@@ -1,9 +1,11 @@
 # Provenance du moteur de rendu
 
-`renderer.js` vient de FERRO (`github.com/M4D135/FERRO`, dépôt privé), version METAL 0.6, commit `950f743` du
-12 novembre 2026, par l'intermédiaire de Point de rupture : c'est la copie de `Jeu/src/moteur/renderer.js` au commit
-`b695b51` (12 novembre 2026), qui porte déjà les retouches « PDR » décrites dans `Jeu/src/moteur/PROVENANCE.md` de
-ce dépôt-là. Rien d'autre de FERRO ni de Point de rupture n'est copié : ni `audio.js`, ni `musique.js`. Le son de
+`renderer.js` vient du moteur de METAL 0.6, commit `950f743` du 12 novembre 2026. Ce commit est dans le dépôt du jeu,
+`github.com/M4D135/METAL` (privé), qui s'appelait `M4D135/FERRO` jusqu'au 12 novembre 2026. Depuis, `M4D135/FERRO`
+(privé) est le dépôt de référence du moteur, où cette version porte l'étiquette `metal-0.6`. Le commentaire d'en-tête
+de Point de rupture, en ligne 2 de `renderer.js`, garde l'ancien nom. La copie est passée par Point de rupture : c'est
+`Jeu/src/moteur/renderer.js` au commit `b695b51` (12 novembre 2026), qui porte déjà les retouches « PDR » décrites
+dans `Jeu/src/moteur/PROVENANCE.md` de ce dépôt-là. Rien d'autre de FERRO ni de Point de rupture n'est copié : ni `audio.js`, ni `musique.js`. Le son de
 BITUME est entièrement dans `src/son.js`. `construire.py` suit le modèle de celui de Point de rupture.
 
 ## Retouches de Point de rupture gardées

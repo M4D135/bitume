@@ -9,11 +9,17 @@ genre et les mécaniques inventées pour vroom-unreal, et ne reprend rien du Vro
 
 ## Jouer
 
-Ouvrir `dist/bitume.html` dans un navigateur récent avec WebGL2 (Chrome, Edge, Firefox, Safari 15 ou plus).
-La page se suffit à elle-même. Pour la reconstruire :
+En ligne : <https://bitume.estrasse.fr>. On peut aussi ouvrir `dist/bitume.html` dans un navigateur récent avec
+WebGL2 (Chrome, Edge, Firefox, Safari 15 ou plus) : la page se suffit à elle-même. Pour la reconstruire :
 
 ```bash
 python3 construire.py
+```
+
+La version en ligne est la page figée d'un commit. Elle ne change qu'à la main, depuis le Mac, sans timer :
+
+```bash
+./deposer.sh
 ```
 
 ## Contenu de l'essai
