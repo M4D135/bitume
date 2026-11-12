@@ -132,7 +132,8 @@
     return step(depth+dot(slope,(centre-uv)*2.),texture(uShadowMap,tap).r);
   }
   float shadow(vec3 n,vec3 l,int slot) {
-    if(vOverlay>.5||(slot==0&&uShadowSettings.x<.5)||(slot==1&&uShadowSettings.x<1.5&&uShadowSettings.w<.5)||(slot==2&&uShadowSettings.z<.5))return 1.;
+    // BITUME : le cockpit est posé à sa vraie place dans le monde, il reçoit donc les ombres du décor.
+    if((slot==0&&uShadowSettings.x<.5)||(slot==1&&uShadowSettings.x<1.5&&uShadowSettings.w<.5)||(slot==2&&uShadowSettings.z<.5))return 1.;
     vec4 projected=uShadowMatrix[slot]*vec4(vWorld+n*.014,1.);
     vec3 p=projected.xyz/projected.w*.5+.5;
     vec3 dx=dFdx(p),dy=dFdy(p);
@@ -317,10 +318,14 @@
       base=teinte*(.86+pierre*.16+grain*.12)*(1.-joint*.3);
       roughness=.82;metalness=0.;
       urbanHeight=(1.-joint)*.006;
-    } else if(m<17.5) {
+    } else if(m<16.5) {
       // PDR : peinture laquée des véhicules et des boucliers.
       base=(vColor.w>.5?vColor.rgb:vec3(.5))*(.94+grain*.06);
       roughness=.22;metalness=.35;
+    } else if(m<17.5) {
+      // BITUME : peinture satinée des monoplaces, qui garde sa couleur sous le ciel en incidence rasante.
+      base=(vColor.w>.5?vColor.rgb:vec3(.5))*(.95+grain*.05);
+      roughness=.46;metalness=.04;
     } else {
       // PDR : tissu et peau des figurines.
       base=(vColor.w>.5?vColor.rgb:vec3(.5))*(.9+grain*.14);
@@ -377,7 +382,7 @@
     vec3 muzzleDirection=muzzleVector/max(muzzleDistance,.001);
     light+=vec3(1.,.48,.12)*muzzlePower*(.22+.78*max(dot(n,muzzleDirection),0.));
     specular+=vec3(1.,.48,.12)*muzzlePower*metalHighlight(n,view,muzzleDirection,roughness,f0);
-    if(vOverlay>.5) light+=vec3(.18,.22,.25);
+    // BITUME : pas de lumière ajoutée au cockpit (elle rosissait la laque rouge) ; il est éclairé comme le monde.
     vec3 color=base*light+specular;
     // Analytic environment reflection: the biome's sky/ground hemisphere and
     // a soft indoor ceiling. This is intentionally not a scene-mirror pass.
@@ -582,7 +587,7 @@
     return Object.freeze({points:Object.freeze(points),faces:Object.freeze(faces),normals:Object.freeze(normals),triangles});
   })();
   function foliageTriangles(){return FOLIAGE.triangles;}
-  const names = ['box','sphere','cylinder','octa','ring','bevel','foliage'];
+  const names = ['box','sphere','cylinder','octa','ring','bevel','foliage','wedge']; // BITUME : 'wedge'
   function geometry(low) {
     const data=[], indices=[], ranges={};
     function vertex(p,n) {const i=data.length/6;data.push(...p,...n);return i;}
@@ -664,6 +669,17 @@
       }
       end('bevel');
     }
+    // BITUME : coin (prisme droit à base triangulaire) pour les nez, pontons et capots en pente des monoplaces.
+    // Dessous en y=-.5, dos en x=-.5 sur toute la hauteur, pente du haut du dos (x=-.5, y=.5) au bas de l'avant.
+    begin('wedge');
+    {
+      const A=[-.5,-.5,-.5],B=[.5,-.5,-.5],C=[.5,-.5,.5],D=[-.5,-.5,.5],E=[-.5,.5,-.5],F=[-.5,.5,.5],n=[Math.SQRT1_2,Math.SQRT1_2,0];
+      triangle(A,B,C,[0,-1,0]);triangle(A,C,D,[0,-1,0]);
+      triangle(A,E,F,[-1,0,0]);triangle(A,F,D,[-1,0,0]);
+      triangle(B,E,F,n);triangle(B,F,C,n);
+      triangle(A,B,E,[0,0,-1]);triangle(D,F,C,[0,0,1]);
+    }
+    end('wedge');
     return {vertices:new Float32Array(data),indices:new Uint16Array(indices),ranges};
   }
 
@@ -1259,7 +1275,7 @@
     }
     function shadowCaster(m){
       const s=m.s||[1,1,1],mat=m.mat||0,limit=m.actorPart&&m.actorScale>1?44:10;
-      return !m.fx&&(m.shape==='box'||m.shape==='bevel'||m.shape==='cylinder'||m.shape==='sphere'||m.shape==='foliage'||m.shape==='octa')&&s[0]>.45&&s[2]>.45&&s[1]>.4&&s[0]<limit&&s[2]<limit&&(mat<4||mat>7);
+      return !m.fx&&(m.shape==='box'||m.shape==='bevel'||m.shape==='cylinder'||m.shape==='sphere'||m.shape==='foliage'||m.shape==='octa'||m.shape==='wedge'/* BITUME */)&&s[0]>.45&&s[2]>.45&&s[1]>.4&&s[0]<limit&&s[2]<limit&&(mat<4||mat>7);
     }
     function staticCasters(eye){
       if(staticCasterPlan&&eye.every((v,k)=>v===staticCasterPlan.eye[k]))return staticCasterPlan.meshes;

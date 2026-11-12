@@ -226,3 +226,34 @@ body.tactile .carte { display: none; }
   .message.visible, .sous-message.visible { animation-duration: .01s; opacity: 1; }
   .gros, .carte-circuit { transition: none; }
 }
+
+/* Cockpit, tableau réduit : la planche donne vitesse, rapport et régime ; plan et compteurs ne couvrent plus les pneus. */
+#jeu[data-reduit="oui"] .carte, #jeu[data-reduit="oui"] .tableau .vitesse, #jeu[data-reduit="oui"] .tableau .regime { display: none; }
+
+/* ------------------------------------------------------------------ démo */
+/* Écran titre : l'attente avant la démo, un trait qui se remplit en cinq secondes. */
+.attente { display: flex; flex-direction: column; gap: 7px; width: 176px; margin: 0; font: 600 10.5px/1 var(--f-texte); letter-spacing: .2em; text-transform: uppercase; color: var(--papier-3); }
+.attente i { display: block; height: 2px; background: var(--trait); }
+.attente b { display: block; height: 100%; background: var(--ambre); transform: scaleX(var(--part, 0)); transform-origin: 0 50%; transition: transform .2s linear; }
+/* La démo : bandeau en haut au centre, à la place des feux ; l'affichage est celui de la voiture filmée. */
+.demo { position: absolute; inset: 0; cursor: pointer; }
+.demo-bandeau, .demo-plan { position: absolute; left: 50%; transform: translateX(-50%); margin: 0; white-space: nowrap; text-transform: uppercase; }
+.demo-bandeau { top: max(var(--marge), env(safe-area-inset-top)); display: flex; align-items: center; gap: 12px; padding: 6px 14px 6px 6px; background: var(--nuit); border: 1px solid var(--trait); border-radius: var(--rayon); color: var(--papier-2); font: 600 12px/1 var(--f-texte); letter-spacing: .14em; }
+.demo-bandeau strong { padding: 6px 10px 5px; border-radius: 2px; background: var(--ambre); color: var(--encre); font: italic 800 19px/1 var(--f-titre); font-stretch: condensed; letter-spacing: .14em; }
+.demo-plan { top: calc(max(var(--marge), env(safe-area-inset-top)) + 50px); padding: 5px 10px; background: var(--nuit-legere); border-radius: var(--rayon); color: var(--papier); font: 700 13px/1 var(--f-titre); font-stretch: condensed; letter-spacing: .1em; }
+.demo-plan:empty { display: none; }
+.demo-tactile, body.tactile .demo-souris { display: none; }
+body.tactile .demo-tactile { display: inline; }
+#jeu[data-ecran="demo"] .feux, #jeu[data-ecran="demo"] #b-pause, #jeu[data-ecran="demo"] #h-delta-ligne, #jeu[data-ecran="demo"] .jauge-derive { display: none !important; }
+body.tactile #jeu[data-ecran="demo"] .hud-bas { top: auto; bottom: max(var(--marge), env(safe-area-inset-bottom)); }
+body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
+/* Sous 1 000 px de large, compteurs et chronos prennent le haut de l'écran : le bandeau passe dessous. */
+@media (max-width: 1000px) {
+  .demo-bandeau { top: calc(max(var(--marge), env(safe-area-inset-top)) + 92px); }
+  .demo-plan { top: calc(max(var(--marge), env(safe-area-inset-top)) + 142px); }
+}
+@media (max-width: 760px) {
+  .demo-bandeau { top: calc(max(var(--marge), env(safe-area-inset-top)) + 70px); gap: 9px; font-size: 10.5px; letter-spacing: .1em; }
+  .demo-bandeau strong { font-size: 16px; }
+  .demo-plan { top: calc(max(var(--marge), env(safe-area-inset-top)) + 114px); max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
+}

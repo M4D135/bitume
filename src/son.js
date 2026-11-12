@@ -22,8 +22,26 @@
     return c;
   }
 
+  // ---------------------------------------------------------------- thème de l'écran titre
+  // Seule musique du jeu (David, 12/11/2026 : « pas de musique sauf à l'écran titre »). Thème original en la mineur,
+  // 126 battements par minute, seize mesures en boucle : basse en octaves, arpège en écho, batterie de bruit, nappe,
+  // et mélodie sur les huit dernières mesures. Accords : racine MIDI et intervalles, une mesure chacun.
+  const THEME = {
+    tempo: 126,
+    accords: [[33, 0, 3, 7], [33, 0, 3, 7], [29, 0, 4, 7], [29, 0, 4, 7], [36, 0, 4, 7], [36, 0, 4, 7], [31, 0, 4, 7], [31, 0, 4, 7]],
+    // [note MIDI (0 : silence), durée en doubles croches] ; seize doubles croches par mesure, huit mesures
+    melodie: [[76, 4], [74, 2], [72, 2], [74, 4], [76, 4], [69, 8], [0, 4], [72, 2], [74, 2], [77, 4], [76, 2], [74, 2], [72, 4], [69, 4],
+      [72, 6], [74, 2], [72, 4], [0, 4], [79, 4], [76, 2], [74, 2], [76, 4], [79, 4], [76, 8], [0, 4], [74, 2], [76, 2],
+      [74, 4], [71, 2], [67, 2], [71, 4], [74, 4], [76, 12], [0, 4]],
+    basse: [0, 0, 12, 0, 0, 12, 7, 12],          // décalage de la basse à chaque croche
+    arpege: [0, 1, 2, 3, 2, 1, 2, 3]              // degré de l'accord (3 : octave) à chaque double croche
+  };
+  const MELODIE_PAS = (() => { const t = new Array(128).fill(null); let k = 0; for (const [n, d] of THEME.melodie) { if (n) t[k] = [n, d]; k += d; } return t; })();
+  const hz = n => 440 * Math.pow(2, (n - 69) / 12);
+
   function creer() {
     let ctx = null, pret = false, enPause = false, coupFin = 0;
+    let musiqueOn = false, minuteur = null, pas = 0, prochain = 0, busMus = null, echo = null;
     const vols = { general: 1, moteur: 1, effets: 1 };
     let maitre = null, busMot = null, busEff = null, bruit = null, m = null, pneus = null, vib = null, herbe = null;
     const voix = [];
@@ -110,7 +128,7 @@
       for (const k of ['general', 'moteur', 'effets']) if (o[k] != null) vols[k] = clamp(+o[k] || 0, 0, 1);
       if (!pret) return;
       const t = ctx.currentTime;
-      rampe(maitre.gain, vols.general * 0.8, t, 0.05); rampe(busMot.gain, vols.moteur, t, 0.05); rampe(busEff.gain, vols.effets, t, 0.05);
+      rampe(maitre.gain, vols.general * 0.8, t, 0.05); rampe(busMot.gain, vols.moteur * (musiqueOn ? SOUS_MUSIQUE : 1), t, 0.05); rampe(busEff.gain, vols.effets, t, 0.05);
     }
 
     // etat = { pause, joueur: { regime, gaz, rapport, v, glisse, surface, turbo, vue, muet },
@@ -181,6 +199,15 @@
       o.connect(g).connect(busEff);
       ponctuelle(o, [g], t, duree);
     }
+    // Clameur des tribunes au drapeau : bruit large qui monte puis s'éteint, sans hauteur.
+    function clameur(t) {
+      const s = ctx.createBufferSource(); s.buffer = bruit; s.loop = true;
+      const bp = filtre('bandpass', 900, 0.5), g = gain(0);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.22, t + 0.45);
+      g.gain.setValueAtTime(0.22, t + 0.9); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.6);
+      s.connect(bp).connect(g).connect(busEff);
+      ponctuelle(s, [bp, g], t, 2.6);
+    }
     function clic(t) {
       const o = osc('square', 1800), g = gain(0);
       g.gain.setValueAtTime(0.12, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.003);
@@ -221,16 +248,78 @@
         case 'contact': choc(t, clamp((p.force ?? 3) / 10, 0.1, 1) * 0.6); break;    // vitesse de rapprochement, m/s
         case 'feu': ton(t, 620, 0.22, 0.3); break;
         case 'vert': ton(t, 1240, 0.22, 0.35); break;
-        case 'niveau': { const n = clamp(p.niveau || 1, 1, 3), b = [659, 784, 988]; for (let i = 0; i < n; i++) ton(t + i * 0.08, b[i], 0.16, 0.24, 'triangle'); break; }
+        case 'niveau': { const n = clamp(p.niveau || 1, 1, 3); for (let i = 0; i < n; i++) ton(t + i * 0.07, 1500, 0.03, 0.2, 'square'); break; } // tics comptés
         case 'fenetre': ton(t, 2000, 0.025, 0.2); break;
         case 'turbo': souffle(t, p.niveau, !!p.parfait); break;
-        case 'tour':
-          if (p.meilleur) [523, 659, 784].forEach((f, i) => ton(t + i * 0.11, f, 0.22, 0.26, 'triangle'));
-          else { ton(t, 523, 0.22, 0.22, 'triangle'); ton(t + 0.12, 659, 0.26, 0.22, 'triangle'); }
-          break;
-        case 'arrivee': [523, 659, 784, 1046].forEach(f => ton(t, f, 0.6, 0.15, 'triangle')); break;
+        case 'tour': ton(t, 880, 0.12, 0.24); if (p.meilleur) ton(t + 0.18, 880, 0.12, 0.24); break; // bip, double au meilleur tour
+        case 'arrivee': clameur(t); break;
         case 'clic': clic(t); break;
         default: break; // 'derive', 'deriveAnnulee' : le crissement suit etat.joueur.glisse
+      }
+    }
+
+    // ---------------------------------------------------------------- musique de l'écran titre
+    const DOUBLE = 60 / THEME.tempo / 4;      // durée d'une double croche
+    const SOUS_MUSIQUE = 0.4;                 // les moteurs de la vitrine passent derrière le thème
+    function initMusique() {
+      busMus = gain(0); busMus.connect(maitre);
+      echo = ctx.createDelay(1); echo.delayTime.value = DOUBLE * 3;  // écho de l'arpège à trois doubles croches
+      const retour = gain(0.32), pb = filtre('lowpass', 2400, 0.7), sortieEcho = gain(0.5);
+      echo.connect(pb).connect(retour).connect(echo); echo.connect(sortieEcho).connect(busMus);
+    }
+    function note(t, type, f, duree, amp, passeBas, attaque, versEcho, detune) {
+      const o = osc(type, f, detune), pb = filtre('lowpass', passeBas, 0.8), g = gain(0);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(amp, t + (attaque || 0.008));
+      g.gain.exponentialRampToValueAtTime(0.0001, t + duree);
+      o.connect(pb).connect(g).connect(busMus); if (versEcho) g.connect(echo);
+      ponctuelle(o, [pb, g], t, duree);
+    }
+    function frappe(t, sorte) {
+      if (sorte === 'g') { // grosse caisse : sinus qui plonge
+        const o = osc('sine', 150), g = gain(0);
+        o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(45, t + 0.12);
+        g.gain.setValueAtTime(0.8, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+        o.connect(g).connect(busMus); ponctuelle(o, [g], t, 0.3);
+        return;
+      }
+      const s = ctx.createBufferSource(); s.buffer = bruit;
+      const caisse = sorte === 'c', f = filtre('highpass', caisse ? 1200 : 7000, 0.7), g = gain(0);
+      const a = caisse ? 0.4 : sorte === 'o' ? 0.11 : 0.08, d = caisse ? 0.16 : sorte === 'o' ? 0.2 : 0.045;
+      g.gain.setValueAtTime(a, t); g.gain.exponentialRampToValueAtTime(0.001, t + d);
+      s.connect(f).connect(g).connect(busMus);
+      s.start(t, Math.random() * 1.5); s.stop(t + d + 0.02);
+      s.onended = () => { for (const x of [s, f, g]) { try { x.disconnect(); } catch (e) { /* déjà débranché */ } } };
+    }
+    function jouerPas(i, t) {
+      const mesure = Math.floor(i / 16), k = i % 16, [racine, ...iv] = THEME.accords[mesure % 8];
+      if (k === 0 || k === 6 || k === 8 || (k === 14 && mesure % 2)) frappe(t, 'g');
+      if (k === 4 || k === 12) frappe(t, 'c');
+      if (k % 2 === 0) frappe(t, k === 14 ? 'o' : 'h');
+      if (k % 2 === 0) note(t, 'sawtooth', hz(racine + THEME.basse[k / 2]), DOUBLE * 1.7, 0.3, 650);
+      const d = THEME.arpege[k % 8];
+      note(t, 'square', hz(racine + 24 + (d === 3 ? 12 : iv[d])), DOUBLE * 0.9, 0.05, 2600, 0.005, true);
+      if (k === 0 && mesure % 2 === 0) for (const v of iv) note(t, 'sawtooth', hz(racine + 12 + v), DOUBLE * 31, 0.03, 1100, 0.35, false, v ? 6 : -6);
+      const m = mesure >= 8 ? MELODIE_PAS[(mesure - 8) * 16 + k] : null;
+      if (m) note(t, 'triangle', hz(m[0]), DOUBLE * m[1] * 0.95, 0.16, 3200, 0.012, true);
+    }
+    function tic() {
+      if (!musiqueOn || !pret) return;
+      const maintenant = ctx.currentTime;
+      if (prochain < maintenant - 0.2) prochain = maintenant + 0.05;   // onglet ralenti : on reprend sans rafale
+      while (prochain < maintenant + 0.15) { jouerPas(pas, prochain); pas = (pas + 1) % 256; prochain += DOUBLE; }
+    }
+    // Lance (true) ou coupe (false) le thème, en fondu. Sans effet avant le premier geste (demarrer).
+    function musique(active) {
+      if (!pret) return;
+      const t = ctx.currentTime;
+      if (active && !musiqueOn) {
+        if (!busMus) initMusique();
+        musiqueOn = true; pas = 0; prochain = t + 0.06;
+        rampe(busMus.gain, 0.9, t, 0.6); rampe(busMot.gain, vols.moteur * SOUS_MUSIQUE, t, 0.6);
+        minuteur = setInterval(tic, 25); tic();
+      } else if (!active && musiqueOn) {
+        musiqueOn = false; clearInterval(minuteur); minuteur = null;
+        rampe(busMus.gain, 0, t, 0.5); rampe(busMot.gain, vols.moteur, t, 0.5);
       }
     }
 
@@ -241,10 +330,10 @@
       for (const g of [m.sortie.gain, pneus.g1.gain, pneus.g2.gain, vib.g.gain, herbe.g.gain, ...voix.map(v => v.sortie.gain)]) vise(g, 0, t, 0.03);
     }
     function reprendre() { enPause = false; }
-    function stats() { return { actif: pret, voix: pret ? 1 + voix.filter(v => v.id >= 0).length : 0 }; }
+    function stats() { return { actif: pret, voix: pret ? 1 + voix.filter(v => v.id >= 0).length : 0, musique: musiqueOn }; }
 
-    return { demarrer, regler, mettreAJour, evenement, suspendre, reprendre, stats };
+    return { demarrer, regler, mettreAJour, evenement, musique, suspendre, reprendre, stats };
   }
 
-  B.son = { creer, frequenceAllumage, coupure, gainDistance, doppler, panoramique };
+  B.son = { creer, frequenceAllumage, coupure, gainDistance, doppler, panoramique, THEME };
 })(globalThis.BITUME = globalThis.BITUME || {});

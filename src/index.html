@@ -40,6 +40,12 @@
     <button id="b-pause" class="bouton-rond" type="button" aria-label="Pause">❚❚</button>
   </section>
 
+  <!-- Démo : les douze voitures à l'ordinateur ; un geste ramène à l'écran titre -->
+  <div id="demo" class="demo" hidden>
+    <p class="demo-bandeau"><strong>Démo</strong><span class="demo-souris">Cliquez ou appuyez sur une touche</span><span class="demo-tactile">Touchez l’écran</span></p>
+    <p id="demo-plan" class="demo-plan"></p>
+  </div>
+
   <!-- Commandes tactiles -->
   <div id="tactile" hidden>
     <div id="t-volant" class="zone-volant" aria-label="Volant : glisser à gauche ou à droite"><div class="bouton-volant"></div></div>
@@ -62,6 +68,7 @@
       <button type="button" class="gros" data-aller="chrono">Chrono</button>
       <button type="button" class="discret" data-aller="reglages">Réglages</button>
     </nav>
+    <p id="titre-attente" class="attente" hidden><span id="titre-attente-texte">Démo dans 5 s</span><i><b></b></i></p>
     <p class="pied-titre">Clavier, manette ou écran tactile · moteur FERRO · aucun fichier d’image ni de son</p>
   </section>
 
@@ -117,6 +124,16 @@
         <label><input type="radio" name="aide" value="0.7"><span>Forte</span></label>
       </fieldset>
       <fieldset>
+        <legend>Tableau en cockpit</legend>
+        <label><input type="radio" name="tableau" value="reduit"><span>Planche seule</span></label>
+        <label><input type="radio" name="tableau" value="complet"><span>Plan et compteurs</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Démo sur l’écran titre</legend>
+        <label><input type="radio" name="demo" value="oui"><span>Après 5 s sans geste</span></label>
+        <label><input type="radio" name="demo" value="non"><span>Jamais</span></label>
+      </fieldset>
+      <fieldset>
         <legend>Image</legend>
         <label><input type="radio" name="qualite" value="low"><span>Légère</span></label>
         <label><input type="radio" name="qualite" value="auto"><span>Auto</span></label>
@@ -126,6 +143,7 @@
         <label>Volume général <input type="range" id="v-general" min="0" max="1" step="0.05"></label>
         <label>Moteurs <input type="range" id="v-moteur" min="0" max="1" step="0.05"></label>
         <label>Effets <input type="range" id="v-effets" min="0" max="1" step="0.05"></label>
+        <label>Champ du cockpit <output id="v-champ-valeur">68°</output> <input type="range" id="v-champ" min="60" max="105" step="1"></label>
       </div>
       <dl class="touches">
         <dt>Accélérer · freiner</dt><dd>↑ ↓ ou Z S (W S en QWERTY)</dd>

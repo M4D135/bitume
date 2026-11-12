@@ -18,7 +18,8 @@ from urllib.parse import quote
 ICI = pathlib.Path(__file__).resolve().parent
 SRC = ICI / 'src'
 DIST = ICI / 'dist'
-# Ordre d'exécution : le moteur, puis la simulation (circuit, conduite, course), le son, le décor, la voiture, la coque.
+# Ordre d'exécution : le moteur, puis la simulation (circuit, conduite, course), le son, le décor, la voiture, le
+# réalisateur de la démo, la coque.
 MODULES = [
     'moteur/renderer.js',
     'circuit.js',
@@ -27,6 +28,7 @@ MODULES = [
     'son.js',
     'decor.js',
     'voiture.js',
+    'realisateur.js',
     'jeu.js',
 ]
 VERSION = 'essai-0.1'

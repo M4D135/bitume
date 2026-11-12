@@ -32,3 +32,11 @@ et lointain (`camera.near`, `camera.far`), la lampe torche éteinte (`fx.torch =
    chaque lot.
 5. **Ombres des lots** : les lots dont la sphère touche le volume du soleil projettent leur ombre.
 6. **Perte de contexte** : nappes et lots rechargés à la restauration, leurs tampons libérés par `dispose`.
+7. **Coin** (`wedge`) : prisme droit à base triangulaire (dessous, dos vertical, pente du haut du dos au bas de
+   l'avant), pour les nez, pontons et capots en pente des monoplaces. Il porte ombre comme les autres formes pleines.
+8. **Cockpit éclairé comme le monde** : la passe de premier plan (`overlay`) ne reçoit plus la lumière ajoutée de
+   FERRO, faite pour l'arme d'un jeu de tir, qui rosissait la laque rouge, et elle reçoit les ombres du décor. Le
+   cockpit de BITUME est posé à sa vraie place dans le monde, l'ombre y tombe donc juste.
+9. **Peinture satinée** (matière 17) : la matière 17 n'est plus une seconde laque mais la peinture des monoplaces,
+   plus mate (rugosité 0,46, métal 0,04). La laque brillante de FERRO reflétait le ciel en incidence rasante et
+   rosissait le rouge vu du cockpit.

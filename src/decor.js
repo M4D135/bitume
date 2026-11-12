@@ -531,10 +531,15 @@
       mx /= l.objets.length; my /= l.objets.length; mz /= l.objets.length;
       let rayon = 0;
       for (const o of l.objets) { const s = o.s || [1, 1, 1]; rayon = Math.max(rayon, Math.hypot(o.p[0] - mx, o.p[1] - my, o.p[2] - mz) + Math.hypot(s[0], s[1], s[2]) / 2); }
-      lots.push({ objets: l.objets, loin: l.loin, centre: [mx, my, mz], rayon, portee: l.lointain ? 1900 : 1500, bascule: l.lointain ? 420 : 230 });
+      // Aucune portée propre : un lot se dessine jusqu'au plan lointain de la caméra, la brume fait la limite (un massif
+      // qui surgit à 1 900 m se voit). La bascule vers la version allégée se fait là où un tronc tient en un pixel.
+      lots.push({ objets: l.objets, loin: l.loin, centre: [mx, my, mz], rayon, portee: Infinity, bascule: l.lointain ? 900 : 520 });
     }
     const atmosphere = Object.assign({ outdoorZones: [{ x: 0, z: 0, w: 1e7, d: 1e7 }] }, th.atmosphere);
-    return { nappes: nappes.concat(terrain.liste), lots, atmosphere, portique, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th };
+    // enceinte : portion de la ligne droite bordée de tribunes et de stands (abscisses comptées depuis la ligne) ; une
+    // caméra de bord de piste s'y place devant eux, pas derrière la glissière où elle serait dans les gradins.
+    return { nappes: nappes.concat(terrain.liste), lots, atmosphere, portique, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
+      enceinte: { debut: avant - 10, fin: apres + 50 } };
   }
 
   B.decor = { construire, THEMES, angles, base, limites, hauteurRoute, cadre };
