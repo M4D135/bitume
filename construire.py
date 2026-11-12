@@ -28,6 +28,7 @@ MODULES = [
     'son.js',
     'decor.js',
     'carene.js',
+    'main.js',
     'voiture.js',
     'realisateur.js',
     'jeu.js',

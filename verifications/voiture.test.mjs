@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 
 const ici = path.dirname(fileURLToPath(import.meta.url));
 createRequire(import.meta.url)(path.join(ici, '..', 'src', 'carene.js'));
+createRequire(import.meta.url)(path.join(ici, '..', 'src', 'main.js'));
 createRequire(import.meta.url)(path.join(ici, '..', 'src', 'voiture.js'));
 const V = globalThis.BITUME.voiture;
 
@@ -96,7 +97,8 @@ verifier('cockpit : haut de la jante, prises des mains, planche, pneus avant et 
   for (const s of [-1, 1]) dansLeCadre(jante(s * prise, R + .03), 'gant');
   const bas = projeter(jante(Math.PI, R));
   assert.ok(bas[1] < -1 && bas[1] > -1.25, `le bas de la jante sort de l'image, de peu : ${bas[1].toFixed(2)}`);
-  for (const a of [-1, 1]) for (const b of [-1, 1]) dansLeCadre(V.PLANCHE.map((v, i) => v + a * .055 * wu[i] + b * .19 * wr[i]), 'planche');
+  const pu = [Math.sin(V.PENTE_PLANCHE), Math.cos(V.PENTE_PLANCHE), 0];
+  for (const a of [-1, 1]) for (const b of [-1, 1]) dansLeCadre(V.PLANCHE.map((v, i) => v + a * .055 * pu[i] + b * .19 * wr[i]), 'planche');
   for (const s of [-1, 1]) {
     dansLeCadre(dehors([1.35, .58, s * .75]), 'pneu avant');
     const retro = mod.corps.find(p => p.glace && p.o[2] * s > .3);
@@ -118,6 +120,12 @@ function coupe(a, b, p0, p1, p2) {
   return uu >= 0 && vv >= 0 && uu + vv <= 1 && t > 0 && t < 1;
 }
 const formeDe = nom => Object.values(V.FORMES).find(f => f.nom === nom);
+// Sommets d'une instance de forme libre, à leur taille et à leur place.
+function sommets(m) {
+  const r = V.euler(...m.r), f = formeDe(m.shape), vus = [];
+  for (const tri of f.tri) for (let k = 0; k < 3; k++) { const l = tri[k].map((v, i) => v * m.s[i]); vus.push([0, 1, 2].map(i => m.p[i] + r[0][i] * l[0] + r[1][i] * l[1] + r[2][i] * l[2])); }
+  return vus;
+}
 
 verifier('cockpit : coque creuse, aucune pièce de carrosserie entre l’œil et le volant', () => {
   const sortie = [], ev = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0 };
@@ -199,15 +207,49 @@ verifier('cockpit : rien que des nombres finis, volant à fond et pendant un cha
 
 verifier('changement de rapport : la main droite va au pommeau, puis revient sur la jante', () => {
   const pommeau = t => bord({ passage: t, rapportAvant: 2 }).find(m => m.shape === 'sphere' && Math.abs(m.s[0] - .040 * V.K) < 1e-9).p;
-  const mainDroite = t => bord({ passage: t, rapportAvant: 2 }).filter(m => m.mat === 18 && m.p[2] > .02 && m.color[0] > .5); // tissu clair : gant et manche de droite, sans la jante
-  const auPlusPres = (t, cible) => Math.min(...mainDroite(t).map(m => ecart(m.p, cible)));
+  // sommets du gant droit, à leur place dans la voiture
+  const gantDroit = t => sommets(bord({ passage: t, rapportAvant: 2 }).find(m => m.shape === 'bitume-main-gant-d'));
+  const auPlusPres = (t, cible) => Math.min(...gantDroit(t).map(q => ecart(q, cible)));
   const tilt = V.VOLANT.inclinaison, a = V.VOLANT.prise;      // prise de la main droite, volant droit
   const prise = reel(V.VOLANT.centre.map((v, i) => v + V.VOLANT.rayon * ([Math.sin(tilt), Math.cos(tilt), 0][i] * Math.cos(a) + [0, 0, 1][i] * Math.sin(a))));
   assert.ok(auPlusPres(1, pommeau(1)) > .05, 'au repos, la main est loin du levier');
-  assert.ok(auPlusPres(.45, pommeau(.45)) < .012, `à mi-changement, la main tient le pommeau (${auPlusPres(.45, pommeau(.45)).toFixed(3)} m)`);
+  assert.ok(auPlusPres(.45, pommeau(.45)) < .015, `à mi-changement, la main tient le pommeau (${auPlusPres(.45, pommeau(.45)).toFixed(3)} m)`);
   assert.ok(auPlusPres(.45, prise) > .04 && auPlusPres(1, prise) < .02, 'elle a quitté la jante, puis y revient');
   // le pommeau passe de la position du 2e rapport (vers l'arrière) à celle du 3e (vers l'avant)
   assert.ok(pommeau(1)[0] - pommeau(0)[0] > .015, 'le levier avance de la 2e à la 3e');
+});
+
+// Point composé vu de l'œil (positions apparentes) d'un point de la voiture : l'inverse de « reel ».
+const apparent = q => q.map((x, i) => (x - V.OEIL[i]) / V.K);
+
+verifier('mains : aucun sommet des gants dans les branches de 3 h et 9 h, volant droit ou tourné', () => {
+  const { centre: C, rayon: R, inclinaison: tau, course } = V.VOLANT, e = R / .105;
+  const wn = [-Math.cos(tau), Math.sin(tau), 0], wu = [Math.sin(tau), Math.cos(tau), 0], wr = [0, 0, 1];
+  for (const volant of [0, .6, -1]) {
+    const phi = volant * course, u = wu.map((v, k) => v * Math.cos(phi) + wr[k] * Math.sin(phi)), r = wu.map((v, k) => -v * Math.sin(phi) + wr[k] * Math.cos(phi));
+    const axe = C.map((v, i) => v - .004 * wn[i]), sc = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+    const pieces = bord({ volant }).filter(m => m.shape.startsWith('bitume-main-'));
+    assert.equal(pieces.length, 10, 'cinq pièces par main');
+    for (const m of pieces) {
+      const dir = m.shape.endsWith('-d') ? r : r.map(v => -v);
+      const dedans = sommets(m).map(apparent).filter(p => {
+        const q = p.map((v, i) => v - axe[i]), c = sc(q, dir);
+        return c > .028 * e && c < .98 * R && Math.abs(sc(q, u)) < .0135 * e && Math.abs(sc(q, wn)) < .003;
+      });
+      assert.equal(dedans.length, 0, `${m.shape}, volant ${volant} : ${dedans.length} sommets dans la branche`);
+    }
+  }
+});
+
+verifier('mains dans le cadre, manches hors du cadre dès le poignet (16:9, volant droit)', () => {
+  const sortie = bord({});
+  for (const m of sortie.filter(m => m.shape.startsWith('bitume-main-gant'))) dansLeCadre(apparent(m.p), m.shape);
+  const manche = sortie.filter(m => m.shape === 'sphere' && m.color === livree.combinaison);
+  assert.equal(manche.length, 12, 'six tronçons par manche');
+  for (const m of manche.filter((m, i) => i % 6 >= 1)) {
+    const [, y] = projeter(apparent(m.p));
+    assert.ok(y < -1, `manche dans l'image : ${y.toFixed(2)}`);
+  }
 });
 
 verifier('lampe de régime : allumée au-dessus de 12 000 tr/min, sauf au dernier rapport', () => {

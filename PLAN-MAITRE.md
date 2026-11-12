@@ -211,28 +211,43 @@ cylindres d'arête et rivets de l'habitacle sont retirés. Capture en 16:10 comp
 But : plus rien de dessin animé. Une main = **un seul maillage** fixe dans le repère du volant (la prise ne change pas
 quand la jante tourne), bâti une fois par `carene` et `tube`, enregistré en forme libre ; son miroir pour l'autre main.
 
-- [ ] **Prise à 9 h et 3 h** : `VOLANT.prise` à 1,50 rad (86° du haut), mains juste au-dessus des branches.
-- [ ] **Dos de la main** : carène plate et inclinée, des jointures au poignet, 8,5 cm de large aux jointures, 6 cm au
-  poignet, 2,6 cm d'épaisseur, exposant 3. Pas d'ellipsoïde.
-- [ ] **Doigts** : quatre `tube` à trois phalanges, rayon 0,9 cm qui s'affine à 0,75 cm, **sans renflement** aux
+- [x] **Prise à 9 h et 3 h** : `VOLANT.prise` à 1,50 rad (86° du haut), mains juste au-dessus des branches.
+  Fait autrement : `prise` à π/2, mains sur les branches, axe de la main vers le pilote, dos tourné de 80° vers le
+  dehors, comme dans vroom-unreal, que David a donné pour modèle ; volant incliné de 25° (`inclinaison`).
+- [x] **Dos de la main** : carène plate et inclinée, des jointures au poignet, 8,5 cm de large aux jointures, 6 cm au
+  poignet, 2,6 cm d'épaisseur, exposant 3. Pas d'ellipsoïde. Fait : 8,8 cm aux jointures, 6,5 cm au poignet, 3 cm
+  d'épaisseur au plus, exposant 2,2 à 2,6.
+- [x] **Doigts** : quatre `tube` à trois phalanges, rayon 0,9 cm qui s'affine à 0,75 cm, **sans renflement** aux
   articulations, **serrés** (entraxe 2,0 cm pour 1,8 cm de diamètre), enroulés autour du tube de la jante. La première
-  phalange passe par-dessus la jante, bien visible ; le bout finit côté intérieur, à peine visible.
-- [ ] **Pouce** : `tube` à deux phalanges, couché sur la face avant de la jante, pointé vers le moyeu et un peu vers
-  le haut, son bout sur la branche. Jamais dressé.
-- [ ] **Couleur** : gant de la couleur de la voiture (rouge pour le joueur), paume et dessous des doigts en cuir sombre
+  phalange passe par-dessus la jante, bien visible ; le bout finit côté intérieur, à peine visible. Fait : rayons de
+  1,0 cm à 0,72 cm, entraxe 2,0 à 2,1 cm ; l'index et l'auriculaire reviennent côté moyeu, le majeur et l'annulaire
+  s'arrêtent contre le dos de la branche.
+- [x] **Pouce** : `tube` à deux phalanges, couché sur la face avant de la jante, pointé vers le moyeu et un peu vers
+  le haut, son bout sur la branche. Jamais dressé. Fait autrement, comme dans vroom-unreal : il part de l'éminence,
+  passe devant la branche et remonte la jante sur sa face tournée vers le pilote.
+- [x] **Couleur** : gant de la couleur de la voiture (rouge pour le joueur), paume et dessous des doigts en cuir sombre
   (une seconde forme libre « paume »), garde de jointures ton sur ton plus sombre. Si la voiture est très claire :
-  gant sombre. Pas de gant blanc uni.
-- [ ] **Poignet** : élastique court sombre, puis revers de la manche de la combinaison. Manche en `tube` le long de la
-  courbe de Bézier actuelle, 5,5 cm au poignet, 7 cm au coude ; coudes bas et serrés.
-- [ ] Échelle : main à 31 % du diamètre du volant (facteur `e` actuel).
-- [ ] Changement de rapport : garder le geste de la main droite vers le pommeau ; la main s'y pose paume vers le bas.
+  gant sombre. Pas de gant blanc uni. Fait : gant sombre au-delà d'une clarté de 0,62, sangle du ton du gant.
+- [x] **Poignet** : élastique court sombre, puis revers de la manche de la combinaison. Manche en `tube` le long de la
+  courbe de Bézier actuelle, 5,5 cm au poignet, 7 cm au coude ; coudes bas et serrés. Fait : manchette sombre et
+  sangle ; pas de revers, qui scintillait contre la manchette : la manche y entre. Manche de 4,6 à 6,7 cm, le long de
+  la courbe de vroom-unreal.
+- [x] Échelle : main à 31 % du diamètre du volant (facteur `e` actuel). Fait : 33 % (8,8 cm pour 27 cm), facteur
+  `rayon / JANTE.R`.
+- [x] Changement de rapport : garder le geste de la main droite vers le pommeau ; la main s'y pose paume vers le bas.
 - [ ] Au-delà de 100° de rotation de la jante, la main du haut lâche et se replace (deux prises), comme dans
-  vroom-unreal. Facultatif si le reste est bon : la rotation est bornée à 92°.
-- [ ] Tests : main dans le cadre, doigts qui touchent le tube sans le traverser de plus de 2 mm, pouce sous la jante
-  haute, aucune sphère d'articulation.
+  vroom-unreal. Facultatif si le reste est bon : la rotation est bornée à 92°. Non fait : la main du haut garde sa
+  prise ; à fond, son avant-bras descend devant le volant, comme dans vroom-unreal 0.34.
+- [x] Tests : main dans le cadre, doigts qui touchent le tube sans le traverser de plus de 2 mm, pouce sous la jante
+  haute, aucune sphère d'articulation. Fait : `verifications/main.test.mjs` (7) ; dans `voiture.test.mjs`, branches
+  libres volant tourné, mains dans le cadre et manches hors du cadre en 16:9. La main n'a aucune sphère.
 
 Fini quand : en gros plan (champ de 9°), on reconnaît une main gantée qui serre une jante, et David ne dit plus
 « Warner Bros ». Lui montrer la capture avant d'aller plus loin.
+
+Fait le 12/11/2026 : main droite en cinq pièces (gant, paume, garde, manchette, sangle) dans `src/main.js`, la gauche
+en miroir. Captures en 16:10 comparées à `cockpit-035-neutral.png`, gros plan au champ de 9°, braquage à fond des deux
+côtés. En attente de l'avis de David.
 
 ### Lot 1E — Rétroviseurs en vraie image (facultatif, après accord de David)
 
@@ -277,3 +292,4 @@ existe) ; voiture vivante ; peloton et voix des rivaux ; tours propres, records 
 - 12/11/2026 — Lot 1A fini (Opus 5.5).
 - 12/11/2026 — Lot 1B fini (Opus 5.5).
 - 12/11/2026 — Lot 1C fini (Opus 5.5).
+- 12/11/2026 — Lot 1D livré (Opus 5.5), en attente de l'avis de David sur les captures.

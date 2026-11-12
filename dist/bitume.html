@@ -4346,6 +4346,116 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
+// ---- main.js ----
+/* BITUME — main droite gantée d'un pilote qui tient la jante du volant à 3 h, sur la branche, comme dans vroom-unreal.
+   Une forme par pièce (gant, paume, garde des jointures, manchette, sangle), en carènes et tubes (src/carene.js).
+   Prise : la main est à l'extérieur de la jante, dos tourné vers le dehors, axe de la main perpendiculaire au plan du
+   volant, vers le pilote ; la jante passe dans la paume, juste sous les jointures. Les doigts font le tour du tube
+   par la planche : l'index au-dessus de la branche et l'auriculaire au-dessous reviennent côté moyeu, le majeur et
+   l'annulaire s'arrêtent contre le dos de la branche. Le pouce remonte la jante sur sa face tournée vers le pilote.
+   Le poignet reste dans l'axe : la manche le prolonge, puis descend vers le coude (src/voiture.js).
+   Repère local, en mètres, taille réelle : origine au centre de la section du tube de la jante au point de prise ;
+   x vers le pilote, y le long de la jante vers le haut du volant, z vers le moyeu. La main gauche est son miroir. */
+(function (B) {
+  'use strict';
+
+  const JANTE = { R: .135, r: .0145 };
+  const deg = Math.PI / 180, JEU = .0004;                       // jeu entre le gant et le gainage de la jante
+
+  // Point autour du tube de la jante. psi : abscisse angulaire le long de la jante (> 0 vers le haut du volant) ;
+  // theta : angle autour du tube (0 : vers le pilote, 90° : dehors, 180° : vers la planche, 270° : vers le moyeu) ;
+  // d : distance à l'axe du tube.
+  function AUTOUR(psi, theta, d) {
+    const cy = JANTE.R * Math.sin(psi), cz = JANTE.R - JANTE.R * Math.cos(psi);
+    const ct = Math.cos(theta), st = Math.sin(theta);
+    return [d * ct, cy + d * st * Math.sin(psi), cz - d * st * Math.cos(psi)];
+  }
+
+  // Branche de 3 h du volant (src/voiture.js), dans ce repère : demi-largeur le long de la jante, faces côté planche et
+  // côté pilote. Elle part du tube vers le moyeu, dans le plan du volant.
+  const BRANCHE = { demi: .0174, dos: -.0076, face: -.0011 };
+  // Jointures sur le flanc extérieur de la jante, un peu vers la planche
+  const JOINTURES = { theta: 95 * deg, d: .034 };
+  // Axe de la main, des jointures vers le poignet : vers le pilote, un peu vers le moyeu (dos tourné de 80° vers le
+  // dehors, comme dans vroom-unreal)
+  const AXE = normalise([.985, 0, .174]);
+  // Doigts : place le long de la jante, rayon, puis angles autour du tube (milieu de la première phalange, deux
+  // articulations, bout), chaque point au contact du tube. Rayons le long du doigt : base, jointure, puis ces 4 points.
+  const DOIGTS = [
+    { nom: 'index', s: .0318, r: .0098, tour: [136, 178, 226, 260] },
+    { nom: 'majeur', s: .0108, r: .0102, tour: [134, 165, 196, 218] },
+    { nom: 'annulaire', s: -.0103, r: .0097, tour: [134, 165, 196, 218] },
+    { nom: 'auriculaire', s: -.0302, r: .0086, tour: [134, 172, 216, 248] }
+  ];
+  const EFFILE = [1, 1, .99, .96, .9, .84];
+  // Pouce : éminence charnue du poignet au bas de l'index, côté paume, puis le long de la jante vers le haut, couché sur
+  // sa face tournée vers le pilote, devant la branche. Éminence : [vers les jointures depuis le poignet, vers
+  // l'index, vers la paume] ; pouce : [abscisse le long de la jante, angle autour du tube] ; rayons de la base au bout.
+  const POUCE = { r: [.0160, .0158, .0124, .0108, .0094], eminence: [[.016, .012, .018], [.036, .020, .026]], tour: [[.026, -24], [.040, -32], [.052, -36]] };
+
+  function construire() {
+    const C = B.carene;
+    const K = AUTOUR(0, JOINTURES.theta, JOINTURES.d);            // jointure du majeur et de l'annulaire : origine du dos
+    const a = AXE, bz = [0, 1, 0], Y = croix(bz, a);              // Y : normale au dos de la main, vers le dehors
+    const m = [a, Y, bz];
+    const W = additionner(K, multiplier(a, .088));                // centre du poignet
+
+    // --- Doigts : de l'intérieur du dos à la jointure, puis autour du tube ---
+    const gant = [], pointsDoigts = [], jointures = [];
+    for (const doigt of DOIGTS) {
+      const psi = doigt.s / JANTE.R, jointure = AUTOUR(psi, JOINTURES.theta, JOINTURES.d), r = doigt.r;
+      const rayons = EFFILE.map(f => r * f);
+      const pts = [additionner(jointure, multiplier(a, .024)), jointure, ...doigt.tour.map((t, i) => AUTOUR(psi, t * deg, JANTE.r + rayons[i + 2] + JEU))];
+      gant.push(...C.tube(pts, rayons, { cotes: 10, pas: 4, bouts: true }));
+      pointsDoigts.push(pts); jointures.push(jointure);
+    }
+
+    // --- Dos de la main : carène bombée, large aux jointures, effilée vers le poignet ---
+    const SECTIONS = [
+      { x: -.008, y0: -.012, y1: .006, l: .036, n: 2.2 },
+      { x: .004, y0: -.0165, y1: .0115, l: .0425, n: 2.5 },
+      { x: .030, y0: -.0195, y1: .0125, l: .0440, n: 2.6 },
+      { x: .060, y0: -.0185, y1: .0120, l: .0405, n: 2.5 },
+      { x: .086, y0: -.0150, y1: .0105, l: .0325, n: 2.3 }
+    ];
+    gant.push(...C.transformer(C.carene(SECTIONS, { cotes: 22, pas: 4, bouts: true }), m, K));
+
+    // --- Pouce : de l'éminence, côté index et paume, jusque sur la face de la jante tournée vers le pilote ---
+    const eminence = POUCE.eminence.map(([x, y, z]) => additionner(additionner(W, multiplier(a, -x)), additionner(multiplier(bz, y), multiplier(Y, -z))));
+    const pouce = [...eminence, ...POUCE.tour.map(([s, t], i) => AUTOUR(s / JANTE.R, t * deg, JANTE.r + POUCE.r[i + 2] + 4 * JEU))];
+    gant.push(...C.tube(pouce, POUCE.r, { cotes: 12, pas: 4, bouts: true }));
+
+    // --- Paume : cuir sombre côté jante, sous le dos ---
+    const paume = C.transformer(C.carene(SECTIONS.map(q => ({ x: q.x + .003, y0: q.y0 - .0012, y1: q.y0 + .008, l: q.l * .97, n: q.n })),
+      { cotes: 22, pas: 4, bouts: true }), m, K);
+
+    // --- Garde : une bosse de cuir sur chaque jointure, dans l'axe du doigt ---
+    const garde = [];
+    jointures.forEach((j, i) => {
+      const p = additionner(j, multiplier(Y, .0045));
+      garde.push(...C.tube([additionner(p, multiplier(a, .014)), additionner(p, multiplier(a, -.003))], i === 3 ? .0085 : .0098, { cotes: 10, pas: 2, bouts: true }));
+    });
+
+    // --- Manchette évasée, qui recouvre le bout de la manche, et sangle à sa base ---
+    // (bouts plats : la manche entre dans la manchette)
+    const rond = (x, r) => ({ x, y0: -r, y1: r, l: r, n: 2 });
+    const poignet = C.transformer(C.carene([rond(-.004, .0262), rond(.014, .0282), rond(.028, .0298)], { cotes: 18, pas: 3 }), m, W);
+    const sangle = C.transformer(C.carene([rond(-.002, .0292), rond(.012, .0292)], { cotes: 18, pas: 1 }), m, W);
+
+    const points = { doigts: pointsDoigts, pouce, jointures, poignet: W, axe: a, dos: Y };
+    return { gant, paume, garde, poignet, sangle, points };
+  }
+
+  // --- Outils vectoriels ---
+  function normalise(v) { const l = Math.hypot(v[0], v[1], v[2]); return l ? [v[0] / l, v[1] / l, v[2] / l] : [0, 0, 0]; }
+  function croix(a, b) { return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]; }
+  function additionner(a, b) { return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; }
+  function multiplier(v, s) { return [v[0] * s, v[1] * s, v[2] * s]; }
+
+  B.main = { construire, AUTOUR, JANTE, JEU, BRANCHE, AXE, DOIGTS, EFFILE, POUCE };
+})(globalThis.BITUME = globalThis.BITUME || {});
+</script>
+<script>
 // ---- voiture.js ----
 /* BITUME — monoplace de 1980 dessinée d'après la Ferrari 312 T5 : cotes, silhouette et livrée rouge à détails blancs,
    sans nom, emblème ni marque de commanditaire. Primitives du moteur : vue extérieure, cockpit vu du siège, fantôme.
@@ -4656,11 +4766,15 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   // 16° sous l'horizon), puis ramenés vers l'œil par une homothétie de rapport K. L'image ne change pas et l'ensemble
   // tient dans l'habitacle, devant le capot.
   const K = .5;
-  // Cadrage de vroom-unreal 0.35 : le volant est gros et bas, 16° sous l'horizon ; le bas de sa jante sort de l'image
+  // Cadrage de vroom-unreal 0.35 : le volant est gros et bas, 16,8° sous l'horizon ; le bas de sa jante sort de l'image
   // (41,6° de champ vertical), les mains sont au premier plan et les manches quittent le champ dès le poignet.
-  const VOLANT = { centre: [1.0, -.287, 0], rayon: .125, inclinaison: .436, course: 1.6, prise: 1.88 };   // prise : 108° du haut de la jante
-  const PLANCHE = [1.12, -.21, 0];
-  const COUDE = [.83, -.66, .15];
+  // Comme dans vroom-unreal, la face du volant regarde le pilote et un peu le bas (inclinaison négative : le haut de la
+  // jante vient vers lui) : l'axe des mains, perpendiculaire au volant, prolonge celui des avant-bras qui montent du bas
+  // de l'image, sans casser le poignet. Mains à 9 h et 3 h, sur les branches (prise : angle depuis le haut de la jante).
+  const VOLANT = { centre: [1.0, -.302, 0], rayon: .125, inclinaison: -.436, course: 1.6, prise: Math.PI / 2 };
+  // Planche : face au pilote, inclinée de 25° vers l'arrière ; elle ne suit pas l'inclinaison du volant.
+  const PLANCHE = [1.12, -.21, 0], PENTE_PLANCHE = .436;
+  const COUDE = [.48, -.58, .20];              // coude du pilote, bras repliés près du corps, sous l'image (vroom-unreal)
   const LEVIER = [.93, -.315, .262];           // pommeau du levier de vitesses, à droite du volant, au point mort
   const REGIME_LAMPE = 12000;                  // la lampe de la casquette s'allume : il est temps de monter un rapport
   // Afficheurs à sept segments : a en haut, puis b, c, d, e, f dans le sens des aiguilles d'une montre, g au milieu.
@@ -4680,6 +4794,9 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const autourY = a => [[Math.cos(a), 0, -Math.sin(a)], [0, 1, 0], [Math.sin(a), 0, Math.cos(a)]];
     forme('branches', [].concat(...[-Math.PI / 2, Math.PI / 2, Math.PI].map(a => C.transformer(branche, autourY(a)))));
   }
+  // Mains : le maillage de src/main.js (main droite, taille réelle, repère de la prise) et son miroir pour la gauche
+  const MAIN = B.main.construire();
+  for (const [cote, t] of [['d', x => x], ['g', C.miroir]]) for (const piece of ['gant', 'paume', 'garde', 'poignet', 'sangle']) forme('main-' + piece + '-' + cote, t(MAIN[piece]));
   const borner = (x, a, b) => x < a ? a : x > b ? b : x, lisse = (a, b, x) => { const t = borner((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
   const clarte = c => .3 * c[0] + .59 * c[1] + .11 * c[2], ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
   // Position du pommeau selon le rapport, grille en H : impairs vers l'avant, pairs vers l'arrière ; 1-2 à gauche.
@@ -4699,14 +4816,16 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const mettre = (shape, v, s, mat, color, m, extra) => pousser(shape, monde([OEIL[0] + K * v[0], OEIL[1] + K * v[1], OEIL[2] + K * v[2]]), [s[0] * K, s[1] * K, s[2] * K], m, mat, color, extra);
     const plus = (a, ...termes) => a.map((v, k) => termes.reduce((s, [d, f]) => s + d[k] * f, v));
 
-    // Repères du volant : plan incliné face au pilote (wu vers le haut de la jante, wn vers le pilote), rotation phi
+    // Repères du volant : plan incliné face au pilote (wu vers le haut de la jante, wn vers le pilote), rotation phi ;
+    // repère de la planche : pu vers son haut, pn vers le pilote
     const regime = etat.regime || 0, tau = VOLANT.inclinaison, phi = borner(etat.volant || 0, -1, 1) * VOLANT.course;
     const wn = [-Math.cos(tau), Math.sin(tau), 0], wu = [Math.sin(tau), Math.cos(tau), 0], wr = [0, 0, 1];
+    const pn = [-Math.cos(PENTE_PLANCHE), Math.sin(PENTE_PLANCHE), 0], pu = [Math.sin(PENTE_PLANCHE), Math.cos(PENTE_PLANCHE), 0];
     const u = wu.map((v, k) => v * Math.cos(phi) + wr[k] * Math.sin(phi)), r = wu.map((v, k) => -v * Math.sin(phi) + wr[k] * Math.cos(phi));
-    const C = VOLANT.centre, R = VOLANT.rayon, jante = [u, wn, croix(u, wn)], cadre = [wr, wu, wn], rond = [wu, wn, wr], plat = [wn.map(v => -v), wu, wr];
-    const cap = b => wu.map((v, k) => v * Math.cos(b) + wr[k] * Math.sin(b));           // direction dans le plan de la planche
-    const sur = (a, b, d) => plus(PLANCHE, [wr, a], [wu, b], [wn, d]);                 // point de la planche : droite, haut, vers le pilote
-    const trait = (centre, b, rayon, long, large, mat, color, extra) => { const d = cap(b); mettre('box', plus(centre, [d, rayon]), [long, .002, large], mat, color, [d, wn, croix(d, wn)], extra); };
+    const C = VOLANT.centre, R = VOLANT.rayon, jante = [u, wn, croix(u, wn)], cadre = [wr, pu, pn], rond = [pu, pn, wr], plat = [pn.map(v => -v), pu, wr];
+    const cap = b => pu.map((v, k) => v * Math.cos(b) + wr[k] * Math.sin(b));           // direction dans le plan de la planche
+    const sur = (a, b, d) => plus(PLANCHE, [wr, a], [pu, b], [pn, d]);                 // point de la planche : droite, haut, vers le pilote
+    const trait = (centre, b, rayon, long, large, mat, color, extra) => { const d = cap(b); mettre('box', plus(centre, [d, rayon]), [long, .002, large], mat, color, [d, pn, croix(d, pn)], extra); };
 
     // Planche : tôle sombre, casquette noire et sa lampe de régime, fenêtres des afficheurs
     const posee = (nom, origine, m, mat, color, extra) => { const f = FORMES[nom]; mettre(f.nom, plus(origine, [m[0], f.centre[0]], [m[1], f.centre[1]], [m[2], f.centre[2]]), f.taille, mat, color, m, extra); };
@@ -4726,14 +4845,14 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       const long = g % 2 ? .006 : .011, rouge = g >= 12;
       trait(tours, -2.36 + 4.72 * g / 13, .041 - long / 2, long, .0028, rouge ? 5 : TISSU, rouge ? [1, .1, .05] : IVOIRE, rouge ? { emissive: .5 } : undefined);
     }
-    trait(plus(tours, [wn, .002]), -2.36 + 4.72 * borner(regime / 13000, 0, 1), .014, .037, .0036, 5, [1, .40, .08], { emissive: .9 });
-    mettre('cylinder', plus(tours, [wn, .003]), [.016, .006, .016], METAL_MAT, ARGENT, rond);
+    trait(plus(tours, [pn, .002]), -2.36 + 4.72 * borner(regime / 13000, 0, 1), .014, .037, .0036, 5, [1, .40, .08], { emissive: .9 });
+    mettre('cylinder', plus(tours, [pn, .003]), [.016, .006, .016], METAL_MAT, ARGENT, rond);
     // Deux petits cadrans : température d'eau à gauche, pression d'huile à droite (elle suit le régime)
     for (const [a, valeur] of [[-.074, .5 + .2 * borner(regime / 13000, 0, 1)], [.074, .12 + .78 * borner(regime / 11000, 0, 1)]]) {
       const centre = cadran(a, -.006, .040, [.02, .02, .022]);
       for (let g = 0; g < 5; g++) trait(centre, -1.2 + .6 * g, .0155, .005, .0022, TISSU, IVOIRE);
-      trait(plus(centre, [wn, .0015]), -1.2 + 2.4 * valeur, .008, .017, .0026, 5, [1, .40, .08], { emissive: .7 });
-      mettre('cylinder', plus(centre, [wn, .002]), [.008, .005, .008], METAL_MAT, ARGENT, rond);
+      trait(plus(centre, [pn, .0015]), -1.2 + 2.4 * valeur, .008, .017, .0026, 5, [1, .40, .08], { emissive: .7 });
+      mettre('cylinder', plus(centre, [pn, .002]), [.008, .005, .008], METAL_MAT, ARGENT, rond);
     }
     // Rangée du bas : deux interrupteurs à levier, témoin vert du contact, témoin rouge (ralenti ou surrégime)
     for (const a of [-.046, -.034]) { mettre('cylinder', sur(a, -.043, .011), [.010, .006, .010], METAL_MAT, ARGENT, rond); mettre('box', sur(a, -.039, .019), [.003, .011, .003], METAL_MAT, ARGENT, cadre); }
@@ -4746,12 +4865,12 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       const places = { a: [0, h / 2, l, t], b: [l / 2, h / 4, t, h / 2], c: [l / 2, -h / 4, t, h / 2], d: [0, -h / 2, l, t], e: [-l / 2, -h / 4, t, h / 2], f: [-l / 2, h / 4, t, h / 2], g: [0, 0, l, t] };
       for (const nom in places) {
         const [x, y, sx, sy] = places[nom], allume = seg.includes(nom);
-        mettre('box', plus(centre, [wr, x], [wu, y], [wn, .011]), [sx, sy, .002], allume ? 5 : MAT, allume ? AMBRE : ETEINT, cadre, allume ? { emissive: 1.1 } : undefined);
+        mettre('box', plus(centre, [wr, x], [pu, y], [pn, .011]), [sx, sy, .002], allume ? 5 : MAT, allume ? AMBRE : ETEINT, cadre, allume ? { emissive: 1.1 } : undefined);
       }
     };
-    chiffre(etat.rapport > 0 ? String(etat.rapport) : 'N', plus(PLANCHE, [wr, -.125], [wu, .006]), .036);
+    chiffre(etat.rapport > 0 ? String(etat.rapport) : 'N', plus(PLANCHE, [wr, -.125], [pu, .006]), .036);
     const kmh = String(Math.min(999, Math.max(0, Math.round(etat.kmh || 0)))).padStart(3, ' ');
-    for (let k = 0; k < 3; k++) if (kmh[k] !== ' ' || k === 2) chiffre(kmh[k], plus(PLANCHE, [wr, .118 + k * .024], [wu, .004]), .026);
+    for (let k = 0; k < 3; k++) if (kmh[k] !== ' ' || k === 2) chiffre(kmh[k], plus(PLANCHE, [wr, .118 + k * .024], [pu, .004]), .026);
 
     // Volant : jante gainée, trois branches d'aluminium ajourées, flasque, cache et vis, ruban blanc en haut de la jante
     const e = R / .105, TUBE = .0225 * e;   // e : échelle du volant et des mains
@@ -4773,48 +4892,45 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     mettre('cylinder', pied.map((v, k) => v + tige[k] * .5), [.011, Math.hypot(tige[0], tige[1], tige[2]), .011], METAL_MAT, ARGENT, selonAxe(tige));
     mettre('sphere', pommeau, [.040, .040, .040], METAL_MAT, [.80, .81, .83]);
 
-    // Mains : gants blancs articulés, comme dans vroom-unreal, mais construits ici. Quatre doigts à trois phalanges
-    // enroulés autour du tube de la jante, pouce posé le long de la jante, dos de main, garde noire sur les jointures,
-    // sangle noire au poignet. Les manches suivent une courbe de Bézier du poignet au coude fixé à la caisse, avec un
-    // pli au poignet. Les dimensions sont celles d'une main à l'échelle du volant (0,75).
-    // Pendant un changement de rapport, la main droite va au pommeau et revient.
-    const combi = liv.combinaison || c1.map(v => v * .7), cuir = [.05, .05, .055], gant = clarte(combi) > .5 || clarte(combi) < .2 ? GANT : IVOIRE;
+    // Mains : un seul maillage par main (src/main.js), fixe dans le repère de la jante, à 9 h et 3 h sur les branches,
+    // comme dans vroom-unreal : doigts serrés autour du tube, pouce couché le long de la jante. Gant de la couleur de la
+    // voiture (sombre si elle est très claire), paume de cuir sombre, garde des jointures plus sombre, élastique sombre
+    // au poignet sous la sangle du gant. La manche de la combinaison sort de la manchette dans l'axe de la main, droite
+    // sur 8 cm, puis descend vers le coude fixé à la caisse sous l'image (courbe de Bézier de vroom-unreal).
+    // Pendant un changement de rapport, la main droite va au pommeau, s'y pose paume vers le bas, puis revient.
+    const combi = liv.combinaison || c1.map(v => v * .7), gant = clarte(c1) > .62 ? [.13, .13, .15] : c1, cuir = [.055, .05, .048];
     const tubeEntre = (a, b, d, mat, color) => { const v = b.map((x, i) => x - a[i]); mettre('cylinder', a.map((x, i) => (x + b[i]) / 2), [d, Math.hypot(v[0], v[1], v[2]), d], mat, color, selonAxe(v)); };
     const boule = (p, d, mat, color) => mettre('sphere', p, [d, d, d], mat, color);
-    const versLevier = lisse(0, .3, t) * (1 - lisse(.65, 1, t)), PRISE = VOLANT.prise;
+    // rotation d'angle a autour de l'axe unitaire n
+    const tourner = (v, n, a) => { const c = Math.cos(a), x = croix(n, v), d = n[0] * v[0] + n[1] * v[1] + n[2] * v[2]; return v.map((q, i) => q * c + x[i] * Math.sin(a) + n[i] * d * (1 - c)); };
+    const versLevier = lisse(0, .3, t) * (1 - lisse(.65, 1, t)), PRISE = VOLANT.prise, echelle = R / B.main.JANTE.R;
+    const couleurs = [['gant', gant], ['paume', cuir], ['garde', gant.map(v => v * .8)], ['poignet', [.06, .06, .065]], ['sangle', gant.map(v => v * .92)]];
     for (const k of [-1, 1]) {
       const rk = r.map(v => v * k), ex = u.map((v, i) => v * Math.cos(PRISE) + rk[i] * Math.sin(PRISE)), haut = u.map((v, i) => v * Math.sin(PRISE) - rk[i] * Math.cos(PRISE));
-      let G = plus(C, [ex, R]);
-      if (k > 0 && versLevier > 0) { const cible = plus(pommeau, [wn, .006]); G = G.map((v, i) => v + (cible[i] - v) * versLevier); }
-      // point autour du tube : angle compté depuis le côté du pilote (wn) vers l'extérieur (ex), à la distance d, décalé de l le long de la jante
-      const tour = (angle, d, l) => plus(G, [wn, Math.cos(angle) * d * e], [ex, Math.sin(angle) * d * e], [haut, l * e]);
-      // doigts : jointures à 50°, puis 140°, 210° et le bout à 265°, de l'index (vers le haut) à l'auriculaire
-      for (let i = 0; i < 4; i++) {
-        const l = (1.5 - i) * .0155, f = (i === 3 ? .88 : 1) * e;
-        const j0 = tour(.87, .0215, l), j1 = tour(2.44, .0185, l), j2 = tour(3.67, .018, l), j3 = tour(4.62, .017, l);
-        tubeEntre(j0, j1, .0138 * f, TISSU, gant); tubeEntre(j1, j2, .0130 * f, TISSU, gant); tubeEntre(j2, j3, .0122 * f, TISSU, gant);
-        boule(j1, .0146 * f, TISSU, gant); boule(j2, .0136 * f, TISSU, gant); boule(j3, .0126 * f, TISSU, gant);
+      // repère de la prise : x vers le pilote, y le long de la jante vers le haut, z vers le moyeu (miroir à gauche)
+      let G = plus(C, [ex, R]), m = [wn, haut, ex.map(v => -k * v)];
+      if (k > 0 && versLevier > 0) {
+        const cible = plus(pommeau, [wn, .004], [wu, .006]);
+        G = G.map((v, i) => v + (cible[i] - v) * versLevier);
+        m = m.map(v => tourner(v, wn, versLevier * Math.PI / 2));      // le dos de la main passe du dehors au-dessus
       }
-      // garde des jointures, dos de la main et paume vers le poignet
-      const poignet = tour(.49, .0725, -.012), jointures = tour(.87, .0225, 0);
-      const versPoignet = norme(poignet.map((v, i) => v - jointures[i])), dos = [haut, versPoignet, croix(haut, versPoignet)];
-      mettre('bevel', plus(jointures, [versPoignet, .002 * e]), [.066 * e, .016 * e, .019 * e], TISSU, cuir, dos);
-      mettre('sphere', jointures.map((v, i) => (v + poignet[i]) / 2), [.064 * e, ecart(poignet, jointures) * 1.12, .030 * e], TISSU, gant, dos);
-      boule(tour(.15, .024, .010), .028 * e, TISSU, gant);                                        // éminence du pouce
-      // pouce : court, posé le long de la jante, vers le haut, du côté du pilote
-      const p0 = tour(.25, .027, .014), p1 = tour(-.30, .0205, .033), p2 = tour(-.62, .0180, .047);
-      tubeEntre(p0, p1, .0160 * e, TISSU, gant); tubeEntre(p1, p2, .0146 * e, TISSU, gant); boule(p1, .0166 * e, TISSU, gant); boule(p2, .0150 * e, TISSU, gant);
-      // poignet : sangle noire, puis la manche en tronçons le long d'une courbe, vers le coude sous l'image
-      const coude = [COUDE[0], COUDE[1], k * COUDE[2]], guide = plus(poignet, [versPoignet, .10 * e]);
-      const bezier = f => poignet.map((v, i) => (1 - f) * (1 - f) * v + 2 * f * (1 - f) * guide[i] + f * f * coude[i]);
-      tubeEntre(plus(poignet, [versPoignet, -.012 * e]), plus(poignet, [versPoignet, .012 * e]), .042 * e, TISSU, cuir);
-      let avant = plus(poignet, [versPoignet, .008 * e]);
+      const cote = k > 0 ? 'd' : 'g', local = q => plus(G, [m[0], q[0] * echelle], [m[1], q[1] * echelle], [m[2], k * q[2] * echelle]);
+      for (const [piece, color] of couleurs) {
+        const fo = FORMES['main-' + piece + '-' + cote];
+        mettre(fo.nom, plus(G, [m[0], fo.centre[0] * echelle], [m[1], fo.centre[1] * echelle], [m[2], fo.centre[2] * echelle]), fo.taille.map(v => v * echelle), TISSU, color, m);
+      }
+      // manche : elle part de l'intérieur de la manchette, puis tronçons le long de la courbe, du poignet au coude
+      const vers = q => MAIN.points.poignet.map((v, i) => v + MAIN.points.axe[i] * q);
+      const bout = local(vers(.012)), dir = norme(local(vers(.03)).map((v, i) => v - bout[i]));
+      const coude = [COUDE[0], COUDE[1], k * COUDE[2]];
+      const P2 = plus(bout, [dir, .08 * echelle]), P1 = plus(coude, [bout.map((v, i) => v - coude[i]), .48], [[0, 1, 0], -.019]);
+      const bezier = f => bout.map((v, i) => (1 - f) ** 3 * v + 3 * (1 - f) ** 2 * f * P2[i] + 3 * (1 - f) * f * f * P1[i] + f ** 3 * coude[i]);
+      let avant = bout;
       for (let n = 1; n <= 6; n++) {
-        const ici = bezier(n / 6), d = (.037 + .013 * n / 6) * e;
+        const ici = bezier(n / 6), d = (.050 + .022 * n / 6) * echelle;
         tubeEntre(avant, ici, d, TISSU, combi); boule(ici, d, TISSU, combi);
         avant = ici;
       }
-      tubeEntre(bezier(.06), bezier(.10), .046 * e, TISSU, combi);                               // pli de la manche sur la sangle
     }
 
     // Rétroviseurs : ciel, horizon et piste dans la glace, et les voitures qui suivent, à leur place et à leur taille.
@@ -4852,7 +4968,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     for (const w of ROUES) sortie.push({ shape: 'cylinder', p: P([w.x, w.r, w.z]), s: [2 * w.r, w.l, 2 * w.r], r: rot, fx: true, alpha: .22, color: bleu });
   }
 
-  B.voiture = { modele, poser, cockpit, fantome, visible, attitude, angles, mul, mulM, euler, braquages, OEIL, K, VOLANT, PLANCHE, LEVIER, ROUES, EMPATTEMENT, FORMES };
+  B.voiture = { modele, poser, cockpit, fantome, visible, attitude, angles, mul, mulM, euler, braquages, OEIL, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>

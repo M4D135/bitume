@@ -34,6 +34,7 @@ Une seule page HTML, moteur FERRO (WebGL2), tout est calculé par le code.
 | `src/course.js` | Grille, feux, IA, contacts, tours, drapeau, classement, fantôme du chrono |
 | `src/son.js` | Synthèse Web Audio : moteur, rivaux, pneus, vibreur, herbe, chocs, signaux |
 | `src/carene.js` | Carènes (peau entre sections en superellipse) et tubes lisses, en triangles pour les formes libres du moteur |
+| `src/main.js` | Main gantée du pilote en carènes et tubes (gant, paume, garde, manchette, sangle), prise à 3 h sur la branche ; la gauche en miroir |
 | `src/voiture.js` | Monoplace en primitives du moteur, cockpit vu du siège, fantôme translucide |
 | `src/realisateur.js` | Réalisateur de la démo : choix du plan (caméra et voiture filmée) d'après la course |
 | `src/jeu.js` | Coque : boucle à pas fixe, commandes, caméras, rendu d'une image, affichage, menus, démo, stockage local |
@@ -44,7 +45,7 @@ Une seule page HTML, moteur FERRO (WebGL2), tout est calculé par le code.
 | `deposer.sh`, `deploiement/` | Mise en ligne de la page du commit sur bitume.estrasse.fr, et son vhost Caddy |
 
 Chaque module s'écrit `(function (B) { … })(globalThis.BITUME = globalThis.BITUME || {})` et s'exécute aussi dans
-Node pour les tests. Ordre de chargement : renderer, circuit, conduite, course, son, decor, carene, voiture, realisateur, jeu.
+Node pour les tests. Ordre de chargement : renderer, circuit, conduite, course, son, decor, carene, main, voiture, realisateur, jeu.
 
 Formes libres : `window.FRender.forme(nom, triangles)` enregistre une forme faite de triangles `[p0, p1, p2, n0, n1,
 n2]` tenus dans le cube unité (`B.carene.normaliser`) ; l'instance porte la vraie taille dans `s`. À appeler avant
@@ -67,7 +68,8 @@ n2]` tenus dans le cube unité (`B.carene.normaliser`) ; l'instance porte la vra
 - **Cockpit** : cadrage de vroom-unreal 0.35 (`docs/images/cockpit-035-neutral.png` de ce dépôt-là). Le volant est gros
   et bas, 16° sous l'horizon, le bas de sa jante sort de l'image ; on voit les mains, pas les bras. Les gants sont
   articulés (trois phalanges par doigt, pouce, sangle au poignet), construits en code : le maillage des gants de
-  vroom-unreal vient de Valve et ne se copie pas. Volant, planche et mains se règlent dans `VOLANT`, `PLANCHE`,
+  vroom-unreal vient de Valve et ne se copie pas. Les mains (`src/main.js`) tiennent la jante à 9 h et 3 h sur les
+  branches, comme dans vroom-unreal : dos tourné vers le dehors, pouce couché sur la jante. Volant, planche et mains se règlent dans `VOLANT`, `PLANCHE`,
   `COUDE` et `LEVIER` de `src/voiture.js` ; `verifications/voiture.test.mjs` tient le cadrage.
 - **Clipping** : rien ne se coupe à distance. Plan lointain `PORTEE_VUE` (6 000 m), lots sans portée propre, bascule
   de détail à 520 m, ombres du soleil sur tout l'atlas (`sunOnly`, carré de 200 m). Ne pas réintroduire de coupe à
