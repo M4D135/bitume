@@ -1,8 +1,8 @@
 {
   "version": "essai-0.1",
-  "raw": 381251,
-  "gzip": 115581,
-  "sha256": "39921bc76f2aff49c2b14a8332f5c49347e690fb51f3bb460321c5f4c9386762",
+  "raw": 384646,
+  "gzip": 116572,
+  "sha256": "6a9766673198b6897e286bcb5dce8a74dd318cd52969d7d074cf1197e2384dae",
   "sources": {
     "moteur/renderer.js": 119815,
     "circuit.js": 17710,
@@ -11,7 +11,7 @@
     "son.js": 20249,
     "decor.js": 36315,
     "carene.js": 15413,
-    "voiture.js": 39678,
+    "voiture.js": 43073,
     "realisateur.js": 5822,
     "jeu.js": 59857,
     "index.html": 9954,

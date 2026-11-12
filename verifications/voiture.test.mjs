@@ -37,7 +37,7 @@ verifier('empattement 2,70 m, voies 1,70 et 1,615 m, roues posées au sol', () =
   const [ag, ad, rg, rd] = V.ROUES;
   assert.ok(Math.abs(ag.x - rg.x - 2.70) < 1e-9 && Math.abs(ad.z - ag.z - 1.70) < 1e-9 && Math.abs(rd.z - rg.z - 1.615) < 1e-9);
   for (const w of V.ROUES) {
-    const pneu = mod.corps.find(p => p.roue !== undefined && V.ROUES[p.roue] === w && p.shape === 'cylinder');
+    const pneu = mod.corps.find(p => p.roue !== undefined && V.ROUES[p.roue] === w && p.shape.startsWith('bitume-pneu'));
     assert.ok(Math.abs(pneu.o[1] - pneu.s[0] / 2) < 1e-9, 'pneu tangent au sol');
   }
 });
@@ -108,14 +108,32 @@ verifier('cockpit : rotation du volant de 95° au plus', () => {
   assert.ok(deg(V.VOLANT.course) <= 95, `${deg(V.VOLANT.course).toFixed(1)}°`);
 });
 
+// Le segment [a, b] coupe-t-il le triangle (p0, p1, p2) ? (Möller et Trumbore)
+function coupe(a, b, p0, p1, p2) {
+  const d = b.map((v, i) => v - a[i]), e1 = p1.map((v, i) => v - p0[i]), e2 = p2.map((v, i) => v - p0[i]);
+  const x = (u, v) => [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]], s = (u, v) => u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
+  const h = x(d, e2), det = s(e1, h);
+  if (Math.abs(det) < 1e-12) return false;
+  const q = a.map((v, i) => v - p0[i]), uu = s(q, h) / det, k = x(q, e1), vv = s(d, k) / det, t = s(e2, k) / det;
+  return uu >= 0 && vv >= 0 && uu + vv <= 1 && t > 0 && t < 1;
+}
+const formeDe = nom => Object.values(V.FORMES).find(f => f.nom === nom);
+
 verifier('cockpit : coque creuse, aucune pièce de carrosserie entre l’œil et le volant', () => {
   const sortie = [], ev = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0 };
   V.cockpit(mod, ev, sortie, { regime: 8000, volant: 0, rapport: 3, kmh: 180 });
-  const carrosserie = sortie.slice(0, mod.corps.filter(p => V.visible(p, true, 0)).length + 4); // la caisse, puis capot bas et saute-vent
+  const carrosserie = sortie.slice(0, mod.corps.filter(p => V.visible(p, true, 0)).length);
   const fin = V.VOLANT.centre.map((v, i) => V.OEIL[i] + V.K * v);
   for (const m of carrosserie) {
     if (m.fx) continue;
-    const r = V.euler(...m.r), b = [0, 1, 2].map(i => { const d = [0, 1, 2].reduce((s, j) => s + Math.abs(r[j][i]) * m.s[j] / 2, 0); return [m.p[i] - d, m.p[i] + d]; });
+    const r = V.euler(...m.r), f = formeDe(m.shape);
+    if (f) {
+      // forme libre : chaque triangle, à sa taille et à sa place
+      const monde = q => { const l = q.map((v, i) => v * m.s[i]); return [0, 1, 2].map(i => m.p[i] + r[0][i] * l[0] + r[1][i] * l[1] + r[2][i] * l[2]); };
+      for (const t of f.tri) assert.ok(!coupe(V.OEIL, fin, monde(t[0]), monde(t[1]), monde(t[2])), `${m.shape} coupe la vue du volant`);
+      continue;
+    }
+    const b = [0, 1, 2].map(i => { const d = [0, 1, 2].reduce((s, j) => s + Math.abs(r[j][i]) * m.s[j] / 2, 0); return [m.p[i] - d, m.p[i] + d]; });
     for (let k = 0; k <= 50; k++) {
       const q = V.OEIL.map((v, i) => v + (fin[i] - v) * k / 50);
       assert.ok(!q.every((v, i) => v > b[i][0] && v < b[i][1]), `${m.shape} en ${m.p.map(v => v.toFixed(2))} coupe la vue du volant`);
@@ -160,6 +178,16 @@ verifier('repère de pneu : il tourne autour de l’axe de la roue, à mi-flanc'
     // la roue avance : son point avant descend
     assert.ok(Math.abs(q[0] - (w.x + flanc * Math.cos(a))) < 1e-9 && Math.abs(q[1] - (w.r + flanc * Math.sin(a))) < 1e-9, `après ${d} m : ${q.map(v => v.toFixed(3))}`);
   }
+});
+
+verifier('cockpit en carènes : habitacle sans boîte, jante d’un seul tube, pneus à épaules rondes', () => {
+  const habitacle = mod.corps.filter(p => p.dedans);
+  assert.ok(habitacle.length >= 4 && habitacle.every(p => p.shape.startsWith('bitume-')), habitacle.map(p => p.shape).join(' '));
+  const sortie = bord({});
+  assert.equal(sortie.filter(m => m.shape === 'bitume-jante').length, 1, 'une seule jante');
+  assert.equal(sortie.filter(m => m.shape === 'bitume-planche' || m.shape === 'bitume-casquette').length, 2, 'planche et casquette arrondies');
+  assert.equal(mod.corps.filter(p => p.shape.startsWith('bitume-pneu')).length, 4);
+  assert.ok(sortie.length < 240, `${sortie.length} instances en vue cockpit`);
 });
 
 verifier('cockpit : rien que des nombres finis, volant à fond et pendant un changement de rapport', () => {

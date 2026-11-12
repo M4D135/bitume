@@ -184,22 +184,27 @@ seconde couleur, rétroviseurs, basculeurs, triangles et arceau en formes libres
 But : la capture `cockpit-035-neutral.png`, en plus juste pour la 312 T5. Cadrage inchangé (`VOLANT`, `PLANCHE`,
 `COUDE`, `LEVIER` de `src/voiture.js`, œil `OEIL`).
 
-- [ ] Carène « intérieur » propre à la vue cockpit (l'œil est 30 cm derrière la tête et plus bas que le vrai pilote :
+- [x] Carène « intérieur » propre à la vue cockpit (l'œil est 30 cm derrière la tête et plus bas que le vrai pilote :
   la coque extérieure boucherait la vue, d'où un capot plus bas). Elle remplace les flancs en boîte, les cylindres
   d'arête et le dôme actuels : deux épaules galbées qui montent des coins du bas vers la planche, un dôme devant la
   planche, bord d'ouverture arrondi avec un jonc sombre fin.
-- [ ] Saute-vent : arc galbé teinté bleu (`fx`, alpha 0,15 à 0,25), arête supérieure claire, visible devant le dôme
+- [x] Saute-vent : arc galbé teinté bleu (`fx`, alpha 0,15 à 0,25), arête supérieure claire, visible devant le dôme
   comme sur la capture.
-- [ ] Planche : garder cadrans, afficheurs, lampe, témoins ; fond en aluminium brossé sombre ou noir selon la
+- [x] Planche : garder cadrans, afficheurs, lampe, témoins ; fond en aluminium brossé sombre ou noir selon la
   capture comparée ; casquette arrondie (carène), pas une planche à angles vifs.
-- [ ] Volant : jante en un seul `tube` fermé (plus de 36 tronçons), branches à bords arrondis, moyeu.
-- [ ] Rétroviseurs : boîtiers profilés ; garder les suiveurs dans la glace.
-- [ ] Pneus avant : épaules arrondies (carène de révolution), flanc et bande de roulement distincts.
-- [ ] Mettre à jour `verifications/voiture.test.mjs` : cadrage, coque creuse (rien entre l'œil et le volant), nombre
+- [x] Volant : jante en un seul `tube` fermé (plus de 36 tronçons), branches à bords arrondis, moyeu.
+- [x] Rétroviseurs : boîtiers profilés ; garder les suiveurs dans la glace.
+- [x] Pneus avant : épaules arrondies (carène de révolution), flanc et bande de roulement distincts.
+- [x] Mettre à jour `verifications/voiture.test.mjs` : cadrage, coque creuse (rien entre l'œil et le volant), nombre
   de pièces.
 
 Fini quand : posée à côté de `cockpit-035-neutral.png`, la capture de BITUME montre les mêmes masses rondes aux mêmes
 endroits, et David ne peut plus dire « trop carré ».
+
+Fait le 12/11/2026 : épaules galbées (carènes décalées en z qui se rejoignent devant la planche), flancs intérieurs
+sombres sous un jonc noir, dôme, cuve sombre, saute-vent en ruban teinté à arête claire ; planche et casquette en
+carènes, jante en un tube fermé, trois branches arrondies ; pneus des quatre roues en carènes de révolution. Les boîtes,
+cylindres d'arête et rivets de l'habitacle sont retirés. Capture en 16:10 comparée à `cockpit-035-neutral.png`.
 
 ### Lot 1D — Des mains de pilote
 
@@ -271,3 +276,4 @@ existe) ; voiture vivante ; peloton et voix des rivaux ; tours propres, records 
 - 12/11/2026 — Plan écrit. Phase 1 à commencer par le lot 1A.
 - 12/11/2026 — Lot 1A fini (Opus 5.5).
 - 12/11/2026 — Lot 1B fini (Opus 5.5).
+- 12/11/2026 — Lot 1C fini (Opus 5.5).

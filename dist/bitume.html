@@ -4406,7 +4406,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   // de carène porte le centre et la taille de sa forme (repère de la voiture) ; sa couleur est celle de la livrée.
   const C = B.carene, FORMES = {};
   function forme(nom, triangles) {
-    const n = C.normaliser(triangles), f = { nom: 'bitume-' + nom, centre: n.centre, taille: n.taille, triangles: n.triangles.length };
+    const n = C.normaliser(triangles), f = { nom: 'bitume-' + nom, centre: n.centre, taille: n.taille, triangles: n.triangles.length, tri: n.triangles };
     const R = globalThis.window && globalThis.window.FRender;
     if (R && R.forme) R.forme(f.nom, n.triangles);
     return (FORMES[nom] = f);
@@ -4464,6 +4464,41 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     { x: .60, y0: .10, y1: .43, l: .72, n: 5 }, { x: -.88, y0: .10, y1: .45, l: .70, n: 5 }, { x: -1.08, y0: .12, y1: .43, l: .50, n: 5 }, { x: -1.30, y0: .16, y1: .40, l: .30, n: 4 }], { cotes: 8, pas: 1 }));
   forme('loin-dessus', C.carene([S_GOUTTE[0], S_GOUTTE[2], S_GOUTTE[3], S_MOTEUR[0], S_MOTEUR[1], S_MOTEUR[2]], { cotes: 8, pas: 1 }));
   forme('loin-quille', C.carene(S_QUILLE, { cotes: 8, pas: 1 }));
+  // Pneus : carène de révolution autour de l'axe y local (celui des cylindres de roue), flanc presque droit depuis la
+  // jante, épaule arrondie, bande de roulement plate
+  function pneu(r, w) {
+    const profil = [[-w / 2, JANTE_R + .012], [-w / 2 + .004, r - .05], [-w / 2 + .018, r - .012], [-w / 2 + .045, r], [w / 2 - .045, r], [w / 2 - .018, r - .012], [w / 2 - .004, r - .05], [w / 2, JANTE_R + .012]];
+    return C.transformer(C.carene(profil.map(([x, q]) => ({ x, y0: -q, y1: q, l: q, n: 2 })), { cotes: 24, pas: 2 }), [[0, 1, 0], [-1, 0, 0], [0, 0, 1]]);
+  }
+  forme('pneu-av', pneu(ROUES[0].r, ROUES[0].l));
+  forme('pneu-ar', pneu(ROUES[2].r, ROUES[2].l));
+  // Habitacle de la vue cockpit. L'œil du cockpit est plus bas et plus en arrière que celui du pilote : la goutte de la
+  // vue extérieure boucherait la vue. À sa place, deux épaules galbées qui montent des coins du bas vers la planche et
+  // se rejoignent devant elle, un dôme devant la planche, une cuve sombre entre les épaules, un saute-vent en arc.
+  const S_EPAULE = [{ x: -.40, y0: .30, y1: .60, l: .10, n: 3, z: .30 }, { x: .00, y0: .30, y1: .62, l: .10, n: 3, z: .28 },
+    { x: .30, y0: .32, y1: .64, l: .10, n: 3, z: .22 }, { x: .55, y0: .36, y1: .64, l: .08, n: 3, z: .14 }, { x: .75, y0: .40, y1: .60, l: .05, n: 3, z: .08 }];
+  forme('epaules', deuxCotes(C.carene(S_EPAULE, { cotes: 24 })));
+  // flanc intérieur sombre sous le jonc : l'épaule n'est rouge que dessus et dehors
+  forme('flancs', deuxCotes(C.carene(S_EPAULE.map(sc => Object.assign({}, sc, { z: sc.z - .03, l: sc.l * .75, y1: sc.y1 - .035 })), { cotes: 16 })));
+  {
+    const e = C.profil(S_EPAULE), bord = [];
+    for (let x = -.30; x <= .70; x += .1) bord.push(C.pointSection(e(x), 2.25));
+    forme('epaules-jonc', deuxCotes(C.tube(bord, .008, { cotes: 8, pas: 3 })));
+  }
+  forme('dome', C.carene([{ x: .40, y0: .40, y1: .60, l: .14, n: 2.5 }, { x: .70, y0: .40, y1: .645, l: .19, n: 2.5 }, { x: 1.00, y0: .40, y1: .58, l: .17, n: 2.5 }, { x: 1.30, y0: .38, y1: .42, l: .04, n: 2.5 }], { cotes: 28 }));
+  forme('cuve', C.carene([{ x: -.45, y0: .12, y1: .48, l: .26, n: 4 }, { x: .30, y0: .12, y1: .48, l: .22, n: 4 }, { x: .80, y0: .15, y1: .47, l: .10, n: 3 }], { cotes: 16 }));
+  {
+    // saute-vent : ruban mince en arc devant l'ouverture, vu des deux côtés, et son arête claire
+    const haut = [], bas = [];
+    for (let i = 0; i <= 16; i++) {
+      const f = -1.25 + 2.5 * i / 16, x = .27 + .20 * Math.cos(f), z = .24 * Math.sin(f), y = .675 + .025 * Math.cos(f);
+      haut.push([x, y, z]); bas.push([x - .015, y - .07, z]);
+    }
+    const faces = [];
+    for (let i = 0; i < 16; i++) faces.push([bas[i], bas[i + 1], haut[i + 1]], [bas[i], haut[i + 1], haut[i]]);
+    forme('pare-brise', C.lisser(faces).concat(C.lisser(faces.map(t => [t[0], t[2], t[1]]))));
+    forme('pare-brise-arete', C.tube(haut, .003, { cotes: 6, pas: 2 }));
+  }
   // ---------------------------------------------------------------- modèle
   function piece(shape, o, s, mat, color, extra) { return Object.assign({ shape, o, s, mat, color }, extra || {}); }
 
@@ -4495,20 +4530,15 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     // Aileron avant argent de 1,62 m, bord de fuite relevé, et ses deux dérives rouges
     P('box', [2.11, .13, 0], [.38, .025, 1.62], LAQUE, ARGENT, { m: euler(0, 0, -.08) });
     for (const k of [-1, 1]) P('box', [2.11, .17, k * .81], [.38, .19, .02], PEINTURE, c1);
-    // Habitacle de la vue cockpit (dessiné seulement dans cette vue) : flancs rouges doublés de sombre, boudin
-    // rembourré, liseré et rivets, plancher, cloison
+    // Habitacle de la vue cockpit (dessiné seulement dans cette vue) : épaules, jonc, dôme, cuve sombre, saute-vent
     const dedans = { dedans: true };
-    for (const k of [-1, 1]) {
-      P('box', [.16, .34, k * .28], [.84, .52, .14], PEINTURE, c1, dedans);
-      P('box', [.16, .34, k * .2045], [.84, .48, .01], MAT, c1.map(v => v * .3), dedans);
-      P('cylinder', [.02, .602, k * .212], [.012, .56, .012], MAT, c1.map(v => v * .28), { m: VERS_AVANT, dedans: true });
-      P('cylinder', [.16, .545, k * .295], [.11, .84, .11], PEINTURE, c1, { m: VERS_AVANT, dedans: true });
-      P('box', [.16, .6015, k * .322], [.84, .003, .018], PEINTURE, c2, dedans);
-      for (let x = -.20; x < .56; x += .095) P('cylinder', [x, .601, k * .262], [.011, .004, .011], METAL_MAT, ACIER, dedans);
-    }
-    P('box', [.13, .11, 0], [.78, .06, .42], MAT, NOIR, dedans);
-    P('box', [.51, .34, 0], [.02, .52, .60], MAT, NOIR, dedans);
-    P('cylinder', [.30, .602, 0], [.012, .43, .012], MAT, c1.map(v => v * .28), { m: ROUE_AXE, dedans: true });
+    L('epaules', PEINTURE, c1, dedans);
+    L('epaules-jonc', MAT, NOIR, dedans);
+    L('flancs', MAT, [.05, .05, .055], dedans);
+    L('dome', PEINTURE, c1, dedans);
+    L('cuve', MAT, [.035, .035, .04], dedans);
+    L('pare-brise', METAL_MAT, [.30, .50, .86], { fx: true, alpha: .2, dedans: true });
+    L('pare-brise-arete', METAL_MAT, [.86, .9, .94], { fx: true, alpha: .5, dedans: true });
     // Pilote : casque, visière, épaules
     P('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque, pilote);
     P('box', [.11, .875, 0], [.07, .07, .2], METAL_MAT, [.05, .06, .09], pilote);
@@ -4553,7 +4583,8 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     // Roues : pneu, jante sombre, six rayons qui tournent, moyeu ; les avant braquent
     ROUES.forEach((w, i) => {
       const base = { roue: i, m: ROUE_AXE, arriere: !w.avant };
-      P('cylinder', [w.x, w.r, w.z], [2 * w.r, w.l, 2 * w.r], MAT, PNEU, base);
+      const f = FORMES[w.avant ? 'pneu-av' : 'pneu-ar'];
+      P(f.nom, [w.x, w.r, w.z], f.taille, MAT, PNEU, base);
       P('cylinder', [w.x, w.r, w.z], [2 * JANTE_R, w.l + .012, 2 * JANTE_R], METAL_MAT, FOND_JANTE, base);
       for (let b = 0; b < 3; b++) P('box', [w.x, w.r, w.z], [2 * JANTE_R * .94, w.l + .02, .04], METAL_MAT, JANTE, Object.assign({ tourne: b * Math.PI / 3 }, base));
       P('cylinder', [w.x, w.r, w.z], [.09, w.l + .05, .09], METAL_MAT, JANTE, base);
@@ -4635,6 +4666,20 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   // Afficheurs à sept segments : a en haut, puis b, c, d, e, f dans le sens des aiguilles d'une montre, g au milieu.
   const SEGMENTS = { 0: 'abcdef', 1: 'bc', 2: 'abdeg', 3: 'abcdg', 4: 'bcfg', 5: 'acdfg', 6: 'acdefg', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg', N: 'ceg', '-': 'g' };
   const AMBRE = [1, .56, .12], ETEINT = [.09, .035, .02];
+  // Formes libres du cockpit, en positions apparentes (voir K). Planche et casquette dans le repère de la planche
+  // (x : vers la droite, y : vers le haut de la planche, z : vers le pilote) ; jante et branches dans celui du volant
+  // (x : vers le haut de la jante, y : vers le pilote, z : vers la droite de la jante).
+  {
+    const R = VOLANT.rayon, e = R / .105, sym = (sec, ...xs) => xs.map(x => Object.assign({}, sec, { x }));
+    forme('planche', C.carene([{ x: -.200, y0: -.044, y1: .044, l: .005, n: 6 }, ...sym({ y0: -.056, y1: .056, l: .009, n: 6 }, -.192, .192), { x: .200, y0: -.044, y1: .044, l: .005, n: 6 }], { cotes: 20, pas: 2 }));
+    forme('casquette', C.carene([{ x: -.206, y0: .049, y1: .055, l: .016, n: 4, z: .026 }, { x: -.19, y0: .051, y1: .064, l: .036, n: 4, z: .028 }, { x: 0, y0: .056, y1: .070, l: .040, n: 4, z: .030 },
+      { x: .19, y0: .051, y1: .064, l: .036, n: 4, z: .028 }, { x: .206, y0: .049, y1: .055, l: .016, n: 4, z: .026 }], { cotes: 20, pas: 3 }));
+    forme('jante', C.tube(Array.from({ length: 24 }, (_, i) => { const a = i * Math.PI / 12; return [R * Math.cos(a), 0, R * Math.sin(a)]; }), .0225 * e / 2, { cotes: 10, ferme: true, pas: 2 }));
+    // une branche le long de x, de la flasque à la jante, aux bords arrondis ; trois copies : 3 h, 9 h et 6 h
+    const branche = C.carene([{ x: .028 * e, y0: -.003, y1: .003, l: .0135 * e, n: 4 }, { x: R * .98, y0: -.003, y1: .003, l: .0135 * e, n: 4 }], { cotes: 12, pas: 1 });
+    const autourY = a => [[Math.cos(a), 0, -Math.sin(a)], [0, 1, 0], [Math.sin(a), 0, Math.cos(a)]];
+    forme('branches', [].concat(...[-Math.PI / 2, Math.PI / 2, Math.PI].map(a => C.transformer(branche, autourY(a)))));
+  }
   const borner = (x, a, b) => x < a ? a : x > b ? b : x, lisse = (a, b, x) => { const t = borner((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
   const clarte = c => .3 * c[0] + .59 * c[1] + .11 * c[2], ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
   // Position du pommeau selon le rapport, grille en H : impairs vers l'avant, pairs vers l'arrière ; 1-2 à gauche.
@@ -4654,12 +4699,6 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const mettre = (shape, v, s, mat, color, m, extra) => pousser(shape, monde([OEIL[0] + K * v[0], OEIL[1] + K * v[1], OEIL[2] + K * v[2]]), [s[0] * K, s[1] * K, s[2] * K], m, mat, color, extra);
     const plus = (a, ...termes) => a.map((v, k) => termes.reduce((s, [d, f]) => s + d[k] * f, v));
 
-    // Capot bas et bombé de la vue cockpit (0,58 à 0,61 m) et saute-vent teinté à l'arête claire, au lieu de ceux de la vue extérieure
-    dans('box', [.44, .565, 0], [.28, .03, .64], PEINTURE, c1);
-    dans('sphere', [.60, .50, 0], [.74, .225, .60], PEINTURE, c1);                        // capot bombé devant la planche
-    dans('box', [.322, .62, 0], [.008, .05, .40], METAL_MAT, [.45, .62, .78], euler(0, 0, .733), { fx: true, alpha: .12 });
-    dans('box', [.3053, .6386, 0], [.004, .0025, .404], METAL_MAT, [.80, .86, .92], euler(0, 0, .733), { fx: true, alpha: .4 });
-
     // Repères du volant : plan incliné face au pilote (wu vers le haut de la jante, wn vers le pilote), rotation phi
     const regime = etat.regime || 0, tau = VOLANT.inclinaison, phi = borner(etat.volant || 0, -1, 1) * VOLANT.course;
     const wn = [-Math.cos(tau), Math.sin(tau), 0], wu = [Math.sin(tau), Math.cos(tau), 0], wr = [0, 0, 1];
@@ -4670,9 +4709,10 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const trait = (centre, b, rayon, long, large, mat, color, extra) => { const d = cap(b); mettre('box', plus(centre, [d, rayon]), [long, .002, large], mat, color, [d, wn, croix(d, wn)], extra); };
 
     // Planche : tôle sombre, casquette noire et sa lampe de régime, fenêtres des afficheurs
-    mettre('box', PLANCHE, [.018, .112, .384], MAT, [.075, .078, .085], plat);
+    const posee = (nom, origine, m, mat, color, extra) => { const f = FORMES[nom]; mettre(f.nom, plus(origine, [m[0], f.centre[0]], [m[1], f.centre[1]], [m[2], f.centre[2]]), f.taille, mat, color, m, extra); };
+    posee('planche', PLANCHE, cadre, MAT, [.075, .078, .085]);
     for (const a of [-.184, .184]) for (const b of [-.048, .048]) mettre('cylinder', sur(a, b, .0095), [.008, .004, .008], METAL_MAT, ARGENT, rond);   // vis des coins
-    mettre('box', sur(0, .060, .028), [.074, .010, .400], MAT, NOIR, plat);
+    posee('casquette', PLANCHE, cadre, MAT, NOIR);
     const passe = regime > REGIME_LAMPE && etat.rapport > 0 && etat.rapport < 6;
     mettre('cylinder', sur(0, .068, .044), [.032, .008, .032], MAT, NOIR, rond);
     mettre('sphere', sur(0, .076, .046), [.024, .024, .024], 5, passe ? [1, .13, .04] : [.20, .03, .02], null, passe ? { emissive: 3.2 } : undefined);
@@ -4714,14 +4754,11 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     for (let k = 0; k < 3; k++) if (kmh[k] !== ' ' || k === 2) chiffre(kmh[k], plus(PLANCHE, [wr, .118 + k * .024], [wu, .004]), .026);
 
     // Volant : jante gainée, trois branches d'aluminium ajourées, flasque, cache et vis, ruban blanc en haut de la jante
-    const e = R / .105, TUBE = .0225 * e, N_JANTE = 36, autour = a => u.map((v, k) => v * Math.cos(a) + r[k] * Math.sin(a));   // e : échelle du volant et des mains
-    for (let i = 0; i < N_JANTE; i++) {
-      const a = (i + .5) * 2 * Math.PI / N_JANTE, d = autour(a);
-      mettre('cylinder', plus(C, [d, R]), [TUBE, 2 * Math.PI * R / N_JANTE * 1.12, TUBE], TISSU, [.045, .045, .05], selonAxe(autour(a + Math.PI / 2)));
-    }
+    const e = R / .105, TUBE = .0225 * e;   // e : échelle du volant et des mains
+    posee('jante', C, jante, TISSU, [.045, .045, .05]);
+    posee('branches', plus(C, [wn, -.004]), jante, METAL_MAT, ACIER);
     for (const dir of [r, r.map(v => -v), u.map(v => -v)]) {
       const m = [dir, wn, croix(dir, wn)];
-      mettre('box', plus(C, [dir, R * .52], [wn, -.004]), [R * .92, .006, .027 * e], METAL_MAT, ACIER, m);
       for (const f of [.40, .66]) mettre('box', plus(C, [dir, R * f], [wn, -.0005]), [R * .17, .003, .010 * e], MAT, NOIR, m);
     }
     mettre('cylinder', plus(C, [wn, .002]), [.060 * e, .012, .060 * e], METAL_MAT, ACIER, jante);
