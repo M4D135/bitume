@@ -63,6 +63,7 @@ Sur écran tactile : glisser le pouce à gauche pour braquer ; pédales et déri
 ## Pour aller plus loin
 
 - `CONCEPTION.md` : intentions, mécaniques, ce qui est vérifié et ce qui ne l'est pas.
+- `PLAN-MAITRE.md` : le plan de travail en cours, phase par phase, avec ce qui reste à faire.
 - `FEUILLE-DE-ROUTE.md` : l'écart avec vroom-unreal et les lots pour le combler.
 - `AGENTS.md` : structure, conventions, construction et tests.
 - `src/moteur/PROVENANCE.md` : origine du moteur et retouches.
