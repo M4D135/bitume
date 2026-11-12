@@ -179,6 +179,18 @@ lancées à 23 h 15.
   - en copie, toutes les 5 minutes jusque vers 2 h 45, dans `bitume-phase1-relecture/spark-session-parente/` du
     même dossier de notes.
 - **Ma propre seconde file**, qui faisait doublon, est annulée.
+- **Seconde file de la session parente**, lancée le 13/11 à 0 h 36 avec 21 demandes :
+  - **Où** : `.../scratchpad/spark-file-2/` (même racine que `spark-file/`), en copie toutes les 5 minutes
+    jusque vers 4 h 45 dans `bitume-phase1-relecture/spark-session-parente-2/`.
+  - **Ses 01 à 08** : seconde relecture du code de la phase 2 au commit `120ba98` (`conduite.js` : unités,
+    stabilité, énergie créée, continuité aux seuils, déterminisme ; `traces.js` ; intégration dans `course.js` et
+    `jeu.js`). Elle complète les miennes ; la croiser avec elles.
+  - **Ses 09 à 14** : le Spark relit ses brouillons 01 à 06 de la première file. Le correctif marche-t-il ? Le test
+    échoue-t-il avant et passe-t-il après ? À lire avant de reprendre un brouillon.
+  - **Ses 15 à 21** : pour la session parente.
+
+**Ma file de la phase 2 est finie** (13/11 à 0 h 21) : ses 12 réponses sont dans
+`bitume-phase2-spark/resultats/`.
 - **Attention** : ces jets sont écrits sur `3ce9c87` ; `src/jeu.js` a bougé depuis, au commit `120ba98`.
 
 Les réponses du Spark sont des brouillons : rien n'est intégré sans être lu, lancé et mesuré.
