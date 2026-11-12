@@ -124,6 +124,26 @@
     return lisser(faces, options.vif).concat(lisser(doublure, options.vif));
   }
 
+  // Profil d'une carène : rend x → section interpolée { x, y0, y1, l, n, z } (la même que celle de la peau), pour poser
+  // un filet, un numéro ou un jonc sur la surface. Hors des sections, la section du bout le plus proche.
+  function profil(sections) {
+    const champ = k => monotone(sections.map(s => k === 'z' ? (s.z || 0) : s[k]));
+    const X = champ('x'), Y0 = champ('y0'), Y1 = champ('y1'), L = champ('l'), N = champ('n'), Z = champ('z'), fin = sections.length - 1;
+    const sens = Math.sign(X(fin) - X(0)) || 1;
+    return x => {
+      let lo = 0, hi = fin;
+      if ((x - X(0)) * sens <= 0) hi = 0; else if ((x - X(fin)) * sens >= 0) lo = fin;
+      else for (let k = 0; k < 60; k++) { const mi = (lo + hi) / 2; if ((X(mi) - x) * sens < 0) lo = mi; else hi = mi; }
+      const t = (lo + hi) / 2;
+      return { x: X(t), y0: Y0(t), y1: Y1(t), l: Math.max(0, L(t)), n: N(t), z: Z(t) };
+    };
+  }
+  // Point d'angle a d'une section (a = π/2 : le sommet ; a = 0 : le flanc droit).
+  function pointSection(s, a) {
+    const e = 2 / Math.max(.5, s.n), h = Math.max(0, (s.y1 - s.y0) / 2);
+    return [s.x, (s.y0 + s.y1) / 2 + h * puiss(Math.sin(a), e), (s.z || 0) + s.l * puiss(Math.cos(a), e)];
+  }
+
   // ------------------------------------------------------------------ tube
   // Cercle balayé le long d'une ligne brisée lissée (Catmull-Rom), rayon donné à chaque point (un nombre : rayon
   // constant), bouts en demi-sphère. Le repère du cercle suit la ligne sans vriller (transport parallèle).
@@ -217,5 +237,5 @@
     return triangles.map(t => [z(t[0]), z(t[2]), z(t[1]), z(t[3]), z(t[5]), z(t[4])]);
   }
 
-  B.carene = { carene, tube, normaliser, lisser, boite, transformer, miroir, monotone };
+  B.carene = { carene, tube, normaliser, lisser, boite, transformer, miroir, monotone, profil, pointSection };
 })(globalThis.BITUME = globalThis.BITUME || {});

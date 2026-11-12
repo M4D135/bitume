@@ -5,6 +5,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 
 const ici = path.dirname(fileURLToPath(import.meta.url));
+createRequire(import.meta.url)(path.join(ici, '..', 'src', 'carene.js'));
 createRequire(import.meta.url)(path.join(ici, '..', 'src', 'voiture.js'));
 const V = globalThis.BITUME.voiture;
 
@@ -43,16 +44,19 @@ verifier('empattement 2,70 m, voies 1,70 et 1,615 m, roues posées au sol', () =
 
 verifier('pièces et version lointaine bien formées', () => {
   for (const p of mod.corps.concat(mod.simples)) {
-    assert.ok(['box', 'bevel', 'sphere', 'cylinder', 'ring', 'wedge'].includes(p.shape), p.shape);
+    assert.ok(['box', 'bevel', 'sphere', 'cylinder', 'ring', 'wedge'].includes(p.shape) || Object.values(V.FORMES).some(f => f.nom === p.shape), p.shape);
     assert.ok(p.o.concat(p.s).every(Number.isFinite) && p.s.every(v => v > 0), JSON.stringify(p));
   }
   assert.ok(mod.simples.length <= 12, `${mod.simples.length} volumes au loin`);
 });
 
+// Pièces dessinées en vue extérieure, à l'arrêt : leur rang est celui des instances rendues par poser.
+const vusDehors = mod.corps.filter(p => V.visible(p, false, 0));
+
 verifier('roues : rotation propre = distance / rayon à 1 % près', () => {
   const ev = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0 };
   for (const roue of [0, 2]) {
-    const k = mod.corps.findIndex(p => p.roue === roue && p.tourne === 0), r = V.ROUES[roue].r;
+    const k = vusDehors.findIndex(p => p.roue === roue && p.tourne === 0), r = V.ROUES[roue].r;
     for (const d of [.05, .1, .14]) {
       const sortie = []; V.poser(mod, Object.assign({ roule: d }, ev), sortie);
       const m = V.euler(...sortie[k].r), angle = Math.atan2(m[0][1], m[0][0]);
@@ -95,7 +99,7 @@ verifier('cockpit : haut de la jante, prises des mains, planche, pneus avant et 
   for (const a of [-1, 1]) for (const b of [-1, 1]) dansLeCadre(V.PLANCHE.map((v, i) => v + a * .055 * wu[i] + b * .19 * wr[i]), 'planche');
   for (const s of [-1, 1]) {
     dansLeCadre(dehors([1.35, .58, s * .75]), 'pneu avant');
-    const retro = mod.corps.find(p => p.shape === 'bevel' && p.o[2] * s > .3 && p.o[1] > .5 && p.o[1] < .7 && p.o[0] > 0 && p.o[0] < 1);
+    const retro = mod.corps.find(p => p.glace && p.o[2] * s > .3);
     dansLeCadre(dehors(retro.o), 'rétroviseur');
   }
 });
@@ -133,18 +137,22 @@ const ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 
 verifier('numéro en géométrie sur le nez et les pontons ; repères des pneus à basse vitesse, bande floue au-delà', () => {
   const sans = V.modele(Object.assign({}, livree, { numero: undefined })), un = V.modele(Object.assign({}, livree, { numero: 1 }));
-  assert.equal(un.corps.length - sans.corps.length, 1 + 3 * 2, 'un panneau et trois « 1 » de deux segments');
-  assert.equal(mod.corps.length - sans.corps.length, 1 + 3 * (5 + 3), '« 27 » : cinq et trois segments, trois fois');
+  assert.equal(un.corps.length - sans.corps.length, 3 * 2, 'trois « 1 » de deux segments, sans panneau');
+  assert.equal(mod.corps.length - sans.corps.length, 3 * (5 + 3), '« 27 » : cinq et trois segments, trois fois');
+  const segments = mod.corps.filter(p => p.shape === 'box' && p.s[2] === .003);
+  assert.equal(segments.length, 24);
+  assert.ok(segments.every(p => p.color[0] > .9 && p.color[1] > .9 && p.color[2] > .85), 'chiffres blancs, posés sur le rouge');
   const lent = [], vite = [];
   V.poser(mod, Object.assign({ v: 10 }, repos), lent); V.poser(mod, Object.assign({ v: 50 }, repos), vite);
   const marques = mod.corps.filter(p => p.lent).length, flous = mod.corps.filter(p => p.vite).length;
   assert.ok(marques === 16 && flous === 4, `${marques} repères, ${flous} bandes`);
-  assert.equal(lent.length, mod.corps.length - flous);
-  assert.equal(vite.length, mod.corps.length - marques);
+  const vus = mod.corps.filter(p => !p.dedans).length;
+  assert.equal(lent.length, vus - flous);
+  assert.equal(vite.length, vus - marques);
 });
 
 verifier('repère de pneu : il tourne autour de l’axe de la roue, à mi-flanc', () => {
-  const k = mod.corps.findIndex(p => p.lent && p.roue === 0 && p.tourne === 0), w = V.ROUES[0], flanc = (.165 + w.r) / 2;
+  const k = mod.corps.filter(p => V.visible(p, false, 5)).findIndex(p => p.lent && p.roue === 0 && p.tourne === 0), w = V.ROUES[0], flanc = (.165 + w.r) / 2;
   for (const d of [0, .2, .7, 1.3]) {
     const sortie = []; V.poser(mod, Object.assign({ v: 5, roule: d }, repos), sortie);
     const q = sortie[k].p, a = -d / w.r;

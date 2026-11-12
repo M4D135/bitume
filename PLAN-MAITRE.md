@@ -161,17 +161,23 @@ photo de Rétromobile, pas à l'œil sur le code.
 | Capot moteur | −0,35 : 0,40–0,70, 0,30, 3 → −1,00 : 0,42–0,60, 0,34, 4 → −1,65 : 0,30–0,50, 0,26, 4 |
 | Saute-vent (translucide) | demi-bulle : base de x 0,62 à 0,10 sur le bord de l'ouverture, sommet à y 0,80 vers x 0,40 |
 
-- [ ] Garder en primitives du moteur ce qui est déjà bon : roues, jantes, disques, aileron avant (plaque et dérives),
+- [x] Garder en primitives du moteur ce qui est déjà bon : roues, jantes, disques, aileron avant (plaque et dérives),
   aileron arrière, boîte, échappements, rivets. Refaire en `tube` : basculeurs, triangles, biellettes, arceau.
-- [ ] Filet blanc le long des bords du capot en flèche ; bande basse des pontons de la seconde couleur.
-- [ ] **Numéro blanc posé sur le rouge**, sans panneau, sur le nez et les pontons (aujourd'hui : noir sur panneau blanc).
-- [ ] Rétroviseurs : boîtier profilé (carène courte) sur patte fine.
-- [ ] Version lointaine (`simples`, au-delà de 170 m ramenés au champ) : trois carènes à 8 côtés et les quatre roues.
-- [ ] Fantôme du chrono : mêmes carènes, translucides.
-- [ ] Vérifier la poursuite, la télévision et l'hélicoptère de la démo : captures des trois, à côté de la photo.
+- [x] Filet blanc le long des bords du capot en flèche ; bande basse des pontons de la seconde couleur.
+- [x] **Numéro blanc posé sur le rouge**, sans panneau, sur le nez et les pontons (aujourd'hui : noir sur panneau blanc).
+- [x] Rétroviseurs : boîtier profilé (carène courte) sur patte fine.
+- [x] Version lointaine (`simples`, au-delà de 170 m ramenés au champ) : trois carènes à 8 côtés et les quatre roues.
+- [x] Fantôme du chrono : mêmes carènes, translucides.
+- [x] Vérifier la poursuite, la télévision et l'hélicoptère de la démo : captures des trois, à côté de la photo.
 
 Fini quand : de trois quarts avant, la voiture se confond en silhouette avec la photo de Rétromobile (hors
 commanditaires), sans une arête vive sur la peau.
+
+Fait le 12/11/2026 : quille, flèche, pontons (resserrés à −1,08 m pour ne pas toucher les roues arrière, où la table
+les faisait entrer), goutte ouverte doublée de sombre avec son jonc, capot moteur, bulle teintée, filet et bande de la
+seconde couleur, rétroviseurs, basculeurs, triangles et arceau en formes libres ; numéro blanc penché collé à la peau
+(nez devant la pointe de la goutte, flancs des pontons). L'habitacle en boîtes ne sert plus qu'à la vue cockpit
+(drapeau `dedans`) jusqu'au lot 1C. Captures : trois quarts avant, poursuite, bord de piste, hélicoptère.
 
 ### Lot 1C — L'habitacle vu du pilote
 
@@ -264,3 +270,4 @@ existe) ; voiture vivante ; peloton et voix des rivaux ; tours propres, records 
 
 - 12/11/2026 — Plan écrit. Phase 1 à commencer par le lot 1A.
 - 12/11/2026 — Lot 1A fini (Opus 5.5).
+- 12/11/2026 — Lot 1B fini (Opus 5.5).
