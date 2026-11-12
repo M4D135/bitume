@@ -1,0 +1,352 @@
+/* BITUME — circuits originaux générés à partir d'une graine.
+   Tracé : polygone étoilé dont les sommets sont arrondis par de vrais arcs de cercle (les côtés deviennent de vraies
+   lignes droites), transitions de courbure adoucies, puis relief, dévers, vibreurs, trajectoire idéale et vitesse
+   de référence. Premier jet du Spark (QAD) pour l'interface, repris par Claude pour la génération du tracé. */
+(function (B) {
+  'use strict';
+
+  const PAS = 2, LARGEUR = 12, LIMITE = 20;
+  const AMPLITUDE = { foret: 14, cote: 6, montagne: 32 };
+
+  function alea(graine) {
+    let a = graine >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const angle = a => { a = (a + Math.PI) % (2 * Math.PI); if (a < 0) a += 2 * Math.PI; return a - Math.PI; };
+  const borner = (v, a, b) => v < a ? a : v > b ? b : v;
+  const lisse = (a, b, x) => { const t = borner((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+
+  // ---------------------------------------------------------------- tracé en plan
+  function polygone(r, rayonBase) {
+    const n = 7 + Math.floor(r() * 5), pasA = 2 * Math.PI / n, debut = r() * 2 * Math.PI, pts = [];
+    for (let i = 0; i < n; i++) {
+      const a = debut + i * pasA + (r() - .5) * pasA * .55;
+      let rr = rayonBase * (.58 + r() * .42);
+      if (r() < .24) rr *= .5 + r() * .15;            // sommet rentré : épingle ou enchaînement serré
+      pts.push([Math.cos(a) * rr, Math.sin(a) * rr]);
+    }
+    if (r() < .5) pts.reverse();                        // la moitié des circuits tournent dans l'autre sens
+    return pts;
+  }
+
+  // Arrondit chaque sommet ; renvoie la liste des segments (droites et arcs) ou null si un côté est trop court.
+  function arrondir(pts, r) {
+    const n = pts.length, coins = [];
+    for (let i = 0; i < n; i++) {
+      const p0 = pts[(i - 1 + n) % n], p1 = pts[i], p2 = pts[(i + 1) % n];
+      const ux = p1[0] - p0[0], uz = p1[1] - p0[1], vx = p2[0] - p1[0], vz = p2[1] - p1[1];
+      const lu = Math.hypot(ux, uz), lv = Math.hypot(vx, vz);
+      const ui = [ux / lu, uz / lu], uo = [vx / lv, vz / lv];
+      const theta = Math.atan2(ui[0] * uo[1] - ui[1] * uo[0], ui[0] * uo[0] + ui[1] * uo[1]);
+      const ab = Math.abs(theta);
+      let R = ab > 1.7 ? 24 + r() * 22 : ab > 1.05 ? 32 + r() * 60 : ab > .55 ? 55 + r() * 110 : 120 + r() * 200;
+      if (ab > .9 && r() < .3) R = 24 + r() * 16;
+      coins.push({ p: p1, ui, uo, theta, R, lu, lv });
+    }
+    // Les tangentes de deux coins voisins doivent laisser une ligne droite d'au moins 24 m.
+    for (let i = 0; i < n; i++) {
+      const a = coins[i], b = coins[(i + 1) % n], cote = a.lv, ta = t => t.R * Math.tan(Math.abs(t.theta) / 2);
+      let somme = ta(a) + ta(b);
+      if (somme > cote - 24) {
+        const f = (cote - 24) / somme;
+        a.R *= f; b.R *= f; somme = ta(a) + ta(b);
+      }
+      if (a.R < 23.9 || b.R < 23.9) return null;
+    }
+    const segments = [];
+    for (let i = 0; i < n; i++) {
+      const c = coins[i], t = c.R * Math.tan(Math.abs(c.theta) / 2);
+      c.entree = [c.p[0] - c.ui[0] * t, c.p[1] - c.ui[1] * t];
+      c.sortie = [c.p[0] + c.uo[0] * t, c.p[1] + c.uo[1] * t];
+    }
+    for (let i = 0; i < n; i++) {
+      const c = coins[i], d = coins[(i + 1) % n];
+      segments.push({ arc: true, depart: c.entree, cap: Math.atan2(c.ui[1], c.ui[0]), k: Math.sign(c.theta) / c.R, longueur: c.R * Math.abs(c.theta) });
+      const lx = d.entree[0] - c.sortie[0], lz = d.entree[1] - c.sortie[1];
+      segments.push({ arc: false, depart: c.sortie, cap: Math.atan2(c.uo[1], c.uo[0]), k: 0, longueur: Math.hypot(lx, lz) });
+    }
+    return segments;
+  }
+
+  // Échantillonne les segments tous les PAS mètres (après mise à l'échelle qui rend L multiple de PAS),
+  // adoucit la courbure sur ±16 m et réintègre le tracé en refermant la boucle.
+  function echantillonner(segments) {
+    let brut = 0;
+    for (const s of segments) brut += s.longueur;
+    const n = Math.round(brut / PAS), f = n * PAS / brut;
+    const k = new Float64Array(n);
+    let seg = 0, debutSeg = 0;
+    for (let i = 0; i < n; i++) {
+      const s = (i + .5) * PAS;
+      while (seg < segments.length - 1 && s > (debutSeg + segments[seg].longueur) * f) { debutSeg += segments[seg].longueur; seg++; }
+      k[i] = segments[seg].k / f;
+    }
+    // adoucissement circulaire : la somme des courbures (le tour complet) est conservée exactement
+    const F = 8, lisseK = new Float64Array(n);
+    for (let i = 0; i < n; i++) { let m = 0; for (let j = -F; j <= F; j++) m += k[(i + j + n) % n]; lisseK[i] = m / (2 * F + 1); }
+    const capDepart = segments[0].cap, x = new Float64Array(n), z = new Float64Array(n);
+    let a = capDepart, px = segments[0].depart[0] * f, pz = segments[0].depart[1] * f;
+    for (let i = 0; i < n; i++) {
+      x[i] = px; z[i] = pz;
+      const am = a + lisseK[i] * PAS / 2;
+      px += Math.cos(am) * PAS; pz += Math.sin(am) * PAS;
+      a += lisseK[i] * PAS;
+    }
+    // fermeture : l'écart résiduel est réparti le long du tour
+    const ex = px - x[0], ez = pz - z[0];
+    for (let i = 0; i < n; i++) { x[i] -= ex * i / n; z[i] -= ez * i / n; }
+    return { x, z, n };
+  }
+
+  function capsEtCourbures(x, z, n) {
+    const cap = new Float64Array(n), courbure = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+      const a = (i - 1 + n) % n, b = (i + 1) % n;
+      cap[i] = Math.atan2(z[b] - z[a], x[b] - x[a]);
+    }
+    for (let i = 0; i < n; i++) courbure[i] = angle(cap[(i + 1) % n] - cap[(i - 1 + n) % n]) / (2 * PAS);
+    return { cap, courbure };
+  }
+
+  function plusLongueDroite(courbure, n) {
+    let meilleur = { debut: 0, longueur: 0 }, debut = -1;
+    // deux tours pour gérer une droite qui chevauche l'indice 0
+    for (let j = 0; j < 2 * n; j++) {
+      const i = j % n, droit = Math.abs(courbure[i]) < 1 / 900;
+      if (droit && debut < 0) debut = j;
+      if ((!droit || j === 2 * n - 1) && debut >= 0) {
+        const l = j - debut;
+        if (l > meilleur.longueur && l <= n) meilleur = { debut: debut % n, longueur: l };
+        debut = -1;
+      }
+    }
+    return { debut: meilleur.debut, longueur: meilleur.longueur * PAS };
+  }
+
+  function separation(x, z, n) {
+    // plus petite distance entre deux points séparés de plus de 150 m le long du tour
+    const ecartMin = Math.ceil(150 / PAS);
+    let min = Infinity;
+    for (let i = 0; i < n; i += 2) for (let j = i + ecartMin; j < n; j += 2) {
+      if (n - (j - i) < ecartMin) continue;
+      const dx = x[i] - x[j], dz = z[i] - z[j], d2 = dx * dx + dz * dz;
+      if (d2 < min) min = d2;
+    }
+    return Math.sqrt(min);
+  }
+
+  function nombreVirages(courbure, n, seuil) {
+    let compte = 0, dans = false;
+    for (let i = 0; i < n; i++) {
+      const v = Math.abs(courbure[i]) > seuil;
+      if (v && !dans) compte++;
+      dans = v;
+    }
+    if (dans && Math.abs(courbure[0]) > seuil && compte > 1) compte--;
+    return compte;
+  }
+
+  function tourner(tab, decalage) {
+    const n = tab.length, r = new tab.constructor(n);
+    for (let i = 0; i < n; i++) r[i] = tab[(i + decalage) % n];
+    return r;
+  }
+
+  // ---------------------------------------------------------------- profils le long du tour
+  function relief(n, L, theme, r, plat) {
+    const y = new Float64Array(n), A = AMPLITUDE[theme] || 14, harm = [];
+    for (let h = 0; h < 3; h++) harm.push({ k: 1 + Math.floor(r() * 5), a: .4 + r() * .6, phi: r() * 2 * Math.PI });
+    const somme = harm.reduce((s, h) => s + h.a, 0);
+    for (let i = 0; i < n; i++) {
+      let v = 0;
+      for (const h of harm) v += h.a * Math.sin(2 * Math.PI * h.k * i * PAS / L + h.phi);
+      y[i] = v / somme * A * (1 - plat[i]);
+    }
+    let pmax = 0;
+    for (let i = 0; i < n; i++) pmax = Math.max(pmax, Math.abs(y[(i + 1) % n] - y[(i - 1 + n) % n]) / (2 * PAS));
+    if (pmax > .068) { const f = .068 / pmax; for (let i = 0; i < n; i++) y[i] *= f; }
+    const pente = new Float64Array(n);
+    for (let i = 0; i < n; i++) pente[i] = (y[(i + 1) % n] - y[(i - 1 + n) % n]) / (2 * PAS);
+    return { y, pente };
+  }
+
+  function moyenneCirculaire(tab, F) {
+    const n = tab.length, r = new Float64Array(n);
+    let somme = 0;
+    for (let j = -F; j <= F; j++) somme += tab[(j + n) % n];
+    for (let i = 0; i < n; i++) { r[i] = somme / (2 * F + 1); somme += tab[(i + F + 1) % n] - tab[(i - F + n) % n]; }
+    return r;
+  }
+
+  // Trajectoire idéale : bande élastique à plusieurs échelles (pas de 16, 8, 4, 2 m), bornée à la piste.
+  function trajectoire(x, z, cap, n, largeur) {
+    const d = new Float64Array(n), borne = largeur / 2 - 1.4;
+    const rx = new Float64Array(n), rz = new Float64Array(n);
+    for (let i = 0; i < n; i++) { rx[i] = -Math.sin(cap[i]); rz[i] = Math.cos(cap[i]); }
+    for (const [h, tours] of [[24, 140], [12, 140], [6, 120], [3, 100], [1, 80]]) {
+      for (let t = 0; t < tours; t++) for (let i = 0; i < n; i++) {
+        const a = (i - h + n) % n, b = (i + h) % n;
+        const mx = (x[a] + rx[a] * d[a] + x[b] + rx[b] * d[b]) / 2, mz = (z[a] + rz[a] * d[a] + z[b] + rz[b] * d[b]) / 2;
+        const cible = (mx - x[i]) * rx[i] + (mz - z[i]) * rz[i];
+        d[i] = borner(d[i] + .55 * (cible - d[i]), -borne, borne);
+      }
+    }
+    return d;
+  }
+
+  function vitesses(x, z, cap, ligne, n) {
+    const px = new Float64Array(n), pz = new Float64Array(n), v = new Float64Array(n);
+    for (let i = 0; i < n; i++) { px[i] = x[i] - Math.sin(cap[i]) * ligne[i]; pz[i] = z[i] + Math.cos(cap[i]) * ligne[i]; }
+    const MU = 1.55, AERO = .00155, VMAX = 86, H = 3;
+    for (let i = 0; i < n; i++) {
+      const a = (i - H + n) % n, b = (i + H) % n;
+      const a1 = Math.atan2(pz[i] - pz[a], px[i] - px[a]), a2 = Math.atan2(pz[b] - pz[i], px[b] - px[i]);
+      const ds = (Math.hypot(pz[i] - pz[a], px[i] - px[a]) + Math.hypot(pz[b] - pz[i], px[b] - px[i])) / 2;
+      const k = Math.abs(angle(a2 - a1)) / Math.max(ds, .5);
+      const den = k - MU * AERO;
+      v[i] = den <= 0 ? VMAX : Math.min(VMAX, Math.sqrt(MU * 9.81 / den));
+    }
+    for (let j = 2 * n - 1; j >= 0; j--) { const i = j % n, s = (i + 1) % n; v[i] = Math.min(v[i], Math.sqrt(v[s] * v[s] + 2 * 16 * PAS)); }
+    // poussée à fond de la monoplace (enveloppe des six rapports mesurée sur conduite.js, boîte auto)
+    const poussee = u => Math.max(.05, Math.min(12, 15.59 - .2592 * u + .000899 * u * u));
+    for (let j = 1; j <= 2 * n; j++) { const i = j % n, p = (i - 1 + n) % n; v[i] = Math.min(v[i], Math.sqrt(v[p] * v[p] + 2 * poussee(v[p]) * PAS)); }
+    return v;
+  }
+
+  // Limites latérales : glissières à 20 m, rapprochées à l'intérieur des virages serrés (repère valable : 1 − κd > 0,3).
+  function limites(courbure, n, largeur) {
+    const G = new Float32Array(n), D = new Float32Array(n), F = Math.round(36 / PAS);
+    for (let i = 0; i < n; i++) {
+      let g = LIMITE, d = LIMITE;
+      for (let j = -F; j <= F; j++) {
+        const k = courbure[(i + j + n) % n];
+        if (k > 1e-6) d = Math.min(d, .62 / k - 2); else if (k < -1e-6) g = Math.min(g, .62 / -k - 2);
+      }
+      G[i] = Math.max(largeur / 2 + 3.2, g); D[i] = Math.max(largeur / 2 + 3.2, d);
+    }
+    return { G, D };
+  }
+
+  // ---------------------------------------------------------------- création
+  function creer(graine, options = {}) {
+    const theme = options.theme || 'foret', vise = options.longueur || 4500, nom = options.nom || 'Circuit ' + graine;
+    for (let essai = 0; essai < 400; essai++) {
+      const r = alea((graine >>> 0) * 2654435761 + essai * 40503);
+      let echelle = vise / (2 * Math.PI) * 1.02, trace = null;
+      for (let ajustement = 0; ajustement < 4; ajustement++) {
+        const rr = alea((graine >>> 0) * 2654435761 + essai * 40503 + 7);
+        const pts = polygone(rr, echelle), segs = arrondir(pts, rr);
+        if (!segs) { trace = null; break; }
+        const L = segs.reduce((s, g) => s + g.longueur, 0);
+        trace = segs;
+        if (Math.abs(L / vise - 1) < .03) break;
+        echelle *= vise / L;
+      }
+      if (!trace) continue;
+      const { x, z, n } = echantillonner(trace);
+      const L = n * PAS;
+      if (Math.abs(L / vise - 1) > .08) continue;
+      let { cap, courbure } = capsEtCourbures(x, z, n);
+      let kmax = 0;
+      for (let i = 0; i < n; i++) kmax = Math.max(kmax, Math.abs(courbure[i]));
+      if (kmax > 1 / 24) continue;
+      const droite = plusLongueDroite(courbure, n);
+      if (droite.longueur < 450) continue;
+      if (nombreVirages(courbure, n, 1 / 70) < 3) continue;
+      if (separation(x, z, n) < 60) continue;
+      // le départ à 35 % de la plus longue ligne droite : l'échantillon 0 devient la ligne
+      const decalage = (droite.debut + Math.round(droite.longueur * .35 / PAS)) % n;
+      const X = tourner(x, decalage), Z = tourner(z, decalage);
+      ({ cap, courbure } = capsEtCourbures(X, Z, n));
+      const debutDroite = -Math.round(droite.longueur * .35 / PAS) * PAS, finDroite = debutDroite + droite.longueur;
+      // fenêtre de la ligne droite (1 sur la droite, raccord doux sur 120 m)
+      const plat = new Float64Array(n);
+      for (let i = 0; i < n; i++) {
+        let s = i * PAS; if (s > L / 2) s -= L;
+        const dehors = Math.max(debutDroite - s, s - finDroite, 0);
+        plat[i] = 1 - lisse(0, 120, dehors);
+      }
+      const { y, pente } = relief(n, L, theme, r, plat);
+      const devBrut = new Float64Array(n);
+      for (let i = 0; i < n; i++) devBrut[i] = borner(courbure[i] * 1.6, -.045, .045);
+      const devers = moyenneCirculaire(devBrut, 10);
+      for (let i = 0; i < n; i++) devers[i] *= 1 - plat[i];
+      const vibreur = new Uint8Array(n), V = Math.round(15 / PAS);
+      for (let i = 0; i < n; i++) if (Math.abs(courbure[i]) > 1 / 140) for (let j = -V; j <= V; j++) vibreur[(i + j + n) % n] = 3;
+      const ligne = trajectoire(X, Z, cap, n, LARGEUR);
+      const vitesse = vitesses(X, Z, cap, ligne, n);
+      const lim = limites(courbure, n, LARGEUR);
+      return {
+        graine, nom, theme, longueur: L, pas: PAS, n,
+        x: X, y, z: Z, cap, courbure, pente, devers, largeur: LARGEUR, vibreur, ligne, vitesse,
+        limite: LIMITE, limiteG: lim.G, limiteD: lim.D,
+        depart: 0, ligneDroite: { debut: debutDroite, fin: finDroite }, secteurs: [Math.round(L / 3 / PAS) * PAS, Math.round(2 * L / 3 / PAS) * PAS],
+        essais: essai + 1
+      };
+    }
+    throw new Error('BITUME : aucun tracé valide pour la graine ' + graine);
+  }
+
+  // ---------------------------------------------------------------- lecture
+  const ramener = (c, s) => { const L = c.longueur; s %= L; return s < 0 ? s + L : s; };
+  function echantillon(c, s) {
+    s = ramener(c, s);
+    const f = s / PAS, i = Math.floor(f) % c.n, j = (i + 1) % c.n, t = f - Math.floor(f);
+    const m = (tab) => tab[i] + (tab[j] - tab[i]) * t;
+    return { x: m(c.x), y: m(c.y), z: m(c.z), cap: c.cap[i] + angle(c.cap[j] - c.cap[i]) * t, courbure: m(c.courbure), pente: m(c.pente), devers: m(c.devers), ligne: m(c.ligne), vitesse: m(c.vitesse) };
+  }
+  function point(c, s, d, h = 0) {
+    const e = echantillon(c, s), sa = Math.sin(e.cap), ca = Math.cos(e.cap), sd = Math.sin(e.devers), cd = Math.cos(e.devers);
+    // normale de la chaussée : verticale inclinée par le dévers (côté droit plus bas si dévers > 0)
+    const n = [-sd * sa, cd, sd * ca];
+    return [e.x - sa * d + n[0] * h, e.y - d * sd + n[1] * h, e.z + ca * d + n[2] * h];
+  }
+  function repere(c, s) {
+    const e = echantillon(c, s), sa = Math.sin(e.cap), ca = Math.cos(e.cap), sd = Math.sin(e.devers), cd = Math.cos(e.devers);
+    const lp = Math.hypot(1, e.pente);
+    let t = [ca / lp, e.pente / lp, sa / lp];
+    let r = [-sa * cd, -sd, ca * cd];
+    // r orthogonal à t, puis n = r × t (vers le haut)
+    const p = r[0] * t[0] + r[1] * t[1] + r[2] * t[2];
+    r = [r[0] - p * t[0], r[1] - p * t[1], r[2] - p * t[2]];
+    const lr = Math.hypot(r[0], r[1], r[2]); r = r.map(v => v / lr);
+    const n = [r[1] * t[2] - r[2] * t[1], r[2] * t[0] - r[0] * t[2], r[0] * t[1] - r[1] * t[0]];
+    return { t, r, n };
+  }
+  function ecart(c, s1, s2) {
+    const L = c.longueur;
+    let d = (s2 - s1) % L;
+    if (d < -L / 2) d += L; else if (d >= L / 2) d -= L;
+    return d;
+  }
+  function vibreurA(c, s, cote) {
+    const i = Math.round(ramener(c, s) / PAS) % c.n;
+    return !!(c.vibreur[i] & (cote < 0 ? 1 : 2));
+  }
+  function limiteA(c, s, cote) {
+    const i = Math.round(ramener(c, s) / PAS) % c.n;
+    return cote < 0 ? c.limiteG[i] : c.limiteD[i];
+  }
+  function valider(c) {
+    const pb = [];
+    const finis = ['x', 'y', 'z', 'cap', 'courbure', 'pente', 'devers', 'ligne', 'vitesse'].every(k => c[k].length === c.n && c[k].every(Number.isFinite));
+    if (!finis) pb.push('valeurs non finies ou tableaux de mauvaise taille');
+    if (c.longueur !== c.n * PAS) pb.push('longueur différente de n × pas');
+    const fx = c.x[0] - c.x[c.n - 1], fz = c.z[0] - c.z[c.n - 1];
+    if (Math.abs(Math.hypot(fx, fz) - PAS) > .5) pb.push('boucle mal refermée');
+    let kmax = 0, pmax = 0;
+    for (let i = 0; i < c.n; i++) { kmax = Math.max(kmax, Math.abs(c.courbure[i])); pmax = Math.max(pmax, Math.abs(c.pente[i])); }
+    if (kmax > 1 / 23.5) pb.push('rayon minimal inférieur à 24 m');
+    if (pmax > .07) pb.push('pente supérieure à 7 %');
+    if (separation(c.x, c.z, c.n) < 59) pb.push('deux portions du tracé trop proches');
+    return pb;
+  }
+
+  B.circuit = { creer, echantillon, point, repere, ecart, vibreurA, limiteA, valider, PAS, LARGEUR };
+})(globalThis.BITUME = globalThis.BITUME || {});

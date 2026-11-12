@@ -1,0 +1,169 @@
+<title>BITUME</title>
+<meta name="description" content="Course de monoplaces rétro, entièrement procédurale : trois circuits générés, onze rivaux, dérive et turbo. Moteur FERRO, sans aucun fichier d’image ni de son.">
+<style>
+/*STYLE*/
+</style>
+<main id="jeu" data-ecran="chargement">
+  <canvas id="scene" aria-label="Vue de la course"></canvas>
+  <div id="vignette" aria-hidden="true"></div>
+
+  <!-- Affichage de course -->
+  <section id="hud" aria-label="Affichage de course" hidden>
+    <div class="hud-haut">
+      <div class="compteurs">
+        <div class="case" id="c-position"><span class="etiquette">Position</span><span class="grand"><b id="h-pos">–</b><small id="h-sur">/12</small></span></div>
+        <div class="case" id="c-tour"><span class="etiquette">Tour</span><span class="grand"><b id="h-tour">–</b><small id="h-tours">/3</small></span></div>
+      </div>
+      <div id="feux" class="feux" aria-hidden="true" hidden><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="chronos">
+        <div class="ligne-chrono"><span class="etiquette">Tour en cours</span><span class="temps" id="h-actuel">–</span></div>
+        <div class="ligne-chrono"><span class="etiquette">Meilleur</span><span class="temps" id="h-meilleur">–</span></div>
+        <div class="ligne-chrono delta" id="h-delta-ligne"><span class="etiquette">Écart</span><span class="temps" id="h-delta">–</span></div>
+      </div>
+    </div>
+
+    <ol id="classement" class="classement" aria-label="Classement"></ol>
+    <div id="message" class="message" role="status" aria-live="polite"></div>
+    <div id="sous-message" class="sous-message"></div>
+
+    <div class="hud-bas">
+      <canvas id="carte" class="carte" width="220" height="220" aria-label="Plan du circuit"></canvas>
+      <div class="tableau">
+        <div id="jauge-derive" class="jauge-derive" data-niveau="0" hidden>
+          <span class="etiquette">Dérive</span>
+          <div class="segments"><i></i><i></i><i></i></div>
+        </div>
+        <div class="vitesse"><b id="h-vitesse">0</b><small>km/h</small></div>
+        <div class="regime" id="h-regime"><div class="barre"></div><span class="rapport" id="h-rapport">1</span></div>
+      </div>
+    </div>
+    <button id="b-pause" class="bouton-rond" type="button" aria-label="Pause">❚❚</button>
+  </section>
+
+  <!-- Commandes tactiles -->
+  <div id="tactile" hidden>
+    <div id="t-volant" class="zone-volant" aria-label="Volant : glisser à gauche ou à droite"><div class="bouton-volant"></div></div>
+    <div class="pedales">
+      <button id="t-derive" type="button" class="pedale derive">Dérive</button>
+      <button id="t-frein" type="button" class="pedale frein">Frein</button>
+      <button id="t-gaz" type="button" class="pedale gaz">Gaz</button>
+    </div>
+    <button id="t-vue" type="button" class="bouton-rond vue" aria-label="Changer de vue">◎</button>
+  </div>
+
+  <!-- Écran titre -->
+  <section id="titre" class="ecran titre" hidden>
+    <div class="marque">
+      <h1>BITUME</h1>
+      <p class="accroche">Monoplaces d’époque · circuits générés · onze rivaux</p>
+    </div>
+    <nav class="choix" aria-label="Menu principal">
+      <button type="button" class="gros" data-aller="course">Course</button>
+      <button type="button" class="gros" data-aller="chrono">Chrono</button>
+      <button type="button" class="discret" data-aller="reglages">Réglages</button>
+    </nav>
+    <p class="pied-titre">Clavier, manette ou écran tactile · moteur FERRO · aucun fichier d’image ni de son</p>
+  </section>
+
+  <!-- Préparation d'une course ou d'un chrono -->
+  <section id="preparation" class="ecran preparation" hidden>
+    <header class="entete">
+      <button type="button" class="retour" data-aller="titre" aria-label="Retour">←</button>
+      <h2 id="p-titre">Course</h2>
+    </header>
+    <div id="circuits" class="circuits" role="radiogroup" aria-label="Circuit"></div>
+    <div class="options">
+      <fieldset id="o-tours">
+        <legend>Tours</legend>
+        <label><input type="radio" name="tours" value="2"><span>2</span></label>
+        <label><input type="radio" name="tours" value="3"><span>3</span></label>
+        <label><input type="radio" name="tours" value="5"><span>5</span></label>
+      </fieldset>
+      <fieldset id="o-difficulte">
+        <legend>Rivaux</legend>
+        <label><input type="radio" name="difficulte" value="0"><span>Faciles</span></label>
+        <label><input type="radio" name="difficulte" value="1"><span>Normaux</span></label>
+        <label><input type="radio" name="difficulte" value="2"><span>Coriaces</span></label>
+      </fieldset>
+      <p id="o-chrono" class="note-chrono" hidden>Seul en piste. Le chrono part au premier passage de la ligne ; votre meilleur tour devient un fantôme bleu, gardé pour la prochaine fois.</p>
+    </div>
+    <footer class="actions">
+      <p id="p-record" class="record"></p>
+      <button type="button" class="gros principal" id="b-depart">Départ</button>
+    </footer>
+  </section>
+
+  <!-- Réglages -->
+  <section id="reglages" class="ecran reglages" hidden>
+    <header class="entete">
+      <button type="button" class="retour" id="r-retour" aria-label="Retour">←</button>
+      <h2>Réglages</h2>
+    </header>
+    <div class="grille-reglages">
+      <fieldset>
+        <legend>Vue</legend>
+        <label><input type="radio" name="vue" value="cockpit"><span>Cockpit</span></label>
+        <label><input type="radio" name="vue" value="poursuite"><span>Poursuite</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Boîte</legend>
+        <label><input type="radio" name="boite" value="auto"><span>Automatique</span></label>
+        <label><input type="radio" name="boite" value="manuelle"><span>Manuelle</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Aide au volant</legend>
+        <label><input type="radio" name="aide" value="0"><span>Aucune</span></label>
+        <label><input type="radio" name="aide" value="0.35"><span>Légère</span></label>
+        <label><input type="radio" name="aide" value="0.7"><span>Forte</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Image</legend>
+        <label><input type="radio" name="qualite" value="low"><span>Légère</span></label>
+        <label><input type="radio" name="qualite" value="auto"><span>Auto</span></label>
+        <label><input type="radio" name="qualite" value="high"><span>Fine</span></label>
+      </fieldset>
+      <div class="curseurs">
+        <label>Volume général <input type="range" id="v-general" min="0" max="1" step="0.05"></label>
+        <label>Moteurs <input type="range" id="v-moteur" min="0" max="1" step="0.05"></label>
+        <label>Effets <input type="range" id="v-effets" min="0" max="1" step="0.05"></label>
+      </div>
+      <dl class="touches">
+        <dt>Accélérer · freiner</dt><dd>↑ ↓ ou Z S (W S en QWERTY)</dd>
+        <dt>Tourner</dt><dd>← → ou Q D (A D en QWERTY)</dd>
+        <dt>Dérive</dt><dd>Espace ou Maj, tenue dans un virage ; contre-braquer pour charger, relâcher pour le turbo</dd>
+        <dt>Rapports</dt><dd>E monter · A descendre (Q en QWERTY), en boîte manuelle</dd>
+        <dt>Vue · son · pause</dt><dd>C · M · Échap ou P</dd>
+        <dt>Manette</dt><dd>gâchettes, stick gauche, A dérive, RB/LB rapports, Y vue, Start pause</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- Pause -->
+  <section id="pause" class="ecran pause" hidden>
+    <h2>Pause</h2>
+    <nav class="choix">
+      <button type="button" class="gros" id="b-reprendre">Reprendre</button>
+      <button type="button" class="discret" id="b-replacer">Se replacer sur la piste</button>
+      <button type="button" class="discret" id="b-recommencer">Recommencer</button>
+      <button type="button" class="discret" id="b-reglages-pause">Réglages</button>
+      <button type="button" class="discret" id="b-abandon">Quitter la séance</button>
+    </nav>
+  </section>
+
+  <!-- Résultats -->
+  <section id="resultats" class="ecran resultats" hidden>
+    <header class="entete"><h2 id="res-titre">Arrivée</h2><p id="res-sous" class="sous"></p></header>
+    <table class="tableau-resultats">
+      <thead><tr><th>Pos.</th><th>N°</th><th class="nom">Pilote</th><th>Tours</th><th>Temps</th><th>Meilleur tour</th></tr></thead>
+      <tbody id="res-lignes"></tbody>
+    </table>
+    <footer class="actions">
+      <button type="button" class="discret" id="b-menu">Menu</button>
+      <button type="button" class="gros principal" id="b-rejouer">Rejouer</button>
+    </footer>
+  </section>
+
+  <div id="chargement" class="chargement" role="status"><span>Préparation du circuit…</span></div>
+  <div id="erreur" class="erreur" role="alert" hidden></div>
+</main>
+<!--MODULES-->

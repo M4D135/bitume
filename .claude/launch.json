@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "bitume",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-c",
+        "import http.server,functools\nclass H(http.server.SimpleHTTPRequestHandler):\n    def end_headers(self):\n        self.send_header('Cache-Control','no-store'); super().end_headers()\nhttp.server.ThreadingHTTPServer(('127.0.0.1',8781),functools.partial(H,directory='dist')).serve_forever()"
+      ],
+      "port": 8781
+    }
+  ]
+}

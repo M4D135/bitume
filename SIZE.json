@@ -1,0 +1,18 @@
+{
+  "version": "essai-0.1",
+  "raw": 305094,
+  "gzip": 90884,
+  "sha256": "c8cf425039772be45b09eacf85466c4fa90f359e2761825c8d588c615976d099",
+  "sources": {
+    "moteur/renderer.js": 117424,
+    "circuit.js": 17710,
+    "conduite.js": 14383,
+    "course.js": 18299,
+    "son.js": 14216,
+    "decor.js": 35791,
+    "voiture.js": 12040,
+    "jeu.js": 46165,
+    "index.html": 8773,
+    "style.css": 19354
+  }
+}

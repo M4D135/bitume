@@ -1,0 +1,799 @@
+(function (B) {
+  'use strict';
+  // BITUME : coque du jeu (boucle à pas fixe, commandes, caméras, affichage, menus). Écrit par Claude.
+
+  const DT = 1 / 120;
+  const $ = id => document.getElementById(id);
+  const clamp = (x, a, b) => x < a ? a : (x > b ? b : x);
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const angle = a => a - 2 * Math.PI * Math.round(a / (2 * Math.PI));
+  const ramener = (s, L) => ((s % L) + L) % L;
+
+  // Les trois circuits de l'essai : graines fixes, tracés générés par circuit.js.
+  const CATALOGUE = [
+    { id: 'val-brule', nom: 'Val-Brûlé', lieu: 'Forêt', theme: 'foret', graine: 11, longueur: 4200 },
+    { id: 'port-sable', nom: 'Port-Sable', lieu: 'Bord de mer', theme: 'cote', graine: 29, longueur: 3600 },
+    { id: 'haut-col', nom: 'Haut-Col', lieu: 'Montagne', theme: 'montagne', graine: 47, longueur: 5200 }
+  ];
+
+  // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
+  function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
+  function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
+  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0 };
+  const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
+  const sauverReglages = () => ecrireStock('bitume.reglages', reglages);
+  const records = lireStock('bitume.records', {});
+
+  function enBase64(f32) {
+    const o = new Uint8Array(f32.buffer, f32.byteOffset, f32.byteLength);
+    let t = '';
+    for (let i = 0; i < o.length; i += 0x8000) t += String.fromCharCode.apply(null, o.subarray(i, i + 0x8000));
+    return btoa(t);
+  }
+  function deBase64(b) {
+    const t = atob(b), o = new Uint8Array(t.length);
+    for (let i = 0; i < t.length; i++) o[i] = t.charCodeAt(i);
+    return new Float32Array(o.buffer);
+  }
+
+  // ---------------------------------------------------------------- formats
+  function chrono(t) {
+    if (t == null || !isFinite(t)) return '–';
+    const m = Math.floor(t / 60), s = t - 60 * m;
+    return m + ':' + s.toFixed(3).padStart(6, '0').replace('.', ',');
+  }
+  const signe = x => (x < 0 ? '−' : '+');
+  function ecartTexte(e, decimales = 1) { return signe(e) + Math.abs(e).toFixed(decimales).replace('.', ','); }
+  const nomCourt = v => v.joueur ? 'Vous' : v.nom.replace(/^.\. /, '');
+
+  // ---------------------------------------------------------------- circuits
+  const circuits = [];
+  function circuit(i) {
+    if (!circuits[i]) { const k = CATALOGUE[i]; circuits[i] = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom }); }
+    return circuits[i];
+  }
+  function nombreVirages(c) {
+    let n = 0, dans = 0, droit = 99;
+    for (let i = 0; i < c.n; i++) {
+      const k = c.courbure[i];
+      if (Math.abs(k) > 1 / 260) {
+        const sens = Math.sign(k);
+        if (!dans || (sens !== dans && droit > 3) || droit >= 15) n++;
+        dans = sens; droit = 0;
+      } else if (Math.abs(k) < 1 / 500) droit++;
+    }
+    return n;
+  }
+  function fiche(c) {
+    const droite = c.ligneDroite ? c.ligneDroite.fin - c.ligneDroite.debut : 0;
+    return { km: (c.longueur / 1000).toFixed(2).replace('.', ','), virages: nombreVirages(c), droite: Math.round(droite) };
+  }
+  // tracé ramené dans un rectangle, pour le plan et les cartes du menu
+  function plan(c, largeur, hauteur, marge) {
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+    for (let i = 0; i < c.n; i++) { x0 = Math.min(x0, c.x[i]); x1 = Math.max(x1, c.x[i]); z0 = Math.min(z0, c.z[i]); z1 = Math.max(z1, c.z[i]); }
+    const e = Math.min((largeur - 2 * marge) / (x1 - x0), (hauteur - 2 * marge) / (z1 - z0));
+    const ox = (largeur - (x1 - x0) * e) / 2 - x0 * e, oz = (hauteur - (z1 - z0) * e) / 2 - z0 * e;
+    return { e, vers: (x, z) => [ox + x * e, oz + z * e] };
+  }
+  function dessinerTrace(ctx, c, p, epaisseur, couleur) {
+    ctx.beginPath();
+    for (let i = 0; i <= c.n; i += 3) { const [x, y] = p.vers(c.x[i % c.n], c.z[i % c.n]); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+    ctx.closePath(); ctx.lineJoin = 'round'; ctx.lineWidth = epaisseur; ctx.strokeStyle = couleur; ctx.stroke();
+    // ligne de départ
+    const [x, y] = p.vers(c.x[0], c.z[0]), a = c.cap[0], l = epaisseur * 1.6;
+    ctx.beginPath(); ctx.moveTo(x - Math.sin(a) * l, y + Math.cos(a) * l); ctx.lineTo(x + Math.sin(a) * l, y - Math.cos(a) * l);
+    ctx.lineWidth = Math.max(2, epaisseur * .55); ctx.strokeStyle = '#e0301e'; ctx.stroke();
+  }
+
+  // ---------------------------------------------------------------- moteur de rendu et son
+  let rendu = null, son = null, scene = null, session = null;
+  const canvas = $('scene');
+
+  function installer(i) {
+    if (scene && scene.index === i) return scene;
+    const c = circuit(i), decor = B.decor.construire(c);
+    rendu.setWorld([], [], decor.atmosphere);
+    rendu.setNappes(decor.nappes);
+    rendu.setLots(decor.lots);
+    // plan du circuit pour l'affichage de course, dessiné une fois
+    const fond = document.createElement('canvas'); fond.width = fond.height = 220;
+    const p = plan(c, 220, 220, 16), ctx = fond.getContext('2d');
+    dessinerTrace(ctx, c, p, 9, 'rgba(10,12,15,.9)'); dessinerTrace(ctx, c, p, 4.5, '#d9d2c3');
+    scene = { index: i, c, decor, fond, plan: p };
+    return scene;
+  }
+
+  // ---------------------------------------------------------------- séances : vitrine (écran titre), course, chrono
+  let graineCourse = (Date.now() >>> 7) & 0xffff;
+  function lancer(type, i) {
+    const sc = installer(i), c = sc.c;
+    const course = B.course.creer(c, {
+      mode: type === 'chrono' ? 'chrono' : 'course', tours: type === 'vitrine' ? 99 : reglages.tours,
+      difficulte: type === 'vitrine' ? 2 : reglages.difficulte, rivaux: 11, graine: ++graineCourse, placeJoueur: type === 'vitrine' ? 5 : 8
+    });
+    if (type === 'vitrine') course.joueur.ia.hab = 0.965;
+    if (type === 'chrono') {
+      const f = lireStock('bitume.fantome.' + CATALOGUE[i].id, null);
+      // fantôme gardé : seulement pour le même tracé (la longueur change si le générateur change)
+      if (f && f.b64 && f.n > 1 && f.temps > 0 && f.longueur === c.longueur) {
+        try { const d = deBase64(f.b64); if (d.length >= 4 * f.n) course.fantome = { meilleur: { donnees: d, n: f.n }, temps: f.temps }; } catch (e) { /* fantôme illisible : ignoré */ }
+      }
+    }
+    const S = {
+      type, i, course, c, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
+      prec: [], cour: [], sortie: [], acc: 0, tele: { poste: null, alea: graine32(course.voitures.length * 7 + i) },
+      camCap: null, profil: new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1), profilMeilleur: null,
+      distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
+      contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null
+    };
+    remplirPoses(S.cour, course); remplirPoses(S.prec, course);
+    session = S;
+    tactile(type !== 'vitrine');
+    return S;
+  }
+  function graine32(a) {
+    return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  }
+
+  // position et attitude de chaque voiture dans le monde, gardées pour l'interpolation entre deux pas
+  function remplirPoses(liste, co) {
+    const c = co.c;
+    co.voitures.forEach((v, k) => {
+      const et = v.etat, e = B.circuit.echantillon(c, et.s), sa = Math.sin(e.cap), ca = Math.cos(e.cap);
+      const p = liste[k] || (liste[k] = {});
+      p.x = e.x - sa * et.d; p.y = et.y; p.z = e.z + ca * et.d;
+      p.cap = e.cap + et.psi + et.beta; p.tangage = et.tangage; p.roulis = et.roulis;
+      p.braquage = et.volant * 0.30 / (1 + et.v / 28) * 2.2;
+    });
+  }
+  function melange(a, b, t, sortie) {
+    sortie.x = lerp(a.x, b.x, t); sortie.y = lerp(a.y, b.y, t); sortie.z = lerp(a.z, b.z, t);
+    sortie.cap = a.cap + angle(b.cap - a.cap) * t; sortie.tangage = lerp(a.tangage, b.tangage, t);
+    sortie.roulis = lerp(a.roulis, b.roulis, t); sortie.braquage = lerp(a.braquage, b.braquage, t);
+    return sortie;
+  }
+
+  // ---------------------------------------------------------------- commandes
+  const touches = new Set();
+  const impulsions = { haut: false, bas: false };
+  const pad = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, actif: false };
+  const doigt = { volant: 0, gaz: false, frein: false, derive: false, id: null, x0: 0 };
+  let analogique = false;
+
+  // conduite par position physique des touches (e.code : ZQSD et WASD au même endroit) ; vue, son et pause par lettre
+  addEventListener('keydown', e => {
+    const course = enCourse(), lettre = (e.key || '').toLowerCase();
+    if (e.repeat) { if (course) e.preventDefault(); return; }
+    activerSon();
+    if (course && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault();
+    touches.add(e.code);
+    if (e.code === 'Escape' || lettre === 'p') {
+      if (course || ecran === 'pause') { basculerPause(); e.preventDefault(); }
+      else if (e.code === 'Escape') retour();
+      return;
+    }
+    if (!course) return;
+    analogique = false;
+    if (e.code === 'KeyE') impulsions.haut = true;
+    if (e.code === 'KeyQ') impulsions.bas = true;
+    if (lettre === 'c') changerVue();
+    if (lettre === 'm') couperSon();
+  });
+  addEventListener('keyup', e => touches.delete(e.code));
+  addEventListener('blur', () => { touches.clear(); if (enCourse()) basculerPause(true); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && enCourse()) basculerPause(true); });
+  addEventListener('pointerdown', activerSon, { passive: true });
+
+  function lireManette() {
+    const liste = navigator.getGamepads ? navigator.getGamepads() : [];
+    pad.actif = false;
+    for (const p of liste) {
+      if (!p || !p.connected) continue;
+      const b = i => p.buttons[i] ? (p.buttons[i].value || (p.buttons[i].pressed ? 1 : 0)) : 0;
+      const appuye = i => b(i) > .5, nouveau = i => appuye(i) && !pad.precedent[i];
+      const ax = p.axes[0] || 0, morte = .12, x = Math.abs(ax) < morte ? 0 : Math.sign(ax) * (Math.abs(ax) - morte) / (1 - morte);
+      pad.volant = Math.sign(x) * Math.pow(Math.abs(x), 1.6);
+      pad.gaz = b(7); pad.frein = b(6); pad.derive = appuye(0) || appuye(2);
+      if (enCourse()) {
+        if (nouveau(5)) impulsions.haut = true;
+        if (nouveau(4)) impulsions.bas = true;
+        if (nouveau(3)) changerVue();
+      }
+      if (nouveau(9) && (enCourse() || ecran === 'pause')) basculerPause();
+      else if (!enCourse()) naviguerManette(nouveau);
+      for (let i = 0; i < p.buttons.length; i++) pad.precedent[i] = appuye(i);
+      if (Math.abs(pad.volant) > .05 || pad.gaz > .05 || pad.frein > .05) { pad.actif = true; analogique = true; activerSon(); }
+      return;
+    }
+  }
+
+  // menus à la manette : croix pour se déplacer (gauche, droite règlent un curseur), A valide, B revient
+  function naviguerManette(nouveau) {
+    const zone = $(ecran); if (!zone || zone.hidden) return;
+    const liste = Array.from(zone.querySelectorAll('button, input')).filter(el => !el.disabled && el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden' && !el.closest('[hidden]'));
+    if (!liste.length) return;
+    const i = liste.indexOf(document.activeElement), el = liste[i];
+    if (el && el.type === 'range' && (nouveau(14) || nouveau(15))) {
+      el.value = String(clamp(+el.value + (nouveau(15) ? 1 : -1) * (+el.step || .05), +el.min, +el.max));
+      el.dispatchEvent(new Event('input', { bubbles: true })); return;
+    }
+    const bouger = k => liste[i < 0 ? 0 : (i + k + liste.length) % liste.length].focus({ focusVisible: true });
+    if (nouveau(12) || nouveau(14)) bouger(-1);
+    else if (nouveau(13) || nouveau(15)) bouger(1);
+    else if (nouveau(0) && el) el.click();
+    else if (nouveau(1)) retour();
+  }
+
+  function commandesJoueur() {
+    let gaz = 0, frein = 0, volant = 0, derive = false;
+    if (touches.has('KeyW') || touches.has('ArrowUp')) gaz = 1;
+    if (touches.has('KeyS') || touches.has('ArrowDown')) frein = 1;
+    if (touches.has('KeyA') || touches.has('ArrowLeft')) volant -= 1;
+    if (touches.has('KeyD') || touches.has('ArrowRight')) volant += 1;
+    if (touches.has('Space') || touches.has('ShiftLeft') || touches.has('ShiftRight')) derive = true;
+    gaz = Math.max(gaz, pad.gaz, doigt.gaz ? 1 : 0);
+    frein = Math.max(frein, pad.frein, doigt.frein ? 1 : 0);
+    if (Math.abs(pad.volant) > Math.abs(volant)) volant = pad.volant;
+    if (Math.abs(doigt.volant) > Math.abs(volant)) volant = doigt.volant;
+    derive = derive || pad.derive || doigt.derive;
+    const cmd = { gaz, frein, volant, derive, haut: impulsions.haut, bas: impulsions.bas, boite: reglages.boite, aide: analogique ? reglages.aide * .5 : reglages.aide };
+    impulsions.haut = impulsions.bas = false;
+    return cmd;
+  }
+
+  // commandes tactiles : volant en glissant le pouce à gauche, pédales et dérive à droite
+  const estTactile = typeof matchMedia === 'function' && (matchMedia('(pointer: coarse)').matches || (navigator.maxTouchPoints > 0 && matchMedia('(hover: none)').matches));
+  if (estTactile) document.body.classList.add('tactile');
+  function tactile(visible) { $('tactile').hidden = !(visible && estTactile); }
+  (function () {
+    const zone = $('t-volant'), bouton = zone.querySelector('.bouton-volant');
+    zone.addEventListener('pointerdown', e => { doigt.id = e.pointerId; doigt.x0 = e.clientX; zone.setPointerCapture(e.pointerId); analogique = true; });
+    zone.addEventListener('pointermove', e => {
+      if (e.pointerId !== doigt.id) return;
+      doigt.volant = clamp((e.clientX - doigt.x0) / 70, -1, 1);
+      bouton.style.transform = 'translateX(' + (doigt.volant * 60) + 'px)';
+    });
+    const lacher = e => { if (e.pointerId !== doigt.id) return; doigt.id = null; doigt.volant = 0; bouton.style.transform = ''; };
+    zone.addEventListener('pointerup', lacher); zone.addEventListener('pointercancel', lacher);
+    for (const [id, cle] of [['t-gaz', 'gaz'], ['t-frein', 'frein'], ['t-derive', 'derive']]) {
+      const el = $(id);
+      const on = e => { doigt[cle] = true; el.classList.add('appuye'); el.setPointerCapture(e.pointerId); e.preventDefault(); };
+      const off = () => { doigt[cle] = false; el.classList.remove('appuye'); };
+      el.addEventListener('pointerdown', on); el.addEventListener('pointerup', off); el.addEventListener('pointercancel', off);
+    }
+    $('t-vue').addEventListener('click', changerVue);
+    $('b-pause').addEventListener('click', () => basculerPause());
+  })();
+
+  function changerVue() {
+    reglages.vue = reglages.vue === 'cockpit' ? 'poursuite' : 'cockpit';
+    sauverReglages(); if (session) session.camCap = null;
+  }
+
+  // ---------------------------------------------------------------- son
+  let sonActif = false, muet = false;
+  function activerSon() {
+    if (!son) return;
+    son.demarrer();
+    if (!sonActif) { sonActif = true; appliquerVolumes(); }
+  }
+  function appliquerVolumes() {
+    if (!son) return;
+    const menu = !enCourse();
+    son.regler({ general: muet ? 0 : reglages.general * (menu ? .55 : 1), moteur: reglages.moteur, effets: reglages.effets });
+  }
+  function couperSon() { muet = !muet; appliquerVolumes(); message(muet ? 'Son coupé' : 'Son rétabli', '', true); }
+
+  // ---------------------------------------------------------------- pas de simulation et événements
+  function pasSimulation(S, pilote) {
+    const co = S.course;
+    const cmd = S.type === 'vitrine' || pilote ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
+    const ev = B.course.pas(co, cmd, DT);
+    const t = S.prec; S.prec = S.cour; S.cour = t; remplirPoses(S.cour, co);
+    if (S.type !== 'vitrine') { traiter(S, ev); suivreJoueur(S); }
+  }
+
+  function traiter(S, ev) {
+    const co = S.course, j = co.joueur;
+    for (const e of ev) {
+      switch (e.type) {
+        case 'feu': son && son.evenement('feu'); break;
+        case 'vert': son && son.evenement('vert'); message('Départ', 'vert', true); break;
+        case 'contact': if (e.a === 0 || e.b === 0) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + .25 + e.force * .05); } break;
+        case 'tour':
+          if (e.id !== 0) break;
+          son && son.evenement('tour', { meilleur: e.meilleur });
+          finTour(S, e);
+          break;
+        case 'arrivee':
+          if (e.id !== 0) break;
+          son && son.evenement('arrivee');
+          S.finA = co.horloge;
+          message(e.position === 1 ? 'Victoire' : e.position + (e.position === 1 ? 're' : 'e') + ' place', e.position <= 3 ? 'ambre' : '');
+          sousMessage('Drapeau à damier · ' + chrono(j.tempsFinal));
+          break;
+        default:
+          if (e.id !== 0) break;
+          if (son) son.evenement(e.type, e);
+          if (e.type === 'choc') S.secousse = Math.min(1, (S.secousse || 0) + .3 + e.force * .04);
+          else if (e.type === 'turbo') message(e.parfait ? 'Turbo parfait' : 'Turbo', e.parfait ? 'ambre' : '', true);
+          else if (e.type === 'deriveAnnulee') S.derniereJauge = co.horloge;
+      }
+    }
+  }
+
+  function finTour(S, e) {
+    const co = S.course, j = co.joueur, id = CATALOGUE[S.i].id;
+    const ancien = records[id] && records[id].tour;
+    // profil du tour (temps tous les 10 m) pour l'écart en direct
+    if (e.meilleur) S.profilMeilleur = S.profil.slice();
+    S.profil.fill(-1);
+    let texte = 'Tour ' + e.tour + ' · ' + chrono(e.temps);
+    if (!ancien || e.temps < ancien) {
+      records[id] = { tour: e.temps, date: new Date().toISOString().slice(0, 10), mode: co.mode };
+      ecrireStock('bitume.records', records);
+      if (ancien) texte += ' · record du circuit';
+    }
+    sousMessage(texte);
+    if (co.mode === 'chrono') {
+      // le fantôme gardé est celui du meilleur tour jamais fait ici
+      const f = co.fantome;
+      const garde = lireStock('bitume.fantome.' + id, null);
+      if (f.meilleur && f.temps === e.temps && (!garde || garde.longueur !== co.c.longueur || e.temps < garde.temps))
+        ecrireStock('bitume.fantome.' + id, { temps: f.temps, n: f.meilleur.n, longueur: co.c.longueur, b64: enBase64(f.meilleur.donnees) });
+      message(e.meilleur ? 'Meilleur tour' : chrono(e.temps), e.meilleur ? 'vert' : '', true);
+    } else if (co.toursTotal - j.tours === 1) message('Dernier tour', 'ambre');
+    else if (e.meilleur && j.tours > 1) message('Meilleur tour', 'vert', true);
+  }
+
+  function suivreJoueur(S) {
+    const co = S.course, j = co.joueur, et = j.etat, L = co.c.longueur;
+    const enLice = co.mode === 'chrono' ? co.chronoParti : co.phase === 'course' || co.phase === 'arrivee';
+    if (enLice && !j.fini) {
+      const dans = j.progression - j.tours * L, k = Math.floor(dans / 10);
+      if (k >= 0 && k < S.profil.length && S.profil[k] < 0) S.profil[k] = co.temps - j.debutTour;
+    }
+    // contresens et voiture coincée : retour sur la piste
+    if (co.phase === 'course' && !j.fini) {
+      const arriere = Math.cos(et.psi) < -.2 && et.v > 2;
+      S.contresens = arriere ? S.contresens + DT : Math.max(0, S.contresens - DT * 2);
+      if (S.contresens > 1.2 && !S.avertiContresens) { message('Contresens', 'rouge', true); S.avertiContresens = true; }
+      if (S.contresens < .2) S.avertiContresens = false;
+      const coince = (et.v < 1.5 && et.gaz > .5) || (Math.cos(et.psi) < -.5 && et.v < 3);
+      S.bloque = coince ? S.bloque + DT : 0;
+      if (S.bloque > 3) { replacer(); S.bloque = 0; }
+    }
+  }
+
+  function replacer() {
+    const S = session; if (!S) return;
+    const co = S.course, et = co.joueur.etat;
+    et.d = B.circuit.echantillon(co.c, et.s).ligne; et.psi = 0; et.beta = 0; et.omega = 0; et.v = Math.min(et.v, 4);
+    B.conduite.annulerDerive(et);
+    message('Replacé', '', true);
+  }
+
+  // ---------------------------------------------------------------- caméras
+  function cameraCockpit(p, et, t) {
+    const M = B.voiture.attitude(p.cap, p.tangage, p.roulis), o = B.voiture.mul(M, B.voiture.OEIL);
+    const vib = et.surface === 'vibreur' ? .006 : et.surface === 'herbe' ? .004 * Math.min(1, et.v / 20) : 0;
+    return {
+      pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib, p.z + o[2]], yaw: p.cap + Math.PI / 2,
+      pitch: p.tangage * .85 - .05, roll: -p.roulis * .85, fov: 64 + 8 * clamp(et.v / 85, 0, 1), near: .1, far: 1700
+    };
+  }
+  function cameraPoursuite(S, p, et, dt) {
+    if (S.camCap === null) S.camCap = p.cap;
+    S.camCap += angle(p.cap - S.camCap) * (1 - Math.exp(-dt * 5.5));
+    const dist = 7.4, cx = p.x - Math.cos(S.camCap) * dist, cz = p.z - Math.sin(S.camCap) * dist;
+    const sol = scene.decor.sol ? scene.decor.sol(cx, cz) : p.y;
+    const y = Math.max(p.y + 2.45, (isFinite(sol) ? sol : p.y) + 1.4);
+    return { pos: [cx, y, cz], yaw: S.camCap + Math.PI / 2, pitch: -.12 - (y - p.y - 2.45) * .06, roll: 0, fov: 64 + 8 * clamp(et.v / 85, 0, 1), near: .1, far: 1700 };
+  }
+  // caméra de télévision : postes au bord de la piste, en avant de la voiture suivie
+  function cameraTele(S, v, p) {
+    const c = S.course.c, T = S.tele, s = v.etat.s;
+    if (!T.poste || B.circuit.ecart(c, T.poste.s, s) > 18 || B.circuit.ecart(c, T.poste.s, s) < -200) {
+      const sp = ramener(s + 60 + T.alea() * 60, c.longueur), e = B.circuit.echantillon(c, sp);
+      const cote = e.courbure > 1e-4 ? -1 : e.courbure < -1e-4 ? 1 : (T.alea() < .5 ? -1 : 1);
+      const d = cote * (B.conduite.limiteCote(c, sp, cote) + 2.5 + T.alea() * 3), sa = Math.sin(e.cap), ca = Math.cos(e.cap);
+      const x = e.x - sa * d, z = e.z + ca * d, sol = scene.decor.sol ? scene.decor.sol(x, z) : e.y;
+      T.poste = { s: sp, pos: [x, Math.max(e.y, isFinite(sol) ? sol : e.y) + 2.2 + T.alea() * 4.5, z] };
+    }
+    const q = T.poste.pos, dx = p.x - q[0], dy = p.y + .55 - q[1], dz = p.z - q[2], dist = Math.hypot(dx, dy, dz) || 1;
+    return { pos: q.slice(), yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / dist, -1, 1)), roll: 0, fov: clamp(2 * Math.atan(7.5 / dist) * 180 / Math.PI, 10, 50), near: .1, far: 1700 };
+  }
+
+  // ---------------------------------------------------------------- rendu d'une image
+  const MATRICE_LAMPE = cap => {
+    const e = B.voiture.euler, A = e(0, -cap, 0), Bm = e(0, 0, -Math.PI / 2);
+    const m = [B.voiture.mul(A, Bm[0]), B.voiture.mul(A, Bm[1]), B.voiture.mul(A, Bm[2])];
+    return B.voiture.angles(m);
+  };
+  const tampons = { poses: [], mel: {} };
+  let horlogeReelle = 0, dureeImage = 16;
+
+  function rendreImage(S, alpha, dtImage) {
+    const co = S.course, c = co.c, sortie = S.sortie, j = co.joueur;
+    sortie.length = 0;
+    const poses = tampons.poses;
+    for (let k = 0; k < co.voitures.length; k++) poses[k] = melange(S.prec[k], S.cour[k], alpha, poses[k] || {});
+    const pj = poses[0];
+
+    // caméra
+    let cam, vue = reglages.vue, suivie = j;
+    if (S.type === 'vitrine') { suivie = co.voitures[co.classement[S.suiviRang || 0]] || j; vue = 'tele'; }
+    else if (j.fini && S.finA !== null && co.horloge - S.finA > 2.5) vue = 'tele';
+    const ps = poses[suivie.id];
+    if (vue === 'tele') cam = cameraTele(S, suivie, ps);
+    else cam = vue === 'cockpit' ? cameraCockpit(pj, j.etat, co.horloge) : cameraPoursuite(S, pj, j.etat, dtImage);
+    if (S.secousse > 0) {
+      const a = S.secousse * .05, t = horlogeReelle;
+      cam.pitch += Math.sin(t * 61) * a * .5; cam.yaw += Math.sin(t * 47) * a * .35;
+      S.secousse = Math.max(0, S.secousse - dtImage * 2.6);
+    }
+    const fwd = [Math.sin(cam.yaw), 0, -Math.cos(cam.yaw)];
+    // ombres du soleil autour de ce que l'on regarde : devant le pilote, ou autour de la voiture filmée
+    cam.sun = vue === 'tele' ? { center: [ps.x, ps.y, ps.z], extent: 44, depth: 190 } : { center: [cam.pos[0] + fwd[0] * 32, pj.y, cam.pos[2] + fwd[2] * 32], extent: 46, depth: 190 };
+
+    // voitures : modèle complet près de la caméra, allégé plus loin
+    for (let k = 0; k < co.voitures.length; k++) {
+      const p = poses[k], dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], d2 = dx * dx + dz * dz;
+      if (k === 0 && vue === 'cockpit') { B.voiture.cockpit(S.modeles[0], { p: [p.x, p.y, p.z], cap: p.cap, tangage: p.tangage, roulis: p.roulis, braquage: p.braquage }, sortie, j.etat.regime, j.etat.volant); continue; }
+      if (d2 > 520 * 520) continue;
+      B.voiture.poser(S.modeles[k], { p: [p.x, p.y, p.z], cap: p.cap, tangage: p.tangage, roulis: p.roulis, braquage: p.braquage }, sortie, { simple: d2 > 95 * 95 });
+    }
+    // fantôme du meilleur tour
+    if (co.mode === 'chrono') {
+      const f = B.course.fantome(co);
+      if (f) {
+        const e = B.circuit.echantillon(c, f.s), sa = Math.sin(e.cap), ca = Math.cos(e.cap);
+        const x = e.x - sa * f.d, z = e.z + ca * f.d, dx = x - pj.x, dz = z - pj.z;
+        if (dx * dx + dz * dz > 9 || vue !== 'cockpit') B.voiture.fantome({ p: [x, e.y - f.d * Math.sin(e.devers), z], cap: e.cap + f.angle, tangage: Math.atan(e.pente), roulis: e.devers }, sortie);
+      }
+    }
+    // feux du portique
+    const port = scene.decor.portique;
+    if (port && co.mode === 'course') {
+      if (!S.rotLampe) S.rotLampe = MATRICE_LAMPE(port.cap);
+      for (let k = 0; k < port.feux.length; k++) {
+        const allume = !co.feux.vert && k < co.feux.allumes;
+        sortie.push({ shape: 'cylinder', p: port.feux[k], s: [.56, .05, .56], r: S.rotLampe, mat: allume ? 5 : 7, color: allume ? [1, .14, .06] : [.1, .03, .03], emissive: allume ? 3 : 0 });
+      }
+    }
+    const q = reglages.qualite;
+    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, adaptive: q === 'auto', frameMs: dureeImage });
+    S.camera = cam; S.vue = vue;
+    return cam;
+  }
+
+  // ---------------------------------------------------------------- son de chaque image
+  const sonRivaux = [];
+  function majSon(S, cam, dtImage) {
+    if (!son || !sonActif) return;
+    const co = S.course, j = co.joueur, et = j.etat, poses = tampons.poses;
+    const fx = Math.sin(cam.yaw), fz = -Math.cos(cam.yaw), rx = Math.cos(cam.yaw), rz = Math.sin(cam.yaw);
+    sonRivaux.length = 0;
+    const exterieur = S.vue === 'tele';
+    for (let k = 0; k < co.voitures.length; k++) {
+      if (k === 0 && !exterieur) continue;
+      const p = poses[k], dx = p.x - cam.pos[0], dy = p.y - cam.pos[1], dz = p.z - cam.pos[2], d = Math.hypot(dx, dy, dz);
+      if (S.distances[k] >= 0 && dtImage > 0) S.vRel[k] = lerp(S.vRel[k], clamp((S.distances[k] - d) / dtImage, -120, 120), .2);
+      S.distances[k] = d;
+      const v = co.voitures[k];
+      sonRivaux.push({ id: k, distance: d, angle: Math.atan2(dx * rx + dz * rz, dx * fx + dz * fz), regime: v.etat.regime, gaz: v.etat.gaz, vRel: S.vRel[k] });
+    }
+    son.mettreAJour({
+      pause: ecran === 'pause',
+      joueur: { regime: et.regime, gaz: et.gaz, rapport: et.rapport, v: et.v, glisse: et.glisse, surface: et.surface, turbo: et.turbo.reste > 0, vue: S.vue === 'cockpit' ? 'cockpit' : 'poursuite', muet: exterieur },
+      rivaux: sonRivaux
+    }, dtImage);
+  }
+
+  // ---------------------------------------------------------------- affichage de course
+  const H = {};
+  for (const id of ['h-pos', 'h-sur', 'h-tour', 'h-tours', 'h-actuel', 'h-meilleur', 'h-delta', 'h-delta-ligne', 'h-vitesse', 'h-rapport', 'h-regime', 'jauge-derive', 'classement', 'feux', 'carte', 'c-position', 'c-tour', 'message', 'sous-message']) H[id] = $(id);
+  const segments = Array.from(H['jauge-derive'].querySelectorAll('i')), lampes = Array.from(H.feux.querySelectorAll('i'));
+  const barre = H['h-regime'].querySelector('.barre');
+  function texte(el, t) { if (el._t !== t) { el._t = t; el.textContent = t; } }
+  function attr(el, nom, v) { if (el['_' + nom] !== v) { el['_' + nom] = v; el.setAttribute(nom, v); } }
+  function style(el, nom, v) { if (el['_s' + nom] !== v) { el['_s' + nom] = v; el.style.setProperty(nom, v); } }
+  function classe(el, nom, oui) { if (el.classList.contains(nom) !== !!oui) el.classList.toggle(nom, !!oui); }
+
+  function message(t, ton, court) {
+    const el = H.message;
+    el.textContent = t; el.className = 'message';
+    void el.offsetWidth;
+    el.className = 'message visible' + (ton ? ' ' + ton : '') + (court ? ' court' : '');
+  }
+  function sousMessage(t) {
+    const el = H['sous-message'];
+    el.textContent = t; el.className = 'sous-message'; void el.offsetWidth; el.className = 'sous-message visible';
+  }
+
+  function majHud(S) {
+    const co = S.course, j = co.joueur, et = j.etat, chronoMode = co.mode === 'chrono';
+    const nb = co.voitures.length;
+    texte(H['h-pos'], chronoMode ? '–' : String(j.position)); texte(H['h-sur'], chronoMode ? '' : '/' + nb);
+    if (!chronoMode && S.positionPrec && j.position < S.positionPrec && co.phase === 'course') { H['c-position'].classList.remove('eclat'); void H['c-position'].offsetWidth; H['c-position'].classList.add('eclat'); }
+    S.positionPrec = j.position;
+    const tourAff = chronoMode ? j.tours + (co.chronoParti ? 1 : 0) : Math.min(co.toursTotal, j.tours + 1);
+    texte(H['h-tour'], co.phase === 'grille' || co.phase === 'feux' || (chronoMode && !co.chronoParti) ? '–' : String(tourAff));
+    texte(H['h-tours'], chronoMode ? '' : '/' + co.toursTotal);
+    const enLice = chronoMode ? co.chronoParti : (co.phase === 'course' || co.phase === 'arrivee');
+    const actuel = j.fini ? j.tempsTours[j.tempsTours.length - 1] : enLice ? co.temps - j.debutTour : null;
+    texte(H['h-actuel'], chrono(actuel));
+    texte(H['h-meilleur'], chrono(j.meilleur));
+    // écart en direct avec le meilleur tour, à distance égale
+    let delta = null;
+    if (enLice && !j.fini && S.profilMeilleur) {
+      const dans = j.progression - j.tours * co.c.longueur, k = Math.floor(dans / 10), u = dans / 10 - k;
+      const a = S.profilMeilleur[k], b = S.profilMeilleur[k + 1];
+      if (a >= 0 && b >= 0) delta = (co.temps - j.debutTour) - lerp(a, b, u);
+    }
+    texte(H['h-delta'], delta === null ? '–' : ecartTexte(delta, 2));
+    classe(H['h-delta'], 'avance', delta !== null && delta < 0); classe(H['h-delta'], 'retard', delta !== null && delta > 0);
+
+    texte(H['h-vitesse'], String(B.conduite.kmh(et)));
+    texte(H['h-rapport'], String(et.rapport));
+    style(barre, '--r', clamp((et.regime - 4000) / 9000, 0, 1).toFixed(3));
+    classe(H['h-regime'], 'passer', et.regime > (reglages.boite === 'manuelle' ? 12100 : 12600) && et.rapport < 6);
+
+    // jauge de dérive
+    const dr = et.derive, montrer = dr.actif || co.horloge - S.derniereJauge < .6;
+    H['jauge-derive'].hidden = !montrer;
+    if (dr.actif) {
+      const N = B.conduite.PARAMS.deriveNiveaux, ch = dr.charge;
+      const f = [clamp(ch / N[0], 0, 1), clamp((ch - N[0]) / (N[1] - N[0]), 0, 1), clamp((ch - N[1]) / (N[2] - N[1]), 0, 1)];
+      segments.forEach((sg, k) => style(sg, '--f', f[k].toFixed(2)));
+      attr(H['jauge-derive'], 'data-niveau', String(dr.niveau));
+      classe(H['jauge-derive'], 'fenetre', dr.fenetre > 0);
+      S.derniereJauge = co.horloge;
+    }
+
+    // feux de départ
+    const feuxVisibles = co.mode === 'course' && (co.phase === 'grille' || co.phase === 'feux');
+    H.feux.hidden = !feuxVisibles;
+    if (feuxVisibles) lampes.forEach((l, k) => classe(l, 'allume', k < co.feux.allumes));
+
+    // tour de classement : tête de course et voisins du joueur
+    if (!chronoMode && (!S.prochainClassement || co.horloge >= S.prochainClassement)) {
+      S.prochainClassement = co.horloge + .25;
+      const ordre = co.classement.map(id => co.voitures[id]);
+      const rangs = new Set([0, 1, 2, j.position - 2, j.position - 1, j.position].filter(r => r >= 0 && r < nb));
+      const liste = [...rangs].sort((a, b) => a - b);
+      let html = '', prec = -1;
+      for (const r of liste) {
+        if (prec >= 0 && r > prec + 1) html += '<li class="saut"></li>';
+        const v = ordre[r], col = 'rgb(' + v.couleur.map(x => Math.round(x * 255)).join(',') + ')';
+        const lance = co.phase === 'course' || co.phase === 'arrivee';
+        const ecart = !lance ? '' : r === 0 ? 'Tête' : ecartTexte(v.ecart);
+        html += '<li' + (v.joueur ? ' class="joueur"' : '') + '><span class="p">' + (r + 1) + '</span><span class="c" style="background:' + col + '"></span><span class="n">' + nomCourt(v) + '</span><span class="e">' + ecart + '</span></li>';
+        prec = r;
+      }
+      if (H.classement._html !== html) { H.classement._html = html; H.classement.innerHTML = html; }
+    }
+    H.classement.hidden = chronoMode;
+
+    // plan du circuit
+    const ctx = H.carte.getContext('2d');
+    ctx.clearRect(0, 0, 220, 220); ctx.drawImage(scene.fond, 0, 0);
+    const p = scene.plan;
+    for (let k = co.voitures.length - 1; k >= 0; k--) {
+      const v = co.voitures[k], ps = tampons.poses[k]; if (!ps) continue;
+      const [x, y] = p.vers(ps.x, ps.z);
+      ctx.beginPath(); ctx.arc(x, y, v.joueur ? 5.5 : 3.6, 0, Math.PI * 2);
+      ctx.fillStyle = v.joueur ? '#e0301e' : 'rgb(' + v.couleur.map(x => Math.round(x * 255)).join(',') + ')'; ctx.fill();
+      ctx.lineWidth = v.joueur ? 2 : 1; ctx.strokeStyle = v.joueur ? '#f2ecdf' : 'rgba(10,12,15,.85)'; ctx.stroke();
+    }
+    if (chronoMode) {
+      const f = B.course.fantome(co);
+      if (f) { const e = B.circuit.echantillon(co.c, f.s), [x, y] = p.vers(e.x, e.z); ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fillStyle = '#6fd0ff'; ctx.fill(); }
+    }
+  }
+
+  // ---------------------------------------------------------------- écrans
+  let ecran = 'chargement';
+  const ECRANS = ['titre', 'preparation', 'reglages', 'pause', 'resultats'];
+  let modePrepa = 'course', retourReglages = 'titre';
+  const enCourse = () => ecran === 'course';
+
+  function aller(nom) {
+    if (son) son.evenement('clic');
+    for (const e of ECRANS) $(e).hidden = e !== nom;
+    $('hud').hidden = !(nom === 'course' || nom === 'pause');
+    $('jeu').dataset.ecran = nom;
+    ecran = nom;
+    if (nom === 'titre' || nom === 'preparation') {
+      if (!session || session.type !== 'vitrine' || (nom === 'preparation' && session.i !== reglages.circuit)) lancer('vitrine', nom === 'preparation' ? reglages.circuit : (session ? session.i : reglages.circuit));
+    }
+    tactile(nom === 'course');
+    if (nom === 'preparation') remplirPreparation();
+    if (nom === 'reglages') remplirReglages();
+    // une course arrêtée (pause, réglages, résultats) se tait ; la vitrine des menus continue, moins fort
+    if (son) { if (session && session.type !== 'vitrine' && nom !== 'course') son.suspendre(); else son.reprendre(); }
+    appliquerVolumes();
+    if (nom === 'course') { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); return; }
+    const focus = $(nom) && $(nom).querySelector('button.gros, button');
+    if (focus && !estTactile) setTimeout(() => focus.focus({ preventScroll: true }), 30);
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-aller]');
+    if (!b) return;
+    const cible = b.dataset.aller;
+    if (cible === 'course' || cible === 'chrono') { modePrepa = cible; aller('preparation'); }
+    else if (cible === 'reglages') { retourReglages = ecran; aller('reglages'); }
+    else aller(cible);
+  });
+
+  function remplirPreparation() {
+    $('p-titre').textContent = modePrepa === 'chrono' ? 'Chrono' : 'Course';
+    $('o-tours').hidden = $('o-difficulte').hidden = modePrepa === 'chrono';
+    $('o-chrono').hidden = modePrepa !== 'chrono';
+    const zone = $('circuits');
+    if (!zone.childElementCount) {
+      CATALOGUE.forEach((k, i) => {
+        const c = circuit(i), f = fiche(c), b = document.createElement('button');
+        b.type = 'button'; b.className = 'carte-circuit'; b.setAttribute('role', 'radio'); b.dataset.index = i;
+        b.innerHTML = '<span class="lieu">' + k.lieu + '</span><span class="nom">' + k.nom + '</span><canvas width="320" height="200"></canvas>' +
+          '<p class="fiche"><b>' + f.km + ' km</b> · ' + f.virages + ' virages · ligne droite de ' + f.droite + ' m</p>';
+        const ctx = b.querySelector('canvas').getContext('2d');
+        const p = plan(c, 320, 200, 14);
+        dessinerTrace(ctx, c, p, 10, 'rgba(0,0,0,.55)'); dessinerTrace(ctx, c, p, 5, '#efe8da');
+        b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); lancer('vitrine', i); });
+        zone.appendChild(b);
+      });
+    }
+    for (const nom of ['tours', 'difficulte']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    majPreparation();
+  }
+  function majPreparation() {
+    for (const b of $('circuits').children) b.setAttribute('aria-checked', String(+b.dataset.index === reglages.circuit));
+    const r = records[CATALOGUE[reglages.circuit].id];
+    $('p-record').innerHTML = r ? 'Votre record sur ' + CATALOGUE[reglages.circuit].nom + ' : <b>' + chrono(r.tour) + '</b>' : 'Pas encore de temps sur ' + CATALOGUE[reglages.circuit].nom + '.';
+  }
+  document.addEventListener('change', e => {
+    const t = e.target;
+    if (t.name === 'tours' || t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
+    if (['vue', 'boite', 'qualite'].includes(t.name)) { reglages[t.name] = t.value; sauverReglages(); if (t.name === 'qualite' && rendu) rendu.resize(t.value); }
+    if (t.name === 'aide') { reglages.aide = +t.value; sauverReglages(); }
+  });
+  for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).addEventListener('input', e => { reglages[nom] = +e.target.value; sauverReglages(); appliquerVolumes(); });
+  function remplirReglages() {
+    for (const nom of ['vue', 'boite', 'qualite', 'aide']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).value = reglages[nom];
+  }
+  function retour() {
+    if (ecran === 'reglages') aller(retourReglages || 'titre');
+    else if (ecran === 'preparation' || ecran === 'resultats') aller('titre');
+  }
+  $('r-retour').addEventListener('click', retour);
+
+  $('b-depart').addEventListener('click', () => demarrerSeance(modePrepa));
+  function demarrerSeance(type) {
+    $('chargement').classList.remove('fini');
+    setTimeout(() => {
+      lancer(type, reglages.circuit);
+      $('chargement').classList.add('fini');
+      aller('course');
+      if (type === 'chrono') sousMessage('Le chrono part à la ligne');
+    }, 30);
+  }
+  function basculerPause(forcer) {
+    if (ecran === 'course') aller('pause');
+    else if (ecran === 'pause' && !forcer) aller('course');
+  }
+  $('b-reprendre').addEventListener('click', () => aller('course'));
+  $('b-replacer').addEventListener('click', () => { replacer(); aller('course'); });
+  $('b-recommencer').addEventListener('click', () => demarrerSeance(session ? session.type : 'course'));
+  $('b-reglages-pause').addEventListener('click', () => { retourReglages = 'pause'; aller('reglages'); });
+  $('b-abandon').addEventListener('click', () => { if (session && session.type === 'chrono' && session.course.joueur.tempsTours.length) montrerResultats(session); else aller('titre'); });
+  $('b-menu').addEventListener('click', () => aller('titre'));
+  $('b-rejouer').addEventListener('click', () => demarrerSeance(session ? session.type : 'course'));
+
+  function montrerResultats(S) {
+    S.resultats = true;
+    const co = S.course;
+    // les rivaux encore en piste finissent leur dernier tour en simulation accélérée (moins d'une seconde de calcul)
+    if (co.mode === 'course' && co.drapeau !== null) {
+      const delai = Math.max(40, 1.25 * co.drapeau / co.toursTotal);
+      for (let k = 0; k < 120 * 240 && !co.voitures.every(v => v.fini) && co.temps - co.drapeau < delai; k++) { co.termine = false; B.course.pas(co, null, DT); }
+      co.termine = true;
+      remplirPoses(S.cour, co); remplirPoses(S.prec, co);
+    }
+    const j = co.joueur, corps = $('res-lignes'), entete = document.querySelector('.tableau-resultats thead tr');
+    const nomCircuit = CATALOGUE[S.i].nom;
+    if (co.mode === 'chrono') {
+      $('res-titre').textContent = 'Séance de chrono';
+      const r = records[CATALOGUE[S.i].id];
+      $('res-sous').textContent = nomCircuit + ' · meilleur tour ' + chrono(j.meilleur) + (r ? ' · record ' + chrono(r.tour) : '');
+      entete.innerHTML = '<th>Tour</th><th class="nom">Temps</th><th>Écart au meilleur</th>';
+      corps.innerHTML = j.tempsTours.map((t, k) => '<tr' + (t === j.meilleur ? ' class="joueur"' : '') + '><td>' + (k + 1) + '</td><td class="nom">' + chrono(t) + '</td><td>' + (t === j.meilleur ? '–' : ecartTexte(t - j.meilleur, 3)) + '</td></tr>').join('');
+    } else {
+      const ordre = co.classement.map(id => co.voitures[id]), tete = ordre[0];
+      const meilleurAbsolu = Math.min(...ordre.map(v => v.meilleur ?? Infinity));
+      $('res-titre').textContent = j.position === 1 ? 'Victoire' : 'Arrivée · ' + j.position + 'e';
+      $('res-sous').textContent = nomCircuit + ' · ' + co.toursTotal + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][co.difficulte];
+      entete.innerHTML = '<th>Pos.</th><th>N°</th><th class="nom">Pilote</th><th>Tours</th><th>Temps</th><th>Meilleur tour</th>';
+      corps.innerHTML = ordre.map((v, r) => {
+        const col = 'rgb(' + v.couleur.map(x => Math.round(x * 255)).join(',') + ')';
+        let tps;
+        if (r === 0 && v.fini) tps = chrono(v.tempsFinal);
+        else if (v.fini && tete.fini && v.tours === tete.tours) tps = ecartTexte(v.tempsFinal - tete.tempsFinal, 3);
+        else if (tete.tours - v.tours >= 1 && v.fini) tps = '+' + (tete.tours - v.tours) + ' tour' + (tete.tours - v.tours > 1 ? 's' : '');
+        else tps = v.fini ? chrono(v.tempsFinal) : 'en piste';
+        return '<tr' + (v.joueur ? ' class="joueur"' : '') + '><td>' + (r + 1) + '</td><td>' + v.numero + '</td><td class="nom"><span class="pastille" style="background:' + col + '"></span>' + (v.joueur ? 'Vous' : v.nom) + '</td><td>' + v.tours + '</td><td>' + tps + '</td><td' + (v.meilleur === meilleurAbsolu ? ' class="record-tour"' : '') + '>' + chrono(v.meilleur) + '</td></tr>';
+      }).join('');
+    }
+    aller('resultats');
+  }
+
+  // ---------------------------------------------------------------- boucle principale
+  let tPrec = 0;
+  function image(t) {
+    requestAnimationFrame(image);
+    const dtReel = tPrec ? Math.min(.1, (t - tPrec) / 1000) : DT;
+    tPrec = t; horlogeReelle += dtReel; dureeImage = lerp(dureeImage, dtReel * 1000, .1);
+    lireManette();
+    const S = session;
+    if (!S || !rendu) return;
+    // la vitrine tourne derrière les menus ; une course ne tourne qu'à l'écran de course
+    const tourne = S.type === 'vitrine' ? ecran !== 'chargement' : ecran === 'course';
+    if (tourne) {
+      S.acc += dtReel;
+      let n = 0;
+      while (S.acc >= DT && n < 14) { pasSimulation(S); S.acc -= DT; n++; }
+      if (n === 14) S.acc = 0;
+    } else if (horlogeReelle - (S.imageFigee || 0) < .25) return; // image arrêtée : quatre images par seconde suffisent
+    S.imageFigee = horlogeReelle;
+    if (S.type === 'vitrine') S.suiviRang = Math.floor(horlogeReelle / 18) % 4;
+    const dtVu = tourne ? dtReel : 0, cam = rendreImage(S, clamp(S.acc / DT, 0, 1), dtVu);
+    if (S.type !== 'vitrine') {
+      majHud(S);
+      if (S.type === 'course' && S.course.termine && !S.resultats) montrerResultats(S);
+    }
+    majSon(S, cam, dtVu);
+  }
+
+  // ---------------------------------------------------------------- démarrage
+  function webgl2() {
+    try {
+      const t = document.createElement('canvas'), gl = t.getContext('webgl2');
+      if (!gl) return false;
+      const perte = gl.getExtension('WEBGL_lose_context'); if (perte) perte.loseContext();
+      return true;
+    } catch (e) { return false; }
+  }
+  function erreur(titre, texteErreur) {
+    const el = $('erreur');
+    el.innerHTML = '<h2></h2><p></p>'; el.querySelector('h2').textContent = titre; el.querySelector('p').textContent = texteErreur;
+    el.hidden = false; $('chargement').classList.add('fini');
+  }
+  function demarrer() {
+    if (!webgl2()) { erreur('WebGL2 indisponible', 'BITUME dessine la piste avec WebGL2. Ouvrez la page dans un navigateur récent (Chrome, Edge, Firefox, Safari 15 ou plus) avec l’accélération graphique active.'); return; }
+    try {
+      rendu = window.FRender.create(canvas);
+      if (rendu.stats.backend !== 'webgl2') { erreur('WebGL2 indisponible', 'Le rendu de secours ne sait pas dessiner la piste. Activez l’accélération graphique du navigateur.'); return; }
+      rendu.resize(reglages.qualite);
+      son = B.son.creer();
+      reglages.circuit = clamp(reglages.circuit | 0, 0, CATALOGUE.length - 1);
+      lancer('vitrine', reglages.circuit);
+      $('chargement').classList.add('fini');
+      aller('titre');
+      requestAnimationFrame(image);
+    } catch (e) {
+      console.error(e);
+      erreur('Le jeu n’a pas pu démarrer', String(e && e.message || e));
+    }
+  }
+  // Outil d'essai (console) : avance la séance de n secondes, la voiture du joueur confiée à l'IA si pilote est vrai.
+  function avancer(secondes, pilote) {
+    const S = session; if (!S) return null;
+    for (let k = 0, n = Math.round(secondes / DT); k < n && !S.course.termine; k++) pasSimulation(S, pilote);
+    const j = S.course.joueur;
+    return { phase: S.course.phase, tours: j.tours, position: j.position, meilleur: j.meilleur, termine: S.course.termine };
+  }
+  window.BITUME_JEU = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer };
+  setTimeout(demarrer, 20);
+})(globalThis.BITUME = globalThis.BITUME || {});

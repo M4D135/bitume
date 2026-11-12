@@ -1,0 +1,52 @@
+# BITUME
+
+Course de monoplaces d'époque dans le navigateur, entièrement procédurale : trois circuits générés, onze rivaux,
+dérive et turbo. Moteur FERRO (WebGL2). Aucune image, aucun son enregistré, aucune police chargée : une seule page
+HTML d'environ 300 Ko.
+
+Essai 0.1 du 12 novembre 2026. BITUME est la refonte web de vroom-unreal, le projet Unreal de David : il garde le
+genre et les mécaniques inventées pour vroom-unreal, et ne reprend rien du Vroom de Lankhor.
+
+## Jouer
+
+Ouvrir `dist/bitume.html` dans un navigateur récent avec WebGL2 (Chrome, Edge, Firefox, Safari 15 ou plus).
+La page se suffit à elle-même. Pour la reconstruire :
+
+```bash
+python3 construire.py
+```
+
+## Contenu de l'essai
+
+- **Circuits** : Val-Brûlé (forêt, 4,22 km), Port-Sable (bord de mer, 3,64 km), Haut-Col (montagne, 5,22 km).
+  Chacun est généré par une graine : arcs et lignes droites, relief, dévers, vibreurs, glissières, trajectoire idéale.
+- **Course** : 2, 3 ou 5 tours à douze voitures, départ arrêté aux feux, rivaux faciles, normaux ou coriaces,
+  drapeau à damier, classement et écarts en direct, résultats.
+- **Chrono** : seul en piste. Le meilleur tour devient un fantôme bleu gardé dans le navigateur, avec un record
+  par circuit.
+- **Conduite** : boîte automatique ou manuelle, rupteur, vibreurs et herbe, glissières, dérive à trois niveaux de
+  charge et turbo au lâcher (avec une fenêtre « parfaite »), aide au volant réglable.
+- **Vues** : cockpit (volant, compte-tours, gants), poursuite, caméra de télévision (vitrine de l'écran titre et
+  fin de course).
+- **Son synthétisé** : moteur à trois oscillateurs et saturation, trois voix de rivaux spatialisées avec effet
+  Doppler, pneus, vibreur, herbe, chocs, feux et signaux.
+
+## Commandes
+
+| Action | Clavier | Manette |
+|---|---|---|
+| Accélérer, freiner | ↑ ↓, ou Z S (W S en QWERTY) | gâchettes droite et gauche |
+| Tourner | ← →, ou Q D (A D en QWERTY) | stick gauche |
+| Dérive | Espace ou Maj, tenue dans un virage | A |
+| Rapports (boîte manuelle) | E monter, A descendre (Q en QWERTY) | RB, LB |
+| Vue, son, pause | C, M, Échap ou P | Y, —, Start |
+| Menus | Tab, Entrée, Échap | croix, A, B |
+
+Sur écran tactile : glisser le pouce à gauche pour braquer ; pédales et dérive à droite.
+
+## Pour aller plus loin
+
+- `CONCEPTION.md` : intentions, mécaniques, ce qui est vérifié et ce qui ne l'est pas.
+- `FEUILLE-DE-ROUTE.md` : l'écart avec vroom-unreal et les lots pour le combler.
+- `AGENTS.md` : structure, conventions, construction et tests.
+- `src/moteur/PROVENANCE.md` : origine du moteur et retouches.
