@@ -1,3 +1,4 @@
 dist/artefact.html
 .DS_Store
 node_modules/
+docs/analyse/

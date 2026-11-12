@@ -5,9 +5,17 @@ Une seule page HTML, moteur FERRO (WebGL2), tout est calculé par le code.
 
 ## Règles du projet
 
-- **Jeu original.** Rien du Vroom de Lankhor : ni tracé relevé, ni table ST ou Amiga, ni son extrait, ni dessin,
-  ni nom, ni bandeau d'affichage, ni bannière. Les mécaniques inventées pour vroom-unreal (le projet Unreal de David)
-  peuvent être reprises ; ce qui vient du jeu de 1991 ne l'est jamais. Dans le doute, demander à David.
+- **Jeu original.** Rien n'est pris au Vroom de Lankhor :
+  - ni tracé relevé, ni table ST ou Amiga, ni leurs valeurs ;
+  - ni son extrait, ni dessin, ni nom ;
+  - ni bandeau d'affichage, ni bannière, ni composition du cockpit Amiga.
+
+  Les mécaniques de jeu peuvent être reprises si on les refait avec notre code et nos constantes :
+  - celles inventées pour vroom-unreal, le projet Unreal de David ;
+  - celles du genre que le jeu de 1991 avait déjà, quand David les demande : le saut roue contre roue, le
+    12/11/2026.
+
+  Dans le doute, demander à David. La règle détaillée est dans `FEUILLE-DE-ROUTE.md`.
 - **Aucun fichier d'image ni de son**, aucune police chargée, aucun appel réseau. Le budget de la page est de
   1,4 Mo (`construire.py`).
 - Textes du jeu en français. Interface et design : Claude. Le Spark écrit des premiers jets, relus avant intégration.
