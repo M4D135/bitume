@@ -327,7 +327,11 @@
     const co = S.course;
     const cmd = S.type === 'vitrine' || S.type === 'demo' || pilote ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
     const ev = B.course.pas(co, cmd, DT);
-    for (const v of co.voitures) v.roule = (v.roule || 0) + v.etat.v * DT; // distance roulée : fait tourner les roues
+    for (const v of co.voitures) {
+      v.roule = (v.roule || 0) + v.etat.v * DT; // distance roulée : fait tourner les roues
+      // changement de rapport : la main droite du pilote va au levier (vue cockpit)
+      if (v.etat.rapport !== v.rapportVu) { v.rapportAvant = v.rapportVu === undefined ? v.etat.rapport : v.rapportVu; v.rapportVu = v.etat.rapport; v.tPassage = co.horloge; }
+    }
     const t = S.prec; S.prec = S.cour; S.cour = t; remplirPoses(S.cour, co);
     if (S.type === 'demo') traiterDemo(S, ev);
     else if (S.type !== 'vitrine') { traiter(S, ev); suivreJoueur(S); }
@@ -448,12 +452,20 @@
     const vertical = 2 * Math.atan(Math.max(t / (16 / 9), t / Math.max(.3, aspect))) * 180 / Math.PI;
     return clamp(vertical * (1 + .13 * clamp(v / 85, 0, 1)), 10, 110);
   }
-  function cameraCockpit(p, et, t) {
-    const M = B.voiture.attitude(p.cap, p.tangage, p.roulis), o = B.voiture.mul(M, B.voiture.OEIL);
-    const vib = et.surface === 'vibreur' ? .006 : et.surface === 'herbe' ? .004 * Math.min(1, et.v / 20) : 0;
+  // La tête du pilote vit : elle part vers l'extérieur du virage et vers l'avant au freinage (2 cm au plus), le regard
+  // va vers la corde (4° au plus), et le casque tremble à haute vitesse, sur les vibreurs et dans l'herbe.
+  function cameraCockpit(S, p, et, t, dt) {
+    const T = S.tete || (S.tete = { lat: 0, lon: 0, regard: 0 }), k = 1 - Math.exp(-dt * 7);
+    T.lat += (clamp(et.alat / 26, -1, 1) - T.lat) * k;
+    T.lon += (clamp(et.along / 22, -1, 1) - T.lon) * k;
+    T.regard += (clamp(et.volant, -1, 1) * clamp(et.v / 28, 0, 1) - T.regard) * (1 - Math.exp(-dt * 3.5));
+    const OE = B.voiture.OEIL, M = B.voiture.attitude(p.cap, p.tangage, p.roulis);
+    const o = B.voiture.mul(M, [OE[0] - T.lon * .02, OE[1] - Math.max(0, -T.lon) * .006, OE[2] - T.lat * .016]);
+    const vib = (et.surface === 'vibreur' ? .006 : et.surface === 'herbe' ? .004 * Math.min(1, et.v / 20) : 0) + .0011 * Math.pow(clamp(et.v / 85, 0, 1), 2);
     return {
-      pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib, p.z + o[2]], yaw: p.cap + Math.PI / 2,
-      pitch: p.tangage * .85, roll: -p.roulis * .85, fov: champCockpit(canvas.width / Math.max(1, canvas.height), et.v), near: .1, far: PORTEE_VUE
+      pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib, p.z + o[2]], yaw: p.cap + Math.PI / 2 + T.regard * .07,
+      pitch: p.tangage * .85 + Math.min(0, T.lon) * .012, roll: -p.roulis * .85 + T.lat * .014,
+      fov: champCockpit(canvas.width / Math.max(1, canvas.height), et.v), near: .1, far: PORTEE_VUE
     };
   }
   function cameraPoursuite(S, p, et, dt) {
@@ -511,13 +523,13 @@
     else if (S.type === 'demo') {
       const pl = B.realisateur.tenir(S.real, co);
       // coupe : les caméras lissées repartent de la nouvelle voiture, les écarts du son aussi
-      if (S.planVu !== pl) { S.planVu = pl; S.camCap = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; }
+      if (S.planVu !== pl) { S.planVu = pl; S.camCap = null; S.tete = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; }
       vue = pl.vue; suivie = co.voitures[pl.sujet];
     } else if (j.fini && S.finA !== null && co.horloge - S.finA > 2.5) vue = 'tele';
     const ps = poses[suivie.id], exterieur = vue === 'tele' || vue === 'helico';
     if (vue === 'tele') cam = cameraTele(S, suivie, ps);
     else if (vue === 'helico') cam = cameraHelico(S, ps, dtImage);
-    else cam = vue === 'cockpit' ? cameraCockpit(ps, suivie.etat, co.horloge) : cameraPoursuite(S, ps, suivie.etat, dtImage);
+    else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, co.horloge, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage);
     if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: PORTEE_VUE, fov: 40 }, cameraEssai(pj, cam));
     if (S.secousse > 0) {
       const a = S.secousse * .05, t = horlogeReelle;
@@ -533,8 +545,21 @@
     const complet = 170 * Math.tan(20.8 * Math.PI / 180) / Math.tan(clamp(cam.fov, 10, 110) * Math.PI / 360);
     for (let k = 0; k < co.voitures.length; k++) {
       const p = poses[k], dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], d2 = dx * dx + dz * dz;
-      const ev = { p: [p.x, p.y, p.z], cap: p.cap, tangage: p.tangage, roulis: p.roulis, braquage: p.braquage, roule: p.roule };
-      if (k === suivie.id && vue === 'cockpit') { const et = suivie.etat; B.voiture.cockpit(S.modeles[k], ev, sortie, { regime: et.regime, volant: et.volant, rapport: et.rapport, kmh: B.conduite.kmh(et) }); continue; }
+      const ev = { p: [p.x, p.y, p.z], cap: p.cap, tangage: p.tangage, roulis: p.roulis, braquage: p.braquage, roule: p.roule, v: co.voitures[k].etat.v };
+      if (k === suivie.id && vue === 'cockpit') {
+        // voitures derrière, dans le repère de celle-ci, de la plus proche à la plus lointaine : les rétroviseurs les montrent
+        const et = suivie.etat, ca = Math.cos(p.cap), sa = Math.sin(p.cap), derriere = [];
+        for (let q = 0; q < co.voitures.length; q++) {
+          if (q === k) continue;
+          const ex = poses[q].x - p.x, ez = poses[q].z - p.z, x = ex * ca + ez * sa;
+          if (x < -1 && x > -95) derriere.push({ x, z: ez * ca - ex * sa, couleur: co.voitures[q].couleur });
+        }
+        derriere.sort((a, b) => b.x - a.x);
+        const atm = scene.decor.atmosphere;
+        B.voiture.cockpit(S.modeles[k], ev, sortie, { regime: et.regime, volant: et.volant, rapport: et.rapport, kmh: B.conduite.kmh(et),
+          passage: suivie.tPassage === undefined ? 1 : (co.horloge - suivie.tPassage) / .36, rapportAvant: suivie.rapportAvant, derriere, ciel: atm.skyBottom, brume: atm.fog });
+        continue;
+      }
       B.voiture.poser(S.modeles[k], ev, sortie, { simple: d2 > complet * complet });
     }
     // fantôme du meilleur tour

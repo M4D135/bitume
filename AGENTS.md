@@ -34,7 +34,8 @@ Une seule page HTML, moteur FERRO (WebGL2), tout est calculé par le code.
 | `src/course.js` | Grille, feux, IA, contacts, tours, drapeau, classement, fantôme du chrono |
 | `src/son.js` | Synthèse Web Audio : moteur, rivaux, pneus, vibreur, herbe, chocs, signaux |
 | `src/voiture.js` | Monoplace en primitives du moteur, cockpit vu du siège, fantôme translucide |
-| `src/jeu.js` | Coque : boucle à pas fixe, commandes, caméras, rendu d'une image, affichage, menus, stockage local |
+| `src/realisateur.js` | Réalisateur de la démo : choix du plan (caméra et voiture filmée) d'après la course |
+| `src/jeu.js` | Coque : boucle à pas fixe, commandes, caméras, rendu d'une image, affichage, menus, démo, stockage local |
 | `src/index.html`, `src/style.css` | Page (gabarit `/*STYLE*/`, `<!--MODULES-->`) et style, polices du système |
 | `src/moteur/renderer.js` | FERRO METAL 0.6 par Point de rupture, retouches BITUME |
 | `construire.py` | Assemble `dist/bitume.html` (versionnée), `dist/artefact.html` (non versionnée) et `SIZE.json` |
@@ -42,7 +43,7 @@ Une seule page HTML, moteur FERRO (WebGL2), tout est calculé par le code.
 | `deposer.sh`, `deploiement/` | Mise en ligne de la page du commit sur bitume.estrasse.fr, et son vhost Caddy |
 
 Chaque module s'écrit `(function (B) { … })(globalThis.BITUME = globalThis.BITUME || {})` et s'exécute aussi dans
-Node pour les tests. Ordre de chargement : renderer, circuit, conduite, course, son, decor, voiture, jeu.
+Node pour les tests. Ordre de chargement : renderer, circuit, conduite, course, son, decor, voiture, realisateur, jeu.
 
 ## Conventions
 
@@ -52,6 +53,23 @@ Node pour les tests. Ordre de chargement : renderer, circuit, conduite, course, 
 - `voiture.attitude(cap, tangage, roulis)` = Ry(−cap)·Rz(tangage)·Rx(roulis), tangage > 0 nez levé.
 - Caméra FERRO : `yaw = cap + π/2`, `roll = −roulis`. Le champ (`fov`) est vertical, en degrés, borné de 10 à 110.
 - Simulation déterministe au pas fixe de 1/120 s, hasard par mulberry32 à graine.
+
+## Décisions de David à tenir (12/11/2026)
+
+- **Musique** : « pas de musique sauf à l'écran titre ». `son.musique(oui)` ne joue que le thème du titre
+  (`B.son.THEME`) ; il se coupe sur tout autre écran, démo comprise. Un signal de course tient sur une seule hauteur :
+  ni mélodie ni accord (`verifications/son.test.mjs` le vérifie).
+- **Cockpit** : cadrage de vroom-unreal 0.35 (`docs/images/cockpit-035-neutral.png` de ce dépôt-là). Le volant est gros
+  et bas, 16° sous l'horizon, le bas de sa jante sort de l'image ; on voit les mains, pas les bras. Les gants sont
+  articulés (trois phalanges par doigt, pouce, sangle au poignet), construits en code : le maillage des gants de
+  vroom-unreal vient de Valve et ne se copie pas. Volant, planche et mains se règlent dans `VOLANT`, `PLANCHE`,
+  `COUDE` et `LEVIER` de `src/voiture.js` ; `verifications/voiture.test.mjs` tient le cadrage.
+- **Clipping** : rien ne se coupe à distance. Plan lointain `PORTEE_VUE` (6 000 m), lots sans portée propre, bascule
+  de détail à 520 m, ombres du soleil sur tout l'atlas (`sunOnly`, carré de 200 m). Ne pas réintroduire de coupe à
+  distance sans fondu.
+- **Démo** : « comme dans Point de rupture » et « qui dure ». Elle part après 5 s sans geste sur le titre, enchaîne les
+  courses sans fin et ne revient au titre que sur un geste.
+- **Voiture** : les cotes et la silhouette de la 312 T5, sans le nom Ferrari, sans cheval cabré, sans commanditaire.
 
 ## Construire, tester, vérifier
 
@@ -67,6 +85,15 @@ Dans le navigateur, servir `dist/` en local (`.claude/launch.json`, port 8781, 1
 Dans la console, `BITUME_JEU.avancer(secondes, true)` fait avancer la séance en confiant la voiture du joueur à l'IA,
 et `BITUME_JEU.session` donne l'état. Un volet de navigateur caché bride les images par seconde : ne mesurer les
 performances que volet visible.
+
+Autres outils d'essai de `BITUME_JEU` :
+- `pauseAuto = false` : la course ne se met plus en pause quand la page perd le focus (captures, banc) ;
+- `camera = (pose, camera) => ({ pos, yaw, pitch, fov })` : vue libre, par exemple un gros plan sur le volant ;
+  `camera = null` rend la vue du jeu ;
+- `demo(i)` : lance la démo sur le circuit `i` sans attendre les cinq secondes ; `session.planVu` donne le plan ;
+- `son` : `{ actif, voix, musique }`.
+
+Le son ne démarre qu'après un vrai geste (clic ou touche), jamais sur un clic simulé par script.
 
 ## Mettre en ligne
 

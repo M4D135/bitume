@@ -13,7 +13,7 @@ function verifier(nom, f) {
   try { f(); compte++; console.log(`ok  ${nom}`); } catch (e) { console.error(`FAIL ${nom}: ${e.message}`); process.exit(1); }
 }
 
-const livree = { couleur: [.86, .1, .08], seconde: [.95, .93, .88], casque: [.95, .93, .88], combinaison: [.95, .93, .88] };
+const livree = { couleur: [.86, .1, .08], seconde: [.95, .93, .88], casque: [.95, .93, .88], combinaison: [.95, .93, .88], numero: 27 };
 const mod = V.modele(livree);
 const deg = r => r * 180 / Math.PI;
 
@@ -79,19 +79,19 @@ const projeter = q => [(q[2] / q[0]) / th, (q[1] / q[0]) / tv];
 const dansLeCadre = (q, nom) => { const [x, y] = projeter(q); assert.ok(q[0] > 0 && Math.abs(x) <= 1 && Math.abs(y) <= 1, `${nom} hors du cadre : ${x.toFixed(2)}, ${y.toFixed(2)}`); };
 const dehors = p => p.map((v, i) => v - V.OEIL[i]);
 
-verifier('cockpit : centre du volant entre 12 et 20° sous l’axe de visée', () => {
+verifier('cockpit : centre du volant entre 14 et 18° sous l’axe de visée', () => {
   const c = V.VOLANT.centre, a = deg(Math.atan2(-c[1], Math.hypot(c[0], c[2])));
-  assert.ok(a >= 12 && a <= 20, `${a.toFixed(1)}°`);
+  assert.ok(a >= 14 && a <= 18, `${a.toFixed(1)}°`);
 });
 
-verifier('cockpit : volant entier, gants, planche, pneus avant et rétroviseurs dans le cadre en 16:9', () => {
-  const { centre: C, rayon: R, inclinaison: t } = V.VOLANT, tube = .065 * R / .435;
-  const wu = [Math.sin(t), Math.cos(t), 0], wr = [0, 0, 1];
-  for (let k = 0; k < 24; k++) {
-    const a = k * Math.PI / 12, e = R + tube;
-    dansLeCadre(C.map((v, i) => v + e * (wu[i] * Math.cos(a) + wr[i] * Math.sin(a))), 'jante');
-  }
-  for (const s of [-1, 1]) dansLeCadre(C.map((v, i) => v + R * wr[i] * s), 'gant');
+// Cadrage de vroom-unreal 0.35 : volant gros et bas, dont le bas de la jante sort de l'image ; les mains, elles, y sont.
+verifier('cockpit : haut de la jante, prises des mains, planche, pneus avant et rétroviseurs dans le cadre en 16:9', () => {
+  const { centre: C, rayon: R, inclinaison: t, prise } = V.VOLANT, tube = .012 * R / .105;
+  const wu = [Math.sin(t), Math.cos(t), 0], wr = [0, 0, 1], jante = (a, e) => C.map((v, i) => v + e * (wu[i] * Math.cos(a) + wr[i] * Math.sin(a)));
+  for (let a = -prise - .15; a <= prise + .15; a += .1) dansLeCadre(jante(a, R + tube), 'jante');
+  for (const s of [-1, 1]) dansLeCadre(jante(s * prise, R + .03), 'gant');
+  const bas = projeter(jante(Math.PI, R));
+  assert.ok(bas[1] < -1 && bas[1] > -1.25, `le bas de la jante sort de l'image, de peu : ${bas[1].toFixed(2)}`);
   for (const a of [-1, 1]) for (const b of [-1, 1]) dansLeCadre(V.PLANCHE.map((v, i) => v + a * .055 * wu[i] + b * .19 * wr[i]), 'planche');
   for (const s of [-1, 1]) {
     dansLeCadre(dehors([1.35, .58, s * .75]), 'pneu avant');
@@ -107,7 +107,7 @@ verifier('cockpit : rotation du volant de 95° au plus', () => {
 verifier('cockpit : coque creuse, aucune pièce de carrosserie entre l’œil et le volant', () => {
   const sortie = [], ev = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0 };
   V.cockpit(mod, ev, sortie, { regime: 8000, volant: 0, rapport: 3, kmh: 180 });
-  const carrosserie = sortie.slice(0, mod.corps.filter(p => !(p.pilote || p.arriere || p.exterieur)).length + 3);
+  const carrosserie = sortie.slice(0, mod.corps.filter(p => V.visible(p, true, 0)).length + 4); // la caisse, puis capot bas et saute-vent
   const fin = V.VOLANT.centre.map((v, i) => V.OEIL[i] + V.K * v);
   for (const m of carrosserie) {
     if (m.fx) continue;
@@ -119,10 +119,81 @@ verifier('cockpit : coque creuse, aucune pièce de carrosserie entre l’œil et
   }
 });
 
-verifier('cockpit : pilote, arrière et capot extérieur absents de la vue, roues avant présentes', () => {
+verifier('cockpit : pilote, arrière, capot et glaces de la vue extérieure absents, roues avant présentes', () => {
   const sortie = []; V.poser(mod, { p: [0, 0, 0], cap: 0 }, sortie, { cockpit: true, overlay: true });
-  assert.equal(sortie.length, mod.corps.filter(p => !(p.pilote || p.arriere || p.exterieur)).length);
+  assert.equal(sortie.length, mod.corps.filter(p => !(p.pilote || p.arriere || p.exterieur || p.glace || p.vite)).length);
   assert.ok(sortie.every(m => m.overlay) && sortie.some(m => m.shape === 'cylinder' && m.p[0] > 1.3));
+});
+
+// ---------------------------------------------------------------- détails de la voiture et cockpit vivant
+const repos = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0 };
+const bord = extra => { const sortie = []; V.cockpit(mod, Object.assign({ v: 40 }, repos), sortie, Object.assign({ regime: 9000, volant: 0, rapport: 3, kmh: 180 }, extra)); return sortie; };
+const reel = v => v.map((x, i) => V.OEIL[i] + V.K * x);      // position dans la voiture d'un point composé vu de l'œil
+const ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+
+verifier('numéro en géométrie sur le nez et les pontons ; repères des pneus à basse vitesse, bande floue au-delà', () => {
+  const sans = V.modele(Object.assign({}, livree, { numero: undefined })), un = V.modele(Object.assign({}, livree, { numero: 1 }));
+  assert.equal(un.corps.length - sans.corps.length, 1 + 3 * 2, 'un panneau et trois « 1 » de deux segments');
+  assert.equal(mod.corps.length - sans.corps.length, 1 + 3 * (5 + 3), '« 27 » : cinq et trois segments, trois fois');
+  const lent = [], vite = [];
+  V.poser(mod, Object.assign({ v: 10 }, repos), lent); V.poser(mod, Object.assign({ v: 50 }, repos), vite);
+  const marques = mod.corps.filter(p => p.lent).length, flous = mod.corps.filter(p => p.vite).length;
+  assert.ok(marques === 16 && flous === 4, `${marques} repères, ${flous} bandes`);
+  assert.equal(lent.length, mod.corps.length - flous);
+  assert.equal(vite.length, mod.corps.length - marques);
+});
+
+verifier('repère de pneu : il tourne autour de l’axe de la roue, à mi-flanc', () => {
+  const k = mod.corps.findIndex(p => p.lent && p.roue === 0 && p.tourne === 0), w = V.ROUES[0], flanc = (.165 + w.r) / 2;
+  for (const d of [0, .2, .7, 1.3]) {
+    const sortie = []; V.poser(mod, Object.assign({ v: 5, roule: d }, repos), sortie);
+    const q = sortie[k].p, a = -d / w.r;
+    assert.ok(Math.abs(Math.hypot(q[0] - w.x, q[1] - w.r) - flanc) < 1e-9, 'à mi-flanc');
+    // la roue avance : son point avant descend
+    assert.ok(Math.abs(q[0] - (w.x + flanc * Math.cos(a))) < 1e-9 && Math.abs(q[1] - (w.r + flanc * Math.sin(a))) < 1e-9, `après ${d} m : ${q.map(v => v.toFixed(3))}`);
+  }
+});
+
+verifier('cockpit : rien que des nombres finis, volant à fond et pendant un changement de rapport', () => {
+  for (const volant of [-1, -.4, 0, .7, 1]) for (const passage of [0, .2, .45, .8, 1]) {
+    const sortie = bord({ volant, passage, rapportAvant: 2, derriere: [{ x: -8, z: -1.5, couleur: [.1, .3, .8] }] });
+    assert.ok(sortie.every(m => m.p.concat(m.s, m.r).every(Number.isFinite) && m.s.every(v => v > 0) && m.overlay), `volant ${volant}, passage ${passage}`);
+  }
+});
+
+verifier('changement de rapport : la main droite va au pommeau, puis revient sur la jante', () => {
+  const pommeau = t => bord({ passage: t, rapportAvant: 2 }).find(m => m.shape === 'sphere' && Math.abs(m.s[0] - .040 * V.K) < 1e-9).p;
+  const mainDroite = t => bord({ passage: t, rapportAvant: 2 }).filter(m => m.mat === 18 && m.p[2] > .02 && m.color[0] > .5); // tissu clair : gant et manche de droite, sans la jante
+  const auPlusPres = (t, cible) => Math.min(...mainDroite(t).map(m => ecart(m.p, cible)));
+  const tilt = V.VOLANT.inclinaison, a = V.VOLANT.prise;      // prise de la main droite, volant droit
+  const prise = reel(V.VOLANT.centre.map((v, i) => v + V.VOLANT.rayon * ([Math.sin(tilt), Math.cos(tilt), 0][i] * Math.cos(a) + [0, 0, 1][i] * Math.sin(a))));
+  assert.ok(auPlusPres(1, pommeau(1)) > .05, 'au repos, la main est loin du levier');
+  assert.ok(auPlusPres(.45, pommeau(.45)) < .012, `à mi-changement, la main tient le pommeau (${auPlusPres(.45, pommeau(.45)).toFixed(3)} m)`);
+  assert.ok(auPlusPres(.45, prise) > .04 && auPlusPres(1, prise) < .02, 'elle a quitté la jante, puis y revient');
+  // le pommeau passe de la position du 2e rapport (vers l'arrière) à celle du 3e (vers l'avant)
+  assert.ok(pommeau(1)[0] - pommeau(0)[0] > .015, 'le levier avance de la 2e à la 3e');
+});
+
+verifier('lampe de régime : allumée au-dessus de 12 000 tr/min, sauf au dernier rapport', () => {
+  const lampe = extra => bord(extra).find(m => m.shape === 'sphere' && m.mat === 5 && Math.abs(m.s[0] - .024 * V.K) < 1e-9);
+  assert.ok(!(lampe({ regime: 11000 }).emissive > 0), 'éteinte à 11 000');
+  assert.ok(lampe({ regime: 12400 }).emissive >= 3, 'allumée à 12 400');
+  assert.ok(!(lampe({ regime: 12400, rapport: 6 }).emissive > 0), 'éteinte en 6e');
+});
+
+verifier('rétroviseurs : une voiture derrière à gauche se voit dans la glace de gauche, à sa place', () => {
+  const vide = bord({}), gauche = bord({ derriere: [{ x: -10, z: -3, couleur: [.1, .3, .8] }] }), loin = bord({ derriere: [{ x: -200, z: -3, couleur: [.1, .3, .8] }] });
+  assert.equal(gauche.length - vide.length, 2, 'caisse et pneus');
+  assert.equal(loin.length, vide.length, 'trop loin : rien');
+  const reflet = gauche.find(m => m.color[2] === .8 && m.color[0] === .1);
+  assert.ok(reflet.p[2] < -.47 + .066 && reflet.p[2] > -.47 - .066 && Math.abs(reflet.p[1] - .565) < .024, `reflet en ${reflet.p.map(v => v.toFixed(3))}`);
+  // plus la voiture est à gauche, plus son reflet est à gauche ; plus elle est près, plus il est grand
+  const z = zr => bord({ derriere: [{ x: -14, z: zr, couleur: [.1, .3, .8] }] }).find(m => m.color[2] === .8 && m.color[0] === .1);
+  assert.ok(z(-5).p[2] < z(-2).p[2] - .01, 'ordre gauche-droite');
+  const pres = bord({ derriere: [{ x: -5, z: -2, couleur: [.1, .3, .8] }] }).find(m => m.color[2] === .8 && m.color[0] === .1);
+  assert.ok(pres.s[2] > z(-2).s[2] * 1.5, 'taille selon la distance');
+  // droit derrière, à 12 m : visible dans les deux glaces
+  assert.equal(bord({ derriere: [{ x: -12, z: 0, couleur: [.1, .3, .8] }] }).length - vide.length, 4);
 });
 
 console.log(`${compte} vérifications réussies`);

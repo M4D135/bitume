@@ -2,7 +2,7 @@
 
 Course de monoplaces d'époque dans le navigateur, entièrement procédurale : trois circuits générés, onze rivaux,
 dérive et turbo. Moteur FERRO (WebGL2). Aucune image, aucun son enregistré, aucune police chargée : une seule page
-HTML d'environ 300 Ko.
+HTML d'environ 360 Ko.
 
 Essai 0.1 du 12 novembre 2026. BITUME est la refonte web de vroom-unreal, le projet Unreal de David : il garde le
 genre et les mécaniques inventées pour vroom-unreal, et ne reprend rien du Vroom de Lankhor.
@@ -32,10 +32,20 @@ La version en ligne est la page figée d'un commit. Elle ne change qu'à la main
   par circuit.
 - **Conduite** : boîte automatique ou manuelle, rupteur, vibreurs et herbe, glissières, dérive à trois niveaux de
   charge et turbo au lâcher (avec une fenêtre « parfaite »), aide au volant réglable.
-- **Vues** : cockpit (volant, compte-tours, gants), poursuite, caméra de télévision (vitrine de l'écran titre et
-  fin de course).
+- **Voiture** : une monoplace aux cotes de la Ferrari 312 T5 de 1980 (empattement 2,70 m, voies 1,70 et 1,615 m),
+  sans nom, emblème ni commanditaire ; numéro en géométrie sur le nez et les pontons, roues qui tournent.
+- **Vues** : cockpit, poursuite, caméra de télévision. Le cockpit est cadré comme celui de vroom-unreal : volant gros
+  et bas, gants articulés sur la jante, planche à trois cadrans, rapport et vitesse en segments, lampe de régime,
+  levier de vitesses où va la main droite à chaque rapport, rétroviseurs qui montrent les voitures qui suivent. La
+  tête du pilote bouge avec les accélérations et regarde vers la corde.
+- **Démo** : sans geste pendant cinq secondes sur l'écran titre, l'ordinateur pilote les douze voitures. Les courses
+  de trois tours s'enchaînent sans fin d'un circuit au suivant, filmées du bord de la piste, à bord, en poursuite et
+  d'hélicoptère. Un clic, une touche ou un bouton ramène au titre ; le réglage « Démo sur l'écran titre » la coupe.
 - **Son synthétisé** : moteur à trois oscillateurs et saturation, trois voix de rivaux spatialisées avec effet
-  Doppler, pneus, vibreur, herbe, chocs, feux et signaux.
+  Doppler, pneus, vibreur, herbe, chocs, feux et signaux. Une seule musique, sur l'écran titre : un thème original
+  calculé note à note. En course, aucun signal ne porte de mélodie.
+- **Image** : rien ne se coupe à distance. Le décor se dessine jusqu'à l'horizon, la brume fait la limite ; les ombres
+  du soleil portent à 176 m devant le pilote.
 
 ## Commandes
 

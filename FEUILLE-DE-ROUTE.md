@@ -10,6 +10,18 @@
   - « énorme travail à faire pour retrouver la qualité de notre version Unreal, mais c'est une super base » ;
   - « le cockpit c'est pas ok, regarde l'original ; aussi les collisions et sauts quand on frotte les pneus d'un
     autre ; tout le fun du gameplay : poids, équilibrage, dérapages contrôlés ».
+- **Soirée du 12/11**, sur d'autres mots de David, deux commits poussés (`3f9787e`, puis celui du cockpit), **pas
+  encore en ligne** :
+  - « je veux exactement ce modèle de F1 » (la 312 T5) : voiture refaite à ses cotes, sans nom ni emblème ;
+  - « pas de musique sauf à l'écran titre » : thème original sur le titre, signaux de course sans mélodie ;
+  - « trop de clipping, à corriger » : plus de coupe à distance, ombres portées à 176 m ;
+  - « mode démo comme on a fait dans Point de rupture », « démo qui dure » : démo sans fin après 5 s sur le titre ;
+  - « le cockpit faut vraiment le soigner », « niveau mains faut retrouver ce qu'on avait sur la version Unreal »,
+    « rapprocher la vue du volant afin de voir que les mains et pas tout le bras » : cockpit refait, voir chantier 1.
+- **Chantiers 2 et 3 non faits.** Le lot lancé en agents le 12/11 s'est arrêté sur la limite d'usage hebdomadaire
+  (retour le 18/11 à 15 h). Il a laissé une réécriture partielle et non vérifiée de `src/conduite.js` dans
+  `.claude/worktrees/wf_654723d2-ff3-1` (branche `physique/conduite`, rien de commité) : à relire avant de s'en
+  servir, ou à refaire.
 - **Référence de qualité** : vroom-unreal 0.35, le projet Unreal de David (GitHub privé `M4D135/vroom-unreal`, commit
   `2aec008` du 20/10/2026). On le lit sans jamais le modifier. Son cockpit suit la photo de David et non le jeu de
   1991 (`docs/COCKPIT_AMIGA.md` de ce dépôt-là). Ses captures de référence sont dans `docs/images/` :
@@ -52,6 +64,24 @@ touchent à la physique : `conduite.js`, `course.js` et un nouveau `contacts.js`
 temps que la physique. Les chantiers 2 et 3 se suivent, parce que le saut a besoin de l'état en l'air de la conduite.
 
 ## Chantier 1 — Cockpit comme l'original
+
+**État au 12/11 au soir : livré, à juger par David en jeu.**
+- Cadrage de la capture `cockpit-035-neutral.png` : volant gros et bas (16° sous l'horizon), bas de la jante hors de
+  l'image, mains au premier plan, manches qui sortent du champ.
+- Gants articulés construits en code (le maillage Valve de vroom-unreal ne se copie pas), jante fine en 36 tronçons,
+  trois branches ajourées, moyeu à vis.
+- Planche anthracite : compte-tours, eau, huile, témoins, rapport et vitesse en segments, lampe de régime.
+- Levier de vitesses à droite : la main droite y va à chaque changement de rapport.
+- Rétroviseurs : ciel, horizon et piste dans la glace, et les voitures qui suivent, à leur place et à leur taille.
+- Tête du pilote : accélérations, regard vers la corde, tremblement à haute vitesse.
+- Capot bombé, flancs à arête ronde, liseré, rivets, numéro sur le nez et les pontons, suspension avant en tôle et
+  tubes, disques de frein, repères à la craie sur les pneus.
+
+**Reste.**
+- Rétroviseurs en vraie image (rendu vers texture dans le moteur) : aujourd'hui les suiveurs sont des silhouettes.
+- Carrosserie encore anguleuse à côté des volumes ronds de vroom-unreal : demande des formes courbes dans le moteur.
+- Mains : une seule prise ; pas de lâcher de la main haute au-delà de 100°, comme le fait vroom-unreal.
+- Le banc `BITUME_JEU.banc()` prévu ci-dessous n'est pas écrit.
 
 **Objectif.** Retrouver la vue de vroom-unreal 0.35 :
 - œil bas, nez et flancs rouges visibles, vraies roues avant aux deux coins du bas, bras de suspension ;

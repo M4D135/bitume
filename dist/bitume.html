@@ -2894,7 +2894,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 
     const voiture = (id, nom, numero, liv, joueur) => ({
       id, nom, numero, joueur, couleur: liv[0],
-      livree: { couleur: liv[0], seconde: liv[1], casque: liv[2], combinaison: liv[1] },
+      livree: { couleur: liv[0], seconde: liv[1], casque: liv[2], combinaison: liv[1], numero },
       etat: null, tours: 0, passages: -1, maxPassages: -1, progression: 0, debutTour: 0,
       tempsTours: [], meilleur: null, position: 0, fini: false, tempsFinal: null, ecart: 0, ecartTete: 0,
       ia: {
@@ -4126,7 +4126,9 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 
   const LAQUE = 16, PEINTURE = 17, MAT = 7, METAL_MAT = 0, TISSU = 18;
   const PNEU = [.035, .035, .04], FOND_JANTE = [.11, .11, .12], JANTE = [.72, .73, .74], NOIR = [.03, .03, .035],
-    CARBONE = [.06, .065, .07], ARGENT = [.76, .77, .79], BLANC = [.95, .94, .9], GANT = [.9, .9, .87];
+    CARBONE = [.06, .065, .07], ARGENT = [.76, .77, .79], BLANC = [.95, .94, .9], GANT = [.9, .9, .87],
+    ACIER = [.56, .57, .59], SOMBRE = [.17, .175, .19], CRAIE = [.82, .82, .78], IVOIRE = [.93, .92, .87];
+  const VITESSE_FLOU = 30;   // m/s : au-delà, la rotation des roues ne se lit plus image par image
 
   // Braquage d'Ackermann : la roue intérieure au virage braque plus que l'extérieure. d > 0 : virage à droite.
   // Rend les angles des roues 0 (avant gauche) et 1 (avant droite).
@@ -4169,7 +4171,11 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     for (const k of [-1, 1]) {
       P('box', [.16, .34, k * .28], [.84, .52, .14], PEINTURE, c1);
       P('box', [.16, .34, k * .2045], [.84, .48, .01], MAT, c1.map(v => v * .3));
-      P('cylinder', [.16, .604, k * .214], [.024, .84, .024], MAT, CARBONE, { m: VERS_AVANT });
+      P('cylinder', [.02, .602, k * .212], [.012, .56, .012], MAT, c1.map(v => v * .28), { m: VERS_AVANT });
+      P('cylinder', [.16, .545, k * .295], [.11, .84, .11], PEINTURE, c1, { m: VERS_AVANT });      // arête haute arrondie du flanc
+      // dessus du flanc : liseré de la seconde couleur et rangée de rivets, sous les yeux du pilote
+      P('box', [.16, .6015, k * .322], [.84, .003, .018], PEINTURE, c2);
+      for (let x = -.20; x < .56; x += .095) P('cylinder', [x, .601, k * .262], [.011, .004, .011], METAL_MAT, ACIER);
     }
     P('box', [.13, .11, 0], [.78, .06, .42], MAT, NOIR);
     P('box', [-.22, .40, 0], [.06, .50, .44], MAT, NOIR, AR());
@@ -4191,16 +4197,40 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     P('box', [-.04, .68, 0], [.26, .16, .40], TISSU, combi, pilote);
     // Rétroviseurs sur supports rouges, de part et d'autre de l'habitacle, glace tournée vers le pilote
     for (const k of [-1, 1]) {
-      P('bevel', [.55, .565, k * .47], [.05, .05, .11], PEINTURE, c1);
-      P('box', [.524, .565, k * .47], [.004, .038, .092], METAL_MAT, [.2, .23, .27]);
-      P('box', [.55, .52, k * .47], [.022, .05, .022], PEINTURE, c1);
+      P('bevel', [.55, .565, k * .47], [.05, .062, .152], PEINTURE, c1);
+      P('box', [.524, .565, k * .47], [.004, .048, .132], METAL_MAT, [.2, .23, .27], { glace: true }); // en vue cockpit : glace vivante
+      P('box', [.55, .515, k * .47], [.022, .05, .022], PEINTURE, c1);
     }
-    // Suspensions : triangles noirs
+    // Suspension avant : basculeur supérieur en tôle, large à la coque et fin à la roue, triangle inférieur en tubes,
+    // biellette de direction devant l'essieu. Suspension arrière : deux bras noirs.
+    const tube = (a, b, d, mat, color, extra) => { const v = b.map((x, i) => x - a[i]); P('cylinder', a.map((x, i) => (x + b[i]) / 2), [d, Math.hypot(v[0], v[1], v[2]), d], mat, color, Object.assign({ m: selonAxe(v) }, extra)); };
     for (const k of [-1, 1]) {
-      P('box', [1.35, .34, k * .47], [.05, .02, .56], MAT, CARBONE);
-      P('box', [1.35, .18, k * .47], [.07, .02, .56], MAT, CARBONE);
+      P('bevel', [1.35, .345, k * .355], [.115, .030, .31], METAL_MAT, ACIER);
+      P('bevel', [1.35, .337, k * .60], [.062, .024, .24], METAL_MAT, ACIER);
+      tube([1.50, .15, k * .20], [1.35, .17, k * .71], .022, METAL_MAT, SOMBRE);
+      tube([1.20, .15, k * .20], [1.35, .17, k * .71], .022, METAL_MAT, SOMBRE);
+      tube([1.47, .30, k * .21], [1.45, .30, k * .70], .016, METAL_MAT, ARGENT);
       P('box', [-1.35, .40, k * .45], [.05, .02, .32], MAT, CARBONE, AR());
       P('box', [-1.35, .22, k * .45], [.07, .02, .32], MAT, CARBONE, AR());
+    }
+    // Bourrelet du bord avant de l'habitacle, entrée d'air en pointe et deux rangées de rivets sur le nez
+    P('cylinder', [.30, .602, 0], [.012, .43, .012], MAT, c1.map(v => v * .28), { m: ROUE_AXE });
+    const pente = Math.atan2(.38, 1.63), surNez = x => .62 - (x - .53) * .38 / 1.63, e1 = [Math.cos(pente), -Math.sin(pente), 0];
+    for (const k of [-1, 1]) P('wedge', [.80, surNez(.80) + .002, k * .024], [.22, .048, .004], MAT, NOIR, { m: [e1, [0, 0, k], [-k * Math.sin(pente), -k * Math.cos(pente), 0]] });
+    for (let x = .68; x < 2.06; x += .135) for (const k of [-1, 1]) P('cylinder', [x, surNez(x) + .001, k * (.31 - (x - .53) / 1.63 * .15 - .028)], [.013, .004, .013], METAL_MAT, ACIER, { m: euler(0, 0, -pente) });
+    // Numéro : noir sur fond blanc, sur le nez (lisible de face) et sur le panneau de chaque ponton
+    if (livree.numero) {
+      const texte = String(livree.numero).slice(0, 2), n = texte.length;
+      const segments = (h, poser) => {
+        const l = h * .52, t = h * .15, pas = l + h * .2;
+        const places = { a: [0, h / 2, l + t, t], b: [l / 2, h / 4, t, h / 2 + t], c: [l / 2, -h / 4, t, h / 2 + t], d: [0, -h / 2, l + t, t], e: [-l / 2, -h / 4, t, h / 2 + t], f: [-l / 2, h / 4, t, h / 2 + t], g: [0, 0, l + t, t] };
+        for (let i = 0; i < n; i++) for (const nom of SEGMENTS[texte[i]] || '') { const q = places[nom]; poser(q[0] + (i - (n - 1) / 2) * pas, q[1], q[2], q[3]); }
+      };
+      // nez : le haut du chiffre vers l'habitacle, sa droite vers la gauche de la voiture
+      const mN = euler(0, 0, -pente), xN = 1.22, yN = surNez(xN);
+      P('box', [xN, yN + .002, 0], [.30, .004, .30], PEINTURE, BLANC, { m: mN });
+      segments(.20, (dx, dy, sx, sy) => P('box', [xN - e1[0] * dy, yN + .005 - e1[1] * dy, -dx], [sy, .004, sx], MAT, NOIR, { m: mN }));
+      for (const k of [-1, 1]) segments(.20, (dx, dy, sx, sy) => P('box', [-.80 + k * dx, .31 + dy, k * .728], [sx, sy, .004], MAT, NOIR, AR()));
     }
     // Boîte, échappements du douze-cylindres à plat, aileron arrière blanc sur mât central, dérives rouges
     P('box', [-1.80, .28, 0], [.50, .28, .34], METAL_MAT, [.3, .31, .33], AR());
@@ -4216,6 +4246,14 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       P('cylinder', [w.x, w.r, w.z], [2 * JANTE_R, w.l + .012, 2 * JANTE_R], METAL_MAT, FOND_JANTE, base);
       for (let b = 0; b < 3; b++) P('box', [w.x, w.r, w.z], [2 * JANTE_R * .94, w.l + .02, .04], METAL_MAT, JANTE, Object.assign({ tourne: b * Math.PI / 3 }, base));
       P('cylinder', [w.x, w.r, w.z], [.09, w.l + .05, .09], METAL_MAT, JANTE, base);
+    });
+    // Disques de frein avant, dans la roue, côté coque. Puis les pièces qui dépendent de la vitesse, en fin de liste :
+    // deux repères à la craie sur chaque flanc tant que l'œil suit la rotation, une bande plus claire au-delà.
+    ROUES.forEach((w, i) => {
+      const base = { roue: i, m: ROUE_AXE, arriere: !w.avant }, k = Math.sign(w.z), flanc = (JANTE_R + w.r) / 2;
+      if (w.avant) P('cylinder', [w.x, w.r, w.z], [.27, .016, .27], METAL_MAT, [.40, .40, .42], Object.assign({ decale: [0, -k * (w.l / 2 + .03), 0] }, base));
+      for (const cote of [-1, 1]) for (const a of [0, Math.PI]) P('box', [w.x, w.r, w.z], [.07, .004, .016], MAT, CRAIE, Object.assign({ tourne: a, decale: [flanc, cote * (w.l / 2 + .001), 0], lent: true }, base));
+      P('cylinder', [w.x, w.r, w.z], [2 * flanc + .06, w.l + .006, 2 * flanc + .06], MAT, [.062, .062, .068], Object.assign({ vite: true }, base));
     });
 
     // Version lointaine : onze volumes
@@ -4234,7 +4272,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 
   // ---------------------------------------------------------------- pose dans le monde
   // ev = { p: [x, y, z] (sol sous le milieu de l'empattement), cap, tangage, roulis, braquage (rad, droite positive),
-  //        roule (distance parcourue, m : fait tourner les roues) }
+  //        roule (distance parcourue, m : fait tourner les roues), v (vitesse, m/s : repères ou flou des pneus) }
   // Rend la rotation d'une pièce de roue : braquage d'Ackermann à l'avant, rotation propre −distance/rayon.
   function rotationRoue(M, pc, braq, roule) {
     const w = ROUES[pc.roue];
@@ -4242,13 +4280,24 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     if (w.avant) m = mulM(euler(0, -braq[pc.roue], 0), m);
     return mulM(M, m);
   }
+  // Une pièce se dessine-t-elle ? En vue cockpit, ni le pilote, ni l'arrière, ni le capot et les glaces de la vue
+  // extérieure ; les repères des pneus à basse vitesse seulement, leur bande floue au-delà.
+  function visible(pc, cockpit, v) {
+    if (cockpit && (pc.pilote || pc.arriere || pc.exterieur || pc.glace)) return false;
+    return !(pc.lent && v > VITESSE_FLOU) && !(pc.vite && !(v > VITESSE_FLOU));
+  }
   function poser(mod, ev, sortie, options = {}) {
     const M = attitude(ev.cap, ev.tangage || 0, ev.roulis || 0), rotM = angles(M), braq = braquages(ev.braquage || 0), roule = ev.roule || 0;
-    const liste = options.simple ? mod.simples : mod.corps;
+    const liste = options.simple ? mod.simples : mod.corps, v = ev.v || 0;
     for (const pc of liste) {
-      if (options.cockpit && (pc.pilote || pc.arriere || pc.exterieur)) continue;
-      const o = mul(M, pc.o);
-      const rot = pc.roue !== undefined ? angles(rotationRoue(M, pc, braq, roule)) : pc.m ? angles(mulM(M, pc.m)) : rotM;
+      if (!visible(pc, options.cockpit, v)) continue;
+      let o = mul(M, pc.o), rot;
+      if (pc.roue !== undefined) {
+        // pièce de roue : elle tourne avec elle ; `decale` la place hors de l'axe, dans le repère de la roue
+        const Rr = rotationRoue(M, pc, braq, roule);
+        rot = angles(Rr);
+        if (pc.decale) { const d = mul(Rr, pc.decale); o = [o[0] + d[0], o[1] + d[1], o[2] + d[2]]; }
+      } else rot = pc.m ? angles(mulM(M, pc.m)) : rotM;
       const m = { shape: pc.shape, p: [ev.p[0] + o[0], ev.p[1] + o[1], ev.p[2] + o[2]], s: pc.s, r: rot, mat: pc.mat, color: pc.color, surface: 'object' };
       if (pc.fx) { m.fx = true; m.alpha = pc.alpha; }
       if (options.overlay) m.overlay = true;
@@ -4263,47 +4312,85 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   // même raison, le capot de l'habitacle y est plus bas que sur la voiture vue de dehors : le nez se voit au milieu.
   const OEIL = [-.30, .74, 0];
   // Volant, planche, gants et avant-bras sont composés à leur place apparente vue de l'œil (VOLANT.centre : 1 m devant,
-  // 13,8° sous l'horizon), puis ramenés vers l'œil par une homothétie de rapport K. L'image ne change pas et l'ensemble
+  // 16° sous l'horizon), puis ramenés vers l'œil par une homothétie de rapport K. L'image ne change pas et l'ensemble
   // tient dans l'habitacle, devant le capot.
   const K = .5;
-  const VOLANT = { centre: [1.0, -.245, 0], rayon: .105, inclinaison: .436, course: 1.6 };
-  const PLANCHE = [1.12, -.19, 0];
-  const COUDE = [.90, -.47, .16];
+  // Cadrage de vroom-unreal 0.35 : le volant est gros et bas, 16° sous l'horizon ; le bas de sa jante sort de l'image
+  // (41,6° de champ vertical), les mains sont au premier plan et les manches quittent le champ dès le poignet.
+  const VOLANT = { centre: [1.0, -.287, 0], rayon: .125, inclinaison: .436, course: 1.6, prise: 1.88 };   // prise : 108° du haut de la jante
+  const PLANCHE = [1.12, -.21, 0];
+  const COUDE = [.83, -.66, .15];
+  const LEVIER = [.93, -.315, .262];           // pommeau du levier de vitesses, à droite du volant, au point mort
+  const REGIME_LAMPE = 12000;                  // la lampe de la casquette s'allume : il est temps de monter un rapport
   // Afficheurs à sept segments : a en haut, puis b, c, d, e, f dans le sens des aiguilles d'une montre, g au milieu.
   const SEGMENTS = { 0: 'abcdef', 1: 'bc', 2: 'abdeg', 3: 'abcdg', 4: 'bcfg', 5: 'acdfg', 6: 'acdefg', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg', N: 'ceg', '-': 'g' };
   const AMBRE = [1, .56, .12], ETEINT = [.09, .035, .02];
+  const borner = (x, a, b) => x < a ? a : x > b ? b : x, lisse = (a, b, x) => { const t = borner((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  const clarte = c => .3 * c[0] + .59 * c[1] + .11 * c[2], ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+  // Position du pommeau selon le rapport, grille en H : impairs vers l'avant, pairs vers l'arrière ; 1-2 à gauche.
+  const grille = n => n > 0 ? [(n % 2 ? 1 : -1) * .024, (Math.floor((n - 1) / 2) - 1) * .017] : [0, 0];
 
-  // etat = { regime (tr/min), volant (−1 à 1), rapport (0 = point mort), kmh (vitesse affichée) }
+  // etat = { regime (tr/min), volant (−1 à 1), rapport (0 = point mort), kmh (vitesse affichée),
+  //          passage (0 à 1 : avancement du changement de rapport en cours, 1 ou absent : aucun), rapportAvant,
+  //          derriere ([{ x, z, couleur }] : rivaux dans le repère de la voiture, du plus proche au plus loin),
+  //          ciel, brume (couleurs du jour, pour les glaces des rétroviseurs) }
   function cockpit(mod, ev, sortie, etat) {
     const M = poser(mod, ev, sortie, { overlay: true, cockpit: true });
-    const rotM = angles(M), c1 = mod.livree.couleur;
-    const dans = (shape, o, s, mat, color, m, extra) => { const w = mul(M, o); sortie.push(Object.assign({ shape, p: [ev.p[0] + w[0], ev.p[1] + w[1], ev.p[2] + w[2]], s, r: m ? angles(mulM(M, m)) : rotM, mat, color, overlay: true, surface: 'object' }, extra)); };
-    // Capot bas de la vue cockpit (0,58 à 0,60 m) et saute-vent, au lieu de ceux de la vue extérieure
-    dans('box', [.44, .565, 0], [.28, .03, .64], PEINTURE, c1);
-    dans('wedge', [.44, .59, 0], [.28, .02, .64], PEINTURE, c1);
-    dans('box', [.322, .62, 0], [.008, .05, .40], METAL_MAT, [.45, .62, .78], euler(0, 0, .733), { fx: true, alpha: .12 });
-    const P = v => { const w = mul(M, [OEIL[0] + K * v[0], OEIL[1] + K * v[1], OEIL[2] + K * v[2]]); return [ev.p[0] + w[0], ev.p[1] + w[1], ev.p[2] + w[2]]; };
-    const mettre = (shape, v, s, mat, color, m, extra) => sortie.push(Object.assign({ shape, p: P(v), s: [s[0] * K, s[1] * K, s[2] * K], r: m ? angles(mulM(M, m)) : rotM, mat, color, overlay: true, surface: 'object' }, extra));
+    const rotM = angles(M), liv = mod.livree, c1 = liv.couleur, c2 = liv.seconde || BLANC;
+    const pousser = (shape, p, s, m, mat, color, extra) => sortie.push(Object.assign({ shape, p, s, r: m ? angles(mulM(M, m)) : rotM, mat, color, overlay: true, surface: 'object' }, extra));
+    const monde = o => { const w = mul(M, o); return [ev.p[0] + w[0], ev.p[1] + w[1], ev.p[2] + w[2]]; };
+    // dans : pièce à sa vraie place dans la voiture ; mettre : pièce composée vue de l'œil, ramenée vers lui
+    const dans = (shape, o, s, mat, color, m, extra) => pousser(shape, monde(o), s, m, mat, color, extra);
+    const mettre = (shape, v, s, mat, color, m, extra) => pousser(shape, monde([OEIL[0] + K * v[0], OEIL[1] + K * v[1], OEIL[2] + K * v[2]]), [s[0] * K, s[1] * K, s[2] * K], m, mat, color, extra);
     const plus = (a, ...termes) => a.map((v, k) => termes.reduce((s, [d, f]) => s + d[k] * f, v));
 
-    // Volant : plan incliné face au pilote (haut de la jante vers l'avant), rotation propre phi, 92° au plus
-    const tau = VOLANT.inclinaison, phi = Math.max(-1, Math.min(1, etat.volant || 0)) * VOLANT.course;
+    // Capot bas et bombé de la vue cockpit (0,58 à 0,61 m) et saute-vent teinté à l'arête claire, au lieu de ceux de la vue extérieure
+    dans('box', [.44, .565, 0], [.28, .03, .64], PEINTURE, c1);
+    dans('sphere', [.60, .50, 0], [.74, .225, .60], PEINTURE, c1);                        // capot bombé devant la planche
+    dans('box', [.322, .62, 0], [.008, .05, .40], METAL_MAT, [.45, .62, .78], euler(0, 0, .733), { fx: true, alpha: .12 });
+    dans('box', [.3053, .6386, 0], [.004, .0025, .404], METAL_MAT, [.80, .86, .92], euler(0, 0, .733), { fx: true, alpha: .4 });
+
+    // Repères du volant : plan incliné face au pilote (wu vers le haut de la jante, wn vers le pilote), rotation phi
+    const regime = etat.regime || 0, tau = VOLANT.inclinaison, phi = borner(etat.volant || 0, -1, 1) * VOLANT.course;
     const wn = [-Math.cos(tau), Math.sin(tau), 0], wu = [Math.sin(tau), Math.cos(tau), 0], wr = [0, 0, 1];
     const u = wu.map((v, k) => v * Math.cos(phi) + wr[k] * Math.sin(phi)), r = wu.map((v, k) => -v * Math.sin(phi) + wr[k] * Math.cos(phi));
-    const C = VOLANT.centre, R = VOLANT.rayon, jante = [u, wn, croix(u, wn)], cadre = [wr, wu, wn];
+    const C = VOLANT.centre, R = VOLANT.rayon, jante = [u, wn, croix(u, wn)], cadre = [wr, wu, wn], rond = [wu, wn, wr], plat = [wn.map(v => -v), wu, wr];
+    const cap = b => wu.map((v, k) => v * Math.cos(b) + wr[k] * Math.sin(b));           // direction dans le plan de la planche
+    const sur = (a, b, d) => plus(PLANCHE, [wr, a], [wu, b], [wn, d]);                 // point de la planche : droite, haut, vers le pilote
+    const trait = (centre, b, rayon, long, large, mat, color, extra) => { const d = cap(b); mettre('box', plus(centre, [d, rayon]), [long, .002, large], mat, color, [d, wn, croix(d, wn)], extra); };
 
-    // Planche fixée à la caisse, derrière le volant : compte-tours au centre, rapport à gauche, vitesse à droite
-    mettre('box', PLANCHE, [.02, .11, .38], MAT, CARBONE, [wn.map(v => -v), wu, wr]);
-    const face = plus(PLANCHE, [wn, .012]);
-    mettre('cylinder', face, [.088, .006, .088], LAQUE, [.9, .89, .84], [wu, wn, wr]);
-    mettre('cylinder', plus(face, [wn, .002]), [.02, .006, .02], MAT, NOIR, [wu, wn, wr]);
-    for (let g = 0; g <= 13; g++) {                       // graduations tous les 1 000 tr/min, zone rouge dès 12 000
-      const b = -2.36 + 4.72 * g / 13, d = plus([0, 0, 0], [wu, Math.cos(b)], [wr, Math.sin(b)]);
-      mettre('box', plus(face, [d, .036], [wn, .004]), [.009, .002, .003], g >= 12 ? 5 : MAT, g >= 12 ? [1, .1, .05] : NOIR, [d, wn, croix(d, wn)], g >= 12 ? { emissive: .4 } : undefined);
+    // Planche : tôle sombre, casquette noire et sa lampe de régime, fenêtres des afficheurs
+    mettre('box', PLANCHE, [.018, .112, .384], MAT, [.075, .078, .085], plat);
+    for (const a of [-.184, .184]) for (const b of [-.048, .048]) mettre('cylinder', sur(a, b, .0095), [.008, .004, .008], METAL_MAT, ARGENT, rond);   // vis des coins
+    mettre('box', sur(0, .060, .028), [.074, .010, .400], MAT, NOIR, plat);
+    const passe = regime > REGIME_LAMPE && etat.rapport > 0 && etat.rapport < 6;
+    mettre('cylinder', sur(0, .068, .044), [.032, .008, .032], MAT, NOIR, rond);
+    mettre('sphere', sur(0, .076, .046), [.024, .024, .024], 5, passe ? [1, .13, .04] : [.20, .03, .02], null, passe ? { emissive: 3.2 } : undefined);
+    mettre('box', sur(-.125, .006, .0085), [.004, .054, .036], LAQUE, [.012, .012, .014], plat);
+    mettre('box', sur(.142, .004, .0085), [.004, .042, .080], LAQUE, [.012, .012, .014], plat);
+    // Compte-tours : lunette, cadran noir, graduations ivoire tous les 1 000 tr/min (longues aux milliers pairs),
+    // zone rouge dès 12 000, aiguille orange
+    const cadran = (a, b, d, fond) => { mettre('cylinder', sur(a, b, .009), [d + .010, .008, d + .010], METAL_MAT, ARGENT, rond); mettre('cylinder', sur(a, b, .012), [d, .006, d], MAT, fond, rond); return sur(a, b, .016); };
+    const tours = cadran(0, 0, .089, [.02, .02, .022]);
+    for (let g = 0; g <= 13; g++) {
+      const long = g % 2 ? .006 : .011, rouge = g >= 12;
+      trait(tours, -2.36 + 4.72 * g / 13, .041 - long / 2, long, .0028, rouge ? 5 : TISSU, rouge ? [1, .1, .05] : IVOIRE, rouge ? { emissive: .5 } : undefined);
     }
-    const b = -2.36 + 4.72 * Math.max(0, Math.min(1, (etat.regime || 0) / 13000));
-    const aiguille = plus([0, 0, 0], [wu, Math.cos(b)], [wr, Math.sin(b)]), cote = croix(aiguille, wn);
-    mettre('box', plus(face, [aiguille, .017], [wn, .005]), [.034, .0025, .004], 5, [1, .16, .05], [aiguille, wn, cote], { emissive: .6 });
+    trait(plus(tours, [wn, .002]), -2.36 + 4.72 * borner(regime / 13000, 0, 1), .014, .037, .0036, 5, [1, .40, .08], { emissive: .9 });
+    mettre('cylinder', plus(tours, [wn, .003]), [.016, .006, .016], METAL_MAT, ARGENT, rond);
+    // Deux petits cadrans : température d'eau à gauche, pression d'huile à droite (elle suit le régime)
+    for (const [a, valeur] of [[-.074, .5 + .2 * borner(regime / 13000, 0, 1)], [.074, .12 + .78 * borner(regime / 11000, 0, 1)]]) {
+      const centre = cadran(a, -.006, .040, [.02, .02, .022]);
+      for (let g = 0; g < 5; g++) trait(centre, -1.2 + .6 * g, .0155, .005, .0022, TISSU, IVOIRE);
+      trait(plus(centre, [wn, .0015]), -1.2 + 2.4 * valeur, .008, .017, .0026, 5, [1, .40, .08], { emissive: .7 });
+      mettre('cylinder', plus(centre, [wn, .002]), [.008, .005, .008], METAL_MAT, ARGENT, rond);
+    }
+    // Rangée du bas : deux interrupteurs à levier, témoin vert du contact, témoin rouge (ralenti ou surrégime)
+    for (const a of [-.046, -.034]) { mettre('cylinder', sur(a, -.043, .011), [.010, .006, .010], METAL_MAT, ARGENT, rond); mettre('box', sur(a, -.039, .019), [.003, .011, .003], METAL_MAT, ARGENT, cadre); }
+    mettre('sphere', sur(.034, -.043, .012), [.009, .009, .009], 5, [.14, .9, .3], null, { emissive: 1.1 });
+    const alerte = regime > 12600 || regime < 2500;
+    mettre('sphere', sur(.046, -.043, .012), [.009, .009, .009], 5, alerte ? [1, .14, .05] : [.2, .03, .02], null, alerte ? { emissive: 1.8 } : undefined);
+    // Rapport à gauche, vitesse à droite, en segments ambre
     const chiffre = (texte, centre, h) => {
       const l = h * .56, t = h * .13, seg = SEGMENTS[texte] || '';
       const places = { a: [0, h / 2, l, t], b: [l / 2, h / 4, t, h / 2], c: [l / 2, -h / 4, t, h / 2], d: [0, -h / 2, l, t], e: [-l / 2, -h / 4, t, h / 2], f: [-l / 2, h / 4, t, h / 2], g: [0, 0, l, t] };
@@ -4316,21 +4403,93 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const kmh = String(Math.min(999, Math.max(0, Math.round(etat.kmh || 0)))).padStart(3, ' ');
     for (let k = 0; k < 3; k++) if (kmh[k] !== ' ' || k === 2) chiffre(kmh[k], plus(PLANCHE, [wr, .118 + k * .024], [wu, .004]), .026);
 
-    // Jante noire, trois branches métalliques, moyeu, repère blanc en haut de la jante
-    const s = R / .435;
-    mettre('ring', C, [s, s, s], TISSU, [.055, .055, .06], jante);
-    for (const dir of [r, r.map(v => -v), u.map(v => -v)]) mettre('box', plus(C, [dir, R * .5], [wn, -.004]), [R * .96, .007, .022], METAL_MAT, [.42, .43, .45], [dir, wn, croix(dir, wn)]);
-    mettre('cylinder', plus(C, [wn, .004]), [.048, .02, .048], MAT, NOIR, jante);
-    mettre('box', plus(C, [u, R]), [.036, .036, .014], TISSU, [.92, .92, .9], jante);
+    // Volant : jante gainée, trois branches d'aluminium ajourées, flasque, cache et vis, ruban blanc en haut de la jante
+    const e = R / .105, TUBE = .0225 * e, N_JANTE = 36, autour = a => u.map((v, k) => v * Math.cos(a) + r[k] * Math.sin(a));   // e : échelle du volant et des mains
+    for (let i = 0; i < N_JANTE; i++) {
+      const a = (i + .5) * 2 * Math.PI / N_JANTE, d = autour(a);
+      mettre('cylinder', plus(C, [d, R]), [TUBE, 2 * Math.PI * R / N_JANTE * 1.12, TUBE], TISSU, [.045, .045, .05], selonAxe(autour(a + Math.PI / 2)));
+    }
+    for (const dir of [r, r.map(v => -v), u.map(v => -v)]) {
+      const m = [dir, wn, croix(dir, wn)];
+      mettre('box', plus(C, [dir, R * .52], [wn, -.004]), [R * .92, .006, .027 * e], METAL_MAT, ACIER, m);
+      for (const f of [.40, .66]) mettre('box', plus(C, [dir, R * f], [wn, -.0005]), [R * .17, .003, .010 * e], MAT, NOIR, m);
+    }
+    mettre('cylinder', plus(C, [wn, .002]), [.060 * e, .012, .060 * e], METAL_MAT, ACIER, jante);
+    mettre('cylinder', plus(C, [wn, .008]), [.040 * e, .012, .040 * e], MAT, NOIR, jante);
+    for (let b = 0; b < 3; b++) { const a = b * 2.0944 + 1.0472, d = u.map((v, k) => v * Math.cos(a) + r[k] * Math.sin(a)); mettre('cylinder', plus(C, [d, .0245 * e], [wn, .009]), [.007 * e, .004, .007 * e], METAL_MAT, ARGENT, jante); }
+    mettre('cylinder', plus(C, [u, R]), [TUBE + .003, .010, TUBE + .003], TISSU, IVOIRE, selonAxe(r));
 
-    // Gants blancs à 9 h 15, poignets, avant-bras jusqu'aux coudes fixés à la caisse
+    // Levier de vitesses à droite : tige et pommeau d'aluminium, qui passe d'une position de la grille à l'autre
+    const t = borner(etat.passage === undefined ? 1 : etat.passage, 0, 1), gA = grille(etat.rapportAvant === undefined ? etat.rapport : etat.rapportAvant), gB = grille(etat.rapport), w = lisse(.25, .6, t);
+    const pommeau = [LEVIER[0] + gA[0] + (gB[0] - gA[0]) * w, LEVIER[1], LEVIER[2] + gA[1] + (gB[1] - gA[1]) * w];
+    const pied = [LEVIER[0], LEVIER[1] - .14, LEVIER[2] + .012], tige = pommeau.map((v, k) => v - pied[k]);
+    mettre('cylinder', pied.map((v, k) => v + tige[k] * .5), [.011, Math.hypot(tige[0], tige[1], tige[2]), .011], METAL_MAT, ARGENT, selonAxe(tige));
+    mettre('sphere', pommeau, [.040, .040, .040], METAL_MAT, [.80, .81, .83]);
+
+    // Mains : gants blancs articulés, comme dans vroom-unreal, mais construits ici. Quatre doigts à trois phalanges
+    // enroulés autour du tube de la jante, pouce posé le long de la jante, dos de main, garde noire sur les jointures,
+    // sangle noire au poignet. Les manches suivent une courbe de Bézier du poignet au coude fixé à la caisse, avec un
+    // pli au poignet. Les dimensions sont celles d'une main à l'échelle du volant (0,75).
+    // Pendant un changement de rapport, la main droite va au pommeau et revient.
+    const combi = liv.combinaison || c1.map(v => v * .7), cuir = [.05, .05, .055], gant = clarte(combi) > .5 || clarte(combi) < .2 ? GANT : IVOIRE;
+    const tubeEntre = (a, b, d, mat, color) => { const v = b.map((x, i) => x - a[i]); mettre('cylinder', a.map((x, i) => (x + b[i]) / 2), [d, Math.hypot(v[0], v[1], v[2]), d], mat, color, selonAxe(v)); };
+    const boule = (p, d, mat, color) => mettre('sphere', p, [d, d, d], mat, color);
+    const versLevier = lisse(0, .3, t) * (1 - lisse(.65, 1, t)), PRISE = VOLANT.prise;
     for (const k of [-1, 1]) {
-      const prise = plus(C, [r, R * k]);
-      mettre('bevel', plus(prise, [wn, .008]), [.09, .05, .07], TISSU, GANT, jante);
-      const poignet = plus(prise, [wn, .03], [u, -.03], [r, k * .012]);
-      mettre('sphere', poignet, [.052, .052, .052], TISSU, GANT);
-      const coude = [COUDE[0], COUDE[1], k * COUDE[2]], d = coude.map((v, i) => v - poignet[i]), long = Math.hypot(d[0], d[1], d[2]);
-      mettre('cylinder', poignet.map((v, i) => (v + coude[i]) / 2), [.075, long, .075], TISSU, mod.livree.combinaison || mod.livree.couleur.map(v => v * .7), selonAxe(d));
+      const rk = r.map(v => v * k), ex = u.map((v, i) => v * Math.cos(PRISE) + rk[i] * Math.sin(PRISE)), haut = u.map((v, i) => v * Math.sin(PRISE) - rk[i] * Math.cos(PRISE));
+      let G = plus(C, [ex, R]);
+      if (k > 0 && versLevier > 0) { const cible = plus(pommeau, [wn, .006]); G = G.map((v, i) => v + (cible[i] - v) * versLevier); }
+      // point autour du tube : angle compté depuis le côté du pilote (wn) vers l'extérieur (ex), à la distance d, décalé de l le long de la jante
+      const tour = (angle, d, l) => plus(G, [wn, Math.cos(angle) * d * e], [ex, Math.sin(angle) * d * e], [haut, l * e]);
+      // doigts : jointures à 50°, puis 140°, 210° et le bout à 265°, de l'index (vers le haut) à l'auriculaire
+      for (let i = 0; i < 4; i++) {
+        const l = (1.5 - i) * .0155, f = (i === 3 ? .88 : 1) * e;
+        const j0 = tour(.87, .0215, l), j1 = tour(2.44, .0185, l), j2 = tour(3.67, .018, l), j3 = tour(4.62, .017, l);
+        tubeEntre(j0, j1, .0138 * f, TISSU, gant); tubeEntre(j1, j2, .0130 * f, TISSU, gant); tubeEntre(j2, j3, .0122 * f, TISSU, gant);
+        boule(j1, .0146 * f, TISSU, gant); boule(j2, .0136 * f, TISSU, gant); boule(j3, .0126 * f, TISSU, gant);
+      }
+      // garde des jointures, dos de la main et paume vers le poignet
+      const poignet = tour(.49, .0725, -.012), jointures = tour(.87, .0225, 0);
+      const versPoignet = norme(poignet.map((v, i) => v - jointures[i])), dos = [haut, versPoignet, croix(haut, versPoignet)];
+      mettre('bevel', plus(jointures, [versPoignet, .002 * e]), [.066 * e, .016 * e, .019 * e], TISSU, cuir, dos);
+      mettre('sphere', jointures.map((v, i) => (v + poignet[i]) / 2), [.064 * e, ecart(poignet, jointures) * 1.12, .030 * e], TISSU, gant, dos);
+      boule(tour(.15, .024, .010), .028 * e, TISSU, gant);                                        // éminence du pouce
+      // pouce : court, posé le long de la jante, vers le haut, du côté du pilote
+      const p0 = tour(.25, .027, .014), p1 = tour(-.30, .0205, .033), p2 = tour(-.62, .0180, .047);
+      tubeEntre(p0, p1, .0160 * e, TISSU, gant); tubeEntre(p1, p2, .0146 * e, TISSU, gant); boule(p1, .0166 * e, TISSU, gant); boule(p2, .0150 * e, TISSU, gant);
+      // poignet : sangle noire, puis la manche en tronçons le long d'une courbe, vers le coude sous l'image
+      const coude = [COUDE[0], COUDE[1], k * COUDE[2]], guide = plus(poignet, [versPoignet, .10 * e]);
+      const bezier = f => poignet.map((v, i) => (1 - f) * (1 - f) * v + 2 * f * (1 - f) * guide[i] + f * f * coude[i]);
+      tubeEntre(plus(poignet, [versPoignet, -.012 * e]), plus(poignet, [versPoignet, .012 * e]), .042 * e, TISSU, cuir);
+      let avant = plus(poignet, [versPoignet, .008 * e]);
+      for (let n = 1; n <= 6; n++) {
+        const ici = bezier(n / 6), d = (.037 + .013 * n / 6) * e;
+        tubeEntre(avant, ici, d, TISSU, combi); boule(ici, d, TISSU, combi);
+        avant = ici;
+      }
+      tubeEntre(bezier(.06), bezier(.10), .046 * e, TISSU, combi);                               // pli de la manche sur la sangle
+    }
+
+    // Rétroviseurs : ciel, horizon et piste dans la glace, et les voitures qui suivent, à leur place et à leur taille.
+    // Champ de 32° par glace, ouvert de 6° vers l'extérieur ; trois voitures au plus.
+    const ciel = etat.ciel || [.66, .77, .88], brume = etat.brume || [.62, .70, .76], suiveurs = etat.derriere || [];
+    const GL = .132, GH = .048;                                    // glace : largeur et hauteur
+    for (const k of [-1, 1]) {
+      const zc = k * .47, x = .5225, y = .565;
+      dans('box', [x, y + GH * .25, zc], [.003, GH * .5, GL], LAQUE, ciel.map(v => v * .62));
+      dans('box', [x, y - GH * .04, zc], [.003, GH * .1, GL], LAQUE, brume.map(v => v * .5));
+      dans('box', [x, y - GH * .295, zc], [.003, GH * .41, GL], LAQUE, [.085, .09, .095]);
+      let n = 0;
+      for (const v of suiveurs) {
+        if (n >= 3) break;
+        const b = .55 - v.x, a = v.z - zc, f = (Math.atan2(a, b) - k * .105) / .28;
+        if (b < 2 || b > 90 || Math.abs(f) > 1) continue;
+        const dist = Math.hypot(a, b), large = borner(1.9 / dist / .56 * GL, .005, GL * .55), haut = borner(1.0 / dist / .23 * GH, .004, GH * .62);
+        const zi = borner(zc + f * GL / 2, zc - GL / 2 + large / 2, zc + GL / 2 - large / 2), yi = y - GH * .08 - haut * .3;
+        dans('box', [x - .0012, yi, zi], [.003, haut, large], LAQUE, v.couleur || c2);
+        dans('box', [x - .0018, yi - haut * .34, zi], [.003, haut * .34, large * 1.08], MAT, [.03, .03, .035]);
+        n++;
+      }
     }
     return M;
   }
@@ -4347,7 +4506,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     for (const w of ROUES) sortie.push({ shape: 'cylinder', p: P([w.x, w.r, w.z]), s: [2 * w.r, w.l, 2 * w.r], r: rot, fx: true, alpha: .22, color: bleu });
   }
 
-  B.voiture = { modele, poser, cockpit, fantome, attitude, angles, mul, mulM, euler, braquages, OEIL, K, VOLANT, PLANCHE, ROUES, EMPATTEMENT };
+  B.voiture = { modele, poser, cockpit, fantome, visible, attitude, angles, mul, mulM, euler, braquages, OEIL, K, VOLANT, PLANCHE, LEVIER, ROUES, EMPATTEMENT };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -4794,7 +4953,11 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const co = S.course;
     const cmd = S.type === 'vitrine' || S.type === 'demo' || pilote ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
     const ev = B.course.pas(co, cmd, DT);
-    for (const v of co.voitures) v.roule = (v.roule || 0) + v.etat.v * DT; // distance roulée : fait tourner les roues
+    for (const v of co.voitures) {
+      v.roule = (v.roule || 0) + v.etat.v * DT; // distance roulée : fait tourner les roues
+      // changement de rapport : la main droite du pilote va au levier (vue cockpit)
+      if (v.etat.rapport !== v.rapportVu) { v.rapportAvant = v.rapportVu === undefined ? v.etat.rapport : v.rapportVu; v.rapportVu = v.etat.rapport; v.tPassage = co.horloge; }
+    }
     const t = S.prec; S.prec = S.cour; S.cour = t; remplirPoses(S.cour, co);
     if (S.type === 'demo') traiterDemo(S, ev);
     else if (S.type !== 'vitrine') { traiter(S, ev); suivreJoueur(S); }
@@ -4915,12 +5078,20 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const vertical = 2 * Math.atan(Math.max(t / (16 / 9), t / Math.max(.3, aspect))) * 180 / Math.PI;
     return clamp(vertical * (1 + .13 * clamp(v / 85, 0, 1)), 10, 110);
   }
-  function cameraCockpit(p, et, t) {
-    const M = B.voiture.attitude(p.cap, p.tangage, p.roulis), o = B.voiture.mul(M, B.voiture.OEIL);
-    const vib = et.surface === 'vibreur' ? .006 : et.surface === 'herbe' ? .004 * Math.min(1, et.v / 20) : 0;
+  // La tête du pilote vit : elle part vers l'extérieur du virage et vers l'avant au freinage (2 cm au plus), le regard
+  // va vers la corde (4° au plus), et le casque tremble à haute vitesse, sur les vibreurs et dans l'herbe.
+  function cameraCockpit(S, p, et, t, dt) {
+    const T = S.tete || (S.tete = { lat: 0, lon: 0, regard: 0 }), k = 1 - Math.exp(-dt * 7);
+    T.lat += (clamp(et.alat / 26, -1, 1) - T.lat) * k;
+    T.lon += (clamp(et.along / 22, -1, 1) - T.lon) * k;
+    T.regard += (clamp(et.volant, -1, 1) * clamp(et.v / 28, 0, 1) - T.regard) * (1 - Math.exp(-dt * 3.5));
+    const OE = B.voiture.OEIL, M = B.voiture.attitude(p.cap, p.tangage, p.roulis);
+    const o = B.voiture.mul(M, [OE[0] - T.lon * .02, OE[1] - Math.max(0, -T.lon) * .006, OE[2] - T.lat * .016]);
+    const vib = (et.surface === 'vibreur' ? .006 : et.surface === 'herbe' ? .004 * Math.min(1, et.v / 20) : 0) + .0011 * Math.pow(clamp(et.v / 85, 0, 1), 2);
     return {
-      pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib, p.z + o[2]], yaw: p.cap + Math.PI / 2,
-      pitch: p.tangage * .85, roll: -p.roulis * .85, fov: champCockpit(canvas.width / Math.max(1, canvas.height), et.v), near: .1, far: PORTEE_VUE
+      pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib, p.z + o[2]], yaw: p.cap + Math.PI / 2 + T.regard * .07,
+      pitch: p.tangage * .85 + Math.min(0, T.lon) * .012, roll: -p.roulis * .85 + T.lat * .014,
+      fov: champCockpit(canvas.width / Math.max(1, canvas.height), et.v), near: .1, far: PORTEE_VUE
     };
   }
   function cameraPoursuite(S, p, et, dt) {
@@ -4978,13 +5149,13 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     else if (S.type === 'demo') {
       const pl = B.realisateur.tenir(S.real, co);
       // coupe : les caméras lissées repartent de la nouvelle voiture, les écarts du son aussi
-      if (S.planVu !== pl) { S.planVu = pl; S.camCap = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; }
+      if (S.planVu !== pl) { S.planVu = pl; S.camCap = null; S.tete = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; }
       vue = pl.vue; suivie = co.voitures[pl.sujet];
     } else if (j.fini && S.finA !== null && co.horloge - S.finA > 2.5) vue = 'tele';
     const ps = poses[suivie.id], exterieur = vue === 'tele' || vue === 'helico';
     if (vue === 'tele') cam = cameraTele(S, suivie, ps);
     else if (vue === 'helico') cam = cameraHelico(S, ps, dtImage);
-    else cam = vue === 'cockpit' ? cameraCockpit(ps, suivie.etat, co.horloge) : cameraPoursuite(S, ps, suivie.etat, dtImage);
+    else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, co.horloge, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage);
     if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: PORTEE_VUE, fov: 40 }, cameraEssai(pj, cam));
     if (S.secousse > 0) {
       const a = S.secousse * .05, t = horlogeReelle;
@@ -5000,8 +5171,21 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const complet = 170 * Math.tan(20.8 * Math.PI / 180) / Math.tan(clamp(cam.fov, 10, 110) * Math.PI / 360);
     for (let k = 0; k < co.voitures.length; k++) {
       const p = poses[k], dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], d2 = dx * dx + dz * dz;
-      const ev = { p: [p.x, p.y, p.z], cap: p.cap, tangage: p.tangage, roulis: p.roulis, braquage: p.braquage, roule: p.roule };
-      if (k === suivie.id && vue === 'cockpit') { const et = suivie.etat; B.voiture.cockpit(S.modeles[k], ev, sortie, { regime: et.regime, volant: et.volant, rapport: et.rapport, kmh: B.conduite.kmh(et) }); continue; }
+      const ev = { p: [p.x, p.y, p.z], cap: p.cap, tangage: p.tangage, roulis: p.roulis, braquage: p.braquage, roule: p.roule, v: co.voitures[k].etat.v };
+      if (k === suivie.id && vue === 'cockpit') {
+        // voitures derrière, dans le repère de celle-ci, de la plus proche à la plus lointaine : les rétroviseurs les montrent
+        const et = suivie.etat, ca = Math.cos(p.cap), sa = Math.sin(p.cap), derriere = [];
+        for (let q = 0; q < co.voitures.length; q++) {
+          if (q === k) continue;
+          const ex = poses[q].x - p.x, ez = poses[q].z - p.z, x = ex * ca + ez * sa;
+          if (x < -1 && x > -95) derriere.push({ x, z: ez * ca - ex * sa, couleur: co.voitures[q].couleur });
+        }
+        derriere.sort((a, b) => b.x - a.x);
+        const atm = scene.decor.atmosphere;
+        B.voiture.cockpit(S.modeles[k], ev, sortie, { regime: et.regime, volant: et.volant, rapport: et.rapport, kmh: B.conduite.kmh(et),
+          passage: suivie.tPassage === undefined ? 1 : (co.horloge - suivie.tPassage) / .36, rapportAvant: suivie.rapportAvant, derriere, ciel: atm.skyBottom, brume: atm.fog });
+        continue;
+      }
       B.voiture.poser(S.modeles[k], ev, sortie, { simple: d2 > complet * complet });
     }
     // fantôme du meilleur tour

@@ -58,7 +58,7 @@
 
     const voiture = (id, nom, numero, liv, joueur) => ({
       id, nom, numero, joueur, couleur: liv[0],
-      livree: { couleur: liv[0], seconde: liv[1], casque: liv[2], combinaison: liv[1] },
+      livree: { couleur: liv[0], seconde: liv[1], casque: liv[2], combinaison: liv[1], numero },
       etat: null, tours: 0, passages: -1, maxPassages: -1, progression: 0, debutTour: 0,
       tempsTours: [], meilleur: null, position: 0, fini: false, tempsFinal: null, ecart: 0, ecartTete: 0,
       ia: {
