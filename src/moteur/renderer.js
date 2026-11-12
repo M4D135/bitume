@@ -588,6 +588,17 @@
   })();
   function foliageTriangles(){return FOLIAGE.triangles;}
   const names = ['box','sphere','cylinder','octa','ring','bevel','foliage','wedge']; // BITUME : 'wedge'
+  // BITUME : formes libres (carènes, mains). Une forme libre est une liste de triangles [p0, p1, p2, n0, n1, n2] tenue
+  // dans le cube unité (−0,5 à 0,5) ; l'instance porte sa vraie taille dans s. Les normales sont celles du cube : le
+  // nuanceur les divise par s, ce qui rend la normale du volume à sa vraie taille. Enregistrer avant FRender.create.
+  const FORMES_LIBRES=new Map();
+  function forme(nom,triangles){
+    if(typeof nom!=='string'||!Array.isArray(triangles))throw new TypeError('forme(nom, triangles)');
+    if(!FORMES_LIBRES.has(nom)&&names.includes(nom))throw new Error('forme déjà définie par le moteur : '+nom);
+    if(!names.includes(nom))names.push(nom);
+    FORMES_LIBRES.set(nom,triangles);
+  }
+  const INDEX_OCTETS=4; // BITUME : index sur 32 bits, les formes libres dépassent les 65 536 sommets
   function geometry(low) {
     const data=[], indices=[], ranges={};
     function vertex(p,n) {const i=data.length/6;data.push(...p,...n);return i;}
@@ -599,8 +610,8 @@
       if(cross[0]*n0[0]+cross[1]*n0[1]+cross[2]*n0[2]<0) {const t=p1;p1=p2;p2=t;const n=n1;n1=n2;n2=n;}
       indices.push(vertex(p0,n0),vertex(p1,n1),vertex(p2,n2));
     }
-    function begin(name){ranges[name]={offset:indices.length*2,count:0};}
-    function end(name){ranges[name].count=indices.length-ranges[name].offset/2;}
+    function begin(name){ranges[name]={offset:indices.length*INDEX_OCTETS,count:0};}
+    function end(name){ranges[name].count=indices.length-ranges[name].offset/INDEX_OCTETS;}
     begin('box');
     for(let axis=0;axis<3;axis++) for(const sign of [-1,1]) {
       const n=[0,0,0];n[axis]=sign;
@@ -680,7 +691,13 @@
       triangle(A,B,E,[0,0,-1]);triangle(D,F,C,[0,0,1]);
     }
     end('wedge');
-    return {vertices:new Float32Array(data),indices:new Uint16Array(indices),ranges};
+    // BITUME : formes libres, mêmes triangles aux trois niveaux de détail
+    for(const [nom,triangles] of FORMES_LIBRES){
+      begin(nom);
+      for(const t of triangles)triangle(t[0],t[1],t[2],t[3],t[4],t[5]);
+      end(nom);
+    }
+    return {vertices:new Float32Array(data),indices:new Uint32Array(indices),ranges};
   }
 
   function environmentInfo(value){
@@ -909,7 +926,7 @@
     for(const [source,shapes] of [[geometry(true),base],[geometry(2),coarseBase]]){
       for(const shape of names) {
         const range=source.ranges[shape],triangles=[];
-        for(let j=range.offset/2;j<range.offset/2+range.count;j+=3){
+        for(let j=range.offset/INDEX_OCTETS;j<range.offset/INDEX_OCTETS+range.count;j+=3){
           const v=[];for(let k=0;k<3;k++){const at=source.indices[j+k]*6;v.push(Array.from(source.vertices.subarray(at,at+3)));}triangles.push(v);
         }
         shapes[shape]=[];
@@ -1275,6 +1292,7 @@
     }
     function shadowCaster(m){
       const s=m.s||[1,1,1],mat=m.mat||0,limit=m.actorPart&&m.actorScale>1?44:10;
+      if(FORMES_LIBRES.has(m.shape))return !m.fx&&Math.max(s[0],s[2])>.45&&s[1]>.2&&s[0]<limit&&s[2]<limit&&(mat<4||mat>7); // BITUME : carènes
       return !m.fx&&(m.shape==='box'||m.shape==='bevel'||m.shape==='cylinder'||m.shape==='sphere'||m.shape==='foliage'||m.shape==='octa'||m.shape==='wedge'/* BITUME */)&&s[0]>.45&&s[2]>.45&&s[1]>.4&&s[0]<limit&&s[2]<limit&&(mat<4||mat>7);
     }
     function staticCasters(eye){
@@ -1517,7 +1535,7 @@
       for(const group of batch.groups) {
         for(let i=2;i<6;i++) gl.vertexAttribPointer(i,4,gl.FLOAT,false,64,group.offset+(i-2)*16);
         const shape=source.ranges[group.name];
-        gl.drawElementsInstanced(gl.TRIANGLES,shape.count,gl.UNSIGNED_SHORT,shape.offset,group.count);
+        gl.drawElementsInstanced(gl.TRIANGLES,shape.count,gl.UNSIGNED_INT,shape.offset,group.count); // BITUME : index 32 bits
         stats.drawCalls++;stats.triangles+=shape.count/3*group.count;if(!shadowPass)stats.instances+=group.count;
       }
     }
@@ -1744,5 +1762,5 @@
     }
     return {setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots};
   }
-  window.FRender={create,foliageTriangles};
+  window.FRender={create,foliageTriangles,forme}; // BITUME : forme
 })();

@@ -110,7 +110,7 @@ poussé.
 
 But : dessiner des volumes courbes, lisses, au lieu d'empiler des boîtes.
 
-- [ ] **Moteur** (`src/moteur/renderer.js`, marque « BITUME », PROVENANCE n° 10). Aujourd'hui `names` (ligne ~590)
+- [x] **Moteur** (`src/moteur/renderer.js`, marque « BITUME », PROVENANCE n° 10). Aujourd'hui `names` (ligne ~590)
   liste les formes et `geometry(low)` (ligne ~591) les construit avec `begin(nom)`, `triangle(p0, p1, p2, n0, n1, n2)`
   et `end(nom)` ; les normales par sommet donnent un ombrage lisse. Ajouter un registre :
   `window.FRender.forme(nom, triangles)` où `triangles` est une liste de `[p0, p1, p2, n0, n1, n2]`. L'appel ajoute
@@ -118,11 +118,11 @@ But : dessiner des volumes courbes, lisses, au lieu d'empiler des boîtes.
   détail (`geometry()`, `geometry(true)`, `geometry(2)` : mêmes triangles partout, c'est suffisant). À appeler avant
   `FRender.create`. Vérifier chaque endroit qui énumère les formes : `shadowCaster` (ligne ~1276) doit accepter les
   formes libres ; `packIndexed`, `pack` et le rendu logiciel ne doivent pas casser.
-- [ ] **Convention** : une forme libre est normalisée dans le cube unité (de −0,5 à 0,5) ; l'instance porte la vraie
+- [x] **Convention** : une forme libre est normalisée dans le cube unité (de −0,5 à 0,5) ; l'instance porte la vraie
   taille dans `s` et le centre de la boîte dans `p`. Le rayon de tri (`hypot(s)/2`) et les seuils d'ombre restent
   justes. Les normales sont celles du volume **à sa vraie taille**, ramenées dans le cube par l'inverse transposée
   (sinon l'ombrage se déforme).
-- [ ] **Nouveau module `src/carene.js`** (pur, chargé après le moteur, testable dans Node) :
+- [x] **Nouveau module `src/carene.js`** (pur, chargé après le moteur, testable dans Node) :
   - `carene(sections, { cotes = 20, bouts = true })` : peau tendue entre des sections en superellipse. Une section :
     `{ x, y0, y1, l, n, z = 0 }` — abscisse, bas, haut, demi-largeur, exposant (2 : ellipse ; 4 à 6 : rectangle aux
     coins ronds). Point d'angle a : `z + l·sgn(cos a)·|cos a|^(2/n)`, `(y0+y1)/2 + (y1−y0)/2·sgn(sin a)·|sin a|^(2/n)`.
@@ -133,12 +133,15 @@ But : dessiner des volumes courbes, lisses, au lieu d'empiler des boîtes.
   - `normaliser(triangles)` : rend `{ triangles, centre, taille }` pour la convention ci-dessus.
   - Normales lisses : moyenne des faces autour de chaque sommet (souder les sommets à 1e-6 près), sauf aux arêtes
     voulues vives (angle de plus de 50° entre faces).
-- [ ] **Tests** `verifications/carene.test.mjs` : volume fermé (chaque arête partagée par deux triangles, sauf
+- [x] **Tests** `verifications/carene.test.mjs` : volume fermé (chaque arête partagée par deux triangles, sauf
   ouverture), normales unitaires vers l'extérieur, boîte englobante égale aux cotes demandées, nombre de triangles
   attendu, symétrie gauche-droite.
-- [ ] `construire.py` : `carene.js` entre `decor.js` et `voiture.js`. `AGENTS.md` : structure et ordre de chargement.
+- [x] `construire.py` : `carene.js` entre `decor.js` et `voiture.js`. `AGENTS.md` : structure et ordre de chargement.
 
 Fini quand : une carène d'essai s'affiche lisse, éclairée et ombrée dans le jeu, et jette son ombre.
+
+Fait le 12/11/2026 : registre `FRender.forme`, index sur 32 bits, `src/carene.js` (`carene`, `tube`, `normaliser`,
+`lisser`, `miroir`), dix vérifications ; carène d'essai vue lisse et éclairée sur les douze voitures, puis retirée.
 
 ### Lot 1B — La 312 T5 en carènes
 
@@ -260,3 +263,4 @@ existe) ; voiture vivante ; peloton et voix des rivaux ; tours propres, records 
 ## 9. Journal
 
 - 12/11/2026 — Plan écrit. Phase 1 à commencer par le lot 1A.
+- 12/11/2026 — Lot 1A fini (Opus 5.5).

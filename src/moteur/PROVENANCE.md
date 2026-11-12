@@ -40,3 +40,7 @@ et lointain (`camera.near`, `camera.far`), la lampe torche éteinte (`fx.torch =
 9. **Peinture satinée** (matière 17) : la matière 17 n'est plus une seconde laque mais la peinture des monoplaces,
    plus mate (rugosité 0,46, métal 0,04). La laque brillante de FERRO reflétait le ciel en incidence rasante et
    rosissait le rouge vu du cockpit.
+10. **Formes libres** (`FRender.forme(nom, triangles)`) : registre de formes faites de triangles, tenues dans le cube
+    unité, émises après les formes d'origine aux trois niveaux de détail, pour les carènes lisses et les mains des
+    monoplaces (`src/carene.js`). Les index passent sur 32 bits (`UNSIGNED_INT`) ; `shadowCaster` accepte les formes
+    libres de plus de 45 cm de long ou de large et de plus de 20 cm de haut.

@@ -33,6 +33,7 @@ Une seule page HTML, moteur FERRO (WebGL2), tout est calculé par le code.
 | `src/conduite.js` | Conduite en repère de Frenet (s, d) : boîte, rupteur, adhérence, sous-virage, dérive, turbo, glissières, attitude |
 | `src/course.js` | Grille, feux, IA, contacts, tours, drapeau, classement, fantôme du chrono |
 | `src/son.js` | Synthèse Web Audio : moteur, rivaux, pneus, vibreur, herbe, chocs, signaux |
+| `src/carene.js` | Carènes (peau entre sections en superellipse) et tubes lisses, en triangles pour les formes libres du moteur |
 | `src/voiture.js` | Monoplace en primitives du moteur, cockpit vu du siège, fantôme translucide |
 | `src/realisateur.js` | Réalisateur de la démo : choix du plan (caméra et voiture filmée) d'après la course |
 | `src/jeu.js` | Coque : boucle à pas fixe, commandes, caméras, rendu d'une image, affichage, menus, démo, stockage local |
@@ -43,7 +44,11 @@ Une seule page HTML, moteur FERRO (WebGL2), tout est calculé par le code.
 | `deposer.sh`, `deploiement/` | Mise en ligne de la page du commit sur bitume.estrasse.fr, et son vhost Caddy |
 
 Chaque module s'écrit `(function (B) { … })(globalThis.BITUME = globalThis.BITUME || {})` et s'exécute aussi dans
-Node pour les tests. Ordre de chargement : renderer, circuit, conduite, course, son, decor, voiture, realisateur, jeu.
+Node pour les tests. Ordre de chargement : renderer, circuit, conduite, course, son, decor, carene, voiture, realisateur, jeu.
+
+Formes libres : `window.FRender.forme(nom, triangles)` enregistre une forme faite de triangles `[p0, p1, p2, n0, n1,
+n2]` tenus dans le cube unité (`B.carene.normaliser`) ; l'instance porte la vraie taille dans `s`. À appeler avant
+`FRender.create` : `voiture.js` le fait à son chargement.
 
 ## Conventions
 
