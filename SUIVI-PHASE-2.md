@@ -78,9 +78,23 @@ Les scripts sont dans `verifications/phase2/` : `outils.mjs` contient les aides 
    - Captures en dérive, à comparer à `cockpit-035-drift.png` de vroom-unreal.
    - Effets visibles en poursuite ; curseur Secousses.
    - Rien de cela n'a été fait le 12/11 : la session n'était ouverte dans aucune fenêtre.
-4. **Lot de corrections de la phase 1.** La session parente annonce 16 constats confirmés, dont un grave : le flanc
-   est percé derrière la roue avant (x de 0,66 à 0,94, y de 0,12 à 0,30). C'est une régression du lot 1B, et le
-   correctif est déjà mesuré. Le lot n'avait pas encore été reçu au moment de la pause.
+4. **Lot de corrections de la phase 1**, reçu le 12/11 vers 23 h 20. La relecture compte 21 constats, établis sur une
+   copie figée de `3ce9c87`.
+   - **Où** : `~/Library/Application Support/Claude/side-session-notes/local_5593f513-cac7-4bfb-8e49-a01f28dce7e2/bitume-phase1-relecture/` ;
+     `relecture/constats-phase1.md` pour les constats ; `relecture-wf/` pour les scripts de preuve et les correctifs
+     mesurés.
+   - **À faire d'abord, au prochain commit** :
+     - **voi-1** (grave, régression du lot 1B) : le flanc est percé derrière la roue avant (x de 0,66 à 0,94, y de
+       0,12 à 0,30), et le décor se voit à travers dans toutes les vues extérieures. Correctif mesuré : ajouter
+       `{ x: .58, y0: .10, y1: .36, l: .22, n: 4 }` à la fin de `S_QUILLE` (`src/voiture.js`), plus un test de
+       silhouette : rayons latéraux sur x de 0,6 à 1,0 et y de 0,12 à 0,30.
+     - **carene-1 et rendu-1** (un seul défaut) : 90 faces retournées dans 7 formes libres (jonc, rétroviseurs,
+       arceau…), d'où des trous visibles. Cause : `triangle()` réoriente dans le cube unité après l'échelle de
+       `normaliser()`. Correction vérifiée : à `src/moteur/renderer.js:697`, garder l'ordre du registre pour les
+       formes libres, avec la marque BITUME et une ligne dans PROVENANCE.md, plus deux tests.
+     - **voi-2** (moyen) : les numéros sont toujours blancs, illisibles sur une caisse claire.
+   - **Le reste** est mineur : à trier. Un seul constat est incertain, `voi-5`.
+   - Le Spark rédige un premier jet par constat, dans `spark/resultats/` (voir § 5).
 5. **Fin de phase** : David conduit un tour, puis on coche `PLAN-MAITRE.md` §5.
 
 **Décisions à faire trancher par David** (les critères de poids et d'équilibre « seront réglés en jouant avec David ») :
@@ -139,6 +153,14 @@ Douze demandes au Spark, une à la fois, à effort bas, sans mémoire, de 6 600 
   - `revue-traces-1` et `2` : `src/traces.js` ;
   - `revue-jeu-1` et `2` : le diff de `src/jeu.js` ;
   - `revue-course` : le diff de `src/course.js` et de son test.
+
+**Seconde file**, pour la relecture de la phase 1 :
+- **Où** : `bitume-phase1-relecture/spark/`, dans le même dossier de notes.
+- **Contenu** : 21 demandes, une par constat. Chacune donne le texte du constat et le code voisin à `3ce9c87`, et
+  demande un avis sur le constat, la correction minimale en diff et un test qui échoue avant.
+- **Ordre** : grave, puis moyen, puis mineur. Elle démarre quand la première file a fini.
+- **Après la fin** : `./file-spark.sh` refait seulement ce qui manque.
+- **Attention** : les numéros de ligne sont ceux de `3ce9c87`. `src/jeu.js` a bougé depuis, au commit `120ba98`.
 
 Les réponses du Spark sont des brouillons : rien n'est intégré sans être lu, lancé et mesuré.
 
