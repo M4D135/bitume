@@ -94,7 +94,8 @@ Les scripts sont dans `verifications/phase2/` : `outils.mjs` contient les aides 
        formes libres, avec la marque BITUME et une ligne dans PROVENANCE.md, plus deux tests.
      - **voi-2** (moyen) : les numéros sont toujours blancs, illisibles sur une caisse claire.
    - **Le reste** est mineur : à trier. Un seul constat est incertain, `voi-5`.
-   - Le Spark rédige un premier jet par constat, dans `spark/resultats/` (voir § 5).
+   - Les premiers jets du Spark viennent de la file de la session parente (voir § 5). Partir de ces jets, sans
+     redemander au Spark.
 5. **Fin de phase** : David conduit un tour, puis on coche `PLAN-MAITRE.md` §5.
 
 **Décisions à faire trancher par David** (les critères de poids et d'équilibre « seront réglés en jouant avec David ») :
@@ -154,13 +155,31 @@ Douze demandes au Spark, une à la fois, à effort bas, sans mémoire, de 6 600 
   - `revue-jeu-1` et `2` : le diff de `src/jeu.js` ;
   - `revue-course` : le diff de `src/course.js` et de son test.
 
-**Seconde file**, pour la relecture de la phase 1 :
-- **Où** : `bitume-phase1-relecture/spark/`, dans le même dossier de notes.
-- **Contenu** : 21 demandes, une par constat. Chacune donne le texte du constat et le code voisin à `3ce9c87`, et
-  demande un avis sur le constat, la correction minimale en diff et un test qui échoue avant.
-- **Ordre** : grave, puis moyen, puis mineur. Elle démarre quand la première file a fini.
-- **Après la fin** : `./file-spark.sh` refait seulement ce qui manque.
-- **Attention** : les numéros de ligne sont ceux de `3ce9c87`. `src/jeu.js` a bougé depuis, au commit `120ba98`.
+**Relecture de la phase 1** : les premiers jets viennent de la file de la session parente. Elle compte 26 demandes,
+lancées à 23 h 15.
+- **Ses 01 à 13** sont les correctifs et les tests des constats, dans cet ordre :
+  1. silhouette (`voi-1`) ;
+  2. faces retournées ;
+  3. numéros ;
+  4. passage de rapport ;
+  5. rétroviseurs et témoin ;
+  6. main au levier ;
+  7. intérieur des carènes ;
+  8. `tube` vif ;
+  9. tests de `carene.js` ;
+  10. filet et bande ;
+  11. jonc ;
+  12. attaches ;
+  13. pouce.
+- **Ses 14 à 26** sont pour la session parente.
+- **Où** :
+  - à l'origine, dans le dossier temporaire de cette session :
+    `/private/tmp/claude-501/-Users-david--claude-spares-spare-P0ORBU/d8022a8d-0508-4111-8b89-0d5fd42d6565/scratchpad/spark-file/`,
+    avec des fichiers `NN-nom.mode.out` et un journal `journal.txt` ;
+  - en copie, toutes les 5 minutes jusque vers 2 h 45, dans `bitume-phase1-relecture/spark-session-parente/` du
+    même dossier de notes.
+- **Ma propre seconde file**, qui faisait doublon, est annulée.
+- **Attention** : ces jets sont écrits sur `3ce9c87` ; `src/jeu.js` a bougé depuis, au commit `120ba98`.
 
 Les réponses du Spark sont des brouillons : rien n'est intégré sans être lu, lancé et mesuré.
 
