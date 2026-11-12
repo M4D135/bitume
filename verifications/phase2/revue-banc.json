@@ -1,0 +1,138 @@
+{
+ "problemes": [
+  {
+   "critere": "Dérive et turbo, clavier : avec des impulsions de 0,20 ou 0,10 s, à 30, 60 et 120 Hz, le palier 3 est atteint",
+   "probleme": "Les 6 « ok » ne tiennent qu'à la piste de 400 m de large du banc (circuit() : largeur 400, limite 500). Pendant la charge, la voiture s'écarte de 58 à 89 m de la ligne. Sur la piste du jeu (LARGEUR 12, LIMITE 20 dans src/circuit.js), le même scénario s'annule entre 0,67 et 0,69 s (herbe) et le palier 3 n'est jamais atteint. Même résultat avec les réglages réels du clavier, guidage 0,15 et aide 0,35 de jeu.js : annulation entre 0,78 et 0,81 s. Le scénario envoie des impulsions de contre-braquage seul, avec rien entre deux, et ne tient donc pas la ligne. Une recherche rapide de 432 stratégies tout-ou-rien qui tiennent la ligne n'a trouvé, pour aucune des 6 cadences, de conduite au clavier qui atteigne le palier 3 sur 12 m. Le vrai verdict est donc probablement NON. La même piste de 400 m masque aussi les sorties de route des essais paliers, contre-braquage et aide.",
+   "correction": "// valeurs du jeu par défaut pour tous les essais de conduite\nfunction circuit({ R = 0, arc = Infinity, pente = 0, largeur = 12, limite = 20 } = {}) { ... }\n// essai clavier : réglages réels et ligne tenue au clavier\nconst cmd = commande({ guidage: .15, aide: .35 });\n// toutes les `on` s, lu à 30/60/120 Hz : touche de contre-braquage, touche vers l'intérieur ou rien\nconst u = -.5 - kd * dn - kp * psin - kb * (bn - .35);\ncible = u < seuil ? -s : (u > 0 ? s : 0);\nconst ok = n3 && !evs.some(e => e.type === 'deriveAnnulee') && dMaxJusquAuPalier3 < 5.5;",
+   "gravite": "haute",
+   "verifie": "Exécution : revue/s10_clavier.mjs (|d|, piste de 12 m, réglages du jeu) et revue/s18_clavier_ligne.mjs (stratégies qui tiennent la ligne). Lecture : src/circuit.js (LARGEUR, LIMITE) et src/jeu.js (commandesJoueur : guidage .15 au clavier)."
+  },
+  {
+   "critere": "Poids et équilibre : l'aide au volant rattrape la forte glisse aux niveaux 1 et 2",
+   "probleme": "Les 2 « ok » passent aussi sans aide. Même scénario (β = 20°, ω + 0,6 rad/s, volant figé, gaz 1) avec l'aide 0 : |β| maxi 21,9°, |β| final 2,37°, pas de tête-à-queue. Cela tient déjà les seuils du banc (< 60° et < 5°). Avec les aides 0,35 et 0,7 : 21,8° et 2,38°. La voiture se rattrape seule, ce qui explique aussi le NON de « sans correction → tête-à-queue ». Le verdict ne dépend donc pas de l'aide. L'aide ne change que le temps de retour sous 5° (0,83, puis 0,45, puis 0,39 s) et elle élargit la trajectoire (d mini −19,9, −31,5, −35,3 m). Le banc ne regarde ni l'un ni l'autre.",
+   "correction": "const essai = aide => { /* même départ */ return { tq, bMax, bFin, dMin }; };\nconst sans = essai(0);\nnoter('forte glisse sans correction : tête-à-queue', +sans.tq, 'oui', sans.tq);\nfor (const aide of [.35, .7]) {\n  const a = essai(aide);\n  noter(`forte glisse, aide ${aide} : rattrapée`, a.bMax * deg, 'tête-à-queue sans aide, rattrapée avec',\n        sans.tq && !a.tq && a.bFin * deg < 5 && a.dMin > -6);\n}\n// régler le choc de départ (β, ω) pour que l'aide 0 parte vraiment en tête-à-queue : sinon le critère n'est pas mesurable",
+   "gravite": "haute",
+   "verifie": "Exécution : revue/s4_aide.mjs (aides 0, 0,175, 0,35 et 0,7, au gaz 1 puis au gaz du pilote)."
+  },
+  {
+   "critere": "Dérive et turbo, tenue : en R 40, 120, 250 et 400 m, |d| < 5,5 m pendant 3 s au contre-braquage idéal",
+   "probleme": "Les 4 NON viennent du « contre-braquage idéal » du banc, qui n'est pas idéal. Sa loi s·clamp(−0,5 − 0,06·dn − 1,2·psin, −1, 0,3) braque vers l'intérieur dès que la voiture s'élargit. Le contre tombe alors à 0, la qualité à 0, la perte dépasse 0,38 s et la dérive s'annule d'elle-même : à 0,82 s en R 40, 0,86 s en R 120, 1,12 s en R 250. Le contre sort de la bande de charge 0,22 à 0,78 sur 66 pas sur 98, 73 sur 103 et 76 sur 134. Deux autres causes s'ajoutent. Le gaz est imposé à 1, une hypothèse que le texte ne pose pas. L'approche ne dure qu'1 s depuis l'état froid (1re, ω = 0) : au moment du bouton, d = −1,8 m et psi = −2° en R 120. Sur le modèle actuel, une petite grille de correcteurs (volant sur d, psi et β visé ; gaz modulé), avec 6 s d'approche, tient les 4 rayons sur une piste réelle de 12 m. |d| maxi : 1,51 / 3,75 / 2,34 / 1,58 m, dérive active pendant 3 s, palier 3 atteint. Le banc, lui, mesure 62,9 / 52,6 / 33,2 / 8,8 m et conclut « dérive perdue ». Plein gaz imposé : R 250 et R 400 tiennent aussi avec un meilleur volant (1,79 et 0,85 m), mais ni R 40 ni R 120 (38 et 17 m). Avec l'approche d'1 s, R 120 ne tient avec aucun des 2 160 correcteurs essayés (7,27 m au mieux). Moduler le gaz fait retomber la vitesse (R 120 : de 50,4 à 38,4 m/s en 3 s) : le choix du gaz est à faire trancher par David. En l'état, le banc pousserait à retoucher un modèle qui tient le critère.",
+   "correction": "// approche stabilisée ; « idéal » = meilleur d'une famille, cherché pour chaque rayon ; verdict sur [t0, t0 + 3 s]\nconst famille = p => (et, cmd) => {\n  const s = et.derive.sens || 1, dn = s * et.d, ps = s * et.psi, bn = s * et.beta;\n  cmd.volant = s * clamp(p.b - p.kd * dn - p.kp * ps - p.kb * (bn - p.bc), -1, .3);\n  cmd.gaz = PLEIN_GAZ ? 1 : clamp(p.g0 + p.gp * ps, 0, 1); // hypothèse à faire trancher par David\n};\nlet mieux = Infinity; // b {-.3,-.5,-.7} kd {0,.03,.1} kp {0,1,3,8} kb {0,1,3} bc {.2,.35} g0 {.2,.5,1} gp {0,5}\nfor (const p of grille) {\n  const r = deriver(Rv, vRef(Rv), 3.2, famille(p), { approche: 6, largeur: 12, limite: 20 });\n  const tr = r.trace.filter(x => x.t >= r.t0 && x.t <= r.t0 + 3);\n  if (tr.every(x => x.actif)) mieux = Math.min(mieux, Math.max(...tr.map(x => Math.abs(x.d))));\n}\nnoter(`dérive tenue en R ${Rv}`, mieux, '< 5,5', mieux < 5.5);",
+   "gravite": "haute",
+   "verifie": "Exécution : revue/s6_tenue.mjs (cause de la perte), revue/s7e_ideal_stabilise.mjs (grille avec 6 s et 1 s d'approche), revue/s7f_gaz1_stabilise.mjs (plein gaz imposé) et revue/s7g_piste12.mjs (piste de 12 m, glissières à 20 m)."
+  },
+  {
+   "critere": "Dérive et turbo, paliers : 0,7 / 1,3 / 2,1 s au mieux",
+   "probleme": "« Au mieux » est mesuré avec une seule conduite : contre-braquage à 0,5 dès le départ. Faute d'angle, la qualité reste sous 1 pendant 0,6 s, d'où 0,93 / 1,53 / 2,33 et un NON. Sur le même modèle, braquer à 0,7 vers l'intérieur pendant 0,1 s puis contre-braquer à 0,25 donne exactement 0,700 / 1,300 / 2,100 s (attente de 0,2 s plus les seuils 0,5 / 1,1 / 1,9) : le NON est faux. Le banc ne pose en outre qu'une borne haute (0,75 / 1,35 / 2,15) : une charge trop rapide passerait, alors que « au mieux » fixe la valeur (2,5 fois plus vite qu'avant, pas 5 fois). Enfin, l'essai se fait à 71,6 m de la ligne (37,7 m pour la meilleure conduite). Sur une piste de 12 m, la conduite du banc est annulée à 0,71 s. Il faut décider si « au mieux » s'entend en restant sur la piste.",
+   "correction": "let mieux = null;\nfor (const tau of [0, .05, .1, .15, .2]) for (const q of [.25, .4, .5, .6, .75]) for (const ti of [.45, .7, 1]) {\n  const r = deriver(120, vRef(120), 4, (et, cmd, t) => { cmd.volant = (t < tau ? ti : -q) * et.derive.sens; cmd.gaz = 1; },\n                    { largeur: SUR_PISTE ? 12 : 400, limite: SUR_PISTE ? 20 : 500 });\n  const p = paliers(r); if (!mieux || p[2] < mieux[2]) mieux = p;\n}\nnoter('paliers de dérive au mieux (s)', mieux.map(x => x.toFixed(2)).join(' / '), '0,7 / 1,3 / 2,1',\n      [.7, 1.3, 2.1].every((c, i) => Math.abs(mieux[i] - c) <= .05));",
+   "gravite": "haute",
+   "verifie": "Exécution : revue/s8_paliers.mjs (recherche de la meilleure conduite) et revue/s11_paliers_piste.mjs (|d|, piste de 12 m)."
+  },
+  {
+   "critere": "Poids et équilibre : dans un R 120 m à la limite, un contre-braquage donné en 0,3 s rattrape la voiture sans tête-à-queue",
+   "probleme": "(a) Le scénario dépend du critère du plein gaz. Sans glisse de 4°, rien n'est mesuré : le NON actuel (« pas de glisse provoquée ») ne fait que répéter l'échec du critère des 6°. (b) Quand une glisse existe, l'essai passe sans contre-braquer. Sur une variante plus survireuse (gripArriere 0,70), ramener le gaz de 1 à 0,5 sans toucher au volant donne « ok » : en 2e, |β| maxi 6,6° et final 2,9° ; en 3e, 5,3° et 2,9°. Le banc change le gaz en même temps que le volant, si bien qu'on ne sait pas lequel des deux rattrape. (c) La loi volant = −β/0,25 ignore la trajectoire : la voiture « rattrapée » finit entre 67 et 92 m de la ligne. (d) Le déclenchement |β| > 4° est absolu, alors que β vaut déjà environ 2,9° à la limite : sur un modèle un peu plus neutre, il partirait à t = 0 sans aucune glisse. Lecture de « donné en 0,3 s » : un délai de réaction, appliqué au pire cas. Plausible, à confirmer.",
+   "correction": "// glisse provoquée indépendamment du critère des 6° ; témoin sans contre-braquage ; gaz inchangé ; trajectoire surveillée\nconst rattrapage = contre => {\n  const { et, c, cmd } = tenir(120, vl120 * .98, 8), b0 = et.beta;\n  et.beta += KICK_B; et.omega += KICK_W; // réglés pour que le témoin parte en tête-à-queue\n  const k = commande({ volant: cmd.volant, gaz: cmd.gaz });\n  let t0 = -1, tq = false, bFin = 0, dMin = 0;\n  rouler(et, c, k, 4, (et, k, t) => {\n    if (t0 < 0 && et.beta - b0 > 4 / deg) t0 = t;            // virage à droite : glisse = β qui monte\n    if (contre && t0 >= 0 && t >= t0 + .3) k.volant = contre(et);\n    tq ||= Math.abs(et.beta) > Math.PI / 2; bFin = Math.abs(et.beta); dMin = Math.min(dMin, et.d);\n  });\n  return { t0, tq, bFin, dMin };\n};\nconst sans = rattrapage(null), avec = rattrapage(et => clamp(-et.beta / .25, -.8, .8));\nconst ok = sans.tq && avec.t0 >= 0 && !avec.tq && avec.bFin * deg < 3 && avec.dMin > -6;",
+   "gravite": "haute",
+   "verifie": "Exécution : revue/s5_survireur.mjs sur les variantes gripArriere 0,80 / 0,70 / 0,60 produites par revue/variante.mjs (loi du banc, gaz gardé, sans contre-braquage) ; β stationnaire de 2,87° relevé par revue/s2_lever.mjs."
+  },
+  {
+   "critere": "Dérive et turbo, gain : dans un R 80 m, dérive puis turbo III plus rapides de 0,1 à 0,3 s que l'adhérence seule",
+   "probleme": "Le scénario ne peut pas montrer de gain. Le palier 3 arrive au mieux 2,1 s après le départ de la dérive, donc en plein virage (l'arc dure environ 6,5 s). Après le lâcher, piloter() vise toujours vRef(80) et freine dès que v dépasse vRef + 1,17 m/s : un frein d'au moins 0,05 coupe le turbo. Un turbo III posé à mi-virage est coupé après 0,15 à 0,16 s sur 1,8 s (frein 0,05 à 0,06). Avec des correcteurs qui chargent vraiment, le lâcher tombe vers s = 108 à 132 m sur un arc de 251 m ; le turbo est coupé 0,07 à 1,1 s après et le gain reste négatif. De plus, le bouton est pressé à t = 0 depuis l'état froid (1re, ω = 0), sans approche. Enfin, le verdict n'exige pas qu'un turbo III ait eu lieu : le palier n'est qu'affiché, et il vaut 0 aujourd'hui.",
+   "correction": "// circuit : droite d'approche de 150 m, arc de 180° en R 80, puis 200 m de droite (circuit() à étendre)\n// dérive tenue jusqu'à la sortie, lâcher en sortie au palier 3 ; pas de frein tant que le turbo pousse\nif (avecDerive && enVirage) { cmd.derive = true; contre(et, cmd); } else cmd.derive = false;\nif (et.turbo.reste > 0) cmd.frein = 0;\nconst tu = evs.find(e => e.type === 'turbo');\nnoter('R 80 : dérive puis turbo III, gain (s)', g, '0,1 à 0,3', !!tu && tu.niveau === 3 && g >= .1 && g <= .3);",
+   "gravite": "haute",
+   "verifie": "Exécution : revue/s12b_turbo_coupe.mjs (turbo injecté à 2,5, 4,5 et 6 s), revue/s12d_gain_correcteur.mjs (dérives qui chargent) et revue/s12_gain.mjs. Lecture : mesures.mjs, lignes 245 à 263."
+  },
+  {
+   "critere": "Poids et équilibre : dans un R 120 m à la limite, plein gaz en 2e ou 3e fait passer l'arrière à au moins 6° de glisse",
+   "probleme": "La 2e n'est pas « à la limite ». La limite du R 120 (51,2 m/s, soit 184 km/h) demanderait 15 036 tr/min en 2e, au-delà du rupteur à 13 000. Le banc prend sans le dire 0,92 fois la pointe du rapport : la 2e roule à 36,8 m/s, soit 72 % de la limite et 55 % de la capacité latérale ; la 3e à 47,8 m/s, soit 93 %. En boîte manuelle, le rupteur coupe la poussée au bout de 0,45 s en 2e et de 1,07 s en 3e, sur un essai de 1,5 s. La glisse mesurée est |β| au centre de gravité, pas la dérive de l'arrière (écart d'environ 0,6° ici), et son sens (nez vers l'intérieur) n'est pas contrôlé. Enfin, le banc écrit deux lignes « ok » séparées, ce qui revient à lire « 2e et 3e », alors que la cible dit « 2e ou 3e ».",
+   "correction": "// 3e à la limite du R 120 ; 2e à la limite d'un rayon où elle est possible (vLimite(R) ≈ 0,9 × 40 m/s, R ≈ 60 à 70 m : à faire valider par David)\nfor (const [rap, Rr] of [[2, R2E], [3, 120]]) {\n  const vg = vLimite(Rr) * .98; /* tenir(Rr, vg, 8, { rapport: rap }) puis plein gaz */\n  bMax[rap] = Math.max(bMax[rap], P.sens * et.beta); // nez vers l'intérieur ; ou et.deriveAr selon la lecture retenue\n}\nnoter('plein gaz en 2e ou 3e : glisse de l\\'arrière (°)', Math.max(bMax[2], bMax[3]) * deg, '≥ 6', Math.max(bMax[2], bMax[3]) * deg >= 6);",
+   "gravite": "moyenne",
+   "verifie": "Exécution : revue/s3_gaz.mjs (vitesse rapportée à la limite, part de la capacité latérale, premier rupteur, régime à la limite pour chaque rapport)."
+  },
+  {
+   "critere": "Dérive et turbo, lissage : |d²β/dt²| ≤ 300°/s² à 60 et à 120 Hz",
+   "probleme": "Le lissage n'est mesuré que dans un scénario (R 120, contre-braquage fixe à 0,5) : 527 °/s² à 120 Hz et 384 à 60 Hz. Les autres dérives du banc montent bien plus haut, chaque fois au départ de la dérive : 1 290 et 960 pour la tenue en R 40, 957 et 552 en R 400, 729 et 489 avec les impulsions clavier. Une fois ce seul scénario réglé, le critère passerait alors que d'autres dépassent encore le seuil d'un facteur 4.",
+   "correction": "const scenarios = [rPaliers, ...rTenues, ...rClaviers, rLacher];\nfor (const hz of [120, 60]) {\n  const m = Math.max(...scenarios.map(r => d2betaMax(r.betas, hz)));\n  noter(`lissage de la glisse à ${hz} Hz (pire scénario)`, m * deg, '≤ 300', m * deg <= 300);\n}",
+   "gravite": "moyenne",
+   "verifie": "Exécution : revue/s9_lissage.mjs."
+  },
+  {
+   "critere": "Direction : plein braquage à 1,2 fois le lacet limite au plus, à 120, 200 et 300 km/h",
+   "probleme": "Le banc mesure en ligne droite avec un guidage de 0. Or jeu.js applique toujours un guidage de 0,15 au clavier et au doigt, qui ajoute la courbure au volant. En virage du même sens, le plein braquage atteint alors 1,25 et 1,30 en R 300, puis 1,33 et 1,36 en R 150, à 200 et 300 km/h. Le critère n'est donc vérifié qu'à la manette.",
+   "correction": "for (const [R, guidage] of [[0, 0], [150, .15], [300, .15]]) for (const kmh of [120, 200, 300]) {\n  const c = circuit({ R }), et = CD.creer(0, 0); et.v = kmh / 3.6;\n  rouler(et, c, commande({ volant: 1, guidage }), 2, ...);\n  // rapport mesuré à la vitesse courante : |omega| / (capaciteLaterale(v) / v)\n}",
+   "gravite": "moyenne",
+   "verifie": "Exécution : revue/s13_braquage.mjs. Lecture : src/jeu.js, commandesJoueur (guidage : analogique ? 0 : .15)."
+  },
+  {
+   "critere": "Dérive et turbo, coupure : le turbo est coupé par le frein, l'herbe et le contact",
+   "probleme": "Pour le contact, le banc appelle directement CD.annulerDerive : il vérifie la fonction, pas le contact. Sur une variante où la glissière n'appelle plus annuler(), il reste 0,975 s de turbo après le choc, et le banc affiche toujours « oui / oui / oui ». Le contact entre voitures (contacts de course.js vers annulerDerive, joueur seulement) n'est pas exercé.",
+   "correction": "// vrai choc : la glissière avant l'herbe (largeur 44, limite 20), voiture lancée vers le mur\nconst c2 = circuit({ largeur: 44, limite: 20 }), e3 = base(); e3.d = -19.9; e3.psi = -.3;\nlet choc = false;\nfor (let i = 0; i < 3; i++) for (const e of CD.pas(e3, commande({ gaz: 1 }), c2, DT)) choc ||= e.type === 'choc';\nconst k = choc && e3.turbo.reste === 0;\n// et un contact voiture contre voiture : deux voitures côte à côte dans B.course, un pas de B.course.pas",
+   "gravite": "moyenne",
+   "verifie": "Exécution : revue/s16_contact.mjs, puis mesures.mjs sur revue/var_mur_sans_coupure.js (ligne « turbo coupé » toujours ok). Lecture : src/course.js, ligne 217."
+  },
+  {
+   "critere": "Poids et équilibre : à −3 g, l'avant porte au moins 60 %",
+   "probleme": "Le banc impose chargeX = −3 g à 78 m/s. Le résultat dépend de la vitesse choisie, à cause de l'appui : 0,614 à 78 m/s, mais 0,598 à 86 m/s. En freinage réel, le critère passe : depuis 86 m/s, chargeX atteint −3 g à 79,3 m/s, avec 0,611. Il échoue en revanche depuis la pointe sous turbo : depuis 92 m/s, −3 g est atteint à 86,5 m/s, avec 0,597. La ligne « info » induit en erreur : elle lit chargeAv au pas de décélération maximale (t = 0,09 s), quand le filtre de 0,07 s n'en est qu'à −2,39 g, d'où 0,565. Le transfert vers l'arrière à l'accélération, prévu par l'objectif « Poids », n'est pas mesuré.",
+   "correction": "for (const v0 of [86, 92]) { // 92 m/s : pointe sous turbo\n  const et = CD.creer(0, 0); et.v = v0; let av = null, arme = false;\n  for (let i = 0; i < 300 && av === null; i++) {\n    CD.pas(et, commande({ frein: 1 }), c, DT);\n    if (arme) av = et.chargeAv; // chargeAv est calculé avec le chargeX du pas précédent\n    arme = et.chargeX <= -3 * G;\n  }\n  if (av !== null) noter(`charge avant à −3 g, freinage depuis ${v0} m/s`, av, '≥ 0,60', av >= .6);\n}\n// accélération : chargeAv < P.repartition en 2e plein gaz",
+   "gravite": "moyenne",
+   "verifie": "Exécution : revue/s1_charge.mjs et revue/s1b_charge92.mjs."
+  },
+  {
+   "critere": "Dérive et turbo : 30 appuis martelés ne donnent qu'un départ",
+   "probleme": "Le test accepte n ≤ 1, donc aussi 0 départ. Sur une variante où la dérive ne part jamais (deriveVolantMin 5), 30 appuis donnent 0 départ et le banc conclut « ok ».",
+   "correction": "noter('30 appuis martelés : départs de dérive', n, '1', n === 1);",
+   "gravite": "basse",
+   "verifie": "Exécution : revue/s15_marteler.mjs."
+  },
+  {
+   "critere": "Dérive et turbo, tenue : fenêtre de mesure et vitesse de départ",
+   "probleme": "La fenêtre de |d| va de 0,3 à 3,3 s après le départ : les 0,3 premières secondes ne comptent pas. « Dérive active » est lu à la fin du roulage, environ 4 s après le départ, au lieu de « pendant 3 s » : un cas de la recherche (R 120, plein gaz) tient 3 s puis se perd avant 4 s. En R 250 et R 400, vRef = 86 m/s (plafond VMAX du circuit) dépasse la pointe que la voiture peut tenir (85,3 m/s) : la dérive commence à 82,2 et 83,5 m/s.",
+   "correction": "const tr = r.trace.filter(x => x.t >= r.t0 && x.t <= r.t0 + 3);\nconst ok = tr.every(x => x.actif) && Math.max(...tr.map(x => Math.abs(x.d))) < 5.5;\n// indiquer la vitesse au départ de la dérive dans l'info",
+   "gravite": "basse",
+   "verifie": "Exécution : revue/s7b_ideal_gaz1.mjs (active 3 s mais plus à la fin), revue/s6_tenue.mjs et revue/s14_depart_pente.mjs (pointe de 85,3 m/s)."
+  },
+  {
+   "critere": "Direction : volant au clavier de 0 à 90 % en 120 ms au plus",
+   "probleme": "La montée ralentit avec la vitesse (tau = 0,030 + 0,0002·v), mais le banc s'arrête à 83 m/s (108 ms). À 86 m/s (pointe) et à 92 m/s (turbo), il faut 116,7 ms : à 3,3 ms du seuil, moins d'un pas de simulation.",
+   "correction": "for (const v of [0, 83, 86, 92]) { /* même mesure ; le pire cas est à la vitesse maximale */ }",
+   "gravite": "basse",
+   "verifie": "Exécution : fin de revue/s13_braquage.mjs."
+  },
+  {
+   "critere": "Départ : régime d'au moins 9 000 tr/min pendant les 0,5 s qui suivent le vert",
+   "probleme": "t est cumulé par additions : après 60 pas, t = 0,5000000000000007, et le pas de 0,5 s sort de la fenêtre. Le banc suppose aussi le gaz tenu 2 s sur la grille (régime au vert : 12 667 tr/min). Si le gaz n'est enfoncé qu'au vert, le minimum tombe à 4 557 tr/min : l'hypothèse est à écrire, ou à faire valider.",
+   "correction": "for (let i = 0; i < 1200; i++) {\n  CD.pas(et, cmd, c, DT); const t = (i + 1) * DT;\n  if (t <= .5 + 1e-9) rMin = Math.min(rMin, et.regime);\n  if (t100 < 0 && et.v * 3.6 >= 100) t100 = t;\n}",
+   "gravite": "basse",
+   "verifie": "Exécution : revue/s14_depart_pente.mjs."
+  },
+  {
+   "critere": "Dérive et turbo : repère de temps des paliers",
+   "probleme": "t0 est pris au rappel qui suit le pas où la dérive démarre (0,0083 s), alors que le e.t d'un événement est le début de son propre pas. Chaque palier est donc daté un pas trop tôt (−8,3 ms), dans le sens qui favorise le modèle.",
+   "correction": "const dep = r.evs.find(e => e.type === 'derive');\nconst niv = n => { const e = r.evs.find(e => e.type === 'niveau' && e.niveau === n); return e ? e.t - dep.t : Infinity; };",
+   "gravite": "basse",
+   "verifie": "Exécution : revue/s8_paliers.mjs (événement derive à 0,0000 s, t0 = 0,0083 s)."
+  },
+  {
+   "critere": "Dérive et turbo : chaque nouveau palier ouvre une fenêtre de 0,22 s",
+   "probleme": "Le banc compte 3 événements « fenetre » et affiche P.deriveFenDur, mais ne mesure pas la durée réelle de la fenêtre. Elle vaut 27 pas, soit 0,225 s, ce qui est correct aujourd'hui. Le libellé écrit que demande FEUILLE-DE-ROUTE.md n'est pas vérifié.",
+   "correction": "// après chaque palier, compter les pas où et.derive.fenetre > 0 et vérifier |n·DT − 0,22| ≤ DT",
+   "gravite": "basse",
+   "verifie": "Exécution : revue/s17_r80.mjs (27 pas par palier)."
+  },
+  {
+   "critere": "Dérive et turbo, gain : référence d'adhérence",
+   "probleme": "L'essai d'adhérence seule roule à vRef(80) = 38,81 m/s, sous la limite tenue par le même pilote (39,72 m/s). Il boucle en 10,600 s, contre 10,583 s à 0,98 fois la limite : 17 ms offerts à la dérive, sur une fenêtre de 0,2 s.",
+   "correction": "const vA = vLimite(80) * .98; piloter(et, c, enVirage ? vA : 90, cmd);",
+   "gravite": "basse",
+   "verifie": "Exécution : revue/s17_r80.mjs."
+  },
+  {
+   "critere": "Lancement du banc",
+   "probleme": "node mesures.mjs equilibre/conduite.origine.js échoue (MODULE_NOT_FOUND) : createRequire traite un chemin relatif sans ./ comme un nom de paquet. Seul un chemin absolu fonctionne.",
+   "correction": "import path from 'node:path'; req(path.resolve(chemin));",
+   "gravite": "basse",
+   "verifie": "Exécution directe depuis phase2/."
+  }
+ ],
+ "criteresAbsents": "Critères du texte que le banc ne mesure pas :\n- la charge qui passe sur l'arrière à l'accélération. Le modèle le fait (chargeAv 0,347 en 2e plein gaz), mais rien ne le vérifie ;\n- « freiner en entrée referme la trajectoire » : seul le lever de pied est mesuré ;\n- « accélérer élargit » sur les rapports longs. La voiture s'élargit bien (d final de −2,3 à −3,7 m dans revue/s3_gaz.mjs), mais rien ne le vérifie ;\n- une glisse naturelle tenue au contre-braquage, hors bouton de dérive ;\n- une direction « progressive sur toute la course du stick » : aucune mesure du lacet en fonction du volant à la manette ;\n- « braquageMax(v) partagé avec l'IA » : non vérifié. braquageMax n'est d'ailleurs appelé nulle part : course.js passe par volantPour ;\n- « l'IA garde la même loi que le joueur » : course.js n'est pas chargé par le banc ;\n- « se charge 2,5 fois plus vite » : aucune comparaison avec les anciens paliers (1,54 / 3,38 / 5,54 s).\n\nCritères qui figurent dans FEUILLE-DE-ROUTE.md (qui fait foi), mais ni dans le texte de la tâche ni dans le banc :\n- manette : zone morte de 0,07, exposant de 1,3 ;\n- aide du clavier à 0,15, devenue un guidage de 0,15 dans jeu.js. Aucun essai du banc ne l'applique ;\n- aspiration : au moins 3 m gagnés en 4 s à 10 m derrière un rival à 250 km/h, rien au-delà de 30 m ou de 2 m d'écart latéral ;\n- libellé écrit des fenêtres ;\n- effets (traces.js) et mouvement ;\n- IA : temps au tour entre 0,90 et 1,25 fois la référence, déterminisme.\n\nVérifiés sains par exécution :\n- lever de pied : 1,130, contre 1,002 avec le gaz gardé (revue/s2_lever.mjs) ;\n- transfert latéral : 0,977 ;\n- pente : écart de 0,588 m/s², pointe à 60 s convergée à 0,04 m/s près ;\n- volant relâché (67 ms) et contre-braquage (25 ms) ;\n- 0-100 km/h en 2,54 s ;\n- monotonie de tenir() autour de vLimite (revue/s19_vlimite.mjs).\n\nLes scripts de la revue sont dans /private/tmp/claude-501/-Users-david/7c7b7907-3ed8-4850-a261-8eeea111ad23/scratchpad/phase2/revue/ : outils.mjs reprend les aides du banc, variante.mjs fabrique les copies modifiées var_*.js. Aucun autre fichier n'a été touché. Pendant la revue, src/jeu.js, src/course.js et src/conduite.js changeaient dans le dépôt, tous trois sous des modifications non commitées. src/conduite.js était alors identique à conduite.origine.js."
+}

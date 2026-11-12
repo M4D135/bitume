@@ -89,10 +89,12 @@ verifier('cercle avec volant', () => {
   const c = creerFauxCircuit('cercle', 150, 12, 20);
   const et = B.conduite.creer(0, 0);
   et.v = 140 / 3.6;
-  const cmd = { gaz: 0.5, frein: 0, volant: 0.15, derive: false, haut: false, bas: false, boite: 'auto', aide: 0 };
+  const cmd = { gaz: 0.5, frein: 0, volant: 0, derive: false, haut: false, bas: false, boite: 'auto', aide: 0 };
   const dt = 1 / 120, vc = 140 / 3.6;
   let t = 0;
   while (t < 10) {
+    // phase 2 : le volant commande une part de l'adhérence avant ; celui qui tient la courbure vient de volantPour
+    cmd.volant = B.conduite.volantPour(et, 1 / 150);
     cmd.gaz = Math.min(1, Math.max(0, (vc - et.v) * 0.8 + 0.35));
     cmd.frein = Math.min(1, Math.max(0, (et.v - vc) * 0.3));
     B.conduite.pas(et, cmd, c, dt); t += dt;
@@ -244,7 +246,8 @@ verifier('boîte manuelle et rupteur', () => {
 verifier('turbo', () => {
   const c = creerFauxCircuit('ligne', 0, 12, 20);
   const a = B.conduite.creer(0, 0), b = B.conduite.creer(0, 0);
-  a.v = b.v = 60; a.rapport = b.rapport = 5; b.turbo.reste = 1.5;
+  // phase 2 : la poussée dépend du palier du turbo (ici le III)
+  a.v = b.v = 60; a.rapport = b.rapport = 5; b.turbo.reste = 1.5; b.turbo.duree = 1.5; b.turbo.niveau = 3;
   const cmd = { gaz: 1, frein: 0, volant: 0, derive: false, haut: false, bas: false, boite: 'auto', aide: 0 };
   for (let i = 0; i < 180; i++) { B.conduite.pas(a, cmd, c, 1 / 120); B.conduite.pas(b, cmd, c, 1 / 120); }
   assert(b.v - a.v > 6, 'gain ' + (b.v - a.v));

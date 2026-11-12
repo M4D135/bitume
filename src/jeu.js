@@ -19,10 +19,14 @@
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
   function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
   function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
-  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 68, tableau: 'reduit', demo: 'oui' };
+  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 68, tableau: 'reduit', demo: 'oui',
+    secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
+  reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
   const sauverReglages = () => ecrireStock('bitume.reglages', reglages);
-  const records = lireStock('bitume.records', {});
+  // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
+  const PHYSIQUE = 'p2', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const records = lireStock(CLE_RECORDS, {});
 
   function enBase64(f32) {
     const o = new Uint8Array(f32.buffer, f32.byteOffset, f32.byteLength);
@@ -125,7 +129,7 @@
     if (auto) course.joueur.ia.hab = 0.965;
     if (demo) course.joueur.nom = PILOTE_DEMO;
     if (type === 'chrono') {
-      const f = lireStock('bitume.fantome.' + CATALOGUE[i].id, null);
+      const f = lireStock(CLE_FANTOME + CATALOGUE[i].id, null);
       // fantôme gardé : seulement pour le même tracé (la longueur change si le générateur change)
       if (f && f.b64 && f.n > 1 && f.temps > 0 && f.longueur === c.longueur) {
         try { const d = deBase64(f.b64); if (d.length >= 4 * f.n) course.fantome = { meilleur: { donnees: d, n: f.n }, temps: f.temps }; } catch (e) { /* fantôme illisible : ignoré */ }
@@ -137,7 +141,8 @@
       camCap: null, profil: new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1), profilMeilleur: null,
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
-      real: demo ? B.realisateur.creer(graineCourse) : null, planVu: null, suivie: 0, enchaine: false
+      real: demo ? B.realisateur.creer(graineCourse) : null, planVu: null, suivie: 0, enchaine: false,
+      fx: B.traces.creer(course.voitures.length, graineCourse)
     };
     remplirPoses(S.cour, course); remplirPoses(S.prec, course);
     session = S;
@@ -156,7 +161,7 @@
       const p = liste[k] || (liste[k] = {});
       p.x = e.x - sa * et.d; p.y = et.y; p.z = e.z + ca * et.d;
       p.cap = e.cap + et.psi + et.beta; p.tangage = et.tangage; p.roulis = et.roulis;
-      p.braquage = et.volant * 0.30 / (1 + et.v / 28) * 2.2; p.roule = v.roule || 0;
+      p.braquage = (et.braquage || 0) * 2.2; p.roule = v.roule || 0; // braquage réel des roues, accentué pour se voir
     });
   }
   function melange(a, b, t, sortie) {
@@ -229,8 +234,9 @@
         // démo : un bouton ou un manche ramène au titre ; le bouton reste « déjà appuyé » pour ne rien valider au retour
         if (ecran === 'demo') { for (let i = 0; i < p.buttons.length; i++) pad.precedent[i] = appuye(i); if (geste) { activerSon(); sortirDemo(); } return; }
       }
-      const ax = p.axes[0] || 0, morte = .12, x = Math.abs(ax) < morte ? 0 : Math.sign(ax) * (Math.abs(ax) - morte) / (1 - morte);
-      pad.volant = Math.sign(x) * Math.pow(Math.abs(x), 1.6);
+      // zone morte de 0,07 puis exposant 1,3 : vif au centre sans à-coup, plein volant au bout de la course
+      const ax = p.axes[0] || 0, morte = .07, x = Math.abs(ax) < morte ? 0 : Math.sign(ax) * (Math.abs(ax) - morte) / (1 - morte);
+      pad.volant = Math.sign(x) * Math.pow(Math.abs(x), 1.3);
       pad.gaz = b(7); pad.frein = b(6); pad.derive = appuye(0) || appuye(2);
       if (enCourse()) {
         if (nouveau(5)) impulsions.haut = true;
@@ -274,7 +280,8 @@
     if (Math.abs(pad.volant) > Math.abs(volant)) volant = pad.volant;
     if (Math.abs(doigt.volant) > Math.abs(volant)) volant = doigt.volant;
     derive = derive || pad.derive || doigt.derive;
-    const cmd = { gaz, frein, volant, derive, haut: impulsions.haut, bas: impulsions.bas, boite: reglages.boite, aide: analogique ? reglages.aide * .5 : reglages.aide };
+    // aide au volant (rattrape les glisses) au niveau choisi ; guidage le long du virage au clavier et au doigt seulement
+    const cmd = { gaz, frein, volant, derive, haut: impulsions.haut, bas: impulsions.bas, boite: reglages.boite, aide: reglages.aide, guidage: analogique ? 0 : .15 };
     impulsions.haut = impulsions.bas = false;
     return cmd;
   }
@@ -333,6 +340,9 @@
       if (v.etat.rapport !== v.rapportVu) { v.rapportAvant = v.rapportVu === undefined ? v.etat.rapport : v.rapportVu; v.rapportVu = v.etat.rapport; v.tPassage = co.horloge; }
     }
     const t = S.prec; S.prec = S.cour; S.cour = t; remplirPoses(S.cour, co);
+    const tFx = S.banc ? performance.now() : 0;
+    B.traces.pas(S.fx, co, S.cour, S.suivie || 0, DT, ev);
+    if (S.banc) S.banc.effets += performance.now() - tFx;
     if (S.type === 'demo') traiterDemo(S, ev);
     else if (S.type !== 'vitrine') { traiter(S, ev); suivreJoueur(S); }
   }
@@ -399,18 +409,18 @@
     if (e.meilleur) S.profilMeilleur = S.profil.slice();
     S.profil.fill(-1);
     let texte = 'Tour ' + e.tour + ' · ' + chrono(e.temps);
-    if (!ancien || e.temps < ancien) {
+    if (!S.essai && (!ancien || e.temps < ancien)) {
       records[id] = { tour: e.temps, date: new Date().toISOString().slice(0, 10), mode: co.mode };
-      ecrireStock('bitume.records', records);
+      ecrireStock(CLE_RECORDS, records);
       if (ancien) texte += ' · record du circuit';
     }
     sousMessage(texte);
     if (co.mode === 'chrono') {
       // le fantôme gardé est celui du meilleur tour jamais fait ici
       const f = co.fantome;
-      const garde = lireStock('bitume.fantome.' + id, null);
-      if (f.meilleur && f.temps === e.temps && (!garde || garde.longueur !== co.c.longueur || e.temps < garde.temps))
-        ecrireStock('bitume.fantome.' + id, { temps: f.temps, n: f.meilleur.n, longueur: co.c.longueur, b64: enBase64(f.meilleur.donnees) });
+      const garde = lireStock(CLE_FANTOME + id, null);
+      if (!S.essai && f.meilleur && f.temps === e.temps && (!garde || garde.longueur !== co.c.longueur || e.temps < garde.temps))
+        ecrireStock(CLE_FANTOME + id, { temps: f.temps, n: f.meilleur.n, longueur: co.c.longueur, b64: enBase64(f.meilleur.donnees) });
       message(e.meilleur ? 'Meilleur tour' : chrono(e.temps), e.meilleur ? 'vert' : '', true);
     } else if (co.toursTotal - j.tours === 1) message('Dernier tour', 'ambre');
     else if (e.meilleur && j.tours > 1) message('Meilleur tour', 'vert', true);
@@ -463,7 +473,7 @@
     const o = B.voiture.mul(M, [OE[0] - T.lon * .02, OE[1] - Math.max(0, -T.lon) * .006, OE[2] - T.lat * .016]);
     const vib = (et.surface === 'vibreur' ? .006 : et.surface === 'herbe' ? .004 * Math.min(1, et.v / 20) : 0) + .0011 * Math.pow(clamp(et.v / 85, 0, 1), 2);
     return {
-      pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib, p.z + o[2]], yaw: p.cap + Math.PI / 2 + T.regard * .07,
+      pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib * reglages.secousses, p.z + o[2]], yaw: p.cap + Math.PI / 2 + T.regard * .07,
       pitch: p.tangage * .85 + Math.min(0, T.lon) * .012, roll: -p.roulis * .85 + T.lat * .014,
       fov: champCockpit(canvas.width / Math.max(1, canvas.height), et.v), near: .1, far: PORTEE_VUE
     };
@@ -532,7 +542,7 @@
     else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, co.horloge, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage);
     if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: PORTEE_VUE, fov: 40 }, cameraEssai(pj, cam));
     if (S.secousse > 0) {
-      const a = S.secousse * .05, t = horlogeReelle;
+      const a = S.secousse * .05 * reglages.secousses, t = horlogeReelle;
       cam.pitch += Math.sin(t * 61) * a * .5; cam.yaw += Math.sin(t * 47) * a * .35;
       S.secousse = Math.max(0, S.secousse - dtImage * 2.6);
     }
@@ -580,7 +590,11 @@
         sortie.push({ shape: 'cylinder', p: port.feux[k], s: [.56, .05, .56], r: S.rotLampe, mat: allume ? 5 : 7, color: allume ? [1, .14, .06] : [.1, .03, .03], emissive: allume ? 3 : 0 });
       }
     }
-    const q = reglages.qualite;
+    // traces de pneus, fumée et étincelles
+    const tFx = S.banc ? performance.now() : 0;
+    B.traces.dessiner(S.fx, sortie, cam.pos, S.fx.acc);
+    if (S.banc) S.banc.effets += performance.now() - tFx;
+    const q = S.banc ? S.banc.qualite : reglages.qualite;
     rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage });
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
     // En cockpit, la planche donne vitesse, rapport et régime : le tableau réduit retire plan et compteurs, qui
@@ -619,6 +633,7 @@
   const H = {};
   for (const id of ['h-pos', 'h-sur', 'h-tour', 'h-tours', 'h-actuel', 'h-meilleur', 'h-delta', 'h-delta-ligne', 'h-vitesse', 'h-rapport', 'h-regime', 'jauge-derive', 'classement', 'feux', 'carte', 'c-position', 'c-tour', 'message', 'sous-message']) H[id] = $(id);
   const segments = Array.from(H['jauge-derive'].querySelectorAll('i')), lampes = Array.from(H.feux.querySelectorAll('i'));
+  const etiquetteDerive = H['jauge-derive'].querySelector('.etiquette');
   const barre = H['h-regime'].querySelector('.barre');
   function texte(el, t) { if (el._t !== t) { el._t = t; el.textContent = t; } }
   function attr(el, nom, v) { if (el['_' + nom] !== v) { el['_' + nom] = v; el.setAttribute(nom, v); } }
@@ -676,6 +691,8 @@
       segments.forEach((sg, k) => style(sg, '--f', f[k].toFixed(2)));
       attr(H['jauge-derive'], 'data-niveau', String(dr.niveau));
       classe(H['jauge-derive'], 'fenetre', dr.fenetre > 0);
+      // chaque nouveau palier ouvre une fenêtre : lâcher dedans donne le turbo parfait
+      texte(etiquetteDerive, dr.fenetre > 0 ? 'Lâchez !' : 'Dérive');
       S.derniereJauge = co.horloge;
     }
 
@@ -828,9 +845,11 @@
   });
   for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).addEventListener('input', e => { reglages[nom] = +e.target.value; sauverReglages(); appliquerVolumes(); });
   $('v-champ').addEventListener('input', e => { reglages.champ = clamp(+e.target.value, 60, 105); $('v-champ-valeur').textContent = reglages.champ + '°'; sauverReglages(); });
+  $('v-secousses').addEventListener('input', e => { reglages.secousses = clamp(+e.target.value, 0, 1); $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %'; sauverReglages(); });
   function remplirReglages() {
     for (const nom of ['vue', 'boite', 'qualite', 'aide', 'tableau', 'demo']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
+    $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';
     for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).value = reglages[nom];
   }
   function retour() {
@@ -913,7 +932,7 @@
     if (tourne) {
       S.acc += dtReel;
       let n = 0;
-      while (S.acc >= DT && n < 14) { pasSimulation(S); S.acc -= DT; n++; }
+      while (S.acc >= DT && n < 14) { pasSimulation(S, !!S.banc); S.acc -= DT; n++; }
       if (n === 14) S.acc = 0;
     } else if (horlogeReelle - (S.imageFigee || 0) < .25) return; // image arrêtée : quatre images par seconde suffisent
     S.imageFigee = horlogeReelle;
@@ -959,13 +978,55 @@
     }
   }
   // Outil d'essai (console) : avance la séance de n secondes, la voiture du joueur confiée à l'IA si pilote est vrai.
+  // La séance devient d'essai : elle n'écrit plus ni record ni fantôme.
   function avancer(secondes, pilote) {
     const S = session; if (!S) return null;
+    S.essai = true;
     for (let k = 0, n = Math.round(secondes / DT); k < n && !S.course.termine; k++) pasSimulation(S, pilote);
     const j = S.course.joueur;
     return { phase: S.course.phase, tours: j.tours, position: j.position, meilleur: j.meilleur, termine: S.course.termine };
   }
-  window.BITUME_JEU = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer,
+  // Banc (console) : une course en qualité fixe (« high » par défaut ; le mode Auto masquerait les régressions), la
+  // voiture du joueur confiée à l'IA, grille et feux passés en simulation. Après une seconde de chauffe, il mesure
+  // l'intervalle entre deux images pendant 20 s, rend p50, p95 et la pire image en ms (objet JSON), puis revient à
+  // l'écran titre. La séance est d'essai : ni record ni fantôme.
+  function banc(options = {}) {
+    const duree = options.duree || 20, chauffe = options.chauffe ?? 1, qualite = options.qualite || 'high';
+    if (!rendu) return Promise.reject(new Error('rendu absent'));
+    if (!['low', 'auto', 'high'].includes(qualite)) return Promise.reject(new Error('qualité inconnue : ' + qualite));
+    lancer('course', clamp((options.circuit ?? reglages.circuit) | 0, 0, CATALOGUE.length - 1));
+    const S = session; S.essai = true; S.banc = { qualite, effets: 0 };
+    rendu.resize(qualite);
+    $('chargement').classList.add('fini');
+    aller('course');
+    while (S.course.phase !== 'course') pasSimulation(S, true);
+    return new Promise(rendre => {
+      const temps = [], effets = []; let t0 = 0, prec = 0;
+      const mesurer = t => {
+        const interrompu = session !== S || ecran !== 'course';
+        if (!t0) t0 = t;
+        const ecoule = (t - t0) / 1000;
+        if (!interrompu && prec && ecoule > chauffe) { temps.push(t - prec); effets.push(S.banc.effets); }
+        S.banc.effets = 0;
+        prec = t;
+        if (!interrompu && ecoule < chauffe + duree) { requestAnimationFrame(mesurer); return; }
+        const tri = temps.sort((a, b) => a - b), q = p => tri.length ? tri[Math.min(tri.length - 1, Math.floor(p * tri.length))] : 0;
+        const r = {
+          qualite, duree: +Math.max(0, ecoule - chauffe).toFixed(2), images: tri.length, p50: +q(.5).toFixed(2), p95: +q(.95).toFixed(2),
+          pire: +(tri.length ? tri[tri.length - 1] : 0).toFixed(2), fenetre: innerWidth + '×' + innerHeight, image: canvas.width + '×' + canvas.height,
+          circuit: CATALOGUE[S.i].nom, interrompu,
+          effets: { moyenne: +(effets.reduce((a, b) => a + b, 0) / Math.max(1, effets.length)).toFixed(3), p95: +(effets.sort((a, b) => a - b)[Math.floor(.95 * effets.length)] || 0).toFixed(3) },
+          traces: B.traces.compter(S.fx)
+        };
+        S.banc = null; rendu.resize(reglages.qualite);
+        if (session === S && ecran === 'course') aller('titre');
+        console.info('BITUME banc', JSON.stringify(r));
+        rendre(r);
+      };
+      requestAnimationFrame(mesurer);
+    });
+  }
+  window.BITUME_JEU = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer, banc,
     get son() { return son ? son.stats() : null; },
     demo: i => lancerDemo(i === undefined ? reglages.circuit : i), // lance la démo sans attendre les cinq secondes
     get pauseAuto() { return pauseAuto; }, set pauseAuto(v) { pauseAuto = !!v; },

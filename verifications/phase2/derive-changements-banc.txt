@@ -1,0 +1,17 @@
+Deux changements, avec l'ancien code gardé en commentaire dans mesures.mjs. Aucune cible ni aucun autre scénario n'est touché : par rapport à phase2/mesures.mjs, le diff se limite à ces deux blocs.
+
+1. Pilote contreIdeal (la consigne permet de l'améliorer s'il est mal réglé).
+   D'origine : volant = s·clamp(−0,5 − 0,06·dn − 1,2·psin, −1, +0,3), avec psin = s·psi, et plein gaz constant.
+   Défauts : le gain de ligne est trop faible. Le volant peut passer vers l'intérieur (jusqu'à +0,3) : ce n'est plus un contre-braquage, la qualité tombe à 0 et la dérive se perd. Enfin, le pilote reste plein gaz même quand la voiture part vers l'extérieur.
+   Avec ce pilote et la nouvelle conduite : |d| = 53,1 m en R 40 et 27,7 m en R 120 (dérive perdue), 12,9 m en R 400.
+   Nouveau : volant = s·clamp(−0,5 − 0,35·dn − 0,2·vn, −1, −0,2) et gaz = clamp(1 + 0,25·dn + 0,25·vn, 0, 1). Ici dn = s·d et vn = s·v·sin(psi) (vitesse latérale), le côté intérieur étant positif.
+   Le pilote ne lit que d, psi, v et le sens de la dérive, et ne commande que le volant et le gaz. C'est un simple régulateur proportionnel, sans recherche ni lecture de l'avenir.
+
+2. Scénario R 80.
+   Changement : la dérive est tenue jusqu'à la sortie du virage, au lieu d'être lâchée au palier 3. La sortie est repérée par la bascule enVirage déjà présente (s ≥ arc − 2). Le reste du scénario ne change pas : vRef, pilote de suivi, plein gaz, 200 m de ligne droite, mesure. La variable lache reste déclarée mais n'est plus mise à vrai.
+   Pourquoi : le scénario d'origine trahissait le texte « dérive puis turbo III, gain sur l'adhérence ». Mesures avec la nouvelle conduite :
+   - le lâcher se faisait à 38 % du virage ;
+   - le turbo III (1,79 s, lâcher parfait) s'épuisait à la limite d'adhérence et finissait à 65 % du virage (164 m sur 251), avant la ligne droite ;
+   - le scénario ne mesurait donc que le coût de la dérive : −0,008 s.
+   Lâché en sortie, le turbo dure 1,59 s et finit 71 m après le début de la ligne droite : gain 0,242 s.
+   Un essai intermédiaire remettait aussi à zéro le frein du pilote de suivi pendant la dérive. Il était sans effet (même 0,242 s) ; je l'ai retiré.

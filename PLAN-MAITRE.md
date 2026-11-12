@@ -258,10 +258,12 @@ une image sur deux en qualité « auto ». Demande une passe et une matière de 
 
 Détail dans « Chantier 2 » de `FEUILLE-DE-ROUTE.md` : il fait foi. Avant de commencer :
 
-- [ ] Lire le travail laissé dans `.claude/worktrees/wf_654723d2-ff3-1` (branche `physique/conduite`, réécriture
+- [x] Lire le travail laissé dans `.claude/worktrees/wf_654723d2-ff3-1` (branche `physique/conduite`, réécriture
   partielle de `src/conduite.js`, 377 lignes ajoutées, rien de commité ni de vérifié). Le reprendre s'il tient les
   tests de `verifications/conduite.test.mjs`, sinon repartir de `main`. Dire à David ce qui a été gardé.
-- [ ] Écrire le banc `BITUME_JEU.banc()` prévu au chantier 1 : il sert à juger la conduite sans la jouer.
+  Fait le 12/11 : le modèle à deux essieux est gardé comme base ; voir `SUIVI-PHASE-2.md` § 1.
+- [x] Écrire le banc `BITUME_JEU.banc()` prévu au chantier 1 : il sert à juger la conduite sans la jouer.
+  Fait le 12/11 ; la mesure au navigateur en 1390×1295 reste à faire.
 - [ ] Suivre l'ordre du chantier 2 : transfert de charge, sous-virage et survirage, dérive tenue au contre-braquage,
   reprise d'adhérence, frein à l'entrée de virage.
 
@@ -293,3 +295,7 @@ existe) ; voiture vivante ; peloton et voix des rivaux ; tours propres, records 
 - 12/11/2026 — Lot 1B fini (Opus 5.5).
 - 12/11/2026 — Lot 1C fini (Opus 5.5).
 - 12/11/2026 — Lot 1D livré (Opus 5.5), en attente de l'avis de David sur les captures.
+- 12/11/2026 — Phase 2 en cours (Opus 5.5), mise en pause à la demande de David. Sont faits : le modèle repris et
+  réglé, les effets, le banc d'images, les Secousses et les records versionnés. Restent : le banc des critères
+  réécrit, la vérification au navigateur et le lot de corrections de la phase 1. Point de reprise :
+  `SUIVI-PHASE-2.md`.

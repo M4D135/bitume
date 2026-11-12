@@ -19,7 +19,7 @@ ICI = pathlib.Path(__file__).resolve().parent
 SRC = ICI / 'src'
 DIST = ICI / 'dist'
 # Ordre d'exécution : le moteur, puis la simulation (circuit, conduite, course), le son, le décor, les carènes, la
-# voiture, le réalisateur de la démo, la coque.
+# voiture, les traces et la fumée, le réalisateur de la démo, la coque.
 MODULES = [
     'moteur/renderer.js',
     'circuit.js',
@@ -30,6 +30,7 @@ MODULES = [
     'carene.js',
     'main.js',
     'voiture.js',
+    'traces.js',
     'realisateur.js',
     'jeu.js',
 ]

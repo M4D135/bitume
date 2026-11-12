@@ -161,6 +161,40 @@ verifier('performance', () => {
   assert.ok(duree < 1500, '60s de course en moins de 1.5s, duree=' + duree + 'ms');
 });
 
+verifier('aspiration', () => {
+  // ligne droite d'essai : à 10 m derrière un rival à 250 km/h, au moins 3 m gagnés en 4 s sur l'air libre ;
+  // rien au-delà de 30 m ou de 2 m d'écart latéral
+  const vrai = B.circuit;
+  B.circuit = {
+    echantillon: () => ({ x: 0, y: 0, z: 0, cap: 0, courbure: 0, pente: 0, devers: 0, ligne: 0, vitesse: 0 }),
+    vibreurA: () => false, ecart: (c, a, b) => a - b
+  };
+  try {
+    const droite = { longueur: 1e6, largeur: 12, limite: 20 }, v0 = 250 / 3.6;
+    const cmd = { gaz: 1, frein: 0, volant: 0, derive: false, haut: false, bas: false, boite: 'auto', aide: 0 };
+    const gain = (derriere, cote) => {
+      const rival = B.conduite.creer(1000, 0), suiveur = B.conduite.creer(1000 - derriere, cote), seul = B.conduite.creer(0, 0);
+      for (const e of [rival, suiveur, seul]) { e.v = v0; e.rapport = 6; }
+      const V = [{ etat: rival }, { etat: suiveur }];
+      for (let i = 0; i < 480; i++) {
+        B.course.aspirer(droite, V);
+        B.conduite.pas(suiveur, cmd, droite, dt); B.conduite.pas(seul, cmd, droite, dt);
+        rival.v = v0; rival.s += v0 * dt;
+      }
+      return (suiveur.s - (1000 - derriere)) - seul.s;
+    };
+    const g10 = gain(10, 0), gCote = gain(10, 2.1);
+    assert.ok(g10 >= 3, 'gain à 10 m : ' + g10.toFixed(2) + ' m');
+    assert.ok(Math.abs(gCote) < .01, 'gain à 2,1 m de côté : ' + gCote.toFixed(3) + ' m');
+    // part d'aspiration selon la place derrière le rival
+    const part = (derriere, cote) => {
+      const V = [{ etat: B.conduite.creer(1000, 0) }, { etat: B.conduite.creer(1000 - derriere, cote) }];
+      B.course.aspirer(droite, V); return V[1].etat.aspiration;
+    };
+    assert.ok(part(29, 0) > 0 && part(30.5, 0) === 0 && part(10, 2.05) === 0 && part(10, 1.5) > 0, 'portée et côté');
+  } finally { B.circuit = vrai; }
+});
+
 console.log('---');
 console.log(nbOk + ' tests passes');
 process.exit(0);

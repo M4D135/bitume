@@ -43,6 +43,7 @@
     return tab[i] + (tab[j] - tab[i]) * (f - fi);
   }
   function sLigne(c, s) { return ramener(s - (c.depart || 0), c.longueur); }
+  const AIDE_IA = 0.35;
   const NEUTRE = Object.freeze({ gaz: 0, frein: 0, volant: 0, derive: false, haut: false, bas: false, boite: 'auto', aide: 0 });
 
   function creer(c, o = {}) {
@@ -167,15 +168,16 @@
     let dVise = clamp(lire(c, c.ligne, e.s + la) + ia.decal + ia.decalDep, -utile, utile);
     dVise = dMin > dMax ? e.d : clamp(dVise, dMin, dMax);
     const psiC = Math.atan2(dVise - e.d, la);
-    const omega = lire(c, c.courbure, e.s) * vit + 2.2 * (psiC - e.psi) * Math.max(vit, 5) / 10;
-    const dmax = 0.30 / (1 + vit / 28);
-    const volant = clamp(Math.atan(omega * B.conduite.PARAMS.empattement / Math.max(vit, 3)) / dmax, -1, 1);
+    // même loi que le joueur : le volant demande la part d'adhérence avant qui tient la courbure visée
+    const kVise = lire(c, c.courbure, e.s) + 2.2 * (psiC - e.psi) * Math.max(vit, 5) / (10 * Math.max(vit, 3));
+    const volant = B.conduite.volantPour(e, kVise);
 
     let gaz = 0, frein = 0;
     if (besoin > 0.7 * dec) frein = clamp((besoin - 0.7 * dec) / (0.3 * dec), 0, 1);
     else if (vit > cible + 2) frein = clamp((vit - cible - 2) / 4, 0, 1);
     else gaz = vit < cible - 1 ? 1 : clamp((cible - vit + 1) / 2, 0, 1);
-    return { gaz, frein, volant, derive: false, haut: false, bas: false, boite: 'auto', aide: 0 };
+    // l'IA conduit avec l'aide au volant légère, le réglage par défaut du joueur
+    return { gaz, frein, volant, derive: false, haut: false, bas: false, boite: 'auto', aide: AIDE_IA };
   }
 
   // Contacts : rectangles 4,5 × 1,9 m dans le repère (s, d), séparés à chaque pas.
@@ -269,6 +271,22 @@
     course.classement = tri.map(v => v.id);
   }
 
+  // Aspiration : dans le sillage d'une voiture à moins de 30 m devant et à moins de 2 m de côté, la traînée baisse
+  // (part de 0 à 1, lue par la conduite) ; elle croît quand on se rapproche et quand on s'aligne.
+  const ASPIRATION = { portee: 30, cote: 2 };
+  function aspirer(c, V) {
+    for (const a of V) {
+      let part = 0;
+      for (const b of V) {
+        if (b === a) continue;
+        const ds = ecart(c, b.etat.s, a.etat.s), dd = Math.abs(b.etat.d - a.etat.d);
+        if (ds > LONGUEUR && ds < ASPIRATION.portee && dd < ASPIRATION.cote)
+          part = Math.max(part, (1 - ds / ASPIRATION.portee) * (1 - dd / ASPIRATION.cote));
+      }
+      a.etat.aspiration = part;
+    }
+  }
+
   function pas(course, cmdJoueur, dt) {
     const ev = [];
     if (course.termine) return ev;
@@ -286,6 +304,7 @@
       }
     }
     const t0 = course.temps;
+    aspirer(c, V);
 
     for (let i = 0; i < V.length; i++) {
       const v = V[i];
@@ -353,5 +372,5 @@
     });
   }
 
-  B.course = { creer, pas, fantome, etatPilotes, commandesIA, PILOTES };
+  B.course = { creer, pas, fantome, etatPilotes, commandesIA, aspirer, PILOTES, ASPIRATION };
 })(globalThis.BITUME = globalThis.BITUME || {});

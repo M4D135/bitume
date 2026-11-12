@@ -30,12 +30,13 @@ Une seule page HTML, moteur FERRO (WebGL2), tout est calculé par le code.
 |---|---|
 | `src/circuit.js` | Tracé généré par graine : arcs et droites, relief, dévers, vibreurs, glissières, trajectoire, vitesse de référence |
 | `src/decor.js` | Décor tiré du circuit : nappes (chaussée, accotements, terrain, eau) et lots (arbres, tribunes, portique, glissières) |
-| `src/conduite.js` | Conduite en repère de Frenet (s, d) : boîte, rupteur, adhérence, sous-virage, dérive, turbo, glissières, attitude |
+| `src/conduite.js` | Conduite : modèle à deux essieux (transfert de charge, ellipse d'adhérence, lacet), intégré dans la caisse puis porté en repère de Frenet (s, d) ; boîte, départ, pente, aspiration, aide au volant, dérive chargée, turbo, glissières |
 | `src/course.js` | Grille, feux, IA, contacts, tours, drapeau, classement, fantôme du chrono |
 | `src/son.js` | Synthèse Web Audio : moteur, rivaux, pneus, vibreur, herbe, chocs, signaux |
 | `src/carene.js` | Carènes (peau entre sections en superellipse) et tubes lisses, en triangles pour les formes libres du moteur |
 | `src/main.js` | Main gantée du pilote en carènes et tubes (gant, paume, garde, manchette, sangle), prise à 3 h sur la branche ; la gauche en miroir |
 | `src/voiture.js` | Monoplace en primitives du moteur, cockpit vu du siège, fantôme translucide |
+| `src/traces.js` | Traces de pneus (512 bandes, effacées en 24 s), fumée et étincelles (48 chacune), à 30 Hz, en objets transparents |
 | `src/realisateur.js` | Réalisateur de la démo : choix du plan (caméra et voiture filmée) d'après la course |
 | `src/jeu.js` | Coque : boucle à pas fixe, commandes, caméras, rendu d'une image, affichage, menus, démo, stockage local |
 | `src/index.html`, `src/style.css` | Page (gabarit `/*STYLE*/`, `<!--MODULES-->`) et style, polices du système |
@@ -45,7 +46,7 @@ Une seule page HTML, moteur FERRO (WebGL2), tout est calculé par le code.
 | `deposer.sh`, `deploiement/` | Mise en ligne de la page du commit sur bitume.estrasse.fr, et son vhost Caddy |
 
 Chaque module s'écrit `(function (B) { … })(globalThis.BITUME = globalThis.BITUME || {})` et s'exécute aussi dans
-Node pour les tests. Ordre de chargement : renderer, circuit, conduite, course, son, decor, carene, main, voiture, realisateur, jeu.
+Node pour les tests. Ordre de chargement : renderer, circuit, conduite, course, son, decor, carene, main, voiture, traces, realisateur, jeu.
 
 Formes libres : `window.FRender.forme(nom, triangles)` enregistre une forme faite de triangles `[p0, p1, p2, n0, n1,
 n2]` tenus dans le cube unité (`B.carene.normaliser`) ; l'instance porte la vraie taille dans `s`. À appeler avant
@@ -59,6 +60,9 @@ n2]` tenus dans le cube unité (`B.carene.normaliser`) ; l'instance porte la vra
 - `voiture.attitude(cap, tangage, roulis)` = Ry(−cap)·Rz(tangage)·Rx(roulis), tangage > 0 nez levé.
 - Caméra FERRO : `yaw = cap + π/2`, `roll = −roulis`. Le champ (`fov`) est vertical, en degrés, borné de 10 à 110.
 - Simulation déterministe au pas fixe de 1/120 s, hasard par mulberry32 à graine.
+- Records et fantômes portent la version de la physique (`bitume.records.p2`) : changer la conduite oblige à la monter.
+- Mouvement : le réglage « Secousses » (0 à 100 %) règle les secousses des chocs et le tremblement du casque ; nul à
+  0 %, il part de 0 quand le système demande moins de mouvement (`prefers-reduced-motion`).
 
 ## Décisions de David à tenir (12/11/2026)
 
@@ -90,8 +94,14 @@ for t in verifications/*.test.mjs; do node "$t" | tail -1; done
 
 Dans le navigateur, servir `dist/` en local (`.claude/launch.json`, port 8781, 127.0.0.1) puis ouvrir `bitume.html`.
 Dans la console, `BITUME_JEU.avancer(secondes, true)` fait avancer la séance en confiant la voiture du joueur à l'IA,
-et `BITUME_JEU.session` donne l'état. Un volet de navigateur caché bride les images par seconde : ne mesurer les
-performances que volet visible.
+et `BITUME_JEU.session` donne l'état. La séance devient d'essai : elle n'écrit plus ni record ni fantôme. Un volet de
+navigateur caché bride les images par seconde, ou les arrête : ne mesurer les performances que volet visible.
+
+`await BITUME_JEU.banc({ duree: 20, qualite: 'high', circuit })` lance une course en qualité fixe, la voiture du
+joueur à l'IA, grille et feux passés. Après une seconde de chauffe, il mesure l'intervalle entre images pendant 20 s,
+revient à l'écran titre et rend en JSON `p50`, `p95` et `pire` (ms), le temps des effets (`effets`) et les effets
+vivants (`traces`). Il n'écrit ni record ni fantôme. Critère sur le Mac, en 1390×1295 : p95 ≤ 16,7 ms, pire
+≤ 29 ms.
 
 Autres outils d'essai de `BITUME_JEU` :
 - `pauseAuto = false` : la course ne se met plus en pause quand la page perd le focus (captures, banc) ;
