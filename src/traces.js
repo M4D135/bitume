@@ -33,7 +33,7 @@
       etincelles: particules(ETINCELLES, 'box', ETINCELLE, 2.4), prochaineEtincelle: 0,
       // par roue (voiture × 4 + roue) : bande ouverte, son numéro de pose, dernier point de contact et sa validité
       ouverte: new Int32Array(n * 4).fill(-1), genOuverte: new Int32Array(n * 4), valide: new Uint8Array(n * 4), dernier: new Float64Array(n * 12),
-      acc: 0, alea: graine32(graine || 1)
+      acc: 0, alea: graine32(graine == null ? 1 : graine)
     };
   }
 
@@ -151,7 +151,7 @@
     const ea = co.voitures[e.a].etat, eb = co.voitures[e.b].etat;
     const ca = a.cap - (ea.beta || 0), cb = b.cap - (eb.beta || 0);
     const vx = .4 * (Math.cos(ca) * ea.v + Math.cos(cb) * eb.v), vz = .4 * (Math.sin(ca) * ea.v + Math.sin(cb) * eb.v), sol = (a.y + b.y) / 2;
-    for (let n = 0, m = 4 + Math.min(6, Math.round(e.force || 0)); n < m; n++)
+    for (let n = 0, m = 4 + Math.min(6, Math.max(0, Math.round(e.force || 0))); n < m; n++)
       etinceler(fx, (a.x + b.x) / 2, sol + .3, (a.z + b.z) / 2, vx, 1.5, vz, sol, 6);
   }
 

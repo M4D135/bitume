@@ -164,13 +164,14 @@
 
   // glissière du côté donné ; repli sur c.limite pour un circuit sans limites par échantillon
   function limiteCote(c, s, cote) {
-    return c.limiteG && B.circuit.limiteA ? B.circuit.limiteA(c, s, cote) : c.limite;
+    return c.limiteG != null && B.circuit.limiteA ? B.circuit.limiteA(c, s, cote) : c.limite;
   }
 
   // ---------------------------------------------------------------- dérive et turbo
   function eteindre(dr) {
     dr.actif = false; dr.sens = 0; dr.duree = 0; dr.charge = 0; dr.niveau = 0; dr.palier = 0; dr.fenetre = 0;
     dr.qualite = 0; dr.contre = 0; dr.perte = 0; dr.grace = 0; dr.relache = 0;
+    dr.amorce = 0; dr.melange = 0; dr.tirage = 0;
   }
   function couperTurbo(etat) {
     const t = etat.turbo;
@@ -188,7 +189,7 @@
   function annuler(etat, ev) { const a = annulerDerive(etat); if (a) ev.push(a); }
   function lacher(etat, ev, enPiste) {
     const dr = etat.derive;
-    if (enPiste && dr.niveau >= 1 && dr.perte < P.deriveGrace) {
+    if (enPiste && dr.niveau >= 1 && dr.perte < P.derivePerte) {
       const parfait = dr.fenetre > 0 && dr.niveau === dr.palier, duree = P.turboDurees[dr.niveau] + (parfait ? P.turboBonus : 0);
       const t = etat.turbo;
       t.reste = duree; t.duree = duree; t.niveau = dr.niveau; t.parfait = parfait; t.ecoule = 0;
@@ -445,8 +446,9 @@
     if (vv > 1e-6) { fx -= m * resist * u / vv; fy -= m * resist * w / vv; }
     // pente et dévers : gravité le long de la tangente et vers la droite de la piste
     const thetaB = etat.psi + etat.beta, ct = Math.cos(thetaB), st = Math.sin(thetaB);
-    const gT = -G * e.pente / Math.sqrt(1 + e.pente * e.pente), gN = G * Math.sin(e.devers);
-    etat.pente = e.pente;
+    const pente = Number.isFinite(e.pente) ? e.pente : 0, devers = Number.isFinite(e.devers) ? e.devers : 0;
+    const gT = -G * pente / Math.sqrt(1 + pente * pente), gN = G * Math.sin(devers);
+    etat.pente = pente;
     fx += m * (gT * ct + gN * st); fy += m * (-gT * st + gN * ct);
 
     // Intégration semi-implicite : vitesses, puis positions
