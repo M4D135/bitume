@@ -372,5 +372,5 @@
     });
   }
 
-  B.course = { creer, pas, fantome, etatPilotes, commandesIA, aspirer, PILOTES, ASPIRATION };
+  B.course = { creer, pas, fantome, etatPilotes, commandesIA, aspirer, PILOTES, LIVREES, ASPIRATION };
 })(globalThis.BITUME = globalThis.BITUME || {});

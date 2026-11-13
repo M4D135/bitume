@@ -83,16 +83,16 @@ Les scripts sont dans `verifications/phase2/` : `outils.mjs` contient les aides 
    - **Où** : `~/Library/Application Support/Claude/side-session-notes/local_5593f513-cac7-4bfb-8e49-a01f28dce7e2/bitume-phase1-relecture/` ;
      `relecture/constats-phase1.md` pour les constats ; `relecture-wf/` pour les scripts de preuve et les correctifs
      mesurés.
-   - **À faire d'abord, au prochain commit** :
-     - **voi-1** (grave, régression du lot 1B) : le flanc est percé derrière la roue avant (x de 0,66 à 0,94, y de
-       0,12 à 0,30), et le décor se voit à travers dans toutes les vues extérieures. Correctif mesuré : ajouter
-       `{ x: .58, y0: .10, y1: .36, l: .22, n: 4 }` à la fin de `S_QUILLE` (`src/voiture.js`), plus un test de
-       silhouette : rayons latéraux sur x de 0,6 à 1,0 et y de 0,12 à 0,30.
-     - **carene-1 et rendu-1** (un seul défaut) : 90 faces retournées dans 7 formes libres (jonc, rétroviseurs,
-       arceau…), d'où des trous visibles. Cause : `triangle()` réoriente dans le cube unité après l'échelle de
-       `normaliser()`. Correction vérifiée : à `src/moteur/renderer.js:697`, garder l'ordre du registre pour les
-       formes libres, avec la marque BITUME et une ligne dans PROVENANCE.md, plus deux tests.
-     - **voi-2** (moyen) : les numéros sont toujours blancs, illisibles sur une caisse claire.
+    - **À faire d'abord, au prochain commit** :
+      - **voi-1** (grave, régression du lot 1B) **[fait 13/11, Spark]** : le flanc est percé derrière la roue avant (x de 0,66 à 0,94, y de
+        0,12 à 0,30), et le décor se voit à travers dans toutes les vues extérieures. Correctif mesuré : ajouter
+        `{ x: .58, y0: .10, y1: .36, l: .22, n: 4 }` à la fin de `S_QUILLE` (`src/voiture.js`), plus un test de
+        silhouette : rayons latéraux sur x de 0,6 à 1,0 et y de 0,12 à 0,30.
+      - **carene-1 et rendu-1** (un seul défaut) **[fait 13/11, Spark]** : 90 faces retournées dans 7 formes libres (jonc, rétroviseurs,
+        arceau…), d'où des trous visibles. Cause : `triangle()` réoriente dans le cube unité après l'échelle de
+        `normaliser()`. Correction vérifiée : à `src/moteur/renderer.js:697`, garder l'ordre du registre pour les
+        formes libres, avec la marque BITUME et une ligne dans PROVENANCE.md, plus deux tests.
+      - **voi-2** (moyen) **[fait 13/11, Spark]** : les numéros sont toujours blancs, illisibles sur une caisse claire.
    - **Le reste** est mineur : à trier. Un seul constat est incertain, `voi-5`.
    - Les premiers jets du Spark viennent de la file de la session parente (voir § 5). Partir de ces jets, sans
      redemander au Spark.
@@ -224,3 +224,22 @@ Règles rappelées le 12/11 :
   et le filtre essayé dégradait S3, S4, S7 et S9. S8 reste donc une mesure à régler, pas une validation.
 - **Validation** : toutes les suites `verifications/*.test.mjs` passent, y compris `conduite-criteres` et
   `relectures-phase2`. Commits poussés : `95295ce` (banc), `30e0264` (corrections et régressions).
+
+## Passage du Spark (13/11, lot de corrections de la phase 1)
+
+Repris des jets de la file de la session parente (`spark-session-parente/01 à 03`), vérifiés contre le code actuel.
+
+- **voi-1** : section `{ x: .58, y0: .10, y1: .36, l: .22, n: 4 }` ajoutée à `S_QUILLE` (`src/voiture.js`). Le test de
+  silhouette (rayons latéraux x 0,60→1,00, y 0,12→0,30, pas de 2 cm) trouvait **144 points percés** avant, **0** après.
+- **carene-1 / rendu-1** : `geometry()` émet désormais les formes libres dans l'ordre du registre, sans passer par
+  `triangle()` (marque BITUME, PROVENANCE n° 11). Nouveau `verifications/formes-libres.test.mjs` : faux WebGL2,
+  capture des tampons de `create()`, contrôle positions et normales contre le registre — **1036 défauts avant, 0
+  après** (27 768 triangles). Garde ajoutée dans `voiture.test.mjs` : chaque triangle du registre, ramené en vraie
+  grandeur (`p·taille + centre`, `n/taille`), a sa normale géométrique du côté de n0.
+- **voi-2** : l'encre des numéros se choisit selon le fond (blanc si contraste ≥ 3 avec le blanc, noir sinon) ;
+  `course.js` exporte `LIVREES`. Test sur les douze livrées : contraste minimal **3,19:1** ; le rouge du joueur garde
+  le blanc du plan maître.
+- `voiture.test.mjs` : 19 → 22 vérifications. Douze suites vertes. Le worktree `.claude/worktrees/` est intact.
+- **Reste du lot** : constats mineurs à trier (voi-5 incertain) et les jets 04 à 13 (passage de rapport, rétroviseurs
+  et témoin, main au levier, intérieur des carènes, `tube` vif, tests de `carene.js`, filet et bande, jonc, attaches,
+  pouce).

@@ -694,7 +694,9 @@
     // BITUME : formes libres, mêmes triangles aux trois niveaux de détail
     for(const [nom,triangles] of FORMES_LIBRES){
       begin(nom);
-      for(const t of triangles)triangle(t[0],t[1],t[2],t[3],t[4],t[5]);
+      // BITUME : ordre du registre, déjà juste en vraie grandeur ; triangle() réorienterait à tort dans le cube
+      // (l'échelle de normaliser() ne conserve pas les angles : 90 faces fines étaient retournées puis éliminées par CULL_FACE)
+      for(const t of triangles)indices.push(vertex(t[0],t[3]),vertex(t[1],t[4]),vertex(t[2],t[5]));
       end(nom);
     }
     return {vertices:new Float32Array(data),indices:new Uint32Array(indices),ranges};

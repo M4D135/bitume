@@ -8,6 +8,9 @@ const ici = path.dirname(fileURLToPath(import.meta.url));
 createRequire(import.meta.url)(path.join(ici, '..', 'src', 'carene.js'));
 createRequire(import.meta.url)(path.join(ici, '..', 'src', 'main.js'));
 createRequire(import.meta.url)(path.join(ici, '..', 'src', 'voiture.js'));
+createRequire(import.meta.url)(path.join(ici, '..', 'src', 'circuit.js'));
+createRequire(import.meta.url)(path.join(ici, '..', 'src', 'conduite.js'));
+createRequire(import.meta.url)(path.join(ici, '..', 'src', 'course.js'));
 const V = globalThis.BITUME.voiture;
 
 let compte = 0;
@@ -272,6 +275,64 @@ verifier('rétroviseurs : une voiture derrière à gauche se voit dans la glace 
   assert.ok(pres.s[2] > z(-2).s[2] * 1.5, 'taille selon la distance');
   // droit derrière, à 12 m : visible dans les deux glaces
   assert.equal(bord({ derriere: [{ x: -12, z: 0, couleur: [.1, .3, .8] }] }).length - vide.length, 4);
+});
+
+verifier('silhouette : le flanc est fermé derrière la roue avant (voi-1)', () => {
+  const sortie = [];
+  V.poser(mod, { p: [0, 0, 0], cap: 0, v: 0 }, sortie);
+  const tris = [];
+  for (const m of sortie) {
+    if (m.fx) continue;
+    const nom = /^bitume-(.*)$/.exec(m.shape)?.[1];
+    if (!nom) continue;
+    const f = V.FORMES[nom], M = m.m || [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+    const monde = v => [0, 1, 2].map(k => m.p[k] + M[0][k] * v[0] * f.taille[0] + M[1][k] * v[1] * f.taille[1] + M[2][k] * v[2] * f.taille[2]);
+    for (const t of f.tri) tris.push([monde(t[0]), monde(t[1]), monde(t[2])]);
+  }
+  const touche = (x, y) => tris.some(([a, b, c]) => {
+    const d1 = (b[0] - a[0]) * (y - a[1]) - (b[1] - a[1]) * (x - a[0]);
+    const d2 = (c[0] - b[0]) * (y - b[1]) - (c[1] - b[1]) * (x - b[0]);
+    const d3 = (a[0] - c[0]) * (y - c[1]) - (a[1] - c[1]) * (x - c[0]);
+    return (d1 >= 0 && d2 >= 0 && d3 >= 0) || (d1 <= 0 && d2 <= 0 && d3 <= 0);
+  });
+  let trous = 0;
+  for (let y = .12; y <= .301; y += .02) for (let x = .60; x <= 1.001; x += .02) if (!touche(x, y)) trous++;
+  assert.equal(trous, 0, `${trous} points percés à jour entre x 0,60 et 1,00, y 0,12 et 0,30`);
+});
+
+verifier('formes libres : chaque triangle est orienté vers l\'extérieur en vraie grandeur (garde rendu-1)', () => {
+  let n = 0;
+  for (const nom of Object.keys(V.FORMES)) {
+    const f = V.FORMES[nom];
+    for (let j = 0; j < f.tri.length; j++) {
+      const t = f.tri[j], p = r => [0, 1, 2].map(k => t[r][k] * f.taille[k] + f.centre[k]);
+      const [p0, p1, p2] = [p(0), p(1), p(2)];
+      const a = [0, 1, 2].map(k => p1[k] - p0[k]), b = [0, 1, 2].map(k => p2[k] - p0[k]);
+      const c = [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+      const nn = [0, 1, 2].map(k => t[3][k] / f.taille[k]);
+      assert.ok(c[0] * nn[0] + c[1] * nn[1] + c[2] * nn[2] > 0, `${nom}#${j} : normale géométrique opposée à n0`);
+      n++;
+    }
+  }
+  assert.ok(n > 5000, `${n} triangles contrôlés`);
+});
+
+verifier('numéros : encre lisible sur les douze livrées de course (voi-2)', () => {
+  const lum = c => .2126 * c[0] + .7152 * c[1] + .0722 * c[2];
+  const contraste = (a, b) => (Math.max(lum(a), lum(b)) + .05) / (Math.min(lum(a), lum(b)) + .05);
+  const COURSE = globalThis.BITUME.course;
+  assert.ok(COURSE && COURSE.LIVREES, 'course.js expose ses livrées');
+  for (const [i, lv] of COURSE.LIVREES.entries()) {
+    const m = V.modele({ couleur: lv[0], seconde: lv[1], numero: 27 });
+    const seg = m.corps.filter(p => p.shape === 'box' && p.s[2] === .003);
+    assert.equal(seg.length, 24, `livrée ${i} : 24 segments`);
+    const encre = seg[0].color;
+    assert.ok(seg.every(p => p.color.join() === encre.join()), `livrée ${i} : une seule encre`);
+    assert.ok(contraste(lv[0], encre) >= 3, `livrée ${i} : contraste ${contraste(lv[0], encre).toFixed(2)} < 3`);
+  }
+  // le rouge du joueur garde le blanc du plan maître
+  const joueur = mod.corps.filter(p => p.shape === 'box' && p.s[2] === .003)[0].color;
+  assert.ok(joueur[0] > .9 && joueur[1] > .9, 'blanc sur le rouge du joueur');
 });
 
 console.log(`${compte} vérifications réussies`);

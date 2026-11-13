@@ -65,7 +65,8 @@
   const deuxCotes = t => t.concat(C.miroir(t));
   // Sections (x : abscisse, y0–y1 : bas et haut, l : demi-largeur, n : exposant), de l'avant vers l'arrière, mesurées
   // sur les photos de la voiture de 1980 (trois quarts avant de haut).
-  const S_QUILLE = [{ x: 2.16, y0: .12, y1: .22, l: .10, n: 3 }, { x: 1.60, y0: .10, y1: .30, l: .15, n: 3 }, { x: .95, y0: .10, y1: .34, l: .20, n: 4 }];
+  // BITUME (voi-1) : la dernière section prolonge la quille sous les pontons ; sans elle, le flanc reste percé derrière la roue avant
+  const S_QUILLE = [{ x: 2.16, y0: .12, y1: .22, l: .10, n: 3 }, { x: 1.60, y0: .10, y1: .30, l: .15, n: 3 }, { x: .95, y0: .10, y1: .34, l: .20, n: 4 }, { x: .58, y0: .10, y1: .36, l: .22, n: 4 }];
   const S_FLECHE = [{ x: 2.08, y0: .22, y1: .25, l: .04, n: 3 }, { x: 1.60, y0: .27, y1: .34, l: .26, n: 4 }, { x: 1.05, y0: .30, y1: .40, l: .52, n: 5 }, { x: .60, y0: .30, y1: .43, l: .72, n: 5 }];
   // pontons : ils s'arrondissent devant, sous la flèche, et se resserrent derrière, à l'intérieur des roues arrière
   const S_PONTONS = [{ x: .66, y0: .14, y1: .40, l: .66, n: 6 }, { x: .60, y0: .10, y1: .43, l: .72, n: 6 }, { x: -.40, y0: .10, y1: .45, l: .72, n: 6 },
@@ -201,8 +202,10 @@
       P('box', [-1.35, .40, k * .45], [.05, .02, .32], MAT, CARBONE, AR());
       P('box', [-1.35, .22, k * .45], [.07, .02, .32], MAT, CARBONE, AR());
     }
-    // Numéro : grand chiffre blanc penché, posé sur le rouge du nez (lisible de face) et sur les flancs des pontons
+    // Numéro : grand chiffre penché, posé directement sur la caisse (lisible de face) et sur les flancs des pontons.
+    // BITUME (voi-2) : blanc sur le rouge du joueur, noir sur les caisses claires — encre choisie pour un contraste ≥ 3
     if (livree.numero) {
+      const lum = c => .2126 * c[0] + .7152 * c[1] + .0722 * c[2], encre = (lum(BLANC) + .05) / (lum(c1) + .05) >= 3 ? BLANC : NOIR;
       const texte = String(livree.numero).slice(0, 2), n = texte.length, penche = .21;
       // chiffre dans le plan (ex : sa droite, ey : son haut), centré en o, hauteur h ; colle(c) pose chaque segment sur
       // la peau
@@ -212,7 +215,7 @@
         for (let i = 0; i < n; i++) for (const nom of SEGMENTS[texte[i]] || '') {
           const [x, y, sx, sy, vertical] = places[nom], dx = x + (i - (n - 1) / 2) * pas + y * Math.tan(penche);
           const c = colle(o.map((v, k) => v + ex[k] * dx + ey[k] * y));
-          P('box', c, [sx, sy, .003], MAT, BLANC, Object.assign({ m: vertical ? [exp, eyp, nz] : [ex, ey, nz] }, extra));
+          P('box', c, [sx, sy, .003], MAT, encre, Object.assign({ m: vertical ? [exp, eyp, nz] : [ex, ey, nz] }, extra));
         }
       };
       // nez : devant la pointe du carénage, le haut du chiffre vers l'habitacle ; flancs : sur la partie droite du ponton

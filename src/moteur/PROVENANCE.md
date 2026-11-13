@@ -44,3 +44,8 @@ et lointain (`camera.near`, `camera.far`), la lampe torche éteinte (`fx.torch =
     unité, émises après les formes d'origine aux trois niveaux de détail, pour les carènes lisses et les mains des
     monoplaces (`src/carene.js`). Les index passent sur 32 bits (`UNSIGNED_INT`) ; `shadowCaster` accepte les formes
     libres de plus de 45 cm de long ou de large et de plus de 20 cm de haut.
+11. **Formes libres émises dans l'ordre du registre** : le registre garde l'ordre des sommets choisi en vraie grandeur
+    par `src/carene.js` ; `geometry()` ne passe plus par `triangle()` pour elles, car son test d'orientation se fait
+    dans le cube unité, où l'échelle inégale de `normaliser()` ne conserve pas les angles — 90 faces fines (jonc,
+    rétros, arceau, épaules, filet, pare-brise, casquette) étaient retournées puis éliminées par `CULL_FACE`, d'où des
+    trous dans la peau. `verifications/formes-libres.test.mjs` contrôle l'ordre émis contre le registre.
