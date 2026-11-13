@@ -199,3 +199,28 @@ Règles rappelées le 12/11 :
 - jamais OpenCode pour une relecture, ni aucun service en ligne qui verrait la mémoire KBZA ;
 - le Spark fait les premiers jets et les relectures, Claude cadre, intègre, teste et compare les captures ;
 - un agent à la fois, et aucun workflow sans que David le demande.
+
+## Passage de Codex (13/11)
+
+- **Banc** : `verifications/conduite-criteres.test.mjs` porte les critères de l'ancien banc et les critères
+  absents issus de S1 à S11 : charge, équilibre, départ, pente, aspiration, dérive clavier/manette, paliers,
+  tenue, braquage maximal, turbo, IA et contacts. Il passe en Node pur : **46/46 critères obligatoires**.
+  S8 reste affiché comme mesure ouverte : le pire lissage mesuré est **997,4 °/s²** (cible ≤ 300), avec
+  **269,1 °/s²** pour les paliers et **501,3 / 905,7 / 821,0 / 997,4 °/s²** pour les cas clavier
+  (60/120 Hz, impulsions 0,2/0,1 s). Aucun seuil n'a été abaissé pour le déclarer vert.
+- **Mesures de piste** : S6 atteint **0,70 / 1,31 / 2,11 s** (écart maximal 0,008 s) ; les tenues manette
+  R40/R120/R250/R400 restent respectivement à **2,417 / 1,124 / 0,327 / 1,083 m** de décalage maximal.
+  S7, sur droite 150 m + demi-tour R80 + sortie 200 m, donne **14,41 s** en adhérence contre **14,11 s**
+  en dérive, soit **0,300 s**, avec turbo III. Le turbo est aussi coupé par frein, herbe, glissière réelle
+  et contact réel entre voitures ; l'IA suit la même loi et reste finie après 60 s.
+- **Relectures intégrées** : correction de la limite gauche nulle, du seuil de perte avant turbo, de la remise
+  à zéro des variables de dérive à l'extinction, des valeurs pente/dévers non finies, de la graine de traces
+  nulle et de la force négative des étincelles. `verifications/relectures-phase2.test.mjs` fournit six
+  régressions dédiées ; elles passent toutes.
+- **Constats rejetés** : la relecture de l'aspiration de `course.js` est fausse sur le code actuel (écart signé,
+  longueur de voiture distincte, test existant vert). Les alertes défensives de `jeu.js` et les remarques de
+  `traces.js` sans reproduction déterministe ont été laissées intactes. La formule turbo proposée par une
+  relecture et les réglages de filtre de β n'ont pas été appliqués : aucune preuve isolée ne les justifiait,
+  et le filtre essayé dégradait S3, S4, S7 et S9. S8 reste donc une mesure à régler, pas une validation.
+- **Validation** : toutes les suites `verifications/*.test.mjs` passent, y compris `conduite-criteres` et
+  `relectures-phase2`. Commits poussés : `95295ce` (banc), `30e0264` (corrections et régressions).
