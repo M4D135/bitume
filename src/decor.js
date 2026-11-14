@@ -100,17 +100,28 @@
 
   // Index spatial des échantillons de l'axe (cases de 40 m).
   function indexAxe(c) {
-    const cases = new Map(), T = 40;
+    const T = 40;
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
     for (let i = 0; i < c.n; i++) {
-      const k = Math.floor(c.x[i] / T) * 65536 + Math.floor(c.z[i] / T);
-      let l = cases.get(k); if (!l) cases.set(k, l = []); l.push(i);
+      const x = Math.floor(c.x[i] / T), z = Math.floor(c.z[i] / T);
+      if (x < x0) x0 = x; if (x > x1) x1 = x;
+      if (z < z0) z0 = z; if (z > z1) z1 = z;
+    }
+    const nz = z1 - z0 + 1, cases = new Array((x1 - x0 + 1) * nz);
+    for (let i = 0; i < c.n; i++) {
+      const k = (Math.floor(c.x[i] / T) - x0) * nz + Math.floor(c.z[i] / T) - z0;
+      let l = cases[k]; if (!l) cases[k] = l = []; l.push(i);
     }
     // Plus proche échantillon et hauteur pondérée (inverse de la distance à la puissance 8 : continue, et exacte sur l'axe).
     function interroger(x, z, rayon) {
       const cx = Math.floor(x / T), cz = Math.floor(z / T), r = Math.ceil(rayon / T);
       let meilleur = -1, d2min = Infinity, somme = 0, poids = 0;
-      for (let a = cx - r; a <= cx + r; a++) for (let b = cz - r; b <= cz + r; b++) {
-        const l = cases.get(a * 65536 + b); if (!l) continue;
+      // Les cases hors des bornes sont vides. Garder exactement l’ordre a/b/i
+      // conserve la somme pondérée et les départages, donc la géométrie produite.
+      const amin = Math.max(cx - r, x0), amax = Math.min(cx + r, x1);
+      const bmin = Math.max(cz - r, z0), bmax = Math.min(cz + r, z1);
+      for (let a = amin; a <= amax; a++) for (let b = bmin; b <= bmax; b++) {
+        const l = cases[(a - x0) * nz + b - z0]; if (!l) continue;
         for (const i of l) {
           const dx = c.x[i] - x, dz = c.z[i] - z, d2 = dx * dx + dz * dz;
           if (d2 < d2min) { d2min = d2; meilleur = i; }
