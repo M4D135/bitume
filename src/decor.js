@@ -323,7 +323,14 @@
   }
 
   function construire(c, options = {}) {
-    const th = THEMES[c.theme] || THEMES.foret, g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
+    const th = Object.assign({}, THEMES[c.theme] || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
+    // l'eau ne noie jamais la piste : le niveau descend sous le point le plus bas de l'axe (le virage de
+    // Port-Sable plongeait à −5,8 sous le niveau −4 du thème cote, David 14/11)
+    if (th.eau !== undefined) {
+      let yMin = Infinity;
+      for (let i = 0; i < c.n; i++) yMin = Math.min(yMin, c.y[i]);
+      th.eau = Math.min(th.eau, yMin - 2.5);
+    }
     const w = c.largeur / 2, lim = limites(c), interroger = indexAxe(c);
     const nappes = nappesRoute(c, th, lim);
     const terrain = nappesTerrain(c, th, interroger, g);
@@ -466,10 +473,34 @@
       break;
     }
 
-    // Arbres : grille irrégulière, hors de l'enceinte du circuit, densité par taches.
-    const [bx0, bz0, bx1, bz1] = terrain.bornes, PAS_A = 11;
+    // Arbres : forêt continue (lot 1) — d'abord une haie le long du tour qui garantit un arbre à moins de
+    // 200 m de chaque échantillon et 20 par tronçon de 300 m, puis la grille irrégulière en taches qui
+    // remplit la campagne jusqu'au plafond. Hors de l'enceinte du circuit, mêmes exclusions des deux côtés.
+    const positionsArbres = [];
     let nombre = 0;
     const MAX = options.arbres === undefined ? 2600 : options.arbres;
+    for (let i = 0; i < c.n && nombre < MAX; i += 7) {   // un plan par 14 m de piste, de chaque côté
+      const f = cadre(c, i);
+      for (const cote of [-1, 1]) {
+        for (let essai = 0; essai < 3; essai++) {        // si la place est prise (eau, roche, tribunes), on tente une autre distance
+          const t = hache(i * 3 + essai, cote + 5, g + 57), d = 40 + t * 150;
+          const glisse = (hache(i, cote + essai + 7, g + 71) - .5) * 12;
+          const p = pointPlan(f, cote * d, 0), jx = p[0] + f.t[0] * glisse, jz = p[2] + f.t[2] * glisse;
+          const q = interroger(jx, jz, 120);
+          const dist = q.i < 0 ? 999 : q.d;
+          if (dist < 30) continue;
+          if (q.i >= 0 && Math.abs(B.circuit.ecart(c, 0, q.i * c.pas)) < 320 && dist < 90) continue;
+          const y = terrain.sol(jx, jz);
+          if (th.eau !== undefined && y < th.eau + 2.5) continue;
+          if (th.montagnes && y > 160) continue;
+          const objets = [], loin = [];
+          arbre(objets, loin, jx, y - .2, jz, th.essence, r);
+          ajouter(objets, loin, jx, jz); positionsArbres.push([jx, jz]); nombre++;
+          break;
+        }
+      }
+    }
+    const [bx0, bz0, bx1, bz1] = terrain.bornes, PAS_A = 11;
     for (let z = bz0 + 40; z < bz1 - 40 && nombre < MAX; z += PAS_A) for (let x = bx0 + 40; x < bx1 - 40 && nombre < MAX; x += PAS_A) {
       const jx = x + (hache(x, z, g) - .5) * PAS_A * .9, jz = z + (hache(z, x, g + 1) - .5) * PAS_A * .9;
       const q = interroger(jx, jz, 120);
@@ -484,7 +515,7 @@
       if (q.i >= 0 && Math.abs(B.circuit.ecart(c, 0, q.i * c.pas)) < 320 && dist < 90) continue; // abords des tribunes et des stands
       const objets = [], loin = [];
       arbre(objets, loin, jx, y - .2, jz, th.essence, r);
-      ajouter(objets, loin, jx, jz); nombre++;
+      ajouter(objets, loin, jx, jz); positionsArbres.push([jx, jz]); nombre++;
     }
 
     // Repères lointains selon le thème : phare et cabanons sur la côte, chalets en montagne, fermes en forêt.
@@ -539,6 +570,7 @@
     // enceinte : portion de la ligne droite bordée de tribunes et de stands (abscisses comptées depuis la ligne) ; une
     // caméra de bord de piste s'y place devant eux, pas derrière la glissière où elle serait dans les gradins.
     return { nappes: nappes.concat(terrain.liste), lots, atmosphere, portique, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
+      arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
   }
 

@@ -435,3 +435,18 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   `geometry()`, et entrée 12 dans `src/moteur/PROVENANCE.md`.
 - cockpit-7 (blocage de cardan dans `angles()`) : constat retiré par le contradicteur, rien à faire.
   Le lot de relecture est clos : sur les 22 constats, 21 sont traités, un est retiré.
+
+## Passage du Spark (14/11, forêt continue et eau sous la piste)
+
+- **Eau sous la piste (David, capture d'écran)** : à Port-Sable, le virage de s 680 plonge à −5,8 m sous le
+  niveau d'eau du thème cote (−4) : la route disparaissait sous le plan d'eau, garde-fou debout dans la mer.
+  Le niveau d'eau du thème est désormais borné : `niveauEau = min(thème, axe le plus bas − 2,5)` dans
+  `construire()`. Test ajouté (rouge avant : −5,79 contre −4).
+- **Forêt continue (lot 1 reste de la feuille de route)** : avant, 62 / 9 / 63 % du tour sans arbre à 200 m
+  (Val-Brûlé, Port-Sable, Haut-Col). Ajout d'une **haie le long du tour** : un plan toutes les 14 m de piste de
+  chaque côté, à 40–190 m de l'axe (3 tentatives de distance si la place est prise par l'eau, la roche ou les
+  tribunes), puis la grille en taches remplit jusqu'au plafond. `construire()` rend `arbres: [[x, z], …]`.
+- **Nouveau `verifications/decor.test.mjs`** (18 vérifications) : sur les 3 circuits du catalogue, moins de
+  10 % du tour sans arbre à 200 m (**0,0 % mesuré** maintenant), au moins 20 arbres par tronçon de 300 m hors
+  stands, plafond de 2 600 tenu (2 600, eau sous la piste, construction en moins de 150 ms (**58 ms au pire**).
+- Treize suites vertes.
