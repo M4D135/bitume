@@ -335,3 +335,19 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   plancher de l'habitacle ; tout premier impact tombant dans le volume d'habitacle (x −0,24→0,52, |z| ≤ 0,2,
   y ≤ 0,55) ne doit pas être rouge. **44/44 rayons rouges avant, 0 après** (le capot moteur, légitimement rouge
   et hors du volume, est exclu du compte). Douze suites vertes, banc conduite inchangé.
+
+## Passage du Spark (14/11, voi-6 : la bande des pontons redevient une peau décalée)
+
+- Constat (relecture e1, « Spark : vrai », correctif proposé non mesuré) : la bande c2 du bas des pontons
+  était une carène à part (demi-hauteur 0,037, exposant 6) ; à y 0,104 elle sortait de **19,3 cm** de la peau
+  (z 0,690 contre 0,497 à x −0,40) et finissait en fond plat à x 0,60.
+- Le correctif proposé (carène `y0−0,004, y1+0,004, l+0,004`) a été **essayé et mesuré : insuffisant** — un
+  décalage vertical sur une superellipse n'est pas un décalage le long de la normale (reste 6,6 cm de saillie
+  à (−0,8 ; 0,104), la face d'appel étant quasi verticale).
+- Correctif retenu (`src/voiture.js`) : construire la peau des pontons (`S_PONTONS.slice(1, 5)`, bouts ouverts),
+  décaler chaque sommet **le long de sa normale lissée** de 4 mm, garder les faces sous y 0,17. La bande suit
+  exactement l'arrondi du ponton, partout à 4 mm.
+- Test (`voiture.test.mjs`, 30 → 31) : chaque centre de face de la bande doit être à 2–8 mm du maillage du
+  ponton (distance point-triangle). **Ancien code : première face à 69 mm → échec ; nouveau : 31/31.** Le
+  compteur `formes-libres` descend à 27 667 triangles (la bande évidée est plus légère que le caisson).
+  Douze suites vertes.

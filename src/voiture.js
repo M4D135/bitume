@@ -79,7 +79,16 @@
   forme('quille', C.carene(S_QUILLE, { cotes: 16 }));
   forme('fleche', C.carene(S_FLECHE, { cotes: 28, pas: 5 }));
   forme('pontons', C.carene(S_PONTONS, { cotes: 28 }));
-  forme('bande', C.carene(S_PONTONS.slice(1, 5).map(s => Object.assign({}, s, { y0: s.y0 - .004, y1: s.y0 + .07, l: s.l + .004 })), { cotes: 28 }));
+  // voi-6 : la bande suit la peau des pontons, décalée de 4 mm le long des normales (une carène à part, à
+  // flancs presque droits, sortait jusqu'à 19 cm de la peau), coupée sous y0 + 0,07
+  {
+    const peau = C.carene(S_PONTONS.slice(1, 5), { cotes: 28, bouts: false }), decalee = [];
+    for (const t of peau) {
+      if ((t[0][1] + t[1][1] + t[2][1]) / 3 >= .17) continue;
+      decalee.push([0, 1, 2].map(r => [0, 1, 2].map(k => t[r][k] + t[3 + r][k] * .004)).concat([0, 1, 2].map(r => t[3 + r])));
+    }
+    forme('bande', decalee);
+  }
   {
     const exterieur = C.carene(S_GOUTTE, { cotes: 28, pas: 5, ouverture: OUVERTURE });
     forme('goutte', exterieur);

@@ -507,4 +507,29 @@ verifier('habitacle vu du haut : par l\'ouverture on voit la cuve sombre, pas le
   assert.equal(rouges, 0, `${rouges}/${total} rayons voient la carrosserie rouge à travers l'ouverture`);
 });
 
+verifier('bande des pontons : une peau décalée de 4 mm, pas un caisson à flancs droits (voi-6)', () => {
+  const sous = (a, b) => a.map((v, k) => v - b[k]);
+  const croix = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const scal = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const monde = f => f.tri.map(t => [0, 1, 2].map(r => [0, 1, 2].map(k => t[r][k] * f.taille[k] + f.centre[k])));
+  const B = monde(V.FORMES['bande']), P = monde(V.FORMES['pontons']);
+  const distTri = (p, [a, b, c]) => {
+    const e1 = sous(b, a), e2 = sous(c, a), ap = sous(p, a);
+    const d1 = scal(e1, e1), d2 = scal(e1, e2), d3 = scal(e1, ap), d4 = scal(e2, e2), d5 = scal(e2, ap);
+    const den = d1 * d4 - d2 * d2;
+    let u = den > 1e-12 ? Math.max(0, Math.min(1, (d4 * d3 - d2 * d5) / den)) : 0;
+    let v = den > 1e-12 ? Math.max(0, Math.min(1 - u, (d1 * d5 - d2 * d3) / den)) : 0;
+    return Math.hypot(...sous(p, a.map((x, k) => x + e1[k] * u + e2[k] * v)));
+  };
+  let pires = 0;
+  for (const t of B) {
+    const g = [0, 1, 2].map(k => (t[0][k] + t[1][k] + t[2][k]) / 3);
+    let d = Infinity;
+    for (const p of P) d = Math.min(d, distTri(g, p));
+    assert.ok(d >= .002 && d <= .008, `face de bande à ${(g[0]).toFixed(2)} ; ${g[1].toFixed(3)} ; ${g[2].toFixed(2)} : ${d.toFixed(3)} m de la peau du ponton, attendu 4 mm`);
+    pires = Math.max(pires, d);
+  }
+  assert.ok(B.length > 100, `${B.length} faces de bande`);
+});
+
 console.log(`${compte} vérifications réussies`);
