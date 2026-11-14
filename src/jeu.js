@@ -460,12 +460,14 @@
   }
 
   // ---------------------------------------------------------------- caméras
-  // Champ du cockpit : réglage en degrés horizontaux mesurés en 16:9 (68° par défaut, 41,6° verticaux, comme
-  // vroom-unreal). Plus large que 16:9, le champ vertical est gardé ; plus étroit, c'est le champ horizontal. Il
-  // s'ouvre de 13 % à pleine vitesse (47° verticaux en 16:9).
+  // Champ du cockpit : réglage en degrés horizontaux mesurés en 16:9 (60° par défaut, 41,6° verticaux, comme
+  // vroom-unreal). Plus large que 16:9, le champ vertical est gardé ; plus étroit, c'est le champ horizontal.
+  // En portrait (téléphone), on garde la diagonale du cadre de référence 16:9 : sinon le vertical dépasse 100°
+  // et le tableau de bord devient minuscule (David, 14/11). Il s'ouvre de 13 % à pleine vitesse (47° verticaux en 16:9).
   function champCockpit(aspect, v) {
     const t = Math.tan(clamp(+reglages.champ || 60, 60, 105) * Math.PI / 360);
-    const vertical = 2 * Math.atan(Math.max(t / (16 / 9), t / Math.max(.3, aspect))) * 180 / Math.PI;
+    const tv = aspect < 1 ? Math.hypot(t, t / (16 / 9)) / Math.hypot(1, aspect) : Math.max(t / (16 / 9), t / Math.max(.3, aspect));
+    const vertical = 2 * Math.atan(tv) * 180 / Math.PI;
     return clamp(vertical * (1 + .13 * clamp(v / 85, 0, 1)), 10, 110);
   }
   // La tête du pilote vit : elle part vers l'extérieur du virage et vers l'avant au freinage (2 cm au plus), le regard

@@ -457,3 +457,10 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   à moitié dans la tôle. Les deux voyants (contact vert, alerte rouge) reçoivent une **lunette de métal**
   noyée dans la tôle comme les vis des coins, et la lentille est posée dans la lunette ; écartement élargi
   (32 et 50 mm) pour que les lunettes ne se touchent plus. Douze suites vertes, cockpit-8 inchangé.
+
+## Passage du Spark (14/11, champ du cockpit en portrait)
+
+- Constat (David, téléphone en portrait) : à 60 degrés le vertical dépassait 100° (2·atan(tan 30°/0,46)),
+  tableau de bord minuscule et déformé. `champCockpit` garde désormais la **diagonale du cadre 16:9** quand
+  le rapport est plus étroit que 1:1 (portrait) : vertical 62° au lieu de 103° sur un 9:19,5. Paysage et
+  16:9 inchangés (David : 60 degrés est bon sur ordinateur et en paysage).
