@@ -132,4 +132,59 @@ verifier('miroir : orientation gardée, volume identique', () => {
   assert.equal(aretesLibres(m).length, 0);
 });
 
+const unitaire = v => { const l = Math.hypot(...v); return v.map(x => x / l); };
+const deg = c => Math.acos(Math.max(-1, Math.min(1, c))) * 180 / Math.PI;
+
+verifier('tube à six côtés : génératrices lisses, le vif suit le nombre de côtés (carene-3)', () => {
+  const t = C.tube([[0, 0, 0], [.12, 0, 0], [.2, .06, .04], [.24, .14, .1]], .01, { cotes: 6, pas: 4, bouts: false });
+  const parSommet = new Map();
+  for (const tri of t) {
+    const nf = unitaire(croix(sous(tri[1], tri[0]), sous(tri[2], tri[0])));
+    for (let i = 0; i < 3; i++) { const k = cle(tri[i]); if (!parSommet.has(k)) parSommet.set(k, []); parSommet.get(k).push({ f: nf, vn: tri[3 + i] }); }
+  }
+  let bruts = 0, controles = 0;
+  for (const entrees of parSommet.values()) {
+    const faces = entrees.map(e => e.f);
+    if (faces.length < 2) continue;
+    if (!faces.some(f => deg(scal(f, faces[0])) > 20 && deg(scal(f, faces[0])) < 80)) continue;
+    controles++;
+    const vn = entrees[0].vn;
+    if (faces.some(f => deg(scal(vn, f)) < 10)) bruts++;
+  }
+  assert.ok(controles > 50, `${controles} sommets à deux faces contrôlés`);
+  assert.equal(bruts, 0, `${bruts}/${controles} sommets collés à une seule face : arêtes restées vives`);
+});
+
+verifier('miroir : les normales suivent la permutation des sommets (garde carene-5)', () => {
+  const t = [[[0, 0, 0], [.1, 0, 0], [.1, .05, .02], [0, 0, 1], [0, .6, .8], [0, -.4, .9]]];
+  const m = C.miroir(t)[0], o = t[0], z = v => [v[0], v[1], -v[2]];
+  assert.deepEqual(m[0], z(o[0])); assert.deepEqual(m[1], z(o[2])); assert.deepEqual(m[2], z(o[1]));
+  assert.deepEqual(m[3], z(o[3])); assert.deepEqual(m[4], z(o[5])); assert.deepEqual(m[5], z(o[4]));
+});
+
+verifier('arêtes vives gardées : un dièdre de 90° ne se lisse pas (garde carene-5)', () => {
+  const A = [0, 0, 0], B = [1, 0, 0], Cc = [1, 0, 1], E = [1, 1, 0];
+  const l = C.lisser([[A, B, Cc], [B, A, E]]);
+  assert.ok(scal(l[0][3], l[1][4]) < .5, "l'arête de 90° est restée vive");
+  const l2 = C.lisser([[A, B, Cc], [B, A, E]], 100);
+  assert.ok(scal(l2[0][3], l2[1][4]) > .99, "à 100°, l'arête se lisse");
+});
+
+verifier('tube hors plan : chaque sommet à r ± 1 % de l\'axe lissé (garde carene-5)', () => {
+  const pts = [[0, 0, 0], [.1, 0, 0], [.15, .05, .05], [.15, .12, .12], [.1, .17, .15]], r = .01;
+  const t = C.tube(pts, r, { cotes: 10, pas: 4, bouts: false });
+  const n = pts.length, P = i => pts[Math.max(0, Math.min(n - 1, i))], axe = [];
+  for (let i = 0; i < n - 1; i++) for (let j = 0; j < 4; j++) {
+    const s = j / 4, p0 = P(i - 1), p1 = P(i), p2 = P(i + 1), p3 = P(i + 2), s2 = s * s, s3 = s2 * s;
+    axe.push([0, 1, 2].map(k => .5 * (2 * p1[k] + (-p0[k] + p2[k]) * s + (2 * p0[k] - 5 * p1[k] + 4 * p2[k] - p3[k]) * s2 + (-p0[k] + 3 * p1[k] - 3 * p2[k] + p3[k]) * s3)));
+  }
+  axe.push(pts[n - 1]);
+  for (const tri of t) for (let i = 0; i < 3; i++) {
+    const p = tri[i];
+    let d = Infinity;
+    for (const a of axe) d = Math.min(d, Math.hypot(...sous(p, a)));
+    assert.ok(Math.abs(d - r) <= r * .01 + 1e-9, `sommet à ${d.toFixed(5)} de l'axe, attendu ${r}`);
+  }
+});
+
 console.log(`carène : ${compte} vérifications passées`);

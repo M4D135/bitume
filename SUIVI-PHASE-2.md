@@ -243,3 +243,32 @@ Repris des jets de la file de la session parente (`spark-session-parente/01 à 0
 - **Reste du lot** : constats mineurs à trier (voi-5 incertain) et les jets 04 à 13 (passage de rapport, rétroviseurs
   et témoin, main au levier, intérieur des carènes, `tube` vif, tests de `carene.js`, filet et bande, jonc, attaches,
   pouce).
+
+## Passage du Spark (14/11, lot 2 des constats mineurs de la phase 1)
+
+Tiré des jets 04 à 13 de la session parente, mesuré avant dêtre appliqué. Six corrections, chacune tenue par un
+## Passage du Spark (14/11, lot 2 des constats mineurs de la phase 1)
+
+Tiré des jets 04 à 13 de la session parente, mesuré avant d'être appliqué. Six corrections, chacune tenue par un
+test rouge sur l'ancien code puis vert sur le nouveau.
+
+- **carene-3** : `tube()` adapte le vif au nombre de côtés (`vif ?? max(50, 360/cotes + 15)`). À six côtés, deux
+  faces voisines du tour dépassent 50° et chaque génératrice restait vive : **78/78 sommets collés à une seule
+  face avant, 0 après**.
+- **voi-3** : numéro de flanc recentré (centre y 0,275→0,262, hauteur 0,16→0,15) : il dépassait le filet
+  (haut 0,3684 → 0,3483, entre la bande 0,17 et le filet 0,357).
+- **voi-4** : le jonc de l'ouverture reçoit trois points par arc (avant et arrière) ; la corde de Catmull-Rom
+  bombait hors de l'ouverture (x 0,5461 → sous 0,545, bord à 0,52).
+- **voi-7** : attaches intérieures des triangles de suspension posées sur la peau de la quille (z 0,20→0,145 à
+  x 1,52 et 0,17 à x 1,18) ; le test lance un rayon depuis chaque sommet de l'anneau et exige un contact à moins
+  du rayon du tube.
+- **cockpit-1 / cockpit-5** : dans les rétroviseurs, le suiveur le plus proche s'enfonce plus que le lointain
+  (un seul lot de dessin, depthFunc LEQUAL : sans quoi le lointain recouvrait le proche) ; hauteur et largeur du
+  reflet bornées pour que caisse et pneus restent dans la glace.
+- **cockpit-8** : le témoin rouge s'allume aussi sous le ralenti de `conduite.js` (seuil pris dans `PARAMS`,
+  plus de 2 500 codé en dur — le ralenti est 4 000, le témoin ne s'allumait jamais).
+- **carene-5 (gardes, sans correction)** : `miroir` permute bien les normales avec les sommets, `lisser` garde
+  vive une arête de 90° et l'adoucit à 100°, et chaque sommet de `tube` reste à r ± 1 % de l'axe lissé.
+- `carene.test.mjs` : 10 → 14 vérifications ; `voiture.test.mjs` : 22 → 27. Douze suites vertes.
+- **Différé** (mesures insuffisantes ou non testables en Node) : carene-2 (cloisons intérieures de la goutte),
+  carene-4 (pouce, 16 px), cockpit-2/3/4/6 (jeu.js, rendu à voir), voi-5 (incertain), voi-6 (correctif non mesuré).

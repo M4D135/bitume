@@ -84,10 +84,13 @@
     const exterieur = C.carene(S_GOUTTE, { cotes: 28, pas: 5, ouverture: OUVERTURE });
     forme('goutte', exterieur);
     forme('goutte-dedans', C.carene(S_GOUTTE, { cotes: 28, pas: 5, ouverture: OUVERTURE, interieur: true }).slice(exterieur.length));
-    // jonc du bord de l'ouverture : il suit le bord gauche, l'arrière, le bord droit et l'avant de l'ouverture
+    // jonc du bord de l'ouverture : il suit le bord gauche, l'arc arrière, le bord droit et l'arc avant de l'ouverture
+    // (voi-4 : trois points par arc, sinon la corde de Catmull-Rom bombe hors de l'ouverture et passe sous la peau)
     const g = C.profil(S_GOUTTE), bord = [], w = OUVERTURE.angle / 2;
     for (let i = 0; i <= 6; i++) { const x = OUVERTURE.de + (OUVERTURE.a - OUVERTURE.de) * i / 6; bord.push(C.pointSection(g(x), Math.PI / 2 + w)); }
+    for (let k = 1; k <= 3; k++) bord.push(C.pointSection(g(OUVERTURE.a), Math.PI / 2 + w - 2 * w * k / 4));
     for (let i = 6; i >= 0; i--) { const x = OUVERTURE.de + (OUVERTURE.a - OUVERTURE.de) * i / 6; bord.push(C.pointSection(g(x), Math.PI / 2 - w)); }
+    for (let k = 1; k <= 3; k++) bord.push(C.pointSection(g(OUVERTURE.de), Math.PI / 2 - w + 2 * w * k / 4));
     forme('jonc', C.tube(bord, .012, { cotes: 8, ferme: true, pas: 3 }));
   }
   forme('moteur', C.carene(S_MOTEUR, { cotes: 24 }));
@@ -106,7 +109,8 @@
     // suspension avant : basculeur supérieur noir, large à la coque et fin à la roue ; triangle inférieur et biellette
     const versZ = [[0, 0, 1], [0, 1, 0], [-1, 0, 0]];
     forme('basculeurs', deuxCotes(C.transformer(C.carene([{ x: 0, y0: .325, y1: .365, l: .075, n: 4 }, { x: .43, y0: .330, y1: .350, l: .028, n: 3 }], { cotes: 12, pas: 2 }), versZ, [1.35, 0, .28])));
-    forme('triangles', deuxCotes([].concat(C.tube([[1.52, .15, .20], [1.35, .17, .71]], .011, { cotes: 6 }), C.tube([[1.18, .15, .20], [1.35, .17, .71]], .011, { cotes: 6 }),
+    // voi-7 : attaches intérieures posées sur la peau de la quille (demi-largeur ≈ 0,143 à x 1,52 et 0,167 à x 1,18, y 0,15)
+    forme('triangles', deuxCotes([].concat(C.tube([[1.52, .15, .145], [1.35, .17, .71]], .011, { cotes: 6 }), C.tube([[1.18, .15, .17], [1.35, .17, .71]], .011, { cotes: 6 }),
       C.tube([[1.47, .29, .22], [1.45, .30, .70]], .008, { cotes: 6 }))));
   }
   // arceau de sécurité derrière le casque
@@ -225,7 +229,8 @@
       const f = C.profil(S_FLECHE), xN = 1.62, s0 = f(xN + .1), s1 = f(xN - .1), ey = norme([-.2, s1.y1 - s0.y1, 0]);
       chiffres([xN, f(xN).y1, 0], [0, 0, -1], ey, .18, c => [c[0], dessus(f(c[0]), c[2]) + .004, c[2]]);
       const p = C.profil(S_PONTONS);
-      for (const k of [-1, 1]) chiffres([-.62, .275, k * .72], [k, 0, 0], [0, 1, 0], .16, c => [c[0], c[1], k * (flanc(p(c[0]), c[1]) + .004)], AR());
+      // voi-3 : numéro de flanc calé entre la bande basse (haut y 0,17) et le filet (bas y 0,357)
+      for (const k of [-1, 1]) chiffres([-.62, .262, k * .72], [k, 0, 0], [0, 1, 0], .15, c => [c[0], c[1], k * (flanc(p(c[0]), c[1]) + .004)], AR());
     }
     // Boîte, échappements du douze-cylindres à plat, aileron arrière blanc sur mât central, dérives rouges
     P('box', [-1.80, .28, 0], [.50, .28, .34], METAL_MAT, [.3, .31, .33], AR());
@@ -399,9 +404,10 @@
       mettre('cylinder', plus(centre, [pn, .002]), [.008, .005, .008], METAL_MAT, ARGENT, rond);
     }
     // Rangée du bas : deux interrupteurs à levier, témoin vert du contact, témoin rouge (ralenti ou surrégime)
+    // voi-8 (cockpit-8) : le régime ne descend jamais sous le ralenti de conduite.js ; seuil pris dans PARAMS
     for (const a of [-.046, -.034]) { mettre('cylinder', sur(a, -.043, .011), [.010, .006, .010], METAL_MAT, ARGENT, rond); mettre('box', sur(a, -.039, .019), [.003, .011, .003], METAL_MAT, ARGENT, cadre); }
     mettre('sphere', sur(.034, -.043, .012), [.009, .009, .009], 5, [.14, .9, .3], null, { emissive: 1.1 });
-    const alerte = regime > 12600 || regime < 2500;
+    const ralenti = B.conduite.PARAMS.ralenti, alerte = regime > 12600 || regime < ralenti + 300;
     mettre('sphere', sur(.046, -.043, .012), [.009, .009, .009], 5, alerte ? [1, .14, .05] : [.2, .03, .02], null, alerte ? { emissive: 1.8 } : undefined);
     // Rapport à gauche, vitesse à droite, en segments ambre
     const chiffre = (texte, centre, h) => {
@@ -492,9 +498,12 @@
         const b = .55 - v.x, a = v.z - zc, f = (Math.atan2(a, b) - k * .105) / .28;
         if (b < 2 || b > 90 || Math.abs(f) > 1) continue;
         const dist = Math.hypot(a, b), large = borner(1.9 / dist / .56 * GL, .005, GL * .55), haut = borner(1.0 / dist / .23 * GH, .004, GH * .62);
-        const zi = borner(zc + f * GL / 2, zc - GL / 2 + large / 2, zc + GL / 2 - large / 2), yi = y - GH * .08 - haut * .3;
-        dans('box', [x - .0012, yi, zi], [.003, haut, large], LAQUE, v.couleur || c2);
-        dans('box', [x - .0018, yi - haut * .34, zi], [.003, haut * .34, large * 1.08], MAT, [.03, .03, .035]);
+        // cockpit-1 : le suiveur le plus proche est enfoncé plus profond dans la glace (un seul lot, depthFunc LEQUAL) ;
+        // cockpit-5 : hauteur et largeur bornées pour que caisse et pneus restent dans la glace
+        const zi = borner(zc + f * GL / 2, zc - GL / 2 + .54 * large, zc + GL / 2 - .54 * large),
+          yi = borner(y - GH * .08 - haut * .3, y - GH / 2 + .51 * haut, y + GH / 2 - haut / 2), xi = x - .0012 - .001 * (2 - n);
+        dans('box', [xi, yi, zi], [.003, haut, large], LAQUE, v.couleur || c2);
+        dans('box', [xi - .0006, yi - haut * .34, zi], [.003, haut * .34, large * 1.08], MAT, [.03, .03, .035]);
         n++;
       }
     }

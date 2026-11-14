@@ -207,7 +207,9 @@
         avant = ici;
       }
     }
-    return lisser(faces, options.vif);
+    // peu de côtés : deux faces voisines du tour dépassent le vif de 50° et chaque génératrice resterait vive ;
+    // on adapte le seuil pour que le cercle balayé reste lisse (75° pour 6 côtés)
+    return lisser(faces, options.vif ?? Math.max(50, 360 / cotes + 15));
   }
 
   // ------------------------------------------------------------------ outils

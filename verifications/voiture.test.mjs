@@ -335,4 +335,77 @@ verifier('numéros : encre lisible sur les douze livrées de course (voi-2)', ()
   assert.ok(joueur[0] > .9 && joueur[1] > .9, 'blanc sur le rouge du joueur');
 });
 
+verifier('numéro de flanc : calé entre la bande basse et le filet (voi-3)', () => {
+  const seg = mod.corps.filter(p => p.shape === 'box' && p.s[2] === .003 && Math.abs(p.o[2]) > .6);
+  assert.equal(seg.length, 16, `${seg.length} segments de flanc`);
+  const bas = Math.min(...seg.map(p => p.o[1] - p.s[1] / 2)), haut = Math.max(...seg.map(p => p.o[1] + p.s[1] / 2));
+  assert.ok(bas > .17, `bas du numéro à ${bas.toFixed(4)} : sous la bande (0,17)`);
+  assert.ok(haut < .357, `haut du numéro à ${haut.toFixed(4)} : sous le filet (0,357)`);
+});
+
+verifier('jonc de l\'ouverture : suit le bord, ne bombe pas hors de l\'ouverture (voi-4)', () => {
+  const f = V.FORMES['jonc'];
+  let xMax = -Infinity, xMin = Infinity;
+  for (const t of f.tri) for (let r = 0; r < 3; r++) for (const k of [0]) {
+    const x = t[r][k] * f.taille[k] + f.centre[k];
+    xMax = Math.max(xMax, x); xMin = Math.min(xMin, x);
+  }
+  assert.ok(xMax < .545, `jonc bombe à x ${xMax.toFixed(4)} au-delà du bord avant (0,52)`);
+  assert.ok(xMin > -.265, `jonc bombe à x ${xMin.toFixed(4)} au-delà du bord arrière (−0,24)`);
+});
+
+verifier('suspension avant : les attaches intérieures touchent la peau de la quille (voi-7)', () => {
+  const sous = (a, b) => a.map((v, k) => v - b[k]);
+  const croix = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const scal = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const f = V.FORMES['quille'];
+  const tris = f.tri.map(t => [0, 1, 2].map(r => [0, 1, 2].map(k => t[r][k] * f.taille[k] + f.centre[k])));
+  const frappe = (o, d) => {
+    let best = Infinity;
+    for (const [a, b, c] of tris) {
+      const e1 = sous(b, a), e2 = sous(c, a), tvec = sous(o, a), p = croix(d, e2), q = croix(tvec, e1);
+      const det = scal(e1, p); if (Math.abs(det) < 1e-12) continue;
+      const inv = 1 / det, u = scal(tvec, p) * inv; if (u < -1e-9 || u > 1 + 1e-9) continue;
+      const v = scal(d, q) * inv; if (v < -1e-9 || u + v > 1 + 1e-9) continue;
+      const t = scal(e2, q) * inv; if (t > 1e-9 && t < best) best = t;
+    }
+    return best;
+  };
+  const g = V.FORMES['triangles'];
+  const pts = g.tri.flatMap(t => [0, 1, 2].map(r => [0, 1, 2].map(k => t[r][k] * g.taille[k] + g.centre[k])));
+  const touche = (x, y) => { const anneau = [...new Set(pts.filter(p => Math.abs(p[0] - x) < .012 && Math.abs(p[1] - y) < .012 && p[2] > 0)
+    .map(p => p.map(v => v.toFixed(6)).join()))].map(s => s.split(',').map(Number));
+    assert.ok(anneau.length >= 6, `pas d'attache à x ${x}`);
+    return Math.min(...anneau.map(p => Math.min(frappe(p, [0, 0, 1]), frappe(p, [0, 0, -1])))); };
+  // le tube d'attache (r 0,011) doit toucher la peau de la quille, sinon il flotte dans l'air
+  assert.ok(touche(1.52, .15) <= .011 + 1e-6, 'attache avant détachée de la quille');
+  assert.ok(touche(1.18, .15) <= .011 + 1e-6, 'attache arrière détachée de la quille');
+});
+
+verifier('rétroviseurs : le proche s\'enfonce plus que le lointain, reflet contenu dans la glace (cockpit-1/5)', () => {
+  const deux = bord({ derriere: [{ x: -10, z: -3, couleur: [.9, .1, .1] }, { x: -20, z: -6, couleur: [.1, .1, .9] }] });
+  const pres = deux.find(m => m.color && m.color.join() === [.9, .1, .1].join());
+  const loin = deux.find(m => m.color && m.color.join() === [.1, .1, .9].join());
+  assert.ok(pres && loin, 'les deux suiveurs ont un reflet');
+  assert.ok(pres.p[0] < loin.p[0] - 1e-9, `proche à x ${pres.p[0].toFixed(5)}, lointain à ${loin.p[0].toFixed(5)} : le proche doit être plus enfoncé`);
+  const pneu = deux.find(m => m.mat === 7 && m.color.join() === [.03, .03, .035].join() && Math.abs(m.p[2] - pres.p[2]) < 1e-9 && m.p[1] < pres.p[1]);
+  assert.ok(pneu && pneu.p[0] < pres.p[0] - 1e-9, 'la bande de pneus est derrière la caisse');
+  // reflet contenu : suiveurs proches et décalés, des deux côtés
+  const pres2 = bord({ derriere: [{ x: -2.5, z: 1.5, couleur: [.9, .1, .1] }, { x: -5, z: -1.5, couleur: [.1, .1, .9] }] });
+  const reflets = pres2.filter(m => Math.abs(m.p[0] - .5225) < .01 && (m.mat === 16 && (m.color.join() === [.9, .1, .1].join() || m.color.join() === [.1, .1, .9].join()) || m.mat === 7 && m.color.join() === [.03, .03, .035].join()));
+  assert.equal(reflets.length, 4, `${reflets.length} reflets (2 caisses, 2 pneus)`);
+  for (const m of reflets) {
+    const zc = Math.sign(m.p[2]) * .47;
+    assert.ok(m.p[1] - m.s[1] / 2 >= .541 - 1e-9 && m.p[1] + m.s[1] / 2 <= .589 + 1e-9, `reflet hors glace en y : ${m.p[1].toFixed(4)} ± ${(m.s[1] / 2).toFixed(4)}`);
+    assert.ok(m.p[2] - m.s[2] / 2 >= zc - .066 - 1e-9 && m.p[2] + m.s[2] / 2 <= zc + .066 + 1e-9, `reflet hors glace en z : ${m.p[2].toFixed(4)} ± ${(m.s[2] / 2).toFixed(4)}`);
+  }
+});
+
+verifier('témoin rouge : s\'allume au ralenti comme au surrégime (cockpit-8)', () => {
+  const auRalenti = bord({ regime: 4000 }).find(m => m.shape === 'sphere' && m.mat === 5 && Math.abs(m.s[0] - .009 * V.K) < 1e-9 && m.color[0] > .9);
+  assert.ok(auRalenti && auRalenti.emissive >= 1, 'allumé au ralenti (4 000 tr/min)');
+  const calme = bord({ regime: 8000 }).find(m => m.shape === 'sphere' && m.mat === 5 && Math.abs(m.s[0] - .009 * V.K) < 1e-9 && m.color[0] > .9);
+  assert.ok(!calme, 'éteint à mi-régime');
+});
+
 console.log(`${compte} vérifications réussies`);
