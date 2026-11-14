@@ -532,4 +532,14 @@ verifier('bande des pontons : une peau décalée de 4 mm, pas un caisson à flan
   assert.ok(B.length > 100, `${B.length} faces de bande`);
 });
 
+verifier('paume au pommeau : paume vers le bas quel que soit le braquage (cockpit-4)', () => {
+  for (const volant of [-1, -.6, 0, .6, 1]) {
+    const gant = bord({ volant, passage: .45, rapportAvant: 2 }).find(p => p.shape === 'bitume-main-gant-d');
+    assert.ok(gant, 'gant droit dessiné au pommeau');
+    const paume = V.euler(...gant.r)[2], l = Math.hypot(...paume);
+    const angle = Math.acos(Math.max(-1, Math.min(1, -paume[1] / l))) * 180 / Math.PI;
+    assert.ok(angle < 40, `volant ${volant} : paume à ${angle.toFixed(1)}° du bas, attendu l\'inclinaison du volant (~25°)`);
+  }
+});
+
 console.log(`${compte} vérifications réussies`);

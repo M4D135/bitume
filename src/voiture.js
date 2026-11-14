@@ -473,7 +473,8 @@
       if (k > 0 && versLevier > 0) {
         const cible = plus(pommeau, [wn, .004], [wu, .006]);
         G = G.map((v, i) => v + (cible[i] - v) * versLevier);
-        m = m.map(v => tourner(v, wn, versLevier * Math.PI / 2));      // le dos de la main passe du dehors au-dessus
+        m = m.map(v => tourner(v, wn, versLevier * (Math.PI / 2 + phi)));      // cockpit-4 : le repère de départ porte déjà −phi ;
+        // sans le +phi, la paume restait tournée du braquage au pommeau (91,5° du bas volant à fond)
       }
       const cote = k > 0 ? 'd' : 'g', local = q => plus(G, [m[0], q[0] * echelle], [m[1], q[1] * echelle], [m[2], k * q[2] * echelle]);
       for (const [piece, color] of couleurs) {

@@ -351,3 +351,17 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   ponton (distance point-triangle). **Ancien code : première face à 69 mm → échec ; nouveau : 31/31.** Le
   compteur `formes-libres` descend à 27 667 triangles (la bande évidée est plus légère que le caisson).
   Douze suites vertes.
+
+## Passage du Spark (14/11, cockpit-4 : paume vers le bas au pommeau, même volant tourné)
+
+- Constat (relecture e1, confirmé par le contradicteur) : au pommeau, la main gardait la rotation du volant.
+  Le repère de départ porte déjà −phi, et la rotation vers le levier valait `versLevier · π/2` : la pose
+  d'arrivée était tournée de −phi. Mesuré à mi-changement : paume à 25° du bas volant droit, 58,7° à ±0,6,
+  **91,5° à ±1** (doigts vers le haut ou vers le pommeau).
+- Correctif (`src/voiture.js`) : rotation `versLevier · (π/2 + phi)` — la paume revient sous la main quel que
+  soit le braquage, comme le proposait la relecture.
+- Test (`voiture.test.mjs`, 31 → 32) : à mi-changement (passage 0,45), l'axe local z du gant droit doit rester
+  à moins de 40° de la verticale basse pour volant −1, −0,6, 0, 0,6, 1. **Ancien code : 91,5° à volant −1 →
+  échec ; nouveau : 32/32.** Douze suites vertes.
+- **Signalé par le contradicteur, non traité** : 633 à 680 sommets de la main restent enfoncés de 4,6 à 5,6 mm
+  dans la boule du pommeau à tous les braquages (pose au pommeau, indépendant de cockpit-4).
