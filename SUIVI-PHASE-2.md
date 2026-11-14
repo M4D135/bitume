@@ -459,3 +459,24 @@ test rouge sur l'ancien code puis vert sur le nouveau.
 - `verifications/contacts.test.mjs` : +6 critères « roue perdue » (immobilisation sans motricité, **plein
   gauche = plein droit** = plus de direction, réparation + repositionnement signalés, roue remise, retombée en
   `d ≈ 0`, état fini / course non terminée). **44/44** critères Chantier 3. Quinze suites vertes, build ok.
+
+## Passage du Spark (14/11, chantier-3 : collisions/glissière et filtre rouge)
+
+- Retours de David (capture : caisse **épinglée nez contre le rail à 0 km/h**, et **voile rouge plein écran qui
+  reste** après un choc fort sans casse). Deux bugs racine trouvés :
+  - **rebond de glissière renvoyé VERS le mur** : `etat.psi = cdg * …` pointait le nez dans le rail → la caisse
+    restait collée, frottait et s'immobilisait. Corrigé en **dégagement vers la piste** (`psi = -cdg * …`) +
+    **anti-épinglage** (au ralenti, la caisse se dégage du mur) + `auRail`/cooldown pour un **vrai premier
+    contact** (le frottement continu ne re-déclenche plus de choc).
+  - **voile rouge = `damage` plein écran piloté par `degats.teinte`** (permanent, ne se remet qu'à la réparation).
+    Un choc fort sans casse laissait l'écran rouge. **Décorrélé** : `damage` ne suit plus que l'**éclair
+    transitoire** du choc (`eclair`), qui s'éteint ; plus de rouge permanent.
+- Récupération de travaux **orphelins non commités** d'une session précédente (scp mais jamais commités sur le
+  Mac) : le test-régression `verifications/glissiere-rebond.test.mjs` (exige dégagement vers la piste, un seul
+  choc, décollage du rail) — c'est exactement la correction ci-dessus ; et l'**optimisation de l'index d'axe**
+  de `decor.js` (Map → tableau dense borné) avec son test d'**identité de géométrie** `decor-identite.test.mjs`
+  (9 empreintes de référence inchangées).
+- `jeu.js` : `PHYSIQUE` passé de `p2` à `p3` — la physique a changé (réparation, roue perdue, rebond), les
+  records/fantômes d'avant ne sont plus comparables (remise à zéro volontaire).
+- `verifications/conduite.test.mjs` : +1 test « la caisse collée au rail se dégage et repart ». Dix-sept suites
+  vertes (dont `glissiere-rebond` et `decor-identite`), build ok.

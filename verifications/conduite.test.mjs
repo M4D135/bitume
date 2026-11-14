@@ -230,6 +230,21 @@ verifier('glissière propre à chaque côté', () => {
   assert(dmin >= -9.2, 'd min ' + dmin);
 });
 
+verifier('glissière : la caisse collée au rail se dégage et repart', () => {
+  const c = creerFauxCircuit('ligne', 0, 12, 20);
+  c.limiteG = new Float64Array(5000).fill(9.2); c.limiteD = new Float64Array(5000).fill(20);
+  B.circuit.limiteA = (c, s, cote) => cote < 0 ? c.limiteG[0] : c.limiteD[0];
+  const et = B.conduite.creer(0, -8.5);
+  et.v = 8; et.psi = -0.3; et.rapport = 3;   // collée au rail gauche, nez vers le mur, gaz tenu
+  const cmd = { gaz: 1, frein: 0, volant: 0, derive: false, haut: false, bas: false, boite: 'auto', aide: 0 };
+  let t = 0;
+  while (t < 2) { B.conduite.pas(et, cmd, c, 1 / 120); t += 1 / 120; }
+  delete B.circuit.limiteA;
+  assert(et.auRail === false, "s'est décollée du rail (auRail=" + et.auRail + ')');
+  assert(et.v > 5, 'est repartie, v=' + et.v.toFixed(1));
+  assert(et.d >= -9.2, 'jamais passée au-delà du rail, d=' + et.d.toFixed(2));
+});
+
 verifier('boîte manuelle et rupteur', () => {
   const c = creerFauxCircuit('ligne', 0, 12, 20);
   const et = B.conduite.creer(0, 0);

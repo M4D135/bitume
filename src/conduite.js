@@ -174,7 +174,7 @@
       coupure: 0, rupteurT: 0, sousVirage: 0,
       // Chantier 3 : vol (saut), accident et retour en piste, immunité, dégâts — tous inactifs au départ, la
       // conduite reste exactement celle des critères quand ils sont absents (tests de conduite sans ces modules)
-      saut: null, accident: null, immunite: 0, degats: null, reparation: null
+      saut: null, accident: null, immunite: 0, degats: null, reparation: null, choc: 0, auRail: false
     };
   }
 
@@ -525,26 +525,29 @@
     const bord = Math.max(0.2, lim - emprise);   // au-delà, un coin de la caisse passerait le rail
     if (Math.abs(etat.d) > bord) {
       const vAvant = etat.v, ang = Math.abs(angle(etat.psi)), versMur = cdg * etat.psi > 0;
+      const premier = !etat.auRail && etat.choc <= 0;   // vrai premier contact, pas le frottement continu le long du rail
       if (versMur && ang > P.glissAccident && etat.v >= P.glissVAccident) {
         etat.d = cdg * bord;
         ev.push({ type: 'choc', force: vAvant });
         declencherAccident(etat, {});
         annuler(etat, ev);
       } else if (versMur && ang >= P.glissRasant) {
-        // choc de trois-quarts : la caisse rebondit puis glisse le long du rail, on reste du même côté de l'axe
+        // choc de trois-quarts : la caisse rebondit et SE DÉGAGE du rail (cap renvoyé vers la piste), au lieu de rester collée
         etat.d = cdg * bord;
-        etat.psi = cdg * Math.min(Math.abs(etat.psi) * 0.15, 0.05);   // repart le long du rail, jamais vers l'axe
+        etat.psi = -cdg * Math.min(Math.abs(etat.psi) * 0.2 + 0.02, 0.09, bord / Math.max(vAvant, 1));   // rebond vers la piste, limité par la largeur libre
         etat.v *= 1 - P.chocRebond * Math.sin(ang);
         etat.omega *= 0.4;
-        if (etat.choc <= 0) ev.push({ type: 'choc', force: vAvant - etat.v });
-        etat.choc = P.chocDuree;
+        if (premier && vAvant - etat.v >= P.chocSeuil) { ev.push({ type: 'choc', force: vAvant - etat.v }); etat.choc = P.chocDuree; }
         annuler(etat, ev);
       } else {
-        // frôlement rasant, ou caisse déjà repartie le long du rail : on longe, on garde la vitesse
+        // frôlement le long du rail : on longe en gardant la vitesse ; au ralenti la caisse se dégage du mur pour repartir
         etat.d = cdg * Math.min(Math.abs(etat.d), bord);
         etat.v = Math.max(0, etat.v - P.glissFrottementRasant * dt);
+        if (etat.v < 2) etat.d = cdg * Math.max(0, Math.abs(etat.d) - 0.6 * dt);
       }
-    } else if (etat.choc > 0) etat.choc -= dt;
+      etat.auRail = true;
+    } else etat.auRail = false;
+    if (etat.choc > 0) etat.choc -= dt;
 
     // Glisse par essieu et par roue, pour le son et les effets
     const gAv = rampe(Math.abs(alphaAv) / P.alphaAv, 0.8, 1.6);
