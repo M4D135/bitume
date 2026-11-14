@@ -441,4 +441,37 @@ verifier('goutte : par l\'ouverture, on ne voit pas l\'envers de la peau au-del�
   assert.equal(perce, 0, `${perce}/${testes} faces d'envers vues à travers l'ouverture`);
 });
 
+verifier('pouce du gant : aucune face enfouie dans son propre volume (carene-4)', () => {
+  const sous = (a, b) => a.map((v, k) => v - b[k]);
+  const croix = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const scal = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const M = globalThis.BITUME.main, C = globalThis.BITUME.carene, deg = Math.PI / 180;
+  const a = M.AXE, bz = [0, 1, 0], Y = croix(bz, a);
+  const K = M.AUTOUR(0, 95 * deg, .034), W = K.map((v, k) => v + a[k] * .088);
+  const eminence = M.POUCE.eminence.map(([x, y, z]) => {
+    const u = W.map((v, k) => v - a[k] * x), p = u.map((v, k) => v + bz[k] * y - Y[k] * z); return p;
+  });
+  const tour = M.POUCE.tour.map(([s, t], i) => M.AUTOUR(s / M.JANTE.R, t * deg, M.JANTE.r + M.POUCE.r[i + 2] + 4 * M.JEU));
+  const mesh = C.tube([...eminence, ...tour], M.POUCE.r, { cotes: 12, pas: 4, bouts: true });
+  const dedans = p => {
+    let n = 0;
+    for (const [A, B, Cc] of mesh) {
+      const e1 = sous(B, A), e2 = sous(Cc, A), tvec = sous(p, A), pv = croix([0, 0, 1], e2), q = croix(tvec, e1);
+      const det = scal(e1, pv); if (Math.abs(det) < 1e-12) continue;
+      const inv = 1 / det, u = scal(tvec, pv) * inv; if (u < -1e-9 || u > 1 + 1e-9) continue;
+      const v = scal([0, 0, 1], q) * inv; if (v < -1e-9 || u + v > 1 + 1e-9) continue;
+      const t = scal(e2, q) * inv; if (t > 1e-9) n++;
+    }
+    return n % 2 === 1;
+  };
+  let enfouies = 0;
+  for (const t of mesh) {
+    const g = [0, 1, 2].map(k => (t[0][k] + t[1][k] + t[2][k]) / 3);
+    const n = croix(sous(t[1], t[0]), sous(t[2], t[0])), l = Math.hypot(...n);
+    assert.ok(l > 1e-12, 'face dégénérée dans le pouce');
+    if (dedans(g.map((v, k) => v + n[k] / l * 3e-4))) enfouies++;
+  }
+  assert.equal(enfouies, 0, `${enfouies} faces du pouce sous sa propre peau (coude trop serré)`);
+});
+
 console.log(`${compte} vérifications réussies`);

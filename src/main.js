@@ -42,7 +42,9 @@
   // Pouce : éminence charnue du poignet au bas de l'index, côté paume, puis le long de la jante vers le haut, couché sur
   // sa face tournée vers le pilote, devant la branche. Éminence : [vers les jointures depuis le poignet, vers
   // l'index, vers la paume] ; pouce : [abscisse le long de la jante, angle autour du tube] ; rayons de la base au bout.
-  const POUCE = { r: [.0160, .0158, .0124, .0108, .0094], eminence: [[.016, .012, .018], [.036, .020, .026]], tour: [[.026, -24], [.040, -32], [.052, -36]] };
+  // carene-4 : la base du pouce était trop serrée (rayon de courbure de l'axe 8,8 mm sous le rayon du tube,
+  // 12,4 mm : la peau se recoupait) ; le premier point de contact est un peu plus haut sur la jante.
+  const POUCE = { r: [.0160, .0158, .0124, .0108, .0094], eminence: [[.016, .012, .018], [.036, .020, .026]], tour: [[.028, -20], [.040, -32], [.052, -36]] };
 
   function construire() {
     const C = B.carene;

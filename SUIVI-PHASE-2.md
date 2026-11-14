@@ -309,3 +309,16 @@ test rouge sur l'ancien code puis vert sur le nouveau.
 - Test (`voiture.test.mjs`, 27 → 28) : depuis deux points de la cavité, chaque face d'envers de la peau
   (2 393 rayons) doit rencontrer une doublure avant elle. **1 565 percées avant, 0 après.** Le compteur de
   `formes-libres` passe de 28 056 à 28 112 triangles, soit les 56 cloisons annoncées. Douze suites vertes.
+
+## Passage du Spark (14/11, carene-4 : le coude du pouce ne se recoupe plus)
+
+- Constat (jet 13) : entre l'éminence et le premier point posé sur la jante, l'axe lissé du pouce avait un rayon
+  de courbure de 8,8–9,6 mm pour un tube de 12,0–12,4 mm — la peau se recoupait à l'intérieur du virage
+  (16 px visibles du côté pilote, 6 faces enfouies mesurées par le relecteur).
+- Correctif (`src/main.js`) : premier point de contact du pouce sur la jante remonté de 2 mm et ramené de
+  −24° à −20° (`POUCE.tour[0]` de `[.026, −24]` à `[.028, −20]`). C'est le plus petit mouvement qui annule le
+  défaut (grille balayée : `[.026, −18]` laisse 2 faces, `[.030, −21]` en laisse 4, `[.028, −20]` : 0).
+- Test (`voiture.test.mjs`, 28 → 29) : le pouce est reconstruit depuis les constantes exportées de `main.js`,
+  puis chaque face est sondée juste au-dessus de sa normale — son dehors immédiat ne doit pas être dans le
+  volume (parité de rayons). **12 faces enfouies avant, 0 après.** Les doigts n'avaient rien (garde du constat).
+  Douze suites vertes ; le test des gants hors des branches tient toujours.
