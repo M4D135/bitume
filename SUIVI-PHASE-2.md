@@ -495,3 +495,29 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   déclenchent un pic qui décroît en ~0,45 s ; le passage de rapport donne un coup sec.
 - Réglage « Manette · Vibrations (moteur, route, chocs) » ; coupé net si on le décoche ; aucune commande émise
   si la manette ne sait pas vibrer. Treize suites vertes.
+
+## Passage du Spark (14/11, Chantier 3 — chocs, sauts roue contre roue, dégâts, accident)
+
+- **`src/contacts.js`** (nouveau) remplace les auto-tamponneuses : frotter les roues d'un autre fait **sauter**
+  (petit bond rattrapable de 0,10–0,35 m en 0,25–0,45 s, ou grand arc de 1–3 m en 0,7–1,3 s avec tangage et
+  roulis), un choc de caisse **orienté** fait tourner la caisse touchée (lacet selon l'excentrement de l'impact),
+  une **roue décalée** fait braquer de plus de 2° et perdre de la vitesse. **Une seule réponse par paire** :
+  réarmement après séparation + 0,35 s, au moins 1,25 s entre deux bonds, jamais deux événements en 0,3 s.
+  Aucune interaction avec une caisse en l'air, en accident ou immunisée.
+- **`src/degats.js`** (nouveau) : un choc coûte de l'**adhérence (−18 % au plus)** et de la **traînée (+24 % au
+  plus)**, alimente la teinte `uEffects.z` ; au-delà d'un seuil une **roue se détache**, plus haut la **caisse
+  casse** et rentre au stand. `conduite.js` lit `etat.degats` pour moduler `mu` et la traînée (roue perdue =
+  traînée supplémentaire).
+- **Vol et réception** (`conduite.js`) : arc parabolique, peu de direction en l'air ; à la réception la vitesse
+  garde **100 % / 97 % / 94 %** selon le contre-braquage (coefficients de vroom-unreal), jamais de gain ; au-delà
+  d'une limite de tangage ou de roulis, **c'est l'accident**.
+- **Accident et retour progressif** (`conduite.js`) : la caisse n'obéit plus, freine, revient seule sur le
+  revêtement en 2,8–8 s à **vitesse et cap continus**, puis **2 s d'immunité**. `replacer()` (jeu) passe par ce
+  retour.
+- **`course.js`** crée les dégâts de chaque voiture et appelle `B.contacts.pas` (repli sur l'ancien `contacts()`
+  si le module est absent, pour les bancs qui ne le chargent pas).
+- **`verifications/contacts.test.mjs`** (nouveau) : 34 critères du Chantier 3 tenus (bond, arc, correction
+  100/97/94, lacet décalé, réarmement par paire, dégâts, accident et retour, cadence 30/60/120 Hz, 60 s en
+  14 ms). Quatorze suites vertes.
+- Reste à faire dans le chantier : grille des **glissières** (angle/vitesse, seuil d'accident, jamais renvoyée
+  au-delà de l'axe, emprise de la caisse) et **IA** qui évite une voiture arrêtée (`ia.test.mjs`).

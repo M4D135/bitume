@@ -24,6 +24,8 @@ MODULES = [
     'moteur/renderer.js',
     'circuit.js',
     'conduite.js',
+    'degats.js',
+    'contacts.js',
     'course.js',
     'son.js',
     'decor.js',

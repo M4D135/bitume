@@ -77,6 +77,7 @@
     ordre.forEach((v, k) => {
       const s = chrono ? -40 : -10 - 8 * k, d = chrono ? 0 : (k % 2 === 0 ? -2.4 : 2.4);
       v.etat = B.conduite.creer(ramener((c.depart || 0) + s, L), d);
+      v.degats = B.degats ? B.degats.creer() : null; v.etat.degats = v.degats;
       v.progression = s; v.position = k + 1;
     });
 
@@ -314,7 +315,7 @@
       else cmd = cmdJoueur || NEUTRE;
       for (const e of B.conduite.pas(v.etat, cmd, c, dt, retenue)) { e.id = v.id; ev.push(e); }
     }
-    contacts(course, ev);
+    if (B.contacts) B.contacts.pas(course, ev); else contacts(course, ev);
     if (!retenue) course.temps = t0 + dt;
 
     // Franchissements de ligne (interpolés dans le pas) et progression continue

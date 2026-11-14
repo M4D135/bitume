@@ -508,7 +508,9 @@
   function replacer() {
     const S = session; if (!S) return;
     const co = S.course, et = co.joueur.etat;
-    et.d = B.circuit.echantillon(co.c, et.s).ligne; et.psi = 0; et.beta = 0; et.omega = 0; et.v = Math.min(et.v, 4);
+    // Chantier 3 : le remplacement passe par le retour progressif en piste (cap et vitesse continus, immunité)
+    if (B.conduite.declencherAccident) B.conduite.declencherAccident(et, { duree: 3.0 });
+    else { et.d = B.circuit.echantillon(co.c, et.s).ligne; et.psi = 0; et.beta = 0; et.omega = 0; et.v = Math.min(et.v, 4); }
     B.conduite.annulerDerive(et);
     message('Replacé', '', true);
   }

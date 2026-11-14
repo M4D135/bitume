@@ -68,7 +68,14 @@
     chocRebond: 0.7, chocV: 0.85, chocSeuil: 0.1, chocDuree: 0.4, frottementMur: 6,
     // attitude visuelle et grille
     tangageCoef: 0.0035, tangageMax: 0.05, roulisCoef: 0.0025, roulisMax: 0.04, attitudeTau: 0.1,
-    grilleMonteeTau: 0.09, grilleDescenteTau: 0.22, rupteurRebond: 380, rupteurCadence: 0.1
+    grilleMonteeTau: 0.09, grilleDescenteTau: 0.22, rupteurRebond: 380, rupteurCadence: 0.1,
+    // Chantier 3 — chocs, sauts roue contre roue, dégâts, accident et retour
+    bondVMin: 0.65, bondH: 0.22, bondDuree: 0.34,          // petit bond : rapprochement minimal, hauteur, durée
+    sautVMin: 6.5, sautH: 1.8, sautDuree: 1.0,             // grand saut : rapprochement au-delà du seuil, arc, durée
+    sautTangLim: 0.55, sautRoulLim: 0.72,                  // au-delà à la réception, la voiture tonne (accident)
+    contreBon: 0.4, contreMauvais: -0.4,                   // contre-braquage : 100 % / 97 % / 94 % de la vitesse
+    volBraquage: 0.15, volTrainee: 0.0011,                 // en l'air on dirige peu ; légère traînée d'air
+    accidentDuree: 4.5, accidentImm: 2, accidentFrein: 3.2 // retour progressif en piste, puis immunité
   });
   const P = PARAMS;
   // accélération moteur maximale de chaque rapport : 13 × (27 / vitesse de pointe)^0,8
@@ -155,7 +162,10 @@
       },
       turbo: { reste: 0, niveau: 0, parfait: false, duree: 0, ecoule: 0, poussee: 0 },
       bond: 0, bondT: 0, choc: 0, distance: 0, tangage: 0, roulis: 0, y: 0,
-      coupure: 0, rupteurT: 0, sousVirage: 0
+      coupure: 0, rupteurT: 0, sousVirage: 0,
+      // Chantier 3 : vol (saut), accident et retour en piste, immunité, dégâts — tous inactifs au départ, la
+      // conduite reste exactement celle des critères quand ils sont absents (tests de conduite sans ces modules)
+      saut: null, accident: null, immunite: 0, degats: null
     };
   }
 
@@ -299,6 +309,10 @@
       else { mu = P.muHerbe; surf = 'herbe'; }
     }
     etat.surface = surf; etat.vibreur = surf === 'vibreur';
+    // dégâts (Chantier 3) : une caisse abîmée perd de l'adhérence (jusqu'à −18 %) ; les débris et le capot
+    // de côté la freinent (traînée jusqu'à +24 %, appliquée plus bas). Absents, rien ne change.
+    const dg = etat.degats;
+    if (dg) mu *= dg.adher;
     const enPiste = ad <= demi + P.largeurVibreur;
 
     // Dérive au bouton
@@ -445,6 +459,7 @@
     let resist = P.coeffTrainee * (1 - P.aspirationMax * clamp(etat.aspiration, 0, 1)) * vv * vv;
     if (vv > 0.1) resist += P.roulement;
     if (surf === 'herbe' && vv > 0.1) resist += P.herbeResist + P.herbeResistV * vv;
+    if (dg) { resist *= dg.trainee; if (B.degats && B.degats.uneRouePerdue(dg)) resist += 0.02 * vv; }
     if (vv > 1e-6) { fx -= m * resist * u / vv; fy -= m * resist * w / vv; }
     // pente et dévers : gravité le long de la tangente et vers la droite de la piste
     const thetaB = etat.psi + etat.beta, ct = Math.cos(thetaB), st = Math.sin(thetaB);
@@ -554,12 +569,102 @@
     if (Math.abs(etat.volant) < 1e-6) etat.volant = 0;
   }
 
+  // ---------------------------------------------------------------- Chantier 3 : vol (saut) et accident
+  // Lancer un saut (petit bond ou grand arc). `o` = { grand, h, duree, tangV, roulV, pouss, omega }. Appelé par
+  // contacts.js quand deux roues se frôlent. La hauteur de décollage est prise à l'état du sol du moment.
+  function lancerSaut(etat, o = {}) {
+    const grand = !!o.grand;
+    etat.saut = {
+      actif: true, t: 0, grand,
+      duree: o.duree || (grand ? P.sautDuree : P.bondDuree),
+      h: o.h != null ? o.h : (grand ? P.sautH : P.bondH),
+      ySol: etat.y, tang0: etat.tangage, roul0: etat.roulis,
+      tangV: o.tangV || 0, roulV: o.roulV || 0, pouss: o.pouss || 0, contre: 0
+    };
+    if (o.omega) etat.omega = o.omega;
+    annuler(etat, []); // plus de dérive ni de turbo pendant le vol
+  }
+
+  // Déclencher un accident : la caisse n'obéit plus, freine et revient seule sur le revêtement, puis immunité.
+  function declencherAccident(etat, o = {}) {
+    if (etat.accident) return;
+    etat.saut = null;
+    etat.accident = { t: 0, duree: o.duree || P.accidentDuree, d0: etat.d, reception: !!o.reception };
+    annuler(etat, []);
+  }
+
+  // Vol : arc parabolique, tangage et roulis qui tournent, peu de direction ; à la réception, la vitesse garde
+  // 100 % / 97 % / 94 % selon le contre-braquage, et au-delà d'une limite d'attitude c'est l'accident.
+  function voler(etat, cmd, c, dt, ev) {
+    const s = etat.saut; s.t += dt;
+    // contre-braquage : on retient si le pilote braque à l'opposé de la poussée reçue (moyenne glissante sur le vol)
+    const cB = s.pouss ? -Math.sign(s.pouss) * etat.volant : 0;
+    s.contre += (cB - s.contre) * clamp(dt / s.duree, 0, 1);
+    // en l'air, on dirige peu : le lacet pris au décollage se poursuit, le volant n'a qu'une faible emprise
+    const rCible = etat.volant * P.volBraquage * (etat.v > 1 ? 0.5 : 0);
+    etat.omega += (rCible - etat.omega) * (1 - Math.exp(-dt / 0.5));
+    // légère traînée d'air, jamais de gain
+    etat.v = Math.max(0, etat.v - P.volTrainee * etat.v * etat.v * dt);
+    // cinématique de Frenet, comme au sol, pour que cap et position restent continus
+    const e = B.circuit.echantillon(c, etat.s), k = e.courbure;
+    const den = Math.max(1 - k * etat.d, 0.1);
+    const psiV = angle(e.cap - etat.beta);
+    const dsdt = etat.v * Math.cos(psiV) / den;
+    etat.s = ramener(etat.s + etat.v * Math.cos(etat.psi) / den * dt, c.longueur);
+    etat.d += etat.v * Math.sin(etat.psi) * dt;
+    etat.psi = angle(etat.psi + etat.omega * dt);
+    // hauteur et attitude
+    const p = clamp(s.t / s.duree, 0, 1);
+    etat.y = s.ySol + s.h * 4 * p * (1 - p);
+    etat.tangage = s.tang0 + s.tangV * s.t;
+    etat.roulis = s.roul0 + s.roulV * s.t;
+    if (s.t < s.duree) return;
+    // réception
+    if (Math.abs(etat.tangage) > P.sautTangLim || Math.abs(etat.roulis) > P.sautRoulLim) {
+      etat.saut = null; declencherAccident(etat, { reception: true });
+      ev.push({ type: 'tonneau' });
+      return;
+    }
+    const corr = s.contre >= P.contreBon ? 1 : (s.contre <= P.contreMauvais ? 0.94 : 0.97);
+    etat.v *= corr; // jamais de gain : corr ≤ 1
+    etat.saut = null;
+    etat.bondT = P.deriveBondDuree; // petit écrasement visuel à l'atterrissage
+    ev.push({ type: 'reception', corr, force: (1 - corr) * etat.v, bon: corr >= 1, grand: s.grand });
+  }
+
+  // Accident et retour progressif : la caisse freine, garde cap et vitesse continus, revient seule sur le
+  // revêtement (d ramené à 0 sans à-coup), puis roule avec 2 s d'immunité.
+  function accidenter(etat, c, dt, ev) {
+    const a = etat.accident; a.t += dt;
+    const p = clamp(a.t / a.duree, 0, 1);
+    // vitesse continue : on freine sans à-coup, sans jamais descendre sous une vitesse de réinsertion
+    etat.v = Math.max(6, etat.v - P.accidentFrein * dt - P.coeffTrainee * etat.v * etat.v * dt);
+    // cap ramené doucement à la piste (continu), lacet qui suit
+    etat.psi += (0 - etat.psi) * (1 - Math.exp(-dt / 0.7));
+    etat.omega += (0 - etat.omega) * (1 - Math.exp(-dt / 0.7));
+    // position latérale revenue à la trajectoire sans discontinuité (dérivée nulle à la fin)
+    etat.d = a.d0 * (1 - p) * (1 - p);
+    const e = B.circuit.echantillon(c, etat.s), den = Math.max(1 - e.courbure * etat.d, 0.1);
+    etat.s = ramener(etat.s + etat.v * Math.cos(etat.psi) / den * dt, c.longueur);
+    // attitude qui se pose, sol sous la caisse
+    etat.tangage *= Math.exp(-dt / 0.5); etat.roulis *= Math.exp(-dt / 0.5);
+    etat.y = e.y - clamp(etat.d, -c.largeur / 2, c.largeur / 2) * Math.sin(e.devers);
+    if (a.t >= a.duree) {
+      etat.accident = null; etat.immunite = P.accidentImm;
+      etat.d = 0; etat.psi = 0; etat.omega = 0; etat.tangage = 0; etat.roulis = 0;
+      ev.push({ type: 'retour' });
+    }
+  }
+
   // cmd = { gaz, frein, volant, derive, haut, bas, boite: 'auto'|'manuelle', aide, guidage }
   function pas(etat, cmd, c, dt, retenue = false) {
     const ev = [];
     const gaz = borne01(cmd.gaz), frein = borne01(cmd.frein), aide = borne01(cmd.aide), guidage = borne01(cmd.guidage);
     etat.gaz = gaz; etat.frein = frein;
     filtrerVolant(etat, clamp(+cmd.volant || 0, -1, 1), dt);
+    if (etat.immunite > 0) etat.immunite = Math.max(0, etat.immunite - dt);
+    if (etat.accident) { accidenter(etat, c, dt, ev); return ev; }
+    if (etat.saut && etat.saut.actif) { voler(etat, cmd, c, dt, ev); return ev; }
     if (retenue) retenir(etat, gaz, dt, ev);
     else rouler(etat, cmd, c, dt, gaz, frein, aide, guidage, ev);
     poserAttitude(etat, c, dt);
@@ -568,6 +673,6 @@
 
   B.conduite = {
     PARAMS, creer, pas, annulerDerive, couperTurbo, cap, kmh, couple, limiteCote, braquageMax, volantPour,
-    capaciteLaterale, pneu
+    capaciteLaterale, pneu, lancerSaut, declencherAccident
   };
 })(globalThis.BITUME = globalThis.BITUME || {});
