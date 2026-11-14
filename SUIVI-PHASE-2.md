@@ -521,3 +521,24 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   14 ms). Quatorze suites vertes.
 - Reste à faire dans le chantier : grille des **glissières** (angle/vitesse, seuil d'accident, jamais renvoyée
   au-delà de l'axe, emprise de la caisse) et **IA** qui évite une voiture arrêtée (`ia.test.mjs`).
+
+## Passage du Spark (14/11, Chantier 3 suite — glissières, IA qui évite, rendu et son du vol)
+
+- **Glissières** (`conduite.js`) : le choc dépend de l'**angle d'attaque et de la vitesse**. Sous 8°, on frôle le
+  rail et on garde au moins 90 % de la vitesse après 0,5 s ; au-delà de 35° et de ~100 km/h, mur plein =
+  **accident** ; entre les deux, rebond le long du rail. La caisse (emprise **4,95 × 2,02 m**) ne franchit
+  **jamais le rail, quel que soit son cap** (le centre reste à `limite − emprise`, l'emprise suivant l'angle), et
+  n'est **jamais renvoyée de l'autre côté de l'axe**.
+- **IA qui évite** (`course.js`) : le regard s'allonge avec la vitesse (distance d'arrêt + marge) ; face à une
+  voiture **vraiment plus lente** (obstacle arrêté ou en perdition), le rival s'engage tôt sur un côté libre, vise
+  plus court pour braquer sec et **ne rampe pas** (il garde de quoi dégager). Un rival lancé à **80 m/s évite une
+  voiture arrêtée** au milieu de la piste (avant : percutée vers 59 m/s). La circulation normale du peloton garde
+  sa conduite habituelle (les 8 tests de `course.test.mjs` et les 46 critères de conduite tiennent).
+- **Rendu et son du vol / des dégâts** : hauteur et attitude déjà rendues (le vol suit `etat.y/tangage/roulis`),
+  caméra cockpit portée par la voiture ; **son de réception**, claquement de **roue qui part**, fracas de
+  **casse** et de **tonneau** (`son.js`) ; **roue détachée masquée** au rendu (`voiture.js`, `options.roues`) ;
+  **teinte des dégâts** `uEffects.z` alimentée par `degats.teinte` et **éclair rouge** bref sur choc violent,
+  tonneau ou casse (`jeu.js`).
+- **`verifications/ia.test.mjs`** (nouveau) : 5 critères (évite à 40/65/80 m/s, freine en approchant).
+  `contacts.test.mjs` passe à 38 critères (grille des glissières 2–90° × 50–300 km/h, emprise de la caisse).
+  Quinze suites vertes.

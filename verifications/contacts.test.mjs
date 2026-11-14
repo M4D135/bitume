@@ -178,6 +178,44 @@ function essaiCorrection(volant) {
   noter('cadence : 60 s de contacts en moins de 1,5 s', ms / 1000, '< 1,5 s', ms < 1500);
 }
 
+// ------------------------------------------------------------------ glissières (grille angles × vitesses)
+function glissiere(ang, v, d0 = 2.6, gaz = 0) {
+  const c = circuit({ R: 0, largeur: 8, limite: 3 });
+  const et = CD.creer(100, d0); et.v = v; et.psi = ang; et.rapport = 6;
+  let dMin = Infinity, accident = false, t = 0;
+  while (t < 0.5 && !et.accident) { CD.pas(et, commande({ gaz }), c, DT); if (et.accident) accident = true; dMin = Math.min(dMin, et.d); t += DT; }
+  return { vRatio: et.v / v, accident, dMin };
+}
+{
+  const ANG = [2, 5, 8, 15, 30, 35, 45, 60, 90], KMH = [50, 100, 200, 300];
+  let rasantOk = true, accOk = true, axeOk = true, pireRasant = 1, accManquee = '', axeManquee = '';
+  for (const degA of ANG) {
+    const ang = degA * Math.PI / 180;
+    for (const kmh of KMH) {
+      const v = kmh / 3.6;
+      if (degA < 8) { const r = glissiere(ang, v, 2.6, 1); if (r.vRatio < 0.9) { rasantOk = false; pireRasant = Math.min(pireRasant, r.vRatio); } }
+      const r = glissiere(ang, v);
+      if (degA > 35 && kmh >= 100 && !r.accident) { accOk = false; accManquee = `${degA}°/${kmh}km/h`; }
+      if (!r.accident && r.dMin < -0.05) { axeOk = false; axeManquee = `${degA}°/${kmh}km/h d=${r.dMin.toFixed(2)}`; }
+    }
+  }
+  noter('glissière : frôlement < 8° garde ≥ 90 % après 0,5 s', pireRasant, '≥ 0,90', rasantOk);
+  noter('glissière : > 35° et ≥ 100 km/h → accident', accOk ? 1 : 0, 'oui', accOk, accManquee);
+  noter('glissière : jamais renvoyée au-delà de l’axe', axeOk ? 1 : 0, 'oui', axeOk, axeManquee);
+}
+{
+  // emprise de la caisse : quel que soit le cap, aucun coin ne passe le rail (le centre reste à bord = lim − emprise)
+  let ok = true, pire = '';
+  for (const degA of [0, 20, 45, 70, 90, 135, 180]) {
+    const c = circuit({ R: 0, largeur: 8, limite: 3 });
+    const et = CD.creer(100, 0); et.v = 30; et.psi = degA * Math.PI / 180; et.rapport = 6;
+    for (let i = 0; i < Math.round(1.2 / DT); i++) CD.pas(et, commande({ gaz: 1 }), c, DT);
+    const capRel = et.psi + et.beta, emprise = (CD.PARAMS.caissel / 2) * Math.abs(Math.cos(capRel)) + (CD.PARAMS.caisseL / 2) * Math.abs(Math.sin(capRel));
+    if (Math.abs(et.d) + emprise > 3 + 0.06) { ok = false; pire = `${degA}° |d|=${et.d.toFixed(2)} emprise=${emprise.toFixed(2)}`; }
+  }
+  noter('emprise de la caisse : aucun coin au-delà du rail, quel que soit le cap', ok ? 1 : 0, 'oui', ok, pire);
+}
+
 const echecs = resultats.filter(r => !r.ok);
 console.log('---');
 console.log(`${resultats.length - echecs.length}/${resultats.length} critères du Chantier 3 tenus`);

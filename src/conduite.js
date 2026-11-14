@@ -66,6 +66,12 @@
     turboMontee: 0.10, turboDescente: 0.16, turboVMax: 92,
     // glissières
     chocRebond: 0.7, chocV: 0.85, chocSeuil: 0.1, chocDuree: 0.4, frottementMur: 6,
+    // Chantier 3 : glissières selon l'angle et la vitesse, et emprise de la caisse (coins jamais au-delà du rail)
+    caisseL: 4.95, caissel: 2.02,
+    glissRasant: 0.14,               // < 8° : on frôle le rail, on garde l'essentiel de la vitesse
+    glissAccident: 0.61,             // > 35° et au-delà de glissVAccident : accident
+    glissVAccident: 27.0,             // ≈ 97 km/h : au-delà et au-delà de 35°, mur plein = accident
+    glissFrottementRasant: 2.2,      // frottement d'une glissade le long du rail (m/s²)
     // attitude visuelle et grille
     tangageCoef: 0.0035, tangageMax: 0.05, roulisCoef: 0.0025, roulisMax: 0.04, attitudeTau: 0.1,
     grilleMonteeTau: 0.09, grilleDescenteTau: 0.22, rupteurRebond: 380, rupteurCadence: 0.1,
@@ -505,20 +511,36 @@
     etat.d += etat.v * Math.sin(etat.psi) * dt;
     etat.distance += Math.abs(dsdt2) * dt;
 
-    // Glissière
-    const cdg = etat.d < 0 ? -1 : 1, lim = limiteCote(c, etat.s, cdg);
-    if (Math.abs(etat.d) > lim) {
-      const vAvant = etat.v, sinI = Math.abs(Math.sin(etat.psi)), versMur = cdg * etat.psi > 0;
-      etat.d = cdg * (lim - 0.1);
-      if (versMur) { etat.psi = -etat.psi * 0.5; etat.v *= 1 - P.chocRebond * sinI; etat.omega *= 0.5; }
-      etat.v = Math.max(0, etat.v - P.frottementMur * dt);
-      if (etat.choc <= 0) {
-        // un vrai choc coûte au moins 15 % ; une glissade le long du mur, seulement le frottement
-        if (versMur && sinI > P.chocSeuil) etat.v = Math.min(etat.v, P.chocV * vAvant);
-        ev.push({ type: 'choc', force: vAvant - etat.v });
+    // Glissière (Chantier 3) : le choc dépend de l'angle d'attaque et de la vitesse ; la caisse (emprise
+    // 4,95 × 2,02 m) ne franchit jamais le rail, quel que soit son cap, et n'est jamais renvoyée de l'autre
+    // côté de l'axe. Un frôlement rasant (< 8°) garde l'essentiel de la vitesse ; un mur plein à plus de
+    // 100 km/h (au-delà de 35°) est un accident.
+    const cdg = etat.d < 0 ? -1 : 1;
+    const capRel = etat.psi + etat.beta;
+    const emprise = (P.caissel / 2) * Math.abs(Math.cos(capRel)) + (P.caisseL / 2) * Math.abs(Math.sin(capRel));
+    const lim = limiteCote(c, etat.s, cdg);
+    const bord = Math.max(0.2, lim - emprise);   // au-delà, un coin de la caisse passerait le rail
+    if (Math.abs(etat.d) > bord) {
+      const vAvant = etat.v, ang = Math.abs(angle(etat.psi)), versMur = cdg * etat.psi > 0;
+      if (versMur && ang > P.glissAccident && etat.v >= P.glissVAccident) {
+        etat.d = cdg * bord;
+        ev.push({ type: 'choc', force: vAvant });
+        declencherAccident(etat, {});
+        annuler(etat, ev);
+      } else if (versMur && ang >= P.glissRasant) {
+        // choc de trois-quarts : la caisse rebondit puis glisse le long du rail, on reste du même côté de l'axe
+        etat.d = cdg * bord;
+        etat.psi = cdg * Math.min(Math.abs(etat.psi) * 0.15, 0.05);   // repart le long du rail, jamais vers l'axe
+        etat.v *= 1 - P.chocRebond * Math.sin(ang);
+        etat.omega *= 0.4;
+        if (etat.choc <= 0) ev.push({ type: 'choc', force: vAvant - etat.v });
+        etat.choc = P.chocDuree;
+        annuler(etat, ev);
+      } else {
+        // frôlement rasant, ou caisse déjà repartie le long du rail : on longe, on garde la vitesse
+        etat.d = cdg * Math.min(Math.abs(etat.d), bord);
+        etat.v = Math.max(0, etat.v - P.glissFrottementRasant * dt);
       }
-      etat.choc = P.chocDuree;
-      annuler(etat, ev);
     } else if (etat.choc > 0) etat.choc -= dt;
 
     // Glisse par essieu et par roue, pour le son et les effets

@@ -302,6 +302,8 @@
     const liste = options.simple ? mod.simples : mod.corps, v = ev.v || 0;
     for (const pc of liste) {
       if (!visible(pc, options.cockpit, v)) continue;
+      // Chantier 3 : une roue détachée (degats.roues[i]) n'est plus dessinée
+      if (pc.roue !== undefined && options.roues && options.roues[pc.roue]) continue;
       let o = mul(M, pc.o), rot;
       if (pc.roue !== undefined) {
         // pièce de roue : elle tourne avec elle ; `decale` la place hors de l'axe, dans le repère de la roue

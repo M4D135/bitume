@@ -117,8 +117,11 @@
       if (b > besoin) besoin = b;
     }
 
-    // Trafic : voiture la plus proche devant dans le couloir ; voisines à côté à ne pas serrer
-    let devant = null, dsMin = 40, dMin = -utile, dMax = utile;
+    // Trafic : voiture la plus proche devant dans le couloir ; voisines à côté à ne pas serrer. Le regard
+    // s'allonge avec la vitesse (distance d'arrêt + marge) pour qu'un rival lancé voie et évite un obstacle
+    // arrêté bien avant de lereach (Chantier 3 : un rival à 80 m/s doit éviter une voiture arrêtée).
+    const regard = Math.max(70, v2 / 60 + 30);
+    let devant = null, dsMin = regard, dMin = -utile, dMax = utile;
     for (const o of course.voitures) {
       if (o === v) continue;
       const ds = ecart(c, e.s, o.etat.s), dd = o.etat.d - e.d;
@@ -129,7 +132,10 @@
     }
     if (devant) {
       const od = devant.etat, gap = dsMin - LONGUEUR;
-      if (ia.cible !== devant.id && vit > od.v + 0.3 && gap < 30) {
+      // un obstacle vraiment plus lent (voiture arrêtée ou en perdition) justifie un engagement plus tôt et plus
+      // franc ; la circulation normale (allure voisine) garde la conduite habituelle du peloton.
+      const obstacle = od.v < vit - 10;
+      if (ia.cible !== devant.id && vit > od.v + 0.3 && gap < (obstacle ? Math.max(45, v2 / 60 + 20) : 30)) {
         const kAv = lire(c, c.courbure, e.s + 60);
         const interieur = kAv > 1e-4 ? 1 : kAv < -1e-4 ? -1 : (od.d > e.d ? -1 : 1);
         // côté libre : dans la piste et sans autre voiture sur la trajectoire de dépassement
@@ -146,26 +152,34 @@
         const cote = libre(interieur) ? interieur : libre(-interieur) ? -interieur : 0;
         if (cote) { ia.cible = devant.id; ia.cote = cote; }
       }
-      // pas d'emboutissage : tant qu'on n'est pas dégagé sur le côté, distance de suivi ;
-      // en dépassement on garde de quoi se déporter (sans vitesse, pas de mouvement latéral)
+      // pas d'emboutissage : tant qu'on est dans les roues de celui de devant, on garde une distance de suivi.
+      // Mais une fois le dépassement amorcé sur un côté libre, on ne rampe pas (sans vitesse, pas de mouvement
+      // latéral) : on garde de quoi dégager la trajectoire, quitte à se rabattre derrière si le côté se referme.
       if (Math.abs(od.d - e.d) < 2.2) {
-        let lim = od.v + Math.max(0, gap - 3) * 0.9;
-        if (ia.cible === devant.id) lim = Math.max(lim, Math.min(5, 1.5 + gap * 0.5));
-        cible = Math.min(cible, lim);
+        if (obstacle && ia.cible === devant.id && Math.abs(od.d - e.d) > 1.1) {
+          const lim = Math.max(od.v + 12, Math.min(vit, od.v + 6 + gap * 0.6));
+          cible = Math.max(cible, lim);
+        } else {
+          let lim = od.v + Math.max(0, gap - 3) * 0.9;
+          if (ia.cible === devant.id) lim = Math.max(lim, Math.min(5, 1.5 + gap * 0.5));
+          cible = Math.min(cible, lim);
+        }
       }
     }
     const base = lire(c, c.ligne, e.s) + ia.decal;
     if (ia.cible >= 0 && dMin > dMax) { ia.cible = -1; ia.cote = 0; } // coincée : on renonce
     if (ia.cible >= 0) {
       const o = course.voitures[ia.cible], avance = ecart(c, o.etat.s, e.s);
-      if (avance > 6 + LONGUEUR || avance < -60) { ia.cible = -1; ia.cote = 0; }
+      if (avance > 6 + LONGUEUR || avance < -(regard + 10)) { ia.cible = -1; ia.cote = 0; }
       else ia.decalVise = o.etat.d + 2.6 * ia.cote - base;
     }
-    const vise = ia.cible >= 0 ? ia.decalVise : 0, vLat = (ia.cible >= 0 ? 3.0 : 0.8) * dt;
+    const vise = ia.cible >= 0 ? ia.decalVise : 0, vLat = (ia.cible >= 0 ? (devant && vit > devant.etat.v + 8 ? 6.0 : 3.0) : 0.8) * dt;
     ia.decalDep += clamp(vise - ia.decalDep, -vLat, vLat);
 
-    // Direction : poursuite d'un point de la ligne visée
-    const la = 8 + 0.45 * vit;
+    // Direction : poursuite d'un point de la ligne visée. Face à un obstacle beaucoup plus lent, on vise plus
+    // court pour braquer plus sec et dégager la trajectoire avant d'arriver dessus ; circulation normale : visée longue.
+    const evite = ia.cible >= 0 && devant && vit > devant.etat.v + 10;
+    const la = (evite ? 5 : 8) + (evite ? 0.30 : 0.45) * vit;
     let dVise = clamp(lire(c, c.ligne, e.s + la) + ia.decal + ia.decalDep, -utile, utile);
     dVise = dMin > dMax ? e.d : clamp(dVise, dMin, dMax);
     const psiC = Math.atan2(dVise - e.d, la);

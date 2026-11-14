@@ -455,7 +455,10 @@
         default:
           if (e.id !== 0) break;
           if (son) son.evenement(e.type, e);
-          if (e.type === 'choc') S.secousse = Math.min(1, (S.secousse || 0) + .3 + e.force * .04);
+          if (e.type === 'choc') { S.secousse = Math.min(1, (S.secousse || 0) + .3 + e.force * .04); if (e.force > 6) S.eclair = Math.min(1, .4 + e.force * .05); }
+          else if (e.type === 'reception') S.secousse = Math.min(1, (S.secousse || 0) + .25 + (e.force || 0) * .1);
+          else if (e.type === 'tonneau' || e.type === 'casse') { S.secousse = 1; S.eclair = 1; }
+          else if (e.type === 'roue') { message('Roue perdue', 'rouge', true); S.eclair = .8; }
           else if (e.type === 'turbo') message(e.parfait ? 'Turbo parfait' : 'Turbo', e.parfait ? 'ambre' : '', true);
           else if (e.type === 'deriveAnnulee') S.derniereJauge = co.horloge;
       }
@@ -634,7 +637,7 @@
           passage: suivie.tPassage === undefined ? 1 : (co.horloge - suivie.tPassage) / .36, rapportAvant: suivie.rapportAvant, derriere, ciel: atm.skyBottom, brume: atm.fog });
         continue;
       }
-      B.voiture.poser(S.modeles[k], ev, sortie, { simple: d2 > complet * complet });
+      B.voiture.poser(S.modeles[k], ev, sortie, { simple: d2 > complet * complet, roues: co.voitures[k].degats && co.voitures[k].degats.roues });
     }
     // fantôme du meilleur tour
     if (co.mode === 'chrono') {
@@ -659,7 +662,10 @@
     B.traces.dessiner(S.fx, sortie, cam.pos, S.fx.acc);
     if (S.banc) S.banc.effets += performance.now() - tFx;
     const q = S.banc ? S.banc.qualite : reglages.qualite;
-    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage });
+    // teinte des dégâts (uEffects.z) sur la caisse abîmée du joueur, et éclair rouge bref sur un choc violent
+    const dg = j.degats, eclair = S.eclair || 0;
+    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: dg ? dg.teinte : 0, flash: eclair });
+    if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
     // En cockpit, la planche donne vitesse, rapport et régime : le tableau réduit retire plan et compteurs, qui
     // couvriraient les pneus avant.

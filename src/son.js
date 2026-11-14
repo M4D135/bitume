@@ -246,6 +246,10 @@
         case 'rupteur': coupureMoteur(t); detonation(t, 0.8); break;
         case 'choc': choc(t, clamp((p.force ?? 8) / 15, 0.15, 1)); break;           // vitesse perdue, m/s
         case 'contact': choc(t, clamp((p.force ?? 3) / 10, 0.1, 1) * 0.6); break;    // vitesse de rapprochement, m/s
+        case 'reception': choc(t, clamp(0.3 + (p.force ?? 1) / 8, 0.2, 0.7)); break;  // la caisse retombe de son saut
+        case 'roue': choc(t, 0.8); ton(t, 170, 0.32, 0.3, 'sawtooth'); break;         // une roue se détache
+        case 'casse': choc(t, 1); detonation(t, 0.9); break;                           // la caisse casse, rentre au stand
+        case 'tonneau': choc(t, 1); detonation(t, 1); break;                           // tonneau à la réception
         case 'feu': ton(t, 620, 0.22, 0.3); break;
         case 'vert': ton(t, 1240, 0.22, 0.35); break;
         case 'niveau': { const n = clamp(p.niveau || 1, 1, 3); for (let i = 0; i < n; i++) ton(t + i * 0.07, 1500, 0.03, 0.2, 'square'); break; } // tics comptés
