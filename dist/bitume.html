@@ -1150,9 +1150,12 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     // BITUME : formes libres, mêmes triangles aux trois niveaux de détail
     for(const [nom,triangles] of FORMES_LIBRES){
       begin(nom);
-      for(const t of triangles)triangle(t[0],t[1],t[2],t[3],t[4],t[5]);
+      // BITUME : ordre du registre, déjà juste en vraie grandeur ; triangle() réorienterait à tort dans le cube
+      // (l'échelle de normaliser() ne conserve pas les angles : 90 faces fines étaient retournées puis éliminées par CULL_FACE)
+      for(const t of triangles)indices.push(vertex(t[0],t[3]),vertex(t[1],t[4]),vertex(t[2],t[5]));
       end(nom);
     }
+    // BITUME : index sur 32 bits (retouche 10, UNSIGNED_INT) — les formes libres dépassent 65 535 sommets
     return {vertices:new Float32Array(data),indices:new Uint32Array(indices),ranges};
   }
 
@@ -2744,13 +2747,16 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 
   // glissière du côté donné ; repli sur c.limite pour un circuit sans limites par échantillon
   function limiteCote(c, s, cote) {
-    return c.limiteG && B.circuit.limiteA ? B.circuit.limiteA(c, s, cote) : c.limite;
+    return c.limiteG != null && B.circuit.limiteA ? B.circuit.limiteA(c, s, cote) : c.limite;
   }
 
   // ---------------------------------------------------------------- dérive et turbo
-  function eteindre(dr) {
+  function eteindre(dr, doux) {
     dr.actif = false; dr.sens = 0; dr.duree = 0; dr.charge = 0; dr.niveau = 0; dr.palier = 0; dr.fenetre = 0;
     dr.qualite = 0; dr.contre = 0; dr.perte = 0; dr.grace = 0; dr.relache = 0;
+    // fin douce : le fondu et le tirage retombent par leurs filtres (sortie 0,16 s), pas d'un cran —
+    // la caisse ne peut pas reprendre l'adhérence instantanément, et un saut de β fausse le lissage (S8)
+    if (!doux) { dr.amorce = 0; dr.melange = 0; dr.tirage = 0; }
   }
   function couperTurbo(etat) {
     const t = etat.turbo;
@@ -2758,23 +2764,23 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   }
   // Fin sans turbo (frein, herbe, contact, perte de contrôle) : le bouton doit être relâché avant une nouvelle dérive.
   // Un contact coupe aussi un turbo en cours.
-  function annulerDerive(etat) {
+  function annulerDerive(etat, doux) {
     const dr = etat.derive, avaitTurbo = etat.turbo.reste > 0;
     couperTurbo(etat);
     if (!dr.actif) return avaitTurbo ? { type: 'turboCoupe' } : null;
-    eteindre(dr); dr.verrou = true;
+    eteindre(dr, doux); dr.verrou = true;
     return { type: 'deriveAnnulee' };
   }
-  function annuler(etat, ev) { const a = annulerDerive(etat); if (a) ev.push(a); }
+  function annuler(etat, ev) { const a = annulerDerive(etat, true); if (a) ev.push(a); }
   function lacher(etat, ev, enPiste) {
     const dr = etat.derive;
-    if (enPiste && dr.niveau >= 1 && dr.perte < P.deriveGrace) {
+    if (enPiste && dr.niveau >= 1 && dr.perte < P.derivePerte) {
       const parfait = dr.fenetre > 0 && dr.niveau === dr.palier, duree = P.turboDurees[dr.niveau] + (parfait ? P.turboBonus : 0);
       const t = etat.turbo;
       t.reste = duree; t.duree = duree; t.niveau = dr.niveau; t.parfait = parfait; t.ecoule = 0;
       ev.push({ type: 'turbo', duree, niveau: dr.niveau, parfait });
     }
-    eteindre(dr);
+    eteindre(dr, true);
   }
   function lisse(x) { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); }
 
@@ -2818,7 +2824,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       if (!cmd.derive) { lacher(etat, ev, enPiste); dr.relache = 0; return; }
       if (dr.perte > P.derivePerte || dr.grace <= 0) {
         // perte de contrôle ou virage fini bouton tenu : la glisse retombe sans turbo
-        eteindre(dr); dr.verrou = true; ev.push({ type: 'deriveAnnulee' });
+        eteindre(dr, true); dr.verrou = true; ev.push({ type: 'deriveAnnulee' });
       }
       return;
     }
@@ -2828,7 +2834,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       etat.turbo.reste <= 0 && dr.relache >= P.deriveRearmement;
     if (possible && Math.abs(k) >= P.deriveCourbMin && Math.abs(etat.volant) >= P.deriveVolantMin &&
         etat.volant * k > 0) {
-      eteindre(dr);
+      eteindre(dr, true);
       dr.actif = true; dr.sens = sign(k); dr.grace = P.deriveGrace;
       etat.bondT = P.deriveBondDuree;
       ev.push({ type: 'derive', sens: dr.sens });
@@ -3025,8 +3031,9 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     if (vv > 1e-6) { fx -= m * resist * u / vv; fy -= m * resist * w / vv; }
     // pente et dévers : gravité le long de la tangente et vers la droite de la piste
     const thetaB = etat.psi + etat.beta, ct = Math.cos(thetaB), st = Math.sin(thetaB);
-    const gT = -G * e.pente / Math.sqrt(1 + e.pente * e.pente), gN = G * Math.sin(e.devers);
-    etat.pente = e.pente;
+    const pente = Number.isFinite(e.pente) ? e.pente : 0, devers = Number.isFinite(e.devers) ? e.devers : 0;
+    const gT = -G * pente / Math.sqrt(1 + pente * pente), gN = G * Math.sin(devers);
+    etat.pente = pente;
     fx += m * (gT * ct + gN * st); fy += m * (-gT * st + gN * ct);
 
     // Intégration semi-implicite : vitesses, puis positions
@@ -3524,7 +3531,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     });
   }
 
-  B.course = { creer, pas, fantome, etatPilotes, commandesIA, aspirer, PILOTES, ASPIRATION };
+  B.course = { creer, pas, fantome, etatPilotes, commandesIA, aspirer, PILOTES, LIVREES, ASPIRATION };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -4539,6 +4546,16 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
         if (options.interieur === 'tout' || (options.interieur && trou)) doublure.push([t1[0], t1[2], t1[1]], [t2[0], t2[2], t2[1]]);
       }
     }
+    // carene-2 : par l'ouverture on voit aussi l'envers de la peau au-delà des bords, éliminé en simple face ;
+    // deux cloisons en éventail sur les anneaux de xmin et xmax, tournées vers l'ouverture, bouchent la cavité
+    if (ouv && options.interieur && options.interieur !== 'tout') {
+      for (const [cible, sens] of [[xmax, 1], [xmin, -1]]) {
+        const A = anneaux.find(a => Math.abs(a.x - cible) < 1e-9);
+        if (!A) continue;
+        const c = A.axe, dedans = [c[0] + sens, c[1], c[2]];
+        for (let j = 0; j < angles.length; j++) doublure.push(orienter(c, A.points[j], A.points[(j + 1) % angles.length], dedans));
+      }
+    }
     if (bouts) for (const [A, sens] of [[anneaux[0], Math.sign(anneaux[0].x - anneaux[1].x) || -1], [anneaux[anneaux.length - 1], Math.sign(anneaux[anneaux.length - 1].x - anneaux[anneaux.length - 2].x) || 1]]) {
       const c = A.axe, dedans = [c[0] - sens, c[1], c[2]];
       for (let j = 0; j < angles.length; j++) faces.push(orienter(c, A.points[j], A.points[(j + 1) % angles.length], dedans));
@@ -4629,7 +4646,9 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
         avant = ici;
       }
     }
-    return lisser(faces, options.vif);
+    // peu de côtés : deux faces voisines du tour dépassent le vif de 50° et chaque génératrice resterait vive ;
+    // on adapte le seuil pour que le cercle balayé reste lisse (75° pour 6 côtés)
+    return lisser(faces, options.vif ?? Math.max(50, 360 / cotes + 15));
   }
 
   // ------------------------------------------------------------------ outils
@@ -4708,9 +4727,11 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   // Pouce : éminence charnue du poignet au bas de l'index, côté paume, puis le long de la jante vers le haut, couché sur
   // sa face tournée vers le pilote, devant la branche. Éminence : [vers les jointures depuis le poignet, vers
   // l'index, vers la paume] ; pouce : [abscisse le long de la jante, angle autour du tube] ; rayons de la base au bout.
-  const POUCE = { r: [.0160, .0158, .0124, .0108, .0094], eminence: [[.016, .012, .018], [.036, .020, .026]], tour: [[.026, -24], [.040, -32], [.052, -36]] };
+  // carene-4 : la base du pouce était trop serrée (rayon de courbure de l'axe 8,8 mm sous le rayon du tube,
+  // 12,4 mm : la peau se recoupait) ; le premier point de contact est un peu plus haut sur la jante.
+  const POUCE = { r: [.0160, .0158, .0124, .0108, .0094], eminence: [[.016, .012, .018], [.036, .020, .026]], tour: [[.028, -20], [.040, -32], [.052, -36]] };
 
-  function construire() {
+  function construire(ouvert) {
     const C = B.carene;
     const K = AUTOUR(0, JOINTURES.theta, JOINTURES.d);            // jointure du majeur et de l'annulaire : origine du dos
     const a = AXE, bz = [0, 1, 0], Y = croix(bz, a);              // Y : normale au dos de la main, vers le dehors
@@ -4718,11 +4739,14 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const W = additionner(K, multiplier(a, .088));                // centre du poignet
 
     // --- Doigts : de l'intérieur du dos à la jointure, puis autour du tube ---
+    // cockpit-3 : variante ouverte pour le trajet au pommeau — les doigts ne serrent plus le tube (ils le
+    // traversaient, fermés, jusqu'à 12,5 mm) ; ils restent ouverts vers le dehors, à plat sur la paume levée
+    const serrage = ouvert ? .28 : 1;
     const gant = [], pointsDoigts = [], jointures = [];
     for (const doigt of DOIGTS) {
       const psi = doigt.s / JANTE.R, jointure = AUTOUR(psi, JOINTURES.theta, JOINTURES.d), r = doigt.r;
       const rayons = EFFILE.map(f => r * f);
-      const pts = [additionner(jointure, multiplier(a, .024)), jointure, ...doigt.tour.map((t, i) => AUTOUR(psi, t * deg, JANTE.r + rayons[i + 2] + JEU))];
+      const pts = [additionner(jointure, multiplier(a, .024)), jointure, ...doigt.tour.map((t, i) => AUTOUR(psi, JOINTURES.theta + (t * deg - JOINTURES.theta) * serrage, JANTE.r + rayons[i + 2] + JEU))];
       gant.push(...C.tube(pts, rayons, { cotes: 10, pas: 4, bouts: true }));
       pointsDoigts.push(pts); jointures.push(jointure);
     }
@@ -4739,7 +4763,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 
     // --- Pouce : de l'éminence, côté index et paume, jusque sur la face de la jante tournée vers le pilote ---
     const eminence = POUCE.eminence.map(([x, y, z]) => additionner(additionner(W, multiplier(a, -x)), additionner(multiplier(bz, y), multiplier(Y, -z))));
-    const pouce = [...eminence, ...POUCE.tour.map(([s, t], i) => AUTOUR(s / JANTE.R, t * deg, JANTE.r + POUCE.r[i + 2] + 4 * JEU))];
+    const pouce = [...eminence, ...POUCE.tour.map(([s, t], i) => AUTOUR(s / JANTE.R, t * deg * (ouvert ? .3 : 1), JANTE.r + POUCE.r[i + 2] + 4 * JEU))];
     gant.push(...C.tube(pouce, POUCE.r, { cotes: 12, pas: 4, bouts: true }));
 
     // --- Paume : cuir sombre côté jante, sous le dos ---
@@ -4841,7 +4865,8 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   const deuxCotes = t => t.concat(C.miroir(t));
   // Sections (x : abscisse, y0–y1 : bas et haut, l : demi-largeur, n : exposant), de l'avant vers l'arrière, mesurées
   // sur les photos de la voiture de 1980 (trois quarts avant de haut).
-  const S_QUILLE = [{ x: 2.16, y0: .12, y1: .22, l: .10, n: 3 }, { x: 1.60, y0: .10, y1: .30, l: .15, n: 3 }, { x: .95, y0: .10, y1: .34, l: .20, n: 4 }];
+  // BITUME (voi-1) : la dernière section prolonge la quille sous les pontons ; sans elle, le flanc reste percé derrière la roue avant
+  const S_QUILLE = [{ x: 2.16, y0: .12, y1: .22, l: .10, n: 3 }, { x: 1.60, y0: .10, y1: .30, l: .15, n: 3 }, { x: .95, y0: .10, y1: .34, l: .20, n: 4 }, { x: .58, y0: .10, y1: .36, l: .22, n: 4 }];
   const S_FLECHE = [{ x: 2.08, y0: .22, y1: .25, l: .04, n: 3 }, { x: 1.60, y0: .27, y1: .34, l: .26, n: 4 }, { x: 1.05, y0: .30, y1: .40, l: .52, n: 5 }, { x: .60, y0: .30, y1: .43, l: .72, n: 5 }];
   // pontons : ils s'arrondissent devant, sous la flèche, et se resserrent derrière, à l'intérieur des roues arrière
   const S_PONTONS = [{ x: .66, y0: .14, y1: .40, l: .66, n: 6 }, { x: .60, y0: .10, y1: .43, l: .72, n: 6 }, { x: -.40, y0: .10, y1: .45, l: .72, n: 6 },
@@ -4854,15 +4879,27 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   forme('quille', C.carene(S_QUILLE, { cotes: 16 }));
   forme('fleche', C.carene(S_FLECHE, { cotes: 28, pas: 5 }));
   forme('pontons', C.carene(S_PONTONS, { cotes: 28 }));
-  forme('bande', C.carene(S_PONTONS.slice(1, 5).map(s => Object.assign({}, s, { y0: s.y0 - .004, y1: s.y0 + .07, l: s.l + .004 })), { cotes: 28 }));
+  // voi-6 : la bande suit la peau des pontons, décalée de 4 mm le long des normales (une carène à part, à
+  // flancs presque droits, sortait jusqu'à 19 cm de la peau), coupée sous y0 + 0,07
+  {
+    const peau = C.carene(S_PONTONS.slice(1, 5), { cotes: 28, bouts: false }), decalee = [];
+    for (const t of peau) {
+      if ((t[0][1] + t[1][1] + t[2][1]) / 3 >= .17) continue;
+      decalee.push([0, 1, 2].map(r => [0, 1, 2].map(k => t[r][k] + t[3 + r][k] * .004)).concat([0, 1, 2].map(r => t[3 + r])));
+    }
+    forme('bande', decalee);
+  }
   {
     const exterieur = C.carene(S_GOUTTE, { cotes: 28, pas: 5, ouverture: OUVERTURE });
     forme('goutte', exterieur);
     forme('goutte-dedans', C.carene(S_GOUTTE, { cotes: 28, pas: 5, ouverture: OUVERTURE, interieur: true }).slice(exterieur.length));
-    // jonc du bord de l'ouverture : il suit le bord gauche, l'arrière, le bord droit et l'avant de l'ouverture
+    // jonc du bord de l'ouverture : il suit le bord gauche, l'arc arrière, le bord droit et l'arc avant de l'ouverture
+    // (voi-4 : trois points par arc, sinon la corde de Catmull-Rom bombe hors de l'ouverture et passe sous la peau)
     const g = C.profil(S_GOUTTE), bord = [], w = OUVERTURE.angle / 2;
     for (let i = 0; i <= 6; i++) { const x = OUVERTURE.de + (OUVERTURE.a - OUVERTURE.de) * i / 6; bord.push(C.pointSection(g(x), Math.PI / 2 + w)); }
+    for (let k = 1; k <= 3; k++) bord.push(C.pointSection(g(OUVERTURE.a), Math.PI / 2 + w - 2 * w * k / 4));
     for (let i = 6; i >= 0; i--) { const x = OUVERTURE.de + (OUVERTURE.a - OUVERTURE.de) * i / 6; bord.push(C.pointSection(g(x), Math.PI / 2 - w)); }
+    for (let k = 1; k <= 3; k++) bord.push(C.pointSection(g(OUVERTURE.de), Math.PI / 2 - w + 2 * w * k / 4));
     forme('jonc', C.tube(bord, .012, { cotes: 8, ferme: true, pas: 3 }));
   }
   forme('moteur', C.carene(S_MOTEUR, { cotes: 24 }));
@@ -4881,7 +4918,8 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     // suspension avant : basculeur supérieur noir, large à la coque et fin à la roue ; triangle inférieur et biellette
     const versZ = [[0, 0, 1], [0, 1, 0], [-1, 0, 0]];
     forme('basculeurs', deuxCotes(C.transformer(C.carene([{ x: 0, y0: .325, y1: .365, l: .075, n: 4 }, { x: .43, y0: .330, y1: .350, l: .028, n: 3 }], { cotes: 12, pas: 2 }), versZ, [1.35, 0, .28])));
-    forme('triangles', deuxCotes([].concat(C.tube([[1.52, .15, .20], [1.35, .17, .71]], .011, { cotes: 6 }), C.tube([[1.18, .15, .20], [1.35, .17, .71]], .011, { cotes: 6 }),
+    // voi-7 : attaches intérieures posées sur la peau de la quille (demi-largeur ≈ 0,143 à x 1,52 et 0,167 à x 1,18, y 0,15)
+    forme('triangles', deuxCotes([].concat(C.tube([[1.52, .15, .145], [1.35, .17, .71]], .011, { cotes: 6 }), C.tube([[1.18, .15, .17], [1.35, .17, .71]], .011, { cotes: 6 }),
       C.tube([[1.47, .29, .22], [1.45, .30, .70]], .008, { cotes: 6 }))));
   }
   // arceau de sécurité derrière le casque
@@ -4957,13 +4995,15 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     // Aileron avant argent de 1,62 m, bord de fuite relevé, et ses deux dérives rouges
     P('box', [2.11, .13, 0], [.38, .025, 1.62], LAQUE, ARGENT, { m: euler(0, 0, -.08) });
     for (const k of [-1, 1]) P('box', [2.11, .17, k * .81], [.38, .19, .02], PEINTURE, c1);
-    // Habitacle de la vue cockpit (dessiné seulement dans cette vue) : épaules, jonc, dôme, cuve sombre, saute-vent
+    // Habitacle de la vue cockpit (dessiné seulement dans cette vue) : épaules, jonc, dôme, saute-vent.
+    // voi-5 : la cuve sombre se dessine aussi en vue extérieure — sans elle, vu du dessus, l'habitacle paraît
+    // plein couleur caisse ; prolongée par la quille (voi-1), elle ne se voit de dehors que par l'ouverture.
     const dedans = { dedans: true };
     L('epaules', PEINTURE, c1, dedans);
     L('epaules-jonc', MAT, NOIR, dedans);
     L('flancs', MAT, [.05, .05, .055], dedans);
     L('dome', PEINTURE, c1, dedans);
-    L('cuve', MAT, [.035, .035, .04], dedans);
+    L('cuve', MAT, [.035, .035, .04]);
     L('pare-brise', METAL_MAT, [.30, .50, .86], { fx: true, alpha: .2, dedans: true });
     L('pare-brise-arete', METAL_MAT, [.86, .9, .94], { fx: true, alpha: .5, dedans: true });
     // Pilote : casque, visière, épaules
@@ -4977,8 +5017,10 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       P('box', [-1.35, .40, k * .45], [.05, .02, .32], MAT, CARBONE, AR());
       P('box', [-1.35, .22, k * .45], [.07, .02, .32], MAT, CARBONE, AR());
     }
-    // Numéro : grand chiffre blanc penché, posé sur le rouge du nez (lisible de face) et sur les flancs des pontons
+    // Numéro : grand chiffre penché, posé directement sur la caisse (lisible de face) et sur les flancs des pontons.
+    // BITUME (voi-2) : blanc sur le rouge du joueur, noir sur les caisses claires — encre choisie pour un contraste ≥ 3
     if (livree.numero) {
+      const lum = c => .2126 * c[0] + .7152 * c[1] + .0722 * c[2], encre = (lum(BLANC) + .05) / (lum(c1) + .05) >= 3 ? BLANC : NOIR;
       const texte = String(livree.numero).slice(0, 2), n = texte.length, penche = .21;
       // chiffre dans le plan (ex : sa droite, ey : son haut), centré en o, hauteur h ; colle(c) pose chaque segment sur
       // la peau
@@ -4988,7 +5030,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
         for (let i = 0; i < n; i++) for (const nom of SEGMENTS[texte[i]] || '') {
           const [x, y, sx, sy, vertical] = places[nom], dx = x + (i - (n - 1) / 2) * pas + y * Math.tan(penche);
           const c = colle(o.map((v, k) => v + ex[k] * dx + ey[k] * y));
-          P('box', c, [sx, sy, .003], MAT, BLANC, Object.assign({ m: vertical ? [exp, eyp, nz] : [ex, ey, nz] }, extra));
+          P('box', c, [sx, sy, .003], MAT, encre, Object.assign({ m: vertical ? [exp, eyp, nz] : [ex, ey, nz] }, extra));
         }
       };
       // nez : devant la pointe du carénage, le haut du chiffre vers l'habitacle ; flancs : sur la partie droite du ponton
@@ -4998,7 +5040,8 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       const f = C.profil(S_FLECHE), xN = 1.62, s0 = f(xN + .1), s1 = f(xN - .1), ey = norme([-.2, s1.y1 - s0.y1, 0]);
       chiffres([xN, f(xN).y1, 0], [0, 0, -1], ey, .18, c => [c[0], dessus(f(c[0]), c[2]) + .004, c[2]]);
       const p = C.profil(S_PONTONS);
-      for (const k of [-1, 1]) chiffres([-.62, .275, k * .72], [k, 0, 0], [0, 1, 0], .16, c => [c[0], c[1], k * (flanc(p(c[0]), c[1]) + .004)], AR());
+      // voi-3 : numéro de flanc calé entre la bande basse (haut y 0,17) et le filet (bas y 0,357)
+      for (const k of [-1, 1]) chiffres([-.62, .262, k * .72], [k, 0, 0], [0, 1, 0], .15, c => [c[0], c[1], k * (flanc(p(c[0]), c[1]) + .004)], AR());
     }
     // Boîte, échappements du douze-cylindres à plat, aileron arrière blanc sur mât central, dérives rouges
     P('box', [-1.80, .28, 0], [.50, .28, .34], METAL_MAT, [.3, .31, .33], AR());
@@ -5112,8 +5155,9 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     forme('branches', [].concat(...[-Math.PI / 2, Math.PI / 2, Math.PI].map(a => C.transformer(branche, autourY(a)))));
   }
   // Mains : le maillage de src/main.js (main droite, taille réelle, repère de la prise) et son miroir pour la gauche
-  const MAIN = B.main.construire();
+  const MAIN = B.main.construire(), MAIN_OUVERT = B.main.construire(true);
   for (const [cote, t] of [['d', x => x], ['g', C.miroir]]) for (const piece of ['gant', 'paume', 'garde', 'poignet', 'sangle']) forme('main-' + piece + '-' + cote, t(MAIN[piece]));
+  forme('main-gant-d-ouvert', MAIN_OUVERT.gant);                  // cockpit-3 : doigts ouverts pendant le trajet au pommeau
   const borner = (x, a, b) => x < a ? a : x > b ? b : x, lisse = (a, b, x) => { const t = borner((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
   const clarte = c => .3 * c[0] + .59 * c[1] + .11 * c[2], ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
   // Position du pommeau selon le rapport, grille en H : impairs vers l'avant, pairs vers l'arrière ; 1-2 à gauche.
@@ -5172,9 +5216,10 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       mettre('cylinder', plus(centre, [pn, .002]), [.008, .005, .008], METAL_MAT, ARGENT, rond);
     }
     // Rangée du bas : deux interrupteurs à levier, témoin vert du contact, témoin rouge (ralenti ou surrégime)
+    // voi-8 (cockpit-8) : le régime ne descend jamais sous le ralenti de conduite.js ; seuil pris dans PARAMS
     for (const a of [-.046, -.034]) { mettre('cylinder', sur(a, -.043, .011), [.010, .006, .010], METAL_MAT, ARGENT, rond); mettre('box', sur(a, -.039, .019), [.003, .011, .003], METAL_MAT, ARGENT, cadre); }
     mettre('sphere', sur(.034, -.043, .012), [.009, .009, .009], 5, [.14, .9, .3], null, { emissive: 1.1 });
-    const alerte = regime > 12600 || regime < 2500;
+    const ralenti = B.conduite.PARAMS.ralenti, alerte = regime > 12600 || regime < ralenti + 300;
     mettre('sphere', sur(.046, -.043, .012), [.009, .009, .009], 5, alerte ? [1, .14, .05] : [.2, .03, .02], null, alerte ? { emissive: 1.8 } : undefined);
     // Rapport à gauche, vitesse à droite, en segments ambre
     const chiffre = (texte, centre, h) => {
@@ -5225,15 +5270,24 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     for (const k of [-1, 1]) {
       const rk = r.map(v => v * k), ex = u.map((v, i) => v * Math.cos(PRISE) + rk[i] * Math.sin(PRISE)), haut = u.map((v, i) => v * Math.sin(PRISE) - rk[i] * Math.cos(PRISE));
       // repère de la prise : x vers le pilote, y le long de la jante vers le haut, z vers le moyeu (miroir à gauche)
-      let G = plus(C, [ex, R]), m = [wn, haut, ex.map(v => -k * v)];
+      let G = plus(C, [ex, R]), m = [wn, haut, ex.map(v => -k * v)], ecart = 0;
       if (k > 0 && versLevier > 0) {
-        const cible = plus(pommeau, [wn, .004], [wu, .006]);
-        G = G.map((v, i) => v + (cible[i] - v) * versLevier);
-        m = m.map(v => tourner(v, wn, versLevier * Math.PI / 2));      // le dos de la main passe du dehors au-dessus
+        const cible = plus(pommeau, [wn, .020], [wu, .030]);
+        // cockpit-3 : doigts fermés, ils traversaient le tore de la jante (jusqu'à 12,5 mm) et la branche de 3 h
+        // pendant le trajet ; la main s'écarte d'abord vers le dehors et vers le pilote avant de tourner, et le
+        // gant passe en variante doigts ouverts dès qu'il ne touche plus le tube (ecart à fond)
+        ecart = borner(Math.min(t, 1 - t) / .02, 0, 1);
+        G = G.map((v, i) => v + ex[i] * .016 * ecart + wn[i] * .016 * ecart);
+        // cockpit-3 (suite) : en ligne droite les doigts piquaient dans la boule du pommeau en vol (35 mm à
+        // t 0,15) ; le trajet devient un arc de Bézier qui passe 15 cm au-dessus, la main retombe dessus
+        const sommet = plus(cible, [wu, .15]);
+        G = G.map((v, i) => v * (1 - versLevier) ** 2 + sommet[i] * 2 * versLevier * (1 - versLevier) + cible[i] * versLevier ** 2);
+        m = m.map(v => tourner(v, wn, lisse(0, .10, t) * (1 - lisse(.86, 1, t)) * (Math.PI / 2 + phi)));      // cockpit-4 : le repère de départ porte déjà −phi ;
+        // sans le +phi, la paume restait tournée du braquage au pommeau (91,5° du bas volant à fond)
       }
       const cote = k > 0 ? 'd' : 'g', local = q => plus(G, [m[0], q[0] * echelle], [m[1], q[1] * echelle], [m[2], k * q[2] * echelle]);
       for (const [piece, color] of couleurs) {
-        const fo = FORMES['main-' + piece + '-' + cote];
+        const fo = FORMES['main-' + piece + '-' + cote + (k > 0 && piece === 'gant' && ecart >= .25 ? '-ouvert' : '')];
         mettre(fo.nom, plus(G, [m[0], fo.centre[0] * echelle], [m[1], fo.centre[1] * echelle], [m[2], fo.centre[2] * echelle]), fo.taille.map(v => v * echelle), TISSU, color, m);
       }
       // manche : elle part de l'intérieur de la manchette, puis tronçons le long de la courbe, du poignet au coude
@@ -5265,9 +5319,12 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
         const b = .55 - v.x, a = v.z - zc, f = (Math.atan2(a, b) - k * .105) / .28;
         if (b < 2 || b > 90 || Math.abs(f) > 1) continue;
         const dist = Math.hypot(a, b), large = borner(1.9 / dist / .56 * GL, .005, GL * .55), haut = borner(1.0 / dist / .23 * GH, .004, GH * .62);
-        const zi = borner(zc + f * GL / 2, zc - GL / 2 + large / 2, zc + GL / 2 - large / 2), yi = y - GH * .08 - haut * .3;
-        dans('box', [x - .0012, yi, zi], [.003, haut, large], LAQUE, v.couleur || c2);
-        dans('box', [x - .0018, yi - haut * .34, zi], [.003, haut * .34, large * 1.08], MAT, [.03, .03, .035]);
+        // cockpit-1 : le suiveur le plus proche est enfoncé plus profond dans la glace (un seul lot, depthFunc LEQUAL) ;
+        // cockpit-5 : hauteur et largeur bornées pour que caisse et pneus restent dans la glace
+        const zi = borner(zc + f * GL / 2, zc - GL / 2 + .54 * large, zc + GL / 2 - .54 * large),
+          yi = borner(y - GH * .08 - haut * .3, y - GH / 2 + .51 * haut, y + GH / 2 - haut / 2), xi = x - .0012 - .001 * (2 - n);
+        dans('box', [xi, yi, zi], [.003, haut, large], LAQUE, v.couleur || c2);
+        dans('box', [xi - .0006, yi - haut * .34, zi], [.003, haut * .34, large * 1.08], MAT, [.03, .03, .035]);
         n++;
       }
     }
@@ -5325,7 +5382,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       etincelles: particules(ETINCELLES, 'box', ETINCELLE, 2.4), prochaineEtincelle: 0,
       // par roue (voiture × 4 + roue) : bande ouverte, son numéro de pose, dernier point de contact et sa validité
       ouverte: new Int32Array(n * 4).fill(-1), genOuverte: new Int32Array(n * 4), valide: new Uint8Array(n * 4), dernier: new Float64Array(n * 12),
-      acc: 0, alea: graine32(graine || 1)
+      acc: 0, alea: graine32(graine == null ? 1 : graine)
     };
   }
 
@@ -5443,7 +5500,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const ea = co.voitures[e.a].etat, eb = co.voitures[e.b].etat;
     const ca = a.cap - (ea.beta || 0), cb = b.cap - (eb.beta || 0);
     const vx = .4 * (Math.cos(ca) * ea.v + Math.cos(cb) * eb.v), vz = .4 * (Math.sin(ca) * ea.v + Math.sin(cb) * eb.v), sol = (a.y + b.y) / 2;
-    for (let n = 0, m = 4 + Math.min(6, Math.round(e.force || 0)); n < m; n++)
+    for (let n = 0, m = 4 + Math.min(6, Math.max(0, Math.round(e.force || 0))); n < m; n++)
       etinceler(fx, (a.x + b.x) / 2, sol + .3, (a.z + b.z) / 2, vx, 1.5, vz, sol, 6);
   }
 
@@ -5962,8 +6019,14 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const ev = B.course.pas(co, cmd, DT);
     for (const v of co.voitures) {
       v.roule = (v.roule || 0) + v.etat.v * DT; // distance roulée : fait tourner les roues
-      // changement de rapport : la main droite du pilote va au levier (vue cockpit)
-      if (v.etat.rapport !== v.rapportVu) { v.rapportAvant = v.rapportVu === undefined ? v.etat.rapport : v.rapportVu; v.rapportVu = v.etat.rapport; v.tPassage = co.horloge; }
+      // changement de rapport : la main droite du pilote va au levier (vue cockpit). cockpit-6 : au premier pas,
+      // on initialise seule la référence, sans trajet ; cockpit-2 : un rapport qui arrive pendant l'animation
+      // précédente (0,36 s) est consommé sans reprise — le trajet en cours vise déjà le rapport courant, et
+      // tPassage ne repart pas à zéro (sinon la main se téléporte du pommeau à la jante)
+      if (v.etat.rapport !== v.rapportVu) {
+        if (v.rapportVu !== undefined && (v.tPassage === undefined || co.horloge - v.tPassage >= .36)) { v.rapportAvant = v.rapportVu; v.tPassage = co.horloge; }
+        v.rapportVu = v.etat.rapport;
+      }
     }
     const t = S.prec; S.prec = S.cour; S.cour = t; remplirPoses(S.cour, co);
     const tFx = S.banc ? performance.now() : 0;
