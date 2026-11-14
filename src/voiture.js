@@ -418,9 +418,15 @@
     // Rangée du bas : deux interrupteurs à levier, témoin vert du contact, témoin rouge (ralenti ou surrégime)
     // voi-8 (cockpit-8) : le régime ne descend jamais sous le ralenti de conduite.js ; seuil pris dans PARAMS
     for (const a of [-.046, -.034]) { mettre('cylinder', sur(a, -.043, .011), [.010, .006, .010], METAL_MAT, ARGENT, rond); mettre('box', sur(a, -.039, .019), [.003, .011, .003], METAL_MAT, ARGENT, cadre); }
-    mettre('sphere', sur(.034, -.043, .012), [.009, .009, .009], 5, [.14, .9, .3], null, { emissive: 1.1 });
+    // voyants encastrés (David 14/11 : le témoin flottait à mi-hauteur de la planche) : lunette de métal noyée
+    // dans la tôle, lentille posée dedans, comme les vis des coins
     const ralenti = B.conduite.PARAMS.ralenti, alerte = regime > 12600 || regime < ralenti + 300;
-    mettre('sphere', sur(.046, -.043, .012), [.009, .009, .009], 5, alerte ? [1, .14, .05] : [.2, .03, .02], null, alerte ? { emissive: 1.8 } : undefined);
+    const voyant = (a, allume, couleur, force) => {
+      mettre('cylinder', sur(a, -.043, .0105), [.0125, .005, .0125], METAL_MAT, [.32, .32, .34], rond);
+      mettre('sphere', sur(a, -.043, .014), [.009, .009, .009], 5, allume ? couleur : [.2, .03, .02], null, allume ? { emissive: force } : undefined);
+    };
+    voyant(.032, true, [.14, .9, .3], 1.1);
+    voyant(.050, alerte, [1, .14, .05], 1.8);
     // Rapport à gauche, vitesse à droite, en segments ambre
     const chiffre = (texte, centre, h) => {
       const l = h * .56, t = h * .13, seg = SEGMENTS[texte] || '';

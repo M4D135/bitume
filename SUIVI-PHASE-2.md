@@ -450,3 +450,10 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   10 % du tour sans arbre à 200 m (**0,0 % mesuré** maintenant), au moins 20 arbres par tronçon de 300 m hors
   stands, plafond de 2 600 tenu (2 600, eau sous la piste, construction en moins de 150 ms (**58 ms au pire**).
 - Treize suites vertes.
+
+## Passage du Spark (14/11, voyants de planche encastrés)
+
+- Constat (David, capture) : le témoin rouge de passage de rapport flottait à mi-hauteur dans la planche,
+  à moitié dans la tôle. Les deux voyants (contact vert, alerte rouge) reçoivent une **lunette de métal**
+  noyée dans la tôle comme les vis des coins, et la lentille est posée dans la lunette ; écartement élargi
+  (32 et 50 mm) pour que les lunettes ne se touchent plus. Douze suites vertes, cockpit-8 inchangé.
