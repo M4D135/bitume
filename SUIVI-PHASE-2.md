@@ -480,3 +480,18 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   records/fantômes d'avant ne sont plus comparables (remise à zéro volontaire).
 - `verifications/conduite.test.mjs` : +1 test « la caisse collée au rail se dégage et repart ». Dix-sept suites
   vertes (dont `glissiere-rebond` et `decor-identite`), build ok.
+
+## Passage du Spark (14/11, rendu : boost de réflexion « photoréaliste » en qualité Fine)
+
+- Demande de David : améliorer les reflets en qualité Fine (le jeu n'a pas de mode « photoréaliste », seulement
+  Légère/Auto/Fine). Choix retenu avec lui : **boost analytique d'abord**, **fluidité d'abord** (pas de passe
+  render-to-texture, le moteur reste « pas de miroir de scène »).
+- `renderer.js` (retouche BITUME n° 13, PROVENANCE à jour) : nouvel uniforme `uPhoto` (passé par le jeu via
+  `fx.photo`, 1 quand la qualité n'est pas Légère) qui active, dans la passe de fragment, un **reflet net du
+  soleil** (Blinn-Phong borné, modulé par la rugosité), un **renvoi chaud du sol** et un **reflet
+  d'environnement renforcé** sur les surfaces lisses. L'**asphalte** (matière 14) passe de `roughness .9` à `.5`
+  (humide, il renvoie le ciel) et le **vernis des monoplaces** (matière 17) de `.46` à `.3`.
+- Tout est gated par `uPhoto` : en **qualité Légère le rendu est identique** à avant ; aucune passe GPU ajoutée.
+  `jeu.js` passe `photo: q !== 'low'`.
+- Reste à faire (validé avec David, en attente) : reflets **plans** des voitures sur la route et **SSR** (lourds,
+  contre la conception du moteur), et le **système météo** (pluie, vent, orages, éclairs).
