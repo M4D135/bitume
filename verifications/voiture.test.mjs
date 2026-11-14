@@ -408,4 +408,37 @@ verifier('témoin rouge : s\'allume au ralenti comme au surrégime (cockpit-8)',
   assert.ok(!calme, 'éteint à mi-régime');
 });
 
+verifier('goutte : par l\'ouverture, on ne voit pas l\'envers de la peau au-delà des bords (carene-2)', () => {
+  const sous = (a, b) => a.map((v, k) => v - b[k]);
+  const croix = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const scal = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const monde = nom => { const f = V.FORMES[nom]; return f.tri.map(t => [0, 1, 2].map(r => [0, 1, 2].map(k => t[r][k] * f.taille[k] + f.centre[k]))); };
+  const frappe = (o, d, tris) => {
+    let best = Infinity;
+    for (const [a, b, c] of tris) {
+      const e1 = sous(b, a), e2 = sous(c, a), tvec = sous(o, a), p = croix(d, e2), q = croix(tvec, e1);
+      const det = scal(e1, p); if (Math.abs(det) < 1e-12) continue;
+      const inv = 1 / det, u = scal(tvec, p) * inv; if (u < -1e-9 || u > 1 + 1e-9) continue;
+      const v = scal(d, q) * inv; if (v < -1e-9 || u + v > 1 + 1e-9) continue;
+      const t = scal(e2, q) * inv; if (t > 1e-9 && t < best) best = t;
+    }
+    return best;
+  };
+  const peau = monde('goutte'), doublure = monde('goutte-dedans');
+  let testes = 0, perce = 0;
+  for (const o of [[.1, .45, 0], [-.1, .45, .1]]) {
+    for (const t of peau) {
+      const g = [0, 1, 2].map(k => (t[0][k] + t[1][k] + t[2][k]) / 3);
+      const n = croix(sous(t[1], t[0]), sous(t[2], t[0]));
+      const d = sous(g, o), ld = Math.hypot(...d); if (ld < .05) continue;
+      if (scal(n, d) < 0) continue; // seul l'envers de la peau, vu de la cavité, doit être doublé
+      testes++;
+      const dir = d.map(v => v / ld);
+      if (frappe(o, dir, doublure) > frappe(o, dir, peau) + 1e-3) perce++;
+    }
+  }
+  assert.ok(testes > 100, `${testes} faces d'envers testées`);
+  assert.equal(perce, 0, `${perce}/${testes} faces d'envers vues à travers l'ouverture`);
+});
+
 console.log(`${compte} vérifications réussies`);

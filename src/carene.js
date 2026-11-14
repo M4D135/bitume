@@ -117,6 +117,16 @@
         if (options.interieur === 'tout' || (options.interieur && trou)) doublure.push([t1[0], t1[2], t1[1]], [t2[0], t2[2], t2[1]]);
       }
     }
+    // carene-2 : par l'ouverture on voit aussi l'envers de la peau au-delà des bords, éliminé en simple face ;
+    // deux cloisons en éventail sur les anneaux de xmin et xmax, tournées vers l'ouverture, bouchent la cavité
+    if (ouv && options.interieur && options.interieur !== 'tout') {
+      for (const [cible, sens] of [[xmax, 1], [xmin, -1]]) {
+        const A = anneaux.find(a => Math.abs(a.x - cible) < 1e-9);
+        if (!A) continue;
+        const c = A.axe, dedans = [c[0] + sens, c[1], c[2]];
+        for (let j = 0; j < angles.length; j++) doublure.push(orienter(c, A.points[j], A.points[(j + 1) % angles.length], dedans));
+      }
+    }
     if (bouts) for (const [A, sens] of [[anneaux[0], Math.sign(anneaux[0].x - anneaux[1].x) || -1], [anneaux[anneaux.length - 1], Math.sign(anneaux[anneaux.length - 1].x - anneaux[anneaux.length - 2].x) || 1]]) {
       const c = A.axe, dedans = [c[0] - sens, c[1], c[2]];
       for (let j = 0; j < angles.length; j++) faces.push(orienter(c, A.points[j], A.points[(j + 1) % angles.length], dedans));

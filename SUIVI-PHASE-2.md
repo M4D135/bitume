@@ -297,3 +297,15 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   une réponse aux impulsions de 0,1 s ; S4/S9 exigent des efforts avant instantanés). La décision est à David :
   soit accepter 997 comme coût du clavier brut, soit ramper le volant clavier dans `jeu.js` (changement de
   sensation à juger en jouant, pas au banc). S8 reste mesure ouverte, aucun seuil abaissé.
+
+## Passage du Spark (14/11, carene-2 : cloisons de l'ouverture de la goutte)
+
+- Constat (jet 07) : `interieur: true` ne doublait que les anneaux entre les bords de l'ouverture ; par
+  l'ouverture, on voyait l'envers de la peau au-delà (x > 0,52 vers le nez, x < −0,24 vers l'arrière), éliminé
+  en simple face — le relecteur mesurait 22 px percés à la caméra de poursuite.
+- Correctif (`src/carene.js`) : quand une carène a ouverture et doublure, deux cloisons en éventail ferment la
+  cavité sur les anneaux de `de` et `a`, tournées vers l'ouverture (2 × 28 = 56 triangles, dans la doublure,
+  donc dans `goutte-dedans` côté voiture).
+- Test (`voiture.test.mjs`, 27 → 28) : depuis deux points de la cavité, chaque face d'envers de la peau
+  (2 393 rayons) doit rencontrer une doublure avant elle. **1 565 percées avant, 0 après.** Le compteur de
+  `formes-libres` passe de 28 056 à 28 112 triangles, soit les 56 cloisons annoncées. Douze suites vertes.
