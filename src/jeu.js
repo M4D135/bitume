@@ -175,7 +175,7 @@
   // ---------------------------------------------------------------- commandes
   const touches = new Set();
   const impulsions = { haut: false, bas: false };
-  const pad = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, rumbleF: -1, rumbleS: -1, rumbleT: 0 };
+  const pad = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, rumbleF: -1, rumbleS: -1, rumbleT: 0, choc: 0, passe: 0 };
   const doigt = { volant: 0, gaz: false, frein: false, derive: false, id: null, x0: 0 };
   let analogique = false;
 
@@ -252,18 +252,52 @@
     }
   }
 
-  // vibration manette (David, 14/11) : vibreurs, herbe, patinage, blocage, glisse et chocs font vibrer les
-  // haut-parleurs de la manette, faible à gauche, fort à droite ; rien si la manette ne sait pas vibrer
+  // vibration manette (David, 14/11) : un vrai système continu, pas de simples déclenchements. Le moteur fait
+  // vibrer les haut-parleurs de la manette selon son régime (de plus en plus fort en approchant la zone rouge,
+  // davantage en charge), la route ronronne selon la vitesse, les vibreurs martèlent, l'herbe trépigne, le
+  // patinage et la glisse de l'arrière sifflent sous les doigts, et les chocs déclenchent un pic qui retombe.
+  // Moteur lourd (grave) à droite, effets légers (aigus) à gauche ; rien si la manette ne sait pas vibrer.
   function secouerManette(faible, fort) {
     const p = pad.manette;
     faible = clamp(faible || 0, 0, 1); fort = clamp(fort || 0, 0, 1);
     if (!p || !p.vibrationActuator || !p.vibrationActuator.playEffect) return;
     const maintenant = performance.now();
-    // on ne reprogramme le moteur que si l'intensité bouge vraiment, ou toutes les 90 ms (le jeu s'éteint seul)
-    if (Math.abs(faible - pad.rumbleF) < .08 && Math.abs(fort - pad.rumbleS) < .08 && maintenant - pad.rumbleT < 90) return;
+    // le moteur à effet « dual-rumble » s'éteint seul au bout de sa durée : on le reprogramme au moins toutes
+    // les 40 ms pour tenir un grondement continu, et plus vite encore dès que l'intensité bouge (choc, vibreur)
+    if (Math.abs(faible - pad.rumbleF) < .05 && Math.abs(fort - pad.rumbleS) < .05 && maintenant - pad.rumbleT < 40) return;
     pad.rumbleF = faible; pad.rumbleS = fort; pad.rumbleT = maintenant;
-    try { p.vibrationActuator.playEffect('dual-rumble', { startDelay: 0, duration: 110, weakMagnitude: faible, strongMagnitude: fort }); } catch (e) { /* manette sans vibration */ }
+    try { p.vibrationActuator.playEffect('dual-rumble', { startDelay: 0, duration: 90, weakMagnitude: faible, strongMagnitude: fort }); } catch (e) { /* manette sans vibration */ }
   }
+
+  // construit l'intensité continue (faible = aigu, fort = grave) à partir de l'état de la voiture et des
+  // événements du pas ; les chocs alimentent un pic qui décroît image après image
+  function vibrationManette(et, ev, horloge) {
+    const PR = B.conduite.PARAMS;
+    // pics transitoires des chocs et contacts, qui retombent en ~0,45 s ; le passage de rapport donne un coup sec
+    pad.choc = Math.max(0, (pad.choc || 0) - DT * 2.2);
+    pad.passe = Math.max(0, (pad.passe || 0) - DT * 3.2);
+    for (const e of ev) {
+      if (e.type === 'choc' && e.id === 0) pad.choc = Math.max(pad.choc, clamp(.45 + (e.force || 0) / 10, 0, 1));
+      else if (e.type === 'contact' && (e.a === 0 || e.b === 0)) pad.choc = Math.max(pad.choc, clamp(.4 + (e.force || 0) / 10, 0, 1));
+      else if (e.type === 'roue' || e.type === 'casse') pad.choc = Math.max(pad.choc, .9);
+    }
+    // régime moteur : 0 au ralenti, 1 en zone rouge ; plus fort en charge (pied au gaz) et un léger grondement de ralenti
+    const r = clamp((et.regime - PR.ralenti) / (PR.maxUtile - PR.ralenti), 0, 1);
+    const charge = .3 + .7 * (et.gaz || 0);
+    const moteur = .06 + r * r * charge * .94;
+    const zoneRouge = r > .96 ? (Math.sin(horloge * 55) > 0 ? .35 : 0) : 0;   // le rupteur crépite en haut
+    // route, vibreurs, herbe, patinage, glisse
+    const route = clamp(et.v / 78, 0, 1);
+    const martellement = et.vibreur ? .5 + .5 * Math.sin(horloge * 42) : 0;
+    const herbe = et.surface === 'herbe' ? clamp(et.v / 22, 0, 1) : 0;
+    const patinage = clamp(et.patinage / .3, 0, 1);
+    const blocage = clamp(et.blocage / .3, 0, 1);
+    const glisse = clamp(Math.abs(et.glisseAr) / .4, 0, 1);
+    const faible = clamp(route * .28 + patinage * .8 + blocage * .6 + glisse * .5 + herbe * .45 + martellement * .55 + zoneRouge, 0, 1);
+    const fort = clamp(moteur * .82 + route * .3 + herbe * .7 + martellement * .7 + (pad.choc || 0) + (pad.passe || 0), 0, 1);
+    return [faible, fort];
+  }
+
 
   // menus à la manette : croix pour se déplacer (gauche, droite règlent un curseur), A valide, B revient
   function naviguerManette(nouveau) {
@@ -348,19 +382,10 @@
     const co = S.course;
     const cmd = S.type === 'vitrine' || S.type === 'demo' || pilote ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
     const ev = B.course.pas(co, cmd, DT);
-    // vibration manette : le pilote la sent passer dans ses mains, aux vibreurs, dans l'herbe, en patinant,
-    // en bloquant, en glissant et sur les chocs ; la main reste calme si le réglage est à « non »
+    // vibration manette : le pilote la sent passer dans ses mains — le moteur selon les tours, la route, les
+    // vibreurs, l'herbe, le patinage, la glisse et les chocs ; la main reste calme si le réglage est à « non »
     if (!pilote && reglages.vibrations === 'oui') {
-      const et = co.joueur.etat;
-      let faible = 0, fort = 0;
-      if (et.vibreur) faible = .55;
-      if (et.surface === 'herbe') faible = Math.max(faible, .3 + .35 * clamp(et.v / 30, 0, 1));
-      faible = Math.max(faible, .85 * clamp(et.patinage / .35, 0, 1), .7 * clamp(et.blocage / .35, 0, 1));
-      fort = .55 * clamp(Math.abs(et.glisseAr) / .4, 0, 1);
-      for (const e of ev) {
-        if (e.type === 'choc' && e.id === 0) fort = Math.max(fort, clamp(.45 + (e.force || 0) / 10, 0, 1));
-        else if (e.type === 'contact' && (e.a === 0 || e.b === 0)) fort = Math.max(fort, clamp(.4 + (e.force || 0) / 10, 0, 1));
-      }
+      const [faible, fort] = vibrationManette(co.joueur.etat, ev, co.horloge);
       secouerManette(faible, fort);
     } else secouerManette(0, 0);
     for (const v of co.voitures) {
@@ -370,7 +395,7 @@
       // précédente (0,36 s) est consommé sans reprise — le trajet en cours vise déjà le rapport courant, et
       // tPassage ne repart pas à zéro (sinon la main se téléporte du pommeau à la jante)
       if (v.etat.rapport !== v.rapportVu) {
-        if (v.rapportVu !== undefined && (v.tPassage === undefined || co.horloge - v.tPassage >= .36)) { v.rapportAvant = v.rapportVu; v.tPassage = co.horloge; }
+        if (v.rapportVu !== undefined && (v.tPassage === undefined || co.horloge - v.tPassage >= .36)) { v.rapportAvant = v.rapportVu; v.tPassage = co.horloge; if (v === co.joueur) pad.passe = .5; }
         v.rapportVu = v.etat.rapport;
       }
     }

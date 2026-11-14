@@ -478,3 +478,20 @@ test rouge sur l'ancien code puis vert sur le nouveau.
 - **Compteur d'images ingame** (David) : badge « N i/s » en bas au centre du HUD, alimenté par le temps d'image
   lissé de la boucle (`dureeImage`), à l'ambre sous 50 i/s ; masqué en démo.
 - Treize suites vertes ; page de 441 930 octets (135 426 compressés).
+
+## Passage du Spark (14/11, système de vibrations manette)
+
+- **Vrai système continu** (David, « faut bien réaliser le système de vibration ») : on remplace les simples
+  déclenchements par une intensité recalculée à chaque pas de simulation et poussée au `vibrationActuator` au
+  moins toutes les 40 ms (le moteur d'effet s'éteint seul au bout de sa durée, il faut le reprogrammer pour
+  tenir un grondement continu).
+- **Le moteur fait vibrer la manette selon son régime** : de zéro au ralenti à plein en zone rouge, carré du
+  régime pour que ça monte vite en haut, amplifié par la charge (pied au gaz), avec un léger grondement de
+  ralenti ; le rupteur crépite (hachage rapide) quand on tape la zone rouge.
+- **Route, vibreurs, herbe, patinage, glisse** : ronronnement grave selon la vitesse, martèlement des vibreurs
+  (haché à ~7 Hz), trépidation de l'herbe, sifflement aigu du patinage et du blocage, feedback de la glisse de
+  l'arrière. Moteur lourd (grave) à droite, effets légers (aigus) à gauche.
+- **Pics transitoires qui retombent** : choc de mur, contact roue contre roue, roue qui part et casse
+  déclenchent un pic qui décroît en ~0,45 s ; le passage de rapport donne un coup sec.
+- Réglage « Manette · Vibrations (moteur, route, chocs) » ; coupé net si on le décoche ; aucune commande émise
+  si la manette ne sait pas vibrer. Treize suites vertes.
