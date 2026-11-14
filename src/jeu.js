@@ -19,7 +19,7 @@
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
   function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
   function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
-  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 68, tableau: 'reduit', demo: 'oui',
+  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, tableau: 'reduit', demo: 'oui',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
@@ -464,7 +464,7 @@
   // vroom-unreal). Plus large que 16:9, le champ vertical est gardé ; plus étroit, c'est le champ horizontal. Il
   // s'ouvre de 13 % à pleine vitesse (47° verticaux en 16:9).
   function champCockpit(aspect, v) {
-    const t = Math.tan(clamp(+reglages.champ || 68, 60, 105) * Math.PI / 360);
+    const t = Math.tan(clamp(+reglages.champ || 60, 60, 105) * Math.PI / 360);
     const vertical = 2 * Math.atan(Math.max(t / (16 / 9), t / Math.max(.3, aspect))) * 180 / Math.PI;
     return clamp(vertical * (1 + .13 * clamp(v / 85, 0, 1)), 10, 110);
   }
