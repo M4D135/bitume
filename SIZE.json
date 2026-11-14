@@ -1,22 +1,24 @@
 {
   "version": "essai-0.1",
-  "raw": 441930,
-  "gzip": 135426,
-  "sha256": "68bc3e4dbbe5f55c22f7a7e2509a735f3b1cdfe5e580b0d1ef759dc39fac8c0f",
+  "raw": 465285,
+  "gzip": 142643,
+  "sha256": "b1ebcbfe4a5d9c73e0db5d2d5049ffa64bc4471a6f853f81dfe521bab96c7160",
   "sources": {
     "moteur/renderer.js": 120204,
     "circuit.js": 17710,
-    "conduite.js": 34532,
-    "course.js": 19201,
-    "son.js": 20249,
+    "conduite.js": 42679,
+    "degats.js": 3098,
+    "contacts.js": 7053,
+    "course.js": 20632,
+    "son.js": 20716,
     "decor.js": 38206,
     "carene.js": 16312,
     "main.js": 7825,
-    "voiture.js": 47290,
+    "voiture.js": 47457,
     "traces.js": 11822,
     "realisateur.js": 5822,
-    "jeu.js": 67626,
-    "index.html": 10373,
+    "jeu.js": 70509,
+    "index.html": 10396,
     "style.css": 23648
   }
 }
