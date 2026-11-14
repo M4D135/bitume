@@ -2772,7 +2772,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       coupure: 0, rupteurT: 0, sousVirage: 0,
       // Chantier 3 : vol (saut), accident et retour en piste, immunité, dégâts — tous inactifs au départ, la
       // conduite reste exactement celle des critères quand ils sont absents (tests de conduite sans ces modules)
-      saut: null, accident: null, immunite: 0, degats: null, reparation: null
+      saut: null, accident: null, immunite: 0, degats: null, reparation: null, choc: 0, auRail: false
     };
   }
 
@@ -3123,26 +3123,29 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const bord = Math.max(0.2, lim - emprise);   // au-delà, un coin de la caisse passerait le rail
     if (Math.abs(etat.d) > bord) {
       const vAvant = etat.v, ang = Math.abs(angle(etat.psi)), versMur = cdg * etat.psi > 0;
+      const premier = !etat.auRail && etat.choc <= 0;   // vrai premier contact, pas le frottement continu le long du rail
       if (versMur && ang > P.glissAccident && etat.v >= P.glissVAccident) {
         etat.d = cdg * bord;
         ev.push({ type: 'choc', force: vAvant });
         declencherAccident(etat, {});
         annuler(etat, ev);
       } else if (versMur && ang >= P.glissRasant) {
-        // choc de trois-quarts : la caisse rebondit puis glisse le long du rail, on reste du même côté de l'axe
+        // choc de trois-quarts : la caisse rebondit et SE DÉGAGE du rail (cap renvoyé vers la piste), au lieu de rester collée
         etat.d = cdg * bord;
-        etat.psi = cdg * Math.min(Math.abs(etat.psi) * 0.15, 0.05);   // repart le long du rail, jamais vers l'axe
+        etat.psi = -cdg * Math.min(Math.abs(etat.psi) * 0.2 + 0.02, 0.09, bord / Math.max(vAvant, 1));   // rebond vers la piste, limité par la largeur libre
         etat.v *= 1 - P.chocRebond * Math.sin(ang);
         etat.omega *= 0.4;
-        if (etat.choc <= 0) ev.push({ type: 'choc', force: vAvant - etat.v });
-        etat.choc = P.chocDuree;
+        if (premier && vAvant - etat.v >= P.chocSeuil) { ev.push({ type: 'choc', force: vAvant - etat.v }); etat.choc = P.chocDuree; }
         annuler(etat, ev);
       } else {
-        // frôlement rasant, ou caisse déjà repartie le long du rail : on longe, on garde la vitesse
+        // frôlement le long du rail : on longe en gardant la vitesse ; au ralenti la caisse se dégage du mur pour repartir
         etat.d = cdg * Math.min(Math.abs(etat.d), bord);
         etat.v = Math.max(0, etat.v - P.glissFrottementRasant * dt);
+        if (etat.v < 2) etat.d = cdg * Math.max(0, Math.abs(etat.d) - 0.6 * dt);
       }
-    } else if (etat.choc > 0) etat.choc -= dt;
+      etat.auRail = true;
+    } else etat.auRail = false;
+    if (etat.choc > 0) etat.choc -= dt;
 
     // Glisse par essieu et par roue, pour le son et les effets
     const gAv = rampe(Math.abs(alphaAv) / P.alphaAv, 0.8, 1.6);
@@ -4371,17 +4374,28 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 
   // Index spatial des échantillons de l'axe (cases de 40 m).
   function indexAxe(c) {
-    const cases = new Map(), T = 40;
+    const T = 40;
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
     for (let i = 0; i < c.n; i++) {
-      const k = Math.floor(c.x[i] / T) * 65536 + Math.floor(c.z[i] / T);
-      let l = cases.get(k); if (!l) cases.set(k, l = []); l.push(i);
+      const x = Math.floor(c.x[i] / T), z = Math.floor(c.z[i] / T);
+      if (x < x0) x0 = x; if (x > x1) x1 = x;
+      if (z < z0) z0 = z; if (z > z1) z1 = z;
+    }
+    const nz = z1 - z0 + 1, cases = new Array((x1 - x0 + 1) * nz);
+    for (let i = 0; i < c.n; i++) {
+      const k = (Math.floor(c.x[i] / T) - x0) * nz + Math.floor(c.z[i] / T) - z0;
+      let l = cases[k]; if (!l) cases[k] = l = []; l.push(i);
     }
     // Plus proche échantillon et hauteur pondérée (inverse de la distance à la puissance 8 : continue, et exacte sur l'axe).
     function interroger(x, z, rayon) {
       const cx = Math.floor(x / T), cz = Math.floor(z / T), r = Math.ceil(rayon / T);
       let meilleur = -1, d2min = Infinity, somme = 0, poids = 0;
-      for (let a = cx - r; a <= cx + r; a++) for (let b = cz - r; b <= cz + r; b++) {
-        const l = cases.get(a * 65536 + b); if (!l) continue;
+      // Les cases hors des bornes sont vides. Garder exactement l’ordre a/b/i
+      // conserve la somme pondérée et les départages, donc la géométrie produite.
+      const amin = Math.max(cx - r, x0), amax = Math.min(cx + r, x1);
+      const bmin = Math.max(cz - r, z0), bmax = Math.min(cz + r, z1);
+      for (let a = amin; a <= amax; a++) for (let b = bmin; b <= bmax; b++) {
+        const l = cases[(a - x0) * nz + b - z0]; if (!l) continue;
         for (const i of l) {
           const dx = c.x[i] - x, dz = c.z[i] - z, d2 = dx * dx + dz * dz;
           if (d2 < d2min) { d2min = d2; meilleur = i; }
@@ -6139,7 +6153,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
   const sauverReglages = () => ecrireStock('bitume.reglages', reglages);
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p2', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p3', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
 
   function enBase64(f32) {
@@ -6784,9 +6798,9 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     B.traces.dessiner(S.fx, sortie, cam.pos, S.fx.acc);
     if (S.banc) S.banc.effets += performance.now() - tFx;
     const q = S.banc ? S.banc.qualite : reglages.qualite;
-    // teinte des dégâts (uEffects.z) sur la caisse abîmée du joueur, et éclair rouge bref sur un choc violent
-    const dg = j.degats, eclair = S.eclair || 0;
-    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: dg ? dg.teinte : 0, flash: eclair });
+    // uEffects.z colore tout l'écran : la rougeur suit seulement l'éclair du choc, jamais les dégâts persistants.
+    const eclair = S.eclair || 0;
+    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair });
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
     // En cockpit, la planche donne vitesse, rapport et régime : le tableau réduit retire plan et compteurs, qui
