@@ -365,3 +365,20 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   échec ; nouveau : 32/32.** Douze suites vertes.
 - **Signalé par le contradicteur, non traité** : 633 à 680 sommets de la main restent enfoncés de 4,6 à 5,6 mm
   dans la boule du pommeau à tous les braquages (pose au pommeau, indépendant de cockpit-4).
+
+## Passage du Spark (14/11, cockpit-2 et cockpit-6 : l'animation de passage ne se téléporte plus)
+
+- Constats (relecture e1, confirmés par le contradicteur), tous deux à `src/jeu.js:340` :
+  - **cockpit-6** : au premier pas de chaque séance, `rapportVu` est indéfini → `tPassage` est posé alors
+    qu'aucun rapport n'a changé ; sur la grille, la main droite fait un aller-retour complet au levier dans
+    les 0,36 premières secondes (gant mesuré à (1331 ; 1027) px au lieu de (1149 ; 989) en 1920×1080).
+  - **cockpit-2** : un second changement pendant l'animation (par exemple 4→3→2 à 0,15 s d'écart) remet
+    `tPassage` à l'horloge et `rapportAvant` au rapport intermédiaire : `passage` retombe de 0,37 à 0 et la
+    main saute de 77,7 mm (231 px) en une image.
+- Correctif (`src/jeu.js`) : premier pas → on initialise seule la référence, sans trajet ; changement arrivé
+  pendant les 0,36 s en cours → **consommé sans reprise** (le trajet en cours vise déjà `etat.rapport`, la
+  main finit son geste puis se repose, sans second bond).
+- **Non testable en Node** (jeu.js dépend du DOM) : vérifié par relecture de la séquence 4→3→2 à 0,15 s et
+  `node --check` ; à confirmer à l'écran par David (deux appuis rapprochés sur Q en boîte manuelle).
+- **Reste différé** : cockpit-3 (les doigts traversent la jante pendant le trajet, 85 ms par changement) —
+  exige une pose de gant ouvert dans `main.js`, travail de géométrie à juger au rendu.

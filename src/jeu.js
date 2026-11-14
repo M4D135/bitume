@@ -336,8 +336,14 @@
     const ev = B.course.pas(co, cmd, DT);
     for (const v of co.voitures) {
       v.roule = (v.roule || 0) + v.etat.v * DT; // distance roulée : fait tourner les roues
-      // changement de rapport : la main droite du pilote va au levier (vue cockpit)
-      if (v.etat.rapport !== v.rapportVu) { v.rapportAvant = v.rapportVu === undefined ? v.etat.rapport : v.rapportVu; v.rapportVu = v.etat.rapport; v.tPassage = co.horloge; }
+      // changement de rapport : la main droite du pilote va au levier (vue cockpit). cockpit-6 : au premier pas,
+      // on initialise seule la référence, sans trajet ; cockpit-2 : un rapport qui arrive pendant l'animation
+      // précédente (0,36 s) est consommé sans reprise — le trajet en cours vise déjà le rapport courant, et
+      // tPassage ne repart pas à zéro (sinon la main se téléporte du pommeau à la jante)
+      if (v.etat.rapport !== v.rapportVu) {
+        if (v.rapportVu !== undefined && (v.tPassage === undefined || co.horloge - v.tPassage >= .36)) { v.rapportAvant = v.rapportVu; v.tPassage = co.horloge; }
+        v.rapportVu = v.etat.rapport;
+      }
     }
     const t = S.prec; S.prec = S.cour; S.cour = t; remplirPoses(S.cour, co);
     const tFx = S.banc ? performance.now() : 0;
