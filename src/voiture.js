@@ -355,8 +355,9 @@
     forme('branches', [].concat(...[-Math.PI / 2, Math.PI / 2, Math.PI].map(a => C.transformer(branche, autourY(a)))));
   }
   // Mains : le maillage de src/main.js (main droite, taille réelle, repère de la prise) et son miroir pour la gauche
-  const MAIN = B.main.construire();
+  const MAIN = B.main.construire(), MAIN_OUVERT = B.main.construire(true);
   for (const [cote, t] of [['d', x => x], ['g', C.miroir]]) for (const piece of ['gant', 'paume', 'garde', 'poignet', 'sangle']) forme('main-' + piece + '-' + cote, t(MAIN[piece]));
+  forme('main-gant-d-ouvert', MAIN_OUVERT.gant);                  // cockpit-3 : doigts ouverts pendant le trajet au pommeau
   const borner = (x, a, b) => x < a ? a : x > b ? b : x, lisse = (a, b, x) => { const t = borner((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
   const clarte = c => .3 * c[0] + .59 * c[1] + .11 * c[2], ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
   // Position du pommeau selon le rapport, grille en H : impairs vers l'avant, pairs vers l'arrière ; 1-2 à gauche.
@@ -469,16 +470,21 @@
     for (const k of [-1, 1]) {
       const rk = r.map(v => v * k), ex = u.map((v, i) => v * Math.cos(PRISE) + rk[i] * Math.sin(PRISE)), haut = u.map((v, i) => v * Math.sin(PRISE) - rk[i] * Math.cos(PRISE));
       // repère de la prise : x vers le pilote, y le long de la jante vers le haut, z vers le moyeu (miroir à gauche)
-      let G = plus(C, [ex, R]), m = [wn, haut, ex.map(v => -k * v)];
+      let G = plus(C, [ex, R]), m = [wn, haut, ex.map(v => -k * v)], ecart = 0;
       if (k > 0 && versLevier > 0) {
         const cible = plus(pommeau, [wn, .004], [wu, .006]);
+        // cockpit-3 : doigts fermés, ils traversaient le tore de la jante (jusqu'à 12,5 mm) et la branche de 3 h
+        // pendant le trajet ; la main s'écarte d'abord vers le dehors et vers le pilote avant de tourner, et le
+        // gant passe en variante doigts ouverts dès qu'il ne touche plus le tube (ecart à fond)
+        ecart = borner(Math.min(t, 1 - t) / .02, 0, 1);
+        G = G.map((v, i) => v + ex[i] * .016 * ecart + wn[i] * .016 * ecart);
         G = G.map((v, i) => v + (cible[i] - v) * versLevier);
         m = m.map(v => tourner(v, wn, versLevier * (Math.PI / 2 + phi)));      // cockpit-4 : le repère de départ porte déjà −phi ;
         // sans le +phi, la paume restait tournée du braquage au pommeau (91,5° du bas volant à fond)
       }
       const cote = k > 0 ? 'd' : 'g', local = q => plus(G, [m[0], q[0] * echelle], [m[1], q[1] * echelle], [m[2], k * q[2] * echelle]);
       for (const [piece, color] of couleurs) {
-        const fo = FORMES['main-' + piece + '-' + cote];
+        const fo = FORMES['main-' + piece + '-' + cote + (k > 0 && piece === 'gant' && ecart >= .25 ? '-ouvert' : '')];
         mettre(fo.nom, plus(G, [m[0], fo.centre[0] * echelle], [m[1], fo.centre[1] * echelle], [m[2], fo.centre[2] * echelle]), fo.taille.map(v => v * echelle), TISSU, color, m);
       }
       // manche : elle part de l'intérieur de la manchette, puis tronçons le long de la courbe, du poignet au coude

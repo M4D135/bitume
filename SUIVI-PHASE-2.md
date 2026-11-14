@@ -382,3 +382,23 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   `node --check` ; à confirmer à l'écran par David (deux appuis rapprochés sur Q en boîte manuelle).
 - **Reste différé** : cockpit-3 (les doigts traversent la jante pendant le trajet, 85 ms par changement) —
   exige une pose de gant ouvert dans `main.js`, travail de géométrie à juger au rendu.
+
+## Passage du Spark (14/11, cockpit-3 : les doigts ne traversent plus la jante pendant le trajet)
+
+- Constat (relecture e1, confirmé par le contradicteur) : pendant le trajet au pommeau, le gant droit fermé
+  traversait le tore de la jante (mesuré ici : 16248 échantillons de sommets dans le volume, pénétration
+  jusqu'à 12,8 mm, fenêtres t 0,01–0,05 et 0,95–0,99) et balayait la branche de 3 h.
+- Correctif en deux temps (`src/main.js`, `src/voiture.js`) :
+  - `construire(ouvert)` accepte une variante **main ouverte** : les doigts ne serrent plus le tube (angles de
+    bouclage ramenés à 28 % vers le dehors, pouce soulevé à 30 %), enregistrée sous `main-gant-d-ouvert` ;
+  - pendant le trajet, la main **s'écarte d'abord** de 16 mm vers le dehors et 16 mm vers le pilote (rampe sur
+    les 2 % premiers et derniers du trajet), et le gant passe en variante ouverte dès qu'il ne touche plus le
+    tube (écart ≥ 0,25) — la paume ouverte se pose sur le pommeau, puis le gant se referme en revenant.
+- Test (`voiture.test.mjs`, 32 → 33) : pour passage de 0 à 1 par pas de 0,01, aucun sommet des cinq pièces
+  droites dans le tore (centre `VOLANT.centre`, rayon 0,125, tube 13,4 mm) ni dans la branche de 3 h.
+  **Ancien code : 16248 sommets, 12,8 mm → échec ; nouveau : 33/33.** Douze suites vertes ; formes libres
+  27667 → 30919 triangles (la variante ouverte, ajoutée au registre, entre dans l'émission de la suite).
+- Le test du trajet existant (main au pommeau) accepte les deux noms de gant, fermé ou ouvert.
+- **Reste signalé, non traité** : 633 à 680 sommets de la main enfoncés de 4,6 à 5,6 mm dans la boule du
+  pommeau à l'arrivée (indépendant du trajet) ; cockpit-3 jugé au rendu par David (pop d'ouverture à 5 ms
+  du trajet, main déjà levée de 5 mm — invisible à l'œil, à confirmer).

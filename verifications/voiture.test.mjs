@@ -211,7 +211,7 @@ verifier('cockpit : rien que des nombres finis, volant à fond et pendant un cha
 verifier('changement de rapport : la main droite va au pommeau, puis revient sur la jante', () => {
   const pommeau = t => bord({ passage: t, rapportAvant: 2 }).find(m => m.shape === 'sphere' && Math.abs(m.s[0] - .040 * V.K) < 1e-9).p;
   // sommets du gant droit, à leur place dans la voiture
-  const gantDroit = t => sommets(bord({ passage: t, rapportAvant: 2 }).find(m => m.shape === 'bitume-main-gant-d'));
+  const gantDroit = t => sommets(bord({ passage: t, rapportAvant: 2 }).find(m => /^bitume-main-gant-d(-ouvert)?$/.test(m.shape)));
   const auPlusPres = (t, cible) => Math.min(...gantDroit(t).map(q => ecart(q, cible)));
   const tilt = V.VOLANT.inclinaison, a = V.VOLANT.prise;      // prise de la main droite, volant droit
   const prise = reel(V.VOLANT.centre.map((v, i) => v + V.VOLANT.rayon * ([Math.sin(tilt), Math.cos(tilt), 0][i] * Math.cos(a) + [0, 0, 1][i] * Math.sin(a))));
@@ -534,12 +534,34 @@ verifier('bande des pontons : une peau décalée de 4 mm, pas un caisson à flan
 
 verifier('paume au pommeau : paume vers le bas quel que soit le braquage (cockpit-4)', () => {
   for (const volant of [-1, -.6, 0, .6, 1]) {
-    const gant = bord({ volant, passage: .45, rapportAvant: 2 }).find(p => p.shape === 'bitume-main-gant-d');
+    const gant = bord({ volant, passage: .45, rapportAvant: 2 }).find(p => /^bitume-main-gant-d(-ouvert)?$/.test(p.shape));
     assert.ok(gant, 'gant droit dessiné au pommeau');
     const paume = V.euler(...gant.r)[2], l = Math.hypot(...paume);
     const angle = Math.acos(Math.max(-1, Math.min(1, -paume[1] / l))) * 180 / Math.PI;
     assert.ok(angle < 40, `volant ${volant} : paume à ${angle.toFixed(1)}° du bas, attendu l\'inclinaison du volant (~25°)`);
   }
+});
+
+verifier('trajet au pommeau : les doigts ne traversent ni la jante ni la branche de 3 h (cockpit-3)', () => {
+  const { centre: C, rayon: R, inclinaison: tau, course } = V.VOLANT, e = R / .105;
+  const wn = [-Math.cos(tau), Math.sin(tau), 0], wu = [Math.sin(tau), Math.cos(tau), 0], wr = [0, 0, 1];
+  const rtube = .0225 * e / 2, sc = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const phi = 0, u = wu, r = wr, axe = C.map((v, i) => v - .004 * wn[i]);
+  let dansTore = 0, pireTore = 0, dansBranche = 0;
+  for (let t = 0; t <= 1.0001; t += .01) {
+    const pieces = bord({ volant: 0, passage: t, rapportAvant: 2 }).filter(m => /^bitume-main-.*-d(-ouvert)?$/.test(m.shape));
+    assert.equal(pieces.length, 5, 'cinq pièces à la main droite');
+    for (const m of pieces) for (const q0 of sommets(m)) {
+      const q = apparent(q0);
+      const v = q.map((x, i) => x - C[i]), h = sc(v, wn), rho = Math.hypot(...v.map((x, i) => x - h * wn[i]));
+      const d = Math.hypot(rho - R, h);
+      if (d < rtube) { dansTore++; pireTore = Math.max(pireTore, rtube - d); }
+      const w = q.map((x, i) => x - axe[i]), c = sc(w, r);
+      if (c > .028 * e && c < .98 * R && Math.abs(sc(w, u)) < .0135 * e && Math.abs(sc(w, wn)) < .003) dansBranche++;
+    }
+  }
+  assert.equal(dansTore, 0, `${dansTore} sommets dans le tore de la jante, jusqu\'à ${(pireTore * 1000).toFixed(1)} mm de pénétration`);
+  assert.equal(dansBranche, 0, `${dansBranche} sommets dans la branche de 3 h pendant le trajet`);
 });
 
 console.log(`${compte} vérifications réussies`);

@@ -46,7 +46,7 @@
   // 12,4 mm : la peau se recoupait) ; le premier point de contact est un peu plus haut sur la jante.
   const POUCE = { r: [.0160, .0158, .0124, .0108, .0094], eminence: [[.016, .012, .018], [.036, .020, .026]], tour: [[.028, -20], [.040, -32], [.052, -36]] };
 
-  function construire() {
+  function construire(ouvert) {
     const C = B.carene;
     const K = AUTOUR(0, JOINTURES.theta, JOINTURES.d);            // jointure du majeur et de l'annulaire : origine du dos
     const a = AXE, bz = [0, 1, 0], Y = croix(bz, a);              // Y : normale au dos de la main, vers le dehors
@@ -54,11 +54,14 @@
     const W = additionner(K, multiplier(a, .088));                // centre du poignet
 
     // --- Doigts : de l'intérieur du dos à la jointure, puis autour du tube ---
+    // cockpit-3 : variante ouverte pour le trajet au pommeau — les doigts ne serrent plus le tube (ils le
+    // traversaient, fermés, jusqu'à 12,5 mm) ; ils restent ouverts vers le dehors, à plat sur la paume levée
+    const serrage = ouvert ? .28 : 1;
     const gant = [], pointsDoigts = [], jointures = [];
     for (const doigt of DOIGTS) {
       const psi = doigt.s / JANTE.R, jointure = AUTOUR(psi, JOINTURES.theta, JOINTURES.d), r = doigt.r;
       const rayons = EFFILE.map(f => r * f);
-      const pts = [additionner(jointure, multiplier(a, .024)), jointure, ...doigt.tour.map((t, i) => AUTOUR(psi, t * deg, JANTE.r + rayons[i + 2] + JEU))];
+      const pts = [additionner(jointure, multiplier(a, .024)), jointure, ...doigt.tour.map((t, i) => AUTOUR(psi, JOINTURES.theta + (t * deg - JOINTURES.theta) * serrage, JANTE.r + rayons[i + 2] + JEU))];
       gant.push(...C.tube(pts, rayons, { cotes: 10, pas: 4, bouts: true }));
       pointsDoigts.push(pts); jointures.push(jointure);
     }
@@ -75,7 +78,7 @@
 
     // --- Pouce : de l'éminence, côté index et paume, jusque sur la face de la jante tournée vers le pilote ---
     const eminence = POUCE.eminence.map(([x, y, z]) => additionner(additionner(W, multiplier(a, -x)), additionner(multiplier(bz, y), multiplier(Y, -z))));
-    const pouce = [...eminence, ...POUCE.tour.map(([s, t], i) => AUTOUR(s / JANTE.R, t * deg, JANTE.r + POUCE.r[i + 2] + 4 * JEU))];
+    const pouce = [...eminence, ...POUCE.tour.map(([s, t], i) => AUTOUR(s / JANTE.R, t * deg * (ouvert ? .3 : 1), JANTE.r + POUCE.r[i + 2] + 4 * JEU))];
     gant.push(...C.tube(pouce, POUCE.r, { cotes: 12, pas: 4, bouts: true }));
 
     // --- Paume : cuir sombre côté jante, sous le dos ---
