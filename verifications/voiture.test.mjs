@@ -216,7 +216,8 @@ verifier('changement de rapport : la main droite va au pommeau, puis revient sur
   const tilt = V.VOLANT.inclinaison, a = V.VOLANT.prise;      // prise de la main droite, volant droit
   const prise = reel(V.VOLANT.centre.map((v, i) => v + V.VOLANT.rayon * ([Math.sin(tilt), Math.cos(tilt), 0][i] * Math.cos(a) + [0, 0, 1][i] * Math.sin(a))));
   assert.ok(auPlusPres(1, pommeau(1)) > .05, 'au repos, la main est loin du levier');
-  assert.ok(auPlusPres(.45, pommeau(.45)) < .015, `à mi-changement, la main tient le pommeau (${auPlusPres(.45, pommeau(.45)).toFixed(3)} m)`);
+  const d0 = auPlusPres(.45, pommeau(.45));
+  assert.ok(d0 > .015 && d0 < .025, `à mi-changement, la main est posée sur le pommeau sans s'enfoncer (${(d0 / V.K * 1000).toFixed(1)} mm du centre)`);
   assert.ok(auPlusPres(.45, prise) > .04 && auPlusPres(1, prise) < .02, 'elle a quitté la jante, puis y revient');
   // le pommeau passe de la position du 2e rapport (vers l'arrière) à celle du 3e (vers l'avant)
   assert.ok(pommeau(1)[0] - pommeau(0)[0] > .015, 'le levier avance de la 2e à la 3e');
@@ -547,10 +548,12 @@ verifier('trajet au pommeau : les doigts ne traversent ni la jante ni la branche
   const wn = [-Math.cos(tau), Math.sin(tau), 0], wu = [Math.sin(tau), Math.cos(tau), 0], wr = [0, 0, 1];
   const rtube = .0225 * e / 2, sc = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
   const phi = 0, u = wu, r = wr, axe = C.map((v, i) => v - .004 * wn[i]);
-  let dansTore = 0, pireTore = 0, dansBranche = 0;
+  let dansTore = 0, pireTore = 0, dansBranche = 0, dansBoule = 0;
   for (let t = 0; t <= 1.0001; t += .01) {
-    const pieces = bord({ volant: 0, passage: t, rapportAvant: 2 }).filter(m => /^bitume-main-.*-d(-ouvert)?$/.test(m.shape));
+    const sortie = bord({ volant: 0, passage: t, rapportAvant: 2 });
+    const pieces = sortie.filter(m => /^bitume-main-.*-d(-ouvert)?$/.test(m.shape));
     assert.equal(pieces.length, 5, 'cinq pièces à la main droite');
+    const cBoule = apparent(sortie.find(m => m.shape === 'sphere' && Math.abs(m.s[0] - .040 * V.K) < 1e-9).p);
     for (const m of pieces) for (const q0 of sommets(m)) {
       const q = apparent(q0);
       const v = q.map((x, i) => x - C[i]), h = sc(v, wn), rho = Math.hypot(...v.map((x, i) => x - h * wn[i]));
@@ -558,10 +561,12 @@ verifier('trajet au pommeau : les doigts ne traversent ni la jante ni la branche
       if (d < rtube) { dansTore++; pireTore = Math.max(pireTore, rtube - d); }
       const w = q.map((x, i) => x - axe[i]), c = sc(w, r);
       if (c > .028 * e && c < .98 * R && Math.abs(sc(w, u)) < .0135 * e && Math.abs(sc(w, wn)) < .003) dansBranche++;
+      if (Math.hypot(...q.map((x, i) => x - cBoule[i])) < .040) dansBoule++;
     }
   }
   assert.equal(dansTore, 0, `${dansTore} sommets dans le tore de la jante, jusqu\'à ${(pireTore * 1000).toFixed(1)} mm de pénétration`);
   assert.equal(dansBranche, 0, `${dansBranche} sommets dans la branche de 3 h pendant le trajet`);
+  assert.equal(dansBoule, 0, `${dansBoule} sommets dans la boule du pommeau pendant le trajet`);
 });
 
 console.log(`${compte} vérifications réussies`);

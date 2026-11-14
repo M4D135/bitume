@@ -402,3 +402,24 @@ test rouge sur l'ancien code puis vert sur le nouveau.
 - **Reste signalé, non traité** : 633 à 680 sommets de la main enfoncés de 4,6 à 5,6 mm dans la boule du
   pommeau à l'arrivée (indépendant du trajet) ; cockpit-3 jugé au rendu par David (pop d'ouverture à 5 ms
   du trajet, main déjà levée de 5 mm — invisible à l'œil, à confirmer).
+
+## Passage du Spark (14/11, pommeau : la main se pose sur la boule sans s'y enfoncer)
+
+- Constat différé du contradicteur (633 à 680 sommets dans la boule, 4,6 à 5,6 mm) mesuré à nouveau avec le
+  gant ouvert de cockpit-3 : c'était pire — 3960 échantillons dans la boule, jusqu'à **21 mm** sous la surface
+  (la cible du trajet était à 7 mm du centre de la boule de 40 mm), et le vol traversait la boule à l'aller
+  (t 0,15–0,25) comme au retour (0,70–0,85), jusqu'à 35 mm.
+- Correctifs (`src/voiture.js`) :
+  - cible du trajet : `pommeau + wn·0,020 + wu·0,030` (au lieu de wn·0,004 + wu·0,006) — la paume ouverte se
+    pose **sur** la boule, à 0,2 mm du contact, sans sommet dedans ;
+  - le trajet devient un **arc de Bézier** passant 15 cm au-dessus du pommeau (sommet `cible + wu·0,15`) : en
+    ligne droite les doigts piquaient dans la boule en vol ;
+  - la rotation paume-en-bas s'achève dès t 0,10 (début) et ne se défait qu'à partir de t 0,86 (retour), au
+    lieu de suivre l'avancée — les doigts ne balaient plus la boule en décollant ni en atterrissant sur la jante.
+- Test (`voiture.test.mjs`, 33 assertions) : le test cockpit-3 vérifie en plus **zéro sommet dans la boule du
+  pommeau** pour passage de 0 à 1 par pas de 0,01 (77122 sommets avec la cible haute seule, en ligne droite
+  → 0 avec l'arc et la rotation rapide) ; le test du
+  trajet exige désormais la paume posée à 30–50 mm du centre (contact surface, pas plongée : 40,2 mm mesuré).
+  **Ancien code : échecs à chaque étape ; nouveau : 33/33.** Douze suites vertes.
+- À juger au rendu par David : le geste est plus ample (main qui s'élève à 15 cm au-dessus du pommeau en
+  0,36 s) — naturel au changement de rapport, à confirmer à l'écran.

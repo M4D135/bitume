@@ -472,14 +472,17 @@
       // repère de la prise : x vers le pilote, y le long de la jante vers le haut, z vers le moyeu (miroir à gauche)
       let G = plus(C, [ex, R]), m = [wn, haut, ex.map(v => -k * v)], ecart = 0;
       if (k > 0 && versLevier > 0) {
-        const cible = plus(pommeau, [wn, .004], [wu, .006]);
+        const cible = plus(pommeau, [wn, .020], [wu, .030]);
         // cockpit-3 : doigts fermés, ils traversaient le tore de la jante (jusqu'à 12,5 mm) et la branche de 3 h
         // pendant le trajet ; la main s'écarte d'abord vers le dehors et vers le pilote avant de tourner, et le
         // gant passe en variante doigts ouverts dès qu'il ne touche plus le tube (ecart à fond)
         ecart = borner(Math.min(t, 1 - t) / .02, 0, 1);
         G = G.map((v, i) => v + ex[i] * .016 * ecart + wn[i] * .016 * ecart);
-        G = G.map((v, i) => v + (cible[i] - v) * versLevier);
-        m = m.map(v => tourner(v, wn, versLevier * (Math.PI / 2 + phi)));      // cockpit-4 : le repère de départ porte déjà −phi ;
+        // cockpit-3 (suite) : en ligne droite les doigts piquaient dans la boule du pommeau en vol (35 mm à
+        // t 0,15) ; le trajet devient un arc de Bézier qui passe 15 cm au-dessus, la main retombe dessus
+        const sommet = plus(cible, [wu, .15]);
+        G = G.map((v, i) => v * (1 - versLevier) ** 2 + sommet[i] * 2 * versLevier * (1 - versLevier) + cible[i] * versLevier ** 2);
+        m = m.map(v => tourner(v, wn, lisse(0, .10, t) * (1 - lisse(.86, 1, t)) * (Math.PI / 2 + phi)));      // cockpit-4 : le repère de départ porte déjà −phi ;
         // sans le +phi, la paume restait tournée du braquage au pommeau (91,5° du bas volant à fond)
       }
       const cote = k > 0 ? 'd' : 'g', local = q => plus(G, [m[0], q[0] * echelle], [m[1], q[1] * echelle], [m[2], k * q[2] * echelle]);
