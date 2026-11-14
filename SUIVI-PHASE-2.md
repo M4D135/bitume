@@ -436,109 +436,26 @@ test rouge sur l'ancien code puis vert sur le nouveau.
 - cockpit-7 (blocage de cardan dans `angles()`) : constat retiré par le contradicteur, rien à faire.
   Le lot de relecture est clos : sur les 22 constats, 21 sont traités, un est retiré.
 
-## Passage du Spark (14/11, forêt continue et eau sous la piste)
+## Passage du Spark (14/11, chantier-3 : retours de ressenti — roue perdue, vibrations)
 
-- **Eau sous la piste (David, capture d'écran)** : à Port-Sable, le virage de s 680 plonge à −5,8 m sous le
-  niveau d'eau du thème cote (−4) : la route disparaissait sous le plan d'eau, garde-fou debout dans la mer.
-  Le niveau d'eau du thème est désormais borné : `niveauEau = min(thème, axe le plus bas − 2,5)` dans
-  `construire()`. Test ajouté (rouge avant : −5,79 contre −4).
-- **Forêt continue (lot 1 reste de la feuille de route)** : avant, 62 / 9 / 63 % du tour sans arbre à 200 m
-  (Val-Brûlé, Port-Sable, Haut-Col). Ajout d'une **haie le long du tour** : un plan toutes les 14 m de piste de
-  chaque côté, à 40–190 m de l'axe (3 tentatives de distance si la place est prise par l'eau, la roche ou les
-  tribunes), puis la grille en taches remplit jusqu'au plafond. `construire()` rend `arbres: [[x, z], …]`.
-- **Nouveau `verifications/decor.test.mjs`** (18 vérifications) : sur les 3 circuits du catalogue, moins de
-  10 % du tour sans arbre à 200 m (**0,0 % mesuré** maintenant), au moins 20 arbres par tronçon de 300 m hors
-  stands, plafond de 2 600 tenu (2 600, eau sous la piste, construction en moins de 150 ms (**58 ms au pire**).
-- Treize suites vertes.
-
-## Passage du Spark (14/11, voyants de planche encastrés)
-
-- Constat (David, capture) : le témoin rouge de passage de rapport flottait à mi-hauteur dans la planche,
-  à moitié dans la tôle. Les deux voyants (contact vert, alerte rouge) reçoivent une **lunette de métal**
-  noyée dans la tôle comme les vis des coins, et la lentille est posée dans la lunette ; écartement élargi
-  (32 et 50 mm) pour que les lunettes ne se touchent plus. Douze suites vertes, cockpit-8 inchangé.
-
-## Passage du Spark (14/11, champ du cockpit en portrait)
-
-- Constat (David, téléphone en portrait) : à 60 degrés le vertical dépassait 100° (2·atan(tan 30°/0,46)),
-  tableau de bord minuscule et déformé. `champCockpit` garde désormais la **diagonale du cadre 16:9** quand
-  le rapport est plus étroit que 1:1 (portrait) : vertical 62° au lieu de 103° sur un 9:19,5. Paysage et
-  16:9 inchangés (David : 60 degrés est bon sur ordinateur et en paysage).
-
-## Passage du Spark (14/11, version au titre, vibrations manette, compteur d'images)
-
-- **Version à l'écran titre** (David, « comme metal et point de rupture ») : `construire.py` injecte
-  `VERSION` (sans le préfixe « essai- ») dans le gabarit, qui porte deux fois `__VERSION_JEU__` (contrôlé à la
-  construction) ; le titre affiche un badge encadré **V0.1** au pied de la marque, comme le « V0.3e » de Point
-  de rupture.
-- **Vibrations de la manette** (David) : `vibrationActuator.playEffect('dual-rumble')` piloté depuis le pas de
-  simulation du joueur — vibreurs, herbe, patinage et blocage de roue en faible, glisse de l'arrière et chocs
-  (mur, contact) en fort. Réglage « Manette · Vibrations » dans le menu (activé par défaut), coupé net si on le
-  décoche ; aucune commande émise si la manette ne sait pas vibrer.
-- **Compteur d'images ingame** (David) : badge « N i/s » en bas au centre du HUD, alimenté par le temps d'image
-  lissé de la boucle (`dureeImage`), à l'ambre sous 50 i/s ; masqué en démo.
-- Treize suites vertes ; page de 441 930 octets (135 426 compressés).
-
-## Passage du Spark (14/11, système de vibrations manette)
-
-- **Vrai système continu** (David, « faut bien réaliser le système de vibration ») : on remplace les simples
-  déclenchements par une intensité recalculée à chaque pas de simulation et poussée au `vibrationActuator` au
-  moins toutes les 40 ms (le moteur d'effet s'éteint seul au bout de sa durée, il faut le reprogrammer pour
-  tenir un grondement continu).
-- **Le moteur fait vibrer la manette selon son régime** : de zéro au ralenti à plein en zone rouge, carré du
-  régime pour que ça monte vite en haut, amplifié par la charge (pied au gaz), avec un léger grondement de
-  ralenti ; le rupteur crépite (hachage rapide) quand on tape la zone rouge.
-- **Route, vibreurs, herbe, patinage, glisse** : ronronnement grave selon la vitesse, martèlement des vibreurs
-  (haché à ~7 Hz), trépidation de l'herbe, sifflement aigu du patinage et du blocage, feedback de la glisse de
-  l'arrière. Moteur lourd (grave) à droite, effets légers (aigus) à gauche.
-- **Pics transitoires qui retombent** : choc de mur, contact roue contre roue, roue qui part et casse
-  déclenchent un pic qui décroît en ~0,45 s ; le passage de rapport donne un coup sec.
-- Réglage « Manette · Vibrations (moteur, route, chocs) » ; coupé net si on le décoche ; aucune commande émise
-  si la manette ne sait pas vibrer. Treize suites vertes.
-
-## Passage du Spark (14/11, Chantier 3 — chocs, sauts roue contre roue, dégâts, accident)
-
-- **`src/contacts.js`** (nouveau) remplace les auto-tamponneuses : frotter les roues d'un autre fait **sauter**
-  (petit bond rattrapable de 0,10–0,35 m en 0,25–0,45 s, ou grand arc de 1–3 m en 0,7–1,3 s avec tangage et
-  roulis), un choc de caisse **orienté** fait tourner la caisse touchée (lacet selon l'excentrement de l'impact),
-  une **roue décalée** fait braquer de plus de 2° et perdre de la vitesse. **Une seule réponse par paire** :
-  réarmement après séparation + 0,35 s, au moins 1,25 s entre deux bonds, jamais deux événements en 0,3 s.
-  Aucune interaction avec une caisse en l'air, en accident ou immunisée.
-- **`src/degats.js`** (nouveau) : un choc coûte de l'**adhérence (−18 % au plus)** et de la **traînée (+24 % au
-  plus)**, alimente la teinte `uEffects.z` ; au-delà d'un seuil une **roue se détache**, plus haut la **caisse
-  casse** et rentre au stand. `conduite.js` lit `etat.degats` pour moduler `mu` et la traînée (roue perdue =
-  traînée supplémentaire).
-- **Vol et réception** (`conduite.js`) : arc parabolique, peu de direction en l'air ; à la réception la vitesse
-  garde **100 % / 97 % / 94 %** selon le contre-braquage (coefficients de vroom-unreal), jamais de gain ; au-delà
-  d'une limite de tangage ou de roulis, **c'est l'accident**.
-- **Accident et retour progressif** (`conduite.js`) : la caisse n'obéit plus, freine, revient seule sur le
-  revêtement en 2,8–8 s à **vitesse et cap continus**, puis **2 s d'immunité**. `replacer()` (jeu) passe par ce
-  retour.
-- **`course.js`** crée les dégâts de chaque voiture et appelle `B.contacts.pas` (repli sur l'ancien `contacts()`
-  si le module est absent, pour les bancs qui ne le chargent pas).
-- **`verifications/contacts.test.mjs`** (nouveau) : 34 critères du Chantier 3 tenus (bond, arc, correction
-  100/97/94, lacet décalé, réarmement par paire, dégâts, accident et retour, cadence 30/60/120 Hz, 60 s en
-  14 ms). Quatorze suites vertes.
-- Reste à faire dans le chantier : grille des **glissières** (angle/vitesse, seuil d'accident, jamais renvoyée
-  au-delà de l'axe, emprise de la caisse) et **IA** qui évite une voiture arrêtée (`ia.test.mjs`).
-
-## Passage du Spark (14/11, Chantier 3 suite — glissières, IA qui évite, rendu et son du vol)
-
-- **Glissières** (`conduite.js`) : le choc dépend de l'**angle d'attaque et de la vitesse**. Sous 8°, on frôle le
-  rail et on garde au moins 90 % de la vitesse après 0,5 s ; au-delà de 35° et de ~100 km/h, mur plein =
-  **accident** ; entre les deux, rebond le long du rail. La caisse (emprise **4,95 × 2,02 m**) ne franchit
-  **jamais le rail, quel que soit son cap** (le centre reste à `limite − emprise`, l'emprise suivant l'angle), et
-  n'est **jamais renvoyée de l'autre côté de l'axe**.
-- **IA qui évite** (`course.js`) : le regard s'allonge avec la vitesse (distance d'arrêt + marge) ; face à une
-  voiture **vraiment plus lente** (obstacle arrêté ou en perdition), le rival s'engage tôt sur un côté libre, vise
-  plus court pour braquer sec et **ne rampe pas** (il garde de quoi dégager). Un rival lancé à **80 m/s évite une
-  voiture arrêtée** au milieu de la piste (avant : percutée vers 59 m/s). La circulation normale du peloton garde
-  sa conduite habituelle (les 8 tests de `course.test.mjs` et les 46 critères de conduite tiennent).
-- **Rendu et son du vol / des dégâts** : hauteur et attitude déjà rendues (le vol suit `etat.y/tangage/roulis`),
-  caméra cockpit portée par la voiture ; **son de réception**, claquement de **roue qui part**, fracas de
-  **casse** et de **tonneau** (`son.js`) ; **roue détachée masquée** au rendu (`voiture.js`, `options.roues`) ;
-  **teinte des dégâts** `uEffects.z` alimentée par `degats.teinte` et **éclair rouge** bref sur choc violent,
-  tonneau ou casse (`jeu.js`).
-- **`verifications/ia.test.mjs`** (nouveau) : 5 critères (évite à 40/65/80 m/s, freine en approchant).
-  `contacts.test.mjs` passe à 38 critères (grille des glissières 2–90° × 50–300 km/h, emprise de la caisse).
-  Quinze suites vertes.
+- Retours de David sur le Chantier 3, traités en solo :
+  - **roue perdue = on ne pilote plus** (physique, pas un simple message) et **course jamais déclarée finie** :
+    on s'inspire du vroom original, la caisse est **réparée et replacée sur la route**, remplacement **lent**
+    qui pénalise le temps de course.
+  - **vibrations « trop abusé »** : modèle revu plus fin (courbe en puissance, seuil de silence, pics plafonnés)
+    et **puissance réglable dans le menu**.
+  - **roue cassée visible en extérieur mais pas en vue FPS** : incohérence de rendu corrigée.
+- `conduite.js` : nouvel état `reparation` (machine `arret` → `stand` → repositionnement). Une roue manquante
+  coupe direction et motricité, la caisse roule en ligne et freine (`rouePerdueFrein`, `rouePerdueTraine`,
+  lacet `rouePerdueLacet`), s'immobilise, répare `reparationDuree` (9 s) à l'arrêt, puis se fait repositionner
+  par `declencherAccident` (retour progressif en piste). `accidenter()` **répare la caisse au retour** (roue
+  remise, `degats.reparer`). Paramètres ajoutés à `PARAMS`.
+- `voiture.js` + `jeu.js` : `cockpit()` propage enfin `options.roues` à `poser()` → une roue avant perdue est
+  masquée **aussi en vue cockpit**, comme en extérieur.
+- `jeu.js` : `vibrationManette` réécrite — grondement moteur doux, mise en forme en `x^1.25`, seuil de silence
+  à 0,04, pics de choc plafonnés ; **puissance maître** `reglages.vibrationForce` (défaut 0,5). Nouveau slider
+  « Puissance des vibrations » dans le fieldset Manette (`index.html`), câblé et persisté.
+- `son.js` + `jeu.js` : sons et messages **Réparation…** / **Repositionné** (`reparation`, `repare`).
+- `verifications/contacts.test.mjs` : +6 critères « roue perdue » (immobilisation sans motricité, **plein
+  gauche = plein droit** = plus de direction, réparation + repositionnement signalés, roue remise, retombée en
+  `d ≈ 0`, état fini / course non terminée). **44/44** critères Chantier 3. Quinze suites vertes, build ok.

@@ -250,6 +250,8 @@
         case 'roue': choc(t, 0.8); ton(t, 170, 0.32, 0.3, 'sawtooth'); break;         // une roue se détache
         case 'casse': choc(t, 1); detonation(t, 0.9); break;                           // la caisse casse, rentre au stand
         case 'tonneau': choc(t, 1); detonation(t, 1); break;                           // tonneau à la réception
+        case 'reparation': choc(t, 0.5); for (let i = 0; i < 3; i++) ton(t + i * 0.12, 300 + i * 90, 0.05, 0.18, 'square'); break; // clics d'outillage à l'arrêt
+        case 'repare': ton(t, 720, 0.1, 0.24); ton(t + 0.12, 1080, 0.12, 0.26); break;  // roue remise, on repart
         case 'feu': ton(t, 620, 0.22, 0.3); break;
         case 'vert': ton(t, 1240, 0.22, 0.35); break;
         case 'niveau': { const n = clamp(p.niveau || 1, 1, 3); for (let i = 0; i < n; i++) ton(t + i * 0.07, 1500, 0.03, 0.2, 'square'); break; } // tics comptés

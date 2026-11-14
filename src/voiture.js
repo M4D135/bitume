@@ -370,7 +370,7 @@
   //          derriere ([{ x, z, couleur }] : rivaux dans le repère de la voiture, du plus proche au plus loin),
   //          ciel, brume (couleurs du jour, pour les glaces des rétroviseurs) }
   function cockpit(mod, ev, sortie, etat) {
-    const M = poser(mod, ev, sortie, { overlay: true, cockpit: true });
+    const M = poser(mod, ev, sortie, { overlay: true, cockpit: true, roues: etat.roues });
     const rotM = angles(M), liv = mod.livree, c1 = liv.couleur, c2 = liv.seconde || BLANC;
     const pousser = (shape, p, s, m, mat, color, extra) => sortie.push(Object.assign({ shape, p, s, r: m ? angles(mulM(M, m)) : rotM, mat, color, overlay: true, surface: 'object' }, extra));
     const monde = o => { const w = mul(M, o); return [ev.p[0] + w[0], ev.p[1] + w[1], ev.p[2] + w[2]]; };

@@ -19,7 +19,7 @@
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
   function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
   function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
-  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, tableau: 'reduit', demo: 'oui', vibrations: 'oui',
+  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, tableau: 'reduit', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5,
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
@@ -273,28 +273,34 @@
   // événements du pas ; les chocs alimentent un pic qui décroît image après image
   function vibrationManette(et, ev, horloge) {
     const PR = B.conduite.PARAMS;
-    // pics transitoires des chocs et contacts, qui retombent en ~0,45 s ; le passage de rapport donne un coup sec
-    pad.choc = Math.max(0, (pad.choc || 0) - DT * 2.2);
-    pad.passe = Math.max(0, (pad.passe || 0) - DT * 3.2);
+    // pics transitoires des chocs et contacts, plafonnés et qui retombent ; le passage de rapport donne un coup sec
+    pad.choc = Math.max(0, (pad.choc || 0) - DT * 2.4);
+    pad.passe = Math.max(0, (pad.passe || 0) - DT * 3.4);
     for (const e of ev) {
-      if (e.type === 'choc' && e.id === 0) pad.choc = Math.max(pad.choc, clamp(.45 + (e.force || 0) / 10, 0, 1));
-      else if (e.type === 'contact' && (e.a === 0 || e.b === 0)) pad.choc = Math.max(pad.choc, clamp(.4 + (e.force || 0) / 10, 0, 1));
-      else if (e.type === 'roue' || e.type === 'casse') pad.choc = Math.max(pad.choc, .9);
+      if (e.type === 'choc' && e.id === 0) pad.choc = Math.max(pad.choc, clamp(.35 + (e.force || 0) / 14, 0, .9));
+      else if (e.type === 'contact' && (e.a === 0 || e.b === 0)) pad.choc = Math.max(pad.choc, clamp(.3 + (e.force || 0) / 14, 0, .7));
+      else if (e.type === 'roue' || e.type === 'casse') pad.choc = Math.max(pad.choc, .85);
     }
-    // régime moteur : 0 au ralenti, 1 en zone rouge ; plus fort en charge (pied au gaz) et un léger grondement de ralenti
+    // grondement du moteur : doux au ralenti, il monte progressivement vers la zone rouge sans jamais saturer
     const r = clamp((et.regime - PR.ralenti) / (PR.maxUtile - PR.ralenti), 0, 1);
-    const charge = .3 + .7 * (et.gaz || 0);
-    const moteur = .06 + r * r * charge * .94;
-    const zoneRouge = r > .96 ? (Math.sin(horloge * 55) > 0 ? .35 : 0) : 0;   // le rupteur crépite en haut
-    // route, vibreurs, herbe, patinage, glisse
-    const route = clamp(et.v / 78, 0, 1);
-    const martellement = et.vibreur ? .5 + .5 * Math.sin(horloge * 42) : 0;
-    const herbe = et.surface === 'herbe' ? clamp(et.v / 22, 0, 1) : 0;
-    const patinage = clamp(et.patinage / .3, 0, 1);
-    const blocage = clamp(et.blocage / .3, 0, 1);
-    const glisse = clamp(Math.abs(et.glisseAr) / .4, 0, 1);
-    const faible = clamp(route * .28 + patinage * .8 + blocage * .6 + glisse * .5 + herbe * .45 + martellement * .55 + zoneRouge, 0, 1);
-    const fort = clamp(moteur * .82 + route * .3 + herbe * .7 + martellement * .7 + (pad.choc || 0) + (pad.passe || 0), 0, 1);
+    const charge = .25 + .75 * (et.gaz || 0);
+    const moteur = .05 + .5 * r * r * charge;
+    const zoneRouge = r > .97 ? (Math.sin(horloge * 50) > 0 ? .2 : 0) : 0;   // le rupteur crépite à peine en haut
+    // route, vibreurs, herbe, patinage, glisse — tous en dessous de leur maximum pour rester fins
+    const route = clamp(et.v / 90, 0, 1);
+    const martellement = et.vibreur ? .5 + .5 * Math.sin(horloge * 40) : 0;
+    const herbe = et.surface === 'herbe' ? clamp(et.v / 26, 0, 1) : 0;
+    const patinage = clamp(et.patinage / .35, 0, 1);
+    const blocage = clamp(et.blocage / .35, 0, 1);
+    const glisse = clamp(Math.abs(et.glisseAr) / .5, 0, 1);
+    let faible = route * .16 + patinage * .5 + blocage * .38 + glisse * .3 + herbe * .3 + martellement * .42 + zoneRouge;
+    let fort = moteur * .5 + route * .16 + herbe * .42 + martellement * .5 + (pad.choc || 0) * .85 + (pad.passe || 0) * .5;
+    // mise en forme : une courbe en puissance garde le bas de l'échelle subtil, puis la puissance maître du réglage
+    const f = clamp(reglages.vibrationForce != null ? +reglages.vibrationForce : .5, 0, 1);
+    faible = Math.pow(clamp(faible, 0, 1), 1.25) * f;
+    fort = Math.pow(clamp(fort, 0, 1), 1.25) * f;
+    if (faible < .04) faible = 0;   // sous ce seuil, la manette reste parfaitement silencieuse
+    if (fort < .04) fort = 0;
     return [faible, fort];
   }
 
@@ -459,6 +465,8 @@
           else if (e.type === 'reception') S.secousse = Math.min(1, (S.secousse || 0) + .25 + (e.force || 0) * .1);
           else if (e.type === 'tonneau' || e.type === 'casse') { S.secousse = 1; S.eclair = 1; }
           else if (e.type === 'roue') { message('Roue perdue', 'rouge', true); S.eclair = .8; }
+          else if (e.type === 'reparation') message('Réparation…', 'ambre', true);
+          else if (e.type === 'repare') message('Repositionné', 'vert', true);
           else if (e.type === 'turbo') message(e.parfait ? 'Turbo parfait' : 'Turbo', e.parfait ? 'ambre' : '', true);
           else if (e.type === 'deriveAnnulee') S.derniereJauge = co.horloge;
       }
@@ -633,7 +641,7 @@
         }
         derriere.sort((a, b) => b.x - a.x);
         const atm = scene.decor.atmosphere;
-        B.voiture.cockpit(S.modeles[k], ev, sortie, { regime: et.regime, volant: et.volant, rapport: et.rapport, kmh: B.conduite.kmh(et),
+        B.voiture.cockpit(S.modeles[k], ev, sortie, { regime: et.regime, volant: et.volant, rapport: et.rapport, kmh: B.conduite.kmh(et), roues: co.voitures[k].degats && co.voitures[k].degats.roues,
           passage: suivie.tPassage === undefined ? 1 : (co.horloge - suivie.tPassage) / .36, rapportAvant: suivie.rapportAvant, derriere, ciel: atm.skyBottom, brume: atm.fog });
         continue;
       }
@@ -920,12 +928,15 @@
   $('v-champ').addEventListener('input', e => { reglages.champ = clamp(+e.target.value, 60, 105); $('v-champ-valeur').textContent = reglages.champ + '°'; sauverReglages(); });
   $('v-secousses').addEventListener('input', e => { reglages.secousses = clamp(+e.target.value, 0, 1); $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %'; sauverReglages(); });
   $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) secouerManette(0, 0); sauverReglages(); });
+  $('v-vibration-force').addEventListener('input', e => { reglages.vibrationForce = clamp(+e.target.value, 0, 1); $('v-vibration-force-valeur').textContent = Math.round(reglages.vibrationForce * 100) + ' %'; sauverReglages(); });
   function remplirReglages() {
     for (const nom of ['vue', 'boite', 'qualite', 'aide', 'tableau', 'demo']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
     $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';
     for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).value = reglages[nom];
     $('v-vibrations').checked = reglages.vibrations !== 'non';
+    reglages.vibrationForce = clamp(reglages.vibrationForce != null ? +reglages.vibrationForce : 0.5, 0, 1);
+    $('v-vibration-force').value = reglages.vibrationForce; $('v-vibration-force-valeur').textContent = Math.round(reglages.vibrationForce * 100) + ' %';
   }
   function retour() {
     if (ecran === 'reglages') aller(retourReglages || 'titre');

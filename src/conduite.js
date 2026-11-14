@@ -81,7 +81,10 @@
     sautTangLim: 0.55, sautRoulLim: 0.72,                  // au-delà à la réception, la voiture tonne (accident)
     contreBon: 0.4, contreMauvais: -0.4,                   // contre-braquage : 100 % / 97 % / 94 % de la vitesse
     volBraquage: 0.15, volTrainee: 0.0011,                 // en l'air on dirige peu ; légère traînée d'air
-    accidentDuree: 4.5, accidentImm: 2, accidentFrein: 3.2 // retour progressif en piste, puis immunité
+    accidentDuree: 4.5, accidentImm: 2, accidentFrein: 3.2, // retour progressif en piste, puis immunité
+    // roue perdue (Chantier 3) : plus de direction ni de motricité, on s'immobilise, réparation lente, repositionnement
+    rouePerdueBraquage: 0.06, rouePerdueTraine: 0.05, rouePerdueLacet: 0.7, rouePerdueFrein: 9,
+    reparationDuree: 9                                       // réparation lente à l'arrêt (pénalise le temps de course)
   });
   const P = PARAMS;
   // accélération moteur maximale de chaque rapport : 13 × (27 / vitesse de pointe)^0,8
@@ -171,7 +174,7 @@
       coupure: 0, rupteurT: 0, sousVirage: 0,
       // Chantier 3 : vol (saut), accident et retour en piste, immunité, dégâts — tous inactifs au départ, la
       // conduite reste exactement celle des critères quand ils sont absents (tests de conduite sans ces modules)
-      saut: null, accident: null, immunite: 0, degats: null
+      saut: null, accident: null, immunite: 0, degats: null, reparation: null
     };
   }
 
@@ -610,7 +613,7 @@
   // Déclencher un accident : la caisse n'obéit plus, freine et revient seule sur le revêtement, puis immunité.
   function declencherAccident(etat, o = {}) {
     if (etat.accident) return;
-    etat.saut = null;
+    etat.saut = null; etat.reparation = null;
     etat.accident = { t: 0, duree: o.duree || P.accidentDuree, d0: etat.d, reception: !!o.reception };
     annuler(etat, []);
   }
@@ -673,8 +676,37 @@
     etat.y = e.y - clamp(etat.d, -c.largeur / 2, c.largeur / 2) * Math.sin(e.devers);
     if (a.t >= a.duree) {
       etat.accident = null; etat.immunite = P.accidentImm;
+      if (etat.degats && B.degats) B.degats.reparer(etat.degats);   // caisse réparée au retour en piste
       etat.d = 0; etat.psi = 0; etat.omega = 0; etat.tangage = 0; etat.roulis = 0;
       ev.push({ type: 'retour' });
+    }
+  }
+
+  // Roue perdue (vroom original) : plus de direction ni de motricité, la caisse s'immobilise, répare lentement à
+  // l'arrêt, puis se fait repositionner sur la route — un remplacement lent qui pénalise le temps de course.
+  function reparerRoue(etat, c, dt, ev) {
+    const rp = etat.reparation, e = B.circuit.echantillon(c, etat.s);
+    if (rp.phase === 'arret') {
+      // on ne dirige plus, on n'a plus de motricité : la caisse roule en ligne et freine jusqu'à l'arrêt
+      etat.v = Math.max(0, etat.v - P.rouePerdueFrein * dt - P.rouePerdueTraine * etat.v * etat.v * dt);
+      const den = Math.max(1 - e.courbure * etat.d, 0.1);
+      etat.s = ramener(etat.s + etat.v * Math.cos(etat.psi) / den * dt, c.longueur);
+      etat.d += etat.v * Math.sin(etat.psi) * dt;
+      const cdg = etat.d < 0 ? -1 : 1, lim = limiteCote(c, etat.s, cdg);
+      if (Math.abs(etat.d) > lim) etat.d = cdg * lim;
+      etat.tangage *= Math.exp(-dt / 0.5); etat.roulis *= Math.exp(-dt / 0.5);
+      etat.y = e.y - clamp(etat.d, -c.largeur / 2, c.largeur / 2) * Math.sin(e.devers);
+      if (etat.v < 0.8) { etat.v = 0; rp.phase = 'stand'; rp.t = 0; annuler(etat, ev); ev.push({ type: 'reparation' }); }
+    } else {
+      // réparation lente à l'arrêt, puis repositionnement progressif sur la route (roue remise, caisse remise à neuf)
+      etat.v = 0; rp.t += dt;
+      etat.y = e.y - clamp(etat.d, -c.largeur / 2, c.largeur / 2) * Math.sin(e.devers);
+      if (rp.t >= P.reparationDuree) {
+        if (etat.degats && B.degats) B.degats.reparer(etat.degats);
+        etat.reparation = null;
+        declencherAccident(etat, { duree: 2.8 });
+        ev.push({ type: 'repare' });
+      }
     }
   }
 
@@ -687,6 +719,11 @@
     if (etat.immunite > 0) etat.immunite = Math.max(0, etat.immunite - dt);
     if (etat.accident) { accidenter(etat, c, dt, ev); return ev; }
     if (etat.saut && etat.saut.actif) { voler(etat, cmd, c, dt, ev); return ev; }
+    // une roue manquante met la caisse hors d'état de rouler : arrêt, réparation lente, repositionnement
+    if (!etat.reparation && etat.degats && B.degats && B.degats.uneRouePerdue(etat.degats)) {
+      etat.reparation = { phase: 'arret', t: 0 }; annuler(etat, ev);
+    }
+    if (etat.reparation) { reparerRoue(etat, c, dt, ev); return ev; }
     if (retenue) retenir(etat, gaz, dt, ev);
     else rouler(etat, cmd, c, dt, gaz, frein, aide, guidage, ev);
     poserAttitude(etat, c, dt);

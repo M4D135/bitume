@@ -216,6 +216,34 @@ function glissiere(ang, v, d0 = 2.6, gaz = 0) {
   noter('emprise de la caisse : aucun coin au-delà du rail, quel que soit le cap', ok ? 1 : 0, 'oui', ok, pire);
 }
 
+// ------------------------------------------------------------------ roue perdue : on ne pilote plus, réparation lente, repositionnement
+function essaiRouePerdue(volant) {
+  const et = CD.creer(100, 0); et.v = 30; et.rapport = 6;
+  const dg = DG.creer(); et.degats = dg; dg.roues[0] = true;   // roue avant gauche arrachée
+  const cmd = commande({ gaz: 1, volant });                     // pied au plancher, plein volant : ne doit rien donner
+  let t = 0, vMin = Infinity, dArret = 0;
+  while (t < 30) {
+    const arret = et.reparation && et.reparation.phase === 'arret';
+    for (const e of CD.pas(et, cmd, CIR, DT)) { if (e.type === 'reparation' || e.type === 'repare') (et._vus || (et._vus = [])).push(e.type); }
+    vMin = Math.min(vMin, et.v);
+    if (arret) dArret = Math.max(dArret, Math.abs(et.d));
+    if (!et.reparation && !et.accident && !dg.roues[0] && t > 1) break;
+    t += DT;
+  }
+  return { vMin, dArret, repaired: dg.roues.every(x => !x) && !dg.casse, d: et.d,
+    fini: Number.isFinite(et.s) && Number.isFinite(et.d) && Number.isFinite(et.v),
+    vus: et._vus || [] };
+}
+{
+  const R = essaiRouePerdue(1), L = essaiRouePerdue(-1);
+  noter('roue perdue : plus de motricité, la caisse s’immobilise', R.vMin, '≈ 0', R.vMin < 0.9);
+  noter('roue perdue : plus de direction (plein gauche = plein droit)', Math.abs(R.dArret - L.dArret), '< 0,1 m', Math.abs(R.dArret - L.dArret) < 0.1);
+  noter('roue perdue : réparation puis repositionnement signalés', R.vus.includes('reparation') && R.vus.includes('repare') ? 1 : 0, 'oui', R.vus.includes('reparation') && R.vus.includes('repare'));
+  noter('roue perdue : roue remise et caisse réparée', R.repaired ? 1 : 0, 'oui', R.repaired);
+  noter('roue perdue : repositionnée sur la trajectoire (d ≈ 0)', Math.abs(R.d), '≈ 0', Math.abs(R.d) < 0.2);
+  noter('roue perdue : état fini, course non déclarée terminée', R.fini ? 1 : 0, 'oui', R.fini);
+}
+
 const echecs = resultats.filter(r => !r.ok);
 console.log('---');
 console.log(`${resultats.length - echecs.length}/${resultats.length} critères du Chantier 3 tenus`);
