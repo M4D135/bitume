@@ -699,6 +699,7 @@
       for(const t of triangles)indices.push(vertex(t[0],t[3]),vertex(t[1],t[4]),vertex(t[2],t[5]));
       end(nom);
     }
+    // BITUME : index sur 32 bits (retouche 10, UNSIGNED_INT) — les formes libres dépassent 65 535 sommets
     return {vertices:new Float32Array(data),indices:new Uint32Array(indices),ranges};
   }
 

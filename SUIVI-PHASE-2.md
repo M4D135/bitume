@@ -423,3 +423,15 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   **Ancien code : échecs à chaque étape ; nouveau : 33/33.** Douze suites vertes.
 - À juger au rendu par David : le geste est plus ample (main qui s'élève à 15 cm au-dessus du pommeau en
   0,36 s) — naturel au changement de rapport, à confirmer à l'écran.
+
+## Passage du Spark (14/11, rendu-2 : marque BITUME sur les index 32 bits)
+
+- Constat (relecture moteur, confirmé par le contradicteur) : le passage du tampon d'index de `Uint16Array` à
+  `Uint32Array` (ligne 700 à l'époque de la relecture, 702 aujourd'hui) n'avait pas de marque « BITUME »,
+  contrairement à la règle d'AGENTS.md ; un report des retouches sur une nouvelle version de FERRO par
+  `grep BITUME` l'aurait oubliée — tampon 16 bits contre dessin en `UNSIGNED_INT`, WebGL2 refuse, plus de
+  formes libres.
+- Correctif : marque `// BITUME : index sur 32 bits (retouche 10, UNSIGNED_INT)` sur la ligne de retour de
+  `geometry()`, et entrée 12 dans `src/moteur/PROVENANCE.md`.
+- cockpit-7 (blocage de cardan dans `angles()`) : constat retiré par le contradicteur, rien à faire.
+  Le lot de relecture est clos : sur les 22 constats, 21 sont traités, un est retiré.

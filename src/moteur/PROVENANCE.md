@@ -49,3 +49,4 @@ et lointain (`camera.near`, `camera.far`), la lampe torche éteinte (`fx.torch =
     dans le cube unité, où l'échelle inégale de `normaliser()` ne conserve pas les angles — 90 faces fines (jonc,
     rétros, arceau, épaules, filet, pare-brise, casquette) étaient retournées puis éliminées par `CULL_FACE`, d'où des
     trous dans la peau. `verifications/formes-libres.test.mjs` contrôle l'ordre émis contre le registre.
+12. **Marque des index 32 bits** : la ligne qui construit le tampon d'index des formes libres porte désormais sa propre marque BITUME (constat rendu-2 de la relecture) ; sans elle, un report des retouches sur une nouvelle version de FERRO la laisserait en Uint16Array alors que la passe dessine en UNSIGNED_INT, et WebGL2 refuserait les appels.
