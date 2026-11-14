@@ -474,4 +474,37 @@ verifier('pouce du gant : aucune face enfouie dans son propre volume (carene-4)'
   assert.equal(enfouies, 0, `${enfouies} faces du pouce sous sa propre peau (coude trop serré)`);
 });
 
+verifier('habitacle vu du haut : par l\'ouverture on voit la cuve sombre, pas le dessus rouge des pontons (voi-5)', () => {
+  const sous = (a, b) => a.map((v, k) => v - b[k]);
+  const croix = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const scal = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const rouge = c => c && c[0] > .4 && c[1] < .25 && c[2] < .25;
+  const vus = [];
+  for (const p of mod.corps) {
+    const f = V.FORMES[String(p.shape).replace(/^bitume-/, '')];
+    if (!f || p.dedans) continue; // vue extérieure seulement : les pièces `dedans` ne sont pas dessinées ici
+    for (const t of f.tri) vus.push({ c: [0, 1, 2].map(r => [0, 1, 2].map(k => t[r][k] * p.s[k] + p.o[k])), p });
+  }
+  const cam = [-4, 6, 0];
+  let rouges = 0, total = 0;
+  for (let x = -.15; x <= .451; x += .05) for (let z = -.12; z <= .121; z += .04) {
+    const cible = [x, .30, z], d0 = sous(cible, cam), l0 = Math.hypot(...d0), d = d0.map(v => v / l0);
+    let best = Infinity, piece = null, pt = null;
+    for (const { c, p } of vus) {
+      const [a, b, cc] = c, e1 = sous(b, a), e2 = sous(cc, a), tvec = sous(cam, a), pv = croix(d, e2), q = croix(tvec, e1);
+      const det = scal(e1, pv); if (Math.abs(det) < 1e-12) continue;
+      const inv = 1 / det, u = scal(tvec, pv) * inv; if (u < -1e-9 || u > 1 + 1e-9) continue;
+      const v = scal(d, q) * inv; if (v < -1e-9 || u + v > 1 + 1e-9) continue;
+      const t = scal(e2, q) * inv; if (t > 1e-9 && t < best) { best = t; piece = p; pt = cam.map((vv, k) => vv + d[k] * t); }
+    }
+    assert.ok(piece, `rayon vers (${x.toFixed(2)} ; ${z.toFixed(2)}) ne voit rien`);
+    if (piece.pilote) continue; // le pilote meuble l'habitacle, il n'est pas un défaut
+    if (pt[0] < -.24 || pt[0] > .52 || Math.abs(pt[2]) > .2 || pt[1] > .55) continue; // hors du volume d'habitacle : carrosserie normale
+    total++;
+    if (rouge(piece.color)) rouges++;
+  }
+  assert.ok(total > 40, `${total} rayons juges hors pilote`);
+  assert.equal(rouges, 0, `${rouges}/${total} rayons voient la carrosserie rouge à travers l'ouverture`);
+});
+
 console.log(`${compte} vérifications réussies`);

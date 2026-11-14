@@ -322,3 +322,16 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   puis chaque face est sondée juste au-dessus de sa normale — son dehors immédiat ne doit pas être dans le
   volume (parité de rayons). **12 faces enfouies avant, 0 après.** Les doigts n'avaient rien (garde du constat).
   Douze suites vertes ; le test des gants hors des branches tient toujours.
+
+## Passage du Spark (14/11, voi-5 : la cuve sombre se voit du dehors)
+
+- Constat (jet 14, contradicteur « vrai ») : la cuve sombre de l'habitacle n'était dessinée qu'en vue cockpit
+  (`dedans`). Vu du haut, le fond de l'ouverture renvoyait le dessus rouge des pontons (y 0,44–0,45) —
+  l'habitacle paraissait plein, peint couleur caisse, 17 à 20 cm sous le bord.
+- Correctif (`src/voiture.js`) : `L('cuve', …)` perd son drapeau `dedans` — la cuve se dessine aussi en vue
+  extérieure. Prolongée par la quille depuis voi-1, elle ne dépasse nulle part la carrosserie et ne se voit que
+  par l'ouverture (le relecteur mesurait « ponton rouge 0/578, sombre 578/578 » avec quille + cuve).
+- Test (`voiture.test.mjs`, 29 → 30) : 91 rayons obliques d'une caméra haute arrière (−4 ; 6 ; 0) visent le
+  plancher de l'habitacle ; tout premier impact tombant dans le volume d'habitacle (x −0,24→0,52, |z| ≤ 0,2,
+  y ≤ 0,55) ne doit pas être rouge. **44/44 rayons rouges avant, 0 après** (le capot moteur, légitimement rouge
+  et hors du volume, est exclu du compte). Douze suites vertes, banc conduite inchangé.

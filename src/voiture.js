@@ -186,13 +186,15 @@
     // Aileron avant argent de 1,62 m, bord de fuite relevé, et ses deux dérives rouges
     P('box', [2.11, .13, 0], [.38, .025, 1.62], LAQUE, ARGENT, { m: euler(0, 0, -.08) });
     for (const k of [-1, 1]) P('box', [2.11, .17, k * .81], [.38, .19, .02], PEINTURE, c1);
-    // Habitacle de la vue cockpit (dessiné seulement dans cette vue) : épaules, jonc, dôme, cuve sombre, saute-vent
+    // Habitacle de la vue cockpit (dessiné seulement dans cette vue) : épaules, jonc, dôme, saute-vent.
+    // voi-5 : la cuve sombre se dessine aussi en vue extérieure — sans elle, vu du dessus, l'habitacle paraît
+    // plein couleur caisse ; prolongée par la quille (voi-1), elle ne se voit de dehors que par l'ouverture.
     const dedans = { dedans: true };
     L('epaules', PEINTURE, c1, dedans);
     L('epaules-jonc', MAT, NOIR, dedans);
     L('flancs', MAT, [.05, .05, .055], dedans);
     L('dome', PEINTURE, c1, dedans);
-    L('cuve', MAT, [.035, .035, .04], dedans);
+    L('cuve', MAT, [.035, .035, .04]);
     L('pare-brise', METAL_MAT, [.30, .50, .86], { fx: true, alpha: .2, dedans: true });
     L('pare-brise-arete', METAL_MAT, [.86, .9, .94], { fx: true, alpha: .5, dedans: true });
     // Pilote : casque, visière, épaules
