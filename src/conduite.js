@@ -168,10 +168,12 @@
   }
 
   // ---------------------------------------------------------------- dérive et turbo
-  function eteindre(dr) {
+  function eteindre(dr, doux) {
     dr.actif = false; dr.sens = 0; dr.duree = 0; dr.charge = 0; dr.niveau = 0; dr.palier = 0; dr.fenetre = 0;
     dr.qualite = 0; dr.contre = 0; dr.perte = 0; dr.grace = 0; dr.relache = 0;
-    dr.amorce = 0; dr.melange = 0; dr.tirage = 0;
+    // fin douce : le fondu et le tirage retombent par leurs filtres (sortie 0,16 s), pas d'un cran —
+    // la caisse ne peut pas reprendre l'adhérence instantanément, et un saut de β fausse le lissage (S8)
+    if (!doux) { dr.amorce = 0; dr.melange = 0; dr.tirage = 0; }
   }
   function couperTurbo(etat) {
     const t = etat.turbo;
@@ -179,14 +181,14 @@
   }
   // Fin sans turbo (frein, herbe, contact, perte de contrôle) : le bouton doit être relâché avant une nouvelle dérive.
   // Un contact coupe aussi un turbo en cours.
-  function annulerDerive(etat) {
+  function annulerDerive(etat, doux) {
     const dr = etat.derive, avaitTurbo = etat.turbo.reste > 0;
     couperTurbo(etat);
     if (!dr.actif) return avaitTurbo ? { type: 'turboCoupe' } : null;
-    eteindre(dr); dr.verrou = true;
+    eteindre(dr, doux); dr.verrou = true;
     return { type: 'deriveAnnulee' };
   }
-  function annuler(etat, ev) { const a = annulerDerive(etat); if (a) ev.push(a); }
+  function annuler(etat, ev) { const a = annulerDerive(etat, true); if (a) ev.push(a); }
   function lacher(etat, ev, enPiste) {
     const dr = etat.derive;
     if (enPiste && dr.niveau >= 1 && dr.perte < P.derivePerte) {
@@ -195,7 +197,7 @@
       t.reste = duree; t.duree = duree; t.niveau = dr.niveau; t.parfait = parfait; t.ecoule = 0;
       ev.push({ type: 'turbo', duree, niveau: dr.niveau, parfait });
     }
-    eteindre(dr);
+    eteindre(dr, true);
   }
   function lisse(x) { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); }
 
@@ -239,7 +241,7 @@
       if (!cmd.derive) { lacher(etat, ev, enPiste); dr.relache = 0; return; }
       if (dr.perte > P.derivePerte || dr.grace <= 0) {
         // perte de contrôle ou virage fini bouton tenu : la glisse retombe sans turbo
-        eteindre(dr); dr.verrou = true; ev.push({ type: 'deriveAnnulee' });
+        eteindre(dr, true); dr.verrou = true; ev.push({ type: 'deriveAnnulee' });
       }
       return;
     }
@@ -249,7 +251,7 @@
       etat.turbo.reste <= 0 && dr.relache >= P.deriveRearmement;
     if (possible && Math.abs(k) >= P.deriveCourbMin && Math.abs(etat.volant) >= P.deriveVolantMin &&
         etat.volant * k > 0) {
-      eteindre(dr);
+      eteindre(dr, true);
       dr.actif = true; dr.sens = sign(k); dr.grace = P.deriveGrace;
       etat.bondT = P.deriveBondDuree;
       ev.push({ type: 'derive', sens: dr.sens });

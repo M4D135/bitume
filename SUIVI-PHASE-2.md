@@ -272,3 +272,28 @@ test rouge sur l'ancien code puis vert sur le nouveau.
 - `carene.test.mjs` : 10 → 14 vérifications ; `voiture.test.mjs` : 22 → 27. Douze suites vertes.
 - **Différé** (mesures insuffisantes ou non testables en Node) : carene-2 (cloisons intérieures de la goutte),
   carene-4 (pouce, 16 px), cockpit-2/3/4/6 (jeu.js, rendu à voir), voi-5 (incertain), voi-6 (correctif non mesuré).
+
+## Passage du Spark (14/11, S8 : mesure ouverte, piste écartée par la mesure)
+
+- **Fondu doux à l'extinction de dérive** (`src/conduite.js`) : aux fins naturelles (relâchement du bouton, perte
+  de contrôle, annulation interne frein/herbe/piste/angle), `amorce`, `melange` et `tirage` retombent désormais
+  par leurs filtres (sortie 0,16 s) au lieu de passer à zéro d'un cran — la caisse ne peut pas reprendre
+  l'adhérence instantanément. La voie publique `annulerDerive` (contact, reset) et la grille restent des remises
+  à zéro dures, comme les régressions de `relectures-phase2` les fixent. Aucune mesure ne bouge (46/46, S8 à
+  997,4) ; c'est une correction de physique, pas un réglage.
+- **S8 explorée à fond — le pic n'est pas à l'extinction**. Sonde sur le pire scénario (clavier 0,1 s à 120 Hz,
+  profil a 0,5 / kd 0,1 / kv 0,3) : le pic de 997 °/s² frappe **en pleine dérive**, à un renversement de volant
+  (la progression de β casse de +0,14° à +0,07° par pas en deux échantillons). Le pas de volant brut du
+  clavier (jeu.js envoie
+  ±1 sans rampe, le banc est fidèle au jeu) se propage sans retard dans l'effort avant : `pneu()` est raide et
+  rien ne retarde la force latérale.
+- **Pistes mesurées et écartées** (chacune casse des critères obligatoires) :
+  - `deriveTirageTau` 0,06→0,16 : S8 stagne à 944–1020, critères 41–45/46 ;
+  - `volantMontee`/`volantRetour` 0,05–0,07 : S8 640–888 au mieux, critères 32–40/46, et divergence à 0,07 ;
+  - `deriveAlpha` 0,18–0,35 : S8 930–977, critères 39–45/46 ;
+  - relaxation de pneu (retard d'effort latéral, avant+arrière, τ 0,03–0,08) : S8 468–578 au mieux mais S4, S5,
+    S7 et S9 cassent (42/46 au meilleur point), et divergence au-delà de τ 0,04.
+- **Conclusion** : ≤ 300 °/s² au clavier tout-ou-rien est incompatible avec les critères de nervosité (S5 exige
+  une réponse aux impulsions de 0,1 s ; S4/S9 exigent des efforts avant instantanés). La décision est à David :
+  soit accepter 997 comme coût du clavier brut, soit ramper le volant clavier dans `jeu.js` (changement de
+  sensation à juger en jouant, pas au banc). S8 reste mesure ouverte, aucun seuil abaissé.
