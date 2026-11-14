@@ -19,7 +19,7 @@
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
   function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
   function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
-  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, tableau: 'reduit', demo: 'oui',
+  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, tableau: 'reduit', demo: 'oui', vibrations: 'oui',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
@@ -175,7 +175,7 @@
   // ---------------------------------------------------------------- commandes
   const touches = new Set();
   const impulsions = { haut: false, bas: false };
-  const pad = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, actif: false };
+  const pad = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, rumbleF: -1, rumbleS: -1, rumbleT: 0 };
   const doigt = { volant: 0, gaz: false, frein: false, derive: false, id: null, x0: 0 };
   let analogique = false;
 
@@ -223,9 +223,10 @@
 
   function lireManette() {
     const liste = navigator.getGamepads ? navigator.getGamepads() : [];
-    pad.actif = false;
+    pad.actif = false; pad.manette = null;
     for (const p of liste) {
       if (!p || !p.connected) continue;
+      pad.manette = p;
       const b = i => p.buttons[i] ? (p.buttons[i].value || (p.buttons[i].pressed ? 1 : 0)) : 0;
       const appuye = i => b(i) > .5, nouveau = i => appuye(i) && !pad.precedent[i];
       if (ecran === 'demo' || ecran === 'titre') {
@@ -249,6 +250,19 @@
       if (Math.abs(pad.volant) > .05 || pad.gaz > .05 || pad.frein > .05) { pad.actif = true; analogique = true; activerSon(); }
       return;
     }
+  }
+
+  // vibration manette (David, 14/11) : vibreurs, herbe, patinage, blocage, glisse et chocs font vibrer les
+  // haut-parleurs de la manette, faible à gauche, fort à droite ; rien si la manette ne sait pas vibrer
+  function secouerManette(faible, fort) {
+    const p = pad.manette;
+    faible = clamp(faible || 0, 0, 1); fort = clamp(fort || 0, 0, 1);
+    if (!p || !p.vibrationActuator || !p.vibrationActuator.playEffect) return;
+    const maintenant = performance.now();
+    // on ne reprogramme le moteur que si l'intensité bouge vraiment, ou toutes les 90 ms (le jeu s'éteint seul)
+    if (Math.abs(faible - pad.rumbleF) < .08 && Math.abs(fort - pad.rumbleS) < .08 && maintenant - pad.rumbleT < 90) return;
+    pad.rumbleF = faible; pad.rumbleS = fort; pad.rumbleT = maintenant;
+    try { p.vibrationActuator.playEffect('dual-rumble', { startDelay: 0, duration: 110, weakMagnitude: faible, strongMagnitude: fort }); } catch (e) { /* manette sans vibration */ }
   }
 
   // menus à la manette : croix pour se déplacer (gauche, droite règlent un curseur), A valide, B revient
@@ -334,6 +348,21 @@
     const co = S.course;
     const cmd = S.type === 'vitrine' || S.type === 'demo' || pilote ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
     const ev = B.course.pas(co, cmd, DT);
+    // vibration manette : le pilote la sent passer dans ses mains, aux vibreurs, dans l'herbe, en patinant,
+    // en bloquant, en glissant et sur les chocs ; la main reste calme si le réglage est à « non »
+    if (!pilote && reglages.vibrations === 'oui') {
+      const et = co.joueur.etat;
+      let faible = 0, fort = 0;
+      if (et.vibreur) faible = .55;
+      if (et.surface === 'herbe') faible = Math.max(faible, .3 + .35 * clamp(et.v / 30, 0, 1));
+      faible = Math.max(faible, .85 * clamp(et.patinage / .35, 0, 1), .7 * clamp(et.blocage / .35, 0, 1));
+      fort = .55 * clamp(Math.abs(et.glisseAr) / .4, 0, 1);
+      for (const e of ev) {
+        if (e.type === 'choc' && e.id === 0) fort = Math.max(fort, clamp(.45 + (e.force || 0) / 10, 0, 1));
+        else if (e.type === 'contact' && (e.a === 0 || e.b === 0)) fort = Math.max(fort, clamp(.4 + (e.force || 0) / 10, 0, 1));
+      }
+      secouerManette(faible, fort);
+    } else secouerManette(0, 0);
     for (const v of co.voitures) {
       v.roule = (v.roule || 0) + v.etat.v * DT; // distance roulée : fait tourner les roues
       // changement de rapport : la main droite du pilote va au levier (vue cockpit). cockpit-6 : au premier pas,
@@ -639,7 +668,7 @@
 
   // ---------------------------------------------------------------- affichage de course
   const H = {};
-  for (const id of ['h-pos', 'h-sur', 'h-tour', 'h-tours', 'h-actuel', 'h-meilleur', 'h-delta', 'h-delta-ligne', 'h-vitesse', 'h-rapport', 'h-regime', 'jauge-derive', 'classement', 'feux', 'carte', 'c-position', 'c-tour', 'message', 'sous-message']) H[id] = $(id);
+  for (const id of ['h-pos', 'h-sur', 'h-tour', 'h-tours', 'h-actuel', 'h-meilleur', 'h-delta', 'h-delta-ligne', 'h-vitesse', 'h-rapport', 'h-regime', 'h-fps', 'jauge-derive', 'classement', 'feux', 'carte', 'c-position', 'c-tour', 'message', 'sous-message']) H[id] = $(id);
   const segments = Array.from(H['jauge-derive'].querySelectorAll('i')), lampes = Array.from(H.feux.querySelectorAll('i'));
   const etiquetteDerive = H['jauge-derive'].querySelector('.etiquette');
   const barre = H['h-regime'].querySelector('.barre');
@@ -744,6 +773,9 @@
       const f = B.course.fantome(co);
       if (f) { const e = B.circuit.echantillon(co.c, f.s), [x, y] = p.vers(e.x, e.z); ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fillStyle = '#6fd0ff'; ctx.fill(); }
     }
+    // compteur d'images : le temps d'image lissé de la boucle, viré à l'ambre quand ça descend sous 50 i/s
+    const fps = Math.round(1000 / Math.max(.5, dureeImage));
+    texte(H['h-fps'], fps + ' i/s'); classe(H['h-fps'], 'bas', fps < 50);
   }
 
   // ---------------------------------------------------------------- écrans
@@ -854,11 +886,13 @@
   for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).addEventListener('input', e => { reglages[nom] = +e.target.value; sauverReglages(); appliquerVolumes(); });
   $('v-champ').addEventListener('input', e => { reglages.champ = clamp(+e.target.value, 60, 105); $('v-champ-valeur').textContent = reglages.champ + '°'; sauverReglages(); });
   $('v-secousses').addEventListener('input', e => { reglages.secousses = clamp(+e.target.value, 0, 1); $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %'; sauverReglages(); });
+  $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) secouerManette(0, 0); sauverReglages(); });
   function remplirReglages() {
     for (const nom of ['vue', 'boite', 'qualite', 'aide', 'tableau', 'demo']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
     $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';
     for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).value = reglages[nom];
+    $('v-vibrations').checked = reglages.vibrations !== 'non';
   }
   function retour() {
     if (ecran === 'reglages') aller(retourReglages || 'titre');

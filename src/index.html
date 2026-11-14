@@ -38,6 +38,7 @@
       </div>
     </div>
     <button id="b-pause" class="bouton-rond" type="button" aria-label="Pause">❚❚</button>
+    <div id="h-fps" class="fps" aria-hidden="true">–</div>
   </section>
 
   <!-- Démo : les douze voitures à l'ordinateur ; un geste ramène à l'écran titre -->
@@ -60,7 +61,7 @@
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version __VERSION_JEU__">V__VERSION_JEU__</b>
       <p class="accroche">Monoplaces d’époque · circuits générés · onze rivaux</p>
     </div>
     <nav class="choix" aria-label="Menu principal">
@@ -138,6 +139,10 @@
         <label><input type="radio" name="qualite" value="low"><span>Légère</span></label>
         <label><input type="radio" name="qualite" value="auto"><span>Auto</span></label>
         <label><input type="radio" name="qualite" value="high"><span>Fine</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Manette</legend>
+        <label><input type="checkbox" id="v-vibrations"><span>Vibrations</span></label>
       </fieldset>
       <div class="curseurs">
         <label>Volume général <input type="range" id="v-general" min="0" max="1" step="0.05"></label>

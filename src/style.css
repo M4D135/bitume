@@ -67,6 +67,9 @@ button, input { font: inherit; color: inherit; }
   text-shadow: 0 6px 30px rgba(0, 0, 0, .45);
 }
 .marque h1::after { content: ""; position: absolute; left: .04em; right: 0; bottom: -.1em; height: .085em; background: var(--rouge); transform: skewX(-18deg); box-shadow: 0 .05em 0 var(--ambre); }
+/* Version sur l'écran titre, comme dans Point de rupture et METAL : badge encadré au pied de la marque. */
+.version-jeu { display: inline-block; margin-left: .7em; padding: .18em .42em; border: 2px solid var(--rouge); border-radius: 4px;
+  color: var(--papier); font: 700 clamp(13px, 1.9vw, 24px)/1 var(--f-texte); letter-spacing: .1em; vertical-align: .55em; }
 /* Le trait et son liseré descendent à .15em du titre sous sa boîte : l'accroche se cale dessous, à toute taille. */
 .accroche { margin: calc(var(--t-marque) * .15 + .75em) 0 0; font: 600 clamp(14px, 1.7vw, 19px)/1.3 var(--f-texte); letter-spacing: .12em; text-transform: uppercase; color: var(--papier-2); text-shadow: 0 1px 10px rgba(0, 0, 0, .7); }
 .choix { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
@@ -148,6 +151,12 @@ input[type="range"] { width: 100%; accent-color: var(--rouge); }
 .feux { position: absolute; left: 50%; top: max(var(--marge), env(safe-area-inset-top)); transform: translateX(-50%); display: flex; gap: 10px; padding: 10px 14px; background: rgba(5, 6, 8, .86); border: 1px solid var(--trait); border-radius: 6px; }
 .feux i { width: clamp(22px, 3.4vw, 34px); aspect-ratio: 1; border-radius: 50%; background: #2a1010; box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .5); }
 .feux i.allume { background: radial-gradient(circle at 40% 35%, #ff9a84, var(--rouge) 45%, #8a1208); box-shadow: 0 0 18px rgba(255, 60, 30, .75); }
+
+/* compteur d'images par seconde, en bas au centre ; il vire à l'ambre sous la barre des 50 */
+.fps { position: absolute; left: 50%; bottom: max(12px, env(safe-area-inset-bottom)); transform: translateX(-50%);
+  padding: 4px 11px; background: var(--nuit); border: 1px solid var(--trait); border-radius: var(--rayon);
+  color: var(--papier-2); font: 700 13px/1 var(--f-texte); font-variant-numeric: tabular-nums; letter-spacing: .08em; pointer-events: none; }
+.fps.bas { color: var(--ambre); border-color: rgba(244, 165, 28, .5); }
 
 .classement { position: absolute; left: var(--marge); top: calc(var(--marge) + 112px); margin: 0; padding: 0; list-style: none; display: grid; gap: 3px; width: 214px; }
 .classement li { display: grid; grid-template-columns: 26px 6px 1fr auto; align-items: center; gap: 8px; padding: 4px 8px 4px 0; font: 700 15px/1.1 var(--f-titre); font-stretch: condensed; letter-spacing: .03em; text-transform: uppercase; }
@@ -244,7 +253,7 @@ body.tactile .carte { display: none; }
 .demo-plan:empty { display: none; }
 .demo-tactile, body.tactile .demo-souris { display: none; }
 body.tactile .demo-tactile { display: inline; }
-#jeu[data-ecran="demo"] .feux, #jeu[data-ecran="demo"] #b-pause, #jeu[data-ecran="demo"] #h-delta-ligne, #jeu[data-ecran="demo"] .jauge-derive { display: none !important; }
+#jeu[data-ecran="demo"] .feux, #jeu[data-ecran="demo"] #b-pause, #jeu[data-ecran="demo"] #h-delta-ligne, #jeu[data-ecran="demo"] .jauge-derive, #jeu[data-ecran="demo"] .fps { display: none !important; }
 body.tactile #jeu[data-ecran="demo"] .hud-bas { top: auto; bottom: max(var(--marge), env(safe-area-inset-bottom)); }
 body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 /* Sous 1 000 px de large, compteurs et chronos prennent le haut de l'écran : le bandeau passe dessous. */

@@ -55,6 +55,9 @@ def main():
             raise SystemExit(f'{nom} contient « </script » ou « <!-- » : la page serait mal découpée')
     if gabarit.count('/*STYLE*/') != 1 or gabarit.count('<!--MODULES-->') != 1:
         raise SystemExit('index.html doit contenir une fois /*STYLE*/ et une fois <!--MODULES-->')
+    if gabarit.count('__VERSION_JEU__') != 2:
+        raise SystemExit('index.html doit porter la version deux fois (libellé et badge du titre)')
+    gabarit = gabarit.replace('__VERSION_JEU__', VERSION.removeprefix('essai-'))
     if 'googleapis' in gabarit or 'googleapis' in style:
         raise SystemExit('BITUME ne charge aucune police : le style se sert de celles du système')
 

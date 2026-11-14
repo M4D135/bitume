@@ -464,3 +464,17 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   tableau de bord minuscule et déformé. `champCockpit` garde désormais la **diagonale du cadre 16:9** quand
   le rapport est plus étroit que 1:1 (portrait) : vertical 62° au lieu de 103° sur un 9:19,5. Paysage et
   16:9 inchangés (David : 60 degrés est bon sur ordinateur et en paysage).
+
+## Passage du Spark (14/11, version au titre, vibrations manette, compteur d'images)
+
+- **Version à l'écran titre** (David, « comme metal et point de rupture ») : `construire.py` injecte
+  `VERSION` (sans le préfixe « essai- ») dans le gabarit, qui porte deux fois `__VERSION_JEU__` (contrôlé à la
+  construction) ; le titre affiche un badge encadré **V0.1** au pied de la marque, comme le « V0.3e » de Point
+  de rupture.
+- **Vibrations de la manette** (David) : `vibrationActuator.playEffect('dual-rumble')` piloté depuis le pas de
+  simulation du joueur — vibreurs, herbe, patinage et blocage de roue en faible, glisse de l'arrière et chocs
+  (mur, contact) en fort. Réglage « Manette · Vibrations » dans le menu (activé par défaut), coupé net si on le
+  décoche ; aucune commande émise si la manette ne sait pas vibrer.
+- **Compteur d'images ingame** (David) : badge « N i/s » en bas au centre du HUD, alimenté par le temps d'image
+  lissé de la boucle (`dureeImage`), à l'ambre sous 50 i/s ; masqué en démo.
+- Treize suites vertes ; page de 441 930 octets (135 426 compressés).
