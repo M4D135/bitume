@@ -6329,7 +6329,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   // ---------------------------------------------------------------- commandes
   const touches = new Set();
   const impulsions = { haut: false, bas: false };
-  const pad = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, rumbleF: -1, rumbleS: -1, rumbleT: 0, choc: 0, passe: 0 };
+  const pad = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, deriveEtat: null, rumbleF: -1, rumbleS: -1, rumbleT: 0, choc: 0, passe: 0 };
   const doigt = { volant: 0, gaz: false, frein: false, derive: false, id: null, x0: 0 };
   let analogique = false;
 
@@ -6377,12 +6377,25 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 
   function lireManette() {
     const liste = navigator.getGamepads ? navigator.getGamepads() : [];
-    pad.actif = false; pad.manette = null;
-    for (const p of liste) {
-      if (!p || !p.connected) continue;
-      pad.manette = p;
+    const ancienne = pad.manette, etatDerive = pad.deriveEtat;
+    let p = null;
+    for (const candidate of liste) if (candidate && candidate.connected) { p = candidate; break; }
+    const change = (ancienne?.index ?? -1) !== (p?.index ?? -1) || ancienne?.id !== p?.id;
+    if (change) {
+      // Une manette perdue ne relâche pas une dérive chargée en déclenchant un turbo involontaire.
+      // Seul l'état auquel ses commandes ont été appliquées compte ; une nouvelle séance reste intacte.
+      if (ancienne && etatDerive === session?.course?.joueur?.etat && etatDerive?.derive?.actif &&
+          !doigt.derive && !touches.has('Space') && !touches.has('ShiftLeft') && !touches.has('ShiftRight'))
+        B.conduite.annulerDerive(etatDerive, true);
+      pad.precedent.length = 0; pad.deriveEtat = null;
+    }
+    pad.actif = false; pad.manette = p;
+    pad.volant = pad.gaz = pad.frein = 0; pad.derive = false;
+    if (p) {
       const b = i => p.buttons[i] ? (p.buttons[i].value || (p.buttons[i].pressed ? 1 : 0)) : 0;
       const appuye = i => b(i) > .5, nouveau = i => appuye(i) && !pad.precedent[i];
+      // À la connexion, les boutons déjà tenus ne sont pas de nouveaux appuis (pause, menus, rapports).
+      if (change) for (let i = 0; i < p.buttons.length; i++) pad.precedent[i] = appuye(i);
       if (ecran === 'demo' || ecran === 'titre') {
         const geste = p.buttons.some((x, i) => appuye(i)) || Array.from(p.axes).some(a => Math.abs(a) > .5);
         if (geste) dernierGeste = performance.now();
@@ -6507,6 +6520,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     if (Math.abs(pad.volant) > Math.abs(volant)) volant = pad.volant;
     if (Math.abs(doigt.volant) > Math.abs(volant)) volant = doigt.volant;
     derive = derive || pad.derive || doigt.derive;
+    pad.deriveEtat = pad.derive && session ? session.course.joueur.etat : null;
     // aide au volant (rattrape les glisses) au niveau choisi ; guidage le long du virage au clavier et au doigt seulement
     const cmd = { gaz, frein, volant, derive, haut: impulsions.haut, bas: impulsions.bas, boite: reglages.boite, aide: reglages.aide, guidage: analogique ? 0 : .15 };
     impulsions.haut = impulsions.bas = false;
