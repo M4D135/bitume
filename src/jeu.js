@@ -19,10 +19,12 @@
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
   function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
   function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
-  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, tableau: 'reduit', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5,
+  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, tableau: 'reduit', carte: 'oui', cartePosition: 'auto', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5,
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
+  for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['auto', 'haut', 'bas'], carteTaille: ['petite', 'normale', 'grande'] }))
+    if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
   const sauverReglages = () => ecrireStock('bitume.reglages', reglages);
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
   const PHYSIQUE = 'p6', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
@@ -94,6 +96,11 @@
   // ---------------------------------------------------------------- moteur de rendu et son
   let rendu = null, son = null, scene = null, session = null;
   const canvas = $('scene'), jeu = $('jeu');
+  function appliquerCarte() {
+    for (const cle of ['carte', 'cartePosition', 'carteTaille'])
+      if (jeu.dataset[cle] !== reglages[cle]) jeu.dataset[cle] = reglages[cle];
+  }
+  appliquerCarte();
 
   // Rien ne se coupe à distance : le plan lointain passe derrière tout le décor (au plus à 4,4 km de la piste) et la
   // brume fait la limite. Les ombres du soleil prennent tout l'atlas du moteur sur un carré de 200 m de côté.
@@ -179,6 +186,7 @@
   const pad = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, deriveEtat: null, rumbleF: -1, rumbleS: -1, rumbleT: 0, choc: 0, passe: 0 };
   const doigt = { volant: 0, gaz: false, frein: false, derive: false, id: null, x0: 0 };
   let analogique = false;
+  let relacherTactile = () => {};
 
   // conduite par position physique des touches (e.code : ZQSD et WASD au même endroit) ; vue, son et pause par lettre
   addEventListener('keydown', e => {
@@ -205,8 +213,9 @@
   addEventListener('keyup', e => touches.delete(e.code));
   let pauseAuto = true; // coupée par BITUME_JEU.pauseAuto = false, pour les captures et le banc
   let cameraEssai = null; // BITUME_JEU.camera = (pose, camera) => ({ pos, yaw, pitch, fov }) : vue libre pour les captures
-  addEventListener('blur', () => { touches.clear(); if (pauseAuto && enCourse()) basculerPause(true); });
+  addEventListener('blur', () => { touches.clear(); relacherTactile(); if (pauseAuto && enCourse()) basculerPause(true); });
   document.addEventListener('visibilitychange', () => {
+    if (document.hidden) relacherTactile();
     if (pauseAuto && document.hidden && enCourse()) basculerPause(true);
     if (son) son.musique(!document.hidden && ecran === 'titre'); // onglet caché : le minuteur du thème serait bridé
   });
@@ -409,23 +418,48 @@
   // commandes tactiles : volant en glissant le pouce à gauche, pédales et dérive à droite
   const estTactile = typeof matchMedia === 'function' && (matchMedia('(pointer: coarse)').matches || (navigator.maxTouchPoints > 0 && matchMedia('(hover: none)').matches));
   if (estTactile) document.body.classList.add('tactile');
-  function tactile(visible) { $('tactile').hidden = !(visible && estTactile); }
+  function tactile(visible) { $('tactile').hidden = !(visible && estTactile); if (!visible) relacherTactile(); }
   (function () {
     const zone = $('t-volant'), bouton = zone.querySelector('.bouton-volant');
-    zone.addEventListener('pointerdown', e => { doigt.id = e.pointerId; doigt.x0 = e.clientX; zone.setPointerCapture(e.pointerId); analogique = true; });
+    const contacts = new Map();
+    const annulerDerive = () => {
+      if (doigt.derive && !pad.derive && !touches.has('Space') && !touches.has('ShiftLeft') && !touches.has('ShiftRight')) {
+        const etat = session?.course?.joueur?.etat;
+        if (etat) B.conduite.annulerDerive(etat, true);
+      }
+    };
+    zone.addEventListener('pointerdown', e => {
+      if (doigt.id !== null) return;
+      doigt.id = e.pointerId; doigt.x0 = e.clientX; zone.setPointerCapture(e.pointerId); analogique = true;
+      zone.classList.add('appuye'); e.preventDefault();
+    });
     zone.addEventListener('pointermove', e => {
       if (e.pointerId !== doigt.id) return;
       doigt.volant = clamp((e.clientX - doigt.x0) / 70, -1, 1);
-      bouton.style.transform = 'translateX(' + (doigt.volant * 60) + 'px)';
+      const course = Math.max(0, Math.min(60, (zone.clientWidth - bouton.offsetWidth) / 2 - 8));
+      bouton.style.transform = 'translateX(' + (doigt.volant * course) + 'px)';
     });
-    const lacher = e => { if (e.pointerId !== doigt.id) return; doigt.id = null; doigt.volant = 0; bouton.style.transform = ''; };
-    zone.addEventListener('pointerup', lacher); zone.addEventListener('pointercancel', lacher);
+    const lacher = e => { if (e.pointerId !== doigt.id) return; doigt.id = null; doigt.volant = 0; bouton.style.transform = ''; zone.classList.remove('appuye'); };
+    zone.addEventListener('pointerup', lacher); zone.addEventListener('pointercancel', lacher); zone.addEventListener('lostpointercapture', lacher);
     for (const [id, cle] of [['t-gaz', 'gaz'], ['t-frein', 'frein'], ['t-derive', 'derive']]) {
       const el = $(id);
-      const on = e => { doigt[cle] = true; el.classList.add('appuye'); el.setPointerCapture(e.pointerId); e.preventDefault(); };
-      const off = () => { doigt[cle] = false; el.classList.remove('appuye'); };
-      el.addEventListener('pointerdown', on); el.addEventListener('pointerup', off); el.addEventListener('pointercancel', off);
+      const on = e => { if (contacts.has(el)) return; contacts.set(el, e.pointerId); doigt[cle] = true; el.classList.add('appuye'); el.setPointerCapture(e.pointerId); e.preventDefault(); };
+      const off = e => {
+        if (contacts.get(el) !== e.pointerId) return;
+        if (cle === 'derive' && e.type !== 'pointerup') annulerDerive();
+        contacts.delete(el); doigt[cle] = false; el.classList.remove('appuye');
+      };
+      el.addEventListener('pointerdown', on); el.addEventListener('pointerup', off); el.addEventListener('pointercancel', off); el.addEventListener('lostpointercapture', off);
     }
+    relacherTactile = () => {
+      annulerDerive();
+      const captures = [...contacts];
+      if (doigt.id !== null) captures.push([zone, doigt.id]);
+      contacts.clear(); doigt.id = null; doigt.volant = 0; doigt.gaz = doigt.frein = doigt.derive = false;
+      bouton.style.transform = ''; zone.classList.remove('appuye');
+      for (const [el, id] of captures) { el.classList.remove('appuye'); if (el.hasPointerCapture(id)) el.releasePointerCapture(id); }
+    };
+    addEventListener('resize', relacherTactile);
     $('t-vue').addEventListener('click', changerVue);
     $('b-pause').addEventListener('click', () => basculerPause());
   })();
@@ -617,7 +651,7 @@
     return {
       pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib * reglages.secousses, p.z + o[2]], yaw: p.cap + Math.PI / 2 + T.regard * .07,
       pitch: p.tangage * .85 + Math.min(0, T.lon) * .012, roll: -p.roulis * .85 + T.lat * .014,
-      fov: champCockpit(canvas.width / Math.max(1, canvas.height), et.v), near: .1, far: PORTEE_VUE
+      fov: champCockpit(canvas.clientWidth / Math.max(1, canvas.clientHeight), et.v), near: .1, far: PORTEE_VUE
     };
   }
   function cameraPoursuite(S, p, et, dt) {
@@ -663,6 +697,7 @@
   let horlogeReelle = 0, dureeImage = 16;
 
   function rendreImage(S, alpha, dtImage) {
+    appliquerCarte();
     const co = S.course, c = co.c, sortie = S.sortie, j = co.joueur;
     sortie.length = 0;
     const poses = tampons.poses;
@@ -990,16 +1025,18 @@
   document.addEventListener('change', e => {
     const t = e.target;
     if (t.name === 'tours' || t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
-    if (['vue', 'boite', 'qualite', 'tableau', 'demo'].includes(t.name)) { reglages[t.name] = t.value; sauverReglages(); if (t.name === 'qualite' && rendu) rendu.resize(t.value); }
+    if (['vue', 'boite', 'qualite', 'tableau', 'demo', 'cartePosition', 'carteTaille'].includes(t.name)) { reglages[t.name] = t.value; sauverReglages(); appliquerCarte(); if (t.name === 'qualite' && rendu) rendu.resize(t.value); }
     if (t.name === 'aide') { reglages.aide = +t.value; sauverReglages(); }
   });
   for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).addEventListener('input', e => { reglages[nom] = +e.target.value; sauverReglages(); appliquerVolumes(); });
   $('v-champ').addEventListener('input', e => { reglages.champ = clamp(+e.target.value, 60, 105); $('v-champ-valeur').textContent = reglages.champ + '°'; sauverReglages(); });
   $('v-secousses').addEventListener('input', e => { reglages.secousses = clamp(+e.target.value, 0, 1); $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %'; sauverReglages(); });
   $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) secouerManette(0, 0); sauverReglages(); });
+  $('v-carte').addEventListener('change', e => { reglages.carte = e.target.checked ? 'oui' : 'non'; sauverReglages(); appliquerCarte(); });
   $('v-vibration-force').addEventListener('input', e => { reglages.vibrationForce = clamp(+e.target.value, 0, 1); $('v-vibration-force-valeur').textContent = Math.round(reglages.vibrationForce * 100) + ' %'; sauverReglages(); });
   function remplirReglages() {
-    for (const nom of ['vue', 'boite', 'qualite', 'aide', 'tableau', 'demo']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    for (const nom of ['vue', 'boite', 'qualite', 'aide', 'tableau', 'demo', 'cartePosition', 'carteTaille']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    $('v-carte').checked = reglages.carte !== 'non';
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
     $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';
     for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).value = reglages[nom];

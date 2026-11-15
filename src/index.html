@@ -3,10 +3,12 @@
 <style>
 /*STYLE*/
 </style>
-<main id="jeu" data-ecran="chargement">
-  <canvas id="scene" aria-label="Vue de la course"></canvas>
-  <canvas id="meteo" aria-hidden="true"></canvas>
-  <div id="vignette" aria-hidden="true"></div>
+<main id="jeu" data-ecran="chargement" data-carte="oui" data-carte-position="auto" data-carte-taille="normale">
+  <div id="vue-course">
+    <canvas id="scene" aria-label="Vue de la course"></canvas>
+    <canvas id="meteo" aria-hidden="true"></canvas>
+    <div id="vignette" aria-hidden="true"></div>
+  </div>
 
   <!-- Affichage de course -->
   <section id="hud" aria-label="Affichage de course" hidden>
@@ -28,7 +30,7 @@
     <div id="sous-message" class="sous-message"></div>
 
     <div class="hud-bas">
-      <canvas id="carte" class="carte" width="220" height="220" aria-label="Plan du circuit"></canvas>
+      <div id="zone-carte"><canvas id="carte" class="carte" width="220" height="220" aria-label="Plan du circuit"></canvas></div>
       <div class="tableau">
         <div id="jauge-derive" class="jauge-derive" data-niveau="0" hidden>
           <span class="etiquette">Dérive</span>
@@ -50,7 +52,11 @@
 
   <!-- Commandes tactiles -->
   <div id="tactile" hidden>
-    <div id="t-volant" class="zone-volant" aria-label="Volant : glisser à gauche ou à droite"><div class="bouton-volant"></div></div>
+    <div id="t-volant" class="zone-volant" aria-label="Direction : glisser à gauche ou à droite">
+      <span class="direction-libelle" aria-hidden="true">Direction</span>
+      <span class="direction-gauche" aria-hidden="true">‹</span><span class="direction-droite" aria-hidden="true">›</span>
+      <div class="bouton-volant"></div>
+    </div>
     <div class="pedales">
       <button id="t-derive" type="button" class="pedale derive">Dérive</button>
       <button id="t-frein" type="button" class="pedale frein">Frein</button>
@@ -128,7 +134,23 @@
       <fieldset>
         <legend>Tableau en cockpit</legend>
         <label><input type="radio" name="tableau" value="reduit"><span>Planche seule</span></label>
-        <label><input type="radio" name="tableau" value="complet"><span>Plan et compteurs</span></label>
+        <label><input type="radio" name="tableau" value="complet"><span>Compteurs supplémentaires</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Carte du circuit</legend>
+        <label><input type="checkbox" id="v-carte" checked><span>Afficher la carte</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Position de la carte</legend>
+        <label><input type="radio" name="cartePosition" value="auto" checked><span>Selon l’écran</span></label>
+        <label><input type="radio" name="cartePosition" value="haut"><span>En haut</span></label>
+        <label><input type="radio" name="cartePosition" value="bas"><span>En bas</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Taille de la carte</legend>
+        <label><input type="radio" name="carteTaille" value="petite"><span>Petite</span></label>
+        <label><input type="radio" name="carteTaille" value="normale" checked><span>Normale</span></label>
+        <label><input type="radio" name="carteTaille" value="grande"><span>Grande</span></label>
       </fieldset>
       <fieldset>
         <legend>Démo sur l’écran titre</legend>

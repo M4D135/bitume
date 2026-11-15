@@ -26,6 +26,7 @@ button, input { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
 
 #jeu { position: fixed; inset: 0; overflow: hidden; }
+#vue-course { position: absolute; inset: 0; overflow: hidden; }
 #scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: var(--encre); }
 #meteo { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 #vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 55%, transparent 58%, rgba(0, 0, 0, .38) 100%); }
@@ -226,10 +227,7 @@ body.tactile #b-pause { display: block; }
   .choix { align-items: stretch; }
   .tableau-resultats th:nth-child(2), .tableau-resultats td:nth-child(2), .tableau-resultats th:nth-child(4), .tableau-resultats td:nth-child(4) { display: none; }
 }
-body.tactile .hud-bas { bottom: 230px; }
-body.tactile .carte { display: none; }
 @media (max-height: 520px) {
-  body.tactile .hud-bas { bottom: auto; top: 100px; }
   .message { top: 22%; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -237,8 +235,8 @@ body.tactile .carte { display: none; }
   .gros, .carte-circuit { transition: none; }
 }
 
-/* Cockpit, tableau réduit : la planche donne vitesse, rapport et régime ; plan et compteurs ne couvrent plus les pneus. */
-#jeu[data-reduit="oui"] .carte, #jeu[data-reduit="oui"] .tableau .vitesse, #jeu[data-reduit="oui"] .tableau .regime { display: none; }
+/* La carte est indépendante des compteurs supplémentaires du cockpit. */
+#jeu[data-reduit="oui"] .tableau .vitesse, #jeu[data-reduit="oui"] .tableau .regime { display: none; }
 
 /* ------------------------------------------------------------------ démo */
 /* Écran titre : l'attente avant la démo, un trait qui se remplit en cinq secondes. */
@@ -255,8 +253,6 @@ body.tactile .carte { display: none; }
 .demo-tactile, body.tactile .demo-souris { display: none; }
 body.tactile .demo-tactile { display: inline; }
 #jeu[data-ecran="demo"] .feux, #jeu[data-ecran="demo"] #b-pause, #jeu[data-ecran="demo"] #h-delta-ligne, #jeu[data-ecran="demo"] .jauge-derive, #jeu[data-ecran="demo"] .fps { display: none !important; }
-body.tactile #jeu[data-ecran="demo"] .hud-bas { top: auto; bottom: max(var(--marge), env(safe-area-inset-bottom)); }
-body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 /* Sous 1 000 px de large, compteurs et chronos prennent le haut de l'écran : le bandeau passe dessous. */
 @media (max-width: 1000px) {
   .demo-bandeau { top: calc(max(var(--marge), env(safe-area-inset-top)) + 92px); }
@@ -266,4 +262,99 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   .demo-bandeau { top: calc(max(var(--marge), env(safe-area-inset-top)) + 70px); gap: 9px; font-size: 10.5px; letter-spacing: .1em; }
   .demo-bandeau strong { font-size: 16px; }
   .demo-plan { top: calc(max(var(--marge), env(safe-area-inset-top)) + 114px); max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
+}
+
+
+/* Carte indépendante : automatique en bas sur ordinateur ; en haut sur écran tactile. */
+#jeu { --carte-echelle: 1; --carte-base: clamp(150px, 17vw, 220px); --carte-cote: calc(var(--carte-base) * var(--carte-echelle)); }
+#jeu[data-carte-taille="petite"] { --carte-echelle: .72; }
+#jeu[data-carte-taille="grande"] { --carte-echelle: 1.25; }
+#zone-carte { position: fixed; left: var(--marge); bottom: max(var(--marge), env(safe-area-inset-bottom)); width: var(--carte-cote); height: var(--carte-cote); flex: 0 0 auto; }
+#zone-carte .carte { display: block; width: 100%; height: 100%; aspect-ratio: 1; }
+#jeu[data-carte="non"] #zone-carte { display: none; }
+.hud-bas { justify-content: flex-end; }
+body:not(.tactile) #jeu[data-carte-position="haut"] { --carte-cote: min(calc(var(--carte-base) * var(--carte-echelle)), max(80px, calc(100dvh - 350px))); }
+body:not(.tactile) #jeu[data-carte-position="haut"] #zone-carte { left: auto; right: var(--marge); top: calc(max(var(--marge), env(safe-area-inset-top)) + 108px); bottom: auto; }
+
+/* ------------------------------------------------------------------ conduite tactile compacte
+   Le renderer mesure #vue-course : la scène garde son propre rectangle, jamais étiré par l'ATH.
+   Les commandes restent dans les coins en paysage ; en portrait elles ont leur bande sous la carte. */
+.direction-libelle, .direction-gauche, .direction-droite { display: none; }
+body.tactile .ecran { touch-action: pan-y; overscroll-behavior: contain; }
+body.tactile .reglages .entete { position: sticky; top: env(safe-area-inset-top); z-index: 2; padding: 6px 0; background: var(--encre); }
+body.tactile .reglages fieldset { scroll-margin-top: calc(72px + env(safe-area-inset-top)); }
+body.tactile fieldset label span { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+body.tactile #jeu { --mobile-entete: max(52px, calc(env(safe-area-inset-top) + 48px)); --mobile-commandes: calc(108px + env(safe-area-inset-bottom)); --carte-base: clamp(68px, 12vw, 100px); --carte-cote: min(calc(var(--carte-base) * var(--carte-echelle)), max(48px, calc(100dvh - var(--mobile-entete) - var(--mobile-commandes) - 16px))); }
+body.tactile #zone-carte { left: max(8px, env(safe-area-inset-left)); top: calc(var(--mobile-entete) + 8px); bottom: auto; }
+body.tactile #jeu[data-carte-position="bas"] #zone-carte { top: auto; bottom: calc(var(--mobile-commandes) + 12px); }
+body.tactile #hud { padding: 6px max(8px, env(safe-area-inset-right)) 8px max(8px, env(safe-area-inset-left)); padding-top: max(6px, env(safe-area-inset-top)); }
+body.tactile .hud-haut { min-height: 44px; gap: 10px; padding-right: 52px; align-items: center; }
+body.tactile .compteurs { gap: 6px; }
+body.tactile .case { min-width: 46px; padding: 3px 6px 4px; border: 0; background: var(--nuit-legere); }
+body.tactile .case .etiquette { font-size: 8px; letter-spacing: .08em; }
+body.tactile .case .grand { margin-top: 3px; font-size: 23px; }
+body.tactile .case .grand small { font-size: 11px; }
+body.tactile .chronos { min-width: 0; padding: 5px 8px; border: 0; background: var(--nuit-legere); }
+body.tactile .ligne-chrono { flex-direction: column; align-items: flex-end; gap: 3px; }
+body.tactile .ligne-chrono .etiquette { font-size: 8px; letter-spacing: .07em; }
+body.tactile .ligne-chrono .temps { font-size: 21px; }
+body.tactile .ligne-chrono:not(:first-child), body.tactile .classement { display: none; }
+body.tactile #b-pause { top: max(6px, env(safe-area-inset-top)); right: max(8px, env(safe-area-inset-right)); width: 44px; height: 44px; border-radius: 8px; background: var(--nuit-legere); }
+body.tactile .feux { top: max(60px, calc(env(safe-area-inset-top) + 54px)); padding: 5px 8px; gap: 6px; }
+body.tactile .feux i { width: 18px; }
+body.tactile .hud-bas { top: 62px; bottom: auto; left: auto; right: max(8px, env(safe-area-inset-right)); }
+body.tactile .tableau { min-width: 0; padding: 4px 8px; gap: 3px; background: var(--nuit-legere); border: 0; }
+body.tactile .vitesse b { font-size: 36px; }
+body.tactile .vitesse small { font-size: 8px; margin-left: 3px; }
+body.tactile .rapport { min-width: 20px; font-size: 23px; }
+body.tactile .regime { gap: 6px; }
+body.tactile .regime .barre { height: 7px; }
+body.tactile .jauge-derive { position: static; gap: 6px; padding: 5px 6px; }
+body.tactile .jauge-derive .etiquette { font-size: 8px; }
+body.tactile .jauge-derive i { width: 20px; height: 7px; }
+body.tactile .zone-volant { left: max(8px, env(safe-area-inset-left)); bottom: max(8px, env(safe-area-inset-bottom)); width: min(180px, calc(50% - 36px)); height: 104px; border-radius: 12px; }
+body.tactile .zone-volant::before { content: ""; position: absolute; left: 20px; right: 20px; bottom: 39px; height: 1px; background: var(--trait-fort); }
+body.tactile .direction-libelle { display: block; position: absolute; top: 15px; left: 0; right: 0; text-align: center; font: 600 10px/1 var(--f-texte); letter-spacing: .08em; color: var(--papier-2); }
+body.tactile .direction-gauche, body.tactile .direction-droite { display: block; position: absolute; bottom: 26px; font: 400 24px/1 var(--f-texte); color: var(--papier-3); }
+body.tactile .direction-gauche { left: 5px; }
+body.tactile .direction-droite { right: 5px; }
+body.tactile .bouton-volant { width: 32px; height: 32px; margin-left: -16px; bottom: 24px; border: 1px solid var(--trait-fort); background: rgba(242,236,223,.12); }
+body.tactile .pedales { right: max(8px, env(safe-area-inset-right)); bottom: max(8px, env(safe-area-inset-bottom)); grid-template-columns: 56px 56px; grid-template-rows: 44px 52px; gap: 8px; }
+body.tactile .pedale { min-width: 44px; min-height: 44px; border-width: 1px; border-radius: 8px; font-size: 12px; background: rgba(10,12,15,.28); }
+body.tactile .pedale.appuye { background: rgba(224,48,30,.5); }
+body.tactile .bouton-rond.vue { width: 44px; height: 44px; right: auto; left: 50%; margin-left: -22px; bottom: max(12px, env(safe-area-inset-bottom)); border-radius: 8px; background: rgba(10,12,15,.28); }
+body.tactile .fps { display: none; }
+body.tactile .message { font-size: clamp(26px, 6vw, 48px); }
+body.tactile .sous-message { font-size: 13px; }
+
+@media (orientation: portrait) and (max-width: 1024px) {
+  body.tactile #jeu {
+    /* Les trois tailles partagent une borne qui réserve au moins une vue proche de 4:3. */
+    --mobile-carte-max: max(60px, min(60vw, 260px, calc(100dvh - var(--mobile-entete) - var(--mobile-commandes) - 75vw - 24px)));
+    --carte-cote: calc(var(--mobile-carte-max) * .8 * var(--carte-echelle));
+    --carte-espace: calc(var(--carte-cote) + 16px);
+    --carte-haut: var(--carte-espace);
+    --mobile-vue-top: calc(var(--mobile-entete) + var(--carte-haut));
+    --mobile-vue-hauteur: min(80vw, calc(100dvh - var(--mobile-entete) - var(--mobile-commandes) - var(--carte-espace) - 8px));
+  }
+  body.tactile #jeu[data-carte-position="bas"] { --carte-haut: 0px; }
+  body.tactile #jeu[data-carte="non"] { --carte-espace: 0px; --carte-haut: 0px; }
+  body.tactile #jeu:is([data-ecran="course"], [data-ecran="demo"], [data-ecran="pause"]) #vue-course {
+    top: var(--mobile-vue-top); bottom: auto; height: var(--mobile-vue-hauteur); border-top: 1px solid var(--trait); border-bottom: 1px solid var(--trait);
+  }
+  body.tactile .hud-haut { justify-content: space-between; }
+  body.tactile #jeu .hud-bas {
+    top: calc(var(--mobile-entete) + 8px); bottom: auto; height: var(--carte-cote);
+    left: max(8px, env(safe-area-inset-left)); right: max(8px, env(safe-area-inset-right));
+    justify-content: center; align-items: center; gap: 14px;
+  }
+  body.tactile #jeu #zone-carte { position: static; width: var(--carte-cote); height: var(--carte-cote); }
+  body.tactile #jeu[data-carte-position="bas"] .hud-bas { top: calc(var(--mobile-vue-top) + var(--mobile-vue-hauteur) + 8px); }
+  body.tactile #jeu[data-carte="non"] .hud-bas { top: calc(var(--mobile-vue-top) + var(--mobile-vue-hauteur) + 8px); bottom: calc(var(--mobile-commandes) + 12px); height: auto; }
+  body.tactile .tableau { background: none; padding: 0; }
+  body.tactile .feux { top: calc(var(--mobile-vue-top) + 8px); }
+  body.tactile .message { top: calc(var(--mobile-vue-top) + var(--mobile-vue-hauteur) * .24); }
+  body.tactile .sous-message { top: calc(var(--mobile-vue-top) + var(--mobile-vue-hauteur) * .24 + 42px); }
+  body.tactile .demo-bandeau { top: calc(var(--mobile-vue-top) + 8px); }
+  body.tactile .demo-plan { top: calc(var(--mobile-vue-top) + 48px); }
 }

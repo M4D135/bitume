@@ -38,6 +38,7 @@ button, input { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
 
 #jeu { position: fixed; inset: 0; overflow: hidden; }
+#vue-course { position: absolute; inset: 0; overflow: hidden; }
 #scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: var(--encre); }
 #meteo { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 #vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 55%, transparent 58%, rgba(0, 0, 0, .38) 100%); }
@@ -238,10 +239,7 @@ body.tactile #b-pause { display: block; }
   .choix { align-items: stretch; }
   .tableau-resultats th:nth-child(2), .tableau-resultats td:nth-child(2), .tableau-resultats th:nth-child(4), .tableau-resultats td:nth-child(4) { display: none; }
 }
-body.tactile .hud-bas { bottom: 230px; }
-body.tactile .carte { display: none; }
 @media (max-height: 520px) {
-  body.tactile .hud-bas { bottom: auto; top: 100px; }
   .message { top: 22%; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -249,8 +247,8 @@ body.tactile .carte { display: none; }
   .gros, .carte-circuit { transition: none; }
 }
 
-/* Cockpit, tableau réduit : la planche donne vitesse, rapport et régime ; plan et compteurs ne couvrent plus les pneus. */
-#jeu[data-reduit="oui"] .carte, #jeu[data-reduit="oui"] .tableau .vitesse, #jeu[data-reduit="oui"] .tableau .regime { display: none; }
+/* La carte est indépendante des compteurs supplémentaires du cockpit. */
+#jeu[data-reduit="oui"] .tableau .vitesse, #jeu[data-reduit="oui"] .tableau .regime { display: none; }
 
 /* ------------------------------------------------------------------ démo */
 /* Écran titre : l'attente avant la démo, un trait qui se remplit en cinq secondes. */
@@ -267,8 +265,6 @@ body.tactile .carte { display: none; }
 .demo-tactile, body.tactile .demo-souris { display: none; }
 body.tactile .demo-tactile { display: inline; }
 #jeu[data-ecran="demo"] .feux, #jeu[data-ecran="demo"] #b-pause, #jeu[data-ecran="demo"] #h-delta-ligne, #jeu[data-ecran="demo"] .jauge-derive, #jeu[data-ecran="demo"] .fps { display: none !important; }
-body.tactile #jeu[data-ecran="demo"] .hud-bas { top: auto; bottom: max(var(--marge), env(safe-area-inset-bottom)); }
-body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 /* Sous 1 000 px de large, compteurs et chronos prennent le haut de l'écran : le bandeau passe dessous. */
 @media (max-width: 1000px) {
   .demo-bandeau { top: calc(max(var(--marge), env(safe-area-inset-top)) + 92px); }
@@ -279,11 +275,108 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   .demo-bandeau strong { font-size: 16px; }
   .demo-plan { top: calc(max(var(--marge), env(safe-area-inset-top)) + 114px); max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
 }
+
+
+/* Carte indépendante : automatique en bas sur ordinateur ; en haut sur écran tactile. */
+#jeu { --carte-echelle: 1; --carte-base: clamp(150px, 17vw, 220px); --carte-cote: calc(var(--carte-base) * var(--carte-echelle)); }
+#jeu[data-carte-taille="petite"] { --carte-echelle: .72; }
+#jeu[data-carte-taille="grande"] { --carte-echelle: 1.25; }
+#zone-carte { position: fixed; left: var(--marge); bottom: max(var(--marge), env(safe-area-inset-bottom)); width: var(--carte-cote); height: var(--carte-cote); flex: 0 0 auto; }
+#zone-carte .carte { display: block; width: 100%; height: 100%; aspect-ratio: 1; }
+#jeu[data-carte="non"] #zone-carte { display: none; }
+.hud-bas { justify-content: flex-end; }
+body:not(.tactile) #jeu[data-carte-position="haut"] { --carte-cote: min(calc(var(--carte-base) * var(--carte-echelle)), max(80px, calc(100dvh - 350px))); }
+body:not(.tactile) #jeu[data-carte-position="haut"] #zone-carte { left: auto; right: var(--marge); top: calc(max(var(--marge), env(safe-area-inset-top)) + 108px); bottom: auto; }
+
+/* ------------------------------------------------------------------ conduite tactile compacte
+   Le renderer mesure #vue-course : la scène garde son propre rectangle, jamais étiré par l'ATH.
+   Les commandes restent dans les coins en paysage ; en portrait elles ont leur bande sous la carte. */
+.direction-libelle, .direction-gauche, .direction-droite { display: none; }
+body.tactile .ecran { touch-action: pan-y; overscroll-behavior: contain; }
+body.tactile .reglages .entete { position: sticky; top: env(safe-area-inset-top); z-index: 2; padding: 6px 0; background: var(--encre); }
+body.tactile .reglages fieldset { scroll-margin-top: calc(72px + env(safe-area-inset-top)); }
+body.tactile fieldset label span { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+body.tactile #jeu { --mobile-entete: max(52px, calc(env(safe-area-inset-top) + 48px)); --mobile-commandes: calc(108px + env(safe-area-inset-bottom)); --carte-base: clamp(68px, 12vw, 100px); --carte-cote: min(calc(var(--carte-base) * var(--carte-echelle)), max(48px, calc(100dvh - var(--mobile-entete) - var(--mobile-commandes) - 16px))); }
+body.tactile #zone-carte { left: max(8px, env(safe-area-inset-left)); top: calc(var(--mobile-entete) + 8px); bottom: auto; }
+body.tactile #jeu[data-carte-position="bas"] #zone-carte { top: auto; bottom: calc(var(--mobile-commandes) + 12px); }
+body.tactile #hud { padding: 6px max(8px, env(safe-area-inset-right)) 8px max(8px, env(safe-area-inset-left)); padding-top: max(6px, env(safe-area-inset-top)); }
+body.tactile .hud-haut { min-height: 44px; gap: 10px; padding-right: 52px; align-items: center; }
+body.tactile .compteurs { gap: 6px; }
+body.tactile .case { min-width: 46px; padding: 3px 6px 4px; border: 0; background: var(--nuit-legere); }
+body.tactile .case .etiquette { font-size: 8px; letter-spacing: .08em; }
+body.tactile .case .grand { margin-top: 3px; font-size: 23px; }
+body.tactile .case .grand small { font-size: 11px; }
+body.tactile .chronos { min-width: 0; padding: 5px 8px; border: 0; background: var(--nuit-legere); }
+body.tactile .ligne-chrono { flex-direction: column; align-items: flex-end; gap: 3px; }
+body.tactile .ligne-chrono .etiquette { font-size: 8px; letter-spacing: .07em; }
+body.tactile .ligne-chrono .temps { font-size: 21px; }
+body.tactile .ligne-chrono:not(:first-child), body.tactile .classement { display: none; }
+body.tactile #b-pause { top: max(6px, env(safe-area-inset-top)); right: max(8px, env(safe-area-inset-right)); width: 44px; height: 44px; border-radius: 8px; background: var(--nuit-legere); }
+body.tactile .feux { top: max(60px, calc(env(safe-area-inset-top) + 54px)); padding: 5px 8px; gap: 6px; }
+body.tactile .feux i { width: 18px; }
+body.tactile .hud-bas { top: 62px; bottom: auto; left: auto; right: max(8px, env(safe-area-inset-right)); }
+body.tactile .tableau { min-width: 0; padding: 4px 8px; gap: 3px; background: var(--nuit-legere); border: 0; }
+body.tactile .vitesse b { font-size: 36px; }
+body.tactile .vitesse small { font-size: 8px; margin-left: 3px; }
+body.tactile .rapport { min-width: 20px; font-size: 23px; }
+body.tactile .regime { gap: 6px; }
+body.tactile .regime .barre { height: 7px; }
+body.tactile .jauge-derive { position: static; gap: 6px; padding: 5px 6px; }
+body.tactile .jauge-derive .etiquette { font-size: 8px; }
+body.tactile .jauge-derive i { width: 20px; height: 7px; }
+body.tactile .zone-volant { left: max(8px, env(safe-area-inset-left)); bottom: max(8px, env(safe-area-inset-bottom)); width: min(180px, calc(50% - 36px)); height: 104px; border-radius: 12px; }
+body.tactile .zone-volant::before { content: ""; position: absolute; left: 20px; right: 20px; bottom: 39px; height: 1px; background: var(--trait-fort); }
+body.tactile .direction-libelle { display: block; position: absolute; top: 15px; left: 0; right: 0; text-align: center; font: 600 10px/1 var(--f-texte); letter-spacing: .08em; color: var(--papier-2); }
+body.tactile .direction-gauche, body.tactile .direction-droite { display: block; position: absolute; bottom: 26px; font: 400 24px/1 var(--f-texte); color: var(--papier-3); }
+body.tactile .direction-gauche { left: 5px; }
+body.tactile .direction-droite { right: 5px; }
+body.tactile .bouton-volant { width: 32px; height: 32px; margin-left: -16px; bottom: 24px; border: 1px solid var(--trait-fort); background: rgba(242,236,223,.12); }
+body.tactile .pedales { right: max(8px, env(safe-area-inset-right)); bottom: max(8px, env(safe-area-inset-bottom)); grid-template-columns: 56px 56px; grid-template-rows: 44px 52px; gap: 8px; }
+body.tactile .pedale { min-width: 44px; min-height: 44px; border-width: 1px; border-radius: 8px; font-size: 12px; background: rgba(10,12,15,.28); }
+body.tactile .pedale.appuye { background: rgba(224,48,30,.5); }
+body.tactile .bouton-rond.vue { width: 44px; height: 44px; right: auto; left: 50%; margin-left: -22px; bottom: max(12px, env(safe-area-inset-bottom)); border-radius: 8px; background: rgba(10,12,15,.28); }
+body.tactile .fps { display: none; }
+body.tactile .message { font-size: clamp(26px, 6vw, 48px); }
+body.tactile .sous-message { font-size: 13px; }
+
+@media (orientation: portrait) and (max-width: 1024px) {
+  body.tactile #jeu {
+    /* Les trois tailles partagent une borne qui réserve au moins une vue proche de 4:3. */
+    --mobile-carte-max: max(60px, min(60vw, 260px, calc(100dvh - var(--mobile-entete) - var(--mobile-commandes) - 75vw - 24px)));
+    --carte-cote: calc(var(--mobile-carte-max) * .8 * var(--carte-echelle));
+    --carte-espace: calc(var(--carte-cote) + 16px);
+    --carte-haut: var(--carte-espace);
+    --mobile-vue-top: calc(var(--mobile-entete) + var(--carte-haut));
+    --mobile-vue-hauteur: min(80vw, calc(100dvh - var(--mobile-entete) - var(--mobile-commandes) - var(--carte-espace) - 8px));
+  }
+  body.tactile #jeu[data-carte-position="bas"] { --carte-haut: 0px; }
+  body.tactile #jeu[data-carte="non"] { --carte-espace: 0px; --carte-haut: 0px; }
+  body.tactile #jeu:is([data-ecran="course"], [data-ecran="demo"], [data-ecran="pause"]) #vue-course {
+    top: var(--mobile-vue-top); bottom: auto; height: var(--mobile-vue-hauteur); border-top: 1px solid var(--trait); border-bottom: 1px solid var(--trait);
+  }
+  body.tactile .hud-haut { justify-content: space-between; }
+  body.tactile #jeu .hud-bas {
+    top: calc(var(--mobile-entete) + 8px); bottom: auto; height: var(--carte-cote);
+    left: max(8px, env(safe-area-inset-left)); right: max(8px, env(safe-area-inset-right));
+    justify-content: center; align-items: center; gap: 14px;
+  }
+  body.tactile #jeu #zone-carte { position: static; width: var(--carte-cote); height: var(--carte-cote); }
+  body.tactile #jeu[data-carte-position="bas"] .hud-bas { top: calc(var(--mobile-vue-top) + var(--mobile-vue-hauteur) + 8px); }
+  body.tactile #jeu[data-carte="non"] .hud-bas { top: calc(var(--mobile-vue-top) + var(--mobile-vue-hauteur) + 8px); bottom: calc(var(--mobile-commandes) + 12px); height: auto; }
+  body.tactile .tableau { background: none; padding: 0; }
+  body.tactile .feux { top: calc(var(--mobile-vue-top) + 8px); }
+  body.tactile .message { top: calc(var(--mobile-vue-top) + var(--mobile-vue-hauteur) * .24); }
+  body.tactile .sous-message { top: calc(var(--mobile-vue-top) + var(--mobile-vue-hauteur) * .24 + 42px); }
+  body.tactile .demo-bandeau { top: calc(var(--mobile-vue-top) + 8px); }
+  body.tactile .demo-plan { top: calc(var(--mobile-vue-top) + 48px); }
+}
 </style>
-<main id="jeu" data-ecran="chargement">
-  <canvas id="scene" aria-label="Vue de la course"></canvas>
-  <canvas id="meteo" aria-hidden="true"></canvas>
-  <div id="vignette" aria-hidden="true"></div>
+<main id="jeu" data-ecran="chargement" data-carte="oui" data-carte-position="auto" data-carte-taille="normale">
+  <div id="vue-course">
+    <canvas id="scene" aria-label="Vue de la course"></canvas>
+    <canvas id="meteo" aria-hidden="true"></canvas>
+    <div id="vignette" aria-hidden="true"></div>
+  </div>
 
   <!-- Affichage de course -->
   <section id="hud" aria-label="Affichage de course" hidden>
@@ -305,7 +398,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     <div id="sous-message" class="sous-message"></div>
 
     <div class="hud-bas">
-      <canvas id="carte" class="carte" width="220" height="220" aria-label="Plan du circuit"></canvas>
+      <div id="zone-carte"><canvas id="carte" class="carte" width="220" height="220" aria-label="Plan du circuit"></canvas></div>
       <div class="tableau">
         <div id="jauge-derive" class="jauge-derive" data-niveau="0" hidden>
           <span class="etiquette">Dérive</span>
@@ -327,7 +420,11 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 
   <!-- Commandes tactiles -->
   <div id="tactile" hidden>
-    <div id="t-volant" class="zone-volant" aria-label="Volant : glisser à gauche ou à droite"><div class="bouton-volant"></div></div>
+    <div id="t-volant" class="zone-volant" aria-label="Direction : glisser à gauche ou à droite">
+      <span class="direction-libelle" aria-hidden="true">Direction</span>
+      <span class="direction-gauche" aria-hidden="true">‹</span><span class="direction-droite" aria-hidden="true">›</span>
+      <div class="bouton-volant"></div>
+    </div>
     <div class="pedales">
       <button id="t-derive" type="button" class="pedale derive">Dérive</button>
       <button id="t-frein" type="button" class="pedale frein">Frein</button>
@@ -405,7 +502,23 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       <fieldset>
         <legend>Tableau en cockpit</legend>
         <label><input type="radio" name="tableau" value="reduit"><span>Planche seule</span></label>
-        <label><input type="radio" name="tableau" value="complet"><span>Plan et compteurs</span></label>
+        <label><input type="radio" name="tableau" value="complet"><span>Compteurs supplémentaires</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Carte du circuit</legend>
+        <label><input type="checkbox" id="v-carte" checked><span>Afficher la carte</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Position de la carte</legend>
+        <label><input type="radio" name="cartePosition" value="auto" checked><span>Selon l’écran</span></label>
+        <label><input type="radio" name="cartePosition" value="haut"><span>En haut</span></label>
+        <label><input type="radio" name="cartePosition" value="bas"><span>En bas</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Taille de la carte</legend>
+        <label><input type="radio" name="carteTaille" value="petite"><span>Petite</span></label>
+        <label><input type="radio" name="carteTaille" value="normale" checked><span>Normale</span></label>
+        <label><input type="radio" name="carteTaille" value="grande"><span>Grande</span></label>
       </fieldset>
       <fieldset>
         <legend>Démo sur l’écran titre</legend>
@@ -6492,10 +6605,12 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
   function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
   function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
-  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, tableau: 'reduit', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5,
+  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, tableau: 'reduit', carte: 'oui', cartePosition: 'auto', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5,
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
+  for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['auto', 'haut', 'bas'], carteTaille: ['petite', 'normale', 'grande'] }))
+    if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
   const sauverReglages = () => ecrireStock('bitume.reglages', reglages);
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
   const PHYSIQUE = 'p6', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
@@ -6567,6 +6682,11 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   // ---------------------------------------------------------------- moteur de rendu et son
   let rendu = null, son = null, scene = null, session = null;
   const canvas = $('scene'), jeu = $('jeu');
+  function appliquerCarte() {
+    for (const cle of ['carte', 'cartePosition', 'carteTaille'])
+      if (jeu.dataset[cle] !== reglages[cle]) jeu.dataset[cle] = reglages[cle];
+  }
+  appliquerCarte();
 
   // Rien ne se coupe à distance : le plan lointain passe derrière tout le décor (au plus à 4,4 km de la piste) et la
   // brume fait la limite. Les ombres du soleil prennent tout l'atlas du moteur sur un carré de 200 m de côté.
@@ -6652,6 +6772,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   const pad = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, deriveEtat: null, rumbleF: -1, rumbleS: -1, rumbleT: 0, choc: 0, passe: 0 };
   const doigt = { volant: 0, gaz: false, frein: false, derive: false, id: null, x0: 0 };
   let analogique = false;
+  let relacherTactile = () => {};
 
   // conduite par position physique des touches (e.code : ZQSD et WASD au même endroit) ; vue, son et pause par lettre
   addEventListener('keydown', e => {
@@ -6678,8 +6799,9 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   addEventListener('keyup', e => touches.delete(e.code));
   let pauseAuto = true; // coupée par BITUME_JEU.pauseAuto = false, pour les captures et le banc
   let cameraEssai = null; // BITUME_JEU.camera = (pose, camera) => ({ pos, yaw, pitch, fov }) : vue libre pour les captures
-  addEventListener('blur', () => { touches.clear(); if (pauseAuto && enCourse()) basculerPause(true); });
+  addEventListener('blur', () => { touches.clear(); relacherTactile(); if (pauseAuto && enCourse()) basculerPause(true); });
   document.addEventListener('visibilitychange', () => {
+    if (document.hidden) relacherTactile();
     if (pauseAuto && document.hidden && enCourse()) basculerPause(true);
     if (son) son.musique(!document.hidden && ecran === 'titre'); // onglet caché : le minuteur du thème serait bridé
   });
@@ -6882,23 +7004,48 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   // commandes tactiles : volant en glissant le pouce à gauche, pédales et dérive à droite
   const estTactile = typeof matchMedia === 'function' && (matchMedia('(pointer: coarse)').matches || (navigator.maxTouchPoints > 0 && matchMedia('(hover: none)').matches));
   if (estTactile) document.body.classList.add('tactile');
-  function tactile(visible) { $('tactile').hidden = !(visible && estTactile); }
+  function tactile(visible) { $('tactile').hidden = !(visible && estTactile); if (!visible) relacherTactile(); }
   (function () {
     const zone = $('t-volant'), bouton = zone.querySelector('.bouton-volant');
-    zone.addEventListener('pointerdown', e => { doigt.id = e.pointerId; doigt.x0 = e.clientX; zone.setPointerCapture(e.pointerId); analogique = true; });
+    const contacts = new Map();
+    const annulerDerive = () => {
+      if (doigt.derive && !pad.derive && !touches.has('Space') && !touches.has('ShiftLeft') && !touches.has('ShiftRight')) {
+        const etat = session?.course?.joueur?.etat;
+        if (etat) B.conduite.annulerDerive(etat, true);
+      }
+    };
+    zone.addEventListener('pointerdown', e => {
+      if (doigt.id !== null) return;
+      doigt.id = e.pointerId; doigt.x0 = e.clientX; zone.setPointerCapture(e.pointerId); analogique = true;
+      zone.classList.add('appuye'); e.preventDefault();
+    });
     zone.addEventListener('pointermove', e => {
       if (e.pointerId !== doigt.id) return;
       doigt.volant = clamp((e.clientX - doigt.x0) / 70, -1, 1);
-      bouton.style.transform = 'translateX(' + (doigt.volant * 60) + 'px)';
+      const course = Math.max(0, Math.min(60, (zone.clientWidth - bouton.offsetWidth) / 2 - 8));
+      bouton.style.transform = 'translateX(' + (doigt.volant * course) + 'px)';
     });
-    const lacher = e => { if (e.pointerId !== doigt.id) return; doigt.id = null; doigt.volant = 0; bouton.style.transform = ''; };
-    zone.addEventListener('pointerup', lacher); zone.addEventListener('pointercancel', lacher);
+    const lacher = e => { if (e.pointerId !== doigt.id) return; doigt.id = null; doigt.volant = 0; bouton.style.transform = ''; zone.classList.remove('appuye'); };
+    zone.addEventListener('pointerup', lacher); zone.addEventListener('pointercancel', lacher); zone.addEventListener('lostpointercapture', lacher);
     for (const [id, cle] of [['t-gaz', 'gaz'], ['t-frein', 'frein'], ['t-derive', 'derive']]) {
       const el = $(id);
-      const on = e => { doigt[cle] = true; el.classList.add('appuye'); el.setPointerCapture(e.pointerId); e.preventDefault(); };
-      const off = () => { doigt[cle] = false; el.classList.remove('appuye'); };
-      el.addEventListener('pointerdown', on); el.addEventListener('pointerup', off); el.addEventListener('pointercancel', off);
+      const on = e => { if (contacts.has(el)) return; contacts.set(el, e.pointerId); doigt[cle] = true; el.classList.add('appuye'); el.setPointerCapture(e.pointerId); e.preventDefault(); };
+      const off = e => {
+        if (contacts.get(el) !== e.pointerId) return;
+        if (cle === 'derive' && e.type !== 'pointerup') annulerDerive();
+        contacts.delete(el); doigt[cle] = false; el.classList.remove('appuye');
+      };
+      el.addEventListener('pointerdown', on); el.addEventListener('pointerup', off); el.addEventListener('pointercancel', off); el.addEventListener('lostpointercapture', off);
     }
+    relacherTactile = () => {
+      annulerDerive();
+      const captures = [...contacts];
+      if (doigt.id !== null) captures.push([zone, doigt.id]);
+      contacts.clear(); doigt.id = null; doigt.volant = 0; doigt.gaz = doigt.frein = doigt.derive = false;
+      bouton.style.transform = ''; zone.classList.remove('appuye');
+      for (const [el, id] of captures) { el.classList.remove('appuye'); if (el.hasPointerCapture(id)) el.releasePointerCapture(id); }
+    };
+    addEventListener('resize', relacherTactile);
     $('t-vue').addEventListener('click', changerVue);
     $('b-pause').addEventListener('click', () => basculerPause());
   })();
@@ -7090,7 +7237,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     return {
       pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib * reglages.secousses, p.z + o[2]], yaw: p.cap + Math.PI / 2 + T.regard * .07,
       pitch: p.tangage * .85 + Math.min(0, T.lon) * .012, roll: -p.roulis * .85 + T.lat * .014,
-      fov: champCockpit(canvas.width / Math.max(1, canvas.height), et.v), near: .1, far: PORTEE_VUE
+      fov: champCockpit(canvas.clientWidth / Math.max(1, canvas.clientHeight), et.v), near: .1, far: PORTEE_VUE
     };
   }
   function cameraPoursuite(S, p, et, dt) {
@@ -7136,6 +7283,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   let horlogeReelle = 0, dureeImage = 16;
 
   function rendreImage(S, alpha, dtImage) {
+    appliquerCarte();
     const co = S.course, c = co.c, sortie = S.sortie, j = co.joueur;
     sortie.length = 0;
     const poses = tampons.poses;
@@ -7463,16 +7611,18 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   document.addEventListener('change', e => {
     const t = e.target;
     if (t.name === 'tours' || t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
-    if (['vue', 'boite', 'qualite', 'tableau', 'demo'].includes(t.name)) { reglages[t.name] = t.value; sauverReglages(); if (t.name === 'qualite' && rendu) rendu.resize(t.value); }
+    if (['vue', 'boite', 'qualite', 'tableau', 'demo', 'cartePosition', 'carteTaille'].includes(t.name)) { reglages[t.name] = t.value; sauverReglages(); appliquerCarte(); if (t.name === 'qualite' && rendu) rendu.resize(t.value); }
     if (t.name === 'aide') { reglages.aide = +t.value; sauverReglages(); }
   });
   for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).addEventListener('input', e => { reglages[nom] = +e.target.value; sauverReglages(); appliquerVolumes(); });
   $('v-champ').addEventListener('input', e => { reglages.champ = clamp(+e.target.value, 60, 105); $('v-champ-valeur').textContent = reglages.champ + '°'; sauverReglages(); });
   $('v-secousses').addEventListener('input', e => { reglages.secousses = clamp(+e.target.value, 0, 1); $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %'; sauverReglages(); });
   $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) secouerManette(0, 0); sauverReglages(); });
+  $('v-carte').addEventListener('change', e => { reglages.carte = e.target.checked ? 'oui' : 'non'; sauverReglages(); appliquerCarte(); });
   $('v-vibration-force').addEventListener('input', e => { reglages.vibrationForce = clamp(+e.target.value, 0, 1); $('v-vibration-force-valeur').textContent = Math.round(reglages.vibrationForce * 100) + ' %'; sauverReglages(); });
   function remplirReglages() {
-    for (const nom of ['vue', 'boite', 'qualite', 'aide', 'tableau', 'demo']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    for (const nom of ['vue', 'boite', 'qualite', 'aide', 'tableau', 'demo', 'cartePosition', 'carteTaille']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    $('v-carte').checked = reglages.carte !== 'non';
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
     $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';
     for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).value = reglages[nom];

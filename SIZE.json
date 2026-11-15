@@ -1,8 +1,8 @@
 {
   "version": "essai-0.1",
-  "raw": 500400,
-  "gzip": 155087,
-  "sha256": "357610bca534684af651182d45e4ceb45d8e58ea0b3186c86c4095e18179087f",
+  "raw": 512174,
+  "gzip": 157511,
+  "sha256": "3ac0acb215c0a47a30ae84b8fa32287423bba14cb686e2d8f74961cf6dd8c49f",
   "sources": {
     "moteur/renderer.js": 122375,
     "circuit.js": 17710,
@@ -18,8 +18,8 @@
     "voiture.js": 47782,
     "traces.js": 14675,
     "realisateur.js": 5822,
-    "jeu.js": 77340,
-    "index.html": 10618,
-    "style.css": 23738
+    "jeu.js": 79662,
+    "index.html": 11926,
+    "style.css": 31882
   }
 }
