@@ -1,12 +1,12 @@
 {
   "version": "essai-0.1",
-  "raw": 495926,
-  "gzip": 153413,
-  "sha256": "a6eb63e73d04926310b51967f607e581df12b86a491aa969a00c0ae6ecaa8769",
+  "raw": 496616,
+  "gzip": 153707,
+  "sha256": "1e2deabbcc47cf1f5fe275f4bb46db76c45b9bfc0c9f84e8ff579cb7cb943a89",
   "sources": {
     "moteur/renderer.js": 122375,
     "circuit.js": 17710,
-    "conduite.js": 46925,
+    "conduite.js": 47615,
     "degats.js": 3317,
     "contacts.js": 6817,
     "obstacles.js": 9361,
