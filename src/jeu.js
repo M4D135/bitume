@@ -305,6 +305,25 @@
   }
 
 
+  // Météo cyclique et déterministe : clair → se couvre → pluie → orage → clair. Ne pilote que des valeurs
+  // d'uniformes (ciel/soleil/brouillard/ambiance) + un éclair ; aucune passe GPU ajoutée (fluidité préservée).
+  function majMeteo(S, dt) {
+    const m = S.meteo || (S.meteo = { t: 0, phase: 'clair', tp: 0, pluie: 0, nuage: 0.12, eclair: 0, prochainEclair: 0 });
+    dt = Math.min(0.05, Math.max(0, dt || 0)); m.t += dt; m.tp += dt;
+    const DUREE = { clair: 26, couvre: 12, pluie: 22, orage: 16 }, SUIV = { clair: 'couvre', couvre: 'pluie', pluie: 'orage', orage: 'clair' };
+    if (m.tp >= DUREE[m.phase]) { m.phase = SUIV[m.phase]; m.tp = 0; if (m.phase === 'orage') m.prochainEclair = m.t + 1.2; }
+    const CIBLE = { clair: [0, 0.12], couvre: [0, 0.6], pluie: [0.75, 0.85], orage: [1, 1] }[m.phase];
+    const k = 1 - Math.exp(-dt / 2.5);
+    m.pluie += (CIBLE[0] - m.pluie) * k; m.nuage += (CIBLE[1] - m.nuage) * k;
+    m.eclair = Math.max(0, m.eclair - dt * 6);
+    if (m.phase === 'orage' && m.t >= m.prochainEclair) {
+      m.eclair = 1;
+      const r = Math.abs(Math.sin(m.t * 12.9898) * 43758.5453) % 1;   // pseudo-aléatoire déterministe
+      m.prochainEclair = m.t + 1.2 + r * 3.6;
+    }
+    return m;
+  }
+
   // menus à la manette : croix pour se déplacer (gauche, droite règlent un curseur), A valide, B revient
   function naviguerManette(nouveau) {
     const zone = $(ecran); if (!zone || zone.hidden) return;
@@ -672,7 +691,8 @@
     const q = S.banc ? S.banc.qualite : reglages.qualite;
     // uEffects.z colore tout l'écran : la rougeur suit seulement l'éclair du choc, jamais les dégâts persistants.
     const eclair = S.eclair || 0;
-    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: q !== 'low' ? 1 : 0 });
+    const meteo = majMeteo(S, dtImage);
+    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: q !== 'low' ? 1 : 0, weather: meteo });
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
     // En cockpit, la planche donne vitesse, rapport et régime : le tableau réduit retire plan et compteurs, qui
@@ -966,16 +986,32 @@
   $('b-menu').addEventListener('click', () => aller('titre'));
   $('b-rejouer').addEventListener('click', () => demarrerSeance(session ? session.type : 'course'));
 
-  function montrerResultats(S) {
+  // Le classement apparaît tout de suite ; les rivaux finissent sans monopoliser le fil de l'interface.
+  function finirClassement(S) {
+    const co = S.course, delai = Math.max(40, 1.25 * co.drapeau / co.toursTotal);
+    let pas = 0;
+    const continuer = () => pas < 120 * 240 && !co.voitures.every(v => v.fini) && co.temps - co.drapeau < delai;
+    co.termine = true;
+    function tranche() {
+      if (session !== S || ecran !== 'resultats') return;
+      const debut = performance.now();
+      while (continuer()) {
+        co.termine = false; B.course.pas(co, null, DT); pas++;
+        if (performance.now() - debut >= 4) break;
+      }
+      co.termine = true;
+      if (continuer()) setTimeout(tranche, 0);
+      else {
+        remplirPoses(S.cour, co); remplirPoses(S.prec, co);
+        if (session === S && ecran === 'resultats') montrerResultats(S, true);
+      }
+    }
+    setTimeout(tranche, 0);
+  }
+
+  function montrerResultats(S, classementFinal = false) {
     S.resultats = true;
     const co = S.course;
-    // les rivaux encore en piste finissent leur dernier tour en simulation accélérée (moins d'une seconde de calcul)
-    if (co.mode === 'course' && co.drapeau !== null) {
-      const delai = Math.max(40, 1.25 * co.drapeau / co.toursTotal);
-      for (let k = 0; k < 120 * 240 && !co.voitures.every(v => v.fini) && co.temps - co.drapeau < delai; k++) { co.termine = false; B.course.pas(co, null, DT); }
-      co.termine = true;
-      remplirPoses(S.cour, co); remplirPoses(S.prec, co);
-    }
     const j = co.joueur, corps = $('res-lignes'), entete = document.querySelector('.tableau-resultats thead tr');
     const nomCircuit = CATALOGUE[S.i].nom;
     if (co.mode === 'chrono') {
@@ -1000,7 +1036,10 @@
         return '<tr' + (v.joueur ? ' class="joueur"' : '') + '><td>' + (r + 1) + '</td><td>' + v.numero + '</td><td class="nom"><span class="pastille" style="background:' + col + '"></span>' + (v.joueur ? 'Vous' : v.nom) + '</td><td>' + v.tours + '</td><td>' + tps + '</td><td' + (v.meilleur === meilleurAbsolu ? ' class="record-tour"' : '') + '>' + chrono(v.meilleur) + '</td></tr>';
       }).join('');
     }
-    aller('resultats');
+    if (!classementFinal) {
+      aller('resultats');
+      if (co.mode === 'course' && co.drapeau !== null) finirClassement(S);
+    }
   }
 
   // ---------------------------------------------------------------- boucle principale

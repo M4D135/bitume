@@ -493,5 +493,9 @@ test rouge sur l'ancien code puis vert sur le nouveau.
   (humide, il renvoie le ciel) et le **vernis des monoplaces** (matière 17) de `.46` à `.3`.
 - Tout est gated par `uPhoto` : en **qualité Légère le rendu est identique** à avant ; aucune passe GPU ajoutée.
   `jeu.js` passe `photo: q !== 'low'`.
-- Reste à faire (validé avec David, en attente) : reflets **plans** des voitures sur la route et **SSR** (lourds,
-  contre la conception du moteur), et le **système météo** (pluie, vent, orages, éclairs).
+- **Météo cyclique** (`jeu.js` `majMeteo` + retouche moteur n° 14) : machine à états déterministe
+  **clair → se couvre → pluie → orage → clair** (cycle ~76 s) qui passe `fx.weather {pluie, nuage, eclair}` au
+  moteur ; le `draw` module les uniformes (ciel/soleil assombris, brouillard épaissi, vent accru) et un **éclair**
+  lointain blanchit l'ambiance. Purement JS, aucun shader ajouté, fluide.
+- Reste à faire : **pluie visible** (particules), reflets **plans** des voitures sur la route et **SSR** (lourds,
+  contre la conception du moteur).

@@ -1737,9 +1737,19 @@
       gl.bindFramebuffer(gl.FRAMEBUFFER,stats.bloom?(msaa?msaa.framebuffer:post.scene.framebuffer):null);gl.viewport(0,0,canvas.width,canvas.height);
       gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);if(environment)skyPass(axes,f,t);gl.useProgram(program);gl.bindVertexArray(vao);
       gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);gl.uniform3fv(uniforms.uEye,eye);gl.uniform3fv(uniforms.uForward,forward);
-      gl.uniform2f(uniforms.uWindTime,environment?environment.wind:0,t);gl.uniform3fv(uniforms.uSunDirection,environment?environment.sunDirection:[.4,.8,.3]);gl.uniform3fv(uniforms.uSunColor,environment?environment.sunColor:[0,0,0]);
-      gl.uniform3fv(uniforms.uAmbient,environment?environment.ambient:[.075,.10,.12]);gl.uniform3fv(uniforms.uFogColor,environment?environment.fog:[.009,.018,.024]);gl.uniform2f(uniforms.uEnvironment,environment?1:0,environment?environment.fogDensity:.014);
-      gl.uniform3fv(uniforms.uSkyTop,environment?environment.skyTop:[.05,.08,.10]);gl.uniform3fv(uniforms.uSkyBottom,environment?environment.skyBottom:[.16,.20,.22]);
+      // BITUME : météo pilotée par le jeu (fx.weather {pluie, nuage, eclair} 0..1). Assombrit ciel et soleil,
+      // épaissit le brouillard, et un éclair lointain blanchit l'ambiance. Valeurs d'uniformes seulement, aucun shader ajouté.
+      const wx=fx.weather||{}, pluie=Math.max(0,Math.min(1,wx.pluie||0)), nuage=Math.max(0,Math.min(1,wx.nuage||0)), eclairW=Math.max(0,Math.min(1,wx.eclair||0));
+      const assom=1-nuage*.5-pluie*.32, env=environment;
+      const skyTopW=(env?env.skyTop:[.05,.08,.10]).map(v=>v*assom+eclairW*.3);
+      const skyBotW=(env?env.skyBottom:[.16,.20,.22]).map(v=>v*(assom*.85+.15)+eclairW*.45);
+      const fogW=(env?env.fog:[.009,.018,.024]).map(v=>v*(1+pluie*.5)+eclairW*.2);
+      const fogDW=(env?env.fogDensity:.014)*(1+pluie*1.3+nuage*.25);
+      const sunW=(env?env.sunColor:[0,0,0]).map(v=>v*(1-nuage*.85)*(1-pluie*.4));
+      const ambW=(env?env.ambient:[.075,.10,.12]).map(v=>v*(1-nuage*.3)+eclairW*.55);
+      gl.uniform2f(uniforms.uWindTime,env?env.wind*(1+pluie*1.4):0,t);gl.uniform3fv(uniforms.uSunDirection,env?env.sunDirection:[.4,.8,.3]);gl.uniform3fv(uniforms.uSunColor,sunW);
+      gl.uniform3fv(uniforms.uAmbient,ambW);gl.uniform3fv(uniforms.uFogColor,fogW);gl.uniform2f(uniforms.uEnvironment,env?1:0,fogDW);
+      gl.uniform3fv(uniforms.uSkyTop,skyTopW);gl.uniform3fv(uniforms.uSkyBottom,skyBotW);
       gl.uniform3fv(uniforms.uLightPosition,lightPositions);gl.uniform3fv(uniforms.uLightColor,lightColors);gl.uniform1fv(uniforms.uLightRange,lightRanges);gl.uniform1i(uniforms.uLightCount,selected.length);
       gl.uniform2f(uniforms.uResolution,canvas.width,canvas.height);gl.uniform4f(uniforms.uEffects,t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0)));gl.uniform1f(uniforms.uPhoto,fx.photo||0);
       gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,stats.shadows?shadowTarget.texture:whiteTexture);gl.uniform1i(uniforms.uShadowMap,2);
