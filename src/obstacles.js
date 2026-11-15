@@ -113,6 +113,7 @@
 
   function sauver(e, o) {
     for (const k of ['s','d','y','psi','beta','v','distance']) o[k]=e[k];
+    o.repositionnements=e.repositionnements||0;
     return o;
   }
   function avant(co) {
@@ -153,8 +154,8 @@
     if (!index || !index.objets.length) return;
     const mem=co._obstacleMemo||(co._obstacleMemo=[]), prev=co._obstacleAvantTemps===co.horloge?co._obstacleAvant:null;
     for(let i=0;i<co.voitures.length;i++) {
-      const voiture=co.voitures[i],e=voiture.etat;if(e.degats&&e.degats.casse)continue;
-      const memory=mem[i]||(mem[i]=new Map()), start=prev&&prev[i] || sauver(e,{});
+      const voiture=co.voitures[i],e=voiture.etat;if(e.recuperation||(e.degats&&e.degats.casse))continue;
+      const memory=mem[i]||(mem[i]=new Map()), start=prev&&prev[i]&&prev[i].repositionnements===(e.repositionnements||0)?prev[i]:sauver(e,{});
       const end=sauver(e,{}), pa=monde(c,start,{}), pb=monde(c,end,{});
       // Hors contrat du pas fixe : refuser un grand saut spatial au lieu de passer au travers d'un obstacle.
       if(Math.abs(ecart(start.s,end.s,c.longueur))+Math.abs(end.d-start.d)+Math.abs(end.y-start.y)>25) {
@@ -198,7 +199,7 @@
         const force=Math.max(0,-(vx*hit.nx+vz*hit.nz));
         if(force>0) {
           const rx=vx+hit.nx*force*1.05,rz=vz+hit.nz*force*1.05;
-          const body=e.psi+e.beta;e.v=Math.min(speed,Math.hypot(rx,rz));if(e.v>.001){e.psi=angle(Math.atan2(rz,rx)-p.cap);e.beta=angle(body-e.psi);}
+          const body=e.psi+e.beta,sg=speed<0?-1:1;e.v=sg*Math.min(Math.abs(speed),Math.hypot(rx,rz));if(Math.abs(e.v)>.001){e.psi=angle(Math.atan2(rz,rx)-p.cap-(sg<0?Math.PI:0));e.beta=angle(body-e.psi);}
         }
         const seen=memory.has(id),violent=B.degats&&force>=B.degats.PARAMS.chocCasse;
         memory.set(id,true);
@@ -210,7 +211,7 @@
         if(force>.1) {
           const cancelled=B.conduite.annulerDerive(e,true);if(cancelled){cancelled.id=voiture.id;ev.push(cancelled);}
         }
-        if(e.degats&&e.degats.casse)break;
+        if(e.recuperation||(e.degats&&e.degats.casse))break;
         // Les prochains obstacles sont testés sur le trajet déjà raccourci/résolu.
         sauver(e,start);monde(c,start,pa);
       }

@@ -28,7 +28,7 @@
     if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
   const sauverReglages = () => ecrireStock('bitume.reglages', reglages);
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p6', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p7', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
 
   function enBase64(f32) {
@@ -305,9 +305,10 @@
     pad.choc = Math.max(0, (pad.choc || 0) - DT * 2.4);
     pad.passe = Math.max(0, (pad.passe || 0) - DT * 3.4);
     for (const e of ev) {
-      if (e.type === 'choc' && e.id === 0) pad.choc = Math.max(pad.choc, clamp(.35 + (e.force || 0) / 14, 0, .9));
-      else if (e.type === 'contact' && (e.a === 0 || e.b === 0)) pad.choc = Math.max(pad.choc, clamp(.3 + (e.force || 0) / 14, 0, .7));
-      else if (e.type === 'roue' || e.type === 'casse') pad.choc = Math.max(pad.choc, .85);
+      if (e.type === 'choc' && e.id === 0) pad.choc = Math.max(pad.choc, clamp(((e.force || 0) - 2) / 28, 0, .9));
+      else if (e.type === 'contact' && (e.a === 0 || e.b === 0)) pad.choc = Math.max(pad.choc, clamp(((e.force || 0) - 2) / 28, 0, .7));
+      else if ((e.type === 'roue' || e.type === 'casse') && e.id === 0) pad.choc = Math.max(pad.choc, .85);
+      else if (e.repositionnement && e.id === 0) pad.choc = 0;
     }
     // grondement du moteur : doux au ralenti, il monte progressivement vers la zone rouge sans jamais saturer
     const r = clamp((et.regime - PR.ralenti) / (PR.maxUtile - PR.ralenti), 0, 1);
@@ -315,9 +316,9 @@
     const moteur = .05 + .5 * r * r * charge;
     const zoneRouge = r > .97 ? (Math.sin(horloge * 50) > 0 ? .2 : 0) : 0;   // le rupteur crépite à peine en haut
     // route, vibreurs, herbe, patinage, glisse — tous en dessous de leur maximum pour rester fins
-    const route = clamp(et.v / 90, 0, 1);
+    const route = clamp(Math.abs(et.v) / 90, 0, 1);
     const martellement = et.vibreur ? .5 + .5 * Math.sin(horloge * 40) : 0;
-    const herbe = et.surface === 'herbe' ? clamp(et.v / 26, 0, 1) : 0;
+    const herbe = et.surface === 'herbe' ? clamp(Math.abs(et.v) / 26, 0, 1) : 0;
     const patinage = clamp(et.patinage / .35, 0, 1);
     const blocage = clamp(et.blocage / .35, 0, 1);
     const glisse = clamp(Math.abs(et.glisseAr) / .5, 0, 1);
@@ -333,55 +334,12 @@
   }
 
 
-  // Météo cyclique et déterministe : clair → se couvre → pluie → orage → clair. Ne pilote que des valeurs
-  // d'uniformes (ciel/soleil/brouillard/ambiance) + un éclair ; aucune passe GPU ajoutée (fluidité préservée).
-  function majMeteo(S, dt) {
-    const m = S.meteo || (S.meteo = { t: 0, phase: 'clair', tp: 0, pluie: 0, nuage: 0.12, eclair: 0, prochainEclair: 0 });
-    dt = Math.min(0.05, Math.max(0, dt || 0)); m.t += dt; m.tp += dt;
-    const DUREE = { clair: 26, couvre: 12, pluie: 22, orage: 16 }, SUIV = { clair: 'couvre', couvre: 'pluie', pluie: 'orage', orage: 'clair' };
-    if (m.tp >= DUREE[m.phase]) { m.phase = SUIV[m.phase]; m.tp = 0; if (m.phase === 'orage') m.prochainEclair = m.t + 1.2; }
-    const CIBLE = { clair: [0, 0.12], couvre: [0, 0.6], pluie: [0.75, 0.85], orage: [1, 1] }[m.phase];
-    const k = 1 - Math.exp(-dt / 2.5);
-    m.pluie += (CIBLE[0] - m.pluie) * k; m.nuage += (CIBLE[1] - m.nuage) * k;
-    m.eclair = Math.max(0, m.eclair - dt * 6);
-    if (m.phase === 'orage' && m.t >= m.prochainEclair) {
-      m.eclair = 1;
-      const r = Math.abs(Math.sin(m.t * 12.9898) * 43758.5453) % 1;   // pseudo-aléatoire déterministe
-      m.prochainEclair = m.t + 1.2 + r * 3.6;
-    }
-    return m;
-  }
-
-  // Pluie et éclairs dessinés sur un canvas 2D en overlay (zéro GLSL, testable) : gouttes inclinées par le vent,
-  // densité ∝ pluie ; un éclair blanchit brièvement l'écran. Ne s'affiche que pendant la pluie/l'éclair.
-  let meteoCtx = null, meteoGouttes = [], meteoDpr = 0;
-  function dessinerMeteo(S, dt) {
-    const cv = document.getElementById('meteo'); if (!cv) return;
-    const m = S.meteo || { pluie: 0, eclair: 0, nuage: 0 };
-    const w = cv.clientWidth, h = cv.clientHeight; if (!w || !h) return;
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr) || dpr !== meteoDpr) {
-      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); meteoCtx = null; meteoDpr = dpr;
-    }
-    if (!meteoCtx) meteoCtx = cv.getContext('2d'); const ctx = meteoCtx; if (!ctx) return;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
-    const pluie = m.pluie || 0, eclair = m.eclair || 0;
-    if (pluie > 0.02) {
-      const cible = Math.round(pluie * 360);
-      while (meteoGouttes.length < cible) meteoGouttes.push({ x: Math.random() * w, y: Math.random() * h, l: 8 + Math.random() * 16, v: 620 + Math.random() * 520 });
-      if (meteoGouttes.length > cible) meteoGouttes.length = cible;
-      const vent = (m.nuage || 0) * 0.28 + 0.06;
-      ctx.strokeStyle = 'rgba(198,214,232,' + (0.16 + pluie * 0.34).toFixed(3) + ')';
-      ctx.lineWidth = 1.1; ctx.beginPath();
-      for (const g of meteoGouttes) {
-        g.y += g.v * dt; g.x += g.v * vent * dt;
-        if (g.y > h) { g.y = -g.l; g.x = Math.random() * w; }
-        if (g.x > w) g.x -= w; else if (g.x < 0) g.x += w;
-        ctx.moveTo(g.x, g.y); ctx.lineTo(g.x - g.l * vent, g.y - g.l);
-      }
-      ctx.stroke();
-    } else if (meteoGouttes.length) meteoGouttes.length = 0;
-    if (eclair > 0.01) { ctx.fillStyle = 'rgba(226,236,255,' + (eclair * 0.5).toFixed(3) + ')'; ctx.fillRect(0, 0, w, h); }
+  // Météo et pluie projetée : les secondes viennent du rendu, zéro pendant une pause.
+  function majMeteo(S, dt) { return B.meteo.avancer(S, dt); }
+  let pluieVue = null;
+  function dessinerMeteo(S, dt, cam, vue) {
+    if (!pluieVue) pluieVue = B.meteo.creerPluie($('meteo'));
+    pluieVue.dessiner(S.meteo, cam, dt, { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1 });
   }
 
   // menus à la manette : croix pour se déplacer (gauche, droite règlent un curseur), A valide, B revient
@@ -415,7 +373,7 @@
     derive = derive || pad.derive || doigt.derive;
     pad.deriveEtat = pad.derive && session ? session.course.joueur.etat : null;
     // aide au volant (rattrape les glisses) au niveau choisi ; guidage le long du virage au clavier et au doigt seulement
-    const cmd = { gaz, frein, volant, derive, haut: impulsions.haut, bas: impulsions.bas, boite: reglages.boite, aide: reglages.aide, guidage: analogique ? 0 : .15 };
+    const cmd = { gaz, frein, volant, derive, marcheArriere: true, haut: impulsions.haut, bas: impulsions.bas, boite: reglages.boite, aide: reglages.aide, guidage: analogique ? 0 : .15 };
     impulsions.haut = impulsions.bas = false;
     return cmd;
   }
@@ -490,6 +448,18 @@
   function couperSon() { muet = !muet; appliquerVolumes(); message(muet ? 'Son coupé' : 'Son rétabli', '', true); }
 
   // ---------------------------------------------------------------- pas de simulation et événements
+  function synchroniserReplacement(S, ev) {
+    for (const e of ev) if (e.repositionnement) {
+      // Ni trajet interpolé dans le décor, ni ancien cap de caméra après un tête-à-queue.
+      if (S.prec[e.id]) Object.assign(S.prec[e.id], S.cour[e.id]);
+      if (e.id === (S.suivie || 0)) {
+        S.camCap = null; S.tete = null; S.tele.poste = null;
+        S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; S.eclair = 0;
+      }
+      if (e.id === 0) { pad.choc = 0; pad.passe = 0; S.avertiContresens = false; }
+    }
+  }
+
   function pasSimulation(S, pilote) {
     const co = S.course;
     const cmd = S.type === 'vitrine' || S.type === 'demo' || pilote ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
@@ -512,6 +482,7 @@
       }
     }
     const t = S.prec; S.prec = S.cour; S.cour = t; remplirPoses(S.cour, co);
+    synchroniserReplacement(S, ev);
     const tFx = S.banc ? performance.now() : 0;
     B.traces.pas(S.fx, co, S.cour, S.suivie || 0, DT, ev);
     if (S.banc) S.banc.effets += performance.now() - tFx;
@@ -527,7 +498,7 @@
         case 'feu': son && son.evenement('feu'); break;
         case 'vert': son && son.evenement('vert'); message('Départ', 'vert', true); break;
         case 'contact':
-          if (dePres && (e.a === sujet || e.b === sujet)) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + .25 + e.force * .05); }
+          if (dePres && (e.a === sujet || e.b === sujet)) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .035); }
           break;
         case 'tour': if (co.voitures[e.id].position === 1 && co.toursTotal - e.tour === 1 && co.drapeau === null) message('Dernier tour', 'ambre'); break;
         case 'arrivee':
@@ -540,7 +511,7 @@
         default:
           if (!dePres || e.id !== sujet) break;
           if (son) son.evenement(e.type, e);
-          if (e.type === 'choc') S.secousse = Math.min(1, (S.secousse || 0) + .3 + e.force * .04);
+          if (e.type === 'choc') S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .035);
       }
     }
   }
@@ -551,7 +522,7 @@
       switch (e.type) {
         case 'feu': son && son.evenement('feu'); break;
         case 'vert': son && son.evenement('vert'); message('Départ', 'vert', true); break;
-        case 'contact': if (e.a === 0 || e.b === 0) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + .25 + e.force * .05); } break;
+        case 'contact': if (e.a === 0 || e.b === 0) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .035); } break;
         case 'tour':
           if (e.id !== 0) break;
           son && son.evenement('tour', { meilleur: e.meilleur });
@@ -567,12 +538,11 @@
         default:
           if (e.id !== 0) break;
           if (son) son.evenement(e.type, e);
-          if (e.type === 'choc') { S.secousse = Math.min(1, (S.secousse || 0) + .3 + e.force * .04); if (e.force > 6) S.eclair = Math.min(1, .4 + e.force * .05); }
-          else if (e.type === 'reception') S.secousse = Math.min(1, (S.secousse || 0) + .25 + (e.force || 0) * .1);
-          else if (e.type === 'tonneau' || e.type === 'casse') { S.secousse = 1; S.eclair = 1; if (e.type === 'casse') message('Voiture détruite', 'rouge'); }
-          else if (e.type === 'roue') { message('Roue perdue', 'rouge', true); S.eclair = .8; }
-          else if (e.type === 'reparation') message('Réparation…', 'ambre', true);
-          else if (e.type === 'repare') message('Repositionné', 'vert', true);
+          if (e.type === 'choc') { S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .035); if (e.force > 18) S.eclair = Math.min(.65, (e.force - 18) * .035); }
+          else if (e.type === 'reception') S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, (e.force || 0) - 2) * .06);
+          else if (e.type === 'tonneau' || e.type === 'casse') { S.secousse = 1; S.eclair = .7; message('Retour en piste', 'ambre', true); }
+          else if (e.type === 'roue') { message('Retour en piste', 'ambre', true); S.eclair = .5; }
+          else if (e.type === 'retour' && e.repositionnement) { S.secousse = 0; S.eclair = 0; S.bloque = 0; S.contresens = 0; message('Replacé', '', true); }
           else if (e.type === 'turbo') message(e.parfait ? 'Turbo parfait' : 'Turbo', e.parfait ? 'ambre' : '', true);
           else if (e.type === 'deriveAnnulee') S.derniereJauge = co.horloge;
       }
@@ -583,22 +553,23 @@
     const co = S.course, j = co.joueur, id = CATALOGUE[S.i].id;
     const ancien = records[id] && records[id].tour;
     // profil du tour (temps tous les 10 m) pour l'écart en direct
-    if (e.meilleur) S.profilMeilleur = S.profil.slice();
+    if (e.valide !== false && e.meilleur) S.profilMeilleur = S.profil.slice();
     S.profil.fill(-1);
     let texte = 'Tour ' + e.tour + ' · ' + chrono(e.temps);
-    if (!S.essai && (!ancien || e.temps < ancien)) {
+    if (!S.essai && e.valide !== false && (!ancien || e.temps < ancien)) {
       records[id] = { tour: e.temps, date: new Date().toISOString().slice(0, 10), mode: co.mode };
       ecrireStock(CLE_RECORDS, records);
       if (ancien) texte += ' · record du circuit';
     }
+    if (e.valide === false) texte += ' · hors classement chrono';
     sousMessage(texte);
     if (co.mode === 'chrono') {
       // le fantôme gardé est celui du meilleur tour jamais fait ici
       const f = co.fantome;
       const garde = lireStock(CLE_FANTOME + id, null);
-      if (!S.essai && f.meilleur && f.temps === e.temps && (!garde || garde.longueur !== co.c.longueur || e.temps < garde.temps))
+      if (!S.essai && e.valide !== false && f.meilleur && f.temps === e.temps && (!garde || garde.longueur !== co.c.longueur || e.temps < garde.temps))
         ecrireStock(CLE_FANTOME + id, { temps: f.temps, n: f.meilleur.n, longueur: co.c.longueur, b64: enBase64(f.meilleur.donnees) });
-      message(e.meilleur ? 'Meilleur tour' : chrono(e.temps), e.meilleur ? 'vert' : '', true);
+      message(e.valide === false ? 'Tour non chronométré' : e.meilleur ? 'Meilleur tour' : chrono(e.temps), e.valide !== false && e.meilleur ? 'vert' : '', true);
     } else if (co.toursTotal - j.tours === 1) message('Dernier tour', 'ambre');
     else if (e.meilleur && j.tours > 1) message('Meilleur tour', 'vert', true);
   }
@@ -616,7 +587,7 @@
       S.contresens = arriere ? S.contresens + DT : Math.max(0, S.contresens - DT * 2);
       if (S.contresens > 1.2 && !S.avertiContresens) { message('Contresens', 'rouge', true); S.avertiContresens = true; }
       if (S.contresens < .2) S.avertiContresens = false;
-      const coince = (et.v < 1.5 && et.gaz > .5) || (Math.cos(et.psi) < -.5 && et.v < 3);
+      const coince = !et.recuperation && et.rapport >= 0 && et.v >= 0 && ((et.v < 1.5 && et.gaz > .5) || (Math.cos(et.psi) < -.5 && et.v < 3));
       S.bloque = coince ? S.bloque + DT : 0;
       if (S.bloque > 3) { replacer(); S.bloque = 0; }
     }
@@ -624,13 +595,11 @@
 
   function replacer() {
     const S = session; if (!S) return;
-    const co = S.course, et = co.joueur.etat;
-    if (et.degats && et.degats.casse) return;
-    // Chantier 3 : le remplacement passe par le retour progressif en piste (cap et vitesse continus, immunité)
-    if (B.conduite.declencherAccident) B.conduite.declencherAccident(et, { duree: 3.0 });
-    else { et.d = B.circuit.echantillon(co.c, et.s).ligne; et.psi = 0; et.beta = 0; et.omega = 0; et.v = Math.min(et.v, 4); }
-    B.conduite.annulerDerive(et);
-    message('Replacé', '', true);
+    const co = S.course, ev = B.course.replacer(co);
+    remplirPoses(S.cour, co); remplirPoses(S.prec, co);
+    synchroniserReplacement(S, ev);
+    B.traces.pas(S.fx, co, S.cour, S.suivie || 0, 0, ev);
+    traiter(S, ev);
   }
 
   // ---------------------------------------------------------------- caméras
@@ -782,8 +751,8 @@
     // uEffects.z colore tout l'écran : la rougeur suit seulement l'éclair du choc, jamais les dégâts persistants.
     const eclair = S.eclair || 0;
     const meteo = majMeteo(S, dtImage);
-    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: q !== 'low' ? 1 : 0, weather: meteo });
-    dessinerMeteo(S, dtImage);
+    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: q !== 'low' ? 1 : 0, weather: B.meteo.ambiance(meteo) });
+    dessinerMeteo(S, dtImage, cam, vue);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
     // En cockpit, la planche donne vitesse, rapport et régime : le tableau réduit retire plan et compteurs, qui
@@ -813,7 +782,7 @@
     }
     son.mettreAJour({
       pause: ecran === 'pause',
-      joueur: { regime: et.regime, gaz: et.gaz, rapport: et.rapport, v: et.v, glisse: et.glisse, surface: et.surface, turbo: et.turbo.reste > 0, vue: S.vue === 'cockpit' ? 'cockpit' : 'poursuite', muet: exterieur },
+      joueur: { regime: et.regime, gaz: et.gaz, rapport: et.rapport, v: Math.abs(et.v), glisse: et.glisse, surface: et.surface, turbo: et.turbo.reste > 0, vue: S.vue === 'cockpit' ? 'cockpit' : 'poursuite', muet: exterieur },
       rivaux: sonRivaux
     }, dtImage);
   }
@@ -867,9 +836,9 @@
     classe(H['h-delta'], 'avance', delta !== null && delta < 0); classe(H['h-delta'], 'retard', delta !== null && delta > 0);
 
     texte(H['h-vitesse'], String(B.conduite.kmh(et)));
-    texte(H['h-rapport'], String(et.rapport));
+    texte(H['h-rapport'], et.rapport < 0 ? 'R' : String(et.rapport));
     style(barre, '--r', clamp((et.regime - 4000) / 9000, 0, 1).toFixed(3));
-    classe(H['h-regime'], 'passer', et.regime > (reglages.boite === 'manuelle' ? 12100 : 12600) && et.rapport < 6);
+    classe(H['h-regime'], 'passer', et.regime > (reglages.boite === 'manuelle' ? 12100 : 12600) && et.rapport > 0 && et.rapport < 6);
 
     // jauge de dérive
     const dr = et.derive, montrer = dr.actif || co.horloge - S.derniereJauge < .6;

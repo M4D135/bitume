@@ -26,10 +26,10 @@ for(const side of [-1,1]){
       if(!first)first={time:(i+1)/120,psi:state.psi,beta:state.beta,speed:state.v,d:state.d,force:event.force};
     }
   }
-  cases.push({side,first,events,rebound_toward_track:!!first&&side*first.psi<0,after1s:{speed:state.v,d:state.d,psi:state.psi}});
+  cases.push({side,first,events,rebound_toward_track:!!first&&side*first.psi<0,after1s:{speed:state.v,d:state.d,psi:state.psi,clearance:circuit.limite-Math.abs(state.d)-1.01*Math.abs(Math.cos(state.psi+state.beta))-2.475*Math.abs(Math.sin(state.psi+state.beta))}});
 }
 const damage=B.degats.creer();B.degats.choc(damage,8);
 const hashes=Object.fromEntries(['conduite.js','jeu.js','degats.js'].map(f=>[f,createHash('sha256').update(readFileSync(join(root,'src',f))).digest('hex')]));
 console.log(JSON.stringify({root,hashes,cases,nonBreakingImpact:{force:8,broken:damage.casse,missingWheel:B.degats.uneRouePerdue(damage),persistentTint:damage.teinte}},null,2));
 
-for(const c of cases){assert.ok(c.rebound_toward_track,"le choc renvoie vers la piste");assert.equal(c.events,1,"un seul choc au premier contact");assert.ok(Math.abs(c.after1s.d)<Math.abs(c.first.d),"la voiture se décolle du rail");}
+for(const c of cases){assert.ok(c.rebound_toward_track,"le choc renvoie vers la piste");assert.equal(c.events,1,"un seul choc au premier contact");assert.ok(c.after1s.clearance>0,"la caisse entière se décolle du rail malgré son cap conservé");}

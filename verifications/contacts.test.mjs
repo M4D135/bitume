@@ -1,3 +1,4 @@
+// Décision David16/11 : seuils adoucis et retour rapide remplacent la pénalité longue.
 // Banc des critères du Chantier 3 : chocs entre voitures, sauts roue contre roue, dégâts, accident et retour.
 // Exécutable par Node, sans navigateur. On exerce les vrais modules src/contacts.js, src/degats.js et
 // src/conduite.js sur un circuit synthétique, avec une fausse course minimale (contacts.pas ne demande que
@@ -31,11 +32,11 @@ function step(et, cmd, n) { const ev = []; for (let i = 0; i < n; i++) for (cons
 
 // ------------------------------------------------------------------ petit bond
 {
-  const a = voiture(0, 100, -0.9, 20, 0.03), b = voiture(1, 100, 0.9, 20, -0.03);
+  const a = voiture(0, 100, -0.9, 20, 0.08), b = voiture(1, 100, 0.9, 20, -0.08);
   const co = course(a, b); const ev = [];
   CT.pas(co, ev);
   const sauteur = a.etat.saut && a.etat.saut.actif ? a.etat : (b.etat.saut && b.etat.saut.actif ? b.etat : null);
-  noter('petit bond : un frottement de roues fait sauter', !!sauteur, 'oui', !!sauteur);
+  noter('petit bond : rapprochement de roues supérieur à2,5m/s', !!sauteur, 'oui', !!sauteur);
   if (sauteur) {
     const h = sauteur.saut.h, dur = sauteur.saut.duree;
     noter('petit bond : hauteur 0,10 à 0,35 m', h, '0,10–0,35 m', h >= 0.10 && h <= 0.35);
@@ -110,13 +111,13 @@ function essaiCorrection(volant) {
 }
 {
   // deux petits bonds à moins de 1,25 s : le second est bloqué
-  const a = voiture(0, 100, -0.9, 20, 0.05), b = voiture(1, 100, 0.9, 20, -0.05);
+  const a = voiture(0, 100, -0.9, 20, 0.08), b = voiture(1, 100, 0.9, 20, -0.08);
   const co = course(a, b); const ev = [];
   CT.pas(co, ev);
   const bond1 = (a.etat.saut && a.etat.saut.actif) || (b.etat.saut && b.etat.saut.actif);
   // on les sépare puis on les rapproche tout de suite (avant 1,25 s)
   a.etat.saut = null; b.etat.saut = null; a.etat.d = -3; b.etat.d = 3; co.horloge += 0.4; CT.pas(co, ev);
-  a.etat.d = -0.9; b.etat.d = 0.9; co.horloge += 0.4; CT.pas(co, ev);   // t ≈ 0,8 s < 1,25 s
+  a.etat.d = -0.9; b.etat.d = 0.9; a.etat.psi=.08;b.etat.psi=-.08;a.etat.v=b.etat.v=20; co.horloge += 0.4; CT.pas(co, ev);   // t ≈ 0,8 s < 1,25 s
   const bond2 = (a.etat.saut && a.etat.saut.actif) || (b.etat.saut && b.etat.saut.actif);
   noter('paire : au moins 1,25 s entre deux bonds', bond1 && !bond2 ? 1 : 0, 'second bloqué', bond1 && !bond2);
 }
@@ -136,12 +137,12 @@ function essaiCorrection(volant) {
 {
   const d = DG.creer();
   DG.choc(d, 30);
-  noter('dégâts : adhérence −18 % au plus', d.adher, '≥ 0,82', d.adher >= 0.82 - 1e-9);
-  noter('dégâts : traînée +24 % au plus', d.trainee, '≤ 1,24', d.trainee <= 1.24 + 1e-9);
+  noter('dégâts : adhérence −8 % au plus', d.adher, '≥ 0,92', d.adher >= 0.92 - 1e-9);
+  noter('dégâts : traînée +8 % au plus', d.trainee, '≤ 1,08', d.trainee <= 1.08 + 1e-9);
   noter('dégâts : teinte uEffects.z alimentée', d.teinte, '0–1', d.teinte > 0 && d.teinte <= 1);
-  const d2 = DG.creer(); DG.choc(d2, 12);
+  const d2 = DG.creer(); DG.choc(d2, 20);
   noter('dégâts : une roue part sur un choc violent', DG.uneRouePerdue(d2) ? 1 : 0, 'oui', DG.uneRouePerdue(d2));
-  const d3 = DG.creer(); DG.choc(d3, 20);
+  const d3 = DG.creer(); DG.choc(d3, 30);
   noter('dégâts : casse franche au-delà du seuil', d3.casse ? 1 : 0, 'oui', d3.casse);
   const d4 = DG.creer(); DG.choc(d4, 0.2);
   noter('dégâts : un frôlement ne casse rien', (d4.adher === 1 && !d4.casse) ? 1 : 0, 'rien', d4.adher === 1 && !d4.casse);
@@ -158,11 +159,11 @@ function essaiCorrection(volant) {
     vPrec = et.v; psiPrec = et.psi; t += DT;
     if (!et.accident) retour = true;
   }
-  noter('accident : retour sur le revêtement en 2,8 à 8 s', t, '2,8–8 s', retour && t >= 2.8 && t <= 8);
+  noter('accident : retour sur le revêtement en moins de1s', t, '0,6–1s', retour && t >= .6 && t <= 1);
   noter('accident : revenu sur la piste (|d| petit)', Math.abs(et.d), '< 0,5 m', Math.abs(et.d) < 0.5);
   noter('accident : vitesse continue (pas d’à-coup)', dvMax, '< 1 m/s par pas', dvMax < 1);
-  noter('accident : cap continu (pas d’à-coup)', dpsiMax, '< 0,05 rad par pas', dpsiMax < 0.05);
-  noter('accident : 2 s d’immunité après le retour', et.immunite, '≈ 2 s', et.immunite > 1.5 && et.immunite <= 2.001);
+  noter('accident : cap réaligné au retour sans gain longitudinal', et.psi, '0 et s100', et.psi === 0 && et.s === 100);
+  noter('accident : 1s d’immunité après le retour', et.immunite, '≈ 1s', et.immunite > .9 && et.immunite <= 1.001);
 }
 
 // ------------------------------------------------------------------ cadence et coût
@@ -181,9 +182,9 @@ function essaiCorrection(volant) {
 // ------------------------------------------------------------------ glissières (grille angles × vitesses)
 function glissiere(ang, v, d0 = 2.6, gaz = 0) {
   const c = circuit({ R: 0, largeur: 8, limite: 3 });
-  const et = CD.creer(100, d0); et.v = v; et.psi = ang; et.rapport = 6;
+  const et = CD.creer(100, d0); et.v = v; et.psi = ang; et.rapport = 6; et.degats=DG.creer();
   let dMin = Infinity, accident = false, t = 0;
-  while (t < 0.5 && !et.accident) { CD.pas(et, commande({ gaz }), c, DT); if (et.accident) accident = true; dMin = Math.min(dMin, et.d); t += DT; }
+  while (t < 0.5 && !et.recuperation) { CD.pas(et, commande({ gaz }), c, DT); if (et.recuperation) accident = true; dMin = Math.min(dMin, et.d); t += DT; }
   return { vRatio: et.v / v, accident, dMin };
 }
 {
@@ -195,12 +196,12 @@ function glissiere(ang, v, d0 = 2.6, gaz = 0) {
       const v = kmh / 3.6;
       if (degA < 8) { const r = glissiere(ang, v, 2.6, 1); if (r.vRatio < 0.9) { rasantOk = false; pireRasant = Math.min(pireRasant, r.vRatio); } }
       const r = glissiere(ang, v);
-      if (degA > 35 && kmh >= 100 && !r.accident) { accOk = false; accManquee = `${degA}°/${kmh}km/h`; }
+      if (v*Math.sin(ang)>=21 && !r.accident) { accOk = false; accManquee = `${degA}°/${kmh}km/h`; }
       if (!r.accident && r.dMin < -0.05) { axeOk = false; axeManquee = `${degA}°/${kmh}km/h d=${r.dMin.toFixed(2)}`; }
     }
   }
   noter('glissière : frôlement < 8° garde ≥ 90 % après 0,5 s', pireRasant, '≥ 0,90', rasantOk);
-  noter('glissière : > 35° et ≥ 100 km/h → accident', accOk ? 1 : 0, 'oui', accOk, accManquee);
+  noter('glissière : vitesse normale≥21m/s → arrêt et reprise', accOk ? 1 : 0, 'oui', accOk, accManquee);
   noter('glissière : jamais renvoyée au-delà de l’axe', axeOk ? 1 : 0, 'oui', axeOk, axeManquee);
 }
 {
@@ -216,7 +217,7 @@ function glissiere(ang, v, d0 = 2.6, gaz = 0) {
   noter('emprise de la caisse : aucun coin au-delà du rail, quel que soit le cap', ok ? 1 : 0, 'oui', ok, pire);
 }
 
-// ------------------------------------------------------------------ roue perdue : on ne pilote plus, réparation lente, repositionnement
+// ------------------------------------------------------------------ roue perdue : on ne pilote plus, reprise rapide sans pénalité longue
 function essaiRouePerdue(volant) {
   const et = CD.creer(100, 0); et.v = 30; et.rapport = 6;
   const dg = DG.creer(); et.degats = dg; dg.roues[0] = true;   // roue avant gauche arrachée
@@ -224,10 +225,10 @@ function essaiRouePerdue(volant) {
   let t = 0, vMin = Infinity, dArret = 0;
   while (t < 30) {
     const arret = et.reparation && et.reparation.phase === 'arret';
-    for (const e of CD.pas(et, cmd, CIR, DT)) { if (e.type === 'reparation' || e.type === 'repare') (et._vus || (et._vus = [])).push(e.type); }
+    for (const e of CD.pas(et, cmd, CIR, DT)) { if (e.type === 'retour') (et._vus || (et._vus = [])).push(e.type); }
     vMin = Math.min(vMin, et.v);
     if (arret) dArret = Math.max(dArret, Math.abs(et.d));
-    if (!et.reparation && !et.accident && !dg.roues[0] && t > 1) break;
+    if (!et.recuperation && !dg.roues[0]) break;
     t += DT;
   }
   return { vMin, dArret, repaired: dg.roues.every(x => !x) && !dg.casse, d: et.d,
@@ -238,7 +239,7 @@ function essaiRouePerdue(volant) {
   const R = essaiRouePerdue(1), L = essaiRouePerdue(-1);
   noter('roue perdue : plus de motricité, la caisse s’immobilise', R.vMin, '≈ 0', R.vMin < 0.9);
   noter('roue perdue : plus de direction (plein gauche = plein droit)', Math.abs(R.dArret - L.dArret), '< 0,1 m', Math.abs(R.dArret - L.dArret) < 0.1);
-  noter('roue perdue : réparation puis repositionnement signalés', R.vus.includes('reparation') && R.vus.includes('repare') ? 1 : 0, 'oui', R.vus.includes('reparation') && R.vus.includes('repare'));
+  noter('roue perdue : remise en piste signalée', R.vus.includes('retour') ? 1 : 0, 'oui', R.vus.includes('retour'));
   noter('roue perdue : roue remise et caisse réparée', R.repaired ? 1 : 0, 'oui', R.repaired);
   noter('roue perdue : repositionnée sur la trajectoire (d ≈ 0)', Math.abs(R.d), '≈ 0', Math.abs(R.d) < 0.2);
   noter('roue perdue : état fini, course non déclarée terminée', R.fini ? 1 : 0, 'oui', R.fini);

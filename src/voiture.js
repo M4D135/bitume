@@ -342,7 +342,7 @@
   const LEVIER = [.93, -.315, .262];           // pommeau du levier de vitesses, à droite du volant, au point mort
   const REGIME_LAMPE = 12000;                  // la lampe de la casquette s'allume : il est temps de monter un rapport
   // Afficheurs à sept segments : a en haut, puis b, c, d, e, f dans le sens des aiguilles d'une montre, g au milieu.
-  const SEGMENTS = { 0: 'abcdef', 1: 'bc', 2: 'abdeg', 3: 'abcdg', 4: 'bcfg', 5: 'acdfg', 6: 'acdefg', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg', N: 'ceg', '-': 'g' };
+  const SEGMENTS = { 0: 'abcdef', 1: 'bc', 2: 'abdeg', 3: 'abcdg', 4: 'bcfg', 5: 'acdfg', 6: 'acdefg', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg', N: 'ceg', R: 'abefg', '-': 'g' };
   const AMBRE = [1, .56, .12], ETEINT = [.09, .035, .02];
   // Formes libres du cockpit, en positions apparentes (voir K). Planche et casquette dans le repère de la planche
   // (x : vers la droite, y : vers le haut de la planche, z : vers le pilote) ; jante et branches dans celui du volant
@@ -367,7 +367,7 @@
   // Position du pommeau selon le rapport, grille en H : impairs vers l'avant, pairs vers l'arrière ; 1-2 à gauche.
   const grille = n => n > 0 ? [(n % 2 ? 1 : -1) * .024, (Math.floor((n - 1) / 2) - 1) * .017] : [0, 0];
 
-  // etat = { regime (tr/min), volant (−1 à 1), rapport (0 = point mort), kmh (vitesse affichée),
+  // etat = { regime (tr/min), volant (−1 à 1), rapport (0 = point mort, −1 = marche arrière), kmh (vitesse affichée),
   //          passage (0 à 1 : avancement du changement de rapport en cours, 1 ou absent : aucun), rapportAvant,
   //          derriere ([{ x, z, couleur }] : rivaux dans le repère de la voiture, du plus proche au plus loin),
   //          ciel, brume (couleurs du jour, pour les glaces des rétroviseurs) }
@@ -439,8 +439,12 @@
         const [x, y, sx, sy] = places[nom], allume = seg.includes(nom);
         mettre('box', plus(centre, [wr, x], [pu, y], [pn, .011]), [sx, sy, .002], allume ? 5 : MAT, allume ? AMBRE : ETEINT, cadre, allume ? { emissive: 1.1 } : undefined);
       }
+      if (texte === 'R') {
+        const long = Math.hypot(l / 2, h / 2), d = wr.map((v, k) => (v * l / 2 - pu[k] * h / 2) / long);
+        mettre('box', plus(centre, [wr, l / 4], [pu, -h / 4], [pn, .011]), [t, long, .002], 5, AMBRE, [croix(d, pn), d, pn], { emissive: 1.1 });
+      }
     };
-    chiffre(etat.rapport > 0 ? String(etat.rapport) : 'N', plus(PLANCHE, [wr, -.125], [pu, .006]), .036);
+    chiffre(etat.rapport < 0 ? 'R' : etat.rapport > 0 ? String(etat.rapport) : 'N', plus(PLANCHE, [wr, -.125], [pu, .006]), .036);
     const kmh = String(Math.min(999, Math.max(0, Math.round(etat.kmh || 0)))).padStart(3, ' ');
     for (let k = 0; k < 3; k++) if (kmh[k] !== ' ' || k === 2) chiffre(kmh[k], plus(PLANCHE, [wr, .118 + k * .024], [pu, .004]), .026);
 

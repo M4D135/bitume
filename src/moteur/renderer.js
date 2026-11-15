@@ -1,12 +1,36 @@
+/* BITUME : backend WebGL2 FERRO repris du snapshot EMPRISE du 16/11/2026.
+   Source renderer SHA-256 c268957562dba93843a4f017be5ae46210136161bd307c8fd0bb8a6a284a2e00.
+   Adaptations course, météo, cockpit et index GPU : voir src/moteur/PROVENANCE.md. */
+/* RADE FERRO 0.1 — base PDR, formes libres BITUME; voir docs/INTEGRATION.md. */
 /* FERRO — original WebGL2 renderer. All surfaces and meshes are mathematical. */
-/* Point de rupture : moteur repris de M4D135/FERRO (METAL 0.6, commit 950f743). Les retouches pour la vue RTS
-   sont marquées « PDR » ; la liste complète est dans Jeu/src/moteur/PROVENANCE.md. */
-/* BITUME : repris de Point de rupture (Jeu/src/moteur/renderer.js, commit b695b51). Les retouches pour la course
-   sont marquées « BITUME » ; la liste est dans src/moteur/PROVENANCE.md. */
+/* PDR (origine) : copie de FERRO 0.2 pour Point de rupture (github.com/M4D135/FERRO, étiquette v0.2, commit 248043a).
+   Chaque retouche du jeu commence par « PDR » et son nom entre parenthèses ; Jeu/src/moteur/PROVENANCE.md la décrit sous
+   ce nom. Tout le reste est le fichier de FERRO, y compris ses lignes « PDR : » ou « BITUME : », reprises des jeux. */
 (function () {
   'use strict';
   // BITUME : champ de vision admis de 10 à 110° (FERRO : 40 à 110°), pour la caméra de télévision au téléobjectif.
   const FOV_MIN = 10;
+
+  // Same wave field as RADE.marine.seaHeight. Only the local navigation grid
+  // is displaced; a 16 m edge band meets the distant flat sea without a seam.
+  const SEA_GLSL = `
+  uniform vec4 uSeaOrigin;
+  uniform vec4 uSeaMotion;
+  vec3 seaField(vec2 p) {
+    float co=cos(uSeaMotion.y),si=sin(uSeaMotion.y),u=p.x*co+p.y*si,v=-p.x*si+p.y*co,t=uSeaMotion.x;
+    float a=.24*u-1.10*t,b=.41*u+.17*v-1.55*t+1.7,c=.63*v-.83*t+.4;
+    float amplitude=.035+.10*clamp(uSeaOrigin.w,0.,2.);
+    float h=amplitude*(.60*sin(a)+.27*sin(b)+.13*sin(c));
+    float du=amplitude*(.60*.24*cos(a)+.27*.41*cos(b));
+    float dv=amplitude*(.27*.17*cos(b)+.13*.63*cos(c));
+    vec2 grad=vec2(du*co-dv*si,du*si+dv*co),q=p-uSeaOrigin.xy;
+    float edge=max(abs(q.x),abs(q.y)),r=uSeaOrigin.z;
+    float f=clamp((r-edge)/16.,0.,1.),fade=f*f*(3.-2.*f);
+    float slope=f>0.&&f<1.?-6.*f*(1.-f)/16.:0.;
+    vec2 de=abs(q.x)>abs(q.y)?vec2(sign(q.x),0.):vec2(0.,sign(q.y));
+    return vec3(h*fade,grad*fade+h*slope*de);
+  }
+  `;
 
   const VERT = `#version 300 es
   precision highp float;
@@ -18,10 +42,14 @@
   layout(location=5) in vec4 iColor;
   uniform mat4 uViewProjection;
   uniform vec2 uWindTime;
+  ${SEA_GLSL}
   out vec3 vWorld;
   out vec3 vNormal;
   out vec3 vSurface;
+  out vec3 vLocal;
+  out vec3 vFaceNormal;flat out vec3 vDimensions;
   out vec3 vSurfaceNormal;
+  flat out vec3 vAnchor;
   flat out float vMaterial;
   flat out float vEmission;
   flat out float vOverlay;
@@ -41,12 +69,14 @@
       vWorld.x+=sin(phase)*bend;vWorld.z+=cos(phase*.73)*bend*.6;
     }
     vNormal=normalize(rotation*(aNormal/max(abs(iScale.xyz),vec3(.0001))));
-    vMaterial=iPosition.w;
+    // BITUME : le niveau des plans d’eau appartient au circuit, pas au port EMPRISE.
+    vAnchor=iPosition.xyz;vMaterial=iPosition.w;
     vEmission=iScale.w;
     vOverlay=mod(iRotation.w,2.);
     vOutdoor=mod(floor(iRotation.w*.5),2.);
     vObject=floor(iRotation.w*.25);
     vSurface=vObject>.5?aPosition*iScale.xyz:vWorld;
+    vLocal=aPosition;vFaceNormal=aNormal;vDimensions=abs(iScale.xyz);
     vSurfaceNormal=vObject>.5?normalize(aNormal/max(abs(iScale.xyz),vec3(.0001))):vNormal;
     vColor=iColor;
     gl_Position=uViewProjection*vec4(vWorld,1.);
@@ -57,7 +87,10 @@
   in vec3 vWorld;
   in vec3 vNormal;
   in vec3 vSurface;
+  in vec3 vLocal;
+  in vec3 vFaceNormal;flat in vec3 vDimensions;
   in vec3 vSurfaceNormal;
+  flat in vec3 vAnchor;
   flat in float vMaterial;
   flat in float vEmission;
   flat in float vOverlay;
@@ -65,6 +98,10 @@
   flat in float vObject;
   flat in vec4 vColor;
   uniform vec3 uEye;
+  uniform vec4 uWeather;uniform vec2 uCloudOffset;
+  uniform highp sampler2DArray uPbrAlbedo;uniform highp sampler2DArray uPbrNormal;uniform highp sampler2DArray uPbrRough;uniform float uPbrReady;
+  uniform vec3 uLightDirection[12];
+  uniform vec2 uLightCone[12];
   uniform vec3 uForward;
   uniform vec3 uLightPosition[12];
   uniform vec3 uLightColor[12];
@@ -72,6 +109,8 @@
   uniform int uLightCount;
   uniform vec2 uResolution;
   uniform vec4 uEffects;
+  uniform vec2 uWindTime;
+  ${SEA_GLSL}
   // Explicit sampler precision keeps 24-bit depth from being quantized into bands.
   uniform highp sampler2D uShadowMap;
   uniform mat4 uShadowMatrix[3];
@@ -83,8 +122,12 @@
   uniform vec3 uFogColor;
   uniform vec3 uSkyTop;
   uniform vec3 uSkyBottom;
-  uniform vec2 uEnvironment;
-  uniform float uPhoto; // BITUME : boost de réflexion analytique en qualité Fine (0 ailleurs)
+  uniform vec2 uEnvironment;uniform vec2 uNightHour;
+  uniform float uPhoto; // BITUME : qualité des reflets analytiques et peinture satinée.
+  // PDR (voile) : voile du brouillard de guerre (fx.voile) : visibilité R8, zone (x0, z0, 1/largeur, 1/profondeur) en mètres, force 0..1.
+  uniform sampler2D uVoile;
+  uniform vec4 uVoileZone;
+  uniform float uVoileForce;
   out vec4 fragColor;
   float hash(vec2 p) {
     vec3 p3=fract(vec3(p.xyx)*.1031);
@@ -130,16 +173,19 @@
     // The nearest depth texel represents a different point on a sloping surface.
     // Compare against that point on the receiver plane, not the centre depth.
     vec2 centre=(floor(tap/texel)+.5)*texel;
-    return step(depth+dot(slope,(centre-uv)*2.),texture(uShadowMap,tap).r);
+    return step(depth+dot(slope,centre-uv),texture(uShadowMap,tap).r);
   }
   float shadow(vec3 n,vec3 l,int slot) {
-    // BITUME : le cockpit est posé à sa vraie place dans le monde, il reçoit donc les ombres du décor.
+    // BITUME : le cockpit reçoit les ombres à sa position réelle.
     if((slot==0&&uShadowSettings.x<.5)||(slot==1&&uShadowSettings.x<1.5&&uShadowSettings.w<.5)||(slot==2&&uShadowSettings.z<.5))return 1.;
     vec4 projected=uShadowMatrix[slot]*vec4(vWorld+n*.014,1.);
     vec3 p=projected.xyz/projected.w*.5+.5;
     vec3 dx=dFdx(p),dy=dFdy(p);
     float determinant=dx.x*dy.y-dx.y*dy.x;
     vec2 slope=abs(determinant)>.00000000001?vec2(dx.z*dy.y-dy.z*dx.y,dy.z*dx.x-dx.z*dy.x)/determinant:vec2(0.);
+    // Derivatives above use projection UVs; PCF offsets use atlas UVs. A half-size
+    // tile needs twice the slope, while the full-atlas sun must keep it unchanged.
+    slope*=slot==1&&uShadowSettings.w>1.5?1.:2.;
     if(projected.w<=0.||p.z<=0.||p.z>=1.||min(p.x,p.y)<=.001||max(p.x,p.y)>=.999)return 1.;
     float bias=slot==1&&uShadowSettings.w>.5?.00014+.00024*(1.-max(dot(n,l),0.)):.00005+.00014*(1.-max(dot(n,l),0.));
     vec2 tile=slot==1?vec2(.5,0.):slot==2?vec2(0.,.5):vec2(0.);
@@ -147,12 +193,18 @@
     vec2 uv=slot==1&&uShadowSettings.w>1.5?p.xy:p.xy*.5+tile;
     float visibility=0.;
     if(slot==1&&uShadowSettings.w>.5){
-      // A wider, weighted kernel softens the sun's large world-space texels.
-      // Every tap still compares its own receiver-plane depth at full precision.
-      visibility=depthSample(uv,vec2(0.),p.z-bias,slope)*4.;
-      visibility+=(depthSample(uv,vec2(-1.25,0.),p.z-bias,slope)+depthSample(uv,vec2(1.25,0.),p.z-bias,slope)+depthSample(uv,vec2(0.,-1.25),p.z-bias,slope)+depthSample(uv,vec2(0.,1.25),p.z-bias,slope))*2.;
-      visibility+=depthSample(uv,vec2(-1.25,-1.25),p.z-bias,slope)+depthSample(uv,vec2(1.25,-1.25),p.z-bias,slope)+depthSample(uv,vec2(-1.25,1.25),p.z-bias,slope)+depthSample(uv,vec2(1.25,1.25),p.z-bias,slope);
-      visibility*=.0625;
+      // Quadratic B-spline PCF: nine comparisons, continuous sub-texel weights.
+      // Nearest PCF taps used to jump together when the light/camera moved.
+      // Compare at each sampled centre before filtering, retaining the receiver
+      // plane correction so oblique facades do not acquire self-shadow bands.
+      float texel=uShadowSettings.y;
+      vec2 cell=uv/texel,f=fract(cell)-.5,centre=(floor(cell)+.5)*texel;
+      vec3 wx=vec3(.5*(.5-f.x)*(.5-f.x),.75-f.x*f.x,.5*(.5+f.x)*(.5+f.x));
+      vec3 wy=vec3(.5*(.5-f.y)*(.5-f.y),.75-f.y*f.y,.5*(.5+f.y)*(.5+f.y));
+      for(int y=0;y<3;y++)for(int x=0;x<3;x++){
+        vec2 tap=centre+vec2(float(x-1),float(y-1))*texel;
+        visibility+=wx[x]*wy[y]*step(p.z-bias+dot(slope,tap-uv),texture(uShadowMap,tap).r);
+      }
     }else{
       visibility+=depthSample(uv,vec2(-.65,-.65),p.z-bias,slope);
       visibility+=depthSample(uv,vec2(.65,-.65),p.z-bias,slope);
@@ -167,8 +219,9 @@
     vec3 geometricNormal=normalize(vNormal), n=geometricNormal, an=abs(normalize(vSurfaceNormal));
     vec2 uv=an.y>.65?vSurface.xz:(an.x>an.z?vSurface.zy:vSurface.xy);
     float m=vMaterial, emission=vEmission;
-    vec3 base=vec3(.105,.135,.15);
-    float roughness=.47,metalness=.65,organicHeight=0.,urbanHeight=0.;
+    vec3 base=vec3(.105,.135,.15),windowGlow=vec3(0.);
+    float night=clamp(uNightHour.x,0.,1.)*vOutdoor;float lateHour=uNightHour.y<12.?uNightHour.y+24.:uNightHour.y;float evening=1.-smoothstep(23.,26.,lateHour);
+    float roughness=.47,metalness=.65,organicHeight=0.,urbanHeight=0.,pbrWeight=0.,pbrLayer=1.;
     float pixelSpan=max(fwidth(uv).x,fwidth(uv).y);
     float fineDetail=1.-smoothstep(.015,.10,pixelSpan);
     float grain=noise(uv*23.)*.5+mix(.5,noise(uv*71.),fineDetail)*.2;
@@ -185,8 +238,12 @@
       base+=screw*.16*architectural;
       float ribs=1.-smoothstep(.02,.03,abs(fract(uv.y*4.)-.5));
       base*=1.-ribs*.085*architectural;
-      float brushing=(.5+.5*sin(uv.y*410.+noise(uv*3.)*4.))*fineDetail;
-      roughness=.33+.19*brushing+.08*broad;
+      // Integrate the brushed finish once it becomes smaller than a pixel;
+      // distant armour must not turn into bands of bright parallel lines.
+      float brushPhase=uv.y*980.+broad*4.;
+      float brushFilter=1.-smoothstep(.65,2.8,fwidth(brushPhase));
+      float brushing=.5+.5*sin(brushPhase)*brushFilter*fineDetail;
+      roughness=.32+.12*brushing+.12*broad;
       float scratch=(1.-smoothstep(.008,.025,abs(fract(uv.y*4.3+noise(vec2(uv.x*1.1,0.))*.4)-.5)))*step(.62,noise(uv*vec2(2.,.25)))*fineDetail;
       base+=vec3(.035,.045,.05)*scratch;
     } else if (m<1.5) {
@@ -269,6 +326,14 @@
       organicHeight=clump*.014+leafShape*.007*fineDetail;
       roughness=.88;metalness=0.;
     } else if(m<12.5) {
+      // The distant ocean and the original 8 km port plane share a datum.
+      // Keep exactly one surface where they overlap, including away from a boat.
+      if(m>12.04&&m<12.06&&max(abs(vWorld.x),abs(vWorld.z))<=4000.)discard;
+      if(vAnchor.y<0.&&uSeaMotion.w>.5){
+        vec2 seaOffset=abs(vWorld.xz-uSeaOrigin.xy);
+        if(m<12.1&&max(seaOffset.x,seaOffset.y)<uSeaOrigin.z)discard;
+        if(m>12.1){vec3 w=seaField(vWorld.xz);n=normalize(vec3(-w.y,1.,-w.z));}
+      }
       base=vec3(.035,.12,.15)*(.9+sin(uv.x*9.+uEffects.x)*sin(uv.y*7.-uEffects.x*.7)*.1);
       roughness=.13;metalness=.35;
     } else if(m<13.5) {
@@ -283,10 +348,15 @@
       }else{
         float etage=3.05+.55*fract(style*7.31),pas=2.25+1.35*fract(style*3.17);
         float largeur=.34+.30*fract(style*5.73),hauteur=.42+.22*fract(style*9.11);
-        vec2 g=vec2(uv.x/pas,uv.y/etage),cellule=floor(g),f=fract(g),aa=max(fwidth(g),vec2(.0001));
+        bool sideX=abs(vFaceNormal.x)>abs(vFaceNormal.z);float faceW=sideX?vDimensions.z:vDimensions.x;
+        float faceX=(sideX?vLocal.z:vLocal.x)*faceW+faceW*.5,margin=min(.8,faceW*.2),span=max(.01,faceW-2.*margin),columns=max(1.,floor(span/pas)),stepX=span/columns;
+        float edge=step(margin,faceX)*step(faceX,faceW-margin)*step(1.7,faceW);
+        vec2 g=vec2((faceX-margin)/stepX,uv.y/etage),cellule=floor(g),f=fract(g),aa=max(fwidth(g),vec2(.0001));
         float haut=step(4.3,uv.y),rez=1.-haut;
         float fenetre=(1.-smoothstep(largeur*.5-aa.x,largeur*.5+aa.x,abs(f.x-.5)))*(1.-smoothstep(hauteur*.5-aa.y,hauteur*.5+aa.y,abs(f.y-.56)))*haut;
-        float baie=fract(uv.x/5.4),ab=max(fwidth(uv.x/5.4),.0001);
+        float facadeTop=vWorld.y+(.5-vLocal.y)*vDimensions.y;
+        fenetre*=step((cellule.y+.56+hauteur*.5)*etage,facadeTop-.30);
+        float bays=max(1.,floor(span/5.4)),bayX=(faceX-margin)/span*bays,baie=fract(bayX),ab=max(fwidth(bayX),.0001);
         float vitrine=(1.-smoothstep(.40-ab,.40+ab,abs(baie-.5)))*smoothstep(.5,.62,uv.y)*(1.-smoothstep(3.2,3.3,uv.y))*rez;
         float bandeau=smoothstep(3.5,3.58,uv.y)*(1.-smoothstep(4.05,4.12,uv.y));
         float corniche=(1.-smoothstep(0.,.06+aa.y,f.y))*haut;
@@ -298,9 +368,23 @@
         mur=mix(mur,enduit*.5,bandeau);
         float lointain=smoothstep(.3,.75,max(aa.x,aa.y));
         float verre=mix(max(fenetre,vitrine),mix(largeur*hauteur,.32,rez),lointain);
-        base=mix(mur,vitre,verre);
+        verre*=edge;base=mix(mur,vitre,verre);
         roughness=mix(.86,.12,verre);metalness=mix(0.,.45,verre);
-        urbanHeight=-verre*.035;
+        urbanHeight=-verre*.035;pbrWeight=1.-verre;
+        // Fixed dwelling occupancy, smoothly fading at dusk and after midnight.
+        // Runs in the existing facade pass: no new triangles or per-window lights.
+        float home=hash(cellule+floor(vAnchor.xz*.31)+style*31.);
+        float occupied=smoothstep(home-.025,home+.025,mix(.16,.49,evening));
+        float shop=step(.18,hash(vec2(floor(bayX),floor(vAnchor.x+vAnchor.z))))*mix(.18,.84,evening);
+        float curtain=.78+.22*smoothstep(.12,.22,abs(f.x-.5));
+        vec3 lamp=mix(vec3(1.,.58,.25),vec3(.92,.87,.66),step(.78,home));
+        float frame=(1.-smoothstep(.010,.025+aa.x,abs(f.x-.5)))*fenetre;
+        frame=max(frame,(1.-smoothstep(.008,.021+aa.y,abs(f.y-.53)))*fenetre);
+        frame*=1.-lointain;
+        base=mix(base,enduit*.45,frame*.82);
+        float blinds=mix(1.,.58+.42*smoothstep(.10,.28,abs(f.x-.5)),step(.64,home));
+        windowGlow=lamp*night*edge*mix(fenetre*occupied*curtain*blinds*(.80+.65*home),vitrine*shop*1.10,rez)*(1.-lointain*.65)*(1.-frame*.92);
+
       }
     } else if(m<14.5) {
       // PDR : asphalte, granulat fin, reprises et fissures.
@@ -309,7 +393,7 @@
       float reprise=smoothstep(.55,.75,noise(uv*.18+3.));
       float fissure=(1.-smoothstep(0.,.035,abs(noise(uv*.9)-.5)))*step(.55,noise(uv*.23+9.))*fineDetail;
       base=teinte*(.82+granulat*.22+broad*.12)*(1.-reprise*.12)*(1.-fissure*.35);
-      roughness=mix(.9,.5,uPhoto);metalness=0.;   // BITUME : en Fine, l'asphalte devient légèrement humide (il renvoie le ciel)
+      roughness=.9;metalness=0.;
       urbanHeight=granulat*.006-fissure*.01;
     } else if(m<15.5) {
       // PDR : dallage de pierre, appareil à joints décalés.
@@ -324,18 +408,38 @@
       base=(vColor.w>.5?vColor.rgb:vec3(.5))*(.94+grain*.06);
       roughness=.22;metalness=.35;
     } else if(m<17.5) {
-      // BITUME : peinture satinée des monoplaces, qui garde sa couleur sous le ciel en incidence rasante.
+      // BITUME : peinture satinée 17, couleur conservée sous le ciel en incidence rasante.
       base=(vColor.w>.5?vColor.rgb:vec3(.5))*(.95+grain*.05);
-      roughness=mix(.46,.3,uPhoto);metalness=.04;   // BITUME : en Fine, vernis plus brillant (reflet du ciel sur la carrosserie)
+      roughness=mix(.46,.3,uPhoto);metalness=.04;
     } else {
       // PDR : tissu et peau des figurines.
       base=(vColor.w>.5?vColor.rgb:vec3(.5))*(.9+grain*.14);
       roughness=.92;metalness=0.;
     }
-    if(vColor.w>.5&&m<12.5){
+    if(m>19.05&&m<19.15){
+      // Individually modeled glass on the nearby Marseille facades.
+      float home=hash(floor(vAnchor.xz*7.)+floor(vAnchor.y*3.));
+      float occupied=smoothstep(home-.025,home+.025,mix(.16,.49,evening));
+      roughness=.13;metalness=.35;
+      windowGlow=mix(vec3(1.,.58,.25),vec3(.92,.87,.66),step(.78,home))*night*occupied*1.7;
+    }
+    if(vColor.w>.5&&m<12.5&&!(m>11.5&&vAnchor.y<0.)){
       vec3 tint=vColor.rgb*(.88+grain*.2)*(1.-panel*.12)*(m<3.5?.65:1.);
       base=m>7.5?base*.35+tint*.65:tint;
     }
+    if(vObject>.5&&m<2.5){
+      // Local edge wear survives instance tinting and follows the moving plate.
+      // It cannot bring the architecture's world-space panel grid onto a gun.
+      vec2 localUV=an.y>.65?vLocal.xz:(an.x>an.z?vLocal.zy:vLocal.xy);
+      float edgeDistance=.5-max(abs(localUV.x),abs(localUV.y));
+      float wear=(1.-smoothstep(.008,.025+fwidth(edgeDistance),edgeDistance))*(.52+.48*broad);
+      float scuff=(1.-smoothstep(.015,.055,abs(sin(uv.y*173.+grain*11.))))*smoothstep(.52,.74,broad)*fineDetail;
+      base*=.82+.24*broad+.14*grain;
+      base=mix(base,base*1.28+vec3(.055,.065,.07),wear*.7);
+      base+=vec3(.04,.045,.048)*scuff;
+      roughness=mix(roughness,.21,wear*.82);
+    }
+    if(m>18.5&&m<19.5){base=vColor.rgb;roughness=.08;metalness=.48;}
     float height=(1.-panel)*.012+grain*.003*fineDetail;
     if(m>1.5&&m<2.5){
       vec2 treadUV=mat2(.707,-.707,.707,.707)*uv*12.;
@@ -346,6 +450,27 @@
     if(m>7.5&&m<9.5)n=reliefNormal(n,(noise(uv*7.)-.5)*.009*fineDetail);
     if(m>9.5&&m<11.5)n=reliefNormal(n,organicHeight*fineDetail);
     if(m>12.5&&m<15.5)n=reliefNormal(n,urbanHeight*fineDetail);
+    if(m>2.5&&m<3.5)pbrWeight=1.;
+    if(m>13.5&&m<14.5){pbrWeight=1.;pbrLayer=0.;}
+    if(uPbrReady>.5&&pbrWeight>0.){
+      vec2 texUV=uv/(pbrLayer<.5?3.:2.);vec3 coord=vec3(texUV,pbrLayer);
+      vec3 albedo=texture(uPbrAlbedo,coord).rgb;
+      if(pbrLayer>.5)albedo*=vColor.w>.5?vColor.rgb*1.9:vec3(1.25);
+      base=mix(base,albedo,pbrWeight*.92);roughness=mix(roughness,clamp(texture(uPbrRough,coord).r,.35,.98),pbrWeight);
+      vec3 mapN=texture(uPbrNormal,coord).xyz*2.-1.;mapN.xy*=.50;
+      vec3 dp1=dFdx(vWorld),dp2=dFdy(vWorld);vec2 duv1=dFdx(texUV),duv2=dFdy(texUV);
+      vec3 t=cross(dp2,geometricNormal)*duv1.x+cross(geometricNormal,dp1)*duv2.x;
+      vec3 b=cross(dp2,geometricNormal)*duv1.y+cross(geometricNormal,dp1)*duv2.y;
+      float inv=inversesqrt(max(max(dot(t,t),dot(b,b)),1e-10));
+      vec3 mapped=normalize(mat3(t*inv,b*inv,geometricNormal)*mapN);n=normalize(mix(n,mapped,pbrWeight));metalness=0.;
+    }
+    if(m>19.5&&m<20.5){base=vColor.rgb*(.96+noise(uv*210.)*.04);roughness=.53;metalness=0.;}
+    // Pixel-scale normal variation broadens highlights instead of shimmering.
+    vec3 ndx=dFdx(n),ndy=dFdy(n);
+    roughness=min(.98,sqrt(roughness*roughness+min(.16,max(dot(ndx,ndx),dot(ndy,ndy))*.28)));
+    float wet=uWeather.x*clamp(n.y,0.,1.)*step(13.5,m)*step(m,15.5);
+    float puddle=smoothstep(.48,.72,noise(vWorld.xz*.29))*wet;
+    base*=1.-wet*.22;roughness=mix(roughness,.105,puddle);metalness=mix(metalness,.24,puddle);
     vec3 view=normalize(uEye-vWorld);
     float distanceToEye=length(uEye-vWorld);
     vec3 light=vec3(.075,.10,.12)*(.72+.28*n.y);
@@ -362,6 +487,7 @@
       vec3 l=toLight/max(d,.001);
       float attenuation=(i<2?.27:.13)/(1.+d*d*.26);
       if(uLightRange[i]>0.)attenuation*=1.-smoothstep(uLightRange[i]*.35,uLightRange[i],d);
+      if(uLightCone[i].x>0.)attenuation*=smoothstep(uLightCone[i].x,uLightCone[i].y,dot(-l,uLightDirection[i]));
       float diffuse=max(dot(n,l),0.);
       float visibility=i==0?shadow(geometricNormal,l,0):i==1&&uEnvironment.x<.5?shadow(geometricNormal,l,1):1.;
       light+=uLightColor[i]*attenuation*(diffuse*visibility+.035);
@@ -383,12 +509,23 @@
     vec3 muzzleDirection=muzzleVector/max(muzzleDistance,.001);
     light+=vec3(1.,.48,.12)*muzzlePower*(.22+.78*max(dot(n,muzzleDirection),0.));
     specular+=vec3(1.,.48,.12)*muzzlePower*metalHighlight(n,view,muzzleDirection,roughness,f0);
-    // BITUME : pas de lumière ajoutée au cockpit (elle rosissait la laque rouge) ; il est éclairé comme le monde.
+    // BITUME : aucune lumière artificielle d’arme sur le cockpit ; éclairage du monde.
     vec3 color=base*light+specular;
     // Analytic environment reflection: the biome's sky/ground hemisphere and
     // a soft indoor ceiling. This is intentionally not a scene-mirror pass.
     vec3 reflected=reflect(-view,n);
     vec3 sky=mix(uSkyBottom,uSkyTop,smoothstep(0.,1.,reflected.y));
+    if(outdoors>.5&&roughness<.65&&metalness>.25){
+      vec2 cloudUV=reflected.xz/max(.13,reflected.y+.18)*1.8+uCloudOffset;
+      // One broad procedural lobe, filtered by roughness; no cubemap pass.
+      float field=noise(cloudUV)*.8+.2;
+      float cloud=smoothstep(.49-roughness*.08,.73+roughness*.08,field)*smoothstep(-.01,.24,reflected.y);
+      float sun=max(0.,dot(reflected,uSunDirection));
+      float skyLight=clamp(max(max(uSkyBottom.r,uSkyBottom.g),uSkyBottom.b)*1.5,.025,1.);
+      vec3 cloudColor=mix(uSkyBottom,vec3(1.12,1.10,1.01)*skyLight,.62)+uSunColor*pow(sun,6.)*.12;
+      sky=mix(sky,cloudColor,cloud*.66);
+      sky+=uSunColor*pow(sun,mix(48.,10.,roughness))*.16;
+    }
     vec3 outside=mix(uAmbient*.20,sky,smoothstep(-.16,.18,reflected.y));
     vec3 inside=mix(vec3(.02,.03,.035),vec3(.18,.24,.27),smoothstep(-.45,.75,reflected.y));
     vec3 environmentReflection=mix(inside,outside,outdoors);
@@ -408,23 +545,29 @@
       color+=environmentReflection*environmentFresnel*(1.-roughness)*(1.-roughness)*.5;
     }
     float pulse=.94+.06*sin(uEffects.x*2.2+vWorld.y*3.);
-    color+=base*emission*pulse*1.55;
+    color+=base*emission*pulse*1.55+windowGlow;
     vec3 fogColor=mix(vec3(.009,.018,.024),uFogColor,outdoors);
     float fog=1.-exp(-distanceToEye*mix(.014+.008*exp(-max(vWorld.y,0.)*.7),uEnvironment.y,outdoors));
     if(vOverlay>.5) fog=0.;
     color=mix(color,fogColor,min(fog,.86));
     color=color/(color+vec3(.76));
     color=pow(max(color,vec3(0.)),vec3(.4545));
+    // PDR (voile) : hors de la vue du joueur, le dehors s'assombrit et perd ses couleurs ; à force 0, rien ne change.
+    if(uVoileForce>0.&&outdoors>.5){
+      float seen=texture(uVoile,(vWorld.xz-uVoileZone.xy)*uVoileZone.zw).r;
+      vec3 dull=vec3(dot(color,vec3(.299,.587,.114)))*vec3(.93,.97,1.04);
+      color=mix(color,mix(color,dull,.6)*.42,uVoileForce*(1.-seen));
+    }
     vec2 screen=gl_FragCoord.xy/uResolution;
     float vignette=pow(max(0.,16.*screen.x*screen.y*(1.-screen.x)*(1.-screen.y)),.13);
-    // PDR : vignettage adouci ; en vue RTS, les escouades au bord de l'écran doivent rester lisibles.
-    color*=mix(.84,1.,vignette);
+    color*=mix(.59,1.,vignette);
     float hurt=uEffects.z*(1.-vignette*.65);
     color=mix(color,vec3(.64,.035,.015),clamp(hurt*.68,0.,.6));
     float waveRadius=(1.-clamp(uEffects.w,0.,1.))*.8;
     float wave=exp(-abs(length((screen-.5)*vec2(uResolution.x/uResolution.y,1.))-waveRadius)*85.)*uEffects.w;
     color+=vec3(.03,.27,.23)*wave;
-    fragColor=vec4(color,1.);
+    float reflection=(vOverlay>.5||emission>.5)?0.:clamp((1.-roughness)*(.13+metalness*.6)+puddle*.30,0.,.75);
+    fragColor=vec4(color,reflection);
   }`;
 
   // A separate translucent pass keeps smoke/steam out of depth atlases and
@@ -437,18 +580,23 @@
       float inner=clamp(iPosition.w-20.,0.,.999);
       particlePosition.xz*=mix(inner*.5,.5,side)/max(radial,.0001);
     }
-    vWorld=rotation*(particlePosition*iScale.xyz)+iPosition.xyz;`);
+    vWorld=rotation*(particlePosition*iScale.xyz)+iPosition.xyz;`)
+    // PDR (grain) : le grain des fumées et des flammes est pris à l'échelle d'une particule de 2,6 m au plus ; au-delà
+    // (colonnes de fumée, nuages de gaz vus de 300 à 900 m), il ne tombe plus sous le pixel en semis de points.
+    .replace('vSurface=vObject>.5?aPosition*iScale.xyz:vWorld;','vSurface=(vObject>.5?aPosition*iScale.xyz:vWorld)*min(1.,2.6/max(max(abs(iScale.x),abs(iScale.y)),max(abs(iScale.z),.001)));');
   const FX_FRAG=`#version 300 es
   precision highp float;
   in vec3 vWorld;
   in vec3 vNormal;
   in vec3 vSurface;
+  in vec3 vLocal;
+  in vec3 vFaceNormal;flat in vec3 vDimensions;
   flat in float vMaterial;
   flat in float vEmission;
   flat in float vOutdoor;
   flat in vec4 vColor;
   uniform vec3 uEye;
-  uniform vec3 uAmbient;
+  uniform vec3 uAmbient;uniform vec3 uSkyTop;uniform vec3 uSkyBottom;
   uniform vec3 uFogColor;
   uniform vec2 uEnvironment;
   uniform float uTime;
@@ -463,16 +611,26 @@
     // Only cosmetic volumes soften toward their silhouette.
     float edge=vMaterial>=15.5?1.:pow(max(dot(normalize(vNormal),toEye/distanceToEye),0.),.65);
     float grain=clamp(noise(vSurface),.1,1.);
-    bool fire=vMaterial>13.5&&vMaterial<14.5;
+    bool fire=vMaterial>13.5&&vMaterial<14.5,smoke=vMaterial>14.5&&vMaterial<15.5,spark=vMaterial>16.5&&vMaterial<17.5;
     float heat=fire?smoothstep(.22,.83,noise(vSurface*vec3(1.65,.72,1.65)-vec3(0.,uTime*2.7,0.))):0.;
     float alpha=clamp(vColor.a*edge*(.58+grain*.42)*(fire?mix(.28,1.,heat):1.),0.,.94);
+    if(smoke){
+      vec3 flow=vSurface*vec3(.91,.65,.91)-vec3(0.,uTime*.30,0.);
+      float billow=noise(flow)*.66+noise(flow*2.1+vec3(7.,3.,11.))*.34;
+      alpha*=smoothstep(.16,.76,billow);
+    }
+    if(spark)alpha*=.30+.70*smoothstep(-.5,.18,vLocal.y);
+    bool glass=vMaterial>17.5&&vMaterial<18.5;if(glass)alpha=mix(vColor.a,.70,pow(1.-abs(dot(normalize(vNormal),toEye/distanceToEye)),3.));
     if(alpha<.004)discard;
     vec3 color=vColor.rgb*(uAmbient*.65+vec3(.34)+max(vEmission,0.)*1.25);
+    if(glass){vec3 r=reflect(-toEye/distanceToEye,normalize(vNormal));color=mix(color,mix(uSkyBottom,uSkyTop,smoothstep(0.,1.,r.y)),.68);}
     if(fire){
       vec3 temperature=mix(vec3(.72,.025,.002),vec3(1.8,.23,.008),smoothstep(.10,.65,heat));
       temperature=mix(temperature,vec3(2.7,1.45,.23),smoothstep(.60,1.,heat));
       color=temperature*(.55+max(vEmission,0.)*.45)*(.7+grain*.3);
     }
+    if(smoke)color*=.74+.40*grain;
+    if(spark)color=mix(vec3(1.3,.10,.005),vec3(2.6,1.7,.52),smoothstep(-.25,.42,vLocal.y))*(.5+vEmission*.45);
     float fog=1.-exp(-distanceToEye*mix(.018,uEnvironment.y,clamp(vOutdoor,0.,1.)));
     color=mix(color,uFogColor,min(.86,fog));
     color=pow(max(color/(color+vec3(.76)),vec3(0.)),vec3(.4545));
@@ -481,7 +639,8 @@
 
   const DEPTH_FRAG=`#version 300 es
   precision highp float;
-  void main() {}`;
+  flat in float vMaterial;
+  void main() {if(vMaterial>12.1&&vMaterial<12.4)discard;}`;
   const POST_VERT=`#version 300 es
   precision highp float;
   out vec2 vUV;
@@ -501,7 +660,7 @@
   uniform vec3 uSunDirection;
   uniform vec3 uSunColor;
   uniform vec2 uSkyFov;
-  uniform vec2 uSkyMotion;
+  uniform vec2 uSkyMotion;uniform vec4 uWeather;uniform vec2 uCloudOffset;
   out vec4 fragColor;
   float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
   float noise(vec2 p){
@@ -516,32 +675,57 @@
     vec3 color=mix(uSkyBottom,uSkyTop,pow(elevation,.55));
     float sun=max(0.,dot(ray,uSunDirection));
     color+=uSunColor*(pow(sun,48.)*.20+pow(sun,650.)*.65+smoothstep(.99925,.99965,sun)*2.8);
-    vec2 cloudUV=ray.xz/max(.13,ray.y+.18)*1.8+vec2(uSkyMotion.x*.006*uSkyMotion.y,0.);
-    float clouds=smoothstep(.49,.73,cloud(cloudUV))*smoothstep(-.01,.24,ray.y);
-    vec3 cloudColor=mix(uSkyBottom,vec3(1.12,1.10,1.01),.62)+uSunColor*pow(sun,6.)*.12;
-    color=mix(color,cloudColor,clouds*.66);
-    // Two distant ridgelines close the horizon without a flat, fog-coloured void.
-    float angle=atan(ray.z,ray.x);
-    float ridge=.018+noise(vec2(angle*5.,1.7))*.075+noise(vec2(angle*13.,4.))*.025;
-    color=mix(color,mix(uSkyFog,uSkyBottom,.43),1.-smoothstep(ridge-.003,ridge+.003,ray.y));
-    float nearRidge=-.025+noise(vec2(angle*7.+25.,2.8))*.065;
-    color=mix(color,uSkyFog*.80,1.-smoothstep(nearRidge-.002,nearRidge+.002,ray.y));
+    vec2 cloudUV=ray.xz/max(.13,ray.y+.18)*1.8+uCloudOffset;
+    float clouds=smoothstep(.68-uWeather.y*.49,.88-uWeather.y*.41,cloud(cloudUV))*smoothstep(-.03,.16,ray.y);
+    float skyLight=clamp(max(max(uSkyBottom.r,uSkyBottom.g),uSkyBottom.b)*1.5,.025,1.);
+      vec3 cloudColor=mix(uSkyBottom,vec3(1.12,1.10,1.01)*skyLight,.62)+uSunColor*pow(sun,6.)*.12;
+    cloudColor=mix(cloudColor,vec3(.075,.09,.12)*skyLight,uWeather.z*.84);color=mix(color,cloudColor,clouds*.92);color+=vec3(.65,.72,.90)*uWeather.w;
+    // The geographic coastline supplies real silhouettes; keep the open sea horizon clear.
+    float night=1.-smoothstep(.025,.16,max(max(uSkyBottom.r,uSkyBottom.g),uSkyBottom.b));
+    vec2 stars=ray.xz/max(.08,ray.y)*310.;vec2 starCell=floor(stars);float starSeed=hash(starCell);
+    float sparkle=step(.997,starSeed)*exp(-dot(fract(stars)-.5,fract(stars)-.5)*90.);
+    color+=vec3(.35,.42,.55)*sparkle*night*(1.-clouds)*smoothstep(.08,.3,ray.y);
     color=color/(color+vec3(.76));color=pow(max(color,vec3(0.)),vec3(.4545));
     float vignette=pow(max(0.,16.*vUV.x*vUV.y*(1.-vUV.x)*(1.-vUV.y)),.13);
-    fragColor=vec4(color*mix(.76,1.,vignette),1.);
+    fragColor=vec4(color*mix(.76,1.,vignette),0.);
+  }`;
+  // Screen-space ray tracing of the current opaque scene; analytic sky remains the fallback.
+  const SSR_FRAG=`#version 300 es
+  precision highp float;
+  in vec2 vUV;uniform sampler2D uColor;uniform sampler2D uDepth;
+  uniform vec4 uProjection;uniform vec2 uPixel;out vec4 fragColor;
+  float distanceZ(float depth){return uProjection.w/(depth*2.-1.+uProjection.z);}
+  vec3 position(vec2 uv){float z=distanceZ(texture(uDepth,uv).r);return vec3((uv*2.-1.)*uProjection.xy*z,-z);}
+  vec2 project(vec3 p){return .5+.5*p.xy/(-p.z*uProjection.xy);}
+  void main(){
+    fragColor=vec4(0.);vec4 original=texture(uColor,vUV);float depth=texture(uDepth,vUV).r;
+    vec3 p=position(vUV),dx=dFdx(p),dy=dFdy(p),n=normalize(cross(dx,dy));
+    if(original.a<.06||depth>=.999999||-p.z>200.||-p.z<.12)return;
+    vec3 eye=normalize(-p);if(dot(n,eye)<0.)n=-n;vec3 r=reflect(-eye,n),origin=p+n*.055;
+    float prev=0.,travel=.16,weight=0.;vec2 hit=vec2(0.);
+    for(int i=0;i<48;i++){
+      float oldTravel=travel;travel+=.24+float(i)*.085;vec3 q=origin+r*travel;if(q.z>-.08)break;vec2 uv=project(q);
+      if(min(uv.x,uv.y)<.012||max(uv.x,uv.y)>.988)break;
+      float sceneZ=distanceZ(texture(uDepth,uv).r),delta=-q.z-sceneZ;
+      if(delta>0.&&prev<=0.&&delta<1.2+travel*.025){
+        float lo=oldTravel,hi=travel;for(int j=0;j<5;j++){float mid=(lo+hi)*.5;vec3 v=origin+r*mid;vec2 at=project(v);float d=-v.z-distanceZ(texture(uDepth,at).r);if(d>0.)hi=mid;else lo=mid;}
+        hit=project(origin+r*(lo+hi)*.5);float edge=min(min(hit.x,hit.y),min(1.-hit.x,1.-hit.y));
+        weight=smoothstep(.01,.12,edge)*(1.-smoothstep(70.,115.,travel));break;
+      }prev=delta;
+    }
+    if(weight>0.){float fresnel=.35+.65*pow(1.-max(dot(n,eye),0.),3.);fragColor=vec4(texture(uColor,hit).rgb,weight*original.a*fresnel);}
   }`;
   const POST_FRAG=`#version 300 es
   precision highp float;
   in vec2 vUV;
   uniform sampler2D uScene;
-  uniform sampler2D uBloom;
+  uniform sampler2D uBloom;uniform sampler2D uReflection;uniform int uReflections;
   uniform vec2 uTexel;
   uniform int uPass;
   out vec4 fragColor;
   vec3 bright(vec2 uv){
     vec3 c=texture(uScene,uv).rgb;
-    // PDR : ville en plein jour. Seuls le feu, les émissifs et les reflets francs débordent ; un toit clair ne voile plus l'image.
-    return c*smoothstep(.86,.98,max(max(c.r,c.g),c.b));
+    return c*smoothstep(.56,.86,max(max(c.r,c.g),c.b));
   }
   void main(){
     if(uPass==0){
@@ -555,9 +739,111 @@
     c+=texture(uBloom,vUV-axis*1.384615).rgb*.316216;
     c+=texture(uBloom,vUV+axis*3.230769).rgb*.070270;
     c+=texture(uBloom,vUV-axis*3.230769).rgb*.070270;
-    if(uPass==2)c=texture(uScene,vUV).rgb+c*.28;
+    if(uPass==2){vec4 scene=texture(uScene,vUV),reflection=texture(uReflection,vUV);c=scene.rgb+c*.28;if(uReflections==1)c=mix(c,reflection.rgb,min(.70,reflection.a)*step(.025,scene.a));}
     fragColor=vec4(c,1.);
   }`;
+
+  // PDR (éclairage) : bibliothèque d'éclairage pour les shaders du jeu (la foule sur le GPU). Ce sont les formules du shader
+  // du monde, pour une surface du dehors : ambiance, soleil et son ombre (même atlas, même noyau, même biais), lampes de
+  // passage, reflet du ciel, émission, puis brouillard, tonemap, gamma et vignettage. Le shader du monde n'en dépend pas :
+  // son code reste celui de FERRO. À insérer après « precision highp float; ». Uniformes posées par renderer.pdr.lier.
+  // Deux apports de METAL 0.8 au shader du monde n'y sont pas, pour que la foule garde son image et son coût : la rugosité
+  // élargie là où la normale varie d'un pixel à l'autre, et le reflet des nuages sur les surfaces lisses. Le vignettage
+  // (0,59 ici, comme dans FRAG) suit le réglage de création : create le remplace comme worldFragment (pdrGlsl).
+  const PDR_GLSL=`
+  uniform highp sampler2D uPdrOmbre;
+  uniform mat4 uPdrMatriceOmbre;
+  uniform vec4 uPdrOmbreReglages;
+  uniform vec3 uPdrOeil;
+  uniform vec3 uPdrSoleil;
+  uniform vec3 uPdrCouleurSoleil;
+  uniform vec3 uPdrAmbiance;
+  uniform vec3 uPdrBrouillard;
+  uniform vec3 uPdrCielHaut;
+  uniform vec3 uPdrCielBas;
+  uniform vec4 uPdrEnvironnement;
+  uniform vec2 uPdrResolution;
+  uniform vec3 uPdrLumierePosition[12];
+  uniform vec3 uPdrLumiereCouleur[12];
+  uniform float uPdrLumierePortee[12];uniform vec3 uPdrLumiereDirection[12];uniform vec2 uPdrLumiereCone[12];
+  uniform int uPdrLumieres;
+  float pdrEchantillon(vec2 uv,vec2 decalage,float profondeur,vec2 pente){
+    float texel=uPdrOmbreReglages.y;
+    vec2 tap=uv+decalage*texel,centre=(floor(tap/texel)+.5)*texel;
+    return step(profondeur+dot(pente,centre-uv),texture(uPdrOmbre,tap).r);
+  }
+  float pdrOmbreSoleil(vec3 monde,vec3 n){
+    if(uPdrOmbreReglages.x<.5)return 1.;
+    vec4 projete=uPdrMatriceOmbre*vec4(monde+n*.014,1.);
+    vec3 p=projete.xyz/projete.w*.5+.5;
+    vec3 dx=dFdx(p),dy=dFdy(p);
+    float determinant=dx.x*dy.y-dx.y*dy.x;
+    vec2 pente=abs(determinant)>.00000000001?vec2(dx.z*dy.y-dy.z*dx.y,dy.z*dx.x-dx.z*dy.x)/determinant:vec2(0.);
+    if(projete.w<=0.||p.z<=0.||p.z>=1.||min(p.x,p.y)<=.001||max(p.x,p.y)>=.999)return 1.;
+    float biais=.00014+.00024*(1.-max(dot(n,uPdrSoleil),0.)),z=p.z-biais;
+    vec2 uv=uPdrOmbreReglages.z>.5?p.xy:p.xy*.5+vec2(.5,0.);
+    // Full-atlas sun uses projection UVs directly; a quarter-atlas tile has
+    // half-sized UVs, hence twice the receiver-plane gradient.
+    pente*=uPdrOmbreReglages.z>.5?1.:2.;
+    float texel=uPdrOmbreReglages.y;
+    vec2 cell=uv/texel,f=fract(cell)-.5,centre=(floor(cell)+.5)*texel;
+    vec3 wx=vec3(.5*(.5-f.x)*(.5-f.x),.75-f.x*f.x,.5*(.5+f.x)*(.5+f.x));
+    vec3 wy=vec3(.5*(.5-f.y)*(.5-f.y),.75-f.y*f.y,.5*(.5+f.y)*(.5+f.y));
+    float v=0.;
+    for(int y=0;y<3;y++)for(int x=0;x<3;x++){
+      vec2 tap=centre+vec2(float(x-1),float(y-1))*texel;
+      v+=wx[x]*wy[y]*step(z+dot(pente,tap-uv),texture(uPdrOmbre,tap).r);
+    }
+    float bord=min(min(p.x,p.y),min(1.-p.x,1.-p.y));
+    return mix(1.,mix(.055,1.,v),smoothstep(.012,.085,bord));
+  }
+  vec3 pdrFresnel(float c,vec3 f0){float q=1.-clamp(c,0.,1.),q2=q*q;return f0+(1.-f0)*q2*q2*q;}
+  vec3 pdrReflet(vec3 n,vec3 vue,vec3 l,float rugosite,vec3 f0){
+    vec3 h=normalize(vue+l);
+    float nv=max(dot(n,vue),.001),nl=max(dot(n,l),0.),nh=max(dot(n,h),0.);
+    float a=max(.055,rugosite*rugosite),a2=a*a,d=nh*nh*(a2-1.)+1.;
+    float k=(rugosite+1.)*(rugosite+1.)*.125;
+    return pdrFresnel(max(dot(vue,h),0.),f0)*min(a2/max(3.141593*d*d,.00001)/max(4.*(nv*(1.-k)+k)*(nl*(1.-k)+k),.001),12.)*nl;
+  }
+  /** Couleur linéaire, avant brouillard et tonemap, d'une surface du dehors ; ombre : visibilité du soleil (pdrOmbreSoleil). */
+  vec3 pdrEclairer(vec3 base,vec3 n,vec3 monde,float rugosite,float metal,float emission,float ombre){
+    vec3 vue=normalize(uPdrOeil-monde),f0=mix(vec3(.04),clamp(base,vec3(.025),vec3(.92)),metal);
+    vec3 lumiere=uPdrAmbiance*(.72+.28*max(n.y,0.)),reflet=vec3(0.);
+    for(int i=0;i<12;i++){
+      if(i>=uPdrLumieres)break;
+      vec3 versLumiere=uPdrLumierePosition[i]-monde;
+      float d=length(versLumiere);
+      vec3 l=versLumiere/max(d,.001);
+      float attenuation=(i<2?.27:.13)/(1.+d*d*.26);
+      if(uPdrLumierePortee[i]>0.)attenuation*=1.-smoothstep(uPdrLumierePortee[i]*.35,uPdrLumierePortee[i],d);
+      if(uPdrLumiereCone[i].x>0.)attenuation*=smoothstep(uPdrLumiereCone[i].x,uPdrLumiereCone[i].y,dot(-l,uPdrLumiereDirection[i]));
+      lumiere+=uPdrLumiereCouleur[i]*attenuation*(max(dot(n,l),0.)+.035);
+      reflet+=uPdrLumiereCouleur[i]*attenuation*pdrReflet(n,vue,l,rugosite,f0)*2.4;
+    }
+    lumiere+=uPdrCouleurSoleil*max(dot(n,uPdrSoleil),0.)*ombre;
+    reflet+=uPdrCouleurSoleil*ombre*pdrReflet(n,vue,uPdrSoleil,rugosite,f0);
+    vec3 couleur=base*lumiere+reflet;
+    vec3 r=reflect(-vue,n),ciel=mix(uPdrCielBas,uPdrCielHaut,smoothstep(0.,1.,r.y));
+    vec3 milieu=mix(mix(uPdrAmbiance*.20,ciel,smoothstep(-.16,.18,r.y)),uPdrAmbiance*.85,rugosite*rugosite*.8);
+    float rasant=pow(1.-max(dot(n,vue),0.),5.);
+    couleur+=milieu*(f0+(max(vec3(1.-rugosite),f0)-f0)*rasant)*(.18+1.3*(1.-rugosite)*(1.-rugosite))*(.5+metal*2.5);
+    return couleur+base*emission*(.94+.06*sin(uPdrEnvironnement.z*2.2+monde.y*3.))*1.55;
+  }
+  /** Brouillard, tonemap, gamma et vignettage du monde : la sortie est celle de la cible de scène (RGBA8, avant le halo). */
+  vec3 pdrFinir(vec3 couleur,vec3 monde){
+    float brume=1.-exp(-length(uPdrOeil-monde)*uPdrEnvironnement.y);
+    couleur=mix(couleur,uPdrBrouillard,min(brume,.86));
+    couleur=pow(max(couleur/(couleur+vec3(.76)),vec3(0.)),vec3(.4545));
+    vec2 ecran=gl_FragCoord.xy/uPdrResolution;
+    return couleur*mix(.59,1.,pow(max(0.,16.*ecran.x*ecran.y*(1.-ecran.x)*(1.-ecran.y)),.13));
+  }`;
+  // Les valeurs que le shader du monde prend sans atmosphère (setWorld sans environnement).
+  const PDR_INDOOR=Object.freeze({sunDirection:[.4,.8,.3],sunColor:[0,0,0],ambient:[.075,.10,.12],fog:[.009,.018,.024],fogDensity:.014,skyTop:[.05,.08,.10],skyBottom:[.16,.20,.22]});
+  // Uniformes de la bibliothèque, dans l'ordre où renderer.pdr.lier les pose. uPdrEnvironnement : x dehors (toujours 1),
+  // y densité du brouillard, z temps (s), w inutilisé.
+  const PDR_UNIFORMS=['uPdrOmbre','uPdrMatriceOmbre','uPdrOmbreReglages','uPdrOeil','uPdrSoleil','uPdrCouleurSoleil','uPdrAmbiance',
+    'uPdrBrouillard','uPdrCielHaut','uPdrCielBas','uPdrEnvironnement','uPdrResolution','uPdrLumierePosition','uPdrLumiereCouleur',
+    'uPdrLumierePortee','uPdrLumiereDirection','uPdrLumiereCone','uPdrLumieres'];
 
   // A closed, asymmetric crown shared with collision raycasts. Its canonical
   // 72 triangles are smaller than the old GPU sphere and remain identical in
@@ -600,14 +886,15 @@
   })();
   function foliageTriangles(){return FOLIAGE.triangles;}
   const names = ['box','sphere','cylinder','octa','ring','bevel','foliage','wedge']; // BITUME : 'wedge'
+  const shapeIndices=new Map(names.map((name,i)=>[name,i]));
   // BITUME : formes libres (carènes, mains). Une forme libre est une liste de triangles [p0, p1, p2, n0, n1, n2] tenue
   // dans le cube unité (−0,5 à 0,5) ; l'instance porte sa vraie taille dans s. Les normales sont celles du cube : le
   // nuanceur les divise par s, ce qui rend la normale du volume à sa vraie taille. Enregistrer avant FRender.create.
   const FORMES_LIBRES=new Map();
   function forme(nom,triangles){
     if(typeof nom!=='string'||!Array.isArray(triangles))throw new TypeError('forme(nom, triangles)');
-    if(!FORMES_LIBRES.has(nom)&&names.includes(nom))throw new Error('forme déjà définie par le moteur : '+nom);
-    if(!names.includes(nom))names.push(nom);
+    if(!FORMES_LIBRES.has(nom)&&shapeIndices.has(nom))throw new Error('forme déjà définie par le moteur : '+nom);
+    if(!shapeIndices.has(nom)){shapeIndices.set(nom,names.length);names.push(nom);}
     FORMES_LIBRES.set(nom,triangles);
   }
   const INDEX_OCTETS=4; // BITUME : index sur 32 bits, les formes libres dépassent les 65 536 sommets
@@ -715,6 +1002,27 @@
     return {vertices:new Float32Array(data),indices:new Uint32Array(indices),ranges};
   }
 
+  // Reuse only bit-identical primitive vertices. Keep expanded vertex storage,
+  // triangle order and public geometry snapshots intact: updateShape() can
+  // restore a primitive's original index range before editing any occurrence.
+  function indexPrimitiveVertices(source){
+    const indices=new Uint32Array(source.indices),words=new Uint32Array(source.vertices.buffer,source.vertices.byteOffset,source.vertices.length),ranges=new Map(),byName=new Map();
+    const stats={shapes:0,references:0,vertices:0,restored:0};
+    for(const name of ['box','sphere','foliage','cylinder','octa','ring','bevel','wedge']){
+      const range=source.ranges[name];if(!range||FORMES_LIBRES.has(name))continue;
+      const key=range.offset+':'+range.count;let record=ranges.get(key);
+      if(record){byName.set(name,record);continue;}
+      const first=range.offset/INDEX_OCTETS,original=source.indices.slice(first,first+range.count),seen=new Map();let changed=false;
+      for(let i=0;i<original.length;i++){
+        const vertex=original[i],at=vertex*6,key=words[at]+','+words[at+1]+','+words[at+2]+','+words[at+3]+','+words[at+4]+','+words[at+5];
+        let prior=seen.get(key);if(prior===undefined){prior=vertex;seen.set(key,vertex);}indices[first+i]=prior;if(prior!==vertex)changed=true;
+      }
+      record={offset:range.offset,indices:original,active:changed};ranges.set(key,record);byName.set(name,record);
+      stats.shapes+=changed?1:0;stats.references+=original.length;stats.vertices+=seen.size;
+    }
+    return {indices,stats,restore(name){const record=byName.get(name);if(!record?.active)return null;record.active=false;indices.set(record.indices,record.offset/INDEX_OCTETS);stats.restored++;return record;}};
+  }
+
   function environmentInfo(value){
     if(!value)return null;
     const color=(v,fallback)=>Array.isArray(v)&&v.length>=3?v.slice(0,3).map((x,i)=>Number.isFinite(x)?Math.max(0,x):fallback[i]):fallback;
@@ -736,7 +1044,7 @@
       if(distance>(180+range)**2)continue;
       const color=Array.isArray(source.color)&&source.color.length===3?source.color.map(v=>Number.isFinite(v)?Math.max(0,Math.min(3,v)):0):[1,.42,.09];
       if(!color.some(v=>v>0))continue;
-      valid.push({p,color,power,range,score:power/(1+distance*.1)});
+      valid.push({p,color,power,range,dir:source.dir,cone:source.cone,score:power/(1+distance*.1)});
     }
     return valid.sort((a,b)=>b.score-a.score).slice(0,limit);
   }
@@ -750,8 +1058,8 @@
   function pack(meshes,environment,objects=false) {
     const grouped=names.map(()=>[]);
     for(const mesh of meshes||[]) {
-      const i=names.indexOf(mesh.shape||'box');
-      if(i>=0) grouped[i].push(mesh);
+      const i=shapeIndices.get(mesh.shape||'box');
+      if(i!==undefined) grouped[i].push(mesh);
     }
     const count=grouped.reduce((n,g)=>n+g.length,0),values=new Float32Array(count*16),groups=[];
     let offset=0;
@@ -760,28 +1068,62 @@
       if(list.length) groups.push({name:names[i],offset:offset*4,count:list.length});
       for(const mesh of list) {
         const p=mesh.p||[0,0,0],s=mesh.s||[1,1,1],r=mesh.r||[0,0,0],c=mesh.color||[0,0,0];
-        // BITUME : écriture directe (Metal 7f1d5589), sans tableau temporaire de 16 valeurs par instance.
-        values[offset]=p[0];values[offset+1]=p[1];values[offset+2]=p[2];values[offset+3]=mesh.mat||0;
-        values[offset+4]=s[0];values[offset+5]=s[1];values[offset+6]=s[2];values[offset+7]=mesh.emissive||0;
-        values[offset+8]=r[0];values[offset+9]=r[1];values[offset+10]=r[2];values[offset+11]=surfaceFlags(mesh,environment,objects);
-        values[offset+12]=c[0];values[offset+13]=c[1];values[offset+14]=c[2];values[offset+15]=mesh.color?1:0;
+        values[offset]=p[0];values[offset+1]=p[1];values[offset+2]=p[2];values[offset+3]=mesh.mat||0;values[offset+4]=s[0];values[offset+5]=s[1];values[offset+6]=s[2];values[offset+7]=mesh.emissive||0;values[offset+8]=r[0];values[offset+9]=r[1];values[offset+10]=r[2];values[offset+11]=surfaceFlags(mesh,environment,objects);values[offset+12]=c[0];values[offset+13]=c[1];values[offset+14]=c[2];values[offset+15]=mesh.color?1:0;
         offset+=16;
       }
     }
     return {values,groups};
   }
+  // A renderer owns each workspace. Returned batches remain valid until its
+  // next call; the public pack() above still returns independent storage.
+  function instancePacker(){
+    let counts=new Uint32Array(0),next=new Uint32Array(0),storage=new Float32Array(0),active=new Float32Array(0);
+    const groups=[],records=[],batch={values:active,groups},zero=[0,0,0],one=[1,1,1];
+    return (meshes,environment,objects=false)=>{
+      if(counts.length<names.length){counts=new Uint32Array(names.length);next=new Uint32Array(names.length);}
+      else counts.fill(0);
+      let total=0;for(const mesh of meshes||[]){const i=shapeIndices.get(mesh.shape||'box');if(i!==undefined){counts[i]++;total++;}}
+      const required=total*16;if(storage.length<required)storage=new Float32Array(Math.max(required,storage.length*2,256));
+      if(active.buffer!==storage.buffer||active.length!==required)active=storage.subarray(0,required);batch.values=active;groups.length=0;
+      let offset=0;for(let i=0;i<names.length;i++){next[i]=offset;if(counts[i]){const group=records[i]||(records[i]={name:names[i],offset:0,count:0});group.offset=offset*4;group.count=counts[i];groups.push(group);offset+=counts[i]*16;}}
+      for(const mesh of meshes||[]){const i=shapeIndices.get(mesh.shape||'box');if(i===undefined)continue;const at=next[i];next[i]+=16;
+        const p=mesh.p||zero,s=mesh.s||one,r=mesh.r||zero,c=mesh.color||zero;
+        active[at]=p[0];active[at+1]=p[1];active[at+2]=p[2];active[at+3]=mesh.mat||0;active[at+4]=s[0];active[at+5]=s[1];active[at+6]=s[2];active[at+7]=mesh.emissive||0;active[at+8]=r[0];active[at+9]=r[1];active[at+10]=r[2];active[at+11]=surfaceFlags(mesh,environment,objects);active[at+12]=c[0];active[at+13]=c[1];active[at+14]=c[2];active[at+15]=mesh.color?1:0;
+      }return batch;
+    };
+  }
   function packEffects(meshes,environment,eye){
     const distance=m=>(m.p[0]-eye[0])**2+(m.p[1]-eye[1])**2+(m.p[2]-eye[2])**2;
-    const list=meshes.filter(m=>names.includes(m.shape||'sphere')&&m.alpha>.003).slice().sort((a,b)=>distance(b)-distance(a));
+    const list=meshes.filter(m=>shapeIndices.has(m.shape||'sphere')&&m.alpha>.003).sort((a,b)=>distance(b)-distance(a));
     const values=new Float32Array(list.length*16),groups=[];let offset=0;
     for(const mesh of list){
       const name=mesh.shape||'sphere',last=groups[groups.length-1];
       if(last&&last.name===name)last.count++;else groups.push({name,offset:offset*4,count:1});
       const p=mesh.p,s=mesh.s||[1,1,1],r=mesh.r||[0,0,0],c=mesh.color||[.5,.5,.5];
-      const material=mesh.shape==='ring'&&Number.isFinite(mesh.innerRatio)?20+Math.min(.999,Math.max(0,mesh.innerRatio)):mesh.fxPriority==='hazard'?16:mesh.fxFire?14:7;
-      values.set([p[0],p[1],p[2],material,s[0],s[1],s[2],mesh.emissive||0,r[0],r[1],r[2],surfaceFlags(mesh,environment,true),c[0],c[1],c[2],Math.min(1,Math.max(0,mesh.alpha))],offset);offset+=16;
+      const material=mesh.window?18:mesh.shape==='ring'&&Number.isFinite(mesh.innerRatio)?20+Math.min(.999,Math.max(0,mesh.innerRatio)):mesh.fxPriority==='hazard'?16:mesh.fxFire?14:mesh.fxSmoke?15:mesh.fxSpark?17:7;
+      values[offset]=p[0];values[offset+1]=p[1];values[offset+2]=p[2];values[offset+3]=material;values[offset+4]=s[0];values[offset+5]=s[1];values[offset+6]=s[2];values[offset+7]=mesh.emissive||0;values[offset+8]=r[0];values[offset+9]=r[1];values[offset+10]=r[2];values[offset+11]=surfaceFlags(mesh,environment,true);values[offset+12]=c[0];values[offset+13]=c[1];values[offset+14]=c[2];values[offset+15]=Math.min(1,Math.max(0,mesh.alpha));offset+=16;
     }
     return {values,groups};
+  }
+  function effectsPacker(){
+    const order=[],records=[],groups=[],groupRecords=[],zero=[0,0,0],one=[1,1,1],gray=[.5,.5,.5];
+    let storage=new Float32Array(0),active=new Float32Array(0),previous=0;const batch={values:active,groups};
+    return (meshes,environment,eye)=>{
+      order.length=0;let count=0;
+      for(const mesh of meshes){if(!shapeIndices.has(mesh.shape||'sphere')||!(mesh.alpha>.003))continue;
+        const record=records[count]||(records[count]={mesh:null,distance:0,index:0});record.mesh=mesh;record.distance=(mesh.p[0]-eye[0])**2+(mesh.p[1]-eye[1])**2+(mesh.p[2]-eye[2])**2;record.index=count++;order.push(record);
+      }
+      for(let i=count;i<previous;i++)records[i].mesh=null;previous=count;
+      // The tie break preserves the input order of the original stable sort.
+      order.sort((a,b)=>(b.distance-a.distance)||a.index-b.index);
+      const required=count*16;if(storage.length<required)storage=new Float32Array(Math.max(required,storage.length*2,256));
+      if(active.buffer!==storage.buffer||active.length!==required)active=storage.subarray(0,required);batch.values=active;groups.length=0;let offset=0;
+      for(const record of order){const mesh=record.mesh,name=mesh.shape||'sphere',last=groups[groups.length-1];
+        if(last&&last.name===name)last.count++;else{const group=groupRecords[groups.length]||(groupRecords[groups.length]={name:'',offset:0,count:0});group.name=name;group.offset=offset*4;group.count=1;groups.push(group);}
+        const p=mesh.p,s=mesh.s||one,r=mesh.r||zero,c=mesh.color||gray,material=mesh.window?18:mesh.shape==='ring'&&Number.isFinite(mesh.innerRatio)?20+Math.min(.999,Math.max(0,mesh.innerRatio)):mesh.fxPriority==='hazard'?16:mesh.fxFire?14:mesh.fxSmoke?15:mesh.fxSpark?17:7;
+        active[offset]=p[0];active[offset+1]=p[1];active[offset+2]=p[2];active[offset+3]=material;active[offset+4]=s[0];active[offset+5]=s[1];active[offset+6]=s[2];active[offset+7]=mesh.emissive||0;active[offset+8]=r[0];active[offset+9]=r[1];active[offset+10]=r[2];active[offset+11]=surfaceFlags(mesh,environment,true);active[offset+12]=c[0];active[offset+13]=c[1];active[offset+14]=c[2];active[offset+15]=Math.min(1,Math.max(0,mesh.alpha));offset+=16;
+      }return batch;
+    };
   }
 
   function multiply(a,b,out) {
@@ -839,32 +1181,183 @@
     };
   }
   function metadata(mesh){
-    return {mesh,p:mesh.p||[0,0,0],radius:Math.hypot(...(mesh.s||[1,1,1]))*.5,detail:Math.max(0,Math.min(2,Math.floor(mesh.detail||0))),software:null,softwareCoarse:null};
+    return {mesh,renderRevision:mesh.renderRevision||0,p:mesh.p||[0,0,0],radius:Math.hypot(...(mesh.s||[1,1,1]))*.5,detail:Math.max(0,Math.min(2,Math.floor(mesh.detail||0))),software:null,softwareCoarse:null};
   }
-  function spatialIndex(meshes,environment,previous){
-    const levels=[new Map(),new Map(),new Map()],maxRadius=[0,0,0],entries=[],byMesh=new WeakMap();
-    for(const mesh of meshes||[]){
-      // Destruction replaces changed meshes; retained immutable meshes keep
-      // their instance rows and expensive Canvas face/lighting caches.
-      const retained=previous&&previous.byMesh.get(mesh),e=retained||metadata(mesh),key=Math.floor(e.p[0]/8)+','+Math.floor(e.p[2]/8),map=levels[e.detail];
-      if(!map.has(key))map.set(key,[]);map.get(key).push(e);maxRadius[e.detail]=Math.max(maxRadius[e.detail],e.radius);
-      if(!retained){const p=e.p,s=mesh.s||[1,1,1],r=mesh.r||[0,0,0],c=mesh.color||[0,0,0];
-        e.row=new Float32Array([p[0],p[1],p[2],mesh.mat||0,s[0],s[1],s[2],mesh.emissive||0,r[0],r[1],r[2],surfaceFlags(mesh,environment),c[0],c[1],c[2],mesh.color?1:0]);}
-      entries.push(e);byMesh.set(mesh,e);
+  function validatedMeshSplices(delta,before,after){
+    if(!delta||delta.full||!Array.isArray(before)||!Array.isArray(after)||delta.before!==before||delta.after!==after||!Array.isArray(delta.splices))return null;
+    let end=0,shift=0,changed=0;
+    for(const q of delta.splices){
+      if(!q||!Number.isInteger(q.start)||!Number.isInteger(q.deleteCount)||q.start<end||q.deleteCount<0||q.start+q.deleteCount>before.length||!Array.isArray(q.items))return null;
+      for(let i=0;i<q.items.length;i++)if(!q.items[i]||typeof q.items[i]!=='object'||after[q.start+shift+i]!==q.items[i])return null;
+      end=q.start+q.deleteCount;shift+=q.items.length-q.deleteCount;changed+=q.items.length+q.deleteCount;
+    }
+    return before.length+shift===after.length&&changed<=Math.max(64,after.length/4)?delta.splices:null;
+  }
+  function spliceReferences(before,splices,length){
+    // Preserve snapshot arrays, but let the native array copier move retained
+    // city ranges instead of visiting every object in JavaScript twice.
+    const ranges=[];let read=0;
+    for(const q of splices){if(read<q.start)ranges.push(before.slice(read,q.start));if(q.items.length)ranges.push(q.items[Symbol.isConcatSpreadable]===false?Array.from(q.items):q.items);read=q.start+q.deleteCount;}
+    if(read<before.length)ranges.push(before.slice(read));
+    if(ranges.length<4096)return [].concat(...ranges);
+    const after=new Array(length);let write=0;for(const range of ranges)for(const item of range)after[write++]=item;return after;
+  }
+  function partitionWorld(meshes,previous,options){
+    const source=meshes||[],splices=options?.revisionedMeshes===true&&previous?.dense&&validatedMeshSplices(options.meshDelta,previous.source,source);
+    if(splices){
+      const foreground=[],positions=previous.backgroundPositions;let bg=0,shift=0,valid=true;
+      for(const q of splices){
+        while(bg<positions.length&&positions[bg]<q.start)bg++;
+        if((bg<positions.length&&positions[bg]<q.start+q.deleteCount)||q.items.some(m=>m.backgroundWater)){valid=false;break;}
+        foreground.push({start:q.start-bg,deleteCount:q.deleteCount,items:q.items});shift+=q.items.length-q.deleteCount;
+      }
+      if(valid){
+        const world=foreground.length?spliceReferences(previous.world,foreground,previous.world.length+shift):previous.world,backgroundPositions=[];let at=0,offset=0;
+        for(const position of positions){while(at<splices.length&&splices[at].start<=position){offset+=splices[at].items.length-splices[at].deleteCount;at++;}backgroundPositions.push(position+offset);}
+        return {source,world,background:previous.background,backgroundPositions,dense:true,meshDelta:{before:previous.world,after:world,full:false,splices:foreground}};
+      }
+    }
+    const world=[],background=[],backgroundPositions=[];
+    for(let i=0;i<source.length;i++){const mesh=source[i];if(mesh===undefined&&!(i in source))continue;if(mesh.backgroundWater){background.push(mesh);backgroundPositions.push(i);}else world.push(mesh);}
+    return {source,world,background,backgroundPositions,dense:world.length+background.length===source.length,meshDelta:null};
+  }
+  function sameChunkCategory(c,e){const m=e.mesh,p=e.p,s=m.s;return s.length===3&&c.x===p[0]&&c.y===p[1]&&c.z===p[2]&&c.sx===s[0]&&c.sy===s[1]&&c.sz===s[2]&&c.detail===m.detail&&c.ground===(m.ground===true)&&c.radius===e.radius;}
+  function planChunks(index,chunks,categories,state){
+    const categoryFor=e=>{let c=categories.get(e);if(!c||!sameChunkCategory(c,e)){
+      const m=e.mesh,p=e.p,s=m.s,size=Math.max(...s),ground=m.ground===true||(s[1]<.15&&p[1]+s[1]/2<.24),range=m.detail===2?65:m.detail===1?130:ground||size>4?6000:size<.65?75:180,cell=range<6000?32:128;
+      c={key:Math.floor(p[0]/cell)+','+Math.floor(p[2]/cell)+','+range+','+(e.radius>40?'large':'small'),range,x:p[0],y:p[1],z:p[2],sx:s[0],sy:s[1],sz:s[2],detail:m.detail,ground:m.ground===true,radius:e.radius};categories.set(e,c);
+    }e.chunkCategory=c;return c;};
+    const delta=index.delta,incremental=chunks.size&&delta&&!delta.full&&state.index===index&&state.epoch===delta.fromEpoch;
+    state.index=index;state.epoch=delta?.epoch;state.incremental=!!incremental;state.entriesVisited=0;
+    if(incremental){
+      const erased=new Set([...delta.removed,...delta.changed]),keys=new Set(),additions=new Map();
+      for(const e of erased){const c=categories.get(e);if(c)keys.add(c.key);}
+      for(const e of [...delta.added,...delta.changed]){const c=categoryFor(e);keys.add(c.key);let list=additions.get(c.key);if(!list){list=[];additions.set(c.key,list);}list.push(e);}
+      const edited=[];
+      for(const key of keys){
+        const old=chunks.get(key),added=additions.get(key)||[],retained=(old?.entries||[]).filter(e=>!erased.has(e));
+        // Retained occurrences are already ordered. Sort only the few new
+        // entries and merge them without sorting an entire facade chunk.
+        added.sort((a,b)=>a.ordinal-b.ordinal);const entries=[];let ai=0;
+        for(const e of retained){while(ai<added.length&&added[ai].ordinal<e.ordinal)entries.push(added[ai++]);entries.push(e);}while(ai<added.length)entries.push(added[ai++]);
+        state.entriesVisited+=(old?.entries.length||0)+added.length;if(!entries.length)continue;
+        const c=old||{range:categoryFor(entries[0]).range,entries:[]};c.nextCount=entries.length;c.nextEntries=c.entries.length===entries.length&&entries.every((e,i)=>e===c.entries[i])?null:entries;edited.push([key,c,entries[0].ordinal]);
+      }
+      edited.sort((a,b)=>a[2]-b[2]);const next=new Map();let at=0;
+      // Unchanged chunks retain relative order. Merge only the affected chunks
+      // at their new first occurrence; even depth ties keep the original order.
+      for(const [key,c] of chunks){if(keys.has(key))continue;const ordinal=c.entries[0].ordinal;while(at<edited.length&&edited[at][2]<ordinal){next.set(edited[at][0],edited[at][1]);at++;}c.nextEntries=null;c.nextCount=c.entries.length;next.set(key,c);}
+      while(at<edited.length){next.set(edited[at][0],edited[at][1]);at++;}return next;
+    }
+    const next=new Map();for(const e of index.entries){state.entriesVisited++;const category=categoryFor(e);let c=next.get(category.key);
+      if(!c){c=chunks.get(category.key)||{range:category.range,entries:[]};c.nextEntries=null;c.nextCount=0;next.set(category.key,c);}
+      if(c.nextEntries)c.nextEntries.push(e);else if(c.entries[c.nextCount]!==e){c.nextEntries=c.entries.slice(0,c.nextCount);c.nextEntries.push(e);}c.nextCount++;
+    }return next;
+  }
+  function spatialIndex(meshes,environment,previous,options){
+    if(previous?.reconcile)return previous.reconcile(meshes,environment,options);
+    const levels=[new Map(),new Map(),new Map()],large=[0,1,2].map(level=>({entries:[],epoch:0,count:0,next:null,level,key:null})),maxRadius=[0,0,0],byMesh=new WeakMap();let epoch=0;
+    const index={entries:[],query,byMesh,reconcile};let sourceMeshes=null;
+    function append(bucket,e){
+      if(bucket.epoch!==epoch){bucket.epoch=epoch;bucket.count=0;bucket.next=null;}
+      if(bucket.next)bucket.next.push(e);
+      else if(bucket.entries[bucket.count]!==e){bucket.next=bucket.entries.slice(0,bucket.count);bucket.next.push(e);}
+      bucket.count++;
+    }
+    function finish(bucket){
+      if(bucket.epoch!==epoch){bucket.entries=[];return false;}
+      if(bucket.next)bucket.entries=bucket.next;
+      else if(bucket.count!==bucket.entries.length)bucket.entries=bucket.entries.slice(0,bucket.count);
+      bucket.next=null;return true;
+    }
+    function applyMeshDelta(list,env,options){
+      const splices=options?.revisionedMeshes===true&&!index.duplicates&&sourceMeshes?.length===index.entries.length&&validatedMeshSplices(options.meshDelta,sourceMeshes,list);
+      if(!splices)return false;
+      // Existing identities in insertions may be moves, revisions or duplicate
+      // occurrences. Preserve their general reconciliation semantics instead.
+      const unique=new Set();for(const q of splices)for(const mesh of q.items){if(byMesh.has(mesh)||unique.has(mesh))return false;unique.add(mesh);}
+      if(!splices.length){sourceMeshes=list;index.delta={fromEpoch:epoch,epoch,added:[],removed:[],changed:[],full:false,fast:true};return true;}
+      const priorEpoch=epoch++,removed=[],added=[],entrySplices=[],dirty=new Set(),insertions=new Map();
+      for(const q of splices){
+        for(let i=q.start;i<q.start+q.deleteCount;i++){const e=index.entries[i];removed.push(e);dirty.add(e.indexBucket);byMesh.delete(e.mesh);}
+        const items=[];for(const mesh of q.items){
+          const e=metadata(mesh),p=e.p,s=mesh.s||[1,1,1],r=mesh.r||[0,0,0],c=mesh.color||[0,0,0];
+          e.row=new Float32Array([p[0],p[1],p[2],mesh.mat||0,s[0],s[1],s[2],mesh.emissive||0,r[0],r[1],r[2],surfaceFlags(mesh,env),c[0],c[1],c[2],mesh.color?1:0]);
+          let bucket;if(e.radius>32)bucket=large[e.detail];else{const key=Math.floor(p[0]/8)+','+Math.floor(p[2]/8),map=levels[e.detail];bucket=map.get(key);if(!bucket){bucket={entries:[],epoch:0,count:0,next:null,level:e.detail,key};map.set(key,bucket);}maxRadius[e.detail]=Math.max(maxRadius[e.detail],e.radius);}
+          e.indexBucket=bucket;e.indexPX=p[0];e.indexPZ=p[2];e.indexRadius=e.radius;e.indexDetail=e.detail;dirty.add(bucket);let group=insertions.get(bucket);if(!group){group=[];insertions.set(bucket,group);}group.push(e);byMesh.set(mesh,e);items.push(e);added.push(e);
+        }entrySplices.push({start:q.start,deleteCount:q.deleteCount,items});
+      }
+      const entries=spliceReferences(index.entries,entrySplices,list.length);for(let i=0;i<entries.length;i++){const e=entries[i];e.indexEpoch=epoch;e.ordinal=i;}
+      for(const bucket of dirty){const next=bucket.entries.filter(e=>e.indexEpoch===epoch),add=insertions.get(bucket);if(add?.length){for(const e of add)next.push(e);next.sort((a,b)=>a.ordinal-b.ordinal);}bucket.entries=next;bucket.epoch=epoch;bucket.count=next.length;bucket.next=null;if(!next.length&&bucket.key!==null)levels[bucket.level].delete(bucket.key);}
+      sourceMeshes=list;index.entries=entries;index.duplicates=false;index.delta={fromEpoch:priorEpoch,epoch,added,removed,changed:[],full:false,fast:true};return true;
+    }
+    function reconcile(list,env,options){
+      if(applyMeshDelta(list,env,options))return index;
+      // Opt-in producer contract: retained identity + renderRevision guarantees
+      // every render/spatial property (including p/s/r/color array contents)
+      // is unchanged. A revised mesh always receives complete new metadata.
+      const revisionedMeshes=options?.revisionedMeshes===true;
+      const priorEpoch=epoch++,priorDuplicates=index.duplicates,priorEntries=index.entries,entries=[],added=[],removed=[],changed=[],removalCandidates=[],dirtyBuckets=new Set(),bucketInsertions=new Map();let lastOrdinal=-1,cursor=0,reordered=false,duplicates=false;
+      const considerRemoval=e=>{if(e.removalEpoch!==epoch){e.removalEpoch=epoch;removalCandidates.push(e);}};
+      for(const mesh of list||[]){
+        // Stable scene order permits a direct reference read. Gaps in that
+        // cursor identify the possible removals without rescanning every entry.
+        const candidate=priorDuplicates?null:priorEntries[cursor],prior=candidate?.mesh===mesh&&candidate.indexEpoch===priorEpoch?candidate:byMesh.get(mesh);
+        if(prior?.indexEpoch===priorEpoch&&prior.ordinal>=cursor){if(!priorDuplicates)for(let i=cursor;i<prior.ordinal;i++)considerRemoval(priorEntries[i]);cursor=prior.ordinal+1;}
+        const duplicate=prior?.indexEpoch===epoch,retained=prior&&(prior.indexEpoch===priorEpoch||prior.retainedEpoch===epoch)&&prior.renderRevision===(mesh.renderRevision||0)?prior:null,e=retained||metadata(mesh);
+        if(duplicate)duplicates=true;
+        if(retained){
+          if(!duplicate){if(e.ordinal<=lastOrdinal)reordered=true;lastOrdinal=e.ordinal;}
+          e.retainedEpoch=epoch;if(!revisionedMeshes&&e.chunkCategory&&!sameChunkCategory(e.chunkCategory,e))changed.push(e);
+        }
+        else{
+          if(!priorDuplicates&&prior?.indexEpoch===priorEpoch)considerRemoval(prior);
+          const p=e.p,s=mesh.s||[1,1,1],r=mesh.r||[0,0,0],c=mesh.color||[0,0,0];
+          e.row=new Float32Array([p[0],p[1],p[2],mesh.mat||0,s[0],s[1],s[2],mesh.emissive||0,r[0],r[1],r[2],surfaceFlags(mesh,env),c[0],c[1],c[2],mesh.color?1:0]);
+          byMesh.set(mesh,e);
+          if(priorEpoch)added.push(e);
+        }
+        const oldBucket=e.indexBucket;
+        if(!oldBucket||(!revisionedMeshes&&(e.indexPX!==e.p[0]||e.indexPZ!==e.p[2]||e.indexRadius!==e.radius||e.indexDetail!==e.detail))){
+          if(e.radius>32)e.indexBucket=large[e.detail];
+          else{const key=Math.floor(e.p[0]/8)+','+Math.floor(e.p[2]/8),map=levels[e.detail];let bucket=map.get(key);if(!bucket){bucket={entries:[],epoch:0,count:0,next:null,level:e.detail,key};map.set(key,bucket);}e.indexBucket=bucket;maxRadius[e.detail]=Math.max(maxRadius[e.detail],e.radius);}
+          e.indexPX=e.p[0];e.indexPZ=e.p[2];e.indexRadius=e.radius;e.indexDetail=e.detail;
+        }
+        if(priorEpoch&&!priorDuplicates&&e.indexBucket!==oldBucket){if(oldBucket)dirtyBuckets.add(oldBucket);dirtyBuckets.add(e.indexBucket);let list=bucketInsertions.get(e.indexBucket);if(!list){list=[];bucketInsertions.set(e.indexBucket,list);}list.push(e);}
+        e.indexEpoch=epoch;e.ordinal=entries.length;entries.push(e);
+      }
+      const threshold=Math.max(64,entries.length/4),scanAll=!priorEpoch||priorDuplicates||duplicates||reordered||added.length>threshold||removalCandidates.length+priorEntries.length-cursor>threshold;
+      if(!scanAll)for(let i=cursor;i<priorEntries.length;i++)considerRemoval(priorEntries[i]);
+      for(const e of scanAll?priorEntries:removalCandidates)if(e.indexEpoch!==epoch){removed.push(e);dirtyBuckets.add(e.indexBucket);if(byMesh.get(e.mesh)===e)byMesh.delete(e.mesh);}
+      const full=!priorEpoch||reordered||duplicates||priorDuplicates||added.length+removed.length>threshold;
+      if(full){
+        // Duplicates and order changes require the exact original traversal.
+        for(const e of entries)append(e.indexBucket,e);
+        for(let level=0;level<3;level++){finish(large[level]);for(const [key,bucket] of levels[level])if(!finish(bucket))levels[level].delete(key);}
+      }else for(const bucket of dirtyBuckets){
+        const next=bucket.entries.filter(e=>e.indexEpoch===epoch&&e.indexBucket===bucket),insertions=bucketInsertions.get(bucket);
+        if(insertions?.length){for(const e of insertions)next.push(e);next.sort((a,b)=>a.ordinal-b.ordinal);}
+        bucket.entries=next;bucket.epoch=epoch;bucket.count=next.length;bucket.next=null;
+        if(!next.length&&bucket.key!==null)levels[bucket.level].delete(bucket.key);
+      }
+      sourceMeshes=list;index.entries=entries;index.duplicates=duplicates;index.delta={fromEpoch:priorEpoch,epoch,added,removed,changed,full,fast:false};return index;
     }
     function query(eye,ranges){
       const result=[];
       for(let level=0;level<3;level++){
         const range=ranges[level];if(!(range>0))continue;
+        for(const e of large[level].entries){const d=(e.p[0]-eye[0])**2+(e.p[1]-eye[1])**2+(e.p[2]-eye[2])**2;if(d<=(range+e.radius)**2)result.push(e);}
+        // Keeping the largest previous radius is conservative: the exact same
+        // distance test below rejects any extra buckets visited after removals.
         const radius=range+maxRadius[level];
         for(let x=Math.floor((eye[0]-radius)/8);x<=Math.floor((eye[0]+radius)/8);x++)for(let z=Math.floor((eye[2]-radius)/8);z<=Math.floor((eye[2]+radius)/8);z++){
           const bucket=levels[level].get(x+','+z);if(!bucket)continue;
-          for(const e of bucket){const d=(e.p[0]-eye[0])**2+(e.p[1]-eye[1])**2+(e.p[2]-eye[2])**2;if(d<=(range+e.radius)**2)result.push(e);}
+          for(const e of bucket.entries){const d=(e.p[0]-eye[0])**2+(e.p[1]-eye[1])**2+(e.p[2]-eye[2])**2;if(d<=(range+e.radius)**2)result.push(e);}
         }
       }
       return result;
     }
-    return {entries,query,byMesh};
+    return reconcile(meshes,environment,options);
   }
   function visible(e,eye,axes,horizontal,vertical,far){
     const x=e.p[0]-eye[0],y=e.p[1]-eye[1],d=e.p[2]-eye[2],f=axes.forward,right=axes.right,up=axes.up;
@@ -872,7 +1365,7 @@
     return z+r>.04&&z-r<far&&Math.abs(x*right[0]+y*right[1]+d*right[2])<=z*horizontal+r*Math.sqrt(1+horizontal*horizontal)&&Math.abs(x*up[0]+y*up[1]+d*up[2])<=z*vertical+r*Math.sqrt(1+vertical*vertical);
   }
   function packIndexed(entries){
-    const buckets=names.map(()=>[]);for(const e of entries){const i=names.indexOf(e.mesh.shape||'box');if(i>=0)buckets[i].push(e);}
+    const buckets=names.map(()=>[]);for(const e of entries){const i=shapeIndices.get(e.mesh.shape||'box');if(i!==undefined)buckets[i].push(e);}
     const values=new Float32Array(entries.length*16),groups=[];let offset=0;
     for(let i=0;i<names.length;i++)if(buckets[i].length){groups.push({name:names[i],offset:offset*4,count:buckets[i].length});for(const e of buckets[i]){values.set(e.row,offset);offset+=16;}}
     return {values,groups};
@@ -945,7 +1438,7 @@
     for(const [source,shapes] of [[geometry(true),base],[geometry(2),coarseBase]]){
       for(const shape of names) {
         const range=source.ranges[shape],triangles=[];
-        for(let j=range.offset/INDEX_OCTETS;j<range.offset/INDEX_OCTETS+range.count;j+=3){
+        for(let j=range.offset/2;j<range.offset/2+range.count;j+=3){
           const v=[];for(let k=0;k<3;k++){const at=source.indices[j+k]*6;v.push(Array.from(source.vertices.subarray(at,at+3)));}triangles.push(v);
         }
         shapes[shape]=[];
@@ -1034,11 +1527,11 @@
       shadowGeometry=new WeakMap();staticCasterPlan=null;for(const e of world.entries)shadowGeometry.set(e.mesh,null);
       worldRevision=0;stats.worldRevision=0;stats.staticTotal=world.entries.length;stats.biome=environment?environment.biome:null;
     }
-    function updateWorld(meshes,revision,points){
+    function updateWorld(meshes,revision,points,updateOptions){
       if(disposed||revision===worldRevision)return false;
       const changedLights=Array.isArray(points)&&(points.length!==lights.length||points.some((light,i)=>light!==lights[i]));
       if(changedLights)lights=points;
-      const next=meshes||[],ground=next.some(mesh=>mesh.ground===true);world=spatialIndex(next,environment,world);
+      const next=meshes||[],ground=next.some(mesh=>mesh.ground===true);world=spatialIndex(next,environment,world,updateOptions);
       // Legacy scenes infer the floor. Switching that rule invalidates their
       // receiver classification, even for otherwise unchanged surfaces.
       if(ground!==explicitGround||changedLights)for(const e of world.entries)e.software=e.softwareCoarse=null;
@@ -1311,8 +1804,9 @@
     }
     function shadowCaster(m){
       const s=m.s||[1,1,1],mat=m.mat||0,limit=m.actorPart&&m.actorScale>1?44:10;
-      if(FORMES_LIBRES.has(m.shape))return !m.fx&&Math.max(s[0],s[2])>.45&&s[1]>.2&&s[0]<limit&&s[2]<limit&&(mat<4||mat>7); // BITUME : carènes
-      return !m.fx&&(m.shape==='box'||m.shape==='bevel'||m.shape==='cylinder'||m.shape==='sphere'||m.shape==='foliage'||m.shape==='octa'||m.shape==='wedge'/* BITUME */)&&s[0]>.45&&s[2]>.45&&s[1]>.4&&s[0]<limit&&s[2]<limit&&(mat<4||mat>7);
+      // RADE / BITUME : les carènes libres et le coin projettent des ombres.
+      if(FORMES_LIBRES.has(m.shape)||m.shape==='wedge')return !m.fx&&Math.max(s[0],s[2])>.45&&s[1]>.2;
+      return !m.fx&&(m.shape==='box'||m.shape==='bevel'||m.shape==='cylinder'||m.shape==='sphere'||m.shape==='foliage'||m.shape==='octa')&&s[0]>.45&&s[2]>.45&&s[1]>.4&&s[0]<limit&&s[2]<limit&&(mat<4||mat>7);
     }
     function staticCasters(eye){
       if(staticCasterPlan&&eye.every((v,k)=>v===staticCasterPlan.eye[k]))return staticCasterPlan.meshes;
@@ -1346,24 +1840,86 @@
       };
     }
     function dispose(){disposed=true;world=spatialIndex([]);lights=[];vignette=null;shadowGeometry=new WeakMap();staticCasterPlan=null;}
-    return {setWorld,updateWorld,draw,resize,dispose,stats,actorFilter};
+    return {setEnvironment(value){environment=environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter};
   }
 
-  function create(canvas) {
+  // FERRO 0.2 : réglages de création, tous facultatifs. Sans eux, l'image et les commandes GPU sont celles de FERRO 0.1.
+  // msaa: 4 anticrénèle la scène avant le bloom (si le GPU l'offre) ; shadowMapScale: 2 double l'atlas d'ombre ;
+  // vignette (0 à 1, FERRO 0,59) éclaircit les bords quand elle monte ; bloomThreshold [début, fin] (FERRO [0,56, 0,86]).
+  // Le rendu logiciel (Canvas 2D) les ignore.
+  // BITUME : adapter le contrat météo historique au vec4 EMPRISE [humidité, nuages, pluie, éclair].
+  // Les tableaux restent stables : ni allocation par couleur, ni mutation de l’environnement de base.
+  const weatherUnit=v=>Number.isFinite(v)?Math.max(0,Math.min(1,v)):0; // BITUME : borne partagée sans fermeture par image.
+  function bitumeWeather(env,value,time,out){
+    const base=env||PDR_INDOOR,w=value||{},unit=weatherUnit;
+    out=out||{values:new Float32Array(4),skyTop:new Float32Array(3),skyBottom:new Float32Array(3),fog:new Float32Array(3),sunColor:new Float32Array(3),ambient:new Float32Array(3),cloudOffset:new Float32Array(2)};
+    const vector=Array.isArray(w)||ArrayBuffer.isView(w),rain=unit(vector?w[2]:w.pluie),cloud=unit(vector?w[1]:w.nuage),flash=unit(vector?w[3]:w.eclair),wet=unit(vector?w[0]:(w.mouille??rain));
+    out.values[0]=wet;out.values[1]=cloud;out.values[2]=rain;out.values[3]=flash;
+    const dim=1-cloud*.42-rain*.20;
+    for(let i=0;i<3;i++){
+      out.skyTop[i]=base.skyTop[i]*dim+flash*.20;out.skyBottom[i]=base.skyBottom[i]*(dim*.8+.2)+flash*.30;
+      out.fog[i]=base.fog[i]*(1+rain*.25)+flash*.15;
+      out.sunColor[i]=base.sunColor[i]*(1-cloud*.85)*(1-rain*.4);out.ambient[i]=base.ambient[i]*(1-cloud*.25)+flash*.40;
+    }
+    out.fogDensity=base.fogDensity*(1+rain*.9+cloud*.2);
+    const vx=Number.isFinite(w.ventX)?w.ventX:0,vz=Number.isFinite(w.ventZ)?w.ventZ:0;
+    out.wind=Math.min(2,(base.wind||0)*(1+rain*.8)+Math.hypot(vx,vz)*.08);
+    out.cloudOffset[0]=time*(.0018+vx*.00015);out.cloudOffset[1]=time*(.0005+vz*.00015);
+    return out;
+  }
+  function settings(options){
+    const o=options||{},unit=(v,d)=>Number.isFinite(v)?Math.max(0,Math.min(1,v)):d;
+    const bloom=Array.isArray(o.bloomThreshold)?[unit(o.bloomThreshold[0],.56),unit(o.bloomThreshold[1],.86)]:[.56,.86];
+    return {reflections:o.reflections===true,msaa:o.msaa===4, // BITUME : SSR optionnel ; aucune cible miroir par défaut.
+      shadowMapScale:o.shadowMapScale===2?2:1,vignette:unit(o.vignette,.59),bloom:bloom[1]>bloom[0]?bloom:[.56,.86]};
+  }
+  const glslFloat=v=>v.toFixed(4);
+  function worldFragment(config){
+    return config.vignette===.59?FRAG:FRAG.replace('color*=mix(.59,1.,vignette);',`color*=mix(${glslFloat(config.vignette)},1.,vignette);`);
+  }
+  function postFragment(config){
+    const [a,b]=config.bloom;
+    return a===.56&&b===.86?POST_FRAG:POST_FRAG.replace('smoothstep(.56,.86,max(max(c.r,c.g),c.b))',`smoothstep(${glslFloat(a)},${glslFloat(b)},max(max(c.r,c.g),c.b))`);
+  }
+  function create(canvas,options) {
     const gl=canvas.getContext('webgl2',{alpha:false,antialias:false,depth:true,powerPreference:'high-performance'});
     if(!gl) return createSoftware(canvas);
-    const source=geometry(),view=new Float32Array(16),projection=new Float32Array(16),vp=new Float32Array(16);
+    // BITUME : garder MSAA 4 et l’atlas solaire 4096/2048 du jeu ; options explicites prioritaires.
+    const config=settings({msaa:4,shadowMapScale:2,...options}),worldFrag=worldFragment(config),postFrag=postFragment(config);
+    const source=geometry(),primitiveIndex=indexPrimitiveVertices(source),view=new Float32Array(16),projection=new Float32Array(16),vp=new Float32Array(16),overlayProjection=new Float32Array(16),overlayVP=new Float32Array(16);
     const shadowView=new Float32Array(16),shadowProjection=new Float32Array(16),shadowMatrix=new Float32Array(16),shadowMatrices=new Float32Array(48);
-    const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12);
-    const stats={drawCalls:0,triangles:0,instances:0,contextLost:false,webglVersion:2,backend:'webgl2',bloom:false,shadows:false};
-    let program,depthProgram,postProgram,skyProgram,fxProgram,vao,postVao,vbo,ibo,worldBuffer,dynamicBuffer,overlayBuffer,fxBuffer,crowdBuffer,uniforms,postUniforms,skyUniforms,fxUniforms,depthMatrix,depthWind;
-    let post=null,shadowTarget=null,whiteTexture=null,targetKey='',shadowKey='',shadowLight=null;
-    let world=[],worldIndex=spatialIndex([]),lights=[],environment=null,worldBatch=pack([]),quality='auto',disposed=false,worldRevision=0;
+    const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12),lightDirections=new Float32Array(36),lightCones=new Float32Array(24);
+    // BITUME : l’indexation EMPRISE est aussi utilisée sur WebGL2 ; formes libres inchangées.
+    const stats={drawCalls:0,triangles:0,instances:0,contextLost:false,webglVersion:2,backend:'webgl2',engine:'ferro-emprise-bitume',bloom:false,shadows:false,primitiveIndex:primitiveIndex.stats};
+    let program,depthProgram,postProgram,skyProgram,fxProgram,vao,postVao,vbo,ibo,worldBuffer,dynamicBuffer,overlayBuffer,fxBuffer,crowdBuffer,uniforms,postUniforms,skyUniforms,fxUniforms,depthMatrix,depthWind,ssrProgram,ssrUniforms;
+    let post=null,shadowTarget=null,whiteTexture=null,pbrTextures=[],targetKey='',shadowKey='',shadowLight=null;
+    let world=[],worldIndex=spatialIndex([]),backgroundIndex=spatialIndex([]),lights=[],environment=null,worldBatch=pack([]),quality='auto',disposed=false,worldRevision=0,partitionState=null;
     let staticCaches=[],lampCasters=[],actorLightPlan=null;
+    const packDynamic=instancePacker(),packOverlay=instancePacker(),packFx=effectsPacker();
+    const ordinary=[],overlay=[],particles=[],overlayParticles=[];
+    const weather=bitumeWeather(null,null,0); // BITUME : stockage météo réutilisé.
     // BITUME : nappes (chaussée, accotements, terrain : triangles continus, matière et couleur par sommet) et lots
     // de décor (instances statiques groupées par portion de circuit, chacune avec sa version lointaine allégée).
     let nappes=[],nappeVao=null,nappeVbo=null,nappeIbo=null,lots=[];
     const governor=resolutionGovernor();let autoScale=1;
+    // PDR (voile) : vrai tant que le voile du jeu occupe l'unité 4 ; draw le retire à la première image sans fx.voile.
+    let pdrVoilePose=false;
+    // PDR (lots) : décor du jeu déjà empaqueté (fx.lots). pdrSlots : un tampon GPU par lot, renvoyé seulement quand le lot
+    // change ; pdrLots : les lots de l'image en cours. FERRO a setLots pour le même besoin : à unifier (PROVENANCE.md).
+    let pdrSlots=[];const pdrLots=[];
+    // PDR (foule) : points d'accroche de la foule sur le GPU. pdrLumiere et pdrVue sont remplis à chaque image, sans
+    // allocation, et passés à fx.foule.ombre et fx.foule.couleur. pdrGeneration change à chaque (ré)initialisation du
+    // contexte. pdrGlsl : la bibliothèque d'éclairage, au vignettage du réglage de création, comme le shader du monde.
+    let pdrGeneration=0;
+    const pdrGlsl=config.vignette===.59?PDR_GLSL:PDR_GLSL.replace('couleur*mix(.59,1.,',`couleur*mix(${glslFloat(config.vignette)},1.,`);
+    const pdrMatriceSoleil=new Float32Array(16);
+    const pdrLumiere={matrice:pdrMatriceSoleil,direction:[.4,.8,.3],texel:1,plein:false,viewport:[0,0,1,1],centre:[0,0,0],etendue:1,profondeur:1};
+    const pdrVue={gl,glsl:pdrGlsl,vp,vue:view,projection,oeil:[0,0,0],avant:[0,0,-1],droite:[1,0,0],haut:[0,1,0],fov:1,tangente:1,focale:1,
+      largeur:1,hauteur:1,near:.045,far:180,temps:0,qualite:'auto',msaa:0,soleil:[.4,.8,.3],couleurSoleil:[0,0,0],ambiance:[.075,.10,.12],
+      brouillard:[.009,.018,.024],densiteBrouillard:.014,cielHaut:[.05,.08,.10],cielBas:[.16,.20,.22],
+      ombre:{texture:null,unite:2,matrice:pdrMatriceSoleil,texel:1,plein:false,active:false},
+      lumieres:{positions:lightPositions,couleurs:lightColors,portees:lightRanges,directions:lightDirections,cones:lightCones,nombre:0},
+      sortie:'Couleur finale de la cible de scène (RGBA8) : pdrFinir applique brouillard, tonemap c/(c+0,76), gamma 1/2,2 et vignettage, comme le monde.'};
 
     function compile(type,code) {
       const shader=gl.createShader(type);gl.shaderSource(shader,code);gl.compileShader(shader);
@@ -1384,12 +1940,13 @@
       return t;
     }
     function deleteTarget(target){
-      if(!target)return;gl.deleteFramebuffer(target.framebuffer);gl.deleteTexture(target.texture);if(target.depth)gl.deleteRenderbuffer(target.depth);
+      if(!target)return;gl.deleteFramebuffer(target.framebuffer);gl.deleteTexture(target.texture);if(target.depth)gl.deleteRenderbuffer(target.depth);if(target.depthTexture)gl.deleteTexture(target.depthTexture);
     }
     function colorTarget(width,height,depth){
       const target={framebuffer:gl.createFramebuffer(),texture:texture(width,height),width,height,depth:null};
       gl.bindFramebuffer(gl.FRAMEBUFFER,target.framebuffer);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,target.texture,0);
-      if(depth){target.depth=gl.createRenderbuffer();gl.bindRenderbuffer(gl.RENDERBUFFER,target.depth);gl.renderbufferStorage(gl.RENDERBUFFER,gl.DEPTH_COMPONENT24,width,height);gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,target.depth);}
+      if(depth==='texture'){target.depthTexture=texture(width,height,true);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,target.depthTexture,0);}
+      else if(depth){target.depth=gl.createRenderbuffer();gl.bindRenderbuffer(gl.RENDERBUFFER,target.depth);gl.renderbufferStorage(gl.RENDERBUFFER,gl.DEPTH_COMPONENT24,width,height);gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,target.depth);}
       gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
       if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE){deleteTarget(target);return null;}
       return target;
@@ -1406,7 +1963,7 @@
       if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE){deleteMsaa(target);return null;}
       return target;
     }
-    function freePost(){if(post){deleteTarget(post.scene);deleteTarget(post.a);deleteTarget(post.b);deleteMsaa(post.msaa);post=null;}}
+    function freePost(){if(post){deleteTarget(post.scene);deleteTarget(post.a);deleteTarget(post.b);deleteTarget(post.reflectSource);deleteTarget(post.reflection);deleteMsaa(post.msaa);post=null;}}
     function ensureTargets(){
       const key=canvas.width+'x'+canvas.height+':'+quality;if(key===targetKey)return;targetKey=key;
       freePost();
@@ -1414,9 +1971,11 @@
       const width=canvas.width,height=canvas.height,bw=Math.max(1,Math.ceil(width/4)),bh=Math.max(1,Math.ceil(height/4));
       const scene=colorTarget(width,height,true),a=colorTarget(bw,bh,false),b=colorTarget(bw,bh,false);
       if(scene&&a&&b)post={scene,a,b};else{deleteTarget(scene);deleteTarget(a);deleteTarget(b);}
-      if(post)post.msaa=msaaTarget(width,height);stats.msaa=post&&post.msaa?post.msaa.samples:0;
-      // PDR : un seul soleil couvre tout le sol visible ; l'atlas double (2 048 en auto, 4 096 en haute qualité si le GPU le permet).
-      const size=Math.min(quality==='high'?2048:1024,Math.floor((gl.getParameter(gl.MAX_TEXTURE_SIZE)||2048)/2));
+      if(post&&config.reflections){post.reflectSource=colorTarget(width,height,'texture');post.reflection=colorTarget(Math.ceil(width/2),Math.ceil(height/2),false);}
+      if(post&&config.msaa)post.msaa=msaaTarget(width,height);stats.msaa=post&&post.msaa?post.msaa.samples:0;
+      // Tuile d'ombre de 512 en auto, 1 024 en haute qualité. Avec shadowMapScale: 2 (repris de Point de rupture, où un
+      // seul soleil couvre tout le sol visible), elle double, bornée par MAX_TEXTURE_SIZE.
+      const base=quality==='high'?1024:512,size=config.shadowMapScale>1?Math.min(base*config.shadowMapScale,Math.floor((gl.getParameter(gl.MAX_TEXTURE_SIZE)||2048)/2)):base;
       // Pixel resolution may adapt; a depth atlas of the same size remains valid.
       if(shadowKey!==String(size)){
         deleteTarget(shadowTarget);shadowTarget=null;shadowKey=String(size);
@@ -1429,27 +1988,44 @@
       stats.bloom=!!post;stats.shadows=!!shadowTarget;
     }
     function initialize() {
-      program=link(VERT,FRAG);depthProgram=link(VERT,DEPTH_FRAG);postProgram=link(POST_VERT,POST_FRAG);skyProgram=link(POST_VERT,SKY_FRAG);fxProgram=link(FX_VERT,FX_FRAG);
-      uniforms={};for(const name of ['uViewProjection','uWindTime','uEye','uForward','uLightPosition','uLightColor','uLightRange','uLightCount','uResolution','uEffects','uShadowMap','uShadowMatrix','uShadowSettings','uTorchPosition','uSunDirection','uSunColor','uAmbient','uFogColor','uSkyTop','uSkyBottom','uEnvironment','uPhoto']) uniforms[name]=gl.getUniformLocation(program,name);
-      postUniforms={};for(const name of ['uScene','uBloom','uTexel','uPass'])postUniforms[name]=gl.getUniformLocation(postProgram,name);
-      skyUniforms={};for(const name of ['uSkyRight','uSkyUp','uSkyForward','uSkyTop','uSkyBottom','uSkyFog','uSunDirection','uSunColor','uSkyFov','uSkyMotion'])skyUniforms[name]=gl.getUniformLocation(skyProgram,name);
-      fxUniforms={};for(const name of ['uViewProjection','uWindTime','uEye','uAmbient','uFogColor','uEnvironment','uTime'])fxUniforms[name]=gl.getUniformLocation(fxProgram,name);
+      ssrProgram=link(POST_VERT,SSR_FRAG);ssrUniforms={};for(const name of ['uColor','uDepth','uProjection','uPixel'])ssrUniforms[name]=gl.getUniformLocation(ssrProgram,name);
+      program=link(VERT,worldFrag);depthProgram=link(VERT,DEPTH_FRAG);postProgram=link(POST_VERT,postFrag);skyProgram=link(POST_VERT,SKY_FRAG);fxProgram=link(FX_VERT,FX_FRAG);
+      uniforms={};for(const name of ['uViewProjection','uWindTime','uSeaOrigin','uSeaMotion','uEye','uForward','uLightPosition','uLightColor','uLightRange','uLightDirection','uLightCone','uWeather','uCloudOffset','uPbrAlbedo','uPbrNormal','uPbrRough','uPbrReady','uLightCount','uResolution','uEffects','uShadowMap','uShadowMatrix','uShadowSettings','uTorchPosition','uSunDirection','uSunColor','uAmbient','uFogColor','uSkyTop','uSkyBottom','uEnvironment','uNightHour','uPhoto']) uniforms[name]=gl.getUniformLocation(program,name);
+      postUniforms={};for(const name of ['uScene','uBloom','uReflection','uReflections','uTexel','uPass'])postUniforms[name]=gl.getUniformLocation(postProgram,name);
+      skyUniforms={};for(const name of ['uSkyRight','uSkyUp','uSkyForward','uSkyTop','uSkyBottom','uSkyFog','uSunDirection','uSunColor','uSkyFov','uSkyMotion','uWeather','uCloudOffset'])skyUniforms[name]=gl.getUniformLocation(skyProgram,name);
+      fxUniforms={};for(const name of ['uViewProjection','uWindTime','uEye','uAmbient','uSkyTop','uSkyBottom','uFogColor','uEnvironment','uTime'])fxUniforms[name]=gl.getUniformLocation(fxProgram,name);
       depthMatrix=gl.getUniformLocation(depthProgram,'uViewProjection');depthWind=gl.getUniformLocation(depthProgram,'uWindTime');
       vao=gl.createVertexArray();gl.bindVertexArray(vao);
       vbo=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferData(gl.ARRAY_BUFFER,source.vertices,gl.STATIC_DRAW);
       gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,24,0);
       gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,3,gl.FLOAT,false,24,12);
-      ibo=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,source.indices,gl.STATIC_DRAW);
+      ibo=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,primitiveIndex.indices,gl.STATIC_DRAW);
       for(let i=2;i<6;i++) {gl.enableVertexAttribArray(i);gl.vertexAttribDivisor(i,1);}
       worldBuffer=gl.createBuffer();dynamicBuffer=gl.createBuffer();overlayBuffer=gl.createBuffer();fxBuffer=gl.createBuffer();
       // PDR : foule déjà empaquetée par le jeu (fx.instances), partagée par l'ombre du soleil et la passe couleur.
-      crowdBuffer=gl.createBuffer();
-      // Main colour and the three shadow views must keep independent instance buffers.
-      staticCaches=[worldBuffer,gl.createBuffer(),gl.createBuffer(),gl.createBuffer()].map(buffer=>({buffer,entries:[],batch:pack([])}));
+      // Son tampon naît au premier usage : un jeu sans foule ne crée rien de plus.
+      crowdBuffer=null;
+      // Main colour, three shadow views and distant water keep independent instance buffers.
+      staticCaches=[worldBuffer,gl.createBuffer(),gl.createBuffer(),gl.createBuffer(),gl.createBuffer()].map(buffer=>({buffer,entries:[],batch:pack([])}));
       lampCasters=[];
       gl.bindBuffer(gl.ARRAY_BUFFER,worldBuffer);gl.bufferData(gl.ARRAY_BUFFER,worldBatch.values,gl.STATIC_DRAW);
       postVao=gl.createVertexArray();
       whiteTexture=texture(1,1);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([255,255,255,255]));
+      pbrTextures=[];const layers=globalThis.RADE?.materials?.layers||[],size=layers[0]?.diff.width||1;
+      for(const [k,kind] of ['diff','nor_gl','rough'].entries()){
+        const tex=gl.createTexture();pbrTextures.push(tex);gl.activeTexture(gl.TEXTURE5+k);gl.bindTexture(gl.TEXTURE_2D_ARRAY,tex);
+        gl.texStorage3D(gl.TEXTURE_2D_ARRAY,Math.floor(Math.log2(size))+1,k===0?gl.SRGB8_ALPHA8:gl.RGBA8,size,size,Math.max(1,layers.length));
+        for(let j=0;j<layers.length;j++)gl.texSubImage3D(gl.TEXTURE_2D_ARRAY,0,0,0,j,size,size,1,gl.RGBA,gl.UNSIGNED_BYTE,layers[j][kind]);
+        gl.texParameteri(gl.TEXTURE_2D_ARRAY,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);gl.texParameteri(gl.TEXTURE_2D_ARRAY,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D_ARRAY,gl.TEXTURE_WRAP_S,gl.REPEAT);gl.texParameteri(gl.TEXTURE_2D_ARRAY,gl.TEXTURE_WRAP_T,gl.REPEAT);gl.generateMipmap(gl.TEXTURE_2D_ARRAY);
+        const aniso=gl.getExtension('EXT_texture_filter_anisotropic');if(aniso)gl.texParameterf(gl.TEXTURE_2D_ARRAY,aniso.TEXTURE_MAX_ANISOTROPY_EXT,Math.min(8,gl.getParameter(aniso.MAX_TEXTURE_MAX_ANISOTROPY_EXT)));
+      }gl.useProgram(program);gl.uniform1i(uniforms.uPbrAlbedo,5);gl.uniform1i(uniforms.uPbrNormal,6);gl.uniform1i(uniforms.uPbrRough,7);gl.uniform1f(uniforms.uPbrReady,layers.length?1:0);stats.pbrLayers=layers.length;
+      // PDR (voile) : ses uniformes. L'échantillonneur reste sur l'unité 4, que rien d'autre n'emploie (texture blanche,
+      // force nulle) : tant qu'aucun voile n'est passé à draw, le moteur n'ajoute aucune commande par image.
+      for(const name of ['uVoile','uVoileZone','uVoileForce'])uniforms[name]=gl.getUniformLocation(program,name);
+      gl.useProgram(program);gl.uniform1i(uniforms.uVoile,4);gl.activeTexture(gl.TEXTURE4);gl.bindTexture(gl.TEXTURE_2D,whiteTexture);gl.activeTexture(gl.TEXTURE0);pdrVoilePose=false;
+      // PDR (lots) : leurs tampons sont à recréer avec le contexte. PDR (foule) : la génération le dit au jeu.
+      pdrSlots=[];pdrLots.length=0;pdrGeneration++;
       gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);
       gl.clearColor(.035,.06,.073,1);
       post=null;shadowTarget=null;targetKey=shadowKey='';shadowLight=null;
@@ -1515,22 +2091,45 @@
       return dessines;
     }
 
+    // BITUME : désindexer seulement la primitive modifiée ; les anciennes occurrences restent indépendantes.
+    function updateShape(name,vertices){
+      const range=source.ranges[name];if(!range||vertices.length!==range.count*6)throw new Error('Shape vertex count changed: '+name);
+      const restored=primitiveIndex.restore(name),start=source.indices[range.offset/INDEX_OCTETS]*6;source.vertices.set(vertices,start);
+      if(!stats.contextLost){
+        if(restored){gl.bindVertexArray(vao);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER,restored.offset,restored.indices);}
+        gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferSubData(gl.ARRAY_BUFFER,start*4,vertices);
+      }
+    }
+    let chunks=new Map();const chunkCategories=new WeakMap(),chunkState={index:null,epoch:0};
+    function rebuildChunks(){
+      const next=planChunks(worldIndex,chunks,chunkCategories,chunkState);
+      let uploads=0;
+      for(const [key,group] of next){if(!group.nextEntries&&group.nextCount===group.entries.length)continue;
+        // Only changed chunks need fresh bounds and GPU data. The final object
+        // has no link to the previous chunk, so replaced generations can die.
+        const c={range:group.range,entries:group.nextEntries||group.entries.slice(0,group.nextCount),min:[Infinity,Infinity,Infinity],max:[-Infinity,-Infinity,-Infinity]};
+        for(const e of c.entries)for(let k=0;k<3;k++){c.min[k]=Math.min(c.min[k],e.p[k]-e.radius);c.max[k]=Math.max(c.max[k],e.p[k]+e.radius);}
+        c.p=c.min.map((v,k)=>(v+c.max[k])/2);c.radius=Math.hypot(...c.max.map((v,k)=>(v-c.min[k])/2));c.batch=packIndexed(c.entries);c.buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,c.buffer);gl.bufferData(gl.ARRAY_BUFFER,c.batch.values,gl.STATIC_DRAW);uploads+=c.batch.values.byteLength;next.set(key,c);
+      }
+      for(const [key,c] of chunks)if(next.get(key)!==c)gl.deleteBuffer(c.buffer);chunks=next;stats.chunks=chunks.size;stats.chunkBuildBytes=uploads;stats.chunkUpdateIncremental=chunkState.incremental;stats.chunkEntriesVisited=chunkState.entriesVisited;
+    }
+    function drawChunks(accept,shadow=false){let objects=0,count=0;for(const c of chunks.values())if(accept(c)){renderBatch(c.batch,c.buffer,false,shadow);objects+=c.entries.length;count++;}if(shadow){stats.shadowChunks=count;stats.shadowStatic=objects;}else{stats.visibleChunks=count;stats.staticVisible=objects;stats.staticCulled=world.length-objects;}return count;}
     function setWorld(meshes,points,atmosphere) {
-      environment=environmentInfo(atmosphere);world=meshes||[];worldIndex=spatialIndex(world,environment);lights=points||[];worldBatch=pack([]);shadowLight=null;actorLightPlan=null;stats.staticTotal=world.length;stats.biome=environment?environment.biome:null;
-      worldRevision=0;stats.worldRevision=0;
+      const partition=partitionState=partitionWorld(meshes);environment=environmentInfo(atmosphere);world=partition.world;worldIndex=spatialIndex(world,environment);backgroundIndex=spatialIndex(partition.background,environment);lights=points||[];worldBatch=pack([]);shadowLight=null;actorLightPlan=null;stats.staticTotal=world.length+backgroundIndex.entries.length;stats.biome=environment?environment.biome:null;
+      worldRevision=0;stats.worldRevision=0;rebuildChunks();
       lampCasters=[];for(const cache of staticCaches){cache.entries=[];cache.batch=pack([]);}
       governor.reset();autoScale=1;
       if(stats.contextLost||disposed) return;
       gl.bindBuffer(gl.ARRAY_BUFFER,worldBuffer);gl.bufferData(gl.ARRAY_BUFFER,worldBatch.values,gl.STATIC_DRAW);
     }
-    function updateWorld(meshes,revision,points){
+    function updateWorld(meshes,revision,points,updateOptions){
       if(disposed||revision===worldRevision)return false;
       if(Array.isArray(points)&&(points.length!==lights.length||points.some((light,i)=>light!==lights[i]))){lights=points;if(!lights.includes(shadowLight))shadowLight=null;}
-      world=meshes||[];worldIndex=spatialIndex(world,environment,worldIndex);worldBatch=pack([]);
+      const partition=partitionState=partitionWorld(meshes,partitionState,updateOptions),indexOptions=partition.meshDelta?{...updateOptions,meshDelta:partition.meshDelta}:updateOptions;world=partition.world;worldIndex=spatialIndex(world,environment,worldIndex,indexOptions);if(!partition.meshDelta)backgroundIndex=spatialIndex(partition.background,environment,backgroundIndex,updateOptions);stats.meshDeltaApplied=!!worldIndex.delta.fast;worldBatch=pack([]);rebuildChunks();
       // Every depth view must stop referencing removed walls immediately. GPU
       // storage is reused; only the affected instance lists upload next draw.
-      lampCasters=[];actorLightPlan=null;for(const cache of staticCaches){cache.entries=[];cache.batch=pack([]);}
-      worldRevision=revision===undefined?worldRevision+1:revision;stats.worldRevision=worldRevision;stats.staticTotal=world.length;
+      lampCasters=[];actorLightPlan=null;for(const cache of staticCaches.slice(0,4)){cache.entries=[];cache.batch=pack([]);}
+      worldRevision=revision===undefined?worldRevision+1:revision;stats.worldRevision=worldRevision;stats.staticTotal=world.length+backgroundIndex.entries.length;
       return true;
     }
     function resize(next) {
@@ -1554,7 +2153,7 @@
       for(const group of batch.groups) {
         for(let i=2;i<6;i++) gl.vertexAttribPointer(i,4,gl.FLOAT,false,64,group.offset+(i-2)*16);
         const shape=source.ranges[group.name];
-        gl.drawElementsInstanced(gl.TRIANGLES,shape.count,gl.UNSIGNED_INT,shape.offset,group.count); // BITUME : index 32 bits
+        gl.drawElementsInstanced(gl.TRIANGLES,shape.count,gl.UNSIGNED_INT,shape.offset,group.count);
         stats.drawCalls++;stats.triangles+=shape.count/3*group.count;if(!shadowPass)stats.instances+=group.count;
       }
     }
@@ -1564,10 +2163,10 @@
       if(!same){cache.entries=entries;cache.batch=packIndexed(entries);}
       renderBatch(cache.batch,cache.buffer,!same,shadow);
     }
-    function renderEffects(meshes,eye,time){
-      const batch=packEffects(meshes,environment,eye);stats.fxInstances+=batch.values.length/16;if(!batch.groups.length)return;
-      gl.useProgram(fxProgram);gl.uniformMatrix4fv(fxUniforms.uViewProjection,false,vp);gl.uniform2f(fxUniforms.uWindTime,0,time);
-      gl.uniform3fv(fxUniforms.uEye,eye);gl.uniform3fv(fxUniforms.uAmbient,environment?environment.ambient:[.12,.15,.16]);
+    function renderEffects(meshes,eye,time,clip=vp){
+      const batch=packFx(meshes,environment,eye);stats.fxInstances+=batch.values.length/16;if(!batch.groups.length)return;
+      gl.useProgram(fxProgram);gl.uniformMatrix4fv(fxUniforms.uViewProjection,false,clip);gl.uniform2f(fxUniforms.uWindTime,0,time);
+      gl.uniform3fv(fxUniforms.uSkyTop,environment?.skyTop||[.2,.3,.4]);gl.uniform3fv(fxUniforms.uSkyBottom,environment?.skyBottom||[.5,.6,.6]);gl.uniform3fv(fxUniforms.uEye,eye);gl.uniform3fv(fxUniforms.uAmbient,environment?environment.ambient:[.12,.15,.16]);
       gl.uniform3fv(fxUniforms.uFogColor,environment?environment.fog:[.009,.018,.024]);gl.uniform2f(fxUniforms.uEnvironment,environment?1:0,environment?environment.fogDensity:.018);gl.uniform1f(fxUniforms.uTime,time);
       gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);
       renderBatch(batch,fxBuffer,true);gl.depthMask(true);gl.disable(gl.BLEND);gl.useProgram(program);
@@ -1608,26 +2207,51 @@
       gl.useProgram(depthProgram);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1.1,2);
       gl.uniformMatrix4fv(depthMatrix,false,shadowMatrix);gl.uniform2f(depthWind,environment.wind,time);
       const inside=e=>{
-        const d=e.p.map((v,k)=>v-p[k]),along=a=>d[0]*a[0]+d[1]*a[1]+d[2]*a[2],z=along(fw);
-        return Math.abs(along(r))<extent+e.radius&&Math.abs(along(u))<extent+e.radius&&z+e.radius>near&&z-e.radius<far;
+        const x=e.p[0]-p[0],y=e.p[1]-p[1],d=e.p[2]-p[2],z=x*fw[0]+y*fw[1]+d*fw[2];
+        return Math.abs(x*r[0]+y*r[1]+d*r[2])<extent+e.radius&&Math.abs(x*u[0]+y*u[1]+d*u[2])<extent+e.radius&&z+e.radius>near&&z-e.radius<far;
       };
-      const casters=camera.allStatic?worldIndex.entries:worldIndex.query(center,[extent+24,26,0]).filter(inside);
-      renderStatic(casters,2,true);
+      const casters=camera.chunked?[]:camera.allStatic?worldIndex.entries:worldIndex.query(center,[extent+24,26,0]).filter(inside);
+      renderStatic(casters,2,true);if(camera.chunked)drawChunks(inside,true);
       // BITUME : les lots dont la sphère touche le volume du soleil projettent leur ombre (version proche ou lointaine).
       dessinerLots(eye,axes,0,0,0,l=>inside({p:l.centre,radius:l.rayon}));
       renderBatch(dynamicBatch,dynamicBuffer,false,true);if(crowd)renderBatch(crowd,crowdBuffer,false,true);gl.disable(gl.POLYGON_OFFSET_FILL);
+      // PDR (lots) : les lots du jeu (fx.lots) entrent dans la même vue du soleil, au même biais, rétabli pour eux.
+      // PDR (foule) : la foule sur le GPU aussi (fx.foule.ombre) ; au retour, le moteur reprend son état GL.
+      const pdrOmbre=fx.foule&&typeof fx.foule.ombre==='function';
+      if(pdrLots.length||pdrOmbre){
+        gl.enable(gl.POLYGON_OFFSET_FILL);
+        for(const entry of pdrLots)renderBatch(entry.lot,entry.buffer,false,true);
+        if(pdrOmbre){
+          pdrMatriceSoleil.set(shadowMatrix);pdrLumiere.direction=sun;pdrLumiere.texel=texel;pdrLumiere.plein=full;
+          pdrLumiere.viewport[0]=full?0:shadowTarget.size;pdrLumiere.viewport[1]=0;pdrLumiere.viewport[2]=pdrLumiere.viewport[3]=tile;
+          pdrLumiere.centre=center;pdrLumiere.etendue=extent;pdrLumiere.profondeur=far;
+          pdrCompter(fx.foule.ombre(gl,pdrLumiere),true);
+          gl.useProgram(depthProgram);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.depthMask(true);gl.disable(gl.BLEND);
+        }
+        gl.disable(gl.POLYGON_OFFSET_FILL);
+      }
     }
-    function skyPass(axes,f,time){
+    // PDR (foule) : ce que rend un point d'accroche ({ appels, triangles, instances }) entre dans les statistiques du moteur.
+    function pdrCompter(r,shadow){
+      if(!r)return;stats.drawCalls+=r.appels||0;stats.triangles+=r.triangles||0;if(!shadow)stats.instances+=r.instances||0;
+    }
+    function skyPass(axes,f,time,weather,cloudOffset){
+      const sky=weather; // BITUME : ciel et monde partagent la même ambiance météo.
       gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.bindVertexArray(postVao);gl.useProgram(skyProgram);
       gl.uniform3fv(skyUniforms.uSkyRight,axes.right);gl.uniform3fv(skyUniforms.uSkyUp,axes.up);gl.uniform3fv(skyUniforms.uSkyForward,axes.forward);
-      gl.uniform3fv(skyUniforms.uSkyTop,environment.skyTop);gl.uniform3fv(skyUniforms.uSkyBottom,environment.skyBottom);gl.uniform3fv(skyUniforms.uSkyFog,environment.fog);
-      gl.uniform3fv(skyUniforms.uSunDirection,environment.sunDirection);gl.uniform3fv(skyUniforms.uSunColor,environment.sunColor);
-      gl.uniform2f(skyUniforms.uSkyFov,canvas.width/canvas.height/f,1/f);gl.uniform2f(skyUniforms.uSkyMotion,time,environment.wind);gl.drawArrays(gl.TRIANGLES,0,3);
+      gl.uniform3fv(skyUniforms.uSkyTop,sky.skyTop);gl.uniform3fv(skyUniforms.uSkyBottom,sky.skyBottom);gl.uniform3fv(skyUniforms.uSkyFog,sky.fog);
+      gl.uniform3fv(skyUniforms.uSunDirection,environment.sunDirection);gl.uniform3fv(skyUniforms.uSunColor,sky.sunColor);
+      gl.uniform2f(skyUniforms.uSkyFov,canvas.width/canvas.height/f,1/f);gl.uniform4fv(skyUniforms.uWeather,sky.values);gl.uniform2f(skyUniforms.uSkyMotion,time,sky.wind);gl.uniform2fv(skyUniforms.uCloudOffset,cloudOffset);gl.drawArrays(gl.TRIANGLES,0,3);
       stats.drawCalls++;gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);
+    }
+    function reflectionsPass(){
+      gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.bindVertexArray(postVao);gl.useProgram(ssrProgram);gl.bindFramebuffer(gl.FRAMEBUFFER,post.reflection.framebuffer);gl.viewport(0,0,post.reflection.width,post.reflection.height);
+      gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,post.reflectSource.texture);gl.uniform1i(ssrUniforms.uColor,0);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,post.reflectSource.depthTexture);gl.uniform1i(ssrUniforms.uDepth,1);
+      gl.uniform4f(ssrUniforms.uProjection,1/projection[0],1/projection[5],projection[10],projection[14]);gl.uniform2f(ssrUniforms.uPixel,1/canvas.width,1/canvas.height);gl.drawArrays(gl.TRIANGLES,0,3);stats.drawCalls++;
     }
     function postPass(){
       gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.bindVertexArray(postVao);gl.useProgram(postProgram);
-      gl.uniform1i(postUniforms.uScene,0);gl.uniform1i(postUniforms.uBloom,1);
+      gl.uniform1i(postUniforms.uScene,0);gl.uniform1i(postUniforms.uBloom,1);gl.uniform1i(postUniforms.uReflection,3);gl.uniform1i(postUniforms.uReflections,stats.reflections?1:0);gl.activeTexture(gl.TEXTURE3);gl.bindTexture(gl.TEXTURE_2D,post.reflection?.texture||whiteTexture);
       gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,post.scene.texture);
       gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,post.b.texture);
       gl.bindFramebuffer(gl.FRAMEBUFFER,post.a.framebuffer);gl.viewport(0,0,post.a.width,post.a.height);
@@ -1708,88 +2332,167 @@
       const ranges=detailRanges(quality);ranges[0]=extendedDistance(ranges[0],environment,eye);stats.viewDistance=ranges[0];
       // PDR : vue de haut, tout le décor part au GPU en un seul lot stable : ni tri ni nouvel envoi quand la caméra bouge,
       // le découpage au champ se fait au clip. Sans camera.allStatic, le tri par portée de FERRO reste inchangé.
-      const shown=camera.allStatic?worldIndex.entries:worldIndex.query(eye,ranges).filter(e=>visible(e,eye,axes,canvas.width/canvas.height/f,1/f,ranges[0]));
+      const shown=camera.chunked?[]:camera.allStatic?worldIndex.entries:worldIndex.query(eye,ranges).filter(e=>visible(e,eye,axes,canvas.width/canvas.height/f,1/f,ranges[0]));
       stats.staticVisible=shown.length;stats.staticCulled=world.length-shown.length;
       const planned=actorLightPlan&&actorLightPlan.previous===shadowLight&&eye.every((v,k)=>v===actorLightPlan.eye[k])?actorLightPlan.plan:lightPlan(eye);actorLightPlan=null;
-      const {sorted,distanceTo,chosen,shadowLights}=planned;shadowLight=chosen;
-      const transient=transientLights(fx.lights,eye,quality==='low'?2:3);stats.dynamicLights=transient.length;
+      const {sorted,distanceTo,chosen}=planned,shadowLights=fx.headlight?[fx.headlight]:planned.shadowLights;shadowLight=chosen;
+      // PDR (lampes) : huit lampes passagères (quatre en qualité basse) au lieu de trois : les huit foyers les plus proches
+      // de la visée éclairent façades et foule (decor.js) ; la ville n'a pas de lampe fixe, les douze places restent assez.
+      const transient=transientLights(fx.lights,eye,quality==='low'?4:8);stats.dynamicLights=transient.length;
       const selected=shadowLights.map(light=>({light,d:distanceTo(light)})).concat(transient.map(light=>({light,d:distanceTo(light)})),sorted.filter(entry=>!shadowLights.includes(entry.light)).slice(0,(quality==='low'?6:12)-shadowLights.length-transient.length));
       const blackout=horrorLights(fx.horror,lights);stats.blackoutLights=blackout?.size||0;
-      lightPositions.fill(0);lightColors.fill(0);lightRanges.fill(0);
-      selected.forEach(({light},i)=>{lightPositions.set(light.p,i*3);lightRanges[i]=light.range||0;const c=light.color||[1,1,1],power=(light.power===undefined?1:light.power)*(blackout?.get(light)??1);lightColors.set([c[0]*power,c[1]*power,c[2]*power],i*3);});
-      const ordinary=[],overlay=[],particles=[],overlayParticles=[];for(const mesh of dynamic||[]) (mesh.overlay?(mesh.fx?overlayParticles:overlay):mesh.fx?particles:ordinary).push(mesh);
-      const dynamicBatch=pack(ordinary,environment,true);
+      lightPositions.fill(0);lightColors.fill(0);lightRanges.fill(0);lightDirections.fill(0);lightCones.fill(0);
+      selected.forEach(({light},i)=>{if(light.dir){lightDirections.set(light.dir,i*3);lightCones.set(light.cone||[.75,.94],i*2);}lightPositions.set(light.p,i*3);lightRanges[i]=light.range||0;const c=light.color||[1,1,1],power=(light.power===undefined?1:light.power)*(blackout?.get(light)??1);lightColors.set([c[0]*power,c[1]*power,c[2]*power],i*3);});
+      ordinary.length=overlay.length=particles.length=overlayParticles.length=0;for(const mesh of dynamic||[]) (mesh.overlay?(mesh.fx?overlayParticles:overlay):mesh.fx?particles:ordinary).push(mesh);
+      const dynamicBatch=packDynamic(ordinary,environment,true);
       const torchPosition=eye.map((v,i)=>v+right[i]*.16-up[i]*.08);
       stats.drawCalls=0;stats.triangles=0;stats.instances=0;stats.bloom=!!post&&fx.bloom!==false;stats.shadows=!!shadowTarget&&fx.shadows!==false;stats.shadowMaps=stats.shadows?shadowLights.length+1+(environment?1:0):0;stats.shadowMode=environment?'sun-atlas':'atlas';
       stats.uploadBytes=0;stats.fxInstances=0;
       // Animated instances are shared unchanged by every depth and colour pass.
       if(dynamicBatch.values.length){gl.bindBuffer(gl.ARRAY_BUFFER,dynamicBuffer);gl.bufferData(gl.ARRAY_BUFFER,dynamicBatch.values,gl.DYNAMIC_DRAW);stats.uploadBytes+=dynamicBatch.values.byteLength;}
       const crowd=fx.instances&&fx.instances.groups&&fx.instances.groups.length?fx.instances:null,sunOnly=!!fx.sunOnly;
-      stats.crowdInstances=crowd?crowd.values.length/16:0;if(sunOnly)stats.shadowMaps=stats.shadows&&environment?1:0;
-      if(crowd){gl.bindBuffer(gl.ARRAY_BUFFER,crowdBuffer);gl.bufferData(gl.ARRAY_BUFFER,crowd.values,gl.DYNAMIC_DRAW);stats.uploadBytes+=crowd.values.byteLength;}
+      stats.crowdInstances=crowd?crowd.values.length/16:0;stats.shadowMaps=stats.shadows?(sunOnly?0:shadowLights.length+(fx.torch!==false?1:0))+(environment?1:0):0;
+      if(crowd){if(!crowdBuffer)crowdBuffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,crowdBuffer);gl.bufferData(gl.ARRAY_BUFFER,crowd.values,gl.DYNAMIC_DRAW);stats.uploadBytes+=crowd.values.byteLength;}
+      // PDR (lots) : lots déjà empaquetés par le jeu (fx.lots : le décor), au format de pack. Un lot ne repart au GPU que si
+      // l'objet ou sa version (lot.version) change ; il sert ensuite à l'ombre du soleil et à la passe couleur.
+      pdrLots.length=0;stats.pdrLotInstances=0;
+      if(Array.isArray(fx.lots))for(let i=0;i<fx.lots.length;i++){
+        const lot=fx.lots[i];if(!lot||!lot.values||!lot.groups||!lot.groups.length)continue;
+        const slot=pdrSlots[i]||(pdrSlots[i]={buffer:gl.createBuffer(),lot:null,version:NaN});
+        if(slot.lot!==lot||slot.version!==lot.version){
+          gl.bindBuffer(gl.ARRAY_BUFFER,slot.buffer);gl.bufferData(gl.ARRAY_BUFFER,lot.values,gl.DYNAMIC_DRAW);stats.uploadBytes+=lot.values.byteLength;
+          slot.lot=lot;slot.version=lot.version;
+        }
+        pdrLots.push(slot);stats.pdrLotInstances+=lot.values.length/16;
+      }
       if(stats.shadows){
         gl.bindFramebuffer(gl.FRAMEBUFFER,shadowTarget.framebuffer);gl.clear(gl.DEPTH_BUFFER_BIT);
-        if(!sunOnly)shadowLights.forEach((light,i)=>shadowPass(light,dynamicBatch,i,null,t));
+        if(!sunOnly)shadowLights.forEach((light,i)=>{const fw=light.dir,axes=fw?{forward:fw,right:[-fw[2],0,fw[0]],up:[0,1,0]}:null;shadowPass(light,dynamicBatch,i,axes,t);});
         if(environment)sunShadowPass(eye,axes,dynamicBatch,t,camera,fx,crowd);
-        if(!sunOnly)shadowPass({p:torchPosition},dynamicBatch,2,axes,t);
+        if(!sunOnly&&fx.torch!==false)shadowPass({p:torchPosition},dynamicBatch,2,axes,t);
       }
-      const msaa=stats.bloom&&post.msaa?post.msaa:null;
+      // PDR (msaa) : fx.msaa === false coupe l'anticrénelage à l'exécution, sans recréer les cibles (réglage du jeu).
+      const msaa=stats.bloom&&post.msaa&&fx.msaa!==false?post.msaa:null;
       gl.bindFramebuffer(gl.FRAMEBUFFER,stats.bloom?(msaa?msaa.framebuffer:post.scene.framebuffer):null);gl.viewport(0,0,canvas.width,canvas.height);
-      gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);if(environment)skyPass(axes,f,t);gl.useProgram(program);gl.bindVertexArray(vao);
+      bitumeWeather(environment,fx.weather,t,weather); // BITUME : même ciel, route humide, vent et éclair.
+      gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);if(environment)skyPass(axes,f,t,weather,fx.cloudOffset||weather.cloudOffset);gl.useProgram(program);gl.bindVertexArray(vao);
       gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);gl.uniform3fv(uniforms.uEye,eye);gl.uniform3fv(uniforms.uForward,forward);
-      // BITUME : météo pilotée par le jeu (fx.weather {pluie, nuage, eclair} 0..1). Assombrit ciel et soleil,
-      // épaissit le brouillard, et un éclair lointain blanchit l'ambiance. Valeurs d'uniformes seulement, aucun shader ajouté.
-      const wx=fx.weather||{}, pluie=Math.max(0,Math.min(1,wx.pluie||0)), nuage=Math.max(0,Math.min(1,wx.nuage||0)), eclairW=Math.max(0,Math.min(1,wx.eclair||0));
-      const assom=1-nuage*.5-pluie*.32, env=environment;
-      const skyTopW=(env?env.skyTop:[.05,.08,.10]).map(v=>v*assom+eclairW*.3);
-      const skyBotW=(env?env.skyBottom:[.16,.20,.22]).map(v=>v*(assom*.85+.15)+eclairW*.45);
-      const fogW=(env?env.fog:[.009,.018,.024]).map(v=>v*(1+pluie*.5)+eclairW*.2);
-      const fogDW=(env?env.fogDensity:.014)*(1+pluie*1.3+nuage*.25);
-      const sunW=(env?env.sunColor:[0,0,0]).map(v=>v*(1-nuage*.85)*(1-pluie*.4));
-      const ambW=(env?env.ambient:[.075,.10,.12]).map(v=>v*(1-nuage*.3)+eclairW*.55);
-      gl.uniform2f(uniforms.uWindTime,env?env.wind*(1+pluie*1.4):0,t);gl.uniform3fv(uniforms.uSunDirection,env?env.sunDirection:[.4,.8,.3]);gl.uniform3fv(uniforms.uSunColor,sunW);
-      gl.uniform3fv(uniforms.uAmbient,ambW);gl.uniform3fv(uniforms.uFogColor,fogW);gl.uniform2f(uniforms.uEnvironment,env?1:0,fogDW);
-      gl.uniform3fv(uniforms.uSkyTop,skyTopW);gl.uniform3fv(uniforms.uSkyBottom,skyBotW);
-      gl.uniform3fv(uniforms.uLightPosition,lightPositions);gl.uniform3fv(uniforms.uLightColor,lightColors);gl.uniform1fv(uniforms.uLightRange,lightRanges);gl.uniform1i(uniforms.uLightCount,selected.length);
-      gl.uniform2f(uniforms.uResolution,canvas.width,canvas.height);gl.uniform4f(uniforms.uEffects,t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0)));gl.uniform1f(uniforms.uPhoto,fx.photo||0);
+      gl.uniform4fv(uniforms.uSeaOrigin,fx.sea?.origin||[0,0,0,0]);gl.uniform4fv(uniforms.uSeaMotion,fx.sea?.motion||[0,0,-1.25,0]);
+      gl.uniform2fv(uniforms.uCloudOffset,fx.cloudOffset||weather.cloudOffset);gl.uniform2f(uniforms.uWindTime,weather.wind,t);gl.uniform3fv(uniforms.uSunDirection,environment?environment.sunDirection:[.4,.8,.3]);gl.uniform3fv(uniforms.uSunColor,weather.sunColor);
+      gl.uniform3fv(uniforms.uAmbient,weather.ambient);gl.uniform3fv(uniforms.uFogColor,weather.fog);gl.uniform2f(uniforms.uEnvironment,environment?1:0,weather.fogDensity);
+      gl.uniform2f(uniforms.uNightHour,environment?.night||0,environment?.hour??14);
+      gl.uniform3fv(uniforms.uSkyTop,weather.skyTop);gl.uniform3fv(uniforms.uSkyBottom,weather.skyBottom);
+      for(let k=0;k<pbrTextures.length;k++){gl.activeTexture(gl.TEXTURE5+k);gl.bindTexture(gl.TEXTURE_2D_ARRAY,pbrTextures[k]);}
+      gl.uniform1f(uniforms.uPhoto,fx.photo||0);gl.uniform4fv(uniforms.uWeather,weather.values);gl.uniform3fv(uniforms.uLightDirection,lightDirections);gl.uniform2fv(uniforms.uLightCone,lightCones);gl.uniform3fv(uniforms.uLightPosition,lightPositions);gl.uniform3fv(uniforms.uLightColor,lightColors);gl.uniform1fv(uniforms.uLightRange,lightRanges);gl.uniform1i(uniforms.uLightCount,selected.length);
+      gl.uniform2f(uniforms.uResolution,canvas.width,canvas.height);gl.uniform4f(uniforms.uEffects,t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0)));
       gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,stats.shadows?shadowTarget.texture:whiteTexture);gl.uniform1i(uniforms.uShadowMap,2);
-      gl.uniformMatrix4fv(uniforms.uShadowMatrix,false,shadowMatrices);gl.uniform4f(uniforms.uShadowSettings,stats.shadows&&!sunOnly?shadowLights.length:0,shadowTarget?1/(shadowTarget.size*2):1,stats.shadows&&!sunOnly?1:0,stats.shadows&&environment?(sunOnly?2:1):0);
+      gl.uniformMatrix4fv(uniforms.uShadowMatrix,false,shadowMatrices);gl.uniform4f(uniforms.uShadowSettings,stats.shadows&&!sunOnly?shadowLights.length:0,shadowTarget?1/(shadowTarget.size*2):1,stats.shadows&&!sunOnly&&fx.torch!==false?1:0,stats.shadows&&environment?(sunOnly?2:1):0);
       // PDR : sans lampe torche (fx.torch === false), sa source est renvoyée assez loin pour ne plus rien éclairer.
       gl.uniform3fv(uniforms.uTorchPosition,fx.torch===false?[0,-1e5,0]:torchPosition);
-      renderStatic(shown,0);
+      // PDR (voile) : fx.voile = { texture R8, origine [x0, z0], taille [largeur, profondeur], force } sur l'unité 4. Sans
+      // voile, rien n'est posé ; à la première image sans lui, la texture blanche reprend l'unité et la force revient à 0.
+      const voile=fx.voile&&fx.voile.texture&&fx.voile.force>0?fx.voile:null;
+      if(voile||pdrVoilePose){
+        gl.activeTexture(gl.TEXTURE4);gl.bindTexture(gl.TEXTURE_2D,voile?voile.texture:whiteTexture);
+        if(voile)gl.uniform4f(uniforms.uVoileZone,voile.origine[0],voile.origine[1],1/Math.max(.001,voile.taille[0]),1/Math.max(.001,voile.taille[1]));
+        gl.uniform1f(uniforms.uVoileForce,voile?Math.min(1,voile.force):0);gl.activeTexture(gl.TEXTURE2);pdrVoilePose=!!voile;
+      }
+      // The distant sea is a sky-like backdrop: it must not compete with land
+      // only centimetres above it at kilometre distances. Local water retains depth/SSR.
+      stats.backgroundWater=backgroundIndex.entries.length;stats.backgroundDrawCalls=0;
+      if(backgroundIndex.entries.length){const before=stats.drawCalls;gl.depthMask(false);renderStatic(backgroundIndex.entries,4);gl.depthMask(true);stats.backgroundDrawCalls=stats.drawCalls-before;}
+      renderStatic(shown,0);if(camera.chunked)drawChunks(c=>visible(c,eye,axes,canvas.width/canvas.height/f,1/f,Math.min(far,c.range)));
       // BITUME : chaussée et terrain, puis décor par lots, découpés au champ et à la portée de chaque lot.
       dessinerNappes(eye,axes,canvas.width/canvas.height/f,1/f,far);
       stats.lotsVisibles=dessinerLots(eye,axes,canvas.width/canvas.height/f,1/f,far);
       renderBatch(dynamicBatch,dynamicBuffer,false);
       if(crowd)renderBatch(crowd,crowdBuffer,false);
+      // PDR (lots) : les lots du jeu, dans la cible de la scène (MSAA), avant les effets translucides.
+      for(const entry of pdrLots)renderBatch(entry.lot,entry.buffer,false);
+      // PDR (foule) : puis la foule sur le GPU (fx.foule.couleur), dans la même cible ; au retour, le moteur reprend son état GL.
+      if(fx.foule&&typeof fx.foule.couleur==='function'){
+        const v=pdrVue,ombre=v.ombre;
+        v.oeil=eye;v.avant=forward;v.droite=right;v.haut=up;v.fov=fov;v.tangente=1/f;v.focale=canvas.height*f*.5;v.largeur=canvas.width;v.hauteur=canvas.height;
+        v.near=near;v.far=far;v.temps=t;v.qualite=quality;v.msaa=msaa?msaa.samples:0;
+        const env=environment||PDR_INDOOR;
+        v.soleil=env.sunDirection;v.couleurSoleil=env.sunColor;v.ambiance=env.ambient;v.brouillard=env.fog;
+        v.densiteBrouillard=env.fogDensity;v.cielHaut=env.skyTop;v.cielBas=env.skyBottom;
+        ombre.texture=stats.shadows?shadowTarget.texture:whiteTexture;ombre.active=!!(stats.shadows&&environment);ombre.plein=sunOnly;
+        ombre.texel=shadowTarget?1/(shadowTarget.size*2):1;if(ombre.active)for(let k=0;k<16;k++)pdrMatriceSoleil[k]=shadowMatrices[16+k];
+        v.lumieres.nombre=selected.length;
+        pdrCompter(fx.foule.couleur(gl,v),false);
+        gl.useProgram(program);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);
+        gl.depthMask(true);gl.disable(gl.BLEND);gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,ombre.texture);
+      }
       if(particles.length)renderEffects(particles,eye,t);
+      stats.reflections=!!(stats.bloom&&post.reflectSource&&post.reflection&&fx.reflections!==false);stats.reflectionSteps=stats.reflections?48:0;
+      if(stats.reflections){const target=msaa?msaa.framebuffer:post.scene.framebuffer;gl.bindFramebuffer(gl.READ_FRAMEBUFFER,target);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,post.reflectSource.framebuffer);gl.blitFramebuffer(0,0,canvas.width,canvas.height,0,0,canvas.width,canvas.height,gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT,gl.NEAREST);gl.bindFramebuffer(gl.FRAMEBUFFER,target);}
       if(overlay.length||overlayParticles.length) {
+        // EMPRISE: weapon/muzzle meshes already render after a depth clear.
+        // Keep their close clipping plane independent from world depth precision.
+        // World projection and its depth texture stay unchanged for SSR and crowds.
+        const overlayNear=Math.min(near,Math.max(.005,Number(camera.overlayNear)||near));
+        let overlayClip=vp;
+        if(overlayNear!==near){overlayProjection.set(projection);overlayProjection[10]=(far+overlayNear)/(overlayNear-far);overlayProjection[14]=2*far*overlayNear/(overlayNear-far);multiply(overlayProjection,view,overlayVP);overlayClip=overlayVP;gl.uniformMatrix4fv(uniforms.uViewProjection,false,overlayClip);}
         if(blackout){selected.forEach(({light},i)=>{const c=light.color||[1,1,1],power=light.power===undefined?1:light.power;lightColors.set([c[0]*power,c[1]*power,c[2]*power],i*3);});gl.uniform3fv(uniforms.uLightColor,lightColors);}
-        gl.clear(gl.DEPTH_BUFFER_BIT);if(overlay.length)renderBatch(pack(overlay,environment,true),overlayBuffer,true);
-        if(overlayParticles.length)renderEffects(overlayParticles,eye,t);
+        gl.clear(gl.DEPTH_BUFFER_BIT);if(overlay.length)renderBatch(packOverlay(overlay,environment,true),overlayBuffer,true);
+        if(overlayParticles.length)renderEffects(overlayParticles,eye,t,overlayClip);
+        if(overlayClip!==vp)gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);
       }
       if(msaa){
         gl.bindFramebuffer(gl.READ_FRAMEBUFFER,msaa.framebuffer);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,post.scene.framebuffer);
         gl.blitFramebuffer(0,0,canvas.width,canvas.height,0,0,canvas.width,canvas.height,gl.COLOR_BUFFER_BIT,gl.NEAREST);
         gl.bindFramebuffer(gl.FRAMEBUFFER,null);
       }
-      if(stats.bloom)postPass();
+      if(stats.reflections)reflectionsPass();if(stats.bloom)postPass();
     }
     function lost(event){event.preventDefault();stats.contextLost=true;}
-    function restored(){if(!disposed){initialize();chargerNappes();chargerLots();}} // BITUME : nappes et lots rechargés
+    function restored(){if(!disposed){
+      // BITUME : les anciens objets GL appartiennent au contexte perdu ; oublier leurs poignées avant recharge.
+      nappeVao=nappeVbo=nappeIbo=null;for(const l of lots)l.tampon=l.tamponLoin=null;
+      chunks.clear();initialize();chargerNappes();chargerLots();rebuildChunks();
+    }}
     canvas.addEventListener('webglcontextlost',lost);canvas.addEventListener('webglcontextrestored',restored);
     function dispose() {
       if(disposed) return;disposed=true;
       canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('webglcontextrestored',restored);
-      for(const buffer of [vbo,ibo,worldBuffer,dynamicBuffer,overlayBuffer,fxBuffer,crowdBuffer]) gl.deleteBuffer(buffer);
+      for(const c of chunks.values())gl.deleteBuffer(c.buffer);chunks.clear();
+      for(const buffer of [vbo,ibo,worldBuffer,dynamicBuffer,overlayBuffer,fxBuffer]) gl.deleteBuffer(buffer);if(crowdBuffer)gl.deleteBuffer(crowdBuffer);
       for(const cache of staticCaches.slice(1))gl.deleteBuffer(cache.buffer);
       // BITUME : tampons des nappes et des lots.
       if(nappeVbo)gl.deleteBuffer(nappeVbo);if(nappeIbo)gl.deleteBuffer(nappeIbo);if(nappeVao)gl.deleteVertexArray(nappeVao);
       for(const l of lots)for(const cle of ['tampon','tamponLoin'])if(l[cle])gl.deleteBuffer(l[cle]);
-      freePost();deleteTarget(shadowTarget);gl.deleteTexture(whiteTexture);
-      gl.deleteVertexArray(vao);gl.deleteVertexArray(postVao);gl.deleteProgram(program);gl.deleteProgram(depthProgram);gl.deleteProgram(postProgram);gl.deleteProgram(skyProgram);gl.deleteProgram(fxProgram);
+      // PDR (lots) : tampons des lots du jeu.
+      for(const slot of pdrSlots)if(slot)gl.deleteBuffer(slot.buffer);pdrSlots=[];pdrLots.length=0;
+      freePost();deleteTarget(shadowTarget);gl.deleteTexture(whiteTexture);for(const tex of pbrTextures)gl.deleteTexture(tex);pbrTextures=[];
+      gl.deleteVertexArray(vao);gl.deleteVertexArray(postVao);gl.deleteProgram(program);gl.deleteProgram(depthProgram);gl.deleteProgram(postProgram);gl.deleteProgram(skyProgram);gl.deleteProgram(fxProgram);gl.deleteProgram(ssrProgram);
     }
-    return {setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots};
+    // PDR (foule) : le jeu dessine la foule lui-même dans les passes du moteur. renderer.gl est le contexte WebGL 2 ;
+    // renderer.pdr donne la bibliothèque d'éclairage (glsl), lier(programme) qui rend la fonction posant ses uniformes à
+    // partir de la vue passée à fx.foule.couleur, la génération du contexte (elle change après une perte de contexte : tout
+    // est à recréer) et la compilation des shaders avec les messages du moteur.
+    const pdr={glsl:pdrGlsl,uniformes:PDR_UNIFORMS,
+      get generation(){return pdrGeneration;},
+      programme(vertex,fragment){return link(vertex,fragment);},
+      lier(programme){
+        const u={};for(const name of PDR_UNIFORMS)u[name]=gl.getUniformLocation(programme,name);
+        return v=>{
+          const o=v.ombre;
+          gl.uniform1i(u.uPdrOmbre,o.unite);gl.uniformMatrix4fv(u.uPdrMatriceOmbre,false,o.matrice);
+          gl.uniform4f(u.uPdrOmbreReglages,o.active?1:0,o.texel,o.plein?1:0,0);
+          gl.uniform3fv(u.uPdrOeil,v.oeil);gl.uniform3fv(u.uPdrSoleil,v.soleil);gl.uniform3fv(u.uPdrCouleurSoleil,v.couleurSoleil);
+          gl.uniform3fv(u.uPdrAmbiance,v.ambiance);gl.uniform3fv(u.uPdrBrouillard,v.brouillard);
+          gl.uniform3fv(u.uPdrCielHaut,v.cielHaut);gl.uniform3fv(u.uPdrCielBas,v.cielBas);
+          gl.uniform4f(u.uPdrEnvironnement,1,v.densiteBrouillard,v.temps,0);gl.uniform2f(u.uPdrResolution,v.largeur,v.hauteur);
+          const l=v.lumieres;gl.uniform3fv(u.uPdrLumierePosition,l.positions);gl.uniform3fv(u.uPdrLumiereCouleur,l.couleurs);
+          gl.uniform3fv(u.uPdrLumiereDirection,l.directions);gl.uniform2fv(u.uPdrLumiereCone,l.cones);gl.uniform1fv(u.uPdrLumierePortee,l.portees);gl.uniform1i(u.uPdrLumieres,l.nombre);
+        };
+      }};
+    return {setEnvironment(value){environment=environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,updateShape,gl,pdr};
   }
-  window.FRender={create,foliageTriangles,forme}; // BITUME : forme
+  // Both GPU backends share the procedural shapes, instance layout and visibility
+  // rules. No rendering calls or GPU state are shared between the APIs.
+  const shared={bitumeWeather,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
+  globalThis.FRender={create,foliageTriangles,forme,shared};
+  if(typeof window!=='undefined')window.FRender=globalThis.FRender; // BITUME : compatibilité navigateur et bancs Node.
 })();

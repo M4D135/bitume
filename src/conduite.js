@@ -15,8 +15,9 @@
   // volant (plein volant = braquageMax(v), comme pour l'IA) ; le contre-braquage de la dérive compte aussitôt et
   // retombe lentement (des appuis répétés au clavier tiennent la dérive) ; centre de gravité à 0,33 m.
   // La mécanique de la dérive chargée vient de vroom-unreal ; constantes et code sont ceux de BITUME.
-  // Conventions : d > 0 à droite ; psi (cap de la vitesse sur la tangente), beta (caisse − vitesse) et omega
-  // (lacet de la caisse) > 0 vers la droite ; tangage > 0 nez levé ; roulis > 0 côté droit plus bas.
+  // Conventions : d > 0 à droite ; psi (axe de vitesse positive sur la tangente), beta (caisse − axe) et omega
+  // (lacet de la caisse) > 0 vers la droite ; v est signée (recul<0), la caisse garde le cap psi+beta.
+  // Tangage > 0 nez levé ; roulis > 0 côté droit plus bas.
 
   const G = 9.81;
   const PARAMS = Object.freeze({
@@ -81,10 +82,11 @@
     sautTangLim: 0.55, sautRoulLim: 0.72,                  // au-delà à la réception, la voiture tonne (accident)
     contreBon: 0.4, contreMauvais: -0.4,                   // contre-braquage : 100 % / 97 % / 94 % de la vitesse
     volBraquage: 0.15, volTrainee: 0.0011,                 // en l'air on dirige peu ; légère traînée d'air
-    accidentDuree: 4.5, accidentImm: 2, accidentFrein: 3.2, // retour progressif en piste, puis immunité
-    // roue perdue (Chantier 3) : plus de direction ni de motricité, on s'immobilise, réparation lente, repositionnement
+    accidentDuree: .65, accidentImm: 1, accidentFrein: 3.2, // remise en piste rapide, puis immunité
+    // Paramètres historiques conservés ; la roue perdue utilise désormais le retour rapide.
     rouePerdueBraquage: 0.06, rouePerdueTraine: 0.05, rouePerdueLacet: 0.7, rouePerdueFrein: 9,
-    reparationDuree: 9                                       // réparation lente à l'arrêt (pénalise le temps de course)
+    reculAttente: .3, reculMax: 12 / 3.6, reculAcc: 3.5, reculFrein: 8,
+    reparationDuree: .65                                       // délai court de remise en piste
   });
   const P = PARAMS;
   // accélération moteur maximale de chaque rapport : 13 × (27 / vitesse de pointe)^0,8
@@ -174,12 +176,13 @@
       coupure: 0, rupteurT: 0, sousVirage: 0,
       // Chantier 3 : vol (saut), accident et retour en piste, immunité, dégâts — tous inactifs au départ, la
       // conduite reste exactement celle des critères quand ils sont absents (tests de conduite sans ces modules)
-      saut: null, accident: null, immunite: 0, degats: null, reparation: null, choc: 0, auRail: false
+      saut: null, accident: null, immunite: 0, degats: null, reparation: null, recuperation: null,
+      freinRecul: 0, repositionnements: 0, choc: 0, auRail: false
     };
   }
 
   function cap(etat, c) { return B.circuit.echantillon(c, etat.s).cap + etat.psi + etat.beta; }
-  function kmh(etat) { return Math.round(etat.v * 3.6); }
+  function kmh(etat) { return Math.round(Math.abs(etat.v) * 3.6); }
 
   // glissière du côté donné ; repli sur c.limite pour un circuit sans limites par échantillon
   function limiteCote(c, s, cote) {
@@ -325,34 +328,22 @@
     const lim = limiteCote(c, etat.s, cdg);
     const bord = Math.max(0.2, lim - emprise);   // au-delà, un coin de la caisse passerait le rail
     if (Math.abs(etat.d) > bord) {
-      const vAvant = etat.v, ang = Math.abs(angle(etat.psi)), versMur = cdg * etat.psi > 0;
-      const premier = !etat.auRail && etat.choc <= 0;   // vrai premier contact, pas le frottement continu le long du rail
-      const normale = Math.max(0, cdg * vAvant * Math.sin(etat.psi));
-      if (versMur && (premier || (B.degats && normale >= B.degats.PARAMS.chocCasse)))
-        for (const e of subirChoc(etat, normale)) ev.push(e);
-      if (etat.degats && etat.degats.casse) {
-        etat.d = cdg * bord;
-        ev.push({ type: 'choc', force: normale });
-        etat.choc = P.chocDuree;
-      } else if (versMur && ang > P.glissAccident && etat.v >= P.glissVAccident) {
-        etat.d = cdg * bord;
-        ev.push({ type: 'choc', force: vAvant });
-        declencherAccident(etat, {});
-        annuler(etat, ev);
-      } else if (versMur && ang >= P.glissRasant) {
-        // choc de trois-quarts : la caisse rebondit et SE DÉGAGE du rail (cap renvoyé vers la piste), au lieu de rester collée
-        etat.d = cdg * bord;
-        etat.psi = -cdg * Math.min(Math.abs(etat.psi) * 0.2 + 0.02, 0.09, bord / Math.max(vAvant, 1));   // rebond vers la piste, limité par la largeur libre
-        etat.v *= 1 - P.chocRebond * Math.sin(ang);
-        etat.omega *= 0.4;
-        if (premier && vAvant - etat.v >= P.chocSeuil) { ev.push({ type: 'choc', force: vAvant - etat.v }); etat.choc = P.chocDuree; }
-        annuler(etat, ev);
-      } else {
-        // frôlement le long du rail : on longe en gardant la vitesse ; au ralenti la caisse se dégage du mur pour repartir
-        etat.d = cdg * Math.min(Math.abs(etat.d), bord);
-        etat.v = Math.max(0, etat.v - P.glissFrottementRasant * dt);
-        if (etat.v < 2) etat.d = cdg * Math.max(0, Math.abs(etat.d) - 0.6 * dt);
-      }
+      const vAvant=etat.v, normale=Math.max(0,cdg*vAvant*Math.sin(etat.psi));
+      const premier=!etat.auRail&&etat.choc<=0, body=etat.psi+etat.beta;
+      etat.d=cdg*bord;
+      if(normale>.1) {
+        if(premier || (B.degats&&normale>=B.degats.PARAMS.chocRoue))
+          for(const e of subirChoc(etat,normale))ev.push(e);
+        if(!etat.recuperation) {
+          // Une réponse normale dissipative fonctionne aussi en marche arrière ; la caisse ne pivote pas.
+          const vx=vAvant*Math.cos(etat.psi),vz=vAvant*Math.sin(etat.psi)-cdg*normale*1.05;
+          const sg=vAvant<0?-1:1;etat.v=sg*Math.hypot(vx,vz);
+          if(Math.abs(etat.v)>.001){etat.psi=angle(Math.atan2(vz,vx)-(sg<0?Math.PI:0));etat.beta=angle(body-etat.psi);}
+          etat.omega*=.65;
+        }
+        if(premier&&normale>=2){ev.push({type:'choc',force:normale});etat.choc=P.chocDuree;}
+        annuler(etat,ev);
+      } else if(Math.abs(etat.v)<2)etat.d=cdg*Math.max(0,Math.abs(etat.d)-.6*dt);
       etat.auRail = true;
     } else etat.auRail = false;
     if (etat.choc > 0) etat.choc -= dt;
@@ -371,8 +362,8 @@
       else { mu = P.muHerbe; surf = 'herbe'; }
     }
     etat.surface = surf; etat.vibreur = surf === 'vibreur';
-    // dégâts (Chantier 3) : une caisse abîmée perd de l'adhérence (jusqu'à −18 %) ; les débris et le capot
-    // de côté la freinent (traînée jusqu'à +24 %, appliquée plus bas). Absents, rien ne change.
+    // dégâts (Chantier 3) : une caisse abîmée perd de l'adhérence (jusqu'à −8 %) ; les débris et le capot
+    // de côté la freinent (traînée jusqu'à +8 %, appliquée plus bas). Absents, rien ne change.
     const dg = etat.degats;
     if (dg) mu *= dg.adher;
     const enPiste = ad <= demi + P.largeurVibreur;
@@ -535,7 +526,7 @@
     u += (fx / m + w * r) * dt;
     w += (fy / m - u0 * r) * dt;
     r += mz / IZ * dt;
-    // ni marche arrière ni recul : sans moteur, la voiture s'arrête au lieu de repartir en arrière
+    // Le solveur de marche avant s’arrête à zéro ; le recul volontaire est traité par reculer().
     if (u0 >= 0 && u < 0 && demAr <= 0) u = 0;
     // au pas, le mouvement se rapproche du roulement sans glisse
     const lk = rampe(Math.hypot(u, w), 1, 4);
@@ -592,6 +583,8 @@
     const e = B.circuit.echantillon(c, etat.s), kA = expTau(P.attitudeTau, dt);
     // sol sous la voiture, même profil que le décor : dévers sur la piste, vibreur, accotement à 2 %
     const w = c.largeur / 2, ad = Math.abs(etat.d);
+    etat.vibreur=ad>w&&ad<=w+P.largeurVibreur&&B.circuit.vibreurA(c,etat.s,etat.d<0?-1:1);
+    etat.surface=ad<=w?'piste':etat.vibreur?'vibreur':'herbe';
     etat.y = e.y - clamp(etat.d, -w, w) * Math.sin(e.devers);
     if (ad > w + P.largeurVibreur) etat.y -= 0.015 + 0.02 * (ad - w - P.largeurVibreur);
     else if (ad > w) etat.y += (etat.vibreur ? 0.05 : -0.015) * (ad - w) / P.largeurVibreur;
@@ -635,25 +628,39 @@
 
   // Déclencher un accident : la caisse n'obéit plus, freine et revient seule sur le revêtement, puis immunité.
   function declencherAccident(etat, o = {}) {
-    if (etat.accident) return;
-    etat.saut = null; etat.reparation = null;
-    if (etat.degats && etat.degats.casse) return;
-    etat.accident = { t: 0, duree: o.duree || P.accidentDuree, d0: etat.d, reception: !!o.reception };
-    annuler(etat, []);
+    if(etat.recuperation)return;
+    immobiliser(etat,[]);
+    etat.recuperation.cause='accident';
+    etat.accident={t:0,duree:P.accidentDuree,d0:etat.d,reception:!!o.reception};
   }
 
-  // BITUME : une casse est définitive pour la séance. Aucun gaz, saut, replacement ou stand ne la ranime.
+  // Décision David16/11 : l'impact reste visible, puis la voiture revient vite, sans gagner d'abscisse.
   function immobiliser(etat, ev) {
-    etat.v = 0; etat.gaz = 0; etat.frein = 1; etat.regime = P.ralenti;
-    etat.psi = angle(etat.psi + etat.beta); etat.omega = 0; etat.beta = 0; etat.saut = null; etat.accident = null; etat.reparation = null;
-    etat.bond = 0; etat.bondT = 0; etat.glisse = 0; etat.immunite = 0;
-    annuler(etat, ev);
+    etat.v=0;etat.gaz=0;etat.frein=1;etat.regime=P.ralenti;
+    etat.psi=angle(etat.psi+etat.beta);etat.omega=0;etat.beta=0;etat.saut=null;etat.accident=null;etat.reparation=null;
+    etat.bond=0;etat.bondT=0;etat.glisse=0;etat.immunite=0;etat.freinRecul=0;
+    if(!etat.recuperation)etat.recuperation={t:0,cause:'choc'};
+    annuler(etat,ev);
+  }
+  function replacer(etat,c) {
+    const s=etat.s,distance=etat.distance,degats=etat.degats,numero=(etat.repositionnements||0)+1;
+    annulerDerive(etat,true);couperTurbo(etat);
+    if(degats&&B.degats)B.degats.reparer(degats);
+    Object.assign(etat,creer(s,0));etat.distance=distance;etat.degats=degats;etat.repositionnements=numero;etat.immunite=P.accidentImm;
+    const q=B.circuit.echantillon(c,s);etat.y=q.y;etat.tangage=Math.atan(q.pente||0);etat.roulis=q.devers||0;
+    return [{type:'retour',repositionnement:true}];
+  }
+  function recuperer(etat,c,dt,ev) {
+    etat.recuperation.t+=dt;
+    if(etat.accident)etat.accident.t=etat.recuperation.t;
+    if(etat.recuperation.t>=P.accidentDuree)ev.push(...replacer(etat,c));
   }
 
-  // Même facture pour les murs et les rivaux ; force en m/s normaux / relatifs, jamais vitesse totale rasante.
+  // L'immunité protège les dégâts, pas la géométrie : rails, solides et concurrents restent présents.
   function subirChoc(etat, force, options = {}) {
-    const ev = B.degats && etat.degats ? (B.degats.choc(etat.degats, force, options) || []) : [];
-    if (etat.degats && etat.degats.casse) immobiliser(etat, ev);
+    if(etat.immunite>0 || etat.recuperation)return [];
+    const ev=B.degats&&etat.degats?(B.degats.choc(etat.degats,force,options)||[]):[];
+    if(etat.degats&&(etat.degats.casse||B.degats.uneRouePerdue(etat.degats)))immobiliser(etat,ev);
     return ev;
   }
 
@@ -668,7 +675,7 @@
     const rCible = etat.volant * P.volBraquage * (etat.v > 1 ? 0.5 : 0);
     etat.omega += (rCible - etat.omega) * (1 - Math.exp(-dt / 0.5));
     // légère traînée d'air, jamais de gain
-    etat.v = Math.max(0, etat.v - P.volTrainee * etat.v * etat.v * dt);
+    etat.v = Math.sign(etat.v) * Math.max(0, Math.abs(etat.v) - P.volTrainee * etat.v * etat.v * dt);
     // cinématique de Frenet, comme au sol, pour que cap et position restent continus
     const e = B.circuit.echantillon(c, etat.s), k = e.courbure;
     const den = Math.max(1 - k * etat.d, 0.1);
@@ -696,82 +703,49 @@
     ev.push({ type: 'reception', corr, force: (1 - corr) * etat.v, bon: corr >= 1, grand: s.grand });
   }
 
-  // Accident et retour progressif : la caisse freine, garde cap et vitesse continus, revient seule sur le
-  // revêtement (d ramené à 0 sans à-coup), puis roule avec 2 s d'immunité.
-  function accidenter(etat, c, dt, ev) {
-    const a = etat.accident; a.t += dt;
-    const p = clamp(a.t / a.duree, 0, 1);
-    // vitesse continue : on freine sans à-coup, sans jamais descendre sous une vitesse de réinsertion
-    etat.v = Math.max(6, etat.v - P.accidentFrein * dt - P.coeffTrainee * etat.v * etat.v * dt);
-    // cap ramené doucement à la piste (continu), lacet qui suit
-    etat.psi += (0 - etat.psi) * (1 - Math.exp(-dt / 0.7));
-    etat.omega += (0 - etat.omega) * (1 - Math.exp(-dt / 0.7));
-    // position latérale revenue à la trajectoire sans discontinuité (dérivée nulle à la fin)
-    etat.d = a.d0 * (1 - p) * (1 - p);
-    const e = B.circuit.echantillon(c, etat.s), den = Math.max(1 - e.courbure * etat.d, 0.1);
-    etat.s = ramener(etat.s + etat.v * Math.cos(etat.psi) / den * dt, c.longueur);
-    // attitude qui se pose, sol sous la caisse
-    etat.tangage *= Math.exp(-dt / 0.5); etat.roulis *= Math.exp(-dt / 0.5);
-    etat.y = e.y - clamp(etat.d, -c.largeur / 2, c.largeur / 2) * Math.sin(e.devers);
-    if (a.t >= a.duree) {
-      etat.accident = null; etat.immunite = P.accidentImm;
-      if (etat.degats && B.degats) B.degats.reparer(etat.degats);   // caisse réparée au retour en piste
-      etat.d = 0; etat.psi = 0; etat.omega = 0; etat.tangage = 0; etat.roulis = 0;
-      ev.push({ type: 'retour' });
-    }
+  // Recul réservé à une commande joueur explicite. Le cap reste celui de l'axe avant de la caisse,
+  // v devient négative ; les normales de collision emploient toujours v*cos(psi),v*sin(psi).
+  function reculer(etat,cmd,c,dt,gaz,frein,ev) {
+    annuler(etat,ev);couperTurbo(etat);
+    const autorise=cmd.marcheArriere===true;
+    const avant=etat.v;
+    if(gaz>0 || !autorise)etat.v=Math.min(0,etat.v+P.reculFrein*Math.max(gaz,.5)*dt);
+    else if(frein>0)etat.v=Math.max(-P.reculMax,etat.v-P.reculAcc*frein*dt);
+    else etat.v=Math.min(0,etat.v+.8*dt);
+    if(etat.v>=0){etat.v=0;etat.omega=0;etat.along=0;etat.alat=0;if(gaz>0||!autorise){etat.rapport=1;etat.freinRecul=0;}return;}
+    etat.rapport=-1;etat.regime=P.ralenti+Math.abs(etat.v)/P.reculMax*1800;
+    const q=B.circuit.echantillon(c,etat.s),body=q.cap+etat.psi+etat.beta;
+    etat.braquage=etat.volant*P.braquageMeca;etat.omega=etat.v*Math.tan(etat.braquage)/L;
+    const rel=angle(body-q.cap),ds=etat.v*Math.cos(rel)/Math.max(.1,1-q.courbure*etat.d)*dt;
+    etat.s=ramener(etat.s+ds,c.longueur);etat.d+=etat.v*Math.sin(rel)*dt;etat.distance+=ds;
+    etat.psi=angle(body+etat.omega*dt-B.circuit.echantillon(c,etat.s).cap);etat.beta=0;
+    etat.along=(etat.v-avant)/dt;etat.alat=etat.v*etat.omega;etat.glisse=0;
+    const kc=expTau(P.chargeTau,dt);
+    etat.chargeX+=(etat.along-etat.chargeX)*kc;etat.chargeY+=(etat.alat-etat.chargeY)*kc;
+    heurterGlissiere(etat,c,dt,ev);
   }
 
-  // Roue perdue (vroom original) : plus de direction ni de motricité, la caisse s'immobilise, répare lentement à
-  // l'arrêt, puis se fait repositionner sur la route — un remplacement lent qui pénalise le temps de course.
-  function reparerRoue(etat, c, dt, ev) {
-    const rp = etat.reparation, e = B.circuit.echantillon(c, etat.s);
-    if (rp.phase === 'arret') {
-      // on ne dirige plus, on n'a plus de motricité : la caisse roule en ligne et freine jusqu'à l'arrêt
-      etat.v = Math.max(0, etat.v - P.rouePerdueFrein * dt - P.rouePerdueTraine * etat.v * etat.v * dt);
-      const den = Math.max(1 - e.courbure * etat.d, 0.1);
-      etat.s = ramener(etat.s + etat.v * Math.cos(etat.psi) / den * dt, c.longueur);
-      etat.d += etat.v * Math.sin(etat.psi) * dt;
-      heurterGlissiere(etat, c, dt, ev);
-      if (etat.degats && etat.degats.casse) return;
-      etat.tangage *= Math.exp(-dt / 0.5); etat.roulis *= Math.exp(-dt / 0.5);
-      etat.y = e.y - clamp(etat.d, -c.largeur / 2, c.largeur / 2) * Math.sin(e.devers);
-      if (etat.v < 0.8) { etat.v = 0; rp.phase = 'stand'; rp.t = 0; annuler(etat, ev); ev.push({ type: 'reparation' }); }
-    } else {
-      // réparation lente à l'arrêt, puis repositionnement progressif sur la route (roue remise, caisse remise à neuf)
-      etat.v = 0; rp.t += dt;
-      etat.y = e.y - clamp(etat.d, -c.largeur / 2, c.largeur / 2) * Math.sin(e.devers);
-      if (rp.t >= P.reparationDuree) {
-        if (etat.degats && B.degats) B.degats.reparer(etat.degats);
-        etat.reparation = null;
-        declencherAccident(etat, { duree: 2.8 });
-        ev.push({ type: 'repare' });
-      }
-    }
-  }
-
-  // cmd = { gaz, frein, volant, derive, haut, bas, boite: 'auto'|'manuelle', aide, guidage }
+  // cmd = { gaz, frein, volant, derive, haut, bas, boite, aide, guidage, marcheArriere: true uniquement pour le joueur }
   function pas(etat, cmd, c, dt, retenue = false) {
-    const ev = [];
-    if (etat.degats && etat.degats.casse) { immobiliser(etat, ev); return ev; }
-    const gaz = borne01(cmd.gaz), frein = borne01(cmd.frein), aide = borne01(cmd.aide), guidage = borne01(cmd.guidage);
-    etat.gaz = gaz; etat.frein = frein;
-    filtrerVolant(etat, clamp(+cmd.volant || 0, -1, 1), dt);
-    if (etat.immunite > 0) etat.immunite = Math.max(0, etat.immunite - dt);
-    if (etat.accident) { accidenter(etat, c, dt, ev); return ev; }
-    if (etat.saut && etat.saut.actif) { voler(etat, cmd, c, dt, ev); heurterGlissiere(etat, c, dt, ev, true); return ev; }
-    // une roue manquante met la caisse hors d'état de rouler : arrêt, réparation lente, repositionnement
-    if (!etat.reparation && etat.degats && B.degats && B.degats.uneRouePerdue(etat.degats)) {
-      etat.reparation = { phase: 'arret', t: 0 }; annuler(etat, ev);
-    }
-    if (etat.reparation) { reparerRoue(etat, c, dt, ev); return ev; }
-    if (retenue) retenir(etat, gaz, dt, ev);
-    else rouler(etat, cmd, c, dt, gaz, frein, aide, guidage, ev);
-    poserAttitude(etat, c, dt);
+    const ev=[];
+    if(!etat.recuperation&&(etat.accident||etat.reparation||(etat.degats&&(etat.degats.casse||B.degats?.uneRouePerdue(etat.degats)))))immobiliser(etat,ev);
+    if(etat.recuperation){recuperer(etat,c,dt,ev);return ev;}
+    const gaz=borne01(cmd.gaz),frein=borne01(cmd.frein),aide=borne01(cmd.aide),guidage=borne01(cmd.guidage);
+    etat.gaz=gaz;etat.frein=frein;filtrerVolant(etat,clamp(+cmd.volant||0,-1,1),dt);
+    if(etat.immunite>0)etat.immunite=Math.max(0,etat.immunite-dt);
+    if(etat.saut&&etat.saut.actif){voler(etat,cmd,c,dt,ev);heurterGlissiere(etat,c,dt,ev,true);return ev;}
+    if(retenue){etat.freinRecul=0;if(etat.rapport<1)etat.rapport=1;retenir(etat,gaz,dt,ev);}
+    else if(etat.v<0||etat.rapport===-1)reculer(etat,cmd,c,dt,gaz,frein,ev);
+    else if(cmd.marcheArriere===true&&etat.v<=.05&&frein>.5&&gaz<.01){
+      etat.v=0;etat.omega=0;etat.psi=angle(etat.psi+etat.beta);etat.beta=0;etat.freinRecul+=dt;
+      if(etat.freinRecul>=P.reculAttente){etat.rapport=-1;reculer(etat,cmd,c,dt,gaz,frein,ev);}
+    } else {etat.freinRecul=0;rouler(etat,cmd,c,dt,gaz,frein,aide,guidage,ev);}
+    if(!etat.recuperation)poserAttitude(etat,c,dt);
     return ev;
   }
 
   B.conduite = {
     PARAMS, creer, pas, annulerDerive, couperTurbo, cap, kmh, couple, limiteCote, braquageMax, volantPour,
-    capaciteLaterale, pneu, lancerSaut, declencherAccident, subirChoc
+    capaciteLaterale, pneu, lancerSaut, declencherAccident, subirChoc, replacer
   };
 })(globalThis.BITUME = globalThis.BITUME || {});

@@ -193,7 +193,8 @@ Les seuils et les impulsions sont les nôtres. Aucune valeur ne vient de `vr2.as
 
 **Critères d'acceptation** (`contacts.test.mjs`, nouveau)
 - **Petit bond** :
-  - un frottement de roues, rapprochement d'au moins 0,65 m/s, donne un bond de 0,10 à 0,35 m pendant 0,25 à 0,45 s ;
+  - un contact de roues, rapprochement d'au moins 2,5 m/s (seuil adouci le 16/11/2026), donne un bond de 0,10 à
+    0,35 m pendant 0,25 à 0,45 s ;
   - à la réception, la vitesse vaut 100 % de la vitesse d'arrivée avec une bonne correction, 97 % au neutre et 94 %
     avec une mauvaise : coefficients de vroom-unreal ;
   - jamais de gain de vitesse.
@@ -206,14 +207,17 @@ Les seuils et les impulsions sont les nôtres. Aucune valeur ne vient de `vr2.as
 - **Roue contre roue décalée** : le cap tourne d'au moins 2° et la vitesse baisse. Jamais deux événements en 0,3 s.
 - **Glissières**, sur une grille d'angles de 2 à 90° et de vitesses de 50 à 300 km/h :
   - sous 8°, frottement qui garde au moins 90 % de la vitesse après 0,5 s ;
-  - au-delà de 35° et de 100 km/h, accident ;
+  - la violence se mesure par la vitesse normale au rail : roue à 20 m/s, casse à 30 m/s ; un passage rapide mais
+    rasant ne compte pas comme un choc frontal (seuils adoucis le 16/11/2026) ;
   - jamais renvoyée au-delà de l'axe de la piste.
 - **Emprise de la caisse** (environ 4,95 × 2,02 m) : aucun coin au-delà du rail ni dans un mur de pneus, quel que
   soit le cap.
 - **Accident puis retour** :
-  - retour sur le revêtement en 2,8 à 8 s, avec vitesse et cap continus et 2 s d'immunité ;
-  - `replacer()` passe par ce retour.
-- **Dégâts** (`degats.js`) : adhérence −18 % et traînée +24 % au plus ; teinte `uEffects.z` alimentée ; éclair au choc.
+  - décision de David du 16/11/2026 : retour sur le revêtement en moins d’une seconde, sans longue réparation
+    ni abandon automatique ; les gros chocs conservent leurs débris ;
+  - `replacer()` remet immédiatement en piste ; abscisse conservée, tour invalidé pour les records et fantômes.
+- **Dégâts** (`degats.js`) : adhérence −8 % et traînée +8 % au plus ; aucun dégât sous 2 m/s de vitesse normale ;
+  éclair réservé aux impacts importants, sans rougeur permanente.
 - **En vol** : hauteur et attitude rendues dans toutes les vues, caméra cockpit portée par la voiture, son de
   réception.
 - **Cadence** : comportement identique à 30, 60 et 120 Hz ; 60 s de course simulées en moins de 1,5 s dans Node.

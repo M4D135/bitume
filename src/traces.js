@@ -51,6 +51,7 @@
     if (ev) for (const e of ev) {
       if (e.type === 'contact') contact(fx, co, poses, e);
       else if (e.type === 'roue' || e.type === 'casse') detacher(fx, co, poses, e);
+      else if (e.repositionnement) lacher(fx, e.id);
     }
     fx.acc += dt;
     if (fx.acc < PAS * .999) return;

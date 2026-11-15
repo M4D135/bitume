@@ -2,7 +2,7 @@
 
 Course de monoplaces d'époque dans le navigateur, entièrement procédurale : trois circuits générés, onze rivaux,
 dérive et turbo. Moteur FERRO (WebGL2). Aucune image, aucun son enregistré, aucune police chargée : une seule page
-HTML d'environ 510 Ko.
+HTML d'environ 581 Ko.
 
 Essai 0.1 du 12 novembre 2026. BITUME est la refonte web de vroom-unreal, le projet Unreal de David : il garde le
 genre et les mécaniques inventées pour vroom-unreal, et ne reprend rien du Vroom de Lankhor.
@@ -32,6 +32,8 @@ La version en ligne est la page figée d'un commit. Elle ne change qu'à la main
   par circuit.
 - **Conduite** : boîte automatique ou manuelle, rupteur, vibreurs et herbe, glissières, dérive à trois niveaux de
   charge et turbo au lâcher (avec une fenêtre « parfaite »), aide au volant réglable.
+- **Accidents** : petits contacts plus tolérants ; les gros chocs détachent toujours des pièces, puis la voiture
+  revient sur la piste en moins d’une seconde. Un replacement invalide le chrono du tour.
 - **Voiture** : une monoplace aux cotes de la Ferrari 312 T5 de 1980 (empattement 2,70 m, voies 1,70 et 1,615 m),
   sans nom, emblème ni commanditaire ; numéro en géométrie sur le nez et les pontons, roues qui tournent.
 - **Vues** : cockpit, poursuite, caméra de télévision. Le cockpit est cadré comme celui de vroom-unreal : volant gros
@@ -45,13 +47,16 @@ La version en ligne est la page figée d'un commit. Elle ne change qu'à la main
   Doppler, pneus, vibreur, herbe, chocs, feux et signaux. Une seule musique, sur l'écran titre : un thème original
   calculé note à note. En course, aucun signal ne porte de mélodie.
 - **Image** : rien ne se coupe à distance. Le décor se dessine jusqu'à l'horizon, la brume fait la limite ; les ombres
-  du soleil portent à 176 m devant le pilote.
+  du soleil portent à 176 m devant le pilote. Le moteur WebGL2 repris d’EMPRISE apporte ses matériaux humides,
+  ses reflets analytiques et ses nuages. La pluie se projette dans le monde avec le vent et la vitesse de la caméra ;
+  la route reste humide après l’averse.
 
 ## Commandes
 
 | Action | Clavier | Manette |
 |---|---|---|
 | Accélérer, freiner | ↑ ↓, ou Z S (W S en QWERTY) | gâchettes droite et gauche |
+| Reculer (12 km/h maximum) | maintenir le frein à l’arrêt | maintenir LT à l’arrêt |
 | Tourner | ← →, ou Q D (A D en QWERTY) | stick gauche |
 | Dérive | Espace ou Maj, tenue dans un virage | A |
 | Rapports (boîte manuelle) | E monter, A descendre (Q en QWERTY) | RB, LB |
@@ -59,6 +64,7 @@ La version en ligne est la page figée d'un commit. Elle ne change qu'à la main
 | Menus | Tab, Entrée, Échap | croix, A, B |
 
 Sur écran tactile : glisser le pouce à gauche pour braquer ; pédales et dérive à droite.
+Maintenir la pédale Frein à l’arrêt fait reculer ; Gaz arrête le recul avant de repartir en avant.
 La vue occupe tout l'écran ; carte et commandes sont transparentes. Dans les réglages, la carte peut être
 masquée, placée en haut à gauche ou à droite, et affichée en trois tailles. Ces choix sont mémorisés.
 Sur téléphone en portrait, le champ du cockpit est resserré et son ouverture à grande vitesse réduite.
@@ -71,8 +77,8 @@ En mode jeu : croix pour les menus, A pour valider, B pour revenir ; RT accélè
 braque, A ou X commande la dérive, Y change la vue et Menu met en pause. Si le son n'a pas démarré, un clic
 sur la page avec le pointeur du navigateur permet de l'activer avant de repasser aux contrôles de jeu.
 
-Le rendu demande WebGL2. Les parcours manette et le démarrage sont testés dans Chromium avec une manette
-simulée ; la validation sur une Xbox physique reste à faire.
+Le rendu demande WebGL2. L’écran titre a été confirmé sur une Xbox par David le 16/11/2026. Les parcours manette
+sont testés dans Chromium avec une manette simulée ; course, son et fluidité restent à confirmer sur la console.
 
 ## Pour aller plus loin
 

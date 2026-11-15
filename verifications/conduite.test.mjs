@@ -237,8 +237,12 @@ verifier('glissière : la caisse collée au rail se dégage et repart', () => {
   const et = B.conduite.creer(0, -8.5);
   et.v = 8; et.psi = -0.3; et.rapport = 3;   // collée au rail gauche, nez vers le mur, gaz tenu
   const cmd = { gaz: 1, frein: 0, volant: 0, derive: false, haut: false, bas: false, boite: 'auto', aide: 0 };
-  let t = 0;
-  while (t < 2) { B.conduite.pas(et, cmd, c, 1 / 120); t += 1 / 120; }
+  // Une impulsion normale ne tourne plus magiquement la caisse : le pilote contre-braque pour se dégager.
+  // Volant neutre, elle doit déjà longer le rail sans perdre sa progression.
+  for(let i=0;i<120;i++)B.conduite.pas(et,cmd,c,1/120);
+  assert(et.s>5&&et.v>5,'frottement roulant sans blocage');
+  cmd.volant=.4;
+  for(let i=0;i<120;i++)B.conduite.pas(et,cmd,c,1/120);
   delete B.circuit.limiteA;
   assert(et.auRail === false, "s'est décollée du rail (auRail=" + et.auRail + ')');
   assert(et.v > 5, 'est repartie, v=' + et.v.toFixed(1));

@@ -11,22 +11,21 @@ const c=B.circuit.creer(11,{theme:'foret',longueur:4200});
 const cmd={gaz:1,frein:0,volant:0,boite:'auto',aide:0,guidage:0};
 const results=[];
 function check(name,fn){try{fn();results.push({name,ok:true});}catch(e){results.push({name,ok:false,error:e.message});}}
-function state(side,psi=.65,v=45){
+function state(side,psi=.65,v=60){
  const s=1000,q=B.circuit.echantillon(c,s),e=C.creer(s,side*17.4);
  Object.assign(e,{v,psi:side*psi,rapport:6,y:q.y-side*c.largeur/2*Math.sin(q.devers)});e.degats=D.creer();return e;
 }
-function advance(e,n=30){const ev=[];for(let k=0;k<n;k++)ev.push(...C.pas(e,cmd,c,dt));return ev;}
+function advance(e,n=30){const ev=[];for(let k=0;k<n;k++){const events=C.pas(e,cmd,c,dt);ev.push(...events);if(events.some(x=>x.type==='retour'))break;}return ev;}
 for(const side of [-1,1]){
- check('petit bond contre rail '+side+' : casse unique, quatre roues, épave immobile',()=>{
+ check('petit bond contre rail '+side+' : casse unique, quatre roues, puis reprise rapide',()=>{
   const e=state(side);C.lancerSaut(e,{grand:false});const ev=advance(e);
   assert.ok(e.degats.casse,'le petit bond traverse le rail sans casser');assert.equal(e.v,0);
   assert.equal(ev.filter(x=>x.type==='casse').length,1);assert.equal(ev.filter(x=>x.type==='roue').length,4);
-  assert.ok(Math.abs(e.d)<C.limiteCote(c,e.s,side));const fixed=[e.s,e.d];advance(e,600);assert.deepEqual([e.s,e.d],fixed);
+  assert.ok(Math.abs(e.d)<C.limiteCote(c,e.s,side));const fixed=e.s;advance(e,50);assert.equal(e.s,fixed);assert.equal(e.d,0);assert.ok(!e.degats.casse&&!e.recuperation);assert.ok(e.immunite>.9);
  });
- check('roue perdue puis second choc violent '+side+' : casse définitive',()=>{
-  const e=state(side);C.subirChoc(e,10);assert.ok(!e.degats.casse);const ev=advance(e);
-  assert.ok(e.degats.casse,'le freinage roue perdue masque le second choc');assert.equal(e.reparation,null);
-  assert.equal(ev.filter(x=>x.type==='casse').length,1);const fixed=[e.s,e.d];advance(e,1800);assert.equal(e.v,0);assert.deepEqual([e.s,e.d],fixed);
+ check('roue perdue près du rail '+side+' : arrêt puis reprise sans traversée',()=>{
+  const e=state(side);const fixed=e.s;C.subirChoc(e,20);assert.ok(!e.degats.casse&&e.recuperation);const ev=advance(e,80);
+  assert.equal(e.reparation,null);assert.equal(e.s,fixed);assert.equal(e.d,0);assert.equal(e.v,0);assert.ok(!D.uneRouePerdue(e.degats));assert.equal(ev.filter(x=>x.type==='retour').length,1);
  });
  check('survol haut '+side+' : pas de mur invisible au-dessus de la glissière',()=>{
   const e=state(side);e.y+=3;C.lancerSaut(e,{grand:true});const ev=advance(e,30);

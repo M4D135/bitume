@@ -53,3 +53,41 @@ et lointain (`camera.near`, `camera.far`), la lampe torche éteinte (`fx.torch =
 13. **Boost de réflexion « photoréaliste » en qualité Fine** (`uPhoto`) : un uniforme booléen (0/1) passé par le jeu (`fx.photo`, 1 quand la qualité n'est pas Légère) active, dans la passe de fragment, un reflet net du soleil (Blinn-Phong borné), un renvoi chaud du sol et un reflet d'environnement renforcé sur les surfaces lisses ; l'asphalte (matière 14) passe de `roughness .9` à `.5` (humide, il renvoie le ciel) et le vernis des monoplaces (matière 17) de `.46` à `.3`. Tout est gated par `uPhoto` : en qualité Légère le rendu est identique à FERRO, et aucune passe render-to-texture n'est ajoutée (le moteur reste « pas de miroir de scène »).
 14. **Météo pilotée par le jeu** (`fx.weather`) : le jeu passe `{pluie, nuage, eclair}` (0..1) et la passe de fragment voit ses valeurs d'uniformes modulées côté JS — assombrissement du ciel et du soleil, brouillard épaissi, ambiance relevée par un éclair lointain, vent accru (balancement du décor). Purement JS (aucun nouveau shader ni passe GPU) : la machine à états (clair → se couvre → pluie → orage) vit dans `jeu.js` (`majMeteo`). La pluie visible (particules) et les reflets plannaires restent à faire.
 14. **Paquets d'instances sans tableau intermédiaire** (15/11/2026) : dans `pack()`, les 16 composantes sont écrites directement dans le `Float32Array`, au lieu de créer un tableau JavaScript de 16 valeurs par instance. Transfert ciblé de METAL `src/renderer.js`, commit `7f1d5589b7f5863e09369b0f55a21d4fe4334280` (voie rendu ; copie consultée SHA-256 `5b0e93723179e7dec07045e39a31e392f92c6ebe4e11a7116ab4375edc122c6f`). Le registre et l'ordre des formes libres BITUME restent ceux du jeu. Les octets des paquets et les captures Légère/Fine sont identiques ; le banc de 1 200 instances supprime 1 200 tableaux temporaires par appel, sans modifier les shaders ni ajouter de passe.
+
+
+15. **Backend WebGL2 EMPRISE repris le 16/11/2026** : remplacement du socle par `rade/src/ferro/renderer.js`,
+    snapshot de travail lu deux fois à l’identique le 15/11/2026 à 23:21:13 UTC. HEAD du dépôt source :
+    `22a330f2dbbdc7ee359ce03da785e0cbeca495d4` ; le renderer source était modifié, il ne faut donc pas attribuer
+    son contenu au seul commit. SHA-256 exact du fichier importé :
+    `c268957562dba93843a4f017be5ae46210136161bd307c8fd0bb8a6a284a2e00` (181 174 octets).
+    Sa provenance conservée au moment de la lecture a l’empreinte
+    `5625b5fc0047eaf03a1bf3d0fe3f50dbd487c3b1e6d4fafeeab82f7d21c613ff` ; elle situe le socle à PDR `1e8b6351`,
+    complété par les formes libres, coins et indices 32 bits de BITUME `e9a5e7f9`.
+    Le snapshot reprend réellement le backend, ses shaders procéduraux, ses empaqueteurs réutilisables,
+    son filtrage du métal et des reflets, ses ombres PCF continues, ses nuages et ses matériaux humides.
+    Aucun fichier WebGPU, image, texture externe, asset ou dépendance réseau n’est embarqué.
+
+    Adaptations marquées BITUME dans la copie :
+    - API `FRender.create(canvas)`, `setNappes`, `setLots`, `forme` et export `window.FRender` conservés ;
+      peinture satinée 17, reflet analytique `photo` et ombres du cockpit rétablis, sans lumière d’arme.
+    - MSAA 4 et atlas solaire 4 096/2 048 conservés par défaut ; SSR disponible uniquement sur option de création
+      explicite `reflections:true`, sans cibles ni passe supplémentaires dans le jeu. Les reflets analytiques et
+      flaques EMPRISE fonctionnent sans SSR. L’eau du circuit ne prend pas le niveau marin imposé du port RADE.
+    - `bitumeWeather` traduit `{pluie,nuage,eclair,mouille,ventX,ventZ}` en vec4 EMPRISE
+      `[humidité,nuages,pluie,éclair]`, accepte l’ancien objet et le vec4 natif, réutilise ses tableaux et n’altère
+      pas l’environnement du circuit. Soleil, ciel, brouillard, vent, route humide et nuages partagent l’ambiance.
+    - `indexPrimitiveVertices`, présent dans le snapshot, raccordé au WebGL2 : 2 352 références de primitives
+      utilisent 618 sommets distincts à détail maximal. Les 30 919 triangles des carènes/mains gardent leurs
+      index développés et leur ordre. `updateShape` restaure les index d’une primitive avant de l’éditer.
+    - Perte de contexte : anciennes poignées de nappes/lots oubliées avant recharge ; les index éventuellement
+      restaurés et les sommets modifiés survivent. Le contrôle WebGL réel rend à nouveau les mêmes nappes/lots
+      et ne produit plus INVALID_OPERATION sur ces anciennes poignées.
+
+    Vérifications : `verifications/moteur-emprise.test.mjs` contrôle les triangles bit à bit aux trois LOD,
+    les formes libres, les mutations et restaurations GPU simulées, la météo et le SSR optionnel ;
+    `formes-libres.test.mjs` et `voiture.test.mjs` passent. Dans Chrome WebGL2 sur Mac, mêmes images figées
+    des trois circuits : appels/triangles identiques au socle `2eccd78`, cockpit complet, qualités Fine/Légère,
+    restauration de contexte réelle et zéro erreur GL. Banc CPU de soumission, 1 280 × 720, qualité Fine
+    avec MSAA 4, 20 images de chauffe et 60 mesures espacées : p95 ancien/nouveau 1,4/1,4 ms (forêt),
+    1,6/1,6 ms (côte), 1,3/1,4 ms (montagne). Ces mesures headless ne prouvent ni FPS visibles ni Xbox réelle.
+    La caméra, le FOV mobile, l’ATH et la simulation ne changent pas dans ce portage.

@@ -35,6 +35,7 @@ MODULES = [
     'voiture.js',
     'traces.js',
     'realisateur.js',
+    'meteo.js',
     'jeu.js',
 ]
 VERSION = 'essai-0.1'

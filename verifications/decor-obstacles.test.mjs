@@ -7,7 +7,7 @@ for(const [graine,theme,longueur,approche] of [[11,'foret',4200,2195],[29,'cote'
  for(const kind of ['pneus','pilier','muret','batiment','gradin','tronc'])assert.ok(kinds[kind]>0,kind);
  c.obstacles=index;const co=B.course.creer(c,{mode:'chrono',rivaux:0}),e=co.joueur.etat;Object.assign(e,{s:approche,d:0,v:50,rapport:6,psi:0});const cmd={gaz:1,frein:0,volant:0,derive:false,boite:'auto',aide:0,guidage:0};let impact=null;
  for(let k=0;k<1200&&!e.degats.casse;k++){const ev=B.course.pas(co,cmd,1/120);for(const x of ev)if(x.type==='choc')impact={t:co.horloge,s:e.s,d:e.d,force:x.force,obstacle:x.obstacle||'glissiere'};}
- assert.ok(e.degats.casse,'virage serré à180km/h sans braquer : casse');const stopped={s:e.s,d:e.d};for(let k=0;k<600;k++)B.course.pas(co,cmd,1/120);assert.equal(e.s,stopped.s);assert.equal(e.d,stopped.d);assert.equal(e.v,0);assert.ok(co.joueur.abandon);assert.ok(co.termine);assert.equal(co.fantome.meilleur,null);
- reports.push({graine,theme,solides:index.objets.length,kinds,impact,terminal:true});
+ assert.ok(e.degats.casse,'virage serré à180km/h sans braquer : casse');const stopped={s:e.s,d:e.d};for(let k=0;k<80;k++)B.course.pas(co,{...cmd,gaz:0},1/120);assert.equal(e.s,stopped.s);assert.equal(e.d,0);assert.equal(e.v,0);assert.ok(!e.degats.casse&&!e.recuperation);assert.ok(!co.joueur.abandon&&!co.termine);assert.equal(co.joueur.tourValide,false);assert.equal(co.fantome.meilleur,null);
+ reports.push({graine,theme,solides:index.objets.length,kinds,impact,repriseRapide:true});
 }
 console.log(JSON.stringify({passed:3,total:3,reports},null,2));

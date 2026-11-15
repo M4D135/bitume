@@ -40,13 +40,14 @@ Une seule page HTML, moteur FERRO (WebGL2), tout est calculé par le code.
 | `src/realisateur.js` | Réalisateur de la démo : choix du plan (caméra et voiture filmée) d'après la course |
 | `src/jeu.js` | Coque : boucle à pas fixe, commandes, caméras, rendu d'une image, affichage, menus, démo, stockage local |
 | `src/index.html`, `src/style.css` | Page (gabarit `/*STYLE*/`, `<!--MODULES-->`) et style, polices du système |
-| `src/moteur/renderer.js` | FERRO METAL 0.6 par Point de rupture, retouches BITUME |
+| `src/meteo.js` | Fronts météo, pluie projetée dans le monde, vent et humidité persistante, adaptés d’EMPRISE |
+| `src/moteur/renderer.js` | FERRO repris d’EMPRISE, adaptations BITUME (voir PROVENANCE.md) |
 | `construire.py` | Assemble `dist/bitume.html` (versionnée), `dist/artefact.html` (non versionnée) et `SIZE.json` |
 | `verifications/*.test.mjs` | Tests Node des modules de simulation et du son |
 | `deposer.sh`, `deploiement/` | Mise en ligne de la page du commit sur bitume.estrasse.fr, et son vhost Caddy |
 
 Chaque module s'écrit `(function (B) { … })(globalThis.BITUME = globalThis.BITUME || {})` et s'exécute aussi dans
-Node pour les tests. Ordre de chargement : renderer, circuit, conduite, course, son, decor, carene, main, voiture, traces, realisateur, jeu.
+Node pour les tests. Ordre de chargement : renderer, circuit, conduite, degats, contacts, obstacles, course, son, decor, carene, main, voiture, traces, realisateur, meteo, jeu.
 
 Formes libres : `window.FRender.forme(nom, triangles)` enregistre une forme faite de triangles `[p0, p1, p2, n0, n1,
 n2]` tenus dans le cube unité (`B.carene.normaliser`) ; l'instance porte la vraie taille dans `s`. À appeler avant
@@ -60,7 +61,7 @@ n2]` tenus dans le cube unité (`B.carene.normaliser`) ; l'instance porte la vra
 - `voiture.attitude(cap, tangage, roulis)` = Ry(−cap)·Rz(tangage)·Rx(roulis), tangage > 0 nez levé.
 - Caméra FERRO : `yaw = cap + π/2`, `roll = −roulis`. Le champ (`fov`) est vertical, en degrés, borné de 10 à 110.
 - Simulation déterministe au pas fixe de 1/120 s, hasard par mulberry32 à graine.
-- Records et fantômes portent la version de la physique (`bitume.records.p2`) : changer la conduite oblige à la monter.
+- Records et fantômes portent la version de la physique (`bitume.records.p7`) : changer la conduite oblige à la monter.
 - Mouvement : le réglage « Secousses » (0 à 100 %) règle les secousses des chocs et le tremblement du casque ; nul à
   0 %, il part de 0 quand le système demande moins de mouvement (`prefers-reduced-motion`).
 
@@ -88,6 +89,12 @@ n2]` tenus dans le cube unité (`B.carene.normaliser`) ; l'instance porte la vra
 - **Voiture** : les cotes et la silhouette de la 312 T5, sans le nom Ferrari, sans cheval cabré, sans commanditaire.
 
 ## Construire, tester, vérifier
+
+Décisions de David du 16/11/2026 : les collisions ordinaires sont moins sévères ; après un accident, remettre la
+voiture sur la piste en moins d’une seconde. Cette décision remplace l’ancienne épave définitive et l’attente de
+réparation. Garder les débris des gros chocs, les obstacles solides, et invalider le chrono du tour avec replacement.
+Maintenir le frein à l’arrêt engage la marche arrière du joueur, limitée à 12 km/h ; l’IA et la grille restent au frein.
+Le moteur 3D et les effets météo reprennent ceux d’EMPRISE ; préserver WebGL2, les nappes/lots du circuit et le HUD mobile.
 
 ```bash
 python3 construire.py

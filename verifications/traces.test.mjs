@@ -176,6 +176,19 @@ verifier('vraie course de 60 s : traces des voitures proches, rien ne casse', ()
   console.log(`    ${max} bandes au plus, ${sortie.length} objets dessinés à la fin`);
 });
 
+verifier('replacement : les traces coupent immédiatement, sans effacer les effets existants', () => {
+  const sc = scene(2), fx = T.creer(2, 51);
+  sc.avancer(fx, 1);
+  const avant = T.compter(fx);
+  assert.ok(avant.bandes > 0);
+  assert.ok(fx.valide[0]); assert.ok(fx.valide[4]);
+  T.pas(fx, sc.co, sc.poses, 0, 0, [{ type: 'retour', id: 0, repositionnement: true }]);
+  assert.ok(Array.from(fx.valide.slice(0, 4)).every(v => v === 0));
+  assert.ok(Array.from(fx.ouverte.slice(0, 4)).every(v => v === -1));
+  assert.ok(fx.valide[4], 'les autres voitures continuent leurs traces');
+  assert.deepEqual(T.compter(fx), avant, 'pas d’effacement des traces et particules');
+});
+
 console.log('---');
 console.log(compte + ' tests passes');
 process.exit(0);

@@ -60,7 +60,7 @@
     const voiture = (id, nom, numero, liv, joueur) => ({
       id, nom, numero, joueur, couleur: liv[0],
       livree: { couleur: liv[0], seconde: liv[1], casque: liv[2], combinaison: liv[1], numero },
-      etat: null, tours: 0, passages: -1, maxPassages: -1, progression: 0, debutTour: 0,
+      etat: null, tourValide: true, repositionnements: 0, tours: 0, passages: -1, maxPassages: -1, progression: 0, debutTour: 0,
       tempsTours: [], meilleur: null, position: 0, fini: false, abandon: false, tempsFinal: null, ecart: 0, ecartTete: 0,
       ia: {
         hab: joueur ? 1 : habBase + (rng() * 2 - 1) * 0.015, decal: joueur ? 0 : (rng() * 2 - 1) * 0.5,
@@ -204,11 +204,11 @@
     // La direction d'une vitesse quasi nulle peut osciller au contact : garder l'épisode tant que la caisse
     // reste immobile, au lieu de remettre le compteur à zéro un pas sur deux.
     const gardeRetour=roule && !v.fini && !v.abandon && e.v<.1 && gaz>.1 && frein<.1 &&
-      !(e.degats&&e.degats.casse) && !e.saut && !e.accident && !e.reparation && !(e.immunite>0);
+      !(e.degats&&e.degats.casse) && !e.recuperation && !e.saut && !e.accident && !e.reparation && !(e.immunite>0);
     ia.retourBloque=gardeRetour && (ia.retourBloque || Math.cos(e.psi)<-.2);
     const intention=gaz>.1 && frein<.1 && (cible>2 || ia.retourBloque);
     const coince=roule && !v.fini && !v.abandon && e.v<1.5 && intention &&
-      !(e.degats&&e.degats.casse) && !e.saut && !e.accident && !e.reparation && !(e.immunite>0);
+      !(e.degats&&e.degats.casse) && !e.recuperation && !e.saut && !e.accident && !e.reparation && !(e.immunite>0);
     ia.bloque=coince?(ia.bloque||0)+dt:0;
     if(ia.bloque>15) { B.conduite.declencherAccident(e,{});ia.bloque=0;ia.cible=-1;ia.cote=0;ia.decalVise=0;ia.decalDep=0; }
     // l'IA conduit avec l'aide au volant légère, le réglage par défaut du joueur
@@ -259,15 +259,16 @@
   function passageLigne(course, v, tPassage, ev) {
     if (v.abandon) return;
     if (course.mode === 'chrono') {
-      if (!course.chronoParti) { course.chronoParti = true; v.debutTour = tPassage; course.enreg.n = 0; course.enreg.prochain = 0; return; }
+      if (!course.chronoParti) { course.chronoParti = true; v.debutTour = tPassage; v.tourValide = true; course.enreg.n = 0; course.enreg.prochain = 0; return; }
     } else if (v.passages === 0 || v.fini) return; // départ compté depuis le vert ; rien après l'arrivée
-    const temps = tPassage - v.debutTour, meilleur = v.meilleur === null || temps < v.meilleur;
+    const temps = tPassage - v.debutTour, valide = v.tourValide !== false, meilleur = valide && (v.meilleur === null || temps < v.meilleur);
     v.debutTour = tPassage; v.tours++; v.tempsTours.push(temps);
     if (meilleur) v.meilleur = temps;
-    ev.push({ type: 'tour', id: v.id, tour: v.tours, temps, meilleur });
+    ev.push({ type: 'tour', id: v.id, tour: v.tours, temps, meilleur, valide });
+    v.tourValide = true;
     if (course.mode === 'chrono') {
       // le fantôme est le meilleur tour connu : celui de la séance, ou celui chargé s'il reste meilleur
-      if (course.fantome.temps === null || temps < course.fantome.temps) course.fantome = { meilleur: { donnees: course.enreg.donnees.slice(0, course.enreg.n * 4), n: course.enreg.n }, temps };
+      if (valide && (course.fantome.temps === null || temps < course.fantome.temps)) course.fantome = { meilleur: { donnees: course.enreg.donnees.slice(0, course.enreg.n * 4), n: course.enreg.n }, temps };
       course.enreg.n = 0; course.enreg.prochain = 0;
     } else if (!v.fini && (v.tours >= course.toursTotal || course.drapeau !== null)) {
       v.fini = true; v.tempsFinal = tPassage; course.finisseurs++;
@@ -360,10 +361,10 @@
     // Franchissements de ligne (interpolés dans le pas) et progression continue
     for (let i = 0; i < V.length; i++) {
       const v = V[i], a = course.sAvant[i], b = sLigne(c, v.etat.s);
-      if (!v.fini && v.degats && v.degats.casse) {
-        if (!v.abandon) { v.abandon = true; v.tAbandon = course.horloge; }
-        continue; // aucun tour ni fantôme ne peut être validé par une épave
-      }
+      if(v.etat.recuperation || (v.degats&&(v.degats.casse||B.degats?.uneRouePerdue(v.degats))))v.tourValide=false;
+      const replacements=v.etat.repositionnements||0;
+      if(replacements!==v.repositionnements){v.tourValide=false;v.repositionnements=replacements;course.sAvant[i]=b;v.progression=v.passages*L+b;continue;}
+      // Un franchissement réellement parcouru peut finir le tour, marqué non valide après accident.
       if (a > 0.75 * L && b < 0.25 * L) {
         v.passages++;
         if (v.passages > v.maxPassages) {
@@ -372,7 +373,7 @@
         }
       } else if (a < 0.25 * L && b > 0.75 * L) v.passages--;
       v.progression = v.passages * L + b;
-      if (course.mode === 'chrono' && course.chronoParti && v.joueur) enregistrer(course, v, course.temps);
+      if (course.mode === 'chrono' && course.chronoParti && v.joueur && v.tourValide !== false) enregistrer(course, v, course.temps);
     }
     majClassement(course);
     if (V.every(v => v.fini || v.abandon)) {
@@ -388,6 +389,14 @@
           V.every(v => v.fini || v.abandon)) course.termine = true;
     }
     return ev;
+  }
+
+  // Retour manuel : même abscisse, aucun passage ajouté, tour courant non homologué.
+  function replacer(course,v=course.joueur) {
+    const ev=B.conduite.replacer(v.etat,course.c);v.tourValide=false;v.repositionnements=v.etat.repositionnements;
+    const i=course.voitures.indexOf(v);if(i>=0)course.sAvant[i]=sLigne(course.c,v.etat.s);
+    v.progression=v.passages*course.c.longueur+sLigne(course.c,v.etat.s);
+    for(const x of ev)x.id=v.id;return ev;
   }
 
   // Fantôme du meilleur tour (chrono) au temps du tour en cours : { s, d, angle } ou null.
@@ -420,5 +429,5 @@
     });
   }
 
-  B.course = { creer, pas, fantome, etatPilotes, commandesIA, aspirer, PILOTES, LIVREES, ASPIRATION };
+  B.course = { creer, pas, replacer, fantome, etatPilotes, commandesIA, aspirer, PILOTES, LIVREES, ASPIRATION };
 })(globalThis.BITUME = globalThis.BITUME || {});

@@ -3,7 +3,7 @@
    gardent leurs bonds. Le balayage est borné par les déplacements du pas fixe, indépendant du rendu. */
 (function(B){
   'use strict';
-  const PARAMS=Object.freeze({LONGUEUR:4.95,LARGEUR:2.02,bondVMin:.65,sautVMin:6.5,rearmSeparation:.35,rearmBond:1.25,rearmEvent:.30,lacetDecale:.06,lacetChoc:.9});
+  const PARAMS=Object.freeze({LONGUEUR:4.95,LARGEUR:2.02,bondVMin:2.5,sautVMin:12,rearmSeparation:.35,rearmBond:1.25,rearmEvent:.30,lacetDecale:.025,lacetChoc:.9});
   const P=PARAMS, HL=P.LONGUEUR/2, HW=P.LARGEUR/2;
   const angle=a=>a-2*Math.PI*Math.round(a/(2*Math.PI));
   const ramener=(s,L)=>((s%L)+L)%L;
@@ -14,7 +14,7 @@
     p.vx=e.v*Math.cos(q.cap+e.psi); p.vz=e.v*Math.sin(q.cap+e.psi);
     return p;
   }
-  function avant(co){const a=co._contactAvant||(co._contactAvant=[]);co._contactAvantTemps=co.horloge;for(let i=0;i<co.voitures.length;i++){const e=co.voitures[i].etat,p=pose(co.c,e,a[i]||(a[i]={}));p.s=e.s;p.d=e.d;p.psi=e.psi;p.beta=e.beta;p.distance=e.distance;}}
+  function avant(co){const a=co._contactAvant||(co._contactAvant=[]);co._contactAvantTemps=co.horloge;for(let i=0;i<co.voitures.length;i++){const e=co.voitures[i].etat,p=pose(co.c,e,a[i]||(a[i]={}));p.s=e.s;p.d=e.d;p.psi=e.psi;p.beta=e.beta;p.distance=e.distance;p.repositionnements=e.repositionnements||0;}}
   // SAT sur les quatre axes des rectangles. La normale va de a vers b.
   function tester(a,b){
     if(Math.abs(a.y-b.y)>1.1)return null;
@@ -36,7 +36,7 @@
     hit=tester(a,b);return hit?{...hit,t:1}:null;
   }
   function deplacer(e,c,p,x,z){e.s=ramener(e.s+(x*p.tx+z*p.tz)/Math.max(.1,1-p.k*e.d),c.longueur);e.d+=-x*p.tz+z*p.tx;const side=e.d<0?-1:1,limit=B.conduite.limiteCote(c,e.s,side)-.1;e.d=side*Math.min(Math.abs(e.d),limit);}
-  function vitesse(e,c,vx,vz,body){const theta=B.circuit.echantillon(c,e.s).cap;e.v=Math.hypot(vx,vz);if(e.v>.001){e.psi=angle(Math.atan2(vz,vx)-theta);e.beta=angle(body-theta-e.psi);}}
+  function vitesse(e,c,vx,vz,body){const theta=B.circuit.echantillon(c,e.s).cap;const sg=e.v<0?-1:1;e.v=sg*Math.hypot(vx,vz);if(Math.abs(e.v)>.001){e.psi=angle(Math.atan2(vz,vx)-theta-(sg<0?Math.PI:0));e.beta=angle(body-theta-e.psi);}}
   function pas(co,ev){
     const V=co.voitures,c=co.c,n=V.length,t=co.horloge;co._paire ||= {};
     const poses=co._contactPoses||(co._contactPoses=[]);
@@ -44,12 +44,12 @@
     for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){
       const va=V[i],vb=V[j],a=va.etat,b=vb.etat,key=i*n+j;
       const p=co._paire[key]||(co._paire[key]={tEvent:-9,tBond:-9,separe:true,tSeparation:0});
-      const ia=a.degats&&a.degats.casse?0:1,ib=b.degats&&b.degats.casse?0:1;
+      const ia=a.recuperation||(a.degats&&a.degats.casse)?0:1,ib=b.recuperation||(b.degats&&b.degats.casse)?0:1;
       if(!ia&&!ib)continue;
-      const blocked=e=>e.accident||e.immunite>0;
+      const blocked=e=>e.accident&&!e.recuperation;
       if(blocked(a)||blocked(b))continue;
       let A=poses[i],Bv=poses[j];
-      const old=co._contactAvantTemps===co.horloge?co._contactAvant:null,pa=old&&old[i],pb=old&&old[j],hit=balayage(A,Bv,pa,pb);
+      const old=co._contactAvantTemps===co.horloge?co._contactAvant:null,pa=old&&old[i]&&old[i].repositionnements===(a.repositionnements||0)?old[i]:null,pb=old&&old[j]&&old[j].repositionnements===(b.repositionnements||0)?old[j]:null,hit=balayage(A,Bv,pa,pb);
       if(!hit){if(!p.separe){p.separe=true;p.tSeparation=t;}continue;}
       // Corriger le chevauchement à chaque pas, même quand le son/dégât n'est pas réarmé.
       if(hit.t<1){for(const [e,o,inv] of [[a,pa,ia],[b,pb,ib]])if(inv){let ds=e.s-o.s;if(ds>c.longueur/2)ds-=c.longueur;else if(ds<-c.longueur/2)ds+=c.longueur;e.s=ramener(o.s+ds*hit.t,c.longueur);e.d=o.d+(e.d-o.d)*hit.t;e.psi=angle(o.psi+angle(e.psi-o.psi)*hit.t);e.beta=angle(o.beta+angle(e.beta-o.beta)*hit.t);e.y=o.y+(e.y-o.y)*hit.t;e.distance=o.distance+(e.distance-o.distance)*hit.t;}A=pose(c,a,poses[i]);Bv=pose(c,b,poses[j]);}
@@ -66,9 +66,9 @@
       p.separe=false;p.tEvent=t;
       const dx=Bv.x-A.x,dz=Bv.z-A.z,ds=dx*Math.cos(A.h)+dz*Math.sin(A.h),side=(-Math.sin(A.h)*nx+Math.cos(A.h)*nz)>=0?1:-1;
       if(lateral&&ia&&ib){
-        if(!a.saut&&!b.saut&&closing>=P.bondVMin&&t-p.tBond>=P.rearmBond){const grand=closing>=P.sautVMin,victim=ds>=0?a:b;B.conduite.lancerSaut(victim,{grand,pouss:side,roulV:-side*(grand?2.4:.7),tangV:grand?-1.4:-.3,omega:victim.omega-side*.18});p.tBond=t;}
+        if(!a.saut&&!b.saut&&a.v>=0&&b.v>=0&&closing>=P.bondVMin&&t-p.tBond>=P.rearmBond){const grand=closing>=P.sautVMin,victim=ds>=0?a:b;B.conduite.lancerSaut(victim,{grand,pouss:side,roulV:-side*(grand?2.4:.7),tangV:grand?-1.4:-.3,omega:victim.omega-side*.18});p.tBond=t;}
         if(Math.abs(ds)>.4){const kick=P.lacetDecale*(ds>=0?1:-1);a.psi-=kick;b.psi+=kick;}
-        const loss=Math.min(.18,closing*.02);a.v*=1-loss;b.v*=1-loss;
+        const loss=Math.min(.06,closing*.006);a.v*=1-loss;b.v*=1-loss;
       }else{const torque=P.lacetChoc*closing*(-Math.sin(A.h)*dx+Math.cos(A.h)*dz)*.05;if(ia)a.omega-=torque;if(ib)b.omega+=torque;}
       ev.push({type:'contact',a:va.id,b:vb.id,force:closing,lateral});
       for(const [v,invMass,normX,normZ,other,self] of [[va,ia,nx,nz,Bv,A],[vb,ib,-nx,-nz,A,Bv]]){
