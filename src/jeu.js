@@ -19,11 +19,12 @@
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
   function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
   function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
-  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, tableau: 'reduit', carte: 'oui', cartePosition: 'auto', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5,
+  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5,
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
-  for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['auto', 'haut', 'bas'], carteTaille: ['petite', 'normale', 'grande'] }))
+  // Les anciens placements auto/haut/bas reviennent en haut à droite ; taille et visibilité sont conservées.
+  for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['gauche', 'droite'], carteTaille: ['petite', 'normale', 'grande'] }))
     if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
   const sauverReglages = () => ecrireStock('bitume.reglages', reglages);
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
@@ -232,7 +233,8 @@
   addEventListener('wheel', () => { dernierGeste = performance.now(); if (ecran === 'demo') sortirDemo(); }, { capture: true, passive: true });
 
   function lireManette() {
-    const liste = navigator.getGamepads ? navigator.getGamepads() : [];
+    let liste = [];
+    try { if (navigator.getGamepads) liste = navigator.getGamepads() || []; } catch (e) { /* accès non autorisé : commandes neutres, le rendu continue */ }
     const ancienne = pad.manette, etatDerive = pad.deriveEtat;
     let p = null;
     for (const candidate of liste) if (candidate && candidate.connected) { p = candidate; break; }
@@ -289,7 +291,10 @@
     // les 40 ms pour tenir un grondement continu, et plus vite encore dès que l'intensité bouge (choc, vibreur)
     if (Math.abs(faible - pad.rumbleF) < .05 && Math.abs(fort - pad.rumbleS) < .05 && maintenant - pad.rumbleT < 40) return;
     pad.rumbleF = faible; pad.rumbleS = fort; pad.rumbleT = maintenant;
-    try { p.vibrationActuator.playEffect('dual-rumble', { startDelay: 0, duration: 90, weakMagnitude: faible, strongMagnitude: fort }); } catch (e) { /* manette sans vibration */ }
+    try {
+      const effet = p.vibrationActuator.playEffect('dual-rumble', { startDelay: 0, duration: 90, weakMagnitude: faible, strongMagnitude: fort });
+      if (effet && typeof effet.catch === 'function') effet.catch(() => {});
+    } catch (e) { /* manette sans vibration */ }
   }
 
   // construit l'intensité continue (faible = aigu, fort = grave) à partir de l'état de la voiture et des
@@ -392,7 +397,7 @@
     const bouger = k => liste[i < 0 ? 0 : (i + k + liste.length) % liste.length].focus({ focusVisible: true });
     if (nouveau(12) || nouveau(14)) bouger(-1);
     else if (nouveau(13) || nouveau(15)) bouger(1);
-    else if (nouveau(0) && el) el.click();
+    else if (nouveau(0)) { const cible = el || liste[0]; cible.focus({ focusVisible: true }); cible.click(); }
     else if (nouveau(1)) retour();
   }
 
@@ -416,8 +421,9 @@
   }
 
   // commandes tactiles : volant en glissant le pouce à gauche, pédales et dérive à droite
-  const estTactile = typeof matchMedia === 'function' && (matchMedia('(pointer: coarse)').matches || (navigator.maxTouchPoints > 0 && matchMedia('(hover: none)').matches));
+  const estTactile = navigator.maxTouchPoints > 0 && typeof matchMedia === 'function' && (matchMedia('(pointer: coarse)').matches || matchMedia('(hover: none)').matches);
   if (estTactile) document.body.classList.add('tactile');
+  if (/Xbox/i.test(navigator.userAgent || '')) $('aide-console').hidden = false;
   function tactile(visible) { $('tactile').hidden = !(visible && estTactile); if (!visible) relacherTactile(); }
   (function () {
     const zone = $('t-volant'), bouton = zone.querySelector('.bouton-volant');
@@ -630,13 +636,14 @@
   // ---------------------------------------------------------------- caméras
   // Champ du cockpit : réglage en degrés horizontaux mesurés en 16:9 (60° par défaut, 41,6° verticaux, comme
   // vroom-unreal). Plus large que 16:9, le champ vertical est gardé ; plus étroit, c'est le champ horizontal.
-  // En portrait (téléphone), on garde la diagonale du cadre de référence 16:9 : sinon le vertical dépasse 100°
-  // et le tableau de bord devient minuscule (David, 14/11). Il s'ouvre de 13 % à pleine vitesse (47° verticaux en 16:9).
+  // Le portrait conserve la diagonale du cadre de référence 16:9. Sur téléphone, David demande un champ
+  // plus serré (16/11) : tangente réduite de 18 %, ouverture de vitesse limitée à 4 %. Le curseur reste mémorisé.
   function champCockpit(aspect, v) {
     const t = Math.tan(clamp(+reglages.champ || 60, 60, 105) * Math.PI / 360);
     const tv = aspect < 1 ? Math.hypot(t, t / (16 / 9)) / Math.hypot(1, aspect) : Math.max(t / (16 / 9), t / Math.max(.3, aspect));
-    const vertical = 2 * Math.atan(tv) * 180 / Math.PI;
-    return clamp(vertical * (1 + .13 * clamp(v / 85, 0, 1)), 10, 110);
+    const portraitTelephone = estTactile && canvas.clientWidth <= 600 && aspect < 1;
+    const vertical = 2 * Math.atan(tv * (portraitTelephone ? .82 : 1)) * 180 / Math.PI;
+    return clamp(vertical * (1 + (portraitTelephone ? .04 : .13) * clamp(v / 85, 0, 1)), 10, 110);
   }
   // La tête du pilote vit : elle part vers l'extérieur du virage et vers l'avant au freinage (2 cm au plus), le regard
   // va vers la corde (4° au plus), et le casque tremble à haute vitesse, sur les vibreurs et dans l'herbe.

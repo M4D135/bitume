@@ -3,7 +3,7 @@
 <style>
 /*STYLE*/
 </style>
-<main id="jeu" data-ecran="chargement" data-carte="oui" data-carte-position="auto" data-carte-taille="normale">
+<main id="jeu" data-ecran="chargement" data-carte="oui" data-carte-position="droite" data-carte-taille="normale">
   <div id="vue-course">
     <canvas id="scene" aria-label="Vue de la course"></canvas>
     <canvas id="meteo" aria-hidden="true"></canvas>
@@ -78,6 +78,7 @@
     </nav>
     <p id="titre-attente" class="attente" hidden><span id="titre-attente-texte">Démo dans 5 s</span><i><b></b></i></p>
     <p class="pied-titre">Clavier, manette ou écran tactile · moteur FERRO · aucun fichier d’image ni de son</p>
+    <p id="aide-console" class="pied-titre" hidden>Xbox : maintenez Menu pour passer aux contrôles de jeu. RT : gaz · LT : frein · A : dérive</p>
   </section>
 
   <!-- Préparation d'une course ou d'un chrono -->
@@ -142,9 +143,8 @@
       </fieldset>
       <fieldset>
         <legend>Position de la carte</legend>
-        <label><input type="radio" name="cartePosition" value="auto" checked><span>Selon l’écran</span></label>
-        <label><input type="radio" name="cartePosition" value="haut"><span>En haut</span></label>
-        <label><input type="radio" name="cartePosition" value="bas"><span>En bas</span></label>
+        <label><input type="radio" name="cartePosition" value="gauche"><span>À gauche</span></label>
+        <label><input type="radio" name="cartePosition" value="droite" checked><span>À droite</span></label>
       </fieldset>
       <fieldset>
         <legend>Taille de la carte</legend>

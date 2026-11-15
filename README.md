@@ -2,7 +2,7 @@
 
 Course de monoplaces d'époque dans le navigateur, entièrement procédurale : trois circuits générés, onze rivaux,
 dérive et turbo. Moteur FERRO (WebGL2). Aucune image, aucun son enregistré, aucune police chargée : une seule page
-HTML d'environ 360 Ko.
+HTML d'environ 510 Ko.
 
 Essai 0.1 du 12 novembre 2026. BITUME est la refonte web de vroom-unreal, le projet Unreal de David : il garde le
 genre et les mécaniques inventées pour vroom-unreal, et ne reprend rien du Vroom de Lankhor.
@@ -59,6 +59,20 @@ La version en ligne est la page figée d'un commit. Elle ne change qu'à la main
 | Menus | Tab, Entrée, Échap | croix, A, B |
 
 Sur écran tactile : glisser le pouce à gauche pour braquer ; pédales et dérive à droite.
+La vue occupe tout l'écran ; carte et commandes sont transparentes. Dans les réglages, la carte peut être
+masquée, placée en haut à gauche ou à droite, et affichée en trois tailles. Ces choix sont mémorisés.
+Sur téléphone en portrait, le champ du cockpit est resserré et son ouverture à grande vitesse réduite.
+
+### Xbox avec Microsoft Edge
+
+Ouvrir `https://bitume.estrasse.fr/` dans Edge. Maintenir le bouton Menu permet de basculer entre les contrôles
+du navigateur et les contrôles de jeu ([aide Microsoft](https://www.microsoft.com/en-us/edge/learning-center/how-to-use-microsoft-edge-on-xbox)).
+En mode jeu : croix pour les menus, A pour valider, B pour revenir ; RT accélère, LT freine, le stick gauche
+braque, A ou X commande la dérive, Y change la vue et Menu met en pause. Si le son n'a pas démarré, un clic
+sur la page avec le pointeur du navigateur permet de l'activer avant de repasser aux contrôles de jeu.
+
+Le rendu demande WebGL2. Les parcours manette et le démarrage sont testés dans Chromium avec une manette
+simulée ; la validation sur une Xbox physique reste à faire.
 
 ## Pour aller plus loin
 

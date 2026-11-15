@@ -77,6 +77,9 @@ n2]` tenus dans le cube unité (`B.carene.normaliser`) ; l'instance porte la vra
   `COUDE` et `LEVIER` de `src/voiture.js` ; `verifications/voiture.test.mjs` tient le cadrage.
 - **Champ du cockpit** : 60 degrés par défaut (David, 14/11/2026). Le curseur du menu reste réglable de 60 à
   105° (`champ` dans `src/jeu.js`, `v-champ` dans le menu) ; un pilote qui a monté son curseur le garde.
+  David demande le 16/11 un champ plus serré sur téléphone en portrait : adaptation de projection dédiée,
+  sans changer la valeur mémorisée ni le cadrage paysage/ordinateur. ATH et commandes en surimpression ;
+  carte toujours en haut, emplacement gauche/droite, taille et visibilité réglables.
 - **Clipping** : rien ne se coupe à distance. Plan lointain `PORTEE_VUE` (6 000 m), lots sans portée propre, bascule
   de détail à 520 m, ombres du soleil sur tout l'atlas (`sunOnly`, carré de 200 m). Ne pas réintroduire de coupe à
   distance sans fondu.
