@@ -28,4 +28,30 @@ for (const hz of [20, 30, 60, 144]) {
   assert.ok(Math.abs(S.meteo.t - 11) < 1e-9, `${hz} Hz : reprise sans rattrapage du temps de pause`);
   controles += 4;
 }
-console.log(`météo : ${controles} contrôles cadence, pause et reprise`);
+
+
+// Le nouveau canvas pluie reçoit lui aussi des secondes et zéro pendant une pause.
+const d0 = source.indexOf('  function dessinerMeteo(');
+assert.ok(d0 >= 0, 'overlay météo présent');
+let d1 = source.indexOf('{', d0), nd = 1;
+for (d1++; nd && d1 < source.length; d1++) { if (source[d1] === '{') nd++; else if (source[d1] === '}') nd--; }
+const raccords = [...source.matchAll(/^    dessinerMeteo\(S,\s*\w+\);/gm)];
+assert.equal(raccords.length, 1, 'un raccord overlay dans le rendu');
+for (const hz of [20, 30, 60, 144]) {
+  const ctx = { setTransform(){}, clearRect(){}, beginPath(){}, moveTo(){}, lineTo(){}, stroke(){}, fillRect(){} };
+  const canvas = { width: 100000, height: 100000, clientWidth: 100000, clientHeight: 100000, getContext: () => ctx };
+  const creer = new Function('document', 'window', `let meteoCtx = null, meteoDpr = 1;
+    let meteoGouttes = Array.from({length:360}, () => ({x:0,y:0,l:10,v:620}));
+    ${source.slice(d0,d1)}
+    return { image(S,dureeImage,dtImage) { ${raccords[0][0]} }, lire() { return JSON.stringify(meteoGouttes); }, y() { return meteoGouttes[0].y; } };`);
+  const test = creer({getElementById: () => canvas}, {devicePixelRatio:1});
+  const S = {meteo:{pluie:1,nuage:0,eclair:0}};
+  for (let k=0;k<10*hz;k++) test.image(S,1000/hz,1/hz);
+  assert.ok(Math.abs(test.y()-6200)<1e-7, `${hz} Hz : pluie 620 px/s durant10s, reçu ${test.y()}`);
+  const avant=test.lire(); for(let k=0;k<40;k++)test.image(S,250,0);
+  assert.equal(test.lire(),avant, `${hz} Hz : pause fige les gouttes`);
+  for(let k=0;k<hz;k++)test.image(S,1000/hz,1/hz);
+  assert.ok(Math.abs(test.y()-6820)<1e-7, `${hz} Hz : pluie reprend sans rattrapage`);
+  controles+=3;
+}
+console.log(`météo : ${controles} contrôles cadence, pause, reprise et overlay`);

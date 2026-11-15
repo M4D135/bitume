@@ -301,7 +301,7 @@
     const marches = 8, profondeur = 1.15, haut = .5;
     for (let m = 0; m < marches; m++) {
       const d = recul + cote * (m * profondeur + profondeur / 2);
-      liste.push({ shape: 'box', p: vers(d, (m + 1) * haut / 2), s: [longueur, (m + 1) * haut, profondeur], r: rot, mat: 3, color: [.62, .62, .6] });
+      liste.push({ shape: 'box', collision: 'gradin', p: vers(d, (m + 1) * haut / 2), s: [longueur, (m + 1) * haut, profondeur], r: rot, mat: 3, color: [.62, .62, .6] });
       // spectateurs : une rangée de silhouettes colorées par marche, avec des trous
       const rangee = [];
       for (let k = -longueur / 2 + .6; k < longueur / 2 - .4; k += .62) {
@@ -312,10 +312,10 @@
       loin.push({ shape: 'box', p: vers(d, (m + 1) * haut / 2 + .3, 0), s: [longueur, (m + 1) * haut + .6, profondeur], r: rot, mat: 18, color: [.42, .36, .34] });
     }
     const fond = recul + cote * (marches * profondeur + .3);
-    liste.push({ shape: 'box', p: vers(fond, 3.6), s: [longueur, 7.2, .4], r: rot, mat: 3, color: [.55, .55, .53] });
-    liste.push({ shape: 'box', p: vers(recul + cote * marches * profondeur * .5, 7.4), s: [longueur + 2, .3, marches * profondeur + 2.4], r: rot, mat: 0, color: [.80, .82, .84] });
+    liste.push({ shape: 'box', collision: 'gradin', p: vers(fond, 3.6), s: [longueur, 7.2, .4], r: rot, mat: 3, color: [.55, .55, .53] });
+    liste.push({ shape: 'box', collision: 'toit', p: vers(recul + cote * marches * profondeur * .5, 7.4), s: [longueur + 2, .3, marches * profondeur + 2.4], r: rot, mat: 0, color: [.80, .82, .84] });
     loin.push({ shape: 'box', p: vers(recul + cote * marches * profondeur * .5, 7.4), s: [longueur + 2, .3, marches * profondeur + 2.4], r: rot, mat: 0, color: [.80, .82, .84] });
-    for (let k = -longueur / 2; k <= longueur / 2; k += 12) liste.push({ shape: 'cylinder', p: vers(recul - cote * .3, 3.7, k), s: [.22, 7.4, .22], mat: 0, color: [.7, .72, .74] });
+    for (let k = -longueur / 2; k <= longueur / 2; k += 12) liste.push({ shape: 'cylinder', collision: 'pilier', p: vers(recul - cote * .3, 3.7, k), s: [.22, 7.4, .22], mat: 0, color: [.7, .72, .74] });
     // bandeau coloré sous le toit
     const teinte = PUBLICITES[Math.floor(r() * 4)];
     liste.push({ shape: 'box', p: vers(recul - cote * .9, 6.9, 0), s: [longueur + 2, .9, .12], r: rot, mat: 16, color: teinte });
@@ -324,13 +324,13 @@
   function batimentStands(liste, loin, f, w, cote, longueur) {
     const rot = capRot(f.a), y0 = hauteurRoute(f, cote * w, w) - .2, recul = cote * (w + 13);
     const vers = (d, h, l = 0) => [f.x + f.r[0] * d + f.t[0] * l, y0 + h, f.z + f.r[2] * d + f.t[2] * l];
-    liste.push({ shape: 'box', p: vers(recul + cote * 6, 4), s: [longueur, 8, 12], r: rot, mat: 13.2, color: [.86, .84, .78] });
+    liste.push({ shape: 'box', collision: 'batiment', p: vers(recul + cote * 6, 4), s: [longueur, 8, 12], r: rot, mat: 13.2, color: [.86, .84, .78] });
     loin.push({ shape: 'box', p: vers(recul + cote * 6, 4), s: [longueur, 8, 12], r: rot, mat: 13.2, color: [.86, .84, .78] });
-    liste.push({ shape: 'box', p: vers(recul + cote * 6, 8.25), s: [longueur + 1, .5, 13], r: rot, mat: 0, color: [.30, .32, .34] });
+    liste.push({ shape: 'box', collision: 'toit', p: vers(recul + cote * 6, 8.25), s: [longueur + 1, .5, 13], r: rot, mat: 0, color: [.30, .32, .34] });
     for (let k = -longueur / 2 + 3; k < longueur / 2 - 2; k += 6) liste.push({ shape: 'box', p: vers(recul - cote * .02, 1.6, k), s: [4.4, 3.2, .12], r: rot, mat: 7, color: [.08, .09, .1] });
     // muret des stands
-    liste.push({ shape: 'box', p: vers(cote * (w + 6.2), .55), s: [longueur + 30, 1.1, .5], r: rot, mat: 3, color: [.82, .82, .8] });
-    liste.push({ shape: 'box', p: vers(cote * (w + 6.2), 1.2), s: [longueur + 30, .2, .54], r: rot, mat: 16, color: [.86, .12, .08] });
+    liste.push({ shape: 'box', collision: 'muret', p: vers(cote * (w + 6.2), .55), s: [longueur + 30, 1.1, .5], r: rot, mat: 3, color: [.82, .82, .8] });
+    liste.push({ shape: 'box', collision: 'muret', p: vers(cote * (w + 6.2), 1.2), s: [longueur + 30, .2, .54], r: rot, mat: 16, color: [.86, .12, .08] });
   }
 
   function construire(c, options = {}) {
@@ -409,8 +409,8 @@
         const objets = [];
         for (let e = 0; e < 3; e++) {
           const p = pointPlan(f, ext * (L - .1), yb + .14 + e * .27);
-          objets.push({ shape: 'cylinder', p, s: [.74, .26, .74], mat: 7, color: [.05, .05, .055], detail: 2 });
-          objets.push({ shape: 'cylinder', p: [p[0] + f.t[0] * .8, p[1], p[2] + f.t[2] * .8], s: [.74, .26, .74], mat: 7, color: e === 2 ? [.9, .9, .88] : [.05, .05, .055], detail: 2 });
+          objets.push({ shape: 'cylinder', collision: 'pneus', p, s: [.74, .26, .74], mat: 7, color: [.05, .05, .055], detail: 2 });
+          objets.push({ shape: 'cylinder', collision: 'pneus', p: [p[0] + f.t[0] * .8, p[1], p[2] + f.t[2] * .8], s: [.74, .26, .74], mat: 7, color: e === 2 ? [.9, .9, .88] : [.05, .05, .055], detail: 2 });
         }
         ajouter(objets, [], objets[0].p[0], objets[0].p[2]);
       }
@@ -420,9 +420,9 @@
     for (let s = 220, k = 0; s < c.longueur - 150; s += 380 + r() * 160, k++) {
       const f = cadre(c, Math.round(s / c.pas)), cote = k % 2 ? 1 : -1, L = (cote < 0 ? lim.G : lim.D)[f.i];
       const p = pointPlan(f, cote * (L + 2.8), hauteurRoute(f, cote * w, w) - .02 * (L - w)), rot = capRot(f.a);
-      ajouter([{ shape: 'box', p: [p[0], p[1] + 1.1, p[2]], s: [2.2, 2.2, 2], r: rot, mat: 13.6, color: [.92, .9, .84] },
-        { shape: 'box', p: [p[0], p[1] + 2.3, p[2]], s: [2.6, .2, 2.4], r: rot, mat: 16, color: [.9, .42, .06] },
-        { shape: 'cylinder', p: [p[0] + 1.3, p[1] + 2.2, p[2]], s: [.05, 4.4, .05], mat: 0, color: [.6, .6, .6] },
+      ajouter([{ shape: 'box', collision: 'cabane', p: [p[0], p[1] + 1.1, p[2]], s: [2.2, 2.2, 2], r: rot, mat: 13.6, color: [.92, .9, .84] },
+        { shape: 'box', collision: 'toit', p: [p[0], p[1] + 2.3, p[2]], s: [2.6, .2, 2.4], r: rot, mat: 16, color: [.9, .42, .06] },
+        { shape: 'cylinder', collision: 'pilier', p: [p[0] + 1.3, p[1] + 2.2, p[2]], s: [.05, 4.4, .05], mat: 0, color: [.6, .6, .6] },
         { shape: 'box', p: [p[0] + 1.3, p[1] + 4.0, p[2] + .45], s: [.02, .55, .8], r: rot, mat: 16, color: [.95, .78, .08] }], [], p[0], p[2]);
     }
 
@@ -444,10 +444,10 @@
     const yP = hauteurRoute(f0, 0, w), portique = { feux: [], cap: f0.a };
     for (const cote of [-1, 1]) {
       const p = pointPlan(f0, cote * (w + 1.6), yP);
-      objetsDepart.push({ shape: 'box', p: [p[0], p[1] + 3.6, p[2]], s: [.5, 7.2, .5], r: rot0, mat: 0, color: [.22, .24, .26] });
+      objetsDepart.push({ shape: 'box', collision: 'pilier', p: [p[0], p[1] + 3.6, p[2]], s: [.5, 7.2, .5], r: rot0, mat: 0, color: [.22, .24, .26] });
       loinDepart.push(objetsDepart[objetsDepart.length - 1]);
     }
-    const poutre = { shape: 'box', p: [f0.x, yP + 7.4, f0.z], s: [.7, .9, 2 * w + 3.8], r: rot0, mat: 0, color: [.18, .2, .22] };
+    const poutre = { shape: 'box', collision: 'poutre', p: [f0.x, yP + 7.4, f0.z], s: [.7, .9, 2 * w + 3.8], r: rot0, mat: 0, color: [.18, .2, .22] };
     objetsDepart.push(poutre); loinDepart.push(poutre);
     objetsDepart.push({ shape: 'box', p: [f0.x - f0.t[0] * .36, yP + 7.4, f0.z - f0.t[2] * .36], s: [.04, .5, 2 * w + 3.6], r: rot0, mat: 16, color: [.92, .92, .9] });
     for (let k = 0; k < 5; k++) {
@@ -476,8 +476,8 @@
       const i = Math.floor((.45 + essai * .002) * c.n);
       if (Math.abs(c.courbure[i]) > 1 / 600) continue;
       const f = cadre(c, i), L = Math.min(lim.G[i], lim.D[i]) + 1, y = hauteurRoute(f, 0, w), rot = capRot(f.a), objets = [];
-      for (const cote of [-1, 1]) { const p = pointPlan(f, cote * L, y); objets.push({ shape: 'box', p: [p[0], y + 3.4, p[2]], s: [1.4, 6.8, 1.4], r: rot, mat: 3, color: [.7, .7, .68] }); }
-      objets.push({ shape: 'box', p: [f.x, y + 7.2, f.z], s: [2.6, 1.0, 2 * L + 1.4], r: rot, mat: 3, color: [.74, .74, .72] });
+      for (const cote of [-1, 1]) { const p = pointPlan(f, cote * L, y); objets.push({ shape: 'box', collision: 'pilier', p: [p[0], y + 3.4, p[2]], s: [1.4, 6.8, 1.4], r: rot, mat: 3, color: [.7, .7, .68] }); }
+      objets.push({ shape: 'box', collision: 'poutre', p: [f.x, y + 7.2, f.z], s: [2.6, 1.0, 2 * L + 1.4], r: rot, mat: 3, color: [.74, .74, .72] });
       const coul = PUBLICITES[Math.floor(r() * PUBLICITES.length)];
       for (const sens of [-1, 1]) objets.push({ shape: 'box', p: [f.x + f.t[0] * sens * 1.32, y + 7.2, f.z + f.t[2] * sens * 1.32], s: [.05, .8, 2 * L], r: rot, mat: 16, color: coul });
       const l = lotDe(f.x, f.z, i); l.objets.push(...objets); l.loin.push(...objets);
@@ -577,10 +577,18 @@
       // qui surgit à 1 900 m se voit). La bascule vers la version allégée se fait là où un tronc tient en un pixel.
       lots.push({ objets: l.objets, loin: l.loin, centre: [mx, my, mz], rayon, portee: Infinity, bascule: l.lointain ? 900 : 520 });
     }
+    // Collision et image partagent les mêmes primitives ; aucune consommation du hasard supplémentaire.
+    // Les troncs inclinés ne sont pas assimilés à de gros cylindres verticaux : exclus de ce premier lot.
+    const obstacles = [];
+    for (const lot of lots) for (const o of lot.objets) if (o.collision) {
+      const commun = { x: o.p[0], z: o.p[2], ymin: o.p[1]-o.s[1]/2, ymax: o.p[1]+o.s[1]/2, genre: o.collision };
+      if (o.shape === 'cylinder') obstacles.push(Object.assign(commun, { type: 'circle', r: o.s[0]/2 }));
+      else obstacles.push(Object.assign(commun, { type: 'box', angle: -(o.r ? o.r[1] : 0), hx: o.s[0]/2, hz: o.s[2]/2 }));
+    }
     const atmosphere = Object.assign({ outdoorZones: [{ x: 0, z: 0, w: 1e7, d: 1e7 }] }, th.atmosphere);
     // enceinte : portion de la ligne droite bordée de tribunes et de stands (abscisses comptées depuis la ligne) ; une
     // caméra de bord de piste s'y place devant eux, pas derrière la glissière où elle serait dans les gradins.
-    return { nappes: nappes.concat(terrain.liste), lots, atmosphere, portique, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
+    return { nappes: nappes.concat(terrain.liste), lots, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
   }

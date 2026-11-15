@@ -95,7 +95,7 @@ function essaiCorrection(volant) {
 
 // ------------------------------------------------------------------ une réponse par paire
 {
-  const a = voiture(0, 100, -0.9, 20, 0), b = voiture(1, 100, 0.9, 20, 0); // se touchent sans se rapprocher (pas de bond)
+  const a = voiture(0, 100, -0.9, 20, 0.01), b = voiture(1, 100, 0.9, 20, -0.01); // vrai rapprochement faible, sans bond
   const co = course(a, b); const ev = [];
   CT.pas(co, ev);
   const n0 = ev.filter(e => e.type === 'contact').length;
@@ -104,7 +104,7 @@ function essaiCorrection(volant) {
   noter('paire : une seule réponse tant qu’elles se touchent', n1 - n0, '0', n1 === n0);
   // séparation puis réarmement après 0,35 s
   a.etat.d = -3; b.etat.d = 3; co.horloge += 0.4; CT.pas(co, ev);       // séparées
-  a.etat.d = -0.9; b.etat.d = 0.9; co.horloge += 0.4; const avant = ev.length; CT.pas(co, ev);
+  a.etat.d = -0.9; b.etat.d = 0.9; a.etat.psi = 0.01; b.etat.psi = -0.01; co.horloge += 0.4; const avant = ev.length; CT.pas(co, ev);
   const n2 = ev.slice(avant).filter(e => e.type === 'contact').length;
   noter('paire : réarmement après séparation + 0,35 s', n2, '≥ 1', n2 >= 1);
 }

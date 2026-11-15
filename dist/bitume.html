@@ -39,6 +39,7 @@ button, input { font: inherit; color: inherit; }
 
 #jeu { position: fixed; inset: 0; overflow: hidden; }
 #scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: var(--encre); }
+#meteo { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 #vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 55%, transparent 58%, rgba(0, 0, 0, .38) 100%); }
 
 /* ------------------------------------------------------------------ éléments communs */
@@ -281,6 +282,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 </style>
 <main id="jeu" data-ecran="chargement">
   <canvas id="scene" aria-label="Vue de la course"></canvas>
+  <canvas id="meteo" aria-hidden="true"></canvas>
   <div id="vignette" aria-hidden="true"></div>
 
   <!-- Affichage de course -->
@@ -3150,7 +3152,14 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     if (Math.abs(etat.d) > bord) {
       const vAvant = etat.v, ang = Math.abs(angle(etat.psi)), versMur = cdg * etat.psi > 0;
       const premier = !etat.auRail && etat.choc <= 0;   // vrai premier contact, pas le frottement continu le long du rail
-      if (versMur && ang > P.glissAccident && etat.v >= P.glissVAccident) {
+      const normale = Math.max(0, cdg * vAvant * Math.sin(etat.psi));
+      if (versMur && (premier || (B.degats && normale >= B.degats.PARAMS.chocCasse)))
+        for (const e of subirChoc(etat, normale)) ev.push(e);
+      if (etat.degats && etat.degats.casse) {
+        etat.d = cdg * bord;
+        ev.push({ type: 'choc', force: normale });
+        etat.choc = P.chocDuree;
+      } else if (versMur && ang > P.glissAccident && etat.v >= P.glissVAccident) {
         etat.d = cdg * bord;
         ev.push({ type: 'choc', force: vAvant });
         declencherAccident(etat, {});
@@ -3241,8 +3250,24 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   function declencherAccident(etat, o = {}) {
     if (etat.accident) return;
     etat.saut = null; etat.reparation = null;
+    if (etat.degats && etat.degats.casse) return;
     etat.accident = { t: 0, duree: o.duree || P.accidentDuree, d0: etat.d, reception: !!o.reception };
     annuler(etat, []);
+  }
+
+  // BITUME : une casse est définitive pour la séance. Aucun gaz, saut, replacement ou stand ne la ranime.
+  function immobiliser(etat, ev) {
+    etat.v = 0; etat.gaz = 0; etat.frein = 1; etat.regime = P.ralenti;
+    etat.psi = angle(etat.psi + etat.beta); etat.omega = 0; etat.beta = 0; etat.saut = null; etat.accident = null; etat.reparation = null;
+    etat.bond = 0; etat.bondT = 0; etat.glisse = 0; etat.immunite = 0;
+    annuler(etat, ev);
+  }
+
+  // Même facture pour les murs et les rivaux ; force en m/s normaux / relatifs, jamais vitesse totale rasante.
+  function subirChoc(etat, force, options = {}) {
+    const ev = B.degats && etat.degats ? (B.degats.choc(etat.degats, force, options) || []) : [];
+    if (etat.degats && etat.degats.casse) immobiliser(etat, ev);
+    return ev;
   }
 
   // Vol : arc parabolique, tangage et roulis qui tournent, peu de direction ; à la réception, la vitesse garde
@@ -3340,6 +3365,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   // cmd = { gaz, frein, volant, derive, haut, bas, boite: 'auto'|'manuelle', aide, guidage }
   function pas(etat, cmd, c, dt, retenue = false) {
     const ev = [];
+    if (etat.degats && etat.degats.casse) { immobiliser(etat, ev); return ev; }
     const gaz = borne01(cmd.gaz), frein = borne01(cmd.frein), aide = borne01(cmd.aide), guidage = borne01(cmd.guidage);
     etat.gaz = gaz; etat.frein = frein;
     filtrerVolant(etat, clamp(+cmd.volant || 0, -1, 1), dt);
@@ -3359,7 +3385,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 
   B.conduite = {
     PARAMS, creer, pas, annulerDerive, couperTurbo, cap, kmh, couple, limiteCote, braquageMax, volantPour,
-    capaciteLaterale, pneu, lancerSaut, declencherAccident
+    capaciteLaterale, pneu, lancerSaut, declencherAccident, subirChoc
   };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
@@ -3367,18 +3393,18 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 // ---- degats.js ----
 /* BITUME — dégâts de la caisse (Chantier 3). Un choc coûte de l'adhérence et de la traînée, dans la limite
    des critères (adhérence −18 % au plus, traînée +24 % au plus) ; au-delà d'un seuil de violence, une roue
-   se détache et la caisse casse (retour en piste assuré par conduite.js). L'état des dégâts vit sur
+   se détache et la caisse devient une épave pour la séance. L'état des dégâts vit sur
    etat.degats ; conduite.js le lit pour moduler mu et la traînée, le moteur le lit pour teinter la caisse
    (uEffects.z) et masquer une roue perdue. Rien ici ne dépend du moteur ni du circuit. */
 (function (B) {
   'use strict';
 
   const PARAMS = Object.freeze({
-    // un choc de `force` (m/s de vitesse perdue) enlève adherPar de coefficient d'adhérence par unité, plafonné
+    // un choc de `force` (m/s normaux vers le rail ou de rapprochement rival) enlève adherPar de coefficient d'adhérence par unité, plafonné
     adherPar: 0.012, adherMin: 0.82,       // −18 % au plus
     traineePar: 0.008, traineeMax: 1.24,   // +24 % au plus
-    chocRoue: 9,                            // m/s de vitesse perdue : au-delà, une roue peut partir
-    chocCasse: 16,                          // m/s : au-delà, la caisse casse (retour en piste)
+    chocRoue: 9,                            // m/s normaux/relatifs : au-delà, une roue peut partir
+    chocCasse: 16,                          // m/s normaux au rail / rapprochement rival : casse définitive
     roueReparation: 0                       // une roue perdue ne revient pas (0 = définitif pour la séance)
   });
   const P = PARAMS;
@@ -3391,7 +3417,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   // un choc de `force` m/s ; `o` = { roue: index 0..3 ou absent, durete: 0..1 } pour orienter la casse
   function choc(d, force, o = {}) {
     force = Math.max(0, +force || 0);
-    if (force < 0.5) return null;
+    if (force < 0.5 || d.casse) return null;
     d.chocs++;
     d.pire = Math.max(d.pire, force);
     d.adher = Math.max(P.adherMin, d.adher - P.adherPar * force);
@@ -3408,13 +3434,18 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
         ev.push({ type: 'roue', roue: i });
       }
     }
-    // la casse franche : au-delà du seuil, la caisse est HS et rentre au stand (retour en piste)
-    if (force >= P.chocCasse && !d.casse) { d.casse = true; ev.push({ type: 'casse' }); }
+    // Casse franche : roues et panneaux détachés, arrêt définitif pour la séance.
+    if (force >= P.chocCasse) {
+      d.casse = true;
+      for (let i = 0; i < 4; i++) if (!d.roues[i]) { d.roues[i] = true; ev.push({ type: 'roue', roue: i }); }
+      ev.push({ type: 'casse', force });
+    }
     return ev.length ? ev : null;
   }
 
-  // remise à zéro (nouvelle séance, ou réparation au stand)
+  // Réparation d’une roue seule ; une nouvelle séance crée un nouvel état, jamais une épave réparée.
   function reparer(d) {
+    if (d.casse) return;
     d.adher = 1; d.trainee = 1; d.chocs = 0; d.pire = 0; d.roues = [false, false, false, false]; d.casse = false; d.teinte = 0;
   }
 
@@ -3425,134 +3456,261 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 </script>
 <script>
 // ---- contacts.js ----
-/* BITUME — contacts entre voitures (Chantier 3). Remplace les auto-tamponneuses : frotter les roues d'un autre
-   fait sauter (petit bond rattrapable, ou grand arc qui peut casser), un choc de caisse orienté fait tourner,
-   une roue décalée fait braquer. Une seule réponse par paire (réarmement après séparation), immunité après un
-   accident, et les dégâts sont facturés à degats.js. Rien ici ne dépend du moteur ni du rendu. */
-(function (B) {
+/* BITUME — contacts de monoplaces orientées dans le monde. Normale de contact commune aux dégâts,
+   séparation et réponse ; les épaves restent des obstacles fixes. Les petits contacts de roues alignées
+   gardent leurs bonds. Le balayage est borné par les déplacements du pas fixe, indépendant du rendu. */
+(function(B){
   'use strict';
-
-  const PARAMS = Object.freeze({
-    LONGUEUR: 4.95, LARGEUR: 2.02,   // emprise de la caisse (critères)
-    bondVMin: 0.65,                  // rapprochement latéral minimal pour un bond
-    sautVMin: 6.5,                   // au-delà, grand arc
-    rearmSeparation: 0.35,           // délai après séparation avant une nouvelle interaction
-    rearmBond: 1.25,                 // délai minimal entre deux petits bonds d'une même paire
-    rearmEvent: 0.30,                // jamais deux événements de la même paire en moins de 0,3 s
-    lacetDecale: 0.06,               // lacet minimal (rad) d'une roue décalée (≈ 3,4° > 2°)
-    lacetChoc: 0.9                    // gain du lacet sur un choc de caisse orienté
-  });
-  const P = PARAMS;
-
-  function ecartSigne(L, a, b) { let d = b - a; while (d > L / 2) d -= L; while (d < -L / 2) d += L; return d; }
-  function ramener(s, Lc) { return ((s % Lc) + Lc) % Lc; }
-
-  // état par paire : minuteurs d'événement, de bond, et drapeau de séparation
-  function paire(co, k) {
-    let p = co._paire[k];
-    if (!p) p = co._paire[k] = { tEvent: -9, tBond: -9, separe: true, tSeparation: 0 };
+  const PARAMS=Object.freeze({LONGUEUR:4.95,LARGEUR:2.02,bondVMin:.65,sautVMin:6.5,rearmSeparation:.35,rearmBond:1.25,rearmEvent:.30,lacetDecale:.06,lacetChoc:.9});
+  const P=PARAMS, HL=P.LONGUEUR/2, HW=P.LARGEUR/2;
+  const angle=a=>a-2*Math.PI*Math.round(a/(2*Math.PI));
+  const ramener=(s,L)=>((s%L)+L)%L;
+  function pose(c,e,p={}) {
+    const q=B.circuit.echantillon(c,e.s),ca=Math.cos(q.cap),sa=Math.sin(q.cap);
+    p.x=q.x-sa*e.d; p.z=q.z+ca*e.d; p.h=q.cap+e.psi+e.beta; p.y=e.y;
+    p.tx=ca; p.tz=sa; p.k=q.courbure;
+    p.vx=e.v*Math.cos(q.cap+e.psi); p.vz=e.v*Math.sin(q.cap+e.psi);
     return p;
   }
-
-  // un choc facture des dégâts aux deux caisses (roue locale si le contact est latéral)
-  function facturer(co, V, i, j, force, lateral) {
-    if (!B.degats) return;
-    for (const idx of [i, j]) {
-      const v = V[idx];
-      if (!v.degats) continue;
-      const roue = lateral ? (v.etat.d >= 0 ? (v.etat.psi > 0 ? 1 : 0) : (v.etat.psi > 0 ? 3 : 2)) : undefined;
-      const e = B.degats.choc(v.degats, force, { roue });
-      if (e) for (const x of e) { x.id = v.id; co._ev.push(x); }
-      if (v.degats.casse && !v.etat.accident) B.conduite.declencherAccident(v.etat, {});
+  function avant(co){const a=co._contactAvant||(co._contactAvant=[]);co._contactAvantTemps=co.horloge;for(let i=0;i<co.voitures.length;i++){const e=co.voitures[i].etat,p=pose(co.c,e,a[i]||(a[i]={}));p.s=e.s;p.d=e.d;p.psi=e.psi;p.beta=e.beta;p.distance=e.distance;}}
+  // SAT sur les quatre axes des rectangles. La normale va de a vers b.
+  function tester(a,b){
+    if(Math.abs(a.y-b.y)>1.1)return null;
+    const dx=b.x-a.x,dz=b.z-a.z;if(dx*dx+dz*dz>(P.LONGUEUR*P.LONGUEUR+P.LARGEUR*P.LARGEUR))return null;
+    const ax=Math.cos(a.h),az=Math.sin(a.h),bx=Math.cos(b.h),bz=Math.sin(b.h);let depth=Infinity,nx=0,nz=0;
+    for(let k=0;k<4;k++){
+      const x=k===0?ax:k===1?-az:k===2?bx:-bz,z=k===0?az:k===1?ax:k===2?bz:bx;
+      const ra=HL*Math.abs(ax*x+az*z)+HW*Math.abs(-az*x+ax*z),rb=HL*Math.abs(bx*x+bz*z)+HW*Math.abs(-bz*x+bx*z),q=dx*x+dz*z;
+      const overlap=ra+rb-Math.abs(q);if(overlap<=0)return null;
+      if(overlap<depth){depth=overlap;const sign=q>=0?1:-1;nx=x*sign;nz=z*sign;}
+    }
+    return {nx,nz,depth};
+  }
+  function balayage(a,b,pa,pb){
+    let hit=tester(a,b);
+    if(!pa||!pb||tester(pa,pb))return hit?{...hit,t:1}:null;
+    const travel=Math.hypot(a.x-pa.x,a.z-pa.z,a.y-pa.y)+Math.hypot(b.x-pb.x,b.z-pb.z,b.y-pb.y),n=Math.max(1,Math.min(64,Math.max(Math.ceil(travel/.4),Math.ceil(Math.max(Math.abs(angle(a.h-pa.h)),Math.abs(angle(b.h-pb.h)))/.06))));
+    for(let k=1;k<n;k++){const t=k/n,aa={x:pa.x+(a.x-pa.x)*t,z:pa.z+(a.z-pa.z)*t,h:pa.h+angle(a.h-pa.h)*t,y:pa.y+(a.y-pa.y)*t},bb={x:pb.x+(b.x-pb.x)*t,z:pb.z+(b.z-pb.z)*t,h:pb.h+angle(b.h-pb.h)*t,y:pb.y+(b.y-pb.y)*t};hit=tester(aa,bb);if(hit)return {...hit,t};}
+    hit=tester(a,b);return hit?{...hit,t:1}:null;
+  }
+  function deplacer(e,c,p,x,z){e.s=ramener(e.s+(x*p.tx+z*p.tz)/Math.max(.1,1-p.k*e.d),c.longueur);e.d+=-x*p.tz+z*p.tx;const side=e.d<0?-1:1,limit=B.conduite.limiteCote(c,e.s,side)-.1;e.d=side*Math.min(Math.abs(e.d),limit);}
+  function vitesse(e,c,vx,vz,body){const theta=B.circuit.echantillon(c,e.s).cap;e.v=Math.hypot(vx,vz);if(e.v>.001){e.psi=angle(Math.atan2(vz,vx)-theta);e.beta=angle(body-theta-e.psi);}}
+  function pas(co,ev){
+    const V=co.voitures,c=co.c,n=V.length,t=co.horloge;co._paire ||= {};
+    const poses=co._contactPoses||(co._contactPoses=[]);
+    for(let k=0;k<n;k++)pose(c,V[k].etat,poses[k]||(poses[k]={}));
+    for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){
+      const va=V[i],vb=V[j],a=va.etat,b=vb.etat,key=i*n+j;
+      const p=co._paire[key]||(co._paire[key]={tEvent:-9,tBond:-9,separe:true,tSeparation:0});
+      const ia=a.degats&&a.degats.casse?0:1,ib=b.degats&&b.degats.casse?0:1;
+      if(!ia&&!ib)continue;
+      const blocked=e=>e.accident||e.immunite>0;
+      if(blocked(a)||blocked(b))continue;
+      let A=poses[i],Bv=poses[j];
+      const old=co._contactAvantTemps===co.horloge?co._contactAvant:null,pa=old&&old[i],pb=old&&old[j],hit=balayage(A,Bv,pa,pb);
+      if(!hit){if(!p.separe){p.separe=true;p.tSeparation=t;}continue;}
+      // Corriger le chevauchement à chaque pas, même quand le son/dégât n'est pas réarmé.
+      if(hit.t<1){for(const [e,o,inv] of [[a,pa,ia],[b,pb,ib]])if(inv){let ds=e.s-o.s;if(ds>c.longueur/2)ds-=c.longueur;else if(ds<-c.longueur/2)ds+=c.longueur;e.s=ramener(o.s+ds*hit.t,c.longueur);e.d=o.d+(e.d-o.d)*hit.t;e.psi=angle(o.psi+angle(e.psi-o.psi)*hit.t);e.beta=angle(o.beta+angle(e.beta-o.beta)*hit.t);e.y=o.y+(e.y-o.y)*hit.t;e.distance=o.distance+(e.distance-o.distance)*hit.t;}A=pose(c,a,poses[i]);Bv=pose(c,b,poses[j]);}
+      const {nx,nz}=hit,inv=ia+ib,sep=hit.depth+.001;
+      if(ia)deplacer(a,c,A,-nx*sep*ia/inv,-nz*sep*ia/inv);
+      if(ib)deplacer(b,c,Bv,nx*sep*ib/inv,nz*sep*ib/inv);
+      const closing=Math.max(0,(A.vx-Bv.vx)*nx+(A.vz-Bv.vz)*nz);
+      const aligned=Math.cos(A.h-Bv.h)>.85;
+      const lateral=aligned&&Math.abs(Math.cos(A.h)*nx+Math.sin(A.h)*nz)<.5&&Math.abs(Math.cos(Bv.h)*nx+Math.sin(Bv.h)*nz)<.5;
+      // Impulsion normale dissipative ; pas de mouvement ajouté à une épave.
+      if(closing>0){const impulse=closing*1.1/inv;if(ia)vitesse(a,c,A.vx-nx*impulse*ia,A.vz-nz*impulse*ia,A.h);if(ib)vitesse(b,c,Bv.vx+nx*impulse*ib,Bv.vz+nz*impulse*ib,Bv.h);}
+      const violent=B.degats && closing>=B.degats.PARAMS.chocCasse;
+      if(closing<=.1 || (!violent && ((!p.separe&&t-p.tSeparation<P.rearmSeparation)||t-p.tEvent<P.rearmEvent))) { pose(c,a,A);pose(c,b,Bv);continue; }
+      p.separe=false;p.tEvent=t;
+      const dx=Bv.x-A.x,dz=Bv.z-A.z,ds=dx*Math.cos(A.h)+dz*Math.sin(A.h),side=(-Math.sin(A.h)*nx+Math.cos(A.h)*nz)>=0?1:-1;
+      if(lateral&&ia&&ib){
+        if(!a.saut&&!b.saut&&closing>=P.bondVMin&&t-p.tBond>=P.rearmBond){const grand=closing>=P.sautVMin,victim=ds>=0?a:b;B.conduite.lancerSaut(victim,{grand,pouss:side,roulV:-side*(grand?2.4:.7),tangV:grand?-1.4:-.3,omega:victim.omega-side*.18});p.tBond=t;}
+        if(Math.abs(ds)>.4){const kick=P.lacetDecale*(ds>=0?1:-1);a.psi-=kick;b.psi+=kick;}
+        const loss=Math.min(.18,closing*.02);a.v*=1-loss;b.v*=1-loss;
+      }else{const torque=P.lacetChoc*closing*(-Math.sin(A.h)*dx+Math.cos(A.h)*dz)*.05;if(ia)a.omega-=torque;if(ib)b.omega+=torque;}
+      ev.push({type:'contact',a:va.id,b:vb.id,force:closing,lateral});
+      for(const [v,invMass,normX,normZ,other,self] of [[va,ia,nx,nz,Bv,A],[vb,ib,-nx,-nz,A,Bv]]){
+        if(!invMass)continue;
+        const front=(other.x-self.x)*Math.cos(self.h)+(other.z-self.z)*Math.sin(self.h)>=0;
+        const right=-Math.sin(self.h)*normX+Math.cos(self.h)*normZ>=0;
+        const roue=lateral?(front?0:2)+(right?1:0):undefined;
+        for(const e of B.conduite.subirChoc(v.etat,closing,{roue})){e.id=v.id;ev.push(e);}
+        if(v.joueur){const e=B.conduite.annulerDerive(v.etat,true);if(e){e.id=v.id;ev.push(e);}}
+      }
+      pose(c,a,A);pose(c,b,Bv);
     }
   }
+  B.contacts={PARAMS,avant,pas,tester};
+})(globalThis.BITUME=globalThis.BITUME||{});
+</script>
+<script>
+// ---- obstacles.js ----
+/* BITUME — solides fixes issus du décor dessiné. Grille16m, caisses orientées et balayage à pas bornés.
+   Les glissières et les autres voitures restent dans leurs modules. Aucun effet sur une course sans solides.
+   Un déplacement exceptionnel >25m en un pas est refusé, sans dégâts : c'est une téléportation, pas un choc. */
+(function (B) {
+  'use strict';
+  const CELLULE = 16, LONG = 2.475, LARGE = 1.01, HAUT = 1.1, EPS = .002;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const angle = a => a - 2 * Math.PI * Math.round(a / (2 * Math.PI));
+  const wrap = (s, L) => ((s % L) + L) % L;
+  const ecart = (a, b, L) => { let d = b - a; if (d > L / 2) d -= L; else if (d < -L / 2) d += L; return d; };
 
-  function pas(course, ev) {
-    const V = course.voitures, c = course.c, n = V.length, L = c.longueur, t = course.horloge;
-    if (!course._paire) course._paire = {};
-    course._ev = ev;
-    for (let i = 0; i < n; i++) {
-      const a = V[i].etat;
-      for (let j = i + 1; j < n; j++) {
-        const b = V[j].etat, k = i * n + j, p = paire(course, k);
-        const ds = ecartSigne(L, a.s, b.s);                 // b devant a si ds > 0
-        const ol = P.LONGUEUR - Math.abs(ds);               // chevauchement longitudinal
-        const dd = b.d - a.d, olat = P.LARGEUR - Math.abs(dd); // chevauchement latéral
-        const separe = ol <= 0 || olat <= 0;
-        if (separe) {
-          if (!p.separe) { p.separe = true; p.tSeparation = t; }   // vient de se séparer : réarmement en cours
-          continue;
-        }
-        // réarmement : il faut être séparé puis attendre 0,35 s, et pas deux événements en 0,3 s
-        if (!p.separe && t - p.tSeparation < P.rearmSeparation) continue;
-        if (t - p.tEvent < P.rearmEvent) continue;
-        p.separe = false;
-
-        // aucun contact avec une caisse en l'air, en accident ou immunisée
-        const bloque = e => (e.saut && e.saut.actif) || e.accident || e.immunite > 0;
-        if (bloque(a) || bloque(b)) continue;
-
-        const sg = ds >= 0 ? 1 : -1;            // b devant a si sg > 0
-        const ar = sg > 0 ? a : b, av = sg > 0 ? b : a;   // arrière, avant
-        const sgD = dd >= 0 ? 1 : -1;           // b à droite de a si sgD > 0
-        const vrLong = ar.v - av.v;             // rapprochement longitudinal (l'arrière rejoint l'avant)
-        // vitesse de rapprochement latéral (signée, vers la droite de a positive)
-        const vrLat = (a.v * Math.sin(a.psi) - b.v * Math.sin(b.psi)) * sgD;
-
-        const lateral = olat <= ol;             // on pénètre par le flanc (roue contre roue) ou par la face
-        let force = 0;
-
-        if (lateral) {
-          // séparation latérale
-          a.d -= sgD * olat / 2; b.d += sgD * olat / 2;
-          const rapprochement = Math.max(0, vrLat);
-          // roue contre roue : un frottement suffisant fait sauter la voiture (l'arrière qui talonne le flanc)
-          const peutSauter = !a.saut && !b.saut;
-          if (peutSauter && rapprochement >= P.bondVMin && t - p.tBond >= P.rearmBond) {
-            const grand = rapprochement >= P.sautVMin;
-            // la voiture qui monte sur la roue de l'autre : celle qui est derrière et pousse vers l'autre
-            const victime = vrLong > 0 ? (sg > 0 ? a : b) : (sgD > 0 ? b : a);
-            const roulV = (sgD > 0 ? -1 : 1) * (grand ? 2.4 : 0.7);
-            const tangV = grand ? -1.4 : -0.3;
-            B.conduite.lancerSaut(victime, { grand, pouss: sgD, roulV, tangV, omega: victime.omega + (sgD > 0 ? -0.18 : 0.18) });
-            p.tBond = t;
-          }
-          // roue décalée : le cap tourne d'au moins 2°, selon la géométrie de l'engagement (qui talonne le flanc)
-          if (Math.abs(ds) > 0.4) {
-            const kick = P.lacetDecale * (ds >= 0 ? 1 : -1);
-            a.psi -= kick; b.psi += kick;
-          }
-          if (rapprochement > 0) { const m = rapprochement * 0.1; a.psi -= sgD * m / Math.max(a.v, 5); b.psi += sgD * m / Math.max(b.v, 5); }
-          // un frottement de roues coûte de la vitesse aux deux caisses
-          const perte = Math.min(0.18, rapprochement * 0.02);
-          a.v *= 1 - perte; b.v *= 1 - perte;
-          force = rapprochement;
-          for (const e of [a, b]) {
-            const cd = e.d < 0 ? -1 : 1, lim = B.conduite.limiteCote(c, e.s, cd) - 0.1;
-            if (Math.abs(e.d) > lim) e.d = cd * lim;
-          }
-        } else {
-          // choc de caisse longitudinal : séparation + lacet orienté selon le décalage latéral (T-bone, talonnage)
-          a.s = ramener(a.s - sg * ol / 2, L); b.s = ramener(b.s + sg * ol / 2, L);
-          if (vrLong > 0) { ar.v -= 0.30 * vrLong; av.v += 0.15 * vrLong; }
-          // le décalage latéral du point d'impact fait tourner la caisse touchée
-          const bras = dd / (P.LARGEUR / 2);                 // -1..1, excentrement de l'impact
-          const lacet = P.lacetChoc * vrLong * bras * 0.05;
-          a.omega -= lacet; b.omega += lacet;
-          force = Math.max(0, vrLong);
-        }
-
-        // une seule réponse par paire : horodatée, avec un contact émis au plus tous les 0,3 s
-        p.tEvent = t;
-        ev.push({ type: 'contact', a: V[i].id, b: V[j].id, force, lateral });
-        facturer(course, V, i, j, force, lateral);
-        for (const v of [V[i], V[j]]) if (v.joueur) { const x = B.conduite.annulerDerive(v.etat); if (x) { x.id = v.id; ev.push(x); } }
+  function creer(liste) {
+    const objets = [], grille = new Map();
+    for (const source of liste || []) {
+      if (!source || !['box', 'circle'].includes(source.type)) continue;
+      const champs = ['x', 'z', 'ymin', 'ymax', ...(source.type === 'box' ? ['angle', 'hx', 'hz'] : ['r'])];
+      if (!champs.every(k => Number.isFinite(source[k])) || source.ymax <= source.ymin) continue;
+      if (source.type === 'box' ? source.hx <= 0 || source.hz <= 0 : source.r <= 0) continue;
+      const o = Object.assign({}, source), ca = Math.cos(o.angle || 0), sa = Math.sin(o.angle || 0);
+      const rx = o.type === 'circle' ? o.r : Math.abs(ca) * o.hx + Math.abs(sa) * o.hz;
+      const rz = o.type === 'circle' ? o.r : Math.abs(sa) * o.hx + Math.abs(ca) * o.hz;
+      const x0 = Math.floor((o.x-rx)/CELLULE), x1 = Math.floor((o.x+rx)/CELLULE);
+      const z0 = Math.floor((o.z-rz)/CELLULE), z1 = Math.floor((o.z+rz)/CELLULE);
+      if ((x1-x0+1)*(z1-z0+1) > 4096) continue; // descripteur hors échelle, jamais une boucle géante
+      o.id = objets.length; objets.push(o);
+      for (let x=x0; x<=x1; x++) for (let z=z0; z<=z1; z++) {
+        const key=x+','+z; let cell=grille.get(key); if (!cell) grille.set(key, cell=[]); cell.push(o.id);
       }
     }
+    return { objets, grille, vus:new Uint32Array(objets.length), generation:0, voisins:[] };
   }
 
-  B.contacts = { PARAMS, pas };
-})(globalThis.BITUME = globalThis.BITUME || {});
+  // Normale obstacle -> voiture. Test pur ; le calcul de profondeur couvre aussi un rectangle contenu.
+  function tester(a, o) {
+    if (a.ymax <= o.ymin || a.ymin >= o.ymax) return null;
+    const ca=Math.cos(a.angle), sa=Math.sin(a.angle), dx=o.x-a.x, dz=o.z-a.z;
+    if (o.type === 'circle') {
+      const x=dx*ca+dz*sa, z=-dx*sa+dz*ca;
+      let nx=clamp(x,-a.hx,a.hx)-x, nz=clamp(z,-a.hz,a.hz)-z;
+      const d=Math.hypot(nx,nz); if (d>=o.r) return null;
+      let depth;
+      if (d>1e-10) { nx/=d; nz/=d; depth=o.r-d; }
+      else if (a.hx-Math.abs(x)<a.hz-Math.abs(z)) { nx=x>=0?-1:1; nz=0; depth=o.r+a.hx-Math.abs(x); }
+      else { nx=0; nz=z>=0?-1:1; depth=o.r+a.hz-Math.abs(z); }
+      return {nx:ca*nx-sa*nz, nz:sa*nx+ca*nz, depth};
+    }
+    const cb=Math.cos(o.angle), sb=Math.sin(o.angle); let depth=Infinity,nx=0,nz=0;
+    for (let k=0;k<4;k++) {
+      const x=k===0?ca:k===1?-sa:k===2?cb:-sb, z=k===0?sa:k===1?ca:k===2?sb:cb;
+      const ra=a.hx*Math.abs(ca*x+sa*z)+a.hz*Math.abs(-sa*x+ca*z);
+      const rb=o.hx*Math.abs(cb*x+sb*z)+o.hz*Math.abs(-sb*x+cb*z), q=-(dx*x+dz*z);
+      const overlap=ra+rb-Math.abs(q); if (overlap<=0) return null;
+      if (overlap<depth) { depth=overlap; const sign=q>=0?1:-1; nx=x*sign; nz=z*sign; }
+    }
+    return {nx,nz,depth};
+  }
+
+  function sauver(e, o) {
+    for (const k of ['s','d','y','psi','beta','v','distance']) o[k]=e[k];
+    return o;
+  }
+  function avant(co) {
+    if (!co.c.obstacles || !co.c.obstacles.objets.length) return;
+    const poses=co._obstacleAvant||(co._obstacleAvant=[]);
+    for (let i=0;i<co.voitures.length;i++) sauver(co.voitures[i].etat, poses[i]||(poses[i]={}));
+    co._obstacleAvantTemps=co.horloge;
+  }
+  function interpoler(c, a, b, t, out) {
+    out.s=wrap(a.s+ecart(a.s,b.s,c.longueur)*t,c.longueur);
+    for (const k of ['d','y','v','distance']) out[k]=a[k]+(b[k]-a[k])*t;
+    out.psi=angle(a.psi+angle(b.psi-a.psi)*t); out.beta=angle(a.beta+angle(b.beta-a.beta)*t);
+    return out;
+  }
+  function monde(c, e, out) {
+    const q=B.circuit.echantillon(c,e.s), ca=Math.cos(q.cap),sa=Math.sin(q.cap);
+    out.x=q.x-sa*e.d; out.z=q.z+ca*e.d; out.angle=q.cap+e.psi+e.beta;
+    out.hx=LONG;out.hz=LARGE;out.ymin=e.y;out.ymax=e.y+HAUT;
+    out.tx=ca;out.tz=sa;out.k=q.courbure;out.cap=q.cap;
+    return out;
+  }
+  function voisins(index, bounds) {
+    const radius=Math.hypot(LONG,LARGE)+.5, ids=index.voisins; ids.length=0;
+    index.generation=(index.generation+1)>>>0; if (!index.generation) {index.vus.fill(0);index.generation=1;}
+    const x0=Math.floor((bounds.minx-radius)/CELLULE),x1=Math.floor((bounds.maxx+radius)/CELLULE);
+    const z0=Math.floor((bounds.minz-radius)/CELLULE),z1=Math.floor((bounds.maxz+radius)/CELLULE);
+    for(let x=x0;x<=x1;x++)for(let z=z0;z<=z1;z++)for(const id of index.grille.get(x+','+z)||[]) {
+      if(index.vus[id]===index.generation)continue;index.vus[id]=index.generation;ids.push(id);
+    }
+    ids.sort((a,b)=>a-b);return ids;
+  }
+  function deplacer(c,e,p,nx,nz,d) {
+    e.s=wrap(e.s+(nx*p.tx+nz*p.tz)*d/Math.max(.1,1-p.k*e.d),c.longueur);
+    e.d+=(-nx*p.tz+nz*p.tx)*d;
+  }
+  function pas(co, ev) {
+    const index=co.c.obstacles, c=co.c;
+    if (!index || !index.objets.length) return;
+    const mem=co._obstacleMemo||(co._obstacleMemo=[]), prev=co._obstacleAvantTemps===co.horloge?co._obstacleAvant:null;
+    for(let i=0;i<co.voitures.length;i++) {
+      const voiture=co.voitures[i],e=voiture.etat;if(e.degats&&e.degats.casse)continue;
+      const memory=mem[i]||(mem[i]=new Map()), start=prev&&prev[i] || sauver(e,{});
+      const end=sauver(e,{}), pa=monde(c,start,{}), pb=monde(c,end,{});
+      // Hors contrat du pas fixe : refuser un grand saut spatial au lieu de passer au travers d'un obstacle.
+      if(Math.abs(ecart(start.s,end.s,c.longueur))+Math.abs(end.d-start.d)+Math.abs(end.y-start.y)>25) {
+        sauver(start,e);e.v=0;co._obstacleTeleports=(co._obstacleTeleports||0)+1;continue;
+      }
+      const probe={}, state={}, bounds={minx:pa.x,maxx:pa.x,minz:pa.z,maxz:pa.z};
+      const trajet=Math.abs(ecart(start.s,end.s,c.longueur))+Math.abs(end.d-start.d)+Math.abs(end.y-start.y);
+      const samples=Math.max(1,Math.ceil(trajet/.4),Math.ceil(Math.abs(angle(pb.angle-pa.angle))/.06));
+      // Un arc peut sortir de l'AABB de ses extrémités : inclure le chemin réellement parcouru.
+      for(let k=1;k<=samples;k++) {
+        monde(c,interpoler(c,start,end,k/samples,state),probe);
+        bounds.minx=Math.min(bounds.minx,probe.x);bounds.maxx=Math.max(bounds.maxx,probe.x);
+        bounds.minz=Math.min(bounds.minz,probe.z);bounds.maxz=Math.max(bounds.maxz,probe.z);
+      }
+      const ids=voisins(index,bounds);
+      for(let iteration=0;iteration<4;iteration++) {
+        sauver(e,end);monde(c,end,pb);
+        const distance=Math.abs(ecart(start.s,end.s,c.longueur))+Math.abs(end.d-start.d)+Math.abs(end.y-start.y);
+        const rotation=Math.abs(angle(pb.angle-pa.angle));
+        const n=Math.max(1,Math.ceil(distance/.4),Math.ceil(rotation/.06));
+        let first=null;
+        for(const id of ids) {
+          const o=index.objets[id];let hit=tester(pa,o),lo=0,hi=0;
+          if(!hit) for(let k=1;k<=n;k++) {
+            const t=k/n;monde(c,interpoler(c,start,end,t,state),probe);hit=tester(probe,o);
+            if(hit){lo=(k-1)/n;hi=t;break;}
+          }
+          if(!hit)continue;
+          if(hi>0) for(let k=0;k<10;k++) {
+            const mid=(lo+hi)/2;monde(c,interpoler(c,start,end,mid,state),probe);const h=tester(probe,o);
+            if(h){hi=mid;hit=h;}else lo=mid;
+          }
+          if(!first || hi<first.hi || (hi===first.hi && hit.depth>first.hit.depth)) first={id,o,hit,lo,hi};
+        }
+        if(!first)break;
+        const {id,o,hit,lo,hi}=first;
+        const vitesseFin=e.v;
+        if(hi>0) { interpoler(c,start,end,lo,e); e.v=vitesseFin; }
+        else deplacer(c,e,monde(c,e,probe),hit.nx,hit.nz,hit.depth+EPS);
+        const p=monde(c,e,probe), speed=e.v, vx=Math.cos(p.cap+e.psi)*speed,vz=Math.sin(p.cap+e.psi)*speed;
+        const force=Math.max(0,-(vx*hit.nx+vz*hit.nz));
+        if(force>0) {
+          const rx=vx+hit.nx*force*1.05,rz=vz+hit.nz*force*1.05;
+          const body=e.psi+e.beta;e.v=Math.min(speed,Math.hypot(rx,rz));if(e.v>.001){e.psi=angle(Math.atan2(rz,rx)-p.cap);e.beta=angle(body-e.psi);}
+        }
+        const seen=memory.has(id),violent=B.degats&&force>=B.degats.PARAMS.chocCasse;
+        memory.set(id,true);
+        if(force>.1 && (!seen||violent)) {
+          ev.push({type:'choc',id:voiture.id,force,obstacle:o.genre,obstacleId:id});
+          for(const x of B.conduite.subirChoc(e,force)){x.id=voiture.id;ev.push(x);}
+          e.choc=B.conduite.PARAMS.chocDuree;
+        }
+        if(force>.1) {
+          const cancelled=B.conduite.annulerDerive(e,true);if(cancelled){cancelled.id=voiture.id;ev.push(cancelled);}
+        }
+        if(e.degats&&e.degats.casse)break;
+        // Les prochains obstacles sont testés sur le trajet déjà raccourci/résolu.
+        sauver(e,start);monde(c,start,pa);
+      }
+      monde(c,e,probe);probe.hx+=.35;probe.hz+=.35;
+      for(const id of memory.keys()) if(!tester(probe,index.objets[id]))memory.delete(id);
+    }
+  }
+  B.obstacles={creer,avant,pas,tester};
+})(globalThis.BITUME=globalThis.BITUME||{});
 </script>
 <script>
 // ---- course.js ----
@@ -3619,7 +3777,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       id, nom, numero, joueur, couleur: liv[0],
       livree: { couleur: liv[0], seconde: liv[1], casque: liv[2], combinaison: liv[1], numero },
       etat: null, tours: 0, passages: -1, maxPassages: -1, progression: 0, debutTour: 0,
-      tempsTours: [], meilleur: null, position: 0, fini: false, tempsFinal: null, ecart: 0, ecartTete: 0,
+      tempsTours: [], meilleur: null, position: 0, fini: false, abandon: false, tempsFinal: null, ecart: 0, ecartTete: 0,
       ia: {
         hab: joueur ? 1 : habBase + (rng() * 2 - 1) * 0.015, decal: joueur ? 0 : (rng() * 2 - 1) * 0.5,
         reaction: joueur ? 0 : 0.12 + rng() * 0.28, cible: -1, cote: 0, decalVise: 0, decalDep: 0
@@ -3653,10 +3811,16 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     };
   }
 
+  // Projection de la caisse orientée sur les axes du circuit ; une épave en travers occupe un vrai couloir.
+  function empriseIA(e) {
+    const h=e.psi+e.beta, ca=Math.abs(Math.cos(h)),sa=Math.abs(Math.sin(h));
+    return {long:2.475*ca+1.01*sa,lat:2.475*sa+1.01*ca};
+  }
   function commandesIA(course, v) {
     const c = course.c, e = v.etat, ia = v.ia, P = c.pas, n = c.n, dt = course.dt;
-    const vit = e.v, utile = c.largeur / 2 - 1;
-    if (course.mode === 'course' && course.phase === 'course' && course.temps < ia.reaction) return NEUTRE;
+    const moi=empriseIA(e), vit=e.v, utile=Math.max(.5,c.largeur/2-moi.lat-.25);
+    const recuperer=Math.abs(e.d)>utile;
+    if (course.mode === 'course' && course.phase === 'course' && course.temps < ia.reaction) { ia.bloque=0;return NEUTRE; }
 
     let hab = ia.hab;
     if (v.fini || (v.joueur && course.phase === 'arrivee')) hab *= 0.82; // tour de décélération
@@ -3682,28 +3846,28 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     let devant = null, dsMin = regard, dMin = -utile, dMax = utile;
     for (const o of course.voitures) {
       if (o === v) continue;
-      const ds = ecart(c, e.s, o.etat.s), dd = o.etat.d - e.d;
-      if (ds > 0 && ds < dsMin && Math.abs(dd) < 2.4) { dsMin = ds; devant = o; }
-      if (Math.abs(ds) < LONGUEUR && Math.abs(dd) < 3) { // vraiment côte à côte
-        if (dd >= 0) dMax = Math.min(dMax, o.etat.d - 2.25); else dMin = Math.max(dMin, o.etat.d + 2.25);
+      const ds = ecart(c, e.s, o.etat.s), dd = o.etat.d - e.d, taille=empriseIA(o.etat), espace=moi.lat+taille.lat+.35;
+      if (ds > 0 && ds < dsMin && Math.abs(dd) < espace) { dsMin = ds; devant = o; }
+      if (Math.abs(ds) < moi.long+taille.long+.5 && Math.abs(dd) < espace+.5) { // vraiment côte à côte
+        if (dd >= 0) dMax = Math.min(dMax, o.etat.d - espace); else dMin = Math.max(dMin, o.etat.d + espace);
       }
     }
     if (devant) {
-      const od = devant.etat, gap = dsMin - LONGUEUR;
+      const od=devant.etat, taille=empriseIA(od), espace=moi.lat+taille.lat+.5, gap=dsMin-moi.long-taille.long;
       // un obstacle vraiment plus lent (voiture arrêtée ou en perdition) justifie un engagement plus tôt et plus
       // franc ; la circulation normale (allure voisine) garde la conduite habituelle du peloton.
       const obstacle = od.v < vit - 10;
-      if (ia.cible !== devant.id && vit > od.v + 0.3 && gap < (obstacle ? Math.max(45, v2 / 60 + 20) : 30)) {
+      if (!recuperer && ia.cible !== devant.id && vit > od.v + 0.3 && gap < (obstacle ? Math.max(70, v2 / 45 + 25) : 30)) {
         const kAv = lire(c, c.courbure, e.s + 60);
         const interieur = kAv > 1e-4 ? 1 : kAv < -1e-4 ? -1 : (od.d > e.d ? -1 : 1);
         // côté libre : dans la piste et sans autre voiture sur la trajectoire de dépassement
         const libre = cote => {
-          const x = od.d + 2.6 * cote;
+          const x=od.d+espace*cote;
           if (Math.abs(x) > utile) return false;
           for (const o of course.voitures) {
             if (o === v || o === devant) continue;
             const ds = ecart(c, e.s, o.etat.s);
-            if (ds > -8 && ds < dsMin + 10 && Math.abs(o.etat.d - x) < 2.0) return false;
+            if (ds > -8 && ds < dsMin + 10 && Math.abs(o.etat.d-x)<moi.lat+empriseIA(o.etat).lat+.35) return false;
           }
           return true;
         };
@@ -3713,10 +3877,10 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       // pas d'emboutissage : tant qu'on est dans les roues de celui de devant, on garde une distance de suivi.
       // Mais une fois le dépassement amorcé sur un côté libre, on ne rampe pas (sans vitesse, pas de mouvement
       // latéral) : on garde de quoi dégager la trajectoire, quitte à se rabattre derrière si le côté se referme.
-      if (Math.abs(od.d - e.d) < 2.2) {
-        if (obstacle && ia.cible === devant.id && Math.abs(od.d - e.d) > 1.1) {
+      if (Math.abs(od.d-e.d)<espace) {
+        if (obstacle && ia.cible === devant.id && Math.abs(od.d-e.d)>espace-.3) {
           const lim = Math.max(od.v + 12, Math.min(vit, od.v + 6 + gap * 0.6));
-          cible = Math.max(cible, lim);
+          cible = Math.min(cible, Math.max(5,lim));
         } else {
           let lim = od.v + Math.max(0, gap - 3) * 0.9;
           if (ia.cible === devant.id) lim = Math.max(lim, Math.min(5, 1.5 + gap * 0.5));
@@ -3724,19 +3888,20 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
         }
       }
     }
+    if (recuperer) { ia.cible=-1;ia.cote=0;ia.decalVise=0;cible=Math.min(cible,Math.max(10,vit*.65)); }
     const base = lire(c, c.ligne, e.s) + ia.decal;
     if (ia.cible >= 0 && dMin > dMax) { ia.cible = -1; ia.cote = 0; } // coincée : on renonce
     if (ia.cible >= 0) {
       const o = course.voitures[ia.cible], avance = ecart(c, o.etat.s, e.s);
-      if (avance > 6 + LONGUEUR || avance < -(regard + 10)) { ia.cible = -1; ia.cote = 0; }
-      else ia.decalVise = o.etat.d + 2.6 * ia.cote - base;
+      if (avance > 3+moi.long+empriseIA(o.etat).long || avance < -(regard + 10)) { ia.cible = -1; ia.cote = 0; }
+      else ia.decalVise = o.etat.d+(moi.lat+empriseIA(o.etat).lat+.5)*ia.cote-base;
     }
-    const vise = ia.cible >= 0 ? ia.decalVise : 0, vLat = (ia.cible >= 0 ? (devant && vit > devant.etat.v + 8 ? 6.0 : 3.0) : 0.8) * dt;
+    const vise = ia.cible >= 0 ? ia.decalVise : 0, vLat = (ia.cible >= 0 ? (devant && vit > devant.etat.v + 8 ? 6.0 : 3.0) : recuperer ? 4 : .8) * dt;
     ia.decalDep += clamp(vise - ia.decalDep, -vLat, vLat);
 
     // Direction : poursuite d'un point de la ligne visée. Face à un obstacle beaucoup plus lent, on vise plus
     // court pour braquer plus sec et dégager la trajectoire avant d'arriver dessus ; circulation normale : visée longue.
-    const evite = ia.cible >= 0 && devant && vit > devant.etat.v + 10;
+    const evite=recuperer || (ia.cible>=0 && devant && vit>devant.etat.v+10);
     const la = (evite ? 5 : 8) + (evite ? 0.30 : 0.45) * vit;
     let dVise = clamp(lire(c, c.ligne, e.s + la) + ia.decal + ia.decalDep, -utile, utile);
     dVise = dMin > dMax ? e.d : clamp(dVise, dMin, dMax);
@@ -3749,6 +3914,19 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     if (besoin > 0.7 * dec) frein = clamp((besoin - 0.7 * dec) / (0.3 * dec), 0, 1);
     else if (vit > cible + 2) frein = clamp((vit - cible - 2) / 4, 0, 1);
     else gaz = vit < cible - 1 ? 1 : clamp((cible - vit + 1) / 2, 0, 1);
+    // Même retour progressif que le joueur, après un long blocage non fatal. Une attente de trafic voulue,
+    // un arrêt au stand, un vol ou une casse n'est jamais une invitation à replacer la voiture.
+    const roule=course.phase==='course'||course.phase==='arrivee';
+    // La direction d'une vitesse quasi nulle peut osciller au contact : garder l'épisode tant que la caisse
+    // reste immobile, au lieu de remettre le compteur à zéro un pas sur deux.
+    const gardeRetour=roule && !v.fini && !v.abandon && e.v<.1 && gaz>.1 && frein<.1 &&
+      !(e.degats&&e.degats.casse) && !e.saut && !e.accident && !e.reparation && !(e.immunite>0);
+    ia.retourBloque=gardeRetour && (ia.retourBloque || Math.cos(e.psi)<-.2);
+    const intention=gaz>.1 && frein<.1 && (cible>2 || ia.retourBloque);
+    const coince=roule && !v.fini && !v.abandon && e.v<1.5 && intention &&
+      !(e.degats&&e.degats.casse) && !e.saut && !e.accident && !e.reparation && !(e.immunite>0);
+    ia.bloque=coince?(ia.bloque||0)+dt:0;
+    if(ia.bloque>15) { B.conduite.declencherAccident(e,{});ia.bloque=0;ia.cible=-1;ia.cote=0;ia.decalVise=0;ia.decalDep=0; }
     // l'IA conduit avec l'aide au volant légère, le réglage par défaut du joueur
     return { gaz, frein, volant, derive: false, haut: false, bas: false, boite: 'auto', aide: AIDE_IA };
   }
@@ -3795,6 +3973,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   }
 
   function passageLigne(course, v, tPassage, ev) {
+    if (v.abandon) return;
     if (course.mode === 'chrono') {
       if (!course.chronoParti) { course.chronoParti = true; v.debutTour = tPassage; course.enreg.n = 0; course.enreg.prochain = 0; return; }
     } else if (v.passages === 0 || v.fini) return; // départ compté depuis le vert ; rien après l'arrivée
@@ -3827,6 +4006,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   function majClassement(course) {
     const L = course.c.longueur;
     const tri = course.voitures.slice().sort((a, b) => {
+      if (a.abandon !== b.abandon) return a.abandon ? 1 : -1;
       const d = score(b, L) - score(a, L);
       if (d !== 0) return d;
       if (a.fini !== b.fini) return a.fini ? -1 : 1;
@@ -3879,6 +4059,8 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const t0 = course.temps;
     aspirer(c, V);
 
+    if (B.contacts && B.contacts.avant) B.contacts.avant(course);
+    if (B.obstacles) B.obstacles.avant(course);
     for (let i = 0; i < V.length; i++) {
       const v = V[i];
       course.sAvant[i] = sLigne(c, v.etat.s);
@@ -3888,11 +4070,16 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       for (const e of B.conduite.pas(v.etat, cmd, c, dt, retenue)) { e.id = v.id; ev.push(e); }
     }
     if (B.contacts) B.contacts.pas(course, ev); else contacts(course, ev);
+    if (B.obstacles) B.obstacles.pas(course, ev);
     if (!retenue) course.temps = t0 + dt;
 
     // Franchissements de ligne (interpolés dans le pas) et progression continue
     for (let i = 0; i < V.length; i++) {
       const v = V[i], a = course.sAvant[i], b = sLigne(c, v.etat.s);
+      if (!v.fini && v.degats && v.degats.casse) {
+        if (!v.abandon) { v.abandon = true; v.tAbandon = course.horloge; }
+        continue; // aucun tour ni fantôme ne peut être validé par une épave
+      }
       if (a > 0.75 * L && b < 0.25 * L) {
         v.passages++;
         if (v.passages > v.maxPassages) {
@@ -3904,13 +4091,17 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       if (course.mode === 'chrono' && course.chronoParti && v.joueur) enregistrer(course, v, course.temps);
     }
     majClassement(course);
+    if (V.every(v => v.fini || v.abandon)) {
+      if (course.finSansCourse === undefined) course.finSansCourse = course.horloge;
+      if (course.horloge - course.finSansCourse >= 3) course.termine = true;
+    }
 
     // Fin : 8 s après l'arrivée du joueur, ou quand le délai après le drapeau est écoulé
     const j = course.joueur;
     if (course.mode === 'course' && course.drapeau !== null) {
       const delai = Math.max(40, 1.25 * course.drapeau / course.toursTotal);
       if ((j.fini && course.temps - j.tempsFinal >= 8) || course.temps - course.drapeau >= delai ||
-          V.every(v => v.fini)) course.termine = true;
+          V.every(v => v.fini || v.abandon)) course.termine = true;
     }
     return ev;
   }
@@ -4601,7 +4792,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const marches = 8, profondeur = 1.15, haut = .5;
     for (let m = 0; m < marches; m++) {
       const d = recul + cote * (m * profondeur + profondeur / 2);
-      liste.push({ shape: 'box', p: vers(d, (m + 1) * haut / 2), s: [longueur, (m + 1) * haut, profondeur], r: rot, mat: 3, color: [.62, .62, .6] });
+      liste.push({ shape: 'box', collision: 'gradin', p: vers(d, (m + 1) * haut / 2), s: [longueur, (m + 1) * haut, profondeur], r: rot, mat: 3, color: [.62, .62, .6] });
       // spectateurs : une rangée de silhouettes colorées par marche, avec des trous
       const rangee = [];
       for (let k = -longueur / 2 + .6; k < longueur / 2 - .4; k += .62) {
@@ -4612,10 +4803,10 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       loin.push({ shape: 'box', p: vers(d, (m + 1) * haut / 2 + .3, 0), s: [longueur, (m + 1) * haut + .6, profondeur], r: rot, mat: 18, color: [.42, .36, .34] });
     }
     const fond = recul + cote * (marches * profondeur + .3);
-    liste.push({ shape: 'box', p: vers(fond, 3.6), s: [longueur, 7.2, .4], r: rot, mat: 3, color: [.55, .55, .53] });
-    liste.push({ shape: 'box', p: vers(recul + cote * marches * profondeur * .5, 7.4), s: [longueur + 2, .3, marches * profondeur + 2.4], r: rot, mat: 0, color: [.80, .82, .84] });
+    liste.push({ shape: 'box', collision: 'gradin', p: vers(fond, 3.6), s: [longueur, 7.2, .4], r: rot, mat: 3, color: [.55, .55, .53] });
+    liste.push({ shape: 'box', collision: 'toit', p: vers(recul + cote * marches * profondeur * .5, 7.4), s: [longueur + 2, .3, marches * profondeur + 2.4], r: rot, mat: 0, color: [.80, .82, .84] });
     loin.push({ shape: 'box', p: vers(recul + cote * marches * profondeur * .5, 7.4), s: [longueur + 2, .3, marches * profondeur + 2.4], r: rot, mat: 0, color: [.80, .82, .84] });
-    for (let k = -longueur / 2; k <= longueur / 2; k += 12) liste.push({ shape: 'cylinder', p: vers(recul - cote * .3, 3.7, k), s: [.22, 7.4, .22], mat: 0, color: [.7, .72, .74] });
+    for (let k = -longueur / 2; k <= longueur / 2; k += 12) liste.push({ shape: 'cylinder', collision: 'pilier', p: vers(recul - cote * .3, 3.7, k), s: [.22, 7.4, .22], mat: 0, color: [.7, .72, .74] });
     // bandeau coloré sous le toit
     const teinte = PUBLICITES[Math.floor(r() * 4)];
     liste.push({ shape: 'box', p: vers(recul - cote * .9, 6.9, 0), s: [longueur + 2, .9, .12], r: rot, mat: 16, color: teinte });
@@ -4624,13 +4815,13 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   function batimentStands(liste, loin, f, w, cote, longueur) {
     const rot = capRot(f.a), y0 = hauteurRoute(f, cote * w, w) - .2, recul = cote * (w + 13);
     const vers = (d, h, l = 0) => [f.x + f.r[0] * d + f.t[0] * l, y0 + h, f.z + f.r[2] * d + f.t[2] * l];
-    liste.push({ shape: 'box', p: vers(recul + cote * 6, 4), s: [longueur, 8, 12], r: rot, mat: 13.2, color: [.86, .84, .78] });
+    liste.push({ shape: 'box', collision: 'batiment', p: vers(recul + cote * 6, 4), s: [longueur, 8, 12], r: rot, mat: 13.2, color: [.86, .84, .78] });
     loin.push({ shape: 'box', p: vers(recul + cote * 6, 4), s: [longueur, 8, 12], r: rot, mat: 13.2, color: [.86, .84, .78] });
-    liste.push({ shape: 'box', p: vers(recul + cote * 6, 8.25), s: [longueur + 1, .5, 13], r: rot, mat: 0, color: [.30, .32, .34] });
+    liste.push({ shape: 'box', collision: 'toit', p: vers(recul + cote * 6, 8.25), s: [longueur + 1, .5, 13], r: rot, mat: 0, color: [.30, .32, .34] });
     for (let k = -longueur / 2 + 3; k < longueur / 2 - 2; k += 6) liste.push({ shape: 'box', p: vers(recul - cote * .02, 1.6, k), s: [4.4, 3.2, .12], r: rot, mat: 7, color: [.08, .09, .1] });
     // muret des stands
-    liste.push({ shape: 'box', p: vers(cote * (w + 6.2), .55), s: [longueur + 30, 1.1, .5], r: rot, mat: 3, color: [.82, .82, .8] });
-    liste.push({ shape: 'box', p: vers(cote * (w + 6.2), 1.2), s: [longueur + 30, .2, .54], r: rot, mat: 16, color: [.86, .12, .08] });
+    liste.push({ shape: 'box', collision: 'muret', p: vers(cote * (w + 6.2), .55), s: [longueur + 30, 1.1, .5], r: rot, mat: 3, color: [.82, .82, .8] });
+    liste.push({ shape: 'box', collision: 'muret', p: vers(cote * (w + 6.2), 1.2), s: [longueur + 30, .2, .54], r: rot, mat: 16, color: [.86, .12, .08] });
   }
 
   function construire(c, options = {}) {
@@ -4709,8 +4900,8 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
         const objets = [];
         for (let e = 0; e < 3; e++) {
           const p = pointPlan(f, ext * (L - .1), yb + .14 + e * .27);
-          objets.push({ shape: 'cylinder', p, s: [.74, .26, .74], mat: 7, color: [.05, .05, .055], detail: 2 });
-          objets.push({ shape: 'cylinder', p: [p[0] + f.t[0] * .8, p[1], p[2] + f.t[2] * .8], s: [.74, .26, .74], mat: 7, color: e === 2 ? [.9, .9, .88] : [.05, .05, .055], detail: 2 });
+          objets.push({ shape: 'cylinder', collision: 'pneus', p, s: [.74, .26, .74], mat: 7, color: [.05, .05, .055], detail: 2 });
+          objets.push({ shape: 'cylinder', collision: 'pneus', p: [p[0] + f.t[0] * .8, p[1], p[2] + f.t[2] * .8], s: [.74, .26, .74], mat: 7, color: e === 2 ? [.9, .9, .88] : [.05, .05, .055], detail: 2 });
         }
         ajouter(objets, [], objets[0].p[0], objets[0].p[2]);
       }
@@ -4720,9 +4911,9 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     for (let s = 220, k = 0; s < c.longueur - 150; s += 380 + r() * 160, k++) {
       const f = cadre(c, Math.round(s / c.pas)), cote = k % 2 ? 1 : -1, L = (cote < 0 ? lim.G : lim.D)[f.i];
       const p = pointPlan(f, cote * (L + 2.8), hauteurRoute(f, cote * w, w) - .02 * (L - w)), rot = capRot(f.a);
-      ajouter([{ shape: 'box', p: [p[0], p[1] + 1.1, p[2]], s: [2.2, 2.2, 2], r: rot, mat: 13.6, color: [.92, .9, .84] },
-        { shape: 'box', p: [p[0], p[1] + 2.3, p[2]], s: [2.6, .2, 2.4], r: rot, mat: 16, color: [.9, .42, .06] },
-        { shape: 'cylinder', p: [p[0] + 1.3, p[1] + 2.2, p[2]], s: [.05, 4.4, .05], mat: 0, color: [.6, .6, .6] },
+      ajouter([{ shape: 'box', collision: 'cabane', p: [p[0], p[1] + 1.1, p[2]], s: [2.2, 2.2, 2], r: rot, mat: 13.6, color: [.92, .9, .84] },
+        { shape: 'box', collision: 'toit', p: [p[0], p[1] + 2.3, p[2]], s: [2.6, .2, 2.4], r: rot, mat: 16, color: [.9, .42, .06] },
+        { shape: 'cylinder', collision: 'pilier', p: [p[0] + 1.3, p[1] + 2.2, p[2]], s: [.05, 4.4, .05], mat: 0, color: [.6, .6, .6] },
         { shape: 'box', p: [p[0] + 1.3, p[1] + 4.0, p[2] + .45], s: [.02, .55, .8], r: rot, mat: 16, color: [.95, .78, .08] }], [], p[0], p[2]);
     }
 
@@ -4744,10 +4935,10 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const yP = hauteurRoute(f0, 0, w), portique = { feux: [], cap: f0.a };
     for (const cote of [-1, 1]) {
       const p = pointPlan(f0, cote * (w + 1.6), yP);
-      objetsDepart.push({ shape: 'box', p: [p[0], p[1] + 3.6, p[2]], s: [.5, 7.2, .5], r: rot0, mat: 0, color: [.22, .24, .26] });
+      objetsDepart.push({ shape: 'box', collision: 'pilier', p: [p[0], p[1] + 3.6, p[2]], s: [.5, 7.2, .5], r: rot0, mat: 0, color: [.22, .24, .26] });
       loinDepart.push(objetsDepart[objetsDepart.length - 1]);
     }
-    const poutre = { shape: 'box', p: [f0.x, yP + 7.4, f0.z], s: [.7, .9, 2 * w + 3.8], r: rot0, mat: 0, color: [.18, .2, .22] };
+    const poutre = { shape: 'box', collision: 'poutre', p: [f0.x, yP + 7.4, f0.z], s: [.7, .9, 2 * w + 3.8], r: rot0, mat: 0, color: [.18, .2, .22] };
     objetsDepart.push(poutre); loinDepart.push(poutre);
     objetsDepart.push({ shape: 'box', p: [f0.x - f0.t[0] * .36, yP + 7.4, f0.z - f0.t[2] * .36], s: [.04, .5, 2 * w + 3.6], r: rot0, mat: 16, color: [.92, .92, .9] });
     for (let k = 0; k < 5; k++) {
@@ -4776,8 +4967,8 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       const i = Math.floor((.45 + essai * .002) * c.n);
       if (Math.abs(c.courbure[i]) > 1 / 600) continue;
       const f = cadre(c, i), L = Math.min(lim.G[i], lim.D[i]) + 1, y = hauteurRoute(f, 0, w), rot = capRot(f.a), objets = [];
-      for (const cote of [-1, 1]) { const p = pointPlan(f, cote * L, y); objets.push({ shape: 'box', p: [p[0], y + 3.4, p[2]], s: [1.4, 6.8, 1.4], r: rot, mat: 3, color: [.7, .7, .68] }); }
-      objets.push({ shape: 'box', p: [f.x, y + 7.2, f.z], s: [2.6, 1.0, 2 * L + 1.4], r: rot, mat: 3, color: [.74, .74, .72] });
+      for (const cote of [-1, 1]) { const p = pointPlan(f, cote * L, y); objets.push({ shape: 'box', collision: 'pilier', p: [p[0], y + 3.4, p[2]], s: [1.4, 6.8, 1.4], r: rot, mat: 3, color: [.7, .7, .68] }); }
+      objets.push({ shape: 'box', collision: 'poutre', p: [f.x, y + 7.2, f.z], s: [2.6, 1.0, 2 * L + 1.4], r: rot, mat: 3, color: [.74, .74, .72] });
       const coul = PUBLICITES[Math.floor(r() * PUBLICITES.length)];
       for (const sens of [-1, 1]) objets.push({ shape: 'box', p: [f.x + f.t[0] * sens * 1.32, y + 7.2, f.z + f.t[2] * sens * 1.32], s: [.05, .8, 2 * L], r: rot, mat: 16, color: coul });
       const l = lotDe(f.x, f.z, i); l.objets.push(...objets); l.loin.push(...objets);
@@ -4877,10 +5068,18 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       // qui surgit à 1 900 m se voit). La bascule vers la version allégée se fait là où un tronc tient en un pixel.
       lots.push({ objets: l.objets, loin: l.loin, centre: [mx, my, mz], rayon, portee: Infinity, bascule: l.lointain ? 900 : 520 });
     }
+    // Collision et image partagent les mêmes primitives ; aucune consommation du hasard supplémentaire.
+    // Les troncs inclinés ne sont pas assimilés à de gros cylindres verticaux : exclus de ce premier lot.
+    const obstacles = [];
+    for (const lot of lots) for (const o of lot.objets) if (o.collision) {
+      const commun = { x: o.p[0], z: o.p[2], ymin: o.p[1]-o.s[1]/2, ymax: o.p[1]+o.s[1]/2, genre: o.collision };
+      if (o.shape === 'cylinder') obstacles.push(Object.assign(commun, { type: 'circle', r: o.s[0]/2 }));
+      else obstacles.push(Object.assign(commun, { type: 'box', angle: -(o.r ? o.r[1] : 0), hx: o.s[0]/2, hz: o.s[2]/2 }));
+    }
     const atmosphere = Object.assign({ outdoorZones: [{ x: 0, z: 0, w: 1e7, d: 1e7 }] }, th.atmosphere);
     // enceinte : portion de la ligne droite bordée de tribunes et de stands (abscisses comptées depuis la ligne) ; une
     // caméra de bord de piste s'y place devant eux, pas derrière la glissière où elle serait dans les gradins.
-    return { nappes: nappes.concat(terrain.liste), lots, atmosphere, portique, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
+    return { nappes: nappes.concat(terrain.liste), lots, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
   }
@@ -5538,8 +5737,10 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       piece('box', [-2.05, .90, 0], [.34, .06, 1.10], PEINTURE, c2),
       piece('box', [-2.02, .66, 0], [.20, .48, .05], PEINTURE, c1),
       piece('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque));
-    for (const w of ROUES) simples.push(piece('cylinder', [w.x, w.r, w.z], [2 * w.r, w.l, 2 * w.r], MAT, PNEU, { m: ROUE_AXE }));
-    return { corps, simples, livree };
+    ROUES.forEach((w, i) => simples.push(piece('cylinder', [w.x, w.r, w.z], [2 * w.r, w.l, 2 * w.r], MAT, PNEU, { m: ROUE_AXE, roue: i })));
+    // Après casse, ne reste que la cellule du pilote et l'arceau ; roues et carrosserie sont des débris.
+    const epave = corps.filter(p => p.pilote || ['cuve', 'goutte', 'goutte-dedans', 'arceau'].some(n => p.shape === FORMES[n].nom));
+    return { corps, simples, epave, livree };
   }
 
   // ---------------------------------------------------------------- pose dans le monde
@@ -5562,7 +5763,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   }
   function poser(mod, ev, sortie, options = {}) {
     const M = attitude(ev.cap, ev.tangage || 0, ev.roulis || 0), rotM = angles(M), braq = braquages(ev.braquage || 0), roule = ev.roule || 0;
-    const liste = options.simple ? mod.simples : mod.corps, v = ev.v || 0;
+    const liste = options.casse ? mod.epave : options.simple ? mod.simples : mod.corps, v = ev.v || 0;
     for (const pc of liste) {
       if (!visible(pc, options.cockpit, v)) continue;
       // Chantier 3 : une roue détachée (degats.roues[i]) n'est plus dessinée
@@ -5633,7 +5834,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   //          derriere ([{ x, z, couleur }] : rivaux dans le repère de la voiture, du plus proche au plus loin),
   //          ciel, brume (couleurs du jour, pour les glaces des rétroviseurs) }
   function cockpit(mod, ev, sortie, etat) {
-    const M = poser(mod, ev, sortie, { overlay: true, cockpit: true, roues: etat.roues });
+    const M = poser(mod, ev, sortie, { overlay: true, cockpit: true, roues: etat.roues, casse: etat.casse });
     const rotM = angles(M), liv = mod.livree, c1 = liv.couleur, c2 = liv.seconde || BLANC;
     const pousser = (shape, p, s, m, mat, color, extra) => sortie.push(Object.assign({ shape, p, s, r: m ? angles(mulM(M, m)) : rotM, mat, color, overlay: true, surface: 'object' }, extra));
     const monde = o => { const w = mul(M, o); return [ev.p[0] + w[0], ev.p[1] + w[1], ev.p[2] + w[2]]; };
@@ -5833,6 +6034,11 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   const SEUIL_TRACE = .35, SEUIL_FUMEE = .6;     // glisse d'une roue (0 à 1) où naissent la gomme et la fumée
   const PORTEE = 160, VUE = 190;                  // m : voitures prises autour de celle que l'on regarde ; bandes dessinées
   const DROIT = Math.cos(3 * Math.PI / 180), LONGUEUR_MAX = 6, LEVEE = .018, EPAISSEUR = .004;
+  // BITUME : douze casses simultanées, quatre roues et huit panneaux chacune ; pool jamais agrandi.
+  const DEBRIS = 144, VIE_DEBRIS = 12;
+  const PANNEAUX = [[2.11,.2,0,.38,.06,1.62],[-2.05,.9,0,.34,.06,1.1],
+    [1.6,.3,0,.9,.12,.5],[.8,.4,0,.8,.1,1.1],[-.6,.4,-.65,1.1,.3,.16],[-.6,.4,.65,1.1,.3,.16],
+    [-1.1,.6,0,.8,.25,.6],[-2,.65,0,.25,.4,.1]];
   const GOMME = [.02, .02, .022], FUMEE = [.82, .82, .8], POUSSIERE = [.58, .5, .38], ETINCELLE = [1, .6, .18];
 
   function creer(n, graine) {
@@ -5849,6 +6055,8 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     }));
     return {
       bandes, prochaine: 0,
+      debris: Array.from({ length: DEBRIS }, () => ({ actif: false, age: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, sol: 0, spin: 0,
+        objet: { shape: 'box', p: [0, 0, 0], s: [1, 1, 1], r: [0, 0, 0], color: [0, 0, 0], mat: 7, fx: true, fxPriority: 'hazard', alpha: 1 } })), prochainDebris: 0,
       fumees: particules(FUMEES, 'sphere', FUMEE, 0), prochaineFumee: 0,
       etincelles: particules(ETINCELLES, 'box', ETINCELLE, 2.4), prochaineEtincelle: 0,
       // par roue (voiture × 4 + roue) : bande ouverte, son numéro de pose, dernier point de contact et sa validité
@@ -5861,7 +6069,10 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   // poses : position et attitude de chaque voiture au dernier pas ; suivie : la voiture que l'on regarde ;
   // ev : les événements du pas (contacts entre voitures).
   function pas(fx, co, poses, suivie, dt, ev) {
-    if (ev) for (const e of ev) if (e.type === 'contact') contact(fx, co, poses, e);
+    if (ev) for (const e of ev) {
+      if (e.type === 'contact') contact(fx, co, poses, e);
+      else if (e.type === 'roue' || e.type === 'casse') detacher(fx, co, poses, e);
+    }
     fx.acc += dt;
     if (fx.acc < PAS * .999) return;
     fx.acc = Math.max(0, fx.acc - PAS);
@@ -5886,6 +6097,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   }
 
   function roue(fx, k, w, et, p, M, auSol, herbe, vx, vz) {
+    if (et.degats && et.degats.roues[w]) { fx.valide[k * 4 + w] = 0; fx.ouverte[k * 4 + w] = -1; return; }
     const i = k * 4 + w, j = i * 3, R = B.voiture.ROUES[w], g = et.roues ? et.roues[w].glisse : 0;
     const o = B.voiture.mul(M, [R.x, LEVEE, R.z]), X = p.x + o[0], Y = p.y + o[1], Z = p.z + o[2];
     const dx = X - fx.dernier[j], dz = Z - fx.dernier[j + 2];
@@ -5975,8 +6187,39 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
       etinceler(fx, (a.x + b.x) / 2, sol + .3, (a.z + b.z) / 2, vx, 1.5, vz, sol, 6);
   }
 
+  function detacher(fx, co, poses, e) {
+    const p = poses[e.id], v = co.voitures[e.id];
+    if (!p || !v) return;
+    const ca = Math.cos(p.cap), sa = Math.sin(p.cap), a = fx.alea;
+    const lancer = (x, y, z, sx, sy, sz, roue, couleur) => {
+      const d = fx.debris[fx.prochainDebris], o = d.objet;
+      fx.prochainDebris = (fx.prochainDebris + 1) % DEBRIS;
+      d.actif = true; d.age = 0; d.x = p.x + ca*x-sa*z; d.y = p.y+y; d.z = p.z+sa*x+ca*z; d.sol = p.y + Math.min(sx,sy,sz)*.5;
+      d.vx = ca*(3+a()*5) - sa*(z*4+(a()-.5)*6); d.vz = sa*(3+a()*5) + ca*(z*4+(a()-.5)*6);
+      d.vy = 3+a()*5; d.spin = (a()-.5)*12;
+      o.shape = roue ? 'cylinder' : 'box'; o.s[0]=sx; o.s[1]=sy; o.s[2]=sz;
+      o.r[0]=0; o.r[1]=-p.cap; o.r[2]=roue ? Math.PI/2 : 0; o.alpha=1;
+      for (let k=0;k<3;k++) o.color[k]=couleur[k];
+    };
+    if (e.type === 'roue') {
+      const w = B.voiture.ROUES[e.roue];
+      if (w) lancer(w.x,w.r,w.z,w.r*2,w.l,w.r*2,true,[.035,.035,.04]);
+    } else {
+      const couleur = v.couleur || [.7,.1,.08];
+      for (const d of PANNEAUX) lancer(d[0],d[1],d[2],d[3],d[4],d[5],false,couleur);
+      for (let n=0;n<8;n++) fumer(fx,p.x,p.y+.3,p.z,(a()-.5)*6,(a()-.5)*6,[.22,.23,.24],1);
+      for (let n=0;n<12;n++) etinceler(fx,p.x,p.y+.4,p.z,0,2,0,p.y,12);
+    }
+  }
+
   function vieillir(fx, h) {
     for (const b of fx.bandes) if (b.actif && (b.age += h) >= VIE_TRACE) b.actif = false;
+    for (const d of fx.debris) if (d.actif) {
+      if ((d.age += h) >= VIE_DEBRIS) { d.actif=false; continue; }
+      d.x+=d.vx*h; d.y+=d.vy*h; d.z+=d.vz*h; d.vy-=9.81*h;
+      if (d.y<d.sol && d.vy<0) { d.y=d.sol; d.vy=Math.abs(d.vy)>.8 ? -d.vy*.3 : 0; d.vx*=.65; d.vz*=.65; d.spin*=.7; }
+      d.objet.r[0]+=d.spin*h; d.objet.r[2]+=d.spin*.7*h;
+    }
     const amorti = Math.exp(-h * 1.6);
     for (const f of fx.fumees) {
       if (!f.actif) continue;
@@ -5995,6 +6238,11 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
 
   // Pousse dans `sortie` les effets visibles depuis `oeil` ; h : temps de course écoulé depuis la dernière mise à jour.
   function dessiner(fx, sortie, oeil, h) {
+    for (const d of fx.debris) if (d.actif) {
+      const o=d.objet; o.p[0]=d.x+d.vx*h; o.p[1]=Math.max(d.sol,d.y+d.vy*h); o.p[2]=d.z+d.vz*h;
+      o.alpha=Math.min(1, Math.max(0,(VIE_DEBRIS-d.age-h)/2));
+      if (o.alpha>.004) sortie.push(o);
+    }
     const vue2 = VUE * VUE;
     for (const b of fx.bandes) {
       if (!b.actif) continue;
@@ -6027,14 +6275,15 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     for (const b of fx.bandes) if (b.actif) bandes++;
     for (const f of fx.fumees) if (f.actif) fumees++;
     for (const e of fx.etincelles) if (e.actif) etincelles++;
-    return { bandes, fumees, etincelles };
+    let debris=0; for (const d of fx.debris) if (d.actif) debris++;
+    return { bandes, fumees, etincelles, debris };
   }
 
   function graine32(a) {
     return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   }
 
-  B.traces = { creer, pas, dessiner, compter, BANDES, FUMEES, ETINCELLES, VIE_TRACE, PAS };
+  B.traces = { creer, pas, dessiner, compter, BANDES, FUMEES, ETINCELLES, VIE_TRACE, PAS, DEBRIS, VIE_DEBRIS };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -6179,7 +6428,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
   const sauverReglages = () => ecrireStock('bitume.reglages', reglages);
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p3', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p4', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
 
   function enBase64(f32) {
@@ -6255,6 +6504,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   function installer(i) {
     if (scene && scene.index === i) return scene;
     const c = circuit(i), decor = B.decor.construire(c);
+    if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
     rendu.setNappes(decor.nappes);
     rendu.setLots(decor.lots);
@@ -6491,6 +6741,38 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     return m;
   }
 
+  // Pluie et éclairs dessinés sur un canvas 2D en overlay (zéro GLSL, testable) : gouttes inclinées par le vent,
+  // densité ∝ pluie ; un éclair blanchit brièvement l'écran. Ne s'affiche que pendant la pluie/l'éclair.
+  let meteoCtx = null, meteoGouttes = [], meteoDpr = 0;
+  function dessinerMeteo(S, dt) {
+    const cv = document.getElementById('meteo'); if (!cv) return;
+    const m = S.meteo || { pluie: 0, eclair: 0, nuage: 0 };
+    const w = cv.clientWidth, h = cv.clientHeight; if (!w || !h) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr) || dpr !== meteoDpr) {
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); meteoCtx = null; meteoDpr = dpr;
+    }
+    if (!meteoCtx) meteoCtx = cv.getContext('2d'); const ctx = meteoCtx; if (!ctx) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+    const pluie = m.pluie || 0, eclair = m.eclair || 0;
+    if (pluie > 0.02) {
+      const cible = Math.round(pluie * 360);
+      while (meteoGouttes.length < cible) meteoGouttes.push({ x: Math.random() * w, y: Math.random() * h, l: 8 + Math.random() * 16, v: 620 + Math.random() * 520 });
+      if (meteoGouttes.length > cible) meteoGouttes.length = cible;
+      const vent = (m.nuage || 0) * 0.28 + 0.06;
+      ctx.strokeStyle = 'rgba(198,214,232,' + (0.16 + pluie * 0.34).toFixed(3) + ')';
+      ctx.lineWidth = 1.1; ctx.beginPath();
+      for (const g of meteoGouttes) {
+        g.y += g.v * dt; g.x += g.v * vent * dt;
+        if (g.y > h) { g.y = -g.l; g.x = Math.random() * w; }
+        if (g.x > w) g.x -= w; else if (g.x < 0) g.x += w;
+        ctx.moveTo(g.x, g.y); ctx.lineTo(g.x - g.l * vent, g.y - g.l);
+      }
+      ctx.stroke();
+    } else if (meteoGouttes.length) meteoGouttes.length = 0;
+    if (eclair > 0.01) { ctx.fillStyle = 'rgba(226,236,255,' + (eclair * 0.5).toFixed(3) + ')'; ctx.fillRect(0, 0, w, h); }
+  }
+
   // menus à la manette : croix pour se déplacer (gauche, droite règlent un curseur), A valide, B revient
   function naviguerManette(nouveau) {
     const zone = $(ecran); if (!zone || zone.hidden) return;
@@ -6650,7 +6932,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
           if (son) son.evenement(e.type, e);
           if (e.type === 'choc') { S.secousse = Math.min(1, (S.secousse || 0) + .3 + e.force * .04); if (e.force > 6) S.eclair = Math.min(1, .4 + e.force * .05); }
           else if (e.type === 'reception') S.secousse = Math.min(1, (S.secousse || 0) + .25 + (e.force || 0) * .1);
-          else if (e.type === 'tonneau' || e.type === 'casse') { S.secousse = 1; S.eclair = 1; }
+          else if (e.type === 'tonneau' || e.type === 'casse') { S.secousse = 1; S.eclair = 1; if (e.type === 'casse') message('Voiture détruite', 'rouge'); }
           else if (e.type === 'roue') { message('Roue perdue', 'rouge', true); S.eclair = .8; }
           else if (e.type === 'reparation') message('Réparation…', 'ambre', true);
           else if (e.type === 'repare') message('Repositionné', 'vert', true);
@@ -6706,6 +6988,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   function replacer() {
     const S = session; if (!S) return;
     const co = S.course, et = co.joueur.etat;
+    if (et.degats && et.degats.casse) return;
     // Chantier 3 : le remplacement passe par le retour progressif en piste (cap et vitesse continus, immunité)
     if (B.conduite.declencherAccident) B.conduite.declencherAccident(et, { duree: 3.0 });
     else { et.d = B.circuit.echantillon(co.c, et.s).ligne; et.psi = 0; et.beta = 0; et.omega = 0; et.v = Math.min(et.v, 4); }
@@ -6828,11 +7111,11 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
         }
         derriere.sort((a, b) => b.x - a.x);
         const atm = scene.decor.atmosphere;
-        B.voiture.cockpit(S.modeles[k], ev, sortie, { regime: et.regime, volant: et.volant, rapport: et.rapport, kmh: B.conduite.kmh(et), roues: co.voitures[k].degats && co.voitures[k].degats.roues,
+        B.voiture.cockpit(S.modeles[k], ev, sortie, { regime: et.regime, volant: et.volant, rapport: et.rapport, kmh: B.conduite.kmh(et), roues: co.voitures[k].degats && co.voitures[k].degats.roues, casse: !!(et.degats && et.degats.casse),
           passage: suivie.tPassage === undefined ? 1 : (co.horloge - suivie.tPassage) / .36, rapportAvant: suivie.rapportAvant, derriere, ciel: atm.skyBottom, brume: atm.fog });
         continue;
       }
-      B.voiture.poser(S.modeles[k], ev, sortie, { simple: d2 > complet * complet, roues: co.voitures[k].degats && co.voitures[k].degats.roues });
+      B.voiture.poser(S.modeles[k], ev, sortie, { simple: d2 > complet * complet, roues: co.voitures[k].degats && co.voitures[k].degats.roues, casse: !!(co.voitures[k].degats && co.voitures[k].degats.casse) });
     }
     // fantôme du meilleur tour
     if (co.mode === 'chrono') {
@@ -6861,6 +7144,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const eclair = S.eclair || 0;
     const meteo = majMeteo(S, dtImage);
     rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: q !== 'low' ? 1 : 0, weather: meteo });
+    dessinerMeteo(S, dtImage);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
     // En cockpit, la planche donne vitesse, rapport et régime : le tableau réduit retire plan et compteurs, qui
@@ -6978,7 +7262,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
         if (prec >= 0 && r > prec + 1) html += '<li class="saut"></li>';
         const v = ordre[r], col = 'rgb(' + v.couleur.map(x => Math.round(x * 255)).join(',') + ')';
         const lance = co.phase === 'course' || co.phase === 'arrivee';
-        const ecart = !lance ? '' : r === 0 ? 'Tête' : ecartTexte(v.ecart);
+        const ecart = v.abandon ? 'Abandon' : !lance ? '' : r === 0 ? 'Tête' : ecartTexte(v.ecart);
         html += '<li' + (v === j ? ' class="joueur"' : '') + '><span class="p">' + (r + 1) + '</span><span class="c" style="background:' + col + '"></span><span class="n">' + nomCourt(v) + '</span><span class="e">' + ecart + '</span></li>';
         prec = r;
       }
@@ -7158,7 +7442,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
   function finirClassement(S) {
     const co = S.course, delai = Math.max(40, 1.25 * co.drapeau / co.toursTotal);
     let pas = 0;
-    const continuer = () => pas < 120 * 240 && !co.voitures.every(v => v.fini) && co.temps - co.drapeau < delai;
+    const continuer = () => pas < 120 * 240 && !co.voitures.every(v => v.fini || v.abandon) && co.temps - co.drapeau < delai;
     co.termine = true;
     function tranche() {
       if (session !== S || ecran !== 'resultats') return;
@@ -7183,7 +7467,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const j = co.joueur, corps = $('res-lignes'), entete = document.querySelector('.tableau-resultats thead tr');
     const nomCircuit = CATALOGUE[S.i].nom;
     if (co.mode === 'chrono') {
-      $('res-titre').textContent = 'Séance de chrono';
+      $('res-titre').textContent = j.abandon ? 'Voiture détruite' : 'Séance de chrono';
       const r = records[CATALOGUE[S.i].id];
       $('res-sous').textContent = nomCircuit + ' · meilleur tour ' + chrono(j.meilleur) + (r ? ' · record ' + chrono(r.tour) : '');
       entete.innerHTML = '<th>Tour</th><th class="nom">Temps</th><th>Écart au meilleur</th>';
@@ -7191,13 +7475,14 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     } else {
       const ordre = co.classement.map(id => co.voitures[id]), tete = ordre[0];
       const meilleurAbsolu = Math.min(...ordre.map(v => v.meilleur ?? Infinity));
-      $('res-titre').textContent = j.position === 1 ? 'Victoire' : 'Arrivée · ' + j.position + 'e';
+      $('res-titre').textContent = j.abandon ? 'Abandon · voiture détruite' : j.position === 1 ? 'Victoire' : 'Arrivée · ' + j.position + 'e';
       $('res-sous').textContent = nomCircuit + ' · ' + co.toursTotal + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][co.difficulte];
       entete.innerHTML = '<th>Pos.</th><th>N°</th><th class="nom">Pilote</th><th>Tours</th><th>Temps</th><th>Meilleur tour</th>';
       corps.innerHTML = ordre.map((v, r) => {
         const col = 'rgb(' + v.couleur.map(x => Math.round(x * 255)).join(',') + ')';
         let tps;
-        if (r === 0 && v.fini) tps = chrono(v.tempsFinal);
+        if (v.abandon) tps = 'Abandon';
+        else if (r === 0 && v.fini) tps = chrono(v.tempsFinal);
         else if (v.fini && tete.fini && v.tours === tete.tours) tps = ecartTexte(v.tempsFinal - tete.tempsFinal, 3);
         else if (tete.tours - v.tours >= 1 && v.fini) tps = '+' + (tete.tours - v.tours) + ' tour' + (tete.tours - v.tours > 1 ? 's' : '');
         else tps = v.fini ? chrono(v.tempsFinal) : 'en piste';
@@ -7206,7 +7491,7 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     }
     if (!classementFinal) {
       aller('resultats');
-      if (co.mode === 'course' && co.drapeau !== null) finirClassement(S);
+      if (co.mode === 'course' && co.drapeau !== null && !j.abandon) finirClassement(S);
     }
   }
 
@@ -7233,7 +7518,11 @@ body.tactile #jeu[data-ecran="demo"] .carte { display: block; }
     const dtVu = tourne ? dtReel : 0, cam = rendreImage(S, clamp(S.acc / DT, 0, 1), dtVu);
     if (S.type !== 'vitrine') {
       majHud(S);
-      if (S.type === 'course' && S.course.termine && !S.resultats) montrerResultats(S);
+      const j = S.course.joueur;
+      if ((S.type === 'course' || S.type === 'chrono') && !S.resultats &&
+          (S.course.termine || (j.abandon && S.course.horloge - j.tAbandon >= 3))) {
+        S.course.termine = true; montrerResultats(S);
+      }
       if (S.type === 'demo' && !S.enchaine && ecran === 'demo' && (S.course.termine || (S.finA !== null && S.course.horloge - S.finA > APRES_DRAPEAU))) demoSuivante(S);
     }
     majSon(S, cam, dtVu);

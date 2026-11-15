@@ -1,128 +1,86 @@
-/* BITUME — contacts entre voitures (Chantier 3). Remplace les auto-tamponneuses : frotter les roues d'un autre
-   fait sauter (petit bond rattrapable, ou grand arc qui peut casser), un choc de caisse orienté fait tourner,
-   une roue décalée fait braquer. Une seule réponse par paire (réarmement après séparation), immunité après un
-   accident, et les dégâts sont facturés à degats.js. Rien ici ne dépend du moteur ni du rendu. */
-(function (B) {
+/* BITUME — contacts de monoplaces orientées dans le monde. Normale de contact commune aux dégâts,
+   séparation et réponse ; les épaves restent des obstacles fixes. Les petits contacts de roues alignées
+   gardent leurs bonds. Le balayage est borné par les déplacements du pas fixe, indépendant du rendu. */
+(function(B){
   'use strict';
-
-  const PARAMS = Object.freeze({
-    LONGUEUR: 4.95, LARGEUR: 2.02,   // emprise de la caisse (critères)
-    bondVMin: 0.65,                  // rapprochement latéral minimal pour un bond
-    sautVMin: 6.5,                   // au-delà, grand arc
-    rearmSeparation: 0.35,           // délai après séparation avant une nouvelle interaction
-    rearmBond: 1.25,                 // délai minimal entre deux petits bonds d'une même paire
-    rearmEvent: 0.30,                // jamais deux événements de la même paire en moins de 0,3 s
-    lacetDecale: 0.06,               // lacet minimal (rad) d'une roue décalée (≈ 3,4° > 2°)
-    lacetChoc: 0.9                    // gain du lacet sur un choc de caisse orienté
-  });
-  const P = PARAMS;
-
-  function ecartSigne(L, a, b) { let d = b - a; while (d > L / 2) d -= L; while (d < -L / 2) d += L; return d; }
-  function ramener(s, Lc) { return ((s % Lc) + Lc) % Lc; }
-
-  // état par paire : minuteurs d'événement, de bond, et drapeau de séparation
-  function paire(co, k) {
-    let p = co._paire[k];
-    if (!p) p = co._paire[k] = { tEvent: -9, tBond: -9, separe: true, tSeparation: 0 };
+  const PARAMS=Object.freeze({LONGUEUR:4.95,LARGEUR:2.02,bondVMin:.65,sautVMin:6.5,rearmSeparation:.35,rearmBond:1.25,rearmEvent:.30,lacetDecale:.06,lacetChoc:.9});
+  const P=PARAMS, HL=P.LONGUEUR/2, HW=P.LARGEUR/2;
+  const angle=a=>a-2*Math.PI*Math.round(a/(2*Math.PI));
+  const ramener=(s,L)=>((s%L)+L)%L;
+  function pose(c,e,p={}) {
+    const q=B.circuit.echantillon(c,e.s),ca=Math.cos(q.cap),sa=Math.sin(q.cap);
+    p.x=q.x-sa*e.d; p.z=q.z+ca*e.d; p.h=q.cap+e.psi+e.beta; p.y=e.y;
+    p.tx=ca; p.tz=sa; p.k=q.courbure;
+    p.vx=e.v*Math.cos(q.cap+e.psi); p.vz=e.v*Math.sin(q.cap+e.psi);
     return p;
   }
-
-  // un choc facture des dégâts aux deux caisses (roue locale si le contact est latéral)
-  function facturer(co, V, i, j, force, lateral) {
-    if (!B.degats) return;
-    for (const idx of [i, j]) {
-      const v = V[idx];
-      if (!v.degats) continue;
-      const roue = lateral ? (v.etat.d >= 0 ? (v.etat.psi > 0 ? 1 : 0) : (v.etat.psi > 0 ? 3 : 2)) : undefined;
-      const e = B.degats.choc(v.degats, force, { roue });
-      if (e) for (const x of e) { x.id = v.id; co._ev.push(x); }
-      if (v.degats.casse && !v.etat.accident) B.conduite.declencherAccident(v.etat, {});
+  function avant(co){const a=co._contactAvant||(co._contactAvant=[]);co._contactAvantTemps=co.horloge;for(let i=0;i<co.voitures.length;i++){const e=co.voitures[i].etat,p=pose(co.c,e,a[i]||(a[i]={}));p.s=e.s;p.d=e.d;p.psi=e.psi;p.beta=e.beta;p.distance=e.distance;}}
+  // SAT sur les quatre axes des rectangles. La normale va de a vers b.
+  function tester(a,b){
+    if(Math.abs(a.y-b.y)>1.1)return null;
+    const dx=b.x-a.x,dz=b.z-a.z;if(dx*dx+dz*dz>(P.LONGUEUR*P.LONGUEUR+P.LARGEUR*P.LARGEUR))return null;
+    const ax=Math.cos(a.h),az=Math.sin(a.h),bx=Math.cos(b.h),bz=Math.sin(b.h);let depth=Infinity,nx=0,nz=0;
+    for(let k=0;k<4;k++){
+      const x=k===0?ax:k===1?-az:k===2?bx:-bz,z=k===0?az:k===1?ax:k===2?bz:bx;
+      const ra=HL*Math.abs(ax*x+az*z)+HW*Math.abs(-az*x+ax*z),rb=HL*Math.abs(bx*x+bz*z)+HW*Math.abs(-bz*x+bx*z),q=dx*x+dz*z;
+      const overlap=ra+rb-Math.abs(q);if(overlap<=0)return null;
+      if(overlap<depth){depth=overlap;const sign=q>=0?1:-1;nx=x*sign;nz=z*sign;}
     }
+    return {nx,nz,depth};
   }
-
-  function pas(course, ev) {
-    const V = course.voitures, c = course.c, n = V.length, L = c.longueur, t = course.horloge;
-    if (!course._paire) course._paire = {};
-    course._ev = ev;
-    for (let i = 0; i < n; i++) {
-      const a = V[i].etat;
-      for (let j = i + 1; j < n; j++) {
-        const b = V[j].etat, k = i * n + j, p = paire(course, k);
-        const ds = ecartSigne(L, a.s, b.s);                 // b devant a si ds > 0
-        const ol = P.LONGUEUR - Math.abs(ds);               // chevauchement longitudinal
-        const dd = b.d - a.d, olat = P.LARGEUR - Math.abs(dd); // chevauchement latéral
-        const separe = ol <= 0 || olat <= 0;
-        if (separe) {
-          if (!p.separe) { p.separe = true; p.tSeparation = t; }   // vient de se séparer : réarmement en cours
-          continue;
-        }
-        // réarmement : il faut être séparé puis attendre 0,35 s, et pas deux événements en 0,3 s
-        if (!p.separe && t - p.tSeparation < P.rearmSeparation) continue;
-        if (t - p.tEvent < P.rearmEvent) continue;
-        p.separe = false;
-
-        // aucun contact avec une caisse en l'air, en accident ou immunisée
-        const bloque = e => (e.saut && e.saut.actif) || e.accident || e.immunite > 0;
-        if (bloque(a) || bloque(b)) continue;
-
-        const sg = ds >= 0 ? 1 : -1;            // b devant a si sg > 0
-        const ar = sg > 0 ? a : b, av = sg > 0 ? b : a;   // arrière, avant
-        const sgD = dd >= 0 ? 1 : -1;           // b à droite de a si sgD > 0
-        const vrLong = ar.v - av.v;             // rapprochement longitudinal (l'arrière rejoint l'avant)
-        // vitesse de rapprochement latéral (signée, vers la droite de a positive)
-        const vrLat = (a.v * Math.sin(a.psi) - b.v * Math.sin(b.psi)) * sgD;
-
-        const lateral = olat <= ol;             // on pénètre par le flanc (roue contre roue) ou par la face
-        let force = 0;
-
-        if (lateral) {
-          // séparation latérale
-          a.d -= sgD * olat / 2; b.d += sgD * olat / 2;
-          const rapprochement = Math.max(0, vrLat);
-          // roue contre roue : un frottement suffisant fait sauter la voiture (l'arrière qui talonne le flanc)
-          const peutSauter = !a.saut && !b.saut;
-          if (peutSauter && rapprochement >= P.bondVMin && t - p.tBond >= P.rearmBond) {
-            const grand = rapprochement >= P.sautVMin;
-            // la voiture qui monte sur la roue de l'autre : celle qui est derrière et pousse vers l'autre
-            const victime = vrLong > 0 ? (sg > 0 ? a : b) : (sgD > 0 ? b : a);
-            const roulV = (sgD > 0 ? -1 : 1) * (grand ? 2.4 : 0.7);
-            const tangV = grand ? -1.4 : -0.3;
-            B.conduite.lancerSaut(victime, { grand, pouss: sgD, roulV, tangV, omega: victime.omega + (sgD > 0 ? -0.18 : 0.18) });
-            p.tBond = t;
-          }
-          // roue décalée : le cap tourne d'au moins 2°, selon la géométrie de l'engagement (qui talonne le flanc)
-          if (Math.abs(ds) > 0.4) {
-            const kick = P.lacetDecale * (ds >= 0 ? 1 : -1);
-            a.psi -= kick; b.psi += kick;
-          }
-          if (rapprochement > 0) { const m = rapprochement * 0.1; a.psi -= sgD * m / Math.max(a.v, 5); b.psi += sgD * m / Math.max(b.v, 5); }
-          // un frottement de roues coûte de la vitesse aux deux caisses
-          const perte = Math.min(0.18, rapprochement * 0.02);
-          a.v *= 1 - perte; b.v *= 1 - perte;
-          force = rapprochement;
-          for (const e of [a, b]) {
-            const cd = e.d < 0 ? -1 : 1, lim = B.conduite.limiteCote(c, e.s, cd) - 0.1;
-            if (Math.abs(e.d) > lim) e.d = cd * lim;
-          }
-        } else {
-          // choc de caisse longitudinal : séparation + lacet orienté selon le décalage latéral (T-bone, talonnage)
-          a.s = ramener(a.s - sg * ol / 2, L); b.s = ramener(b.s + sg * ol / 2, L);
-          if (vrLong > 0) { ar.v -= 0.30 * vrLong; av.v += 0.15 * vrLong; }
-          // le décalage latéral du point d'impact fait tourner la caisse touchée
-          const bras = dd / (P.LARGEUR / 2);                 // -1..1, excentrement de l'impact
-          const lacet = P.lacetChoc * vrLong * bras * 0.05;
-          a.omega -= lacet; b.omega += lacet;
-          force = Math.max(0, vrLong);
-        }
-
-        // une seule réponse par paire : horodatée, avec un contact émis au plus tous les 0,3 s
-        p.tEvent = t;
-        ev.push({ type: 'contact', a: V[i].id, b: V[j].id, force, lateral });
-        facturer(course, V, i, j, force, lateral);
-        for (const v of [V[i], V[j]]) if (v.joueur) { const x = B.conduite.annulerDerive(v.etat); if (x) { x.id = v.id; ev.push(x); } }
+  function balayage(a,b,pa,pb){
+    let hit=tester(a,b);
+    if(!pa||!pb||tester(pa,pb))return hit?{...hit,t:1}:null;
+    const travel=Math.hypot(a.x-pa.x,a.z-pa.z,a.y-pa.y)+Math.hypot(b.x-pb.x,b.z-pb.z,b.y-pb.y),n=Math.max(1,Math.min(64,Math.max(Math.ceil(travel/.4),Math.ceil(Math.max(Math.abs(angle(a.h-pa.h)),Math.abs(angle(b.h-pb.h)))/.06))));
+    for(let k=1;k<n;k++){const t=k/n,aa={x:pa.x+(a.x-pa.x)*t,z:pa.z+(a.z-pa.z)*t,h:pa.h+angle(a.h-pa.h)*t,y:pa.y+(a.y-pa.y)*t},bb={x:pb.x+(b.x-pb.x)*t,z:pb.z+(b.z-pb.z)*t,h:pb.h+angle(b.h-pb.h)*t,y:pb.y+(b.y-pb.y)*t};hit=tester(aa,bb);if(hit)return {...hit,t};}
+    hit=tester(a,b);return hit?{...hit,t:1}:null;
+  }
+  function deplacer(e,c,p,x,z){e.s=ramener(e.s+(x*p.tx+z*p.tz)/Math.max(.1,1-p.k*e.d),c.longueur);e.d+=-x*p.tz+z*p.tx;const side=e.d<0?-1:1,limit=B.conduite.limiteCote(c,e.s,side)-.1;e.d=side*Math.min(Math.abs(e.d),limit);}
+  function vitesse(e,c,vx,vz,body){const theta=B.circuit.echantillon(c,e.s).cap;e.v=Math.hypot(vx,vz);if(e.v>.001){e.psi=angle(Math.atan2(vz,vx)-theta);e.beta=angle(body-theta-e.psi);}}
+  function pas(co,ev){
+    const V=co.voitures,c=co.c,n=V.length,t=co.horloge;co._paire ||= {};
+    const poses=co._contactPoses||(co._contactPoses=[]);
+    for(let k=0;k<n;k++)pose(c,V[k].etat,poses[k]||(poses[k]={}));
+    for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){
+      const va=V[i],vb=V[j],a=va.etat,b=vb.etat,key=i*n+j;
+      const p=co._paire[key]||(co._paire[key]={tEvent:-9,tBond:-9,separe:true,tSeparation:0});
+      const ia=a.degats&&a.degats.casse?0:1,ib=b.degats&&b.degats.casse?0:1;
+      if(!ia&&!ib)continue;
+      const blocked=e=>e.accident||e.immunite>0;
+      if(blocked(a)||blocked(b))continue;
+      let A=poses[i],Bv=poses[j];
+      const old=co._contactAvantTemps===co.horloge?co._contactAvant:null,pa=old&&old[i],pb=old&&old[j],hit=balayage(A,Bv,pa,pb);
+      if(!hit){if(!p.separe){p.separe=true;p.tSeparation=t;}continue;}
+      // Corriger le chevauchement à chaque pas, même quand le son/dégât n'est pas réarmé.
+      if(hit.t<1){for(const [e,o,inv] of [[a,pa,ia],[b,pb,ib]])if(inv){let ds=e.s-o.s;if(ds>c.longueur/2)ds-=c.longueur;else if(ds<-c.longueur/2)ds+=c.longueur;e.s=ramener(o.s+ds*hit.t,c.longueur);e.d=o.d+(e.d-o.d)*hit.t;e.psi=angle(o.psi+angle(e.psi-o.psi)*hit.t);e.beta=angle(o.beta+angle(e.beta-o.beta)*hit.t);e.y=o.y+(e.y-o.y)*hit.t;e.distance=o.distance+(e.distance-o.distance)*hit.t;}A=pose(c,a,poses[i]);Bv=pose(c,b,poses[j]);}
+      const {nx,nz}=hit,inv=ia+ib,sep=hit.depth+.001;
+      if(ia)deplacer(a,c,A,-nx*sep*ia/inv,-nz*sep*ia/inv);
+      if(ib)deplacer(b,c,Bv,nx*sep*ib/inv,nz*sep*ib/inv);
+      const closing=Math.max(0,(A.vx-Bv.vx)*nx+(A.vz-Bv.vz)*nz);
+      const aligned=Math.cos(A.h-Bv.h)>.85;
+      const lateral=aligned&&Math.abs(Math.cos(A.h)*nx+Math.sin(A.h)*nz)<.5&&Math.abs(Math.cos(Bv.h)*nx+Math.sin(Bv.h)*nz)<.5;
+      // Impulsion normale dissipative ; pas de mouvement ajouté à une épave.
+      if(closing>0){const impulse=closing*1.1/inv;if(ia)vitesse(a,c,A.vx-nx*impulse*ia,A.vz-nz*impulse*ia,A.h);if(ib)vitesse(b,c,Bv.vx+nx*impulse*ib,Bv.vz+nz*impulse*ib,Bv.h);}
+      const violent=B.degats && closing>=B.degats.PARAMS.chocCasse;
+      if(closing<=.1 || (!violent && ((!p.separe&&t-p.tSeparation<P.rearmSeparation)||t-p.tEvent<P.rearmEvent))) { pose(c,a,A);pose(c,b,Bv);continue; }
+      p.separe=false;p.tEvent=t;
+      const dx=Bv.x-A.x,dz=Bv.z-A.z,ds=dx*Math.cos(A.h)+dz*Math.sin(A.h),side=(-Math.sin(A.h)*nx+Math.cos(A.h)*nz)>=0?1:-1;
+      if(lateral&&ia&&ib){
+        if(!a.saut&&!b.saut&&closing>=P.bondVMin&&t-p.tBond>=P.rearmBond){const grand=closing>=P.sautVMin,victim=ds>=0?a:b;B.conduite.lancerSaut(victim,{grand,pouss:side,roulV:-side*(grand?2.4:.7),tangV:grand?-1.4:-.3,omega:victim.omega-side*.18});p.tBond=t;}
+        if(Math.abs(ds)>.4){const kick=P.lacetDecale*(ds>=0?1:-1);a.psi-=kick;b.psi+=kick;}
+        const loss=Math.min(.18,closing*.02);a.v*=1-loss;b.v*=1-loss;
+      }else{const torque=P.lacetChoc*closing*(-Math.sin(A.h)*dx+Math.cos(A.h)*dz)*.05;if(ia)a.omega-=torque;if(ib)b.omega+=torque;}
+      ev.push({type:'contact',a:va.id,b:vb.id,force:closing,lateral});
+      for(const [v,invMass,normX,normZ,other,self] of [[va,ia,nx,nz,Bv,A],[vb,ib,-nx,-nz,A,Bv]]){
+        if(!invMass)continue;
+        const front=(other.x-self.x)*Math.cos(self.h)+(other.z-self.z)*Math.sin(self.h)>=0;
+        const right=-Math.sin(self.h)*normX+Math.cos(self.h)*normZ>=0;
+        const roue=lateral?(front?0:2)+(right?1:0):undefined;
+        for(const e of B.conduite.subirChoc(v.etat,closing,{roue})){e.id=v.id;ev.push(e);}
+        if(v.joueur){const e=B.conduite.annulerDerive(v.etat,true);if(e){e.id=v.id;ev.push(e);}}
       }
+      pose(c,a,A);pose(c,b,Bv);
     }
   }
-
-  B.contacts = { PARAMS, pas };
-})(globalThis.BITUME = globalThis.BITUME || {});
+  B.contacts={PARAMS,avant,pas,tester};
+})(globalThis.BITUME=globalThis.BITUME||{});

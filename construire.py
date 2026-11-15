@@ -26,6 +26,7 @@ MODULES = [
     'conduite.js',
     'degats.js',
     'contacts.js',
+    'obstacles.js',
     'course.js',
     'son.js',
     'decor.js',

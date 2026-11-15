@@ -61,7 +61,7 @@
       id, nom, numero, joueur, couleur: liv[0],
       livree: { couleur: liv[0], seconde: liv[1], casque: liv[2], combinaison: liv[1], numero },
       etat: null, tours: 0, passages: -1, maxPassages: -1, progression: 0, debutTour: 0,
-      tempsTours: [], meilleur: null, position: 0, fini: false, tempsFinal: null, ecart: 0, ecartTete: 0,
+      tempsTours: [], meilleur: null, position: 0, fini: false, abandon: false, tempsFinal: null, ecart: 0, ecartTete: 0,
       ia: {
         hab: joueur ? 1 : habBase + (rng() * 2 - 1) * 0.015, decal: joueur ? 0 : (rng() * 2 - 1) * 0.5,
         reaction: joueur ? 0 : 0.12 + rng() * 0.28, cible: -1, cote: 0, decalVise: 0, decalDep: 0
@@ -95,10 +95,16 @@
     };
   }
 
+  // Projection de la caisse orientée sur les axes du circuit ; une épave en travers occupe un vrai couloir.
+  function empriseIA(e) {
+    const h=e.psi+e.beta, ca=Math.abs(Math.cos(h)),sa=Math.abs(Math.sin(h));
+    return {long:2.475*ca+1.01*sa,lat:2.475*sa+1.01*ca};
+  }
   function commandesIA(course, v) {
     const c = course.c, e = v.etat, ia = v.ia, P = c.pas, n = c.n, dt = course.dt;
-    const vit = e.v, utile = c.largeur / 2 - 1;
-    if (course.mode === 'course' && course.phase === 'course' && course.temps < ia.reaction) return NEUTRE;
+    const moi=empriseIA(e), vit=e.v, utile=Math.max(.5,c.largeur/2-moi.lat-.25);
+    const recuperer=Math.abs(e.d)>utile;
+    if (course.mode === 'course' && course.phase === 'course' && course.temps < ia.reaction) { ia.bloque=0;return NEUTRE; }
 
     let hab = ia.hab;
     if (v.fini || (v.joueur && course.phase === 'arrivee')) hab *= 0.82; // tour de décélération
@@ -124,28 +130,28 @@
     let devant = null, dsMin = regard, dMin = -utile, dMax = utile;
     for (const o of course.voitures) {
       if (o === v) continue;
-      const ds = ecart(c, e.s, o.etat.s), dd = o.etat.d - e.d;
-      if (ds > 0 && ds < dsMin && Math.abs(dd) < 2.4) { dsMin = ds; devant = o; }
-      if (Math.abs(ds) < LONGUEUR && Math.abs(dd) < 3) { // vraiment côte à côte
-        if (dd >= 0) dMax = Math.min(dMax, o.etat.d - 2.25); else dMin = Math.max(dMin, o.etat.d + 2.25);
+      const ds = ecart(c, e.s, o.etat.s), dd = o.etat.d - e.d, taille=empriseIA(o.etat), espace=moi.lat+taille.lat+.35;
+      if (ds > 0 && ds < dsMin && Math.abs(dd) < espace) { dsMin = ds; devant = o; }
+      if (Math.abs(ds) < moi.long+taille.long+.5 && Math.abs(dd) < espace+.5) { // vraiment côte à côte
+        if (dd >= 0) dMax = Math.min(dMax, o.etat.d - espace); else dMin = Math.max(dMin, o.etat.d + espace);
       }
     }
     if (devant) {
-      const od = devant.etat, gap = dsMin - LONGUEUR;
+      const od=devant.etat, taille=empriseIA(od), espace=moi.lat+taille.lat+.5, gap=dsMin-moi.long-taille.long;
       // un obstacle vraiment plus lent (voiture arrêtée ou en perdition) justifie un engagement plus tôt et plus
       // franc ; la circulation normale (allure voisine) garde la conduite habituelle du peloton.
       const obstacle = od.v < vit - 10;
-      if (ia.cible !== devant.id && vit > od.v + 0.3 && gap < (obstacle ? Math.max(45, v2 / 60 + 20) : 30)) {
+      if (!recuperer && ia.cible !== devant.id && vit > od.v + 0.3 && gap < (obstacle ? Math.max(70, v2 / 45 + 25) : 30)) {
         const kAv = lire(c, c.courbure, e.s + 60);
         const interieur = kAv > 1e-4 ? 1 : kAv < -1e-4 ? -1 : (od.d > e.d ? -1 : 1);
         // côté libre : dans la piste et sans autre voiture sur la trajectoire de dépassement
         const libre = cote => {
-          const x = od.d + 2.6 * cote;
+          const x=od.d+espace*cote;
           if (Math.abs(x) > utile) return false;
           for (const o of course.voitures) {
             if (o === v || o === devant) continue;
             const ds = ecart(c, e.s, o.etat.s);
-            if (ds > -8 && ds < dsMin + 10 && Math.abs(o.etat.d - x) < 2.0) return false;
+            if (ds > -8 && ds < dsMin + 10 && Math.abs(o.etat.d-x)<moi.lat+empriseIA(o.etat).lat+.35) return false;
           }
           return true;
         };
@@ -155,10 +161,10 @@
       // pas d'emboutissage : tant qu'on est dans les roues de celui de devant, on garde une distance de suivi.
       // Mais une fois le dépassement amorcé sur un côté libre, on ne rampe pas (sans vitesse, pas de mouvement
       // latéral) : on garde de quoi dégager la trajectoire, quitte à se rabattre derrière si le côté se referme.
-      if (Math.abs(od.d - e.d) < 2.2) {
-        if (obstacle && ia.cible === devant.id && Math.abs(od.d - e.d) > 1.1) {
+      if (Math.abs(od.d-e.d)<espace) {
+        if (obstacle && ia.cible === devant.id && Math.abs(od.d-e.d)>espace-.3) {
           const lim = Math.max(od.v + 12, Math.min(vit, od.v + 6 + gap * 0.6));
-          cible = Math.max(cible, lim);
+          cible = Math.min(cible, Math.max(5,lim));
         } else {
           let lim = od.v + Math.max(0, gap - 3) * 0.9;
           if (ia.cible === devant.id) lim = Math.max(lim, Math.min(5, 1.5 + gap * 0.5));
@@ -166,19 +172,20 @@
         }
       }
     }
+    if (recuperer) { ia.cible=-1;ia.cote=0;ia.decalVise=0;cible=Math.min(cible,Math.max(10,vit*.65)); }
     const base = lire(c, c.ligne, e.s) + ia.decal;
     if (ia.cible >= 0 && dMin > dMax) { ia.cible = -1; ia.cote = 0; } // coincée : on renonce
     if (ia.cible >= 0) {
       const o = course.voitures[ia.cible], avance = ecart(c, o.etat.s, e.s);
-      if (avance > 6 + LONGUEUR || avance < -(regard + 10)) { ia.cible = -1; ia.cote = 0; }
-      else ia.decalVise = o.etat.d + 2.6 * ia.cote - base;
+      if (avance > 3+moi.long+empriseIA(o.etat).long || avance < -(regard + 10)) { ia.cible = -1; ia.cote = 0; }
+      else ia.decalVise = o.etat.d+(moi.lat+empriseIA(o.etat).lat+.5)*ia.cote-base;
     }
-    const vise = ia.cible >= 0 ? ia.decalVise : 0, vLat = (ia.cible >= 0 ? (devant && vit > devant.etat.v + 8 ? 6.0 : 3.0) : 0.8) * dt;
+    const vise = ia.cible >= 0 ? ia.decalVise : 0, vLat = (ia.cible >= 0 ? (devant && vit > devant.etat.v + 8 ? 6.0 : 3.0) : recuperer ? 4 : .8) * dt;
     ia.decalDep += clamp(vise - ia.decalDep, -vLat, vLat);
 
     // Direction : poursuite d'un point de la ligne visée. Face à un obstacle beaucoup plus lent, on vise plus
     // court pour braquer plus sec et dégager la trajectoire avant d'arriver dessus ; circulation normale : visée longue.
-    const evite = ia.cible >= 0 && devant && vit > devant.etat.v + 10;
+    const evite=recuperer || (ia.cible>=0 && devant && vit>devant.etat.v+10);
     const la = (evite ? 5 : 8) + (evite ? 0.30 : 0.45) * vit;
     let dVise = clamp(lire(c, c.ligne, e.s + la) + ia.decal + ia.decalDep, -utile, utile);
     dVise = dMin > dMax ? e.d : clamp(dVise, dMin, dMax);
@@ -191,6 +198,19 @@
     if (besoin > 0.7 * dec) frein = clamp((besoin - 0.7 * dec) / (0.3 * dec), 0, 1);
     else if (vit > cible + 2) frein = clamp((vit - cible - 2) / 4, 0, 1);
     else gaz = vit < cible - 1 ? 1 : clamp((cible - vit + 1) / 2, 0, 1);
+    // Même retour progressif que le joueur, après un long blocage non fatal. Une attente de trafic voulue,
+    // un arrêt au stand, un vol ou une casse n'est jamais une invitation à replacer la voiture.
+    const roule=course.phase==='course'||course.phase==='arrivee';
+    // La direction d'une vitesse quasi nulle peut osciller au contact : garder l'épisode tant que la caisse
+    // reste immobile, au lieu de remettre le compteur à zéro un pas sur deux.
+    const gardeRetour=roule && !v.fini && !v.abandon && e.v<.1 && gaz>.1 && frein<.1 &&
+      !(e.degats&&e.degats.casse) && !e.saut && !e.accident && !e.reparation && !(e.immunite>0);
+    ia.retourBloque=gardeRetour && (ia.retourBloque || Math.cos(e.psi)<-.2);
+    const intention=gaz>.1 && frein<.1 && (cible>2 || ia.retourBloque);
+    const coince=roule && !v.fini && !v.abandon && e.v<1.5 && intention &&
+      !(e.degats&&e.degats.casse) && !e.saut && !e.accident && !e.reparation && !(e.immunite>0);
+    ia.bloque=coince?(ia.bloque||0)+dt:0;
+    if(ia.bloque>15) { B.conduite.declencherAccident(e,{});ia.bloque=0;ia.cible=-1;ia.cote=0;ia.decalVise=0;ia.decalDep=0; }
     // l'IA conduit avec l'aide au volant légère, le réglage par défaut du joueur
     return { gaz, frein, volant, derive: false, haut: false, bas: false, boite: 'auto', aide: AIDE_IA };
   }
@@ -237,6 +257,7 @@
   }
 
   function passageLigne(course, v, tPassage, ev) {
+    if (v.abandon) return;
     if (course.mode === 'chrono') {
       if (!course.chronoParti) { course.chronoParti = true; v.debutTour = tPassage; course.enreg.n = 0; course.enreg.prochain = 0; return; }
     } else if (v.passages === 0 || v.fini) return; // départ compté depuis le vert ; rien après l'arrivée
@@ -269,6 +290,7 @@
   function majClassement(course) {
     const L = course.c.longueur;
     const tri = course.voitures.slice().sort((a, b) => {
+      if (a.abandon !== b.abandon) return a.abandon ? 1 : -1;
       const d = score(b, L) - score(a, L);
       if (d !== 0) return d;
       if (a.fini !== b.fini) return a.fini ? -1 : 1;
@@ -321,6 +343,8 @@
     const t0 = course.temps;
     aspirer(c, V);
 
+    if (B.contacts && B.contacts.avant) B.contacts.avant(course);
+    if (B.obstacles) B.obstacles.avant(course);
     for (let i = 0; i < V.length; i++) {
       const v = V[i];
       course.sAvant[i] = sLigne(c, v.etat.s);
@@ -330,11 +354,16 @@
       for (const e of B.conduite.pas(v.etat, cmd, c, dt, retenue)) { e.id = v.id; ev.push(e); }
     }
     if (B.contacts) B.contacts.pas(course, ev); else contacts(course, ev);
+    if (B.obstacles) B.obstacles.pas(course, ev);
     if (!retenue) course.temps = t0 + dt;
 
     // Franchissements de ligne (interpolés dans le pas) et progression continue
     for (let i = 0; i < V.length; i++) {
       const v = V[i], a = course.sAvant[i], b = sLigne(c, v.etat.s);
+      if (!v.fini && v.degats && v.degats.casse) {
+        if (!v.abandon) { v.abandon = true; v.tAbandon = course.horloge; }
+        continue; // aucun tour ni fantôme ne peut être validé par une épave
+      }
       if (a > 0.75 * L && b < 0.25 * L) {
         v.passages++;
         if (v.passages > v.maxPassages) {
@@ -346,13 +375,17 @@
       if (course.mode === 'chrono' && course.chronoParti && v.joueur) enregistrer(course, v, course.temps);
     }
     majClassement(course);
+    if (V.every(v => v.fini || v.abandon)) {
+      if (course.finSansCourse === undefined) course.finSansCourse = course.horloge;
+      if (course.horloge - course.finSansCourse >= 3) course.termine = true;
+    }
 
     // Fin : 8 s après l'arrivée du joueur, ou quand le délai après le drapeau est écoulé
     const j = course.joueur;
     if (course.mode === 'course' && course.drapeau !== null) {
       const delai = Math.max(40, 1.25 * course.drapeau / course.toursTotal);
       if ((j.fini && course.temps - j.tempsFinal >= 8) || course.temps - course.drapeau >= delai ||
-          V.every(v => v.fini)) course.termine = true;
+          V.every(v => v.fini || v.abandon)) course.termine = true;
     }
     return ev;
   }

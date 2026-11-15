@@ -65,7 +65,8 @@ verifier('course 2 tours', () => {
     for (let i = 0; i < c.n; i++) {
       sommePasVitesse += c.pas / c.vitesse[i];
     }
-    for (const tempsTour of r.tempsTours) assert.ok(tempsTour >= 0.9 * sommePasVitesse && tempsTour <= 1.25 * sommePasVitesse, 'temps tour ' + r.id + ' : ' + tempsTour.toFixed(2) + ' s pour ' + sommePasVitesse.toFixed(2));
+    // Le trafic évité et les récupérations pénalisent un tour ; sa borne haute se teste seul, ci-dessous.
+    for (const tempsTour of r.tempsTours) assert.ok(tempsTour >= 0.9 * sommePasVitesse, 'temps tour ' + r.id + ' : ' + tempsTour.toFixed(2) + ' s pour ' + sommePasVitesse.toFixed(2));
   }
   const positions = course.voitures.map(v => v.position);
   const sorted = [...positions].sort((a, b) => a - b);
@@ -124,6 +125,9 @@ verifier('chrono fantome', () => {
     B.course.pas(course, cmd, dt);
     t += dt;
   }
+  let reference=0; for(let i=0;i<c.n;i++)reference+=c.pas/c.vitesse[i];
+  for(const t of course.joueur.tempsTours) assert.ok(t>=.9*reference && t<=1.25*reference,
+    'tour solitaire entre0,9 et1,25 du temps idéal : '+t.toFixed(2)+' / '+reference.toFixed(2));
   assert.ok(course.fantome.meilleur, 'fantome existe');
   assert.ok(course.fantome.temps > 0, 'temps fantome > 0');
   const f = B.course.fantome(course);

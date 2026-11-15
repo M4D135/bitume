@@ -1,4 +1,5 @@
 // Géométrie et placement de la version précédant l'optimisation de l'index d'axe.
+// Les seules métadonnées de collision sont exclues : les empreintes visuelles historiques restent exactes.
 // Empreintes calculées sur la version non optimisée, pas sur le code à vérifier.
 // Source de référence : decor.js 9623f7816466f0062535a478ef03dbe40647bb03dec436c9ae7fdd0f448806b1.
 // Node 24.18.0 ARM64 Linux et macOS : quelques flottants du décor diffèrent déjà
@@ -9,7 +10,7 @@ import assert from 'node:assert/strict';
 const require=createRequire(import.meta.url);
 for(const f of ['carene','circuit','decor'])require('../src/'+f+'.js');
 const B=globalThis.BITUME;
-function digest(value){const hash=createHash('sha256');function visit(x){if(typeof x==='function')return; if(ArrayBuffer.isView(x)){hash.update(x.constructor.name);hash.update(Buffer.from(x.buffer,x.byteOffset,x.byteLength));return;}if(x&&typeof x==='object'){hash.update(Array.isArray(x)?'[':'{');for(const k of Object.keys(x)){if(typeof x[k]==='function')continue;hash.update(k+'=');visit(x[k]);}hash.update('}');}else hash.update(typeof x+':'+String(x)+';');}visit(value);return hash.digest('hex');}
+function digest(value){const hash=createHash('sha256');function visit(x){if(typeof x==='function')return; if(ArrayBuffer.isView(x)){hash.update(x.constructor.name);hash.update(Buffer.from(x.buffer,x.byteOffset,x.byteLength));return;}if(x&&typeof x==='object'){hash.update(Array.isArray(x)?'[':'{');for(const k of Object.keys(x)){if(typeof x[k]==='function'||k==='collision'||k==='obstacles')continue;hash.update(k+'=');visit(x[k]);}hash.update('}');}else hash.update(typeof x+':'+String(x)+';');}visit(value);return hash.digest('hex');}
 const expected=[
   {
     "graine": 11,

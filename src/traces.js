@@ -13,6 +13,11 @@
   const SEUIL_TRACE = .35, SEUIL_FUMEE = .6;     // glisse d'une roue (0 à 1) où naissent la gomme et la fumée
   const PORTEE = 160, VUE = 190;                  // m : voitures prises autour de celle que l'on regarde ; bandes dessinées
   const DROIT = Math.cos(3 * Math.PI / 180), LONGUEUR_MAX = 6, LEVEE = .018, EPAISSEUR = .004;
+  // BITUME : douze casses simultanées, quatre roues et huit panneaux chacune ; pool jamais agrandi.
+  const DEBRIS = 144, VIE_DEBRIS = 12;
+  const PANNEAUX = [[2.11,.2,0,.38,.06,1.62],[-2.05,.9,0,.34,.06,1.1],
+    [1.6,.3,0,.9,.12,.5],[.8,.4,0,.8,.1,1.1],[-.6,.4,-.65,1.1,.3,.16],[-.6,.4,.65,1.1,.3,.16],
+    [-1.1,.6,0,.8,.25,.6],[-2,.65,0,.25,.4,.1]];
   const GOMME = [.02, .02, .022], FUMEE = [.82, .82, .8], POUSSIERE = [.58, .5, .38], ETINCELLE = [1, .6, .18];
 
   function creer(n, graine) {
@@ -29,6 +34,8 @@
     }));
     return {
       bandes, prochaine: 0,
+      debris: Array.from({ length: DEBRIS }, () => ({ actif: false, age: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, sol: 0, spin: 0,
+        objet: { shape: 'box', p: [0, 0, 0], s: [1, 1, 1], r: [0, 0, 0], color: [0, 0, 0], mat: 7, fx: true, fxPriority: 'hazard', alpha: 1 } })), prochainDebris: 0,
       fumees: particules(FUMEES, 'sphere', FUMEE, 0), prochaineFumee: 0,
       etincelles: particules(ETINCELLES, 'box', ETINCELLE, 2.4), prochaineEtincelle: 0,
       // par roue (voiture × 4 + roue) : bande ouverte, son numéro de pose, dernier point de contact et sa validité
@@ -41,7 +48,10 @@
   // poses : position et attitude de chaque voiture au dernier pas ; suivie : la voiture que l'on regarde ;
   // ev : les événements du pas (contacts entre voitures).
   function pas(fx, co, poses, suivie, dt, ev) {
-    if (ev) for (const e of ev) if (e.type === 'contact') contact(fx, co, poses, e);
+    if (ev) for (const e of ev) {
+      if (e.type === 'contact') contact(fx, co, poses, e);
+      else if (e.type === 'roue' || e.type === 'casse') detacher(fx, co, poses, e);
+    }
     fx.acc += dt;
     if (fx.acc < PAS * .999) return;
     fx.acc = Math.max(0, fx.acc - PAS);
@@ -66,6 +76,7 @@
   }
 
   function roue(fx, k, w, et, p, M, auSol, herbe, vx, vz) {
+    if (et.degats && et.degats.roues[w]) { fx.valide[k * 4 + w] = 0; fx.ouverte[k * 4 + w] = -1; return; }
     const i = k * 4 + w, j = i * 3, R = B.voiture.ROUES[w], g = et.roues ? et.roues[w].glisse : 0;
     const o = B.voiture.mul(M, [R.x, LEVEE, R.z]), X = p.x + o[0], Y = p.y + o[1], Z = p.z + o[2];
     const dx = X - fx.dernier[j], dz = Z - fx.dernier[j + 2];
@@ -155,8 +166,39 @@
       etinceler(fx, (a.x + b.x) / 2, sol + .3, (a.z + b.z) / 2, vx, 1.5, vz, sol, 6);
   }
 
+  function detacher(fx, co, poses, e) {
+    const p = poses[e.id], v = co.voitures[e.id];
+    if (!p || !v) return;
+    const ca = Math.cos(p.cap), sa = Math.sin(p.cap), a = fx.alea;
+    const lancer = (x, y, z, sx, sy, sz, roue, couleur) => {
+      const d = fx.debris[fx.prochainDebris], o = d.objet;
+      fx.prochainDebris = (fx.prochainDebris + 1) % DEBRIS;
+      d.actif = true; d.age = 0; d.x = p.x + ca*x-sa*z; d.y = p.y+y; d.z = p.z+sa*x+ca*z; d.sol = p.y + Math.min(sx,sy,sz)*.5;
+      d.vx = ca*(3+a()*5) - sa*(z*4+(a()-.5)*6); d.vz = sa*(3+a()*5) + ca*(z*4+(a()-.5)*6);
+      d.vy = 3+a()*5; d.spin = (a()-.5)*12;
+      o.shape = roue ? 'cylinder' : 'box'; o.s[0]=sx; o.s[1]=sy; o.s[2]=sz;
+      o.r[0]=0; o.r[1]=-p.cap; o.r[2]=roue ? Math.PI/2 : 0; o.alpha=1;
+      for (let k=0;k<3;k++) o.color[k]=couleur[k];
+    };
+    if (e.type === 'roue') {
+      const w = B.voiture.ROUES[e.roue];
+      if (w) lancer(w.x,w.r,w.z,w.r*2,w.l,w.r*2,true,[.035,.035,.04]);
+    } else {
+      const couleur = v.couleur || [.7,.1,.08];
+      for (const d of PANNEAUX) lancer(d[0],d[1],d[2],d[3],d[4],d[5],false,couleur);
+      for (let n=0;n<8;n++) fumer(fx,p.x,p.y+.3,p.z,(a()-.5)*6,(a()-.5)*6,[.22,.23,.24],1);
+      for (let n=0;n<12;n++) etinceler(fx,p.x,p.y+.4,p.z,0,2,0,p.y,12);
+    }
+  }
+
   function vieillir(fx, h) {
     for (const b of fx.bandes) if (b.actif && (b.age += h) >= VIE_TRACE) b.actif = false;
+    for (const d of fx.debris) if (d.actif) {
+      if ((d.age += h) >= VIE_DEBRIS) { d.actif=false; continue; }
+      d.x+=d.vx*h; d.y+=d.vy*h; d.z+=d.vz*h; d.vy-=9.81*h;
+      if (d.y<d.sol && d.vy<0) { d.y=d.sol; d.vy=Math.abs(d.vy)>.8 ? -d.vy*.3 : 0; d.vx*=.65; d.vz*=.65; d.spin*=.7; }
+      d.objet.r[0]+=d.spin*h; d.objet.r[2]+=d.spin*.7*h;
+    }
     const amorti = Math.exp(-h * 1.6);
     for (const f of fx.fumees) {
       if (!f.actif) continue;
@@ -175,6 +217,11 @@
 
   // Pousse dans `sortie` les effets visibles depuis `oeil` ; h : temps de course écoulé depuis la dernière mise à jour.
   function dessiner(fx, sortie, oeil, h) {
+    for (const d of fx.debris) if (d.actif) {
+      const o=d.objet; o.p[0]=d.x+d.vx*h; o.p[1]=Math.max(d.sol,d.y+d.vy*h); o.p[2]=d.z+d.vz*h;
+      o.alpha=Math.min(1, Math.max(0,(VIE_DEBRIS-d.age-h)/2));
+      if (o.alpha>.004) sortie.push(o);
+    }
     const vue2 = VUE * VUE;
     for (const b of fx.bandes) {
       if (!b.actif) continue;
@@ -207,12 +254,13 @@
     for (const b of fx.bandes) if (b.actif) bandes++;
     for (const f of fx.fumees) if (f.actif) fumees++;
     for (const e of fx.etincelles) if (e.actif) etincelles++;
-    return { bandes, fumees, etincelles };
+    let debris=0; for (const d of fx.debris) if (d.actif) debris++;
+    return { bandes, fumees, etincelles, debris };
   }
 
   function graine32(a) {
     return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   }
 
-  B.traces = { creer, pas, dessiner, compter, BANDES, FUMEES, ETINCELLES, VIE_TRACE, PAS };
+  B.traces = { creer, pas, dessiner, compter, BANDES, FUMEES, ETINCELLES, VIE_TRACE, PAS, DEBRIS, VIE_DEBRIS };
 })(globalThis.BITUME = globalThis.BITUME || {});

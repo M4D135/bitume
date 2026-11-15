@@ -275,8 +275,10 @@
       piece('box', [-2.05, .90, 0], [.34, .06, 1.10], PEINTURE, c2),
       piece('box', [-2.02, .66, 0], [.20, .48, .05], PEINTURE, c1),
       piece('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque));
-    for (const w of ROUES) simples.push(piece('cylinder', [w.x, w.r, w.z], [2 * w.r, w.l, 2 * w.r], MAT, PNEU, { m: ROUE_AXE }));
-    return { corps, simples, livree };
+    ROUES.forEach((w, i) => simples.push(piece('cylinder', [w.x, w.r, w.z], [2 * w.r, w.l, 2 * w.r], MAT, PNEU, { m: ROUE_AXE, roue: i })));
+    // Après casse, ne reste que la cellule du pilote et l'arceau ; roues et carrosserie sont des débris.
+    const epave = corps.filter(p => p.pilote || ['cuve', 'goutte', 'goutte-dedans', 'arceau'].some(n => p.shape === FORMES[n].nom));
+    return { corps, simples, epave, livree };
   }
 
   // ---------------------------------------------------------------- pose dans le monde
@@ -299,7 +301,7 @@
   }
   function poser(mod, ev, sortie, options = {}) {
     const M = attitude(ev.cap, ev.tangage || 0, ev.roulis || 0), rotM = angles(M), braq = braquages(ev.braquage || 0), roule = ev.roule || 0;
-    const liste = options.simple ? mod.simples : mod.corps, v = ev.v || 0;
+    const liste = options.casse ? mod.epave : options.simple ? mod.simples : mod.corps, v = ev.v || 0;
     for (const pc of liste) {
       if (!visible(pc, options.cockpit, v)) continue;
       // Chantier 3 : une roue détachée (degats.roues[i]) n'est plus dessinée
@@ -370,7 +372,7 @@
   //          derriere ([{ x, z, couleur }] : rivaux dans le repère de la voiture, du plus proche au plus loin),
   //          ciel, brume (couleurs du jour, pour les glaces des rétroviseurs) }
   function cockpit(mod, ev, sortie, etat) {
-    const M = poser(mod, ev, sortie, { overlay: true, cockpit: true, roues: etat.roues });
+    const M = poser(mod, ev, sortie, { overlay: true, cockpit: true, roues: etat.roues, casse: etat.casse });
     const rotM = angles(M), liv = mod.livree, c1 = liv.couleur, c2 = liv.seconde || BLANC;
     const pousser = (shape, p, s, m, mat, color, extra) => sortie.push(Object.assign({ shape, p, s, r: m ? angles(mulM(M, m)) : rotM, mat, color, overlay: true, surface: 'object' }, extra));
     const monde = o => { const w = mul(M, o); return [ev.p[0] + w[0], ev.p[1] + w[1], ev.p[2] + w[2]]; };

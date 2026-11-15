@@ -25,7 +25,7 @@
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
   const sauverReglages = () => ecrireStock('bitume.reglages', reglages);
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p3', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p4', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
 
   function enBase64(f32) {
@@ -101,6 +101,7 @@
   function installer(i) {
     if (scene && scene.index === i) return scene;
     const c = circuit(i), decor = B.decor.construire(c);
+    if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
     rendu.setNappes(decor.nappes);
     rendu.setLots(decor.lots);
@@ -337,6 +338,38 @@
     return m;
   }
 
+  // Pluie et éclairs dessinés sur un canvas 2D en overlay (zéro GLSL, testable) : gouttes inclinées par le vent,
+  // densité ∝ pluie ; un éclair blanchit brièvement l'écran. Ne s'affiche que pendant la pluie/l'éclair.
+  let meteoCtx = null, meteoGouttes = [], meteoDpr = 0;
+  function dessinerMeteo(S, dt) {
+    const cv = document.getElementById('meteo'); if (!cv) return;
+    const m = S.meteo || { pluie: 0, eclair: 0, nuage: 0 };
+    const w = cv.clientWidth, h = cv.clientHeight; if (!w || !h) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr) || dpr !== meteoDpr) {
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); meteoCtx = null; meteoDpr = dpr;
+    }
+    if (!meteoCtx) meteoCtx = cv.getContext('2d'); const ctx = meteoCtx; if (!ctx) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+    const pluie = m.pluie || 0, eclair = m.eclair || 0;
+    if (pluie > 0.02) {
+      const cible = Math.round(pluie * 360);
+      while (meteoGouttes.length < cible) meteoGouttes.push({ x: Math.random() * w, y: Math.random() * h, l: 8 + Math.random() * 16, v: 620 + Math.random() * 520 });
+      if (meteoGouttes.length > cible) meteoGouttes.length = cible;
+      const vent = (m.nuage || 0) * 0.28 + 0.06;
+      ctx.strokeStyle = 'rgba(198,214,232,' + (0.16 + pluie * 0.34).toFixed(3) + ')';
+      ctx.lineWidth = 1.1; ctx.beginPath();
+      for (const g of meteoGouttes) {
+        g.y += g.v * dt; g.x += g.v * vent * dt;
+        if (g.y > h) { g.y = -g.l; g.x = Math.random() * w; }
+        if (g.x > w) g.x -= w; else if (g.x < 0) g.x += w;
+        ctx.moveTo(g.x, g.y); ctx.lineTo(g.x - g.l * vent, g.y - g.l);
+      }
+      ctx.stroke();
+    } else if (meteoGouttes.length) meteoGouttes.length = 0;
+    if (eclair > 0.01) { ctx.fillStyle = 'rgba(226,236,255,' + (eclair * 0.5).toFixed(3) + ')'; ctx.fillRect(0, 0, w, h); }
+  }
+
   // menus à la manette : croix pour se déplacer (gauche, droite règlent un curseur), A valide, B revient
   function naviguerManette(nouveau) {
     const zone = $(ecran); if (!zone || zone.hidden) return;
@@ -496,7 +529,7 @@
           if (son) son.evenement(e.type, e);
           if (e.type === 'choc') { S.secousse = Math.min(1, (S.secousse || 0) + .3 + e.force * .04); if (e.force > 6) S.eclair = Math.min(1, .4 + e.force * .05); }
           else if (e.type === 'reception') S.secousse = Math.min(1, (S.secousse || 0) + .25 + (e.force || 0) * .1);
-          else if (e.type === 'tonneau' || e.type === 'casse') { S.secousse = 1; S.eclair = 1; }
+          else if (e.type === 'tonneau' || e.type === 'casse') { S.secousse = 1; S.eclair = 1; if (e.type === 'casse') message('Voiture détruite', 'rouge'); }
           else if (e.type === 'roue') { message('Roue perdue', 'rouge', true); S.eclair = .8; }
           else if (e.type === 'reparation') message('Réparation…', 'ambre', true);
           else if (e.type === 'repare') message('Repositionné', 'vert', true);
@@ -552,6 +585,7 @@
   function replacer() {
     const S = session; if (!S) return;
     const co = S.course, et = co.joueur.etat;
+    if (et.degats && et.degats.casse) return;
     // Chantier 3 : le remplacement passe par le retour progressif en piste (cap et vitesse continus, immunité)
     if (B.conduite.declencherAccident) B.conduite.declencherAccident(et, { duree: 3.0 });
     else { et.d = B.circuit.echantillon(co.c, et.s).ligne; et.psi = 0; et.beta = 0; et.omega = 0; et.v = Math.min(et.v, 4); }
@@ -674,11 +708,11 @@
         }
         derriere.sort((a, b) => b.x - a.x);
         const atm = scene.decor.atmosphere;
-        B.voiture.cockpit(S.modeles[k], ev, sortie, { regime: et.regime, volant: et.volant, rapport: et.rapport, kmh: B.conduite.kmh(et), roues: co.voitures[k].degats && co.voitures[k].degats.roues,
+        B.voiture.cockpit(S.modeles[k], ev, sortie, { regime: et.regime, volant: et.volant, rapport: et.rapport, kmh: B.conduite.kmh(et), roues: co.voitures[k].degats && co.voitures[k].degats.roues, casse: !!(et.degats && et.degats.casse),
           passage: suivie.tPassage === undefined ? 1 : (co.horloge - suivie.tPassage) / .36, rapportAvant: suivie.rapportAvant, derriere, ciel: atm.skyBottom, brume: atm.fog });
         continue;
       }
-      B.voiture.poser(S.modeles[k], ev, sortie, { simple: d2 > complet * complet, roues: co.voitures[k].degats && co.voitures[k].degats.roues });
+      B.voiture.poser(S.modeles[k], ev, sortie, { simple: d2 > complet * complet, roues: co.voitures[k].degats && co.voitures[k].degats.roues, casse: !!(co.voitures[k].degats && co.voitures[k].degats.casse) });
     }
     // fantôme du meilleur tour
     if (co.mode === 'chrono') {
@@ -707,6 +741,7 @@
     const eclair = S.eclair || 0;
     const meteo = majMeteo(S, dtImage);
     rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: q !== 'low' ? 1 : 0, weather: meteo });
+    dessinerMeteo(S, dtImage);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
     // En cockpit, la planche donne vitesse, rapport et régime : le tableau réduit retire plan et compteurs, qui
@@ -824,7 +859,7 @@
         if (prec >= 0 && r > prec + 1) html += '<li class="saut"></li>';
         const v = ordre[r], col = 'rgb(' + v.couleur.map(x => Math.round(x * 255)).join(',') + ')';
         const lance = co.phase === 'course' || co.phase === 'arrivee';
-        const ecart = !lance ? '' : r === 0 ? 'Tête' : ecartTexte(v.ecart);
+        const ecart = v.abandon ? 'Abandon' : !lance ? '' : r === 0 ? 'Tête' : ecartTexte(v.ecart);
         html += '<li' + (v === j ? ' class="joueur"' : '') + '><span class="p">' + (r + 1) + '</span><span class="c" style="background:' + col + '"></span><span class="n">' + nomCourt(v) + '</span><span class="e">' + ecart + '</span></li>';
         prec = r;
       }
@@ -1004,7 +1039,7 @@
   function finirClassement(S) {
     const co = S.course, delai = Math.max(40, 1.25 * co.drapeau / co.toursTotal);
     let pas = 0;
-    const continuer = () => pas < 120 * 240 && !co.voitures.every(v => v.fini) && co.temps - co.drapeau < delai;
+    const continuer = () => pas < 120 * 240 && !co.voitures.every(v => v.fini || v.abandon) && co.temps - co.drapeau < delai;
     co.termine = true;
     function tranche() {
       if (session !== S || ecran !== 'resultats') return;
@@ -1029,7 +1064,7 @@
     const j = co.joueur, corps = $('res-lignes'), entete = document.querySelector('.tableau-resultats thead tr');
     const nomCircuit = CATALOGUE[S.i].nom;
     if (co.mode === 'chrono') {
-      $('res-titre').textContent = 'Séance de chrono';
+      $('res-titre').textContent = j.abandon ? 'Voiture détruite' : 'Séance de chrono';
       const r = records[CATALOGUE[S.i].id];
       $('res-sous').textContent = nomCircuit + ' · meilleur tour ' + chrono(j.meilleur) + (r ? ' · record ' + chrono(r.tour) : '');
       entete.innerHTML = '<th>Tour</th><th class="nom">Temps</th><th>Écart au meilleur</th>';
@@ -1037,13 +1072,14 @@
     } else {
       const ordre = co.classement.map(id => co.voitures[id]), tete = ordre[0];
       const meilleurAbsolu = Math.min(...ordre.map(v => v.meilleur ?? Infinity));
-      $('res-titre').textContent = j.position === 1 ? 'Victoire' : 'Arrivée · ' + j.position + 'e';
+      $('res-titre').textContent = j.abandon ? 'Abandon · voiture détruite' : j.position === 1 ? 'Victoire' : 'Arrivée · ' + j.position + 'e';
       $('res-sous').textContent = nomCircuit + ' · ' + co.toursTotal + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][co.difficulte];
       entete.innerHTML = '<th>Pos.</th><th>N°</th><th class="nom">Pilote</th><th>Tours</th><th>Temps</th><th>Meilleur tour</th>';
       corps.innerHTML = ordre.map((v, r) => {
         const col = 'rgb(' + v.couleur.map(x => Math.round(x * 255)).join(',') + ')';
         let tps;
-        if (r === 0 && v.fini) tps = chrono(v.tempsFinal);
+        if (v.abandon) tps = 'Abandon';
+        else if (r === 0 && v.fini) tps = chrono(v.tempsFinal);
         else if (v.fini && tete.fini && v.tours === tete.tours) tps = ecartTexte(v.tempsFinal - tete.tempsFinal, 3);
         else if (tete.tours - v.tours >= 1 && v.fini) tps = '+' + (tete.tours - v.tours) + ' tour' + (tete.tours - v.tours > 1 ? 's' : '');
         else tps = v.fini ? chrono(v.tempsFinal) : 'en piste';
@@ -1052,7 +1088,7 @@
     }
     if (!classementFinal) {
       aller('resultats');
-      if (co.mode === 'course' && co.drapeau !== null) finirClassement(S);
+      if (co.mode === 'course' && co.drapeau !== null && !j.abandon) finirClassement(S);
     }
   }
 
@@ -1079,7 +1115,11 @@
     const dtVu = tourne ? dtReel : 0, cam = rendreImage(S, clamp(S.acc / DT, 0, 1), dtVu);
     if (S.type !== 'vitrine') {
       majHud(S);
-      if (S.type === 'course' && S.course.termine && !S.resultats) montrerResultats(S);
+      const j = S.course.joueur;
+      if ((S.type === 'course' || S.type === 'chrono') && !S.resultats &&
+          (S.course.termine || (j.abandon && S.course.horloge - j.tAbandon >= 3))) {
+        S.course.termine = true; montrerResultats(S);
+      }
       if (S.type === 'demo' && !S.enchaine && ecran === 'demo' && (S.course.termine || (S.finA !== null && S.course.horloge - S.finA > APRES_DRAPEAU))) demoSuivante(S);
     }
     majSon(S, cam, dtVu);

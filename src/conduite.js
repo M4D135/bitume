@@ -526,7 +526,14 @@
     if (Math.abs(etat.d) > bord) {
       const vAvant = etat.v, ang = Math.abs(angle(etat.psi)), versMur = cdg * etat.psi > 0;
       const premier = !etat.auRail && etat.choc <= 0;   // vrai premier contact, pas le frottement continu le long du rail
-      if (versMur && ang > P.glissAccident && etat.v >= P.glissVAccident) {
+      const normale = Math.max(0, cdg * vAvant * Math.sin(etat.psi));
+      if (versMur && (premier || (B.degats && normale >= B.degats.PARAMS.chocCasse)))
+        for (const e of subirChoc(etat, normale)) ev.push(e);
+      if (etat.degats && etat.degats.casse) {
+        etat.d = cdg * bord;
+        ev.push({ type: 'choc', force: normale });
+        etat.choc = P.chocDuree;
+      } else if (versMur && ang > P.glissAccident && etat.v >= P.glissVAccident) {
         etat.d = cdg * bord;
         ev.push({ type: 'choc', force: vAvant });
         declencherAccident(etat, {});
@@ -617,8 +624,24 @@
   function declencherAccident(etat, o = {}) {
     if (etat.accident) return;
     etat.saut = null; etat.reparation = null;
+    if (etat.degats && etat.degats.casse) return;
     etat.accident = { t: 0, duree: o.duree || P.accidentDuree, d0: etat.d, reception: !!o.reception };
     annuler(etat, []);
+  }
+
+  // BITUME : une casse est définitive pour la séance. Aucun gaz, saut, replacement ou stand ne la ranime.
+  function immobiliser(etat, ev) {
+    etat.v = 0; etat.gaz = 0; etat.frein = 1; etat.regime = P.ralenti;
+    etat.psi = angle(etat.psi + etat.beta); etat.omega = 0; etat.beta = 0; etat.saut = null; etat.accident = null; etat.reparation = null;
+    etat.bond = 0; etat.bondT = 0; etat.glisse = 0; etat.immunite = 0;
+    annuler(etat, ev);
+  }
+
+  // Même facture pour les murs et les rivaux ; force en m/s normaux / relatifs, jamais vitesse totale rasante.
+  function subirChoc(etat, force, options = {}) {
+    const ev = B.degats && etat.degats ? (B.degats.choc(etat.degats, force, options) || []) : [];
+    if (etat.degats && etat.degats.casse) immobiliser(etat, ev);
+    return ev;
   }
 
   // Vol : arc parabolique, tangage et roulis qui tournent, peu de direction ; à la réception, la vitesse garde
@@ -716,6 +739,7 @@
   // cmd = { gaz, frein, volant, derive, haut, bas, boite: 'auto'|'manuelle', aide, guidage }
   function pas(etat, cmd, c, dt, retenue = false) {
     const ev = [];
+    if (etat.degats && etat.degats.casse) { immobiliser(etat, ev); return ev; }
     const gaz = borne01(cmd.gaz), frein = borne01(cmd.frein), aide = borne01(cmd.aide), guidage = borne01(cmd.guidage);
     etat.gaz = gaz; etat.frein = frein;
     filtrerVolant(etat, clamp(+cmd.volant || 0, -1, 1), dt);
@@ -735,6 +759,6 @@
 
   B.conduite = {
     PARAMS, creer, pas, annulerDerive, couperTurbo, cap, kmh, couple, limiteCote, braquageMax, volantPour,
-    capaciteLaterale, pneu, lancerSaut, declencherAccident
+    capaciteLaterale, pneu, lancerSaut, declencherAccident, subirChoc
   };
 })(globalThis.BITUME = globalThis.BITUME || {});
