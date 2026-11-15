@@ -9,19 +9,74 @@
   const wrap = (s, L) => ((s % L) + L) % L;
   const ecart = (a, b, L) => { let d = b - a; if (d > L / 2) d -= L; else if (d < -L / 2) d += L; return d; };
 
+  // Prisme du cylindre WebGL FERRO : 16 côtés, mêmes sommets et rotation Rz·Ry·Rx.
+  // Les sommets centrés, axes de faces et directions d'arêtes sont calculés une seule fois.
+  function prisme(source) {
+    if (!['p','s','r'].every(k => Array.isArray(source[k]) && source[k].length===3 && source[k].every(Number.isFinite)) ||
+        source.s.some(v=>v<=0) || source.sides!==16) return null;
+    const [rx,ry,rz]=source.r, cx=Math.cos(rx),sx=Math.sin(rx),cy=Math.cos(ry),sy=Math.sin(ry),cz=Math.cos(rz),sz=Math.sin(rz);
+    const tourner=(x,y,z)=>{const y1=cx*y-sx*z,z1=sx*y+cx*z,x2=cy*x+sy*z1,z2=-sy*x+cy*z1;return[cz*x2-sz*y1,sz*x2+cz*y1,z2];};
+    const sommets=[], axes=[tourner(0,1,0)], aretes=[tourner(0,1,0)], [dx,dy,dz]=source.s;
+    let xmin=Infinity,xmax=-Infinity,ymin=Infinity,ymax=-Infinity,zmin=Infinity,zmax=-Infinity;
+    for(let i=0;i<16;i++) {
+      const a=i*Math.PI/8,b=(i+1)*Math.PI/8,m=(a+b)/2;
+      const edge=tourner((Math.cos(b)-Math.cos(a))*dx,0,(Math.sin(b)-Math.sin(a))*dz);
+      aretes.push(edge); axes.push(tourner(Math.cos(m)/dx,0,Math.sin(m)/dz));
+      // Arête du prisme croisée avec la verticale de la voiture (indépendante de son cap).
+      axes.push([-edge[2],0,edge[0]]);
+      for(const sign of [-1,1]) {
+        const v=tourner(Math.cos(a)*dx/2,sign*dy/2,Math.sin(a)*dz/2);sommets.push(v);
+        xmin=Math.min(xmin,v[0]);xmax=Math.max(xmax,v[0]);ymin=Math.min(ymin,v[1]);ymax=Math.max(ymax,v[1]);zmin=Math.min(zmin,v[2]);zmax=Math.max(zmax,v[2]);
+      }
+    }
+    const up=aretes[0];axes.push([-up[2],0,up[0]]);
+    if(!axes.concat(aretes).every(v=>v.every(Number.isFinite)))return null;
+    return Object.assign({},source,{x:source.p[0],y:source.p[1],z:source.p[2],xmin:xmin+source.p[0],xmax:xmax+source.p[0],ymin:ymin+source.p[1],ymax:ymax+source.p[1],zmin:zmin+source.p[2],zmax:zmax+source.p[2],sommets,axes,aretes});
+  }
+  function testerPrisme(a,o) {
+    if(!o || a.ymax<=o.ymin || a.ymin>=o.ymax)return null;
+    const ca=Math.cos(a.angle),sa=Math.sin(a.angle),rx=Math.abs(ca)*a.hx+Math.abs(sa)*a.hz,rz=Math.abs(sa)*a.hx+Math.abs(ca)*a.hz;
+    if(a.x+rx<=o.xmin || a.x-rx>=o.xmax || a.z+rz<=o.zmin || a.z-rz>=o.zmax)return null;
+    const dx=a.x-o.x,dy=(a.ymin+a.ymax)/2-o.y,dz=a.z-o.z,hy=(a.ymax-a.ymin)/2;
+    let depth=Infinity,nx=0,nz=0;
+    function axe(x,y,z) {
+      if(x*x+y*y+z*z<1e-24)return true; // arêtes parallèles
+      const ra=a.hx*Math.abs(ca*x+sa*z)+a.hz*Math.abs(-sa*x+ca*z)+hy*Math.abs(y);
+      let rb=0;for(const v of o.sommets)rb=Math.max(rb,Math.abs(v[0]*x+v[1]*y+v[2]*z));
+      const q=dx*x+dy*y+dz*z,overlap=ra+rb-Math.abs(q);
+      if(overlap<=1e-10)return false;
+      // Une translation horizontale doit fermer toute la projection sur cet axe 3D.
+      const horizontal=Math.hypot(x,z),d=horizontal>1e-12?overlap/horizontal:Infinity;
+      if(d<depth){depth=d;const sign=q>=0?1:-1;nx=sign*x/horizontal;nz=sign*z/horizontal;}
+      return true;
+    }
+    if(!axe(ca,0,sa)||!axe(-sa,0,ca)||!axe(0,1,0))return null;
+    for(const v of o.axes)if(!axe(...v))return null;
+    // Produits croisés de chaque direction d'arête avec les deux axes horizontaux de la caisse.
+    for(const [x,y,z] of o.aretes)if(!axe(y*sa,z*ca-x*sa,-y*ca)||!axe(y*ca,-z*sa-x*ca,y*sa))return null;
+    return {nx,nz,depth};
+  }
+
   function creer(liste) {
     const objets = [], grille = new Map();
     for (const source of liste || []) {
-      if (!source || !['box', 'circle'].includes(source.type)) continue;
-      const champs = ['x', 'z', 'ymin', 'ymax', ...(source.type === 'box' ? ['angle', 'hx', 'hz'] : ['r'])];
-      if (!champs.every(k => Number.isFinite(source[k])) || source.ymax <= source.ymin) continue;
-      if (source.type === 'box' ? source.hx <= 0 || source.hz <= 0 : source.r <= 0) continue;
-      const o = Object.assign({}, source), ca = Math.cos(o.angle || 0), sa = Math.sin(o.angle || 0);
-      const rx = o.type === 'circle' ? o.r : Math.abs(ca) * o.hx + Math.abs(sa) * o.hz;
-      const rz = o.type === 'circle' ? o.r : Math.abs(sa) * o.hx + Math.abs(ca) * o.hz;
-      const x0 = Math.floor((o.x-rx)/CELLULE), x1 = Math.floor((o.x+rx)/CELLULE);
-      const z0 = Math.floor((o.z-rz)/CELLULE), z1 = Math.floor((o.z+rz)/CELLULE);
-      if ((x1-x0+1)*(z1-z0+1) > 4096) continue; // descripteur hors échelle, jamais une boucle géante
+      if (!source || !['box','circle','prism'].includes(source.type)) continue;
+      let o, xmin,xmax,zmin,zmax;
+      if(source.type==='prism') {
+        o=prisme(source);if(!o)continue;
+        ({xmin,xmax,zmin,zmax}=o);
+      } else {
+        const champs=['x','z','ymin','ymax',...(source.type==='box'?['angle','hx','hz']:['r'])];
+        if(!champs.every(k=>Number.isFinite(source[k])) || source.ymax<=source.ymin)continue;
+        if(source.type==='box'?source.hx<=0||source.hz<=0:source.r<=0)continue;
+        o=Object.assign({},source);const ca=Math.cos(o.angle||0),sa=Math.sin(o.angle||0);
+        const rx=o.type==='circle'?o.r:Math.abs(ca)*o.hx+Math.abs(sa)*o.hz;
+        const rz=o.type==='circle'?o.r:Math.abs(sa)*o.hx+Math.abs(ca)*o.hz;
+        xmin=o.x-rx;xmax=o.x+rx;zmin=o.z-rz;zmax=o.z+rz;
+      }
+      if(![xmin,xmax,zmin,zmax,o.ymin,o.ymax].every(Number.isFinite))continue;
+      const x0=Math.floor(xmin/CELLULE),x1=Math.floor(xmax/CELLULE),z0=Math.floor(zmin/CELLULE),z1=Math.floor(zmax/CELLULE);
+      if (![x0,x1,z0,z1].every(Number.isSafeInteger) || (x1-x0+1)*(z1-z0+1) > 4096) continue; // descripteur hors échelle, jamais une boucle géante
       o.id = objets.length; objets.push(o);
       for (let x=x0; x<=x1; x++) for (let z=z0; z<=z1; z++) {
         const key=x+','+z; let cell=grille.get(key); if (!cell) grille.set(key, cell=[]); cell.push(o.id);
@@ -32,6 +87,7 @@
 
   // Normale obstacle -> voiture. Test pur ; le calcul de profondeur couvre aussi un rectangle contenu.
   function tester(a, o) {
+    if(o.type==='prism')return testerPrisme(a,o.sommets?o:prisme(o));
     if (a.ymax <= o.ymin || a.ymin >= o.ymax) return null;
     const ca=Math.cos(a.angle), sa=Math.sin(a.angle), dx=o.x-a.x, dz=o.z-a.z;
     if (o.type === 'circle') {

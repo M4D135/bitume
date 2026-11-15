@@ -278,7 +278,7 @@
     const tronc = [.30, .21, .13], vert = essence === 'conifere' ? [.10, .24, .11] : essence === 'pin' ? [.20, .32, .12] : [.17, .31, .09];
     const v = varier(vert, r, .35), h = (essence === 'pin' ? 9 : essence === 'conifere' ? 11 : 7) * (.75 + r() * .55);
     const penche = (r() - .5) * .12;
-    liste.push({ shape: 'cylinder', p: [x, y + h * .42, z], s: [h * .045, h * .84, h * .045], r: [penche, 0, penche * .7], mat: 10, color: tronc, detail: 1 });
+    liste.push({ shape: 'cylinder', collision: 'tronc', p: [x, y + h * .42, z], s: [h * .045, h * .84, h * .045], r: [penche, 0, penche * .7], mat: 10, color: tronc, detail: 1 });
     if (essence === 'pin') {
       liste.push({ shape: 'foliage', p: [x + penche * h * .4, y + h * .92, z], s: [h * .78, h * .26, h * .78], r: [0, r() * 6, 0], mat: 11, color: v });
       liste.push({ shape: 'foliage', p: [x + penche * h * .4 + 1, y + h * .82, z - .8], s: [h * .5, h * .2, h * .5], r: [0, r() * 6, 0], mat: 11, color: v.map(q => q * .9) });
@@ -578,9 +578,10 @@
       lots.push({ objets: l.objets, loin: l.loin, centre: [mx, my, mz], rayon, portee: Infinity, bascule: l.lointain ? 900 : 520 });
     }
     // Collision et image partagent les mêmes primitives ; aucune consommation du hasard supplémentaire.
-    // Les troncs inclinés ne sont pas assimilés à de gros cylindres verticaux : exclus de ce premier lot.
+    // Les troncs gardent le prisme à 16 côtés et la rotation du cylindre WebGL, indépendants de la qualité.
     const obstacles = [];
     for (const lot of lots) for (const o of lot.objets) if (o.collision) {
+      if(o.collision==='tronc'){obstacles.push({type:'prism',p:o.p.slice(),s:o.s.slice(),r:o.r.slice(),sides:16,genre:'tronc'});continue;}
       const commun = { x: o.p[0], z: o.p[2], ymin: o.p[1]-o.s[1]/2, ymax: o.p[1]+o.s[1]/2, genre: o.collision };
       if (o.shape === 'cylinder') obstacles.push(Object.assign(commun, { type: 'circle', r: o.s[0]/2 }));
       else obstacles.push(Object.assign(commun, { type: 'box', angle: -(o.r ? o.r[1] : 0), hx: o.s[0]/2, hz: o.s[2]/2 }));
