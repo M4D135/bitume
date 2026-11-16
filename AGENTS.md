@@ -138,6 +138,11 @@ contrôle l'empreinte, bascule le lien `current` d'un coup et garde 3 versions. 
 `~/apps/caddy-shared/vhosts.d/` si `deploiement/bitume.estrasse.fr.Caddyfile` a changé, puis vérifie que la page
 servie a la même empreinte. Aucun timer : le VPS n'a pas accès au dépôt privé. Le retour arrière est en tête du script.
 
+Le salon du jeu en ligne part avec la page : `serveur/salon.mjs` dans `~/apps/bitume/salon/`, service utilisateur
+`bitume-salon` (`deploiement/bitume-salon.service`, 127.0.0.1:8790), servi par Caddy sous `/salon` (WebSocket,
+`stream_close_delay` de 10 min). Il n'est reposé et relancé que s'il a changé ; le script vérifie
+`https://bitume.estrasse.fr/salon/sante`. Couper le jeu en ligne : `systemctl --user disable --now bitume-salon`.
+
 
 ## Décisions de David — 16 novembre 2026, soir
 
@@ -169,8 +174,8 @@ Les modules listés dans `FERRO.lock.json` sont désormais des copies exactes de
   par le salon au bout de 7 s. Le jeu seul ne fait toujours aucun appel réseau. Chaque machine conduit sa voiture
   sans attendre le réseau ; horloge commune ; état envoyé à chaque image ; voiture distante prolongée puis corrigée en
   0,12 s. L'hôte fait courir les rivaux et annonce les temps officiels. La course attend les deux pilotes ; à la
-  fin, l'hôte lance la revanche ; une coupure confie l'autre voiture à l'ordinateur. Le salon n'est pas installé sur
-  amiga : service et route publique seulement avec l'accord de David.
+  fin, l'hôte lance la revanche ; une coupure confie l'autre voiture à l'ordinateur. Salon installé sur amiga avec
+  l'accord de David (« go », 16/11) : voir « Mettre en ligne ».
   Suite, David, 16/11 après la mise en ligne de la 0.2.7 : « on verra plus tard le online, mais je veux du peer to
   peer avec mini serveur pour rejoindre les joueurs, un truc léger, sans besoin de ports ouverts ». Le serveur ne
   sert qu'à se trouver ; la partie passe d'une machine à l'autre ; aucun joueur n'ouvre de port.

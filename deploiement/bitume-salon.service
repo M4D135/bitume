@@ -1,0 +1,25 @@
+# BITUME — salon du jeu en ligne (serveur/salon.mjs) : met deux pilotes en relation et relaie leur partie quand la
+# liaison directe est impossible. N'écoute que 127.0.0.1:8790 ; Caddy le sert sur https://bitume.estrasse.fr/salon.
+# Posé et relancé par deposer.sh dans ~/.config/systemd/user/ (compte ddd, sans root, lingering actif).
+[Unit]
+Description=BITUME salon du jeu en ligne (127.0.0.1:8790, derrière Caddy)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/ddd/apps/bitume/salon
+Environment=PORT=8790
+Environment=HOTE=127.0.0.1
+ExecStart=/usr/bin/node /home/ddd/apps/bitume/salon/salon.mjs
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=10
+KillSignal=SIGTERM
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+MemoryMax=256M
+
+[Install]
+WantedBy=default.target

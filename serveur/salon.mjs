@@ -15,7 +15,12 @@ import crypto from 'node:crypto';
 
 const PORT = +(process.env.PORT || 8790), HOTE = process.env.HOTE || '127.0.0.1';
 const MAX_OCTETS = 64 * 1024, LETTRES = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+// Garde-fous d'un service public : 600 connexions au plus, 24 par adresse, 240 messages par seconde et par pilote
+// (une partie en envoie environ 65) ; au-delà, les messages sont perdus, et un flot continu ferme la connexion.
+const MAX_CLIENTS = 600, MAX_PAR_IP = 24, DEBIT = 240, RAFALE = 480;
 const salons = new Map();   // code → [hôte, invité]
+const parIp = new Map();
+let clients = 0;
 
 function trame(opcode, donnees) {
   const n = donnees.length, entete = n < 126 ? Buffer.from([0x80 | opcode, n]) : n < 65536
@@ -50,6 +55,10 @@ function recevoir(c, opcode, donnees) {
   if (opcode === 8) return fermer(c);
   if (opcode === 9) { try { c.socket.write(trame(10, donnees)); } catch (e) { /* fermé */ } return; }
   if (opcode === 10) { c.vivant = true; return; }
+  const t = Date.now();
+  c.jetons = Math.min(RAFALE, c.jetons + (t - c.tJetons) * DEBIT / 1000); c.tJetons = t;
+  if (c.jetons < 1) { if (++c.exces > 5 * DEBIT) { fermer(c); c.socket.destroy(); } return; }
+  c.jetons--; c.exces = 0;
   const autre = c.code && (salons.get(c.code) || []).find(x => x && x !== c);
   if (opcode === 2) { if (autre) envoyer(autre, donnees); return; }       // état des voitures, relayé
   if (opcode !== 1) return;
@@ -70,16 +79,22 @@ function recevoir(c, opcode, donnees) {
 }
 
 const serveur = http.createServer((req, res) => {
-  res.writeHead(req.url === '/salon/sante' ? 200 : 404, { 'content-type': 'text/plain; charset=utf-8' });
-  res.end(req.url === '/salon/sante' ? `salon BITUME : ${salons.size} partie(s)\n` : 'introuvable\n');
+  res.writeHead(req.url === '/salon/sante' ? 200 : 404, { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' });
+  res.end(req.url === '/salon/sante' ? `salon BITUME : ${salons.size} partie(s), ${clients} pilote(s)\n` : 'introuvable\n');
 });
 serveur.on('upgrade', (req, socket) => {
   const cle = req.headers['sec-websocket-key'];
   if (!req.url.startsWith('/salon') || !cle) { socket.destroy(); return; }
+  // derrière Caddy (le salon n'écoute que 127.0.0.1), l'adresse du pilote est la première de X-Forwarded-For
+  const ip = String(req.headers['x-forwarded-for'] || socket.remoteAddress || '').split(',')[0].trim();
+  if (clients >= MAX_CLIENTS || (parIp.get(ip) || 0) >= MAX_PAR_IP) { socket.end('HTTP/1.1 503 Service Unavailable\r\nConnection: close\r\n\r\n'); return; }
+  clients++; parIp.set(ip, (parIp.get(ip) || 0) + 1);
+  let libere = false;
+  const liberer = () => { if (libere) return; libere = true; clients--; const n = (parIp.get(ip) || 1) - 1; if (n > 0) parIp.set(ip, n); else parIp.delete(ip); };
   const accepte = crypto.createHash('sha1').update(cle + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11').digest('base64');
   socket.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + accepte + '\r\n\r\n');
   socket.setNoDelay(true);
-  const c = { socket, code: null, role: null, nom: '', ferme: false, vivant: true, tampon: Buffer.alloc(0), fragments: [], opFragment: 0 };
+  const c = { socket, code: null, role: null, nom: '', ferme: false, vivant: true, tampon: Buffer.alloc(0), fragments: [], opFragment: 0, jetons: RAFALE, tJetons: Date.now(), exces: 0 };
   socket.on('data', morceau => {
     c.tampon = Buffer.concat([c.tampon, morceau]);
     for (;;) {
@@ -100,8 +115,8 @@ serveur.on('upgrade', (req, socket) => {
       else recevoir(c, opcode, donnees);
     }
   });
-  socket.on('close', () => fermer(c));
-  socket.on('error', () => fermer(c));
+  socket.on('close', () => { fermer(c); liberer(); });
+  socket.on('error', () => { fermer(c); liberer(); });
   const veille = setInterval(() => {
     if (c.ferme) { clearInterval(veille); return; }
     if (!c.vivant) { fermer(c); socket.destroy(); clearInterval(veille); return; }

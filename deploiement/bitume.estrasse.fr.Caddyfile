@@ -2,10 +2,19 @@
 # Fichiers : /home/ddd/apps/bitume/current -> releases/<commit>. La page est déposée depuis le Mac par deposer.sh,
 # sans timer : le VPS n'a pas accès au dépôt privé. Certificat : l'applicateur caddy-shared déclare ce domaine
 # en ACME, d'après le nom de ce fichier.
+# /salon : salon du jeu en ligne (service utilisateur bitume-salon, 127.0.0.1:8790), en WebSocket ; les parties
+# restent ouvertes 10 min quand Caddy recharge sa configuration (autre site déployé).
 bitume.estrasse.fr {
 	import security_headers
-	root * /home/ddd/apps/bitume/current
-	encode zstd gzip
-	header Cache-Control "no-cache"
-	file_server
+	handle /salon* {
+		reverse_proxy 127.0.0.1:8790 {
+			stream_close_delay 10m
+		}
+	}
+	handle {
+		root * /home/ddd/apps/bitume/current
+		encode zstd gzip
+		header Cache-Control "no-cache"
+		file_server
+	}
 }
