@@ -1,26 +1,23 @@
 (function (B) {
   'use strict';
-  // BITUME — jeu en ligne à deux (David, 16/11/2026 : « gros chantier, le multijoueur en ligne, deux pour commencer » ;
-  // « netcode précis et léger, pas de lag ; jeu de course, précision absolue nécessaire »).
+  // BITUME — jeu en ligne (David, 16/11/2026 : « le multijoueur en ligne », « netcode précis et léger, pas de lag » ;
+  // « en ligne jusqu'à quatre, et deux en local contre deux en local, deux en local contre un seul »).
   //
   // Principe :
-  // - chaque pilote conduit SA voiture sur sa machine, sans attendre le réseau : aucun retard à la commande ;
-  // - liaison directe WebRTC entre les deux machines (canal « état » sans reprise ni ordre, canal « fiable »
-  //   ordonné) ; le salon (serveur/salon.mjs) ne sert qu'à se trouver, et relaie la partie si la liaison directe
-  //   échoue ;
-  // - horloge commune : l'invité mesure son décalage sur l'hôte (aller-retours, on garde le plus court) ; la course
-  //   part au même instant T0 des deux côtés et la simulation suit cette horloge pas à pas ;
-  // - l'état d'une voiture (15 nombres, horodatés) part 60 fois par seconde ; la voiture distante est prolongée
-  //   jusqu'à l'instant du pas par la même cinématique que la conduite, et l'écart à chaque nouvel état se résorbe
-  //   en 0,12 s au lieu de sauter ;
-  // - l'hôte fait courir les rivaux et envoie leur état 30 fois par seconde ;
-  // - les temps officiels (tours, arrivée) passent par le canal fiable : chacun chronomètre sa propre voiture.
+  // - de deux à quatre machines, une ou deux voitures humaines chacune (écran partagé), quatre pilotes au plus ;
+  // - chaque machine conduit SES voitures sans attendre le réseau : aucun retard à la commande ;
+  // - liaisons directes WebRTC entre toutes les machines (canal « état » sans reprise ni ordre, canal « fiable »
+  //   ordonné) ; le salon (serveur/salon.mjs) sert à se trouver, et relaie entre deux machines sans liaison directe ;
+  // - horloge commune, celle de l'hôte ; la course part au même instant T0 partout et la simulation suit cette horloge ;
+  // - l'état d'une voiture (15 nombres, horodatés) part à chaque image ; une voiture distante est prolongée jusqu'à
+  //   l'instant du pas par la même cinématique que la conduite, et l'écart à chaque nouvel état se résorbe en 0,12 s ;
+  // - l'hôte fait courir les rivaux (et les voitures d'une machine partie) et annonce leurs temps officiels ; chaque
+  //   machine annonce ceux de ses voitures.
   //
-  //   const R = B.reseau.creer({ url, nom });  R.on('pret' | 'message' | 'etat' | 'ferme' | 'salon' | 'erreur', f)
-  //   R.creerSalon() ; R.rejoindreSalon(code) ; R.envoyer(objet) ; R.envoyerEtat(tampon) ; R.horloge() (ms, hôte)
+  //   const R = B.reseau.creer({ url, nom, joueurs });  R.on('salon' | 'salle' | 'pair' | 'relais' | 'parti' |
+  //   'message' | 'etat' | 'erreur' | 'ferme', f) ; R.creerSalon() ; R.rejoindreSalon(code) ; R.envoyer(objet, machine?) ;
+  //   R.envoyerEtat(tampon) ; R.horloge() (ms, celle de l'hôte)
 
-  // STUN publics de deux fournisseurs (si l'un est bloqué, l'autre répond) : chaque machine apprend son adresse vue
-  // d'Internet et les deux percent leur routeur l'une vers l'autre, sans port ouvert à la main
   const STUN = [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }, { urls: 'stun:stun.cloudflare.com:3478' }];
   const CHAMPS = ['s', 'd', 'v', 'psi', 'beta', 'omega', 'y', 'tangage', 'roulis', 'regime', 'volant', 'rapport', 'gaz', 'frein', 'braquage'];
   const TAILLE_VOITURE = 1 + 4 * CHAMPS.length;
@@ -68,115 +65,150 @@
   }
 
   // ---------------------------------------------------------------- liaison
+  // Maillage : chaque machine a une liaison avec chacune des autres (trois au plus). La plus ancienne appelle la plus
+  // récente ; une liaison directe qui n'aboutit pas en 7 s, ou qui se perd en course, passe par le salon. L'horloge
+  // commune est celle de l'hôte (machine 0).
   function creer(options = {}) {
-    const ecoute = {}, R = { etat: 'ferme', role: null, code: null, autre: null, rtt: 0, decalage: 0, relais: false, nom: options.nom || '' };
-    const emettre = (nom, x) => { for (const f of ecoute[nom] || []) f(x); };
+    const ecoute = {}, pairs = new Map();   // machine → { id, pc, canal, fiable, relais, pret, minuteur, coupure }
+    const R = { etat: 'ferme', role: null, id: -1, code: null, membres: [], rtt: 0, decalage: 0, synchro: false, pairs,
+      nom: options.nom || '', joueurs: options.joueurs === 2 ? 2 : 1 };
+    Object.defineProperty(R, 'relais', { get: () => [...pairs.values()].some(p => p.relais) });
+    const emettre = (nom, ...x) => { for (const f of ecoute[nom] || []) f(...x); };
     R.on = (nom, f) => { (ecoute[nom] || (ecoute[nom] = [])).push(f); return R; };
-    let ws = null, pc = null, canal = null, fiable = null, minuteurRelais = null, minuteurPing = null, minuteurCoupure = null;
+    R.pretAvec = id => { const p = pairs.get(id); return !!(p && p.pret); };
+    let ws = null, minuteurPing = null;
     const echantillons = [];
     const maintenant = () => performance.now();
     R.horloge = () => maintenant() + (R.role === 'invite' ? R.decalage : 0);
 
     function versSalon(m) { if (ws && ws.readyState === 1) ws.send(JSON.stringify(m)); }
+    function majEtat() { if (R.etat !== 'ferme') R.etat = [...pairs.values()].some(p => p.pret) ? 'connecte' : 'salon'; }
     function ouvrir() {
       return new Promise((ok, ko) => {
         try { ws = new WebSocket(options.url); } catch (e) { ko(e); return; }
         ws.binaryType = 'arraybuffer';
         ws.onopen = () => { R.etat = 'salon'; ok(); };
         ws.onerror = () => { if (R.etat === 'ferme') ko(new Error('salon injoignable')); };
-        ws.onclose = () => { if (R.etat !== 'ferme' && (R.relais || R.etat !== 'connecte')) terminer('salon'); };
+        // sans salon, plus de nouvelles liaisons ni de relais : la partie ne tient que si toutes ses liaisons sont directes
+        ws.onclose = () => { if (R.etat !== 'ferme' && (!pairs.size || [...pairs.values()].some(p => p.relais || !p.pret))) terminer('salon'); };
         ws.onmessage = ev => {
-          if (typeof ev.data !== 'string') { recevoirEtat(ev.data); return; }
+          if (typeof ev.data !== 'string') { const u = new Uint8Array(ev.data); if (u.length > 1) recevoirEtat(ev.data.slice(1), u[0]); return; }
           let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
-          if (m.t === 'salon') { R.code = m.code; R.role = m.role; R.autre = m.autre || null; emettre('salon', m); if (m.role === 'invite') attendreLiaison(); }
-          else if (m.t === 'arrivee') { R.autre = m.nom; emettre('arrivee', m); lier(); }
-          else if (m.t === 'signal') signal(m);
-          else if (m.t === 'relais') recevoirFiable(m.m);
-          else if (m.t === 'parti') terminer('parti');
+          if (m.t === 'salon') { R.code = m.code; R.id = m.id; R.role = m.role; emettre('salon', m); }
+          else if (m.t === 'salle') {
+            R.membres = Array.isArray(m.membres) ? m.membres : [];
+            for (const x of R.membres) if (x.id > R.id && !pairs.has(x.id)) lier(x.id);
+            for (const id of [...pairs.keys()]) if (!R.membres.some(x => x.id === id)) fermerPair(id);
+            emettre('salle', R.membres);
+          }
+          else if (m.t === 'signal') signal(m.de, m);
+          else if (m.t === 'relais') recevoirFiable(m.m, m.de);
+          else if (m.t === 'parti') { fermerPair(m.id); if (m.hote) terminer('parti'); else emettre('parti', m.id); }
           else if (m.t === 'erreur') emettre('erreur', m.message);
         };
       });
     }
-    R.creerSalon = async () => { await ouvrir(); versSalon({ t: 'creer', nom: R.nom }); };
-    R.rejoindreSalon = async code => { await ouvrir(); versSalon({ t: 'rejoindre', code: String(code || '').trim().toUpperCase(), nom: R.nom }); };
+    R.creerSalon = async () => { await ouvrir(); versSalon({ t: 'creer', nom: R.nom, joueurs: R.joueurs }); };
+    R.rejoindreSalon = async code => { await ouvrir(); versSalon({ t: 'rejoindre', code: String(code || '').trim().toUpperCase(), nom: R.nom, joueurs: R.joueurs }); };
+    R.profil = (nom, joueurs) => { R.nom = nom; R.joueurs = joueurs === 2 ? 2 : 1; versSalon({ t: 'profil', nom: R.nom, joueurs: R.joueurs }); };
 
-    // WebRTC : l'hôte offre, l'invité répond ; candidats échangés par le salon
-    function nouvellePaire() {
-      pc = new RTCPeerConnection({ iceServers: options.iceServers || STUN });
-      pc.onicecandidate = ev => { if (ev.candidate) versSalon({ t: 'signal', ice: ev.candidate }); };
-      pc.ondatachannel = ev => brancher(ev.channel);
-      const p = pc;
-      pc.onconnectionstatechange = () => {
-        if (p !== pc) return;
-        const etat = pc.connectionState;
-        if (etat === 'failed' || etat === 'closed') perdreDirect();
-        else if (etat === 'disconnected') {   // souvent passager (changement de réseau) : 2,5 s pour revenir
-          clearTimeout(minuteurCoupure);
-          minuteurCoupure = setTimeout(() => { if (p === pc && pc.connectionState !== 'connected') perdreDirect(); }, 2500);
-        }
-      };
-    }
-    async function lier() {
-      attendreLiaison();
+    function nouveauPair(id) {
+      let p = pairs.get(id);
+      if (p) return p;
+      p = { id, pc: null, canal: null, fiable: null, relais: false, pret: false, minuteur: null, coupure: null };
+      pairs.set(id, p);
       try {
-        nouvellePaire();
-        brancher(pc.createDataChannel('etat', { ordered: false, maxRetransmits: 0 }));
-        brancher(pc.createDataChannel('fiable', { ordered: true }));
-        const offre = await pc.createOffer();
-        await pc.setLocalDescription(offre);
-        versSalon({ t: 'signal', sdp: pc.localDescription });
-      } catch (e) { /* pas de WebRTC sur cette machine : au bout de 7 s, la partie passe par le salon */ }
+        const pc = p.pc = new RTCPeerConnection({ iceServers: options.iceServers || STUN });
+        pc.onicecandidate = ev => { if (ev.candidate) versSalon({ t: 'signal', a: id, ice: ev.candidate }); };
+        pc.ondatachannel = ev => brancher(p, ev.channel);
+        pc.onconnectionstatechange = () => {
+          if (p.pc !== pc) return;
+          const e = pc.connectionState;
+          if (e === 'failed' || e === 'closed') perdreDirect(p);
+          else if (e === 'disconnected') {   // souvent passager (changement de réseau) : 2,5 s pour revenir
+            clearTimeout(p.coupure);
+            p.coupure = setTimeout(() => { if (p.pc === pc && pc.connectionState !== 'connected') perdreDirect(p); }, 2500);
+          }
+        };
+      } catch (e) { p.pc = null; /* pas de WebRTC ici : le relais au bout de 7 s */ }
+      p.minuteur = setTimeout(() => { if (!p.pret && pairs.get(id) === p) pairPret(p, true); }, 7000);
+      return p;
     }
-    async function signal(m) {
+    async function lier(id) {
+      const p = nouveauPair(id);
+      if (!p.pc) return;
       try {
+        brancher(p, p.pc.createDataChannel('etat', { ordered: false, maxRetransmits: 0 }));
+        brancher(p, p.pc.createDataChannel('fiable', { ordered: true }));
+        const offre = await p.pc.createOffer();
+        await p.pc.setLocalDescription(offre);
+        versSalon({ t: 'signal', a: id, sdp: p.pc.localDescription });
+      } catch (e) { /* le relais prendra le relais */ }
+    }
+    async function signal(de, m) {
+      const p = nouveauPair(de);
+      try {
+        if (!p.pc) return;
         if (m.sdp) {
-          if (!pc) nouvellePaire();
-          await pc.setRemoteDescription(m.sdp);
-          if (m.sdp.type === 'offer') { const reponse = await pc.createAnswer(); await pc.setLocalDescription(reponse); versSalon({ t: 'signal', sdp: pc.localDescription }); }
-        } else if (m.ice && pc) await pc.addIceCandidate(m.ice);
-      } catch (e) { /* candidat tardif ou liaison abandonnée : le relais prendra le relais */ }
+          await p.pc.setRemoteDescription(m.sdp);
+          if (m.sdp.type === 'offer') { const reponse = await p.pc.createAnswer(); await p.pc.setLocalDescription(reponse); versSalon({ t: 'signal', a: de, sdp: p.pc.localDescription }); }
+        } else if (m.ice) await p.pc.addIceCandidate(m.ice);
+      } catch (e) { /* candidat tardif ou liaison abandonnée */ }
     }
-    function brancher(ch) {
+    function brancher(p, ch) {
       ch.binaryType = 'arraybuffer';
-      if (ch.label === 'etat') { canal = ch; ch.onmessage = ev => recevoirEtat(ev.data); }
-      else { fiable = ch; ch.onmessage = ev => { try { recevoirFiable(JSON.parse(ev.data)); } catch (e) { /* message illisible */ } }; }
-      ch.onopen = () => { if (canal && fiable && canal.readyState === 'open' && fiable.readyState === 'open') connecte(false); };
-      ch.onclose = () => perdreDirect();
+      if (ch.label === 'etat') { p.canal = ch; ch.onmessage = ev => recevoirEtat(ev.data, p.id); }
+      else { p.fiable = ch; ch.onmessage = ev => { try { recevoirFiable(JSON.parse(ev.data), p.id); } catch (e) { /* message illisible */ } }; }
+      ch.onopen = () => { if (p.canal && p.fiable && p.canal.readyState === 'open' && p.fiable.readyState === 'open') pairPret(p, false); };
+      ch.onclose = () => perdreDirect(p);
     }
-    // sans liaison directe au bout de 7 s, la partie passe par le salon
-    function attendreLiaison() {
-      clearTimeout(minuteurRelais);
-      minuteurRelais = setTimeout(() => { if (R.etat !== 'connecte') connecte(true); }, 7000);
-    }
-    function connecte(relais) {
-      if (R.etat === 'connecte') return;
-      clearTimeout(minuteurRelais);
-      R.relais = relais; R.etat = 'connecte';
-      if (relais) passerRelais(true);
-      // horloge commune : l'invité interroge l'hôte, vite au début puis toutes les secondes
-      if (R.role === 'invite') { let n = 0; const ping = () => { R.envoyer({ t: 'ping', a: maintenant() }); minuteurPing = setTimeout(ping, ++n < 12 ? 120 : 1000); }; ping(); }
-      emettre('pret', { relais });
+    function pairPret(p, relais) {
+      if (p.pret && (!relais || p.relais)) return;
+      clearTimeout(p.minuteur);
+      const nouveau = !p.pret;
+      p.pret = true;
+      if (relais) passerRelais(p, true);
+      majEtat();
+      if (nouveau) {
+        if (p.id === 0 && R.role === 'invite') demarrerPing();
+        emettre('pair', p.id, p.relais);
+      }
     }
     // l'un passe par le salon : l'autre le suit, même s'il croyait la liaison directe établie
-    function passerRelais(prevenir) {
-      R.relais = true;
-      clearTimeout(minuteurCoupure);
-      if (prevenir) versSalon({ t: 'relais', m: { t: 'passer-relais' } });
-      const p = pc; pc = null;
-      if (p) { try { p.close(); } catch (e) { /* déjà fermée */ } }
-      if (R.etat === 'connecte') emettre('relais');
+    function passerRelais(p, prevenir) {
+      p.relais = true;
+      clearTimeout(p.coupure);
+      if (prevenir) versSalon({ t: 'relais', a: p.id, m: { t: 'passer-relais' } });
+      const pc = p.pc; p.pc = null; p.canal = p.fiable = null;
+      if (pc) { try { pc.close(); } catch (e) { /* déjà fermée */ } }
+      if (p.pret) emettre('relais', p.id);
     }
     // Liaison directe impossible (pare-feu, routeur d'opérateur mobile) ou perdue en pleine course : la partie passe
     // par le salon, sur la même connexion que la page (port 443), sans attendre ni s'arrêter.
-    function perdreDirect() {
-      if (R.relais || R.etat === 'ferme') return;
-      if (!ws || ws.readyState !== 1) { if (R.etat === 'connecte') terminer('liaison'); return; }
-      if (R.etat === 'connecte') passerRelais(true); else connecte(true);
+    function perdreDirect(p) {
+      if (p.relais || R.etat === 'ferme' || pairs.get(p.id) !== p) return;
+      if (!ws || ws.readyState !== 1) { fermerPair(p.id); emettre('parti', p.id); return; }
+      if (p.pret) passerRelais(p, true); else pairPret(p, true);
     }
-    function recevoirFiable(m) {
+    function fermerPair(id) {
+      const p = pairs.get(id);
+      if (!p) return;
+      pairs.delete(id); clearTimeout(p.minuteur); clearTimeout(p.coupure);
+      const pc = p.pc; p.pc = null;
+      if (pc) { try { pc.close(); } catch (e) { /* déjà fermée */ } }
+      majEtat();
+    }
+    // horloge commune : l'invité interroge l'hôte, vite au début puis toutes les secondes
+    function demarrerPing() {
+      if (minuteurPing) return;
+      let n = 0;
+      const ping = () => { R.envoyer({ t: 'ping', a: maintenant() }, 0); minuteurPing = setTimeout(ping, ++n < 12 ? 120 : 1000); };
+      ping();
+    }
+    function recevoirFiable(m, de) {
       if (!m || typeof m !== 'object') return;
-      if (m.t === 'passer-relais') { if (!R.relais) { passerRelais(false); if (R.etat !== 'connecte') connecte(true); } return; }
-      if (m.t === 'ping') { R.envoyer({ t: 'pong', a: m.a, b: maintenant() }); return; }
+      if (m.t === 'passer-relais') { const p = pairs.get(de); if (p && !p.relais) { if (p.pret) passerRelais(p, false); else pairPret(p, true); } return; }
+      if (m.t === 'ping') { R.envoyer({ t: 'pong', a: m.a, b: maintenant() }, de); return; }
       if (m.t === 'pong') {
         const rtt = maintenant() - m.a;
         echantillons.push({ rtt, decalage: m.b + rtt / 2 - maintenant() });
@@ -186,26 +218,39 @@
         R.rtt = meilleur.rtt; R.decalage = meilleur.decalage; R.synchro = echantillons.length >= 6;
         return;
       }
-      if (m.t === 'bye') { terminer('parti'); return; }
-      emettre('message', m);
+      if (m.t === 'bye') { fermerPair(de); if (de === 0) terminer('parti'); else emettre('parti', de); return; }
+      emettre('message', m, de);
     }
-    function recevoirEtat(buf) { const p = deballer(buf); if (p) emettre('etat', p); }
+    function recevoirEtat(buf, de) { const p = deballer(buf); if (p) emettre('etat', p, de); }
 
-    R.envoyer = m => {
-      if (fiable && fiable.readyState === 'open' && !R.relais) fiable.send(JSON.stringify(m));
-      else versSalon({ t: 'relais', m });
+    // message fiable à une machine (a) ou à toutes
+    R.envoyer = (m, a) => {
+      for (const p of pairs.values()) {
+        if ((a !== undefined && p.id !== a) || !p.pret) continue;
+        if (!p.relais && p.fiable && p.fiable.readyState === 'open') p.fiable.send(JSON.stringify(m));
+        else versSalon({ t: 'relais', a: p.id, m });
+      }
     };
+    // état des voitures à toutes les machines : en direct, ou par le salon (le premier octet désigne la machine)
     R.envoyerEtat = buf => {
-      if (canal && canal.readyState === 'open' && !R.relais) { if (canal.bufferedAmount < 64 * 1024) canal.send(buf); }
-      else if (ws && ws.readyState === 1 && ws.bufferedAmount < 64 * 1024) ws.send(buf);
+      let copie = null;
+      for (const p of pairs.values()) {
+        if (!p.pret) continue;
+        if (!p.relais && p.canal && p.canal.readyState === 'open') { if (p.canal.bufferedAmount < 64 * 1024) p.canal.send(buf); }
+        else if (ws && ws.readyState === 1 && ws.bufferedAmount < 64 * 1024) {
+          if (!copie) { copie = new Uint8Array(buf.byteLength + 1); copie.set(new Uint8Array(buf), 1); }
+          copie[0] = p.id; ws.send(copie);
+        }
+      }
     };
     function terminer(raison) {
       if (R.etat === 'ferme') return;
       R.etat = 'ferme';
-      clearTimeout(minuteurRelais); clearTimeout(minuteurPing); clearTimeout(minuteurCoupure);
-      try { if (pc) pc.close(); } catch (e) { /* déjà fermée */ }
+      clearTimeout(minuteurPing);
+      for (const id of [...pairs.keys()]) fermerPair(id);
+      R.etat = 'ferme';
       try { if (ws) ws.close(); } catch (e) { /* déjà fermé */ }
-      pc = canal = fiable = ws = null;
+      ws = null;
       emettre('ferme', raison);
     }
     R.fermer = () => { try { R.envoyer({ t: 'bye' }); } catch (e) { /* liaison déjà coupée */ } terminer('local'); };

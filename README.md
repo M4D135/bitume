@@ -32,8 +32,9 @@ La version en ligne est la page figée d'un commit. Elle ne change qu'à la main
 - **À deux** : écran partagé sur la même machine, l'un sur l'autre ou côte à côte, chacun avec sa vue et son
   affichage. Chaque joueur choisit manette, clavier ou souris ; les touches de chacun se règlent (par défaut, flèches
   ou ZQSD pour l'un, pavé numérique pour l'autre).
-- **En ligne** : course à deux, chacun sur sa machine. L'un crée la partie et donne son code de quatre lettres,
-  l'autre le saisit ; les onze autres voitures restent à l'ordinateur. Chacun conduit sans attendre le réseau.
+- **En ligne** : de deux à quatre pilotes, un ou deux par machine (écran partagé) : deux contre deux, deux contre un,
+  quatre chacun chez soi… L'hôte crée la partie et donne son code de quatre lettres ; les autres le saisissent. Le
+  reste de la grille est à l'ordinateur. Chacun conduit sans attendre le réseau.
 - **Chrono** : seul en piste. Le meilleur tour devient un fantôme bleu gardé dans le navigateur, avec un record
   par circuit.
 - **Conduite** : boîte automatique ou manuelle, rupteur, vibreurs et herbe, glissières, dérive à trois niveaux de

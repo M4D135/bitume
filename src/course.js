@@ -24,7 +24,10 @@
     [C(.55, .80, .15), C(.08, .08, .09), C(.08, .50, .25)]
   ];
   const LIVREE_JOUEUR = [C(.86, .10, .08), C(.95, .93, .88), C(.95, .93, .88)];
-  const LIVREE_INVITE = [C(.93, .93, .95), C(.12, .28, .78), C(.86, .10, .08)];   // jeu en ligne : la seconde voiture humaine
+  const LIVREE_INVITE = [C(.93, .93, .95), C(.12, .28, .78), C(.86, .10, .08)];   // à deux : la seconde voiture humaine
+  // humains 3 et 4 (en ligne, quatre pilotes au plus) : jaune et noir, vert et blanc ; numéros libres chez les rivaux
+  const LIVREES_HUMAINS = [LIVREE_JOUEUR, LIVREE_INVITE, [C(.95, .78, .08), C(.08, .08, .09), C(.08, .08, .09)], [C(.10, .52, .30), C(.95, .93, .88), C(.95, .93, .88)]];
+  const NUMEROS_HUMAINS = [1, 2, 4, 6];
   const LONGUEUR = 4.5, LARGEUR_VOITURE = 1.9;
 
   function mulberry32(a) {
@@ -54,32 +57,43 @@
     // Jeu en ligne (reseau.js) : deux voitures humaines, 0 pour l'hôte et 1 pour l'invité sur les deux machines ;
     // celles que l'on ne conduit pas sont « distantes » (état reçu du réseau) : l'autre pilote, et chez l'invité les
     // rivaux, que l'hôte fait courir. Les rivaux suivent, de 2 à 11.
-    const humains = !chrono && o.humains ? o.humains : null;
-    const nbRivaux = chrono ? 0 : clamp(Math.round(o.rivaux ?? 11) - (humains ? 1 : 0), 0, PILOTES.length);
+    // Humains (jeu.js) : { noms (deux à quatre), locaux (voitures conduites sur cette machine), hote, enLigne }. Les
+    // humains ont les numéros 0 à 3 ; celles que l'on ne conduit pas sont « distantes » en ligne (état reçu du réseau),
+    // comme les rivaux hors de chez l'hôte, qui les fait courir. Les rivaux suivent.
+    let humains = !chrono && o.humains ? o.humains : null;
+    if (humains && !humains.locaux) humains = humains.duo ? { noms: humains.noms, locaux: [0, 1], hote: true, enLigne: false }
+      : { noms: humains.noms, locaux: [humains.local], hote: humains.local === 0, enLigne: true };
+    const nH = humains ? clamp(humains.noms.length, 1, 4) : 0;
+    const nbRivaux = chrono ? 0 : clamp(Math.round(o.rivaux ?? 11) - Math.max(0, nH - 1), 0, PILOTES.length);
     const nb = nbRivaux + 1;
     const graine = (o.graine ?? 1) >>> 0;
     const placeJoueur = clamp(Math.round(o.placeJoueur ?? Math.min(8, nb)), 1, nb);
     const rng = mulberry32(graine + 0x2545F491);
     const habBase = [0.90, 0.955, 0.99][difficulte];
 
-    const voiture = (id, nom, numero, liv, joueur) => ({
+    // les voitures humaines tirent toujours leurs trois nombres, conduites ici ou ailleurs : en ligne, la grille (tirée
+    // ensuite au même générateur) est la même sur toutes les machines
+    const voiture = (id, nom, numero, liv, joueur) => {
+      const tire = !joueur || (!!humains && id < nH), t1 = tire ? rng() : 0, t2 = tire ? rng() : 0, t3 = tire ? rng() : 0;
+      return {
       id, nom, numero, joueur, couleur: liv[0],
       livree: { couleur: liv[0], seconde: liv[1], casque: liv[2], combinaison: liv[1], numero },
       etat: null, tourValide: true, repositionnements: 0, tours: 0, passages: -1, maxPassages: -1, progression: 0, debutTour: 0,
       tempsTours: [], meilleur: null, position: 0, fini: false, abandon: false, tempsFinal: null, ecart: 0, ecartTete: 0,
       ia: {
-        hab: joueur ? 1 : habBase + (rng() * 2 - 1) * 0.015, decal: joueur ? 0 : (rng() * 2 - 1) * 0.5,
-        reaction: joueur ? 0 : 0.12 + rng() * 0.28, cible: -1, cote: 0, decalVise: 0, decalDep: 0
+        hab: joueur ? 1 : habBase + (t1 * 2 - 1) * 0.015, decal: joueur ? 0 : (t2 * 2 - 1) * 0.5,
+        reaction: joueur ? 0 : 0.12 + t3 * 0.28, cible: -1, cote: 0, decalVise: 0, decalDep: 0
       }
-    });
-    // écran partagé (humains.duo) : les deux voitures humaines sont conduites sur cette machine, aucune n'est distante
-    const duo = !!(humains && humains.duo);
+      };
+    };
+    // écran partagé : deux voitures humaines conduites sur cette machine (course à deux, ou en ligne)
+    const duo = !!humains && humains.locaux.length === 2;
     const voitures = humains
-      ? [voiture(0, humains.noms[0], 1, LIVREE_JOUEUR, duo || humains.local === 0), voiture(1, humains.noms[1], 2, LIVREE_INVITE, duo || humains.local === 1)]
+      ? humains.noms.slice(0, nH).map((nom, k) => voiture(k, nom, NUMEROS_HUMAINS[k], LIVREES_HUMAINS[k], humains.locaux.includes(k)))
       : [voiture(0, 'Vous', 1, LIVREE_JOUEUR, true)];
     const premierRival = voitures.length;
     for (let r = 0; r < nbRivaux; r++) voitures.push(voiture(r + premierRival, PILOTES[r][0], PILOTES[r][1], LIVREES[r], false));
-    if (humains) for (const v of voitures) { v.humain = v.id < 2; v.distant = !duo && v.id !== humains.local && (v.humain || humains.local === 1); }
+    if (humains) for (const v of voitures) { v.humain = v.id < nH; v.distant = !!humains.enLigne && !humains.locaux.includes(v.id) && (v.humain || !humains.hote); }
     // Caractère de chaque rival (David, 16/11 : « rends les IA plus intelligentes ») : combativité au dépassement,
     // goût de la défense, régularité d'un tour à l'autre ; tiré à part, sans changer la grille.
     for (const v of voitures) {
@@ -104,7 +118,7 @@
       c, mode: chrono ? 'chrono' : 'course', toursTotal: chrono ? 0 : Math.max(1, Math.round(o.tours ?? 3)), difficulte,
       phase: chrono ? 'course' : 'grille', horloge: 0, temps: 0, dt: 1 / 120,
       feux: { allumes: 0, vert: chrono }, delaiVert: 0.4 + rng() * 1.0,
-      voitures, joueur: voitures[humains && !duo ? humains.local : 0], classement: ordre.map(v => v.id), enLigne: !!humains && !duo, duo,
+      voitures, joueur: voitures[humains ? humains.locaux[0] : 0], classement: ordre.map(v => v.id), enLigne: !!humains && !!humains.enLigne, duo,
       fantome: { meilleur: null, temps: null }, chronoParti: false,
       enreg: { donnees: new Float32Array(4 * 2048), n: 0, prochain: 0 },
       termine: false, drapeau: null, finisseurs: 0, tempsReference: tRef, vref: L / tRef,

@@ -176,6 +176,11 @@ Les modules listés dans `FERRO.lock.json` sont désormais des copies exactes de
   0,12 s. L'hôte fait courir les rivaux et annonce les temps officiels. La course attend les deux pilotes ; à la
   fin, l'hôte lance la revanche ; une coupure confie l'autre voiture à l'ordinateur. Salon installé sur amiga avec
   l'accord de David (« go », 16/11) : voir « Mettre en ligne ».
+  Puis (16/11) : « en ligne jusqu'à quatre ; deux en local contre deux en local ; deux en local contre un seul ». De deux
+  à quatre machines par partie, une ou deux voitures humaines chacune (écran partagé), quatre pilotes au plus ; maillage
+  de liaisons directes (la plus ancienne machine appelle la plus récente), relais par machine ; horloge de l'hôte ;
+  une machine qui part laisse ses voitures à l'ordinateur de l'hôte (`v.reprise`) ; sans hôte, chacun finit seul. Les
+  voitures humaines tirent toujours leurs nombres au générateur de la course : la grille est la même partout.
   Suite, David, 16/11 après la mise en ligne de la 0.2.7 : « on verra plus tard le online, mais je veux du peer to
   peer avec mini serveur pour rejoindre les joueurs, un truc léger, sans besoin de ports ouverts ». Le serveur ne
   sert qu'à se trouver ; la partie passe d'une machine à l'autre ; aucun joueur n'ouvre de port.
