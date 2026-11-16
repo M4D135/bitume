@@ -142,6 +142,10 @@ servie a la même empreinte. Aucun timer : le VPS n'a pas accès au dépôt priv
 - **Rétroviseurs** : « les deux rétros bien visibles et bien foutus, pas de central ». En vue cockpit, deux
   rétroviseurs dédiés (`RETRO` de `src/voiture.js`) à 21° du regard ; chaque glace reçoit l'image réelle de la scène
   arrière (second rendu FERRO, `majGlaces` de `src/jeu.js`, posé par matrix3d). Réglage « Image des rétroviseurs ».
+- **Pneus** : « choisir les pneus, présélectionnés selon le climat, distinguer les types en jeu ». Slicks,
+  intermédiaires, pluie (`PNEUS` de `src/conduite.js`, adhérence selon l'eau sur la piste) ; présélection à la
+  préparation selon la météo prévue ; rivaux sur les pneus conseillés au départ ; cercle peint sur le flanc (jaune,
+  vert, bleu) et rainures ; pastille « Pneus » dans l'affichage.
 - **Version** : « incrémente les versions à chaque maj ». `construire.py` monte le dernier nombre de `VERSION.json`
   une fois par mise à jour dont les sources changent ; ne pas éditer la version à la main, sauf pour un grand lot.
 

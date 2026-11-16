@@ -116,9 +116,9 @@
       const ej = v.progression - course.joueur.progression, f = clamp((Math.abs(ej) - 250) / 500, 0, 1) * 0.02;
       hab += ej < 0 ? f : -f; // léger élastique
     }
-    // Pluie : la conduite perd jusqu'à 22 % d'adhérence ; l'allure de virage suit sa racine, le freinage la suit.
-    const meteo = B.meteo && B.meteo.actuel, pluie = meteo && Number.isFinite(meteo.pluie) ? clamp(meteo.pluie, 0, 1) : 0;
-    const adh = 1 - .22 * pluie;
+    // Pluie et pneus : l'adhérence perdue (conduite.js, adherencePneus) ; l'allure de virage suit sa racine, le
+    // freinage la suit.
+    const adh = B.conduite.adherencePneus ? B.conduite.adherencePneus(e.pneus, B.conduite.eauSurPiste()) : 1;
     hab *= Math.sqrt(adh);
 
     // Vitesse visée et freinage anticipé (jusqu'à 200 m devant). Le freinage finit une fraction de seconde avant

@@ -122,6 +122,20 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     };
   }
 
+  // Pneus (David, 16/11 : « choisir les pneus, présélectionnés selon le climat, ça évite de glisser sous la pluie »).
+  // Adhérence relative selon l'eau sur la piste w (0 sec, 1 détrempée) : [sur le sec, pente avec w]. Les slicks sont
+  // les meilleurs au sec et glissent sous la pluie ; les pneus pluie chauffent et se déforment au sec ; les
+  // intermédiaires tiennent l'entre-deux. Meilleur choix : slicks sous w 0,2, intermédiaires jusqu'à 0,47, pluie au-delà.
+  const PNEUS = Object.freeze({ slicks: Object.freeze([1, -.30]), inter: Object.freeze([.96, -.10]), pluie: Object.freeze([.88, .07]) });
+  function adherencePneus(type, eau) { const p = PNEUS[type] || PNEUS.slicks; return p[0] + p[1] * clamp(eau || 0, 0, 1); }
+  function pneusConseilles(eau) { return eau < .2 ? 'slicks' : eau < .47 ? 'inter' : 'pluie'; }
+  // eau sur la piste : la pluie qui tombe, ou la piste qui reste mouillée après l'averse (séchage de meteo.js)
+  function eauSurPiste(m) {
+    m = m || (B.meteo && B.meteo.actuel);
+    if (!m) return 0;
+    return clamp(Math.max(Number.isFinite(m.pluie) ? m.pluie : 0, .6 * (Number.isFinite(m.mouille) ? m.mouille : 0)), 0, 1);
+  }
+
   function cap(etat, c) { return B.circuit.echantillon(c, etat.s).cap + etat.psi + etat.beta; }
   function kmh(etat) { return Math.round(Math.abs(etat.v) * 3.6); }
 
@@ -307,9 +321,8 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     // de côté la freinent (traînée jusqu'à +8 %, appliquée plus bas). Absents, rien ne change.
     const dg = etat.degats;
     if (dg) mu *= dg.adher;
-    // Pluie : l'adhérence baisse avec l'intensité de la pluie et revient dès qu'elle s'arrête.
-    const pluie = (B.meteo && B.meteo.actuel && Number.isFinite(B.meteo.actuel.pluie)) ? B.meteo.actuel.pluie : 0;
-    if (pluie > 0) mu *= 1 - 0.22 * Math.min(1, pluie);
+    // Pluie et pneus : l'adhérence suit l'eau sur la piste (pluie qui tombe, piste encore mouillée) et les pneus.
+    mu *= adherencePneus(etat.pneus, eauSurPiste());
     const enPiste = ad <= demi + P.largeurVibreur;
 
     // Dérive au bouton
@@ -691,7 +704,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   }
 
   B.conduite = {
-    PARAMS, creer, pas, annulerDerive, couperTurbo, cap, kmh, couple, limiteCote, braquageMax, volantPour,
+    PARAMS, PNEUS, adherencePneus, pneusConseilles, eauSurPiste, creer, pas, annulerDerive, couperTurbo, cap, kmh, couple, limiteCote, braquageMax, volantPour,
     capaciteLaterale, pneu, lancerSaut, declencherAccident, subirChoc, replacer
   };
 })(globalThis.BITUME = globalThis.BITUME || {});

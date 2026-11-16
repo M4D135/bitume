@@ -19,6 +19,7 @@
       <div class="compteurs">
         <div class="case" id="c-position"><span class="etiquette">Position</span><span class="grand"><b id="h-pos">–</b><small id="h-sur">/12</small></span></div>
         <div class="case" id="c-tour"><span class="etiquette">Tour</span><span class="grand"><b id="h-tour">–</b><small id="h-tours">/3</small></span></div>
+        <div class="case pneus" id="c-pneus" data-pneus="slicks"><span class="etiquette">Pneus</span><span class="nom-pneus"><i aria-hidden="true"></i><b id="h-pneus">Slicks</b></span></div>
       </div>
       <div id="feux" class="feux" aria-hidden="true" hidden><i></i><i></i><i></i><i></i><i></i></div>
       <div class="chronos">
@@ -109,6 +110,13 @@
         <label><input type="radio" name="meteo" value="soleil"><span>Soleil</span></label>
         <label><input type="radio" name="meteo" value="pluie"><span>Pluie</span></label>
         <label><input type="radio" name="meteo" value="variable"><span>Variable</span></label>
+      </fieldset>
+      <fieldset id="o-pneus">
+        <legend>Pneus</legend>
+        <label><input type="radio" name="pneus" value="slicks"><span>Slicks</span></label>
+        <label><input type="radio" name="pneus" value="inter"><span>Intermédiaires</span></label>
+        <label><input type="radio" name="pneus" value="pluie"><span>Pluie</span></label>
+        <p id="p-pneus-conseil" class="note-pneus"></p>
       </fieldset>
       <p id="o-chrono" class="note-chrono" hidden>Seul en piste. Le chrono part au premier passage de la ligne ; votre meilleur tour devient un fantôme bleu, gardé pour la prochaine fois.</p>
     </div>

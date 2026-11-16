@@ -38,6 +38,8 @@
   ];
 
   const LAQUE = 16, PEINTURE = 17, MAT = 7, METAL_MAT = 0, TISSU = 18;
+  // types de pneus : couleur du cercle peint sur le flanc, rainures transversales de la bande de roulement
+  const PNEUS_TYPES = { slicks: { cercle: [.95, .76, .08], rainures: 0 }, inter: { cercle: [.16, .72, .30], rainures: 8 }, pluie: { cercle: [.16, .46, .90], rainures: 14 } };
   const PNEU = [.035, .035, .04], FOND_JANTE = [.11, .11, .12], JANTE = [.72, .73, .74], NOIR = [.03, .03, .035],
     CARBONE = [.06, .065, .07], ARGENT = [.76, .77, .79], BLANC = [.95, .94, .9], GANT = [.9, .9, .87],
     ACIER = [.56, .57, .59], SOMBRE = [.17, .175, .19], CRAIE = [.82, .82, .78], IVOIRE = [.93, .92, .87];
@@ -287,11 +289,20 @@
     // gomme plus claires sur la bande de roulement, qui se voient tourner depuis le cockpit (David, 16/11 : « on voit
     // pas les roues rouler, on dirait qu'on glisse »). Leur angle dessiné est borné par image (jeu.js) : plus d'effet
     // stroboscopique qui figeait la roue au-delà de 100 km/h.
+    // Pneus montés (livree.pneus, David 16/11 : « distinguer les types de pneus en jeu ») : un cercle peint sur chaque
+    // flanc, jaune pour les slicks, vert pour les intermédiaires, bleu pour la pluie, et des rainures sur la bande de
+    // roulement des pneus rainurés, qui se voient tourner depuis le cockpit ; les slicks gardent leurs traces de gomme.
+    const typePneus = PNEUS_TYPES[livree.pneus] ? livree.pneus : 'slicks', pneus = PNEUS_TYPES[typePneus];
     ROUES.forEach((w, i) => {
       const base = { roue: i, m: ROUE_AXE, arriere: !w.avant }, k = Math.sign(w.z), flanc = (JANTE_R + w.r) / 2;
       if (w.avant) P('cylinder', [w.x, w.r, w.z], [.27, .016, .27], METAL_MAT, [.40, .40, .42], Object.assign({ decale: [0, -k * (w.l / 2 + .03), 0] }, base));
-      for (const cote of [-1, 1]) for (const a of [0, Math.PI]) P('box', [w.x, w.r, w.z], [.07, .004, .016], MAT, CRAIE, Object.assign({ tourne: a, decale: [flanc, cote * (w.l / 2 + .001), 0] }, base));
-      for (let g = 0; g < 4; g++) P('box', [w.x, w.r, w.z], [.006, w.l * .86, .045], MAT, [.15, .15, .16], Object.assign({ tourne: (g + .25) * Math.PI / 2, decale: [w.r - .001, 0, 0] }, base));
+      for (const cote of [-1, 1]) {
+        P('cylinder', [w.x, w.r, w.z], [2 * (w.r - .03), .002, 2 * (w.r - .03)], MAT, pneus.cercle, Object.assign({ decale: [0, cote * (w.l / 2 + .001), 0], pneus: typePneus }, base));
+        P('cylinder', [w.x, w.r, w.z], [2 * (w.r - .052), .002, 2 * (w.r - .052)], MAT, PNEU, Object.assign({ decale: [0, cote * (w.l / 2 + .0025), 0] }, base));
+        for (const a of [0, Math.PI]) P('box', [w.x, w.r, w.z], [.07, .004, .016], MAT, CRAIE, Object.assign({ tourne: a, decale: [flanc, cote * (w.l / 2 + .0045), 0] }, base));
+      }
+      if (pneus.rainures) for (let g = 0; g < pneus.rainures; g++) P('box', [w.x, w.r, w.z], [.008, w.l * .8, .022], MAT, [.008, .008, .01], Object.assign({ tourne: (g + .5) * 2 * Math.PI / pneus.rainures, decale: [w.r - .004, 0, 0], rainure: true }, base));
+      else for (let g = 0; g < 4; g++) P('box', [w.x, w.r, w.z], [.006, w.l * .86, .045], MAT, [.15, .15, .16], Object.assign({ tourne: (g + .25) * Math.PI / 2, decale: [w.r - .001, 0, 0] }, base));
     });
 
     // Version lointaine : trois carènes à huit côtés, les ailerons, le casque et les quatre roues

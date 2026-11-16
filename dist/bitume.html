@@ -119,6 +119,7 @@ fieldset label:hover span { color: var(--papier); border-color: var(--papier-2);
 fieldset input:checked + span { color: var(--encre); background: var(--papier); border-color: var(--papier); }
 fieldset input:focus-visible + span { outline: 2px solid var(--ambre); outline-offset: 2px; }
 .note-chrono { margin: 0; max-width: 52ch; color: var(--papier-2); font-size: 14px; }
+.note-pneus { margin: 6px 0 0; color: var(--papier-2); font-size: 13px; flex-basis: 100%; }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: clamp(18px, 3vh, 30px); max-width: 1080px; }
 .actions .gros { min-width: 220px; }
 .record { margin: 0; flex: 1 1 260px; color: var(--papier-2); font-size: 14px; }
@@ -157,6 +158,13 @@ input[type="range"] { width: 100%; accent-color: var(--rouge); }
 .case, .chronos, .tableau { border: 0; background: transparent; text-shadow: 0 1px 3px #000, 0 0 12px rgba(0,0,0,.6); }
 .case { padding: 8px 14px 9px; border-top: 2px solid var(--rouge); min-width: 88px; }
 #c-tour { border-top-color: var(--papier-2); }
+/* Pneus montés : pastille de couleur, comme le cercle peint sur le flanc (slicks jaune, intermédiaires vert, pluie bleu) */
+#c-pneus { --pneu: #f2c418; border-top-color: var(--pneu); }
+#c-pneus[data-pneus="inter"] { --pneu: #2fbf5a; }
+#c-pneus[data-pneus="pluie"] { --pneu: #2f7fe0; }
+.case .nom-pneus { display: flex; align-items: center; gap: 7px; margin-top: 8px; font: italic 800 19px/1 var(--f-titre); font-stretch: condensed; text-transform: uppercase; }
+.case .nom-pneus i { width: 13px; height: 13px; border-radius: 50%; border: 3px solid var(--pneu); background: #111; flex: none; }
+#jeu[data-ecran="demo"] #c-pneus { display: none; }
 .case .grand { display: block; margin-top: 4px; font: italic 800 40px/.9 var(--f-titre); font-stretch: condensed; }
 .case .grand small { font-size: 22px; color: var(--papier-2); margin-left: 2px; }
 .case.eclat { animation: eclat .7s ease-out; }
@@ -312,6 +320,8 @@ body.tactile .compteurs { gap: 10px; }
 body.tactile .case { min-width: 42px; padding: 2px 3px; border: 0; }
 body.tactile .case .etiquette { font-size: 8px; letter-spacing: .1em; color: var(--papier-2); }
 body.tactile .case .grand { margin-top: 3px; font-size: 25px; }
+body.tactile .case .nom-pneus { margin-top: 4px; font-size: 11px; gap: 4px; }
+body.tactile .case .nom-pneus i { width: 8px; height: 8px; border-width: 2px; }
 body.tactile .case .grand small { font-size: 11px; }
 body.tactile .chronos { min-width: 0; padding: 2px 4px; }
 body.tactile .ligne-chrono { flex-direction: column; align-items: flex-end; gap: 3px; }
@@ -357,6 +367,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       <div class="compteurs">
         <div class="case" id="c-position"><span class="etiquette">Position</span><span class="grand"><b id="h-pos">–</b><small id="h-sur">/12</small></span></div>
         <div class="case" id="c-tour"><span class="etiquette">Tour</span><span class="grand"><b id="h-tour">–</b><small id="h-tours">/3</small></span></div>
+        <div class="case pneus" id="c-pneus" data-pneus="slicks"><span class="etiquette">Pneus</span><span class="nom-pneus"><i aria-hidden="true"></i><b id="h-pneus">Slicks</b></span></div>
       </div>
       <div id="feux" class="feux" aria-hidden="true" hidden><i></i><i></i><i></i><i></i><i></i></div>
       <div class="chronos">
@@ -409,7 +420,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.2">V0.2.2</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.3">V0.2.3</b>
     </div>
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
@@ -447,6 +458,13 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
         <label><input type="radio" name="meteo" value="soleil"><span>Soleil</span></label>
         <label><input type="radio" name="meteo" value="pluie"><span>Pluie</span></label>
         <label><input type="radio" name="meteo" value="variable"><span>Variable</span></label>
+      </fieldset>
+      <fieldset id="o-pneus">
+        <legend>Pneus</legend>
+        <label><input type="radio" name="pneus" value="slicks"><span>Slicks</span></label>
+        <label><input type="radio" name="pneus" value="inter"><span>Intermédiaires</span></label>
+        <label><input type="radio" name="pneus" value="pluie"><span>Pluie</span></label>
+        <p id="p-pneus-conseil" class="note-pneus"></p>
       </fieldset>
       <p id="o-chrono" class="note-chrono" hidden>Seul en piste. Le chrono part au premier passage de la ligne ; votre meilleur tour devient un fantôme bleu, gardé pour la prochaine fois.</p>
     </div>
@@ -57196,6 +57214,20 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     };
   }
 
+  // Pneus (David, 16/11 : « choisir les pneus, présélectionnés selon le climat, ça évite de glisser sous la pluie »).
+  // Adhérence relative selon l'eau sur la piste w (0 sec, 1 détrempée) : [sur le sec, pente avec w]. Les slicks sont
+  // les meilleurs au sec et glissent sous la pluie ; les pneus pluie chauffent et se déforment au sec ; les
+  // intermédiaires tiennent l'entre-deux. Meilleur choix : slicks sous w 0,2, intermédiaires jusqu'à 0,47, pluie au-delà.
+  const PNEUS = Object.freeze({ slicks: Object.freeze([1, -.30]), inter: Object.freeze([.96, -.10]), pluie: Object.freeze([.88, .07]) });
+  function adherencePneus(type, eau) { const p = PNEUS[type] || PNEUS.slicks; return p[0] + p[1] * clamp(eau || 0, 0, 1); }
+  function pneusConseilles(eau) { return eau < .2 ? 'slicks' : eau < .47 ? 'inter' : 'pluie'; }
+  // eau sur la piste : la pluie qui tombe, ou la piste qui reste mouillée après l'averse (séchage de meteo.js)
+  function eauSurPiste(m) {
+    m = m || (B.meteo && B.meteo.actuel);
+    if (!m) return 0;
+    return clamp(Math.max(Number.isFinite(m.pluie) ? m.pluie : 0, .6 * (Number.isFinite(m.mouille) ? m.mouille : 0)), 0, 1);
+  }
+
   function cap(etat, c) { return B.circuit.echantillon(c, etat.s).cap + etat.psi + etat.beta; }
   function kmh(etat) { return Math.round(Math.abs(etat.v) * 3.6); }
 
@@ -57381,9 +57413,8 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     // de côté la freinent (traînée jusqu'à +8 %, appliquée plus bas). Absents, rien ne change.
     const dg = etat.degats;
     if (dg) mu *= dg.adher;
-    // Pluie : l'adhérence baisse avec l'intensité de la pluie et revient dès qu'elle s'arrête.
-    const pluie = (B.meteo && B.meteo.actuel && Number.isFinite(B.meteo.actuel.pluie)) ? B.meteo.actuel.pluie : 0;
-    if (pluie > 0) mu *= 1 - 0.22 * Math.min(1, pluie);
+    // Pluie et pneus : l'adhérence suit l'eau sur la piste (pluie qui tombe, piste encore mouillée) et les pneus.
+    mu *= adherencePneus(etat.pneus, eauSurPiste());
     const enPiste = ad <= demi + P.largeurVibreur;
 
     // Dérive au bouton
@@ -57765,7 +57796,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   }
 
   B.conduite = {
-    PARAMS, creer, pas, annulerDerive, couperTurbo, cap, kmh, couple, limiteCote, braquageMax, volantPour,
+    PARAMS, PNEUS, adherencePneus, pneusConseilles, eauSurPiste, creer, pas, annulerDerive, couperTurbo, cap, kmh, couple, limiteCote, braquageMax, volantPour,
     capaciteLaterale, pneu, lancerSaut, declencherAccident, subirChoc, replacer
   };
 })(globalThis.BITUME = globalThis.BITUME || {});
@@ -58269,9 +58300,9 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       const ej = v.progression - course.joueur.progression, f = clamp((Math.abs(ej) - 250) / 500, 0, 1) * 0.02;
       hab += ej < 0 ? f : -f; // léger élastique
     }
-    // Pluie : la conduite perd jusqu'à 22 % d'adhérence ; l'allure de virage suit sa racine, le freinage la suit.
-    const meteo = B.meteo && B.meteo.actuel, pluie = meteo && Number.isFinite(meteo.pluie) ? clamp(meteo.pluie, 0, 1) : 0;
-    const adh = 1 - .22 * pluie;
+    // Pluie et pneus : l'adhérence perdue (conduite.js, adherencePneus) ; l'allure de virage suit sa racine, le
+    // freinage la suit.
+    const adh = B.conduite.adherencePneus ? B.conduite.adherencePneus(e.pneus, B.conduite.eauSurPiste()) : 1;
     hab *= Math.sqrt(adh);
 
     // Vitesse visée et freinage anticipé (jusqu'à 200 m devant). Le freinage finit une fraction de seconde avant
@@ -59992,6 +60023,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   ];
 
   const LAQUE = 16, PEINTURE = 17, MAT = 7, METAL_MAT = 0, TISSU = 18;
+  // types de pneus : couleur du cercle peint sur le flanc, rainures transversales de la bande de roulement
+  const PNEUS_TYPES = { slicks: { cercle: [.95, .76, .08], rainures: 0 }, inter: { cercle: [.16, .72, .30], rainures: 8 }, pluie: { cercle: [.16, .46, .90], rainures: 14 } };
   const PNEU = [.035, .035, .04], FOND_JANTE = [.11, .11, .12], JANTE = [.72, .73, .74], NOIR = [.03, .03, .035],
     CARBONE = [.06, .065, .07], ARGENT = [.76, .77, .79], BLANC = [.95, .94, .9], GANT = [.9, .9, .87],
     ACIER = [.56, .57, .59], SOMBRE = [.17, .175, .19], CRAIE = [.82, .82, .78], IVOIRE = [.93, .92, .87];
@@ -60241,11 +60274,20 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     // gomme plus claires sur la bande de roulement, qui se voient tourner depuis le cockpit (David, 16/11 : « on voit
     // pas les roues rouler, on dirait qu'on glisse »). Leur angle dessiné est borné par image (jeu.js) : plus d'effet
     // stroboscopique qui figeait la roue au-delà de 100 km/h.
+    // Pneus montés (livree.pneus, David 16/11 : « distinguer les types de pneus en jeu ») : un cercle peint sur chaque
+    // flanc, jaune pour les slicks, vert pour les intermédiaires, bleu pour la pluie, et des rainures sur la bande de
+    // roulement des pneus rainurés, qui se voient tourner depuis le cockpit ; les slicks gardent leurs traces de gomme.
+    const typePneus = PNEUS_TYPES[livree.pneus] ? livree.pneus : 'slicks', pneus = PNEUS_TYPES[typePneus];
     ROUES.forEach((w, i) => {
       const base = { roue: i, m: ROUE_AXE, arriere: !w.avant }, k = Math.sign(w.z), flanc = (JANTE_R + w.r) / 2;
       if (w.avant) P('cylinder', [w.x, w.r, w.z], [.27, .016, .27], METAL_MAT, [.40, .40, .42], Object.assign({ decale: [0, -k * (w.l / 2 + .03), 0] }, base));
-      for (const cote of [-1, 1]) for (const a of [0, Math.PI]) P('box', [w.x, w.r, w.z], [.07, .004, .016], MAT, CRAIE, Object.assign({ tourne: a, decale: [flanc, cote * (w.l / 2 + .001), 0] }, base));
-      for (let g = 0; g < 4; g++) P('box', [w.x, w.r, w.z], [.006, w.l * .86, .045], MAT, [.15, .15, .16], Object.assign({ tourne: (g + .25) * Math.PI / 2, decale: [w.r - .001, 0, 0] }, base));
+      for (const cote of [-1, 1]) {
+        P('cylinder', [w.x, w.r, w.z], [2 * (w.r - .03), .002, 2 * (w.r - .03)], MAT, pneus.cercle, Object.assign({ decale: [0, cote * (w.l / 2 + .001), 0], pneus: typePneus }, base));
+        P('cylinder', [w.x, w.r, w.z], [2 * (w.r - .052), .002, 2 * (w.r - .052)], MAT, PNEU, Object.assign({ decale: [0, cote * (w.l / 2 + .0025), 0] }, base));
+        for (const a of [0, Math.PI]) P('box', [w.x, w.r, w.z], [.07, .004, .016], MAT, CRAIE, Object.assign({ tourne: a, decale: [flanc, cote * (w.l / 2 + .0045), 0] }, base));
+      }
+      if (pneus.rainures) for (let g = 0; g < pneus.rainures; g++) P('box', [w.x, w.r, w.z], [.008, w.l * .8, .022], MAT, [.008, .008, .01], Object.assign({ tourne: (g + .5) * 2 * Math.PI / pneus.rainures, decale: [w.r - .004, 0, 0], rainure: true }, base));
+      else for (let g = 0; g < 4; g++) P('box', [w.x, w.r, w.z], [.006, w.l * .86, .045], MAT, [.15, .15, .16], Object.assign({ tourne: (g + .25) * Math.PI / 2, decale: [w.r - .001, 0, 0] }, base));
     });
 
     // Version lointaine : trois carènes à huit côtés, les ailerons, le casque et les quatre roues
@@ -61124,7 +61166,7 @@ FERRO.initPhysics().then(function(){
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
   function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
   function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
-  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
+  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
   // Champ du cockpit : 69° n'a été le défaut que l'après-midi du 16/11, et David le trouve trop large (« fov moins
@@ -61255,6 +61297,14 @@ FERRO.initPhysics().then(function(){
     const meteoInit = (type === 'course' || type === 'chrono')
       ? (B.meteo.pour(reglages.meteo) || B.meteo.initial(graineCourse))
       : B.meteo.initial(graineCourse);
+    // Pneus : le joueur roule sur ceux de la préparation (présélectionnés selon la météo, qu'il peut changer) ; les
+    // rivaux sur ceux que conseille la piste au départ. La caisse les montre (voiture.js) et la conduite les sent.
+    const conseil = B.conduite.pneusConseilles(B.conduite.eauSurPiste(meteoInit)), joue = type === 'course' || type === 'chrono';
+    for (const v of course.voitures) {
+      v.etat.pneus = v.joueur && joue && B.conduite.PNEUS[reglages.pneus] ? reglages.pneus : conseil;
+      v.livree.pneus = v.etat.pneus;
+    }
+    if (joue) { $('h-pneus').textContent = NOMS_PNEUS[course.joueur.etat.pneus]; $('c-pneus').dataset.pneus = course.joueur.etat.pneus; }
     const S = {
       type, i, course, c, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
       prec: [], cour: [], sortie: [], acc: 0, tele: { poste: null, alea: graine32(course.voitures.length * 7 + i) },
@@ -62218,7 +62268,17 @@ FERRO.initPhysics().then(function(){
     for (const r of document.querySelectorAll('input[name="meteo"]')) r.checked = String(reglages.meteo || 'aleatoire') === r.value;
     majPreparation();
   }
+  // Présélection des pneus selon la météo prévue (David, 16/11) : au soleil des slicks, sous la pluie des pneus
+  // pluie ; la météo aléatoire est tirée d'avance (même graine que la course qui va partir). Le pilote peut changer.
+  const NOMS_PNEUS = { slicks: 'Slicks', inter: 'Intermédiaires', pluie: 'Pluie' };
+  function preselectionnerPneus() {
+    const prevue = (reglages.meteo && reglages.meteo !== 'aleatoire' && B.meteo.pour(reglages.meteo)) || B.meteo.initial(graineCourse + 1);
+    reglages.pneus = B.conduite.pneusConseilles(B.conduite.eauSurPiste(prevue));
+    for (const r of document.querySelectorAll('input[name="pneus"]')) r.checked = r.value === reglages.pneus;
+    $('p-pneus-conseil').textContent = 'Conseillés pour cette météo : ' + NOMS_PNEUS[reglages.pneus].toLowerCase() + '.';
+  }
   function majPreparation() {
+    preselectionnerPneus();
     for (const b of $('circuits').children) b.setAttribute('aria-checked', String(+b.dataset.index === reglages.circuit));
     const r = records[CATALOGUE[reglages.circuit].id];
     $('p-record').innerHTML = r ? 'Votre record sur ' + CATALOGUE[reglages.circuit].nom + ' : <b>' + chrono(r.tour) + '</b>' : 'Pas encore de temps sur ' + CATALOGUE[reglages.circuit].nom + '.';
@@ -62226,7 +62286,8 @@ FERRO.initPhysics().then(function(){
   document.addEventListener('change', e => {
     const t = e.target;
     if (t.name === 'tours' || t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
-    if (t.name === 'meteo') { reglages.meteo = t.value; sauverReglages(); }
+    if (t.name === 'meteo') { reglages.meteo = t.value; sauverReglages(); preselectionnerPneus(); }
+    if (t.name === 'pneus' && B.conduite.PNEUS[t.value]) { reglages.pneus = t.value; sauverReglages(); }
     if (['vue', 'boite', 'qualite', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille'].includes(t.name)) { reglages[t.name] = t.value; sauverReglages(); appliquerCarte(); if (t.name === 'qualite' && rendu) rendu.resize(t.value); }
     if (t.name === 'aide') { reglages.aide = +t.value; sauverReglages(); }
   });
