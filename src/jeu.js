@@ -755,7 +755,7 @@
     const objets = retro.objets; objets.length = 0;
     for (const o of sortie) if (!o.overlay) objets.push(o);
     const n0 = objets.length, ca = Math.cos(ps.cap), sa = Math.sin(ps.cap);
-    B.voiture.poser(S.modeles[suivie.id], { p: [ps.x, ps.y, ps.z], cap: ps.cap, tangage: ps.tangage, roulis: ps.roulis, braquage: ps.braquage, roule: ps.roule, v: suivie.etat.v }, objets, { roues: suivie.degats && suivie.degats.roues, casse: !!(suivie.etat.degats && suivie.etat.degats.casse) });
+    B.voiture.poser(S.modeles[suivie.id], { p: [ps.x, ps.y, ps.z], cap: ps.cap, tangage: ps.tangage, roulis: ps.roulis, braquage: ps.braquage, roule: S.rouleVu ? S.rouleVu[suivie.id] : ps.roule, rebond: ps.rebond, v: suivie.etat.v }, objets, { roues: suivie.degats && suivie.degats.roues, casse: !!(suivie.etat.degats && suivie.etat.degats.casse) });
     for (let k = objets.length - 1; k >= n0; k--) {
       const o = objets[k], dx = o.p[0] - ps.x, dz = o.p[2] - ps.z, x = dx * ca + dz * sa, z = dz * ca - dx * sa;
       if (!(x < -.9 && Math.abs(z) > .55)) objets.splice(k, 1);
@@ -806,12 +806,24 @@
     // ombres du soleil autour de ce que l'on regarde : devant le pilote (jusqu'à 176 m), ou autour de la voiture filmée
     cam.sun = Object.assign({ center: exterieur ? [ps.x, ps.y, ps.z] : [cam.pos[0] + fwd[0] * OMBRE_DEVANT, ps.y, cam.pos[2] + fwd[2] * OMBRE_DEVANT] }, scene.ombre);
 
+    // Roues (David, 16/11 : « on voit pas les roues rouler, on dirait qu'on glisse ») : au-delà d'une vingtaine de
+    // degrés par image, la rotation vraie se lit figée ou à l'envers (effet stroboscopique). L'angle dessiné suit la
+    // distance roulée, mais avance d'au plus 0,11 m de bande par image (22° à l'avant) ; la suspension bat sur les
+    // bosses, plus vite et un peu plus fort avec la vitesse (quelques millimètres, roue par roue).
+    const nV = co.voitures.length, RV = S.rouleVu || (S.rouleVu = new Float64Array(nV)), RP = S.rouleVrai || (S.rouleVrai = new Float64Array(nV).fill(NaN));
+    for (let k = 0; k < nV; k++) {
+      const p = poses[k], d = Number.isNaN(RP[k]) ? 0 : p.roule - RP[k];
+      RP[k] = p.roule; RV[k] += Math.abs(d) > .11 ? Math.sign(d) * .11 : d;
+      const v = Math.abs(co.voitures[k].etat.v), a = .0035 * clamp(v / 60, 0, 1) * (co.voitures[k].etat.surface === 'herbe' ? 3 : co.voitures[k].etat.surface === 'vibreur' ? 2.2 : 1);
+      const reb = p.rebond || (p.rebond = [0, 0, 0, 0]), t = horlogeReelle, s0 = p.roule * 1.7;
+      for (let r = 0; r < 4; r++) reb[r] = a * (Math.sin(s0 + r * 1.9) * .6 + Math.sin(s0 * 2.3 + r * .7 + t * 3) * .4);
+    }
     // voitures : toujours dessinées ; modèle complet tant qu'il tient plus d'une trentaine de pixels de haut, allégé
     // au-delà. Le seuil suit le champ : un téléobjectif garde le modèle complet bien plus loin.
     const complet = 170 * Math.tan(20.8 * Math.PI / 180) / Math.tan(clamp(cam.fov, 10, 110) * Math.PI / 360);
     for (let k = 0; k < co.voitures.length; k++) {
       const p = poses[k], dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], d2 = dx * dx + dz * dz;
-      const ev = { p: [p.x, p.y, p.z], cap: p.cap, tangage: p.tangage, roulis: p.roulis, braquage: p.braquage, roule: p.roule, v: co.voitures[k].etat.v };
+      const ev = { p: [p.x, p.y, p.z], cap: p.cap, tangage: p.tangage, roulis: p.roulis, braquage: p.braquage, roule: RV[k], rebond: p.rebond, v: co.voitures[k].etat.v };
       if (k === suivie.id && vue === 'cockpit') {
         // voitures derrière, dans le repère de celle-ci, de la plus proche à la plus lointaine : les rétroviseurs les montrent
         const et = suivie.etat, ca = Math.cos(p.cap), sa = Math.sin(p.cap), derriere = [];

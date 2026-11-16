@@ -115,10 +115,11 @@
   forme('retros', deuxCotes(C.carene([{ x: .61, y0: .560, y1: .575, l: .02, n: 2, z: .47 }, { x: .57, y0: .540, y1: .592, l: .072, n: 3, z: .47 }, { x: .53, y0: .538, y1: .594, l: .078, n: 4, z: .47 }], { cotes: 16, pas: 3 })
     .concat(C.tube([[.565, .53, .27], [.565, .55, .40]], .009, { cotes: 6 }))));
   // Rétroviseurs de la vue cockpit (David, 16/11 : « les deux rétros bien visibles et bien foutus »). Sur la vraie
-  // voiture, les glaces sont à 30° du regard, au bord de l'image, et petites. En vue cockpit, elles viennent à 21° de
-  // part et d'autre, au-dessus des pneus avant, plus grandes, un peu tournées vers le pilote ; la vue extérieure
-  // garde les rétroviseurs à leur place. Glace : centre (x, y, ±z), largeur l, hauteur h, rotation vers le pilote.
-  const RETRO = { x: .64, y: .66, z: .37, l: .20, h: .076, angle: .15 };
+  // voiture, les glaces sont à 30° du regard, au bord de l'image, et petites. En vue cockpit, elles viennent à 17° de
+  // part et d'autre, entre la planche et les pneus avant qu'elles ne cachent pas, plus grandes, un peu tournées vers
+  // le pilote ; la vue extérieure garde les rétroviseurs à leur place. Glace : centre (x, y, ±z), largeur l, hauteur
+  // h, rotation vers le pilote.
+  const RETRO = { x: .64, y: .665, z: .29, l: .19, h: .074, angle: .12 };
   // repère d'une glace (k = −1 à gauche, 1 à droite) : centre, normale vers le pilote, droite de la glace, rotation
   function cadreGlace(k) {
     const a = k * RETRO.angle, w = [-Math.sin(a), 0, Math.cos(a)];
@@ -282,13 +283,15 @@
       for (let b = 0; b < 3; b++) P('box', [w.x, w.r, w.z], [2 * JANTE_R * .94, w.l + .02, .04], METAL_MAT, JANTE, Object.assign({ tourne: b * Math.PI / 3 }, base));
       P('cylinder', [w.x, w.r, w.z], [.09, w.l + .05, .09], METAL_MAT, JANTE, base);
     });
-    // Disques de frein avant, dans la roue, côté coque. Puis les pièces qui dépendent de la vitesse, en fin de liste :
-    // deux repères à la craie sur chaque flanc tant que l'œil suit la rotation, une bande plus claire au-delà.
+    // Disques de frein avant, dans la roue, côté coque ; deux repères à la craie sur chaque flanc et quatre traces de
+    // gomme plus claires sur la bande de roulement, qui se voient tourner depuis le cockpit (David, 16/11 : « on voit
+    // pas les roues rouler, on dirait qu'on glisse »). Leur angle dessiné est borné par image (jeu.js) : plus d'effet
+    // stroboscopique qui figeait la roue au-delà de 100 km/h.
     ROUES.forEach((w, i) => {
       const base = { roue: i, m: ROUE_AXE, arriere: !w.avant }, k = Math.sign(w.z), flanc = (JANTE_R + w.r) / 2;
       if (w.avant) P('cylinder', [w.x, w.r, w.z], [.27, .016, .27], METAL_MAT, [.40, .40, .42], Object.assign({ decale: [0, -k * (w.l / 2 + .03), 0] }, base));
-      for (const cote of [-1, 1]) for (const a of [0, Math.PI]) P('box', [w.x, w.r, w.z], [.07, .004, .016], MAT, CRAIE, Object.assign({ tourne: a, decale: [flanc, cote * (w.l / 2 + .001), 0], lent: true }, base));
-      P('cylinder', [w.x, w.r, w.z], [2 * flanc + .06, w.l + .006, 2 * flanc + .06], MAT, [.062, .062, .068], Object.assign({ vite: true }, base));
+      for (const cote of [-1, 1]) for (const a of [0, Math.PI]) P('box', [w.x, w.r, w.z], [.07, .004, .016], MAT, CRAIE, Object.assign({ tourne: a, decale: [flanc, cote * (w.l / 2 + .001), 0] }, base));
+      for (let g = 0; g < 4; g++) P('box', [w.x, w.r, w.z], [.006, w.l * .86, .045], MAT, [.15, .15, .16], Object.assign({ tourne: (g + .25) * Math.PI / 2, decale: [w.r - .001, 0, 0] }, base));
     });
 
     // Version lointaine : trois carènes à huit côtés, les ailerons, le casque et les quatre roues
@@ -331,10 +334,12 @@
       if (pc.roue !== undefined && options.roues && options.roues[pc.roue]) continue;
       let o = mul(M, pc.o), rot;
       if (pc.roue !== undefined) {
-        // pièce de roue : elle tourne avec elle ; `decale` la place hors de l'axe, dans le repère de la roue
+        // pièce de roue : elle tourne avec elle ; `decale` la place hors de l'axe, dans le repère de la roue ; `rebond`
+        // (m, par roue) : course de suspension sur les bosses, purement visuelle
         const Rr = rotationRoue(M, pc, braq, roule);
         rot = angles(Rr);
         if (pc.decale) { const d = mul(Rr, pc.decale); o = [o[0] + d[0], o[1] + d[1], o[2] + d[2]]; }
+        if (ev.rebond) { const h = ev.rebond[pc.roue] || 0; o = [o[0] + M[1][0] * h, o[1] + M[1][1] * h, o[2] + M[1][2] * h]; }
       } else rot = pc.m ? angles(mulM(M, pc.m)) : rotM;
       const m = { shape: pc.shape, p: [ev.p[0] + o[0], ev.p[1] + o[1], ev.p[2] + o[2]], s: pc.s, r: rot, mat: pc.mat, color: pc.color, surface: 'object' };
       if (pc.fx) { m.fx = true; m.alpha = pc.alpha; }

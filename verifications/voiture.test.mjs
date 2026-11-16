@@ -164,24 +164,26 @@ const bord = extra => { const sortie = []; V.cockpit(mod, Object.assign({ v: 40 
 const reel = v => v.map((x, i) => V.OEIL[i] + V.K * x);      // position dans la voiture d'un point composé vu de l'œil
 const ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 
-verifier('numéro en géométrie sur le nez et les pontons ; repères des pneus à basse vitesse, bande floue au-delà', () => {
+verifier('numéro en géométrie sur le nez et les pontons ; repères et traces des pneus à toute vitesse', () => {
   const sans = V.modele(Object.assign({}, livree, { numero: undefined })), un = V.modele(Object.assign({}, livree, { numero: 1 }));
   assert.equal(un.corps.length - sans.corps.length, 3 * 2, 'trois « 1 » de deux segments, sans panneau');
   assert.equal(mod.corps.length - sans.corps.length, 3 * (5 + 3), '« 27 » : cinq et trois segments, trois fois');
   const segments = mod.corps.filter(p => p.shape === 'box' && p.s[2] === .003);
   assert.equal(segments.length, 24);
   assert.ok(segments.every(p => p.color[0] > .9 && p.color[1] > .9 && p.color[2] > .85), 'chiffres blancs, posés sur le rouge');
+  // David (16/11) : les roues doivent se voir tourner à toute vitesse ; plus de bande floue qui les figeait
   const lent = [], vite = [];
   V.poser(mod, Object.assign({ v: 10 }, repos), lent); V.poser(mod, Object.assign({ v: 50 }, repos), vite);
-  const marques = mod.corps.filter(p => p.lent).length, flous = mod.corps.filter(p => p.vite).length;
-  assert.ok(marques === 16 && flous === 4, `${marques} repères, ${flous} bandes`);
+  const tournent = mod.corps.filter(p => p.roue !== undefined && p.tourne !== undefined && p.decale).length;
+  assert.ok(tournent === 16 + 16, `${tournent} repères et traces de gomme`);
+  assert.ok(!mod.corps.some(p => p.lent || p.vite), 'aucune pièce réservée à une vitesse');
   const vus = mod.corps.filter(p => !p.dedans).length;
-  assert.equal(lent.length, vus - flous);
-  assert.equal(vite.length, vus - marques);
+  assert.equal(lent.length, vus);
+  assert.equal(vite.length, vus);
 });
 
 verifier('repère de pneu : il tourne autour de l’axe de la roue, à mi-flanc', () => {
-  const k = mod.corps.filter(p => V.visible(p, false, 5)).findIndex(p => p.lent && p.roue === 0 && p.tourne === 0), w = V.ROUES[0], flanc = (.165 + w.r) / 2;
+  const w = V.ROUES[0], flanc = (.165 + w.r) / 2, k = mod.corps.filter(p => V.visible(p, false, 5)).findIndex(p => p.roue === 0 && p.tourne === 0 && p.decale && Math.abs(p.decale[0] - flanc) < 1e-9);
   for (const d of [0, .2, .7, 1.3]) {
     const sortie = []; V.poser(mod, Object.assign({ v: 5, roule: d }, repos), sortie);
     const q = sortie[k].p, a = -d / w.r;
