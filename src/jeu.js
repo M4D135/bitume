@@ -1243,16 +1243,6 @@
   // effets permis par la qualité et le palier
   const avecOmbres = q => q === 'high' || (q === 'auto' && palier.n < 2);
   // retour de halo en [0,1] : 0 = éteint, 1 = plein (qualité élevée ou palier suffisant)
-  // on l'adapte aussi selon qu'on est dans le tunnel pour éviter le pop
-  const intensiteHalo = (q, dansTunnel) => {
-    const base = q === 'high' ? 1 : q === 'auto' && palier.n < 3 ? .5 : 0;
-    // si on est dans le tunnel, faire doucement monter/descendre l'intensité
-    if (dansTunnel !== undefined && dansTunnel !== null) {
-      const av = dansTunnel.avancement !== undefined ? dansTunnel.avancement : 0;
-      return base * (.5 + .5 * av);  // demi-intensity au début du tunnel, plein à la sortie
-    }
-    return base;
-  };
   const avecReflets = (q, m) => !gpuModeste && (q === 'high' || (q === 'auto' && palier.n === 0)) && !!m && (m.mouille > .2 || m.pluie > .2);
   // Reflets d'écran (David, 16/11 : « améliore le rendu, reflets ») : sur piste mouillée, les voitures, le ciel et les
   // lampes du tunnel se reflètent dans les flaques (matières humides du moteur repris d'EMPRISE). Qualité Fine, ou
@@ -1485,8 +1475,8 @@
       for (const p of LT) { const d2 = (p[0] - cam.pos[0]) ** 2 + (p[2] - cam.pos[2]) ** 2; if (d2 < 4900) lampes.push({ p, power: 12, range: 18, color: [1, .84, .58], d2 }); }
       lampes.sort((a, b) => a.d2 - b.d2); if (lampes.length > 8) lampes.length = 8;
     }
-    // Intensité du halo/bloom : pleine en qualité élevée, moitié en automatique au palier 2+, atténuée à l'entrée du tunnel
-    const haloInt = intensiteHalo(reglages.qualite, { avancement });
+    // Halo/bloom : qualité du palier (plus coûteux en qualité élevée)
+    const haloInt = avecHalo(q);
     rendu.draw(cam, sortie, { time: horlogeReelle, shadows: avecOmbres(q), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(q, meteo), weather: B.meteo.ambiance(meteo) });
     dessinerMeteo(S, dtImage, cam, vue);
     majGlaces(S, vue, cam, ps, sortie, B.meteo.ambiance(meteo), suivie);
