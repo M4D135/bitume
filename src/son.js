@@ -244,8 +244,8 @@
       switch (nom) {
         case 'rapport': coupureMoteur(t); detonation(t, p.haut ? 0.7 : 0.5); break;
         case 'rupteur': coupureMoteur(t); detonation(t, 0.8); break;
-        case 'choc': choc(t, clamp((p.force ?? 8) / 15, 0.15, 1)); break;           // vitesse perdue, m/s
-        case 'contact': choc(t, clamp((p.force ?? 3) / 10, 0.1, 1) * 0.6); break;    // vitesse de rapprochement, m/s
+        case 'choc': choc(t, clamp((p.force ?? 8) / 12, 0.2, 1)); break;           // vitesse perdue, m/s
+        case 'contact': choc(t, clamp((p.force ?? 3) / 8, 0.15, 1) * 0.8); break;    // vitesse de rapprochement, m/s
         case 'reception': choc(t, clamp(0.3 + (p.force ?? 1) / 8, 0.2, 0.7)); break;  // la caisse retombe de son saut
         case 'roue': choc(t, 0.8); ton(t, 170, 0.32, 0.3, 'sawtooth'); break;         // une roue se détache
         case 'casse': choc(t, 1); detonation(t, 0.9); break;                           // la caisse casse, rentre au stand

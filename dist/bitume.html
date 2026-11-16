@@ -58818,8 +58818,8 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       switch (nom) {
         case 'rapport': coupureMoteur(t); detonation(t, p.haut ? 0.7 : 0.5); break;
         case 'rupteur': coupureMoteur(t); detonation(t, 0.8); break;
-        case 'choc': choc(t, clamp((p.force ?? 8) / 15, 0.15, 1)); break;           // vitesse perdue, m/s
-        case 'contact': choc(t, clamp((p.force ?? 3) / 10, 0.1, 1) * 0.6); break;    // vitesse de rapprochement, m/s
+        case 'choc': choc(t, clamp((p.force ?? 8) / 12, 0.2, 1)); break;           // vitesse perdue, m/s
+        case 'contact': choc(t, clamp((p.force ?? 3) / 8, 0.15, 1) * 0.8); break;    // vitesse de rapprochement, m/s
         case 'reception': choc(t, clamp(0.3 + (p.force ?? 1) / 8, 0.2, 0.7)); break;  // la caisse retombe de son saut
         case 'roue': choc(t, 0.8); ton(t, 170, 0.32, 0.3, 'sawtooth'); break;         // une roue se détache
         case 'casse': choc(t, 1); detonation(t, 0.9); break;                           // la caisse casse, rentre au stand
@@ -60611,7 +60611,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   // Flanc qui frotte la glissière : des étincelles le long de la caisse, qui partent avec la voiture
   function mur(fx, et, p, M, vx, vz) {
     const cote = et.d < 0 ? -1 : 1;
-    for (let n = 0; n < 3; n++) {
+    for (let n = 0; n < 6; n++) {
       const o = B.voiture.mul(M, [.6 - 2.2 * fx.alea(), .22, cote * 1.02]);
       etinceler(fx, p.x + o[0], p.y + o[1], p.z + o[2], vx * .75, 1.2, vz * .75, p.y, 5);
     }
@@ -60624,8 +60624,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const ea = co.voitures[e.a].etat, eb = co.voitures[e.b].etat;
     const ca = a.cap - (ea.beta || 0), cb = b.cap - (eb.beta || 0);
     const vx = .4 * (Math.cos(ca) * ea.v + Math.cos(cb) * eb.v), vz = .4 * (Math.sin(ca) * ea.v + Math.sin(cb) * eb.v), sol = (a.y + b.y) / 2;
-    for (let n = 0, m = 4 + Math.min(6, Math.max(0, Math.round(e.force || 0))); n < m; n++)
-      etinceler(fx, (a.x + b.x) / 2, sol + .3, (a.z + b.z) / 2, vx, 1.5, vz, sol, 6);
+    for (let n = 0, m = 10 + Math.min(12, Math.max(0, Math.round(e.force || 0))); n < m; n++)
+      etinceler(fx, (a.x + b.x) / 2, sol + .3, (a.z + b.z) / 2, vx, 1.5, vz, sol, 8);
   }
 
   function detacher(fx, co, poses, e) {
@@ -61511,7 +61511,7 @@ FERRO.initPhysics().then(function(){
         case 'feu': son && son.evenement('feu'); break;
         case 'vert': son && son.evenement('vert'); message('Départ', 'vert', true); break;
         case 'contact':
-          if (dePres && (e.a === sujet || e.b === sujet)) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .035); }
+          if (dePres && (e.a === sujet || e.b === sujet)) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07); }
           break;
         case 'tour': if (co.voitures[e.id].position === 1 && co.toursTotal - e.tour === 1 && co.drapeau === null) message('Dernier tour', 'ambre'); break;
         case 'arrivee':
@@ -61524,7 +61524,7 @@ FERRO.initPhysics().then(function(){
         default:
           if (!dePres || e.id !== sujet) break;
           if (son) son.evenement(e.type, e);
-          if (e.type === 'choc') S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .035);
+          if (e.type === 'choc') S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07);
       }
     }
   }
@@ -61535,7 +61535,7 @@ FERRO.initPhysics().then(function(){
       switch (e.type) {
         case 'feu': son && son.evenement('feu'); break;
         case 'vert': son && son.evenement('vert'); message('Départ', 'vert', true); break;
-        case 'contact': if (e.a === 0 || e.b === 0) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .035); } break;
+        case 'contact': if (e.a === 0 || e.b === 0) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07); } break;
         case 'tour':
           if (e.id !== 0) break;
           son && son.evenement('tour', { meilleur: e.meilleur });
@@ -61551,8 +61551,8 @@ FERRO.initPhysics().then(function(){
         default:
           if (e.id !== 0) break;
           if (son) son.evenement(e.type, e);
-          if (e.type === 'choc') { S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .035); if (e.force > 18) S.eclair = Math.min(.65, (e.force - 18) * .035); }
-          else if (e.type === 'reception') S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, (e.force || 0) - 2) * .06);
+          if (e.type === 'choc') { S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07); if (e.force > 18) S.eclair = Math.min(.9, (e.force - 18) * .07); }
+          else if (e.type === 'reception') S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, (e.force || 0) - 2) * .12);
           else if (e.type === 'tonneau' || e.type === 'casse') { S.secousse = 1; S.eclair = .7; message('Retour en piste', 'ambre', true); }
           else if (e.type === 'roue') { message('Retour en piste', 'ambre', true); S.eclair = .5; }
           else if (e.type === 'retour' && e.repositionnement) { S.secousse = 0; S.eclair = 0; S.bloque = 0; S.contresens = 0; message('Replacé', '', true); }

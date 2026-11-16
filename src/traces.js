@@ -150,7 +150,7 @@
   // Flanc qui frotte la glissière : des étincelles le long de la caisse, qui partent avec la voiture
   function mur(fx, et, p, M, vx, vz) {
     const cote = et.d < 0 ? -1 : 1;
-    for (let n = 0; n < 3; n++) {
+    for (let n = 0; n < 6; n++) {
       const o = B.voiture.mul(M, [.6 - 2.2 * fx.alea(), .22, cote * 1.02]);
       etinceler(fx, p.x + o[0], p.y + o[1], p.z + o[2], vx * .75, 1.2, vz * .75, p.y, 5);
     }
@@ -163,8 +163,8 @@
     const ea = co.voitures[e.a].etat, eb = co.voitures[e.b].etat;
     const ca = a.cap - (ea.beta || 0), cb = b.cap - (eb.beta || 0);
     const vx = .4 * (Math.cos(ca) * ea.v + Math.cos(cb) * eb.v), vz = .4 * (Math.sin(ca) * ea.v + Math.sin(cb) * eb.v), sol = (a.y + b.y) / 2;
-    for (let n = 0, m = 4 + Math.min(6, Math.max(0, Math.round(e.force || 0))); n < m; n++)
-      etinceler(fx, (a.x + b.x) / 2, sol + .3, (a.z + b.z) / 2, vx, 1.5, vz, sol, 6);
+    for (let n = 0, m = 10 + Math.min(12, Math.max(0, Math.round(e.force || 0))); n < m; n++)
+      etinceler(fx, (a.x + b.x) / 2, sol + .3, (a.z + b.z) / 2, vx, 1.5, vz, sol, 8);
   }
 
   function detacher(fx, co, poses, e) {

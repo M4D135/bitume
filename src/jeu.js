@@ -503,7 +503,7 @@
         case 'feu': son && son.evenement('feu'); break;
         case 'vert': son && son.evenement('vert'); message('Départ', 'vert', true); break;
         case 'contact':
-          if (dePres && (e.a === sujet || e.b === sujet)) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .035); }
+          if (dePres && (e.a === sujet || e.b === sujet)) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07); }
           break;
         case 'tour': if (co.voitures[e.id].position === 1 && co.toursTotal - e.tour === 1 && co.drapeau === null) message('Dernier tour', 'ambre'); break;
         case 'arrivee':
@@ -516,7 +516,7 @@
         default:
           if (!dePres || e.id !== sujet) break;
           if (son) son.evenement(e.type, e);
-          if (e.type === 'choc') S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .035);
+          if (e.type === 'choc') S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07);
       }
     }
   }
@@ -527,7 +527,7 @@
       switch (e.type) {
         case 'feu': son && son.evenement('feu'); break;
         case 'vert': son && son.evenement('vert'); message('Départ', 'vert', true); break;
-        case 'contact': if (e.a === 0 || e.b === 0) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .035); } break;
+        case 'contact': if (e.a === 0 || e.b === 0) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07); } break;
         case 'tour':
           if (e.id !== 0) break;
           son && son.evenement('tour', { meilleur: e.meilleur });
@@ -543,8 +543,8 @@
         default:
           if (e.id !== 0) break;
           if (son) son.evenement(e.type, e);
-          if (e.type === 'choc') { S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .035); if (e.force > 18) S.eclair = Math.min(.65, (e.force - 18) * .035); }
-          else if (e.type === 'reception') S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, (e.force || 0) - 2) * .06);
+          if (e.type === 'choc') { S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07); if (e.force > 18) S.eclair = Math.min(.9, (e.force - 18) * .07); }
+          else if (e.type === 'reception') S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, (e.force || 0) - 2) * .12);
           else if (e.type === 'tonneau' || e.type === 'casse') { S.secousse = 1; S.eclair = .7; message('Retour en piste', 'ambre', true); }
           else if (e.type === 'roue') { message('Retour en piste', 'ambre', true); S.eclair = .5; }
           else if (e.type === 'retour' && e.repositionnement) { S.secousse = 0; S.eclair = 0; S.bloque = 0; S.contresens = 0; message('Replacé', '', true); }
