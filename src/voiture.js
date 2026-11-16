@@ -544,26 +544,6 @@
       }
     }
 
-    // Rétroviseur central : flottant en haut, au centre de l'écran (verrouillé à la vue).
-    {
-      const GLc = GL * .6, GHc = GH * .6;
-      const vc = [.6, .15, 0];
-      mettre('box', [vc[0], vc[1] + GHc * .25, vc[2]], [.006, GHc * .5 / K, GLc / K], LAQUE, ciel.map(vv => vv * .85));
-      mettre('box', [vc[0], vc[1] - GHc * .04, vc[2]], [.006, GHc * .1 / K, GLc / K], LAQUE, brume.map(vv => vv * .7));
-      mettre('box', [vc[0], vc[1] - GHc * .295, vc[2]], [.006, GHc * .41 / K, GLc / K], LAQUE, [.12, .125, .13]);
-      let n = 0;
-      for (const v of suiveurs) {
-        if (n >= 5) break;
-        const b = .55 - v.x, a = v.z, f = a / .35;
-        if (b < 2 || b > 90 || Math.abs(f) > 1) continue;
-        const dist = Math.hypot(a, b), large = borner(1.9 / dist / .56 * GLc, .005, GLc * .55), haut = borner(1.0 / dist / .23 * GHc, .004, GHc * .62);
-        const zi = borner(f * GLc / 2, -GLc / 2 + .54 * large, GLc / 2 - .54 * large),
-          yi = borner(-GHc * .08 - haut * .3, -GHc / 2 + .51 * haut, GHc / 2 - haut / 2);
-        mettre('box', [vc[0], vc[1] + yi / K, vc[2] + zi / K], [.006, haut / K, large / K], LAQUE, v.couleur || c2);
-        mettre('box', [vc[0], vc[1] + (yi - haut * .34) / K, vc[2] + zi / K], [.006, haut * .34 / K, large * 1.08 / K], MAT, [.03, .03, .035]);
-        n++;
-      }
-    }
     return M;
   }
 
