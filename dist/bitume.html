@@ -420,7 +420,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.4">V0.2.4</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.5">V0.2.5</b>
     </div>
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
@@ -58672,7 +58672,21 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   function clamp(x, a, b) { return x < a ? a : (x > b ? b : x); }
   function lerp(a, b, t) { return a + (b - a) * t; }
 
-  const frequenceAllumage = regime => regime / 60 * 4; // V8 quatre temps : 4 allumages par tour
+  const frequenceAllumage = regime => regime / 60 * 4; // V8 quatre temps : 4 allumages par tour (ancienne voix)
+  // Douze-cylindres à plat, quatre temps : un cycle moteur dure deux tours ; douze allumages par cycle.
+  const frequenceCycle = regime => Math.max(0, regime) / 120;
+  // Spectre d'un cycle moteur (amplitudes des harmoniques de la fréquence de cycle, 1 à n) : ordres d'allumage
+  // (12, 24…) forts, demi-ordres d'un banc à l'autre (6, 18…), ordres de vilebrequin pairs pour le corps, quelques
+  // impairs pour la rugosité d'un cylindre à l'autre ; une petite inégalité fixe casse la perfection.
+  function spectreMoteur(n = 64) {
+    const a = new Float32Array(n + 1);
+    for (let k = 1; k <= n; k++) {
+      const v = k % 12 === 0 ? .6 / Math.pow(k / 12, .9) : k % 6 === 0 ? .8 / Math.pow(k / 6, .85)
+        : k % 4 === 0 ? .42 / Math.pow(k / 4, .6) : k % 2 === 0 ? .36 / Math.pow(k / 2, .5) : .09 / Math.pow(k, .35);
+      a[k] = v * (1 + .22 * Math.sin(k * 2.3));
+    }
+    return a;
+  }
   const coupure = (gaz, regime) => clamp(700 + 2600 * gaz + 0.22 * regime, 600, 6500);
   const gainDistance = d => clamp(1 / Math.pow(1 + Math.max(0, d) / 14, 2), 0, 1);
   const doppler = vRel => 343 / (343 - clamp(vRel, -120, 120));
@@ -58716,35 +58730,53 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     function gain(v) { const g = ctx.createGain(); g.gain.value = v; return g; }
     function osc(type, f, detune) { const o = ctx.createOscillator(); o.type = type; o.frequency.value = f; o.detune.value = detune || 0; return o; }
 
-    // Moteur du joueur : scies à f et f/2, carré à f/4, attaque variable dans une saturation tanh,
-    // modulation d'allumage, souffle d'échappement, passe-haut 40 Hz, passe-bas à coupure().
+    // Onde d'un cycle moteur (voir spectreMoteur), phases tirées une fois pour toutes : pas de pointe trop aiguë.
+    let onde = null;
+    function ondeMoteur() {
+      if (onde) return onde;
+      const a = spectreMoteur(64), re = new Float32Array(a.length), im = new Float32Array(a.length);
+      let x = 0x2545F491;
+      for (let k = 1; k < a.length; k++) { x = Math.imul(x ^ x >>> 15, 0x2C1B3C6D) >>> 0; const ph = x / 4294967296 * 2 * Math.PI; re[k] = a[k] * Math.cos(ph); im[k] = a[k] * Math.sin(ph); }
+      return (onde = ctx.createPeriodicWave(re, im));
+    }
+    function crete(f, gainDb, q) { const b = filtre('peaking', f, q); b.gain.value = gainDb; return b; }
+
+    // Moteur du joueur (David, 16/11 : « gros point, là on dirait un moustique ») : un douze-cylindres à plat de 1980.
+    // Deux bancs (onde d'un cycle complet, fondamentale = régime/120) légèrement désaccordés qui battent, vibrato
+    // lent ; grondement du vilebrequin au ralenti ; saturation qui suit la charge ; résonances FIXES d'échappement et
+    // d'admission (les harmoniques les traversent quand le régime monte) ; râpe de combustion : bruit modulé à la
+    // fréquence d'allumage. Vue cockpit : plus d'admission et de râpe ; dehors : plus d'échappement.
     function moteur() {
-      const t = ctx.currentTime;
-      const o1 = osc('sawtooth', 300, 3), o2 = osc('sawtooth', 150, -4), o3 = osc('square', 75);
-      const g1 = gain(0.5), g2 = gain(0.42), g3 = gain(0.1);
-      const attaque = gain(1.2);                 // la dureté de la saturation suit le gaz
-      const mod = osc('sine', 75), modG = gain(0.22); // irrégularité d'allumage : grondement
-      mod.connect(modG).connect(attaque.gain);
-      o1.connect(g1).connect(attaque); o2.connect(g2).connect(attaque); o3.connect(g3).connect(attaque);
-      const sat = ctx.createWaveShaper(); sat.curve = courbeTanh(1.6); sat.oversample = '2x';
-      const ph = filtre('highpass', 40, 0.7), pb = filtre('lowpass', 1500, 0.9);
-      const ns = bruitEnBoucle(), bp = filtre('bandpass', 480, 2), ng = gain(0);
-      ns.connect(bp).connect(ng).connect(pb);
-      const sortie = gain(0);
-      attaque.connect(sat).connect(ph).connect(pb).connect(sortie).connect(busMot);
-      for (const o of [o1, o2, o3, mod, ns]) o.start(t);
-      return { o1, o2, o3, mod, attaque, pb, bp, ng, sortie };
+      const t = ctx.currentTime, w = ondeMoteur();
+      const oA = ctx.createOscillator(), oB = ctx.createOscillator();
+      oA.setPeriodicWave(w); oB.setPeriodicWave(w); oA.frequency.value = oB.frequency.value = 33; oB.detune.value = 9;
+      const vib = osc('sine', 5.7), vibG = gain(5), vib2 = osc('sine', .83), vib2G = gain(7);
+      vib.connect(vibG); vib2.connect(vib2G);
+      for (const o of [oA, oB]) { vibG.connect(o.detune); vib2G.connect(o.detune); }
+      const gA = gain(.55), gB = gain(.45), oSub = osc('sine', 67), gSub = gain(.2);
+      const attaque = gain(1.2);
+      oA.connect(gA).connect(attaque); oB.connect(gB).connect(attaque); oSub.connect(gSub).connect(attaque);
+      const sat = ctx.createWaveShaper(); sat.curve = courbeTanh(2.2); sat.oversample = '2x';
+      const ph = filtre('highpass', 32, .7), echap = crete(210, 8, .9), basse = crete(520, 3, 1.2), adm = crete(1400, 2, 2);
+      const doux = filtre('highshelf', 4200, .7); doux.gain.value = -4;
+      const pb = filtre('lowpass', 3000, .7), sortie = gain(0);
+      // râpe : bruit en bande large, porte ouverte et fermée à chaque allumage
+      const ns = bruitEnBoucle(), rapeF = filtre('bandpass', 2600, .9), rape = gain(0), am = osc('square', 400), amG = gain(.5);
+      am.connect(amG).connect(rape.gain);
+      ns.connect(rapeF).connect(rape).connect(pb);
+      attaque.connect(sat).connect(ph).connect(echap).connect(basse).connect(adm).connect(doux).connect(pb).connect(sortie).connect(busMot);
+      for (const o of [oA, oB, vib, vib2, oSub, ns, am]) o.start(t);
+      return { oA, oB, oSub, gSub, am, attaque, echap, adm, pb, rape, sortie };
     }
 
-    // Voix d'un rival : scie à f, carré à f/2, passe-bas plus fermé, panoramique.
+    // Voix d'un rival : la même onde de cycle, filtrée plus fermée, panoramique.
     function voixRival() {
-      const t = ctx.currentTime;
-      const o1 = osc('sawtooth', 300), o2 = osc('square', 150), g1 = gain(0.55), g2 = gain(0.22);
-      const mix = gain(1), pb = filtre('lowpass', 900, 0.8), pan = ctx.createStereoPanner(), sortie = gain(0);
-      o1.connect(g1).connect(mix); o2.connect(g2).connect(mix);
-      mix.connect(pb).connect(pan).connect(sortie).connect(busMot);
-      o1.start(t); o2.start(t);
-      return { o1, o2, pb, pan, sortie, id: -1, libereA: 0 };
+      const t = ctx.currentTime, o1 = ctx.createOscillator();
+      o1.setPeriodicWave(ondeMoteur()); o1.frequency.value = 50;
+      const g1 = gain(.9), pb = filtre('lowpass', 1600, .8), corps = crete(170, 5, 1.1), pan = ctx.createStereoPanner(), sortie = gain(0);
+      o1.connect(g1).connect(corps).connect(pb).connect(pan).connect(sortie).connect(busMot);
+      o1.start(t);
+      return { o1, pb, pan, sortie, id: -1, libereA: 0 };
     }
 
     function init() {
@@ -58800,15 +58832,16 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       const t = ctx.currentTime, tc = 0.015, j = etat.joueur || {};
       const silence = enPause || !!etat.pause;
       const muet = silence || !!j.muet; // vue extérieure : la voiture du joueur passe par une voix de rival
-      const gaz = clamp(+j.gaz || 0, 0, 1), regime = Math.max(0, +j.regime || 0), f = frequenceAllumage(regime);
-      vise(m.o1.frequency, f, t, tc); vise(m.o2.frequency, f / 2, t, tc); vise(m.o3.frequency, f / 4, t, tc);
-      vise(m.mod.frequency, f / 4, t, tc);
-      vise(m.attaque.gain, lerp(1.2, 3.6, gaz), t, 0.03);
-      vise(m.pb.frequency, coupure(gaz, regime) * (j.vue === 'poursuite' ? 1 : 0.85), t, tc);
-      vise(m.bp.frequency, 1.6 * f, t, tc);
-      vise(m.ng.gain, 0.03 + gaz * 0.14 + (j.turbo ? 0.08 : 0), t, 0.03);
+      const gaz = clamp(+j.gaz || 0, 0, 1), regime = Math.max(0, +j.regime || 0), fc = frequenceCycle(regime), r = clamp(regime / 13000, 0, 1);
+      const bord = j.vue !== 'poursuite';
+      vise(m.oA.frequency, fc, t, tc); vise(m.oB.frequency, fc, t, tc); vise(m.oSub.frequency, 2 * fc, t, tc); vise(m.am.frequency, 12 * fc, t, tc);
+      vise(m.gSub.gain, .07 + .26 * (1 - r), t, .05);
+      vise(m.attaque.gain, lerp(1.0, 2.9, gaz) * (.8 + .4 * r) + (j.turbo ? .4 : 0), t, .03);
+      vise(m.pb.frequency, clamp(1300 + 3400 * gaz + .3 * regime, 900, 8500) * (bord ? .92 : 1), t, tc);
+      vise(m.rape.gain, (.02 + .12 * gaz + (j.turbo ? .04 : 0)) * (.35 + .65 * r) * (bord ? 1.25 : .8), t, .03);
+      vise(m.echap.gain, bord ? 6.5 : 9, t, .1); vise(m.adm.gain, bord ? 3.5 : 1, t, .1);
       // le gain de sortie est réduit car la saturation remonte le niveau
-      const vol = muet ? 0 : lerp(0.55, 0.9, gaz) * 0.42;
+      const vol = muet ? 0 : lerp(0.5, 0.9, gaz) * 0.34;
       if (t >= coupFin) vise(m.sortie.gain, vol, t, muet ? 0.03 : tc);
 
       // rivaux : les trois plus proches, attribution stable, fondu de 0,1 s
@@ -58821,12 +58854,10 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
           vx = voix.find(x => x.id < 0 && t >= x.libereA);
           if (!vx) continue;
           vx.id = r.id;
-          const rf0 = frequenceAllumage(Math.max(0, +r.regime || 0)) * doppler(+r.vRel || 0);
-          vx.o1.frequency.setValueAtTime(rf0, t); vx.o2.frequency.setValueAtTime(rf0 / 2, t);
+          vx.o1.frequency.setValueAtTime(frequenceCycle(+r.regime || 0) * doppler(+r.vRel || 0), t);
         }
-        const rf = frequenceAllumage(Math.max(0, +r.regime || 0)) * doppler(+r.vRel || 0);
-        vise(vx.o1.frequency, rf, t, tc); vise(vx.o2.frequency, rf / 2, t, tc);
-        vise(vx.pb.frequency, coupure(clamp(+r.gaz || 0, 0, 1), +r.regime || 0) * 0.6, t, tc);
+        vise(vx.o1.frequency, frequenceCycle(+r.regime || 0) * doppler(+r.vRel || 0), t, tc);
+        vise(vx.pb.frequency, coupure(clamp(+r.gaz || 0, 0, 1), +r.regime || 0) * 0.75, t, tc);
         vise(vx.pan.pan, panoramique(+r.angle || 0), t, 0.05);
         vise(vx.sortie.gain, silence ? 0 : gainDistance(+r.distance || 0) * 0.5 * 0.42, t, 0.1 / 3);
       }
@@ -59003,7 +59034,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     return { demarrer, regler, mettreAJour, evenement, musique, suspendre, reprendre, stats };
   }
 
-  B.son = { creer, frequenceAllumage, coupure, gainDistance, doppler, panoramique, THEME };
+  B.son = { creer, frequenceAllumage, frequenceCycle, spectreMoteur, coupure, gainDistance, doppler, panoramique, THEME };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>

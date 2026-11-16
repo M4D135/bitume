@@ -1,8 +1,8 @@
 {
-  "version": "0.2.4",
-  "raw": 12719360,
-  "gzip": 2908058,
-  "sha256": "7624497032b167083158f5b294dee4230756f639b71f69002b65e9a32a5170ae",
+  "version": "0.2.5",
+  "raw": 12722017,
+  "gzip": 2909060,
+  "sha256": "f0e9e33a7eccdcccddeebd2c61f5168023ff55cea88dfd104a6ba1d13ccb3100",
   "sources": {
     "moteur/renderer.js": 209041,
     "ferro/engine.js": 2024,
@@ -15,7 +15,7 @@
     "contacts.js": 7096,
     "obstacles.js": 13181,
     "course.js": 27506,
-    "son.js": 20993,
+    "son.js": 23650,
     "decor.js": 40023,
     "carene.js": 16443,
     "main.js": 7825,

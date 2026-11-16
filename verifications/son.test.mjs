@@ -80,9 +80,10 @@ function fauxAudio() {
     constructor() { this.currentTime = 0; this.sampleRate = 48000; this.state = 'running'; this.destination = noeud({}); contextes.push(this); }
     resume() {}
     createGain() { return noeud({ gain: param(1) }); }
-    createOscillator() { const o = source({ type: 'sine', frequency: param(440), detune: param(0) }); oscillateurs.push(o); return o; }
+    createOscillator() { const o = source({ type: 'sine', frequency: param(440), detune: param(0), setPeriodicWave(w) { o.type = 'custom'; o.onde = w; } }); oscillateurs.push(o); return o; }
+    createPeriodicWave(re, im) { return { re, im }; }
     createDelay() { return noeud({ delayTime: param(0) }); }
-    createBiquadFilter() { return noeud({ type: 'lowpass', frequency: param(350), Q: param(1) }); }
+    createBiquadFilter() { return noeud({ type: 'lowpass', frequency: param(350), Q: param(1), gain: param(0) }); }
     createWaveShaper() { return noeud({ curve: null, oversample: 'none' }); }
     createDynamicsCompressor() { return noeud({ threshold: param(-24), knee: param(30), ratio: param(12), attack: param(.003), release: param(.25) }); }
     createStereoPanner() { return noeud({ pan: param(0) }); }
