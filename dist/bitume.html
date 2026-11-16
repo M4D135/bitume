@@ -168,7 +168,7 @@ input[type="range"] { width: 100%; accent-color: var(--rouge); }
 .feux i.allume { background: radial-gradient(circle at 40% 35%, #ff9a84, var(--rouge) 45%, #8a1208); box-shadow: 0 0 18px rgba(255, 60, 30, .75); }
 
 /* compteur d'images par seconde, en bas au centre ; il vire à l'ambre sous la barre des 50 */
-.fps { position: absolute; left: 50%; bottom: max(12px, env(safe-area-inset-bottom)); transform: translateX(-50%);
+.fps { position: absolute; left: max(12px, env(safe-area-inset-left)); bottom: max(12px, env(safe-area-inset-bottom)); transform: none;
   padding: 4px 11px; background: var(--nuit); border: 1px solid var(--trait); border-radius: var(--rayon);
   color: var(--papier-2); font: 700 13px/1 var(--f-texte); font-variant-numeric: tabular-nums; letter-spacing: .08em; pointer-events: none; }
 .fps.bas { color: var(--ambre); border-color: rgba(244, 165, 28, .5); }
