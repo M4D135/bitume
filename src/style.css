@@ -348,6 +348,6 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 .enligne .rejoindre { display: flex; gap: 10px; align-items: center; }
 .enligne #l-code { width: 6.5ch; text-transform: uppercase; letter-spacing: .25em; text-align: center; }
 .code-partie { margin: 0; font: italic 800 64px/1 var(--f-titre); letter-spacing: .18em; color: var(--papier); }
-/* m4d135 : signature de l'écran titre */
-.gros, .discret, .retour, .bouton-rond{pointer-events:auto}.m4d-signature{display:inline-flex;align-items:center;gap:.5em;text-transform:none;opacity:.75;transition:opacity .2s}.m4d-signature:hover,.m4d-signature:focus-visible{opacity:1}.m4d-signature svg{width:1.3em;height:1.3em;margin:-.15em 0;flex:none}
-.discret:hover,.discret:focus-visible{color:var(--papier);border-left-color:var(--ambre);outline:none}.marque .m4d-signature{margin-left:auto;margin-right:0}
+
+.gros, .discret, .retour, .bouton-rond{pointer-events:auto}
+
