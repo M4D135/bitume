@@ -91,3 +91,8 @@ et lointain (`camera.near`, `camera.far`), la lampe torche éteinte (`fx.torch =
     avec MSAA 4, 20 images de chauffe et 60 mesures espacées : p95 ancien/nouveau 1,4/1,4 ms (forêt),
     1,6/1,6 ms (côte), 1,3/1,4 ms (montagne). Ces mesures headless ne prouvent ni FPS visibles ni Xbox réelle.
     La caméra, le FOV mobile, l’ATH et la simulation ne changent pas dans ce portage.
+
+
+## FERRO commun 0.3.0 — 16 novembre 2026
+
+Migration vers le renderer de référence EMPRISE/src/ferro/renderer.js, identique dans les quatre jeux et contrôlé par FERRO.lock.json. Les apports BITUME et PDR sont conservés dans le moteur commun ; le jeu fournit ses réglages et son style. Aucun plafond de taille (décision explicite de David). Voir FERRO-REFERENCE.md.

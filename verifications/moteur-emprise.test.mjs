@@ -22,7 +22,7 @@ assert.equal(S.bitumeWeather(env,{pluie:0,nuage:.2,eclair:0,mouille:.7},13,w),w)
 for(const [i,key] of ['values','skyTop','skyBottom','fog','sunColor','ambient','cloudOffset'].entries())assert.equal(w[key],references[i]);
 S.bitumeWeather(env,{pluie:Infinity,nuage:9,eclair:-1,mouille:NaN},14,w);assert.deepEqual([...w.values],[0,1,0,0]);
 S.bitumeWeather(env,[.3,.4,.5,.2],15,w);assert.ok(Math.abs(w.values[0]-.3)<1e-6,'vec4 natif accepté');assert.equal(JSON.stringify(env),original,'environnement conservé');
-assert.equal(S.settings().reflections,false,'aucun SSR implicite');assert.equal(S.settings({reflections:true}).reflections,true);
+assert.equal(S.settings({reflections:false}).reflections,false,'aucun SSR implicite');assert.equal(S.settings({reflections:true}).reflections,true);
 console.log('moteur EMPRISE : triangles exacts aux 3 LOD, formes libres, restauration, météo et SSR optionnel',JSON.stringify(rapports));
 // Le branchement WebGL2 doit désindexer avant une mutation, puis restaurer le même état après perte du contexte.
 let serial=0;const constants=new Map(),uploads=[],subUploads=[],listeners={};

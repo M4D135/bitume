@@ -22,7 +22,9 @@ DIST = ICI / 'dist'
 # voiture, les traces et la fumée, le réalisateur de la démo, la coque.
 MODULES = [
     'moteur/renderer.js',
+    'ferro/engine.js',
     'circuit.js',
+    'ferro/vehicle-dynamics.js',
     'conduite.js',
     'degats.js',
     'contacts.js',
@@ -39,7 +41,6 @@ MODULES = [
     'jeu.js',
 ]
 VERSION = 'essai-0.1'
-BUDGET = 1_400_000      # octets : la page reste petite, bien sous la limite des artefacts (16 Mo)
 # Titre et description en tête du gabarit : ils passent dans le <head> de la page complète.
 ENTETE = re.compile(r'\A(<title>[^<]*</title>\n<meta name="description" content="[^"]*">\n)')
 ICONE_SVG = ("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'>"
@@ -50,6 +51,8 @@ ICONE = f'<link rel="icon" href="data:image/svg+xml,{quote(ICONE_SVG)}">\n'
 
 
 def main():
+    import subprocess,sys
+    subprocess.run([sys.executable,str(ICI/'tools/check-ferro-lock.py'),str(ICI)],check=True)
     gabarit = (SRC / 'index.html').read_text(encoding='utf-8')
     style = (SRC / 'style.css').read_text(encoding='utf-8')
     sources = {nom: (SRC / nom).read_text(encoding='utf-8') for nom in MODULES}
@@ -76,8 +79,6 @@ def main():
             '</head>\n<body>\n' + fragment[entete.end():] + '</body>\n</html>\n')
 
     octets = page.encode('utf-8')
-    if len(octets) > BUDGET:
-        raise SystemExit(f'page de {len(octets)} octets, au-delà du budget de {BUDGET}')
     DIST.mkdir(exist_ok=True)
     (DIST / 'bitume.html').write_bytes(octets)
     (DIST / 'artefact.html').write_text(fragment, encoding='utf-8')

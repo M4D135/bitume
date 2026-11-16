@@ -132,3 +132,10 @@ diffère de celle du commit. Sur amiga (compte `ddd`, sans root), il dépose `~/
 contrôle l'empreinte, bascule le lien `current` d'un coup et garde 3 versions. Il repose le vhost dans
 `~/apps/caddy-shared/vhosts.d/` si `deploiement/bitume.estrasse.fr.Caddyfile` a changé, puis vérifie que la page
 servie a la même empreinte. Aucun timer : le VPS n'a pas accès au dépôt privé. Le retour arrière est en tête du script.
+
+
+## Décision de David — 16 novembre 2026
+
+Aucun plafond de taille du code, du moteur ou des builds. Cette décision remplace les anciens budgets en octets ci-dessus. Le contenu graphique et sonore reste entièrement procédural. Mesurer les tailles et les performances, sans réduire les fonctionnalités pour respecter une limite de fichier.
+
+Les modules listés dans `FERRO.lock.json` sont désormais des copies exactes de la référence `EMPRISE/src/ferro`. Cette décision remplace les anciennes consignes de retouche locale du moteur : corriger la référence et propager une version qualifiée ; conserver les adaptations du jeu hors de ces modules.

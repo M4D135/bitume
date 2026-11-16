@@ -1155,7 +1155,7 @@
   function demarrer() {
     if (!webgl2()) { erreur('WebGL2 indisponible', 'BITUME dessine la piste avec WebGL2. Ouvrez la page dans un navigateur récent (Chrome, Edge, Firefox, Safari 15 ou plus) avec l’accélération graphique active.'); return; }
     try {
-      rendu = window.FRender.create(canvas);
+      rendu = window.FRender.create(canvas,{msaa:4,shadowMapScale:2,reflections:false,sea:false,overlayLighting:'world'});
       if (rendu.stats.backend !== 'webgl2') { erreur('WebGL2 indisponible', 'Le rendu de secours ne sait pas dessiner la piste. Activez l’accélération graphique du navigateur.'); return; }
       rendu.resize(reglages.qualite);
       son = B.son.creer();
