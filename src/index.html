@@ -11,6 +11,8 @@
     <canvas id="glace-d" class="glace" aria-hidden="true" hidden></canvas>
     <canvas id="retro-rendu" class="retro-rendu" aria-hidden="true"></canvas>
     <canvas id="meteo" aria-hidden="true"></canvas>
+    <div id="glaces2" class="glaces2" aria-hidden="true"><canvas id="glace-g2" class="glace" hidden></canvas><canvas id="glace-d2" class="glace" hidden></canvas></div>
+    <canvas id="meteo2" aria-hidden="true"></canvas>
     <div id="vignette" aria-hidden="true"></div>
   </div>
 
@@ -78,12 +80,12 @@
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
       <button type="button" class="gros" data-aller="chrono">Chrono</button>
-      <button type="button" class="gros" data-aller="duo">À deux</button>
+      <button type="button" class="gros" data-aller="duo" id="b-duo">À deux<small id="t-manettes" class="detecte" hidden>2 manettes</small></button>
       <button type="button" class="gros" data-aller="enligne">En ligne</button>
       <button type="button" class="discret" data-aller="reglages">Réglages</button>
     </nav>
     <p id="titre-attente" class="attente" hidden><span id="titre-attente-texte">Démo dans 5 s</span><i><b></b></i></p>
-    <p class="pied-titre">Clavier, manette ou écran tactile</p>
+    <p class="pied-titre">Clavier, souris, manette ou écran tactile</p>
     <p id="aide-console" class="pied-titre" hidden>Xbox : maintenez Menu pour passer aux contrôles de jeu. RT : gaz · LT : frein · A : dérive</p>
   </section>
 
@@ -91,20 +93,31 @@
   <section id="enligne" class="ecran enligne" hidden>
     <header class="entete">
       <button type="button" class="retour" data-aller="titre" aria-label="Retour">←</button>
-      <h2>En ligne</h2>
+      <div><h2>En ligne</h2><p class="sous">À deux, chacun sur sa machine. Chacun conduit sa voiture sans attendre le réseau.</p></div>
     </header>
-    <p class="note-enligne">À deux, chacun sur sa machine. L’un crée la partie et donne son code à l’autre, qui le saisit. Chacun conduit sa voiture sans attendre le réseau.</p>
-    <label class="champ-nom"><span>Votre nom</span><input id="l-nom" maxlength="16" autocomplete="nickname" spellcheck="false"></label>
-    <div class="enligne-choix">
-      <button type="button" class="gros" id="l-creer">Créer une partie</button>
-      <div class="rejoindre">
-        <input id="l-code" maxlength="4" autocomplete="off" spellcheck="false" placeholder="CODE" aria-label="Code de la partie">
-        <button type="button" class="gros" id="l-rejoindre">Rejoindre</button>
+    <div class="salon">
+      <label class="champ-nom"><span>Votre nom</span><input id="l-nom" maxlength="16" autocomplete="nickname" spellcheck="false" placeholder="Pilote"></label>
+      <div class="enligne-choix">
+        <div class="carte-salon">
+          <h3>Créer une partie</h3>
+          <p>Vous recevez un code de quatre lettres à donner à l’autre pilote. Vous choisirez ensuite la course.</p>
+          <button type="button" class="gros principal" id="l-creer">Créer</button>
+        </div>
+        <div class="carte-salon rejoindre">
+          <h3>Rejoindre</h3>
+          <p>Entrez le code que l’autre pilote vous a donné.</p>
+          <div class="ligne-code">
+            <input id="l-code" maxlength="4" autocomplete="off" spellcheck="false" placeholder="ABCD" aria-label="Code de la partie">
+            <button type="button" class="gros" id="l-rejoindre">Rejoindre</button>
+          </div>
+        </div>
+      </div>
+      <div class="etat-salon">
+        <button type="button" id="l-code-affiche" class="code-partie" title="Copier le code" hidden></button>
+        <p id="l-etat" class="note-enligne" role="status" aria-live="polite"></p>
+        <button type="button" class="gros principal" id="l-choisir" hidden>Choisir la course</button>
       </div>
     </div>
-    <p id="l-code-affiche" class="code-partie" hidden></p>
-    <p id="l-etat" class="note-enligne" role="status" aria-live="polite"></p>
-    <button type="button" class="gros" id="l-choisir" hidden>Choisir la course</button>
   </section>
 
   <!-- Préparation d'une course ou d'un chrono -->
@@ -141,11 +154,17 @@
         <label><input type="radio" name="pneus" value="pluie"><span>Pluie</span></label>
         <p id="p-pneus-conseil" class="note-pneus"></p>
       </fieldset>
+      <fieldset id="o-commandes" hidden>
+        <legend>Commandes</legend>
+        <div class="ligne-commande"><b>Joueur 1</b><label><input type="radio" name="cmd0" value="auto"><span>Auto</span></label><label><input type="radio" name="cmd0" value="manette"><span>Manette</span></label><label><input type="radio" name="cmd0" value="clavier"><span>Clavier</span></label><label><input type="radio" name="cmd0" value="souris"><span>Souris</span></label></div>
+        <div class="ligne-commande"><b>Joueur 2</b><label><input type="radio" name="cmd1" value="auto"><span>Auto</span></label><label><input type="radio" name="cmd1" value="manette"><span>Manette</span></label><label><input type="radio" name="cmd1" value="clavier"><span>Clavier</span></label><label><input type="radio" name="cmd1" value="souris"><span>Souris</span></label></div>
+        <p id="p-manettes" class="note-pneus"></p>
+        <button type="button" class="discret" id="p-touches">Régler les touches</button>
+      </fieldset>
       <fieldset id="o-partage" hidden>
         <legend>Écran</legend>
         <label><input type="radio" name="partage" value="haut-bas"><span>L’un sur l’autre</span></label>
         <label><input type="radio" name="partage" value="cote"><span>Côte à côte</span></label>
-        <p id="p-manettes" class="note-pneus"></p>
       </fieldset>
       <p id="o-chrono" class="note-chrono" hidden>Seul en piste. Le chrono part au premier passage de la ligne ; votre meilleur tour devient un fantôme bleu, gardé pour la prochaine fois.</p>
     </div>
@@ -227,15 +246,7 @@
         <label>Champ du cockpit <output id="v-champ-valeur">60°</output> <input type="range" id="v-champ" min="60" max="105" step="1"></label>
         <label>Secousses <output id="v-secousses-valeur">100 %</output> <input type="range" id="v-secousses" min="0" max="1" step="0.05"></label>
       </div>
-      <dl class="touches">
-        <dt>Accélérer · freiner</dt><dd>↑ ↓ ou Z S (W S en QWERTY)</dd>
-        <dt>Reculer</dt><dd>Maintenir le frein à l’arrêt</dd>
-        <dt>Tourner</dt><dd>← → ou Q D (A D en QWERTY)</dd>
-        <dt>Dérive</dt><dd>Espace ou Maj, tenue dans un virage ; contre-braquer pour charger, relâcher pour le turbo</dd>
-        <dt>Rapports</dt><dd>E monter · A descendre (Q en QWERTY), en boîte manuelle</dd>
-        <dt>Vue · son · pause</dt><dd>C · M · Échap ou P</dd>
-        <dt>Manette</dt><dd>gâchettes, stick gauche, A dérive, RB/LB rapports, Y vue, Start pause</dd>
-      </dl>
+      <div id="r-commandes" class="commandes-joueurs"></div>
     </div>
   </section>
 

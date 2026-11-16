@@ -214,8 +214,31 @@
   const touches = new Set();
   const impulsions = { haut: false, bas: false };
   const pad = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, deriveEtat: null, rumbleF: -1, rumbleS: -1, rumbleT: 0, choc: 0, passe: 0 };
-  const pad2 = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, manette: null };   // manette du joueur 2 (écran partagé)
-  let nbManettes = 0;
+  const pad2 = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, manette: null, rumbleF: -1, rumbleS: -1, rumbleT: 0, choc: 0, passe: 0 };   // manette du joueur 2 (écran partagé)
+  let nbManettes = 0, manettes = [];
+  const impulsions2 = { haut: false, bas: false };
+  // Commandes de chaque joueur (David, 16/11 : « choix manette, clavier ou souris, et gérer les touches de chacun » ;
+  // « clavier normal pour un et pavé numérique pour l'autre ») : appareil choisi (auto, manette, clavier, souris) et
+  // jusqu'à deux touches par action, réglables ; positions physiques des touches (e.code).
+  const ACTIONS = ['gaz', 'frein', 'gauche', 'droite', 'derive', 'haut', 'bas', 'vue'];
+  const TOUCHES_DEFAUT = [
+    { gaz: ['ArrowUp', 'KeyW'], frein: ['ArrowDown', 'KeyS'], gauche: ['ArrowLeft', 'KeyA'], droite: ['ArrowRight', 'KeyD'], derive: ['Space', 'ShiftLeft', 'ShiftRight'], haut: ['KeyE'], bas: ['KeyQ'], vue: ['KeyC'] },
+    { gaz: ['Numpad8'], frein: ['Numpad5', 'Numpad2'], gauche: ['Numpad4'], droite: ['Numpad6'], derive: ['Numpad0'], haut: ['Numpad9'], bas: ['Numpad7'], vue: ['NumpadEnter'] }
+  ];
+  const commande = n => (reglages.commandes && reglages.commandes[n]) || 'auto';
+  const toucheDe = (n, action) => (reglages.touches && reglages.touches[n] && reglages.touches[n][action]) || TOUCHES_DEFAUT[n][action];
+  const appuieSur = (n, action) => toucheDe(n, action).some(c => touches.has(c));
+  // la souris va au joueur qui l'a choisie ; en Auto, au joueur seul, ou au joueur 2 dans une course à deux
+  const sourisPour = (n, duo = !!session && session.type === 'duo') => { const c = commande(n); return c === 'souris' || (c === 'auto' && (duo ? n === 1 && commande(0) !== 'souris' : n === 0)); };
+  const souris = { active: false, x: 0, largeur: 1, gaz: false, frein: false, derive: false };
+  const volantSouris = () => { const x = (souris.x - souris.largeur / 2) / (souris.largeur * .3); return Math.abs(x) < .03 ? 0 : Math.max(-1, Math.min(1, x)); };
+  // manettes de la course à deux selon le choix de chacun : deux pour deux ; une seule va au joueur 2, sauf si le joueur
+  // 1 l'a demandée et pas lui
+  const assigner = c => {
+    const v0 = commande(0) === 'auto' || commande(0) === 'manette', v1 = commande(1) === 'auto' || commande(1) === 'manette';
+    if (v0 && v1) return c.length >= 2 ? [c[0], c[1]] : c.length === 1 ? (commande(0) === 'manette' && commande(1) !== 'manette' ? [c[0], null] : [null, c[0]]) : [null, null];
+    return [v0 ? c[0] || null : null, v1 ? c[0] || null : null];
+  };
   const doigt = { volant: 0, gaz: false, frein: false, derive: false, id: null, x0: 0 };
   let analogique = false;
   let relacherTactile = () => {};
@@ -228,7 +251,7 @@
     // démo : n'importe quelle touche, sauf une touche morte seule, ramène à l'écran titre
     if (ecran === 'demo') { if (!/^(Shift|Control|Alt|AltGraph|Meta|OS|CapsLock|Fn)$/.test(e.key || '')) { e.preventDefault(); activerSon(); sortirDemo(); } return; }
     activerSon();
-    if (course && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault();
+    if (course && (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code) || [0, 1].some(n => ACTIONS.some(a => toucheDe(n, a).includes(e.code))))) e.preventDefault();
     touches.add(e.code);
     if (e.code === 'Escape' || lettre === 'p') {
       if (course || ecran === 'pause') { basculerPause(); e.preventDefault(); }
@@ -237,17 +260,39 @@
     }
     if (!course) return;
     analogique = false;
-    if (e.code === 'KeyE') impulsions.haut = true;
-    if (e.code === 'KeyQ') impulsions.bas = true;
-    if (lettre === 'c') changerVue();
-    if ((e.code === 'Enter' || e.code === 'NumpadEnter') && session && session.type === 'duo') changerVue2();
+    if (commande(0) === 'auto' || commande(0) === 'clavier') {
+      if (toucheDe(0, 'haut').includes(e.code)) impulsions.haut = true;
+      if (toucheDe(0, 'bas').includes(e.code)) impulsions.bas = true;
+      if (toucheDe(0, 'vue').includes(e.code)) changerVue();
+    }
+    if (session && session.type === 'duo' && (commande(1) === 'auto' || commande(1) === 'clavier')) {
+      if (toucheDe(1, 'haut').includes(e.code)) impulsions2.haut = true;
+      if (toucheDe(1, 'bas').includes(e.code)) impulsions2.bas = true;
+      if (toucheDe(1, 'vue').includes(e.code)) changerVue2();
+    }
     if (lettre === 'm') couperSon();
   });
   addEventListener('keyup', e => touches.delete(e.code));
+  // Souris (David, 16/11 : « ou alors souris aussi, comme le vrai Vroom », refaite ici) : le pointeur à gauche ou à
+  // droite du milieu de l'écran tourne le volant (plein braquage à 30 % de la largeur), bouton gauche : gaz, droit :
+  // frein, milieu ou latéraux : dérive, molette : rapports. En Auto, elle compte après un clic en course.
+  const boutonsSouris = e => { souris.gaz = !!(e.buttons & 1); souris.frein = !!(e.buttons & 2); souris.derive = !!(e.buttons & 28); };
+  addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'mouse' || !enCourse()) return;
+    souris.active = true; souris.x = e.clientX; souris.largeur = innerWidth || 1; boutonsSouris(e); activerSon();
+  });
+  addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; souris.x = e.clientX; souris.largeur = innerWidth || 1; if (souris.active) boutonsSouris(e); }, { passive: true });
+  addEventListener('pointerup', e => { if (e.pointerType === 'mouse') boutonsSouris(e); });
+  addEventListener('contextmenu', e => { if (enCourse() || ecran === 'pause') e.preventDefault(); });
+  addEventListener('wheel', e => {
+    if (!enCourse() || !souris.active || !e.deltaY) return;
+    const imp = session && session.type === 'duo' && sourisPour(1) ? impulsions2 : impulsions;
+    if (e.deltaY < 0) imp.haut = true; else imp.bas = true;
+  }, { passive: true });
   let pauseAuto = true; // coupée par BITUME_JEU.pauseAuto = false, pour les captures et le banc
   let pilotageAuto = false; // BITUME_JEU.pilotageAuto = true : l'ordinateur conduit la voiture du joueur en temps réel (essais en ligne)
   let cameraEssai = null; // BITUME_JEU.camera = (pose, camera) => ({ pos, yaw, pitch, fov }) : vue libre pour les captures
-  addEventListener('blur', () => { touches.clear(); relacherTactile(); if (pauseAuto && enCourse()) basculerPause(true); });
+  addEventListener('blur', () => { touches.clear(); souris.gaz = souris.frein = souris.derive = false; relacherTactile(); if (pauseAuto && enCourse()) basculerPause(true); });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) relacherTactile();
     if (pauseAuto && document.hidden && enCourse()) basculerPause(true);
@@ -273,10 +318,11 @@
     // la première manette mène les menus et la seconde peut reprendre.
     const connectees = [];
     for (const candidate of liste) if (candidate && candidate.connected) connectees.push(candidate);
-    nbManettes = connectees.length;
+    nbManettes = connectees.length; manettes = connectees;
     const duoJeu = !!session && session.type === 'duo' && (ecran === 'course' || ecran === 'pause');
-    if (duoJeu || pad2.manette) lireManette2(duoJeu ? (connectees.length >= 2 ? connectees[1] : ecran === 'course' && connectees.length === 1 ? connectees[0] : null) : null);
-    const p = duoJeu && ecran === 'course' && connectees.length === 1 ? null : connectees[0] || null;
+    const [p1, p2] = duoJeu && ecran === 'course' ? assigner(connectees) : [connectees[0] || null, duoJeu && connectees.length >= 2 ? connectees[1] : null];
+    if (duoJeu || pad2.manette) lireManette2(p2);
+    const p = p1;
     const change = (ancienne?.index ?? -1) !== (p?.index ?? -1) || ancienne?.id !== p?.id;
     if (change) {
       // Une manette perdue ne relâche pas une dérive chargée en déclenchant un turbo involontaire.
@@ -326,15 +372,15 @@
   // davantage en charge), la route ronronne selon la vitesse, les vibreurs martèlent, l'herbe trépigne, le
   // patinage et la glisse de l'arrière sifflent sous les doigts, et les chocs déclenchent un pic qui retombe.
   // Moteur lourd (grave) à droite, effets légers (aigus) à gauche ; rien si la manette ne sait pas vibrer.
-  function secouerManette(faible, fort) {
-    const p = pad.manette;
+  function secouerManette(faible, fort, P = pad) {
+    const p = P.manette;
     faible = clamp(faible || 0, 0, 1); fort = clamp(fort || 0, 0, 1);
     if (!p || !p.vibrationActuator || !p.vibrationActuator.playEffect) return;
     const maintenant = performance.now();
     // le moteur à effet « dual-rumble » s'éteint seul au bout de sa durée : on le reprogramme au moins toutes
     // les 40 ms pour tenir un grondement continu, et plus vite encore dès que l'intensité bouge (choc, vibreur)
-    if (Math.abs(faible - pad.rumbleF) < .05 && Math.abs(fort - pad.rumbleS) < .05 && maintenant - pad.rumbleT < 40) return;
-    pad.rumbleF = faible; pad.rumbleS = fort; pad.rumbleT = maintenant;
+    if (Math.abs(faible - P.rumbleF) < .05 && Math.abs(fort - P.rumbleS) < .05 && maintenant - P.rumbleT < 40) return;
+    P.rumbleF = faible; P.rumbleS = fort; P.rumbleT = maintenant;
     try {
       const effet = p.vibrationActuator.playEffect('dual-rumble', { startDelay: 0, duration: 90, weakMagnitude: faible, strongMagnitude: fort });
       if (effet && typeof effet.catch === 'function') effet.catch(() => {});
@@ -343,16 +389,16 @@
 
   // construit l'intensité continue (faible = aigu, fort = grave) à partir de l'état de la voiture et des
   // événements du pas ; les chocs alimentent un pic qui décroît image après image
-  function vibrationManette(et, ev, horloge) {
+  function vibrationManette(et, ev, horloge, P = pad, id = 0) {
     const PR = B.conduite.PARAMS;
     // pics transitoires des chocs et contacts, plafonnés et qui retombent ; le passage de rapport donne un coup sec
-    pad.choc = Math.max(0, (pad.choc || 0) - DT * 2.4);
-    pad.passe = Math.max(0, (pad.passe || 0) - DT * 3.4);
+    P.choc = Math.max(0, (P.choc || 0) - DT * 2.4);
+    P.passe = Math.max(0, (P.passe || 0) - DT * 3.4);
     for (const e of ev) {
-      if (e.type === 'choc' && e.id === 0) pad.choc = Math.max(pad.choc, clamp(((e.force || 0) - 2) / 28, 0, .9));
-      else if (e.type === 'contact' && (e.a === 0 || e.b === 0)) pad.choc = Math.max(pad.choc, clamp(((e.force || 0) - 2) / 28, 0, .7));
-      else if ((e.type === 'roue' || e.type === 'casse') && e.id === 0) pad.choc = Math.max(pad.choc, .85);
-      else if (e.repositionnement && e.id === 0) pad.choc = 0;
+      if (e.type === 'choc' && e.id === id) P.choc = Math.max(P.choc, clamp(((e.force || 0) - 2) / 28, 0, .9));
+      else if (e.type === 'contact' && (e.a === id || e.b === id)) P.choc = Math.max(P.choc, clamp(((e.force || 0) - 2) / 28, 0, .7));
+      else if ((e.type === 'roue' || e.type === 'casse') && e.id === id) P.choc = Math.max(P.choc, .85);
+      else if (e.repositionnement && e.id === id) P.choc = 0;
     }
     // grondement du moteur : doux au ralenti, il monte progressivement vers la zone rouge sans jamais saturer
     const r = clamp((et.regime - PR.ralenti) / (PR.maxUtile - PR.ralenti), 0, 1);
@@ -367,7 +413,7 @@
     const blocage = clamp(et.blocage / .35, 0, 1);
     const glisse = clamp(Math.abs(et.glisseAr) / .5, 0, 1);
     let faible = route * .16 + patinage * .5 + blocage * .38 + glisse * .3 + herbe * .3 + martellement * .42 + zoneRouge + moteur * .35;
-    let fort = moteur * 1.0 + route * .16 + herbe * .42 + martellement * .5 + (pad.choc || 0) * .85 + (pad.passe || 0) * .5;
+    let fort = moteur * 1.0 + route * .16 + herbe * .42 + martellement * .5 + (P.choc || 0) * .85 + (P.passe || 0) * .5;
     // mise en forme : une courbe en puissance garde le bas de l'échelle subtil, puis la puissance maître du réglage
     const f = clamp(reglages.vibrationForce != null ? +reglages.vibrationForce : .5, 0, 1);
     faible = Math.pow(clamp(faible, 0, 1), 1.25) * f;
@@ -380,13 +426,16 @@
 
   // Météo et pluie projetée : les secondes viennent du rendu, zéro pendant une pause.
   function majMeteo(S, dt) { return B.meteo.avancer(S, dt); }
-  let pluieVue = null;
+  let pluieVue = null, pluieVue2 = null;
   const METEO_ABRI = { pluie: 0, nuage: 0, eclair: 0, mouille: 0, ventX: 0, ventZ: 0, t: 0 };
   function dessinerMeteo(S, dt, cam, vue) {
-    if (!pluieVue) pluieVue = B.meteo.creerPluie($('meteo'));
+    // à deux, les gouttes du joueur 2 tombent sur sa moitié (toile #meteo2)
+    const deux = S !== session;
+    if (deux && !pluieVue2) pluieVue2 = B.meteo.creerPluie($('meteo2'));
+    if (!deux && !pluieVue) pluieVue = B.meteo.creerPluie($('meteo'));
     // sous la voûte du tunnel, il ne pleut pas
     const suivie = S.course.voitures[S.suivie || 0], abri = !VUES_DEHORS.has(vue) && B.circuit.dansTunnel(S.course.c, suivie.etat.s, -4);
-    pluieVue.dessiner(abri ? Object.assign(METEO_ABRI, { t: S.meteo.t }) : S.meteo, cam, dt, { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1 });
+    (deux ? pluieVue2 : pluieVue).dessiner(abri ? Object.assign(METEO_ABRI, { t: S.meteo.t }) : S.meteo, cam, dt, { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1 });
   }
 
   // menus à la manette : croix pour se déplacer (gauche, droite règlent un curseur), A valide, B revient
@@ -423,31 +472,55 @@
     if (Math.abs(pad2.volant) > .05 || pad2.gaz > .05 || pad2.frein > .05) activerSon();
   }
   function commandesJoueur2() {
-    let gaz = 0, frein = 0, volant = 0, derive = false;
-    if (nbManettes !== 1) {
-      if (touches.has('ArrowUp')) gaz = 1;
-      if (touches.has('ArrowDown')) frein = 1;
-      if (touches.has('ArrowLeft')) volant -= 1;
-      if (touches.has('ArrowRight')) volant += 1;
-      derive = touches.has('ShiftRight') || touches.has('ControlRight');
+    let gaz = 0, frein = 0, volant = 0, derive = false, analog = false;
+    const c1 = commande(1), clavier = c1 === 'auto' || c1 === 'clavier', manette = c1 === 'auto' || c1 === 'manette';
+    if (clavier) {
+      if (appuieSur(1, 'gaz')) gaz = 1;
+      if (appuieSur(1, 'frein')) frein = 1;
+      if (appuieSur(1, 'gauche')) volant -= 1;
+      if (appuieSur(1, 'droite')) volant += 1;
+      derive = appuieSur(1, 'derive');
     }
-    gaz = Math.max(gaz, pad2.gaz); frein = Math.max(frein, pad2.frein);
-    if (Math.abs(pad2.volant) > Math.abs(volant)) volant = pad2.volant;
-    return { gaz, frein, volant, derive: derive || pad2.derive, marcheArriere: true, haut: false, bas: false, boite: 'auto', aide: reglages.aide, guidage: pad2.manette ? 0 : .15 };
+    if (c1 === 'auto' && souris.active && sourisPour(1) && (gaz || frein || volant || Math.abs(pad2.volant) > .05 || pad2.gaz > .05)) souris.active = false;
+    if (manette && pad2.manette) {
+      gaz = Math.max(gaz, pad2.gaz); frein = Math.max(frein, pad2.frein);
+      if (Math.abs(pad2.volant) > Math.abs(volant)) { volant = pad2.volant; analog = true; }
+      derive = derive || pad2.derive;
+    }
+    if (souris.active && sourisPour(1)) {
+      gaz = Math.max(gaz, souris.gaz ? 1 : 0); frein = Math.max(frein, souris.frein ? 1 : 0);
+      const vs = volantSouris(); if (Math.abs(vs) > Math.abs(volant)) volant = vs;
+      derive = derive || souris.derive; analog = true;
+    }
+    const cmd = { gaz, frein, volant, derive, marcheArriere: true, haut: impulsions2.haut, bas: impulsions2.bas, boite: 'auto', aide: reglages.aide, guidage: analog ? 0 : .15 };
+    impulsions2.haut = impulsions2.bas = false;
+    return cmd;
   }
   function commandesJoueur() {
     let gaz = 0, frein = 0, volant = 0, derive = false;
-    const duo = !!session && session.type === 'duo', fleches = !duo || nbManettes === 1;
-    if (touches.has('KeyW') || (fleches && touches.has('ArrowUp'))) gaz = 1;
-    if (touches.has('KeyS') || (fleches && touches.has('ArrowDown'))) frein = 1;
-    if (touches.has('KeyA') || (fleches && touches.has('ArrowLeft'))) volant -= 1;
-    if (touches.has('KeyD') || (fleches && touches.has('ArrowRight'))) volant += 1;
-    if (touches.has('Space') || touches.has('ShiftLeft') || (!duo && touches.has('ShiftRight'))) derive = true;
-    gaz = Math.max(gaz, pad.gaz, doigt.gaz ? 1 : 0);
-    frein = Math.max(frein, pad.frein, doigt.frein ? 1 : 0);
-    if (Math.abs(pad.volant) > Math.abs(volant)) volant = pad.volant;
+    const c0 = commande(0), clavier = c0 === 'auto' || c0 === 'clavier', manette = c0 === 'auto' || c0 === 'manette';
+    if (clavier) {
+      if (appuieSur(0, 'gaz')) gaz = 1;
+      if (appuieSur(0, 'frein')) frein = 1;
+      if (appuieSur(0, 'gauche')) volant -= 1;
+      if (appuieSur(0, 'droite')) volant += 1;
+      derive = appuieSur(0, 'derive');
+    }
+    // en Auto, le clavier ou la manette reprennent la main sur la souris
+    if (c0 === 'auto' && souris.active && (gaz || frein || volant || pad.actif)) souris.active = false;
+    if (manette) {
+      gaz = Math.max(gaz, pad.gaz); frein = Math.max(frein, pad.frein);
+      if (Math.abs(pad.volant) > Math.abs(volant)) volant = pad.volant;
+      derive = derive || pad.derive;
+    }
+    gaz = Math.max(gaz, doigt.gaz ? 1 : 0); frein = Math.max(frein, doigt.frein ? 1 : 0);
     if (Math.abs(doigt.volant) > Math.abs(volant)) volant = doigt.volant;
-    derive = derive || pad.derive || doigt.derive;
+    derive = derive || doigt.derive;
+    if (souris.active && sourisPour(0)) {
+      gaz = Math.max(gaz, souris.gaz ? 1 : 0); frein = Math.max(frein, souris.frein ? 1 : 0);
+      const vs = volantSouris(); if (Math.abs(vs) > Math.abs(volant)) volant = vs;
+      derive = derive || souris.derive; analogique = true;
+    }
     pad.deriveEtat = pad.derive && session ? session.course.joueur.etat : null;
     // aide au volant (rattrape les glisses) au niveau choisi ; guidage le long du virage au clavier et au doigt seulement
     const cmd = { gaz, frein, volant, derive, marcheArriere: true, haut: impulsions.haut, bas: impulsions.bas, boite: reglages.boite, aide: reglages.aide, guidage: analogique ? 0 : .15 };
@@ -505,6 +578,17 @@
     $('b-pause').addEventListener('click', () => basculerPause());
   })();
 
+  // ce que tient chaque joueur dans une course à deux, en clair
+  function entreeDe(n) {
+    const [m1, m2] = assigner(manettes), m = n ? m2 : m1, c = commande(n), codes = ['gaz', 'gauche', 'frein', 'droite'].map(a => toucheDe(n, a)[0]);
+    const texteClavier = codes.every(k => /^Numpad\d$/.test(k || '')) ? 'pavé numérique (' + codes.map(k => k.slice(6)).join(' ') + ')' : 'clavier (' + codes.map(nomTouche).join(' ') + ')';
+    const morceaux = [];
+    if (m) morceaux.push('manette');
+    else if (c === 'manette') morceaux.push('manette (non détectée)');
+    if (c === 'auto' || c === 'clavier') morceaux.push(texteClavier);
+    if (sourisPour(n, true) && (c === 'souris' || !m)) morceaux.push('souris');
+    return morceaux.join(' ou ') || 'rien';
+  }
   function changerVue2() {
     reglages.vue2 = reglages.vue2 === 'cockpit' ? 'poursuite' : 'cockpit';
     sauverReglages(); if (session && session.vueJ2) session.vueJ2.camCap = null;
@@ -538,6 +622,7 @@
         S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; S.eclair = 0;
       }
       if (e.id === 0) { pad.choc = 0; pad.passe = 0; S.avertiContresens = false; }
+      if (e.id === 1) { pad2.choc = 0; pad2.passe = 0; }
     }
   }
 
@@ -554,6 +639,11 @@
       const [faible, fort] = vibrationManette(co.joueur.etat, ev, co.horloge);
       secouerManette(faible, fort);
     } else secouerManette(0, 0);
+    // à deux, la manette du joueur 2 vit sa propre voiture
+    if (S.type === 'duo' && pad2.manette) {
+      if (!pilote && reglages.vibrations === 'oui') { const [f2, s2] = vibrationManette(co.voitures[1].etat, ev, co.horloge, pad2, 1); secouerManette(f2, s2, pad2); }
+      else secouerManette(0, 0, pad2);
+    }
     for (const v of co.voitures) {
       v.roule = (v.roule || 0) + v.etat.v * DT; // distance roulée : fait tourner les roues
       // changement de rapport : la main droite du pilote va au levier (vue cockpit). cockpit-6 : au premier pas,
@@ -561,7 +651,7 @@
       // précédente (0,36 s) est consommé sans reprise — le trajet en cours vise déjà le rapport courant, et
       // tPassage ne repart pas à zéro (sinon la main se téléporte du pommeau à la jante)
       if (v.etat.rapport !== v.rapportVu) {
-        if (v.rapportVu !== undefined && (v.tPassage === undefined || co.horloge - v.tPassage >= .36)) { v.rapportAvant = v.rapportVu; v.tPassage = co.horloge; if (v === co.joueur) pad.passe = .5; }
+        if (v.rapportVu !== undefined && (v.tPassage === undefined || co.horloge - v.tPassage >= .36)) { v.rapportAvant = v.rapportVu; v.tPassage = co.horloge; if (v === co.joueur) pad.passe = .5; else if (v.id === 1 && S.type === 'duo') pad2.passe = .5; }
         v.rapportVu = v.etat.rapport;
       }
     }
@@ -625,11 +715,13 @@
         case 'vert': son && son.evenement('vert'); message('Départ', 'vert', true); break;
         case 'contact': if (e.a === 0 || e.b === 0) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07); } break;
         case 'tour':
+          if (e.id === 1 && co.duo) finTourJ2(S, e);
           if (e.id !== 0) break;
           son && son.evenement('tour', { meilleur: e.meilleur });
           finTour(S, e);
           break;
         case 'arrivee':
+          if (e.id === 1 && co.duo) { message(co.voitures[1].position === 1 ? 'Victoire' : 'Arrivée · ' + co.voitures[1].position + 'e', 'vert', false, 1); sousMessage('Drapeau à damier · ' + chrono(co.voitures[1].tempsFinal), 1); }
           if (e.id !== 0) break;
           son && son.evenement('arrivee');
           S.finA = co.horloge;
@@ -663,7 +755,8 @@
       if (ancien) texte += ' · record du circuit';
     }
     if (e.valide === false) texte += ' · hors classement chrono';
-    sousMessage(texte);
+    const qui = co.duo ? 0 : undefined;
+    sousMessage(texte, qui);
     if (co.mode === 'chrono') {
       // le fantôme gardé est celui du meilleur tour jamais fait ici
       const f = co.fantome;
@@ -671,8 +764,15 @@
       if (!S.essai && e.valide !== false && f.meilleur && f.temps === e.temps && (!garde || garde.longueur !== co.c.longueur || e.temps < garde.temps))
         ecrireStock(CLE_FANTOME + id, { temps: f.temps, n: f.meilleur.n, longueur: co.c.longueur, b64: enBase64(f.meilleur.donnees) });
       message(e.valide === false ? 'Tour non chronométré' : e.meilleur ? 'Meilleur tour' : chrono(e.temps), e.valide !== false && e.meilleur ? 'vert' : '', true);
-    } else if (co.toursTotal - j.tours === 1) message('Dernier tour', 'ambre');
-    else if (e.meilleur && j.tours > 1) message('Meilleur tour', 'vert', true);
+    } else if (co.toursTotal - j.tours === 1) message('Dernier tour', 'ambre', false, qui);
+    else if (e.meilleur && j.tours > 1) message('Meilleur tour', 'vert', true, qui);
+  }
+  // tours du joueur 2, sur son affichage
+  function finTourJ2(S, e) {
+    const co = S.course, v = co.voitures[1];
+    sousMessage('Tour ' + e.tour + ' · ' + chrono(e.temps), 1);
+    if (co.toursTotal - v.tours === 1) message('Dernier tour', 'ambre', false, 1);
+    else if (e.meilleur && v.tours > 1) message('Meilleur tour', 'vert', true, 1);
   }
 
   function suivreJoueur(S) {
@@ -832,6 +932,12 @@
     try { await R.rejoindreSalon(code); } catch (e) { etatEnLigne('Le salon ne répond pas. Réessayez plus tard.'); }
   };
   $('l-rejoindre').addEventListener('click', rejoindre);
+  $('p-touches').addEventListener('click', () => { retourReglages = 'preparation'; aller('reglages'); setTimeout(() => $('r-commandes').scrollIntoView({ block: 'start' }), 60); });
+  $('l-code').addEventListener('input', e => { const v = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4); if (v !== e.target.value) e.target.value = v; });
+  $('l-code-affiche').addEventListener('click', () => {
+    const code = $('l-code-affiche').textContent;
+    if (navigator.clipboard && code) navigator.clipboard.writeText(code).then(() => etatEnLigne('Code ' + code + ' copié. Envoyez-le à l’autre pilote.'), () => {});
+  });
   $('l-code').addEventListener('keydown', e => { if (e.key === 'Enter') rejoindre(); });
   $('l-choisir').addEventListener('click', () => { modePrepa = 'enligne'; aller('preparation'); });
 
@@ -986,7 +1092,7 @@
   function retroVoulu(S, vue) {
     const r = reglages.retro === 'auto' ? (estTactile ? 'non' : 'oui') : reglages.retro;
     const q = S.banc ? S.banc.qualite : reglages.qualite;
-    return r === 'oui' && vue === 'cockpit' && S.type !== 'vitrine' && S.type !== 'duo' && !retro.echec && !cameraEssai && q !== 'low' && !(q === 'auto' && palier.n >= 1);
+    return r === 'oui' && vue === 'cockpit' && S.type !== 'vitrine' && !retro.echec && !cameraEssai && q !== 'low' && !(q === 'auto' && palier.n >= 1);
   }
   // homographie du carré unité vers le quadrilatère q (images de (0,0), (1,0), (1,1), (0,1)), puis matrix3d CSS
   // pour une toile de l × h pixels CSS
@@ -1001,7 +1107,10 @@
     return v.every(Number.isFinite) ? 'matrix3d(' + v.map(x => +x.toFixed(6)).join(',') + ')' : null;
   }
   function majGlaces(S, vue, cam, ps, sortie, ambiance, suivie) {
-    const toiles = retro.toiles || (retro.toiles = [$('glace-g'), $('glace-d')]);
+    // à deux, le joueur 2 a ses deux glaces, posées sur sa moitié ; chaque joueur rafraîchit une glace par image
+    const G = S !== session ? (retro.j2 || (retro.j2 = { toiles: [$('glace-g2'), $('glace-d2')], ctx: [], cote: 0 }))
+      : (retro.j1 || (retro.j1 = { toiles: [$('glace-g'), $('glace-d')], ctx: [], cote: 0 }));
+    const toiles = G.toiles;
     const voir = retroVoulu(S, vue);
     for (const t of toiles) if (t.hidden === voir) t.hidden = !voir;
     if (!voir) return;
@@ -1009,8 +1118,8 @@
     if (!retro.rendu) {
       try { retro.rendu = window.FRender.create(source, { msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' }); retro.rendu.resize(Math.min(window.devicePixelRatio || 1, 1.5)); }
       catch (e) { console.warn('BITUME : image des rétroviseurs indisponible', e); retro.echec = true; for (const t of toiles) t.hidden = true; return; }
-      toiles.forEach((t, i) => { t.width = source.width; t.height = source.height; t.style.width = source.clientWidth + 'px'; t.style.height = source.clientHeight + 'px'; retro.ctx[i] = t.getContext('2d'); });
     }
+    if (!G.ctx.length) toiles.forEach((t, i) => { t.width = source.width; t.height = source.height; t.style.width = source.clientWidth + 'px'; t.style.height = source.clientHeight + 'px'; G.ctx[i] = t.getContext('2d'); });
     if (retro.scene !== scene.index) {
       const d = scene.decor;
       retro.rendu.setWorld([], [], d.atmosphere);
@@ -1037,7 +1146,7 @@
       toiles[i].style.visibility = ''; toiles[i].style.transform = m;
     });
     // une glace par image : la caméra est à la glace et regarde dans la direction réfléchie du regard
-    const g = glaces[retro.cote], i = retro.cote; retro.cote = 1 - retro.cote;
+    const g = glaces[G.cote], i = G.cote; G.cote = 1 - G.cote;
     // Comme un vrai rétroviseur réglé par le pilote, le regard est ouvert de 9° vers l'extérieur et passe un peu
     // au-dessus de la caisse : la roue arrière et le ponton n'occupent que le bord intérieur de la glace.
     const d0 = g.centre.map((v, k) => v - cam.pos[k]), dn = Math.hypot(d0[0], d0[1], d0[2]) || 1, dv = d0.map(v => v / dn);
@@ -1058,7 +1167,7 @@
       if (!(Math.abs(x - B.voiture.ROUES[2].x) < .5 && Math.abs(z) > .55)) objets.splice(k, 1);
     }
     retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance });
-    const ctx = retro.ctx[i];
+    const ctx = G.ctx[i];
     if (toiles[i].width !== source.width || toiles[i].height !== source.height) { toiles[i].width = source.width; toiles[i].height = source.height; }
     ctx.drawImage(source, 0, 0);
   }
@@ -1196,7 +1305,8 @@
       lampes.sort((a, b) => a.d2 - b.d2); if (lampes.length > 8) lampes.length = 8;
     }
     rendu.draw(cam, sortie, { time: horlogeReelle, shadows: avecOmbres(q), bloom: avecHalo(q), brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: avecHalo(q) ? 1 : 0, reflections: avecReflets(q, meteo), weather: B.meteo.ambiance(meteo) });
-    if (S.type !== 'duo') { dessinerMeteo(S, dtImage, cam, vue); majGlaces(S, vue, cam, ps, sortie, B.meteo.ambiance(meteo), suivie); }
+    dessinerMeteo(S, dtImage, cam, vue);
+    majGlaces(S, vue, cam, ps, sortie, B.meteo.ambiance(meteo), suivie);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
     // En cockpit, la planche donne vitesse, rapport et régime : le tableau réduit retire plan et compteurs, qui
@@ -1259,15 +1369,17 @@
   function classe(el, nom, oui) { if (el.classList.contains(nom) !== !!oui) el.classList.toggle(nom, !!oui); }
 
   const aDeux = () => !!session && session.type === 'duo';
-  function message(t, ton, court) {
-    for (const el of aDeux() ? [H.message, H2.message] : [H.message]) {
+  // à deux : qui = 0 pour l'affichage du joueur 1 seul, 1 pour celui du joueur 2, rien pour les deux
+  const affichages = (cle, qui) => !aDeux() || qui === 0 ? [H[cle]] : qui === 1 ? [H2[cle]] : [H[cle], H2[cle]];
+  function message(t, ton, court, qui) {
+    for (const el of affichages('message', qui)) {
       el.textContent = t; el.className = 'message';
       void el.offsetWidth;
       el.className = 'message visible' + (ton ? ' ' + ton : '') + (court ? ' court' : '');
     }
   }
-  function sousMessage(t) {
-    for (const el of aDeux() ? [H['sous-message'], H2['sous-message']] : [H['sous-message']]) {
+  function sousMessage(t, qui) {
+    for (const el of affichages('sous-message', qui)) {
       el.textContent = t; el.className = 'sous-message'; void el.offsetWidth; el.className = 'sous-message visible';
     }
   }
@@ -1372,7 +1484,7 @@
 
   function aller(nom) {
     if (son && nom !== 'demo') son.evenement('clic');
-    if (nom !== 'course' && nom !== 'demo' && nom !== 'pause') secouerManette(0, 0);
+    if (nom !== 'course' && nom !== 'demo' && nom !== 'pause') { secouerManette(0, 0); secouerManette(0, 0, pad2); }
     for (const e of ECRANS) $(e).hidden = e !== nom;
     $('hud').hidden = !(nom === 'course' || nom === 'pause' || nom === 'demo');
     hud2.hidden = !(aDeux() && (nom === 'course' || nom === 'pause'));
@@ -1446,7 +1558,8 @@
 
   function remplirPreparation() {
     $('p-titre').textContent = modePrepa === 'chrono' ? 'Chrono' : modePrepa === 'enligne' ? 'Course en ligne' : modePrepa === 'duo' ? 'Course à deux' : 'Course';
-    $('o-partage').hidden = modePrepa !== 'duo';
+    $('o-partage').hidden = $('o-commandes').hidden = modePrepa !== 'duo';
+    for (const n of [0, 1]) for (const r of document.querySelectorAll('input[name="cmd' + n + '"]')) r.checked = commande(n) === r.value;
     for (const r of document.querySelectorAll('input[name="partage"]')) r.checked = (reglages.partage === 'cote' ? 'cote' : 'haut-bas') === r.value;
     $('o-tours').hidden = $('o-difficulte').hidden = modePrepa === 'chrono';
     $('o-chrono').hidden = modePrepa !== 'chrono';
@@ -1489,16 +1602,81 @@
     if (t.name === 'meteo') { reglages.meteo = t.value; sauverReglages(); preselectionnerPneus(); }
     if (t.name === 'pneus' && B.conduite.PNEUS[t.value]) { reglages.pneus = t.value; sauverReglages(); }
     if (t.name === 'partage') { reglages.partage = t.value === 'cote' ? 'cote' : 'haut-bas'; sauverReglages(); }
+    if (/^r?cmd[01]$/.test(t.name) && NOMS_COMMANDES[t.value]) {
+      const n = +t.name.slice(-1);
+      reglages.commandes = [commande(0), commande(1)]; reglages.commandes[n] = t.value; souris.active = false; sauverReglages();
+      if (t.name[0] === 'r') majCommandes(); else for (const r of document.querySelectorAll('input[name="rcmd' + n + '"]')) r.checked = r.value === t.value;
+    }
     if (['vue', 'boite', 'qualite', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille'].includes(t.name)) { reglages[t.name] = t.value; sauverReglages(); appliquerCarte(); if (t.name === 'qualite' && rendu) { palier.n = gpuModeste ? 1 : 0; rendu.resize(t.value); } }
     if (t.name === 'aide') { reglages.aide = +t.value; sauverReglages(); }
   });
   for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).addEventListener('input', e => { reglages[nom] = +e.target.value; sauverReglages(); appliquerVolumes(); });
   $('v-champ').addEventListener('input', e => { reglages.champ = clamp(+e.target.value, 60, 105); $('v-champ-valeur').textContent = reglages.champ + '°'; sauverReglages(); });
   $('v-secousses').addEventListener('input', e => { reglages.secousses = clamp(+e.target.value, 0, 1); $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %'; sauverReglages(); });
-  $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) secouerManette(0, 0); sauverReglages(); });
+  $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) { secouerManette(0, 0); secouerManette(0, 0, pad2); } sauverReglages(); });
   $('v-carte').addEventListener('change', e => { reglages.carte = e.target.checked ? 'oui' : 'non'; sauverReglages(); appliquerCarte(); });
   $('v-vibration-force').addEventListener('input', e => { reglages.vibrationForce = clamp(+e.target.value, 0, 1); $('v-vibration-force-valeur').textContent = Math.round(reglages.vibrationForce * 100) + ' %'; sauverReglages(); });
+  const NOMS_ACTIONS = { gaz: 'Accélérer', frein: 'Freiner', gauche: 'Gauche', droite: 'Droite', derive: 'Dérive', haut: 'Rapport +', bas: 'Rapport −', vue: 'Vue' };
+  const NOMS_COMMANDES = { auto: 'Auto', manette: 'Manette', clavier: 'Clavier', souris: 'Souris' };
+  let captureTouche = null, carteClavier = null;   // action en attente d'une touche ; noms des touches du clavier réel
+  try { if (navigator.keyboard && navigator.keyboard.getLayoutMap) navigator.keyboard.getLayoutMap().then(m => { carteClavier = m; majCommandes(); }, () => {}); } catch (e) { /* pas d'API de disposition */ }
+  function nomTouche(code) {
+    if (!code) return '–';
+    const fixes = { ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→', Space: 'Espace', ShiftLeft: 'Maj gauche', ShiftRight: 'Maj droite', ControlLeft: 'Ctrl gauche', ControlRight: 'Ctrl droite',
+      AltLeft: 'Alt gauche', AltRight: 'Alt droite', MetaLeft: 'Cmd gauche', MetaRight: 'Cmd droite', Enter: 'Entrée', NumpadEnter: 'Entrée (pavé)', Backspace: 'Effacer', Tab: 'Tab', CapsLock: 'Verr. maj' };
+    if (fixes[code]) return fixes[code];
+    const vu = (carteClavier && carteClavier.get(code)) || (reglages.etiquettes && reglages.etiquettes[code]);
+    if (vu) return vu.toUpperCase();
+    let m = /^Key(.)$/.exec(code); if (m) return m[1];
+    m = /^Digit(.)$/.exec(code); if (m) return m[1];
+    m = /^Numpad(.+)$/.exec(code); if (m) return ({ Add: '+', Subtract: '−', Multiply: '×', Divide: '÷', Decimal: ',' }[m[1]] || m[1]) + ' (pavé)';
+    return code;
+  }
+  // tableau des commandes des deux joueurs dans les réglages : appareil, puis deux touches par action
+  function majCommandes() {
+    const zone = $('r-commandes'); if (!zone) return;
+    let html = '';
+    for (const n of [0, 1]) {
+      html += '<div class="joueur-commandes"><h3>Joueur ' + (n + 1) + '</h3><fieldset class="choix-commande"><legend>Commande</legend>';
+      for (const c of Object.keys(NOMS_COMMANDES)) html += '<label><input type="radio" name="rcmd' + n + '" value="' + c + '"' + (commande(n) === c ? ' checked' : '') + '><span>' + NOMS_COMMANDES[c] + '</span></label>';
+      html += '</fieldset><table class="table-touches"><tbody>';
+      for (const a of ACTIONS) {
+        const l = toucheDe(n, a);
+        html += '<tr><th scope="row">' + NOMS_ACTIONS[a] + '</th>';
+        for (const k of [0, 1]) {
+          const attend = captureTouche && captureTouche.n === n && captureTouche.action === a && captureTouche.place === k;
+          html += '<td><button type="button" class="touche' + (attend ? ' attente' : '') + '" data-n="' + n + '" data-action="' + a + '" data-place="' + k + '">' + (attend ? 'Touche ?' : nomTouche(l[k])) + '</button></td>';
+        }
+        html += '</tr>';
+      }
+      html += '</tbody></table></div>';
+    }
+    zone.innerHTML = html + '<p class="note-commandes">Cliquez une touche puis appuyez sur la nouvelle (Échap annule). Souris : pointeur à gauche ou à droite pour tourner, bouton gauche pour accélérer, droit pour freiner, molette pour les rapports. Manette : gâchettes, stick gauche, A pour la dérive, RB et LB pour les rapports, Y pour la vue, Start pour la pause. Pause : Échap ou P · son : M.</p>'
+      + '<button type="button" class="discret" id="r-touches-defaut">Touches par défaut</button>';
+  }
+  $('r-commandes').addEventListener('click', e => {
+    const b = e.target.closest('button.touche');
+    if (b) { captureTouche = { n: +b.dataset.n, action: b.dataset.action, place: +b.dataset.place }; majCommandes(); return; }
+    if (e.target.id === 'r-touches-defaut') { reglages.touches = [{}, {}]; captureTouche = null; sauverReglages(); majCommandes(); }
+  });
+  // la touche suivante prend la place choisie ; elle quitte toute autre action, des deux joueurs
+  addEventListener('keydown', e => {
+    if (!captureTouche) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    const q = captureTouche; captureTouche = null;
+    if (e.code !== 'Escape' && e.code) {
+      const T = reglages.touches = [0, 1].map(n => Object.assign({}, reglages.touches && reglages.touches[n]));
+      for (const n of [0, 1]) for (const a of ACTIONS) if (toucheDe(n, a).includes(e.code)) T[n][a] = toucheDe(n, a).filter(c => c !== e.code);
+      const liste = toucheDe(q.n, q.action).slice(0, 2);
+      liste[Math.min(q.place, liste.length)] = e.code;
+      T[q.n][q.action] = liste.filter(Boolean);
+      if (e.key && e.key.length === 1) reglages.etiquettes = Object.assign({}, reglages.etiquettes, { [e.code]: e.key });
+      sauverReglages();
+    }
+    majCommandes();
+  }, { capture: true });
   function remplirReglages() {
+    captureTouche = null; majCommandes();
     for (const nom of ['vue', 'boite', 'qualite', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     $('v-carte').checked = reglages.carte !== 'non';
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
@@ -1629,9 +1807,17 @@
     tPrec = t; horlogeReelle += dtReel; dureeImage = lerp(dureeImage, dtReel * 1000, .1);
     lireManette();
     majAttente();
-    // préparation d'une course à deux : qui joue avec quoi, selon les manettes branchées
-    if (ecran === 'preparation' && modePrepa === 'duo') texte($('p-manettes'), nbManettes >= 2 ? 'Joueur 1 : manette 1 · Joueur 2 : manette 2.'
-      : nbManettes === 1 ? 'Joueur 1 : clavier (ZQSD ou WASD, flèches) · Joueur 2 : la manette.' : 'Joueur 1 : ZQSD ou WASD, Espace · Joueur 2 : flèches, Maj droite. Une manette par joueur si vous en branchez deux.');
+    const sourisVue = souris.active && enCourse() ? 'oui' : 'non';
+    if (jeu.dataset.souris !== sourisVue) jeu.dataset.souris = sourisVue;
+    // deux manettes branchées : « À deux » le signale, et Start sur la seconde, au titre, ouvre la course à deux
+    if (ecran === 'titre') {
+      $('t-manettes').hidden = nbManettes < 2;
+      const start2 = nbManettes >= 2 && !!(manettes[1].buttons[9] && manettes[1].buttons[9].pressed);
+      if (start2 && !pad2.start) { modePrepa = 'duo'; activerSon(); aller('preparation'); }
+      pad2.start = start2;
+    }
+    // préparation d'une course à deux : qui joue avec quoi, selon les choix et les manettes branchées
+    if (ecran === 'preparation' && modePrepa === 'duo') texte($('p-manettes'), [0, 1].map(n => 'Joueur ' + (n + 1) + ' : ' + entreeDe(n)).join(' · ') + '.');
     const S = session;
     if (!S || !rendu) return;
     // la vitrine tourne derrière les menus ; une course ne tourne qu'à l'écran de course, la démo qu'à l'écran de démo

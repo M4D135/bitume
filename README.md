@@ -29,8 +29,9 @@ La version en ligne est la page figée d'un commit. Elle ne change qu'à la main
   Haut-Col passe 260 m sous la montagne, dans un tunnel éclairé.
 - **Course** : 2, 3 ou 5 tours à douze voitures, départ arrêté aux feux, rivaux faciles, normaux ou coriaces,
   drapeau à damier, classement et écarts en direct, résultats.
-- **À deux** : écran partagé sur la même machine, l'un sur l'autre ou côte à côte, une manette chacun (ou le clavier
-  partagé), chacun avec sa vue et son affichage.
+- **À deux** : écran partagé sur la même machine, l'un sur l'autre ou côte à côte, chacun avec sa vue et son
+  affichage. Chaque joueur choisit manette, clavier ou souris ; les touches de chacun se règlent (par défaut, flèches
+  ou ZQSD pour l'un, pavé numérique pour l'autre).
 - **En ligne** : course à deux, chacun sur sa machine. L'un crée la partie et donne son code de quatre lettres,
   l'autre le saisit ; les onze autres voitures restent à l'ordinateur. Chacun conduit sans attendre le réseau.
 - **Chrono** : seul en piste. Le meilleur tour devient un fantôme bleu gardé dans le navigateur, avec un record

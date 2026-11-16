@@ -340,15 +340,30 @@ body.tactile .sous-message { top: max(calc(28% + 42px),calc(var(--hud-top) + var
 body.tactile .demo-bandeau { top: calc(var(--hud-top) + var(--carte-presence) + 58px); background: rgba(10,12,15,.3); border: 0; }
 body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98px); background: rgba(10,12,15,.2); }
 
-/* Jeu en ligne */
-.enligne { display: flex; flex-direction: column; gap: 18px; }
-.note-enligne { margin: 0; max-width: 60ch; color: var(--papier-2); font-size: 15px; }
-.champ-nom { display: flex; flex-direction: column; gap: 6px; max-width: 280px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--papier-2); }
-.enligne input { font: 700 20px/1.2 var(--f-titre); padding: 10px 12px; background: rgba(8, 9, 11, .8); color: var(--papier); border: 1px solid var(--trait); border-radius: var(--rayon); }
-.enligne-choix { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
-.enligne .rejoindre { display: flex; gap: 10px; align-items: center; }
-.enligne #l-code { width: 6.5ch; text-transform: uppercase; letter-spacing: .25em; text-align: center; }
-.code-partie { margin: 0; font: italic 800 64px/1 var(--f-titre); letter-spacing: .18em; color: var(--papier); }
+/* deux manettes branchées : l'écran titre le signale sur « À deux » */
+.gros .detecte { display: inline-block; margin-left: 14px; padding: 4px 8px 3px; vertical-align: middle; font: normal 700 12px/1 var(--f-texte); letter-spacing: .1em; text-transform: uppercase; color: var(--encre); background: var(--vert); border-radius: var(--rayon); }
+/* Jeu en ligne : nom, puis deux cartes (créer, rejoindre), puis le code et l'état de la liaison */
+.enligne { background: linear-gradient(180deg, rgba(8, 9, 11, .92), rgba(8, 9, 11, .8)); }
+.salon { display: flex; flex-direction: column; gap: 22px; max-width: 920px; }
+.champ-nom { display: flex; flex-direction: column; gap: 8px; max-width: 320px; font: 600 11px/1 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); }
+.enligne input { font: 700 22px/1.2 var(--f-titre); padding: 11px 14px; background: rgba(8, 9, 11, .9); color: var(--papier); border: 1px solid var(--trait-fort); border-radius: var(--rayon); user-select: text; -webkit-user-select: text; }
+.enligne input::placeholder { color: var(--papier-3); }
+.enligne input:focus { outline: 2px solid var(--ambre); outline-offset: 2px; }
+.enligne-choix { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; }
+.carte-salon { display: flex; flex-direction: column; gap: 12px; padding: 20px 22px 22px; background: rgba(22, 24, 28, .82); border: 1px solid var(--trait); border-top: 3px solid var(--rouge); border-radius: var(--rayon); }
+.carte-salon.rejoindre { border-top-color: var(--bleu); }
+.carte-salon h3 { margin: 0; font: italic 800 30px/1 var(--f-titre); font-stretch: condensed; text-transform: uppercase; letter-spacing: .02em; }
+.carte-salon p { margin: 0; color: var(--papier-2); }
+.carte-salon .gros { align-self: flex-start; min-width: 0; margin-top: auto; }
+.ligne-code { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; margin-top: auto; }
+.ligne-code .gros { margin-top: 0; }
+.enligne #l-code { width: 9ch; font-size: 28px; text-transform: uppercase; letter-spacing: .3em; text-align: center; }
+.etat-salon { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+.note-enligne { margin: 0; color: var(--papier); font-size: 16px; }
+.note-enligne:empty { display: none; }
+.code-partie { margin: 0; padding: 14px 24px 16px; font: italic 800 64px/1 var(--f-titre); letter-spacing: .22em; color: var(--papier); text-align: left; background: rgba(22, 24, 28, .9); border: 1px solid var(--trait-fort); border-left: 4px solid var(--ambre); border-radius: var(--rayon); cursor: copy; }
+.code-partie::before { content: 'Code de la partie · toucher pour copier'; display: block; margin-bottom: 10px; font: normal 600 11px/1 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); }
+.code-partie:hover, .code-partie:focus-visible { border-color: var(--ambre); outline: none; }
 
 /* Écran partagé à deux : deux moitiés, l'une sur l'autre ou côte à côte ; chaque affichage est mis en page dans une
    boîte plus grande puis réduit à sa moitié (k = 0,72 l'un sur l'autre, 0,6 côte à côte) */
@@ -362,4 +377,25 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 #jeu[data-partage="haut-bas"] #hud2 { top: 50%; }
 #jeu[data-partage="cote"] #hud, #jeu[data-partage="cote"] #hud2 { inset: auto; left: 0; top: 0; width: calc(50% / .6); height: calc(100% / .6); transform: scale(.6); transform-origin: 0 0; }
 #jeu[data-partage="cote"] #hud2 { left: 50%; }
-#jeu[data-partage="haut-bas"] #meteo, #jeu[data-partage="cote"] #meteo { display: none; }
+#meteo2, .glaces2 { position: absolute; display: none; pointer-events: none; }
+.glaces2 { overflow: hidden; }
+#jeu[data-partage="haut-bas"] #meteo { height: 50%; }
+#jeu[data-partage="haut-bas"] #meteo2, #jeu[data-partage="haut-bas"] .glaces2 { display: block; left: 0; top: 50%; width: 100%; height: 50%; }
+#jeu[data-partage="cote"] #meteo { width: 50%; }
+#jeu[data-partage="cote"] #meteo2, #jeu[data-partage="cote"] .glaces2 { display: block; left: 50%; top: 0; width: 50%; height: 100%; }
+
+/* Commandes des joueurs : appareil et touches (réglages), choix rapide à la préparation d'une course à deux */
+#jeu[data-souris="oui"] { cursor: none; }
+.commandes-joueurs { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px 30px; }
+.joueur-commandes h3 { margin: 0 0 10px; font: italic 800 24px/1 var(--f-titre); text-transform: uppercase; }
+.choix-commande { margin-bottom: 12px; }
+.table-touches { border-collapse: collapse; width: 100%; max-width: 440px; }
+.table-touches th { padding: 4px 12px 4px 0; text-align: left; font: 600 12px/1.2 var(--f-texte); letter-spacing: .08em; text-transform: uppercase; color: var(--papier-2); white-space: nowrap; }
+.table-touches td { padding: 3px 4px; }
+.touche { width: 100%; min-width: 92px; padding: 7px 10px 6px; font: 700 15px/1 var(--f-titre); letter-spacing: .04em; color: var(--papier); background: rgba(22, 24, 28, .85); border: 1px solid var(--trait-fort); border-radius: var(--rayon); cursor: pointer; }
+.touche:hover, .touche:focus-visible { border-color: var(--papier-2); outline: none; }
+.touche.attente { color: var(--encre); background: var(--ambre); border-color: var(--ambre); }
+.note-commandes { grid-column: 1 / -1; margin: 0; max-width: 90ch; color: var(--papier-2); font-size: 14px; }
+.commandes-joueurs > .discret { grid-column: 1 / -1; justify-self: start; }
+.ligne-commande { display: flex; flex-wrap: wrap; align-items: center; gap: 0 4px; margin-bottom: 6px; }
+.ligne-commande b { min-width: 76px; font: 600 12px/1 var(--f-texte); letter-spacing: .08em; text-transform: uppercase; color: var(--papier-2); }

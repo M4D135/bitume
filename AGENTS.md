@@ -191,5 +191,11 @@ Les modules listés dans `FERRO.lock.json` sont désormais des copies exactes de
   côté de l'autre, au choix ». Menu « À deux », réglage « Écran » (`reglages.partage`). Un seul moteur de rendu : la
   vue du joueur 2 est rendue d'abord et copiée dans la toile 2D `#scene2`, puis celle du joueur 1 reste dans `#scene`,
   chaque toile à sa moitié. État de caméra du joueur 2 : `S.vueJ2` (hérite de la séance). Affichage du joueur 2 :
-  copie de `#hud` (`#hud2`, mêmes identifiants). Commandes : deux manettes, une chacun ; une seule va au joueur 2 ;
-  au clavier, ZQSD/WASD pour le joueur 1, flèches et Maj droite pour le joueur 2 (Entrée change sa vue).
+  copie de `#hud` (`#hud2`, mêmes identifiants), messages de tours propres à chacun ; pluie à l'écran (`#meteo2`) et
+  rétroviseurs vivants (`#glace-g2`, `#glace-d2`) par joueur ; vibration de chaque manette.
+- **Commandes de chaque joueur** (David, 16/11 : « choix manette, clavier ou souris, et gérer les touches de chacun » ;
+  « clavier normal pour un et pavé numérique pour l'autre » ; « souris aussi, comme le vrai Vroom ») : appareil par
+  joueur (`reglages.commandes` : auto, manette, clavier, souris) et deux touches par action (`reglages.touches`,
+  `TOUCHES_DEFAUT` de `src/jeu.js` : flèches et ZQSD pour le joueur 1, pavé numérique pour le joueur 2), réglables
+  dans les réglages. Manettes : deux pour deux ; une seule va au joueur 2. Souris refaite ici : position du pointeur
+  pour tourner, bouton gauche gaz, droit frein, molette rapports ; en Auto, au joueur seul ou au joueur 2.
