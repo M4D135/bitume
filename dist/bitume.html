@@ -57368,6 +57368,9 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     // de côté la freinent (traînée jusqu'à +8 %, appliquée plus bas). Absents, rien ne change.
     const dg = etat.degats;
     if (dg) mu *= dg.adher;
+    // Pluie : l'adhérence baisse avec l'intensité de la pluie et revient dès qu'elle s'arrête.
+    const pluie = (B.meteo && B.meteo.actuel && Number.isFinite(B.meteo.actuel.pluie)) ? B.meteo.actuel.pluie : 0;
+    if (pluie > 0) mu *= 1 - 0.22 * Math.min(1, pluie);
     const enPiste = ad <= demi + P.largeurVibreur;
 
     // Dérive au bouton
@@ -60292,8 +60295,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     for (const a of [-.184, .184]) for (const b of [-.048, .048]) mettre('cylinder', sur(a, b, .0095), [.008, .004, .008], METAL_MAT, ARGENT, rond);   // vis des coins
     posee('casquette', PLANCHE, cadre, MAT, NOIR);
     const passe = regime > REGIME_LAMPE && etat.rapport > 0 && etat.rapport < 6;
-    mettre('cylinder', sur(0, .070, .070), [.032, .008, .032], MAT, NOIR, rond);
-    mettre('sphere', sur(0, .078, .074), [.024, .024, .024], 5, passe ? [1, .13, .04] : [.20, .03, .02], null, passe ? { emissive: 3.2 } : undefined);
+    mettre('cylinder', sur(0, .070, .090), [.032, .008, .032], MAT, NOIR, rond);
+    mettre('sphere', sur(0, .078, .095), [.024, .024, .024], 5, passe ? [1, .13, .04] : [.20, .03, .02], null, passe ? { emissive: 3.2 } : undefined);
     mettre('box', sur(-.125, .006, .0085), [.004, .054, .036], LAQUE, [.012, .012, .014], plat);
     mettre('box', sur(.142, .004, .0085), [.004, .042, .080], LAQUE, [.012, .012, .014], plat);
     // Compte-tours : lunette, cadran noir, graduations ivoire tous les 1 000 tr/min (longues aux milliers pairs),
@@ -60321,7 +60324,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const ralenti = B.conduite.PARAMS.ralenti, alerte = regime > 12600 || regime < ralenti + 300;
     const voyant = (a, allume, couleur, force) => {
       mettre('cylinder', sur(a, -.043, .0105), [.0125, .005, .0125], METAL_MAT, [.32, .32, .34], rond);
-      mettre('sphere', sur(a, -.043, .030), [.009, .009, .009], 5, allume ? couleur : [.2, .03, .02], null, allume ? { emissive: force } : undefined);
+      mettre('sphere', sur(a, -.043, .040), [.009, .009, .009], 5, allume ? couleur : [.2, .03, .02], null, allume ? { emissive: force } : undefined);
     };
     voyant(.032, true, [.14, .9, .3], 1.1);
     voyant(.050, alerte, [1, .14, .05], 1.8);
@@ -60867,7 +60870,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       m.nuage += (NUAGES[p] - m.nuage) * k;
       // Intégrale de la pluie pendant le pas (pas une somme dépendant du nombre d'images).
       const eau = PLUIE[p] * pas + (anciennePluie - PLUIE[p]) * 2.5 * k;
-      m.mouille = clamp(m.mouille + eau * .039 - pas * .004, 0, 1);
+      const sechage = PLUIE[p] > 0 ? .004 : .012;
+      m.mouille = clamp(m.mouille + eau * .039 - pas * sechage, 0, 1);
       m.t += pas; m.tp += pas; reste -= pas;
       m.eclair = Math.max(0, m.eclair - pas * 6);
       if (p === 3 && m.prochainEclair > 0 && m.t + 1e-10 >= m.prochainEclair) {
@@ -61468,6 +61472,7 @@ FERRO.initPhysics().then(function(){
   }
 
   function pasSimulation(S, pilote) {
+    if (B.meteo) B.meteo.actuel = S.meteo;
     const co = S.course;
     const cmd = S.type === 'vitrine' || S.type === 'demo' || pilote ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
     const ev = B.course.pas(co, cmd, DT);
@@ -61758,6 +61763,7 @@ FERRO.initPhysics().then(function(){
     // uEffects.z colore tout l'écran : la rougeur suit seulement l'éclair du choc, jamais les dégâts persistants.
     const eclair = S.eclair || 0;
     const meteo = majMeteo(S, dtImage);
+    if (B.meteo) B.meteo.actuel = meteo;
     rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: q !== 'low' ? 1 : 0, weather: B.meteo.ambiance(meteo) });
     dessinerMeteo(S, dtImage, cam, vue);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);

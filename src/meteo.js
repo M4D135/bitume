@@ -27,7 +27,8 @@
       m.nuage += (NUAGES[p] - m.nuage) * k;
       // Intégrale de la pluie pendant le pas (pas une somme dépendant du nombre d'images).
       const eau = PLUIE[p] * pas + (anciennePluie - PLUIE[p]) * 2.5 * k;
-      m.mouille = clamp(m.mouille + eau * .039 - pas * .004, 0, 1);
+      const sechage = PLUIE[p] > 0 ? .004 : .012;
+      m.mouille = clamp(m.mouille + eau * .039 - pas * sechage, 0, 1);
       m.t += pas; m.tp += pas; reste -= pas;
       m.eclair = Math.max(0, m.eclair - pas * 6);
       if (p === 3 && m.prochainEclair > 0 && m.t + 1e-10 >= m.prochainEclair) {

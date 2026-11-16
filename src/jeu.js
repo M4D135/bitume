@@ -465,6 +465,7 @@
   }
 
   function pasSimulation(S, pilote) {
+    if (B.meteo) B.meteo.actuel = S.meteo;
     const co = S.course;
     const cmd = S.type === 'vitrine' || S.type === 'demo' || pilote ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
     const ev = B.course.pas(co, cmd, DT);
@@ -755,6 +756,7 @@
     // uEffects.z colore tout l'écran : la rougeur suit seulement l'éclair du choc, jamais les dégâts persistants.
     const eclair = S.eclair || 0;
     const meteo = majMeteo(S, dtImage);
+    if (B.meteo) B.meteo.actuel = meteo;
     rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: q !== 'low' ? 1 : 0, weather: B.meteo.ambiance(meteo) });
     dessinerMeteo(S, dtImage, cam, vue);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);

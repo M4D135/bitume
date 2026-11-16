@@ -307,6 +307,9 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     // de côté la freinent (traînée jusqu'à +8 %, appliquée plus bas). Absents, rien ne change.
     const dg = etat.degats;
     if (dg) mu *= dg.adher;
+    // Pluie : l'adhérence baisse avec l'intensité de la pluie et revient dès qu'elle s'arrête.
+    const pluie = (B.meteo && B.meteo.actuel && Number.isFinite(B.meteo.actuel.pluie)) ? B.meteo.actuel.pluie : 0;
+    if (pluie > 0) mu *= 1 - 0.22 * Math.min(1, pluie);
     const enPiste = ad <= demi + P.largeurVibreur;
 
     // Dérive au bouton
