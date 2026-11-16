@@ -61346,7 +61346,7 @@ FERRO.initPhysics().then(function(){
     // grondement du moteur : doux au ralenti, il monte progressivement vers la zone rouge sans jamais saturer
     const r = clamp((et.regime - PR.ralenti) / (PR.maxUtile - PR.ralenti), 0, 1);
     const charge = .25 + .75 * (et.gaz || 0);
-    const moteur = .05 + .5 * r * r * charge;
+    const moteur = .05 + .7 * r * r * charge;
     const zoneRouge = r > .97 ? (Math.sin(horloge * 50) > 0 ? .2 : 0) : 0;   // le rupteur crépite à peine en haut
     // route, vibreurs, herbe, patinage, glisse — tous en dessous de leur maximum pour rester fins
     const route = clamp(Math.abs(et.v) / 90, 0, 1);
@@ -61355,8 +61355,8 @@ FERRO.initPhysics().then(function(){
     const patinage = clamp(et.patinage / .35, 0, 1);
     const blocage = clamp(et.blocage / .35, 0, 1);
     const glisse = clamp(Math.abs(et.glisseAr) / .5, 0, 1);
-    let faible = route * .16 + patinage * .5 + blocage * .38 + glisse * .3 + herbe * .3 + martellement * .42 + zoneRouge;
-    let fort = moteur * .5 + route * .16 + herbe * .42 + martellement * .5 + (pad.choc || 0) * .85 + (pad.passe || 0) * .5;
+    let faible = route * .16 + patinage * .5 + blocage * .38 + glisse * .3 + herbe * .3 + martellement * .42 + zoneRouge + moteur * .35;
+    let fort = moteur * 1.0 + route * .16 + herbe * .42 + martellement * .5 + (pad.choc || 0) * .85 + (pad.passe || 0) * .5;
     // mise en forme : une courbe en puissance garde le bas de l'échelle subtil, puis la puissance maître du réglage
     const f = clamp(reglages.vibrationForce != null ? +reglages.vibrationForce : .5, 0, 1);
     faible = Math.pow(clamp(faible, 0, 1), 1.25) * f;
