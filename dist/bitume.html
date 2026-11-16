@@ -58240,8 +58240,12 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   }
   function commandesIA(course, v) {
     const c = course.c, e = v.etat, ia = v.ia, P = c.pas, n = c.n, dt = course.dt;
-    const moi=empriseIA(e), vit=e.v, utile=Math.max(.5,c.largeur/2-moi.lat-.25);
-    const recuperer=Math.abs(e.d)>utile;
+    const moi=empriseIA(e), vit=e.v, demi=c.largeur/2, utile=Math.max(.5,demi-moi.lat-.25);
+    // Retour en piste seulement quand la voiture est vraiment dehors (centre au-delà du bord), avec hystérésis :
+    // frôler la trajectoire idéale, qui longe le bord, n'est pas une sortie.
+    const ad=Math.abs(e.d);
+    if (ad>demi+.4) ia.dehors=true; else if (ad<demi-1.2) ia.dehors=false;
+    const recuperer=!!ia.dehors;
     if (course.mode === 'course' && course.phase === 'course' && course.temps < ia.reaction) { ia.bloque=0;return NEUTRE; }
 
     let hab = ia.hab;
@@ -58250,14 +58254,22 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       const ej = v.progression - course.joueur.progression, f = clamp((Math.abs(ej) - 250) / 500, 0, 1) * 0.02;
       hab += ej < 0 ? f : -f; // léger élastique
     }
+    // Pluie : la conduite perd jusqu'à 22 % d'adhérence ; l'allure de virage suit sa racine, le freinage la suit.
+    const meteo = B.meteo && B.meteo.actuel, pluie = meteo && Number.isFinite(meteo.pluie) ? clamp(meteo.pluie, 0, 1) : 0;
+    const adh = 1 - .22 * pluie;
+    hab *= Math.sqrt(adh);
 
-    // Vitesse visée et freinage anticipé (jusqu'à 200 m devant)
-    let cible = lire(c, c.vitesse, e.s) * hab;
+    // Vitesse visée et freinage anticipé (jusqu'à 200 m devant). Le freinage finit une fraction de seconde avant
+    // chaque point (avance), et la vitesse visée est la plus basse de ce bout de piste : la voiture arrive à la
+    // corde déjà ralentie, au lieu de freiner en braquant, ce qui prend aux pneus l'adhérence du virage.
     const f = ramener(e.s, c.longueur) / P, i0 = Math.floor(f) % n, fr = f - Math.floor(f);
-    const dec = 0.8 * (14 + 0.15 * vit), v2 = vit * vit;
-    let besoin = 0;
+    const dec = 0.8 * (14 + 0.15 * vit) * (recuperer ? .6 : 1) * adh, v2 = vit * vit; // l'herbe freine moins bien
+    const anticipe = .5 * vit;
+    let cible = lire(c, c.vitesse, e.s) * hab, besoin = 0;
     for (let q = 1, N = Math.ceil(200 / P); q <= N; q++) {
-      const vc = c.vitesse[(i0 + q) % n] * hab, b = (v2 - vc * vc) / (2 * (q - fr) * P);
+      const vc = c.vitesse[(i0 + q) % n] * hab, dist = (q - fr) * P;
+      if (dist <= anticipe) { if (vc < cible) cible = vc; continue; }
+      const b = (v2 - vc * vc) / (2 * (dist - anticipe));
       if (b > besoin) besoin = b;
     }
 
@@ -58265,6 +58277,12 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     // s'allonge avec la vitesse (distance d'arrêt + marge) pour qu'un rival lancé voie et évite un obstacle
     // arrêté bien avant de lereach (Chantier 3 : un rival à 80 m/s doit éviter une voiture arrêtée).
     const regard = Math.max(70, v2 / 60 + 30);
+    // prochain virage à portée de freinage : son intérieur est le seul côté où l'on dépasse en freinant
+    let kAv = 0;
+    for (let q = 1, N = Math.ceil(Math.max(60, v2 / 20 + 30) / P); q <= N; q++) {
+      const k = c.courbure[(i0 + q) % n];
+      if (Math.abs(k) > 3e-3) { kAv = k; break; }
+    }
     let devant = null, dsMin = regard, dMin = -utile, dMax = utile;
     for (const o of course.voitures) {
       if (o === v) continue;
@@ -58280,8 +58298,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       // franc ; la circulation normale (allure voisine) garde la conduite habituelle du peloton.
       const obstacle = od.v < vit - 10;
       if (!recuperer && ia.cible !== devant.id && vit > od.v + 0.3 && gap < (obstacle ? Math.max(70, v2 / 45 + 25) : 30)) {
-        const kAv = lire(c, c.courbure, e.s + 60);
-        const interieur = kAv > 1e-4 ? 1 : kAv < -1e-4 ? -1 : (od.d > e.d ? -1 : 1);
+        const interieur = kAv > 0 ? 1 : kAv < 0 ? -1 : (od.d > e.d ? -1 : 1);
         // côté libre : dans la piste et sans autre voiture sur la trajectoire de dépassement
         const libre = cote => {
           const x=od.d+espace*cote;
@@ -58293,9 +58310,13 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
           }
           return true;
         };
-        const cote = libre(interieur) ? interieur : libre(-interieur) ? -interieur : 0;
+        // l'extérieur d'un virage qui arrive mène tout droit dans l'herbe : réservé à l'évitement d'un obstacle
+        const cote = libre(interieur) ? interieur : (!kAv || obstacle) && libre(-interieur) ? -interieur : 0;
         if (cote) { ia.cible = devant.id; ia.cote = cote; }
       }
+      // dépassement engagé par l'extérieur quand le virage arrive, sans être encore à la hauteur de l'autre : on
+      // renonce et on rentre derrière lui
+      if (ia.cible === devant.id && !obstacle && kAv && ia.cote === -Math.sign(kAv) && gap > -moi.long) { ia.cible = -1; ia.cote = 0; }
       // pas d'emboutissage : tant qu'on est dans les roues de celui de devant, on garde une distance de suivi.
       // Mais une fois le dépassement amorcé sur un côté libre, on ne rampe pas (sans vitesse, pas de mouvement
       // latéral) : on garde de quoi dégager la trajectoire, quitte à se rabattre derrière si le côté se referme.
@@ -58310,7 +58331,12 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
         }
       }
     }
-    if (recuperer) { ia.cible=-1;ia.cote=0;ia.decalVise=0;cible=Math.min(cible,Math.max(10,vit*.65)); }
+    // Dehors, l'adhérence tombe à un peu plus de la moitié. Tant que la voiture s'éloigne encore de la piste, on
+    // freine fort pour resserrer le virage ; dès qu'elle revient, allure de virage réduite d'autant, sans piler.
+    if (recuperer) {
+      ia.cible=-1;ia.cote=0;ia.decalVise=0;
+      cible=Math.min(cible,e.psi*Math.sign(e.d)>.03?Math.max(10,vit*.65):lire(c, c.vitesse, e.s)*hab*.74);
+    }
     const base = lire(c, c.ligne, e.s) + ia.decal;
     if (ia.cible >= 0 && dMin > dMax) { ia.cible = -1; ia.cote = 0; } // coincée : on renonce
     if (ia.cible >= 0) {
@@ -58323,14 +58349,30 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
 
     // Direction : poursuite d'un point de la ligne visée. Face à un obstacle beaucoup plus lent, on vise plus
     // court pour braquer plus sec et dégager la trajectoire avant d'arriver dessus ; circulation normale : visée longue.
-    const evite=recuperer || (ia.cible>=0 && devant && vit>devant.etat.v+10);
-    const la = (evite ? 5 : 8) + (evite ? 0.30 : 0.45) * vit;
-    let dVise = clamp(lire(c, c.ligne, e.s + la) + ia.decal + ia.decalDep, -utile, utile);
+    // Dehors : retour du côté où l'on est sorti, sans traverser la piste, sous un angle doux (11° au plus), pour
+    // ne pas repartir dans l'herbe d'en face. En piste, l'écart au cap de la trajectoire est borné par une vitesse
+    // latérale (5 m/s, 9 pour éviter un obstacle) : à 200 km/h, un changement de côté ne jette plus la voiture
+    // de travers à l'entrée d'un virage.
+    const evite=!recuperer && ia.cible>=0 && devant && vit>devant.etat.v+10;
+    const la = recuperer ? 10 + 0.6 * vit : (evite ? 5 : 8) + (evite ? 0.30 : 0.45) * vit;
+    const ligneLa = lire(c, c.ligne, e.s + la);
+    let dVise = recuperer ? Math.sign(e.d) * (demi - 1.8) : clamp(ligneLa + ia.decal + ia.decalDep, -utile, utile);
     dVise = dMin > dMax ? e.d : clamp(dVise, dMin, dMax);
-    const psiC = Math.atan2(dVise - e.d, la);
-    // même loi que le joueur : le volant demande la part d'adhérence avant qui tient la courbure visée
-    const kVise = lire(c, c.courbure, e.s) + 2.2 * (psiC - e.psi) * Math.max(vit, 5) / (10 * Math.max(vit, 3));
+    const psiL = recuperer ? 0 : Math.atan2(ligneLa - lire(c, c.ligne, e.s), la);
+    const ouverture = recuperer ? .19 : Math.asin(Math.min(1, (evite ? 9 : 5) / Math.max(vit, 1)));
+    const psiC = clamp(Math.atan2(dVise - e.d, la), psiL - ouverture, psiL + ouverture);
+    // même loi que le joueur : le volant demande la part d'adhérence avant qui tient la courbure visée. La courbure
+    // de base est celle de la voiture à son décalage (plus serrée à la corde), pas celle de l'axe de la piste.
+    const kIci = lire(c, c.courbure, e.s);
+    const kVise = kIci / Math.max(1 - kIci * e.d, .3) + 2.2 * (psiC - e.psi) * Math.max(vit, 5) / (10 * Math.max(vit, 3));
     const volant = B.conduite.volantPour(e, kVise);
+
+    // Sous-virage : en virage, la voiture s'écarte de sa ligne vers l'extérieur. Comme un pilote, on lève le pied
+    // et on freine un peu : la charge revient sur l'avant et la trajectoire se referme.
+    if (!recuperer && Math.abs(kIci) > 4e-3) {
+      const large = (lire(c, c.ligne, e.s) + ia.decal + ia.decalDep - e.d) * Math.sign(kIci);
+      if (large > 2) cible = Math.min(cible, vit * (1 - .03 * Math.min(large - 2, 3)));
+    }
 
     let gaz = 0, frein = 0;
     if (besoin > 0.7 * dec) frein = clamp((besoin - 0.7 * dec) / (0.3 * dec), 0, 1);

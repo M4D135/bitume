@@ -60,7 +60,7 @@ verifier('traces : une force de contact négative garde une gerbe minimale', () 
   const fx = T.creer(2, 7), co = { longueur: 1000, voitures: [{ etat: { v: 20, beta: 0 } }, { etat: { v: 20, beta: 0 } }] };
   const poses = [{ x: 0, y: 0, z: 0, cap: 0 }, { x: 1, y: 0, z: 0, cap: 0 }];
   T.pas(fx, co, poses, 0, DT, [{ type: 'contact', a: 0, b: 1, force: -10 }]);
-  assert.equal(T.compter(fx).etincelles, 4);
+  assert.equal(T.compter(fx).etincelles, 10); // gerbe minimale portée à 10 par 7dfc247 (chocs plus spectaculaires)
 });
 
 console.log('---');

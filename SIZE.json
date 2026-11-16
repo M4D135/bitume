@@ -1,8 +1,8 @@
 {
   "version": "essai-0.1",
-  "raw": 12687229,
-  "gzip": 2897604,
-  "sha256": "2c51a7a75f01830d916115fc8c2f55cd8e7ca33d6ec3c9112222568436e52c9c",
+  "raw": 12690642,
+  "gzip": 2898821,
+  "sha256": "3418bd7905039c18b8de97742fe25bfd71afa72269377d45fecad258225af538",
   "sources": {
     "moteur/renderer.js": 209041,
     "ferro/engine.js": 2024,
@@ -14,7 +14,7 @@
     "degats.js": 3228,
     "contacts.js": 7096,
     "obstacles.js": 13181,
-    "course.js": 24117,
+    "course.js": 27530,
     "son.js": 20993,
     "decor.js": 40023,
     "carene.js": 16443,
