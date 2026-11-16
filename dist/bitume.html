@@ -420,7 +420,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.5">V0.2.5</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.6">V0.2.6</b>
     </div>
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
@@ -61968,6 +61968,28 @@ FERRO.initPhysics().then(function(){
     return { pos: q.slice(), yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / dist, -1, 1)), roll: 0, fov: clamp(2 * Math.atan(5 / dist) * 180 / Math.PI, 28, 70), near: .1, far: PORTEE_VUE };
   }
 
+  // ---------------------------------------------------------------- paliers de la qualité Auto
+  // En qualité Auto, quand les images ralentissent (plus de 19 ms en moyenne pendant 2 s, volet visible), le jeu
+  // retire un effet coûteux après l'autre : image réelle des rétroviseurs, ombres, halo et reflets, puis il baisse la
+  // résolution (palier 4). Il remonte d'un palier après 8 s sous 14 ms. Le gouverneur de résolution du moteur
+  // continue d'agir dans chaque palier. Les qualités Légère et Fine restent fixes.
+  const palier = { n: 0, somme: 0, compte: 0, t: 0, aise: 0 };
+  const PALIERS = 4;
+  function majPalier(S, dt) {
+    if (reglages.qualite !== 'auto' || S.banc || document.hidden || !(dt > 0) || dt > .25 || (S.type !== 'course' && S.type !== 'chrono' && S.type !== 'demo')) { palier.somme = palier.compte = palier.t = 0; return; }
+    palier.somme += dt; palier.compte++; palier.t += dt;
+    if (palier.t < 2) return;
+    const moyenne = palier.somme / palier.compte * 1000;
+    palier.somme = palier.compte = palier.t = 0;
+    if (moyenne > 19 && palier.n < PALIERS) { palier.n++; palier.aise = 0; appliquerPalier(); }
+    else if (moyenne < 14 && palier.n > (gpuModeste ? 1 : 0)) { if ((palier.aise += 2) >= 8) { palier.n--; palier.aise = 0; appliquerPalier(); } }
+    else palier.aise = 0;
+  }
+  function appliquerPalier() { if (rendu) rendu.resize(palier.n >= 4 ? .75 : 'auto'); }
+  // effets permis par la qualité et le palier
+  const avecOmbres = q => q === 'high' || (q === 'auto' && palier.n < 2);
+  const avecHalo = q => q === 'high' || (q === 'auto' && palier.n < 3);
+
   // ---------------------------------------------------------------- rétroviseurs
   // David (16/11) : « les deux rétros bien visibles et bien foutus ». En vue cockpit, chaque glace reçoit l'image
   // réelle de la scène arrière : un second rendu FERRO, sur une petite toile hors de l'écran, depuis la glace et dans
@@ -61979,8 +62001,8 @@ FERRO.initPhysics().then(function(){
   const retro = { rendu: null, scene: -1, cote: 0, echec: false, objets: [], toiles: null, ctx: [], l: 0, h: 0 };
   function retroVoulu(S, vue) {
     const r = reglages.retro === 'auto' ? (estTactile ? 'non' : 'oui') : reglages.retro;
-    return r === 'oui' && vue === 'cockpit' && S.type !== 'vitrine' && !retro.echec && !cameraEssai &&
-      (S.banc ? S.banc.qualite : reglages.qualite) !== 'low';
+    const q = S.banc ? S.banc.qualite : reglages.qualite;
+    return r === 'oui' && vue === 'cockpit' && S.type !== 'vitrine' && !retro.echec && !cameraEssai && q !== 'low' && !(q === 'auto' && palier.n >= 1);
   }
   // homographie du carré unité vers le quadrilatère q (images de (0,0), (1,0), (1,1), (0,1)), puis matrix3d CSS
   // pour une toile de l × h pixels CSS
@@ -62160,7 +62182,7 @@ FERRO.initPhysics().then(function(){
     const eclair = S.eclair || 0;
     const meteo = majMeteo(S, dtImage);
     if (B.meteo) B.meteo.actuel = meteo;
-    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: q !== 'low', bloom: q !== 'low', torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: q !== 'low' ? 1 : 0, weather: B.meteo.ambiance(meteo) });
+    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: avecOmbres(q), bloom: avecHalo(q), torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: avecHalo(q) ? 1 : 0, weather: B.meteo.ambiance(meteo) });
     dessinerMeteo(S, dtImage, cam, vue);
     majGlaces(S, vue, cam, ps, sortie, B.meteo.ambiance(meteo), suivie);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
@@ -62426,7 +62448,7 @@ FERRO.initPhysics().then(function(){
     if (t.name === 'tours' || t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
     if (t.name === 'meteo') { reglages.meteo = t.value; sauverReglages(); preselectionnerPneus(); }
     if (t.name === 'pneus' && B.conduite.PNEUS[t.value]) { reglages.pneus = t.value; sauverReglages(); }
-    if (['vue', 'boite', 'qualite', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille'].includes(t.name)) { reglages[t.name] = t.value; sauverReglages(); appliquerCarte(); if (t.name === 'qualite' && rendu) rendu.resize(t.value); }
+    if (['vue', 'boite', 'qualite', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille'].includes(t.name)) { reglages[t.name] = t.value; sauverReglages(); appliquerCarte(); if (t.name === 'qualite' && rendu) { palier.n = gpuModeste ? 1 : 0; rendu.resize(t.value); } }
     if (t.name === 'aide') { reglages.aide = +t.value; sauverReglages(); }
   });
   for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).addEventListener('input', e => { reglages[nom] = +e.target.value; sauverReglages(); appliquerVolumes(); });
@@ -62552,6 +62574,7 @@ FERRO.initPhysics().then(function(){
     S.imageFigee = horlogeReelle;
     if (S.type === 'vitrine') S.suiviRang = Math.floor(horlogeReelle / 18) % 4;
     const dtVu = tourne ? dtReel : 0, cam = rendreImage(S, clamp(S.acc / DT, 0, 1), dtVu);
+    if (tourne) majPalier(S, dtReel);
     if (S.type !== 'vitrine') {
       majHud(S);
       const j = S.course.joueur;
@@ -62565,10 +62588,16 @@ FERRO.initPhysics().then(function(){
   }
 
   // ---------------------------------------------------------------- démarrage
+  // Petites configurations (David, 16/11 : « faire tourner ce jeu sur des petites configs type ordi portable de
+  // bureau ») : un processeur graphique intégré ou logiciel est reconnu dès le départ ; le rendu part alors sans
+  // anticrénelage, avec une carte d'ombres simple, et la qualité Auto commence un palier plus bas (voir paliers).
+  let gpuModeste = false;
   function webgl2() {
     try {
       const t = document.createElement('canvas'), gl = t.getContext('webgl2');
       if (!gl) return false;
+      const info = gl.getExtension('WEBGL_debug_renderer_info'), nom = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
+      gpuModeste = /intel|uhd|iris|hd graphics|mali|adreno|powervr|swiftshader|llvmpipe|software|microsoft basic|radeon\(tm\) graphics|vega [0-9]+ graphics/i.test(nom) || (navigator.hardwareConcurrency || 8) <= 4;
       const perte = gl.getExtension('WEBGL_lose_context'); if (perte) perte.loseContext();
       return true;
     } catch (e) { return false; }
@@ -62581,7 +62610,8 @@ FERRO.initPhysics().then(function(){
   function demarrer() {
     if (!webgl2()) { erreur('WebGL2 indisponible', 'BITUME dessine la piste avec WebGL2. Ouvrez la page dans un navigateur récent (Chrome, Edge, Firefox, Safari 15 ou plus) avec l’accélération graphique active.'); return; }
     try {
-      rendu = window.FRender.create(canvas,{msaa:4,shadowMapScale:2,reflections:false,sea:false,overlayLighting:'world'});
+      rendu = window.FRender.create(canvas,{msaa:gpuModeste?0:4,shadowMapScale:gpuModeste?1:2,reflections:false,sea:false,overlayLighting:'world'});
+      palier.n = gpuModeste ? 1 : 0;
       if (rendu.stats.backend !== 'webgl2') { erreur('WebGL2 indisponible', 'Le rendu de secours ne sait pas dessiner la piste. Activez l’accélération graphique du navigateur.'); return; }
       rendu.resize(reglages.qualite);
       son = B.son.creer();
@@ -62645,7 +62675,7 @@ FERRO.initPhysics().then(function(){
     });
   }
   window.BITUME_JEU = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer, banc,
-    get son() { return son ? son.stats() : null; },
+    get son() { return son ? son.stats() : null; }, get palier() { return palier.n; }, get gpuModeste() { return gpuModeste; },
     demo: i => lancerDemo(i === undefined ? reglages.circuit : i), // lance la démo sans attendre les cinq secondes
     get pauseAuto() { return pauseAuto; }, set pauseAuto(v) { pauseAuto = !!v; },
     get camera() { return cameraEssai; }, set camera(f) { cameraEssai = typeof f === 'function' ? f : null; } };
