@@ -61282,8 +61282,12 @@ FERRO.initPhysics().then(function(){
         if (nouveau(4)) impulsions.bas = true;
         if (nouveau(3)) changerVue();
       }
-      if (nouveau(9) && (enCourse() || ecran === 'pause')) basculerPause();
-      else if (!enCourse()) naviguerManette(nouveau);
+      if (nouveau(9)) {
+        if (enCourse() || ecran === 'pause') basculerPause();
+        else if (ecran === 'titre') { modePrepa = 'course'; activerSon(); aller('preparation'); }
+        else if (ecran === 'preparation') { const b = $('b-depart'); if (b) { activerSon(); b.click(); } }
+        else naviguerManette(nouveau);
+      } else if (!enCourse()) naviguerManette(nouveau);
       for (let i = 0; i < p.buttons.length; i++) pad.precedent[i] = appuye(i);
       if (Math.abs(pad.volant) > .05 || pad.gaz > .05 || pad.frein > .05) { pad.actif = true; analogique = true; activerSon(); }
       return;
