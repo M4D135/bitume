@@ -171,6 +171,9 @@ Les modules listés dans `FERRO.lock.json` sont désormais des copies exactes de
   0,12 s. L'hôte fait courir les rivaux et annonce les temps officiels. La course attend les deux pilotes ; à la
   fin, l'hôte lance la revanche ; une coupure confie l'autre voiture à l'ordinateur. Le salon n'est pas installé sur
   amiga : service et route publique seulement avec l'accord de David.
+  Suite, David, 16/11 après la mise en ligne de la 0.2.7 : « on verra plus tard le online, mais je veux du peer to
+  peer avec mini serveur pour rejoindre les joueurs, un truc léger, sans besoin de ports ouverts ». Le serveur ne
+  sert qu'à se trouver ; la partie passe d'une machine à l'autre ; aucun joueur n'ouvre de port.
 - **Tunnel** : « dans le circuit Haut-Col, fais une partie dans un tunnel ». 260 m au milieu de la plus longue ligne
   droite (rayon > 400 m, insensible aux courbures de l'ordre de 1e-15 qui changent d'un moteur JavaScript à l'autre) ;
   les murs sont les limites, en entonnoir sur 40 m. L'intérieur est éclairé « dedans » (`outdoor: false`) par ses
