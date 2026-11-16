@@ -413,7 +413,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 .ligne-commande b { min-width: 76px; font: 600 12px/1 var(--f-texte); letter-spacing: .08em; text-transform: uppercase; color: var(--papier-2); }
 
 /* Signature discrète */
-.signature-m4d { position: fixed; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); left: 0; right: 0; margin: 0; text-align: center; font: 500 11px/1 var(--f-texte); letter-spacing: .12em; color: var(--papier-3); opacity: .35; pointer-events: none; z-index: 30; }
+.signature-m4d { position: fixed; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); left: calc(12px + env(safe-area-inset-left, 0px)); margin: 0; text-align: left; font: 500 11px/1 var(--f-texte); letter-spacing: .12em; color: var(--papier-3); opacity: .35; pointer-events: none; z-index: 30; }
 </style>
 <main id="jeu" data-ecran="chargement" data-carte="oui" data-carte-position="droite" data-carte-taille="normale">
   <div id="vue-course">
@@ -487,7 +487,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.14">V0.2.14</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.15">V0.2.15</b>
     </div>
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
