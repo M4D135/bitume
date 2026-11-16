@@ -18,8 +18,8 @@ vhost_local="$depot/deploiement/bitume.estrasse.fr.Caddyfile"
 vhost_distant=/home/ddd/apps/caddy-shared/vhosts.d/bitume.estrasse.fr.Caddyfile
 url=https://bitume.estrasse.fr/
 
-propre() { [ -z "$(git -C "$depot" status --porcelain -- src construire.py dist SIZE.json deploiement deposer.sh)" ]; }
-propre || { echo "src, construire.py, dist, SIZE.json, deploiement ou deposer.sh ont des modifications non commitées : committer d'abord." >&2; exit 1; }
+propre() { [ -z "$(git -C "$depot" status --porcelain -- src construire.py dist SIZE.json VERSION.json deploiement deposer.sh)" ]; }
+propre || { echo "src, construire.py, dist, SIZE.json, VERSION.json, deploiement ou deposer.sh ont des modifications non commitées : committer d'abord." >&2; exit 1; }
 commit=$(git -C "$depot" rev-parse HEAD)
 
 python3 "$depot/construire.py"

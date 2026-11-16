@@ -114,6 +114,29 @@
   // rétroviseurs : boîtier profilé, glace vers l'arrière (x = 0,53), sur une patte fine fixée au flanc du carénage
   forme('retros', deuxCotes(C.carene([{ x: .61, y0: .560, y1: .575, l: .02, n: 2, z: .47 }, { x: .57, y0: .540, y1: .592, l: .072, n: 3, z: .47 }, { x: .53, y0: .538, y1: .594, l: .078, n: 4, z: .47 }], { cotes: 16, pas: 3 })
     .concat(C.tube([[.565, .53, .27], [.565, .55, .40]], .009, { cotes: 6 }))));
+  // Rétroviseurs de la vue cockpit (David, 16/11 : « les deux rétros bien visibles et bien foutus »). Sur la vraie
+  // voiture, les glaces sont à 30° du regard, au bord de l'image, et petites. En vue cockpit, elles viennent à 21° de
+  // part et d'autre, au-dessus des pneus avant, plus grandes, un peu tournées vers le pilote ; la vue extérieure
+  // garde les rétroviseurs à leur place. Glace : centre (x, y, ±z), largeur l, hauteur h, rotation vers le pilote.
+  const RETRO = { x: .64, y: .66, z: .37, l: .20, h: .076, angle: .15 };
+  // repère d'une glace (k = −1 à gauche, 1 à droite) : centre, normale vers le pilote, droite de la glace, rotation
+  function cadreGlace(k) {
+    const a = k * RETRO.angle, w = [-Math.sin(a), 0, Math.cos(a)];
+    return { k, c: [RETRO.x, RETRO.y, k * RETRO.z], n: [-Math.cos(a), 0, -Math.sin(a)], w, m: [[Math.cos(a), 0, Math.sin(a)], [0, 1, 0], w] };
+  }
+  // Coins des deux glaces dans le monde (haut gauche, haut droit, bas droit, bas gauche, vus du pilote), leur centre,
+  // leur normale et leur droite : jeu.js y pose l'image réelle de la scène arrière.
+  function glacesCockpit(ev) {
+    const M = attitude(ev.cap, ev.tangage || 0, ev.roulis || 0), monde = o => { const q = mul(M, o); return [ev.p[0] + q[0], ev.p[1] + q[1], ev.p[2] + q[2]]; };
+    return [-1, 1].map(k => {
+      const g = cadreGlace(k), coin = (dz, dy) => monde(g.c.map((v, i) => v + g.w[i] * dz + (i === 1 ? dy : 0) - g.n[i] * .0035));
+      const l = RETRO.l / 2, h = RETRO.h / 2;
+      return { k, coins: [coin(-l, h), coin(l, h), coin(l, -h), coin(-l, -h)], centre: monde(g.c), normale: mul(M, g.n), droite: mul(M, g.w) };
+    });
+  }
+  // boîtier : face arrière autour de la glace (cadre de 8 mm), nez effilé vers l'avant
+  forme('retro-boitier', C.carene([{ x: 0, y0: -.048, y1: .048, l: .112, n: 4.5 }, { x: .02, y0: -.050, y1: .050, l: .115, n: 4 },
+    { x: .07, y0: -.037, y1: .037, l: .088, n: 3 }, { x: .118, y0: -.011, y1: .011, l: .03, n: 2 }], { cotes: 24, pas: 3 }));
   {
     // suspension avant : basculeur supérieur noir, large à la coque et fin à la roue ; triangle inférieur et biellette
     const versZ = [[0, 0, 1], [0, 1, 0], [-1, 0, 0]];
@@ -189,7 +212,7 @@
     L('bulle', METAL_MAT, [.30, .50, .86], { fx: true, alpha: .3, exterieur: true });
     L('moteur', PEINTURE, c1, AR());
     L('arceau', METAL_MAT, ARGENT, AR());
-    L('retros', PEINTURE, c1);
+    L('retros', PEINTURE, c1, dehors);                 // vue cockpit : rétroviseurs dédiés (voir RETRO)
     L('basculeurs', MAT, NOIR);
     L('triangles', METAL_MAT, SOMBRE);
     // Aileron avant argent de 1,62 m, bord de fuite relevé, et ses deux dérives rouges
@@ -335,11 +358,14 @@
   // Comme dans vroom-unreal, la face du volant regarde le pilote et un peu le bas (inclinaison négative : le haut de la
   // jante vient vers lui) : l'axe des mains, perpendiculaire au volant, prolonge celui des avant-bras qui montent du bas
   // de l'image, sans casser le poignet. Mains à 9 h et 3 h, sur les branches (prise : angle depuis le haut de la jante).
-  const VOLANT = { centre: [1.0, -.302, 0], rayon: .125, inclinaison: -.436, course: 1.6, prise: Math.PI / 2 };
+  // David (16/11 : « rapproche le pilote du volant, il a des bras de 10 km ») : l'ensemble volant, planche et levier
+  // est 12 % plus près de l'œil, 15,5° sous l'horizon pour garder les mains dans un cadre 16:9 de 60°, et les coudes
+  // plus bas : les manches sortent de l'image juste après les poignets, même dans une fenêtre presque carrée.
+  const VOLANT = { centre: [.88, -.244, 0], rayon: .125, inclinaison: -.436, course: 1.6, prise: Math.PI / 2 };
   // Planche : face au pilote, inclinée de 25° vers l'arrière ; elle ne suit pas l'inclinaison du volant.
-  const PLANCHE = [1.12, -.21, 0], PENTE_PLANCHE = .436;
-  const COUDE = [.48, -.58, .20];              // coude du pilote, bras repliés près du corps, sous l'image (vroom-unreal)
-  const LEVIER = [.93, -.315, .262];           // pommeau du levier de vitesses, à droite du volant, au point mort
+  const PLANCHE = [.986, -.163, 0], PENTE_PLANCHE = .436;
+  const COUDE = [.50, -.68, .19];              // coude du pilote, bras repliés près du corps, sous l'image (vroom-unreal)
+  const LEVIER = [.818, -.27, .262];           // pommeau du levier de vitesses, à droite du volant, au point mort
   const REGIME_LAMPE = 12000;                  // la lampe de la casquette s'allume : il est temps de monter un rapport
   // Afficheurs à sept segments : a en haut, puis b, c, d, e, f dans le sens des aiguilles d'une montre, g au milieu.
   const SEGMENTS = { 0: 'abcdef', 1: 'bc', 2: 'abdeg', 3: 'abcdg', 4: 'bcfg', 5: 'acdfg', 6: 'acdefg', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg', N: 'ceg', R: 'abefg', '-': 'g' };
@@ -519,27 +545,35 @@
       }
     }
 
-    // Rétroviseurs : ciel, horizon et piste dans la glace, et les voitures qui suivent, à leur place et à leur taille.
-    // Champ de 32° par glace, ouvert de 6° vers l'extérieur ; trois voitures au plus.
+    // Rétroviseurs (voir RETRO) : boîtier de la couleur de la voiture, patte vers le flanc de l'habitacle, glace. Le
+    // fond de la glace montre ciel, horizon et piste, et les voitures qui suivent à leur place ; quand le jeu pose
+    // dessus l'image réelle de la scène arrière (jeu.js, majGlaces), ce fond reste dessous.
     const ciel = etat.ciel || [.66, .77, .88], brume = etat.brume || [.62, .70, .76], suiveurs = etat.derriere || [];
-    const GL = .132, GH = .048;                                    // glace : largeur et hauteur
+    const GL = RETRO.l, GH = RETRO.h, fb = FORMES['retro-boitier'];
     for (const k of [-1, 1]) {
-      const zc = k * .47, x = .5225, y = .565;
-      dans('box', [x, y + GH * .25, zc], [.003, GH * .5, GL], LAQUE, ciel.map(v => v * .75));
-      dans('box', [x, y - GH * .04, zc], [.003, GH * .1, GL], LAQUE, brume.map(v => v * .6));
-      dans('box', [x, y - GH * .295, zc], [.003, GH * .41, GL], LAQUE, [.10, .105, .11]);
+      const g = cadreGlace(k), { c, n: nr, w, m } = g;
+      // point de la glace : dx vers l'avant (le boîtier est devant la glace), dy vers le haut, dz vers sa droite
+      const vers = (dx, dy, dz) => plus(c, [nr, -dx], [[0, 1, 0], dy], [w, dz]);
+      dans(fb.nom, plus(c, [m[0], fb.centre[0]], [m[1], fb.centre[1]], [m[2], fb.centre[2]]), fb.taille, PEINTURE, c1, m);
+      const attache = vers(.06, -GH * .45, -k * .03), pied = [c[0] + .07, .56, k * .29], axe = pied.map((v, i) => v - attache[i]);
+      dans('cylinder', attache.map((v, i) => (v + pied[i]) / 2), [.018, Math.hypot(axe[0], axe[1], axe[2]), .018], PEINTURE, c1, selonAxe(axe));
+      // image réelle posée par le jeu : la glace n'est plus qu'un fond sombre sous elle
+      if (etat.glaceVive) { dans('box', vers(-.002, 0, 0), [.003, GH, GL], LAQUE, [.05, .055, .06], m); continue; }
+      dans('box', vers(-.002, GH * .25, 0), [.003, GH * .5, GL], LAQUE, ciel.map(v => v * .75), m);
+      dans('box', vers(-.002, -GH * .04, 0), [.003, GH * .1, GL], LAQUE, brume.map(v => v * .6), m);
+      dans('box', vers(-.002, -GH * .295, 0), [.003, GH * .41, GL], LAQUE, [.10, .105, .11], m);
       let n = 0;
       for (const v of suiveurs) {
         if (n >= 5) break;
-        const b = .55 - v.x, a = v.z - zc, f = (Math.atan2(a, b) - k * .105) / .28;
+        const b = c[0] - v.x, a = v.z - c[2], f = (Math.atan2(a, b) - k * .075) / .30;
         if (b < 2 || b > 90 || Math.abs(f) > 1) continue;
-        const dist = Math.hypot(a, b), large = borner(1.9 / dist / .56 * GL, .005, GL * .55), haut = borner(1.0 / dist / .23 * GH, .004, GH * .62);
+        const dist = Math.hypot(a, b), large = borner(1.9 / dist / .6 * GL, .005, GL * .55), haut = borner(1.0 / dist / .24 * GH, .004, GH * .62);
         // cockpit-1 : le suiveur le plus proche est enfoncé plus profond dans la glace (un seul lot, depthFunc LEQUAL) ;
         // cockpit-5 : hauteur et largeur bornées pour que caisse et pneus restent dans la glace
-        const zi = borner(zc + f * GL / 2, zc - GL / 2 + .54 * large, zc + GL / 2 - .54 * large),
-          yi = borner(y - GH * .08 - haut * .3, y - GH / 2 + .51 * haut, y + GH / 2 - haut / 2), xi = x - .0012 - .001 * (2 - n);
-        dans('box', [xi, yi, zi], [.003, haut, large], LAQUE, v.couleur || c2);
-        dans('box', [xi - .0006, yi - haut * .34, zi], [.003, haut * .34, large * 1.08], MAT, [.03, .03, .035]);
+        const zi = borner(f * GL / 2, -GL / 2 + .54 * large, GL / 2 - .54 * large),
+          yi = borner(-GH * .08 - haut * .3, -GH / 2 + .51 * haut, GH / 2 - haut / 2), xi = -.0032 - .001 * (2 - n);
+        dans('box', vers(xi, yi, zi), [.003, haut, large], LAQUE, v.couleur || c2, m);
+        dans('box', vers(xi - .0006, yi - haut * .34, zi), [.003, haut * .34, large * 1.08], MAT, [.03, .03, .035], m);
         n++;
       }
     }
@@ -558,5 +592,5 @@
     for (const w of ROUES) sortie.push({ shape: 'cylinder', p: P([w.x, w.r, w.z]), s: [2 * w.r, w.l, 2 * w.r], r: rot, fx: true, alpha: .22, color: bleu });
   }
 
-  B.voiture = { modele, poser, cockpit, fantome, visible, attitude, angles, mul, mulM, euler, braquages, OEIL, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES };
+  B.voiture = { modele, poser, cockpit, fantome, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES };
 })(globalThis.BITUME = globalThis.BITUME || {});

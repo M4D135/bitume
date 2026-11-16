@@ -268,7 +268,9 @@ verifier('rétroviseurs : une voiture derrière à gauche se voit dans la glace 
   assert.equal(gauche.length - vide.length, 2, 'caisse et pneus');
   assert.equal(loin.length, vide.length, 'trop loin : rien');
   const reflet = gauche.find(m => m.color[2] === .8 && m.color[0] === .1);
-  assert.ok(reflet.p[2] < -.47 + .066 && reflet.p[2] > -.47 - .066 && Math.abs(reflet.p[1] - .565) < .024, `reflet en ${reflet.p.map(v => v.toFixed(3))}`);
+  // glaces de la vue cockpit (David, 16/11 : rétroviseurs bien visibles) : voir V.RETRO
+  const R = V.RETRO;
+  assert.ok(Math.abs(reflet.p[2] + R.z) < R.l / 2 && Math.abs(reflet.p[1] - R.y) < R.h / 2, `reflet en ${reflet.p.map(v => v.toFixed(3))}`);
   // plus la voiture est à gauche, plus son reflet est à gauche ; plus elle est près, plus il est grand
   const z = zr => bord({ derriere: [{ x: -14, z: zr, couleur: [.1, .3, .8] }] }).find(m => m.color[2] === .8 && m.color[0] === .1);
   assert.ok(z(-5).p[2] < z(-2).p[2] - .01, 'ordre gauche-droite');
@@ -384,21 +386,24 @@ verifier('suspension avant : les attaches intérieures touchent la peau de la qu
 });
 
 verifier('rétroviseurs : le proche s\'enfonce plus que le lointain, reflet contenu dans la glace (cockpit-1/5)', () => {
+  // repère de chaque glace de la vue cockpit (V.cadreGlace) : profondeur vers le pilote, position le long de la glace
+  const R = V.RETRO, local = m => { const g = V.cadreGlace(Math.sign(m.p[2])), d = m.p.map((v, i) => v - g.c[i]);
+    return { vers: d[0] * g.n[0] + d[2] * g.n[2], u: d[0] * g.w[0] + d[2] * g.w[2], v: d[1] }; };
   const deux = bord({ derriere: [{ x: -10, z: -3, couleur: [.9, .1, .1] }, { x: -20, z: -6, couleur: [.1, .1, .9] }] });
   const pres = deux.find(m => m.color && m.color.join() === [.9, .1, .1].join());
   const loin = deux.find(m => m.color && m.color.join() === [.1, .1, .9].join());
   assert.ok(pres && loin, 'les deux suiveurs ont un reflet');
-  assert.ok(pres.p[0] < loin.p[0] - 1e-9, `proche à x ${pres.p[0].toFixed(5)}, lointain à ${loin.p[0].toFixed(5)} : le proche doit être plus enfoncé`);
-  const pneu = deux.find(m => m.mat === 7 && m.color.join() === [.03, .03, .035].join() && Math.abs(m.p[2] - pres.p[2]) < 1e-9 && m.p[1] < pres.p[1]);
-  assert.ok(pneu && pneu.p[0] < pres.p[0] - 1e-9, 'la bande de pneus est derrière la caisse');
+  assert.ok(local(pres).vers > local(loin).vers + 1e-9, `proche à ${local(pres).vers.toFixed(5)}, lointain à ${local(loin).vers.toFixed(5)} vers le pilote : le proche doit être devant`);
+  const pneu = deux.find(m => m.mat === 7 && m.color.join() === [.03, .03, .035].join() && Math.abs(local(m).u - local(pres).u) < 1e-9 && m.p[1] < pres.p[1]);
+  assert.ok(pneu && local(pneu).vers > local(pres).vers + 1e-9, 'la bande de pneus est devant la caisse, vue du pilote');
   // reflet contenu : suiveurs proches et décalés, des deux côtés
   const pres2 = bord({ derriere: [{ x: -2.5, z: 1.5, couleur: [.9, .1, .1] }, { x: -5, z: -1.5, couleur: [.1, .1, .9] }] });
-  const reflets = pres2.filter(m => Math.abs(m.p[0] - .5225) < .01 && (m.mat === 16 && (m.color.join() === [.9, .1, .1].join() || m.color.join() === [.1, .1, .9].join()) || m.mat === 7 && m.color.join() === [.03, .03, .035].join()));
+  const reflets = pres2.filter(m => (m.mat === 16 && (m.color.join() === [.9, .1, .1].join() || m.color.join() === [.1, .1, .9].join()) || m.mat === 7 && m.color.join() === [.03, .03, .035].join()) && Math.abs(local(m).vers) < .02);
   assert.equal(reflets.length, 4, `${reflets.length} reflets (2 caisses, 2 pneus)`);
   for (const m of reflets) {
-    const zc = Math.sign(m.p[2]) * .47;
-    assert.ok(m.p[1] - m.s[1] / 2 >= .541 - 1e-9 && m.p[1] + m.s[1] / 2 <= .589 + 1e-9, `reflet hors glace en y : ${m.p[1].toFixed(4)} ± ${(m.s[1] / 2).toFixed(4)}`);
-    assert.ok(m.p[2] - m.s[2] / 2 >= zc - .066 - 1e-9 && m.p[2] + m.s[2] / 2 <= zc + .066 + 1e-9, `reflet hors glace en z : ${m.p[2].toFixed(4)} ± ${(m.s[2] / 2).toFixed(4)}`);
+    const q = local(m);
+    assert.ok(Math.abs(q.v) + m.s[1] / 2 <= R.h / 2 + 1e-9, `reflet hors glace en hauteur : ${q.v.toFixed(4)} ± ${(m.s[1] / 2).toFixed(4)}`);
+    assert.ok(Math.abs(q.u) + m.s[2] / 2 <= R.l / 2 + 1e-9, `reflet hors glace en largeur : ${q.u.toFixed(4)} ± ${(m.s[2] / 2).toFixed(4)}`);
   }
 });
 

@@ -42,7 +42,41 @@ MODULES = [
     'meteo.js',
     'jeu.js',
 ]
-VERSION = 'essai-0.1'
+# Version affichée au titre (David, 16/11/2026 : « incrémente les versions à chaque maj, je veux la vraie version »).
+# VERSION.json porte la version et l'empreinte des sources (src/ et ce script). Quand les sources changent par
+# rapport au dernier commit, la version du commit monte d'un cran (dernier nombre), une seule fois pour toute la
+# mise à jour ; reconstruire sans rien changer garde la même version et la même page. Une version montée à la main
+# (0.3.0 pour un grand lot, par exemple) est gardée.
+FICHIER_VERSION = ICI / 'VERSION.json'
+
+
+def empreinte_sources():
+    h = hashlib.sha256()
+    for chemin in sorted(p for p in SRC.rglob('*') if p.is_file()) + [pathlib.Path(__file__).resolve()]:
+        h.update(str(chemin.relative_to(ICI)).encode('utf-8') + b'\0' + chemin.read_bytes() + b'\0')
+    return h.hexdigest()
+
+
+def version_du_jeu():
+    import subprocess
+    nombres = lambda v: tuple(int(x) for x in v.split('.'))
+    actuel = json.loads(FICHIER_VERSION.read_text(encoding='utf-8')) if FICHIER_VERSION.exists() else {'version': '0.2.0'}
+    try:
+        base = json.loads(subprocess.run(['git', 'show', 'HEAD:VERSION.json'], cwd=ICI, capture_output=True, text=True, check=True).stdout)
+    except Exception:
+        base = None
+    empreinte = empreinte_sources()
+    if base is None or nombres(actuel['version']) > nombres(base['version']):
+        version = actuel['version']
+    elif base.get('empreinte') == empreinte:
+        version = base['version']
+    else:
+        n = list(nombres(base['version'])); n[-1] += 1; version = '.'.join(map(str, n))
+    contenu = {'version': version, 'titre': 'BITUME', 'moteur': 'FERRO', 'empreinte': empreinte}
+    texte = json.dumps(contenu, indent=2, ensure_ascii=False) + '\n'
+    if not FICHIER_VERSION.exists() or FICHIER_VERSION.read_text(encoding='utf-8') != texte:
+        FICHIER_VERSION.write_text(texte, encoding='utf-8')
+    return version
 # Titre et description en tête du gabarit : ils passent dans le <head> de la page complète.
 ENTETE = re.compile(r'\A(<title>[^<]*</title>\n<meta name="description" content="[^"]*">\n)')
 ICONE_SVG = ("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'>"
@@ -66,7 +100,8 @@ def main():
         raise SystemExit('index.html doit contenir une fois /*STYLE*/ et une fois <!--MODULES-->')
     if gabarit.count('__VERSION_JEU__') != 2:
         raise SystemExit('index.html doit porter la version deux fois (libellé et badge du titre)')
-    gabarit = gabarit.replace('__VERSION_JEU__', VERSION.removeprefix('essai-'))
+    version = version_du_jeu()
+    gabarit = gabarit.replace('__VERSION_JEU__', version)
     if 'googleapis' in gabarit or 'googleapis' in style:
         raise SystemExit('BITUME ne charge aucune police : le style se sert de celles du système')
 
@@ -87,14 +122,14 @@ def main():
     (DIST / 'artefact.html').write_text(fragment, encoding='utf-8')
 
     taille = {
-        'version': VERSION,
+        'version': version,
         'raw': len(octets),
         'gzip': len(gzip.compress(octets, 9, mtime=0)),
         'sha256': hashlib.sha256(octets).hexdigest(),
         'sources': {nom: len(code.encode('utf-8')) for nom, code in {**sources, 'index.html': gabarit, 'style.css': style}.items()},
     }
     (ICI / 'SIZE.json').write_text(json.dumps(taille, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
-    print(f"CONSTRUIT  {DIST / 'bitume.html'}  {taille['raw']} octets, {taille['gzip']} compressés, sha256 {taille['sha256'][:16]}")
+    print(f"CONSTRUIT  {DIST / 'bitume.html'}  version {version}, {taille['raw']} octets, {taille['gzip']} compressés, sha256 {taille['sha256'][:16]}")
 
 
 if __name__ == '__main__':

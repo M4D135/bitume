@@ -134,6 +134,17 @@ contrôle l'empreinte, bascule le lien `current` d'un coup et garde 3 versions. 
 servie a la même empreinte. Aucun timer : le VPS n'a pas accès au dépôt privé. Le retour arrière est en tête du script.
 
 
+## Décisions de David — 16 novembre 2026, soir
+
+- **Champ du cockpit** : « fov moins prononcé », « bras de 10 km ». Défaut 60°, ouverture de vitesse de 5 % ; plus
+  étroit que 16:9 (fenêtre presque carrée, portrait), le jeu garde la diagonale du cadre 16:9 au lieu de tout le champ
+  horizontal. Volant, planche et levier 12 % plus près de l'œil, 15,5° sous l'horizon.
+- **Rétroviseurs** : « les deux rétros bien visibles et bien foutus, pas de central ». En vue cockpit, deux
+  rétroviseurs dédiés (`RETRO` de `src/voiture.js`) à 21° du regard ; chaque glace reçoit l'image réelle de la scène
+  arrière (second rendu FERRO, `majGlaces` de `src/jeu.js`, posé par matrix3d). Réglage « Image des rétroviseurs ».
+- **Version** : « incrémente les versions à chaque maj ». `construire.py` monte le dernier nombre de `VERSION.json`
+  une fois par mise à jour dont les sources changent ; ne pas éditer la version à la main, sauf pour un grand lot.
+
 ## Décision de David — 16 novembre 2026
 
 Aucun plafond de taille du code, du moteur ou des builds. Cette décision remplace les anciens budgets en octets ci-dessus. Le contenu graphique et sonore reste entièrement procédural. Mesurer les tailles et les performances, sans réduire les fonctionnalités pour respecter une limite de fichier.
