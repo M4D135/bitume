@@ -917,6 +917,7 @@
 
   function aller(nom) {
     if (son && nom !== 'demo') son.evenement('clic');
+    if (nom !== 'course' && nom !== 'demo' && nom !== 'pause') secouerManette(0, 0);
     for (const e of ECRANS) $(e).hidden = e !== nom;
     $('hud').hidden = !(nom === 'course' || nom === 'pause' || nom === 'demo');
     $('demo').hidden = nom !== 'demo';
