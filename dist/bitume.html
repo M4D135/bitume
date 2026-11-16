@@ -484,7 +484,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.12">V0.2.12</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.13">V0.2.13</b>
     </div>
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
@@ -62067,7 +62067,11 @@ FERRO.initPhysics().then(function(){
   const signe = x => (x < 0 ? '−' : '+');
   function ecartTexte(e, decimales = 1) { return signe(e) + Math.abs(e).toFixed(decimales).replace('.', ','); }
   const enDemo = () => !!session && session.type === 'demo';
-  const nomCourt = v => v.humain && session && session.course.duo ? 'J' + (v.id + 1) : v.joueur && !enDemo() ? 'Vous' : v.nom.replace(/^.\. /, '');
+  const nomCourt = v => {
+    const co = session && session.course;
+    if (v.humain && co && (co.duo || co.enLigne) && !(v.joueur && !co.duo)) return co.enLigne ? v.nom.slice(0, 10) : 'J' + (v.id + 1);
+    return v.joueur && !enDemo() ? 'Vous' : v.nom.replace(/^.\. /, '');
+  };
 
   // ---------------------------------------------------------------- circuits
   const circuits = [];
@@ -62145,12 +62149,14 @@ FERRO.initPhysics().then(function(){
   const TOURS_DEMO = 3, PILOTE_DEMO = 'N. Aubrac';
   let graineCourse = (Date.now() >>> 7) & 0xffff;
   function lancer(type, i, enl) {
+    // en ligne, une machine qui porte deux pilotes joue en écran partagé, comme une course à deux
+    if (enl && enl.locaux.length === 2) type = 'duo';
     const sc = installer(i), c = sc.c, demo = type === 'demo', auto = demo || type === 'vitrine', duo = type === 'duo';
     // enl : course en ligne (même graine, mêmes réglages des deux côtés ; voir « jeu en ligne »)
     const course = B.course.creer(c, {
       mode: type === 'chrono' ? 'chrono' : 'course', tours: enl ? enl.tours : type === 'vitrine' ? 99 : demo ? TOURS_DEMO : reglages.tours,
       difficulte: enl ? enl.difficulte : auto ? 2 : reglages.difficulte, rivaux: 11, graine: enl ? enl.graine : ++graineCourse, placeJoueur: type === 'vitrine' ? 5 : demo ? 6 : 8,
-      humains: enl ? { local: enl.role === 'hote' ? 0 : 1, noms: enl.noms } : duo ? { local: 0, noms: ['Joueur 1', 'Joueur 2'], duo: true } : null
+      humains: enl ? { noms: enl.humains.map(h => h.nom), locaux: enl.locaux, hote: enl.role === 'hote', enLigne: true } : duo ? { noms: ['Joueur 1', 'Joueur 2'], locaux: [0, 1], hote: true, enLigne: false } : null
     });
     if (auto) course.joueur.ia.hab = 0.965;
     if (demo) course.joueur.nom = PILOTE_DEMO;
@@ -62169,7 +62175,7 @@ FERRO.initPhysics().then(function(){
     // rivaux sur ceux que conseille la piste au départ. La caisse les montre (voiture.js) et la conduite les sent.
     const conseil = B.conduite.pneusConseilles(B.conduite.eauSurPiste(meteoInit)), joue = type === 'course' || type === 'chrono' || duo;
     for (const v of course.voitures) {
-      v.etat.pneus = enl && v.humain ? (B.conduite.PNEUS[enl.pneus[v.id]] ? enl.pneus[v.id] : conseil) : v.joueur && joue && B.conduite.PNEUS[reglages.pneus] ? reglages.pneus : conseil;
+      v.etat.pneus = enl && v.humain ? (B.conduite.PNEUS[enl.pneus && enl.pneus[v.id]] ? enl.pneus[v.id] : conseil) : v.joueur && joue && B.conduite.PNEUS[reglages.pneus] ? reglages.pneus : conseil;
       v.livree.pneus = v.etat.pneus;
     }
     if (joue) for (const h of duo ? [H, H2] : [H]) { h['h-pneus'].textContent = NOMS_PNEUS[course.joueur.etat.pneus]; h['c-pneus'].dataset.pneus = course.joueur.etat.pneus; }
@@ -62184,14 +62190,15 @@ FERRO.initPhysics().then(function(){
       meteo: meteoInit
     };
     if (enl) {
-      S.enLigne = { T0: enl.T0, role: enl.role }; S.enLigneOrigine = true;
+      S.enLigne = { T0: enl.T0, role: enl.role, humains: enl.humains }; S.enLigneOrigine = true;
       course.distant = (v, dt) => appliquerDistant(S, v, dt);
       EL.recus.clear(); EL.corr.clear(); EL.pasEnvoi = 0;
     }
     // Écran partagé (David, 16/11 : « multi en écran splitté local, deux manettes, l'un sur l'autre ou côte à côte ») :
     // la vue du joueur 2 a son propre état de caméra, d'éclair et d'affichage, le reste vient de la séance.
     if (duo) S.vueJ2 = Object.assign(Object.create(S), { camCap: null, tete: null, secousse: 0, eclair: 0, lumiere: 1, sol: null, tele: { poste: null, alea: graine32(31 + i) },
-      suivie: 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null });
+      suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null });
+    S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une, ou deux à l'écran partagé)
     jeu.dataset.partage = duo ? (reglages.partage === 'cote' ? 'cote' : 'haut-bas') : '';
     delete $('hud').dataset.reduit; delete hud2.dataset.reduit;
     remplirPoses(S.cour, course); remplirPoses(S.prec, course);
@@ -62633,8 +62640,8 @@ FERRO.initPhysics().then(function(){
         S.camCap = null; S.tete = null; S.tele.poste = null;
         S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; S.eclair = 0;
       }
-      if (e.id === 0) { pad.choc = 0; pad.passe = 0; S.avertiContresens = false; }
-      if (e.id === 1) { pad2.choc = 0; pad2.passe = 0; }
+      if (e.id === S.course.joueur.id) { pad.choc = 0; pad.passe = 0; S.avertiContresens = false; }
+      if (S.locaux && e.id === S.locaux[1]) { pad2.choc = 0; pad2.passe = 0; }
     }
   }
 
@@ -62642,18 +62649,19 @@ FERRO.initPhysics().then(function(){
     if (B.meteo) B.meteo.actuel = S.meteo;
     const co = S.course;
     const auto = S.type === 'vitrine' || S.type === 'demo' || pilote || pilotageAuto;
-    const cmd = S.type === 'duo' ? (auto ? [B.course.commandesIA(co, co.voitures[0]), B.course.commandesIA(co, co.voitures[1])] : [commandesJoueur(), commandesJoueur2()])
-      : auto ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
+    let cmd;
+    if (S.type === 'duo') { const [a, b] = S.locaux; cmd = []; cmd[a] = auto ? B.course.commandesIA(co, co.voitures[a]) : commandesJoueur(); cmd[b] = auto ? B.course.commandesIA(co, co.voitures[b]) : commandesJoueur2(); }
+    else cmd = auto ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
     const ev = B.course.pas(co, cmd, DT);
     // vibration manette : le pilote la sent passer dans ses mains — le moteur selon les tours, la route, les
     // vibreurs, l'herbe, le patinage, la glisse et les chocs ; la main reste calme si le réglage est à « non »
     if (!pilote && reglages.vibrations === 'oui') {
-      const [faible, fort] = vibrationManette(co.joueur.etat, ev, co.horloge);
+      const [faible, fort] = vibrationManette(co.joueur.etat, ev, co.horloge, pad, co.joueur.id);
       secouerManette(faible, fort);
     } else secouerManette(0, 0);
     // à deux, la manette du joueur 2 vit sa propre voiture
     if (S.type === 'duo' && pad2.manette) {
-      if (!pilote && reglages.vibrations === 'oui') { const [f2, s2] = vibrationManette(co.voitures[1].etat, ev, co.horloge, pad2, 1); secouerManette(f2, s2, pad2); }
+      if (!pilote && reglages.vibrations === 'oui') { const [f2, s2] = vibrationManette(co.voitures[S.locaux[1]].etat, ev, co.horloge, pad2, S.locaux[1]); secouerManette(f2, s2, pad2); }
       else secouerManette(0, 0, pad2);
     }
     for (const v of co.voitures) {
@@ -62663,7 +62671,7 @@ FERRO.initPhysics().then(function(){
       // précédente (0,36 s) est consommé sans reprise — le trajet en cours vise déjà le rapport courant, et
       // tPassage ne repart pas à zéro (sinon la main se téléporte du pommeau à la jante)
       if (v.etat.rapport !== v.rapportVu) {
-        if (v.rapportVu !== undefined && (v.tPassage === undefined || co.horloge - v.tPassage >= .36)) { v.rapportAvant = v.rapportVu; v.tPassage = co.horloge; if (v === co.joueur) pad.passe = .5; else if (v.id === 1 && S.type === 'duo') pad2.passe = .5; }
+        if (v.rapportVu !== undefined && (v.tPassage === undefined || co.horloge - v.tPassage >= .36)) { v.rapportAvant = v.rapportVu; v.tPassage = co.horloge; if (v === co.joueur) pad.passe = .5; else if (S.type === 'duo' && v.id === S.locaux[1]) pad2.passe = .5; }
         v.rapportVu = v.etat.rapport;
       }
     }
@@ -62706,18 +62714,19 @@ FERRO.initPhysics().then(function(){
   function traiter(S, ev) {
     const co = S.course, j = co.joueur, V2 = S.vueJ2;
     if (V2) for (const e of ev) {
-      if (e.type === 'contact' && (e.a === 1 || e.b === 1)) V2.secousse = Math.min(1, V2.secousse + Math.max(0, e.force - 2) * .07);
-      else if (e.id !== 1) continue;
+      const id2 = S.locaux[1];
+      if (e.type === 'contact' && (e.a === id2 || e.b === id2)) V2.secousse = Math.min(1, V2.secousse + Math.max(0, e.force - 2) * .07);
+      else if (e.id !== id2) continue;
       else if (e.type === 'choc') { V2.secousse = Math.min(1, V2.secousse + Math.max(0, e.force - 2) * .07); if (e.force > 18) V2.eclair = Math.min(.9, (e.force - 18) * .07); }
       else if (e.type === 'tonneau' || e.type === 'casse') { V2.secousse = 1; V2.eclair = .7; }
     }
     // en ligne : chacun annonce le temps officiel de sa voiture, l'hôte aussi ceux des rivaux ; un temps officiel reçu
     // remplace celui mesuré ici sur les états reçus (même classement au millième sur les deux machines)
     if (S.enLigne && EL.R) for (const e of ev) {
-      if (e.type === 'tour' && e.id === j.id) EL.R.envoyer({ t: 'tour', id: j.id, tour: e.tour, temps: e.temps });
+      if (e.type === 'tour' && co.voitures[e.id].joueur) EL.R.envoyer({ t: 'tour', id: e.id, tour: e.tour, temps: e.temps });
       else if (e.type === 'arrivee') {
         const v = co.voitures[e.id];
-        if (v === j || (S.enLigne.role === 'hote' && !v.humain)) EL.R.envoyer({ t: 'arrivee', id: v.id, temps: v.tempsFinal, tours: v.tours });
+        if (v.joueur || (S.enLigne.role === 'hote' && (!v.humain || v.reprise))) EL.R.envoyer({ t: 'arrivee', id: v.id, temps: v.tempsFinal, tours: v.tours });
         else if (v.tempsOfficiel != null) v.tempsFinal = v.tempsOfficiel;
       }
     }
@@ -62725,23 +62734,23 @@ FERRO.initPhysics().then(function(){
       switch (e.type) {
         case 'feu': son && son.evenement('feu'); break;
         case 'vert': son && son.evenement('vert'); message('Départ', 'vert', true); break;
-        case 'contact': if (e.a === 0 || e.b === 0) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07); } break;
+        case 'contact': if (e.a === j.id || e.b === j.id) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07); } break;
         case 'tour':
-          if (e.id === 1 && co.duo) finTourJ2(S, e);
-          if (e.id !== 0) break;
+          if (co.duo && e.id === S.locaux[1]) finTourJ2(S, e);
+          if (e.id !== j.id) break;
           son && son.evenement('tour', { meilleur: e.meilleur });
           finTour(S, e);
           break;
         case 'arrivee':
-          if (e.id === 1 && co.duo) { message(co.voitures[1].position === 1 ? 'Victoire' : 'Arrivée · ' + co.voitures[1].position + 'e', 'vert', false, 1); sousMessage('Drapeau à damier · ' + chrono(co.voitures[1].tempsFinal), 1); }
-          if (e.id !== 0) break;
+          if (co.duo && e.id === S.locaux[1]) { const v2 = co.voitures[e.id]; message(v2.position === 1 ? 'Victoire' : 'Arrivée · ' + v2.position + 'e', 'vert', false, 1); sousMessage('Drapeau à damier · ' + chrono(v2.tempsFinal), 1); }
+          if (e.id !== j.id) break;
           son && son.evenement('arrivee');
           S.finA = co.horloge;
           message(e.position === 1 ? 'Victoire' : e.position + (e.position === 1 ? 're' : 'e') + ' place', e.position <= 3 ? 'ambre' : '');
           sousMessage('Drapeau à damier · ' + chrono(j.tempsFinal));
           break;
         default:
-          if (e.id !== 0) break;
+          if (e.id !== j.id) break;
           if (son) son.evenement(e.type, e);
           if (e.type === 'choc') { S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07); if (e.force > 18) S.eclair = Math.min(.9, (e.force - 18) * .07); }
           else if (e.type === 'reception') S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, (e.force || 0) - 2) * .12);
@@ -62781,7 +62790,7 @@ FERRO.initPhysics().then(function(){
   }
   // tours du joueur 2, sur son affichage
   function finTourJ2(S, e) {
-    const co = S.course, v = co.voitures[1];
+    const co = S.course, v = co.voitures[S.locaux[1]];
     sousMessage('Tour ' + e.tour + ' · ' + chrono(e.temps), 1);
     if (co.toursTotal - v.tours === 1) message('Dernier tour', 'ambre', false, 1);
     else if (e.meilleur && v.tours > 1) message('Meilleur tour', 'vert', true, 1);
@@ -62816,99 +62825,138 @@ FERRO.initPhysics().then(function(){
   }
 
   // ---------------------------------------------------------------- jeu en ligne (reseau.js)
-  // Deux pilotes, chacun sur sa machine (David, 16/11 : « précision absolue, pas de lag »). L'hôte crée la partie,
-  // choisit la course et donne l'instant du départ T0 sur l'horloge commune ; les deux simulations partent ensemble et
-  // avancent au même pas. Chacun conduit sa voiture et envoie son état 60 fois par seconde ; l'hôte envoie aussi celui
-  // des rivaux 30 fois par seconde. Une voiture distante est prolongée jusqu'au pas courant et son écart se résorbe en
-  // 0,12 s. Les temps officiels de l'autre arrivent par le canal fiable.
-  const EL = { R: null, role: null, autre: '', recus: new Map(), corr: new Map(), pasEnvoi: 0, pred: {}, vieux: {} };
+  // De deux à quatre pilotes (David, 16/11 : « en ligne jusqu'à quatre ; deux en local contre deux en local ; deux en
+  // local contre un seul ») : chaque machine en porte un ou deux (écran partagé). L'hôte crée la partie, choisit la
+  // course et donne l'instant du départ T0 sur l'horloge commune ; toutes les simulations partent ensemble et avancent
+  // au même pas. Chaque machine conduit ses voitures et envoie leur état à chaque image ; l'hôte envoie aussi celui des
+  // rivaux une image sur deux. Une voiture distante est prolongée jusqu'au pas courant et son écart se résorbe en
+  // 0,12 s. Les temps officiels arrivent par le canal fiable. Une machine qui part laisse ses voitures à l'ordinateur
+  // de l'hôte ; sans hôte, chacun finit la course seul.
+  const EL = { R: null, role: null, recus: new Map(), corr: new Map(), pasEnvoi: 0, pred: {}, vieux: {} };
   const nomPilote = () => (reglages.nom || '').trim().slice(0, 16) || 'Pilote';
+  const joueursIci = () => reglages.joueursLocaux === 2 ? 2 : 1;
+  const propre = t => String(t || '').replace(/[<>&"'`\\]/g, '').trim().slice(0, 16) || 'Pilote';
   function etatEnLigne(t) { texte($('l-etat'), t); }
   const lienActif = () => !!(EL.R && EL.R.etat === 'connecte');
   function quitterEnLigne() {
     const R = EL.R;
-    EL.R = null; EL.role = null; EL.autre = '';
+    EL.R = null; EL.role = null;
     if (R) R.fermer();
     etatEnLigne('');
     aller('titre');
   }
-  // l'écran du salon selon la liaison : choix créer / rejoindre sans partie, sinon le code et l'état
+  // pilotes de la partie, dans l'ordre des machines (voitures humaines 0 à 3) ; « prets » : l'hôte et les machines liées
+  function pilotesSalle(R, prets) {
+    const p = [];
+    for (const m of [...R.membres].sort((a, b) => a.id - b.id)) {
+      if (prets && m.id !== R.id && !R.pretAvec(m.id)) continue;
+      for (let k = 0; k < (m.joueurs === 2 ? 2 : 1); k++) p.push({ nom: propre(m.nom) + (k ? ' 2' : ''), machine: m.id });
+    }
+    return p;
+  }
+  // l'écran du salon : choix créer / rejoindre sans partie, sinon le code, la liste des machines et l'état
   function majSalon() {
     const R = EL.R, ouvert = !!R && R.etat !== 'ferme', actif = lienActif();
-    document.querySelector('.enligne-choix').hidden = ouvert;
-    document.querySelector('.champ-nom').hidden = ouvert;
+    for (const sel of ['.enligne-choix', '.champ-nom', '.champ-joueurs']) document.querySelector(sel).hidden = ouvert;
     $('l-code-affiche').hidden = !(ouvert && EL.role === 'hote' && R.code);
+    const liste = $('l-pilotes');
+    liste.hidden = !ouvert;
+    if (ouvert) {
+      let html = '';
+      for (const m of [...R.membres].sort((a, b) => a.id - b.id)) {
+        const moi = m.id === R.id, p = R.pairs.get(m.id);
+        const lien = moi ? 'vous' : !p || !p.pret ? 'connexion…' : p.relais ? 'par le salon' : 'liaison directe';
+        html += '<li' + (moi ? ' class="moi"' : '') + '><b>' + propre(m.nom) + '</b><span>' + (m.joueurs === 2 ? '2 pilotes, écran partagé' : '1 pilote') + (m.id === 0 ? ' · hôte' : '') + '</span><em>' + lien + '</em></li>';
+      }
+      if (liste._html !== html) { liste._html = html; liste.innerHTML = html; }
+    }
+    const n = ouvert ? pilotesSalle(R).length : 0;
     $('l-choisir').hidden = !(actif && EL.role === 'hote');
-    if (actif) etatEnLigne('Connecté à ' + EL.autre + (R.relais ? ' (par le salon)' : ' (liaison directe)') + (EL.role === 'hote' ? '. Choisissez la course.' : '. L’hôte choisit la course…'));
+    $('l-choisir').disabled = n > 4;
+    if (ouvert && !actif) etatEnLigne(EL.role === 'hote' ? 'Partie créée. Donnez ce code aux autres pilotes : quatre pilotes au plus.' : 'Connexion aux autres pilotes…');
+    else if (actif) etatEnLigne(n > 4 ? 'Plus de quatre pilotes : une machine doit passer à un seul pilote.'
+      : EL.role === 'hote' ? n + ' pilotes. Choisissez la course quand tout le monde est là.' : n + ' pilotes. L’hôte choisit la course…');
   }
   function nouvelleLiaison() {
     if (EL.R) EL.R.fermer();
-    const R = EL.R = B.reseau.creer({ url: B.reseau.adresseSalon(), nom: nomPilote() });
-    EL.role = null; EL.autre = '';
+    const R = EL.R = B.reseau.creer({ url: B.reseau.adresseSalon(), nom: nomPilote(), joueurs: joueursIci() });
+    EL.role = null;
     $('l-choisir').hidden = true; $('l-code-affiche').hidden = true;
     R.on('salon', m => {
       if (R !== EL.R) return;
       EL.role = m.role;
-      if (m.role === 'hote') { texte($('l-code-affiche'), m.code); etatEnLigne('Partie créée. Donnez ce code à l’autre pilote.'); }
-      else { EL.autre = m.autre || 'Hôte'; etatEnLigne('Connexion à ' + EL.autre + '…'); }
+      if (m.role === 'hote') texte($('l-code-affiche'), m.code);
       majSalon();
-    }).on('arrivee', m => { if (R === EL.R) { EL.autre = m.nom || 'Invité'; etatEnLigne(EL.autre + ' arrive. Liaison en cours…'); } })
-      .on('pret', x => {
-        if (R !== EL.R) return;
-        majSalon();
-      })
-      .on('message', m => { if (R === EL.R) surMessageEnLigne(m); })
+    }).on('salle', () => { if (R === EL.R) majSalon(); })
+      .on('pair', () => { if (R === EL.R) majSalon(); })
       .on('relais', () => { if (R !== EL.R) return; majSalon(); if (session && session.enLigne && ecran === 'course') sousMessage('Liaison directe perdue : la course passe par le salon'); })
+      .on('parti', id => { if (R === EL.R) surDepart(id); })
+      .on('message', (m, de) => { if (R === EL.R) surMessageEnLigne(m, de); })
       .on('etat', p => { if (R === EL.R) for (const e of p.voitures) { const r = EL.recus.get(e.id); if (!r || p.t >= r.t) EL.recus.set(e.id, { t: p.t, etat: e }); } })
       .on('erreur', t => { if (R === EL.R) etatEnLigne(t); })
       .on('ferme', raison => { if (R === EL.R) surFermeture(raison); });
     return R;
   }
-  function surMessageEnLigne(m) {
+  function lancerEnLigne(cfg) {
+    reglages.circuit = cfg.i;
+    $('chargement').classList.remove('fini');
+    setTimeout(() => { lancer('course', cfg.i, cfg); $('chargement').classList.add('fini'); aller('course'); }, 30);
+  }
+  function surMessageEnLigne(m, de) {
     const S = session;
-    if (m.t === 'depart' && EL.role === 'invite') {
-      const cfg = Object.assign({}, m.cfg, { role: 'invite' });
-      reglages.circuit = cfg.i;
-      $('chargement').classList.remove('fini');
-      setTimeout(() => { lancer('course', cfg.i, cfg); $('chargement').classList.add('fini'); aller('course'); }, 30);
+    if (m.t === 'depart' && de === 0 && EL.role === 'invite' && m.cfg) {
+      const humains = (Array.isArray(m.cfg.humains) ? m.cfg.humains : []).slice(0, 4).map(h => ({ nom: propre(h.nom), machine: h.machine | 0 }));
+      const locaux = humains.map((h, k) => h.machine === EL.R.id ? k : -1).filter(k => k >= 0);
+      if (!locaux.length) { etatEnLigne('La course est partie sans cette machine : attendez la suivante.'); return; }
+      lancerEnLigne(Object.assign({}, m.cfg, { humains, locaux, role: 'invite' }));
     } else if (m.t === 'arrivee' && S && S.enLigne) {
       const v = S.course.voitures[m.id];
       if (v && v.distant && Number.isFinite(m.temps)) { v.tempsOfficiel = m.temps; if (v.fini) v.tempsFinal = m.temps; }   // temps officiel
-    } else if (m.t === 'salle' && EL.role === 'invite' && ecran !== 'enligne' && (!S || !S.enLigne || S.course.termine)) aller('enligne');
+    } else if (m.t === 'vers-salon' && de === 0 && EL.role === 'invite' && ecran !== 'enligne' && (!S || !S.enLigne || S.course.termine)) aller('enligne');
+  }
+  // une machine (pas l'hôte) quitte la partie : l'ordinateur de l'hôte reprend ses voitures et envoie leur état
+  function surDepart(id) {
+    majSalon();
+    const S = session;
+    if (!S || !S.enLigne || S.course.termine) return;
+    const leurs = S.enLigne.humains.map((h, k) => h.machine === id ? k : -1).filter(k => k >= 0);
+    if (!leurs.length) return;
+    if (EL.role === 'hote') for (const k of leurs) { const v = S.course.voitures[k]; v.distant = false; v.joueur = false; v.reprise = true; }
+    message('Un pilote est parti', 'ambre'); sousMessage('Sa voiture passe à l’ordinateur');
   }
   function surFermeture(raison) {
     const S = session;
-    etatEnLigne(raison === 'parti' ? 'L’autre pilote a quitté la partie.' : raison === 'local' ? '' : 'La liaison est coupée.');
+    etatEnLigne(raison === 'parti' ? 'L’hôte a quitté la partie.' : raison === 'local' ? '' : 'La liaison est coupée.');
     if (S && S.enLigne && !S.course.termine) {
       // la course continue : ce qui venait du réseau passe à l'IA de cette machine
       for (const v of S.course.voitures) if (v.distant) { v.distant = false; v.joueur = false; }
       S.enLigne = null; S.enLigneOrigine = false;   // la course finit comme une course seule
-      if (raison !== 'local') { message('Liaison perdue', 'ambre'); sousMessage('L’autre pilote est remplacé par l’ordinateur'); }
+      if (raison !== 'local') { message('Liaison perdue', 'ambre'); sousMessage('Les autres pilotes sont remplacés par l’ordinateur'); }
       if (ecran === 'resultats' && S.course.drapeau !== null) finirClassement(S);
     }
     EL.role = raison === 'local' ? null : EL.role;
     majSalon();
     if (S && ecran === 'resultats') montrerResultats(S, true);
   }
-  // hôte : départ de la course en ligne, T0 dans 4 s sur l'horloge commune
+  // hôte : départ de la course en ligne, T0 dans 4 s sur l'horloge commune ; les machines déjà liées y prennent part
   function departEnLigne() {
     const R = EL.R;
-    if (!R || R.etat !== 'connecte' || EL.role !== 'hote') { etatEnLigne('Pas d’autre pilote connecté.'); aller('enligne'); return; }
+    if (!R || !lienActif() || EL.role !== 'hote') { etatEnLigne('Pas d’autre pilote connecté.'); aller('enligne'); return; }
+    const humains = pilotesSalle(R, true);
+    if (humains.length > 4) { etatEnLigne('Quatre pilotes au plus.'); aller('enligne'); return; }
     const meteo = reglages.meteo || 'aleatoire', graine = ++graineCourse;
     const conseil = B.conduite.pneusConseilles(B.conduite.eauSurPiste(B.meteo.pour(meteo) || B.meteo.initial(graine)));
-    const cfg = { graine, i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, meteo, T0: R.horloge() + 4000,
-      noms: [nomPilote(), EL.autre || 'Invité'], pneus: [B.conduite.PNEUS[reglages.pneus] ? reglages.pneus : conseil, conseil] };
+    const cfg = { graine, i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, meteo, T0: R.horloge() + 4000, humains,
+      pneus: humains.map(h => h.machine === 0 && B.conduite.PNEUS[reglages.pneus] ? reglages.pneus : conseil) };
     R.envoyer({ t: 'depart', cfg });
-    $('chargement').classList.remove('fini');
-    setTimeout(() => { lancer('course', cfg.i, Object.assign({}, cfg, { role: 'hote' })); $('chargement').classList.add('fini'); aller('course'); }, 30);
+    lancerEnLigne(Object.assign({}, cfg, { locaux: humains.map((h, k) => h.machine === 0 ? k : -1).filter(k => k >= 0), role: 'hote' }));
   }
-  // état de nos voitures, une fois par image : la nôtre toujours, et chez l'hôte les rivaux une image sur deux
+  // état de nos voitures, une fois par image : les nôtres toujours, et chez l'hôte les rivaux une image sur deux
   function envoyerEtats(S) {
     const R = EL.R, co = S.course;
     if (!R || R.etat !== 'connecte') return;
-    const k = ++EL.pasEnvoi;
-    const liste = [co.joueur];
-    if (S.enLigne.role === 'hote' && k % 2 === 0) for (const v of co.voitures) if (!v.humain) liste.push(v);
+    const k = ++EL.pasEnvoi, liste = S.locaux.map(id => co.voitures[id]);
+    if (S.enLigne.role === 'hote' && k % 2 === 0) for (const v of co.voitures) if (!v.humain || v.reprise) liste.push(v);
     R.envoyerEtat(B.reseau.emballer(S.enLigne.T0 + co.horloge * 1000, liste));
   }
   // Voiture distante : dernier état reçu, prolongé jusqu'à l'instant de ce pas. À l'arrivée d'un état, ce qu'on aurait
@@ -62931,6 +62979,7 @@ FERRO.initPhysics().then(function(){
     e.s = ramener(pred.s + corr.s, L); e.d = pred.d + corr.d; e.psi = pred.psi + corr.psi;
     for (const k of ['v', 'beta', 'omega', 'y', 'tangage', 'roulis', 'regime', 'volant', 'rapport', 'gaz', 'frein', 'braquage']) e[k] = pred[k];
   }
+  for (const r of document.querySelectorAll('input[name="joueursIci"]')) r.checked = String(joueursIci()) === r.value;
   $('l-nom').value = reglages.nom || '';
   $('l-nom').addEventListener('input', e => { reglages.nom = e.target.value.slice(0, 16); sauverReglages(); });
   $('l-creer').addEventListener('click', async () => {
@@ -63216,7 +63265,7 @@ FERRO.initPhysics().then(function(){
     // Écran partagé : la vue du joueur 2 d'abord, copiée aussitôt dans sa toile 2D, puis celle du joueur 1, qui reste dans
     // la toile WebGL. Le moteur lit la taille affichée de sa toile à chaque image : il rend chaque vue à la moitié.
     if (S.type === 'duo' && S.vueJ2) {
-      rendreVue(S.vueJ2, co.voitures[1], reglages.vue2, dtImage, meteo);
+      rendreVue(S.vueJ2, co.voitures[S.locaux[1]], reglages.vue2, dtImage, meteo);
       const t2 = $('scene2'), ctx2 = t2._ctx || (t2._ctx = t2.getContext('2d'));
       if (t2.width !== canvas.width || t2.height !== canvas.height) { t2.width = canvas.width; t2.height = canvas.height; }
       ctx2.drawImage(canvas, 0, 0);
@@ -63613,6 +63662,7 @@ FERRO.initPhysics().then(function(){
     if (t.name === 'tours' || t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
     if (t.name === 'meteo') { reglages.meteo = t.value; sauverReglages(); preselectionnerPneus(); }
     if (t.name === 'pneus' && B.conduite.PNEUS[t.value]) { reglages.pneus = t.value; sauverReglages(); }
+    if (t.name === 'joueursIci') { reglages.joueursLocaux = t.value === '2' ? 2 : 1; sauverReglages(); }
     if (t.name === 'partage') { reglages.partage = t.value === 'cote' ? 'cote' : 'haut-bas'; sauverReglages(); }
     if (/^r?cmd[01]$/.test(t.name) && NOMS_COMMANDES[t.value]) {
       const n = +t.name.slice(-1);
@@ -63743,7 +63793,7 @@ FERRO.initPhysics().then(function(){
   $('b-menu').addEventListener('click', () => {
     if (!enLigneApres()) aller('titre');
     else if (!session.course.termine) quitterEnLigne();
-    else { if (EL.role === 'hote') EL.R.envoyer({ t: 'salle' }); aller('enligne'); }
+    else { if (EL.role === 'hote') EL.R.envoyer({ t: 'vers-salon' }); aller('enligne'); }
   });
   $('b-rejouer').addEventListener('click', () => {
     if (!enLigneApres()) demarrerSeance(session ? session.type : 'course');
@@ -63787,8 +63837,8 @@ FERRO.initPhysics().then(function(){
     } else {
       const ordre = co.classement.map(id => co.voitures[id]), tete = ordre[0];
       const meilleurAbsolu = Math.min(...ordre.map(v => v.meilleur ?? Infinity));
-      const p1 = co.voitures[0].position, p2 = co.duo ? co.voitures[1].position : 0;
-      $('res-titre').textContent = co.duo ? (p1 < p2 ? 'Joueur 1' : 'Joueur 2') + ' devant · ' + Math.min(p1, p2) + 'e et ' + Math.max(p1, p2) + 'e'
+      const [h1, h2] = (S.locaux || [0]).map(id => co.voitures[id]);
+      $('res-titre').textContent = co.duo && h2 ? (h1.position < h2.position ? h1.nom : h2.nom) + ' devant · ' + Math.min(h1.position, h2.position) + 'e et ' + Math.max(h1.position, h2.position) + 'e'
         : j.abandon ? 'Abandon · voiture détruite' : j.position === 1 ? 'Victoire' : 'Arrivée · ' + j.position + 'e';
       $('res-sous').textContent = nomCircuit + ' · ' + co.toursTotal + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][co.difficulte]
         + (!S.enLigneOrigine || !lienActif() ? '' : !co.termine ? ' · course en cours' : EL.role === 'hote' ? '' : ' · l’hôte choisit la suite');
@@ -63855,12 +63905,12 @@ FERRO.initPhysics().then(function(){
     if (tourne) majPalier(S, dtReel);
     if (S.type !== 'vitrine') {
       majHud(S);
-      if (S.type === 'duo' && S.vueJ2) majHud(S.vueJ2, HUD2, S.course.voitures[1]);
+      if (S.type === 'duo' && S.vueJ2) majHud(S.vueJ2, HUD2, S.course.voitures[S.locaux[1]]);
       const j = S.course.joueur;
       // en ligne, le classement s'affiche 8 s après sa propre arrivée et se complète en direct : la course continue
       // derrière (l'autre pilote est peut-être encore en piste), jusqu'à sa fin commune
       if ((S.type === 'course' || S.type === 'chrono' || S.type === 'duo') && !S.resultats &&
-          (S.course.termine || (j.abandon && S.course.horloge - j.tAbandon >= 3) || (S.enLigneOrigine && j.fini && S.course.temps - j.tempsFinal >= 8))) {
+          (S.course.termine || (j.abandon && S.course.horloge - j.tAbandon >= 3) || (S.enLigneOrigine && S.locaux.every(id => S.course.voitures[id].fini) && S.course.temps - Math.max(...S.locaux.map(id => S.course.voitures[id].tempsFinal)) >= 8))) {
         if (!S.enLigneOrigine) S.course.termine = true;
         montrerResultats(S);
       }
