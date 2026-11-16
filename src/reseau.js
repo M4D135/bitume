@@ -19,7 +19,9 @@
   //   const R = B.reseau.creer({ url, nom });  R.on('pret' | 'message' | 'etat' | 'ferme' | 'salon' | 'erreur', f)
   //   R.creerSalon() ; R.rejoindreSalon(code) ; R.envoyer(objet) ; R.envoyerEtat(tampon) ; R.horloge() (ms, hôte)
 
-  const STUN = [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }];
+  // STUN publics de deux fournisseurs (si l'un est bloqué, l'autre répond) : chaque machine apprend son adresse vue
+  // d'Internet et les deux percent leur routeur l'une vers l'autre, sans port ouvert à la main
+  const STUN = [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }, { urls: 'stun:stun.cloudflare.com:3478' }];
   const CHAMPS = ['s', 'd', 'v', 'psi', 'beta', 'omega', 'y', 'tangage', 'roulis', 'regime', 'volant', 'rapport', 'gaz', 'frein', 'braquage'];
   const TAILLE_VOITURE = 1 + 4 * CHAMPS.length;
 
@@ -70,7 +72,7 @@
     const ecoute = {}, R = { etat: 'ferme', role: null, code: null, autre: null, rtt: 0, decalage: 0, relais: false, nom: options.nom || '' };
     const emettre = (nom, x) => { for (const f of ecoute[nom] || []) f(x); };
     R.on = (nom, f) => { (ecoute[nom] || (ecoute[nom] = [])).push(f); return R; };
-    let ws = null, pc = null, canal = null, fiable = null, minuteurRelais = null, minuteurPing = null;
+    let ws = null, pc = null, canal = null, fiable = null, minuteurRelais = null, minuteurPing = null, minuteurCoupure = null;
     const echantillons = [];
     const maintenant = () => performance.now();
     R.horloge = () => maintenant() + (R.role === 'invite' ? R.decalage : 0);
@@ -103,7 +105,16 @@
       pc = new RTCPeerConnection({ iceServers: options.iceServers || STUN });
       pc.onicecandidate = ev => { if (ev.candidate) versSalon({ t: 'signal', ice: ev.candidate }); };
       pc.ondatachannel = ev => brancher(ev.channel);
-      pc.onconnectionstatechange = () => { if (pc && (pc.connectionState === 'failed' || pc.connectionState === 'closed') && !R.relais && R.etat === 'connecte') terminer('liaison'); };
+      const p = pc;
+      pc.onconnectionstatechange = () => {
+        if (p !== pc) return;
+        const etat = pc.connectionState;
+        if (etat === 'failed' || etat === 'closed') perdreDirect();
+        else if (etat === 'disconnected') {   // souvent passager (changement de réseau) : 2,5 s pour revenir
+          clearTimeout(minuteurCoupure);
+          minuteurCoupure = setTimeout(() => { if (p === pc && pc.connectionState !== 'connected') perdreDirect(); }, 2500);
+        }
+      };
     }
     async function lier() {
       attendreLiaison();
@@ -130,7 +141,7 @@
       if (ch.label === 'etat') { canal = ch; ch.onmessage = ev => recevoirEtat(ev.data); }
       else { fiable = ch; ch.onmessage = ev => { try { recevoirFiable(JSON.parse(ev.data)); } catch (e) { /* message illisible */ } }; }
       ch.onopen = () => { if (canal && fiable && canal.readyState === 'open' && fiable.readyState === 'open') connecte(false); };
-      ch.onclose = () => { if (R.etat === 'connecte' && !R.relais) terminer('liaison'); };
+      ch.onclose = () => perdreDirect();
     }
     // sans liaison directe au bout de 7 s, la partie passe par le salon
     function attendreLiaison() {
@@ -149,8 +160,18 @@
     // l'un passe par le salon : l'autre le suit, même s'il croyait la liaison directe établie
     function passerRelais(prevenir) {
       R.relais = true;
+      clearTimeout(minuteurCoupure);
       if (prevenir) versSalon({ t: 'relais', m: { t: 'passer-relais' } });
-      if (pc) { try { pc.close(); } catch (e) { /* déjà fermée */ } pc = null; }
+      const p = pc; pc = null;
+      if (p) { try { p.close(); } catch (e) { /* déjà fermée */ } }
+      if (R.etat === 'connecte') emettre('relais');
+    }
+    // Liaison directe impossible (pare-feu, routeur d'opérateur mobile) ou perdue en pleine course : la partie passe
+    // par le salon, sur la même connexion que la page (port 443), sans attendre ni s'arrêter.
+    function perdreDirect() {
+      if (R.relais || R.etat === 'ferme') return;
+      if (!ws || ws.readyState !== 1) { if (R.etat === 'connecte') terminer('liaison'); return; }
+      if (R.etat === 'connecte') passerRelais(true); else connecte(true);
     }
     function recevoirFiable(m) {
       if (!m || typeof m !== 'object') return;
@@ -181,7 +202,7 @@
     function terminer(raison) {
       if (R.etat === 'ferme') return;
       R.etat = 'ferme';
-      clearTimeout(minuteurRelais); clearTimeout(minuteurPing);
+      clearTimeout(minuteurRelais); clearTimeout(minuteurPing); clearTimeout(minuteurCoupure);
       try { if (pc) pc.close(); } catch (e) { /* déjà fermée */ }
       try { if (ws) ws.close(); } catch (e) { /* déjà fermé */ }
       pc = canal = fiable = ws = null;
@@ -191,12 +212,13 @@
     return R;
   }
 
-  // adresse du salon : ?salon=ws://… pour les essais, sinon le même hôte que la page
+  // Adresse du salon : ?salon=ws://… pour les essais, le même hôte en local (localhost), sinon le salon de
+  // bitume.estrasse.fr, d'où que vienne la page (fichier ouvert sur le disque, copie hébergée ailleurs).
   function adresseSalon() {
     const q = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('salon') : null;
     if (q) return q;
-    if (typeof location === 'undefined' || !/^https?:$/.test(location.protocol)) return 'wss://bitume.estrasse.fr/salon';
-    return (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/salon';
+    if (typeof location !== 'undefined' && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) return 'ws://' + location.host + '/salon';
+    return 'wss://bitume.estrasse.fr/salon';
   }
 
   B.reseau = { creer, emballer, deballer, prolonger, adresseSalon, CHAMPS };

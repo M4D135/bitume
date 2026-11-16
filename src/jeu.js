@@ -689,6 +689,7 @@
         majSalon();
       })
       .on('message', m => { if (R === EL.R) surMessageEnLigne(m); })
+      .on('relais', () => { if (R !== EL.R) return; majSalon(); if (session && session.enLigne && ecran === 'course') sousMessage('Liaison directe perdue : la course passe par le salon'); })
       .on('etat', p => { if (R === EL.R) for (const e of p.voitures) { const r = EL.recus.get(e.id); if (!r || p.t >= r.t) EL.recus.set(e.id, { t: p.t, etat: e }); } })
       .on('erreur', t => { if (R === EL.R) etatEnLigne(t); })
       .on('ferme', raison => { if (R === EL.R) surFermeture(raison); });
