@@ -547,7 +547,7 @@
     // Rétroviseur central : flottant en haut, au centre de l'écran (verrouillé à la vue).
     {
       const GLc = GL * 1.8, GHc = GH * 1.4;
-      const vc = [0, .82, .55];
+      const vc = [0, .15, .55];
       mettre('box', [vc[0], vc[1] + GHc * .25, vc[2]], [.006, GHc * .5 / K, GLc / K], LAQUE, ciel.map(vv => vv * .85));
       mettre('box', [vc[0], vc[1] - GHc * .04, vc[2]], [.006, GHc * .1 / K, GLc / K], LAQUE, brume.map(vv => vv * .7));
       mettre('box', [vc[0], vc[1] - GHc * .295, vc[2]], [.006, GHc * .41 / K, GLc / K], LAQUE, [.12, .125, .13]);
