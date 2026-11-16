@@ -1,0 +1,50 @@
+{
+  "game": "bitume",
+  "repository": "/Users/david/Documents/Codex/2026-11-15/no/work/ferro-reference-bitume",
+  "root": "/Users/david/Documents/Codex/2026-11-15/no/work/ferro-reference-bitume",
+  "baseCommit": "ab43cbee3cac494cbfd53f2071987d939dd99f5f",
+  "engineCommit": "781230ad4032ffa41ad5f477a7a3ce8338669a95",
+  "version": "0.3.1",
+  "changedModuleIds": [
+    "render",
+    "webgpu",
+    "backends",
+    "host"
+  ],
+  "moduleCount": 32,
+  "buildScript": "construire.py",
+  "html": "dist/bitume.html",
+  "testGlob": "verifications/*.test.mjs",
+  "previousPreparedCommit": "30192e917b398c9e059e567dc449f84f386c7355",
+  "changedModuleIdsSincePreparation": [
+    "render",
+    "webgpu"
+  ],
+  "date": "2026-11-16T08:26:38.270665+00:00",
+  "state": "prepared-local",
+  "moduleHashesMatchReference": true,
+  "nodeVersion": "v24.18.0",
+  "testCommand": "node --test --test-concurrency=2 verifications/moteur-emprise.test.mjs verifications/formes-libres.test.mjs",
+  "node": {
+    "tests": 2,
+    "pass": 2,
+    "fail": 0,
+    "todo": 0
+  },
+  "testScope": "Targeted renderer/build/host integration checks after the two renderer modules changed. Previous full game suite is recorded in docs/ferro-031/.",
+  "canonicalNodeQualification": {
+    "source": "M4D135/FERRO/docs/performance-031/validation.json",
+    "engineCommit": "781230ad4032ffa41ad5f477a7a3ce8338669a95",
+    "tests": 97,
+    "pass": 96,
+    "fail": 0,
+    "todo": 1,
+    "runBy": "EMPRISE pilot thread"
+  },
+  "adaptersChanged": false,
+  "gpuTestsRun": false,
+  "pushed": false,
+  "deployed": false,
+  "buildBytes": 607337,
+  "buildSha256": "b7bcbd3f0a19ed7b9b1afefc82adbf5451b664f5857330279f30cb7c5a999a6e"
+}

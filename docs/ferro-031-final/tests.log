@@ -1,0 +1,13 @@
+formes libres : 30919 triangles émis dans l'ordre du registre
+✔ verifications/formes-libres.test.mjs (171.673083ms)
+moteur EMPRISE : triangles exacts aux 3 LOD, formes libres, restauration, météo et SSR optionnel [{"detail":"fin","shapes":7,"references":2352,"vertices":618,"restored":7},{"detail":true,"shapes":7,"references":1056,"vertices":360,"restored":7},{"detail":2,"shapes":6,"references":672,"vertices":210,"restored":6}]
+moteur EMPRISE : updateShape WebGL2, indices et sommets restaurés après perte du contexte
+✔ verifications/moteur-emprise.test.mjs (58.0005ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 175.416542
