@@ -151,7 +151,8 @@
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
       real: demo ? B.realisateur.creer(graineCourse) : null, planVu: null, suivie: 0, enchaine: false,
-      fx: B.traces.creer(course.voitures.length, graineCourse)
+      fx: B.traces.creer(course.voitures.length, graineCourse),
+      meteo: B.meteo.initial(graineCourse)
     };
     remplirPoses(S.cour, course); remplirPoses(S.prec, course);
     session = S;

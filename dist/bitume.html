@@ -60285,8 +60285,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     for (const a of [-.184, .184]) for (const b of [-.048, .048]) mettre('cylinder', sur(a, b, .0095), [.008, .004, .008], METAL_MAT, ARGENT, rond);   // vis des coins
     posee('casquette', PLANCHE, cadre, MAT, NOIR);
     const passe = regime > REGIME_LAMPE && etat.rapport > 0 && etat.rapport < 6;
-    mettre('cylinder', sur(0, .068, .044), [.032, .008, .032], MAT, NOIR, rond);
-    mettre('sphere', sur(0, .076, .046), [.024, .024, .024], 5, passe ? [1, .13, .04] : [.20, .03, .02], null, passe ? { emissive: 3.2 } : undefined);
+    mettre('cylinder', sur(0, .068, .050), [.032, .008, .032], MAT, NOIR, rond);
+    mettre('sphere', sur(0, .076, .052), [.024, .024, .024], 5, passe ? [1, .13, .04] : [.20, .03, .02], null, passe ? { emissive: 3.2 } : undefined);
     mettre('box', sur(-.125, .006, .0085), [.004, .054, .036], LAQUE, [.012, .012, .014], plat);
     mettre('box', sur(.142, .004, .0085), [.004, .042, .080], LAQUE, [.012, .012, .014], plat);
     // Compte-tours : lunette, cadran noir, graduations ivoire tous les 1 000 tr/min (longues aux milliers pairs),
@@ -60314,7 +60314,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const ralenti = B.conduite.PARAMS.ralenti, alerte = regime > 12600 || regime < ralenti + 300;
     const voyant = (a, allume, couleur, force) => {
       mettre('cylinder', sur(a, -.043, .0105), [.0125, .005, .0125], METAL_MAT, [.32, .32, .34], rond);
-      mettre('sphere', sur(a, -.043, .014), [.009, .009, .009], 5, allume ? couleur : [.2, .03, .02], null, allume ? { emissive: force } : undefined);
+      mettre('sphere', sur(a, -.043, .016), [.009, .009, .009], 5, allume ? couleur : [.2, .03, .02], null, allume ? { emissive: force } : undefined);
     };
     voyant(.032, true, [.14, .9, .3], 1.1);
     voyant(.050, alerte, [1, .14, .05], 1.8);
@@ -60848,12 +60848,13 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const m = S.meteo || (S.meteo = { t: 0, phase: 'clair', tp: 0, pluie: 0, nuage: .12,
       eclair: 0, prochainEclair: 0, mouille: 0, ventX: 1.8, ventZ: .9 });
     if (!(dt > 0) || !Number.isFinite(dt)) return m;
+    const fixe = m.fixe === true;
     let reste = Math.min(.1, dt);
     if (!Number.isFinite(m.mouille)) m.mouille = 0;
     // Découper aux frontières conserve le reliquat et la même évolution à 30, 60 et 120 Hz.
     while (reste > 1e-12) {
       const p = Math.max(0, PHASES.indexOf(m.phase));
-      const pas = Math.min(reste, Math.max(0, DUREES[p] - m.tp));
+      const pas = fixe ? reste : Math.min(reste, Math.max(0, DUREES[p] - m.tp));
       const k = -Math.expm1(-pas / 2.5), anciennePluie = m.pluie;
       m.pluie += (PLUIE[p] - m.pluie) * k;
       m.nuage += (NUAGES[p] - m.nuage) * k;
@@ -60867,7 +60868,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
         m.eclair = Math.max(0, 1 - (m.t - frappe) * 6);
         m.prochainEclair = frappe + 2.8 + hasard(Math.round(frappe * 1000)) * 4.2;
       }
-      if (m.tp + 1e-10 >= DUREES[p]) {
+      if (!fixe && m.tp + 1e-10 >= DUREES[p]) {
         m.tp = 0; m.phase = PHASES[(p + 1) % PHASES.length];
         if (m.phase === 'orage') m.prochainEclair = m.t + 1.2;
       }
@@ -60971,7 +60972,17 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     }
     return { dessiner, stats };
   }
-  B.meteo = { avancer, ambiance, creerPluie };
+  function initial(graine) {
+    const r = hasard((graine >>> 0) + 1);
+    const phase = r < 1 / 3 ? 'clair' : r < 2 / 3 ? 'pluie' : 'clair';
+    const fixe = r >= 2 / 3 ? false : true;
+    // variable (ni soleil ni pluie fixe) : cycle complet, départ clair
+    const phaseFinale = fixe ? phase : 'clair';
+    const idx = Math.max(0, PHASES.indexOf(phaseFinale));
+    return { t: 0, phase: phaseFinale, tp: 0, pluie: PLUIE[idx], nuage: NUAGES[idx],
+      eclair: 0, prochainEclair: 0, mouille: 0, ventX: 1.8, ventZ: .9, fixe };
+  }
+  B.meteo = { avancer, ambiance, creerPluie, initial };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -61130,7 +61141,8 @@ FERRO.initPhysics().then(function(){
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
       real: demo ? B.realisateur.creer(graineCourse) : null, planVu: null, suivie: 0, enchaine: false,
-      fx: B.traces.creer(course.voitures.length, graineCourse)
+      fx: B.traces.creer(course.voitures.length, graineCourse),
+      meteo: B.meteo.initial(graineCourse)
     };
     remplirPoses(S.cour, course); remplirPoses(S.prec, course);
     session = S;

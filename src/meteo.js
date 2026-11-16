@@ -15,12 +15,13 @@
     const m = S.meteo || (S.meteo = { t: 0, phase: 'clair', tp: 0, pluie: 0, nuage: .12,
       eclair: 0, prochainEclair: 0, mouille: 0, ventX: 1.8, ventZ: .9 });
     if (!(dt > 0) || !Number.isFinite(dt)) return m;
+    const fixe = m.fixe === true;
     let reste = Math.min(.1, dt);
     if (!Number.isFinite(m.mouille)) m.mouille = 0;
     // Découper aux frontières conserve le reliquat et la même évolution à 30, 60 et 120 Hz.
     while (reste > 1e-12) {
       const p = Math.max(0, PHASES.indexOf(m.phase));
-      const pas = Math.min(reste, Math.max(0, DUREES[p] - m.tp));
+      const pas = fixe ? reste : Math.min(reste, Math.max(0, DUREES[p] - m.tp));
       const k = -Math.expm1(-pas / 2.5), anciennePluie = m.pluie;
       m.pluie += (PLUIE[p] - m.pluie) * k;
       m.nuage += (NUAGES[p] - m.nuage) * k;
@@ -34,7 +35,7 @@
         m.eclair = Math.max(0, 1 - (m.t - frappe) * 6);
         m.prochainEclair = frappe + 2.8 + hasard(Math.round(frappe * 1000)) * 4.2;
       }
-      if (m.tp + 1e-10 >= DUREES[p]) {
+      if (!fixe && m.tp + 1e-10 >= DUREES[p]) {
         m.tp = 0; m.phase = PHASES[(p + 1) % PHASES.length];
         if (m.phase === 'orage') m.prochainEclair = m.t + 1.2;
       }
@@ -138,5 +139,15 @@
     }
     return { dessiner, stats };
   }
-  B.meteo = { avancer, ambiance, creerPluie };
+  function initial(graine) {
+    const r = hasard((graine >>> 0) + 1);
+    const phase = r < 1 / 3 ? 'clair' : r < 2 / 3 ? 'pluie' : 'clair';
+    const fixe = r >= 2 / 3 ? false : true;
+    // variable (ni soleil ni pluie fixe) : cycle complet, départ clair
+    const phaseFinale = fixe ? phase : 'clair';
+    const idx = Math.max(0, PHASES.indexOf(phaseFinale));
+    return { t: 0, phase: phaseFinale, tp: 0, pluie: PLUIE[idx], nuage: NUAGES[idx],
+      eclair: 0, prochainEclair: 0, mouille: 0, ventX: 1.8, ventZ: .9, fixe };
+  }
+  B.meteo = { avancer, ambiance, creerPluie, initial };
 })(globalThis.BITUME = globalThis.BITUME || {});
