@@ -498,7 +498,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.16">V0.2.16</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.17">V0.2.17</b>
     </div>
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
@@ -63544,18 +63544,17 @@ FERRO.initPhysics().then(function(){
     const eclair = S.eclair || 0;
     // Tunnel : l'œil s'adapte. En entrant, l'intérieur paraît d'abord sombre puis s'éclaircit (0,8 s) ; en sortant, le
     // jour éblouit un instant (0,3 s). Les huit lampes les plus proches de la caméra éclairent les murs et la chaussée.
-    // Progression progressive des lumières du tunnel : facteur avancement de 0 (début) à 1 (milieu/fin).
+    // Les lumières sont ALLUMÉES EN PERMANENCE (puissance 12, portée 18) ; l'adaptation S.lumiere gère le passage lumière/caverne.
     const sousVoute = !VUES_DEHORS.has(vue) && B.circuit.dansTunnel(c, suivie.etat.s, -6), cibleLumiere = sousVoute ? 1.32 : 1;
     S.lumiere = S.lumiere ?? 1;
     S.lumiere += (cibleLumiere - S.lumiere) * (1 - Math.exp(-dtImage / (cibleLumiere > S.lumiere ? .8 : .3)));
-    // Facteur d'avancement dans le tunnel : 0 à l'entrée, 1 à la sortie
-    const t = c.tunnel, L = c.longueur, sTunnel = ((suivie.etat.s % L) + L) % L, dansTunnel = B.circuit.dansTunnel(c, suivie.etat.s, 80);
-    const avancement = dansTunnel ? Math.min(1, Math.max(0, (sTunnel - t.debut) / (t.fin - t.debut + 1e-6))) : 0;
+    // LAMPES TUNNEL : toujours allumées plein pot, pas de progression progressive pour éviter le "clipping"
+    // L'adaptation oculaire S.lumiere (0,8 s entrée / 0,3 s sortie) gère le passage lumière/caverne
     let lampes;
     const LT = scene.decor.tunnelLampes;
-    if (LT && dansTunnel) {
+    if (LT && B.circuit.dansTunnel(c, suivie.etat.s, 80)) {
       lampes = tampons.lampes || (tampons.lampes = []); lampes.length = 0;
-      for (const p of LT) { const d2 = (p[0] - cam.pos[0]) ** 2 + (p[2] - cam.pos[2]) ** 2; if (d2 < 4900) lampes.push({ p, power: 12 * avancement, range: 18 * avancement, color: [1, .84, .58], d2 }); }
+      for (const p of LT) { const d2 = (p[0] - cam.pos[0]) ** 2 + (p[2] - cam.pos[2]) ** 2; if (d2 < 4900) lampes.push({ p, power: 12, range: 18, color: [1, .84, .58], d2 }); }
       lampes.sort((a, b) => a.d2 - b.d2); if (lampes.length > 8) lampes.length = 8;
     }
     // Intensité du halo/bloom : pleine en qualité élevée, moitié en automatique au palier 2+, atténuée à l'entrée du tunnel
