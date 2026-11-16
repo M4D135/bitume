@@ -255,6 +255,7 @@ body.tactile #b-pause { display: block; }
 
 /* La carte est indépendante des compteurs supplémentaires du cockpit. */
 #jeu[data-reduit="oui"] .tableau .vitesse, #jeu[data-reduit="oui"] .tableau .regime { display: none; }
+#hud[data-reduit="oui"] .tableau .vitesse, #hud[data-reduit="oui"] .tableau .regime, #hud2[data-reduit="oui"] .tableau .vitesse, #hud2[data-reduit="oui"] .tableau .regime { display: none; }
 
 /* ------------------------------------------------------------------ démo */
 /* Écran titre : l'attente avant la démo, un trait qui se remplit en cinq secondes. */
@@ -348,3 +349,17 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 .enligne .rejoindre { display: flex; gap: 10px; align-items: center; }
 .enligne #l-code { width: 6.5ch; text-transform: uppercase; letter-spacing: .25em; text-align: center; }
 .code-partie { margin: 0; font: italic 800 64px/1 var(--f-titre); letter-spacing: .18em; color: var(--papier); }
+
+/* Écran partagé à deux : deux moitiés, l'une sur l'autre ou côte à côte ; chaque affichage est mis en page dans une
+   boîte plus grande puis réduit à sa moitié (k = 0,72 l'un sur l'autre, 0,6 côte à côte) */
+#scene2 { position: absolute; display: none; background: var(--encre); box-sizing: border-box; }
+#hud2 { position: absolute; pointer-events: none; padding: var(--marge); font-variant-numeric: tabular-nums; }
+#jeu[data-partage="haut-bas"] #scene { height: 50%; }
+#jeu[data-partage="haut-bas"] #scene2 { display: block; left: 0; top: 50%; width: 100%; height: 50%; border-top: 2px solid #050607; }
+#jeu[data-partage="cote"] #scene { width: 50%; }
+#jeu[data-partage="cote"] #scene2 { display: block; left: 50%; top: 0; width: 50%; height: 100%; border-left: 2px solid #050607; }
+#jeu[data-partage="haut-bas"] #hud, #jeu[data-partage="haut-bas"] #hud2 { inset: auto; left: 0; top: 0; width: calc(100% / .72); height: calc(50% / .72); transform: scale(.72); transform-origin: 0 0; }
+#jeu[data-partage="haut-bas"] #hud2 { top: 50%; }
+#jeu[data-partage="cote"] #hud, #jeu[data-partage="cote"] #hud2 { inset: auto; left: 0; top: 0; width: calc(50% / .6); height: calc(100% / .6); transform: scale(.6); transform-origin: 0 0; }
+#jeu[data-partage="cote"] #hud2 { left: 50%; }
+#jeu[data-partage="haut-bas"] #meteo, #jeu[data-partage="cote"] #meteo { display: none; }

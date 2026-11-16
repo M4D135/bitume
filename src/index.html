@@ -6,6 +6,7 @@
 <main id="jeu" data-ecran="chargement" data-carte="oui" data-carte-position="droite" data-carte-taille="normale">
   <div id="vue-course">
     <canvas id="scene" aria-label="Vue de la course"></canvas>
+    <canvas id="scene2" aria-label="Vue du joueur 2"></canvas>
     <canvas id="glace-g" class="glace" aria-hidden="true" hidden></canvas>
     <canvas id="glace-d" class="glace" aria-hidden="true" hidden></canvas>
     <canvas id="retro-rendu" class="retro-rendu" aria-hidden="true"></canvas>
@@ -77,6 +78,7 @@
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
       <button type="button" class="gros" data-aller="chrono">Chrono</button>
+      <button type="button" class="gros" data-aller="duo">À deux</button>
       <button type="button" class="gros" data-aller="enligne">En ligne</button>
       <button type="button" class="discret" data-aller="reglages">Réglages</button>
     </nav>
@@ -138,6 +140,12 @@
         <label><input type="radio" name="pneus" value="inter"><span>Intermédiaires</span></label>
         <label><input type="radio" name="pneus" value="pluie"><span>Pluie</span></label>
         <p id="p-pneus-conseil" class="note-pneus"></p>
+      </fieldset>
+      <fieldset id="o-partage" hidden>
+        <legend>Écran</legend>
+        <label><input type="radio" name="partage" value="haut-bas"><span>L’un sur l’autre</span></label>
+        <label><input type="radio" name="partage" value="cote"><span>Côte à côte</span></label>
+        <p id="p-manettes" class="note-pneus"></p>
       </fieldset>
       <p id="o-chrono" class="note-chrono" hidden>Seul en piste. Le chrono part au premier passage de la ligne ; votre meilleur tour devient un fantôme bleu, gardé pour la prochaine fois.</p>
     </div>

@@ -187,3 +187,9 @@ Les modules listés dans `FERRO.lock.json` sont désormais des copies exactes de
   voiture). Les triangles d'EMPRISE gardent l'ordre de leurs indices : retournés, ils montraient le pilote de dedans.
 - **IA** : caractère par pilote (combativité, défense, régularité), aspiration en ligne droite, défense de
   l'intérieur une fois par virage.
+- **Écran partagé à deux** : « multi en écran splitté local, 2 manettes possible, écran adapté, un sur l'autre ou un à
+  côté de l'autre, au choix ». Menu « À deux », réglage « Écran » (`reglages.partage`). Un seul moteur de rendu : la
+  vue du joueur 2 est rendue d'abord et copiée dans la toile 2D `#scene2`, puis celle du joueur 1 reste dans `#scene`,
+  chaque toile à sa moitié. État de caméra du joueur 2 : `S.vueJ2` (hérite de la séance). Affichage du joueur 2 :
+  copie de `#hud` (`#hud2`, mêmes identifiants). Commandes : deux manettes, une chacun ; une seule va au joueur 2 ;
+  au clavier, ZQSD/WASD pour le joueur 1, flèches et Maj droite pour le joueur 2 (Entrée change sa vue).
