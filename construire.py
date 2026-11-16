@@ -23,6 +23,8 @@ DIST = ICI / 'dist'
 MODULES = [
     'moteur/renderer.js',
     'ferro/engine.js',
+    'ferro/physx-runtime.js',
+    'ferro/physx.js',
     'circuit.js',
     'ferro/vehicle-dynamics.js',
     'conduite.js',
@@ -68,6 +70,7 @@ def main():
     if 'googleapis' in gabarit or 'googleapis' in style:
         raise SystemExit('BITUME ne charge aucune police : le style se sert de celles du système')
 
+    sources['jeu.js']='FERRO.initPhysics().then(function(){\n'+sources['jeu.js']+"\n}).catch(function(error){console.error('FERRO physics initialization failed',error);const notice=document.createElement('p');notice.setAttribute('role','alert');notice.textContent='Impossible de démarrer le jeu. Rechargez la page.';document.body.appendChild(notice);});"
     scripts = '\n'.join(f'<script>\n// ---- {nom} ----\n{sources[nom]}</script>' for nom in MODULES)
     fragment = gabarit.replace('/*STYLE*/', style.rstrip('\n')).replace('<!--MODULES-->', scripts)
     entete = ENTETE.match(fragment)

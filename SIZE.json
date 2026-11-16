@@ -1,11 +1,13 @@
 {
   "version": "essai-0.1",
-  "raw": 607633,
-  "gzip": 188040,
-  "sha256": "3f3b5fb287dd947f9155d26042d1a00342c51770e736664979e7e38fb23203be",
+  "raw": 12684310,
+  "gzip": 2896933,
+  "sha256": "0350edccb42d012272fb1bfdb6659a6b81ecccc6b7527994d3e53e5673645050",
   "sources": {
     "moteur/renderer.js": 209041,
-    "ferro/engine.js": 1871,
+    "ferro/engine.js": 2024,
+    "ferro/physx-runtime.js": 12063280,
+    "ferro/physx.js": 12834,
     "circuit.js": 17710,
     "ferro/vehicle-dynamics.js": 3980,
     "conduite.js": 43351,
@@ -21,7 +23,7 @@
     "traces.js": 14728,
     "realisateur.js": 5822,
     "meteo.js": 8413,
-    "jeu.js": 78306,
+    "jeu.js": 78614,
     "index.html": 11961,
     "style.css": 30027
   }
