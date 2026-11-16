@@ -1,10 +1,10 @@
 {
   "version": "essai-0.1",
-  "raw": 607337,
-  "gzip": 187944,
-  "sha256": "b7bcbd3f0a19ed7b9b1afefc82adbf5451b664f5857330279f30cb7c5a999a6e",
+  "raw": 607633,
+  "gzip": 188040,
+  "sha256": "3f3b5fb287dd947f9155d26042d1a00342c51770e736664979e7e38fb23203be",
   "sources": {
-    "moteur/renderer.js": 208601,
+    "moteur/renderer.js": 209041,
     "ferro/engine.js": 1871,
     "circuit.js": 17710,
     "ferro/vehicle-dynamics.js": 3980,
@@ -22,7 +22,7 @@
     "realisateur.js": 5822,
     "meteo.js": 8413,
     "jeu.js": 78306,
-    "index.html": 12105,
+    "index.html": 11961,
     "style.css": 30027
   }
 }
