@@ -103,8 +103,13 @@
       am.connect(amG).connect(rape.gain);
       ns.connect(rapeF).connect(rape).connect(pb);
       attaque.connect(sat).connect(ph).connect(echap).connect(basse).connect(adm).connect(doux).connect(pb).connect(sortie).connect(busMot);
+      // tunnel : le moteur revient des murs (deux échos courts qui se nourrissent, assourdis)
+      const echo = ctx.createDelay(.2), echo2 = ctx.createDelay(.2), retour = gain(.38), sourd = filtre('lowpass', 2600, .7), echoG = gain(0);
+      echo.delayTime.value = .043; echo2.delayTime.value = .071;
+      sortie.connect(echo); sortie.connect(echo2); echo.connect(sourd); echo2.connect(sourd); sourd.connect(retour); retour.connect(echo);
+      sourd.connect(echoG).connect(busMot);
       for (const o of [oA, oB, vib, vib2, oSub, ns, am]) o.start(t);
-      return { oA, oB, oSub, gSub, am, attaque, echap, adm, pb, rape, sortie };
+      return { oA, oB, oSub, gSub, am, attaque, echap, adm, pb, rape, sortie, echoG };
     }
 
     // Voix d'un rival : la même onde de cycle, filtrée plus fermée, panoramique.
@@ -178,6 +183,7 @@
       vise(m.pb.frequency, clamp(1300 + 3400 * gaz + .3 * regime, 900, 8500) * (bord ? .92 : 1), t, tc);
       vise(m.rape.gain, (.02 + .12 * gaz + (j.turbo ? .04 : 0)) * (.35 + .65 * r) * (bord ? 1.25 : .8), t, .03);
       vise(m.echap.gain, bord ? 6.5 : 9, t, .1); vise(m.adm.gain, bord ? 3.5 : 1, t, .1);
+      vise(m.echoG.gain, j.tunnel && !muet ? .55 : 0, t, .12);
       // le gain de sortie est réduit car la saturation remonte le niveau
       const vol = muet ? 0 : lerp(0.5, 0.9, gaz) * 0.34;
       if (t >= coupFin) vise(m.sortie.gain, vol, t, muet ? 0.03 : tc);

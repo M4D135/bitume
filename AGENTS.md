@@ -38,6 +38,9 @@ Une seule page HTML, moteur FERRO (WebGL2), tout est calculé par le code.
 | `src/voiture.js` | Monoplace en primitives du moteur, cockpit vu du siège, fantôme translucide |
 | `src/traces.js` | Traces de pneus (512 bandes, effacées en 24 s), fumée et étincelles (48 chacune), à 30 Hz, en objets transparents |
 | `src/realisateur.js` | Réalisateur de la démo : choix du plan (caméra et voiture filmée) d'après la course |
+| `src/humain-donnees.js`, `src/humain-corps.js` | Tête et corps procéduraux d'EMPRISE (copies exactes du commit 509b2ec) : le pilote, sous son casque |
+| `src/reseau.js` | Jeu en ligne à deux : salon, liaison WebRTC (repli par le salon), horloge commune, paquets d'état, prolongation |
+| `serveur/salon.mjs` | Salon du jeu en ligne (Node, sans dépendance) : codes de partie, mise en relation, relais |
 | `src/jeu.js` | Coque : boucle à pas fixe, commandes, caméras, rendu d'une image, affichage, menus, démo, stockage local |
 | `src/index.html`, `src/style.css` | Page (gabarit `/*STYLE*/`, `<!--MODULES-->`) et style, polices du système |
 | `src/meteo.js` | Fronts météo, pluie projetée dans le monde, vent et humidité persistante, adaptés d’EMPRISE |
@@ -47,7 +50,9 @@ Une seule page HTML, moteur FERRO (WebGL2), tout est calculé par le code.
 | `deposer.sh`, `deploiement/` | Mise en ligne de la page du commit sur bitume.estrasse.fr, et son vhost Caddy |
 
 Chaque module s'écrit `(function (B) { … })(globalThis.BITUME = globalThis.BITUME || {})` et s'exécute aussi dans
-Node pour les tests. Ordre de chargement : renderer, circuit, conduite, degats, contacts, obstacles, course, son, decor, carene, main, voiture, traces, realisateur, meteo, jeu.
+Node pour les tests. Ordre de chargement : celui de `MODULES` dans `construire.py` (renderer et FERRO, circuit, conduite, degats, contacts,
+obstacles, course, son, decor, carene, humain-donnees, humain-corps, main, voiture, traces, realisateur, meteo, reseau,
+jeu).
 
 Formes libres : `window.FRender.forme(nom, triangles)` enregistre une forme faite de triangles `[p0, p1, p2, n0, n1,
 n2]` tenus dans le cube unité (`B.carene.normaliser`) ; l'instance porte la vraie taille dans `s`. À appeler avant
@@ -154,3 +159,23 @@ servie a la même empreinte. Aucun timer : le VPS n'a pas accès au dépôt priv
 Aucun plafond de taille du code, du moteur ou des builds. Cette décision remplace les anciens budgets en octets ci-dessus. Le contenu graphique et sonore reste entièrement procédural. Mesurer les tailles et les performances, sans réduire les fonctionnalités pour respecter une limite de fichier.
 
 Les modules listés dans `FERRO.lock.json` sont désormais des copies exactes de la référence `M4D135/FERRO:src/ferro`. Cette décision remplace les anciennes consignes de retouche locale du moteur : corriger la référence et propager une version qualifiée ; conserver les adaptations du jeu hors de ces modules.
+
+## Décisions de David — 16 novembre 2026, nuit
+
+- **Jeu en ligne à deux** : « le multijoueur en ligne, deux pour commencer », « netcode précis et léger, pas de lag,
+  précision absolue », « fais les deux modes, solo et online ». Pour ce seul mode, la demande lève la règle « aucun
+  appel réseau » : « En ligne » ouvre un WebSocket vers le salon (`serveur/salon.mjs`, même hôte que la page,
+  chemin `/salon` ; `?salon=ws://…` pour les essais) et une liaison WebRTC directe (STUN publics de Google), avec repli
+  par le salon au bout de 7 s. Le jeu seul ne fait toujours aucun appel réseau. Chaque machine conduit sa voiture
+  sans attendre le réseau ; horloge commune ; état envoyé à chaque image ; voiture distante prolongée puis corrigée en
+  0,12 s. L'hôte fait courir les rivaux et annonce les temps officiels. La course attend les deux pilotes ; à la
+  fin, l'hôte lance la revanche ; une coupure confie l'autre voiture à l'ordinateur. Le salon n'est pas installé sur
+  amiga : service et route publique seulement avec l'accord de David.
+- **Tunnel** : « dans le circuit Haut-Col, fais une partie dans un tunnel ». 260 m au milieu de la plus longue ligne
+  droite (rayon > 400 m, insensible aux courbures de l'ordre de 1e-15 qui changent d'un moteur JavaScript à l'autre) ;
+  les murs sont les limites, en entonnoir sur 40 m. L'intérieur est éclairé « dedans » (`outdoor: false`) par ses
+  lampes, l'œil s'adapte ; la piste y est sèche et il n'y pleut pas. `tunnel.test.mjs` le tient.
+- **Pilotes** : tête et buste d'EMPRISE sous un casque intégral (coque, visière teintée, bandeau aux couleurs de la
+  voiture). Les triangles d'EMPRISE gardent l'ordre de leurs indices : retournés, ils montraient le pilote de dedans.
+- **IA** : caractère par pilote (combativité, défense, régularité), aspiration en ligne droite, défense de
+  l'intérieur une fois par virage.

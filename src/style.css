@@ -338,3 +338,13 @@ body.tactile .message { top: max(28%,calc(var(--hud-top) + var(--carte-presence)
 body.tactile .sous-message { top: max(calc(28% + 42px),calc(var(--hud-top) + var(--carte-presence) + 118px)); font-size: 13px; }
 body.tactile .demo-bandeau { top: calc(var(--hud-top) + var(--carte-presence) + 58px); background: rgba(10,12,15,.3); border: 0; }
 body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98px); background: rgba(10,12,15,.2); }
+
+/* Jeu en ligne */
+.enligne { display: flex; flex-direction: column; gap: 18px; }
+.note-enligne { margin: 0; max-width: 60ch; color: var(--papier-2); font-size: 15px; }
+.champ-nom { display: flex; flex-direction: column; gap: 6px; max-width: 280px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--papier-2); }
+.enligne input { font: 700 20px/1.2 var(--f-titre); padding: 10px 12px; background: rgba(8, 9, 11, .8); color: var(--papier); border: 1px solid var(--trait); border-radius: var(--rayon); }
+.enligne-choix { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.enligne .rejoindre { display: flex; gap: 10px; align-items: center; }
+.enligne #l-code { width: 6.5ch; text-transform: uppercase; letter-spacing: .25em; text-align: center; }
+.code-partie { margin: 0; font: italic 800 64px/1 var(--f-titre); letter-spacing: .18em; color: var(--papier); }

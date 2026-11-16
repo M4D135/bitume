@@ -15,6 +15,9 @@
   const DROIT = Math.cos(3 * Math.PI / 180), LONGUEUR_MAX = 6, LEVEE = .018, EPAISSEUR = .004;
   // BITUME : douze casses simultanées, quatre roues et huit panneaux chacune ; pool jamais agrandi.
   const DEBRIS = 144, VIE_DEBRIS = 12;
+  // Embruns (David, 16/11 : « améliore le rendu, particules ») : sous la pluie, chaque voiture lancée soulève derrière
+  // ses roues arrière une gerbe d'eau, plus haute avec la vitesse ; pas sous la voûte du tunnel.
+  const EMBRUNS = 160, EMBRUN = [.80, .84, .88];
   const PANNEAUX = [[2.11,.2,0,.38,.06,1.62],[-2.05,.9,0,.34,.06,1.1],
     [1.6,.3,0,.9,.12,.5],[.8,.4,0,.8,.1,1.1],[-.6,.4,-.65,1.1,.3,.16],[-.6,.4,.65,1.1,.3,.16],
     [-1.1,.6,0,.8,.25,.6],[-2,.65,0,.25,.4,.1]];
@@ -38,6 +41,9 @@
         objet: { shape: 'box', p: [0, 0, 0], s: [1, 1, 1], r: [0, 0, 0], color: [0, 0, 0], mat: 7, fx: true, fxPriority: 'hazard', alpha: 1 } })), prochainDebris: 0,
       fumees: particules(FUMEES, 'sphere', FUMEE, 0), prochaineFumee: 0,
       etincelles: particules(ETINCELLES, 'box', ETINCELLE, 2.4), prochaineEtincelle: 0,
+      embruns: particules(EMBRUNS, 'sphere', EMBRUN, 0), prochainEmbrun: 0,
+      // PhysX (FERRO) : les pièces détachées deviennent des corps rigides qui roulent et rebondissent sur le sol
+      monde: null, sols: [],
       // par roue (voiture × 4 + roue) : bande ouverte, son numéro de pose, dernier point de contact et sa validité
       ouverte: new Int32Array(n * 4).fill(-1), genOuverte: new Int32Array(n * 4), valide: new Uint8Array(n * 4), dernier: new Float64Array(n * 12),
       acc: 0, alea: graine32(graine == null ? 1 : graine)
@@ -58,6 +64,7 @@
     fx.acc = Math.max(0, fx.acc - PAS);
     vieillir(fx, PAS);
     const V = co.voitures, L = co.c.longueur, ref = V[suivie] ? V[suivie].etat.s : 0, choc = B.conduite.PARAMS.chocDuree;
+    const eau = B.conduite.eauSurPiste ? B.conduite.eauSurPiste() : 0;
     for (let k = 0; k < V.length; k++) {
       const et = V[k].etat, p = poses[k];
       let ds = (et.s - ref) % L;
@@ -67,8 +74,21 @@
       const cap = p.cap - (et.beta || 0), vx = Math.cos(cap) * et.v, vz = Math.sin(cap) * et.v;
       const auSol = !(et.bond > .03), herbe = et.surface === 'herbe';
       for (let w = 0; w < 4; w++) roue(fx, k, w, et, p, M, auSol, herbe, vx, vz);
+      if (eau > .12 && et.v > 14 && auSol && !(B.circuit.dansTunnel && B.circuit.dansTunnel(co.c, et.s))) embrun(fx, et, p, M, vx, vz, eau);
       // glissière touchée pendant ce trentième de seconde
       if (et.choc > choc - PAS && et.v > 6) mur(fx, et, p, M, vx, vz);
+    }
+  }
+
+  // gerbe d'eau derrière les roues arrière : une à trois gouttes de brume par trentième de seconde, selon la vitesse
+  function embrun(fx, et, p, M, vx, vz, eau) {
+    const a = fx.alea, n = Math.min(3, Math.floor(et.v / 22 * eau * 2 + a()));
+    for (let k = 0; k < n; k++) {
+      const cote = a() < .5 ? -1 : 1, o = B.voiture.mul(M, [-1.55 - a() * .4, .25, cote * (.62 + a() * .25)]);
+      const f = fx.embruns[fx.prochainEmbrun]; fx.prochainEmbrun = (fx.prochainEmbrun + 1) % EMBRUNS;
+      f.actif = true; f.age = 0; f.vie = .55 + a() * .5; f.x = p.x + o[0]; f.y = p.y + o[1]; f.z = p.z + o[2]; f.sol = p.y;
+      f.vx = vx * .55 + (a() - .5) * 3; f.vz = vz * .55 + (a() - .5) * 3; f.vy = 1.2 + a() * 1.8 * Math.min(1, et.v / 60);
+      f.taille = .55 + a() * .4; f.a0 = .16 + .14 * eau;
     }
   }
 
@@ -180,6 +200,9 @@
       o.shape = roue ? 'cylinder' : 'box'; o.s[0]=sx; o.s[1]=sy; o.s[2]=sz;
       o.r[0]=0; o.r[1]=-p.cap; o.r[2]=roue ? Math.PI/2 : 0; o.alpha=1;
       for (let k=0;k<3;k++) o.color[k]=couleur[k];
+      d.q = null;
+      if (d.corps && fx.monde) fx.monde.remove(d.corps);
+      d.corps = physique(fx, d, p, [sx / 2, sy / 2, sz / 2], roue ? 11 : 4);   // la boîte épouse la pièce dessinée
     };
     if (e.type === 'roue') {
       const w = B.voiture.ROUES[e.roue];
@@ -192,13 +215,52 @@
     }
   }
 
+  // Corps rigide PhysX d'une pièce détachée (navigateur seulement : dans Node, la pièce garde sa parabole). Le sol est
+  // une dalle statique sous l'accident ; quatre accidents récents au plus gardent la leur.
+  function physique(fx, d, p, demi, masse) {
+    const X = globalThis.FPhysX;
+    if (!X || !X.isReady || !X.isReady()) return 0;
+    try {
+      if (!fx.monde) fx.monde = X.createWorld({ fixedStep: 1 / 60, maxSubSteps: 4 });
+      if (!fx.sols.some(q => Math.hypot(q.center[0] - p.x, q.center[2] - p.z) < 25)) {
+        fx.sols.push({ center: [p.x, p.y - .5, p.z], half: [40, .5, 40] }); if (fx.sols.length > 4) fx.sols.shift();
+        fx.monde.setStatics(fx.sols);
+      }
+      const id = fx.monde.addBox([d.x, d.y, d.z], demi, { mass: masse, friction: .75, restitution: .28, ccd: true });
+      fx.monde.setVelocity(id, [d.vx, d.vy, d.vz]);
+      return id;
+    } catch (e) { fx.monde = null; return 0; }
+  }
+  // quaternion (x, y, z, w) → angles du moteur, par la matrice de rotation (colonnes : images des axes)
+  function anglesQuaternion(q, r) {
+    const [x, y, z, w] = q;
+    const m = [[1 - 2 * (y * y + z * z), 2 * (x * y + z * w), 2 * (x * z - y * w)], [2 * (x * y - z * w), 1 - 2 * (x * x + z * z), 2 * (y * z + x * w)], [2 * (x * z + y * w), 2 * (y * z - x * w), 1 - 2 * (x * x + y * y)]];
+    const a = B.voiture.angles(m); r[0] = a[0]; r[1] = a[1]; r[2] = a[2];
+  }
+
   function vieillir(fx, h) {
     for (const b of fx.bandes) if (b.actif && (b.age += h) >= VIE_TRACE) b.actif = false;
+    if (fx.monde) { try { fx.monde.step(h); } catch (e) { fx.monde = null; } }
     for (const d of fx.debris) if (d.actif) {
-      if ((d.age += h) >= VIE_DEBRIS) { d.actif=false; continue; }
+      if ((d.age += h) >= VIE_DEBRIS) { d.actif = false; if (d.corps && fx.monde) fx.monde.remove(d.corps); d.corps = 0; continue; }
+      if (d.corps && fx.monde) {
+        const q = fx.monde.readPose(d.corps), v = fx.monde.readVelocity(d.corps);
+        if (q) { d.x = q[0]; d.y = q[1]; d.z = q[2]; d.q = d.q || [0, 0, 0, 1]; d.q[0] = q[3]; d.q[1] = q[4]; d.q[2] = q[5]; d.q[3] = q[6]; }
+        if (v) { d.vx = v[0]; d.vy = v[1]; d.vz = v[2]; }
+        d.sol = -1e9;
+        continue;
+      }
       d.x+=d.vx*h; d.y+=d.vy*h; d.z+=d.vz*h; d.vy-=9.81*h;
       if (d.y<d.sol && d.vy<0) { d.y=d.sol; d.vy=Math.abs(d.vy)>.8 ? -d.vy*.3 : 0; d.vx*=.65; d.vz*=.65; d.spin*=.7; }
       d.objet.r[0]+=d.spin*h; d.objet.r[2]+=d.spin*.7*h;
+    }
+    const amortiE = Math.exp(-h * 2.4);
+    for (const f of fx.embruns) {
+      if (!f.actif) continue;
+      if ((f.age += h) >= f.vie) { f.actif = false; continue; }
+      f.x += f.vx * h; f.y += f.vy * h; f.z += f.vz * h;
+      f.vx *= amortiE; f.vz *= amortiE; f.vy = f.vy * amortiE - 1.5 * h;
+      if (f.y < f.sol + .1) { f.y = f.sol + .1; f.vy = 0; }
     }
     const amorti = Math.exp(-h * 1.6);
     for (const f of fx.fumees) {
@@ -218,8 +280,16 @@
 
   // Pousse dans `sortie` les effets visibles depuis `oeil` ; h : temps de course écoulé depuis la dernière mise à jour.
   function dessiner(fx, sortie, oeil, h) {
+    for (const f of fx.embruns) {
+      if (!f.actif) continue;
+      const o = f.objet, t = (f.age + h) / f.vie, k = f.taille * (1 + 2.6 * t);
+      o.p[0] = f.x + f.vx * h; o.p[1] = f.y + f.vy * h; o.p[2] = f.z + f.vz * h; o.s[0] = o.s[1] = o.s[2] = k;
+      o.alpha = f.a0 * (1 - t) * Math.min(1, t * 6);
+      if (o.alpha > .004) sortie.push(o);
+    }
     for (const d of fx.debris) if (d.actif) {
       const o=d.objet; o.p[0]=d.x+d.vx*h; o.p[1]=Math.max(d.sol,d.y+d.vy*h); o.p[2]=d.z+d.vz*h;
+      if (d.q) anglesQuaternion(d.q, o.r);
       o.alpha=Math.min(1, Math.max(0,(VIE_DEBRIS-d.age-h)/2));
       if (o.alpha>.004) sortie.push(o);
     }
@@ -256,7 +326,8 @@
     for (const f of fx.fumees) if (f.actif) fumees++;
     for (const e of fx.etincelles) if (e.actif) etincelles++;
     let debris=0; for (const d of fx.debris) if (d.actif) debris++;
-    return { bandes, fumees, etincelles, debris };
+    let embruns = 0; for (const f of fx.embruns) if (f.actif) embruns++;
+    return { bandes, fumees, etincelles, debris, embruns };
   }
 
   function graine32(a) {

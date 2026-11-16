@@ -322,7 +322,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     const dg = etat.degats;
     if (dg) mu *= dg.adher;
     // Pluie et pneus : l'adhérence suit l'eau sur la piste (pluie qui tombe, piste encore mouillée) et les pneus.
-    mu *= adherencePneus(etat.pneus, eauSurPiste());
+    mu *= adherencePneus(etat.pneus, B.circuit.dansTunnel && B.circuit.dansTunnel(c, etat.s) ? 0 : eauSurPiste()); // sous la voûte, la piste est sèche
     const enPiste = ad <= demi + P.largeurVibreur;
 
     // Dérive au bouton

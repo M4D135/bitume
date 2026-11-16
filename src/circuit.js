@@ -282,18 +282,57 @@
       const ligne = trajectoire(X, Z, cap, n, LARGEUR);
       const vitesse = vitesses(X, Z, cap, ligne, n);
       const lim = limites(courbure, n, LARGEUR);
+      // Tunnel (David, 16/11 : « dans le circuit Haut-Col, fais une partie dans un tunnel ») : en montagne, 260 m de
+      // piste passent sous la roche, au milieu de la plus longue portion droite (rayon > 400 m), loin de la ligne des
+      // stands. Le seuil écarte les courbures de l'ordre de 1e-15 dont le signe change d'un moteur JavaScript à l'autre :
+      // le tunnel est au même endroit sur toutes les machines (jeu en ligne). Ses murs sont les limites ; 40 m avant et
+      // après, les limites se resserrent en entonnoir jusqu'aux portails.
+      let tunnel = null;
+      if (theme === 'montagne' && options.tunnel !== false) {
+        const N = Math.round(260 / PAS), i0 = choisirTunnel(courbure, n, N);
+        if (i0 >= 0) {
+          const mur = LARGEUR / 2 + 1.6, E = Math.round(40 / PAS);
+          tunnel = { debut: i0 * PAS, fin: (i0 + N) * PAS, mur, hauteur: 6.4 };
+          for (let i = i0 - E; i <= i0 + N + E; i++) {
+            const dehors = Math.max(i0 - i, i - i0 - N, 0) * PAS, k = (i + n) % n;
+            lim.G[k] = Math.min(lim.G[k], mur + dehors * .35); lim.D[k] = Math.min(lim.D[k], mur + dehors * .35);
+          }
+        }
+      }
       return {
         graine, nom, theme, longueur: L, pas: PAS, n,
         x: X, y, z: Z, cap, courbure, pente, devers, largeur: LARGEUR, vibreur, ligne, vitesse,
         limite: LIMITE, limiteG: lim.G, limiteD: lim.D,
-        depart: 0, ligneDroite: { debut: debutDroite, fin: finDroite }, secteurs: [Math.round(L / 3 / PAS) * PAS, Math.round(2 * L / 3 / PAS) * PAS],
+        depart: 0, ligneDroite: { debut: debutDroite, fin: finDroite }, secteurs: [Math.round(L / 3 / PAS) * PAS, Math.round(2 * L / 3 / PAS) * PAS], tunnel,
         essais: essai + 1
       };
     }
     throw new Error('BITUME : aucun tracé valide pour la graine ' + graine);
   }
 
+  // Premier échantillon du tunnel (N échantillons) : au milieu de la plus longue portion droite (rayon > 400 m) entre 30 et
+  // 92 % du tour ; −1 s'il n'y en a pas d'assez longue.
+  function choisirTunnel(courbure, n, N) {
+    const i1 = Math.round(.3 * n), i2 = Math.round(.92 * n), droit = i => Math.abs(courbure[i]) < 1 / 400;
+    let meilleur = null;
+    for (let i = i1; i < i2;) {
+      if (!droit(i)) { i++; continue; }
+      let j = i;
+      while (j < i2 && droit(j)) j++;
+      if (j - i >= N && (!meilleur || j - i > meilleur.long)) meilleur = { debut: i, long: j - i };
+      i = j;
+    }
+    return meilleur ? meilleur.debut + Math.floor((meilleur.long - N) / 2) : -1;
+  }
+
   // ---------------------------------------------------------------- lecture
+  // dans le tunnel (marge en mètres de part et d'autre) ?
+  function dansTunnel(c, s, marge = 0) {
+    const t = c && c.tunnel;
+    if (!t) return false;
+    const L = c.longueur, x = ((s % L) + L) % L;
+    return x > t.debut - marge && x < t.fin + marge;
+  }
   const ramener = (c, s) => { const L = c.longueur; s %= L; return s < 0 ? s + L : s; };
   function echantillon(c, s) {
     s = ramener(c, s);
@@ -348,5 +387,5 @@
     return pb;
   }
 
-  B.circuit = { creer, echantillon, point, repere, ecart, vibreurA, limiteA, valider, PAS, LARGEUR };
+  B.circuit = { creer, echantillon, point, repere, ecart, vibreurA, limiteA, valider, dansTunnel, choisirTunnel, PAS, LARGEUR };
 })(globalThis.BITUME = globalThis.BITUME || {});

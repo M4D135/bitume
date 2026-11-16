@@ -65,6 +65,71 @@
     return (FORMES[nom] = f);
   }
   const deuxCotes = t => t.concat(C.miroir(t));
+  // Pilotes (David, 16/11 : « pour les pilotes, les modèles d'EMPRISE pour le buste et la tête, c'est parfait ») :
+  // tête et buste du personnage procédural d'EMPRISE (src/humain-donnees.js et src/humain-corps.js, copies exactes
+  // du commit 509b2ec d'EMPRISE), assis dans la monoplace. Casque intégral : la tête lissée et agrandie, ouverte
+  // devant les yeux ; visière teintée, et derrière elle le visage. Sans ces modules (tests Node), les primitives
+  // d'avant restent.
+  const HUMAIN = (() => {
+    const R = globalThis.RADE, h = R && R.humanData, b = R && R.bodyData;
+    if (!h || !b) return null;
+    // EMPRISE (visage vers +z, y du sol) → voiture (avant +x, droite +z, y du sol de la voiture) : une rotation, l'ordre
+    // des indices d'EMPRISE est gardé (sens direct vu de dehors, comme les carènes ; l'ordre 0, 2, 1 retournait les
+    // faces et le pilote se voyait de l'intérieur)
+    const rot = q => [q[2], q[1], -q[0]], place = q => [q[2], q[1] - .781, -q[0]];
+    const normales = (pos, ids) => {
+      const n = pos.map(() => [0, 0, 0]);
+      for (let i = 0; i < ids.length; i += 3) {
+        const [a, c, d] = [ids[i], ids[i + 1], ids[i + 2]], u = pos[c].map((v, k) => v - pos[a][k]), v = pos[d].map((x, k) => x - pos[a][k]);
+        const f = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]];
+        for (const j of [a, c, d]) for (let k = 0; k < 3; k++) n[j][k] += f[k];
+      }
+      return n.map(x => { const l = Math.hypot(x[0], x[1], x[2]) || 1; return x.map(v => v / l); });
+    };
+    const triangles = (pos, nor, ids, garder) => {
+      const t = [];
+      for (let i = 0; i < ids.length; i += 3) {
+        const a = ids[i], c = ids[i + 1], d = ids[i + 2];
+        if (garder && !garder((pos[a][0] + pos[c][0] + pos[d][0]) / 3, (pos[a][1] + pos[c][1] + pos[d][1]) / 3, (pos[a][2] + pos[c][2] + pos[d][2]) / 3, b.materials && b.materials[a])) continue;
+        t.push([place(pos[a]), place(pos[c]), place(pos[d]), rot(nor[a]), rot(nor[c]), rot(nor[d])]);
+      }
+      return t;
+    };
+    // Casque intégral : une coque ellipsoïdale autour de la tête d'EMPRISE (27,6 cm de large, 3 cm de jeu), ouverte au
+    // cou ; l'ouverture de la visière suit la grille (bords nets), à hauteur des yeux (1,701), et un bandeau aux
+    // couleurs de la voiture fait le tour au-dessus. Même sens des triangles que ceux d'EMPRISE, mesuré sur le crâne.
+    const cy = 1.695, cz = .018, rx = .138, ry = .165, rz = .136, N = 36, OUVERT = 5.5;
+    const NIVEAUX = [1.545, 1.575, 1.61, 1.64, 1.664, 1.703, 1.742, 1.776, 1.804, 1.826, 1.843, 1.853, cy + ry];
+    const point = (y, k, f = 1) => {
+      const c = Math.sqrt(Math.max(0, 1 - ((y - cy) / ry) ** 2)), a = k / N * 2 * Math.PI;
+      return [rx * c * Math.sin(a) * f, cy + (y - cy) * f, cz + rz * c * Math.cos(a) * f];
+    };
+    const normaleE = q => { const n = [q[0] / rx ** 2, (q[1] - cy) / ry ** 2, (q[2] - cz) / rz ** 2], l = Math.hypot(...n) || 1; return n.map(v => v / l); };
+    const croix = (A, C, D) => { const u = A.map((v, k) => C[k] - v), v = A.map((x, k) => D[k] - x); return [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]]; };
+    const crane = triangles(h.positions, h.normals, h.indices, (x, y) => y > 1.79)[0];
+    const sens = Math.sign(croix(crane[0], crane[1], crane[2]).reduce((m, v, k) => m + v * crane[3][k], 0)) || 1;
+    const coque = [], visiere = [], bande = [];
+    for (let j = 0; j + 1 < NIVEAUX.length; j++) for (let k = 0; k < N; k++) {
+      const y0 = NIVEAUX[j], y1 = NIVEAUX[j + 1], dk = Math.min(k, N - k - 1) + .5;   // 0 : face avant
+      const ouvert = y0 >= 1.664 && y1 <= 1.742 && dk <= OUVERT, colore = y0 >= 1.742 && y1 <= 1.776;
+      const f = ouvert ? 1.006 : 1, q = [point(y0, k, f), point(y0, k + 1, f), point(y1, k + 1, f), point(y1, k, f)];
+      const dest = ouvert ? visiere : colore ? bande : coque;
+      for (const [a, c, d] of [[0, 1, 2], [0, 2, 3]]) {
+        let A = q[a], C = q[c], D = q[d];
+        const m = [0, 1, 2].map(i => (A[i] + C[i] + D[i]) / 3);
+        if (Math.sign(croix(place(A), place(C), place(D)).reduce((s, v, i) => s + v * rot(normaleE(m))[i], 0)) !== sens) [C, D] = [D, C];
+        if (Math.hypot(...croix(A, C, D)) < 1e-12) continue;
+        dest.push([place(A), place(C), place(D), rot(normaleE(A)), rot(normaleE(C)), rot(normaleE(D))]);
+      }
+    }
+    return {
+      casque: coque, visiere, bande,
+      visage: triangles(h.positions, h.normals, h.indices, (x, y, z) => z > -.01 && y > 1.6),
+      // buste sans le bas des bras (ils pendaient hors de la coque) : sous l'épaule, seulement le torse
+      buste: triangles(b.positions, b.normals, b.indices, (x, y) => y > 1.2 && (Math.abs(x) < .19 || y > 1.38))
+    };
+  })();
+  if (HUMAIN) for (const nom of ['casque', 'visiere', 'bande', 'visage', 'buste']) if (HUMAIN[nom].length) forme('pilote-' + nom, HUMAIN[nom]);
   // Sections (x : abscisse, y0–y1 : bas et haut, l : demi-largeur, n : exposant), de l'avant vers l'arrière, mesurées
   // sur les photos de la voiture de 1980 (trois quarts avant de haut).
   // BITUME (voi-1) : la dernière section prolonge la quille sous les pontons ; sans elle, le flanc reste percé derrière la roue avant
@@ -232,10 +297,19 @@
     L('cuve', MAT, [.035, .035, .04]);
     L('pare-brise', METAL_MAT, [.30, .50, .86], { fx: true, alpha: .2, dedans: true });
     L('pare-brise-arete', METAL_MAT, [.86, .9, .94], { fx: true, alpha: .5, dedans: true });
-    // Pilote : casque, visière, épaules
-    P('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque, pilote);
-    P('box', [.11, .875, 0], [.07, .07, .2], METAL_MAT, [.05, .06, .09], pilote);
-    P('sphere', [-.04, .66, 0], [.30, .20, .38], TISSU, combi, pilote);
+    // Pilote : buste et tête d'EMPRISE sous un casque intégral (voir HUMAIN), sinon casque, visière et épaules simples
+    if (FORMES['pilote-buste'] && FORMES['pilote-casque']) {
+      const PEAUX = [[.86, .66, .54], [.74, .54, .41], [.55, .38, .27], [.92, .76, .64]], peau = PEAUX[(livree.numero || 0) % PEAUX.length];
+      L('pilote-buste', TISSU, combi, pilote);
+      L('pilote-casque', LAQUE, casque, pilote);
+      if (FORMES['pilote-bande']) L('pilote-bande', LAQUE, c1, pilote);
+      if (FORMES['pilote-visage']) L('pilote-visage', MAT, peau, pilote);
+      if (FORMES['pilote-visiere']) L('pilote-visiere', METAL_MAT, [.05, .07, .11], { fx: true, alpha: .62, pilote: true });
+    } else {
+      P('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque, pilote);
+      P('box', [.11, .875, 0], [.07, .07, .2], METAL_MAT, [.05, .06, .09], pilote);
+      P('sphere', [-.04, .66, 0], [.30, .20, .38], TISSU, combi, pilote);
+    }
     // Glaces des rétroviseurs, tournées vers le pilote (en vue cockpit : glace vivante)
     for (const k of [-1, 1]) P('box', [.527, .566, k * .47], [.004, .048, .132], METAL_MAT, [.2, .23, .27], { glace: true });
     // Suspension arrière : deux bras noirs

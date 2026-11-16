@@ -343,6 +343,7 @@
       th.eau = Math.min(th.eau, yMin - 2.5);
     }
     const w = c.largeur / 2, lim = limites(c), interroger = indexAxe(c);
+    let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
     const nappes = nappesRoute(c, th, lim);
     const terrain = nappesTerrain(c, th, interroger, g);
     const groupes = new Map();   // lots par portion de 150 m, plus lots lointains
@@ -358,8 +359,9 @@
     };
 
     // Glissières à double lisse sur poteaux, posées à la limite de chaque côté.
-    const PAS_G = 4;
+    const PAS_G = 4, sousTunnel = i => B.circuit.dansTunnel && B.circuit.dansTunnel(c, i * c.pas, 6);
     for (let i = 0; i < c.n; i += PAS_G) {
+      if (sousTunnel(i)) continue;
       for (const cote of [-1, 1]) {
         const f0 = cadre(c, i), f1 = cadre(c, i + PAS_G), L0 = (cote < 0 ? lim.G : lim.D)[f0.i], L1 = (cote < 0 ? lim.G : lim.D)[f1.i];
         const y0 = hauteurRoute(f0, cote * w, w) - .02 * (L0 - w - 1.2), y1 = hauteurRoute(f1, cote * w, w) - .02 * (L1 - w - 1.2);
@@ -381,6 +383,90 @@
           loin.push(objets[objets.length - 2]);
         }
         ajouter(objets, loin, milieu[0], milieu[2]);
+      }
+    }
+
+    // Tunnel de Haut-Col (circuit.js, c.tunnel) : murs de béton aux limites, voûte, lampes, deux portails dans la roche
+    // et la montagne autour (flancs posés au sol contre les murs, crête sur la voûte, rien ne dépasse à l'intérieur).
+    // L'intérieur est éclairé « dedans » (outdoor: false : ni soleil ni ciel, seulement les lampes) ; la chaussée y est
+    // doublée d'un revêtement intérieur, car la nappe de la route reste éclairée par le ciel. Pas de pluie dedans (jeu.js).
+    if (c.tunnel) {
+      const T = c.tunnel, PAS_T = 3, iD = Math.round(T.debut / c.pas), iF = Math.round(T.fin / c.pas), M = T.mur, H = T.hauteur;
+      const BETON = [.50, .50, .48], VOUTE = [.22, .22, .23], SOL = [.20, .20, .205], LIGNE = [.82, .82, .78];
+      const ROCHE = [.43, .41, .38], ROCHE2 = [.36, .35, .33], ROCHE3 = [.48, .46, .42];
+      tunnelLampes = [];
+      for (let i = iD; i < iF; i += PAS_T) {
+        const f0 = cadre(c, i), f1 = cadre(c, Math.min(i + PAS_T, iF)), y0 = hauteurRoute(f0, 0, w), y1 = hauteurRoute(f1, 0, w);
+        const objets = [], loin = [];
+        const a0 = pointPlan(f0, 0, y0), a1 = pointPlan(f1, 0, y1), axe = [a1[0] - a0[0], a1[1] - a0[1], a1[2] - a0[2]], long = Math.hypot(...axe) + .05;
+        const no = [Math.sin(f0.devers) * f0.r[0], Math.cos(f0.devers), Math.sin(f0.devers) * f0.r[2]], rotSol = angles(...base(axe, no));
+        const milieu = (d, h) => { const p = pointPlan(f0, d, (y0 + y1) / 2 + h), q = pointPlan(f1, d, 0); return [(p[0] + q[0]) / 2, p[1], (p[2] + q[2]) / 2]; };
+        // revêtement intérieur (4 cm au-dessus de la nappe) et lignes de rive
+        const sol = { shape: 'box', p: milieu(0, -.01), s: [long, .1, 2 * M], r: rotSol, mat: 7, color: SOL, outdoor: false, surface: 'object' };
+        objets.push(sol); loin.push(sol);
+        for (const cote of [-1, 1]) objets.push({ shape: 'box', p: milieu(cote * (w - .15), .045), s: [long, .02, .26], r: rotSol, mat: 7, color: LIGNE, outdoor: false, surface: 'object' });
+        for (const cote of [-1, 1]) {
+          const p0 = pointPlan(f0, cote * (M + .3), y0), p1 = pointPlan(f1, cote * (M + .3), y1);
+          const dir = [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]], rot = angles(...base(dir, [0, 1, 0]));
+          const m = [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, (p0[2] + p1[2]) / 2];
+          const mur = { shape: 'box', p: [m[0], m[1] + H / 2 - .2, m[2]], s: [long, H + .4, .6], r: rot, mat: 3, color: BETON, outdoor: false };
+          objets.push(mur); loin.push(mur);
+          // bande réfléchissante, et une lampe tous les 12 m de chaque côté, en quinconce
+          objets.push({ shape: 'box', p: [m[0] - f0.r[0] * cote * .32, m[1] + .9, m[2] - f0.r[2] * cote * .32], s: [long, .14, .02], r: rot, mat: 16, color: [.85, .72, .2], outdoor: false });
+          if (((i - iD) / PAS_T + (cote > 0 ? 0 : 2)) % 4 === 0) {
+            const lampe = { shape: 'box', p: [m[0] - f0.r[0] * cote * .34, m[1] + H - .6, m[2] - f0.r[2] * cote * .34], s: [1.1, .16, .08], r: rot, mat: 5, color: [1, .86, .58], emissive: 2.4, outdoor: false };
+            objets.push(lampe); loin.push(lampe);
+            tunnelLampes.push([m[0] - f0.r[0] * cote * 1.2, m[1] + H - .9, m[2] - f0.r[2] * cote * 1.2]);
+          }
+        }
+        const c0 = pointPlan(f0, 0, y0 + H + .35), c1 = pointPlan(f1, 0, y1 + H + .35), dir = [c1[0] - c0[0], c1[1] - c0[1], c1[2] - c0[2]];
+        const voute = { shape: 'box', p: [(c0[0] + c1[0]) / 2, (c0[1] + c1[1]) / 2, (c0[2] + c1[2]) / 2], s: [long, .7, 2 * M + 1.4], r: angles(...base(dir, [0, 1, 0])), mat: 3, color: VOUTE, outdoor: false };
+        objets.push(voute); loin.push(voute);
+        ajouter(objets, loin, f0.x, f0.z);
+      }
+      // La colline au-dessus du tunnel, en roche à strates (matière 9) : tous les 10 m, une crête posée sur la voûte et, de
+      // chaque côté, quatre colonnes de blocs biseautés posées au sol, plus hautes au milieu du tunnel (15 m aux portails,
+      // 29 m au milieu) et qui descendent vers l'extérieur. La colonne contre les murs reste alignée sur la piste : rien
+      // ne dépasse à l'intérieur. Au-delà des portails, la pente continue sur 20 m, hors des limites de la piste.
+      const ROCHES = [ROCHE, ROCHE2, ROCHE3], nT = iF - iD;
+      for (let i = iD - 10; i <= iF + 10; i += 5) {
+        const t = (i - iD) / nT, interieur = i >= iD + 4 && i <= iF - 4, horsTunnel = i < iD || i > iF;
+        const P = 1 - Math.pow(Math.min(1, Math.abs(2 * t - 1)), 4), Hc = 15 + 14 * P, recul = horsTunnel ? Math.min(i < iD ? iD - i : i - iF, 10) / 10 : 0;
+        const f = cadre(c, i), y = hauteurRoute(f, 0, w), objets = [], h = k => hache(i, k, g + 101);
+        if (i >= iD + 3 && i <= iF - 3) {
+          const haut = Hc - .5 + 3 * h(1) - (H + .7);
+          objets.push({ shape: 'bevel', p: pointPlan(f, (h(2) - .5) * 4, y + H + .7 + haut / 2), s: [12 + 4 * h(3), haut, 2 * M + 8], r: angles(...base(f.t, [0, 1, 0])), mat: 9, color: ROCHES[i % 3] });
+          // un piton par-dessus, de travers, pour casser la ligne de crête
+          if (h(4) > .45) objets.push({ shape: 'octa', p: pointPlan(f, (h(5) - .5) * 16, y + Hc + 1.5 + 2 * h(6)), s: [9 + 6 * h(7), 5 + 6 * h(8), 8 + 6 * h(9)], r: [h(11) * .5, h(12) * 6.3, h(13) * .5], mat: 9, color: ROCHES[(i + 1) % 3] });
+        }
+        for (const cote of [-1, 1]) {
+          let lat = M + .6;
+          const limite = (cote < 0 ? lim.G : lim.D)[f.i];
+          for (let k = 0; k < 4; k++) {
+            const large = 9 + 6 * h(10 + 2 * k + (cote > 0)), centre = lat + large / 2;
+            lat += large * .8;
+            // hors du tunnel, seulement loin de la piste (marge de rotation comprise) ; contre les murs, seulement dedans
+            if (k === 0 ? !interieur : !interieur && centre - large / 2 - 3 < limite + 2) continue;
+            const haut = Math.max(3, (Hc * (1 - Math.pow(centre / 54, 2)) + 4 * (h(20 + k) - .5)) * (1 - .5 * recul));
+            const lacet = k ? (h(30 + k) - .5) * .7 : 0, penche = k ? (h(40 + k) - .5) * .3 : 0;
+            const av = [Math.cos(f.a + lacet), 0, Math.sin(f.a + lacet)], dessus = [f.r[0] * penche * cote, 1, f.r[2] * penche * cote];
+            const pointu = k >= 2 && h(60 + k) > .5;   // dehors, des blocs pointus pour une silhouette de rocher
+            objets.push({ shape: pointu ? 'octa' : 'bevel', p: pointPlan(f, cote * centre, y - 2 + (haut + 2) / 2 + (pointu ? haut * .2 : 0)), s: [11 + 5 * h(50 + k), (haut + 2) * (pointu ? 1.5 : 1), large * (pointu ? 1.3 : 1)], r: angles(...base(av, dessus)), mat: 9, color: ROCHES[(i + k + (cote > 0)) % 3] });
+          }
+        }
+        if (objets.length) ajouter(objets, objets.slice(), f.x, f.z);
+      }
+      // portails : façade de roche percée à la taille de la voûte, à chaque bout, encadrée de béton (piédroits et linteau)
+      for (const [i, sens] of [[iD, -1], [iF, 1]]) {
+        const f = cadre(c, i), y = hauteurRoute(f, 0, w), rot = capRot(f.a), objets = [];
+        const devant = (d, h) => { const p = pointPlan(f, d, y + h); return [p[0] + f.t[0] * sens * 1.75, p[1], p[2] + f.t[2] * sens * 1.75]; };
+        for (const cote of [-1, 1]) {
+          objets.push({ shape: 'bevel', p: pointPlan(f, cote * (M + 7.3), y + 7.5), s: [3, 15.5, 14], r: rot, mat: 9, color: ROCHE });
+          objets.push({ shape: 'box', p: devant(cote * (M + .4), H / 2 - .05), s: [.5, H + .1, .8], r: rot, mat: 3, color: BETON });
+        }
+        objets.push({ shape: 'bevel', p: pointPlan(f, 0, y + H + 4.5), s: [3, 7, 2 * M + 28], r: rot, mat: 9, color: ROCHE2 });
+        objets.push({ shape: 'box', p: devant(0, H + .8), s: [.5, 1.6, 2 * M + 2.4], r: rot, mat: 3, color: BETON });
+        ajouter(objets, objets.slice(), f.x, f.z);
       }
     }
 
@@ -499,7 +585,7 @@
           const p = pointPlan(f, cote * d, 0), jx = p[0] + f.t[0] * glisse, jz = p[2] + f.t[2] * glisse;
           const q = interroger(jx, jz, 120);
           const dist = q.i < 0 ? 999 : q.d;
-          if (dist < 30) continue;
+          if (dist < 30 || (q.i >= 0 && dist < 48 && sousTunnel(q.i))) continue;
           if (q.i >= 0 && Math.abs(B.circuit.ecart(c, 0, q.i * c.pas)) < 320 && dist < 90) continue;
           const y = terrain.sol(jx, jz);
           if (th.eau !== undefined && y < th.eau + 2.5) continue;
@@ -516,7 +602,7 @@
       const jx = x + (hache(x, z, g) - .5) * PAS_A * .9, jz = z + (hache(z, x, g + 1) - .5) * PAS_A * .9;
       const q = interroger(jx, jz, 120);
       const dist = q.i < 0 ? 999 : q.d;
-      if (dist < 30 || dist > 460) continue;
+      if (dist < 30 || dist > 460 || (q.i >= 0 && dist < 48 && sousTunnel(q.i))) continue;
       const tache = fbm(jx / 210, jz / 210, g + 21, 3);
       const seuil = 1 - th.densite + lisse(30, 60, dist) * -.08 + lisse(200, 460, dist) * .12;
       if (tache < seuil) continue;
@@ -589,9 +675,11 @@
     const atmosphere = Object.assign({ outdoorZones: [{ x: 0, z: 0, w: 1e7, d: 1e7 }] }, th.atmosphere);
     // enceinte : portion de la ligne droite bordée de tribunes et de stands (abscisses comptées depuis la ligne) ; une
     // caméra de bord de piste s'y place devant eux, pas derrière la glissière où elle serait dans les gradins.
-    return { nappes: nappes.concat(terrain.liste), lots, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
+    const decor = { nappes: nappes.concat(terrain.liste), lots, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
+    if (tunnelLampes) decor.tunnelLampes = tunnelLampes;
+    return decor;
   }
 
   B.decor = { construire, THEMES, angles, base, limites, hauteurRoute, cadre };

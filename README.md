@@ -26,8 +26,11 @@ La version en ligne est la page figée d'un commit. Elle ne change qu'à la main
 
 - **Circuits** : Val-Brûlé (forêt, 4,22 km), Port-Sable (bord de mer, 3,64 km), Haut-Col (montagne, 5,22 km).
   Chacun est généré par une graine : arcs et lignes droites, relief, dévers, vibreurs, glissières, trajectoire idéale.
+  Haut-Col passe 260 m sous la montagne, dans un tunnel éclairé.
 - **Course** : 2, 3 ou 5 tours à douze voitures, départ arrêté aux feux, rivaux faciles, normaux ou coriaces,
   drapeau à damier, classement et écarts en direct, résultats.
+- **En ligne** : course à deux, chacun sur sa machine. L'un crée la partie et donne son code de quatre lettres,
+  l'autre le saisit ; les onze autres voitures restent à l'ordinateur. Chacun conduit sans attendre le réseau.
 - **Chrono** : seul en piste. Le meilleur tour devient un fantôme bleu gardé dans le navigateur, avec un record
   par circuit.
 - **Conduite** : boîte automatique ou manuelle, rupteur, vibreurs et herbe, glissières, dérive à trois niveaux de

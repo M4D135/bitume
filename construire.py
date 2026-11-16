@@ -35,11 +35,14 @@ MODULES = [
     'son.js',
     'decor.js',
     'carene.js',
+    'humain-donnees.js',
+    'humain-corps.js',
     'main.js',
     'voiture.js',
     'traces.js',
     'realisateur.js',
     'meteo.js',
+    'reseau.js',
     'jeu.js',
 ]
 # Version affichée au titre (David, 16/11/2026 : « incrémente les versions à chaque maj, je veux la vraie version »).

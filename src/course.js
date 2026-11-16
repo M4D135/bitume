@@ -24,6 +24,7 @@
     [C(.55, .80, .15), C(.08, .08, .09), C(.08, .50, .25)]
   ];
   const LIVREE_JOUEUR = [C(.86, .10, .08), C(.95, .93, .88), C(.95, .93, .88)];
+  const LIVREE_INVITE = [C(.93, .93, .95), C(.12, .28, .78), C(.86, .10, .08)];   // jeu en ligne : la seconde voiture humaine
   const LONGUEUR = 4.5, LARGEUR_VOITURE = 1.9;
 
   function mulberry32(a) {
@@ -50,7 +51,11 @@
     const chrono = o.mode === 'chrono';
     const L = c.longueur;
     const difficulte = clamp(Math.round(o.difficulte ?? 1), 0, 2);
-    const nbRivaux = chrono ? 0 : clamp(Math.round(o.rivaux ?? 11), 0, PILOTES.length);
+    // Jeu en ligne (reseau.js) : deux voitures humaines, 0 pour l'hôte et 1 pour l'invité sur les deux machines ;
+    // celles que l'on ne conduit pas sont « distantes » (état reçu du réseau) : l'autre pilote, et chez l'invité les
+    // rivaux, que l'hôte fait courir. Les rivaux suivent, de 2 à 11.
+    const humains = !chrono && o.humains ? o.humains : null;
+    const nbRivaux = chrono ? 0 : clamp(Math.round(o.rivaux ?? 11) - (humains ? 1 : 0), 0, PILOTES.length);
     const nb = nbRivaux + 1;
     const graine = (o.graine ?? 1) >>> 0;
     const placeJoueur = clamp(Math.round(o.placeJoueur ?? Math.min(8, nb)), 1, nb);
@@ -67,13 +72,23 @@
         reaction: joueur ? 0 : 0.12 + rng() * 0.28, cible: -1, cote: 0, decalVise: 0, decalDep: 0
       }
     });
-    const voitures = [voiture(0, 'Vous', 1, LIVREE_JOUEUR, true)];
-    for (let r = 0; r < nbRivaux; r++) voitures.push(voiture(r + 1, PILOTES[r][0], PILOTES[r][1], LIVREES[r], false));
+    const voitures = humains
+      ? [voiture(0, humains.noms[0], 1, LIVREE_JOUEUR, humains.local === 0), voiture(1, humains.noms[1], 2, LIVREE_INVITE, humains.local === 1)]
+      : [voiture(0, 'Vous', 1, LIVREE_JOUEUR, true)];
+    const premierRival = voitures.length;
+    for (let r = 0; r < nbRivaux; r++) voitures.push(voiture(r + premierRival, PILOTES[r][0], PILOTES[r][1], LIVREES[r], false));
+    if (humains) for (const v of voitures) { v.humain = v.id < 2; v.distant = v.id !== humains.local && (v.humain || humains.local === 1); }
+    // Caractère de chaque rival (David, 16/11 : « rends les IA plus intelligentes ») : combativité au dépassement,
+    // goût de la défense, régularité d'un tour à l'autre ; tiré à part, sans changer la grille.
+    for (const v of voitures) {
+      const h = mulberry32((graine ^ Math.imul(v.id + 1, 0x9E3779B1)) >>> 0);
+      Object.assign(v.ia, { agressivite: v.joueur ? .5 : .25 + .75 * h(), defense: v.joueur ? 0 : h(), regularite: v.joueur ? 1 : .55 + .45 * h(), forme: 1, sillage: -1, defend: 0, defendu: -1 });
+    }
 
     // grille : ordre des rivaux tiré de la graine, le joueur à sa place
-    const ordre = voitures.slice(1);
+    const ordre = voitures.slice(premierRival);
     for (let i = ordre.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [ordre[i], ordre[j]] = [ordre[j], ordre[i]]; }
-    ordre.splice(placeJoueur - 1, 0, voitures[0]);
+    ordre.splice(Math.min(placeJoueur - 1, ordre.length), 0, ...voitures.slice(0, premierRival));
     ordre.forEach((v, k) => {
       const s = chrono ? -40 : -10 - 8 * k, d = chrono ? 0 : (k % 2 === 0 ? -2.4 : 2.4);
       v.etat = B.conduite.creer(ramener((c.depart || 0) + s, L), d);
@@ -87,7 +102,7 @@
       c, mode: chrono ? 'chrono' : 'course', toursTotal: chrono ? 0 : Math.max(1, Math.round(o.tours ?? 3)), difficulte,
       phase: chrono ? 'course' : 'grille', horloge: 0, temps: 0, dt: 1 / 120,
       feux: { allumes: 0, vert: chrono }, delaiVert: 0.4 + rng() * 1.0,
-      voitures, joueur: voitures[0], classement: ordre.map(v => v.id),
+      voitures, joueur: voitures[humains ? humains.local : 0], classement: ordre.map(v => v.id), enLigne: !!humains,
       fantome: { meilleur: null, temps: null }, chronoParti: false,
       enreg: { donnees: new Float32Array(4 * 2048), n: 0, prochain: 0 },
       termine: false, drapeau: null, finisseurs: 0, tempsReference: tRef, vref: L / tRef,
@@ -110,7 +125,7 @@
     const recuperer=!!ia.dehors;
     if (course.mode === 'course' && course.phase === 'course' && course.temps < ia.reaction) { ia.bloque=0;return NEUTRE; }
 
-    let hab = ia.hab;
+    let hab = ia.hab * (ia.forme || 1);
     if (v.fini || (v.joueur && course.phase === 'arrivee')) hab *= 0.82; // tour de décélération
     else if (course.mode === 'course' && course.difficulte < 2 && !v.joueur && !course.joueur.fini) {
       const ej = v.progression - course.joueur.progression, f = clamp((Math.abs(ej) - 250) / 500, 0, 1) * 0.02;
@@ -118,14 +133,14 @@
     }
     // Pluie et pneus : l'adhérence perdue (conduite.js, adherencePneus) ; l'allure de virage suit sa racine, le
     // freinage la suit.
-    const adh = B.conduite.adherencePneus ? B.conduite.adherencePneus(e.pneus, B.conduite.eauSurPiste()) : 1;
+    const adh = B.conduite.adherencePneus ? B.conduite.adherencePneus(e.pneus, B.circuit.dansTunnel && B.circuit.dansTunnel(c, e.s) ? 0 : B.conduite.eauSurPiste()) : 1;
     hab *= Math.sqrt(adh);
 
     // Vitesse visée et freinage anticipé (jusqu'à 200 m devant). Le freinage finit une fraction de seconde avant
     // chaque point (avance), et la vitesse visée est la plus basse de ce bout de piste : la voiture arrive à la
     // corde déjà ralentie, au lieu de freiner en braquant, ce qui prend aux pneus l'adhérence du virage.
     const f = ramener(e.s, c.longueur) / P, i0 = Math.floor(f) % n, fr = f - Math.floor(f);
-    const dec = 0.8 * (14 + 0.15 * vit) * (recuperer ? .6 : 1) * adh, v2 = vit * vit; // l'herbe freine moins bien
+    let dec = 0.8 * (14 + 0.15 * vit) * (recuperer ? .6 : 1) * adh; const v2 = vit * vit; // l'herbe freine moins bien
     const anticipe = .5 * vit;
     let cible = lire(c, c.vitesse, e.s) * hab, besoin = 0;
     for (let q = 1, N = Math.ceil(200 / P); q <= N; q++) {
@@ -145,6 +160,8 @@
       const k = c.courbure[(i0 + q) % n];
       if (Math.abs(k) > 3e-3) { kAv = k; break; }
     }
+    // un attaquant engagé à l'intérieur du virage qui vient freine un peu plus tard, selon sa combativité
+    if (ia.cible >= 0 && kAv && ia.cote === Math.sign(kAv)) dec *= 1 + .06 * (ia.agressivite || 0);
     let devant = null, dsMin = regard, dMin = -utile, dMax = utile;
     for (const o of course.voitures) {
       if (o === v) continue;
@@ -154,12 +171,32 @@
         if (dd >= 0) dMax = Math.min(dMax, o.etat.d - espace); else dMin = Math.max(dMin, o.etat.d + espace);
       }
     }
+    // Aspiration : en ligne droite, derrière une voiture à allure voisine (6 à 45 m), on se glisse dans son sillage ;
+    // le gain de vitesse qu'il donne (conduite.js) ouvre le dépassement, par l'intérieur du virage qui vient.
+    if (!recuperer && !kAv && ia.cible < 0 && devant) {
+      const gap = dsMin - moi.long - empriseIA(devant.etat).long;
+      ia.sillage = gap > 6 && gap < 45 && Math.abs(devant.etat.v - vit) < 6 ? devant.id : -1;
+    } else ia.sillage = -1;
+    // Défense : un poursuivant à moins de 12 m avant un virage ; un pilote qui aime défendre prend l'intérieur, une
+    // fois par virage, au prix d'un peu d'allure ; jamais en serrant une voiture déjà à sa hauteur (dMin, dMax).
+    if (!recuperer && kAv && ia.cible < 0 && (ia.defense || 0) > .45 && course.phase === 'course') {
+      const virage = (i0 + Math.round(Math.max(60, v2 / 20 + 30) / P)) / 40 | 0;
+      if (ia.defendu !== virage) {
+        for (const o of course.voitures) {
+          if (o === v || o.fini) continue;
+          const ds = ecart(c, o.etat.s, e.s);
+          if (ds > 2 && ds < 12 + moi.long && Math.abs(o.etat.d - e.d) < 4) { ia.defend = Math.sign(kAv); ia.defendu = virage; break; }
+        }
+      }
+    }
+    if (!kAv && ia.defend && Math.abs(lire(c, c.courbure, e.s)) < 3e-3) ia.defend = 0;
     if (devant) {
       const od=devant.etat, taille=empriseIA(od), espace=moi.lat+taille.lat+.5, gap=dsMin-moi.long-taille.long;
       // un obstacle vraiment plus lent (voiture arrêtée ou en perdition) justifie un engagement plus tôt et plus
       // franc ; la circulation normale (allure voisine) garde la conduite habituelle du peloton.
       const obstacle = od.v < vit - 10;
-      if (!recuperer && ia.cible !== devant.id && vit > od.v + 0.3 && gap < (obstacle ? Math.max(70, v2 / 45 + 25) : 30)) {
+      const aspire = ia.sillage === devant.id && gap < 12;
+      if (!recuperer && ia.cible !== devant.id && (vit > od.v + 0.3 || aspire) && gap < (obstacle ? Math.max(70, v2 / 45 + 25) : 30)) {
         const interieur = kAv > 0 ? 1 : kAv < 0 ? -1 : (od.d > e.d ? -1 : 1);
         // côté libre : dans la piste et sans autre voiture sur la trajectoire de dépassement
         const libre = cote => {
@@ -206,7 +243,11 @@
       if (avance > 3+moi.long+empriseIA(o.etat).long || avance < -(regard + 10)) { ia.cible = -1; ia.cote = 0; }
       else ia.decalVise = o.etat.d+(moi.lat+empriseIA(o.etat).lat+.5)*ia.cote-base;
     }
-    const vise = ia.cible >= 0 ? ia.decalVise : 0, vLat = (ia.cible >= 0 ? (devant && vit > devant.etat.v + 8 ? 6.0 : 3.0) : recuperer ? 4 : .8) * dt;
+    let vise = ia.cible >= 0 ? ia.decalVise : 0, vLat = (ia.cible >= 0 ? (devant && vit > devant.etat.v + 8 ? 6.0 : 3.0) : recuperer ? 4 : .8) * dt;
+    if (ia.cible < 0 && !recuperer) {
+      if (ia.sillage >= 0) { vise = clamp(course.voitures[ia.sillage].etat.d - base, -utile - base, utile - base); vLat = 1.6 * dt; }
+      else if (ia.defend) { vise = ia.defend * (utile - .6) - base; vLat = 2.2 * dt; cible *= .985; }
+    }
     ia.decalDep += clamp(vise - ia.decalDep, -vLat, vLat);
 
     // Direction : poursuite d'un point de la ligne visée. Face à un obstacle beaucoup plus lent, on vise plus
@@ -305,6 +346,8 @@
     } else if (v.passages === 0 || v.fini) return; // départ compté depuis le vert ; rien après l'arrivée
     const temps = tPassage - v.debutTour, valide = v.tourValide !== false, meilleur = valide && (v.meilleur === null || temps < v.meilleur);
     v.debutTour = tPassage; v.tours++; v.tempsTours.push(temps);
+    // forme du tour suivant : un rival peu régulier varie un peu (±0,3 % au plus), sans hasard hors de la graine
+    if (!v.joueur && v.ia) { const h = mulberry32((Math.imul(v.id + 7, 0x85EBCA6B) ^ Math.imul(v.tours + 3, 0xC2B2AE35)) >>> 0); v.ia.forme = 1 + (h() - .5) * .012 * (1 - v.ia.regularite); }
     if (meilleur) v.meilleur = temps;
     ev.push({ type: 'tour', id: v.id, tour: v.tours, temps, meilleur, valide });
     v.tourValide = true;
@@ -391,6 +434,8 @@
     for (let i = 0; i < V.length; i++) {
       const v = V[i];
       course.sAvant[i] = sLigne(c, v.etat.s);
+      // voiture distante : son état vient du réseau, prolongé jusqu'à ce pas (jeu.js, reseau.js)
+      if (v.distant) { if (course.distant) course.distant(v, dt); continue; }
       let cmd;
       if (!v.joueur || v.fini) cmd = commandesIA(course, v);
       else cmd = cmdJoueur || NEUTRE;
@@ -424,11 +469,14 @@
     }
 
     // Fin : 8 s après l'arrivée du joueur, ou quand le délai après le drapeau est écoulé
+    // En ligne, la course attend aussi l'autre pilote (au plus deux fois ce délai) : l'hôte continue de faire courir les
+    // rivaux tant qu'un humain est en piste.
     const j = course.joueur;
     if (course.mode === 'course' && course.drapeau !== null) {
       const delai = Math.max(40, 1.25 * course.drapeau / course.toursTotal);
-      if ((j.fini && course.temps - j.tempsFinal >= 8) || course.temps - course.drapeau >= delai ||
-          V.every(v => v.fini || v.abandon)) course.termine = true;
+      const attendre = course.enLigne && course.temps - course.drapeau < 2 * delai && V.some(v => v.humain && !v.fini && !v.abandon);
+      if (!attendre && ((j.fini && course.temps - j.tempsFinal >= 8) || course.temps - course.drapeau >= delai ||
+          V.every(v => v.fini || v.abandon))) course.termine = true;
     }
     return ev;
   }

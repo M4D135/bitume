@@ -77,11 +77,32 @@
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
       <button type="button" class="gros" data-aller="chrono">Chrono</button>
+      <button type="button" class="gros" data-aller="enligne">En ligne</button>
       <button type="button" class="discret" data-aller="reglages">Réglages</button>
     </nav>
     <p id="titre-attente" class="attente" hidden><span id="titre-attente-texte">Démo dans 5 s</span><i><b></b></i></p>
     <p class="pied-titre">Clavier, manette ou écran tactile</p>
     <p id="aide-console" class="pied-titre" hidden>Xbox : maintenez Menu pour passer aux contrôles de jeu. RT : gaz · LT : frein · A : dérive</p>
+  </section>
+
+  <!-- Jeu en ligne à deux : créer ou rejoindre une partie -->
+  <section id="enligne" class="ecran enligne" hidden>
+    <header class="entete">
+      <button type="button" class="retour" data-aller="titre" aria-label="Retour">←</button>
+      <h2>En ligne</h2>
+    </header>
+    <p class="note-enligne">À deux, chacun sur sa machine. L’un crée la partie et donne son code à l’autre, qui le saisit. Chacun conduit sa voiture sans attendre le réseau.</p>
+    <label class="champ-nom"><span>Votre nom</span><input id="l-nom" maxlength="16" autocomplete="nickname" spellcheck="false"></label>
+    <div class="enligne-choix">
+      <button type="button" class="gros" id="l-creer">Créer une partie</button>
+      <div class="rejoindre">
+        <input id="l-code" maxlength="4" autocomplete="off" spellcheck="false" placeholder="CODE" aria-label="Code de la partie">
+        <button type="button" class="gros" id="l-rejoindre">Rejoindre</button>
+      </div>
+    </div>
+    <p id="l-code-affiche" class="code-partie" hidden></p>
+    <p id="l-etat" class="note-enligne" role="status" aria-live="polite"></p>
+    <button type="button" class="gros" id="l-choisir" hidden>Choisir la course</button>
   </section>
 
   <!-- Préparation d'une course ou d'un chrono -->

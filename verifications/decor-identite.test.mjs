@@ -73,5 +73,6 @@ const expected=[
     "sha256Darwin": "0e33056b3ea37f11484c68bfbbba1a66036e9ac69aedef18efc446b7c614e985"
   }
 ];
-for(const {sha256,sha256Darwin,...spec} of expected){const c=B.circuit.creer(spec.graine,spec);const ref=process.platform==='darwin'?(sha256Darwin||sha256):sha256;assert.equal(digest(B.decor.construire(c)),ref,JSON.stringify(spec));}
+// Le tunnel de montagne (16/11/2026) est vérifié à part (tunnel.test.mjs) : ici, la géométrie historique sans lui.
+for(const {sha256,sha256Darwin,...spec} of expected){const c=B.circuit.creer(spec.graine,{...spec,tunnel:false});const ref=process.platform==='darwin'?(sha256Darwin||sha256):sha256;assert.equal(digest(B.decor.construire(c)),ref,JSON.stringify(spec));}
 console.log('décor : 9 géométries de référence inchangées');
