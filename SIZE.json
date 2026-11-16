@@ -1,8 +1,8 @@
 {
   "version": "essai-0.1",
   "raw": 12686856,
-  "gzip": 2897508,
-  "sha256": "a4ff927bcf31472674dc09b1d07dbdfa97edfd60bacb651a271d7ee44b191564",
+  "gzip": 2897507,
+  "sha256": "82a950db4d198edeeb87cd2677e04380f1eb0651b0e33fcb467ed9eb328df3d7",
   "sources": {
     "moteur/renderer.js": 209041,
     "ferro/engine.js": 2024,
