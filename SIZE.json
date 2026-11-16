@@ -1,8 +1,8 @@
 {
-  "version": "0.2.19",
+  "version": "0.2.12",
   "raw": 12824119,
   "gzip": 2940694,
-  "sha256": "16773e526274ee7574234834ff62f4be891516f3c116deaaf000c7b56255d022",
+  "sha256": "745f3b0657c95171aa3c510977d2a063ca798ec0f0c9c01c5e2db4fc3580085f",
   "sources": {
     "moteur/renderer.js": 209041,
     "ferro/engine.js": 2024,
