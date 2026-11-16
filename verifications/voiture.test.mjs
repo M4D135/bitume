@@ -268,7 +268,7 @@ verifier('rétroviseurs : une voiture derrière à gauche se voit dans la glace 
   assert.equal(gauche.length - vide.length, 2, 'caisse et pneus');
   assert.equal(loin.length, vide.length, 'trop loin : rien');
   const reflet = gauche.find(m => m.color[2] === .8 && m.color[0] === .1);
-  assert.ok(reflet.p[2] < -.47 + .066 && reflet.p[2] > -.47 - .066 && Math.abs(reflet.p[1] - .565) < .024, `reflet en ${reflet.p.map(v => v.toFixed(3))}`);
+  assert.ok(reflet.p[2] < -.49 + .066 && reflet.p[2] > -.49 - .066 && Math.abs(reflet.p[1] - .565) < .024, `reflet en ${reflet.p.map(v => v.toFixed(3))}`);
   // plus la voiture est à gauche, plus son reflet est à gauche ; plus elle est près, plus il est grand
   const z = zr => bord({ derriere: [{ x: -14, z: zr, couleur: [.1, .3, .8] }] }).find(m => m.color[2] === .8 && m.color[0] === .1);
   assert.ok(z(-5).p[2] < z(-2).p[2] - .01, 'ordre gauche-droite');
@@ -393,10 +393,10 @@ verifier('rétroviseurs : le proche s\'enfonce plus que le lointain, reflet cont
   assert.ok(pneu && pneu.p[0] < pres.p[0] - 1e-9, 'la bande de pneus est derrière la caisse');
   // reflet contenu : suiveurs proches et décalés, des deux côtés
   const pres2 = bord({ derriere: [{ x: -2.5, z: 1.5, couleur: [.9, .1, .1] }, { x: -5, z: -1.5, couleur: [.1, .1, .9] }] });
-  const reflets = pres2.filter(m => Math.abs(m.p[0] - .5225) < .01 && (m.mat === 16 && (m.color.join() === [.9, .1, .1].join() || m.color.join() === [.1, .1, .9].join()) || m.mat === 7 && m.color.join() === [.03, .03, .035].join()));
+  const reflets = pres2.filter(m => Math.abs(m.p[0] - .48) < .01 && (m.mat === 16 && (m.color.join() === [.9, .1, .1].join() || m.color.join() === [.1, .1, .9].join()) || m.mat === 7 && m.color.join() === [.03, .03, .035].join()));
   assert.equal(reflets.length, 4, `${reflets.length} reflets (2 caisses, 2 pneus)`);
   for (const m of reflets) {
-    const zc = Math.sign(m.p[2]) * .47;
+    const zc = Math.sign(m.p[2]) * .49;
     assert.ok(m.p[1] - m.s[1] / 2 >= .541 - 1e-9 && m.p[1] + m.s[1] / 2 <= .589 + 1e-9, `reflet hors glace en y : ${m.p[1].toFixed(4)} ± ${(m.s[1] / 2).toFixed(4)}`);
     assert.ok(m.p[2] - m.s[2] / 2 >= zc - .066 - 1e-9 && m.p[2] + m.s[2] / 2 <= zc + .066 + 1e-9, `reflet hors glace en z : ${m.p[2].toFixed(4)} ± ${(m.s[2] / 2).toFixed(4)}`);
   }

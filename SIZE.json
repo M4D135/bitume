@@ -1,8 +1,8 @@
 {
   "version": "essai-0.1",
-  "raw": 12686850,
-  "gzip": 2897504,
-  "sha256": "a68f42f898fbecc9b413f769bdbad41ec7b27593b757111eb889ec17efcf64d9",
+  "raw": 12686848,
+  "gzip": 2897505,
+  "sha256": "53ce17b3906c0afa6a4c42c97ff3770997220f4a07b42713d1551092673e1e0b",
   "sources": {
     "moteur/renderer.js": 209041,
     "ferro/engine.js": 2024,
@@ -19,7 +19,7 @@
     "decor.js": 40023,
     "carene.js": 16443,
     "main.js": 7825,
-    "voiture.js": 48231,
+    "voiture.js": 48229,
     "traces.js": 14730,
     "realisateur.js": 5822,
     "meteo.js": 9619,
