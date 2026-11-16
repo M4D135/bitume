@@ -112,7 +112,7 @@
     forme('filet', deuxCotes(C.tube(ligne, .008, { cotes: 6, pas: 2 })));
   }
   // rétroviseurs : boîtier profilé, glace vers l'arrière (x = 0,53), sur une patte fine fixée au flanc du carénage
-  forme('retros', deuxCotes(C.carene([{ x: .61, y0: .560, y1: .575, l: .02, n: 2, z: .49 }, { x: .57, y0: .540, y1: .592, l: .072, n: 3, z: .49 }, { x: .53, y0: .538, y1: .594, l: .078, n: 4, z: .49 }], { cotes: 16, pas: 3 })
+  forme('retros', deuxCotes(C.carene([{ x: .61, y0: .560, y1: .575, l: .02, n: 2, z: .47 }, { x: .57, y0: .540, y1: .592, l: .072, n: 3, z: .47 }, { x: .53, y0: .538, y1: .594, l: .078, n: 4, z: .47 }], { cotes: 16, pas: 3 })
     .concat(C.tube([[.565, .53, .27], [.565, .55, .40]], .009, { cotes: 6 }))));
   {
     // suspension avant : basculeur supérieur noir, large à la coque et fin à la roue ; triangle inférieur et biellette
@@ -524,7 +524,7 @@
     const ciel = etat.ciel || [.66, .77, .88], brume = etat.brume || [.62, .70, .76], suiveurs = etat.derriere || [];
     const GL = .132, GH = .048;                                    // glace : largeur et hauteur
     for (const k of [-1, 1]) {
-      const zc = k * .49, x = .48, y = .565;
+      const zc = k * .47, x = .5225, y = .565;
       dans('box', [x, y + GH * .25, zc], [.003, GH * .5, GL], LAQUE, ciel.map(v => v * .75));
       dans('box', [x, y - GH * .04, zc], [.003, GH * .1, GL], LAQUE, brume.map(v => v * .6));
       dans('box', [x, y - GH * .295, zc], [.003, GH * .41, GL], LAQUE, [.10, .105, .11]);
