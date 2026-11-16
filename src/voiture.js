@@ -398,8 +398,8 @@
     for (const a of [-.184, .184]) for (const b of [-.048, .048]) mettre('cylinder', sur(a, b, .0095), [.008, .004, .008], METAL_MAT, ARGENT, rond);   // vis des coins
     posee('casquette', PLANCHE, cadre, MAT, NOIR);
     const passe = regime > REGIME_LAMPE && etat.rapport > 0 && etat.rapport < 6;
-    mettre('cylinder', sur(0, .070, .056), [.032, .008, .032], MAT, NOIR, rond);
-    mettre('sphere', sur(0, .078, .058), [.024, .024, .024], 5, passe ? [1, .13, .04] : [.20, .03, .02], null, passe ? { emissive: 3.2 } : undefined);
+    mettre('cylinder', sur(0, .070, .058), [.032, .008, .032], MAT, NOIR, rond);
+    mettre('sphere', sur(0, .078, .060), [.024, .024, .024], 5, passe ? [1, .13, .04] : [.20, .03, .02], null, passe ? { emissive: 3.2 } : undefined);
     mettre('box', sur(-.125, .006, .0085), [.004, .054, .036], LAQUE, [.012, .012, .014], plat);
     mettre('box', sur(.142, .004, .0085), [.004, .042, .080], LAQUE, [.012, .012, .014], plat);
     // Compte-tours : lunette, cadran noir, graduations ivoire tous les 1 000 tr/min (longues aux milliers pairs),
@@ -427,7 +427,7 @@
     const ralenti = B.conduite.PARAMS.ralenti, alerte = regime > 12600 || regime < ralenti + 300;
     const voyant = (a, allume, couleur, force) => {
       mettre('cylinder', sur(a, -.043, .0105), [.0125, .005, .0125], METAL_MAT, [.32, .32, .34], rond);
-      mettre('sphere', sur(a, -.043, .020), [.009, .009, .009], 5, allume ? couleur : [.2, .03, .02], null, allume ? { emissive: force } : undefined);
+      mettre('sphere', sur(a, -.043, .022), [.009, .009, .009], 5, allume ? couleur : [.2, .03, .02], null, allume ? { emissive: force } : undefined);
     };
     voyant(.032, true, [.14, .9, .3], 1.1);
     voyant(.050, alerte, [1, .14, .05], 1.8);

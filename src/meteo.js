@@ -149,5 +149,11 @@
     return { t: 0, phase: phaseFinale, tp: 0, pluie: PLUIE[idx], nuage: NUAGES[idx],
       eclair: 0, prochainEclair: 0, mouille: 0, ventX: 1.8, ventZ: .9, fixe };
   }
-  B.meteo = { avancer, ambiance, creerPluie, initial };
+  function pour(mode) {
+    if (mode === 'soleil') return { t: 0, phase: 'clair', tp: 0, pluie: 0, nuage: .12, eclair: 0, prochainEclair: 0, mouille: 0, ventX: 1.8, ventZ: .9, fixe: true };
+    if (mode === 'pluie') return { t: 0, phase: 'pluie', tp: 0, pluie: .75, nuage: .85, eclair: 0, prochainEclair: 0, mouille: 0, ventX: 1.8, ventZ: .9, fixe: true };
+    if (mode === 'variable') return { t: 0, phase: 'clair', tp: 0, pluie: 0, nuage: .12, eclair: 0, prochainEclair: 0, mouille: 0, ventX: 1.8, ventZ: .9, fixe: false };
+    return null;
+  }
+  B.meteo = { avancer, ambiance, creerPluie, initial, pour };
 })(globalThis.BITUME = globalThis.BITUME || {});

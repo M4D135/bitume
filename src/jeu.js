@@ -19,7 +19,7 @@
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
   function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
   function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
-  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5,
+  const DEFAUT = { vue: 'cockpit', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
@@ -144,6 +144,9 @@
         try { const d = deBase64(f.b64); if (d.length >= 4 * f.n) course.fantome = { meilleur: { donnees: d, n: f.n }, temps: f.temps }; } catch (e) { /* fantôme illisible : ignoré */ }
       }
     }
+    const meteoInit = (type === 'course' || type === 'chrono')
+      ? (B.meteo.pour(reglages.meteo) || B.meteo.initial(graineCourse))
+      : B.meteo.initial(graineCourse);
     const S = {
       type, i, course, c, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
       prec: [], cour: [], sortie: [], acc: 0, tele: { poste: null, alea: graine32(course.voitures.length * 7 + i) },
@@ -152,7 +155,7 @@
       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
       real: demo ? B.realisateur.creer(graineCourse) : null, planVu: null, suivie: 0, enchaine: false,
       fx: B.traces.creer(course.voitures.length, graineCourse),
-      meteo: B.meteo.initial(graineCourse)
+      meteo: meteoInit
     };
     remplirPoses(S.cour, course); remplirPoses(S.prec, course);
     session = S;
@@ -992,6 +995,7 @@
       });
     }
     for (const nom of ['tours', 'difficulte']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    for (const r of document.querySelectorAll('input[name="meteo"]')) r.checked = String(reglages.meteo || 'aleatoire') === r.value;
     majPreparation();
   }
   function majPreparation() {
@@ -1002,6 +1006,7 @@
   document.addEventListener('change', e => {
     const t = e.target;
     if (t.name === 'tours' || t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
+    if (t.name === 'meteo') { reglages.meteo = t.value; sauverReglages(); }
     if (['vue', 'boite', 'qualite', 'tableau', 'demo', 'cartePosition', 'carteTaille'].includes(t.name)) { reglages[t.name] = t.value; sauverReglages(); appliquerCarte(); if (t.name === 'qualite' && rendu) rendu.resize(t.value); }
     if (t.name === 'aide') { reglages.aide = +t.value; sauverReglages(); }
   });
