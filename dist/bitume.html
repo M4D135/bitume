@@ -44,7 +44,7 @@ button, input { font: inherit; color: inherit; }
 /* Glaces des rétroviseurs en vue cockpit : image réelle de la scène arrière, posée sur la glace par une
    transformation projective (matrix3d) ; la toile de rendu reste hors de l'écran, à taille fixe. */
 .glace { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none; border-radius: 14px / 22%; filter: brightness(.9) contrast(1.04); }
-.retro-rendu { position: absolute; left: -10000px; top: 0; width: 320px; height: 120px; visibility: hidden; pointer-events: none; }
+.retro-rendu { position: absolute; left: -10000px; top: 0; width: 330px; height: 100px; visibility: hidden; pointer-events: none; }
 #vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 55%, transparent 58%, rgba(0, 0, 0, .38) 100%); }
 
 /* ------------------------------------------------------------------ éléments communs */
@@ -430,7 +430,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.8">V0.2.8</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.9">V0.2.9</b>
     </div>
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
@@ -58326,12 +58326,14 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
         reaction: joueur ? 0 : 0.12 + rng() * 0.28, cible: -1, cote: 0, decalVise: 0, decalDep: 0
       }
     });
+    // écran partagé (humains.duo) : les deux voitures humaines sont conduites sur cette machine, aucune n'est distante
+    const duo = !!(humains && humains.duo);
     const voitures = humains
-      ? [voiture(0, humains.noms[0], 1, LIVREE_JOUEUR, humains.local === 0), voiture(1, humains.noms[1], 2, LIVREE_INVITE, humains.local === 1)]
+      ? [voiture(0, humains.noms[0], 1, LIVREE_JOUEUR, duo || humains.local === 0), voiture(1, humains.noms[1], 2, LIVREE_INVITE, duo || humains.local === 1)]
       : [voiture(0, 'Vous', 1, LIVREE_JOUEUR, true)];
     const premierRival = voitures.length;
     for (let r = 0; r < nbRivaux; r++) voitures.push(voiture(r + premierRival, PILOTES[r][0], PILOTES[r][1], LIVREES[r], false));
-    if (humains) for (const v of voitures) { v.humain = v.id < 2; v.distant = v.id !== humains.local && (v.humain || humains.local === 1); }
+    if (humains) for (const v of voitures) { v.humain = v.id < 2; v.distant = !duo && v.id !== humains.local && (v.humain || humains.local === 1); }
     // Caractère de chaque rival (David, 16/11 : « rends les IA plus intelligentes ») : combativité au dépassement,
     // goût de la défense, régularité d'un tour à l'autre ; tiré à part, sans changer la grille.
     for (const v of voitures) {
@@ -58356,7 +58358,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       c, mode: chrono ? 'chrono' : 'course', toursTotal: chrono ? 0 : Math.max(1, Math.round(o.tours ?? 3)), difficulte,
       phase: chrono ? 'course' : 'grille', horloge: 0, temps: 0, dt: 1 / 120,
       feux: { allumes: 0, vert: chrono }, delaiVert: 0.4 + rng() * 1.0,
-      voitures, joueur: voitures[humains ? humains.local : 0], classement: ordre.map(v => v.id), enLigne: !!humains,
+      voitures, joueur: voitures[humains && !duo ? humains.local : 0], classement: ordre.map(v => v.id), enLigne: !!humains && !duo, duo,
       fantome: { meilleur: null, temps: null }, chronoParti: false,
       enreg: { donnees: new Float32Array(4 * 2048), n: 0, prochain: 0 },
       termine: false, drapeau: null, finisseurs: 0, tempsReference: tRef, vref: L / tRef,
@@ -58692,7 +58694,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       if (v.distant) { if (course.distant) course.distant(v, dt); continue; }
       let cmd;
       if (!v.joueur || v.fini) cmd = commandesIA(course, v);
-      else cmd = cmdJoueur || NEUTRE;
+      else cmd = (Array.isArray(cmdJoueur) ? cmdJoueur[v.id] : cmdJoueur) || NEUTRE;   // écran partagé : une commande par voiture
       for (const e of B.conduite.pas(v.etat, cmd, c, dt, retenue)) { e.id = v.id; ev.push(e); }
     }
     if (B.contacts) B.contacts.pas(course, ev); else contacts(course, ev);
@@ -58723,13 +58725,15 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     }
 
     // Fin : 8 s après l'arrivée du joueur, ou quand le délai après le drapeau est écoulé
-    // En ligne, la course attend aussi l'autre pilote (au plus deux fois ce délai) : l'hôte continue de faire courir les
-    // rivaux tant qu'un humain est en piste.
+    // À deux (en ligne ou écran partagé), la course attend aussi l'autre pilote (au plus deux fois ce délai) et finit
+    // 8 s après l'arrivée du dernier des deux.
     const j = course.joueur;
     if (course.mode === 'course' && course.drapeau !== null) {
       const delai = Math.max(40, 1.25 * course.drapeau / course.toursTotal);
-      const attendre = course.enLigne && course.temps - course.drapeau < 2 * delai && V.some(v => v.humain && !v.fini && !v.abandon);
-      if (!attendre && ((j.fini && course.temps - j.tempsFinal >= 8) || course.temps - course.drapeau >= delai ||
+      let humains = 0, enPiste = false, arrivee = j.fini ? j.tempsFinal : -Infinity;
+      for (const v of V) if (v.humain) { humains++; if (!v.fini && !v.abandon) enPiste = true; else if (v.fini) arrivee = Math.max(arrivee, v.tempsFinal); }
+      const attendre = humains > 0 && enPiste && course.temps - course.drapeau < 2 * delai;
+      if (!attendre && ((arrivee > -Infinity && course.temps - arrivee >= 8) || course.temps - course.drapeau >= delai ||
           V.every(v => v.fini || v.abandon))) course.termine = true;
     }
     return ev;
@@ -60358,11 +60362,11 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       }
       return n.map(x => { const l = Math.hypot(x[0], x[1], x[2]) || 1; return x.map(v => v / l); });
     };
-    const triangles = (pos, nor, ids, garder) => {
+    const triangles = (pos, nor, ids, garder, filtre = pos) => {
       const t = [];
       for (let i = 0; i < ids.length; i += 3) {
-        const a = ids[i], c = ids[i + 1], d = ids[i + 2];
-        if (garder && !garder((pos[a][0] + pos[c][0] + pos[d][0]) / 3, (pos[a][1] + pos[c][1] + pos[d][1]) / 3, (pos[a][2] + pos[c][2] + pos[d][2]) / 3, b.materials && b.materials[a])) continue;
+        const a = ids[i], c = ids[i + 1], d = ids[i + 2], f = filtre;
+        if (garder && !garder((f[a][0] + f[c][0] + f[d][0]) / 3, (f[a][1] + f[c][1] + f[d][1]) / 3, (f[a][2] + f[c][2] + f[d][2]) / 3, b.materials && b.materials[a])) continue;
         t.push([place(pos[a]), place(pos[c]), place(pos[d]), rot(nor[a]), rot(nor[c]), rot(nor[d])]);
       }
       return t;
@@ -60397,8 +60401,13 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     return {
       casque: coque, visiere, bande,
       visage: triangles(h.positions, h.normals, h.indices, (x, y, z) => z > -.01 && y > 1.6),
-      // buste sans le bas des bras (ils pendaient hors de la coque) : sous l'épaule, seulement le torse
-      buste: triangles(b.positions, b.normals, b.indices, (x, y) => y > 1.2 && (Math.abs(x) < .19 || y > 1.38))
+      // Buste sans le bas des bras (ils pendaient hors de la coque) : sous l'épaule, seulement le torse. Les épaules
+      // (63 cm d'EMPRISE) traversaient le jonc du cockpit, large de 44 cm (David, 16/11 : « le perso est en collision
+      // avec le cockpit niveau épaule ») : au-delà de 16 cm de l'axe, le buste est resserré au quart ; 40 cm au plus.
+      buste: (() => {
+        const serre = b.positions.map(q => { const x = Math.abs(q[0]); return x > .16 ? [Math.sign(q[0]) * (.16 + (x - .16) * .25), q[1], q[2]] : q; });
+        return triangles(serre, normales(serre, b.indices), b.indices, (x, y) => y > 1.2 && (Math.abs(x) < .19 || y > 1.38), b.positions);
+      })()
     };
   })();
   if (HUMAIN) for (const nom of ['casque', 'visiere', 'bande', 'visage', 'buste']) if (HUMAIN[nom].length) forme('pilote-' + nom, HUMAIN[nom]);
@@ -60458,7 +60467,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   // part et d'autre, entre la planche et les pneus avant qu'elles ne cachent pas, plus grandes, un peu tournées vers
   // le pilote ; la vue extérieure garde les rétroviseurs à leur place. Glace : centre (x, y, ±z), largeur l, hauteur
   // h, rotation vers le pilote.
-  const RETRO = { x: .64, y: .665, z: .29, l: .19, h: .074, angle: .12 };
+  // David, 16/11 au soir : « plus bas un peu, plus petits, plus écrasés les rétros » (avant : y .665, 19 × 7,4 cm)
+  const RETRO = { x: .64, y: .64, z: .29, l: .165, h: .05, angle: .12 };
   // repère d'une glace (k = −1 à gauche, 1 à droite) : centre, normale vers le pilote, droite de la glace, rotation
   function cadreGlace(k) {
     const a = k * RETRO.angle, w = [-Math.sin(a), 0, Math.cos(a)];
@@ -60475,8 +60485,9 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     });
   }
   // boîtier : face arrière autour de la glace (cadre de 8 mm), nez effilé vers l'avant
-  forme('retro-boitier', C.carene([{ x: 0, y0: -.048, y1: .048, l: .112, n: 4.5 }, { x: .02, y0: -.050, y1: .050, l: .115, n: 4 },
-    { x: .07, y0: -.037, y1: .037, l: .088, n: 3 }, { x: .118, y0: -.011, y1: .011, l: .03, n: 2 }], { cotes: 24, pas: 3 }));
+  { const h = RETRO.h / 2, l = RETRO.l / 2;
+    forme('retro-boitier', C.carene([{ x: 0, y0: -h - .011, y1: h + .011, l: l + .017, n: 4.5 }, { x: .02, y0: -h - .013, y1: h + .013, l: l + .02, n: 4 },
+      { x: .07, y0: -h, y1: h, l: l - .007, n: 3 }, { x: .118, y0: -.011, y1: .011, l: .03, n: 2 }], { cotes: 24, pas: 3 })); }
   {
     // suspension avant : basculeur supérieur noir, large à la coque et fin à la roue ; triangle inférieur et biellette
     const versZ = [[0, 0, 1], [0, 1, 0], [-1, 0, 0]];
@@ -62855,14 +62866,15 @@ FERRO.initPhysics().then(function(){
     const camR = { pos, yaw: Math.atan2(rx, -rz), pitch: Math.asin(clamp(rf[1], -1, 1)) + .06, roll: ps.roulis * .85, fov: 2 * Math.atan(Math.tan(16 * Math.PI / 180) * h / l) * 180 / Math.PI, near: .3, far: PORTEE_VUE };
     camR.sun = Object.assign({ center: [ps.x, ps.y, ps.z] }, scene.ombre);
     // tout sauf l'habitacle (pièces « overlay »), plus la roue arrière de la voiture elle-même, qui entre au bord
-    // extérieur de la glace comme dans un vrai rétroviseur (le reste de la caisse boucherait la vue)
+    // extérieur de la glace comme dans un vrai rétroviseur (le reste de la caisse boucherait la vue ; les dérives de
+    // l'aileron arrière faisaient deux « carrés rouges », David 16/11)
     const objets = retro.objets; objets.length = 0;
     for (const o of sortie) if (!o.overlay) objets.push(o);
     const n0 = objets.length, ca = Math.cos(ps.cap), sa = Math.sin(ps.cap);
     B.voiture.poser(S.modeles[suivie.id], { p: [ps.x, ps.y, ps.z], cap: ps.cap, tangage: ps.tangage, roulis: ps.roulis, braquage: ps.braquage, roule: S.rouleVu ? S.rouleVu[suivie.id] : ps.roule, rebond: ps.rebond, v: suivie.etat.v }, objets, { roues: suivie.degats && suivie.degats.roues, casse: !!(suivie.etat.degats && suivie.etat.degats.casse) });
     for (let k = objets.length - 1; k >= n0; k--) {
       const o = objets[k], dx = o.p[0] - ps.x, dz = o.p[2] - ps.z, x = dx * ca + dz * sa, z = dz * ca - dx * sa;
-      if (!(x < -.9 && Math.abs(z) > .55)) objets.splice(k, 1);
+      if (!(Math.abs(x - B.voiture.ROUES[2].x) < .5 && Math.abs(z) > .55)) objets.splice(k, 1);
     }
     retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance });
     const ctx = retro.ctx[i];

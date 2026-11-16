@@ -983,14 +983,15 @@
     const camR = { pos, yaw: Math.atan2(rx, -rz), pitch: Math.asin(clamp(rf[1], -1, 1)) + .06, roll: ps.roulis * .85, fov: 2 * Math.atan(Math.tan(16 * Math.PI / 180) * h / l) * 180 / Math.PI, near: .3, far: PORTEE_VUE };
     camR.sun = Object.assign({ center: [ps.x, ps.y, ps.z] }, scene.ombre);
     // tout sauf l'habitacle (pièces « overlay »), plus la roue arrière de la voiture elle-même, qui entre au bord
-    // extérieur de la glace comme dans un vrai rétroviseur (le reste de la caisse boucherait la vue)
+    // extérieur de la glace comme dans un vrai rétroviseur (le reste de la caisse boucherait la vue ; les dérives de
+    // l'aileron arrière faisaient deux « carrés rouges », David 16/11)
     const objets = retro.objets; objets.length = 0;
     for (const o of sortie) if (!o.overlay) objets.push(o);
     const n0 = objets.length, ca = Math.cos(ps.cap), sa = Math.sin(ps.cap);
     B.voiture.poser(S.modeles[suivie.id], { p: [ps.x, ps.y, ps.z], cap: ps.cap, tangage: ps.tangage, roulis: ps.roulis, braquage: ps.braquage, roule: S.rouleVu ? S.rouleVu[suivie.id] : ps.roule, rebond: ps.rebond, v: suivie.etat.v }, objets, { roues: suivie.degats && suivie.degats.roues, casse: !!(suivie.etat.degats && suivie.etat.degats.casse) });
     for (let k = objets.length - 1; k >= n0; k--) {
       const o = objets[k], dx = o.p[0] - ps.x, dz = o.p[2] - ps.z, x = dx * ca + dz * sa, z = dz * ca - dx * sa;
-      if (!(x < -.9 && Math.abs(z) > .55)) objets.splice(k, 1);
+      if (!(Math.abs(x - B.voiture.ROUES[2].x) < .5 && Math.abs(z) > .55)) objets.splice(k, 1);
     }
     retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance });
     const ctx = retro.ctx[i];

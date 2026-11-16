@@ -86,11 +86,11 @@
       }
       return n.map(x => { const l = Math.hypot(x[0], x[1], x[2]) || 1; return x.map(v => v / l); });
     };
-    const triangles = (pos, nor, ids, garder) => {
+    const triangles = (pos, nor, ids, garder, filtre = pos) => {
       const t = [];
       for (let i = 0; i < ids.length; i += 3) {
-        const a = ids[i], c = ids[i + 1], d = ids[i + 2];
-        if (garder && !garder((pos[a][0] + pos[c][0] + pos[d][0]) / 3, (pos[a][1] + pos[c][1] + pos[d][1]) / 3, (pos[a][2] + pos[c][2] + pos[d][2]) / 3, b.materials && b.materials[a])) continue;
+        const a = ids[i], c = ids[i + 1], d = ids[i + 2], f = filtre;
+        if (garder && !garder((f[a][0] + f[c][0] + f[d][0]) / 3, (f[a][1] + f[c][1] + f[d][1]) / 3, (f[a][2] + f[c][2] + f[d][2]) / 3, b.materials && b.materials[a])) continue;
         t.push([place(pos[a]), place(pos[c]), place(pos[d]), rot(nor[a]), rot(nor[c]), rot(nor[d])]);
       }
       return t;
@@ -125,8 +125,13 @@
     return {
       casque: coque, visiere, bande,
       visage: triangles(h.positions, h.normals, h.indices, (x, y, z) => z > -.01 && y > 1.6),
-      // buste sans le bas des bras (ils pendaient hors de la coque) : sous l'épaule, seulement le torse
-      buste: triangles(b.positions, b.normals, b.indices, (x, y) => y > 1.2 && (Math.abs(x) < .19 || y > 1.38))
+      // Buste sans le bas des bras (ils pendaient hors de la coque) : sous l'épaule, seulement le torse. Les épaules
+      // (63 cm d'EMPRISE) traversaient le jonc du cockpit, large de 44 cm (David, 16/11 : « le perso est en collision
+      // avec le cockpit niveau épaule ») : au-delà de 16 cm de l'axe, le buste est resserré au quart ; 40 cm au plus.
+      buste: (() => {
+        const serre = b.positions.map(q => { const x = Math.abs(q[0]); return x > .16 ? [Math.sign(q[0]) * (.16 + (x - .16) * .25), q[1], q[2]] : q; });
+        return triangles(serre, normales(serre, b.indices), b.indices, (x, y) => y > 1.2 && (Math.abs(x) < .19 || y > 1.38), b.positions);
+      })()
     };
   })();
   if (HUMAIN) for (const nom of ['casque', 'visiere', 'bande', 'visage', 'buste']) if (HUMAIN[nom].length) forme('pilote-' + nom, HUMAIN[nom]);
@@ -186,7 +191,8 @@
   // part et d'autre, entre la planche et les pneus avant qu'elles ne cachent pas, plus grandes, un peu tournées vers
   // le pilote ; la vue extérieure garde les rétroviseurs à leur place. Glace : centre (x, y, ±z), largeur l, hauteur
   // h, rotation vers le pilote.
-  const RETRO = { x: .64, y: .665, z: .29, l: .19, h: .074, angle: .12 };
+  // David, 16/11 au soir : « plus bas un peu, plus petits, plus écrasés les rétros » (avant : y .665, 19 × 7,4 cm)
+  const RETRO = { x: .64, y: .64, z: .29, l: .165, h: .05, angle: .12 };
   // repère d'une glace (k = −1 à gauche, 1 à droite) : centre, normale vers le pilote, droite de la glace, rotation
   function cadreGlace(k) {
     const a = k * RETRO.angle, w = [-Math.sin(a), 0, Math.cos(a)];
@@ -203,8 +209,9 @@
     });
   }
   // boîtier : face arrière autour de la glace (cadre de 8 mm), nez effilé vers l'avant
-  forme('retro-boitier', C.carene([{ x: 0, y0: -.048, y1: .048, l: .112, n: 4.5 }, { x: .02, y0: -.050, y1: .050, l: .115, n: 4 },
-    { x: .07, y0: -.037, y1: .037, l: .088, n: 3 }, { x: .118, y0: -.011, y1: .011, l: .03, n: 2 }], { cotes: 24, pas: 3 }));
+  { const h = RETRO.h / 2, l = RETRO.l / 2;
+    forme('retro-boitier', C.carene([{ x: 0, y0: -h - .011, y1: h + .011, l: l + .017, n: 4.5 }, { x: .02, y0: -h - .013, y1: h + .013, l: l + .02, n: 4 },
+      { x: .07, y0: -h, y1: h, l: l - .007, n: 3 }, { x: .118, y0: -.011, y1: .011, l: .03, n: 2 }], { cotes: 24, pas: 3 })); }
   {
     // suspension avant : basculeur supérieur noir, large à la coque et fin à la roue ; triangle inférieur et biellette
     const versZ = [[0, 0, 1], [0, 1, 0], [-1, 0, 0]];

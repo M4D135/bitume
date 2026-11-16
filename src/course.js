@@ -72,12 +72,14 @@
         reaction: joueur ? 0 : 0.12 + rng() * 0.28, cible: -1, cote: 0, decalVise: 0, decalDep: 0
       }
     });
+    // écran partagé (humains.duo) : les deux voitures humaines sont conduites sur cette machine, aucune n'est distante
+    const duo = !!(humains && humains.duo);
     const voitures = humains
-      ? [voiture(0, humains.noms[0], 1, LIVREE_JOUEUR, humains.local === 0), voiture(1, humains.noms[1], 2, LIVREE_INVITE, humains.local === 1)]
+      ? [voiture(0, humains.noms[0], 1, LIVREE_JOUEUR, duo || humains.local === 0), voiture(1, humains.noms[1], 2, LIVREE_INVITE, duo || humains.local === 1)]
       : [voiture(0, 'Vous', 1, LIVREE_JOUEUR, true)];
     const premierRival = voitures.length;
     for (let r = 0; r < nbRivaux; r++) voitures.push(voiture(r + premierRival, PILOTES[r][0], PILOTES[r][1], LIVREES[r], false));
-    if (humains) for (const v of voitures) { v.humain = v.id < 2; v.distant = v.id !== humains.local && (v.humain || humains.local === 1); }
+    if (humains) for (const v of voitures) { v.humain = v.id < 2; v.distant = !duo && v.id !== humains.local && (v.humain || humains.local === 1); }
     // Caractère de chaque rival (David, 16/11 : « rends les IA plus intelligentes ») : combativité au dépassement,
     // goût de la défense, régularité d'un tour à l'autre ; tiré à part, sans changer la grille.
     for (const v of voitures) {
@@ -102,7 +104,7 @@
       c, mode: chrono ? 'chrono' : 'course', toursTotal: chrono ? 0 : Math.max(1, Math.round(o.tours ?? 3)), difficulte,
       phase: chrono ? 'course' : 'grille', horloge: 0, temps: 0, dt: 1 / 120,
       feux: { allumes: 0, vert: chrono }, delaiVert: 0.4 + rng() * 1.0,
-      voitures, joueur: voitures[humains ? humains.local : 0], classement: ordre.map(v => v.id), enLigne: !!humains,
+      voitures, joueur: voitures[humains && !duo ? humains.local : 0], classement: ordre.map(v => v.id), enLigne: !!humains && !duo, duo,
       fantome: { meilleur: null, temps: null }, chronoParti: false,
       enreg: { donnees: new Float32Array(4 * 2048), n: 0, prochain: 0 },
       termine: false, drapeau: null, finisseurs: 0, tempsReference: tRef, vref: L / tRef,
@@ -438,7 +440,7 @@
       if (v.distant) { if (course.distant) course.distant(v, dt); continue; }
       let cmd;
       if (!v.joueur || v.fini) cmd = commandesIA(course, v);
-      else cmd = cmdJoueur || NEUTRE;
+      else cmd = (Array.isArray(cmdJoueur) ? cmdJoueur[v.id] : cmdJoueur) || NEUTRE;   // écran partagé : une commande par voiture
       for (const e of B.conduite.pas(v.etat, cmd, c, dt, retenue)) { e.id = v.id; ev.push(e); }
     }
     if (B.contacts) B.contacts.pas(course, ev); else contacts(course, ev);
@@ -469,13 +471,15 @@
     }
 
     // Fin : 8 s après l'arrivée du joueur, ou quand le délai après le drapeau est écoulé
-    // En ligne, la course attend aussi l'autre pilote (au plus deux fois ce délai) : l'hôte continue de faire courir les
-    // rivaux tant qu'un humain est en piste.
+    // À deux (en ligne ou écran partagé), la course attend aussi l'autre pilote (au plus deux fois ce délai) et finit
+    // 8 s après l'arrivée du dernier des deux.
     const j = course.joueur;
     if (course.mode === 'course' && course.drapeau !== null) {
       const delai = Math.max(40, 1.25 * course.drapeau / course.toursTotal);
-      const attendre = course.enLigne && course.temps - course.drapeau < 2 * delai && V.some(v => v.humain && !v.fini && !v.abandon);
-      if (!attendre && ((j.fini && course.temps - j.tempsFinal >= 8) || course.temps - course.drapeau >= delai ||
+      let humains = 0, enPiste = false, arrivee = j.fini ? j.tempsFinal : -Infinity;
+      for (const v of V) if (v.humain) { humains++; if (!v.fini && !v.abandon) enPiste = true; else if (v.fini) arrivee = Math.max(arrivee, v.tempsFinal); }
+      const attendre = humains > 0 && enPiste && course.temps - course.drapeau < 2 * delai;
+      if (!attendre && ((arrivee > -Infinity && course.temps - arrivee >= 8) || course.temps - course.drapeau >= delai ||
           V.every(v => v.fini || v.abandon))) course.termine = true;
     }
     return ev;
