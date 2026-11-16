@@ -546,7 +546,7 @@
 
     // Rétroviseur central : en haut, au milieu, pour la vue arrière.
     {
-      const x = 1.0, y = .65, zc = 0, GLc = GL * 1.4, GHc = GH * 1.1;
+      const x = .4, y = .75, zc = 0, GLc = GL * 1.4, GHc = GH * 1.1;
       dans('box', [x, y + GHc * .25, zc], [.003, GHc * .5, GLc], LAQUE, ciel.map(v => v * .75));
       dans('box', [x, y - GHc * .04, zc], [.003, GHc * .1, GLc], LAQUE, brume.map(v => v * .6));
       dans('box', [x, y - GHc * .295, zc], [.003, GHc * .41, GLc], LAQUE, [.10, .105, .11]);
