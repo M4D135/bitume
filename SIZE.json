@@ -1,10 +1,10 @@
 {
   "version": "essai-0.1",
-  "raw": 606234,
-  "gzip": 187569,
-  "sha256": "3690e8ee678ec0cbc5fea39fc8c52778d2dcd8e3d79aa4bdff3c8c6edaeae4a6",
+  "raw": 606917,
+  "gzip": 187808,
+  "sha256": "5561223ce35f6a238ad3e8f98d99efbd27a870bdb24845d0c9a90198a2a7bcc1",
   "sources": {
-    "moteur/renderer.js": 207498,
+    "moteur/renderer.js": 208181,
     "ferro/engine.js": 1871,
     "circuit.js": 17710,
     "ferro/vehicle-dynamics.js": 3980,

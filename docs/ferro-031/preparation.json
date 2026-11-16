@@ -1,0 +1,40 @@
+{
+  "game": "bitume",
+  "repository": "/Users/david/Documents/Codex/2026-11-15/no/work/ferro-reference-bitume",
+  "root": "/Users/david/Documents/Codex/2026-11-15/no/work/ferro-reference-bitume",
+  "baseCommit": "ab43cbee3cac494cbfd53f2071987d939dd99f5f",
+  "engineCommit": "54007b174a327e97513cb0b4dc7b0f941ffc19e2",
+  "version": "0.3.1",
+  "changedModuleIds": [
+    "render",
+    "webgpu",
+    "backends",
+    "host"
+  ],
+  "moduleCount": 32,
+  "buildScript": "construire.py",
+  "html": "dist/bitume.html",
+  "testGlob": "verifications/*.test.mjs",
+  "date": "2026-11-16T07:56:35.614222+00:00",
+  "state": "prepared-local",
+  "nodeVersion": "v24.18.0",
+  "testCommand": [
+    "node",
+    "--test",
+    "--test-concurrency=2",
+    "verifications/*.test.mjs"
+  ],
+  "node": {
+    "tests": 29,
+    "pass": 29,
+    "fail": 0,
+    "todo": 0
+  },
+  "moduleHashesMatchReference": true,
+  "adaptersChanged": false,
+  "gpuTestsRun": false,
+  "pushed": false,
+  "deployed": false,
+  "buildBytes": 606917,
+  "buildSha256": "5561223ce35f6a238ad3e8f98d99efbd27a870bdb24845d0c9a90198a2a7bcc1"
+}

@@ -138,4 +138,4 @@ servie a la même empreinte. Aucun timer : le VPS n'a pas accès au dépôt priv
 
 Aucun plafond de taille du code, du moteur ou des builds. Cette décision remplace les anciens budgets en octets ci-dessus. Le contenu graphique et sonore reste entièrement procédural. Mesurer les tailles et les performances, sans réduire les fonctionnalités pour respecter une limite de fichier.
 
-Les modules listés dans `FERRO.lock.json` sont désormais des copies exactes de la référence `EMPRISE/src/ferro`. Cette décision remplace les anciennes consignes de retouche locale du moteur : corriger la référence et propager une version qualifiée ; conserver les adaptations du jeu hors de ces modules.
+Les modules listés dans `FERRO.lock.json` sont désormais des copies exactes de la référence `M4D135/FERRO:src/ferro`. Cette décision remplace les anciennes consignes de retouche locale du moteur : corriger la référence et propager une version qualifiée ; conserver les adaptations du jeu hors de ces modules.
