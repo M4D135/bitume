@@ -275,7 +275,7 @@ verifier('rétroviseurs : une voiture derrière à gauche se voit dans la glace 
   const pres = bord({ derriere: [{ x: -5, z: -2, couleur: [.1, .3, .8] }] }).find(m => m.color[2] === .8 && m.color[0] === .1);
   assert.ok(pres.s[2] > z(-2).s[2] * 1.5, 'taille selon la distance');
   // droit derrière, à 12 m : visible dans les deux glaces
-  assert.equal(bord({ derriere: [{ x: -12, z: 0, couleur: [.1, .3, .8] }] }).length - vide.length, 4);
+  assert.equal(bord({ derriere: [{ x: -12, z: 0, couleur: [.1, .3, .8] }] }).length - vide.length, 6);
 });
 
 verifier('silhouette : le flanc est fermé derrière la roue avant (voi-1)', () => {
