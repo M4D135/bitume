@@ -61,7 +61,7 @@ n2]` tenus dans le cube unité (`B.carene.normaliser`) ; l'instance porte la vra
 - `voiture.attitude(cap, tangage, roulis)` = Ry(−cap)·Rz(tangage)·Rx(roulis), tangage > 0 nez levé.
 - Caméra FERRO : `yaw = cap + π/2`, `roll = −roulis`. Le champ (`fov`) est vertical, en degrés, borné de 10 à 110.
 - Simulation déterministe au pas fixe de 1/120 s, hasard par mulberry32 à graine.
-- Records et fantômes portent la version de la physique (`bitume.records.p7`) : changer la conduite oblige à la monter.
+- Records et fantômes portent la version de la physique (`bitume.records.p8`) : changer la conduite oblige à la monter.
 - Mouvement : le réglage « Secousses » (0 à 100 %) règle les secousses des chocs et le tremblement du casque ; nul à
   0 %, il part de 0 quand le système demande moins de mouvement (`prefers-reduced-motion`).
 

@@ -25,7 +25,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   const PARAMS = Object.freeze({
     // châssis : monoplace de 1990, pilote et essence compris
     masse: 600, empattement: 2.85, repartition: 0.44, hauteurCG: 0.33, voie: 1.75, giration: 1.30,
-    roulisAvant: 0.54, chargeTau: 0.07,
+    roulisAvant: 0.54, chargeTau: 0.062,
     // air : appui (m/s² par (m/s)²), part de l'appui sur l'avant, traînée, roulement, aspiration
     aero: 0.0016, aeroAvant: 0.45, coeffTrainee: 0.00059, roulement: 0.25, aspirationMax: 0.35,
     // pneus : adhérence au pic, sensibilité à la charge, dérive au pic, retombée après le pic (plus basse et plus
@@ -44,13 +44,13 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     coeffMoteur: 13, freinMoteur: 1.6, rapportDuree: 0.08, regimeTau: 0.05,
     lancement: 0.70, lancementTau: 0.09,
     // freins : part de l'adhérence totale à pleine pédale, part de l'avant
-    freinMax: 0.92, freinAvant: 0.60,
+    freinMax: 0.92, freinAvant: 0.58,
     // direction : le volant commande une part de l'adhérence avant ; plein volant un peu après le pic ;
     // amortisseur de glisse, lâché entre amortSeuil et amortSeuil + amortPlage fois la dérive arrière au pic
     braquageMeca: 0.38, marge: 1.0, vSuivi0: 2, vSuivi1: 6, amortGlisse: 0.5, amortSeuil: 3.0, amortPlage: 0.5,
-    volantMontee: 0.030, volantMonteeV: 0.0002, volantRetour: 0.028,
+    volantMontee: 0.030, volantMonteeV: 0.0002, volantRetour: 0.026,
     // aide au volant : rattrape les glisses (niveaux 0,35 et 0,7)
-    aideSeuil: 0.06, aidePlage: 0.12, aideGain: 2.2, aideLacet: 0.25,
+    aideSeuil: 0.062, aidePlage: 0.118, aideGain: 2.15, aideLacet: 0.28,
     // dérive au bouton
     deriveVMin: 12.2, deriveCourbMin: 0.0015, deriveVolantMin: 0.2, deriveFreinMax: 0.05, deriveAnnulV: 10,
     deriveArmement: 0.15, deriveRearmement: 0.25, deriveAttente: 0.2, deriveGrace: 0.18, derivePerte: 0.38,
@@ -416,13 +416,15 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     // le guidage du clavier s'efface vers le plein volant : plein volant = braquageMax(v), comme pour l'IA
     if (guidage > 0) rho = clamp(rho + guidage * (1 - Math.abs(rho)) * volantPour(etat, k / Math.max(1 - k * etat.d, 0.3)), -1, 1);
     // aide au volant : quand l'arrière décroche (nez vers l'intérieur au-delà du seuil), la consigne vers
-    // l'intérieur s'efface et un contre-braquage s'ajoute ; inactive pendant une dérive au bouton
+    // l'intérieur s'efface et un contre-braquage s'ajoute ; inactive pendant une dérive au bouton. Le lacet rattrapé
+    // est surtout l'excès de rotation (lacet plus vif que la trajectoire), pas le lacet d'un virage propre : la limite
+    // reste lisible au lieu d'un sous-virage artificiel (relecture Spark, David 16/11 : « précision et fun »).
     if (aide > 0 && bd < 0.5) {
       const exces = rampe(Math.abs(etat.beta), P.aideSeuil, P.aideSeuil + P.aidePlage) * aide * (1 - 2 * bd);
       if (exces > 0) {
-        const sb = sign(etat.beta);
+        const sb = sign(etat.beta), lacetExces = r - etat.alat / ua, rAide = 0.6 * r + (lacetExces * sb > 0 ? lacetExces : 0);
         if (rho * sb > 0) rho *= 1 - Math.min(1, P.aideGain * exces);
-        rho -= sb * exces * P.aideGain * 0.5 + P.aideLacet * aide * r * (1 - 2 * bd);
+        rho -= sb * exces * P.aideGain * 0.5 + P.aideLacet * aide * rAide * (1 - 2 * bd);
       }
     }
     if (bt > 0) rho += bt * sensD * P.deriveTirage;

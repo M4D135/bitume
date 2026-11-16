@@ -31,7 +31,7 @@
     if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
   const sauverReglages = () => ecrireStock('bitume.reglages', reglages);
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p7', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p8', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
 
   function enBase64(f32) {
@@ -267,9 +267,10 @@
         // démo : un bouton ou un manche ramène au titre ; le bouton reste « déjà appuyé » pour ne rien valider au retour
         if (ecran === 'demo') { for (let i = 0; i < p.buttons.length; i++) pad.precedent[i] = appuye(i); if (geste) { activerSon(); sortirDemo(); } return; }
       }
-      // zone morte de 0,07 puis exposant 1,3 : vif au centre sans à-coup, plein volant au bout de la course
-      const ax = p.axes[0] || 0, morte = .07, x = Math.abs(ax) < morte ? 0 : Math.sign(ax) * (Math.abs(ax) - morte) / (1 - morte);
-      pad.volant = Math.sign(x) * Math.pow(Math.abs(x), 1.3);
+      // zone morte de 0,06 puis exposant 1,22 : vif au centre sans à-coup, point d'accroche trouvé plus tôt, plein
+      // volant au bout de la course (16/11 : « précision »)
+      const ax = p.axes[0] || 0, morte = .06, x = Math.abs(ax) < morte ? 0 : Math.sign(ax) * (Math.abs(ax) - morte) / (1 - morte);
+      pad.volant = Math.sign(x) * Math.pow(Math.abs(x), 1.22);
       pad.gaz = b(7); pad.frein = b(6); pad.derive = appuye(0) || appuye(2);
       if (enCourse()) {
         if (nouveau(5)) impulsions.haut = true;
