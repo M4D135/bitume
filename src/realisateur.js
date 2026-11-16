@@ -1,23 +1,34 @@
 (function (B) {
   'use strict';
-  // BITUME — réalisateur de la démo. Plan après plan, il choisit la voiture filmée et la caméra : bord de piste,
-  // embarquée, poursuite, hélicoptère. Il ne lit que la course (course.js) et un tirage à graine : même course et
-  // même graine, mêmes plans. Les caméras elles-mêmes sont dans jeu.js.
+  // BITUME — réalisateur de la démo. Plan après plan, il choisit la voiture filmée et la caméra. Il ne lit que la
+  // course (course.js) et un tirage à graine : même course et même graine, mêmes plans. Les caméras elles-mêmes sont
+  // dans jeu.js.
   //
   //   const R = B.realisateur.creer(graine);
-  //   const plan = B.realisateur.tenir(R, course);   // à chaque image : { vue, sujet, debut, fin, motif, n }
+  //   B.realisateur.signaler(R, course, evenements);  // à chaque pas : contacts et accidents appellent l'action
+  //   const plan = B.realisateur.tenir(R, course);   // à chaque image : { vue, sujet, debut, fin, motif, n, cote, ralenti }
   //
   // Le plan rendu reste le même objet jusqu'à la coupe ; `n` compte les plans, `motif` dit pourquoi il a été choisi
-  // ('grille', 'depart', 'duel', 'tete', 'sprint', 'arrivee', 'honneur').
+  // ('grille', 'depart', 'duel', 'tete', 'depassement', 'action', 'sprint', 'arrivee', 'honneur'). `cote` (−1, 1) place
+  // les caméras latérales du côté du milieu de la piste ; `ralenti` (horloge de course) ralentit l'action.
+  //
+  // David (16/11/2026) : « refais des démos plus impressionnantes avec de l'action, des vues différentes ». Dix
+  // caméras : bord de piste, embarquée, poursuite, hélicoptère, roue (au ras du ponton), aileron (au-dessus de
+  // l'arceau), arrière (sur l'aileron, vers le poursuivant), travelling (grue qui roule à côté), orbite (tour lent de
+  // la voiture), sol (au ras de la piste, la voiture passe tout près). Plans plus courts dans l'action ; un
+  // dépassement coupe sur le dépasseur ; un choc ou un accident passe au ralenti, filmé de dehors.
 
-  const VUES = ['tele', 'cockpit', 'poursuite', 'helico'];
-  const DUREES = { tele: 9, cockpit: 8, poursuite: 7, helico: 7 };   // secondes, à une seconde près
-  const POIDS = { tele: 34, cockpit: 30, poursuite: 22, helico: 14 };
+  const VUES = ['tele', 'cockpit', 'poursuite', 'helico', 'roue', 'aileron', 'arriere', 'travelling', 'orbite', 'sol'];
+  const DUREES = { tele: 7, cockpit: 6, poursuite: 5, helico: 6, roue: 4, aileron: 6, arriere: 5, travelling: 4, orbite: 6, sol: 4 };   // secondes, à une seconde près
+  const POIDS = { tele: 13, cockpit: 10, poursuite: 9, helico: 7, roue: 11, aileron: 11, arriere: 9, travelling: 10, orbite: 8, sol: 10 };
+  // caméras portées par la voiture filmée ou tout près d'elle : jamais sur une voiture lente
+  const PORTEES = new Set(['cockpit', 'poursuite', 'roue', 'aileron', 'arriere', 'travelling']);
   const APRES_VERT = 2.5;      // la grille reste à l'image le temps que le peloton s'élance
   const DUEL = 30;             // mètres : en dessous, deux voitures se battent
-  const ALLURE = 15;           // m/s : en dessous, pas de caméra embarquée ni de poursuite
+  const ALLURE = 15;           // m/s : en dessous, pas de caméra portée
   const ARRET = 6;             // m/s : une voiture filmée de près qui s'arrête fait couper
   const SPRINT = 300;          // mètres : la tête arrive au drapeau, on monte à son bord et on ne coupe plus
+  const RALENTI = .35, RALENTI_DUREE = 2.2;   // vitesse et durée (horloge de course) du ralenti d'un choc
 
   function mulberry32(a) {
     return function () {
@@ -27,14 +38,18 @@
       return ((t ^ t >>> 14) >>> 0) / 4294967296;
     };
   }
-  const dePres = vue => vue === 'cockpit' || vue === 'poursuite';
+  const dePres = vue => PORTEES.has(vue);
 
   function creer(graine) {
-    return { alea: mulberry32((graine >>> 0) + 0x51ED270B), plan: null, n: 0, vert: -1, vainqueur: -1, sprint: false };
+    return { alea: mulberry32((graine >>> 0) + 0x51ED270B), plan: null, n: 0, vert: -1, vainqueur: -1, sprint: false,
+      vus: {}, ordre: null, action: null };
   }
 
-  function couper(R, co, vue, sujet, duree, motif) {
-    R.plan = { vue, sujet, debut: co.horloge, fin: co.horloge + duree, motif, n: ++R.n };
+  // côté du milieu de la piste, vu de la voiture : les caméras latérales s'y placent, loin des arbres et des rails
+  const coteMilieu = (co, id) => co.voitures[id].etat.d > 0 ? -1 : 1;
+  function couper(R, co, vue, sujet, duree, motif, extra) {
+    R.vus[vue] = R.n + 1;
+    R.plan = Object.assign({ vue, sujet, debut: co.horloge, fin: co.horloge + duree, motif, n: ++R.n, cote: coteMilieu(co, sujet), angle: R.alea() * Math.PI * 2 }, extra);
     return R.plan;
   }
 
@@ -46,12 +61,19 @@
     for (const x of liste) { u -= x[1]; if (u <= 0) return x[0]; }
     return liste[liste.length - 1][0];
   }
+  // une caméra pas vue depuis longtemps pèse plus lourd : toutes servent
+  const poids = (R, v) => POIDS[v] * (1 + .45 * Math.min(8, R.n + 1 - (R.vus[v] || 0)));
+
+  // un poursuivant à moins de DUEL mètres ?
+  function chasse(co, id) {
+    const v = co.voitures[id];
+    return co.voitures.some(o => o !== v && !o.fini && v.progression - o.progression > 0 && v.progression - o.progression < DUEL);
+  }
 
   function suivant(R, co) {
     const avant = R.plan, V = co.voitures;
     const enPiste = co.classement.map(id => V[id]).filter(v => !v.fini);
     if (!enPiste.length) return couper(R, co, 'tele', co.classement[0], DUREES.tele, 'tete');
-    let vue = tirer(R, VUES.filter(v => !avant || v !== avant.vue).map(v => [v, POIDS[v]]));
 
     // Les duels : la voiture qui chasse, pour que celle de devant soit à l'image. La tête de course pèse plus lourd,
     // l'écart court aussi ; on évite de reprendre la voiture du plan précédent.
@@ -69,8 +91,24 @@
       sujet = (menace && R.alea() < .6 ? menace : tete).id; motif = 'tete';
     } else if (duels.length) { sujet = tirer(R, autre(duels)); motif = 'duel'; }
     else { sujet = tirer(R, autre(enPiste.slice(0, 4).map((v, r) => [v.id, 4 - r]))); motif = 'tete'; }
-    if (dePres(vue) && V[sujet].etat.v <= ALLURE) vue = avant && avant.vue === 'tele' ? 'helico' : 'tele';
+
+    // la caméra : jamais la même deux fois ; l'arrière seulement si quelqu'un suit ; rien de porté sur une voiture lente
+    const lente = V[sujet].etat.v <= ALLURE;
+    const vues = VUES.filter(v => (!avant || v !== avant.vue) && !(v === 'arriere' && !chasse(co, sujet)) && !(lente && dePres(v)));
+    const vue = tirer(R, vues.map(v => [v, poids(R, v)]));
     return couper(R, co, vue, sujet, DUREES[vue] - 1 + 2 * R.alea(), motif);
+  }
+
+  // Contacts et accidents de la course : le plus fort, s'il touche une voiture qui roulait vite, appelle l'action.
+  function signaler(R, co, evenements) {
+    if (co.phase !== 'course' || co.drapeau !== null || R.sprint) return;
+    for (const e of evenements) {
+      let id = -1, force = 0;
+      if (e.type === 'contact' && e.force > 3) { id = co.voitures[e.a].etat.v >= co.voitures[e.b].etat.v ? e.a : e.b; force = e.force; }
+      else if (e.type === 'choc' && e.id !== undefined && e.force > 8) { id = e.id; force = e.force; }
+      else if ((e.type === 'tonneau' || e.type === 'casse' || e.type === 'roue') && e.id !== undefined) { id = e.id; force = 25; }
+      if (id >= 0 && (!R.action || force > R.action.force)) R.action = { id, force, t: co.horloge };
+    }
   }
 
   function tenir(R, co) {
@@ -93,7 +131,7 @@
       }
       return t < p.fin ? p : couper(R, co, 'helico', R.vainqueur, 1e9, 'honneur');
     }
-    if (!p) return suivant(R, co);
+    if (!p) { R.ordre = co.classement.slice(); return suivant(R, co); }
     // Les 300 derniers mètres de la tête : on finit avec elle, de près, et le plan tient jusqu'au drapeau.
     const tete = V[co.classement[0]];
     if (!R.sprint && co.toursTotal * co.c.longueur - tete.progression < SPRINT) {
@@ -101,10 +139,37 @@
       if (p.sujet !== tete.id) return couper(R, co, p.vue === 'poursuite' ? 'cockpit' : 'poursuite', tete.id, 1e9, 'sprint');
       p.fin = 1e9;
     }
+    if (!R.sprint) {
+      // L'action : un choc fort, filmé de dehors, au ralenti
+      const a = R.action; R.action = null;
+      if (a && p.motif !== 'action' && t - p.debut > .8 && !V[a.id].fini) {
+        const vue = tirer(R, ['orbite', 'tele', 'sol'].filter(v => v !== p.vue).map(v => [v, 1]));
+        return couper(R, co, vue, a.id, 4.2, 'action', { ralenti: t + RALENTI_DUREE, facteur: RALENTI });
+      }
+      // Un dépassement dans les huit premiers : on coupe sur celui qui vient de passer
+      const ordre = co.classement;
+      if (R.ordre && p.motif !== 'action' && p.motif !== 'depassement' && t - p.debut > 2.5) {
+        for (let r = 0; r < Math.min(8, ordre.length); r++) {
+          const id = ordre[r], avantRang = R.ordre.indexOf(id);
+          if (avantRang > r && !V[id].fini && V[id].etat.v > ALLURE && R.alea() < .7) {
+            R.ordre = ordre.slice();
+            const vue = tirer(R, ['travelling', 'arriere', 'tele', 'roue'].filter(v => v !== p.vue && !(v === 'arriere' && !chasse(co, id))).map(v => [v, poids(R, v)]));
+            return couper(R, co, vue, id, DUREES[vue], 'depassement');
+          }
+        }
+      }
+      R.ordre = ordre.slice();
+    }
     const s = V[p.sujet];
-    const arrete = dePres(p.vue) && t - p.debut > 1.5 && s.etat.v < ARRET;
+    const arrete = dePres(p.vue) && p.motif !== 'action' && t - p.debut > 1.5 && s.etat.v < ARRET;
     return t < p.fin && !s.fini && !arrete ? p : suivant(R, co);
   }
 
-  B.realisateur = { creer, tenir, VUES, DUREES };
+  // facteur de vitesse de la démo : ralenti d'une action, sinon 1
+  function vitesse(R, co) {
+    const p = R && R.plan;
+    return p && p.ralenti && co.horloge < p.ralenti ? p.facteur : 1;
+  }
+
+  B.realisateur = { creer, tenir, signaler, vitesse, VUES, DUREES, PORTEES };
 })(globalThis.BITUME = globalThis.BITUME || {});

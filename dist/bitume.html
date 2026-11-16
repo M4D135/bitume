@@ -420,7 +420,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.3">V0.2.3</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.4">V0.2.4</b>
     </div>
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
@@ -60870,24 +60870,35 @@ globalThis.FGeometry=globalThis.BITUME.carene;
 // ---- realisateur.js ----
 (function (B) {
   'use strict';
-  // BITUME — réalisateur de la démo. Plan après plan, il choisit la voiture filmée et la caméra : bord de piste,
-  // embarquée, poursuite, hélicoptère. Il ne lit que la course (course.js) et un tirage à graine : même course et
-  // même graine, mêmes plans. Les caméras elles-mêmes sont dans jeu.js.
+  // BITUME — réalisateur de la démo. Plan après plan, il choisit la voiture filmée et la caméra. Il ne lit que la
+  // course (course.js) et un tirage à graine : même course et même graine, mêmes plans. Les caméras elles-mêmes sont
+  // dans jeu.js.
   //
   //   const R = B.realisateur.creer(graine);
-  //   const plan = B.realisateur.tenir(R, course);   // à chaque image : { vue, sujet, debut, fin, motif, n }
+  //   B.realisateur.signaler(R, course, evenements);  // à chaque pas : contacts et accidents appellent l'action
+  //   const plan = B.realisateur.tenir(R, course);   // à chaque image : { vue, sujet, debut, fin, motif, n, cote, ralenti }
   //
   // Le plan rendu reste le même objet jusqu'à la coupe ; `n` compte les plans, `motif` dit pourquoi il a été choisi
-  // ('grille', 'depart', 'duel', 'tete', 'sprint', 'arrivee', 'honneur').
+  // ('grille', 'depart', 'duel', 'tete', 'depassement', 'action', 'sprint', 'arrivee', 'honneur'). `cote` (−1, 1) place
+  // les caméras latérales du côté du milieu de la piste ; `ralenti` (horloge de course) ralentit l'action.
+  //
+  // David (16/11/2026) : « refais des démos plus impressionnantes avec de l'action, des vues différentes ». Dix
+  // caméras : bord de piste, embarquée, poursuite, hélicoptère, roue (au ras du ponton), aileron (au-dessus de
+  // l'arceau), arrière (sur l'aileron, vers le poursuivant), travelling (grue qui roule à côté), orbite (tour lent de
+  // la voiture), sol (au ras de la piste, la voiture passe tout près). Plans plus courts dans l'action ; un
+  // dépassement coupe sur le dépasseur ; un choc ou un accident passe au ralenti, filmé de dehors.
 
-  const VUES = ['tele', 'cockpit', 'poursuite', 'helico'];
-  const DUREES = { tele: 9, cockpit: 8, poursuite: 7, helico: 7 };   // secondes, à une seconde près
-  const POIDS = { tele: 34, cockpit: 30, poursuite: 22, helico: 14 };
+  const VUES = ['tele', 'cockpit', 'poursuite', 'helico', 'roue', 'aileron', 'arriere', 'travelling', 'orbite', 'sol'];
+  const DUREES = { tele: 7, cockpit: 6, poursuite: 5, helico: 6, roue: 4, aileron: 6, arriere: 5, travelling: 4, orbite: 6, sol: 4 };   // secondes, à une seconde près
+  const POIDS = { tele: 13, cockpit: 10, poursuite: 9, helico: 7, roue: 11, aileron: 11, arriere: 9, travelling: 10, orbite: 8, sol: 10 };
+  // caméras portées par la voiture filmée ou tout près d'elle : jamais sur une voiture lente
+  const PORTEES = new Set(['cockpit', 'poursuite', 'roue', 'aileron', 'arriere', 'travelling']);
   const APRES_VERT = 2.5;      // la grille reste à l'image le temps que le peloton s'élance
   const DUEL = 30;             // mètres : en dessous, deux voitures se battent
-  const ALLURE = 15;           // m/s : en dessous, pas de caméra embarquée ni de poursuite
+  const ALLURE = 15;           // m/s : en dessous, pas de caméra portée
   const ARRET = 6;             // m/s : une voiture filmée de près qui s'arrête fait couper
   const SPRINT = 300;          // mètres : la tête arrive au drapeau, on monte à son bord et on ne coupe plus
+  const RALENTI = .35, RALENTI_DUREE = 2.2;   // vitesse et durée (horloge de course) du ralenti d'un choc
 
   function mulberry32(a) {
     return function () {
@@ -60897,14 +60908,18 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       return ((t ^ t >>> 14) >>> 0) / 4294967296;
     };
   }
-  const dePres = vue => vue === 'cockpit' || vue === 'poursuite';
+  const dePres = vue => PORTEES.has(vue);
 
   function creer(graine) {
-    return { alea: mulberry32((graine >>> 0) + 0x51ED270B), plan: null, n: 0, vert: -1, vainqueur: -1, sprint: false };
+    return { alea: mulberry32((graine >>> 0) + 0x51ED270B), plan: null, n: 0, vert: -1, vainqueur: -1, sprint: false,
+      vus: {}, ordre: null, action: null };
   }
 
-  function couper(R, co, vue, sujet, duree, motif) {
-    R.plan = { vue, sujet, debut: co.horloge, fin: co.horloge + duree, motif, n: ++R.n };
+  // côté du milieu de la piste, vu de la voiture : les caméras latérales s'y placent, loin des arbres et des rails
+  const coteMilieu = (co, id) => co.voitures[id].etat.d > 0 ? -1 : 1;
+  function couper(R, co, vue, sujet, duree, motif, extra) {
+    R.vus[vue] = R.n + 1;
+    R.plan = Object.assign({ vue, sujet, debut: co.horloge, fin: co.horloge + duree, motif, n: ++R.n, cote: coteMilieu(co, sujet), angle: R.alea() * Math.PI * 2 }, extra);
     return R.plan;
   }
 
@@ -60916,12 +60931,19 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     for (const x of liste) { u -= x[1]; if (u <= 0) return x[0]; }
     return liste[liste.length - 1][0];
   }
+  // une caméra pas vue depuis longtemps pèse plus lourd : toutes servent
+  const poids = (R, v) => POIDS[v] * (1 + .45 * Math.min(8, R.n + 1 - (R.vus[v] || 0)));
+
+  // un poursuivant à moins de DUEL mètres ?
+  function chasse(co, id) {
+    const v = co.voitures[id];
+    return co.voitures.some(o => o !== v && !o.fini && v.progression - o.progression > 0 && v.progression - o.progression < DUEL);
+  }
 
   function suivant(R, co) {
     const avant = R.plan, V = co.voitures;
     const enPiste = co.classement.map(id => V[id]).filter(v => !v.fini);
     if (!enPiste.length) return couper(R, co, 'tele', co.classement[0], DUREES.tele, 'tete');
-    let vue = tirer(R, VUES.filter(v => !avant || v !== avant.vue).map(v => [v, POIDS[v]]));
 
     // Les duels : la voiture qui chasse, pour que celle de devant soit à l'image. La tête de course pèse plus lourd,
     // l'écart court aussi ; on évite de reprendre la voiture du plan précédent.
@@ -60939,8 +60961,24 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       sujet = (menace && R.alea() < .6 ? menace : tete).id; motif = 'tete';
     } else if (duels.length) { sujet = tirer(R, autre(duels)); motif = 'duel'; }
     else { sujet = tirer(R, autre(enPiste.slice(0, 4).map((v, r) => [v.id, 4 - r]))); motif = 'tete'; }
-    if (dePres(vue) && V[sujet].etat.v <= ALLURE) vue = avant && avant.vue === 'tele' ? 'helico' : 'tele';
+
+    // la caméra : jamais la même deux fois ; l'arrière seulement si quelqu'un suit ; rien de porté sur une voiture lente
+    const lente = V[sujet].etat.v <= ALLURE;
+    const vues = VUES.filter(v => (!avant || v !== avant.vue) && !(v === 'arriere' && !chasse(co, sujet)) && !(lente && dePres(v)));
+    const vue = tirer(R, vues.map(v => [v, poids(R, v)]));
     return couper(R, co, vue, sujet, DUREES[vue] - 1 + 2 * R.alea(), motif);
+  }
+
+  // Contacts et accidents de la course : le plus fort, s'il touche une voiture qui roulait vite, appelle l'action.
+  function signaler(R, co, evenements) {
+    if (co.phase !== 'course' || co.drapeau !== null || R.sprint) return;
+    for (const e of evenements) {
+      let id = -1, force = 0;
+      if (e.type === 'contact' && e.force > 3) { id = co.voitures[e.a].etat.v >= co.voitures[e.b].etat.v ? e.a : e.b; force = e.force; }
+      else if (e.type === 'choc' && e.id !== undefined && e.force > 8) { id = e.id; force = e.force; }
+      else if ((e.type === 'tonneau' || e.type === 'casse' || e.type === 'roue') && e.id !== undefined) { id = e.id; force = 25; }
+      if (id >= 0 && (!R.action || force > R.action.force)) R.action = { id, force, t: co.horloge };
+    }
   }
 
   function tenir(R, co) {
@@ -60963,7 +61001,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       }
       return t < p.fin ? p : couper(R, co, 'helico', R.vainqueur, 1e9, 'honneur');
     }
-    if (!p) return suivant(R, co);
+    if (!p) { R.ordre = co.classement.slice(); return suivant(R, co); }
     // Les 300 derniers mètres de la tête : on finit avec elle, de près, et le plan tient jusqu'au drapeau.
     const tete = V[co.classement[0]];
     if (!R.sprint && co.toursTotal * co.c.longueur - tete.progression < SPRINT) {
@@ -60971,12 +61009,39 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       if (p.sujet !== tete.id) return couper(R, co, p.vue === 'poursuite' ? 'cockpit' : 'poursuite', tete.id, 1e9, 'sprint');
       p.fin = 1e9;
     }
+    if (!R.sprint) {
+      // L'action : un choc fort, filmé de dehors, au ralenti
+      const a = R.action; R.action = null;
+      if (a && p.motif !== 'action' && t - p.debut > .8 && !V[a.id].fini) {
+        const vue = tirer(R, ['orbite', 'tele', 'sol'].filter(v => v !== p.vue).map(v => [v, 1]));
+        return couper(R, co, vue, a.id, 4.2, 'action', { ralenti: t + RALENTI_DUREE, facteur: RALENTI });
+      }
+      // Un dépassement dans les huit premiers : on coupe sur celui qui vient de passer
+      const ordre = co.classement;
+      if (R.ordre && p.motif !== 'action' && p.motif !== 'depassement' && t - p.debut > 2.5) {
+        for (let r = 0; r < Math.min(8, ordre.length); r++) {
+          const id = ordre[r], avantRang = R.ordre.indexOf(id);
+          if (avantRang > r && !V[id].fini && V[id].etat.v > ALLURE && R.alea() < .7) {
+            R.ordre = ordre.slice();
+            const vue = tirer(R, ['travelling', 'arriere', 'tele', 'roue'].filter(v => v !== p.vue && !(v === 'arriere' && !chasse(co, id))).map(v => [v, poids(R, v)]));
+            return couper(R, co, vue, id, DUREES[vue], 'depassement');
+          }
+        }
+      }
+      R.ordre = ordre.slice();
+    }
     const s = V[p.sujet];
-    const arrete = dePres(p.vue) && t - p.debut > 1.5 && s.etat.v < ARRET;
+    const arrete = dePres(p.vue) && p.motif !== 'action' && t - p.debut > 1.5 && s.etat.v < ARRET;
     return t < p.fin && !s.fini && !arrete ? p : suivant(R, co);
   }
 
-  B.realisateur = { creer, tenir, VUES, DUREES };
+  // facteur de vitesse de la démo : ralenti d'une action, sinon 1
+  function vitesse(R, co) {
+    const p = R && R.plan;
+    return p && p.ralenti && co.horloge < p.ralenti ? p.facteur : 1;
+  }
+
+  B.realisateur = { creer, tenir, signaler, vitesse, VUES, DUREES, PORTEES };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -61660,7 +61725,8 @@ FERRO.initPhysics().then(function(){
 
   // Démo : les sons et les annonces suivent la course et la voiture filmée, pas un joueur.
   function traiterDemo(S, ev) {
-    const co = S.course, pl = S.planVu, sujet = pl ? pl.sujet : -1, dePres = !!pl && (pl.vue === 'cockpit' || pl.vue === 'poursuite');
+    const co = S.course, pl = S.planVu, sujet = pl ? pl.sujet : -1, dePres = !!pl && B.realisateur.PORTEES.has(pl.vue);
+    B.realisateur.signaler(S.real, co, ev);
     for (const e of ev) {
       switch (e.type) {
         case 'feu': son && son.evenement('feu'); break;
@@ -61833,6 +61899,44 @@ FERRO.initPhysics().then(function(){
     return { pos: q.slice(), yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / dist, -1, 1)), roll: 0, fov: clamp(2 * Math.atan(7.5 / dist) * 180 / Math.PI, 10, 50), near: .1, far: PORTEE_VUE };
   }
 
+  // Caméras de la démo (David, 16/11 : « des démos plus impressionnantes, avec de l'action, des vues différentes »).
+  // Portées par la voiture filmée (son attitude) ou posées autour d'elle ; le plan dit de quel côté (milieu de piste).
+  const VUES_DEHORS = new Set(['tele', 'helico', 'orbite', 'travelling', 'sol']);
+  const CAMERAS_DEMO = new Set(['roue', 'aileron', 'arriere', 'travelling', 'orbite']);
+  function cameraDemo(S, p, plan) {
+    const M = B.voiture.attitude(p.cap, p.tangage, p.roulis), pt = o => { const q = B.voiture.mul(M, o); return [p.x + q[0], p.y + q[1], p.z + q[2]]; };
+    const vise = (pos, cible, fov) => { const dx = cible[0] - pos[0], dy = cible[1] - pos[1], dz = cible[2] - pos[2], d = Math.hypot(dx, dy, dz) || 1;
+      return { pos, yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / d, -1, 1)), roll: 0, fov, near: .1, far: PORTEE_VUE }; };
+    const cote = plan.cote || 1, age = S.course.horloge - plan.debut;
+    switch (plan.vue) {
+      case 'roue':        // au ras du ponton, la roue avant au premier plan et la piste qui file
+        return { pos: pt([-.05, .40, cote * 1.13]), yaw: p.cap + Math.PI / 2 - cote * .07, pitch: -.025 + p.tangage * .85, roll: -p.roulis * .85, fov: 66, near: .05, far: PORTEE_VUE };
+      case 'aileron':     // au-dessus de l'arceau, comme les caméras de télévision : casque et nez devant
+        return { pos: pt([-.66, 1.17, 0]), yaw: p.cap + Math.PI / 2, pitch: -.12 + p.tangage * .85, roll: -p.roulis * .85, fov: 58, near: .05, far: PORTEE_VUE };
+      case 'arriere':     // sur l'aileron arrière, regard vers le poursuivant
+        return { pos: pt([-1.95, 1.1, 0]), yaw: p.cap - Math.PI / 2, pitch: -.075 - p.tangage * .85, roll: p.roulis * .85, fov: 46, near: .05, far: PORTEE_VUE };
+      case 'travelling':  // grue qui roule à côté de la voiture et se laisse doucement distancer ; le décor file
+        return vise(pt([1.6 - age * .45, 1.15, cote * 6.4]), pt([.2, .45, 0]), 38);
+      default: {          // orbite : tour lent autour de la voiture, plus serré pendant une action
+        const a = plan.angle + age * .34 * cote, r = plan.motif === 'action' ? 6.2 : 7.8;
+        return vise(pt([Math.cos(a) * r, 1.6 + .5 * Math.sin(age * .5), Math.sin(a) * r]), pt([0, .5, 0]), 44);
+      }
+    }
+  }
+  // au ras de la piste, à son bord, un peu devant la voiture : elle arrive, passe tout près, et la caméra la suit
+  function cameraSol(S, v, p) {
+    const c = S.course.c, s = v.etat.s, plan = S.planVu;
+    if (!S.sol || S.sol.plan !== plan) {
+      const sp = ramener(s + 55 + plan.angle * 4, c.longueur), e = B.circuit.echantillon(c, sp);
+      const cote = e.courbure > 1e-4 ? 1 : e.courbure < -1e-4 ? -1 : plan.cote;
+      const d = cote * (c.largeur / 2 + 1.1), x = e.x - Math.sin(e.cap) * d, z = e.z + Math.cos(e.cap) * d;
+      const sol = scene.decor.sol ? scene.decor.sol(x, z) : e.y;
+      S.sol = { plan, pos: [x, Math.max(e.y, isFinite(sol) ? sol : e.y) + .32, z] };
+    }
+    const q = S.sol.pos, dx = p.x - q[0], dy = p.y + .4 - q[1], dz = p.z - q[2], dist = Math.hypot(dx, dy, dz) || 1;
+    return { pos: q.slice(), yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / dist, -1, 1)), roll: 0, fov: clamp(2 * Math.atan(5 / dist) * 180 / Math.PI, 28, 70), near: .1, far: PORTEE_VUE };
+  }
+
   // ---------------------------------------------------------------- rétroviseurs
   // David (16/11) : « les deux rétros bien visibles et bien foutus ». En vue cockpit, chaque glace reçoit l'image
   // réelle de la scène arrière : un second rendu FERRO, sur une petite toile hors de l'écran, depuis la glace et dans
@@ -61947,9 +62051,11 @@ FERRO.initPhysics().then(function(){
       if (S.planVu !== pl) { S.planVu = pl; S.camCap = null; S.tete = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; }
       vue = pl.vue; suivie = co.voitures[pl.sujet];
     } else if (j.fini && S.finA !== null && co.horloge - S.finA > 2.5) vue = 'tele';
-    const ps = poses[suivie.id], exterieur = vue === 'tele' || vue === 'helico';
+    const ps = poses[suivie.id], exterieur = VUES_DEHORS.has(vue);
     if (vue === 'tele') cam = cameraTele(S, suivie, ps);
     else if (vue === 'helico') cam = cameraHelico(S, ps, dtImage);
+    else if (vue === 'sol') cam = cameraSol(S, suivie, ps);
+    else if (CAMERAS_DEMO.has(vue)) cam = cameraDemo(S, ps, S.planVu);
     else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, co.horloge, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage);
     if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: PORTEE_VUE, fov: 40 }, cameraEssai(pj, cam));
     if (S.secousse > 0) {
@@ -62043,7 +62149,7 @@ FERRO.initPhysics().then(function(){
     const co = S.course, ks = S.suivie || 0, et = co.voitures[ks].etat, poses = tampons.poses;
     const fx = Math.sin(cam.yaw), fz = -Math.cos(cam.yaw), rx = Math.cos(cam.yaw), rz = Math.sin(cam.yaw);
     sonRivaux.length = 0;
-    const exterieur = S.vue === 'tele' || S.vue === 'helico', micro = exterieur && S.type === 'demo';
+    const exterieur = VUES_DEHORS.has(S.vue), micro = exterieur && S.type === 'demo';
     for (let k = 0; k < co.voitures.length; k++) {
       if (k === ks && !exterieur) continue;
       const p = poses[k], dx = p.x - cam.pos[0], dy = p.y - cam.pos[1], dz = p.z - cam.pos[2], d = Math.hypot(dx, dy, dz);
@@ -62082,7 +62188,8 @@ FERRO.initPhysics().then(function(){
     el.textContent = t; el.className = 'sous-message'; void el.offsetWidth; el.className = 'sous-message visible';
   }
 
-  const LIBELLES_PLAN = { tele: 'bord de piste', cockpit: 'caméra embarquée', poursuite: 'poursuite', helico: 'hélicoptère' };
+  const LIBELLES_PLAN = { tele: 'bord de piste', cockpit: 'caméra embarquée', poursuite: 'poursuite', helico: 'hélicoptère',
+    roue: 'caméra de roue', aileron: 'au-dessus de l’arceau', arriere: 'caméra arrière', travelling: 'travelling', orbite: 'autour de la voiture', sol: 'au ras de la piste' };
   function majHud(S) {
     // en démo, l'affichage est celui de la voiture filmée
     const co = S.course, demo = S.type === 'demo', j = demo ? co.voitures[S.suivie || 0] : co.joueur, et = j.etat, chronoMode = co.mode === 'chrono';
@@ -62405,7 +62512,8 @@ FERRO.initPhysics().then(function(){
     // la vitrine tourne derrière les menus ; une course ne tourne qu'à l'écran de course, la démo qu'à l'écran de démo
     const tourne = S.type === 'vitrine' ? ecran !== 'chargement' : ecran === (S.type === 'demo' ? 'demo' : 'course');
     if (tourne) {
-      S.acc += dtReel;
+      // démo : un choc passe au ralenti (réalisateur)
+      S.acc += dtReel * (S.type === 'demo' ? B.realisateur.vitesse(S.real, S.course) : 1);
       let n = 0;
       while (S.acc >= DT && n < 14) { pasSimulation(S, !!S.banc); S.acc -= DT; n++; }
       if (n === 14) S.acc = 0;

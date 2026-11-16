@@ -1,8 +1,8 @@
 {
-  "version": "0.2.3",
-  "raw": 12711170,
-  "gzip": 2905613,
-  "sha256": "e1ab8ad13d3e90a6a54b0828bac093acafdbe30d3033288a291b58ea512fd987",
+  "version": "0.2.4",
+  "raw": 12719360,
+  "gzip": 2908058,
+  "sha256": "7624497032b167083158f5b294dee4230756f639b71f69002b65e9a32a5170ae",
   "sources": {
     "moteur/renderer.js": 209041,
     "ferro/engine.js": 2024,
@@ -21,9 +21,9 @@
     "main.js": 7825,
     "voiture.js": 53504,
     "traces.js": 14730,
-    "realisateur.js": 5822,
+    "realisateur.js": 10265,
     "meteo.js": 9619,
-    "jeu.js": 90684,
+    "jeu.js": 94431,
     "index.html": 13600,
     "style.css": 31449
   }
