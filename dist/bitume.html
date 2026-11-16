@@ -484,7 +484,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.13">V0.2.13</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.14">V0.2.14</b>
     </div>
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
@@ -63539,7 +63539,7 @@ FERRO.initPhysics().then(function(){
 
   // ---------------------------------------------------------------- écrans
   let ecran = 'chargement';
-  const ECRANS = ['titre', 'enligne', 'preparation', 'reglages', 'pause', 'resultats'];
+  const ECRANS = ['titre', 'enligne', 'prets', 'preparation', 'reglages', 'pause', 'resultats'];
   let modePrepa = 'course', retourReglages = 'titre';
   const enCourse = () => ecran === 'course';
 
@@ -63553,7 +63553,7 @@ FERRO.initPhysics().then(function(){
     $('jeu').dataset.ecran = nom;
     ecran = nom;
     if (nom === 'titre') dernierGeste = performance.now();
-    if (nom === 'titre' || nom === 'preparation' || nom === 'enligne') {
+    if (nom === 'titre' || nom === 'preparation' || nom === 'enligne' || nom === 'prets') {
       if (!session || session.type !== 'vitrine' || (nom === 'preparation' && session.i !== reglages.circuit)) lancer('vitrine', nom === 'preparation' ? reglages.circuit : (session ? session.i : reglages.circuit));
     }
     // en ligne, la pause n'arrête pas la course : pas de « Recommencer »

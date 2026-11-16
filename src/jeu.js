@@ -1527,7 +1527,7 @@
 
   // ---------------------------------------------------------------- écrans
   let ecran = 'chargement';
-  const ECRANS = ['titre', 'enligne', 'preparation', 'reglages', 'pause', 'resultats'];
+  const ECRANS = ['titre', 'enligne', 'prets', 'preparation', 'reglages', 'pause', 'resultats'];
   let modePrepa = 'course', retourReglages = 'titre';
   const enCourse = () => ecran === 'course';
 
@@ -1541,7 +1541,7 @@
     $('jeu').dataset.ecran = nom;
     ecran = nom;
     if (nom === 'titre') dernierGeste = performance.now();
-    if (nom === 'titre' || nom === 'preparation' || nom === 'enligne') {
+    if (nom === 'titre' || nom === 'preparation' || nom === 'enligne' || nom === 'prets') {
       if (!session || session.type !== 'vitrine' || (nom === 'preparation' && session.i !== reglages.circuit)) lancer('vitrine', nom === 'preparation' ? reglages.circuit : (session ? session.i : reglages.circuit));
     }
     // en ligne, la pause n'arrête pas la course : pas de « Recommencer »
