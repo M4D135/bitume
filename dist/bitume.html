@@ -60322,12 +60322,12 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     // voyants encastrés (David 14/11 : le témoin flottait à mi-hauteur de la planche) : lunette de métal noyée
     // dans la tôle, lentille posée dedans, comme les vis des coins
     const ralenti = B.conduite.PARAMS.ralenti, alerte = regime > 12600 || regime < ralenti + 300;
-    const voyant = (a, allume, couleur, force) => {
-      mettre('cylinder', sur(a, -.043, .0105), [.0125, .005, .0125], METAL_MAT, [.32, .32, .34], rond);
-      mettre('sphere', sur(a, -.043, .040), [.009, .009, .009], 5, allume ? couleur : [.2, .03, .02], null, allume ? { emissive: force } : undefined);
+    const voyant = (a, b, allume, couleur, force) => {
+      mettre('cylinder', sur(a, b, .012), [.0125, .005, .0125], METAL_MAT, [.32, .32, .34], rond);
+      mettre('sphere', sur(a, b, .016), [.009, .009, .009], 5, allume ? couleur : [.2, .03, .02], null, allume ? { emissive: force } : undefined);
     };
-    voyant(.032, true, [.14, .9, .3], 1.1);
-    voyant(.050, alerte, [1, .14, .05], 1.8);
+    voyant(.032, -.043, true, [.14, .9, .3], 1.1);
+    voyant(-.10, 0, alerte, [1, .14, .05], 1.8);
     // Rapport à gauche, vitesse à droite, en segments ambre
     const chiffre = (texte, centre, h) => {
       const l = h * .56, t = h * .13, seg = SEGMENTS[texte] || '';
