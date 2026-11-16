@@ -401,4 +401,4 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 .ligne-commande b { min-width: 76px; font: 600 12px/1 var(--f-texte); letter-spacing: .08em; text-transform: uppercase; color: var(--papier-2); }
 
 /* Signature discrète */
-.signature-m4d { position: fixed; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); left: 0; right: 0; margin: 0; text-align: center; font: 500 11px/1 var(--f-texte); letter-spacing: .12em; color: var(--papier-3); opacity: .35; pointer-events: none; z-index: 30; }
+.signature-m4d { position: fixed; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); left: calc(12px + env(safe-area-inset-left, 0px)); margin: 0; text-align: left; font: 500 11px/1 var(--f-texte); letter-spacing: .12em; color: var(--papier-3); opacity: .35; pointer-events: none; z-index: 30; }
