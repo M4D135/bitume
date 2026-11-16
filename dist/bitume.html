@@ -498,7 +498,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.13">V0.2.13</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.14">V0.2.14</b>
     </div>
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
@@ -63061,7 +63061,8 @@ FERRO.initPhysics().then(function(){
     if (m.t === 'depart' && de === 0 && EL.role === 'invite' && m.cfg) {
       const humains = (Array.isArray(m.cfg.humains) ? m.cfg.humains : []).slice(0, 4).map(h => ({ nom: propre(h.nom), machine: h.machine | 0 }));
       const locaux = humains.map((h, k) => h.machine === EL.R.id ? k : -1).filter(k => k >= 0);
-      if (!locaux.length) { etatEnLigne('La course est partie sans cette machine : attendez la suivante.'); return; }
+      EL.confirmation = null; EL.pretIci = false;
+      if (!locaux.length) { etatEnLigne('La course est partie sans cette machine : attendez la suivante.'); majCourseSalon(); return; }
       lancerEnLigne(Object.assign({}, m.cfg, { humains, locaux, role: 'invite' }));
     } else if (m.t === 'course' && de === 0 && EL.role === 'invite') recevoirCourse(m);
     else if (m.t === 'confirmer' && de === 0 && EL.role === 'invite') {

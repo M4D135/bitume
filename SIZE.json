@@ -1,8 +1,8 @@
 {
-  "version": "0.2.13",
-  "raw": 12840699,
-  "gzip": 2944724,
-  "sha256": "f8373cfa4c40cb2a725dc4607cab2e7e6dc7fd000ffe3312a75ff335f2ff978f",
+  "version": "0.2.14",
+  "raw": 12840767,
+  "gzip": 2944733,
+  "sha256": "f0e6033caefb657d7e9f2cac86ac0125b0e8178a9f44f80be5b69005b909100d",
   "sources": {
     "moteur/renderer.js": 209041,
     "ferro/engine.js": 2024,
@@ -26,7 +26,7 @@
     "realisateur.js": 10265,
     "meteo.js": 9619,
     "reseau.js": 15157,
-    "jeu.js": 148982,
+    "jeu.js": 149050,
     "index.html": 19139,
     "style.css": 39263
   }
