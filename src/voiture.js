@@ -398,8 +398,9 @@
     for (const a of [-.184, .184]) for (const b of [-.048, .048]) mettre('cylinder', sur(a, b, .0095), [.008, .004, .008], METAL_MAT, ARGENT, rond);   // vis des coins
     posee('casquette', PLANCHE, cadre, MAT, NOIR);
     const passe = regime > REGIME_LAMPE && etat.rapport > 0 && etat.rapport < 6;
-    mettre('cylinder', sur(0, .070, .090), [.032, .008, .032], MAT, NOIR, rond);
-    mettre('sphere', sur(0, .078, .095), [.024, .024, .024], 5, passe ? [1, .13, .04] : [.20, .03, .02], null, passe ? { emissive: 3.2 } : undefined);
+    // lampe de régime déplacée sur le tableau de bord (à gauche, mi-hauteur), intégrée
+    mettre('cylinder', sur(-.10, 0, .024), [.032, .008, .032], MAT, NOIR, rond);
+    mettre('sphere', sur(-.10, 0, .030), [.024, .024, .024], 5, passe ? [1, .13, .04] : [.20, .03, .02], null, passe ? { emissive: 3.2 } : undefined);
     mettre('box', sur(-.125, .006, .0085), [.004, .054, .036], LAQUE, [.012, .012, .014], plat);
     mettre('box', sur(.142, .004, .0085), [.004, .042, .080], LAQUE, [.012, .012, .014], plat);
     // Compte-tours : lunette, cadran noir, graduations ivoire tous les 1 000 tr/min (longues aux milliers pairs),
@@ -430,7 +431,7 @@
       mettre('sphere', sur(a, b, .016), [.009, .009, .009], 5, allume ? couleur : [.2, .03, .02], null, allume ? { emissive: force } : undefined);
     };
     voyant(.032, -.043, true, [.14, .9, .3], 1.1);
-    voyant(-.10, 0, alerte, [1, .14, .05], 1.8);
+    voyant(.050, -.043, alerte, [1, .14, .05], 1.8);
     // Rapport à gauche, vitesse à droite, en segments ambre
     const chiffre = (texte, centre, h) => {
       const l = h * .56, t = h * .13, seg = SEGMENTS[texte] || '';
