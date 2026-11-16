@@ -408,3 +408,8 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 .liste-pilotes b { font: italic 800 22px/1 var(--f-titre); text-transform: uppercase; }
 .liste-pilotes span { color: var(--papier-2); font-size: 14px; }
 .liste-pilotes em { font-style: normal; font-size: 13px; color: var(--vert); }
+
+.prochaine-course { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; padding: 16px 18px; background: rgba(22, 24, 28, .82); border: 1px solid var(--trait); border-left: 3px solid var(--ambre); border-radius: var(--rayon); }
+
+/* Avant le départ en ligne : machines prêtes en vert, celles qui règlent encore en ambre */
+.liste-pilotes em.attente { color: var(--ambre); }
