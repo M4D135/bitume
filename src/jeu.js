@@ -1462,14 +1462,18 @@
     const eclair = S.eclair || 0;
     // Tunnel : l'œil s'adapte. En entrant, l'intérieur paraît d'abord sombre puis s'éclaircit (0,8 s) ; en sortant, le
     // jour éblouit un instant (0,3 s). Les huit lampes les plus proches de la caméra éclairent les murs et la chaussée.
+    // Les lumières s'allument progressivement à mesure qu'on pénètre dans le tunnel pour éviter le clipping lumineux.
     const sousVoute = !VUES_DEHORS.has(vue) && B.circuit.dansTunnel(c, suivie.etat.s, -6), cibleLumiere = sousVoute ? 1.32 : 1;
     S.lumiere = S.lumiere ?? 1;
     S.lumiere += (cibleLumiere - S.lumiere) * (1 - Math.exp(-dtImage / (cibleLumiere > S.lumiere ? .8 : .3)));
     let lampes;
     const LT = scene.decor.tunnelLampes;
     if (LT && B.circuit.dansTunnel(c, suivie.etat.s, 80)) {
+      const t = c.tunnel, L = c.longueur, sTunnel = ((suivie.etat.s % L) + L) % L;
+      // Progression dans le tunnel : 0 à l'entrée, 1 à la sortie
+      const avancement = Math.min(1, Math.max(0, (sTunnel - t.debut) / (t.fin - t.debut + 1e-6)));
       lampes = tampons.lampes || (tampons.lampes = []); lampes.length = 0;
-      for (const p of LT) { const d2 = (p[0] - cam.pos[0]) ** 2 + (p[2] - cam.pos[2]) ** 2; if (d2 < 4900) lampes.push({ p, power: 12, range: 18, color: [1, .84, .58], d2 }); }
+      for (const p of LT) { const d2 = (p[0] - cam.pos[0]) ** 2 + (p[2] - cam.pos[2]) ** 2; if (d2 < 4900) lampes.push({ p, power: 12 * avancement, range: 18 * avancement, color: [1, .84, .58], d2 }); }
       lampes.sort((a, b) => a.d2 - b.d2); if (lampes.length > 8) lampes.length = 8;
     }
     rendu.draw(cam, sortie, { time: horlogeReelle, shadows: avecOmbres(q), bloom: avecHalo(q), brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: avecHalo(q) ? 1 : 0, reflections: avecReflets(q, meteo), weather: B.meteo.ambiance(meteo) });
