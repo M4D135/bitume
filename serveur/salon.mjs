@@ -1,17 +1,14 @@
-// BITUME — salon du jeu en ligne : met de deux à quatre machines en relation (code de partie à quatre lettres), passe
-// leurs messages de mise en relation WebRTC (offre, réponse, candidats) et relaie la partie entre deux machines dont la
-// liaison directe échoue. Quatre pilotes au plus, une ou deux par machine (écran partagé). WebSocket écrit à la main
-// (RFC 6455) : aucune dépendance. Node 18 ou plus.
+// BITUME — salon du jeu en ligne : met deux pilotes en relation (code de partie à quatre lettres), passe les messages
+// de mise en relation WebRTC (offre, réponse, candidats) et relaie la partie quand la liaison directe échoue.
+// WebSocket écrit à la main (RFC 6455) : aucune dépendance. Node 18 ou plus.
 //
 //   PORT=8790 HOTE=127.0.0.1 node serveur/salon.mjs
 //
 // Derrière Caddy : `handle /salon* { reverse_proxy 127.0.0.1:8790 }` dans le vhost de bitume.estrasse.fr.
-// Protocole (texte JSON) : { t: 'creer', nom, joueurs } → { t: 'salon', code, id: 0, role: 'hote' } ;
-// { t: 'rejoindre', code, nom, joueurs } → { t: 'salon', code, id, role: 'invite' } ; à chaque arrivée ou départ, tous
-// reçoivent { t: 'salle', membres: [{ id, nom, joueurs }] } ; { t: 'signal', a, … } et { t: 'relais', a?, m } vont à la
-// machine a (relais sans a : à toutes), avec de = l'expéditeur. Message binaire : [destinataire (255 : toutes)] + état
-// des voitures, relayé avec l'expéditeur à la place du destinataire. Au départ d'une machine : { t: 'parti', id } ; sans
-// son hôte (id 0), la partie s'arrête ({ t: 'parti', id: 0, hote: true }).
+// Protocole (texte JSON) : { t: 'creer', nom } → { t: 'salon', code, role: 'hote' } ; { t: 'rejoindre', code, nom } →
+// { t: 'salon', code, role: 'invite', autre } à l'invité et { t: 'arrivee', nom } à l'hôte ; { t: 'signal' | 'relais',
+// … } passent tels quels à l'autre ; un message binaire (état des voitures) est relayé tel quel ; à la fermeture,
+// l'autre reçoit { t: 'parti' }. Une partie a deux places et disparaît avec son dernier pilote.
 
 import http from 'node:http';
 import crypto from 'node:crypto';
@@ -21,8 +18,7 @@ const MAX_OCTETS = 64 * 1024, LETTRES = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
 // Garde-fous d'un service public : 600 connexions au plus, 24 par adresse, 240 messages par seconde et par pilote
 // (une partie en envoie environ 65) ; au-delà, les messages sont perdus, et un flot continu ferme la connexion.
 const MAX_CLIENTS = 600, MAX_PAR_IP = 24, DEBIT = 240, RAFALE = 480;
-const MAX_MACHINES = 4, MAX_PILOTES = 4;
-const salons = new Map();   // code → { membres: Map(id → machine), prochain }
+const salons = new Map();   // code → [hôte, invité]
 const parIp = new Map();
 let clients = 0;
 
@@ -35,19 +31,18 @@ function envoyer(c, x) {
   if (!c || c.ferme) return;
   try { c.socket.write(Buffer.isBuffer(x) ? trame(2, x) : trame(1, Buffer.from(JSON.stringify(x)))); } catch (e) { /* fermé */ }
 }
-const propre = (t, n) => String(t || '').replace(/[<>&"'`\\]/g, '').trim().slice(0, n);
-const pilotes = s => { let n = 0; for (const m of s.membres.values()) n += m.joueurs; return n; };
-function diffuser(s, x, sauf) { for (const m of s.membres.values()) if (m !== sauf) envoyer(m, x); }
-function salle(s) { diffuser(s, { t: 'salle', membres: [...s.membres.values()].map(m => ({ id: m.id, nom: m.nom, joueurs: m.joueurs })) }); }
 function fermer(c) {
   if (c.ferme) return;
   c.ferme = true;
   try { c.socket.end(trame(8, Buffer.alloc(0))); } catch (e) { /* déjà fermé */ }
   const s = c.code && salons.get(c.code);
-  if (!s || s.membres.get(c.id) !== c) return;
-  s.membres.delete(c.id);
-  if (c.id === 0 || !s.membres.size) { diffuser(s, { t: 'parti', id: c.id, hote: c.id === 0 }); salons.delete(c.code); }
-  else { diffuser(s, { t: 'parti', id: c.id }); salle(s); }
+  if (s) {
+    const autre = s.find(x => x && x !== c);
+    if (autre) envoyer(autre, { t: 'parti' });
+    const reste = s.filter(x => x && x !== c && !x.ferme);
+    if (reste.length) salons.set(c.code, [reste[0]]); else salons.delete(c.code);
+    if (reste.length) reste[0].role = 'hote';
+  }
 }
 function nouveauCode() {
   for (;;) {
@@ -64,45 +59,28 @@ function recevoir(c, opcode, donnees) {
   c.jetons = Math.min(RAFALE, c.jetons + (t - c.tJetons) * DEBIT / 1000); c.tJetons = t;
   if (c.jetons < 1) { if (++c.exces > 5 * DEBIT) { fermer(c); c.socket.destroy(); } return; }
   c.jetons--; c.exces = 0;
-  const s = c.code && salons.get(c.code);
-  if (opcode === 2) {   // état des voitures : le premier octet passe du destinataire à l'expéditeur
-    if (!s || donnees.length < 2) return;
-    const a = donnees[0]; donnees[0] = c.id;
-    for (const m of s.membres.values()) if (m !== c && (a === 255 || m.id === a)) envoyer(m, donnees);
-    return;
-  }
+  const autre = c.code && (salons.get(c.code) || []).find(x => x && x !== c);
+  if (opcode === 2) { if (autre) envoyer(autre, donnees); return; }       // état des voitures, relayé
   if (opcode !== 1) return;
   let m; try { m = JSON.parse(donnees.toString('utf8')); } catch (e) { return; }
-  if (!m || typeof m !== 'object') return;
-  const nom = propre(m.nom, 16), joueurs = m.joueurs === 2 ? 2 : 1;
+  const nom = String(m.nom || '').slice(0, 24);
   if (m.t === 'creer' && !c.code) {
-    c.code = nouveauCode(); c.id = 0; c.role = 'hote'; c.nom = nom || 'Pilote 1'; c.joueurs = joueurs;
-    const nv = { membres: new Map([[0, c]]), prochain: 1 };
-    salons.set(c.code, nv);
-    envoyer(c, { t: 'salon', code: c.code, id: 0, role: 'hote' });
-    salle(nv);
+    c.code = nouveauCode(); c.role = 'hote'; c.nom = nom || 'Pilote 1';
+    salons.set(c.code, [c]);
+    envoyer(c, { t: 'salon', code: c.code, role: 'hote' });
   } else if (m.t === 'rejoindre' && !c.code) {
-    const code = String(m.code || '').toUpperCase(), s2 = salons.get(code);
-    if (!s2) return envoyer(c, { t: 'erreur', message: 'Aucune partie avec ce code.' });
-    if (s2.membres.size >= MAX_MACHINES || pilotes(s2) + joueurs > MAX_PILOTES) return envoyer(c, { t: 'erreur', message: 'Cette partie est complète : quatre pilotes au plus.' });
-    c.code = code; c.id = s2.prochain++; c.role = 'invite'; c.nom = nom || 'Pilote ' + (s2.membres.size + 1); c.joueurs = joueurs;
-    s2.membres.set(c.id, c);
-    envoyer(c, { t: 'salon', code, id: c.id, role: 'invite' });
-    salle(s2);
-  } else if (m.t === 'profil' && s) {
-    if (nom) c.nom = nom;
-    if (pilotes(s) - c.joueurs + joueurs <= MAX_PILOTES) c.joueurs = joueurs;
-    salle(s);
-  } else if ((m.t === 'signal' || m.t === 'relais') && s) {
-    const x = Object.assign({}, m, { de: c.id });
-    if (m.a === undefined || m.a === null) { if (m.t === 'relais') diffuser(s, x, c); }
-    else { const cible = s.membres.get(m.a); if (cible && cible !== c) envoyer(cible, x); }
-  }
+    const code = String(m.code || '').toUpperCase(), s = salons.get(code);
+    if (!s) return envoyer(c, { t: 'erreur', message: 'Aucune partie avec ce code.' });
+    if (s.length >= 2) return envoyer(c, { t: 'erreur', message: 'Cette partie est déjà complète.' });
+    c.code = code; c.role = 'invite'; c.nom = nom || 'Pilote 2'; s.push(c);
+    envoyer(c, { t: 'salon', code, role: 'invite', autre: s[0].nom });
+    envoyer(s[0], { t: 'arrivee', nom: c.nom });
+  } else if ((m.t === 'signal' || m.t === 'relais') && autre) envoyer(autre, m);
 }
 
 const serveur = http.createServer((req, res) => {
   res.writeHead(req.url === '/salon/sante' ? 200 : 404, { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' });
-  res.end(req.url === '/salon/sante' ? `salon BITUME : ${salons.size} partie(s), ${clients} machine(s)\n` : 'introuvable\n');
+  res.end(req.url === '/salon/sante' ? `salon BITUME : ${salons.size} partie(s), ${clients} pilote(s)\n` : 'introuvable\n');
 });
 serveur.on('upgrade', (req, socket) => {
   const cle = req.headers['sec-websocket-key'];

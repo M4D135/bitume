@@ -399,17 +399,3 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 .commandes-joueurs > .discret { grid-column: 1 / -1; justify-self: start; }
 .ligne-commande { display: flex; flex-wrap: wrap; align-items: center; gap: 0 4px; margin-bottom: 6px; }
 .ligne-commande b { min-width: 76px; font: 600 12px/1 var(--f-texte); letter-spacing: .08em; text-transform: uppercase; color: var(--papier-2); }
-
-/* Jeu en ligne à quatre : nom et pilotes de la machine, liste des machines de la partie */
-.ligne-identite { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: flex-end; }
-.liste-pilotes { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; min-width: min(560px, 100%); }
-.liste-pilotes li { display: grid; grid-template-columns: minmax(120px, 1fr) auto auto; gap: 14px; align-items: baseline; padding: 10px 14px; background: rgba(22, 24, 28, .82); border: 1px solid var(--trait); border-left: 3px solid var(--papier-3); border-radius: var(--rayon); }
-.liste-pilotes li.moi { border-left-color: var(--rouge); }
-.liste-pilotes b { font: italic 800 22px/1 var(--f-titre); text-transform: uppercase; }
-.liste-pilotes span { color: var(--papier-2); font-size: 14px; }
-.liste-pilotes em { font-style: normal; font-size: 13px; color: var(--vert); }
-
-.prochaine-course { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; padding: 16px 18px; background: rgba(22, 24, 28, .82); border: 1px solid var(--trait); border-left: 3px solid var(--ambre); border-radius: var(--rayon); }
-
-/* Avant le départ en ligne : machines prêtes en vert, celles qui règlent encore en ambre */
-.liste-pilotes em.attente { color: var(--ambre); }
