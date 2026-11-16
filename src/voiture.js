@@ -525,12 +525,12 @@
     const GL = .132, GH = .048;                                    // glace : largeur et hauteur
     for (const k of [-1, 1]) {
       const zc = k * .47, x = .5225, y = .565;
-      dans('box', [x, y + GH * .25, zc], [.003, GH * .5, GL], LAQUE, ciel.map(v => v * .62));
-      dans('box', [x, y - GH * .04, zc], [.003, GH * .1, GL], LAQUE, brume.map(v => v * .5));
-      dans('box', [x, y - GH * .295, zc], [.003, GH * .41, GL], LAQUE, [.085, .09, .095]);
+      dans('box', [x, y + GH * .25, zc], [.003, GH * .5, GL], LAQUE, ciel.map(v => v * .75));
+      dans('box', [x, y - GH * .04, zc], [.003, GH * .1, GL], LAQUE, brume.map(v => v * .6));
+      dans('box', [x, y - GH * .295, zc], [.003, GH * .41, GL], LAQUE, [.10, .105, .11]);
       let n = 0;
       for (const v of suiveurs) {
-        if (n >= 3) break;
+        if (n >= 5) break;
         const b = .55 - v.x, a = v.z - zc, f = (Math.atan2(a, b) - k * .105) / .28;
         if (b < 2 || b > 90 || Math.abs(f) > 1) continue;
         const dist = Math.hypot(a, b), large = borner(1.9 / dist / .56 * GL, .005, GL * .55), haut = borner(1.0 / dist / .23 * GH, .004, GH * .62);
