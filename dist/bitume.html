@@ -88,6 +88,12 @@ button, input { font: inherit; color: inherit; }
 /* Version sur l'écran titre, comme dans Point de rupture et METAL : badge encadré au pied de la marque. */
 .version-jeu { display: inline-block; margin-left: .7em; padding: .18em .42em; border: 2px solid var(--rouge); border-radius: 4px;
   color: var(--papier); font: 700 clamp(13px, 1.9vw, 24px)/1 var(--f-texte); letter-spacing: .1em; vertical-align: .55em; }
+/* Signature de l'auteur, au pied de la marque, à côté du badge de version. */
+.signature { display: inline-flex; align-items: center; gap: .5em; margin-left: .9em; vertical-align: .55em;
+  color: var(--papier); font: 700 clamp(13px, 1.9vw, 24px)/1 var(--f-texte); letter-spacing: .06em;
+  text-decoration: none; text-transform: none; opacity: .72; transition: opacity .2s; }
+.signature:hover, .signature:focus-visible { opacity: 1; text-decoration: none; }
+.signature svg { width: 1.3em; height: 1.3em; margin: -.15em 0; flex: none; }
 /* Le trait et son liseré descendent à .15em du titre sous sa boîte : l'accroche se cale dessous, à toute taille. */
 .accroche { margin: calc(var(--t-marque) * .15 + .75em) 0 0; font: 600 clamp(14px, 1.7vw, 19px)/1.3 var(--f-texte); letter-spacing: .12em; text-transform: uppercase; color: var(--papier-2); text-shadow: 0 1px 10px rgba(0, 0, 0, .7); }
 .choix { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
@@ -498,7 +504,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.19">V0.2.19</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.20">V0.2.20</b><a class="signature" href="https://github.com/M4D135" target="_blank" rel="noopener" title="m4d135 sur GitHub"><svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="32" fill="#b7492a"/></svg>m4d135</a>
     </div>
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
