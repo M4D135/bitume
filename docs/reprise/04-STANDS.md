@@ -1,6 +1,17 @@
 # Lot 4 : santé de la voiture et arrêts aux stands
 
-Statut : **à faire**, après intégration des lots 2 et 3.
+Statut : **terminé** le 17 novembre 2026 (client 0.2.24). Rapport complet : `rapports/LOT4-2026-11-17.md`.
+
+Retenu : la santé vient de `B.degats.sante` (adhérence, traînée, roues, caisse) — pas d'un compteur d'affichage ; la
+voie des stands est calculée avec le tracé (`c.stands`) le long du bord droit de la ligne droite, sous le bâtiment déjà
+dessiné par `decor.js`, et prise sur la chaussée pour qu'on y entre sans franchir de glissière ; le service ne se rend
+qu'à l'arrêt dans le garage, pour la durée chiffrée d'après l'état constaté ; la réparation complète n'existe qu'ici ;
+entrer aux stands invalide le tour ; les rivaux n'utilisent pas les stands ; rien ne se décrète pour une voiture
+distante. `verifications/stands.test.mjs` tient les 18 contrôles, et `tools/banc-navigateur.mjs --mode stand` joue le
+parcours manuel dans le navigateur.
+
+Ouvert : la voie n'est pas encore **peinte** (bande de chaussée, ligne de garage, panneau) — à juger sur le Mac ; le
+service ne change pas les pneus, la fiche le subordonnant au raccordement du choix des pneus existant.
 
 ## Objectif
 

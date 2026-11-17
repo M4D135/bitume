@@ -85,6 +85,24 @@ dans une première version), et peuvent **tenir leur ligne** au lieu de se rabat
 
 **Le prochain lot prêt est le lot 4 (santé et stands).**
 
+## État vérifié le 17 novembre 2026 (lot 4 terminé)
+
+Base de départ : `main` à `18e69ce` (lot 3). Livré : commit de code `d330084f7bb4bf0a610cef4e8b527ea01c363f54`, client **0.2.24**,
+`dist/bitume.html` 12 885 086 octets, gzip 2 959 105, sha256 `baee4977777f70510779b926988d15634a3297c67cdee7b0ddbaa64cbc32187f`.
+**40 suites Node**, FERRO **34/34**, build reproductible, navigateur réel sans erreur de console. Détail dans
+`docs/reprise/rapports/LOT4-2026-11-17.md`.
+
+La jauge de santé se lit dans le **même état** que les pénalités et la réparation (`B.degats.sante` : adhérence,
+traînée, roues, caisse) — rien n'est simulé pour le seul affichage. Les stands existent : voie de 3,2 m le long du bord
+droit de la ligne droite, sous le bâtiment que dessine déjà `decor.js`, calculée avec le tracé (`c.stands`), entrée
+délibérée à basse vitesse, bridage à 40 km/h, **service à l'arrêt seul**, durée chiffrée d'après l'état constaté. La
+réparation complète ne se fait que là : le replacement après crash reste une remise en piste partielle. Entrer aux
+stands invalide le tour, comme un replacement. Les rivaux n'y vont pas (règle écrite, tenue par un test) et un pair
+distant ne peut pas faire réparer sa voiture. En navigateur : `Neuve` → `40 %` → `Service 3,7 s` → `Neuve`, adhérence
+et traînée revenues à 1, teinte à 0.
+
+**Le prochain lot prêt est le lot 5 (performance).**
+
 `src/jeu.js`, `src/course.js`, `src/index.html`, `src/style.css`, `VERSION.json`, `SIZE.json` et `dist/bitume.html` sont des points de jonction : modifications et reconstructions séquentielles uniquement. Les analyses peuvent être indépendantes, pas les pushs concurrents sur la branche principale.
 
 ## Contraintes communes et décisions récentes

@@ -1,0 +1,160 @@
+{
+  "url": "file:///home/m4d135/work/bitume-qwen-20261117/bitume/dist/bitume.html",
+  "environnement": {
+    "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+    "rendu": "WebKit WebGL",
+    "nonMasque": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+    "webgl2": true,
+    "backend": "webgl2",
+    "chronometrageGpu": true,
+    "gpuModeste": true,
+    "resolution": [
+      1390,
+      1295
+    ],
+    "version": "V0.2.24",
+    "signature": true,
+    "liensSignature": 1
+  },
+  "banc": null,
+  "mesures": {
+    "actif": false,
+    "fps": null,
+    "imageP50": null,
+    "imageP95": null,
+    "imagePire": null,
+    "cpu": {
+      "boucle": null,
+      "simulation": null,
+      "rendu": null,
+      "effets": null,
+      "hud": null,
+      "son": null
+    },
+    "cpuP50": {
+      "boucle": null,
+      "simulation": null,
+      "rendu": null,
+      "effets": null,
+      "hud": null,
+      "son": null
+    },
+    "cpuP95": {
+      "boucle": null,
+      "simulation": null,
+      "rendu": null,
+      "effets": null,
+      "hud": null,
+      "son": null
+    },
+    "vues": {
+      "principale": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0
+      },
+      "retro": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0
+      }
+    },
+    "gpu": false,
+    "gpuValide": false,
+    "gpuMs": null,
+    "gpuPasses": null,
+    "gpuDescartes": 0,
+    "gpuEnAttente": 0,
+    "voitures": 0,
+    "voituresTotal": 0,
+    "lampes": 0,
+    "ombres": false,
+    "palier": 0,
+    "qualite": "",
+    "images": 0,
+    "pieces": 0,
+    "piecesTotal": 0,
+    "physx": null
+  },
+  "erreurs": [],
+  "avertissements": [
+    {
+      "type": "info",
+      "texte": "BITUME banc {\"qualite\":\"high\",\"duree\":180.29,\"images\":363,\"p50\":499.9,\"p95\":566.6,\"pire\":2716.5,\"fenetre\":\"1390×1295\",\"image\":\"1390×1295\",\"circuit\":\"Val-Brûlé\",\"interrompu\":false,\"effets\":{\"moyenne\":0.122,\"p95\":0.3},\"traces\":{\"bandes\":37,\"fumees\":0,\"etincelles\":0,\"debris\":0,\"embruns\":81}}"
+    }
+  ],
+  "limites": [
+    "Rendu logiciel (SwiftShader) : ces chiffres ne qualifient les performances d aucun GPU réel, ni d un téléphone, ni d une Xbox Edge.",
+    "Une session Chrome sans interface ne prouve ni les manettes physiques, ni une vraie partie WebRTC sur plusieurs machines."
+  ],
+  "titre": {
+    "visible": true,
+    "marque": "BITUME",
+    "signature": "m4d135"
+  },
+  "avant": {
+    "stands": {
+      "debut": 30,
+      "garage0": 70,
+      "garage1": 118,
+      "fin": 240,
+      "d": 4.4,
+      "vitesse": 11
+    },
+    "sante": 0.4,
+    "avaries": [
+      "adhérence",
+      "carrosserie"
+    ],
+    "dureeService": 3.94,
+    "tourValide": true,
+    "affiche": "Neuve",
+    "phase": "piste"
+  },
+  "pendant": {
+    "phase": "service",
+    "t": 0.28,
+    "course": {
+      "phase": "course",
+      "temps": 8.51,
+      "joueur": true,
+      "humain": false,
+      "distant": false
+    },
+    "pos": {
+      "s": 80,
+      "d": 4.4,
+      "v": 0,
+      "accident": false,
+      "recup": false,
+      "saut": false,
+      "immunite": 0
+    },
+    "affiche": "Service 3.7 s",
+    "phaseAffichee": "service",
+    "remplissage": "0.40"
+  },
+  "apres": {
+    "phase": null,
+    "repare": false,
+    "sante": 1,
+    "adher": 1,
+    "trainee": 1,
+    "teinte": 0,
+    "affiche": "Neuve",
+    "phaseAffichee": "piste",
+    "tourValide": false
+  },
+  "etatCourse": {
+    "ecran": "titre",
+    "phase": "grille",
+    "voitures": 12,
+    "horloge": 0.1
+  },
+  "capture": "/home/m4d135/work/bitume-qwen-20261117/bitume/docs/reprise/rapports/LOT4-stand.png"
+}
