@@ -89,7 +89,7 @@ sont testés dans Chromium avec une manette simulée ; course, son et fluidité 
 
 ## Pour aller plus loin
 
-- `docs/REPRISE-2026-11-17.md` : état vérifié de la reprise, corrections des commandes à deux et limites des essais.
+- `docs/REPRISE-2026-11-17.md` : lots 0.2.13 et 0.2.14, corrections des commandes et de la pause à deux, preuves avant/après et limites des essais.
 - `CONCEPTION.md` : intentions, mécaniques, ce qui est vérifié et ce qui ne l'est pas.
 - `PLAN-MAITRE.md` : le plan de travail en cours, phase par phase, avec ce qui reste à faire.
 - `FEUILLE-DE-ROUTE.md` : l'écart avec vroom-unreal et les lots pour le combler.

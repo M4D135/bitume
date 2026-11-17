@@ -493,7 +493,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.13">V0.2.13</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.14">V0.2.14</b>
     </div>
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
@@ -62315,6 +62315,7 @@ FERRO.initPhysics().then(function(){
   const boutonsSouris = e => { souris.gaz = !!(e.buttons & 1); souris.frein = !!(e.buttons & 2); souris.derive = !!(e.buttons & 28); };
   addEventListener('pointerdown', e => {
     if (e.pointerType !== 'mouse' || !enCourse()) return;
+    if (!sourisPour(0) && !(session && session.type === 'duo' && sourisPour(1))) return;
     souris.active = true; souris.x = e.clientX; souris.largeur = innerWidth || 1; boutonsSouris(e); activerSon();
   });
   addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; souris.x = e.clientX; souris.largeur = innerWidth || 1; if (souris.active) boutonsSouris(e); }, { passive: true });
@@ -62322,7 +62323,8 @@ FERRO.initPhysics().then(function(){
   addEventListener('contextmenu', e => { if (enCourse() || ecran === 'pause') e.preventDefault(); });
   addEventListener('wheel', e => {
     if (!enCourse() || !souris.active || !e.deltaY) return;
-    const imp = session && session.type === 'duo' && sourisPour(1) ? impulsions2 : impulsions;
+    const imp = session && session.type === 'duo' && sourisPour(1) ? impulsions2 : sourisPour(0) ? impulsions : null;
+    if (!imp) return;
     if (e.deltaY < 0) imp.haut = true; else imp.bas = true;
   }, { passive: true });
   let pauseAuto = true; // coupée par BITUME_JEU.pauseAuto = false, pour les captures et le banc
@@ -62349,22 +62351,23 @@ FERRO.initPhysics().then(function(){
   function lireManette() {
     let liste = [];
     try { if (navigator.getGamepads) liste = navigator.getGamepads() || []; } catch (e) { /* accès non autorisé : commandes neutres, le rendu continue */ }
-    const ancienne = pad.manette, etatDerive = pad.deriveEtat;
-    // à deux en course : deux manettes, une chacun ; une seule va au joueur 2 (le joueur 1 garde le clavier). En pause,
-    // la première manette mène les menus et la seconde peut reprendre.
+    const ancienne = pad.manette, etatDerive = pad.deriveEtat, ecranLecture = ecran;
+    // À deux, garder les mêmes affectations durant toute la séance, réglages et résultats compris : en ligne,
+    // la simulation continue derrière certains menus. Chaque manette affectée peut y naviguer.
     const connectees = [];
     for (const candidate of liste) if (candidate && candidate.connected) connectees.push(candidate);
     nbManettes = connectees.length; manettes = connectees;
-    const duoJeu = !!session && session.type === 'duo' && (ecran === 'course' || ecran === 'pause');
-    const [p1, p2] = duoJeu && ecran === 'course' ? assigner(connectees) : [connectees[0] || null, duoJeu && connectees.length >= 2 ? connectees[1] : null];
+    const duoJeu = !!session && session.type === 'duo';
+    const [p1, p2] = duoJeu ? assigner(connectees) : [connectees[0] || null, null];
     if (duoJeu || pad2.manette) lireManette2(p2);
     const p = p1;
     const change = (ancienne?.index ?? -1) !== (p?.index ?? -1) || ancienne?.id !== p?.id;
     if (change) {
       // Une manette perdue ne relâche pas une dérive chargée en déclenchant un turbo involontaire.
       // Seul l'état auquel ses commandes ont été appliquées compte ; une nouvelle séance reste intacte.
+      const clavier = commande(0) === 'auto' || commande(0) === 'clavier';
       if (ancienne && etatDerive === session?.course?.joueur?.etat && etatDerive?.derive?.actif &&
-          !doigt.derive && !touches.has('Space') && !touches.has('ShiftLeft') && !touches.has('ShiftRight'))
+          !doigt.derive && !(clavier && appuieSur(0, 'derive')) && !(souris.active && sourisPour(0) && souris.derive))
         B.conduite.annulerDerive(etatDerive, true);
       pad.precedent.length = 0; pad.deriveEtat = null;
     }
@@ -62386,19 +62389,23 @@ FERRO.initPhysics().then(function(){
       const ax = p.axes[0] || 0, morte = .06, x = Math.abs(ax) < morte ? 0 : Math.sign(ax) * (Math.abs(ax) - morte) / (1 - morte);
       pad.volant = Math.sign(x) * Math.pow(Math.abs(x), 1.22);
       pad.gaz = b(7); pad.frein = b(6); pad.derive = appuye(0) || appuye(2);
-      if (enCourse()) {
+      const accepte = commande(0) === 'auto' || commande(0) === 'manette';
+      if (enCourse() && ecran === ecranLecture && accepte) {
         if (nouveau(5)) impulsions.haut = true;
         if (nouveau(4)) impulsions.bas = true;
         if (nouveau(3)) changerVue();
       }
-      if (nouveau(9)) {
-        if (enCourse() || ecran === 'pause') basculerPause();
-        else if (ecran === 'titre') { modePrepa = 'course'; activerSon(); aller('preparation'); }
-        else if (ecran === 'preparation') { const b = $('b-depart'); if (b) { activerSon(); b.click(); } }
-        else naviguerManette(nouveau);
-      } else if (!enCourse()) naviguerManette(nouveau);
+      // Si J2 vient de changer d'écran, consommer aussi les fronts de J1 sans agir une seconde fois.
+      if (ecran === ecranLecture) {
+        if (nouveau(9)) {
+          if (enCourse() || ecran === 'pause') basculerPause();
+          else if (ecran === 'titre') { modePrepa = 'course'; activerSon(); aller('preparation'); }
+          else if (ecran === 'preparation') { const b = $('b-depart'); if (b) { activerSon(); b.click(); } }
+          else naviguerManette(nouveau);
+        } else if (!enCourse()) naviguerManette(nouveau);
+      }
       for (let i = 0; i < p.buttons.length; i++) pad.precedent[i] = appuye(i);
-      if (Math.abs(pad.volant) > .05 || pad.gaz > .05 || pad.frein > .05) { pad.actif = true; analogique = true; activerSon(); }
+      if (accepte && (Math.abs(pad.volant) > .05 || pad.gaz > .05 || pad.frein > .05)) { pad.actif = true; analogique = true; activerSon(); }
       return;
     }
   }
@@ -62518,6 +62525,7 @@ FERRO.initPhysics().then(function(){
       if (nouveau(3)) changerVue2();
     }
     if (nouveau(9)) { activerSon(); basculerPause(); }
+    else if (!enCourse()) naviguerManette(nouveau);
     for (let i = 0; i < p.buttons.length; i++) pad2.precedent[i] = appuye(i);
     if (Math.abs(pad2.volant) > .05 || pad2.gaz > .05 || pad2.frein > .05) activerSon();
   }
@@ -62572,7 +62580,7 @@ FERRO.initPhysics().then(function(){
       const vs = volantSouris(); if (Math.abs(vs) > Math.abs(volant)) volant = vs;
       derive = derive || souris.derive; analogique = true;
     }
-    pad.deriveEtat = pad.derive && session ? session.course.joueur.etat : null;
+    pad.deriveEtat = manette && pad.manette && pad.derive ? session?.course?.joueur?.etat : null;
     // aide au volant (rattrape les glisses) au niveau choisi ; guidage le long du virage au clavier et au doigt seulement
     const cmd = { gaz, frein, volant, derive, marcheArriere: true, haut: impulsions.haut, bas: impulsions.bas, boite: reglages.boite, aide: reglages.aide, guidage: analogique ? 0 : .15 };
     impulsions.haut = impulsions.bas = false;
