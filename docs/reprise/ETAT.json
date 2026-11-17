@@ -3,13 +3,14 @@
   "etat_courant": {
     "date": "2026-11-17",
     "base_branche": "main",
-    "base_commit": "d67506c6d023ad5efa5a3b1ac721811c53a323a2",
-    "base_version_client": "0.2.24",
-    "version_preparee": "0.2.25",
-    "statut": "pilote_local_qualifie_publication_en_attente",
+    "base_commit": "552d3dfd6476a7678b8f7e958922b15ad1094b7c",
+    "base_version_client": "0.2.26",
+    "version_preparee": "0.2.27",
+    "statut": "chantier_cat_garden_profils_en_cours",
     "lot_5": "partiel",
-    "prochaine_action": "Publier BITUME sur main et consigner le recu verifie. Prochaine reprise depuis le Mac : ./deposer.sh, verification du site servi, smoke du HTML final et bancs GPU reels ; aucune execution automatique annoncee.",
-    "qualification_reprise": "Controle final : 43/43 suites Node reussies, build strictement reproductible et FERRO 34/34 verifies. Chromium bloque avant DevTools et avant le jeu ; aucun nouveau smoke ni banc instrumente. Passage precedent 42/43 puis decor seul reussi conserve comme historique."
+    "plan": "docs/reprise/06-QUALITE-CAT-GARDEN.md",
+    "prochaine_action": "Publier le checkpoint documentaire, puis FERRO 0.3.5 stable, puis BITUME avec profils Low/Medium/High/Auto apres les controles. Mise a jour progressive des demandes et du suivi requise par David.",
+    "qualification_reprise": "Moteur 122 tests reussis et 1 TODO historique ; compilation de 18 stages GLSL/WGSL ; installation EMPRISE et BITUME 34/34. Profils graphiques finaux du jeu en cours. Rendu navigateur bloque avant chargement, pas de FPS materiel annonce."
   },
   "organisation": "Une discussion par lot borne ; integrations sequentielles. Maitre d'oeuvre unique sur les fichiers de jonction.",
   "base_verifiee": {
@@ -465,6 +466,23 @@
       "publication": "En preparation via le connecteur GitHub ; commit reel a consigner apres verification.",
       "deploiement": "Autorise, non effectue ; aucun acces Mac/amiga disponible.",
       "portee": "Le passage 43/43 est distinct du passage precedent 42/43 puis decor reussi isole. Le lot 5 reste partiel ; GPU reel, batching des monoplaces et LOD historique a poursuivre."
+    }
+  },
+  "chantier_cat_garden": {
+    "demandes": [
+      "Qualite proche Cat Garden et maximum de techniques reutilisables",
+      "High tres detaille, choix Low/Medium/High dans les options, Auto conserve",
+      "Pousser progressivement demandes, plan et sources pour reprise fiable"
+    ],
+    "etat": "integration_en_cours",
+    "plan": "docs/reprise/06-QUALITE-CAT-GARDEN.md",
+    "prochaine_publication": "FERRO 0.3.5 puis BITUME 0.2.27",
+    "validation_visuelle": false,
+    "deploiement_effectue": false,
+    "concurrence_preservee": {
+      "commit": "552d3dfd6476a7678b8f7e958922b15ad1094b7c",
+      "sujet": "Signature titre m4d135 et avatar embarqué",
+      "fusion": "3 voies sans conflit ; nouvelles options Graphismes conservees"
     }
   }
 }

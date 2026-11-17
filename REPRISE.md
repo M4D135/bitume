@@ -10,9 +10,15 @@ Ce fichier permet de reprendre dans une nouvelle discussion sans recopier les co
 4. Relire la tête distante avant le push. En cas d'avancement concurrent, récupérer et réconcilier, sans force-push. Ne jamais faire écrire deux discussions simultanément sur les fichiers partagés.
 5. Mettre à jour la fiche et `ETAT.json` : base, commit livré, fichiers, tests réellement exécutés, résultats, limites et prochaine action. L'identifiant du commit de code peut être inscrit dans une mise à jour documentaire suivante ; ne pas inventer de SHA autoréférentiel.
 
-## Reprise du 17 novembre 2026, soir
+## Chantier actif — qualité Cat Garden et profils graphiques
 
-Base de cette reprise : **`main` à `d67506c6d023ad5efa5a3b1ac721811c53a323a2`, BITUME 0.2.24**. Le pilote **0.2.25** du lot 5 a été retrouvé dans la copie de travail de la discussion précédente, avec ses sources, son build et ses preuves. Il comprend les matières et végétaux de Val-Brûlé, les mesures corrigées, le moteur audio de J2, la qualité Auto et les corrections pause/HUD. **BITUME 0.2.25 n'est pas encore publié à ce point de reprise.** Le lot 5 reste partiel : batching des monoplaces, LOD historique et qualification sur appareils réels restent ouverts.
+**Lire [les demandes et le plan de reprise](docs/reprise/06-QUALITE-CAT-GARDEN.md).** David demande de pousser le détail au maximum en High, un menu Low / Medium / High + Auto et des publications GitHub progressives. Le présent point enregistre les demandes ; les nouveaux sous-lots sont en cours d'intégration. La dernière version de jeu publiée est **0.2.26**, commit `552d3dfd6476a7678b8f7e958922b15ad1094b7c` : la signature de titre ajoutée en parallèle est conservée. La version de ce lot sera **0.2.27**.
+
+Le moteur 0.3.5 est préparé et vérifié hors navigateur ; les profils géométriques et le menu BITUME sont en finalisation. Relire les têtes GitHub avant toute reprise : publication du moteur, puis du jeu dès les contrôles terminés. Le déploiement Mac/amiga et la validation visuelle restent à faire.
+
+## Historique — préparation du 17 novembre 2026, soir
+
+Base de cette reprise : **`main` à `d67506c6d023ad5efa5a3b1ac721811c53a323a2`, BITUME 0.2.24**. Le pilote **0.2.25** du lot 5 a été retrouvé dans la copie de travail de la discussion précédente, avec ses sources, son build et ses preuves. Il comprend les matières et végétaux de Val-Brûlé, les mesures corrigées, le moteur audio de J2, la qualité Auto et les corrections pause/HUD. **Cette préparation a ensuite été publiée sur main au commit `352814f6dca9fbfd837b15e5253bbf33ed30483b`, avec un arbre strictement identique au commit local `6c6a40e`.** Le lot 5 reste partiel : batching des monoplaces, LOD historique et qualification sur appareils réels restent ouverts.
 
 **FERRO 0.3.4 est publié** sur `M4D135/FERRO:main`, commit `457a9671f4ea5c314a5c8e7b3337474ba031c78e`. Les 34 modules de la copie BITUME correspondent à `FERRO.lock.json`. Le candidat visuel initial et le build final ont des empreintes distinctes ; leur qualification et les actions de publication sont détaillées dans [le rapport du lot 5](docs/reprise/rapports/LOT5-2026-11-17.md).
 
