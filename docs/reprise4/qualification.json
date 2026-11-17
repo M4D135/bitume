@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-17",
+  "base_commit": "7fab6b77fe37e42369e7a936935ed79c0d8cc5f2",
+  "branch": "codex/bitume-reprise4-20261117",
+  "client_version": "0.2.14",
+  "previous_local_0_2_18_recovered": false,
+  "salon_test_node": "22.16.0",
+  "salon_original": { "passed": 6, "total": 29 },
+  "salon_fixed": { "passed": 29, "total": 29 },
+  "local_suites": { "passed": 31, "total": 32, "failed": "verifications/decor.test.mjs", "reason": "Existing performance limit 150 ms; measured 277 ms in parallel, 213 ms isolated. Decor unchanged." },
+  "baseline_ci": { "node": "24.22.2", "passed": 31, "total": 31, "run_id": 44060670834 },
+  "current_ci": "Consult the workflow attached to the branch commit; not inferred from baseline.",
+  "ferro_modules": { "verified": 34, "total": 34 },
+  "driving_required_criteria": { "passed": 46, "total": 46, "open_measure": "S8" },
+  "html_sha256": "c48f8b6a3939a272c7a21e621a44add3aeadb978a66b689f06a21b59902ae76c",
+  "server_blob": "731686480e150c08860fba8af690f6245bc52459",
+  "tests_blob": "1ac2490f706f37bb982b2f06aa131b2766f75307",
+  "webgl_validated": false,
+  "production_deployed": false
+}
