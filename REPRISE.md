@@ -10,24 +10,29 @@ Ce fichier permet de reprendre dans une nouvelle discussion sans recopier les co
 4. Relire la tête distante avant le push. En cas d'avancement concurrent, récupérer et réconcilier, sans force-push. Ne jamais faire écrire deux discussions simultanément sur les fichiers partagés.
 5. Mettre à jour la fiche et `ETAT.json` : base, commit livré, fichiers, tests réellement exécutés, résultats, limites et prochaine action. L'identifiant du commit de code peut être inscrit dans une mise à jour documentaire suivante ; ne pas inventer de SHA autoréférentiel.
 
-## État vérifié au 17 novembre 2026
+## État vérifié le 17 novembre 2026 (lot 0 terminé)
 
-Base distante : `main`, `d891fa24b6a2d00ffd01abb50989b2d9199698ee`, client **0.2.19**. Les PR 1 et 2 sont intégrées. Qualification historique de cette base : 34 suites et build reproductible ; voir les rapports versionnés de réconciliation. Ces résultats ne valident PAS les futurs changements.
+Base distante : `main`, `b9d8c6db3e4eff55b9f1dd05e8e74de45f2d5507`, client **0.2.19** à cette tête. PR #1 et #2 fermées, aucune PR ouverte, branche par défaut `main`.
 
-Sept branches distantes étaient encore présentes lors du dernier inventaire. La demande de branche unique n'est donc pas encore exécutée. L'archive fournie est intégrée ; l'ancienne série locale `e074b55` reste non retrouvée. Ne pas la confondre avec l'archive portant les mêmes numéros de version.
+Qualification réellement exécutée sur le Spark (`spark-5fc3`, Linux arm64, Node 24.18.0) : **34 suites Node réussies**, `python3 tools/check-ferro-lock.py` conforme (**FERRO 0.3.3, 34/34 modules**), build reproductible identique aux fichiers versionnés (`dist/bitume.html` 12 843 946 octets, gzip 2 945 485, sha256 `c8ac999b71b1944f50cf3d25c42635f2b6db3b72741be9a0def66793ed9ef76e`). Ces résultats ne valident PAS les changements postérieurs.
 
-**Cette livraison organise les reprises seulement. Les nouvelles corrections tunnel/crashs/IA/stands/performance ne sont pas encore réalisées. Aucun déploiement du site n'est effectué.**
+**Le paquet de reprise annoncé par le prompt de mission est absent.** `BITUME-REPRISE-QWEN-SPARK.zip`, son bundle `bitume-main-12dc097.bundle` et le relais `BITUME-RELAIS-2026-11-17.zip` ne sont sur aucun disque joint (Mac et Spark cherchés le 17/11/2026). Les commits `12dc097`, `827c307`, `74352fe`, `a690e92` et la série `e074b55` ne sont ni sur GitHub ni dans les copies locales : la « récupération 0.2.20 » du prompt n'a jamais été poussée et n'est pas récupérable. Rien n'a été réinventé à sa place ; le 0.2.20 livré par le lot 0 est un autre commit, construit depuis `main`. Détail dans `docs/reprise/00-DEPOT.md`.
+
+`opencode/titre-zip-signature-20261116` (`9e23cc1`) n'était pas fusionnée : son unique apport propre, la signature `m4d135` de l'écran titre, a été réintégré proprement (sans la fermeture `</span>` excédentaire, sans le lien ZIP retiré par le second commit) et couvert par `verifications/titre-signature.test.mjs`. Les six autres branches sont des ancêtres de `main`. Sauvegarde vérifiée avant tout nettoyage : `bitume-toutes-refs-2026-11-17.bundle`, sha256 `4a733d1faf1dec986d89e5bf0969a804f95f6a24463e618fd8897abbaf4fb1ef`.
+
+**Le lot 0 organise le dépôt et réintègre la signature. Les corrections tunnel/crashs/IA/stands/performance des lots 1 à 5 restent à réaliser.**
+
 
 ## Répartition des discussions
 
-| Lot | Fiche | Résultat attendu | Dépendance |
-|---|---|---|---|
-| 0 | [Dépôt unique](docs/reprise/00-DEPOT.md) | Travail conservé, une seule branche principale | Aucune |
-| 1 | [Tunnel et mesures](docs/reprise/01-TUNNEL.md) | Reflets sans apparition brutale, référence de performance et overlay | Base vérifiée |
-| 2 | [Crashs et PhysX](docs/reprise/02-CRASHS.md) | Accidents lisibles, pièces détachées bornées, récupération rapide | Lot 1 intégré |
-| 3 | [Rivaux agressifs](docs/reprise/03-RIVAUX.md) | Manœuvres offensives contre joueur et autres IA | Lot 2 intégré |
-| 4 | [Santé et stands](docs/reprise/04-STANDS.md) | Dégâts persistants visibles et réparations aux stands | Lots 2 et 3 intégrés |
-| 5 | [Optimisation et qualification](docs/reprise/05-PERFORMANCE.md) | Gains mesurés, modes et plateformes contrôlés | Lots 1 à 4 intégrés |
+| Lot | Fiche | Résultat attendu | Dépendance | Statut |
+|---|---|---|---|---|
+| 0 | [Dépôt unique](docs/reprise/00-DEPOT.md) | Travail conservé, une seule branche principale | Aucune | **terminé** |
+| 1 | [Tunnel et mesures](docs/reprise/01-TUNNEL.md) | Reflets sans apparition brutale, référence de performance et overlay | Base vérifiée | en cours |
+| 2 | [Crashs et PhysX](docs/reprise/02-CRASHS.md) | Accidents lisibles, pièces détachées bornées, récupération rapide | Lot 1 intégré | à faire |
+| 3 | [Rivaux agressifs](docs/reprise/03-RIVAUX.md) | Manœuvres offensives contre joueur et autres IA | Lot 2 intégré | à faire |
+| 4 | [Santé et stands](docs/reprise/04-STANDS.md) | Dégâts persistants visibles et réparations aux stands | Lots 2 et 3 intégrés | à faire |
+| 5 | [Optimisation et qualification](docs/reprise/05-PERFORMANCE.md) | Gains mesurés, modes et plateformes contrôlés | Lots 1 à 4 intégrés | à faire |
 
 `src/jeu.js`, `src/course.js`, `src/index.html`, `src/style.css`, `VERSION.json`, `SIZE.json` et `dist/bitume.html` sont des points de jonction : modifications et reconstructions séquentielles uniquement. Les analyses peuvent être indépendantes, pas les pushs concurrents sur la branche principale.
 
@@ -40,7 +45,7 @@ Sept branches distantes étaient encore présentes lors du dernier inventaire. L
 - Les nouveaux crashs doivent être spectaculaires sans imposer une longue interruption : récupération en moins d'une seconde, débris pouvant poursuivre leur mouvement. Ne pas rendre la voiture totalement neuve à chaque replacement ; la réparation complète appartient aux stands.
 - Aucun gain FPS inventé. Les mesures CPU, GPU et intervalle d'image sont distinctes ; une mesure indisponible reste N/D. Un test Node ne constitue pas une validation WebGL, PhysX navigateur, manette physique ou course WebRTC réelle.
 - Cible mobile/Xbox Edge : 60 FPS, pas une garantie non mesurée. Ne pas supprimer du contenu au loin avec un seuil brutal pour atteindre cette cible.
-- Pas de création de branches supplémentaires pour organiser les discussions. Pas de publication sur le site sans demande de déploiement.
+- Pas de création de branches supplémentaires pour organiser les discussions. Publication : la mission du 17/11/2026 autorise explicitement commits, pushs via le Mac et déploiement sur `bitume.estrasse.fr` ; hors ce mandat, `./deposer.sh` reste sur demande de David.
 
 ## Fin de chaque lot
 
