@@ -221,7 +221,7 @@
   const touches = new Set();
   const impulsions = { haut: false, bas: false };
   const pad = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, deriveEtat: null, rumbleF: -1, rumbleS: -1, rumbleT: 0, choc: 0, passe: 0 };
-  const pad2 = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, manette: null, rumbleF: -1, rumbleS: -1, rumbleT: 0, choc: 0, passe: 0 };   // manette du joueur 2 (écran partagé)
+  const pad2 = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, manette: null, deriveEtat: null, rumbleF: -1, rumbleS: -1, rumbleT: 0, choc: 0, passe: 0 };   // manette du joueur 2 (écran partagé)
   let nbManettes = 0, manettes = [];
   const impulsions2 = { haut: false, bas: false };
   // Commandes de chaque joueur (David, 16/11 : « choix manette, clavier ou souris, et gérer les touches de chacun » ;
@@ -462,10 +462,20 @@
     else if (nouveau(1)) retour();
   }
 
-  // à deux au clavier, le joueur 1 garde ZQSD (WASD), Espace et Maj gauche ; les flèches vont au joueur 2, sauf
-  // quand celui-ci a l'unique manette
+  // Deuxième manette : mêmes rapports et protection de dérive que pour le joueur 1 ; son clavier reste indépendant.
   function lireManette2(p) {
-    const change = (pad2.manette?.index ?? -1) !== (p?.index ?? -1) || pad2.manette?.id !== p?.id;
+    const ancienne = pad2.manette, etatDerive = pad2.deriveEtat;
+    const change = (ancienne?.index ?? -1) !== (p?.index ?? -1) || ancienne?.id !== p?.id;
+    if (change) {
+      // En ligne, le deuxième pilote local peut conduire une autre voiture que la n° 1. Ne toucher qu'à la
+      // dérive réellement commandée par cette manette, sauf si son clavier ou sa souris la maintient encore.
+      const etatJ2 = session?.course?.voitures?.[session?.locaux?.[1]]?.etat;
+      const clavier = commande(1) === 'auto' || commande(1) === 'clavier';
+      if (ancienne && etatDerive === etatJ2 && etatDerive?.derive?.actif &&
+          !(clavier && appuieSur(1, 'derive')) && !(souris.active && sourisPour(1) && souris.derive))
+        B.conduite.annulerDerive(etatDerive, true);
+      pad2.precedent.length = 0; pad2.deriveEtat = null;
+    }
     pad2.manette = p; pad2.volant = pad2.gaz = pad2.frein = 0; pad2.derive = false;
     if (!p) { pad2.precedent.length = 0; return; }
     const b = i => p.buttons[i] ? (p.buttons[i].value || (p.buttons[i].pressed ? 1 : 0)) : 0, appuye = i => b(i) > .5, nouveau = i => appuye(i) && !pad2.precedent[i];
@@ -473,7 +483,11 @@
     const ax = p.axes[0] || 0, morte = .06, x = Math.abs(ax) < morte ? 0 : Math.sign(ax) * (Math.abs(ax) - morte) / (1 - morte);
     pad2.volant = Math.sign(x) * Math.pow(Math.abs(x), 1.22);
     pad2.gaz = b(7); pad2.frein = b(6); pad2.derive = appuye(0) || appuye(2);
-    if (ecran === 'course' && nouveau(3)) changerVue2();
+    if (ecran === 'course') {
+      if (nouveau(5)) impulsions2.haut = true;
+      if (nouveau(4)) impulsions2.bas = true;
+      if (nouveau(3)) changerVue2();
+    }
     if (nouveau(9)) { activerSon(); basculerPause(); }
     for (let i = 0; i < p.buttons.length; i++) pad2.precedent[i] = appuye(i);
     if (Math.abs(pad2.volant) > .05 || pad2.gaz > .05 || pad2.frein > .05) activerSon();
@@ -499,7 +513,8 @@
       const vs = volantSouris(); if (Math.abs(vs) > Math.abs(volant)) volant = vs;
       derive = derive || souris.derive; analog = true;
     }
-    const cmd = { gaz, frein, volant, derive, marcheArriere: true, haut: impulsions2.haut, bas: impulsions2.bas, boite: 'auto', aide: reglages.aide, guidage: analog ? 0 : .15 };
+    pad2.deriveEtat = manette && pad2.manette && pad2.derive ? session?.course?.voitures?.[session?.locaux?.[1]]?.etat : null;
+    const cmd = { gaz, frein, volant, derive, marcheArriere: true, haut: impulsions2.haut, bas: impulsions2.bas, boite: reglages.boite, aide: reglages.aide, guidage: analog ? 0 : .15 };
     impulsions2.haut = impulsions2.bas = false;
     return cmd;
   }
@@ -513,8 +528,8 @@
       if (appuieSur(0, 'droite')) volant += 1;
       derive = appuieSur(0, 'derive');
     }
-    // en Auto, le clavier ou la manette reprennent la main sur la souris
-    if (c0 === 'auto' && souris.active && (gaz || frein || volant || pad.actif)) souris.active = false;
+    // en Auto, le clavier ou la manette reprennent la main sur la souris de ce joueur seulement
+    if (c0 === 'auto' && souris.active && sourisPour(0) && (gaz || frein || volant || pad.actif)) souris.active = false;
     if (manette) {
       gaz = Math.max(gaz, pad.gaz); frein = Math.max(frein, pad.frein);
       if (Math.abs(pad.volant) > Math.abs(volant)) volant = pad.volant;

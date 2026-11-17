@@ -2,9 +2,9 @@
 
 Course de monoplaces d'époque dans le navigateur, entièrement procédurale : trois circuits générés, onze rivaux,
 dérive et turbo. Moteur FERRO (WebGL2). Aucune image, aucun son enregistré, aucune police chargée : une seule page
-HTML d'environ 581 Ko.
+HTML autonome. Sa taille exacte, brute et compressée, est mesurée dans `SIZE.json` à chaque construction.
 
-Essai 0.1 du 12 novembre 2026. BITUME est la refonte web de vroom-unreal, le projet Unreal de David : il garde le
+Première version du 12 novembre 2026. BITUME est la refonte web de vroom-unreal, le projet Unreal de David : il garde le
 genre et les mécaniques inventées pour vroom-unreal, et ne reprend rien du Vroom de Lankhor.
 
 ## Jouer
@@ -89,6 +89,7 @@ sont testés dans Chromium avec une manette simulée ; course, son et fluidité 
 
 ## Pour aller plus loin
 
+- `docs/REPRISE-2026-11-17.md` : état vérifié de la reprise, corrections des commandes à deux et limites des essais.
 - `CONCEPTION.md` : intentions, mécaniques, ce qui est vérifié et ce qui ne l'est pas.
 - `PLAN-MAITRE.md` : le plan de travail en cours, phase par phase, avec ce qui reste à faire.
 - `FEUILLE-DE-ROUTE.md` : l'écart avec vroom-unreal et les lots pour le combler.
