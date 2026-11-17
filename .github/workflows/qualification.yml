@@ -1,0 +1,66 @@
+name: Qualification BITUME
+
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qualification-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Sauvegarder les sources exactes du commit
+        shell: bash
+        run: |
+          mkdir -p qualification
+          git archive --format=tar.gz --output=qualification/bitume-sources.tar.gz HEAD
+          git rev-parse HEAD > qualification/COMMIT.txt
+          node --version > qualification/ENVIRONNEMENT.txt
+          python3 --version >> qualification/ENVIRONNEMENT.txt
+      - name: Reconstruire et verifier toutes les suites
+        shell: bash
+        run: |
+          set -o pipefail
+          python3 construire.py 2>&1 | tee qualification/build.log
+          failures=0
+          passed=0
+          for test in verifications/*.test.mjs; do
+            name="$(basename "$test" .test.mjs)"
+            if node "$test" > "qualification/${name}.log" 2>&1; then
+              passed=$((passed + 1))
+              printf 'PASS %s\n' "$test"
+            else
+              failures=$((failures + 1))
+              printf 'FAIL %s\n' "$test"
+              tail -n 60 "qualification/${name}.log"
+            fi
+          done
+          printf 'Suites reussies : %s\nSuites en echec : %s\n' "$passed" "$failures" | tee qualification/RESUME.txt
+          sha256sum dist/bitume.html > qualification/SHA256SUMS.txt
+          test "$failures" -eq 0
+      - name: Conserver sources, build et rapports, meme en cas d'echec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-${{ github.sha }}
+          path: |
+            qualification/
+            dist/bitume.html
+            SIZE.json
+          if-no-files-found: error
+          retention-days: 14
