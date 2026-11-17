@@ -13,8 +13,10 @@ for (const n of [0, 1, 2, 3, 4]) test('halo et ombres au palier ' + n, () => {
   assert.equal(q.avecHalo('auto'), n < 3); assert.equal(q.avecOmbres('auto'), n < 2);
 });
 test('reflets préservés selon la météo et le GPU', () => {
+  // une séance neuve à chaque contrôle : le seuil a une prise et un relâchement (tunnel-transitions.test.mjs les tient)
   const q = fonctions({ n: 0 }, false);
-  assert.equal(q.avecReflets('high', { mouille: .5 }), true);
-  assert.equal(q.avecReflets('high', { mouille: 0, pluie: 0 }), false);
-  assert.equal(fonctions({ n: 0 }, true).avecReflets('high', { mouille: 1 }), false);
+  assert.equal(q.avecReflets({}, 'high', { mouille: .5 }), true);
+  assert.equal(q.avecReflets({}, 'high', { mouille: 0, pluie: 0 }), false);
+  assert.equal(q.avecReflets({}, 'high', { mouille: .1, pluie: .3 }), true);
+  assert.equal(fonctions({ n: 0 }, true).avecReflets({}, 'high', { mouille: 1 }), false);
 });

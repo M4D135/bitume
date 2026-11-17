@@ -419,3 +419,9 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 
 /* Avant le départ en ligne : machines prêtes en vert, celles qui règlent encore en ambre */
 .liste-pilotes em.attente { color: var(--ambre); }
+
+/* Volet de mesures (F3) : hors jeu, jamais sous le doigt, jamais compté dans l'image par lui-même (5 Hz). */
+#mesures { position: fixed; left: 10px; bottom: 10px; z-index: 9; margin: 0; padding: 8px 10px; pointer-events: none;
+  background: rgba(8, 9, 11, .82); border: 1px solid var(--trait); border-left: 3px solid var(--ambre); border-radius: 6px;
+  color: var(--papier); font: 500 11px/1.55 ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+  white-space: pre; font-variant-numeric: tabular-nums; }

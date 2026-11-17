@@ -25,6 +25,9 @@ MODULES = [
     'ferro/engine.js',
     'ferro/physx-runtime.js',
     'ferro/physx.js',
+    # chronomètre GPU optionnel du moteur (EXT_disjoint_timer_query_webgl2) : sans lui, rendu.profile() reste nul et
+    # le volet de mesures ne peut pas distinguer le CPU du GPU. Copie verrouillée, chargée telle quelle.
+    'ferro/gpu-profile.js',
     'circuit.js',
     'ferro/vehicle-dynamics.js',
     'conduite.js',
@@ -43,6 +46,7 @@ MODULES = [
     'realisateur.js',
     'meteo.js',
     'reseau.js',
+    'mesures.js',
     'jeu.js',
 ]
 # Version affichée au titre (David, 16/11/2026 : « incrémente les versions à chaque maj, je veux la vraie version »).

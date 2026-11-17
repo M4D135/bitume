@@ -254,6 +254,8 @@
   addEventListener('keydown', e => {
     const course = enCourse(), lettre = (e.key || '').toLowerCase();
     if (e.repeat) { if (course) e.preventDefault(); return; }
+    // F3 : volet de mesures (FPS, intervalle d'image, CPU, GPU mesuré, draw calls, triangles, voitures)
+    if (e.code === 'F3') { B.mesures.afficher(!B.mesures.actif, rendu); e.preventDefault(); return; }
     dernierGeste = performance.now();
     // démo : n'importe quelle touche, sauf une touche morte seule, ramène à l'écran titre
     if (ecran === 'demo') { if (!/^(Shift|Control|Alt|AltGraph|Meta|OS|CapsLock|Fn)$/.test(e.key || '')) { e.preventDefault(); activerSon(); sortirDemo(); } return; }
@@ -447,8 +449,9 @@
     const deux = S !== session;
     if (deux && !pluieVue2) pluieVue2 = B.meteo.creerPluie($('meteo2'));
     if (!deux && !pluieVue) pluieVue = B.meteo.creerPluie($('meteo'));
-    // sous la voûte du tunnel, il ne pleut pas
-    const suivie = S.course.voitures[S.suivie || 0], abri = !VUES_DEHORS.has(vue) && B.circuit.dansTunnel(S.course.c, suivie.etat.s, -4);
+    // sous la voûte du tunnel, il ne pleut pas : la caméra décide, sinon les gouttes disparaissent pendant que la
+    // vue extérieure montre encore la pluie
+    const abri = !VUES_DEHORS.has(vue) && sousLaVoute(S.course.c, cam.pos);
     (deux ? pluieVue2 : pluieVue).dessiner(abri ? Object.assign(METEO_ABRI, { t: S.meteo.t }) : S.meteo, cam, dt, { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1 });
   }
 
@@ -1303,7 +1306,93 @@
   // Reflets d'écran (David, 16/11 : « améliore le rendu, reflets ») : sur piste mouillée, les voitures, le ciel et les
   // lampes du tunnel se reflètent dans les flaques (matières humides du moteur repris d'EMPRISE). Qualité Fine, ou
   // Auto au premier palier, hors processeur graphique modeste.
-  const avecReflets = (q, m) => !gpuModeste && (q === 'high' || (q === 'auto' && palier.n === 0)) && !!m && (m.mouille > .2 || m.pluie > .2);
+  // Le moteur ne propose ce rendu que tout ou rien (fx.reflections) : l'intensité ne se règle pas ici, dans un module
+  // verrouillé. Ce qui l'est, c'est le franchissement du seuil. L'humidité de la piste monte et redescend en continu
+  // sous la pluie ; franchir un seul seuil faisait clignoter le rendu aller-retour autour de la valeur. Deux seuils
+  // (prise puis relâchement) et un état mémorisé par séance suppriment l'oscillation.
+  const REFLET_PRISE = .2, REFLET_LACHE = .12;
+  function avecReflets(S, q, m) {
+    const peutEtre = !gpuModeste && (q === 'high' || (q === 'auto' && palier.n === 0)) && !!m;
+    const eau = peutEtre ? Math.max(m.mouille || 0, m.pluie || 0) : 0;
+    const etat = S.refletsEcran === true;
+    const pris = etat ? eau >= REFLET_LACHE : eau >= REFLET_PRISE;
+    S.refletsEcran = pris;
+    return pris;
+  }
+
+  // ---------------------------------------------------------------- tunnel : lampes et abri, selon la caméra
+  // L'œil s'adapte et les lampes éclairent d'après ce que VOIT la caméra, pas seulement d'après l'abscisse de la
+  // voiture suivie : en poursuite, en poursuite rapprochée ou à deux, la caméra peut être encore sous la voûte quand
+  // la voiture en est sortie, ou l'inverse. L'axe du tunnel est échantillonné une fois par scène (une vingtaine de
+  // points, la portion est droite par construction) ; le test d'une caméra ne coûte ensuite qu'une comparaison.
+  const TUNNEL_PAS = 10, TUNNEL_MARGE = 3;
+  const tunnel = { scene: -1, n: 0, axe: null, demi: 0 };
+  function preparerTunnel(c) {
+    if (tunnel.scene === scene.index) return tunnel.n > 0;
+    tunnel.scene = scene.index; tunnel.n = 0;
+    const t = c && c.tunnel;
+    if (!t) return false;
+    const n = Math.max(2, Math.round((t.fin - t.debut) / TUNNEL_PAS) + 1);
+    if (!tunnel.axe || tunnel.axe.length < n * 2) tunnel.axe = new Float64Array(n * 2);
+    for (let i = 0; i < n; i++) { const e = B.circuit.echantillon(c, t.debut + (t.fin - t.debut) * i / (n - 1)); tunnel.axe[2 * i] = e.x; tunnel.axe[2 * i + 1] = e.z; }
+    tunnel.n = n; tunnel.demi = t.mur + TUNNEL_MARGE;
+    return true;
+  }
+  // la caméra (ou tout point) est-elle sous la voûte, ou juste devant un portail ?
+  function sousLaVoute(c, p) {
+    if (!preparerTunnel(c)) return false;
+    const x = p[0], z = p[2], A = tunnel.axe;
+    let dm = Infinity;
+    for (let i = 0; i < tunnel.n; i++) { const dx = A[2 * i] - x, dz = A[2 * i + 1] - z, d = dx * dx + dz * dz; if (d < dm) dm = d; }
+    return dm < tunnel.demi * tunnel.demi;
+  }
+
+  // Une lampe n'éclaire que ce qui est près d'elle : le moteur éteint toute lampe de portée 18 m au-delà de 18 m
+  // (atténuation du shader) et n'en retient que huit par rendu. Les choisir à 70 m à la volée, triées à chaque image,
+  // les faisait basculer par blocs de douze watts. La contribution de chaque lampe suit maintenant une rampe continue
+  // qui s'achève au-delà de la portée réelle du moteur : la lumière monte et redescend, elle ne bascule pas. Le
+  // lissage anti-tremblement ne sert qu'à cela : le seuil d'extinction est appliqué à la cible, jamais à la valeur
+  // lissée, sinon une lampe dont la cible reste sous le seuil ne s'allumerait plus jamais.
+  const LAMPE_PUISSANCE = 12, LAMPE_PORTEE = 18, LAMPE_RAYON = 20, LAMPE_PLAT = .5, LAMPE_MIN = .35, LAMPE_MAX = 8, LAMPE_LISSAGE = .08;
+  const COULEUR_LAMPE = [1, .84, .58];
+  function nouvelEtatLampes(rev, n) {
+    const e = { rev, n, p: new Float64Array(n), hors: [], pool: [] };
+    for (let k = 0; k < LAMPE_MAX; k++) e.pool.push({ p: null, power: 0, range: LAMPE_PORTEE, color: COULEUR_LAMPE });
+    return e;
+  }
+  // porteur/clé isolent l'état temporel de chaque caméra : la vue de J1, celle de J2 et chaque glace ont leur propre
+  // lissage. Le tableau rendu est celui de l'état : le moteur le lit pendant le draw, rien n'est alloué par image.
+  function lampesTunnel(porteur, cle, LT, cam, dtImage, rev) {
+    if (!LT || !LT.length) return null;
+    let et = porteur[cle];
+    if (!et || et.rev !== rev || et.n !== LT.length) et = porteur[cle] = nouvelEtatLampes(rev, LT.length);
+    const k = 1 - Math.exp(-Math.max(0, dtImage) / LAMPE_LISSAGE), r = LAMPE_RAYON, plat = r * (1 - LAMPE_PLAT);
+    const cx = cam.pos[0], cz = cam.pos[2], P = et.p, n = et.n;
+    for (let i = 0; i < n; i++) {
+      const q = LT[i], dx = q[0] - cx, dz = q[2] - cz, d = Math.sqrt(dx * dx + dz * dz);
+      let cible = 0;
+      if (d < r) { const u = d <= plat ? 1 : (r - d) / (r - plat); cible = LAMPE_PUISSANCE * u * u * (3 - 2 * u); }
+      const v = P[i] + (cible - P[i]) * k;
+      P[i] = cible === 0 && v < LAMPE_MIN ? 0 : v;
+    }
+    // les contributions les plus fortes, sans tri ni allocation ; la sélection ne peut plus osciller, les valeurs
+    // montent et descendent en continu et le plafond de huit n'est jamais atteint à la limite du cône d'éclairage
+    let compte = 0;
+    for (let i = 0; i < n; i++) {
+      const v = P[i];
+      if (v <= 0) continue;
+      if (compte < LAMPE_MAX) { const o = et.pool[compte++]; o.p = LT[i]; o.power = v; }
+      else {
+        let min = 0;
+        for (let j = 1; j < LAMPE_MAX; j++) if (et.pool[j].power < et.pool[min].power) min = j;
+        if (v > et.pool[min].power) { const o = et.pool[min]; o.p = LT[i]; o.power = v; }
+      }
+    }
+    if (!compte) return null;
+    const hors = et.hors; hors.length = 0;
+    for (let j = 0; j < compte; j++) hors.push(et.pool[j]);
+    return hors;
+  }
 
   // ---------------------------------------------------------------- rétroviseurs
   // David (16/11) : « les deux rétros bien visibles et bien foutus ». En vue cockpit, chaque glace reçoit l'image
@@ -1331,7 +1420,7 @@
     const v = [a / l, d / l, 0, g / l, b / h, e / h, 0, k / h, 0, 0, 1, 0, x0, y0, 0, 1];
     return v.every(Number.isFinite) ? 'matrix3d(' + v.map(x => +x.toFixed(6)).join(',') + ')' : null;
   }
-  function majGlaces(S, vue, cam, ps, sortie, ambiance, suivie) {
+  function majGlaces(S, vue, cam, ps, sortie, ambiance, suivie, dtImage) {
     // à deux, le joueur 2 a ses deux glaces, posées sur sa moitié ; chaque joueur rafraîchit une glace par image
     const G = S !== session ? (retro.j2 || (retro.j2 = { toiles: [$('glace-g2'), $('glace-d2')], ctx: [], cote: 0 }))
       : (retro.j1 || (retro.j1 = { toiles: [$('glace-g'), $('glace-d')], ctx: [], cote: 0 }));
@@ -1391,7 +1480,8 @@
       const o = objets[k], dx = o.p[0] - ps.x, dz = o.p[2] - ps.z, x = dx * ca + dz * sa, z = dz * ca - dx * sa;
       if (!(Math.abs(x - B.voiture.ROUES[2].x) < .5 && Math.abs(z) > .55)) objets.splice(k, 1);
     }
-    retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance });
+    retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, lights: lampesTunnel(G, 'lampes' + i, scene.decor.tunnelLampes, camR, dtImage, scene.index) });
+    if (B.mesures.actif) B.mesures.vue('retro', retro.rendu);
     const ctx = G.ctx[i];
     if (toiles[i].width !== source.width || toiles[i].height !== source.height) { toiles[i].width = source.width; toiles[i].height = source.height; }
     ctx.drawImage(source, 0, 0);
@@ -1411,6 +1501,13 @@
     const co = S.course, j = co.joueur;
     const poses = tampons.poses;
     for (let k = 0; k < co.voitures.length; k++) poses[k] = melange(S.prec[k], S.cour[k], alpha, poses[k] || {});
+    if (B.mesures.actif) {
+      let actives = 0;
+      for (let k = 0; k < co.voitures.length; k++) if (!co.voitures[k].abandon && !co.voitures[k].fini) actives++;
+      B.mesures.voitures(actives, co.voitures.length);
+      const qVue = S.banc ? S.banc.qualite : reglages.qualite;
+      B.mesures.reglages({ palier: qVue === 'auto' ? palier.n : null, qualite: qVue });
+    }
 
     // Roues (David, 16/11 : « on voit pas les roues rouler, on dirait qu'on glisse ») : au-delà d'une vingtaine de
     // degrés par image, la rotation vraie se lit figée ou à l'envers (effet stroboscopique). L'angle dessiné suit la
@@ -1511,30 +1608,30 @@
       }
     }
     // traces de pneus, fumée et étincelles
-    const tFx = S.banc ? performance.now() : 0;
+    const tFx = (S.banc || B.mesures.actif) ? performance.now() : 0;
     B.traces.dessiner(S.fx, sortie, cam.pos, S.fx.acc);
-    if (S.banc) S.banc.effets += performance.now() - tFx;
+    if (tFx) { const dFx = performance.now() - tFx; if (S.banc) S.banc.effets += dFx; if (B.mesures.actif) B.mesures.section('effets', dFx); }
     const q = S.banc ? S.banc.qualite : reglages.qualite;
     // uEffects.z colore tout l'écran : la rougeur suit seulement l'éclair du choc, jamais les dégâts persistants.
     const eclair = S.eclair || 0;
-    // Tunnel : l'œil s'adapte. En entrant, l'intérieur paraît d'abord sombre puis s'éclaircit (0,8 s) ; en sortant, le
-    // jour éblouit un instant (0,3 s). Les huit lampes les plus proches de la caméra éclairent les murs et la chaussée.
-    // Les lampes gardent leur puissance ; seule l'adaptation de l'œil change à l'entrée et à la sortie.
-    const sousVoute = !VUES_DEHORS.has(vue) && B.circuit.dansTunnel(c, suivie.etat.s, -6), cibleLumiere = sousVoute ? 1.32 : 1;
+    // Tunnel : l'œil s'adapte d'après la caméra, pas d'après la seule voiture suivie. En entrant, l'intérieur paraît
+    // d'abord sombre puis s'éclaircit (0,8 s) ; en sortant, le jour éblouit un instant (0,3 s). Les lampes gardent
+    // leur puissance : seules l'adaptation de l'œil et les contributions lissées de lampesTunnel changent.
+    const sousVoute = !VUES_DEHORS.has(vue) && sousLaVoute(c, cam.pos), cibleLumiere = sousVoute ? 1.32 : 1;
     S.lumiere = S.lumiere ?? 1;
     S.lumiere += (cibleLumiere - S.lumiere) * (1 - Math.exp(-dtImage / (cibleLumiere > S.lumiere ? .8 : .3)));
-    let lampes;
     const LT = scene.decor.tunnelLampes;
-    if (LT && B.circuit.dansTunnel(c, suivie.etat.s, 80)) {
-      lampes = tampons.lampes || (tampons.lampes = []); lampes.length = 0;
-      for (const p of LT) { const d2 = (p[0] - cam.pos[0]) ** 2 + (p[2] - cam.pos[2]) ** 2; if (d2 < 4900) lampes.push({ p, power: 12, range: 18, color: [1, .84, .58], d2 }); }
-      lampes.sort((a, b) => a.d2 - b.d2); if (lampes.length > 8) lampes.length = 8;
-    }
+    const lampes = lampesTunnel(S, 'lampesTunnel', LT, cam, dtImage, scene.index);
     // Halo/bloom : qualité du palier (plus coûteux en qualité élevée)
     const haloInt = avecHalo(q);
-    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: avecOmbres(q), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(q, meteo), weather: B.meteo.ambiance(meteo) });
+    const tDraw = B.mesures.actif ? performance.now() : 0;
+    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: avecOmbres(q), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, q, meteo), weather: B.meteo.ambiance(meteo) });
+    if (B.mesures.actif) {
+      B.mesures.section('rendu', performance.now() - tDraw);
+      B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(q) });
+    }
     dessinerMeteo(S, dtImage, cam, vue);
-    majGlaces(S, vue, cam, ps, sortie, B.meteo.ambiance(meteo), suivie);
+    majGlaces(S, vue, cam, ps, sortie, B.meteo.ambiance(meteo), suivie, dtImage);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
     // En cockpit, la planche donne vitesse, rapport et régime : le tableau réduit retire plan et compteurs, qui
@@ -2041,7 +2138,9 @@
   let tPrec = 0;
   function image(t) {
     requestAnimationFrame(image);
-    const dtReel = tPrec ? Math.min(.1, (t - tPrec) / 1000) : DT;
+    const tMes = B.mesures.imageDebut();
+    const tBrut = tPrec ? (t - tPrec) / 1000 : DT;   // intervalle réellement subi, avant le bridage de la simulation
+    const dtReel = Math.min(.1, tBrut);
     tPrec = t; horlogeReelle += dtReel; dureeImage = lerp(dureeImage, dtReel * 1000, .1);
     lireManette();
     majAttente();
@@ -2060,6 +2159,7 @@
     if (!S || !rendu) return;
     // la vitrine tourne derrière les menus ; une course ne tourne qu'à l'écran de course, la démo qu'à l'écran de démo
     const tourne = S.type === 'vitrine' ? ecran !== 'chargement' : ecran === (S.type === 'demo' ? 'demo' : 'course') || (!!S.enLigne && (ecran === 'pause' || ecran === 'resultats'));
+    const tSim = B.mesures.actif ? performance.now() : 0;
     if (tourne && S.enLigne) {
       // en ligne : la simulation suit l'horloge commune, pas à pas, depuis l'instant T0 du départ
       const cible = (EL.R ? EL.R.horloge() - S.enLigne.T0 : 0) / 1000;
@@ -2075,10 +2175,12 @@
       while (S.acc >= DT && n < 14) { pasSimulation(S, !!S.banc); S.acc -= DT; n++; }
       if (n === 14) S.acc = 0;
     } else if (horlogeReelle - (S.imageFigee || 0) < .25) return; // image arrêtée : quatre images par seconde suffisent
+    if (B.mesures.actif) B.mesures.section('simulation', performance.now() - tSim);
     S.imageFigee = horlogeReelle;
     if (S.type === 'vitrine') S.suiviRang = Math.floor(horlogeReelle / 18) % 4;
     const dtVu = tourne ? dtReel : 0, cam = rendreImage(S, clamp(S.acc / DT, 0, 1), dtVu);
     if (tourne) majPalier(S, dtReel);
+    const tHud = B.mesures.actif ? performance.now() : 0;
     if (S.type !== 'vitrine') {
       majHud(S);
       if (S.type === 'duo' && S.vueJ2) majHud(S.vueJ2, HUD2, S.course.voitures[S.locaux[1]]);
@@ -2093,7 +2195,10 @@
       if (S.enLigneOrigine && ecran === 'resultats' && horlogeReelle - (S.majResultats || 0) > .5) { S.majResultats = horlogeReelle; montrerResultats(S, true); }
       if (S.type === 'demo' && !S.enchaine && ecran === 'demo' && (S.course.termine || (S.finA !== null && S.course.horloge - S.finA > APRES_DRAPEAU))) demoSuivante(S);
     }
+    if (B.mesures.actif) B.mesures.section('hud', performance.now() - tHud);
+    const tSon = B.mesures.actif ? performance.now() : 0;
     majSon(S, cam, dtVu);
+    if (B.mesures.actif) { B.mesures.section('son', performance.now() - tSon); B.mesures.imageFin(tMes, tBrut); B.mesures.majAffichage(rendu, horlogeReelle); }
   }
 
   // ---------------------------------------------------------------- démarrage
@@ -2188,6 +2293,8 @@
     demo: i => lancerDemo(i === undefined ? reglages.circuit : i), // lance la démo sans attendre les cinq secondes
     get pauseAuto() { return pauseAuto; }, set pauseAuto(v) { pauseAuto = !!v; },
     get pilotageAuto() { return pilotageAuto; }, set pilotageAuto(v) { pilotageAuto = !!v; }, get enLigne() { return EL; },
-    get camera() { return cameraEssai; }, set camera(f) { cameraEssai = typeof f === 'function' ? f : null; } };
+    get camera() { return cameraEssai; }, set camera(f) { cameraEssai = typeof f === 'function' ? f : null; },
+    // volet de mesures : BITUME_JEU.mesures = true l'ouvre, false le ferme ; la lecture donne l'instantané
+    get mesures() { return B.mesures.lire(rendu); }, set mesures(v) { B.mesures.afficher(!!v, rendu); } };
   setTimeout(demarrer, 20);
 })(globalThis.BITUME = globalThis.BITUME || {});

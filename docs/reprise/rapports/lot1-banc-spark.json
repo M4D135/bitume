@@ -1,0 +1,130 @@
+{
+  "url": "file:///home/m4d135/work/bitume-qwen-20261117/bitume/dist/bitume.html",
+  "environnement": {
+    "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+    "rendu": "WebKit WebGL",
+    "nonMasque": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+    "webgl2": true,
+    "backend": "webgl2",
+    "chronometrageGpu": true,
+    "gpuModeste": true,
+    "resolution": [
+      1390,
+      1295
+    ],
+    "version": "V0.2.21",
+    "signature": true,
+    "liensSignature": 1
+  },
+  "banc": {
+    "qualite": "high",
+    "duree": 6.28,
+    "images": 8,
+    "p50": 749.9,
+    "p95": 2650,
+    "pire": 2650,
+    "fenetre": "1390×1295",
+    "image": "1390×1295",
+    "circuit": "Val-Brûlé",
+    "interrompu": false,
+    "effets": {
+      "moyenne": 0.437,
+      "p95": 1
+    },
+    "traces": {
+      "bandes": 24,
+      "fumees": 31,
+      "etincelles": 0,
+      "debris": 0,
+      "embruns": 0
+    }
+  },
+  "mesures": {
+    "actif": true,
+    "fps": 1.3335111348179731,
+    "imageP50": 749.9000000000015,
+    "imageP95": 2650,
+    "imagePire": 2650,
+    "cpu": {
+      "boucle": 13199.999999906868,
+      "simulation": 3.309999999962747,
+      "rendu": 1.7199999998323618,
+      "effets": 0.13333333345750967,
+      "hud": 0.19999999977234337,
+      "son": 0.09999999962747097
+    },
+    "cpuP50": {
+      "boucle": 8200.000000186265,
+      "simulation": 3.2000000001862645,
+      "rendu": 1.3999999994412065,
+      "effets": 0.10000000055879354,
+      "hud": 0.10000000055879354,
+      "son": 0.09999999962747097
+    },
+    "cpuP95": {
+      "boucle": 14599.999999627471,
+      "simulation": 4.5,
+      "rendu": 1.7000000001862645,
+      "effets": 0.10000000055879354,
+      "hud": 0.19999999925494194,
+      "son": 0.09999999962747097
+    },
+    "vues": {
+      "principale": {
+        "images": 10,
+        "drawCalls": 171.8,
+        "triangles": 703066.3
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0
+      },
+      "retro": {
+        "images": 9,
+        "drawCalls": 90.33333333333333,
+        "triangles": 301587.6666666667
+      }
+    },
+    "gpu": true,
+    "gpuValide": true,
+    "gpuMs": 407.52619166666665,
+    "gpuPasses": {
+      "shadows": 176.227331,
+      "world": 217.289194,
+      "effects": 2.048367,
+      "post": 16.204566
+    },
+    "gpuDescartes": 0,
+    "gpuEnAttente": 8,
+    "voitures": 12,
+    "voituresTotal": 12,
+    "lampes": 0,
+    "ombres": true,
+    "palier": 1,
+    "qualite": "auto",
+    "images": 10
+  },
+  "erreurs": [],
+  "avertissements": [
+    {
+      "type": "info",
+      "texte": "BITUME banc {\"qualite\":\"high\",\"duree\":6.28,\"images\":8,\"p50\":749.9,\"p95\":2650,\"pire\":2650,\"fenetre\":\"1390×1295\",\"image\":\"1390×1295\",\"circuit\":\"Val-Brûlé\",\"interrompu\":false,\"effets\":{\"moyenne\":0.437,\"p95\":1},\"traces\":{\"bandes\":24,\"fumees\":31,\"etincelles\":0,\"debris\":0,\"embruns\":0}}"
+    }
+  ],
+  "limites": [
+    "Rendu logiciel (SwiftShader) : ces chiffres ne qualifient les performances d aucun GPU réel, ni d un téléphone, ni d une Xbox Edge.",
+    "Une session Chrome sans interface ne prouve ni les manettes physiques, ni une vraie partie WebRTC sur plusieurs machines."
+  ],
+  "titre": {
+    "visible": true,
+    "marque": "BITUME",
+    "signature": "m4d135"
+  },
+  "etatCourse": {
+    "ecran": "titre",
+    "phase": "grille",
+    "voitures": 12,
+    "horloge": 0.1
+  }
+}
