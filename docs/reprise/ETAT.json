@@ -28,8 +28,8 @@
     "consequence": "La recuperation 0.2.20 du prompt (51 suites, HTML 12 857 043 octets, sha256 c9cfce03...) n'a jamais ete poussee et n'existe sur aucun disque joint : non recuperable. Rien n'a ete reinvente a sa place. Le 0.2.20 livre par le lot 0 est un autre commit, construit depuis main b9d8c6d.",
     "relais_lots_1_a_5": "BITUME-RELAIS-2026-11-17.zip (sha256 6114cf19897ad3b1e3a30afee5d99d5af87399fdac625790366f124d08cd1696) egalement absent : les preparations candidates (eclairage.js, performance.js, duels.js, stands.js) ne sont pas disponibles. Les lots 1 a 5 sont donc realises depuis les sources de main, pas portes depuis le relais."
   },
-  "lot_actif": "3",
-  "prochain_lot": "3",
+  "lot_actif": "4",
+  "prochain_lot": "4",
   "lots": [
     {
       "id": "0",
@@ -57,16 +57,16 @@
     {
       "id": "3",
       "fiche": "docs/reprise/03-RIVAUX.md",
-      "statut": "pret",
+      "statut": "termine",
       "dependances": [
         "2"
       ],
-      "commit_livre": null
+      "commit_livre": "7b09e84f35eb38ed9c918ff0325944d9ffea4a50"
     },
     {
       "id": "4",
       "fiche": "docs/reprise/04-STANDS.md",
-      "statut": "a_faire",
+      "statut": "pret",
       "dependances": [
         "2",
         "3"
@@ -209,6 +209,45 @@
       "docs/reprise/rapports/LOT2-2026-11-17.md",
       "docs/reprise/rapports/lot2-casse-spark.json",
       "docs/reprise/rapports/lot2-banc-spark.json"
+    ]
+  },
+  "lot_3_resultat": {
+    "commit_code": "7b09e84f35eb38ed9c918ff0325944d9ffea4a50",
+    "version_client": "0.2.23",
+    "dist_sha256": "eddde8603c57af8962fc2bcfa6cf88edfb67b60809be2bde628f67dc6f8cdd9d",
+    "dist_octets": 12875639,
+    "dist_gzip": 2955917,
+    "suites_node": "39/39 sur Spark machine calme, dont verifications/ia-attaque.test.mjs (10 controles)",
+    "ferro": "0.3.3, 34/34",
+    "parametres": {
+      "IA_ATTENTE": "2,5 s de simulation locale entre deux engagements",
+      "IA_PORT": "34 m",
+      "IA_ECART_VITESSE": "1/60 (vitesse relative minimale = gap/60)",
+      "agressivite_blocage": "> 0,55"
+    },
+    "regles": [
+      "cible atteignable exigee (portee, vitesse relative, cote libre)",
+      "delai entre deux attaques sur l'horloge locale de la voiture, jamais le temps affiche : decisions identiques sur chaque machine en ligne",
+      "une voiture en recuperation, replacement, accident ou casse n'est plus une cible d'attaque, mais rester contourner et eviter sans bride",
+      "blocage : tenir sa ligne dans un virage quand un poursuivant est colle, une fois par virage, sans impulsion ajoutee ; l'evitement d'une voiture plus lente prime"
+    ],
+    "compteurs": "course.statsIa = attaques, abandons, presses, contacts, decisions, tempsDecision ; contournement d'une voiture hors service non compte comme attaque (ia.attaque)",
+    "navigateur": {
+      "demo_val_brule": {
+        "attaques": 14,
+        "abandons": 12,
+        "presses": 29,
+        "contacts": 13,
+        "temps_decision_moyen": 0.91
+      },
+      "erreurs_console": 0
+    },
+    "non_regressions": "ia.test.mjs 5/5 (evitement d'une voiture arree a 80, 65 et 40 m/s), ia-epaves, ia-reprise 10/10, course 8/8, collisions-orientees 17/17",
+    "regression_rattrapee": "une premiere version bridait l'evitement par la portee et le delai : un rival a 80 m/s freinait derriere une voiture arree au lieu de la contourner et la touchait. ia.test.mjs l'a detecte.",
+    "fin_de_course": "3 graines x 3 difficultes, 1 tour, 11 rivaux : toutes finissent, au moins 8 finisseurs, aucune voiture bloquee",
+    "rapports": [
+      "docs/reprise/rapports/LOT3-2026-11-17.md",
+      "docs/reprise/rapports/lot3-course-spark.json"
     ]
   }
 }

@@ -1,6 +1,7 @@
 # Lot 3 : rivaux agressifs contre tous
 
-Statut : **à faire**, après intégration du lot 2.
+Statut : **terminé le 17 novembre 2026**, commit `7b09e84f35eb38ed9c918ff0325944d9ffea4a50`, client **0.2.23**.
+Rapport brut : `docs/reprise/rapports/LOT3-2026-11-17.md`.
 
 ## Objectif
 
@@ -25,3 +26,27 @@ Scénarios reproductibles montrant attaque IA/joueur et IA/IA, sorties de manœu
 ## Livraison
 
 Paramètres de comportement documentés, tests des décisions et collisions, conséquences sur les temps de course. Pas de refonte du rendu ni du système audio dans ce lot.
+
+## Ce qui a été fait (17/11/2026)
+
+- **Engagement mesuré** : cible à portée (`IA_PORT` = 34 m), vitesse relative suffisante (`Δv > gap/60`), côté libre,
+  et délai de `IA_ATTENTE` = 2,5 s entre deux attaques d'une même voiture, compté sur l'horloge locale de simulation
+  (`ia.t`) — pas le temps affiché, pour que les décisions restent identiques sur chaque machine en ligne.
+- **Hors service respecté** : une voiture en récupération, replacement, accident ou casse n'est plus une cible
+  d'attaque (`B.course.horsService`). Elle reste une voiture devant soi : **contourner et éviter gardent la main**,
+  sans portée ni délai. Oublier cette distinction faisait freiner un rival à 80 m/s derrière une voiture arrêtée au
+  lieu de la contourner (régression rattrapée par `ia.test.mjs`).
+- **Blocage** : un rival combatif (`agressivite > .55`) tenu de près dans un virage tient la ligne qu'il a prise au
+  lieu de se rabattre sous le nez de son poursuivant, une fois par virage, jusqu'à ce que l'autre décroche ou que le
+  virage finisse. Aucun élan ajouté ; l'évitement d'une voiture plus lente prime toujours.
+- **Compteurs** `course.statsIa` : `attaques`, `abandons`, `presses`, `contacts`, `decisions`, `tempsDecision`.
+  Un contournement de voiture hors service n'est pas compté comme attaque (`ia.attaque`).
+
+## Reste ouvert après ce lot
+
+- **Le spectacle reste à juger à l'œil** : les compteurs prouvent que les manœuvres ont lieu, s'arrêtent et coûtent
+  des contacts, pas qu'elles sont belles. Capture et avis humain sur le Mac.
+- **Réseau réel non éprouvé** : décisions sans hasard et sur horloge locale, donc divergentes nulle part par
+  construction, mais aucune vraie partie multi-machines jouée.
+- Les 13 contacts relevés en navigateur viennent d'une démo en rendu logiciel à ~1 image/s : preuve que la chaîne
+  tourne, pas un taux exploitable. Le taux exploitable vient avec la qualification Mac du lot 5.

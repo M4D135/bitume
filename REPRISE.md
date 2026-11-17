@@ -30,8 +30,8 @@ Qualification réellement exécutée sur le Spark (`spark-5fc3`, Linux arm64, No
 | 0 | [Dépôt unique](docs/reprise/00-DEPOT.md) | Travail conservé, une seule branche principale | Aucune | **terminé** |
 | 1 | [Tunnel et mesures](docs/reprise/01-TUNNEL.md) | Reflets sans apparition brutale, référence de performance et overlay | Base vérifiée | **terminé** |
 | 2 | [Crashs et PhysX](docs/reprise/02-CRASHS.md) | Accidents lisibles, pièces détachées bornées, récupération rapide | Lot 1 intégré | **terminé** |
-| 3 | [Rivaux agressifs](docs/reprise/03-RIVAUX.md) | Manœuvres offensives contre joueur et autres IA | Lot 2 intégré | **prêt** |
-| 4 | [Santé et stands](docs/reprise/04-STANDS.md) | Dégâts persistants visibles et réparations aux stands | Lots 2 et 3 intégrés | à faire |
+| 3 | [Rivaux agressifs](docs/reprise/03-RIVAUX.md) | Manœuvres offensives contre joueur et autres IA | Lot 2 intégré | **terminé** |
+| 4 | [Santé et stands](docs/reprise/04-STANDS.md) | Dégâts persistants visibles et réparations aux stands | Lots 2 et 3 intégrés | **prêt** |
 | 5 | [Optimisation et qualification](docs/reprise/05-PERFORMANCE.md) | Gains mesurés, modes et plateformes contrôlés | Lots 1 à 4 intégrés | à faire |
 
 ## État vérifié le 17 novembre 2026 (lot 1 terminé)
@@ -69,6 +69,21 @@ lot 4 ; (2) la physique changeant, records et fantômes sont versionnés **p9**,
 comparables.
 
 **Le prochain lot prêt est le lot 3 (rivaux agressifs).**
+
+## État vérifié le 17 novembre 2026 (lot 3 terminé)
+
+Base de départ : `main` à `0c06fa9` (lot 2). Livré : commit de code `7b09e84f35eb38ed9c918ff0325944d9ffea4a50`, client
+**0.2.23**, `dist/bitume.html` 12 875 639 octets, gzip 2 955 917, sha256 `eddde8603c57af8962fc2bcfa6cf88edfb67b60809be2bde628f67dc6f8cdd9d`. **39 suites Node**, FERRO
+**34/34**, build reproductible, navigateur réel sans erreur de console. Détail dans
+`docs/reprise/rapports/LOT3-2026-11-17.md`.
+
+Les rivaux s'engagent désormais sur une cible **atteignable**, avec un **délai de 2,5 s** entre deux attaques, ne
+s'acharnent plus sur une voiture **hors service** (tout en la contournant, ce qui avait cassé l'évitement à 80 m/s
+dans une première version), et peuvent **tenir leur ligne** au lieu de se rabattre sous le nez d'un poursuivant.
+`course.statsIa` compte attaques, abandons, blocages, contacts et temps de décision : en démo réelle, 14 engagements,
+12 abandons, 29 blocages, 13 contacts, 0,91 s de temps de décision moyen.
+
+**Le prochain lot prêt est le lot 4 (santé et stands).**
 
 `src/jeu.js`, `src/course.js`, `src/index.html`, `src/style.css`, `VERSION.json`, `SIZE.json` et `dist/bitume.html` sont des points de jonction : modifications et reconstructions séquentielles uniquement. Les analyses peuvent être indépendantes, pas les pushs concurrents sur la branche principale.
 
