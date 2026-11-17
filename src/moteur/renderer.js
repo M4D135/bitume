@@ -12,10 +12,11 @@
   const FOV_MIN = 10;
   // Optional surface recipes. Existing material IDs keep their original appearance;
   // hosts opt in per mesh (or terrain vertex), without another draw pass or texture.
-  const MATERIALS = Object.freeze({weatheredAsphalt:21,weatheredConcrete:22,weatheredStone:23,weatheredPaint:24});
+  const MATERIALS = Object.freeze({weatheredAsphalt:21,weatheredConcrete:22,weatheredStone:23,weatheredPaint:24,
+    organicSoil:25,fibrousBark:26,botanicalFoliage:27});
   function materialFamily(value){
     const recipe=Math.floor(value+.5);
-    return recipe===21?14:recipe===22?3:recipe===23?9:recipe===24?16:value;
+    return recipe===21?14:recipe===22?3:recipe===23?9:recipe===24?16:recipe===25?8:recipe===26?10:recipe===27?11:value;
   }
 
   // A lot may describe the FOV and viewport at which its near/far threshold was
@@ -87,6 +88,15 @@
       float phase=uWindTime.y*.85+iPosition.x*.37+iPosition.z*.21;
       float bend=(aPosition.y+.5)*uWindTime.x*.055;
       vWorld.x+=sin(phase)*bend;vWorld.z+=cos(phase*.73)*bend*.6;
+    }else if(iPosition.w>26.5&&iPosition.w<27.5){
+      // The same vertex program drives colour and shadow depth. Roots stay fixed,
+      // broad gusts move the stem and a smaller phase moves its free tip.
+      float root=clamp(aPosition.y+.5,0.,1.);
+      float phase=uWindTime.y*.85+iPosition.x*.37+iPosition.z*.21;
+      float bend=root*root*uWindTime.x*.075*clamp(abs(iScale.y),.25,4.);
+      float tip=sin(uWindTime.y*2.1+iPosition.x*1.9+iPosition.z*.43+root*4.5)
+        *root*root*root*uWindTime.x*.015*min(abs(iScale.y),2.);
+      vWorld.x+=sin(phase)*bend+tip;vWorld.z+=cos(phase*.73)*bend*.65-tip*.4;
     }
     vNormal=normalize(rotation*(aNormal/max(abs(iScale.xyz),vec3(.0001))));
         if(uSeaMode>.5&&iPosition.w>11.5&&iPosition.w<12.5&&iPosition.y<0.) {
@@ -249,11 +259,12 @@
   void main() {
     vec3 geometricNormal=normalize(vNormal), n=geometricNormal, an=abs(normalize(vSurfaceNormal));
     vec2 uv=an.y>.65?vSurface.xz:(an.x>an.z?vSurface.zy:vSurface.xy);
-    float recipe=vMaterial>20.5&&vMaterial<24.5?floor(vMaterial+.5)-20.:0.;
-    float m=recipe==1.?14.:recipe==2.?3.:recipe==3.?9.:recipe==4.?16.:vMaterial, emission=vEmission;
+    float recipe=vMaterial>20.5&&vMaterial<27.5?floor(vMaterial+.5)-20.:0.;
+    float m=recipe==1.?14.:recipe==2.?3.:recipe==3.?9.:recipe==4.?16.:recipe==5.?8.:recipe==6.?10.:recipe==7.?11.:vMaterial, emission=vEmission;
     vec3 base=vec3(.105,.135,.15),windowGlow=vec3(0.);
     float night=clamp(uNightHour.x,0.,1.)*vOutdoor;float lateHour=uNightHour.y<12.?uNightHour.y+24.:uNightHour.y;float evening=1.-smoothstep(23.,26.,lateHour);
     float roughness=.47,metalness=.65,organicHeight=0.,urbanHeight=0.,pbrWeight=0.,pbrLayer=1.,recipeHeight=0.;
+    float cavity=1.,leafTransmission=0.;
     float pixelSpan=max(fwidth(uv).x,fwidth(uv).y);
     float fineDetail=1.-smoothstep(.015,.10,pixelSpan);
     float grain=noise(uv*23.)*.5+mix(.5,noise(uv*71.),fineDetail)*.2;
@@ -292,7 +303,7 @@
         base=mix(base,base*vec3(.76,.89,.62),lichen*.42);
         roughness=.87+.10*structure;metalness=0.;
         recipeHeight=(structure-.5)*.016+(aggregate-.5)*.003;
-      }else{
+      }else if(recipe<4.5){
         vec2 localUV=an.y>.65?vLocal.xz:(an.x>an.z?vLocal.zy:vLocal.xy);
         float edgeDistance=.5-max(abs(localUV.x),abs(localUV.y));
         float edge=1.-smoothstep(.010,.035+fwidth(edgeDistance),edgeDistance);
@@ -301,6 +312,55 @@
         base=mix(base,vec3(.23,.25,.25)*(.8+.25*patches),chip);
         roughness=mix(.34+.08*patches,.62,chip);metalness=mix(.08,.72,chip);
         recipeHeight=(aggregate-.5)*.0007-chip*.0015;
+      }else if(recipe<5.5){
+        // Continuous metre-scale humus, grass and mineral flecks. Filter every
+        // smaller layer before it reaches a subpixel: no screen-space grain.
+        if(vColor.w<.5)tint=vec3(.24,.30,.13);
+        float growth=smoothstep(.38,.70,patches+.20*(structure-.5))*smoothstep(.12,.78,geometricNormal.y);
+        float clods=surfaceNoise(uv+vec2(31.2,6.4),10.,pixelSpan);
+        float mineral=smoothstep(.68,.81,clods)*(1.-smoothstep(.025,.08,pixelSpan));
+        vec3 humus=tint*vec3(.94,.83,.68),cover=tint*vec3(.90,1.06,.78);
+        base=mix(humus,cover,growth)*(.78+.30*structure+.12*(aggregate-.5));
+        base=mix(base,base*1.18+vec3(.035,.030,.020),mineral*.40);
+        roughness=.90+.06*structure;metalness=0.;
+        recipeHeight=(structure-.5)*.008+(clods-.5)*.003+(aggregate-.5)*.001;
+        cavity=.86+.14*smoothstep(.24,.67,structure);
+      }else if(recipe<6.5){
+        // Object-space fibres follow the trunk's axis, including a tilted trunk.
+        // A 3-D transverse field avoids a cylindrical UV seam.
+        if(vColor.w<.5)tint=vec3(.24,.15,.08);
+        vec3 wood=vLocal*vDimensions;
+        float woodSpan=max(max(fwidth(wood).x,fwidth(wood).y),fwidth(wood).z);
+        float warp=surfaceNoise(wood.xz+vec2(wood.y*.035),1.4,woodSpan);
+        vec2 fibresUV=vec2((wood.x+wood.z*.73)*6.+warp*.65,wood.y*.22);
+        float fibres=surfaceNoise(fibresUV,1.,woodSpan*6.);
+        float split=1.-smoothstep(.26,.47,fibres);
+        float fine=surfaceNoise(vec2((wood.x-wood.z*.61)*43.,wood.y*1.7),1.,woodSpan*43.);
+        float collar=1.-smoothstep(.03,.24,clamp(vLocal.y+.5,0.,1.));
+        base=tint*(.70+.46*fibres+.12*(fine-.5))*(1.-split*.20);
+        base=mix(base,base*vec3(.76,.91,.59),collar*patches*.22);
+        roughness=.93+.04*structure;metalness=0.;
+        recipeHeight=(fibres-.5)*.018+(fine-.5)*.003;
+        cavity=1.-split*.16-collar*.06;
+      }else{
+        // Veins and wax follow the plant, rather than sliding through it in wind.
+        // Broad variations remain when distant fine detail has been integrated.
+        if(vColor.w<.5)tint=vec3(.20,.34,.09);
+        vec3 plant=vLocal*vDimensions;
+        vec2 leafUV=an.y>.65?plant.xz:(an.x>an.z?plant.zy:plant.xy);
+        float leafSpan=max(fwidth(leafUV).x,fwidth(leafUV).y);
+        float pigment=surfaceNoise(leafUV+vAnchor.xz*.13,3.2,leafSpan);
+        float tissue=surfaceNoise(leafUV+vec2(4.8,19.1),28.,leafSpan);
+        float veinPhase=leafUV.y*58.+abs(leafUV.x)*92.;
+        float veinFilter=1.-smoothstep(.8,2.8,fwidth(veinPhase));
+        float veins=pow(.5+.5*cos(veinPhase),8.)*veinFilter;
+        float top=smoothstep(.0,.9,clamp(vLocal.y+.5,0.,1.));
+        base=tint*mix(vec3(.72,.85,.61),vec3(1.10,1.07,.77),pigment)*(.83+.17*top);
+        base*=1.+(tissue-.5)*.14+veins*.055;
+        roughness=.67+.13*structure;metalness=0.;
+        recipeHeight=(tissue-.5)*.0012+veins*.0005;
+        cavity=.79+.21*top;
+        leafTransmission=(.26+.16*pigment)*(.65+.35*top);
       }
     } else if (m<.5) {
       base*=.82+grain*.27+broad*.17;
@@ -545,7 +605,7 @@
     vec3 ndx=dFdx(n),ndy=dFdy(n);
     roughness=min(.98,sqrt(roughness*roughness+min(.16,max(dot(ndx,ndx),dot(ndy,ndy))*.28)));
     float puddle=0.;
-    if(recipe>.5){
+    if(recipe>.5&&recipe<4.5){
       // Rain only reaches exposed surfaces. A single persistent mask controls
       // darkening, gloss and normal flattening; wet asphalt remains dielectric.
       float upward=clamp(geometricNormal.y,0.,1.);
@@ -557,6 +617,14 @@
       base*=1.-wet*(recipe<1.5?.32:.22);
       roughness=mix(roughness,recipe<1.5?.12:.18,film);
       n=normalize(mix(n,geometricNormal,film*.82));
+    }else if(recipe>4.5){
+      // Natural surfaces darken when exposed, retaining a dielectric, mostly
+      // rough finish. Bark and leaves do not acquire asphalt puddles.
+      float exposed=clamp(vOutdoor,0.,1.)*uEnvironment.x;
+      float wet=clamp(uWeather.x,0.,1.)*exposed*(.24+.76*max(geometricNormal.y,0.));
+      base*=1.-wet*(recipe<5.5?.26:recipe<6.5?.21:.12);
+      roughness=mix(roughness,recipe<5.5?.49:recipe<6.5?.54:.32,wet*.78);
+      n=normalize(mix(n,geometricNormal,wet*.30));
     }else{
       float wet=uWeather.x*clamp(n.y,0.,1.)*step(13.5,m)*step(m,15.5);
       puddle=smoothstep(.48,.72,noise(vWorld.xz*.29))*wet;
@@ -569,6 +637,7 @@
     light*=1.-panel*.18;
     float outdoors=clamp(vOutdoor,0.,1.)*uEnvironment.x;
     light=mix(light,uAmbient*(.72+.28*max(n.y,0.)),outdoors);
+    if(recipe>4.5)light*=cavity;
     vec3 f0=mix(vec3(.04),clamp(base,vec3(.025),vec3(.92)),metalness);
     vec3 specular=vec3(0.);
     for(int i=0;i<12;i++) {
@@ -585,8 +654,15 @@
       specular+=uLightColor[i]*attenuation*visibility*metalHighlight(n,view,l,roughness,f0)*2.4;
     }
     float sunlight=outdoors>.5?shadow(geometricNormal,uSunDirection,1):0.;
-    float leafBack=m>10.5&&m<11.5?max(dot(-n,uSunDirection),0.)*.24:0.;
+    float leafBack=m>10.5&&m<11.5&&recipe<6.5?max(dot(-n,uSunDirection),0.)*.24:0.;
     light+=uSunColor*(max(dot(n,uSunDirection),0.)+leafBack)*sunlight;
+    if(recipe>6.5){
+      // Thin leaf transmission is shadow-aware, coloured by chlorophyll and
+      // strongest toward the sun. It never becomes an unlit emissive outline.
+      float back=max(dot(-n,uSunDirection),0.);
+      float forward=pow(max(dot(-view,uSunDirection),0.),4.);
+      light+=uSunColor*vec3(.65,1.,.38)*leafTransmission*back*(.55+.45*forward)*sunlight;
+    }
     specular+=uSunColor*sunlight*metalHighlight(n,view,uSunDirection,roughness,f0);
     vec3 torchVector=uTorchPosition-vWorld;
     float torchDistance=length(torchVector);
@@ -1580,7 +1656,7 @@
         [x,z]=[c[1]*x+sn[1]*z,-sn[1]*x+c[1]*z];
         return [c[2]*x-sn[2]*y+p[0],sn[2]*x+c[2]*y+p[1],z+p[2]];
       }
-      const mat=Math.max(0,Math.min(12,Math.floor(mesh.mat||0))),outdoor=outdoorMesh(mesh,environment),color=mesh.color?(mat<4?mesh.color.map(v=>v*.65):mat>=8?mesh.color.map((v,k)=>v*.65+palette[mat][k]*.35):mesh.color):palette[mat],shape=mesh.shape||'box';
+      const recipe=mesh.mat||0,mat=Math.max(0,Math.min(12,Math.floor(recipe>24.5&&recipe<27.5?materialFamily(recipe):recipe))),outdoor=outdoorMesh(mesh,environment),color=mesh.color?(mat<4?mesh.color.map(v=>v*.65):mat>=8?mesh.color.map((v,k)=>v*.65+palette[mat][k]*.35):mesh.color):palette[mat],shape=mesh.shape||'box';
       const object=surfaceFlags(mesh,environment,objects)>=4;
       const emission=(mesh.emissive||0)+(mat===4?.72:mat===5?.68:mat===6?.18:0);
       const shapeSet=coarse?coarseBase:base,template=shapeSet[shape]||shapeSet.box,vertices=template.vertices.map(transform),faces=template.faces.map((v,index)=>{
@@ -2022,7 +2098,7 @@
     const shadowView=new Float32Array(16),shadowProjection=new Float32Array(16),shadowMatrix=new Float32Array(16),shadowMatrices=new Float32Array(48);
     const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12),lightDirections=new Float32Array(36),lightCones=new Float32Array(24);
     // BITUME : l’indexation EMPRISE est aussi utilisée sur WebGL2 ; formes libres inchangées.
-    const stats={drawCalls:0,triangles:0,instances:0,contextLost:false,webglVersion:2,backend:'webgl2',engine:'ferro-reference',bloom:false,shadows:false,primitiveIndex:primitiveIndex.stats};
+    const stats={drawCalls:0,triangles:0,instances:0,contextLost:false,webglVersion:2,backend:'webgl2',engine:'ferro-reference',bloom:false,shadows:false,msaa:0,reflections:false,primitiveIndex:primitiveIndex.stats};
     let program,depthProgram,postProgram,skyProgram,fxProgram,vao,postVao,vbo,ibo,worldBuffer,dynamicBuffer,overlayBuffer,fxBuffer,crowdBuffer,uniforms,postUniforms,skyUniforms,fxUniforms,depthMatrix,depthWind,ssrProgram,ssrUniforms;
     let post=null,shadowTarget=null,whiteTexture=null,pbrTextures=[],targetKey='',shadowKey='',shadowLight=null;
     let world=[],worldIndex=spatialIndex([]),backgroundIndex=spatialIndex([]),lights=[],environment=null,worldBatch=pack([]),quality='auto',disposed=false,worldRevision=0,partitionState=null;
@@ -2108,7 +2184,7 @@
       if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE){deleteMsaa(target);return null;}
       return target;
     }
-    function freePost(){if(post){deleteTarget(post.scene);deleteTarget(post.a);deleteTarget(post.b);deleteTarget(post.reflectSource);deleteTarget(post.reflection);deleteMsaa(post.msaa);post=null;}}
+    function freePost(){if(post){deleteTarget(post.scene);deleteTarget(post.a);deleteTarget(post.b);deleteTarget(post.reflectSource);deleteTarget(post.reflection);deleteMsaa(post.msaa);post=null;}stats.msaa=0;stats.reflections=false;}
     function ensureTargets(){
       const key=canvas.width+'x'+canvas.height+':'+quality;if(key===targetKey)return;targetKey=key;
       freePost();
@@ -2116,8 +2192,6 @@
       const width=canvas.width,height=canvas.height,bw=Math.max(1,Math.ceil(width/4)),bh=Math.max(1,Math.ceil(height/4));
       const scene=colorTarget(width,height,true),a=colorTarget(bw,bh,false),b=colorTarget(bw,bh,false);
       if(scene&&a&&b)post={scene,a,b};else{deleteTarget(scene);deleteTarget(a);deleteTarget(b);}
-      if(post&&config.reflections){post.reflectSource=colorTarget(width,height,'texture');post.reflection=colorTarget(Math.ceil(width/2),Math.ceil(height/2),false);}
-      if(post&&config.msaa)post.msaa=msaaTarget(width,height);stats.msaa=post&&post.msaa?post.msaa.samples:0;
       // Tuile d'ombre de 512 en auto, 1 024 en haute qualité. Avec shadowMapScale: 2 (repris de Point de rupture, où un
       // seul soleil couvre tout le sol visible), elle double, bornée par MAX_TEXTURE_SIZE.
       const base=quality==='high'?1024:512,size=config.shadowMapScale>1?Math.min(base*config.shadowMapScale,Math.floor((gl.getParameter(gl.MAX_TEXTURE_SIZE)||2048)/2)):base;
@@ -2131,6 +2205,38 @@
       }
       gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,null);
       stats.bloom=!!post;stats.shadows=!!shadowTarget;
+    }
+    // Les options de création ouvrent une capacité, sans réserver sa mémoire. Les
+    // cibles coûteuses naissent au premier draw qui s'en sert. Une qualité ou taille
+    // différente les libère via freePost ; sinon 120 rendus consécutifs sans usage
+    // libèrent le cache, sans churn entre les vues ni à chaque transition météo.
+    function ensureOptionalTargets(fx,reflectionMode){
+      if(!post){stats.msaa=0;return;}
+      const bloom=fx.bloom!==false,wantMsaa=config.msaa&&bloom&&fx.msaa!==false;
+      const wantReflections=config.reflections&&bloom&&reflectionMode==='off'&&fx.reflections!==false&&fx.reflections!=='off';
+      let changed=false;
+      if(wantMsaa){
+        post.msaaIdle=0;
+        // null mémorise un échec jusqu'au prochain changement de taille/qualité.
+        if(post.msaa===undefined){post.msaa=msaaTarget(canvas.width,canvas.height);changed=true;}
+      }else if(post.msaa&&(post.msaaIdle=(post.msaaIdle||0)+1)>=120){
+        deleteMsaa(post.msaa);post.msaa=undefined;post.msaaIdle=0;changed=true;
+      }
+      if(wantReflections){
+        post.reflectionIdle=0;
+        if(post.reflectSource===undefined){
+          const source=colorTarget(canvas.width,canvas.height,'texture');
+          const reflected=source?colorTarget(Math.ceil(canvas.width/2),Math.ceil(canvas.height/2),false):null;
+          if(source&&reflected){post.reflectSource=source;post.reflection=reflected;}
+          else{deleteTarget(source);deleteTarget(reflected);post.reflectSource=post.reflection=null;}
+          changed=true;
+        }
+      }else if(post.reflectSource&&(post.reflectionIdle=(post.reflectionIdle||0)+1)>=120){
+        deleteTarget(post.reflectSource);deleteTarget(post.reflection);
+        post.reflectSource=post.reflection=undefined;post.reflectionIdle=0;changed=true;
+      }
+      stats.msaa=wantMsaa&&post.msaa?post.msaa.samples:0;
+      if(changed){gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,null);}
     }
     const screenGLSL=`
       uniform vec4 uScreen;
@@ -2238,6 +2344,7 @@
       gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);
       gl.clearColor(.035,.06,.073,1);
       post=null;shadowTarget=null;targetKey=shadowKey='';shadowLight=null;
+      stats.msaa=0;stats.reflections=false;
       governor.reset();autoScale=1;
       stats.contextLost=false;
     }
@@ -2430,7 +2537,7 @@
       shadowMatrices.set(shadowMatrix,slot*16);
       gl.bindFramebuffer(gl.FRAMEBUFFER,shadowTarget.framebuffer);gl.viewport((slot%2)*shadowTarget.size,Math.floor(slot/2)*shadowTarget.size,shadowTarget.size,shadowTarget.size);
       gl.useProgram(depthProgram);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);
-      gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1.1,2.0);gl.uniformMatrix4fv(depthMatrix,false,shadowMatrix);gl.uniform2f(depthWind,environment?environment.wind:0,time);
+      gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1.1,2.0);gl.uniformMatrix4fv(depthMatrix,false,shadowMatrix);gl.uniform2f(depthWind,weather.wind,time);
       const tangent=1/f;
       const previous=lampCasters[slot];
       const stable=!torchAxes&&previous&&previous.light===light&&previous.p.every((v,k)=>v===p[k]);
@@ -2454,7 +2561,7 @@
       gl.bindFramebuffer(gl.FRAMEBUFFER,shadowTarget.framebuffer);
       if(full)gl.viewport(0,0,tile,tile);else gl.viewport(shadowTarget.size,0,shadowTarget.size,shadowTarget.size);
       gl.useProgram(depthProgram);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1.1,2);
-      gl.uniformMatrix4fv(depthMatrix,false,shadowMatrix);gl.uniform2f(depthWind,environment.wind,time);
+      gl.uniformMatrix4fv(depthMatrix,false,shadowMatrix);gl.uniform2f(depthWind,weather.wind,time);
       const inside=e=>{
         const x=e.p[0]-p[0],y=e.p[1]-p[1],d=e.p[2]-p[2],z=x*fw[0]+y*fw[1]+d*fw[2];
         return Math.abs(x*r[0]+y*r[1]+d*r[2])<extent+e.radius&&Math.abs(x*u[0]+y*u[1]+d*u[2])<extent+e.radius&&z+e.radius>near&&z-e.radius<far;
@@ -2576,10 +2683,14 @@
     function draw(camera,dynamic,fx) {
       if(disposed||stats.contextLost) return;
       profiler?.start();fx=fx||{};if(native){autoScale=1;if(fx.adaptive===true)watch.update(fx.frameMs);}else autoScale=governor.update(fx,quality);drawing=true;try{resize();}finally{drawing=false;}
-      const reflectionMode=reflections&&['probe','screen'].includes(fx.reflections)?fx.reflections:'off';composeScreen=!!post&&!!options.composition;stats.composition=composeScreen;
+      const reflectionMode=reflections&&['probe','screen'].includes(fx.reflections)?fx.reflections:'off';
+      ensureOptionalTargets(fx,reflectionMode);composeScreen=!!post&&!!options.composition;stats.composition=composeScreen;
       screenValues[0]=Math.max(0,Math.min(1,fx.damage||0));screenValues[1]=Math.max(0,Math.min(1,fx.pulse||0));screenValues[2]=Number.isFinite(fx.brightness)?Math.max(.5,Math.min(2,fx.brightness)):1;screenValues[3]=fx.vignette===false?0:1;
 
       const t=fx.time||0,shake=fx.shake||0,p=camera.pos||[0,1.6,0];
+      // Resolve weather once, before depth passes: foliage and its shadows must
+      // bend with the same current gusts and rain, including alternating views.
+      bitumeWeather(environment,fx.weather,t,weather);
       const axes=cameraAxes(camera),{right,up,forward}=axes;
       const eye=[p[0]+Math.sin(t*57.)*shake*.025,p[1]+Math.sin(t*71.)*shake*.015,p[2]];
       view.set([right[0],up[0],-forward[0],0,right[1],up[1],-forward[1],0,right[2],up[2],-forward[2],0,
@@ -2636,10 +2747,9 @@
       }
       profiler?.end();
       reflections?.beginScreen(post?.scene,reflectionMode);if(reflectionMode==='screen'){gl.clearBufferfv(gl.COLOR,1,new Float32Array(4));gl.drawBuffers([gl.COLOR_ATTACHMENT0]);}
-      // PDR (msaa) : fx.msaa === false coupe l'anticrénelage à l'exécution, sans recréer les cibles (réglage du jeu).
+      // PDR (msaa) : fx.msaa === false coupe l'anticrénelage sans recréer le contexte.
       const msaa=stats.bloom&&post.msaa&&fx.msaa!==false?post.msaa:null;
       gl.bindFramebuffer(gl.FRAMEBUFFER,(stats.bloom||composeScreen)?(msaa?msaa.framebuffer:post.scene.framebuffer):null);gl.viewport(0,0,canvas.width,canvas.height);
-      bitumeWeather(environment,fx.weather,t,weather); // BITUME : même ciel, route humide, vent et éclair.
       gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);if(environment)skyPass(axes,f,t,weather,fx.cloudOffset||weather.cloudOffset);gl.useProgram(program);gl.bindVertexArray(vao);
       bindScreen(program);bindSkyFog(program);gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);gl.uniform3fv(uniforms.uEye,eye);gl.uniform3fv(uniforms.uForward,forward);
       gl.uniform4fv(uniforms.uSeaOrigin,fx.sea?.origin||[0,0,0,0]);gl.uniform4fv(uniforms.uSeaMotion,fx.sea?.motion||[0,0,-1.25,0]);

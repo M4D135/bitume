@@ -126,7 +126,7 @@ async function create(canvas,options={}){
   shadowProjection.fill(0);shadowProjection[0]=shadowProjection[5]=f;shadowProjection[10]=(far+near)/(near-far);shadowProjection[11]=-1;shadowProjection[14]=2*far*near/(near-far);
   S.multiply(shadowProjection,shadowViewMatrix,shadowMatrix);shadowMatrices.set(shadowMatrix,slot*16);
   const size=shadowTarget.size;pass.setViewport(slot%2*size,2*size-(Math.floor(slot/2)+1)*size,size,size,0,1);
-  pass.setPipeline(pipeline('depth',{samples:1}));pass.setBindGroup(0,bind('depth','lamp'+slot,{uViewProjection:shadowMatrix,uWindTime:[environment?.wind||0,time]}));
+  pass.setPipeline(pipeline('depth',{samples:1}));pass.setBindGroup(0,bind('depth','lamp'+slot,{uViewProjection:shadowMatrix,uWindTime:[weatherFrame.wind,time]}));
   const previous=lampCasters[slot],stable=!torchAxes&&previous&&previous.light===light&&previous.p.every((v,k)=>v===p[k]);
   const casters=stable?previous.entries:worldIndex.query(p,[32,18,0]).filter(e=>S.visible(e,p,axes,1/f,1/f,32));
   if(!torchAxes&&!stable)lampCasters[slot]={light,p:p.slice(),entries:casters};
@@ -141,7 +141,7 @@ async function create(canvas,options={}){
   shadowViewMatrix.set([r[0],u[0],-fw[0],0,r[1],u[1],-fw[1],0,r[2],u[2],-fw[2],0,-(r[0]*p[0]+r[1]*p[1]+r[2]*p[2]),-(u[0]*p[0]+u[1]*p[1]+u[2]*p[2]),fw[0]*p[0]+fw[1]*p[1]+fw[2]*p[2],1]);
   shadowProjection.fill(0);shadowProjection[0]=shadowProjection[5]=1/extent;shadowProjection[10]=-2/(far-near);shadowProjection[14]=-(far+near)/(far-near);shadowProjection[15]=1;
   S.multiply(shadowProjection,shadowViewMatrix,shadowMatrix);shadowMatrices.set(shadowMatrix,16);crowdSunMatrix.set(shadowMatrix);
-  pass.setViewport(full?0:shadowTarget.size,full?0:shadowTarget.size,tile,tile,0,1);pass.setPipeline(pipeline('depth',{samples:1}));pass.setBindGroup(0,bind('depth','sun',{uViewProjection:shadowMatrix,uWindTime:[environment.wind,time]}));
+  pass.setViewport(full?0:shadowTarget.size,full?0:shadowTarget.size,tile,tile,0,1);pass.setPipeline(pipeline('depth',{samples:1}));pass.setBindGroup(0,bind('depth','sun',{uViewProjection:shadowMatrix,uWindTime:[weatherFrame.wind,time]}));
   const inside=e=>{const x=e.p[0]-p[0],y=e.p[1]-p[1],d=e.p[2]-p[2],z=x*fw[0]+y*fw[1]+d*fw[2];return Math.abs(x*r[0]+y*r[1]+d*r[2])<extent+e.radius&&Math.abs(x*u[0]+y*u[1]+d*u[2])<extent+e.radius&&z+e.radius>near&&z-e.radius<far;};
   const casters=camera.chunked?[]:camera.allStatic?worldIndex.entries:worldIndex.query(center,[extent+24,26,0]).filter(inside);
   renderStatic(pass,casters,2,true);if(camera.chunked)drawChunks(pass,inside,true);
