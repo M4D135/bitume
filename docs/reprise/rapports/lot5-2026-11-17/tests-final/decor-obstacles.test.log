@@ -1,0 +1,78 @@
+{
+  "passed": 3,
+  "total": 3,
+  "reports": [
+    {
+      "graine": 11,
+      "theme": "foret",
+      "solides": 3241,
+      "kinds": {
+        "pilier": 43,
+        "poutre": 2,
+        "gradin": 45,
+        "toit": 20,
+        "batiment": 6,
+        "muret": 12,
+        "tronc": 2600,
+        "cabane": 9,
+        "pneus": 504
+      },
+      "impact": {
+        "t": 1.2666666666666646,
+        "s": 2250.4661475559897,
+        "d": -17.445825927124275,
+        "force": 52.00756355840808,
+        "obstacle": "pneus"
+      },
+      "repriseRapide": true
+    },
+    {
+      "graine": 29,
+      "theme": "cote",
+      "solides": 3166,
+      "kinds": {
+        "pilier": 42,
+        "poutre": 2,
+        "gradin": 45,
+        "toit": 19,
+        "batiment": 6,
+        "muret": 12,
+        "tronc": 2600,
+        "cabane": 8,
+        "pneus": 432
+      },
+      "impact": {
+        "t": 1.3416666666666643,
+        "s": 1829.8607579454692,
+        "d": 17.509183889034016,
+        "force": 38.14669009511698,
+        "obstacle": "glissiere"
+      },
+      "repriseRapide": true
+    },
+    {
+      "graine": 47,
+      "theme": "montagne",
+      "solides": 2979,
+      "kinds": {
+        "pilier": 51,
+        "poutre": 2,
+        "gradin": 54,
+        "toit": 24,
+        "batiment": 7,
+        "muret": 14,
+        "tronc": 2600,
+        "cabane": 11,
+        "pneus": 216
+      },
+      "impact": {
+        "t": 1.1583333333333317,
+        "s": 1599.8332074539885,
+        "d": 16.267930363546792,
+        "force": 51.71940293983555,
+        "obstacle": "pneus"
+      },
+      "repriseRapide": true
+    }
+  ]
+}

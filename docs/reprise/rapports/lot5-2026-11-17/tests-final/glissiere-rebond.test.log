@@ -1,0 +1,54 @@
+{
+  "root": "/workspace/scratch/fee880a8de7f/bitume/",
+  "hashes": {
+    "conduite.js": "8bfaef7957ee8698d16727afa4b440739ae4787f8e386089ba2d9e952506f08b",
+    "jeu.js": "4143ef33c1130684efdfd9a37ffaca7b79fa5e28c74116c0e03d20561668f24b",
+    "degats.js": "bdb6c02c3e9ac2251d2f5c77f97e4388a918c192beeb2972fe74a6d7fe2481f2"
+  },
+  "cases": [
+    {
+      "side": -1,
+      "first": {
+        "time": 0.39166666666666666,
+        "psi": 0.01546557932205094,
+        "beta": -0.31546557932205094,
+        "speed": 51.64091349889848,
+        "d": -6.303697634496323,
+        "force": 15.97249613387086
+      },
+      "events": 1,
+      "rebound_toward_track": true,
+      "after1s": {
+        "speed": 45.57759211585563,
+        "d": -6.491050497477599,
+        "psi": -0.00632208980767382,
+        "clearance": 0.0028269428219191983
+      }
+    },
+    {
+      "side": 1,
+      "first": {
+        "time": 0.39166666666666666,
+        "psi": -0.01546557932205094,
+        "beta": 0.31546557932205094,
+        "speed": 51.64091349889848,
+        "d": 6.303697634496323,
+        "force": 15.97249613387086
+      },
+      "events": 1,
+      "rebound_toward_track": true,
+      "after1s": {
+        "speed": 45.57759211585563,
+        "d": 6.491050497477599,
+        "psi": 0.00632208980767382,
+        "clearance": 0.0028269428219191983
+      }
+    }
+  ],
+  "nonBreakingImpact": {
+    "force": 8,
+    "broken": false,
+    "missingWheel": false,
+    "persistentTint": 0.25000000000000033
+  }
+}

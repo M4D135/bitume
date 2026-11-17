@@ -1,0 +1,874 @@
+[
+  {
+    "case": "foret-reference",
+    "exit": 0,
+    "seconds": 22.53,
+    "images": 12,
+    "errors": [],
+    "fatal": null,
+    "alertes": 0,
+    "comparison": null
+  },
+  {
+    "case": "foret-enrichi",
+    "exit": 0,
+    "seconds": 20.88,
+    "images": 12,
+    "errors": [],
+    "fatal": null,
+    "alertes": 0,
+    "comparison": {
+      "comparable": true,
+      "ecarts": [],
+      "differences": [
+        {
+          "image": 0,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0006962084862508055,
+            "max": 0.009112806228376957
+          },
+          "couleur": {
+            "moyenne": 0.0006921062280389362,
+            "max": 0.009175317185689813
+          }
+        },
+        {
+          "image": 0,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.008177733637436395,
+            "max": 0.03132145969498851
+          },
+          "couleur": {
+            "moyenne": 0.008128706729605395,
+            "max": 0.032625272331154476
+          }
+        },
+        {
+          "image": 0,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.006129594928355929,
+            "max": 0.03056494720965297
+          },
+          "couleur": {
+            "moyenne": 0.006120878372716586,
+            "max": 0.03187531422825535
+          }
+        },
+        {
+          "image": 1,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0006661725589137604,
+            "max": 0.006536638985003618
+          },
+          "couleur": {
+            "moyenne": 0.0006632161723579738,
+            "max": 0.00666739830261176
+          }
+        },
+        {
+          "image": 1,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.008150186394963904,
+            "max": 0.03112986928104544
+          },
+          "couleur": {
+            "moyenne": 0.00810658855184996,
+            "max": 0.03287581699346387
+          }
+        },
+        {
+          "image": 1,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.005002327925115882,
+            "max": 0.025604431372548864
+          },
+          "couleur": {
+            "moyenne": 0.004984410787106842,
+            "max": 0.02653594771241824
+          }
+        },
+        {
+          "image": 2,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0005651131231772539,
+            "max": 0.006451660899656542
+          },
+          "couleur": {
+            "moyenne": 0.0005627264768883869,
+            "max": 0.006695501730097808
+          }
+        },
+        {
+          "image": 2,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.005919222141919441,
+            "max": 0.029773801742919437
+          },
+          "couleur": {
+            "moyenne": 0.005903188020222309,
+            "max": 0.029847494553376763
+          }
+        },
+        {
+          "image": 2,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.005119442806966047,
+            "max": 0.02531887581699327
+          },
+          "couleur": {
+            "moyenne": 0.005099016814703067,
+            "max": 0.026405228758169752
+          }
+        },
+        {
+          "image": 3,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0006568000458484075,
+            "max": 0.008180502883511465
+          },
+          "couleur": {
+            "moyenne": 0.000655159061478327,
+            "max": 0.00831026528257639
+          }
+        },
+        {
+          "image": 3,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.005910290615747715,
+            "max": 0.029735130718954284
+          },
+          "couleur": {
+            "moyenne": 0.005895658180176129,
+            "max": 0.029793028322439963
+          }
+        },
+        {
+          "image": 3,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.006044423101363009,
+            "max": 0.033591477124182645
+          },
+          "couleur": {
+            "moyenne": 0.006029344845725536,
+            "max": 0.034640522875816815
+          }
+        },
+        {
+          "image": 4,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0006077375269300297,
+            "max": 0.010787997260681137
+          },
+          "couleur": {
+            "moyenne": 0.0006061127794082575,
+            "max": 0.011038062283727834
+          }
+        },
+        {
+          "image": 4,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.005287417707111298,
+            "max": 0.025024847494553193
+          },
+          "couleur": {
+            "moyenne": 0.005259907500512056,
+            "max": 0.025762527233115284
+          }
+        },
+        {
+          "image": 4,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.00605057263386119,
+            "max": 0.03263992156862727
+          },
+          "couleur": {
+            "moyenne": 0.006032324195110117,
+            "max": 0.0335294117647057
+          }
+        },
+        {
+          "image": 5,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0005279047769778007,
+            "max": 0.008784260524812626
+          },
+          "couleur": {
+            "moyenne": 0.0005254558573074917,
+            "max": 0.009086649365620758
+          }
+        },
+        {
+          "image": 5,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.005319772095483444,
+            "max": 0.02426260348583892
+          },
+          "couleur": {
+            "moyenne": 0.005281923845036569,
+            "max": 0.024836601307189454
+          }
+        },
+        {
+          "image": 5,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.007104470459052528,
+            "max": 0.02984898692810445
+          },
+          "couleur": {
+            "moyenne": 0.0070938657989311265,
+            "max": 0.030827886710239505
+          }
+        },
+        {
+          "image": 6,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0005403134543547957,
+            "max": 0.00793107771050261
+          },
+          "couleur": {
+            "moyenne": 0.0005368365992747863,
+            "max": 0.00817906574393723
+          }
+        },
+        {
+          "image": 6,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.005132365629015126,
+            "max": 0.026620901960784538
+          },
+          "couleur": {
+            "moyenne": 0.005207294634377954,
+            "max": 0.030653594771241743
+          }
+        },
+        {
+          "image": 6,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.007196431386514675,
+            "max": 0.03022610021786465
+          },
+          "couleur": {
+            "moyenne": 0.0071555476416587166,
+            "max": 0.031263616557734075
+          }
+        },
+        {
+          "image": 7,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0006603789960459187,
+            "max": 0.010264305940023477
+          },
+          "couleur": {
+            "moyenne": 0.0006553541868104733,
+            "max": 0.010490196078421832
+          }
+        },
+        {
+          "image": 7,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.005122754222878603,
+            "max": 0.02345505882352944
+          },
+          "couleur": {
+            "moyenne": 0.005201853830326036,
+            "max": 0.033594771241830246
+          }
+        },
+        {
+          "image": 7,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.00971112027959327,
+            "max": 0.0347444575163397
+          },
+          "couleur": {
+            "moyenne": 0.009706944328063564,
+            "max": 0.036013071895424686
+          }
+        },
+        {
+          "image": 8,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0007574700606238401,
+            "max": 0.010271416666669086
+          },
+          "couleur": {
+            "moyenne": 0.0007538751076531762,
+            "max": 0.010499567474038907
+          }
+        },
+        {
+          "image": 8,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.008989412260488173,
+            "max": 0.036363398692810134
+          },
+          "couleur": {
+            "moyenne": 0.008992947903282832,
+            "max": 0.0376470588235292
+          }
+        },
+        {
+          "image": 8,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.00972407343688897,
+            "max": 0.03477277124182998
+          },
+          "couleur": {
+            "moyenne": 0.009718943192186606,
+            "max": 0.036013071895424686
+          }
+        },
+        {
+          "image": 9,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.000545011725900583,
+            "max": 0.007145983611359097
+          },
+          "couleur": {
+            "moyenne": 0.0005429039024886051,
+            "max": 0.007390254609312197
+          }
+        },
+        {
+          "image": 9,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.008970585559116744,
+            "max": 0.03626990849673167
+          },
+          "couleur": {
+            "moyenne": 0.008965031050406828,
+            "max": 0.0376470588235292
+          }
+        },
+        {
+          "image": 9,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.005534479823054536,
+            "max": 0.026219324618735995
+          },
+          "couleur": {
+            "moyenne": 0.0055218894894139775,
+            "max": 0.02701525054466214
+          }
+        },
+        {
+          "image": 10,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0004881745707333319,
+            "max": 0.007285061995387254
+          },
+          "couleur": {
+            "moyenne": 0.0004873703662457987,
+            "max": 0.007436562860431484
+          }
+        },
+        {
+          "image": 10,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.006247175980042967,
+            "max": 0.018743620915032566
+          },
+          "couleur": {
+            "moyenne": 0.006258007001471029,
+            "max": 0.023071895424836397
+          }
+        },
+        {
+          "image": 10,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.005588061223884093,
+            "max": 0.0253079084967317
+          },
+          "couleur": {
+            "moyenne": 0.0055992856544326945,
+            "max": 0.026579520697167625
+          }
+        },
+        {
+          "image": 11,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0005141264942724487,
+            "max": 0.007202058391005073
+          },
+          "couleur": {
+            "moyenne": 0.0005126656775832917,
+            "max": 0.007356545559393468
+          }
+        },
+        {
+          "image": 11,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.006244001185338777,
+            "max": 0.018149934640522503
+          },
+          "couleur": {
+            "moyenne": 0.006258623819898305,
+            "max": 0.022091503267973822
+          }
+        },
+        {
+          "image": 11,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0066120326797385436,
+            "max": 0.0243593464052288
+          },
+          "couleur": {
+            "moyenne": 0.006613448620188791,
+            "max": 0.024705882352941022
+          }
+        }
+      ],
+      "reference": "/workspace/scratch/c89193d9c5e7/bitume-visual-qualification/foret-reference/rapport.json"
+    }
+  },
+  {
+    "case": "pluie-reference",
+    "exit": 0,
+    "seconds": 16.92,
+    "images": 8,
+    "errors": [],
+    "fatal": null,
+    "alertes": 0,
+    "comparison": null
+  },
+  {
+    "case": "pluie-enrichi",
+    "exit": 0,
+    "seconds": 15.83,
+    "images": 8,
+    "errors": [],
+    "fatal": null,
+    "alertes": 0,
+    "comparison": {
+      "comparable": true,
+      "ecarts": [],
+      "differences": [
+        {
+          "image": 0,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0012848000072033332,
+            "max": 0.016081314157974647
+          },
+          "couleur": {
+            "moyenne": 0.0012951325677693546,
+            "max": 0.018009659746235918
+          }
+        },
+        {
+          "image": 0,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.026703575322258588,
+            "max": 0.15310410457516344
+          },
+          "couleur": {
+            "moyenne": 0.02680445866618244,
+            "max": 0.16163398692810377
+          }
+        },
+        {
+          "image": 0,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.011613643930506673,
+            "max": 0.0974262875816993
+          },
+          "couleur": {
+            "moyenne": 0.011681537227901571,
+            "max": 0.10379084967320207
+          }
+        },
+        {
+          "image": 1,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.001231748637887926,
+            "max": 0.018912879325236387
+          },
+          "couleur": {
+            "moyenne": 0.0012406859875937145,
+            "max": 0.020907583621664894
+          }
+        },
+        {
+          "image": 1,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.02656245182007992,
+            "max": 0.14943721568627466
+          },
+          "couleur": {
+            "moyenne": 0.02666538065843611,
+            "max": 0.1586928104575155
+          }
+        },
+        {
+          "image": 1,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.02556662621676162,
+            "max": 0.11051092609351437
+          },
+          "couleur": {
+            "moyenne": 0.025703044988175675,
+            "max": 0.11867269984917012
+          }
+        },
+        {
+          "image": 2,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0011918462367325252,
+            "max": 0.018883361574483032
+          },
+          "couleur": {
+            "moyenne": 0.0011983359825247111,
+            "max": 0.02090064383962434
+          }
+        },
+        {
+          "image": 2,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.013054054619853645,
+            "max": 0.09829235294117633
+          },
+          "couleur": {
+            "moyenne": 0.013090263230173337,
+            "max": 0.105392156862745
+          }
+        },
+        {
+          "image": 2,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.025506072696706864,
+            "max": 0.1105699869281046
+          },
+          "couleur": {
+            "moyenne": 0.02564186067351914,
+            "max": 0.11879336349924552
+          }
+        },
+        {
+          "image": 3,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0009824802851463293,
+            "max": 0.029060412197228436
+          },
+          "couleur": {
+            "moyenne": 0.000986473096060774,
+            "max": 0.03040008650516357
+          }
+        },
+        {
+          "image": 3,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.01226152706901848,
+            "max": 0.0993854793028322
+          },
+          "couleur": {
+            "moyenne": 0.012295193005977288,
+            "max": 0.10697167755991249
+          }
+        },
+        {
+          "image": 3,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.01600219292043735,
+            "max": 0.07487304172951181
+          },
+          "couleur": {
+            "moyenne": 0.016122033452507248,
+            "max": 0.08466566113624907
+          }
+        },
+        {
+          "image": 4,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0012172356912725135,
+            "max": 0.039545243079570414
+          },
+          "couleur": {
+            "moyenne": 0.0012221584954763111,
+            "max": 0.04127450980388647
+          }
+        },
+        {
+          "image": 4,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.014919966705770575,
+            "max": 0.08247495642701547
+          },
+          "couleur": {
+            "moyenne": 0.01507962194849445,
+            "max": 0.08671023965141589
+          }
+        },
+        {
+          "image": 4,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.015892100563515952,
+            "max": 0.07460344896933091
+          },
+          "couleur": {
+            "moyenne": 0.016002658720183173,
+            "max": 0.08436400201106053
+          }
+        },
+        {
+          "image": 5,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0007326162198983662,
+            "max": 0.01991325980391201
+          },
+          "couleur": {
+            "moyenne": 0.0007326668930907634,
+            "max": 0.02034241637830203
+          }
+        },
+        {
+          "image": 5,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.014838035338458693,
+            "max": 0.08171149237472775
+          },
+          "couleur": {
+            "moyenne": 0.01497403834515758,
+            "max": 0.08551198257080583
+          }
+        },
+        {
+          "image": 5,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.007090400579925685,
+            "max": 0.046025076252722896
+          },
+          "couleur": {
+            "moyenne": 0.007129827477049671,
+            "max": 0.05283224400871428
+          }
+        },
+        {
+          "image": 6,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0005933193967224375,
+            "max": 0.014668725636525992
+          },
+          "couleur": {
+            "moyenne": 0.0006003608597009047,
+            "max": 0.01542654375182656
+          }
+        },
+        {
+          "image": 6,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.012954452219848025,
+            "max": 0.09923526797385634
+          },
+          "couleur": {
+            "moyenne": 0.013146527545016063,
+            "max": 0.1065359477124177
+          }
+        },
+        {
+          "image": 6,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.007033568145634303,
+            "max": 0.04457343137254838
+          },
+          "couleur": {
+            "moyenne": 0.007060671075172682,
+            "max": 0.05136165577342017
+          }
+        },
+        {
+          "image": 7,
+          "vue": "scene",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.0010979891722150334,
+            "max": 0.028349283881218712
+          },
+          "couleur": {
+            "moyenne": 0.0010991956144045067,
+            "max": 0.02950547866203923
+          }
+        },
+        {
+          "image": 7,
+          "vue": "glace-g",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.013061209111921102,
+            "max": 0.0994253464052291
+          },
+          "couleur": {
+            "moyenne": 0.013243795737668235,
+            "max": 0.10666666666666608
+          }
+        },
+        {
+          "image": 7,
+          "vue": "glace-d",
+          "identique": false,
+          "luminance": {
+            "moyenne": 0.01712419503798673,
+            "max": 0.09220429193899793
+          },
+          "couleur": {
+            "moyenne": 0.017205687415041925,
+            "max": 0.09896514161220016
+          }
+        }
+      ],
+      "reference": "/workspace/scratch/c89193d9c5e7/bitume-visual-qualification/pluie-reference/rapport.json"
+    }
+  },
+  {
+    "case": "tunnel",
+    "exit": 0,
+    "seconds": 145.38,
+    "images": 48,
+    "errors": [],
+    "fatal": null,
+    "alertes": 0,
+    "comparison": null
+  },
+  {
+    "case": "duo-haut-bas",
+    "exit": 0,
+    "seconds": 16.96,
+    "images": 8,
+    "errors": [],
+    "fatal": null,
+    "alertes": 0,
+    "comparison": null
+  },
+  {
+    "case": "duo-cote",
+    "exit": 0,
+    "seconds": 17.93,
+    "images": 8,
+    "errors": [],
+    "fatal": null,
+    "alertes": 0,
+    "comparison": null
+  },
+  {
+    "case": "portrait",
+    "exit": 0,
+    "seconds": 11.41,
+    "images": 8,
+    "errors": [],
+    "fatal": null,
+    "alertes": 0,
+    "comparison": null
+  }
+]

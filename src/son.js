@@ -29,6 +29,27 @@
   const gainDistance = d => clamp(1 / Math.pow(1 + Math.max(0, d) / 14, 2), 0, 1);
   const doppler = vRel => 343 / (343 - clamp(vRel, -120, 120));
   const panoramique = angle => clamp(Math.sin(angle), -1, 1);
+  const MAX_RIVAUX = 3;
+
+  // Trois références dans un tampon réutilisé : pas de copie, tri global ni objet temporaire par image.
+  // Les ids départagent les distances égales, indépendamment de l'ordre de parcours des voitures.
+  function selectionnerRivaux(rivaux, sortie, joueur = -1, joueur2 = -1) {
+    sortie.length = 0;
+    if (!rivaux) return sortie;
+    for (let i = 0; i < rivaux.length; i++) {
+      const r = rivaux[i];
+      if (!r || r.id === joueur || r.id === joueur2 || !Number.isFinite(r.id) || r.id < 0 || !Number.isFinite(r.distance) || r.distance < 0) continue;
+      let place = 0, doublon = false;
+      for (let k = 0; k < sortie.length; k++) if (sortie[k].id === r.id) { doublon = true; break; }
+      if (doublon) continue;
+      while (place < sortie.length && (sortie[place].distance < r.distance || (sortie[place].distance === r.distance && sortie[place].id < r.id))) place++;
+      if (place >= MAX_RIVAUX) continue;
+      const n = Math.min(MAX_RIVAUX - 1, sortie.length);
+      for (let k = n; k > place; k--) sortie[k] = sortie[k - 1];
+      sortie[place] = r;
+    }
+    return sortie;
+  }
 
   function courbeTanh(k) {
     const n = 2048, c = new Float32Array(n), kh = Math.tanh(k);
@@ -57,8 +78,9 @@
     let ctx = null, pret = false, enPause = false, coupFin = 0;
     let musiqueOn = false, minuteur = null, pas = 0, prochain = 0, busMus = null, echo = null;
     const vols = { general: 1, moteur: 1, effets: 1 };
-    let maitre = null, busMot = null, busEff = null, bruit = null, m = null, pneus = null, vib = null, herbe = null;
-    const voix = [];
+    let maitre = null, busMot = null, busEff = null, bruit = null, m = null, m2 = null, pneus = null, vib = null, herbe = null;
+    let deuxJoueurs = false, joueur2LibereA = 0;
+    const voix = [], proches = [];
 
     // rampe linéaire courte vers une valeur exacte (un 0 coupe vraiment)
     function rampe(p, v, t, d) { p.cancelScheduledValues(t); p.setValueAtTime(p.value, t); p.linearRampToValueAtTime(v, t + d); }
@@ -97,19 +119,20 @@
       const sat = ctx.createWaveShaper(); sat.curve = courbeTanh(2.2); sat.oversample = '2x';
       const ph = filtre('highpass', 32, .7), echap = crete(210, 8, .9), basse = crete(520, 3, 1.2), adm = crete(1400, 2, 2);
       const doux = filtre('highshelf', 4200, .7); doux.gain.value = -4;
-      const pb = filtre('lowpass', 3000, .7), sortie = gain(0);
+      const pb = filtre('lowpass', 3000, .7), sortie = gain(0), pan = ctx.createStereoPanner();
+      pan.pan.value = 0; pan.connect(busMot);
       // râpe : bruit en bande large, porte ouverte et fermée à chaque allumage
       const ns = bruitEnBoucle(), rapeF = filtre('bandpass', 2600, .9), rape = gain(0), am = osc('square', 400), amG = gain(.5);
       am.connect(amG).connect(rape.gain);
       ns.connect(rapeF).connect(rape).connect(pb);
-      attaque.connect(sat).connect(ph).connect(echap).connect(basse).connect(adm).connect(doux).connect(pb).connect(sortie).connect(busMot);
+      attaque.connect(sat).connect(ph).connect(echap).connect(basse).connect(adm).connect(doux).connect(pb).connect(sortie).connect(pan);
       // tunnel : le moteur revient des murs (deux échos courts qui se nourrissent, assourdis)
       const echo = ctx.createDelay(.2), echo2 = ctx.createDelay(.2), retour = gain(.38), sourd = filtre('lowpass', 2600, .7), echoG = gain(0);
       echo.delayTime.value = .043; echo2.delayTime.value = .071;
       sortie.connect(echo); sortie.connect(echo2); echo.connect(sourd); echo2.connect(sourd); sourd.connect(retour); retour.connect(echo);
-      sourd.connect(echoG).connect(busMot);
+      sourd.connect(echoG).connect(pan);
       for (const o of [oA, oB, vib, vib2, oSub, ns, am]) o.start(t);
-      return { oA, oB, oSub, gSub, am, attaque, echap, adm, pb, rape, sortie, echoG };
+      return { oA, oB, oSub, gSub, am, attaque, echap, adm, pb, rape, sortie, echoG, pan };
     }
 
     // Voix d'un rival : la même onde de cycle, filtrée plus fermée, panoramique.
@@ -134,7 +157,7 @@
       const d = bruit.getChannelData(0);
       for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
       m = moteur();
-      for (let i = 0; i < 3; i++) voix.push(voixRival());
+      for (let i = 0; i < MAX_RIVAUX; i++) voix.push(voixRival());
       { // pneus : deux bandes de bruit
         const s = bruitEnBoucle(), b1 = filtre('bandpass', 1800, 5), b2 = filtre('bandpass', 2600, 5), g1 = gain(0), g2 = gain(0);
         s.connect(b1).connect(g1).connect(busEff); s.connect(b2).connect(g2).connect(busEff); s.start(t);
@@ -168,34 +191,51 @@
       rampe(maitre.gain, vols.general * 0.8, t, 0.05); rampe(busMot.gain, vols.moteur * (musiqueOn ? SOUS_MUSIQUE : 1), t, 0.05); rampe(busEff.gain, vols.effets, t, 0.05);
     }
 
-    // etat = { pause, joueur: { regime, gaz, rapport, v, glisse, surface, turbo, vue, muet },
-    //          rivaux: [{ id, distance, angle, regime, gaz, vRel }] }
-    function mettreAJour(etat) {
-      if (!pret || !etat) return;
-      const t = ctx.currentTime, tc = 0.015, j = etat.joueur || {};
-      const silence = enPause || !!etat.pause;
+    function reglerMoteur(moteur, j, t, silence, poids, pan) {
+      const tc = .015;
       const muet = silence || !!j.muet; // vue extérieure : la voiture du joueur passe par une voix de rival
       const gaz = clamp(+j.gaz || 0, 0, 1), regime = Math.max(0, +j.regime || 0), fc = frequenceCycle(regime), r = clamp(regime / 13000, 0, 1);
       const bord = j.vue !== 'poursuite';
-      vise(m.oA.frequency, fc, t, tc); vise(m.oB.frequency, fc, t, tc); vise(m.oSub.frequency, 2 * fc, t, tc); vise(m.am.frequency, 12 * fc, t, tc);
-      vise(m.gSub.gain, .07 + .26 * (1 - r), t, .05);
-      vise(m.attaque.gain, lerp(1.0, 2.9, gaz) * (.8 + .4 * r) + (j.turbo ? .4 : 0), t, .03);
-      vise(m.pb.frequency, clamp(1300 + 3400 * gaz + .3 * regime, 900, 8500) * (bord ? .92 : 1), t, tc);
-      vise(m.rape.gain, (.02 + .12 * gaz + (j.turbo ? .04 : 0)) * (.35 + .65 * r) * (bord ? 1.25 : .8), t, .03);
-      vise(m.echap.gain, bord ? 6.5 : 9, t, .1); vise(m.adm.gain, bord ? 3.5 : 1, t, .1);
-      vise(m.echoG.gain, j.tunnel && !muet ? .55 : 0, t, .12);
+      vise(moteur.oA.frequency, fc, t, tc); vise(moteur.oB.frequency, fc, t, tc); vise(moteur.oSub.frequency, 2 * fc, t, tc); vise(moteur.am.frequency, 12 * fc, t, tc);
+      vise(moteur.gSub.gain, .07 + .26 * (1 - r), t, .05);
+      vise(moteur.attaque.gain, lerp(1.0, 2.9, gaz) * (.8 + .4 * r) + (j.turbo ? .4 : 0), t, .03);
+      vise(moteur.pb.frequency, clamp(1300 + 3400 * gaz + .3 * regime, 900, 8500) * (bord ? .92 : 1), t, tc);
+      vise(moteur.rape.gain, (.02 + .12 * gaz + (j.turbo ? .04 : 0)) * (.35 + .65 * r) * (bord ? 1.25 : .8), t, .03);
+      vise(moteur.echap.gain, bord ? 6.5 : 9, t, .1); vise(moteur.adm.gain, bord ? 3.5 : 1, t, .1);
+      vise(moteur.echoG.gain, j.tunnel && !muet ? .55 : 0, t, .12);
+      vise(moteur.pan.pan, pan, t, .08);
       // le gain de sortie est réduit car la saturation remonte le niveau
-      const vol = muet ? 0 : lerp(0.5, 0.9, gaz) * 0.34;
-      if (t >= coupFin) vise(m.sortie.gain, vol, t, muet ? 0.03 : tc);
+      const vol = muet ? 0 : lerp(0.5, 0.9, gaz) * 0.34 * poids;
+      if (moteur !== m || t >= coupFin) vise(moteur.sortie.gain, vol, t, muet ? 0.03 : tc);
+    }
+
+    // etat = { pause, joueur: { id, regime, gaz, rapport, v, glisse, surface, turbo, vue, muet },
+    //          joueur2: même structure ou null, rivaux: [{ id, distance, angle, regime, gaz, vRel }] }
+    // En duo les distances des rivaux viennent de la caméra humaine la plus proche (adaptateur du jeu).
+    function mettreAJour(etat) {
+      if (!pret || !etat) return;
+      const t = ctx.currentTime, tc = .015, j = etat.joueur || {}, j2 = etat.joueur2 || null;
+      const silence = enPause || !!etat.pause, muet = silence || !!j.muet;
+      // Le second graphe est créé une seule fois, après le premier geste audio et seulement si J2 existe. Les
+      // séances suivantes réutilisent ce graphe ; sa distance à J1 ne peut jamais le sortir du budget.
+      if (j2 && !m2) m2 = moteur();
+      if (!j2 && deuxJoueurs) { vise(m2.sortie.gain, 0, t, .03); vise(m2.echoG.gain, 0, t, .03); joueur2LibereA = t + .12; }
+      deuxJoueurs = !!j2;
+      reglerMoteur(m, j, t, silence, j2 ? Math.SQRT1_2 : 1, j2 ? -.24 : 0);
+      if (j2) reglerMoteur(m2, j2, t, silence, Math.SQRT1_2, .24);
 
       // rivaux : les trois plus proches, attribution stable, fondu de 0,1 s
-      const proches = (etat.rivaux || []).slice().sort((a, b) => a.distance - b.distance).slice(0, voix.length);
-      const ids = proches.map(r => r.id);
-      for (const vx of voix) if (vx.id >= 0 && !ids.includes(vx.id)) { vise(vx.sortie.gain, 0, t, 0.03); vx.id = -1; vx.libereA = t + 0.12; }
+      selectionnerRivaux(etat.rivaux, proches, j.muet ? -1 : j.id, j2 && !j2.muet ? j2.id : -1);
+      for (const vx of voix) if (vx.id >= 0) {
+        let garde = false;
+        for (let i = 0; i < proches.length; i++) if (proches[i].id === vx.id) { garde = true; break; }
+        if (!garde) { vise(vx.sortie.gain, 0, t, .03); vx.id = -1; vx.libereA = t + .12; }
+      }
       for (const r of proches) {
-        let vx = voix.find(x => x.id === r.id);
+        let vx = null;
+        for (let i = 0; i < voix.length; i++) if (voix[i].id === r.id) { vx = voix[i]; break; }
         if (!vx) {
-          vx = voix.find(x => x.id < 0 && t >= x.libereA);
+          for (let i = 0; i < voix.length; i++) if (voix[i].id < 0 && t >= voix[i].libereA) { vx = voix[i]; break; }
           if (!vx) continue;
           vx.id = r.id;
           vx.o1.frequency.setValueAtTime(frequenceCycle(+r.regime || 0) * doppler(+r.vRel || 0), t);
@@ -370,13 +410,20 @@
       enPause = true;
       if (!pret) return;
       const t = ctx.currentTime;
-      for (const g of [m.sortie.gain, pneus.g1.gain, pneus.g2.gain, vib.g.gain, herbe.g.gain, ...voix.map(v => v.sortie.gain)]) vise(g, 0, t, 0.03);
+      for (const g of [m.sortie.gain, m.echoG.gain, pneus.g1.gain, pneus.g2.gain, vib.g.gain, herbe.g.gain]) vise(g, 0, t, 0.03);
+      if (m2) { vise(m2.sortie.gain, 0, t, .03); vise(m2.echoG.gain, 0, t, .03); }
+      for (const v of voix) vise(v.sortie.gain, 0, t, .03);
     }
     function reprendre() { enPause = false; }
-    function stats() { return { actif: pret, voix: pret ? 1 + voix.filter(v => v.id >= 0).length : 0, musique: musiqueOn }; }
+    function stats() {
+      let rivaux = 0, fondus = 0;
+      if (pret) for (const v of voix) { if (v.id >= 0) rivaux++; else if (ctx.currentTime < v.libereA) fondus++; }
+      const joueurs = pret ? 1 + (deuxJoueurs || ctx.currentTime < joueur2LibereA ? 1 : 0) : 0;
+      return { actif: pret, voix: joueurs + rivaux + fondus, joueurs, rivaux, fondus, budget: 2 + MAX_RIVAUX, musique: musiqueOn };
+    }
 
     return { demarrer, regler, mettreAJour, evenement, musique, suspendre, reprendre, stats };
   }
 
-  B.son = { creer, frequenceAllumage, frequenceCycle, spectreMoteur, coupure, gainDistance, doppler, panoramique, THEME };
+  B.son = { creer, frequenceAllumage, frequenceCycle, spectreMoteur, coupure, gainDistance, doppler, panoramique, selectionnerRivaux, MAX_RIVAUX, THEME };
 })(globalThis.BITUME = globalThis.BITUME || {});

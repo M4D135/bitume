@@ -1,0 +1,66 @@
+{
+  "passed": 15,
+  "total": 15,
+  "results": [
+    {
+      "name": "budget : douze voitures en casse simultanée tiennent sous le plafond du pool",
+      "ok": true
+    },
+    {
+      "name": "budget : une voiture ne peut pas déborder sur le quota d une autre",
+      "ok": true
+    },
+    {
+      "name": "budget : le remplacement d une voiture rouvre son quota",
+      "ok": true
+    },
+    {
+      "name": "plafond : mille pièces réclamées ne dépassent jamais la taille du pool",
+      "ok": true
+    },
+    {
+      "name": "plafond : quand il faut sacrifier, c est la pièce la plus vieille qui cède",
+      "ok": true
+    },
+    {
+      "name": "panneau arraché sur choc violent, du côté de la normale, sans dépasser le budget",
+      "ok": true
+    },
+    {
+      "name": "cohérence : une pièce détachée ne reste pas dessinée sur la voiture",
+      "ok": true
+    },
+    {
+      "name": "repos : la pièce posée quitte la simulation et reste dessinée",
+      "ok": true
+    },
+    {
+      "name": "repos : une pièce encore en mouvement garde son corps",
+      "ok": true
+    },
+    {
+      "name": "libération : corps retirés, monde détruit, effets éteints, plus rien ne bouge",
+      "ok": true
+    },
+    {
+      "name": "sans PhysX, la pièce suit sa parabole et rien ne lève une exception",
+      "ok": true
+    },
+    {
+      "name": "sol : les dalles suivent l altitude réelle du tracé autour de l accident",
+      "ok": true
+    },
+    {
+      "name": "récupération d urgence : jouable mais pas neuve ; la réparation complète reste aux stands",
+      "ok": true
+    },
+    {
+      "name": "vraie course : après un gros choc, la voiture repart et garde la trace du choc",
+      "ok": true
+    },
+    {
+      "name": "collisions multiples en chaîne : pas de NaN, pas de blocage, corps bornés",
+      "ok": true
+    }
+  ]
+}

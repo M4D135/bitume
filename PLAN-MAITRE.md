@@ -299,3 +299,18 @@ existe) ; voiture vivante ; peloton et voix des rivaux ; tours propres, records 
   réglé, les effets, le banc d'images, les Secousses et les records versionnés. Restent : le banc des critères
   réécrit, la vérification au navigateur et le lot de corrections de la phase 1. Point de reprise :
   `SUIVI-PHASE-2.md`.
+
+
+## Livraison procédurale du 17 novembre 2026 — BITUME 0.2.25 / FERRO 0.3.4
+
+Cette livraison suit les décisions récentes d’`AGENTS.md` et le point `REPRISE.md` : moteur canonique FERRO avec verrou SHA256, aucun plafond de taille, intégrations successives sur `main`.
+
+- [x] Recettes de matière opt-in dans FERRO ; version GLSL et bundle WGSL régénéré.
+- [x] Végétation paramétrique originale sur Val-Brûlé, sous-lots et silhouettes communes aux niveaux de détail.
+- [x] Seuil de détail adapté à chaque caméra, sans modifier les obstacles.
+- [x] Mesures CPU corrigées, coût des deux vues et des rétros explicite, budget audio visible.
+- [x] Deux moteurs humains et trois voix de rivaux réutilisées ; qualité automatique avec hystérésis en temps réel.
+- [x] Parcours de référence, captures déterministes et banc réel séparés.
+- [ ] Qualification des performances sur le Mac, téléphone et Xbox Edge, manettes physiques et session WebRTC multi-machines.
+
+Les changements de style sont limités au circuit pilote. Le batching des voitures utilise déjà les groupes instanciés par forme et par passe du moteur ; cette livraison ne revendique pas un appel de dessin unique par matériau. Les LOD historiques des glissières et reliefs ne sont pas une nouvelle optimisation de cette version. La conduite S8 conserve son critère ouvert. Les résultats effectifs, captures et statut de publication sont dans `docs/reprise/rapports/LOT5-2026-11-17.md` et `docs/reprise/ETAT.json`.

@@ -1,0 +1,31 @@
+✔ l’annonce ouvre la confirmation sans lancer la course (2.670374ms)
+✔ départ unique avec 1+1 pilotes (1.766583ms)
+✔ départ unique avec 2+1 pilotes (0.350118ms)
+✔ départ unique avec 2+2 pilotes (0.334955ms)
+✔ départ unique avec 1+1+1+1 pilotes (0.445739ms)
+✔ cinq pilotes ne peuvent pas confirmer le départ (0.26342ms)
+✔ un pilote peut retirer son accord pendant les 700 ms (0.385039ms)
+✔ retour de l’hôte au salon annule le départ différé (0.275918ms)
+✔ quitter puis rejoindre une autre partie ne lance pas l’ancienne course (0.375936ms)
+✔ une nouvelle proposition remplace le compte à rebours précédent (0.404148ms)
+✔ un membre en cours de connexion n’est pas oublié (0.538827ms)
+✔ une arrivée pendant le compte à rebours impose sa confirmation (0.225444ms)
+✔ perdre une liaison pendant le compte à rebours ne lance pas une course incomplète (0.148059ms)
+✔ départ d’un membre nettoie ses pneus et permet aux autres de continuer (0.44648ms)
+✔ les accords répétés ne programment qu’un départ (0.399641ms)
+✔ ouvrir les réglages retire l’accord local (1.432629ms)
+✔ un inconnu ne peut se dire prêt ni imposer des pneus (0.137033ms)
+✔ l’invité choisit ses pneus sans modifier sa boîte ni sa vue (0.306303ms)
+✔ annulation par l’hôte depuis les réglages retourne au salon (0.603563ms)
+✔ fermeture du salon efface la confirmation et quitte son écran (0.261497ms)
+✔ confirmation invalide ignorée sans écran vide (0.083183ms)
+✔ messages nuls ignorés sans interrompre le jeu (0.263109ms)
+✔ quitter pendant les 30 ms de chargement annule le lancement (0.300484ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 20.706079

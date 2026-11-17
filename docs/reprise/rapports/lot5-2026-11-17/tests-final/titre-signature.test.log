@@ -1,0 +1,12 @@
+✔ la marque porte la signature m4d135 vers GitHub (0.958277ms)
+✔ aucune fermeture excédentaire et le badge de version reste en place (0.382436ms)
+✔ le lien ZIP retiré par la branche ne revient pas (0.226705ms)
+✔ la feuille de style tient la signature (0.302798ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9.14114

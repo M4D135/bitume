@@ -10,6 +10,26 @@
   'use strict';
   // BITUME : champ de vision admis de 10 à 110° (FERRO : 40 à 110°), pour la caméra de télévision au téléobjectif.
   const FOV_MIN = 10;
+  // Optional surface recipes. Existing material IDs keep their original appearance;
+  // hosts opt in per mesh (or terrain vertex), without another draw pass or texture.
+  const MATERIALS = Object.freeze({weatheredAsphalt:21,weatheredConcrete:22,weatheredStone:23,weatheredPaint:24});
+  function materialFamily(value){
+    const recipe=Math.floor(value+.5);
+    return recipe===21?14:recipe===22?3:recipe===23?9:recipe===24?16:value;
+  }
+
+  // A lot may describe the FOV and viewport at which its near/far threshold was
+  // chosen. Keep its projected detail size stable in a telephoto or split view.
+  // No camera state is cached: colour, mirrors and shadows use the current view.
+  function lotDetailDistance(lot,verticalTangent,viewportHeight){
+    let distance=lot.bascule||240;
+    const fov=lot.lodReferenceFov,height=lot.lodReferenceHeight;
+    if(Number.isFinite(fov)&&fov>0&&fov<180&&Number.isFinite(verticalTangent)&&verticalTangent>0)
+      distance*=Math.tan(fov*Math.PI/360)/verticalTangent;
+    if(Number.isFinite(height)&&height>0&&Number.isFinite(viewportHeight)&&viewportHeight>0)
+      distance*=viewportHeight/height;
+    return distance;
+  }
 
   // Same wave field as RADE.marine.seaHeight. Only the local navigation grid
   // is displaced; a 16 m edge band meets the distant flat sea without a seam.
@@ -144,6 +164,12 @@
     return mix(mix(hash(a),hash(a+vec2(1,0)),b.x),
       mix(hash(a+vec2(0,1)),hash(a+vec2(1,1)),b.x),b.y);
   }
+  // Integrate grain towards its mean before it becomes smaller than a pixel.
+  // Frequencies are in world/object metres, independently of display resolution.
+  float surfaceNoise(vec2 uv,float frequency,float pixelSpan){
+    float detail=1.-smoothstep(.35,.90,pixelSpan*frequency);
+    return .5+(noise(uv*frequency)-.5)*detail;
+  }
   float grid(vec2 uv,float width) {
     vec2 distanceToEdge=min(fract(uv),1.-fract(uv));
     vec2 aa=max(fwidth(uv),vec2(.0001));
@@ -223,18 +249,60 @@
   void main() {
     vec3 geometricNormal=normalize(vNormal), n=geometricNormal, an=abs(normalize(vSurfaceNormal));
     vec2 uv=an.y>.65?vSurface.xz:(an.x>an.z?vSurface.zy:vSurface.xy);
-    float m=vMaterial, emission=vEmission;
+    float recipe=vMaterial>20.5&&vMaterial<24.5?floor(vMaterial+.5)-20.:0.;
+    float m=recipe==1.?14.:recipe==2.?3.:recipe==3.?9.:recipe==4.?16.:vMaterial, emission=vEmission;
     vec3 base=vec3(.105,.135,.15),windowGlow=vec3(0.);
     float night=clamp(uNightHour.x,0.,1.)*vOutdoor;float lateHour=uNightHour.y<12.?uNightHour.y+24.:uNightHour.y;float evening=1.-smoothstep(23.,26.,lateHour);
-    float roughness=.47,metalness=.65,organicHeight=0.,urbanHeight=0.,pbrWeight=0.,pbrLayer=1.;
+    float roughness=.47,metalness=.65,organicHeight=0.,urbanHeight=0.,pbrWeight=0.,pbrLayer=1.,recipeHeight=0.;
     float pixelSpan=max(fwidth(uv).x,fwidth(uv).y);
     float fineDetail=1.-smoothstep(.015,.10,pixelSpan);
     float grain=noise(uv*23.)*.5+mix(.5,noise(uv*71.),fineDetail)*.2;
     float broad=noise(uv*.7);
     // Architectural joints belong to the building, not to moving armour or the weapon.
     float architectural=1.-clamp(vObject,0.,1.);
-    float panel=m<7.5?grid(uv*.55,.007)*architectural:0.;
-    if (m<.5) {
+    float panel=m<7.5&&recipe<.5?grid(uv*.55,.007)*architectural:0.;
+    if(recipe>.5){
+      // Original, bounded recipes: broad ageing, medium surface structure and
+      // filtered grain share the same coordinates and seedless world field.
+      float patches=surfaceNoise(uv+vec2(17.3,8.1),.17,pixelSpan);
+      float structure=surfaceNoise(uv+vec2(3.7,11.9),2.6,pixelSpan);
+      float aggregate=surfaceNoise(uv,83.,pixelSpan);
+      vec3 tint=vColor.w>.5?vColor.rgb:vec3(.5);
+      if(recipe<1.5){
+        if(vColor.w<.5)tint=vec3(.18,.18,.19);
+        float repair=smoothstep(.48,.69,patches);
+        base=tint*(.91+.16*(structure-.5)+.16*(aggregate-.5))*(1.-repair*.12);
+        roughness=.88+.08*(structure-.5)+.04*(aggregate-.5);metalness=0.;
+        recipeHeight=(aggregate-.5)*.0022+(structure-.5)*.0012;
+      }else if(recipe<2.5){
+        if(vColor.w<.5)tint=vec3(.54,.55,.52);
+        float run=surfaceNoise(vec2(uv.x*3.,uv.y*.14)+19.,1.,pixelSpan*3.);
+        float foot=(1.-smoothstep(.05,1.25,(vLocal.y+.5)*vDimensions.y))*(1.-abs(geometricNormal.y));
+        float stain=smoothstep(.48,.72,run)*(.07+.15*foot);
+        base=tint*(.84+.20*patches+.10*(aggregate-.5))*(1.-stain);
+        base=mix(base,base*vec3(.80,.82,.73),foot*structure*.12);
+        roughness=.88+.08*(structure-.5);metalness=0.;
+        recipeHeight=(structure-.5)*.005+(aggregate-.5)*.0014;
+      }else if(recipe<3.5){
+        if(vColor.w<.5)tint=vec3(.37,.36,.31);
+        float strataPhase=vWorld.y*2.1+patches*5.5;
+        float strata=.5+.5*sin(strataPhase)*(1.-smoothstep(.6,2.4,fwidth(strataPhase)));
+        float lichen=smoothstep(.60,.78,patches+.12*structure)*max(geometricNormal.y,0.)*clamp(vOutdoor,0.,1.);
+        base=tint*(.77+.28*patches+.12*strata+.10*(aggregate-.5));
+        base=mix(base,base*vec3(.76,.89,.62),lichen*.42);
+        roughness=.87+.10*structure;metalness=0.;
+        recipeHeight=(structure-.5)*.016+(aggregate-.5)*.003;
+      }else{
+        vec2 localUV=an.y>.65?vLocal.xz:(an.x>an.z?vLocal.zy:vLocal.xy);
+        float edgeDistance=.5-max(abs(localUV.x),abs(localUV.y));
+        float edge=1.-smoothstep(.010,.035+fwidth(edgeDistance),edgeDistance);
+        float chip=smoothstep(.65,.82,structure+.14*patches)*(.10+.55*edge);
+        base=tint*(.95+.08*(aggregate-.5))*(.94+.08*patches);
+        base=mix(base,vec3(.23,.25,.25)*(.8+.25*patches),chip);
+        roughness=mix(.34+.08*patches,.62,chip);metalness=mix(.08,.72,chip);
+        recipeHeight=(aggregate-.5)*.0007-chip*.0015;
+      }
+    } else if (m<.5) {
       base*=.82+grain*.27+broad*.17;
       base*=1.-panel*.38;
       vec2 panelUV=fract(uv*.55);
@@ -428,7 +496,7 @@
       roughness=.13;metalness=.35;
       windowGlow=mix(vec3(1.,.58,.25),vec3(.92,.87,.66),step(.78,home))*night*occupied*1.7;
     }
-    if(vColor.w>.5&&m<12.5&&!(m>11.5&&vAnchor.y<0.)){
+    if(recipe<.5&&vColor.w>.5&&m<12.5&&!(m>11.5&&vAnchor.y<0.)){
       vec3 tint=vColor.rgb*(.88+grain*.2)*(1.-panel*.12)*(m<3.5?.65:1.);
       base=m>7.5?base*.35+tint*.65:tint;
     }
@@ -451,13 +519,16 @@
       float tread=(1.-smoothstep(.26,.34,abs(fract(treadUV.x)-.5)))*(1.-smoothstep(.08,.16,abs(fract(treadUV.y)-.5)));
       height=(1.-grid(uv*.5,.007)*architectural)*.006+tread*.0018*fineDetail;
     }
-    if(m<3.5)n=reliefNormal(n,height);
-    if(m>7.5&&m<9.5)n=reliefNormal(n,(noise(uv*7.)-.5)*.009*fineDetail);
-    if(m>9.5&&m<11.5)n=reliefNormal(n,organicHeight*fineDetail);
-    if(m>12.5&&m<15.5)n=reliefNormal(n,urbanHeight*fineDetail);
+    if(recipe>.5)n=reliefNormal(n,recipeHeight);
+    else{
+      if(m<3.5)n=reliefNormal(n,height);
+      if(m>7.5&&m<9.5)n=reliefNormal(n,(noise(uv*7.)-.5)*.009*fineDetail);
+      if(m>9.5&&m<11.5)n=reliefNormal(n,organicHeight*fineDetail);
+      if(m>12.5&&m<15.5)n=reliefNormal(n,urbanHeight*fineDetail);
+    }
     if(m>2.5&&m<3.5)pbrWeight=1.;
     if(m>13.5&&m<14.5){pbrWeight=1.;pbrLayer=0.;}
-    if(uPbrReady>.5&&pbrWeight>0.){
+    if(recipe<.5&&uPbrReady>.5&&pbrWeight>0.){
       vec2 texUV=uv/(pbrLayer<.5?3.:2.);vec3 coord=vec3(texUV,pbrLayer);
       vec3 albedo=texture(uPbrAlbedo,coord).rgb;
       if(pbrLayer>.5)albedo*=vColor.w>.5?vColor.rgb*1.9:vec3(1.25);
@@ -473,9 +544,24 @@
     // Pixel-scale normal variation broadens highlights instead of shimmering.
     vec3 ndx=dFdx(n),ndy=dFdy(n);
     roughness=min(.98,sqrt(roughness*roughness+min(.16,max(dot(ndx,ndx),dot(ndy,ndy))*.28)));
-    float wet=uWeather.x*clamp(n.y,0.,1.)*step(13.5,m)*step(m,15.5);
-    float puddle=smoothstep(.48,.72,noise(vWorld.xz*.29))*wet;
-    base*=1.-wet*.22;roughness=mix(roughness,.105,puddle);metalness=mix(metalness,.24,puddle);
+    float puddle=0.;
+    if(recipe>.5){
+      // Rain only reaches exposed surfaces. A single persistent mask controls
+      // darkening, gloss and normal flattening; wet asphalt remains dielectric.
+      float upward=clamp(geometricNormal.y,0.,1.);
+      float exposure=clamp(vOutdoor,0.,1.)*uEnvironment.x;
+      float wet=clamp(uWeather.x,0.,1.)*exposure*(.18+.82*upward);
+      float pool=smoothstep(.45,.72,noise(vWorld.xz*.23+vec2(5.7,13.1)))*upward;
+      float film=wet*(.30+.70*pool);
+      puddle=wet*pool;
+      base*=1.-wet*(recipe<1.5?.32:.22);
+      roughness=mix(roughness,recipe<1.5?.12:.18,film);
+      n=normalize(mix(n,geometricNormal,film*.82));
+    }else{
+      float wet=uWeather.x*clamp(n.y,0.,1.)*step(13.5,m)*step(m,15.5);
+      puddle=smoothstep(.48,.72,noise(vWorld.xz*.29))*wet;
+      base*=1.-wet*.22;roughness=mix(roughness,.105,puddle);metalness=mix(metalness,.24,puddle);
+    }
     vec3 view=normalize(uEye-vWorld);
     float distanceToEye=length(uEye-vWorld);
     vec3 light=vec3(.075,.10,.12)*(.72+.28*n.y);
@@ -1059,7 +1145,7 @@
     return valid.sort((a,b)=>b.score-a.score).slice(0,limit);
   }
   function outdoorMesh(mesh,environment){
-    return !!environment&&(mesh.outdoor===undefined?((mesh.mat||0)>=8||outdoorAt(mesh.p||[0,0,0],environment)):!!mesh.outdoor);
+    return !!environment&&(mesh.outdoor===undefined?(materialFamily(mesh.mat||0)>=8||outdoorAt(mesh.p||[0,0,0],environment)):!!mesh.outdoor);
   }
   function surfaceFlags(mesh,environment,objects=false){
     const object=mesh.overlay||mesh.surface==='object'||objects&&mesh.surface!=='architecture';
@@ -2208,7 +2294,7 @@
         const dx=l.centre[0]-eye[0],dy=l.centre[1]-eye[1],dz=l.centre[2]-eye[2],distance=Math.sqrt(dx*dx+dy*dy+dz*dz)-l.rayon;
         if(accepte){if(!accepte(l))continue;}
         else{if(distance>Math.min(far,l.portee||far))continue;if(!visible({p:l.centre,radius:l.rayon},eye,axes,horizontal,vertical,far))continue;}
-        const proche=!l.paquetLoin||distance<(l.bascule||240);
+        const proche=!l.paquetLoin||distance<lotDetailDistance(l,vertical,canvas.height);
         renderBatch(proche?l.paquet:l.paquetLoin,proche?l.tampon:l.tamponLoin,false,!!accepte);dessines++;
       }
       return dessines;
@@ -2376,7 +2462,8 @@
       const casters=camera.chunked?[]:camera.allStatic?worldIndex.entries:worldIndex.query(center,[extent+24,26,0]).filter(inside);
       renderStatic(casters,2,true);if(camera.chunked)drawChunks(inside,true);
       // BITUME : les lots dont la sphère touche le volume du soleil projettent leur ombre (version proche ou lointaine).
-      dessinerLots(eye,axes,0,0,0,l=>inside({p:l.centre,radius:l.rayon}));
+      const viewTangent=Math.tan(Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/360);
+      dessinerLots(eye,axes,0,viewTangent,0,l=>inside({p:l.centre,radius:l.rayon}));
       renderBatch(dynamicBatch,dynamicBuffer,false,true);if(crowd)renderBatch(crowd,crowdBuffer,false,true);gl.disable(gl.POLYGON_OFFSET_FILL);
       // PDR (lots) : les lots du jeu (fx.lots) entrent dans la même vue du soleil, au même biais, rétabli pour eux.
       // PDR (foule) : la foule sur le GPU aussi (fx.foule.ombre) ; au retour, le moteur reprend son état GL.
@@ -2697,7 +2784,7 @@
   }
   // Both GPU backends share the procedural shapes, instance layout and visibility
   // rules. No rendering calls or GPU state are shared between the APIs.
-  const shared={bitumeWeather,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
+  const shared={bitumeWeather,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
   function mesh(shape,p,s,mat,r=[0,0,0],emissive=0){
     return {shape,p,s,mat,r,emissive,color:undefined,surface:undefined,overlay:false,fx:false,
       alpha:undefined,additive:undefined,outdoor:undefined,actorPart:undefined,actorLod:0,
@@ -2705,6 +2792,6 @@
       effectPart:'',fxFire:false,fxSmoke:false,fxSpark:false,fxPriority:undefined,ground:undefined,
       innerRatio:undefined,region:undefined};
   }
-  globalThis.FRender={create,foliageTriangles,forme,shared,mesh};
+  globalThis.FRender={create,foliageTriangles,forme,shared,mesh,materials:MATERIALS};
   if(typeof window!=='undefined')window.FRender=globalThis.FRender;
 })();

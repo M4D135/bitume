@@ -1,5 +1,16 @@
 {
   "date": "2026-11-17",
+  "etat_courant": {
+    "date": "2026-11-17",
+    "base_branche": "main",
+    "base_commit": "d67506c6d023ad5efa5a3b1ac721811c53a323a2",
+    "base_version_client": "0.2.24",
+    "version_preparee": "0.2.25",
+    "statut": "pilote_local_qualifie_publication_en_attente",
+    "lot_5": "partiel",
+    "prochaine_action": "Publier BITUME sur main et consigner le recu verifie. Prochaine reprise depuis le Mac : ./deposer.sh, verification du site servi, smoke du HTML final et bancs GPU reels ; aucune execution automatique annoncee.",
+    "qualification_reprise": "Controle final : 43/43 suites Node reussies, build strictement reproductible et FERRO 34/34 verifies. Chromium bloque avant DevTools et avant le jeu ; aucun nouveau smoke ni banc instrumente. Passage precedent 42/43 puis decor seul reussi conserve comme historique."
+  },
   "organisation": "Une discussion par lot borne ; integrations sequentielles. Maitre d'oeuvre unique sur les fichiers de jonction.",
   "base_verifiee": {
     "branche": "main",
@@ -7,26 +18,51 @@
     "version_client": "0.2.19",
     "branches_distantes_comptees": 7,
     "qualification_historique": "34 suites Node sur Spark (Node 24.18.0, Linux arm64), build reproductible sha256 c8ac999b71b1944f50cf3d25c42635f2b6db3b72741be9a0def66793ed9ef76e, FERRO 0.3.3 34/34",
-    "serie_locale_e074b55_retrouvee": false,
+    "serie_locale_e074b55_retrouvee": true,
     "pr": [
       "#1 closed",
       "#2 closed",
       "aucune PR ouverte"
-    ]
+    ],
+    "contexte": "Constat historique du lot 0, 17 novembre 2026 ; la base de reprise actuelle figure dans etat_courant."
   },
   "paquet_reprise": {
     "attendu": "BITUME-REPRISE-QWEN-SPARK.zip (bitume-main-12dc097.bundle, relais-2026-11-17/, qualification-lot0/)",
-    "recherche": "Mac : Downloads, Documents, Desktop, Projects, Documents/Codex/** ; Spark : /home/m4d135/**, /tmp, /mnt/data absent. Le 17/11/2026.",
-    "resultat": "ABSENT des deux machines",
-    "commits_introuvables": [
+    "recherche": "Recherche historique du lot 0 : Mac (Downloads, Documents, Desktop, Projects, Documents/Codex/**) et Spark (/home/m4d135/**, /tmp ; /mnt/data absent), le 17 novembre 2026.",
+    "resultat": "RETROUVE le 17 novembre au soir dans les copies anterieures de l’environnement ChatGPT.",
+    "consequence": "La preparation locale 0.2.20 existe et est conservee comme historique. Elle est distincte du 0.2.20 livre ensuite depuis main. Aucune fusion de ces anciennes preparations dans le pilote 0.2.25 : main 0.2.24 a poursuivi les lots entre-temps.",
+    "relais_lots_1_a_5": "Retrouve avec son SHA256 attendu. Les lots 1 a 4 deja publies ont ete realises depuis main pendant son absence sur Mac/Spark ; cette reprise ne les remplace pas par le relais ancien.",
+    "resultat_lot_0": "ABSENT des disques Mac/Spark recherches a ce moment-la ; ce constat ne prouvait pas une perte definitive.",
+    "commits_introuvables_lot_0": [
       "12dc0977567251e9b568b25c495c900653f0cb90",
       "827c3072fbc573241441b8f2d1e100710d8619a9",
       "74352fee37a1d579fa431ba4b8dfe79a04e676e5",
       "a690e92bc5e6f6a22b1b708dce782208c842890b",
       "e074b55"
     ],
-    "consequence": "La recuperation 0.2.20 du prompt (51 suites, HTML 12 857 043 octets, sha256 c9cfce03...) n'a jamais ete poussee et n'existe sur aucun disque joint : non recuperable. Rien n'a ete reinvente a sa place. Le 0.2.20 livre par le lot 0 est un autre commit, construit depuis main b9d8c6d.",
-    "relais_lots_1_a_5": "BITUME-RELAIS-2026-11-17.zip (sha256 6114cf19897ad3b1e3a30afee5d99d5af87399fdac625790366f124d08cd1696) egalement absent : les preparations candidates (eclairage.js, performance.js, duels.js, stands.js) ne sont pas disponibles. Les lots 1 a 5 sont donc realises depuis les sources de main, pas portes depuis le relais."
+    "commits_retrouves": [
+      "12dc0977567251e9b568b25c495c900653f0cb90",
+      "827c3072fbc573241441b8f2d1e100710d8619a9",
+      "74352fee37a1d579fa431ba4b8dfe79a04e676e5",
+      "a690e92bc5e6f6a22b1b708dce782208c842890b",
+      "e074b557b21d81add4f3ab30cc0a07445f5a9dcc"
+    ],
+    "archives_retrouvees": [
+      {
+        "fichier": "BITUME-REPRISE-QWEN-SPARK.zip",
+        "sha256": "6c911da721227d345bc499fd9c40bdb840d4d78af5dcdcdd4165c1149d92b298",
+        "chemin_observe": "/workspace/scratch/c89193d9c5e7/livraison/BITUME-REPRISE-QWEN-SPARK.zip"
+      },
+      {
+        "fichier": "BITUME-RELAIS-2026-11-17.zip",
+        "sha256": "6114cf19897ad3b1e3a30afee5d99d5af87399fdac625790366f124d08cd1696",
+        "chemin_observe": "/workspace/scratch/d1c96fbfcceb/recovery-relais/BITUME-RELAIS-2026-11-17.zip"
+      },
+      {
+        "fichier": "bitume-main-12dc097.bundle",
+        "chemin_observe": "/workspace/scratch/c89193d9c5e7/livraison/BITUME-REPRISE-QWEN-SPARK/historique/bitume-main-12dc097.bundle"
+      }
+    ]
   },
   "lot_actif": "5",
   "prochain_lot": "5",
@@ -76,39 +112,59 @@
     {
       "id": "5",
       "fiche": "docs/reprise/05-PERFORMANCE.md",
-      "statut": "a_faire",
+      "statut": "partiellement_realise",
       "dependances": [
         "1",
         "2",
         "3",
         "4"
       ],
-      "commit_livre": null
+      "commit_livre": null,
+      "publication": "en_attente",
+      "rapport": "docs/reprise/rapports/LOT5-2026-11-17.md"
     }
   ],
   "integration": {
     "nouvelle_branche_autorisee_pour_coordination": false,
     "push_concurrents": false,
     "force_push": false,
-    "trajet_publication": "commit sur Spark, bundle Git verifie, transport vers le Mac, push depuis le Mac (le Spark n'a aucun identifiant GitHub)",
+    "trajet_publication": "Connecteur GitHub avec controle de la tete main ; ecriture Git native indisponible faute d’identifiants. Recu du commit a ajouter apres verification.",
     "deploiement_effectue": false,
     "sauvegarde_historique": {
       "fichier": "bitume-toutes-refs-2026-11-17.bundle",
       "sha256": "4a733d1faf1dec986d89e5bf0969a804f95f6a24463e618fd8897abbaf4fb1ef",
       "verifie": true
-    }
+    },
+    "publication_bitume_025": "en_preparation_via_connecteur_github",
+    "ferro_034": {
+      "branche": "main",
+      "commit": "457a9671f4ea5c314a5c8e7b3337474ba031c78e",
+      "statut": "publie"
+    },
+    "portee_deploiement": "Livraison 0.2.25 : autorisee, non effectuee ; pas d’acces SSH au Mac/amiga ni workflow de deploiement utilisable dans cet environnement.",
+    "production_verifiee": {
+      "version": "0.2.24",
+      "dist_sha256": "baee4977777f70510779b926988d15634a3297c67cdee7b0ddbaa64cbc32187f",
+      "date": "2026-11-17"
+    },
+    "trajet_publication_historique": "commit sur Spark, bundle Git verifie, transport vers le Mac, push depuis le Mac (le Spark n'a aucun identifiant GitHub)"
   },
   "criteres_ouverts": [
-    "Conduite S8 : environ 1 031 degres/s2 pour une cible inferieure ou egale a 300 ; mesure non bloquante existante, pas un objectif atteint",
-    "FPS GPU reels, vraie session WebRTC et manettes physiques : non qualifies (le Spark ne rend qu'en logiciel)"
+    "Conduite S8 : environ 1 031 degres/s2 pour une cible <= 300 ; mesure historique non bloquante, objectif non atteint.",
+    "FERRO P08 : TODO historique de contact sur pente, non resolu par cette livraison.",
+    "Batching des monoplaces par passe, LOD historique du relief/vibreurs/glissieres et gains materiels du lot 5.",
+    "FPS sur GPU reels, appareils mobiles/Xbox Edge, vraie session WebRTC multi-machines et manettes physiques non qualifies.",
+    "Ecoute reelle et effets audio complets du second joueur ; interruptions natives, perte de contexte et transitions de LOD en mouvement a qualifier."
   ],
   "limites_qualification": [
-    "Les suites Node ne qualifient ni le rendu WebGL, ni PhysX en navigateur, ni le reseau reel, ni le materiel.",
-    "Navigateur disponible sur le Spark : Chrome 151 sans interface, WebGL2 avec rendu logiciel ANGLE/SwiftShader. Il prouve le rendu WebGL2, l'absence d'erreur de console et le cout reel des passes ; il ne qualifie aucun GPU reel (carte GB10 non exposee aux conteneurs, /dev/dri absent) et ne remplace pas l'avis humain sur une capture.",
-    "Performances non qualifiees : la cible 60 FPS et le critere p95 <= 16,7 ms en 1390x1295 restent a mesurer sur le Mac, volet visible et focalise.",
-    "Validation visuelle du tunnel non faite : les chiffres prouvent que les lampes suivent la camera, pas la qualite percue du fondu. Capture Mac a prendre (cockpit sous la voute, entree, milieu, sortie, vitesses lente et rapide, poursuite, demo, ecran partage).",
-    "Les mesures sensibles au temps exigent une machine calme : decor.test.mjs echoue de 154 a 180 ms pour un seuil de 150 ms sous concurrence CPU, passe machine calme. Seuils non assouplis.",
-    "Manettes physiques et vraie partie WebRTC multi-machines : non testees."
+    "Les suites Node qualifient la logique executee, pas le materiel ou un reseau reel.",
+    "Les preuves navigateur precedentes du lot 5 utilisent Chrome Headless Shell 157, Linux x64, ANGLE/Vulkan/SwiftShader ; elles sont logicielles. Dans cette reprise, Chromium 156 echoue avant DevTools : socket Operation not permitted.",
+    "La cible 60 FPS et le critere p95 <= 16,7 ms en 1390x1295 restent a mesurer sur le Mac, volet visible et focalise.",
+    "Tunnel inspecte en solo cockpit sec dans une sequence logicielle ; reflets SSR desactives dans cette sequence. Les autres modes, vitesses et appareils restent a qualifier.",
+    "Les sequences visuelles et le smoke precedents portent sur le candidat SHA256 43473b8f... ; les corrections pause/HUD ont des tests cibles. Le nouveau smoke du HTML final 9180313f... s’est arrete avant chargement du jeu : aucun resultat jeu acquis.",
+    "Les premiers bancs A/B avaient mesures.actif=false ; aucune ventilation CPU/GPU detaillee ni gain n’en est deduit. Les sorties instrumentees annoncees precedemment etaient absentes et aucun nouveau banc n’a ete execute dans cette reprise.",
+    "Les mesures sensibles au temps exigent une machine calme ; les seuils de decor.test.mjs ne sont pas assouplis.",
+    "Le masquage natif n’a pas ete reproduit par le navigateur de qualification ; manettes physiques et vraie partie WebRTC multi-machines non testees."
   ],
   "lot_1_resultat": {
     "commit_code": "856dd363150892e74494f045aa8ca94c8e6bbc1d",
@@ -305,5 +361,110 @@
       "docs/reprise/rapports/LOT4-2026-11-17.md",
       "docs/reprise/rapports/LOT4-stand.json"
     ]
+  },
+  "lot_5_resultat": {
+    "base_commit": "d67506c6d023ad5efa5a3b1ac721811c53a323a2",
+    "commit_code": null,
+    "version_client": "0.2.25",
+    "statut": "pilote_local_qualifie_publication_en_attente",
+    "ferro": {
+      "version": "0.3.4",
+      "commit_source": "457a9671f4ea5c314a5c8e7b3337474ba031c78e",
+      "modules_conformes": 34,
+      "modules_total": 34
+    },
+    "candidat_initial": {
+      "dist_sha256": "43473b8fb373480521a6b18d4906efcf28c6bc4086cc681379646fe92170eb5b",
+      "dist_octets": 12916095,
+      "dist_gzip": 2969084,
+      "preuves": "smoke.json, visuel/, vegetation-closeup/ ; HUD controle ensuite avec CSS source injectee"
+    },
+    "build_final_retrouve": {
+      "dist_sha256": "9180313f5b33a735a1eb02a7ff1aa3a22646c3baaad9c218e239247d92a83ce5",
+      "dist_octets": 12917928,
+      "dist_gzip": 2969444,
+      "reproductibilite_reprise": "reconstruction strictement identique ; version, tailles et SHA256 conserves",
+      "smoke_reprise": "bloque_avant_chargement_jeu",
+      "smoke_erreur": "Chromium 156 : port DevTools introuvable, socket() failed: Operation not permitted ; erreur d’environnement avant execution du jeu.",
+      "smoke_rapport": "docs/reprise/rapports/lot5-2026-11-17/reprise-final/smoke.json"
+    },
+    "suites_node": {
+      "reussies": 43,
+      "total": 43,
+      "node": "24.22.1",
+      "plateforme": "Linux x64",
+      "rapport": "docs/reprise/rapports/lot5-2026-11-17/tests-final/tests.json"
+    },
+    "visuel": {
+      "images_calculees": 112,
+      "scenarios": 8,
+      "erreurs_js": 0,
+      "alertes_automatiques": 0,
+      "portee": "candidat initial, horloge commandee, pas de mesure FPS"
+    },
+    "hud_cible": {
+      "scenarios_reussis": 7,
+      "captures": 14,
+      "portee": "CSS source corrigee injectee dans le candidat ; emulation tactile distincte du desktop etroit"
+    },
+    "bancs_instrumentes": "non_executes_dans_cette_reprise ; navigateur bloque avant DevTools ; aucune mesure nouvelle ni tache automatique annoncee",
+    "sous_lots_ouverts": [
+      "5A batching monoplaces",
+      "5B LOD historique et transitions",
+      "5C ecoute et effets complets J2",
+      "5D gains materiels et interruptions natives"
+    ],
+    "rapports": [
+      "docs/reprise/rapports/LOT5-2026-11-17.md",
+      "docs/reprise/rapports/lot5-2026-11-17/tests-final/tests.json",
+      "docs/reprise/rapports/lot5-2026-11-17/hud-final/RAPPORT-HUD.md",
+      "docs/reprise/rapports/lot5-2026-11-17/reprise-final/smoke.json",
+      "docs/reprise/rapports/lot5-2026-11-17/publication-final/tests.json",
+      "docs/reprise/rapports/lot5-2026-11-17/publication-final/logs.zip",
+      "docs/reprise/rapports/lot5-2026-11-17/publication-final/runtime-probe.json",
+      "docs/reprise/rapports/lot5-2026-11-17/publication-final/browser-audit.json"
+    ],
+    "suites_node_reprise": {
+      "premier_passage": {
+        "reussies": 42,
+        "total": 43,
+        "echec": "decor.test.mjs : 172 ms pour un seuil de 150 ms"
+      },
+      "reexecution_isolee_decor": {
+        "controles_reussis": 18,
+        "secondes_processus": 0.54,
+        "resultat": "reussie"
+      },
+      "seuil_modifie": false,
+      "portee": "Le passage global initial n’est pas presente comme 43/43 ; la reexecution isolee ne qualifie pas la stabilite du seuil sous toute charge.",
+      "rapports": [
+        "docs/reprise/rapports/lot5-2026-11-17/reprise-final/tests.json",
+        "docs/reprise/rapports/lot5-2026-11-17/reprise-final/decor-reprise.log"
+      ]
+    },
+    "controle_final_publication": {
+      "suites_node": {
+        "reussies": 43,
+        "total": 43,
+        "echecs": 0,
+        "node": "24.22.1",
+        "plateforme": "Linux x64",
+        "rapport": "docs/reprise/rapports/lot5-2026-11-17/publication-final/tests.json",
+        "journaux": "docs/reprise/rapports/lot5-2026-11-17/publication-final/logs.zip"
+      },
+      "build_reproductible": true,
+      "dist_sha256": "9180313f5b33a735a1eb02a7ff1aa3a22646c3baaad9c218e239247d92a83ce5",
+      "ferro_modules_conformes": 34,
+      "ferro_modules_total": 34,
+      "navigateur": "Chromium 156 bloque sur sa socket avant DevTools, y compris sur about:blank ; jeu non charge, aucune qualification navigateur nouvelle.",
+      "preuves_navigateur": [
+        "docs/reprise/rapports/lot5-2026-11-17/publication-final/runtime-probe.json",
+        "docs/reprise/rapports/lot5-2026-11-17/publication-final/browser-audit.json"
+      ],
+      "seuil_modifie": false,
+      "publication": "En preparation via le connecteur GitHub ; commit reel a consigner apres verification.",
+      "deploiement": "Autorise, non effectue ; aucun acces Mac/amiga disponible.",
+      "portee": "Le passage 43/43 est distinct du passage precedent 42/43 puis decor reussi isole. Le lot 5 reste partiel ; GPU reel, batching des monoplaces et LOD historique a poursuivre."
+    }
   }
 }

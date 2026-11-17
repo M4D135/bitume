@@ -1,0 +1,6 @@
+Commande : node verifications/decor.test.mjs
+Code de sortie : 0
+Sortie observée : forêt : 18 vérifications passées
+Durée du processus rapportée par exec : 0,544562616 s
+Seuil de construction inchangé : 150 ms
+Premier passage de la suite : 172 ms, échec conservé dans tests.json

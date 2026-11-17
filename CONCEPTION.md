@@ -66,3 +66,16 @@ calculés par le code.
 Pas de dégâts ni d'usure, pas de rétroviseurs, pas de replays, pas de championnat. Le décor reste simple : relief
 doux, arbres en primitives, pas d'herbe haute. L'écart avec la version Unreal et les lots pour le combler sont dans
 `FEUILLE-DE-ROUTE.md`.
+
+
+## Actualisation du 17 novembre 2026 — pilote procédural et mesures
+
+Le client 0.2.25 utilise FERRO 0.3.4. Val-Brûlé reçoit quatre recettes de matière originales (asphalte, béton, roche, peinture) et deux familles de végétation paramétrique. Les deux autres circuits gardent leur décor. Les plantes sont construites une seule fois, groupées par portion de piste, avec une forme proche et lointaine partageant position, volume et couleur ; aucun obstacle de simulation n’est ajouté. Les nouveaux seuils de détail tiennent compte du champ et de la hauteur de chaque vue, y compris les rétroviseurs.
+
+Le son réserve une voix détaillée à chaque joueur local et trois voix aux rivaux les plus proches, soit cinq voix moteur au maximum en duo. Les trois voix de rivaux sont réutilisées avec un fondu et une sélection sans tri ni allocation par voiture. Les distances et vitesses relatives sont suivies séparément pour les deux pilotes. Les effets ponctuels restent principalement centrés sur J1 ; l’écoute humaine du mix reste à qualifier.
+
+La qualité automatique utilise l’intervalle réel entre images, demande une baisse après trois secondes sous 50 images/s et une remontée après huit secondes avec marge. Elle ne consomme pas le temps passé hors de la page. L’instrumentation compte les deux vues et les rétroviseurs par image, garde la portée exacte des requêtes GPU et corrige une multiplication par mille erronée du coût CPU de boucle.
+
+`BITUME_JEU.reference()` impose les paramètres d’une séance d’essai, sans enregistrer de record, et restaure les préférences lors du retour au jeu. `tools/controle-visuel.mjs` capture une trajectoire à pas commandés, identique entre variantes ; cette horloge ne fournit pas de FPS. Le banc de performance reste séparé et utilise l’horloge réelle. Les preuves, mesures et limites de cette livraison figurent dans `docs/reprise/rapports/LOT5-2026-11-17.md`.
+
+Les limites de l’essai du 12 novembre ci-dessus sont historiques : les versions suivantes ont ajouté dégâts, rétroviseurs, santé, stands et jeu en ligne. Leurs états datés restent dans `REPRISE.md`.

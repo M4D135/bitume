@@ -67,6 +67,9 @@
     }
   };
   const PUBLICITES = [[.86, .12, .08], [.98, .78, .10], [.10, .28, .70], [.06, .52, .30], [.95, .95, .92], [.08, .08, .09], [.92, .40, .06], [.40, .14, .55]];
+  // Recettes opt-in de FERRO : seules les surfaces de Val-Brûlé changent. Les marquages de piste restent sur
+  // leur matière historique et les glissières gardent leur métal galvanisé ; 24 désigne une vraie tôle peinte.
+  const MATIERES_PILOTES = Object.freeze({ asphalte: 21, beton: 22, roche: 23, metalPeint: 24 });
 
   // ---------------------------------------------------------------- géométrie du circuit
   function cadre(c, i) {
@@ -167,7 +170,7 @@
         for (let b = 0; b < bandes.length; b++) {
           const [type, cote] = bandes[b];
           let d0, d1, y0, y1, mat = 8, col = tonte, n0 = no, n1 = no;
-          if (type === 'asphalte') { d0 = -w + .3; d1 = w - .3; y0 = hauteurRoute(f, d0, w); y1 = hauteurRoute(f, d1, w); mat = 14; col = asphalte(f.i); }
+          if (type === 'asphalte') { d0 = -w + .3; d1 = w - .3; y0 = hauteurRoute(f, d0, w); y1 = hauteurRoute(f, d1, w); mat = th.matieres ? th.matieres.asphalte : 14; col = asphalte(f.i); }
           else {
             const bord = cote < 0 ? -1 : 1, limite = cote < 0 ? limG : limD, yBord = hauteurRoute(f, bord * w, w);
             const ext = limite + 4;
@@ -321,12 +324,12 @@
     liste.push({ shape: 'box', p: vers(recul - cote * .9, 6.9, 0), s: [longueur + 2, .9, .12], r: rot, mat: 16, color: teinte });
   }
 
-  function batimentStands(liste, loin, f, w, cote, longueur) {
+  function batimentStands(liste, loin, f, w, cote, longueur, matieres) {
     const rot = capRot(f.a), y0 = hauteurRoute(f, cote * w, w) - .2, recul = cote * (w + 13);
     const vers = (d, h, l = 0) => [f.x + f.r[0] * d + f.t[0] * l, y0 + h, f.z + f.r[2] * d + f.t[2] * l];
     liste.push({ shape: 'box', collision: 'batiment', p: vers(recul + cote * 6, 4), s: [longueur, 8, 12], r: rot, mat: 13.2, color: [.86, .84, .78] });
     loin.push({ shape: 'box', p: vers(recul + cote * 6, 4), s: [longueur, 8, 12], r: rot, mat: 13.2, color: [.86, .84, .78] });
-    liste.push({ shape: 'box', collision: 'toit', p: vers(recul + cote * 6, 8.25), s: [longueur + 1, .5, 13], r: rot, mat: 0, color: [.30, .32, .34] });
+    liste.push({ shape: 'box', collision: 'toit', p: vers(recul + cote * 6, 8.25), s: [longueur + 1, .5, 13], r: rot, mat: matieres ? matieres.metalPeint : 0, color: [.30, .32, .34] });
     for (let k = -longueur / 2 + 3; k < longueur / 2 - 2; k += 6) liste.push({ shape: 'box', p: vers(recul - cote * .02, 1.6, k), s: [4.4, 3.2, .12], r: rot, mat: 7, color: [.08, .09, .1] });
     // muret des stands
     liste.push({ shape: 'box', collision: 'muret', p: vers(cote * (w + 6.2), .55), s: [longueur + 30, 1.1, .5], r: rot, mat: 3, color: [.82, .82, .8] });
@@ -335,6 +338,7 @@
 
   function construire(c, options = {}) {
     const th = Object.assign({}, THEMES[c.theme] || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
+    if (c.theme === 'foret' && options.matieres !== false) th.matieres = MATIERES_PILOTES;
     // l'eau ne noie jamais la piste : le niveau descend sous le point le plus bas de l'axe (le virage de
     // Port-Sable plongeait à −5,8 sous le niveau −4 du thème cote, David 14/11)
     if (th.eau !== undefined) {
@@ -553,7 +557,7 @@
     }
     for (let s = avant + 40; s < apres - 20; s += 60) {
       const f = cadre(c, Math.round(s / c.pas)), objets = [], loin = [];
-      batimentStands(objets, loin, f, w, 1, 60);
+      batimentStands(objets, loin, f, w, 1, 60, th.matieres);
       const l = lotDe(f.x, f.z, f.i); l.objets.push(...objets); l.loin.push(...loin);
     }
 
@@ -654,6 +658,12 @@
     const lots = [];
     for (const l of groupes.values()) {
       if (!l.objets.length) continue;
+      // Ces objets gardent exactement leur géométrie, leurs solides et leur répartition. La recette de surface
+      // change seulement dans le biome pilote, dans les versions proches et lointaines du même lot.
+      if (th.matieres) for (const objets of [l.objets, l.loin]) for (const o of objets) {
+        if (o.mat === 3) o.mat = th.matieres.beton;
+        else if (o.mat === 9) o.mat = th.matieres.roche;
+      }
       let mx = 0, my = 0, mz = 0;
       for (const o of l.objets) { mx += o.p[0]; my += o.p[1]; mz += o.p[2]; }
       mx /= l.objets.length; my /= l.objets.length; mz /= l.objets.length;
@@ -679,6 +689,13 @@
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
     if (tunnelLampes) decor.tunnelLampes = tunnelLampes;
+    // Végétation basse pilote : générateur et lots indépendants. Le décor historique et ses solides restent
+    // identiques ; vegetation:false permet une comparaison avant/après avec exactement les mêmes obstacles.
+    if (B.vegetation && options.vegetation !== false && c.theme === 'foret') {
+      const v = B.vegetation.construire(c, { limites: lim, interroger });
+      lots.push(...v.lots);
+      decor.vegetation = { herbes: v.herbes, taillis: v.taillis, lots: v.lots.length };
+    }
     return decor;
   }
 

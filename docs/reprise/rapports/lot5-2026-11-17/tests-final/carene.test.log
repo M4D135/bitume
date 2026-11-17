@@ -1,0 +1,15 @@
+ok  carène fermée : chaque arête partagée par deux triangles, volume positif
+ok  carène : nombre de triangles attendu (20 côtés, 2 intervalles de 4 pas, deux bouts)
+ok  normales unitaires, tournées vers dehors, cohérentes avec les faces
+ok  boîte englobante égale aux cotes des sections
+ok  symétrie gauche-droite : chaque sommet a son reflet
+ok  peau lisse : entre deux sections, aucune arête de plus de 50° (normales moyennées)
+ok  ouverture : le haut reste ouvert entre ses abscisses, le bord est net
+ok  tube : fermé, rayon tenu, bouts en demi-sphère
+ok  normaliser : cube unité, centre et taille, normales ramenées par l’inverse transposée
+ok  miroir : orientation gardée, volume identique
+ok  tube à six côtés : génératrices lisses, le vif suit le nombre de côtés (carene-3)
+ok  miroir : les normales suivent la permutation des sommets (garde carene-5)
+ok  arêtes vives gardées : un dièdre de 90° ne se lisse pas (garde carene-5)
+ok  tube hors plan : chaque sommet à r ± 1 % de l'axe lissé (garde carene-5)
+carène : 14 vérifications passées

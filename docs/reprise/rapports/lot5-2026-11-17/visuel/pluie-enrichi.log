@@ -1,0 +1,13 @@
+{
+  "dossier": "/workspace/scratch/c89193d9c5e7/bitume-visual-qualification/pluie-enrichi",
+  "images": 8,
+  "alertes": 0,
+  "erreurs": [],
+  "fatal": null,
+  "comparaison": {
+    "comparable": true,
+    "ecarts": []
+  }
+}
+capture 1/8
+capture 8/8

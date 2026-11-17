@@ -72,8 +72,13 @@ verifier('panoramique(pi/2)=1 et borne', function () {
 // Faux Web Audio minimal : vérifie que tout le graphe se construit et que chaque méthode tourne.
 function fauxAudio() {
   let noeuds = 0, actifs = 0, enRetard = 0;
-  const oscillateurs = [], contextes = [];
-  const param = v => ({ value: v, setValueAtTime() {}, setTargetAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime(x) { if (!(x > 0)) throw new Error('rampe exponentielle vers ' + x); }, cancelScheduledValues() {} });
+  const oscillateurs = [], contextes = [], parametres = [];
+  const param = v => {
+    const p = { value: v, cibles: [], valeurs: [],
+      setValueAtTime(v, t) { p.valeurs.push({ v, t }); }, setTargetAtTime(v, t, tc) { p.cibles.push({ v, t, tc }); },
+      linearRampToValueAtTime() {}, exponentialRampToValueAtTime(x) { if (!(x > 0)) throw new Error('rampe exponentielle vers ' + x); }, cancelScheduledValues() {} };
+    parametres.push(p); return p;
+  };
   const noeud = extra => { noeuds++; return Object.assign({ connect(x) { return x; }, disconnect() {} }, extra); };
   const source = extra => noeud(Object.assign({ start(t) { actifs++; this.debut = t; if (t < contextes[contextes.length - 1].currentTime - 1e-9) enRetard++; }, stop() {}, set onended(f) { this._fin = f; } }, extra));
   class Ctx {
@@ -90,8 +95,71 @@ function fauxAudio() {
     createBuffer(c, n) { const d = new Float32Array(n); return { getChannelData: () => d }; }
     createBufferSource() { return source({ buffer: null, loop: false }); }
   }
-  return { Ctx, compte: () => ({ noeuds, actifs, enRetard }), oscillateurs, contextes };
+  return { Ctx, compte: () => ({ noeuds, actifs, enRetard }), oscillateurs, contextes, parametres };
 }
+
+verifier('sélection bornée sans modifier ni recopier les rivaux', function () {
+  const rivaux = [{ id: 9, distance: 1 }, { id: 1, distance: 1000 }, { id: 5, distance: 7 }, { id: 4, distance: 7 }, { id: 3, distance: 3 }, { id: 2, distance: 10 }];
+  const ordre = rivaux.map(r => r.id), tampon = [];
+  const retour = B.son.selectionnerRivaux(rivaux, tampon, 9, 1);
+  assert.equal(retour, tampon, 'le tampon fourni est réutilisé');
+  assert.deepEqual(tampon.map(r => r.id), [3, 4, 5]);
+  assert.deepEqual(rivaux.map(r => r.id), ordre, 'le tableau source garde son ordre');
+  assert.equal(tampon[0], rivaux[4], 'les objets sont partagés, pas clonés');
+  rivaux.reverse(); B.son.selectionnerRivaux(rivaux, tampon, 9, 1);
+  assert.deepEqual(tampon.map(r => r.id), [3, 4, 5], 'égalité départagée par id');
+  B.son.selectionnerRivaux([{ id: 2, distance: NaN }, { id: 4, distance: Infinity }], tampon);
+  assert.equal(tampon.length, 0, 'distances invalides ignorées');
+});
+
+verifier('deux moteurs humains conservés à toute distance et trois rivaux au maximum', function () {
+  const fa = fauxAudio(); globalThis.window = { AudioContext: fa.Ctx };
+  try {
+    const s = B.son.creer();
+    const joueur = { id: 0, regime: 9000, gaz: .8, vue: 'cockpit' }, joueur2 = { id: 1, regime: 11000, gaz: 1, vue: 'cockpit', distance: 4000 };
+    const etat = { joueur, joueur2, rivaux: [1, 2, 3, 4, 5, 6].map(id => ({ id, distance: id === 1 ? 4000 : id, regime: 6000, gaz: .5, angle: 0, vRel: 0 })) };
+    s.mettreAJour(etat);
+    assert.equal(fa.contextes.length, 0, 'aucun contexte ni graphe avant le geste');
+    s.demarrer(); const solo = fa.compte().noeuds;
+    s.mettreAJour(etat); const duo = fa.compte().noeuds;
+    assert.ok(duo > solo, 'second graphe préparé une fois');
+    assert.equal(s.stats().joueurs, 2); assert.equal(s.stats().rivaux, 3); assert.equal(s.stats().voix, 5);
+    for (let i = 0; i < 240; i++) { fa.contextes[0].currentTime += 1 / 60; s.mettreAJour(etat); }
+    assert.equal(fa.compte().noeuds, duo, 'aucun nouveau nœud dans les images suivantes');
+    assert.equal(s.stats().voix, 5); assert.equal(s.stats().budget, 5);
+    assert.ok(fa.oscillateurs.some(o => o.frequency.cibles.some(p => p.v === 11000 / 120)), 'le régime de J2 atteint son moteur');
+    etat.joueur2 = null; s.mettreAJour(etat);
+    assert.equal(s.stats().joueurs, 2, 'le moteur de J2 finit son fondu');
+    fa.contextes[0].currentTime += .2; s.mettreAJour(etat);
+    assert.equal(s.stats().joueurs, 1); assert.equal(s.stats().voix, 4);
+    etat.joueur2 = joueur2; s.mettreAJour(etat);
+    assert.equal(fa.compte().noeuds, duo, 'retour au duo : même graphe réutilisé');
+    assert.equal(s.stats().voix, 5);
+    s.suspendre();
+    assert.ok(fa.parametres.filter(p => p.cibles.at(-1)?.v === 0 && p.cibles.at(-1)?.tc === .03).length >= 9, 'pause : moteurs, échos et rivaux coupés en fondu');
+    assert.equal(s.stats().musique, false);
+  } finally { delete globalThis.window; }
+});
+
+verifier('attribution stable puis fondu complet avant de réutiliser une voix rivale', function () {
+  const fa = fauxAudio(); globalThis.window = { AudioContext: fa.Ctx };
+  try {
+    const s = B.son.creer(); s.demarrer();
+    const etat = { joueur: { id: 0, regime: 9000, gaz: .8 }, rivaux: [1, 2, 3].map(id => ({ id, distance: id * 5, regime: 6000 + id * 100, gaz: .5 })) };
+    s.mettreAJour(etat);
+    const affectations = () => fa.oscillateurs.reduce((n, o) => n + o.frequency.valeurs.length, 0);
+    const avant = affectations(); etat.rivaux.reverse(); s.mettreAJour(etat);
+    assert.equal(affectations(), avant, 'changer l’ordre des rivaux ne réaffecte pas les voix');
+    etat.rivaux = [4, 5, 6].map(id => ({ id, distance: id, regime: 6500, gaz: .5 }));
+    s.mettreAJour(etat);
+    assert.equal(s.stats().fondus, 3); assert.equal(s.stats().rivaux, 0);
+    fa.contextes[0].currentTime += .1; s.mettreAJour(etat);
+    assert.equal(affectations(), avant, 'fréquence inchangée tant que l’ancienne voix décroît');
+    fa.contextes[0].currentTime += .03; s.mettreAJour(etat);
+    assert.equal(affectations(), avant + 3); assert.equal(s.stats().fondus, 0); assert.equal(s.stats().rivaux, 3);
+    assert.ok(s.stats().voix <= s.stats().budget);
+  } finally { delete globalThis.window; }
+});
 
 verifier('graphe complet avec un faux contexte audio', function () {
   const fa = fauxAudio();

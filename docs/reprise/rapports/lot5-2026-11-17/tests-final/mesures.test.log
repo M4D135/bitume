@@ -1,0 +1,21 @@
+✔ deux millisecondes de boucle restent deux millisecondes (4.527195ms)
+✔ deux vues cumulent leur coût CPU et les deux glaces leur coût par image (1.226494ms)
+✔ les coûts nuls comptent et la pire image est le maximum (1.127377ms)
+✔ la fenêtre circulaire efface les anciens relevés sans section ni rétroviseur (4.9764ms)
+✔ le total GPU et ses passes utilisent les mêmes rendus complets (1.782446ms)
+✔ le module expose l API attendue (1.208127ms)
+✔ sans chronomètre GPU, le temps GPU reste N/D (1.207926ms)
+✔ les trois vues sont comptées séparément (0.436666ms)
+✔ le GPU vient des requêtes du moteur, les mesures invalides sont écartées (0.552397ms)
+✔ une extension absente ou un profil inexistant ne fabrique pas de mesure (0.541581ms)
+✔ reinitialiser vide la fenêtre (0.307415ms)
+✔ le budget audio ne devient pas une activité avant le geste utilisateur (2.15748ms)
+✔ le retour de l’horloge à zéro rafraîchit immédiatement le volet (2.608358ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 33.019776

@@ -29,7 +29,9 @@
   // Les anciens placements auto/haut/bas reviennent en haut à droite ; taille et visibilité sont conservées.
   for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['gauche', 'droite'], carteTaille: ['petite', 'normale', 'grande'] }))
     if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
-  const sauverReglages = () => ecrireStock('bitume.reglages', reglages);
+  const sauverReglages = () => {
+    if (!session || !session.reglagesReference) ecrireStock('bitume.reglages', reglages);
+  };
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
   const PHYSIQUE = 'p9', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
@@ -103,6 +105,7 @@
 
   // ---------------------------------------------------------------- moteur de rendu et son
   let rendu = null, son = null, scene = null, session = null;
+  let decorEnrichi = true; // l'outil de référence peut retrouver le décor historique pour une comparaison A/B
   const canvas = $('scene'), jeu = $('jeu');
   function appliquerCarte() {
     for (const cle of ['carte', 'cartePosition', 'carteTaille'])
@@ -114,8 +117,8 @@
   // brume fait la limite. Les ombres du soleil prennent tout l'atlas du moteur sur un carré de 200 m de côté.
   const PORTEE_VUE = 6000, OMBRE = 100, OMBRE_DEVANT = 76;
   function installer(i) {
-    if (scene && scene.index === i) return scene;
-    const c = circuit(i), decor = B.decor.construire(c);
+    if (scene && scene.index === i && scene.enrichi === decorEnrichi) return scene;
+    const c = circuit(i), decor = B.decor.construire(c, { matieres: decorEnrichi, vegetation: decorEnrichi });
     if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
     rendu.setNappes(decor.nappes);
@@ -127,7 +130,7 @@
     // profondeur du volume d'ombre : un point du sol au bord du carré est décalé de OMBRE × cotangente de la hauteur du soleil
     const sol = decor.atmosphere.sunDirection, sinus = sol[1] / Math.hypot(sol[0], sol[1], sol[2]);
     const ombre = { extent: OMBRE, depth: 2 * (OMBRE * Math.sqrt(Math.max(0, 1 - sinus * sinus)) / Math.max(.25, sinus) + 30) };
-    scene = { index: i, c, decor, fond, plan: p, ombre };
+    scene = { index: i, enrichi: decorEnrichi, c, decor, fond, plan: p, ombre };
     return scene;
   }
 
@@ -137,6 +140,7 @@
   const TOURS_DEMO = 3, PILOTE_DEMO = 'N. Aubrac';
   let graineCourse = (Date.now() >>> 7) & 0xffff;
   function lancer(type, i, enl) {
+    restaurerReference();
     // la séance qui meurt rend ses corps PhysX : la démo enchaîne les courses sans fin et laisserait un monde
     // orphelin par course (les pièces détachées y vivent douze secondes chacune)
     if (session && session.fx) B.traces.liberer(session.fx);
@@ -188,6 +192,7 @@
     // Écran partagé (David, 16/11 : « multi en écran splitté local, deux manettes, l'un sur l'autre ou côte à côte ») :
     // la vue du joueur 2 a son propre état de caméra, d'éclair et d'affichage, le reste vient de la séance.
     if (duo) S.vueJ2 = Object.assign(Object.create(S), { camCap: null, tete: null, secousse: 0, eclair: 0, lumiere: 1, sol: null, tele: { poste: null, alea: graine32(31 + i) },
+      distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
       suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null });
     S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une, ou deux à l'écran partagé)
     jeu.dataset.partage = duo ? (reglages.partage === 'cote' ? 'cote' : 'haut-bas') : '';
@@ -308,10 +313,12 @@
   let cameraEssai = null; // BITUME_JEU.camera = (pose, camera) => ({ pos, yaw, pitch, fov }) : vue libre pour les captures
   addEventListener('blur', () => { touches.clear(); souris.gaz = souris.frein = souris.derive = false; relacherTactile(); if (pauseAuto && enCourse()) basculerPause(true); });
   document.addEventListener('visibilitychange', () => {
+    oublierIntervalle();
     if (document.hidden) relacherTactile();
     if (pauseAuto && document.hidden && enCourse()) basculerPause(true);
     if (son) son.musique(!document.hidden && ecran === 'titre'); // onglet caché : le minuteur du thème serait bridé
   });
+  addEventListener('focus', oublierIntervalle);
   addEventListener('pointerdown', activerSon, { passive: true });
   // Gestes : ils remettent à zéro l'attente de la démo sur l'écran titre ; pendant la démo, le premier ramène au
   // titre et ne compte pas comme un clic sur le menu qui revient.
@@ -1286,21 +1293,16 @@
   }
 
   // ---------------------------------------------------------------- paliers de la qualité Auto
-  // En qualité Auto, quand les images ralentissent (plus de 19 ms en moyenne pendant 2 s, volet visible), le jeu
+  // En qualité Auto, quand les images ralentissent (moins de 50 i/s pendant 3 s, volet visible), le jeu
   // retire un effet coûteux après l'autre : image réelle des rétroviseurs, ombres, halo et reflets, puis il baisse la
   // résolution (palier 4). Il remonte d'un palier après 8 s sous 14 ms. Le gouverneur de résolution du moteur
   // continue d'agir dans chaque palier. Les qualités Légère et Fine restent fixes.
   const palier = { n: 0, somme: 0, compte: 0, t: 0, aise: 0 };
   const PALIERS = 4;
   function majPalier(S, dt) {
-    if (reglages.qualite !== 'auto' || S.banc || document.hidden || !(dt > 0) || dt > .25 || (S.type !== 'course' && S.type !== 'chrono' && S.type !== 'demo')) { palier.somme = palier.compte = palier.t = 0; return; }
-    palier.somme += dt; palier.compte++; palier.t += dt;
-    if (palier.t < 2) return;
-    const moyenne = palier.somme / palier.compte * 1000;
-    palier.somme = palier.compte = palier.t = 0;
-    if (moyenne > 19 && palier.n < PALIERS) { palier.n++; palier.aise = 0; appliquerPalier(); }
-    else if (moyenne < 14 && palier.n > (gpuModeste ? 1 : 0)) { if ((palier.aise += 2) >= 8) { palier.n--; palier.aise = 0; appliquerPalier(); } }
-    else palier.aise = 0;
+    const actif = reglages.qualite === 'auto' && !S.banc && !S.reference && !document.hidden &&
+      (S.type === 'course' || S.type === 'chrono' || S.type === 'demo' || S.type === 'duo');
+    if (B.qualite.avancer(palier, dt, { actif, min: gpuModeste ? 1 : 0, max: PALIERS })) appliquerPalier();
   }
   function appliquerPalier() { if (rendu) rendu.resize(palier.n >= 4 ? .75 : 'auto'); }
   // effets permis par la qualité et le palier
@@ -1437,12 +1439,12 @@
       catch (e) { console.warn('BITUME : image des rétroviseurs indisponible', e); retro.echec = true; for (const t of toiles) t.hidden = true; return; }
     }
     if (!G.ctx.length) toiles.forEach((t, i) => { t.width = source.width; t.height = source.height; t.style.width = source.clientWidth + 'px'; t.style.height = source.clientHeight + 'px'; G.ctx[i] = t.getContext('2d'); });
-    if (retro.scene !== scene.index) {
+    if (retro.scene !== scene) {
       const d = scene.decor;
       retro.rendu.setWorld([], [], d.atmosphere);
       retro.rendu.setNappes(d.nappes.map(n => Object.assign({}, n)));
       retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })));
-      retro.scene = scene.index;
+      retro.scene = scene;
     }
     // axes de la caméra principale, comme le moteur (cameraAxes) : chaque coin de glace projeté à l'écran
     const cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw), cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch), cr = Math.cos(cam.roll || 0), sr = Math.sin(cam.roll || 0);
@@ -1648,29 +1650,52 @@
   }
 
   // ---------------------------------------------------------------- son de chaque image
-  const sonRivaux = [];
+  const sonRivaux = [], sonCandidats = [], sonJoueur2 = {};
+  const etatSon = { pause: false, joueur: {}, joueur2: null, rivaux: sonRivaux };
+  function decrireMoteur(sortie, S, voiture, cam) {
+    const et = voiture.etat, exterieur = VUES_DEHORS.has(S.vue);
+    sortie.id = voiture.id; sortie.regime = et.regime; sortie.gaz = et.gaz; sortie.rapport = et.rapport;
+    sortie.v = Math.abs(et.v); sortie.glisse = et.glisse; sortie.surface = et.surface;
+    sortie.turbo = et.turbo.reste > 0; sortie.vue = S.vue === 'cockpit' ? 'cockpit' : 'poursuite';
+    sortie.muet = exterieur; sortie.tunnel = !exterieur && sousLaVoute(S.course.c, cam.pos);
+  }
   function majSon(S, cam, dtImage) {
     if (!son || !sonActif) return;
     // la voiture entendue de l'intérieur est celle que l'on suit de près : le joueur, ou celle du plan de la démo
-    const co = S.course, ks = S.suivie || 0, et = co.voitures[ks].etat, poses = tampons.poses;
+    const co = S.course, ks = S.suivie || 0, poses = tampons.poses;
+    const S2 = S.type === 'duo' ? S.vueJ2 : null, cam2 = S2 && S2.camera, k2 = cam2 ? S.locaux[1] : -1;
     const fx = Math.sin(cam.yaw), fz = -Math.cos(cam.yaw), rx = Math.cos(cam.yaw), rz = Math.sin(cam.yaw);
+    const fx2 = cam2 ? Math.sin(cam2.yaw) : 0, fz2 = cam2 ? -Math.cos(cam2.yaw) : 0;
+    const rx2 = cam2 ? Math.cos(cam2.yaw) : 0, rz2 = cam2 ? Math.sin(cam2.yaw) : 0;
     sonRivaux.length = 0;
-    const exterieur = VUES_DEHORS.has(S.vue), micro = exterieur && S.type === 'demo';
+    const exterieur = VUES_DEHORS.has(S.vue), exterieur2 = S2 && VUES_DEHORS.has(S2.vue), micro = exterieur && S.type === 'demo';
     for (let k = 0; k < co.voitures.length; k++) {
       if (k === ks && !exterieur) continue;
+      if (k === k2 && !exterieur2) continue;
       const p = poses[k], dx = p.x - cam.pos[0], dy = p.y - cam.pos[1], dz = p.z - cam.pos[2], d = Math.hypot(dx, dy, dz);
       if (S.distances[k] >= 0 && dtImage > 0) S.vRel[k] = lerp(S.vRel[k], clamp((S.distances[k] - d) / dtImage, -120, 120), .2);
       S.distances[k] = d;
+      let distance = d, direction = Math.atan2(dx * rx + dz * rz, dx * fx + dz * fz), vitesseRelative = S.vRel[k];
+      // Les deux moteurs humains sont réservés. Pour les trois voix d'ambiance communes, retenir l'auditeur
+      // le plus proche avec sa propre histoire de distances ; J2 éloigné ne devient jamais silencieux.
+      if (cam2) {
+        const dx2 = p.x - cam2.pos[0], dy2 = p.y - cam2.pos[1], dz2 = p.z - cam2.pos[2], d2 = Math.hypot(dx2, dy2, dz2);
+        if (S2.distances[k] >= 0 && dtImage > 0) S2.vRel[k] = lerp(S2.vRel[k], clamp((S2.distances[k] - d2) / dtImage, -120, 120), .2);
+        S2.distances[k] = d2;
+        if (d2 < distance) { distance = d2; direction = Math.atan2(dx2 * rx2 + dz2 * rz2, dx2 * fx2 + dz2 * fz2); vitesseRelative = S2.vRel[k]; }
+      }
       const v = co.voitures[k];
       // démo vue de l'extérieur : un micro d'ambiance rapproche les voitures (la caméra est à 30 à 120 m), l'effet Doppler reste celui de la caméra
-      sonRivaux.push({ id: k, distance: micro ? 2 + d * .06 : d, angle: Math.atan2(dx * rx + dz * rz, dx * fx + dz * fz), regime: v.etat.regime, gaz: v.etat.gaz, vRel: S.vRel[k] });
+      const r = sonCandidats[k] || (sonCandidats[k] = {});
+      r.id = k; r.distance = micro ? 2 + distance * .06 : distance; r.angle = direction;
+      r.regime = v.etat.regime; r.gaz = v.etat.gaz; r.vRel = vitesseRelative;
+      sonRivaux.push(r);
     }
-    son.mettreAJour({
-      pause: ecran === 'pause',
-      joueur: { regime: et.regime, gaz: et.gaz, rapport: et.rapport, v: Math.abs(et.v), glisse: et.glisse, surface: et.surface, turbo: et.turbo.reste > 0, vue: S.vue === 'cockpit' ? 'cockpit' : 'poursuite', muet: exterieur,
-        tunnel: !exterieur && B.circuit.dansTunnel(co.c, et.s, -2) },
-      rivaux: sonRivaux
-    }, dtImage);
+    etatSon.pause = ecran === 'pause';
+    decrireMoteur(etatSon.joueur, S, co.voitures[ks], cam);
+    etatSon.joueur2 = cam2 ? sonJoueur2 : null;
+    if (cam2) decrireMoteur(sonJoueur2, S2, co.voitures[k2], cam2);
+    son.mettreAJour(etatSon, dtImage);
   }
 
   // ---------------------------------------------------------------- affichage de course
@@ -1820,6 +1845,10 @@
   const enCourse = () => ecran === 'course';
 
   function aller(nom) {
+    // Une pause ou les réglages interrompent l'observation Auto, même quand aucune image de course ne passe.
+    // Conserver le niveau déjà choisi, mais exiger une nouvelle fenêtre complète au retour en piste.
+    if ((ecran === 'course' || ecran === 'demo') !== (nom === 'course' || nom === 'demo'))
+      B.qualite.avancer(palier, 0, { actif: false });
     if (son && nom !== 'demo') son.evenement('clic');
     if (nom !== 'course' && nom !== 'demo' && nom !== 'pause') { secouerManette(0, 0); secouerManette(0, 0, pad2); }
     for (const e of ECRANS) $(e).hidden = e !== nom;
@@ -1953,7 +1982,14 @@
       reglages.commandes = [commande(0), commande(1)]; reglages.commandes[n] = t.value; souris.active = false; sauverReglages();
       if (t.name[0] === 'r') majCommandes(); else for (const r of document.querySelectorAll('input[name="rcmd' + n + '"]')) r.checked = r.value === t.value;
     }
-    if (['vue', 'boite', 'qualite', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille'].includes(t.name)) { reglages[t.name] = t.value; sauverReglages(); appliquerCarte(); if (t.name === 'qualite' && rendu) { palier.n = gpuModeste ? 1 : 0; rendu.resize(t.value); } }
+    if (['vue', 'boite', 'qualite', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille'].includes(t.name)) {
+      reglages[t.name] = t.value; sauverReglages(); appliquerCarte();
+      if (t.name === 'qualite') {
+        B.qualite.avancer(palier, 0, { actif: false });
+        palier.n = gpuModeste ? 1 : 0;
+        if (rendu) rendu.resize(t.value);
+      }
+    }
     if (t.name === 'aide') { reglages.aide = +t.value; sauverReglages(); }
   });
   for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).addEventListener('input', e => { reglages[nom] = +e.target.value; sauverReglages(); appliquerVolumes(); });
@@ -2148,6 +2184,12 @@
 
   // ---------------------------------------------------------------- boucle principale
   let tPrec = 0;
+  function oublierIntervalle() {
+    // Le temps passé dans un onglet masqué ne doit pas faire baisser la qualité au retour.
+    tPrec = 0;
+    B.qualite.avancer(palier, 0, { actif: false });
+    B.mesures.reinitialiser();
+  }
   function image(t) {
     requestAnimationFrame(image);
     const tMes = B.mesures.imageDebut();
@@ -2184,14 +2226,14 @@
       // démo : un choc passe au ralenti (réalisateur)
       S.acc += dtReel * (S.type === 'demo' ? B.realisateur.vitesse(S.real, S.course) : 1);
       let n = 0;
-      while (S.acc >= DT && n < 14) { pasSimulation(S, !!S.banc); S.acc -= DT; n++; }
+      while (S.acc >= DT && n < 14) { pasSimulation(S, !!(S.reference && S.reference.pilote)); S.acc -= DT; n++; }
       if (n === 14) S.acc = 0;
     } else if (horlogeReelle - (S.imageFigee || 0) < .25) return; // image arrêtée : quatre images par seconde suffisent
     if (B.mesures.actif) B.mesures.section('simulation', performance.now() - tSim);
     S.imageFigee = horlogeReelle;
     if (S.type === 'vitrine') S.suiviRang = Math.floor(horlogeReelle / 18) % 4;
     const dtVu = tourne ? dtReel : 0, cam = rendreImage(S, clamp(S.acc / DT, 0, 1), dtVu);
-    if (tourne) majPalier(S, dtReel);
+    if (tourne) majPalier(S, tBrut);
     const tHud = B.mesures.actif ? performance.now() : 0;
     if (S.type !== 'vitrine') {
       majHud(S);
@@ -2212,6 +2254,7 @@
     majSon(S, cam, dtVu);
     if (B.mesures.actif) {
       B.mesures.section('son', performance.now() - tSon);
+      B.mesures.audio(son ? son.stats() : null);
       const fx = S && S.fx;
       B.mesures.pieces(fx ? B.traces.compter(fx).debris : 0, B.traces.DEBRIS,
         window.FPhysX && window.FPhysX.status ? window.FPhysX.status() : null);
@@ -2271,6 +2314,78 @@
     const j = S.course.joueur;
     return { phase: S.course.phase, tours: j.tours, position: j.position, meilleur: j.meilleur, termine: S.course.termine };
   }
+  // Parcours reproductible réservé à la console et aux outils de qualification. Même course réelle, mêmes
+  // caméras et rétroviseurs ; seuls les paramètres de départ sont imposés. Aucun record ni réglage stocké.
+  // Le retour au jeu normal restitue les réglages qui précédaient cet essai.
+  function restaurerReference() {
+    if (!session || !session.reglagesReference) return;
+    Object.assign(reglages, session.reglagesReference);
+    decorEnrichi = session.decorAvantReference;
+    delete session.reglagesReference;
+    session.reference = null;
+    if (rendu) rendu.resize(reglages.qualite);
+  }
+  function reference(options = {}) {
+    if (!rendu) throw new Error('rendu absent');
+    if (session && session.enLigne) throw new Error('terminer la séance en ligne avant une référence locale');
+    const mode = options.mode || 'solo', qualite = options.qualite || 'high';
+    const i = options.circuit ?? 0, graine = options.graine ?? 17017;
+    const meteo = ['sec', 'clair'].includes(options.meteo) ? 'soleil' : (options.meteo || 'soleil');
+    const vue = options.vue || 'cockpit', vue2 = options.vue2 || 'cockpit';
+    const partage = options.partage || 'haut-bas', glaces = options.retro || 'oui';
+    const difficulte = options.difficulte ?? 1, tours = options.tours ?? 3;
+    const pilote = options.pilote ?? true;
+    const vitesse = options.vitesse ?? 75, mouille = options.mouille ?? (meteo === 'pluie' ? .75 : 0);
+    const vues = ['cockpit', 'poursuite', 'tele', 'helico'];
+    if (!['solo', 'duo'].includes(mode) || !['low', 'high', 'auto'].includes(qualite)) throw new Error('mode ou qualité de référence inconnu');
+    if (!Number.isInteger(i) || i < 0 || i >= CATALOGUE.length || !Number.isInteger(graine) || graine < 0 || graine > 0xffffffff) throw new Error('circuit ou graine invalide');
+    if (!Number.isInteger(difficulte) || difficulte < 0 || difficulte > 2 || !Number.isInteger(tours) || tours < 1 || tours > 99) throw new Error('difficulté ou nombre de tours invalide');
+    if (typeof pilote !== 'boolean') throw new Error('pilotage de référence invalide');
+    if (!B.meteo.pour(meteo) || !vues.includes(vue) || !vues.includes(vue2) || !['haut-bas', 'cote'].includes(partage) || !['oui', 'non'].includes(glaces)) throw new Error('paramètre visuel de référence inconnu');
+    if (!Number.isFinite(vitesse) || vitesse < 0 || vitesse > 100 || !Number.isFinite(mouille) || mouille < 0 || mouille > 1) throw new Error('vitesse ou humidité invalide');
+    if (options.decor !== undefined && !['reference', 'enrichi'].includes(options.decor)) throw new Error('décor de référence inconnu');
+    const c = circuit(i);
+    if (options.depart === 'tunnel' && !c.tunnel) throw new Error('ce circuit ne possède pas de tunnel');
+    const depart = options.depart === 'tunnel' ? c.tunnel.debut - 40 : (options.depart ?? 800);
+    if (!Number.isFinite(depart)) throw new Error('abscisse de départ invalide');
+    restaurerReference();
+    const cles = ['vue', 'vue2', 'partage', 'qualite', 'retro', 'meteo', 'pneus', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
+    const avant = Object.fromEntries(cles.map(k => [k, reglages[k]])), decorAvant = decorEnrichi;
+    Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, secousses: 0, vibrations: 'non', champ: 60,
+      pneus: B.conduite.pneusConseilles(B.conduite.eauSurPiste(B.meteo.pour(meteo))) });
+    decorEnrichi = options.decor !== 'reference';
+    graineCourse = graine - 1;
+    const S = lancer(mode === 'duo' ? 'duo' : 'course', i);
+    S.reglagesReference = avant; S.decorAvantReference = decorAvant; S.essai = true;
+    S.meteo.mouille = mouille;
+    const co = S.course, ancienDepart = co.joueur.etat.s;
+    co.phase = 'course'; co.feux.vert = true; co.feux.allumes = 5; co.horloge = 6; co.temps = 6;
+    const P = B.conduite.PARAMS;
+    for (const v of co.voitures) {
+      const et = v.etat, decal = B.circuit.ecart(c, ancienDepart, et.s);
+      et.s = ramener(depart + (v.id === S.locaux[1] ? -14 : decal), c.longueur);
+      if (v.joueur) et.d = 0;
+      const e = B.circuit.echantillon(c, et.s);
+      et.y = e.y - et.d * Math.sin(e.devers); et.tangage = Math.atan(e.pente || 0); et.roulis = e.devers || 0;
+      et.v = vitesse; et.gaz = .6;
+      const rapport = P.vitessePointe.findIndex(pointe => vitesse < pointe * .95);
+      et.rapport = rapport < 0 ? P.vitessePointe.length : rapport + 1;
+      et.regime = clamp(P.maxUtile * vitesse / P.vitessePointe[et.rapport - 1], P.ralenti, P.maxUtile);
+      v.progression = ramener(et.s - (c.depart || 0), c.longueur); v.roule = et.s; v.tourValide = false;
+      v.passages = 0; v.maxPassages = 0; v.debutTour = co.temps;
+      co.sAvant[v.id] = et.s;
+    }
+    remplirPoses(S.cour, co); remplirPoses(S.prec, co);
+    cameraEssai = null; horlogeReelle = 0; tPrec = 0; dureeImage = 16;
+    Object.assign(palier, { n: gpuModeste ? 1 : 0, somme: 0, compte: 0, t: 0, aise: 0 });
+    for (const G of [retro.j1, retro.j2]) if (G) { G.cote = 0; delete G.lampes0; delete G.lampes1; }
+    S.reference = { graine, circuit: i, circuitId: CATALOGUE[i].id, graineCircuit: CATALOGUE[i].graine,
+      mode, qualite, difficulte, tours, pilote, vue, vue2, partage, retro: glaces, meteo, mouille, depart: ramener(depart, c.longueur), vitesse,
+      decor: decorEnrichi ? 'enrichi' : 'reference', tunnel: c.tunnel ? { debut: c.tunnel.debut, fin: c.tunnel.fin } : null };
+    $('chargement').classList.add('fini'); aller('course'); rendu.resize(qualite);
+    B.mesures.reinitialiser();
+    return Object.assign({}, S.reference);
+  }
   // Banc (console) : une course en qualité fixe (« high » par défaut ; le mode Auto masquerait les régressions), la
   // voiture du joueur confiée à l'IA, grille et feux passés en simulation. Après une seconde de chauffe, il mesure
   // l'intervalle entre deux images pendant 20 s, rend p50, p95 et la pire image en ms (objet JSON), puis revient à
@@ -2279,7 +2394,7 @@
     const duree = options.duree || 20, chauffe = options.chauffe ?? 1, qualite = options.qualite || 'high';
     if (!rendu) return Promise.reject(new Error('rendu absent'));
     if (!['low', 'auto', 'high'].includes(qualite)) return Promise.reject(new Error('qualité inconnue : ' + qualite));
-    lancer('course', clamp((options.circuit ?? reglages.circuit) | 0, 0, CATALOGUE.length - 1));
+    reference(Object.assign({}, options, { qualite, circuit: options.circuit ?? reglages.circuit }));
     const S = session; S.essai = true; S.banc = { qualite, effets: 0 };
     rendu.resize(qualite);
     $('chargement').classList.add('fini');
@@ -2300,18 +2415,19 @@
           qualite, duree: +Math.max(0, ecoule - chauffe).toFixed(2), images: tri.length, p50: +q(.5).toFixed(2), p95: +q(.95).toFixed(2),
           pire: +(tri.length ? tri[tri.length - 1] : 0).toFixed(2), fenetre: innerWidth + '×' + innerHeight, image: canvas.width + '×' + canvas.height,
           circuit: CATALOGUE[S.i].nom, interrompu,
+          reference: S.reference,
           effets: { moyenne: +(effets.reduce((a, b) => a + b, 0) / Math.max(1, effets.length)).toFixed(3), p95: +(effets.sort((a, b) => a - b)[Math.floor(.95 * effets.length)] || 0).toFixed(3) },
           traces: B.traces.compter(S.fx)
         };
-        S.banc = null; rendu.resize(reglages.qualite);
-        if (session === S && ecran === 'course') aller('titre');
+        S.banc = null;
+        if (session === S) { restaurerReference(); if (ecran === 'course') aller('titre'); }
         console.info('BITUME banc', JSON.stringify(r));
         rendre(r);
       };
       requestAnimationFrame(mesurer);
     });
   }
-  window.BITUME_JEU = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer, banc,
+  window.BITUME_JEU = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer, banc, reference,
     get son() { return son ? son.stats() : null; }, get palier() { return palier.n; }, get gpuModeste() { return gpuModeste; },
     demo: i => lancerDemo(i === undefined ? reglages.circuit : i), // lance la démo sans attendre les cinq secondes
     get pauseAuto() { return pauseAuto; }, set pauseAuto(v) { pauseAuto = !!v; },

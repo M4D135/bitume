@@ -1,0 +1,14 @@
+{
+  "dossier": "/workspace/scratch/c89193d9c5e7/bitume-visual-qualification/foret-enrichi",
+  "images": 12,
+  "alertes": 0,
+  "erreurs": [],
+  "fatal": null,
+  "comparaison": {
+    "comparable": true,
+    "ecarts": []
+  }
+}
+capture 1/12
+capture 9/12
+capture 12/12

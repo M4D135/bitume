@@ -1,0 +1,226 @@
+{
+  "date_utc": "2026-11-17T18:14:55Z",
+  "node": "v24.22.1",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "build_sha256": "9180313f5b33a735a1eb02a7ff1aa3a22646c3baaad9c218e239247d92a83ce5",
+  "reproducible": true,
+  "suites": [
+    {
+      "name": "carene.test.mjs",
+      "code": 0,
+      "seconds": 0.123
+    },
+    {
+      "name": "circuit.test.mjs",
+      "code": 0,
+      "seconds": 0.771
+    },
+    {
+      "name": "collisions-orientees.test.mjs",
+      "code": 0,
+      "seconds": 0.065
+    },
+    {
+      "name": "commandes-partage.test.mjs",
+      "code": 0,
+      "seconds": 0.09
+    },
+    {
+      "name": "conduite-criteres.test.mjs",
+      "code": 0,
+      "seconds": 2.318
+    },
+    {
+      "name": "conduite.test.mjs",
+      "code": 0,
+      "seconds": 0.364
+    },
+    {
+      "name": "contacts.test.mjs",
+      "code": 0,
+      "seconds": 0.137
+    },
+    {
+      "name": "controle-visuel.test.mjs",
+      "code": 0,
+      "seconds": 0.081
+    },
+    {
+      "name": "course.test.mjs",
+      "code": 0,
+      "seconds": 4.19
+    },
+    {
+      "name": "crash.test.mjs",
+      "code": 0,
+      "seconds": 0.479
+    },
+    {
+      "name": "decor-identite.test.mjs",
+      "code": 0,
+      "seconds": 3.055
+    },
+    {
+      "name": "decor-obstacles.test.mjs",
+      "code": 0,
+      "seconds": 0.646
+    },
+    {
+      "name": "decor.test.mjs",
+      "code": 0,
+      "seconds": 0.561
+    },
+    {
+      "name": "formes-libres.test.mjs",
+      "code": 0,
+      "seconds": 0.312
+    },
+    {
+      "name": "glissiere-etats.test.mjs",
+      "code": 0,
+      "seconds": 0.111
+    },
+    {
+      "name": "glissiere-rebond.test.mjs",
+      "code": 0,
+      "seconds": 0.076
+    },
+    {
+      "name": "ia-attaque.test.mjs",
+      "code": 0,
+      "seconds": 15.065
+    },
+    {
+      "name": "ia-epaves.test.mjs",
+      "code": 0,
+      "seconds": 0.114
+    },
+    {
+      "name": "ia-reprise.test.mjs",
+      "code": 0,
+      "seconds": 0.121
+    },
+    {
+      "name": "ia.test.mjs",
+      "code": 0,
+      "seconds": 0.117
+    },
+    {
+      "name": "main.test.mjs",
+      "code": 0,
+      "seconds": 0.131
+    },
+    {
+      "name": "manette.test.mjs",
+      "code": 0,
+      "seconds": 0.073
+    },
+    {
+      "name": "mesures.test.mjs",
+      "code": 0,
+      "seconds": 0.092
+    },
+    {
+      "name": "meteo.test.mjs",
+      "code": 0,
+      "seconds": 0.107
+    },
+    {
+      "name": "moteur-emprise.test.mjs",
+      "code": 0,
+      "seconds": 0.09
+    },
+    {
+      "name": "obstacles.test.mjs",
+      "code": 0,
+      "seconds": 0.078
+    },
+    {
+      "name": "pieces.test.mjs",
+      "code": 0,
+      "seconds": 0.572
+    },
+    {
+      "name": "prets-enligne.test.mjs",
+      "code": 0,
+      "seconds": 0.141
+    },
+    {
+      "name": "qualite.test.mjs",
+      "code": 0,
+      "seconds": 0.076
+    },
+    {
+      "name": "realisateur.test.mjs",
+      "code": 0,
+      "seconds": 3.22
+    },
+    {
+      "name": "relectures-phase2.test.mjs",
+      "code": 0,
+      "seconds": 0.305
+    },
+    {
+      "name": "rendu-halo.test.mjs",
+      "code": 0,
+      "seconds": 0.076
+    },
+    {
+      "name": "reprise-recul.test.mjs",
+      "code": 0,
+      "seconds": 0.075
+    },
+    {
+      "name": "salon-protocole.test.mjs",
+      "code": 0,
+      "seconds": 2.763
+    },
+    {
+      "name": "son.test.mjs",
+      "code": 0,
+      "seconds": 0.089
+    },
+    {
+      "name": "stands.test.mjs",
+      "code": 0,
+      "seconds": 7.055
+    },
+    {
+      "name": "titre-signature.test.mjs",
+      "code": 0,
+      "seconds": 0.072
+    },
+    {
+      "name": "traces.test.mjs",
+      "code": 0,
+      "seconds": 1.419
+    },
+    {
+      "name": "troncs.test.mjs",
+      "code": 0,
+      "seconds": 0.785
+    },
+    {
+      "name": "tunnel-transitions.test.mjs",
+      "code": 0,
+      "seconds": 0.271
+    },
+    {
+      "name": "tunnel.test.mjs",
+      "code": 0,
+      "seconds": 0.561
+    },
+    {
+      "name": "vegetation.test.mjs",
+      "code": 0,
+      "seconds": 2.726
+    },
+    {
+      "name": "voiture.test.mjs",
+      "code": 0,
+      "seconds": 2.622
+    }
+  ],
+  "passed": 43,
+  "failed": 0
+}

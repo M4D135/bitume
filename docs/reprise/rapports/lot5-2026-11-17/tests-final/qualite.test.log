@@ -1,0 +1,14 @@
+ok 49 FPS : aucune baisse avant trois secondes, puis un seul palier
+ok 50 et 60 FPS stables : ni baisse ni remontée
+ok 75 FPS : huit secondes avant une remontée, puis nouvelle observation complète
+ok 14 ms est la limite stricte de la remontée
+ok très faible FPS et longues images restent pris en compte
+ok masquage ou mode inactif remet à zéro les deux fenêtres
+ok durées invalides ignorées sans contaminer une fenêtre
+ok plancher GPU modeste et plafond de qualité respectés
+ok une zone intermédiaire rompt la remontée, sans oscillation
+ok jeu : 2,9 s lentes puis pause exigent trois nouvelles secondes après reprise
+ok jeu : les réglages interrompent aussi une remontée presque acquise
+ok jeu : un choix manuel de qualité efface la charge précédente
+ok jeu : pause/reprise ne force ni qualité fixe ni banc ni référence
+qualité : 13 contrôles passés

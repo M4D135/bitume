@@ -105,6 +105,8 @@ for (const reference of expected) {
   const c = B.circuit.creer(graine, { ...spec, tunnel: false });
   // Les cas sans empreinte Darwin distincte sont déjà identiques sur les deux références ARM.
   const ref = reference[champReference] ?? (champReference === 'sha256Darwin' ? reference.sha256 : undefined);
-  assert.equal(digest(B.decor.construire(c)), ref, `${environnement} : ${JSON.stringify(spec)}`);
+  // Oracle du décor historique, sans les recettes ni la végétation du biome pilote ajoutés ensuite.
+  // Les empreintes restent celles des sources historiques ; vegetation.test.mjs contrôle les ajouts et les solides.
+  assert.equal(digest(B.decor.construire(c, { matieres: false, vegetation: false })), ref, `${environnement} : ${JSON.stringify(spec)}`);
 }
 console.log(`décor : 9 géométries de référence inchangées (${environnement})`);

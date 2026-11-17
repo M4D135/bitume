@@ -1,0 +1,222 @@
+{
+  "circuit": "Val-Brule",
+  "seed": 11,
+  "trackLength": 4222,
+  "plants": {
+    "herbes": 124,
+    "taillis": 34,
+    "lots": 10
+  },
+  "prototypes": {
+    "herbes-val": 216,
+    "herbes-val-loin": 72,
+    "taillis-val": 336,
+    "taillis-val-loin": 144
+  },
+  "maxPerLot": 21,
+  "lotRadii": [
+    2.68,
+    169.26,
+    197.592,
+    170.459,
+    195.469,
+    150.354,
+    200.32,
+    164.515,
+    204.164,
+    3.854
+  ],
+  "allLots": {
+    "nearTriangles": 38208,
+    "farTriangles": 13824,
+    "colorDrawCalls": 19,
+    "instanceBytesPerRenderer": 20224
+  },
+  "windWorstCaseMeters": 0.1282809416865966,
+  "boundingSlackMeters": 0.24999999999998612,
+  "frustumChecks": {
+    "poses": 1060,
+    "falseCulls": 0,
+    "occlusionTest": false
+  },
+  "modes": [
+    {
+      "name": "high_1920x1080",
+      "w": 1920,
+      "h": 1080,
+      "fov": 60,
+      "threshold": 520,
+      "max": {
+        "lots": 6,
+        "calls": 12,
+        "triangles": 16944,
+        "nearLots": 3,
+        "farLots": 4
+      },
+      "mean": {
+        "lots": 3.45,
+        "calls": 6.57,
+        "triangles": 10487.09
+      },
+      "samples": 212
+    },
+    {
+      "name": "low_1536x864",
+      "w": 1536,
+      "h": 864,
+      "fov": 60,
+      "threshold": 416,
+      "max": {
+        "lots": 6,
+        "calls": 12,
+        "triangles": 16944,
+        "nearLots": 3,
+        "farLots": 4
+      },
+      "mean": {
+        "lots": 3.45,
+        "calls": 6.57,
+        "triangles": 9834.11
+      },
+      "samples": 212
+    },
+    {
+      "name": "duo_1920x540",
+      "w": 1920,
+      "h": 540,
+      "fov": 60,
+      "threshold": 260,
+      "max": {
+        "lots": 7,
+        "calls": 13,
+        "triangles": 14784,
+        "nearLots": 2,
+        "farLots": 5
+      },
+      "mean": {
+        "lots": 4.33,
+        "calls": 8.32,
+        "triangles": 10091.77
+      },
+      "samples": 212
+    },
+    {
+      "name": "retro_330x100_dpr1",
+      "w": 330,
+      "h": 100,
+      "fov": 10,
+      "retro": true,
+      "threshold": 317.73655207429596,
+      "max": {
+        "lots": 5,
+        "calls": 10,
+        "triangles": 14352,
+        "nearLots": 2,
+        "farLots": 3
+      },
+      "mean": {
+        "lots": 2.27,
+        "calls": 4.4,
+        "triangles": 7358.49
+      },
+      "requestedFov": 9.932204801001571,
+      "viewModel": "Rearward track-axis estimate; real mirror axes depend on glass reflection.",
+      "samples": 212
+    },
+    {
+      "name": "retro_495x150_dpr1_5",
+      "w": 495,
+      "h": 150,
+      "fov": 10,
+      "retro": true,
+      "threshold": 476.60482811144396,
+      "max": {
+        "lots": 5,
+        "calls": 10,
+        "triangles": 17136,
+        "nearLots": 3,
+        "farLots": 3
+      },
+      "mean": {
+        "lots": 2.27,
+        "calls": 4.4,
+        "triangles": 8033.21
+      },
+      "requestedFov": 9.932204801001571,
+      "viewModel": "Rearward track-axis estimate; real mirror axes depend on glass reflection.",
+      "samples": 212
+    }
+  ],
+  "fallback": {
+    "vegetationFalse": true,
+    "referenceTrue": true,
+    "obstaclesPreserved": true,
+    "userSetting": false
+  },
+  "cameraCloseup": {
+    "pos": [
+      377.19543519128354,
+      6.560339766033804,
+      82.94082262455422
+    ],
+    "yaw": -1.6841825998046538,
+    "pitch": -0.1357640925456239,
+    "fov": 48
+  },
+  "closeupProjectedAt1280x720": [
+    {
+      "shape": "herbes-val",
+      "p": [
+        370.22882159053154,
+        5.425055622777668,
+        84.2605679540392
+      ],
+      "screen": [
+        580.9,
+        378.9
+      ],
+      "heightPixels": 74.7
+    },
+    {
+      "shape": "herbes-val",
+      "p": [
+        366.69284770989697,
+        5.223567704821319,
+        86.39144069862854
+      ],
+      "screen": [
+        473.9,
+        349.6
+      ],
+      "heightPixels": 36.1
+    },
+    {
+      "shape": "taillis-val",
+      "p": [
+        368.57092425614394,
+        5.544655432029959,
+        82.38937143078716
+      ],
+      "screen": [
+        783.8,
+        346.3
+      ],
+      "heightPixels": 94.1
+    }
+  ],
+  "cockpitPose": {
+    "depart": 2388,
+    "circuit": 0,
+    "seed": 17017,
+    "speed": 0,
+    "fov": 60,
+    "plantStation": 2408
+  },
+  "limitations": [
+    "CPU visibility/LOD estimates using the engine helpers, not GPU draw-call measurements.",
+    "Low quality keeps plants; it simplifies via pixel-scaled distance and has no rendered mirrors.",
+    "Mirrors use the same persistent lots, with dedicated buffers. One mirror per player is refreshed per frame.",
+    "No per-instance culling within a visible vegetation lot; its 1 or 2 batches include the whole bounded sector."
+  ],
+  "sampling": "212 camera stations, every 20 m, per view scenario. Means rounded; individual maxima need not occur at the same pose."
+}

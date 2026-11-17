@@ -1,0 +1,27 @@
+ok quatre formes réutilisées, au plus 800 triangles au registre
+ok triangles finis, orientés, non dégénérés et tenus dans le cube des instances
+ok LOD vraiment simplifié ; détail retiré sous 0,4 pixel à la distance de référence
+ok Val-Brûlé reçoit un nombre borné de plantes et deux groupes au plus par lot
+ok aucun obstacle, arbre ou objet historique déplacé ou retiré
+ok nouvel asphalte seul, géométrie de chaussée et marquages inchangés
+ok plantes à l’écart de la chaussée, des stands et des glissières
+ok répartition déterministe et indépendante des autres générateurs
+ok Port-Sable et Haut-Col entièrement inchangés par le pilote
+{
+  "controles": 9,
+  "plantes": {
+    "herbes": 124,
+    "taillis": 34,
+    "lots": 10
+  },
+  "erreursLod": {
+    "herbes": {
+      "metres": 0.021013878261790717,
+      "pixels": 0.03779699346016133
+    },
+    "taillis": {
+      "metres": 0.030015847563754975,
+      "pixels": 0.05398854889776867
+    }
+  }
+}

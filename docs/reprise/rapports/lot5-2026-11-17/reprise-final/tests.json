@@ -1,0 +1,231 @@
+{
+  "tests": [
+    {
+      "test": "carene.test.mjs",
+      "code": 0,
+      "seconds": 0.151
+    },
+    {
+      "test": "circuit.test.mjs",
+      "code": 0,
+      "seconds": 0.882
+    },
+    {
+      "test": "collisions-orientees.test.mjs",
+      "code": 0,
+      "seconds": 0.088
+    },
+    {
+      "test": "commandes-partage.test.mjs",
+      "code": 0,
+      "seconds": 0.1
+    },
+    {
+      "test": "conduite-criteres.test.mjs",
+      "code": 0,
+      "seconds": 2.458
+    },
+    {
+      "test": "conduite.test.mjs",
+      "code": 0,
+      "seconds": 0.391
+    },
+    {
+      "test": "contacts.test.mjs",
+      "code": 0,
+      "seconds": 0.159
+    },
+    {
+      "test": "controle-visuel.test.mjs",
+      "code": 0,
+      "seconds": 0.102
+    },
+    {
+      "test": "course.test.mjs",
+      "code": 0,
+      "seconds": 4.543
+    },
+    {
+      "test": "crash.test.mjs",
+      "code": 0,
+      "seconds": 0.531
+    },
+    {
+      "test": "decor-identite.test.mjs",
+      "code": 0,
+      "seconds": 2.873
+    },
+    {
+      "test": "decor-obstacles.test.mjs",
+      "code": 0,
+      "seconds": 0.674
+    },
+    {
+      "test": "decor.test.mjs",
+      "code": 1,
+      "seconds": 0.272
+    },
+    {
+      "test": "formes-libres.test.mjs",
+      "code": 0,
+      "seconds": 0.412
+    },
+    {
+      "test": "glissiere-etats.test.mjs",
+      "code": 0,
+      "seconds": 0.101
+    },
+    {
+      "test": "glissiere-rebond.test.mjs",
+      "code": 0,
+      "seconds": 0.075
+    },
+    {
+      "test": "ia-attaque.test.mjs",
+      "code": 0,
+      "seconds": 14.937
+    },
+    {
+      "test": "ia-epaves.test.mjs",
+      "code": 0,
+      "seconds": 0.105
+    },
+    {
+      "test": "ia-reprise.test.mjs",
+      "code": 0,
+      "seconds": 0.126
+    },
+    {
+      "test": "ia.test.mjs",
+      "code": 0,
+      "seconds": 0.112
+    },
+    {
+      "test": "main.test.mjs",
+      "code": 0,
+      "seconds": 0.106
+    },
+    {
+      "test": "manette.test.mjs",
+      "code": 0,
+      "seconds": 0.071
+    },
+    {
+      "test": "mesures.test.mjs",
+      "code": 0,
+      "seconds": 0.11
+    },
+    {
+      "test": "meteo.test.mjs",
+      "code": 0,
+      "seconds": 0.12
+    },
+    {
+      "test": "moteur-emprise.test.mjs",
+      "code": 0,
+      "seconds": 0.094
+    },
+    {
+      "test": "obstacles.test.mjs",
+      "code": 0,
+      "seconds": 0.085
+    },
+    {
+      "test": "pieces.test.mjs",
+      "code": 0,
+      "seconds": 0.621
+    },
+    {
+      "test": "prets-enligne.test.mjs",
+      "code": 0,
+      "seconds": 0.083
+    },
+    {
+      "test": "qualite.test.mjs",
+      "code": 0,
+      "seconds": 0.065
+    },
+    {
+      "test": "realisateur.test.mjs",
+      "code": 0,
+      "seconds": 3.098
+    },
+    {
+      "test": "relectures-phase2.test.mjs",
+      "code": 0,
+      "seconds": 0.294
+    },
+    {
+      "test": "rendu-halo.test.mjs",
+      "code": 0,
+      "seconds": 0.076
+    },
+    {
+      "test": "reprise-recul.test.mjs",
+      "code": 0,
+      "seconds": 0.076
+    },
+    {
+      "test": "salon-protocole.test.mjs",
+      "code": 0,
+      "seconds": 2.694
+    },
+    {
+      "test": "son.test.mjs",
+      "code": 0,
+      "seconds": 0.099
+    },
+    {
+      "test": "stands.test.mjs",
+      "code": 0,
+      "seconds": 7.491
+    },
+    {
+      "test": "titre-signature.test.mjs",
+      "code": 0,
+      "seconds": 0.096
+    },
+    {
+      "test": "traces.test.mjs",
+      "code": 0,
+      "seconds": 1.548
+    },
+    {
+      "test": "troncs.test.mjs",
+      "code": 0,
+      "seconds": 0.771
+    },
+    {
+      "test": "tunnel-transitions.test.mjs",
+      "code": 0,
+      "seconds": 0.3
+    },
+    {
+      "test": "tunnel.test.mjs",
+      "code": 0,
+      "seconds": 0.53
+    },
+    {
+      "test": "vegetation.test.mjs",
+      "code": 0,
+      "seconds": 3.007
+    },
+    {
+      "test": "voiture.test.mjs",
+      "code": 0,
+      "seconds": 2.68
+    }
+  ],
+  "total": 43,
+  "passed": 42,
+  "duration": 53.20971465110779,
+  "reprise_isolee": {
+    "test": "decor.test.mjs",
+    "exit_code": 0,
+    "message": "forêt : 18 vérifications passées",
+    "seuil_ms": 150,
+    "premier_passage_ms": 172,
+    "seuil_modifie": false
+  },
+  "resultat": "42/43 au premier passage ; 43/43 après reprise isolée inchangée du test temporel de décor"
+}

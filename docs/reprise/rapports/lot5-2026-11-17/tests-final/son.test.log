@@ -1,0 +1,15 @@
+ok  module charge sans AudioContext
+ok  creer sans demarrer : methodes sans effet
+ok  frequenceAllumage(12000) = 800
+ok  coupure bornee [600,6500]
+ok  gainDistance(0)=1 et decroissant
+ok  doppler(0)=1 et >1 pour rapprochement
+ok  panoramique(pi/2)=1 et borne
+ok  sélection bornée sans modifier ni recopier les rivaux
+ok  deux moteurs humains conservés à toute distance et trois rivaux au maximum
+ok  attribution stable puis fondu complet avant de réutiliser une voix rivale
+ok  graphe complet avec un faux contexte audio
+ok  signaux de course sans musique : une seule hauteur au plus par signal
+ok  thème du titre : huit mesures de mélodie en la mineur sur huit accords
+ok  thème du titre : rien avant le premier geste, boucle entière, arrêt net, pas de rafale
+14 vérifications réussies

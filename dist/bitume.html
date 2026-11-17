@@ -366,6 +366,26 @@ body.tactile .sous-message { top: max(calc(28% + 42px),calc(var(--hud-top) + var
 body.tactile .demo-bandeau { top: calc(var(--hud-top) + var(--carte-presence) + 58px); background: rgba(10,12,15,.3); border: 0; }
 body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98px); background: rgba(10,12,15,.2); }
 
+/* Fenêtre étroite : les quatre compteurs partagent la largeur, le chrono vient dessous.
+   En tactile, la pause garde 44 px et la carte reste sous les deux lignes de l'ATH. */
+@media (max-width: 600px) {
+  .hud-haut, body.tactile .hud-haut { flex-direction: column; align-items: stretch; gap: 4px; padding-right: 0; }
+  .compteurs, body.tactile .compteurs { display: grid; grid-template-columns: .8fr .8fr 1.5fr 1.4fr; width: 100%; gap: 4px; }
+  .case, body.tactile .case { min-width: 0; padding: 4px 2px; }
+  .case .etiquette { font-size: 9px; letter-spacing: .08em; }
+  .case .grand { font-size: 26px; }
+  .case .grand small { font-size: 14px; }
+  .case .nom-pneus { margin-top: 5px; font-size: 11px; gap: 4px; }
+  .case .nom-pneus i { width: 8px; height: 8px; border-width: 2px; }
+  .chronos, body.tactile .chronos { width: 100%; min-width: 0; padding: 4px 2px; }
+  .chronos { display: flex; gap: 8px; }
+  .ligne-chrono { flex: 1; min-width: 0; flex-direction: column; align-items: flex-start; gap: 3px; }
+  body.tactile .chronos { min-height: 44px; padding-right: 52px; align-items: flex-start; }
+  body.tactile .ligne-chrono { flex-direction: row; align-items: baseline; justify-content: flex-start; gap: 8px; }
+  body.tactile #b-pause { top: calc(var(--hud-top) + 48px); }
+  body.tactile #zone-carte, body.tactile .hud-bas { top: calc(var(--hud-top) + 100px); }
+}
+
 /* deux manettes branchées : l'écran titre le signale sur « À deux » */
 .gros .detecte { display: inline-block; margin-left: 14px; padding: 4px 8px 3px; vertical-align: middle; font: normal 700 12px/1 var(--f-texte); letter-spacing: .1em; text-transform: uppercase; color: var(--encre); background: var(--vert); border-radius: var(--rayon); }
 /* Jeu en ligne : nom, puis deux cartes (créer, rejoindre), puis le code et l'état de la liaison */
@@ -519,7 +539,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.24">V0.2.24</b><a class="signature" href="https://github.com/M4D135" target="_blank" rel="noopener" title="m4d135 sur GitHub"><svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="32" fill="#b7492a"/></svg>m4d135</a>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.25">V0.2.25</b><a class="signature" href="https://github.com/M4D135" target="_blank" rel="noopener" title="m4d135 sur GitHub"><svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="32" fill="#b7492a"/></svg>m4d135</a>
     </div>
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
@@ -782,6 +802,26 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   'use strict';
   // BITUME : champ de vision admis de 10 à 110° (FERRO : 40 à 110°), pour la caméra de télévision au téléobjectif.
   const FOV_MIN = 10;
+  // Optional surface recipes. Existing material IDs keep their original appearance;
+  // hosts opt in per mesh (or terrain vertex), without another draw pass or texture.
+  const MATERIALS = Object.freeze({weatheredAsphalt:21,weatheredConcrete:22,weatheredStone:23,weatheredPaint:24});
+  function materialFamily(value){
+    const recipe=Math.floor(value+.5);
+    return recipe===21?14:recipe===22?3:recipe===23?9:recipe===24?16:value;
+  }
+
+  // A lot may describe the FOV and viewport at which its near/far threshold was
+  // chosen. Keep its projected detail size stable in a telephoto or split view.
+  // No camera state is cached: colour, mirrors and shadows use the current view.
+  function lotDetailDistance(lot,verticalTangent,viewportHeight){
+    let distance=lot.bascule||240;
+    const fov=lot.lodReferenceFov,height=lot.lodReferenceHeight;
+    if(Number.isFinite(fov)&&fov>0&&fov<180&&Number.isFinite(verticalTangent)&&verticalTangent>0)
+      distance*=Math.tan(fov*Math.PI/360)/verticalTangent;
+    if(Number.isFinite(height)&&height>0&&Number.isFinite(viewportHeight)&&viewportHeight>0)
+      distance*=viewportHeight/height;
+    return distance;
+  }
 
   // Same wave field as RADE.marine.seaHeight. Only the local navigation grid
   // is displaced; a 16 m edge band meets the distant flat sea without a seam.
@@ -916,6 +956,12 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
     return mix(mix(hash(a),hash(a+vec2(1,0)),b.x),
       mix(hash(a+vec2(0,1)),hash(a+vec2(1,1)),b.x),b.y);
   }
+  // Integrate grain towards its mean before it becomes smaller than a pixel.
+  // Frequencies are in world/object metres, independently of display resolution.
+  float surfaceNoise(vec2 uv,float frequency,float pixelSpan){
+    float detail=1.-smoothstep(.35,.90,pixelSpan*frequency);
+    return .5+(noise(uv*frequency)-.5)*detail;
+  }
   float grid(vec2 uv,float width) {
     vec2 distanceToEdge=min(fract(uv),1.-fract(uv));
     vec2 aa=max(fwidth(uv),vec2(.0001));
@@ -995,18 +1041,60 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   void main() {
     vec3 geometricNormal=normalize(vNormal), n=geometricNormal, an=abs(normalize(vSurfaceNormal));
     vec2 uv=an.y>.65?vSurface.xz:(an.x>an.z?vSurface.zy:vSurface.xy);
-    float m=vMaterial, emission=vEmission;
+    float recipe=vMaterial>20.5&&vMaterial<24.5?floor(vMaterial+.5)-20.:0.;
+    float m=recipe==1.?14.:recipe==2.?3.:recipe==3.?9.:recipe==4.?16.:vMaterial, emission=vEmission;
     vec3 base=vec3(.105,.135,.15),windowGlow=vec3(0.);
     float night=clamp(uNightHour.x,0.,1.)*vOutdoor;float lateHour=uNightHour.y<12.?uNightHour.y+24.:uNightHour.y;float evening=1.-smoothstep(23.,26.,lateHour);
-    float roughness=.47,metalness=.65,organicHeight=0.,urbanHeight=0.,pbrWeight=0.,pbrLayer=1.;
+    float roughness=.47,metalness=.65,organicHeight=0.,urbanHeight=0.,pbrWeight=0.,pbrLayer=1.,recipeHeight=0.;
     float pixelSpan=max(fwidth(uv).x,fwidth(uv).y);
     float fineDetail=1.-smoothstep(.015,.10,pixelSpan);
     float grain=noise(uv*23.)*.5+mix(.5,noise(uv*71.),fineDetail)*.2;
     float broad=noise(uv*.7);
     // Architectural joints belong to the building, not to moving armour or the weapon.
     float architectural=1.-clamp(vObject,0.,1.);
-    float panel=m<7.5?grid(uv*.55,.007)*architectural:0.;
-    if (m<.5) {
+    float panel=m<7.5&&recipe<.5?grid(uv*.55,.007)*architectural:0.;
+    if(recipe>.5){
+      // Original, bounded recipes: broad ageing, medium surface structure and
+      // filtered grain share the same coordinates and seedless world field.
+      float patches=surfaceNoise(uv+vec2(17.3,8.1),.17,pixelSpan);
+      float structure=surfaceNoise(uv+vec2(3.7,11.9),2.6,pixelSpan);
+      float aggregate=surfaceNoise(uv,83.,pixelSpan);
+      vec3 tint=vColor.w>.5?vColor.rgb:vec3(.5);
+      if(recipe<1.5){
+        if(vColor.w<.5)tint=vec3(.18,.18,.19);
+        float repair=smoothstep(.48,.69,patches);
+        base=tint*(.91+.16*(structure-.5)+.16*(aggregate-.5))*(1.-repair*.12);
+        roughness=.88+.08*(structure-.5)+.04*(aggregate-.5);metalness=0.;
+        recipeHeight=(aggregate-.5)*.0022+(structure-.5)*.0012;
+      }else if(recipe<2.5){
+        if(vColor.w<.5)tint=vec3(.54,.55,.52);
+        float run=surfaceNoise(vec2(uv.x*3.,uv.y*.14)+19.,1.,pixelSpan*3.);
+        float foot=(1.-smoothstep(.05,1.25,(vLocal.y+.5)*vDimensions.y))*(1.-abs(geometricNormal.y));
+        float stain=smoothstep(.48,.72,run)*(.07+.15*foot);
+        base=tint*(.84+.20*patches+.10*(aggregate-.5))*(1.-stain);
+        base=mix(base,base*vec3(.80,.82,.73),foot*structure*.12);
+        roughness=.88+.08*(structure-.5);metalness=0.;
+        recipeHeight=(structure-.5)*.005+(aggregate-.5)*.0014;
+      }else if(recipe<3.5){
+        if(vColor.w<.5)tint=vec3(.37,.36,.31);
+        float strataPhase=vWorld.y*2.1+patches*5.5;
+        float strata=.5+.5*sin(strataPhase)*(1.-smoothstep(.6,2.4,fwidth(strataPhase)));
+        float lichen=smoothstep(.60,.78,patches+.12*structure)*max(geometricNormal.y,0.)*clamp(vOutdoor,0.,1.);
+        base=tint*(.77+.28*patches+.12*strata+.10*(aggregate-.5));
+        base=mix(base,base*vec3(.76,.89,.62),lichen*.42);
+        roughness=.87+.10*structure;metalness=0.;
+        recipeHeight=(structure-.5)*.016+(aggregate-.5)*.003;
+      }else{
+        vec2 localUV=an.y>.65?vLocal.xz:(an.x>an.z?vLocal.zy:vLocal.xy);
+        float edgeDistance=.5-max(abs(localUV.x),abs(localUV.y));
+        float edge=1.-smoothstep(.010,.035+fwidth(edgeDistance),edgeDistance);
+        float chip=smoothstep(.65,.82,structure+.14*patches)*(.10+.55*edge);
+        base=tint*(.95+.08*(aggregate-.5))*(.94+.08*patches);
+        base=mix(base,vec3(.23,.25,.25)*(.8+.25*patches),chip);
+        roughness=mix(.34+.08*patches,.62,chip);metalness=mix(.08,.72,chip);
+        recipeHeight=(aggregate-.5)*.0007-chip*.0015;
+      }
+    } else if (m<.5) {
       base*=.82+grain*.27+broad*.17;
       base*=1.-panel*.38;
       vec2 panelUV=fract(uv*.55);
@@ -1200,7 +1288,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       roughness=.13;metalness=.35;
       windowGlow=mix(vec3(1.,.58,.25),vec3(.92,.87,.66),step(.78,home))*night*occupied*1.7;
     }
-    if(vColor.w>.5&&m<12.5&&!(m>11.5&&vAnchor.y<0.)){
+    if(recipe<.5&&vColor.w>.5&&m<12.5&&!(m>11.5&&vAnchor.y<0.)){
       vec3 tint=vColor.rgb*(.88+grain*.2)*(1.-panel*.12)*(m<3.5?.65:1.);
       base=m>7.5?base*.35+tint*.65:tint;
     }
@@ -1223,13 +1311,16 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       float tread=(1.-smoothstep(.26,.34,abs(fract(treadUV.x)-.5)))*(1.-smoothstep(.08,.16,abs(fract(treadUV.y)-.5)));
       height=(1.-grid(uv*.5,.007)*architectural)*.006+tread*.0018*fineDetail;
     }
-    if(m<3.5)n=reliefNormal(n,height);
-    if(m>7.5&&m<9.5)n=reliefNormal(n,(noise(uv*7.)-.5)*.009*fineDetail);
-    if(m>9.5&&m<11.5)n=reliefNormal(n,organicHeight*fineDetail);
-    if(m>12.5&&m<15.5)n=reliefNormal(n,urbanHeight*fineDetail);
+    if(recipe>.5)n=reliefNormal(n,recipeHeight);
+    else{
+      if(m<3.5)n=reliefNormal(n,height);
+      if(m>7.5&&m<9.5)n=reliefNormal(n,(noise(uv*7.)-.5)*.009*fineDetail);
+      if(m>9.5&&m<11.5)n=reliefNormal(n,organicHeight*fineDetail);
+      if(m>12.5&&m<15.5)n=reliefNormal(n,urbanHeight*fineDetail);
+    }
     if(m>2.5&&m<3.5)pbrWeight=1.;
     if(m>13.5&&m<14.5){pbrWeight=1.;pbrLayer=0.;}
-    if(uPbrReady>.5&&pbrWeight>0.){
+    if(recipe<.5&&uPbrReady>.5&&pbrWeight>0.){
       vec2 texUV=uv/(pbrLayer<.5?3.:2.);vec3 coord=vec3(texUV,pbrLayer);
       vec3 albedo=texture(uPbrAlbedo,coord).rgb;
       if(pbrLayer>.5)albedo*=vColor.w>.5?vColor.rgb*1.9:vec3(1.25);
@@ -1245,9 +1336,24 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
     // Pixel-scale normal variation broadens highlights instead of shimmering.
     vec3 ndx=dFdx(n),ndy=dFdy(n);
     roughness=min(.98,sqrt(roughness*roughness+min(.16,max(dot(ndx,ndx),dot(ndy,ndy))*.28)));
-    float wet=uWeather.x*clamp(n.y,0.,1.)*step(13.5,m)*step(m,15.5);
-    float puddle=smoothstep(.48,.72,noise(vWorld.xz*.29))*wet;
-    base*=1.-wet*.22;roughness=mix(roughness,.105,puddle);metalness=mix(metalness,.24,puddle);
+    float puddle=0.;
+    if(recipe>.5){
+      // Rain only reaches exposed surfaces. A single persistent mask controls
+      // darkening, gloss and normal flattening; wet asphalt remains dielectric.
+      float upward=clamp(geometricNormal.y,0.,1.);
+      float exposure=clamp(vOutdoor,0.,1.)*uEnvironment.x;
+      float wet=clamp(uWeather.x,0.,1.)*exposure*(.18+.82*upward);
+      float pool=smoothstep(.45,.72,noise(vWorld.xz*.23+vec2(5.7,13.1)))*upward;
+      float film=wet*(.30+.70*pool);
+      puddle=wet*pool;
+      base*=1.-wet*(recipe<1.5?.32:.22);
+      roughness=mix(roughness,recipe<1.5?.12:.18,film);
+      n=normalize(mix(n,geometricNormal,film*.82));
+    }else{
+      float wet=uWeather.x*clamp(n.y,0.,1.)*step(13.5,m)*step(m,15.5);
+      puddle=smoothstep(.48,.72,noise(vWorld.xz*.29))*wet;
+      base*=1.-wet*.22;roughness=mix(roughness,.105,puddle);metalness=mix(metalness,.24,puddle);
+    }
     vec3 view=normalize(uEye-vWorld);
     float distanceToEye=length(uEye-vWorld);
     vec3 light=vec3(.075,.10,.12)*(.72+.28*n.y);
@@ -1831,7 +1937,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
     return valid.sort((a,b)=>b.score-a.score).slice(0,limit);
   }
   function outdoorMesh(mesh,environment){
-    return !!environment&&(mesh.outdoor===undefined?((mesh.mat||0)>=8||outdoorAt(mesh.p||[0,0,0],environment)):!!mesh.outdoor);
+    return !!environment&&(mesh.outdoor===undefined?(materialFamily(mesh.mat||0)>=8||outdoorAt(mesh.p||[0,0,0],environment)):!!mesh.outdoor);
   }
   function surfaceFlags(mesh,environment,objects=false){
     const object=mesh.overlay||mesh.surface==='object'||objects&&mesh.surface!=='architecture';
@@ -2980,7 +3086,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
         const dx=l.centre[0]-eye[0],dy=l.centre[1]-eye[1],dz=l.centre[2]-eye[2],distance=Math.sqrt(dx*dx+dy*dy+dz*dz)-l.rayon;
         if(accepte){if(!accepte(l))continue;}
         else{if(distance>Math.min(far,l.portee||far))continue;if(!visible({p:l.centre,radius:l.rayon},eye,axes,horizontal,vertical,far))continue;}
-        const proche=!l.paquetLoin||distance<(l.bascule||240);
+        const proche=!l.paquetLoin||distance<lotDetailDistance(l,vertical,canvas.height);
         renderBatch(proche?l.paquet:l.paquetLoin,proche?l.tampon:l.tamponLoin,false,!!accepte);dessines++;
       }
       return dessines;
@@ -3148,7 +3254,8 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       const casters=camera.chunked?[]:camera.allStatic?worldIndex.entries:worldIndex.query(center,[extent+24,26,0]).filter(inside);
       renderStatic(casters,2,true);if(camera.chunked)drawChunks(inside,true);
       // BITUME : les lots dont la sphère touche le volume du soleil projettent leur ombre (version proche ou lointaine).
-      dessinerLots(eye,axes,0,0,0,l=>inside({p:l.centre,radius:l.rayon}));
+      const viewTangent=Math.tan(Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/360);
+      dessinerLots(eye,axes,0,viewTangent,0,l=>inside({p:l.centre,radius:l.rayon}));
       renderBatch(dynamicBatch,dynamicBuffer,false,true);if(crowd)renderBatch(crowd,crowdBuffer,false,true);gl.disable(gl.POLYGON_OFFSET_FILL);
       // PDR (lots) : les lots du jeu (fx.lots) entrent dans la même vue du soleil, au même biais, rétabli pour eux.
       // PDR (foule) : la foule sur le GPU aussi (fx.foule.ombre) ; au retour, le moteur reprend son état GL.
@@ -3469,7 +3576,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   }
   // Both GPU backends share the procedural shapes, instance layout and visibility
   // rules. No rendering calls or GPU state are shared between the APIs.
-  const shared={bitumeWeather,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
+  const shared={bitumeWeather,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
   function mesh(shape,p,s,mat,r=[0,0,0],emissive=0){
     return {shape,p,s,mat,r,emissive,color:undefined,surface:undefined,overlay:false,fx:false,
       alpha:undefined,additive:undefined,outdoor:undefined,actorPart:undefined,actorLod:0,
@@ -3477,7 +3584,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       effectPart:'',fxFire:false,fxSmoke:false,fxSpark:false,fxPriority:undefined,ground:undefined,
       innerRatio:undefined,region:undefined};
   }
-  globalThis.FRender={create,foliageTriangles,forme,shared,mesh};
+  globalThis.FRender={create,foliageTriangles,forme,shared,mesh,materials:MATERIALS};
   if(typeof window!=='undefined')window.FRender=globalThis.FRender;
 })();
 </script>
@@ -3487,7 +3594,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 (function(G){'use strict';
  const names={passages:'FPassages',tacticalNetwork:'FBrain',loop:'FLoop',scheduler:'FSchedule',jobs:'FJobs',demo:'FDemo',surface:'FSurface',gpuProfile:'FGPUProfile',skies:'FSky',reflections:'FSceneReflections',render:'FRender',backends:'FRenderBackends',physics:'FPhysics',physx:'FPhysX',physicsGeometry:'FPhysicsGeometry',geometry:'FGeometry',vehicleDynamics:'FVehicleDynamics',navigation:'FNavigation',crowd:'FCrowd',crowdWebGPU:'FCrowdWebGPU',materials:'FMaterials',destruction:'FDestruction',input:'FInput',audio:'FAudio',motion:'FMotion',effects:'FEffects',recipes:'FRecipes',math:'FMath',music:'FMusic',musicTransitions:'FImuse'};
  function requireModule(name){const module=G[names[name]];if(!module)throw new Error('FERRO : module '+name+' non chargé.');return module;}
- const api={version:'0.3.3',apiVersion:1,
+ const api={version:'0.3.4',apiVersion:1,
   capabilities(){return Object.fromEntries(Object.entries(names).map(([name,key])=>[name,!!G[key]]));},
   require:requireModule,
   async createRenderer(canvas,options={}){const materials=options.materials||requireModule('materials').create();if(!materials.layers.length)await materials.load();return requireModule('backends').create(canvas,{...options,materials});},
@@ -59201,6 +59308,27 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   const gainDistance = d => clamp(1 / Math.pow(1 + Math.max(0, d) / 14, 2), 0, 1);
   const doppler = vRel => 343 / (343 - clamp(vRel, -120, 120));
   const panoramique = angle => clamp(Math.sin(angle), -1, 1);
+  const MAX_RIVAUX = 3;
+
+  // Trois références dans un tampon réutilisé : pas de copie, tri global ni objet temporaire par image.
+  // Les ids départagent les distances égales, indépendamment de l'ordre de parcours des voitures.
+  function selectionnerRivaux(rivaux, sortie, joueur = -1, joueur2 = -1) {
+    sortie.length = 0;
+    if (!rivaux) return sortie;
+    for (let i = 0; i < rivaux.length; i++) {
+      const r = rivaux[i];
+      if (!r || r.id === joueur || r.id === joueur2 || !Number.isFinite(r.id) || r.id < 0 || !Number.isFinite(r.distance) || r.distance < 0) continue;
+      let place = 0, doublon = false;
+      for (let k = 0; k < sortie.length; k++) if (sortie[k].id === r.id) { doublon = true; break; }
+      if (doublon) continue;
+      while (place < sortie.length && (sortie[place].distance < r.distance || (sortie[place].distance === r.distance && sortie[place].id < r.id))) place++;
+      if (place >= MAX_RIVAUX) continue;
+      const n = Math.min(MAX_RIVAUX - 1, sortie.length);
+      for (let k = n; k > place; k--) sortie[k] = sortie[k - 1];
+      sortie[place] = r;
+    }
+    return sortie;
+  }
 
   function courbeTanh(k) {
     const n = 2048, c = new Float32Array(n), kh = Math.tanh(k);
@@ -59229,8 +59357,9 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     let ctx = null, pret = false, enPause = false, coupFin = 0;
     let musiqueOn = false, minuteur = null, pas = 0, prochain = 0, busMus = null, echo = null;
     const vols = { general: 1, moteur: 1, effets: 1 };
-    let maitre = null, busMot = null, busEff = null, bruit = null, m = null, pneus = null, vib = null, herbe = null;
-    const voix = [];
+    let maitre = null, busMot = null, busEff = null, bruit = null, m = null, m2 = null, pneus = null, vib = null, herbe = null;
+    let deuxJoueurs = false, joueur2LibereA = 0;
+    const voix = [], proches = [];
 
     // rampe linéaire courte vers une valeur exacte (un 0 coupe vraiment)
     function rampe(p, v, t, d) { p.cancelScheduledValues(t); p.setValueAtTime(p.value, t); p.linearRampToValueAtTime(v, t + d); }
@@ -59269,19 +59398,20 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       const sat = ctx.createWaveShaper(); sat.curve = courbeTanh(2.2); sat.oversample = '2x';
       const ph = filtre('highpass', 32, .7), echap = crete(210, 8, .9), basse = crete(520, 3, 1.2), adm = crete(1400, 2, 2);
       const doux = filtre('highshelf', 4200, .7); doux.gain.value = -4;
-      const pb = filtre('lowpass', 3000, .7), sortie = gain(0);
+      const pb = filtre('lowpass', 3000, .7), sortie = gain(0), pan = ctx.createStereoPanner();
+      pan.pan.value = 0; pan.connect(busMot);
       // râpe : bruit en bande large, porte ouverte et fermée à chaque allumage
       const ns = bruitEnBoucle(), rapeF = filtre('bandpass', 2600, .9), rape = gain(0), am = osc('square', 400), amG = gain(.5);
       am.connect(amG).connect(rape.gain);
       ns.connect(rapeF).connect(rape).connect(pb);
-      attaque.connect(sat).connect(ph).connect(echap).connect(basse).connect(adm).connect(doux).connect(pb).connect(sortie).connect(busMot);
+      attaque.connect(sat).connect(ph).connect(echap).connect(basse).connect(adm).connect(doux).connect(pb).connect(sortie).connect(pan);
       // tunnel : le moteur revient des murs (deux échos courts qui se nourrissent, assourdis)
       const echo = ctx.createDelay(.2), echo2 = ctx.createDelay(.2), retour = gain(.38), sourd = filtre('lowpass', 2600, .7), echoG = gain(0);
       echo.delayTime.value = .043; echo2.delayTime.value = .071;
       sortie.connect(echo); sortie.connect(echo2); echo.connect(sourd); echo2.connect(sourd); sourd.connect(retour); retour.connect(echo);
-      sourd.connect(echoG).connect(busMot);
+      sourd.connect(echoG).connect(pan);
       for (const o of [oA, oB, vib, vib2, oSub, ns, am]) o.start(t);
-      return { oA, oB, oSub, gSub, am, attaque, echap, adm, pb, rape, sortie, echoG };
+      return { oA, oB, oSub, gSub, am, attaque, echap, adm, pb, rape, sortie, echoG, pan };
     }
 
     // Voix d'un rival : la même onde de cycle, filtrée plus fermée, panoramique.
@@ -59306,7 +59436,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       const d = bruit.getChannelData(0);
       for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
       m = moteur();
-      for (let i = 0; i < 3; i++) voix.push(voixRival());
+      for (let i = 0; i < MAX_RIVAUX; i++) voix.push(voixRival());
       { // pneus : deux bandes de bruit
         const s = bruitEnBoucle(), b1 = filtre('bandpass', 1800, 5), b2 = filtre('bandpass', 2600, 5), g1 = gain(0), g2 = gain(0);
         s.connect(b1).connect(g1).connect(busEff); s.connect(b2).connect(g2).connect(busEff); s.start(t);
@@ -59340,34 +59470,51 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       rampe(maitre.gain, vols.general * 0.8, t, 0.05); rampe(busMot.gain, vols.moteur * (musiqueOn ? SOUS_MUSIQUE : 1), t, 0.05); rampe(busEff.gain, vols.effets, t, 0.05);
     }
 
-    // etat = { pause, joueur: { regime, gaz, rapport, v, glisse, surface, turbo, vue, muet },
-    //          rivaux: [{ id, distance, angle, regime, gaz, vRel }] }
-    function mettreAJour(etat) {
-      if (!pret || !etat) return;
-      const t = ctx.currentTime, tc = 0.015, j = etat.joueur || {};
-      const silence = enPause || !!etat.pause;
+    function reglerMoteur(moteur, j, t, silence, poids, pan) {
+      const tc = .015;
       const muet = silence || !!j.muet; // vue extérieure : la voiture du joueur passe par une voix de rival
       const gaz = clamp(+j.gaz || 0, 0, 1), regime = Math.max(0, +j.regime || 0), fc = frequenceCycle(regime), r = clamp(regime / 13000, 0, 1);
       const bord = j.vue !== 'poursuite';
-      vise(m.oA.frequency, fc, t, tc); vise(m.oB.frequency, fc, t, tc); vise(m.oSub.frequency, 2 * fc, t, tc); vise(m.am.frequency, 12 * fc, t, tc);
-      vise(m.gSub.gain, .07 + .26 * (1 - r), t, .05);
-      vise(m.attaque.gain, lerp(1.0, 2.9, gaz) * (.8 + .4 * r) + (j.turbo ? .4 : 0), t, .03);
-      vise(m.pb.frequency, clamp(1300 + 3400 * gaz + .3 * regime, 900, 8500) * (bord ? .92 : 1), t, tc);
-      vise(m.rape.gain, (.02 + .12 * gaz + (j.turbo ? .04 : 0)) * (.35 + .65 * r) * (bord ? 1.25 : .8), t, .03);
-      vise(m.echap.gain, bord ? 6.5 : 9, t, .1); vise(m.adm.gain, bord ? 3.5 : 1, t, .1);
-      vise(m.echoG.gain, j.tunnel && !muet ? .55 : 0, t, .12);
+      vise(moteur.oA.frequency, fc, t, tc); vise(moteur.oB.frequency, fc, t, tc); vise(moteur.oSub.frequency, 2 * fc, t, tc); vise(moteur.am.frequency, 12 * fc, t, tc);
+      vise(moteur.gSub.gain, .07 + .26 * (1 - r), t, .05);
+      vise(moteur.attaque.gain, lerp(1.0, 2.9, gaz) * (.8 + .4 * r) + (j.turbo ? .4 : 0), t, .03);
+      vise(moteur.pb.frequency, clamp(1300 + 3400 * gaz + .3 * regime, 900, 8500) * (bord ? .92 : 1), t, tc);
+      vise(moteur.rape.gain, (.02 + .12 * gaz + (j.turbo ? .04 : 0)) * (.35 + .65 * r) * (bord ? 1.25 : .8), t, .03);
+      vise(moteur.echap.gain, bord ? 6.5 : 9, t, .1); vise(moteur.adm.gain, bord ? 3.5 : 1, t, .1);
+      vise(moteur.echoG.gain, j.tunnel && !muet ? .55 : 0, t, .12);
+      vise(moteur.pan.pan, pan, t, .08);
       // le gain de sortie est réduit car la saturation remonte le niveau
-      const vol = muet ? 0 : lerp(0.5, 0.9, gaz) * 0.34;
-      if (t >= coupFin) vise(m.sortie.gain, vol, t, muet ? 0.03 : tc);
+      const vol = muet ? 0 : lerp(0.5, 0.9, gaz) * 0.34 * poids;
+      if (moteur !== m || t >= coupFin) vise(moteur.sortie.gain, vol, t, muet ? 0.03 : tc);
+    }
+
+    // etat = { pause, joueur: { id, regime, gaz, rapport, v, glisse, surface, turbo, vue, muet },
+    //          joueur2: même structure ou null, rivaux: [{ id, distance, angle, regime, gaz, vRel }] }
+    // En duo les distances des rivaux viennent de la caméra humaine la plus proche (adaptateur du jeu).
+    function mettreAJour(etat) {
+      if (!pret || !etat) return;
+      const t = ctx.currentTime, tc = .015, j = etat.joueur || {}, j2 = etat.joueur2 || null;
+      const silence = enPause || !!etat.pause, muet = silence || !!j.muet;
+      // Le second graphe est créé une seule fois, après le premier geste audio et seulement si J2 existe. Les
+      // séances suivantes réutilisent ce graphe ; sa distance à J1 ne peut jamais le sortir du budget.
+      if (j2 && !m2) m2 = moteur();
+      if (!j2 && deuxJoueurs) { vise(m2.sortie.gain, 0, t, .03); vise(m2.echoG.gain, 0, t, .03); joueur2LibereA = t + .12; }
+      deuxJoueurs = !!j2;
+      reglerMoteur(m, j, t, silence, j2 ? Math.SQRT1_2 : 1, j2 ? -.24 : 0);
+      if (j2) reglerMoteur(m2, j2, t, silence, Math.SQRT1_2, .24);
 
       // rivaux : les trois plus proches, attribution stable, fondu de 0,1 s
-      const proches = (etat.rivaux || []).slice().sort((a, b) => a.distance - b.distance).slice(0, voix.length);
-      const ids = proches.map(r => r.id);
-      for (const vx of voix) if (vx.id >= 0 && !ids.includes(vx.id)) { vise(vx.sortie.gain, 0, t, 0.03); vx.id = -1; vx.libereA = t + 0.12; }
+      selectionnerRivaux(etat.rivaux, proches, j.muet ? -1 : j.id, j2 && !j2.muet ? j2.id : -1);
+      for (const vx of voix) if (vx.id >= 0) {
+        let garde = false;
+        for (let i = 0; i < proches.length; i++) if (proches[i].id === vx.id) { garde = true; break; }
+        if (!garde) { vise(vx.sortie.gain, 0, t, .03); vx.id = -1; vx.libereA = t + .12; }
+      }
       for (const r of proches) {
-        let vx = voix.find(x => x.id === r.id);
+        let vx = null;
+        for (let i = 0; i < voix.length; i++) if (voix[i].id === r.id) { vx = voix[i]; break; }
         if (!vx) {
-          vx = voix.find(x => x.id < 0 && t >= x.libereA);
+          for (let i = 0; i < voix.length; i++) if (voix[i].id < 0 && t >= voix[i].libereA) { vx = voix[i]; break; }
           if (!vx) continue;
           vx.id = r.id;
           vx.o1.frequency.setValueAtTime(frequenceCycle(+r.regime || 0) * doppler(+r.vRel || 0), t);
@@ -59542,15 +59689,179 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       enPause = true;
       if (!pret) return;
       const t = ctx.currentTime;
-      for (const g of [m.sortie.gain, pneus.g1.gain, pneus.g2.gain, vib.g.gain, herbe.g.gain, ...voix.map(v => v.sortie.gain)]) vise(g, 0, t, 0.03);
+      for (const g of [m.sortie.gain, m.echoG.gain, pneus.g1.gain, pneus.g2.gain, vib.g.gain, herbe.g.gain]) vise(g, 0, t, 0.03);
+      if (m2) { vise(m2.sortie.gain, 0, t, .03); vise(m2.echoG.gain, 0, t, .03); }
+      for (const v of voix) vise(v.sortie.gain, 0, t, .03);
     }
     function reprendre() { enPause = false; }
-    function stats() { return { actif: pret, voix: pret ? 1 + voix.filter(v => v.id >= 0).length : 0, musique: musiqueOn }; }
+    function stats() {
+      let rivaux = 0, fondus = 0;
+      if (pret) for (const v of voix) { if (v.id >= 0) rivaux++; else if (ctx.currentTime < v.libereA) fondus++; }
+      const joueurs = pret ? 1 + (deuxJoueurs || ctx.currentTime < joueur2LibereA ? 1 : 0) : 0;
+      return { actif: pret, voix: joueurs + rivaux + fondus, joueurs, rivaux, fondus, budget: 2 + MAX_RIVAUX, musique: musiqueOn };
+    }
 
     return { demarrer, regler, mettreAJour, evenement, musique, suspendre, reprendre, stats };
   }
 
-  B.son = { creer, frequenceAllumage, frequenceCycle, spectreMoteur, coupure, gainDistance, doppler, panoramique, THEME };
+  B.son = { creer, frequenceAllumage, frequenceCycle, spectreMoteur, coupure, gainDistance, doppler, panoramique, selectionnerRivaux, MAX_RIVAUX, THEME };
+})(globalThis.BITUME = globalThis.BITUME || {});
+</script>
+<script>
+// ---- vegetation.js ----
+/* BITUME — végétation basse de Val-Brûlé. Géométrie originale, générée une fois puis instanciée.
+   Les deux résolutions partagent leurs pieds, extrémités et dimensions ; les plantes restent présentes au loin.
+   Aucun fichier de modèle, texture ou son ; aucune dépendance à la simulation ni consommation de son hasard. */
+(function (B) {
+  'use strict';
+
+  const PI2 = Math.PI * 2;
+  const BUDGET = Object.freeze({ stations: 76, herbes: 152, taillis: 76, formes: 4 });
+  function hasard(graine) {
+    let n = graine >>> 0;
+    return () => {
+      n = (n + 0x6D2B79F5) >>> 0;
+      let x = Math.imul(n ^ (n >>> 15), n | 1);
+      x ^= x + Math.imul(x ^ (x >>> 7), x | 61);
+      return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const unite = p => { const l = Math.hypot(...p) || 1; return p.map(v => v / l); };
+  const croix = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const moins = (a, b) => a.map((v, i) => v - b[i]);
+  function triangle(sortie, a, b, c, deuxFaces = false) {
+    const n = croix(moins(b, a), moins(c, a)), aire = Math.hypot(...n);
+    if (aire < 1e-10) return;
+    const no = n.map(v => v / aire);
+    sortie.push([a, b, c, no, no, no]);
+    if (deuxFaces) { const inverse = no.map(v => -v); sortie.push([a, c, b, inverse, inverse, inverse]); }
+  }
+
+  // Ruban à nervure relevée : une courbe simple, deux pans et une pointe. Le niveau lointain ne change que
+  // l'échantillonnage de la courbe ; aucune feuille n'est supprimée, aucun volume de remplacement n'apparaît.
+  function feuille(sortie, spec, segments) {
+    const { pied, cap, longueur, largeur, elevation, courbe, pli } = spec;
+    const avant = [Math.cos(cap), 0, Math.sin(cap)], cote = [-avant[2], 0, avant[0]];
+    const point = (t, u) => {
+      const profil = Math.sin(Math.PI * t), avance = longueur * (t - courbe * t * t * .28);
+      const monte = longueur * (elevation * t - courbe * t * t * .28);
+      const l = largeur * profil * u, dos = largeur * pli * profil * (1 - Math.abs(u));
+      return [pied[0] + avant[0] * avance + cote[0] * l, pied[1] + monte + dos, pied[2] + avant[2] * avance + cote[2] * l];
+    };
+    for (let i = 0; i < segments; i++) for (const u of [-1, 0]) {
+      const a = point(i / segments, u), b = point(i / segments, u + 1);
+      const c = point((i + 1) / segments, u + 1), d = point((i + 1) / segments, u);
+      triangle(sortie, a, b, c, true); triangle(sortie, a, c, d, true);
+    }
+  }
+  function tige(sortie, a, b, rayon) {
+    const axe = unite(moins(b, a)), cote = unite(croix(axe, Math.abs(axe[1]) < .9 ? [0, 1, 0] : [1, 0, 0]));
+    const face = croix(axe, cote), anneau = (p, r) => [0, 1, 2].map(i => {
+      const angle = i * PI2 / 3;
+      return p.map((v, k) => v + r * (cote[k] * Math.cos(angle) + face[k] * Math.sin(angle)));
+    });
+    const bas = anneau(a, rayon), haut = anneau(b, rayon * .45);
+    for (let i = 0; i < 3; i++) { const j = (i + 1) % 3; triangle(sortie, bas[i], haut[j], haut[i]); triangle(sortie, bas[i], bas[j], haut[j]); }
+  }
+  function herbe(segments) {
+    const r = hasard(1807), tri = [];
+    for (let i = 0; i < 9; i++) {
+      const a = i * 2.399963229728653 + (r() - .5) * .4;
+      feuille(tri, { pied: [Math.cos(a) * .045, 0, Math.sin(a) * .045], cap: a,
+        longueur: .30 + r() * .24, largeur: .022 + r() * .017,
+        elevation: 1.1 + r() * .9, courbe: .45 + r() * .7, pli: .36 }, segments);
+    }
+    return tri;
+  }
+  function taillis(segments) {
+    const r = hasard(937), tri = [], pied = [0, 0, 0];
+    for (let i = 0; i < 4; i++) {
+      const a = i * PI2 / 4 + (r() - .5) * .5, h = .44 + r() * .22;
+      const milieu = [Math.cos(a) * .12, h * .55, Math.sin(a) * .12];
+      const bout = [Math.cos(a) * .25, h, Math.sin(a) * .25];
+      tige(tri, pied, milieu, .012); tige(tri, milieu, bout, .008);
+      for (let j = 0; j < 3; j++) {
+        const t = .28 + j * .32;
+        const p = milieu.map((v, k) => v + (bout[k] - v) * t);
+        feuille(tri, { pied: p, cap: a + (j % 2 ? 1 : -1) * (.55 + r() * .35), longueur: .20 + r() * .11,
+          largeur: .065 + r() * .025, elevation: .10 + r() * .38, courbe: .38, pli: .28 }, segments);
+      }
+    }
+    return tri;
+  }
+  function normaliserPaire(proche, loin) {
+    const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
+    for (const tri of proche.concat(loin)) for (let i = 0; i < 3; i++) for (let k = 0; k < 3; k++) {
+      min[k] = Math.min(min[k], tri[i][k]); max[k] = Math.max(max[k], tri[i][k]);
+    }
+    const taille = max.map((v, i) => v - min[i]), centre = max.map((v, i) => (v + min[i]) / 2);
+    const convertir = liste => liste.map(t => t.map((p, i) => i < 3 ? p.map((v, k) => (v - centre[k]) / taille[k]) : unite(p.map((v, k) => v * taille[k]))));
+    return { proche: convertir(proche), loin: convertir(loin) };
+  }
+  const H = normaliserPaire(herbe(4), herbe(2)), T = normaliserPaire(taillis(4), taillis(2));
+  const FORMES = Object.freeze({ 'herbes-val': H.proche, 'herbes-val-loin': H.loin, 'taillis-val': T.proche, 'taillis-val-loin': T.loin });
+  function installer(rendu) {
+    if (!rendu || typeof rendu.forme !== 'function') return false;
+    for (const nom of Object.keys(FORMES)) rendu.forme(nom, FORMES[nom]);
+    return true;
+  }
+
+  // Un lot par secteur de 420 m : deux familles seulement, donc au plus deux groupes instanciés par lot/passe.
+  // Les verts ont leur générateur indépendant. Ajouter un massif ne déplace ni arbre, ni obstacle, ni stand.
+  function construire(c, { limites, interroger } = {}) {
+    if (c.theme !== 'foret' || !limites || !interroger) return { lots: [], herbes: 0, taillis: 0 };
+    const r = hasard((c.graine ^ 0x53a98b17) >>> 0), groupes = new Map(), w = c.largeur / 2;
+    let herbes = 0, taillis = 0;
+    const pas = Math.max(1, Math.ceil(c.n / BUDGET.stations));
+    function ajouter(i, d, famille, angle, taille, color) {
+      const a = c.cap[i], x = c.x[i] - Math.sin(a) * d, z = c.z[i] + Math.cos(a) * d;
+      const q = interroger(x, z, 40), marge = Math.hypot(taille[0], taille[2]) / 2 + .18;
+      if (q.i < 0 || q.d < w + 1.2 + marge || Math.abs(B.circuit.ecart(c, i * c.pas, q.i * c.pas)) > 20) return false;
+      const cote = d < 0 ? -1 : 1, limite = cote < 0 ? limites.G[i] : limites.D[i];
+      if (Math.abs(d) + marge > limite - .7) return false;
+      // Même bande d'accotement que nappesRoute(), pied légèrement enterré, dévers arrêté au bord de piste.
+      const ext = limite + 4, u = (Math.abs(d) - w - 1.2) / (ext - w - 1.2);
+      const bord = c.y[i] - cote * w * Math.sin(c.devers[i]);
+      const sol = bord - .015 + u * (.015 - .02 * (ext - w - 1.2));
+      const objet = { shape: famille + '-val', p: [x, sol + taille[1] / 2 - .025, z], s: taille,
+        r: [0, angle, 0], mat: 11, color };
+      const cle = Math.floor(i * c.pas / 420);
+      let lot = groupes.get(cle); if (!lot) groupes.set(cle, lot = { objets: [], loin: [] });
+      lot.objets.push(objet); lot.loin.push({ ...objet, shape: famille + '-val-loin' });
+      return true;
+    }
+    for (let station = 0, i = 0; i < c.n && station < BUDGET.stations; i += pas, station++) {
+      const cote = station % 2 ? 1 : -1, hasardStation = [r(), r(), r(), r(), r(), r(), r(), r()];
+      if (Math.abs(B.circuit.ecart(c, 0, i * c.pas)) < 360 || (B.circuit.dansTunnel && B.circuit.dansTunnel(c, i * c.pas, 20))) continue;
+      const limite = cote < 0 ? limites.G[i] : limites.D[i], espace = limite - w - 4.2;
+      if (espace < 1.2) continue;
+      const d = cote * (w + 2.5 + hasardStation[0] * Math.min(espace - .3, 4.5));
+      for (let k = 0; k < 2; k++) {
+        const j = (i + k * 2) % c.n, largeur = .95 + hasardStation[k + 1] * .52, h = .40 + hasardStation[k + 3] * .28;
+        const vert = .82 + hasardStation[k + 4] * .30;
+        if (ajouter(j, d + cote * k * .75, 'herbes', hasardStation[k + 2] * PI2,
+          [largeur, h, largeur * (.72 + hasardStation[k + 3] * .20)], [.21 * vert, .34 * vert, .105 * vert])) herbes++;
+      }
+      if (hasardStation[7] < .58 && espace > 3) {
+        const largeur = 1.0 + hasardStation[5] * .55, h = .75 + hasardStation[6] * .35;
+        if (ajouter(i, cote * Math.min(limite - 2.3, Math.abs(d) + 2.5), 'taillis', hasardStation[4] * PI2,
+          [largeur, h, largeur * .85], [.135 + hasardStation[3] * .04, .26 + hasardStation[3] * .06, .075])) taillis++;
+      }
+    }
+    const lots = [];
+    for (const l of groupes.values()) {
+      const centre = [0, 0, 0];
+      for (const o of l.objets) for (let k = 0; k < 3; k++) centre[k] += o.p[k] / l.objets.length;
+      // La sphère comprend la déformation de vent, également utilisée dans la passe d'ombre de FERRO.
+      let rayon = 0;
+      for (const o of l.objets) rayon = Math.max(rayon, Math.hypot(...moins(o.p, centre)) + Math.hypot(...o.s) / 2 + .25);
+      lots.push({ ...l, centre, rayon, portee: Infinity, bascule: 520, lodReferenceFov: 60, lodReferenceHeight: 1080, vegetation: true });
+    }
+    return { lots, herbes, taillis };
+  }
+
+  B.vegetation = { FORMES, BUDGET, installer, construire };
+  installer(typeof window !== 'undefined' ? window.FRender : globalThis.FRender);
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -59624,6 +59935,9 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     }
   };
   const PUBLICITES = [[.86, .12, .08], [.98, .78, .10], [.10, .28, .70], [.06, .52, .30], [.95, .95, .92], [.08, .08, .09], [.92, .40, .06], [.40, .14, .55]];
+  // Recettes opt-in de FERRO : seules les surfaces de Val-Brûlé changent. Les marquages de piste restent sur
+  // leur matière historique et les glissières gardent leur métal galvanisé ; 24 désigne une vraie tôle peinte.
+  const MATIERES_PILOTES = Object.freeze({ asphalte: 21, beton: 22, roche: 23, metalPeint: 24 });
 
   // ---------------------------------------------------------------- géométrie du circuit
   function cadre(c, i) {
@@ -59724,7 +60038,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
         for (let b = 0; b < bandes.length; b++) {
           const [type, cote] = bandes[b];
           let d0, d1, y0, y1, mat = 8, col = tonte, n0 = no, n1 = no;
-          if (type === 'asphalte') { d0 = -w + .3; d1 = w - .3; y0 = hauteurRoute(f, d0, w); y1 = hauteurRoute(f, d1, w); mat = 14; col = asphalte(f.i); }
+          if (type === 'asphalte') { d0 = -w + .3; d1 = w - .3; y0 = hauteurRoute(f, d0, w); y1 = hauteurRoute(f, d1, w); mat = th.matieres ? th.matieres.asphalte : 14; col = asphalte(f.i); }
           else {
             const bord = cote < 0 ? -1 : 1, limite = cote < 0 ? limG : limD, yBord = hauteurRoute(f, bord * w, w);
             const ext = limite + 4;
@@ -59878,12 +60192,12 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     liste.push({ shape: 'box', p: vers(recul - cote * .9, 6.9, 0), s: [longueur + 2, .9, .12], r: rot, mat: 16, color: teinte });
   }
 
-  function batimentStands(liste, loin, f, w, cote, longueur) {
+  function batimentStands(liste, loin, f, w, cote, longueur, matieres) {
     const rot = capRot(f.a), y0 = hauteurRoute(f, cote * w, w) - .2, recul = cote * (w + 13);
     const vers = (d, h, l = 0) => [f.x + f.r[0] * d + f.t[0] * l, y0 + h, f.z + f.r[2] * d + f.t[2] * l];
     liste.push({ shape: 'box', collision: 'batiment', p: vers(recul + cote * 6, 4), s: [longueur, 8, 12], r: rot, mat: 13.2, color: [.86, .84, .78] });
     loin.push({ shape: 'box', p: vers(recul + cote * 6, 4), s: [longueur, 8, 12], r: rot, mat: 13.2, color: [.86, .84, .78] });
-    liste.push({ shape: 'box', collision: 'toit', p: vers(recul + cote * 6, 8.25), s: [longueur + 1, .5, 13], r: rot, mat: 0, color: [.30, .32, .34] });
+    liste.push({ shape: 'box', collision: 'toit', p: vers(recul + cote * 6, 8.25), s: [longueur + 1, .5, 13], r: rot, mat: matieres ? matieres.metalPeint : 0, color: [.30, .32, .34] });
     for (let k = -longueur / 2 + 3; k < longueur / 2 - 2; k += 6) liste.push({ shape: 'box', p: vers(recul - cote * .02, 1.6, k), s: [4.4, 3.2, .12], r: rot, mat: 7, color: [.08, .09, .1] });
     // muret des stands
     liste.push({ shape: 'box', collision: 'muret', p: vers(cote * (w + 6.2), .55), s: [longueur + 30, 1.1, .5], r: rot, mat: 3, color: [.82, .82, .8] });
@@ -59892,6 +60206,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
 
   function construire(c, options = {}) {
     const th = Object.assign({}, THEMES[c.theme] || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
+    if (c.theme === 'foret' && options.matieres !== false) th.matieres = MATIERES_PILOTES;
     // l'eau ne noie jamais la piste : le niveau descend sous le point le plus bas de l'axe (le virage de
     // Port-Sable plongeait à −5,8 sous le niveau −4 du thème cote, David 14/11)
     if (th.eau !== undefined) {
@@ -60110,7 +60425,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     }
     for (let s = avant + 40; s < apres - 20; s += 60) {
       const f = cadre(c, Math.round(s / c.pas)), objets = [], loin = [];
-      batimentStands(objets, loin, f, w, 1, 60);
+      batimentStands(objets, loin, f, w, 1, 60, th.matieres);
       const l = lotDe(f.x, f.z, f.i); l.objets.push(...objets); l.loin.push(...loin);
     }
 
@@ -60211,6 +60526,12 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     const lots = [];
     for (const l of groupes.values()) {
       if (!l.objets.length) continue;
+      // Ces objets gardent exactement leur géométrie, leurs solides et leur répartition. La recette de surface
+      // change seulement dans le biome pilote, dans les versions proches et lointaines du même lot.
+      if (th.matieres) for (const objets of [l.objets, l.loin]) for (const o of objets) {
+        if (o.mat === 3) o.mat = th.matieres.beton;
+        else if (o.mat === 9) o.mat = th.matieres.roche;
+      }
       let mx = 0, my = 0, mz = 0;
       for (const o of l.objets) { mx += o.p[0]; my += o.p[1]; mz += o.p[2]; }
       mx /= l.objets.length; my /= l.objets.length; mz /= l.objets.length;
@@ -60236,6 +60557,13 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
     if (tunnelLampes) decor.tunnelLampes = tunnelLampes;
+    // Végétation basse pilote : générateur et lots indépendants. Le décor historique et ses solides restent
+    // identiques ; vegetation:false permet une comparaison avant/après avec exactement les mêmes obstacles.
+    if (B.vegetation && options.vegetation !== false && c.theme === 'foret') {
+      const v = B.vegetation.construire(c, { limites: lim, interroger });
+      lots.push(...v.lots);
+      decor.vegetation = { herbes: v.herbes, taillis: v.taillis, lots: v.lots.length };
+    }
     return decor;
   }
 
@@ -62411,33 +62739,45 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   const PAS_AFFICHAGE = 0.2;  // le volet se rafraîchit à 5 Hz, jamais à chaque image
 
   const cercles = {};
-  for (const n of SECTIONS) cercles[n] = new Float64Array(FENETRE);
+  for (const n of SECTIONS) cercles[n] = new Float64Array(FENETRE).fill(NaN);
   const cerclesVues = {};
-  for (const v of VUES) cerclesVues[v] = { appels: 0, draw: new Float64Array(FENETRE), triangles: new Float64Array(FENETRE) };
+  for (const v of VUES) cerclesVues[v] = { appels: new Float64Array(FENETRE), draw: new Float64Array(FENETRE), triangles: new Float64Array(FENETRE) };
   let tete = 0, remplies = 0;
 
   const etat = {
     actif: false, gpu: false, gpuValide: false, gpuMs: null, gpuPasses: null,
     voitures: 0, voituresTotal: 0, lampes: 0, ombres: false, palier: 0, qualite: '',
     pieces: 0, piecesTotal: 0, physx: null,
+    audio: { actif: false, voix: 0, joueurs: 0, rivaux: 0, fondus: 0, budget: null, musique: false },
     images: 0, descartees: 0, enAttente: 0
   };
   const cumulVues = {};
   for (const v of VUES) cumulVues[v] = { drawCalls: 0, triangles: 0, images: 0 };
 
   // Une image remplit une ligne de tous les cercles ; la ligne suivante n'est ouverte qu'à la fin de l'image.
-  function imageDebut() { return performance.now(); }
+  function imageDebut() {
+    if (etat.actif) {
+      // La case appartient à la nouvelle image : une section absente ne doit pas hériter de l'image vieille de
+      // quatre secondes. NaN signifie « non relevé » ; un vrai coût nul reste un échantillon valable.
+      for (const n of SECTIONS) cercles[n][tete] = NaN;
+      for (const v of VUES) { const c = cerclesVues[v]; c.appels[tete] = c.draw[tete] = c.triangles[tete] = 0; }
+    }
+    return performance.now();
+  }
   function imageFin(t0, dtReel) {
     if (!etat.actif) return;
-    cercles.intervalle[tete] = dtReel * 1000;
-    cercles.boucle[tete] = (performance.now() - t0) * 1000;
+    cercles.intervalle[tete] = Number.isFinite(dtReel) && dtReel > 0 ? dtReel * 1000 : NaN;
+    // performance.now() est déjà en millisecondes, contrairement à dtReel (secondes).
+    cercles.boucle[tete] = Math.max(0, performance.now() - t0);
     etat.images++;
     tete = (tete + 1) % FENETRE;
     if (remplies < FENETRE) remplies++;
   }
   // section : coût JavaScript d'une partie de l'image, en millisecondes. Ce n'est pas un temps GPU.
   function section(nom, ms) {
-    if (etat.actif && cercles[nom] && ms >= 0) cercles[nom][tete] = ms;
+    // Une section peut être appelée plusieurs fois dans une image (J1 + J2) : conserver leur coût total.
+    if (etat.actif && cercles[nom] && Number.isFinite(ms) && ms >= 0)
+      cercles[nom][tete] = (Number.isFinite(cercles[nom][tete]) ? cercles[nom][tete] : 0) + ms;
   }
 
   // relevé juste après un draw : le moteur vient de compter cette vue
@@ -62445,7 +62785,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     if (!etat.actif || !rendu || !rendu.stats || !cumulVues[nom]) return;
     const s = rendu.stats, c = cumulVues[nom], cv = cerclesVues[nom];
     c.drawCalls += s.drawCalls || 0; c.triangles += s.triangles || 0; c.images++;
-    cv.appels++;
+    cv.appels[tete]++;
     cv.draw[tete] = (cv.draw[tete] || 0) + (s.drawCalls || 0);
     cv.triangles[tete] = (cv.triangles[tete] || 0) + (s.triangles || 0);
     if (info) {
@@ -62455,11 +62795,21 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   }
   function voitures(actives, total) { etat.voitures = actives; etat.voituresTotal = total; }
   function pieces(n, total, etatPhysX) { etat.pieces = n | 0; etat.piecesTotal = total | 0; etat.physx = etatPhysX || null; }
+  // Une fabrique Web Audio préparée ne signifie pas que le geste utilisateur a démarré le son.
+  // Le budget est une capacité, les voix sont les moteurs actifs ou encore en fondu (hors thème et effets).
+  function audio(stats) {
+    const a = etat.audio;
+    a.actif = !!(stats && stats.actif);
+    a.budget = stats && Number.isFinite(stats.budget) && stats.budget >= 0 ? Math.floor(stats.budget) : null;
+    for (const k of ['voix', 'joueurs', 'rivaux', 'fondus'])
+      a[k] = a.actif && Number.isFinite(stats[k]) && stats[k] >= 0 ? Math.floor(stats[k]) : 0;
+    a.musique = a.actif && !!stats.musique;
+  }
   function reglages(v) { if (v) { etat.palier = v.palier === null ? null : (v.palier || 0); etat.qualite = v.qualite || ''; } }
 
   function percentile(cercle, p) {
     if (!remplies) return null;
-    const t = Array.prototype.slice.call(cercle, 0, remplies).filter(v => v > 0);
+    const t = Array.prototype.slice.call(cercle, 0, remplies).filter(Number.isFinite);
     if (!t.length) return null;
     t.sort((a, b) => a - b);
     return t[Math.min(t.length - 1, Math.floor(p * (t.length - 1)))];
@@ -62467,7 +62817,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   function moyenne(cercle) {
     if (!remplies) return null;
     let s = 0, k = 0;
-    for (let i = 0; i < remplies; i++) if (cercle[i] > 0) { s += cercle[i]; k++; }
+    for (let i = 0; i < remplies; i++) if (Number.isFinite(cercle[i])) { s += cercle[i]; k++; }
     return k ? s / k : null;
   }
 
@@ -62482,16 +62832,22 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     let total = 0, lignes = 0, passes = null;
     for (let i = h.length - 1; i >= 0 && lignes < 3; i--) {
       const r = h[i];
-      if (!r || !r.valid || !r.queries || r.completed !== r.queries) continue;
-      total += Object.keys(r.gpu).reduce((a, k) => a + r.gpu[k], 0);
-      if (!passes) passes = Object.assign({}, r.gpu);
+      if (!r || !r.valid || !r.queries || r.completed !== r.queries || !r.gpu) continue;
+      const noms = Object.keys(r.gpu);
+      if (!noms.length || noms.some(k => !Number.isFinite(r.gpu[k]) || r.gpu[k] < 0)) continue;
+      if (!passes) passes = {};
+      for (const k of noms) { total += r.gpu[k]; passes[k] = (passes[k] || 0) + r.gpu[k]; }
       lignes++;
     }
     etat.gpuValide = lignes > 0;
     etat.gpuMs = lignes ? total / lignes : null;
+    if (passes) for (const k of Object.keys(passes)) passes[k] /= lignes;
     etat.gpuPasses = passes;
   }
-  function arretGpu() { etat.gpu = false; etat.gpuValide = false; etat.gpuMs = null; etat.gpuPasses = null; }
+  function arretGpu() {
+    etat.gpu = false; etat.gpuValide = false; etat.gpuMs = null; etat.gpuPasses = null;
+    etat.descartees = etat.enAttente = 0;
+  }
 
   function lire(rendu) {
     if (etat.actif) lireGpu(rendu);
@@ -62499,30 +62855,33 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const v = {
       actif: etat.actif,
       fps: p50 ? 1000 / p50 : null, imageP50: p50,
-      imageP95: percentile(cercles.intervalle, .95), imagePire: percentile(cercles.intervalle, .999),
+      imageP95: percentile(cercles.intervalle, .95), imagePire: percentile(cercles.intervalle, 1),
       cpu: {}, cpuP50: {}, cpuP95: {}, vues: {},
       gpu: etat.gpu, gpuValide: etat.gpuValide, gpuMs: etat.gpuMs, gpuPasses: etat.gpuPasses,
+      gpuPortee: 'Moyenne des trois derniers rendus complets du moteur principal ; pas le total de l’image avec les rétroviseurs.',
       gpuDescartes: etat.descartees, gpuEnAttente: etat.enAttente,
       voitures: etat.voitures, voituresTotal: etat.voituresTotal,
       lampes: etat.lampes, ombres: etat.ombres, palier: etat.palier, qualite: etat.qualite, images: etat.images,
-      pieces: etat.pieces, piecesTotal: etat.piecesTotal, physx: etat.physx
+      pieces: etat.pieces, piecesTotal: etat.piecesTotal, physx: etat.physx, audio: Object.assign({}, etat.audio)
     };
     for (const n of SECTIONS) if (n !== 'intervalle') { v.cpu[n] = moyenne(cercles[n]); v.cpuP50[n] = percentile(cercles[n], .5); v.cpuP95[n] = percentile(cercles[n], .95); }
     for (const k of VUES) {
       const c = cumulVues[k];
-      v.vues[k] = { images: c.images, drawCalls: c.images ? c.drawCalls / c.images : 0, triangles: c.images ? c.triangles / c.images : 0 };
+      const cv = cerclesVues[k];
+      v.vues[k] = { images: c.images, drawCalls: c.images ? c.drawCalls / c.images : 0, triangles: c.images ? c.triangles / c.images : 0,
+        rendusParImage: moyenne(cv.appels), drawCallsParImage: moyenne(cv.draw), trianglesParImage: moyenne(cv.triangles) };
     }
     return v;
   }
 
   function reinitialiser() {
-    for (const n of SECTIONS) cercles[n].fill(0);
+    for (const n of SECTIONS) cercles[n].fill(NaN);
     for (const k of VUES) {
       const c = cumulVues[k]; c.drawCalls = c.triangles = c.images = 0;
-      const cv = cerclesVues[k]; cv.appels = 0; cv.draw.fill(0); cv.triangles.fill(0);
+      const cv = cerclesVues[k]; cv.appels.fill(0); cv.draw.fill(0); cv.triangles.fill(0);
     }
-    tete = 0; remplies = 0; etat.images = 0;
-    arretGpu();
+    tete = 0; remplies = 0; etat.images = 0; dernier = -1;
+    arretGpu(); audio(null);
   }
 
   // ---------------------------------------------------------------- volet
@@ -62541,11 +62900,14 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     el.textContent = [
       'FPS ' + f(v.fps) + ' · image ' + f(v.imageP50) + ' ms · p95 ' + f(v.imageP95) + ' · pire ' + f(v.imagePire),
       'CPU (ms, p50/p95)  ' + SECTIONS.filter(n => n !== 'intervalle').map(n => n + ' ' + f(v.cpuP50[n]) + '/' + f(v.cpuP95[n])).join(' · '),
-      'GPU  ' + (v.gpuValide ? f(v.gpuMs) + ' ms' : 'N/D') + (v.gpu ? '' : ' (extension absente)') +
+      'GPU / rendu principal  ' + (v.gpuValide ? f(v.gpuMs) + ' ms' : 'N/D') + (v.gpu ? '' : ' (extension absente)') +
         (v.gpuPasses ? '  ' + Object.keys(v.gpuPasses).map(k => k + ' ' + f(v.gpuPasses[k])).join(' · ') : '') +
         (v.gpuDescartes ? '  · ' + v.gpuDescartes + ' mesure(s) disjointe(s) écartée(s)' : ''),
-      'draw calls  ' + VUES.map(k => k + ' ' + e(v.vues[k].drawCalls)).join(' · '),
-      'triangles  ' + VUES.map(k => k + ' ' + e(v.vues[k].triangles)).join(' · '),
+      'draw calls / image  ' + VUES.map(k => k + ' ' + e(v.vues[k].drawCallsParImage)).join(' · '),
+      'triangles / image  ' + VUES.map(k => k + ' ' + e(v.vues[k].trianglesParImage)).join(' · '),
+      'son ' + (v.audio.actif ? 'démarré' : 'non démarré') + ' · voix moteur ' + v.audio.voix + '/' + e(v.audio.budget) +
+        ' · joueurs ' + v.audio.joueurs + ' · rivaux ' + v.audio.rivaux + ' · fondus ' + v.audio.fondus +
+        ' · musique ' + (v.audio.musique ? 'oui' : 'non'),
       'voitures ' + v.voitures + '/' + v.voituresTotal + ' · lampes ' + v.lampes + ' · ombres ' + (v.ombres ? 'oui' : 'non') +
       ' · pièces ' + v.pieces + '/' + v.piecesTotal + ' · PhysX ' + (v.physx && v.physx.ready ? v.physx.version : 'N/D') +
         ' · qualité ' + (v.qualite || 'N/D') + ' · palier ' + (v.palier === null ? 'N/D (hors Auto)' : v.palier)
@@ -62569,10 +62931,46 @@ globalThis.FGeometry=globalThis.BITUME.carene;
 
   B.mesures = {
     SECTIONS, VUES, etat,
-    imageDebut, imageFin, section, vue, voitures, pieces, reglages,
+    imageDebut, imageFin, section, vue, voitures, pieces, audio, reglages,
     lire, reinitialiser, afficher, majAffichage,
     get actif() { return etat.actif; }
   };
+})(globalThis.BITUME = globalThis.BITUME || {});
+</script>
+<script>
+// ---- qualite.js ----
+/* BITUME — gouverneur de qualité, en temps réel visible. Une décision vaut pour toutes les vues de la séance. */
+(function (B) {
+  'use strict';
+  const FENETRE = 3, REMONTEE = 8, LENT = 1 / 50, AISE = .014, EPS = 1e-9;
+  function vider(palier) { palier.somme = palier.compte = palier.t = palier.aise = 0; }
+  function avancer(palier, dtReel, { actif = true, min = 0, max = 4 } = {}) {
+    // Une vue masquée, un banc à qualité fixe ou un mode manuel ne contribue à aucune décision ultérieure.
+    if (!actif) { vider(palier); return false; }
+    if (!(dtReel > 0) || !Number.isFinite(dtReel)) return false;
+    const minimum = Math.max(0, Math.floor(Number.isFinite(min) ? min : 0));
+    const maximum = Math.max(minimum, Math.floor(Number.isFinite(max) ? max : 4));
+    const niveau = Number.isFinite(palier.n) ? Math.floor(palier.n) : minimum;
+    const borne = Math.max(minimum, Math.min(maximum, niveau));
+    if (borne !== palier.n) { palier.n = borne; vider(palier); return true; }
+
+    palier.somme = (palier.somme || 0) + dtReel;
+    palier.compte = (palier.compte || 0) + 1;
+    palier.t = (palier.t || 0) + dtReel;
+    const moyenne = palier.somme / palier.compte;
+    // La remontée exige huit secondes de moyennes confortables successives. Un intervalle isolé est intégré
+    // à la moyenne de la fenêtre courante ; les frontières de fenêtres ne conservent pas une ancienne charge.
+    if (moyenne < AISE - EPS && palier.n > minimum) palier.aise = (palier.aise || 0) + dtReel;
+    else palier.aise = 0;
+
+    if (palier.t >= FENETRE - EPS) {
+      palier.somme = palier.compte = palier.t = 0;
+      if (moyenne > LENT + EPS && palier.n < maximum) { palier.n++; palier.aise = 0; return true; }
+    }
+    if (palier.aise >= REMONTEE - EPS && palier.n > minimum) { palier.n--; vider(palier); return true; }
+    return false;
+  }
+  B.qualite = { avancer };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -62609,7 +63007,9 @@ FERRO.initPhysics().then(function(){
   // Les anciens placements auto/haut/bas reviennent en haut à droite ; taille et visibilité sont conservées.
   for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['gauche', 'droite'], carteTaille: ['petite', 'normale', 'grande'] }))
     if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
-  const sauverReglages = () => ecrireStock('bitume.reglages', reglages);
+  const sauverReglages = () => {
+    if (!session || !session.reglagesReference) ecrireStock('bitume.reglages', reglages);
+  };
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
   const PHYSIQUE = 'p9', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
@@ -62683,6 +63083,7 @@ FERRO.initPhysics().then(function(){
 
   // ---------------------------------------------------------------- moteur de rendu et son
   let rendu = null, son = null, scene = null, session = null;
+  let decorEnrichi = true; // l'outil de référence peut retrouver le décor historique pour une comparaison A/B
   const canvas = $('scene'), jeu = $('jeu');
   function appliquerCarte() {
     for (const cle of ['carte', 'cartePosition', 'carteTaille'])
@@ -62694,8 +63095,8 @@ FERRO.initPhysics().then(function(){
   // brume fait la limite. Les ombres du soleil prennent tout l'atlas du moteur sur un carré de 200 m de côté.
   const PORTEE_VUE = 6000, OMBRE = 100, OMBRE_DEVANT = 76;
   function installer(i) {
-    if (scene && scene.index === i) return scene;
-    const c = circuit(i), decor = B.decor.construire(c);
+    if (scene && scene.index === i && scene.enrichi === decorEnrichi) return scene;
+    const c = circuit(i), decor = B.decor.construire(c, { matieres: decorEnrichi, vegetation: decorEnrichi });
     if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
     rendu.setNappes(decor.nappes);
@@ -62707,7 +63108,7 @@ FERRO.initPhysics().then(function(){
     // profondeur du volume d'ombre : un point du sol au bord du carré est décalé de OMBRE × cotangente de la hauteur du soleil
     const sol = decor.atmosphere.sunDirection, sinus = sol[1] / Math.hypot(sol[0], sol[1], sol[2]);
     const ombre = { extent: OMBRE, depth: 2 * (OMBRE * Math.sqrt(Math.max(0, 1 - sinus * sinus)) / Math.max(.25, sinus) + 30) };
-    scene = { index: i, c, decor, fond, plan: p, ombre };
+    scene = { index: i, enrichi: decorEnrichi, c, decor, fond, plan: p, ombre };
     return scene;
   }
 
@@ -62717,6 +63118,7 @@ FERRO.initPhysics().then(function(){
   const TOURS_DEMO = 3, PILOTE_DEMO = 'N. Aubrac';
   let graineCourse = (Date.now() >>> 7) & 0xffff;
   function lancer(type, i, enl) {
+    restaurerReference();
     // la séance qui meurt rend ses corps PhysX : la démo enchaîne les courses sans fin et laisserait un monde
     // orphelin par course (les pièces détachées y vivent douze secondes chacune)
     if (session && session.fx) B.traces.liberer(session.fx);
@@ -62768,6 +63170,7 @@ FERRO.initPhysics().then(function(){
     // Écran partagé (David, 16/11 : « multi en écran splitté local, deux manettes, l'un sur l'autre ou côte à côte ») :
     // la vue du joueur 2 a son propre état de caméra, d'éclair et d'affichage, le reste vient de la séance.
     if (duo) S.vueJ2 = Object.assign(Object.create(S), { camCap: null, tete: null, secousse: 0, eclair: 0, lumiere: 1, sol: null, tele: { poste: null, alea: graine32(31 + i) },
+      distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
       suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null });
     S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une, ou deux à l'écran partagé)
     jeu.dataset.partage = duo ? (reglages.partage === 'cote' ? 'cote' : 'haut-bas') : '';
@@ -62888,10 +63291,12 @@ FERRO.initPhysics().then(function(){
   let cameraEssai = null; // BITUME_JEU.camera = (pose, camera) => ({ pos, yaw, pitch, fov }) : vue libre pour les captures
   addEventListener('blur', () => { touches.clear(); souris.gaz = souris.frein = souris.derive = false; relacherTactile(); if (pauseAuto && enCourse()) basculerPause(true); });
   document.addEventListener('visibilitychange', () => {
+    oublierIntervalle();
     if (document.hidden) relacherTactile();
     if (pauseAuto && document.hidden && enCourse()) basculerPause(true);
     if (son) son.musique(!document.hidden && ecran === 'titre'); // onglet caché : le minuteur du thème serait bridé
   });
+  addEventListener('focus', oublierIntervalle);
   addEventListener('pointerdown', activerSon, { passive: true });
   // Gestes : ils remettent à zéro l'attente de la démo sur l'écran titre ; pendant la démo, le premier ramène au
   // titre et ne compte pas comme un clic sur le menu qui revient.
@@ -63866,21 +64271,16 @@ FERRO.initPhysics().then(function(){
   }
 
   // ---------------------------------------------------------------- paliers de la qualité Auto
-  // En qualité Auto, quand les images ralentissent (plus de 19 ms en moyenne pendant 2 s, volet visible), le jeu
+  // En qualité Auto, quand les images ralentissent (moins de 50 i/s pendant 3 s, volet visible), le jeu
   // retire un effet coûteux après l'autre : image réelle des rétroviseurs, ombres, halo et reflets, puis il baisse la
   // résolution (palier 4). Il remonte d'un palier après 8 s sous 14 ms. Le gouverneur de résolution du moteur
   // continue d'agir dans chaque palier. Les qualités Légère et Fine restent fixes.
   const palier = { n: 0, somme: 0, compte: 0, t: 0, aise: 0 };
   const PALIERS = 4;
   function majPalier(S, dt) {
-    if (reglages.qualite !== 'auto' || S.banc || document.hidden || !(dt > 0) || dt > .25 || (S.type !== 'course' && S.type !== 'chrono' && S.type !== 'demo')) { palier.somme = palier.compte = palier.t = 0; return; }
-    palier.somme += dt; palier.compte++; palier.t += dt;
-    if (palier.t < 2) return;
-    const moyenne = palier.somme / palier.compte * 1000;
-    palier.somme = palier.compte = palier.t = 0;
-    if (moyenne > 19 && palier.n < PALIERS) { palier.n++; palier.aise = 0; appliquerPalier(); }
-    else if (moyenne < 14 && palier.n > (gpuModeste ? 1 : 0)) { if ((palier.aise += 2) >= 8) { palier.n--; palier.aise = 0; appliquerPalier(); } }
-    else palier.aise = 0;
+    const actif = reglages.qualite === 'auto' && !S.banc && !S.reference && !document.hidden &&
+      (S.type === 'course' || S.type === 'chrono' || S.type === 'demo' || S.type === 'duo');
+    if (B.qualite.avancer(palier, dt, { actif, min: gpuModeste ? 1 : 0, max: PALIERS })) appliquerPalier();
   }
   function appliquerPalier() { if (rendu) rendu.resize(palier.n >= 4 ? .75 : 'auto'); }
   // effets permis par la qualité et le palier
@@ -64017,12 +64417,12 @@ FERRO.initPhysics().then(function(){
       catch (e) { console.warn('BITUME : image des rétroviseurs indisponible', e); retro.echec = true; for (const t of toiles) t.hidden = true; return; }
     }
     if (!G.ctx.length) toiles.forEach((t, i) => { t.width = source.width; t.height = source.height; t.style.width = source.clientWidth + 'px'; t.style.height = source.clientHeight + 'px'; G.ctx[i] = t.getContext('2d'); });
-    if (retro.scene !== scene.index) {
+    if (retro.scene !== scene) {
       const d = scene.decor;
       retro.rendu.setWorld([], [], d.atmosphere);
       retro.rendu.setNappes(d.nappes.map(n => Object.assign({}, n)));
       retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })));
-      retro.scene = scene.index;
+      retro.scene = scene;
     }
     // axes de la caméra principale, comme le moteur (cameraAxes) : chaque coin de glace projeté à l'écran
     const cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw), cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch), cr = Math.cos(cam.roll || 0), sr = Math.sin(cam.roll || 0);
@@ -64228,29 +64628,52 @@ FERRO.initPhysics().then(function(){
   }
 
   // ---------------------------------------------------------------- son de chaque image
-  const sonRivaux = [];
+  const sonRivaux = [], sonCandidats = [], sonJoueur2 = {};
+  const etatSon = { pause: false, joueur: {}, joueur2: null, rivaux: sonRivaux };
+  function decrireMoteur(sortie, S, voiture, cam) {
+    const et = voiture.etat, exterieur = VUES_DEHORS.has(S.vue);
+    sortie.id = voiture.id; sortie.regime = et.regime; sortie.gaz = et.gaz; sortie.rapport = et.rapport;
+    sortie.v = Math.abs(et.v); sortie.glisse = et.glisse; sortie.surface = et.surface;
+    sortie.turbo = et.turbo.reste > 0; sortie.vue = S.vue === 'cockpit' ? 'cockpit' : 'poursuite';
+    sortie.muet = exterieur; sortie.tunnel = !exterieur && sousLaVoute(S.course.c, cam.pos);
+  }
   function majSon(S, cam, dtImage) {
     if (!son || !sonActif) return;
     // la voiture entendue de l'intérieur est celle que l'on suit de près : le joueur, ou celle du plan de la démo
-    const co = S.course, ks = S.suivie || 0, et = co.voitures[ks].etat, poses = tampons.poses;
+    const co = S.course, ks = S.suivie || 0, poses = tampons.poses;
+    const S2 = S.type === 'duo' ? S.vueJ2 : null, cam2 = S2 && S2.camera, k2 = cam2 ? S.locaux[1] : -1;
     const fx = Math.sin(cam.yaw), fz = -Math.cos(cam.yaw), rx = Math.cos(cam.yaw), rz = Math.sin(cam.yaw);
+    const fx2 = cam2 ? Math.sin(cam2.yaw) : 0, fz2 = cam2 ? -Math.cos(cam2.yaw) : 0;
+    const rx2 = cam2 ? Math.cos(cam2.yaw) : 0, rz2 = cam2 ? Math.sin(cam2.yaw) : 0;
     sonRivaux.length = 0;
-    const exterieur = VUES_DEHORS.has(S.vue), micro = exterieur && S.type === 'demo';
+    const exterieur = VUES_DEHORS.has(S.vue), exterieur2 = S2 && VUES_DEHORS.has(S2.vue), micro = exterieur && S.type === 'demo';
     for (let k = 0; k < co.voitures.length; k++) {
       if (k === ks && !exterieur) continue;
+      if (k === k2 && !exterieur2) continue;
       const p = poses[k], dx = p.x - cam.pos[0], dy = p.y - cam.pos[1], dz = p.z - cam.pos[2], d = Math.hypot(dx, dy, dz);
       if (S.distances[k] >= 0 && dtImage > 0) S.vRel[k] = lerp(S.vRel[k], clamp((S.distances[k] - d) / dtImage, -120, 120), .2);
       S.distances[k] = d;
+      let distance = d, direction = Math.atan2(dx * rx + dz * rz, dx * fx + dz * fz), vitesseRelative = S.vRel[k];
+      // Les deux moteurs humains sont réservés. Pour les trois voix d'ambiance communes, retenir l'auditeur
+      // le plus proche avec sa propre histoire de distances ; J2 éloigné ne devient jamais silencieux.
+      if (cam2) {
+        const dx2 = p.x - cam2.pos[0], dy2 = p.y - cam2.pos[1], dz2 = p.z - cam2.pos[2], d2 = Math.hypot(dx2, dy2, dz2);
+        if (S2.distances[k] >= 0 && dtImage > 0) S2.vRel[k] = lerp(S2.vRel[k], clamp((S2.distances[k] - d2) / dtImage, -120, 120), .2);
+        S2.distances[k] = d2;
+        if (d2 < distance) { distance = d2; direction = Math.atan2(dx2 * rx2 + dz2 * rz2, dx2 * fx2 + dz2 * fz2); vitesseRelative = S2.vRel[k]; }
+      }
       const v = co.voitures[k];
       // démo vue de l'extérieur : un micro d'ambiance rapproche les voitures (la caméra est à 30 à 120 m), l'effet Doppler reste celui de la caméra
-      sonRivaux.push({ id: k, distance: micro ? 2 + d * .06 : d, angle: Math.atan2(dx * rx + dz * rz, dx * fx + dz * fz), regime: v.etat.regime, gaz: v.etat.gaz, vRel: S.vRel[k] });
+      const r = sonCandidats[k] || (sonCandidats[k] = {});
+      r.id = k; r.distance = micro ? 2 + distance * .06 : distance; r.angle = direction;
+      r.regime = v.etat.regime; r.gaz = v.etat.gaz; r.vRel = vitesseRelative;
+      sonRivaux.push(r);
     }
-    son.mettreAJour({
-      pause: ecran === 'pause',
-      joueur: { regime: et.regime, gaz: et.gaz, rapport: et.rapport, v: Math.abs(et.v), glisse: et.glisse, surface: et.surface, turbo: et.turbo.reste > 0, vue: S.vue === 'cockpit' ? 'cockpit' : 'poursuite', muet: exterieur,
-        tunnel: !exterieur && B.circuit.dansTunnel(co.c, et.s, -2) },
-      rivaux: sonRivaux
-    }, dtImage);
+    etatSon.pause = ecran === 'pause';
+    decrireMoteur(etatSon.joueur, S, co.voitures[ks], cam);
+    etatSon.joueur2 = cam2 ? sonJoueur2 : null;
+    if (cam2) decrireMoteur(sonJoueur2, S2, co.voitures[k2], cam2);
+    son.mettreAJour(etatSon, dtImage);
   }
 
   // ---------------------------------------------------------------- affichage de course
@@ -64400,6 +64823,10 @@ FERRO.initPhysics().then(function(){
   const enCourse = () => ecran === 'course';
 
   function aller(nom) {
+    // Une pause ou les réglages interrompent l'observation Auto, même quand aucune image de course ne passe.
+    // Conserver le niveau déjà choisi, mais exiger une nouvelle fenêtre complète au retour en piste.
+    if ((ecran === 'course' || ecran === 'demo') !== (nom === 'course' || nom === 'demo'))
+      B.qualite.avancer(palier, 0, { actif: false });
     if (son && nom !== 'demo') son.evenement('clic');
     if (nom !== 'course' && nom !== 'demo' && nom !== 'pause') { secouerManette(0, 0); secouerManette(0, 0, pad2); }
     for (const e of ECRANS) $(e).hidden = e !== nom;
@@ -64533,7 +64960,14 @@ FERRO.initPhysics().then(function(){
       reglages.commandes = [commande(0), commande(1)]; reglages.commandes[n] = t.value; souris.active = false; sauverReglages();
       if (t.name[0] === 'r') majCommandes(); else for (const r of document.querySelectorAll('input[name="rcmd' + n + '"]')) r.checked = r.value === t.value;
     }
-    if (['vue', 'boite', 'qualite', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille'].includes(t.name)) { reglages[t.name] = t.value; sauverReglages(); appliquerCarte(); if (t.name === 'qualite' && rendu) { palier.n = gpuModeste ? 1 : 0; rendu.resize(t.value); } }
+    if (['vue', 'boite', 'qualite', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille'].includes(t.name)) {
+      reglages[t.name] = t.value; sauverReglages(); appliquerCarte();
+      if (t.name === 'qualite') {
+        B.qualite.avancer(palier, 0, { actif: false });
+        palier.n = gpuModeste ? 1 : 0;
+        if (rendu) rendu.resize(t.value);
+      }
+    }
     if (t.name === 'aide') { reglages.aide = +t.value; sauverReglages(); }
   });
   for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).addEventListener('input', e => { reglages[nom] = +e.target.value; sauverReglages(); appliquerVolumes(); });
@@ -64728,6 +65162,12 @@ FERRO.initPhysics().then(function(){
 
   // ---------------------------------------------------------------- boucle principale
   let tPrec = 0;
+  function oublierIntervalle() {
+    // Le temps passé dans un onglet masqué ne doit pas faire baisser la qualité au retour.
+    tPrec = 0;
+    B.qualite.avancer(palier, 0, { actif: false });
+    B.mesures.reinitialiser();
+  }
   function image(t) {
     requestAnimationFrame(image);
     const tMes = B.mesures.imageDebut();
@@ -64764,14 +65204,14 @@ FERRO.initPhysics().then(function(){
       // démo : un choc passe au ralenti (réalisateur)
       S.acc += dtReel * (S.type === 'demo' ? B.realisateur.vitesse(S.real, S.course) : 1);
       let n = 0;
-      while (S.acc >= DT && n < 14) { pasSimulation(S, !!S.banc); S.acc -= DT; n++; }
+      while (S.acc >= DT && n < 14) { pasSimulation(S, !!(S.reference && S.reference.pilote)); S.acc -= DT; n++; }
       if (n === 14) S.acc = 0;
     } else if (horlogeReelle - (S.imageFigee || 0) < .25) return; // image arrêtée : quatre images par seconde suffisent
     if (B.mesures.actif) B.mesures.section('simulation', performance.now() - tSim);
     S.imageFigee = horlogeReelle;
     if (S.type === 'vitrine') S.suiviRang = Math.floor(horlogeReelle / 18) % 4;
     const dtVu = tourne ? dtReel : 0, cam = rendreImage(S, clamp(S.acc / DT, 0, 1), dtVu);
-    if (tourne) majPalier(S, dtReel);
+    if (tourne) majPalier(S, tBrut);
     const tHud = B.mesures.actif ? performance.now() : 0;
     if (S.type !== 'vitrine') {
       majHud(S);
@@ -64792,6 +65232,7 @@ FERRO.initPhysics().then(function(){
     majSon(S, cam, dtVu);
     if (B.mesures.actif) {
       B.mesures.section('son', performance.now() - tSon);
+      B.mesures.audio(son ? son.stats() : null);
       const fx = S && S.fx;
       B.mesures.pieces(fx ? B.traces.compter(fx).debris : 0, B.traces.DEBRIS,
         window.FPhysX && window.FPhysX.status ? window.FPhysX.status() : null);
@@ -64851,6 +65292,78 @@ FERRO.initPhysics().then(function(){
     const j = S.course.joueur;
     return { phase: S.course.phase, tours: j.tours, position: j.position, meilleur: j.meilleur, termine: S.course.termine };
   }
+  // Parcours reproductible réservé à la console et aux outils de qualification. Même course réelle, mêmes
+  // caméras et rétroviseurs ; seuls les paramètres de départ sont imposés. Aucun record ni réglage stocké.
+  // Le retour au jeu normal restitue les réglages qui précédaient cet essai.
+  function restaurerReference() {
+    if (!session || !session.reglagesReference) return;
+    Object.assign(reglages, session.reglagesReference);
+    decorEnrichi = session.decorAvantReference;
+    delete session.reglagesReference;
+    session.reference = null;
+    if (rendu) rendu.resize(reglages.qualite);
+  }
+  function reference(options = {}) {
+    if (!rendu) throw new Error('rendu absent');
+    if (session && session.enLigne) throw new Error('terminer la séance en ligne avant une référence locale');
+    const mode = options.mode || 'solo', qualite = options.qualite || 'high';
+    const i = options.circuit ?? 0, graine = options.graine ?? 17017;
+    const meteo = ['sec', 'clair'].includes(options.meteo) ? 'soleil' : (options.meteo || 'soleil');
+    const vue = options.vue || 'cockpit', vue2 = options.vue2 || 'cockpit';
+    const partage = options.partage || 'haut-bas', glaces = options.retro || 'oui';
+    const difficulte = options.difficulte ?? 1, tours = options.tours ?? 3;
+    const pilote = options.pilote ?? true;
+    const vitesse = options.vitesse ?? 75, mouille = options.mouille ?? (meteo === 'pluie' ? .75 : 0);
+    const vues = ['cockpit', 'poursuite', 'tele', 'helico'];
+    if (!['solo', 'duo'].includes(mode) || !['low', 'high', 'auto'].includes(qualite)) throw new Error('mode ou qualité de référence inconnu');
+    if (!Number.isInteger(i) || i < 0 || i >= CATALOGUE.length || !Number.isInteger(graine) || graine < 0 || graine > 0xffffffff) throw new Error('circuit ou graine invalide');
+    if (!Number.isInteger(difficulte) || difficulte < 0 || difficulte > 2 || !Number.isInteger(tours) || tours < 1 || tours > 99) throw new Error('difficulté ou nombre de tours invalide');
+    if (typeof pilote !== 'boolean') throw new Error('pilotage de référence invalide');
+    if (!B.meteo.pour(meteo) || !vues.includes(vue) || !vues.includes(vue2) || !['haut-bas', 'cote'].includes(partage) || !['oui', 'non'].includes(glaces)) throw new Error('paramètre visuel de référence inconnu');
+    if (!Number.isFinite(vitesse) || vitesse < 0 || vitesse > 100 || !Number.isFinite(mouille) || mouille < 0 || mouille > 1) throw new Error('vitesse ou humidité invalide');
+    if (options.decor !== undefined && !['reference', 'enrichi'].includes(options.decor)) throw new Error('décor de référence inconnu');
+    const c = circuit(i);
+    if (options.depart === 'tunnel' && !c.tunnel) throw new Error('ce circuit ne possède pas de tunnel');
+    const depart = options.depart === 'tunnel' ? c.tunnel.debut - 40 : (options.depart ?? 800);
+    if (!Number.isFinite(depart)) throw new Error('abscisse de départ invalide');
+    restaurerReference();
+    const cles = ['vue', 'vue2', 'partage', 'qualite', 'retro', 'meteo', 'pneus', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
+    const avant = Object.fromEntries(cles.map(k => [k, reglages[k]])), decorAvant = decorEnrichi;
+    Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, secousses: 0, vibrations: 'non', champ: 60,
+      pneus: B.conduite.pneusConseilles(B.conduite.eauSurPiste(B.meteo.pour(meteo))) });
+    decorEnrichi = options.decor !== 'reference';
+    graineCourse = graine - 1;
+    const S = lancer(mode === 'duo' ? 'duo' : 'course', i);
+    S.reglagesReference = avant; S.decorAvantReference = decorAvant; S.essai = true;
+    S.meteo.mouille = mouille;
+    const co = S.course, ancienDepart = co.joueur.etat.s;
+    co.phase = 'course'; co.feux.vert = true; co.feux.allumes = 5; co.horloge = 6; co.temps = 6;
+    const P = B.conduite.PARAMS;
+    for (const v of co.voitures) {
+      const et = v.etat, decal = B.circuit.ecart(c, ancienDepart, et.s);
+      et.s = ramener(depart + (v.id === S.locaux[1] ? -14 : decal), c.longueur);
+      if (v.joueur) et.d = 0;
+      const e = B.circuit.echantillon(c, et.s);
+      et.y = e.y - et.d * Math.sin(e.devers); et.tangage = Math.atan(e.pente || 0); et.roulis = e.devers || 0;
+      et.v = vitesse; et.gaz = .6;
+      const rapport = P.vitessePointe.findIndex(pointe => vitesse < pointe * .95);
+      et.rapport = rapport < 0 ? P.vitessePointe.length : rapport + 1;
+      et.regime = clamp(P.maxUtile * vitesse / P.vitessePointe[et.rapport - 1], P.ralenti, P.maxUtile);
+      v.progression = ramener(et.s - (c.depart || 0), c.longueur); v.roule = et.s; v.tourValide = false;
+      v.passages = 0; v.maxPassages = 0; v.debutTour = co.temps;
+      co.sAvant[v.id] = et.s;
+    }
+    remplirPoses(S.cour, co); remplirPoses(S.prec, co);
+    cameraEssai = null; horlogeReelle = 0; tPrec = 0; dureeImage = 16;
+    Object.assign(palier, { n: gpuModeste ? 1 : 0, somme: 0, compte: 0, t: 0, aise: 0 });
+    for (const G of [retro.j1, retro.j2]) if (G) { G.cote = 0; delete G.lampes0; delete G.lampes1; }
+    S.reference = { graine, circuit: i, circuitId: CATALOGUE[i].id, graineCircuit: CATALOGUE[i].graine,
+      mode, qualite, difficulte, tours, pilote, vue, vue2, partage, retro: glaces, meteo, mouille, depart: ramener(depart, c.longueur), vitesse,
+      decor: decorEnrichi ? 'enrichi' : 'reference', tunnel: c.tunnel ? { debut: c.tunnel.debut, fin: c.tunnel.fin } : null };
+    $('chargement').classList.add('fini'); aller('course'); rendu.resize(qualite);
+    B.mesures.reinitialiser();
+    return Object.assign({}, S.reference);
+  }
   // Banc (console) : une course en qualité fixe (« high » par défaut ; le mode Auto masquerait les régressions), la
   // voiture du joueur confiée à l'IA, grille et feux passés en simulation. Après une seconde de chauffe, il mesure
   // l'intervalle entre deux images pendant 20 s, rend p50, p95 et la pire image en ms (objet JSON), puis revient à
@@ -64859,7 +65372,7 @@ FERRO.initPhysics().then(function(){
     const duree = options.duree || 20, chauffe = options.chauffe ?? 1, qualite = options.qualite || 'high';
     if (!rendu) return Promise.reject(new Error('rendu absent'));
     if (!['low', 'auto', 'high'].includes(qualite)) return Promise.reject(new Error('qualité inconnue : ' + qualite));
-    lancer('course', clamp((options.circuit ?? reglages.circuit) | 0, 0, CATALOGUE.length - 1));
+    reference(Object.assign({}, options, { qualite, circuit: options.circuit ?? reglages.circuit }));
     const S = session; S.essai = true; S.banc = { qualite, effets: 0 };
     rendu.resize(qualite);
     $('chargement').classList.add('fini');
@@ -64880,18 +65393,19 @@ FERRO.initPhysics().then(function(){
           qualite, duree: +Math.max(0, ecoule - chauffe).toFixed(2), images: tri.length, p50: +q(.5).toFixed(2), p95: +q(.95).toFixed(2),
           pire: +(tri.length ? tri[tri.length - 1] : 0).toFixed(2), fenetre: innerWidth + '×' + innerHeight, image: canvas.width + '×' + canvas.height,
           circuit: CATALOGUE[S.i].nom, interrompu,
+          reference: S.reference,
           effets: { moyenne: +(effets.reduce((a, b) => a + b, 0) / Math.max(1, effets.length)).toFixed(3), p95: +(effets.sort((a, b) => a - b)[Math.floor(.95 * effets.length)] || 0).toFixed(3) },
           traces: B.traces.compter(S.fx)
         };
-        S.banc = null; rendu.resize(reglages.qualite);
-        if (session === S && ecran === 'course') aller('titre');
+        S.banc = null;
+        if (session === S) { restaurerReference(); if (ecran === 'course') aller('titre'); }
         console.info('BITUME banc', JSON.stringify(r));
         rendre(r);
       };
       requestAnimationFrame(mesurer);
     });
   }
-  window.BITUME_JEU = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer, banc,
+  window.BITUME_JEU = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer, banc, reference,
     get son() { return son ? son.stats() : null; }, get palier() { return palier.n; }, get gpuModeste() { return gpuModeste; },
     demo: i => lancerDemo(i === undefined ? reglages.circuit : i), // lance la démo sans attendre les cinq secondes
     get pauseAuto() { return pauseAuto; }, set pauseAuto(v) { pauseAuto = !!v; },

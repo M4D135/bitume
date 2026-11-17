@@ -9,17 +9,28 @@
 // Aucune dépendance : Node 22 et plus suffisent (WebSocket global).
 
 import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { mkdtempSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { controlerJeu, controlerStand } from './smoke-jeu.mjs';
 
 const args = {};
 for (let i = 2; i < process.argv.length; i += 2) args[process.argv[i].replace(/^--/, '')] = process.argv[i + 1];
 const url = args.url;
-if (!url) { console.error('usage : banc-navigateur.mjs --url <page> [--duree 20] [--qualite high] [--circuit 0] [--chauffe 1] [--overlay] [--capture fichier.png] [--chrome binaire] [--attendre 20000]'); process.exit(2); }
+if (!url) { console.error('usage : banc-navigateur.mjs --url <page> [--mode banc|course|crash|stand|smoke] [--duree 20] [--qualite high] [--circuit 0] [--graine 17017] [--meteo sec|pluie] [--partie solo|duo] [--decor reference|enrichi] [--chauffe 1] [--taille 1390,1295] [--overlay oui] [--capture fichier.png] [--chrome binaire] [--attendre 20000]'); process.exit(2); }
 const mode = args.mode || 'banc';
 const duree = Number(args.duree ?? 20), qualite = args.qualite || 'high', circuit = Number(args.circuit ?? 0);
 const chauffe = Number(args.chauffe ?? 1), attendre = Number(args.attendre ?? 20000);
+const taille = (args.taille || '1390,1295').split(/[x,]/).map(Number);
+if (taille.length !== 2 || taille.some(n => !Number.isInteger(n) || n < 240 || n > 4096)) {
+  console.error('--taille attend largeur,hauteur (240..4096 pixels)'); process.exit(2);
+}
+const referenceJeu = { graine: Number(args.graine ?? 17017), circuit, qualite, mode: args.partie || 'solo',
+  meteo: args.meteo || 'sec', vue: args.vue || 'cockpit', vue2: args.vue2 || 'cockpit', partage: args.partage || 'haut-bas',
+  retro: args.retro || 'oui', decor: args.decor || 'enrichi', depart: args.depart === 'tunnel' ? 'tunnel' : Number(args.depart ?? 280), vitesse: Number(args.vitesse ?? 75) };
+const optionsBanc = { ...referenceJeu, duree, chauffe };
 const chrome = args.chrome || process.env.CHROME || 'google-chrome';
 const profil = mkdtempSync(path.join(tmpdir(), 'bitume-chrome-'));
 const requetes = new Map(); let suivant = 1; let ws = null;
@@ -28,20 +39,17 @@ const evenements = { console: [], avertissements: [], exceptions: [] };
 function envoyer(methode, params = {}) {
   return new Promise((resoudre, rejeter) => {
     const id = suivant++;
-    requetes.set(id, { resoudre, rejeter });
+    const minuteur = setTimeout(() => { requetes.delete(id); rejeter(new Error('DevTools expiré : ' + methode)); }, Math.max(attendre, (duree + chauffe + 10) * 1000));
+    requetes.set(id, { resoudre, rejeter, minuteur });
     ws.send(JSON.stringify({ id, method: methode, params }));
   });
 }
-function attendreJusqua(teste, delai, etiquete) {
+async function attendreJusqua(teste, delai, etiquette) {
   const echeance = Date.now() + delai;
-  return new Promise((resoudre, rejeter) => {
-    const tourner = async () => {
-      if (await teste()) return resoudre();
-      if (Date.now() > echeance) return rejeter(new Error('expiré : ' + etiquete));
-      setTimeout(tourner, 120);
-    };
-    tourner();
-  });
+  while (!await teste()) {
+    if (Date.now() > echeance) throw new Error('expiré : ' + etiquette);
+    await new Promise(r => setTimeout(r, 120));
+  }
 }
 async function evaluer(expression) {
   const r = await envoyer('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true, allowUnsafeEvalBlocklist: true });
@@ -52,28 +60,40 @@ async function evaluer(expression) {
 const chromeArgs = [
   '--headless=new', '--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu-sandbox',
   '--remote-debugging-port=0', '--user-data-dir=' + profil,
-  '--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=' + (args.angle || 'swiftshader'),
-  '--window-size=' + (args.taille || '1390,1295'), '--hide-scrollbars', 'about:blank'
+  '--window-size=' + taille.join(','), '--hide-scrollbars'
 ];
+// --angle native laisse Chrome choisir le backend matériel de la machine ; le défaut est explicitement logiciel.
+if (args.angle !== 'native') chromeArgs.push('--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=' + (args.angle || 'swiftshader'));
+chromeArgs.push('about:blank');
 // groupe détaché : le navigateur lance des processus enfants qu'un simple kill du père laisserait tourner,
 // et un rendu logiciel à 1000 % de CPU qui traîne fausse toutes les mesures suivantes
 const processus = spawn(chrome, chromeArgs, { stdio: ['ignore', 'ignore', 'pipe'], detached: true });
-let stderr = '';
+let stderr = '', lancementErreur = null;
 processus.stderr.on('data', d => { stderr += d.toString(); });
+processus.on('error', e => { lancementErreur = e; });
 
 const dormir = ms => new Promise(r => setTimeout(r, ms));
+const images = n => evaluer(`new Promise(resolve => { let restant = ${n}; function prochain() {
+  if (--restant <= 0) resolve(true); else requestAnimationFrame(prochain);
+} requestAnimationFrame(prochain); })`);
 async function lirePort() {
   const f = path.join(profil, 'DevToolsActivePort');
   for (let i = 0; i < 200; i++) {
+    if (lancementErreur) throw lancementErreur;
     try { const l = readFileSync(f, 'utf8').split('\n'); if (l[0] && l[1]) return { port: l[0], cible: l[1] }; } catch (e) { /* pas encore écrit */ }
     await dormir(50);
   }
   throw new Error('port DevTools introuvable\n' + stderr.slice(-800));
 }
 
-const rapport = { url, environnement: {}, banc: null, mesures: null, erreurs: [], avertissements: [], limites: [] };
+const rapport = { url, parametres: { mode, duree, chauffe, taille, angle: args.angle || 'swiftshader', referenceJeu },
+  environnement: {}, build: null, banc: null, mesures: null, erreurs: [], avertissements: [], limites: [] };
 let code = 0;
 try {
+  if (url.startsWith('file:')) {
+    const html = readFileSync(fileURLToPath(url));
+    rapport.build = { sha256: createHash('sha256').update(html).digest('hex'), octets: html.length };
+  }
   const { port } = await lirePort();
   const liste = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
   const cible = liste.find(t => t.type === 'page');
@@ -82,7 +102,7 @@ try {
   await new Promise((resoudre, rejeter) => { ws.onopen = resoudre; ws.onerror = () => rejeter(new Error('connexion DevTools refusée')); });
   ws.onmessage = e => {
     const m = JSON.parse(e.data);
-    if (m.id && requetes.has(m.id)) { const q = requetes.get(m.id); requetes.delete(m.id); m.error ? q.rejeter(new Error(m.error.message)) : q.resoudre(m.result); return; }
+    if (m.id && requetes.has(m.id)) { const q = requetes.get(m.id); requetes.delete(m.id); clearTimeout(q.minuteur); m.error ? q.rejeter(new Error(m.error.message)) : q.resoudre(m.result); return; }
     if (m.method === 'Runtime.consoleAPICalled') {
       const t = (m.params.args || []).map(a => a.value !== undefined ? a.value : (a.description || a.type)).join(' ');
       (m.params.type === 'error' ? evenements.console : evenements.avertissements).push({ type: m.params.type, texte: String(t).slice(0, 400) });
@@ -91,7 +111,7 @@ try {
     }
   };
   await envoyer('Runtime.enable'); await envoyer('Page.enable');
-  await envoyer('Emulation.setDeviceMetricsOverride', { width: 1390, height: 1295, deviceScaleFactor: 1, mobile: false });
+  await envoyer('Emulation.setDeviceMetricsOverride', { width: taille[0], height: taille[1], deviceScaleFactor: 1, mobile: false });
   await envoyer('Page.navigate', { url });
   await attendreJusqua(() => evaluer('!!(window.BITUME && window.BITUME_JEU && window.BITUME_JEU.rendu)'), attendre, 'le jeu ne démarre pas');
 
@@ -100,23 +120,26 @@ try {
       nonMasque: i ? gl.getParameter(i.UNMASKED_RENDERER_WEBGL) : null, webgl2: r.stats.webglVersion === 2,
       backend: r.stats.backend, chronometrageGpu: !!gl.getExtension('EXT_disjoint_timer_query_webgl2'),
       gpuModeste: window.BITUME_JEU.gpuModeste, resolution: [document.getElementById('scene').width, document.getElementById('scene').height],
+      fenetre: [innerWidth, innerHeight, devicePixelRatio], visible: !document.hidden,
       version: (document.querySelector('.version-jeu') || {}).textContent || null,
       signature: !!document.querySelector('.signature'), liensSignature: document.querySelectorAll('.marque a').length }; })()`);
   rapport.titre = await evaluer(`(() => { const t = document.getElementById('titre'); return { visible: !t.hidden,
     marque: (document.querySelector('.marque h1') || {}).textContent, signature: (document.querySelector('.signature') || {}).textContent || null }; })()`);
 
-  if (args.overlay === 'oui') await evaluer('BITUME_JEU.mesures = true; true');
+  // Le banc promet aussi les sections CPU et les coûts de chaque vue : les activer même sans demande
+  // explicite d'overlay, sinon la capture finale serait un rapport vide alors que le chronomètre a tourné.
+  if (mode === 'banc' || args.overlay === 'oui') await evaluer('BITUME_JEU.mesures = true; true');
   await evaluer('BITUME_JEU.pauseAuto = false; true');
   if (args.mode === 'course') {
     // une séance réelle (démo sur le circuit choisi), avancée en simulation jusqu à l endroit voulu, puis quelques
     // secondes d images rendues : c est là que les lampes du tunnel et les rétroviseurs sont réellement dessinés
-    await evaluer(`BITUME_JEU.demo(${circuit}); true`);
+    await evaluer(`BITUME_JEU.reference(${JSON.stringify(referenceJeu)}); true`);
     if (args.avancer) await evaluer(`BITUME_JEU.avancer(${Number(args.avancer)}, true); true`);
     await evaluer('BITUME_JEU.mesures = true; true');
     await dormir(Number(args.secondes || 6) * 1000);
     rapport.seance = await evaluer(`(() => { const S = BITUME_JEU.session; if (!S) return null;
       const k = S.suivie || 0, v = S.course.voitures[k];
-      return { ecran: BITUME_JEU.ecran, type: S.type, circuit: BITUME_JEU.ecran, suivie: k, s: +v.etat.s.toFixed(1),
+      return { ecran: BITUME_JEU.ecran, type: S.type, circuit: BITUME_JEU.CATALOGUE[S.i].nom, suivie: k, s: +v.etat.s.toFixed(1),
         v: +v.etat.v.toFixed(1), vue: S.vue, dansTunnel: BITUME.circuit.dansTunnel(S.course.c, v.etat.s, 0),
         lampes: (S.lampesTunnel && S.lampesTunnel.p) ? Array.from(S.lampesTunnel.p).filter(x => x > 0).length : 0,
         sommeLampes: (S.lampesTunnel && S.lampesTunnel.p) ? +Array.from(S.lampesTunnel.p).reduce((a, x) => a + x, 0).toFixed(2) : 0,
@@ -125,7 +148,7 @@ try {
   } else if (args.camera) {
     // caméra d'essai placée à une abscisse voulue : c'est la caméra, et non la voiture, qui décide des lampes, de
     // l'adaptation de l'œil et de l'abri de la pluie. Le banc ne peut pas viser un endroit précis, si.
-    await evaluer(`BITUME_JEU.demo(${circuit}); true`);
+    await evaluer(`BITUME_JEU.reference(${JSON.stringify(referenceJeu)}); true`);
     await evaluer(`BITUME_JEU.reglages.vue = 'cockpit'; BITUME_JEU.camera = () => { const c = BITUME_JEU.session.course.c,
       e = BITUME.circuit.echantillon(c, ${Number(args.camera)}); return { pos: [e.x, e.y + 1.4, e.z], yaw: e.cap + Math.PI / 2, pitch: 0, fov: 60 }; }; true`);
     await evaluer('BITUME_JEU.mesures = true; true');
@@ -140,7 +163,7 @@ try {
   } else if (mode === 'crash') {
     rapport.etapes = [];
     // gros choc réel : les pièces détachées doivent naître, être budgétées, et rouler avec de vrais corps PhysX
-    await evaluer(`window.__banc = BITUME_JEU.banc({ duree: ${duree}, qualite: ${JSON.stringify(qualite)}, circuit: ${circuit}, chauffe: ${chauffe} }); true`);
+    await evaluer(`window.__banc = BITUME_JEU.banc(${JSON.stringify(optionsBanc)}); true`);
     await dormir(Number(args.attente || 4) * 1000);
     rapport.avantCasse = await evaluer('window.FPhysX ? Object.assign({ present: true }, window.FPhysX.status()) : { present: false }');
     rapport.etapes.push(await evaluer(`(() => { const S = BITUME_JEU.session; if (!S) return 'sans seance';
@@ -166,50 +189,33 @@ try {
     rapport.apresSeance = await evaluer(`(() => { const S = BITUME_JEU.session;
       return { mondeCourant: !!(S && S.fx && S.fx.monde), mondes: window.FPhysX ? window.FPhysX.status().worlds : null }; })()`);
   } else if (mode === 'stand') {
-    // arrêt au stand réel : une vraie course, le joueur amené dans la voie, l'arrêt demandé, et l'on regarde ce que
-    // l'affichage dit pendant le service. C'est le parcours manuel de la fiche, joué par le banc.
-    await evaluer(`window.__banc = BITUME_JEU.banc({ duree: ${Math.max(duree, 180)}, qualite: ${JSON.stringify(qualite)}, circuit: ${circuit}, chauffe: ${chauffe} }); true`);
-    // la course doit avoir quelques secondes : un arrêt n'est possible qu'après le départ (course.js). Sous rendu
-    // logiciel l'image tourne à un image par seconde : on avance la simulation, on n'attend pas les images.
-    { const echeance = Date.now() + Math.max(40000, Number(args.attente || 6) * 4000);
-      while (Date.now() < echeance) {
-        const e = await evaluer('(() => { const S = BITUME_JEU.session; return S && S.course ? [S.course.phase, S.course.temps] : null; })()');
-        if (e && e[0] === 'course' && e[1] > 6) break;
-        if (e && e[0] === 'course') await evaluer(`BITUME_JEU.avancer(8, true); true`);
-        await dormir(250);
-      } }
-    rapport.avant = await evaluer(`(() => { const S = BITUME_JEU.session; if (!S) return null;
-      const v = S.course.joueur, e = v.etat, d = e.degats, St = S.course.c.stands;
-      for (let k = 0; k < 12; k++) BITUME.degats.choc(d, 18, { cote: 1, avant: k % 2 === 0 });
-      const q = BITUME.circuit.echantillon(S.course.c, St.garage0 + 10);
-      e.s = St.garage0 + 10; e.d = St.d; e.v = 0; e.psi = 0; e.beta = 0; e.omega = 0; e.y = q.y;
-      BITUME_JEU.pilotageAuto = false;                       // plus personne n'accélère : la voiture reste à l'arrêt
-      return { stands: { debut: St.debut, garage0: St.garage0, garage1: St.garage1, fin: St.fin, d: St.d, vitesse: St.vitesse },
-        sante: +BITUME.degats.sante(d).toFixed(3), avaries: BITUME.degats.avaries(d),
-        dureeService: +BITUME.degats.chiffrerService(d).toFixed(2), tourValide: v.tourValide,
-        affiche: document.getElementById('h-sante').textContent, phase: document.getElementById('c-sante').dataset.phase }; })()`);
-    await dormir(4000);
-    rapport.pendant = await evaluer(`(() => { const S = BITUME_JEU.session; if (!S) return null;
-      const v = S.course.joueur, e = v.etat;
-      return { phase: e.stands && e.stands.phase, t: e.stands ? +e.stands.t.toFixed(2) : null,
-        course: { phase: S.course.phase, temps: +S.course.temps.toFixed(2), joueur: !!v.joueur, humain: !!v.humain, distant: !!v.distant },
-        pos: { s: +e.s.toFixed(1), d: +e.d.toFixed(2), v: +e.v.toFixed(2), accident: !!e.accident, recup: !!e.recuperation, saut: !!e.saut, immunite: +e.immunite.toFixed(2) },
-        affiche: document.getElementById('h-sante').textContent, phaseAffichee: document.getElementById('c-sante').dataset.phase,
-        remplissage: getComputedStyle(document.getElementById('h-sante-barre')).getPropertyValue('--f') }; })()`);
-    // sous rendu logiciel le temps de course s'écoule à un image par seconde : on laisse le service finir
-    await dormir(Number(args.service || 40) * 1000);
-    rapport.apres = await evaluer(`(() => { const S = BITUME_JEU.session; if (!S) return null;
-      const v = S.course.joueur, e = v.etat, d = e.degats;
-      return { phase: e.stands && e.stands.phase, repare: !!(e.stands && e.stands.repare), sante: +BITUME.degats.sante(d).toFixed(3),
-        adher: +d.adher.toFixed(4), trainee: +d.trainee.toFixed(4), teinte: +d.teinte.toFixed(3),
-        affiche: document.getElementById('h-sante').textContent, phaseAffichee: document.getElementById('c-sante').dataset.phase,
-        tourValide: v.tourValide }; })()`);
-    await evaluer('BITUME_JEU.pilotageAuto = true; true');
-    await evaluer('window.__banc');
+    Object.assign(rapport, await controlerStand(evaluer, images, referenceJeu));
+    rapport.limites.push('Stand contrôlé par avancement explicite au pas fixe : aucun FPS de ce parcours ne qualifie le temps réel.');
+  } else if (mode === 'smoke') {
+    rapport.smoke = { controles: [], limites: [] };
+    await controlerJeu({ evaluer, envoyer, images, dormir, cible: cible.id }, referenceJeu, rapport.smoke);
+    rapport.limites.push('Parcours fonctionnel avec sauts de simulation : ne pas utiliser ses FPS comme mesure de performance.');
   } else {
-    rapport.banc = await evaluer(`BITUME_JEU.banc({ duree: ${duree}, qualite: ${JSON.stringify(qualite)}, circuit: ${circuit}, chauffe: ${chauffe} })`);
+    // Le banc restitue les menus avant de résoudre sa promesse. Relever les mesures dans cette microtâche :
+    // un second appel CDP laisserait entre-temps une image de vitrine contaminer la fenêtre CPU/GPU.
+    const releve = await evaluer(`(() => {
+      const p = BITUME_JEU.banc(${JSON.stringify(optionsBanc)}), S = BITUME_JEU.session, debutSimulation = S.course.horloge;
+      return p.then(banc => ({ banc, mesures: BITUME_JEU.mesures, finBanc: {
+        phase: S.course.phase, simulationEcoulee: S.course.horloge-debutSimulation,
+        joueurs: S.locaux.map(id => { const e=S.course.voitures[id].etat; return { id, s:e.s, d:e.d, v:e.v }; }),
+        visible: !document.hidden, imagePrincipale: banc.image
+      } }));
+    })()`);
+    Object.assign(rapport, releve);
+    rapport.mesuresPortee = {
+      intervalles: 'Fenêtre chronométrée du banc après chauffe : p50/p95/pire dans banc, en millisecondes réelles.',
+      cpu: 'Fenêtre des 240 images les plus récentes, pouvant inclure la chauffe si moins de 240 images ont été rendues.',
+      vues: 'drawCalls/triangles : moyenne par rendu depuis le départ ; champs ParImage : fenêtre des 240 images récentes.',
+      gpu: 'Moyenne des trois derniers draws complets du moteur principal ; pas le total par image avec les rétroviseurs.',
+      simulation: 'simulationEcoulee inclut la chauffe ; vérifier le trajet final, la boucle bride les longs intervalles à 0,1 s.'
+    };
   }
-  rapport.mesures = await evaluer('JSON.parse(JSON.stringify(BITUME_JEU.mesures))');
+  if (!rapport.mesures) rapport.mesures = await evaluer('JSON.parse(JSON.stringify(BITUME_JEU.mesures))');
   rapport.etatCourse = await evaluer(`(() => { const S = BITUME_JEU.session; if (!S) return null; const c = S.course;
     return { ecran: BITUME_JEU.ecran, phase: c && c.phase, voitures: c && c.voitures.length, horloge: c && +c.horloge.toFixed(2) }; })()`);
   if (args.capture) {
@@ -227,8 +233,14 @@ try {
 } catch (e) {
   rapport.fatal = String(e && e.message || e);
   rapport.erreurs = evenements.console.filter(x => x.type === 'error').concat(evenements.exceptions);
+  if (args.capture && ws) try {
+    const s = await envoyer('Page.captureScreenshot', { format: 'png' });
+    writeFileSync(args.capture, Buffer.from(s.data, 'base64')); rapport.capture = path.resolve(args.capture);
+  } catch { /* la cause d'origine reste dans le rapport */ }
   code = 1;
 } finally {
+  for (const q of requetes.values()) clearTimeout(q.minuteur);
+  requetes.clear();
   if (args.sortie) writeFileSync(args.sortie, JSON.stringify(rapport, null, 2));
   console.log(JSON.stringify(rapport, null, 2));
   try { ws && ws.close(); } catch (e) { /* déjà fermé */ }

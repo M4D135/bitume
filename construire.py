@@ -36,6 +36,7 @@ MODULES = [
     'obstacles.js',
     'course.js',
     'son.js',
+    'vegetation.js',
     'decor.js',
     'carene.js',
     'humain-donnees.js',
@@ -47,6 +48,7 @@ MODULES = [
     'meteo.js',
     'reseau.js',
     'mesures.js',
+    'qualite.js',
     'jeu.js',
 ]
 # Version affichée au titre (David, 16/11/2026 : « incrémente les versions à chaque maj, je veux la vraie version »).

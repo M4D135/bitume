@@ -1,0 +1,60 @@
+{
+  "date_utc": "2026-11-17T18:15:46.834965+00:00",
+  "build": {
+    "version": "0.2.25",
+    "sha256": "9180313f5b33a735a1eb02a7ff1aa3a22646c3baaad9c218e239247d92a83ce5",
+    "octets": 12917928
+  },
+  "resultat": "navigateur_bloque_avant_chargement_jeu",
+  "probe": "runtime-probe.json",
+  "source_modifiee": false,
+  "qualification_nouvelle_du_jeu": false,
+  "audit_smoke": {
+    "script": "tools/smoke-jeu.mjs",
+    "controles_prevus": [
+      "vue par entree CDP et stockage inchange",
+      "duo haut-bas, taille J2 et visibilite des quatre glaces",
+      "activation audio, deux moteurs humains eloignes, budget de cinq voix",
+      "abandon au titre et restauration qualite/prefs/musique",
+      "stand : dommages initiaux, service a l arret, sante et penalites restaurees",
+      "crash : debris bornes, corps PhysX si runtime pret, recuperation finie et tour invalide",
+      "pause native uniquement si le navigateur expose document.hidden"
+    ],
+    "portee": "Parcours et assertions lus dans les sources, non executes dans cette reprise.",
+    "limites": [
+      "La visibilite DOM des glaces et la taille du canvas J2 ne valident pas leurs pixels ni leur animation.",
+      "Le parcours utilise des sauts de simulation explicites : ce n est pas un banc FPS.",
+      "Le budget et les etats Web Audio ne remplacent pas l ecoute.",
+      "Ni manettes physiques ni jeu reseau multi-machines.",
+      "Les retours cote-a-cote et portrait relèvent des autres captures, pas de ce smoke haut-bas."
+    ]
+  },
+  "preuve_historique": {
+    "fichier": "docs/reprise/rapports/lot5-2026-11-17/smoke.json",
+    "runtime": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.8103.78 Safari/537.36",
+    "controles": [
+      "changement de vue par vraie touche, stockage local inchangé",
+      "duo cockpit et quatre rétroviseurs",
+      "geste audio, deux moteurs éloignés et budget de cinq voix",
+      "retour au titre, réglages/résolution restaurés, musique au titre",
+      "service au stand, santé et pénalités réparées, tour invalide",
+      "crash, débris bornés, PhysX si prêt, récupération"
+    ],
+    "erreurs": [],
+    "build_sha_dans_recu": null,
+    "capture_inspectee": "docs/reprise/rapports/lot5-2026-11-17/smoke.png",
+    "capture_constat": "Image cockpit non noire, piste, HUD et carte rendus ; preuve historique seulement.",
+    "sources_inchangees_par_rapport_au_candidat": [
+      "src/son.js",
+      "src/decor.js",
+      "src/vegetation.js",
+      "src/ferro/engine.js",
+      "tools/smoke-jeu.mjs"
+    ],
+    "sources_modifiees_depuis": [
+      "src/jeu.js",
+      "src/style.css"
+    ]
+  },
+  "commande_pour_environnement_compatible": "node tools/banc-navigateur.mjs --url file:///CHEMIN/bitume/dist/bitume.html --mode smoke --chrome /CHEMIN/chrome --taille 640,360 --attendre 180000 --sortie smoke-final.json --capture smoke-final.png"
+}

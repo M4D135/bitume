@@ -10,13 +10,25 @@ Ce fichier permet de reprendre dans une nouvelle discussion sans recopier les co
 4. Relire la tête distante avant le push. En cas d'avancement concurrent, récupérer et réconcilier, sans force-push. Ne jamais faire écrire deux discussions simultanément sur les fichiers partagés.
 5. Mettre à jour la fiche et `ETAT.json` : base, commit livré, fichiers, tests réellement exécutés, résultats, limites et prochaine action. L'identifiant du commit de code peut être inscrit dans une mise à jour documentaire suivante ; ne pas inventer de SHA autoréférentiel.
 
-## État vérifié le 17 novembre 2026 (lot 0 terminé)
+## Reprise du 17 novembre 2026, soir
+
+Base de cette reprise : **`main` à `d67506c6d023ad5efa5a3b1ac721811c53a323a2`, BITUME 0.2.24**. Le pilote **0.2.25** du lot 5 a été retrouvé dans la copie de travail de la discussion précédente, avec ses sources, son build et ses preuves. Il comprend les matières et végétaux de Val-Brûlé, les mesures corrigées, le moteur audio de J2, la qualité Auto et les corrections pause/HUD. **BITUME 0.2.25 n'est pas encore publié à ce point de reprise.** Le lot 5 reste partiel : batching des monoplaces, LOD historique et qualification sur appareils réels restent ouverts.
+
+**FERRO 0.3.4 est publié** sur `M4D135/FERRO:main`, commit `457a9671f4ea5c314a5c8e7b3337474ba031c78e`. Les 34 modules de la copie BITUME correspondent à `FERRO.lock.json`. Le candidat visuel initial et le build final ont des empreintes distinctes ; leur qualification et les actions de publication sont détaillées dans [le rapport du lot 5](docs/reprise/rapports/LOT5-2026-11-17.md).
+
+Les archives annoncées introuvables lors du lot 0 ont aussi été **retrouvées dans les copies antérieures de l'environnement ChatGPT** : `BITUME-REPRISE-QWEN-SPARK.zip`, `BITUME-RELAIS-2026-11-17.zip`, le bundle `bitume-main-12dc097.bundle` et les cinq commits cités dans `ETAT.json`. Le constat antérieur concernait les disques Mac/Spark recherchés à ce moment-là ; il ne démontrait pas une perte définitive. Ces anciennes préparations 0.2.14–0.2.20 sont conservées comme historique, sans être fusionnées dans ce lot : la base distante 0.2.24 a poursuivi les travaux depuis.
+
+**Contrôle final avant publication : 43/43 suites Node réussies**, FERRO **34/34** conforme et build 0.2.25 strictement reproductible, SHA256 `9180313f5b33a735a1eb02a7ff1aa3a22646c3baaad9c218e239247d92a83ce5`. Les preuves sont dans [publication-final/](docs/reprise/rapports/lot5-2026-11-17/publication-final/) : `tests.json`, `logs.zip`, `runtime-probe.json`, `browser-audit.json`. Le précédent passage à **42/43**, suivi des 18 contrôles de `decor.test.mjs` réussis isolément, reste conservé dans `reprise-final/` ; aucun seuil n'a été assoupli. **Le nouveau navigateur reste bloqué avant le jeu** : Chromium 156 échoue sur sa socket avant DevTools, y compris sur `about:blank`. Aucun nouveau smoke du HTML final ni banc instrumenté n'est acquis. Les preuves navigateur précédentes restent limitées à leur candidat et à leurs contrôles ciblés.
+
+**Action immédiate :** publier BITUME sur `main` avec les preuves acquises et ces limites explicites ; le reçu du commit sera ajouté après vérification. Le déploiement est déjà autorisé mais **bloqué ici par l'absence d'accès SSH au Mac/amiga et de workflow de déploiement utilisable** ; le site public vérifié sert encore la 0.2.24. La prochaine reprise depuis le Mac devra exécuter `./deposer.sh`, vérifier le site servi, puis mesurer le jeu sur le GPU réel. Ces opérations ne sont pas lancées automatiquement entre deux messages. Les sections suivantes conservent l'historique daté des lots 0 à 4 ; leurs « prochains lots » décrivent leur état d'alors.
+
+## Historique du 17 novembre 2026 (lot 0 terminé)
 
 Base distante : `main`, `b9d8c6db3e4eff55b9f1dd05e8e74de45f2d5507`, client **0.2.19** à cette tête. PR #1 et #2 fermées, aucune PR ouverte, branche par défaut `main`.
 
 Qualification réellement exécutée sur le Spark (`spark-5fc3`, Linux arm64, Node 24.18.0) : **34 suites Node réussies**, `python3 tools/check-ferro-lock.py` conforme (**FERRO 0.3.3, 34/34 modules**), build reproductible identique aux fichiers versionnés (`dist/bitume.html` 12 843 946 octets, gzip 2 945 485, sha256 `c8ac999b71b1944f50cf3d25c42635f2b6db3b72741be9a0def66793ed9ef76e`). Ces résultats ne valident PAS les changements postérieurs.
 
-**Le paquet de reprise annoncé par le prompt de mission est absent.** `BITUME-REPRISE-QWEN-SPARK.zip`, son bundle `bitume-main-12dc097.bundle` et le relais `BITUME-RELAIS-2026-11-17.zip` ne sont sur aucun disque joint (Mac et Spark cherchés le 17/11/2026). Les commits `12dc097`, `827c307`, `74352fe`, `a690e92` et la série `e074b55` ne sont ni sur GitHub ni dans les copies locales : la « récupération 0.2.20 » du prompt n'a jamais été poussée et n'est pas récupérable. Rien n'a été réinventé à sa place ; le 0.2.20 livré par le lot 0 est un autre commit, construit depuis `main`. Détail dans `docs/reprise/00-DEPOT.md`.
+**Constat du lot 0, avant la récupération du soir :** `BITUME-REPRISE-QWEN-SPARK.zip`, son bundle `bitume-main-12dc097.bundle`, le relais `BITUME-RELAIS-2026-11-17.zip` et les commits `12dc097`, `827c307`, `74352fe`, `a690e92`, `e074b55` n'avaient pas été trouvés sur GitHub ni sur les disques Mac/Spark recherchés. Le lot 0 a donc été construit depuis `main` et sa version 0.2.20 est distincte de la préparation locale retrouvée ensuite. Le rapport historique `docs/reprise/00-DEPOT.md` décrit cette recherche initiale ; son appréciation « non récupérable » est corrigée par la reprise du soir ci-dessus.
 
 `opencode/titre-zip-signature-20261116` (`9e23cc1`) n'était pas fusionnée : son unique apport propre, la signature `m4d135` de l'écran titre, a été réintégré proprement (sans la fermeture `</span>` excédentaire, sans le lien ZIP retiré par le second commit) et couvert par `verifications/titre-signature.test.mjs`. Les six autres branches sont des ancêtres de `main`. Sauvegarde vérifiée avant tout nettoyage : `bitume-toutes-refs-2026-11-17.bundle`, sha256 `4a733d1faf1dec986d89e5bf0969a804f95f6a24463e618fd8897abbaf4fb1ef`.
 
@@ -31,8 +43,8 @@ Qualification réellement exécutée sur le Spark (`spark-5fc3`, Linux arm64, No
 | 1 | [Tunnel et mesures](docs/reprise/01-TUNNEL.md) | Reflets sans apparition brutale, référence de performance et overlay | Base vérifiée | **terminé** |
 | 2 | [Crashs et PhysX](docs/reprise/02-CRASHS.md) | Accidents lisibles, pièces détachées bornées, récupération rapide | Lot 1 intégré | **terminé** |
 | 3 | [Rivaux agressifs](docs/reprise/03-RIVAUX.md) | Manœuvres offensives contre joueur et autres IA | Lot 2 intégré | **terminé** |
-| 4 | [Santé et stands](docs/reprise/04-STANDS.md) | Dégâts persistants visibles et réparations aux stands | Lots 2 et 3 intégrés | **prêt** |
-| 5 | [Optimisation et qualification](docs/reprise/05-PERFORMANCE.md) | Gains mesurés, modes et plateformes contrôlés | Lots 1 à 4 intégrés | à faire |
+| 4 | [Santé et stands](docs/reprise/04-STANDS.md) | Dégâts persistants visibles et réparations aux stands | Lots 2 et 3 intégrés | **terminé** |
+| 5 | [Optimisation et qualification](docs/reprise/05-PERFORMANCE.md) | Gains mesurés, modes et plateformes contrôlés | Lots 1 à 4 intégrés | **pilote local qualifié, publication en attente ; lot partiel** |
 
 ## État vérifié le 17 novembre 2026 (lot 1 terminé)
 

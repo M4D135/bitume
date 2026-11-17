@@ -1,0 +1,15 @@
+ok  plafonds : 512 bandes, 48 fumées, 48 étincelles, sans jamais grandir
+ok  traces effacées en 24 s, fumée et étincelles éteintes avant
+ok  pâleur : une trace pâlit avec l'âge et ne se dessine plus après 24 s
+ok  cadence : une mise à jour tous les 4 pas de 1/120 s (30 Hz)
+ok  bandes sous les roues arrière, prolongées en ligne droite
+ok  pas de bande à travers un replacement
+ok  voitures loin de celle que l'on regarde : rien
+    0.046 ms par image, 589 objets dessinés
+ok  coût : au plus 0,3 ms par image à 60 Hz, tout plein
+ok  déterminisme : même graine, mêmes effets
+    159 bandes au plus, 97 objets dessinés à la fin
+ok  vraie course de 60 s : traces des voitures proches, rien ne casse
+ok  replacement : les traces coupent immédiatement, sans effacer les effets existants
+---
+11 tests passes

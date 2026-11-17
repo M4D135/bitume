@@ -1,6 +1,8 @@
 # Lot 5 : optimisation mesurée et qualification finale
 
-Statut : **à faire**, après intégration des lots fonctionnels. Réutiliser l'overlay et la référence avant modification du lot 1.
+Statut au **17 novembre 2026, reprise du soir** : **lot partiellement réalisé — pilote BITUME 0.2.25 local, publication en attente**. FERRO 0.3.4 est publié sur `main` au commit `457a9671f4ea5c314a5c8e7b3337474ba031c78e`. Matières et végétation pilotes, audio J2 borné, mesures corrigées, qualité Auto, outils reproductibles et corrections de reprise ont des preuves locales ; le candidat visuel initial est distingué du build final dans [le rapport du lot 5](rapports/LOT5-2026-11-17.md). Batching des monoplaces, LOD historique et qualification matérielle restent ouverts.
+
+Le contrôle final avant publication réussit **43/43 suites Node**, confirme les **34/34 modules FERRO** et reproduit strictement le build final (`9180313f…`). Les preuves sont dans [publication-final/](rapports/lot5-2026-11-17/publication-final/) ; le précédent passage à 42/43 puis la réussite isolée de `decor.test.mjs` restent conservés comme historique, sans seuil assoupli. Le nouveau smoke est **non exécutable ici** : Chromium 156 échoue sur sa socket avant DevTools, y compris sur `about:blank`, donc avant le jeu. Aucun nouveau banc instrumenté n'a été exécuté. Les premières sorties de banc avaient l'instrumentation désactivée ; elles ne démontrent ni les coûts CPU/GPU détaillés ni un gain de performance. La publication sur `main` est en préparation via le connecteur GitHub ; son reçu sera consigné après vérification. Le déploiement est autorisé mais l'accès Mac/amiga manque ici. La suite reste le smoke final et les mesures GPU réelles, puis le batching des monoplaces et le LOD historique.
 
 ## Mesurer avant d'optimiser
 
@@ -28,4 +30,4 @@ Reconstruire avec `python3 construire.py`, exécuter toutes les suites, vérifie
 
 ## Livraison
 
-Rapport avant/après avec environnement et données brutes, mises à jour ciblées de `CONCEPTION.md` et `PLAN-MAITRE.md`, tests manuels décrits avec leur statut réel. Distinguer tests passés, échoués et non exécutés. Build autonome prêt ; déploiement seulement sur demande explicite.
+Rapport avant/après avec environnement et données brutes, mises à jour ciblées de `CONCEPTION.md` et `PLAN-MAITRE.md`, tests manuels décrits avec leur statut réel. Distinguer tests passés, échoués et non exécutés. Le mandat du 17 novembre autorise commit, push sur `main` sans écrasement d'un travail concurrent, puis déploiement sur `bitume.estrasse.fr`. Consigner séparément la qualification locale, la publication GitHub et la vérification du site servi.
