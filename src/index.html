@@ -122,9 +122,47 @@
       <div class="etat-salon">
         <button type="button" id="l-code-affiche" class="code-partie" title="Copier le code" hidden></button>
         <ul id="l-pilotes" class="liste-pilotes" aria-label="Machines de la partie" hidden></ul>
+        <div id="l-course" class="prochaine-course" hidden>
+          <p id="l-course-texte" class="note-enligne"></p>
+          <button type="button" class="gros principal" id="l-vers-prets" hidden>Avant le départ</button>
+          <button type="button" class="discret" id="l-reglages">Vos réglages : boîte, vue, commandes</button>
+        </div>
         <p id="l-etat" class="note-enligne" role="status" aria-live="polite"></p>
         <button type="button" class="gros principal" id="l-choisir" hidden>Choisir la course</button>
       </div>
+    </div>
+  </section>
+
+  <!-- En ligne, avant le départ : chacun règle ses options et se dit prêt -->
+  <section id="prets" class="ecran enligne" hidden>
+    <header class="entete">
+      <button type="button" class="retour" id="pr-retour" aria-label="Retour au salon">←</button>
+      <div><h2>Avant le départ</h2><p class="sous" id="pr-course"></p></div>
+    </header>
+    <div class="salon">
+      <div class="options">
+        <fieldset>
+          <legend>Vos pneus</legend>
+          <label><input type="radio" name="pneusPret" value="slicks"><span>Slicks</span></label>
+          <label><input type="radio" name="pneusPret" value="inter"><span>Intermédiaires</span></label>
+          <label><input type="radio" name="pneusPret" value="pluie"><span>Pluie</span></label>
+          <p id="pr-pneus-conseil" class="note-pneus"></p>
+        </fieldset>
+        <fieldset>
+          <legend>Boîte</legend>
+          <label><input type="radio" name="boitePret" value="auto"><span>Automatique</span></label>
+          <label><input type="radio" name="boitePret" value="manuelle"><span>Manuelle</span></label>
+        </fieldset>
+        <fieldset>
+          <legend>Vue</legend>
+          <label><input type="radio" name="vuePret" value="cockpit"><span>Cockpit</span></label>
+          <label><input type="radio" name="vuePret" value="poursuite"><span>Poursuite</span></label>
+        </fieldset>
+      </div>
+      <button type="button" class="discret" id="pr-reglages">Commandes et autres réglages</button>
+      <ul id="pr-pilotes" class="liste-pilotes" aria-label="Machines prêtes"></ul>
+      <p id="pr-etat" class="note-enligne" role="status" aria-live="polite"></p>
+      <button type="button" class="gros principal" id="pr-pret">Je suis prêt</button>
     </div>
   </section>
 

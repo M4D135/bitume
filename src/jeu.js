@@ -843,7 +843,7 @@
   // rivaux une image sur deux. Une voiture distante est prolongée jusqu'au pas courant et son écart se résorbe en
   // 0,12 s. Les temps officiels arrivent par le canal fiable. Une machine qui part laisse ses voitures à l'ordinateur
   // de l'hôte ; sans hôte, chacun finit la course seul.
-  const EL = { R: null, role: null, recus: new Map(), corr: new Map(), pasEnvoi: 0, pred: {}, vieux: {} };
+  const EL = { R: null, role: null, recus: new Map(), corr: new Map(), pasEnvoi: 0, pred: {}, vieux: {}, course: null, pneusDe: new Map() };
   const nomPilote = () => (reglages.nom || '').trim().slice(0, 16) || 'Pilote';
   const joueursIci = () => reglages.joueursLocaux === 2 ? 2 : 1;
   const propre = t => String(t || '').replace(/[<>&"'`\\]/g, '').trim().slice(0, 16) || 'Pilote';
@@ -851,6 +851,7 @@
   const lienActif = () => !!(EL.R && EL.R.etat === 'connecte');
   function quitterEnLigne() {
     const R = EL.R;
+    annulerConfirmation(); EL.course = null; EL.pneusDe.clear();
     EL.R = null; EL.role = null;
     if (R) R.fermer();
     etatEnLigne('');
@@ -884,12 +885,120 @@
     const n = ouvert ? pilotesSalle(R).length : 0;
     $('l-choisir').hidden = !(actif && EL.role === 'hote');
     $('l-choisir').disabled = n > 4;
+    majCourseSalon();
     if (ouvert && !actif) etatEnLigne(EL.role === 'hote' ? 'Partie créée. Donnez ce code aux autres pilotes : quatre pilotes au plus.' : 'Connexion aux autres pilotes…');
     else if (actif) etatEnLigne(n > 4 ? 'Plus de quatre pilotes : une machine doit passer à un seul pilote.'
       : EL.role === 'hote' ? n + ' pilotes. Choisissez la course quand tout le monde est là.' : n + ' pilotes. L’hôte choisit la course…');
   }
+  // Prochaine course (David, 16/11 : « pourquoi les autres ne peuvent pas choisir les pneus ? ») : l'hôte annonce
+  // circuit, tours et météo prévue (la même graine que la course qui partira) ; chaque machine choisit ses pneus, que
+  // l'hôte reprend au départ. Boîte, vue, aide et commandes restent les réglages de chaque machine.
+  const NOMS_METEO = { soleil: 'soleil', pluie: 'pluie', variable: 'variable' };
+  function annoncerCourse() {
+    if (EL.role !== 'hote' || !EL.R) return;
+    const prevue = (reglages.meteo && reglages.meteo !== 'aleatoire' && B.meteo.pour(reglages.meteo)) || B.meteo.initial(graineCourse + 1);
+    EL.course = { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, meteo: reglages.meteo || 'aleatoire', eau: B.conduite.eauSurPiste(prevue) };
+    EL.R.envoyer(Object.assign({ t: 'course' }, EL.course));
+    majCourseSalon();
+  }
+  function majCourseSalon() {
+    const k = EL.course, ouvert = !!EL.R && EL.R.etat !== 'ferme';
+    $('l-course').hidden = !(ouvert && k);
+    if (!k) return;
+    const conseil = B.conduite.pneusConseilles(k.eau), meteo = NOMS_METEO[k.meteo] || (k.eau > .25 ? 'pluie, tirée au sort' : 'sec, tirée au sort');
+    texte($('l-course-texte'), 'Prochaine course : ' + CATALOGUE[k.i].nom + ' · ' + k.tours + ' tours · météo : ' + meteo + ' (pneus conseillés : ' + NOMS_PNEUS[conseil].toLowerCase() + ').');
+    $('l-vers-prets').hidden = !EL.confirmation;
+  }
+  // Avant le départ (David, 16/11 : « un écran de confirmation quand tout le monde est prêt, pour régler ses options
+  // avant la course ») : l'hôte propose la course ; chaque machine règle pneus, boîte et vue, puis se dit prête ; la
+  // course part quand toutes les machines liées le sont. L'hôte peut annuler ; une machine peut revenir au salon.
+  function proposerCourse() {
+    const R = EL.R;
+    if (!R || !lienActif() || EL.role !== 'hote') { etatEnLigne('Pas d’autre pilote connecté.'); aller('enligne'); return; }
+    annulerConfirmation();
+    annoncerCourse();
+    EL.confirmation = { prets: new Set() }; EL.pretIci = false;
+    R.envoyer({ t: 'confirmer', course: EL.course });
+    aller('prets');
+  }
+  function majPrets() {
+    const k = EL.course, R = EL.R, C = EL.confirmation;
+    if (!k || !R || !C) return;
+    const meteo = NOMS_METEO[k.meteo] || (k.eau > .25 ? 'pluie, tirée au sort' : 'sec, tirée au sort');
+    texte($('pr-course'), CATALOGUE[k.i].nom + ' · ' + k.tours + ' tours · météo : ' + meteo);
+    texte($('pr-pneus-conseil'), 'Conseillés pour cette météo : ' + NOMS_PNEUS[B.conduite.pneusConseilles(k.eau)].toLowerCase() + '.');
+    for (const [nom, val] of [['pneusPret', reglages.pneus], ['boitePret', reglages.boite], ['vuePret', reglages.vue]]) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = r.value === val;
+    let html = '', n = 0, m = 0;
+    for (const x of [...R.membres].sort((a, b) => a.id - b.id)) {
+      const pret = C.prets.has(x.id) && (x.id === R.id || R.pretAvec(x.id));
+      m++; if (pret) n++;
+      html += '<li' + (x.id === R.id ? ' class="moi"' : '') + '><b>' + propre(x.nom) + '</b><span>' + (x.joueurs === 2 ? '2 pilotes' : '1 pilote') + (x.id === 0 ? ' · hôte' : '') + '</span><em class="' + (pret ? 'pret' : 'attente') + '">' + (pret ? 'prêt' : 'règle ses options…') + '</em></li>';
+    }
+    const liste = $('pr-pilotes');
+    if (liste._html !== html) { liste._html = html; liste.innerHTML = html; }
+    texte($('pr-etat'), tousPrets(R, C) ? 'Tout le monde est prêt : départ !' : n + ' machine' + (n > 1 ? 's' : '') + ' prête' + (n > 1 ? 's' : '') + ' sur ' + m + '. La course part quand toutes le sont.');
+    texte($('pr-pret'), EL.pretIci ? 'Pas encore prêt' : 'Je suis prêt');
+    classe($('pr-pret'), 'principal', !EL.pretIci);
+  }
+  function basculerPret() {
+    const R = EL.R, C = EL.confirmation;
+    if (!R || !C) return;
+    EL.pretIci = !EL.pretIci;
+    if (EL.role === 'hote') { if (EL.pretIci) C.prets.add(R.id); else C.prets.delete(R.id); diffuserPrets(); }
+    else R.envoyer({ t: 'pret', oui: EL.pretIci, pneus: reglages.pneus }, 0);
+    majPrets();
+  }
+  function annulerConfirmation() {
+    if (EL.confirmation) clearTimeout(EL.confirmation.minuteur);
+    EL.confirmation = null; EL.pretIci = false;
+  }
+  function retirerPret() {
+    if (EL.confirmation && EL.pretIci) basculerPret();
+  }
+  function tousPrets(R, C) {
+    return !!(R && C && R.etat === 'connecte' && R.membres.length >= 2 &&
+      pilotesSalle(R).length <= 4 && R.membres.every(m =>
+        C.prets.has(m.id) && (m.id === R.id || R.pretAvec(m.id))));
+  }
+  // Le délai reste annulable : retour au salon, déconnexion ou nouveau membre ne lancent jamais une ancienne course.
+  function diffuserPrets() {
+    const R = EL.R, C = EL.confirmation;
+    if (!R || !C || EL.role !== 'hote') return;
+    for (const id of C.prets) if (!R.membres.some(m => m.id === id)) C.prets.delete(id);
+    R.envoyer({ t: 'prets', liste: [...C.prets] });
+    majPrets();
+    if (!tousPrets(R, C)) { clearTimeout(C.minuteur); C.minuteur = null; return; }
+    if (C.minuteur != null) return;
+    C.minuteur = setTimeout(() => {
+      C.minuteur = null;
+      if (EL.R !== R || EL.confirmation !== C || !tousPrets(R, C)) return;
+      annulerConfirmation();
+      departEnLigne();
+    }, 700);
+  }
+  function quitterPrets() {
+    if (EL.role === 'hote') { annulerConfirmation(); if (EL.R) EL.R.envoyer({ t: 'annuler' }); }
+    else if (EL.R && EL.pretIci) EL.R.envoyer({ t: 'pret', oui: false }, 0);
+    EL.pretIci = false;
+    aller('enligne');
+  }
+  function recevoirCourse(m) {
+    if (!m || !Number.isInteger(m.i) || !CATALOGUE[m.i]) return false;
+    // nouvelle annonce : les pneus conseillés sont présélectionnés quand la météo change, le pilote peut changer
+    const eau = clamp(+m.eau || 0, 0, 1), avant = EL.course;
+    EL.course = { i: m.i | 0, tours: clamp(m.tours | 0, 1, 99), difficulte: m.difficulte | 0, meteo: String(m.meteo || ''), eau };
+    if (!avant || Math.abs(avant.eau - eau) > .05 || !B.conduite.PNEUS[reglages.pneus]) { reglages.pneus = B.conduite.pneusConseilles(eau); envoyerPneus(); }
+    majCourseSalon();
+    if (ecran === 'prets') majPrets();
+    return true;
+  }
+  function envoyerPneus() {
+    if (EL.R && EL.role === 'invite' && EL.R.pretAvec(0) && B.conduite.PNEUS[reglages.pneus]) EL.R.envoyer({ t: 'pneus', pneus: reglages.pneus }, 0);
+  }
   function nouvelleLiaison() {
+    annulerConfirmation();
     if (EL.R) EL.R.fermer();
+    EL.course = null; EL.pneusDe.clear();
     const R = EL.R = B.reseau.creer({ url: B.reseau.adresseSalon(), nom: nomPilote(), joueurs: joueursIci() });
     EL.role = null;
     $('l-choisir').hidden = true; $('l-code-affiche').hidden = true;
@@ -898,8 +1007,15 @@
       EL.role = m.role;
       if (m.role === 'hote') texte($('l-code-affiche'), m.code);
       majSalon();
-    }).on('salle', () => { if (R === EL.R) majSalon(); })
-      .on('pair', () => { if (R === EL.R) majSalon(); })
+    }).on('salle', () => { if (R === EL.R) { majSalon(); if (EL.confirmation) { diffuserPrets(); majPrets(); } } })
+      .on('pair', id => {
+        if (R !== EL.R) return;
+        majSalon();
+        if (EL.role !== 'hote') { if (id === 0) envoyerPneus(); return; }
+        annoncerCourse();
+        // une machine arrive pendant la confirmation : elle la reçoit aussi
+        if (EL.confirmation) { R.envoyer({ t: 'confirmer', course: EL.course }, id); R.envoyer({ t: 'prets', liste: [...EL.confirmation.prets] }, id); diffuserPrets(); }
+      })
       .on('relais', () => { if (R !== EL.R) return; majSalon(); if (session && session.enLigne && ecran === 'course') sousMessage('Liaison directe perdue : la course passe par le salon'); })
       .on('parti', id => { if (R === EL.R) surDepart(id); })
       .on('message', (m, de) => { if (R === EL.R) surMessageEnLigne(m, de); })
@@ -911,15 +1027,41 @@
   function lancerEnLigne(cfg) {
     reglages.circuit = cfg.i;
     $('chargement').classList.remove('fini');
-    setTimeout(() => { lancer('course', cfg.i, cfg); $('chargement').classList.add('fini'); aller('course'); }, 30);
+    const R = EL.R;
+    setTimeout(() => {
+      $('chargement').classList.add('fini');
+      if (EL.R !== R || !R || R.etat !== 'connecte') return;
+      lancer('course', cfg.i, cfg); aller('course');
+    }, 30);
   }
   function surMessageEnLigne(m, de) {
+    if (!m || typeof m !== 'object' || !EL.R) return;
     const S = session;
     if (m.t === 'depart' && de === 0 && EL.role === 'invite' && m.cfg) {
       const humains = (Array.isArray(m.cfg.humains) ? m.cfg.humains : []).slice(0, 4).map(h => ({ nom: propre(h.nom), machine: h.machine | 0 }));
       const locaux = humains.map((h, k) => h.machine === EL.R.id ? k : -1).filter(k => k >= 0);
-      if (!locaux.length) { etatEnLigne('La course est partie sans cette machine : attendez la suivante.'); return; }
+      annulerConfirmation();
+      if (!locaux.length) { etatEnLigne('La course est partie sans cette machine : attendez la suivante.'); majCourseSalon(); return; }
       lancerEnLigne(Object.assign({}, m.cfg, { humains, locaux, role: 'invite' }));
+    } else if (m.t === 'course' && de === 0 && EL.role === 'invite') recevoirCourse(m);
+    else if (m.t === 'confirmer' && de === 0 && EL.role === 'invite') {
+      if (!recevoirCourse(m.course)) return;
+      annulerConfirmation();
+      EL.confirmation = { prets: new Set() }; EL.pretIci = false;
+      if (ecran !== 'course' && ecran !== 'pause') aller('prets');
+      majCourseSalon();
+    } else if (m.t === 'prets' && de === 0 && EL.confirmation) { EL.confirmation.prets = new Set((Array.isArray(m.liste) ? m.liste : []).map(x => x | 0)); majPrets(); }
+    else if (m.t === 'annuler' && de === 0 && EL.role === 'invite') {
+      annulerConfirmation();
+      if (retourReglages === 'prets') retourReglages = 'enligne';
+      if (ecran === 'prets') aller('enligne');
+      etatEnLigne('L’hôte a annulé le départ.'); majCourseSalon();
+    } else if (m.t === 'pret' && EL.role === 'hote' && EL.confirmation && EL.R.membres.some(x => x.id === de) && EL.R.pretAvec(de)) {
+      if (B.conduite.PNEUS[m.pneus]) EL.pneusDe.set(de, m.pneus);
+      if (m.oui) EL.confirmation.prets.add(de); else EL.confirmation.prets.delete(de);
+      diffuserPrets();
+    } else if (m.t === 'pneus' && EL.role === 'hote' && EL.R.membres.some(x => x.id === de)) {
+      if (B.conduite.PNEUS[m.pneus]) EL.pneusDe.set(de, m.pneus);
     } else if (m.t === 'arrivee' && S && S.enLigne) {
       const v = S.course.voitures[m.id];
       if (v && v.distant && Number.isFinite(m.temps)) { v.tempsOfficiel = m.temps; if (v.fini) v.tempsFinal = m.temps; }   // temps officiel
@@ -927,7 +1069,10 @@
   }
   // une machine (pas l'hôte) quitte la partie : l'ordinateur de l'hôte reprend ses voitures et envoie leur état
   function surDepart(id) {
+    EL.pneusDe.delete(id);
     majSalon();
+    if (EL.confirmation && EL.role === 'hote') { EL.confirmation.prets.delete(id); diffuserPrets(); }
+    else if (ecran === 'prets') majPrets();
     const S = session;
     if (!S || !S.enLigne || S.course.termine) return;
     const leurs = S.enLigne.humains.map((h, k) => h.machine === id ? k : -1).filter(k => k >= 0);
@@ -936,6 +1081,9 @@
     message('Un pilote est parti', 'ambre'); sousMessage('Sa voiture passe à l’ordinateur');
   }
   function surFermeture(raison) {
+    annulerConfirmation(); EL.course = null; EL.pneusDe.clear();
+    if (retourReglages === 'prets') retourReglages = 'enligne';
+    if (ecran === 'prets') aller('enligne');
     const S = session;
     etatEnLigne(raison === 'parti' ? 'L’hôte a quitté la partie.' : raison === 'local' ? '' : 'La liaison est coupée.');
     if (S && S.enLigne && !S.course.termine) {
@@ -958,7 +1106,7 @@
     const meteo = reglages.meteo || 'aleatoire', graine = ++graineCourse;
     const conseil = B.conduite.pneusConseilles(B.conduite.eauSurPiste(B.meteo.pour(meteo) || B.meteo.initial(graine)));
     const cfg = { graine, i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, meteo, T0: R.horloge() + 4000, humains,
-      pneus: humains.map(h => h.machine === 0 && B.conduite.PNEUS[reglages.pneus] ? reglages.pneus : conseil) };
+      pneus: humains.map(h => { const p = h.machine === 0 ? reglages.pneus : EL.pneusDe.get(h.machine); return B.conduite.PNEUS[p] ? p : conseil; }) };
     R.envoyer({ t: 'depart', cfg });
     lancerEnLigne(Object.assign({}, cfg, { locaux: humains.map((h, k) => h.machine === 0 ? k : -1).filter(k => k >= 0), role: 'hote' }));
   }
@@ -1011,7 +1159,12 @@
     if (navigator.clipboard && code) navigator.clipboard.writeText(code).then(() => etatEnLigne('Code ' + code + ' copié. Envoyez-le à l’autre pilote.'), () => {});
   });
   $('l-code').addEventListener('keydown', e => { if (e.key === 'Enter') rejoindre(); });
-  $('l-choisir').addEventListener('click', () => { modePrepa = 'enligne'; aller('preparation'); });
+  $('l-choisir').addEventListener('click', () => { modePrepa = 'enligne'; aller('preparation'); annoncerCourse(); });
+  $('l-reglages').addEventListener('click', () => { retirerPret(); retourReglages = 'enligne'; aller('reglages'); });
+  $('l-vers-prets').addEventListener('click', () => aller('prets'));
+  $('pr-pret').addEventListener('click', basculerPret);
+  $('pr-retour').addEventListener('click', quitterPrets);
+  $('pr-reglages').addEventListener('click', () => { retirerPret(); retourReglages = 'prets'; aller('reglages'); });
 
   // ---------------------------------------------------------------- caméras
   // Champ du cockpit : réglage en degrés horizontaux mesurés en 16:9 (60° par défaut, 36° verticaux). Plus large
@@ -1366,6 +1519,7 @@
     const eclair = S.eclair || 0;
     // Tunnel : l'œil s'adapte. En entrant, l'intérieur paraît d'abord sombre puis s'éclaircit (0,8 s) ; en sortant, le
     // jour éblouit un instant (0,3 s). Les huit lampes les plus proches de la caméra éclairent les murs et la chaussée.
+    // Les lampes gardent leur puissance ; seule l'adaptation de l'œil change à l'entrée et à la sortie.
     const sousVoute = !VUES_DEHORS.has(vue) && B.circuit.dansTunnel(c, suivie.etat.s, -6), cibleLumiere = sousVoute ? 1.32 : 1;
     S.lumiere = S.lumiere ?? 1;
     S.lumiere += (cibleLumiere - S.lumiere) * (1 - Math.exp(-dtImage / (cibleLumiere > S.lumiere ? .8 : .3)));
@@ -1376,7 +1530,9 @@
       for (const p of LT) { const d2 = (p[0] - cam.pos[0]) ** 2 + (p[2] - cam.pos[2]) ** 2; if (d2 < 4900) lampes.push({ p, power: 12, range: 18, color: [1, .84, .58], d2 }); }
       lampes.sort((a, b) => a.d2 - b.d2); if (lampes.length > 8) lampes.length = 8;
     }
-    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: avecOmbres(q), bloom: avecHalo(q), brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: avecHalo(q) ? 1 : 0, reflections: avecReflets(q, meteo), weather: B.meteo.ambiance(meteo) });
+    // Halo/bloom : qualité du palier (plus coûteux en qualité élevée)
+    const haloInt = avecHalo(q);
+    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: avecOmbres(q), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(q, meteo), weather: B.meteo.ambiance(meteo) });
     dessinerMeteo(S, dtImage, cam, vue);
     majGlaces(S, vue, cam, ps, sortie, B.meteo.ambiance(meteo), suivie);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
@@ -1550,7 +1706,7 @@
 
   // ---------------------------------------------------------------- écrans
   let ecran = 'chargement';
-  const ECRANS = ['titre', 'enligne', 'preparation', 'reglages', 'pause', 'resultats'];
+  const ECRANS = ['titre', 'enligne', 'prets', 'preparation', 'reglages', 'pause', 'resultats'];
   let modePrepa = 'course', retourReglages = 'titre';
   const enCourse = () => ecran === 'course';
 
@@ -1564,12 +1720,13 @@
     $('jeu').dataset.ecran = nom;
     ecran = nom;
     if (nom === 'titre') dernierGeste = performance.now();
-    if (nom === 'titre' || nom === 'preparation' || nom === 'enligne') {
+    if (nom === 'titre' || nom === 'preparation' || nom === 'enligne' || nom === 'prets') {
       if (!session || session.type !== 'vitrine' || (nom === 'preparation' && session.i !== reglages.circuit)) lancer('vitrine', nom === 'preparation' ? reglages.circuit : (session ? session.i : reglages.circuit));
     }
     // en ligne, la pause n'arrête pas la course : pas de « Recommencer »
     if (nom === 'pause') { $('b-recommencer').hidden = !!(session && session.enLigne); $('b-replacer').hidden = aDeux(); }
     if (nom === 'enligne') majSalon();
+    if (nom === 'prets') majPrets();
     tactile(nom === 'course' && !aDeux());
     if (nom === 'preparation') remplirPreparation();
     if (nom === 'reglages') remplirReglages();
@@ -1645,7 +1802,7 @@
         const ctx = b.querySelector('canvas').getContext('2d');
         const p = plan(c, 320, 200, 14);
         dessinerTrace(ctx, c, p, 10, 'rgba(0,0,0,.55)'); dessinerTrace(ctx, c, p, 5, '#efe8da');
-        b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); lancer('vitrine', i); });
+        b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); lancer('vitrine', i); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
         zone.appendChild(b);
       });
     }
@@ -1673,6 +1830,13 @@
     if (t.name === 'tours' || t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
     if (t.name === 'meteo') { reglages.meteo = t.value; sauverReglages(); preselectionnerPneus(); }
     if (t.name === 'pneus' && B.conduite.PNEUS[t.value]) { reglages.pneus = t.value; sauverReglages(); }
+    if (['pneusIci', 'pneusPret', 'boitePret', 'vuePret', 'boite', 'vue'].includes(t.name)) retirerPret();
+    if ((t.name === 'pneusIci' || t.name === 'pneusPret') && B.conduite.PNEUS[t.value]) {
+      reglages.pneus = t.value; sauverReglages(); envoyerPneus();
+    }
+    if (t.name === 'boitePret' && ['auto', 'manuelle'].includes(t.value)) { reglages.boite = t.value; sauverReglages(); }
+    if (t.name === 'vuePret' && ['cockpit', 'poursuite'].includes(t.value)) { reglages.vue = t.value; sauverReglages(); }
+    if (EL.role === 'hote' && lienActif() && ['tours', 'difficulte', 'meteo', 'pneus'].includes(t.name)) annoncerCourse();
     if (t.name === 'joueursIci') { reglages.joueursLocaux = t.value === '2' ? 2 : 1; sauverReglages(); }
     if (t.name === 'partage') { reglages.partage = t.value === 'cote' ? 'cote' : 'haut-bas'; sauverReglages(); }
     if (/^r?cmd[01]$/.test(t.name) && NOMS_COMMANDES[t.value]) {
@@ -1763,12 +1927,13 @@
     if (ecran === 'reglages') aller(retourReglages || 'titre');
     else if (ecran === 'preparation' && modePrepa === 'enligne') aller('enligne');
     else if (ecran === 'enligne') quitterEnLigne();
+    else if (ecran === 'prets') quitterPrets();
     else if (ecran === 'resultats' && enLigneApres()) $('b-menu').click();
     else if (ecran === 'preparation' || ecran === 'resultats') aller('titre');
   }
   $('r-retour').addEventListener('click', retour);
 
-  $('b-depart').addEventListener('click', () => modePrepa === 'enligne' ? departEnLigne() : demarrerSeance(modePrepa));
+  $('b-depart').addEventListener('click', () => modePrepa === 'enligne' ? proposerCourse() : demarrerSeance(modePrepa));
   function demarrerSeance(type) {
     $('chargement').classList.remove('fini');
     setTimeout(() => {
@@ -1808,7 +1973,7 @@
   });
   $('b-rejouer').addEventListener('click', () => {
     if (!enLigneApres()) demarrerSeance(session ? session.type : 'course');
-    else if (EL.role === 'hote' && session.course.termine) departEnLigne();
+    else if (EL.role === 'hote' && session.course.termine) proposerCourse();
   });
 
   // Le classement apparaît tout de suite ; les rivaux finissent sans monopoliser le fil de l'interface.
