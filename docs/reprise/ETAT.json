@@ -8,7 +8,11 @@
     "branches_distantes_comptees": 7,
     "qualification_historique": "34 suites Node sur Spark (Node 24.18.0, Linux arm64), build reproductible sha256 c8ac999b71b1944f50cf3d25c42635f2b6db3b72741be9a0def66793ed9ef76e, FERRO 0.3.3 34/34",
     "serie_locale_e074b55_retrouvee": false,
-    "pr": ["#1 closed", "#2 closed", "aucune PR ouverte"]
+    "pr": [
+      "#1 closed",
+      "#2 closed",
+      "aucune PR ouverte"
+    ]
   },
   "paquet_reprise": {
     "attendu": "BITUME-REPRISE-QWEN-SPARK.zip (bitume-main-12dc097.bundle, relais-2026-11-17/, qualification-lot0/)",
@@ -24,15 +28,63 @@
     "consequence": "La recuperation 0.2.20 du prompt (51 suites, HTML 12 857 043 octets, sha256 c9cfce03...) n'a jamais ete poussee et n'existe sur aucun disque joint : non recuperable. Rien n'a ete reinvente a sa place. Le 0.2.20 livre par le lot 0 est un autre commit, construit depuis main b9d8c6d.",
     "relais_lots_1_a_5": "BITUME-RELAIS-2026-11-17.zip (sha256 6114cf19897ad3b1e3a30afee5d99d5af87399fdac625790366f124d08cd1696) egalement absent : les preparations candidates (eclairage.js, performance.js, duels.js, stands.js) ne sont pas disponibles. Les lots 1 a 5 sont donc realises depuis les sources de main, pas portes depuis le relais."
   },
-  "lot_actif": "1",
-  "prochain_lot": "1",
+  "lot_actif": "2",
+  "prochain_lot": "2",
   "lots": [
-    { "id": "0", "fiche": "docs/reprise/00-DEPOT.md", "statut": "termine", "dependances": [], "commit_livre": "d0b4f89e69c0086511a43089a4d02290442ceb65" },
-    { "id": "1", "fiche": "docs/reprise/01-TUNNEL.md", "statut": "en_cours", "dependances": [], "commit_livre": null },
-    { "id": "2", "fiche": "docs/reprise/02-CRASHS.md", "statut": "a_faire", "dependances": ["1"], "commit_livre": null },
-    { "id": "3", "fiche": "docs/reprise/03-RIVAUX.md", "statut": "a_faire", "dependances": ["2"], "commit_livre": null },
-    { "id": "4", "fiche": "docs/reprise/04-STANDS.md", "statut": "a_faire", "dependances": ["2", "3"], "commit_livre": null },
-    { "id": "5", "fiche": "docs/reprise/05-PERFORMANCE.md", "statut": "a_faire", "dependances": ["1", "2", "3", "4"], "commit_livre": null }
+    {
+      "id": "0",
+      "fiche": "docs/reprise/00-DEPOT.md",
+      "statut": "termine",
+      "dependances": [],
+      "commit_livre": "d0b4f89e69c0086511a43089a4d02290442ceb65"
+    },
+    {
+      "id": "1",
+      "fiche": "docs/reprise/01-TUNNEL.md",
+      "statut": "termine",
+      "dependances": [],
+      "commit_livre": "856dd363150892e74494f045aa8ca94c8e6bbc1d"
+    },
+    {
+      "id": "2",
+      "fiche": "docs/reprise/02-CRASHS.md",
+      "statut": "pret",
+      "dependances": [
+        "1"
+      ],
+      "commit_livre": null
+    },
+    {
+      "id": "3",
+      "fiche": "docs/reprise/03-RIVAUX.md",
+      "statut": "a_faire",
+      "dependances": [
+        "2"
+      ],
+      "commit_livre": null
+    },
+    {
+      "id": "4",
+      "fiche": "docs/reprise/04-STANDS.md",
+      "statut": "a_faire",
+      "dependances": [
+        "2",
+        "3"
+      ],
+      "commit_livre": null
+    },
+    {
+      "id": "5",
+      "fiche": "docs/reprise/05-PERFORMANCE.md",
+      "statut": "a_faire",
+      "dependances": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "commit_livre": null
+    }
   ],
   "integration": {
     "nouvelle_branche_autorisee_pour_coordination": false,
@@ -40,14 +92,77 @@
     "force_push": false,
     "trajet_publication": "commit sur Spark, bundle Git verifie, transport vers le Mac, push depuis le Mac (le Spark n'a aucun identifiant GitHub)",
     "deploiement_effectue": false,
-    "sauvegarde_historique": { "fichier": "bitume-toutes-refs-2026-11-17.bundle", "sha256": "4a733d1faf1dec986d89e5bf0969a804f95f6a24463e618fd8897abbaf4fb1ef", "verifie": true }
+    "sauvegarde_historique": {
+      "fichier": "bitume-toutes-refs-2026-11-17.bundle",
+      "sha256": "4a733d1faf1dec986d89e5bf0969a804f95f6a24463e618fd8897abbaf4fb1ef",
+      "verifie": true
+    }
   },
   "criteres_ouverts": [
     "Conduite S8 : environ 1 031 degres/s2 pour une cible inferieure ou egale a 300 ; mesure non bloquante existante, pas un objectif atteint",
-    "Rendu WebGL reel, FPS GPU, vraie session WebRTC et manettes physiques : non qualifies"
+    "FPS GPU reels, vraie session WebRTC et manettes physiques : non qualifies (le Spark ne rend qu'en logiciel)"
   ],
   "limites_qualification": [
     "Les suites Node ne qualifient ni le rendu WebGL, ni PhysX en navigateur, ni le reseau reel, ni le materiel.",
-    "Aucun navigateur avec WebGL2 disponible sur le Spark : les validations visuelles restent ouvertes jusqu'au controle sur le Mac."
-  ]
+    "Navigateur disponible sur le Spark : Chrome 151 sans interface, WebGL2 avec rendu logiciel ANGLE/SwiftShader. Il prouve le rendu WebGL2, l'absence d'erreur de console et le cout reel des passes ; il ne qualifie aucun GPU reel (carte GB10 non exposee aux conteneurs, /dev/dri absent) et ne remplace pas l'avis humain sur une capture.",
+    "Performances non qualifiees : la cible 60 FPS et le critere p95 <= 16,7 ms en 1390x1295 restent a mesurer sur le Mac, volet visible et focalise.",
+    "Validation visuelle du tunnel non faite : les chiffres prouvent que les lampes suivent la camera, pas la qualite percue du fondu. Capture Mac a prendre (cockpit sous la voute, entree, milieu, sortie, vitesses lente et rapide, poursuite, demo, ecran partage).",
+    "Les mesures sensibles au temps exigent une machine calme : decor.test.mjs echoue de 154 a 180 ms pour un seuil de 150 ms sous concurrence CPU, passe machine calme. Seuils non assouplis.",
+    "Manettes physiques et vraie partie WebRTC multi-machines : non testees."
+  ],
+  "lot_1_resultat": {
+    "commit_code": "856dd363150892e74494f045aa8ca94c8e6bbc1d",
+    "version_client": "0.2.21",
+    "dist_sha256": "40e8a9d50c3dfafb77a4ff117a3e463759a85d9bc9175f155887297ae081fd58",
+    "dist_octets": 12863555,
+    "dist_gzip": 2951929,
+    "suites_node": "37/37 sur Spark (machine calme)",
+    "ferro": "0.3.3, 34/34 modules conformes ; aucun module verrouille modifie, ferro/gpu-profile.js seulement charge",
+    "navigateur": "Chrome 151 sans interface, WebGL2, aucune erreur de console, titre et signature verifies",
+    "mesures_reference": {
+      "scene": "Val-Brule, 1390x1295, qualite high, banc 6 s apres 1 s de chauffe",
+      "cpu_autour_draw_ms": {
+        "p50": 1.4,
+        "p95": 1.7
+      },
+      "cpu_simulation_ms": {
+        "p50": 3.2,
+        "p95": 4.5
+      },
+      "gpu_ms": 407.5,
+      "gpu_passes": {
+        "ombres": 176.2,
+        "monde": 217.3,
+        "effets": 2.0,
+        "post": 16.2
+      },
+      "draw_calls_principale": 171.8,
+      "triangles_principale": 703066,
+      "draw_calls_retroviseurs": 90.3,
+      "triangles_retroviseurs": 301588,
+      "requetes_disjointes_ecartees": 0,
+      "fps": 1.33,
+      "portee": "rendu logiciel SwiftShader : ne qualifie aucun GPU reel"
+    },
+    "tunnel": {
+      "sous_la_voute_abscisse_1928": {
+        "lampes": 3,
+        "somme_puissances": 24.79,
+        "draw_calls": 135.0,
+        "triangles": 261150
+      },
+      "hors_tunnel_abscisse_2200": {
+        "lampes": 0,
+        "somme_puissances": 0,
+        "draw_calls": 110.2,
+        "triangles": 221132
+      }
+    },
+    "rapports": [
+      "docs/reprise/rapports/LOT1-2026-11-17.md",
+      "docs/reprise/rapports/lot1-banc-spark.json",
+      "docs/reprise/rapports/lot1-tunnel-s1928.json",
+      "docs/reprise/rapports/lot1-tunnel-s2200.json"
+    ]
+  }
 }

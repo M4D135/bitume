@@ -28,11 +28,28 @@ Qualification réellement exécutée sur le Spark (`spark-5fc3`, Linux arm64, No
 | Lot | Fiche | Résultat attendu | Dépendance | Statut |
 |---|---|---|---|---|
 | 0 | [Dépôt unique](docs/reprise/00-DEPOT.md) | Travail conservé, une seule branche principale | Aucune | **terminé** |
-| 1 | [Tunnel et mesures](docs/reprise/01-TUNNEL.md) | Reflets sans apparition brutale, référence de performance et overlay | Base vérifiée | en cours |
-| 2 | [Crashs et PhysX](docs/reprise/02-CRASHS.md) | Accidents lisibles, pièces détachées bornées, récupération rapide | Lot 1 intégré | à faire |
+| 1 | [Tunnel et mesures](docs/reprise/01-TUNNEL.md) | Reflets sans apparition brutale, référence de performance et overlay | Base vérifiée | **terminé** |
+| 2 | [Crashs et PhysX](docs/reprise/02-CRASHS.md) | Accidents lisibles, pièces détachées bornées, récupération rapide | Lot 1 intégré | **prêt** |
 | 3 | [Rivaux agressifs](docs/reprise/03-RIVAUX.md) | Manœuvres offensives contre joueur et autres IA | Lot 2 intégré | à faire |
 | 4 | [Santé et stands](docs/reprise/04-STANDS.md) | Dégâts persistants visibles et réparations aux stands | Lots 2 et 3 intégrés | à faire |
 | 5 | [Optimisation et qualification](docs/reprise/05-PERFORMANCE.md) | Gains mesurés, modes et plateformes contrôlés | Lots 1 à 4 intégrés | à faire |
+
+## État vérifié le 17 novembre 2026 (lot 1 terminé)
+
+Base de départ : `main` à `fae244f` (lot 0). Livré : commit de code `856dd363150892e74494f045aa8ca94c8e6bbc1d`, client
+**0.2.21**, `dist/bitume.html` 12 863 555 octets, gzip 2 951 929, sha256 `40e8a9d50c3dfafb77a4ff117a3e463759a85d9bc9175f155887297ae081fd58`.
+Qualification exécutée sur le Spark : **37 suites Node**, FERRO **34/34**, page réellement rendue dans Chrome 151 sans
+interface (WebGL2, **aucune erreur de console**), GPU mesuré par les requêtes asynchrones du moteur. Détail et journaux
+dans `docs/reprise/rapports/LOT1-2026-11-17.md`.
+
+Un navigateur avec WebGL2 **est** disponible sur le Spark (Chrome sans interface, rendu logiciel ANGLE/SwiftShader) :
+la limite « aucun navigateur WebGL2 sur le Spark » inscrite au lot 0 est corrigée ici. Ce navigateur prouve le rendu
+WebGL2, l'absence d'erreur et le coût réel des passes ; il ne qualifie **aucun GPU réel** (la carte GB10 n'est pas
+exposée aux conteneurs) et ne remplace pas l'avis humain sur une capture. Les mesures de performance restent à prendre
+sur le Mac. `verifications/decor.test.mjs` échoue sous concurrence CPU parasite et passe machine calme : ne pas mesurer
+pendant un rendu logiciel en arrière-plan.
+
+**Le prochain lot prêt est le lot 2 (crashs et PhysX).**
 
 `src/jeu.js`, `src/course.js`, `src/index.html`, `src/style.css`, `VERSION.json`, `SIZE.json` et `dist/bitume.html` sont des points de jonction : modifications et reconstructions séquentielles uniquement. Les analyses peuvent être indépendantes, pas les pushs concurrents sur la branche principale.
 
