@@ -1,6 +1,8 @@
 # Lot 2 : crashs spectaculaires et pièces PhysX
 
-Statut : **à faire**, après intégration du lot 1. Le style demandé est celui d'accidents de course spectaculaires ; aucune ressource de Burnout ou Destruction Derby n'est à importer.
+Statut : **terminé le 17 novembre 2026**, commit `2766f01e2b7a8469ce61056b0ddbd2d652b8fe46`, client **0.2.22**.
+Rapport brut et journaux : `docs/reprise/rapports/LOT2-2026-11-17.md`. Le style demandé est celui d'accidents de
+course spectaculaires ; aucune ressource de Burnout ou Destruction Derby n'est à importer.
 
 ## Sources utiles
 
@@ -27,3 +29,33 @@ Régressions utiles : `crash.test.mjs`, `contacts.test.mjs`, `collisions-oriente
 ## Livraison
 
 API de dégâts et contrat de récupération documentés pour les lots 3 et 4 ; budget effectivement mesuré ; captures/tests manuels réels ou limites explicites. Ne pas attaquer simultanément la refonte des stands.
+
+## Ce qui a été fait (17/11/2026)
+
+- **PhysX réellement utilisé.** `FPhysX.init()` n'était appelé nulle part : les pièces détachées suivaient la parabole
+  de repli et les 12 Mo de runtime embarqués ne servaient à rien. Initialisation lancée en tâche de fond au
+  démarrage. Le choc réel vérifié dans Chrome crée 6 corps rigides et 5 dalles de sol (`FPhysX 5.12.0, ready`).
+- **Budget de pièces.** Douze pièces par casse → **six** (4 roues + 2 panneaux), quota par voiture remis à zéro au
+  remplacement, pool de 144 → **96** repris à la pièce la plus proche de sa fin de vie. Vérifié avec douze voitures
+  (72 pièces) et par saturation répétée. Un choc violent sans casse perd un panneau, du côté de la normale ; le côté
+  du choc est propagé de `contacts.js` jusqu'au choix des panneaux.
+- **Corps qui s'éteignent.** Une pièce immobile depuis 0,4 s sort de la simulation et reste dessinée.
+- **Sol adapté au relief.** Cinq dalles courtes suivant l'altitude échantillonnée du tracé, au lieu d'une dalle
+  horizontale de 80 m qui traversait dévers et pente.
+- **Libération sûre.** `B.traces.liberer(fx)` appelé à chaque nouvelle séance (la démo empilait un monde PhysX orphelin
+  par course) et sur `webglcontextlost`. Vérifié : le compteur de mondes redescend à 0.
+- **Dégâts persistants.** `reparerUrgence` (conduisible, pas neuve) au remplacement ; `reparer` (remise à neuf) réservé
+  aux stands du lot 4. Records et fantômes passent à **p9**.
+- **Autorité réseau.** Impacts et dégâts calculés par la machine qui conduit la voiture ; le paquet d'état ne
+  transporte que la cinématique ; débris, fumée et étincelles restent locaux.
+
+## Reste ouvert après ce lot
+
+- **Spectacle et lisibilité à l'œil non validés** : capture Mac à prendre (mur à 45°, contact latéral à 130 km/h,
+  tonneau, débris dans le tunnel). Les chiffres prouvent la mécanique, pas le rendu perçu.
+- **Performances non qualifiées** (rendu logiciel sur le Spark) ; le critère Mac p95 ≤ 16,7 ms reste à mesurer.
+- **Décision à confirmer par David** : `degats.js` annonçait une « réparation complète à la remise en piste (décision
+  David 16/11) ». La décision du 16/11 porte sur le délai (moins d'une seconde), pas sur une remise à neuf, et
+  `REPRISE.md` réserve la réparation complète aux stands. Le remplacement n'est donc plus une remise à neuf ; facile à
+  annuler si David veut l'inverse.
+- **Réseau réel non éprouvé** : l'autorité est définie et documentée, pas testée sur une vraie partie multi-machines.

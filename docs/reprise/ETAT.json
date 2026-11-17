@@ -28,8 +28,8 @@
     "consequence": "La recuperation 0.2.20 du prompt (51 suites, HTML 12 857 043 octets, sha256 c9cfce03...) n'a jamais ete poussee et n'existe sur aucun disque joint : non recuperable. Rien n'a ete reinvente a sa place. Le 0.2.20 livre par le lot 0 est un autre commit, construit depuis main b9d8c6d.",
     "relais_lots_1_a_5": "BITUME-RELAIS-2026-11-17.zip (sha256 6114cf19897ad3b1e3a30afee5d99d5af87399fdac625790366f124d08cd1696) egalement absent : les preparations candidates (eclairage.js, performance.js, duels.js, stands.js) ne sont pas disponibles. Les lots 1 a 5 sont donc realises depuis les sources de main, pas portes depuis le relais."
   },
-  "lot_actif": "2",
-  "prochain_lot": "2",
+  "lot_actif": "3",
+  "prochain_lot": "3",
   "lots": [
     {
       "id": "0",
@@ -48,16 +48,16 @@
     {
       "id": "2",
       "fiche": "docs/reprise/02-CRASHS.md",
-      "statut": "pret",
+      "statut": "termine",
       "dependances": [
         "1"
       ],
-      "commit_livre": null
+      "commit_livre": "2766f01e2b7a8469ce61056b0ddbd2d652b8fe46"
     },
     {
       "id": "3",
       "fiche": "docs/reprise/03-RIVAUX.md",
-      "statut": "a_faire",
+      "statut": "pret",
       "dependances": [
         "2"
       ],
@@ -163,6 +163,52 @@
       "docs/reprise/rapports/lot1-banc-spark.json",
       "docs/reprise/rapports/lot1-tunnel-s1928.json",
       "docs/reprise/rapports/lot1-tunnel-s2200.json"
+    ]
+  },
+  "lot_2_resultat": {
+    "commit_code": "2766f01e2b7a8469ce61056b0ddbd2d652b8fe46",
+    "version_client": "0.2.22",
+    "dist_sha256": "021d24e8cf51234b240624007523069916b4ebce67311819f1a299d413771761",
+    "dist_octets": 12870767,
+    "dist_gzip": 2954414,
+    "suites_node": "38/38 sur Spark machine calme, dont verifications/pieces.test.mjs (15 controles)",
+    "ferro": "0.3.3, 34/34 ; aucun module verrouille modifie",
+    "decouverte": "FPhysX.init() n'etait appele nulle part : les pieces detachees n'ont jamais ete des corps rigides en navigateur, et les 12 Mo de runtime PhysX de la page ne servaient a rien",
+    "corrections": [
+      "initialisation PhysX en tache de fond au démarrage, sans bloquer le titre ni faire echouer la page",
+      "budget de six pieces par voiture (4 roues + 2 panneaux), quota remis a zero au remplacement",
+      "pool 144 -> 96, place reprise a la piece la plus proche de sa fin de vie",
+      "evenement 'panneau' produit mais jamais distribue par traces.pas : corrige",
+      "cote du choc propage de contacts.js jusqu'au choix des panneaux",
+      "corps supprime quand la piece est immobile depuis 0,4 s, piece reste dessinee",
+      "sol : cinq dalles courtes suivant l'altitude du trace, au lieu d'une dalle horizontale de 80 m",
+      "traces.liberer() appele a chaque nouvelle seance et sur webglcontextlost (la demo empilait un monde orphelin par course)",
+      "reparerUrgence : conduisible mais pas neuve ; reparer reserve aux stands",
+      "records et fantomes en p9"
+    ],
+    "navigateur": {
+      "physx": "5.12.0, ready",
+      "choc_reel": {
+        "evenements": "roue,roue,roue,roue,casse",
+        "pieces": 6,
+        "roues": 4,
+        "corps_physx": 6,
+        "dalles": 5,
+        "trainee_apres_casse": 1.08
+      },
+      "liberation": "mondes PhysX 1 -> 0 a la seance suivante, session.fx.monde null",
+      "erreurs_console": 0
+    },
+    "reseau_autorite": "impacts et degats calcules par la machine qui conduit la voiture ; le paquet d'etat ne transporte que la cinématique (15 flottants par voiture) ; debris, fumee et etincelles restent locaux",
+    "tests_modifies_volontairement": [
+      "crash.test.mjs : 12 pieces -> 6 (budget demande par la fiche)",
+      "reprise-recul.test.mjs : adher == 1 -> adher >= 0,96 et degats conserves (REPRISE.md)"
+    ],
+    "a_confirmer_par_david": "le remplacement apres accident n'est plus une remise a neuf ; la decision du 16/11 portait sur le delai, pas sur une remise a neuf. Reprendre reparer() dans replacer() suffit a annuler.",
+    "rapports": [
+      "docs/reprise/rapports/LOT2-2026-11-17.md",
+      "docs/reprise/rapports/lot2-casse-spark.json",
+      "docs/reprise/rapports/lot2-banc-spark.json"
     ]
   }
 }

@@ -29,8 +29,8 @@ Qualification réellement exécutée sur le Spark (`spark-5fc3`, Linux arm64, No
 |---|---|---|---|---|
 | 0 | [Dépôt unique](docs/reprise/00-DEPOT.md) | Travail conservé, une seule branche principale | Aucune | **terminé** |
 | 1 | [Tunnel et mesures](docs/reprise/01-TUNNEL.md) | Reflets sans apparition brutale, référence de performance et overlay | Base vérifiée | **terminé** |
-| 2 | [Crashs et PhysX](docs/reprise/02-CRASHS.md) | Accidents lisibles, pièces détachées bornées, récupération rapide | Lot 1 intégré | **prêt** |
-| 3 | [Rivaux agressifs](docs/reprise/03-RIVAUX.md) | Manœuvres offensives contre joueur et autres IA | Lot 2 intégré | à faire |
+| 2 | [Crashs et PhysX](docs/reprise/02-CRASHS.md) | Accidents lisibles, pièces détachées bornées, récupération rapide | Lot 1 intégré | **terminé** |
+| 3 | [Rivaux agressifs](docs/reprise/03-RIVAUX.md) | Manœuvres offensives contre joueur et autres IA | Lot 2 intégré | **prêt** |
 | 4 | [Santé et stands](docs/reprise/04-STANDS.md) | Dégâts persistants visibles et réparations aux stands | Lots 2 et 3 intégrés | à faire |
 | 5 | [Optimisation et qualification](docs/reprise/05-PERFORMANCE.md) | Gains mesurés, modes et plateformes contrôlés | Lots 1 à 4 intégrés | à faire |
 
@@ -50,6 +50,25 @@ sur le Mac. `verifications/decor.test.mjs` échoue sous concurrence CPU parasite
 pendant un rendu logiciel en arrière-plan.
 
 **Le prochain lot prêt est le lot 2 (crashs et PhysX).**
+
+## État vérifié le 17 novembre 2026 (lot 2 terminé)
+
+Base de départ : `main` à `2a66129` (lot 1). Livré : commit de code `2766f01e2b7a8469ce61056b0ddbd2d652b8fe46`, client
+**0.2.22**, `dist/bitume.html` 12 870 767 octets, gzip 2 954 414, sha256 `021d24e8cf51234b240624007523069916b4ebce67311819f1a299d413771761`. **38 suites Node**,
+FERRO **34/34**, build reproductible, navigateur réel sans erreur de console. Détail dans
+`docs/reprise/rapports/LOT2-2026-11-17.md`.
+
+**Découverte à retenir** : `FPhysX.init()` n'était appelé par personne. Les pièces détachées n'ont jamais été des
+corps rigides en navigateur, et les 12 Mo de runtime PhysX de la page ne servaient à rien. C'est corrigé et vérifié
+dans Chrome (PhysX 5.12.0 prêt, 6 corps et 5 dalles sur un vrai choc). Le budget est de six pièces par voiture, pool
+global de 96, corps supprimés au repos, monde détruit quand la séance meurt.
+
+**Deux points pour David** : (1) le remplacement après accident n'est plus une remise à neuf — la voiture repart
+conduisible mais garde traînée, teinte et historique de chocs, la réparation complète étant réservée aux stands du
+lot 4 ; (2) la physique changeant, records et fantômes sont versionnés **p9**, les chronos `p8` ne sont plus
+comparables.
+
+**Le prochain lot prêt est le lot 3 (rivaux agressifs).**
 
 `src/jeu.js`, `src/course.js`, `src/index.html`, `src/style.css`, `VERSION.json`, `SIZE.json` et `dist/bitume.html` sont des points de jonction : modifications et reconstructions séquentielles uniquement. Les analyses peuvent être indépendantes, pas les pushs concurrents sur la branche principale.
 
