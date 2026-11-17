@@ -1,5 +1,5 @@
-// Signature de l'écran titre : reprise de la branche opencode, sans sa fermeture </span> excédentaire
-// et sans le lien ZIP que le second commit avait retiré.
+// Signature de l'écran titre : reprise de la branche opencode, puis déplacée en bas à gauche avec
+// l'avatar embarqué (commit concurrent a617a04). Le contrôle porte sur l'écran titre lui-même.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -10,17 +10,24 @@ const ici = path.dirname(fileURLToPath(import.meta.url));
 const page = readFileSync(process.argv[2] || path.join(ici, '..', 'src', 'index.html'), 'utf8');
 const feuille = readFileSync(process.argv[3] || path.join(ici, '..', 'src', 'style.css'), 'utf8');
 
-const debut = page.indexOf('<div class="marque">');
-assert.ok(debut >= 0, 'la marque est absente de la page');
-const marque = page.slice(debut, page.indexOf('</div>', debut));
+const debut = page.indexOf('<section id="titre"');
+assert.ok(debut >= 0, "l'écran titre est absent de la page");
+const titre = page.slice(debut, page.indexOf('</section>', debut));
+const marque = (() => {
+  const d = titre.indexOf('<div class="marque">');
+  assert.ok(d >= 0, "la marque est absente de l'écran titre");
+  return titre.slice(d, titre.indexOf('</div>', d));
+})();
 
-test('la marque porte la signature m4d135 vers GitHub', () => {
-  assert.match(marque, /<a class="signature" href="https:\/\/github\.com\/M4D135"/);
-  assert.match(marque, /target="_blank" rel="noopener"/);
-  assert.match(marque, /<svg viewBox="0 0 64 64"[^>]*><circle cx="32" cy="32" r="32" fill="#b7492a"\/><\/svg>m4d135<\/a>/);
+test("l'écran titre porte la signature m4d135 vers GitHub", () => {
+  assert.match(titre, /<a class="signature" href="https:\/\/github\.com\/M4D135"/);
+  assert.match(titre, /target="_blank" rel="noopener"/);
+  assert.match(titre, />m4d135<\/a>/);
+  assert.match(titre, /<img class="signature-avatar" src="data:image\/jpeg;base64,[A-Za-z0-9+/]+"/,
+    "l'avatar de la signature doit être embarqué, sans appel réseau");
 });
 
-test('aucune fermeture excédentaire et le badge de version reste en place', () => {
+test('la marque garde son badge de version, sans fermeture excédentaire', () => {
   const ouvrants = (marque.match(/<span\b/g) || []).length, fermantes = (marque.match(/<\/span>/g) || []).length;
   assert.equal(ouvrants, fermantes, 'les span de la marque ne sont pas appariés');
   assert.doesNotMatch(marque, /<\/span>\s*<\/span>/);
@@ -34,5 +41,6 @@ test('le lien ZIP retiré par la branche ne revient pas', () => {
 test('la feuille de style tient la signature', () => {
   assert.match(feuille, /\.signature \{[^}]*display: inline-flex/);
   assert.match(feuille, /\.signature:hover, \.signature:focus-visible \{/);
-  assert.match(feuille, /\.signature svg \{/);
+  assert.match(feuille, /\.signature-avatar \{[^}]*border-radius: 50%/);
+  assert.match(feuille, /#titre \.signature \{[^}]*position: absolute/);
 });
