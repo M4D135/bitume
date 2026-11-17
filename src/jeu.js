@@ -1675,7 +1675,7 @@
 
   // ---------------------------------------------------------------- affichage de course
   const H = {};
-  for (const id of ['h-pos', 'h-sur', 'h-tour', 'h-tours', 'h-actuel', 'h-meilleur', 'h-delta', 'h-delta-ligne', 'h-vitesse', 'h-rapport', 'h-regime', 'h-fps', 'jauge-derive', 'classement', 'feux', 'carte', 'c-position', 'c-tour', 'message', 'sous-message']) H[id] = $(id);
+  for (const id of ['h-pos', 'h-sur', 'h-tour', 'h-tours', 'h-actuel', 'h-meilleur', 'h-delta', 'h-delta-ligne', 'h-vitesse', 'h-rapport', 'h-regime', 'h-fps', 'h-sante', 'h-sante-barre', 'c-sante', 'jauge-derive', 'classement', 'feux', 'carte', 'c-position', 'c-tour', 'message', 'sous-message']) H[id] = $(id);
   const segments = Array.from(H['jauge-derive'].querySelectorAll('i')), lampes = Array.from(H.feux.querySelectorAll('i'));
   const etiquetteDerive = H['jauge-derive'].querySelector('.etiquette');
   const barre = H['h-regime'].querySelector('.barre');
@@ -1687,7 +1687,7 @@
   $('hud').after(hud2);
   const H2 = {};
   for (const id of Object.keys(H)) H2[id] = hud2.querySelector('#' + id);
-  for (const id of ['h-pneus', 'c-pneus']) { H[id] = $(id); H2[id] = hud2.querySelector('#' + id); }
+  for (const id of ['h-pneus', 'c-pneus', 'h-sante', 'h-sante-barre', 'c-sante']) { H[id] = $(id); H2[id] = hud2.querySelector('#' + id); }
   const HUD1 = { h: H, segments, lampes, etiquette: etiquetteDerive, barre };
   const HUD2 = { h: H2, segments: Array.from(H2['jauge-derive'].querySelectorAll('i')), lampes: Array.from(H2.feux.querySelectorAll('i')),
     etiquette: H2['jauge-derive'].querySelector('.etiquette'), barre: H2['h-regime'].querySelector('.barre') };
@@ -1744,6 +1744,15 @@
     texte(H['h-rapport'], et.rapport < 0 ? 'R' : String(et.rapport));
     style(barre, '--r', clamp((et.regime - 4000) / 9000, 0, 1).toFixed(3));
     classe(H['h-regime'], 'passer', et.regime > (reglages.boite === 'manuelle' ? 12100 : 12600) && et.rapport > 0 && et.rapport < 6);
+
+    // Santé (lot 4) : la jauge vient du même état que les pénalités et la réparation (B.degats.sante), jamais d'un
+    // compteur monté pour le seul affichage. Le stand y ajoute son fil : voie, service avec le temps restant, sortie.
+    const av = et.degats, st = et.stands, s01 = B.degats.sante(av);
+    texte(H['h-sante'], st ? (st.phase === 'service' ? 'Service ' + Math.max(0, st.duree - st.t).toFixed(1) + ' s'
+      : st.repare ? 'Réparée' : 'Stand') : s01 > .999 ? 'Neuve' : Math.round(s01 * 100) + ' %');
+    style(H['h-sante-barre'], '--f', s01.toFixed(2));
+    attr(H['c-sante'], 'data-sante', s01 > .999 ? 'neuve' : s01 > .55 ? 'abimee' : 'grave');
+    attr(H['c-sante'], 'data-phase', st ? st.phase : 'piste');
 
     // jauge de dérive
     const dr = et.derive, montrer = dr.actif || co.horloge - S.derniereJauge < .6;

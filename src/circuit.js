@@ -299,11 +299,23 @@
           }
         }
       }
+      // Stands (lot 4) : une voie le long du bord droit de la ligne droite principale, sous le bâtiment des stands
+      // que dessine decor.js (même côté, même emprise). Elle est prise sur la chaussée elle-même : on y entre en
+      // serrant à droite, sans avoir à franchir une glissière. `garage` est la zone d'arrêt où le service se fait.
+      const av = Math.max(-300, debutDroite + 40), ap = Math.min(260, finDroite - 60);
+      // La voie commence APRÈS la ligne : la grille est derrière, et une voiture qui rampe à l'arrêt du départ ne
+      // doit pas se retrouver aux stands sans l'avoir voulu.
+      const s0 = Math.max(av + 30, 30), g0 = s0 + 40, g1 = g0 + 48, s1 = ap - 20;
+      const stands = (s1 - s0 > 140 && g1 + 20 < s1) ? {
+        cote: 1, d: LARGEUR / 2 - 1.6, demi: 1.6,        // voie de 3,2 m collée au bord droit
+        debut: s0, fin: s1, garage0: g0, garage1: g1,
+        vitesse: 11,                                      // m/s : 40 km/h, au-delà le service n'est pas rendu
+      } : null;
       return {
         graine, nom, theme, longueur: L, pas: PAS, n,
         x: X, y, z: Z, cap, courbure, pente, devers, largeur: LARGEUR, vibreur, ligne, vitesse,
         limite: LIMITE, limiteG: lim.G, limiteD: lim.D,
-        depart: 0, ligneDroite: { debut: debutDroite, fin: finDroite }, secteurs: [Math.round(L / 3 / PAS) * PAS, Math.round(2 * L / 3 / PAS) * PAS], tunnel,
+        depart: 0, ligneDroite: { debut: debutDroite, fin: finDroite }, secteurs: [Math.round(L / 3 / PAS) * PAS, Math.round(2 * L / 3 / PAS) * PAS], tunnel, stands,
         essais: essai + 1
       };
     }

@@ -135,7 +135,8 @@
   const IA_ATTENTE = 2.5, IA_PORT = 34, IA_ECART_VITESSE = 1 / 60;
   // Une voiture en cours de récupération, de replacement ou de service n'est jamais une cible d'attaque : on la
   // contourne, on ne la serre pas. (Le lot 2 a défini ces états ; le lot 4 ajoutera la réparation aux stands.)
-  const horsService = e => !!(e && (e.recuperation || e.reparation || e.accident || (e.degats && e.degats.casse)));
+  // Voiture hors service : ni cible d'attaque, ni obstacle qu'on bride. L'arrêt au stand en fait partie (lot 4).
+  const horsService = e => !!(e && (e.recuperation || e.reparation || e.stands || e.accident || (e.degats && e.degats.casse)));
   // Manœuvre abandonnée : on rentre derrière la voiture visée. Comptée, car une IA qui renonce sans arrêt oscille.
   function renoncer(ia, course) {
     if (ia.cible >= 0) { ia.abandons++; ia.changements++; if (course && course.statsIa) course.statsIa.abandons++; }
@@ -363,11 +364,11 @@
     // La direction d'une vitesse quasi nulle peut osciller au contact : garder l'épisode tant que la caisse
     // reste immobile, au lieu de remettre le compteur à zéro un pas sur deux.
     const gardeRetour=roule && !v.fini && !v.abandon && e.v<.1 && gaz>.1 && frein<.1 &&
-      !(e.degats&&e.degats.casse) && !e.recuperation && !e.saut && !e.accident && !e.reparation && !(e.immunite>0);
+      !(e.degats&&e.degats.casse) && !e.recuperation && !e.saut && !e.accident && !e.reparation && !e.stands && !(e.immunite>0);
     ia.retourBloque=gardeRetour && (ia.retourBloque || Math.cos(e.psi)<-.2);
     const intention=gaz>.1 && frein<.1 && (cible>2 || ia.retourBloque);
     const coince=roule && !v.fini && !v.abandon && e.v<1.5 && intention &&
-      !(e.degats&&e.degats.casse) && !e.recuperation && !e.saut && !e.accident && !e.reparation && !(e.immunite>0);
+      !(e.degats&&e.degats.casse) && !e.recuperation && !e.saut && !e.accident && !e.reparation && !e.stands && !(e.immunite>0);
     ia.bloque=coince?(ia.bloque||0)+dt:0;
     if(ia.bloque>15) { B.conduite.declencherAccident(e,{});ia.bloque=0;ia.cible=-1;ia.cote=0;ia.decalVise=0;ia.decalDep=0; }
     // l'IA conduit avec l'aide au volant légère, le réglage par défaut du joueur
@@ -486,6 +487,76 @@
     }
   }
 
+  // Stands (lot 4). La voie est le long du bord droit de la ligne droite principale, sous le bâtiment que dessine
+  // decor.js (circuit.js, c.stands). Elle est prise sur la chaussée : on y entre en serrant à droite, sans trou dans
+  // la glissière. Règles tenues ici, nulle part ailleurs :
+  //  - on n'entre qu'à basse vitesse (S.vitesse + 4 m/s) ; à vitesse de course, la voie n'est pas un stand ;
+  //  - la voie bride à S.vitesse ; sortir de la voie avant le garage annule l'arrêt, sans réparation ;
+  //  - le service ne se rend qu'à l'arrêt dans le garage, pour la durée chiffrée d'après l'état constaté ;
+  //  - la réparation complète (B.degats.reparer) ne se fait QUE là : ni en roulant, ni par replacement
+  //    (conduite.js donne reparerUrgence au remplacement, qui laisse les avaries) ;
+  //  - entrer aux stands invalide le tour courant (même règle que le replacement) : le chrono et le fantôme n'y
+  //    gagnent rien, la voie ne raccourcit pas le tour puisqu'elle est sur la piste ;
+  //  - une voiture à l'arrêt au stand n'est jamais « coincée » au sens de l'IA (pas d'accident au bout de 15 s) ;
+  //  - les rivaux n'utilisent pas les stands : ils n'ont que la récupération d'urgence du remplacement, la même que
+  //    le joueur, et aucune réparation gratuite (verifications/stands.test.mjs le vérifie) ;
+  //  - en ligne, rien ici ne se décrète pour une voiture distante : son état vient de sa machine (reseau.js ne
+  //    transporte ni dégâts ni arrêt), un pair ne peut pas faire réparer la voiture d'un autre.
+  const STANDS = { marge: .8, entree: 4, arret: .35, frein: 18 };
+  function dansLaVoie(c, e, S) {
+    return ecart(c, e.s, (S.debut + S.fin) / 2) <= (S.fin - S.debut) / 2 + STANDS.entree * 10 &&
+      Math.abs(e.d - S.d) <= S.demi + STANDS.marge;
+  }
+  function dansLeGarage(c, e, S) {
+    return ecart(c, e.s, (S.garage0 + S.garage1) / 2) <= (S.garage1 - S.garage0) / 2;
+  }
+  function stands(course, v, dt, ev) {
+    const S = course.c.stands, e = v.etat;
+    // Les rivaux n'utilisent pas les stands (règle documentée de la fiche) : ils n'ont que la récupération d'urgence
+    // du remplacement, comme le joueur, et aucune réparation gratuite. Sans cette garde, un rival qui traîne à droite
+    // irait se refaire une santé au garage sans en payer le prix.
+    const conduite = v.joueur || v.humain;            // en solo, le joueur n'est pas marqué « humain » : c'est v.joueur
+    if (!S || !conduite || v.distant || v.abandon || v.fini) { if (e && e.stands) e.stands = null; return; }
+    const st = e.stands;
+    if (!st) {
+      if (course.phase !== 'course' || course.temps < 5 || e.recuperation || e.accident || e.saut) return;
+      // on ne reprend pas un deuxième arrêt sans être sorti de la voie : sinon la voiture tournerait en boucle
+      // « réparée, re-entrée » tant qu'elle traîne le long du garage
+      if (e.standsSortie) { if (!dansLaVoie(course.c, e, S)) e.standsSortie = false; return; }
+      // Entrée délibérée : la voiture doit être DANS la voie (pas seulement à son bord) et lente. Une roue qui
+      // frôle le bord droit à vitesse de course ne déclenche rien, et une file lente à l'arrêt du départ non plus.
+      if (Math.abs(e.d - S.d) <= S.demi - .3 && e.v <= S.vitesse + STANDS.entree) {
+        e.stands = { phase: 'voie', t: 0, repare: false };
+        v.tourValide = false;
+        ev.push({ type: 'stand', id: v.id, phase: 'entree' });
+      }
+      return;
+    }
+    if (e.recuperation || e.accident || e.saut) { e.stands = null; return; }   // un accident annule l'arrêt en cours
+    st.t += dt;
+    const dans = dansLaVoie(course.c, e, S);
+    if (st.phase === 'voie') {
+      if (!dans) { e.stands = null; ev.push({ type: 'stand', id: v.id, phase: 'annule' }); return; }
+      if (e.v > S.vitesse) e.v = Math.max(S.vitesse, e.v - STANDS.frein * dt);
+      if (dansLeGarage(course.c, e, S) && Math.abs(e.v) < STANDS.arret) {
+        st.phase = 'service'; st.t = 0; st.duree = B.degats.chiffrerService(v.degats);
+        ev.push({ type: 'stand', id: v.id, phase: 'service', duree: st.duree });
+      }
+    } else if (st.phase === 'service') {
+      e.v = 0; e.gaz = 0; e.frein = 1; e.omega = 0;
+      if (st.t >= st.duree) {
+        B.degats.reparer(v.degats);
+        st.phase = 'sortie'; st.repare = true;
+        ev.push({ type: 'stand', id: v.id, phase: 'repare' });
+      }
+    } else if (st.phase === 'sortie') {
+      if (e.v > S.vitesse || !dans) {
+        e.stands = null; e.standsSortie = true;
+        ev.push({ type: 'stand', id: v.id, phase: 'sortie' });
+      }
+    }
+  }
+
   function pas(course, cmdJoueur, dt) {
     const ev = [];
     if (course.termine) return ev;
@@ -521,6 +592,7 @@
     if (B.contacts) B.contacts.pas(course, ev); else contacts(course, ev);
     for (let k = avant; k < ev.length; k++) if (ev[k].type === 'contact' && course.statsIa) course.statsIa.contacts++;
     if (B.obstacles) B.obstacles.pas(course, ev);
+    if (!retenue) for (let i = 0; i < V.length; i++) stands(course, V[i], dt, ev);
     if (!retenue) course.temps = t0 + dt;
 
     // Franchissements de ligne (interpolés dans le pas) et progression continue
@@ -599,5 +671,5 @@
     });
   }
 
-  B.course = { creer, pas, replacer, fantome, etatPilotes, commandesIA, aspirer, horsService, empriseIA, IA_ATTENTE, IA_PORT, PILOTES, LIVREES, ASPIRATION };
+  B.course = { creer, pas, replacer, fantome, etatPilotes, commandesIA, aspirer, horsService, empriseIA, stands, dansLaVoie, dansLeGarage, STANDS, IA_ATTENTE, IA_PORT, PILOTES, LIVREES, ASPIRATION };
 })(globalThis.BITUME = globalThis.BITUME || {});

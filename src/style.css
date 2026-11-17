@@ -158,6 +158,14 @@ input[type="range"] { width: 100%; accent-color: var(--rouge); }
 #c-pneus[data-pneus="pluie"] { --pneu: #2f7fe0; }
 .case .nom-pneus { display: flex; align-items: center; gap: 7px; margin-top: 8px; font: italic 800 19px/1 var(--f-titre); font-stretch: condensed; text-transform: uppercase; }
 .case .nom-pneus i { width: 13px; height: 13px; border-radius: 50%; border: 3px solid var(--pneu); background: #111; flex: none; }
+/* Santé de la voiture (lot 4) : la barre se lit dans l'état des dégâts, le mot change au stand. */
+.case .barre-sante { display: block; height: 5px; margin-top: 7px; border-radius: 3px; background: #ffffff26; overflow: hidden; }
+.case .barre-sante i { display: block; height: 100%; width: calc(var(--f, 1) * 100%); background: #46c07a; border-radius: 3px; }
+.case.sante[data-sante="abimee"] .barre-sante i { background: #e8b23c; }
+.case.sante[data-sante="grave"] .barre-sante i { background: #d8452f; }
+.case.sante[data-phase="voie"] .etiquette, .case.sante[data-phase="sortie"] .etiquette { color: #7fd0ff; }
+.case.sante[data-phase="service"] .etiquette { color: #ffd166; }
+body.tactile .case .barre-sante { height: 4px; margin-top: 3px; }
 #jeu[data-ecran="demo"] #c-pneus { display: none; }
 .case .grand { display: block; margin-top: 4px; font: italic 800 40px/.9 var(--f-titre); font-stretch: condensed; }
 .case .grand small { font-size: 22px; color: var(--papier-2); margin-left: 2px; }

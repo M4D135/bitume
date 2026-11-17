@@ -165,6 +165,47 @@ try {
     await dormir(2500);
     rapport.apresSeance = await evaluer(`(() => { const S = BITUME_JEU.session;
       return { mondeCourant: !!(S && S.fx && S.fx.monde), mondes: window.FPhysX ? window.FPhysX.status().worlds : null }; })()`);
+  } else if (mode === 'stand') {
+    // arrêt au stand réel : une vraie course, le joueur amené dans la voie, l'arrêt demandé, et l'on regarde ce que
+    // l'affichage dit pendant le service. C'est le parcours manuel de la fiche, joué par le banc.
+    await evaluer(`window.__banc = BITUME_JEU.banc({ duree: ${Math.max(duree, 180)}, qualite: ${JSON.stringify(qualite)}, circuit: ${circuit}, chauffe: ${chauffe} }); true`);
+    // la course doit avoir quelques secondes : un arrêt n'est possible qu'après le départ (course.js). Sous rendu
+    // logiciel l'image tourne à un image par seconde : on avance la simulation, on n'attend pas les images.
+    { const echeance = Date.now() + Math.max(40000, Number(args.attente || 6) * 4000);
+      while (Date.now() < echeance) {
+        const e = await evaluer('(() => { const S = BITUME_JEU.session; return S && S.course ? [S.course.phase, S.course.temps] : null; })()');
+        if (e && e[0] === 'course' && e[1] > 6) break;
+        if (e && e[0] === 'course') await evaluer(`BITUME_JEU.avancer(8, true); true`);
+        await dormir(250);
+      } }
+    rapport.avant = await evaluer(`(() => { const S = BITUME_JEU.session; if (!S) return null;
+      const v = S.course.joueur, e = v.etat, d = e.degats, St = S.course.c.stands;
+      for (let k = 0; k < 12; k++) BITUME.degats.choc(d, 18, { cote: 1, avant: k % 2 === 0 });
+      const q = BITUME.circuit.echantillon(S.course.c, St.garage0 + 10);
+      e.s = St.garage0 + 10; e.d = St.d; e.v = 0; e.psi = 0; e.beta = 0; e.omega = 0; e.y = q.y;
+      BITUME_JEU.pilotageAuto = false;                       // plus personne n'accélère : la voiture reste à l'arrêt
+      return { stands: { debut: St.debut, garage0: St.garage0, garage1: St.garage1, fin: St.fin, d: St.d, vitesse: St.vitesse },
+        sante: +BITUME.degats.sante(d).toFixed(3), avaries: BITUME.degats.avaries(d),
+        dureeService: +BITUME.degats.chiffrerService(d).toFixed(2), tourValide: v.tourValide,
+        affiche: document.getElementById('h-sante').textContent, phase: document.getElementById('c-sante').dataset.phase }; })()`);
+    await dormir(4000);
+    rapport.pendant = await evaluer(`(() => { const S = BITUME_JEU.session; if (!S) return null;
+      const v = S.course.joueur, e = v.etat;
+      return { phase: e.stands && e.stands.phase, t: e.stands ? +e.stands.t.toFixed(2) : null,
+        course: { phase: S.course.phase, temps: +S.course.temps.toFixed(2), joueur: !!v.joueur, humain: !!v.humain, distant: !!v.distant },
+        pos: { s: +e.s.toFixed(1), d: +e.d.toFixed(2), v: +e.v.toFixed(2), accident: !!e.accident, recup: !!e.recuperation, saut: !!e.saut, immunite: +e.immunite.toFixed(2) },
+        affiche: document.getElementById('h-sante').textContent, phaseAffichee: document.getElementById('c-sante').dataset.phase,
+        remplissage: getComputedStyle(document.getElementById('h-sante-barre')).getPropertyValue('--f') }; })()`);
+    // sous rendu logiciel le temps de course s'écoule à un image par seconde : on laisse le service finir
+    await dormir(Number(args.service || 40) * 1000);
+    rapport.apres = await evaluer(`(() => { const S = BITUME_JEU.session; if (!S) return null;
+      const v = S.course.joueur, e = v.etat, d = e.degats;
+      return { phase: e.stands && e.stands.phase, repare: !!(e.stands && e.stands.repare), sante: +BITUME.degats.sante(d).toFixed(3),
+        adher: +d.adher.toFixed(4), trainee: +d.trainee.toFixed(4), teinte: +d.teinte.toFixed(3),
+        affiche: document.getElementById('h-sante').textContent, phaseAffichee: document.getElementById('c-sante').dataset.phase,
+        tourValide: v.tourValide }; })()`);
+    await evaluer('BITUME_JEU.pilotageAuto = true; true');
+    await evaluer('window.__banc');
   } else {
     rapport.banc = await evaluer(`BITUME_JEU.banc({ duree: ${duree}, qualite: ${JSON.stringify(qualite)}, circuit: ${circuit}, chauffe: ${chauffe} })`);
   }

@@ -71,5 +71,33 @@
 
   const uneRouePerdue = d => d.roues.some(Boolean);
 
-  B.degats = { PARAMS, creer, choc, reparer, reparerUrgence, uneRouePerdue };
+  // Santé (lot 4) : un seul chiffre, 1 = neuve, 0 = au plus bas des critères. Il se lit dans le MÊME état que les
+  // pénalités et la réparation — adhérence, traînée, roues manquantes — et n'est jamais une simulation parallèle
+  // montée pour le seul affichage. Le flash rouge d'un impact est autre chose (jeu.js) : la santé, elle, persiste.
+  const NOMS_ROUES = ['roue avant droite', 'roue avant gauche', 'roue arrière droite', 'roue arrière gauche'];
+  function sante(d) {
+    if (!d) return 1;
+    const gA = (1 - d.adher) / (1 - P.adherMin);           // 0 à 1 sur la plage utile des critères
+    const gT = (d.trainee - 1) / (P.traineeMax - 1);
+    const gR = d.roues.filter(Boolean).length / 4;
+    const gC = d.casse ? 1 : 0;                            // la caisse à redresser pèse à part
+    return Math.max(0, Math.min(1, 1 - (.4 * gA + .2 * gT + .3 * gR + .1 * gC)));
+  }
+  // Ce qui est abîmé, en français, pour l'affichage et pour le devis du service.
+  function avaries(d) {
+    if (!d) return [];
+    const a = [];
+    if (d.adher < .995) a.push('adhérence');
+    if (d.trainee > 1.005) a.push('carrosserie');
+    for (let i = 0; i < 4; i++) if (d.roues[i]) a.push(NOMS_ROUES[i]);
+    if (d.casse) a.push("caisse à redresser");
+    return a;
+  }
+  // Durée du service, en secondes : elle dépend de l'état réellement constaté, pas d'un compteur de passage.
+  function chiffrerService(d) {
+    if (!d) return 0;
+    return 2.5 + 1.2 * d.roues.filter(Boolean).length + (d.casse ? 3 : 0) + Math.min(3, d.chocs * .12);
+  }
+
+  B.degats = { PARAMS, creer, choc, reparer, reparerUrgence, uneRouePerdue, sante, avaries, chiffrerService, NOMS_ROUES };
 })(globalThis.BITUME = globalThis.BITUME || {});

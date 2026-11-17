@@ -117,7 +117,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       coupure: 0, rupteurT: 0, sousVirage: 0,
       // Chantier 3 : vol (saut), accident et retour en piste, immunité, dégâts — tous inactifs au départ, la
       // conduite reste exactement celle des critères quand ils sont absents (tests de conduite sans ces modules)
-      saut: null, accident: null, immunite: 0, degats: null, reparation: null, recuperation: null,
+      saut: null, accident: null, immunite: 0, degats: null, reparation: null, stands: null, standsSortie: false, recuperation: null,
       freinRecul: 0, repositionnements: 0, choc: 0, auRail: false
     };
   }
