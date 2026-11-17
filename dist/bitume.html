@@ -510,7 +510,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.22">V0.2.22</b><a class="signature" href="https://github.com/M4D135" target="_blank" rel="noopener" title="m4d135 sur GitHub"><svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="32" fill="#b7492a"/></svg>m4d135</a>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.23">V0.2.23</b><a class="signature" href="https://github.com/M4D135" target="_blank" rel="noopener" title="m4d135 sur GitHub"><svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="32" fill="#b7492a"/></svg>m4d135</a>
     </div>
     <nav class="choix" aria-label="Menu principal">
       <button type="button" class="gros" data-aller="course">Course</button>
@@ -58533,6 +58533,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     };
     // écran partagé : deux voitures humaines conduites sur cette machine (course à deux, ou en ligne)
     const duo = !!humains && humains.locaux.length === 2;
+    const statsIa = { attaques: 0, abandons: 0, presses: 0, contacts: 0, decisions: 0, tempsDecision: 0 };
     const voitures = humains
       ? humains.noms.slice(0, nH).map((nom, k) => voiture(k, nom, NUMEROS_HUMAINS[k], LIVREES_HUMAINS[k], humains.locaux.includes(k)))
       : [voiture(0, 'Vous', 1, LIVREE_JOUEUR, true)];
@@ -58543,7 +58544,8 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     // goût de la défense, régularité d'un tour à l'autre ; tiré à part, sans changer la grille.
     for (const v of voitures) {
       const h = mulberry32((graine ^ Math.imul(v.id + 1, 0x9E3779B1)) >>> 0);
-      Object.assign(v.ia, { agressivite: v.joueur ? .5 : .25 + .75 * h(), defense: v.joueur ? 0 : h(), regularite: v.joueur ? 1 : .55 + .45 * h(), forme: 1, sillage: -1, defend: 0, defendu: -1 });
+      Object.assign(v.ia, { agressivite: v.joueur ? .5 : .25 + .75 * h(), defense: v.joueur ? 0 : h(), regularite: v.joueur ? 1 : .55 + .45 * h(), forme: 1, sillage: -1, defend: 0, defendu: -1,
+        t: 0, derniereAttaque: -99, attaques: 0, abandons: 0, presses: 0, presse: -1, tenu: -99, changements: 0 });
     }
 
     // grille : ordre des rivaux tiré de la graine, le joueur à sa place
@@ -58567,10 +58569,23 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       fantome: { meilleur: null, temps: null }, chronoParti: false,
       enreg: { donnees: new Float32Array(4 * 2048), n: 0, prochain: 0 },
       termine: false, drapeau: null, finisseurs: 0, tempsReference: tRef, vref: L / tRef,
-      contactsT: new Float64Array(nb * nb).fill(-1e9), sAvant: new Float64Array(nb)
+      contactsT: new Float64Array(nb * nb).fill(-1e9), sAvant: new Float64Array(nb), statsIa
     };
   }
 
+  // Lot 3 — attaque. Délai entre deux engagements d'une même voiture (s de simulation locale, jamais le temps
+  // d'affichage), portée au-delà de laquelle une cible n'est plus tenue pour atteignable, et seuil de vitesse
+  // relative minimale pour s'engager. Aucun hasard ici : les décisions restent déterministes, donc identiques sur
+  // chaque machine en ligne.
+  const IA_ATTENTE = 2.5, IA_PORT = 34, IA_ECART_VITESSE = 1 / 60;
+  // Une voiture en cours de récupération, de replacement ou de service n'est jamais une cible d'attaque : on la
+  // contourne, on ne la serre pas. (Le lot 2 a défini ces états ; le lot 4 ajoutera la réparation aux stands.)
+  const horsService = e => !!(e && (e.recuperation || e.reparation || e.accident || (e.degats && e.degats.casse)));
+  // Manœuvre abandonnée : on rentre derrière la voiture visée. Comptée, car une IA qui renonce sans arrêt oscille.
+  function renoncer(ia, course) {
+    if (ia.cible >= 0) { ia.abandons++; ia.changements++; if (course && course.statsIa) course.statsIa.abandons++; }
+    ia.cible = -1; ia.cote = 0; ia.entamee = null;
+  }
   // Projection de la caisse orientée sur les axes du circuit ; une épave en travers occupe un vrai couloir.
   function empriseIA(e) {
     const h=e.psi+e.beta, ca=Math.abs(Math.cos(h)),sa=Math.abs(Math.sin(h));
@@ -58579,6 +58594,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   function commandesIA(course, v) {
     const c = course.c, e = v.etat, ia = v.ia, P = c.pas, n = c.n, dt = course.dt;
     const moi=empriseIA(e), vit=e.v, demi=c.largeur/2, utile=Math.max(.5,demi-moi.lat-.25);
+    ia.t = (ia.t || 0) + dt;   // horloge locale de la voiture : le délai entre deux attaques ne dépend pas du temps affiché
     // Retour en piste seulement quand la voiture est vraiment dehors (centre au-delà du bord), avec hystérésis :
     // frôler la trajectoire idéale, qui longe le bord, n'est pas une sortie.
     const ad=Math.abs(e.d);
@@ -58651,13 +58667,46 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       }
     }
     if (!kAv && ia.defend && Math.abs(lire(c, c.courbure, e.s)) < 3e-3) ia.defend = 0;
+    // Blocage (lot 3) : un rival combatif tenu de près dans un virage ne se rabat pas sous le nez de son poursuivant,
+    // il tient la ligne qu'il a prise jusqu'à ce que l'autre décroche ou que le virage finisse. Un seul maintien par
+    // virage, aucun élan ajouté : c'est un choix de trajectoire, pas une impulsion réservée à l'IA.
+    const gene = !!devant && devant.etat.v < vit - 10;
+    if (!recuperer && !gene && ia.cible < 0 && Math.abs(e.d) <= utile && (ia.agressivite || 0) > .55 && course.phase === 'course') {
+      const virage = (i0 + Math.round(Math.max(60, v2 / 20 + 30) / P)) / 40 | 0;
+      if (virage !== ia.tenu) {
+        for (const o of course.voitures) {
+          if (o === v || o.fini || o.abandon || horsService(o.etat)) continue;
+          const ds = ecart(c, e.s, o.etat.s);                       // o est derrière moi
+          if (ds > 1 && ds < 8 + moi.long && Math.abs(o.etat.d - e.d) < moi.lat + empriseIA(o.etat).lat + .6) {
+            if (ia.presse !== o.id) { ia.presse = o.id; ia.presses++; if (course.statsIa) course.statsIa.presses++; }
+            ia.tenu = virage; break;
+          }
+        }
+      }
+    }
+    if (ia.presse >= 0) {
+      const o = course.voitures[ia.presse];
+      if (!o || horsService(o.etat) || gene || ecart(c, e.s, o.etat.s) > 12 + moi.long || Math.abs(lire(c, c.courbure, e.s)) < 3e-3) ia.presse = -1;
+    }
     if (devant) {
       const od=devant.etat, taille=empriseIA(od), espace=moi.lat+taille.lat+.5, gap=dsMin-moi.long-taille.long;
       // un obstacle vraiment plus lent (voiture arrêtée ou en perdition) justifie un engagement plus tôt et plus
       // franc ; la circulation normale (allure voisine) garde la conduite habituelle du peloton.
       const obstacle = od.v < vit - 10;
       const aspire = ia.sillage === devant.id && gap < 12;
-      if (!recuperer && ia.cible !== devant.id && (vit > od.v + 0.3 || aspire) && gap < (obstacle ? Math.max(70, v2 / 45 + 25) : 30)) {
+      if (ia.cible < 0 && vit > od.v + 0.3 && gap < IA_PORT) { if (ia.entamee == null) ia.entamee = ia.t; }
+      else if (ia.cible < 0) ia.entamee = null;
+      // cible réellement atteignable : à portée, plus lent, et assez de marge de vitesse pour combler l'écart.
+      // Un adversaire en récupération, en replacement ou en service n'est jamais attaqué, mais il reste une voiture
+      // devant soi : l'éviter ou le contourner (obstacle) garde la main, sinon on freine derrière lui jusqu'au
+      // contact. Le délai entre deux engagements ne bride pas non plus l'évitement.
+      // Une voiture hors service reste une voiture devant soi : on la contourne sans bride (ni portée, ni délai) et
+      // sans que ce soit compté comme une attaque. Contre une voiture en course, l'engagement reste mesuré : cible
+      // atteignable et délai entre deux attaques.
+      const horsJeu = horsService(od), contourne = horsJeu || obstacle;
+      const atteignable = (contourne || gap <= IA_PORT) && vit - od.v > Math.max(0.3, gap * IA_ECART_VITESSE);
+      if (!recuperer && ia.cible !== devant.id && (contourne || vit > od.v + 0.3 || aspire) && atteignable &&
+          gap < (obstacle ? Math.max(70, v2 / 45 + 25) : 30) && (contourne || ia.t - (ia.derniereAttaque ?? -99) >= IA_ATTENTE)) {
         const interieur = kAv > 0 ? 1 : kAv < 0 ? -1 : (od.d > e.d ? -1 : 1);
         // côté libre : dans la piste et sans autre voiture sur la trajectoire de dépassement
         const libre = cote => {
@@ -58672,11 +58721,20 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
         };
         // l'extérieur d'un virage qui arrive mène tout droit dans l'herbe : réservé à l'évitement d'un obstacle
         const cote = libre(interieur) ? interieur : (!kAv || obstacle) && libre(-interieur) ? -interieur : 0;
-        if (cote) { ia.cible = devant.id; ia.cote = cote; }
+        if (cote) {
+          // un engagement contre une voiture hors service est un contournement, pas une attaque : compté comme tel
+          ia.attaque = !horsJeu;
+          ia.cible = devant.id; ia.cote = cote;
+          if (ia.attaque) {
+            ia.derniereAttaque = ia.t; ia.attaques++;
+            if (course.statsIa) { course.statsIa.attaques++; course.statsIa.decisions++; course.statsIa.tempsDecision += ia.t - (ia.entamee ?? ia.t); }
+          }
+          ia.changements++;
+        }
       }
       // dépassement engagé par l'extérieur quand le virage arrive, sans être encore à la hauteur de l'autre : on
       // renonce et on rentre derrière lui
-      if (ia.cible === devant.id && !obstacle && kAv && ia.cote === -Math.sign(kAv) && gap > -moi.long) { ia.cible = -1; ia.cote = 0; }
+      if (ia.cible === devant.id && !obstacle && kAv && ia.cote === -Math.sign(kAv) && gap > -moi.long) renoncer(ia, course);
       // pas d'emboutissage : tant qu'on est dans les roues de celui de devant, on garde une distance de suivi.
       // Mais une fois le dépassement amorcé sur un côté libre, on ne rampe pas (sans vitesse, pas de mouvement
       // latéral) : on garde de quoi dégager la trajectoire, quitte à se rabattre derrière si le côté se referme.
@@ -58698,15 +58756,17 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       cible=Math.min(cible,e.psi*Math.sign(e.d)>.03?Math.max(10,vit*.65):lire(c, c.vitesse, e.s)*hab*.74);
     }
     const base = lire(c, c.ligne, e.s) + ia.decal;
-    if (ia.cible >= 0 && dMin > dMax) { ia.cible = -1; ia.cote = 0; } // coincée : on renonce
+    if (ia.cible >= 0 && dMin > dMax) renoncer(ia, course);   // coincée : on renonce
+    if (ia.cible >= 0 && horsService(course.voitures[ia.cible] && course.voitures[ia.cible].etat)) renoncer(ia, course);
     if (ia.cible >= 0) {
       const o = course.voitures[ia.cible], avance = ecart(c, o.etat.s, e.s);
-      if (avance > 3+moi.long+empriseIA(o.etat).long || avance < -(regard + 10)) { ia.cible = -1; ia.cote = 0; }
+      if (avance > 3+moi.long+empriseIA(o.etat).long || avance < -(regard + 10)) renoncer(ia, course);
       else ia.decalVise = o.etat.d+(moi.lat+empriseIA(o.etat).lat+.5)*ia.cote-base;
     }
     let vise = ia.cible >= 0 ? ia.decalVise : 0, vLat = (ia.cible >= 0 ? (devant && vit > devant.etat.v + 8 ? 6.0 : 3.0) : recuperer ? 4 : .8) * dt;
     if (ia.cible < 0 && !recuperer) {
-      if (ia.sillage >= 0) { vise = clamp(course.voitures[ia.sillage].etat.d - base, -utile - base, utile - base); vLat = 1.6 * dt; }
+      if (ia.presse >= 0) { vise = e.d - base; vLat = 1.2 * dt; }        // tient sa ligne, ne se rabat pas
+      else if (ia.sillage >= 0) { vise = clamp(course.voitures[ia.sillage].etat.d - base, -utile - base, utile - base); vLat = 1.6 * dt; }
       else if (ia.defend) { vise = ia.defend * (utile - .6) - base; vLat = 2.2 * dt; cible *= .985; }
     }
     ia.decalDep += clamp(vise - ia.decalDep, -vLat, vLat);
@@ -58902,7 +58962,9 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       else cmd = (Array.isArray(cmdJoueur) ? cmdJoueur[v.id] : cmdJoueur) || NEUTRE;   // écran partagé : une commande par voiture
       for (const e of B.conduite.pas(v.etat, cmd, c, dt, retenue)) { e.id = v.id; ev.push(e); }
     }
+    const avant = ev.length;
     if (B.contacts) B.contacts.pas(course, ev); else contacts(course, ev);
+    for (let k = avant; k < ev.length; k++) if (ev[k].type === 'contact' && course.statsIa) course.statsIa.contacts++;
     if (B.obstacles) B.obstacles.pas(course, ev);
     if (!retenue) course.temps = t0 + dt;
 
@@ -58982,7 +59044,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     });
   }
 
-  B.course = { creer, pas, replacer, fantome, etatPilotes, commandesIA, aspirer, PILOTES, LIVREES, ASPIRATION };
+  B.course = { creer, pas, replacer, fantome, etatPilotes, commandesIA, aspirer, horsService, empriseIA, IA_ATTENTE, IA_PORT, PILOTES, LIVREES, ASPIRATION };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>

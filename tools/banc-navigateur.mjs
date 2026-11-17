@@ -120,7 +120,8 @@ try {
         v: +v.etat.v.toFixed(1), vue: S.vue, dansTunnel: BITUME.circuit.dansTunnel(S.course.c, v.etat.s, 0),
         lampes: (S.lampesTunnel && S.lampesTunnel.p) ? Array.from(S.lampesTunnel.p).filter(x => x > 0).length : 0,
         sommeLampes: (S.lampesTunnel && S.lampesTunnel.p) ? +Array.from(S.lampesTunnel.p).reduce((a, x) => a + x, 0).toFixed(2) : 0,
-        lumiere: +(S.lumiere || 1).toFixed(3), refletsEcran: !!S.refletsEcran }; })()`);
+        lumiere: +(S.lumiere || 1).toFixed(3), refletsEcran: !!S.refletsEcran,
+        statsIa: S.course.statsIa, engagees: S.course.voitures.filter(x => x.ia.cible >= 0).length }; })()`);
   } else if (args.camera) {
     // caméra d'essai placée à une abscisse voulue : c'est la caméra, et non la voiture, qui décide des lampes, de
     // l'adaptation de l'œil et de l'abri de la pluie. Le banc ne peut pas viser un endroit précis, si.
@@ -134,7 +135,8 @@ try {
       return { ecran: BITUME_JEU.ecran, type: S.type, vue: S.vue, abscisse: ${Number(args.camera)},
         dansTunnel: BITUME.circuit.dansTunnel(S.course.c, ${Number(args.camera)}, 0),
         lampesAllumees: P.filter(x => x > 0).length, sommeLampes: +P.reduce((a, x) => a + x, 0).toFixed(2),
-        lumiere: +(S.lumiere || 1).toFixed(3), refletsEcran: !!S.refletsEcran }; })()`);
+        lumiere: +(S.lumiere || 1).toFixed(3), refletsEcran: !!S.refletsEcran,
+        statsIa: S.course.statsIa, engagees: S.course.voitures.filter(x => x.ia.cible >= 0).length }; })()`);
   } else if (mode === 'crash') {
     rapport.etapes = [];
     // gros choc réel : les pièces détachées doivent naître, être budgétées, et rouler avec de vrais corps PhysX

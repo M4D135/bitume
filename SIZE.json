@@ -1,8 +1,8 @@
 {
-  "version": "0.2.22",
-  "raw": 12870767,
-  "gzip": 2954414,
-  "sha256": "021d24e8cf51234b240624007523069916b4ebce67311819f1a299d413771761",
+  "version": "0.2.23",
+  "raw": 12875639,
+  "gzip": 2955917,
+  "sha256": "eddde8603c57af8962fc2bcfa6cf88edfb67b60809be2bde628f67dc6f8cdd9d",
   "sources": {
     "moteur/renderer.js": 209041,
     "ferro/engine.js": 2024,
@@ -15,7 +15,7 @@
     "degats.js": 4169,
     "contacts.js": 7118,
     "obstacles.js": 13181,
-    "course.js": 33579,
+    "course.js": 38451,
     "son.js": 24207,
     "decor.js": 48184,
     "carene.js": 16443,
