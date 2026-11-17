@@ -9,7 +9,7 @@
     "qualification_historique": "34 suites ; ne couvre pas les futurs correctifs",
     "serie_locale_e074b55_retrouvee": false
   },
-  "livraison_actuelle": "Documentation de coordination uniquement ; aucun changement du jeu, aucune suppression de branche, aucun deploiement.",
+  "livraison_actuelle": "Documentation de coordination uniquement ; aucun changement du jeu pousse, aucune suppression de branche, aucun deploiement. Sauvegarde distincte des modifications locales candidates remise a l'utilisateur.",
   "lot_actif": null,
   "prochain_lot": "0",
   "lots": [
@@ -25,5 +25,37 @@
     "push_concurrents": false,
     "force_push": false,
     "deploiement_effectue": false
+  },
+  "sauvegarde_locale": {
+    "archive": "BITUME-RELAIS-2026-11-17.zip",
+    "taille_octets": 6570014,
+    "sha256": "6114cf19897ad3b1e3a30afee5d99d5af87399fdac625790366f124d08cd1696",
+    "emplacement": "Archive remise a l'utilisateur dans la discussion, pas stockee dans ce depot. La joindre a la discussion suivante si l'ancien espace local n'est plus disponible.",
+    "source_locale_initiale": "/mnt/data/bitume-work/BITUME-0.2.19",
+    "archive_locale_initiale": "/mnt/data/BITUME-RELAIS-2026-11-17.zip",
+    "version_candidate": "0.2.20",
+    "base_code": "d891fa24b6a2d00ffd01abb50989b2d9199698ee",
+    "coordination_distante_observee": "3124c30d38381bbf23cbf06899bdeda41ccde62d",
+    "statut": "Sources locales preparees, non poussees, non deployees, non qualifiees comme release. Ne pas recommencer leur implementation sans les examiner.",
+    "contenu": ["LIRE-DABORD.md", "MANIFEST.json", "sources/ : 183 fichiers", "patches/chantier-complet.patch", "rapports/", "lots/ : cinq prompts alignes sur la numerotation du depot"],
+    "perimetre_prepare": ["eclairage continu et overlay", "reutilisation objets voitures", "crashs PhysX et groupes de pieces reelles", "sante persistante et stands", "duels IA", "integration HUD, audio et reseau", "tests"],
+    "tests_point_sauvegarde": {
+      "node": "22.16.0",
+      "plateforme": "Linux x64",
+      "suites_reussies": 36,
+      "suites_total": 37,
+      "echec": "decor.test.mjs : 189 ms pour un seuil de 150 ms ; decor inchange, seuil non assoupli",
+      "salon": "29/29 controles, suite relancee integralement apres un timeout de la commande globale",
+      "modules_ferro_conformes": "34/34",
+      "build_octets": 12868897,
+      "build_compresse_octets": 2953321,
+      "webgl_valide": false
+    },
+    "limites": [
+      "Le patch global traverse plusieurs lots et exclut le HTML genere et SIZE.json ; ne pas l'appliquer aveuglement sur une tete plus recente.",
+      "Les rapports navigateur sont un essai DOM avec rendu simule et un essai PhysX sans WebGL. Aucun FPS, draw call ou temps GPU de rendu valide.",
+      "Le rapport PhysX local de 12 impacts simultanes mesure 23,1 ms de creation : pic encore a traiter.",
+      "Conserver le plan distant existant et les nouvelles modifications d'autres discussions. Les sources sauvegardees ne doivent pas les ecraser."
+    ]
   }
 }
