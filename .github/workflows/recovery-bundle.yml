@@ -1,0 +1,27 @@
+name: Archive de reconciliation
+on:
+  push:
+    branches: ['codex/reconciliation-archives-20261117']
+    paths: ['.github/workflows/recovery-bundle.yml']
+permissions:
+  contents: read
+jobs:
+  sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Conserver les historiques exacts sans les modifier
+        run: |
+          mkdir -p recovery
+          git bundle create recovery/bitume.bundle --all
+          git log --all --oneline --decorate -80 > recovery/HISTORIQUE.txt
+          git diff --stat 7fab6b77fe37e42369e7a936935ed79c0d8cc5f2 247d4445e02129af3c28b242eab9783ca3fb010d > recovery/COMPARAISON.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bitume-reconciliation-historiques
+          path: recovery/
+          retention-days: 14
