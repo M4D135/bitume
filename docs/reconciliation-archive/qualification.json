@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-17",
+  "version": "0.2.19",
+  "base_main": "7fab6b77fe37e42369e7a936935ed79c0d8cc5f2",
+  "salon_preserved": "861c342bee6766f031202ecc7afa0d442d6914fa",
+  "archive": "247d4445e02129af3c28b242eab9783ca3fb010d",
+  "integration_commit": "57421ed25c36255d2acb21d1c6d36dcf9d258ef3",
+  "local": { "node": "22.16.0", "suites_passed": 34, "suites_total": 34 },
+  "github_actions": { "node": "24.22.2", "run_id": 44065882723, "artifact_id": 14320835365, "suites_passed": 34, "suites_total": 34 },
+  "new_preparation_checks": { "archive_passed": 8, "corrected_passed": 23, "total": 23 },
+  "new_render_checks": { "archive_passed": 0, "corrected_passed": 6, "total": 6 },
+  "existing_checks": { "shared_controls": "44/44", "gamepad": "17/17", "salon": "29/29", "driving_required": "46/46", "ferro_modules": "34/34" },
+  "jeu_sha256": "dc116229a6803da620ea41e9728ee2547ad981cd6aa1615c92870a3bf5901590",
+  "html_sha256": "c8ac999b71b1944f50cf3d25c42635f2b6db3b72741be9a0def66793ed9ef76e",
+  "integration_artifact_matches_local": true,
+  "historical_local_e074b55_recovered": false,
+  "webgl_validated": false,
+  "production_deployed": false,
+  "open_measure": "S8: worst 1030.7 degrees/s^2, target 300; unchanged physics p8."
+}

@@ -181,6 +181,10 @@ Les modules listés dans `FERRO.lock.json` sont désormais des copies exactes de
   de liaisons directes (la plus ancienne machine appelle la plus récente), relais par machine ; horloge de l'hôte ;
   une machine qui part laisse ses voitures à l'ordinateur de l'hôte (`v.reprise`) ; sans hôte, chacun finit seul. Les
   voitures humaines tirent toujours leurs nombres au générateur de la course : la grille est la même partout.
+  Avant chaque course en ligne (David, 16/11 : « pourquoi les autres ne peuvent pas choisir les pneus ? », « un écran
+  de confirmation quand tout le monde est prêt ») : l'hôte annonce la course (circuit, tours, météo prévue) ; l'écran
+  « Avant le départ » (`prets`) laisse chaque machine régler pneus, boîte, vue et commandes puis se dire prête ; la
+  course part quand toutes les machines liées le sont ; l'hôte reprend les pneus de chacun dans la configuration.
   Suite, David, 16/11 après la mise en ligne de la 0.2.7 : « on verra plus tard le online, mais je veux du peer to
   peer avec mini serveur pour rejoindre les joueurs, un truc léger, sans besoin de ports ouverts ». Le serveur ne
   sert qu'à se trouver ; la partie passe d'une machine à l'autre ; aucun joueur n'ouvre de port.

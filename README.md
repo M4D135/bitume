@@ -34,7 +34,8 @@ La version en ligne est la page figée d'un commit. Elle ne change qu'à la main
   ou ZQSD pour l'un, pavé numérique pour l'autre).
 - **En ligne** : de deux à quatre pilotes, un ou deux par machine (écran partagé) : deux contre deux, deux contre un,
   quatre chacun chez soi… L'hôte crée la partie et donne son code de quatre lettres ; les autres le saisissent. Le
-  reste de la grille est à l'ordinateur. Chacun conduit sans attendre le réseau.
+  reste de la grille est à l'ordinateur. Avant chaque course, chacun règle ses pneus, sa boîte, sa vue et ses commandes,
+  puis se dit prêt ; la course part quand tout le monde l'est. Chacun conduit sans attendre le réseau.
 - **Chrono** : seul en piste. Le meilleur tour devient un fantôme bleu gardé dans le navigateur, avec un record
   par circuit.
 - **Conduite** : boîte automatique ou manuelle, rupteur, vibreurs et herbe, glissières, dérive à trois niveaux de
