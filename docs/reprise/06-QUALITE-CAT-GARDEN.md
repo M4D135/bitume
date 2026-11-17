@@ -69,3 +69,52 @@ Les contrôles du profil Medium initial valident les géométries, les empreinte
 3. Examiner `git status` et les derniers commits : la rédaction d'un plan ne prouve pas la publication de ses sources.
 4. Achever les sous-lots en conservant les demandes High détaillé et menu à 3 niveaux + Auto. Qualifier puis publier par étapes sans forcer.
 5. Après chaque publication, vérifier le SHA de `main`, le contenu/version et actualiser le suivi. Ne pas annoncer un déploiement sur la seule preuve du push.
+
+## Ce que le lot 5 livre aujourd'hui (17/11, build 0.2.28)
+
+Le menu des réglages présente quatre boutons : **Légère**, **Moyenne**, **Fine**, **Auto** (`src/index.html`,
+`input[name=qualite]`, valeurs `low`, `medium`, `high`, `auto`). Une valeur ancienne ou inconnue retrouvée dans le
+stockage local retombe sur le profil historique, jamais sur le plus coûteux.
+
+`src/graphismes.js` est la seule source des paliers. `src/jeu.js` ne décide plus effet par effet : il demande un
+profil (`B.graphismes.melange(qualite, palierAuto, gardeFous)`) et obéit à l'objet rendu. Le garde-fous reçoit les
+capacités **réellement** ouvertes par `FRender.create` (msaa, atlas d'ombres, reflets) : le jeu ne promet pas ce que
+le moteur a refusé. Le volet de mesures enregistre la demande du menu **et** le palier rendu (`B.mesures.reglages`).
+
+| Palier | Résolution | MSAA | Atlas ombres | Ombres | Halo | Reflets | Glaces (cadence) | Joueur 2 | Décor |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Légère | 0,8 | 0 | 1 | non | non | non | glace peinte | 30 Hz | historique, sans massifs |
+| Moyenne | 1 | 4 | 1 | oui | oui | non | 2 à 15 Hz | 30 Hz | matières 0.3.5, fougères |
+| Fine | min(dpr, 2) | 4 | 2 | oui | oui | oui | 2 à 30 Hz | 60 Hz | matières 0.3.5, fougères et fleurs |
+| Auto | gouverneur du moteur | — | — | paliers 0-1 | paliers 0-2 | palier 0 | décroît avec le palier | décroît | suit l'ancre |
+
+Règles d'application :
+
+- Résolution, ombres, halo, reflets, cadence des glaces et du second joueur s'appliquent **à l'image**, sans
+  réinitialiser la course. Le choix du menu n'attend pas la stabilisation ; seule une fluctuation de l'Auto attend
+  `STABILISATION` (5 s).
+- Les matières et les massifs sont **cuits dans la scène** : ils suivent l'ancre de décor (`etatProfils.decor`) et
+  prennent effet à la séance suivante. Le gouverneur Auto ne rebâtit jamais le terrain en pleine course ; un choix du
+  menu non plus, parce que reconstruire nappes, lots et tampons toucherait les stands, les caméras et les glaces.
+- `decorDiffer` compare les paliers eux-mêmes : Moyenne et Fine n'ont pas le même terrain (comptes de plantes,
+  matières, distance de bascule du LOD). Le verrou `RECONSTRUCTION` (5 s) borne seul la cadence des rebâtiments.
+
+## Preuves du lot 5
+
+- Suite Node : **45 fichiers de vérification, 45 réussis, 0 échec** (`verifications/*.test.mjs`).
+- `node tools/budget-decor.mjs` : budgets réellement distincts, biome par biome. Forêt — 14 290 objets / 124 herbes /
+  0 fleur en Légère, 14 667 / 276 / 0 en Moyenne, 15 263 / 468 / 237 en Fine.
+- `node tools/banc-navigateur.mjs --mode smoke` sur `dist/bitume.html` : 7 contrôles, **0 erreur de console**,
+  0 avertissement.
+- Sonde CDP sur la page construite (`BITUME_JEU.reference({qualite})` puis lecture de la scène installée) :
+  Légère 3 formes et pas de végétation, ratio 0,8 ; Moyenne 7 formes, 276 herbes, 97 fougères, 0 fleur, ratio 1 ;
+  Fine 8 formes, 468 herbes, 163 fougères, 237 fleurs, ratio 1. L'ancre et `scene.palier` suivent le palier demandé.
+- Captures comparées (`tools/controle-visuel.mjs --scenario piste --circuit 0 --vue poursuite`, 960×540, même graine) :
+  écart moyen par canal Légère/Moyenne ≈ 10,0 sur 255 ; Moyenne/Fine ≈ 0,25.
+
+## Limite de qualification à lever sur GPU réel
+
+Sous SwiftShader, le navigateur est reconnu « processeur graphique modeste » : `FRender.create` refuse MSAA et atlas
+doublé, donc Moyenne et Fine reçoivent l'un et l'autre `msaa 0` et `shadowMapScale 1`. L'écart mesuré Moyenne/Fine ne
+reflète que le seuil de halo, la bascule du LOD et les comptes de plantes. Sur une carte réelle, les deux paliers
+diffèrent aussi par 4× MSAA, l'atlas d'ombres 1024 et le ratio 2. Cette mesure reste à faire sur la machine de David.

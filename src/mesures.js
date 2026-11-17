@@ -25,7 +25,7 @@
 
   const etat = {
     actif: false, gpu: false, gpuValide: false, gpuMs: null, gpuPasses: null,
-    voitures: 0, voituresTotal: 0, lampes: 0, ombres: false, palier: 0, qualite: '',
+    voitures: 0, voituresTotal: 0, lampes: 0, ombres: false, palier: 0, qualite: '', profil: '',
     pieces: 0, piecesTotal: 0, physx: null,
     audio: { actif: false, voix: 0, joueurs: 0, rivaux: 0, fondus: 0, budget: null, musique: false },
     images: 0, descartees: 0, enAttente: 0
@@ -84,7 +84,7 @@
       a[k] = a.actif && Number.isFinite(stats[k]) && stats[k] >= 0 ? Math.floor(stats[k]) : 0;
     a.musique = a.actif && !!stats.musique;
   }
-  function reglages(v) { if (v) { etat.palier = v.palier === null ? null : (v.palier || 0); etat.qualite = v.qualite || ''; } }
+  function reglages(v) { if (v) { etat.palier = v.palier === null ? null : (v.palier || 0); etat.qualite = v.qualite || ''; etat.profil = v.profil || ''; } }
 
   function percentile(cercle, p) {
     if (!remplies) return null;
@@ -140,7 +140,7 @@
       gpuPortee: 'Moyenne des trois derniers rendus complets du moteur principal ; pas le total de l’image avec les rétroviseurs.',
       gpuDescartes: etat.descartees, gpuEnAttente: etat.enAttente,
       voitures: etat.voitures, voituresTotal: etat.voituresTotal,
-      lampes: etat.lampes, ombres: etat.ombres, palier: etat.palier, qualite: etat.qualite, images: etat.images,
+      lampes: etat.lampes, ombres: etat.ombres, palier: etat.palier, qualite: etat.qualite, profil: etat.profil, images: etat.images,
       pieces: etat.pieces, piecesTotal: etat.piecesTotal, physx: etat.physx, audio: Object.assign({}, etat.audio)
     };
     for (const n of SECTIONS) if (n !== 'intervalle') { v.cpu[n] = moyenne(cercles[n]); v.cpuP50[n] = percentile(cercles[n], .5); v.cpuP95[n] = percentile(cercles[n], .95); }

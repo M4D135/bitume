@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 const req = createRequire(import.meta.url);
-for (const f of ['carene', 'circuit', 'ferro/vehicle-dynamics', 'conduite', 'decor']) req('../src/' + f + '.js');
+for (const f of ['carene', 'circuit', 'ferro/vehicle-dynamics', 'conduite', 'decor', 'graphismes']) req('../src/' + f + '.js');
 const B = globalThis.BITUME;
 const page = req('node:fs').readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 
@@ -122,15 +122,20 @@ test('l abri de la pluie et l œil suivent la caméra, pas la voiture', () => {
 
 test('les reflets d écran ne clignotent plus au seuil d humidité', () => {
   const avecReflets = refletsF(false, { n: 0 });
-  const q = 'high', S = {};
+  // ce que le moteur a ouvert à la création du rendu, puis le profil résolu par src/graphismes.js
+  const garde = B.graphismes.capacites({ msaa: 4, shadowMapScale: 2, reflections: true }, false, 2);
+  const modeste = B.graphismes.capacites({ msaa: 0, shadowMapScale: 1, reflections: false }, true, 1);
+  const P = (q, n) => B.graphismes.melange(q, n, garde);
+  const S = {};
   const eau = v => ({ mouille: v, pluie: 0 });
-  assert.equal(avecReflets(S, q, eau(.15)), false, 'sous le seuil de prise');
-  assert.equal(avecReflets(S, q, eau(.25)), true, 'au-dessus du seuil de prise');
-  assert.equal(avecReflets(S, q, eau(.15)), true, 'redescente : le rendu reste, sinon il clignote');
-  assert.equal(avecReflets(S, q, eau(.10)), false, 'sous le seuil de relâchement');
-  assert.equal(avecReflets(S, q, eau(.18)), false, 'remontée : il faut reprendre le seuil haut');
-  assert.equal(avecReflets(S, 'low', eau(.9)), false, 'qualité basse : pas de reflets');
-  assert.equal(refletsF(false, { n: 1 })(S, 'auto', eau(.9)), false, 'auto au palier 1 : pas de reflets');
-  assert.equal(refletsF(false, { n: 0 })(S, 'auto', eau(.9)), true, 'auto au premier palier : les reflets reviennent');
-  assert.equal(refletsF(true, { n: 0 })(S, 'high', eau(.9)), false, 'GPU modeste : pas de reflets');
+  assert.equal(avecReflets(S, P('high', 0), eau(.15)), false, 'sous le seuil de prise');
+  assert.equal(avecReflets(S, P('high', 0), eau(.25)), true, 'au-dessus du seuil de prise');
+  assert.equal(avecReflets(S, P('high', 0), eau(.15)), true, 'redescente : le rendu reste, sinon il clignote');
+  assert.equal(avecReflets(S, P('high', 0), eau(.10)), false, 'sous le seuil de relâchement');
+  assert.equal(avecReflets(S, P('high', 0), eau(.18)), false, 'remontée : il faut reprendre le seuil haut');
+  assert.equal(avecReflets({}, P('low', 0), eau(.9)), false, 'qualité basse : pas de reflets');
+  assert.equal(avecReflets({}, P('medium', 0), eau(.9)), false, 'qualité moyenne : pas de reflets');
+  assert.equal(avecReflets({}, P('auto', 1), eau(.9)), false, 'auto au palier 1 : pas de reflets');
+  assert.equal(avecReflets({}, P('auto', 0), eau(.9)), true, 'auto au premier palier : les reflets reviennent');
+  assert.equal(avecReflets({}, B.graphismes.melange('high', 0, modeste), eau(.9)), false, 'GPU modeste : pas de reflets');
 });

@@ -15,7 +15,7 @@ const aide = `Contrôle visuel de BITUME (Node >= 22 + Chrome/Chromium)
   --url <page> --sortie <nouveau dossier>
   --scenario tunnel|piste|pluie|duo     défaut tunnel
   --images 48 --pas 0.1 --chauffe 4   nombre de captures, secondes simulées, images de chauffe
-  --taille 960,540 --qualite high      résolution CSS ; DPR fixé à 1
+  --taille 960,540 --qualite high      résolution CSS ; DPR fixé à 1 (low, medium ou high)
   --graine 17017 --circuit 2          défaut circuit 2 pour tunnel, 0 pour les autres
   --meteo sec|pluie --vue cockpit --vue2 cockpit --partage haut-bas|cote
   --depart tunnel|<abscisse> --vitesse 75 --retro oui|non
@@ -56,7 +56,7 @@ export function optionsCapture(argv) {
     angle: choix('angle', 'swiftshader', ['swiftshader', 'native']), attendre: nombre('attendre', 60000, 1000, 300000),
     scenario, taille, images: nombre('images', 48, 3, 1000, true), pas: nombre('pas', .1, 1 / 240, .1), chauffe: nombre('chauffe', 4, 0, 240, true),
     referenceJeu: { graine: nombre('graine', 17017, 0, 0xffffffff, true), circuit: nombre('circuit', scenario === 'tunnel' ? 2 : 0, 0, 2, true),
-      qualite: choix('qualite', 'high', ['low', 'high']), mode: scenario === 'duo' ? 'duo' : 'solo',
+      qualite: choix('qualite', 'high', ['low', 'medium', 'high']), mode: scenario === 'duo' ? 'duo' : 'solo',
       vue: choix('vue', 'cockpit', ['cockpit', 'poursuite']),
       vue2: choix('vue2', 'cockpit', ['cockpit', 'poursuite']),
       meteo: choix('meteo', scenario === 'pluie' ? 'pluie' : 'sec', ['sec', 'pluie']),

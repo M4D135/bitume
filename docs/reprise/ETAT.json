@@ -3,13 +3,13 @@
   "etat_courant": {
     "date": "2026-11-17",
     "base_branche": "main",
-    "base_commit": "552d3dfd6476a7678b8f7e958922b15ad1094b7c",
+    "base_commit": "92f1993a7073857a9f1effb1d59140ef04ab95d0",
     "base_version_client": "0.2.26",
-    "version_preparee": "0.2.27",
-    "statut": "chantier_cat_garden_profils_en_cours",
-    "lot_5": "partiel",
+    "version_preparee": "0.2.28",
+    "statut": "chantier_cat_garden_lot5_integre_localement",
+    "lot_5": "integre_attente_publication",
     "plan": "docs/reprise/06-QUALITE-CAT-GARDEN.md",
-    "prochaine_action": "Publier le checkpoint documentaire, puis FERRO 0.3.5 stable, puis BITUME avec profils Low/Medium/High/Auto apres les controles. Mise a jour progressive des demandes et du suivi requise par David.",
+    "prochaine_action": "Pousser le lot 5 (Spark vers Mac puis GitHub), deployer et controler la production, puis lever la limite de qualification MSAA/atlas sur GPU reel.",
     "qualification_reprise": "Moteur 122 tests reussis et 1 TODO historique ; compilation de 18 stages GLSL/WGSL ; installation EMPRISE et BITUME 34/34. Profils graphiques finaux du jeu en cours. Rendu navigateur bloque avant chargement, pas de FPS materiel annonce."
   },
   "organisation": "Une discussion par lot borne ; integrations sequentielles. Maitre d'oeuvre unique sur les fichiers de jonction.",
@@ -165,7 +165,8 @@
     "Les sequences visuelles et le smoke precedents portent sur le candidat SHA256 43473b8f... ; les corrections pause/HUD ont des tests cibles. Le nouveau smoke du HTML final 9180313f... s’est arrete avant chargement du jeu : aucun resultat jeu acquis.",
     "Les premiers bancs A/B avaient mesures.actif=false ; aucune ventilation CPU/GPU detaillee ni gain n’en est deduit. Les sorties instrumentees annoncees precedemment etaient absentes et aucun nouveau banc n’a ete execute dans cette reprise.",
     "Les mesures sensibles au temps exigent une machine calme ; les seuils de decor.test.mjs ne sont pas assouplis.",
-    "Le masquage natif n’a pas ete reproduit par le navigateur de qualification ; manettes physiques et vraie partie WebRTC multi-machines non testees."
+    "Le masquage natif n’a pas ete reproduit par le navigateur de qualification ; manettes physiques et vraie partie WebRTC multi-machines non testees.",
+    "Sous SwiftShader le moteur refuse MSAA et atlas doublé : Moyenne et Fine reçoivent les mêmes réglages de rendu. L écart Moyenne/Fine mesuré (0,25 sur 255) ne vaut que pour le seuil de halo, la bascule du LOD et les comptes de plantes ; à requalifier sur GPU réel."
   ],
   "lot_1_resultat": {
     "commit_code": "856dd363150892e74494f045aa8ca94c8e6bbc1d",
@@ -474,15 +475,82 @@
       "High tres detaille, choix Low/Medium/High dans les options, Auto conserve",
       "Pousser progressivement demandes, plan et sources pour reprise fiable"
     ],
-    "etat": "integration_en_cours",
+    "etat": "lot5_integre_attente_publication",
     "plan": "docs/reprise/06-QUALITE-CAT-GARDEN.md",
-    "prochaine_publication": "FERRO 0.3.5 puis BITUME 0.2.27",
-    "validation_visuelle": false,
+    "prochaine_publication": "BITUME 0.2.28 (FERRO 0.3.5 déjà publié sur main)",
+    "validation_visuelle": "partielle : captures comparées et sonde CDP faites, avis de David attendu",
     "deploiement_effectue": false,
     "concurrence_preservee": {
       "commit": "552d3dfd6476a7678b8f7e958922b15ad1094b7c",
       "sujet": "Signature titre m4d135 et avatar embarqué",
       "fusion": "3 voies sans conflit ; nouvelles options Graphismes conservees"
-    }
+    },
+    "preuves": "docs/reprise/06-QUALITE-CAT-GARDEN.md, sections « Ce que le lot 5 livre » et « Preuves du lot 5 »"
+  },
+  "lot_5_cat_garden": {
+    "date": "2026-11-17",
+    "base_commit": "92f1993a7073857a9f1effb1d59140ef04ab95d0",
+    "commits_locaux": [
+      {
+        "commit": "86b61d1",
+        "sujet": "test(titre): reporter le controle de signature sur l'ecran titre actuel"
+      },
+      {
+        "commit": "3a6d405",
+        "sujet": "build(ferro): propager FERRO 0.3.5 dans les modules verrouilles"
+      }
+    ],
+    "ferro": {
+      "version": "0.3.5",
+      "commit_source": "7afe6d692f45892fc9fdf30ff46397a5ebe00498",
+      "modules_conformes": 34,
+      "modules_total": 34,
+      "importation": "bundle Mac /tmp/ferro-main-035.bundle (dépôt privé, clone direct impossible depuis Spark)"
+    },
+    "version_client": "0.2.28",
+    "suites_node": {
+      "reussies": 45,
+      "total": 45,
+      "repertoire": "verifications/*.test.mjs"
+    },
+    "budget_decor": "node tools/budget-decor.mjs : forét 14290/14667/15263 objets et 124/276/468 herbes, 0/0/237 fleurs pour low/medium/high",
+    "navigateur": {
+      "smoke": {
+        "controles": 7,
+        "erreurs_console": 0,
+        "avertissements": 0,
+        "outil": "tools/banc-navigateur.mjs --mode smoke"
+      },
+      "sonde": {
+        "outil": "sonde CDP sur BITUME_JEU.reference({qualite}) puis lecture de BITUME_JEU.scene",
+        "low": "3 formes, aucune végétation, ratio 0,8",
+        "medium": "7 formes, 276 herbes, 97 fougères, 0 fleur, ratio 1",
+        "high": "8 formes, 468 herbes, 163 fougères, 237 fleurs, ratio 1"
+      },
+      "captures": {
+        "outil": "tools/controle-visuel.mjs --scenario piste --circuit 0 --vue poursuite --images 6",
+        "ecart_moyen_par_canal": {
+          "low_vs_medium": 10.0,
+          "medium_vs_high": 0.25
+        },
+        "limite": "SwiftShader : msaa 0 et atlas 1 imposés par le moteur, donc Moyenne et Fine partagent ces deux réglages"
+      }
+    },
+    "menu_qualite": {
+      "valeurs": [
+        "low",
+        "medium",
+        "high",
+        "auto"
+      ],
+      "source_unique": "src/graphismes.js",
+      "controle": "verifications/graphismes.test.mjs"
+    },
+    "attente": [
+      "publication Spark vers Mac puis GitHub",
+      "déploiement et contrôle production",
+      "validation visuelle par David",
+      "mesure MSAA/atlas sur GPU réel"
+    ]
   }
 }

@@ -277,7 +277,33 @@
   }
 
   // ---------------------------------------------------------------- objets
-  function arbre(liste, loin, x, y, z, essence, r) {
+  // Palier du décor. Sans palier demandé, on tient le profil historique : les contrôles d'identité du décor,
+  // l'outil de comparaison avant/après et les tests Node appellent construire sans le nommer.
+  function normaliserQualite(q) {
+    return q === 'medium' || q === 'high' ? q : 'low';
+  }
+  const ESSENCE_BOTANIQUE = essence => (essence === 'pin' || essence === 'conifere') ? essence : 'feuillu';
+
+  // Habillage d'un arbre déjà construit à l'historique. Moyenne et Fine remplacent les blobs de feuillage par
+  // une couronne procédurale de la botanique et donnent au tronc la matière écorce du moteur. Le tronc reste
+  // l'objet qui porte la collision, avec ses coordonnées et sa taille d'origine : le solide ne bouge pas d'un
+  // centimètre. Aucune valeur de hasard n'est consommée ici, donc aucun arbre ne se déplace ailleurs.
+  function habiller(liste, loin, essence, qualite, h, penche, v) {
+    if (!B.botanique) return;
+    const e = ESSENCE_BOTANIQUE(essence);
+    for (const o of liste) if (o.mat === 10) o.mat = B.botanique.matiere('ecorce');
+    for (let k = liste.length - 1; k >= 0; k--) if (liste[k].shape === 'foliage') liste.splice(k, 1);
+    for (let k = loin.length - 1; k >= 0; k--) if (loin[k].shape === 'foliage') loin.splice(k, 1);
+    const pied = liste.find(o => o.collision === 'tronc');
+    if (!pied) return;
+    const x = pied.p[0], y = pied.p[1] - pied.s[1] * .5, z = pied.p[2];
+    liste.push({ shape: B.botanique.nomForme(e, false, qualite), p: [x, y + h * .5, z], s: [h, h, h],
+      r: [penche, 0, penche * .7], mat: B.botanique.matiere('feuillage'), color: v });
+    loin.push({ shape: B.botanique.nomForme(e, true, qualite), p: [x, y + h * .5, z], s: [h, h, h],
+      r: [penche, 0, penche * .7], mat: B.botanique.matiere('feuillage'), color: v });
+  }
+
+  function arbre(liste, loin, x, y, z, essence, r, qualite) {
     const tronc = [.30, .21, .13], vert = essence === 'conifere' ? [.10, .24, .11] : essence === 'pin' ? [.20, .32, .12] : [.17, .31, .09];
     const v = varier(vert, r, .35), h = (essence === 'pin' ? 9 : essence === 'conifere' ? 11 : 7) * (.75 + r() * .55);
     const penche = (r() - .5) * .12;
@@ -295,6 +321,8 @@
       liste.push({ shape: 'foliage', p: [x + (r() - .5) * 2, y + h * .66, z + (r() - .5) * 2], s: [couronne * .7, couronne * .6, couronne * .7], r: [0, r() * 6, 0], mat: 11, color: v.map(q => q * .88) });
       loin.push({ shape: 'foliage', p: [x, y + h * .8, z], s: [couronne * 1.05, couronne * .9, couronne * 1.05], mat: 11, color: v });
     }
+    // Le palier bas ignore l'habillage : la liste reste exactement celle d'aujourd'hui.
+    if (qualite && qualite !== 'low') habiller(liste, loin, essence, qualite, h, penche, v);
   }
 
   function tribune(liste, loin, f, w, cote, longueur, r) {
@@ -338,6 +366,7 @@
 
   function construire(c, options = {}) {
     const th = Object.assign({}, THEMES[c.theme] || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
+    const qualite = normaliserQualite(options.qualite);
     if (c.theme === 'foret' && options.matieres !== false) th.matieres = MATIERES_PILOTES;
     // l'eau ne noie jamais la piste : le niveau descend sous le point le plus bas de l'axe (le virage de
     // Port-Sable plongeait à −5,8 sous le niveau −4 du thème cote, David 14/11)
@@ -595,7 +624,7 @@
           if (th.eau !== undefined && y < th.eau + 2.5) continue;
           if (th.montagnes && y > 160) continue;
           const objets = [], loin = [];
-          arbre(objets, loin, jx, y - .2, jz, th.essence, r);
+          arbre(objets, loin, jx, y - .2, jz, th.essence, r, qualite);
           ajouter(objets, loin, jx, jz); positionsArbres.push([jx, jz]); nombre++;
           break;
         }
@@ -615,7 +644,7 @@
       if (th.montagnes && y > 160) continue;
       if (q.i >= 0 && Math.abs(B.circuit.ecart(c, 0, q.i * c.pas)) < 320 && dist < 90) continue; // abords des tribunes et des stands
       const objets = [], loin = [];
-      arbre(objets, loin, jx, y - .2, jz, th.essence, r);
+      arbre(objets, loin, jx, y - .2, jz, th.essence, r, qualite);
       ajouter(objets, loin, jx, jz); positionsArbres.push([jx, jz]); nombre++;
     }
 
@@ -689,13 +718,18 @@
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
     if (tunnelLampes) decor.tunnelLampes = tunnelLampes;
-    // Végétation basse pilote : générateur et lots indépendants. Le décor historique et ses solides restent
-    // identiques ; vegetation:false permet une comparaison avant/après avec exactement les mêmes obstacles.
-    if (B.vegetation && options.vegetation !== false && c.theme === 'foret') {
-      const v = B.vegetation.construire(c, { limites: lim, interroger });
+    // Végétation basse : générateur et lots indépendants. Le décor historique et ses solides restent identiques ;
+    // vegetation:false permet une comparaison avant/après avec exactement les mêmes obstacles. Le module choisit
+    // lui-même les biomes qu'il sait habiller et retourne des lots vides pour les autres.
+    if (B.vegetation && options.vegetation !== false) {
+      const v = B.vegetation.construire(c, { limites: lim, interroger, qualite });
       lots.push(...v.lots);
-      decor.vegetation = { herbes: v.herbes, taillis: v.taillis, lots: v.lots.length };
+      decor.vegetation = { herbes: v.herbes, fougeres: v.fougeres, fleurs: v.fleurs, taillis: v.taillis,
+        lots: v.lots.length, qualite: v.qualite };
     }
+    // Le palier est une métadée de suivi, pas une donnée d'image : il reste non énumérable pour que les
+    // empreintes historiques du décor (verifications/decor-identite.test.mjs) ne bougent pas d'un cran.
+    Object.defineProperty(decor, 'qualite', { value: qualite, enumerable: false });
     return decor;
   }
 

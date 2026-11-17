@@ -117,8 +117,15 @@
   // brume fait la limite. Les ombres du soleil prennent tout l'atlas du moteur sur un carré de 200 m de côté.
   const PORTEE_VUE = 6000, OMBRE = 100, OMBRE_DEVANT = 76;
   function installer(i) {
-    if (scene && scene.index === i && scene.enrichi === decorEnrichi) return scene;
-    const c = circuit(i), decor = B.decor.construire(c, { matieres: decorEnrichi, vegetation: decorEnrichi });
+    // Le décor est bâti sur un palier « ancre » (voir « profils graphiques du menu ») : la même piste ne se
+    // reconstruit pas à chaque fluctuation du gouverneur, seulement quand l'ancre ou l'enrichissement change.
+    const ancre = etatProfils.decor, veut = B.graphismes.profil(ancre).decor;
+    if (scene && scene.index === i && scene.enrichi === decorEnrichi && scene.palier === ancre) return scene;
+    const c = circuit(i), decor = B.decor.construire(c, {
+      qualite: ancre,
+      matieres: decorEnrichi && veut.matieres,
+      vegetation: decorEnrichi && veut.vegetation,
+    });
     if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
     rendu.setNappes(decor.nappes);
@@ -130,7 +137,7 @@
     // profondeur du volume d'ombre : un point du sol au bord du carré est décalé de OMBRE × cotangente de la hauteur du soleil
     const sol = decor.atmosphere.sunDirection, sinus = sol[1] / Math.hypot(sol[0], sol[1], sol[2]);
     const ombre = { extent: OMBRE, depth: 2 * (OMBRE * Math.sqrt(Math.max(0, 1 - sinus * sinus)) / Math.max(.25, sinus) + 30) };
-    scene = { index: i, enrichi: decorEnrichi, c, decor, fond, plan: p, ombre };
+    scene = { index: i, enrichi: decorEnrichi, palier: ancre, c, decor, fond, plan: p, ombre };
     return scene;
   }
 
@@ -1299,25 +1306,49 @@
   // continue d'agir dans chaque palier. Les qualités Légère et Fine restent fixes.
   const palier = { n: 0, somme: 0, compte: 0, t: 0, aise: 0 };
   const PALIERS = 4;
+  // ---------------------------------------------------------------- profils graphiques du menu
+  // src/graphismes.js est la seule source des paliers : le menu (Légère, Moyenne, Fine, Auto), le gouverneur
+  // Auto de src/qualite.js et les capacités réellement ouvertes par FRender.create s'y rejoignent. Le gouverneur
+  // reste seul décideur du niveau ; ici on traduit ce niveau en budget et on retarde l'application d'un palier
+  // pour qu'une fluctuation isolée ne fasse rien payer deux fois.
+  const etatProfils = B.graphismes.etatStable();
+  let capacitesRendu = B.graphismes.capacites({ msaa: 0, shadowMapScale: 1, reflections: false }, true, 1);
+  const horlogeProfils = () => performance.now() / 1000;
+  function profilDe(S) {
+    return B.graphismes.melange(S && S.banc ? S.banc.qualite : reglages.qualite, palier.n,
+      Object.assign({ decor: etatProfils.decor }, capacitesRendu));
+  }
+  // Le décor (matières et massifs) est bâti une fois par séance sur un palier « ancre ». Le gouverneur Auto ne le
+  // fait jamais bouger en pleine course : rebâtir nappes, lots et tampons au milieu d'une course toucherait les
+  // stands, les caméras et les rétroviseurs. Le budget du décor suit donc l'ancre et prend effet à la séance
+  // suivante ; tout le reste — résolution, ombres, halo, reflets, glaces, cadence du second joueur — s'applique
+  // à l'image, sans redémarrer la course.
+  function majProfils(S) {
+    return B.graphismes.stabiliser(etatProfils, S && S.banc ? S.banc.qualite : reglages.qualite,
+      palier.n, horlogeProfils());
+  }
   function majPalier(S, dt) {
     const actif = reglages.qualite === 'auto' && !S.banc && !S.reference && !document.hidden &&
       (S.type === 'course' || S.type === 'chrono' || S.type === 'demo' || S.type === 'duo');
-    if (B.qualite.avancer(palier, dt, { actif, min: gpuModeste ? 1 : 0, max: PALIERS })) appliquerPalier();
+    const change = B.qualite.avancer(palier, dt, { actif, min: gpuModeste ? 1 : 0, max: PALIERS });
+    majProfils(S);
+    if (change) appliquerPalier();
   }
-  function appliquerPalier() { if (rendu) rendu.resize(palier.n >= 4 ? .75 : 'auto'); }
-  // effets permis par la qualité et le palier
-  const avecOmbres = q => q === 'high' || (q === 'auto' && palier.n < 2);
-  const avecHalo = q => q === 'high' || (q === 'auto' && palier.n < 3);
+  function appliquerPalier() { if (rendu) rendu.resize(profilDe(session).rendu.resolution); }
+  // effets permis par le profil résolu : menu, gouverneur et capacités du moteur, en un seul endroit
+  const avecOmbres = P => P.effets.ombres;
+  const avecHalo = P => P.effets.halo;
   // Reflets d'écran (David, 16/11 : « améliore le rendu, reflets ») : sur piste mouillée, les voitures, le ciel et les
-  // lampes du tunnel se reflètent dans les flaques (matières humides du moteur repris d'EMPRISE). Qualité Fine, ou
-  // Auto au premier palier, hors processeur graphique modeste.
+  // lampes du tunnel se reflètent dans les flaques (matières humides du moteur repris d'EMPRISE). Le profil les ouvre
+  // (Fine, ou Auto au premier palier) et refuse déjà un processeur graphique modeste : le moteur n'a de toute façon
+  // pas ouvert la capacité à la création.
   // Le moteur ne propose ce rendu que tout ou rien (fx.reflections) : l'intensité ne se règle pas ici, dans un module
   // verrouillé. Ce qui l'est, c'est le franchissement du seuil. L'humidité de la piste monte et redescend en continu
   // sous la pluie ; franchir un seul seuil faisait clignoter le rendu aller-retour autour de la valeur. Deux seuils
   // (prise puis relâchement) et un état mémorisé par séance suppriment l'oscillation.
   const REFLET_PRISE = .2, REFLET_LACHE = .12;
-  function avecReflets(S, q, m) {
-    const peutEtre = !gpuModeste && (q === 'high' || (q === 'auto' && palier.n === 0)) && !!m;
+  function avecReflets(S, P, m) {
+    const peutEtre = P.effets.reflets && !!m;
     const eau = peutEtre ? Math.max(m.mouille || 0, m.pluie || 0) : 0;
     const etat = S.refletsEcran === true;
     const pris = etat ? eau >= REFLET_LACHE : eau >= REFLET_PRISE;
@@ -1410,8 +1441,8 @@
   const retro = { rendu: null, scene: -1, cote: 0, echec: false, objets: [], toiles: null, ctx: [], l: 0, h: 0 };
   function retroVoulu(S, vue) {
     const r = reglages.retro === 'auto' ? (estTactile ? 'non' : 'oui') : reglages.retro;
-    const q = S.banc ? S.banc.qualite : reglages.qualite;
-    return r === 'oui' && vue === 'cockpit' && S.type !== 'vitrine' && !retro.echec && !cameraEssai && q !== 'low' && !(q === 'auto' && palier.n >= 1);
+    // Le profil décide : image des glaces refusée d'office au palier bas et aux paliers Auto les plus serrés.
+    return r === 'oui' && vue === 'cockpit' && S.type !== 'vitrine' && !retro.echec && !cameraEssai && profilDe(S).effets.retroImages;
   }
   // homographie du carré unité vers le quadrilatère q (images de (0,0), (1,0), (1,1), (0,1)), puis matrix3d CSS
   // pour une toile de l × h pixels CSS
@@ -1433,6 +1464,13 @@
     const voir = retroVoulu(S, vue);
     for (const t of toiles) if (t.hidden === voir) t.hidden = !voir;
     if (!voir) return;
+    // Cadence des glaces (src/graphismes.js) : une glace par image donne déjà 30 images/s par glace. Les paliers
+    // serrés peignent une image sur deux, sur quatre, et laissent à l'écran la dernière image faite, au lieu de
+    // payer un rendu complet pour un miroir que l'œil ne distingue plus.
+    const hzGlaces = profilDe(S).secondaires.retroviseurs.hz;
+    const saut = Math.max(1, Math.round(30 / Math.max(1, hzGlaces)));
+    G.pas = ((G.pas | 0) + 1) % saut;
+    if (G.pas) return;
     const source = $('retro-rendu');
     if (!retro.rendu) {
       try { retro.rendu = window.FRender.create(source, { msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' }); retro.rendu.resize(Math.min(window.devicePixelRatio || 1, 1.5)); }
@@ -1510,8 +1548,9 @@
       let actives = 0;
       for (let k = 0; k < co.voitures.length; k++) if (!co.voitures[k].abandon && !co.voitures[k].fini) actives++;
       B.mesures.voitures(actives, co.voitures.length);
-      const qVue = S.banc ? S.banc.qualite : reglages.qualite;
-      B.mesures.reglages({ palier: qVue === 'auto' ? palier.n : null, qualite: qVue });
+      const qVue = S.banc ? S.banc.qualite : reglages.qualite, pVue = profilDe(S);
+      // le rapport garde la demande du menu ET le palier réellement rendu : « auto » n'est pas un palier
+      B.mesures.reglages({ palier: qVue === 'auto' ? palier.n : null, qualite: qVue, profil: pVue.palier });
     }
 
     // Roues (David, 16/11 : « on voit pas les roues rouler, on dirait qu'on glisse ») : au-delà d'une vingtaine de
@@ -1528,13 +1567,19 @@
     }
     const meteo = majMeteo(S, dtImage);
     if (B.meteo) B.meteo.actuel = meteo;
+    const P = profilDe(S);
     // Écran partagé : la vue du joueur 2 d'abord, copiée aussitôt dans sa toile 2D, puis celle du joueur 1, qui reste dans
     // la toile WebGL. Le moteur lit la taille affichée de sa toile à chaque image : il rend chaque vue à la moitié.
     if (S.type === 'duo' && S.vueJ2) {
-      rendreVue(S.vueJ2, co.voitures[S.locaux[1]], reglages.vue2, dtImage, meteo);
-      const t2 = $('scene2'), ctx2 = t2._ctx || (t2._ctx = t2.getContext('2d'));
-      if (t2.width !== canvas.width || t2.height !== canvas.height) { t2.width = canvas.width; t2.height = canvas.height; }
-      ctx2.drawImage(canvas, 0, 0);
+      // Cadence du second joueur (src/graphismes.js) : au palier serré, le joueur 2 tient sur une image sur deux et
+      // garde la dernière copiée ; le joueur 1 garde toute la fluidité de la sienne.
+      S.j2Image = (S.j2Image | 0) + 1;
+      if (P.secondaires.partage.hz >= 55 || S.j2Image % 2 === 0) {
+        rendreVue(S.vueJ2, co.voitures[S.locaux[1]], reglages.vue2, dtImage, meteo);
+        const t2 = $('scene2'), ctx2 = t2._ctx || (t2._ctx = t2.getContext('2d'));
+        if (t2.width !== canvas.width || t2.height !== canvas.height) { t2.width = canvas.width; t2.height = canvas.height; }
+        ctx2.drawImage(canvas, 0, 0);
+      }
       return rendreVue(S, j, reglages.vue, dtImage, meteo);
     }
     // caméra : celle du joueur, ou celle que choisit le réalisateur de la démo
@@ -1552,6 +1597,7 @@
   // joueur 2 à deux, qui hérite de la séance).
   function rendreVue(S, suivie, vue, dtImage, meteo) {
     const co = S.course, c = co.c, sortie = S.sortie, poses = tampons.poses, pj = poses[0], RV = S.rouleVu;
+    const P = profilDe(S); // menu + gouverneur + capacités du moteur, décidé une fois par image
     sortie.length = 0;
     let cam;
     if (DANS_LA_ROCHE.has(vue) && B.circuit.dansTunnel(co.c, suivie.etat.s, 8)) vue = 'poursuite';
@@ -1616,7 +1662,6 @@
     const tFx = (S.banc || B.mesures.actif) ? performance.now() : 0;
     B.traces.dessiner(S.fx, sortie, cam.pos, S.fx.acc);
     if (tFx) { const dFx = performance.now() - tFx; if (S.banc) S.banc.effets += dFx; if (B.mesures.actif) B.mesures.section('effets', dFx); }
-    const q = S.banc ? S.banc.qualite : reglages.qualite;
     // uEffects.z colore tout l'écran : la rougeur suit seulement l'éclair du choc, jamais les dégâts persistants.
     const eclair = S.eclair || 0;
     // Tunnel : l'œil s'adapte d'après la caméra, pas d'après la seule voiture suivie. En entrant, l'intérieur paraît
@@ -1627,13 +1672,13 @@
     S.lumiere += (cibleLumiere - S.lumiere) * (1 - Math.exp(-dtImage / (cibleLumiere > S.lumiere ? .8 : .3)));
     const LT = scene.decor.tunnelLampes;
     const lampes = lampesTunnel(S, 'lampesTunnel', LT, cam, dtImage, scene.index);
-    // Halo/bloom : qualité du palier (plus coûteux en qualité élevée)
-    const haloInt = avecHalo(q);
+    // Halo/bloom : ouverts ou fermés par le profil résolu (menu, gouverneur et capacités du moteur)
+    const haloInt = avecHalo(P);
     const tDraw = B.mesures.actif ? performance.now() : 0;
-    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: avecOmbres(q), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: q === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, q, meteo), weather: B.meteo.ambiance(meteo) });
+    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: P.qualite === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: B.meteo.ambiance(meteo) });
     if (B.mesures.actif) {
       B.mesures.section('rendu', performance.now() - tDraw);
-      B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(q) });
+      B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
     }
     dessinerMeteo(S, dtImage, cam, vue);
     majGlaces(S, vue, cam, ps, sortie, B.meteo.ambiance(meteo), suivie, dtImage);
@@ -1987,7 +2032,10 @@
       if (t.name === 'qualite') {
         B.qualite.avancer(palier, 0, { actif: false });
         palier.n = gpuModeste ? 1 : 0;
-        if (rendu) rendu.resize(t.value);
+        // Un choix du menu est un acte délibéré : il s'applique à l'image, sans la temporisation réservée aux
+        // fluctuations de l'Auto. Le décor, lui, attend la séance suivante : il est cuit dans la scène.
+        B.graphismes.stabiliser(etatProfils, t.value, palier.n, horlogeProfils());
+        if (rendu) appliquerPalier();
       }
     }
     if (t.name === 'aide') { reglages.aide = +t.value; sauverReglages(); }
@@ -2285,12 +2333,17 @@
   function demarrer() {
     if (!webgl2()) { erreur('WebGL2 indisponible', 'BITUME dessine la piste avec WebGL2. Ouvrez la page dans un navigateur récent (Chrome, Edge, Firefox, Safari 15 ou plus) avec l’accélération graphique active.'); return; }
     try {
-      rendu = window.FRender.create(canvas,{msaa:gpuModeste?0:4,shadowMapScale:gpuModeste?1:2,reflections:!gpuModeste,sea:false,overlayLighting:'world'});
+      const optionsRendu = { msaa: gpuModeste ? 0 : 4, shadowMapScale: gpuModeste ? 1 : 2, reflections: !gpuModeste, sea: false, overlayLighting: 'world' };
+      rendu = window.FRender.create(canvas, optionsRendu);
+      // ce que le moteur a réellement ouvert, et non ce que le menu demande : src/graphismes.js ne promet pas
+      // une capacité que FRender.create aurait refusée (msaa, atlas d'ombres, reflets d'écran)
+      capacitesRendu = B.graphismes.capacites(optionsRendu, gpuModeste, window.devicePixelRatio || 1);
       // perte de contexte : les pièces détachées n'ont plus de scène où vivre ; on rend leurs corps sans attendre
       canvas.addEventListener('webglcontextlost', () => { if (session && session.fx) B.traces.liberer(session.fx); });
       palier.n = gpuModeste ? 1 : 0;
       if (rendu.stats.backend !== 'webgl2') { erreur('WebGL2 indisponible', 'Le rendu de secours ne sait pas dessiner la piste. Activez l’accélération graphique du navigateur.'); return; }
-      rendu.resize(reglages.qualite);
+      B.graphismes.stabiliser(etatProfils, reglages.qualite, palier.n, horlogeProfils());
+      appliquerPalier();
       // PhysX (FERRO) ne sert qu'aux pièces détachées et son décodage est lourd : lancé en tâche de fond, jamais
       // sur le chemin de l'écran titre, et l'absence du module ne doit pas empêcher la page de tourner.
       if (window.FPhysX && window.FPhysX.init) Promise.resolve(window.FPhysX.init()).catch(() => { /* pièces en parabole */ });
@@ -2323,7 +2376,7 @@
     decorEnrichi = session.decorAvantReference;
     delete session.reglagesReference;
     session.reference = null;
-    if (rendu) rendu.resize(reglages.qualite);
+    if (rendu) appliquerPalier();
   }
   function reference(options = {}) {
     if (!rendu) throw new Error('rendu absent');
@@ -2337,7 +2390,7 @@
     const pilote = options.pilote ?? true;
     const vitesse = options.vitesse ?? 75, mouille = options.mouille ?? (meteo === 'pluie' ? .75 : 0);
     const vues = ['cockpit', 'poursuite', 'tele', 'helico'];
-    if (!['solo', 'duo'].includes(mode) || !['low', 'high', 'auto'].includes(qualite)) throw new Error('mode ou qualité de référence inconnu');
+    if (!['solo', 'duo'].includes(mode) || !B.graphismes.QUALITES.includes(qualite)) throw new Error('mode ou qualité de référence inconnu');
     if (!Number.isInteger(i) || i < 0 || i >= CATALOGUE.length || !Number.isInteger(graine) || graine < 0 || graine > 0xffffffff) throw new Error('circuit ou graine invalide');
     if (!Number.isInteger(difficulte) || difficulte < 0 || difficulte > 2 || !Number.isInteger(tours) || tours < 1 || tours > 99) throw new Error('difficulté ou nombre de tours invalide');
     if (typeof pilote !== 'boolean') throw new Error('pilotage de référence invalide');
@@ -2355,6 +2408,8 @@
       pneus: B.conduite.pneusConseilles(B.conduite.eauSurPiste(B.meteo.pour(meteo))) });
     decorEnrichi = options.decor !== 'reference';
     graineCourse = graine - 1;
+    // l'ancre du décor se fixe avant la construction de la scène : une séance de référence est filmée au palier demandé
+    B.graphismes.stabiliser(etatProfils, qualite, palier.n, horlogeProfils());
     const S = lancer(mode === 'duo' ? 'duo' : 'course', i);
     S.reglagesReference = avant; S.decorAvantReference = decorAvant; S.essai = true;
     S.meteo.mouille = mouille;
@@ -2382,7 +2437,7 @@
     S.reference = { graine, circuit: i, circuitId: CATALOGUE[i].id, graineCircuit: CATALOGUE[i].graine,
       mode, qualite, difficulte, tours, pilote, vue, vue2, partage, retro: glaces, meteo, mouille, depart: ramener(depart, c.longueur), vitesse,
       decor: decorEnrichi ? 'enrichi' : 'reference', tunnel: c.tunnel ? { debut: c.tunnel.debut, fin: c.tunnel.fin } : null };
-    $('chargement').classList.add('fini'); aller('course'); rendu.resize(qualite);
+    $('chargement').classList.add('fini'); aller('course'); appliquerPalier();
     B.mesures.reinitialiser();
     return Object.assign({}, S.reference);
   }
@@ -2393,10 +2448,11 @@
   function banc(options = {}) {
     const duree = options.duree || 20, chauffe = options.chauffe ?? 1, qualite = options.qualite || 'high';
     if (!rendu) return Promise.reject(new Error('rendu absent'));
-    if (!['low', 'auto', 'high'].includes(qualite)) return Promise.reject(new Error('qualité inconnue : ' + qualite));
+    if (!B.graphismes.QUALITES.includes(qualite)) return Promise.reject(new Error('qualité inconnue : ' + qualite));
     reference(Object.assign({}, options, { qualite, circuit: options.circuit ?? reglages.circuit }));
     const S = session; S.essai = true; S.banc = { qualite, effets: 0 };
-    rendu.resize(qualite);
+    B.graphismes.stabiliser(etatProfils, qualite, palier.n, horlogeProfils());
+    appliquerPalier();
     $('chargement').classList.add('fini');
     aller('course');
     while (S.course.phase !== 'course') pasSimulation(S, true);
@@ -2428,6 +2484,8 @@
     });
   }
   window.BITUME_JEU = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer, banc, reference,
+    // ce que le banc et le contrôle visuel vérifient sans toucher au jeu : la scène installée et le profil résolu
+    get scene() { return scene; }, get profil() { return profilDe(session); }, get ancre() { return etatProfils.decor; },
     get son() { return son ? son.stats() : null; }, get palier() { return palier.n; }, get gpuModeste() { return gpuModeste; },
     demo: i => lancerDemo(i === undefined ? reglages.circuit : i), // lance la démo sans attendre les cinq secondes
     get pauseAuto() { return pauseAuto; }, set pauseAuto(v) { pauseAuto = !!v; },

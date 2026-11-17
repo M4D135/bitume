@@ -2,6 +2,7 @@ import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 createRequire(import.meta.url)('../src/qualite.js');
+createRequire(import.meta.url)('../src/graphismes.js');
 const Q = globalThis.BITUME.qualite;
 const creer = n => ({ n, somme: 0, compte: 0, t: 0, aise: 0 });
 function images(p, fps, n, options) { let changements = 0; for (let i = 0; i < n; i++) if (Q.avancer(p, 1 / fps, options)) changements++; return changements; }
@@ -89,7 +90,7 @@ const integration = new Function('B', `
   const session = { type: 'course' }, son = null, hud2 = $('hud2'), pad2 = {}, EL = { role: null };
   const aDeux = () => session.type === 'duo', secouerManette = () => {}, tactile = () => {};
   const appliquerVolumes = () => {}, remplirReglages = () => {}, sauverReglages = () => {}, appliquerCarte = () => {};
-  ${bloc('  const palier = ', '  // effets permis par la qualité et le palier')}
+  ${bloc('  const palier = ', '  // effets permis par le profil résolu')}
   ${bloc("  let ecran = 'chargement';", "  document.addEventListener('click', e => {")}
   ${bloc("  document.addEventListener('change', e => {", "  for (const nom of ['general', 'moteur', 'effets'])")}
   ecran = 'course';
@@ -119,7 +120,11 @@ verifier('jeu : les réglages interrompent aussi une remontée presque acquise',
 verifier('jeu : un choix manuel de qualité efface la charge précédente', () => {
   const jeu = integration(globalThis.BITUME);
   jeu.images(40, 116); jeu.choisir('high'); jeu.choisir('auto');
-  assert.deepEqual(jeu.redimensions, ['high', 'auto']);
+  // Fine rend le ratio décidé par src/graphismes.js (borné par devicePixelRatio), Auto rend la main au
+  // gouverneur du moteur : c'est lui qui tient les 1 800 000 pixels, plus le profil qui décide du reste.
+  assert.equal(typeof jeu.redimensions[0], 'number', 'un choix nommé rend un ratio, pas un nom');
+  assert.ok(jeu.redimensions[0] >= .5 && jeu.redimensions[0] <= 2, 'ratio dans les bornes du moteur');
+  assert.deepEqual(jeu.redimensions.slice(1), ['auto']);
   jeu.images(40, 119); assert.equal(jeu.palier.n, 0);
   jeu.images(40, 1); assert.equal(jeu.palier.n, 1);
 });

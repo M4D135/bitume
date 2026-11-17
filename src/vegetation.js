@@ -5,7 +5,47 @@
   'use strict';
 
   const PI2 = Math.PI * 2;
+  // Budget historique du palier bas : référence figée, le palier low ne retire ni ne déplace rien.
   const BUDGET = Object.freeze({ stations: 76, herbes: 152, taillis: 76, formes: 4 });
+
+  // Paliers opt-in. low reproduit exactement l'existant (mêmes stations, mêmes comptes, matière 11, deux familles).
+  // medium et high ajoutent familles, stations et densités ; l'échantillonnage change, jamais la silhouette.
+  // `groupes` = formes distinctes au plus par lot et par passe. `sol` = recette de terreau sous les fougères.
+  const PALIERS = Object.freeze({
+    low: Object.freeze({ stations: 76, herbes: 2, fougeres: 0, fleurs: 0, taillis: .58, mat: 11, sol: 11, groupes: 2, familles: ['herbes', 'taillis'] }),
+    medium: Object.freeze({ stations: 112, herbes: 3, fougeres: 1, fleurs: 0, taillis: .74, mat: 27, sol: 25, groupes: 4, familles: ['herbes', 'fougères', 'taillis'] }),
+    high: Object.freeze({ stations: 150, herbes: 4, fougeres: 2, fleurs: 3, taillis: .88, mat: 27, sol: 25, groupes: 5, familles: ['herbes', 'fougères', 'fleurs', 'taillis'] }),
+  });
+
+  // Biomes réellement dessinés par le décor (mêmes noms que THEMES de decor.js). Un biome absent retourne des lots vides.
+  // `stations` module la maille d'échantillonnage, `densite` le nombre de plants par station, `taille` la stature.
+  const BIOMES = Object.freeze({
+    foret: Object.freeze({
+      stations: 1, densite: 1, taille: 1, familles: ['herbes', 'fougères', 'fleurs', 'taillis'],
+      herbe: [.21, .34, .105], taillis: [.135, .26, .075], taillisNuance: [.04, .06, 0],
+      fougere: [.115, .27, .10], humus: [.16, .115, .06],
+      fleurs: [[.70, .17, .12], [.90, .76, .16], [.86, .86, .90], [.34, .38, .78]],
+    }),
+    cote: Object.freeze({
+      stations: .72, densite: .78, taille: .9, familles: ['herbes', 'fleurs', 'taillis'],
+      herbe: [.34, .40, .17], taillis: [.22, .27, .13], taillisNuance: [.05, .05, .02],
+      fougere: [.24, .33, .16], humus: [.30, .25, .15],
+      fleurs: [[.92, .84, .30], [.88, .46, .18], [.94, .93, .88]],
+    }),
+    montagne: Object.freeze({
+      stations: .62, densite: .66, taille: .78, familles: ['herbes', 'fougères', 'taillis'],
+      herbe: [.21, .33, .14], taillis: [.15, .23, .13], taillisNuance: [.03, .05, .03],
+      fougere: [.14, .26, .15], humus: [.13, .12, .09],
+      fleurs: [[.56, .34, .62], [.88, .82, .28], [.90, .36, .44]],
+    }),
+  });
+
+  // Sans palier demandé, le profil historique : un appel qui ne nomme pas le palier (tests, outil de
+  // comparaison avant/après, consommateur externe) retrouve exactement la végétation d'avant le chantier.
+  function normaliserQualite(q) {
+    return q === 'medium' || q === 'high' ? q : 'low';
+  }
+
   function hasard(graine) {
     let n = graine >>> 0;
     return () => {
@@ -52,6 +92,12 @@
     const bas = anneau(a, rayon), haut = anneau(b, rayon * .45);
     for (let i = 0; i < 3; i++) { const j = (i + 1) % 3; triangle(sortie, bas[i], haut[j], haut[i]); triangle(sortie, bas[i], bas[j], haut[j]); }
   }
+  // Équivalent lointain d'une tige : un seul plan deux faces, même pied et même extrémité, donc même volume.
+  function lance(sortie, a, b, largeur) {
+    const axe = unite(moins(b, a)), cote = unite(croix(axe, Math.abs(axe[1]) < .9 ? [0, 1, 0] : [1, 0, 0]));
+    const l = largeur / 2;
+    triangle(sortie, a.map((v, i) => v - cote[i] * l), a.map((v, i) => v + cote[i] * l), b, true);
+  }
   function herbe(segments) {
     const r = hasard(1807), tri = [];
     for (let i = 0; i < 9; i++) {
@@ -78,6 +124,86 @@
     }
     return tri;
   }
+  // Fronde : un rachis arqué et huit pinnules par fronde, présentes aux deux résolutions. Le niveau lointain
+  // ne change que l'échantillonnage (plan au lieu du tube du rachis, triangle au lieu du pan de la pinnule).
+  function fougere(segments) {
+    const r = hasard(2411), tri = [], proche = segments > 2;
+    for (let i = 0; i < 5; i++) {
+      const a = i * PI2 / 5 + (r() - .5) * .55, h = .34 + r() * .20;
+      const pied = [0, 0, 0];
+      const milieu = [Math.cos(a) * .07, h * .62, Math.sin(a) * .07];
+      const bout = [Math.cos(a) * .30, h * .94, Math.sin(a) * .30];
+      const avant = [Math.cos(a), 0, Math.sin(a)], cote = [-avant[2], 0, avant[0]];
+      if (proche) { tige(tri, pied, milieu, .010); tige(tri, milieu, bout, .006); }
+      else { lance(tri, pied, milieu, .050); lance(tri, milieu, bout, .034); }
+      for (let j = 0; j < 8; j++) {
+        const t = (j + .5) / 8, sens = j % 2 ? 1 : -1;
+        const p = t < .5 ? pied.map((v, k) => v + (milieu[k] - v) * (t / .5)) : milieu.map((v, k) => v + (bout[k] - v) * ((t - .5) / .5));
+        const l = (.055 + r() * .05) * Math.sin(Math.PI * Math.min(1, t * 1.15)) + .015;
+        const e = [p[0] + cote[0] * l * sens, p[1] + .014, p[2] + cote[2] * l * sens];
+        const q = [p[0] + avant[0] * .085, p[1] + .008, p[2] + avant[2] * .085];
+        const eq = q.map((v, k) => v + (e[k] - p[k]));
+        // Le pan lointain garde le coin extérieur de la pinnule ; le pied, porté par le rachis, reste couvert.
+        if (proche) { triangle(tri, p, e, eq, true); triangle(tri, p, eq, q, true); }
+        else triangle(tri, e, q, eq, true);
+      }
+    }
+    return tri;
+  }
+  // Touffe fleurie : trois hampes raides, une corolle à six pétales, un cœur et deux feuilles. Au loin,
+  // hampe en un plan, corolle à trois pétales pris parmi les six (mêmes pointes) et feuilles en un plan :
+  // aucune hampe, aucune corolle, aucune feuille ne disparaît, seules les arêtes s'espacent.
+  function fleur(segments) {
+    const r = hasard(5217), tri = [], proche = segments > 2;
+    for (let i = 0; i < 3; i++) {
+      const a = i * PI2 / 3 + (r() - .5) * .8, h = .20 + r() * .14;
+      const pied = [Math.cos(a) * .05, 0, Math.sin(a) * .05];
+      const sommet = [Math.cos(a) * .085, h, Math.sin(a) * .085];
+      const avant = [Math.cos(a), 0, Math.sin(a)], cote = [-avant[2], 0, avant[0]];
+      if (proche) tige(tri, pied, sommet, .006); else lance(tri, pied, sommet, .038);
+      const rayon = .055 + r() * .02;
+      const pointe = j => {
+        const b = j * PI2 / 6 + a;
+        return [sommet[0] + Math.cos(b) * rayon, sommet[1] + .015, sommet[2] + Math.sin(b) * rayon];
+      };
+      // Au loin, la corolle s'appuie sur le sommet du cœur : la pointe la plus haute reste couverte.
+      const origine = proche ? sommet : [sommet[0], sommet[1] + .05, sommet[2]];
+      const petales = proche ? 6 : 3;
+      for (let j = 0; j < petales; j++) triangle(tri, origine, pointe(2 * j), pointe(2 * ((j + 1) % 3)), true);
+      if (proche) {
+        const coeur = [sommet[0], sommet[1] + .05, sommet[2]], r2 = rayon * .45;
+        for (let j = 0; j < 3; j++) {
+          const b1 = j * PI2 / 3, b2 = (j + 1) * PI2 / 3;
+          triangle(tri, coeur,
+            [sommet[0] + Math.cos(b1) * r2, sommet[1] + .012, sommet[2] + Math.sin(b1) * r2],
+            [sommet[0] + Math.cos(b2) * r2, sommet[1] + .012, sommet[2] + Math.sin(b2) * r2]);
+        }
+      }
+      for (let j = 0; j < 2; j++) {
+        const t = .35 + j * .3, sens = j % 2 ? 1 : -1;
+        const p = pied.map((v, k) => v + (sommet[k] - v) * t);
+        const e = [p[0] + cote[0] * .075 * sens, p[1] + .012, p[2] + cote[2] * .075 * sens];
+        const q = [p[0] + avant[0] * .055, p[1] + .006, p[2] + avant[2] * .055];
+        const eq = q.map((v, k) => v + (e[k] - p[k]));
+        if (proche) { triangle(tri, p, e, eq, true); triangle(tri, p, eq, q, true); }
+        else triangle(tri, e, q, eq, true);
+      }
+    }
+    return tri;
+  }
+  // Terreau sous les fougères : couronne basse et large, recette de sol organique du moteur. Les rayons sont
+  // tirés une fois pour les deux résolutions ; la version lointaine reprend les mêmes, seulement moins sectorisée.
+  function terreau(segments) {
+    const tri = [], sommet = [0, .035, 0], n = segments > 2 ? 11 : 5;
+    // Rayon analytique : les deux résolutions posent leurs sommets sur le même contour, seule la sectorisation change.
+    const rayon = a => .115 + .022 * Math.cos(5 * a + .7) + .011 * Math.sin(3 * a + 1.9);
+    for (let i = 0; i < n; i++) {
+      const a0 = i * PI2 / n, a1 = (i + 1) * PI2 / n;
+      triangle(tri, sommet, [Math.cos(a0) * rayon(a0), .004, Math.sin(a0) * rayon(a0)],
+        [Math.cos(a1) * rayon(a1), .004, Math.sin(a1) * rayon(a1)]);
+    }
+    return tri;
+  }
   function normaliserPaire(proche, loin) {
     const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
     for (const tri of proche.concat(loin)) for (let i = 0; i < 3; i++) for (let k = 0; k < 3; k++) {
@@ -88,21 +214,51 @@
     return { proche: convertir(proche), loin: convertir(loin) };
   }
   const H = normaliserPaire(herbe(4), herbe(2)), T = normaliserPaire(taillis(4), taillis(2));
+  const F = normaliserPaire(fougere(4), fougere(2)), FLE = normaliserPaire(fleur(4), fleur(2));
+  const U = normaliserPaire(terreau(4), terreau(2));
+
+  // Les quatre formes historiques restent le registre de référence du palier bas.
   const FORMES = Object.freeze({ 'herbes-val': H.proche, 'herbes-val-loin': H.loin, 'taillis-val': T.proche, 'taillis-val-loin': T.loin });
-  function installer(rendu) {
+  const FORMES_AJOUT = Object.freeze({
+    'fougeres-val': F.proche, 'fougeres-val-loin': F.loin,
+    'humus-val': U.proche, 'humus-val-loin': U.loin,
+    'fleurs-val': FLE.proche, 'fleurs-val-loin': FLE.loin,
+  });
+  const TOUTES = Object.assign({}, FORMES, FORMES_AJOUT);
+  const JEU_FORMES = Object.freeze({
+    low: Object.keys(FORMES),
+    medium: Object.keys(FORMES).concat(['fougeres-val', 'fougeres-val-loin', 'humus-val', 'humus-val-loin']),
+    high: Object.keys(FORMES).concat(Object.keys(FORMES_AJOUT)),
+  });
+  const forme = nom => TOUTES[nom];
+  function installer(rendu, qualite) {
     if (!rendu || typeof rendu.forme !== 'function') return false;
-    for (const nom of Object.keys(FORMES)) rendu.forme(nom, FORMES[nom]);
+    // Sans palier demandé, on tient le contrat historique : quatre formes au registre. Une valeur nommée mais
+    // inconnue (« auto », une faute de frappe) enregistre tout : inscrire une forme de trop coûte de la mémoire,
+    // en oublier une ferait dessiner un objet absent du registre.
+    const cle = qualite === undefined || qualite === null || qualite === 'low' ? 'low'
+      : qualite === 'medium' ? 'medium' : 'high';
+    for (const nom of JEU_FORMES[cle]) rendu.forme(nom, TOUTES[nom]);
     return true;
   }
 
-  // Un lot par secteur de 420 m : deux familles seulement, donc au plus deux groupes instanciés par lot/passe.
+  // Un lot par secteur de 420 m : deux familles au palier bas, jusqu'à cinq au palier haut.
   // Les verts ont leur générateur indépendant. Ajouter un massif ne déplace ni arbre, ni obstacle, ni stand.
-  function construire(c, { limites, interroger } = {}) {
-    if (c.theme !== 'foret' || !limites || !interroger) return { lots: [], herbes: 0, taillis: 0 };
+  function construire(c, options = {}) {
+    const { limites, interroger } = options;
+    const qualite = normaliserQualite(options.qualite);
+    const vide = { lots: [], herbes: 0, fougeres: 0, fleurs: 0, taillis: 0, qualite };
+    if (!c || !limites || !interroger) return vide;
+    const biome = BIOMES[c.theme];
+    if (!biome) return vide;
+    // Un biome que le décor ne connaît pas n'a pas d'accotement dessiné : rien à végétaliser.
+    if (B.decor && B.decor.THEMES && !B.decor.THEMES[c.theme]) return vide;
+    const palier = PALIERS[qualite];
     const r = hasard((c.graine ^ 0x53a98b17) >>> 0), groupes = new Map(), w = c.largeur / 2;
-    let herbes = 0, taillis = 0;
-    const pas = Math.max(1, Math.ceil(c.n / BUDGET.stations));
-    function ajouter(i, d, famille, angle, taille, color) {
+    let herbes = 0, fougeres = 0, fleurs = 0, taillis = 0;
+    const stations = Math.max(1, Math.round(palier.stations * biome.stations));
+    const pas = Math.max(1, Math.ceil(c.n / stations));
+    function ajouter(i, d, famille, angle, taille, color, mat) {
       const a = c.cap[i], x = c.x[i] - Math.sin(a) * d, z = c.z[i] + Math.cos(a) * d;
       const q = interroger(x, z, 40), marge = Math.hypot(taille[0], taille[2]) / 2 + .18;
       if (q.i < 0 || q.d < w + 1.2 + marge || Math.abs(B.circuit.ecart(c, i * c.pas, q.i * c.pas)) > 20) return false;
@@ -113,30 +269,87 @@
       const bord = c.y[i] - cote * w * Math.sin(c.devers[i]);
       const sol = bord - .015 + u * (.015 - .02 * (ext - w - 1.2));
       const objet = { shape: famille + '-val', p: [x, sol + taille[1] / 2 - .025, z], s: taille,
-        r: [0, angle, 0], mat: 11, color };
+        r: [0, angle, 0], mat, color };
       const cle = Math.floor(i * c.pas / 420);
       let lot = groupes.get(cle); if (!lot) groupes.set(cle, lot = { objets: [], loin: [] });
       lot.objets.push(objet); lot.loin.push({ ...objet, shape: famille + '-val-loin' });
-      return true;
+      return objet;
     }
-    for (let station = 0, i = 0; i < c.n && station < BUDGET.stations; i += pas, station++) {
+    function interdit(i) {
+      return Math.abs(B.circuit.ecart(c, 0, i * c.pas)) < 360 || (B.circuit.dansTunnel && B.circuit.dansTunnel(c, i * c.pas, 20));
+    }
+    for (let station = 0, i = 0; i < c.n && station < stations; i += pas, station++) {
       const cote = station % 2 ? 1 : -1, hasardStation = [r(), r(), r(), r(), r(), r(), r(), r()];
-      if (Math.abs(B.circuit.ecart(c, 0, i * c.pas)) < 360 || (B.circuit.dansTunnel && B.circuit.dansTunnel(c, i * c.pas, 20))) continue;
+      if (interdit(i)) continue;
       const limite = cote < 0 ? limites.G[i] : limites.D[i], espace = limite - w - 4.2;
       if (espace < 1.2) continue;
       const d = cote * (w + 2.5 + hasardStation[0] * Math.min(espace - .3, 4.5));
-      for (let k = 0; k < 2; k++) {
-        const j = (i + k * 2) % c.n, largeur = .95 + hasardStation[k + 1] * .52, h = .40 + hasardStation[k + 3] * .28;
-        const vert = .82 + hasardStation[k + 4] * .30;
+      for (let k = 0; k < palier.herbes; k++) {
+        const j = (i + k * 2) % c.n, largeur = (.95 + hasardStation[k + 1] * .52) * biome.taille, h = (.40 + hasardStation[k + 3] * .28) * biome.taille;
+        const vert = .82 + hasardStation[k + 4] * .30, b = biome.herbe;
         if (ajouter(j, d + cote * k * .75, 'herbes', hasardStation[k + 2] * PI2,
-          [largeur, h, largeur * (.72 + hasardStation[k + 3] * .20)], [.21 * vert, .34 * vert, .105 * vert])) herbes++;
+          [largeur, h, largeur * (.72 + hasardStation[k + 3] * .20)], [b[0] * vert, b[1] * vert, b[2] * vert], palier.mat)) herbes++;
       }
-      if (hasardStation[7] < .58 && espace > 3) {
-        const largeur = 1.0 + hasardStation[5] * .55, h = .75 + hasardStation[6] * .35;
+      if (hasardStation[7] < palier.taillis && espace > 3) {
+        const largeur = (1.0 + hasardStation[5] * .55) * biome.taille, h = (.75 + hasardStation[6] * .35) * biome.taille;
+        const b = biome.taillis, n = biome.taillisNuance, t = hasardStation[3];
         if (ajouter(i, cote * Math.min(limite - 2.3, Math.abs(d) + 2.5), 'taillis', hasardStation[4] * PI2,
-          [largeur, h, largeur * .85], [.135 + hasardStation[3] * .04, .26 + hasardStation[3] * .06, .075])) taillis++;
+          [largeur, h, largeur * .85], [b[0] + n[0] * t, b[1] + n[1] * t, b[2] + n[2] * t], palier.mat)) taillis++;
       }
     }
+
+    // Fougères : générées sur leur propre maille, côté opposé aux herbes, avec leur terreau.
+    if (palier.fougeres && biome.familles.includes('fougères')) {
+      const rf = hasard((c.graine ^ 0x2c1f9a17) >>> 0);
+      const stationsF = Math.max(1, Math.round(stations * .82 * biome.densite)), pasF = Math.max(1, Math.ceil(c.n / stationsF));
+      for (let station = 0, i = 0; i < c.n && station < stationsF; i += pasF, station++) {
+        if (interdit(i)) continue;
+        const cote = station % 2 ? -1 : 1;
+        const limite = cote < 0 ? limites.G[i] : limites.D[i], espace = limite - w - 4.2;
+        if (espace < 2.2) continue;
+        const t = [rf(), rf(), rf(), rf(), rf(), rf()];
+        const d = cote * (w + 3.6 + t[0] * Math.min(espace - .8, 4.8));
+        const nombre = 1 + Math.floor(t[1] * (palier.fougeres + .35));
+        for (let k = 0; k < nombre; k++) {
+          const j = (i + k) % c.n, vert = .78 + t[2 + (k % 4)] * .34;
+          const largeur = (1.05 + t[2] * .55) * biome.taille, h = (.52 + t[3] * .26) * biome.taille;
+          const b = biome.fougere;
+          const plant = ajouter(j, d + cote * k * .85, 'fougeres', t[4] * PI2 + k * 1.7,
+            [largeur, h, largeur * (.86 + t[5] * .22)], [b[0] * vert, b[1] * vert, b[2] * vert], palier.mat);
+          if (!plant) continue;
+          fougeres++;
+          // Le pied de fougère repose sur une couronne de terreau posée au sol, même empreinte au sol que la fronde.
+          const lot = groupes.get(Math.floor(j * c.pas / 420));
+          const couronne = { ...plant, shape: 'humus-val',
+            p: [plant.p[0], plant.p[1] - plant.s[1] / 2 + .03, plant.p[2]],
+            s: [plant.s[0] * .8, .06, plant.s[2] * .8], mat: palier.sol, color: biome.humus };
+          lot.objets.push(couronne); lot.loin.push({ ...couronne, shape: 'humus-val-loin' });
+        }
+      }
+    }
+
+    // Fleurs : prairie clairsemée en bordure extérieure, palette par biome.
+    if (palier.fleurs && biome.familles.includes('fleurs') && biome.fleurs && biome.fleurs.length) {
+      const rl = hasard((c.graine ^ 0x7a19c3d1) >>> 0);
+      const stationsL = Math.max(1, Math.round(stations * .9 * biome.densite)), pasL = Math.max(1, Math.ceil(c.n / stationsL));
+      for (let station = 0, i = 0; i < c.n && station < stationsL; i += pasL, station++) {
+        if (interdit(i)) continue;
+        const cote = station % 3 ? 1 : -1;
+        const limite = cote < 0 ? limites.G[i] : limites.D[i], espace = limite - w - 4.2;
+        if (espace < 2.6) continue;
+        const t = [rl(), rl(), rl(), rl(), rl(), rl()];
+        const d = cote * (w + 4.4 + t[0] * Math.min(espace - 1.0, 5.4));
+        const nombre = 1 + Math.floor(t[1] * (palier.fleurs + .4));
+        for (let k = 0; k < nombre; k++) {
+          const j = (i + k) % c.n, vert = .84 + t[2 + (k % 4)] * .30;
+          const largeur = (.62 + t[2] * .40) * biome.taille, h = (.30 + t[3] * .18) * biome.taille;
+          const c0 = biome.fleurs[Math.floor(t[5] * biome.fleurs.length) % biome.fleurs.length];
+          if (ajouter(j, d + cote * k * .6, 'fleurs', t[4] * PI2 + k * 2.1,
+            [largeur, h, largeur * (.9 + t[5] * .25)], [c0[0] * vert, c0[1] * vert, c0[2] * vert], palier.mat)) fleurs++;
+        }
+      }
+    }
+
     const lots = [];
     for (const l of groupes.values()) {
       const centre = [0, 0, 0];
@@ -146,9 +359,11 @@
       for (const o of l.objets) rayon = Math.max(rayon, Math.hypot(...moins(o.p, centre)) + Math.hypot(...o.s) / 2 + .25);
       lots.push({ ...l, centre, rayon, portee: Infinity, bascule: 520, lodReferenceFov: 60, lodReferenceHeight: 1080, vegetation: true });
     }
-    return { lots, herbes, taillis };
+    return { lots, herbes, fougeres, fleurs, taillis, qualite };
   }
 
-  B.vegetation = { FORMES, BUDGET, installer, construire };
-  installer(typeof window !== 'undefined' ? window.FRender : globalThis.FRender);
+  B.vegetation = { FORMES, FORMES_AJOUT, BUDGET, PALIERS, BIOMES, JEU_FORMES, forme, installer, construire };
+  // La page enregistre d'emblée toutes les formes : un changement de palier ne doit pas demander
+  // d'ajouter une forme après FRender.create. Le registre du palier bas reste les quatre formes historiques.
+  installer(typeof window !== 'undefined' ? window.FRender : globalThis.FRender, 'high');
 })(globalThis.BITUME = globalThis.BITUME || {});
