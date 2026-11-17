@@ -6,11 +6,12 @@
     "base_commit": "92f1993a7073857a9f1effb1d59140ef04ab95d0",
     "base_version_client": "0.2.26",
     "version_preparee": "0.2.28",
-    "statut": "chantier_cat_garden_lot5_integre_localement",
+    "statut": "chantier_cat_garden_lot5_publie_et_deploye",
     "lot_5": "integre_attente_publication",
     "plan": "docs/reprise/06-QUALITE-CAT-GARDEN.md",
-    "prochaine_action": "Pousser le lot 5 (Spark vers Mac puis GitHub), deployer et controler la production, puis lever la limite de qualification MSAA/atlas sur GPU reel.",
-    "qualification_reprise": "Moteur 122 tests reussis et 1 TODO historique ; compilation de 18 stages GLSL/WGSL ; installation EMPRISE et BITUME 34/34. Profils graphiques finaux du jeu en cours. Rendu navigateur bloque avant chargement, pas de FPS materiel annonce."
+    "prochaine_action": "Avis de David sur les trois paliers en ligne, puis mesure MSAA et atlas d'ombres sur GPU reel (SwiftShader les refuse).",
+    "qualification_reprise": "Moteur 122 tests reussis et 1 TODO historique ; compilation de 18 stages GLSL/WGSL ; installation EMPRISE et BITUME 34/34. Profils graphiques finaux du jeu en cours. Rendu navigateur bloque avant chargement, pas de FPS materiel annonce.",
+    "commit_publie": "46a5cce62c7c3beae8c66da2deed689802983050"
   },
   "organisation": "Une discussion par lot borne ; integrations sequentielles. Maitre d'oeuvre unique sur les fichiers de jonction.",
   "base_verifiee": {
@@ -475,11 +476,11 @@
       "High tres detaille, choix Low/Medium/High dans les options, Auto conserve",
       "Pousser progressivement demandes, plan et sources pour reprise fiable"
     ],
-    "etat": "lot5_integre_attente_publication",
+    "etat": "lot5_publie_et_deploye",
     "plan": "docs/reprise/06-QUALITE-CAT-GARDEN.md",
-    "prochaine_publication": "BITUME 0.2.28 (FERRO 0.3.5 déjà publié sur main)",
+    "prochaine_publication": "prochain lot Cat Garden (avis de David attendu)",
     "validation_visuelle": "partielle : captures comparées et sonde CDP faites, avis de David attendu",
-    "deploiement_effectue": false,
+    "deploiement_effectue": true,
     "concurrence_preservee": {
       "commit": "552d3dfd6476a7678b8f7e958922b15ad1094b7c",
       "sujet": "Signature titre m4d135 et avatar embarqué",
@@ -547,10 +548,24 @@
       "controle": "verifications/graphismes.test.mjs"
     },
     "attente": [
-      "publication Spark vers Mac puis GitHub",
-      "déploiement et contrôle production",
-      "validation visuelle par David",
-      "mesure MSAA/atlas sur GPU réel"
-    ]
+      "avis visuel de David sur Legere/Moyenne/Fine",
+      "mesure MSAA et atlas d ombres sur GPU reel"
+    ],
+    "publication": {
+      "commit": "46a5cce62c7c3beae8c66da2deed689802983050",
+      "branche": "main",
+      "colis": "/tmp/opencode/bitume-lot5-0228.bundle sha256 5fad265bf0bb2a259a7b4042e375f332e877141c2ddc10cb4e96b605187ac590",
+      "verifie_depuis": "Mac /Users/david/Projects/bitume, worktree /Users/david/Projects/bitume-deploy-0228"
+    },
+    "deploiement": {
+      "effectue": true,
+      "url": "https://bitume.estrasse.fr/",
+      "commit": "46a5cce62c7c3beae8c66da2deed689802983050",
+      "dist_sha256": "41f82e4cac4256fe3db92f032e9a4f2e4c498a5402ab1f79b9eef2aa71e329bd",
+      "version": "0.2.28",
+      "commit_retire": "d67506c6d023ad5efa5a3b1ac721811c53a323a2",
+      "controle": "page servie comparee au build du commit (SHA256 identique, version 0.2.28, option Moyenne presente)",
+      "salon": "https://bitume.estrasse.fr/salon repond, 0 partie"
+    }
   }
 }
