@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-17",
+  "organisation": "Une discussion par lot borne ; integrations sequentielles, aucun agent autonome lance.",
+  "base_verifiee": {
+    "branche": "main",
+    "commit": "d891fa24b6a2d00ffd01abb50989b2d9199698ee",
+    "version_client": "0.2.19",
+    "branches_distantes_comptees": 7,
+    "qualification_historique": "34 suites ; ne couvre pas les futurs correctifs",
+    "serie_locale_e074b55_retrouvee": false
+  },
+  "livraison_actuelle": "Documentation de coordination uniquement ; aucun changement du jeu, aucune suppression de branche, aucun deploiement.",
+  "lot_actif": null,
+  "prochain_lot": "0",
+  "lots": [
+    { "id": "0", "fiche": "docs/reprise/00-DEPOT.md", "statut": "a_faire", "dependances": [], "commit_livre": null },
+    { "id": "1", "fiche": "docs/reprise/01-TUNNEL.md", "statut": "a_faire", "dependances": [], "commit_livre": null },
+    { "id": "2", "fiche": "docs/reprise/02-CRASHS.md", "statut": "a_faire", "dependances": ["1"], "commit_livre": null },
+    { "id": "3", "fiche": "docs/reprise/03-RIVAUX.md", "statut": "a_faire", "dependances": ["2"], "commit_livre": null },
+    { "id": "4", "fiche": "docs/reprise/04-STANDS.md", "statut": "a_faire", "dependances": ["2", "3"], "commit_livre": null },
+    { "id": "5", "fiche": "docs/reprise/05-PERFORMANCE.md", "statut": "a_faire", "dependances": ["1", "2", "3", "4"], "commit_livre": null }
+  ],
+  "integration": {
+    "nouvelle_branche_autorisee_pour_coordination": false,
+    "push_concurrents": false,
+    "force_push": false,
+    "deploiement_effectue": false
+  }
+}
