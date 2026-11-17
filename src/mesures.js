@@ -26,6 +26,7 @@
   const etat = {
     actif: false, gpu: false, gpuValide: false, gpuMs: null, gpuPasses: null,
     voitures: 0, voituresTotal: 0, lampes: 0, ombres: false, palier: 0, qualite: '',
+    pieces: 0, piecesTotal: 0, physx: null,
     images: 0, descartees: 0, enAttente: 0
   };
   const cumulVues = {};
@@ -60,6 +61,7 @@
     }
   }
   function voitures(actives, total) { etat.voitures = actives; etat.voituresTotal = total; }
+  function pieces(n, total, etatPhysX) { etat.pieces = n | 0; etat.piecesTotal = total | 0; etat.physx = etatPhysX || null; }
   function reglages(v) { if (v) { etat.palier = v.palier === null ? null : (v.palier || 0); etat.qualite = v.qualite || ''; } }
 
   function percentile(cercle, p) {
@@ -109,7 +111,8 @@
       gpu: etat.gpu, gpuValide: etat.gpuValide, gpuMs: etat.gpuMs, gpuPasses: etat.gpuPasses,
       gpuDescartes: etat.descartees, gpuEnAttente: etat.enAttente,
       voitures: etat.voitures, voituresTotal: etat.voituresTotal,
-      lampes: etat.lampes, ombres: etat.ombres, palier: etat.palier, qualite: etat.qualite, images: etat.images
+      lampes: etat.lampes, ombres: etat.ombres, palier: etat.palier, qualite: etat.qualite, images: etat.images,
+      pieces: etat.pieces, piecesTotal: etat.piecesTotal, physx: etat.physx
     };
     for (const n of SECTIONS) if (n !== 'intervalle') { v.cpu[n] = moyenne(cercles[n]); v.cpuP50[n] = percentile(cercles[n], .5); v.cpuP95[n] = percentile(cercles[n], .95); }
     for (const k of VUES) {
@@ -151,6 +154,7 @@
       'draw calls  ' + VUES.map(k => k + ' ' + e(v.vues[k].drawCalls)).join(' · '),
       'triangles  ' + VUES.map(k => k + ' ' + e(v.vues[k].triangles)).join(' · '),
       'voitures ' + v.voitures + '/' + v.voituresTotal + ' · lampes ' + v.lampes + ' · ombres ' + (v.ombres ? 'oui' : 'non') +
+      ' · pièces ' + v.pieces + '/' + v.piecesTotal + ' · PhysX ' + (v.physx && v.physx.ready ? v.physx.version : 'N/D') +
         ' · qualité ' + (v.qualite || 'N/D') + ' · palier ' + (v.palier === null ? 'N/D (hors Auto)' : v.palier)
     ].join('\n');
   }
@@ -172,7 +176,7 @@
 
   B.mesures = {
     SECTIONS, VUES, etat,
-    imageDebut, imageFin, section, vue, voitures, reglages,
+    imageDebut, imageFin, section, vue, voitures, pieces, reglages,
     lire, reinitialiser, afficher, majAffichage,
     get actif() { return etat.actif; }
   };

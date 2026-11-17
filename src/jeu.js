@@ -31,7 +31,7 @@
     if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
   const sauverReglages = () => ecrireStock('bitume.reglages', reglages);
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p8', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p9', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
 
   function enBase64(f32) {
@@ -137,6 +137,9 @@
   const TOURS_DEMO = 3, PILOTE_DEMO = 'N. Aubrac';
   let graineCourse = (Date.now() >>> 7) & 0xffff;
   function lancer(type, i, enl) {
+    // la séance qui meurt rend ses corps PhysX : la démo enchaîne les courses sans fin et laisserait un monde
+    // orphelin par course (les pièces détachées y vivent douze secondes chacune)
+    if (session && session.fx) B.traces.liberer(session.fx);
     // en ligne, une machine qui porte deux pilotes joue en écran partagé, comme une course à deux
     if (enl && enl.locaux.length === 2) type = 'duo';
     const sc = installer(i), c = sc.c, demo = type === 'demo', auto = demo || type === 'vitrine', duo = type === 'duo';
@@ -2198,7 +2201,13 @@
     if (B.mesures.actif) B.mesures.section('hud', performance.now() - tHud);
     const tSon = B.mesures.actif ? performance.now() : 0;
     majSon(S, cam, dtVu);
-    if (B.mesures.actif) { B.mesures.section('son', performance.now() - tSon); B.mesures.imageFin(tMes, tBrut); B.mesures.majAffichage(rendu, horlogeReelle); }
+    if (B.mesures.actif) {
+      B.mesures.section('son', performance.now() - tSon);
+      const fx = S && S.fx;
+      B.mesures.pieces(fx ? B.traces.compter(fx).debris : 0, B.traces.DEBRIS,
+        window.FPhysX && window.FPhysX.status ? window.FPhysX.status() : null);
+      B.mesures.imageFin(tMes, tBrut); B.mesures.majAffichage(rendu, horlogeReelle);
+    }
   }
 
   // ---------------------------------------------------------------- démarrage
@@ -2225,9 +2234,14 @@
     if (!webgl2()) { erreur('WebGL2 indisponible', 'BITUME dessine la piste avec WebGL2. Ouvrez la page dans un navigateur récent (Chrome, Edge, Firefox, Safari 15 ou plus) avec l’accélération graphique active.'); return; }
     try {
       rendu = window.FRender.create(canvas,{msaa:gpuModeste?0:4,shadowMapScale:gpuModeste?1:2,reflections:!gpuModeste,sea:false,overlayLighting:'world'});
+      // perte de contexte : les pièces détachées n'ont plus de scène où vivre ; on rend leurs corps sans attendre
+      canvas.addEventListener('webglcontextlost', () => { if (session && session.fx) B.traces.liberer(session.fx); });
       palier.n = gpuModeste ? 1 : 0;
       if (rendu.stats.backend !== 'webgl2') { erreur('WebGL2 indisponible', 'Le rendu de secours ne sait pas dessiner la piste. Activez l’accélération graphique du navigateur.'); return; }
       rendu.resize(reglages.qualite);
+      // PhysX (FERRO) ne sert qu'aux pièces détachées et son décodage est lourd : lancé en tâche de fond, jamais
+      // sur le chemin de l'écran titre, et l'absence du module ne doit pas empêcher la page de tourner.
+      if (window.FPhysX && window.FPhysX.init) Promise.resolve(window.FPhysX.init()).catch(() => { /* pièces en parabole */ });
       son = B.son.creer();
       reglages.circuit = clamp(reglages.circuit | 0, 0, CATALOGUE.length - 1);
       lancer('vitrine', reglages.circuit);

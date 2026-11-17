@@ -604,7 +604,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   function replacer(etat,c) {
     const s=etat.s,distance=etat.distance,degats=etat.degats,numero=(etat.repositionnements||0)+1;
     annulerDerive(etat,true);couperTurbo(etat);
-    if(degats&&B.degats)B.degats.reparer(degats);
+    if(degats&&B.degats)B.degats.reparerUrgence(degats);   // jouable, pas neuve : la réparation complète se fait aux stands
     Object.assign(etat,creer(s,0));etat.distance=distance;etat.degats=degats;etat.repositionnements=numero;etat.immunite=P.accidentImm;
     const q=B.circuit.echantillon(c,s);etat.y=q.y;etat.tangage=Math.atan(q.pente||0);etat.roulis=q.devers||0;
     return [{type:'retour',repositionnement:true}];

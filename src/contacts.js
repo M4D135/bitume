@@ -76,7 +76,7 @@
         const front=(other.x-self.x)*Math.cos(self.h)+(other.z-self.z)*Math.sin(self.h)>=0;
         const right=-Math.sin(self.h)*normX+Math.cos(self.h)*normZ>=0;
         const roue=lateral?(front?0:2)+(right?1:0):undefined;
-        for(const e of B.conduite.subirChoc(v.etat,closing,{roue})){e.id=v.id;ev.push(e);}
+        for(const e of B.conduite.subirChoc(v.etat,closing,{roue,cote:right?1:-1,front})){e.id=v.id;ev.push(e);}
         if(v.joueur){const e=B.conduite.annulerDerive(v.etat,true);if(e){e.id=v.id;ev.push(e);}}
       }
       pose(c,a,A);pose(c,b,Bv);

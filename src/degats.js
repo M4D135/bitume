@@ -12,13 +12,14 @@
     traineePar: 0.002, traineeMax: 1.08,   // +8 % au plus
     chocRoue: 20,                            // m/s normaux/relatifs : au-delà, une roue peut partir
     chocCasse: 30,                          // m/s normaux au rail / rapprochement rival : casse franche
-    roueReparation: 0                       // remise en piste gérée par conduite.js
+    roueReparation: 0,                      // remise en piste gérée par conduite.js
+    urgenceAdher: .96                       // plancher rendu après une récupération d'urgence : jamais remise à neuf
   });
   const P = PARAMS;
 
   // état des dégâts d'une voiture : adhérence et traînée multiplicatrices, roues manquantes, violence max reçue
   function creer() {
-    return { adher: 1, trainee: 1, chocs: 0, pire: 0, roues: [false, false, false, false], casse: false, teinte: 0 };
+    return { adher: 1, trainee: 1, chocs: 0, pire: 0, roues: [false, false, false, false], casse: false, teinte: 0, cote: 0, avant: true };
   }
 
   // un choc de `force` m/s ; `o` = { roue: index 0..3 ou absent, durete: 0..1 } pour orienter la casse
@@ -30,6 +31,8 @@
     d.adher = Math.max(P.adherMin, d.adher - P.adherPar * force);
     d.trainee = Math.min(P.traineeMax, d.trainee + P.traineePar * force);
     d.teinte = Math.min(1, (1 - d.adher) / (1 - P.adherMin));   // 0 = neuve, 1 = au plus bas de l'adhérence
+    if (o.cote) d.cote = o.cote > 0 ? 1 : -1;
+    if (o.front !== undefined) d.avant = !!o.front;
     const ev = [];
     // une roue part sur un choc violent et localisé (ou tiré au sort selon la violence) ; une seule par roue
     if (force >= P.chocRoue) {
@@ -45,17 +48,28 @@
     if (force >= P.chocCasse) {
       d.casse = true;
       for (let i = 0; i < 4; i++) if (!d.roues[i]) { d.roues[i] = true; ev.push({ type: 'roue', roue: i }); }
-      ev.push({ type: 'casse', force });
+      ev.push({ type: 'casse', force, cote: d.cote, avant: d.avant });
     }
     return ev.length ? ev : null;
   }
 
-  // Réparation complète lors de la remise en piste (décision David, 16/11/2026).
+  // Récupération d'urgence (lot 2) : la caisse redevient conduisible — les roues repoussent, la casse est levée —
+  // mais l'état des dégâts reste visible et exploitable : teinte, traînée, nombre de chocs et violence maximale
+  // tiennent. La réparation complète (reparer) appartient aux stands, pas au remplacement sur la piste.
+  function reparerUrgence(d) {
+    d.roues = [false, false, false, false];
+    d.casse = false;
+    d.adher = Math.max(P.urgenceAdher, d.adher);
+    d.teinte = Math.min(1, (1 - d.adher) / (1 - P.adherMin));   // la teinte suit l'adhérence qui reste, pas la violence reçue
+    return d;
+  }
+
+  // Réparation complète : celle des stands (lot 4), jamais celle du remplacement sur la piste.
   function reparer(d) {
     d.adher = 1; d.trainee = 1; d.chocs = 0; d.pire = 0; d.roues = [false, false, false, false]; d.casse = false; d.teinte = 0;
   }
 
   const uneRouePerdue = d => d.roues.some(Boolean);
 
-  B.degats = { PARAMS, creer, choc, reparer, uneRouePerdue };
+  B.degats = { PARAMS, creer, choc, reparer, reparerUrgence, uneRouePerdue };
 })(globalThis.BITUME = globalThis.BITUME || {});

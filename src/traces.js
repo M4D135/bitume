@@ -13,14 +13,18 @@
   const SEUIL_TRACE = .35, SEUIL_FUMEE = .6;     // glisse d'une roue (0 à 1) où naissent la gomme et la fumée
   const PORTEE = 160, VUE = 190;                  // m : voitures prises autour de celle que l'on regarde ; bandes dessinées
   const DROIT = Math.cos(3 * Math.PI / 180), LONGUEUR_MAX = 6, LEVEE = .018, EPAISSEUR = .004;
-  // BITUME : douze casses simultanées, quatre roues et huit panneaux chacune ; pool jamais agrandi.
-  const DEBRIS = 144, VIE_DEBRIS = 12;
+  // BITUME — lot 2 : budget de pièces par voiture (fiche : quatre à six), plafond global tenu avec douze voitures.
+  // Quatre roues et deux panneaux par casse, six au plus ; le pool n'est jamais agrandi et une place se reprend à la
+  // pièce la plus proche de sa fin de vie, jamais au hasard sur une pièce encore en vol.
+  const DEBRIS = 96, VIE_DEBRIS = 12, PIECES_PAR_VOITURE = 6, REPOS_V = .08, REPOS_ATTENTE = .4;
   // Embruns (David, 16/11 : « améliore le rendu, particules ») : sous la pluie, chaque voiture lancée soulève derrière
   // ses roues arrière une gerbe d'eau, plus haute avec la vitesse ; pas sous la voûte du tunnel.
   const EMBRUNS = 160, EMBRUN = [.80, .84, .88];
+  // Panneaux de carrosserie réellement dessinés par voiture.js (nez, ailerons, pontons, capot), repérés par leur
+  // avant et leur flanc pour que la pièce qui part corresponde au côté du choc.
   const PANNEAUX = [[2.11,.2,0,.38,.06,1.62],[-2.05,.9,0,.34,.06,1.1],
     [1.6,.3,0,.9,.12,.5],[.8,.4,0,.8,.1,1.1],[-.6,.4,-.65,1.1,.3,.16],[-.6,.4,.65,1.1,.3,.16],
-    [-1.1,.6,0,.8,.25,.6],[-2,.65,0,.25,.4,.1]];
+    [-1.1,.6,0,.8,.25,.6],[-2,.65,0,.25,.4,.1]].map(d => ({ d, avant: d[0] > 0, cote: d[2] > .2 ? 1 : d[2] < -.2 ? -1 : 0 }));
   const GOMME = [.02, .02, .022], FUMEE = [.82, .82, .8], POUSSIERE = [.58, .5, .38], ETINCELLE = [1, .6, .18];
 
   function creer(n, graine) {
@@ -43,7 +47,7 @@
       etincelles: particules(ETINCELLES, 'box', ETINCELLE, 2.4), prochaineEtincelle: 0,
       embruns: particules(EMBRUNS, 'sphere', EMBRUN, 0), prochainEmbrun: 0,
       // PhysX (FERRO) : les pièces détachées deviennent des corps rigides qui roulent et rebondissent sur le sol
-      monde: null, sols: [],
+      monde: null, sols: [], libere: false, pieces: new Int16Array(n),
       // par roue (voiture × 4 + roue) : bande ouverte, son numéro de pose, dernier point de contact et sa validité
       ouverte: new Int32Array(n * 4).fill(-1), genOuverte: new Int32Array(n * 4), valide: new Uint8Array(n * 4), dernier: new Float64Array(n * 12),
       acc: 0, alea: graine32(graine == null ? 1 : graine)
@@ -54,9 +58,10 @@
   // poses : position et attitude de chaque voiture au dernier pas ; suivie : la voiture que l'on regarde ;
   // ev : les événements du pas (contacts entre voitures).
   function pas(fx, co, poses, suivie, dt, ev) {
+    if (!fx || fx.libere) return;
     if (ev) for (const e of ev) {
       if (e.type === 'contact') contact(fx, co, poses, e);
-      else if (e.type === 'roue' || e.type === 'casse') detacher(fx, co, poses, e);
+      else if (e.type === 'roue' || e.type === 'casse' || e.type === 'panneau') detacher(fx, co, poses, e);
       else if (e.repositionnement) lacher(fx, e.id);
     }
     fx.acc += dt;
@@ -94,6 +99,7 @@
 
   function lacher(fx, k) {
     for (let w = 0; w < 4; w++) { fx.valide[k * 4 + w] = 0; fx.ouverte[k * 4 + w] = -1; }
+    if (fx.pieces) fx.pieces[k] = 0;   // la voiture est neuve ici : son budget de pièces repart
   }
 
   function roue(fx, k, w, et, p, M, auSol, herbe, vx, vz) {
@@ -185,51 +191,114 @@
     const vx = .4 * (Math.cos(ca) * ea.v + Math.cos(cb) * eb.v), vz = .4 * (Math.sin(ca) * ea.v + Math.sin(cb) * eb.v), sol = (a.y + b.y) / 2;
     for (let n = 0, m = 10 + Math.min(12, Math.max(0, Math.round(e.force || 0))); n < m; n++)
       etinceler(fx, (a.x + b.x) / 2, sol + .3, (a.z + b.z) / 2, vx, 1.5, vz, sol, 8);
+    // un choc déjà violent perd un panneau, du côté de la normale : l'impact se lit sans attendre la casse
+    const seuil = B.degats && B.degats.PARAMS.chocRoue;
+    if (seuil !== undefined && (e.force || 0) >= seuil) {
+      const cote = (b.x - a.x) * -Math.sin(a.cap) + (b.z - a.z) * Math.cos(a.cap) >= 0 ? 1 : -1;
+      for (const [v, et] of [[co.voitures[e.a], ea], [co.voitures[e.b], eb]]) if (et) detacher(fx, co, poses, { type: 'panneau', id: v.id, cote, avant: Math.cos(a.cap - (et.beta || 0)) >= 0 });
+    }
+  }
+
+  // Place du pool : une libre de préférence, sinon la pièce la plus proche de sa fin de vie cède la sienne. Le plafond
+  // global est ainsi tenu sans écraser au hasard une pièce encore en vol.
+  function place(fx) {
+    let pire = 0, reste = Infinity;
+    for (let i = 0; i < DEBRIS; i++) {
+      const d = fx.debris[i];
+      if (!d.actif) return d;
+      const r = VIE_DEBRIS - d.age;
+      if (r < reste) { reste = r; pire = i; }
+    }
+    return fx.debris[pire];
   }
 
   function detacher(fx, co, poses, e) {
     const p = poses[e.id], v = co.voitures[e.id];
-    if (!p || !v) return;
+    if (!p || !v || !fx.pieces || fx.pieces[e.id] >= PIECES_PAR_VOITURE) return;
     const ca = Math.cos(p.cap), sa = Math.sin(p.cap), a = fx.alea;
     const lancer = (x, y, z, sx, sy, sz, roue, couleur) => {
-      const d = fx.debris[fx.prochainDebris], o = d.objet;
-      fx.prochainDebris = (fx.prochainDebris + 1) % DEBRIS;
+      const d = place(fx), o = d.objet;
+      if (d.corps && fx.monde) { try { fx.monde.remove(d.corps); } catch (err) { /* monde déjà perdu */ } }
       d.actif = true; d.age = 0; d.x = p.x + ca*x-sa*z; d.y = p.y+y; d.z = p.z+sa*x+ca*z; d.sol = p.y + Math.min(sx,sy,sz)*.5;
       d.vx = ca*(3+a()*5) - sa*(z*4+(a()-.5)*6); d.vz = sa*(3+a()*5) + ca*(z*4+(a()-.5)*6);
-      d.vy = 3+a()*5; d.spin = (a()-.5)*12;
+      d.vy = 3+a()*5; d.spin = (a()-.5)*12; d.repos = 0;
       o.shape = roue ? 'cylinder' : 'box'; o.s[0]=sx; o.s[1]=sy; o.s[2]=sz;
       o.r[0]=0; o.r[1]=-p.cap; o.r[2]=roue ? Math.PI/2 : 0; o.alpha=1;
       for (let k=0;k<3;k++) o.color[k]=couleur[k];
       d.q = null;
-      if (d.corps && fx.monde) fx.monde.remove(d.corps);
-      d.corps = physique(fx, d, p, [sx / 2, sy / 2, sz / 2], roue ? 11 : 4);   // la boîte épouse la pièce dessinée
+      d.corps = physique(fx, d, p, [sx / 2, sy / 2, sz / 2], roue ? 11 : 4, co, v.etat && v.etat.s);   // la boîte épouse la pièce dessinée
+      fx.pieces[e.id]++;
     };
     if (e.type === 'roue') {
       const w = B.voiture.ROUES[e.roue];
       if (w) lancer(w.x,w.r,w.z,w.r*2,w.l,w.r*2,true,[.035,.035,.04]);
-    } else {
-      const couleur = v.couleur || [.7,.1,.08];
-      for (const d of PANNEAUX) lancer(d[0],d[1],d[2],d[3],d[4],d[5],false,couleur);
-      for (let n=0;n<8;n++) fumer(fx,p.x,p.y+.3,p.z,(a()-.5)*6,(a()-.5)*6,[.22,.23,.24],1);
-      for (let n=0;n<12;n++) etinceler(fx,p.x,p.y+.4,p.z,0,2,0,p.y,12);
+      return;
+    }
+    // panneaux : du côté du choc d'abord, dans la limite du budget restant de la voiture
+    const couleur = v.couleur || [.7,.1,.08];
+    const notes = PANNEAUX.map(q => ({ q, n: (q.cote && q.cote === e.cote ? 2 : 0) + (q.avant === !!e.avant ? 1 : 0) }));
+    notes.sort((u, w) => w.n - u.n || PANNEAUX.indexOf(u.q) - PANNEAUX.indexOf(w.q));
+    const n = e.type === 'panneau' ? 1 : PIECES_PAR_VOITURE - fx.pieces[e.id];
+    for (let k = 0; k < n && k < notes.length; k++) { const d = notes[k].q.d; lancer(d[0],d[1],d[2],d[3],d[4],d[5],false,couleur); }
+    if (e.type === 'casse') {
+      for (let k=0;k<8;k++) fumer(fx,p.x,p.y+.3,p.z,(a()-.5)*6,(a()-.5)*6,[.22,.23,.24],1);
+      for (let k=0;k<12;k++) etinceler(fx,p.x,p.y+.4,p.z,0,2,0,p.y,12);
     }
   }
 
-  // Corps rigide PhysX d'une pièce détachée (navigateur seulement : dans Node, la pièce garde sa parabole). Le sol est
-  // une dalle statique sous l'accident ; quatre accidents récents au plus gardent la leur.
-  function physique(fx, d, p, demi, masse) {
+  // Sol de l'accident : une seule dalle horizontale de 80 m traverserait dévers et pente. Autant de dalles courtes
+  // que nécessaire le long de l'axe autour de l'accident, chacune à l'altitude réelle du tracé. Quatre accidents
+  // récents au plus gardent les leurs.
+  const PAS_DALLE = 12, DEMI_DALLE = 11;
+  function dalles(fx, co, s) {
+    if (s == null || !Number.isFinite(s)) return;
+    const cle = Math.round(s / (PAS_DALLE * 2));
+    if (fx.sols.some(g => g.cle === cle)) return;
+    const c = co && co.c, g = { cle, boites: [] };
+    for (let k = -2; k <= 2; k++) {
+      let q;
+      try { q = c ? B.circuit.echantillon(c, s + k * PAS_DALLE) : null; } catch (e) { q = null; }
+      if (!q || !Number.isFinite(q.x) || !Number.isFinite(q.y)) continue;
+      const ca = Math.abs(Math.cos(q.cap)), sa = Math.abs(Math.sin(q.cap));
+      g.boites.push({ center: [q.x, q.y - .6, q.z], half: [ca * PAS_DALLE / 2 + sa * DEMI_DALLE, 1.2, sa * PAS_DALLE / 2 + ca * DEMI_DALLE] });
+    }
+    if (!g.boites.length) return;
+    fx.sols.push(g);
+    while (fx.sols.length > 4) fx.sols.shift();
+    fx.monde.setStatics(fx.sols.reduce((a, q) => a.concat(q.boites), []));
+  }
+
+  // Corps rigide PhysX d'une pièce détachée (navigateur seulement : dans Node, la pièce garde sa parabole).
+  function physique(fx, d, p, demi, masse, co, s) {
     const X = globalThis.FPhysX;
     if (!X || !X.isReady || !X.isReady()) return 0;
     try {
       if (!fx.monde) fx.monde = X.createWorld({ fixedStep: 1 / 60, maxSubSteps: 4 });
-      if (!fx.sols.some(q => Math.hypot(q.center[0] - p.x, q.center[2] - p.z) < 25)) {
-        fx.sols.push({ center: [p.x, p.y - .5, p.z], half: [40, .5, 40] }); if (fx.sols.length > 4) fx.sols.shift();
-        fx.monde.setStatics(fx.sols);
-      }
+      dalles(fx, co, s);
       const id = fx.monde.addBox([d.x, d.y, d.z], demi, { mass: masse, friction: .75, restitution: .28, ccd: true });
       fx.monde.setVelocity(id, [d.vx, d.vy, d.vz]);
       return id;
     } catch (e) { fx.monde = null; return 0; }
+  }
+
+  // Libération sûre : corps retirés du monde, monde détruit, effets éteints. Appelé quand une séance meurt (une
+  // nouvelle course, une perte de contexte) : la démo enchaîne les courses sans fin, un monde PhysX orphelin par
+  // course fuiterait jusqu'à la panne.
+  function liberer(fx) {
+    if (!fx || fx.libere) return;
+    fx.libere = true;
+    for (const d of fx.debris) {
+      if (d.corps && fx.monde) { try { fx.monde.remove(d.corps); } catch (e) { /* monde déjà perdu */ } }
+      d.corps = 0; d.actif = false; d.q = null; d.repos = 0;
+    }
+    if (fx.monde) { try { fx.monde.dispose(); } catch (e) { /* monde déjà détruit */ } }
+    fx.monde = null; fx.sols = [];
+    for (const b of fx.bandes) b.actif = false;
+    for (const f of fx.fumees) f.actif = false;
+    for (const e of fx.etincelles) e.actif = false;
+    for (const f of fx.embruns) f.actif = false;
+    if (fx.pieces) fx.pieces.fill(0);
+    fx.acc = 0;
   }
   // quaternion (x, y, z, w) → angles du moteur, par la matrice de rotation (colonnes : images des axes)
   function anglesQuaternion(q, r) {
@@ -248,6 +317,15 @@
         if (q) { d.x = q[0]; d.y = q[1]; d.z = q[2]; d.q = d.q || [0, 0, 0, 1]; d.q[0] = q[3]; d.q[1] = q[4]; d.q[2] = q[5]; d.q[3] = q[6]; }
         if (v) { d.vx = v[0]; d.vy = v[1]; d.vz = v[2]; }
         d.sol = -1e9;
+        // la pièce est-elle posée ? une vitesse quasi nulle tenue un instant (un sommet de rebond ne dure pas) : on la
+        // sort de la simulation, elle reste dessinée là où elle s'est arrêtée sans coûter de corps actif
+        if (q && v && Math.hypot(v[0], v[1], v[2]) < REPOS_V) {
+          d.repos = (d.repos || 0) + h;
+          if (d.repos > REPOS_ATTENTE) {
+            try { fx.monde.remove(d.corps); } catch (e) { /* monde déjà perdu */ }
+            d.corps = 0; d.vx = d.vy = d.vz = 0; d.spin = 0; d.sol = q[1];
+          }
+        } else d.repos = 0;
         continue;
       }
       d.x+=d.vx*h; d.y+=d.vy*h; d.z+=d.vz*h; d.vy-=9.81*h;
@@ -334,5 +412,5 @@
     return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   }
 
-  B.traces = { creer, pas, dessiner, compter, BANDES, FUMEES, ETINCELLES, VIE_TRACE, PAS, DEBRIS, VIE_DEBRIS };
+  B.traces = { creer, pas, dessiner, compter, liberer, BANDES, FUMEES, ETINCELLES, VIE_TRACE, PAS, DEBRIS, VIE_DEBRIS, PIECES_PAR_VOITURE };
 })(globalThis.BITUME = globalThis.BITUME || {});

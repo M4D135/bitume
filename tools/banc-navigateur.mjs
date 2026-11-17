@@ -135,6 +135,34 @@ try {
         dansTunnel: BITUME.circuit.dansTunnel(S.course.c, ${Number(args.camera)}, 0),
         lampesAllumees: P.filter(x => x > 0).length, sommeLampes: +P.reduce((a, x) => a + x, 0).toFixed(2),
         lumiere: +(S.lumiere || 1).toFixed(3), refletsEcran: !!S.refletsEcran }; })()`);
+  } else if (mode === 'crash') {
+    rapport.etapes = [];
+    // gros choc réel : les pièces détachées doivent naître, être budgétées, et rouler avec de vrais corps PhysX
+    await evaluer(`window.__banc = BITUME_JEU.banc({ duree: ${duree}, qualite: ${JSON.stringify(qualite)}, circuit: ${circuit}, chauffe: ${chauffe} }); true`);
+    await dormir(Number(args.attente || 4) * 1000);
+    rapport.avantCasse = await evaluer('window.FPhysX ? Object.assign({ present: true }, window.FPhysX.status()) : { present: false }');
+    rapport.etapes.push(await evaluer(`(() => { const S = BITUME_JEU.session; if (!S) return 'sans seance';
+      // le chemin réel d'un gros choc : la conduite produit les événements de dégâts, les effets les consomment,
+      // exactement comme dans la boucle d'image du jeu
+      const v = S.course.voitures[0], ev = BITUME.conduite.subirChoc(v.etat, 45, { cote: 1, front: true });
+      for (const e of ev) e.id = v.id;
+      BITUME.traces.pas(S.fx, S.course, S.cour, S.suivie || 0, 0, ev);
+      return ev.map(e => e.type).join(',') || 'aucun evenement'; })()`));
+    await dormir(2500);
+    rapport.casse = await evaluer(`(() => { const S = BITUME_JEU.session; if (!S) return null; const fx = S.fx, m = fx.monde;
+      const d = fx.debris.filter(x => x.actif);
+      return { debris: BITUME.traces.compter(fx).debris, pool: BITUME.traces.DEBRIS, budget: BITUME.traces.PIECES_PAR_VOITURE,
+        piecesVoiture0: fx.pieces[0], roues: d.filter(x => x.objet.shape === 'cylinder').length,
+        corps: m ? m._bodies.size : 0, dalles: m ? m._statics.length : 0, repos: d.filter(x => !x.corps && x.repos > 0).length,
+        casse: !!(S.course.voitures[0].etat.degats && S.course.voitures[0].etat.degats.casse),
+        trainee: +(S.course.voitures[0].etat.degats ? S.course.voitures[0].etat.degats.trainee : 1).toFixed(4),
+        physx: window.FPhysX ? window.FPhysX.status() : null }; })()`);
+    await evaluer('window.__banc');
+    // la séance qui finit doit rendre son monde : une nouvelle séance ne doit pas en empiler un second
+    await evaluer(`BITUME_JEU.demo(${circuit}); true`);
+    await dormir(2500);
+    rapport.apresSeance = await evaluer(`(() => { const S = BITUME_JEU.session;
+      return { mondeCourant: !!(S && S.fx && S.fx.monde), mondes: window.FPhysX ? window.FPhysX.status().worlds : null }; })()`);
   } else {
     rapport.banc = await evaluer(`BITUME_JEU.banc({ duree: ${duree}, qualite: ${JSON.stringify(qualite)}, circuit: ${circuit}, chauffe: ${chauffe} })`);
   }
