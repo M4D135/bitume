@@ -44,6 +44,8 @@
       'wss://offchain.pub', 'wss://relay.wavlake.com', 'wss://nos.lol', 'wss://yabu.me']
   };
   const ACTIFS = 3, MAX_MACHINES = 4, MAX_PILOTES = 4, TTL = 4;
+  // aucun message de mise en relation n’approche cette taille
+  const MAX_TRAME = 65536;
   const DELAIS = {
     ouverture: 8000,      // une connexion à un relais public qui ne s'ouvre pas en 8 s est un échec
     collecte: 2500,       // candidats ICE réunis au plus 2,5 s avant d'envoyer l'offre, la suite part au fil de l'eau
@@ -609,6 +611,12 @@
           let lng = 0, mult = 1, i = 1, fin = false;
           while (i < tampon.length && i <= 4) { const b = tampon[i++]; lng += (b & 127) * mult; mult *= 128; if (!(b & 128)) { fin = true; break; } }
           if (!fin) { if (i > 4) ws.close(); return; }
+          if (lng > MAX_TRAME) {
+            tampon = VIDE;
+            r.refus('paquet démesuré');
+            try { ws.close(); } catch (e) { /* déjà fermé */ }
+            return;
+          }
           if (tampon.length < i + lng) return;
           const tete = tampon[0], corps = tampon.slice(i, i + lng);
           tampon = tampon.slice(i + lng);
@@ -637,6 +645,7 @@
       const annoncer = () => envoyer(JSON.stringify(Object.assign({ action: 'announce', info_hash: ctx.hash, peer_id: ctx.pid, numwant: 0 }, pret ? {} : { event: 'started' })));
       ws.onopen = () => { annoncer(); minuteur = setInterval(annoncer, 50000); };
       ws.onmessage = ev => {
+        if ((typeof ev.data === 'string' ? ev.data.length : ev.data.byteLength) > MAX_TRAME) return;
         let m;
         try { m = JSON.parse(typeof ev.data === 'string' ? ev.data : enTexte(new Uint8Array(ev.data))); } catch (e) { return; }
         if (!m || typeof m !== 'object') return;
@@ -666,6 +675,7 @@
       const envoyer = t => { if (ws.readyState === 1) ws.send(t); };
       ws.onopen = () => envoyer(JSON.stringify(['REQ', sub, { kinds: [ctx.genre], '#x': [ctx.salle, ctx.salle + '.' + ctx.pid], since: Math.floor(Date.now() / 1000) - 30 }]));
       ws.onmessage = ev => {
+        if ((typeof ev.data === 'string' ? ev.data.length : ev.data.byteLength) > MAX_TRAME) return;
         let m;
         try { m = JSON.parse(ev.data); } catch (e) { return; }
         if (!Array.isArray(m)) return;
@@ -691,6 +701,7 @@
       if (!ws || ws.readyState !== 1) { setTimeout(() => r.ferme(), 0); return { envoyerBrut() {}, fermer() {} }; }
       ws.onmessage = ev => {
         if (typeof ev.data !== 'string') return;
+        if (ev.data.length > MAX_TRAME) return;
         let m;
         try { m = JSON.parse(ev.data); } catch (e) { return; }
         if (m.t === 'relais' && m.m && typeof m.m.o === 'string') { try { r.recu(deB64(m.m.o)); } catch (e) { /* illisible */ } }
@@ -1404,6 +1415,7 @@
         ws.onerror = () => finir(() => ko(new Error('salon injoignable')));
         ws.onclose = () => finir(() => ko(new Error('salon fermé')));
         ws.onmessage = ev => {
+          if ((typeof ev.data === 'string' ? ev.data.length : ev.data.byteLength) > MAX_TRAME) return;
           let r;
           try { r = JSON.parse(ev.data); } catch (e) { return; }
           if (r.t === 'salon') finir(() => ok({ ws, code: r.code }));
