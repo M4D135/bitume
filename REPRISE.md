@@ -2,26 +2,25 @@
 
 ## État actuel — 18 novembre 2026
 
-- Branche : `main`. BITUME **0.2.32 publié** : `e90b08f550eae2bda47ad14d4093911d3fd793d2`.
-- Moteur **FERRO 0.3.8 publié** : `ef722c0c56e04a20574db53b057f339968d714c3` ; 34 modules installés et verrouillés.
-- **Lot 09 publié** : prairie aléatoire sur sols herbeux, Extrême local ≥ ×14, vent, insectes, lucioles à Haut-Col.
-- **Jour / Crépuscule / Nuit / Cycle** avant départ près de la météo et dans Réglages ; choix de l’hôte en ligne.
-- Fiche active unique : `docs/reprise/09-PRAIRIES-VIVANTES.md`.
-- La signature **m4d135 enregistre BITUME.html** ; rôle, avatar et placement préservés.
-- Preuves : `docs/reprise/rapports/prairies-vivantes-2026-11-18/` et `rapports/faune-2026-11-18/`.
-- Qualification : 49 suites d’intégration + suite végétation finale (16 contrôles), build reproductible ; pas de mesure FPS matérielle.
-- Extrême est manuel et coûteux ; Moyen/Élevé bornés, Léger/Désactivé conservés. Rendu complet à contrôler sur navigateur réel.
-- Déploiement autorisé depuis le Mac ; accès Mac/amiga indisponible ici. Publication Git et site servi restent distincts.
+- Branche `main` ; base **BITUME 0.2.32** : `5292baffb0e2853560e089ee2ed18b1ed33ad8df`.
+- Moteur **FERRO 0.3.8** : `ef722c0c56e04a20574db53b057f339968d714c3`, copies verrouillées.
+- **Lot 10 en cours** : clairières et poches naturelles, faune localisée, coût réel de l’herbe, détection graphique.
+- Fiche active unique : `docs/reprise/10-NATURE-ET-AUTODETECTION.md`.
+- La nouvelle demande remplace la couverture uniforme : des endroits vraiment vides, d’autres très denses.
+- Détection avant titre au premier lancement sur une configuration ; résultat mémorisé. Bouton des options pour mesurer et réappliquer les réglages graphiques.
+- Travaux bornés : écologie/prairie/décor ; faune ; moteur ; détection et intégration par le responsable.
+- Garder Jour / Crépuscule / Nuit / Cycle avant départ et en options ; lucioles seulement Haut-Col.
+- **m4d135 enregistre BITUME.html** : préserver le lien, l’avatar et le placement.
+- Preuves précédentes : `docs/reprise/rapports/prairies-vivantes-2026-11-18/publication.json`.
+- Aucune qualification du lot 10 à ce stade. Pas de FPS matériel annoncé sans mesure.
 
 ## Prochain petit lot
 
-Déployer depuis le Mac et contrôler jour/nuit, prairie et FPS sur matériel réel. Ne pas refaire le lot 09 sans défaut constaté.
+Terminer, mesurer et publier FERRO puis BITUME. Déploiement autorisé, mais accès Mac/amiga indisponible ici.
 
 ## Méthode pour garder le contexte court
 
-1. Lire ce fichier, `docs/reprise/ETAT.json` et les consignes applicables ; vérifier les têtes distantes.
+1. Lire ce fichier et `docs/reprise/ETAT.json` ; vérifier les têtes distantes.
 2. Lire seulement la fiche active et les extraits utiles ; jamais tout l’historique ni le HTML généré.
-3. Garder les sorties complètes sur disque, faire un lot borné à la fois et publier les points de reprise.
-4. Ne pas forcer les références Git ; un commit publié ne prouve pas le déploiement du site.
-
-Historique dans `docs/reprise/archives/` et Git ; l’ouvrir seulement pour une question précise.
+3. Garder les sorties complètes sur disque et publier chaque point de reprise.
+4. Ne pas forcer les références Git ; une publication Git ne prouve pas le déploiement du site.

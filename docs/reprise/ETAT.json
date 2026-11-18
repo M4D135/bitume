@@ -2,44 +2,16 @@
   "date": "2026-11-18",
   "etat_courant": {
     "branche": "main",
-    "base_commit": "ff40baa98069ecb64dd7d263672b2c040d4adc09",
-    "base_version": "0.2.31",
-    "version_cible": "0.2.32",
-    "ferro_version_base": "0.3.7",
-    "statut": "lot_09_publie",
-    "lot": "prairies_vivantes",
-    "fiche": "docs/reprise/09-PRAIRIES-VIVANTES.md",
-    "commit_publie": "e90b08f550eae2bda47ad14d4093911d3fd793d2",
-    "prochaine_action": "Deployer depuis le Mac, puis controler Haut-Col Jour/Nuit/Cycle, prairie/vent et FPS sur materiel reel.",
-    "precision_utilisateur": "Choix jour/nuit avant départ avec météo ; lumière sur les trois circuits, lucioles et palette féerique seulement Haut-Col.",
-    "version": "0.2.32",
-    "ferro_version": "0.3.8",
-    "checkpoint_commit": "e4d3e74b76ed03222424077bad1939acbd5e60c0",
-    "qualification": {
-      "jeu": "49 suites d’integration sur sources stables ; seule vegetation.js a ensuite changé, qualifiée séparément par 16 contrôles finaux, soit 50 suites",
-      "moteur": "156 reussis, 0 echec, 1 TODO physique historique ; WGSL 18/18",
-      "verrou": "34/34 modules conformes",
-      "build_reproductible": true,
-      "dist_sha256": "99f404b8df5dd6dc520545c79d572cd8af0254a71bd7e19a18a125909110b86b",
-      "dist_octets": 13075203,
-      "preuves": "docs/reprise/rapports/prairies-vivantes-2026-11-18/",
-      "navigateur": "Ouverture du fichier local refusée par la politique de sécurité CUA ; aucune validation visuelle complète ni mesure FPS matérielle. Probes EGL logiciel disponibles dans FERRO."
-    },
-    "reglages_moment": [
-      "jour",
-      "crepuscule",
-      "nuit",
-      "cycle"
-    ],
-    "cycle_secondes": 360,
-    "lucioles": "Haut-Col uniquement, 256 maximum au niveau ultra",
-    "densite_locale_min_vs_031": {
-      "foret": 14.87,
-      "cote": 14.71,
-      "montagne": 14.18
-    },
-    "arbre_publie": "557ba44aeb3f2dc92c2b64c9fc1ebdee11e11c8e",
-    "recu": "docs/reprise/rapports/prairies-vivantes-2026-11-18/publication.json"
+    "base_commit": "5292baffb0e2853560e089ee2ed18b1ed33ad8df",
+    "base_version": "0.2.32",
+    "version_cible": "0.2.33",
+    "ferro_version_base": "0.3.8",
+    "statut": "lot_10_en_cours",
+    "lot": "irregularite_optimisation_autodetection",
+    "fiche": "docs/reprise/10-NATURE-ET-AUTODETECTION.md",
+    "commit_publie": null,
+    "prochaine_action": "Terminer ecologie/faune/moteur et detection graphique, qualifier puis publier moteur et jeu.",
+    "precision_utilisateur": "Vraies zones riches et vides, priorite aux astuces allegeant le rendu de l’herbe ; benchmark avant titre et relancable en options pour reappliquer tous les reglages graphiques."
   },
   "integration": {
     "nouvelle_branche": false,
@@ -85,17 +57,8 @@
     "autres_chantiers": "Lots 0 a 4 termines ; optimisation lot 5 partielle. Details archives, ne pas rouvrir pendant la publication de ce lot."
   },
   "lot_precedent": {
-    "version": "0.2.31",
-    "commit": "f6093f45c9f55f17c8f7b7035405ebfe1c9142bf",
-    "qualification": {
-      "jeu": "47/47 suites du candidat graphique ; 4 tests de signature reexecutes sur integration finale Enregistrer",
-      "moteur": "147 reussis, zero echec, 1 TODO physique historique ; WGSL 18/18",
-      "verrou": "34/34 modules conformes",
-      "build_reproductible": true,
-      "dist_sha256": "7b20b827f870428ce0bd310dc6f1270d68b6282ef56e7b1b27bd5df8ff160599",
-      "preuves": "docs/reprise/rapports/herbe-sillage-2026-11-18/",
-      "navigateur": "Chromium bloque avant DevTools ; EGL logiciel valide le shader, pas l’image finale ni les FPS materiels."
-    },
-    "recu": "docs/reprise/rapports/herbe-sillage-2026-11-18/publication.json"
+    "version": "0.2.32",
+    "commit": "e90b08f550eae2bda47ad14d4093911d3fd793d2",
+    "recu": "docs/reprise/rapports/prairies-vivantes-2026-11-18/publication.json"
   }
 }
