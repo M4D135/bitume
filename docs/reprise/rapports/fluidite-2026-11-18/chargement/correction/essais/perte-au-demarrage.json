@@ -1,0 +1,30 @@
+titre apres ms 981
+{
+ "valeur": {
+  "perte": {
+   "etape": "voile",
+   "type": "vitrine",
+   "session": false,
+   "scene": false,
+   "t": 418.60000002384186,
+   "restaure": 1221.3999999761581
+  },
+  "ecran": "titre",
+  "session": "vitrine",
+  "scene": 0,
+  "perdu": false,
+  "dernier": {
+   "annule": true
+  },
+  "horlogeAvance": 1.01,
+  "stats": {
+   "drawCalls": 405,
+   "triangles": 1566558
+  },
+  "course": {
+   "total": 298.8,
+   "ecran": "course"
+  }
+ },
+ "erreurs": []
+}

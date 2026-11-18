@@ -1,0 +1,17 @@
+base-c0-r1 22:46:16 charge 9.23 12.16 21.30
+apres-c0-r1 22:46:45 charge 6.56 11.24 20.65
+base-c2-r1 22:47:15 charge 5.09 10.42 20.02
+apres-c2-r1 22:47:45 charge 4.38 9.74 19.44
+base-duo-r1 22:48:14 charge 3.66 9.15 18.95
+apres-duo-r1 22:49:00 charge 23.48 12.90 19.73
+base-c0-r2 22:49:56 charge 45.11 20.19 21.98
+apres-c0-r2 22:50:31 charge 28.73 18.78 21.39
+base-c2-r2 22:51:04 charge 20.33 17.67 20.90
+apres-c2-r2 22:51:38 charge 15.25 16.63 20.38
+base-duo-r2 22:52:11 charge 12.93 15.78 19.91
+apres-duo-r2 22:53:24 charge 79.88 35.73 27.12
+base-sw-r1 22:54:47 charge 84.02 45.63 31.58
+apres-sw-r1 22:55:44 charge 43.14 40.58 30.57
+base-sw-r2 22:56:39 charge 25.14 35.82 29.42
+apres-sw-r2 22:57:47 charge 24.86 33.12 28.88
+FIN

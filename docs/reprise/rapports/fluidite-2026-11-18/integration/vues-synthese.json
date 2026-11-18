@@ -1,0 +1,801 @@
+{
+ "objet": "Lot Fluidité, intégration, partie VUES (étapes 1 à 6) : mesures avant/après sur la même machine, chargée (durées bruitées, compteurs fiables).",
+ "pages": {
+  "base": "/Users/david/Projects/bitume/dist/bitume.html (dépôt principal)",
+  "avant": "build de l'arbre fluidite/integration avant l'étape 1 (09b6f23)",
+  "apres": "build de l'arbre après l'étape 6 (5a29722)"
+ },
+ "commandes": {
+  "compteurs": "vues-outils/lancer.sh <page> '{\"reference\":{}}' sortie.json --taille 1440,900 --dpr 1 (puis --dpr 2 ; '{\"reference\":{\"mode\":\"duo\"}}' pour deux joueurs) : reference({circuit:0, qualite:'high', vue:'cockpit', depart:800}), horloge rAF commandée, hasard semé, simulation figée, médianes sur 60 images, puis peintures par seconde à 60, 120, 144 et 30 Hz.",
+  "captures": "vues-outils/lancer.sh <page> '{\"capture\":true,\"reference\":R}' c.json --taille 1440,900 --dpr 1 --capture c.png avec R = {} (cockpit), {\"vue\":\"poursuite\"}, {\"meteo\":\"pluie\",\"mouille\":0.75}, {\"mode\":\"duo\"} ; écarts : node vues-outils/diff.mjs avant.png apres.png c.json ecarts.png",
+  "ramasseMiettes": "node tools/profil-accrocs.mjs --url <page> --scenario reference --duree 15 --sortie f.json (champ ramasseMiettes)",
+  "controles": "node tools/page-essai.mjs <page> vues-outils/hud.js|temps.js|profil.js --taille 1440,900 --dpr 1",
+  "smoke": "node tools/banc-navigateur.mjs --url file://…/dist/bitume.html --mode smoke --angle native --sortie vues-smoke.json"
+ },
+ "compteurs": {
+  "cockpit-dpr1": {
+   "avant": {
+    "parImage": {
+     "principal": {
+      "objets": 2136,
+      "drawCalls": 425,
+      "triangles": 4227534,
+      "instances": 5774,
+      "lotsVisibles": 38,
+      "width": 1440,
+      "height": 900
+     },
+     "glace -343.33,-1.48,-705.79": {
+      "objets": 1977,
+      "drawCalls": 174,
+      "triangles": 1532832,
+      "instances": 4595,
+      "lotsVisibles": 13,
+      "width": 330,
+      "height": 100
+     },
+     "glace -343.18,-1.48,-705.23": {
+      "objets": 1977,
+      "drawCalls": 169,
+      "triangles": 1509524,
+      "instances": 3828,
+      "lotsVisibles": 11,
+      "width": 330,
+      "height": 100
+     }
+    },
+    "cpuMsMediane": 6.1,
+    "peinturesParSeconde": {
+     "60 Hz": {
+      "principal": 60,
+      "glaces": 60,
+      "vueJ2": null
+     },
+     "120 Hz": {
+      "principal": 120,
+      "glaces": 120,
+      "vueJ2": null
+     },
+     "144 Hz": {
+      "principal": 144,
+      "glaces": 144,
+      "vueJ2": null
+     },
+     "30 Hz": {
+      "principal": 30,
+      "glaces": 30,
+      "vueJ2": null
+     }
+    }
+   },
+   "apres": {
+    "parImage": {
+     "principal": {
+      "objets": 1501,
+      "drawCalls": 287,
+      "triangles": 4112580,
+      "instances": 5139,
+      "lotsVisibles": 38,
+      "width": 1440,
+      "height": 900
+     },
+     "glace -343.18,-1.48,-705.23": {
+      "objets": 1150,
+      "drawCalls": 125,
+      "triangles": 1384394,
+      "instances": 3203,
+      "lotsVisibles": 15,
+      "width": 468,
+      "height": 142
+     },
+     "glace -343.33,-1.48,-705.79": {
+      "objets": 1150,
+      "drawCalls": 125,
+      "triangles": 1406928,
+      "instances": 3928,
+      "lotsVisibles": 15,
+      "width": 468,
+      "height": 142
+     }
+    },
+    "cpuMsMediane": 4,
+    "peinturesParSeconde": {
+     "60 Hz": {
+      "principal": 60,
+      "glaces": 60,
+      "vueJ2": null
+     },
+     "120 Hz": {
+      "principal": 120,
+      "glaces": 60,
+      "vueJ2": null
+     },
+     "144 Hz": {
+      "principal": 144,
+      "glaces": 60,
+      "vueJ2": null
+     },
+     "30 Hz": {
+      "principal": 30,
+      "glaces": 60,
+      "vueJ2": null
+     }
+    }
+   }
+  },
+  "cockpit-dpr2": {
+   "avant": {
+    "parImage": {
+     "principal": {
+      "objets": 2136,
+      "drawCalls": 625,
+      "triangles": 4705532,
+      "instances": 7792,
+      "lotsVisibles": 94,
+      "width": 2880,
+      "height": 1800
+     },
+     "glace -343.33,-1.48,-705.79": {
+      "objets": 1977,
+      "drawCalls": 177,
+      "triangles": 1539430,
+      "instances": 4787,
+      "lotsVisibles": 15,
+      "width": 495,
+      "height": 150
+     },
+     "glace -343.18,-1.48,-705.23": {
+      "objets": 1977,
+      "drawCalls": 176,
+      "triangles": 1516904,
+      "instances": 4066,
+      "lotsVisibles": 15,
+      "width": 495,
+      "height": 150
+     }
+    },
+    "cpuMsMediane": 4,
+    "peinturesParSeconde": {
+     "60 Hz": {
+      "principal": 60,
+      "glaces": 60,
+      "vueJ2": null
+     },
+     "120 Hz": {
+      "principal": 120,
+      "glaces": 120,
+      "vueJ2": null
+     },
+     "144 Hz": {
+      "principal": 144,
+      "glaces": 144,
+      "vueJ2": null
+     },
+     "30 Hz": {
+      "principal": 30,
+      "glaces": 30,
+      "vueJ2": null
+     }
+    }
+   },
+   "apres": {
+    "parImage": {
+     "principal": {
+      "objets": 1501,
+      "drawCalls": 404,
+      "triangles": 4320166,
+      "instances": 7157,
+      "lotsVisibles": 94,
+      "width": 2880,
+      "height": 1800
+     },
+     "glace -343.18,-1.48,-705.23": {
+      "objets": 1150,
+      "drawCalls": 126,
+      "triangles": 1387478,
+      "instances": 3239,
+      "lotsVisibles": 15,
+      "width": 495,
+      "height": 150
+     },
+     "glace -343.33,-1.48,-705.79": {
+      "objets": 1150,
+      "drawCalls": 126,
+      "triangles": 1410004,
+      "instances": 3960,
+      "lotsVisibles": 15,
+      "width": 495,
+      "height": 150
+     }
+    },
+    "cpuMsMediane": 2.8,
+    "peinturesParSeconde": {
+     "60 Hz": {
+      "principal": 60,
+      "glaces": 60,
+      "vueJ2": null
+     },
+     "120 Hz": {
+      "principal": 120,
+      "glaces": 60,
+      "vueJ2": null
+     },
+     "144 Hz": {
+      "principal": 144,
+      "glaces": 60,
+      "vueJ2": null
+     },
+     "30 Hz": {
+      "principal": 30,
+      "glaces": 60,
+      "vueJ2": null
+     }
+    }
+   }
+  },
+  "duo-dpr1": {
+   "avant": {
+    "parImage": {
+     "principal": {
+      "objets": 2106,
+      "drawCalls": 381,
+      "triangles": 4168419,
+      "instances": 5213,
+      "lotsVisibles": 27,
+      "width": 1440,
+      "height": 450
+     },
+     "glace -346.57,-1.04,-695.60": {
+      "objets": 1938,
+      "drawCalls": 186,
+      "triangles": 1509000,
+      "instances": 3817,
+      "lotsVisibles": 11,
+      "width": 330,
+      "height": 100
+     },
+     "glace -343.32,-1.49,-705.92": {
+      "objets": 1947,
+      "drawCalls": 171,
+      "triangles": 1533024,
+      "instances": 4565,
+      "lotsVisibles": 13,
+      "width": 330,
+      "height": 100
+     },
+     "glace -346.50,-1.03,-695.02": {
+      "objets": 1938,
+      "drawCalls": 182,
+      "triangles": 1508704,
+      "instances": 3817,
+      "lotsVisibles": 11,
+      "width": 330,
+      "height": 100
+     },
+     "glace -343.17,-1.48,-705.36": {
+      "objets": 1947,
+      "drawCalls": 166,
+      "triangles": 1509716,
+      "instances": 3798,
+      "lotsVisibles": 11,
+      "width": 330,
+      "height": 100
+     }
+    },
+    "cpuMsMediane": 7.4,
+    "peinturesParSeconde": {
+     "60 Hz": {
+      "principal": 120,
+      "glaces": 120,
+      "vueJ2": 60
+     },
+     "120 Hz": {
+      "principal": 240,
+      "glaces": 240,
+      "vueJ2": 120
+     },
+     "144 Hz": {
+      "principal": 288,
+      "glaces": 288,
+      "vueJ2": 144
+     },
+     "30 Hz": {
+      "principal": 60,
+      "glaces": 60,
+      "vueJ2": 30
+     }
+    }
+   },
+   "apres": {
+    "parImage": {
+     "principal": {
+      "objets": 1499,
+      "drawCalls": 285,
+      "triangles": 4095203,
+      "instances": 4559,
+      "lotsVisibles": 27,
+      "width": 1440,
+      "height": 450
+     },
+     "glace -346.50,-1.03,-695.02": {
+      "objets": 843,
+      "drawCalls": 109,
+      "triangles": 1342412,
+      "instances": 2928,
+      "lotsVisibles": 15,
+      "width": 468,
+      "height": 142
+     },
+     "glace -343.17,-1.48,-705.36": {
+      "objets": 989,
+      "drawCalls": 113,
+      "triangles": 1361901,
+      "instances": 3042,
+      "lotsVisibles": 15,
+      "width": 468,
+      "height": 142
+     },
+     "glace -346.57,-1.04,-695.60": {
+      "objets": 843,
+      "drawCalls": 105,
+      "triangles": 1341934,
+      "instances": 2886,
+      "lotsVisibles": 13,
+      "width": 468,
+      "height": 142
+     },
+     "glace -343.32,-1.49,-705.92": {
+      "objets": 1133,
+      "drawCalls": 114,
+      "triangles": 1405068,
+      "instances": 3911,
+      "lotsVisibles": 15,
+      "width": 468,
+      "height": 142
+     }
+    },
+    "cpuMsMediane": 6.1,
+    "peinturesParSeconde": {
+     "60 Hz": {
+      "principal": 120,
+      "glaces": 120,
+      "vueJ2": 60
+     },
+     "120 Hz": {
+      "principal": 240,
+      "glaces": 120,
+      "vueJ2": 120
+     },
+     "144 Hz": {
+      "principal": 288,
+      "glaces": 120,
+      "vueJ2": 144
+     },
+     "30 Hz": {
+      "principal": 60,
+      "glaces": 120,
+      "vueJ2": 30
+     }
+    }
+   }
+  }
+ },
+ "ramasseMiettes": {
+  "base": {
+   "mineursParSeconde": 4.26,
+   "mineurs": {
+    "n": 64,
+    "totalMs": 98.1,
+    "pireMs": 4.8
+   },
+   "imagesAuDela1_5x": 7,
+   "images": 895
+  },
+  "avant-1": {
+   "mineursParSeconde": 1.53,
+   "mineurs": {
+    "n": 23,
+    "totalMs": 17.1,
+    "pireMs": 3.6
+   },
+   "imagesAuDela1_5x": 39,
+   "images": 864
+  },
+  "avant-2": {
+   "mineursParSeconde": 1.53,
+   "mineurs": {
+    "n": 23,
+    "totalMs": 18.9,
+    "pireMs": 4.4
+   },
+   "imagesAuDela1_5x": 18,
+   "images": 884
+  },
+  "apres-1": {
+   "mineursParSeconde": 1.26,
+   "mineurs": {
+    "n": 19,
+    "totalMs": 15.3,
+    "pireMs": 3.8
+   },
+   "imagesAuDela1_5x": 21,
+   "images": 881
+  },
+  "apres-2": {
+   "mineursParSeconde": 1.33,
+   "mineurs": {
+    "n": 20,
+    "totalMs": 34.1,
+    "pireMs": 3.9
+   },
+   "imagesAuDela1_5x": 20,
+   "images": 883
+  }
+ },
+ "hud": {
+  "avant": {
+   "a60": {
+    "actuel": 60,
+    "vitesse": 54,
+    "delta": 0,
+    "classementLignes": 3,
+    "classementCellules": 0,
+    "plans": 60,
+    "lecturesGeometrie": 0
+   },
+   "a144": {
+    "actuel": 119.5,
+    "vitesse": 3.5,
+    "delta": 0,
+    "classementLignes": 3.5,
+    "classementCellules": 0,
+    "plans": 142.5,
+    "lecturesGeometrie": 0
+   },
+   "carteMasquee60": {
+    "actuel": 60,
+    "vitesse": 4,
+    "delta": 0,
+    "classementLignes": 3,
+    "classementCellules": 0,
+    "plans": 60,
+    "lecturesGeometrie": 0
+   },
+   "lecturesGeometrieTotal": 7
+  },
+  "apres": {
+   "a60": {
+    "actuel": 30,
+    "vitesse": 28.5,
+    "delta": 0,
+    "classementLignes": 0,
+    "classementCellules": 18,
+    "plans": 15,
+    "lecturesGeometrie": 0
+   },
+   "a144": {
+    "actuel": 29,
+    "vitesse": 3.5,
+    "delta": 0,
+    "classementLignes": 0,
+    "classementCellules": 17,
+    "plans": 14.5,
+    "lecturesGeometrie": 0
+   },
+   "carteMasquee60": {
+    "actuel": 28,
+    "vitesse": 3,
+    "delta": 0,
+    "classementLignes": 0,
+    "classementCellules": 6,
+    "plans": 0,
+    "lecturesGeometrie": 0
+   },
+   "lecturesGeometrieTotal": 0
+  },
+  "lecture": "écritures par seconde (MutationObserver) du chrono, de la vitesse, de l'écart ; classementLignes = reconstructions des lignes ; plans = dessins du plan ; lecturesGeometrie = offsetWidth lus (messages et éclat déclenchés : 7 avant, 0 après)."
+ },
+ "tempsRendu144Hz": {
+  "horloge": {
+   "images": 143,
+   "sansAvance": 23,
+   "min": 0,
+   "max": 8.333
+  },
+  "tRendu": {
+   "images": 143,
+   "sansAvance": 0,
+   "min": 6.944,
+   "max": 6.944
+  },
+  "ecartEffetsMaxMs": 0
+ },
+ "vueJ2DuoMoyenne": {
+  "avant": {
+   "30 Hz": 15,
+   "60 Hz": 15,
+   "120 Hz": 60,
+   "144 Hz": 72
+  },
+  "apres": {
+   "30 Hz": 30,
+   "60 Hz": 30,
+   "120 Hz": 30,
+   "144 Hz": 28.5
+  },
+  "note": "rendus par seconde de la vue du joueur 2 au palier serré (30 Hz visés) ; à 60 Hz la cadence du jeu tenait 30 images par seconde dans ce banc."
+ },
+ "profil": {
+  "avant": {
+   "solo": {
+    "melangesParImage": 5,
+    "stabilisationsParImage": 1
+   },
+   "duo": {
+    "melangesParImage": 9,
+    "stabilisationsParImage": 1
+   },
+   "memeObjet": false,
+   "ombresCoupees": {
+    "avant": true,
+    "apres": false,
+    "rendu": true
+   }
+  },
+  "apres": {
+   "solo": {
+    "melangesParImage": 0,
+    "stabilisationsParImage": 0
+   },
+   "duo": {
+    "melangesParImage": 0,
+    "stabilisationsParImage": 0
+   },
+   "memeObjet": true,
+   "ombresCoupees": {
+    "avant": true,
+    "apres": false,
+    "rendu": true
+   }
+  }
+ },
+ "capturesAvantApres": {
+  "cockpit": {
+   "image": {
+    "pixels": 1296000,
+    "moyen": 0.1116,
+    "max": 107,
+    "part2": 0.00685,
+    "part16": 0.00098,
+    "boite": [
+     64,
+     275,
+     1424,
+     631
+    ]
+   },
+   "glace-g": {
+    "pixels": 18075,
+    "moyen": 2.5756,
+    "max": 78,
+    "part2": 0.2052,
+    "part16": 0.03303,
+    "boite": [
+     112,
+     567,
+     351,
+     631
+    ]
+   },
+   "glace-d": {
+    "pixels": 14807,
+    "moyen": 3.4134,
+    "max": 107,
+    "part2": 0.27892,
+    "part16": 0.04552,
+    "boite": [
+     909,
+     551,
+     1128,
+     617
+    ]
+   },
+   "scene": {
+    "pixels": 1296000,
+    "moyen": 0.1116,
+    "max": 107,
+    "part2": 0.00685,
+    "part16": 0.00098,
+    "boite": [
+     64,
+     275,
+     1424,
+     631
+    ]
+   }
+  },
+  "poursuite": {
+   "image": {
+    "pixels": 1296000,
+    "moyen": 0.1035,
+    "max": 70,
+    "part2": 0.00631,
+    "part16": 5e-05,
+    "boite": [
+     0,
+     401,
+     1053,
+     898
+    ]
+   },
+   "scene": {
+    "pixels": 1296000,
+    "moyen": 0.1035,
+    "max": 70,
+    "part2": 0.00631,
+    "part16": 5e-05,
+    "boite": [
+     0,
+     401,
+     1053,
+     898
+    ]
+   }
+  },
+  "pluie": {
+   "image": {
+    "pixels": 1296000,
+    "moyen": 0.4194,
+    "max": 71,
+    "part2": 0.05262,
+    "part16": 0.00037,
+    "boite": [
+     0,
+     270,
+     1439,
+     675
+    ]
+   },
+   "glace-g": {
+    "pixels": 18075,
+    "moyen": 2.2195,
+    "max": 58,
+    "part2": 0.28968,
+    "part16": 0.01189,
+    "boite": [
+     112,
+     559,
+     351,
+     631
+    ]
+   },
+   "glace-d": {
+    "pixels": 14874,
+    "moyen": 2.9552,
+    "max": 71,
+    "part2": 0.37246,
+    "part16": 0.01768,
+    "boite": [
+     909,
+     551,
+     1128,
+     617
+    ]
+   },
+   "scene": {
+    "pixels": 1296000,
+    "moyen": 0.4194,
+    "max": 71,
+    "part2": 0.05262,
+    "part16": 0.00037,
+    "boite": [
+     0,
+     270,
+     1439,
+     675
+    ]
+   }
+  },
+  "duo": {
+   "image": {
+    "pixels": 1296000,
+    "moyen": 0.1244,
+    "max": 82,
+    "part2": 0.00554,
+    "part16": 0.00057,
+    "boite": [
+     68,
+     43,
+     1418,
+     769
+    ]
+   },
+   "glace-g": {
+    "pixels": 5460,
+    "moyen": 2.259,
+    "max": 67,
+    "part2": 0.16941,
+    "part16": 0.03333,
+    "boite": [
+     391,
+     288,
+     520,
+     322
+    ]
+   },
+   "glace-d": {
+    "pixels": 4440,
+    "moyen": 2.8892,
+    "max": 78,
+    "part2": 0.23153,
+    "part16": 0.03829,
+    "boite": [
+     822,
+     280,
+     940,
+     315
+    ]
+   },
+   "glace-g2": {
+    "pixels": 5120,
+    "moyen": 2.4611,
+    "max": 82,
+    "part2": 0.18594,
+    "part16": 0.03184,
+    "boite": [
+     400,
+     732,
+     526,
+     769
+    ]
+   },
+   "glace-d2": {
+    "pixels": 4366,
+    "moyen": 2.9031,
+    "max": 76,
+    "part2": 0.22103,
+    "part16": 0.03665,
+    "boite": [
+     822,
+     729,
+     937,
+     763
+    ]
+   },
+   "scene": {
+    "pixels": 648000,
+    "moyen": 0.1663,
+    "max": 78,
+    "part2": 0.00742,
+    "part16": 0.00056,
+    "boite": [
+     71,
+     43,
+     1418,
+     344
+    ]
+   },
+   "scene2": {
+    "pixels": 648000,
+    "moyen": 0.0825,
+    "max": 82,
+    "part2": 0.00365,
+    "part16": 0.00058,
+    "boite": [
+     68,
+     544,
+     937,
+     769
+    ]
+   }
+  }
+ },
+ "changementsImage": [
+  "voitures lointaines au modèle moyen sous 1080 lignes (poursuite, à deux) : niveau de détail selon la taille à l'écran (étape 1)",
+  "glaces plus nettes en densité 1 (toile 330×100 → 468×142, seuil de la toile 2D accélérée), voitures des glaces reposées à leur propre niveau ; densité 2 inchangée (étape 2)",
+  "glaces peintes au temps : 30 Hz par glace quel que soit l'écran (avant : l'écran divisé par deux)",
+  "barre de régime en transform : 280 pixels à 1 niveau sur 255, aucun au-delà (étape 4)",
+  "effets (bouffées, traces, étincelles), vibration du casque, fantôme, caméras de la démo, aurores pris au temps des voitures : captures figées décalées d'un pas sur ces seuls éléments (étape 5)",
+  "étapes 3 et 6 : captures identiques octet pour octet"
+ ]
+}

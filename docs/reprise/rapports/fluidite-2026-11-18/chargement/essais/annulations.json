@@ -1,0 +1,56 @@
+{
+ "valeur": {
+  "pendant": {
+   "ecran": "demo",
+   "enCours": true,
+   "etape": "decor"
+  },
+  "demo": {
+   "annule": true,
+   "ecran": "titre",
+   "enCours": false,
+   "voile": "hidden",
+   "hudCache": true,
+   "titreInerte": false,
+   "session": {
+    "type": "vitrine",
+    "i": 0
+   },
+   "scene": 0
+  },
+  "echap": {
+   "pendant": {
+    "ecran": "titre",
+    "voile": true
+   },
+   "annule": false,
+   "ecran": "course",
+   "tardives": {
+    "n": 0,
+    "sousVoile": 0,
+    "noms": {}
+   }
+  },
+  "remplacee": {
+   "a": {
+    "annule": true,
+    "type": "course"
+   },
+   "b": {
+    "annule": false,
+    "type": "chrono",
+    "totalMs": 989.6
+   },
+   "ecran": "course",
+   "type": "chrono",
+   "tardives": {
+    "n": 0,
+    "sousVoile": 0,
+    "noms": {}
+   },
+   "voile": "hidden",
+   "hud": true
+  }
+ },
+ "erreurs": []
+}

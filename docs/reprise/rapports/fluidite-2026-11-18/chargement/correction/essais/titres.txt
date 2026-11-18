@@ -1,0 +1,36 @@
+base-gpu | charge 5.37 14.65 24.38 | titre apres ms 1114 { "fatal": "Error: TypeError: Cannot read properties of undefined (reading 'rapport')
+ at <anonymous>:1:42
+ at <anonymous>:1:200
+ at evaluer (file:///private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/corr/driver240.mjs:31:165)
+ at async file:///private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/corr/driver240.mjs:52:18", "erreurs": [] } 
+avant-gpu | charge 5.18 14.45 24.25 | titre apres ms 1524 { "valeur": { "maintenant": 1532, "vitrine": { "total": 808.9, "etapes": "voile:19.2 decor:661.9 retro:0 circuit:0.1 seance:2.3 creations:44.1 rendu:47.4 zero:0 image:10.3" } }, "erreurs": [] } 
+apres-gpu | charge 5.18 14.45 24.25 | titre apres ms 1307 { "valeur": { "maintenant": 1317, "vitrine": { "total": 753.1, "etapes": "voile:14 decor:630 retro:0 circuit:0.1 seance:2.4 creations:42.4 rendu:0 zero:0.1 image:28.2" } }, "erreurs": [] } 
+base-gpu | charge 6.12 14.49 24.21 | titre apres ms 1021 { "fatal": "Error: TypeError: Cannot read properties of undefined (reading 'rapport')
+ at <anonymous>:1:42
+ at <anonymous>:1:200
+ at evaluer (file:///private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/corr/driver240.mjs:31:165)
+ at async file:///private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/corr/driver240.mjs:52:18", "erreurs": [] } 
+avant-gpu | charge 6.12 14.49 24.21 | titre apres ms 1390 { "valeur": { "maintenant": 1395, "vitrine": { "total": 781.5, "etapes": "voile:9.6 decor:633.5 retro:0 circuit:0 seance:2.3 creations:42.5 rendu:43.7 zero:0.1 image:17.7" } }, "erreurs": [] } 
+apres-gpu | charge 5.71 14.27 24.07 | titre apres ms 1297 { "valeur": { "maintenant": 1300, "vitrine": { "total": 763.8, "etapes": "voile:11.6 decor:641.6 retro:0 circuit:0.1 seance:2.4 creations:49.5 rendu:0 zero:0 image:25.1" } }, "erreurs": [] } 
+base-gpu | charge 5.71 14.27 24.07 | titre apres ms 1089 { "fatal": "Error: TypeError: Cannot read properties of undefined (reading 'rapport')
+ at <anonymous>:1:42
+ at <anonymous>:1:200
+ at evaluer (file:///private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/corr/driver240.mjs:31:165)
+ at async file:///private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/corr/driver240.mjs:52:18", "erreurs": [] } 
+avant-gpu | charge 5.71 14.27 24.07 | titre apres ms 1477 { "valeur": { "maintenant": 1481, "vitrine": { "total": 817.5, "etapes": "voile:13 decor:678.1 retro:0 circuit:0.1 seance:2.4 creations:47.7 rendu:44.9 zero:0.2 image:9.5" } }, "erreurs": [] } 
+apres-gpu | charge 6.06 14.20 23.99 | titre apres ms 1334 { "valeur": { "maintenant": 1339, "vitrine": { "total": 770.7, "etapes": "voile:15.9 decor:656.9 retro:0 circuit:0 seance:2.4 creations:46.2 rendu:0 zero:0.1 image:24.5" } }, "erreurs": [] } 
+base-sw | charge 6.06 14.20 23.99 | titre apres ms 1977 { "fatal": "Error: TypeError: Cannot read properties of undefined (reading 'rapport')
+ at <anonymous>:1:42
+ at <anonymous>:1:200
+ at evaluer (file:///private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/corr/driver240.mjs:31:165)
+ at async file:///private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/corr/driver240.mjs:52:18", "erreurs": [] } 
+avant-sw | charge 5.73 14.00 23.86 | titre apres ms 4696 { "valeur": { "maintenant": 4702, "vitrine": { "total": 3008.6, "etapes": "voile:20.6 decor:653.7 retro:0 circuit:0 seance:5.2 creations:85.8 rendu:1908.3 zero:0.2 image:239.4" } }, "erreurs": [] } 
+apres-sw | charge 6.63 14.05 23.82 | titre apres ms 3534 { "valeur": { "maintenant": 3538, "vitrine": { "total": 2241.4, "etapes": "voile:6 decor:566.8 retro:0 circuit:0 seance:2 creations:43.2 rendu:0 zero:0 image:1535.9" } }, "erreurs": [] } 
+base-sw | charge 6.63 14.05 23.82 | titre apres ms 1627 { "fatal": "Error: TypeError: Cannot read properties of undefined (reading 'rapport')
+ at <anonymous>:1:42
+ at <anonymous>:1:200
+ at evaluer (file:///private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/corr/driver240.mjs:31:165)
+ at async file:///private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/corr/driver240.mjs:52:18", "erreurs": [] } 
+avant-sw | charge 6.26 13.85 23.69 | titre apres ms 6038 { "valeur": { "maintenant": 6044, "vitrine": { "total": 4354.7, "etapes": "voile:31.6 decor:968.5 retro:0 circuit:0.1 seance:7.8 creations:49.1 rendu:2698.8 zero:0.4 image:415.5" } }, "erreurs": [] } 
+apres-sw | charge 6.40 13.75 23.60 | titre apres ms 5945 { "valeur": { "maintenant": 5969, "vitrine": { "total": 3736.8, "etapes": "voile:19.2 decor:792.3 retro:0 circuit:0.1 seance:3.4 creations:60 rendu:0.1 zero:0 image:2711.7" } }, "erreurs": [] } 
+FIN

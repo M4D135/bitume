@@ -1,0 +1,455 @@
+{
+ "methode": "Chrome 157 sans interface, file://dist/bitume.html instrumenté (page-instrumentee.py), 1440×900, carte graphique réelle ; scénario scenario-menu.js : choix du circuit dans l’écran de préparation, puis Départ ; 3 essais par cas ; ms murales",
+ "charges": [
+  "c0 cpu1 r0 charge 24.87",
+  "c2 cpu1 r0 charge 23.63",
+  "c3 cpu1 r0 charge 25.87",
+  "c6 cpu1 r0 charge 26.51",
+  "c0 cpu1 r1 charge 26.46",
+  "c2 cpu1 r1 charge 34.12",
+  "c3 cpu1 r1 charge 41.09",
+  "c6 cpu1 r1 charge 40.59",
+  "c0 cpu1 r2 charge 37.17",
+  "c2 cpu1 r2 charge 37.31",
+  "c3 cpu1 r2 charge 36.73",
+  "c6 cpu1 r2 charge 33.11",
+  "c0 cpu4 r0 charge 38.65",
+  "c2 cpu4 r0 charge 44.46",
+  "c3 cpu4 r0 charge 52.10",
+  "c6 cpu4 r0 charge 51.02",
+  "c0 cpu4 r1 charge 90.56",
+  "c2 cpu4 r1 charge 113.29",
+  "c3 cpu4 r1 charge 91.26",
+  "c6 cpu4 r1 charge 81.02",
+  "c0 cpu4 r2 charge 69.41",
+  "c2 cpu4 r2 charge 59.80",
+  "c3 cpu4 r2 charge 49.49",
+  "c6 cpu4 r2 charge 47.15"
+ ],
+ "cas": [
+  {
+   "circuit": 0,
+   "cpu": 1,
+   "essais": 3,
+   "plusLongueImagePreparation": [
+    283,
+    233,
+    283
+   ],
+   "preparation": [
+    299,
+    257,
+    304
+   ],
+   "herbierPropre": [
+    0,
+    0,
+    0
+   ],
+   "plusLongueImageDepart": [
+    500,
+    483,
+    800
+   ],
+   "retroCreate": [
+    281,
+    278,
+    312
+   ],
+   "retroSetLots": [
+    63,
+    49,
+    140
+   ],
+   "fauneCreer": [
+    130,
+    129,
+    130
+   ],
+   "imagesLongues": [
+    30,
+    24,
+    31
+   ],
+   "topPrepa": [
+    "circuit.creer:258.1",
+    "rendu.draw:18.9",
+    "course.pas:2.6",
+    "voiture.poser:2.3",
+    "graphismes.melange:0.2",
+    "traces.pas:0.1"
+   ]
+  },
+  {
+   "circuit": 0,
+   "cpu": 4,
+   "essais": 3,
+   "plusLongueImagePreparation": [
+    883,
+    683,
+    1033
+   ],
+   "preparation": [
+    916,
+    692,
+    1055
+   ],
+   "herbierPropre": [
+    0,
+    0,
+    0
+   ],
+   "plusLongueImageDepart": [
+    1367,
+    1217,
+    1650
+   ],
+   "retroCreate": [
+    662,
+    493,
+    682
+   ],
+   "retroSetLots": [
+    253,
+    148,
+    266
+   ],
+   "fauneCreer": [
+    460,
+    356,
+    537
+   ],
+   "imagesLongues": [
+    38,
+    21,
+    46
+   ],
+   "topPrepa": [
+    "circuit.creer:868",
+    "rendu.draw:94.2",
+    "course.pas:13.4",
+    "voiture.poser:4.8",
+    "traces.pas:0.8",
+    "graphismes.melange:0.1"
+   ]
+  },
+  {
+   "circuit": 2,
+   "cpu": 1,
+   "essais": 3,
+   "plusLongueImagePreparation": [
+    2483,
+    2333,
+    3283
+   ],
+   "preparation": [
+    2512,
+    2329,
+    3292
+   ],
+   "herbierPropre": [
+    1323,
+    1017,
+    1718
+   ],
+   "plusLongueImageDepart": [
+    617,
+    400,
+    767
+   ],
+   "retroCreate": [
+    309,
+    202,
+    434
+   ],
+   "retroSetLots": [
+    53,
+    31,
+    63
+   ],
+   "fauneCreer": [
+    202,
+    150,
+    204
+   ],
+   "imagesLongues": [
+    32,
+    1,
+    39
+   ],
+   "topPrepa": [
+    "decor.herbier:1016.5",
+    "vegetation.construire:468.6",
+    "faune.creer:232.2",
+    "circuit.creer:217",
+    "decor.construire:115.6",
+    "rendu.setLots:102.4"
+   ]
+  },
+  {
+   "circuit": 2,
+   "cpu": 4,
+   "essais": 3,
+   "plusLongueImagePreparation": [
+    6733,
+    6333,
+    6866
+   ],
+   "preparation": [
+    6771,
+    6353,
+    6886
+   ],
+   "herbierPropre": [
+    3576,
+    3572,
+    3940
+   ],
+   "plusLongueImageDepart": [
+    1400,
+    1300,
+    1583
+   ],
+   "retroCreate": [
+    702,
+    640,
+    754
+   ],
+   "retroSetLots": [
+    107,
+    97,
+    133
+   ],
+   "fauneCreer": [
+    462,
+    418,
+    672
+   ],
+   "imagesLongues": [
+    56,
+    23,
+    57
+   ],
+   "topPrepa": [
+    "decor.herbier:3572.2",
+    "vegetation.construire:800.4",
+    "circuit.creer:627.2",
+    "faune.creer:473.8",
+    "decor.construire:230.4",
+    "rendu.setLots:199.1"
+   ]
+  },
+  {
+   "circuit": 3,
+   "cpu": 1,
+   "essais": 3,
+   "plusLongueImagePreparation": [
+    417,
+    300,
+    500
+   ],
+   "preparation": [
+    421,
+    325,
+    526
+   ],
+   "herbierPropre": [
+    0,
+    0,
+    0
+   ],
+   "plusLongueImageDepart": [
+    300,
+    200,
+    367
+   ],
+   "retroCreate": [
+    277,
+    178,
+    349
+   ],
+   "retroSetLots": [
+    2,
+    2,
+    5
+   ],
+   "fauneCreer": [
+    0,
+    0,
+    0
+   ],
+   "imagesLongues": [
+    1,
+    1,
+    12
+   ],
+   "topPrepa": [
+    "circuit.creer:160.3",
+    "decor.relief-terrain:54.1",
+    "decor.construire:50.2",
+    "decor.chaussee:20.7",
+    "rendu.draw:9.6",
+    "rendu.setLots:4.9"
+   ]
+  },
+  {
+   "circuit": 3,
+   "cpu": 4,
+   "essais": 3,
+   "plusLongueImagePreparation": [
+    983,
+    850,
+    1200
+   ],
+   "preparation": [
+    1011,
+    851,
+    1189
+   ],
+   "herbierPropre": [
+    0,
+    0,
+    0
+   ],
+   "plusLongueImageDepart": [
+    783,
+    683,
+    1033
+   ],
+   "retroCreate": [
+    682,
+    598,
+    986
+   ],
+   "retroSetLots": [
+    9,
+    4,
+    16
+   ],
+   "fauneCreer": [
+    0,
+    0,
+    0
+   ],
+   "imagesLongues": [
+    11,
+    9,
+    32
+   ],
+   "topPrepa": [
+    "circuit.creer:402.4",
+    "decor.relief-terrain:142.9",
+    "decor.chaussee:124.8",
+    "decor.construire:93.1",
+    "rendu.draw:22.9",
+    "rendu.setLots:14.5"
+   ]
+  },
+  {
+   "circuit": 6,
+   "cpu": 1,
+   "essais": 3,
+   "plusLongueImagePreparation": [
+    1550,
+    1317,
+    1867
+   ],
+   "preparation": [
+    1560,
+    1330,
+    1886
+   ],
+   "herbierPropre": [
+    958,
+    906,
+    1443
+   ],
+   "plusLongueImageDepart": [
+    383,
+    300,
+    483
+   ],
+   "retroCreate": [
+    255,
+    210,
+    311
+   ],
+   "retroSetLots": [
+    3,
+    3,
+    4
+   ],
+   "fauneCreer": [
+    105,
+    71,
+    150
+   ],
+   "imagesLongues": [
+    2,
+    1,
+    4
+   ],
+   "topPrepa": [
+    "decor.herbier:1443.1",
+    "circuit.creer:163.6",
+    "faune.creer:93.1",
+    "decor.relief-terrain:58.2",
+    "decor.construire:50.9",
+    "decor.chaussee:23.2"
+   ]
+  },
+  {
+   "circuit": 6,
+   "cpu": 4,
+   "essais": 3,
+   "plusLongueImagePreparation": [
+    4367,
+    4100,
+    4833
+   ],
+   "preparation": [
+    4368,
+    4130,
+    4750
+   ],
+   "herbierPropre": [
+    2468,
+    2338,
+    3575
+   ],
+   "plusLongueImageDepart": [
+    733,
+    617,
+    1367
+   ],
+   "retroCreate": [
+    451,
+    351,
+    829
+   ],
+   "retroSetLots": [
+    7,
+    6,
+    11
+   ],
+   "fauneCreer": [
+    213,
+    204,
+    437
+   ],
+   "imagesLongues": [
+    2,
+    1,
+    19
+   ],
+   "topPrepa": [
+    "decor.herbier:3574.6",
+    "circuit.creer:328.2",
+    "faune.creer:327.5",
+    "decor.relief-terrain:164.1",
+    "decor.construire:117",
+    "decor.chaussee:81.3"
+   ]
+  }
+ ]
+}

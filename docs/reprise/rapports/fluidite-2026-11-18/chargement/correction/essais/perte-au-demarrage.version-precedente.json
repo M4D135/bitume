@@ -1,0 +1,6 @@
+{
+ "fatal": "Error: écran titre jamais atteint {\"enCours\":false,\"voile\":false,\"type\":\"vitrine\",\"etape\":null,\"tardives\":null,\"rapport\":{\"type\":\"vitrine\",\"circuit\":0,\"leger\":false,\"etapes\":[{\"nom\":\"voile\",\"ms\":16.5}],\"date\":1795038126373,\"annule\":true},\"chaud\":[]}\n    at file:///private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/corr/driver.mjs:49:225",
+ "erreurs": [
+  "Error: la vitrine ne démarre pas\n    at demarrer (file:///private/tmp/relecture-chargement/bitume.html:70592:27)"
+ ]
+}

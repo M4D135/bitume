@@ -100,7 +100,12 @@
     for (const v of voitures) {
       const h = mulberry32((graine ^ Math.imul(v.id + 1, 0x9E3779B1)) >>> 0);
       Object.assign(v.ia, { agressivite: v.joueur ? .5 : .25 + .75 * h(), defense: v.joueur ? 0 : h(), regularite: v.joueur ? 1 : .55 + .45 * h(), forme: 1, sillage: -1, defend: 0, defendu: -1,
-        t: 0, derniereAttaque: -99, attaques: 0, abandons: 0, presses: 0, presse: -1, tenu: -99, changements: 0 });
+        t: 0, derniereAttaque: -99, attaques: 0, abandons: 0, presses: 0, presse: -1, tenu: -99, changements: 0,
+        // Champs posés en cours de course, déclarés ici dans un ordre fixe : toutes les voitures gardent la même
+        // forme d'objet et le pas de l'IA reste compilé pour une seule (sinon chaque voiture les ajoute dans son
+        // propre ordre, et le moteur JavaScript recompile commandesIA sans fin). undefined se lit exactement comme
+        // un champ absent pour chaque lecteur (!!, ??, == null, ||) : aucune décision ne change.
+        dehors: undefined, entamee: undefined, retourBloque: undefined, bloque: undefined, attaque: undefined });
     }
 
     // grille : ordre des rivaux tiré de la graine, le joueur à sa place
@@ -147,9 +152,44 @@
     const h=e.psi+e.beta, ca=Math.abs(Math.cos(h)),sa=Math.abs(Math.sin(h));
     return {long:2.475*ca+1.01*sa,lat:2.475*sa+1.01*ca};
   }
-  function commandesIA(course, v) {
-    const c = course.c, e = v.etat, ia = v.ia, P = c.pas, n = c.n, dt = course.dt;
-    const moi=empriseIA(e), vit=e.v, demi=c.largeur/2, utile=Math.max(.5,demi-moi.lat-.25);
+  // Les mêmes emprises pour les voitures de la course, rangées par indice et retenues pour leur cap relatif
+  // h = psi + beta : l'IA de chaque voiture relit celles de toutes les autres, plusieurs fois par pas. Même calcul
+  // qu'empriseIA, refait dès que h change (une voiture déjà avancée dans ce pas a un autre h) : mêmes bits.
+  function emprises(course) {
+    const n = course.voitures.length;
+    let E = course._emprises;
+    if (!E || E.h.length < n) E = course._emprises = { h: new Float64Array(n).fill(NaN), long: new Float64Array(n), lat: new Float64Array(n) };
+    return E;
+  }
+  function emprise(E, i, e) {
+    const h = e.psi + e.beta;
+    if (E.h[i] !== h) {
+      const ca = Math.abs(Math.cos(h)), sa = Math.abs(Math.sin(h));
+      E.long[i] = 2.475 * ca + 1.01 * sa; E.lat[i] = 2.475 * sa + 1.01 * ca; E.h[i] = h;
+    }
+  }
+  function largeurDe(E, i, e) { emprise(E, i, e); return E.lat[i]; }
+  function longueurDe(E, i, e) { emprise(E, i, e); return E.long[i]; }
+  // Côté libre d'un dépassement (x : décalage visé) : dans la piste et sans autre voiture sur la trajectoire.
+  function coteLibre(course, E, v, devant, x, utile, s, dsMin, moiLat) {
+    if (Math.abs(x) > utile) return false;
+    const V = course.voitures, c = course.c;
+    for (let i = 0; i < V.length; i++) {
+      const o = V[i];
+      if (o === v || o === devant) continue;
+      const ds = ecart(c, s, o.etat.s);
+      if (ds > -8 && ds < dsMin + 10 && Math.abs(o.etat.d - x) < moiLat + largeurDe(E, i, o.etat) + .35) return false;
+    }
+    return true;
+  }
+  // `sortie`, facultatif : objet de commandes de l'appelant, rempli et rendu au lieu d'un neuf (la course en garde
+  // un par voiture pour ses rivaux). Sans lui, chaque appel rend un objet neuf, comme toujours.
+  function commandesIA(course, v, sortie) {
+    const c = course.c, e = v.etat, ia = v.ia, P = c.pas, n = c.n, dt = course.dt, V = course.voitures, E = emprises(course);
+    // emprise de la voiture elle-même : le calcul d'empriseIA, sans objet
+    const h0 = e.psi + e.beta, ca0 = Math.abs(Math.cos(h0)), sa0 = Math.abs(Math.sin(h0));
+    const moiLong = 2.475 * ca0 + 1.01 * sa0, moiLat = 2.475 * sa0 + 1.01 * ca0;
+    const vit=e.v, demi=c.largeur/2, utile=Math.max(.5,demi-moiLat-.25);
     ia.t = (ia.t || 0) + dt;   // horloge locale de la voiture : le délai entre deux attaques ne dépend pas du temps affiché
     // Retour en piste seulement quand la voiture est vraiment dehors (centre au-delà du bord), avec hystérésis :
     // frôler la trajectoire idéale, qui longe le bord, n'est pas une sortie.
@@ -175,7 +215,10 @@
     const f = ramener(e.s, c.longueur) / P, i0 = Math.floor(f) % n, fr = f - Math.floor(f);
     let dec = 0.8 * (14 + 0.15 * vit) * (recuperer ? .6 : 1) * adh; const v2 = vit * vit; // l'herbe freine moins bien
     const anticipe = .5 * vit;
-    let cible = lire(c, c.vitesse, e.s) * hab, besoin = 0;
+    // vitesse de référence, courbure et trajectoire idéale au droit de la voiture : lues une fois, chacune servait
+    // jusqu'à trois fois (e.s ne bouge pas pendant la décision, et lire est une fonction pure : mêmes valeurs)
+    const vIci = lire(c, c.vitesse, e.s), kIci = lire(c, c.courbure, e.s), lIci = lire(c, c.ligne, e.s);
+    let cible = vIci * hab, besoin = 0;
     for (let q = 1, N = Math.ceil(200 / P); q <= N; q++) {
       const vc = c.vitesse[(i0 + q) % n] * hab, dist = (q - fr) * P;
       if (dist <= anticipe) { if (vc < cible) cible = vc; continue; }
@@ -195,19 +238,21 @@
     }
     // un attaquant engagé à l'intérieur du virage qui vient freine un peu plus tard, selon sa combativité
     if (ia.cible >= 0 && kAv && ia.cote === Math.sign(kAv)) dec *= 1 + .06 * (ia.agressivite || 0);
-    let devant = null, dsMin = regard, dMin = -utile, dMax = utile;
-    for (const o of course.voitures) {
+    let devant = null, devantI = -1, dsMin = regard, dMin = -utile, dMax = utile;
+    for (let i = 0; i < V.length; i++) {
+      const o = V[i];
       if (o === v) continue;
-      const ds = ecart(c, e.s, o.etat.s), dd = o.etat.d - e.d, taille=empriseIA(o.etat), espace=moi.lat+taille.lat+.35;
-      if (ds > 0 && ds < dsMin && Math.abs(dd) < espace) { dsMin = ds; devant = o; }
-      if (Math.abs(ds) < moi.long+taille.long+.5 && Math.abs(dd) < espace+.5) { // vraiment côte à côte
+      emprise(E, i, o.etat);
+      const ds = ecart(c, e.s, o.etat.s), dd = o.etat.d - e.d, espace=moiLat+E.lat[i]+.35;
+      if (ds > 0 && ds < dsMin && Math.abs(dd) < espace) { dsMin = ds; devant = o; devantI = i; }
+      if (Math.abs(ds) < moiLong+E.long[i]+.5 && Math.abs(dd) < espace+.5) { // vraiment côte à côte
         if (dd >= 0) dMax = Math.min(dMax, o.etat.d - espace); else dMin = Math.max(dMin, o.etat.d + espace);
       }
     }
     // Aspiration : en ligne droite, derrière une voiture à allure voisine (6 à 45 m), on se glisse dans son sillage ;
     // le gain de vitesse qu'il donne (conduite.js) ouvre le dépassement, par l'intérieur du virage qui vient.
     if (!recuperer && !kAv && ia.cible < 0 && devant) {
-      const gap = dsMin - moi.long - empriseIA(devant.etat).long;
+      const gap = dsMin - moiLong - longueurDe(E, devantI, devant.etat);
       ia.sillage = gap > 6 && gap < 45 && Math.abs(devant.etat.v - vit) < 6 ? devant.id : -1;
     } else ia.sillage = -1;
     // Défense : un poursuivant à moins de 12 m avant un virage ; un pilote qui aime défendre prend l'intérieur, une
@@ -215,14 +260,15 @@
     if (!recuperer && kAv && ia.cible < 0 && (ia.defense || 0) > .45 && course.phase === 'course') {
       const virage = (i0 + Math.round(Math.max(60, v2 / 20 + 30) / P)) / 40 | 0;
       if (ia.defendu !== virage) {
-        for (const o of course.voitures) {
+        for (let i = 0; i < V.length; i++) {
+          const o = V[i];
           if (o === v || o.fini) continue;
           const ds = ecart(c, o.etat.s, e.s);
-          if (ds > 2 && ds < 12 + moi.long && Math.abs(o.etat.d - e.d) < 4) { ia.defend = Math.sign(kAv); ia.defendu = virage; break; }
+          if (ds > 2 && ds < 12 + moiLong && Math.abs(o.etat.d - e.d) < 4) { ia.defend = Math.sign(kAv); ia.defendu = virage; break; }
         }
       }
     }
-    if (!kAv && ia.defend && Math.abs(lire(c, c.courbure, e.s)) < 3e-3) ia.defend = 0;
+    if (!kAv && ia.defend && Math.abs(kIci) < 3e-3) ia.defend = 0;
     // Blocage (lot 3) : un rival combatif tenu de près dans un virage ne se rabat pas sous le nez de son poursuivant,
     // il tient la ligne qu'il a prise jusqu'à ce que l'autre décroche ou que le virage finisse. Un seul maintien par
     // virage, aucun élan ajouté : c'est un choix de trajectoire, pas une impulsion réservée à l'IA.
@@ -230,10 +276,11 @@
     if (!recuperer && !gene && ia.cible < 0 && Math.abs(e.d) <= utile && (ia.agressivite || 0) > .55 && course.phase === 'course') {
       const virage = (i0 + Math.round(Math.max(60, v2 / 20 + 30) / P)) / 40 | 0;
       if (virage !== ia.tenu) {
-        for (const o of course.voitures) {
+        for (let i = 0; i < V.length; i++) {
+          const o = V[i];
           if (o === v || o.fini || o.abandon || horsService(o.etat)) continue;
           const ds = ecart(c, e.s, o.etat.s);                       // o est derrière moi
-          if (ds > 1 && ds < 8 + moi.long && Math.abs(o.etat.d - e.d) < moi.lat + empriseIA(o.etat).lat + .6) {
+          if (ds > 1 && ds < 8 + moiLong && Math.abs(o.etat.d - e.d) < moiLat + largeurDe(E, i, o.etat) + .6) {
             if (ia.presse !== o.id) { ia.presse = o.id; ia.presses++; if (course.statsIa) course.statsIa.presses++; }
             ia.tenu = virage; break;
           }
@@ -242,10 +289,11 @@
     }
     if (ia.presse >= 0) {
       const o = course.voitures[ia.presse];
-      if (!o || horsService(o.etat) || gene || ecart(c, e.s, o.etat.s) > 12 + moi.long || Math.abs(lire(c, c.courbure, e.s)) < 3e-3) ia.presse = -1;
+      if (!o || horsService(o.etat) || gene || ecart(c, e.s, o.etat.s) > 12 + moiLong || Math.abs(kIci) < 3e-3) ia.presse = -1;
     }
     if (devant) {
-      const od=devant.etat, taille=empriseIA(od), espace=moi.lat+taille.lat+.5, gap=dsMin-moi.long-taille.long;
+      emprise(E, devantI, devant.etat);
+      const od=devant.etat, espace=moiLat+E.lat[devantI]+.5, gap=dsMin-moiLong-E.long[devantI];
       // un obstacle vraiment plus lent (voiture arrêtée ou en perdition) justifie un engagement plus tôt et plus
       // franc ; la circulation normale (allure voisine) garde la conduite habituelle du peloton.
       const obstacle = od.v < vit - 10;
@@ -264,19 +312,10 @@
       if (!recuperer && ia.cible !== devant.id && (contourne || vit > od.v + 0.3 || aspire) && atteignable &&
           gap < (obstacle ? Math.max(70, v2 / 45 + 25) : 30) && (contourne || ia.t - (ia.derniereAttaque ?? -99) >= IA_ATTENTE)) {
         const interieur = kAv > 0 ? 1 : kAv < 0 ? -1 : (od.d > e.d ? -1 : 1);
-        // côté libre : dans la piste et sans autre voiture sur la trajectoire de dépassement
-        const libre = cote => {
-          const x=od.d+espace*cote;
-          if (Math.abs(x) > utile) return false;
-          for (const o of course.voitures) {
-            if (o === v || o === devant) continue;
-            const ds = ecart(c, e.s, o.etat.s);
-            if (ds > -8 && ds < dsMin + 10 && Math.abs(o.etat.d-x)<moi.lat+empriseIA(o.etat).lat+.35) return false;
-          }
-          return true;
-        };
+        // côté libre : dans la piste et sans autre voiture sur la trajectoire de dépassement (coteLibre) ;
         // l'extérieur d'un virage qui arrive mène tout droit dans l'herbe : réservé à l'évitement d'un obstacle
-        const cote = libre(interieur) ? interieur : (!kAv || obstacle) && libre(-interieur) ? -interieur : 0;
+        const cote = coteLibre(course, E, v, devant, od.d + espace * interieur, utile, e.s, dsMin, moiLat) ? interieur
+          : (!kAv || obstacle) && coteLibre(course, E, v, devant, od.d + espace * -interieur, utile, e.s, dsMin, moiLat) ? -interieur : 0;
         if (cote) {
           // un engagement contre une voiture hors service est un contournement, pas une attaque : compté comme tel
           ia.attaque = !horsJeu;
@@ -290,7 +329,7 @@
       }
       // dépassement engagé par l'extérieur quand le virage arrive, sans être encore à la hauteur de l'autre : on
       // renonce et on rentre derrière lui
-      if (ia.cible === devant.id && !obstacle && kAv && ia.cote === -Math.sign(kAv) && gap > -moi.long) renoncer(ia, course);
+      if (ia.cible === devant.id && !obstacle && kAv && ia.cote === -Math.sign(kAv) && gap > -moiLong) renoncer(ia, course);
       // pas d'emboutissage : tant qu'on est dans les roues de celui de devant, on garde une distance de suivi.
       // Mais une fois le dépassement amorcé sur un côté libre, on ne rampe pas (sans vitesse, pas de mouvement
       // latéral) : on garde de quoi dégager la trajectoire, quitte à se rabattre derrière si le côté se referme.
@@ -309,15 +348,15 @@
     // freine fort pour resserrer le virage ; dès qu'elle revient, allure de virage réduite d'autant, sans piler.
     if (recuperer) {
       ia.cible=-1;ia.cote=0;ia.decalVise=0;
-      cible=Math.min(cible,e.psi*Math.sign(e.d)>.03?Math.max(10,vit*.65):lire(c, c.vitesse, e.s)*hab*.74);
+      cible=Math.min(cible,e.psi*Math.sign(e.d)>.03?Math.max(10,vit*.65):vIci*hab*.74);
     }
-    const base = lire(c, c.ligne, e.s) + ia.decal;
+    const base = lIci + ia.decal;
     if (ia.cible >= 0 && dMin > dMax) renoncer(ia, course);   // coincée : on renonce
     if (ia.cible >= 0 && horsService(course.voitures[ia.cible] && course.voitures[ia.cible].etat)) renoncer(ia, course);
     if (ia.cible >= 0) {
       const o = course.voitures[ia.cible], avance = ecart(c, o.etat.s, e.s);
-      if (avance > 3+moi.long+empriseIA(o.etat).long || avance < -(regard + 10)) renoncer(ia, course);
-      else ia.decalVise = o.etat.d+(moi.lat+empriseIA(o.etat).lat+.5)*ia.cote-base;
+      if (avance > 3+moiLong+longueurDe(E, ia.cible, o.etat) || avance < -(regard + 10)) renoncer(ia, course);
+      else ia.decalVise = o.etat.d+(moiLat+largeurDe(E, ia.cible, o.etat)+.5)*ia.cote-base;
     }
     let vise = ia.cible >= 0 ? ia.decalVise : 0, vLat = (ia.cible >= 0 ? (devant && vit > devant.etat.v + 8 ? 6.0 : 3.0) : recuperer ? 4 : .8) * dt;
     if (ia.cible < 0 && !recuperer) {
@@ -338,19 +377,18 @@
     const ligneLa = lire(c, c.ligne, e.s + la);
     let dVise = recuperer ? Math.sign(e.d) * (demi - 1.8) : clamp(ligneLa + ia.decal + ia.decalDep, -utile, utile);
     dVise = dMin > dMax ? e.d : clamp(dVise, dMin, dMax);
-    const psiL = recuperer ? 0 : Math.atan2(ligneLa - lire(c, c.ligne, e.s), la);
+    const psiL = recuperer ? 0 : Math.atan2(ligneLa - lIci, la);
     const ouverture = recuperer ? .19 : Math.asin(Math.min(1, (evite ? 9 : 5) / Math.max(vit, 1)));
     const psiC = clamp(Math.atan2(dVise - e.d, la), psiL - ouverture, psiL + ouverture);
     // même loi que le joueur : le volant demande la part d'adhérence avant qui tient la courbure visée. La courbure
     // de base est celle de la voiture à son décalage (plus serrée à la corde), pas celle de l'axe de la piste.
-    const kIci = lire(c, c.courbure, e.s);
     const kVise = kIci / Math.max(1 - kIci * e.d, .3) + 2.2 * (psiC - e.psi) * Math.max(vit, 5) / (10 * Math.max(vit, 3));
     const volant = B.conduite.volantPour(e, kVise);
 
     // Sous-virage : en virage, la voiture s'écarte de sa ligne vers l'extérieur. Comme un pilote, on lève le pied
     // et on freine un peu : la charge revient sur l'avant et la trajectoire se referme.
     if (!recuperer && Math.abs(kIci) > 4e-3) {
-      const large = (lire(c, c.ligne, e.s) + ia.decal + ia.decalDep - e.d) * Math.sign(kIci);
+      const large = (lIci + ia.decal + ia.decalDep - e.d) * Math.sign(kIci);
       if (large > 2) cible = Math.min(cible, vit * (1 - .03 * Math.min(large - 2, 3)));
     }
 
@@ -372,7 +410,10 @@
     ia.bloque=coince?(ia.bloque||0)+dt:0;
     if(ia.bloque>15) { B.conduite.declencherAccident(e,{});ia.bloque=0;ia.cible=-1;ia.cote=0;ia.decalVise=0;ia.decalDep=0; }
     // l'IA conduit avec l'aide au volant légère, le réglage par défaut du joueur
-    return { gaz, frein, volant, derive: false, haut: false, bas: false, boite: 'auto', aide: AIDE_IA };
+    if (!sortie) return { gaz, frein, volant, derive: false, haut: false, bas: false, boite: 'auto', aide: AIDE_IA };
+    sortie.gaz = gaz; sortie.frein = frein; sortie.volant = volant; sortie.derive = false; sortie.haut = false;
+    sortie.bas = false; sortie.boite = 'auto'; sortie.aide = AIDE_IA;
+    return sortie;
   }
 
   // Contacts : rectangles 4,5 × 1,9 m dans le repère (s, d), séparés à chaque pas.
@@ -450,34 +491,54 @@
   }
 
   function score(v, L) { return v.fini ? v.tours : v.progression / L; }
+  function comparerRangs(a, b, L) {
+    if (a.abandon !== b.abandon) return a.abandon ? 1 : -1;
+    const d = score(b, L) - score(a, L);
+    if (d !== 0) return d;
+    if (a.fini !== b.fini) return a.fini ? -1 : 1;
+    return a.fini ? a.tempsFinal - b.tempsFinal : a.id - b.id;
+  }
+  function progressionTotale(v, L) { return v.fini ? v.tours * L : v.progression; }
+  // Rangs, à chaque pas : tri par insertion, stable, depuis l'ordre des voitures, dans le tableau `tri` (rendu ; la
+  // course garde le sien : douze voitures, presque toujours déjà en ordre). Même comparaison et, la comparaison étant
+  // un ordre cohérent, même résultat, égalités comprises, que le tri stable de Array.prototype.sort sur cet ordre.
+  function classer(V, L, tri = []) {
+    const n = V.length;
+    tri.length = n;
+    for (let i = 0; i < n; i++) {
+      const v = V[i];
+      let j = i;
+      while (j > 0 && comparerRangs(tri[j - 1], v, L) > 0) { tri[j] = tri[j - 1]; j--; }
+      tri[j] = v;
+    }
+    return tri;
+  }
+  // course.classement reste un tableau neuf à chaque pas : ceux qui en gardent un d'avant le retrouvent intact.
   function majClassement(course) {
-    const L = course.c.longueur;
-    const tri = course.voitures.slice().sort((a, b) => {
-      if (a.abandon !== b.abandon) return a.abandon ? 1 : -1;
-      const d = score(b, L) - score(a, L);
-      if (d !== 0) return d;
-      if (a.fini !== b.fini) return a.fini ? -1 : 1;
-      return a.fini ? a.tempsFinal - b.tempsFinal : a.id - b.id;
-    });
-    const tete = tri[0];
-    const prog = v => v.fini ? v.tours * L : v.progression;
-    tri.forEach((v, i) => {
+    const L = course.c.longueur, n = course.voitures.length;
+    const tri = classer(course.voitures, L, course._tri || (course._tri = []));
+    const tete = tri[0], ids = new Array(n);
+    for (let i = 0; i < n; i++) {
+      const v = tri[i];
+      ids[i] = v.id;
       v.position = i + 1;
-      if (i === 0) { v.ecart = 0; v.ecartTete = 0; return; }
+      if (i === 0) { v.ecart = 0; v.ecartTete = 0; continue; }
       const p = tri[i - 1];
-      v.ecart = p.fini && v.fini && p.tours === v.tours ? v.tempsFinal - p.tempsFinal : (prog(p) - prog(v)) / course.vref;
-      v.ecartTete = tete.fini && v.fini && tete.tours === v.tours ? v.tempsFinal - tete.tempsFinal : (prog(tete) - prog(v)) / course.vref;
-    });
-    course.classement = tri.map(v => v.id);
+      v.ecart = p.fini && v.fini && p.tours === v.tours ? v.tempsFinal - p.tempsFinal : (progressionTotale(p, L) - progressionTotale(v, L)) / course.vref;
+      v.ecartTete = tete.fini && v.fini && tete.tours === v.tours ? v.tempsFinal - tete.tempsFinal : (progressionTotale(tete, L) - progressionTotale(v, L)) / course.vref;
+    }
+    course.classement = ids;
   }
 
   // Aspiration : dans le sillage d'une voiture à moins de 30 m devant et à moins de 2 m de côté, la traînée baisse
   // (part de 0 à 1, lue par la conduite) ; elle croît quand on se rapproche et quand on s'aligne.
   const ASPIRATION = { portee: 30, cote: 2 };
   function aspirer(c, V) {
-    for (const a of V) {
+    for (let i = 0; i < V.length; i++) {
+      const a = V[i];
       let part = 0;
-      for (const b of V) {
+      for (let j = 0; j < V.length; j++) {
+        const b = V[j];
         if (b === a) continue;
         const ds = ecart(c, b.etat.s, a.etat.s), dd = Math.abs(b.etat.d - a.etat.d);
         if (ds > LONGUEUR && ds < ASPIRATION.portee && dd < ASPIRATION.cote)
@@ -557,8 +618,12 @@
     }
   }
 
-  function pas(course, cmdJoueur, dt) {
-    const ev = [];
+  function tousArrives(V) { for (let i = 0; i < V.length; i++) if (!(V[i].fini || V[i].abandon)) return false; return true; }
+  // `sortie`, facultatif : tableau d'événements de l'appelant, vidé puis rempli et rendu au lieu d'un neuf (un
+  // appelant qui avance la course à chaque image peut garder le sien). Sans lui, un tableau neuf, comme toujours.
+  function pas(course, cmdJoueur, dt, sortie) {
+    const ev = sortie || [];
+    if (sortie) sortie.length = 0;
     if (course.termine) return ev;
     const c = course.c, L = c.longueur, V = course.voitures;
     course.dt = dt; course.horloge += dt;
@@ -578,15 +643,20 @@
 
     if (B.contacts && B.contacts.avant) B.contacts.avant(course);
     if (B.obstacles) B.obstacles.avant(course);
+    const cmdsIA = course._cmdsIA || (course._cmdsIA = []);   // un objet de commandes par voiture, rempli à chaque pas
     for (let i = 0; i < V.length; i++) {
       const v = V[i];
       course.sAvant[i] = sLigne(c, v.etat.s);
       // voiture distante : son état vient du réseau, prolongé jusqu'à ce pas (jeu.js, reseau.js)
       if (v.distant) { if (course.distant) course.distant(v, dt); continue; }
       let cmd;
-      if (!v.joueur || v.fini) cmd = commandesIA(course, v);
+      if (!v.joueur || v.fini) cmd = commandesIA(course, v, cmdsIA[i] || (cmdsIA[i] = {}));
       else cmd = (Array.isArray(cmdJoueur) ? cmdJoueur[v.id] : cmdJoueur) || NEUTRE;   // écran partagé : une commande par voiture
-      for (const e of B.conduite.pas(v.etat, cmd, c, dt, retenue)) { e.id = v.id; ev.push(e); }
+      // les événements de la voiture vont droit dans ceux du pas ; une conduite de test qui rend son propre tableau
+      // est recopiée comme avant
+      const debut = ev.length, rendus = B.conduite.pas(v.etat, cmd, c, dt, retenue, ev);
+      if (rendus === ev) for (let k = debut; k < ev.length; k++) ev[k].id = v.id;
+      else for (const e of rendus) { e.id = v.id; ev.push(e); }
     }
     const avant = ev.length;
     if (B.contacts) B.contacts.pas(course, ev); else contacts(course, ev);
@@ -613,7 +683,7 @@
       if (course.mode === 'chrono' && course.chronoParti && v.joueur && v.tourValide !== false) enregistrer(course, v, course.temps);
     }
     majClassement(course);
-    if (V.every(v => v.fini || v.abandon)) {
+    if (tousArrives(V)) {
       if (course.finSansCourse === undefined) course.finSansCourse = course.horloge;
       if (course.horloge - course.finSansCourse >= 3) course.termine = true;
     }
@@ -625,10 +695,10 @@
     if (course.mode === 'course' && course.drapeau !== null) {
       const delai = Math.max(40, 1.25 * course.drapeau / course.toursTotal);
       let humains = 0, enPiste = false, arrivee = j.fini ? j.tempsFinal : -Infinity;
-      for (const v of V) if (v.humain) { humains++; if (!v.fini && !v.abandon) enPiste = true; else if (v.fini) arrivee = Math.max(arrivee, v.tempsFinal); }
+      for (let i = 0; i < V.length; i++) { const v = V[i]; if (v.humain) { humains++; if (!v.fini && !v.abandon) enPiste = true; else if (v.fini) arrivee = Math.max(arrivee, v.tempsFinal); } }
       const attendre = humains > 0 && enPiste && course.temps - course.drapeau < 2 * delai;
       if (!attendre && ((arrivee > -Infinity && course.temps - arrivee >= 8) || course.temps - course.drapeau >= delai ||
-          V.every(v => v.fini || v.abandon))) course.termine = true;
+          tousArrives(V))) course.termine = true;
     }
     return ev;
   }
@@ -641,11 +711,13 @@
     for(const x of ev)x.id=v.id;return ev;
   }
 
-  // Fantôme du meilleur tour (chrono) au temps du tour en cours : { s, d, angle } ou null.
-  function fantome(course) {
+  // Fantôme du meilleur tour (chrono) au temps du tour en cours : { s, d, angle } ou null. retard (facultatif) : durée
+  // dont l'instant dessiné précède le dernier pas (le jeu dessine les voitures entre leurs deux dernières poses) ; le
+  // fantôme est alors pris au même instant qu'elles, sans sauts d'un pas à l'autre.
+  function fantome(course, retard = 0) {
     const f = course.fantome.meilleur;
     if (!f || !course.chronoParti || f.n < 1) return null;
-    const c = course.c, D = f.donnees, m = f.n, t = course.temps - course.joueur.debutTour;
+    const c = course.c, D = f.donnees, m = f.n, t = course.temps - retard - course.joueur.debutTour;
     if (t < 0 || t > course.fantome.temps) return null;
     if (m === 1) return { s: D[1], d: D[2], angle: D[3] };
     let i = clamp(Math.floor(t / 0.05), 0, m - 2);
@@ -671,5 +743,41 @@
     });
   }
 
-  B.course = { creer, pas, replacer, fantome, etatPilotes, commandesIA, aspirer, horsService, empriseIA, stands, dansLaVoie, dansLeGarage, STANDS, IA_ATTENTE, IA_PORT, PILOTES, LIVREES, ASPIRATION };
+  // Course de chauffe jetable, pour le préchargement d'une séance : douze voitures sur le tracé de la séance, départ
+  // lancé (ni grille ni feux), le joueur à la main (boîte manuelle, dérive tenue dans les virages, donc turbo), puis
+  // freinage jusqu'à l'arrêt, marche arrière et replacement. Le moteur JavaScript compile ainsi l'IA, la conduite,
+  // les contacts et les solides avant la grille, au lieu de le faire en course, où chaque chemin encore jamais pris
+  // coûte une recompilation et des objets jetés. Rien n'en passe dans la vraie course : la course jetable a ses
+  // propres états, elle lit la météo sans l'écrire et ne touche ni au son, ni aux records, ni aux débris (des solides
+  // du tracé, elle ne laisse que les marques de recherche des voisins, qui ne changent aucun contact).
+  // avancer(n) fait au plus n pas et dit s'il en reste : la chauffe s'étale en tranches sous le voile de chargement.
+  function chauffe(c, o = {}) {
+    const co = creer(c, { mode: 'course', tours: 2, difficulte: 2, rivaux: 11, graine: o.graine ?? 4242, placeJoueur: 12 });
+    const pneus = B.conduite.pneusConseilles(B.conduite.eauSurPiste());
+    for (let i = 0; i < co.voitures.length; i++) co.voitures[i].etat.pneus = pneus;
+    co.phase = 'course'; co.feux.vert = true; co.temps = 0;
+    const dt = co.dt, total = Math.max(1, Math.round((o.secondes ?? 20) / dt)), arret = total - Math.round(6 / dt);
+    const cmd = { gaz: 0, frein: 0, volant: 0, derive: false, haut: false, bas: false, boite: 'manuelle', aide: AIDE_IA, guidage: 0, marcheArriere: false };
+    const cmdIA = {}, ev = [];
+    let k = 0;
+    function unPas() {
+      const v = co.joueur, e = v.etat, base = commandesIA(co, v, cmdIA);
+      cmd.gaz = base.gaz; cmd.frein = base.frein; cmd.volant = base.volant; cmd.marcheArriere = false;
+      cmd.haut = e.regime > 12400 && e.rapport < 6; cmd.bas = !cmd.haut && e.regime < 9300 && e.rapport > 1;
+      cmd.derive = Math.abs(lire(c, c.courbure, e.s + 12)) > 1 / 170 && e.v > 18 && base.frein < .3;
+      if (cmd.derive && e.derive.actif && e.derive.sens * e.beta > .03) cmd.volant = -e.derive.sens * .45;
+      if (k >= arret) {   // six dernières secondes : frein tenu jusqu'à l'arrêt (la marche arrière s'engage), puis recul
+        cmd.derive = false; cmd.haut = false; cmd.bas = false; cmd.marcheArriere = true;
+        if (k - arret < Math.round(4.5 / dt)) { cmd.gaz = 0; cmd.frein = 1; } else { cmd.gaz = .5; cmd.frein = 0; }
+      }
+      pas(co, cmd, dt, ev);
+      if (k === total - 1) replacer(co, v);
+    }
+    return {
+      get reste() { return total - k; },
+      avancer(n = total) { const fin = Math.min(total, k + (n > 0 ? n : 0)); while (k < fin) { unPas(); k++; } return k < total; }
+    };
+  }
+
+  B.course = { creer, pas, replacer, fantome, etatPilotes, commandesIA, aspirer, horsService, empriseIA, stands, dansLaVoie, dansLeGarage, classer, chauffe, STANDS, IA_ATTENTE, IA_PORT, PILOTES, LIVREES, ASPIRATION };
 })(globalThis.BITUME = globalThis.BITUME || {});

@@ -19,9 +19,12 @@ const B={ambiance:A,faune:{
   creer:()=>{crees++;return {habitats:true};},
   dessiner:(etat,t,ctx,sortie)=>{dessins.push({...ctx,t,etat});sortie.push({faune:true});}
 }};
+// filet du chemin d'image (jeu.js) : ce qui naît dans rendreVue au lieu de la préparation est compté par son nom
+const tardives=[];
 const ctx={B,S:session,session,co:{horloge:180},reglages:{moment:'nuit'},
   rendu:{setEnvironment:v=>env.push(v)},retro:{rendu:{setEnvironment:v=>miroirs.push(v)}},
-  c:{},scene:{decor:{}},P:Grap.melange('high',0),ps:{x:1,y:2,z:3},meteo:{pluie:.3},horlogeReelle:5,sortie:[]};
+  c:{},scene:{decor:{}},P:Grap.melange('high',0),ps:{x:1,y:2,z:3},meteo:{pluie:.3},horlogeReelle:5,sortie:[],
+  creationTardive:(nom,valeur)=>{tardives.push(nom);return valeur;}};
 const lumiere=section('    if (S.nature) {','    if (B.meteo) B.meteo.actuel');
 const reflet=section('    if (S.nature && (retro.ambianceSource','    retro.rendu.draw(camR');
 const faune=section("    if (S.nature && B.faune && P.faune !== 'off'",'    // voitures : toujours dessinées');
@@ -56,6 +59,8 @@ verifier('faune inactive sans construction ; habitats partagés et pools propres
   assert.equal(dessins[0].t,dessins[1].t);assert.equal(dessins[0].vue,0);assert.equal(dessins[1].vue,1);
   assert.notStrictEqual(session.fauneVue,second.fauneVue);
   assert.equal(dessins[1].qualite,'ultra');assert.equal(dessins[1].pluie,.3);
+  // sans préparation, les habitats et les deux contextes de vue naissent dans l'image : chacun est compté une fois
+  assert.deepEqual(tardives,['faune','contexteFaune','contexteFaune'],'créations tardives comptées une fois chacune');
 });
 
 verifier('faune et lumière chargées avant la coque et réglages restaurables',()=>{

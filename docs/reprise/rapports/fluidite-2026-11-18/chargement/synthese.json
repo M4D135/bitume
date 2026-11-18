@@ -1,0 +1,877 @@
+{
+ "outil": "tools/profil-accrocs.mjs --scenario depart (Chrome 157 sans interface, ANGLE Metal, Apple M5 10 cœurs ; SwiftShader pour sw)",
+ "scenarios": {
+  "c0": "Val-Brûlé, Fine, sec, 1390×1295",
+  "c2": "Haut-Col, Fine, pluie (tunnel, reflets)",
+  "duo": "Val-Brûlé, Fine, à deux",
+  "sw": "Val-Brûlé, Basse, SwiftShader 640×360, 40 s"
+ },
+ "resume": {
+  "c0 avant": {
+   "passes": 3,
+   "clicAuPremierEcranCourseMs": {
+    "mediane": 303,
+    "min": 218,
+    "max": 527
+   },
+   "plusLongueImagePendantChargementMs": {
+    "mediane": 250,
+    "max": 483
+   },
+   "premieres2sPire": [
+    33.4,
+    16.8,
+    16.8
+   ],
+   "premieres2sAuDela50ms": 0,
+   "ensuiteAuDela50ms": [
+    1,
+    0,
+    0
+   ]
+  },
+  "c0 apres": {
+   "passes": 3,
+   "clicAuPremierEcranCourseMs": {
+    "mediane": 604,
+    "min": 339,
+    "max": 635
+   },
+   "plusLongueImagePendantChargementMs": {
+    "mediane": 100,
+    "max": 117
+   },
+   "premieres2sPire": [
+    33.4,
+    16.8,
+    16.8
+   ],
+   "premieres2sAuDela50ms": 0,
+   "ensuiteAuDela50ms": [
+    2,
+    0,
+    0
+   ]
+  },
+  "c2 avant": {
+   "passes": 5,
+   "clicAuPremierEcranCourseMs": {
+    "mediane": 421,
+    "min": 216,
+    "max": 604
+   },
+   "plusLongueImagePendantChargementMs": {
+    "mediane": 350,
+    "max": 533
+   },
+   "premieres2sPire": [
+    33.4,
+    16.8,
+    33.4,
+    16.8,
+    33.4
+   ],
+   "premieres2sAuDela50ms": 0,
+   "ensuiteAuDela50ms": [
+    2,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "c2 apres": {
+   "passes": 5,
+   "clicAuPremierEcranCourseMs": {
+    "mediane": 499,
+    "min": 433,
+    "max": 697
+   },
+   "plusLongueImagePendantChargementMs": {
+    "mediane": 100,
+    "max": 183
+   },
+   "premieres2sPire": [
+    33.4,
+    33.4,
+    16.8,
+    16.8,
+    33.3
+   ],
+   "premieres2sAuDela50ms": 0,
+   "ensuiteAuDela50ms": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "duo avant": {
+   "passes": 3,
+   "clicAuPremierEcranCourseMs": {
+    "mediane": 294,
+    "min": 240,
+    "max": 425
+   },
+   "plusLongueImagePendantChargementMs": {
+    "mediane": 233,
+    "max": 333
+   },
+   "premieres2sPire": [
+    33.4,
+    33.4,
+    33.4
+   ],
+   "premieres2sAuDela50ms": 0,
+   "ensuiteAuDela50ms": [
+    0,
+    1,
+    0
+   ]
+  },
+  "duo apres": {
+   "passes": 3,
+   "clicAuPremierEcranCourseMs": {
+    "mediane": 409,
+    "min": 383,
+    "max": 783
+   },
+   "plusLongueImagePendantChargementMs": {
+    "mediane": 100,
+    "max": 117
+   },
+   "premieres2sPire": [
+    16.8,
+    33.5,
+    50
+   ],
+   "premieres2sAuDela50ms": 0,
+   "ensuiteAuDela50ms": [
+    0,
+    0,
+    0
+   ]
+  },
+  "sw avant": {
+   "passes": 3,
+   "clicAuPremierEcranCourseMs": {
+    "mediane": 470,
+    "min": 144,
+    "max": 611
+   },
+   "plusLongueImagePendantChargementMs": {
+    "mediane": 292.0,
+    "max": 567
+   },
+   "premieres2sPire": [
+    916.6,
+    1816.6,
+    null
+   ],
+   "premieres2sAuDela50ms": 4,
+   "ensuiteAuDela50ms": [
+    209,
+    71,
+    38
+   ]
+  },
+  "sw apres": {
+   "passes": 3,
+   "clicAuPremierEcranCourseMs": {
+    "mediane": 3731,
+    "min": 2861,
+    "max": 6094
+   },
+   "plusLongueImagePendantChargementMs": {
+    "mediane": 1717,
+    "max": 4650
+   },
+   "premieres2sPire": [
+    266.7,
+    533.3,
+    233.3
+   ],
+   "premieres2sAuDela50ms": 21,
+   "ensuiteAuDela50ms": [
+    159,
+    3,
+    215
+   ]
+  }
+ },
+ "passes": [
+  {
+   "fichier": "apres-c0-r1.json",
+   "build": "apres",
+   "scenario": "c0",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 604,
+   "plusLongueImagePendantChargementMs": 100,
+   "premieres2s": {
+    "images": 115,
+    "p95": 16.8,
+    "pire": 33.4,
+    "au_dela_1_5x": 5,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1037,
+    "p95": 16.8,
+    "pire": 66.7,
+    "au_dela_1_5x": 37,
+    "au_dela_50ms": 2
+   },
+   "pireApresEcranCourseMs": 66.7,
+   "sha256": "0502cc15304c3bb3"
+  },
+  {
+   "fichier": "apres-c0-r2.json",
+   "build": "apres",
+   "scenario": "c0",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 339,
+   "plusLongueImagePendantChargementMs": 67,
+   "premieres2s": {
+    "images": 120,
+    "p95": 16.7,
+    "pire": 16.8,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1080,
+    "p95": 16.7,
+    "pire": 16.8,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": null,
+   "sha256": "0502cc15304c3bb3"
+  },
+  {
+   "fichier": "apres-c0-r3.json",
+   "build": "apres",
+   "scenario": "c0",
+   "passe": "r3",
+   "clicAuPremierEcranCourseMs": 635,
+   "plusLongueImagePendantChargementMs": 117,
+   "premieres2s": {
+    "images": 120,
+    "p95": 16.8,
+    "pire": 16.8,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1079,
+    "p95": 16.8,
+    "pire": 33.3,
+    "au_dela_1_5x": 1,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 33.3,
+   "sha256": "0502cc15304c3bb3"
+  },
+  {
+   "fichier": "apres-c2-r1.json",
+   "build": "apres",
+   "scenario": "c2",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 433,
+   "plusLongueImagePendantChargementMs": 100,
+   "premieres2s": {
+    "images": 100,
+    "p95": 33.4,
+    "pire": 33.4,
+    "au_dela_1_5x": 19,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1034,
+    "p95": 16.8,
+    "pire": 33.4,
+    "au_dela_1_5x": 46,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 33.4,
+   "sha256": "0502cc15304c3bb3"
+  },
+  {
+   "fichier": "apres-c2-r2.json",
+   "build": "apres",
+   "scenario": "c2",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 499,
+   "plusLongueImagePendantChargementMs": 133,
+   "premieres2s": {
+    "images": 94,
+    "p95": 33.4,
+    "pire": 33.4,
+    "au_dela_1_5x": 26,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 981,
+    "p95": 33.3,
+    "pire": 50,
+    "au_dela_1_5x": 100,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 50,
+   "sha256": "0502cc15304c3bb3"
+  },
+  {
+   "fichier": "apres-c2-r3.json",
+   "build": "apres",
+   "scenario": "c2",
+   "passe": "r3",
+   "clicAuPremierEcranCourseMs": 581,
+   "plusLongueImagePendantChargementMs": 100,
+   "premieres2s": {
+    "images": 120,
+    "p95": 16.7,
+    "pire": 16.8,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 891,
+    "p95": 33.4,
+    "pire": 33.4,
+    "au_dela_1_5x": 189,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 33.4,
+   "sha256": "0502cc15304c3bb3"
+  },
+  {
+   "fichier": "apres-c2-r4.json",
+   "build": "apres",
+   "scenario": "c2",
+   "passe": "r4",
+   "clicAuPremierEcranCourseMs": 697,
+   "plusLongueImagePendantChargementMs": 183,
+   "premieres2s": {
+    "images": 120,
+    "p95": 16.8,
+    "pire": 16.8,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1080,
+    "p95": 16.8,
+    "pire": 16.8,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": null,
+   "sha256": "0502cc15304c3bb3"
+  },
+  {
+   "fichier": "apres-c2-r5.json",
+   "build": "apres",
+   "scenario": "c2",
+   "passe": "r5",
+   "clicAuPremierEcranCourseMs": 446,
+   "plusLongueImagePendantChargementMs": 83,
+   "premieres2s": {
+    "images": 119,
+    "p95": 16.8,
+    "pire": 33.3,
+    "au_dela_1_5x": 1,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1079,
+    "p95": 16.8,
+    "pire": 33.4,
+    "au_dela_1_5x": 1,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 33.4,
+   "sha256": "0502cc15304c3bb3"
+  },
+  {
+   "fichier": "apres-duo-r1.json",
+   "build": "apres",
+   "scenario": "duo",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 383,
+   "plusLongueImagePendantChargementMs": 100,
+   "premieres2s": {
+    "images": 120,
+    "p95": 16.7,
+    "pire": 16.8,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 997,
+    "p95": 33.3,
+    "pire": 50,
+    "au_dela_1_5x": 81,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 50,
+   "sha256": "0502cc15304c3bb3"
+  },
+  {
+   "fichier": "apres-duo-r2.json",
+   "build": "apres",
+   "scenario": "duo",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 409,
+   "plusLongueImagePendantChargementMs": 83,
+   "premieres2s": {
+    "images": 87,
+    "p95": 33.4,
+    "pire": 33.5,
+    "au_dela_1_5x": 33,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 812,
+    "p95": 33.4,
+    "pire": 50,
+    "au_dela_1_5x": 255,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 50,
+   "sha256": "0502cc15304c3bb3"
+  },
+  {
+   "fichier": "apres-duo-r3.json",
+   "build": "apres",
+   "scenario": "duo",
+   "passe": "r3",
+   "clicAuPremierEcranCourseMs": 783,
+   "plusLongueImagePendantChargementMs": 117,
+   "premieres2s": {
+    "images": 98,
+    "p95": 33.4,
+    "pire": 50,
+    "au_dela_1_5x": 19,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 891,
+    "p95": 33.4,
+    "pire": 50,
+    "au_dela_1_5x": 189,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 50,
+   "sha256": "0502cc15304c3bb3"
+  },
+  {
+   "fichier": "apres-sw-r1.json",
+   "build": "apres",
+   "scenario": "sw",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 2861,
+   "plusLongueImagePendantChargementMs": 1717,
+   "premieres2s": {
+    "images": 10,
+    "p95": 266.7,
+    "pire": 266.7,
+    "au_dela_1_5x": 5,
+    "au_dela_50ms": 9
+   },
+   "ensuite": {
+    "images": 167,
+    "p95": 466.7,
+    "pire": 2916.5,
+    "au_dela_1_5x": 30,
+    "au_dela_50ms": 159
+   },
+   "pireApresEcranCourseMs": 2916.5,
+   "sha256": "0502cc15304c3bb3"
+  },
+  {
+   "fichier": "apres-sw-r2.json",
+   "build": "apres",
+   "scenario": "sw",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 6094,
+   "plusLongueImagePendantChargementMs": 4650,
+   "premieres2s": {
+    "images": 4,
+    "p95": 533.3,
+    "pire": 533.3,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 3
+   },
+   "ensuite": {
+    "images": 3,
+    "p95": 22049.2,
+    "pire": 22049.2,
+    "au_dela_1_5x": 3,
+    "au_dela_50ms": 3
+   },
+   "pireApresEcranCourseMs": 22049.2,
+   "sha256": "0502cc15304c3bb3"
+  },
+  {
+   "fichier": "apres-sw-r3.json",
+   "build": "apres",
+   "scenario": "sw",
+   "passe": "r3",
+   "clicAuPremierEcranCourseMs": 3731,
+   "plusLongueImagePendantChargementMs": 1433,
+   "premieres2s": {
+    "images": 10,
+    "p95": 233.3,
+    "pire": 233.3,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 9
+   },
+   "ensuite": {
+    "images": 216,
+    "p95": 233.4,
+    "pire": 566.7,
+    "au_dela_1_5x": 7,
+    "au_dela_50ms": 215
+   },
+   "pireApresEcranCourseMs": 566.7,
+   "sha256": "0502cc15304c3bb3"
+  },
+  {
+   "fichier": "avant-c0-r1.json",
+   "build": "avant",
+   "scenario": "c0",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 527,
+   "plusLongueImagePendantChargementMs": 483,
+   "premieres2s": {
+    "images": 108,
+    "p95": 33.3,
+    "pire": 33.4,
+    "au_dela_1_5x": 12,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 888,
+    "p95": 33.4,
+    "pire": 383.4,
+    "au_dela_1_5x": 175,
+    "au_dela_50ms": 1
+   },
+   "pireApresEcranCourseMs": 483.4,
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "avant-c0-r2.json",
+   "build": "avant",
+   "scenario": "c0",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 218,
+   "plusLongueImagePendantChargementMs": 150,
+   "premieres2s": {
+    "images": 120,
+    "p95": 16.8,
+    "pire": 16.8,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1080,
+    "p95": 16.8,
+    "pire": 16.8,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 150,
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "avant-c0-r3.json",
+   "build": "avant",
+   "scenario": "c0",
+   "passe": "r3",
+   "clicAuPremierEcranCourseMs": 303,
+   "plusLongueImagePendantChargementMs": 250,
+   "premieres2s": {
+    "images": 120,
+    "p95": 16.7,
+    "pire": 16.8,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1079,
+    "p95": 16.7,
+    "pire": 33.4,
+    "au_dela_1_5x": 1,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 250,
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "avant-c2-r1.json",
+   "build": "avant",
+   "scenario": "c2",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 604,
+   "plusLongueImagePendantChargementMs": 533,
+   "premieres2s": {
+    "images": 79,
+    "p95": 33.4,
+    "pire": 33.4,
+    "au_dela_1_5x": 41,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 943,
+    "p95": 33.4,
+    "pire": 66.7,
+    "au_dela_1_5x": 125,
+    "au_dela_50ms": 2
+   },
+   "pireApresEcranCourseMs": 66.7,
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "avant-c2-r2.json",
+   "build": "avant",
+   "scenario": "c2",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 216,
+   "plusLongueImagePendantChargementMs": 167,
+   "premieres2s": {
+    "images": 120,
+    "p95": 16.7,
+    "pire": 16.8,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1066,
+    "p95": 16.8,
+    "pire": 50,
+    "au_dela_1_5x": 13,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 166.7,
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "avant-c2-r3.json",
+   "build": "avant",
+   "scenario": "c2",
+   "passe": "r3",
+   "clicAuPremierEcranCourseMs": 421,
+   "plusLongueImagePendantChargementMs": 350,
+   "premieres2s": {
+    "images": 120,
+    "p95": 16.8,
+    "pire": 33.4,
+    "au_dela_1_5x": 1,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1080,
+    "p95": 16.7,
+    "pire": 16.8,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 33.4,
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "avant-c2-r4.json",
+   "build": "avant",
+   "scenario": "c2",
+   "passe": "r4",
+   "clicAuPremierEcranCourseMs": 387,
+   "plusLongueImagePendantChargementMs": 333,
+   "premieres2s": {
+    "images": 120,
+    "p95": 16.7,
+    "pire": 16.8,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1080,
+    "p95": 16.8,
+    "pire": 16.8,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 333.4,
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "avant-c2-r5.json",
+   "build": "avant",
+   "scenario": "c2",
+   "passe": "r5",
+   "clicAuPremierEcranCourseMs": 440,
+   "plusLongueImagePendantChargementMs": 383,
+   "premieres2s": {
+    "images": 115,
+    "p95": 33.3,
+    "pire": 33.4,
+    "au_dela_1_5x": 6,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1078,
+    "p95": 16.8,
+    "pire": 33.4,
+    "au_dela_1_5x": 2,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 383.3,
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "avant-duo-r1.json",
+   "build": "avant",
+   "scenario": "duo",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 294,
+   "plusLongueImagePendantChargementMs": 233,
+   "premieres2s": {
+    "images": 80,
+    "p95": 33.4,
+    "pire": 33.4,
+    "au_dela_1_5x": 39,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 989,
+    "p95": 33.3,
+    "pire": 33.4,
+    "au_dela_1_5x": 92,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 233.3,
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "avant-duo-r2.json",
+   "build": "avant",
+   "scenario": "duo",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 240,
+   "plusLongueImagePendantChargementMs": 167,
+   "premieres2s": {
+    "images": 89,
+    "p95": 33.4,
+    "pire": 33.4,
+    "au_dela_1_5x": 32,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 840,
+    "p95": 33.4,
+    "pire": 50.1,
+    "au_dela_1_5x": 238,
+    "au_dela_50ms": 1
+   },
+   "pireApresEcranCourseMs": 50.1,
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "avant-duo-r3.json",
+   "build": "avant",
+   "scenario": "duo",
+   "passe": "r3",
+   "clicAuPremierEcranCourseMs": 425,
+   "plusLongueImagePendantChargementMs": 333,
+   "premieres2s": {
+    "images": 117,
+    "p95": 16.8,
+    "pire": 33.4,
+    "au_dela_1_5x": 3,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 986,
+    "p95": 33.3,
+    "pire": 50,
+    "au_dela_1_5x": 97,
+    "au_dela_50ms": 0
+   },
+   "pireApresEcranCourseMs": 50,
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "avant-sw-r1.json",
+   "build": "avant",
+   "scenario": "sw",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 611,
+   "plusLongueImagePendantChargementMs": 567,
+   "premieres2s": {
+    "images": 4,
+    "p95": 916.6,
+    "pire": 916.6,
+    "au_dela_1_5x": 3,
+    "au_dela_50ms": 3
+   },
+   "ensuite": {
+    "images": 210,
+    "p95": 300,
+    "pire": 733.4,
+    "au_dela_1_5x": 20,
+    "au_dela_50ms": 209
+   },
+   "pireApresEcranCourseMs": 916.6,
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "avant-sw-r2.json",
+   "build": "avant",
+   "scenario": "sw",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 470,
+   "plusLongueImagePendantChargementMs": 17,
+   "premieres2s": {
+    "images": 2,
+    "p95": 1816.6,
+    "pire": 1816.6,
+    "au_dela_1_5x": 1,
+    "au_dela_50ms": 1
+   },
+   "ensuite": {
+    "images": 74,
+    "p95": 1766.6,
+    "pire": 2233.2,
+    "au_dela_1_5x": 30,
+    "au_dela_50ms": 71
+   },
+   "pireApresEcranCourseMs": 2233.2,
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "avant-sw-r3.json",
+   "build": "avant",
+   "scenario": "sw",
+   "passe": "r3",
+   "clicAuPremierEcranCourseMs": 144,
+   "plusLongueImagePendantChargementMs": null,
+   "premieres2s": {
+    "images": 0,
+    "p95": null,
+    "pire": null,
+    "au_dela_1_5x": 0,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 38,
+    "p95": 6266.4,
+    "pire": 7599.7,
+    "au_dela_1_5x": 13,
+    "au_dela_50ms": 38
+   },
+   "pireApresEcranCourseMs": 7599.7,
+   "sha256": "46a0b0af1311c310"
+  }
+ ]
+}

@@ -54,7 +54,10 @@
     });
     return { objets, stats: { rubans: 0, objets: 0, triangles: 0, intensite: 0 } };
   }
-  function creer(circuit) {
+  const PREPARATION = 'aurores';
+  // Partie statique d'une scène : les trois rubans ne dépendent que du circuit (emprise, altitude, graine).
+  // L'appelant peut la garder sur la scène ; creer() refuse celle d'un autre circuit et la refait alors.
+  function preparer(circuit) {
     const c = circuit || {}, actif = c.theme === 'islande';
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity, haut = 0;
     for (let i = 0; i < (c.x ? c.x.length : 0); i++) {
@@ -68,10 +71,16 @@
     for (let i = 0; i < 3; i++) {
       const phase = hache(graine ^ Math.imul(i + 1, 7919)) * TAU, a = i * TAU / 3 + .15 + phase * .09;
       const d = rayon + i * 170;
-      rubans.push({ x: cx + Math.sin(a) * d, y: haut + 780 + i * 90, z: cz - Math.cos(a) * d,
-        cap: -a, largeur: 3380 - i * 150, hauteur: 390 - i * 28, profondeur: 620 + i * 55, phase });
+      rubans.push(Object.freeze({ x: cx + Math.sin(a) * d, y: haut + 780 + i * 90, z: cz - Math.cos(a) * d,
+        cap: -a, largeur: 3380 - i * 150, hauteur: 390 - i * 28, profondeur: 620 + i * 55, phase }));
     }
-    return { actif, rubans, vues: actif ? [vue(), vue()] : [], stats: { rubans: 0, objets: 0, triangles: 0, intensite: 0 } };
+    return Object.freeze({ type: PREPARATION, circuit, actif, rubans: Object.freeze(rubans) });
+  }
+  // creer(circuit) seul calcule aussi les rubans ; avec la préparation du même circuit, seuls les objets des deux vues sont créés.
+  function creer(circuit, preparation) {
+    const p = preparation && preparation.type === PREPARATION && preparation.circuit === circuit ? preparation : preparer(circuit);
+    return { actif: p.actif, rubans: p.rubans, preparation: p, vues: p.actif ? [vue(), vue()] : [],
+      stats: { rubans: 0, objets: 0, triangles: 0, intensite: 0 } };
   }
   function dessiner(etat, temps, contexte, sortie) {
     const c = contexte || {}, v = etat.actif ? etat.vues[c.vue === 1 ? 1 : 0] : null;
@@ -101,5 +110,5 @@
     stats.rubans = budget; stats.objets = budget * BANDES; stats.triangles = stats.objets * SEGMENTS * 8; stats.intensite = intensite;
     return stats;
   }
-  B.aurores = { creer, dessiner, BUDGETS, MAX_OBJETS: 18, TRIANGLES_PAR_RUBAN: BANDES * SEGMENTS * 8 };
+  B.aurores = { preparer, creer, dessiner, BUDGETS, MAX_OBJETS: 18, TRIANGLES_PAR_RUBAN: BANDES * SEGMENTS * 8 };
 })(globalThis.BITUME = globalThis.BITUME || {});

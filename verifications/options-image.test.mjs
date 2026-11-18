@@ -9,6 +9,8 @@ require('../src/ambiance.js');
 require('../src/saisons.js');
 require('../src/conditions-course.js');
 require('../src/qualite.js');
+// la lecture des réglages normalise aussi la cadence d'images (src/cadence.js, chargé avant jeu.js)
+require('../src/cadence.js');
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 function bloc(debut, fin) {
   const a = source.indexOf(debut), b = source.indexOf(fin, a);
@@ -56,12 +58,16 @@ const executer = new Function('B', 'stockage', `
     } };
     return session;
   }
+  // la cadence de la boucle, créée comme dans jeu.js avec le réglage lu
+  const cadence = B.cadence.creer({ hz: 120, maxPas: 14, mode: reglages.cadence });
   ${bloc("  document.addEventListener('change', e => {", "  for (const nom of ['general', 'moteur', 'effets'])")}
   ${bloc('  function restaurerReference()', '  // Banc (console)')}
   lancer('course',0);
   return { reglages, stockage, appels, radios, installer, reference, restaurerReference, lancer,
-    preparer: () => { ecran = 'preparation'; },
+    preparer: () => { ecran = 'preparation'; }, enCourse: () => { ecran = 'course'; },
+    lireStock, ecrireStock, differerStock, viderStock,
     get session() { return session; }, get scene() { return scene; }, get profil() { return profilDe(session); },
+    etatCadence: () => B.cadence.etat(cadence),
     choisir: (name,value) => ecouteurs.get('change')({ target: { name, value } }) };
 `);
 function jeu(prefs = {}) {
@@ -92,6 +98,19 @@ verifier('gestionnaire change : les trois choix sont sauvegardés et rechargés'
   j.choisir('vegetation','inconnue');
   assert.equal(j.reglages.vegetation,'profil');
   assert.equal(JSON.parse(j.stockage['bitume.reglages']).vegetation,'profil');
+});
+
+verifier('cadence : valeur normalisée au chargement, choix du menu sauvegardé et donné à la cadence', () => {
+  for (const [stocke, attendu] of [[undefined, 'auto'], ['Écran', 'ecran'], [' 60 ', '60'], [120, '120'], ['144', 'auto'], ['n importe', 'auto']])
+    assert.equal(jeu(stocke === undefined ? {} : { cadence: stocke }).reglages.cadence, attendu, String(stocke));
+  const j = jeu();
+  assert.equal(j.etatCadence().mode, 'auto');
+  j.choisir('cadence', '30');
+  assert.equal(j.reglages.cadence, '30'); assert.equal(JSON.parse(j.stockage['bitume.reglages']).cadence, '30');
+  assert.equal(j.etatCadence().mode, '30', 'la boucle suit le menu sans redémarrer');
+  assert.equal(jeu(JSON.parse(j.stockage['bitume.reglages'])).reglages.cadence, '30', 'rechargé tel quel');
+  j.choisir('cadence', 'bidon');
+  assert.equal(j.reglages.cadence, 'auto'); assert.equal(j.etatCadence().mode, 'auto');
 });
 
 verifier('faune et moment avant départ : préférences indépendantes persistées', () => {
@@ -164,6 +183,26 @@ verifier('reference(options) applique les surcharges et restitue les préférenc
   assert.equal(j.reglages.moment,initial.moment);assert.equal(j.profil.faune,initial.faune);
   assert.equal(j.scene.vegetationQualite,'low');
   assert.equal(j.stockage['bitume.reglages'],stockAvant);
+});
+
+// File des écritures (src/jeu.js, differerStock) : en course, localStorage n'est jamais écrit dans l'image ; une
+// lecture de la clé en attente vide la file d'abord, une écriture directe remplace la valeur en attente.
+verifier('stockage : écritures de course différées, relues fraîches, calculées à la vidange', () => {
+  const j = jeu();
+  j.enCourse();
+  const avant = j.appels.ecritures.length;
+  j.choisir('ombres', 'medium');
+  assert.equal(j.appels.ecritures.length, avant, 'aucune écriture pendant la course');
+  assert.equal(j.lireStock('bitume.reglages', {}).ombres, 'medium', 'la lecture vide la file et relit la valeur');
+  assert.equal(j.appels.ecritures.length, avant + 1);
+  let encodages = 0;
+  j.differerStock('essai', () => { encodages++; return { n: 1 }; });
+  assert.equal(encodages, 0, 'valeur calculée seulement à la vidange');
+  j.viderStock(); j.viderStock();
+  assert.equal(encodages, 1, 'une seule écriture par valeur en attente');
+  assert.deepEqual(JSON.parse(j.stockage.essai), { n: 1 });
+  j.differerStock('essai', { n: 2 }); j.ecrireStock('essai', { n: 3 }); j.viderStock();
+  assert.deepEqual(JSON.parse(j.stockage.essai), { n: 3 }, 'une écriture directe remplace la valeur en attente');
 });
 
 verifier('références successives sans options reviennent au profil, puis aux choix antérieurs', () => {

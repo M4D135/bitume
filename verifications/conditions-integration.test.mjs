@@ -38,13 +38,20 @@ const fabriquer = new Function('B', 'options', `
   const reglages = { circuit: 0, tours: 3, difficulte: 1, saison: 'ete', moment: 'jour', meteo: 'soleil',
     saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', pneus: 'slicks', boite: 'auto', vue: 'cockpit', joueursLocaux: 1 };
   const son = null, palier = {}, pad2 = null, hud2 = $('hud2'), jeu = $('jeu'), estTactile = true;
-  const aDeux = () => false, secouerManette = () => {}, tactile = () => {}, appliquerVolumes = () => {};
+  const aDeux = () => false, secouerManette = () => {}, tactile = () => {}, appliquerVolumes = () => {}, viderStock = () => {};
   const remplirReglages = () => {}, message = () => {}, sousMessage = () => {}, finirClassement = () => {}, montrerResultats = () => {};
   const remplirPreparation = () => { actualiserConditions(); };
   const lancer = (type, i, cfg, conditions) => {
     departs.push({ type, i, cfg, conditions });
     if (type === 'vitrine') session = { type, i, nature: { saison: B.saisons.profil((conditions || conditionsDuDepart()).saison, CATALOGUE[i].theme) } };
   };
+  // Préparation sous voile (jeu.js) : ses étapes cèdent des images ; ici, la séance part au bout de 30 ms, si sa
+  // condition (même écran, même liaison) tient encore, puis vient l'écran de course.
+  const lancerVitrine = (i, k) => lancer('vitrine', i, null, k);
+  const preparerSeance = (type, i, enl, conditions, o = {}) => setTimeout(() => {
+    if (o.verifier && !o.verifier()) return;
+    lancer(type, i, enl, conditions); aller(type === 'demo' ? 'demo' : 'course'); if (o.apres) o.apres();
+  }, 30);
   B.conditionsCourse.resoudre = (regles, opts) => {
     const row = { regles: structuredClone(regles), options: opts }; resolutions.push(row);
     if (options.resoudre) return options.resoudre(regles, opts, resolutions.length);

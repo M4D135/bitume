@@ -1,0 +1,253 @@
+{
+ "valeur": {
+  "ref": {
+   "graine": 17017,
+   "circuit": 0,
+   "circuitId": "val-brule",
+   "graineCircuit": 11,
+   "mode": "solo",
+   "qualite": "high",
+   "anticrenelage": "profil",
+   "ombres": "profil",
+   "vegetation": "profil",
+   "faune": "profil",
+   "moment": "jour",
+   "saison": "ete",
+   "difficulte": 1,
+   "tours": 3,
+   "pilote": true,
+   "vue": "cockpit",
+   "vue2": "cockpit",
+   "partage": "haut-bas",
+   "retro": "oui",
+   "meteo": "soleil",
+   "mouille": 0,
+   "depart": 800,
+   "vitesse": 75,
+   "decor": "enrichi",
+   "tunnel": null
+  },
+  "fige": {
+   "parImage": {
+    "principal": {
+     "rendus": 60,
+     "objets": 1501,
+     "drawCalls": 287,
+     "triangles": 4112580,
+     "instances": 5139,
+     "staticVisible": 0,
+     "staticCulled": 0,
+     "lotsVisibles": 38,
+     "shadowMaps": 1,
+     "fxInstances": 64,
+     "width": 1440,
+     "height": 900,
+     "pixelRatio": 1
+    },
+    "glace -343.18,-1.48,-705.23": {
+     "rendus": 30,
+     "objets": 1150,
+     "drawCalls": 125,
+     "triangles": 1384394,
+     "instances": 3203,
+     "staticVisible": 0,
+     "staticCulled": 0,
+     "lotsVisibles": 15,
+     "shadowMaps": 0,
+     "fxInstances": 438,
+     "width": 468,
+     "height": 142,
+     "pixelRatio": 1.419213562373095
+    },
+    "glace -343.33,-1.48,-705.79": {
+     "rendus": 30,
+     "objets": 1150,
+     "drawCalls": 125,
+     "triangles": 1406928,
+     "instances": 3928,
+     "staticVisible": 0,
+     "staticCulled": 0,
+     "lotsVisibles": 15,
+     "shadowMaps": 0,
+     "fxInstances": 438,
+     "width": 468,
+     "height": 142,
+     "pixelRatio": 1.419213562373095
+    }
+   },
+   "cpuMsMediane": 4,
+   "images": 60
+  },
+  "cadence": {
+   "60 Hz": {
+    "images": 120,
+    "etatCadence": {
+     "mode": "auto",
+     "periodeMs": 16.66666666666697,
+     "hz": 59.999999999998906,
+     "diviseur": 1,
+     "diviseurStable": 1,
+     "diviseurMax": 2,
+     "cibleMs": 16.66666666666697,
+     "ips": 59.99999999992587,
+     "verrouille": true,
+     "pasParPeriode": 2,
+     "grille": true,
+     "reestimations": 0,
+     "grillesTropFines": 0,
+     "bride": false,
+     "periodeAvantBridageMs": null,
+     "suiteBridage": 8,
+     "images": 260,
+     "ratees": 0,
+     "hausses": 0,
+     "pasAbandonnes": 2,
+     "fenetre": {
+      "images": 0,
+      "ratees": 0,
+      "part": 0
+     },
+     "regulierS": 0,
+     "travailMs": 1.9536666364421758,
+     "essais": {
+      "enCours": false,
+      "faits": 0,
+      "rates": 0,
+      "reussis": 0,
+      "restants": 3,
+      "delaiS": 20
+     }
+    },
+    "principalParS": 60,
+    "glaceParS": 60
+   },
+   "120 Hz": {
+    "images": 240,
+    "etatCadence": {
+     "mode": "auto",
+     "periodeMs": 8.333333333333938,
+     "hz": 119.99999999999129,
+     "diviseur": 1,
+     "diviseurStable": 1,
+     "diviseurMax": 5,
+     "cibleMs": 8.333333333333938,
+     "ips": 119.99999999999122,
+     "verrouille": true,
+     "pasParPeriode": 1,
+     "grille": true,
+     "reestimations": 1,
+     "grillesTropFines": 0,
+     "bride": false,
+     "periodeAvantBridageMs": null,
+     "suiteBridage": 8,
+     "images": 616,
+     "ratees": 0,
+     "hausses": 0,
+     "pasAbandonnes": 2,
+     "fenetre": {
+      "images": 0,
+      "ratees": 0,
+      "part": 0
+     },
+     "regulierS": 0,
+     "travailMs": 3.650672920780238,
+     "essais": {
+      "enCours": false,
+      "faits": 0,
+      "rates": 0,
+      "reussis": 0,
+      "restants": 3,
+      "delaiS": 20
+     }
+    },
+    "principalParS": 120,
+    "glaceParS": 60
+   },
+   "144 Hz": {
+    "images": 288,
+    "etatCadence": {
+     "mode": "auto",
+     "periodeMs": 6.944444444445253,
+     "hz": 143.99999999998323,
+     "diviseur": 1,
+     "diviseurStable": 1,
+     "diviseurMax": 6,
+     "cibleMs": 6.944444444445253,
+     "ips": 143.9999999999832,
+     "verrouille": false,
+     "pasParPeriode": null,
+     "grille": true,
+     "reestimations": 2,
+     "grillesTropFines": 0,
+     "bride": false,
+     "periodeAvantBridageMs": null,
+     "suiteBridage": 8,
+     "images": 1046,
+     "ratees": 0,
+     "hausses": 0,
+     "pasAbandonnes": 2,
+     "fenetre": {
+      "images": 0,
+      "ratees": 0,
+      "part": 0
+     },
+     "regulierS": 0,
+     "travailMs": 7.959883861810048,
+     "essais": {
+      "enCours": false,
+      "faits": 0,
+      "rates": 0,
+      "reussis": 0,
+      "restants": 3,
+      "delaiS": 20
+     }
+    },
+    "principalParS": 144,
+    "glaceParS": 60
+   },
+   "30 Hz": {
+    "images": 60,
+    "etatCadence": {
+     "mode": "auto",
+     "periodeMs": 33.333333333333925,
+     "hz": 29.999999999999467,
+     "diviseur": 1,
+     "diviseurStable": 1,
+     "diviseurMax": 1,
+     "cibleMs": 33.333333333333925,
+     "ips": 30.001947369598618,
+     "verrouille": true,
+     "pasParPeriode": 4,
+     "grille": true,
+     "reestimations": 3,
+     "grillesTropFines": 0,
+     "bride": true,
+     "periodeAvantBridageMs": 6.666714904537376,
+     "suiteBridage": 8,
+     "images": 1135,
+     "ratees": 71,
+     "hausses": 0,
+     "pasAbandonnes": 2,
+     "fenetre": {
+      "images": 0,
+      "ratees": 0,
+      "part": 0
+     },
+     "regulierS": 0,
+     "travailMs": 5.612750658943253,
+     "essais": {
+      "enCours": false,
+      "faits": 0,
+      "rates": 0,
+      "reussis": 0,
+      "restants": 3,
+      "delaiS": 20
+     }
+    },
+    "principalParS": 30,
+    "glaceParS": 60
+   }
+  }
+ },
+ "erreurs": []
+}

@@ -1,0 +1,230 @@
+{
+ "herbier-c0-scalaire": {
+  "circuit": 0,
+  "charge": [
+   32.6,
+   46.3,
+   32.4
+  ],
+  "reps": 5,
+  "volumes": {
+   "triangles": 73315,
+   "sources": 45592,
+   "masques": 3861,
+   "pointsSurface": 200000,
+   "pointsSurHerbe": 197975
+  },
+  "identite": {
+   "serre": [],
+   "wasm": []
+  },
+  "ecartsSurface": 0,
+  "wasm": {
+   "fichier": "herbier.wasm",
+   "octets": 5963,
+   "base64": 7952,
+   "compilationMs": 0.17,
+   "instanciationMs": 0.04
+  },
+  "tempsMs": {
+   "original": {
+    "med": 739,
+    "min": 518.7,
+    "max": 922
+   },
+   "serre": {
+    "med": 258.7,
+    "min": 239,
+    "max": 339.9
+   },
+   "wasm": {
+    "med": 155.8,
+    "min": 131.5,
+    "max": 213.4
+   },
+   "serrePreparer": {
+    "med": 82.6,
+    "min": 64.2,
+    "max": 88.7
+   },
+   "serreNoyau": {
+    "med": 177.7,
+    "min": 139.6,
+    "max": 239.4
+   },
+   "serreFinir": {
+    "med": 12.9,
+    "min": 10.8,
+    "max": 24.2
+   },
+   "wasmNoyau": {
+    "med": 59.5,
+    "min": 51.3,
+    "max": 99.2
+   },
+   "surfaceOriginal": {
+    "med": 354.1,
+    "min": 284.6,
+    "max": 534.9
+   },
+   "surfaceSerre": {
+    "med": 294.6,
+    "min": 258.1,
+    "max": 404.8
+   }
+  },
+  "unite": "ms de processeur du fil principal (process.threadCpuUsage), médiane de 5 essais alternés ; surface = 200 000 requêtes"
+ },
+ "herbier-c0-simd": {
+  "circuit": 0,
+  "charge": [
+   23.5,
+   43.1,
+   31.6
+  ],
+  "reps": 5,
+  "volumes": {
+   "triangles": 73315,
+   "sources": 45592,
+   "masques": 3861,
+   "pointsSurface": 200000,
+   "pointsSurHerbe": 197975
+  },
+  "identite": {
+   "serre": [],
+   "wasm": []
+  },
+  "ecartsSurface": 0,
+  "wasm": {
+   "fichier": "herbier-simd.wasm",
+   "octets": 5949,
+   "base64": 7932,
+   "compilationMs": 0.26,
+   "instanciationMs": 0.07
+  },
+  "tempsMs": {
+   "original": {
+    "med": 598,
+    "min": 477.3,
+    "max": 1313.2
+   },
+   "serre": {
+    "med": 218.5,
+    "min": 193.4,
+    "max": 585.1
+   },
+   "wasm": {
+    "med": 117.8,
+    "min": 104.5,
+    "max": 349.9
+   },
+   "serrePreparer": {
+    "med": 60.3,
+    "min": 47.4,
+    "max": 190.7
+   },
+   "serreNoyau": {
+    "med": 148.4,
+    "min": 137.1,
+    "max": 374.8
+   },
+   "serreFinir": {
+    "med": 9.7,
+    "min": 8.9,
+    "max": 67.1
+   },
+   "wasmNoyau": {
+    "med": 52.8,
+    "min": 46.3,
+    "max": 108.2
+   },
+   "surfaceOriginal": {
+    "med": 252.7,
+    "min": 229.4,
+    "max": 918.6
+   },
+   "surfaceSerre": {
+    "med": 166.2,
+    "min": 143,
+    "max": 655
+   }
+  },
+  "unite": "ms de processeur du fil principal (process.threadCpuUsage), médiane de 5 essais alternés ; surface = 200 000 requêtes"
+ },
+ "herbier-c2-scalaire": {
+  "circuit": 2,
+  "charge": [
+   31.6,
+   35.8,
+   39.4
+  ],
+  "reps": 3,
+  "volumes": {
+   "triangles": 57427,
+   "sources": 31251,
+   "masques": 4250,
+   "pointsSurface": 200000,
+   "pointsSurHerbe": 127054
+  },
+  "identite": {
+   "serre": [],
+   "wasm": []
+  },
+  "ecartsSurface": 0,
+  "wasm": {
+   "fichier": "herbier.wasm",
+   "octets": 5963,
+   "base64": 7952,
+   "compilationMs": 0.26,
+   "instanciationMs": 0.17
+  },
+  "tempsMs": {
+   "original": {
+    "med": 1162.8,
+    "min": 1109.4,
+    "max": 1304
+   },
+   "serre": {
+    "med": 455.5,
+    "min": 440.4,
+    "max": 492.8
+   },
+   "wasm": {
+    "med": 258.6,
+    "min": 204.7,
+    "max": 278.5
+   },
+   "serrePreparer": {
+    "med": 133.3,
+    "min": 128.1,
+    "max": 148.5
+   },
+   "serreNoyau": {
+    "med": 290.2,
+    "min": 277.9,
+    "max": 301.6
+   },
+   "serreFinir": {
+    "med": 34.3,
+    "min": 32,
+    "max": 42.8
+   },
+   "wasmNoyau": {
+    "med": 80.8,
+    "min": 80.7,
+    "max": 96.5
+   },
+   "surfaceOriginal": {
+    "med": 508.1,
+    "min": 506.6,
+    "max": 834.3
+   },
+   "surfaceSerre": {
+    "med": 362.1,
+    "min": 323.1,
+    "max": 577.7
+   }
+  },
+  "unite": "ms de processeur du fil principal (process.threadCpuUsage), médiane de 3 essais alternés ; surface = 200 000 requêtes"
+ }
+}

@@ -323,6 +323,15 @@
         <label><input type="radio" name="qualite" value="high"><span>Fine</span></label>
         <p class="note-graphismes">Les réglages « Selon qualité » suivent ce profil.</p>
       </fieldset>
+      <fieldset aria-describedby="note-cadence">
+        <legend>Cadence d’images</legend>
+        <label><input type="radio" name="cadence" value="auto"><span>Auto</span></label>
+        <label><input type="radio" name="cadence" value="ecran"><span>Écran</span></label>
+        <label><input type="radio" name="cadence" value="120"><span>120 i/s</span></label>
+        <label><input type="radio" name="cadence" value="60"><span>60 i/s</span></label>
+        <label><input type="radio" name="cadence" value="30"><span>30 i/s</span></label>
+        <p class="note-graphismes" id="note-cadence">Auto suit l’écran et ne divise sa cadence que si la machine ne la tient plus (en qualité Auto, une fois celle-ci au plus bas). Écran suit toujours l’écran ; 120, 60 et 30 visent le diviseur de l’écran le plus proche.</p>
+      </fieldset>
       <fieldset>
         <legend>Anticrénelage</legend>
         <label><input type="radio" name="anticrenelage" value="profil"><span>Selon qualité</span></label>
@@ -468,7 +477,7 @@
       <button type="button" class="discret" id="detection-annuler">Passer</button>
     </div>
   </div>
-  <div id="chargement" class="chargement" role="status"><span>Préparation du circuit…</span></div>
+  <div id="chargement" class="chargement" role="status" aria-live="polite"><span class="chargement-titre">Préparation du circuit…</span><span id="chargement-etape" class="chargement-etape"></span><progress id="chargement-progres" class="chargement-progres" max="1" value="0" aria-label="Progression du chargement"></progress></div>
   <div id="erreur" class="erreur" role="alert" hidden></div>
 </main>
 <!--MODULES-->

@@ -14,6 +14,7 @@
   const cleSol = (x, z) => (x + 32768) * 65536 + z + 32768;
   const hache = cle => melanger((cle | 0) ^ Math.floor(cle / 4294967296));
   const PALETTES = [[.68, .20, .035], [.86, .43, .065], [.51, .13, .04], [.72, .50, .09]];
+  const PREPARATION = 'effets-saison';
   function objet(type) {
     return { shape: 'octa', p: [0, 0, 0], s: [0, 0, 0], r: [0, 0, 0], color: [1, 1, 1],
       alpha: 0, emissive: 0, mat: 7, fx: true, overlay: false, outdoor: true, surface: 'object',
@@ -25,6 +26,7 @@
       x: 0, z: 0, bas: 0, haut: 0, rayon: 0, phase: 0, phase2: 0, duree: 0, taille: 0 };
     return { type, slots, plan: new Float64Array(n), sols: new Float64Array(n), nombre: 0, limite: 0,
       demande: -1, entier: -1, partiel: -1, proprietaires: new Float64Array(2048).fill(-1), indices: new Int16Array(2048),
+      positions: new Uint16Array(n), nPositions: 0,
       libres: new Uint16Array(n), comptes: new Uint16Array(32), debuts: new Uint16Array(32) };
   }
   function vue() {
@@ -33,7 +35,12 @@
       distances: new Float64Array(125), sols: new Float64Array(125), nombre: 0,
       stats: { feuilles: 0, neige: 0, objets: 0, requetes: 0 } };
   }
-  function creer(c, decor) {
+  // Préparation statique d'une scène : masques de route, de tunnel et de toits, sources de feuilles et cache des
+  // hauteurs de sol. Rien n'y dépend du palier, de la vue ni de l'horloge ; le cache des sols, rempli au fil des
+  // sélections, ne mémorise que des valeurs exactes du décor et se partage donc sans risque entre vues et séances.
+  // Le circuit et le décor d'origine sont gardés pour que creer() refuse une préparation d'une autre scène.
+  function preparer(c, decor) {
+    const circuit = c, source = decor;
     c = c || {}; decor = decor || {};
     const profil = decor.saison || {}, interdits = new Set(), route = new Map(), sources = [];
     // Un masque conservateur couvre aussi les portails vus depuis l'extérieur.
@@ -54,22 +61,29 @@
       for (let z = Math.floor((o.z - r) / CELLULE); z <= Math.floor((o.z + r) / CELLULE); z++)
         for (let x = Math.floor((o.x - r) / CELLULE); x <= Math.floor((o.x + r) / CELLULE); x++) interdits.add(cleSol(x, z));
     }
-    const etat = { saison: profil, cote: c.theme === 'cote', graine: c.graine || 1, decor, interdits, route, sources,
-      cacheCles: new Float64Array(4096).fill(-1), cacheSols: new Float64Array(4096),
-      vues: [vue(), vue()], temps: null, ventX: 0, ventZ: 0 };
+    const statique = { type: PREPARATION, circuit, source, saison: profil, cote: c.theme === 'cote', graine: c.graine || 1, decor,
+      interdits, route, sources, cacheCles: new Float64Array(4096).fill(-1), cacheSols: new Float64Array(4096) };
     if (profil.feuilles) for (const s of decor.sourcesFeuilles || []) {
       if (![s.x, s.y, s.z, s.rayon, s.sol].every(Number.isFinite) || s.y <= s.sol + .3) continue;
       const r = Math.max(.2, s.rayon), cx = Math.floor(s.x / CELLULE), cz = Math.floor(s.z / CELLULE);
       let valide = true, sol = s.sol;
       for (let z = Math.floor((s.z - r - 2.2) / CELLULE); z <= Math.floor((s.z + r + 2.2) / CELLULE); z++)
         for (let x = Math.floor((s.x - r - 2.2) / CELLULE); x <= Math.floor((s.x + r + 2.2) / CELLULE); x++) {
-          const h = solCellule(etat, x, z); if (!Number.isFinite(h)) valide = false;
+          const h = solCellule(statique, x, z); if (!Number.isFinite(h)) valide = false;
           else sol = Math.max(sol, h);
         }
       if (valide && s.y > sol + .4 && !interdits.has(cleSol(cx, cz))) sources.push({ x: s.x, z: s.z, y: s.y, sol, rayon: r,
-        nombre: 3 + melanger(sources.length + etat.graine) % 6 });
+        nombre: 3 + melanger(sources.length + statique.graine) % 6 });
     }
-    return etat;
+    return Object.freeze(statique);
+  }
+  const preparationDe = (p, c, decor) => !!p && p.type === PREPARATION && p.circuit === c && p.source === decor;
+  // creer(c, decor) seul prépare puis crée ; creer(c, decor, preparation) reprend la partie
+  // statique de la même scène et ne crée que l'état de la séance : pools des deux vues et vent lissé.
+  function creer(c, decor, preparation) {
+    const p = preparationDe(preparation, c, decor) ? preparation : preparer(c, decor);
+    return { saison: p.saison, cote: p.cote, graine: p.graine, decor: p.decor, interdits: p.interdits, route: p.route, sources: p.sources,
+      cacheCles: p.cacheCles, cacheSols: p.cacheSols, preparation: p, vues: [vue(), vue()], temps: null, ventX: 0, ventZ: 0 };
   }
   function solCellule(e, cx, cz) {
     const cle = cleSol(cx, cz), cache = hache(cle) & 4095;
@@ -132,17 +146,27 @@
   function planifier(p, nombre, change) {
     nombre = Math.min(p.nombre, nombre); const n = Math.ceil(nombre);
     if (!change && n === p.entier) { if (p.partiel >= 0) p.slots[p.partiel].demande = Math.min(1, nombre - n + 1); return; }
-    p.entier = n; p.partiel = -1; p.proprietaires.fill(-1);
+    p.entier = n; p.partiel = -1;
+    // La table n'a été écrite qu'aux positions notées au plan précédent : les remettre à −1 la vide aussi
+    // sûrement qu'un fill des 2 048 cases, et la suite la remplit dans le même ordre, donc aux mêmes places.
+    for (let k = 0; k < p.nPositions; k++) p.proprietaires[p.positions[k]] = -1;
+    p.nPositions = 0;
+    if (n <= 0) { // Plan vide (pas de neige, ou pas de feuilles) : éteindre les slots suffit, rien ne serait réservé.
+      for (let i = 0; i < p.slots.length; i++) { const s = p.slots[i]; s.cible = -1; s.demande = 0; }
+      return;
+    }
     for (let i = 0; i < p.slots.length; i++) {
       const s = p.slots[i]; s.cible = -1; s.demande = 0;
-      if (s.cle >= 0) { const k = proprietaire(p, s.cle); p.proprietaires[k] = s.cle; p.indices[k] = i; }
+      if (s.cle >= 0) { const k = proprietaire(p, s.cle); p.proprietaires[k] = s.cle; p.indices[k] = i; p.positions[p.nPositions++] = k; }
     }
+    let nouveaux = 0;
     for (let i = 0; i < n; i++) {
       const cle = p.plan[i], k = proprietaire(p, cle);
-      if (p.proprietaires[k] !== cle) continue;
+      if (p.proprietaires[k] !== cle) { nouveaux++; continue; }
       const id = p.indices[k], s = p.slots[id]; s.cible = cle; s.demande = Math.min(1, nombre - i);
       if (i === n - 1) p.partiel = id;
     }
+    if (!nouveaux) return; // Toutes les clés gardent leur slot : le tri des slots libres ne servirait pas.
     // Réserver d'abord les slots déjà invisibles, puis les autres par poids croissant.
     // Tri par 32 classes en O(capacité), au lieu d'un scan de 480 slots par nouveau flocon.
     p.comptes.fill(0);
@@ -211,11 +235,12 @@
     }
     p.limite = limite;
   }
+  function effacerPool(p) { // Seulement à l'arrêt, jamais dans la boucle des particules.
+    for (let i = 0; i < p.slots.length; i++) { const s = p.slots[i]; s.cle = s.cible = -1; s.poids = s.demande = 0; }
+    p.limite = p.nombre = 0; p.entier = -1;
+  }
   function effacer(v) {
-    for (const p of [v.feuilles, v.neige]) { // Seulement à l'arrêt, jamais dans la boucle des particules.
-      for (const s of p.slots) { s.cle = s.cible = -1; s.poids = s.demande = 0; }
-      p.limite = p.nombre = 0; p.entier = -1;
-    }
+    effacerPool(v.feuilles); effacerPool(v.neige);
     v.x = Infinity; v.dernierTemps = null;
   }
   function dessiner(etat, temps, contexte, sortie) {
@@ -246,5 +271,5 @@
     dessinerPool(etat, v, v.neige, temps, dt, x, y, z, nuit, sortie);
     return stats;
   }
-  B.effetsSaison = { creer, dessiner, BUDGETS, MAX_OBJETS: 608, PORTEE_NEIGE, PORTEE_FEUILLES };
+  B.effetsSaison = { preparer, creer, dessiner, BUDGETS, MAX_OBJETS: 608, PORTEE_NEIGE, PORTEE_FEUILLES };
 })(globalThis.BITUME = globalThis.BITUME || {});

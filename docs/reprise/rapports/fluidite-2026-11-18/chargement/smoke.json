@@ -1,0 +1,407 @@
+{
+  "url": "file:///Users/david/Projects/bitume-wt/chargement/dist/bitume.html",
+  "parametres": {
+    "mode": "smoke",
+    "duree": 20,
+    "chauffe": 1,
+    "taille": [
+      1390,
+      1295
+    ],
+    "angle": "native",
+    "referenceJeu": {
+      "graine": 17017,
+      "circuit": 0,
+      "qualite": "high",
+      "mode": "solo",
+      "meteo": "sec",
+      "vue": "cockpit",
+      "vue2": "cockpit",
+      "partage": "haut-bas",
+      "retro": "oui",
+      "decor": "enrichi",
+      "depart": 280,
+      "vitesse": 75
+    }
+  },
+  "environnement": {
+    "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+    "rendu": "WebKit WebGL",
+    "nonMasque": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+    "webgl2": true,
+    "backend": "webgl2",
+    "chronometrageGpu": true,
+    "gpuModeste": false,
+    "resolution": [
+      1390,
+      1295
+    ],
+    "fenetre": [
+      1390,
+      1295,
+      1
+    ],
+    "visible": true,
+    "version": "V0.2.39",
+    "signature": true,
+    "liensSignature": 0
+  },
+  "build": {
+    "sha256": "0502cc15304c3bb301c483c758e529287217af89043e6ca1322aef984cd44e63",
+    "octets": 13286605
+  },
+  "banc": null,
+  "mesures": {
+    "actif": false,
+    "fps": null,
+    "imageP50": null,
+    "imageP95": null,
+    "imagePire": null,
+    "cpu": {
+      "boucle": null,
+      "simulation": null,
+      "rendu": null,
+      "effets": null,
+      "hud": null,
+      "son": null
+    },
+    "cpuP50": {
+      "boucle": null,
+      "simulation": null,
+      "rendu": null,
+      "effets": null,
+      "hud": null,
+      "son": null
+    },
+    "cpuP95": {
+      "boucle": null,
+      "simulation": null,
+      "rendu": null,
+      "effets": null,
+      "hud": null,
+      "son": null
+    },
+    "vues": {
+      "principale": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": null,
+        "drawCallsParImage": null,
+        "trianglesParImage": null
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": null,
+        "drawCallsParImage": null,
+        "trianglesParImage": null
+      },
+      "retro": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": null,
+        "drawCallsParImage": null,
+        "trianglesParImage": null
+      }
+    },
+    "gpu": false,
+    "gpuValide": false,
+    "gpuMs": null,
+    "gpuPasses": null,
+    "gpuPortee": "Moyenne des trois derniers rendus complets du moteur principal ; pas le total de l’image avec les rétroviseurs.",
+    "gpuDescartes": 0,
+    "gpuEnAttente": 0,
+    "voitures": 0,
+    "voituresTotal": 0,
+    "lampes": 0,
+    "ombres": false,
+    "palier": 0,
+    "qualite": "",
+    "profil": "",
+    "images": 0,
+    "pieces": 0,
+    "piecesTotal": 0,
+    "physx": null,
+    "audio": {
+      "actif": false,
+      "voix": 0,
+      "joueurs": 0,
+      "rivaux": 0,
+      "fondus": 0,
+      "budget": null,
+      "musique": false
+    }
+  },
+  "erreurs": [],
+  "avertissements": [],
+  "limites": [
+    "Parcours fonctionnel avec sauts de simulation : ne pas utiliser ses FPS comme mesure de performance.",
+    "Une session Chrome sans interface ne prouve ni les manettes physiques, ni une vraie partie WebRTC sur plusieurs machines."
+  ],
+  "titre": {
+    "visible": true,
+    "marque": "BITUME",
+    "signature": "m4d135"
+  },
+  "smoke": {
+    "controles": [
+      "changement de vue par vraie touche, stockage local inchangé",
+      "duo cockpit et quatre rétroviseurs",
+      "geste audio, deux moteurs éloignés et budget de cinq voix",
+      "retour au titre, réglages/résolution restaurés, musique au titre",
+      "service au stand, santé et pénalités réparées, tour invalide",
+      "crash, débris bornés, PhysX si prêt, récupération",
+      "masquage réel de l’onglet et pause automatique"
+    ],
+    "limites": [
+      "La synthèse audio est contrôlée par son état ; aucune écoute ni manette physique n’est qualifiée."
+    ],
+    "audioAvant": {
+      "actif": false,
+      "voix": 0,
+      "joueurs": 0,
+      "rivaux": 0,
+      "fondus": 0,
+      "budget": 5,
+      "musique": false
+    },
+    "stockage": {
+      "inchange": true,
+      "touche": "KeyC",
+      "allerRetour": "cockpit/poursuite/cockpit"
+    },
+    "duo": {
+      "locaux": [
+        0,
+        1
+      ],
+      "reference": {
+        "graine": 17017,
+        "circuit": 0,
+        "circuitId": "val-brule",
+        "graineCircuit": 11,
+        "mode": "duo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "soleil",
+        "mouille": 0,
+        "depart": 280,
+        "vitesse": 75,
+        "decor": "enrichi",
+        "tunnel": null
+      },
+      "tailleJ2": [
+        1390,
+        648
+      ],
+      "glaces": [
+        {
+          "id": "glace-g",
+          "visible": true
+        },
+        {
+          "id": "glace-d",
+          "visible": true
+        },
+        {
+          "id": "glace-g2",
+          "visible": true
+        },
+        {
+          "id": "glace-d2",
+          "visible": true
+        }
+      ]
+    },
+    "audioDuo": {
+      "actif": true,
+      "voix": 5,
+      "joueurs": 2,
+      "rivaux": 3,
+      "fondus": 0,
+      "budget": 5,
+      "musique": false,
+      "geste": true
+    },
+    "audioEloigne": {
+      "actif": true,
+      "voix": 5,
+      "joueurs": 2,
+      "rivaux": 2,
+      "fondus": 1,
+      "budget": 5,
+      "musique": false
+    },
+    "restauration": {
+      "ecran": "titre",
+      "reglages": {
+        "vue": "poursuite",
+        "vue2": "poursuite",
+        "partage": "haut-bas",
+        "boite": "auto",
+        "aide": 0.35,
+        "qualite": "low",
+        "general": 0.8,
+        "moteur": 0.9,
+        "effets": 0.9,
+        "tours": 5,
+        "difficulte": 2,
+        "circuit": 0,
+        "champ": 60,
+        "retro": "auto",
+        "pneus": "slicks",
+        "tableau": "reduit",
+        "carte": "oui",
+        "cartePosition": "droite",
+        "carteTaille": "normale",
+        "demo": "non",
+        "vibrations": "oui",
+        "vibrationForce": 0.5,
+        "meteo": "aleatoire",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "saisonMode": "manuel",
+        "momentMode": "manuel",
+        "secousses": 1,
+        "meteoMode": "aleatoire",
+        "champRevu": true
+      },
+      "ratio": 0.8,
+      "son": {
+        "actif": true,
+        "voix": 5,
+        "joueurs": 2,
+        "rivaux": 1,
+        "fondus": 2,
+        "budget": 5,
+        "musique": true
+      }
+    },
+    "stand": {
+      "avant": {
+        "sante": 0.3999999999999999,
+        "avaries": [
+          "adhérence",
+          "carrosserie"
+        ],
+        "dureeService": 3.94,
+        "stands": {
+          "garage0": 70,
+          "garage1": 118,
+          "d": 4.4
+        },
+        "pilote": false,
+        "reference": {
+          "graine": 17017,
+          "circuit": 0,
+          "circuitId": "val-brule",
+          "graineCircuit": 11,
+          "mode": "solo",
+          "qualite": "low",
+          "anticrenelage": "profil",
+          "ombres": "profil",
+          "vegetation": "profil",
+          "faune": "profil",
+          "moment": "jour",
+          "saison": "ete",
+          "difficulte": 1,
+          "tours": 3,
+          "pilote": false,
+          "vue": "cockpit",
+          "vue2": "cockpit",
+          "partage": "haut-bas",
+          "retro": "oui",
+          "meteo": "soleil",
+          "mouille": 0,
+          "depart": 280,
+          "vitesse": 0,
+          "decor": "enrichi",
+          "tunnel": null
+        }
+      },
+      "pendant": {
+        "phase": "service",
+        "t": 0.3833333333333337,
+        "v": 0,
+        "sante": 0.3999999999999999,
+        "affiche": "Service 3.6 s",
+        "phaseAffichee": "service"
+      },
+      "apres": {
+        "phase": "sortie",
+        "repare": true,
+        "sante": 1,
+        "adher": 1,
+        "trainee": 1,
+        "tourValide": false,
+        "affiche": "Réparée",
+        "phaseAffichee": "sortie"
+      },
+      "horloge": "avancement explicite au pas fixe, sans qualification FPS"
+    },
+    "crash": {
+      "evenements": [
+        "roue",
+        "roue",
+        "roue",
+        "roue",
+        "casse"
+      ],
+      "debris": 6,
+      "pool": 96,
+      "corps": 6,
+      "physx": {
+        "ready": true,
+        "version": "5.12.0",
+        "worlds": 1,
+        "queryCount": 0
+      }
+    },
+    "recuperation": {
+      "accident": false,
+      "recuperation": false,
+      "sante": 0.5999999999999996,
+      "tourValide": false,
+      "finite": true
+    },
+    "visibilite": {
+      "masque": true,
+      "ecran": "pause",
+      "palier": 0
+    },
+    "audioFinal": {
+      "actif": true,
+      "voix": 2,
+      "joueurs": 1,
+      "rivaux": 1,
+      "fondus": 0,
+      "budget": 5,
+      "musique": false
+    }
+  },
+  "etatCourse": {
+    "ecran": "pause",
+    "phase": "course",
+    "voitures": 12,
+    "horloge": 7.34
+  }
+}

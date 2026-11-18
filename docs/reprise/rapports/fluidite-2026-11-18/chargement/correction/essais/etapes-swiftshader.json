@@ -1,0 +1,80 @@
+{
+ "valeur": {
+  "total": 2848,
+  "etapes": [
+   {
+    "nom": "voile",
+    "ms": 0.8
+   },
+   {
+    "nom": "decor",
+    "ms": 0
+   },
+   {
+    "nom": "retro",
+    "ms": 0
+   },
+   {
+    "nom": "circuit",
+    "ms": 0
+   },
+   {
+    "nom": "seance",
+    "ms": 1.7
+   },
+   {
+    "nom": "creations",
+    "ms": 65.7
+   },
+   {
+    "nom": "rendu",
+    "ms": 2093.1
+   },
+   {
+    "nom": "code",
+    "ms": 384.1
+   },
+   {
+    "nom": "zero",
+    "ms": 0
+   },
+   {
+    "nom": "image",
+    "ms": 282.6
+   }
+  ],
+  "rendu": {
+   "variantes": 1,
+   "retro": 0,
+   "prewarm": false,
+   "voisins": false,
+   "ms": 2092.7
+  },
+  "code": {
+   "images": 1,
+   "lent": true,
+   "simulation": {
+    "pas": 300,
+    "ms": 110.8,
+    "effets": {
+     "bandes": 84,
+     "fumees": 14,
+     "etincelles": 34,
+     "debris": 8,
+     "embruns": 0
+    }
+   },
+   "ms": 384
+  },
+  "leger": false,
+  "tardives": {
+   "n": 0,
+   "sousVoile": 0,
+   "noms": {}
+  },
+  "ecran": "course",
+  "profil": "low",
+  "palier": 1
+ },
+ "erreurs": []
+}
