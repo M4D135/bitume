@@ -224,12 +224,19 @@ const integration = new Function('B', `
   const session = { type: 'course' }, son = null, hud2 = $('hud2'), pad2 = {}, EL = { role: null };
   const aDeux = () => session.type === 'duo', secouerManette = () => {}, tactile = () => {};
   const appliquerVolumes = () => {}, remplirReglages = () => {}, sauverReglages = () => {}, appliquerCarte = () => {};
+  // stockage local et empreinte de la détection : le palier appris est rangé par machine
+  const stockage = {}, lireStock = (k, d) => stockage[k] ?? d, ecrireStock = (k, v) => { stockage[k] = JSON.parse(JSON.stringify(v)); };
+  let empreinte = 'machine';
+  const empreinteDetection = () => empreinte;
   ${bloc('  const palier = ', '  // effets permis par le profil résolu')}
   ${bloc("  let ecran = 'chargement';", "  document.addEventListener('click', e => {")}
   ${bloc("  document.addEventListener('change', e => {", "  for (const nom of ['general', 'moteur', 'effets'])")}
   ecran = 'course';
-  return { palier, session, reglages, redimensions, aller,
+  return { palier, session, reglages, redimensions, aller, stockage, restaurerPalier, appliquerPalier, appliquerResolutionDifferee,
+    set empreinte(v) { empreinte = v; },
     images: (fps, n) => { for (let i = 0; i < n; i++) majPalier(session, 1 / fps); },
+    // images de la cadence : intervalle sur la grille, période de l'écran, diviseur et travail du fil principal (s)
+    imagesCadence: (intervalle, n, f) => { for (let i = 0; i < n; i++) majPalier(session, intervalle, f); },
     choisir: valeur => ecouteurs.get('change')({ target: { name: 'qualite', value: valeur } }) };
 `);
 
@@ -271,5 +278,56 @@ verifier('jeu : pause/reprise ne force ni qualité fixe ni banc ni référence',
     jeu.aller('pause'); jeu.aller('course'); jeu.images(10, 100);
     assert.equal(jeu.palier.n, 2); assert.equal(jeu.redimensions.length, 0);
   }
+});
+// La boucle donne à majPalier l'image de la cadence (période de l'écran, diviseur, travail du fil principal).
+verifier('jeu : avec la cadence, les seuils suivent la période visée et non 60 Hz', () => {
+  const ancien = integration(globalThis.BITUME); ancien.palier.n = 1;
+  ancien.images(30, 100);
+  assert.equal(ancien.palier.n, 2, 'sans période, 30 images par seconde passaient pour une machine lente');
+  const ecran30 = integration(globalThis.BITUME); ecran30.palier.n = 1;
+  ecran30.imagesCadence(1 / 30, 300, { periode: 1 / 30, diviseur: 1, travail: .004 });
+  assert.equal(ecran30.palier.n, 0, 'écran à 30 Hz tenu avec de la marge : la qualité remonte');
+  const rate = integration(globalThis.BITUME); rate.palier.n = 1;
+  rate.imagesCadence(2 / 60, 100, { periode: 1 / 60, diviseur: 1, travail: .02 });
+  assert.equal(rate.palier.n, 2, 'écran à 60 Hz, une image sur deux ratée : la qualité baisse');
+  const divise = integration(globalThis.BITUME); divise.palier.n = 1;
+  divise.imagesCadence(2 / 60, 100, { periode: 1 / 60, diviseur: 2, travail: .02 });
+  assert.equal(divise.palier.n, 1, 'diviseur 2 : deux périodes par image sont la cadence visée');
+});
+verifier('jeu : en pleine conduite, la résolution du palier 4 attend un arrêt ; les autres paliers suivent à l’image', () => {
+  const jeu = integration(globalThis.BITUME);
+  jeu.appliquerPalier(); assert.deepEqual(jeu.redimensions, ['auto']);
+  jeu.session.course = { phase: 'course', termine: false };
+  jeu.palier.n = 2; jeu.images(40, 120);
+  assert.equal(jeu.palier.n, 3); assert.deepEqual(jeu.redimensions, ['auto', 'auto'], 'palier 3 : même résolution, appliqué');
+  jeu.images(40, 120);
+  assert.equal(jeu.palier.n, 4);
+  assert.deepEqual(jeu.redimensions, ['auto', 'auto'], 'aucune nouvelle taille d’image en roulant');
+  jeu.appliquerResolutionDifferee(jeu.session);
+  assert.equal(jeu.redimensions.length, 2, 'toujours en conduite');
+  jeu.aller('pause'); jeu.appliquerResolutionDifferee(jeu.session);
+  assert.deepEqual(jeu.redimensions, ['auto', 'auto', .75], 'la pause est un arrêt');
+  jeu.appliquerResolutionDifferee(jeu.session);
+  assert.equal(jeu.redimensions.length, 3, 'appliquée une seule fois');
+  const grille = integration(globalThis.BITUME); grille.appliquerPalier();
+  grille.session.course = { phase: 'grille', termine: false }; grille.palier.n = 3; grille.images(40, 120);
+  assert.equal(grille.palier.n, 4); assert.deepEqual(grille.redimensions, ['auto', .75], 'sur la grille, personne ne conduit');
+});
+verifier('jeu : le palier appris est rangé par machine et repris au démarrage', () => {
+  const jeu = integration(globalThis.BITUME); jeu.palier.n = 1;
+  jeu.images(40, 120);
+  assert.equal(jeu.palier.n, 2); assert.deepEqual(jeu.stockage['bitume.palier.v1'], { empreinte: 'machine', n: 2 });
+  const suivant = integration(globalThis.BITUME); Object.assign(suivant.stockage, jeu.stockage);
+  assert.equal(suivant.restaurerPalier(), true); assert.equal(suivant.palier.n, 2);
+  const ailleurs = integration(globalThis.BITUME); Object.assign(ailleurs.stockage, jeu.stockage); ailleurs.empreinte = 'autre écran';
+  assert.equal(ailleurs.restaurerPalier(), false); assert.equal(ailleurs.palier.n, 0);
+  const fixe = integration(globalThis.BITUME); Object.assign(fixe.stockage, jeu.stockage); fixe.reglages.qualite = 'high';
+  assert.equal(fixe.restaurerPalier(), false);
+  const abime = integration(globalThis.BITUME); abime.stockage['bitume.palier.v1'] = { empreinte: 'machine', n: 'deux' };
+  assert.equal(abime.restaurerPalier(), false);
+  const borne = integration(globalThis.BITUME); borne.stockage['bitume.palier.v1'] = { empreinte: 'machine', n: 9 };
+  assert.equal(borne.restaurerPalier(), true); assert.equal(borne.palier.n, 4, 'borné au dernier palier');
+  const banc = integration(globalThis.BITUME); banc.session.banc = {}; banc.palier.n = 1; banc.images(10, 100);
+  assert.equal(banc.stockage['bitume.palier.v1'], undefined, 'un banc ne réécrit pas la mémoire');
 });
 console.log(`qualité : ${controles} contrôles passés`);

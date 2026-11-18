@@ -57,6 +57,8 @@ MODULES = [
     'reseau.js',
     'mesures.js',
     'qualite.js',
+    # cadence d'affichage : période de l'écran, pas fixes verrouillés, diviseur d'images (lue par la boucle de jeu.js)
+    'cadence.js',
     'graphismes.js',
     'ambiance.js',
     'conditions-course.js',

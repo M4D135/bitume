@@ -1,9 +1,10 @@
 import { createRequire } from 'node:module';
+import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import inspector from 'node:inspector/promises';
 const require = createRequire(import.meta.url);
-// Même ordre que la liste MODULES de construire.py ; la cadence applique elle-même les règles de FLoop (voir
-// src/cadence.js) et doit aussi marcher seule.
+// Même ordre que la liste MODULES de construire.py, qui ne livre pas ferro/loop.js : le jeu n'appelle pas FLoop, la
+// cadence en applique elle-même les règles (voir src/cadence.js) et doit marcher avec ou sans lui.
 require('../src/ferro/loop.js');
 require('../src/cadence.js');
 require('../src/qualite.js');
@@ -658,4 +659,16 @@ for (const [hz, gpu, cpu, nom] of [[60, 0, 1, '60 Hz verrouillé'], [144, 0, 1, 
   assert.equal(K.etat(C).diviseur, k, nom + ' : régime inchangé pendant la mesure');
   controles++; console.log('ok aucune allocation en régime permanent : ' + nom + ' (' + mesure.cadence + ' octets en 100 000 rappels)');
 }
+// Boucle du jeu (src/jeu.js, image) : hors ligne, elle fait les pas que la cadence a comptés et garde leur phase. Un
+// S.acc négatif vient d'un outil d'essai qui fige la boucle pour avancer pas à pas (scripts de captures) : aucun pas
+// alors, l'état précédent montré (alpha nul), comme avec l'ancien accumulateur.
+verifier('boucle du jeu : pas de la cadence, gel des outils d’essai respecté', () => {
+  const jeu = readFileSync(process.argv[2] || new URL('../src/jeu.js', import.meta.url), 'utf8');
+  const debut = jeu.indexOf('\n  function image(t) {'), fin = jeu.indexOf('\n  }\n', debut);
+  assert.ok(debut > 0 && fin > debut, 'fonction image introuvable');
+  const image = jeu.slice(debut, fin);
+  assert.match(image, /const f = imageCadence = B\.cadence\.image\(cadence, t, ctxCadence\);/);
+  assert.match(image, /if \(S\.acc < 0\) alpha = 0;\n\s*else \{\n\s*const pilote = !!\(S\.reference && S\.reference\.pilote\);\n\s*for \(let k = 0; k < f\.pas; k\+\+\) pasSimulation\(S, pilote\);\n\s*alpha = f\.alpha; S\.acc = alpha \* DT;\n\s*\}/);
+  assert.equal((image.match(/pasSimulation\(S, pilote\)/g) || []).length, 1, 'un seul endroit fait les pas hors ligne');
+});
 console.log(`cadence : ${controles} contrôles passés`);

@@ -41,18 +41,23 @@ const orchestration = new Function('base', 'scenario', `
   const reglages = { qualite: 'high', anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra', faune: 'ultra', retro: 'oui', moment: 'nuit', meteo: 'pluie', pneus: 'pluie', tours: 9, commandes: ['clavier','manette'] };
   const appliquerPalier = () => appels.push('resize'), oublierIntervalle = () => appels.push('reset-clock');
   const remplirReglages = () => appels.push('refresh-options'), lancer = (...a) => appels.push(['lancer', ...a]);
+  // moteur des rétroviseurs : prêté au parcours seulement s'il existe déjà ; scene dit quel décor il porte
+  const retro = { rendu: scenario.glaces || null, scene: 'seance' }, annexes = [];
+  let ioVu = null;
   const resultat = { revision: base.autoconfig.REVISION, statut: 'ok', selection: 'medium', empreinte: 'machine', mesures: [{}], reglages: base.autoconfig.reglages('medium') };
   const B = { ...base, autoconfig: { ...base.autoconfig, async executer(io) {
+    ioVu = io;
     if (scenario.attente) await scenario.attente;
     if (scenario.echec) throw Error('driver');
     if (scenario.perteContexte) { contexteRenduPerdu = true; return { statut: 'interrompu', motif: 'contexte_perdu' }; }
     if (scenario.annulation) return { statut: 'interrompu', motif: 'annule' };
     return resultat;
-  } }, sceneBench: { creer() { appels.push('prepare-bench'); return { preparer() {}, dessiner() {}, liberer() { appels.push('release-bench'); } }; } } };
+  } }, sceneBench: { creer(r, capacites, annexe) { appels.push('prepare-bench'); annexes.push(annexe);
+    return { preparer() {}, dessiner() {}, terminer: scenario.terminer || null, liberer() { appels.push('release-bench'); } }; } } };
   ${bloc('  function empreinteDetection()', '  async function demarrer()')}
   return { detecterGraphismes, majDetectionGraphique, appliquerDetection, contexteGraphiqueRetabli, resultat, appels, stockage, reglages,
     scene, session, obstacles, nodes, get actif() { return detectionGraphiqueActive; }, get ecran() { return ecran; }, jeu,
-    get gpuModeste() { return gpuModeste; } };
+    get gpuModeste() { return gpuModeste; }, retro, annexes, get io() { return ioVu; } };
 `);
 let n = 0;
 async function verifier(nom, f) { await f(); n++; console.log('ok ' + nom); }
@@ -91,21 +96,34 @@ await verifier('perte puis retour WebGL : restaurer le vrai décor après la fin
   assert.ok(h.appels.some(a => Array.isArray(a) && a[0] === 'nappes' && a[1] === h.scene.decor.nappes));
   assert.equal(h.session.course.temps, 123.45); assert.deepEqual(h.stockage, {});
 });
+await verifier('fin forcée transmise ; moteur des glaces prêté s’il existe, puis rendu au décor de la séance', async () => {
+  const terminer = () => {}, glaces = { gl: {} };
+  const h = orchestration(B, { glaces, terminer }); await h.detecterGraphismes(false);
+  assert.strictEqual(h.io.terminer, terminer, 'la détection reçoit la lecture d’un pixel du parcours');
+  assert.strictEqual(h.annexes[0].glaces, glaces, 'le parcours dessine les glaces avec le moteur du jeu');
+  assert.equal(h.retro.scene, null, 'la prochaine glace réinstalle le décor de la séance');
+  const sans = orchestration(B, {}); await sans.detecterGraphismes(false);
+  assert.equal(sans.annexes[0], undefined, 'pas de moteur de glaces : aucune annexe');
+  assert.equal(sans.retro.scene, 'seance', 'rien à réinstaller');
+  assert.equal(typeof sans.io.terminer === 'function', false, 'sans contexte lisible, la détection garde le chronomètre');
+});
 await verifier('la vitrine suit immédiatement la densité sélectionnée, les préférences manuelles sont signalées', async () => {
   const h = orchestration(B, { vitrine: true }); await h.detecterGraphismes();
   assert.ok(h.appels.some(a => Array.isArray(a) && a[0] === 'lancer' && a[1] === 'vitrine'));
   h.majDetectionGraphique(); assert.match(h.nodes.get('r-detection-etat').textContent, /appliqués/);
   h.reglages.vegetation = 'ultra'; h.majDetectionGraphique(); assert.match(h.nodes.get('r-detection-etat').textContent, /modifiés/);
 });
-const demarrage = new Function('base','mesure','attente', `
+// gl : contexte du moteur ; lisible (readPixels), il permet la fin forcée de la détection
+const demarrage = new Function('base','mesure','attente','gl', `
   const appels=[], elements=new Map(); const $=id=>{if(!elements.has(id))elements.set(id,{classList:{add(){}}});return elements.get(id);};
   const canvas={addEventListener(){}},optionsRendu={};
   let rendu=null,son=null,contexteRenduPerdu=false,gpuModeste=false,derniereDetection=null,capacitesRendu=null;
   const palier={n:0},etatProfils=base.graphismes.etatStable(),reglages={qualite:'high',vegetation:'ultra',circuit:0};
   const CATALOGUE=[{}],clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),horlogeProfils=()=>0;
   const B={...base,son:{creer(){appels.push('son');return{};}}};
-  const window={devicePixelRatio:1,FRender:{create(){appels.push('renderer');return{stats:{backend:'webgl2'}};}}};
+  const window={devicePixelRatio:1,FRender:{create(){appels.push('renderer');return{stats:{backend:'webgl2'},gl};}}};
   const webgl2=()=>true,appliquerPalier=()=>{},lireStock=()=>mesure,empreinteDetection=()=> 'machine';
+  const restaurerPalier=()=>{appels.push('palier');return false;};
   const detecterGraphismes=async()=>{appels.push('bench');await attente;appels.push('bench-termine');};
   const contexteGraphiqueRetabli=()=>{};
   const lancer=()=>appels.push('vitrine'),aller=nom=>appels.push(nom),requestAnimationFrame=()=>appels.push('boucle'),image=()=>{},erreur=()=>appels.push('erreur');
@@ -117,7 +135,18 @@ await verifier('premier lancement : attendre le benchmark avant le titre, la mus
   const execution = h.demarrer();
   assert.deepEqual(h.appels, ['renderer','bench']); assert.equal(h.appels.includes('titre'), false);
   finir(); await execution;
-  assert.deepEqual(h.appels, ['renderer','bench','bench-termine','son','vitrine','titre','boucle']);
+  // le palier appris de la qualité Auto est repris après la détection, avant la vitrine
+  assert.deepEqual(h.appels, ['renderer','bench','bench-termine','palier','son','vitrine','titre','boucle']);
+});
+await verifier('démarrage : une mesure faite au chronomètre GPU est refaite une fois quand la fin forcée existe', async () => {
+  const gl = { readPixels() {} };
+  const ancienne = { revision: B.autoconfig.REVISION, statut: 'ok', empreinte: 'machine', selection: 'low', mesures: [{}] };
+  let h = demarrage(B, ancienne, Promise.resolve(), gl); await h.demarrer();
+  assert.ok(h.appels.includes('bench'), 'méthode ancienne : nouvelle détection');
+  h = demarrage(B, { ...ancienne, methode: 'terminer' }, Promise.resolve(), gl); await h.demarrer();
+  assert.equal(h.appels.includes('bench'), false, 'méthode à fin forcée : cache gardé');
+  h = demarrage(B, ancienne, Promise.resolve(), undefined); await h.demarrer();
+  assert.equal(h.appels.includes('bench'), false, 'sans contexte lisible : la mesure ancienne reste valable');
 });
 await verifier('démarrage suivant : cache compatible, choix manuels conservés et aucun nouveau bench', async () => {
   const mesure = { revision: B.autoconfig.REVISION, statut: 'ok', empreinte: 'machine', selection: 'medium', mesures: [{}] };
