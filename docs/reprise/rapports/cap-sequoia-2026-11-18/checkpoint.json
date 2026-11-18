@@ -1,0 +1,40 @@
+{
+  "date_utc": "2026-11-18T12:57:32.798686+00:00",
+  "lot": "11D Cap-Séquoia + FPS démo + libellé Faune",
+  "base_commit": "2df8acc7c42352f926841e0efb846d4a8964eb67",
+  "version_publiee": "0.2.37",
+  "version_cible": "0.2.38",
+  "statut": "sources_en_cours_de_qualification",
+  "patch": "travail-en-cours.patch",
+  "patch_sha256": "7e929e45ac2f497877b9c7f7a98e91a61eff5a35f027731aa440b3a72bff7365",
+  "sources_sha256": {
+    "src/circuit.js": "c439a8124cd788e88095b6f80b5ea72a4bcba83d7d89aff3286220cb3cdfb47c",
+    "src/decor.js": "c98ba69de1da3bed4cc4a5f9dddb150532e6c26fdad472c1df37d4ceb5a73c1e",
+    "src/saisons.js": "332afcde7865aac79e7da88ef02bd19e8da2d489a63c2e22e0f8876827c675d3",
+    "src/jeu.js": "22bf36b5a1cc5ac952fb55c90485d30fff9f569259bf80c5666f5cd547f0bce0",
+    "src/style.css": "a4a5208933b2c277704c397bd09ccd402de73f126a751e629e4006454cc71b9a",
+    "src/index.html": "8cd75e0612ac87029203be39b95bf36919657129f806720119f07cb207093334",
+    "verifications/prets-enligne.test.mjs": "7a8120ecd1af1bafa2649600cf6c0ea00cb9b84c09be2a28032befa3a48ad769",
+    "verifications/pacifique.test.mjs": "e32ff871c35c6b68be72283c96d804df5f86bb1dc0e96f38672bfac4c4bccadb"
+  },
+  "realise": [
+    "Septième circuit Cap-Séquoia, 5 234 m, côte rocheuse du Pacifique, grands conifères et océan.",
+    "FPS visibles pendant la démo, ordinateur et tactile.",
+    "Réglage Faune et libellés accordés.",
+    "Maintien des grands troncs dans les modèles lointains."
+  ],
+  "validation_preliminaire": {
+    "pacifique": 9,
+    "predepart": 29,
+    "rivaux_arrives": 11,
+    "geometrie_arbres_revue": true
+  },
+  "reste": [
+    "Terminer la suite globale et vérifier les 24 anciens décors.",
+    "Recontrôler les troncs lointains avec la botanique du jeu.",
+    "Reconstruire deux fois et contrôler FERRO.",
+    "Publier sources et build qualifiés, puis le reçu."
+  ],
+  "webgl": false,
+  "deploiement": false
+}

@@ -2,26 +2,23 @@
 
 ## État — 18 novembre 2026
 
-- Branche unique `main`, aucun push forcé ; publier fréquemment la progression.
-- **0.2.36 publiée** : `a7cdd5e3116dc294afbbca581ad87cb3973dd5fe`, arrière de monoplace corrigé et conservé.
-- Checkpoint Asie publié et vérifié : `5368b4bebd77c7005c287d042050c28011f64e39` ; patch réel de travail sauvegardé.
-- **0.2.37 publiée et vérifiée** (`2a0c9d9`) : Brume-de-Jade, sixième circuit, Asie, 5 018 m, graine 131.
-- Sept pics calcaires et terrasses jade dans le terrain ; 46 arbres, 104 éperons, aucun brin additionnel.
-- Quatre saisons ; onze rivaux terminent un tour ; conditions de l’hôte et menus manette conservés.
-- **65/65 suites**, deux builds identiques, **34 modules FERRO 0.3.9 conformes** ; 20 anciens décors identiques.
-- Carte et vue CPU du terrain inspectées. **WebGL non validé**, navigateur local bloqué et fichier local refusé par le cloud.
-- Accès Mac/amiga absent ; déploiement autorisé mais non effectué ici. Voir le dernier contrôle de production dans ETAT.json.
+- Branche unique `main`, sans push forcé ; publier fréquemment le travail réel.
+- **0.2.37 publiée et vérifiée** : `2a0c9d9`, Brume-de-Jade, six circuits. Reçu enregistré au commit `2df8acc`.
+- **Lot 11D en qualification** : Cap-Séquoia, septième circuit original, côte du Pacifique aux États-Unis, 5 234 m, graine 157.
+- Falaises/anses dans les nappes, océan et 320 grands conifères regroupés ; aucun brin ajouté. Troncs conservés au loin.
+- Ajouts utilisateur : **FPS en démo**, ordinateur et tactile ; réglage renommé **Faune**.
+- Contrôles ciblés initiaux réussis ; suite globale et ancien décor en cours. Jeu publié toujours en 0.2.37 à ce checkpoint.
+- WebGL bloqué au démarrage de Chromium ; accès Mac/amiga absent, déploiement autorisé mais non effectué.
 
 ## Reprendre
 
-Lire `docs/reprise/ETAT.json` puis seulement `docs/reprise/11C-BRUME-DE-JADE.md`.
-Reçu du lot 11C enregistré et vérifié ; contrôler le jeu et déployer dès que l’accès Mac/amiga est disponible.
-Lot 11D en préparation : Cap-Séquoia, un seul circuit original aux États-Unis (côte du Pacifique), cible totale de 16 circuits.
-Conserver l’arrière de monoplace, les conditions de l’hôte, menus manette et lien **m4d135 → BITUME.html**.
+Lire `docs/reprise/ETAT.json`, puis seulement `docs/reprise/11D-CAP-SEQUOIA.md`.
+Le patch de travail réel est sauvegardé dans `docs/reprise/rapports/cap-sequoia-2026-11-18/`.
+Terminer les vérifications et le double build, publier sources/build, puis enregistrer le reçu. Un seul lot.
+Conserver l’arrière de monoplace 0.2.36, les six anciens circuits, conditions de l’hôte, menus manette et lien **m4d135 → BITUME.html**.
 
 ## Méthode
 
-Publier souvent un checkpoint du travail réel, puis les sources/build qualifiés et leur reçu. Pas de push forcé.
-Le patch initial du lot 11C est historique : ne pas le réappliquer sur le jeu qualifié.
-Un seul lot ; extraits utiles uniquement ; sorties complètes sur disque ; ne pas relire tout le HTML ou l’historique.
-Une publication GitHub ne prouve jamais la mise en ligne. Toute modification moteur passe par FERRO canonique.
+Sorties bornées ; journaux complets sur disque ; publications fréquentes sur `main`.
+Ne pas réappliquer un patch historique après publication de sa version. Une publication GitHub ne prouve pas la mise en ligne.
+Toute modification moteur passe par FERRO canonique.

@@ -2,29 +2,17 @@
   "date": "2026-11-18",
   "etat_courant": {
     "branche": "main",
-    "base_commit": "2a0c9d94c985f8b9b679355139cffc8d11b07122",
+    "base_commit": "2df8acc7c42352f926841e0efb846d4a8964eb67",
     "base_version": "0.2.37",
-    "version_cible": "0.2.37",
-    "statut": "lot_11c_publie_verifie",
-    "lot": "brume_de_jade_asie",
-    "fiche": "docs/reprise/11C-BRUME-DE-JADE.md",
-    "commit_publie": "2a0c9d94c985f8b9b679355139cffc8d11b07122",
+    "version_cible": "0.2.38",
+    "statut": "lot_11d_sources_en_qualification",
+    "lot": "cap_sequoia_pacifique_fps_demo_faune",
+    "fiche": "docs/reprise/11D-CAP-SEQUOIA.md",
+    "commit_publie": null,
     "catalogue_jouable_publie": 6,
-    "catalogue_cible": 6,
-    "prochaine_action": "Lot 11D : Cap-Séquoia, septième circuit original aux États-Unis (côte du Pacifique). Publier un checkpoint réel puis le jeu qualifié. Contrôle WebGL et déploiement dès que l’accès Mac/amiga est disponible.",
-    "checkpoint": "docs/reprise/rapports/brume-de-jade-2026-11-18/checkpoint.json",
-    "qualification": {
-      "suites": 65,
-      "reussies": 65,
-      "ferro_modules": 34,
-      "build_reproductible": true,
-      "anciens_decors_identiques": 20,
-      "baseline_historique": "8d2c78460e1f5e15e29b8aa846a7a4cf98ce0f64",
-      "apercus_cpu_realises": true,
-      "visuel_webgl_realise": false,
-      "preuve": "docs/reprise/rapports/brume-de-jade-2026-11-18/qualification.json"
-    },
-    "catalogue_jouable": 6
+    "catalogue_cible": 7,
+    "prochaine_action": "Terminer qualification, anciens décors et double build, puis publier sources/build et reçu.",
+    "checkpoint": "docs/reprise/rapports/cap-sequoia-2026-11-18/checkpoint.json"
   },
   "integration": {
     "nouvelle_branche": false,
@@ -73,10 +61,10 @@
     "autres_chantiers": "Lots 0 a 4 termines ; optimisation lot 5 partielle. Details archives, ne pas rouvrir pendant la publication de ce lot."
   },
   "lot_precedent": {
-    "version": "0.2.36",
-    "commit": "a7cdd5e3116dc294afbbca581ad87cb3973dd5fe",
-    "lot": "arriere_monoplace_312t5",
-    "recu": "docs/reprise/rapports/arriere-monoplace-2026-11-18/publication.json"
+    "version": "0.2.37",
+    "commit": "2a0c9d94c985f8b9b679355139cffc8d11b07122",
+    "lot": "brume_de_jade_asie",
+    "recu": "docs/reprise/rapports/brume-de-jade-2026-11-18/publication.json"
   },
   "lot_suivant": {
     "numero": 11,
@@ -94,6 +82,6 @@
       "Vroom officiel",
       "dépôt GitHub personnel Vroom Unreal"
     ],
-    "statut": "11C publié et vérifié : 6 circuits sur 16. Prochain contenu en préparation : Cap-Séquoia, côte du Pacifique aux États-Unis."
+    "statut": "11D en qualification : Cap-Séquoia (7e circuit), FPS démo et libellé Faune. Ne pas entamer un autre circuit avant publication de ce lot."
   }
 }
