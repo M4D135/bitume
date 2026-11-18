@@ -1,0 +1,100 @@
+{
+ "verdict": "corrections",
+ "constats": [
+  {
+   "id": "C1",
+   "gravite": 3,
+   "fichier": "src/cadence.js",
+   "lignes": "314-321 (amorce), 196-230 (estimer, règle du plus long), 242-244 (bridePossible)",
+   "probleme": "Une machine lente dont le fil principal prend 18 à 30 ms par image sur un écran 60 Hz rend une image toutes les deux périodes, régulièrement. La cadence la prend dès l'amorce pour un écran 30 Hz : période vue 33,34 ms, k = 1. La qualité Auto en mode période ne baisse donc jamais. Aujourd'hui, le gouverneur baisse en 3 à 6 s et retrouve 60 images/s. L'amorce n'utilise pas le temps de travail, qu'elle connaît pourtant. Le compte rendu ne cite ce cas que pour une machine « liée au GPU » ; le cas d'un fil principal mesuré, plus courant, n'est pas déclaré. Une fois branché, c'est une régression pour la classe de machines visée : la grille s'apprend dans la vitrine, à la même charge, et oublier() garde la période.",
+   "preuve": "/private/tmp/relecture-cadence/p12.mjs reprend tel quel le modèle machine de cadence.test.mjs (fil principal seul, gigue ±0,5 ms, travail rapporté par K.travail). Résultats : 18, 22, 26 et 30 ms en Fine sur 60 Hz donnent tous « période vue 33.34 ms, k 1, niveaux aucun changement ». Le gouverneur d'aujourd'hui donne 3.0s→1 (puis 6.0s→2). p11.mjs donne le même résultat pour les profils « limite » et « moyen » (Fine à 1,3 à 1,6 période), en GPU comme en CPU : qualité jamais changée, 30 images/s en Fine pendant 600 s.",
+   "correctif": "À l'amorce et à la confirmation, quand le travail connu est au moins CHARGE × la période candidate la plus courte, retenir cette période courte (l'écran) plutôt que la règle du plus long. On aurait alors k = 1 et des images ratées, et la qualité baisserait. Garder la règle du plus long seulement quand le travail est inconnu ou faible. Ajouter le test : fil principal de 22 ms en Fine sur 60 Hz, qualité réductible, la qualité doit baisser. Déclarer aussi le cas GPU sans issue (qualité jamais baissée) dans les changements visibles."
+  },
+  {
+   "id": "C2",
+   "gravite": 3,
+   "fichier": "src/cadence.js",
+   "lignes": "47 (K_MAX), 367 (kMax), 389-401 (augmenter), 247-259 (reestimer)",
+   "probleme": "Une grille fausse peut devenir permanente. Après un passage d'écran de 60 à 144 Hz sous charge (images de 23,3 ms, une toutes les 4 synchronisations, soit 27,8 ms), une réestimation retient 3,47 ms, la moitié de la période réelle. Les rappels tombent sur cette grille : aucun désaccord, donc aucune correction. K_MAX = 6 borne la cible à 20,8 ms, sous les 27,8 ms réels : toutes les images comptent ratées, sans fin. La qualité Auto descend au plancher. Le plancher « 24 images/s » repose sur une période fausse et ne protège plus rien.",
+   "preuve": "/private/tmp/relecture-cadence/p15.mjs : 60→144 Hz à 20 s, image de 23,3 ms bloquant le fil principal, 60 s. Graine 7 : « per 3.47 k 6 ratées 1607/2058, ratées sur les 10 dernières s 541/541, qualité 25s:2 28s:3 31s:4 ». Graine 4 : période 5,56 ms (fausse, sans image ratée). Les autres graines de 5 à 12 retrouvent 6,94 ms. p13.mjs, 60→75 Hz, charge de 1,4 : période 3,33 ms, k 6, 931 images ratées, qualité au plancher.",
+   "correctif": "Ajouter une sortie. Quand k = kMax et que presque toutes les images de la fenêtre sont ratées (par exemple plus de 80 % sur 1,5 s), lancer une réestimation qui écarte les sous-multiples de la période connue, ou essayer la grille de l'intervalle médian. Autre voie : borner k par PLANCHER seul (floor(PLANCHER × 1,02 / P)) plutôt que par K_MAX = 6 quand la période est courte. Ajouter un test de passage d'écran sous charge sur au moins 20 graines."
+  },
+  {
+   "id": "C3",
+   "gravite": 2,
+   "fichier": "src/cadence.js",
+   "lignes": "260-300 (changementPeriode), 277 et 286 (suiteMin)",
+   "probleme": "La grille oscille sans fin entre 16,67 et 33,33 ms. Le cas : une machine liée au GPU, fil principal faible, dont les images bloquent deux périodes, parfois trois (images de 1,5 à 1,6 période ±30 %, modèle sans image d'avance en file GPU). L'hypothèse d'écran bridé est démentie, la suite exigée double jusqu'à 32. Puis une hypothèse tenue plus de 3 s passe pour « fin d'un vrai bridage » et remet la suite à 8, et le cycle repart. Chaque bascule fait sauter le temps de jeu de 16 à 33 ms, et du temps est perdu : la boucle actuelle n'aurait aucun saut. Le simulateur de l'exécutant, qui laisse une image d'avance au GPU, ne montre pas ce cas. Le réalisme du modèle bloquant reste à établir pour Safari et Firefox.",
+   "preuve": "/private/tmp/relecture-cadence/p7.mjs, 60 Hz, 120 s, gigue ±0,5 ms. Image de 1,6 P ±30 % : 34 à 43 réestimations, 62 à 77 sauts de plus de 1 ms (au plus 33,3), dérive du temps de jeu de −233 à −350 ms. Image de 1,5 P ±35 % : 61 à 68 réestimations, 123 à 125 sauts. Journal des bascules (graine 1) : 33.37/16.65/33.33/16.66… avec suiteBridage 8→16→32→32→…→8. En 10 min (p6.mjs) : 150 à 189 réestimations et 149 à 187 changements de k. p9.mjs : le même cas avec un travail rapporté égal au coût n'oscille pas.",
+   "correctif": "Ne remettre la suite exigée à SUITE qu'après un bridage long (par exemple plus de 30 s) ou un vrai changement d'écran. Sous l'hypothèse de bridage, démentir aussitôt dès qu'un intervalle de 1,5 période bridée tombe hors grille (trois périodes d'avant), plutôt que de compter des désaccords. Ajouter ce motif de charge (deux ou trois périodes, travail faible) sur 2 min dans cadence.test.mjs, avec un plafond de réestimations et de sauts."
+  },
+  {
+   "id": "C4",
+   "gravite": 2,
+   "fichier": "verifications/cadence.test.mjs",
+   "lignes": "87-101 ; src/cadence.js 336-354, 247-259",
+   "probleme": "Pour 144 Hz avec ±2 ms, la régularité « à mieux que 0,5 ms » n'est prouvée que sur 12 s × 6 graines. Sur 10 min, la gigue jointe à l'erreur d'extrémité de la droite crée des désaccords. La réestimation sur 16 intervalles retient alors un peigne fin (3,255 ms) pendant environ 370 ms : images ratées et sauts de 2,5 à 8 ms. Le compte rendu situe la limite « au-delà de 0,3 période » ; ±2 ms à 144 Hz font 0,29 période et figurent parmi les cas déclarés réussis.",
+   "preuve": "/private/tmp/relecture-cadence/p3.mjs 144 2 60 600 donne : écart de plus de 0,5 ms dans 13 séances sur 60 (de 2,54 à 7,96 ms), images ratées dans 14, réestimations dans 42. Le même script sur 12 s : 0 écart de plus de 0,5 ms. p4.mjs (graine 3) : « rees à 208541.7 per 3.255 » puis « rees à 208909.7 per 6.934 », saut de 6,13 ms et 46 images ratées. Avec ±1,5 ms, et aux autres cadences (60/120/100 Hz ±2 ms, 165 Hz ±1 ms), 0 défaut sur 20 × 600 s.",
+   "correctif": "Dans une réestimation déclenchée par des désaccords, garder la période connue tant qu'elle range presque aussi bien en ms (même règle que la confirmation : rConnue ≤ DOMINE × rPrecis + DOMINE_MS), et refuser un candidat proche d'un sous-multiple de la période connue. Ajouter un contrôle long (au moins 10 min simulées, plusieurs graines) à 144 Hz ±2 ms, ou retirer ce cas des réussites annoncées."
+  },
+  {
+   "id": "C5",
+   "gravite": 2,
+   "fichier": "src/cadence.js",
+   "lignes": "309-310 (horloge)",
+   "probleme": "Un horodatage qui recule n'est jamais rendu, et tPrec n'est pas mis à jour. Après un recul de 10 s, plus aucune image n'est rendue tant que l'horloge n'a pas rattrapé l'ancien tPrec : 10 s d'écran figé. FLoop, la brique du moteur, fait last = now dans ce cas.",
+   "preuve": "/private/tmp/relecture-cadence/p5.mjs : 5 s à 60 Hz, puis horodatages 10 s plus tôt, au pas de 16,7 ms. Résultat : « recul 10 s : rendus 600 sur 1200 premier rendu au rappel 600 ». Les rappels nuls ou un peu en arrière ne sont pas rendus (voulu), et après oublier() un recul est bien rendu.",
+   "correctif": "Dans horloge(), si brut < −TOT × période (ou < 0 et au-delà d'une période), traiter le rappel comme une reprise : tPrec = t, nBruts = 0, ancrer si la grille existe, rendre −1. Ajouter un test de recul de 10 s."
+  },
+  {
+   "id": "C6",
+   "gravite": 2,
+   "fichier": "src/cadence.js",
+   "lignes": "16 (COUPURE), 312 (horloge), 450-454 (reprise)",
+   "probleme": "Tout intervalle de plus de 250 ms est traité comme une coupure : un seul pas, aucune grille. Sur une machine qui tient durablement 4 images/s ou moins (rendu logiciel, très petite configuration, longue rafale de compilation), le temps de jeu avance à 2 ou 3 % du temps réel ; la boucle actuelle en tient 25 à 37 %. C'est un ralenti presque figé, et aucune grille ni aucune décision ne vient jamais. Le seuil n'est pas tenu par les tests : le mutant COUPURE = 2500 survit.",
+   "preuve": "/private/tmp/relecture-cadence/p16.mjs donne, pour une image de 260 ms : « vitesse du temps de jeu 0.031 × le temps réel ; grille false ». Pour 400 ms : 0,021. Calcul de la boucle d'aujourd'hui : 0,375 et 0,250. Mutation (/private/tmp/relecture-cadence/muter.py) : « SURVIT src/cadence.js | const COUPURE = 250; -> const COUPURE = 2500; ».",
+   "correctif": "Ne traiter en coupure qu'un intervalle long isolé, précédé d'intervalles normaux, ou celui qui suit oublier(). Pour des intervalles longs consécutifs, revenir au rattrapage borné par maxPas, comme aujourd'hui. Ajouter un test à 300 ms par image, où le temps de jeu doit avancer d'au moins maxPas pas par image, et un test qui fige le seuil."
+  },
+  {
+   "id": "C7",
+   "gravite": 1,
+   "fichier": "src/qualite.js",
+   "lignes": "59",
+   "probleme": "Le mode période s'enclenche sur periode !== undefined. Un periode: null, qu'un intégrateur peut passer faute d'image de cadence, coupe donc silencieusement tout le gouverneur : rien ne compte plus. C'est voulu par le test, mais fragile.",
+   "preuve": "verifications/qualite.test.mjs, ligne « for (const periode of [0, -P60, Infinity, NaN, null]) » : avancer rend toujours faux et le palier ne change pas.",
+   "correctif": "Tester periode != null (null redonne la logique d'avant), ou dire explicitement dans demandes_integration de ne jamais passer null."
+  },
+  {
+   "id": "C8",
+   "gravite": 1,
+   "fichier": "src/cadence.js",
+   "lignes": "47, 369-372",
+   "probleme": "Avec K_MAX = 6 sur un écran 240 Hz, le mode « 30 » donne 40 images/s (k = 6) au lieu de 30. En Auto, une machine à 25-40 images/s sur 240 Hz reste à k = 6 avec des images ratées, alors que k = 8 tiendrait 30 images/s, au-dessus du plancher. La consigne fixe k de 1 à 6 ; le compte rendu ne cite pas cet effet.",
+   "preuve": "Lecture : kImpose('30', 4,17) = min(6, round(8)) = 6, soit 1000 / 25 = 40 images/s. kMax(4,17) = min(6, 10) = 6.",
+   "correctif": "Le signaler à David ou à l'intégrateur. Si le plancher de 24 images/s prime, borner k par PLANCHER seul (voir C2)."
+  },
+  {
+   "id": "C9",
+   "gravite": 1,
+   "fichier": "verifications/cadence.test.mjs",
+   "lignes": "7 ; commit bc957f0",
+   "probleme": "Trois écarts de forme. FLoop (src/ferro/loop.js), présenté par la consigne comme la brique à employer, n'est pas utilisé : le test le charge sans s'en servir et demandes_integration dit « ferro/loop.js n'est pas requis ». Le choix est justifié dans l'en-tête de cadence.js, mais il contredit le contexte de la consigne. La ligne d'attribution est « Claude Opus 5.5 » et non « Claude Fable 5.2 » ; c'est déclaré par l'exécutant. Le comportement de FLoop sur un horodatage qui recule (last = now) est meilleur que celui de la cadence (C5).",
+   "preuve": "git log -1 --format=%B bc957f0 : « Co-Authored-By: Claude Opus 5.5 ». L'en-tête de src/cadence.js, lignes 11-13, justifie l'abandon de FLoop.",
+   "correctif": "Faire trancher la ligne d'attribution par l'intégrateur (amend). Retirer le require de loop.js du test, ou s'en servir. Reprendre de FLoop la règle du recul (C5)."
+  }
+ ],
+ "verifications_faites": [
+  "Diff complet 54e98c9..HEAD : un seul commit, bc957f0, quatre fichiers, tous dans la liste (src/cadence.js, src/qualite.js, verifications/cadence.test.mjs, verifications/qualite.test.mjs). Ni src/jeu.js, ni dist, ni VERSION.json, ni SIZE.json, ni construire.py. Arbre propre (git status vide).",
+  "Lecture entière de src/cadence.js et de src/qualite.js (nouvelle version et base), de verifications/cadence.test.mjs et des ajouts à qualite.test.mjs ; boucle image() de src/jeu.js (lignes 2470-2550) et majPalier (1400) pour juger les demandes d'intégration.",
+  "qualite.js sans periode : test différentiel contre la version 54e98c9 dans des contextes vm séparés, 400 séquences et 1 600 000 appels mêlant dt réguliers, aléatoires et invalides, actif faux, min et max, travail sans periode. 0 divergence de retour ou d'état (/private/tmp/relecture-cadence/p10.mjs). Les 13 contrôles de qualite.test.mjs de la base passent aussi tels quels sur le nouveau qualite.js.",
+  "Régularité sur 10 minutes avec mon propre simulateur (/private/tmp/relecture-cadence/sim.mjs, p1.mjs, p2.mjs, p3.mjs). 30, 60 et 120 Hz ±2 ms, et 60 Hz arrondi à la ms : verrou, un seul nombre de pas, un seul alpha, écart 0 et dérive 0 sur 600 s (20 graines à 60 et 120 Hz). 59,94 Hz : 0,0167 ms par image, −598 ms en 10 min (retard annoncé de 0,1 %). 165 Hz ±1, 100 Hz ±2, 75 Hz arrondi, 240 Hz ±0,5 et arrondi, 144 Hz ±1 et ±1,5 ms : écart de 0,004 à 0,15 ms, dérive sous 1,1 ms sur 10 min. 144 Hz ±2 ms : défaut C4.",
+  "Cas limites (p5.mjs). Premier appel : rendu, un pas. Second appel : 3 pas, alpha 0,003 ; le temps rendu est juste. Contexte absent, t NaN, undefined ou Infinity : pas de rendu, pas d'exception. Intervalle nul : pas de rendu. echelle NaN : 1 par défaut ; echelle 0 : 0 pas. travail NaN, négatif ou infini : ignoré. etat() avant la grille : champs nuls. Recul d'horodatage : défaut C5.",
+  "Oscillations (p6.mjs à p9.mjs et p11.mjs). Balayage de 126 configurations sur 600 s (60, 120, 144 Hz ; charges de 0,8 à 2,05 périodes ; bruit 0, 10 et 30 %). Mêmes charges avec le simulateur à file GPU de l'exécutant : aucune oscillation. Modèle bloquant avec fil principal faible : C3. Cadence et gouverneur de qualité couplés : C1 ; reprises de qualité bornées par le délai doublé, ce qui est conforme.",
+  "Changements d'écran en cours de séance (p13.mjs à p15.mjs) : 60↔144, 60↔120, 60↔240, 144→165, 60→75, avec et sans charge. Sans charge, réglage en 21 à 317 ms et écart final de 0,025 ms au plus. Sous charge : C2.",
+  "Machine très lente, au-delà de COUPURE (p16.mjs) : C6.",
+  "Mutations faites par moi sur une copie (/private/tmp/relecture-cadence/muter.py) : 23 mutants, 21 tués. Survivent COUPURE 250→2500 et DETTE .1→.5. Les seuils SEUIL, FENETRE, REGULARITE, PART_TRAVAIL, ECHECS, le doublement du délai, PLANCHER, oublier, maxPas, VERROU, PHASE, reductible, nouvelleSeance, suspendre et les six constantes de qualite.js sont tenus.",
+  "Allocations : contrôle de l'échantillonneur de tas relancé (0 octet en 100 000 rappels dans les trois régimes, témoin vu). Objet rendu unique vérifié par le test.",
+  "Comptes du compte rendu : 29 contrôles de cadence, 20 de qualité (13 d'avant et 7 nouveaux, compte confirmé dans la base), 67 suites, durée de la suite cadence 0,44 s : tout est confirmé. Contrôle dans Chrome sans interface (page-essai) : non relancé."
+ ],
+ "tests": "node verifications/cadence.test.mjs : 29 contrôles passés (0,44 s), dont 0 octet alloué en 100 000 rappels à 60 Hz verrouillé, à 144 Hz recalé et à 60 Hz avec k = 2. node verifications/qualite.test.mjs : 20 contrôles passés. Les 13 contrôles de qualite.test.mjs du commit 54e98c9 passent aussi sur le nouveau qualite.js. Suite complète (for t in verifications/*.test.mjs …) : 67 suites, aucun ECHEC. Mes épreuves sont dans /private/tmp/relecture-cadence (sim.mjs, p1.mjs à p16.mjs, muter.py, copie mut/), sans aucune écriture dans l'arbre suivi. Elles confirment les verrous à 30, 60 et 120 Hz et la non-régression de qualite.js sans periode. Elles révèlent les défauts C1 à C6."
+}
