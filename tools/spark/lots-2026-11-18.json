@@ -1,0 +1,202 @@
+[
+ {
+  "nom": "22C-terrain",
+  "arbre": "/Users/david/Projects/bitume-wt/spark-circuits",
+  "plan": "docs/reprise/22F-CIRCUITS-MEMORABLES.md",
+  "titre": [
+   "### 3.6",
+   "### 3.5"
+  ],
+  "texte": "Route-des-Cimes est le huitième circuit (partition 'route-des-cimes' dans src/partitions.js, 9,7 km, montagne). Les sept autres circuits ne doivent pas changer d'un bit : tout ce qui suit ne vaut que pour un circuit qui a une partition. Le terrain de montagne ne suit pas encore le tracé : on voit de grands murs gris, la branche du dessus des Lacets est recouverte par le terrain, et la neige commence dès 250 m. À faire dans src/decor.js : la hauteur du terrain des abords suit le profil de la route et les bords déclarés par la partition (c.bords, c.lieux) : pente douce côté montagne, vide réel (terrain qui plonge) derrière les parapets du Balcon du Cirque et du Virage du Vide, paroi rocheuse au-dessus des corniches, gorge sous le pont de la Gorge ; aucune branche du tracé recouverte par le terrain d'une autre ; neige seulement au-dessus de l'altitude du col et jamais à moins de 30 m de la piste ; roche et alpage au lieu du gris uni. Chaque règle a son test Node (hauteur du terrain sous et autour de la piste, aucun recouvrement, altitude de la neige).",
+  "fichiers": [
+   "src/decor.js",
+   "src/partitions.js",
+   "src/circuit.js"
+  ],
+  "filet": "decor|circuit|route-des-cimes|partition|empreinte|lieux|bords"
+ },
+ {
+  "nom": "22D-lieux",
+  "arbre": "/Users/david/Projects/bitume-wt/spark-circuits",
+  "plan": "docs/reprise/22F-CIRCUITS-MEMORABLES.md",
+  "titre": [
+   "### 3.5",
+   "### 3.2"
+  ],
+  "texte": "Route-des-Cimes est le huitième circuit (partition 'route-des-cimes' dans src/partitions.js, 9,7 km, montagne). Les sept autres circuits ne doivent pas changer d'un bit : tout ce qui suit ne vaut que pour un circuit qui a une partition. Lieux construits : écris un module nouveau src/lieux.js (B.lieux) de fonctions pures qui rendent des listes d'objets au format des lots de src/decor.js (regarde comment decor.js bâtit une tribune ou un portique) : murets de pierre sèche entre les branches des Lacets, parapets bas du Balcon et du Virage du Vide, refuge et petit lac du col de l'Aiglière, piles et arche du pont de la Gorge, piliers de la galerie des Avalanches, portails des tunnels, sapins serrés du Bois Noir à 3 m du bord. Chaque fonction a son test (nombre d'objets, emprise hors de la piste, hauteurs). La dernière fiche ajoute lieux.js à MODULES de construire.py (avant decor.js) et pose ces objets depuis decor.js, pour les seuls circuits à partition.",
+  "fichiers": [
+   "src/decor.js",
+   "src/partitions.js",
+   "construire.py"
+  ],
+  "filet": "decor|circuit|route-des-cimes|partition|empreinte|lieux|bords"
+ },
+ {
+  "nom": "22B-couverts",
+  "arbre": "/Users/david/Projects/bitume-wt/spark-circuits",
+  "plan": "docs/reprise/22F-CIRCUITS-MEMORABLES.md",
+  "titre": [
+   "### 6.3",
+   "### 6.1"
+  ],
+  "texte": "Route-des-Cimes est le huitième circuit (partition 'route-des-cimes' dans src/partitions.js, 9,7 km, montagne). Les sept autres circuits ne doivent pas changer d'un bit : tout ce qui suit ne vaut que pour un circuit qui a une partition. Passages couverts multiples : aujourd'hui dansTunnel et sousLaVoute ne connaissent que c.tunnel. Généralise dans src/circuit.js : c.couverts (liste tirée de la partition : tunnel, galerie ouverte d'un côté, voûte) et dansCouvert(c, s), qui rend le passage ou null sans rien allouer ; c.tunnel reste le premier tunnel. Dans src/decor.js : murs, voûte, piliers et lampes de chaque passage, sans trou ni face manquante. Les caméras et l'éclairage en course seront branchés plus tard dans jeu.js.",
+  "fichiers": [
+   "src/circuit.js",
+   "src/decor.js",
+   "src/partitions.js"
+  ],
+  "filet": "decor|circuit|route-des-cimes|partition|empreinte|tunnel"
+ },
+ {
+  "nom": "28E-cache",
+  "arbre": "/Users/david/Projects/bitume-wt/spark-calcul",
+  "plan": "docs/reprise/28-CALCUL.md",
+  "titre": [
+   "cache"
+  ],
+  "texte": "Lot 28E : garder le niveau construit entre deux visites. Écris un module nouveau src/cache-niveau.js (B.cacheNiveau), sans le brancher : cle(version, circuit, palier, saison, options) rend une chaîne stable ; emballer(niveau) rend un ArrayBuffer à plat (tableaux typés bout à bout, avec un en-tête qui porte un numéro de format et les longueurs) et deballer(tampon) refait les tableaux typés, ou rend null si le format ou les longueurs ne collent pas ; lire(cle) et ecrire(cle, tampon) rendent des promesses sur IndexedDB (base « bitume-niveaux », un magasin), null ou false sans exception quand IndexedDB manque ou refuse ; purger(versionCourante) efface les entrées d'une autre version. Tests Node avec un faux IndexedDB en mémoire : aller-retour exact au bit, tampon abîmé refusé, autre version purgée, absence d'IndexedDB. Ajoute le module à MODULES de construire.py (avant jeu.js).",
+  "fichiers": [
+   "prototypes/calcul/scenario-worker-cache.js",
+   "construire.py"
+  ],
+  "filet": "decor|herbier|cache"
+ },
+ {
+  "nom": "17C",
+  "arbre": "/Users/david/Projects/bitume-wt/spark-conduite",
+  "plan": "docs/reprise/17-CONDUITE.md",
+  "titre": [
+   "### 17C",
+   "### 3.5"
+  ],
+  "texte": "Lot 17 « conduite », sous-lot 17C du plan ci-dessous ; les sous-lots précédents sont déjà livrés dans cet arbre. Suis les équations et les valeurs de départ des sections jointes. Chaque cible du sous-lot devient un contrôle du banc (tools/banc-conduite.mjs) ou d'une suite. Quand une empreinte de déterminisme change parce que la conduite change, mets à jour la valeur attendue du test avec la valeur affichée par l'échec.",
+  "fichiers": [
+   "src/conduite.js",
+   "src/pneu.js",
+   "src/course.js",
+   "tools/banc-conduite.mjs"
+  ],
+  "filet": "conduite|pneu|banc|determinisme"
+ },
+ {
+  "nom": "17D",
+  "arbre": "/Users/david/Projects/bitume-wt/spark-conduite",
+  "plan": "docs/reprise/17-CONDUITE.md",
+  "titre": [
+   "### 17D",
+   "### 3.6"
+  ],
+  "texte": "Lot 17 « conduite », sous-lot 17D du plan ci-dessous ; les sous-lots précédents sont déjà livrés dans cet arbre. Suis les équations et les valeurs de départ des sections jointes. Chaque cible du sous-lot devient un contrôle du banc (tools/banc-conduite.mjs) ou d'une suite. Quand une empreinte de déterminisme change parce que la conduite change, mets à jour la valeur attendue du test avec la valeur affichée par l'échec.",
+  "fichiers": [
+   "src/conduite.js",
+   "src/pneu.js",
+   "src/course.js",
+   "tools/banc-conduite.mjs"
+  ],
+  "filet": "conduite|pneu|banc|determinisme"
+ },
+ {
+  "nom": "17E",
+  "arbre": "/Users/david/Projects/bitume-wt/spark-conduite",
+  "plan": "docs/reprise/17-CONDUITE.md",
+  "titre": [
+   "### 17E",
+   "### 3.7"
+  ],
+  "texte": "Lot 17 « conduite », sous-lot 17E du plan ci-dessous ; les sous-lots précédents sont déjà livrés dans cet arbre. Suis les équations et les valeurs de départ des sections jointes. Chaque cible du sous-lot devient un contrôle du banc (tools/banc-conduite.mjs) ou d'une suite. Quand une empreinte de déterminisme change parce que la conduite change, mets à jour la valeur attendue du test avec la valeur affichée par l'échec.",
+  "fichiers": [
+   "src/conduite.js",
+   "src/pneu.js",
+   "src/course.js",
+   "tools/banc-conduite.mjs"
+  ],
+  "filet": "conduite|pneu|banc|determinisme"
+ },
+ {
+  "nom": "17F",
+  "arbre": "/Users/david/Projects/bitume-wt/spark-conduite",
+  "plan": "docs/reprise/17-CONDUITE.md",
+  "titre": [
+   "### 17F",
+   "### 3.8",
+   "### 3.9"
+  ],
+  "texte": "Lot 17 « conduite », sous-lot 17F du plan ci-dessous ; les sous-lots précédents sont déjà livrés dans cet arbre. Suis les équations et les valeurs de départ des sections jointes. Chaque cible du sous-lot devient un contrôle du banc (tools/banc-conduite.mjs) ou d'une suite. Quand une empreinte de déterminisme change parce que la conduite change, mets à jour la valeur attendue du test avec la valeur affichée par l'échec.",
+  "fichiers": [
+   "src/conduite.js",
+   "src/pneu.js",
+   "src/course.js",
+   "tools/banc-conduite.mjs"
+  ],
+  "filet": "conduite|pneu|banc|determinisme"
+ },
+ {
+  "nom": "17G",
+  "arbre": "/Users/david/Projects/bitume-wt/spark-conduite",
+  "plan": "docs/reprise/17-CONDUITE.md",
+  "titre": [
+   "### 17G",
+   "### 3.10"
+  ],
+  "texte": "Lot 17 « conduite », sous-lot 17G du plan ci-dessous ; les sous-lots précédents sont déjà livrés dans cet arbre. Suis les équations et les valeurs de départ des sections jointes. Chaque cible du sous-lot devient un contrôle du banc (tools/banc-conduite.mjs) ou d'une suite. Quand une empreinte de déterminisme change parce que la conduite change, mets à jour la valeur attendue du test avec la valeur affichée par l'échec.",
+  "fichiers": [
+   "src/conduite.js",
+   "src/pneu.js",
+   "src/course.js",
+   "tools/banc-conduite.mjs"
+  ],
+  "filet": "conduite|pneu|banc|determinisme"
+ },
+ {
+  "nom": "17H",
+  "arbre": "/Users/david/Projects/bitume-wt/spark-conduite",
+  "plan": "docs/reprise/17-CONDUITE.md",
+  "titre": [
+   "### 17H",
+   "### 3.11"
+  ],
+  "texte": "Lot 17 « conduite », sous-lot 17H du plan ci-dessous ; les sous-lots précédents sont déjà livrés dans cet arbre. Suis les équations et les valeurs de départ des sections jointes. Chaque cible du sous-lot devient un contrôle du banc (tools/banc-conduite.mjs) ou d'une suite. Quand une empreinte de déterminisme change parce que la conduite change, mets à jour la valeur attendue du test avec la valeur affichée par l'échec.",
+  "fichiers": [
+   "src/conduite.js",
+   "src/pneu.js",
+   "src/course.js",
+   "tools/banc-conduite.mjs"
+  ],
+  "filet": "conduite|pneu|banc|determinisme"
+ },
+ {
+  "nom": "17I",
+  "arbre": "/Users/david/Projects/bitume-wt/spark-conduite",
+  "plan": "docs/reprise/17-CONDUITE.md",
+  "titre": [
+   "### 17I",
+   "### 3.12"
+  ],
+  "texte": "Lot 17 « conduite », sous-lot 17I du plan ci-dessous ; les sous-lots précédents sont déjà livrés dans cet arbre. Suis les équations et les valeurs de départ des sections jointes. Chaque cible du sous-lot devient un contrôle du banc (tools/banc-conduite.mjs) ou d'une suite. Quand une empreinte de déterminisme change parce que la conduite change, mets à jour la valeur attendue du test avec la valeur affichée par l'échec.",
+  "fichiers": [
+   "src/conduite.js",
+   "src/pneu.js",
+   "src/course.js",
+   "tools/banc-conduite.mjs"
+  ],
+  "filet": "conduite|pneu|banc|determinisme"
+ },
+ {
+  "nom": "17J",
+  "arbre": "/Users/david/Projects/bitume-wt/spark-conduite",
+  "plan": "docs/reprise/17-CONDUITE.md",
+  "titre": [
+   "### 17J",
+   "### 3.13",
+   "### 3.14"
+  ],
+  "texte": "Lot 17 « conduite », sous-lot 17J du plan ci-dessous ; les sous-lots précédents sont déjà livrés dans cet arbre. Suis les équations et les valeurs de départ des sections jointes. Chaque cible du sous-lot devient un contrôle du banc (tools/banc-conduite.mjs) ou d'une suite. Quand une empreinte de déterminisme change parce que la conduite change, mets à jour la valeur attendue du test avec la valeur affichée par l'échec.",
+  "fichiers": [
+   "src/conduite.js",
+   "src/pneu.js",
+   "src/course.js",
+   "tools/banc-conduite.mjs"
+  ],
+  "filet": "conduite|pneu|banc|determinisme"
+ }
+]
