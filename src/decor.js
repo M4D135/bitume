@@ -1438,6 +1438,9 @@
       return herbier;
     };
     Object.defineProperties(decor, {
+      // lots lus par l'herbier, avant le regroupement des arbres en cases de l'image (lotsImage) : la référence
+      // historique de verifications/herbier-identite.test.mjs doit relire exactement les mêmes, dans le même ordre
+      lotsHerbier: { value: lots },
       ecologie: { value: ecologie },
       saison: { value: saison },
       sourcesFeuilles: { value: sourcesFeuilles },

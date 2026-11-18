@@ -114,7 +114,7 @@ for (const palier of paliers) {
     const c = B.circuit.creer(cfg.graine, { theme: cfg.theme, longueur: cfg.longueur });
     const d = B.decor.construire(c, { qualite: palier, matieres: true, vegetation: false, saison: 'ete' });
     const apres = d.herbier;
-    const avant = historique(c, d.nappes, d.lots, d.limites, d.enceinte, d.niveauEau);
+    const avant = historique(c, d.nappes, d.lotsHerbier || d.lots, d.limites, d.enceinte, d.niveauEau);
     
     verifier(`herbier ${palier} ${cfg.nom}`, () => {
       // (a) Totaux
