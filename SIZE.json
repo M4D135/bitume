@@ -1,8 +1,8 @@
 {
-  "version": "0.2.29",
-  "raw": 13007872,
-  "gzip": 3004365,
-  "sha256": "969f211ec815ac28601761e5c5dfb1a7eea17e151f0c17d9ea9978e3bac5f2df",
+  "version": "0.2.30",
+  "raw": 13007869,
+  "gzip": 3004363,
+  "sha256": "2f8c359838c4c92237fbafcfdec17427777bb1dbcc49e880712e1c05ccab6da1",
   "sources": {
     "moteur/renderer.js": 222682,
     "ferro/engine.js": 2024,
@@ -33,7 +33,7 @@
     "qualite.js": 1936,
     "graphismes.js": 20868,
     "jeu.js": 175071,
-    "index.html": 40044,
+    "index.html": 40041,
     "style.css": 43012
   }
 }
