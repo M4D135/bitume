@@ -57,12 +57,16 @@ MODULES = [
     'reseau.js',
     'mesures.js',
     'qualite.js',
+    # cadence d'affichage : période de l'écran, pas fixes verrouillés, diviseur d'images (lue par la boucle de jeu.js)
+    'cadence.js',
     'graphismes.js',
     'ambiance.js',
     'conditions-course.js',
     'navigation-menu.js',
     'autoconfig.js',
     'scene-bench.js',
+    # vibrations de manette : quatre sorties calculées une fois par image rendue, branchées par jeu.js
+    'vibrations.js',
     'jeu.js',
 ]
 # Version affichée au titre (David, 16/11/2026 : « incrémente les versions à chaque maj, je veux la vraie version »).

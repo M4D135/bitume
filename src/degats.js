@@ -69,7 +69,10 @@
     d.adher = 1; d.trainee = 1; d.chocs = 0; d.pire = 0; d.roues = [false, false, false, false]; d.casse = false; d.teinte = 0;
   }
 
-  const uneRouePerdue = d => d.roues.some(Boolean);
+  // Lues pour chaque voiture à chaque pas de simulation : une boucle simple, sans fonction de rappel ni tableau
+  // intermédiaire (même réponse que roues.some(Boolean) et roues.filter(Boolean).length sur ce tableau plein).
+  function uneRouePerdue(d) { const r = d.roues; for (let i = 0; i < r.length; i++) if (r[i]) return true; return false; }
+  function rouesPerdues(d) { const r = d.roues; let n = 0; for (let i = 0; i < r.length; i++) if (r[i]) n++; return n; }
 
   // Santé (lot 4) : un seul chiffre, 1 = neuve, 0 = au plus bas des critères. Il se lit dans le MÊME état que les
   // pénalités et la réparation — adhérence, traînée, roues manquantes — et n'est jamais une simulation parallèle
@@ -79,7 +82,7 @@
     if (!d) return 1;
     const gA = (1 - d.adher) / (1 - P.adherMin);           // 0 à 1 sur la plage utile des critères
     const gT = (d.trainee - 1) / (P.traineeMax - 1);
-    const gR = d.roues.filter(Boolean).length / 4;
+    const gR = rouesPerdues(d) / 4;
     const gC = d.casse ? 1 : 0;                            // la caisse à redresser pèse à part
     return Math.max(0, Math.min(1, 1 - (.4 * gA + .2 * gT + .3 * gR + .1 * gC)));
   }
@@ -96,7 +99,7 @@
   // Durée du service, en secondes : elle dépend de l'état réellement constaté, pas d'un compteur de passage.
   function chiffrerService(d) {
     if (!d) return 0;
-    return 2.5 + 1.2 * d.roues.filter(Boolean).length + (d.casse ? 3 : 0) + Math.min(3, d.chocs * .12);
+    return 2.5 + 1.2 * rouesPerdues(d) + (d.casse ? 3 : 0) + Math.min(3, d.chocs * .12);
   }
 
   B.degats = { PARAMS, creer, choc, reparer, reparerUrgence, uneRouePerdue, sante, avaries, chiffrerService, NOMS_ROUES };

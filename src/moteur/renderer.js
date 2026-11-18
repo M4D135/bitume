@@ -1546,19 +1546,22 @@
   }
   // A renderer owns each workspace. Returned batches remain valid until its
   // next call; the public pack() above still returns independent storage.
+  // batch.storage et batch.length (en flottants) servent le téléversement WebGL sans sous-vue ;
+  // batch.values reste une vue exacte, créée seulement quand un appelant la lit après un changement de taille.
   function instancePacker(){
-    let counts=new Uint32Array(0),next=new Uint32Array(0),storage=new Float32Array(0),active=new Float32Array(0);
-    const groups=[],records=[],batch={values:active,groups},zero=[0,0,0],one=[1,1,1];
+    let counts=new Uint32Array(0),next=new Uint32Array(0),storage=new Float32Array(0),active=new Float32Array(0),required=0;
+    const groups=[],records=[],zero=[0,0,0],one=[1,1,1];
+    const batch={groups,storage,length:0,get values(){if(active.buffer!==storage.buffer||active.length!==required)active=storage.subarray(0,required);return active;}};
     return (meshes,environment,objects=false)=>{
       if(counts.length<names.length){counts=new Uint32Array(names.length);next=new Uint32Array(names.length);}
       else counts.fill(0);
       let total=0;for(const mesh of meshes||[]){const i=shapeIndices.get(mesh.shape||'box');if(i!==undefined){counts[i]++;total++;}}
-      const required=total*16;if(storage.length<required)storage=new Float32Array(Math.max(required,storage.length*2,256));
-      if(active.buffer!==storage.buffer||active.length!==required)active=storage.subarray(0,required);batch.values=active;groups.length=0;
+      required=total*16;if(storage.length<required)storage=new Float32Array(Math.max(required,storage.length*2,256));
+      batch.storage=storage;batch.length=required;groups.length=0;const out=storage;
       let offset=0;for(let i=0;i<names.length;i++){next[i]=offset;if(counts[i]){const group=records[i]||(records[i]={name:names[i],offset:0,count:0});group.offset=offset*4;group.count=counts[i];groups.push(group);offset+=counts[i]*16;}}
       for(const mesh of meshes||[]){const i=shapeIndices.get(mesh.shape||'box');if(i===undefined)continue;const at=next[i];next[i]+=16;
         const p=mesh.p||zero,s=mesh.s||one,r=mesh.r||zero,c=mesh.color||zero;
-        active[at]=p[0];active[at+1]=p[1];active[at+2]=p[2];active[at+3]=mesh.mat||0;active[at+4]=s[0];active[at+5]=s[1];active[at+6]=s[2];active[at+7]=instanceDataW(mesh);active[at+8]=r[0];active[at+9]=r[1];active[at+10]=r[2];active[at+11]=surfaceFlags(mesh,environment,objects);active[at+12]=c[0];active[at+13]=c[1];active[at+14]=c[2];active[at+15]=mesh.color?1:0;
+        out[at]=p[0];out[at+1]=p[1];out[at+2]=p[2];out[at+3]=mesh.mat||0;out[at+4]=s[0];out[at+5]=s[1];out[at+6]=s[2];out[at+7]=instanceDataW(mesh);out[at+8]=r[0];out[at+9]=r[1];out[at+10]=r[2];out[at+11]=surfaceFlags(mesh,environment,objects);out[at+12]=c[0];out[at+13]=c[1];out[at+14]=c[2];out[at+15]=mesh.color?1:0;
       }return batch;
     };
   }
@@ -1577,7 +1580,8 @@
   }
   function effectsPacker(){
     const order=[],records=[],groups=[],groupRecords=[],zero=[0,0,0],one=[1,1,1],gray=[.5,.5,.5];
-    let storage=new Float32Array(0),active=new Float32Array(0),previous=0;const batch={values:active,groups};
+    let storage=new Float32Array(0),active=new Float32Array(0),previous=0,required=0;
+    const batch={groups,storage,length:0,get values(){if(active.buffer!==storage.buffer||active.length!==required)active=storage.subarray(0,required);return active;}};
     return (meshes,environment,eye)=>{
       order.length=0;let count=0;
       for(const mesh of meshes){if(!shapeIndices.has(mesh.shape||'sphere')||!(mesh.alpha>.003))continue;
@@ -1586,12 +1590,12 @@
       for(let i=count;i<previous;i++)records[i].mesh=null;previous=count;
       // The tie break preserves the input order of the original stable sort.
       order.sort((a,b)=>(b.distance-a.distance)||a.index-b.index);
-      const required=count*16;if(storage.length<required)storage=new Float32Array(Math.max(required,storage.length*2,256));
-      if(active.buffer!==storage.buffer||active.length!==required)active=storage.subarray(0,required);batch.values=active;groups.length=0;let offset=0;
+      required=count*16;if(storage.length<required)storage=new Float32Array(Math.max(required,storage.length*2,256));
+      batch.storage=storage;batch.length=required;groups.length=0;let offset=0;const out=storage;
       for(const record of order){const mesh=record.mesh,name=mesh.shape||'sphere',last=groups[groups.length-1];
         if(last&&last.name===name)last.count++;else{const group=groupRecords[groups.length]||(groupRecords[groups.length]={name:'',offset:0,count:0});group.name=name;group.offset=offset*4;group.count=1;groups.push(group);}
         const p=mesh.p,s=mesh.s||one,r=mesh.r||zero,c=mesh.color||gray,material=mesh.window?18:mesh.shape==='ring'&&Number.isFinite(mesh.innerRatio)?20+Math.min(.999,Math.max(0,mesh.innerRatio)):mesh.fxPriority==='hazard'?16:mesh.fxFire?14:mesh.fxSmoke?15:mesh.fxSpark?17:7;
-        active[offset]=p[0];active[offset+1]=p[1];active[offset+2]=p[2];active[offset+3]=material;active[offset+4]=s[0];active[offset+5]=s[1];active[offset+6]=s[2];active[offset+7]=mesh.emissive||0;active[offset+8]=r[0];active[offset+9]=r[1];active[offset+10]=r[2];active[offset+11]=surfaceFlags(mesh,environment,true);active[offset+12]=c[0];active[offset+13]=c[1];active[offset+14]=c[2];active[offset+15]=Math.min(1,Math.max(0,mesh.alpha));offset+=16;
+        out[offset]=p[0];out[offset+1]=p[1];out[offset+2]=p[2];out[offset+3]=material;out[offset+4]=s[0];out[offset+5]=s[1];out[offset+6]=s[2];out[offset+7]=mesh.emissive||0;out[offset+8]=r[0];out[offset+9]=r[1];out[offset+10]=r[2];out[offset+11]=surfaceFlags(mesh,environment,true);out[offset+12]=c[0];out[offset+13]=c[1];out[offset+14]=c[2];out[offset+15]=Math.min(1,Math.max(0,mesh.alpha));offset+=16;
       }return batch;
     };
   }
@@ -1727,6 +1731,10 @@
       if(c.nextEntries)c.nextEntries.push(e);else if(c.entries[c.nextCount]!==e){c.nextEntries=c.entries.slice(0,c.nextCount);c.nextEntries.push(e);}c.nextCount++;
     }return next;
   }
+  // Résultat partagé d'une requête sur un index vide : figé, car aucun appelant ne doit le remplir.
+  const EMPTY_ENTRIES=Object.freeze([]);
+  // Valeurs par défaut lues à chaque image (uniformes, lampes) : constantes, mêmes valeurs que les littéraux d'origine.
+  const WHITE=Object.freeze([1,1,1]),DEFAULT_CONE=Object.freeze([.75,.94]),SEA_ORIGIN=new Float32Array(4),SEA_MOTION=new Float32Array([0,0,-1.25,0]),TORCH_OFF=new Float32Array([0,-1e5,0]),ZERO4=new Float32Array(4);
   function spatialIndex(meshes,environment,previous,options){
     if(previous?.reconcile)return previous.reconcile(meshes,environment,options);
     const levels=[new Map(),new Map(),new Map()],large=[0,1,2].map(level=>({entries:[],epoch:0,count:0,next:null,level,key:null})),maxRadius=[0,0,0],byMesh=new WeakMap();let epoch=0;
@@ -1823,6 +1831,8 @@
       sourceMeshes=list;revisionedSource=revisionedMeshes;index.entries=entries;index.duplicates=duplicates;index.delta={fromEpoch:priorEpoch,epoch,added,removed,changed,full,fast:false};return index;
     }
     function query(eye,ranges,out,frustum){
+      // Un index vide (BITUME pose setWorld([], [])) n'a aucun seau : ni clé de cellule ni tableau à construire.
+      if(!index.entries.length){if(out)out.length=0;return out||EMPTY_ENTRIES;}
       const result=out||[];result.length=0;
       for(let level=0;level<3;level++){
         const range=ranges[level];if(!(range>0))continue;
@@ -1896,7 +1906,7 @@
     const ctx=canvas.getContext('2d',{alpha:false});
     if(!ctx) throw new Error('Le rendu graphique est indisponible dans ce navigateur.');
     const base={},coarseBase={},palette=[[.105,.135,.15],[.36,.18,.065],[.13,.16,.17],[.57,.58,.54],[.025,.74,.77],[1,.42,.06],[.68,.055,.025],[.065,.075,.085],[.16,.21,.075],[.32,.31,.27],[.18,.10,.04],[.105,.255,.055],[.035,.12,.15]];
-    const stats={backend:'canvas2d',webglVersion:0,drawCalls:0,triangles:0,instances:0,contextLost:false,bloom:false,shadows:false};
+    const stats={backend:'canvas2d',webglVersion:0,drawCalls:0,triangles:0,instances:0,contextLost:false,bloom:false,shadows:false,creations:0};
     const surface=options.resolution==='native'&&window.FSurface?window.FSurface.create(canvas,{scale:options.renderScale}):null;if(surface)stats.native=surface.stats;
     let world=spatialIndex([]),lights=[],environment=null,quality='auto',disposed=false,vignette=null,shadowGeometry=new WeakMap(),explicitGround=false,staticCasterPlan=null,worldRevision=0,environmentRevision=0;
     const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
@@ -2339,7 +2349,10 @@
       };
     }
     function dispose(){surface?.dispose();disposed=true;world=spatialIndex([]);lights=[];vignette=null;shadowGeometry=new WeakMap();staticCasterPlan=null;}
-    return {setEnvironment(value){environment=environmentInfo(value);environmentRevision++;},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setRenderScale:value=>surface?.setScale(value)};
+    // Rendu logiciel : aucun pipeline ni cible GPU à préparer ; mêmes signatures que WebGL 2, réponse immédiate.
+    const prewarm=()=>Promise.resolve({variants:0,draws:0,drawCalls:0,triangles:0,lots:0,nappes:0,subsets:0,creations:0,bytes:0,keys:[],ms:0,submitMs:0,waitMs:0,fallback:'unsupported'});
+    let retained=false;const retain=value=>value===undefined?retained:(retained=!!value);
+    return {setEnvironment(value){environment=environmentInfo(value);environmentRevision++;},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,prewarm,retain,resetStats(){stats.creations=0;return stats;},setRenderScale:value=>surface?.setScale(value)};
   }
 
   // FERRO 0.2 : réglages de création, tous facultatifs. Sans eux, l'image et les commandes GPU sont celles de FERRO 0.1.
@@ -2403,22 +2416,28 @@
       }
       motion.x=eye[0];motion.y=eye[1];motion.z=eye[2];motion.fx=forward[0];motion.fy=forward[1];motion.fz=forward[2];
     }
-    function margins(demiDiag){
-      if(exactMargin)return {distance:0,tilt:0};
-      if(fixedMargin)return {distance:Number.isFinite(fixedMargin.distance)?fixedMargin.distance:VIEW_MARGIN,tilt:Number.isFinite(fixedMargin.angle)?fixedMargin.angle:VIEW_TILT};
+    // out est réécrit sur place (marge de la vue courante ou du préchauffage) : aucun objet par image.
+    function margins(demiDiag,out){
+      if(exactMargin){out.distance=0;out.tilt=0;return out;}
+      if(fixedMargin){out.distance=Number.isFinite(fixedMargin.distance)?fixedMargin.distance:VIEW_MARGIN;out.tilt=Number.isFinite(fixedMargin.angle)?fixedMargin.angle:VIEW_TILT;return out;}
       const distance=Math.max(1,Math.min(16,motion.speed*.15)),tilt=Math.min(demiDiag*.5,Math.max(4*Math.PI/180,Math.min(12*Math.PI/180,motion.turn*.1)));
-      return {distance,tilt};
+      out.distance=distance;out.tilt=tilt;return out;
     }
     const config=settings(options.sceneReflections?{...options,msaa:0}:options),worldFrag=worldFragment(config),postFrag=postFragment(config);
     const source=geometry(),primitiveIndex=indexPrimitiveVertices(source),groundIndex=groundCoverGeometry(source,primitiveIndex.indices),view=new Float32Array(16),projection=new Float32Array(16),vp=new Float32Array(16),overlayProjection=new Float32Array(16),overlayVP=new Float32Array(16);
     const shadowView=new Float32Array(16),shadowProjection=new Float32Array(16),shadowMatrix=new Float32Array(16),shadowMatrices=new Float32Array(48);
     const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12),lightDirections=new Float32Array(36),lightCones=new Float32Array(24);
     // BITUME : l’indexation EMPRISE est aussi utilisée sur WebGL2 ; formes libres inchangées.
-    const stats={drawCalls:0,triangles:0,instances:0,contextLost:false,webglVersion:2,backend:'webgl2',engine:'ferro-reference',bloom:false,shadows:false,shadowMapSize:0,shadowTileSize:0,msaa:0,reflections:false,primitiveIndex:primitiveIndex.stats,groundCoverIndex:groundIndex.stats};
+    const stats={drawCalls:0,triangles:0,instances:0,contextLost:false,webglVersion:2,backend:'webgl2',engine:'ferro-reference',bloom:false,shadows:false,shadowMapSize:0,shadowTileSize:0,msaa:0,reflections:false,primitiveIndex:primitiveIndex.stats,groundCoverIndex:groundIndex.stats,creations:0};
+    // Preuve d'une course sans allocation : stats.creations cumule les objets GL (cibles, tampons, programmes)
+    // et les agrandissements de flux d'instances faits pendant draw. Le préchauffage compte à part (warm.creations).
+    // retained suspend la libération des cibles optionnelles après 120 rendus sans usage (retain, prewarm).
+    let counting=false,retained=false,warm=null;
+    function created(n){if(counting)stats.creations+=n;else if(warm)warm.creations+=n;}
     let program,depthProgram,postProgram,skyProgram,fxProgram,vao,postVao,vbo,ibo,worldBuffer,dynamicBuffer,overlayBuffer,fxBuffer,crowdBuffer,uniforms,postUniforms,skyUniforms,fxUniforms,depthMatrix,depthWind,depthLocalWind,ssrProgram,ssrUniforms;
     let post=null,msaaBuffer,msaaIdle=0,shadowTarget=null,shadowIdle=0,maxShadowTileSize=1024,whiteTexture=null,pbrTextures=[],targetKey='',shadowKey='',shadowLight=null;
     let world=[],worldIndex=spatialIndex([]),backgroundIndex=spatialIndex([]),lights=[],environment=null,worldBatch=pack([]),quality='auto',disposed=false,worldRevision=0,partitionState=null;
-    let staticCaches=[],lampCasters=[],actorLightPlan=null;
+    let staticCaches=[],lampCasters=[],actorLightPlan=null,dynamicStream=null,overlayStream=null,fxStream=null;
     const packDynamic=instancePacker(),packOverlay=instancePacker(),packFx=effectsPacker();
     const ordinary=[],overlay=[],particles=[],overlayParticles=[];
     const native=options.resolution==='native',maxSize=native?Math.min(Number(gl.getParameter(gl.MAX_RENDERBUFFER_SIZE))||16384,Number(gl.getParameter(gl.MAX_TEXTURE_SIZE))||16384):16384;
@@ -2446,9 +2465,14 @@
     // de décor (instances statiques groupées par portion de circuit, chacune avec sa version lointaine allégée).
     let nappes=[],nappeVao=null,nappeVbo=null,nappeIbo=null,lots=[],groundPlans=new WeakMap();
     const lotView=lotViewState();
-    let viewCache=null,torchCache=null,sunCache=null,indexRevision=0,selectionGen=0;
-    const cacheStats={viewFrames:0,viewRebuilds:0,torchRebuilds:0,sunRebuilds:0,marginDistance:1,marginAngle:8};
+    let viewCache=null,torchCache=null,sunCache=null,indexRevision=0,selectionGen=0,selectionRebuilt=false;
+    const emptyGuard={revision:-1,origin:[0,0,0],forward:[0,0,0],horizontal:0,vertical:0,far:0,ranges:[0,0,0],margin:0,tilt:0,entries:EMPTY_ENTRIES};
+    // Les marges arrondies sont lues à la demande : plus de chaîne (toFixed) construite à chaque image,
+    // pour la même valeur que l'ancienne affectation faite à chaque vue.
+    const cacheStats={viewFrames:0,viewRebuilds:0,torchRebuilds:0,sunRebuilds:0,get marginDistance(){return +guardMargin.distance.toFixed(2);},get marginAngle(){return +(guardMargin.tilt*180/Math.PI).toFixed(2);}};
     let guardMargin={distance:1,tilt:8*Math.PI/180};
+    // Sélections couleur alternées : le cache statique garde l'une pendant que l'autre se remplit (aucun tableau par image).
+    const shownA=[],shownB=[],warmMargin={distance:0,tilt:0};
     const VIEW_MARGIN=1,VIEW_TILT=8*Math.PI/180;
     const governor=resolutionGovernor();let autoScale=1;
     // PDR (voile) : vrai tant que le voile du jeu occupe l'unité 4 ; draw le retire à la première image sans fx.voile.
@@ -2476,13 +2500,30 @@
       return shader;
     }
     function link(vertex,fragment){
-      const vs=compile(gl.VERTEX_SHADER,vertex),fs=compile(gl.FRAGMENT_SHADER,fragment),p=gl.createProgram();
+      const vs=compile(gl.VERTEX_SHADER,vertex),fs=compile(gl.FRAGMENT_SHADER,fragment),p=gl.createProgram();created(1);
       gl.attachShader(p,vs);gl.attachShader(p,fs);gl.linkProgram(p);gl.deleteShader(vs);gl.deleteShader(fs);
       if(!gl.getProgramParameter(p,gl.LINK_STATUS)){const message=gl.getProgramInfoLog(p);gl.deleteProgram(p);throw new Error('Initialisation 3D : '+message);}
       return p;
     }
+    // Compilation groupée : toutes les compilations et tous les liens partent avant la lecture du premier statut,
+    // pour que le pilote les mène en parallèle ; un source identique (VERT, POST_VERT) n'est compilé qu'une fois.
+    // En cas d'échec, le message et son ordre restent ceux de link : compilation du sommet, du fragment, puis lien.
+    function linkAll(pairs){
+      const shaders=new Map(),entries=[];
+      const shader=(type,code)=>{const key=(type===gl.VERTEX_SHADER?'v':'f')+code;let s=shaders.get(key);if(!s){s=gl.createShader(type);gl.shaderSource(s,code);gl.compileShader(s);shaders.set(key,s);}return s;};
+      for(const [vertex,fragment] of pairs){const vs=shader(gl.VERTEX_SHADER,vertex),fs=shader(gl.FRAGMENT_SHADER,fragment),p=gl.createProgram();gl.attachShader(p,vs);gl.attachShader(p,fs);gl.linkProgram(p);entries.push({p,vs,fs});}
+      let failure=null;
+      for(const {p,vs,fs} of entries){
+        if(gl.getProgramParameter(p,gl.LINK_STATUS))continue;
+        for(const s of [vs,fs])if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){failure='Compilation 3D : '+gl.getShaderInfoLog(s);break;}
+        failure=failure||'Initialisation 3D : '+gl.getProgramInfoLog(p);break;
+      }
+      for(const s of shaders.values())gl.deleteShader(s);
+      if(failure){for(const {p} of entries)gl.deleteProgram(p);throw new Error(failure);}
+      return entries.map(entry=>entry.p);
+    }
     function texture(width,height,depth=false){
-      const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);
+      const t=gl.createTexture();created(1);gl.bindTexture(gl.TEXTURE_2D,t);
       gl.texImage2D(gl.TEXTURE_2D,0,depth?gl.DEPTH_COMPONENT24:gl.RGBA8,width,height,0,depth?gl.DEPTH_COMPONENT:gl.RGBA,depth?gl.UNSIGNED_INT:gl.UNSIGNED_BYTE,null);
       gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,depth?gl.NEAREST:gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,depth?gl.NEAREST:gl.LINEAR);
       gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
@@ -2492,10 +2533,10 @@
       if(!target)return;gl.deleteFramebuffer(target.framebuffer);gl.deleteTexture(target.texture);if(target.depth)gl.deleteRenderbuffer(target.depth);if(target.depthTexture)gl.deleteTexture(target.depthTexture);
     }
     function colorTarget(width,height,depth){
-      const target={framebuffer:gl.createFramebuffer(),texture:texture(width,height),width,height,depth:null};
+      const target={framebuffer:gl.createFramebuffer(),texture:texture(width,height),width,height,depth:null};created(1);
       gl.bindFramebuffer(gl.FRAMEBUFFER,target.framebuffer);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,target.texture,0);
       if(depth==='texture'){target.depthTexture=texture(width,height,true);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,target.depthTexture,0);}
-      else if(depth){target.depth=gl.createRenderbuffer();gl.bindRenderbuffer(gl.RENDERBUFFER,target.depth);gl.renderbufferStorage(gl.RENDERBUFFER,gl.DEPTH_COMPONENT24,width,height);gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,target.depth);}
+      else if(depth){target.depth=gl.createRenderbuffer();created(1);gl.bindRenderbuffer(gl.RENDERBUFFER,target.depth);gl.renderbufferStorage(gl.RENDERBUFFER,gl.DEPTH_COMPONENT24,width,height);gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,target.depth);}
       gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
       if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE){deleteTarget(target);return null;}
       return target;
@@ -2504,7 +2545,7 @@
     function deleteMsaa(target){if(!target)return;gl.deleteFramebuffer(target.framebuffer);gl.deleteRenderbuffer(target.color);gl.deleteRenderbuffer(target.depth);}
     function msaaTarget(width,height){
       const samples=Math.min(4,gl.getParameter(gl.MAX_SAMPLES)||0);if(samples<2)return null;
-      const target={framebuffer:gl.createFramebuffer(),color:gl.createRenderbuffer(),depth:gl.createRenderbuffer(),samples};
+      const target={framebuffer:gl.createFramebuffer(),color:gl.createRenderbuffer(),depth:gl.createRenderbuffer(),samples};created(3);
       gl.bindRenderbuffer(gl.RENDERBUFFER,target.color);gl.renderbufferStorageMultisample(gl.RENDERBUFFER,samples,gl.RGBA8,width,height);
       gl.bindRenderbuffer(gl.RENDERBUFFER,target.depth);gl.renderbufferStorageMultisample(gl.RENDERBUFFER,samples,gl.DEPTH_COMPONENT24,width,height);
       gl.bindFramebuffer(gl.FRAMEBUFFER,target.framebuffer);
@@ -2527,7 +2568,7 @@
     function ensureShadowTarget(fx){
       if(!shadowsEnabled(fx)){
         // Une vue sans ombres ne fait pas détruire l'atlas de la vue suivante. Une désactivation durable le libère.
-        if(shadowTarget&&++shadowIdle>=120){deleteTarget(shadowTarget);shadowTarget=null;shadowKey='';shadowIdle=0;}
+        if(shadowTarget&&!retained&&++shadowIdle>=120){deleteTarget(shadowTarget);shadowTarget=null;shadowKey='';shadowIdle=0;}
         stats.shadowMapSize=stats.shadowTileSize=0;return;
       }
       shadowIdle=0;
@@ -2539,7 +2580,7 @@
       // Pixel resolution may adapt; a depth atlas of the same size remains valid.
       if(shadowKey!==String(size)){
         deleteTarget(shadowTarget);shadowTarget=null;shadowKey=String(size);
-        const target={framebuffer:gl.createFramebuffer(),texture:texture(size*2,size*2,true),size};
+        const target={framebuffer:gl.createFramebuffer(),texture:texture(size*2,size*2,true),size};created(1);
         gl.bindFramebuffer(gl.FRAMEBUFFER,target.framebuffer);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,target.texture,0);
         gl.drawBuffers([gl.NONE]);gl.readBuffer(gl.NONE);
         if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)===gl.FRAMEBUFFER_COMPLETE)shadowTarget=target;else deleteTarget(target);
@@ -2559,7 +2600,7 @@
         msaaIdle=0;
         // null mémorise un échec jusqu'au prochain changement de taille/qualité.
         if(msaaBuffer===undefined){msaaBuffer=msaaTarget(canvas.width,canvas.height);changed=true;}
-      }else if(msaaBuffer&&++msaaIdle>=120){
+      }else if(msaaBuffer&&!retained&&++msaaIdle>=120){
         deleteMsaa(msaaBuffer);msaaBuffer=undefined;msaaIdle=0;changed=true;
       }
       if(wantReflections){
@@ -2571,7 +2612,7 @@
           else{deleteTarget(source);deleteTarget(reflected);post.reflectSource=post.reflection=null;}
           changed=true;
         }
-      }else if(post&&post.reflectSource&&(post.reflectionIdle=(post.reflectionIdle||0)+1)>=120){
+      }else if(!retained&&post&&post.reflectSource&&(post.reflectionIdle=(post.reflectionIdle||0)+1)>=120){
         deleteTarget(post.reflectSource);deleteTarget(post.reflection);
         post.reflectSource=post.reflection=undefined;post.reflectionIdle=0;changed=true;
       }
@@ -2644,9 +2685,17 @@
       maxShadowTileSize=Math.max(1,Math.floor((Number(gl.getParameter(gl.MAX_TEXTURE_SIZE))||2048)/2));
       if(profiler){profiler.dispose();profiler=window.FGPUProfile.create(gl,profileOptions);}
       fskyProgram=null;fskyBound=null;fskyCache={};skyFrame={};fogCaches.clear();screenCaches.clear();
-      if(options.advancedSky&&window.FSky)fskyProgram=link(window.FSky.VERT,screenShader('fsky',window.FSky.FRAG));
-      ssrProgram=link(POST_VERT,SSR_FRAG);ssrUniforms={};for(const name of ['uColor','uDepth','uProjection','uPixel'])ssrUniforms[name]=gl.getUniformLocation(ssrProgram,name);
-      program=link(VERT,reflectionShader(screenShader('world',skyFogShader(worldFrag))));depthProgram=link(VERT,DEPTH_FRAG);postProgram=link(POST_VERT,screenShader('post',postFrag));skyProgram=link(POST_VERT,screenShader('sky',SKY_FRAG));fxProgram=link(FX_VERT,screenShader('fx',skyFogShader(FX_FRAG)));
+      // skyFogShader lit fskyProgram : le marquer avant de composer les sources ; le programme réel sort du lien groupé.
+      // FX_VERT est textuellement VERT (ses remplacements ne trouvent pas leur cible) : monde, profondeur et effets
+      // partagent donc un seul shader de sommets compilé, sans changer l'image.
+      const advanced=!!(options.advancedSky&&window.FSky);fskyProgram=advanced;
+      try{
+        const pairs=[[POST_VERT,SSR_FRAG],[VERT,reflectionShader(screenShader('world',skyFogShader(worldFrag)))],[VERT,DEPTH_FRAG],[POST_VERT,screenShader('post',postFrag)],[POST_VERT,screenShader('sky',SKY_FRAG)],[FX_VERT,screenShader('fx',skyFogShader(FX_FRAG))]];
+        if(advanced)pairs.unshift([window.FSky.VERT,screenShader('fsky',window.FSky.FRAG)]);
+        const linked=linkAll(pairs);fskyProgram=advanced?linked.shift():null;
+        [ssrProgram,program,depthProgram,postProgram,skyProgram,fxProgram]=linked;
+      }catch(error){fskyProgram=null;throw error;}
+      ssrUniforms={};for(const name of ['uColor','uDepth','uProjection','uPixel'])ssrUniforms[name]=gl.getUniformLocation(ssrProgram,name);
       uniforms={};for(const name of ['uViewProjection','uWindTime','uWindStrength','uGroundCoverEye','uGroundCoverDensity','uGroundCoverRange','uLocalWindCount','uLocalWindPosition','uLocalWindMotion','uSeaOrigin','uSeaMotion','uEye','uForward','uLightPosition','uLightColor','uLightRange','uLightDirection','uLightCone','uWeather','uCloudOffset','uPbrAlbedo','uPbrNormal','uPbrRough','uPbrReady','uLightCount','uResolution','uEffects','uShadowMap','uShadowMatrix','uShadowSettings','uTorchPosition','uSunDirection','uSunColor','uAmbient','uFogColor','uSkyTop','uSkyBottom','uEnvironment','uNightHour','uPhoto','uOverlayMode','uSeaMode','uSceneProbe','uProbeReady','uProbeOrigin']) uniforms[name]=gl.getUniformLocation(program,name);
       postUniforms={};for(const name of ['uScene','uBloom','uReflection','uReflections','uTexel','uPass'])postUniforms[name]=gl.getUniformLocation(postProgram,name);
       skyUniforms={};for(const name of ['uSkyRight','uSkyUp','uSkyForward','uSkyTop','uSkyBottom','uSkyFog','uSunDirection','uSunColor','uSkyFov','uSkyMotion','uWeather','uCloudOffset','uSkyNight'])skyUniforms[name]=gl.getUniformLocation(skyProgram,name);
@@ -2661,6 +2710,7 @@
       for(let i=2;i<6;i++) {gl.enableVertexAttribArray(i);gl.vertexAttribDivisor(i,1);}
       reflections?.dispose();reflections=options.sceneReflections&&window.FSceneReflections?window.FSceneReflections.create(gl,link):null;stats.sceneReflections=reflections?.stats;probeBuffer=gl.createBuffer();probeBatch=null;probeKey='';
       worldBuffer=gl.createBuffer();dynamicBuffer=gl.createBuffer();overlayBuffer=gl.createBuffer();fxBuffer=gl.createBuffer();
+      dynamicStream={buffer:dynamicBuffer,capacity:0};overlayStream={buffer:overlayBuffer,capacity:0};fxStream={buffer:fxBuffer,capacity:0};
       // PDR : foule déjà empaquetée par le jeu (fx.instances), partagée par l'ombre du soleil et la passe couleur.
       // Son tampon naît au premier usage : un jeu sans foule ne crée rien de plus.
       crowdBuffer=null;
@@ -2718,14 +2768,27 @@
       nappeIbo=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,nappeIbo);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,index,gl.STATIC_DRAW);
       gl.bindVertexArray(vao);stats.nappeTriangles=indices/3;
     }
-    function setNappes(liste){nappes=(liste||[]).filter(n=>n&&n.sommets&&n.indices&&n.indices.length);chargerNappes();}
+    // Une sphère de test par nappe, relue à chaque vue : aucune allocation par nappe et par image.
+    let nappeBounds=[];
+    function setNappes(liste){nappes=(liste||[]).filter(n=>n&&n.sommets&&n.indices&&n.indices.length);nappeBounds=nappes.map(n=>({p:n.centre,radius:n.rayon}));chargerNappes();}
     function dessinerNappes(eye,axes,horizontal,vertical,far){
       if(!nappeVao)return;
       gl.bindVertexArray(nappeVao);gl.vertexAttrib4f(3,1,1,1,0);gl.vertexAttrib4f(4,0,0,0,2);
-      for(const n of nappes){
-        if(!visible({p:n.centre,radius:n.rayon},eye,axes,horizontal,vertical,far))continue;
+      for(let i=0;i<nappes.length;i++){
+        const n=nappes[i],bounds=nappeBounds[i];bounds.p=n.centre;bounds.radius=n.rayon;
+        if(!visible(bounds,eye,axes,horizontal,vertical,far))continue;
         gl.drawElements(gl.TRIANGLES,n.compte,gl.UNSIGNED_INT,n.debut);stats.drawCalls++;stats.triangles+=n.compte/3;
       }
+      gl.bindVertexArray(vao);
+    }
+    // Préchauffage : chaque nappe, sans test de champ. Les nappes ne projettent pas d'ombre (aucune passe d'ombre
+    // ne les trace) : les tracer dans l'atlas ferait compiler une variante que le jeu n'utilise jamais. Une cible
+    // déjà balayée (voir prechaufferLots) ne reçoit qu'une nappe, assez pour la variante d'état de cette image.
+    function prechaufferNappes(){
+      if(!nappeVao)return;
+      const cle=warm.cible+' nappes',seule=warm.balayes.has(cle);warm.balayes.add(cle);
+      gl.bindVertexArray(nappeVao);gl.vertexAttrib4f(3,1,1,1,0);gl.vertexAttrib4f(4,0,0,0,2);
+      for(const n of nappes){gl.drawElements(gl.TRIANGLES,n.compte,gl.UNSIGNED_INT,n.debut);stats.drawCalls++;stats.triangles+=n.compte/3;warm.nappes++;if(seule)break;}
       gl.bindVertexArray(vao);
     }
     function chargerLots(){
@@ -2744,7 +2807,8 @@
       for(const entry of lotView.records){const l=entry.lot;
         if(!l.tampon)continue;
         if(entry.cover&&entry.distance>entry.range)continue;
-        if(accepte){if(!accepte(entry.bounds))continue;}
+        // lot.ombre === false : le lot ne projette pas d'ombre du soleil (herbe courte, marquages au sol).
+        if(accepte){if(l.ombre===false||!accepte(entry.bounds))continue;}
         else{if(entry.distance>Math.min(far,entry.range))continue;if(!visible(entry.bounds,eye,axes,horizontal,vertical,far))continue;}
         const plan=entry.cover&&groundPlans.get(l),fresh=plan&&plan.frame!==lotView.frame;
         if(plan&&prepareGroundCover(plan,entry,lotView.frame,vegetationState.eye,vegetationState)){
@@ -2755,6 +2819,36 @@
         renderBatch(proche?l.paquet:l.paquetLoin,proche?l.tampon:l.tamponLoin,false,!!accepte);dessines++;
       }
       return dessines;
+    }
+    // Préchauffage : chaque tampon de lot, proche ET lointain, sans test de champ ni de portée, puis une fois chaque
+    // sous-ensemble d'indices des prairies (le pilote valide et met en cache chaque intervalle d'indices du tampon
+    // partagé). En passe d'ombre, les lots « ombre: false » restent exclus, comme en jeu.
+    // Ce balayage complet n'a lieu qu'une fois par cible (warm.cible : passe, format, échantillons). Un tampon et un
+    // intervalle d'indices ne se valident qu'une fois, et un pipeline dépend du programme et de la cible, pas du tampon :
+    // refaire le balayage dans chaque variante soumettait des centaines de milliers d'appels pour rien. Les variantes
+    // suivantes d'une même cible tracent un lot et un sous-ensemble, assez pour l'état qu'elles apportent (uniformes,
+    // textures liées, mélange).
+    function prechaufferLots(ombre){
+      const cle=warm.cible+' lots',complet=!warm.balayes.has(cle);warm.balayes.add(cle);
+      let dessines=0,sousEnsemble=false;const formes=new Set();
+      for(const l of lots){
+        if(ombre&&l.ombre===false)continue;
+        if(!complet&&dessines&&sousEnsemble)break;
+        if(l.tampon&&(complet||!dessines)){renderBatch(l.paquet,l.tampon,false,ombre);dessines++;}
+        if(complet&&l.tamponLoin&&l.paquetLoin){renderBatch(l.paquetLoin,l.tamponLoin,false,ombre);dessines++;}
+        const plan=l.tampon&&groundPlans.get(l);if(!plan||!plan.valid||!complet&&sousEnsemble)continue;
+        for(const group of plan.groups){
+          const record=group.nearIndex,full=source.ranges[record.name];if(!record.active||formes.has(record))continue;formes.add(record);
+          gl.bindBuffer(gl.ARRAY_BUFFER,l.tampon);for(let k=2;k<6;k++)gl.vertexAttribPointer(k,4,gl.FLOAT,false,64,group.near.offset+(k-2)*16);
+          for(const range of record.ranges){
+            if(!range.count||range.count===full.count&&range.offset===full.offset)continue;
+            gl.drawElementsInstanced(gl.TRIANGLES,range.count,gl.UNSIGNED_INT,range.offset,1);stats.drawCalls++;stats.triangles+=range.count/3;warm.subsets++;
+            sousEnsemble=true;if(!complet)break;
+          }
+          if(!complet&&sousEnsemble)break;
+        }
+      }
+      warm.lots+=dessines;return dessines;
     }
 
     // BITUME : désindexer seulement la primitive modifiée ; les anciennes occurrences restent indépendantes.
@@ -2777,7 +2871,7 @@
         // has no link to the previous chunk, so replaced generations can die.
         const c={range:group.range,entries:group.nextEntries||group.entries.slice(0,group.nextCount),min:[Infinity,Infinity,Infinity],max:[-Infinity,-Infinity,-Infinity]};
         for(const e of c.entries)for(let k=0;k<3;k++){c.min[k]=Math.min(c.min[k],e.p[k]-e.radius);c.max[k]=Math.max(c.max[k],e.p[k]+e.radius);}
-        c.p=c.min.map((v,k)=>(v+c.max[k])/2);c.radius=Math.hypot(...c.max.map((v,k)=>(v-c.min[k])/2));c.batch=packIndexed(c.entries);c.buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,c.buffer);gl.bufferData(gl.ARRAY_BUFFER,c.batch.values,gl.STATIC_DRAW);uploads+=c.batch.values.byteLength;next.set(key,c);
+        c.p=c.min.map((v,k)=>(v+c.max[k])/2);c.radius=Math.hypot(...c.max.map((v,k)=>(v-c.min[k])/2));c.batch=packIndexed(c.entries);c.buffer=gl.createBuffer();created(1);gl.bindBuffer(gl.ARRAY_BUFFER,c.buffer);gl.bufferData(gl.ARRAY_BUFFER,c.batch.values,gl.STATIC_DRAW);uploads+=c.batch.values.byteLength;next.set(key,c);
       }
       for(const [key,c] of chunks)if(next.get(key)!==c)gl.deleteBuffer(c.buffer);chunks=next;stats.chunks=chunks.size;stats.chunkBuildBytes=uploads;stats.chunkUpdateIncremental=chunkState.incremental;stats.chunkEntriesVisited=chunkState.entriesVisited;
     }
@@ -2839,6 +2933,24 @@
         stats.drawCalls++;stats.triangles+=shape.count/3*group.count;if(!shadowPass)stats.instances+=group.count;
       }
     }
+    // Flux d'instances de chaque image (objets, effets, habitacle) : chaque envoi re-spécifie le stockage à sa taille
+    // utile, données comprises (bufferData avec srcOffset et longueur, depuis l'espace de travail du packer, sans
+    // sous-vue). C'est l'orphelinage de 0.3.9 : l'ancien stockage revient au pilote sans attendre le GPU, et rien n'est
+    // mis à zéro. Un stockage à la capacité sans données, puis bufferSubData, faisait effacer toute la capacité à
+    // chaque appel (WebGL initialise un stockage vide), jusqu'à trois fois par image pour les effets. capacity retient
+    // la plus grande taille envoyée : la dépasser compte une création ; prewarm peut la relever (options.reserve). Le
+    // coût réel côté pilote n'est pas mesuré ici.
+    function streamUpload(stream,batch){
+      // Une longueur nulle signifierait « jusqu'au bout » : un flux vide n'envoie rien.
+      const floats=batch.length,bytes=floats*4;if(!floats)return;
+      if(stream.capacity<bytes){stream.capacity=Math.max(bytes,stream.capacity*2,16384);created(1);}
+      gl.bindBuffer(gl.ARRAY_BUFFER,stream.buffer);gl.bufferData(gl.ARRAY_BUFFER,batch.storage,gl.DYNAMIC_DRAW,0,floats);
+      stats.uploadBytes+=bytes;
+    }
+    // Réserve de prewarm : relève la taille retenue, sans appel GL ; une course qui reste dessous ne compte aucune création.
+    function reserveStream(stream,bytes){
+      if(bytes>stream.capacity)stream.capacity=Math.ceil(bytes/16384)*16384;
+    }
     function renderGroundCover(plan,near,far,shadowPass){
       let bound=null;
       for(let i=0;i<plan.count;i++){
@@ -2864,6 +2976,13 @@
         &&previous.ranges[0]>=ranges[0]&&previous.ranges[1]>=ranges[1]&&previous.ranges[2]>=ranges[2]
         &&Math.hypot(origin[0]-previous.origin[0],origin[1]-previous.origin[1],origin[2]-previous.origin[2])<=previous.margin
         &&axes.forward[0]*previous.forward[0]+axes.forward[1]*previous.forward[1]+axes.forward[2]*previous.forward[2]>=Math.cos(previous.tilt))return previous;
+      selectionRebuilt=true;
+      if(!worldIndex.entries.length){
+        // Index vide (BITUME) : une garde unique, mise à jour sur place, sans tableau ni requête de cellules.
+        const g=emptyGuard;g.revision=revision;g.horizontal=horizontal;g.vertical=vertical;g.far=far;g.margin=margin;g.tilt=tilt;
+        for(let i=0;i<3;i++){g.origin[i]=origin[i];g.forward[i]=axes.forward[i];g.ranges[i]=ranges[i]>0?ranges[i]+margin:0;}
+        return g;
+      }
       const demiDiag=Math.atan(Math.hypot(horizontal,vertical)),k=Math.hypot(1,horizontal,vertical);
       // Un niveau à portée nulle doit rester exclu : ajouter la marge le ferait revenir dans la requête.
       // Pas de plafond sur la taille du sur-ensemble : le réduire ferait disparaître des objets
@@ -2878,18 +2997,18 @@
       return {revision,origin:[origin[0],origin[1],origin[2]],forward:[axes.forward[0],axes.forward[1],axes.forward[2]],horizontal,vertical,far,ranges:query0,margin,tilt,entries};
     }
     function renderStatic(entries,slot,shadow=false){
-      const cache=staticCaches[slot];
-      const same=cache.entries.length===entries.length&&entries.every((entry,i)=>entry===cache.entries[i]);
+      const cache=staticCaches[slot],prior=cache.entries;
+      let same=prior.length===entries.length;for(let i=0;same&&i<entries.length;i++)if(entries[i]!==prior[i])same=false;
       if(!same){cache.entries=entries;cache.batch=packIndexed(entries);}
       renderBatch(cache.batch,cache.buffer,!same,shadow);
     }
     function renderEffects(meshes,eye,time,clip=vp){
-      const batch=packFx(meshes,environment,eye);stats.fxInstances+=batch.values.length/16;if(!batch.groups.length)return;
+      const batch=packFx(meshes,environment,eye);stats.fxInstances+=batch.length/16;if(!batch.groups.length)return;
       gl.useProgram(fxProgram);gl.uniformMatrix4fv(fxUniforms.uViewProjection,false,clip);gl.uniform2f(fxUniforms.uWindTime,0,time);
       gl.uniform3fv(fxUniforms.uSkyTop,environment?.skyTop||[.2,.3,.4]);gl.uniform3fv(fxUniforms.uSkyBottom,environment?.skyBottom||[.5,.6,.6]);gl.uniform3fv(fxUniforms.uEye,eye);gl.uniform3fv(fxUniforms.uAmbient,environment?environment.ambient:[.12,.15,.16]);
       gl.uniform3fv(fxUniforms.uFogColor,environment?environment.fog:[.009,.018,.024]);gl.uniform2f(fxUniforms.uEnvironment,environment?1:0,environment?environment.fogDensity:.018);gl.uniform1f(fxUniforms.uTime,time);
       gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);
-      renderBatch(batch,fxBuffer,true);gl.depthMask(true);gl.disable(gl.BLEND);gl.useProgram(program);
+      streamUpload(fxStream,batch);renderBatch(batch,fxBuffer,false);gl.depthMask(true);gl.disable(gl.BLEND);gl.useProgram(program);
     }
     function shadowPass(light,dynamicBatch,slot,torchAxes,time){
       const p=light.p,shadowAxes=torchAxes||{right:[1,0,0],up:[0,0,-1],forward:[0,-1,0]};
@@ -2906,7 +3025,7 @@
       const tangent=1/f;
       const previous=lampCasters[slot];
       const stable=!torchAxes&&previous&&previous.light===light&&previous.p.every((v,k)=>v===p[k]);
-      const casters=stable?previous.entries:worldIndex.query(p,[32,18,0]).filter(e=>visible(e,p,shadowAxes,tangent,tangent,32));
+      const casters=stable?previous.entries:!worldIndex.entries.length?EMPTY_ENTRIES:worldIndex.query(p,[32,18,0]).filter(e=>visible(e,p,shadowAxes,tangent,tangent,32));
       if(!torchAxes&&!stable)lampCasters[slot]={light,p:p.slice(),entries:casters};
       renderStatic(casters,slot+1,true);renderBatch(dynamicBatch,dynamicBuffer,false,true);gl.disable(gl.POLYGON_OFFSET_FILL);
     }
@@ -2932,11 +3051,12 @@
         const x=e.p[0]-p[0],y=e.p[1]-p[1],d=e.p[2]-p[2],z=x*fw[0]+y*fw[1]+d*fw[2];
         return Math.abs(x*r[0]+y*r[1]+d*r[2])<extent+e.radius&&Math.abs(x*u[0]+y*u[1]+d*u[2])<extent+e.radius&&z+e.radius>near&&z-e.radius<far;
       };
-      const casters=camera.chunked?[]:camera.allStatic?worldIndex.entries:worldIndex.query(center,[extent+24,26,0]).filter(inside);
+      // Index vide (BITUME) : ni requête, ni filtre, ni tableau de projeteurs.
+      const casters=camera.chunked||!worldIndex.entries.length?EMPTY_ENTRIES:camera.allStatic?worldIndex.entries:worldIndex.query(center,[extent+24,26,0]).filter(inside);
       renderStatic(casters,2,true);if(camera.chunked)drawChunks(inside,true);
       // BITUME : les lots dont la sphère touche le volume du soleil projettent leur ombre (version proche ou lointaine).
       const viewTangent=Math.tan(Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/360);
-      dessinerLots(eye,axes,0,viewTangent,0,inside);
+      if(warm){warm.cible='ombre';prechaufferLots(true);}else dessinerLots(eye,axes,0,viewTangent,0,inside);
       renderBatch(dynamicBatch,dynamicBuffer,false,true);if(crowd)renderBatch(crowd,crowdBuffer,false,true);gl.disable(gl.POLYGON_OFFSET_FILL);
       // PDR (lots) : les lots du jeu (fx.lots) entrent dans la même vue du soleil, au même biais, rétabli pour eux.
       // PDR (foule) : la foule sur le GPU aussi (fx.foule.ombre) ; au retour, le moteur reprend son état GL.
@@ -3047,10 +3167,17 @@
         stats.actorsCulled++;return false;
       };
     }
-    function draw(camera,dynamic,fx) {
+    // Le corps de draw. En préchauffage (warm), les états temporels du jeu ne bougent pas : gouverneur de
+    // résolution, budget natif, vent local, mouvement de caméra, caches de vue et chronomètre GPU. Les nappes et
+    // les lots sont tous tracés (proche et lointain), sous un ciseau d'un pixel posé avant le premier effacement.
+    function render(camera,dynamic,fx) {
       if(disposed||stats.contextLost) return;
-      profiler?.start();fx=fx||{};if(native){autoScale=1;if(fx.adaptive===true)watch.update(fx.frameMs);}else autoScale=governor.update(fx,quality);drawing=true;try{resize();}finally{drawing=false;}
+      const prof=warm?null:profiler;
+      prof?.start();fx=fx||{};if(!warm){if(native){autoScale=1;if(fx.adaptive===true)watch.update(fx.frameMs);}else autoScale=governor.update(fx,quality);}drawing=true;try{resize();}finally{drawing=false;}
+      if(warm){gl.enable(gl.SCISSOR_TEST);gl.scissor(0,0,1,1);}
       const reflectionMode=reflections&&['probe','screen'].includes(fx.reflections)?fx.reflections:'off';
+      // Captures temporelles de FSceneReflections (sonde, écran) : jamais avancées par le préchauffage.
+      const sceneMode=warm?'off':reflectionMode;
       ensureShadowTarget(fx);ensureOptionalTargets(fx,reflectionMode);composeScreen=!!post&&!!options.composition;stats.composition=composeScreen;
       screenValues[0]=Math.max(0,Math.min(1,fx.damage||0));screenValues[1]=Math.max(0,Math.min(1,fx.pulse||0));screenValues[2]=Number.isFinite(fx.brightness)?Math.max(.5,Math.min(2,fx.brightness)):1;screenValues[3]=fx.vignette===false?0:1;
 
@@ -3060,7 +3187,7 @@
       bitumeWeather(environment,fx.weather,t,weather);
       const axes=cameraAxes(camera),{right,up,forward}=axes;
       const eye=[p[0]+Math.sin(t*57.)*shake*.025,p[1]+Math.sin(t*71.)*shake*.015,p[2]];
-      localWind.update(fx.windSources,t);localWind.select(eye);stats.windSources=windFrame.count;stats.windCandidates=windFrame.candidates;stats.windUpdates=windFrame.updates;
+      if(!warm)localWind.update(fx.windSources,t);localWind.select(eye);stats.windSources=windFrame.count;stats.windCandidates=windFrame.candidates;stats.windUpdates=windFrame.updates;
       view.set([right[0],up[0],-forward[0],0,right[1],up[1],-forward[1],0,right[2],up[2],-forward[2],0,
         -(right[0]*eye[0]+right[1]*eye[1]+right[2]*eye[2]),-(up[0]*eye[0]+up[1]*eye[1]+up[2]*eye[2]),forward[0]*eye[0]+forward[1]*eye[1]+forward[2]*eye[2],1]);
       const fov=Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/180,f=1/Math.tan(fov*.5),near=camera.near||.045,far=camera.far||180;
@@ -3072,10 +3199,26 @@
       const ranges=detailRanges(quality);ranges[0]=extendedDistance(ranges[0],environment,eye);stats.viewDistance=ranges[0];
       // PDR : vue de haut, tout le décor part au GPU en un seul lot stable : ni tri ni nouvel envoi quand la caméra bouge,
       // le découpage au champ se fait au clip. Sans camera.allStatic, le tri par portée de FERRO reste inchangé.
-      cacheStats.viewFrames++;trackMotion(eye,axes.forward,t);const horizontal=canvas.width/canvas.height/f,vertical=1/f;guardMargin=margins(Math.atan(Math.hypot(horizontal,vertical)));cacheStats.marginDistance=+guardMargin.distance.toFixed(2);cacheStats.marginAngle=+(guardMargin.tilt*180/Math.PI).toFixed(2);stats.cache=cacheStats;
-      const previousView=viewCache;let guard=null;
-      if(!camera.chunked&&!camera.allStatic){guard=viewCache=selectionCache(viewCache,indexRevision,eye,axes,horizontal,vertical,ranges[0],ranges,near,guardMargin.distance,guardMargin.tilt);if(guard!==previousView)cacheStats.viewRebuilds++;}
-      const shown=camera.chunked?[]:camera.allStatic?worldIndex.entries:guard.entries.filter(e=>Math.hypot(...e.p.map((v,k)=>v-eye[k]))<=ranges[e.detail]+e.radius&&visible(e,eye,axes,horizontal,vertical,ranges[0]));stats.staticSuperset=guard?.entries.length||shown.length;
+      const horizontal=canvas.width/canvas.height/f,vertical=1/f,empty=!worldIndex.entries.length;
+      if(!warm){cacheStats.viewFrames++;trackMotion(eye,axes.forward,t);stats.cache=cacheStats;}
+      const margin=margins(Math.atan(Math.hypot(horizontal,vertical)),warm?warmMargin:guardMargin);
+      let guard=null;
+      if(!camera.chunked&&!camera.allStatic){
+        // Le préchauffage construit sa propre garde sans toucher au cache de vue du jeu ; sur un index vide, aucune.
+        if(warm)guard=empty?emptyGuard:selectionCache(null,indexRevision,eye,axes,horizontal,vertical,ranges[0],ranges,near,margin.distance,margin.tilt);
+        else{selectionRebuilt=false;guard=viewCache=selectionCache(viewCache,indexRevision,eye,axes,horizontal,vertical,ranges[0],ranges,near,margin.distance,margin.tilt);if(selectionRebuilt)cacheStats.viewRebuilds++;}
+      }
+      let shown;
+      if(camera.chunked||empty)shown=EMPTY_ENTRIES;
+      else if(camera.allStatic)shown=worldIndex.entries;
+      else{
+        // Jeu : celle des deux sélections que le cache statique ne référence pas. Préchauffage : un tableau propre,
+        // pour que les tableaux du jeu (restaurés ensuite dans le cache) ne soient jamais réécrits.
+        const list=guard.entries;shown=warm?[]:staticCaches[0].entries===shownA?shownB:shownA;shown.length=0;
+        for(let i=0;i<list.length;i++){const e=list[i],q=e.p,d=q.length===3?Math.hypot(q[0]-eye[0],q[1]-eye[1],q[2]-eye[2]):Math.hypot(...q.map((v,k)=>v-eye[k]));
+          if(d<=ranges[e.detail]+e.radius&&visible(e,eye,axes,horizontal,vertical,ranges[0]))shown.push(e);}
+      }
+      stats.staticSuperset=guard?.entries.length||shown.length;
       stats.staticVisible=shown.length;stats.staticCulled=world.length-shown.length;
       const planned=actorLightPlan&&actorLightPlan.previous===shadowLight&&eye.every((v,k)=>v===actorLightPlan.eye[k])?actorLightPlan.plan:lightPlan(eye);actorLightPlan=null;
       const {sorted,distanceTo,chosen}=planned,shadowLights=fx.headlight?[fx.headlight]:planned.shadowLights;shadowLight=chosen;
@@ -3085,44 +3228,46 @@
       const selected=shadowLights.map(light=>({light,d:distanceTo(light)})).concat(transient.map(light=>({light,d:distanceTo(light)})),sorted.filter(entry=>!shadowLights.includes(entry.light)).slice(0,(quality==='low'?6:12)-shadowLights.length-transient.length));
       const blackout=horrorLights(fx.horror,lights);stats.blackoutLights=blackout?.size||0;
       lightPositions.fill(0);lightColors.fill(0);lightRanges.fill(0);lightDirections.fill(0);lightCones.fill(0);
-      selected.forEach(({light},i)=>{if(light.dir){lightDirections.set(light.dir,i*3);lightCones.set(light.cone||[.75,.94],i*2);}lightPositions.set(light.p,i*3);lightRanges[i]=light.range||0;const c=light.color||[1,1,1],power=(light.power===undefined?1:light.power)*(blackout?.get(light)??1);lightColors.set([c[0]*power,c[1]*power,c[2]*power],i*3);});
+      for(let i=0;i<selected.length;i++){const light=selected[i].light;if(light.dir){lightDirections.set(light.dir,i*3);lightCones.set(light.cone||DEFAULT_CONE,i*2);}lightPositions.set(light.p,i*3);lightRanges[i]=light.range||0;const c=light.color||WHITE,power=(light.power===undefined?1:light.power)*(blackout?.get(light)??1);lightColors[i*3]=c[0]*power;lightColors[i*3+1]=c[1]*power;lightColors[i*3+2]=c[2]*power;}
       ordinary.length=overlay.length=particles.length=overlayParticles.length=0;for(const mesh of dynamic||[]) (mesh.overlay?(mesh.fx?overlayParticles:overlay):mesh.fx?particles:ordinary).push(mesh);
+      // Préchauffage : quelques pièces témoins garantissent chaque passe (objets, effets translucides, habitacle).
+      if(warm)for(const mesh of warm.extra)(mesh.overlay?(mesh.fx?overlayParticles:overlay):mesh.fx?particles:ordinary).push(mesh);
       const dynamicBatch=packDynamic(ordinary,environment,true);
       const torchPosition=eye.map((v,i)=>v+right[i]*.16-up[i]*.08);
       stats.drawCalls=0;stats.triangles=0;stats.instances=0;stats.bloom=!!post&&fx.bloom!==false;stats.shadows=!!shadowTarget&&shadowsEnabled(fx);stats.shadowMaps=stats.shadows?shadowLights.length+1+(environment?1:0):0;stats.shadowMode=environment?'sun-atlas':'atlas';
       stats.uploadBytes=0;stats.fxInstances=0;
       // Animated instances are shared unchanged by every depth and colour pass.
-      if(dynamicBatch.values.length){gl.bindBuffer(gl.ARRAY_BUFFER,dynamicBuffer);gl.bufferData(gl.ARRAY_BUFFER,dynamicBatch.values,gl.DYNAMIC_DRAW);stats.uploadBytes+=dynamicBatch.values.byteLength;}
+      streamUpload(dynamicStream,dynamicBatch);
       const crowd=fx.instances&&fx.instances.groups&&fx.instances.groups.length?fx.instances:null,sunOnly=!!fx.sunOnly;
       stats.crowdInstances=crowd?crowd.values.length/16:0;stats.shadowMaps=stats.shadows?(sunOnly?0:shadowLights.length+(fx.torch!==false?1:0))+(environment?1:0):0;
-      if(crowd){if(!crowdBuffer)crowdBuffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,crowdBuffer);gl.bufferData(gl.ARRAY_BUFFER,crowd.values,gl.DYNAMIC_DRAW);stats.uploadBytes+=crowd.values.byteLength;}
+      if(crowd){if(!crowdBuffer){crowdBuffer=gl.createBuffer();created(1);}gl.bindBuffer(gl.ARRAY_BUFFER,crowdBuffer);gl.bufferData(gl.ARRAY_BUFFER,crowd.values,gl.DYNAMIC_DRAW);stats.uploadBytes+=crowd.values.byteLength;}
       // PDR (lots) : lots déjà empaquetés par le jeu (fx.lots : le décor), au format de pack. Un lot ne repart au GPU que si
       // l'objet ou sa version (lot.version) change ; il sert ensuite à l'ombre du soleil et à la passe couleur.
       pdrLots.length=0;stats.pdrLotInstances=0;
       if(Array.isArray(fx.lots))for(let i=0;i<fx.lots.length;i++){
         const lot=fx.lots[i];if(!lot||!lot.values||!lot.groups||!lot.groups.length)continue;
-        const slot=pdrSlots[i]||(pdrSlots[i]={buffer:gl.createBuffer(),lot:null,version:NaN});
+        let slot=pdrSlots[i];if(!slot){slot=pdrSlots[i]={buffer:gl.createBuffer(),lot:null,version:NaN};created(1);}
         if(slot.lot!==lot||slot.version!==lot.version){
           gl.bindBuffer(gl.ARRAY_BUFFER,slot.buffer);gl.bufferData(gl.ARRAY_BUFFER,lot.values,gl.DYNAMIC_DRAW);stats.uploadBytes+=lot.values.byteLength;
           slot.lot=lot;slot.version=lot.version;
         }
         pdrLots.push(slot);stats.pdrLotInstances+=lot.values.length/16;
       }
-      profiler?.begin('shadows');
+      prof?.begin('shadows');
       if(stats.shadows){
         gl.bindFramebuffer(gl.FRAMEBUFFER,shadowTarget.framebuffer);gl.clear(gl.DEPTH_BUFFER_BIT);
         if(!sunOnly)shadowLights.forEach((light,i)=>{const fw=light.dir,axes=fw?{forward:fw,right:[-fw[2],0,fw[0]],up:[0,1,0]}:null;shadowPass(light,dynamicBatch,i,axes,t);});
         if(environment)sunShadowPass(eye,axes,dynamicBatch,t,camera,fx,crowd);
         if(!sunOnly&&fx.torch!==false)shadowPass({p:torchPosition},dynamicBatch,2,axes,t);
       }
-      profiler?.end();
-      reflections?.beginScreen(post?.scene,reflectionMode);if(reflectionMode==='screen'){gl.clearBufferfv(gl.COLOR,1,new Float32Array(4));gl.drawBuffers([gl.COLOR_ATTACHMENT0]);}
+      prof?.end();
+      if(!warm)reflections?.beginScreen(post?.scene,reflectionMode);if(sceneMode==='screen'){gl.clearBufferfv(gl.COLOR,1,ZERO4);gl.drawBuffers([gl.COLOR_ATTACHMENT0]);}
       // Le MSAA explicite possède sa cible : un profil sans halo peut lisser l'image sans allumer le post-traitement.
       const msaa=stats.msaa?msaaBuffer:null;
       gl.bindFramebuffer(gl.FRAMEBUFFER,msaa?msaa.framebuffer:(stats.bloom||composeScreen)?post.scene.framebuffer:null);gl.viewport(0,0,canvas.width,canvas.height);
       gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);if(environment)skyPass(axes,f,t,weather,fx.cloudOffset||weather.cloudOffset);gl.useProgram(program);gl.bindVertexArray(vao);
       bindScreen(program);bindSkyFog(program);gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);gl.uniform3fv(uniforms.uEye,eye);gl.uniform3fv(uniforms.uForward,forward);
-      gl.uniform4fv(uniforms.uSeaOrigin,fx.sea?.origin||[0,0,0,0]);gl.uniform4fv(uniforms.uSeaMotion,fx.sea?.motion||[0,0,-1.25,0]);
+      gl.uniform4fv(uniforms.uSeaOrigin,fx.sea?.origin||SEA_ORIGIN);gl.uniform4fv(uniforms.uSeaMotion,fx.sea?.motion||SEA_MOTION);
       gl.uniform2fv(uniforms.uCloudOffset,fx.cloudOffset||weather.cloudOffset);gl.uniform2f(uniforms.uWindTime,weather.wind,t);gl.uniform3fv(uniforms.uSunDirection,environment?environment.sunDirection:[.4,.8,.3]);gl.uniform3fv(uniforms.uSunColor,weather.sunColor);
       bindLocalWind(uniforms);
       gl.uniform3fv(uniforms.uAmbient,weather.ambient);gl.uniform3fv(uniforms.uFogColor,weather.fog);gl.uniform2f(uniforms.uEnvironment,environment?1:0,weather.fogDensity);
@@ -3134,7 +3279,7 @@
       gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,stats.shadows?shadowTarget.texture:whiteTexture);gl.uniform1i(uniforms.uShadowMap,2);
       gl.uniformMatrix4fv(uniforms.uShadowMatrix,false,shadowMatrices);gl.uniform4f(uniforms.uShadowSettings,stats.shadows&&!sunOnly?shadowLights.length:0,shadowTarget?1/(shadowTarget.size*2):1,stats.shadows&&!sunOnly&&fx.torch!==false?1:0,stats.shadows&&environment?(sunOnly?2:1):0);
       // PDR : sans lampe torche (fx.torch === false), sa source est renvoyée assez loin pour ne plus rien éclairer.
-      gl.uniform3fv(uniforms.uTorchPosition,fx.torch===false?[0,-1e5,0]:torchPosition);
+      gl.uniform3fv(uniforms.uTorchPosition,fx.torch===false?TORCH_OFF:torchPosition);
       // PDR (voile) : fx.voile = { texture R8, origine [x0, z0], taille [largeur, profondeur], force } sur l'unité 4. Sans
       // voile, rien n'est posé ; à la première image sans lui, la texture blanche reprend l'unité et la force revient à 0.
       const voile=fx.voile&&fx.voile.texture&&fx.voile.force>0?fx.voile:null;
@@ -3144,31 +3289,31 @@
         gl.uniform1f(uniforms.uVoileForce,voile?Math.min(1,voile.force):0);gl.activeTexture(gl.TEXTURE2);pdrVoilePose=!!voile;
       }
       if(reflections){
-        if(!profiler||profiler.begin('reflection-probe')){reflections.update(reflectionMode,eye,dynamic||[],worldRevision,t,(origin,face,size)=>{
+        if(!warm&&(!prof||prof.begin('reflection-probe'))){reflections.update(reflectionMode,eye,dynamic||[],worldRevision,t,(origin,face,size)=>{
           gl.clearColor(...(environment?.skyBottom||[.12,.16,.18]),1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);if(environment)skyPass(face,1,t,weather,weather.cloudOffset,size);
           gl.useProgram(program);gl.bindVertexArray(vao);bindSkyFog(program);bindScreen(program);reflections.bind(uniforms,false);
           const {right:r,up:u,forward:f}=face;probeView.set([r[0],u[0],-f[0],0,r[1],u[1],-f[1],0,r[2],u[2],-f[2],0,-(r[0]*origin[0]+r[1]*origin[1]+r[2]*origin[2]),-(u[0]*origin[0]+u[1]*origin[1]+u[2]*origin[2]),f[0]*origin[0]+f[1]*origin[1]+f[2]*origin[2],1]);probeProjection.fill(0);probeProjection[0]=probeProjection[5]=1;probeProjection[10]=(48+.045)/(.045-48);probeProjection[11]=-1;probeProjection[14]=2*48*.045/(.045-48);multiply(probeProjection,probeView,probeVP);
           gl.uniformMatrix4fv(uniforms.uViewProjection,false,probeVP);gl.uniform3fv(uniforms.uEye,origin);gl.uniform3fv(uniforms.uForward,forward);gl.uniform2f(uniforms.uResolution,size,size);gl.uniform4f(uniforms.uShadowSettings,0,1,0,0);gl.uniform4f(uniforms.uEffects,t,fx.flash||0,0,0);
           const key=worldRevision+':'+origin.join(',');if(probeKey!==key){probeKey=key;probeBatch=pack(worldIndex.query(origin,[48,48,48]).map(e=>e.mesh),environment);gl.bindBuffer(gl.ARRAY_BUFFER,probeBuffer);gl.bufferData(gl.ARRAY_BUFFER,probeBatch.values,gl.DYNAMIC_DRAW);}
           renderBatch(probeBatch,probeBuffer,false);renderBatch(dynamicBatch,dynamicBuffer,false);if(particles.length)renderEffects(particles,origin,t);
-        });profiler?.end();}
-        gl.bindFramebuffer(gl.FRAMEBUFFER,(stats.bloom||composeScreen)?post.scene.framebuffer:null);gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(.035,.06,.073,1);gl.useProgram(program);gl.bindVertexArray(vao);reflections.bind(uniforms,reflectionMode!=='off');gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);gl.uniform3fv(uniforms.uEye,eye);gl.uniform3fv(uniforms.uForward,forward);gl.uniform2f(uniforms.uResolution,canvas.width,canvas.height);gl.uniform4f(uniforms.uEffects,t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0)));gl.uniform4f(uniforms.uShadowSettings,stats.shadows&&!sunOnly?shadowLights.length:0,shadowTarget?1/(shadowTarget.size*2):1,stats.shadows&&!sunOnly&&fx.torch!==false?1:0,stats.shadows&&environment?(sunOnly?2:1):0);
+        });prof?.end();}
+        gl.bindFramebuffer(gl.FRAMEBUFFER,(stats.bloom||composeScreen)?post.scene.framebuffer:null);gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(.035,.06,.073,1);gl.useProgram(program);gl.bindVertexArray(vao);reflections.bind(uniforms,sceneMode!=='off');gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);gl.uniform3fv(uniforms.uEye,eye);gl.uniform3fv(uniforms.uForward,forward);gl.uniform2f(uniforms.uResolution,canvas.width,canvas.height);gl.uniform4f(uniforms.uEffects,t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0)));gl.uniform4f(uniforms.uShadowSettings,stats.shadows&&!sunOnly?shadowLights.length:0,shadowTarget?1/(shadowTarget.size*2):1,stats.shadows&&!sunOnly&&fx.torch!==false?1:0,stats.shadows&&environment?(sunOnly?2:1):0);
       }
-      if(reflectionMode==='screen')gl.drawBuffers([gl.COLOR_ATTACHMENT0,gl.COLOR_ATTACHMENT1]);
-      profiler?.begin('world');
+      if(sceneMode==='screen')gl.drawBuffers([gl.COLOR_ATTACHMENT0,gl.COLOR_ATTACHMENT1]);
+      prof?.begin('world');
       // The distant sea is a sky-like backdrop: it must not compete with land
       // only centimetres above it at kilometre distances. Local water retains depth/SSR.
       stats.backgroundWater=backgroundIndex.entries.length;stats.backgroundDrawCalls=0;
       if(backgroundIndex.entries.length){const before=stats.drawCalls;gl.depthMask(false);renderStatic(backgroundIndex.entries,4);gl.depthMask(true);stats.backgroundDrawCalls=stats.drawCalls-before;}
       renderStatic(shown,0);if(camera.chunked)drawChunks(c=>visible(c,eye,axes,canvas.width/canvas.height/f,1/f,Math.min(far,c.range)));
       // BITUME : chaussée et terrain, puis décor par lots, découpés au champ et à la portée de chaque lot.
-      dessinerNappes(eye,axes,canvas.width/canvas.height/f,1/f,far);
-      stats.lotsVisibles=dessinerLots(eye,axes,canvas.width/canvas.height/f,1/f,far);
+      if(warm){warm.cible='couleur '+(msaa?'msaa'+msaa.samples:(stats.bloom||composeScreen)?'scene':'ecran');prechaufferNappes();stats.lotsVisibles=prechaufferLots(false);}
+      else{dessinerNappes(eye,axes,canvas.width/canvas.height/f,1/f,far);stats.lotsVisibles=dessinerLots(eye,axes,canvas.width/canvas.height/f,1/f,far);}
       renderBatch(dynamicBatch,dynamicBuffer,false);
       if(crowd)renderBatch(crowd,crowdBuffer,false);
       // PDR (lots) : les lots du jeu, dans la cible de la scène (MSAA), avant les effets translucides.
       for(const entry of pdrLots)renderBatch(entry.lot,entry.buffer,false);
-      if(reflectionMode==='screen')gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
+      if(sceneMode==='screen')gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
       // PDR (foule) : puis la foule sur le GPU (fx.foule.couleur), dans la même cible ; au retour, le moteur reprend son état GL.
       if(fx.foule&&typeof fx.foule.couleur==='function'){
         const v=pdrVue,ombre=v.ombre;
@@ -3184,9 +3329,9 @@
         gl.useProgram(program);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);
         gl.depthMask(true);gl.disable(gl.BLEND);gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,ombre.texture);
       }
-      profiler?.end();profiler?.begin('effects');
-      if(particles.length)renderEffects(particles,eye,t);profiler?.end();
-      if(reflectionMode==='screen'&&post){gl.drawBuffers([gl.COLOR_ATTACHMENT0]);reflections.resolve(post.scene,reflectionMode,{pos:eye},axes,projection,view,t,worldRevision,reflections.key);gl.useProgram(program);gl.bindVertexArray(vao);reflections.bind(uniforms);gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,stats.shadows?shadowTarget.texture:whiteTexture);gl.activeTexture(gl.TEXTURE0);}
+      prof?.end();prof?.begin('effects');
+      if(particles.length)renderEffects(particles,eye,t);prof?.end();
+      if(sceneMode==='screen'&&post){gl.drawBuffers([gl.COLOR_ATTACHMENT0]);reflections.resolve(post.scene,reflectionMode,{pos:eye},axes,projection,view,t,worldRevision,reflections.key);gl.useProgram(program);gl.bindVertexArray(vao);reflections.bind(uniforms);gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,stats.shadows?shadowTarget.texture:whiteTexture);gl.activeTexture(gl.TEXTURE0);}
       stats.reflections=reflectionMode==='off'&&!!(stats.bloom&&post.reflectSource&&post.reflection&&fx.reflections!==false&&fx.reflections!=='off');stats.reflectionSteps=stats.reflections?48:0;
       if(stats.reflections){const target=msaa?msaa.framebuffer:post.scene.framebuffer;gl.bindFramebuffer(gl.READ_FRAMEBUFFER,target);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,post.reflectSource.framebuffer);gl.blitFramebuffer(0,0,canvas.width,canvas.height,0,0,canvas.width,canvas.height,gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT,gl.NEAREST);gl.bindFramebuffer(gl.FRAMEBUFFER,target);}
       if(overlay.length||overlayParticles.length) {
@@ -3196,8 +3341,8 @@
         const overlayNear=Math.min(near,Math.max(.005,Number(camera.overlayNear)||near));
         let overlayClip=vp;
         if(overlayNear!==near){overlayProjection.set(projection);overlayProjection[10]=(far+overlayNear)/(overlayNear-far);overlayProjection[14]=2*far*overlayNear/(overlayNear-far);multiply(overlayProjection,view,overlayVP);overlayClip=overlayVP;gl.uniformMatrix4fv(uniforms.uViewProjection,false,overlayClip);}
-        if(blackout){selected.forEach(({light},i)=>{const c=light.color||[1,1,1],power=light.power===undefined?1:light.power;lightColors.set([c[0]*power,c[1]*power,c[2]*power],i*3);});gl.uniform3fv(uniforms.uLightColor,lightColors);}
-        gl.clear(gl.DEPTH_BUFFER_BIT);if(overlay.length)renderBatch(packOverlay(overlay,environment,true),overlayBuffer,true);
+        if(blackout){for(let i=0;i<selected.length;i++){const light=selected[i].light,c=light.color||WHITE,power=light.power===undefined?1:light.power;lightColors[i*3]=c[0]*power;lightColors[i*3+1]=c[1]*power;lightColors[i*3+2]=c[2]*power;}gl.uniform3fv(uniforms.uLightColor,lightColors);}
+        gl.clear(gl.DEPTH_BUFFER_BIT);if(overlay.length){const cockpit=packOverlay(overlay,environment,true);streamUpload(overlayStream,cockpit);renderBatch(cockpit,overlayBuffer,false);}
         if(overlayParticles.length)renderEffects(overlayParticles,eye,t,overlayClip);
         if(overlayClip!==vp)gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);
       }
@@ -3206,8 +3351,10 @@
         gl.blitFramebuffer(0,0,canvas.width,canvas.height,0,0,canvas.width,canvas.height,gl.COLOR_BUFFER_BIT,gl.NEAREST);
         gl.bindFramebuffer(gl.FRAMEBUFFER,null);
       }
-      profiler?.begin('post');if(stats.reflections)reflectionsPass();if(stats.bloom||composeScreen)postPass();profiler?.end();
+      prof?.begin('post');if(stats.reflections)reflectionsPass();if(stats.bloom||composeScreen)postPass();prof?.end();
     }
+    // Rendu du jeu : seules ses créations d'objets GL entrent dans stats.creations.
+    function draw(camera,dynamic,fx){counting=true;try{render(camera,dynamic,fx);}finally{counting=false;}}
     function lost(event){event.preventDefault();stats.contextLost=true;}
     function restored(){if(!disposed){
       // BITUME : les anciens objets GL appartiennent au contexte perdu ; oublier leurs poignées avant recharge.
@@ -3241,6 +3388,137 @@
       times.sort((a,b)=>a-b);gaps.sort((a,b)=>a-b);
       const result={p50:times[Math.floor(times.length*.5)],p95:times[Math.floor(times.length*.95)],refreshMs:gaps[Math.floor(gaps.length*.5)]||0,frames:times.length,buffer:[canvas.width,canvas.height]};stats.calibration=result;return result;
     }
+    // Préchauffage d'un niveau. Le pilote compile ses variantes de pipeline (programme × format de cible × mélange ×
+    // échantillons × disposition des sommets) et valide chaque tampon et chaque intervalle d'indices au premier tracé
+    // qui s'en sert : prewarm fait ces premiers tracés pendant le chargement, sous un ciseau d'un pixel, puis attend le
+    // GPU sans bloquer le fil principal (barrière interrogée à chaque image).
+    const clock=()=>window.performance?.now?.()??Date.now();
+    // Ce que la combinaison d'options allume réellement (mêmes règles que ensureOptionalTargets et ensureShadowTarget) :
+    // deux variantes de même clé tracent les mêmes pipelines dans les mêmes cibles.
+    function effectiveKey(fx){
+      const mode=reflections&&['probe','screen'].includes(fx.reflections)?fx.reflections:'off';
+      const bloom=quality!=='low'&&fx.bloom!==false,msaa=!!config.msaa&&fx.msaa!==false&&(bloom||fx.msaa===true);
+      const scale=fx.shadowMapScale===1||fx.shadowMapScale===2?Math.min(config.shadowMapScale,fx.shadowMapScale):config.shadowMapScale;
+      const ssr=!!config.reflections&&bloom&&mode==='off'&&fx.reflections!==false&&fx.reflections!=='off';
+      return 'halo:'+(bloom?1:0)+' msaa:'+(msaa?1:0)+' ombres:'+(shadowsEnabled(fx)?scale:0)+' reflets:'+(ssr?1:0)+(mode==='off'?'':' scene:'+mode);
+    }
+    // Variantes par défaut : chaque fonction (MSAA, halo, ombres, reflets) prend la valeur du jeu (fx) ou « coupé »,
+    // jamais « forcé ». true force une fonction que la qualité coupe (fx.shadows === true allume les ombres en qualité
+    // basse, fx.msaa === true le MSAA sans halo) : forcer créerait puis retiendrait l'atlas, le MSAA ou les reflets d'un
+    // profil qui les coupe, sur les machines qui ont le moins de mémoire. Un jeu qui allume une fonction en cours de
+    // partie le déclare dans options.variants, rendues telles quelles. Sans doublon de clé effective ; la variante du
+    // jeu (fx) vient en dernier.
+    function prewarmVariants(fx,list){
+      if(Array.isArray(list))return [...list.filter(v=>v&&typeof v==='object'),{}];
+      const seen=new Set([effectiveKey(fx)]),out=[],valeurs=v=>v===false?[false]:[false,v];
+      for(const msaa of valeurs(fx.msaa))for(const bloom of valeurs(fx.bloom))
+        for(const shadows of valeurs(fx.shadows))for(const reflections of valeurs(fx.reflections)){
+          const variant={msaa,bloom,shadows,reflections},key=effectiveKey({...fx,...variant});
+          if(!seen.has(key)){seen.add(key);out.push(variant);}
+        }
+      out.push({});return out;
+    }
+    // Pièces témoins posées devant la caméra : une par passe dynamique (objet opaque, effet translucide, pièce
+    // d'habitacle, effet d'habitacle) ; avec allShapes, une de chaque par forme enregistrée.
+    function prewarmExtras(camera,allShapes){
+      const p=camera.pos||[0,1.6,0],f=cameraAxes(camera).forward,at=[p[0]+f[0]*4,p[1]+f[1]*4,p[2]+f[2]*4],s=[.05,.05,.05],r=[0,0,0],c=[.5,.5,.5];
+      const solid=allShapes?names.filter(name=>source.ranges[name]):['box'],glow=allShapes?solid:['sphere'],out=[];
+      for(const shape of solid)out.push({shape,p:at,s,r,mat:0},{shape,p:at,s,r,mat:0,overlay:true});
+      for(const shape of glow)out.push({shape,p:at,s,r,mat:0,fx:true,alpha:.5,color:c},{shape,p:at,s,r,mat:0,overlay:true,fx:true,alpha:.5,color:c});
+      return out;
+    }
+    // Mémoire nominale des cibles tenues (octets) : scène RGBA8 + D24, halo, MSAA par échantillon, reflets, atlas D24.
+    function targetBytes(){
+      let bytes=0;
+      if(post){bytes+=post.scene.width*post.scene.height*8+(post.a.width*post.a.height+post.b.width*post.b.height)*4;
+        if(post.reflectSource)bytes+=post.reflectSource.width*post.reflectSource.height*8+post.reflection.width*post.reflection.height*4;}
+      if(msaaBuffer)bytes+=canvas.width*canvas.height*8*msaaBuffer.samples;
+      if(shadowTarget)bytes+=(shadowTarget.size*2)**2*4;
+      return bytes;
+    }
+    // Attente du GPU sans blocage : barrière, puis clientWaitSync(sync, 0, 0) à chaque requestAnimationFrame (une minuterie
+    // de 16 ms si la page est cachée). Sans barrière ni minuterie, après timeoutMs ou sur WAIT_FAILED : gl.finish().
+    function waitForGpu(report,timeoutMs,start,done){
+      const begin=clock();let sync=null,finished=false,deadline=null;
+      const finish=fallback=>{
+        if(finished)return;finished=true;
+        if(deadline!==null&&typeof window.clearTimeout==='function')window.clearTimeout(deadline);
+        if(fallback&&fallback!=='lost'&&!disposed&&!stats.contextLost)gl.finish();
+        if(sync&&!stats.contextLost)gl.deleteSync(sync);sync=null;
+        report.waitMs=clock()-begin;report.ms=clock()-start;report.fallback=fallback;done(report);
+      };
+      // Contexte perdu pendant les rendus : fenceSync rendrait null et le repli se dirait 'unsupported'.
+      if(disposed||stats.contextLost){finish('lost');return;}
+      if(typeof gl.fenceSync==='function'){sync=gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE,0);gl.flush();}
+      const timer=typeof window.setTimeout==='function';
+      const later=typeof window.requestAnimationFrame==='function'
+        ?step=>{if(timer&&window.document?.hidden)window.setTimeout(step,16);else window.requestAnimationFrame(step);}
+        :timer?step=>window.setTimeout(step,16):null;
+      if(!sync||!later){finish('unsupported');return;}
+      if(timer)deadline=window.setTimeout(()=>finish('timeout'),timeoutMs);
+      // Le statut d'une barrière WebGL ne change pas pendant la tâche qui l'a posée : première lecture différée.
+      const poll=()=>{
+        if(finished)return;
+        if(disposed||stats.contextLost){finish('lost');return;}
+        const status=gl.clientWaitSync(sync,0,0);
+        if(status===gl.ALREADY_SIGNALED||status===gl.CONDITION_SATISFIED)finish(false);
+        else if(status===gl.WAIT_FAILED)finish('failed');
+        else if(clock()-begin>=timeoutMs)finish('timeout');
+        else later(poll);
+      };
+      later(poll);
+    }
+    // prewarm(camera, dynamic, fx, options) : options.variants (fx partiels), options.allShapes, options.timeoutMs (4 000 par
+    // défaut), options.reserve = { dynamic, overlay, effects } (instances à réserver dans les flux de chaque image).
+    // Il retient les cibles (retain(true)), puis rend l'état du moteur tel qu'il l'a trouvé : lampe d'ombre, plan de
+    // lumière, matrices d'ombre, caches d'ombre et de sélection, ciseau, statistiques ; stats.creations repart de zéro,
+    // y compris dans les replis sans rendu ('lost', 'busy'). Une erreur rend aussi la rétention d'avant l'appel.
+    function prewarm(camera,dynamic,fx,options){
+      camera=camera||{};fx=fx||{};options=options||{};
+      const start=clock(),timeoutMs=Number.isFinite(options.timeoutMs)&&options.timeoutMs>=0?options.timeoutMs:4000;
+      const report={variants:0,draws:0,drawCalls:0,triangles:0,lots:0,nappes:0,subsets:0,creations:0,bytes:0,keys:[],ms:0,submitMs:0,waitMs:0,fallback:false};
+      if(disposed||stats.contextLost||warm){report.fallback=warm?'busy':'lost';stats.creations=0;report.ms=clock()-start;return Promise.resolve(report);}
+      const retainedBefore=retained;retain(true);
+      const snapshot=Object.assign({},stats),savedMatrices=shadowMatrices.slice();
+      const savedLight=shadowLight,savedPlan=actorLightPlan,savedCasters=lampCasters.slice(),savedCaches=staticCaches.map(c=>({entries:c.entries,batch:c.batch}));
+      const scissor=gl.isEnabled(gl.SCISSOR_TEST),box=gl.getParameter(gl.SCISSOR_BOX);
+      // balayes : cibles (passe, format, échantillons) déjà balayées en entier ; cible : celle de la passe en cours.
+      warm={extra:[],creations:0,lots:0,nappes:0,subsets:0,balayes:new Set(),cible:''};let failure=null;
+      try{
+        // Dans le try : une option qui lève rejette la promesse après la remise en état, comme une erreur de rendu.
+        const list=prewarmVariants(fx,options.variants);warm.extra=prewarmExtras(camera,options.allShapes===true);
+        report.variants=list.length;
+        for(const variant of list){
+          if(stats.contextLost)break;
+          const merged={...fx,...variant,adaptive:false};
+          render(camera,dynamic,merged);report.draws++;report.drawCalls+=stats.drawCalls;report.triangles+=stats.triangles;report.keys.push(effectiveKey(merged));
+        }
+        const reserve=options.reserve||{},instances=v=>Number.isFinite(v)&&v>0?Math.ceil(v)*64:0;
+        if(!stats.contextLost){reserveStream(dynamicStream,instances(reserve.dynamic));reserveStream(overlayStream,instances(reserve.overlay));reserveStream(fxStream,instances(reserve.effects));}
+      }catch(error){failure=error;}finally{
+        report.creations=warm.creations;report.lots=warm.lots;report.nappes=warm.nappes;report.subsets=warm.subsets;warm=null;
+        shadowLight=savedLight;actorLightPlan=savedPlan;lampCasters=savedCasters;shadowMatrices.set(savedMatrices);
+        if(!stats.contextLost){
+          // Un cache réécrit par le préchauffage reprend sa sélection et ses données GPU.
+          for(let i=0;i<staticCaches.length;i++){const c=staticCaches[i],s=savedCaches[i];if(c.entries===s.entries&&c.batch===s.batch)continue;
+            c.entries=s.entries;c.batch=s.batch;if(s.batch.groups.length){gl.bindBuffer(gl.ARRAY_BUFFER,c.buffer);gl.bufferData(gl.ARRAY_BUFFER,s.batch.values,gl.DYNAMIC_DRAW);}}
+          if(scissor)gl.scissor(box[0],box[1],box[2],box[3]);else gl.disable(gl.SCISSOR_TEST);
+        }
+        const lost=stats.contextLost;Object.assign(stats,snapshot);stats.contextLost=lost;stats.creations=0;
+      }
+      // Une erreur (options, rendu du jeu ou du moteur) rejette la promesse, après la remise en état.
+      if(failure){retain(retainedBefore);return Promise.reject(failure);}
+      report.bytes=targetBytes();report.submitMs=clock()-start;
+      return new Promise(resolve=>waitForGpu(report,timeoutMs,start,resolve));
+    }
+    // retain(true) : l'atlas d'ombres, le tampon MSAA et les cibles de reflets ne sont plus libérés après 120 rendus
+    // sans usage (un changement de taille ou de qualité les libère toujours). retain(false) : comportement d'origine,
+    // compteurs repartis de zéro. Sans argument : l'état courant.
+    function retain(value){
+      if(value===undefined)return retained;
+      retained=!!value;shadowIdle=msaaIdle=0;if(post)post.reflectionIdle=0;return retained;
+    }
+    function resetStats(){stats.creations=0;return stats;}
     // PDR (foule) : le jeu dessine la foule lui-même dans les passes du moteur. renderer.gl est le contexte WebGL 2 ;
     // renderer.pdr donne la bibliothèque d'éclairage (glsl), lier(programme) qui rend la fonction posant ses uniformes à
     // partir de la vue passée à fx.foule.couleur, la génération du contexte (elle change après une perte de contexte : tout
@@ -3262,7 +3540,7 @@
           gl.uniform3fv(u.uPdrLumiereDirection,l.directions);gl.uniform2fv(u.uPdrLumiereCone,l.cones);gl.uniform1fv(u.uPdrLumierePortee,l.portees);gl.uniform1i(u.uPdrLumieres,l.nombre);
         };
       }};
-    return {setEnvironment(value){environment=environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,updateShape,gl,pdr,calibrate,profile,setRenderScale:value=>surface?.setScale(value),setBudgetTarget:value=>watch?.setTarget(value)};
+    return {setEnvironment(value){environment=environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,updateShape,gl,pdr,calibrate,profile,prewarm,retain,resetStats,setRenderScale:value=>surface?.setScale(value),setBudgetTarget:value=>watch?.setTarget(value)};
   }
   // Both GPU backends share the procedural shapes, instance layout and visibility
   // rules. No rendering calls or GPU state are shared between the APIs.
