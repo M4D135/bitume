@@ -1,0 +1,78 @@
+{
+ "resume": "Le lot 20 est fait dans /Users/david/Projects/bitume-wt/echappement (branche etude/echappement), en un seul commit : 10f2c82, posé sur 8bd3d86. Il n'est ni poussé ni fusionné, et la version reste 0.2.39. Les douze voitures crachent maintenant du feu à l'échappement :\n- au passage d'un rapport : une détonation sur les quatre tubes, 12 à 55 ms après le passage. Elle claque toujours au-dessus de 11 400 tr/min, moins souvent quand on rétrograde ;\n- au lever de pied au-dessus de 8 500 tr/min : des crépitements ;\n- au rupteur : des ratés.\nLes flammes sont procédurales et tirées à chaque claquement : 3 formes, un cœur chaud, une bouffée, une teinte orangée ou bleue, des tailles au hasard. Le son est synthétisé au démarrage (13 tampons, 6 voix prêtes). Le hasard est propre au module : la course est identique avec ou sans lui, et les flammes sont les mêmes à 30, 60 ou 120 images/s. Rien n'est alloué en course et rien ne s'efface au loin. Les vérifications passent : 17 pour l'échappement, 20 pour le son, et toute la suite (67 fichiers). J'ai fait 9 captures avec mesures ; les flammes coûtent 3 à 10 appels de dessin de plus. Le branchement dans jeu.js et construire.py reste hors commit, dans integration.patch. Le son n'a pas été écouté dans un navigateur. Ta demande « génération procédurale plus détaillée et plus aléatoire » n'est appliquée qu'à l'échappement : ce n'est pas la refonte générale, qui est le lot 22 (branche etude/procedural).",
+ "documents": [
+  "/Users/david/Projects/bitume-wt/echappement/docs/reprise/20-ECHAPPEMENT.md : demande, ce qui se passe et pourquoi, son, branchement, preuves, limites, comment reproduire, questions",
+  "/Users/david/Projects/bitume-wt/echappement/docs/reprise/rapports/echappement-2026-11-18/ : 9 captures (jour et nuit en poursuite au passage et au lever de pied, concurrente vue de derrière, gros plan, rétroviseur en cockpit, qualité Légère), leurs 9 fichiers de mesures, les scripts captures.sh, capture-echappement.js et grille.mjs, et integration.patch"
+ ],
+ "preuves": [
+  "node verifications/echappement.test.mjs : 17 vérifications sur 17. Sur 200 graines, la détonation tombe 12 à 55 ms après le passage, et le second claquement sort 60 à 120 fois. En moyenne, 11,3 crépitements par lever de pied, 12 à 40 % de bleus. Au rupteur : 16 à 26 ratés en 3 s en roulant, 9 à 18 à l'arrêt. Aucune flamme à bas régime, au pas, vers la marche arrière ni sur un saut de deux rapports.",
+  "Cadence : sur une vraie course de 24 s, mêmes événements et mêmes flammes à 30, 60 et 120 images/s et à cadence variable qu'à 240 images/s.",
+  "Hasard : Math.random n'est jamais appelé. Avec ou sans le module, la course a les mêmes positions, vitesses, régimes et rapports après 20 s. La même flamme sort à 10 m, 45 m, 150 m et 1 km.",
+  "Coût sous Node, douze voitures en feu : 2,4 µs par pas, 11,6 µs par dessin, 57,9 objets en moyenne et 94 au plus (borne : 144). Vraie course de 60 s : 106 passages montants à 12 000 tr/min ou plus, les 106 claquent ; 12,6 objets par image en moyenne, 112 au plus.",
+  "node verifications/son.test.mjs : 20 vérifications sur 20, dont 6 nouvelles (voix préparées, budget de voix, distance, angle, cockpit, niveaux, repli sur l'ancien claquement, synthèse déterministe).",
+  "Suite complète : les 67 fichiers passent, sans aucun ECHEC, sur l'état commité (68 s) et avec le branchement appliqué et la page construite (94 s).",
+  "Mutations sur une copie : 7 essais (Math.random dans la hauteur, scintillement compté en images, tableau neuf à chaque dessin, exclusion du cockpit retirée, seuil des crépitements déplacé, saut de deux rapports accepté, flamme qui pâlit au-delà de 100 m). Chacun fait échouer au moins une vérification ; la copie intacte passe.",
+  "Captures dans la page construite (tools/page-essai.mjs), aucune erreur dans la console : 3 à 10 appels de dessin et 7 à 34 instances d'effets de plus, sur environ 4 800. Dans la page, le dessin coûte 2,2 à 14 µs et le pas 0,5 à 1,9 µs. En Légère : 126 → 134 appels, 34 objets comme en Fine.",
+  "grille.mjs sur deux vraies courses de 20 s : 341 et 299 ratés, tous à l'arrêt sur la grille avant le feu vert, soit 19 à 33 par voiture ; aucun en roulant.",
+  "git apply --check integration.patch réussit sur 10f2c82. L'arbre est propre après le commit et la branche n'a pas d'amont."
+ ],
+ "plan": [
+  "Regarder les captures et répondre aux 6 questions de 20-ECHAPPEMENT.md : taille des flammes, rétroviseurs, grille, mode additif, bus du son, poids des PNG.",
+  "Appliquer integration.patch dans une branche d'intégration, construire, puis écouter sur le Mac et régler les niveaux 0,42 / 0,24 / 0,3 à l'oreille.",
+  "Mesurer la cadence en fenêtre réelle, en Fine et en Légère, avec tools/profil-accrocs.mjs, avant toute publication ; aucun gain n'est annoncé aujourd'hui.",
+  "Selon les réponses : ajuster la taille des flammes, les flammes à l'arrêt sur la grille ou le bus du son, en quelques lignes de PARAMS et de NIVEAU_ECH.",
+  "Si l'éclat manque, ouvrir un lot moteur FERRO (mode additif ou halo dans la passe des effets) ; ce lot n'y touche pas.",
+  "Puis fusion, version et publication par le circuit habituel ; rien de cela n'est fait ici."
+ ],
+ "non_fait": [
+  "Le branchement dans src/jeu.js et construire.py n'est pas commité, comme demandé : il est dans integration.patch.",
+  "Le son n'a pas été écouté : dans Chrome sans tête, le contexte audio reste suspendu.",
+  "Aucune mesure de cadence en fenêtre réelle sur le Mac, donc aucun gain ni aucun FPS annoncé.",
+  "Pas de mode additif ni de halo : la passe des effets de FERRO ne mêle que par transparence, et le moteur n'a pas été touché.",
+  "Les flammes n'éclairent ni le sol ni la caisse.",
+  "Les flammes de sa propre voiture n'apparaissent pas dans ses rétroviseurs, car sa caisse n'y est pas non plus.",
+  "Les autres sons de son.js créent toujours leurs nœuds à chaque événement : c'est la suite 5B-7, non touchée.",
+  "Pas de refonte générale de la génération procédurale (décor, circuits, matières) : c'est le lot 22.",
+  "Rien de poussé ni de fusionné ; pas de nouvelle version ni de publication (dist, VERSION.json et SIZE.json sont revenus à la base)."
+ ],
+ "commits": [
+  "10f2c82a9f220262f2cdf4bbd247bdbd2c465da0 : « Lot 20 : flammes et détonations à l'échappement, toutes voitures, en attente de branchement ». Branche etude/echappement, parent 8bd3d86, 27 fichiers (+2107/−11), non poussé, non fusionné."
+ ],
+ "constats": [
+  "La passe des effets de FERRO (matière 7) ne mêle que par transparence. De jour, la flamme reste orangée mais ne brille pas. J'ai écarté fxFire (matière 14) : elle ignore la couleur, donc pas de bleu possible.",
+  "Le moteur compresse chaque canal par x/(x+0,76) : avec 0,3 de vert, la flamme virait au beige. J'ai donc baissé le vert et le bleu, réglage fait sur les captures.",
+  "Vue poursuite : la flamme part vers la caméra et paraît raccourcie. Les quatre langues du passage se lisent bien. Un crépitement se voit à peine de jour : le premier venu était bleu, sur un seul tube, presque invisible. La capture montre donc le premier crépitement franc, orangé, sur un banc entier, et c'est noté.",
+  "J'ai retiré le fondu à distance du cœur et de la bouffée pour respecter « rien ne se coupe à distance » (lot 5B). Le nombre d'objets monte (34 au lieu de 19 dans la capture du passage) mais reste borné à 144. Le point clair du cœur aide à repérer le passage d'une concurrente au loin.",
+  "Sur la grille, les douze voitures tiennent le rupteur pendant le compte à rebours, d'où 19 à 33 flammes chacune avant le feu vert. En course, les IA passent le rapport avant le rupteur.",
+  "L'ancien claquement de son.js (voiture suivie seulement, sur le bus des effets) ne joue plus quand le module mène le son. Les nouveaux claquements passent par le bus moteur.",
+  "tools/page-essai.mjs est identique dans l'arbre et dans le dépôt principal : captures.sh utilise celui de l'arbre."
+ ],
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/echappement/src/echappement.js (nouveau, 465 lignes)",
+  "/Users/david/Projects/bitume-wt/echappement/src/son.js (modifié : synthèse au démarrage, 6 voix, fonction echappement, repli)",
+  "/Users/david/Projects/bitume-wt/echappement/verifications/echappement.test.mjs (nouveau, 17 vérifications)",
+  "/Users/david/Projects/bitume-wt/echappement/verifications/son.test.mjs (modifié, 6 vérifications ajoutées)",
+  "/Users/david/Projects/bitume-wt/echappement/docs/reprise/20-ECHAPPEMENT.md",
+  "/Users/david/Projects/bitume-wt/echappement/docs/reprise/rapports/echappement-2026-11-18/integration.patch",
+  "/Users/david/Projects/bitume-wt/echappement/docs/reprise/rapports/echappement-2026-11-18/captures.sh",
+  "/Users/david/Projects/bitume-wt/echappement/docs/reprise/rapports/echappement-2026-11-18/capture-echappement.js",
+  "/Users/david/Projects/bitume-wt/echappement/docs/reprise/rapports/echappement-2026-11-18/grille.mjs",
+  "/Users/david/Projects/bitume-wt/echappement/docs/reprise/rapports/echappement-2026-11-18/capture-jour-passage.png",
+  "/Users/david/Projects/bitume-wt/echappement/docs/reprise/rapports/echappement-2026-11-18/capture-nuit-rival.png"
+ ],
+ "integration": [
+  "Depuis la racine de l'arbre : git apply docs/reprise/rapports/echappement-2026-11-18/integration.patch && python3 construire.py",
+  "construire.py : ajouter 'echappement.js' après 'traces.js' dans MODULES.",
+  "src/jeu.js, 4 points :\n- créer S.ech avec B.echappement.creer(n, graineCourse) ;\n- appeler B.echappement.pas(S.ech, co.voitures, co.horloge) à chaque pas, après traces.pas ;\n- appeler B.echappement.dessiner(S.ech, sortie, poses, instant interpolé, voiture exclue en cockpit) après traces.dessiner ;\n- dans majSon, remplir des tableaux typés préparés (dedans, distance, angle) et appeler son.echappement(S.ech.son, ec).",
+  "Revenir à l'état commité : git checkout -- src/jeu.js construire.py dist VERSION.json SIZE.json",
+  "Captures, environ 1 min : sh docs/reprise/rapports/echappement-2026-11-18/captures.sh"
+ ],
+ "questions_pour_david": [
+  "Taille des flammes : au passage, les langues font 30 à 75 cm, et jusqu'à 1 m environ lancées à plus de 190 km/h. Les veux-tu plus grandes (plus lisibles, moins vraies) ou plus petites ?",
+  "Faut-il montrer les flammes de ta propre voiture dans tes rétroviseurs ? Aujourd'hui elles n'y sont pas, car la caisse n'y est pas.",
+  "Sur la grille, les douze voitures crachent au rupteur pendant le compte à rebours, 19 à 33 flammes chacune. Garder, réduire ou supprimer à l'arrêt ?",
+  "Faut-il ouvrir un lot moteur FERRO (mode additif ou halo dans la passe des effets) pour des flammes qui brillent vraiment de jour ?",
+  "Son : les claquements passent par le bus moteur (curseur « moteur »), alors que l'ancien claquement passait par celui des effets. Lequel garder ?",
+  "Les captures pèsent 5,8 Mo de PNG dans le dépôt (le lot 5 en pèse 18) : les garder ainsi ou les réduire ?"
+ ]
+}

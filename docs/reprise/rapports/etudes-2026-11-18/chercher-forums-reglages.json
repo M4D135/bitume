@@ -1,0 +1,252 @@
+{
+ "synthese": "Les communautés de réglages (F1 de Codemasters/EA, iRacing, AMS2, ACC, forums de simulation) s accordent sur peu de principes, tous exploitables pour un modèle à deux essieux.\n\n1. L équilibre est un jeu de charge entre essieux. Le transfert de charge total dépend de la hauteur du centre de gravité, de la masse, de la voie et de l accélération. Barres antiroulis et ressorts ne le changent pas : ils le répartissent entre avant et arrière. Comme l adhérence par kilo baisse quand la charge monte (coefficient de 1,10 à 0,97 pour une charge doublée, d après Milliken), l essieu qui reçoit le plus de transfert perd du grip. Avant plus raide, plus de sous-virage ; arrière plus raide, plus de survirage.\n\n2. Le ressenti dépend de la phase. Au freinage, la charge passe devant : l avant mord, l arrière s allège et peut décrocher (le freinage dégressif fait pivoter). À l accélération, elle passe derrière : sous-virage de motricité. En courbe, l intérieur se décharge. Le différentiel en décélération gouverne l entrée (plus fermé : stable mais sous-vireur, plus ouvert : pivote mais nerveux). En accélération, plus fermé : motricité mais sous-virage de sortie ; plus ouvert : la roue intérieure patine.\n\n3. Une bonne voiture prévient. Les joueurs aiment un grip qui monte progressivement jusqu au pic de dérive, puis retombe doucement, et un volant qui s allège au sous-virage. Ils détestent le décrochage sans préavis, le flottement et le survirage qui suit la perte de motricité. Les développeurs F1 EA ont retravaillé le pneu pour que le patinage coupe la poussée sans supprimer tout le grip latéral, et ont accepté un jeu plus indulgent qu une simulation sur les bordures.\n\n4. Les voitures de 1978-80 se décrivent par des défauts constants : sous-virage fort à basse vitesse (surtout à l accélération), grip qui croît avec la vitesse, pilotage précis mais pointu à haute vitesse, survirage brusque en grande courbe. Les joueurs d AMS2 notent que l absence de poids sur l avant et de survirage au lever de pied oblige à pivoter au freinage dégressif puis à lever doucement. Le moteur à plat de la 312T5 gêne les tunnels sous le plancher : sa voiture a donc peu d effet de sol, le grip vient surtout du mécanique.\n\n5. La manette n est pas un volant. Les guides recommandent : zone morte nulle, linéarité de direction 30-40 %, vitesse de braquage 115-130 %, linéarité de frein 25-30 %, contrôle de traction moyen. Un différentiel d accélération très ouvert (autour de 10) et un aileron arrière 2 à 4 crans au-dessus de l avant donnent de la stabilité. Réduire le braquage avec la vitesse est quasi universel (environ 10° à basse vitesse, 2° à haute, d après Game Developer).\n\n6. Les accidents de plateforme (bordures, talonnage, décrochage du diffuseur) créent le survirage soudain le plus souvent signalé. Les joueurs le règlent en relevant l arrière, en assouplissant la barre arrière et en conduisant sans à-coups.\n\nDésaccords à noter : la répartition de freinage conseillée va de 50-52 % (guide F1 22) à 54-57 % (champion d e-sport F1 2021), et un conseil iRacing de moins de 50 % pour les grosses roues arrière reste à confirmer. La barre avant plus raide donne une entrée plus vive (guides de jeu) mais plus de sous-virage en régime établi (théorie de répartition du transfert) : les deux sont vrais, l un en transitoire, l autre en stabilisé. L angle de dérive au pic va de 3° (F1 moderne) à 6-10° (pneus de route et de course) ; les pneus bias de 1980 ne sont pas documentés.",
+ "mecanismes": [
+  {
+   "nom": "Transfert de charge longitudinal (freinage, accélération)",
+   "cause": "Le centre de gravité haut par rapport à l empattement déplace la charge d un essieu à l autre : delta = force x hauteur / empattement. Exemple à 1 g : 3200 lb, CG 20 in, empattement 100 in, soit 640 lb d un essieu à l autre.",
+   "effet_ressenti": "Freinage : l avant mord, l arrière se délaie, entrée qui pivote voire survire. Accélération : l arrière se charge, le sous-virage de sortie apparaît ; en lâchant le gaz en virage, charge devant et pointe vive.",
+   "ordre_de_grandeur": "Environ 20 % du poids à 1 g pour une monoplace à CG bas (empattement 2,70 m, CG ~0,30 m : 0,11 x poids par g, soit ~11 % pour 1 g). Calculer, ne pas régler à la main.",
+   "recommandation": "Calculer la charge de chaque essieu à chaque pas à partir de l accélération longitudinale et laisser le freinage dégressif alléger l arrière. Appliquer un filtre du premier ordre (~60-100 ms) à la charge pour éviter les à-coups visibles."
+  },
+  {
+   "nom": "Perte de grip avec la charge (sensibilité du pneu)",
+   "cause": "La force latérale maximale croît moins vite que la charge (exposant ~0,7 à 0,9). Le coefficient de grip baisse quand la charge monte.",
+   "effet_ressenti": "L essieu le plus chargé en virage perd du grip relatif : c est ce qui permet à une barre antiroulis de modifier l équilibre. Sans cette sensibilité, les réglages ne changent rien.",
+   "ordre_de_grandeur": "Coefficient de 1,10 à 900 lbf, 1,08 à 1350, 0,97 à 1800 (exemple Milliken) : charge x2, force maximale +76 % seulement.",
+   "recommandation": "Utiliser mu = mu0 x (Fz/Fz0)^(-0,15 à -0,25). Plus la sensibilité est forte, plus les réglages comptent : en choisir une assez marquée pour que barres et ressorts soient lisibles."
+  },
+  {
+   "nom": "Répartition du transfert latéral (barres antiroulis, ressorts)",
+   "cause": "Le transfert latéral total ne dépend que du CG, de la masse, de la voie et de l accélération latérale. Barres et ressorts décident quelle part passe par l avant ou l arrière.",
+   "effet_ressenti": "Plus de raideur avant : entrée plus vive mais sous-virage stabilisé. Plus de raideur arrière : rotation, survirage en mi-virage et en sortie. Une barre arrière trop dure donne un survirage nerveux sur les bordures.",
+   "ordre_de_grandeur": "Point de départ : part avant du transfert 5 % au-dessus de la répartition statique des masses (anecdotique, forum). Plage de jeu : part avant entre 45 % et 65 %.",
+   "recommandation": "Répartir le transfert latéral entre essieux par un paramètre unique (0-1), appliqué avant le calcul du grip. Laisser le préréglage à une valeur légèrement sous-vireuse (avant ~55 %) pour que la voiture prévienne."
+  },
+  {
+   "nom": "Différentiel en décélération (coast)",
+   "cause": "Un blocage en lever de pied lie les deux roues arrière et résiste à la rotation ; un différentiel ouvert laisse la voiture pivoter librement.",
+   "effet_ressenti": "Fermé : stable au freinage, sous-vireur à l entrée, rotation difficile. Ouvert : pivote facilement mais peut devenir nerveux. Trop fermé donne un « frein à main inversé » qui fait manquer le virage.",
+   "ordre_de_grandeur": "Jeux F1 : 50-60 % (base 56 % chez un champion d e-sport ; 50-55 % dans un guide F1 22). Clutch : rampe 80 degrés pour un blocage faible.",
+   "recommandation": "Modéliser un couple de blocage entre roues arrière proportionnel à la charge, séparé en blocage décélération et accélération. Réglage par défaut : décélération assez fermé pour la stabilité."
+  },
+  {
+   "nom": "Différentiel en accélération (power)",
+   "cause": "Le blocage répartit le couple moteur entre les roues. Fermé : les deux roues tirent, mais la voiture résiste à tourner sous charge.",
+   "effet_ressenti": "Fermé : motricité forte, sous-virage de sortie, survirage plus difficile à rattraper. Ouvert : la roue intérieure patine, perte de poussée soudaine.",
+   "ordre_de_grandeur": "65-70 % (guide F1 22), 70-100 % (champion F1 2021), autour de 10 pour manette (guide F1 25) : les sources divergent selon le jeu et le périphérique.",
+   "recommandation": "Pour manette et clavier, prévoir un blocage moyen en accélération. Un patinage progressif de la roue intérieure doit prévenir avant la perte de motricité."
+  },
+  {
+   "nom": "Ailerons, appui et hauteur de caisse",
+   "cause": "L appui croît avec le carré de la vitesse et dépend de la hauteur de caisse et du tangage. Plus bas : plus d appui mais plus de sensibilité (talonnage, décrochage du diffuseur).",
+   "effet_ressenti": "Plus d aileron avant : meilleur pivot en entrée, instabilité à haute vitesse. Plus d aileron arrière : stabilité, moins de vitesse de pointe. Sur bordure ou talonnage, l appui arrière disparaît et la voiture survire d un coup.",
+   "ordre_de_grandeur": "Réglages de jeu de 0 à 50 crans, base 4 et plus ; hauteur de caisse 5-6 sur 11 dans F1 2021. Le tangage au freinage fait avancer le centre de poussée et allège l arrière (source de blog, à vérifier).",
+   "recommandation": "Appui = k x v^2, aileron avant et arrière séparés, avec une chute douce quand la hauteur de caisse descend sous un seuil. La 312T5 a peu d effet de sol : surtout de l appui d ailerons."
+  },
+  {
+   "nom": "Carrossage et pincement",
+   "cause": "Un carrossage négatif augmente la surface utile du pneu en courbe. Le pincement avant rapproche l entrée en virage mais coûte de la vitesse.",
+   "effet_ressenti": "Carrossage plus négatif : plus de grip en courbe, moins de motricité et de freinage en ligne droite. Pincement avant plus fort : entrée plus vive, sous-virage en mi-virage, usure.",
+   "ordre_de_grandeur": "Avant -3,5 à -2,5 degrés, arrière -2,0 à -1,0 ; pincement avant 0,05-0,15, arrière 0,20-0,50 (guide F1 22). Réel : -2,5 avant, -1,0 arrière.",
+   "recommandation": "Ne pas en faire un réglage joueur : l intégrer au pneu (grip latéral +3 à +5 % avec le carrossage, perte de motricité en ligne droite proportionnelle)."
+  },
+  {
+   "nom": "Répartition et pression de freinage",
+   "cause": "La répartition avant/arrière doit suivre le transfert de charge au freinage ; trop avant, l avant se bloque ; trop arrière, l arrière décroche.",
+   "effet_ressenti": "Plus avant : stable mais bloque les roues avant et sous-vire à l entrée. Plus arrière : la voiture tourne plus vite mais décroche. Un blocage de roues sans préavis est vécu comme injuste.",
+   "ordre_de_grandeur": "54-57 % (champion F1 2021), 50-52 % (guide F1 22) ; pression 90-100 %. Avec de gros pneus arrière, moins de 50 % est conseillé sur une monoplace de 1978 (iRacing, à confirmer).",
+   "recommandation": "Répartition fixe à 55-58 % avant par défaut, avec un petit ABS ou un seuil de blocage progressif (courbe de glissement lissée) pour la manette."
+  },
+  {
+   "nom": "Pression et température des pneus",
+   "cause": "Une pression plus basse agrandit la surface de contact et le grip mécanique, mais ralentit les réactions et chauffe.",
+   "effet_ressenti": "Pression basse : grip et motricité, direction paresseuse. Pression haute : réactif, dérapant, chauffe. Il faut quelques tours pour que les pneus soient à température (3 à 4 tours, selon les joueurs).",
+   "ordre_de_grandeur": "Cible 90-100 degrés Celsius en fonctionnement ; 21-25 psi à l avant, 19,5-23,5 à l arrière (guide F1 22).",
+   "recommandation": "Ajouter un grip qui monte en 2-3 tours puis baisse avec l usure : cela donne de la vie sans réglage manuel."
+  },
+  {
+   "nom": "Courbe de grip et ressenti de glissement",
+   "cause": "La force latérale monte avec l angle de dérive jusqu à un pic, puis baisse plus ou moins vite. Un pneu à bande bias de 1980 est plus doux après le pic qu un radial.",
+   "effet_ressenti": "Les joueurs veulent un volant qui reste ferme jusqu au pic et s allège ensuite ; au survirage, ils veulent du contre-braquage et une vibration, pas un volant vide. La perte de force sur deux axes à la fois est jugée ingérable.",
+   "ordre_de_grandeur": "Pic à 6-10 degrés (pneus de route et course), 3 degrés (F1 moderne, discuté) ; chute de 30 % en quelques degrés après le pic sur pneu GT, courbe presque plate sur slick bias.",
+   "recommandation": "Choisir un pic vers 7 degrés, une retombée de 10-15 % entre 7 et 14 degrés, et un contre-braquage assisté qui reste dans la fenêtre de rattrapage."
+  },
+  {
+   "nom": "Entrées de la manette et du clavier",
+   "cause": "Un stick ou une touche donne une entrée brusque et imprécise ; un volant est limité par la vitesse physique du bras.",
+   "effet_ressenti": "Sans filtre, la voiture serpente ; avec trop de lissage, elle répond avec retard. La vitesse de braquage doit baisser avec la vitesse du véhicule.",
+   "ordre_de_grandeur": "Linéarité 30-40, vitesse 115-130 %, zone morte 0 ; braquage maximal de ~10 degrés à basse vitesse à ~2 degrés à haute. Multiplicateur de vitesse de 0,67 contre 0,96 par défaut (Coach Dave).",
+   "recommandation": "Courbe de braquage non linéaire, limitation de l angle de roue en fonction de la vitesse, cadence de braquage plafonnée, retour automatique au centre pour le clavier."
+  }
+ ],
+ "chiffres": [
+  {
+   "grandeur": "Transfert de charge au freinage à 1 g (exemple Beckman)",
+   "valeur": "640 lb d un essieu à l autre pour 3200 lb, CG 20 in, empattement 100 in (soit 20 % du poids)",
+   "source": "Physics of Racing, partie 1 (Beckman), cygnus-supra.duckdns.org"
+  },
+  {
+   "grandeur": "Sensibilité du pneu à la charge",
+   "valeur": "Fy/Fz de 1,10 (900 lbf) à 0,97 (1800 lbf) ; pic à 5,6 puis 6,7 degrés ; Fy ~ Fz^0,7 à 0,9",
+   "source": "Wikipedia, Tire load sensitivity (exemple de Milliken)"
+  },
+  {
+   "grandeur": "Angle de dérive au pic",
+   "valeur": "6-10 degrés pour un pneu de route, 3 degrés pour une F1 moderne, 7-8 degrés pour la plupart des pneus de course en limite",
+   "source": "Wikipedia ; f1technical.net ; suspensionsecrets (via recherche)"
+  },
+  {
+   "grandeur": "Différentiel F1 (en accélération / décélération)",
+   "valeur": "65-70 / 50-55 (guide F1 22) ; 70-100 / 54-60 (champion F1 2021)",
+   "source": "f1laps.com ; racinggames.gg (Jarno Opmeer)"
+  },
+  {
+   "grandeur": "Répartition de freinage",
+   "valeur": "50-52 % avant (F1 22) ; 54-57 % (F1 2021) ; pression 90-100 %",
+   "source": "f1laps.com ; racinggames.gg"
+  },
+  {
+   "grandeur": "Carrossage et pincement",
+   "valeur": "Avant -3,5 à -2,5 ; arrière -2,0 à -1,0 ; pincement avant 0,05-0,15, arrière 0,20-0,50",
+   "source": "f1laps.com"
+  },
+  {
+   "grandeur": "Pression de pneus et température cible",
+   "valeur": "90-100 degrés ; ~23,3 psi avant et 21,3 psi arrière au départ",
+   "source": "f1laps.com"
+  },
+  {
+   "grandeur": "Réglages de manette",
+   "valeur": "Linéarité 30-40, vitesse 115-130 %, zone morte 0, linéarité de frein 25-30, contrôle de traction moyen (environ 0,5 s par tour pour le contrôle complet)",
+   "source": "f1laps.com, F1 25 controller settings"
+  },
+  {
+   "grandeur": "Braquage limité par la vitesse",
+   "valeur": "~10 degrés à basse vitesse vers ~2 degrés à haute vitesse",
+   "source": "gamedeveloper.com, Implementing racing games"
+  },
+  {
+   "grandeur": "Direction de manette (Rennsport)",
+   "valeur": "Multiplicateur de vitesse 0,67 (défaut 0,96) ; lissage 0,02 ; lissage frein 0,10",
+   "source": "coachdaveacademy.com, Ultimate Rennsport controller settings"
+  },
+  {
+   "grandeur": "Part avant du transfert latéral de départ",
+   "valeur": "~5 % au-dessus de la répartition statique avant (anecdotique)",
+   "source": "Forums cités par HP Academy, grassrootsmotorsports"
+  },
+  {
+   "grandeur": "Rampes de différentiel à embrayage",
+   "valeur": "90 degrés = pas de blocage hors précharge ; départ 80/80 ; précharge ~20 ; 4 à 6 disques",
+   "source": "forum.reizastudios.com, Differential Tuning Discussion"
+  }
+ ],
+ "recommandations": [
+  "1. Calculer le transfert de charge longitudinal et latéral à chaque pas de 1/120 s et en tirer le grip de chaque essieu : c est le fondement de la cohérence ressentie (Beckman, Milliken).",
+  "2. Introduire la sensibilité du pneu à la charge (mu = mu0 x (Fz/Fz0)^-0,2) : sans elle, barres, ressorts et lest ne font rien de visible.",
+  "3. Pic de grip entre 6 et 8 degrés avec une retombée progressive de 10-15 % puis un plateau, et assistance de contre-braquage : la voiture « prévient » avant de lâcher, ce que les joueurs décrivent comme le meilleur marqueur d une bonne voiture.",
+  "4. Ellipse d adhérence : la poussée en sortie retire du grip latéral à l arrière, et le freinage retire du grip latéral à l avant ; le patinage doit couper la poussée sans annuler tout le grip latéral (leçon du travail de handling F1 EA).",
+  "5. Freinage dégressif et lever de pied : la charge passe devant au freinage, l arrière s allège, la voiture pivote ; faire du survirage au lever de pied un outil, plafonné par un amortissement de lacet (technique décrite sur les forums de monoplaces rétro).",
+  "6. Un différentiel à deux paramètres (accélération, décélération) agissant sur les roues arrière, avec patinage de la roue intérieure en sortie : signal de motricité clair et dosable.",
+  "7. Barre antiroulis et rigidité en un curseur d équilibre avant/arrière du transfert latéral, plutôt que quinze réglages ; défaut légèrement sous-vireur pour la stabilité.",
+  "8. Limiter le braquage avec la vitesse (≈10 à ≈2 degrés) et plafonner la cadence de braquage, avec un lissage faible : réglage de manette et de clavier indispensable (Rennsport, Game Developer, F1 25).",
+  "9. Entrée de manette : linéarité autour de 35 % au centre, zone morte nulle, retour au centre et vitesse de braquage 115-130 %. Garder un contrôle de traction moyen par défaut et des aides désactivables.",
+  "10. Effet de sol modeste (la 312T5 en a peu) : appui = k x v^2 sur deux ailerons, avec perte d appui arrière progressive (pas brutale) quand la voiture touche une bordure ou talonne : événement lisible et rattrapable plutôt que snap mortel.",
+  "11. Bordures lisibles : une bordure décharge la roue touchée et allège brièvement l essieu, avec un signal visuel et sonore ; éviter qu elle déclenche un survirage sans préavis (plainte fréquente sur les forums).",
+  "12. Répartition de freinage fixe vers 55-58 % avant avec un seuil de blocage progressif : un blocage soudain est vécu comme injuste ; cumuler un peu d ABS pour la manette.",
+  "13. Pneus : montée en température sur 2-3 tours (3-4 tours selon les joueurs), puis usure : grip qui vit sans multiplier les réglages.",
+  "14. Sous-virage à basse vitesse caractéristique des voitures de 1978-80, mais atténué pour rester amusant : pas de « mur » de sous-virage ; le freinage dégressif doit le défaire (forums Formula Retro).",
+  "15. Carrossage et pincement intégrés au pneu plutôt qu exposés : bonus de grip en courbe, léger malus de motricité.",
+  "16. Mode arcade modulé par un seul curseur « aide » : stabilité de lacet, contre-braquage assisté, limiteur de dérive ; la dérive chargée du jeu (turbo) peut s appuyer sur la fenêtre du pic de dérive.",
+  "17. Retour de force et vibrations : le volant ou la manette doit s alléger au sous-virage, vibrer à l approche du pic, et rester ferme au survirage (consensus des forums AMS2 et rFactor 2).",
+  "18. Prévoir des préréglages d équilibre avant/arrière (appui haut, médium, bas) comme dans iRacing pour la Lotus 79, au lieu de dizaines de curseurs.",
+  "19. Faire dépendre légèrement l équilibre de la hauteur de caisse et du tangage (rake) pour que le freinage allège l arrière : cohérence aéro/mécanique sans surcharger l interface.",
+  "20. Faire valider chaque changement de comportement par des cas de test numériques : charge de chaque essieu en virage à 1 g, patinage en sortie, dérive en lever de pied."
+ ],
+ "sources": [
+  {
+   "url": "https://www.f1laps.com/blog/f1-game-car-setups-explained/",
+   "apport": "Plages de réglages F1 22 (ailerons, différentiel, barres, carrossage, pincement, freinage, pression) et effets par phase de virage."
+  },
+  {
+   "url": "https://racinggames.gg/f1/f1-2021-setup-guide-tips-from-f1-esports-champion-jarno-opmeer",
+   "apport": "Réglages d un champion d e-sport : différentiel 70-100 / 54-60, freinage 54-57 %, barres et hauteur de caisse, critère de voiture prévisible."
+  },
+  {
+   "url": "https://racinggames.gg/f1/f1-2021-setups-how-to-tune-out-oversteer-understeer-from-your-car",
+   "apport": "Correctifs de survirage et sous-virage par phase (aileron, différentiel, barres, hauteur arrière sur bordures)."
+  },
+  {
+   "url": "https://www.f1laps.com/blog/f1-25-controller-settings/",
+   "apport": "Réglages de manette (linéarité, vitesse, zone morte, traction), différentiel plus ouvert et aileron arrière plus haut pour la manette."
+  },
+  {
+   "url": "https://virtualracingschool.com/academy/tag/setup/",
+   "apport": "Différentiel (précharge, rampes), barres antiroulis, ressorts et pression : mécanismes et effets par phase."
+  },
+  {
+   "url": "https://forum.reizastudios.com/goto/post?id=91108",
+   "apport": "Discussion de différentiel sur Formula Retro : blocage en accélération et en décélération, valeurs de rampes, ressenti."
+  },
+  {
+   "url": "https://forum.reizastudios.com/posts/84528",
+   "apport": "Ressenti des monoplaces anciennes : sous-virage à basse vitesse, survirage soudain à haute vitesse, absence de lever de pied utile."
+  },
+  {
+   "url": "https://forum.reizastudios.com/goto/post?id=84328",
+   "apport": "Pourquoi les monoplaces d époque partent en tête-à-queue à l accélération : puissance supérieure au grip, entrées brusques, correctifs de conduite."
+  },
+  {
+   "url": "https://forum.reizastudios.com/goto/post?id=331107",
+   "apport": "Ce que le retour de force doit transmettre : grip jusqu au pic, volant léger au sous-virage, bordures, survirage."
+  },
+  {
+   "url": "https://www.iracing.com/lotus-79-stew/",
+   "apport": "Lotus 79 sur iRacing : sous-virage à basse vitesse sur le réglage de base, appui croissant avec la vitesse, compromis appui/traînée."
+  },
+  {
+   "url": "https://www.iracing.com/no-fear-dont-brake/",
+   "apport": "Lotus 79 : grip énorme qui permet de rester plein gaz, direction très réactive."
+  },
+  {
+   "url": "https://www.autosport.com/f1/news/how-f1-2023-has-better-balanced-the-handling-conundrum-of-racing-games/10507628/",
+   "apport": "Philosophie d EA : stabilité, patinage sans perte totale de grip latéral, rotation sans snap, aides pour débutants."
+  },
+  {
+   "url": "https://gamedeveloper.com/design/implementing-racing-games-an-intro-to-different-approaches-and-their-game-design-trade-offs",
+   "apport": "Arcade contre simulation : braquage limité par la vitesse (~10 à ~2 degrés), dérive, aides."
+  },
+  {
+   "url": "https://coachdaveacademy.com/tutorials/ultimate-rennsport-controller-settings/",
+   "apport": "Braquage sensible à la vitesse, lissage, pourquoi la manette a besoin de ces réglages."
+  },
+  {
+   "url": "https://cygnus-supra.duckdns.org/Supra/Library/PhysicsOfRacing/physics_of_racing_01.html",
+   "apport": "Formules et exemple chiffré du transfert de charge (Beckman, Physics of Racing)."
+  },
+  {
+   "url": "https://cygnus-supra.duckdns.org/Supra/Library/PhysicsOfRacing/physics_of_racing_10.html",
+   "apport": "Angle de dérive : montée, pic puis retombée progressive ; sous-virage = plus de dérive à l avant."
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Tire_load_sensitivity",
+   "apport": "Sensibilité du pneu à la charge, exposant 0,7-0,9, exemple de Milliken et angles de pic."
+  },
+  {
+   "url": "https://www.hpacademy.com/courses/suspension-tuning-and-optimization/lateral-load-transfer-basics-total-lateral-load-transfer-distribution-and-tuning",
+   "apport": "Répartition du transfert latéral : barres et ressorts répartissent sans réduire le total ; effet sur l équilibre."
+  },
+  {
+   "url": "https://www.motorsport.com/f1/news/lotus-79-tech-analysis-piola/4794820/",
+   "apport": "Technique de la Lotus 79 : jupes, tunnels, châssis peu rigide."
+  },
+  {
+   "url": "https://www.motorsportmagazine.com/archive/article/november-2002/41/312t5-1980",
+   "apport": "312T5 : le moteur à plat gêne les tunnels d effet de sol."
+  },
+  {
+   "url": "https://rossbentley.substack.com/p/speed-secrets-how-to-rotate-your",
+   "apport": "Freinage dégressif : la rotation vient d un angle de dérive plus grand à l arrière ; trop long, l avant sature."
+  }
+ ]
+}

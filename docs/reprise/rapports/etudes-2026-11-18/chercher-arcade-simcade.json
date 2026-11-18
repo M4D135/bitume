@@ -1,0 +1,337 @@
+{
+ "synthese": "Constat croisé de plus de vingt sources : une conduite simcade réussie repose sur un modèle physique honnête (deux essieux, transfert de charge, ellipse d'adhérence) dont on retouche la forme, puis sur trois couches de lisibilité : filtrage des commandes, aides invisibles et retours sensoriels.\n\n1. Le pneu décide de tout. La force latérale croît avec l'angle de dérive, plafonne, puis décroît. Les pneus de route plafonnent vers 6 à 10 degrés, une F1 vers 3 degrés (Wikipédia, d'après Milliken et Wright). Le plaisir vient de la forme de la courbe : un pic pointu donne un pneu nerveux qui lâche d'un coup, un pic rond et une queue relevée donnent une perte d'adhérence annoncée et rattrapable (devlog Lupine, mod de pneu BeamNG). Il faut donc élargir volontairement la fenêtre par rapport à une vraie F1 de 1980, par exemple un pic vers 7 à 9 degrés (proposition).\n\n2. La charge verticale module la courbe. La force maximale suit à peu près la charge à la puissance 0,7 à 0,9. Donc l'essieu qui transfère le plus de charge perd en efficacité, ce qui crée sous-virage ou survirage sans règle ajoutée. Le transfert longitudinal vaut (h/L)·m·a (Marco Monster). Pour 600 kg, h = 0,30 m et L = 2,70 m, un freinage à 1,5 g déplace environ 1 000 N vers l'avant (calcul personnel).\n\n3. L'ellipse d'adhérence est le budget unique : freiner ou accélérer fort retire de la force latérale (Beckman). Avec un budget de 1 g, 0,6 g de freinage laisse environ 0,8 g en latéral. C'est ce qui rend le freinage dégressif en courbe et la sortie sous gaz naturellement lisibles.\n\n4. Les voitures aimées cachent les détails. Sega Rally a retiré transfert de charge, gommes et différentiels pour garder la glisse comme compétence (generationamiga). Daytona USA tire son plaisir de glissades à moitié accidentelles, que l'équipe a laissées exister (Osaki). Mario Kart donne une dérive récompensée : entrée au-dessus de 55 % de la vitesse maximale, charge par paliers, boost de 0,5 à 3 s selon la voiture, et le braquage doux charge aussi vite que le dur (wiki TAS, Kotaku).\n\n5. Le piège numéro un du clavier et de la manette est de contrôler à l'aveugle. Sans retour de force, rien n'indique l'angle optimal ni ne ramène les roues. L'auteur du mod Advanced Steering réplique le retour de force par code : plafond de braquage à l'angle de grip maximal et auto-contre-braquage proportionnel à la dérive, avec amortissement. Il soutient que ce n'est pas une aide qui conduit à la place du joueur, mais le comblement d'un manque du périphérique. Ses réglages par défaut donnent des ordres de grandeur : réponse 0,35, amortissement 0,5, angle maximal 8 degrés, autorité du joueur 0,7, décalage de contre-braquage 4 degrés. À l'inverse, des joueurs de Gran Turismo disent aller plus vite sans l'aide au contre-braquage : l'aide doit rester dosable et débrayable.\n\n6. Les sources se contredisent sur trois points. Le flou de mouvement : une étude le dit nuisible à la vitesse perçue à forte dose, Disney ne trouve aucun effet, des joueurs le trouvent utile en léger. Le champ de vision large : l'étude cite un gain de vitesse perçue longitudinale mais moins de mouvement latéral, Hargreaves y voit un gain via les objets proches. Le pneu linéaire clampé : Marco Monster le juge suffisant, d'autres notent qu'il rend les tête-à-queue ardus, et la conférence Just Cause 4 plaide pour un modèle à peu de paramètres plutôt que Pacejka complet.\n\n7. Pièges connus : retard de commande (la relaxation du pneu, longueur divisée par la vitesse, rend la réponse molle à basse vitesse), voiture sur rails (aide qui ramène trop fort), flottement (trop peu de charge sur l'essieu avant ou direction trop rapide à haute vitesse), survirage sec (queue de courbe trop basse ou transfert de charge arrière trop brutal).\n\n8. Sensation de vitesse : caméra basse, objets proches du bord de piste, textures de sol à gros motifs, champ de vision dynamique, secousse légère, son. Le crissement des pneus passe à une fréquence plus basse au-delà de la limite (Beckman) : c'est un indice sonore gratuit.\n\nAucun chiffre pour la manette (zone morte, exposant, vitesse de braquage) n'est établi par les sources : les valeurs proposées plus bas sont des points de départ à régler à la main.",
+ "mecanismes": [
+  {
+   "nom": "Courbe force latérale en fonction de l'angle de dérive (pic puis décroissance)",
+   "cause": "Le patin de contact adhère puis glisse progressivement, de l'arrière vers l'avant ; la force plafonne juste avant le glissement complet puis baisse (Beckman). Pacejka simplifié : D pic, C forme (1,35 en latéral dans l'exemple Lupine), B raideur, E queue.",
+   "effet_ressenti": "Pic pointu : voiture nerveuse qui décroche d'un coup. Pic rond avec queue relevée : perte annoncée, volant qui s'alourdit, rattrapage possible. Trop de queue : voiture sur rails.",
+   "ordre_de_grandeur": "Pic réel à 6-10 degrés (route), environ 3 degrés (F1) ; proposition de jeu : pic à 7-9 degrés, force à 80-85 % du pic autour de 2,5 fois l'angle de pic, jamais sous 70 % pour éviter le décrochage sec.",
+   "recommandation": "Courbe Pacejka simplifiée ou arctangente, une seule table par essieu avec D, C, B, E exposés. Mesurer la queue : viser une décroissance douce de 15 à 25 % maximum après le pic. Raideur initiale plus forte à l'avant qu'à l'arrière pour un léger sous-virage de base stable."
+  },
+  {
+   "nom": "Sensibilité à la charge verticale",
+   "cause": "L'aire de contact ne croît pas proportionnellement à la charge, donc le coefficient de frottement baisse quand la charge monte (Wikipédia d'après Milliken ; forum HP Academy).",
+   "effet_ressenti": "L'essieu le plus chargé en virage ou au freinage perd en efficacité : sous-virage sous freinage prolongé ou survirage au lever de pied selon la répartition.",
+   "ordre_de_grandeur": "Force maximale proportionnelle à la charge puissance 0,7 à 0,9 ; exemple Milliken : Fy/Fz de 1,10 à 0,97 quand la charge double ; l'angle de pic monte de 5,6 à 6,7 degrés.",
+   "recommandation": "Ajouter par roue un facteur (Fz/Fz0)^(0,85-1) au pic D, et faire monter légèrement l'angle de pic avec la charge. C'est ce qui rend le transfert de charge perceptible sans règle ad hoc."
+  },
+  {
+   "nom": "Transfert de charge longitudinal",
+   "cause": "Le centre de gravité haut crée un couple de tangage : Wf = (c/L)W moins (h/L)ma, Wr = (b/L)W plus (h/L)ma (Marco Monster ; Beckman partie 1).",
+   "effet_ressenti": "Au freinage, l'avant mord et l'arrière s'allège (rotation, survirage à l'inscription) ; à l'accélération, l'arrière mord et l'avant s'allège (sous-virage de sortie).",
+   "ordre_de_grandeur": "Pour 600 kg, h = 0,30 m, L = 2,70 m : environ 1 000 N à 1,5 g (calcul personnel), soit environ 17 % du poids ; exemple de Marco Monster : 2 940 N pour 1 500 kg, h = 1,0 m, L = 2,5 m, 0,5 g.",
+   "recommandation": "Appliquer la formule telle quelle, mais filtrer le résultat par un passe-bas de 60 à 120 ms (suspension) pour éviter les à-coups et le survirage sec au lever de pied. Exagérer h de 10 à 20 % pour que le tangage se sente."
+  },
+  {
+   "nom": "Transfert latéral et répartition de rigidité de roulis",
+   "cause": "En virage la charge passe de l'intérieur vers l'extérieur ; l'essieu qui en reçoit la plus grande part perd en efficacité moyenne, donc l'essieu le plus raide en roulis sature en premier (forums HP Academy et LFS, article sur la distribution de roulis).",
+   "effet_ressenti": "Essieu avant raide : sous-virage en milieu de courbe. Essieu arrière raide : survirage et rotation franche. Source indiquant le sens exact absente ; sens classique déduit.",
+   "ordre_de_grandeur": "Répartition de transfert avant/arrière de 50-60 % à l'avant pour une voiture stable.",
+   "recommandation": "Calculer le transfert latéral par essieu (masse, hauteur, voie) et le répartir selon un paramètre de roulis avant/arrière. Un seul curseur de réglage donne le caractère de la voiture."
+  },
+  {
+   "nom": "Ellipse d'adhérence (cercle de forces)",
+   "cause": "Une seule enveloppe d'adhérence : forces longitudinale et latérale se combinent en somme pythagoricienne (Beckman partie 7 ; mod de pneu BeamNG).",
+   "effet_ressenti": "Freiner fort en courbe fait sous-virer ; gaz en courbe fait survirer ou patiner ; le pilote apprend à répartir son budget.",
+   "ordre_de_grandeur": "Budget 1 g : 0,6 g de freinage laisse environ 0,8 g latéral.",
+   "recommandation": "Normaliser les deux glissements par leur pic, composer la force par l'ellipse (rapport légèrement elliptique, longitudinal plus fort que latéral) et projeter la force sur la direction du glissement combiné. Le patinage au gaz et la dérive deviennent alors cohérents."
+  },
+  {
+   "nom": "Relaxation du pneu (retard de réponse)",
+   "cause": "La force latérale suit l'angle de dérive avec un retard : première-ordre de constante de temps longueur de relaxation divisée par la vitesse (littérature citée par la recherche web).",
+   "effet_ressenti": "À basse vitesse la réponse est molle et retardée ; à haute vitesse le retard est court. Trop de retard donne une sensation de flottement et d'oscillation de lacet.",
+   "ordre_de_grandeur": "Longueur de relaxation de quelques dizaines de centimètres à environ un mètre ; constante de temps de 10 à 50 ms à vitesse de course.",
+   "recommandation": "Filtrer l'angle de dérive de chaque essieu avec une longueur de relaxation (0,3 à 0,8 m) et un plancher de vitesse pour éviter la singularité à l'arrêt (Wikipédia, épsilon au dénominateur). À pas fixe de 1/120 s c'est peu coûteux et cela supprime les vibrations."
+  },
+  {
+   "nom": "Direction dégressive avec la vitesse et plafond d'angle optimal",
+   "cause": "Au-delà de l'angle de braquage optimal, l'essieu avant dépasse son pic et perd du grip : braquer plus fait tourner moins (explication Advanced Steering ; guides de réglages des F1 de Codemasters).",
+   "effet_ressenti": "Plein braquage à haute vitesse = sous-virage ; sans plafond, le joueur au clavier ou à la manette tombe dans le piège.",
+   "ordre_de_grandeur": "Article de développeur : de l'ordre de 10 degrés de roue à basse vitesse à environ 2 degrés à haute vitesse ; Advanced Steering : vitesse de braquage 1,2, plafond calculé depuis la vitesse et le grip.",
+   "recommandation": "Plafonner le braquage commandé à l'angle donnant la force avant maximale (angle de pic de l'essieu avant plus l'angle de dérive du centre de masse, divisé par le facteur de direction), calculé en temps réel, avec un petit surplus (environ 1 degré) pour garder une sensation d'autorité. Cela évite que les aides conduisent à la place du joueur."
+  },
+  {
+   "nom": "Auto-alignement et contre-braquage naturel",
+   "cause": "Chasse et déport font que les roues avant se remettent dans la direction du déplacement, donc la voiture contre-braque seule en glissade ; un retour de force le transmet, pas une manette (Advanced Steering).",
+   "effet_ressenti": "Sans cela le joueur se bat contre une voiture qui ne se stabilise pas ; avec cela les glissades sont tenables à une main.",
+   "ordre_de_grandeur": "Préréglage par défaut : réponse 0,35, amortissement 0,5, angle maximal 8 degrés, autorité du joueur 0,7, marge de contre-braquage 4 degrés ; préréglage de dérive maximal presque automatique.",
+   "recommandation": "Calculer l'angle de dérive de la caisse (vitesse latérale sur longitudinale) et ajouter au braquage un terme proportionnel plafonné (8 degrés), amorti par la vitesse de lacet. Laisser le joueur l'emporter (autorité 0,7). Exposer un curseur de force de 0 à 100 %."
+  },
+  {
+   "nom": "Filtrage des commandes clavier et manette",
+   "cause": "Une entrée tout ou rien ou un stick brut excite la voiture ; les sims utilisent vitesse de braquage, rappel au centre plus rapide que l'entrée, et réduction à haute vitesse (réglages Live for Speed, Rigs of Rods, F1 de Codemasters).",
+   "effet_ressenti": "Trop rapide : zigzag et tête-à-queue. Trop lent : sensation de retard. Zone morte trop grande : manque de précision au centre.",
+   "ordre_de_grandeur": "Clavier : rappel environ 1,5 à 2 fois plus rapide que la prise de braquage ; manette : zone morte radiale 5-10 %, exposant de courbe 1,5-2 (valeurs de départ proposées, sources sans chiffres).",
+   "recommandation": "Clavier : rampe d'entrée de 0,3 à 0,5 s pour aller en butée, rappel de 0,15 à 0,25 s, taux réduit avec la vitesse, rappel accéléré quand la touche opposée est enfoncée. Manette : zone morte, courbe puissance douce, limite de vitesse de braquage, même plafond d'angle optimal."
+  },
+  {
+   "nom": "Dérive chargée et mini-turbo",
+   "cause": "Mario Kart : le temps passé en dérive charge un boost libéré à la sortie ; seuil d'entrée à 55 % de la vitesse maximale ; braquage doux ou dur chargent pareil, le contre-braquage plus lentement (wiki TAS, Kotaku).",
+   "effet_ressenti": "La glissade devient un choix de risque et de gain, pas une erreur ; la longueur de dérive est le gain.",
+   "ordre_de_grandeur": "Boost de 28 à 188 images à 60 par seconde, soit de 0,5 à 3 s ; trois paliers.",
+   "recommandation": "Charger sur la durée avec glissement latéral réel supérieur à un seuil ; trois paliers visuels et sonores ; plafonner la vitesse pour que le boost ne casse pas la tenue (réduire le braquage utile, hausser l'appui). Sega Rally : la glissade bien jugée conserve la vitesse en courbe."
+  },
+  {
+   "nom": "Sensation de vitesse",
+   "cause": "Les objets proches et latéraux défilent le plus vite dans le champ visuel, donc comptent le plus ; la hauteur de caméra compte aussi (Hargreaves) ; la secousse et le champ de vision dynamique renforcent la perception.",
+   "effet_ressenti": "Un jeu physiquement rapide peut paraître lent sans repères proches ; trop de flou ou de champ gêne.",
+   "ordre_de_grandeur": "Champ de vision de base environ 90 degrés ; MotoGP l'élargissait progressivement au-dessus de 100 mph.",
+   "recommandation": "Caméra basse, objets de bord de piste proches, texture de sol à gros motifs, élargissement du champ de vision lié à l'accélération plus qu'à la vitesse seule, secousse légère proportionnelle à la vitesse et aux vibreurs, flou léger et optionnel."
+  },
+  {
+   "nom": "Retours par la manette et par le son des pneus",
+   "cause": "Les développeurs relient le retour manette au glissement : gâchette qui durcit au blocage et au patinage (F1 22, Gran Turismo 7), retour sur la limite de traction avant la rupture (Dirt 5). Le crissement change de fréquence au passage de la limite (Beckman).",
+   "effet_ressenti": "Le joueur sent la limite sans la voir ; sans cela le sous-virage est muet.",
+   "ordre_de_grandeur": "Source sans valeur chiffrée ; le crissement tombe à une fréquence plus basse au-delà de la limite.",
+   "recommandation": "Deux bandes de vibration : basse fréquence pour l'essieu avant près du pic, haute fréquence pour le patinage ou la glissade arrière. Son : crissement qui monte vers le pic puis chute en tonalité et se salit après. Prévoir un réglage d'intensité."
+  }
+ ],
+ "recommandations": [
+  "1. Remplacer toute adhérence binaire par une courbe d'essieu avec pic rond et queue relevée (décroissance de 15 à 25 % après le pic), exposée en D, C, B, E : c'est le plus gros gain de plaisir et de cohérence.",
+  "2. Calculer le glissement combiné et projeter la force par une ellipse d'adhérence unique : freiner en courbe sous-vire, gaz en courbe survire, la dérive à l'accélérateur devient naturelle.",
+  "3. Ajouter la sensibilité à la charge (puissance 0,85 à 1) et le transfert de charge filtré à 60-120 ms : le survirage au lever de pied et le sous-virage au freinage deviennent lisibles sans règle ad hoc.",
+  "4. Plafonner le braquage commandé à l'angle donnant la force avant maximale (direction dégressive calculée, pas une table) : empêche le sous-virage par sur-braquage au clavier et à la manette.",
+  "5. Implémenter un auto-contre-braquage proportionnel à l'angle de dérive, amorti par la vitesse de lacet, plafonné à environ 8 degrés, avec une autorité joueur de 0,7 : stabilise la voiture sans la conduire.",
+  "6. Filtrer l'angle de dérive avec une longueur de relaxation (0,3 à 0,8 m) pour supprimer les vibrations et le survirage sec, en gardant un plancher de vitesse contre la singularité à basse vitesse.",
+  "7. Rendre la perte d'adhérence annoncée : le crissement change de tonalité, la manette vibre à 80-100 % du pic avant, le volant virtuel s'allège, avant que la voiture ne parte.",
+  "8. Dérive chargée : seuil d'entrée environ 55 % de la vitesse maximale, trois paliers de charge sur 0,8 à 2,4 s, boost de 0,5 à 2 s, charge identique en braquage doux ou dur pour garder le choix de trajectoire libre.",
+  "9. Clavier : rampe d'entrée de 0,3 à 0,5 s, rappel plus rapide que l'entrée, taux réduit à haute vitesse, rappel accéléré à l'inversion de touche. Manette : zone morte radiale 5-10 %, exposant 1,5-2, limite de vitesse de braquage. Les deux passent par le même plafond d'angle optimal.",
+  "10. Aides dosables de 0 à 100 % et débrayables : contre-braquage, correction de sous-virage, motricité (réduction de couple par patinage), antiblocage. Les joueurs de Gran Turismo disent aller plus vite sans aide : l'aide doit récompenser, pas imposer.",
+  "11. Direction : réduire aussi la vitesse de braquage et le gain de lacet avec la vitesse, pour éviter le flottement et le zigzag à haute vitesse.",
+  "12. Sensation de vitesse : caméra basse, objets de bord proches et variés, champ de vision dynamique modéré lié à l'accélération, secousse légère liée à la vitesse et aux vibreurs, flou de mouvement léger et optionnel (preuves contradictoires).",
+  "13. Retours de manette séparés : basse fréquence pour l'essieu avant près du pic, haute fréquence pour patinage et glissade arrière, résistance de gâchette au blocage et au patinage si le matériel le permet.",
+  "14. Fenêtres de rattrapage : après un décrochage, garder environ 100 à 200 ms de force latérale plus élevée que la courbe stationnaire (hystérésis douce) et un amortissement de lacet pour que la reprise soit possible sans réflexe de pro.",
+  "15. Éviter les pièges : jamais de rotation par couple fantôme ; pas de rails (queue de courbe jamais au-dessus de 85 % du pic) ; pas de survirage sec (filtrer le transfert arrière) ; pas de retard de commande (relaxation courte, braquage non filtré en entrée).",
+  "16. Régler à la main et sauvegarder des préréglages (Responsive, Stable, Dérive facile) comme dans les mods de référence, plutôt que de chercher un réglage unique.",
+  "17. Garder un budget d'effet de sol ou d'appui propre à la voiture de 1980 : appui qui croît avec le carré de la vitesse, sensible à la hauteur de caisse seulement si le jeu veut un risque de perte brutale (les voitures à jupes pouvaient perdre l'appui d'un coup selon Racer). À traiter comme option de mode difficile, pas comme base."
+ ],
+ "chiffres": [
+  {
+   "grandeur": "Angle de dérive au pic de force latérale, pneus de route",
+   "valeur": "6 à 10 degrés, qui augmente avec la charge",
+   "source": "https://en.wikipedia.org/wiki/Tire_load_sensitivity (d'après Milliken)"
+  },
+  {
+   "grandeur": "Angle de dérive au pic, pneus de F1",
+   "valeur": "environ 3 degrés",
+   "source": "https://en.wikipedia.org/wiki/Tire_load_sensitivity (d'après Wright)"
+  },
+  {
+   "grandeur": "Exposant de sensibilité à la charge sur la force latérale maximale",
+   "valeur": "0,7 à 0,9",
+   "source": "https://en.wikipedia.org/wiki/Tire_load_sensitivity"
+  },
+  {
+   "grandeur": "Exemple de rapport Fy/Fz maximal en fonction de la charge",
+   "valeur": "1,10 à 900 lbf, 1,08 à 1 350 lbf, 0,97 à 1 800 lbf ; angle de pic 5,6 à 6,7 degrés",
+   "source": "https://en.wikipedia.org/wiki/Tire_load_sensitivity (Milliken, figure 2.9)"
+  },
+  {
+   "grandeur": "Pic de force longitudinale en taux de glissement",
+   "valeur": "environ 0,06 (Marco Monster) à 0,15 (Beckman, ajustement simplifié)",
+   "source": "https://rsms.me/etc/car-physics/ ; https://cygnus-supra.duckdns.org/Supra/Library/PhysicsOfRacing/physics_of_racing_29.html"
+  },
+  {
+   "grandeur": "Ajustement simplifié de la force longitudinale F = B·Fz·s / (1 + |A·s|^P)",
+   "valeur": "A = 9,625, B = 31,0, P = 2,375 ; erreur maximale moins de 10 % du pic",
+   "source": "https://cygnus-supra.duckdns.org/Supra/Library/PhysicsOfRacing/physics_of_racing_29.html"
+  },
+  {
+   "grandeur": "Exemple de paramètres Pacejka simplifié pour un pneu de jeu",
+   "valeur": "D = 1, C = 1,35 (latéral) ou 1,65 (longitudinal), B = 10, E = 0",
+   "source": "https://lupine-vidya.itch.io/gdsim/devlog/677587/workshop-iii-rays-go-round-lateral-force-mirror"
+  },
+  {
+   "grandeur": "Budget d'adhérence : freinage 0,6 g sur 1 g total",
+   "valeur": "environ 0,8 g reste en latéral",
+   "source": "https://cygnus-supra.duckdns.org/Supra/Library/PhysicsOfRacing/physics_of_racing_07.html"
+  },
+  {
+   "grandeur": "Coefficient de frottement de référence",
+   "valeur": "environ 1,0 (pneus de route) à 1,5 (pneus de course)",
+   "source": "https://rsms.me/etc/car-physics/"
+  },
+  {
+   "grandeur": "Préréglage par défaut d'Advanced Steering (BeamNG)",
+   "valeur": "réponse 0,35, amortissement 0,5, angle maximal 8 degrés, autorité 0,7, marge de contre-braquage 4 degrés, vitesse de braquage 1,2",
+   "source": "https://github.com/adam10603/BeamNG-Advanced-Steering (ConfigGuide.md et préréglage Default)"
+  },
+  {
+   "grandeur": "Direction dégressive dans un article de développeur",
+   "valeur": "environ 10 degrés de roue à basse vitesse, environ 2 degrés à haute vitesse",
+   "source": "https://gamedeveloper.com/design/implementing-racing-games-an-intro-to-different-approaches-and-their-game-design-trade-offs"
+  },
+  {
+   "grandeur": "Boost de mini-turbo (Mario Kart)",
+   "valeur": "28 à 188 images, soit 0,5 à 3 s à 60 images par seconde ; rigidité du mini-turbo de 1 à 5,75",
+   "source": "https://kotaku.com/everything-you-didn-t-know-about-drifting-in-mario-kart-1819196173"
+  },
+  {
+   "grandeur": "Seuil d'entrée de dérive (Mario Kart Wii)",
+   "valeur": "strictement plus de 55 % de la vitesse de base maximale ; braquage doux (3) et dur (7) chargent à la même vitesse, contre-braquage plus lent",
+   "source": "https://wiki.mkwtas.com/wiki/Manual_drift"
+  },
+  {
+   "grandeur": "Champ de vision de base et élargissement",
+   "valeur": "environ 90 degrés ; MotoGP l'a élargi progressivement au-delà de 100 mph",
+   "source": "https://www.shawnhargreaves.com/blog/speed-is-a-matter-of-perspective.html"
+  },
+  {
+   "grandeur": "Poids de transfert de charge (exemple)",
+   "valeur": "2 940 N pour 1 500 kg, h = 1,0 m, L = 2,5 m, 0,5 g",
+   "source": "https://rsms.me/etc/car-physics/"
+  },
+  {
+   "grandeur": "Traînée aérodynamique et résistance au roulement",
+   "valeur": "traînée proportionnelle à v², résistance au roulement linéaire, égales vers 30 m/s dans l'exemple",
+   "source": "https://rsms.me/etc/car-physics/"
+  },
+  {
+   "grandeur": "Constante de temps du retard de pneu",
+   "valeur": "longueur de relaxation divisée par la vitesse ; la longueur est la distance pour atteindre 63 % de la force stationnaire",
+   "source": "https://link.springer.com/doi/10.1007/s11012-023-01684-z (via recherche web)"
+  }
+ ],
+ "sources": [
+  {
+   "url": "https://rsms.me/etc/car-physics/",
+   "apport": "Marco Monster : force latérale linéaire puis plafonnée, transfert de charge, traînée, pas de simulation trop fine ; ajuster les constantes à l'oreille pour l'arcade."
+  },
+  {
+   "url": "https://cygnus-supra.duckdns.org/Supra/Library/PhysicsOfRacing/physics_of_racing_29.html",
+   "apport": "Beckman : ajustement simplifié de la courbe de force longitudinale, instabilité de rupture, pic autour de 0,15 de glissement."
+  },
+  {
+   "url": "https://cygnus-supra.duckdns.org/Supra/Library/PhysicsOfRacing/physics_of_racing_10.html",
+   "apport": "Beckman : angle d'adhérence, force qui plafonne puis baisse, crissement qui change de fréquence au-delà de la limite."
+  },
+  {
+   "url": "https://cygnus-supra.duckdns.org/Supra/Library/PhysicsOfRacing/physics_of_racing_07.html",
+   "apport": "Beckman : cercle de traction, addition pythagoricienne, effet sur sous-virage et survirage."
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Tire_load_sensitivity",
+   "apport": "Sensibilité à la charge, exposant 0,7 à 0,9, pic de pneus de route et de F1, données Milliken."
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Slip_(vehicle_dynamics)",
+   "apport": "Définitions de glissement et d'angle de dérive, singularité à basse vitesse et épsilon de lissage."
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Understeer_and_oversteer",
+   "apport": "Définition du gradient de sous-virage et lien avec la répartition de charge."
+  },
+  {
+   "url": "https://lupine-vidya.itch.io/gdsim/devlog/677587/workshop-iii-rays-go-round-lateral-force-mirror",
+   "apport": "Pacejka simplifié pour un jeu : rôle de D, C, B, E ; pic pointu = pneu nerveux, pic rond = indulgent."
+  },
+  {
+   "url": "https://beamng.com/resources/grip-dynamics-mod.36559",
+   "apport": "Pneu progressif avec chute douce après le pic et ellipse d'adhérence, pour remplacer un grip binaire."
+  },
+  {
+   "url": "https://raw.githubusercontent.com/adam10603/BeamNG-Advanced-Steering/main/Explanation.md",
+   "apport": "Pourquoi traiter l'entrée clavier et manette comme un retour de force : plafond d'angle optimal et auto-contre-braquage ; réponse aux objections sur les aides."
+  },
+  {
+   "url": "https://raw.githubusercontent.com/adam10603/BeamNG-Advanced-Steering/release/ConfigGuide.md",
+   "apport": "Paramètres détaillés : réponse, amortissement, autorité du joueur, marge de contre-braquage, vitesse de braquage, préréglages jusqu'à la dérive quasi automatique."
+  },
+  {
+   "url": "https://beamng.com/posts/1098657/",
+   "apport": "Débat sur les aides au volant : limite de braquage à vitesse, contre-braquage assisté, objections de pureté de simulation."
+  },
+  {
+   "url": "https://gdcvault.com/play/1026035/Vehicle-Physics-and-Tire-Dynamics",
+   "apport": "Just Cause 4 : un modèle de pneu à peu de paramètres, plus adapté à l'arcade et au simcade que le Magic Formula."
+  },
+  {
+   "url": "https://www.gdcvault.com/browse/gdc-17/play/1024004",
+   "apport": "Uncharted 4 : tuner pneus et moteur pour rendre un véhicule accessible au plus grand nombre."
+  },
+  {
+   "url": "https://gdcvault.com/play/1025295/contactUs",
+   "apport": "Criterion : une bonne conduite part d'une simulation solide, puis caméra et aides par couches."
+  },
+  {
+   "url": "https://gamedeveloper.com/design/implementing-racing-games-an-intro-to-different-approaches-and-their-game-design-trade-offs",
+   "apport": "Approches arcade et simulation, direction dégressive avec la vitesse, aides de style autopilote."
+  },
+  {
+   "url": "https://www.generationamiga.com/2026/09/02/sega-rally-championship-how-tetsuya-mizuguchi-crashed-a-rally-car-during-development/",
+   "apport": "Sega Rally : glissade conçue comme compétence, détails réels retirés volontairement, surfaces qui changent l'adhérence."
+  },
+  {
+   "url": "https://itsfantastic.moe/outrun-2-development-stories/",
+   "apport": "Osaki : le Gear Drift de Daytona USA n'était pas voulu ; liberté d'expérimenter au centre du plaisir."
+  },
+  {
+   "url": "https://gamingbolt.com/hotshot-racing-interview-bringing-back-arcade-racers",
+   "apport": "Hotshot Racing : dérive déclenchée par un coup de frein, boost lié à la dérive, glissade lourde mais contrôlable."
+  },
+  {
+   "url": "https://gamingbolt.com/art-of-rally-interview-art-style-development-and-more",
+   "apport": "Art of Rally : réglages de conduite interdépendants, prévisibilité accrue, nombreuses options pour s'adapter aux joueurs."
+  },
+  {
+   "url": "https://www.thesixthaxis.com/2019/01/28/interview-ross-gowing-on-dirt-rally-2-0s-push-for-realism/",
+   "apport": "Codemasters : conduite validée par des pilotes, manette testée autant que le volant, équilibre réalisme-jouabilité."
+  },
+  {
+   "url": "https://racinggames.gg/article/forza-horizon-5-major-handling-upgrades-revealed",
+   "apport": "Forza Horizon 5 : pneu plus précis, antiblocage refait pour relâcher la pression, réglages de freins plus influents."
+  },
+  {
+   "url": "https://wiki.mkwtas.com/wiki/Manual_drift",
+   "apport": "Mario Kart Wii : seuil d'entrée de dérive, braquage doux ou dur, contre-braquage qui charge plus lentement."
+  },
+  {
+   "url": "https://kotaku.com/everything-you-didn-t-know-about-drifting-in-mario-kart-1819196173",
+   "apport": "Mario Kart : rigidité du mini-turbo, durée de boost de 0,5 à 3 s, arbitrage entre vitesse et boost."
+  },
+  {
+   "url": "https://www.shawnhargreaves.com/blog/speed-is-a-matter-of-perspective.html",
+   "apport": "Sensation de vitesse : champ de vision dynamique, objets proches, hauteur de caméra."
+  },
+  {
+   "url": "https://www.shawnhargreaves.com/blog/vrrroom-whoosh.html",
+   "apport": "Sensation de vitesse : hauteur de caméra, objets de bord proches et suspendus, texture de sol grossière, marques de pneus."
+  },
+  {
+   "url": "https://studios.disneyresearch.com/2013/11/06/simulated-motion-blur-does-not-improve-player-experience-in-racing-game/",
+   "apport": "Le flou de mouvement simulé n'améliore ni la performance ni le plaisir mesurés dans un jeu de course."
+  },
+  {
+   "url": "https://blog.playstation.com/?p=366243",
+   "apport": "F1 22 : résistance de gâchette liée au blocage des roues et au patinage."
+  },
+  {
+   "url": "https://segmentnext.com/2020/10/22/dirt-5-dualsense-features-simulate",
+   "apport": "Dirt 5 : retours haptiques pour représenter le niveau d'adhérence et la dérive."
+  },
+  {
+   "url": "https://www.pcgamer.com/f1-2020-setup-car-monaco-spa",
+   "apport": "Réglages de F1 de jeu : aéro, différentiel, frein, effets sur sous-virage et survirage."
+  },
+  {
+   "url": "https://racinggames.gg/article/f1-2021-setups-how-to-tune-out-oversteer-understeer-from-your-car",
+   "apport": "Guide de réglage : corriger sous-virage et survirage par équilibre aéro et différentiel."
+  },
+  {
+   "url": "https://racer.com/racerpedia/technical-explainers/what-is-ground-effect",
+   "apport": "Effet de sol : appui qui croît avec la vitesse, perte brutale d'appui des voitures à jupes."
+  },
+  {
+   "url": "https://www.hpacademy.com/forum/race-driving-fundamentals/show/why-tire-friction-coefficient-changes-with-load",
+   "apport": "Cause physique de la sensibilité à la charge : l'aire de contact croît moins vite que la charge."
+  },
+  {
+   "url": "https://link.springer.com/doi/10.1007/s11012-023-01684-z",
+   "apport": "Relaxation du pneu : constante de temps égale à la longueur de relaxation divisée par la vitesse."
+  },
+  {
+   "url": "https://www.lfs.net/forum/post/394577",
+   "apport": "Réglages de direction au clavier : vitesse de braquage, rappel, multiplicateurs de rapidité et de limite."
+  }
+ ]
+}

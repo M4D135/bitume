@@ -1,0 +1,281 @@
+{
+ "synthese": "Facette : aérodynamique, freins, transmission et moteur d'une F1 de 1980. Une vingtaine de pages consultées (fiches techniques, archives Motor Sport, études universitaires, guides de réglage, forums). Mes calculs et estimations sont signalés \"estimation\" ; le reste vient d'une source citée.\n\nLa voiture. La Ferrari 312 T5 est un flat-12 de 2 992 cc (80 x 49,6 mm) à environ 515 ch à 12 300 tr/min, pour 595 kg avec eau et huile. Elle a une boîte transversale à 5 rapports, un différentiel à disques à friction, des freins à disques fonte ventilés sans assistance ni antiblocage, et des Michelin avant 23/59-13 et arrière 38/68-13. Surtout, le moteur large gênait les tunnels de sol : Scheckter dit qu'il \"gênait l'effet de sol\", et la voiture a surtout fonctionné comme une voiture à ailes. Elle a fini 1980 sans victoire. Pour BITUME, cela donne une identité : moteur fort et accrocheur, appui de sol modeste, donc davantage de traînée et un pilotage nerveux. Pour la référence de vitesse, les pôles de 1980 (turbos) étaient à 191 km/h de moyenne à Imola, 231 à Hockenheim et 237 au Österreichring.\n\nAérodynamique. L'appui et la traînée varient comme le carré de la vitesse. Sur une Williams FW07, environ 80 % de l'appui vient du dessous et 20 % de l'aile arrière, avec une finesse de 6 à 7 selon Dernie. Le dessous agit comme un venturi scellé par des jupes coulissantes (environ 75 mm de course utile). Deux comportements sont à retenir. D'abord, l'appui dépend de l'étanchéité plus que de la hauteur : une bosse ou une jupe qui décolle fait perdre l'appui d'un coup. Ensuite, la hauteur de caisse suit une courbe en bosse : l'appui monte quand on descend, atteint un pic à une hauteur critique, puis s'effondre avec une hystérésis (il faut remonter plus haut pour le retrouver). Le marsouinage naît de ce cycle. Les sources divisent sur la sensibilité : Wright la juge faible avec des jupes coulissantes, d'autres décrivent des pertes brutales. Je tranche ainsi : peu sensible à la hauteur dans le plateau, très sensible à la perte d'étanchéité. Estimation : une voiture type Williams a un appui d'environ 1,8 fois son poids à 250 km/h, soit des virages à 3,5 g ou plus. La T5, moins bien servie, serait plutôt à 1,1 à 1,3 fois. Le chiffre de 4,5 g rapporté par Surer est une anecdote de seconde main et reste invérifié. L'équilibre aérodynamique doit rester proche de la répartition des masses, légèrement vers l'arrière (2 à 3 points pour un pro) : un manque d'appui avant fait sous-virer à haute vitesse, un manque arrière fait survirer.\n\nAir sale et aspiration. Derrière une voiture, un modèle de Grand Prix des années 1990 perd jusqu'à 23 % de traînée et 36 % d'appui (Durham). Les mesures de la FIA donnent 55 % d'appui conservé à une longueur de voiture pour les F1 modernes. Les sources ne comparent pas les mêmes voitures. Le gain d'aspiration est donc réel, mais il se paie en virage, et le tour lancé reste meilleur en air libre.\n\nFreins. Disques fonte, pédale sans assistance, pas d'ABS. La répartition règle quel essieu bloque d'abord : l'avant bloque en sous-virage, récupérable au volant ; l'arrière bloque en tête-à-queue. Le freinage dégressif (appui qui baisse avec la vitesse) rend l'arrière plus fragile en fin de freinage. Estimation : à 300 km/h, la traînée seule freine déjà d'environ 0,6 g, et le pic de freinage atteint 2 à 2,5 g à haute vitesse contre environ 1,5 g à basse vitesse.\n\nDifférentiel. Un autobloquant à rampes se règle par précharge, rampe en accélération et rampe au lâcher. Le blocage transmet du couple à la roue lente et crée un moment de lacet proportionnel à l'écart de couple et à la voie, qui s'inverse entre accélération et frein. Trop de blocage donne un sous-virage terminal ; trop peu fait survirer et patiner la roue intérieure. À l'apex il doit être presque ouvert. Au lâcher, le frein moteur seul a un effet de lacet bien inférieur à celui d'un frein arrière.\n\nMoteur et boîte. Le 12 cylindres plat est un moteur de haut régime : la plage utile est étroite en bas et large en haut. L'écart entre rapports fixe la chute de régime à chaque passage (rapports en progression géométrique, passage près du pic de puissance, retombée vers le couple maxi). Un rétrogradage mal égalisé fait remonter le régime, le frein moteur bloque l'arrière, d'où le talon-pointe et les embrayages à glissement.\n\nFlammes et détonations. Du mélange non brûlé arrive dans un échappement brûlant avec de l'oxygène et s'y enflamme. Causes cumulées : recouvrement des soupapes à haut régime, faible contre-pression d'un échappement ouvert, carburant tiré par le vide à gaz coupés, allumage retardé qui laisse la combustion inachevée, limiteur qui coupe l'étincelle sans couper l'essence. Cela se voit au lever de pied et au rétrogradage, jamais à bas régime. Je n'ai trouvé aucune source spécifique aux F1 atmosphériques de 1980 ; le volet visuel et sonore est une recommandation de conception.",
+ "mecanismes": [
+  {
+   "nom": "Appui en v² et équilibre aérodynamique",
+   "cause": "L'appui et la traînée suivent le carré de la vitesse. Le centre de poussée aérodynamique face au centre de gravité fixe le comportement en vitesse : manque d'appui avant donne du sous-virage, manque d'appui arrière du survirage. Règle de réglage : équilibre aéro proche de la répartition des masses, 2 à 3 points plus arrière pour un pilote expérimenté.",
+   "effet_ressenti": "La voiture colle de plus en plus à haute vitesse et devient très stable. Si l'avant manque d'appui, le sous-virage augmente avec la vitesse.",
+   "ordre_de_grandeur": "Estimation : ClA d'environ 4 m² pour une Williams, 2,5 à 3 m² pour la T5, CdA d'environ 1 m². À 250 km/h, soit environ 1,8 fois le poids en appui pour une Williams et 1,1 à 1,3 fois pour la T5. Finesse de la FW07 : 6 à 7 selon Dernie, dont 80 % sous le plancher.",
+   "recommandation": "Définir F_appui = 0,5 rho ClA v², répartie entre essieux avec 40 à 45 % à l'avant, une dérive du centre de poussée de plus ou moins 3 à 5 % avec le tangage (nez qui plonge au freinage, arrière qui s'écrase à l'accélération), et une légère position arrière du centre de poussée. Réduire ClA de la T5 d'environ 30 % par rapport à une Williams."
+  },
+  {
+   "nom": "Effet de sol, jupes et perte d'étanchéité",
+   "cause": "Venturi sous les pontons, scellé par des jupes coulissantes. Une bosse, un vibreur ou une jupe coincée rompt l'étanchéité : l'air entre, la dépression s'effondre. Le flux revient ensuite avec hystérésis.",
+   "effet_ressenti": "Grip énorme et stable en virage rapide, puis perte brutale sur bosse ou vibreur, pouvant causer un tête-à-queue. Le marsouinage lève parfois les roues avant en ligne droite.",
+   "ordre_de_grandeur": "Course utile de jupe d'environ 75 mm sur FW07 ; 15 mm seulement avec les jupes flexibles de 1981. Réglementation 1981 : garde au sol de 6 cm. Des équipes ont percé les jupes pour calmer le marsouinage, au prix d'un peu d'appui.",
+   "recommandation": "Modéliser l'appui comme f(hauteur, vitesse) : plateau large avec jupes, pic puis chute rapide avec hystérésis. Événement de rupture d'étanchéité sur vibreur ou bosse franche : appui réduit à 40-60 % pendant 0,2 à 0,5 s, retour progressif. Marsouinage optionnel, seulement à vitesse élevée sur sol très ondulé."
+  },
+  {
+   "nom": "Transfert de charge et sensibilité de charge des pneus",
+   "cause": "Le coefficient de frottement baisse quand la charge verticale monte : doubler la charge ne double pas le grip. Le partage du transfert latéral entre essieux règle le sous-virage (plus de transfert à l'arrière, moins de sous-virage). L'essieu dont le pneu extérieur sature d'abord décide du comportement à la limite.",
+   "effet_ressenti": "Sous-virage quand l'avant sature, survirage quand c'est l'arrière. Lever de pied : charge portée vers l'avant, arrière allégé, d'où un survirage de décharge.",
+   "ordre_de_grandeur": "Pneus de course : mu d'environ 1,4 à 1,6 (Asawicki donne 1,5). Estimation : baisse de mu de 10 à 20 % quand la charge double.",
+   "recommandation": "mu(Fz) = mu0 (1 - k (Fz/Fz0 - 1)) avec k de 0,10 à 0,20 par pneu. Transfert de charge filtré par un premier ordre de 60 à 120 ms (suspension) pour éviter les réponses instantanées. Pneus arrière plus larges que l'avant (38 contre 23) : arrière stable, mais limité en traction."
+  },
+  {
+   "nom": "Ellipse d'adhérence",
+   "cause": "La force latérale disponible diminue quand le pneu freine ou accélère. L'ellipse est une approximation : la courbe réelle des forces combinées n'est pas exactement elliptique (SAE, Brach).",
+   "effet_ressenti": "Freiner fort en virage fait sous-virer ou chasser l'arrière ; accélérer fort en sortie réduit la tenue latérale (le turbo de dérive du jeu s'appuie là-dessus).",
+   "ordre_de_grandeur": "Pic latéral des slicks vers 4 à 7 degrés de dérive (estimation). Ellipse : rapport Fx_max/Fy_max proche de 1 à 1,2 selon l'essieu.",
+   "recommandation": "Courbe de force saturante de type Pacejka simplifiée en dérive et en glissement, ellipse pour combiner les deux, avec un plateau large après le pic pour que la dérive reste contrôlable et amusante. Écrêter par essieu, pas par pneu seul."
+  },
+  {
+   "nom": "Freinage sans ABS et répartition",
+   "cause": "La répartition choisit l'essieu qui bloque en premier. Le transfert de charge vers l'avant au freinage charge les roues avant. Le freinage dégressif (appui qui s'efface avec la vitesse) rend l'arrière plus fragile en fin de freinage.",
+   "effet_ressenti": "Blocage avant : traînée de fumée et sous-virage, récupérable. Blocage arrière : mise en travers, difficile à rattraper. Pédale sans assistance, donc dosage physique.",
+   "ordre_de_grandeur": "Estimation : répartition de 55 à 62 % à l'avant. Décélération pic de 2 à 2,5 g à haute vitesse, environ 1,5 g à basse vitesse. Traînée seule : environ 0,6 g à 300 km/h. Pic de freinage à environ 10 à 15 % de glissement, avec perte de 15 à 20 % de force au blocage complet.",
+   "recommandation": "Courbe de glissement longitudinal avec pic puis chute ; blocage avant avec fumée, flat-spot optionnel et sous-virage ; blocage arrière avec rotation. Réponse pédale progressive pour manette et clavier, plus une assistance douce (limitation de pression avant blocage) qui ne se remarque que sur les touches tout ou rien."
+  },
+  {
+   "nom": "Différentiel autobloquant à disques (précharge, rampe puissance, rampe lâcher)",
+   "cause": "Le blocage transfère du couple de la roue rapide vers la roue lente. Lock = précharge + rampe x couple d'entrée, avec des rampes distinctes en accélération et au lâcher. Le moment de lacet est proportionnel à l'écart de couple et à la voie, et change de signe entre accélération et frein.",
+   "effet_ressenti": "Bloc fort en accélération : traction à la sortie mais sous-virage (trop de blocage : terminal). Blocage au lâcher : stabilité à l'entrée, mais rotation freinée. À l'apex, un différentiel quasi ouvert tourne mieux. Trop ouvert : roue intérieure qui patine et survirage à la remise des gaz.",
+   "ordre_de_grandeur": "Estimation : puissance de 35 à 50 %, lâcher de 15 à 30 %, précharge de 20 à 40 N.m (essieu arrière). Le frein moteur seul crée un lacet bien inférieur à celui d'un frein arrière.",
+   "recommandation": "Implémenter la précharge et deux rampes sur l'essieu arrière : T_transfert = min(precharge + rampe x |T_carter|, 2 x limite d'adhérence). Cela donne de la stabilité à la remise des gaz et de la rotation au lever de pied. Sans réglage visible, régler à la main pour la T5 et ne pas dépasser 50 % en puissance."
+  },
+  {
+   "nom": "Frein moteur et rétrogradage",
+   "cause": "Gaz coupés, le moteur freine par pompage et frottements, proportionnellement au régime. Un rétrogradage trop bas ou mal égalisé renvoie du couple vers l'essieu moteur. En pleine décélération, l'inertie du moteur peut même appliquer un couple positif. L'embrayage à glissement et le talon-pointe limitent ce phénomène.",
+   "effet_ressenti": "À haut régime, l'arrière saccade, bloque ou glisse à l'entrée de virage.",
+   "ordre_de_grandeur": "Estimation : couple de freinage moteur de 40 à 70 N.m au vilebrequin vers 10 000 tr/min, multiplié par le rapport engagé (donc fort en 2e et 1re).",
+   "recommandation": "Couple de frein moteur = c0 + c1 x régime, appliqué à l'essieu arrière via la boîte avec limite d'adhérence. Rétrogradage assisté (blip automatique) par défaut pour le fun, mode manuel risqué optionnel : surrégime au-delà de 1,05 à 1,1 fois la zone rouge avec choc arrière et blocage."
+  },
+  {
+   "nom": "Étagement de boîte à cinq rapports",
+   "cause": "La chute de régime à chaque passage ne dépend que de l'écart entre rapports. On passe près du pic de puissance et on retombe vers le couple maximal. Les rapports se règlent par circuit (la fiche mentionne 5 ou 6 rapports selon la piste).",
+   "effet_ressenti": "Un étagement trop long pénalise la sortie de virage ; trop court, il fait gagner en reprises mais perdre en vitesse de pointe.",
+   "ordre_de_grandeur": "Régime de 8 000 à 12 300 tr/min utile. Estimation : rapport de pas de 1,15 à 1,25 entre vitesses hautes ; chute de 1 800 à 2 400 tr/min. Vitesse de pointe estimée à 290-310 km/h pour la T5 (puissance 515 ch, CdA d'environ 1 m²).",
+   "recommandation": "Courbe de couple plate au-dessus de 8 500 tr/min, perte de 30 à 35 % sous 7 000 tr/min. Régler les rapports par circuit pour que la vitesse maxi tombe au régime maximum en dernière vitesse ; coupure d'allumage de 40 à 80 ms au passage de rapport."
+  },
+  {
+   "nom": "Flammes et détonations à l'échappement",
+   "cause": "Mélange non brûlé arrivant dans un échappement chaud avec de l'oxygène. Causes cumulées : recouvrement des soupapes à haut régime, faible contre-pression d'un échappement ouvert, carburant tiré par le vide à gaz fermés, allumage retardé, limiteur coupant l'étincelle sans l'essence, passage de rapport avec lever de pied.",
+   "effet_ressenti": "Langues de flammes et claquements à chaque rétrogradage et à chaque lever de pied à haut régime ; rafales de pops en séries. Aucun effet à bas régime.",
+   "ordre_de_grandeur": "Aucune source spécifique aux F1 atmosphériques de 1980. Estimation de conception : régime supérieur à 70 % de la zone rouge, fermeture des gaz plus rapide que 0,15 s ; flamme de 0,2 à 1 m, orange-jaune avec base bleutée, durée de 50 à 200 ms ; séries de 2 à 6 claquements espacés de 20 à 50 ms.",
+   "recommandation": "Déclencher sur le taux de fermeture des gaz, le régime et la température d'échappement (état chaud). Particules en cône sortant de l'échappement, visibles surtout au crépuscule et sous la pluie, plus longues au rétrogradage et plus courtes au lever de pied simple. Son : craquement sec plus série de crépitements, volume lié au régime. Au limiteur : pops répétés."
+  },
+  {
+   "nom": "Aspiration et air sale",
+   "cause": "La voiture qui suit voit de l'air ralenti : moins de traînée, mais aussi moins d'appui, surtout à l'avant, ce qui déséquilibre l'aérodynamique.",
+   "effet_ressenti": "Bonne vitesse de pointe en ligne droite, sous-virage et instabilité en virage rapide derrière une autre voiture.",
+   "ordre_de_grandeur": "Jusqu'à -23 % de traînée et -36 % d'appui (voiture de Grand Prix des années 1990, Durham). F1 moderne : environ 55 % d'appui conservé à 10 m (FIA). Écart de 37 % de traînée à une longueur de voiture cité dans une source secondaire.",
+   "recommandation": "Facteurs de sillage en fonction de la distance longitudinale (jusqu'à 1,5 longueur) et du décalage latéral (gaussienne). Plafonner à environ -20 % de traînée et -25 % d'appui avant, avec perte plus forte à l'avant pour un sous-virage lisible."
+  }
+ ],
+ "chiffres": [
+  {
+   "grandeur": "Cylindrée et cotes moteur de la 312 T5",
+   "valeur": "2 992 cc, alésage-course 80 x 49,6 mm, rapport volumétrique 11,5:1",
+   "source": "f1technical.net (fiche 312T5) et ferrari.com"
+  },
+  {
+   "grandeur": "Puissance et régime",
+   "valeur": "515 ch (379 kW) à 12 300 tr/min ; certaines sources donnent 510 ch",
+   "source": "f1technical.net, ferrari.com, Wikipedia (312T)"
+  },
+  {
+   "grandeur": "Couple (valeur indicative)",
+   "valeur": "environ 320 N.m (236 lb.ft), donnée non datée ; cohérent avec 298 N.m au régime de puissance maxi (calcul)",
+   "source": "Wikipedia Ferrari flat-12 (extrait de recherche) ; recoupement par calcul"
+  },
+  {
+   "grandeur": "Masse",
+   "valeur": "595 kg avec eau et huile (f1technical) ou 595 kg sec (tableau Wikipedia) ; 598 kg pour le châssis 048 (ferraris-online). Les sources divergent sur le sec ou le mouillé.",
+   "source": "f1technical.net, Wikipedia, ferraris-online.com"
+  },
+  {
+   "grandeur": "Empattement et voies",
+   "valeur": "2 700 mm ; voies de 1 700 mm (avant) et 1 615 mm (arrière)",
+   "source": "f1technical.net"
+  },
+  {
+   "grandeur": "Réservoir",
+   "valeur": "182 à 185 litres, au centre",
+   "source": "f1technical.net"
+  },
+  {
+   "grandeur": "Transmission",
+   "valeur": "Boîte transversale 5 vitesses (6 selon les pistes), différentiel autobloquant à disques à friction, rapports variables selon circuit",
+   "source": "f1technical.net, conceptcarz.com"
+  },
+  {
+   "grandeur": "Pneus",
+   "valeur": "Michelin 23/59-13 avant, 38/68-13 arrière ; jantes 12x13 et 18x13",
+   "source": "f1technical.net"
+  },
+  {
+   "grandeur": "Freins",
+   "valeur": "Brembo, disques fonte ventilés, étriers Lockheed ; pas d'assistance, pas d'ABS",
+   "source": "f1technical.net ; Motor Sport (FW07, pédale sans assistance)"
+  },
+  {
+   "grandeur": "Finesse et répartition de l'appui (FW07)",
+   "valeur": "Finesse de 6 à 7 ; environ 80 % de l'appui sous le plancher, 20 % à l'aile arrière",
+   "source": "Motor Sport, X-ray spec FW07 (Dernie)"
+  },
+  {
+   "grandeur": "Course de jupe",
+   "valeur": "environ 75 mm de course utile avec jupes coulissantes, 15 mm avec jupes flexibles ; 6 cm de garde au sol imposés en 1981",
+   "source": "Motor Sport X-ray spec FW07 ; formula1.com"
+  },
+  {
+   "grandeur": "Vitesses moyennes de pole 1980",
+   "valeur": "Imola 1:33.988 (Arnoux, environ 191 km/h sur 5,0 km, longueur de piste ajoutée par moi) ; Österreichring 1:30.270 soit 237 km/h ; Hockenheim 231 km/h (Jones)",
+   "source": "formulaonehistory.com ; racing-reference.info ; Wikipedia 1980 German GP"
+  },
+  {
+   "grandeur": "Charge latérale citée par un pilote",
+   "valeur": "4,5 g (anecdote de Surer rapportant Dernie ; signification exacte incertaine)",
+   "source": "racingnews365.com"
+  },
+  {
+   "grandeur": "Perte dans le sillage",
+   "valeur": "-23 % de traînée et -36 % d'appui (Grand Prix du début des années 1990) ; 55 % d'appui conservé à 10 m (F1 moderne)",
+   "source": "Durham (worktribe) ; the-race.com"
+  },
+  {
+   "grandeur": "Coefficient de friction de pneus de course",
+   "valeur": "environ 1,5 (contre 1,0 en route)",
+   "source": "Asawicki, Car Physics for Games (cité par les résultats de recherche)"
+  },
+  {
+   "grandeur": "Équilibre aérodynamique recommandé",
+   "valeur": "Proche de l'équilibre des masses, décalé de 2 à 3 % vers l'arrière pour un pro, 5 à 10 % pour un amateur",
+   "source": "HP Academy (aero balance)"
+  }
+ ],
+ "recommandations": [
+  "1. (Plaisir et cohérence, priorité maximale) Appui en v² réparti par essieu avec un centre de poussée légèrement arrière : la voiture s'enfonce dans la route à mesure qu'on accélère, ce qui donne le caractère F1. Prévoir un ClA de la T5 environ 30 % sous celui d'une Williams.",
+  "2. Sensibilité de charge des pneus (mu baisse de 10 à 20 % quand la charge double) plus transfert de charge filtré à 60-120 ms : la base de la cohérence du survirage et du sous-virage au lever de pied et au freinage.",
+  "3. Différentiel à précharge et deux rampes (puissance, lâcher) sur l'essieu arrière, avec valeurs par défaut de 40 % et 20 %. Donne la remise des gaz franche, stable puis vive, et la rotation au lâcher.",
+  "4. Événement de perte d'étanchéité sur vibreur ou bosse (appui à 40-60 % pendant 0,2 à 0,5 s, retour avec hystérésis). C'est la signature drama de l'ère et un bon générateur de fun.",
+  "5. Freinage sans ABS : courbe de glissement avec pic à 10-15 %, blocage avant (fumée, sous-virage) ou arrière (rotation). Répartition par défaut de 58 % à l'avant ; décélération pic de 2 à 2,5 g à vitesse maximale, 1,5 g à basse vitesse, ajoutée de la traînée (0,6 g à 300 km/h).",
+  "6. Combinaison longitudinal-latéral par ellipse, avec plateau large après le pic de dérive : cohérence du turbo de dérive du jeu (dérive chargée) et rattrapage possible.",
+  "7. Courbe de couple plate au-dessus de 8 500 tr/min, zone rouge à 12 300 : un moteur de F1 qui chante et demande de rester haut dans les tours. Coupure d'allumage de 40 à 80 ms au passage.",
+  "8. Frein moteur proportionnel au régime avec rétrogradage assisté (blip automatique) par défaut : évite les blocages d'essieu arrière frustrants tout en gardant un mode manuel risqué.",
+  "9. Flammes et claquements au lever de pied et au rétrogradage au-dessus de 70 % du régime maximum, selon le taux de fermeture des gaz, avec séries de pops et flammes courtes ; plus visibles au crépuscule et sous la pluie. Visuel et sonore forts pour un faible coût de simulation.",
+  "10. Boîte à cinq rapports en progression géométrique (pas de 1,15 à 1,25), rapports réglés par circuit, vitesse de pointe de 290 à 310 km/h vérifiée par P = 0,5 rho CdA v3 avec 345 kW aux roues.",
+  "11. Sillage : moins de traînée (jusqu'à -20 %) et moins d'appui avant (jusqu'à -25 %) derrière une voiture, sur 1,5 longueur et avec décalage latéral. Donne l'aspiration et l'air sale lisibles sans saturer le jeu.",
+  "12. Décalage du centre de poussée avec le tangage (plus d'avant au freinage, plus d'arrière en accélération) de 3 à 5 % : stabilise le freinage, donne de la rotation à l'entrée.",
+  "13. Hystérésis de la hauteur de caisse sur le plateau de jupe : apprentissage des vibreurs, risque de marsouinage seulement à haute vitesse sur sol très abîmé. Optionnel et à faible amplitude.",
+  "14. Assistances douces propres au jeu : limitation de pression de frein juste avant blocage pour les touches tout ou rien, aide de contre-braquage progressive, sensibilité de direction selon la vitesse. À régler pour rester invisibles aux joueurs qui n'en ont pas besoin.",
+  "15. Pneus arrière plus larges et plus grippants que l'avant (38 contre 23) : la traction est limitée par le couple et non par la tenue arrière, ce qui nourrit à la fois le survirage de sortie et la dérive chargée.",
+  "16. Valider sur des temps de référence : Imola environ 191 km/h de moyenne, Österreichring 237 km/h, Hockenheim 231 km/h pour une voiture de pointe ; la T5, plus lente, doit rester dans les 5 à 8 % derrière (estimation)."
+ ],
+ "sources": [
+  {
+   "url": "https://www.f1technical.net/f1db/cars/443/ferrari-312t5",
+   "apport": "Fiche technique 312 T5 : moteur, 515 ch à 12 300 tr/min, 595 kg, empattement, voies, boîte transversale, différentiel à disques, pneus, freins, réservoir."
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Ferrari_312T",
+   "apport": "Historique de la lignée 312T : moteur plat trop large pour les tunnels d'effet de sol, T5 médiocre et sans victoire en 1980, tableau des masses et puissances."
+  },
+  {
+   "url": "https://www.ferrari.com/formula1/312-t5",
+   "apport": "Données officielles Ferrari : cylindrée, régime de puissance, saison 1980 difficile."
+  },
+  {
+   "url": "https://www.motorsportmagazine.com/archive/article/november-2002/41/312t5-1980",
+   "apport": "Scheckter : le moteur plat gênait les tunnels, voiture dépassée ; contexte d'une T5 faible en effet de sol."
+  },
+  {
+   "url": "https://www.motorsportmagazine.com/archive/article/november-2004/75/williams-sw07",
+   "apport": "Finesse de 6 à 7, répartition de l'appui (80 % sous le plancher), course de jupe de 75 mm contre 15 mm, freins difficiles à loger, gains du carénage."
+  },
+  {
+   "url": "https://www.motorsportmagazine.com/archive/article/july-2004/134/venturi-capitalists/",
+   "apport": "Mécanisme du venturi scellé par jupes sur la Lotus 79, faiblesses de raideur, marsouinage, jupes coincées."
+  },
+  {
+   "url": "https://racingnews365.com/exclusive-marc-surer-relives-the-dangers-of-the-previous-ground-effect-era",
+   "apport": "Témoignage de pilote : perte d'étanchéité des jupes, trous percés, suspension rigide, marsouinage, 4,5 g cité."
+  },
+  {
+   "url": "https://www.formula1.com/en/latest/article/re-writing-the-f1-rule-book-part-1-from-wing-cars-to-flat-bottoms.EJZ73Lnn0c6EgcMKMAWOU",
+   "apport": "Chronologie 1978-1983 des voitures à ailes, interdiction des jupes, garde au sol de 6 cm, appui imprévisible."
+  },
+  {
+   "url": "https://eprints.soton.ac.uk/509221/",
+   "apport": "Étude en soufflerie : appui qui monte avec la baisse de hauteur, pic critique, effondrement et hystérésis ; effet de l'angle de diffuseur et du rake."
+  },
+  {
+   "url": "https://durham-repository.worktribe.com/OutputFile/1374051",
+   "apport": "Effet d'une voiture amont sur une voiture de Grand Prix : jusqu'à -23 % de traînée, -36 % d'appui ; position du centre de poussée et comportement directionnel."
+  },
+  {
+   "url": "https://www.the-race.com/formula-1/exclusive-new-data-f1-aero-losses-ruining-close-racing",
+   "apport": "Pertes d'appui à une longueur de voiture dans les F1 modernes (55 % conservé) ; ne concerne pas 1980 mais donne un ordre de grandeur."
+  },
+  {
+   "url": "https://www.hpacademy.com/courses/aerodynamics-fundamentals/aerodynamics-and-vehicle-physics-aero-balance/",
+   "apport": "Équilibre aéro à aligner sur l'équilibre des masses puis décaler vers l'arrière de 2 à 3 % (pros) ou 5 à 10 % (amateurs)."
+  },
+  {
+   "url": "https://www.hpacademy.com/courses/suspension-tuning-and-optimization/lateral-load-transfer-basics-total-lateral-load-transfer-distribution-and-tuning",
+   "apport": "Répartition du transfert latéral et sensibilité de charge des pneus : effet sur le sous-virage."
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Tire_load_sensitivity",
+   "apport": "Principe de la baisse du coefficient de frottement avec la charge (cité d'après Milliken)."
+  },
+  {
+   "url": "https://miata.net/sport/Physics/07-Circle.html",
+   "apport": "Beckman, The Physics of Racing : cercle d'adhérence et budget de traction ; suite (parties 10, 21, 22) sur la dérive et la formule magique."
+  },
+  {
+   "url": "https://saemobilus.sae.org/papers/race-car-tire-modeling-a-simplified-approach-vehicle-dynamic-analysis-real-time-simulation-2004-01-3530",
+   "apport": "Modélisation de pneu simplifiée pour simulation en temps réel ; mise en garde contre l'ellipse comme équation exacte."
+  },
+  {
+   "url": "https://www.motor1.com/features/767719/limited-slip-differential-explained/",
+   "apport": "Effet du différentiel à l'accélération, au lever de pied et en trail-braking ; blocage presque nul à l'apex ; sous-virage terminal si trop bloqué."
+  },
+  {
+   "url": "https://designjudges.com/articles/differential-effects",
+   "apport": "Moment de lacet du différentiel : proportionnel à l'écart de couple, inversé entre accélération et frein ; le frein moteur seul agit peu."
+  },
+  {
+   "url": "https://classicmotorsports.com/forum/grm/learn-me-fwd-lsd-tuning/161370/page1",
+   "apport": "Forum de réglage : rampe d'accélération et rampe de lâcher, précharge, sous-virage si trop ouvert au lâcher."
+  },
+  {
+   "url": "https://flowracers.com/blog/f1-brake-bias/",
+   "apport": "Répartition de freinage : avant bloque et sous-vire, arrière bloque et fait tourner ; trail braking et déplacement de charge."
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Back-fire",
+   "apport": "Causes des détonations : mélange riche, allumage retardé, combustion tardive, et cas des levers de pied en course."
+  },
+  {
+   "url": "https://www.f1technical.net/forum/viewtopic.php?p=81591",
+   "apport": "Forum : flammes à la décélération, recouvrement de soupapes, faible contre-pression, carburant tiré par le vide, cartographies."
+  },
+  {
+   "url": "https://www.gran-turismo.com/gb/gt7/apex/settings/08",
+   "apport": "Méthode d'étagement en progression géométrique et choix de la première (page citée par les résultats de recherche)."
+  },
+  {
+   "url": "https://www.racing-reference.info/qual-results/1980-10/F",
+   "apport": "Qualifications du Österreichring 1980 : pôle d'Arnoux à environ 237 km/h de moyenne."
+  },
+  {
+   "url": "https://www.formulaonehistory.com/1980-italian-grand-prix/",
+   "apport": "Qualifications d'Imola 1980 : pôle d'Arnoux en 1:33.988."
+  },
+  {
+   "url": "https://www.thebrakereport.com/formula-1-innovations-the-carbon-brake-revolution/",
+   "apport": "Freins fonte en F1 jusqu'au début des années 1980, arrivée du carbone (dates qui divergent selon les sources)."
+  }
+ ]
+}

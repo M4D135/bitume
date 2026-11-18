@@ -1,0 +1,88 @@
+{
+ "resume": "Le plan du lot 17 (conduite p10) est écrit et chiffré. Aucune source du jeu n'a été touchée.\n\n- docs/reprise/17-CONDUITE.md (636 lignes) contient :\n  - les principes ;\n  - le modèle cible équation par équation, avec pour chaque paramètre une valeur de départ et une plage ;\n  - les écarts point par point aux 25 points de MODELE.md ;\n  - les sous-lots 17A à 17J, chacun livrable seul, avec ses critères de banc et une règle d'arrêt ;\n  - la non-régression (rivaux, déterminisme, en ligne, records), les réglages du joueur, dix risques et sept questions.\n- RECHERCHE.md met en forme les quatre volets de recherche, avec leurs sources, leur fiabilité et les contradictions tranchées.\n\nLes valeurs de départ viennent de trois études qu'on peut rejouer (dossier etude-17/) :\n- E1 : calculateurs de régime établi et de ligne droite, validés contre banc-base.json (−2,0 à +3,5 %) ;\n- E2 : réponse en lacet mesurée au banc sur le vrai modèle p9 ;\n- E3 : les 46 critères rejoués sur une copie de l'arbre, en 11 variantes.\n\nVérifications :\n- nouveau test verifications/etude-conduite-17.test.mjs : 4 vérifications, et deux mutants échouent comme attendu ;\n- suite complète relancée avant le commit : 68 fichiers, aucun ECHEC.\n\nCommit 3ab50fa sur la branche conduite/etude, ni push ni merge.\n\nÉcart à signaler : la demande relayée de David portait sur la génération procédurale (plus détaillée, meilleures matières, plus variée et aléatoire). Cette étape du workflow traitait la conduite et n'a rien fait sur la génération procédurale.",
+ "documents": [
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/17-CONDUITE.md",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/RECHERCHE.md"
+ ],
+ "preuves": [
+  "E1 virages (etude-regime.mjs, sorties resultats/regime.json et regime.txt). Calculateur contre banc-base.json sur le modèle actuel : R 30 −1,99 %, R 60 +0,87 %, R 120 +2,37 %, R 180 +3,48 %. Limité par l'avant partout, comme au banc.",
+  "E1, jeu p10 retenu (665 kg, empattement 2,70 m, voies 1,70 / 1,615 m, SCz 1,9, μ 1,85, q 0,18, gAr 1,04). Au calcul, R 30 / 60 / 120 / 180 donnent 84,5 / 124,4 / 192,3 / 260,8 km/h, soit en équivalent banc 86,2 / 123,4 / 187,9 / 252,1. Réserve arrière de 8,4 à 11,3 %, toujours limité par l'avant.",
+  "E1 ligne droite (etude-ligne.mjs, sorties ligne.json et ligne.txt). Le calcul est optimiste de 0,8 s sur le 0-200 (6,52 s contre 7,30 au banc). Niveau actuel : 233 kW à la roue, 0-200 en 6,83 s au calcul, pointe 302 km/h. Niveau fidèle (320 N·m) : 345 kW, 0-200 en 5,31 s, pointe 302 km/h. Pied levé à 290 km/h : 0,51 g (actuel) et 0,70 g (fidèle).",
+  "E1 freins (Fb 2,3 g, frein moteur 45 N·m à 10 000 tr/min). Seule la répartition 0,70 fait bloquer l'avant le premier dans les quatre freinages (300-0, 200-0, 300-100, 100-0) ; de 0,60 à 0,68, l'arrière bloque le premier au moins une fois. Distances au mieux : 138,3 / 69,2 / 119,3 / 20,5 m. Pédale pleine : 4 à 16 % plus long ; l'avant bloque à 175 km/h en 300-0.",
+  "E2 lacet (etude-lacet.mjs, banc sur le vrai modèle p9, sorties lacet.json et lacet.txt). Échelon à 200 km/h, mi-volant : 17,1 % de dépassement en p9, 17,9 % avec l'empattement 2,70 seul. Avec un pic de 4,9 / 4,4° et un amortisseur à 0,6 : 6,7 %, t90 87 ms (123 ms à 100 km/h). Un amortisseur à 0,8 donne 0,5 %, mais t90 105 ms à 200 km/h et 156 ms à 100 km/h (trop mou). Giration, aeroAvant et roulisAvant ne changent presque rien.",
+  "E3 critères (etude-criteres.sh sur une copie rsync de l'arbre, sortie criteres.txt, 11 variantes). Base 46/46. Empattement 2,70 seul : 42/46 (S4 et S5 aux trois cadences tombent). Avec le pic 4,9 / 4,4° et l'amortisseur 0,6 : 43/46 (tombent S3, dérive arrière 5,6° pour une cible de 6°, S4 et S5 à 120 Hz). Amortisseur 0,7 : 34/46.",
+  "Test verifications/etude-conduite-17.test.mjs : 4 vérifications tenues. Deux mutants échouent comme attendu : répartition 0,62 (l'arrière bloque le premier) et cible du 0-200 resserrée à [5,4 ; 5,6] (5,307 hors plage).",
+  "Suite complète relancée après la dernière retouche, avant le commit : 68 fichiers verifications/*.test.mjs, aucun ECHEC. conduite-criteres : 46/46, S8 reste en mesure ouverte (1 031 °/s²).",
+  "Les chiffres p9 que le plan cite ont été revérifiés contre BANC-BASE.md et contre une exécution de conduite-criteres : S10 0,614 / 0,601 ; S11 1,532 ; S3 lever de pied 1,126 ; S3 aspiration 4,061 m ; S6 tenues 2,4 / 1,1 / 0,3 / 1,1 m ; S9 de 75 à 117 ms et 1,161. Trois imprécisions ont été corrigées : le nom de l'essai herbe, les estimations du 0-200 de la question 1 et le gain selon l'appareil.",
+  "Nombre de colonnes des tableaux Markdown contrôlé dans les deux documents : 0 anomalie."
+ ],
+ "constats": [
+  "Le modèle p9 ne tient ses 46 critères que par un réglage fin. Un seul changement physique (empattement 2,85 → 2,70) en fait tomber 4. D'où l'ordre du plan : l'outillage d'abord (17A, empreinte inchangée), puis un nouveau réglage de l'aide et de la dérive à chaque sous-lot.",
+  "Le dépassement de lacet à 200 km/h (17 à 25 %) se corrige par un pic plus bas (4,9 / 4,4°) et par un amortisseur qui monte avec la vitesse (0,5 puis 0,62). La relaxation n'y peut rien : à 200 km/h, σ/u ne vaut que 5 ms.",
+  "Freinage p9 : c'est l'arrière qui sature, d'où le tête-à-queue en appui sans aide. Le calcul demande 70 % sur l'avant pour que l'avant bloque le premier, frein moteur et transfert compris. Les sources donnent 55 à 62 % : écart signalé, à remesurer sur le vrai modèle en 17D.",
+  "En p9, la puissance à la roue croît avec le rapport (182 puis 233 kW) ; p10 la rend constante. Deux jeux cohérents sont proposés. Niveau actuel : 216 N·m, SCx 0,58. Niveau fidèle à la 312 T5 : 320 N·m, SCx 0,88, pied levé franc. Le choix revient à David.",
+  "L'aide Légère écrête la limite des grands rayons (−1,7 % en R 120, −3,4 % en R 180). Elle se déclenche à |β| > 3,55°, alors que la voiture y tient à 3,5–3,9°. En p10, elle se déclenche sur la glisse de l'arrière.",
+  "La dérive p9 est un mode à part : loi de l'arrière changée, tirage avant de 1,4 fois l'adhérence, tenue de 10 s gratuite. Son gain dépend de l'appareil (clavier +0,85 s en R 40, manette +0,025 s en R 80). p10 propose une impulsion au bouton et une charge tirée de la glisse réelle, avec un repli déclaré si elle ne tient pas S6.",
+  "Plusieurs chiffres de RECHERCHE.md viennent de forums ou d'estimations. Ils ne fixent que des points de départ ; les cibles viennent du banc."
+ ],
+ "plan": [
+  "17A outillage : src/pneu.js (loi p10, plus la loi p9 à l'identique), essais ajoutés au banc, critères p10 en mesure, outil de profil des rivaux. Aucune conduite changée ; empreintes 52a7484e7589dd23 / 6dc495a68695aec5 inchangées ; 46/46.",
+  "17B châssis et pneus latéraux : 665 kg, 2,70 m, voies de la T5 ; charges avec part géométrique et courbure verticale ; loi de charge en puissance (q 0,18) ; pic 4,9 / 4,4° selon la charge ; plateau 85 / 80 % ; mémoire du pic ; κ_D selon la vitesse. Cibles : vitesses d'adhérence ±3 % de p9, dépassement à 200 km/h ≤ 10 %, t90 ≤ 90 / 125 ms, 46/46 avec S3 exprimé en fois le pic arrière.",
+  "17C motricité : régime tiré de la roue, puissance constante, frein moteur c0 + c1·n, état de rotation arrière en intégration implicite, glissement combiné de Beckman, antipatinage, montée du gaz pour les appareils tout ou rien. Cibles : puissance constante à ±4 %, pointe 295–310 km/h sous le rupteur, remise des gaz en Légère à 4 m dehors au plus, aide seule ≥ −0,5 %.",
+  "17D freins : pédale = force (2,3 g), répartition 70 % réglable au menu (60–76 %), blocage réel, antiblocage dans l'Aide. Cibles : en 300-0, l'avant bloque le premier entre 140 et 200 km/h ; freinage plein en appui sans aide β ≤ 20° (p9 : 75°) ; à 60 %, l'arrière bloque le premier.",
+  "17E aéro : SCz 1,9, aeroAvant 0,42, sensibilité au tangage, perte d'appui dans le sillage de 20 % à l'avant et 8 % à l'arrière, aspiration 0,25. Cibles : aspiration S3 ≥ 3 m, pointe en sillage +2 à +4 %, R 120 derrière une voiture −2 à −5 %.",
+  "17F direction et Aide : κ_P et κ_D dosés par l'Aide (en Aucune, contre-braquage 0,85 et marge 1,15), stabilisateur sur la glisse arrière, compensation des appareils. Cibles : aide seule ≥ 99 % de la voiture seule, S9 tenu, S8 selon la réponse de David.",
+  "17G dérive : impulsion au bouton, charge tirée de la glisse arrière mesurée, coût au-delà de 1 s passé le palier III, « parfait » seulement sur une glisse propre, turbo borné au rupteur. Cibles : paliers S6 à ±0,05 s, gain de 0,10 à 0,30 s pour toutes les commandes, tirage avant 0 (repli au plus 0,6).",
+  "17H surfaces et météo : surface par roue (transition sur 0,15 m), vibreurs, herbe par roue, aquaplanage, flaques placées au chargement depuis la graine du circuit, neige. Cibles : perte dans l'herbe 0,3–0,6 s à 100 km/h et 0,6–1,0 s à 200, croisements des pneus à 0,2 et 0,47 (±0,05), hasard de course inchangé.",
+  "17I sensations : crissement par essieu qui descend passé le pic, vibrations selon leur source, fumée selon la puissance de glisse. Cibles : hauteur du crissement 0,80 ± 0,05 à x = 3, zéro création d'objet en course, hasard de course intact.",
+  "17J rivaux et version p10 : profil des rivaux tiré de la voiture (rapport 0,97–1,03 au lieu de 0,94–1,13), PHYSIQUE p10 avec records et fantômes neufs, version annoncée en ligne (refus si elle diffère), paramètres morts retirés, MODELE-P10 et BANC-P10. Page contre Node à 1e-12 près."
+ ],
+ "integration": [
+  "Tous les fichiers sont nouveaux et aucun fichier existant n'est modifié : pas d'integration.patch. La fusion de conduite/etude (3ab50fa sur 912f17b) n'entre en conflit avec aucun autre lot.",
+  "verifications/etude-conduite-17.test.mjs importe les calculateurs de docs/reprise/rapports/conduite-2026-11-18/etude-17/ et lit banc-base.json : ces fichiers doivent rester ensemble, sinon le test casse.",
+  "Le lot 17 ne commence qu'après la fusion de 5B-7 (fluidité) : 17B à 17J réécrivent conduite.js, jeu.js, course.js et circuit.js, que 5B réécrit en ce moment. On commence par 17A, à empreinte identique.",
+  "Les empreintes de banc citées (52a7484e7589dd23 / 6dc495a68695aec5) sont celles de BANC-BASE à 912f17b. Si 5B-7 les change, 17A part des nouvelles.",
+  "Les études se rejouent depuis etude-17/ avec les commandes du § 10 du plan. etude-criteres.sh travaille toujours sur une copie de l'arbre, jamais sur l'arbre lui-même."
+ ],
+ "questions_pour_david": [
+  "1. Puissance : garder le niveau actuel (233 kW à la roue, 0-200 vers 7,5 s, pied levé doux) ou passer au niveau fidèle de la 312 T5 (521 ch, 345 kW à la roue, 0-200 vers 6 s, pied levé franc) ? Proposition : fidèle, décidé en roulant après 17C.",
+  "2. Aide « Aucune » : la rendre plus simulation (contre-braquage automatique à 85 %, l'avant peut passer le pic et sous-virer, ni antipatinage ni antiblocage), Légère restant le défaut ?",
+  "3. Dérive physique : d'accord pour que le bouton donne l'élan et relâche l'aide, que la charge vienne de la glisse réelle, qu'il n'y ait plus de tirage avant de 1,4 fois l'adhérence, que le turbo soit borné au rupteur et qu'il y ait un coût si on la tient trop ?",
+  "4. S8 au clavier : accepter le lacet vif actuel (S8 reste ouverte) ou ralentir le volant clavier à haute vitesse seulement (jusqu'à +0,08 s à 300 km/h, S9 gardé) ?",
+  "5. Freins : pas d'antiblocage en Aucune, léger en Légère, complet en Forte, toujours plafonné au clavier, avec la répartition au menu (60 à 76 %) : d'accord ?",
+  "6. Vibreurs : une perte d'appui brève (−12 % pendant 0,25 s) ou rien ?",
+  "7. Ordre des lots : 17 après 5B et 12A, avant 12B à 12E (l'usure et la neige s'appuieront sur pneu.js) ?",
+  "8. Votre demande relayée portait sur la génération procédurale (plus détaillée, meilleures matières, plus variée et aléatoire). Cette étape a produit le plan de conduite que le workflow lui assignait. Faut-il lancer un lot séparé pour la génération procédurale ?"
+ ],
+ "non_fait": [
+  "Aucune source du jeu modifiée et aucun sous-lot 17A à 17J réalisé. Tout le modèle p10 est proposé ; rien n'a été mesuré sur un modèle p10.",
+  "E2 et E3 mesurent le modèle p9 avec quelques paramètres changés. Les calculateurs E1 ne remplacent pas le banc : −2,0 à +3,5 % en virage, 0,8 s d'optimisme sur le 0-200.",
+  "Rien n'a été joué par un humain, ni au volant, ni au clavier, ni à la manette : le côté « fun » n'est pas évalué.",
+  "Les sources de RECHERCHE.md viennent des rapports de recherche et n'ont pas été relues en ligne pendant la rédaction ; plusieurs chiffres viennent de forums.",
+  "Les empreintes du banc n'ont pas été remesurées dans cette étape : elles sont reprises de BANC-BASE.md.",
+  "Le coût par pas (lot 5B) n'a pas été mesuré : le plafond de +30 % est une cible.",
+  "Ni Spark, ni kbza, ni sous-agent, comme le veut la consigne ; ni push ni merge.",
+  "La demande relayée sur la génération procédurale n'a pas été traitée par cette étape."
+ ],
+ "commits": [
+  "3ab50fa (3ab50fae3f8e982c335363c99f9c1d1972fa29f6) — lot 17 conduite : plan chiffré du modèle p10 avant d'y toucher. Branche conduite/etude, arbre /Users/david/Projects/bitume-wt/conduite, parent 912f17b. 16 fichiers nouveaux, 4 740 lignes. Non poussé, non fusionné."
+ ],
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/17-CONDUITE.md",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/RECHERCHE.md",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/etude-17/regime-etabli.mjs",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/etude-17/longitudinal.mjs",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/etude-17/etude-regime.mjs",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/etude-17/etude-ligne.mjs",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/etude-17/etude-lacet.mjs",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/etude-17/etude-criteres.sh",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/regime.json",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/regime.txt",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/ligne.json",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/ligne.txt",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/lacet.json",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/lacet.txt",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/criteres.txt",
+  "/Users/david/Projects/bitume-wt/conduite/verifications/etude-conduite-17.test.mjs"
+ ]
+}
