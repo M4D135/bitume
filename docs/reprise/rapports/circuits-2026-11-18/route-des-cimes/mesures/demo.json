@@ -1,0 +1,24 @@
+{
+ "valeur": {
+  "images": 1440,
+  "parCircuit": {
+   "route-des-cimes": 1371,
+   "val-brule": 69
+  },
+  "plans": {
+   "helico": 270,
+   "tele": 381,
+   "orbite": 270,
+   "arriere": 90,
+   "roue": 180,
+   "poursuite": 90,
+   "sol": 90
+  },
+  "sousTerrain": 0,
+  "exemples": [],
+  "tunnel": {},
+  "sMax": 9697,
+  "tours": "0,0,0,0,0,0,0,0,0,0,0,0"
+ },
+ "erreurs": []
+}

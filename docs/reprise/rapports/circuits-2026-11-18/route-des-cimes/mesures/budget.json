@@ -1,0 +1,1418 @@
+{
+ "valeur": {
+  "taille": [
+   1440,
+   900
+  ],
+  "date": "2026-11-18T21:31:32.612Z",
+  "qualites": [
+   "high",
+   "medium",
+   "low"
+  ],
+  "repetitions": 3,
+  "circuits": [
+   {
+    "id": "val-brule",
+    "nom": "Val-Brûlé",
+    "longueur": 4222,
+    "qualites": {
+     "high": {
+      "constructionMs": 368.2,
+      "constructionsMs": [
+       427.8,
+       362.5,
+       368.2
+      ],
+      "premiereImageMs": 474.7,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 288,
+        "triangles": 1853667,
+        "instances": 6141
+       },
+       {
+        "s": 804,
+        "drawCalls": 233,
+        "triangles": 3744315,
+        "instances": 2992
+       },
+       {
+        "s": 1507,
+        "drawCalls": 369,
+        "triangles": 2343169,
+        "instances": 2908
+       },
+       {
+        "s": 2211,
+        "drawCalls": 328,
+        "triangles": 750770,
+        "instances": 1710
+       },
+       {
+        "s": 2915,
+        "drawCalls": 127,
+        "triangles": 208889,
+        "instances": 1007
+       },
+       {
+        "s": 3618,
+        "drawCalls": 193,
+        "triangles": 469415,
+        "instances": 4135
+       }
+      ],
+      "plusCharge": {
+       "s": 804,
+       "drawCalls": 233,
+       "triangles": 3744315,
+       "instances": 2992
+      },
+      "drawCallsMax": 369,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "medium": {
+      "constructionMs": 459.8,
+      "constructionsMs": [
+       522.6,
+       444.4,
+       459.8
+      ],
+      "premiereImageMs": 600.4,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 236,
+        "triangles": 951701,
+        "instances": 5886
+       },
+       {
+        "s": 804,
+        "drawCalls": 190,
+        "triangles": 2019235,
+        "instances": 2789
+       },
+       {
+        "s": 1507,
+        "drawCalls": 296,
+        "triangles": 1157320,
+        "instances": 2472
+       },
+       {
+        "s": 2211,
+        "drawCalls": 282,
+        "triangles": 207221,
+        "instances": 1580
+       },
+       {
+        "s": 2915,
+        "drawCalls": 109,
+        "triangles": 155087,
+        "instances": 949
+       },
+       {
+        "s": 3618,
+        "drawCalls": 135,
+        "triangles": 455683,
+        "instances": 4145
+       }
+      ],
+      "plusCharge": {
+       "s": 804,
+       "drawCalls": 190,
+       "triangles": 2019235,
+       "instances": 2789
+      },
+      "drawCallsMax": 296,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "low": {
+      "constructionMs": 145.6,
+      "constructionsMs": [
+       171.7,
+       145.6,
+       141.2
+      ],
+      "premiereImageMs": 164.8,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 87,
+        "triangles": 225191,
+        "instances": 6094
+       },
+       {
+        "s": 804,
+        "drawCalls": 88,
+        "triangles": 236619,
+        "instances": 3420
+       },
+       {
+        "s": 1507,
+        "drawCalls": 94,
+        "triangles": 158887,
+        "instances": 2334
+       },
+       {
+        "s": 2211,
+        "drawCalls": 66,
+        "triangles": 58013,
+        "instances": 641
+       },
+       {
+        "s": 2915,
+        "drawCalls": 68,
+        "triangles": 67385,
+        "instances": 873
+       },
+       {
+        "s": 3618,
+        "drawCalls": 95,
+        "triangles": 119301,
+        "instances": 3916
+       }
+      ],
+      "plusCharge": {
+       "s": 804,
+       "drawCalls": 88,
+       "triangles": 236619,
+       "instances": 3420
+      },
+      "drawCallsMax": 95,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     }
+    }
+   },
+   {
+    "id": "port-sable",
+    "nom": "Port-Sable",
+    "longueur": 3638,
+    "qualites": {
+     "high": {
+      "constructionMs": 329.2,
+      "constructionsMs": [
+       286.7,
+       329.2,
+       340
+      ],
+      "premiereImageMs": 474.8,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 200,
+        "triangles": 554453,
+        "instances": 3689
+       },
+       {
+        "s": 706,
+        "drawCalls": 287,
+        "triangles": 663265,
+        "instances": 1857
+       },
+       {
+        "s": 1313,
+        "drawCalls": 275,
+        "triangles": 619092,
+        "instances": 2102
+       },
+       {
+        "s": 1919,
+        "drawCalls": 227,
+        "triangles": 801439,
+        "instances": 2325
+       },
+       {
+        "s": 2525,
+        "drawCalls": 321,
+        "triangles": 1483173,
+        "instances": 3132
+       },
+       {
+        "s": 3132,
+        "drawCalls": 422,
+        "triangles": 2032264,
+        "instances": 6718
+       }
+      ],
+      "plusCharge": {
+       "s": 3132,
+       "drawCalls": 422,
+       "triangles": 2032264,
+       "instances": 6718
+      },
+      "drawCallsMax": 422,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "medium": {
+      "constructionMs": 333.4,
+      "constructionsMs": [
+       315.8,
+       566.9,
+       333.4
+      ],
+      "premiereImageMs": 460,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 155,
+        "triangles": 362253,
+        "instances": 3406
+       },
+       {
+        "s": 706,
+        "drawCalls": 248,
+        "triangles": 246285,
+        "instances": 1779
+       },
+       {
+        "s": 1313,
+        "drawCalls": 218,
+        "triangles": 322261,
+        "instances": 1969
+       },
+       {
+        "s": 1919,
+        "drawCalls": 175,
+        "triangles": 491303,
+        "instances": 1876
+       },
+       {
+        "s": 2525,
+        "drawCalls": 292,
+        "triangles": 610673,
+        "instances": 3011
+       },
+       {
+        "s": 3132,
+        "drawCalls": 391,
+        "triangles": 962829,
+        "instances": 6570
+       }
+      ],
+      "plusCharge": {
+       "s": 3132,
+       "drawCalls": 391,
+       "triangles": 962829,
+       "instances": 6570
+      },
+      "drawCallsMax": 391,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "low": {
+      "constructionMs": 75.8,
+      "constructionsMs": [
+       84.6,
+       75.8,
+       74
+      ],
+      "premiereImageMs": 83.5,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 85,
+        "triangles": 116779,
+        "instances": 3351
+       },
+       {
+        "s": 706,
+        "drawCalls": 72,
+        "triangles": 64869,
+        "instances": 719
+       },
+       {
+        "s": 1313,
+        "drawCalls": 101,
+        "triangles": 101639,
+        "instances": 1546
+       },
+       {
+        "s": 1919,
+        "drawCalls": 111,
+        "triangles": 119817,
+        "instances": 1742
+       },
+       {
+        "s": 2525,
+        "drawCalls": 89,
+        "triangles": 119867,
+        "instances": 2277
+       },
+       {
+        "s": 3132,
+        "drawCalls": 127,
+        "triangles": 179023,
+        "instances": 5502
+       }
+      ],
+      "plusCharge": {
+       "s": 3132,
+       "drawCalls": 127,
+       "triangles": 179023,
+       "instances": 5502
+      },
+      "drawCallsMax": 127,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     }
+    }
+   },
+   {
+    "id": "haut-col",
+    "nom": "Haut-Col",
+    "longueur": 5216,
+    "qualites": {
+     "high": {
+      "constructionMs": 442.8,
+      "constructionsMs": [
+       442.8,
+       370.2,
+       549.3
+      ],
+      "premiereImageMs": 570.8,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 253,
+        "triangles": 2261434,
+        "instances": 5468
+       },
+       {
+        "s": 969,
+        "drawCalls": 217,
+        "triangles": 442105,
+        "instances": 1755
+       },
+       {
+        "s": 1839,
+        "drawCalls": 284,
+        "triangles": 533397,
+        "instances": 1980
+       },
+       {
+        "s": 2708,
+        "drawCalls": 407,
+        "triangles": 989343,
+        "instances": 2901
+       },
+       {
+        "s": 3577,
+        "drawCalls": 326,
+        "triangles": 2010043,
+        "instances": 2116
+       },
+       {
+        "s": 4447,
+        "drawCalls": 169,
+        "triangles": 4262655,
+        "instances": 6518
+       }
+      ],
+      "plusCharge": {
+       "s": 4447,
+       "drawCalls": 169,
+       "triangles": 4262655,
+       "instances": 6518
+      },
+      "drawCallsMax": 407,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "medium": {
+      "constructionMs": 392.5,
+      "constructionsMs": [
+       430.7,
+       360.4,
+       392.5
+      ],
+      "premiereImageMs": 512,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 206,
+        "triangles": 1253112,
+        "instances": 5261
+       },
+       {
+        "s": 969,
+        "drawCalls": 176,
+        "triangles": 277059,
+        "instances": 1608
+       },
+       {
+        "s": 1839,
+        "drawCalls": 225,
+        "triangles": 333475,
+        "instances": 1830
+       },
+       {
+        "s": 2708,
+        "drawCalls": 351,
+        "triangles": 408972,
+        "instances": 2400
+       },
+       {
+        "s": 3577,
+        "drawCalls": 282,
+        "triangles": 1067922,
+        "instances": 2039
+       },
+       {
+        "s": 4447,
+        "drawCalls": 161,
+        "triangles": 2241869,
+        "instances": 6500
+       }
+      ],
+      "plusCharge": {
+       "s": 4447,
+       "drawCalls": 161,
+       "triangles": 2241869,
+       "instances": 6500
+      },
+      "drawCallsMax": 351,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "low": {
+      "constructionMs": 109.6,
+      "constructionsMs": [
+       200.4,
+       109.6,
+       107.2
+      ],
+      "premiereImageMs": 117,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 139,
+        "triangles": 181249,
+        "instances": 5303
+       },
+       {
+        "s": 969,
+        "drawCalls": 130,
+        "triangles": 99549,
+        "instances": 1590
+       },
+       {
+        "s": 1839,
+        "drawCalls": 150,
+        "triangles": 113265,
+        "instances": 1911
+       },
+       {
+        "s": 2708,
+        "drawCalls": 141,
+        "triangles": 103635,
+        "instances": 1503
+       },
+       {
+        "s": 3577,
+        "drawCalls": 150,
+        "triangles": 136973,
+        "instances": 1941
+       },
+       {
+        "s": 4447,
+        "drawCalls": 122,
+        "triangles": 308817,
+        "instances": 7803
+       }
+      ],
+      "plusCharge": {
+       "s": 4447,
+       "drawCalls": 122,
+       "triangles": 308817,
+       "instances": 7803
+      },
+      "drawCallsMax": 150,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     }
+    }
+   },
+   {
+    "id": "lande-noire",
+    "nom": "Lande-Noire",
+    "longueur": 4616,
+    "qualites": {
+     "high": {
+      "constructionMs": 158.8,
+      "constructionsMs": [
+       181.8,
+       158.8,
+       122.4
+      ],
+      "premiereImageMs": 172.7,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 131,
+        "triangles": 209117,
+        "instances": 4924
+       },
+       {
+        "s": 869,
+        "drawCalls": 92,
+        "triangles": 85375,
+        "instances": 809
+       },
+       {
+        "s": 1639,
+        "drawCalls": 142,
+        "triangles": 126981,
+        "instances": 1790
+       },
+       {
+        "s": 2408,
+        "drawCalls": 90,
+        "triangles": 86331,
+        "instances": 817
+       },
+       {
+        "s": 3177,
+        "drawCalls": 115,
+        "triangles": 93681,
+        "instances": 1330
+       },
+       {
+        "s": 3947,
+        "drawCalls": 115,
+        "triangles": 192261,
+        "instances": 5297
+       }
+      ],
+      "plusCharge": {
+       "s": 100,
+       "drawCalls": 131,
+       "triangles": 209117,
+       "instances": 4924
+      },
+      "drawCallsMax": 142,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "medium": {
+      "constructionMs": 109.6,
+      "constructionsMs": [
+       112.4,
+       97.3,
+       109.6
+      ],
+      "premiereImageMs": 121.1,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 131,
+        "triangles": 209117,
+        "instances": 4924
+       },
+       {
+        "s": 869,
+        "drawCalls": 92,
+        "triangles": 85375,
+        "instances": 809
+       },
+       {
+        "s": 1639,
+        "drawCalls": 142,
+        "triangles": 126981,
+        "instances": 1790
+       },
+       {
+        "s": 2408,
+        "drawCalls": 90,
+        "triangles": 86331,
+        "instances": 817
+       },
+       {
+        "s": 3177,
+        "drawCalls": 115,
+        "triangles": 93681,
+        "instances": 1330
+       },
+       {
+        "s": 3947,
+        "drawCalls": 115,
+        "triangles": 192261,
+        "instances": 5297
+       }
+      ],
+      "plusCharge": {
+       "s": 100,
+       "drawCalls": 131,
+       "triangles": 209117,
+       "instances": 4924
+      },
+      "drawCallsMax": 142,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "low": {
+      "constructionMs": 148.1,
+      "constructionsMs": [
+       152.8,
+       148.1,
+       136.9
+      ],
+      "premiereImageMs": 165.9,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 108,
+        "triangles": 130909,
+        "instances": 4928
+       },
+       {
+        "s": 869,
+        "drawCalls": 71,
+        "triangles": 63247,
+        "instances": 813
+       },
+       {
+        "s": 1639,
+        "drawCalls": 121,
+        "triangles": 98937,
+        "instances": 1794
+       },
+       {
+        "s": 2408,
+        "drawCalls": 69,
+        "triangles": 62751,
+        "instances": 821
+       },
+       {
+        "s": 3177,
+        "drawCalls": 100,
+        "triangles": 78205,
+        "instances": 1334
+       },
+       {
+        "s": 3947,
+        "drawCalls": 91,
+        "triangles": 125553,
+        "instances": 5301
+       }
+      ],
+      "plusCharge": {
+       "s": 100,
+       "drawCalls": 108,
+       "triangles": 130909,
+       "instances": 4928
+      },
+      "drawCallsMax": 121,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     }
+    }
+   },
+   {
+    "id": "roche-fauve",
+    "nom": "Roche-Fauve",
+    "longueur": 4834,
+    "qualites": {
+     "high": {
+      "constructionMs": 174,
+      "constructionsMs": [
+       220.6,
+       174,
+       118.8
+      ],
+      "premiereImageMs": 200,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 117,
+        "triangles": 182649,
+        "instances": 4501
+       },
+       {
+        "s": 906,
+        "drawCalls": 102,
+        "triangles": 88785,
+        "instances": 959
+       },
+       {
+        "s": 1711,
+        "drawCalls": 99,
+        "triangles": 91323,
+        "instances": 1103
+       },
+       {
+        "s": 2517,
+        "drawCalls": 87,
+        "triangles": 80751,
+        "instances": 797
+       },
+       {
+        "s": 3323,
+        "drawCalls": 105,
+        "triangles": 96825,
+        "instances": 915
+       },
+       {
+        "s": 4128,
+        "drawCalls": 107,
+        "triangles": 147735,
+        "instances": 3895
+       }
+      ],
+      "plusCharge": {
+       "s": 100,
+       "drawCalls": 117,
+       "triangles": 182649,
+       "instances": 4501
+      },
+      "drawCallsMax": 117,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "medium": {
+      "constructionMs": 194.6,
+      "constructionsMs": [
+       174.6,
+       194.6,
+       199.9
+      ],
+      "premiereImageMs": 214.1,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 117,
+        "triangles": 182649,
+        "instances": 4501
+       },
+       {
+        "s": 906,
+        "drawCalls": 102,
+        "triangles": 88785,
+        "instances": 959
+       },
+       {
+        "s": 1711,
+        "drawCalls": 99,
+        "triangles": 91323,
+        "instances": 1103
+       },
+       {
+        "s": 2517,
+        "drawCalls": 87,
+        "triangles": 80751,
+        "instances": 797
+       },
+       {
+        "s": 3323,
+        "drawCalls": 105,
+        "triangles": 96825,
+        "instances": 915
+       },
+       {
+        "s": 4128,
+        "drawCalls": 107,
+        "triangles": 147735,
+        "instances": 3895
+       }
+      ],
+      "plusCharge": {
+       "s": 100,
+       "drawCalls": 117,
+       "triangles": 182649,
+       "instances": 4501
+      },
+      "drawCallsMax": 117,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "low": {
+      "constructionMs": 169.7,
+      "constructionsMs": [
+       173.8,
+       169.7,
+       160.7
+      ],
+      "premiereImageMs": 183.5,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 95,
+        "triangles": 117645,
+        "instances": 4505
+       },
+       {
+        "s": 906,
+        "drawCalls": 85,
+        "triangles": 69949,
+        "instances": 963
+       },
+       {
+        "s": 1711,
+        "drawCalls": 80,
+        "triangles": 70495,
+        "instances": 1107
+       },
+       {
+        "s": 2517,
+        "drawCalls": 70,
+        "triangles": 61447,
+        "instances": 801
+       },
+       {
+        "s": 3323,
+        "drawCalls": 81,
+        "triangles": 67553,
+        "instances": 919
+       },
+       {
+        "s": 4128,
+        "drawCalls": 87,
+        "triangles": 108855,
+        "instances": 3899
+       }
+      ],
+      "plusCharge": {
+       "s": 100,
+       "drawCalls": 95,
+       "triangles": 117645,
+       "instances": 4505
+      },
+      "drawCallsMax": 95,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     }
+    }
+   },
+   {
+    "id": "brume-de-jade",
+    "nom": "Brume-de-Jade",
+    "longueur": 5018,
+    "qualites": {
+     "high": {
+      "constructionMs": 196.6,
+      "constructionsMs": [
+       194.2,
+       196.6,
+       202.3
+      ],
+      "premiereImageMs": 302,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 148,
+        "triangles": 231875,
+        "instances": 5287
+       },
+       {
+        "s": 936,
+        "drawCalls": 119,
+        "triangles": 107713,
+        "instances": 1044
+       },
+       {
+        "s": 1773,
+        "drawCalls": 124,
+        "triangles": 192331,
+        "instances": 991
+       },
+       {
+        "s": 2609,
+        "drawCalls": 128,
+        "triangles": 111717,
+        "instances": 1228
+       },
+       {
+        "s": 3445,
+        "drawCalls": 156,
+        "triangles": 140545,
+        "instances": 1423
+       },
+       {
+        "s": 4282,
+        "drawCalls": 147,
+        "triangles": 248311,
+        "instances": 4662
+       }
+      ],
+      "plusCharge": {
+       "s": 4282,
+       "drawCalls": 147,
+       "triangles": 248311,
+       "instances": 4662
+      },
+      "drawCallsMax": 156,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "medium": {
+      "constructionMs": 243,
+      "constructionsMs": [
+       232.8,
+       243,
+       249.7
+      ],
+      "premiereImageMs": 393.7,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 149,
+        "triangles": 219691,
+        "instances": 5287
+       },
+       {
+        "s": 936,
+        "drawCalls": 120,
+        "triangles": 102157,
+        "instances": 1044
+       },
+       {
+        "s": 1773,
+        "drawCalls": 125,
+        "triangles": 147907,
+        "instances": 991
+       },
+       {
+        "s": 2609,
+        "drawCalls": 129,
+        "triangles": 107369,
+        "instances": 1228
+       },
+       {
+        "s": 3445,
+        "drawCalls": 162,
+        "triangles": 131155,
+        "instances": 1486
+       },
+       {
+        "s": 4282,
+        "drawCalls": 147,
+        "triangles": 222837,
+        "instances": 4662
+       }
+      ],
+      "plusCharge": {
+       "s": 4282,
+       "drawCalls": 147,
+       "triangles": 222837,
+       "instances": 4662
+      },
+      "drawCallsMax": 162,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "low": {
+      "constructionMs": 188.8,
+      "constructionsMs": [
+       188.8,
+       191.8,
+       185.3
+      ],
+      "premiereImageMs": 198.6,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 116,
+        "triangles": 132943,
+        "instances": 5298
+       },
+       {
+        "s": 936,
+        "drawCalls": 94,
+        "triangles": 72839,
+        "instances": 1053
+       },
+       {
+        "s": 1773,
+        "drawCalls": 83,
+        "triangles": 69655,
+        "instances": 917
+       },
+       {
+        "s": 2609,
+        "drawCalls": 99,
+        "triangles": 83015,
+        "instances": 1234
+       },
+       {
+        "s": 3445,
+        "drawCalls": 124,
+        "triangles": 86017,
+        "instances": 1435
+       },
+       {
+        "s": 4282,
+        "drawCalls": 107,
+        "triangles": 132531,
+        "instances": 5428
+       }
+      ],
+      "plusCharge": {
+       "s": 100,
+       "drawCalls": 116,
+       "triangles": 132943,
+       "instances": 5298
+      },
+      "drawCallsMax": 124,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     }
+    }
+   },
+   {
+    "id": "cap-sequoia",
+    "nom": "Cap-Séquoia",
+    "longueur": 5234,
+    "qualites": {
+     "high": {
+      "constructionMs": 233.1,
+      "constructionsMs": [
+       322.1,
+       233.1,
+       217.5
+      ],
+      "premiereImageMs": 386.9,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 100,
+        "triangles": 154247,
+        "instances": 2839
+       },
+       {
+        "s": 972,
+        "drawCalls": 126,
+        "triangles": 743841,
+        "instances": 1218
+       },
+       {
+        "s": 1845,
+        "drawCalls": 198,
+        "triangles": 1225421,
+        "instances": 2090
+       },
+       {
+        "s": 2717,
+        "drawCalls": 127,
+        "triangles": 694337,
+        "instances": 1448
+       },
+       {
+        "s": 3589,
+        "drawCalls": 151,
+        "triangles": 1272575,
+        "instances": 1477
+       },
+       {
+        "s": 4462,
+        "drawCalls": 133,
+        "triangles": 336095,
+        "instances": 1177
+       }
+      ],
+      "plusCharge": {
+       "s": 3589,
+       "drawCalls": 151,
+       "triangles": 1272575,
+       "instances": 1477
+      },
+      "drawCallsMax": 198,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "medium": {
+      "constructionMs": 175.7,
+      "constructionsMs": [
+       193.9,
+       175.7,
+       173
+      ],
+      "premiereImageMs": 279.5,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 100,
+        "triangles": 154247,
+        "instances": 2839
+       },
+       {
+        "s": 972,
+        "drawCalls": 126,
+        "triangles": 429225,
+        "instances": 1212
+       },
+       {
+        "s": 1845,
+        "drawCalls": 198,
+        "triangles": 714329,
+        "instances": 2090
+       },
+       {
+        "s": 2717,
+        "drawCalls": 134,
+        "triangles": 461217,
+        "instances": 1581
+       },
+       {
+        "s": 3589,
+        "drawCalls": 151,
+        "triangles": 700993,
+        "instances": 1477
+       },
+       {
+        "s": 4462,
+        "drawCalls": 133,
+        "triangles": 219671,
+        "instances": 1177
+       }
+      ],
+      "plusCharge": {
+       "s": 1845,
+       "drawCalls": 198,
+       "triangles": 714329,
+       "instances": 2090
+      },
+      "drawCallsMax": 198,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "low": {
+      "constructionMs": 102.1,
+      "constructionsMs": [
+       107.3,
+       102.1,
+       101.6
+      ],
+      "premiereImageMs": 116.4,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 81,
+        "triangles": 92007,
+        "instances": 2843
+       },
+       {
+        "s": 972,
+        "drawCalls": 103,
+        "triangles": 105419,
+        "instances": 1384
+       },
+       {
+        "s": 1845,
+        "drawCalls": 162,
+        "triangles": 146883,
+        "instances": 2182
+       },
+       {
+        "s": 2717,
+        "drawCalls": 94,
+        "triangles": 96705,
+        "instances": 1331
+       },
+       {
+        "s": 3589,
+        "drawCalls": 117,
+        "triangles": 122077,
+        "instances": 1620
+       },
+       {
+        "s": 4462,
+        "drawCalls": 111,
+        "triangles": 88937,
+        "instances": 1243
+       }
+      ],
+      "plusCharge": {
+       "s": 1845,
+       "drawCalls": 162,
+       "triangles": 146883,
+       "instances": 2182
+      },
+      "drawCallsMax": 162,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     }
+    }
+   },
+   {
+    "id": "route-des-cimes",
+    "nom": "Route-des-Cimes",
+    "longueur": 9698,
+    "qualites": {
+     "high": {
+      "constructionMs": 455.6,
+      "constructionsMs": [
+       464.8,
+       455.6,
+       454.5
+      ],
+      "premiereImageMs": 528.9,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 205,
+        "triangles": 670509,
+        "instances": 4288
+       },
+       {
+        "s": 1716,
+        "drawCalls": 306,
+        "triangles": 3035965,
+        "instances": 4647
+       },
+       {
+        "s": 3333,
+        "drawCalls": 198,
+        "triangles": 588639,
+        "instances": 1598
+       },
+       {
+        "s": 4949,
+        "drawCalls": 215,
+        "triangles": 509194,
+        "instances": 2502
+       },
+       {
+        "s": 6565,
+        "drawCalls": 141,
+        "triangles": 445862,
+        "instances": 1848
+       },
+       {
+        "s": 8182,
+        "drawCalls": 112,
+        "triangles": 398690,
+        "instances": 1022
+       }
+      ],
+      "plusCharge": {
+       "s": 1716,
+       "drawCalls": 306,
+       "triangles": 3035965,
+       "instances": 4647
+      },
+      "drawCallsMax": 306,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "medium": {
+      "constructionMs": 462,
+      "constructionsMs": [
+       488.9,
+       462,
+       396.3
+      ],
+      "premiereImageMs": 539.3,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 179,
+        "triangles": 399068,
+        "instances": 4127
+       },
+       {
+        "s": 1716,
+        "drawCalls": 236,
+        "triangles": 1596934,
+        "instances": 4106
+       },
+       {
+        "s": 3333,
+        "drawCalls": 185,
+        "triangles": 206213,
+        "instances": 1488
+       },
+       {
+        "s": 4949,
+        "drawCalls": 193,
+        "triangles": 326874,
+        "instances": 2455
+       },
+       {
+        "s": 6565,
+        "drawCalls": 140,
+        "triangles": 298448,
+        "instances": 1845
+       },
+       {
+        "s": 8182,
+        "drawCalls": 116,
+        "triangles": 248801,
+        "instances": 1024
+       }
+      ],
+      "plusCharge": {
+       "s": 1716,
+       "drawCalls": 236,
+       "triangles": 1596934,
+       "instances": 4106
+      },
+      "drawCallsMax": 236,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     },
+     "low": {
+      "constructionMs": 157.2,
+      "constructionsMs": [
+       162.8,
+       157.2,
+       138.9
+      ],
+      "premiereImageMs": 166,
+      "poses": [
+       {
+        "s": 100,
+        "drawCalls": 102,
+        "triangles": 137679,
+        "instances": 4101
+       },
+       {
+        "s": 1716,
+        "drawCalls": 115,
+        "triangles": 271727,
+        "instances": 4264
+       },
+       {
+        "s": 3333,
+        "drawCalls": 66,
+        "triangles": 73327,
+        "instances": 955
+       },
+       {
+        "s": 4949,
+        "drawCalls": 136,
+        "triangles": 145519,
+        "instances": 1951
+       },
+       {
+        "s": 6565,
+        "drawCalls": 112,
+        "triangles": 115981,
+        "instances": 1830
+       },
+       {
+        "s": 8182,
+        "drawCalls": 80,
+        "triangles": 83895,
+        "instances": 1104
+       }
+      ],
+      "plusCharge": {
+       "s": 1716,
+       "drawCalls": 115,
+       "triangles": 271727,
+       "instances": 4264
+      },
+      "drawCallsMax": 136,
+      "creationsCourse": 0,
+      "imagesCourse": 300
+     }
+    }
+   }
+  ]
+ },
+ "erreurs": []
+}

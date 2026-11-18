@@ -1,0 +1,263 @@
+{
+ "date": "2026-11-18T20:56:07.196Z",
+ "page": "dist/bitume.html (construite depuis la branche circuits/lot22, 0.2.40)",
+ "etiquette": "",
+ "pas": 400,
+ "taille": [
+  1280,
+  720
+ ],
+ "qualite": "high",
+ "saison": "ete",
+ "moment": "jour",
+ "graine": 17017,
+ "injection": false,
+ "circuits": [
+  {
+   "id": "route-des-cimes",
+   "nom": "Route-des-Cimes",
+   "theme": "montagne",
+   "longueur": 9698,
+   "positions": [
+    {
+     "rang": 0,
+     "s": 9650,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 283,
+     "tunnel": false,
+     "joueur": {
+      "s": 9655.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "route-des-cimes-9650-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.9,
+      "pos": [
+       -18,
+       1.6,
+       10.5
+      ]
+     },
+     "bord": "route-des-cimes-9650-bord.jpg"
+    },
+    {
+     "rang": 1,
+     "s": 1150,
+     "y": 20.35,
+     "pentePct": 3.93,
+     "deversDeg": -0.46,
+     "rayon": 214,
+     "sens": "gauche",
+     "vitesseRefKmh": 149,
+     "tunnel": false,
+     "joueur": {
+      "s": 1155,
+      "v": 40
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "route-des-cimes-1150-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 20.55,
+      "pos": [
+       798.6,
+       23.1,
+       -600.7
+      ]
+     },
+     "bord": "route-des-cimes-1150-bord.jpg"
+    },
+    {
+     "rang": 2,
+     "s": 2380,
+     "y": 72.46,
+     "pentePct": 22,
+     "deversDeg": -0.01,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 142,
+     "tunnel": false,
+     "joueur": {
+      "s": 2385,
+      "v": 39.9
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "route-des-cimes-2380-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 78.2,
+      "pos": [
+       1177.6,
+       80.7,
+       -1597.2
+      ]
+     },
+     "bord": "route-des-cimes-2380-bord.jpg"
+    },
+    {
+     "rang": 3,
+     "s": 3380,
+     "y": 192.9,
+     "pentePct": 4.04,
+     "deversDeg": -3,
+     "rayon": 32,
+     "sens": "gauche",
+     "vitesseRefKmh": 76,
+     "tunnel": false,
+     "joueur": {
+      "s": 3384.8,
+      "v": 37.3
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "route-des-cimes-3380-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 193.49,
+      "pos": [
+       1545.6,
+       195.6,
+       -2199.7
+      ]
+     },
+     "bord": "route-des-cimes-3380-bord.jpg"
+    },
+    {
+     "rang": 4,
+     "s": 4900,
+     "y": 260.83,
+     "pentePct": 1.5,
+     "deversDeg": -2.5,
+     "rayon": 420,
+     "sens": "gauche",
+     "vitesseRefKmh": 273,
+     "tunnel": false,
+     "joueur": {
+      "s": 4905,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "route-des-cimes-4900-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 260.38,
+      "pos": [
+       714.6,
+       263.3,
+       -2425.3
+      ]
+     },
+     "bord": "route-des-cimes-4900-bord.jpg"
+    },
+    {
+     "rang": 5,
+     "s": 5700,
+     "y": 270.38,
+     "pentePct": 0.03,
+     "deversDeg": 0.02,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 249,
+     "tunnel": false,
+     "joueur": {
+      "s": 5705.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "route-des-cimes-5700-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 269.48,
+      "pos": [
+       423.2,
+       272,
+       -1717.8
+      ]
+     },
+     "bord": "route-des-cimes-5700-bord.jpg"
+    },
+    {
+     "rang": 6,
+     "s": 7860,
+     "y": 119.67,
+     "pentePct": -7.71,
+     "deversDeg": -0.56,
+     "rayon": 160,
+     "sens": "gauche",
+     "vitesseRefKmh": 221,
+     "tunnel": false,
+     "joueur": {
+      "s": 7864.9,
+      "v": 39
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "route-des-cimes-7860-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 117.16,
+      "pos": [
+       -907.3,
+       119.4,
+       -784.9
+      ]
+     },
+     "bord": "route-des-cimes-7860-bord.jpg"
+    },
+    {
+     "rang": 7,
+     "s": 8580,
+     "y": 68.55,
+     "pentePct": -6.75,
+     "deversDeg": -0.05,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 231,
+     "tunnel": false,
+     "joueur": {
+      "s": 8585.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "route-des-cimes-8580-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 65.78,
+      "pos": [
+       -1046.6,
+       68,
+       -106.1
+      ]
+     },
+     "bord": "route-des-cimes-8580-bord.jpg"
+    }
+   ]
+  }
+ ],
+ "erreurs": [],
+ "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+ "planches": [
+  "planche-route-des-cimes-cockpit.jpg",
+  "planche-route-des-cimes-bord.jpg"
+ ]
+}

@@ -1,0 +1,178 @@
+# Courses de Route-des-Cimes, 2026-11-18 22:32, branche circuits/lot22, sources de la fin du lot (contenu du commit dad2a37, validé juste après le lancement)
+# Simulation pure des sources (node), pas de 1/120 s, obstacles du décor construits comme en jeu, 12 voitures, 2 tours.
+# Une sortie : |d| > demi-largeur + 0,5 m. sans_contact_recent : aucun contact dans les 2 s avant la sortie.
+# Circuits : rdc Route-des-Cimes, hc Haut-Col, vb Val-Brûlé, ps Port-Sable, ln Lande-Noire, rf Roche-Fauve, bj Brume-de-Jade, cs Cap-Séquoia.
+
+## 1. Sorties de piste, graines 11, 4242, 777, 1 et 2, difficulté 2, rivaux sur la référence p9
+rdc sorties 19 sans_contact_recent 8
+hc sorties 3 sans_contact_recent 2
+vb sorties 10 sans_contact_recent 6
+ps sorties 3 sans_contact_recent 0
+ln sorties 0 sans_contact_recent 0
+rf sorties 3 sans_contact_recent 0
+bj sorties 3 sans_contact_recent 0
+cs sorties 6 sans_contact_recent 0
+
+## 2. Route-des-Cimes, rivaux sur la référence p10 de l'étude, mêmes graines
+rdc sorties 29 sans_contact_recent 22
+réf p10 décor true graine 11 difficulté 2 durée sim 375.8 s, calcul 2.1 s, contacts 44 terminé true tRef 169.9
+sortie {"k":11,"nom":"A. Kowalczyk","s":2350,"tour":0,"v":93,"d":6.5,"contact":156.7,"t":57.7,"adher":1,"pneus":null}
+sortie {"k":7,"nom":"J. Vanmeer","s":2347,"tour":0,"v":98,"d":6.5,"contact":36.9,"t":58.6,"adher":1,"pneus":null}
+sortie {"k":2,"nom":"E. Varenne","s":2339,"tour":0,"v":109,"d":6.5,"contact":21.5,"t":58.8,"adher":0.995,"pneus":null}
+sortie {"k":4,"nom":"L. Brasquet","s":7287,"tour":0,"v":216,"d":6.5,"contact":0.4,"t":158.9,"adher":0.947,"pneus":null}
+sortie {"k":1,"nom":"R. Castagnet","s":7677,"tour":0,"v":129,"d":6.5,"contact":9,"t":167.5,"adher":0.943,"pneus":null}
+sortie {"k":8,"nom":"S. Ferrandi","s":8440,"tour":0,"v":175,"d":6.5,"contact":85.6,"t":182.7,"adher":0.948,"pneus":null}
+réf p10 décor true graine 4242 difficulté 2 durée sim 389.4 s, calcul 2.4 s, contacts 75 terminé true tRef 169.9
+sortie {"k":9,"nom":"K. Lindgren","s":7738,"tour":0,"v":107,"d":6.5,"contact":0.4,"t":165.1,"adher":0.937,"pneus":null}
+sortie {"k":11,"nom":"A. Kowalczyk","s":7773,"tour":0,"v":94,"d":6.5,"contact":0.4,"t":166.3,"adher":0.92,"pneus":null}
+sortie {"k":1,"nom":"R. Castagnet","s":2342,"tour":1,"v":110,"d":6.5,"contact":84,"t":236.8,"adher":0.993,"pneus":null}
+sortie {"k":6,"nom":"T. Okafor","s":3677,"tour":1,"v":73,"d":6.5,"contact":0.5,"t":272.9,"adher":0.979,"pneus":null}
+sortie {"k":0,"nom":"Vous","s":7715,"tour":1,"v":166,"d":6.5,"contact":184.7,"t":350.6,"adher":0.92,"pneus":null}
+réf p10 décor true graine 777 difficulté 2 durée sim 392.0 s, calcul 2.3 s, contacts 94 terminé true tRef 169.9
+sortie {"k":3,"nom":"P. Morvan","s":3461,"tour":0,"v":89,"d":-6.5,"contact":5,"t":93.4,"adher":0.965,"pneus":null}
+sortie {"k":6,"nom":"T. Okafor","s":5677,"tour":0,"v":185,"d":-6.5,"contact":50,"t":138.4,"adher":0.95,"pneus":null}
+sortie {"k":10,"nom":"M. Duvernet","s":7852,"tour":0,"v":146,"d":6.5,"contact":2.1,"t":166.8,"adher":0.948,"pneus":null}
+sortie {"k":3,"nom":"P. Morvan","s":7836,"tour":0,"v":168,"d":6.6,"contact":84.4,"t":172.8,"adher":0.965,"pneus":null}
+sortie {"k":0,"nom":"Vous","s":7729,"tour":1,"v":163,"d":6.5,"contact":68.1,"t":353.4,"adher":0.92,"pneus":null}
+réf p10 décor true graine 1 difficulté 2 durée sim 379.6 s, calcul 2.3 s, contacts 58 terminé true tRef 169.9
+sortie {"k":6,"nom":"T. Okafor","s":2342,"tour":0,"v":111,"d":6.5,"contact":156.1,"t":57.1,"adher":1,"pneus":null}
+sortie {"k":11,"nom":"A. Kowalczyk","s":2365,"tour":0,"v":125,"d":6.5,"contact":156.8,"t":57.8,"adher":1,"pneus":null}
+sortie {"k":9,"nom":"K. Lindgren","s":2328,"tour":0,"v":101,"d":6.5,"contact":1.6,"t":57.8,"adher":0.968,"pneus":null}
+sortie {"k":10,"nom":"M. Duvernet","s":2340,"tour":1,"v":109,"d":6.5,"contact":132.5,"t":242.9,"adher":0.97,"pneus":null}
+sortie {"k":5,"nom":"H. Delacour","s":2360,"tour":1,"v":123,"d":6.5,"contact":154.9,"t":243.4,"adher":0.983,"pneus":null}
+sortie {"k":5,"nom":"H. Delacour","s":8428,"tour":1,"v":199,"d":6.5,"contact":275.8,"t":364.3,"adher":0.983,"pneus":null}
+réf p10 décor true graine 2 difficulté 2 durée sim 386.5 s, calcul 2.1 s, contacts 70 terminé true tRef 169.9
+sortie {"k":7,"nom":"J. Vanmeer","s":1051,"tour":0,"v":146,"d":-6.5,"contact":127.6,"t":28.6,"adher":1,"pneus":null}
+sortie {"k":4,"nom":"L. Brasquet","s":2341,"tour":0,"v":112,"d":6.5,"contact":27.1,"t":57.5,"adher":1,"pneus":null}
+sortie {"k":2,"nom":"E. Varenne","s":2340,"tour":0,"v":108,"d":6.5,"contact":0.2,"t":58.7,"adher":0.977,"pneus":null}
+sortie {"k":1,"nom":"R. Castagnet","s":2415,"tour":0,"v":109,"d":-6.5,"contact":0.7,"t":61.9,"adher":0.991,"pneus":null}
+sortie {"k":2,"nom":"E. Varenne","s":1049,"tour":1,"v":150,"d":-6.5,"contact":125.7,"t":214.9,"adher":0.971,"pneus":null}
+sortie {"k":8,"nom":"S. Ferrandi","s":2342,"tour":1,"v":110,"d":6.5,"contact":156.9,"t":237.8,"adher":1,"pneus":null}
+sortie {"k":9,"nom":"K. Lindgren","s":2359,"tour":1,"v":122,"d":6.5,"contact":157.3,"t":238.2,"adher":0.982,"pneus":null}
+
+## 3. Détail des cinq courses de Route-des-Cimes (p9) ; Mur = vitesse mini-maxi dans le Mur (km/h)
+Mur (rampe déclarée) : de 2314 à 2924 m ; tour 9698 m
+réf p9 décor true graine 11 difficulté 2 durée sim 378.5 s, calcul 2.3 s, contacts 39 terminé true tRef 168.6
+*Vous           tours 2 fini true meilleur 176.93 temps 364.3 |d|max 4.81 hors 0.00 chocs 0 repl 0 Mur 99-213 abandon false
+ R. Castagnet   tours 2 fini true meilleur 177.12 temps 363.3 |d|max 4.81 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+ E. Varenne     tours 2 fini true meilleur 178.34 temps 369.6 |d|max 5.07 hors 0.00 chocs 0 repl 0 Mur 97-211 abandon false
+ P. Morvan      tours 2 fini true meilleur 176.26 temps 359.5 |d|max 4.83 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+ L. Brasquet    tours 2 fini true meilleur 177.89 temps 370.0 |d|max 11.75 hors 4.97 chocs 0 repl 0 Mur 35-211 abandon false
+ H. Delacour    tours 2 fini true meilleur 177.28 temps 362.3 |d|max 4.81 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+ T. Okafor      tours 2 fini true meilleur 178.55 temps 367.8 |d|max 6.88 hors 0.37 chocs 0 repl 0 Mur 95-212 abandon false
+ J. Vanmeer     tours 1 fini false meilleur null temps null |d|max 9.49 hors 1.40 chocs 1 repl 1 Mur 95-209 abandon false
+ S. Ferrandi    tours 2 fini true meilleur 178.23 temps 366.6 |d|max 4.84 hors 0.00 chocs 0 repl 0 Mur 98-214 abandon false
+ K. Lindgren    tours 2 fini true meilleur 176.15 temps 358.5 |d|max 4.81 hors 0.00 chocs 0 repl 0 Mur 93-212 abandon false
+ M. Duvernet    tours 2 fini true meilleur 175.68 temps 357.2 |d|max 4.83 hors 0.00 chocs 0 repl 0 Mur 99-213 abandon false
+ A. Kowalczyk   tours 1 fini false meilleur null temps null |d|max 5.59 hors 0.00 chocs 0 repl 1 Mur 99-210 abandon false
+sortie {"k":6,"nom":"T. Okafor","s":1453,"tour":0,"v":163,"d":-6.5,"contact":15.2,"t":39.5,"adher":0.994,"pneus":null}
+sortie {"k":4,"nom":"L. Brasquet","s":2337,"tour":0,"v":96,"d":6.5,"contact":0.8,"t":59.1,"adher":0.982,"pneus":null}
+sortie {"k":7,"nom":"J. Vanmeer","s":7281,"tour":0,"v":220,"d":6.5,"contact":0.2,"t":158,"adher":0.94,"pneus":null}
+sortie {"k":7,"nom":"J. Vanmeer","s":7863,"tour":0,"v":149,"d":6.5,"contact":10,"t":168.8,"adher":0.927,"pneus":null}
+
+réf p9 décor true graine 4242 difficulté 2 durée sim 380.8 s, calcul 2.1 s, contacts 51 terminé true tRef 168.6
+*Vous           tours 2 fini true meilleur 178.95 temps 366.3 |d|max 4.81 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+ R. Castagnet   tours 2 fini true meilleur 177.41 temps 360.8 |d|max 4.82 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+ E. Varenne     tours 1 fini false meilleur 194.36 temps null |d|max 6.69 hors 0.29 chocs 0 repl 0 Mur 94-211 abandon false
+ P. Morvan      tours 2 fini true meilleur 179.77 temps 368.7 |d|max 6.26 hors 0.00 chocs 0 repl 0 Mur 99-210 abandon false
+ L. Brasquet    tours 1 fini false meilleur 193.72 temps null |d|max 6.66 hors 1.14 chocs 0 repl 0 Mur 45-209 abandon false
+ H. Delacour    tours 2 fini true meilleur 175.69 temps 356.9 |d|max 4.83 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+ T. Okafor      tours 2 fini true meilleur 180.42 temps 365.2 |d|max 5.68 hors 0.00 chocs 0 repl 0 Mur 98-211 abandon false
+ J. Vanmeer     tours 2 fini true meilleur 178.91 temps 365.5 |d|max 4.81 hors 0.00 chocs 0 repl 0 Mur 98-213 abandon false
+ S. Ferrandi    tours 2 fini true meilleur 179.12 temps 364.3 |d|max 4.84 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+ K. Lindgren    tours 2 fini true meilleur 183.09 temps 371.8 |d|max 4.78 hors 0.00 chocs 0 repl 0 Mur 86-213 abandon false
+ M. Duvernet    tours 1 fini false meilleur 193.90 temps null |d|max 4.84 hors 0.00 chocs 0 repl 0 Mur 65-207 abandon false
+ A. Kowalczyk   tours 2 fini true meilleur 178.37 temps 367.2 |d|max 4.84 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+sortie {"k":2,"nom":"E. Varenne","s":1498,"tour":0,"v":138,"d":-6.5,"contact":0.5,"t":42.4,"adher":0.977,"pneus":null}
+sortie {"k":4,"nom":"L. Brasquet","s":2356,"tour":0,"v":55,"d":6.5,"contact":0.8,"t":59.8,"adher":0.93,"pneus":null}
+
+réf p9 décor true graine 777 difficulté 2 durée sim 380.3 s, calcul 2.2 s, contacts 64 terminé true tRef 168.6
+*Vous           tours 2 fini true meilleur 177.57 temps 365.7 |d|max 5.11 hors 0.00 chocs 0 repl 0 Mur 93-211 abandon false
+ R. Castagnet   tours 1 fini false meilleur 194.28 temps null |d|max 6.56 hors 0.18 chocs 0 repl 0 Mur 94-210 abandon false
+ E. Varenne     tours 2 fini true meilleur 176.94 temps 361.7 |d|max 4.84 hors 0.00 chocs 0 repl 0 Mur 92-212 abandon false
+ P. Morvan      tours 2 fini true meilleur 176.32 temps 358.2 |d|max 4.82 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+ L. Brasquet    tours 2 fini true meilleur 177.74 temps 369.4 |d|max 4.83 hors 0.00 chocs 0 repl 0 Mur 91-214 abandon false
+ H. Delacour    tours 2 fini true meilleur 178.06 temps 367.4 |d|max 4.84 hors 0.00 chocs 0 repl 0 Mur 62-211 abandon false
+ T. Okafor      tours 1 fini false meilleur 195.54 temps null |d|max 18.83 hors 6.03 chocs 2 repl 0 Mur 61-208 abandon false
+ J. Vanmeer     tours 2 fini true meilleur 175.52 temps 356.5 |d|max 4.83 hors 0.00 chocs 0 repl 0 Mur 99-214 abandon false
+ S. Ferrandi    tours 2 fini true meilleur 176.39 temps 362.9 |d|max 4.84 hors 0.00 chocs 0 repl 0 Mur 90-213 abandon false
+ K. Lindgren    tours 1 fini false meilleur 194.57 temps null |d|max 7.06 hors 0.27 chocs 1 repl 0 Mur 88-209 abandon false
+ M. Duvernet    tours 1 fini false meilleur 200.88 temps null |d|max 18.74 hors 6.25 chocs 1 repl 0 Mur 92-212 abandon false
+ A. Kowalczyk   tours 1 fini false meilleur 195.69 temps null |d|max 14.05 hors 6.13 chocs 0 repl 1 Mur 55-211 abandon false
+sortie {"k":1,"nom":"R. Castagnet","s":1506,"tour":0,"v":135,"d":-6.5,"contact":0.6,"t":41,"adher":0.99,"pneus":null}
+sortie {"k":9,"nom":"K. Lindgren","s":3733,"tour":0,"v":75,"d":-6.5,"contact":1,"t":99.2,"adher":0.952,"pneus":null}
+sortie {"k":9,"nom":"K. Lindgren","s":3738,"tour":0,"v":70,"d":-6.5,"contact":1.3,"t":99.5,"adher":0.94,"pneus":null}
+sortie {"k":10,"nom":"M. Duvernet","s":7780,"tour":0,"v":137,"d":6.5,"contact":68.8,"t":169.1,"adher":0.94,"pneus":null}
+sortie {"k":6,"nom":"T. Okafor","s":8816,"tour":0,"v":112,"d":6.5,"contact":98.9,"t":187.9,"adher":0.92,"pneus":null}
+sortie {"k":11,"nom":"A. Kowalczyk","s":1046,"tour":1,"v":149,"d":-6.5,"contact":118.8,"t":219,"adher":0.952,"pneus":null}
+sortie {"k":6,"nom":"T. Okafor","s":7367,"tour":1,"v":150,"d":-6.5,"contact":0.7,"t":347.4,"adher":0.92,"pneus":null}
+sortie {"k":11,"nom":"A. Kowalczyk","s":7375,"tour":1,"v":133,"d":-6.5,"contact":0.3,"t":347.8,"adher":0.939,"pneus":null}
+sortie {"k":6,"nom":"T. Okafor","s":8481,"tour":1,"v":132,"d":6.5,"contact":24.6,"t":372.1,"adher":0.92,"pneus":null}
+
+réf p9 décor true graine 1 difficulté 2 durée sim 388.7 s, calcul 2.4 s, contacts 109 terminé true tRef 168.6
+*Vous           tours 2 fini true meilleur 182.32 temps 373.9 |d|max 6.26 hors 0.00 chocs 0 repl 0 Mur 99-213 abandon false
+ R. Castagnet   tours 2 fini true meilleur 178.27 temps 363.1 |d|max 5.72 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+ E. Varenne     tours 2 fini true meilleur 181.67 temps 369.0 |d|max 5.32 hors 0.00 chocs 0 repl 0 Mur 92-211 abandon false
+ P. Morvan      tours 2 fini true meilleur 181.52 temps 375.2 |d|max 4.77 hors 0.00 chocs 0 repl 0 Mur 61-209 abandon false
+ L. Brasquet    tours 2 fini true meilleur 186.89 temps 374.4 |d|max 4.84 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+ H. Delacour    tours 2 fini true meilleur 180.32 temps 374.6 |d|max 4.75 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+ T. Okafor      tours 2 fini true meilleur 178.78 temps 362.6 |d|max 4.82 hors 0.00 chocs 0 repl 0 Mur 98-213 abandon false
+ J. Vanmeer     tours 1 fini false meilleur 205.00 temps null |d|max 18.90 hors 8.65 chocs 1 repl 0 Mur 48-208 abandon false
+ S. Ferrandi    tours 2 fini true meilleur 182.50 temps 378.1 |d|max 4.79 hors 0.00 chocs 0 repl 0 Mur 55-210 abandon false
+ K. Lindgren    tours 2 fini true meilleur 179.18 temps 367.0 |d|max 4.80 hors 0.00 chocs 0 repl 0 Mur 99-211 abandon false
+ M. Duvernet    tours 1 fini false meilleur 204.28 temps null |d|max 16.63 hors 6.42 chocs 0 repl 0 Mur 99-208 abandon false
+ A. Kowalczyk   tours 2 fini true meilleur 176.98 temps 359.9 |d|max 4.81 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+sortie {"k":7,"nom":"J. Vanmeer","s":7363,"tour":0,"v":151,"d":-6.5,"contact":1.2,"t":165.9,"adher":0.925,"pneus":null}
+sortie {"k":10,"nom":"M. Duvernet","s":7377,"tour":0,"v":145,"d":-6.5,"contact":1.4,"t":166.1,"adher":0.92,"pneus":null}
+
+réf p9 décor true graine 2 difficulté 2 durée sim 379.1 s, calcul 1.9 s, contacts 55 terminé true tRef 168.6
+*Vous           tours 2 fini true meilleur 182.46 temps 369.3 |d|max 18.94 hors 4.12 chocs 1 repl 0 Mur 95-210 abandon false
+ R. Castagnet   tours 2 fini true meilleur 181.10 temps 371.6 |d|max 4.81 hors 0.00 chocs 0 repl 0 Mur 62-210 abandon false
+ E. Varenne     tours 2 fini true meilleur 181.40 temps 367.4 |d|max 4.80 hors 0.00 chocs 0 repl 0 Mur 85-213 abandon false
+ P. Morvan      tours 2 fini true meilleur 180.03 temps 372.4 |d|max 4.77 hors 0.00 chocs 0 repl 0 Mur 92-212 abandon false
+ L. Brasquet    tours 2 fini true meilleur 175.89 temps 357.5 |d|max 4.83 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+ H. Delacour    tours 2 fini true meilleur 176.31 temps 359.7 |d|max 4.83 hors 0.00 chocs 0 repl 0 Mur 99-213 abandon false
+ T. Okafor      tours 2 fini true meilleur 184.35 temps 372.2 |d|max 18.86 hors 4.64 chocs 1 repl 0 Mur 76-212 abandon false
+ J. Vanmeer     tours 2 fini true meilleur 175.01 temps 355.6 |d|max 4.84 hors 0.00 chocs 0 repl 0 Mur 99-212 abandon false
+ S. Ferrandi    tours 2 fini true meilleur 178.41 temps 363.7 |d|max 4.82 hors 0.00 chocs 0 repl 0 Mur 98-212 abandon false
+ K. Lindgren    tours 2 fini true meilleur 181.05 temps 371.9 |d|max 6.38 hors 0.00 chocs 1 repl 0 Mur 63-210 abandon false
+ M. Duvernet    tours 2 fini true meilleur 180.13 temps 372.3 |d|max 4.75 hors 0.00 chocs 0 repl 0 Mur 70-214 abandon false
+ A. Kowalczyk   tours 2 fini true meilleur 179.03 temps 367.6 |d|max 4.85 hors 0.00 chocs 0 repl 0 Mur 76-214 abandon false
+sortie {"k":6,"nom":"T. Okafor","s":7780,"tour":1,"v":157,"d":6.5,"contact":79.1,"t":342.4,"adher":0.984,"pneus":null}
+sortie {"k":0,"nom":"Vous","s":8454,"tour":1,"v":191,"d":6.5,"contact":19,"t":352.9,"adher":0.981,"pneus":null}
+
+## 4. Difficultés 0 et 1 (p9), graines 11 et 4242
+réf p9 décor true graine 11 difficulté 0 durée sim 385.2 s, calcul 1.5 s, contacts 99 terminé true tRef 168.6
+  sorties 1, abandons 0, voitures à moins d'un tour 0
+réf p9 décor true graine 4242 difficulté 0 durée sim 405.0 s, calcul 1.5 s, contacts 101 terminé true tRef 168.6
+  sorties 2, abandons 0, voitures à moins d'un tour 0
+réf p9 décor true graine 11 difficulté 1 durée sim 382.9 s, calcul 1.5 s, contacts 73 terminé true tRef 168.6
+  sorties 1, abandons 0, voitures à moins d'un tour 0
+réf p9 décor true graine 4242 difficulté 1 durée sim 395.9 s, calcul 1.3 s, contacts 85 terminé true tRef 168.6
+  sorties 9, abandons 0, voitures à moins d'un tour 0
+
+## 5. Arrêt complet dans le Mur puis plein gaz (IA du joueur), et charge verticale aux vitesses roulées
+arrêt à 2350 pente 14.6 % s/kmh toutes les 2 s : 2350/0 2370/73 2426/122 2503/151 2593/173 2694/190 2804/202 2893/118 2960/113 3033/148 3126/183
+arrêt à 2480 pente 29.4 % s/kmh toutes les 2 s : 2480/0 2498/64 2548/113 2621/145 2709/173 2811/193 2897/114 2964/113 3038/150 3132/185 3238/171
+arrêt à 2600 pente 25.5 % s/kmh toutes les 2 s : 2600/0 2618/67 2671/118 2747/154 2841/171 2917/112 2984/121 3063/163 3163/193 3264/144 3324/76
+arrêt à 2700 pente 18.0 % s/kmh toutes les 2 s : 2700/0 2720/72 2776/126 2857/156 2928/112 2996/129 3079/169 3181/198 3276/130 3332/76 3379/75
+charge verticale mini sur le tour 0.634 g à 7980 m ( 230 km/h ) ; crête du Mur 0.672 g à 2726 m ( 203 km/h )
+
+## 6. Jeu en ligne : fonctions Math faussées d'un facteur (1 + eps), écart maximal par champ
+eps 2.22e-16 n true L true | vibreur true | seqDe true | tunnel true | stands true | rampes 0.0e+0 | x 1.1e-10 | y 3.8e-12 | z 7.3e-11 | cap 6.1e-13 | courbure 2.1e-14 | pente 6.6e-14 | devers 2.2e-14 | ligne 3.1e-12 | vitesse 2.7e-10 | limiteG 0.0e+0 | limiteD 0.0e+0 | valeurs différentes 27547 valider [] sep -1.4e-12
+eps -2.22e-16 n true L true | vibreur true | seqDe true | tunnel true | stands true | rampes 0.0e+0 | x 1.2e-10 | y 7.0e-12 | z 1.1e-10 | cap 1.1e-12 | courbure 2.6e-14 | pente 1.2e-13 | devers 2.9e-14 | ligne 1.2e-11 | vitesse 2.2e-10 | limiteG 0.0e+0 | limiteD 0.0e+0 | valeurs différentes 33916 valider [] sep -1.1e-12
+eps 4.40e-16 n true L true | vibreur true | seqDe true | tunnel true | stands true | rampes 0.0e+0 | x 1.1e-10 | y 4.5e-12 | z 1.1e-10 | cap 5.9e-13 | courbure 2.0e-14 | pente 6.5e-14 | devers 2.1e-14 | ligne 5.0e-12 | vitesse 2.7e-10 | limiteG 0.0e+0 | limiteD 0.0e+0 | valeurs différentes 33506 valider [] sep -4.5e-12
+eps 1.00e-15 n true L true | vibreur true | seqDe true | tunnel true | stands true | rampes 0.0e+0 | x 3.9e-10 | y 1.8e-11 | z 1.8e-10 | cap 2.5e-12 | courbure 6.1e-14 | pente 1.9e-13 | devers 6.7e-14 | ligne 2.8e-11 | vitesse 3.4e-10 | limiteG 0.0e+0 | limiteD 0.0e+0 | valeurs différentes 34043 valider [] sep 2.8e-12
+eps 1.00e-14 n true L true | vibreur true | seqDe true | tunnel true | stands true | rampes 0.0e+0 | x 7.7e-11 | y 6.7e-12 | z 1.2e-10 | cap 1.2e-12 | courbure 3.0e-14 | pente 1.3e-13 | devers 2.7e-14 | ligne 2.1e-11 | vitesse 2.5e-10 | limiteG 0.0e+0 | limiteD 0.0e+0 | valeurs différentes 33974 valider [] sep -1.2e-12
+eps 1.00e-12 n true L true | vibreur true | seqDe true | tunnel true | stands true | rampes 0.0e+0 | x 2.1e-9 | y 2.6e-11 | z 2.6e-9 | cap 4.3e-12 | courbure 1.0e-13 | pente 2.5e-13 | devers 8.2e-14 | ligne 2.4e-9 | vitesse 9.2e-9 | limiteG 0.0e+0 | limiteD 0.0e+0 | valeurs différentes 34096 valider [] sep -6.8e-11
+
+## 7. Essai hors lot : rivaux qui visent selon l'adhérence restante (dégâts compris), une ligne de course.js
+# course.js:209 : adh = adhérence des pneus × v.degats.adher (copie /private/tmp/bitume-cimes/src-ia, rien dans l'arbre)
+rdc sorties 13 sans_contact_recent 8
+hc sorties 2 sans_contact_recent 0
+vb sorties 5 sans_contact_recent 2
+ps sorties 0 sans_contact_recent 0
+ln sorties 1 sans_contact_recent 0
+rf sorties 2 sans_contact_recent 0
+bj sorties 3 sans_contact_recent 0
+cs sorties 3 sans_contact_recent 0

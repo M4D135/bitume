@@ -1,0 +1,367 @@
+{
+ "src": "src/ au commit dad2a37 (fin du lot)",
+ "qualites": [
+  "high",
+  "medium",
+  "low"
+ ],
+ "circuits": {
+  "val-brule": {
+   "nom": "Val-Brûlé",
+   "trace": "6775df2a99516c3930b9c6c215bd9a02aae883d9ca8bc290f9913d4ec1515717",
+   "decor": {
+    "high": {
+     "nappes": "513959f7ae2572a3cf5478d6916cbfe436f4ee986b8ddc1b6d3deac118d9130d",
+     "lots": "664b9deb5d8be4642081d07260ba4f1bbc3ddafe0cb15710a6e44d1ed6bfceb4",
+     "obstacles": "0645e2b70f09de27f7b9a107afe9bc07eeda534ac10026b2b17f484f9ae5eee0",
+     "arbres": "8185ed262b37bea1b9e317d23b9e4c87fa099b82506efd51992efe5571e85c07",
+     "autres": "31f090e7ddb9cbca120e69d5477455ed4e67b5166379df780ffcada0dd0a2ad4",
+     "comptes": {
+      "nappes": 117,
+      "triangles": 66702,
+      "lots": 2394,
+      "objets": 47609,
+      "arbres": 1082,
+      "obstacles": 1723
+     }
+    },
+    "medium": {
+     "nappes": "513959f7ae2572a3cf5478d6916cbfe436f4ee986b8ddc1b6d3deac118d9130d",
+     "lots": "5f717d7dffb43f40f60cc84240941d19fbc72f1a854dbc2663873ff31a076089",
+     "obstacles": "0645e2b70f09de27f7b9a107afe9bc07eeda534ac10026b2b17f484f9ae5eee0",
+     "arbres": "8185ed262b37bea1b9e317d23b9e4c87fa099b82506efd51992efe5571e85c07",
+     "autres": "31f090e7ddb9cbca120e69d5477455ed4e67b5166379df780ffcada0dd0a2ad4",
+     "comptes": {
+      "nappes": 117,
+      "triangles": 66702,
+      "lots": 2394,
+      "objets": 47523,
+      "arbres": 1082,
+      "obstacles": 1723
+     }
+    },
+    "low": {
+     "nappes": "0e6646761d7ed4bb6644cfc55260264336bb7d904ee1b598f53d59092c943e10",
+     "lots": "4d086f4ede15d9495cb340d5c37096e82d93649dde747517eba096e4721c66cb",
+     "obstacles": "0645e2b70f09de27f7b9a107afe9bc07eeda534ac10026b2b17f484f9ae5eee0",
+     "arbres": "8185ed262b37bea1b9e317d23b9e4c87fa099b82506efd51992efe5571e85c07",
+     "autres": "31f090e7ddb9cbca120e69d5477455ed4e67b5166379df780ffcada0dd0a2ad4",
+     "comptes": {
+      "nappes": 117,
+      "triangles": 66702,
+      "lots": 42,
+      "objets": 9736,
+      "arbres": 1082,
+      "obstacles": 1723
+     }
+    }
+   }
+  },
+  "port-sable": {
+   "nom": "Port-Sable",
+   "trace": "ce77736a4ca6e5cfc9da0da69cd309623aeb7ba6c85b6d56c18f91045528647c",
+   "decor": {
+    "high": {
+     "nappes": "281a11fbf4afc5b5c1ede8d39594f1020728b4c6d8c1f5005f75a9a586df019b",
+     "lots": "c8a3b129f460ffbcb5222cd58a4dacd6c89aee34d3124eefb92c1ae61f6a3042",
+     "obstacles": "9f873073e44bb860dda81db80d94a9102b54869fd5333919f9e5b4b96918d1ee",
+     "arbres": "d4c7e695cd147335c61b63f70f333cdfa5764c137dcbb88e43bb24e78718e7ce",
+     "autres": "d244a947c642c4f33c47509cd4e4e7066d81b58e44b7f93f88950c1a85f51391",
+     "comptes": {
+      "nappes": 104,
+      "triangles": 59524,
+      "lots": 1595,
+      "objets": 34906,
+      "arbres": 453,
+      "obstacles": 1019
+     }
+    },
+    "medium": {
+     "nappes": "281a11fbf4afc5b5c1ede8d39594f1020728b4c6d8c1f5005f75a9a586df019b",
+     "lots": "68f7b6e1964370107e87ccd1a3a4298b2054857c3b23445499e984b2855bd80a",
+     "obstacles": "9f873073e44bb860dda81db80d94a9102b54869fd5333919f9e5b4b96918d1ee",
+     "arbres": "d4c7e695cd147335c61b63f70f333cdfa5764c137dcbb88e43bb24e78718e7ce",
+     "autres": "d244a947c642c4f33c47509cd4e4e7066d81b58e44b7f93f88950c1a85f51391",
+     "comptes": {
+      "nappes": 104,
+      "triangles": 59524,
+      "lots": 1595,
+      "objets": 34837,
+      "arbres": 453,
+      "obstacles": 1019
+     }
+    },
+    "low": {
+     "nappes": "b86ef547de79c10204d9677aa3dd90a441e7a468385a589cc3590a92feeb855f",
+     "lots": "2bd70b8ea1802bd3e3e8ff9cafab5a4481c5263a475a8357ec7458a95e1a671d",
+     "obstacles": "9f873073e44bb860dda81db80d94a9102b54869fd5333919f9e5b4b96918d1ee",
+     "arbres": "d4c7e695cd147335c61b63f70f333cdfa5764c137dcbb88e43bb24e78718e7ce",
+     "autres": "d244a947c642c4f33c47509cd4e4e7066d81b58e44b7f93f88950c1a85f51391",
+     "comptes": {
+      "nappes": 104,
+      "triangles": 59524,
+      "lots": 36,
+      "objets": 7471,
+      "arbres": 453,
+      "obstacles": 1019
+     }
+    }
+   }
+  },
+  "haut-col": {
+   "nom": "Haut-Col",
+   "trace": "51ac7498c53d03bbc8406ca659b43b74f5b4985622d8777c4e8ceef46a97cec0",
+   "decor": {
+    "high": {
+     "nappes": "51e2c9f29d12cc3a3d07ea5586f162f321dfa86d533d619d753eee02fd070694",
+     "lots": "1b0034af069c7a3109840bbae99817d227f99eb0f3dc5a37ee0b54dcdf699238",
+     "obstacles": "7d7684ed4e2bd80cfb8b9f169a9c86016a818bbf672078a19b47c23406ab4919",
+     "arbres": "af6be1c33240e276df67c0287a5c582d63a422ebd47d9c2a0d181e05e49b6167",
+     "autres": "168fbc6ea4bbcc9961ba7e292d8f1c3e7c50fd0c569a1c49a286e460ea9832ae",
+     "comptes": {
+      "nappes": 176,
+      "triangles": 96728,
+      "lots": 1554,
+      "objets": 43157,
+      "arbres": 799,
+      "obstacles": 1178
+     }
+    },
+    "medium": {
+     "nappes": "51e2c9f29d12cc3a3d07ea5586f162f321dfa86d533d619d753eee02fd070694",
+     "lots": "6ea38f155a96106acc3cf9f6868ad246a224f659b7811ffd0bf0178e8a60099b",
+     "obstacles": "7d7684ed4e2bd80cfb8b9f169a9c86016a818bbf672078a19b47c23406ab4919",
+     "arbres": "af6be1c33240e276df67c0287a5c582d63a422ebd47d9c2a0d181e05e49b6167",
+     "autres": "168fbc6ea4bbcc9961ba7e292d8f1c3e7c50fd0c569a1c49a286e460ea9832ae",
+     "comptes": {
+      "nappes": 176,
+      "triangles": 96728,
+      "lots": 1553,
+      "objets": 43089,
+      "arbres": 799,
+      "obstacles": 1178
+     }
+    },
+    "low": {
+     "nappes": "d7c73566399984538f78f9cbf542a508b04c028348a5b50527e38f91374b72c7",
+     "lots": "3b1fdc3f1b370776ef0f3d5960197cab8bbac5e1546ed3b3c6de11dd52bb93d4",
+     "obstacles": "7d7684ed4e2bd80cfb8b9f169a9c86016a818bbf672078a19b47c23406ab4919",
+     "arbres": "af6be1c33240e276df67c0287a5c582d63a422ebd47d9c2a0d181e05e49b6167",
+     "autres": "168fbc6ea4bbcc9961ba7e292d8f1c3e7c50fd0c569a1c49a286e460ea9832ae",
+     "comptes": {
+      "nappes": 176,
+      "triangles": 96728,
+      "lots": 112,
+      "objets": 11191,
+      "arbres": 799,
+      "obstacles": 1178
+     }
+    }
+   }
+  },
+  "lande-noire": {
+   "nom": "Lande-Noire",
+   "trace": "9ef2cb2fc83538c3f011a9355aa64e9a6a086195b5d6e9e6d60171a9a980762e",
+   "decor": {
+    "high": {
+     "nappes": "9bfdd06d41a3da70adc8fa91add5e194ed7eaa3d69c1e68f41fea1c8a20746fb",
+     "lots": "fd2411a774f82974b176592780a65552d03f765fe15b2990be230d69701f3abd",
+     "obstacles": "8f0b5fe7fd75e02213a1364b78616bd2acc6c629086fa91dd470e421a378f5d3",
+     "arbres": "a89ab0d186c122dcd07ff699273f06a26ca1ebd231de6138a3d4c8a2338c2105",
+     "autres": "5caa3b3196c681db2b1ea1a22ec208db7970559e072df324390484f69053365e",
+     "comptes": {
+      "nappes": 160,
+      "triangles": 85278,
+      "lots": 31,
+      "objets": 7858,
+      "arbres": 0,
+      "obstacles": 973
+     }
+    },
+    "medium": {
+     "nappes": "9bfdd06d41a3da70adc8fa91add5e194ed7eaa3d69c1e68f41fea1c8a20746fb",
+     "lots": "fd2411a774f82974b176592780a65552d03f765fe15b2990be230d69701f3abd",
+     "obstacles": "8f0b5fe7fd75e02213a1364b78616bd2acc6c629086fa91dd470e421a378f5d3",
+     "arbres": "a89ab0d186c122dcd07ff699273f06a26ca1ebd231de6138a3d4c8a2338c2105",
+     "autres": "5caa3b3196c681db2b1ea1a22ec208db7970559e072df324390484f69053365e",
+     "comptes": {
+      "nappes": 160,
+      "triangles": 85278,
+      "lots": 31,
+      "objets": 7858,
+      "arbres": 0,
+      "obstacles": 973
+     }
+    },
+    "low": {
+     "nappes": "e3a50308f8170fa813bccb842aebeeefbc4636811335385d8942363c08132e0e",
+     "lots": "fd2411a774f82974b176592780a65552d03f765fe15b2990be230d69701f3abd",
+     "obstacles": "8f0b5fe7fd75e02213a1364b78616bd2acc6c629086fa91dd470e421a378f5d3",
+     "arbres": "a89ab0d186c122dcd07ff699273f06a26ca1ebd231de6138a3d4c8a2338c2105",
+     "autres": "5caa3b3196c681db2b1ea1a22ec208db7970559e072df324390484f69053365e",
+     "comptes": {
+      "nappes": 160,
+      "triangles": 85278,
+      "lots": 31,
+      "objets": 7858,
+      "arbres": 0,
+      "obstacles": 973
+     }
+    }
+   }
+  },
+  "roche-fauve": {
+   "nom": "Roche-Fauve",
+   "trace": "a5bef40673dc2b33fbe3ff1ddde39eda5edba1c64dbf2db952ac76461a01dfa6",
+   "decor": {
+    "high": {
+     "nappes": "897a25f9f5f21276a4f98cd4afbbe8969256a7910e485455b6c141b43bfa5059",
+     "lots": "2ef6467d02b037a71f5d6dd9ff66054f396187bb32e453d95d0b0a8e068f5163",
+     "obstacles": "b1a0b9e0253d3b05985ca241dee1d9cb631284a5b3d8748a363d13e3140a73d8",
+     "arbres": "a89ab0d186c122dcd07ff699273f06a26ca1ebd231de6138a3d4c8a2338c2105",
+     "autres": "d54af006559e000d6962b518b5833bbb47118e1219d890508b2be9e98471f848",
+     "comptes": {
+      "nappes": 173,
+      "triangles": 88650,
+      "lots": 33,
+      "objets": 7049,
+      "arbres": 0,
+      "obstacles": 965
+     }
+    },
+    "medium": {
+     "nappes": "897a25f9f5f21276a4f98cd4afbbe8969256a7910e485455b6c141b43bfa5059",
+     "lots": "2ef6467d02b037a71f5d6dd9ff66054f396187bb32e453d95d0b0a8e068f5163",
+     "obstacles": "b1a0b9e0253d3b05985ca241dee1d9cb631284a5b3d8748a363d13e3140a73d8",
+     "arbres": "a89ab0d186c122dcd07ff699273f06a26ca1ebd231de6138a3d4c8a2338c2105",
+     "autres": "d54af006559e000d6962b518b5833bbb47118e1219d890508b2be9e98471f848",
+     "comptes": {
+      "nappes": 173,
+      "triangles": 88650,
+      "lots": 33,
+      "objets": 7049,
+      "arbres": 0,
+      "obstacles": 965
+     }
+    },
+    "low": {
+     "nappes": "897a25f9f5f21276a4f98cd4afbbe8969256a7910e485455b6c141b43bfa5059",
+     "lots": "2ef6467d02b037a71f5d6dd9ff66054f396187bb32e453d95d0b0a8e068f5163",
+     "obstacles": "b1a0b9e0253d3b05985ca241dee1d9cb631284a5b3d8748a363d13e3140a73d8",
+     "arbres": "a89ab0d186c122dcd07ff699273f06a26ca1ebd231de6138a3d4c8a2338c2105",
+     "autres": "d54af006559e000d6962b518b5833bbb47118e1219d890508b2be9e98471f848",
+     "comptes": {
+      "nappes": 173,
+      "triangles": 88650,
+      "lots": 33,
+      "objets": 7049,
+      "arbres": 0,
+      "obstacles": 965
+     }
+    }
+   }
+  },
+  "brume-de-jade": {
+   "nom": "Brume-de-Jade",
+   "trace": "2e7e16ab915e088f253814eb59699c432c21de071e3398382b66fb59a74c976a",
+   "decor": {
+    "high": {
+     "nappes": "548ff0b7467c6b3aef6ae9ec910ec0b1176d2c02362a27df68c40b6e5c61ad40",
+     "lots": "eec4a09634d28d040cdd01c2eb0b4bb5a80e3a30f03cc2da7ac02897389421f9",
+     "obstacles": "9d7631bdec56a6ae33acc6ced0f2c0a09108dafa91cf6bac1c7ab3bade3dbf35",
+     "arbres": "892efe4052f435079a8837cf12536b7dda1af8a8c2053799adbe61c21947b65e",
+     "autres": "661d44b73b7c8c525c26aeab4f378f36fba68844438ecde158eefa075c61c42d",
+     "comptes": {
+      "nappes": 186,
+      "triangles": 95608,
+      "lots": 34,
+      "objets": 7670,
+      "arbres": 46,
+      "obstacles": 817
+     }
+    },
+    "medium": {
+     "nappes": "548ff0b7467c6b3aef6ae9ec910ec0b1176d2c02362a27df68c40b6e5c61ad40",
+     "lots": "4c5deb83daab595a3e11a23c76dff2dbe03f0491319442b7a5cef838660713ec",
+     "obstacles": "9d7631bdec56a6ae33acc6ced0f2c0a09108dafa91cf6bac1c7ab3bade3dbf35",
+     "arbres": "892efe4052f435079a8837cf12536b7dda1af8a8c2053799adbe61c21947b65e",
+     "autres": "661d44b73b7c8c525c26aeab4f378f36fba68844438ecde158eefa075c61c42d",
+     "comptes": {
+      "nappes": 186,
+      "triangles": 95608,
+      "lots": 34,
+      "objets": 7670,
+      "arbres": 46,
+      "obstacles": 817
+     }
+    },
+    "low": {
+     "nappes": "d1b7a154a556cdc482efea2da04e51ce0e68dbcc1ad130ae301f67a27c07dd09",
+     "lots": "4fb92ee436a1f936c49964ac351afa8cf5720899d3bc2bd9cfb54e828c07c573",
+     "obstacles": "9d7631bdec56a6ae33acc6ced0f2c0a09108dafa91cf6bac1c7ab3bade3dbf35",
+     "arbres": "892efe4052f435079a8837cf12536b7dda1af8a8c2053799adbe61c21947b65e",
+     "autres": "661d44b73b7c8c525c26aeab4f378f36fba68844438ecde158eefa075c61c42d",
+     "comptes": {
+      "nappes": 186,
+      "triangles": 95608,
+      "lots": 34,
+      "objets": 7716,
+      "arbres": 46,
+      "obstacles": 817
+     }
+    }
+   }
+  },
+  "cap-sequoia": {
+   "nom": "Cap-Séquoia",
+   "trace": "641cc1829f31c8c24594c138c165b6e07cc8546345ffdda24758012d86a9cb16",
+   "decor": {
+    "high": {
+     "nappes": "16c705ebdf612c1db3945c63eff6ed5b362214505e4de1e62a517c9412b4edd5",
+     "lots": "220e92684ef31e39b77e1f9b96017576a3bd5e6fc24d0d288cda427e49e60594",
+     "obstacles": "fa1c311cee57cf50a05d7b072cc9cd662737e5b9ed0e8e53c706083d8299fb5c",
+     "arbres": "25ddbdeee48b18a95bbcae7d1bea661658997b4e77591f72bbbc347bdf096580",
+     "autres": "9cd4eb00f5d0f6871c23c032603d42a95732ef25abc545e433e1a2055d82a93e",
+     "comptes": {
+      "nappes": 189,
+      "triangles": 99768,
+      "lots": 39,
+      "objets": 7502,
+      "arbres": 320,
+      "obstacles": 968
+     }
+    },
+    "medium": {
+     "nappes": "16c705ebdf612c1db3945c63eff6ed5b362214505e4de1e62a517c9412b4edd5",
+     "lots": "4e51515f291a517b6fe7b05de0153b7dbdffd006f1477353f4971986b23c6b76",
+     "obstacles": "fa1c311cee57cf50a05d7b072cc9cd662737e5b9ed0e8e53c706083d8299fb5c",
+     "arbres": "25ddbdeee48b18a95bbcae7d1bea661658997b4e77591f72bbbc347bdf096580",
+     "autres": "9cd4eb00f5d0f6871c23c032603d42a95732ef25abc545e433e1a2055d82a93e",
+     "comptes": {
+      "nappes": 189,
+      "triangles": 99768,
+      "lots": 39,
+      "objets": 7502,
+      "arbres": 320,
+      "obstacles": 968
+     }
+    },
+    "low": {
+     "nappes": "3002571524a0f52539c2529ca757499afccc9a54807079caef2e3fb4d58635f4",
+     "lots": "b80ba01b20863589da15f96246e592e2458fe674284766eba332ac510dba13b2",
+     "obstacles": "fa1c311cee57cf50a05d7b072cc9cd662737e5b9ed0e8e53c706083d8299fb5c",
+     "arbres": "25ddbdeee48b18a95bbcae7d1bea661658997b4e77591f72bbbc347bdf096580",
+     "autres": "9cd4eb00f5d0f6871c23c032603d42a95732ef25abc545e433e1a2055d82a93e",
+     "comptes": {
+      "nappes": 189,
+      "triangles": 99768,
+      "lots": 39,
+      "objets": 8142,
+      "arbres": 320,
+      "obstacles": 968
+     }
+    }
+   }
+  }
+ }
+}

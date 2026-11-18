@@ -1,0 +1,64 @@
+{
+ "valeur": {
+  "cartes": 8,
+  "nom7": "Route-des-Cimes",
+  "fiche7": "9,70 km · 22 virages · ligne droite de 420 m",
+  "etapes": [
+   {
+    "nom": "départ (circuit undefined)",
+    "coche": 3,
+    "stock": {}
+   },
+   {
+    "nom": "Val-Brûlé, 5 tours choisis",
+    "coche": 5,
+    "stock": {
+     "tours": 5,
+     "commun": 5
+    }
+   },
+   {
+    "nom": "Route-des-Cimes (attendu 2)",
+    "coche": 2,
+    "stock": {
+     "tours": 2,
+     "commun": 5
+    }
+   },
+   {
+    "nom": "Route-des-Cimes, 3 tours choisis",
+    "coche": 3,
+    "stock": {
+     "tours": 3,
+     "commun": 5,
+     "parCircuit": {
+      "route-des-cimes": 3
+     }
+    }
+   },
+   {
+    "nom": "Haut-Col (attendu 5, le commun)",
+    "coche": 5,
+    "stock": {
+     "tours": 5,
+     "commun": 5,
+     "parCircuit": {
+      "route-des-cimes": 3
+     }
+    }
+   },
+   {
+    "nom": "Route-des-Cimes (attendu 3, gardé)",
+    "coche": 3,
+    "stock": {
+     "tours": 3,
+     "commun": 5,
+     "parCircuit": {
+      "route-des-cimes": 3
+     }
+    }
+   }
+  ]
+ },
+ "erreurs": []
+}
