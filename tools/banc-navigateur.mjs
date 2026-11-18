@@ -19,7 +19,7 @@ import { controlerJeu, controlerStand } from './smoke-jeu.mjs';
 const args = {};
 for (let i = 2; i < process.argv.length; i += 2) args[process.argv[i].replace(/^--/, '')] = process.argv[i + 1];
 const url = args.url;
-if (!url) { console.error('usage : banc-navigateur.mjs --url <page> [--mode banc|course|crash|stand|smoke] [--duree 20] [--qualite high] [--circuit 0] [--graine 17017] [--meteo sec|pluie] [--partie solo|duo] [--decor reference|enrichi] [--chauffe 1] [--taille 1390,1295] [--overlay oui] [--capture fichier.png] [--chrome binaire] [--attendre 20000]'); process.exit(2); }
+if (!url) { console.error('usage : banc-navigateur.mjs --url <page> [--mode banc|course|crash|stand|smoke] [--duree 20] [--qualite high] [--circuit 0] [--graine 17017] [--meteo sec|pluie] [--partie solo|duo] [--decor reference|enrichi] [--chauffe 1] [--taille 1390,1295] [--overlay oui] [--capture fichier.png] [--chrome binaire] [--attendre 20000] [--detection oui] [--angle native|swiftshader]'); process.exit(2); }
 const mode = args.mode || 'banc';
 const duree = Number(args.duree ?? 20), qualite = args.qualite || 'high', circuit = Number(args.circuit ?? 0);
 const chauffe = Number(args.chauffe ?? 1), attendre = Number(args.attendre ?? 20000);
@@ -31,8 +31,11 @@ const referenceJeu = { graine: Number(args.graine ?? 17017), circuit, qualite, m
   meteo: args.meteo || 'sec', vue: args.vue || 'cockpit', vue2: args.vue2 || 'cockpit', partage: args.partage || 'haut-bas',
   retro: args.retro || 'oui', decor: args.decor || 'enrichi', depart: args.depart === 'tunnel' ? 'tunnel' : Number(args.depart ?? 280), vitesse: Number(args.vitesse ?? 75) };
 const optionsBanc = { ...referenceJeu, duree, chauffe };
-const chrome = args.chrome || process.env.CHROME || 'google-chrome';
+const chrome = args.chrome || process.env.CHROME || (process.platform === 'darwin' ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : 'google-chrome');
 const profil = mkdtempSync(path.join(tmpdir(), 'bitume-chrome-'));
+// Sous 20 % de batterie, Chrome bride l'affichage à 30 images par seconde (économie d'énergie) : coupé dans ce profil
+// jetable, pour mesurer la machine et non son alimentation.
+writeFileSync(path.join(profil, 'Local State'), JSON.stringify({ performance_tuning: { battery_saver_mode: { state: 0 } } }));
 const requetes = new Map(); let suivant = 1; let ws = null;
 const evenements = { console: [], avertissements: [], exceptions: [] };
 
@@ -114,6 +117,12 @@ try {
   await envoyer('Emulation.setDeviceMetricsOverride', { width: taille[0], height: taille[1], deviceScaleFactor: 1, mobile: false });
   await envoyer('Page.navigate', { url });
   await attendreJusqua(() => evaluer('!!(window.BITUME && window.BITUME_JEU && window.BITUME_JEU.rendu)'), attendre, 'le jeu ne démarre pas');
+  // Premier lancement d'un profil neuf : la détection graphique tient le renderer et masque les écrans. Un banc lancé
+  // pendant qu'elle tourne était interrompu au bout de deux secondes. On la passe comme le bouton « Passer », puis
+  // on attend l'écran titre (--detection oui la laisse aller au bout).
+  await attendreJusqua(() => evaluer(`(() => { const a = document.getElementById('autodetection');
+    if (a && !a.hidden) { ${args.detection === 'oui' ? '' : "document.getElementById('detection-annuler').click();"} return false; }
+    return window.BITUME_JEU.ecran === 'titre'; })()`), Math.max(attendre, 30000), 'écran titre jamais atteint');
 
   rapport.environnement = await evaluer(`(() => { const r = window.BITUME_JEU.rendu, gl = r.gl, i = gl.getExtension('WEBGL_debug_renderer_info');
     return { navigateur: navigator.userAgent, rendu: gl.getParameter(gl.RENDERER),

@@ -4,13 +4,13 @@
     "branche": "main",
     "base_commit": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
     "base_version": "0.2.38",
-    "statut": "base_0_2_38_publiee_passation_claude_fable_prete",
-    "lot": "master_liste_roues_pneus_russie_monaco_marseille",
-    "fiche": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
+    "statut": "lot_5B_fluidite_en_cours",
+    "lot": "5B_fluidite_cadence_prechargement",
+    "fiche": "docs/reprise/05B-FLUIDITE.md",
     "commit_publie": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
     "catalogue_jouable_publie": 7,
     "catalogue_cible": 10,
-    "prochaine_action": "Claude Fable : lire MASTER-LISTE-CLAUDE-FABLE.md puis ouvrir 12A. Aucun nouveau lot de code commencé.",
+    "prochaine_action": "Intégrer la vague 1 (arbres de travail ~/Projects/bitume-wt/*, branches fluidite/*, moteur dans ~/Projects/ferro), installer FERRO 0.3.10, puis vague 2 (boucle et vues dans jeu.js), mesures avant/après, publication. 12A reprend ensuite.",
     "checkpoint": "docs/reprise/rapports/cap-sequoia-2026-11-18/checkpoint.json",
     "catalogue_jouable": 7,
     "qualification": {
@@ -140,5 +140,36 @@
       "terrain": "Centre plat ; relief périphérique synthétique ; MNT mesuré à préparer."
     },
     "catalogue_complet": "MASTER-LISTE-CLAUDE-FABLE.md#2-catalogue-complet--objectif-16-circuits"
+  },
+  "lot_5B": {
+    "demande": "David, 18/11/2026 : moteur le plus fluide possible, aucun accroc en jeu, précache en début de niveau, tout en RAM, 100 % fluide à 30, 60 ou 120 images par seconde.",
+    "mesures_base": "docs/reprise/rapports/fluidite-2026-11-18/MESURES-BASE.md",
+    "cartes": "docs/reprise/rapports/fluidite-2026-11-18/cartes/",
+    "outils": [
+      "tools/profil-accrocs.mjs",
+      "tools/page-essai.mjs",
+      "tools/serie-fluidite.sh",
+      "tools/resume-fluidite.py"
+    ],
+    "vague_1": {
+      "modele_executants": "Opus 5.5",
+      "lots": [
+        "moteur",
+        "arbres",
+        "cadence",
+        "voitures",
+        "effets",
+        "nature",
+        "simulation",
+        "profils",
+        "chargement"
+      ],
+      "arbres_de_travail": "~/Projects/bitume-wt/<lot>, branches locales fluidite/<lot>, base 54e98c9 ; moteur : ~/Projects/ferro sur 89c7841",
+      "reportes": [
+        "prairie (regroupement des lots d herbe)",
+        "son (préparation audio avant le départ)"
+      ]
+    },
+    "statut": "vague 1 en cours ; rien de fusionné ni de publié côté sources du jeu"
   }
 }

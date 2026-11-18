@@ -7,6 +7,12 @@
 - Production vérifiée identique le 18 novembre à 14 h 47 (Paris) ; reçu `docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json`.
 - Qualification de la base : **66/66 suites**, 34 modules FERRO 0.3.9 conformes, build reproductible. WebGL et performances matérielles restent à contrôler : Chromium bloque ici.
 
+## Lot actif — 5B fluidité (18 novembre 2026)
+
+Demande de David du 18/11 : moteur le plus fluide possible, aucun accroc en jeu, précache en début de niveau, 30/60/120 images par seconde tenues. **Ce lot passe avant 12A.** Fiche : `docs/reprise/05B-FLUIDITE.md` ; mesures : `docs/reprise/rapports/fluidite-2026-11-18/MESURES-BASE.md` ; cartes du code : `…/cartes/`.
+Constats mesurés sur le M5 : une image sur quatre ratée en Fine (rétroviseurs), 3,6 M de triangles d'arbres sur 4,2 M, première image du départ de 150 à 480 ms, qualité Auto calée sur 60 Hz, détection qui choisit « Légère ».
+En cours : vague 1 dans `~/Projects/bitume-wt/<lot>` (branches locales `fluidite/<lot>`) et moteur FERRO 0.3.10 dans `~/Projects/ferro`. Rien n'est fusionné dans les sources du jeu. Suite : intégrer, installer le moteur, vague 2 dans `jeu.js`, mesurer avant/après, publier.
+
 ## Passation Claude Fable
 
 **Entrée : `MASTER-LISTE-CLAUDE-FABLE.md`.** Catalogue complet : **7 livrés + Russie + Monaco + Spéciale Marseille + 6 propositions = 16**.
