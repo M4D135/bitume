@@ -1,5 +1,9 @@
 # BITUME — consignes pour les agents
 
+## Reprise par petits lots
+
+Lire d'abord `REPRISE.md` et `docs/reprise/ETAT.json`, volontairement courts. N'ouvrir que la fiche du lot actif et les extraits de source nécessaires. Ne pas recharger les anciennes discussions, les archives ou le HTML généré en entier. Conserver les sorties complètes sur disque et ne rendre que les conclusions utiles. Actualiser le point court après chaque lot publié.
+
 Jeu de course de monoplaces dans le navigateur, original : circuits générés, onze rivaux, dérive et turbo.
 Une seule page HTML, moteur FERRO (WebGL2), tout est calculé par le code.
 

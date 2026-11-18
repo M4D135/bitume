@@ -1,0 +1,11 @@
+{
+  "buildReproductible": true,
+  "empreintes": {
+    "dist/bitume.html": "969f211ec815ac28601761e5c5dfb1a7eea17e151f0c17d9ea9978e3bac5f2df",
+    "SIZE.json": "4e8b41db1c6ece184982ef7125441dd53ecba8e395c858a6bd8937840a7db2bb",
+    "VERSION.json": "8d944fe86676498cdb357fced491f416f7217a83772273e808adecce66122549"
+  },
+  "ferro": "0.3.6",
+  "modulesConformes": 34,
+  "version": "0.2.29"
+}

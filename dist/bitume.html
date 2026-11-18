@@ -139,6 +139,7 @@ fieldset input:focus-visible + span { outline: 2px solid var(--ambre); outline-o
 .record b { color: var(--papier); font: 700 18px/1 var(--f-titre); font-variant-numeric: tabular-nums; letter-spacing: .02em; }
 
 .grille-reglages { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px 30px; max-width: 1080px; }
+.note-graphismes { margin: 4px 0 0; max-width: 38ch; font-size: 12px; line-height: 1.5; color: var(--papier-2); }
 .curseurs { display: grid; gap: 12px; }
 .curseurs label { display: grid; gap: 6px; font: 600 11px/1 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); }
 input[type="range"] { width: 100%; accent-color: var(--rouge); }
@@ -546,7 +547,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.28">V0.2.28</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.29">V0.2.29</b>
     </div>
     <a class="signature" href="https://github.com/M4D135" target="_blank" rel="noopener" title="m4d135 sur GitHub"><img class="signature-avatar" src="data:image/jpeg;base64,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" alt="" />m4d135</a>
     <nav class="choix" aria-label="Menu principal">
@@ -747,11 +748,35 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
         <label><input type="radio" name="demo" value="non"><span>Jamais</span></label>
       </fieldset>
       <fieldset>
-        <legend>Image</legend>
+        <legend>Qualité générale</legend>
         <label><input type="radio" name="qualite" value="low"><span>Légère</span></label>
         <label><input type="radio" name="qualite" value="medium"><span>Moyenne</span></label>
         <label><input type="radio" name="qualite" value="auto"><span>Auto</span></label>
         <label><input type="radio" name="qualite" value="high"><span>Fine</span></label>
+        <p class="note-graphismes">Les réglages « Selon qualité » suivent ce profil.</p>
+      </fieldset>
+      <fieldset>
+        <legend>Anticrénelage</legend>
+        <label><input type="radio" name="anticrenelage" value="profil"><span>Selon qualité</span></label>
+        <label><input type="radio" name="anticrenelage" value="off"><span>Désactivé</span></label>
+        <label><input type="radio" name="anticrenelage" value="msaa4"><span>MSAA 4×</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Ombres</legend>
+        <label><input type="radio" name="ombres" value="profil"><span>Selon qualité</span></label>
+        <label><input type="radio" name="ombres" value="off"><span>Désactivées</span></label>
+        <label><input type="radio" name="ombres" value="medium"><span>Moyennes</span></label>
+        <label><input type="radio" name="ombres" value="high"><span>Fines</span></label>
+      </fieldset>
+      <fieldset aria-describedby="note-vegetation">
+        <legend>Densité de végétation</legend>
+        <label><input type="radio" name="vegetation" value="profil"><span>Selon qualité</span></label>
+        <label><input type="radio" name="vegetation" value="off"><span>Sans herbes</span></label>
+        <label><input type="radio" name="vegetation" value="low"><span>Légère</span></label>
+        <label><input type="radio" name="vegetation" value="medium"><span>Moyenne</span></label>
+        <label><input type="radio" name="vegetation" value="high"><span>Dense</span></label>
+        <label><input type="radio" name="vegetation" value="ultra"><span>Très dense</span></label>
+        <p class="note-graphismes" id="note-vegetation">Herbes, fougères et fleurs. Appliquée à la prochaine course.</p>
       </fieldset>
       <fieldset>
         <legend>Manette</legend>
@@ -2830,7 +2855,9 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   }
 
   // FERRO 0.2 : réglages de création, tous facultatifs. Sans eux, l'image et les commandes GPU sont celles de FERRO 0.1.
-  // msaa: 4 anticrénèle la scène avant le bloom (si le GPU l'offre) ; shadowMapScale: 2 double l'atlas d'ombre ;
+  // msaa: 4 ouvre l'anticrénelage (si le GPU l'offre) ; shadowMapScale: 2 autorise l'atlas d'ombre doublé ;
+  // draw({msaa:true}) fonctionne aussi sans bloom et en qualité basse ; sans valeur explicite, le lien historique
+  // au bloom est conservé. draw({shadows,shadowMapScale:1|2}) règle les ombres à chaud dans les capacités ouvertes.
   // vignette (0 à 1, FERRO 0,59) éclaircit les bords quand elle monte ; bloomThreshold [début, fin] (FERRO [0,56, 0,86]).
   // Le rendu logiciel (Canvas 2D) les ignore.
   // BITUME : adapter le contrat météo historique au vec4 EMPRISE [humidité, nuages, pluie, éclair].
@@ -2899,9 +2926,9 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
     const shadowView=new Float32Array(16),shadowProjection=new Float32Array(16),shadowMatrix=new Float32Array(16),shadowMatrices=new Float32Array(48);
     const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12),lightDirections=new Float32Array(36),lightCones=new Float32Array(24);
     // BITUME : l’indexation EMPRISE est aussi utilisée sur WebGL2 ; formes libres inchangées.
-    const stats={drawCalls:0,triangles:0,instances:0,contextLost:false,webglVersion:2,backend:'webgl2',engine:'ferro-reference',bloom:false,shadows:false,msaa:0,reflections:false,primitiveIndex:primitiveIndex.stats};
+    const stats={drawCalls:0,triangles:0,instances:0,contextLost:false,webglVersion:2,backend:'webgl2',engine:'ferro-reference',bloom:false,shadows:false,shadowMapSize:0,shadowTileSize:0,msaa:0,reflections:false,primitiveIndex:primitiveIndex.stats};
     let program,depthProgram,postProgram,skyProgram,fxProgram,vao,postVao,vbo,ibo,worldBuffer,dynamicBuffer,overlayBuffer,fxBuffer,crowdBuffer,uniforms,postUniforms,skyUniforms,fxUniforms,depthMatrix,depthWind,ssrProgram,ssrUniforms;
-    let post=null,shadowTarget=null,whiteTexture=null,pbrTextures=[],targetKey='',shadowKey='',shadowLight=null;
+    let post=null,msaaBuffer,msaaIdle=0,shadowTarget=null,shadowIdle=0,maxShadowTileSize=1024,whiteTexture=null,pbrTextures=[],targetKey='',shadowKey='',shadowLight=null;
     let world=[],worldIndex=spatialIndex([]),backgroundIndex=spatialIndex([]),lights=[],environment=null,worldBatch=pack([]),quality='auto',disposed=false,worldRevision=0,partitionState=null;
     let staticCaches=[],lampCasters=[],actorLightPlan=null;
     const packDynamic=instancePacker(),packOverlay=instancePacker(),packFx=effectsPacker();
@@ -2985,17 +3012,30 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE){deleteMsaa(target);return null;}
       return target;
     }
-    function freePost(){if(post){deleteTarget(post.scene);deleteTarget(post.a);deleteTarget(post.b);deleteTarget(post.reflectSource);deleteTarget(post.reflection);deleteMsaa(post.msaa);post=null;}stats.msaa=0;stats.reflections=false;}
+    function freePost(){if(post){deleteTarget(post.scene);deleteTarget(post.a);deleteTarget(post.b);deleteTarget(post.reflectSource);deleteTarget(post.reflection);post=null;}deleteMsaa(msaaBuffer);msaaBuffer=undefined;msaaIdle=0;stats.msaa=0;stats.reflections=false;}
     function ensureTargets(){
       const key=canvas.width+'x'+canvas.height+':'+quality;if(key===targetKey)return;targetKey=key;
       freePost();
-      if(quality==='low'){deleteTarget(shadowTarget);shadowTarget=null;shadowKey='';stats.bloom=stats.shadows=false;return;}
+      if(quality==='low'){deleteTarget(shadowTarget);shadowTarget=null;shadowKey='';shadowIdle=0;stats.bloom=stats.shadows=false;stats.shadowMapSize=stats.shadowTileSize=0;return;}
       const width=canvas.width,height=canvas.height,bw=Math.max(1,Math.ceil(width/4)),bh=Math.max(1,Math.ceil(height/4));
       const scene=colorTarget(width,height,true),a=colorTarget(bw,bh,false),b=colorTarget(bw,bh,false);
       if(scene&&a&&b)post={scene,a,b};else{deleteTarget(scene);deleteTarget(a);deleteTarget(b);}
+      gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,null);
+      stats.bloom=!!post;
+    }
+    const shadowsEnabled=fx=>fx.shadows!==false&&(quality!=='low'||fx.shadows===true);
+    function ensureShadowTarget(fx){
+      if(!shadowsEnabled(fx)){
+        // Une vue sans ombres ne fait pas détruire l'atlas de la vue suivante. Une désactivation durable le libère.
+        if(shadowTarget&&++shadowIdle>=120){deleteTarget(shadowTarget);shadowTarget=null;shadowKey='';shadowIdle=0;}
+        stats.shadowMapSize=stats.shadowTileSize=0;return;
+      }
+      shadowIdle=0;
       // Tuile d'ombre de 512 en auto, 1 024 en haute qualité. Avec shadowMapScale: 2 (repris de Point de rupture, où un
-      // seul soleil couvre tout le sol visible), elle double, bornée par MAX_TEXTURE_SIZE.
-      const base=quality==='high'?1024:512,size=config.shadowMapScale>1?Math.min(base*config.shadowMapScale,Math.floor((gl.getParameter(gl.MAX_TEXTURE_SIZE)||2048)/2)):base;
+      // seul soleil couvre tout le sol visible), elle double. Le choix par image reste borné par la capacité de
+      // création et MAX_TEXTURE_SIZE ; changer seulement cette taille ne recrée ni le contexte ni les cibles couleur.
+      const scale=fx.shadowMapScale===1||fx.shadowMapScale===2?Math.min(config.shadowMapScale,fx.shadowMapScale):config.shadowMapScale;
+      const base=quality==='high'?1024:512,size=Math.min(base*scale,maxShadowTileSize);
       // Pixel resolution may adapt; a depth atlas of the same size remains valid.
       if(shadowKey!==String(size)){
         deleteTarget(shadowTarget);shadowTarget=null;shadowKey=String(size);
@@ -3005,23 +3045,22 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
         if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)===gl.FRAMEBUFFER_COMPLETE)shadowTarget=target;else deleteTarget(target);
       }
       gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,null);
-      stats.bloom=!!post;stats.shadows=!!shadowTarget;
+      stats.shadowTileSize=shadowTarget?size:0;stats.shadowMapSize=stats.shadowTileSize*2;
     }
     // Les options de création ouvrent une capacité, sans réserver sa mémoire. Les
     // cibles coûteuses naissent au premier draw qui s'en sert. Une qualité ou taille
     // différente les libère via freePost ; sinon 120 rendus consécutifs sans usage
     // libèrent le cache, sans churn entre les vues ni à chaque transition météo.
     function ensureOptionalTargets(fx,reflectionMode){
-      if(!post){stats.msaa=0;return;}
-      const bloom=fx.bloom!==false,wantMsaa=config.msaa&&bloom&&fx.msaa!==false;
+      const bloom=!!post&&fx.bloom!==false,wantMsaa=config.msaa&&fx.msaa!==false&&(bloom||fx.msaa===true);
       const wantReflections=config.reflections&&bloom&&reflectionMode==='off'&&fx.reflections!==false&&fx.reflections!=='off';
       let changed=false;
       if(wantMsaa){
-        post.msaaIdle=0;
+        msaaIdle=0;
         // null mémorise un échec jusqu'au prochain changement de taille/qualité.
-        if(post.msaa===undefined){post.msaa=msaaTarget(canvas.width,canvas.height);changed=true;}
-      }else if(post.msaa&&(post.msaaIdle=(post.msaaIdle||0)+1)>=120){
-        deleteMsaa(post.msaa);post.msaa=undefined;post.msaaIdle=0;changed=true;
+        if(msaaBuffer===undefined){msaaBuffer=msaaTarget(canvas.width,canvas.height);changed=true;}
+      }else if(msaaBuffer&&++msaaIdle>=120){
+        deleteMsaa(msaaBuffer);msaaBuffer=undefined;msaaIdle=0;changed=true;
       }
       if(wantReflections){
         post.reflectionIdle=0;
@@ -3032,11 +3071,11 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
           else{deleteTarget(source);deleteTarget(reflected);post.reflectSource=post.reflection=null;}
           changed=true;
         }
-      }else if(post.reflectSource&&(post.reflectionIdle=(post.reflectionIdle||0)+1)>=120){
+      }else if(post&&post.reflectSource&&(post.reflectionIdle=(post.reflectionIdle||0)+1)>=120){
         deleteTarget(post.reflectSource);deleteTarget(post.reflection);
         post.reflectSource=post.reflection=undefined;post.reflectionIdle=0;changed=true;
       }
-      stats.msaa=wantMsaa&&post.msaa?post.msaa.samples:0;
+      stats.msaa=wantMsaa&&msaaBuffer?msaaBuffer.samples:0;
       if(changed){gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,null);}
     }
     const screenGLSL=`
@@ -3100,6 +3139,9 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
     }
     const reflectionShader=source=>options.sceneReflections&&window.FSceneReflections?window.FSceneReflections.shader(source):source;
     function initialize() {
+      // Limite stable pendant la vie du contexte : aucune requête synchrone au GPU par vue ou par image.
+      // Une restauration peut changer d'adaptateur ; relire alors sa capacité avant toute nouvelle allocation.
+      maxShadowTileSize=Math.max(1,Math.floor((Number(gl.getParameter(gl.MAX_TEXTURE_SIZE))||2048)/2));
       if(profiler){profiler.dispose();profiler=window.FGPUProfile.create(gl,profileOptions);}
       fskyProgram=null;fskyBound=null;fskyCache={};skyFrame={};fogCaches.clear();screenCaches.clear();
       if(options.advancedSky&&window.FSky)fskyProgram=link(window.FSky.VERT,screenShader('fsky',window.FSky.FRAG));
@@ -3144,8 +3186,8 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       pdrSlots=[];pdrLots.length=0;pdrGeneration++;
       gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);
       gl.clearColor(.035,.06,.073,1);
-      post=null;shadowTarget=null;targetKey=shadowKey='';shadowLight=null;
-      stats.msaa=0;stats.reflections=false;
+      post=null;msaaBuffer=undefined;msaaIdle=0;shadowTarget=null;shadowIdle=0;targetKey=shadowKey='';shadowLight=null;
+      stats.msaa=0;stats.reflections=false;stats.shadowMapSize=stats.shadowTileSize=0;
       governor.reset();autoScale=1;
       stats.contextLost=false;
     }
@@ -3448,7 +3490,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       // rounded aspect instead of relying on the previous backing-store size.
       const aspect=Math.max(canvas.width/Math.max(1,canvas.height),cssWidth/cssHeight)+(1+cssWidth/cssHeight)/Math.max(1,cssHeight*.3);
       const tangent=Math.tan(Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/360),views=[{eye,axes,h:aspect*tangent,v:tangent,far:camera.far||180}];
-      const shadows=quality!=='low'&&fx.shadows!==false;
+      const shadows=shadowsEnabled(fx);
       let sunVolume=null;
       if(shadows){
         const plan=lightPlan(eye);actorLightPlan={eye:eye.slice(),previous:shadowLight,plan};
@@ -3485,7 +3527,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       if(disposed||stats.contextLost) return;
       profiler?.start();fx=fx||{};if(native){autoScale=1;if(fx.adaptive===true)watch.update(fx.frameMs);}else autoScale=governor.update(fx,quality);drawing=true;try{resize();}finally{drawing=false;}
       const reflectionMode=reflections&&['probe','screen'].includes(fx.reflections)?fx.reflections:'off';
-      ensureOptionalTargets(fx,reflectionMode);composeScreen=!!post&&!!options.composition;stats.composition=composeScreen;
+      ensureShadowTarget(fx);ensureOptionalTargets(fx,reflectionMode);composeScreen=!!post&&!!options.composition;stats.composition=composeScreen;
       screenValues[0]=Math.max(0,Math.min(1,fx.damage||0));screenValues[1]=Math.max(0,Math.min(1,fx.pulse||0));screenValues[2]=Number.isFinite(fx.brightness)?Math.max(.5,Math.min(2,fx.brightness)):1;screenValues[3]=fx.vignette===false?0:1;
 
       const t=fx.time||0,shake=fx.shake||0,p=camera.pos||[0,1.6,0];
@@ -3520,7 +3562,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       ordinary.length=overlay.length=particles.length=overlayParticles.length=0;for(const mesh of dynamic||[]) (mesh.overlay?(mesh.fx?overlayParticles:overlay):mesh.fx?particles:ordinary).push(mesh);
       const dynamicBatch=packDynamic(ordinary,environment,true);
       const torchPosition=eye.map((v,i)=>v+right[i]*.16-up[i]*.08);
-      stats.drawCalls=0;stats.triangles=0;stats.instances=0;stats.bloom=!!post&&fx.bloom!==false;stats.shadows=!!shadowTarget&&fx.shadows!==false;stats.shadowMaps=stats.shadows?shadowLights.length+1+(environment?1:0):0;stats.shadowMode=environment?'sun-atlas':'atlas';
+      stats.drawCalls=0;stats.triangles=0;stats.instances=0;stats.bloom=!!post&&fx.bloom!==false;stats.shadows=!!shadowTarget&&shadowsEnabled(fx);stats.shadowMaps=stats.shadows?shadowLights.length+1+(environment?1:0):0;stats.shadowMode=environment?'sun-atlas':'atlas';
       stats.uploadBytes=0;stats.fxInstances=0;
       // Animated instances are shared unchanged by every depth and colour pass.
       if(dynamicBatch.values.length){gl.bindBuffer(gl.ARRAY_BUFFER,dynamicBuffer);gl.bufferData(gl.ARRAY_BUFFER,dynamicBatch.values,gl.DYNAMIC_DRAW);stats.uploadBytes+=dynamicBatch.values.byteLength;}
@@ -3548,9 +3590,9 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       }
       profiler?.end();
       reflections?.beginScreen(post?.scene,reflectionMode);if(reflectionMode==='screen'){gl.clearBufferfv(gl.COLOR,1,new Float32Array(4));gl.drawBuffers([gl.COLOR_ATTACHMENT0]);}
-      // PDR (msaa) : fx.msaa === false coupe l'anticrénelage sans recréer le contexte.
-      const msaa=stats.bloom&&post.msaa&&fx.msaa!==false?post.msaa:null;
-      gl.bindFramebuffer(gl.FRAMEBUFFER,(stats.bloom||composeScreen)?(msaa?msaa.framebuffer:post.scene.framebuffer):null);gl.viewport(0,0,canvas.width,canvas.height);
+      // Le MSAA explicite possède sa cible : un profil sans halo peut lisser l'image sans allumer le post-traitement.
+      const msaa=stats.msaa?msaaBuffer:null;
+      gl.bindFramebuffer(gl.FRAMEBUFFER,msaa?msaa.framebuffer:(stats.bloom||composeScreen)?post.scene.framebuffer:null);gl.viewport(0,0,canvas.width,canvas.height);
       gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);if(environment)skyPass(axes,f,t,weather,fx.cloudOffset||weather.cloudOffset);gl.useProgram(program);gl.bindVertexArray(vao);
       bindScreen(program);bindSkyFog(program);gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);gl.uniform3fv(uniforms.uEye,eye);gl.uniform3fv(uniforms.uForward,forward);
       gl.uniform4fv(uniforms.uSeaOrigin,fx.sea?.origin||[0,0,0,0]);gl.uniform4fv(uniforms.uSeaMotion,fx.sea?.motion||[0,0,-1.25,0]);
@@ -3632,7 +3674,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
         if(overlayClip!==vp)gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);
       }
       if(msaa){
-        gl.bindFramebuffer(gl.READ_FRAMEBUFFER,msaa.framebuffer);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,post.scene.framebuffer);
+        gl.bindFramebuffer(gl.READ_FRAMEBUFFER,msaa.framebuffer);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,(stats.bloom||composeScreen)?post.scene.framebuffer:null);
         gl.blitFramebuffer(0,0,canvas.width,canvas.height,0,0,canvas.width,canvas.height,gl.COLOR_BUFFER_BIT,gl.NEAREST);
         gl.bindFramebuffer(gl.FRAMEBUFFER,null);
       }
@@ -3713,7 +3755,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 (function(G){'use strict';
  const names={passages:'FPassages',tacticalNetwork:'FBrain',loop:'FLoop',scheduler:'FSchedule',jobs:'FJobs',demo:'FDemo',surface:'FSurface',gpuProfile:'FGPUProfile',skies:'FSky',reflections:'FSceneReflections',render:'FRender',backends:'FRenderBackends',physics:'FPhysics',physx:'FPhysX',physicsGeometry:'FPhysicsGeometry',geometry:'FGeometry',vehicleDynamics:'FVehicleDynamics',navigation:'FNavigation',crowd:'FCrowd',crowdWebGPU:'FCrowdWebGPU',materials:'FMaterials',destruction:'FDestruction',input:'FInput',audio:'FAudio',motion:'FMotion',effects:'FEffects',recipes:'FRecipes',math:'FMath',music:'FMusic',musicTransitions:'FImuse'};
  function requireModule(name){const module=G[names[name]];if(!module)throw new Error('FERRO : module '+name+' non chargé.');return module;}
- const api={version:'0.3.5',apiVersion:1,
+ const api={version:'0.3.6',apiVersion:1,
   capabilities(){return Object.fromEntries(Object.entries(names).map(([name,key])=>[name,!!G[key]]));},
   require:requireModule,
   async createRenderer(canvas,options={}){const materials=options.materials||requireModule('materials').create();if(!materials.layers.length)await materials.load();return requireModule('backends').create(canvas,{...options,materials});},
@@ -60122,7 +60164,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
 </script>
 <script>
 // ---- vegetation.js ----
-/* BITUME — végétation basse de Val-Brûlé. Géométrie originale, générée une fois puis instanciée.
+/* BITUME — végétation basse des trois biomes. Géométrie originale, générée une fois puis instanciée.
    Les deux résolutions partagent leurs pieds, extrémités et dimensions ; les plantes restent présentes au loin.
    Aucun fichier de modèle, texture ou son ; aucune dépendance à la simulation ni consommation de son hasard. */
 (function (B) {
@@ -60132,13 +60174,22 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   // Budget historique du palier bas : référence figée, le palier low ne retire ni ne déplace rien.
   const BUDGET = Object.freeze({ stations: 76, herbes: 152, taillis: 76, formes: 4 });
 
-  // Paliers opt-in. low reproduit exactement l'existant (mêmes stations, mêmes comptes, matière 11, deux familles).
-  // medium et high ajoutent familles, stations et densités ; l'échantillonnage change, jamais la silhouette.
+  // low reproduit exactement l'existant (mêmes stations, mêmes comptes, matière 11, deux familles).
+  // Les paliers supérieurs ajoutent un tapis bas entre les massifs historiques. Ultra réemploie les formes High :
+  // plus d'instances, pas de nouvelle famille de maillage ni de nouvelle passe de rendu.
   // `groupes` = formes distinctes au plus par lot et par passe. `sol` = recette de terreau sous les fougères.
   const PALIERS = Object.freeze({
     low: Object.freeze({ stations: 76, herbes: 2, fougeres: 0, fleurs: 0, taillis: .58, mat: 11, sol: 11, groupes: 2, familles: ['herbes', 'taillis'] }),
     medium: Object.freeze({ stations: 112, herbes: 3, fougeres: 1, fleurs: 0, taillis: .74, mat: 27, sol: 25, groupes: 4, familles: ['herbes', 'fougères', 'taillis'] }),
     high: Object.freeze({ stations: 150, herbes: 4, fougeres: 2, fleurs: 3, taillis: .88, mat: 27, sol: 25, groupes: 5, familles: ['herbes', 'fougères', 'fleurs', 'taillis'] }),
+    ultra: Object.freeze({ stations: 150, herbes: 4, fougeres: 2, fleurs: 3, taillis: .88, mat: 27, sol: 25, groupes: 5, familles: ['herbes', 'fougères', 'fleurs', 'taillis'] }),
+  });
+  // Maille exprimée en mètres : un long circuit garde une couverture comparable. Le plafond borne le nombre
+  // d'instances supplémentaires, même sur une piste créée avec une longueur inhabituelle.
+  const TAPIS = Object.freeze({
+    medium: Object.freeze({ pas: 8, rangees: 1, maximum: 1400 }),
+    high: Object.freeze({ pas: 4, rangees: 2, maximum: 4800 }),
+    ultra: Object.freeze({ pas: 2, rangees: 2, maximum: 9600 }),
   });
 
   // Biomes réellement dessinés par le décor (mêmes noms que THEMES de decor.js). Un biome absent retourne des lots vides.
@@ -60167,7 +60218,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   // Sans palier demandé, le profil historique : un appel qui ne nomme pas le palier (tests, outil de
   // comparaison avant/après, consommateur externe) retrouve exactement la végétation d'avant le chantier.
   function normaliserQualite(q) {
-    return q === 'medium' || q === 'high' ? q : 'low';
+    return q === 'medium' || q === 'high' || q === 'ultra' || q === 'off' ? q : 'low';
   }
 
   function hasard(graine) {
@@ -60372,7 +60423,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     const { limites, interroger } = options;
     const qualite = normaliserQualite(options.qualite);
     const vide = { lots: [], herbes: 0, fougeres: 0, fleurs: 0, taillis: 0, qualite };
-    if (!c || !limites || !interroger) return vide;
+    if (qualite === 'off' || !c || !limites || !interroger) return vide;
     const biome = BIOMES[c.theme];
     if (!biome) return vide;
     // Un biome que le décor ne connaît pas n'a pas d'accotement dessiné : rien à végétaliser.
@@ -60382,12 +60433,16 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     let herbes = 0, fougeres = 0, fleurs = 0, taillis = 0;
     const stations = Math.max(1, Math.round(palier.stations * biome.stations));
     const pas = Math.max(1, Math.ceil(c.n / stations));
-    function ajouter(i, d, famille, angle, taille, color, mat) {
+    function ajouter(i, d, famille, angle, taille, color, mat, tapis = false) {
+      // Chaque plante vérifie sa propre abscisse, pas seulement celle du début du massif : les décalages
+      // internes d'une touffe ne doivent pas rentrer par le portail ou dans la zone des stands.
+      if (qualite !== 'low' && interdit(i)) return false;
       const a = c.cap[i], x = c.x[i] - Math.sin(a) * d, z = c.z[i] + Math.cos(a) * d;
       const q = interroger(x, z, 40), marge = Math.hypot(taille[0], taille[2]) / 2 + .18;
       if (q.i < 0 || q.d < w + 1.2 + marge || Math.abs(B.circuit.ecart(c, i * c.pas, q.i * c.pas)) > 20) return false;
+      if (qualite !== 'low' && interdit(q.i)) return false;
       const cote = d < 0 ? -1 : 1, limite = cote < 0 ? limites.G[i] : limites.D[i];
-      if (Math.abs(d) + marge > limite - .7) return false;
+      if (Math.abs(d) + marge > limite - (tapis ? 1.6 : .7)) return false;
       // Même bande d'accotement que nappesRoute(), pied légèrement enterré, dévers arrêté au bord de piste.
       const ext = limite + 4, u = (Math.abs(d) - w - 1.2) / (ext - w - 1.2);
       const bord = c.y[i] - cote * w * Math.sin(c.devers[i]);
@@ -60419,6 +60474,47 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
         const b = biome.taillis, n = biome.taillisNuance, t = hasardStation[3];
         if (ajouter(i, cote * Math.min(limite - 2.3, Math.abs(d) + 2.5), 'taillis', hasardStation[4] * PI2,
           [largeur, h, largeur * .85], [b[0] + n[0] * t, b[1] + n[1] * t, b[2] + n[2] * t], palier.mat)) taillis++;
+      }
+    }
+
+    // Tapis de graminées : deux accotements peuplés, hauteurs courtes variées et plaques irrégulières. La graine
+    // est indépendante des massifs et du circuit. Les mailles 8 / 4 / 2 m sont emboîtées ; une densité supérieure
+    // conserve les touffes du tapis déjà présentes (hors plafonnement), en ajoute entre elles et élargit la bande.
+    const tapis = TAPIS[qualite];
+    if (tapis) {
+      const base = Math.max(1, Math.round(2 / c.pas));
+      const saut = Math.max(1, Math.round(tapis.pas / (base * c.pas)));
+      // Répartir le plafond sur le tour, sans remplir seulement le début d'un très long circuit.
+      const cellules = Math.ceil(c.n / base), candidats = Math.ceil(cellules / saut) * 2 * tapis.rangees;
+      let poses = 0;
+      for (let cellule = 0; cellule < cellules && poses < tapis.maximum; cellule += saut) {
+        const i = Math.min(c.n - 1, cellule * base);
+        if (interdit(i)) continue;
+        for (const cote of [-1, 1]) for (let rang = 0; rang < tapis.rangees && poses < tapis.maximum; rang++) {
+          if (candidats > tapis.maximum) {
+            const k = (Math.floor(cellule / saut) * 2 + (cote > 0 ? 1 : 0)) * tapis.rangees + rang;
+            if (Math.floor((k + 1) * tapis.maximum / candidats) === Math.floor(k * tapis.maximum / candidats)) continue;
+          }
+          // Un générateur par candidat évite qu'une plante refusée déplace toutes les suivantes.
+          const rt = hasard((c.graine ^ 0x4f1b7d93 ^ Math.imul(cellule + 1, 0x45d9f3b)
+            ^ Math.imul(rang + 1, 0x119de1f3) ^ (cote < 0 ? 0x6a09e667 : 0xbb67ae85)) >>> 0);
+          const t = [rt(), rt(), rt(), rt(), rt(), rt(), rt()];
+          if (t[0] > .72 + biome.densite * .25) continue;
+          const j = (i + (rang ? Math.max(1, Math.round(saut * base / 2)) : 0)) % c.n;
+          if (interdit(j)) continue;
+          const limite = cote < 0 ? limites.G[j] : limites.D[j];
+          const largeur = (1.05 + t[1] * .68) * biome.taille;
+          const h = (.19 + t[2] * .23) * biome.taille;
+          const profondeur = largeur * (.72 + t[3] * .25);
+          const marge = Math.hypot(largeur, profondeur) / 2 + .18;
+          const debut = w + 1.2 + marge + .12;
+          const fin = Math.min(limite - 1.65 - marge, w + 6.8);
+          if (fin <= debut) continue;
+          const d = cote * (debut + (fin - debut) * (.08 + .42 * rang + t[4] * .44));
+          const vert = .78 + t[5] * .34, b = biome.herbe;
+          if (ajouter(j, d, 'herbes', t[6] * PI2, [largeur, h, profondeur],
+            [b[0] * vert, b[1] * vert, b[2] * vert], palier.mat, true)) { herbes++; poses++; }
+        }
       }
     }
 
@@ -60486,7 +60582,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     return { lots, herbes, fougeres, fleurs, taillis, qualite };
   }
 
-  B.vegetation = { FORMES, FORMES_AJOUT, BUDGET, PALIERS, BIOMES, JEU_FORMES, forme, installer, construire };
+  B.vegetation = { FORMES, FORMES_AJOUT, BUDGET, PALIERS, TAPIS, BIOMES, JEU_FORMES, forme, installer, construire };
   // La page enregistre d'emblée toutes les formes : un changement de palier ne doit pas demander
   // d'ajouter une forme après FRender.create. Le registre du palier bas reste les quatre formes historiques.
   installer(typeof window !== 'undefined' ? window.FRender : globalThis.FRender, 'high');
@@ -61216,9 +61312,12 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     if (tunnelLampes) decor.tunnelLampes = tunnelLampes;
     // Végétation basse : générateur et lots indépendants. Le décor historique et ses solides restent identiques ;
     // vegetation:false permet une comparaison avant/après avec exactement les mêmes obstacles. Le module choisit
-    // lui-même les biomes qu'il sait habiller et retourne des lots vides pour les autres.
-    if (B.vegetation && options.vegetation !== false) {
-      const v = B.vegetation.construire(c, { limites: lim, interroger, qualite });
+    // lui-même les biomes qu'il sait habiller et retourne des lots vides pour les autres. La densité nommée
+    // vegetationQualite surcharge seulement les plantes : ni les arbres, ni leurs collisions, ni leurs matières.
+    const vegetationQualite = ['off', 'low', 'medium', 'high', 'ultra'].includes(options.vegetationQualite)
+      ? options.vegetationQualite : qualite;
+    if (B.vegetation && options.vegetation !== false && vegetationQualite !== 'off') {
+      const v = B.vegetation.construire(c, { limites: lim, interroger, qualite: vegetationQualite });
       lots.push(...v.lots);
       decor.vegetation = { herbes: v.herbes, fougeres: v.fougeres, fleurs: v.fleurs, taillis: v.taillis,
         lots: v.lots.length, qualite: v.qualite };
@@ -63637,17 +63736,22 @@ globalThis.FGeometry=globalThis.BITUME.carene;
 </script>
 <script>
 // ---- graphismes.js ----
-/* BITUME — profils graphiques du menu Image : Low / Medium / High + Auto.
+/* BITUME — profils graphiques et réglages indépendants d'anticrénelage, d'ombres et de végétation.
    Le module ne rend rien : il ne calcule que des décisions (nombres et interrupteurs). Aucun DOM, aucun moteur,
    aucun asset, aucun réseau. C'est src/jeu.js qui applique : rendu.resize, rendu.draw, B.decor.construire,
    majGlaces et la vue du second joueur.
-   Les valeurs des paliers viennent des bornes réelles du moteur (src/moteur/renderer.js, FERRO 0.3.5), relues aux
-   lignes indiquées en commentaire : une valeur hors de ces bornes serait silencieusement ignorée par le moteur. */
+   Les valeurs restent dans les bornes du moteur : MSAA 4× et atlas d'ombres à deux échelles. Les choix explicites
+   priment sur le profil et sur Auto, puis les capacités réellement ouvertes par le moteur bornent le résultat. */
 (function (B) {
   'use strict';
 
   const PALIERS = Object.freeze(['low', 'medium', 'high']);
   const QUALITES = Object.freeze(['low', 'medium', 'high', 'auto']);
+  const OPTIONS = Object.freeze({
+    anticrenelage: Object.freeze(['profil', 'off', 'msaa4']),
+    ombres: Object.freeze(['profil', 'off', 'medium', 'high']),
+    vegetation: Object.freeze(['profil', 'off', 'low', 'medium', 'high', 'ultra']),
+  });
 
   // ---------------------------------------------------------------- bornes du moteur (à ne pas dépasser)
   const MSAA_ACCEPTE = 4;            // settings(), renderer.js:2058 : config.msaa = (o.msaa === 4), sinon 0
@@ -63689,7 +63793,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     medium: {
       palier: 'medium', libelle: 'Moyenne',
       rendu: {
-        msaa: 4,              // le moteur n'ouvre la cible MSAA qu'avec le bloom (renderer.js:2215) : les deux vont ensemble
+        msaa: 4,              // anticrénelage de la géométrie, indépendant du halo
         shadowMapScale: 1,    // tuile de 512 : une ombre du soleil un peu douce vaut mieux qu'un atlas doublé payé deux fois
         vignette: .59,
         bloomThreshold: BLOOM_DEFAUT,
@@ -63738,6 +63842,14 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     if (QUALITES.indexOf(v) >= 0) return v;
     return ANCIENNES[v] || 'auto'; // une valeur enregistrée par une ancienne version ne doit jamais bloquer le menu
   }
+  function normaliserOptions(reglages) {
+    const source = reglages || {}, resultat = {};
+    for (const cle of Object.keys(OPTIONS)) {
+      const v = typeof source[cle] === 'string' ? source[cle].trim().toLowerCase() : '';
+      resultat[cle] = OPTIONS[cle].includes(v) ? v : 'profil';
+    }
+    return Object.freeze(resultat);
+  }
   const estPalier = v => typeof v === 'string' && PALIERS.indexOf(v) >= 0;
 
   function profil(palier) {
@@ -63782,7 +63894,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const o = options || {};
     const logiciel = o.logiciel === true; // le repli Canvas 2D ignore ombres, bloom, MSAA et reflets
     return figer({
-      msaa: o.msaa === MSAA_ACCEPTE,
+      msaa: !logiciel && o.msaa === MSAA_ACCEPTE,
       shadowMapScale: o.shadowMapScale === ATLAS_MAX ? ATLAS_MAX : 1,
       reflets: !logiciel && o.reflections !== false,
       ombres: !logiciel,
@@ -63813,19 +63925,20 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   }
 
   // ---------------------------------------------------------------- l'objet réellement appliqué
-  // gardeFous : les capacités du moteur, et éventuellement `decor`, l'ancre du décor prise au démarrage de la séance.
+  // gardeFous : les capacités du moteur, `options` (choix du menu) et éventuellement `decor`, l'ancre du décor.
   // Ancre : le gouverneur ne fait JAMAIS varier le décor en cours de course. Sans ancre, le décor suit le palier
   // résolu (choix explicite du menu, ou première décision d'Auto avant la course).
   function melange(qualite, palierAuto, gardeFous) {
     const g = gardeFous || {};
     const c = capacitesDe(g);
+    const options = normaliserOptions(g.options);
     const q = normaliser(qualite), p = profil(resoudre(q, palierAuto));
     const coupes = q === 'auto' ? TABLE_GOUVERNEUR[niveauDe(palierAuto)] : null;
     const veut = (demande, cle) => demande && !!c[cle] && !(coupes && coupes[cle]);
 
     const halo = veut(p.effets.halo, 'halo');
     const effets = {
-      ombres: veut(p.effets.ombres, 'ombres'),
+      ombres: options.ombres === 'profil' ? veut(p.effets.ombres, 'ombres') : options.ombres !== 'off' && !!c.ombres,
       halo,
       // Le moteur n'allume les reflets d'écran que si la capacité est ouverte ET avec le bloom
       // (wantReflections, renderer.js:2216), et le jeu les refuse sur un GPU modeste (jeu.js:1320).
@@ -63833,10 +63946,14 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       retroImages: veut(p.effets.retroImages, 'retroviseurs'),
     };
 
+    // Auto conserve sa réduction de coût au niveau 3 et le GPU modeste son réglage prudent par défaut.
+    // Un choix manuel de MSAA reste cependant actif sans halo, même en Légère ou au dernier palier d'Auto.
+    const msaaProfil = !c.gpuModeste && !(coupes && coupes.halo) ? p.rendu.msaa : 0;
+    const msaaDemande = options.anticrenelage === 'profil' ? msaaProfil : options.anticrenelage === 'msaa4' ? MSAA_ACCEPTE : 0;
+    const atlasDemande = options.ombres === 'profil' ? (c.gpuModeste ? 1 : p.rendu.shadowMapScale) : options.ombres === 'high' ? ATLAS_MAX : 1;
     const rendu = {
-      // wantMsaa = config.msaa && bloom (renderer.js:2215) : sans halo, la cible MSAA ne serait jamais montée.
-      msaa: effets.halo && c.msaa ? p.rendu.msaa : 0,
-      shadowMapScale: effets.ombres ? Math.max(1, Math.min(ATLAS_MAX, c.shadowMapScale, p.rendu.shadowMapScale)) : 1,
+      msaa: c.msaa ? msaaDemande : 0,
+      shadowMapScale: effets.ombres ? Math.max(1, Math.min(ATLAS_MAX, c.shadowMapScale, atlasDemande)) : 1,
       vignette: bornes(p.rendu.vignette, 0, 1, .59),
       bloomThreshold: figer(seuilsDeBloom(p.rendu.bloomThreshold)),
       resolution: resolutionDe(q, p, c, coupes),
@@ -63844,13 +63961,14 @@ globalThis.FGeometry=globalThis.BITUME.carene;
 
     const ancre = estPalier(g.decor) ? g.decor : p.palier;
     const decorProfil = PROFILS[ancre];
+    const vegetationQualite = options.vegetation === 'profil' ? (decorProfil.decor.vegetation ? ancre : 'off') : options.vegetation;
     const glaces = effets.retroImages ? p.secondaires.retroviseurs.glaces : 0;
     const hz = effets.retroImages ? p.secondaires.retroviseurs.hz : 0;
 
     return figer({
       palier: p.palier, libelle: p.libelle, qualite: q,
       rendu, effets,
-      decor: { matieres: decorProfil.decor.matieres, vegetation: decorProfil.decor.vegetation },
+      decor: { matieres: decorProfil.decor.matieres, vegetation: vegetationQualite !== 'off', vegetationQualite },
       // Le module ne produit jamais de portée de culling : le moteur coupe par fondu (decor.js:674, portee Infinity).
       lod: { bascule: p.lod.bascule },
       secondaires: {
@@ -63943,8 +64061,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   }
 
   B.graphismes = {
-    PALIERS, QUALITES, PROFILS, TABLE_GOUVERNEUR, NIVEAU_MAX, RESOLUTION_PALIER_4, STABILISATION, RECONSTRUCTION,
-    normaliser, estPalier, profil, resoudre, capacites, melange, budget, budgets, stabiliser, etatStable,
+    PALIERS, QUALITES, OPTIONS, PROFILS, TABLE_GOUVERNEUR, NIVEAU_MAX, RESOLUTION_PALIER_4, STABILISATION, RECONSTRUCTION,
+    normaliser, normaliserOptions, estPalier, profil, resoudre, capacites, melange, budget, budgets, stabiliser, etatStable,
   };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
@@ -63973,8 +64091,11 @@ FERRO.initPhysics().then(function(){
   function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
   function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
+    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
+  reglages.qualite = B.graphismes.normaliser(reglages.qualite);
+  Object.assign(reglages, B.graphismes.normaliserOptions(reglages));
   // Champ du cockpit : 69° n'a été le défaut que l'après-midi du 16/11, et David le trouve trop large (« fov moins
   // prononcé »). Une valeur restée à 69 revient une seule fois au défaut ; tout autre choix du pilote est gardé.
   if (!reglages.champRevu) { if (+reglages.champ === 69) reglages.champ = DEFAUT.champ; reglages.champRevu = true; }
@@ -64072,12 +64193,15 @@ FERRO.initPhysics().then(function(){
   function installer(i) {
     // Le décor est bâti sur un palier « ancre » (voir « profils graphiques du menu ») : la même piste ne se
     // reconstruit pas à chaque fluctuation du gouverneur, seulement quand l'ancre ou l'enrichissement change.
-    const ancre = etatProfils.decor, veut = B.graphismes.profil(ancre).decor;
-    if (scene && scene.index === i && scene.enrichi === decorEnrichi && scene.palier === ancre) return scene;
+    const ancre = etatProfils.decor;
+    const veut = B.graphismes.melange(ancre, 0, { decor: ancre, capacites: capacitesRendu, options: reglages }).decor;
+    const vegetationQualite = decorEnrichi ? veut.vegetationQualite : 'off';
+    if (scene && scene.index === i && scene.enrichi === decorEnrichi && scene.palier === ancre && scene.vegetationQualite === vegetationQualite) return scene;
     const c = circuit(i), decor = B.decor.construire(c, {
       qualite: ancre,
       matieres: decorEnrichi && veut.matieres,
       vegetation: decorEnrichi && veut.vegetation,
+      vegetationQualite,
     });
     if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
@@ -64090,7 +64214,7 @@ FERRO.initPhysics().then(function(){
     // profondeur du volume d'ombre : un point du sol au bord du carré est décalé de OMBRE × cotangente de la hauteur du soleil
     const sol = decor.atmosphere.sunDirection, sinus = sol[1] / Math.hypot(sol[0], sol[1], sol[2]);
     const ombre = { extent: OMBRE, depth: 2 * (OMBRE * Math.sqrt(Math.max(0, 1 - sinus * sinus)) / Math.max(.25, sinus) + 30) };
-    scene = { index: i, enrichi: decorEnrichi, palier: ancre, c, decor, fond, plan: p, ombre };
+    scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, c, decor, fond, plan: p, ombre };
     return scene;
   }
 
@@ -65269,7 +65393,7 @@ FERRO.initPhysics().then(function(){
   const horlogeProfils = () => performance.now() / 1000;
   function profilDe(S) {
     return B.graphismes.melange(S && S.banc ? S.banc.qualite : reglages.qualite, palier.n,
-      Object.assign({ decor: etatProfils.decor }, capacitesRendu));
+      { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages });
   }
   // Le décor (matières et massifs) est bâti une fois par séance sur un palier « ancre ». Le gouverneur Auto ne le
   // fait jamais bouger en pleine course : rebâtir nappes, lots et tampons au milieu d'une course toucherait les
@@ -65628,7 +65752,7 @@ FERRO.initPhysics().then(function(){
     // Halo/bloom : ouverts ou fermés par le profil résolu (menu, gouverneur et capacités du moteur)
     const haloInt = avecHalo(P);
     const tDraw = B.mesures.actif ? performance.now() : 0;
-    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: P.qualite === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: B.meteo.ambiance(meteo) });
+    rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: P.qualite === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: B.meteo.ambiance(meteo) });
     if (B.mesures.actif) {
       B.mesures.section('rendu', performance.now() - tDraw);
       B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
@@ -65991,6 +66115,12 @@ FERRO.initPhysics().then(function(){
         if (rendu) appliquerPalier();
       }
     }
+    if (Object.prototype.hasOwnProperty.call(B.graphismes.OPTIONS, t.name)) {
+      reglages[t.name] = B.graphismes.normaliserOptions({ [t.name]: t.value })[t.name];
+      sauverReglages();
+      // AA et ombres sont lus au prochain rendu, sans recréer le contexte. La végétation suit la prochaine
+      // séance : aucun rebâtiment du terrain ni changement d'obstacles au milieu d'une course.
+    }
     if (t.name === 'aide') { reglages.aide = +t.value; sauverReglages(); }
   });
   for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).addEventListener('input', e => { reglages[nom] = +e.target.value; sauverReglages(); appliquerVolumes(); });
@@ -66060,7 +66190,7 @@ FERRO.initPhysics().then(function(){
   }, { capture: true });
   function remplirReglages() {
     captureTouche = null; majCommandes();
-    for (const nom of ['vue', 'boite', 'qualite', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    for (const nom of ['vue', 'boite', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     $('v-carte').checked = reglages.carte !== 'non';
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
     $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';
@@ -66265,8 +66395,9 @@ FERRO.initPhysics().then(function(){
 
   // ---------------------------------------------------------------- démarrage
   // Petites configurations (David, 16/11 : « faire tourner ce jeu sur des petites configs type ordi portable de
-  // bureau ») : un processeur graphique intégré ou logiciel est reconnu dès le départ ; le rendu part alors sans
+  // bureau ») : un processeur graphique intégré ou logiciel est reconnu dès le départ ; le profil part alors sans
   // anticrénelage, avec une carte d'ombres simple, et la qualité Auto commence un palier plus bas (voir paliers).
+  // Les capacités restent ouvertes pour un choix manuel ; FERRO n'alloue les cibles qu'au moment de les utiliser.
   let gpuModeste = false;
   function webgl2() {
     try {
@@ -66286,7 +66417,7 @@ FERRO.initPhysics().then(function(){
   function demarrer() {
     if (!webgl2()) { erreur('WebGL2 indisponible', 'BITUME dessine la piste avec WebGL2. Ouvrez la page dans un navigateur récent (Chrome, Edge, Firefox, Safari 15 ou plus) avec l’accélération graphique active.'); return; }
     try {
-      const optionsRendu = { msaa: gpuModeste ? 0 : 4, shadowMapScale: gpuModeste ? 1 : 2, reflections: !gpuModeste, sea: false, overlayLighting: 'world' };
+      const optionsRendu = { msaa: 4, shadowMapScale: 2, reflections: !gpuModeste, sea: false, overlayLighting: 'world' };
       rendu = window.FRender.create(canvas, optionsRendu);
       // ce que le moteur a réellement ouvert, et non ce que le menu demande : src/graphismes.js ne promet pas
       // une capacité que FRender.create aurait refusée (msaa, atlas d'ombres, reflets d'écran)
@@ -66355,10 +66486,11 @@ FERRO.initPhysics().then(function(){
     const depart = options.depart === 'tunnel' ? c.tunnel.debut - 40 : (options.depart ?? 800);
     if (!Number.isFinite(depart)) throw new Error('abscisse de départ invalide');
     restaurerReference();
-    const cles = ['vue', 'vue2', 'partage', 'qualite', 'retro', 'meteo', 'pneus', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
+    const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'retro', 'meteo', 'pneus', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
     const avant = Object.fromEntries(cles.map(k => [k, reglages[k]])), decorAvant = decorEnrichi;
     Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, secousses: 0, vibrations: 'non', champ: 60,
       pneus: B.conduite.pneusConseilles(B.conduite.eauSurPiste(B.meteo.pour(meteo))) });
+    Object.assign(reglages, B.graphismes.normaliserOptions(options));
     decorEnrichi = options.decor !== 'reference';
     graineCourse = graine - 1;
     // l'ancre du décor se fixe avant la construction de la scène : une séance de référence est filmée au palier demandé
@@ -66388,7 +66520,7 @@ FERRO.initPhysics().then(function(){
     Object.assign(palier, { n: gpuModeste ? 1 : 0, somme: 0, compte: 0, t: 0, aise: 0 });
     for (const G of [retro.j1, retro.j2]) if (G) { G.cote = 0; delete G.lampes0; delete G.lampes1; }
     S.reference = { graine, circuit: i, circuitId: CATALOGUE[i].id, graineCircuit: CATALOGUE[i].graine,
-      mode, qualite, difficulte, tours, pilote, vue, vue2, partage, retro: glaces, meteo, mouille, depart: ramener(depart, c.longueur), vitesse,
+      mode, qualite, ...B.graphismes.normaliserOptions(reglages), difficulte, tours, pilote, vue, vue2, partage, retro: glaces, meteo, mouille, depart: ramener(depart, c.longueur), vitesse,
       decor: decorEnrichi ? 'enrichi' : 'reference', tunnel: c.tunnel ? { debut: c.tunnel.debut, fin: c.tunnel.fin } : null };
     $('chargement').classList.add('fini'); aller('course'); appliquerPalier();
     B.mesures.reinitialiser();

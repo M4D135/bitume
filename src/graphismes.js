@@ -1,14 +1,19 @@
-/* BITUME — profils graphiques du menu Image : Low / Medium / High + Auto.
+/* BITUME — profils graphiques et réglages indépendants d'anticrénelage, d'ombres et de végétation.
    Le module ne rend rien : il ne calcule que des décisions (nombres et interrupteurs). Aucun DOM, aucun moteur,
    aucun asset, aucun réseau. C'est src/jeu.js qui applique : rendu.resize, rendu.draw, B.decor.construire,
    majGlaces et la vue du second joueur.
-   Les valeurs des paliers viennent des bornes réelles du moteur (src/moteur/renderer.js, FERRO 0.3.5), relues aux
-   lignes indiquées en commentaire : une valeur hors de ces bornes serait silencieusement ignorée par le moteur. */
+   Les valeurs restent dans les bornes du moteur : MSAA 4× et atlas d'ombres à deux échelles. Les choix explicites
+   priment sur le profil et sur Auto, puis les capacités réellement ouvertes par le moteur bornent le résultat. */
 (function (B) {
   'use strict';
 
   const PALIERS = Object.freeze(['low', 'medium', 'high']);
   const QUALITES = Object.freeze(['low', 'medium', 'high', 'auto']);
+  const OPTIONS = Object.freeze({
+    anticrenelage: Object.freeze(['profil', 'off', 'msaa4']),
+    ombres: Object.freeze(['profil', 'off', 'medium', 'high']),
+    vegetation: Object.freeze(['profil', 'off', 'low', 'medium', 'high', 'ultra']),
+  });
 
   // ---------------------------------------------------------------- bornes du moteur (à ne pas dépasser)
   const MSAA_ACCEPTE = 4;            // settings(), renderer.js:2058 : config.msaa = (o.msaa === 4), sinon 0
@@ -50,7 +55,7 @@
     medium: {
       palier: 'medium', libelle: 'Moyenne',
       rendu: {
-        msaa: 4,              // le moteur n'ouvre la cible MSAA qu'avec le bloom (renderer.js:2215) : les deux vont ensemble
+        msaa: 4,              // anticrénelage de la géométrie, indépendant du halo
         shadowMapScale: 1,    // tuile de 512 : une ombre du soleil un peu douce vaut mieux qu'un atlas doublé payé deux fois
         vignette: .59,
         bloomThreshold: BLOOM_DEFAUT,
@@ -99,6 +104,14 @@
     if (QUALITES.indexOf(v) >= 0) return v;
     return ANCIENNES[v] || 'auto'; // une valeur enregistrée par une ancienne version ne doit jamais bloquer le menu
   }
+  function normaliserOptions(reglages) {
+    const source = reglages || {}, resultat = {};
+    for (const cle of Object.keys(OPTIONS)) {
+      const v = typeof source[cle] === 'string' ? source[cle].trim().toLowerCase() : '';
+      resultat[cle] = OPTIONS[cle].includes(v) ? v : 'profil';
+    }
+    return Object.freeze(resultat);
+  }
   const estPalier = v => typeof v === 'string' && PALIERS.indexOf(v) >= 0;
 
   function profil(palier) {
@@ -143,7 +156,7 @@
     const o = options || {};
     const logiciel = o.logiciel === true; // le repli Canvas 2D ignore ombres, bloom, MSAA et reflets
     return figer({
-      msaa: o.msaa === MSAA_ACCEPTE,
+      msaa: !logiciel && o.msaa === MSAA_ACCEPTE,
       shadowMapScale: o.shadowMapScale === ATLAS_MAX ? ATLAS_MAX : 1,
       reflets: !logiciel && o.reflections !== false,
       ombres: !logiciel,
@@ -174,19 +187,20 @@
   }
 
   // ---------------------------------------------------------------- l'objet réellement appliqué
-  // gardeFous : les capacités du moteur, et éventuellement `decor`, l'ancre du décor prise au démarrage de la séance.
+  // gardeFous : les capacités du moteur, `options` (choix du menu) et éventuellement `decor`, l'ancre du décor.
   // Ancre : le gouverneur ne fait JAMAIS varier le décor en cours de course. Sans ancre, le décor suit le palier
   // résolu (choix explicite du menu, ou première décision d'Auto avant la course).
   function melange(qualite, palierAuto, gardeFous) {
     const g = gardeFous || {};
     const c = capacitesDe(g);
+    const options = normaliserOptions(g.options);
     const q = normaliser(qualite), p = profil(resoudre(q, palierAuto));
     const coupes = q === 'auto' ? TABLE_GOUVERNEUR[niveauDe(palierAuto)] : null;
     const veut = (demande, cle) => demande && !!c[cle] && !(coupes && coupes[cle]);
 
     const halo = veut(p.effets.halo, 'halo');
     const effets = {
-      ombres: veut(p.effets.ombres, 'ombres'),
+      ombres: options.ombres === 'profil' ? veut(p.effets.ombres, 'ombres') : options.ombres !== 'off' && !!c.ombres,
       halo,
       // Le moteur n'allume les reflets d'écran que si la capacité est ouverte ET avec le bloom
       // (wantReflections, renderer.js:2216), et le jeu les refuse sur un GPU modeste (jeu.js:1320).
@@ -194,10 +208,14 @@
       retroImages: veut(p.effets.retroImages, 'retroviseurs'),
     };
 
+    // Auto conserve sa réduction de coût au niveau 3 et le GPU modeste son réglage prudent par défaut.
+    // Un choix manuel de MSAA reste cependant actif sans halo, même en Légère ou au dernier palier d'Auto.
+    const msaaProfil = !c.gpuModeste && !(coupes && coupes.halo) ? p.rendu.msaa : 0;
+    const msaaDemande = options.anticrenelage === 'profil' ? msaaProfil : options.anticrenelage === 'msaa4' ? MSAA_ACCEPTE : 0;
+    const atlasDemande = options.ombres === 'profil' ? (c.gpuModeste ? 1 : p.rendu.shadowMapScale) : options.ombres === 'high' ? ATLAS_MAX : 1;
     const rendu = {
-      // wantMsaa = config.msaa && bloom (renderer.js:2215) : sans halo, la cible MSAA ne serait jamais montée.
-      msaa: effets.halo && c.msaa ? p.rendu.msaa : 0,
-      shadowMapScale: effets.ombres ? Math.max(1, Math.min(ATLAS_MAX, c.shadowMapScale, p.rendu.shadowMapScale)) : 1,
+      msaa: c.msaa ? msaaDemande : 0,
+      shadowMapScale: effets.ombres ? Math.max(1, Math.min(ATLAS_MAX, c.shadowMapScale, atlasDemande)) : 1,
       vignette: bornes(p.rendu.vignette, 0, 1, .59),
       bloomThreshold: figer(seuilsDeBloom(p.rendu.bloomThreshold)),
       resolution: resolutionDe(q, p, c, coupes),
@@ -205,13 +223,14 @@
 
     const ancre = estPalier(g.decor) ? g.decor : p.palier;
     const decorProfil = PROFILS[ancre];
+    const vegetationQualite = options.vegetation === 'profil' ? (decorProfil.decor.vegetation ? ancre : 'off') : options.vegetation;
     const glaces = effets.retroImages ? p.secondaires.retroviseurs.glaces : 0;
     const hz = effets.retroImages ? p.secondaires.retroviseurs.hz : 0;
 
     return figer({
       palier: p.palier, libelle: p.libelle, qualite: q,
       rendu, effets,
-      decor: { matieres: decorProfil.decor.matieres, vegetation: decorProfil.decor.vegetation },
+      decor: { matieres: decorProfil.decor.matieres, vegetation: vegetationQualite !== 'off', vegetationQualite },
       // Le module ne produit jamais de portée de culling : le moteur coupe par fondu (decor.js:674, portee Infinity).
       lod: { bascule: p.lod.bascule },
       secondaires: {
@@ -304,7 +323,7 @@
   }
 
   B.graphismes = {
-    PALIERS, QUALITES, PROFILS, TABLE_GOUVERNEUR, NIVEAU_MAX, RESOLUTION_PALIER_4, STABILISATION, RECONSTRUCTION,
-    normaliser, estPalier, profil, resoudre, capacites, melange, budget, budgets, stabiliser, etatStable,
+    PALIERS, QUALITES, OPTIONS, PROFILS, TABLE_GOUVERNEUR, NIVEAU_MAX, RESOLUTION_PALIER_4, STABILISATION, RECONSTRUCTION,
+    normaliser, normaliserOptions, estPalier, profil, resoudre, capacites, melange, budget, budgets, stabiliser, etatStable,
   };
 })(globalThis.BITUME = globalThis.BITUME || {});

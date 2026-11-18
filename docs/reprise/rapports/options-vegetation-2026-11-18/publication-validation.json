@@ -1,0 +1,74 @@
+{
+  "date_utc": "2026-11-18T07:39:16.877962+00:00",
+  "base": "b094dc4d25bf9a16d0c21044226d29879ab93dab",
+  "scope": "Revalidation ciblee de publication des sources recuperees, sans modification fonctionnelle. Les 46 suites completes restent les preuves anterieures.",
+  "checks": [
+    {
+      "command": "node verifications/graphismes.test.mjs",
+      "exit": 0,
+      "seconds": 0.086,
+      "last_lines": [
+        "ok stabiliser : un choix explicite du menu s'applique à l'image",
+        "ok le module se charge et décide sans DOM ni moteur",
+        "graphismes : 22 contrôles passés"
+      ]
+    },
+    {
+      "command": "node verifications/vegetation.test.mjs",
+      "exit": 0,
+      "seconds": 3.576,
+      "last_lines": [
+        "    }",
+        "  }",
+        "}"
+      ]
+    },
+    {
+      "command": "node verifications/options-image.test.mjs",
+      "exit": 0,
+      "seconds": 0.055,
+      "last_lines": [
+        "ok reference(options) applique les surcharges et restitue les préférences précédentes",
+        "ok références successives sans options reviennent au profil, puis aux choix antérieurs",
+        "options image : 6 contrôles passés"
+      ]
+    },
+    {
+      "command": "node verifications/decor.test.mjs",
+      "exit": 0,
+      "seconds": 0.387,
+      "last_lines": [
+        "forêt : 18 vérifications passées"
+      ]
+    },
+    {
+      "command": "python3 tools/check-ferro-lock.py",
+      "exit": 0,
+      "seconds": 0.032,
+      "last_lines": [
+        "FERRO 0.3.6: 34 reference modules verified"
+      ]
+    },
+    {
+      "command": "python3 construire.py",
+      "exit": 0,
+      "seconds": 0.722,
+      "last_lines": [
+        "FERRO 0.3.6: 34 reference modules verified",
+        "CONSTRUIT  /workspace/scratch/91b494a5f0bb/bitume/dist/bitume.html  version 0.2.29, 13007872 octets, 3004365 compressés, sha256 969f211ec815ac28"
+      ]
+    }
+  ],
+  "hashes_before": {
+    "dist/bitume.html": "969f211ec815ac28601761e5c5dfb1a7eea17e151f0c17d9ea9978e3bac5f2df",
+    "SIZE.json": "4e8b41db1c6ece184982ef7125441dd53ecba8e395c858a6bd8937840a7db2bb",
+    "VERSION.json": "8d944fe86676498cdb357fced491f416f7217a83772273e808adecce66122549"
+  },
+  "hashes_after": {
+    "dist/bitume.html": "969f211ec815ac28601761e5c5dfb1a7eea17e151f0c17d9ea9978e3bac5f2df",
+    "SIZE.json": "4e8b41db1c6ece184982ef7125441dd53ecba8e395c858a6bd8937840a7db2bb",
+    "VERSION.json": "8d944fe86676498cdb357fced491f416f7217a83772273e808adecce66122549"
+  },
+  "build_reproducible": true,
+  "browser": "Non execute dans cette reprise; qualification visuelle et GPU reste a faire."
+}

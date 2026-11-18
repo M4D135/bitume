@@ -277,11 +277,35 @@
         <label><input type="radio" name="demo" value="non"><span>Jamais</span></label>
       </fieldset>
       <fieldset>
-        <legend>Image</legend>
+        <legend>Qualité générale</legend>
         <label><input type="radio" name="qualite" value="low"><span>Légère</span></label>
         <label><input type="radio" name="qualite" value="medium"><span>Moyenne</span></label>
         <label><input type="radio" name="qualite" value="auto"><span>Auto</span></label>
         <label><input type="radio" name="qualite" value="high"><span>Fine</span></label>
+        <p class="note-graphismes">Les réglages « Selon qualité » suivent ce profil.</p>
+      </fieldset>
+      <fieldset>
+        <legend>Anticrénelage</legend>
+        <label><input type="radio" name="anticrenelage" value="profil"><span>Selon qualité</span></label>
+        <label><input type="radio" name="anticrenelage" value="off"><span>Désactivé</span></label>
+        <label><input type="radio" name="anticrenelage" value="msaa4"><span>MSAA 4×</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Ombres</legend>
+        <label><input type="radio" name="ombres" value="profil"><span>Selon qualité</span></label>
+        <label><input type="radio" name="ombres" value="off"><span>Désactivées</span></label>
+        <label><input type="radio" name="ombres" value="medium"><span>Moyennes</span></label>
+        <label><input type="radio" name="ombres" value="high"><span>Fines</span></label>
+      </fieldset>
+      <fieldset aria-describedby="note-vegetation">
+        <legend>Densité de végétation</legend>
+        <label><input type="radio" name="vegetation" value="profil"><span>Selon qualité</span></label>
+        <label><input type="radio" name="vegetation" value="off"><span>Sans herbes</span></label>
+        <label><input type="radio" name="vegetation" value="low"><span>Légère</span></label>
+        <label><input type="radio" name="vegetation" value="medium"><span>Moyenne</span></label>
+        <label><input type="radio" name="vegetation" value="high"><span>Dense</span></label>
+        <label><input type="radio" name="vegetation" value="ultra"><span>Très dense</span></label>
+        <p class="note-graphismes" id="note-vegetation">Herbes, fougères et fleurs. Appliquée à la prochaine course.</p>
       </fieldset>
       <fieldset>
         <legend>Manette</legend>

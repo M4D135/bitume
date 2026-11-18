@@ -1,0 +1,240 @@
+{
+  "base": "b094dc4d25bf9a16d0c21044226d29879ab93dab",
+  "version": "0.2.29",
+  "ferro": "0.3.6",
+  "tests": [
+    {
+      "file": "verifications/botanique.test.mjs",
+      "exit": 0,
+      "seconds": 0.292
+    },
+    {
+      "file": "verifications/carene.test.mjs",
+      "exit": 0,
+      "seconds": 0.079
+    },
+    {
+      "file": "verifications/circuit.test.mjs",
+      "exit": 0,
+      "seconds": 0.453
+    },
+    {
+      "file": "verifications/collisions-orientees.test.mjs",
+      "exit": 0,
+      "seconds": 0.047
+    },
+    {
+      "file": "verifications/commandes-partage.test.mjs",
+      "exit": 0,
+      "seconds": 0.054
+    },
+    {
+      "file": "verifications/conduite-criteres.test.mjs",
+      "exit": 0,
+      "seconds": 1.499
+    },
+    {
+      "file": "verifications/conduite.test.mjs",
+      "exit": 0,
+      "seconds": 0.25
+    },
+    {
+      "file": "verifications/contacts.test.mjs",
+      "exit": 0,
+      "seconds": 0.095
+    },
+    {
+      "file": "verifications/controle-visuel.test.mjs",
+      "exit": 0,
+      "seconds": 0.072
+    },
+    {
+      "file": "verifications/course.test.mjs",
+      "exit": 0,
+      "seconds": 2.731
+    },
+    {
+      "file": "verifications/crash.test.mjs",
+      "exit": 0,
+      "seconds": 0.298
+    },
+    {
+      "file": "verifications/decor-identite.test.mjs",
+      "exit": 0,
+      "seconds": 1.901
+    },
+    {
+      "file": "verifications/decor-obstacles.test.mjs",
+      "exit": 0,
+      "seconds": 0.473
+    },
+    {
+      "file": "verifications/decor.test.mjs",
+      "exit": 0,
+      "seconds": 0.41
+    },
+    {
+      "file": "verifications/formes-libres.test.mjs",
+      "exit": 0,
+      "seconds": 0.215
+    },
+    {
+      "file": "verifications/glissiere-etats.test.mjs",
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "file": "verifications/glissiere-rebond.test.mjs",
+      "exit": 0,
+      "seconds": 0.05
+    },
+    {
+      "file": "verifications/graphismes.test.mjs",
+      "exit": 0,
+      "seconds": 0.053
+    },
+    {
+      "file": "verifications/ia-attaque.test.mjs",
+      "exit": 0,
+      "seconds": 9.408
+    },
+    {
+      "file": "verifications/ia-epaves.test.mjs",
+      "exit": 0,
+      "seconds": 0.083
+    },
+    {
+      "file": "verifications/ia-reprise.test.mjs",
+      "exit": 0,
+      "seconds": 0.099
+    },
+    {
+      "file": "verifications/ia.test.mjs",
+      "exit": 0,
+      "seconds": 0.074
+    },
+    {
+      "file": "verifications/main.test.mjs",
+      "exit": 0,
+      "seconds": 0.079
+    },
+    {
+      "file": "verifications/manette.test.mjs",
+      "exit": 0,
+      "seconds": 0.052
+    },
+    {
+      "file": "verifications/mesures.test.mjs",
+      "exit": 0,
+      "seconds": 0.064
+    },
+    {
+      "file": "verifications/meteo.test.mjs",
+      "exit": 0,
+      "seconds": 0.101
+    },
+    {
+      "file": "verifications/moteur-emprise.test.mjs",
+      "exit": 0,
+      "seconds": 0.063
+    },
+    {
+      "file": "verifications/obstacles.test.mjs",
+      "exit": 0,
+      "seconds": 0.047
+    },
+    {
+      "file": "verifications/options-image.test.mjs",
+      "exit": 0,
+      "seconds": 0.051
+    },
+    {
+      "file": "verifications/pieces.test.mjs",
+      "exit": 0,
+      "seconds": 0.463
+    },
+    {
+      "file": "verifications/prets-enligne.test.mjs",
+      "exit": 0,
+      "seconds": 0.06
+    },
+    {
+      "file": "verifications/qualite.test.mjs",
+      "exit": 0,
+      "seconds": 0.053
+    },
+    {
+      "file": "verifications/realisateur.test.mjs",
+      "exit": 0,
+      "seconds": 2.104
+    },
+    {
+      "file": "verifications/relectures-phase2.test.mjs",
+      "exit": 0,
+      "seconds": 0.201
+    },
+    {
+      "file": "verifications/rendu-halo.test.mjs",
+      "exit": 0,
+      "seconds": 0.079
+    },
+    {
+      "file": "verifications/reprise-recul.test.mjs",
+      "exit": 0,
+      "seconds": 0.064
+    },
+    {
+      "file": "verifications/salon-protocole.test.mjs",
+      "exit": 0,
+      "seconds": 2.09
+    },
+    {
+      "file": "verifications/son.test.mjs",
+      "exit": 0,
+      "seconds": 0.065
+    },
+    {
+      "file": "verifications/stands.test.mjs",
+      "exit": 0,
+      "seconds": 4.587
+    },
+    {
+      "file": "verifications/titre-signature.test.mjs",
+      "exit": 0,
+      "seconds": 0.06
+    },
+    {
+      "file": "verifications/traces.test.mjs",
+      "exit": 0,
+      "seconds": 1.07
+    },
+    {
+      "file": "verifications/troncs.test.mjs",
+      "exit": 0,
+      "seconds": 0.705
+    },
+    {
+      "file": "verifications/tunnel-transitions.test.mjs",
+      "exit": 0,
+      "seconds": 0.209
+    },
+    {
+      "file": "verifications/tunnel.test.mjs",
+      "exit": 0,
+      "seconds": 0.344
+    },
+    {
+      "file": "verifications/vegetation.test.mjs",
+      "exit": 0,
+      "seconds": 2.999
+    },
+    {
+      "file": "verifications/voiture.test.mjs",
+      "exit": 0,
+      "seconds": 1.854
+    }
+  ],
+  "passed": 46,
+  "failed": 0,
+  "browser": "non exécuté : navigateur indisponible pour le build local"
+}

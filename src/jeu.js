@@ -20,8 +20,11 @@
   function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
   function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
+    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
+  reglages.qualite = B.graphismes.normaliser(reglages.qualite);
+  Object.assign(reglages, B.graphismes.normaliserOptions(reglages));
   // Champ du cockpit : 69° n'a été le défaut que l'après-midi du 16/11, et David le trouve trop large (« fov moins
   // prononcé »). Une valeur restée à 69 revient une seule fois au défaut ; tout autre choix du pilote est gardé.
   if (!reglages.champRevu) { if (+reglages.champ === 69) reglages.champ = DEFAUT.champ; reglages.champRevu = true; }
@@ -119,12 +122,15 @@
   function installer(i) {
     // Le décor est bâti sur un palier « ancre » (voir « profils graphiques du menu ») : la même piste ne se
     // reconstruit pas à chaque fluctuation du gouverneur, seulement quand l'ancre ou l'enrichissement change.
-    const ancre = etatProfils.decor, veut = B.graphismes.profil(ancre).decor;
-    if (scene && scene.index === i && scene.enrichi === decorEnrichi && scene.palier === ancre) return scene;
+    const ancre = etatProfils.decor;
+    const veut = B.graphismes.melange(ancre, 0, { decor: ancre, capacites: capacitesRendu, options: reglages }).decor;
+    const vegetationQualite = decorEnrichi ? veut.vegetationQualite : 'off';
+    if (scene && scene.index === i && scene.enrichi === decorEnrichi && scene.palier === ancre && scene.vegetationQualite === vegetationQualite) return scene;
     const c = circuit(i), decor = B.decor.construire(c, {
       qualite: ancre,
       matieres: decorEnrichi && veut.matieres,
       vegetation: decorEnrichi && veut.vegetation,
+      vegetationQualite,
     });
     if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
@@ -137,7 +143,7 @@
     // profondeur du volume d'ombre : un point du sol au bord du carré est décalé de OMBRE × cotangente de la hauteur du soleil
     const sol = decor.atmosphere.sunDirection, sinus = sol[1] / Math.hypot(sol[0], sol[1], sol[2]);
     const ombre = { extent: OMBRE, depth: 2 * (OMBRE * Math.sqrt(Math.max(0, 1 - sinus * sinus)) / Math.max(.25, sinus) + 30) };
-    scene = { index: i, enrichi: decorEnrichi, palier: ancre, c, decor, fond, plan: p, ombre };
+    scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, c, decor, fond, plan: p, ombre };
     return scene;
   }
 
@@ -1316,7 +1322,7 @@
   const horlogeProfils = () => performance.now() / 1000;
   function profilDe(S) {
     return B.graphismes.melange(S && S.banc ? S.banc.qualite : reglages.qualite, palier.n,
-      Object.assign({ decor: etatProfils.decor }, capacitesRendu));
+      { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages });
   }
   // Le décor (matières et massifs) est bâti une fois par séance sur un palier « ancre ». Le gouverneur Auto ne le
   // fait jamais bouger en pleine course : rebâtir nappes, lots et tampons au milieu d'une course toucherait les
@@ -1675,7 +1681,7 @@
     // Halo/bloom : ouverts ou fermés par le profil résolu (menu, gouverneur et capacités du moteur)
     const haloInt = avecHalo(P);
     const tDraw = B.mesures.actif ? performance.now() : 0;
-    rendu.draw(cam, sortie, { time: horlogeReelle, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: P.qualite === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: B.meteo.ambiance(meteo) });
+    rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: P.qualite === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: B.meteo.ambiance(meteo) });
     if (B.mesures.actif) {
       B.mesures.section('rendu', performance.now() - tDraw);
       B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
@@ -2038,6 +2044,12 @@
         if (rendu) appliquerPalier();
       }
     }
+    if (Object.prototype.hasOwnProperty.call(B.graphismes.OPTIONS, t.name)) {
+      reglages[t.name] = B.graphismes.normaliserOptions({ [t.name]: t.value })[t.name];
+      sauverReglages();
+      // AA et ombres sont lus au prochain rendu, sans recréer le contexte. La végétation suit la prochaine
+      // séance : aucun rebâtiment du terrain ni changement d'obstacles au milieu d'une course.
+    }
     if (t.name === 'aide') { reglages.aide = +t.value; sauverReglages(); }
   });
   for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).addEventListener('input', e => { reglages[nom] = +e.target.value; sauverReglages(); appliquerVolumes(); });
@@ -2107,7 +2119,7 @@
   }, { capture: true });
   function remplirReglages() {
     captureTouche = null; majCommandes();
-    for (const nom of ['vue', 'boite', 'qualite', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    for (const nom of ['vue', 'boite', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     $('v-carte').checked = reglages.carte !== 'non';
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
     $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';
@@ -2312,8 +2324,9 @@
 
   // ---------------------------------------------------------------- démarrage
   // Petites configurations (David, 16/11 : « faire tourner ce jeu sur des petites configs type ordi portable de
-  // bureau ») : un processeur graphique intégré ou logiciel est reconnu dès le départ ; le rendu part alors sans
+  // bureau ») : un processeur graphique intégré ou logiciel est reconnu dès le départ ; le profil part alors sans
   // anticrénelage, avec une carte d'ombres simple, et la qualité Auto commence un palier plus bas (voir paliers).
+  // Les capacités restent ouvertes pour un choix manuel ; FERRO n'alloue les cibles qu'au moment de les utiliser.
   let gpuModeste = false;
   function webgl2() {
     try {
@@ -2333,7 +2346,7 @@
   function demarrer() {
     if (!webgl2()) { erreur('WebGL2 indisponible', 'BITUME dessine la piste avec WebGL2. Ouvrez la page dans un navigateur récent (Chrome, Edge, Firefox, Safari 15 ou plus) avec l’accélération graphique active.'); return; }
     try {
-      const optionsRendu = { msaa: gpuModeste ? 0 : 4, shadowMapScale: gpuModeste ? 1 : 2, reflections: !gpuModeste, sea: false, overlayLighting: 'world' };
+      const optionsRendu = { msaa: 4, shadowMapScale: 2, reflections: !gpuModeste, sea: false, overlayLighting: 'world' };
       rendu = window.FRender.create(canvas, optionsRendu);
       // ce que le moteur a réellement ouvert, et non ce que le menu demande : src/graphismes.js ne promet pas
       // une capacité que FRender.create aurait refusée (msaa, atlas d'ombres, reflets d'écran)
@@ -2402,10 +2415,11 @@
     const depart = options.depart === 'tunnel' ? c.tunnel.debut - 40 : (options.depart ?? 800);
     if (!Number.isFinite(depart)) throw new Error('abscisse de départ invalide');
     restaurerReference();
-    const cles = ['vue', 'vue2', 'partage', 'qualite', 'retro', 'meteo', 'pneus', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
+    const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'retro', 'meteo', 'pneus', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
     const avant = Object.fromEntries(cles.map(k => [k, reglages[k]])), decorAvant = decorEnrichi;
     Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, secousses: 0, vibrations: 'non', champ: 60,
       pneus: B.conduite.pneusConseilles(B.conduite.eauSurPiste(B.meteo.pour(meteo))) });
+    Object.assign(reglages, B.graphismes.normaliserOptions(options));
     decorEnrichi = options.decor !== 'reference';
     graineCourse = graine - 1;
     // l'ancre du décor se fixe avant la construction de la scène : une séance de référence est filmée au palier demandé
@@ -2435,7 +2449,7 @@
     Object.assign(palier, { n: gpuModeste ? 1 : 0, somme: 0, compte: 0, t: 0, aise: 0 });
     for (const G of [retro.j1, retro.j2]) if (G) { G.cote = 0; delete G.lampes0; delete G.lampes1; }
     S.reference = { graine, circuit: i, circuitId: CATALOGUE[i].id, graineCircuit: CATALOGUE[i].graine,
-      mode, qualite, difficulte, tours, pilote, vue, vue2, partage, retro: glaces, meteo, mouille, depart: ramener(depart, c.longueur), vitesse,
+      mode, qualite, ...B.graphismes.normaliserOptions(reglages), difficulte, tours, pilote, vue, vue2, partage, retro: glaces, meteo, mouille, depart: ramener(depart, c.longueur), vitesse,
       decor: decorEnrichi ? 'enrichi' : 'reference', tunnel: c.tunnel ? { debut: c.tunnel.debut, fin: c.tunnel.fin } : null };
     $('chargement').classList.add('fini'); aller('course'); appliquerPalier();
     B.mesures.reinitialiser();

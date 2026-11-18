@@ -720,9 +720,12 @@
     if (tunnelLampes) decor.tunnelLampes = tunnelLampes;
     // Végétation basse : générateur et lots indépendants. Le décor historique et ses solides restent identiques ;
     // vegetation:false permet une comparaison avant/après avec exactement les mêmes obstacles. Le module choisit
-    // lui-même les biomes qu'il sait habiller et retourne des lots vides pour les autres.
-    if (B.vegetation && options.vegetation !== false) {
-      const v = B.vegetation.construire(c, { limites: lim, interroger, qualite });
+    // lui-même les biomes qu'il sait habiller et retourne des lots vides pour les autres. La densité nommée
+    // vegetationQualite surcharge seulement les plantes : ni les arbres, ni leurs collisions, ni leurs matières.
+    const vegetationQualite = ['off', 'low', 'medium', 'high', 'ultra'].includes(options.vegetationQualite)
+      ? options.vegetationQualite : qualite;
+    if (B.vegetation && options.vegetation !== false && vegetationQualite !== 'off') {
+      const v = B.vegetation.construire(c, { limites: lim, interroger, qualite: vegetationQualite });
       lots.push(...v.lots);
       decor.vegetation = { herbes: v.herbes, fougeres: v.fougeres, fleurs: v.fleurs, taillis: v.taillis,
         lots: v.lots.length, qualite: v.qualite };

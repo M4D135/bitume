@@ -51,6 +51,22 @@ verifier('normalisation : valeurs inconnues, anciennes et casse tolérées', () 
   for (const v of [undefined, null, 3, {}, [], '', 'ultra-violet', 'faux', true, 'auto2']) assert.equal(G.normaliser(v), 'auto', 'inconnu → auto : ' + v);
 });
 
+verifier('anciens réglages et valeurs corrompues gardent les options du profil', () => {
+  const herite = { anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil' };
+  for (const valeur of [undefined, null, {}, { qualite: 'high' }, { anticrenelage: true, ombres: 3, vegetation: 'dense?' }]) {
+    assert.deepEqual(G.normaliserOptions(valeur), herite);
+  }
+  const existant = { qualite: 'medium', anticrenelage: ' MSAA4 ', ombres: 'HIGH', vegetation: ' Ultra ' };
+  const avant = JSON.stringify(existant);
+  const normalise = G.normaliserOptions(existant);
+  assert.deepEqual(normalise, { anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra' });
+  assert.equal(JSON.stringify(existant), avant, 'la lecture ne réécrit pas les préférences enregistrées');
+  assert.ok(Object.isFrozen(normalise));
+  for (const cle of Object.keys(G.OPTIONS)) for (const valeur of G.OPTIONS[cle]) {
+    assert.equal(G.normaliserOptions({ [cle]: valeur })[cle], valeur);
+  }
+});
+
 verifier('estPalier ne reconnaît que les trois paliers effectifs', () => {
   for (const v of G.PALIERS) assert.equal(G.estPalier(v), true);
   for (const v of ['auto', 'medium ', 'Medium', undefined, null, 1, {}]) assert.equal(G.estPalier(v), false, String(v));
@@ -160,10 +176,10 @@ verifier('melange n\'ouvre jamais un effet que le moteur n\'a pas ouvert', () =>
     assert.ok(m.rendu.resolution === 'auto' || m.rendu.resolution <= 1, 'jamais plus de pixels que l\'écran');
     sansCoupure(m, q + n);
   }
-  // le moteur ne monte la cible MSAA qu'avec le bloom, et les reflets d'écran aussi (renderer.js:2215-2216)
+  // Le halo n'est plus une condition du MSAA. Les reflets d'écran restent liés au halo.
   for (const q of QUALITES) for (const n of NIVEAUX) {
     const m = G.melange(q, n, { halo: false });
-    assert.equal(m.rendu.msaa, 0, 'sans halo, pas de MSAA : ' + q + n);
+    assert.equal(m.rendu.msaa, G.melange(q, n).rendu.msaa, 'MSAA indépendant de la capacité halo : ' + q + n);
     assert.equal(m.effets.reflets, false, 'sans halo, pas de reflets : ' + q + n);
   }
   // un GPU modeste refuse les reflets même en Fine (règle tenue par jeu.js:1320)
@@ -181,6 +197,84 @@ verifier('melange n\'ouvre jamais un effet que le moteur n\'a pas ouvert', () =>
   assert.equal(plein.effets.ombres && plein.effets.halo && plein.effets.reflets && plein.effets.retroImages, true);
   assert.equal(plein.secondaires.retroviseurs.glaces, 2);
   figeEnProfondeur(plein, 'melange');
+});
+
+verifier('anticrénelage manuel actif sans halo en Légère et sans changer les autres effets', () => {
+  const base = G.melange('low', 0);
+  const lisse = G.melange('low', 0, { options: { anticrenelage: 'msaa4' } });
+  assert.equal(lisse.rendu.msaa, 4);
+  assert.equal(lisse.effets.halo, false);
+  assert.deepEqual(lisse.effets, base.effets);
+  assert.deepEqual(lisse.decor, base.decor);
+  assert.equal(lisse.rendu.resolution, base.rendu.resolution);
+  const sans = G.melange('high', 0, { options: { anticrenelage: 'off' } });
+  assert.equal(sans.rendu.msaa, 0);
+  assert.equal(sans.effets.halo, true, 'couper le MSAA ne coupe pas le halo');
+  assert.equal(sans.effets.ombres, true);
+});
+
+verifier('chaque choix d’ombres fixe activation et taille sans modifier anticrénelage ou végétation', () => {
+  for (const q of ['low', 'high']) {
+    const base = G.melange(q, 0);
+    for (const [option, actif, echelle] of [['off', false, 1], ['medium', true, 1], ['high', true, 2]]) {
+      const m = G.melange(q, 0, { options: { ombres: option } });
+      assert.equal(m.effets.ombres, actif);
+      assert.equal(m.rendu.shadowMapScale, echelle);
+      assert.equal(m.rendu.msaa, base.rendu.msaa);
+      assert.equal(m.effets.halo, base.effets.halo);
+      assert.deepEqual(m.decor, base.decor);
+      assert.deepEqual(m.secondaires, base.secondaires);
+    }
+  }
+});
+
+verifier('végétation indépendante : chaque densité existe même avec le profil Légère', () => {
+  for (const q of ['low', 'medium', 'high']) {
+    const base = G.melange(q, 0);
+    for (const option of ['off', 'low', 'medium', 'high', 'ultra']) {
+      const m = G.melange(q, 0, { options: { vegetation: option } });
+      assert.equal(m.decor.vegetationQualite, option);
+      assert.equal(m.decor.vegetation, option !== 'off');
+      assert.equal(m.decor.matieres, base.decor.matieres, 'la densité ne réactive pas les matières');
+      assert.deepEqual(m.effets, base.effets);
+      assert.deepEqual(m.rendu, base.rendu);
+      assert.deepEqual(m.secondaires, base.secondaires);
+    }
+  }
+  assert.equal(G.melange('low', 0).decor.vegetationQualite, 'off');
+  assert.equal(G.melange('medium', 0).decor.vegetationQualite, 'medium');
+  assert.equal(G.melange('high', 0).decor.vegetationQualite, 'high');
+});
+
+verifier('Auto respecte les choix manuels à chaque palier', () => {
+  const options = { anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra' };
+  for (const n of NIVEAUX) {
+    const m = G.melange('auto', n, { options, decor: 'low' });
+    assert.equal(m.rendu.msaa, 4, 'AA manuel conservé au palier ' + n);
+    assert.equal(m.effets.ombres, true, 'ombres manuelles conservées au palier ' + n);
+    assert.equal(m.rendu.shadowMapScale, 2);
+    assert.equal(m.decor.vegetationQualite, 'ultra');
+    assert.equal(m.decor.matieres, false, 'les matières suivent toujours leur profil');
+  }
+  const allegement = G.melange('auto', 3);
+  assert.equal(allegement.rendu.msaa, 0, 'AA hérité allégé avec le halo au palier 3');
+  const eteint = G.melange('auto', 0, { options: { anticrenelage: 'off', ombres: 'off', vegetation: 'off' } });
+  assert.equal(eteint.rendu.msaa, 0); assert.equal(eteint.effets.ombres, false); assert.equal(eteint.decor.vegetation, false);
+});
+
+verifier('options explicites soumises aux capacités matérielles, mais pas au profil prudent', () => {
+  const options = { anticrenelage: 'msaa4', ombres: 'high' };
+  const cap = G.capacites({ msaa: 4, shadowMapScale: 2 }, true, 1);
+  const prudent = G.melange('high', 0, { capacites: cap });
+  assert.equal(prudent.rendu.msaa, 0); assert.equal(prudent.rendu.shadowMapScale, 1);
+  const explicite = G.melange('high', 0, { capacites: cap, options });
+  assert.equal(explicite.rendu.msaa, 4); assert.equal(explicite.rendu.shadowMapScale, 2);
+  const limite = G.melange('high', 0, { msaa: false, shadowMapScale: 1, options });
+  assert.equal(limite.rendu.msaa, 0); assert.equal(limite.rendu.shadowMapScale, 1);
+  assert.equal(limite.effets.ombres, true);
+  const logiciel = G.capacites({ logiciel: true, msaa: 4, shadowMapScale: 2 }, false, 1);
+  const repli = G.melange('high', 0, { capacites: logiciel, options });
+  assert.equal(repli.rendu.msaa, 0); assert.equal(repli.effets.ombres, false); assert.equal(repli.effets.halo, false);
 });
 
 verifier('aucun palier n\'introduit de coupure à distance brutale', () => {
@@ -216,6 +310,7 @@ verifier('l\'ancre de décor empêche l\'Auto de rebâtir le terrain', () => {
   assert.equal(sans.decor.vegetation, false, 'sans ancre, Low ferme la végétation');
   const ancre = G.melange('auto', 4, { decor: 'high' });
   assert.equal(ancre.decor.matieres, true); assert.equal(ancre.decor.vegetation, true, 'le gouverneur ne touche pas au décor');
+  assert.equal(ancre.decor.vegetationQualite, 'high', 'la densité héritée suit le terrain construit');
   assert.equal(ancre.effets.ombres, false, 'les effets, eux, suivent bien le gouverneur');
   assert.equal(ancre.rendu.resolution, .75);
   assert.equal(G.melange('auto', 4, { decor: 'inconnu' }).decor.vegetation, false, 'ancre invalide ignorée');

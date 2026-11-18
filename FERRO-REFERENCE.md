@@ -1,4 +1,4 @@
-# FERRO — référence commune 0.3.5
+# FERRO — référence commune 0.3.6
 
 Décision de David du 16 novembre 2026 : entièrement procédural, aucun plafond de taille du code ni du build. Moteur prioritaire, atelier secondaire.
 
@@ -13,3 +13,5 @@ Le paquet contient les sources, les bundles optionnels, un installateur et le co
 La version 0.3.4 ajoute quatre recettes de surface opt-in et un seuil de LOD adapté à chaque caméra. BITUME définit leur usage dans `decor.js` et ses formes dans `vegetation.js` ; les modules moteur restent copiés à l’identique. Qualification et limites : `docs/reprise/rapports/LOT5-2026-11-17.md`.
 
 La version 0.3.5 (commit `7afe6d692f45892fc9fdf30ff46397a5ebe00498`) ajoute trois matières naturelles — `organicSoil` 25, `fibrousBark` 26, `botanicalFoliage` 27 — avec vent, mouillage et transmission solaire cohérents entre l’image et la passe d’ombres, et reporte l’allocation des cibles MSAA et SSR au premier rendu qui s’en sert. Le jeu choisit ces matières dans ses adaptateurs (`decor.js`, `vegetation.js`, `botanique.js`) ; les modules moteur ne sont pas touchés. Documentation du moteur : `docs/botanical-035/README.md` du dépôt FERRO.
+
+La version 0.3.6 (commit `7d7f1018db33632ae448e6fd6e0b4f6b6f8fe5d1`) permet de régler à chaud `draw(..., {msaa, shadows, shadowMapScale})`. Le MSAA demandé explicitement fonctionne aussi sans halo. Les ombres changent de résolution sans recréer le contexte ; les limites GPU sont conservées et relues après restauration. BITUME applique ses options indépendantes dans `jeu.js`. Qualification et limites : `docs/reprise/07-OPTIONS-VEGETATION.md` et `docs/runtime-options-036/` du dépôt FERRO.

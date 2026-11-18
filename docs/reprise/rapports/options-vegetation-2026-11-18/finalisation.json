@@ -1,0 +1,55 @@
+{
+  "date_utc": "2026-11-18T07:20:34.446113+00:00",
+  "scope": "Revalidation ciblee du lot recupere ; les 46 suites historiques ne sont pas representees comme reexecutees. Aucun rendu navigateur ni mesure GPU.",
+  "version": "0.2.29",
+  "tests_reexecuted": [
+    {
+      "command": "node verifications/options-image.test.mjs",
+      "exit": 0,
+      "seconds": 0.076,
+      "summary": "options image : 6 contrôles passés"
+    },
+    {
+      "command": "node verifications/graphismes.test.mjs",
+      "exit": 0,
+      "seconds": 0.104,
+      "summary": "graphismes : 22 contrôles passés"
+    },
+    {
+      "command": "node verifications/vegetation.test.mjs",
+      "exit": 0,
+      "seconds": 3.439,
+      "summary": "Code de sortie nul ; suite terminee sans echec."
+    },
+    {
+      "command": "node verifications/decor-identite.test.mjs",
+      "exit": 0,
+      "seconds": 1.697,
+      "summary": "décor : 9 géométries de référence inchangées (linux/x64/node-24.22.3)"
+    },
+    {
+      "command": "python3 tools/check-ferro-lock.py",
+      "exit": 0,
+      "seconds": 0.032,
+      "summary": "FERRO 0.3.6: 34 reference modules verified"
+    },
+    {
+      "command": "python3 construire.py",
+      "exit": 0,
+      "seconds": 0.715,
+      "summary": "FERRO 0.3.6: 34 reference modules verified | CONSTRUIT  /workspace/scratch/bae4fa447f1d/bitume/dist/bitume.html  version 0.2.29, 13007872 octets, 3004365 compressés, sha256 969f211ec815ac28"
+    }
+  ],
+  "hashes_before": {
+    "dist/bitume.html": "969f211ec815ac28601761e5c5dfb1a7eea17e151f0c17d9ea9978e3bac5f2df",
+    "SIZE.json": "4e8b41db1c6ece184982ef7125441dd53ecba8e395c858a6bd8937840a7db2bb",
+    "VERSION.json": "8d944fe86676498cdb357fced491f416f7217a83772273e808adecce66122549"
+  },
+  "hashes_after": {
+    "dist/bitume.html": "969f211ec815ac28601761e5c5dfb1a7eea17e151f0c17d9ea9978e3bac5f2df",
+    "SIZE.json": "4e8b41db1c6ece184982ef7125441dd53ecba8e395c858a6bd8937840a7db2bb",
+    "VERSION.json": "8d944fe86676498cdb357fced491f416f7217a83772273e808adecce66122549"
+  },
+  "build_reproducible": true,
+  "source_modification": false
+}

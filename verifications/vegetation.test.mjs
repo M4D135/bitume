@@ -213,17 +213,17 @@ verifier('le palier bas reproduit exactement l\'existant : formes, comptes, plac
   for (const l of bas.lots) for (const o of l.objets) triangles += V.forme(o.shape).length;
   assert.ok(triangles < 60000, `${triangles} triangles au palier bas`);
 });
-verifier('qualite optionnelle : seule medium et high sont demandés ; tout le reste vaut le palier historique', () => {
+verifier('qualite optionnelle : une valeur inconnue retrouve le palier historique', () => {
   // Le palier haut est une demande explicite. Une valeur absente, nulle, « auto » ou inconnue ne peut pas,
   // par accident, multiplier le coût du décor : elle retrouve le profil d'avant le chantier.
   const bas = construire(c, 'low');
   assert.equal(V.construire(c, { limites: B.decor.limites(c), interroger: indexAxe(c) }).qualite, 'low');
-  const haut = construire(c, 'high'), auto = construire(c, 'auto'), inconnue = construire(c, 'ultra');
+  const haut = construire(c, 'high'), auto = construire(c, 'auto'), inconnue = construire(c, 'inconnue');
   assert.deepEqual(auto.lots, bas.lots);
   assert.deepEqual(inconnue.lots, bas.lots);
   assert.equal(V.construire(c, { limites: B.decor.limites(c), interroger: indexAxe(c), qualite: null }).qualite, 'low');
   const moyen = construire(c, 'medium');
-  assert.ok(moyen.herbes > haut.herbes * .4 && moyen.herbes < haut.herbes, 'medium entre bas et haut');
+  assert.ok(moyen.herbes > bas.herbes && moyen.herbes < haut.herbes, 'medium entre bas et haut');
   assert.ok(moyen.fougeres > 0 && moyen.fleurs === 0, 'medium ajoute les fougères, pas les fleurs');
   assert.ok(haut.fleurs > 0, 'haut ajoute les fleurs');
   const registre = new Map();
@@ -255,6 +255,76 @@ verifier('les trois paliers donnent des budgets vraiment distincts, biome par bi
     const autorisees = ['herbes', 'taillis', 'fougeres', 'fleurs', 'humus'];
     for (const f of moyennes.concat(hautes)) assert.ok(autorisees.includes(f), `${theme} ${f}`);
     for (const l of r.high.lots) assert.ok(new Set(l.objets.map(o => o.shape)).size <= V.PALIERS.high.groupes, theme);
+  }
+});
+verifier('tapis nettement plus dense, quatre densités distinctes et allocations bornées dans chaque biome', () => {
+  // Références High de la 0.2.28 : 468 / 344 / 287 touffes. La demande doit changer la couverture visible,
+  // et non seulement renommer le palier ou grossir quelques plantes.
+  const anciennesHerbes = { foret: 468, cote: 344, montagne: 287 };
+  for (const [graine, theme, longueur] of PISTES) {
+    const piste = B.circuit.creer(graine, { theme, longueur }), r = {};
+    for (const q of ['low', 'medium', 'high', 'ultra']) r[q] = construire(piste, q);
+    assert.ok(r.low.herbes < r.medium.herbes, theme);
+    assert.ok(r.high.herbes > r.medium.herbes * 2, `${theme} High apporte une vraie couverture`);
+    assert.ok(r.high.herbes >= anciennesHerbes[theme] * 5, `${theme} densification High`);
+    assert.ok(r.ultra.herbes > r.high.herbes * 1.5, `${theme} Ultra est distinct`);
+    for (const q of ['medium', 'high', 'ultra']) {
+      const p = V.PALIERS[q], stations = Math.round(p.stations * V.BIOMES[theme].stations);
+      assert.ok(r[q].herbes <= stations * p.herbes + V.TAPIS[q].maximum, `${theme} ${q} plafond`);
+      assert.ok(r[q].lots.length <= Math.ceil(piste.longueur / 420), `${theme} ${q} lots`);
+      for (const l of r[q].lots) assert.ok(new Set(l.objets.map(o => o.shape)).size <= p.groupes);
+    }
+    assert.deepEqual(famillesDe(r.ultra), famillesDe(r.high), 'Ultra réutilise les maillages High');
+    for (const k of ['fougeres', 'fleurs', 'taillis']) assert.equal(r.ultra[k], r.high[k], 'Ultra ajoute des graminées');
+    assert.deepEqual(construire(piste, 'ultra'), r.ultra, `${theme} Ultra déterministe`);
+  }
+});
+verifier('densité indépendante du profil général, modes désactivés et données de course inchangées', () => {
+  const piste = B.circuit.creer(11, { theme: 'foret', longueur: 4200 });
+  const tracer = () => ['x', 'y', 'z', 'cap', 'devers', 'courbure', 'pente'].map(k => Array.from(piste[k]));
+  const traceAvant = tracer();
+  const reference = B.decor.construire(piste, { qualite: 'medium', vegetation: false });
+  const sansPlantes = d => {
+    const { vegetation, sol, ...reste } = d;
+    return { ...reste, lots: d.lots.filter(l => !l.vegetation) };
+  };
+  for (const vegetationQualite of ['off', 'low', 'medium', 'high', 'ultra']) {
+    const d = B.decor.construire(piste, { qualite: 'medium', vegetationQualite });
+    assert.equal(d.qualite, 'medium', 'la densité ne change pas le profil des arbres');
+    assert.deepEqual(sansPlantes(d), sansPlantes(reference), vegetationQualite + ' : décor et solides intacts');
+    assert.deepEqual(d.obstacles, reference.obstacles);
+    if (vegetationQualite === 'off') assert.equal(d.vegetation, undefined);
+    else assert.equal(d.vegetation.qualite, vegetationQualite);
+  }
+  assert.deepEqual(tracer(), traceAvant, 'aucune influence sur la simulation');
+  assert.equal(B.decor.construire(piste, { qualite: 'high', vegetationQualite: 'ultra', vegetation: false }).vegetation, undefined);
+  const defaut = B.decor.construire(piste, { qualite: 'medium' });
+  const inconnue = B.decor.construire(piste, { qualite: 'medium', vegetationQualite: 'inconnue' });
+  assert.deepEqual(defaut.vegetation, inconnue.vegetation, 'densité invalide : suivre le profil');
+  assert.deepEqual(construire(piste, 'off'), { lots: [], herbes: 0, fougeres: 0, fleurs: 0, taillis: 0, qualite: 'off' });
+});
+verifier('tapis dense hors chaussée, stands, glissières et tunnel, sur les deux accotements', () => {
+  for (const [graine, theme, longueur] of PISTES) {
+    const piste = B.circuit.creer(graine, { theme, longueur }), q = indexAxe(piste), limites = B.decor.limites(piste);
+    for (const qualite of ['medium', 'high', 'ultra']) {
+      const r = construire(piste, qualite), cotes = new Set();
+      for (const l of r.lots) for (const o of l.objets) {
+        const p = q(o.p[0], o.p[2], 40), i = p.i;
+        assert.ok(i >= 0);
+        const marge = Math.hypot(o.s[0], o.s[2]) / 2;
+        assert.ok(p.d >= piste.largeur / 2 + 1.2 + marge, theme + ' piste');
+        const s = i * piste.pas;
+        assert.ok(Math.abs(B.circuit.ecart(piste, 0, s)) >= 360, theme + ' stands');
+        assert.ok(!B.circuit.dansTunnel(piste, s, 20), theme + ' tunnel');
+        const d = -(o.p[0] - piste.x[i]) * Math.sin(piste.cap[i]) + (o.p[2] - piste.z[i]) * Math.cos(piste.cap[i]);
+        const cote = d < 0 ? -1 : 1, limite = cote < 0 ? limites.G[i] : limites.D[i];
+        assert.ok(Math.abs(d) + marge < limite, theme + ' glissière');
+        cotes.add(cote);
+        assert.ok(o.p.concat(o.s, o.r, o.color).every(Number.isFinite));
+        assert.equal(o.collision, undefined);
+      }
+      assert.equal(cotes.size, 2, `${theme} ${qualite} : deux bords végétalisés`);
+    }
   }
 });
 verifier('côte et montagne sont végétalisées, un biome hors thème reste vide sans erreur', () => {
@@ -297,7 +367,7 @@ verifier('matières naturelles 0.3.5 : feuillage 27 et sol organique 25, retomba
 verifier('aucune disparition au loin sur tous les paliers et tous les biomes', () => {
   for (const [graine, theme, longueur] of PISTES) {
     const piste = B.circuit.creer(graine, { theme, longueur });
-    for (const qualite of ['low', 'medium', 'high']) {
+    for (const qualite of ['low', 'medium', 'high', 'ultra']) {
       const r = construire(piste, qualite);
       for (const l of r.lots) {
         assert.equal(l.objets.length, l.loin.length, `${theme} ${qualite}`);

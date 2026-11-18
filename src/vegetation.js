@@ -1,4 +1,4 @@
-/* BITUME — végétation basse de Val-Brûlé. Géométrie originale, générée une fois puis instanciée.
+/* BITUME — végétation basse des trois biomes. Géométrie originale, générée une fois puis instanciée.
    Les deux résolutions partagent leurs pieds, extrémités et dimensions ; les plantes restent présentes au loin.
    Aucun fichier de modèle, texture ou son ; aucune dépendance à la simulation ni consommation de son hasard. */
 (function (B) {
@@ -8,13 +8,22 @@
   // Budget historique du palier bas : référence figée, le palier low ne retire ni ne déplace rien.
   const BUDGET = Object.freeze({ stations: 76, herbes: 152, taillis: 76, formes: 4 });
 
-  // Paliers opt-in. low reproduit exactement l'existant (mêmes stations, mêmes comptes, matière 11, deux familles).
-  // medium et high ajoutent familles, stations et densités ; l'échantillonnage change, jamais la silhouette.
+  // low reproduit exactement l'existant (mêmes stations, mêmes comptes, matière 11, deux familles).
+  // Les paliers supérieurs ajoutent un tapis bas entre les massifs historiques. Ultra réemploie les formes High :
+  // plus d'instances, pas de nouvelle famille de maillage ni de nouvelle passe de rendu.
   // `groupes` = formes distinctes au plus par lot et par passe. `sol` = recette de terreau sous les fougères.
   const PALIERS = Object.freeze({
     low: Object.freeze({ stations: 76, herbes: 2, fougeres: 0, fleurs: 0, taillis: .58, mat: 11, sol: 11, groupes: 2, familles: ['herbes', 'taillis'] }),
     medium: Object.freeze({ stations: 112, herbes: 3, fougeres: 1, fleurs: 0, taillis: .74, mat: 27, sol: 25, groupes: 4, familles: ['herbes', 'fougères', 'taillis'] }),
     high: Object.freeze({ stations: 150, herbes: 4, fougeres: 2, fleurs: 3, taillis: .88, mat: 27, sol: 25, groupes: 5, familles: ['herbes', 'fougères', 'fleurs', 'taillis'] }),
+    ultra: Object.freeze({ stations: 150, herbes: 4, fougeres: 2, fleurs: 3, taillis: .88, mat: 27, sol: 25, groupes: 5, familles: ['herbes', 'fougères', 'fleurs', 'taillis'] }),
+  });
+  // Maille exprimée en mètres : un long circuit garde une couverture comparable. Le plafond borne le nombre
+  // d'instances supplémentaires, même sur une piste créée avec une longueur inhabituelle.
+  const TAPIS = Object.freeze({
+    medium: Object.freeze({ pas: 8, rangees: 1, maximum: 1400 }),
+    high: Object.freeze({ pas: 4, rangees: 2, maximum: 4800 }),
+    ultra: Object.freeze({ pas: 2, rangees: 2, maximum: 9600 }),
   });
 
   // Biomes réellement dessinés par le décor (mêmes noms que THEMES de decor.js). Un biome absent retourne des lots vides.
@@ -43,7 +52,7 @@
   // Sans palier demandé, le profil historique : un appel qui ne nomme pas le palier (tests, outil de
   // comparaison avant/après, consommateur externe) retrouve exactement la végétation d'avant le chantier.
   function normaliserQualite(q) {
-    return q === 'medium' || q === 'high' ? q : 'low';
+    return q === 'medium' || q === 'high' || q === 'ultra' || q === 'off' ? q : 'low';
   }
 
   function hasard(graine) {
@@ -248,7 +257,7 @@
     const { limites, interroger } = options;
     const qualite = normaliserQualite(options.qualite);
     const vide = { lots: [], herbes: 0, fougeres: 0, fleurs: 0, taillis: 0, qualite };
-    if (!c || !limites || !interroger) return vide;
+    if (qualite === 'off' || !c || !limites || !interroger) return vide;
     const biome = BIOMES[c.theme];
     if (!biome) return vide;
     // Un biome que le décor ne connaît pas n'a pas d'accotement dessiné : rien à végétaliser.
@@ -258,12 +267,16 @@
     let herbes = 0, fougeres = 0, fleurs = 0, taillis = 0;
     const stations = Math.max(1, Math.round(palier.stations * biome.stations));
     const pas = Math.max(1, Math.ceil(c.n / stations));
-    function ajouter(i, d, famille, angle, taille, color, mat) {
+    function ajouter(i, d, famille, angle, taille, color, mat, tapis = false) {
+      // Chaque plante vérifie sa propre abscisse, pas seulement celle du début du massif : les décalages
+      // internes d'une touffe ne doivent pas rentrer par le portail ou dans la zone des stands.
+      if (qualite !== 'low' && interdit(i)) return false;
       const a = c.cap[i], x = c.x[i] - Math.sin(a) * d, z = c.z[i] + Math.cos(a) * d;
       const q = interroger(x, z, 40), marge = Math.hypot(taille[0], taille[2]) / 2 + .18;
       if (q.i < 0 || q.d < w + 1.2 + marge || Math.abs(B.circuit.ecart(c, i * c.pas, q.i * c.pas)) > 20) return false;
+      if (qualite !== 'low' && interdit(q.i)) return false;
       const cote = d < 0 ? -1 : 1, limite = cote < 0 ? limites.G[i] : limites.D[i];
-      if (Math.abs(d) + marge > limite - .7) return false;
+      if (Math.abs(d) + marge > limite - (tapis ? 1.6 : .7)) return false;
       // Même bande d'accotement que nappesRoute(), pied légèrement enterré, dévers arrêté au bord de piste.
       const ext = limite + 4, u = (Math.abs(d) - w - 1.2) / (ext - w - 1.2);
       const bord = c.y[i] - cote * w * Math.sin(c.devers[i]);
@@ -295,6 +308,47 @@
         const b = biome.taillis, n = biome.taillisNuance, t = hasardStation[3];
         if (ajouter(i, cote * Math.min(limite - 2.3, Math.abs(d) + 2.5), 'taillis', hasardStation[4] * PI2,
           [largeur, h, largeur * .85], [b[0] + n[0] * t, b[1] + n[1] * t, b[2] + n[2] * t], palier.mat)) taillis++;
+      }
+    }
+
+    // Tapis de graminées : deux accotements peuplés, hauteurs courtes variées et plaques irrégulières. La graine
+    // est indépendante des massifs et du circuit. Les mailles 8 / 4 / 2 m sont emboîtées ; une densité supérieure
+    // conserve les touffes du tapis déjà présentes (hors plafonnement), en ajoute entre elles et élargit la bande.
+    const tapis = TAPIS[qualite];
+    if (tapis) {
+      const base = Math.max(1, Math.round(2 / c.pas));
+      const saut = Math.max(1, Math.round(tapis.pas / (base * c.pas)));
+      // Répartir le plafond sur le tour, sans remplir seulement le début d'un très long circuit.
+      const cellules = Math.ceil(c.n / base), candidats = Math.ceil(cellules / saut) * 2 * tapis.rangees;
+      let poses = 0;
+      for (let cellule = 0; cellule < cellules && poses < tapis.maximum; cellule += saut) {
+        const i = Math.min(c.n - 1, cellule * base);
+        if (interdit(i)) continue;
+        for (const cote of [-1, 1]) for (let rang = 0; rang < tapis.rangees && poses < tapis.maximum; rang++) {
+          if (candidats > tapis.maximum) {
+            const k = (Math.floor(cellule / saut) * 2 + (cote > 0 ? 1 : 0)) * tapis.rangees + rang;
+            if (Math.floor((k + 1) * tapis.maximum / candidats) === Math.floor(k * tapis.maximum / candidats)) continue;
+          }
+          // Un générateur par candidat évite qu'une plante refusée déplace toutes les suivantes.
+          const rt = hasard((c.graine ^ 0x4f1b7d93 ^ Math.imul(cellule + 1, 0x45d9f3b)
+            ^ Math.imul(rang + 1, 0x119de1f3) ^ (cote < 0 ? 0x6a09e667 : 0xbb67ae85)) >>> 0);
+          const t = [rt(), rt(), rt(), rt(), rt(), rt(), rt()];
+          if (t[0] > .72 + biome.densite * .25) continue;
+          const j = (i + (rang ? Math.max(1, Math.round(saut * base / 2)) : 0)) % c.n;
+          if (interdit(j)) continue;
+          const limite = cote < 0 ? limites.G[j] : limites.D[j];
+          const largeur = (1.05 + t[1] * .68) * biome.taille;
+          const h = (.19 + t[2] * .23) * biome.taille;
+          const profondeur = largeur * (.72 + t[3] * .25);
+          const marge = Math.hypot(largeur, profondeur) / 2 + .18;
+          const debut = w + 1.2 + marge + .12;
+          const fin = Math.min(limite - 1.65 - marge, w + 6.8);
+          if (fin <= debut) continue;
+          const d = cote * (debut + (fin - debut) * (.08 + .42 * rang + t[4] * .44));
+          const vert = .78 + t[5] * .34, b = biome.herbe;
+          if (ajouter(j, d, 'herbes', t[6] * PI2, [largeur, h, profondeur],
+            [b[0] * vert, b[1] * vert, b[2] * vert], palier.mat, true)) { herbes++; poses++; }
+        }
       }
     }
 
@@ -362,7 +416,7 @@
     return { lots, herbes, fougeres, fleurs, taillis, qualite };
   }
 
-  B.vegetation = { FORMES, FORMES_AJOUT, BUDGET, PALIERS, BIOMES, JEU_FORMES, forme, installer, construire };
+  B.vegetation = { FORMES, FORMES_AJOUT, BUDGET, PALIERS, TAPIS, BIOMES, JEU_FORMES, forme, installer, construire };
   // La page enregistre d'emblée toutes les formes : un changement de palier ne doit pas demander
   // d'ajouter une forme après FRender.create. Le registre du palier bas reste les quatre formes historiques.
   installer(typeof window !== 'undefined' ? window.FRender : globalThis.FRender, 'high');

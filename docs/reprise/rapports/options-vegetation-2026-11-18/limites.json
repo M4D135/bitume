@@ -1,0 +1,6 @@
+{
+  "navigateur_local": "Chromium arrêté avant chargement : socket() failed: Operation not permitted.",
+  "navigateur_cloud": "Adresse locale inaccessible ; protocole file:// refusé par la politique de sécurité du navigateur. Aucun contournement effectué.",
+  "webgl_visuel": "Non exécuté sur le build final ; aucune mesure FPS/GPU nouvelle.",
+  "deploiement": "Non effectué : aucune configuration SSH Mac/amiga disponible dans cet environnement."
+}

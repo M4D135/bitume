@@ -127,6 +127,7 @@ fieldset input:focus-visible + span { outline: 2px solid var(--ambre); outline-o
 .record b { color: var(--papier); font: 700 18px/1 var(--f-titre); font-variant-numeric: tabular-nums; letter-spacing: .02em; }
 
 .grille-reglages { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px 30px; max-width: 1080px; }
+.note-graphismes { margin: 4px 0 0; max-width: 38ch; font-size: 12px; line-height: 1.5; color: var(--papier-2); }
 .curseurs { display: grid; gap: 12px; }
 .curseurs label { display: grid; gap: 6px; font: 600 11px/1 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); }
 input[type="range"] { width: 100%; accent-color: var(--rouge); }

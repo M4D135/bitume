@@ -2029,7 +2029,9 @@
   }
 
   // FERRO 0.2 : réglages de création, tous facultatifs. Sans eux, l'image et les commandes GPU sont celles de FERRO 0.1.
-  // msaa: 4 anticrénèle la scène avant le bloom (si le GPU l'offre) ; shadowMapScale: 2 double l'atlas d'ombre ;
+  // msaa: 4 ouvre l'anticrénelage (si le GPU l'offre) ; shadowMapScale: 2 autorise l'atlas d'ombre doublé ;
+  // draw({msaa:true}) fonctionne aussi sans bloom et en qualité basse ; sans valeur explicite, le lien historique
+  // au bloom est conservé. draw({shadows,shadowMapScale:1|2}) règle les ombres à chaud dans les capacités ouvertes.
   // vignette (0 à 1, FERRO 0,59) éclaircit les bords quand elle monte ; bloomThreshold [début, fin] (FERRO [0,56, 0,86]).
   // Le rendu logiciel (Canvas 2D) les ignore.
   // BITUME : adapter le contrat météo historique au vec4 EMPRISE [humidité, nuages, pluie, éclair].
@@ -2098,9 +2100,9 @@
     const shadowView=new Float32Array(16),shadowProjection=new Float32Array(16),shadowMatrix=new Float32Array(16),shadowMatrices=new Float32Array(48);
     const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12),lightDirections=new Float32Array(36),lightCones=new Float32Array(24);
     // BITUME : l’indexation EMPRISE est aussi utilisée sur WebGL2 ; formes libres inchangées.
-    const stats={drawCalls:0,triangles:0,instances:0,contextLost:false,webglVersion:2,backend:'webgl2',engine:'ferro-reference',bloom:false,shadows:false,msaa:0,reflections:false,primitiveIndex:primitiveIndex.stats};
+    const stats={drawCalls:0,triangles:0,instances:0,contextLost:false,webglVersion:2,backend:'webgl2',engine:'ferro-reference',bloom:false,shadows:false,shadowMapSize:0,shadowTileSize:0,msaa:0,reflections:false,primitiveIndex:primitiveIndex.stats};
     let program,depthProgram,postProgram,skyProgram,fxProgram,vao,postVao,vbo,ibo,worldBuffer,dynamicBuffer,overlayBuffer,fxBuffer,crowdBuffer,uniforms,postUniforms,skyUniforms,fxUniforms,depthMatrix,depthWind,ssrProgram,ssrUniforms;
-    let post=null,shadowTarget=null,whiteTexture=null,pbrTextures=[],targetKey='',shadowKey='',shadowLight=null;
+    let post=null,msaaBuffer,msaaIdle=0,shadowTarget=null,shadowIdle=0,maxShadowTileSize=1024,whiteTexture=null,pbrTextures=[],targetKey='',shadowKey='',shadowLight=null;
     let world=[],worldIndex=spatialIndex([]),backgroundIndex=spatialIndex([]),lights=[],environment=null,worldBatch=pack([]),quality='auto',disposed=false,worldRevision=0,partitionState=null;
     let staticCaches=[],lampCasters=[],actorLightPlan=null;
     const packDynamic=instancePacker(),packOverlay=instancePacker(),packFx=effectsPacker();
@@ -2184,17 +2186,30 @@
       if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE){deleteMsaa(target);return null;}
       return target;
     }
-    function freePost(){if(post){deleteTarget(post.scene);deleteTarget(post.a);deleteTarget(post.b);deleteTarget(post.reflectSource);deleteTarget(post.reflection);deleteMsaa(post.msaa);post=null;}stats.msaa=0;stats.reflections=false;}
+    function freePost(){if(post){deleteTarget(post.scene);deleteTarget(post.a);deleteTarget(post.b);deleteTarget(post.reflectSource);deleteTarget(post.reflection);post=null;}deleteMsaa(msaaBuffer);msaaBuffer=undefined;msaaIdle=0;stats.msaa=0;stats.reflections=false;}
     function ensureTargets(){
       const key=canvas.width+'x'+canvas.height+':'+quality;if(key===targetKey)return;targetKey=key;
       freePost();
-      if(quality==='low'){deleteTarget(shadowTarget);shadowTarget=null;shadowKey='';stats.bloom=stats.shadows=false;return;}
+      if(quality==='low'){deleteTarget(shadowTarget);shadowTarget=null;shadowKey='';shadowIdle=0;stats.bloom=stats.shadows=false;stats.shadowMapSize=stats.shadowTileSize=0;return;}
       const width=canvas.width,height=canvas.height,bw=Math.max(1,Math.ceil(width/4)),bh=Math.max(1,Math.ceil(height/4));
       const scene=colorTarget(width,height,true),a=colorTarget(bw,bh,false),b=colorTarget(bw,bh,false);
       if(scene&&a&&b)post={scene,a,b};else{deleteTarget(scene);deleteTarget(a);deleteTarget(b);}
+      gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,null);
+      stats.bloom=!!post;
+    }
+    const shadowsEnabled=fx=>fx.shadows!==false&&(quality!=='low'||fx.shadows===true);
+    function ensureShadowTarget(fx){
+      if(!shadowsEnabled(fx)){
+        // Une vue sans ombres ne fait pas détruire l'atlas de la vue suivante. Une désactivation durable le libère.
+        if(shadowTarget&&++shadowIdle>=120){deleteTarget(shadowTarget);shadowTarget=null;shadowKey='';shadowIdle=0;}
+        stats.shadowMapSize=stats.shadowTileSize=0;return;
+      }
+      shadowIdle=0;
       // Tuile d'ombre de 512 en auto, 1 024 en haute qualité. Avec shadowMapScale: 2 (repris de Point de rupture, où un
-      // seul soleil couvre tout le sol visible), elle double, bornée par MAX_TEXTURE_SIZE.
-      const base=quality==='high'?1024:512,size=config.shadowMapScale>1?Math.min(base*config.shadowMapScale,Math.floor((gl.getParameter(gl.MAX_TEXTURE_SIZE)||2048)/2)):base;
+      // seul soleil couvre tout le sol visible), elle double. Le choix par image reste borné par la capacité de
+      // création et MAX_TEXTURE_SIZE ; changer seulement cette taille ne recrée ni le contexte ni les cibles couleur.
+      const scale=fx.shadowMapScale===1||fx.shadowMapScale===2?Math.min(config.shadowMapScale,fx.shadowMapScale):config.shadowMapScale;
+      const base=quality==='high'?1024:512,size=Math.min(base*scale,maxShadowTileSize);
       // Pixel resolution may adapt; a depth atlas of the same size remains valid.
       if(shadowKey!==String(size)){
         deleteTarget(shadowTarget);shadowTarget=null;shadowKey=String(size);
@@ -2204,23 +2219,22 @@
         if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)===gl.FRAMEBUFFER_COMPLETE)shadowTarget=target;else deleteTarget(target);
       }
       gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,null);
-      stats.bloom=!!post;stats.shadows=!!shadowTarget;
+      stats.shadowTileSize=shadowTarget?size:0;stats.shadowMapSize=stats.shadowTileSize*2;
     }
     // Les options de création ouvrent une capacité, sans réserver sa mémoire. Les
     // cibles coûteuses naissent au premier draw qui s'en sert. Une qualité ou taille
     // différente les libère via freePost ; sinon 120 rendus consécutifs sans usage
     // libèrent le cache, sans churn entre les vues ni à chaque transition météo.
     function ensureOptionalTargets(fx,reflectionMode){
-      if(!post){stats.msaa=0;return;}
-      const bloom=fx.bloom!==false,wantMsaa=config.msaa&&bloom&&fx.msaa!==false;
+      const bloom=!!post&&fx.bloom!==false,wantMsaa=config.msaa&&fx.msaa!==false&&(bloom||fx.msaa===true);
       const wantReflections=config.reflections&&bloom&&reflectionMode==='off'&&fx.reflections!==false&&fx.reflections!=='off';
       let changed=false;
       if(wantMsaa){
-        post.msaaIdle=0;
+        msaaIdle=0;
         // null mémorise un échec jusqu'au prochain changement de taille/qualité.
-        if(post.msaa===undefined){post.msaa=msaaTarget(canvas.width,canvas.height);changed=true;}
-      }else if(post.msaa&&(post.msaaIdle=(post.msaaIdle||0)+1)>=120){
-        deleteMsaa(post.msaa);post.msaa=undefined;post.msaaIdle=0;changed=true;
+        if(msaaBuffer===undefined){msaaBuffer=msaaTarget(canvas.width,canvas.height);changed=true;}
+      }else if(msaaBuffer&&++msaaIdle>=120){
+        deleteMsaa(msaaBuffer);msaaBuffer=undefined;msaaIdle=0;changed=true;
       }
       if(wantReflections){
         post.reflectionIdle=0;
@@ -2231,11 +2245,11 @@
           else{deleteTarget(source);deleteTarget(reflected);post.reflectSource=post.reflection=null;}
           changed=true;
         }
-      }else if(post.reflectSource&&(post.reflectionIdle=(post.reflectionIdle||0)+1)>=120){
+      }else if(post&&post.reflectSource&&(post.reflectionIdle=(post.reflectionIdle||0)+1)>=120){
         deleteTarget(post.reflectSource);deleteTarget(post.reflection);
         post.reflectSource=post.reflection=undefined;post.reflectionIdle=0;changed=true;
       }
-      stats.msaa=wantMsaa&&post.msaa?post.msaa.samples:0;
+      stats.msaa=wantMsaa&&msaaBuffer?msaaBuffer.samples:0;
       if(changed){gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,null);}
     }
     const screenGLSL=`
@@ -2299,6 +2313,9 @@
     }
     const reflectionShader=source=>options.sceneReflections&&window.FSceneReflections?window.FSceneReflections.shader(source):source;
     function initialize() {
+      // Limite stable pendant la vie du contexte : aucune requête synchrone au GPU par vue ou par image.
+      // Une restauration peut changer d'adaptateur ; relire alors sa capacité avant toute nouvelle allocation.
+      maxShadowTileSize=Math.max(1,Math.floor((Number(gl.getParameter(gl.MAX_TEXTURE_SIZE))||2048)/2));
       if(profiler){profiler.dispose();profiler=window.FGPUProfile.create(gl,profileOptions);}
       fskyProgram=null;fskyBound=null;fskyCache={};skyFrame={};fogCaches.clear();screenCaches.clear();
       if(options.advancedSky&&window.FSky)fskyProgram=link(window.FSky.VERT,screenShader('fsky',window.FSky.FRAG));
@@ -2343,8 +2360,8 @@
       pdrSlots=[];pdrLots.length=0;pdrGeneration++;
       gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);
       gl.clearColor(.035,.06,.073,1);
-      post=null;shadowTarget=null;targetKey=shadowKey='';shadowLight=null;
-      stats.msaa=0;stats.reflections=false;
+      post=null;msaaBuffer=undefined;msaaIdle=0;shadowTarget=null;shadowIdle=0;targetKey=shadowKey='';shadowLight=null;
+      stats.msaa=0;stats.reflections=false;stats.shadowMapSize=stats.shadowTileSize=0;
       governor.reset();autoScale=1;
       stats.contextLost=false;
     }
@@ -2647,7 +2664,7 @@
       // rounded aspect instead of relying on the previous backing-store size.
       const aspect=Math.max(canvas.width/Math.max(1,canvas.height),cssWidth/cssHeight)+(1+cssWidth/cssHeight)/Math.max(1,cssHeight*.3);
       const tangent=Math.tan(Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/360),views=[{eye,axes,h:aspect*tangent,v:tangent,far:camera.far||180}];
-      const shadows=quality!=='low'&&fx.shadows!==false;
+      const shadows=shadowsEnabled(fx);
       let sunVolume=null;
       if(shadows){
         const plan=lightPlan(eye);actorLightPlan={eye:eye.slice(),previous:shadowLight,plan};
@@ -2684,7 +2701,7 @@
       if(disposed||stats.contextLost) return;
       profiler?.start();fx=fx||{};if(native){autoScale=1;if(fx.adaptive===true)watch.update(fx.frameMs);}else autoScale=governor.update(fx,quality);drawing=true;try{resize();}finally{drawing=false;}
       const reflectionMode=reflections&&['probe','screen'].includes(fx.reflections)?fx.reflections:'off';
-      ensureOptionalTargets(fx,reflectionMode);composeScreen=!!post&&!!options.composition;stats.composition=composeScreen;
+      ensureShadowTarget(fx);ensureOptionalTargets(fx,reflectionMode);composeScreen=!!post&&!!options.composition;stats.composition=composeScreen;
       screenValues[0]=Math.max(0,Math.min(1,fx.damage||0));screenValues[1]=Math.max(0,Math.min(1,fx.pulse||0));screenValues[2]=Number.isFinite(fx.brightness)?Math.max(.5,Math.min(2,fx.brightness)):1;screenValues[3]=fx.vignette===false?0:1;
 
       const t=fx.time||0,shake=fx.shake||0,p=camera.pos||[0,1.6,0];
@@ -2719,7 +2736,7 @@
       ordinary.length=overlay.length=particles.length=overlayParticles.length=0;for(const mesh of dynamic||[]) (mesh.overlay?(mesh.fx?overlayParticles:overlay):mesh.fx?particles:ordinary).push(mesh);
       const dynamicBatch=packDynamic(ordinary,environment,true);
       const torchPosition=eye.map((v,i)=>v+right[i]*.16-up[i]*.08);
-      stats.drawCalls=0;stats.triangles=0;stats.instances=0;stats.bloom=!!post&&fx.bloom!==false;stats.shadows=!!shadowTarget&&fx.shadows!==false;stats.shadowMaps=stats.shadows?shadowLights.length+1+(environment?1:0):0;stats.shadowMode=environment?'sun-atlas':'atlas';
+      stats.drawCalls=0;stats.triangles=0;stats.instances=0;stats.bloom=!!post&&fx.bloom!==false;stats.shadows=!!shadowTarget&&shadowsEnabled(fx);stats.shadowMaps=stats.shadows?shadowLights.length+1+(environment?1:0):0;stats.shadowMode=environment?'sun-atlas':'atlas';
       stats.uploadBytes=0;stats.fxInstances=0;
       // Animated instances are shared unchanged by every depth and colour pass.
       if(dynamicBatch.values.length){gl.bindBuffer(gl.ARRAY_BUFFER,dynamicBuffer);gl.bufferData(gl.ARRAY_BUFFER,dynamicBatch.values,gl.DYNAMIC_DRAW);stats.uploadBytes+=dynamicBatch.values.byteLength;}
@@ -2747,9 +2764,9 @@
       }
       profiler?.end();
       reflections?.beginScreen(post?.scene,reflectionMode);if(reflectionMode==='screen'){gl.clearBufferfv(gl.COLOR,1,new Float32Array(4));gl.drawBuffers([gl.COLOR_ATTACHMENT0]);}
-      // PDR (msaa) : fx.msaa === false coupe l'anticrénelage sans recréer le contexte.
-      const msaa=stats.bloom&&post.msaa&&fx.msaa!==false?post.msaa:null;
-      gl.bindFramebuffer(gl.FRAMEBUFFER,(stats.bloom||composeScreen)?(msaa?msaa.framebuffer:post.scene.framebuffer):null);gl.viewport(0,0,canvas.width,canvas.height);
+      // Le MSAA explicite possède sa cible : un profil sans halo peut lisser l'image sans allumer le post-traitement.
+      const msaa=stats.msaa?msaaBuffer:null;
+      gl.bindFramebuffer(gl.FRAMEBUFFER,msaa?msaa.framebuffer:(stats.bloom||composeScreen)?post.scene.framebuffer:null);gl.viewport(0,0,canvas.width,canvas.height);
       gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);if(environment)skyPass(axes,f,t,weather,fx.cloudOffset||weather.cloudOffset);gl.useProgram(program);gl.bindVertexArray(vao);
       bindScreen(program);bindSkyFog(program);gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);gl.uniform3fv(uniforms.uEye,eye);gl.uniform3fv(uniforms.uForward,forward);
       gl.uniform4fv(uniforms.uSeaOrigin,fx.sea?.origin||[0,0,0,0]);gl.uniform4fv(uniforms.uSeaMotion,fx.sea?.motion||[0,0,-1.25,0]);
@@ -2831,7 +2848,7 @@
         if(overlayClip!==vp)gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);
       }
       if(msaa){
-        gl.bindFramebuffer(gl.READ_FRAMEBUFFER,msaa.framebuffer);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,post.scene.framebuffer);
+        gl.bindFramebuffer(gl.READ_FRAMEBUFFER,msaa.framebuffer);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,(stats.bloom||composeScreen)?post.scene.framebuffer:null);
         gl.blitFramebuffer(0,0,canvas.width,canvas.height,0,0,canvas.width,canvas.height,gl.COLOR_BUFFER_BIT,gl.NEAREST);
         gl.bindFramebuffer(gl.FRAMEBUFFER,null);
       }
