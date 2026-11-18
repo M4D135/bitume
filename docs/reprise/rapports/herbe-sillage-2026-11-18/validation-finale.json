@@ -1,0 +1,17 @@
+{
+  "version": "0.2.31",
+  "bytes": 13025697,
+  "sha256": "7b20b827f870428ce0bd310dc6f1270d68b6282ef56e7b1b27bd5df8ff160599",
+  "blob": "466163116876de856b5dd8ef2db5ac630e219215",
+  "build_reproducible": true,
+  "hashes": {
+    "VERSION.json": "434413597cc76b0d960d3fd9487921f21b9b31a935515577fa442100192439b0",
+    "SIZE.json": "78949d6a66813a29fa5c8dadaef2ce5a9f6d426a1dc7fbbddc6aec2e0f4f0189",
+    "dist/bitume.html": "7b20b827f870428ce0bd310dc6f1270d68b6282ef56e7b1b27bd5df8ff160599"
+  },
+  "signature_tests": 4,
+  "signature_download": "BITUME.html",
+  "signature_in_final_html": true,
+  "version_reason": "La version 0.2.30 du lien Enregistrer est deja en ligne ; le lot graphique prend 0.2.31.",
+  "qualification_scope": "47/47 suites sur le candidat graphique ; integration finale du lien Enregistrer seule, 4 tests de signature reexecutes."
+}

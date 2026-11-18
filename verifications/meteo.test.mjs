@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
+import vm from 'node:vm';
 const fichier=process.argv[2]||fileURLToPath(new URL('../src/jeu.js',import.meta.url));
 const source=readFileSync(fichier,'utf8');
 await import(pathToFileURL(resolve(dirname(fichier),'meteo.js')));
@@ -58,5 +59,27 @@ assert.deepEqual(results[0],results[1]);assert.deepEqual(results[0],results[2]);
 const a=M.ambiance({pluie:1,nuage:1,eclair:1,mouille:.8,ventX:2,ventZ:.3});
 check(a.pluie===.72&&a.nuage===.86&&a.eclair===.3&&a.mouille===.8,'contrat ambiance borné et mouillage pour renderer');
 check(source.includes('dessinerMeteo(S, dtImage, cam, vue);'),'overlay reçoit secondes et caméra effectivement rendue');
-check(source.includes('weather: B.meteo.ambiance(meteo)'),'ambiance raccordée au rendu');
+// Exécuter les vrais appels de rendu avec une frontière instrumentée : le tampon
+// de météo et les sources de sillage doivent être communs à la scène et aux miroirs.
+const appelsRendu=[],rendu={draw:(cam,objets,fx)=>appelsRendu.push(fx)};
+const contexte={B,S:{lumiere:1,sillage:{sources:[{id:0}]}},meteo:{pluie:1,nuage:1,eclair:0,mouille:.8,ventX:2,ventZ:.3},
+  cam:{},camR:{},ps:{},suivie:{},vue:'cockpit',sortie:[],objets:[],rendu,retro:{rendu},horlogeReelle:2,
+  P:{rendu:{msaa:4,shadowMapScale:2},qualite:'high'},avecOmbres:()=>true,avecReflets:()=>false,
+  haloInt:true,lampes:[],dureeImage:16,eclair:0,scene:{decor:{tunnelLampes:[]},index:0},
+  G:{},i:0,dtImage:1/60,lampesTunnel:()=>[]};
+const preparation=source.match(/^\s*S\.ambianceImage = B\.meteo\.ambiance\([^\n]+;/m)?.[0];
+check(!!preparation,'préparation de l’ambiance par image');
+vm.runInNewContext(preparation,contexte);
+const tampon=contexte.S.ambianceImage;
+contexte.majGlaces=(...args)=>{contexte.ambiance=args[5];};
+const passageMiroirs=source.match(/^\s*majGlaces\(S, vue, cam, ps, sortie, [^\n]+;/m)?.[0];
+check(!!passageMiroirs,'passage de production vers les miroirs');
+vm.runInNewContext(passageMiroirs,contexte);
+for(const expression of [/^\s*rendu\.draw\(cam, sortie, [^\n]+;/m,/^\s*retro\.rendu\.draw\(camR, objets, [^\n]+;/m]) {
+  const appelRendu=source.match(expression)?.[0];check(!!appelRendu,'appel de production disponible');
+  vm.runInNewContext(appelRendu,contexte);
+}
+check(appelsRendu.length===2&&appelsRendu.every(fx=>fx.weather===tampon&&fx.windSources===contexte.S.sillage.sources),'même ambiance et sillage dans la scène et les miroirs');
+contexte.meteo.pluie=0;vm.runInNewContext(preparation,contexte);
+check(contexte.S.ambianceImage===tampon&&tampon.pluie<.72,'tampon conservé et actualisé à l’image suivante');
 console.log(`météo : ${controles} contrôles horloge, pause, projection, profondeur, paramètres et cadence tenus`);

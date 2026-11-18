@@ -45,10 +45,12 @@
     m.ventZ = .55 + .35 * Math.cos(m.t * .43);
     return m;
   }
-  function ambiance(m) {
+  function ambiance(m, sortie = {}) {
     // Humidité résiduelle = brume légère ; aucun reflet de sol n'est simulé par cet overlay.
-    return { pluie: Math.max(m.pluie * .72, (m.mouille || 0) * .14), nuage: m.nuage * .86,
-      eclair: m.eclair * .30, mouille: m.mouille || 0, ventX: m.ventX || 0, ventZ: m.ventZ || 0 };
+    sortie.pluie = Math.max(m.pluie * .72, (m.mouille || 0) * .14); sortie.nuage = m.nuage * .86;
+    sortie.eclair = m.eclair * .30; sortie.mouille = m.mouille || 0;
+    sortie.ventX = m.ventX || 0; sortie.ventZ = m.ventZ || 0;
+    return sortie;
   }
 
   const N = 840, LARGEUR = 48, HAUTEUR = 18, EXPOSITION = 1 / 90;

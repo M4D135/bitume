@@ -47,6 +47,7 @@ MODULES = [
     'traces.js',
     'realisateur.js',
     'meteo.js',
+    'sillage.js',
     'reseau.js',
     'mesures.js',
     'qualite.js',

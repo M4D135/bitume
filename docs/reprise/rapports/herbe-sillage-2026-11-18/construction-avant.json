@@ -1,0 +1,93 @@
+{
+  "date": "2026-11-18T07:56:57.003Z",
+  "node": "v24.22.3",
+  "platform": "linux",
+  "arch": "x64",
+  "sourceRef": "e150378d6e547a8dc1510334643c061b7cba72dc",
+  "hashes": {
+    "src/moteur/renderer.js": "1cee31205d58fe044e5140e31a1385519cdaf5b9b626676884dff7b4768bcdf2",
+    "src/graphismes.js": "63f4c39ba4a0eaa7a43251d9731b11e710e3e98349405031d1d05784b48d167d",
+    "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+    "src/circuit.js": "24aad5f7b4c13a21c122d800cd3661dd3a71e1e32b94d2b12b9eb3abe8103061",
+    "src/vegetation.js": "a7e73716b7a6a0880a085d4dbfab71f764b0e87371c6e25d768a70cf6c5c88f0",
+    "src/decor.js": "9b3a7ae788eb7d8a8753f55b0e79c64f4850cbee6c4e52cdcde63d1c59e5b385",
+    "src/botanique.js": "06a3a79f6f609a70a44912c75b16ef9d452df5d389772d528c5098605a298049"
+  },
+  "conditions": {
+    "theme": "foret",
+    "seed": 11,
+    "length": 4200,
+    "generalQuality": "high",
+    "warmups": 1,
+    "measuredSamples": 5
+  },
+  "scope": "CPU generation and static instance packing only. Complete-circuit counts are not visible-frame counts. No GPU execution or FPS measurement. Timings include normal runtime and GC noise.",
+  "cases": [
+    {
+      "density": "high",
+      "grassClumps": 3866,
+      "vegetationInstances": 4529,
+      "lots": 10,
+      "nearTrianglesWholeCircuit": 926928,
+      "farTrianglesWholeCircuit": 318399,
+      "nearGroupsWholeCircuit": 50,
+      "farGroupsWholeCircuit": 50,
+      "instanceBufferBytesNearAndFar": 579712,
+      "decorConstructionMs": {
+        "samples": [
+          78.95577199999997,
+          73.77147100000002,
+          96.42629699999998,
+          99.43160599999999,
+          73.333391
+        ],
+        "median": 78.95577199999997,
+        "max": 99.43160599999999
+      },
+      "vegetationPackingMs": {
+        "samples": [
+          2.5073549999999614,
+          2.6179519999999457,
+          2.03143799999998,
+          2.065379000000007,
+          1.4011899999999287
+        ],
+        "median": 2.065379000000007,
+        "max": 2.6179519999999457
+      }
+    },
+    {
+      "density": "ultra",
+      "grassClumps": 7238,
+      "vegetationInstances": 7901,
+      "lots": 10,
+      "nearTrianglesWholeCircuit": 1655280,
+      "farTrianglesWholeCircuit": 561183,
+      "nearGroupsWholeCircuit": 50,
+      "farGroupsWholeCircuit": 50,
+      "instanceBufferBytesNearAndFar": 1011328,
+      "decorConstructionMs": {
+        "samples": [
+          56.09602599999994,
+          71.38677600000005,
+          50.081065999999964,
+          50.75233100000014,
+          41.41567000000009
+        ],
+        "median": 50.75233100000014,
+        "max": 71.38677600000005
+      },
+      "vegetationPackingMs": {
+        "samples": [
+          1.8198889999998755,
+          1.4779450000000907,
+          1.2780339999999342,
+          1.2074769999999262,
+          1.1226900000001478
+        ],
+        "median": 1.2780339999999342,
+        "max": 1.8198889999998755
+      }
+    }
+  ]
+}

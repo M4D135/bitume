@@ -1,0 +1,96 @@
+{
+  "version": "0.2.31",
+  "ferro": "0.3.7",
+  "build_reproducible": true,
+  "hashes": {
+    "VERSION.json": "434413597cc76b0d960d3fd9487921f21b9b31a935515577fa442100192439b0",
+    "SIZE.json": "78949d6a66813a29fa5c8dadaef2ce5a9f6d426a1dc7fbbddc6aec2e0f4f0189",
+    "dist/bitume.html": "7b20b827f870428ce0bd310dc6f1270d68b6282ef56e7b1b27bd5df8ff160599"
+  },
+  "dist_git_blob": "466163116876de856b5dd8ef2db5ac630e219215",
+  "comparisons": [
+    {
+      "scope": "grass-only",
+      "camera": "cockpit",
+      "triangles_before": 433008,
+      "triangles_after": 329664,
+      "triangles_delta_pct": -23.87,
+      "calls_before": 5,
+      "calls_after": 25,
+      "cpu_median_before_ms": 0.2057800000000043,
+      "cpu_median_after_ms": 0.3884649999999965
+    },
+    {
+      "scope": "grass-only",
+      "camera": "poursuite",
+      "triangles_before": 301104,
+      "triangles_after": 253632,
+      "triangles_delta_pct": -15.77,
+      "calls_before": 3,
+      "calls_after": 15,
+      "cpu_median_before_ms": 0.1942629999999781,
+      "cpu_median_after_ms": 0.30646200000001045
+    },
+    {
+      "scope": "grass-only",
+      "camera": "bord-sol",
+      "triangles_before": 344736,
+      "triangles_after": 395040,
+      "triangles_delta_pct": 14.59,
+      "calls_before": 6,
+      "calls_after": 35,
+      "cpu_median_before_ms": 0.17262000000005173,
+      "cpu_median_after_ms": 0.32008300000006784
+    },
+    {
+      "scope": "full-decor",
+      "camera": "cockpit",
+      "triangles_before": 7006428,
+      "triangles_after": 6903084,
+      "triangles_delta_pct": -1.47,
+      "calls_before": 93,
+      "calls_after": 113,
+      "cpu_median_before_ms": 0.29610600000000886,
+      "cpu_median_after_ms": 0.40040399999998044
+    },
+    {
+      "scope": "full-decor",
+      "camera": "poursuite",
+      "triangles_before": 837987,
+      "triangles_after": 790515,
+      "triangles_delta_pct": -5.67,
+      "calls_before": 68,
+      "calls_after": 80,
+      "cpu_median_before_ms": 0.2693249999999807,
+      "cpu_median_after_ms": 0.3363570000000209
+    },
+    {
+      "scope": "full-decor",
+      "camera": "bord-sol",
+      "triangles_before": 2077104,
+      "triangles_after": 2127408,
+      "triangles_delta_pct": 2.42,
+      "calls_before": 128,
+      "calls_after": 157,
+      "cpu_median_before_ms": 0.28246500000000196,
+      "cpu_median_after_ms": 0.463779000000045
+    }
+  ],
+  "limits": [
+    "Banc WebGL instrumente inerte, 960x540/FOV60 : aucune image, temps GPU ni mesure FPS.",
+    "Scenes sans voitures : les compteurs isolent les lots et ne mesurent pas le cout GPU du souffle.",
+    "Appels et CPU instrumente augmentent avec les tuiles ; aucun gain FPS global deduit.",
+    "Vue bord-sol plus couteuse en triangles ; gains cockpit/poursuite specifiques aux cameras testees.",
+    "EGL moteur execute les vrais shaders sur Mesa logiciel ; qualification visuelle finale du jeu a faire."
+  ],
+  "candidat_graphique": {
+    "version": "0.2.30",
+    "hashes": {
+      "VERSION.json": "d3a78c74b690a0e9ea3c4d9c98ae958449367a93bc0500119e326d3b7f1af0e9",
+      "SIZE.json": "bc62c55f0fddc530484b87ed62c950aad8bc5e23ce7b3eac8cd566a9d599db9e",
+      "dist/bitume.html": "c058d2da60ee9b5aaa75c6cecda752bd42b148e0be731493d5933762656f13bd"
+    },
+    "scope": "47 suites et compteurs de soumission ; avant integration du lien Enregistrer."
+  },
+  "signature_tests_final": 4
+}

@@ -4,44 +4,41 @@
     "branche": "main",
     "base_commit": "e150378d6e547a8dc1510334643c061b7cba72dc",
     "base_version": "0.2.29",
-    "version": "0.2.29",
-    "ferro_version": "0.3.6",
-    "statut": "lot_08_en_cours",
+    "version": "0.2.31",
+    "ferro_version": "0.3.7",
+    "statut": "lot_08_qualifie_publication_jeu_en_cours",
     "lot": "herbe_sillage_brume",
     "fiche": "docs/reprise/08-HERBE-SILLAGE-BRUME.md",
-    "commit_publie": "40b31d582e434b8d87379c360648997e940f6d64",
-    "prochaine_action": "Terminer densite/vent/optimisation, qualifier moteur et jeu, publier dans cet ordre.",
-    "version_preparee": "0.2.30",
-    "ferro_prepare": "0.3.7"
+    "commit_publie": null,
+    "prochaine_action": "Publier BITUME 0.2.31, puis depuis le Mac verifier rendu/options, deployer et controler empreinte."
   },
   "qualification": {
-    "historique_jeu": "46/46 suites Node reussies avant cette reprise",
-    "historique_moteur": "136 reussis, 1 TODO physique preexistant, zero echec",
-    "reprise": "4 suites ciblees, verrou 34/34 et build reproductible ; details dans publication-validation.json",
-    "preuves": "docs/reprise/rapports/options-vegetation-2026-11-18/",
-    "dist_sha256": "969f211ec815ac28601761e5c5dfb1a7eea17e151f0c17d9ea9978e3bac5f2df",
-    "navigateur": "Non execute sur le build final ; pas de qualification visuelle ni de FPS GPU reel.",
-    "reprise_lot_08": "Sillage/brume 7 controles ; meteo 103 controles ; autres controles et rendu final en attente."
+    "jeu": "47/47 suites du candidat graphique ; 4 tests de signature reexecutes sur integration finale Enregistrer",
+    "moteur": "147 reussis, zero echec, 1 TODO physique historique ; WGSL 18/18",
+    "verrou": "34/34 modules conformes",
+    "build_reproductible": true,
+    "dist_sha256": "7b20b827f870428ce0bd310dc6f1270d68b6282ef56e7b1b27bd5df8ff160599",
+    "preuves": "docs/reprise/rapports/herbe-sillage-2026-11-18/",
+    "navigateur": "Chromium bloque avant DevTools ; EGL logiciel valide le shader, pas l’image finale ni les FPS materiels."
   },
   "integration": {
     "nouvelle_branche": false,
     "force_push": false,
     "publication_ferro": {
-      "version": "0.3.6",
-      "commit": "7d7f1018db33632ae448e6fd6e0b4f6b6f8fe5d1",
+      "version": "0.3.7",
+      "commit": "0250a5750d10789976186a1491ffdf011fb19611",
       "branche": "main",
       "verifiee": true
     },
-    "deploiement_029_effectue": false,
-    "deploiement_029_blocage": "Acces Mac/amiga indisponible dans cet environnement ; autorisation deja acquise.",
     "derniere_production_documentee": {
-      "version": "0.2.28",
-      "commit": "46a5cce62c7c3beae8c66da2deed689802983050",
+      "version": "0.2.30",
       "date": "2026-11-18",
       "reverifiee_dans_cette_reprise": true,
-      "sha256": "41f82e4cac4256fe3db92f032e9a4f2e4c498a5402ab1f79b9eef2aa71e329bd"
+      "sha256": "2f8c359838c4c92237fbafcfdec17427777bb1dbcc49e880712e1c05ccab6da1",
+      "signature": "m4d135 telecharge BITUME.html"
     },
-    "recu_publication": "docs/reprise/rapports/options-vegetation-2026-11-18/publication.json"
+    "deploiement_blocage": "Acces Mac/amiga indisponible dans cet environnement ; autorisation deja acquise.",
+    "deploiement_031_effectue": false
   },
   "reprise_courte": {
     "regle": "Lire REPRISE.md et cet etat ; un seul lot ; sorties et recherches bornees ; historique seulement si necessaire.",

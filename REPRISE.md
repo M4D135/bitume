@@ -3,17 +3,17 @@
 ## État actuel — 18 novembre 2026
 
 - Branche : `main`. Base du lot : `e150378d6e547a8dc1510334643c061b7cba72dc` (0.2.29).
-- **Lot 08 en cours** : brume réduite, herbe au moins ×10, souffle des voitures, optimisation du rendu.
-- Versions préparées : BITUME **0.2.30**, moteur **FERRO 0.3.7**. Sources à qualifier puis publier.
-- Dernier code livré : BITUME `40b31d582e434b8d87379c360648997e940f6d64`, FERRO `7d7f1018db33632ae448e6fd6e0b4f6b6f8fe5d1`.
+- **Lot 08 qualifié** : brume réduite, herbe au moins ×10, souffle des voitures, optimisation du rendu. m4d135 enregistre BITUME.html.
+- BITUME **0.2.31 qualifié**, publication en cours. Moteur **FERRO 0.3.7 publié**.
+- Référence moteur : `0250a5750d10789976186a1491ffdf011fb19611`. Reçus exacts dans `docs/reprise/ETAT.json`.
 - Fiche unique à lire : `docs/reprise/08-HERBE-SILLAGE-BRUME.md`.
-- Premier contrôle : sillage/brume et jonction météo réussis ; qualification finale à faire.
+- Contrôles : jeu 47/47, moteur 147 réussis + 1 TODO historique, WGSL 18/18, verrou 34/34, build identique ; lien Enregistrer revalidé.
 - Limite : Chromium échoue avant DevTools ; aucune nouvelle image ni mesure FPS GPU réelle.
 - Déploiement autorisé depuis le Mac ; accès Mac/amiga indisponible ici.
 
 ## Prochain petit lot
 
-Finir et qualifier ce lot. Publier FERRO avant BITUME, avec sources et build. Depuis le Mac, contrôler le rendu puis `./deposer.sh` et l'empreinte servie.
+Publier BITUME avec sources et build. Depuis le Mac, contrôler le rendu puis `./deposer.sh` et l'empreinte servie.
 
 ## Méthode pour garder le contexte court
 

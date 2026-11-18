@@ -322,8 +322,17 @@
     return figer({ palier: e.palier, decor: e.decor, changement: !!changement, reconstruit: !!reconstruit, attente: !!e.demande });
   }
 
+  // Réglage d'image du jeu : le décor de référence et sa géométrie restent intacts.
+  // La pluie garde son extinction supplémentaire ; les reliefs restent lisibles au loin.
+  const BRUME = .34;
+  function atmosphere(base) {
+    if (!base || !Number.isFinite(base.fogDensity)) return base;
+    return { ...base, fogDensity: base.fogDensity * BRUME };
+  }
+
   B.graphismes = {
     PALIERS, QUALITES, OPTIONS, PROFILS, TABLE_GOUVERNEUR, NIVEAU_MAX, RESOLUTION_PALIER_4, STABILISATION, RECONSTRUCTION,
     normaliser, normaliserOptions, estPalier, profil, resoudre, capacites, melange, budget, budgets, stabiliser, etatStable,
+    atmosphere, BRUME,
   };
 })(globalThis.BITUME = globalThis.BITUME || {});

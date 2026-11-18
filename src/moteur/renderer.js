@@ -32,6 +32,117 @@
     return distance;
   }
 
+  // The colour and sun passes need the same camera-relative LOD. Prepare it
+  // once per view, and reuse bounds rather than allocating an object (and, on
+  // WebGPU, a mapped position array) for each lot in each pass.
+  function lotViewState(){
+    const records=[];let source=null;
+    return {records,reset(){records.length=0;source=null;},prepare(lots,eye,vertical,height){
+      if(source!==lots){records.length=0;for(const lot of lots)records.push({lot,bounds:{p:lot.centre,radius:lot.rayon},distance:0,near:true});source=lots;}
+      for(const entry of records){const l=entry.lot,dx=l.centre[0]-eye[0],dy=l.centre[1]-eye[1],dz=l.centre[2]-eye[2];entry.bounds.p=l.centre;entry.bounds.radius=l.rayon;entry.distance=Math.sqrt(dx*dx+dy*dy+dz*dz)-l.rayon;entry.near=entry.distance<lotDetailDistance(l,vertical,height);}
+      return records;
+    }};
+  }
+
+  // Local wind is an opt-in instance flag, independent of material and surface
+  // mapping. Track emitters, never blades: 32 bounded CPU records, four GPU
+  // sources, and stable arrays reused by every colour/depth/camera pass.
+  function localWindState(){
+    const records=Array.from({length:32},()=>({key:null,seen:false,x:0,y:0,z:0,fx:0,fz:0,radius:5,wake:12,targetX:0,targetZ:0,viewFade:0,priority:1}));
+    const indices=new Int32Array(5),scores=new Float64Array(5),positions=new Float32Array(16),motions=new Float32Array(16);
+    const frame={count:0,candidates:0,updates:0,positions,motions};let lastTime=null;
+    const unit=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x);};
+    function reset(){for(const r of records){r.key=null;r.fx=r.fz=0;r.seen=false;}lastTime=null;positions.fill(0);motions.fill(0);frame.count=frame.candidates=frame.updates=0;}
+    function update(sources,time){
+      time=Number.isFinite(time)?time:0;if(time===lastTime)return;
+      if(lastTime!==null&&time<lastTime)reset();
+      const dt=lastTime===null?1/60:Math.min(.25,time-lastTime);lastTime=time;frame.updates++;
+      for(const r of records){r.seen=false;r.targetX=r.targetZ=0;}
+      const length=Array.isArray(sources)?Math.min(32,sources.length):0;
+      for(let i=0;i<length;i++){
+        const source=sources[i],p=source?.p,v=source?.velocity;
+        if(!p||!v||!Number.isFinite(p[0])||!Number.isFinite(p[1])||!Number.isFinite(p[2])||!Number.isFinite(v[0])||!Number.isFinite(v[1])||!Number.isFinite(v[2]))continue;
+        const key=source.id??source;let record=null,free=null;
+        for(const r of records){if(r.key===key){record=r;break;}if(r.key===null&&!free)free=r;}
+        if(!record){
+          record=free;if(!record)continue;record.key=key;record.fx=record.fz=0;
+          // A bounded, stable tie-break keeps symmetric formations active.
+          // It changes ranking by at most 8%, never the source's force.
+          let hash=typeof key==='number'?key|0:2166136261;
+          if(typeof key==='string')for(let k=0;k<Math.min(key.length,64);k++)hash=Math.imul(hash^key.charCodeAt(k),16777619);
+          else if(typeof key!=='number')hash=i+1;
+          hash=Math.imul(hash^(hash>>>16),0x45d9f3b);hash=Math.imul(hash^(hash>>>16),0x45d9f3b);hash^=hash>>>16;
+          record.priority=1+(hash>>>0)/4294967296*.08;
+        }
+        if(record.seen)continue;record.seen=true;record.x=p[0];record.y=p[1];record.z=p[2];
+        const horizontalSpeed=Math.hypot(v[0],v[2]),speed=Math.min(120,horizontalSpeed),strength=Number.isFinite(source.strength)?Math.max(0,Math.min(3,source.strength)):1;
+        const gain=strength*speed*speed/(speed*speed+324),length=horizontalSpeed||1;
+        record.targetX=v[0]/length*gain;record.targetZ=v[2]/length*gain;
+        record.radius=Number.isFinite(source.radius)?Math.max(.25,Math.min(24,source.radius)):5;
+        record.wake=Number.isFinite(source.wake)?Math.max(0,Math.min(48,source.wake)):Math.min(48,4+speed*.45);
+      }
+      frame.candidates=0;
+      for(const r of records){
+        if(r.key===null)continue;
+        const rising=r.targetX*r.targetX+r.targetZ*r.targetZ>r.fx*r.fx+r.fz*r.fz,blend=1-Math.exp(-dt/(rising?.09:.42));
+        r.fx+=(r.targetX-r.fx)*blend;r.fz+=(r.targetZ-r.fz)*blend;
+        if(!r.seen&&r.fx*r.fx+r.fz*r.fz<1e-10){r.key=null;r.fx=r.fz=0;}else if(r.fx*r.fx+r.fz*r.fz>1e-10)frame.candidates++;
+      }
+    }
+    function select(eye){
+      indices.fill(-1);scores.fill(0);positions.fill(0);motions.fill(0);frame.count=0;
+      for(let i=0;i<records.length;i++){
+        const r=records[i],power=Math.hypot(r.fx,r.fz);if(r.key===null||power<1e-5)continue;
+        const vx=r.fx/power,vz=r.fz/power,dx=eye[0]-r.x,dz=eye[2]-r.z,along=Math.max(-r.wake,Math.min(0,dx*vx+dz*vz));
+        const x=dx-vx*along,z=dz-vz*along,y=eye[1]-r.y,distance=Math.max(0,Math.hypot(x,y,z)-r.radius);
+        // The wake distance alone becomes identical for several cars queued
+        // along the same road. Keep a smooth body-distance term so the closest
+        // passing vehicles retain priority even inside overlapping wakes.
+        r.viewFade=unit((160-distance)/40);const score=power*r.viewFade*r.priority/(1+distance*distance*.0025+(dx*dx+dz*dz)*.003);if(score<=scores[4])continue;
+        let at=4;while(at>0&&score>scores[at-1]){scores[at]=scores[at-1];indices[at]=indices[at-1];at--;}scores[at]=score;indices[at]=i;
+      }
+      for(let i=0;i<4&&indices[i]>=0;i++){
+        const r=records[indices[i]],power=Math.hypot(r.fx,r.fz),fade=scores[4]>0?unit((scores[i]-scores[4])/(scores[i]*.25)):1,at=frame.count*4;
+        if(fade<1e-5)continue;
+        positions[at]=r.x;positions[at+1]=r.y;positions[at+2]=r.z;positions[at+3]=r.radius;
+        motions[at]=r.fx/power;motions[at+1]=r.fz/power;motions[at+2]=power*fade*r.viewFade;motions[at+3]=r.wake;frame.count++;
+      }
+      return frame;
+    }
+    return {frame,update,select,reset};
+  }
+
+  const LOCAL_WIND_GLSL=`
+  uniform int uLocalWindCount;
+  uniform vec4 uLocalWindPosition[4];
+  uniform vec4 uLocalWindMotion[4];
+  vec2 localVegetationWind(vec3 world,float root,float height){
+    vec2 force=vec2(0.);
+    for(int i=0;i<4;i++){
+      if(i>=uLocalWindCount)break;
+      vec4 source=uLocalWindPosition[i],motion=uLocalWindMotion[i];
+      vec2 delta=world.xz-source.xz,side=vec2(-motion.y,motion.x);
+      // Most ground cover lies outside every source. Reject with cheap bounds
+      // before normalization, square roots, smoothsteps or trigonometry.
+      float reach=source.w*1.35+motion.w;
+      if(max(abs(delta.x),abs(delta.y))>reach||abs(world.y-source.y)>=source.w)continue;
+      float along=dot(delta,motion.xy),across=dot(delta,side);
+      if(along>source.w||along<-max(motion.w,source.w)||abs(across)>source.w*1.35)continue;
+      float trail=clamp(-along/max(motion.w,.001),0.,1.);
+      float radius=source.w*(1.+trail*.35);
+      float lateral=1.-smoothstep(radius*.2,radius,abs(across));
+      float ahead=1.-smoothstep(0.,source.w,along);
+      float behind=smoothstep(-max(motion.w,.001),-max(motion.w,.001)*.25,along);
+      float vertical=1.-smoothstep(source.w*.25,source.w,abs(world.y-source.y));
+      float body=1.-smoothstep(source.w*.15,source.w,length(delta));
+      float envelope=max(body*.85,lateral*ahead*behind)*vertical*motion.z;
+      float flutter=sin(uWindTime.y*6.2+along*1.9+across*.8)*(.08+trail*.12);
+      vec2 flow=motion.xy*.75+side*(clamp(across/source.w,-1.,1.)*.55+flutter);
+      force+=flow*envelope;
+    }
+    return force/(1.+length(force)*.45)*root*root*min(height,2.)*.62;
+  }`;
+
   // Same wave field as RADE.marine.seaHeight. Only the local navigation grid
   // is displaced; a 16 m edge band meets the distant flat sea without a seam.
   const SEA_GLSL = `
@@ -63,6 +174,7 @@
   layout(location=5) in vec4 iColor;
   uniform mat4 uViewProjection;
   uniform vec2 uWindTime;
+  ${LOCAL_WIND_GLSL}
   ${SEA_GLSL}
   out vec3 vWorld;
   out vec3 vNormal;
@@ -84,6 +196,8 @@
     mat3 rz=mat3(c.z,s.z,0., -s.z,c.z,0., 0.,0.,1.);
     mat3 rotation=rz*ry*rx;
     vWorld=rotation*(aPosition*iScale.xyz)+iPosition.xyz;
+    vec3 windPosition=vWorld;
+    bool windResponsive=mod(floor(iRotation.w*.125),2.)>.5;
     if(iPosition.w>10.5&&iPosition.w<11.5){
       float phase=uWindTime.y*.85+iPosition.x*.37+iPosition.z*.21;
       float bend=(aPosition.y+.5)*uWindTime.x*.055;
@@ -92,12 +206,14 @@
       // The same vertex program drives colour and shadow depth. Roots stay fixed,
       // broad gusts move the stem and a smaller phase moves its free tip.
       float root=clamp(aPosition.y+.5,0.,1.);
-      float phase=uWindTime.y*.85+iPosition.x*.37+iPosition.z*.21;
+      vec2 phasePosition=windResponsive?windPosition.xz:iPosition.xz;
+      float phase=uWindTime.y*.85+phasePosition.x*.37+phasePosition.y*.21;
       float bend=root*root*uWindTime.x*.075*clamp(abs(iScale.y),.25,4.);
       float tip=sin(uWindTime.y*2.1+iPosition.x*1.9+iPosition.z*.43+root*4.5)
         *root*root*root*uWindTime.x*.015*min(abs(iScale.y),2.);
       vWorld.x+=sin(phase)*bend+tip;vWorld.z+=cos(phase*.73)*bend*.65-tip*.4;
     }
+    if(windResponsive&&uLocalWindCount>0)vWorld.xz+=localVegetationWind(windPosition,clamp(aPosition.y+.5,0.,1.),abs(iScale.y));
     vNormal=normalize(rotation*(aNormal/max(abs(iScale.xyz),vec3(.0001))));
         if(uSeaMode>.5&&iPosition.w>11.5&&iPosition.w<12.5&&iPosition.y<0.) {
       if(iPosition.w>12.1&&uSeaMotion.w>.5){vec3 w=seaField(vWorld.xz);vWorld.y=uSeaMotion.z+w.x;vNormal=normalize(vec3(-w.y,1.,-w.z));}
@@ -108,7 +224,7 @@
     vEmission=iScale.w;
     vOverlay=mod(iRotation.w,2.);
     vOutdoor=mod(floor(iRotation.w*.5),2.);
-    vObject=floor(iRotation.w*.25);
+    vObject=mod(floor(iRotation.w*.25),2.);
     vSurface=vObject>.5?aPosition*iScale.xyz:vWorld;
     vLocal=aPosition;vFaceNormal=aNormal;vDimensions=abs(iScale.xyz);
     vSurfaceNormal=vObject>.5?normalize(aNormal/max(abs(iScale.xyz),vec3(.0001))):vNormal;
@@ -1225,7 +1341,7 @@
   }
   function surfaceFlags(mesh,environment,objects=false){
     const object=mesh.overlay||mesh.surface==='object'||objects&&mesh.surface!=='architecture';
-    return (mesh.overlay?1:0)+(outdoorMesh(mesh,environment)?2:0)+(object?4:0);
+    return (mesh.overlay?1:0)+(outdoorMesh(mesh,environment)?2:0)+(object?4:0)+(mesh.windResponsive===true?8:0);
   }
   function pack(meshes,environment,objects=false) {
     const grouped=names.map(()=>[]);
@@ -1354,7 +1470,9 @@
   }
   function meshState(mesh,env){return [...(mesh.p||[0,0,0]),...(mesh.s||[1,1,1]),...(mesh.r||[0,0,0]),...(mesh.color||[0,0,0]),mesh.mat||0,mesh.emissive||0,mesh.color?1:0,surfaceFlags(mesh,env),mesh.detail||0,mesh.shape||'box',mesh.ground,mesh.terrain,mesh.region];}
   function metadata(mesh){
-    return {mesh,renderRevision:mesh.renderRevision||0,p:(mesh.p||[0,0,0]).slice(),radius:Math.hypot(...(mesh.s||[1,1,1]))*.5,detail:Math.max(0,Math.min(2,Math.floor(mesh.detail||0))),software:null,softwareCoarse:null};
+    const scale=mesh.s||[1,1,1],height=Math.abs(scale[1]),localHeight=Math.min(height,2);
+    const windMargin=mesh.windResponsive===true?1.5*localHeight+.18*Math.max(0,Math.max(.25,Math.min(height,4))-localHeight):0;
+    return {mesh,renderRevision:mesh.renderRevision||0,p:(mesh.p||[0,0,0]).slice(),radius:Math.hypot(...scale)*.5+windMargin,detail:Math.max(0,Math.min(2,Math.floor(mesh.detail||0))),software:null,softwareCoarse:null};
   }
   function validatedMeshSplices(delta,before,after){
     if(!delta||delta.full||!Array.isArray(before)||!Array.isArray(after)||delta.before!==before||delta.after!==after||!Array.isArray(delta.splices))return null;
@@ -2101,7 +2219,7 @@
     const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12),lightDirections=new Float32Array(36),lightCones=new Float32Array(24);
     // BITUME : l’indexation EMPRISE est aussi utilisée sur WebGL2 ; formes libres inchangées.
     const stats={drawCalls:0,triangles:0,instances:0,contextLost:false,webglVersion:2,backend:'webgl2',engine:'ferro-reference',bloom:false,shadows:false,shadowMapSize:0,shadowTileSize:0,msaa:0,reflections:false,primitiveIndex:primitiveIndex.stats};
-    let program,depthProgram,postProgram,skyProgram,fxProgram,vao,postVao,vbo,ibo,worldBuffer,dynamicBuffer,overlayBuffer,fxBuffer,crowdBuffer,uniforms,postUniforms,skyUniforms,fxUniforms,depthMatrix,depthWind,ssrProgram,ssrUniforms;
+    let program,depthProgram,postProgram,skyProgram,fxProgram,vao,postVao,vbo,ibo,worldBuffer,dynamicBuffer,overlayBuffer,fxBuffer,crowdBuffer,uniforms,postUniforms,skyUniforms,fxUniforms,depthMatrix,depthWind,depthLocalWind,ssrProgram,ssrUniforms;
     let post=null,msaaBuffer,msaaIdle=0,shadowTarget=null,shadowIdle=0,maxShadowTileSize=1024,whiteTexture=null,pbrTextures=[],targetKey='',shadowKey='',shadowLight=null;
     let world=[],worldIndex=spatialIndex([]),backgroundIndex=spatialIndex([]),lights=[],environment=null,worldBatch=pack([]),quality='auto',disposed=false,worldRevision=0,partitionState=null;
     let staticCaches=[],lampCasters=[],actorLightPlan=null;
@@ -2117,9 +2235,16 @@
     let fskyProgram=null,fskyBound=null,fskyCache={},skyFrame={},fogCaches=new Map();
     const skyCamera={right:null,up:null,forward:null,fov:[0,0],height:0,time:0,vignette:options.composition?1:.76,dither:options.composition?0:1,mask:0,layers:[1,1,1,1]};
     const weather=bitumeWeather(null,null,0); // BITUME : stockage météo réutilisé.
+    const localWind=localWindState(),windFrame=localWind.frame;
+    function bindLocalWind(locations){
+      if(!windFrame.count&&!locations.localWindActive)return;
+      gl.uniform1i(locations.uLocalWindCount,windFrame.count);locations.localWindActive=windFrame.count>0;
+      if(windFrame.count){gl.uniform4fv(locations.uLocalWindPosition,windFrame.positions);gl.uniform4fv(locations.uLocalWindMotion,windFrame.motions);}
+    }
     // BITUME : nappes (chaussée, accotements, terrain : triangles continus, matière et couleur par sommet) et lots
     // de décor (instances statiques groupées par portion de circuit, chacune avec sa version lointaine allégée).
     let nappes=[],nappeVao=null,nappeVbo=null,nappeIbo=null,lots=[];
+    const lotView=lotViewState();
     let viewCache=null,torchCache=null,sunCache=null,indexRevision=0,selectionGen=0;
     const cacheStats={viewFrames:0,viewRebuilds:0,torchRebuilds:0,sunRebuilds:0,marginDistance:1,marginAngle:8};
     let guardMargin={distance:1,tilt:8*Math.PI/180};
@@ -2321,11 +2446,12 @@
       if(options.advancedSky&&window.FSky)fskyProgram=link(window.FSky.VERT,screenShader('fsky',window.FSky.FRAG));
       ssrProgram=link(POST_VERT,SSR_FRAG);ssrUniforms={};for(const name of ['uColor','uDepth','uProjection','uPixel'])ssrUniforms[name]=gl.getUniformLocation(ssrProgram,name);
       program=link(VERT,reflectionShader(screenShader('world',skyFogShader(worldFrag))));depthProgram=link(VERT,DEPTH_FRAG);postProgram=link(POST_VERT,screenShader('post',postFrag));skyProgram=link(POST_VERT,screenShader('sky',SKY_FRAG));fxProgram=link(FX_VERT,screenShader('fx',skyFogShader(FX_FRAG)));
-      uniforms={};for(const name of ['uViewProjection','uWindTime','uSeaOrigin','uSeaMotion','uEye','uForward','uLightPosition','uLightColor','uLightRange','uLightDirection','uLightCone','uWeather','uCloudOffset','uPbrAlbedo','uPbrNormal','uPbrRough','uPbrReady','uLightCount','uResolution','uEffects','uShadowMap','uShadowMatrix','uShadowSettings','uTorchPosition','uSunDirection','uSunColor','uAmbient','uFogColor','uSkyTop','uSkyBottom','uEnvironment','uNightHour','uPhoto','uOverlayMode','uSeaMode','uSceneProbe','uProbeReady','uProbeOrigin']) uniforms[name]=gl.getUniformLocation(program,name);
+      uniforms={};for(const name of ['uViewProjection','uWindTime','uLocalWindCount','uLocalWindPosition','uLocalWindMotion','uSeaOrigin','uSeaMotion','uEye','uForward','uLightPosition','uLightColor','uLightRange','uLightDirection','uLightCone','uWeather','uCloudOffset','uPbrAlbedo','uPbrNormal','uPbrRough','uPbrReady','uLightCount','uResolution','uEffects','uShadowMap','uShadowMatrix','uShadowSettings','uTorchPosition','uSunDirection','uSunColor','uAmbient','uFogColor','uSkyTop','uSkyBottom','uEnvironment','uNightHour','uPhoto','uOverlayMode','uSeaMode','uSceneProbe','uProbeReady','uProbeOrigin']) uniforms[name]=gl.getUniformLocation(program,name);
       postUniforms={};for(const name of ['uScene','uBloom','uReflection','uReflections','uTexel','uPass'])postUniforms[name]=gl.getUniformLocation(postProgram,name);
       skyUniforms={};for(const name of ['uSkyRight','uSkyUp','uSkyForward','uSkyTop','uSkyBottom','uSkyFog','uSunDirection','uSunColor','uSkyFov','uSkyMotion','uWeather','uCloudOffset'])skyUniforms[name]=gl.getUniformLocation(skyProgram,name);
       fxUniforms={};for(const name of ['uViewProjection','uWindTime','uEye','uAmbient','uSkyTop','uSkyBottom','uFogColor','uEnvironment','uTime'])fxUniforms[name]=gl.getUniformLocation(fxProgram,name);
       depthMatrix=gl.getUniformLocation(depthProgram,'uViewProjection');depthWind=gl.getUniformLocation(depthProgram,'uWindTime');
+      depthLocalWind={};for(const name of ['uLocalWindCount','uLocalWindPosition','uLocalWindMotion'])depthLocalWind[name]=gl.getUniformLocation(depthProgram,name);
       vao=gl.createVertexArray();gl.bindVertexArray(vao);
       vbo=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferData(gl.ARRAY_BUFFER,source.vertices,gl.STATIC_DRAW);
       gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,24,0);
@@ -2410,15 +2536,14 @@
         else l.paquetLoin=null;
       }
     }
-    function setLots(liste){for(const l of lots)for(const cle of ['tampon','tamponLoin'])if(l[cle])gl.deleteBuffer(l[cle]);lots=(liste||[]).filter(l=>l&&l.objets);chargerLots();stats.lots=lots.length;}
+    function setLots(liste){for(const l of lots)for(const cle of ['tampon','tamponLoin'])if(l[cle])gl.deleteBuffer(l[cle]);lotView.reset();lots=(liste||[]).filter(l=>l&&l.objets);chargerLots();stats.lots=lots.length;}
     function dessinerLots(eye,axes,horizontal,vertical,far,accepte){
       let dessines=0;
-      for(const l of lots){
+      for(const entry of lotView.records){const l=entry.lot;
         if(!l.tampon)continue;
-        const dx=l.centre[0]-eye[0],dy=l.centre[1]-eye[1],dz=l.centre[2]-eye[2],distance=Math.sqrt(dx*dx+dy*dy+dz*dz)-l.rayon;
-        if(accepte){if(!accepte(l))continue;}
-        else{if(distance>Math.min(far,l.portee||far))continue;if(!visible({p:l.centre,radius:l.rayon},eye,axes,horizontal,vertical,far))continue;}
-        const proche=!l.paquetLoin||distance<lotDetailDistance(l,vertical,canvas.height);
+        if(accepte){if(!accepte(entry.bounds))continue;}
+        else{if(entry.distance>Math.min(far,l.portee||far))continue;if(!visible(entry.bounds,eye,axes,horizontal,vertical,far))continue;}
+        const proche=!l.paquetLoin||entry.near;
         renderBatch(proche?l.paquet:l.paquetLoin,proche?l.tampon:l.tamponLoin,false,!!accepte);dessines++;
       }
       return dessines;
@@ -2448,6 +2573,7 @@
     }
     function drawChunks(accept,shadow=false){let objects=0,count=0;for(const c of chunks.values())if(accept(c)){renderBatch(c.batch,c.buffer,false,shadow);objects+=c.entries.length;count++;}if(shadow){stats.shadowChunks=count;stats.shadowStatic=objects;}else{stats.visibleChunks=count;stats.staticVisible=objects;stats.staticCulled=world.length-objects;}return count;}
     function setWorld(meshes,points,atmosphere,setOptions) {
+      localWind.reset();
       const partition=partitionState=partitionWorld(meshes);environment=environmentInfo(atmosphere);world=partition.world;worldIndex=spatialIndex(world,environment,undefined,setOptions);backgroundIndex=spatialIndex(partition.background,environment,undefined,setOptions);lights=points||[];worldBatch=pack([]);shadowLight=null;actorLightPlan=null;stats.staticTotal=world.length+backgroundIndex.entries.length;stats.biome=environment?environment.biome:null;
       worldRevision=0;stats.worldRevision=0;indexRevision++;viewCache=torchCache=sunCache=null;for(const c of chunks.values())gl.deleteBuffer(c.buffer);chunks.clear();chunkState.index=null;chunkState.epoch=0;
       lampCasters=[];for(const cache of staticCaches){cache.entries=[];cache.batch=pack([]);}
@@ -2555,6 +2681,7 @@
       gl.bindFramebuffer(gl.FRAMEBUFFER,shadowTarget.framebuffer);gl.viewport((slot%2)*shadowTarget.size,Math.floor(slot/2)*shadowTarget.size,shadowTarget.size,shadowTarget.size);
       gl.useProgram(depthProgram);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);
       gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1.1,2.0);gl.uniformMatrix4fv(depthMatrix,false,shadowMatrix);gl.uniform2f(depthWind,weather.wind,time);
+      bindLocalWind(depthLocalWind);
       const tangent=1/f;
       const previous=lampCasters[slot];
       const stable=!torchAxes&&previous&&previous.light===light&&previous.p.every((v,k)=>v===p[k]);
@@ -2579,6 +2706,7 @@
       if(full)gl.viewport(0,0,tile,tile);else gl.viewport(shadowTarget.size,0,shadowTarget.size,shadowTarget.size);
       gl.useProgram(depthProgram);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1.1,2);
       gl.uniformMatrix4fv(depthMatrix,false,shadowMatrix);gl.uniform2f(depthWind,weather.wind,time);
+      bindLocalWind(depthLocalWind);
       const inside=e=>{
         const x=e.p[0]-p[0],y=e.p[1]-p[1],d=e.p[2]-p[2],z=x*fw[0]+y*fw[1]+d*fw[2];
         return Math.abs(x*r[0]+y*r[1]+d*r[2])<extent+e.radius&&Math.abs(x*u[0]+y*u[1]+d*u[2])<extent+e.radius&&z+e.radius>near&&z-e.radius<far;
@@ -2587,7 +2715,7 @@
       renderStatic(casters,2,true);if(camera.chunked)drawChunks(inside,true);
       // BITUME : les lots dont la sphère touche le volume du soleil projettent leur ombre (version proche ou lointaine).
       const viewTangent=Math.tan(Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/360);
-      dessinerLots(eye,axes,0,viewTangent,0,l=>inside({p:l.centre,radius:l.rayon}));
+      dessinerLots(eye,axes,0,viewTangent,0,inside);
       renderBatch(dynamicBatch,dynamicBuffer,false,true);if(crowd)renderBatch(crowd,crowdBuffer,false,true);gl.disable(gl.POLYGON_OFFSET_FILL);
       // PDR (lots) : les lots du jeu (fx.lots) entrent dans la même vue du soleil, au même biais, rétabli pour eux.
       // PDR (foule) : la foule sur le GPU aussi (fx.foule.ombre) ; au retour, le moteur reprend son état GL.
@@ -2710,9 +2838,11 @@
       bitumeWeather(environment,fx.weather,t,weather);
       const axes=cameraAxes(camera),{right,up,forward}=axes;
       const eye=[p[0]+Math.sin(t*57.)*shake*.025,p[1]+Math.sin(t*71.)*shake*.015,p[2]];
+      localWind.update(fx.windSources,t);localWind.select(eye);stats.windSources=windFrame.count;stats.windCandidates=windFrame.candidates;stats.windUpdates=windFrame.updates;
       view.set([right[0],up[0],-forward[0],0,right[1],up[1],-forward[1],0,right[2],up[2],-forward[2],0,
         -(right[0]*eye[0]+right[1]*eye[1]+right[2]*eye[2]),-(up[0]*eye[0]+up[1]*eye[1]+up[2]*eye[2]),forward[0]*eye[0]+forward[1]*eye[1]+forward[2]*eye[2],1]);
       const fov=Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/180,f=1/Math.tan(fov*.5),near=camera.near||.045,far=camera.far||180;
+      lotView.prepare(lots,eye,1/f,canvas.height);stats.lotDistanceTests=lots.length;
       projection.fill(0);projection[0]=f/(canvas.width/canvas.height);projection[5]=f;projection[10]=(far+near)/(near-far);projection[11]=-1;projection[14]=2*far*near/(near-far);
       multiply(projection,view,vp);
       if(camera.chunked&&!chunks.size)rebuildChunks();
@@ -2771,6 +2901,7 @@
       bindScreen(program);bindSkyFog(program);gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);gl.uniform3fv(uniforms.uEye,eye);gl.uniform3fv(uniforms.uForward,forward);
       gl.uniform4fv(uniforms.uSeaOrigin,fx.sea?.origin||[0,0,0,0]);gl.uniform4fv(uniforms.uSeaMotion,fx.sea?.motion||[0,0,-1.25,0]);
       gl.uniform2fv(uniforms.uCloudOffset,fx.cloudOffset||weather.cloudOffset);gl.uniform2f(uniforms.uWindTime,weather.wind,t);gl.uniform3fv(uniforms.uSunDirection,environment?environment.sunDirection:[.4,.8,.3]);gl.uniform3fv(uniforms.uSunColor,weather.sunColor);
+      bindLocalWind(uniforms);
       gl.uniform3fv(uniforms.uAmbient,weather.ambient);gl.uniform3fv(uniforms.uFogColor,weather.fog);gl.uniform2f(uniforms.uEnvironment,environment?1:0,weather.fogDensity);
       gl.uniform2f(uniforms.uNightHour,environment?.night||0,environment?.hour??14);
       gl.uniform3fv(uniforms.uSkyTop,weather.skyTop);gl.uniform3fv(uniforms.uSkyBottom,weather.skyBottom);
@@ -2863,6 +2994,7 @@
     canvas.addEventListener('webglcontextlost',lost);canvas.addEventListener('webglcontextrestored',restored);
     function dispose() {
       if(disposed) return;disposed=true;profiler?.dispose();surface?.dispose();reflections?.dispose();if(probeBuffer)gl.deleteBuffer(probeBuffer);if(fskyProgram)gl.deleteProgram(fskyProgram);
+      localWind.reset();lotView.reset();
       canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('webglcontextrestored',restored);
       for(const c of chunks.values())gl.deleteBuffer(c.buffer);chunks.clear();
       for(const buffer of [vbo,ibo,worldBuffer,dynamicBuffer,overlayBuffer,fxBuffer]) gl.deleteBuffer(buffer);if(crowdBuffer)gl.deleteBuffer(crowdBuffer);
@@ -2911,13 +3043,13 @@
   }
   // Both GPU backends share the procedural shapes, instance layout and visibility
   // rules. No rendering calls or GPU state are shared between the APIs.
-  const shared={bitumeWeather,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
+  const shared={bitumeWeather,localWindState,lotViewState,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
   function mesh(shape,p,s,mat,r=[0,0,0],emissive=0){
     return {shape,p,s,mat,r,emissive,color:undefined,surface:undefined,overlay:false,fx:false,
       alpha:undefined,additive:undefined,outdoor:undefined,actorPart:undefined,actorLod:0,
       actorScale:undefined,structural:false,debrisId:undefined,sourceId:undefined,material:undefined,
       effectPart:'',fxFire:false,fxSmoke:false,fxSpark:false,fxPriority:undefined,ground:undefined,
-      innerRatio:undefined,region:undefined};
+      innerRatio:undefined,region:undefined,windResponsive:false};
   }
   globalThis.FRender={create,foliageTriangles,forme,shared,mesh,materials:MATERIALS};
   if(typeof window!=='undefined')window.FRender=globalThis.FRender;

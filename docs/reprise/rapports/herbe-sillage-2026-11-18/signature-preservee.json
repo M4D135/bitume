@@ -1,0 +1,17 @@
+{
+  "source": "https://bitume.estrasse.fr/",
+  "live_versions": [
+    "0.2.30"
+  ],
+  "live_sha256": "2f8c359838c4c92237fbafcfdec17427777bb1dbcc49e880712e1c05ccab6da1",
+  "href": "https://bitume.estrasse.fr/",
+  "download": "BITUME.html",
+  "title": "Télécharger BITUME",
+  "anchor_sha256": "41fdf4e3d33e7aa39d6795c7c108b11c64de74f48c25e54fca264229717cb5e3",
+  "old_anchor_sha256": "d30b949374a143dcdf02d0df791b01e734efe92b47cac4b09658e21a24c5ba26",
+  "anchor_replaced_from_live_exactly": true,
+  "final_version": "0.2.31",
+  "complete_anchor_preserved_in_build": true,
+  "avatar_label_layout_preserved": true,
+  "tests_passed": 4
+}

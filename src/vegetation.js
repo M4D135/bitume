@@ -18,12 +18,16 @@
     high: Object.freeze({ stations: 150, herbes: 4, fougeres: 2, fleurs: 3, taillis: .88, mat: 27, sol: 25, groupes: 5, familles: ['herbes', 'fougères', 'fleurs', 'taillis'] }),
     ultra: Object.freeze({ stations: 150, herbes: 4, fougeres: 2, fleurs: 3, taillis: .88, mat: 27, sol: 25, groupes: 5, familles: ['herbes', 'fougères', 'fleurs', 'taillis'] }),
   });
-  // Maille exprimée en mètres : un long circuit garde une couverture comparable. Le plafond borne le nombre
-  // d'instances supplémentaires, même sur une piste créée avec une longueur inhabituelle.
+  // Une tuile est un petit maillage de 96 vrais brins, partagé par toutes les instances. La 0.2.29
+  // dessinait 9 brins et 216 triangles par touffe : ici 576 triangles proches / 192 lointains par tuile,
+  // soit 6 / 2 triangles par brin. Les plafonds concernent les tuiles, jamais des objets JS par brin.
+  const BRINS_TUILE = 96;
+  const LOT_TAPIS = 48;
+  // Maille métrique : couverture identique sur une piste plus longue, jusqu'au plafond réparti sur le tour.
   const TAPIS = Object.freeze({
-    medium: Object.freeze({ pas: 8, rangees: 1, maximum: 1400 }),
-    high: Object.freeze({ pas: 4, rangees: 2, maximum: 4800 }),
-    ultra: Object.freeze({ pas: 2, rangees: 2, maximum: 9600 }),
+    medium: Object.freeze({ pas: 6, rangees: 1, maximum: 1800, brins: BRINS_TUILE }),
+    high: Object.freeze({ pas: 3.75, rangees: 2, maximum: 5600, brins: BRINS_TUILE }),
+    ultra: Object.freeze({ pas: 1.875, rangees: 2, maximum: 11200, brins: BRINS_TUILE }),
   });
 
   // Biomes réellement dessinés par le décor (mêmes noms que THEMES de decor.js). Un biome absent retourne des lots vides.
@@ -116,6 +120,37 @@
         elevation: 1.1 + r() * .9, courbe: .45 + r() * .7, pli: .36 }, segments);
     }
     return tri;
+  }
+  // Points bleus périodiques : chaque racine choisit le meilleur de douze candidats, avec la distance
+  // torique aux racines déjà placées. Ni lignes de plantation ni amas au centre de la tuile. La génération
+  // coûte une seule fois à l'ouverture ; le moteur n'actualise ensuite que ses uniformes de vent.
+  function prairie() {
+    const r = hasard(180729), racines = [], proche = [], loin = [];
+    for (let i = 0; i < BRINS_TUILE; i++) {
+      let meilleur = null, distance = -1;
+      for (let essai = 0; essai < 12; essai++) {
+        const p = [r(), r()];
+        let d = Infinity;
+        for (const q of racines) {
+          const dx = Math.abs(p[0] - q[0]), dz = Math.abs(p[1] - q[1]);
+          d = Math.min(d, Math.min(dx, 1 - dx) ** 2 + Math.min(dz, 1 - dz) ** 2);
+        }
+        if (d > distance) { distance = d; meilleur = p; }
+      }
+      racines.push(meilleur);
+      const x = (meilleur[0] - .5) * .90, z = (meilleur[1] - .5) * .90;
+      const cap = r() * PI2, largeur = .0035 + r() * .0035, penche = .012 + r() * .025;
+      const hauteur = i === 0 ? 1 : .56 + r() * .44, dx = Math.cos(cap), dz = Math.sin(cap);
+      const a = [x - dz * largeur, -.5, z + dx * largeur];
+      const b = [x + dz * largeur, -.5, z - dx * largeur];
+      const c = [x + dx * penche, -.5 + hauteur, z + dz * penche];
+      const milieu = p => p.map((v, k) => v + (c[k] - v) * .53), am = milieu(a), bm = milieu(b);
+      // La version proche subdivise EXACTEMENT le triangle lointain : surface, racines, normales et
+      // silhouette identiques au repos. Le milieu sert seulement à courber le brin sous le vent GPU.
+      triangle(proche, a, b, bm, true); triangle(proche, a, bm, am, true); triangle(proche, am, bm, c, true);
+      triangle(loin, a, b, c, true);
+    }
+    return { proche, loin };
   }
   function taillis(segments) {
     const r = hasard(937), tri = [], pied = [0, 0, 0];
@@ -224,11 +259,12 @@
   }
   const H = normaliserPaire(herbe(4), herbe(2)), T = normaliserPaire(taillis(4), taillis(2));
   const F = normaliserPaire(fougere(4), fougere(2)), FLE = normaliserPaire(fleur(4), fleur(2));
-  const U = normaliserPaire(terreau(4), terreau(2));
+  const U = normaliserPaire(terreau(4), terreau(2)), P = prairie();
 
   // Les quatre formes historiques restent le registre de référence du palier bas.
   const FORMES = Object.freeze({ 'herbes-val': H.proche, 'herbes-val-loin': H.loin, 'taillis-val': T.proche, 'taillis-val-loin': T.loin });
   const FORMES_AJOUT = Object.freeze({
+    'prairie-val': P.proche, 'prairie-val-loin': P.loin,
     'fougeres-val': F.proche, 'fougeres-val-loin': F.loin,
     'humus-val': U.proche, 'humus-val-loin': U.loin,
     'fleurs-val': FLE.proche, 'fleurs-val-loin': FLE.loin,
@@ -236,7 +272,7 @@
   const TOUTES = Object.assign({}, FORMES, FORMES_AJOUT);
   const JEU_FORMES = Object.freeze({
     low: Object.keys(FORMES),
-    medium: Object.keys(FORMES).concat(['fougeres-val', 'fougeres-val-loin', 'humus-val', 'humus-val-loin']),
+    medium: Object.keys(FORMES).concat(['prairie-val', 'prairie-val-loin', 'fougeres-val', 'fougeres-val-loin', 'humus-val', 'humus-val-loin']),
     high: Object.keys(FORMES).concat(Object.keys(FORMES_AJOUT)),
   });
   const forme = nom => TOUTES[nom];
@@ -251,23 +287,24 @@
     return true;
   }
 
-  // Un lot par secteur de 420 m : deux familles au palier bas, jusqu'à cinq au palier haut.
+  // Massifs par secteurs de 420 m, tapis par secteurs de 48 m pour limiter le surdessin hors champ.
   // Les verts ont leur générateur indépendant. Ajouter un massif ne déplace ni arbre, ni obstacle, ni stand.
   function construire(c, options = {}) {
     const { limites, interroger } = options;
     const qualite = normaliserQualite(options.qualite);
-    const vide = { lots: [], herbes: 0, fougeres: 0, fleurs: 0, taillis: 0, qualite };
+    const vide = { lots: [], herbes: 0, fougeres: 0, fleurs: 0, taillis: 0, brins: 0, brinsTapis: 0, tuiles: 0, objetsHerbe: 0, qualite };
     if (qualite === 'off' || !c || !limites || !interroger) return vide;
     const biome = BIOMES[c.theme];
     if (!biome) return vide;
     // Un biome que le décor ne connaît pas n'a pas d'accotement dessiné : rien à végétaliser.
     if (B.decor && B.decor.THEMES && !B.decor.THEMES[c.theme]) return vide;
     const palier = PALIERS[qualite];
-    const r = hasard((c.graine ^ 0x53a98b17) >>> 0), groupes = new Map(), w = c.largeur / 2;
+    const r = hasard((c.graine ^ 0x53a98b17) >>> 0), groupes = new Map(), groupesTapis = new Map(), w = c.largeur / 2;
     let herbes = 0, fougeres = 0, fleurs = 0, taillis = 0;
+    let tuiles = 0;
     const stations = Math.max(1, Math.round(palier.stations * biome.stations));
     const pas = Math.max(1, Math.ceil(c.n / stations));
-    function ajouter(i, d, famille, angle, taille, color, mat, tapis = false) {
+    function ajouter(i, d, famille, angle, taille, color, mat) {
       // Chaque plante vérifie sa propre abscisse, pas seulement celle du début du massif : les décalages
       // internes d'une touffe ne doivent pas rentrer par le portail ou dans la zone des stands.
       if (qualite !== 'low' && interdit(i)) return false;
@@ -276,13 +313,14 @@
       if (q.i < 0 || q.d < w + 1.2 + marge || Math.abs(B.circuit.ecart(c, i * c.pas, q.i * c.pas)) > 20) return false;
       if (qualite !== 'low' && interdit(q.i)) return false;
       const cote = d < 0 ? -1 : 1, limite = cote < 0 ? limites.G[i] : limites.D[i];
-      if (Math.abs(d) + marge > limite - (tapis ? 1.6 : .7)) return false;
+      if (Math.abs(d) + marge > limite - .7) return false;
       // Même bande d'accotement que nappesRoute(), pied légèrement enterré, dévers arrêté au bord de piste.
       const ext = limite + 4, u = (Math.abs(d) - w - 1.2) / (ext - w - 1.2);
       const bord = c.y[i] - cote * w * Math.sin(c.devers[i]);
       const sol = bord - .015 + u * (.015 - .02 * (ext - w - 1.2));
       const objet = { shape: famille + '-val', p: [x, sol + taille[1] / 2 - .025, z], s: taille,
         r: [0, angle, 0], mat, color };
+      if (qualite !== 'low' && famille === 'herbes') objet.windResponsive = true;
       const cle = Math.floor(i * c.pas / 420);
       let lot = groupes.get(cle); if (!lot) groupes.set(cle, lot = { objets: [], loin: [] });
       lot.objets.push(objet); lot.loin.push({ ...objet, shape: famille + '-val-loin' });
@@ -311,43 +349,85 @@
       }
     }
 
-    // Tapis de graminées : deux accotements peuplés, hauteurs courtes variées et plaques irrégulières. La graine
-    // est indépendante des massifs et du circuit. Les mailles 8 / 4 / 2 m sont emboîtées ; une densité supérieure
-    // conserve les touffes du tapis déjà présentes (hors plafonnement), en ajoute entre elles et élargit la bande.
+    // Le plan est celui du triangle d'accotement réellement dessiné par nappesRoute(), dévers compris.
+    // Une tuile suit ce plan au lieu de flotter à l'horizontale au-dessus d'une pente. Les indices voisins
+    // couvrent aussi les petites variations de cap entre l'axe interpolé et les triangles du sol.
+    function planSol(x, z, indice, cote) {
+      const sommetSol = (j, exterieur) => {
+        j = (j + c.n) % c.n;
+        const limite = cote < 0 ? limites.G[j] : limites.D[j], ext = limite + 4;
+        const d = cote * (exterieur ? ext : w + 1.2), a = c.cap[j];
+        const y = c.y[j] - cote * w * Math.sin(c.devers[j]) - (exterieur ? .02 * (ext - w - 1.2) : .015);
+        return [c.x[j] - Math.sin(a) * d, y, c.z[j] + Math.cos(a) * d];
+      };
+      for (let ecart = -2; ecart <= 2; ecart++) {
+        const i = indice + ecart, a = sommetSol(i, cote < 0), b = sommetSol(i, cote > 0);
+        const d = sommetSol(i + 1, cote < 0), e = sommetSol(i + 1, cote > 0);
+        for (const [p, q, v] of [[a, b, e], [a, e, d]]) {
+          const ax = q[0] - p[0], az = q[2] - p[2], bx = v[0] - p[0], bz = v[2] - p[2];
+          const det = ax * bz - az * bx;
+          if (Math.abs(det) < 1e-8) continue;
+          const px = x - p[0], pz = z - p[2], u = (px * bz - pz * bx) / det, t = (ax * pz - az * px) / det;
+          if (u < -1e-6 || t < -1e-6 || u + t > 1.000001) continue;
+          const ay = q[1] - p[1], by = v[1] - p[1];
+          return { y: p[1] + u * ay + t * by, dx: (ay * bz - by * az) / det, dz: (ax * by - bx * ay) / det };
+        }
+      }
+      return null;
+    }
+    // Tapis continu : le maillage couvre toute l'empreinte, les tuiles se chevauchent légèrement et leur
+    // décalage est indépendant. La frontière ne révèle ni rangée ni forme de touffe agrandie. Les paliers
+    // partagent le même registre et n'ajoutent aucun objet par brin, même en Ultra.
     const tapis = TAPIS[qualite];
     if (tapis) {
-      const base = Math.max(1, Math.round(2 / c.pas));
-      const saut = Math.max(1, Math.round(tapis.pas / (base * c.pas)));
-      // Répartir le plafond sur le tour, sans remplir seulement le début d'un très long circuit.
-      const cellules = Math.ceil(c.n / base), candidats = Math.ceil(cellules / saut) * 2 * tapis.rangees;
-      let poses = 0;
-      for (let cellule = 0; cellule < cellules && poses < tapis.maximum; cellule += saut) {
-        const i = Math.min(c.n - 1, cellule * base);
-        if (interdit(i)) continue;
-        for (const cote of [-1, 1]) for (let rang = 0; rang < tapis.rangees && poses < tapis.maximum; rang++) {
-          if (candidats > tapis.maximum) {
-            const k = (Math.floor(cellule / saut) * 2 + (cote > 0 ? 1 : 0)) * tapis.rangees + rang;
-            if (Math.floor((k + 1) * tapis.maximum / candidats) === Math.floor(k * tapis.maximum / candidats)) continue;
-          }
-          // Un générateur par candidat évite qu'une plante refusée déplace toutes les suivantes.
+      const cellules = Math.ceil(c.longueur / tapis.pas), candidats = cellules * 2 * tapis.rangees;
+      for (let cellule = 0; cellule < cellules; cellule++) {
+        for (const cote of [-1, 1]) for (let rang = 0; rang < tapis.rangees; rang++) {
+          const k = (cellule * 2 + (cote > 0 ? 1 : 0)) * tapis.rangees + rang;
+          if (candidats > tapis.maximum && Math.floor((k + 1) * tapis.maximum / candidats) === Math.floor(k * tapis.maximum / candidats)) continue;
           const rt = hasard((c.graine ^ 0x4f1b7d93 ^ Math.imul(cellule + 1, 0x45d9f3b)
             ^ Math.imul(rang + 1, 0x119de1f3) ^ (cote < 0 ? 0x6a09e667 : 0xbb67ae85)) >>> 0);
-          const t = [rt(), rt(), rt(), rt(), rt(), rt(), rt()];
-          if (t[0] > .72 + biome.densite * .25) continue;
-          const j = (i + (rang ? Math.max(1, Math.round(saut * base / 2)) : 0)) % c.n;
-          if (interdit(j)) continue;
-          const limite = cote < 0 ? limites.G[j] : limites.D[j];
-          const largeur = (1.05 + t[1] * .68) * biome.taille;
-          const h = (.19 + t[2] * .23) * biome.taille;
-          const profondeur = largeur * (.72 + t[3] * .25);
-          const marge = Math.hypot(largeur, profondeur) / 2 + .18;
-          const debut = w + 1.2 + marge + .12;
-          const fin = Math.min(limite - 1.65 - marge, w + 6.8);
-          if (fin <= debut) continue;
-          const d = cote * (debut + (fin - debut) * (.08 + .42 * rang + t[4] * .44));
-          const vert = .78 + t[5] * .34, b = biome.herbe;
-          if (ajouter(j, d, 'herbes', t[6] * PI2, [largeur, h, profondeur],
-            [b[0] * vert, b[1] * vert, b[2] * vert], palier.mat, true)) { herbes++; poses++; }
+          const t = [rt(), rt(), rt(), rt(), rt(), rt(), rt(), rt()];
+          const s = ((cellule + .5 + (t[0] - .5) * .10) * tapis.pas) % c.longueur;
+          const i = Math.min(c.n - 1, Math.floor(s / c.pas));
+          const longueur = tapis.pas * (1.28 + t[1] * .04);
+          const protection = longueur / 2 + .5;
+          if (interdit(i) || Math.abs(B.circuit.ecart(c, 0, s)) < 360 + protection
+            || (B.circuit.dansTunnel && B.circuit.dansTunnel(c, s, 20 + protection))) continue;
+          const e = B.circuit.echantillon(c, s), limite = cote < 0 ? limites.G[i] : limites.D[i];
+          const debut = w + 1.48, fin = Math.min(limite - 1.9, w + 8.2), bande = fin - debut;
+          if (bande < 1.1) continue;
+          const largeur = bande / tapis.rangees * (1.04 + t[2] * .04);
+          const demi = largeur * .5;
+          const radial = Math.max(debut + demi, Math.min(fin - demi,
+            debut + bande * ((rang + .5 + (t[3] - .5) * .10) / tapis.rangees)));
+          const d = cote * radial, x = e.x - Math.sin(e.cap) * d, z = e.z + Math.cos(e.cap) * d;
+          const q = interroger(x, z, 40);
+          if (q.i < 0 || interdit(q.i) || Math.abs(B.circuit.ecart(c, s, q.i * c.pas)) > 20) continue;
+          const plan = planSol(x, z, i, cote);
+          if (!plan) continue;
+          const cap = e.cap + (t[4] < .5 ? 0 : Math.PI), co = Math.cos(cap), si = Math.sin(cap);
+          // La pente moyenne de l'empreinte évite de prolonger sur toute une tuile le seul triangle
+          // central, notamment à l'entrée d'un dévers, et répartit l'erreur sur toute l'empreinte.
+          const ax = planSol(x - co * longueur / 2, z - si * longueur / 2, i, cote);
+          const bx = planSol(x + co * longueur / 2, z + si * longueur / 2, i, cote);
+          const az = planSol(x + si * largeur / 2, z - co * largeur / 2, i, cote);
+          const bz = planSol(x - si * largeur / 2, z + co * largeur / 2, i, cote);
+          if (ax && bx && az && bz) {
+            const px = (bx.y - ax.y) / longueur, pz = (bz.y - az.y) / largeur;
+            plan.dx = px * co - pz * si; plan.dz = px * si + pz * co;
+          }
+          const normal = unite([-plan.dx, 1, -plan.dz]);
+          const tangent = unite([co, plan.dx * co + plan.dz * si, si]), lateral = croix(tangent, normal);
+          const rotation = [Math.atan2(normal[2], lateral[2]), -Math.asin(Math.max(-1, Math.min(1, tangent[2]))), Math.atan2(tangent[1], tangent[0])];
+          const h = (.23 + t[5] * .13) * biome.taille, vert = .84 + t[6] * .26, b = biome.herbe;
+          const objet = { shape: 'prairie-val', p: [x + normal[0] * h / 2, plan.y + normal[1] * h / 2 - .012, z + normal[2] * h / 2],
+            s: [longueur, h, largeur], r: rotation, mat: palier.mat,
+            color: [b[0] * vert, b[1] * vert, b[2] * vert], windResponsive: true };
+          const cle = Math.floor(s / LOT_TAPIS);
+          let lot = groupesTapis.get(cle); if (!lot) groupesTapis.set(cle, lot = { objets: [], loin: [] });
+          lot.objets.push(objet); lot.loin.push({ ...objet, shape: 'prairie-val-loin' });
+          herbes++; tuiles++;
         }
       }
     }
@@ -405,18 +485,22 @@
     }
 
     const lots = [];
-    for (const l of groupes.values()) {
+    for (const [tapis, collection] of [[false, groupes], [true, groupesTapis]]) for (const l of collection.values()) {
       const centre = [0, 0, 0];
       for (const o of l.objets) for (let k = 0; k < 3; k++) centre[k] += o.p[k] / l.objets.length;
       // La sphère comprend la déformation de vent, également utilisée dans la passe d'ombre de FERRO.
       let rayon = 0;
-      for (const o of l.objets) rayon = Math.max(rayon, Math.hypot(...moins(o.p, centre)) + Math.hypot(...o.s) / 2 + .25);
-      lots.push({ ...l, centre, rayon, portee: Infinity, bascule: 520, lodReferenceFov: 60, lodReferenceHeight: 1080, vegetation: true });
+      for (const o of l.objets) rayon = Math.max(rayon, Math.hypot(...moins(o.p, centre)) + Math.hypot(...o.s) / 2 + .25
+        + (o.windResponsive ? o.s[1] * 1.5 : 0));
+      const lot = { ...l, centre, rayon, portee: Infinity, bascule: tapis ? 60 : 520, lodReferenceFov: 60, lodReferenceHeight: 1080, vegetation: true };
+      if (tapis) lot.tapis = true;
+      lots.push(lot);
     }
-    return { lots, herbes, fougeres, fleurs, taillis, qualite };
+    return { lots, herbes, fougeres, fleurs, taillis, brins: (herbes - tuiles) * 9 + tuiles * BRINS_TUILE,
+      brinsTapis: tuiles * BRINS_TUILE, tuiles, objetsHerbe: herbes, qualite };
   }
 
-  B.vegetation = { FORMES, FORMES_AJOUT, BUDGET, PALIERS, TAPIS, BIOMES, JEU_FORMES, forme, installer, construire };
+  B.vegetation = { FORMES, FORMES_AJOUT, BUDGET, PALIERS, TAPIS, LOT_TAPIS, BRINS_TUILE, BIOMES, JEU_FORMES, forme, installer, construire };
   // La page enregistre d'emblée toutes les formes : un changement de palier ne doit pas demander
   // d'ajouter une forme après FRender.create. Le registre du palier bas reste les quatre formes historiques.
   installer(typeof window !== 'undefined' ? window.FRender : globalThis.FRender, 'high');

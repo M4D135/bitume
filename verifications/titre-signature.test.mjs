@@ -1,5 +1,5 @@
 // Signature de l'écran titre : reprise de la branche opencode, puis déplacée en bas à gauche avec
-// l'avatar embarqué (commit concurrent a617a04). Le contrôle porte sur l'écran titre lui-même.
+// l'avatar embarqué (commit concurrent a617a04). Le lien sert désormais à enregistrer la page HTML.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,9 +19,10 @@ const marque = (() => {
   return titre.slice(d, titre.indexOf('</div>', d));
 })();
 
-test("l'écran titre porte la signature m4d135 vers GitHub", () => {
-  assert.match(titre, /<a class="signature" href="https:\/\/github\.com\/M4D135"/);
-  assert.match(titre, /target="_blank" rel="noopener"/);
+test("m4d135 permet d'enregistrer le jeu en HTML depuis l'écran titre", () => {
+  assert.match(titre, /<a class="signature" href="https:\/\/bitume\.estrasse\.fr\/" download="BITUME\.html" title="Télécharger BITUME"/);
+  const lien = titre.match(/<a class="signature"[^>]*>/)[0];
+  assert.doesNotMatch(lien, /github\.com|target="_blank"/);
   assert.match(titre, />m4d135<\/a>/);
   assert.match(titre, /<img class="signature-avatar" src="data:image\/jpeg;base64,[A-Za-z0-9+/]+"/,
     "l'avatar de la signature doit être embarqué, sans appel réseau");

@@ -728,7 +728,8 @@
       const v = B.vegetation.construire(c, { limites: lim, interroger, qualite: vegetationQualite });
       lots.push(...v.lots);
       decor.vegetation = { herbes: v.herbes, fougeres: v.fougeres, fleurs: v.fleurs, taillis: v.taillis,
-        lots: v.lots.length, qualite: v.qualite };
+        lots: v.lots.length, qualite: v.qualite,
+        brins: v.brins, tuiles: v.tuiles, brinsTapis: v.brinsTapis, objetsHerbe: v.objetsHerbe };
     }
     // Le palier est une métadée de suivi, pas une donnée d'image : il reste non énumérable pour que les
     // empreintes historiques du décor (verifications/decor-identite.test.mjs) ne bougent pas d'un cran.

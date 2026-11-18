@@ -1,0 +1,208 @@
+ok quatre formes réutilisées, au plus 800 triangles au registre
+ok triangles finis, orientés, non dégénérés et tenus dans le cube des instances
+ok LOD vraiment simplifié ; détail retiré sous 0,4 pixel à la distance de référence
+ok 96 brins fins couvrent la tuile ; la simplification conserve exactement sa surface et chaque racine
+ok Val-Brûlé reçoit un nombre borné de plantes et deux groupes au plus par lot
+ok aucun obstacle, arbre ou objet historique déplacé ou retiré
+ok nouvel asphalte seul, géométrie de chaussée et marquages inchangés
+ok plantes à l’écart de la chaussée, des stands et des glissières
+ok répartition déterministe et indépendante des autres générateurs
+ok Port-Sable et Haut-Col : la végétation est purement additive, le décor historique est intact
+ok le palier bas reproduit exactement l'existant : formes, comptes, placement et matière
+ok qualite optionnelle : une valeur inconnue retrouve le palier historique
+ok les trois paliers donnent des budgets vraiment distincts, biome par biome
+ok au moins dix fois les vrais brins de la 0.2.29, avec moins de deux fois ses instances
+ok le plafonnement des longues pistes répartit les tuiles sur tout le tour
+ok densité indépendante du profil général, modes désactivés et données de course inchangées
+ok tapis dense hors chaussée, stands, glissières et tunnel, sur les deux accotements
+ok racines posées sur les vrais triangles de terrain, pieds et pointes hors piste et ouvrages
+ok côte et montagne sont végétalisées, un biome hors thème reste vide sans erreur
+ok matières naturelles 0.3.5 : feuillage 27 et sol organique 25, retombant sur les familles 11 et 8
+ok aucune disparition au loin sur tous les paliers et tous les biomes
+ok le palier haut ne consomme pas le hasard de la simulation et ne touche pas au tracé
+{
+  "controles": 22,
+  "plantes": {
+    "herbes": 124,
+    "fougeres": 0,
+    "fleurs": 0,
+    "taillis": 34,
+    "lots": 10,
+    "qualite": "low",
+    "brins": 1116,
+    "tuiles": 0,
+    "brinsTapis": 0,
+    "objetsHerbe": 124
+  },
+  "erreursLod": {
+    "herbes": {
+      "metres": 0.021013878261790717,
+      "pixels": 0.03779699346016133
+    },
+    "taillis": {
+      "metres": 0.030015847563754975,
+      "pixels": 0.05398854889776867
+    },
+    "fougeres": {
+      "metres": 0.08195574962053627,
+      "pixels": 0.14741119625036112
+    },
+    "fleurs": {
+      "metres": 0.12420602100961978,
+      "pixels": 0.22340541357134538
+    },
+    "humus": {
+      "metres": 0.16198358989879955,
+      "pixels": 0.2913547233777801
+    },
+    "prairie": {
+      "metresAuRepos": 1.670444188832582e-16,
+      "trianglesParBrin": {
+        "proche": 6,
+        "loin": 2
+      }
+    }
+  },
+  "densitesMesurees": {
+    "foret": {
+      "medium": {
+        "reference029": 10107,
+        "brins": 114228,
+        "facteur": 11.30186999109528,
+        "instances": 1440,
+        "tuiles": 1164,
+        "lotsTapis": 74
+      },
+      "high": {
+        "reference029": 34794,
+        "brins": 362100,
+        "facteur": 10.406966718399724,
+        "instances": 4196,
+        "tuiles": 3728,
+        "lotsTapis": 74
+      },
+      "ultra": {
+        "reference029": 65142,
+        "brins": 720756,
+        "facteur": 11.064382426084554,
+        "instances": 7932,
+        "tuiles": 7464,
+        "lotsTapis": 74
+      }
+    },
+    "cote": {
+      "medium": {
+        "reference029": 7677,
+        "brins": 94848,
+        "facteur": 12.354826103946854,
+        "instances": 1162,
+        "tuiles": 970,
+        "lotsTapis": 62
+      },
+      "high": {
+        "reference029": 27270,
+        "brins": 301080,
+        "facteur": 11.04070407040704,
+        "instances": 3448,
+        "tuiles": 3104,
+        "lotsTapis": 62
+      },
+      "ultra": {
+        "reference029": 51444,
+        "brins": 599832,
+        "facteur": 11.659902029391183,
+        "instances": 6560,
+        "tuiles": 6216,
+        "lotsTapis": 62
+      }
+    },
+    "montagne": {
+      "medium": {
+        "reference029": 9711,
+        "brins": 135309,
+        "facteur": 13.933580475749151,
+        "instances": 1559,
+        "tuiles": 1394,
+        "lotsTapis": 89
+      },
+      "high": {
+        "reference029": 33156,
+        "brins": 430743,
+        "facteur": 12.991404270720231,
+        "instances": 4747,
+        "tuiles": 4460,
+        "lotsTapis": 89
+      },
+      "ultra": {
+        "reference029": 63972,
+        "brins": 860439,
+        "facteur": 13.450243856687301,
+        "instances": 9223,
+        "tuiles": 8936,
+        "lotsTapis": 89
+      }
+    }
+  },
+  "solMesure": {
+    "foret": {
+      "piedsVerifies": 1186176,
+      "erreurMaxMetres": 0.0602833865296466,
+      "sousSolMetres": -0.0602833865296466,
+      "auDessusMetres": 0.025987225648680834,
+      "parQualite": {
+        "medium": {
+          "min": -0.0602833865296466,
+          "max": 0.025987225648680834
+        },
+        "high": {
+          "min": -0.027055747464933333,
+          "max": 0
+        },
+        "ultra": {
+          "min": -0.021013189035990365,
+          "max": 0
+        }
+      }
+    },
+    "cote": {
+      "piedsVerifies": 987840,
+      "erreurMaxMetres": 0.05740935927470492,
+      "sousSolMetres": -0.05740935927470492,
+      "auDessusMetres": 0.02102790416425293,
+      "parQualite": {
+        "medium": {
+          "min": -0.05740935927470492,
+          "max": 0.02102790416425293
+        },
+        "high": {
+          "min": -0.025488664855095378,
+          "max": 0
+        },
+        "ultra": {
+          "min": -0.021305911256212617,
+          "max": 0
+        }
+      }
+    },
+    "montagne": {
+      "piedsVerifies": 1419840,
+      "erreurMaxMetres": 0.032947260774617515,
+      "sousSolMetres": -0.032947260774617515,
+      "auDessusMetres": 0.00768133878386168,
+      "parQualite": {
+        "medium": {
+          "min": -0.032947260774617515,
+          "max": 0.00768133878386168
+        },
+        "high": {
+          "min": -0.021015812464123318,
+          "max": 0.00611589501663401
+        },
+        "ultra": {
+          "min": -0.022285655898646173,
+          "max": 0
+        }
+      }
+    }
+  }
+}

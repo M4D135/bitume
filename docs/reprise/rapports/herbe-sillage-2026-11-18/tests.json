@@ -1,0 +1,294 @@
+{
+  "date_utc": "2026-11-18T08:19:19.957358+00:00",
+  "base": "e150378d6e547a8dc1510334643c061b7cba72dc",
+  "version": "0.2.30",
+  "ferro": "0.3.7",
+  "total": 47,
+  "passed": 47,
+  "failed": 0,
+  "checks": [
+    {
+      "suite": "botanique.test.mjs",
+      "exit": 0,
+      "seconds": 0.512,
+      "summary": "}"
+    },
+    {
+      "suite": "carene.test.mjs",
+      "exit": 0,
+      "seconds": 0.104,
+      "summary": "carène : 14 vérifications passées"
+    },
+    {
+      "suite": "circuit.test.mjs",
+      "exit": 0,
+      "seconds": 0.524,
+      "summary": "ok  Ecart circuit 47"
+    },
+    {
+      "suite": "collisions-orientees.test.mjs",
+      "exit": 0,
+      "seconds": 0.06,
+      "summary": "}"
+    },
+    {
+      "suite": "commandes-partage.test.mjs",
+      "exit": 0,
+      "seconds": 0.074,
+      "summary": "44/44 contrôles commandes partagées tenus"
+    },
+    {
+      "suite": "conduite-criteres.test.mjs",
+      "exit": 0,
+      "seconds": 1.581,
+      "summary": "46/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)"
+    },
+    {
+      "suite": "conduite.test.mjs",
+      "exit": 0,
+      "seconds": 0.262,
+      "summary": "18 vérifications réussies"
+    },
+    {
+      "suite": "contacts.test.mjs",
+      "exit": 0,
+      "seconds": 0.105,
+      "summary": "44/44 critères du Chantier 3 tenus"
+    },
+    {
+      "suite": "controle-visuel.test.mjs",
+      "exit": 0,
+      "seconds": 0.059,
+      "summary": "ℹ duration_ms 13.698061"
+    },
+    {
+      "suite": "course.test.mjs",
+      "exit": 0,
+      "seconds": 2.944,
+      "summary": "8 tests passes"
+    },
+    {
+      "suite": "crash.test.mjs",
+      "exit": 0,
+      "seconds": 0.293,
+      "summary": "}"
+    },
+    {
+      "suite": "decor-identite.test.mjs",
+      "exit": 0,
+      "seconds": 2.158,
+      "summary": "décor : 9 géométries de référence inchangées (linux/x64/node-24.22.3)"
+    },
+    {
+      "suite": "decor-obstacles.test.mjs",
+      "exit": 0,
+      "seconds": 0.512,
+      "summary": "}"
+    },
+    {
+      "suite": "decor.test.mjs",
+      "exit": 0,
+      "seconds": 0.399,
+      "summary": "forêt : 18 vérifications passées"
+    },
+    {
+      "suite": "formes-libres.test.mjs",
+      "exit": 0,
+      "seconds": 0.288,
+      "summary": "formes libres : 31399 triangles émis dans l'ordre du registre"
+    },
+    {
+      "suite": "glissiere-etats.test.mjs",
+      "exit": 0,
+      "seconds": 0.106,
+      "summary": "}"
+    },
+    {
+      "suite": "glissiere-rebond.test.mjs",
+      "exit": 0,
+      "seconds": 0.058,
+      "summary": "}"
+    },
+    {
+      "suite": "graphismes.test.mjs",
+      "exit": 0,
+      "seconds": 0.064,
+      "summary": "graphismes : 22 contrôles passés"
+    },
+    {
+      "suite": "ia-attaque.test.mjs",
+      "exit": 0,
+      "seconds": 10.316,
+      "summary": "}"
+    },
+    {
+      "suite": "ia-epaves.test.mjs",
+      "exit": 0,
+      "seconds": 0.095,
+      "summary": "}"
+    },
+    {
+      "suite": "ia-reprise.test.mjs",
+      "exit": 0,
+      "seconds": 0.116,
+      "summary": "}"
+    },
+    {
+      "suite": "ia.test.mjs",
+      "exit": 0,
+      "seconds": 0.092,
+      "summary": "5/5 critères IA tenus"
+    },
+    {
+      "suite": "main.test.mjs",
+      "exit": 0,
+      "seconds": 0.109,
+      "summary": "main : 7 vérifications passées"
+    },
+    {
+      "suite": "manette.test.mjs",
+      "exit": 0,
+      "seconds": 0.072,
+      "summary": "17/17 contrôles manette tenus"
+    },
+    {
+      "suite": "mesures.test.mjs",
+      "exit": 0,
+      "seconds": 0.073,
+      "summary": "ℹ duration_ms 18.705078"
+    },
+    {
+      "suite": "meteo.test.mjs",
+      "exit": 0,
+      "seconds": 0.088,
+      "summary": "météo : 103 contrôles horloge, pause, projection, profondeur, paramètres et cadence tenus"
+    },
+    {
+      "suite": "moteur-emprise.test.mjs",
+      "exit": 0,
+      "seconds": 0.075,
+      "summary": "moteur EMPRISE : updateShape WebGL2, indices et sommets restaurés après perte du contexte"
+    },
+    {
+      "suite": "obstacles.test.mjs",
+      "exit": 0,
+      "seconds": 0.057,
+      "summary": "}"
+    },
+    {
+      "suite": "options-image.test.mjs",
+      "exit": 0,
+      "seconds": 0.057,
+      "summary": "options image : 6 contrôles passés"
+    },
+    {
+      "suite": "pieces.test.mjs",
+      "exit": 0,
+      "seconds": 0.475,
+      "summary": "}"
+    },
+    {
+      "suite": "prets-enligne.test.mjs",
+      "exit": 0,
+      "seconds": 0.065,
+      "summary": "ℹ duration_ms 13.659432"
+    },
+    {
+      "suite": "qualite.test.mjs",
+      "exit": 0,
+      "seconds": 0.057,
+      "summary": "qualité : 13 contrôles passés"
+    },
+    {
+      "suite": "realisateur.test.mjs",
+      "exit": 0,
+      "seconds": 2.084,
+      "summary": "7 vérifications réussies"
+    },
+    {
+      "suite": "relectures-phase2.test.mjs",
+      "exit": 0,
+      "seconds": 0.225,
+      "summary": "6/6 tests passes"
+    },
+    {
+      "suite": "rendu-halo.test.mjs",
+      "exit": 0,
+      "seconds": 0.056,
+      "summary": "ℹ duration_ms 6.41027"
+    },
+    {
+      "suite": "reprise-recul.test.mjs",
+      "exit": 0,
+      "seconds": 0.07,
+      "summary": "}"
+    },
+    {
+      "suite": "salon-protocole.test.mjs",
+      "exit": 0,
+      "seconds": 2.327,
+      "summary": "ℹ duration_ms 2277.01647"
+    },
+    {
+      "suite": "sillage.test.mjs",
+      "exit": 0,
+      "seconds": 0.061,
+      "summary": "sillage et brume : 7 contrôles passés"
+    },
+    {
+      "suite": "son.test.mjs",
+      "exit": 0,
+      "seconds": 0.075,
+      "summary": "14 vérifications réussies"
+    },
+    {
+      "suite": "stands.test.mjs",
+      "exit": 0,
+      "seconds": 5.396,
+      "summary": "stands : 18 verifications passees"
+    },
+    {
+      "suite": "titre-signature.test.mjs",
+      "exit": 0,
+      "seconds": 0.066,
+      "summary": "ℹ duration_ms 6.31577"
+    },
+    {
+      "suite": "traces.test.mjs",
+      "exit": 0,
+      "seconds": 1.053,
+      "summary": "11 tests passes"
+    },
+    {
+      "suite": "troncs.test.mjs",
+      "exit": 0,
+      "seconds": 0.529,
+      "summary": "}"
+    },
+    {
+      "suite": "tunnel-transitions.test.mjs",
+      "exit": 0,
+      "seconds": 0.309,
+      "summary": "ℹ duration_ms 27.188929"
+    },
+    {
+      "suite": "tunnel.test.mjs",
+      "exit": 0,
+      "seconds": 0.353,
+      "summary": "tunnel : 6 vérifications passées"
+    },
+    {
+      "suite": "vegetation.test.mjs",
+      "exit": 0,
+      "seconds": 12.523,
+      "summary": "}"
+    },
+    {
+      "suite": "voiture.test.mjs",
+      "exit": 0,
+      "seconds": 2.019,
+      "summary": "33 vérifications réussies"
+    }
+  ],
+  "scope": "Suites Node du jeu ; ne remplacent pas image ni mesures FPS materiel."
+}
