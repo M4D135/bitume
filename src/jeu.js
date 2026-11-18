@@ -708,6 +708,11 @@
     }
   }
 
+  // La manette ne vibre que sur l'écran de course, quand un joueur tient le volant (David, 18/11 : « je ne veux pas
+  // de vibration dans la manette pendant les menus »). La vitrine des menus et la démo font rouler la voiture « du
+  // joueur » à l'ordinateur : sans ce garde-fou, son moteur grondait dans les mains devant l'écran titre.
+  function manetteVibre(auto) { return !auto && reglages.vibrations === 'oui' && ecran === 'course'; }
+
   function pasSimulation(S, pilote) {
     if (B.meteo) B.meteo.actuel = S.meteo;
     const co = S.course;
@@ -718,13 +723,14 @@
     const ev = B.course.pas(co, cmd, DT);
     // vibration manette : le pilote la sent passer dans ses mains — le moteur selon les tours, la route, les
     // vibreurs, l'herbe, le patinage, la glisse et les chocs ; la main reste calme si le réglage est à « non »
-    if (!pilote && reglages.vibrations === 'oui') {
+    const vibre = manetteVibre(auto);
+    if (vibre) {
       const [faible, fort] = vibrationManette(co.joueur.etat, ev, co.horloge, pad, co.joueur.id);
       secouerManette(faible, fort);
     } else secouerManette(0, 0);
     // à deux, la manette du joueur 2 vit sa propre voiture
     if (S.type === 'duo' && pad2.manette) {
-      if (!pilote && reglages.vibrations === 'oui') { const [f2, s2] = vibrationManette(co.voitures[S.locaux[1]].etat, ev, co.horloge, pad2, S.locaux[1]); secouerManette(f2, s2, pad2); }
+      if (vibre) { const [f2, s2] = vibrationManette(co.voitures[S.locaux[1]].etat, ev, co.horloge, pad2, S.locaux[1]); secouerManette(f2, s2, pad2); }
       else secouerManette(0, 0, pad2);
     }
     for (const v of co.voitures) {
@@ -2023,7 +2029,7 @@
     if ((ecran === 'course' || ecran === 'demo') !== (nom === 'course' || nom === 'demo'))
       B.qualite.avancer(palier, 0, { actif: false });
     if (son && nom !== 'demo') son.evenement('clic');
-    if (nom !== 'course' && nom !== 'demo' && nom !== 'pause') { secouerManette(0, 0); secouerManette(0, 0, pad2); }
+    if (nom !== 'course') { secouerManette(0, 0); secouerManette(0, 0, pad2); }
     for (const e of ECRANS) $(e).hidden = e !== nom;
     $('hud').hidden = !(nom === 'course' || nom === 'pause' || nom === 'demo');
     hud2.hidden = !(aDeux() && (nom === 'course' || nom === 'pause'));

@@ -32,4 +32,11 @@ test('charge non commandée par le pad et turbo déjà lancé préservés',()=>{
 
 test('API getGamepads refusée neutralise les commandes sans interrompre la boucle',()=>{const {api,navigator}=fresh();navigator.pads=[gamepad(0,{0:1,6:.75,7:1},.8)];api.poll();api.command();navigator.getGamepads=()=>{throw new DOMException('Gamepad forbidden','SecurityError')};assert.doesNotThrow(()=>api.poll());neutral(api.command());assert.equal(api.pad.manette,null)});
 test('API refusée annule la dérive chargée sans turbo fantôme',()=>{const {api,navigator,etat}=held();navigator.getGamepads=()=>{throw new DOMException('Gamepad forbidden','SecurityError')};assert.doesNotThrow(()=>api.poll());const ev=CD.pas(etat,api.command(),c,DT);assert(!ev.some(e=>e.type==='turbo'));assert.equal(etat.derive.actif,false)});
+// Vibration : seulement sur l'écran de course et quand un joueur conduit (David, 18/11 : aucune vibration dans les menus).
+const vibre=(ecran,auto,vibrations='oui')=>new Function('reglages','ecran',extract('manetteVibre')+';return manetteVibre('+auto+');')({vibrations},ecran);
+test('vibration : un joueur en course la reçoit',()=>assert.equal(vibre('course',false),true));
+for(const ecran of ['titre','preparation','reglages','pause','resultats','demo','enligne','prets'])test('vibration : aucune sur l’écran '+ecran,()=>assert.equal(vibre(ecran,false),false));
+test('vibration : aucune quand l’ordinateur conduit (vitrine des menus, démo, outils)',()=>assert.equal(vibre('course',true),false));
+test('vibration : aucune si le réglage est à non',()=>assert.equal(vibre('course',false,'non'),false));
+test('vibration : la vitrine et la démo passent par le garde-fou',()=>{assert.match(extract('pasSimulation'),/const vibre = manetteVibre\(auto\);/);assert.match(extract('aller'),/if \(nom !== 'course'\) \{ secouerManette\(0, 0\); secouerManette\(0, 0, pad2\); \}/)});
 console.log(`${passed}/${passed+failures.length} contrôles manette tenus`);if(failures.length)process.exitCode=1;
