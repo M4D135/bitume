@@ -26,6 +26,11 @@
   const BRIDE_COURTE = 3000;    // ms : un bridage démenti plus tôt était la machine
   const CHARGE = .9;            // travail du fil principal (en périodes) qui explique à lui seul des rappels espacés
   const DESACCORDS = 4;         // rappels en avance ou hors grille parmi les 16 derniers : la grille est à refaire
+  // Écart quadratique moyen des synchronisations retenues à la droite (2 ms, ou 0,15 période si c'est plus) au-delà
+  // duquel elle range un autre rythme que le sien, vérifié sur une droite pleine et confirmée. Une machine qui rend une image toutes les deux ou trois périodes d'un écran 75 Hz tombe à 6,7 ms près sur
+  // une grille de 60 Hz, sous la tolérance de 0,4 période ; la droite absorbe ce décalage et l'écart reste toujours
+  // en deçà, mais il vaut 3,3 ms en moyenne quadratique. La gigue uniforme de ±2 ms en vaut 1,3 sur la droite.
+  const RESIDU = 2, RESIDU_PART = .15;
   const ECART = .25;            // écart quadratique moyen (en périodes) au-delà duquel des horodatages ne font pas une grille
   const PROCHE = 1.1;           // une période plus longue est retenue si elle range presque aussi bien
   const PRECIS = .1;            // écart (en périodes) d'une grille précise
@@ -41,6 +46,8 @@
   // ms : requestAnimationFrame bat entre 400 et 30 Hz au premier plan (un navigateur bride à 30 images par seconde,
   // pas en dessous) ; une grille plus longue serait une machine lente dont le rythme cache l'écran
   const PERIODE_MIN = 2.5, PERIODE_MAX = 34;
+  // ms : un écran plus lent que 50 Hz n'existe guère que bridé ; une grille plus longue peut être une machine lente
+  const ECRAN_LENT = 20;
   const VERROU = .01, DEVERROU = .02;      // période multiple du pas à 1 % près ; lâché au-delà de 2 % (règle de FLoop)
   const DETTE = .1, DETTE_MAX = 2;         // part de la dette rendue par image, dette comptée au plus (ms)
   const FENETRE = 1500, SEUIL = .12;       // part d'images ratées tolérée sur la fenêtre de décision
@@ -70,7 +77,7 @@
       cP: new Float64Array(CANDIDATS), cR: new Float64Array(CANDIDATS), cG: new Float64Array(CANDIDATS),
       cZ: new Uint8Array(CANDIDATS), cA: new Float64Array(CANDIDATS),
       gN: new Float64Array(GRILLE), gT: new Float64Array(GRILLE), gC: 0, gI: 0,
-      t0: 0, nCour: 0, phi: 0, apriori: 0,
+      t0: 0, nCour: 0, phi: 0, apriori: 0, residu: 0,
       suite: 0, suiteN: 0, suiteMin: SUITE, desaccords: 0, reestimations: 0, fine: 0, brideDebut: 0, confirmer: 0,
       rConnue: 0, rPrecis: 0, kAvant: 1, cadenceBride: 0,
       // temps de jeu : pas entiers en attente, phase (fraction de pas, l'alpha rendu), instant recalé précédent
@@ -82,7 +89,7 @@
       regulier: 0, travailMs: 0, travailVu: false,
       essai: false, essaiDebut: 0, essaiImages: 0, essaiRatees: 0,
       essais: 0, echecs: 0, reussis: 0, delai: REGULARITE, succesA: -Infinity, hausses: 0,
-      images: 0, ratees: 0,
+      images: 0, ratees: 0, affinages: 0,
       sortie: { rendre: false, pas: 0, alpha: PHASE, dt: 0, periode: 1 / 60, diviseur: 1, ips: 0, verrouille: false,
         intervalle: 0, rate: false, travail: 0 }
     };
@@ -109,6 +116,10 @@
     const P = (nt + APRIORI * C.apriori) / (nn + APRIORI);
     if (P >= PERIODE_MIN && P <= PERIODE_MAX) C.periode = P;
     C.phi = C.t0 + mT + C.periode * (C.nCour - mN);
+    // écart quadratique moyen des synchronisations retenues à la droite (ms²), voir RESIDU
+    let r = 0;
+    for (let i = 0; i < c; i++) { const e = C.gT[i] - mT - C.periode * (C.gN[i] - mN); r += e * e; }
+    C.residu = r / c;
   }
   function ancrer(C, t) {
     C.apriori = C.periode; C.t0 = t; C.nCour = 0; C.phi = t;
@@ -225,7 +236,28 @@
     for (let j = 0; j < nc; j++) {
       if (C.cA[j] <= admis && C.cR[j] <= proche && C.cP[j] > P) { P = C.cP[j]; graine = C.cG[j]; zero = C.cZ[j] === 1; }
     }
-    if (P) essayer(C, n, graine, zero);   // rangement du candidat retenu, pour refaire la grille
+    if (!P) return 0;
+    essayer(C, n, graine, zero);   // rangement du candidat retenu, pour refaire la grille
+    // La règle du plus long suppose que rien n'explique des rappels espacés. Un fil principal qui occupe à lui seul
+    // toutes les périodes d'une grille plus fine sauf la dernière, sur le plus court des intervalles, les explique :
+    // 22 ms par image sur un écran 60 Hz donnent des rappels toutes les 33 ms, qui ne sont pas un écran à 30 Hz. La
+    // grille fine retenue est la plus longue que le travail explique ; elle range les horodatages aussi bien en
+    // millisecondes, les images y comptent ratées et la qualité Auto peut baisser. Aucune marge : le travail mesuré
+    // commence après le rappel et sous-estime l'occupation du fil, et 8 ms n'expliquent pas qu'un écran 120 Hz ne
+    // rappelle qu'une synchronisation sur deux. Un processeur graphique lent, que le travail ne montre pas, reste pris
+    // pour un écran bridé (voir bridePossible). Seule, la vérification d'un bridage s'en passe.
+    if (!seule && C.travailVu && P > ECRAN_LENT) {
+      let court = Infinity;
+      for (let i = 1; i <= n; i++) { const d = C.eN[i] - C.eN[i - 1]; if (d > 0 && d < court) court = d; }
+      let fin = 0;
+      for (let j = 0; j < nc; j++) {
+        const c = C.cP[j], m = Math.round(P / c);
+        if (C.cA[j] <= admis && m >= 2 && c > fin && Math.abs(P - m * c) <= MEME * P && C.travailMs >= (court * m - 1) * c) {
+          fin = c; graine = C.cG[j]; zero = C.cZ[j] === 1;
+        }
+      }
+      if (fin) { P = fin; essayer(C, n, graine, zero); }
+    }
     return P;
   }
   function bits(x) { let n = 0; while (x) { x &= x - 1; n++; } return n; }
@@ -243,10 +275,12 @@
     return C.suiteN * C.periode <= PERIODE_MAX && !(C.travailVu && C.travailMs >= CHARGE * C.periode);
   }
   // bride : la suite de rappels sur un même multiple de la période propose une période précise, vérifiée seule
-  // sur ces quelques intervalles (où un peigne fin rangerait la gigue par hasard).
-  function reestimer(C, m, t, bride) {
+  // sur ces quelques intervalles (où un peigne fin rangerait la gigue par hasard). douteuse : la période connue
+  // n'est pas candidate (voir tropFine).
+  function reestimer(C, m, t, bride, douteuse) {
     C.reestimations++;
-    const ancien = C.periode, P = bride ? estimer(C, m, C.suiteN * ancien, true) : estimer(C, m, ancien, false);
+    const ancien = C.periode;
+    const P = bride ? estimer(C, m, C.suiteN * ancien, true) : estimer(C, m, douteuse ? 0 : ancien, false);
     // les images ratées d'avant étaient peut-être jugées sur une grille fausse
     viderFenetre(C);
     if (!P) { ancrer(C, t); return; }
@@ -347,8 +381,11 @@
     C.desaccords = (C.desaccords << 1 | (hors ? 1 : 0)) & 0xffff;
     suivre(C, n);
     if (C.suite >= C.suiteMin && bridePossible(C)) { reestimer(C, C.suiteMin, t, true); return 1; }
-    if (!hors) pousser(C, n, t);
-    else {
+    if (!hors) {
+      pousser(C, n, t);
+      const seuil = RESIDU > RESIDU_PART * P ? RESIDU : RESIDU_PART * P;
+      if (C.gC === GRILLE && !(C.confirmer > 0) && C.residu > seuil * seuil) { reestimer(C, REEST, t, false); return 1; }
+    } else {
       C.nCour += n; C.phi += n * P;
       if (bits(C.desaccords) >= DESACCORDS) { reestimer(C, REEST, t, false); return 1; }
     }
@@ -399,6 +436,21 @@
     C.k = C.kStable = k; C.hausses++;
     viderFenetre(C); C.regulier = 0;
   }
+  // Grille trop fine : le diviseur est à K_MAX, et plus de 12 % des images de la fenêtre sont ratées alors que la
+  // machine les a rendues à 24 par seconde ou plus. Un diviseur plus haut les tiendrait, mais K_MAX l'interdit : sur
+  // une grille de moins de 7 ms, le plafond ne vient plus du plancher de 24 images par seconde. C'est une fraction
+  // de la vraie période (3,5 ms au lieu de 6,9 après un changement d'écran sous charge : les rappels tombent juste et
+  // rien ne la dément, toutes les images ratent sans fin et la qualité Auto tombe au plancher), ou un écran très
+  // rapide dont le diviseur n'atteint pas la cadence que la machine tient. Dans les deux cas, la grille est refaite
+  // sur les derniers rappels sans la période connue, que la règle du plus long ne retiendrait pas contre ses
+  // multiples. Le mode Écran ne vise pas de diviseur : ses images ratées ne disent rien de la grille.
+  function tropFine(C, t) {
+    if (!(t - C.fDebut >= FENETRE) || C.fine > 0 || C.k < K_MAX || C.mode === 'ecran') return false;
+    if (!(Math.floor(PLANCHER * 1.02 / C.periode) > K_MAX) || !(C.fRatees > SEUIL * C.fCompte)) return false;
+    let tenables = 0;
+    for (let i = 0, j = C.fQueue; i < C.fCompte; i++, j = (j + 1) % CAP) if (C.fR[j] && C.fD[j] * C.periode <= PLANCHER * 1.02) tenables++;
+    return tenables > SEUIL * C.fCompte;
+  }
   function travailPermis(C) { return !C.travailVu || C.travailMs < PART_TRAVAIL * (C.k - 1) * C.periode; }
   function decider(C, t, dN, rate, reductible) {
     C.images++; if (rate) C.ratees++;
@@ -413,6 +465,7 @@
       return;
     }
     pousserFenetre(C, t, dN, rate);
+    if (tropFine(C, t)) { C.affinages++; reestimer(C, BRUTS, t, false, true); return; }
     C.regulier = rate ? 0 : C.regulier + dN * C.periode;
     if (C.mode !== 'auto') return;
     // Une suite de rappels longs peut être un écran qui passe à 30 Hz : l'horloge tranche d'abord.
@@ -533,7 +586,7 @@
     o.diviseur = C.k; o.diviseurStable = C.essai ? C.kStable : C.k; o.diviseurMax = kMax(P);
     o.cibleMs = P ? P * C.k : null; o.ips = C.intervalleMs ? 1000 / C.intervalleMs : null;
     o.verrouille = C.verrou; o.pasParPeriode = C.verrou ? C.pasSync : null;
-    o.grille = C.grille; o.reestimations = C.reestimations;
+    o.grille = C.grille; o.reestimations = C.reestimations; o.grillesTropFines = C.affinages;
     o.bride = C.fine > 0; o.periodeAvantBridageMs = C.fine > 0 ? C.fine : null; o.suiteBridage = C.suiteMin;
     o.images = C.images; o.ratees = C.ratees; o.hausses = C.hausses; o.pasAbandonnes = C.abandon;
     const f = o.fenetre || (o.fenetre = {});

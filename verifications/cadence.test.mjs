@@ -455,6 +455,56 @@ verifier('écran bridé pendant que k > 1 : la cadence tenue ne change ni pendan
   assert.equal(K.etat(C).suiteBridage, 8, 'puis remise à huit');
   assert.equal(K.etat(C).bride, false);
 });
+verifier('fil principal de 18 à 30 ms en Fine sur 60 Hz : la grille est l’écran, pas un écran à 30 Hz, la qualité baisse', () => {
+  // Des rappels réguliers toutes les deux périodes ressemblent à un écran bridé à 30 Hz ; le travail du fil
+  // principal, plus long qu'une période, les explique. Pris pour un écran à 30 Hz, k resterait 1, aucune image ne
+  // compterait ratée et la qualité Auto ne baisserait jamais : 30 images par seconde en Fine pour toute la partie.
+  for (const fine of [18, 22, 26, 30]) for (let graine = 1; graine <= 3; graine++) {
+    const C = K.creer({}), palier = { n: 0, somme: 0, compte: 0, t: 0, aise: 0 }, changements = [];
+    const ctx = contexte({ qualiteReductible: true }), nom = `${fine} ms en Fine, graine ${graine}`;
+    // le travail du fil principal baisse d'un quart par niveau
+    const { images } = jouer(C, { hz: 60, duree: 20, gigue: .5, graine, contexte: ctx, cpu: () => fine * (1 - .25 * palier.n),
+      apres: (f, s) => {
+        const avant = palier.n;
+        Q.avancer(palier, f.intervalle, { periode: f.periode * f.diviseur, travail: f.travail, min: 0, max: 4 });
+        if (palier.n !== avant) changements.push([s, palier.n]);
+        ctx.qualiteReductible = palier.n < 4;
+      } });
+    const e = K.etat(C);
+    assert.ok(Math.abs(e.periodeMs - 1000 / 60) < .05, nom + ' : période ' + e.periodeMs);
+    assert.ok(changements.length && changements[0][1] === 1 && changements[0][0] < 4500, nom + ' : la qualité baisse dès la première fenêtre');
+    // 18 et 22 ms tiennent 60 images par seconde un niveau plus bas, 26 et 30 ms deux niveaux plus bas
+    assert.equal(palier.n, fine <= 22 ? 1 : 2, nom + ' : niveau final');
+    assert.ok(depuis(images, 12000).every(i => i.k === 1 && !i.rate && i.pas === 2), nom + ' : 60 images par seconde ensuite');
+  }
+});
+verifier('changement d’écran sous charge, sur 20 graines : la grille suit l’écran, aucune image ratée sans fin', () => {
+  // Une machine qui rend une image toutes les deux périodes d'un écran 60 Hz (23 ms de fil principal) passe sur un
+  // écran 75, 100, 144 ou 165 Hz. Les rappels d'avant et d'après se mêlent dans la réestimation : elle retient
+  // parfois une fraction de la vraie période (3,03 ms à 165 Hz, 3,33 ms à 100 Hz) sur laquelle les rappels tombent
+  // juste ; le diviseur plafonné à six n'y atteint pas la cadence tenue, toutes les images ratent et la qualité Auto
+  // descend au plancher. Vers 75 Hz, des images toutes les deux ou trois périodes tombent à 6,7 ms près sur la
+  // grille de 60 Hz, sous la tolérance : la droite les absorbait, et le temps de jeu avançait de 33 ms par image
+  // pour des intervalles de 27 et 40 ms.
+  for (const hz of [75, 100, 144, 165]) for (let graine = 1; graine <= 20; graine++) {
+    const C = K.creer({}), palier = { n: 0, somme: 0, compte: 0, t: 0, aise: 0 }, nom = `60 → ${hz} Hz, graine ${graine}`;
+    let niveau = -1;
+    const { images } = jouer(C, { hz: s => s < 10000 ? 60 : hz, duree: 30, gigue: .5, graine, cpu: 1.4 * 1000 / 60,
+      apres: (f, s) => {
+        Q.avancer(palier, f.intervalle, { periode: f.periode * f.diviseur, travail: f.travail, min: 0, max: 4 });
+        if (s < 20000) niveau = palier.n;
+      } });
+    const fin = depuis(images, 20000), ratees = fin.filter(i => i.rate).length;
+    assert.ok(ratees <= 2, nom + ' : ' + ratees + ' images ratées sur les 10 dernières secondes (période ' + K.etat(C).periodeMs + ')');
+    assert.ok(ecartMax(fin) < .5, nom + ' : écart ' + ecartMax(fin));
+    // la cadence visée est celle que la machine tient : deux périodes de 75 Hz, quatre de 144 Hz
+    const cible = Math.ceil(1.4 * 1000 / 60 / (1000 / hz)) * 1000 / hz;
+    assert.ok(fin.every(i => Math.abs(i.periode * i.k * 1000 - cible) < .1), nom + ' : cadence visée ' + fin[0].periode * fin[0].k * 1000);
+    // La transition coûte un ou deux niveaux (k repart de 1 sur la période plus courte) ; ensuite, plus rien ne
+    // baisse, la qualité n'est pas poussée au plancher par des images ratées sans fin.
+    assert.ok(palier.n === niveau && palier.n < 4, nom + ' : qualité ' + niveau + ' puis ' + palier.n);
+  }
+});
 verifier('contexte.actif faux (menus, pause) : la période se mesure, rien ne se décide', () => {
   const C = K.creer({}), ctx = contexte({ actif: false });
   const { images } = jouer(C, { hz: 60, duree: 12, gigue: .5, gpu: GPU_LENT, contexte: ctx, avant: s => { ctx.actif = s >= 8000; } });
