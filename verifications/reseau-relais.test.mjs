@@ -119,8 +119,9 @@ function courtier(M, url, o = {}) {
           if (!abonnes.has(t)) abonnes.set(t, new Set());
           abonnes.get(t).add(conn); sujets.add(t); codes.push(0);
         }
-        conn.pousser(Buffer.concat([Buffer.from([0x90, 2 + codes.length]), Buffer.from(corps.subarray(0, 2)), Buffer.from(codes)]));
-      } else if (type === 3) {   // PUBLISH (QoS 0 côté client), rendu à tous les abonnés du sujet, l'auteur compris
+    conn.pousser(Buffer.concat([Buffer.from([0x90, 2 + codes.length]), Buffer.from(corps.subarray(0, 2)), Buffer.from(codes)]));
+    if (o.demesure) conn.pousser(Buffer.from([0x30, 0x80, 0x80, 0x40]));
+  } else if (type === 3) {   // PUBLISH (QoS 0 côté client), rendu à tous les abonnés du sujet, l'auteur compris
         const [t, p] = lireChaine(corps, 0), charge = Buffer.from(corps.subarray(p));
         s.publications++;
         for (const c of abonnes.get(t) || []) c.livrer(t, charge);
@@ -398,6 +399,26 @@ test('refus d’un relais : il est écarté et le suivant prend sa place', async
   await A.rv.envoyer({ t: 'encore' });
   assert.ok(await attendre(() => B.recus.length === 2));
   assert.deepEqual(B.recus.map(x => x.m.t), ['salut', 'encore']);
+});
+
+test('relais MQTT qui annonce un paquet démesuré : écarté et remplacé', async () => {
+  const M = monde(), c = await salle();
+  courtier(M, 'wss://gros.test/mqtt', { demesure: true });
+  courtier(M, 'wss://m1.test/mqtt');
+  traqueur(M, 'wss://t1.test');
+  relaisNostr(M, 'wss://n1.test');
+  const familles = {
+    mqtt: ['wss://gros.test/mqtt', 'wss://m1.test/mqtt'],
+    torrent: ['wss://t1.test'],
+    nostr: ['wss://n1.test']
+  };
+  const A = participant(c, M, familles), B = participant(c, M, familles);
+  assert.ok(await attendre(() => [A, B].every(p => p.prets().length === 3) && A.changes.some(x => x.refus === 'paquet démesuré'), 4000));
+  assert.ok(A.changes.some(x => x.url === 'wss://gros.test/mqtt' && x.refus === 'paquet démesuré'));
+  assert.ok(!A.rv.etat().some(l => l.url === 'wss://gros.test/mqtt'), 'écarté après paquet démesuré');
+  await A.rv.envoyer({ t: 'salut' });
+  assert.ok(await attendre(() => B.recus.length === 1));
+  assert.deepEqual(B.recus.map(x => x.m.t), ['salut']);
 });
 
 test('relais Nostr qui limite le débit : mis en pause cinq secondes, pas écarté', async () => {
