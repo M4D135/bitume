@@ -707,11 +707,21 @@
   function creerHerbier(c, nappes, lots, lim, enceinte, niveauEau, ancien) {
     const D = HERBIER.lire(c, nappes, lots, lim, enceinte, niveauEau), empreinte = HERBIER.empreinte(D);
     const reprise = !!ancien && ancien.empreinte === empreinte;
-    // La découpe ne dépend que de la géométrie ; copiée à sa taille, elle reste avec l'herbier.
-    const decoupe = reprise ? ancien.decoupe : HERBIER.noyau(HERBIER.relier(D)).slice();
+    let decoupe;
+    if (reprise) {
+      // La découpe ne dépend que de la géométrie : elle se relit dans les triangles de l'ancien herbier (les mêmes
+      // nombres) et l'indice de leur surface source, seul gardé à part (4 octets par triangle au lieu de 88).
+      const T = ancien.triangles, S = ancien.sourcesTriangles; decoupe = new Float64Array(11 * T.length);
+      for (let k = 0, o = 0; k < T.length; k++) {
+        const p = T[k].points; decoupe[o++] = S[k];
+        for (let j = 0; j < 3; j++) { decoupe[o++] = p[j][0]; decoupe[o++] = p[j][1]; decoupe[o++] = p[j][2]; }
+        decoupe[o++] = T[k].aire;
+      }
+    } else decoupe = HERBIER.noyau(HERBIER.relier(D));
     COMPTES_HERBIER[reprise ? 'reprises' : 'decoupes']++;
-    const herbier = HERBIER.finir(D, decoupe);
-    Object.defineProperties(herbier, { empreinte: { value: empreinte }, decoupe: { value: decoupe } });
+    const herbier = HERBIER.finir(D, decoupe), sourcesTriangles = new Int32Array(herbier.triangles.length);
+    for (let k = 0; k < sourcesTriangles.length; k++) sourcesTriangles[k] = decoupe[11 * k];
+    Object.defineProperties(herbier, { empreinte: { value: empreinte }, sourcesTriangles: { value: sourcesTriangles } });
     return herbier;
   }
 
