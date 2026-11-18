@@ -49,6 +49,7 @@ MODULES = [
     'carene.js',
     'humain-donnees.js',
     'humain-corps.js',
+    'public.js',
     'main.js',
     'voiture.js',
     'animaux.js',
