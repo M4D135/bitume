@@ -190,6 +190,7 @@
     "etudes": "~/Projects/bitume-wt/{conduite,public,vitre,son,echappement,photo}, branches locales conduite/etude et etude/* ; rien de fusionné",
     "tunnels": "Plus de passages en tunnel (lot 22), éclairage de tunnel amélioré (lot 21), aucun clipping ; les études 21 et 22 lancées avant cette demande ne la couvrent qu en partie : à ajouter à leurs plans.",
     "opencode": "tools/opencode/lancer.sh (réglage isolé) ; premier emploi : module src/vibrations.js confié à opencode/iceman-free dans ~/Projects/bitume-wt/vibrations (branche etude/vibrations), à relire",
-    "lot_22_valide": "Plan rendu (etude/procedural, 2807e0b) ; David a validé les choix par défaut le 18/11 (voir AGENTS.md). 22A (relief) à livrer avec la physique p10 ; 22C à 22E après la fluidité."
+    "lot_22_valide": "Plan rendu (etude/procedural, 2807e0b) ; David a validé les choix par défaut le 18/11 (voir AGENTS.md). 22A (relief) à livrer avec la physique p10 ; 22C à 22E après la fluidité.",
+    "haut_col": "Pentes au-delà de 10 % et portion en bord de falaise le long d un grand virage (lot 22A) ; tracé en plan et graine conservés."
   }
 }
