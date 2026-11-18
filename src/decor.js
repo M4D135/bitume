@@ -459,7 +459,9 @@
     // ---------------------------------------------------------------- préparation (JS, partagée par les deux noyaux)
     // Les calculs qui passent par Math.hypot, Math.sin, Math.cos et B.circuit restent ici, en JavaScript : le noyau
     // n'emploie que + − × ÷ et des comparaisons, exactes partout (IEEE 754), en JS comme en WebAssembly.
-    function preparer(c, nappes, lots, lim, enceinte, niveauEau) {
+    // Lot 28C : la préparation est coupée en deux, lecture des nappes et des masques (lire), puis candidats du noyau
+    // (relier) ; mêmes opérations dans le même ordre.
+    function lire(c, nappes, lots, lim, enceinte, niveauEau) {
       let total = 0; for (const nap of nappes) total += nap.indices.length / 3;
       const P = new Float64Array(9 * total), PL = new Float64Array(3 * total), LEN = new Float64Array(total), BX = new Float64Array(4 * total), VEG = new Uint8Array(total);
       const sources = []; // objets de sortie (plan, normale, couleur, type) des seules surfaces végétalisables
@@ -521,7 +523,11 @@
         masquer(points);
       }
       const nM = MO.length - 1, M = new Float64Array(MX), MOff = new Int32Array(MO), MBX = new Float64Array(MBXl);
-      // candidats de chaque surface végétalisable (format CSR), filtrés par recouvrement de boîtes
+      return { n, P, PL, LEN, BX, VEG, brutes: new Int32Array(brutes), sources, nM, M, MOff, MBX, eau: Number.isFinite(niveauEau) ? niveauEau : NaN };
+    }
+    // candidats de chaque surface végétalisable (format CSR), filtrés par recouvrement de boîtes ; seul le noyau s'en sert
+    function relier(D) {
+      const { n, BX, brutes, nM, MBX } = D;
       const gM = grille(nM, MBX), gC = grille(n, BX);
       const marquesM = new Uint32Array(nM), marquesC = new Uint32Array(n);
       const nb = brutes.length, CMO = new Int32Array(nb + 1), CCO = new Int32Array(nb + 1);
@@ -540,8 +546,26 @@
           if (bx0 < BX[4 * id + 1] - EPS && bx1 > BX[4 * id] + EPS && bz0 < BX[4 * id + 3] - EPS && bz1 > BX[4 * id + 2] + EPS) CC[nc++] = id; }
         CCO[q + 1] = nc;
       }
-      return { n, P, PL, LEN, BX, VEG, brutes: new Int32Array(brutes), sources, nM, M, MOff, MBX, CM: CM.subarray(0, nm), CMO, CC: CC.subarray(0, nc), CCO,
-        eau: Number.isFinite(niveauEau) ? niveauEau : NaN };
+      D.CM = CM.subarray(0, nm); D.CMO = CMO; D.CC = CC.subarray(0, nc); D.CCO = CCO;
+      return D;
+    }
+    // Empreinte de la géométrie lue (lot 28C) : tout ce que lisent le noyau et la finition, sauf les couleurs, que la
+    // saison change. Positions (P), surfaces végétalisables (brutes), masques (M, MOff) et eau déterminent PL, LEN, BX,
+    // MBX et les candidats ; les types viennent des nappes. Deux voies de 32 bits, plus les deux effectifs.
+    function empreinte(D) {
+      let a = 0x811c9dc5 | 0, b = 0x2545f491 | 0;
+      const types = new Map(), eau = new Float64Array([D.eau]);
+      for (const T of [D.P, D.brutes, D.M, D.MOff, eau]) {
+        const U = new Int32Array(T.buffer, T.byteOffset, T.byteLength >> 2);
+        for (let i = 0; i < U.length; i++) { const v = U[i]; a = Math.imul(a ^ v, 0x01000193); b = Math.imul(b ^ v, 0x5bd1e995); b ^= b >>> 15; }
+        a = Math.imul(a ^ U.length, 0x01000193); b = Math.imul(b ^ U.length, 0x5bd1e995); b ^= b >>> 13;
+      }
+      for (let q = 0; q < D.brutes.length; q++) {
+        const type = String(D.sources[D.brutes[q]].type); let v = types.get(type);
+        if (v === undefined) { v = 0x9e3779b9 | 0; for (let i = 0; i < type.length; i++) v = Math.imul(v ^ type.charCodeAt(i), 0x01000193); types.set(type, v); }
+        a = Math.imul(a ^ v, 0x01000193); b = Math.imul(b ^ v, 0x5bd1e995); b ^= b >>> 15;
+      }
+      return (a >>> 0).toString(16) + ':' + (b >>> 0).toString(16) + ':' + D.n + ':' + D.nM;
     }
 
     // ---------------------------------------------------------------- noyau JavaScript (transcription directe en C : herbier.c)
@@ -674,11 +698,21 @@
       }
       return { triangles, surface, aireBrute, aire: aireAccotements + aireTerrain, aireAccotements, aireTerrain, trianglesSources: D.brutes.length, masques: D.nM };
     }
-    return { preparer, noyau: noyauJS, finir };
+    return { lire, relier, empreinte, noyau: noyauJS, finir };
   })();
-  function creerHerbier(c, nappes, lots, lim, enceinte, niveauEau) {
-    const D = HERBIER.preparer(c, nappes, lots, lim, enceinte, niveauEau);
-    return HERBIER.finir(D, HERBIER.noyau(D));
+  // Comptes de l'herbier (lot 28C, lus par verifications/herbier-saisons.test.mjs) : découpes calculées, découpes reprises.
+  const COMPTES_HERBIER = { decoupes: 0, reprises: 0 };
+  // ancien : l'herbier gardé pour la même clé, d'une autre saison. Sa découpe est reprise si la géométrie lue a la même
+  // empreinte ; seules les couleurs, relues dans les nappes de cette saison, changent alors.
+  function creerHerbier(c, nappes, lots, lim, enceinte, niveauEau, ancien) {
+    const D = HERBIER.lire(c, nappes, lots, lim, enceinte, niveauEau), empreinte = HERBIER.empreinte(D);
+    const reprise = !!ancien && ancien.empreinte === empreinte;
+    // La découpe ne dépend que de la géométrie ; copiée à sa taille, elle reste avec l'herbier.
+    const decoupe = reprise ? ancien.decoupe : HERBIER.noyau(HERBIER.relier(D)).slice();
+    COMPTES_HERBIER[reprise ? 'reprises' : 'decoupes']++;
+    const herbier = HERBIER.finir(D, decoupe);
+    Object.defineProperties(herbier, { empreinte: { value: empreinte }, decoupe: { value: decoupe } });
+    return herbier;
   }
 
   // ---------------------------------------------------------------- objets
@@ -1299,7 +1333,9 @@
       const entree = cache.get(cle), couleurSaison = saison ? saison.id : 'historique';
       if (entree && entree.saison === couleurSaison) herbier = entree.herbier;
       if (!herbier) {
-        herbier = creerHerbier(c, decor.nappes, lots, lim, decor.enceinte, terrain.niveauEau);
+        // Lot 28C : une autre saison ne change que les couleurs du sol ; l'herbier gardé prête sa découpe quand la
+        // géométrie lue est la même (creerHerbier compare les empreintes), sinon tout se refait.
+        herbier = creerHerbier(c, decor.nappes, lots, lim, decor.enceinte, terrain.niveauEau, entree && entree.herbier);
         // Garder une seule palette par clé évite d'accumuler quatre grands caches de sol par circuit.
         cache.set(cle, { saison: couleurSaison, herbier });
       }
@@ -1347,5 +1383,5 @@
     return decor;
   }
 
-  B.decor = { construire, THEMES, angles, base, limites, hauteurRoute, cadre };
+  B.decor = { construire, THEMES, angles, base, limites, hauteurRoute, cadre, comptesHerbier: COMPTES_HERBIER };
 })(globalThis.BITUME = globalThis.BITUME || {});
