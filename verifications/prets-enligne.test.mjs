@@ -101,7 +101,7 @@ test('l’annonce ouvre la confirmation sans lancer la course', () => {
   const { a } = hote(); assert.equal(a.etat().ecran, 'prets'); a.avancer(1000); assert.equal(compte(a), 0);
   assert.ok(a.messages.some(x => x.m.t === 'confirmer'));
 });
-for (const [id, nom, index] of [['lande-noire', 'Lande-Noire', 3], ['roche-fauve', 'Roche-Fauve', 4]]) test(nom + ' conserve le circuit et les conditions de l’hôte jusqu’au départ invité', () => {
+for (const [id, nom, index] of [['lande-noire', 'Lande-Noire', 3], ['roche-fauve', 'Roche-Fauve', 4], ['brume-de-jade', 'Brume-de-Jade', 5]]) test(nom + ' conserve le circuit et les conditions de l’hôte jusqu’au départ invité', () => {
   const catalogue = new Function(catalogueDeclaration + '; return CATALOGUE;')();
   assert.deepEqual(catalogue.slice(0, 3).map(k => k.id), ['val-brule', 'port-sable', 'haut-col']);
   const i = catalogue.findIndex(k => k.id === id);

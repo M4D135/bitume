@@ -1,0 +1,48 @@
+{
+  "controles": 8,
+  "mesures": {
+    "longueur": 5018,
+    "denivelePiste": 24.760682908152948,
+    "penteMax": 0.05445045924781644,
+    "arbres": 46,
+    "trianglesNappes": 95608,
+    "objets": 7716,
+    "lots": 34,
+    "ete": {
+      "jade": 1,
+      "neige": 0,
+      "nuances": 31,
+      "relief": [
+        -42.56916809082031,
+        277.72369384765625
+      ]
+    },
+    "asymetrie": 12.164736043919477,
+    "rochers": 104,
+    "margeRochers": 47.679679350572016,
+    "margeArbres": 36.06665448584189,
+    "hiver": {
+      "jade": 0.0021893814997263274,
+      "neige": 1,
+      "nuances": 11,
+      "relief": [
+        -42.56916809082031,
+        277.72369384765625
+      ]
+    },
+    "course": {
+      "rivauxArrives": 11,
+      "duree": 253.1166666666008
+    }
+  },
+  "tests_enligne": {
+    "passes": 28,
+    "echecs": 0
+  },
+  "sources_sha256": {
+    "src/circuit.js": "8b3fce588e7c5c2e2b8c0ef53bcb47801d8a06fd8dadf8a29fef9a4ae7358351",
+    "src/decor.js": "744823dd8432d2630c1b664fd492c839536a86154fab42ed4161eb24c0317b52",
+    "src/jeu.js": "36d074a0d09311ac9bc79863993c304079417fc673db75f53816ec0fe427a972",
+    "src/saisons.js": "359dc4fd07f8391ea67ed7b0929367f1937b59fc38d31753f5706e530d0b7815"
+  }
+}

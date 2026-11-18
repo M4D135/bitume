@@ -2,24 +2,26 @@
 
 ## État — 18 novembre 2026
 
-- Branche unique `main`, aucun push forcé.
-- Dernier jeu qualifié publié : **0.2.36**, commit `a7cdd5e3116dc294afbbca581ad87cb3973dd5fe`.
-- Arrière corrigé : carter nervuré, quatre échappements ouverts, platines ajourées ; 64 suites et FERRO 0.3.9 vérifiés.
-- **Lot 11C en cours : Brume-de-Jade**, sixième circuit en Asie, cible 0.2.37.
-- Le patch réel des sources/tests en cours est sauvegardé : `docs/reprise/rapports/brume-de-jade-2026-11-18/travail-en-cours.patch`.
-- Ce checkpoint n'est pas qualifié ; le jeu compilé publié reste 0.2.36. État détaillé dans `checkpoint.json` du même dossier.
-- Production observée en 0.2.34 ; accès Mac/amiga absent, déploiement autorisé mais non effectué ici.
-- WebGL non validé : Chromium bloqué et navigateur cloud refusant le fichier local. Les aperçus CPU sont identifiés comme tels.
+- Branche unique `main`, aucun push forcé ; publier fréquemment la progression.
+- **0.2.36 publiée** : `a7cdd5e3116dc294afbbca581ad87cb3973dd5fe`, arrière de monoplace corrigé et conservé.
+- Checkpoint Asie publié et vérifié : `5368b4bebd77c7005c287d042050c28011f64e39` ; patch réel de travail sauvegardé.
+- **0.2.37 qualifiée, publication en cours** : Brume-de-Jade, sixième circuit, Asie, 5 018 m, graine 131.
+- Sept pics calcaires et terrasses jade dans le terrain ; 46 arbres, 104 éperons, aucun brin additionnel.
+- Quatre saisons ; onze rivaux terminent un tour ; conditions de l’hôte et menus manette conservés.
+- **65/65 suites**, deux builds identiques, **34 modules FERRO 0.3.9 conformes** ; 20 anciens décors identiques.
+- Carte et vue CPU du terrain inspectées. **WebGL non validé**, navigateur local bloqué et fichier local refusé par le cloud.
+- Accès Mac/amiga absent ; déploiement autorisé mais non effectué ici. Voir le dernier contrôle de production dans ETAT.json.
 
 ## Reprendre
 
-Lire `docs/reprise/ETAT.json`, puis seulement `docs/reprise/11C-BRUME-DE-JADE.md`.
-Finir le circuit, vérifier tests/IA/saisons et identité des 20 décors historiques ; reconstruire et publier.
-Conserver la correction de monoplace, les conditions de l'hôte, menus manette et lien **m4d135 → BITUME.html**.
+Lire `docs/reprise/ETAT.json` puis seulement `docs/reprise/11C-BRUME-DE-JADE.md`.
+Vérifier le reçu du lot 11C, contrôler le jeu et déployer dès que l’accès Mac/amiga est disponible.
+Prochain lot de contenu : un seul circuit original aux États-Unis, cible totale de 16 circuits.
+Conserver l’arrière de monoplace, les conditions de l’hôte, menus manette et lien **m4d135 → BITUME.html**.
 
 ## Méthode
 
-**Publier souvent la progression sur GitHub**, avec patch de travail si le lot n'est pas encore qualifié.
-Après qualification, publier les sources et le build, puis le reçu et l'état court. Aucun push forcé.
-Un seul lot ; extraits utiles uniquement ; sorties complètes sur disque. Ne pas relire tout le HTML ou l'historique.
+Publier souvent un checkpoint du travail réel, puis les sources/build qualifiés et leur reçu. Pas de push forcé.
+Le patch initial du lot 11C est historique : ne pas le réappliquer sur le jeu qualifié.
+Un seul lot ; extraits utiles uniquement ; sorties complètes sur disque ; ne pas relire tout le HTML ou l’historique.
 Une publication GitHub ne prouve jamais la mise en ligne. Toute modification moteur passe par FERRO canonique.

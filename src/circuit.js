@@ -6,7 +6,7 @@
   'use strict';
 
   const PAS = 2, LARGEUR = 12, LIMITE = 20;
-  const AMPLITUDE = { foret: 14, cote: 6, montagne: 32, islande: 21, desert: 26 };
+  const AMPLITUDE = { foret: 14, cote: 6, montagne: 32, islande: 21, desert: 26, asie: 23 };
 
   function alea(graine) {
     let a = graine >>> 0;

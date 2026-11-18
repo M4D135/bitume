@@ -15,7 +15,8 @@
     { id: 'port-sable', nom: 'Port-Sable', lieu: 'Bord de mer', theme: 'cote', graine: 29, longueur: 3600 },
     { id: 'haut-col', nom: 'Haut-Col', lieu: 'Montagne', theme: 'montagne', graine: 47, longueur: 5200 },
     { id: 'lande-noire', nom: 'Lande-Noire', lieu: 'Islande · plateau volcanique', theme: 'islande', graine: 83, longueur: 4600 },
-    { id: 'roche-fauve', nom: 'Roche-Fauve', lieu: 'Afrique · hauts plateaux d’ocre', theme: 'desert', graine: 107, longueur: 4800 }
+    { id: 'roche-fauve', nom: 'Roche-Fauve', lieu: 'Afrique · hauts plateaux d’ocre', theme: 'desert', graine: 107, longueur: 4800 },
+    { id: 'brume-de-jade', nom: 'Brume-de-Jade', lieu: 'Asie · pics calcaires et terrasses', theme: 'asie', graine: 131, longueur: 5000 }
   ];
 
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)

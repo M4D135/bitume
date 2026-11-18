@@ -1,27 +1,39 @@
 # Lot 11C — Brume-de-Jade
 
-## Objectif
+## Résultat qualifié — 18 novembre 2026
 
-Sixième circuit original, Asie montagneuse : pics calcaires asymétriques, vallées en terrasses jade et bosquets clairsemés.
-Graine 131, cible 5 000 m. Aucune reprise de tracé externe, aucun asset ni module FERRO modifié.
-Préserver les cinq circuits, les quatre saisons (hiver enneigé sauf Port-Sable), conditions de l’hôte et menus manette.
+Sixième circuit original : `brume-de-jade`, index 5, thème `asie`, graine 131, longueur réelle **5 018 m**.
+Sept pics calcaires asymétriques et terrasses jade sont intégrés aux nappes existantes. Atmosphère brumeuse,
+46 arbres en bosquets, 104 éperons ; aucun brin additionnel ni boucle de décor supplémentaire par image.
+Printemps fleuri, été plus sec, automne orangé avec feuilles, hiver enneigé. Port-Sable conserve son exception.
+Aucun asset, tracé externe ou module FERRO importé ou modifié. Arrière de monoplace 0.2.36 conservé.
 
-## Checkpoint de travail — 18 novembre 2026
+## Qualification
 
-Sources et tests en cours sauvegardés dans `rapports/brume-de-jade-2026-11-18/travail-en-cours.patch`.
-Base exacte et fichiers dans `checkpoint.json`. Ce patch n'est pas une version qualifiée du jeu.
-La dernière version qualifiée reste 0.2.36. L’arrière de monoplace de cette version doit être conservé.
+- **65/65 suites**, deux builds identiques, 34 modules FERRO 0.3.9 conformes.
+- Onze adversaires terminent un tour en 253,12 secondes simulées.
+- Pente maximale 5,445 %, dénivelé de piste 24,76 m ; terrain de −42,57 à 277,72 m.
+- Rochers dégagés d’au moins 47,68 m de la chaussée ; troncs à 36,07 m au minimum.
+- 95 608 triangles de nappes ; aucune mesure FPS matérielle annoncée.
+- Route, positions des arbres et collisions stables entre quatre saisons et entre Low/High.
+- Les 20 variantes des cinq décors précédents sont strictement identiques au commit `8d2c784`
+  dans le contrôle High sans végétation additionnelle. Rapport avec empreintes exactes conservé.
+- Sixième circuit et conditions de l’hôte transmis jusqu’au départ invité, 28 contrôles de pré-départ réussis.
 
-## Prochaines actions
+Preuves : `rapports/brume-de-jade-2026-11-18/qualification.json`, `tests.json`, `qualification-asie.json`,
+`decors-historiques.json`, `carte-relief.png` et `terrain-oblique.png`.
+Les images sont des projections CPU du terrain réel. **Pas des captures du jeu** : WebGL, matériaux et performances
+restent non validés. Chromium local ne démarre pas ; le navigateur cloud refuse les fichiers locaux par sa politique.
+Le déploiement via `./deposer.sh` est autorisé mais l’accès Mac/amiga n’est pas disponible ici.
 
-1. Finir et contrôler les appuis des éperons, tenir obstacles hors chaussée.
-2. Vérifier tracé, onze IA sur un tour, quatre saisons et stabilité des collisions entre qualités.
-3. Comparer les 20 décors précédents contre la baseline du commit 8d2c784.
-4. Recalculer une carte et un aperçu CPU ; WebGL reste non validé, navigateur local et cloud indisponibles pour ce build.
-5. Reconstruire deux fois, vérifier FERRO, publier sources et build 0.2.37 ; actualiser cette fiche et le reçu.
-6. Déploiement déjà autorisé, à réaliser depuis Mac/amiga avec `./deposer.sh` lorsque l’accès est disponible.
+## Publications fréquentes et reprise
 
-## Rythme de publication demandé
+Checkpoint initial publié et vérifié : `5368b4bebd77c7005c287d042050c28011f64e39`.
+Il conserve le vrai patch des sources/tests alors en cours, ainsi que les actions restantes. Ce patch est historique :
+ne pas le réappliquer sur la version qualifiée. Voir `publication.json` pour le reçu de la 0.2.37.
+La branche unique reste `main`, sans push forcé. Après chaque petit lot, publier le progrès puis le code/build qualifiés.
 
-Publier fréquemment les progrès pour survivre à une interruption de session : checkpoint du patch en cours,
-puis code/build qualifiés et reçu. Garder un point de reprise court ; un seul circuit dans ce lot.
+## Suite
+
+Contrôle du jeu en WebGL et déploiement dès que Mac/amiga est accessible. Le programme atteint 6 circuits sur 16.
+Pour le prochain lot de contenu, choisir un seul circuit original aux États-Unis ; ne pas recharger les anciens lots.

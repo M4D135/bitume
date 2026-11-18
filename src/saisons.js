@@ -11,13 +11,13 @@
   const normaliser = id => IDS.includes(id) ? id : 'ete';
   const lisse = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
   const profils = {};
-  for (const id of IDS) for (const theme of ['foret', 'cote', 'montagne', 'islande', 'desert']) {
+  for (const id of IDS) for (const theme of ['foret', 'cote', 'montagne', 'islande', 'desert', 'asie']) {
     const d = DONNEES[id], neige = id === 'hiver' && theme !== 'cote';
-    profils[id + ':' + theme] = Object.freeze({ id, theme, neige, feuilles: id === 'automne' && theme === 'foret',
+    profils[id + ':' + theme] = Object.freeze({ id, theme, neige, feuilles: id === 'automne' && (theme === 'foret' || theme === 'asie'),
       faune: neige || theme === 'islande' || theme === 'desert' ? 0 : d.faune, soleil: d.soleil, teinteSoleil: Object.freeze(d.teinteSoleil.slice()) });
   }
   function profil(id, theme = 'foret') {
-    return profils[normaliser(id) + ':' + (theme === 'cote' || theme === 'montagne' || theme === 'islande' || theme === 'desert' ? theme : 'foret')];
+    return profils[normaliser(id) + ':' + (theme === 'cote' || theme === 'montagne' || theme === 'islande' || theme === 'desert' || theme === 'asie' ? theme : 'foret')];
   }
   function bruit(x, z, sel) {
     const px = (x * .8 - z * .6) / 73, pz = (x * .6 + z * .8) / 73;
@@ -49,7 +49,7 @@
       cible = p.id === 'printemps' ? [.67, .45, .25] : p.id === 'automne' ? [.59, .32, .14] : [.82, .59, .31];
       part = (p.id === 'ete' ? .10 : .06) + .04 * n;
     } else if (p.id === 'printemps') {
-      if (feuillage && p.theme === 'foret') {
+      if (feuillage && (p.theme === 'foret' || p.theme === 'asie')) {
         const floraison = lisse(.38, .72, n + (habitat ? habitat.fleurs : 0) * .24);
         cible = nuance < .5 ? BLANC : ROSE; part = floraison * .94;
       } else if (!feuillage) {
@@ -58,10 +58,10 @@
       }
     } else if (p.id === 'ete') {
       cible = SEC;
-      part = feuillage ? (p.theme === 'foret' ? .18 : .09) + .18 * n
+      part = feuillage ? (p.theme === 'foret' || p.theme === 'asie' ? .18 : .09) + .18 * n
         : fleurs ? .12 : .22 + .19 * n + (habitat ? (1 - habitat.herbe) * .10 : 0);
     } else if (p.id === 'automne') {
-      if (feuillage && p.theme === 'foret') {
+      if (feuillage && (p.theme === 'foret' || p.theme === 'asie')) {
         cible = n < .34 ? CUIVRE : n < .67 ? ORANGE : OR; part = .79 + .18 * nuance;
       } else if (!feuillage) { cible = SEC; part = fleurs ? .30 : .35 + .20 * nuance; }
     } else {

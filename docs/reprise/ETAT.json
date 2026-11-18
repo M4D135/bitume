@@ -2,22 +2,29 @@
   "date": "2026-11-18",
   "etat_courant": {
     "branche": "main",
-    "base_commit": "8d2c78460e1f5e15e29b8aa846a7a4cf98ce0f64",
+    "base_commit": "5368b4bebd77c7005c287d042050c28011f64e39",
     "base_version": "0.2.36",
     "version_cible": "0.2.37",
-    "statut": "lot_11c_en_cours_checkpoint_patch",
+    "statut": "lot_11c_qualifie_publication_en_cours",
     "lot": "brume_de_jade_asie",
     "fiche": "docs/reprise/11C-BRUME-DE-JADE.md",
     "commit_publie": null,
     "catalogue_jouable_publie": 5,
     "catalogue_cible": 6,
-    "prochaine_action": "Finir les appuis du décor, exécuter tests circuit/IA/saisons et comparer20 décors historiques, reconstruire puis publier les sources qualifiées.",
+    "prochaine_action": "Publier le code et le build 0.2.37 qualifiés, enregistrer le reçu. Contrôle WebGL et déploiement dès accès Mac/amiga ; prochain circuit original aux États-Unis.",
     "checkpoint": "docs/reprise/rapports/brume-de-jade-2026-11-18/checkpoint.json",
     "qualification": {
-      "realisee": false,
+      "suites": 65,
+      "reussies": 65,
+      "ferro_modules": 34,
+      "build_reproductible": true,
+      "anciens_decors_identiques": 20,
       "baseline_historique": "8d2c78460e1f5e15e29b8aa846a7a4cf98ce0f64",
-      "variantes_a_comparer": 20
-    }
+      "apercus_cpu_realises": true,
+      "visuel_webgl_realise": false,
+      "preuve": "docs/reprise/rapports/brume-de-jade-2026-11-18/qualification.json"
+    },
+    "catalogue_jouable": 6
   },
   "integration": {
     "nouvelle_branche": false,
@@ -42,14 +49,20 @@
     },
     "production_controle_final": {
       "url": "https://bitume.estrasse.fr/",
-      "controle_utc": "2026-11-18T12:13:26.062918+00:00",
+      "controle_utc": "2026-11-18T12:43:10.145604+00:00",
       "deploiement_effectue": false,
       "http": 200,
       "octets": 13215718,
       "sha256": "812edd74f616cd6a31a4b419cfc89adcce0ba7ab84a0ba717dcac7f9821c8786",
       "version": "0.2.34"
     },
-    "deploiement_blocage": "Accès Mac/amiga absent : aucune configuration SSH utilisateur ni agent SSH. Autorisation déjà acquise."
+    "deploiement_blocage": "Accès Mac/amiga absent : aucune configuration SSH utilisateur ni agent SSH. Autorisation déjà acquise.",
+    "publication_checkpoint": {
+      "commit": "5368b4bebd77c7005c287d042050c28011f64e39",
+      "branche": "main",
+      "verifiee": true,
+      "patch": "docs/reprise/rapports/brume-de-jade-2026-11-18/travail-en-cours.patch"
+    }
   },
   "reprise_courte": {
     "regle": "Un seul lot, sorties bornées, publications fréquentes de checkpoints réels puis code/build qualifiés ; pas de push forcé.",
@@ -81,6 +94,6 @@
       "Vroom officiel",
       "dépôt GitHub personnel Vroom Unreal"
     ],
-    "statut": "11C Brume-de-Jade en cours ; objectif6 circuits après qualification,16 au total. Déploiement Mac/amiga et contrôle WebGL restent en attente."
+    "statut": "11C qualifié en 0.2.37 : 6 circuits sur16. Publier et enregistrer le reçu ; contrôle WebGL et déploiement en attente. Prochain contenu : un seul circuit aux États-Unis."
   }
 }

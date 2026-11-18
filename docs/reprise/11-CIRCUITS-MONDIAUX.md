@@ -47,8 +47,20 @@ Retenir la diversité des reliefs, de l’éclairage et des décors. **Ne copier
 
 Le contrôle visuel reste bloqué au démarrage de Chromium. Aucun gain FPS matériel annoncé. Le site public sert désormais la **0.2.34**, contrôlée par empreinte ; la 0.2.35 n’a pas été déployée depuis cette session.
 
+## 11C — Brume-de-Jade, Asie (0.2.37)
+
+- Sixième circuit original, index 5 conservant les cinq entrées antérieures ; graine 131, **5 018 m**.
+- Sept pics calcaires asymétriques et vallées en terrasses dans les nappes ; 46 arbres et 104 éperons, aucun brin ajouté.
+- Quatre saisons, conditions de l’hôte, contrôle manette et correction arrière de monoplace conservés.
+- **65/65 suites**, deux builds identiques, 34 modules FERRO conformes ; 20 décors antérieurs identiques.
+- Onze rivaux terminent un tour ; pente maximale 5,445 %, obstacles dégagés de la chaussée.
+- Carte et projection CPU inspectées ; rendu WebGL et déploiement Mac/amiga restent non réalisés.
+
+Fiche courte : `11C-BRUME-DE-JADE.md`. Rapports : `rapports/brume-de-jade-2026-11-18/`.
+Checkpoint de progression publié : `5368b4b` ; reçu du jeu qualifié dans `publication.json`.
+
 ## Tranche suivante
 
-1. Vérifier en navigateur Lande-Noire et Roche-Fauve, jour/nuit/hiver, aurores, sélection manette, écran partagé et rétroviseurs ; ajuster seulement les défauts observés.
-2. Déployer le commit 0.2.35 publié depuis le Mac avec `./deposer.sh` et confirmer l’empreinte servie.
-3. Choisir **un seul circuit en Asie** ; conserver les autres régions dans le programme des 16 au total. Construire, tester, publier, puis actualiser le point court.
+Contrôler le jeu en WebGL et déployer dès que l’accès Mac/amiga est disponible.
+Poursuivre le programme de 16 circuits par un seul circuit original aux États-Unis. Publier fréquemment les progrès,
+puis le code et le build qualifiés, sans force et sans nouvelle branche.

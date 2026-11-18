@@ -1,0 +1,9 @@
+{
+  "url": "https://bitume.estrasse.fr/",
+  "controle_utc": "2026-11-18T12:43:10.145604+00:00",
+  "deploiement_effectue": false,
+  "http": 200,
+  "octets": 13215718,
+  "sha256": "812edd74f616cd6a31a4b419cfc89adcce0ba7ab84a0ba717dcac7f9821c8786",
+  "version": "0.2.34"
+}

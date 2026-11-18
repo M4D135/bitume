@@ -1,0 +1,57 @@
+{
+  "version": "0.2.37",
+  "sha256": "f2211f1c1cb4b2d2a62cfe43f34f4c603e7f48c41cb8c9f19e13a17e36a3d34a",
+  "octets": 13231124,
+  "caracteres": 13225950,
+  "utf16_units": 13225950,
+  "git_blob": "b68edb1bac43996b75cc653853cfbec65650e4e1",
+  "build_reproductible": true,
+  "suites": 65,
+  "reussies": 65,
+  "ferro_version": "0.3.9",
+  "ferro_modules": 34,
+  "anciens_decors_identiques": 20,
+  "reference_historique": "8d2c78460e1f5e15e29b8aa846a7a4cf98ce0f64",
+  "mesures_circuit": {
+    "longueur": 5018,
+    "denivelePiste": 24.760682908152948,
+    "penteMax": 0.05445045924781644,
+    "arbres": 46,
+    "trianglesNappes": 95608,
+    "objets": 7716,
+    "lots": 34,
+    "ete": {
+      "jade": 1,
+      "neige": 0,
+      "nuances": 31,
+      "relief": [
+        -42.56916809082031,
+        277.72369384765625
+      ]
+    },
+    "asymetrie": 12.164736043919477,
+    "rochers": 104,
+    "margeRochers": 47.679679350572016,
+    "margeArbres": 36.06665448584189,
+    "hiver": {
+      "jade": 0.0021893814997263274,
+      "neige": 1,
+      "nuances": 11,
+      "relief": [
+        -42.56916809082031,
+        277.72369384765625
+      ]
+    },
+    "course": {
+      "rivauxArrives": 11,
+      "duree": 253.1166666666008
+    }
+  },
+  "controle_webgl_realise": false,
+  "apercu_geometrie_cpu": true,
+  "blocages_visuels": [
+    "Chromium local : socket() failed: Operation not permitted (1)",
+    "Navigateur cloud : ouverture file: refusée par la politique de sécurité"
+  ],
+  "deploiement_realise": false
+}
