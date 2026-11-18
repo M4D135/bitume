@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-for (const nom of ['carene','circuit','main','humain-donnees','humain-corps','voiture','botanique','ecologie','saisons','vegetation','decor','faune','meteo','sillage','graphismes','autoconfig','scene-bench']) require('../src/' + nom + '.js');
+for (const nom of ['carene','circuit','main','humain-donnees','humain-corps','conduite','voiture','botanique','ecologie','saisons','vegetation','decor','faune','meteo','sillage','graphismes','autoconfig','scene-bench']) require('../src/' + nom + '.js');
 const B = globalThis.BITUME;
 let decorMesure, circuitMesure, optionsDecor;
 const construire = B.decor.construire;
@@ -18,7 +18,7 @@ const faux = { resize(x) { assert.ok(x === 'auto' || x > 0); }, setWorld(objets,
     assert.equal(camera.fov, 60); assert.equal(effets.adaptive, false);
     assert.ok(objets.length > 50, 'les vraies monoplaces sont dessinées');
     for (const o of objets) { assert.ok(o.p.every(Number.isFinite)); assert.ok(o.s.every(Number.isFinite)); }
-    renduCourant = { camera, objets: objets.length, effets }; images++;
+    renduCourant = { camera, objets: objets.length, overlay: objets.filter(o => o.overlay).length, effets }; images++;
   } };
 const capacites = B.graphismes.capacites({ msaa: 4, shadowMapScale: 2, reflections: true }, false, 1);
 // Interdire les effets de bord les plus importants, même si une future réécriture réutilisait course/jeu.
@@ -30,6 +30,7 @@ p.preparer('medium', B.autoconfig.profils.medium);
 assert.deepEqual(chrono, [false, true], 'détection au chronomètre : le parcours l’ouvre comme avant');
 assert.ok(monde && nappes.length && lots.length);
 assert.equal(p.positions.length, 3);
+const pointsHerbe = p.positions;
 for (let i = 0; i < 3; i++) for (let j = i + 1; j < 3; j++) assert.ok(Math.abs(p.positions[i] - p.positions[j]) > 300);
 for (const s of p.positions) {
   const e = B.circuit.echantillon(circuitMesure, s), dx = Math.sin(e.cap) * 17, dz = Math.cos(e.cap) * 17;
@@ -86,5 +87,87 @@ assert.equal(lectures.length, 2);
 assert.deepEqual(lectures[0].slice(0, 6), [0, 0, 1, 1, 0x1908, 0x1401]);
 assert.ok(lectures[0][6] instanceof Uint8Array && lectures[0][6].length === 4 && lectures[0][6] === lectures[1][6]);
 lisible.liberer();
+
+// Mesure à l'horloge : le parcours contient l'endroit le plus chargé de la course (départ de la séance de référence
+// de Val-Brûlé, vu du cockpit) et, si le jeu prête leur moteur, les glaces des rétroviseurs au rythme de la course.
+const VAL_BRULE = { graine: 11, theme: 'foret', longueur: 4200 };
+const glacesVues = [], lectG = [];
+let lotsGlaces = null, nappesGlaces = null, mondeGlaces = null;
+const glacesRendu = { gl: { RGBA: 1, UNSIGNED_BYTE: 2, readPixels(...a) { lectG.push(a); } },
+  setWorld(o, l, atm) { mondeGlaces = atm; }, setNappes(v) { nappesGlaces = v; }, setLots(v) { lotsGlaces = v; },
+  draw(camera, objets, effets) {
+    assert.ok(camera.pos.every(Number.isFinite) && Number.isFinite(camera.yaw) && Number.isFinite(camera.pitch));
+    assert.ok(camera.fov > 5 && camera.fov < 20, 'champ de la glace : ' + camera.fov);
+    assert.ok(objets.length > 50 && objets.every(o => !o.overlay), 'ni habitacle ni pièces « overlay » dans la glace');
+    glacesVues.push({ image: images, effets });
+  } };
+const lect = [];
+const course = B.sceneBench.creer({ ...faux, gl: { RGBA: 1, UNSIGNED_BYTE: 2, readPixels(...a) { lect.push(a); } } }, capacites, { glaces: glacesRendu });
+const vb = B.circuit.creer(VAL_BRULE.graine, { theme: VAL_BRULE.theme, longueur: VAL_BRULE.longueur, nom: 'Val-Brûlé' });
+// même tracé que Val-Brûlé : le point de départ de la séance de référence est bien le même endroit
+for (const s of [0, 800, 2100]) {
+  const a = B.circuit.echantillon(vb, s), b = B.circuit.echantillon(circuitMesure, s);
+  assert.ok(Math.abs(a.x - b.x) < 1e-6 && Math.abs(a.z - b.z) < 1e-6 && Math.abs(a.y - b.y) < 1e-6, 'tracé de Val-Brûlé à ' + s);
+}
+assert.equal(circuitMesure.longueur, vb.longueur);
+// Ancienne méthode (chronomètre) : mêmes points d'herbe qu'avant, aucune glace, même avec leur moteur prêté.
+let info = course.preparer('medium', B.autoconfig.profils.medium);
+assert.deepEqual(course.positions, pointsHerbe, 'chronomètre : points de vue inchangés');
+for (let i = 0; i < 6; i++) course.dessiner(i / 60, 0);
+assert.equal(glacesVues.length, 0); assert.equal(lotsGlaces, null);
+assert.ok(renduCourant.camera.pos[1] - B.circuit.echantillon(circuitMesure, course.positions[0]).y > 2, 'vue de poursuite');
+assert.equal(info.glaces, 'absentes');
+
+info = course.preparer('medium', B.autoconfig.profils.medium, { chronoGPU: false });
+assert.deepEqual(info, { glaces: 'dessinees', glacesParImage: .5, cockpit: true });
+const pos = course.positions;
+assert.equal(pos[0], 800, 'départ de la séance de référence');
+for (let i = 0; i < 3; i++) for (let j = i + 1; j < 3; j++) assert.ok(Math.abs(pos[i] - pos[j]) > 300);
+for (const s of pos.slice(1)) {
+  const e = B.circuit.echantillon(circuitMesure, s), dx = Math.sin(e.cap) * 17, dz = Math.cos(e.cap) * 17;
+  assert.ok(decorMesure.surfaceHerbe(e.x + dx, e.z - dz) && decorMesure.surfaceHerbe(e.x - dx, e.z + dz), 'herbe à ' + s);
+}
+// copies des lots pour le moteur des glaces, sans ses tampons, comme en course (src/jeu.js, majGlaces)
+assert.ok(lotsGlaces.length === decorMesure.lots.length && lotsGlaces.every((l, i) => l !== decorMesure.lots[i] && l.tampon === null && l.paquet === null));
+assert.equal(nappesGlaces.length, decorMesure.nappes.length); assert.equal(mondeGlaces, decorMesure.atmosphere);
+// point de vue 0 : œil du pilote, habitacle dessiné
+course.dessiner(0, 0);
+const eSol = B.circuit.echantillon(circuitMesure, 800), hauteur = renduCourant.camera.pos[1] - eSol.y;
+assert.ok(hauteur > .5 && hauteur < 1, 'œil du cockpit : ' + hauteur);
+assert.ok(renduCourant.overlay > 20, 'habitacle dessiné : ' + renduCourant.overlay);
+let fx = renduCourant.effets;
+assert.equal(fx.shadows, true); assert.deepEqual(fx.groundCover, B.graphismes.PRAIRIE.medium);
+// Moyenne : une glace une image du cockpit sur deux ; les autres points de vue n'en dessinent pas
+glacesVues.length = 0;
+for (let i = 0; i < 8; i++) course.dessiner(i / 60, 0);
+assert.equal(glacesVues.length, 4);
+for (let i = 0; i < 8; i++) course.dessiner(i / 60, 1 + i % 2);
+assert.equal(glacesVues.length, 4, 'pas de glace en vue de poursuite');
+assert.ok(renduCourant.camera.pos[1] - B.circuit.echantillon(circuitMesure, pos[2]).y > 2);
+assert.equal(renduCourant.overlay, 0, 'pas d habitacle en vue de poursuite');
+const g = glacesVues[0].effets;
+assert.equal(g.shadows, false); assert.equal(g.bloom, false); assert.equal(g.photo, 0); assert.equal(g.adaptive, false);
+assert.deepEqual(g.groundCover, B.graphismes.PRAIRIE.medium); assert.ok(Array.isArray(g.windSources) && g.windSources.length === 12);
+// fin forcée sur les deux contextes
+lect.length = 0; lectG.length = 0; course.terminer();
+assert.equal(lect.length, 1); assert.equal(lectG.length, 1);
+// Fine : une glace par image du cockpit
+assert.deepEqual(course.preparer('high', B.autoconfig.profils.high, { chronoGPU: false }), { glaces: 'dessinees', glacesParImage: 1, cockpit: true });
+glacesVues.length = 0;
+for (let i = 0; i < 6; i++) course.dessiner(i / 60, 0);
+assert.equal(glacesVues.length, 6); assert.equal(course.imagesGlaces, 6);
+// Légère : pas d'image des glaces en course, aucune ici ; seul le moteur principal est terminé
+assert.deepEqual(course.preparer('low', B.autoconfig.profils.low, { chronoGPU: false }), { glaces: 'aucune', glacesParImage: 0, cockpit: true });
+glacesVues.length = 0;
+for (let i = 0; i < 4; i++) course.dessiner(i / 60, 0);
+assert.equal(glacesVues.length, 0);
+lect.length = 0; lectG.length = 0; course.terminer();
+assert.equal(lect.length, 1); assert.equal(lectG.length, 0);
+course.liberer();
+// Sans moteur des glaces prêté : le parcours dit qu'il ne les dessine pas, la détection resserre sa limite.
+const seul = B.sceneBench.creer({ ...faux, gl: { RGBA: 1, UNSIGNED_BYTE: 2, readPixels() {} } }, capacites);
+assert.deepEqual(seul.preparer('high', B.autoconfig.profils.high, { chronoGPU: false }), { glaces: 'absentes', glacesParImage: 1, cockpit: true });
+seul.dessiner(0, 0); assert.ok(renduCourant.objets > 50);
+seul.liberer();
 B.voiture.poser = poser; delete globalThis.localStorage;
-console.log('Scène de détection : vrais décors, douze voitures comme en course, sillage, options de chaque palier, fin forcée et chronomètre fermé vérifiés.');
+console.log('Scène de détection : vrais décors, douze voitures comme en course, sillage, options de chaque palier, fin forcée, chronomètre fermé, départ de Val-Brûlé au cockpit et glaces au rythme de la course vérifiés.');

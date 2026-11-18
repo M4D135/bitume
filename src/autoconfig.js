@@ -22,19 +22,34 @@
   // bridé à 30 Hz.
   // Le budget vise 60 images par seconde sur tout écran : un écran à 120 ou 144 Hz se cale sur un diviseur de sa
   // cadence, et un bridage à 30 Hz (économie d'énergie) ne dit rien de la machine.
-  // FRACTION : l'image de mesure ne contient que la vue principale (douze voitures, décor et végétation du palier,
-  // ombres, halo, reflets). En Fine, le parcours dessine 2,1 M de triangles (2,7 M au plus) ; une course en dessine
-  // 0,6 à 1,9 M sur treize des quatorze endroits comptés le 18/11 (sept circuits, deux endroits chacun) et 4,3 M au
-  // départ de Val-Brûlé, le plus chargé. La course y ajoute les rétroviseurs (un second rendu à chaque image en Fine,
-  // une image sur deux en Moyenne : 0,5 à 2,1 M de triangles), l'habitacle, la simulation, l'affichage, le son et les
-  // effets (1,6 à 1,7 ms du fil principal hors rendu principal sur un Apple M5), un ramassage mineur de 0,9 à 2,1 ms
-  // dans 7 à 10 % des images (donc dans le 95e centile) et le temps de composition du navigateur. Une image de mesure
-  // de 10 ms, dont 7 à 8 de GPU, devient sur un circuit courant 10 à 12 ms de GPU avec les glaces, plus 2 ms de
-  // ramassage et 1 ms de composition : elle tient dans 16,7 ms. La lecture d'un pixel met processeur et GPU en série
-  // alors qu'ils se recouvrent en course : la marge réelle est un peu plus large, jamais plus étroite. À 70 %, le cas
-  // des glaces les plus chargées n'a plus de marge. L'endroit le plus chargé (1,6 fois les triangles du parcours, plus
-  // les glaces) échappe à ce raisonnement : il se vérifie à l'horloge, sur une machine au repos.
-  const BUDGET = 1000 / 60, FRACTION = .6, LIMITE = BUDGET * FRACTION;
+  // Ce que l'image de mesure contient (src/scene-bench.js, mesure à l'horloge) : la vue principale avec douze
+  // voitures, le décor, la végétation, les ombres, le halo et les reflets du palier ; l'un des trois points de vue est
+  // l'endroit le plus chargé compté en course le 18/11 (départ de Val-Brûlé, vu du cockpit, habitacle compris : 4,3 M
+  // de triangles en Fine), et le 95e centile tombe sur lui ; les glaces des rétroviseurs au rythme de la course (une
+  // par image en Fine, une image sur deux en Moyenne) quand le jeu prête leur moteur.
+  // FRACTION : ce qui reste hors de la mesure doit tenir dans le reste du budget. Sur un Apple M5 (MESURES-BASE du
+  // 18/11) : simulation, affichage, son et effets, 1,6 à 1,7 ms du fil principal ; un ramassage mineur de 0,9 à
+  // 2,1 ms dans 7 à 10 % des images, donc dans le 95e centile ; la copie des glaces dans leurs toiles et la
+  // composition du navigateur, de l'ordre d'une milliseconde. Ces travaux du processeur se recouvrent en course avec
+  // celui du GPU, alors que la lecture d'un pixel met processeur et GPU en série : la mesure les surestime déjà. À
+  // 0,75, il reste 4,2 ms (16,7 − 12,5), de quoi couvrir le ramassage et la composition dans la même image. Le cas de
+  // référence borne ce choix : Fine rate une image sur quatre sur ce M5 en course, son coût mesuré glaces comprises
+  // dépasse donc 16,7 ms et elle est refusée à toute fraction inférieure à 1 ; Moyenne y tient sans une image ratée,
+  // avec moitié moins de triangles et le quart des pixels. La fraction de 0,6 laissait 6,7 ms pour des glaces et un
+  // endroit chargé que la mesure ne contenait pas ; ils y sont maintenant, la garder refuserait Moyenne sur des
+  // machines qui la tiennent. Elle reste à confirmer à l'horloge sur une machine au repos.
+  const BUDGET = 1000 / 60, FRACTION = .75, LIMITE = BUDGET * FRACTION;
+  // Glaces que la course dessinerait mais que le parcours ne peut pas dessiner (moteur des glaces non prêté) : leur
+  // part est retirée de la limite. Comptée le 18/11 au départ de Val-Brûlé, une image de glace pèse 0,36 fois les
+  // triangles de la vue principale en Fine (1,56 M pour 4,28 M, une glace par image) ; en Moyenne, une image sur
+  // deux, 0,19 (0,48 M pour 2,54 M), soit 0,36 × 0,5. Les triangles valent ici pour le coût : la toile d'une glace
+  // compte peu de pixels.
+  const PART_GLACES = .36;
+  function limiteProfil(info) {
+    if (!info || info.glaces !== 'absentes') return LIMITE;
+    const parImage = Number.isFinite(info.glacesParImage) ? Math.max(0, Math.min(1, info.glacesParImage)) : 1;
+    return LIMITE / (1 + PART_GLACES * parImage);
+  }
   // Extrême rend le tapis d'herbe trente fois plus dru que Fine : il n'est essayé que si Fine tient dans la moitié
   // de la limite.
   const EXTREME = .5;
@@ -84,13 +99,14 @@
   // Méthode « terminer » : couts = dessiner + terminer par image ; cpu = dessiner seul ; attentes = terminer seul
   // (fin du travail graphique) ; intervalles = écarts entre images, relevés pour mémoire, jamais jugés : la lecture
   // du pixel les allonge.
-  function bilanCout(id, couts, cpu, attentes, intervalles) {
+  // limite : celle du profil (limiteProfil), LIMITE par défaut.
+  function bilanCout(id, couts, cpu, attentes, intervalles, limite = LIMITE) {
     const c95 = q(couts, .95);
     return { profil: id, methode: 'terminer', images: couts.length, cout50: arrondir(q(couts, .5)), cout95: arrondir(c95),
       cpu95: arrondir(q(cpu || [], .95)), attente95: arrondir(q(attentes || [], .95)),
       p50: arrondir(q(intervalles || [], .5)), p95: arrondir(q(intervalles || [], .95)),
-      budget: arrondir(BUDGET), limite: arrondir(LIMITE),
-      acceptable: couts.length >= 24 && c95 !== null && c95 <= LIMITE };
+      budget: arrondir(BUDGET), limite: arrondir(limite),
+      acceptable: couts.length >= 24 && c95 !== null && c95 <= limite };
   }
   function choisir(mesures) {
     for (const id of ['extreme', 'high', 'medium', 'low']) if (mesures.some(m => m.profil === id && m.acceptable)) return id;
@@ -141,8 +157,11 @@
         progression('Préparation · ' + profils[id].nom, .1 + rang * .23);
         await trame();
         // Sans le chronomètre GPU, le parcours ne l'ouvre pas : ses requêtes fausseraient la mesure à l'horloge.
-        if (avecFin) await io.preparer(id, profils[id], { chronoGPU: false });
+        // Le parcours répond s'il dessine les glaces que la course paierait à ce palier.
+        let info = null;
+        if (avecFin) info = await io.preparer(id, profils[id], { chronoGPU: false });
         else await io.preparer(id, profils[id]);
+        const limite = limiteProfil(info), glaces = info && typeof info.glaces === 'string' ? info.glaces : null;
         verifier();
         // Trois points de vue parcourus pendant la chauffe et la mesure : aucune clairière isolée ne fait le test.
         // Avec la fin forcée, chaque image de chauffe est attendue : la première image mesurée ne paie pas le retard
@@ -161,9 +180,10 @@
             const fin = maintenant();
             cpu.push(dessine - avant); attentes.push(fin - dessine); couts.push(fin - avant); temps.push(t - prec); prec = t;
             // Profil sans espoir : la médiane dépasse déjà largement la limite, inutile de prolonger.
-            if (couts.length >= 8 && q(couts, .5) > LIMITE * 1.5) break;
+            if (couts.length >= 8 && q(couts, .5) > limite * 1.5) break;
           } while (((maintenant() - depart < 720 || couts.length < 24) && couts.length < 90) && maintenant() - depart < 1800);
-          const resultat = bilanCout(id, couts, cpu, attentes, temps);
+          const resultat = bilanCout(id, couts, cpu, attentes, temps, limite);
+          resultat.glaces = glaces;
           mesures.push(resultat); return resultat;
         }
         const premiereImage = (io.profilGPU && io.profilGPU()?.frames || 0) + 1;
@@ -191,6 +211,6 @@
       return { revision: REVISION, statut: 'interrompu', motif: e && e.motif || 'erreur', empreinte: cle, mesures, methode };
     }
   }
-  B.autoconfig = { REVISION, CLE, CLES, BUDGET, FRACTION, LIMITE, profils, empreinte, reglages, cacheValide, bilan, bilanCout,
+  B.autoconfig = { REVISION, CLE, CLES, BUDGET, FRACTION, LIMITE, PART_GLACES, profils, empreinte, reglages, cacheValide, bilan, bilanCout, limiteProfil,
     choisir, peutEssayerExtreme, gpuComplet, executer };
 })(globalThis.BITUME = globalThis.BITUME || {});
