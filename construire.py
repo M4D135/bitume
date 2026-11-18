@@ -29,6 +29,8 @@ MODULES = [
     # le volet de mesures ne peut pas distinguer le CPU du GPU. Copie verrouillée, chargée telle quelle.
     'ferro/gpu-profile.js',
     'circuit.js',
+    # partitions des circuits dessinés (génération 3, lot 22F) : données lues par circuit.js à la création
+    'partitions.js',
     'ferro/vehicle-dynamics.js',
     'conduite.js',
     'degats.js',

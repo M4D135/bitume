@@ -149,8 +149,8 @@ verifier('pose : mêmes solides en Légère et en Fine, Légère plus légère, 
   }
 });
 
-verifier('un tracé de génération 3 déclare ses bords : ils sont repris tels quels (Haut-Col proposé)', () => {
-  const c = TRACE.construire(PARTITION['haut-col']), plan = B.bords.planifier(c);
+verifier('un tracé de génération 3 déclare ses bords : ils sont repris tels quels (Route-des-Cimes)', () => {
+  const c = TRACE.construire(PARTITION['route-des-cimes']), plan = B.bords.planifier(c);
   assert.equal(plan.dangers.length, c.bords.length);
   plan.dangers.forEach((d, k) => { const b = c.bords[k]; assert.deepEqual([d.type, d.cote, d.debut, d.fin, d.nom], [b.type, b.cote === 'G' ? -1 : 1, b.debut, b.fin, b.nom]); });
   for (const b of plan.bandeaux) for (const t of c.couverts) assert.ok(b.i * c.pas < t.debut - 40 || b.i * c.pas > t.fin + 40, 'bandeau sous un passage couvert');

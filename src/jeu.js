@@ -17,7 +17,9 @@
     { id: 'lande-noire', nom: 'Lande-Noire', lieu: 'Islande · plateau volcanique', theme: 'islande', graine: 83, longueur: 4600 },
     { id: 'roche-fauve', nom: 'Roche-Fauve', lieu: 'Afrique · hauts plateaux d’ocre', theme: 'desert', graine: 107, longueur: 4800 },
     { id: 'brume-de-jade', nom: 'Brume-de-Jade', lieu: 'Asie · pics calcaires et terrasses', theme: 'asie', graine: 131, longueur: 5000 },
-    { id: 'cap-sequoia', nom: 'Cap-Séquoia', lieu: 'États-Unis · falaises du Pacifique', theme: 'pacifique', graine: 157, longueur: 5200 }
+    { id: 'cap-sequoia', nom: 'Cap-Séquoia', lieu: 'États-Unis · falaises du Pacifique', theme: 'pacifique', graine: 157, longueur: 5200 },
+    // huitième circuit (David, 18/11) : tracé dessiné par sa partition (src/partitions.js), deux tours par défaut
+    { id: 'route-des-cimes', nom: 'Route-des-Cimes', lieu: 'Montagne · grande route des cols', theme: 'montagne', graine: 181, longueur: 9700, partition: 'route-des-cimes', tours: 2 }
   ];
 
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
@@ -80,7 +82,7 @@
   // ---------------------------------------------------------------- circuits
   const circuits = [];
   function circuit(i) {
-    if (!circuits[i]) { const k = CATALOGUE[i]; circuits[i] = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom }); }
+    if (!circuits[i]) { const k = CATALOGUE[i]; circuits[i] = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition }); }
     return circuits[i];
   }
   function nombreVirages(c) {
@@ -107,7 +109,11 @@
     const ox = (largeur - (x1 - x0) * e) / 2 - x0 * e, oz = (hauteur - (z1 - z0) * e) / 2 - z0 * e;
     return { e, vers: (x, z) => [ox + x * e, oz + z * e] };
   }
+  // Traits d'un plan : le contour (9 à 10 px) ne dépasse pas 80 % de l'écart entre les deux portions de piste les plus
+  // proches (c.separation, en mètres, fourni par les circuits dessinés) : les lacets d'un long circuit restent lisibles.
+  const traitPlan = (c, p) => c.separation ? Math.min(1, Math.max(.25, .8 * c.separation * p.e / 9.5)) : 1;
   function dessinerTrace(ctx, c, p, epaisseur, couleur) {
+    epaisseur *= traitPlan(c, p);
     ctx.beginPath();
     for (let i = 0; i <= c.n; i += 3) { const [x, y] = p.vers(c.x[i % c.n], c.z[i % c.n]); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
     ctx.closePath(); ctx.lineJoin = 'round'; ctx.lineWidth = epaisseur; ctx.strokeStyle = couleur; ctx.stroke();
@@ -183,7 +189,7 @@
     const sc = installer(i, B.saisons.normaliser(conditions.saison)), c = sc.c, demo = type === 'demo', auto = demo || type === 'vitrine', duo = type === 'duo';
     // enl : course en ligne (même graine, mêmes réglages des deux côtés ; voir « jeu en ligne »)
     const course = B.course.creer(c, {
-      mode: type === 'chrono' ? 'chrono' : 'course', tours: enl ? enl.tours : type === 'vitrine' ? 99 : demo ? TOURS_DEMO : reglages.tours,
+      mode: type === 'chrono' ? 'chrono' : 'course', tours: enl ? enl.tours : type === 'vitrine' ? 99 : demo ? Math.min(TOURS_DEMO, CATALOGUE[i].tours || TOURS_DEMO) : reglages.tours,
       difficulte: enl ? enl.difficulte : auto ? 2 : reglages.difficulte, rivaux: 11, graine: enl ? enl.graine : ++graineCourse, placeJoueur: type === 'vitrine' ? 5 : demo ? 6 : 8,
       humains: enl ? { noms: enl.humains.map(h => h.nom), locaux: enl.locaux, hote: enl.role === 'hote', enLigne: true } : duo ? { noms: ['Joueur 1', 'Joueur 2'], locaux: [0, 1], hote: true, enLigne: false } : null
     });
@@ -2247,6 +2253,20 @@
   }
   $('p-actualiser-conditions').addEventListener('click', () => actualiserConditions(true));
 
+  // Tours : un circuit long a son propre nombre de tours (`tours` du catalogue : 2 pour les 9,7 km de Route-des-Cimes),
+  // gardé par circuit dans reglages.toursCircuit ; les autres partagent reglages.toursCommun. reglages.tours reste le
+  // nombre de tours de la course qui va partir, celui que lisent la course, le jeu en ligne et les séances de référence.
+  function toursPour(i) {
+    const k = CATALOGUE[i] || CATALOGUE[0];
+    return k.tours ? (reglages.toursCircuit || {})[k.id] || k.tours : reglages.toursCommun || DEFAUT.tours;
+  }
+  // le nombre de tours d'un circuit qu'on quitte reste le sien (réglages d'avant ce lot : celui de tous les circuits)
+  function quitterTours() { if (!(CATALOGUE[reglages.circuit] || {}).tours) reglages.toursCommun = reglages.tours; }
+  function choisirTours(n) {
+    const k = CATALOGUE[reglages.circuit] || CATALOGUE[0];
+    if (k.tours) reglages.toursCircuit = Object.assign({}, reglages.toursCircuit, { [k.id]: n }); else reglages.toursCommun = n;
+    reglages.tours = n;
+  }
   function remplirPreparation() {
     $('p-titre').textContent = modePrepa === 'chrono' ? 'Chrono' : modePrepa === 'enligne' ? 'Course en ligne' : modePrepa === 'duo' ? 'Course à deux' : 'Course';
     $('o-partage').hidden = $('o-commandes').hidden = modePrepa !== 'duo';
@@ -2264,7 +2284,7 @@
         const ctx = b.querySelector('canvas').getContext('2d');
         const p = plan(c, 320, 200, 14);
         dessinerTrace(ctx, c, p, 10, 'rgba(0,0,0,.55)'); dessinerTrace(ctx, c, p, 5, '#efe8da');
-        b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); lancer('vitrine', i); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
+        b.addEventListener('click', () => { quitterTours(); reglages.circuit = i; reglages.tours = toursPour(i); sauverReglages(); majPreparation(); if (son) son.evenement('clic'); lancer('vitrine', i); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
         zone.appendChild(b);
       });
     }
@@ -2289,6 +2309,7 @@
     for (const r of document.querySelectorAll('input[name="saisonDepart"]')) r.checked = r.value === reglages.saison;
     afficherConditions();
     for (const b of $('circuits').children) b.setAttribute('aria-checked', String(+b.dataset.index === reglages.circuit));
+    for (const r of document.querySelectorAll('input[name="tours"]')) r.checked = String(reglages.tours) === r.value;
     const r = records[CATALOGUE[reglages.circuit].id];
     $('p-record').innerHTML = r ? 'Votre record sur ' + CATALOGUE[reglages.circuit].nom + ' : <b>' + chrono(r.tour) + '</b>' : 'Pas encore de temps sur ' + CATALOGUE[reglages.circuit].nom + '.';
   }
@@ -2306,7 +2327,8 @@
       if (t.name === 'meteoMode' && reglages.meteo === 'aleatoire') reglages.meteo = 'soleil';
       sauverReglages(); afficherConditions();
     }
-    if (t.name === 'tours' || t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
+    if (t.name === 'tours') { choisirTours(+t.value); sauverReglages(); }
+    if (t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
     if (t.name === 'meteo') { reglages.meteo = t.value; sauverReglages(); preselectionnerPneus(); }
     if (t.name === 'pneus' && B.conduite.PNEUS[t.value]) { reglages.pneus = t.value; sauverReglages(); }
     if (['pneusIci', 'pneusPret', 'boitePret', 'vuePret', 'boite', 'vue'].includes(t.name)) retirerPret();

@@ -3,7 +3,7 @@
    est réelle et les images sont prises quand la scène est posée).
 
      node tools/lieux-captures.mjs <page.html> [--sortie dossier] [--circuits 0,2,4] [--qualite high]
-          [--taille 960,540] [--jpeg 84] [--trace haut-col] [--vues bords|lieux] [--sans-images]
+          [--taille 960,540] [--jpeg 84] [--trace route-des-cimes] [--vues bords|lieux] [--sans-images]
 
    Une planche par circuit (<id>-planche.jpg, trois vues par rangée avec l'abscisse, l'altitude et la pente) ;
    --sans-images ne garde que les planches et le rapport JSON.
@@ -12,19 +12,18 @@
    longue série de bandeaux, un grand panneau et la passerelle. La page doit être construite avec src/bords.js branché
    (integration.patch du rapport) ; sinon il n'y a rien à montrer et l'outil le dit.
    --trace <id> : avant le chargement du jeu, remplace le circuit de même graine par le tracé proposé de
-   tools/lieux-partitions.mjs (construit par tools/lieux-trace.mjs, la même source qu'en Node) ; --vues lieux prend
+   tools/lieux-partitions.mjs (construit par le générateur du jeu, B.circuit.trace, la même source qu'en Node) ; --vues lieux prend
    alors une vue par lieu nommé, par passage couvert et par pont. Les sources du jeu ne sont pas touchées.
    Une seule session de Chrome, profil jetable ; aucune dépendance (Node 22 et plus). */
 import { spawn } from 'node:child_process';
 import { mkdtempSync, rmSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { fabriqueTrace } from './lieux-trace.mjs';
 import { PARTITION } from './lieux-partitions.mjs';
 
 const argv = process.argv.slice(2), page = argv[0];
 const opt = (k, d = null) => { const i = argv.indexOf('--' + k); return i < 0 ? d : argv[i + 1]; };
-if (!page) { console.error('usage : node tools/lieux-captures.mjs <page.html> [--sortie dossier] [--circuits 0,2] [--trace haut-col] [--vues bords|lieux]'); process.exit(2); }
+if (!page) { console.error('usage : node tools/lieux-captures.mjs <page.html> [--sortie dossier] [--circuits 0,2] [--trace route-des-cimes] [--vues bords|lieux]'); process.exit(2); }
 const sortie = path.resolve(opt('sortie', 'docs/reprise/rapports/lieux-2026-11-18/captures'));
 const taille = String(opt('taille', '960,540')).split(',').map(Number), jpeg = Number(opt('jpeg', 84)), qualite = opt('qualite', 'high');
 const trace = opt('trace'), vuesVoulues = opt('vues', trace ? 'lieux' : 'bords');
@@ -37,11 +36,11 @@ function scriptTrace(id) {
   if (!p) throw new Error('partition inconnue : ' + id);
   return `/* lot 22F : tracé proposé « ${p.nom} » injecté (tools/lieux-captures.mjs), sources du jeu intactes */
 (() => {
-  const TRACE = (${fabriqueTrace.toString()})(), PARTITION = ${JSON.stringify(p)};
+  const PARTITION = ${JSON.stringify(p)};
   const B = globalThis.BITUME = globalThis.BITUME || {};
   let reel;
   Object.defineProperty(B, 'circuit', { configurable: true, enumerable: true, get() { return reel; }, set(v) {
-    const creer = v.creer;
+    const creer = v.creer, TRACE = v.trace;   // le constructeur du jeu lui-même (src/circuit.js, génération 3)
     v.creer = function (graine, options) {
       if (graine !== PARTITION.graine) return creer.call(this, graine, options);
       try { const c = TRACE.construire(PARTITION); c.vitesse = c.vitesseP9; return c; }   // l'IA du jeu reste réglée sur p9

@@ -6,94 +6,16 @@
    dv en degrés (> 0 = côté droit plus bas) ; la première et la dernière séquence forment la ligne des stands
    (le départ est entre les deux). La fermeture ajuste `ajusteCap` (angle) et deux droites `ajuste` (longueur). */
 
+import { createRequire } from 'node:module';
+
 const D = (l, o = {}) => ({ t: 'D', l, ...o });
 const C = (r, a, o = {}) => ({ t: 'C', r, a, ...o });
 
-// ------------------------------------------------------------------ Haut-Col : la grande boucle de montagne
-// Le tour fait le tour du cirque de l'Aiglière, dans le sens contraire des aiguilles d'une montre : la vallée et
-// les stands au sud, la montée par le Bois Noir et le Mur à l'est, les lacets, le tunnel du Rocher, la corniche
-// sur le rebord nord (le cirque est à gauche, à l'intérieur de la boucle), le col, la galerie et le tunnel des
-// Échelles à l'ouest, l'alpage, le pont de la Gorge et le virage du Vide pour redescendre à la vallée.
-const HAUT_COL = {
-  id: 'haut-col', nom: 'Haut-Col', theme: 'montagne', graine: 47, zoom: [{ lieu: 3, rayon: 240 }],
-  lieux: [
-    { n: 1, nom: 'Le Bois Noir', court: 'forêt dense de sapins, esses en montée, troncs à 3 m du bord' },
-    { n: 2, nom: 'Le Mur', court: 'rampe droite, près de 300 m au-delà de 20 % et une pointe à 30 %, après la gauche lente de la Scierie' },
-    { n: 3, nom: 'Les Lacets', court: 'trois épingles empilées, murs de pierre sèche entre les branches' },
-    { n: 4, nom: 'Le Balcon du Cirque', court: 'corniche taillée dans la paroi, grand virage, le vide à gauche' },
-    { n: 5, nom: "Col de l'Aiglière", court: 'replat sommital, lac, refuge, galerie paravalanche' },
-    { n: 6, nom: 'Pont de la Gorge', court: 'arche de pierre au-dessus de la gorge, cascade en aval' },
-    { n: 7, nom: 'Virage du Vide', court: 'gauche convexe, contre-dévers, parapet bas au-dessus de la vallée' },
-  ],
-  seq: [
-    D(300, { p: 0, stands: true, dv: 0 }),
-    C(260, -30, { p: 1 }),
-    D(240, { p: 1, ajuste: true }),
-    C(130, -50, { p: 2 }),
-    // le Bois Noir : la forêt dense, esses en montée douce
-    D(180, { p: 3.5, lieu: 1, bord: { cote: 'D', type: 'arbres', nom: 'Sapins du Bois Noir' } }),
-    C(90, 50, { p: 4.5, lieu: 1 }),
-    C(80, -70, { p: 4.5, lieu: 1 }),
-    D(220, { p: 3.5, lieu: 1, bord: { cote: 'G', type: 'arbres', nom: 'Sapins du Bois Noir' } }),
-    C(110, 45, { p: 4.5, lieu: 1 }),
-    C(95, -45, { p: 3.5, lieu: 1 }),
-    D(160, { p: 3.5, lieu: 1 }),
-    C(130, 35, { p: 3.5, lieu: 1 }),
-    D(260, { p: 3.5, lieu: 1, bord: { cote: 'D', type: 'arbres', nom: 'Sapins du Bois Noir' } }),
-    C(130, 65, { p: 4, lieu: 1, ajusteCap: true }),
-    D(100, { p: 4 }),
-    // la Scierie : gauche lente au pied du Mur, on l'attaque à 70 km/h
-    C(45, -90, { p: 4 }),
-    // le Mur : droit dans la pente, 320 m de 22 à 30 % (26 % de moyenne), puis 160 m de bascule à 14 et 7 % : la crête
-    // est assez longue pour qu'on ne s'y allège pas de plus de 0,4 g à 190 km/h
-    D(110, { p: 22, lieu: 2, vib: false }),
-    D(130, { p: 30, lieu: 2, vib: false }),
-    D(80, { p: 24, lieu: 2, vib: false }),
-    D(90, { p: 14, lieu: 2, vib: false }),
-    D(70, { p: 7, lieu: 2, vib: false }),
-    // replat, puis les lacets (branches à 7,5 %, épingles à 4 %)
-    C(60, 90, { p: 2, lieu: 3 }),
-    D(320, { p: 6.5, lieu: 3 }),
-    C(32, -180, { p: 4, lieu: 3, dv: -3 }),
-    D(230, { p: 7.5, lieu: 3, bord: { cote: 'D', type: 'muret', nom: 'Murs des Lacets' } }),
-    C(32, 180, { p: 4, lieu: 3, dv: 3 }),
-    D(230, { p: 7.5, lieu: 3, bord: { cote: 'G', type: 'muret', nom: 'Murs des Lacets' } }),
-    C(34, -180, { p: 4, lieu: 3, dv: -3 }),
-    D(200, { p: 5 }),
-    // tunnel du Rocher, en légère courbe
-    C(300, 20, { p: 4, couvert: { type: 'tunnel', nom: 'Tunnel du Rocher' } }),
-    D(200, { p: 4, couvert: { type: 'tunnel', nom: 'Tunnel du Rocher' } }),
-    // le Balcon du Cirque : corniche, le cirque à gauche (dans le virage), la paroi à droite
-    C(420, -110, { p: 1.5, lieu: 4, dv: -2.5, vib: false, ld: 8.2, bord: { cote: 'G', type: 'vide', nom: 'Balcon du Cirque' } }),
-    D(160, { p: 1, lieu: 4, vib: false, bord: { cote: 'G', type: 'vide', nom: 'Balcon du Cirque' } }),
-    // le col
-    C(180, 40, { p: .5, lieu: 5 }),
-    D(260, { p: 0, lieu: 5 }),
-    C(180, -40, { p: -3, lieu: 5 }),
-    // galerie paravalanche (ouverte à gauche sur le cirque) et tunnel des Échelles
-    D(300, { p: -7, couvert: { type: 'galerie', nom: 'Galerie des Avalanches', ouvert: 'G' } }),
-    C(250, 40, { p: -8 }),
-    D(170, { p: -8, couvert: { type: 'tunnel', nom: 'Tunnel des Échelles' } }),
-    C(250, 80, { p: -8 }),
-    // l'alpage : la traversée vers l'ouest-nord-ouest, rapide et ouverte, en balcon au-dessus de la vallée
-    D(200, { p: -9, ajuste: true }),
-    C(170, -40, { p: -9 }),
-    C(170, 35, { p: -10 }),
-    D(160, { p: -9 }),
-    C(160, -125, { p: -8 }),
-    // pont de la Gorge, les Mélèzes (forêt claire en descente), puis le virage du Vide (le vide à droite)
-    D(130, { p: -1, lieu: 6, pont: { type: 'arche', nom: 'Pont de la Gorge' } }),
-    C(150, 40, { p: -8 }),
-    D(180, { p: -9, ajuste: true }),
-    C(150, -40, { p: -9 }),
-    D(120, { p: -7, ajuste: true }),
-    C(140, -80, { p: -5, lieu: 7, dv: 2, vib: false, bord: { cote: 'D', type: 'vide', nom: 'Virage du Vide' } }),
-    // la vallée : dernière descente le long de la rivière, puis le replat des stands
-    D(560, { p: 'a', ajuste: true }),
-    D(220, { p: -1.5 }),
-    D(120, { p: 0, stands: true, dv: 0 }),
-  ],
-};
+// ------------------------------------------------------------------ Route-des-Cimes : la grande boucle de montagne
+// Dessinée ici sous le nom de Haut-Col, elle est devenue le huitième circuit du jeu (David, 18/11 : « Huitième
+// circuit » ; Haut-Col garde son tracé) : sa partition vit dans src/partitions.js, lue telle quelle.
+createRequire(import.meta.url)('../src/partitions.js');
+const ROUTE_DES_CIMES = globalThis.BITUME.partitions['route-des-cimes'];
 
 // ------------------------------------------------------------------ Val-Brûlé : forêt, lac, cascade, brûlis
 // Sens des aiguilles d'une montre. Les stands longent le lac du Moulin ; la Futaie referme ses hêtres sur la piste ;
@@ -331,5 +253,5 @@ const CAP_SEQUOIA = {
   ],
 };
 
-export const PARTITIONS = [HAUT_COL, VAL_BRULE, PORT_SABLE, LANDE_NOIRE, ROCHE_FAUVE, BRUME_DE_JADE, CAP_SEQUOIA];
+export const PARTITIONS = [ROUTE_DES_CIMES, VAL_BRULE, PORT_SABLE, LANDE_NOIRE, ROCHE_FAUVE, BRUME_DE_JADE, CAP_SEQUOIA];
 export const PARTITION = Object.fromEntries(PARTITIONS.map(p => [p.id, p]));

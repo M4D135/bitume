@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* BITUME — lot 22F : plans et profils des tracés proposés (outil d'étude, aucune source du jeu n'est touchée).
 
-   node tools/lieux-plans.mjs [--sortie dossier] [--ids haut-col,cap-sequoia] [--esquisse] [--sans-png]
+   node tools/lieux-plans.mjs [--sortie dossier] [--ids route-des-cimes,cap-sequoia] [--esquisse] [--sans-png]
 
    Pour chaque partition de tools/lieux-partitions.mjs : construit le tracé (tools/lieux-trace.mjs), écrit
    <id>-plan.svg (tracé coloré par la pente, passages couverts, ponts, bords dangereux, lieux numérotés),
