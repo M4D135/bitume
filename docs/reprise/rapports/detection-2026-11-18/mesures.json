@@ -1,0 +1,8262 @@
+{
+ "objet": "Détection des réglages, 18/11/2026 : relevés de chaque essai (Chrome 157, Apple M5, écran 1710 × 1107 points, densité 2, 60 Hz).",
+ "legende": {
+  "charge_avant": "uptime : moyennes de charge sur 1, 5 et 15 minutes, machine de 10 cœurs chargée par d’autres agents",
+  "construction": "v3c et v3d : révision intermédiaire, sans limite du fil principal ni relevés avant décor ; v3e : sans limite du fil principal ; v3f à v3k : limite du fil principal au rapport 2,5, relevés avant décor ajoutés pas à pas (v3h : simulation au minimum, abandonné) ; v3k : décor de plus de 3 s ; v3l : rapport 3 ; v3m = cette branche à des commentaires près (simulation confirmée deux fois, chauffe jugée sur deux images de suite)",
+  "fil_principal_recalcule_ms": "pour v3c, v3d et v3e : temps processeur du point de vue le plus chargé × 3, comme la règle finale",
+  "course_10_s": "départ de Val-Brûlé, vue cockpit ; images au-delà de 1,5 période de l’écran"
+ },
+ "releves": [
+  {
+   "essai": "F1-m5-auto",
+   "construction": "v3c",
+   "fenetre_visible": true,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "35.47 38.67 37.05",
+   "carte_occupee_avant_pct": 30,
+   "fenetre": [
+    1440,
+    757,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3001,
+   "executer_ms": 2933,
+   "creer_parcours_ms": 26.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.6,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 2.933,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 9.65,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 6,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 766.3,
+      "duree_ms": 1434.6,
+      "par_vue": [
+       [
+        9.65,
+        2
+       ],
+       [
+        5.85,
+        1.35
+       ],
+       [
+        5.975,
+        1.4
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 25,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 7.2,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 501.3,
+      "duree_ms": 1228.2,
+      "par_vue": [
+       [
+        25,
+        2.4
+       ],
+       [
+        19.4,
+        1.9
+       ],
+       [
+        19.95,
+        2.15
+       ]
+      ]
+     }
+    ]
+   },
+   "course_10_s": {
+    "images": 601,
+    "au_dela_de_1_5_periode": 0,
+    "p50": 16.7,
+    "p95": 17.6,
+    "pire": 17.7,
+    "image": "1440×757",
+    "fenetre": "1440×757"
+   }
+  },
+  {
+   "essai": "F2-m5-auto-pe",
+   "construction": "v3c",
+   "fenetre_visible": true,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "29.80 36.98 36.53",
+   "carte_occupee_avant_pct": 24,
+   "fenetre": [
+    1440,
+    813,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2513,
+   "executer_ms": 2462.5,
+   "creer_parcours_ms": 36.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 2.462,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 8.775,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 2.7,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 934.3,
+      "duree_ms": 1489,
+      "par_vue": [
+       [
+        8.775,
+        0.9
+       ],
+       [
+        5.1,
+        0.625
+       ],
+       [
+        5.225,
+        0.575
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 23.25,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 3.15,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 206.6,
+      "duree_ms": 699.6,
+      "par_vue": [
+       [
+        23.25,
+        1.05
+       ],
+       [
+        16.45,
+        0.75
+       ],
+       [
+        16.55,
+        0.6
+       ]
+      ]
+     }
+    ]
+   },
+   "course_10_s": {
+    "images": 600,
+    "au_dela_de_1_5_periode": 0,
+    "p50": 16.7,
+    "p95": 17.6,
+    "pire": 17.7,
+    "image": "1440×813",
+    "fenetre": "1440×813"
+   }
+  },
+  {
+   "essai": "F3-m5-auto-pe",
+   "construction": "v3c",
+   "fenetre_visible": true,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "37.39 39.31 37.50",
+   "carte_occupee_avant_pct": 19,
+   "fenetre": [
+    1440,
+    757,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3147,
+   "executer_ms": 3074.4,
+   "creer_parcours_ms": 40.4,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.6,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 3.074,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 9.525,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 4.35,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 978.8,
+      "duree_ms": 1767.7,
+      "par_vue": [
+       [
+        9.525,
+        1.45
+       ],
+       [
+        5.075,
+        1.025
+       ],
+       [
+        5.05,
+        0.9
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 25.45,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 10.05,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 417.4,
+      "duree_ms": 1036.1,
+      "par_vue": [
+       [
+        25.45,
+        3.35
+       ],
+       [
+        18.7,
+        1.85
+       ],
+       [
+        19.4,
+        2
+       ]
+      ]
+     }
+    ]
+   },
+   "course_10_s": {
+    "images": 600,
+    "au_dela_de_1_5_periode": 0,
+    "p50": 16.7,
+    "p95": 17.5,
+    "pire": 17.7,
+    "image": "1440×757",
+    "fenetre": "1440×757"
+   }
+  },
+  {
+   "essai": "F4-m5-auto-pe",
+   "construction": "v3c",
+   "fenetre_visible": true,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "27.16 36.18 36.43",
+   "carte_occupee_avant_pct": 50,
+   "fenetre": [
+    1440,
+    757,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3259,
+   "executer_ms": 3182.2,
+   "creer_parcours_ms": 43.8,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 3.182,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 8.025,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 6.45,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1146.5,
+      "duree_ms": 1830.2,
+      "par_vue": [
+       [
+        8.025,
+        2.15
+       ],
+       [
+        5.325,
+        1.45
+       ],
+       [
+        5.675,
+        1.65
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 27.3,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 13.05,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 497.7,
+      "duree_ms": 1078.6,
+      "par_vue": [
+       [
+        27.3,
+        4.35
+       ],
+       [
+        23.9,
+        4.25
+       ],
+       [
+        22.8,
+        3.65
+       ]
+      ]
+     }
+    ]
+   },
+   "course_10_s": {
+    "images": 600,
+    "au_dela_de_1_5_periode": 0,
+    "p50": 16.7,
+    "p95": 17.2,
+    "pire": 17.7,
+    "image": "1440×757",
+    "fenetre": "1440×757"
+   }
+  },
+  {
+   "essai": "F5-m5-auto-pe",
+   "construction": "v3c",
+   "fenetre_visible": true,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "44.30 39.77 37.76",
+   "carte_occupee_avant_pct": 23,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3183,
+   "executer_ms": 3114,
+   "creer_parcours_ms": 43.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 3.114,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 8.467,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 5.799,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 3,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1135.6,
+      "duree_ms": 1729.5,
+      "par_vue": [
+       [
+        8.467,
+        1.933
+       ],
+       [
+        5.7,
+        1.333
+       ],
+       [
+        6,
+        1.267
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 25.25,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 12.45,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 474.7,
+      "duree_ms": 1102,
+      "par_vue": [
+       [
+        25.25,
+        4.15
+       ],
+       [
+        22.7,
+        3.65
+       ],
+       [
+        22,
+        3.5
+       ]
+      ]
+     }
+    ]
+   },
+   "course_10_s": {
+    "images": 600,
+    "au_dela_de_1_5_periode": 0,
+    "p50": 16.7,
+    "p95": 17.1,
+    "pire": 17.7,
+    "image": "1710×1107",
+    "fenetre": "1710×1107"
+   }
+  },
+  {
+   "essai": "F6-m5-fine-pe",
+   "construction": "v3c",
+   "fenetre_visible": true,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "passer",
+   "charge_avant": "31.96 37.24 36.91",
+   "carte_occupee_avant_pct": 21,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 46,
+   "executer_ms": 2.3,
+   "creer_parcours_ms": 42.3,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": null,
+    "statut": "interrompu",
+    "cadence_ms": null,
+    "cadence_bridee": null,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": null,
+    "mesures": []
+   },
+   "course_10_s": {
+    "images": 286,
+    "au_dela_de_1_5_periode": 276,
+    "p50": 33.3,
+    "p95": 50,
+    "pire": 50.9,
+    "image": "3420×2214",
+    "fenetre": "1710×1107"
+   }
+  },
+  {
+   "essai": "F7-cpu4-legere",
+   "construction": "v3c",
+   "fenetre_visible": true,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": 4.0,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "passer",
+   "charge_avant": "18.23 27.24 32.44",
+   "carte_occupee_avant_pct": 63,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": null,
+   "executer_ms": null,
+   "creer_parcours_ms": null,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": null,
+    "statut": "interrompu",
+    "cadence_ms": null,
+    "cadence_bridee": null,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": null,
+    "mesures": []
+   },
+   "course_10_s": {
+    "images": 601,
+    "au_dela_de_1_5_periode": 0,
+    "p50": 16.7,
+    "p95": 17.5,
+    "pire": 17.7,
+    "image": "1368×886",
+    "fenetre": "1710×1107"
+   }
+  },
+  {
+   "essai": "F8-cpu4-moyenne",
+   "construction": "v3c",
+   "fenetre_visible": true,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": 4.0,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "passer",
+   "charge_avant": "21.55 27.20 32.26",
+   "carte_occupee_avant_pct": 83,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": null,
+   "executer_ms": null,
+   "creer_parcours_ms": null,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": null,
+    "statut": "interrompu",
+    "cadence_ms": null,
+    "cadence_bridee": null,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": null,
+    "mesures": []
+   },
+   "course_10_s": {
+    "images": 579,
+    "au_dela_de_1_5_periode": 14,
+    "p50": 16.7,
+    "p95": 17.6,
+    "pire": 350.8,
+    "image": "1710×1107",
+    "fenetre": "1710×1107"
+   }
+  },
+  {
+   "essai": "F9-cpu6-legere",
+   "construction": "v3c",
+   "fenetre_visible": true,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": 6.0,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "passer",
+   "charge_avant": "16.23 25.50 31.50",
+   "carte_occupee_avant_pct": 91,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": null,
+   "executer_ms": null,
+   "creer_parcours_ms": null,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": null,
+    "statut": "interrompu",
+    "cadence_ms": null,
+    "cadence_bridee": null,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": null,
+    "mesures": []
+   },
+   "course_10_s": {
+    "images": 581,
+    "au_dela_de_1_5_periode": 20,
+    "p50": 16.7,
+    "p95": 17.7,
+    "pire": 49.9,
+    "image": "1368×886",
+    "fenetre": "1710×1107"
+   }
+  },
+  {
+   "essai": "F11-sw",
+   "construction": "v3c",
+   "fenetre_visible": true,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "swiftshader",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "24.83 25.69 30.93",
+   "carte_occupee_avant_pct": 94,
+   "fenetre": null,
+   "ecran": null,
+   "voile_ms": null,
+   "executer_ms": null,
+   "creer_parcours_ms": null,
+   "erreur_banc": "limite de 20 s atteinte"
+  },
+  {
+   "essai": "F12-30hz",
+   "construction": "v3c",
+   "fenetre_visible": true,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": true,
+   "detection": "oui",
+   "charge_avant": "29.37 26.94 31.18",
+   "carte_occupee_avant_pct": 87,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3417,
+   "executer_ms": 3298.4,
+   "creer_parcours_ms": 72.8,
+   "erreur_banc": "limite de 20 s atteinte",
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 33.4,
+    "cadence_bridee": true,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 3.298,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 17.95,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 21.75,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2022.1,
+      "duree_ms": 2966.8,
+      "par_vue": [
+       [
+        17.95,
+        7.25
+       ],
+       [
+        13.4,
+        3.7
+       ],
+       [
+        13.4,
+        3.25
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "F13-cpu4-moyenne",
+   "construction": "v3d",
+   "fenetre_visible": true,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": 4.0,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "passer",
+   "charge_avant": "7.66 19.18 27.35",
+   "carte_occupee_avant_pct": 47,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": null,
+   "executer_ms": null,
+   "creer_parcours_ms": null,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": null,
+    "statut": "interrompu",
+    "cadence_ms": null,
+    "cadence_bridee": null,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": null,
+    "mesures": []
+   },
+   "course_10_s": {
+    "images": 473,
+    "au_dela_de_1_5_periode": 95,
+    "p50": 16.7,
+    "p95": 33.5,
+    "pire": 566.1,
+    "image": "1710×1107",
+    "fenetre": "1710×1107"
+   }
+  },
+  {
+   "essai": "F14-cpu4-legere",
+   "construction": "v3d",
+   "fenetre_visible": true,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": 4.0,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "passer",
+   "charge_avant": "11.48 19.24 27.18",
+   "carte_occupee_avant_pct": 82,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": null,
+   "executer_ms": null,
+   "creer_parcours_ms": null,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": null,
+    "statut": "interrompu",
+    "cadence_ms": null,
+    "cadence_bridee": null,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": null,
+    "mesures": []
+   },
+   "course_10_s": {
+    "images": 602,
+    "au_dela_de_1_5_periode": 0,
+    "p50": 16.7,
+    "p95": 17.6,
+    "pire": 17.7,
+    "image": "1368×886",
+    "fenetre": "1710×1107"
+   }
+  },
+  {
+   "essai": "F15-m5-auto-pe",
+   "construction": "v3d",
+   "fenetre_visible": true,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "9.81 18.22 26.58",
+   "carte_occupee_avant_pct": 61,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3217,
+   "executer_ms": 3147.4,
+   "creer_parcours_ms": 39.5,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 3.147,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 9.95,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 5.625,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1110.2,
+      "duree_ms": 1836,
+      "par_vue": [
+       [
+        9.95,
+        1.875
+       ],
+       [
+        6.025,
+        1.25
+       ],
+       [
+        6.725,
+        1.175
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 23.7,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 12.75,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 478.4,
+      "duree_ms": 1032.1,
+      "par_vue": [
+       [
+        23.7,
+        4.25
+       ],
+       [
+        23.1,
+        4
+       ],
+       [
+        22.55,
+        2.65
+       ]
+      ]
+     }
+    ]
+   },
+   "course_10_s": {
+    "images": 602,
+    "au_dela_de_1_5_periode": 0,
+    "p50": 16.7,
+    "p95": 17.7,
+    "pire": 17.8,
+    "image": "1710×1107",
+    "fenetre": "1710×1107"
+   }
+  },
+  {
+   "essai": "v3e-30hz",
+   "construction": "v3e",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": true,
+   "detection": "oui",
+   "charge_avant": "5.88 13.53 23.31",
+   "carte_occupee_avant_pct": 43,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3699,
+   "executer_ms": 3643.9,
+   "creer_parcours_ms": 34.2,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 33.4,
+    "cadence_bridee": true,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 3.644,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 8.1,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 3.975,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1409.8,
+      "duree_ms": 2191.3,
+      "par_vue": [
+       [
+        8.1,
+        1.325
+       ],
+       [
+        4.775,
+        0.925
+       ],
+       [
+        5.2,
+        0.85
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 24.35,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 7.05,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 520.7,
+      "duree_ms": 1121.2,
+      "par_vue": [
+       [
+        24.35,
+        2.35
+       ],
+       [
+        18.4,
+        1.25
+       ],
+       [
+        18.55,
+        1.5
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3e-cpu4",
+   "construction": "v3e",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "5.95 13.81 23.52",
+   "carte_occupee_avant_pct": 39,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3877,
+   "executer_ms": 3772.9,
+   "creer_parcours_ms": 85.7,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 3.773,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 11.033,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 15.201,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 3,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2749.5,
+      "duree_ms": 3597.6,
+      "par_vue": [
+       [
+        11.033,
+        5.067
+       ],
+       [
+        7.833,
+        3.267
+       ],
+       [
+        7.167,
+        3.1
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3e-cpu6",
+   "construction": "v3e",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "6.12 13.97 23.63",
+   "carte_occupee_avant_pct": 30,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 4850,
+   "executer_ms": 4692.9,
+   "creer_parcours_ms": 129.4,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 4.692,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 17.05,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 22.5,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 3440.3,
+      "duree_ms": 4513.5,
+      "par_vue": [
+       [
+        17.05,
+        7.5
+       ],
+       [
+        10.55,
+        5.65
+       ],
+       [
+        11.9,
+        5.35
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3e-m5-1",
+   "construction": "v3e",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "9.97 17.05 25.64",
+   "carte_occupee_avant_pct": 61,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2713,
+   "executer_ms": 2649.9,
+   "creer_parcours_ms": 33.1,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 2.65,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 10.367,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 3.999,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 3,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 908.5,
+      "duree_ms": 1501,
+      "par_vue": [
+       [
+        10.367,
+        1.333
+       ],
+       [
+        6.167,
+        0.967
+       ],
+       [
+        6.867,
+        0.867
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 26.75,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 13.5,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 358.3,
+      "duree_ms": 980.6,
+      "par_vue": [
+       [
+        26.75,
+        4.5
+       ],
+       [
+        19.25,
+        1.85
+       ],
+       [
+        19.4,
+        2.1
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3e-m5-2",
+   "construction": "v3e",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "9.81 16.90 25.53",
+   "carte_occupee_avant_pct": 33,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2810,
+   "executer_ms": 2735.4,
+   "creer_parcours_ms": 35.8,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 2.735,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 9.525,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 4.2,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 952.6,
+      "duree_ms": 1603.8,
+      "par_vue": [
+       [
+        9.525,
+        1.4
+       ],
+       [
+        5.45,
+        1.075
+       ],
+       [
+        5.575,
+        1
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 24.25,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 6.6,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 392,
+      "duree_ms": 965.7,
+      "par_vue": [
+       [
+        24.25,
+        2.15
+       ],
+       [
+        18.55,
+        1.25
+       ],
+       [
+        21.2,
+        2.2
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3e-m5-3",
+   "construction": "v3e",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "9.43 16.70 25.41",
+   "carte_occupee_avant_pct": 34,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2592,
+   "executer_ms": 2534.4,
+   "creer_parcours_ms": 34.1,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 2.534,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 7.7,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 4.5,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 925.1,
+      "duree_ms": 1507.5,
+      "par_vue": [
+       [
+        7.7,
+        1.5
+       ],
+       [
+        4.775,
+        1.05
+       ],
+       [
+        5.1,
+        1.075
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 23.5,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": 7.95,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 364.9,
+      "duree_ms": 872.8,
+      "par_vue": [
+       [
+        23.5,
+        2.65
+       ],
+       [
+        17.9,
+        1.75
+       ],
+       [
+        21.15,
+        1.5
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3e-sw-2",
+   "construction": "v3e",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "swiftshader",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "5.44 14.40 24.01",
+   "carte_occupee_avant_pct": 18,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 6181,
+   "executer_ms": 6127.7,
+   "creer_parcours_ms": 31.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 6.128,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "chauffe",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 837.1,
+      "duree_ms": 5290.8,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3e-sw-3",
+   "construction": "v3e",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "swiftshader",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "5.67 14.16 23.81",
+   "carte_occupee_avant_pct": 6,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 6338,
+   "executer_ms": 6287.3,
+   "creer_parcours_ms": 27.9,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 33.3,
+    "cadence_bridee": true,
+    "sonde": null,
+    "simulation": null,
+    "duree_s": 6.287,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "chauffe",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 887.8,
+      "duree_ms": 5600.1,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3f-30hz",
+   "construction": "v3f",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": true,
+   "detection": "oui",
+   "charge_avant": "54.85 44.49 39.37",
+   "carte_occupee_avant_pct": 43,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3884,
+   "executer_ms": 3711.6,
+   "creer_parcours_ms": 145.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 33.3,
+    "cadence_bridee": true,
+    "sonde": {
+     "passe": 0.5,
+     "passes": [
+      0.6,
+      0.5,
+      0.4
+     ],
+     "premiere": 3.6,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": null,
+    "duree_s": 3.711,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 13.55,
+      "fil_principal_estime_ms": 4.625,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2317.7,
+      "duree_ms": 3300.8,
+      "par_vue": [
+       [
+        13.55,
+        1.85
+       ],
+       [
+        8.8,
+        1.55
+       ],
+       [
+        8.95,
+        1.4
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3f-cpu2-course",
+   "construction": "v3f",
+   "fenetre_visible": false,
+   "processeur_ralenti": 2.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "36.57 40.15 37.68",
+   "carte_occupee_avant_pct": 79,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3618,
+   "executer_ms": 3483,
+   "creer_parcours_ms": 105.9,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "passe": 0.6,
+     "passes": [
+      0.8,
+      0.6,
+      0.6
+     ],
+     "premiere": 1.3,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": null,
+    "duree_s": 3.483,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 12.75,
+      "fil_principal_estime_ms": 12.375,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2444.1,
+      "duree_ms": 3292,
+      "par_vue": [
+       [
+        12.75,
+        4.95
+       ],
+       [
+        8.85,
+        3.7
+       ],
+       [
+        10.1,
+        3.65
+       ]
+      ]
+     }
+    ]
+   },
+   "course_10_s": {
+    "images": 365,
+    "au_dela_de_1_5_periode": 42,
+    "p50": 16.7,
+    "p95": 33.3,
+    "pire": 3366.5,
+    "image": "1710×1107",
+    "fenetre": null
+   }
+  },
+  {
+   "essai": "v3f-cpu4-1",
+   "construction": "v3f",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "22.42 38.65 37.08",
+   "carte_occupee_avant_pct": 86,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 6505,
+   "executer_ms": 6316.8,
+   "creer_parcours_ms": 173.5,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.6,
+    "cadence_bridee": false,
+    "sonde": {
+     "passe": 0.7,
+     "passes": [
+      1.1,
+      0.6,
+      0.7
+     ],
+     "premiere": 36,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": null,
+    "duree_s": 6.316,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "chauffe",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 5734.6,
+      "duree_ms": 5999.1,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3f-cpu4-2",
+   "construction": "v3f",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "23.99 38.45 37.03",
+   "carte_occupee_avant_pct": 84,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 7759,
+   "executer_ms": 7539.2,
+   "creer_parcours_ms": 183.8,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "passe": 1,
+     "passes": [
+      1,
+      0.7,
+      1
+     ],
+     "premiere": 1.6,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": null,
+    "duree_s": 7.538,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 23,
+      "fil_principal_estime_ms": 22.5,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 5891.2,
+      "duree_ms": 7337,
+      "par_vue": [
+       [
+        23,
+        9
+       ],
+       [
+        14.9,
+        5.6
+       ],
+       [
+        12.85,
+        4.7
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3f-cpu6",
+   "construction": "v3f",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "29.83 39.07 37.27",
+   "carte_occupee_avant_pct": 28,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 767,
+   "executer_ms": 324.3,
+   "creer_parcours_ms": 413.2,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "passe": 4.3,
+     "passes": [
+      3.3,
+      10.1,
+      4.3
+     ],
+     "premiere": 3.6,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": null,
+    "duree_s": 0.317,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "chauffe",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3f-m5-1",
+   "construction": "v3f",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "19.24 41.81 38.00",
+   "carte_occupee_avant_pct": 66,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3343,
+   "executer_ms": 3262.9,
+   "creer_parcours_ms": 37.5,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "passe": 0.6,
+     "passes": [
+      0.6,
+      0.7,
+      0.5
+     ],
+     "premiere": 40.6,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": null,
+    "duree_s": 3.263,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 10.025,
+      "fil_principal_estime_ms": 4.063,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1082.2,
+      "duree_ms": 1802.9,
+      "par_vue": [
+       [
+        10.025,
+        1.625
+       ],
+       [
+        5.7,
+        1.225
+       ],
+       [
+        5.75,
+        1.15
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 33.5,
+      "fil_principal_estime_ms": 11.5,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 437,
+      "duree_ms": 1163.3,
+      "par_vue": [
+       [
+        33.5,
+        4.6
+       ],
+       [
+        28.9,
+        2.7
+       ],
+       [
+        28.05,
+        2.35
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3f-m5-2",
+   "construction": "v3f",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "18.27 40.86 37.71",
+   "carte_occupee_avant_pct": 38,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3130,
+   "executer_ms": 3048.1,
+   "creer_parcours_ms": 39,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "passe": 0.6,
+     "passes": [
+      0.6,
+      0.6,
+      0.5
+     ],
+     "premiere": 1.2,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": null,
+    "duree_s": 3.048,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 9.825,
+      "fil_principal_estime_ms": 4.125,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1076.2,
+      "duree_ms": 1802.2,
+      "par_vue": [
+       [
+        9.825,
+        1.65
+       ],
+       [
+        5.675,
+        1.225
+       ],
+       [
+        6.2,
+        1.15
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 26.1,
+      "fil_principal_estime_ms": 11.75,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 484.1,
+      "duree_ms": 1066.8,
+      "par_vue": [
+       [
+        26.1,
+        4.7
+       ],
+       [
+        23.75,
+        4.45
+       ],
+       [
+        22.45,
+        4.15
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3f-m5-3",
+   "construction": "v3f",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "18.65 40.56 37.62",
+   "carte_occupee_avant_pct": 44,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3169,
+   "executer_ms": 3089.6,
+   "creer_parcours_ms": 41,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "passe": 0.7,
+     "passes": [
+      0.6,
+      0.7,
+      0.8
+     ],
+     "premiere": 1.1,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": null,
+    "duree_s": 3.089,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 10,
+      "fil_principal_estime_ms": 4.25,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 3,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1141,
+      "duree_ms": 1871.2,
+      "par_vue": [
+       [
+        10,
+        1.7
+       ],
+       [
+        6.033,
+        1.267
+       ],
+       [
+        6.9,
+        1.167
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 24.6,
+      "fil_principal_estime_ms": 10.125,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 469.3,
+      "duree_ms": 1038.4,
+      "par_vue": [
+       [
+        23.6,
+        3.25
+       ],
+       [
+        20.85,
+        3.1
+       ],
+       [
+        24.6,
+        4.05
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3f-m5-course",
+   "construction": "v3f",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "46.58 42.49 38.59",
+   "carte_occupee_avant_pct": 66,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2395,
+   "executer_ms": 2304.1,
+   "creer_parcours_ms": 46.2,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "passe": 0.5,
+     "passes": [
+      0.4,
+      0.5,
+      0.5
+     ],
+     "premiere": 1.1,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": null,
+    "duree_s": 2.304,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 22.45,
+      "fil_principal_estime_ms": 19.875,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1379.5,
+      "duree_ms": 2121.1,
+      "par_vue": [
+       [
+        22.45,
+        7.95
+       ],
+       [
+        13.5,
+        6.2
+       ],
+       [
+        15.6,
+        5.05
+       ]
+      ]
+     }
+    ]
+   },
+   "course_10_s": {
+    "images": 525,
+    "au_dela_de_1_5_periode": 4,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 1516.6,
+    "image": "1710×1107",
+    "fenetre": null
+   }
+  },
+  {
+   "essai": "v3f-sw-1",
+   "construction": "v3f",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "swiftshader",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "19.40 40.35 37.57",
+   "carte_occupee_avant_pct": 100,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3526,
+   "executer_ms": 3375.4,
+   "creer_parcours_ms": 89.1,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "passe": 14.3,
+     "passes": [
+      18.4,
+      14.3,
+      13.7
+     ],
+     "premiere": 93.6,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": null,
+    "duree_s": 3.375,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "chauffe",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3f-sw-2",
+   "construction": "v3f",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "swiftshader",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "23.29 39.98 37.50",
+   "carte_occupee_avant_pct": 14,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 10116,
+   "executer_ms": 10043.5,
+   "creer_parcours_ms": 41.9,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.8,
+    "cadence_bridee": false,
+    "sonde": {
+     "passe": 1,
+     "passes": [
+      1,
+      1.4,
+      0.8
+     ],
+     "premiere": 37.7,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": null,
+    "duree_s": 10.043,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "chauffe",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 944.3,
+      "duree_ms": 8971.5,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3g-30hz",
+   "construction": "v3g",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": true,
+   "detection": "oui",
+   "charge_avant": "27.24 39.19 39.70",
+   "carte_occupee_avant_pct": 62,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 475,
+   "executer_ms": 395.9,
+   "creer_parcours_ms": 63.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 33.3,
+    "cadence_bridee": true,
+    "sonde": {
+     "logiciel": false,
+     "passe": 7.1,
+     "passes": [
+      7.1,
+      9,
+      2.9
+     ],
+     "premiere": 3,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.173,
+     "processeur": 2.773
+    },
+    "duree_s": 0.396,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "sonde",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3g-cpu2-course",
+   "construction": "v3g",
+   "fenetre_visible": false,
+   "processeur_ralenti": 2.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "24.22 40.18 40.06",
+   "carte_occupee_avant_pct": 23,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 5478,
+   "executer_ms": 5362.5,
+   "creer_parcours_ms": 73.4,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.6,
+     "passes": [
+      0.6,
+      0.5,
+      1
+     ],
+     "premiere": 1.3,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.227,
+     "processeur": 3.627
+    },
+    "duree_s": 5.362,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 24.85,
+      "fil_principal_estime_ms": 20,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 3979.4,
+      "duree_ms": 5176.6,
+      "par_vue": [
+       [
+        24.85,
+        8
+       ],
+       [
+        15.5,
+        5.35
+       ],
+       [
+        21.1,
+        5.75
+       ]
+      ]
+     }
+    ]
+   },
+   "course_10_s": {
+    "images": 329,
+    "au_dela_de_1_5_periode": 91,
+    "p50": 16.7,
+    "p95": 33.4,
+    "pire": 3116.5,
+    "image": "1710×1107",
+    "fenetre": null
+   }
+  },
+  {
+   "essai": "v3g-cpu4-1",
+   "construction": "v3g",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "35.01 44.07 41.35",
+   "carte_occupee_avant_pct": 84,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 6786,
+   "executer_ms": 6605.1,
+   "creer_parcours_ms": 149.8,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.8,
+     "passes": [
+      0.8,
+      0.8,
+      0.7
+     ],
+     "premiere": 2.2,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.433,
+     "processeur": 6.933
+    },
+    "duree_s": 6.604,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 18.55,
+      "fil_principal_estime_ms": 21.125,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 4872.7,
+      "duree_ms": 6402.8,
+      "par_vue": [
+       [
+        18.55,
+        8.45
+       ],
+       [
+        13.45,
+        6.25
+       ],
+       [
+        12.25,
+        5.35
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3g-cpu4-2",
+   "construction": "v3g",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "32.55 43.23 41.09",
+   "carte_occupee_avant_pct": 55,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 5853,
+   "executer_ms": 5650.8,
+   "creer_parcours_ms": 175.2,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.2,
+     "passes": [
+      1.2,
+      1.3,
+      1.2
+     ],
+     "premiere": 2.5,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.553,
+     "processeur": 8.853
+    },
+    "duree_s": 5.649,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 24.05,
+      "fil_principal_estime_ms": 25.625,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 4284,
+      "duree_ms": 5441.7,
+      "par_vue": [
+       [
+        24.05,
+        10.25
+       ],
+       [
+        11.95,
+        5.15
+       ],
+       [
+        12.1,
+        5.1
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3g-cpu6",
+   "construction": "v3g",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "28.63 42.04 40.69",
+   "carte_occupee_avant_pct": 79,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 9764,
+   "executer_ms": 9427.1,
+   "creer_parcours_ms": 304.3,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1,
+     "passes": [
+      1,
+      1.8,
+      0.6
+     ],
+     "premiere": 2.5,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.833,
+     "processeur": 13.333
+    },
+    "duree_s": 9.426,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "chauffe",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 8830.3,
+      "duree_ms": 9181.8,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3g-m5-1",
+   "construction": "v3g",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "52.35 47.69 42.34",
+   "carte_occupee_avant_pct": 85,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3002,
+   "executer_ms": 2893,
+   "creer_parcours_ms": 62.3,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.8,
+     "passes": [
+      1.2,
+      0.6,
+      0.8
+     ],
+     "premiere": 7.1,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.173,
+     "processeur": 2.773
+    },
+    "duree_s": 2.892,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 17.85,
+      "fil_principal_estime_ms": 13.125,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1734.4,
+      "duree_ms": 2696.8,
+      "par_vue": [
+       [
+        17.85,
+        5.25
+       ],
+       [
+        13.85,
+        3.85
+       ],
+       [
+        13,
+        3.55
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3g-m5-2",
+   "construction": "v3g",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "50.73 47.51 42.34",
+   "carte_occupee_avant_pct": 59,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3597,
+   "executer_ms": 3466.6,
+   "creer_parcours_ms": 81.9,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.7,
+     "passes": [
+      1.6,
+      0.7,
+      0.4
+     ],
+     "premiere": 7.7,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.247,
+     "processeur": 3.947
+    },
+    "duree_s": 3.466,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 18.1,
+      "fil_principal_estime_ms": 9.875,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2291.6,
+      "duree_ms": 3262.7,
+      "par_vue": [
+       [
+        18.1,
+        3.95
+       ],
+       [
+        12.7,
+        2.75
+       ],
+       [
+        13.1,
+        2.45
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3g-m5-3",
+   "construction": "v3g",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "50.29 47.55 42.42",
+   "carte_occupee_avant_pct": 79,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2078,
+   "executer_ms": 2000.2,
+   "creer_parcours_ms": 41.9,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.6,
+     "passes": [
+      0.6,
+      0.5,
+      0.6
+     ],
+     "premiere": 1.1,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.113,
+     "processeur": 1.813
+    },
+    "duree_s": 2,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 25,
+      "fil_principal_estime_ms": 6.875,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1119.8,
+      "duree_ms": 1825.7,
+      "par_vue": [
+       [
+        25,
+        2.75
+       ],
+       [
+        14.3,
+        2.1
+       ],
+       [
+        12.15,
+        1.95
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3g-m5-course",
+   "construction": "v3g",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "23.52 39.30 39.74",
+   "carte_occupee_avant_pct": 78,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3259,
+   "executer_ms": 3161.3,
+   "creer_parcours_ms": 62.2,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.1,
+     "passes": [
+      2.4,
+      1.1,
+      0.6
+     ],
+     "premiere": 4.1,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.173,
+     "processeur": 2.773
+    },
+    "duree_s": 3.161,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 10.233,
+      "fil_principal_estime_ms": 4,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 3,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1351.9,
+      "duree_ms": 2012.6,
+      "par_vue": [
+       [
+        10.233,
+        1.6
+       ],
+       [
+        6.233,
+        1.2
+       ],
+       [
+        6.133,
+        1.133
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 24.4,
+      "fil_principal_estime_ms": 7.125,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 418.5,
+      "duree_ms": 958.1,
+      "par_vue": [
+       [
+        24.4,
+        2.85
+       ],
+       [
+        19.85,
+        2.2
+       ],
+       [
+        21.55,
+        2.5
+       ]
+      ]
+     }
+    ]
+   },
+   "course_10_s": {
+    "images": 471,
+    "au_dela_de_1_5_periode": 123,
+    "p50": 16.7,
+    "p95": 33.4,
+    "pire": 400,
+    "image": "1710×1107",
+    "fenetre": null
+   }
+  },
+  {
+   "essai": "v3g-sw-1",
+   "construction": "v3g",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "swiftshader",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "48.03 47.13 42.30",
+   "carte_occupee_avant_pct": 100,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 1417,
+   "executer_ms": 1325.7,
+   "creer_parcours_ms": 45.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": true,
+     "passe": null,
+     "passes": [],
+     "premiere": null,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.147,
+     "processeur": 2.347
+    },
+    "duree_s": 1.326,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "logiciel",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3g-sw-2",
+   "construction": "v3g",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "swiftshader",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "41.10 45.64 41.85",
+   "carte_occupee_avant_pct": 49,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 1160,
+   "executer_ms": 1089.1,
+   "creer_parcours_ms": 41.1,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": true,
+     "passe": null,
+     "passes": [],
+     "premiere": null,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.12,
+     "processeur": 1.92
+    },
+    "duree_s": 1.089,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "logiciel",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3h-30hz",
+   "construction": "v3h",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": true,
+   "detection": "oui",
+   "charge_avant": "53.08 47.67 43.38",
+   "carte_occupee_avant_pct": 90,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3477,
+   "executer_ms": 3394.1,
+   "creer_parcours_ms": 42.2,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 33.3,
+    "cadence_bridee": true,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.6,
+     "passes": [
+      0.6,
+      0.6,
+      0.5
+     ],
+     "premiere": 1.2,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.093,
+     "processeur": 2.987
+    },
+    "duree_s": 3.394,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 23.9,
+      "fil_principal_estime_ms": 9.875,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1957,
+      "duree_ms": 3052.6,
+      "par_vue": [
+       [
+        23.9,
+        3.95
+       ],
+       [
+        13.65,
+        2.65
+       ],
+       [
+        17.25,
+        2.7
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3h-cpu4-1",
+   "construction": "v3h",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "50.81 45.76 42.41",
+   "carte_occupee_avant_pct": 85,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 7210,
+   "executer_ms": 6901.3,
+   "creer_parcours_ms": 257.9,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.1,
+     "passes": [
+      0.6,
+      1.1,
+      2.1
+     ],
+     "premiere": 1.8,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.173,
+     "processeur": 5.547
+    },
+    "duree_s": 6.9,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 26.5,
+      "fil_principal_estime_ms": 38.75,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 5107.4,
+      "duree_ms": 6682.2,
+      "par_vue": [
+       [
+        26.5,
+        15.5
+       ],
+       [
+        14.7,
+        7.65
+       ],
+       [
+        15.45,
+        7.85
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3h-cpu4-2",
+   "construction": "v3h",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "51.29 46.13 42.61",
+   "carte_occupee_avant_pct": 99,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 7047,
+   "executer_ms": 6821.1,
+   "creer_parcours_ms": 173.1,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.9,
+     "passes": [
+      0.8,
+      1.1,
+      0.9
+     ],
+     "premiere": 2.3,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.14,
+     "processeur": 4.48
+    },
+    "duree_s": 6.82,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 22.4,
+      "fil_principal_estime_ms": 8.5,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 4869.2,
+      "duree_ms": 6601.7,
+      "par_vue": [
+       [
+        22.4,
+        3.4
+       ],
+       [
+        16.45,
+        2.95
+       ],
+       [
+        16.15,
+        2.45
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3h-cpu6-1",
+   "construction": "v3h",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "53.88 47.01 42.99",
+   "carte_occupee_avant_pct": 92,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 6719,
+   "executer_ms": 6502.2,
+   "creer_parcours_ms": 170.5,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.5,
+     "passes": [
+      1.3,
+      1.7,
+      1.5
+     ],
+     "premiere": 2,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.193,
+     "processeur": 6.187
+    },
+    "duree_s": 6.502,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "chauffe",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 5942,
+      "duree_ms": 6266.5,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3h-cpu6-2",
+   "construction": "v3h",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "56.90 48.21 43.52",
+   "carte_occupee_avant_pct": 88,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 865,
+   "executer_ms": 339.3,
+   "creer_parcours_ms": 478,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 5.1,
+     "passes": [
+      4,
+      5.1,
+      11.6
+     ],
+     "premiere": 4.3,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.333,
+     "processeur": 10.667
+    },
+    "duree_s": 0.339,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "sonde",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3h-m5-1",
+   "construction": "v3h",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "47.41 44.29 41.68",
+   "carte_occupee_avant_pct": 83,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3427,
+   "executer_ms": 3338.2,
+   "creer_parcours_ms": 45.4,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.6,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.5,
+     "passes": [
+      0.9,
+      0.5,
+      0.4
+     ],
+     "premiere": 58.8,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.113,
+     "processeur": 3.627
+    },
+    "duree_s": 3.338,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 8.425,
+      "fil_principal_estime_ms": 4.875,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1210.2,
+      "duree_ms": 1921.8,
+      "par_vue": [
+       [
+        8.425,
+        1.95
+       ],
+       [
+        5.075,
+        1.2
+       ],
+       [
+        6.375,
+        1.925
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 24.25,
+      "fil_principal_estime_ms": 10.375,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 527.8,
+      "duree_ms": 1091.1,
+      "par_vue": [
+       [
+        24.25,
+        4.15
+       ],
+       [
+        20.85,
+        2.85
+       ],
+       [
+        21.55,
+        2.4
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3h-m5-2",
+   "construction": "v3h",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "45.91 44.08 41.64",
+   "carte_occupee_avant_pct": 67,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3943,
+   "executer_ms": 3834.1,
+   "creer_parcours_ms": 54.4,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.6,
+     "passes": [
+      8.8,
+      0.6,
+      0.5
+     ],
+     "premiere": 3.2,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.12,
+     "processeur": 3.84
+    },
+    "duree_s": 3.834,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 12,
+      "fil_principal_estime_ms": 6.625,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1445.2,
+      "duree_ms": 2211.7,
+      "par_vue": [
+       [
+        12,
+        2.65
+       ],
+       [
+        7.85,
+        1.95
+       ],
+       [
+        8.25,
+        1.75
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 35.7,
+      "fil_principal_estime_ms": 17.625,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 606.2,
+      "duree_ms": 1429.4,
+      "par_vue": [
+       [
+        35.7,
+        7.05
+       ],
+       [
+        30.4,
+        3.7
+       ],
+       [
+        26.65,
+        4.05
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3h-m5-3",
+   "construction": "v3h",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "53.97 45.91 42.32",
+   "carte_occupee_avant_pct": 39,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3269,
+   "executer_ms": 3117,
+   "creer_parcours_ms": 104.8,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1,
+     "passes": [
+      1,
+      0.8,
+      1.3
+     ],
+     "premiere": 8.5,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.28,
+     "processeur": 8.96
+    },
+    "duree_s": 3.116,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 13.4,
+      "fil_principal_estime_ms": 9.875,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1863,
+      "duree_ms": 2873.5,
+      "par_vue": [
+       [
+        13.4,
+        3.95
+       ],
+       [
+        10.65,
+        2.75
+       ],
+       [
+        11.65,
+        2.75
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3h-sw-1",
+   "construction": "v3h",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "swiftshader",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "50.77 45.38 42.15",
+   "carte_occupee_avant_pct": 79,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2802,
+   "executer_ms": 2704.8,
+   "creer_parcours_ms": 66.4,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": true,
+     "passe": null,
+     "passes": [],
+     "premiere": null,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.14,
+     "processeur": 4.48
+    },
+    "duree_s": 2.704,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "logiciel",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3i-30hz",
+   "construction": "v3i",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": true,
+   "detection": "oui",
+   "charge_avant": "20.00 36.28 39.60",
+   "carte_occupee_avant_pct": 68,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 4287,
+   "executer_ms": 4182.7,
+   "creer_parcours_ms": 84.3,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 33.4,
+    "cadence_bridee": true,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.7,
+     "passes": [
+      0.7,
+      0.7,
+      0.6
+     ],
+     "premiere": 1.1,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.153,
+     "processeur": 4.907
+    },
+    "duree_s": 4.182,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 13.3,
+      "fil_principal_estime_ms": 7.125,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2773,
+      "duree_ms": 3781.3,
+      "par_vue": [
+       [
+        13.3,
+        2.85
+       ],
+       [
+        8.4,
+        1.65
+       ],
+       [
+        9.5,
+        1.6
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3i-cpu4-1",
+   "construction": "v3i",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "29.98 40.76 41.30",
+   "carte_occupee_avant_pct": 54,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 5279,
+   "executer_ms": 5103.6,
+   "creer_parcours_ms": 145.7,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.7,
+     "passes": [
+      0.8,
+      0.7,
+      0.6
+     ],
+     "premiere": 1.4,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.347,
+     "processeur": 11.093
+    },
+    "duree_s": 5.103,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 16.3,
+      "fil_principal_estime_ms": 19.125,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 3722.3,
+      "duree_ms": 4903.9,
+      "par_vue": [
+       [
+        16.3,
+        7.65
+       ],
+       [
+        11.85,
+        5.7
+       ],
+       [
+        10.7,
+        5.3
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3i-cpu4-2",
+   "construction": "v3i",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "26.77 39.72 40.92",
+   "carte_occupee_avant_pct": 31,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 5383,
+   "executer_ms": 5164.1,
+   "creer_parcours_ms": 182.7,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.1,
+     "passes": [
+      0.6,
+      1.2,
+      1.1
+     ],
+     "premiere": 1.2,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.433,
+     "processeur": 13.867
+    },
+    "duree_s": 5.163,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 22.55,
+      "fil_principal_estime_ms": 22.125,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 3943.1,
+      "duree_ms": 4955.6,
+      "par_vue": [
+       [
+        22.55,
+        8.85
+       ],
+       [
+        11.35,
+        5.05
+       ],
+       [
+        13.8,
+        4.6
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3i-cpu6-1",
+   "construction": "v3i",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "24.29 38.76 40.57",
+   "carte_occupee_avant_pct": 72,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 9045,
+   "executer_ms": 8815.3,
+   "creer_parcours_ms": 190.1,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.5,
+     "passes": [
+      1.7,
+      1.2,
+      1.5
+     ],
+     "premiere": 1.7,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.14,
+     "processeur": 4.48
+    },
+    "duree_s": 8.815,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 20.1,
+      "fil_principal_estime_ms": 26.875,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 7023.4,
+      "duree_ms": 8595.7,
+      "par_vue": [
+       [
+        20.1,
+        10.75
+       ],
+       [
+        12.75,
+        7.1
+       ],
+       [
+        13.25,
+        7.5
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3i-cpu6-2",
+   "construction": "v3i",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "20.39 37.18 39.98",
+   "carte_occupee_avant_pct": 64,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 8615,
+   "executer_ms": 8310.5,
+   "creer_parcours_ms": 251.3,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.6,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.4,
+     "passes": [
+      1.4,
+      1.9,
+      1.3
+     ],
+     "premiere": 2.4,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.713,
+     "processeur": 22.827
+    },
+    "duree_s": 8.31,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 23.75,
+      "fil_principal_estime_ms": 40,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 6356.4,
+      "duree_ms": 8070.1,
+      "par_vue": [
+       [
+        23.75,
+        16
+       ],
+       [
+        17.2,
+        10.6
+       ],
+       [
+        15.7,
+        9.75
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3i-m5-1",
+   "construction": "v3i",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "31.86 42.81 42.01",
+   "carte_occupee_avant_pct": 78,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 4057,
+   "executer_ms": 3920.9,
+   "creer_parcours_ms": 68.5,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.5,
+     "passes": [
+      0.6,
+      0.5,
+      0.5
+     ],
+     "premiere": 2,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.173,
+     "processeur": 5.547
+    },
+    "duree_s": 3.921,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 13.267,
+      "fil_principal_estime_ms": 6.418,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 3,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1899.4,
+      "duree_ms": 2795.1,
+      "par_vue": [
+       [
+        13.267,
+        2.567
+       ],
+       [
+        8.367,
+        1.967
+       ],
+       [
+        9.6,
+        1.9
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "chauffe",
+      "images_par_rafale": null,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 744.5,
+      "duree_ms": 933.2,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3i-m5-2",
+   "construction": "v3i",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "32.73 42.66 41.96",
+   "carte_occupee_avant_pct": 51,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2665,
+   "executer_ms": 2560.8,
+   "creer_parcours_ms": 63,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.6,
+     "passes": [
+      1,
+      0.6,
+      0.6
+     ],
+     "premiere": 3.1,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.193,
+     "processeur": 6.187
+    },
+    "duree_s": 2.56,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 14.05,
+      "fil_principal_estime_ms": 7.875,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1571.4,
+      "duree_ms": 2361.6,
+      "par_vue": [
+       [
+        14.05,
+        3.15
+       ],
+       [
+        8.8,
+        2.15
+       ],
+       [
+        10.85,
+        1.9
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3i-m5-3",
+   "construction": "v3i",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "32.99 42.55 41.93",
+   "carte_occupee_avant_pct": 64,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2601,
+   "executer_ms": 2494.8,
+   "creer_parcours_ms": 61.4,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.5,
+     "passes": [
+      0.4,
+      0.5,
+      0.6
+     ],
+     "premiere": 1.7,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.173,
+     "processeur": 5.547
+    },
+    "duree_s": 2.494,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 15.45,
+      "fil_principal_estime_ms": 9.5,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1471.1,
+      "duree_ms": 2293.1,
+      "par_vue": [
+       [
+        15.45,
+        3.8
+       ],
+       [
+        10.5,
+        2.4
+       ],
+       [
+        10.95,
+        2.75
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3i-sw-1",
+   "construction": "v3i",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "swiftshader",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "30.77 41.77 41.66",
+   "carte_occupee_avant_pct": 69,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3145,
+   "executer_ms": 3037.9,
+   "creer_parcours_ms": 62.2,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": true,
+     "passe": null,
+     "passes": [],
+     "premiere": null,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.173,
+     "processeur": 5.547
+    },
+    "duree_s": 3.038,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "logiciel",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3j-cpu4-1",
+   "construction": "v3j",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "28.96 34.41 38.52",
+   "carte_occupee_avant_pct": 63,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 524,
+   "executer_ms": 246.7,
+   "creer_parcours_ms": 257.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 5.7,
+     "passes": [
+      5,
+      5.7,
+      5.7
+     ],
+     "premiere": 3.2,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.52,
+     "processeur": 16.64
+    },
+    "duree_s": 0.246,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "sonde",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3j-cpu6-1",
+   "construction": "v3j",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "24.26 33.83 38.39",
+   "carte_occupee_avant_pct": 80,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 514,
+   "executer_ms": 189.9,
+   "creer_parcours_ms": 305.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": {
+     "pasMs": 0.653,
+     "processeur": 20.907
+    },
+    "duree_s": 0.188,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "processeur",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3j-cpu6-2",
+   "construction": "v3j",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "29.04 34.52 38.58",
+   "carte_occupee_avant_pct": 63,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 441,
+   "executer_ms": 182.7,
+   "creer_parcours_ms": 242.7,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": {
+     "pasMs": 0.613,
+     "processeur": 19.627
+    },
+    "duree_s": 0.18,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "processeur",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3j-m5-1",
+   "construction": "v3j",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "19.48 33.44 38.34",
+   "carte_occupee_avant_pct": 80,
+   "fenetre": null,
+   "ecran": null,
+   "voile_ms": null,
+   "executer_ms": null,
+   "creer_parcours_ms": null,
+   "erreur_banc": "TypeError: fetch failed"
+  },
+  {
+   "essai": "v3j-m5-2",
+   "construction": "v3j",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "22.89 33.91 38.48",
+   "carte_occupee_avant_pct": 94,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3131,
+   "executer_ms": 3041.8,
+   "creer_parcours_ms": 43.5,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.7,
+     "passes": [
+      0.6,
+      0.7,
+      0.7
+     ],
+     "premiere": 102.7,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.147,
+     "processeur": 4.693
+    },
+    "duree_s": 3.042,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 20.35,
+      "fil_principal_estime_ms": 11,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1341.8,
+      "duree_ms": 2771.4,
+      "par_vue": [
+       [
+        20.35,
+        4.4
+       ],
+       [
+        16.95,
+        3.9
+       ],
+       [
+        16.4,
+        3.25
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3k-30hz",
+   "construction": "v3k",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": true,
+   "detection": "oui",
+   "charge_avant": "5.51 14.99 24.61",
+   "carte_occupee_avant_pct": 14,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3027,
+   "executer_ms": 2992.5,
+   "creer_parcours_ms": 20.3,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 33.3,
+    "cadence_bridee": true,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.8,
+     "passes": [
+      4.4,
+      0.8,
+      0.7
+     ],
+     "premiere": 1.6,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.087,
+     "processeur": 2.773
+    },
+    "duree_s": 2.992,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 8.2,
+      "fil_principal_estime_ms": 2.582,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 3,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 910,
+      "duree_ms": 1783.3,
+      "par_vue": [
+       [
+        8.2,
+        1.033
+       ],
+       [
+        5.1,
+        0.633
+       ],
+       [
+        5.1,
+        0.6
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 21.7,
+      "fil_principal_estime_ms": 2.75,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 334.6,
+      "duree_ms": 829.8,
+      "par_vue": [
+       [
+        21.7,
+        1.1
+       ],
+       [
+        15.55,
+        0.7
+       ],
+       [
+        15.5,
+        0.6
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3k-cpu4-1",
+   "construction": "v3k",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "8.62 16.66 25.58",
+   "carte_occupee_avant_pct": 86,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 4304,
+   "executer_ms": 4212.1,
+   "creer_parcours_ms": 74.9,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.1,
+     "passes": [
+      1.2,
+      0.4,
+      1.1
+     ],
+     "premiere": 0.8,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.187,
+     "processeur": 5.973
+    },
+    "duree_s": 4.212,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 9.767,
+      "fil_principal_estime_ms": 8.25,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 3,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1998.9,
+      "duree_ms": 2804.6,
+      "par_vue": [
+       [
+        9.767,
+        3.3
+       ],
+       [
+        6.4,
+        2.333
+       ],
+       [
+        6.467,
+        2.067
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 23.55,
+      "fil_principal_estime_ms": 10.875,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 697.5,
+      "duree_ms": 1223.8,
+      "par_vue": [
+       [
+        23.55,
+        4.35
+       ],
+       [
+        16.95,
+        2.6
+       ],
+       [
+        16.75,
+        2.15
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3k-cpu4-2",
+   "construction": "v3k",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "7.52 16.16 25.30",
+   "carte_occupee_avant_pct": 44,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3147,
+   "executer_ms": 3051,
+   "creer_parcours_ms": 82.2,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.3,
+     "passes": [
+      0.8,
+      0.3,
+      0.3
+     ],
+     "premiere": 4.1,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.22,
+     "processeur": 7.04
+    },
+    "duree_s": 3.05,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 15.45,
+      "fil_principal_estime_ms": 8.25,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2052.3,
+      "duree_ms": 2862.1,
+      "par_vue": [
+       [
+        15.45,
+        3.3
+       ],
+       [
+        9.1,
+        2.65
+       ],
+       [
+        9.7,
+        2.45
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3k-cpu4-3",
+   "construction": "v3k",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "7.00 15.91 25.16",
+   "carte_occupee_avant_pct": 0,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3225,
+   "executer_ms": 3127.9,
+   "creer_parcours_ms": 85.2,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.6,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.1,
+     "passes": [
+      0.4,
+      1.1,
+      1.3
+     ],
+     "premiere": 1.8,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.227,
+     "processeur": 7.253
+    },
+    "duree_s": 3.127,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 10.333,
+      "fil_principal_estime_ms": 8.25,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 3,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2099.3,
+      "duree_ms": 2929.9,
+      "par_vue": [
+       [
+        10.333,
+        3.3
+       ],
+       [
+        7.067,
+        2.4
+       ],
+       [
+        7.033,
+        2.033
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3k-cpu6-1",
+   "construction": "v3k",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "6.60 15.68 25.02",
+   "carte_occupee_avant_pct": 46,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3329,
+   "executer_ms": 3200.9,
+   "creer_parcours_ms": 117.3,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.1,
+     "passes": [
+      1.5,
+      1.1,
+      0.5
+     ],
+     "premiere": 0.8,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.267,
+     "processeur": 8.533
+    },
+    "duree_s": 3.2,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "preparation",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 3008.2,
+      "duree_ms": 3008.2,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3k-cpu6-2",
+   "construction": "v3k",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "5.82 15.21 24.75",
+   "carte_occupee_avant_pct": 0,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3328,
+   "executer_ms": 3200.4,
+   "creer_parcours_ms": 118.7,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.4,
+     "passes": [
+      1.1,
+      1.4,
+      1.6
+     ],
+     "premiere": 2,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.227,
+     "processeur": 7.253
+    },
+    "duree_s": 3.2,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "preparation",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 3010.9,
+      "duree_ms": 3010.9,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3k-m5-1",
+   "construction": "v3k",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "8.56 16.92 25.78",
+   "carte_occupee_avant_pct": 81,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2013,
+   "executer_ms": 1981.2,
+   "creer_parcours_ms": 18.9,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.6,
+     "passes": [
+      0.6,
+      0.6,
+      0.6
+     ],
+     "premiere": 1.6,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.08,
+     "processeur": 2.56
+    },
+    "duree_s": 1.981,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 7.875,
+      "fil_principal_estime_ms": 2.313,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 586.8,
+      "duree_ms": 1134.1,
+      "par_vue": [
+       [
+        7.875,
+        0.925
+       ],
+       [
+        4.725,
+        0.625
+       ],
+       [
+        4.5,
+        0.6
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 21.55,
+      "fil_principal_estime_ms": 3,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 216.9,
+      "duree_ms": 675,
+      "par_vue": [
+       [
+        21.55,
+        1.2
+       ],
+       [
+        15.7,
+        0.7
+       ],
+       [
+        15.65,
+        0.7
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3k-m5-2",
+   "construction": "v3k",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "8.76 16.82 25.69",
+   "carte_occupee_avant_pct": 91,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2028,
+   "executer_ms": 1994.9,
+   "creer_parcours_ms": 20,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.2,
+     "passes": [
+      0.2,
+      0.3,
+      0.2
+     ],
+     "premiere": 0.7,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.073,
+     "processeur": 2.347
+    },
+    "duree_s": 1.995,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 11.4,
+      "fil_principal_estime_ms": 2.25,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 570.1,
+      "duree_ms": 1071,
+      "par_vue": [
+       [
+        11.4,
+        0.9
+       ],
+       [
+        6.3,
+        0.75
+       ],
+       [
+        6.85,
+        0.7
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 22.7,
+      "fil_principal_estime_ms": 3.625,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 247,
+      "duree_ms": 746.2,
+      "par_vue": [
+       [
+        22.7,
+        1.45
+       ],
+       [
+        16.15,
+        0.9
+       ],
+       [
+        16.45,
+        0.95
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3k-m5-3",
+   "construction": "v3k",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "8.62 16.66 25.58",
+   "carte_occupee_avant_pct": 100,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2152,
+   "executer_ms": 2113.2,
+   "creer_parcours_ms": 24.5,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.5,
+     "passes": [
+      0.5,
+      0.3,
+      0.5
+     ],
+     "premiere": 0.9,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.067,
+     "processeur": 2.133
+    },
+    "duree_s": 2.113,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 7.25,
+      "fil_principal_estime_ms": 2.25,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 635.6,
+      "duree_ms": 1169.3,
+      "par_vue": [
+       [
+        7.25,
+        0.9
+       ],
+       [
+        4.275,
+        0.675
+       ],
+       [
+        4.8,
+        0.6
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 28.8,
+      "fil_principal_estime_ms": 3.625,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 216.4,
+      "duree_ms": 761.2,
+      "par_vue": [
+       [
+        28.8,
+        1.45
+       ],
+       [
+        20.5,
+        0.95
+       ],
+       [
+        17.75,
+        0.85
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3k-sw-1",
+   "construction": "v3k",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "swiftshader",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "5.51 14.99 24.61",
+   "carte_occupee_avant_pct": 50,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 478,
+   "executer_ms": 445.1,
+   "creer_parcours_ms": 20.2,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": true,
+     "passe": null,
+     "passes": [],
+     "premiere": null,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.047,
+     "processeur": 1.493
+    },
+    "duree_s": 0.445,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "logiciel",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3l-30hz",
+   "construction": "v3l",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": true,
+   "detection": "oui",
+   "charge_avant": "9.51 12.27 21.39",
+   "carte_occupee_avant_pct": 11,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3005,
+   "executer_ms": 2964.4,
+   "creer_parcours_ms": 19.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 33.3,
+    "cadence_bridee": true,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.4,
+     "passes": [
+      0.5,
+      0.4,
+      0.3
+     ],
+     "premiere": 1.1,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.093,
+     "processeur": 2.987
+    },
+    "duree_s": 2.964,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 7.8,
+      "fil_principal_estime_ms": 2.85,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 861.5,
+      "duree_ms": 1585.2,
+      "par_vue": [
+       [
+        7.8,
+        0.95
+       ],
+       [
+        4.45,
+        0.7
+       ],
+       [
+        4.575,
+        0.6
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 30.95,
+      "fil_principal_estime_ms": 4.05,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 352.6,
+      "duree_ms": 993.8,
+      "par_vue": [
+       [
+        30.95,
+        1.35
+       ],
+       [
+        21.15,
+        0.9
+       ],
+       [
+        20.95,
+        0.85
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3l-cpu4-1",
+   "construction": "v3l",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "9.48 12.41 21.81",
+   "carte_occupee_avant_pct": 35,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 497,
+   "executer_ms": 216,
+   "creer_parcours_ms": 271.1,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": {
+     "pasMs": 1.193,
+     "processeur": 38.187
+    },
+    "duree_s": 0.214,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "processeur",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3l-cpu4-2",
+   "construction": "v3l",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "12.94 13.08 21.94",
+   "carte_occupee_avant_pct": 33,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3624,
+   "executer_ms": 3459.2,
+   "creer_parcours_ms": 158.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.7,
+     "passes": [
+      0.7,
+      0.7,
+      0.5
+     ],
+     "premiere": 2.1,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.36,
+     "processeur": 11.52
+    },
+    "duree_s": 3.459,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "preparation",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 3257.8,
+      "duree_ms": 3257.8,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3l-cpu4-3",
+   "construction": "v3l",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "12.47 12.98 21.85",
+   "carte_occupee_avant_pct": 17,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3113,
+   "executer_ms": 3018.8,
+   "creer_parcours_ms": 79.9,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.6,
+     "passes": [
+      0.6,
+      0.6,
+      0.7
+     ],
+     "premiere": 0.9,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.2,
+     "processeur": 6.4
+    },
+    "duree_s": 3.018,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 10.5,
+      "fil_principal_estime_ms": 9.999,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 3,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2017.5,
+      "duree_ms": 2831.9,
+      "par_vue": [
+       [
+        10.5,
+        3.333
+       ],
+       [
+        6.667,
+        2.333
+       ],
+       [
+        6.933,
+        2.167
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3l-cpu6-1",
+   "construction": "v3l",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "11.55 12.78 21.73",
+   "carte_occupee_avant_pct": 31,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3998,
+   "executer_ms": 3816.3,
+   "creer_parcours_ms": 172,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.6,
+     "passes": [
+      1.6,
+      1.1,
+      1.7
+     ],
+     "premiere": 1.5,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.48,
+     "processeur": 15.36
+    },
+    "duree_s": 3.815,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "preparation",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 3603.3,
+      "duree_ms": 3603.3,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3l-cpu6-2",
+   "construction": "v3l",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "10.78 12.60 21.61",
+   "carte_occupee_avant_pct": 47,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 4220,
+   "executer_ms": 4084.1,
+   "creer_parcours_ms": 115.9,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.4,
+     "passes": [
+      1.8,
+      1.4,
+      1
+     ],
+     "premiere": 1,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.247,
+     "processeur": 7.893
+    },
+    "duree_s": 4.084,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 10.967,
+      "fil_principal_estime_ms": 15.099,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 3,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2993.8,
+      "duree_ms": 3896.8,
+      "par_vue": [
+       [
+        10.967,
+        5.033
+       ],
+       [
+        7.733,
+        3.767
+       ],
+       [
+        7.267,
+        3.167
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3l-m5-1",
+   "construction": "v3l",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "9.01 12.48 22.00",
+   "carte_occupee_avant_pct": 33,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 1723,
+   "executer_ms": 1666.5,
+   "creer_parcours_ms": 45.7,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.5,
+     "passes": [
+      0.6,
+      0.5,
+      0.4
+     ],
+     "premiere": 3.4,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.167,
+     "processeur": 5.333
+    },
+    "duree_s": 1.666,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "chauffe",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1312,
+      "duree_ms": 1477.5,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3l-m5-2",
+   "construction": "v3l",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "8.85 12.39 21.92",
+   "carte_occupee_avant_pct": 23,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3179,
+   "executer_ms": 3073.2,
+   "creer_parcours_ms": 45.5,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.5,
+     "passes": [
+      0.5,
+      0.5,
+      0.4
+     ],
+     "premiere": 3.5,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.107,
+     "processeur": 3.413
+    },
+    "duree_s": 3.073,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 9,
+      "fil_principal_estime_ms": 4.5,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1126.1,
+      "duree_ms": 1749.1,
+      "par_vue": [
+       [
+        9,
+        1.5
+       ],
+       [
+        6.2,
+        1.15
+       ],
+       [
+        6.45,
+        1.1
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 29.35,
+      "fil_principal_estime_ms": 17.7,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 477.8,
+      "duree_ms": 1143.7,
+      "par_vue": [
+       [
+        29.35,
+        5.9
+       ],
+       [
+        25.3,
+        3.8
+       ],
+       [
+        23.9,
+        3.75
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3l-m5-3",
+   "construction": "v3l",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "9.48 12.41 21.81",
+   "carte_occupee_avant_pct": 51,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 261,
+   "executer_ms": 165.1,
+   "creer_parcours_ms": 81.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": null,
+    "simulation": {
+     "pasMs": 0.58,
+     "processeur": 18.56
+    },
+    "duree_s": 0.164,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "processeur",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3l-sw-1",
+   "construction": "v3l",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "swiftshader",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "9.51 12.27 21.39",
+   "carte_occupee_avant_pct": 41,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 481,
+   "executer_ms": 448.5,
+   "creer_parcours_ms": 20.1,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": true,
+     "passe": null,
+     "passes": [],
+     "premiere": null,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.047,
+     "processeur": 1.493
+    },
+    "duree_s": 0.448,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "logiciel",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-30hz",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": true,
+   "detection": "oui",
+   "charge_avant": "15.30 16.70 20.45",
+   "carte_occupee_avant_pct": 77,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3882,
+   "executer_ms": 3787.2,
+   "creer_parcours_ms": 57.7,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 33.3,
+    "cadence_bridee": true,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.4,
+     "passes": [
+      0.5,
+      0.3,
+      0.4
+     ],
+     "premiere": 1.2,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.167,
+     "processeur": 5.333,
+     "pas": [
+      0.72,
+      0.18,
+      0.287,
+      0.253,
+      0.14,
+      0.2,
+      0.227,
+      0.167
+     ]
+    },
+    "duree_s": 3.787,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 17.4,
+      "fil_principal_estime_ms": 10.05,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2379.9,
+      "duree_ms": 3432,
+      "par_vue": [
+       [
+        17.4,
+        3.35
+       ],
+       [
+        10.85,
+        2.4
+       ],
+       [
+        9.25,
+        2.3
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-cpu4-1",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "28.73 18.78 21.39",
+   "carte_occupee_avant_pct": 79,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 4965,
+   "executer_ms": 4821.9,
+   "creer_parcours_ms": 134,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.6,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 2.5,
+     "passes": [
+      1.5,
+      5.5,
+      2.5
+     ],
+     "premiere": 4.4,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.373,
+     "processeur": 11.947,
+     "pas": [
+      1.727,
+      0.353,
+      0.58,
+      0.64,
+      0.08,
+      0.447,
+      0.5,
+      0.373
+     ]
+    },
+    "duree_s": 4.821,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "preparation",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 4623.4,
+      "duree_ms": 4623.4,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-cpu4-2",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "25.63 18.44 21.24",
+   "carte_occupee_avant_pct": 71,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3353,
+   "executer_ms": 3244.8,
+   "creer_parcours_ms": 87.2,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 2.1,
+     "passes": [
+      2.1,
+      5.2,
+      2
+     ],
+     "premiere": 3,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.28,
+     "processeur": 8.96,
+     "pas": [
+      1.167,
+      0.3,
+      0.44,
+      0.293,
+      0.213,
+      0.333,
+      0.307,
+      0.28
+     ]
+    },
+    "duree_s": 3.244,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 16.4,
+      "fil_principal_estime_ms": 16.65,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2205,
+      "duree_ms": 3058.7,
+      "par_vue": [
+       [
+        16.4,
+        5.55
+       ],
+       [
+        11.3,
+        4.25
+       ],
+       [
+        9.05,
+        3.75
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-cpu4-3",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "23.73 18.17 21.13",
+   "carte_occupee_avant_pct": 60,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3558,
+   "executer_ms": 3426.7,
+   "creer_parcours_ms": 118.3,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.4,
+     "passes": [
+      0.4,
+      1.2,
+      0.3
+     ],
+     "premiere": 6.6,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.333,
+     "processeur": 10.667,
+     "pas": [
+      1.52,
+      0.34,
+      0.54,
+      0.42,
+      0.287,
+      0.333,
+      0.427,
+      0.353
+     ]
+    },
+    "duree_s": 3.426,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "preparation",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 3237.7,
+      "duree_ms": 3237.7,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-cpu4-4",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 4.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "64.66 28.16 24.22",
+   "carte_occupee_avant_pct": 96,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 7819,
+   "executer_ms": 7480.9,
+   "creer_parcours_ms": 317.8,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1,
+     "passes": [
+      1,
+      1.1,
+      0.5
+     ],
+     "premiere": 3.7,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.953,
+     "processeur": 30.507,
+     "pas": [
+      3.487,
+      0.84,
+      0.393,
+      0.787,
+      0.953,
+      1.487,
+      2.12,
+      0.307
+     ],
+     "confirmation": 0.333,
+     "pasConfirmation": [
+      0.333,
+      0.373,
+      0.46,
+      0.267
+     ]
+    },
+    "duree_s": 7.478,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "preparation",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 7158.9,
+      "duree_ms": 7158.9,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-cpu6-1",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "20.62 17.68 20.92",
+   "carte_occupee_avant_pct": 79,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 897,
+   "executer_ms": 460.1,
+   "creer_parcours_ms": 411.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 33.3,
+    "cadence_bridee": true,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.2,
+     "passes": [
+      0.5,
+      1.2,
+      1.7
+     ],
+     "premiere": 1.8,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 1.46,
+     "processeur": 46.72,
+     "pas": [
+      5.867,
+      1.713,
+      2.28,
+      1.853,
+      1.3,
+      1.547,
+      1.573,
+      1.46
+     ],
+     "confirmation": 1.227,
+     "pasConfirmation": [
+      1.773,
+      1.227,
+      1.207,
+      2.1
+     ]
+    },
+    "duree_s": 0.456,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "processeur",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-cpu6-2",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "20.33 17.67 20.90",
+   "carte_occupee_avant_pct": 0,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 5727,
+   "executer_ms": 5553.6,
+   "creer_parcours_ms": 158.2,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.6,
+     "passes": [
+      1.3,
+      0.6,
+      0.6
+     ],
+     "premiere": 9.6,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.42,
+     "processeur": 13.44,
+     "pas": [
+      2.067,
+      0.507,
+      0.84,
+      0.593,
+      0.42,
+      0.547,
+      0.587,
+      0.407
+     ]
+    },
+    "duree_s": 5.552,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "preparation",
+      "images_par_rafale": null,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 5347.5,
+      "duree_ms": 5347.5,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-cpu6-3",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 6.0,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "81.62 33.72 26.27",
+   "carte_occupee_avant_pct": 88,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 705,
+   "executer_ms": 347.5,
+   "creer_parcours_ms": 337.2,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1.5,
+     "passes": [
+      1.5,
+      3.4,
+      0.8
+     ],
+     "premiere": 2.8,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 1.08,
+     "processeur": 34.56,
+     "pas": [
+      3.46,
+      1.107,
+      0.72,
+      1.14,
+      0.853,
+      1.08,
+      1.98,
+      1.127
+     ],
+     "confirmation": 0.96,
+     "pasConfirmation": [
+      1.113,
+      0.887,
+      0.96,
+      1.513
+     ]
+    },
+    "duree_s": 0.344,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "processeur",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-m5-1",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "35.70 19.33 21.64",
+   "carte_occupee_avant_pct": 88,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2789,
+   "executer_ms": 2738.8,
+   "creer_parcours_ms": 20.8,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.5,
+     "passes": [
+      1.1,
+      0.3,
+      0.5
+     ],
+     "premiere": 8.5,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.073,
+     "processeur": 2.347,
+     "pas": [
+      0.3,
+      0.067,
+      0.093,
+      0.087,
+      0.053,
+      0.08,
+      0.093,
+      0.073
+     ]
+    },
+    "duree_s": 2.739,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 12.75,
+      "fil_principal_estime_ms": 4.05,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 593,
+      "duree_ms": 1177.3,
+      "par_vue": [
+       [
+        12.75,
+        1.35
+       ],
+       [
+        8.55,
+        1
+       ],
+       [
+        9.25,
+        0.9
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 46.9,
+      "fil_principal_estime_ms": 9.6,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 396,
+      "duree_ms": 1377.6,
+      "par_vue": [
+       [
+        46.9,
+        3.2
+       ],
+       [
+        35.45,
+        2.1
+       ],
+       [
+        38.25,
+        2.2
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-m5-2",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "33.00 19.04 21.53",
+   "carte_occupee_avant_pct": 80,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2445,
+   "executer_ms": 2372.7,
+   "creer_parcours_ms": 40.4,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.6,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.7,
+     "passes": [
+      1.7,
+      0.7,
+      0.6
+     ],
+     "premiere": 10.9,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.127,
+     "processeur": 4.053,
+     "pas": [
+      0.56,
+      0.133,
+      0.193,
+      0.173,
+      0.1,
+      0.127,
+      0.167,
+      0.14
+     ]
+    },
+    "duree_s": 2.372,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 18.35,
+      "fil_principal_estime_ms": 9.15,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1291,
+      "duree_ms": 2196.1,
+      "par_vue": [
+       [
+        18.35,
+        3.05
+       ],
+       [
+        13.5,
+        2.15
+       ],
+       [
+        12.2,
+        2.05
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-m5-3",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "30.76 18.81 21.43",
+   "carte_occupee_avant_pct": 74,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2932,
+   "executer_ms": 2837.7,
+   "creer_parcours_ms": 61.8,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.7,
+     "passes": [
+      1.7,
+      0.7,
+      0.5
+     ],
+     "premiere": 7.3,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.267,
+     "processeur": 8.533,
+     "pas": [
+      0.807,
+      0.193,
+      0.28,
+      0.58,
+      0.327,
+      0.267,
+      0.287,
+      0.233
+     ]
+    },
+    "duree_s": 2.837,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 22.8,
+      "fil_principal_estime_ms": 9.45,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1826.4,
+      "duree_ms": 2653.4,
+      "par_vue": [
+       [
+        22.8,
+        3.15
+       ],
+       [
+        11,
+        2.1
+       ],
+       [
+        12.6,
+        2.35
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-m5-4",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "30.62 18.98 21.47",
+   "carte_occupee_avant_pct": 87,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 2750,
+   "executer_ms": 2655.9,
+   "creer_parcours_ms": 69.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "medium",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.6,
+     "passes": [
+      0.6,
+      0.6,
+      0.7
+     ],
+     "premiere": 1.3,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.18,
+     "processeur": 5.76,
+     "pas": [
+      0.813,
+      0.22,
+      0.413,
+      0.333,
+      0.18,
+      0.213,
+      0.24,
+      0.167
+     ]
+    },
+    "duree_s": 2.656,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 8.05,
+      "fil_principal_estime_ms": 3.45,
+      "fil_principal_recalcule_ms": null,
+      "retenu": true,
+      "sans_espoir": null,
+      "images_par_rafale": 4,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1019.8,
+      "duree_ms": 1655.5,
+      "par_vue": [
+       [
+        8.05,
+        1.15
+       ],
+       [
+        4.9,
+        0.875
+       ],
+       [
+        5.2,
+        0.75
+       ]
+      ]
+     },
+     {
+      "palier": "high",
+      "cout_ms": 24.7,
+      "fil_principal_estime_ms": 5.25,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       3420,
+       2214
+      ],
+      "decor_ms": 310.6,
+      "duree_ms": 808.6,
+      "par_vue": [
+       [
+        24.7,
+        1.75
+       ],
+       [
+        17.3,
+        1.2
+       ],
+       [
+        17.25,
+        1
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-m5-5",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "12.93 15.78 19.91",
+   "carte_occupee_avant_pct": 84,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3126,
+   "executer_ms": 3040.8,
+   "creer_parcours_ms": 48.8,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.7,
+     "passes": [
+      0.7,
+      1,
+      0.7
+     ],
+     "premiere": 4,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.14,
+     "processeur": 4.48,
+     "pas": [
+      0.66,
+      0.187,
+      0.273,
+      0.2,
+      0.133,
+      0.16,
+      0.193,
+      0.14
+     ]
+    },
+    "duree_s": 3.041,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 17.7,
+      "fil_principal_estime_ms": 11.1,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 1888.9,
+      "duree_ms": 2853.9,
+      "par_vue": [
+       [
+        17.7,
+        3.7
+       ],
+       [
+        10.5,
+        2.7
+       ],
+       [
+        11.75,
+        2.55
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-m5-6",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "18.81 16.92 20.27",
+   "carte_occupee_avant_pct": 90,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3928,
+   "executer_ms": 3782.9,
+   "creer_parcours_ms": 84.6,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.9,
+     "passes": [
+      1.1,
+      0.9,
+      0.6
+     ],
+     "premiere": 4.9,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.3,
+     "processeur": 9.6,
+     "pas": [
+      0.807,
+      0.413,
+      0.56,
+      0.333,
+      0.413,
+      0.3,
+      0.333,
+      0.273
+     ]
+    },
+    "duree_s": 3.782,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 16.7,
+      "fil_principal_estime_ms": 11.1,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2499.5,
+      "duree_ms": 3546.5,
+      "par_vue": [
+       [
+        16.7,
+        3.7
+       ],
+       [
+        11.95,
+        2.55
+       ],
+       [
+        10.95,
+        2.4
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-m5-7",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "35.21 20.53 21.51",
+   "carte_occupee_avant_pct": 90,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3986,
+   "executer_ms": 3852.3,
+   "creer_parcours_ms": 86.8,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 0.7,
+     "passes": [
+      0.7,
+      0.5,
+      0.7
+     ],
+     "premiere": 4.7,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.48,
+     "processeur": 15.36,
+     "pas": [
+      1.3,
+      0.34,
+      0.387,
+      0.38,
+      0.48,
+      0.72,
+      0.753,
+      0.42
+     ]
+    },
+    "duree_s": 3.852,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 19.45,
+      "fil_principal_estime_ms": 11.1,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2575.4,
+      "duree_ms": 3649.8,
+      "par_vue": [
+       [
+        19.45,
+        3.7
+       ],
+       [
+        13.8,
+        2.8
+       ],
+       [
+        11.6,
+        2.5
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-m5-8",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "natif",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "43.60 22.51 22.21",
+   "carte_occupee_avant_pct": 95,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 3657,
+   "executer_ms": 3532.7,
+   "creer_parcours_ms": 89.1,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.7,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": false,
+     "passe": 1,
+     "passes": [
+      2.9,
+      1,
+      0.8
+     ],
+     "premiere": 7.1,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.34,
+     "processeur": 10.88,
+     "pas": [
+      1.18,
+      0.68,
+      1.18,
+      0.513,
+      0.293,
+      0.407,
+      0.34,
+      0.38
+     ]
+    },
+    "duree_s": 3.532,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": 21.55,
+      "fil_principal_estime_ms": 11.55,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": null,
+      "images_par_rafale": 2,
+      "toile": [
+       1710,
+       1107
+      ],
+      "decor_ms": 2394.2,
+      "duree_ms": 3319.3,
+      "par_vue": [
+       [
+        21.55,
+        3.85
+       ],
+       [
+        12.3,
+        2.05
+       ],
+       [
+        9.6,
+        2.35
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "essai": "v3m-sw-1",
+   "construction": "v3m",
+   "fenetre_visible": false,
+   "processeur_ralenti": 1,
+   "ralenti_pendant_la_course_seulement": null,
+   "rendu": "swiftshader",
+   "economie_energie": false,
+   "detection": "oui",
+   "charge_avant": "17.87 17.24 20.70",
+   "carte_occupee_avant_pct": 91,
+   "fenetre": [
+    1710,
+    1107,
+    2
+   ],
+   "ecran": [
+    1710,
+    1107
+   ],
+   "voile_ms": 1464,
+   "executer_ms": 1363.6,
+   "creer_parcours_ms": 68.1,
+   "erreur_banc": null,
+   "verdict": {
+    "selection": "low",
+    "statut": "ok",
+    "cadence_ms": 16.8,
+    "cadence_bridee": false,
+    "sonde": {
+     "logiciel": true,
+     "passe": null,
+     "passes": [],
+     "premiere": null,
+     "taille": [
+      512,
+      512
+     ]
+    },
+    "simulation": {
+     "pasMs": 0.167,
+     "processeur": 5.333,
+     "pas": [
+      0.653,
+      0.173,
+      0.28,
+      0.253,
+      0.14,
+      0.207,
+      0.227,
+      0.167
+     ]
+    },
+    "duree_s": 1.363,
+    "mesures": [
+     {
+      "palier": "medium",
+      "cout_ms": null,
+      "fil_principal_estime_ms": null,
+      "fil_principal_recalcule_ms": null,
+      "retenu": false,
+      "sans_espoir": "logiciel",
+      "images_par_rafale": null,
+      "toile": null,
+      "decor_ms": 0,
+      "duree_ms": 0,
+      "par_vue": []
+     }
+    ]
+   }
+  }
+ ]
+}
