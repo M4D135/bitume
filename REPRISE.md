@@ -19,7 +19,7 @@ Mots exacts de David dans `AGENTS.md` (dernière section). Ordre retenu, dicté 
 1. **5B fluidité** (en cours) : intégrer, mesurer, publier.
 2. **Moteur** : pluie et neige sur l'écran (lot 19), puis lumière, ombres et eau (lot 21), dans FERRO après la 0.3.10.
 3. **17 conduite** (physique `p10`), **18 public** en humains d'EMPRISE, **20 échappements** (flammes et pétarades).
-   Puis **23 cockpit** (matières, reflets, relief, netteté ; s'appuie sur le lot 21) et **22 génération procédurale** (détail, matières, diversité).
+   Puis **23 cockpit** (matières, reflets, relief, netteté ; s'appuie sur le lot 21) et **22 circuits et génération procédurale** (relief, irrégularités de chaussée, aménagements de course, matières, diversité). **24 vibrations de manette** avec la conduite.
 4. Reprise de la master liste : **12A** roues et pneus, puis Russie, Monaco, Marseille.
 Fait : **0.2.39** en ligne (`8bd3d86`), plus de vibration de manette dans les menus.
 Études lancées le 18/11 au soir dans `~/Projects/bitume-wt/{conduite,public,vitre,son,echappement,photo}` (branches locales `conduite/etude`, `etude/*`) : elles rendent un plan, un prototype et des captures par lot, rien n'est fusionné.
