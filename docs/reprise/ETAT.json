@@ -180,7 +180,9 @@
       "18": "public en humains d EMPRISE",
       "19": "pluie et neige sur l écran",
       "20": "échappements : flammes et pétarades",
-      "21": "photoréalisme : lumière, ombres, eau"
+      "21": "photoréalisme : lumière, ombres, eau",
+      "22": "génération procédurale plus détaillée, diversifiée, meilleures matières",
+      "23": "cockpit : matières, reflets, grain, relief, netteté"
     },
     "fait": "0.2.39 en ligne (8bd3d86, sha256 acbea8562b828aeb…) : plus de vibration de manette dans les menus",
     "etudes": "~/Projects/bitume-wt/{conduite,public,vitre,son,echappement,photo}, branches locales conduite/etude et etude/* ; rien de fusionné"
