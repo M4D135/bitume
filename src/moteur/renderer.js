@@ -36,8 +36,9 @@
   // once per view, and reuse bounds rather than allocating an object (and, on
   // WebGPU, a mapped position array) for each lot in each pass.
   function lotViewState(){
-    const records=[];let source=null;
-    return {records,reset(){records.length=0;source=null;},prepare(lots,eye,vertical,height,cover){
+    const records=[];let source=null,frame=0;
+    return {records,get frame(){return frame;},reset(){records.length=0;source=null;},prepare(lots,eye,vertical,height,cover){
+      frame++;
       if(source!==lots){records.length=0;for(const lot of lots)records.push({lot,bounds:{p:lot.centre,radius:lot.rayon},distance:0,near:true});source=lots;}
       for(const entry of records){const l=entry.lot,dx=l.centre[0]-eye[0],dy=l.centre[1]-eye[1],dz=l.centre[2]-eye[2];entry.bounds.p=l.centre;entry.bounds.radius=l.rayon;entry.distance=Math.sqrt(dx*dx+dy*dy+dz*dz)-l.rayon;
         const active=l.groundCover===true&&cover?.enabled;entry.range=active&&cover.range[1]>0?cover.range[1]:(l.portee||Infinity);
@@ -1390,6 +1391,102 @@
     return {indices,stats,restore(name){const record=byName.get(name);if(!record?.active)return null;record.active=false;indices.set(record.indices,record.offset/INDEX_OCTETS);stats.restored++;return record;}};
   }
 
+  // Immutable index subsets remove only ranks whose existing shader coverage
+  // is already zero. Preserve the order and all six attributes of every kept
+  // vertex; the ordinary index ranges and mutable vertex storage stay intact.
+  function groundCoverGeometry(source,baseIndices=source.indices){
+    const records=new Map(),pending=[];let additional=0;
+    for(const name of FORMES_LIBRES.keys()){
+      const shape=source.ranges[name];if(!shape?.count)continue;
+      const first=shape.offset/INDEX_OCTETS,ranks=new Uint8Array(shape.count/3),counts=new Uint32Array(8);let valid=true,mask=0;
+      for(let t=0;t<ranks.length&&valid;t++){
+        let cx=0,cz=0;
+        for(let j=0;j<3;j++){
+          const at=source.indices[first+t*3+j]*6,x=Math.floor(Math.fround(source.vertices[at]+.5)*32),z=Math.floor(Math.fround(source.vertices[at+2]+.5)*32);
+          if(x<0||x>=32||z<0||z>=32||!Number.isFinite(x)||!Number.isFinite(z)||j&&(x!==cx||z!==cz)){valid=false;break;}cx=x;cz=z;
+        }
+        if(valid){const rank=((cx*13+cz*7)%8+8)%8;ranks[t]=rank;counts[rank]+=3;mask|=1<<rank;}
+      }
+      if(!valid)continue;
+      const ranges=[];let count=0;
+      for(let k=0;k<8;k++){count+=counts[k];ranges.push({count,offset:shape.offset});if(count&&count!==shape.count)additional+=count;}
+      const record={name,active:true,mask,ranges};records.set(name,record);pending.push({shape,first,ranks,record});
+    }
+    const indices=additional?new Uint32Array(baseIndices.length+additional):baseIndices;
+    if(additional)indices.set(baseIndices);let offset=baseIndices.length;
+    for(const {shape,first,ranks,record} of pending)for(let k=0;k<8;k++){
+      const range=record.ranges[k];if(!range.count||range.count===shape.count)continue;
+      range.offset=offset*INDEX_OCTETS;
+      for(let t=0;t<ranks.length;t++)if(ranks[t]<=k)for(let j=0;j<3;j++)indices[offset++]=baseIndices[first+t*3+j];
+    }
+    return {indices,records,stats:{shapes:records.size,indexBytes:indices.byteLength,additionalIndexBytes:additional*INDEX_OCTETS},
+      invalidate(name){const record=records.get(name);if(record)record.active=false;}};
+  }
+
+  // Pair only static, identical instance rows, with matching near/far groups.
+  // Unrecognised custom lots retain the historical whole-lot path. One fixed
+  // run buffer per lot replaces per-frame arrays, objects and instance uploads.
+  function groundCoverPlan(lot,near,far,index){
+    if(lot.groundCover!==true||!near?.values.length||!far||near.values.length!==far.values.length||near.groups.length!==far.groups.length)return null;
+    const a=new Uint32Array(near.values.buffer,near.values.byteOffset,near.values.length),b=new Uint32Array(far.values.buffer,far.values.byteOffset,far.values.length);
+    for(let i=0;i<a.length;i++)if(a[i]!==b[i])return null;
+    const groups=[];
+    for(let i=0;i<near.groups.length;i++){
+      const n=near.groups[i],f=far.groups[i],nr=index.records.get(n.name),fr=index.records.get(f.name);
+      if(n.count!==f.count||n.offset!==f.offset||!nr?.active||!fr?.active)return null;
+      groups.push({near:n,far:f,nearIndex:nr,farIndex:fr});
+    }
+    const length=near.values.length/16,points=new Float32Array(length*3),runs=new Uint32Array(length*4);
+    for(let i=0;i<length;i++){
+      const at=i*16,p=i*3,v=near.values,flags=v[at+11];if((flags&16)===0)return null;
+      points[p]=v[at];points[p+1]=v[at+1];points[p+2]=v[at+2];
+      if(!Number.isFinite(points[p]+points[p+1]+points[p+2]))return null;
+    }
+    return {groups,points,runs,length,count:0,frame:-1,tested:0,valid:true,supported:true};
+  }
+  function prepareGroundCover(plan,entry,viewFrame,eye,cover){
+    if(!plan.valid)return false;
+    if(plan.frame===viewFrame)return plan.supported;
+    plan.frame=viewFrame;plan.count=plan.tested=0;plan.supported=true;
+    for(const group of plan.groups)if(!group.nearIndex.active||!group.farIndex.active){plan.valid=false;return false;}
+    const density=cover.density,start=density[0],end=density[1],keep=density[2]*8,range=cover.range[1],fading=end>start&&keep<8;
+    const run=plan.runs,points=plan.points,min=entry.distance,max=min+2*entry.bounds.radius;
+    const allNear=fading&&max<start&&(range<=0||max<range),allFar=!entry.near&&(range<=0||max<range-.02);
+    for(let g=0;g<plan.groups.length;g++){
+      const group=plan.groups[g],first=group.near.offset/64,last=first+group.near.count;
+      // The far subset must contain every requested retained rank.
+      const canFar=group.farIndex.mask===(1<<keep)-1;
+      if(!canFar){plan.supported=false;return false;}
+      if(allNear||allFar&&canFar){const at=plan.count++*4;run[at]=g;run[at+1]=allNear?8:0;run[at+2]=first;run[at+3]=last-first;continue;}
+      let previous=-2,begin=first;
+      for(let i=first;i<last;i+=4){
+        let mode=-1;
+        // Four adjacent rows share the most detailed required subset. This
+        // bounds draw-call fragmentation without ever removing a live rank.
+        for(let j=i,stop=Math.min(last,i+4);j<stop;j++){
+          const p=j*3,dx=points[p]-eye[0],dy=points[p+1]-eye[1],dz=points[p+2]-eye[2],distance=Math.sqrt(dx*dx+dy*dy+dz*dz);
+          const margin=.01+distance*.000001,conservative=distance-margin;let required=8;plan.tested++;
+          if(range>0&&conservative>=range)required=-1;
+          // Keep the exact existing near/far decision: only invisible work is
+          // omitted, with no change to curvature, shading or LOD transitions.
+          else if(canFar&&!entry.near)required=0;
+          else if(fading&&conservative>start){
+            const t=Math.max(0,Math.min(1,(conservative-start)/(end-start))),progress=t*t*(3-2*t);
+            required=progress>=1?keep:Math.min(8,Math.ceil(8-progress*(8-keep)+.00001));
+            if(required>keep)required=required<=4?4:8;
+          }
+          if(required>mode)mode=required;
+        }
+        if(mode!==previous){
+          if(previous>=0){const at=plan.count++*4;run[at]=g;run[at+1]=previous;run[at+2]=begin;run[at+3]=i-begin;}
+          previous=mode;begin=i;
+        }
+      }
+      if(previous>=0){const at=plan.count++*4;run[at]=g;run[at+1]=previous;run[at+2]=begin;run[at+3]=last-begin;}
+    }
+    return true;
+  }
+
   function environmentInfo(value){
     if(!value)return null;
     const color=(v,fallback)=>Array.isArray(v)&&v.length>=3?v.slice(0,3).map((x,i)=>Number.isFinite(x)?Math.max(0,x):fallback[i]):fallback;
@@ -2313,11 +2410,11 @@
       return {distance,tilt};
     }
     const config=settings(options.sceneReflections?{...options,msaa:0}:options),worldFrag=worldFragment(config),postFrag=postFragment(config);
-    const source=geometry(),primitiveIndex=indexPrimitiveVertices(source),view=new Float32Array(16),projection=new Float32Array(16),vp=new Float32Array(16),overlayProjection=new Float32Array(16),overlayVP=new Float32Array(16);
+    const source=geometry(),primitiveIndex=indexPrimitiveVertices(source),groundIndex=groundCoverGeometry(source,primitiveIndex.indices),view=new Float32Array(16),projection=new Float32Array(16),vp=new Float32Array(16),overlayProjection=new Float32Array(16),overlayVP=new Float32Array(16);
     const shadowView=new Float32Array(16),shadowProjection=new Float32Array(16),shadowMatrix=new Float32Array(16),shadowMatrices=new Float32Array(48);
     const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12),lightDirections=new Float32Array(36),lightCones=new Float32Array(24);
     // BITUME : l’indexation EMPRISE est aussi utilisée sur WebGL2 ; formes libres inchangées.
-    const stats={drawCalls:0,triangles:0,instances:0,contextLost:false,webglVersion:2,backend:'webgl2',engine:'ferro-reference',bloom:false,shadows:false,shadowMapSize:0,shadowTileSize:0,msaa:0,reflections:false,primitiveIndex:primitiveIndex.stats};
+    const stats={drawCalls:0,triangles:0,instances:0,contextLost:false,webglVersion:2,backend:'webgl2',engine:'ferro-reference',bloom:false,shadows:false,shadowMapSize:0,shadowTileSize:0,msaa:0,reflections:false,primitiveIndex:primitiveIndex.stats,groundCoverIndex:groundIndex.stats};
     let program,depthProgram,postProgram,skyProgram,fxProgram,vao,postVao,vbo,ibo,worldBuffer,dynamicBuffer,overlayBuffer,fxBuffer,crowdBuffer,uniforms,postUniforms,skyUniforms,fxUniforms,depthMatrix,depthWind,depthLocalWind,ssrProgram,ssrUniforms;
     let post=null,msaaBuffer,msaaIdle=0,shadowTarget=null,shadowIdle=0,maxShadowTileSize=1024,whiteTexture=null,pbrTextures=[],targetKey='',shadowKey='',shadowLight=null;
     let world=[],worldIndex=spatialIndex([]),backgroundIndex=spatialIndex([]),lights=[],environment=null,worldBatch=pack([]),quality='auto',disposed=false,worldRevision=0,partitionState=null;
@@ -2347,7 +2444,7 @@
     }
     // BITUME : nappes (chaussée, accotements, terrain : triangles continus, matière et couleur par sommet) et lots
     // de décor (instances statiques groupées par portion de circuit, chacune avec sa version lointaine allégée).
-    let nappes=[],nappeVao=null,nappeVbo=null,nappeIbo=null,lots=[];
+    let nappes=[],nappeVao=null,nappeVbo=null,nappeIbo=null,lots=[],groundPlans=new WeakMap();
     const lotView=lotViewState();
     let viewCache=null,torchCache=null,sunCache=null,indexRevision=0,selectionGen=0;
     const cacheStats={viewFrames:0,viewRebuilds:0,torchRebuilds:0,sunRebuilds:0,marginDistance:1,marginAngle:8};
@@ -2560,7 +2657,7 @@
       vbo=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferData(gl.ARRAY_BUFFER,source.vertices,gl.STATIC_DRAW);
       gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,24,0);
       gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,3,gl.FLOAT,false,24,12);
-      ibo=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,primitiveIndex.indices,gl.STATIC_DRAW);
+      ibo=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,groundIndex.indices,gl.STATIC_DRAW);
       for(let i=2;i<6;i++) {gl.enableVertexAttribArray(i);gl.vertexAttribDivisor(i,1);}
       reflections?.dispose();reflections=options.sceneReflections&&window.FSceneReflections?window.FSceneReflections.create(gl,link):null;stats.sceneReflections=reflections?.stats;probeBuffer=gl.createBuffer();probeBatch=null;probeKey='';
       worldBuffer=gl.createBuffer();dynamicBuffer=gl.createBuffer();overlayBuffer=gl.createBuffer();fxBuffer=gl.createBuffer();
@@ -2638,9 +2735,10 @@
         l.paquet=pack(l.objets,environment);l.tampon=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,l.tampon);gl.bufferData(gl.ARRAY_BUFFER,l.paquet.values,gl.STATIC_DRAW);
         if(l.loin&&l.loin.length){l.paquetLoin=pack(l.loin,environment);l.tamponLoin=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,l.tamponLoin);gl.bufferData(gl.ARRAY_BUFFER,l.paquetLoin.values,gl.STATIC_DRAW);}
         else l.paquetLoin=null;
+        groundPlans.set(l,groundCoverPlan(l,l.paquet,l.paquetLoin,groundIndex));
       }
     }
-    function setLots(liste){for(const l of lots)for(const cle of ['tampon','tamponLoin'])if(l[cle])gl.deleteBuffer(l[cle]);lotView.reset();lots=(liste||[]).filter(l=>l&&l.objets);chargerLots();stats.lots=lots.length;}
+    function setLots(liste){for(const l of lots)for(const cle of ['tampon','tamponLoin'])if(l[cle])gl.deleteBuffer(l[cle]);lotView.reset();groundPlans=new WeakMap();lots=(liste||[]).filter(l=>l&&l.objets);chargerLots();stats.lots=lots.length;}
     function dessinerLots(eye,axes,horizontal,vertical,far,accepte){
       let dessines=0;
       for(const entry of lotView.records){const l=entry.lot;
@@ -2648,6 +2746,11 @@
         if(entry.cover&&entry.distance>entry.range)continue;
         if(accepte){if(!accepte(entry.bounds))continue;}
         else{if(entry.distance>Math.min(far,entry.range))continue;if(!visible(entry.bounds,eye,axes,horizontal,vertical,far))continue;}
+        const plan=entry.cover&&groundPlans.get(l),fresh=plan&&plan.frame!==lotView.frame;
+        if(plan&&prepareGroundCover(plan,entry,lotView.frame,vegetationState.eye,vegetationState)){
+          if(fresh)stats.lotInstanceTests+=plan.tested;
+          if(plan.count){renderGroundCover(plan,l.tampon,l.tamponLoin,!!accepte);dessines++;}continue;
+        }
         const proche=!l.paquetLoin||entry.near;
         renderBatch(proche?l.paquet:l.paquetLoin,proche?l.tampon:l.tamponLoin,false,!!accepte);dessines++;
       }
@@ -2657,7 +2760,9 @@
     // BITUME : désindexer seulement la primitive modifiée ; les anciennes occurrences restent indépendantes.
     function updateShape(name,vertices){
       const range=source.ranges[name];if(!range||vertices.length!==range.count*6)throw new Error('Shape vertex count changed: '+name);
+      groundIndex.invalidate(name);
       const restored=primitiveIndex.restore(name),start=source.indices[range.offset/INDEX_OCTETS]*6;source.vertices.set(vertices,start);
+      if(restored)groundIndex.indices.set(restored.indices,restored.offset/INDEX_OCTETS);
       if(!stats.contextLost){
         if(restored){gl.bindVertexArray(vao);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER,restored.offset,restored.indices);}
         gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferSubData(gl.ARRAY_BUFFER,start*4,vertices);
@@ -2732,6 +2837,17 @@
         const shape=source.ranges[group.name];
         gl.drawElementsInstanced(gl.TRIANGLES,shape.count,gl.UNSIGNED_INT,shape.offset,group.count);
         stats.drawCalls++;stats.triangles+=shape.count/3*group.count;if(!shadowPass)stats.instances+=group.count;
+      }
+    }
+    function renderGroundCover(plan,near,far,shadowPass){
+      let bound=null;
+      for(let i=0;i<plan.count;i++){
+        const at=i*4,group=plan.groups[plan.runs[at]],mode=plan.runs[at+1],first=plan.runs[at+2],count=plan.runs[at+3];
+        const shape=mode?group.nearIndex.ranges[mode-1]:source.ranges[group.far.name],buffer=mode?near:far;if(!shape.count)continue;
+        if(bound!==buffer){gl.bindBuffer(gl.ARRAY_BUFFER,buffer);bound=buffer;}
+        for(let k=2;k<6;k++)gl.vertexAttribPointer(k,4,gl.FLOAT,false,64,first*64+(k-2)*16);
+        gl.drawElementsInstanced(gl.TRIANGLES,shape.count,gl.UNSIGNED_INT,shape.offset,count);
+        stats.drawCalls++;stats.triangles+=shape.count/3*count;if(!shadowPass)stats.instances+=count;
       }
     }
     function cached(e,origin,forward,demiDiag,k,margin,tilt,near,far){
@@ -2949,7 +3065,7 @@
         -(right[0]*eye[0]+right[1]*eye[1]+right[2]*eye[2]),-(up[0]*eye[0]+up[1]*eye[1]+up[2]*eye[2]),forward[0]*eye[0]+forward[1]*eye[1]+forward[2]*eye[2],1]);
       const fov=Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/180,f=1/Math.tan(fov*.5),near=camera.near||.045,far=camera.far||180;
       vegetation.update(fx,eye,1/f,canvas.height);stats.windStrength=vegetationState.strength;stats.groundCover=vegetationState.enabled;
-      lotView.prepare(lots,eye,1/f,canvas.height,vegetationState);stats.lotDistanceTests=lots.length;
+      lotView.prepare(lots,eye,1/f,canvas.height,vegetationState);stats.lotDistanceTests=lots.length;stats.lotInstanceTests=0;
       projection.fill(0);projection[0]=f/(canvas.width/canvas.height);projection[5]=f;projection[10]=(far+near)/(near-far);projection[11]=-1;projection[14]=2*far*near/(near-far);
       multiply(projection,view,vp);
       if(camera.chunked&&!chunks.size)rebuildChunks();
@@ -3101,7 +3217,7 @@
     canvas.addEventListener('webglcontextlost',lost);canvas.addEventListener('webglcontextrestored',restored);
     function dispose() {
       if(disposed) return;disposed=true;profiler?.dispose();surface?.dispose();reflections?.dispose();if(probeBuffer)gl.deleteBuffer(probeBuffer);if(fskyProgram)gl.deleteProgram(fskyProgram);
-      localWind.reset();lotView.reset();
+      localWind.reset();lotView.reset();groundPlans=new WeakMap();
       canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('webglcontextrestored',restored);
       for(const c of chunks.values())gl.deleteBuffer(c.buffer);chunks.clear();
       for(const buffer of [vbo,ibo,worldBuffer,dynamicBuffer,overlayBuffer,fxBuffer]) gl.deleteBuffer(buffer);if(crowdBuffer)gl.deleteBuffer(crowdBuffer);
@@ -3150,7 +3266,7 @@
   }
   // Both GPU backends share the procedural shapes, instance layout and visibility
   // rules. No rendering calls or GPU state are shared between the APIs.
-  const shared={bitumeWeather,localWindState,vegetationFrame,groundCoverRank,lotViewState,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
+  const shared={bitumeWeather,localWindState,vegetationFrame,groundCoverRank,groundCoverGeometry,groundCoverPlan,prepareGroundCover,lotViewState,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
   function mesh(shape,p,s,mat,r=[0,0,0],emissive=0){
     return {shape,p,s,mat,r,emissive,color:undefined,surface:undefined,overlay:false,fx:false,
       alpha:undefined,additive:undefined,outdoor:undefined,actorPart:undefined,actorLod:0,

@@ -6,6 +6,8 @@ import assert from 'node:assert/strict';
 const require = createRequire(import.meta.url);
 require('../src/graphismes.js');
 require('../src/ambiance.js');
+require('../src/saisons.js');
+require('../src/conditions-course.js');
 require('../src/qualite.js');
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 function bloc(debut, fin) {
@@ -33,7 +35,7 @@ const executer = new Function('B', 'stockage', `
     setWorld: (...args) => appels.rendu.push(['world',...args]), setNappes: v => appels.rendu.push(['nappes',v]), setLots: v => appels.rendu.push(['lots',v]) };
   const gpuModeste = false, EL = { role: null }, retro = { j1: null, j2: null };
   let scene = null, session = null, decorEnrichi = true, graineCourse = 0, cameraEssai = null, horlogeReelle = 0, tPrec = 0, dureeImage = 16, ecran = 'titre';
-  const remplirPoses = () => {}, aller = nom => { ecran = nom; };
+  const remplirPoses = () => {}, aller = nom => { ecran = nom; }, majPreparation = () => {}, afficherConditions = () => {}, actualiserConditions = () => {};
   B = { ...B,
     decor: { construire: (c,o) => { appels.decor.push(o); return { nappes: [], lots: [], obstacles: [], atmosphere: { sunDirection: [1,1,0] } }; } },
     obstacles: { creer: objets => ({ objets }) },
@@ -58,6 +60,7 @@ const executer = new Function('B', 'stockage', `
   ${bloc('  function restaurerReference()', '  // Banc (console)')}
   lancer('course',0);
   return { reglages, stockage, appels, radios, installer, reference, restaurerReference, lancer,
+    preparer: () => { ecran = 'preparation'; },
     get session() { return session; }, get scene() { return scene; }, get profil() { return profilDe(session); },
     choisir: (name,value) => ecouteurs.get('change')({ target: { name, value } }) };
 `);
@@ -91,16 +94,27 @@ verifier('gestionnaire change : les trois choix sont sauvegardés et rechargés'
   assert.equal(JSON.parse(j.stockage['bitume.reglages']).vegetation,'profil');
 });
 
-verifier('faune et moment de la course : préférences indépendantes persistées', () => {
+verifier('faune et moment avant départ : préférences indépendantes persistées', () => {
   const j=jeu({qualite:'low'}), sc=j.scene;
   assert.equal(j.reglages.moment,'jour');assert.equal(j.profil.faune,'off');
   j.choisir('faune','ultra');j.choisir('momentDepart','nuit');
-  for(const nom of ['moment','momentDepart']) assert.equal(j.radios.get(nom).find(r=>r.checked).value,'nuit');
+  assert.equal(j.radios.get('momentDepart').find(r=>r.checked).value,'nuit');
   assert.equal(j.profil.faune,'ultra');assert.strictEqual(j.scene,sc,'aucune reconstruction du terrain');
   const prefs=JSON.parse(j.stockage['bitume.reglages']), recharge=jeu(prefs);
   assert.equal(recharge.reglages.faune,'ultra');assert.equal(recharge.reglages.moment,'nuit');
-  j.choisir('moment','inconnu');assert.equal(j.reglages.moment,'jour');
+  j.choisir('momentDepart','inconnu');assert.equal(j.reglages.moment,'jour');
   j.choisir('faune','off');assert.equal(j.profil.faune,'off');
+});
+verifier('saison choisie avant départ : sauvegarde et cache du décor distincts', () => {
+  const j = jeu({ saison: 'ete' }), avant = j.scene;
+  j.preparer(); j.choisir('saisonDepart', 'hiver');
+  j.installer(0); // Reconstruction appelée par la résolution de préparation, qualifiée dans conditions-integration.
+  assert.equal(j.reglages.saison, 'hiver'); assert.notStrictEqual(j.scene, avant);
+  assert.equal(j.scene.saison, 'hiver'); assert.equal(j.appels.decor.at(-1).saison, 'hiver');
+  assert.equal(JSON.parse(j.stockage['bitume.reglages']).saison, 'hiver');
+  assert.equal(jeu({ saison: 'erreur' }).reglages.saison, 'ete');
+  const ref = jeu({ saison: 'automne' }); ref.reference({ saison: 'printemps' });
+  assert.equal(ref.reglages.saison, 'printemps'); ref.restaurerReference(); assert.equal(ref.reglages.saison, 'automne');
 });
 
 verifier('AA et ombres changent le profil sans reconstruire le circuit ni la séance', () => {

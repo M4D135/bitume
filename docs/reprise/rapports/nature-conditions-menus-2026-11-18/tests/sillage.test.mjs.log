@@ -1,0 +1,8 @@
+ok flux dans la direction de vitesse, distincte du cap de la caisse en dérive
+ok marche arrière et vitesse signée orientent le sillage correctement
+ok arrêt, épave, tunnel ou données invalides ne produisent aucun souffle artificiel
+ok pool borné et références identiques pendant 2 000 images, partagées par les vues
+ok téléportation et vitesses extrêmes ne créent ni impulsion de position ni rayon sans limite
+ok brume réduite sur les trois biomes, atmosphère source et météo conservées
+ok ambiance réutilisée entre vues et images sans perdre pluie, humidité ou vent
+sillage et brume : 7 contrôles passés

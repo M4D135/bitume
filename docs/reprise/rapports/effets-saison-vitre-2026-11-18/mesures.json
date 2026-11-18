@@ -1,0 +1,459 @@
+{
+  "protocole": "CPU Node, 4000 appels après chauffe. Effets 3D : vrais décors, caméra fixe puis trajet préparé à 180 km/h, animation à 60 Hz. Vitre : Canvas2D instrumenté sans rasterisation, appel hôte 120 Hz et simulation 30 Hz ; les timings ne mesurent ni le GPU, ni la rasterisation Canvas2D, ni le débit d’un appareil de jeu.",
+  "node": "v24.22.3",
+  "hashes": {
+    "faune": "c668c463a58a2f2a01506ee396195d4d433900e22aa191e33ee10ae61c8a5529",
+    "effets-saison": "12337e99af3102971e26816a8e8e096276b90c921a07fc9fdc904613779e9abe",
+    "vitre": "a2327a2ceacbbe9c16364adc7b7dd02e76e7b19ec8277b7390ae9806af2b3cfc",
+    "circuit": "24aad5f7b4c13a21c122d800cd3661dd3a71e1e32b94d2b12b9eb3abe8103061",
+    "ecologie": "90c0720de150cea4e479eff553fdd85abaf6761046cd4d52b5851c149edf8b86",
+    "saisons": "679d893997e06b3fab6185b58de02485962b313b6d3d0bbe867c85e110bd03c8",
+    "decor": "b203af04641674007a4ed71a284e19effe19399725256951da48913de4b20a5c"
+  },
+  "scenes": [
+    {
+      "theme": "foret",
+      "saison": "automne",
+      "creationMs": 5.675264000000027,
+      "variationHeapApresGc": 838496,
+      "sourcesArbres": 1082,
+      "sourcesFeuillesAdmissibles": 1082,
+      "objetsPoolesParVue": 608,
+      "vues": 2
+    },
+    {
+      "theme": "montagne",
+      "saison": "hiver",
+      "creationMs": 3.4498839999999973,
+      "variationHeapApresGc": 858464,
+      "sourcesArbres": 0,
+      "sourcesFeuillesAdmissibles": 0,
+      "objetsPoolesParVue": 608,
+      "vues": 2
+    }
+  ],
+  "effets": [
+    {
+      "theme": "foret",
+      "qualite": "off",
+      "camera": "fixe",
+      "images": 4000,
+      "moyenneObjets": 0,
+      "maximumObjets": 0,
+      "selections": 0,
+      "p50ms": 0.00009000000000014552,
+      "p95ms": 0.00022999999998774,
+      "maximumMs": 0.010656000000039967
+    },
+    {
+      "theme": "foret",
+      "qualite": "off",
+      "camera": "trajet_180kmh",
+      "images": 4000,
+      "moyenneObjets": 0,
+      "maximumObjets": 0,
+      "selections": 0,
+      "p50ms": 0.00009000000000014552,
+      "p95ms": 0.0001699999999686952,
+      "maximumMs": 0.009283999999979642
+    },
+    {
+      "theme": "foret",
+      "qualite": "low",
+      "camera": "fixe",
+      "images": 4000,
+      "moyenneObjets": 5.859,
+      "maximumObjets": 6,
+      "selections": 0,
+      "p50ms": 0.0009110000000305263,
+      "p95ms": 0.0018129999999700885,
+      "maximumMs": 0.4271929999999884
+    },
+    {
+      "theme": "foret",
+      "qualite": "low",
+      "camera": "trajet_180kmh",
+      "images": 4000,
+      "moyenneObjets": 0.19425,
+      "maximumObjets": 6,
+      "selections": 999,
+      "p50ms": 0.0004710000000045511,
+      "p95ms": 0.035162999999954536,
+      "maximumMs": 0.6957780000000184
+    },
+    {
+      "theme": "foret",
+      "qualite": "medium",
+      "camera": "fixe",
+      "images": 4000,
+      "moyenneObjets": 17.57425,
+      "maximumObjets": 18,
+      "selections": 0,
+      "p50ms": 0.0014119999999593347,
+      "p95ms": 0.012568999999984953,
+      "maximumMs": 0.7762880000000223
+    },
+    {
+      "theme": "foret",
+      "qualite": "medium",
+      "camera": "trajet_180kmh",
+      "images": 4000,
+      "moyenneObjets": 0.32925,
+      "maximumObjets": 9,
+      "selections": 999,
+      "p50ms": 0.00021000000003823516,
+      "p95ms": 0.008292000000039934,
+      "maximumMs": 0.1241059999999834
+    },
+    {
+      "theme": "foret",
+      "qualite": "high",
+      "camera": "fixe",
+      "images": 4000,
+      "moyenneObjets": 37.795,
+      "maximumObjets": 41,
+      "selections": 0,
+      "p50ms": 0.013260000000059335,
+      "p95ms": 0.019869999999968968,
+      "maximumMs": 0.30894499999999425
+    },
+    {
+      "theme": "foret",
+      "qualite": "high",
+      "camera": "trajet_180kmh",
+      "images": 4000,
+      "moyenneObjets": 0.36475,
+      "maximumObjets": 13,
+      "selections": 999,
+      "p50ms": 0.00037099999997280975,
+      "p95ms": 0.01740600000005088,
+      "maximumMs": 0.0639969999999721
+    },
+    {
+      "theme": "foret",
+      "qualite": "ultra",
+      "camera": "fixe",
+      "images": 4000,
+      "moyenneObjets": 98.22725,
+      "maximumObjets": 104,
+      "selections": 0,
+      "p50ms": 0.008752999999956046,
+      "p95ms": 0.012618999999972402,
+      "maximumMs": 0.5383600000000115
+    },
+    {
+      "theme": "foret",
+      "qualite": "ultra",
+      "camera": "trajet_180kmh",
+      "images": 4000,
+      "moyenneObjets": 0.36475,
+      "maximumObjets": 13,
+      "selections": 999,
+      "p50ms": 0.00021000000003823516,
+      "p95ms": 0.008763000000044485,
+      "maximumMs": 0.10421699999994871
+    },
+    {
+      "theme": "montagne",
+      "qualite": "off",
+      "camera": "fixe",
+      "images": 4000,
+      "moyenneObjets": 0,
+      "maximumObjets": 0,
+      "selections": 0,
+      "p50ms": 0.00013000000001284207,
+      "p95ms": 0.00018000000000029104,
+      "maximumMs": 0.05104600000004211
+    },
+    {
+      "theme": "montagne",
+      "qualite": "off",
+      "camera": "trajet_180kmh",
+      "images": 4000,
+      "moyenneObjets": 0,
+      "maximumObjets": 0,
+      "selections": 0,
+      "p50ms": 0.00007000000005064066,
+      "p95ms": 0.00008100000002286833,
+      "maximumMs": 0.05959900000004836
+    },
+    {
+      "theme": "montagne",
+      "qualite": "low",
+      "camera": "fixe",
+      "images": 4000,
+      "moyenneObjets": 17.4335,
+      "maximumObjets": 19,
+      "selections": 0,
+      "p50ms": 0.0019230000000334257,
+      "p95ms": 0.0030140000000073996,
+      "maximumMs": 0.18225399999994352
+    },
+    {
+      "theme": "montagne",
+      "qualite": "low",
+      "camera": "trajet_180kmh",
+      "images": 4000,
+      "moyenneObjets": 10.26025,
+      "maximumObjets": 29,
+      "selections": 922,
+      "p50ms": 0.0037360000000035143,
+      "p95ms": 0.021322000000054686,
+      "maximumMs": 0.9506910000000062
+    },
+    {
+      "theme": "montagne",
+      "qualite": "medium",
+      "camera": "fixe",
+      "images": 4000,
+      "moyenneObjets": 27.4665,
+      "maximumObjets": 31,
+      "selections": 0,
+      "p50ms": 0.004367000000002008,
+      "p95ms": 0.006669999999985521,
+      "maximumMs": 1.7139610000000403
+    },
+    {
+      "theme": "montagne",
+      "qualite": "medium",
+      "camera": "trajet_180kmh",
+      "images": 4000,
+      "moyenneObjets": 19.43675,
+      "maximumObjets": 83,
+      "selections": 922,
+      "p50ms": 0.012428999999997359,
+      "p95ms": 0.03371099999992566,
+      "maximumMs": 2.7411670000000186
+    },
+    {
+      "theme": "montagne",
+      "qualite": "high",
+      "camera": "fixe",
+      "images": 4000,
+      "moyenneObjets": 61.73575,
+      "maximumObjets": 68,
+      "selections": 0,
+      "p50ms": 0.01061600000002727,
+      "p95ms": 0.01670600000011291,
+      "maximumMs": 0.3849800000000414
+    },
+    {
+      "theme": "montagne",
+      "qualite": "high",
+      "camera": "trajet_180kmh",
+      "images": 4000,
+      "moyenneObjets": 47.07275,
+      "maximumObjets": 212,
+      "selections": 922,
+      "p50ms": 0.022463999999899897,
+      "p95ms": 0.06330500000012762,
+      "maximumMs": 0.7910259999998743
+    },
+    {
+      "theme": "montagne",
+      "qualite": "ultra",
+      "camera": "fixe",
+      "images": 4000,
+      "moyenneObjets": 163.047,
+      "maximumObjets": 173,
+      "selections": 0,
+      "p50ms": 0.029554000000189262,
+      "p95ms": 0.04317499999979191,
+      "maximumMs": 2.3423870000001443
+    },
+    {
+      "theme": "montagne",
+      "qualite": "ultra",
+      "camera": "trajet_180kmh",
+      "images": 4000,
+      "moyenneObjets": 64.63725,
+      "maximumObjets": 307,
+      "selections": 922,
+      "p50ms": 0.031267000000070766,
+      "p95ms": 0.07654600000000755,
+      "maximumMs": 0.7981710000001385
+    }
+  ],
+  "vitre": [
+    {
+      "qualite": "off",
+      "type": "pluie",
+      "appelsHote": 4000,
+      "dessins": 0,
+      "pixels": 0,
+      "moyenneDepots": 0,
+      "maximumDepots": 0,
+      "commandesCanvas": 0,
+      "p50ms": 0.00016100000016194826,
+      "p95ms": 0.00019000000020241714,
+      "maximumMs": 0.17571399999997084
+    },
+    {
+      "qualite": "off",
+      "type": "neige",
+      "appelsHote": 4000,
+      "dessins": 0,
+      "pixels": 0,
+      "moyenneDepots": 0,
+      "maximumDepots": 0,
+      "commandesCanvas": 0,
+      "p50ms": 0.00010000000020227162,
+      "p95ms": 0.00011100000006081245,
+      "maximumMs": 0.0066700000002128945
+    },
+    {
+      "qualite": "low",
+      "type": "pluie",
+      "appelsHote": 4000,
+      "dessins": 1000,
+      "pixels": 1998100,
+      "moyenneDepots": 9.845,
+      "maximumDepots": 10,
+      "commandesCanvas": 101400,
+      "p50ms": 0.00006000000007588824,
+      "p95ms": 0.0014530000000831933,
+      "maximumMs": 0.05403200000000652
+    },
+    {
+      "qualite": "low",
+      "type": "neige",
+      "appelsHote": 4000,
+      "dessins": 1000,
+      "pixels": 1998100,
+      "moyenneDepots": 6.91525,
+      "maximumDepots": 8,
+      "commandesCanvas": 75823,
+      "p50ms": 0.00006000000007588824,
+      "p95ms": 0.0014820000001236622,
+      "maximumMs": 0.041362999999819294
+    },
+    {
+      "qualite": "medium",
+      "type": "pluie",
+      "appelsHote": 4000,
+      "dessins": 1000,
+      "pixels": 1998100,
+      "moyenneDepots": 25.807,
+      "maximumDepots": 26,
+      "commandesCanvas": 260930,
+      "p50ms": 0.00007000000005064066,
+      "p95ms": 0.00608900000020185,
+      "maximumMs": 0.5051009999999678
+    },
+    {
+      "qualite": "medium",
+      "type": "neige",
+      "appelsHote": 4000,
+      "dessins": 1000,
+      "pixels": 1998100,
+      "moyenneDepots": 15.23775,
+      "maximumDepots": 18,
+      "commandesCanvas": 163784,
+      "p50ms": 0.00006099999995967664,
+      "p95ms": 0.006600000000162254,
+      "maximumMs": 0.06562899999994443
+    },
+    {
+      "qualite": "high",
+      "type": "pluie",
+      "appelsHote": 4000,
+      "dessins": 1000,
+      "pixels": 1998100,
+      "moyenneDepots": 55.754,
+      "maximumDepots": 56,
+      "commandesCanvas": 560310,
+      "p50ms": 0.000050999999984924216,
+      "p95ms": 0.003856000000041604,
+      "maximumMs": 0.1594199999999546
+    },
+    {
+      "qualite": "high",
+      "type": "neige",
+      "appelsHote": 4000,
+      "dessins": 1000,
+      "pixels": 1998100,
+      "moyenneDepots": 29.583,
+      "maximumDepots": 35,
+      "commandesCanvas": 315664,
+      "p50ms": 0.000050999999984924216,
+      "p95ms": 0.0019629999999324355,
+      "maximumMs": 0.04123200000003635
+    },
+    {
+      "qualite": "ultra",
+      "type": "pluie",
+      "appelsHote": 4000,
+      "dessins": 1000,
+      "pixels": 1998100,
+      "moyenneDepots": 111.6545,
+      "maximumDepots": 112,
+      "commandesCanvas": 1119000,
+      "p50ms": 0.000050999999984924216,
+      "p95ms": 0.007041000000072017,
+      "maximumMs": 0.1089640000000145
+    },
+    {
+      "qualite": "ultra",
+      "type": "neige",
+      "appelsHote": 4000,
+      "dessins": 1000,
+      "pixels": 1998100,
+      "moyenneDepots": 61.2805,
+      "maximumDepots": 71,
+      "commandesCanvas": 649784,
+      "p50ms": 0.00006000000007588824,
+      "p95ms": 0.0032049999999799184,
+      "maximumMs": 0.06887400000005073
+    }
+  ],
+  "budgets3D": {
+    "off": {
+      "feuilles": 0,
+      "neige": 0
+    },
+    "low": {
+      "feuilles": 6,
+      "neige": 24
+    },
+    "medium": {
+      "feuilles": 18,
+      "neige": 72
+    },
+    "high": {
+      "feuilles": 48,
+      "neige": 180
+    },
+    "ultra": {
+      "feuilles": 128,
+      "neige": 480
+    }
+  },
+  "budgetsVitre": {
+    "off": {
+      "gouttes": 0,
+      "neige": 0,
+      "dpr": 1
+    },
+    "low": {
+      "gouttes": 10,
+      "neige": 4,
+      "dpr": 1
+    },
+    "medium": {
+      "gouttes": 26,
+      "neige": 9,
+      "dpr": 1
+    },
+    "high": {
+      "gouttes": 56,
+      "neige": 18,
+      "dpr": 1.25
+    },
+    "ultra": {
+      "gouttes": 112,
+      "neige": 36,
+      "dpr": 1.5
+    }
+  },
+  "pixelsVitreMax": 2000000
+}

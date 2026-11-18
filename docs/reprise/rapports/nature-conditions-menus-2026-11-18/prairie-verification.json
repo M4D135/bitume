@@ -1,0 +1,912 @@
+{
+  "date": "2026-11-18T10:12:42.413118+00:00",
+  "reference": "5292baffb0e2853560e089ee2ed18b1ed33ad8df",
+  "versionReference": "0.2.32",
+  "sourceSha256": {
+    "src/ecologie.js": "90c0720de150cea4e479eff553fdd85abaf6761046cd4d52b5851c149edf8b86",
+    "src/vegetation.js": "5297864ea5752e10482d9944f3bc97e959df73570995521437d283456ffc7673",
+    "src/decor.js": "d8e55532f22f6b75f570bed8ec51d16285150f6095bb6ba65c8ef0eb37b659d0",
+    "verifications/ecologie.test.mjs": "6980aa0f31e4ab59f86703eb6a17643a32f7b7842679eb61897d696e0ae97a0c",
+    "verifications/vegetation.test.mjs": "3b7953a36f2dfed2b464a1c47ccab771aac195fa16b3eb2ce49d255a0a45ac8b",
+    "verifications/fixtures/herbe-032.json": "cba5abe6e282585ad4a8a917d82a88a1567b679e9f353af6b52287d88d2b877e",
+    "tools/budget-herbe.mjs": "3b961a8f497c758b6418cc3b041308f7a86ec1eeb2cec32582aa3ea935ca3370",
+    "tools/budget-decor.mjs": "06156abc59830e5f66ff3926eec03b831d992421f905400aca390780605c37a9"
+  },
+  "qualification": {
+    "vegetation": 17,
+    "ecologieEtDecor": 3,
+    "identiteHistorique": 9,
+    "budgetCombinaisons": 15,
+    "precision": "La suite végétation précède uniquement le renforcement final de la palette du sol. La suite écologie/décor exécutée après cette modification confirme des positions, normales, matières et indices strictement identiques, avec changements de couleurs seulement sur les surfaces herbeuses. Aucun navigateur ou FPS matériel mesuré."
+  },
+  "synthese": [
+    {
+      "biome": "foret",
+      "brinsMAX": 49134826,
+      "brinsReference032": 163010460,
+      "reductionBrins": 0.698578692434829,
+      "instancesMAX": 41410,
+      "reductionInstances": 0.5925335537450309,
+      "lotsMAX": 3057,
+      "reductionLots": 0.4055998444487653,
+      "fractionSurfacePlantee": 0.4786678424084476,
+      "aireNueM2": 4289060.366683427,
+      "fractionPointsChampNus": 0.647985989492119,
+      "fractionPointsChampRiches": 0.11996497373029773,
+      "asymetrieMoyenneCotes": 0.10944841389374574,
+      "plusLongueSerieNueM": 522,
+      "densiteMinDisquesRiches": 247.48593650789726,
+      "disquesNus": 3,
+      "disquesRiches": 3,
+      "erreurSolMaxM": 0.0050000034057284815,
+      "arbresAvant": 2600,
+      "arbresApres": 1082,
+      "solLointain": {
+        "nappes": 117,
+        "sommets": 55271,
+        "indices": 200106,
+        "couleursModifiees": 33801,
+        "sableInchange": 0,
+        "sommetsAjoutes": 0,
+        "indicesAjoutes": 0,
+        "nappesAjoutees": 0
+      }
+    },
+    {
+      "biome": "cote",
+      "brinsMAX": 44840175,
+      "brinsReference032": 129057608,
+      "reductionBrins": 0.6525569031157001,
+      "instancesMAX": 30697,
+      "reductionInstances": 0.6316831445574966,
+      "lotsMAX": 2172,
+      "reductionLots": 0.46130952380952384,
+      "fractionSurfacePlantee": 0.3890517298535505,
+      "aireNueM2": 3228040.4886449603,
+      "fractionPointsChampNus": 0.5983086680761099,
+      "fractionPointsChampRiches": 0.21035940803382663,
+      "asymetrieMoyenneCotes": 0.09729017896319372,
+      "plusLongueSerieNueM": 480,
+      "densiteMinDisquesRiches": 302.23523693150923,
+      "disquesNus": 3,
+      "disquesRiches": 3,
+      "erreurSolMaxM": 0.005000000112081793,
+      "arbresAvant": 2600,
+      "arbresApres": 453,
+      "solLointain": {
+        "nappes": 104,
+        "sommets": 48772,
+        "indices": 178572,
+        "couleursModifiees": 25611,
+        "sableInchange": 4657,
+        "sommetsAjoutes": 0,
+        "indicesAjoutes": 0,
+        "nappesAjoutees": 0
+      }
+    },
+    {
+      "biome": "montagne",
+      "brinsMAX": 53396992,
+      "brinsReference032": 167320367,
+      "reductionBrins": 0.6808697413387815,
+      "instancesMAX": 37370,
+      "reductionInstances": 0.6024468085106383,
+      "lotsMAX": 2325,
+      "reductionLots": 0.48867385089069715,
+      "fractionSurfacePlantee": 0.3826007430396573,
+      "aireNueM2": 1787650.2469040751,
+      "fractionPointsChampNus": 0.5427989130434783,
+      "fractionPointsChampRiches": 0.23233695652173914,
+      "asymetrieMoyenneCotes": 0.12492872951733996,
+      "plusLongueSerieNueM": 432,
+      "densiteMinDisquesRiches": 248.28171122335672,
+      "disquesNus": 3,
+      "disquesRiches": 3,
+      "erreurSolMaxM": 0.005000000005085011,
+      "arbresAvant": 2600,
+      "arbresApres": 799,
+      "solLointain": {
+        "nappes": 176,
+        "sommets": 76424,
+        "indices": 290184,
+        "couleursModifiees": 27500,
+        "sableInchange": 0,
+        "sommetsAjoutes": 0,
+        "indicesAjoutes": 0,
+        "nappesAjoutees": 0
+      }
+    }
+  ],
+  "vegetation": {
+    "controles": 17,
+    "plantesHistoriques": {
+      "herbes": 124,
+      "fougeres": 0,
+      "fleurs": 0,
+      "taillis": 34,
+      "lots": 10,
+      "qualite": "low",
+      "brins": 1116,
+      "tuiles": 0,
+      "brinsTapis": 0,
+      "objetsHerbe": 124,
+      "brinsAccotements": 0,
+      "brinsTerrain": 0,
+      "aireAccotements": 0,
+      "aireTerrain": 0,
+      "aireNue": 0,
+      "aireRiche": 0,
+      "brinsRiches": 0
+    },
+    "erreursLod": {
+      "herbes": {
+        "metres": 0.021013878261790717,
+        "pixels": 0.03779699346016133
+      },
+      "taillis": {
+        "metres": 0.030015847563754975,
+        "pixels": 0.05398854889776867
+      },
+      "fougeres": {
+        "metres": 0.08195574962053627,
+        "pixels": 0.14741119625036112
+      },
+      "fleurs": {
+        "metres": 0.12420602100961978,
+        "pixels": 0.22340541357134538
+      },
+      "humus": {
+        "metres": 0.16198358989879955,
+        "pixels": 0.2913547233777801
+      },
+      "prairie": {
+        "metresAuRepos": 1.670444188832582e-16,
+        "trianglesParBrin": {
+          "proche": 6,
+          "loin": 2
+        }
+      }
+    },
+    "mesures": {
+      "foret": {
+        "medium": {
+          "brins": 647821,
+          "tuiles": 38951,
+          "lots": 2362,
+          "aireCouverte": 3938110.078344097,
+          "couverture": 0.47867440615290896,
+          "brinsAccotements": 143728,
+          "brinsTerrain": 503688,
+          "erreurSol": 0,
+          "controlesSol": 0,
+          "instanceBufferBytes": 4985728,
+          "aireNue": 4289006.365993417,
+          "aireRiche": 2332203.1459190887,
+          "brinsRiches": 398720,
+          "ratioBrins032": 0.3850475855362794,
+          "ratioInstances032": 0.4454954079123443,
+          "tuilesRichesProches": 0
+        },
+        "high": {
+          "brins": 2719234,
+          "tuiles": 38951,
+          "lots": 2362,
+          "aireCouverte": 3938110.078344097,
+          "couverture": 0.47867440615290896,
+          "brinsAccotements": 614272,
+          "brinsTerrain": 2104296,
+          "erreurSol": 0,
+          "controlesSol": 0,
+          "instanceBufferBytes": 4985728,
+          "aireNue": 4289006.365993417,
+          "aireRiche": 2332203.1459190887,
+          "brinsRiches": 1581824,
+          "ratioBrins032": 0.4162741055392911,
+          "ratioInstances032": 0.4454954079123443,
+          "tuilesRichesProches": 0
+        },
+        "ultra": {
+          "brins": 49134826,
+          "tuiles": 41410,
+          "lots": 3057,
+          "aireCouverte": 3938056.0776541024,
+          "couverture": 0.4786678424084476,
+          "brinsAccotements": 13860128,
+          "brinsTerrain": 35274032,
+          "erreurSol": 0.0050000034057284815,
+          "controlesSol": 41410,
+          "instanceBufferBytes": 5300480,
+          "aireNue": 4289060.366683427,
+          "aireRiche": 2332289.053700357,
+          "brinsRiches": 30156920,
+          "ratioBrins032": 0.301421307565171,
+          "ratioInstances032": 0.4074664462549691,
+          "tuilesRichesProches": 4320,
+          "disques": [
+            {
+              "id": "0.2:-1",
+              "type": "reference",
+              "avant": 197,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.2:1",
+              "type": "reference",
+              "avant": 213,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.37:-1",
+              "type": "reference",
+              "avant": 221,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.37:1",
+              "type": "reference",
+              "avant": 197,
+              "brins": 747,
+              "facteur": 3.7918781725888326,
+              "parMetreCarre": 59.44437124482291
+            },
+            {
+              "id": "0.53:-1",
+              "type": "reference",
+              "avant": 160,
+              "brins": 5298,
+              "facteur": 33.1125,
+              "parMetreCarre": 421.60144425043075
+            },
+            {
+              "id": "0.53:1",
+              "type": "reference",
+              "avant": 286,
+              "brins": 7923,
+              "facteur": 27.702797202797203,
+              "parMetreCarre": 630.4923070585434
+            },
+            {
+              "id": "0.69:-1",
+              "type": "reference",
+              "avant": 180,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.69:1",
+              "type": "reference",
+              "avant": 220,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.84:-1",
+              "type": "reference",
+              "avant": 216,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.84:1",
+              "type": "reference",
+              "avant": 205,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            }
+          ],
+          "habitats": [
+            {
+              "id": "nu:454:-1",
+              "type": "nu",
+              "avant": 0,
+              "brins": 0,
+              "facteur": null,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "nu:580:1",
+              "type": "nu",
+              "avant": 0,
+              "brins": 0,
+              "facteur": null,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "nu:622:-1",
+              "type": "nu",
+              "avant": 0,
+              "brins": 0,
+              "facteur": null,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "riche:958:-1",
+              "type": "riche",
+              "avant": 0,
+              "brins": 3110,
+              "facteur": null,
+              "parMetreCarre": 247.48593650789726
+            },
+            {
+              "id": "riche:1000:-1",
+              "type": "riche",
+              "avant": 0,
+              "brins": 6420,
+              "facteur": null,
+              "parMetreCarre": 510.88736732498404
+            },
+            {
+              "id": "riche:1042:-1",
+              "type": "riche",
+              "avant": 0,
+              "brins": 3112,
+              "facteur": null,
+              "parMetreCarre": 247.64509145098916
+            }
+          ]
+        }
+      },
+      "cote": {
+        "medium": {
+          "brins": 450862,
+          "tuiles": 27860,
+          "lots": 1567,
+          "aireCouverte": 2055633.505441386,
+          "couverture": 0.38905513689256205,
+          "brinsAccotements": 146584,
+          "brinsTerrain": 303792,
+          "erreurSol": 0,
+          "controlesSol": 0,
+          "instanceBufferBytes": 3566080,
+          "aireNue": 3228022.4870228665,
+          "aireRiche": 1137379.9533920933,
+          "brinsRiches": 282280,
+          "ratioBrins032": 0.3559736609398686,
+          "ratioInstances032": 0.38731023744647725,
+          "tuilesRichesProches": 0
+        },
+        "high": {
+          "brins": 1961887,
+          "tuiles": 27860,
+          "lots": 1567,
+          "aireCouverte": 2055633.505441386,
+          "couverture": 0.38905513689256205,
+          "brinsAccotements": 617464,
+          "brinsTerrain": 1343496,
+          "erreurSol": 0,
+          "controlesSol": 0,
+          "instanceBufferBytes": 3566080,
+          "aireNue": 3228022.4870228665,
+          "aireRiche": 1137379.9533920933,
+          "brinsRiches": 1141888,
+          "ratioBrins032": 0.410396086411551,
+          "ratioInstances032": 0.38731023744647725,
+          "tuilesRichesProches": 0
+        },
+        "ultra": {
+          "brins": 44840175,
+          "tuiles": 30697,
+          "lots": 2172,
+          "aireCouverte": 2055615.5038192961,
+          "couverture": 0.3890517298535505,
+          "brinsAccotements": 15815112,
+          "brinsTerrain": 29024136,
+          "erreurSol": 0.005000000112081793,
+          "controlesSol": 30697,
+          "instanceBufferBytes": 3929216,
+          "aireNue": 3228040.4886449603,
+          "aireRiche": 1136815.288694938,
+          "brinsRiches": 30564184,
+          "ratioBrins032": 0.3474430968842999,
+          "ratioInstances032": 0.36831685544250337,
+          "tuilesRichesProches": 5940,
+          "disques": [
+            {
+              "id": "0.2:-1",
+              "type": "reference",
+              "avant": 251,
+              "brins": 3728,
+              "facteur": 14.852589641434262,
+              "parMetreCarre": 296.6648139232929
+            },
+            {
+              "id": "0.2:1",
+              "type": "reference",
+              "avant": 175,
+              "brins": 4942,
+              "facteur": 28.24,
+              "parMetreCarre": 393.2718643800734
+            },
+            {
+              "id": "0.37:-1",
+              "type": "reference",
+              "avant": 198,
+              "brins": 3478,
+              "facteur": 17.565656565656564,
+              "parMetreCarre": 276.770446036806
+            },
+            {
+              "id": "0.37:1",
+              "type": "reference",
+              "avant": 208,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.53:-1",
+              "type": "reference",
+              "avant": 209,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.53:1",
+              "type": "reference",
+              "avant": 207,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.69:-1",
+              "type": "reference",
+              "avant": 171,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.69:1",
+              "type": "reference",
+              "avant": 239,
+              "brins": 1883,
+              "facteur": 7.878661087866109,
+              "parMetreCarre": 149.84437892101946
+            },
+            {
+              "id": "0.84:-1",
+              "type": "reference",
+              "avant": 241,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.84:1",
+              "type": "reference",
+              "avant": 185,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            }
+          ],
+          "habitats": [
+            {
+              "id": "nu:440:-1",
+              "type": "nu",
+              "avant": 0,
+              "brins": 0,
+              "facteur": null,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "nu:482:-1",
+              "type": "nu",
+              "avant": 0,
+              "brins": 0,
+              "facteur": null,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "nu:524:-1",
+              "type": "nu",
+              "avant": 0,
+              "brins": 0,
+              "facteur": null,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "riche:706:-1",
+              "type": "riche",
+              "avant": 0,
+              "brins": 3798,
+              "facteur": null,
+              "parMetreCarre": 302.23523693150923
+            },
+            {
+              "id": "riche:748:1",
+              "type": "riche",
+              "avant": 0,
+              "brins": 4895,
+              "facteur": null,
+              "parMetreCarre": 389.53172321741386
+            },
+            {
+              "id": "riche:1210:-1",
+              "type": "riche",
+              "avant": 0,
+              "brins": 5809,
+              "facteur": null,
+              "parMetreCarre": 462.26553221041
+            }
+          ]
+        }
+      },
+      "montagne": {
+        "medium": {
+          "brins": 467055,
+          "tuiles": 33519,
+          "lots": 1452,
+          "aireCouverte": 1108038.0858990448,
+          "couverture": 0.3826821785204272,
+          "brinsAccotements": 180088,
+          "brinsTerrain": 286544,
+          "erreurSol": 0,
+          "controlesSol": 0,
+          "instanceBufferBytes": 4290432,
+          "aireNue": 1787414.4543344174,
+          "aireRiche": 605013.7194667134,
+          "brinsRiches": 268424,
+          "ratioBrins032": 0.40010159841897097,
+          "ratioInstances032": 0.4427697713432757,
+          "tuilesRichesProches": 0
+        },
+        "high": {
+          "brins": 1892184,
+          "tuiles": 33519,
+          "lots": 1453,
+          "aireCouverte": 1108038.0858990448,
+          "couverture": 0.3826821785204272,
+          "brinsAccotements": 729016,
+          "brinsTerrain": 1162376,
+          "erreurSol": 0,
+          "controlesSol": 0,
+          "instanceBufferBytes": 4290432,
+          "aireNue": 1787414.4543344174,
+          "aireRiche": 605013.7194667134,
+          "brinsRiches": 1030904,
+          "ratioBrins032": 0.4379642936417796,
+          "ratioInstances032": 0.4427697713432757,
+          "tuilesRichesProches": 0
+        },
+        "ultra": {
+          "brins": 53396992,
+          "tuiles": 37370,
+          "lots": 2325,
+          "aireCouverte": 1107802.2933293844,
+          "couverture": 0.3826007430396573,
+          "brinsAccotements": 20683256,
+          "brinsTerrain": 32712944,
+          "erreurSol": 0.005000000005085011,
+          "controlesSol": 37370,
+          "instanceBufferBytes": 4783360,
+          "aireNue": 1787650.2469040751,
+          "aireRiche": 605206.1415347661,
+          "brinsRiches": 36407096,
+          "ratioBrins032": 0.31913025866121847,
+          "ratioInstances032": 0.3975531914893617,
+          "tuilesRichesProches": 6788,
+          "disques": [
+            {
+              "id": "0.2:-1",
+              "type": "reference",
+              "avant": 222,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.2:1",
+              "type": "reference",
+              "avant": 208,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.53:-1",
+              "type": "reference",
+              "avant": 205,
+              "brins": 3015,
+              "facteur": 14.707317073170731,
+              "parMetreCarre": 239.92607671103224
+            },
+            {
+              "id": "0.53:1",
+              "type": "reference",
+              "avant": 199,
+              "brins": 5963,
+              "facteur": 29.964824120603016,
+              "parMetreCarre": 474.52046282848596
+            },
+            {
+              "id": "0.69:-1",
+              "type": "reference",
+              "avant": 210,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.69:1",
+              "type": "reference",
+              "avant": 208,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.84:-1",
+              "type": "reference",
+              "avant": 204,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "0.84:1",
+              "type": "reference",
+              "avant": 207,
+              "brins": 0,
+              "facteur": 0,
+              "parMetreCarre": 0
+            }
+          ],
+          "habitats": [
+            {
+              "id": "nu:496:-1",
+              "type": "nu",
+              "avant": 0,
+              "brins": 0,
+              "facteur": null,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "nu:734:-1",
+              "type": "nu",
+              "avant": 0,
+              "brins": 0,
+              "facteur": null,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "nu:776:-1",
+              "type": "nu",
+              "avant": 0,
+              "brins": 0,
+              "facteur": null,
+              "parMetreCarre": 0
+            },
+            {
+              "id": "riche:440:-1",
+              "type": "riche",
+              "avant": 0,
+              "brins": 3449,
+              "facteur": null,
+              "parMetreCarre": 274.46269936197353
+            },
+            {
+              "id": "riche:524:1",
+              "type": "riche",
+              "avant": 0,
+              "brins": 3120,
+              "facteur": null,
+              "parMetreCarre": 248.28171122335672
+            },
+            {
+              "id": "riche:566:-1",
+              "type": "riche",
+              "avant": 0,
+              "brins": 3121,
+              "facteur": null,
+              "parMetreCarre": 248.36128869490267
+            }
+          ]
+        }
+      }
+    }
+  },
+  "ecologie": {
+    "controles": 3,
+    "mesures": [
+      {
+        "biome": "foret",
+        "points": 1142,
+        "nus": 0.647985989492119,
+        "riches": 0.11996497373029773,
+        "asymetrie": 0.10944841389374574,
+        "plusLongueClairiere": 522,
+        "arbresAvant": 2600,
+        "arbresApres": 1082,
+        "solLointain": {
+          "nappes": 117,
+          "sommets": 55271,
+          "indices": 200106,
+          "couleursModifiees": 33801,
+          "sableInchange": 0,
+          "sommetsAjoutes": 0,
+          "indicesAjoutes": 0,
+          "nappesAjoutees": 0
+        }
+      },
+      {
+        "biome": "cote",
+        "points": 946,
+        "nus": 0.5983086680761099,
+        "riches": 0.21035940803382663,
+        "asymetrie": 0.09729017896319372,
+        "plusLongueClairiere": 480,
+        "arbresAvant": 2600,
+        "arbresApres": 453,
+        "solLointain": {
+          "nappes": 104,
+          "sommets": 48772,
+          "indices": 178572,
+          "couleursModifiees": 25611,
+          "sableInchange": 4657,
+          "sommetsAjoutes": 0,
+          "indicesAjoutes": 0,
+          "nappesAjoutees": 0
+        }
+      },
+      {
+        "biome": "montagne",
+        "points": 1472,
+        "nus": 0.5427989130434783,
+        "riches": 0.23233695652173914,
+        "asymetrie": 0.12492872951733996,
+        "plusLongueClairiere": 432,
+        "arbresAvant": 2600,
+        "arbresApres": 799,
+        "solLointain": {
+          "nappes": 176,
+          "sommets": 76424,
+          "indices": 290184,
+          "couleursModifiees": 27500,
+          "sableInchange": 0,
+          "sommetsAjoutes": 0,
+          "indicesAjoutes": 0,
+          "nappesAjoutees": 0
+        }
+      }
+    ]
+  },
+  "soumission": {
+    "moteur": "FERRO 0.3.8 identique",
+    "changements": "Écologie et portées de prairie plus courtes ; palette du sol sans nouvelle géométrie.",
+    "conditions": "Forêt, trois vues fixes, 960x540, FOV60 ; API WebGL inerte, aucun FPS matériel.",
+    "mesures": [
+      {
+        "qualite": "medium",
+        "vue": "cockpit",
+        "trianglesAvant": 233514,
+        "trianglesApres": 104060,
+        "gainTriangles": 0.5543736135734902,
+        "appelsAvant": 161,
+        "appelsApres": 48,
+        "cpuAvant": 3.719268999999713,
+        "cpuApres": 2.157771000000139,
+        "buffersAvant": 11226752,
+        "buffersApres": 4991488
+      },
+      {
+        "qualite": "medium",
+        "vue": "poursuite",
+        "trianglesAvant": 196728,
+        "trianglesApres": 113616,
+        "gainTriangles": 0.4224716359643772,
+        "appelsAvant": 153,
+        "appelsApres": 61,
+        "cpuAvant": 3.6949720000002344,
+        "cpuApres": 2.159073000000035,
+        "buffersAvant": 11226752,
+        "buffersApres": 4991488
+      },
+      {
+        "qualite": "medium",
+        "vue": "bord-sol",
+        "trianglesAvant": 182616,
+        "trianglesApres": 144,
+        "gainTriangles": 0.9992114601130241,
+        "appelsAvant": 146,
+        "appelsApres": 2,
+        "cpuAvant": 3.5442250000000968,
+        "cpuApres": 2.221918000000187,
+        "buffersAvant": 11226752,
+        "buffersApres": 4991488
+      },
+      {
+        "qualite": "high",
+        "vue": "cockpit",
+        "trianglesAvant": 963792,
+        "trianglesApres": 405208,
+        "gainTriangles": 0.5795690356425454,
+        "appelsAvant": 285,
+        "appelsApres": 64,
+        "cpuAvant": 3.962093999999979,
+        "cpuApres": 2.753297999999859,
+        "buffersAvant": 11251328,
+        "buffersApres": 4995200
+      },
+      {
+        "qualite": "high",
+        "vue": "poursuite",
+        "trianglesAvant": 774144,
+        "trianglesApres": 593416,
+        "gainTriangles": 0.23345527447089942,
+        "appelsAvant": 242,
+        "appelsApres": 77,
+        "cpuAvant": 4.149982000000364,
+        "cpuApres": 2.7611109999998007,
+        "buffersAvant": 11251328,
+        "buffersApres": 4995200
+      },
+      {
+        "qualite": "high",
+        "vue": "bord-sol",
+        "trianglesAvant": 692386,
+        "trianglesApres": 504,
+        "gainTriangles": 0.9992720823355759,
+        "appelsAvant": 251,
+        "appelsApres": 3,
+        "cpuAvant": 4.13535499999989,
+        "cpuApres": 2.4712429999999586,
+        "buffersAvant": 11251328,
+        "buffersApres": 4995200
+      },
+      {
+        "qualite": "ultra",
+        "vue": "cockpit",
+        "trianglesAvant": 35371278,
+        "trianglesApres": 8018336,
+        "gainTriangles": 0.7733094065755837,
+        "appelsAvant": 1330,
+        "appelsApres": 200,
+        "cpuAvant": 7.7375770000003286,
+        "cpuApres": 4.907878999999866,
+        "buffersAvant": 13068288,
+        "buffersApres": 5309952
+      },
+      {
+        "qualite": "ultra",
+        "vue": "poursuite",
+        "trianglesAvant": 34868044,
+        "trianglesApres": 10562046,
+        "gainTriangles": 0.697085216480741,
+        "appelsAvant": 775,
+        "appelsApres": 271,
+        "cpuAvant": 6.320894999999837,
+        "cpuApres": 3.92645900000025,
+        "buffersAvant": 13068288,
+        "buffersApres": 5309952
+      },
+      {
+        "qualite": "ultra",
+        "vue": "bord-sol",
+        "trianglesAvant": 34194206,
+        "trianglesApres": 504,
+        "gainTriangles": 0.9999852606608266,
+        "appelsAvant": 909,
+        "appelsApres": 3,
+        "cpuAvant": 6.491821000000073,
+        "cpuApres": 4.0220729999996365,
+        "buffersAvant": 13068288,
+        "buffersApres": 5309952
+      }
+    ]
+  },
+  "relecture": "relecture-autoconfig.md",
+  "precisionSaisons": "Mesures prises avant la recoloration saisonnière : palette historique sans saison explicite. La géométrie est identique, vérifiée séparément dans saisons-verification.json."
+}

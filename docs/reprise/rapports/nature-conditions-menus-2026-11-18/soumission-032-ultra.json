@@ -1,0 +1,446 @@
+{
+  "date": "2026-11-18T10:04:59.412Z",
+  "node": "v24.22.3",
+  "platform": "linux",
+  "arch": "x64",
+  "sourceRef": "5292baffb0e2853560e089ee2ed18b1ed33ad8df",
+  "hashes": {
+    "src/moteur/renderer.js": "3446da8881aa8f9203a8194747b097f87742aed125b435d8cda2e4d553e24adb",
+    "src/graphismes.js": "e33e5987d0b1c1c59b6abc734102cfb13bccb99d0f4ba8b9ea5e644d7ee0c251",
+    "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+    "src/circuit.js": "24aad5f7b4c13a21c122d800cd3661dd3a71e1e32b94d2b12b9eb3abe8103061",
+    "src/vegetation.js": "17ac29cfed9cac36327439c1ecc56f184d1deb619436f0a212d15984855d2397",
+    "src/decor.js": "341ae69221b83df7638ba90d05d5dc4e087debb86e1dc89c9b5d3f7eacd9bdc4",
+    "src/botanique.js": "06a3a79f6f609a70a44912c75b16ef9d452df5d389772d528c5098605a298049"
+  },
+  "fixtureSha256": "9de9a936bba474e15b4031c632921235b7858cf98fcf370785a3c980459dfb4f",
+  "conditions": {
+    "theme": "foret",
+    "seed": 11,
+    "length": 4200,
+    "generalQuality": "high",
+    "density": "ultra",
+    "viewport": [
+      960,
+      540
+    ],
+    "fov": 60,
+    "warmupFrames": 8,
+    "measuredFrames": 24,
+    "fx": {
+      "time": 5,
+      "shadows": true,
+      "sunOnly": true,
+      "torch": false,
+      "shadowMapScale": 2,
+      "msaa": true,
+      "bloom": true,
+      "reflections": false,
+      "adaptive": false,
+      "weather": {
+        "pluie": 0.72,
+        "nuage": 0.731,
+        "eclair": 0,
+        "mouille": 0.75,
+        "ventX": 2,
+        "ventZ": 0.3
+      },
+      "groundCover": {
+        "density": [
+          25,
+          90,
+          0.125
+        ],
+        "distance": [
+          250,
+          420
+        ]
+      },
+      "windStrength": 1
+    }
+  },
+  "vegetation": {
+    "herbes": 102096,
+    "fougeres": 163,
+    "fleurs": 237,
+    "taillis": 100,
+    "lots": 5143,
+    "qualite": "ultra",
+    "brins": 163010460,
+    "tuiles": 101628,
+    "brinsTapis": 163006248,
+    "objetsHerbe": 102096,
+    "brinsAccotements": 50847088,
+    "brinsTerrain": 112159160,
+    "aireAccotements": 133852.82857195675,
+    "aireTerrain": 8092896.785678673
+  },
+  "memory": {
+    "before": {
+      "rss": 39247872,
+      "heapTotal": 12374016,
+      "heapUsed": 9151360,
+      "external": 4160799,
+      "arrayBuffers": 146615
+    },
+    "after": {
+      "rss": 628174848,
+      "heapTotal": 513875968,
+      "heapUsed": 423161416,
+      "external": 60629646,
+      "arrayBuffers": 56581578
+    },
+    "maxRssKiB": 623304
+  },
+  "cases": [
+    {
+      "scope": "grass-only",
+      "camera": "cockpit",
+      "cameraParameters": {
+        "label": "cockpit",
+        "s": 1200,
+        "side": 0,
+        "pos": [
+          -49.574374544336564,
+          -3.090126982749634,
+          -745.0130929438379
+        ],
+        "yaw": 1.3837350801214836,
+        "pitch": 0,
+        "roll": 0,
+        "fov": 60,
+        "near": 0.045,
+        "far": 6000,
+        "sun": {
+          "center": [
+            25.099805729257056,
+            -3.300674715615751,
+            -759.1469813142348
+          ],
+          "extent": 100,
+          "depth": 286.22371678423065
+        }
+      },
+      "submitted": {
+        "colorCalls": 520,
+        "shadowCalls": 810,
+        "postCalls": 4,
+        "colorTriangles": 12042202,
+        "shadowTriangles": 23329076,
+        "postTriangles": 4
+      },
+      "rendererStats": {
+        "drawCalls": 1334,
+        "triangles": 35371278,
+        "instances": 6437,
+        "lots": 5143,
+        "lotsVisibles": 174,
+        "msaa": 4,
+        "shadowMaps": 1,
+        "shadowMapSize": 2048,
+        "shadowTileSize": 1024,
+        "uploadBytes": 0
+      },
+      "setLotsMs": 199.41247599999997,
+      "instanceBufferBytes": 13068288,
+      "requestedLiveBufferBytes": 23883036,
+      "cpuDrawMs": {
+        "median": 7.7375770000003286,
+        "p95": 10.652005000000372,
+        "max": 11.136217000000215,
+        "samples": 24
+      }
+    },
+    {
+      "scope": "grass-only",
+      "camera": "poursuite",
+      "cameraParameters": {
+        "label": "poursuite",
+        "s": 2200,
+        "side": 0,
+        "pos": [
+          447.76329194985755,
+          5.373520179143572,
+          -66.6207951390594
+        ],
+        "yaw": 2.2482412046428655,
+        "pitch": -0.12,
+        "roll": 0,
+        "fov": 60,
+        "near": 0.045,
+        "far": 6000,
+        "sun": {
+          "center": [
+            453.99670652377006,
+            3.3971133232992843,
+            -61.60636169651223
+          ],
+          "extent": 100,
+          "depth": 286.22371678423065
+        }
+      },
+      "submitted": {
+        "colorCalls": 222,
+        "shadowCalls": 553,
+        "postCalls": 4,
+        "colorTriangles": 11644272,
+        "shadowTriangles": 23223772,
+        "postTriangles": 4
+      },
+      "rendererStats": {
+        "drawCalls": 779,
+        "triangles": 34868044,
+        "instances": 2547,
+        "lots": 5143,
+        "lotsVisibles": 116,
+        "msaa": 4,
+        "shadowMaps": 1,
+        "shadowMapSize": 2048,
+        "shadowTileSize": 1024,
+        "uploadBytes": 0
+      },
+      "setLotsMs": 199.41247599999997,
+      "instanceBufferBytes": 13068288,
+      "requestedLiveBufferBytes": 23883036,
+      "cpuDrawMs": {
+        "median": 6.320894999999837,
+        "p95": 9.746369999999843,
+        "max": 10.409969999999703,
+        "samples": 24
+      }
+    },
+    {
+      "scope": "grass-only",
+      "camera": "bord-sol",
+      "cameraParameters": {
+        "label": "bord-sol",
+        "s": 3400,
+        "side": 7.5,
+        "pos": [
+          -249.2520171173564,
+          -0.8116824336193619,
+          590.7252778483534
+        ],
+        "yaw": -0.9877194219144387,
+        "pitch": -0.02,
+        "roll": 0,
+        "fov": 60,
+        "near": 0.045,
+        "far": 6000,
+        "sun": {
+          "center": [
+            -253.3814800266858,
+            -0.5669382041824318,
+            596.9860714147052
+          ],
+          "extent": 100,
+          "depth": 286.22371678423065
+        }
+      },
+      "submitted": {
+        "colorCalls": 325,
+        "shadowCalls": 584,
+        "postCalls": 4,
+        "colorTriangles": 11327912,
+        "shadowTriangles": 22866294,
+        "postTriangles": 4
+      },
+      "rendererStats": {
+        "drawCalls": 913,
+        "triangles": 34194206,
+        "instances": 3363,
+        "lots": 5143,
+        "lotsVisibles": 164,
+        "msaa": 4,
+        "shadowMaps": 1,
+        "shadowMapSize": 2048,
+        "shadowTileSize": 1024,
+        "uploadBytes": 0
+      },
+      "setLotsMs": 199.41247599999997,
+      "instanceBufferBytes": 13068288,
+      "requestedLiveBufferBytes": 23883036,
+      "cpuDrawMs": {
+        "median": 6.491821000000073,
+        "p95": 7.1753200000002835,
+        "max": 7.687099999999646,
+        "samples": 24
+      }
+    },
+    {
+      "scope": "full-decor",
+      "camera": "cockpit",
+      "cameraParameters": {
+        "label": "cockpit",
+        "s": 1200,
+        "side": 0,
+        "pos": [
+          -49.574374544336564,
+          -3.090126982749634,
+          -745.0130929438379
+        ],
+        "yaw": 1.3837350801214836,
+        "pitch": 0,
+        "roll": 0,
+        "fov": 60,
+        "near": 0.045,
+        "far": 6000,
+        "sun": {
+          "center": [
+            25.099805729257056,
+            -3.300674715615751,
+            -759.1469813142348
+          ],
+          "extent": 100,
+          "depth": 286.22371678423065
+        }
+      },
+      "submitted": {
+        "colorCalls": 579,
+        "shadowCalls": 839,
+        "postCalls": 4,
+        "colorTriangles": 14766432,
+        "shadowTriangles": 27178266,
+        "postTriangles": 4
+      },
+      "rendererStats": {
+        "drawCalls": 1422,
+        "triangles": 41944698,
+        "instances": 9852,
+        "lots": 5175,
+        "lotsVisibles": 181,
+        "msaa": 4,
+        "shadowMaps": 1,
+        "shadowMapSize": 2048,
+        "shadowTileSize": 1024,
+        "uploadBytes": 0
+      },
+      "setLotsMs": 199.66064300000016,
+      "instanceBufferBytes": 14139712,
+      "requestedLiveBufferBytes": 28628976,
+      "cpuDrawMs": {
+        "median": 6.093211999999767,
+        "p95": 8.849615999999969,
+        "max": 17.090940000000046,
+        "samples": 24
+      }
+    },
+    {
+      "scope": "full-decor",
+      "camera": "poursuite",
+      "cameraParameters": {
+        "label": "poursuite",
+        "s": 2200,
+        "side": 0,
+        "pos": [
+          447.76329194985755,
+          5.373520179143572,
+          -66.6207951390594
+        ],
+        "yaw": 2.2482412046428655,
+        "pitch": -0.12,
+        "roll": 0,
+        "fov": 60,
+        "near": 0.045,
+        "far": 6000,
+        "sun": {
+          "center": [
+            453.99670652377006,
+            3.3971133232992843,
+            -61.60636169651223
+          ],
+          "extent": 100,
+          "depth": 286.22371678423065
+        }
+      },
+      "submitted": {
+        "colorCalls": 261,
+        "shadowCalls": 579,
+        "postCalls": 4,
+        "colorTriangles": 11851026,
+        "shadowTriangles": 23553901,
+        "postTriangles": 4
+      },
+      "rendererStats": {
+        "drawCalls": 844,
+        "triangles": 35404927,
+        "instances": 3310,
+        "lots": 5175,
+        "lotsVisibles": 121,
+        "msaa": 4,
+        "shadowMaps": 1,
+        "shadowMapSize": 2048,
+        "shadowTileSize": 1024,
+        "uploadBytes": 0
+      },
+      "setLotsMs": 199.66064300000016,
+      "instanceBufferBytes": 14139712,
+      "requestedLiveBufferBytes": 28628976,
+      "cpuDrawMs": {
+        "median": 5.399387999999817,
+        "p95": 8.412522999999965,
+        "max": 9.113648000000467,
+        "samples": 24
+      }
+    },
+    {
+      "scope": "full-decor",
+      "camera": "bord-sol",
+      "cameraParameters": {
+        "label": "bord-sol",
+        "s": 3400,
+        "side": 7.5,
+        "pos": [
+          -249.2520171173564,
+          -0.8116824336193619,
+          590.7252778483534
+        ],
+        "yaw": -0.9877194219144387,
+        "pitch": -0.02,
+        "roll": 0,
+        "fov": 60,
+        "near": 0.045,
+        "far": 6000,
+        "sun": {
+          "center": [
+            -253.3814800266858,
+            -0.5669382041824318,
+            596.9860714147052
+          ],
+          "extent": 100,
+          "depth": 286.22371678423065
+        }
+      },
+      "submitted": {
+        "colorCalls": 421,
+        "shadowCalls": 610,
+        "postCalls": 4,
+        "colorTriangles": 12754647,
+        "shadowTriangles": 23171927,
+        "postTriangles": 4
+      },
+      "rendererStats": {
+        "drawCalls": 1035,
+        "triangles": 35926574,
+        "instances": 6937,
+        "lots": 5175,
+        "lotsVisibles": 179,
+        "msaa": 4,
+        "shadowMaps": 1,
+        "shadowMapSize": 2048,
+        "shadowTileSize": 1024,
+        "uploadBytes": 0
+      },
+      "setLotsMs": 199.66064300000016,
+      "instanceBufferBytes": 14139712,
+      "requestedLiveBufferBytes": 28628976,
+      "cpuDrawMs": {
+        "median": 5.443294000000606,
+        "p95": 6.2071939999996175,
+        "max": 6.30438999999933,
+        "samples": 24
+      }
+    }
+  ],
+  "scope": "Production setLots/draw and real generated geometry; WebGL calls recorded by an inert API. No shader compilation, rasterization, pixels, driver memory measurement or GPU/FPS claims. All CPU times include instrumentation overhead and normal Node/JIT noise. Full-decor omits cars and weather overlays. Grass-only preserves original lot bounding spheres."
+}

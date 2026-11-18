@@ -1,0 +1,55 @@
+ok trois essences figées et budgets consultables, segments proches strictement supérieurs aux lointains
+ok dix-huit formes distinctes, nommées et mémoïsées à la référence près
+ok triangles finis, non dégénérés, normés, tenus dans le cube unité
+ok paliers strictement croissants low < medium < high, en proche comme en loin
+ok le lointain ne retire aucun organe : mêmes pieds, mêmes cimes, organes comptés identiques
+ok déterminisme : deux exécutions indépendantes donnent les mêmes empreintes sha256
+ok installer enregistre dix-huit formes et refuse un rendu indisponible
+ok matières du moteur : écorce 26 (fibrousBark), feuillage 27 (botanicalFoliage)
+{
+  "controles": 8,
+  "comptes": {
+    "feuillu": {
+      "low": {
+        "proche": 486,
+        "loin": 410
+      },
+      "medium": {
+        "proche": 1074,
+        "loin": 810
+      },
+      "high": {
+        "proche": 2022,
+        "loin": 1410
+      }
+    },
+    "pin": {
+      "low": {
+        "proche": 538,
+        "loin": 454
+      },
+      "medium": {
+        "proche": 1182,
+        "loin": 902
+      },
+      "high": {
+        "proche": 2218,
+        "loin": 1582
+      }
+    },
+    "conifere": {
+      "low": {
+        "proche": 750,
+        "loin": 610
+      },
+      "medium": {
+        "proche": 1854,
+        "loin": 1350
+      },
+      "high": {
+        "proche": 3702,
+        "loin": 2514
+      }
+    }
+  }
+}

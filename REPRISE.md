@@ -4,15 +4,15 @@
 
 - Branche `main` ; base BITUME **0.2.32**, code `e90b08f`, reçu `5292baf`, checkpoint `b6ee542`.
 - **FERRO 0.3.9 publié** : `89c784163b8671676b11f3d4114fab22f6200a7e` ; 34 copies identiques installées.
-- **Lot10 en cours**, cible BITUME 0.2.33 : nature irrégulière, herbe proche/sol coloré lointain, détection automatique.
-- Fiche active : `docs/reprise/10-NATURE-ET-AUTODETECTION.md` ; aucune compilation 0.2.33 finale à ce stade.
+- **Lot10 qualifié**, BITUME 0.2.33 à publier : nature irrégulière, herbe proche/sol coloré lointain, détection automatique.
+- Fiche active : `docs/reprise/10-NATURE-ET-AUTODETECTION.md` ; deux builds identiques, 61/61 suites revérifiées.
 - Saisons qualifiées sur 12 scènes : printemps blanc/rose, été sec/soleil fort, automne orange/feuilles, hiver neige sauf Port-Sable.
 - Conditions seulement avant course : manuel / aléatoire / réel par saison, heure et météo.
 - Réel : date/heure + météo de zone IP ; **en ligne, informations de l’hôte uniquement**, pas de localisation des invités.
-- En cours : neige dans l’air, pluie/neige sur la vitre, menus à onglets et navigation complète manette.
+- Livrés et qualifiés : neige dans l’air, pluie/neige sur la vitre, menus à onglets et navigation complète manette.
 - Benchmark avant titre sur une nouvelle configuration ; bouton Image pour mesurer et remplacer les réglages graphiques.
 - **m4d135 enregistre BITUME.html** : préserver lien, avatar et placement ; ne pas ajouter de lien GitHub à sa place.
-- Vérifications ciblées en cours ; aucun FPS matériel annoncé. Contrôle navigateur local refusé, sans contournement.
+- Vérifications terminées ; aucun FPS matériel annoncé. Contrôle navigateur local refusé, sans contournement.
 
 ## Lot suivant demandé, à traiter après gel et publication du lot10
 

@@ -5,7 +5,7 @@
 (function (B) {
   'use strict';
   const TAU = Math.PI * 2, MAX_VUES = 2, MAX_HABITATS = 1536, ANCRES = 48, ECHANTILLONS = 32;
-  const PORTEE = 90, DEBUT_FONDU = 55, CELLULE = 48, MAX_OBJETS = 512;
+  const PORTEE = 90, DEBUT_FONDU = 55, PORTEE_JOUR = 38, CELLULE = 48, MAX_OBJETS = 512;
   const BUDGETS = Object.freeze({
     off: Object.freeze({ abeilles: 0, insectes: 0, lucioles: 0, objetsJour: 0, objetsNuit: 0 }),
     low: Object.freeze({ abeilles: 2, insectes: 0, lucioles: 6, objetsJour: 10, objetsNuit: 12 }),
@@ -23,49 +23,70 @@
     const resultat = [];
     if (!decor || typeof decor.surfaceHerbe !== 'function') return resultat;
     const cellules = new Map(), candidats = [], graine = c.graine >>> 0;
-    function proposer(x, z, hauteurHerbe, proche, priorite) {
+    const ecologie = decor.ecologie || B.ecologie && B.ecologie.creer(graine, c.theme);
+    const milieu = { herbe: 0, fleurs: 0, insectes: 0, boisement: 0 };
+    function proposer(x, z, hauteurHerbe) {
       if (!Number.isFinite(x) || !Number.isFinite(z)) return;
       const gx = Math.floor(x / 3), gz = Math.floor(z / 3), cle = gx + ':' + gz;
       if (cellules.has(cle)) return;
       const seed = melanger(graine ^ Math.imul(gx, 73856093) ^ Math.imul(gz, 19349663));
-      const h = { x, z, graine: seed, hauteurHerbe, proche, priorite };
+      if (ecologie) ecologie.echantillonner(x, z, milieu);
+      else {
+        // Repli pour un petit décor ancien sans module écologique : des poches fixes,
+        // jamais du hasard consommé au dessin ni une présence garantie partout.
+        const poche = hasard(graine ^ Math.imul(Math.floor(x / 83), 18181) ^ Math.imul(Math.floor(z / 83), 73939));
+        milieu.herbe = milieu.insectes = poche > .46 ? poche : 0; milieu.fleurs = hasard(seed + 79);
+      }
+      const herbage = clamp(Number(milieu.herbe) || 0, 0, 1), insectes = clamp(Number(milieu.insectes) || 0, 0, 1);
+      const fleurs = clamp(Number(milieu.fleurs) || 0, 0, 1);
+      if (herbage <= .015 || insectes <= .025) return;
+      const activite = lisse(.04, .72, insectes), floraison = lisse(.05, .75, fleurs);
+      const h = { x, z, graine: seed, hauteurHerbe, richesse: insectes, fleurs,
+        abeilles: Math.min(8, Math.floor(activite * floraison * (2 + hasard(seed + 97) * 7) + .5)),
+        insectes: Math.min(8, Math.floor(activite * (.35 + floraison * .65) * (1 + hasard(seed + 101) * 4) + .5)),
+        lucioles: Math.min(8, Math.floor(lisse(.12, .76, insectes) * (4 + hasard(seed + 109) * 5) + .5)) };
+      if (!h.abeilles && !h.insectes && !h.lucioles) return;
       cellules.set(cle, h); candidats.push(h);
     }
-    const axe = c.n > 0 && c.pas > 0 && c.x && c.z && c.cap;
+    const axe = c.n > 0 && c.x && c.z;
     if (axe) {
-      // L'habitat dépend du sol herbeux, jamais du palier de plantes affichées. Deux rubans
-      // irréguliers longent chaque côté ; le plus proche permet de voir les insectes à l'arrêt.
-      const pas = Math.max(1, Math.ceil(Math.max(6, c.longueur / 1400) / c.pas)), w = c.largeur / 2;
-      for (let priorite = 0; priorite < 2; priorite++) for (let i = 0; i < c.n; i += pas) for (const cote of [-1, 1]) {
-        const seed = melanger(graine ^ Math.imul(i + 1, 0x45d9f3b) ^ (cote > 0 ? 13 : 47) ^ priorite);
-        const d = cote * (w + (priorite ? 7 + hasard(seed + 3) * 4 : 2.4 + hasard(seed + 3) * .25));
-        const a = c.cap[i], longitudinal = (hasard(seed + 7) - .5) * 1.4;
-        proposer(c.x[i] - Math.sin(a) * d + Math.cos(a) * longitudinal,
-          c.z[i] + Math.cos(a) * d + Math.sin(a) * longitudinal, .35, !priorite, priorite);
+      // Les centres sont tirés dans l'espace du monde, sans rubans parallèles, paires
+      // gauche/droite ou stations régulières le long de la route. Le champ écologique
+      // conserve ses clairières vides et ses foyers fleuris, y compris végétation Off.
+      let x0 = Infinity, z0 = Infinity, x1 = -Infinity, z1 = -Infinity;
+      for (let i = 0; i < c.n; i++) { x0 = Math.min(x0, c.x[i]); x1 = Math.max(x1, c.x[i]); z0 = Math.min(z0, c.z[i]); z1 = Math.max(z1, c.z[i]); }
+      // Le bord du domaine reste au-delà du fondu, même pour une vue de bord de piste.
+      const marge = PORTEE + 48; x0 -= marge; z0 -= marge; x1 += marge; z1 += marge;
+      const pas = Math.max(13, Math.sqrt((x1 - x0) * (z1 - z0) / 12000));
+      for (let iz = Math.floor(z0 / pas); iz <= Math.ceil(z1 / pas); iz++) for (let ix = Math.floor(x0 / pas); ix <= Math.ceil(x1 / pas); ix++) {
+        const seed = melanger(graine ^ Math.imul(ix, 83492791) ^ Math.imul(iz, 2654435761));
+        if (hasard(seed + 3) < .22) continue;
+        proposer((ix + .07 + hasard(seed + 7) * .86) * pas, (iz + .07 + hasard(seed + 11) * .86) * pas, .35);
       }
     } else for (const lot of decor.lots || []) for (const o of lot.objets || []) {
       // Compatibilité des petits décors sans axe de circuit : noms historiques ou marqueur
       // groundCover, quelle que soit la variante de maillage et sans dépendre du nom du lot.
-      if (herbe(o) && o.p) proposer(o.p[0], o.p[2], clamp(Math.abs(o.s && o.s[1] || .35), .05, .9), false, 1);
+      if (herbe(o) && o.p) proposer(o.p[0], o.p[2], clamp(Math.abs(o.s && o.s[1] || .35), .05, .9));
     }
-    // Répartir le plafond sur tout le tour, puis compléter dans les prairies plus éloignées.
-    candidats.sort((a, b) => a.priorite - b.priorite || a.graine - b.graine || a.x - b.x || a.z - b.z);
+    candidats.sort((a, b) => a.graine - b.graine || a.x - b.x || a.z - b.z);
     const sonde = { y: 0, normal: [0, 1, 0], color: [0, 0, 0] };
     for (const h of candidats) {
       if (resultat.length >= MAX_HABITATS) break;
       const centre = decor.surfaceHerbe(h.x, h.z, sonde);
       if (!centre || !Number.isFinite(centre.y)) continue;
       h.y = centre.y;
-      h.rx = h.proche ? .28 + hasard(h.graine + 11) * .20 : .58 + hasard(h.graine + 11) * .64;
-      h.rz = h.proche ? .26 + hasard(h.graine + 29) * .20 : .54 + hasard(h.graine + 29) * .68;
+      h.rx = .32 + hasard(h.graine + 11) * 1.45; h.rz = .30 + hasard(h.graine + 29) * 1.50;
+      h.pliX = .04 + hasard(h.graine + 43) * .21; h.pliZ = .05 + hasard(h.graine + 47) * .22;
+      h.phaseX = hasard(h.graine + 53) * TAU; h.phaseZ = hasard(h.graine + 59) * TAU;
+      h.freqX = 2 + h.graine % 3; h.freqZ = 2 + (h.graine >>> 4) % 2;
       const angle = hasard(h.graine + 41) * TAU; h.cos = Math.cos(angle); h.sin = Math.sin(angle);
       h.sols = new Float64Array(ECHANTILLONS); let valide = true;
       // Points et milieux de la trajectoire sont validés ; les grandes bandes route/eau/tunnel
       // ne peuvent être franchies par l'orbite locale. Les mêmes coordonnées servent au vol.
       for (let j = 0; j < ECHANTILLONS * 2; j++) {
         const a = j / (ECHANTILLONS * 2) * TAU;
-        const lx = (Math.cos(a) + Math.sin(a * 3) * .14) * h.rx;
-        const lz = (Math.sin(a) + Math.cos(a * 2) * .18) * h.rz;
+        const lx = (Math.cos(a) + Math.sin(a * h.freqX + h.phaseX) * h.pliX) * h.rx;
+        const lz = (Math.sin(a) + Math.cos(a * h.freqZ + h.phaseZ) * h.pliZ) * h.rz;
         const q = decor.surfaceHerbe(h.x + h.cos * lx - h.sin * lz, h.z + h.sin * lx + h.cos * lz, sonde);
         if (!q || !Number.isFinite(q.y) || q.normal && q.normal[1] < .65) { valide = false; break; }
         if (!(j & 1)) h.sols[j / 2] = q.y;
@@ -98,9 +119,12 @@
       const objets = new Array(composants);
       for (let j = 0; j < composants; j++) objets[j] = objet(espece, espece === 'luciole' ? j === 1 : j >= composants - 2);
       if (espece === 'luciole') { objets[0].shape = 'octa'; objets[0].mat = 5; }
-      slots[i] = { cle: -1, cible: -1, poids: 0, demande: 0, epoque: -1, phase: 0, vitesse: 0, taille: 0, altitude: 0, battement: 0, teinte: 0, objets };
+      slots[i] = { cle: -1, cible: -1, poids: 0, demande: 0, epoque: -1, phase: 0, phase2: 0, phase3: 0,
+        vitesse: 0, flotte: 0, souffle: 0, hausse: 0, lueur: 0, impulsion: 0, taille: 0, altitude: 0, battement: 0, teinte: 0, objets };
     }
-    return { slots, limite: 0, especes: espece, composants, demande: -1, nombrePlan: -1, partiel: -1 };
+    return { slots, limite: 0, especes: espece, capacite: espece === 'abeille' ? 'abeilles' : espece === 'insecte' ? 'insectes' : 'lucioles',
+      portee: espece === 'luciole' ? PORTEE : PORTEE_JOUR, debutFondu: espece === 'luciole' ? DEBUT_FONDU : 22,
+      disponibles: new Int32Array(nombre), population: 0, composants, demande: -1, nombrePlan: -1, partiel: -1 };
   }
   function vue(nombreHabitats) {
     return { dernierTemps: null, selectionTemps: -Infinity, x: Infinity, z: Infinity, nombre: 0, generation: 0, epoque: 0,
@@ -109,8 +133,10 @@
       stats: { abeilles: 0, insectes: 0, lucioles: 0, objets: 0, habitats: 0, requetes: 0 } };
   }
   function creer(c, decor) {
-    const liste = habitats(c || {}, decor);
+    const activite = decor && decor.saison && Number.isFinite(decor.saison.faune) ? clamp(decor.saison.faune, 0, 1) : 1;
+    const liste = activite === 0 ? [] : habitats(c || {}, decor);
     return { habitats: liste, index: indexer(liste), montagne: !!c && c.theme === 'montagne',
+      activite,
       vues: [vue(liste.length), vue(liste.length)], temps: null, nuit: 0, pluie: 0 };
   }
   function selectionner(etat, v, x, z, temps) {
@@ -133,13 +159,30 @@
       }
       while (v.nombre < ANCRES && indices[v.nombre] >= 0) v.nombre++;
     }
+    peupler(etat, v, v.abeilles); peupler(etat, v, v.insectes); peupler(etat, v, v.lucioles);
     v.selectionTemps = temps; v.x = x; v.z = z; v.generation++; v.stats.requetes++;
   }
+  function peupler(etat, v, p) {
+    p.population = 0;
+    // Une poche possède sa population propre. Le réglage est un plafond, il ne remplit
+    // pas artificiellement les zones pauvres et ne crée jamais d'individus hors habitat.
+    for (let individu = 0; individu < 8; individu++) {
+      let foyers = 0;
+      for (let j = 0; j < v.nombre; j++) {
+        if (v.distances[j] >= p.portee * p.portee) break;
+        const id = v.indices[j], h = etat.habitats[id];
+        if (!h[p.capacite]) continue;
+        if (p.especes !== 'luciole' && ++foyers > 8) break;
+        if (individu >= h[p.capacite]) continue;
+        p.disponibles[p.population++] = id * 8 + individu;
+        if (p.population === p.slots.length) return;
+      }
+    }
+  }
   function affecter(v, p, nombre, change) {
+    nombre *= p.population / p.slots.length;
     if (!change && p.demande === nombre) return;
-    // Les petits insectes restent groupés dans les huit habitats les plus proches. Les
-    // lucioles occupent jusqu'à 48 habitats et huit individus distincts par habitat.
-    const ancres = Math.min(v.nombre, p.especes === 'luciole' ? ANCRES : 8), n = Math.min(Math.ceil(nombre), ancres * 8);
+    const n = Math.min(Math.ceil(nombre), p.population);
     if (!change && p.demande >= 0 && p.nombrePlan === n) {
       if (p.partiel >= 0) p.slots[p.partiel].demande = Math.min(1, nombre - n + 1);
       p.demande = nombre; return;
@@ -155,14 +198,14 @@
     // Retenir d'abord les identités déjà présentes ; l'ordre des plus proches peut changer
     // sans téléporter tous les insectes d'un essaim. Une identité = habitat + individu local.
     for (let i = 0; i < n; i++) {
-      const cle = v.indices[i % ancres] * 8 + Math.floor(i / ancres), ancien = proprietaires[cle];
+      const cle = p.disponibles[i], ancien = proprietaires[cle];
       if (ancien >= 0) {
         slots[ancien].cible = cle; slots[ancien].demande = Math.min(1, nombre - i);
         if (i === n - 1) p.partiel = ancien;
       }
     }
     for (let i = 0; i < n; i++) {
-      const cle = v.indices[i % ancres] * 8 + Math.floor(i / ancres);
+      const cle = p.disponibles[i];
       if (proprietaires[cle] >= 0) continue;
       let meilleur = -1, poids = Infinity;
       for (let k = 0; k < slots.length; k++) {
@@ -179,9 +222,12 @@
   function identifier(s, cle, espece, etat, epoque) {
     s.cle = cle; s.epoque = epoque;
     const h = etat.habitats[Math.floor(cle / 8)], seed = melanger(h.graine ^ Math.imul(cle % 8 + 1, 0x45d9f3b) ^ (espece === 'abeille' ? 17 : espece === 'insecte' ? 71 : 131));
-    s.phase = hasard(seed) * TAU; s.vitesse = (espece === 'luciole' ? .28 : .58) + hasard(seed + 3) * .35;
-    s.taille = .85 + hasard(seed + 7) * .3; s.altitude = h.hauteurHerbe + (espece === 'luciole' ? .3 + hasard(seed + 11) * .8 : .25 + hasard(seed + 11) * .35);
-    s.battement = 47 + hasard(seed + 13) * 43; s.teinte = seed % 3;
+    s.phase = hasard(seed) * TAU; s.phase2 = hasard(seed + 17) * TAU; s.phase3 = hasard(seed + 19) * TAU;
+    s.vitesse = (espece === 'luciole' ? .24 : .43) + hasard(seed + 3) * (espece === 'luciole' ? .53 : .85);
+    s.taille = .72 + hasard(seed + 7) * .46; s.altitude = h.hauteurHerbe + (espece === 'luciole' ? .35 + hasard(seed + 11) * 1.35 : .31 + hasard(seed + 11) * .68);
+    s.flotte = .13 + hasard(seed + 23) * .34; s.souffle = .035 + hasard(seed + 29) * .075; s.hausse = .02 + hasard(seed + 31) * .05;
+    s.lueur = .65 + hasard(seed + 37) * 1.85; s.impulsion = seed % 3;
+    s.teinte = seed % 3; s.battement = espece === 'insecte' && s.teinte !== 2 ? 8 + hasard(seed + 13) * 12 : 47 + hasard(seed + 13) * 48;
   }
   function placer(o, x, y, z, sx, sy, sz, yaw, pitch = 0, roll = 0) {
     o.p[0] = x; o.p[1] = y; o.p[2] = z; o.s[0] = sx; o.s[1] = sy; o.s[2] = sz;
@@ -200,21 +246,25 @@
       }
       let cible = s.cle === s.cible && s.cle >= 0 ? s.demande : 0;
       let h = s.cle >= 0 ? etat.habitats[Math.floor(s.cle / 8)] : null;
-      if (h) cible *= 1 - lisse(DEBUT_FONDU, PORTEE, Math.hypot(h.x - x, h.z - z));
+      if (h) cible *= 1 - lisse(p.debutFondu, p.portee, Math.hypot(h.x - x, h.z - z));
       s.poids += (cible - s.poids) * melange;
       if (s.cible >= 0 || s.poids > .008) limite = i + 1;
       if (!h || s.poids < .008 || v.stats.objets + p.composants > MAX_OBJETS) continue;
-      const a = temps * s.vitesse + s.phase, ca = Math.cos(a), sa = Math.sin(a);
-      const lx = (ca + Math.sin(a * 3) * .14) * h.rx, lz = (sa + Math.cos(a * 2) * .18) * h.rz;
+      const flottement = Math.sin(temps * s.flotte + s.phase2), souffleLent = Math.sin(temps * s.flotte * .371 + s.phase3);
+      const a = temps * s.vitesse + s.phase + flottement * .28 + souffleLent * .12, ca = Math.cos(a), sa = Math.sin(a);
+      const lx = (ca + Math.sin(a * h.freqX + h.phaseX) * h.pliX) * h.rx, lz = (sa + Math.cos(a * h.freqZ + h.phaseZ) * h.pliZ) * h.rz;
       const px = h.x + h.cos * lx - h.sin * lz, pz = h.z + h.sin * lx + h.cos * lz;
       const u = ((a / TAU % 1) + 1) % 1 * ECHANTILLONS, j = Math.floor(u), t = u - j;
       const sol = h.sols[j] + (h.sols[(j + 1) % ECHANTILLONS] - h.sols[j]) * t;
-      const py = sol + s.altitude + Math.sin(a * 2 + s.phase) * .09 + Math.sin(temps * 1.7 + s.phase) * .045;
-      const vx = (-sa + Math.cos(a * 3) * .42) * h.rx, vz = (ca - Math.sin(a * 2) * .36) * h.rz;
+      const py = sol + s.altitude + Math.sin(a * 1.73 + s.phase2) * s.souffle + souffleLent * s.hausse;
+      const vx = (-sa + Math.cos(a * h.freqX + h.phaseX) * h.pliX * h.freqX) * h.rx;
+      const vz = (ca - Math.sin(a * h.freqZ + h.phaseZ) * h.pliZ * h.freqZ) * h.rz;
       const yaw = Math.atan2(h.sin * vx + h.cos * vz, h.cos * vx - h.sin * vz), cy = Math.cos(yaw), sy = Math.sin(yaw);
       const e = Math.sqrt(clamp(s.poids, 0, 1)), taille = s.taille * e, o = s.objets;
       if (p.especes === 'luciole') {
-        const souffle = .5 + Math.sin(temps * (1.15 + s.taille * .4) + s.phase) * .5, pulse = .25 + .75 * souffle * souffle * souffle;
+        const onde = .5 + Math.sin(temps * s.lueur + s.phase + souffleLent * .21) * .5;
+        let flash = onde * onde; if (s.impulsion > 0) flash *= flash; if (s.impulsion > 1) flash *= flash;
+        const pulse = .16 + .84 * flash;
         const coeur = (.012 + (s.taille - .85) * .022) * e, halo = (.085 + (s.taille - .85) * .16) * (.9 + .1 * pulse) * e;
         placer(o[0], px, py, pz, coeur, coeur, coeur, yaw); placer(o[1], px, py, pz, halo, halo, halo, 0);
         if (s.teinte === 0) { couleur(o[0], .9, 1, .27); couleur(o[1], .72, 1, .22); }
@@ -223,7 +273,7 @@
         o[0].emissive = 1.8 + pulse * 2.1; o[1].emissive = 1.3 + pulse * 1.3; o[1].alpha = s.poids * (.11 + pulse * .2);
         v.stats.lucioles++;
       } else if (p.especes === 'abeille') {
-        const vol = Math.sin(temps * s.battement + s.phase), pitch = Math.sin(a * 2) * .12;
+        const vol = Math.sin(temps * s.battement + s.phase + flottement * .3), pitch = Math.sin(a * 2 + s.phase3) * .12;
         placer(o[0], px - cy * .012 * taille, py, pz - sy * .012 * taille, .044 * taille, .026 * taille, .028 * taille, yaw, pitch);
         placer(o[1], px + cy * .014 * taille, py, pz + sy * .014 * taille, .022 * taille, .025 * taille, .024 * taille, yaw, pitch);
         placer(o[2], px + cy * .032 * taille, py + .003 * taille, pz + sy * .032 * taille, .018 * taille, .018 * taille, .019 * taille, yaw, pitch);
@@ -235,7 +285,7 @@
         }
         v.stats.abeilles++;
       } else {
-        const papillon = s.teinte !== 2, bat = Math.sin(temps * (papillon ? 15 : 61) + s.phase);
+        const papillon = s.teinte !== 2, bat = Math.sin(temps * s.battement + s.phase + flottement * .3);
         placer(o[0], px, py, pz, .033 * taille, .008 * taille, .008 * taille, yaw); couleur(o[0], .14, .18, .1);
         for (let k = 0; k < 2; k++) {
           const cote = k ? 1 : -1, wing = o[k + 1], decalage = cote * .022 * taille;
@@ -253,9 +303,10 @@
   function dessiner(etat, temps, contexte, sortie) {
     const c = contexte || {}, qualite = Object.prototype.hasOwnProperty.call(BUDGETS, c.qualite) ? c.qualite : 'medium';
     const v = etat.vues[c.vue === 1 ? 1 : 0], stats = v.stats;
+    const activite = etat.activite === 0 ? 0 : Number.isFinite(c.activite) ? clamp(c.activite, 0, 1) : etat.activite;
     stats.abeilles = stats.insectes = stats.lucioles = stats.objets = 0; stats.habitats = 0;
     temps = Number.isFinite(temps) ? temps : 0;
-    if (qualite === 'off' || !etat.habitats.length) {
+    if (qualite === 'off' || !etat.habitats.length || activite === 0 && !v.abeilles.limite && !v.insectes.limite && !v.lucioles.limite) {
       if (v.dernierTemps !== null) v.epoque++;
       v.dernierTemps = null; v.abeilles.limite = v.insectes.limite = v.lucioles.limite = 0;
       v.abeilles.demande = v.insectes.demande = v.lucioles.demande = -1;
@@ -276,11 +327,13 @@
       etat.nuit += (nuit - etat.nuit) * a; etat.pluie += (pluie - etat.pluie) * a;
     }
     etat.temps = temps;
-    const change = temps - v.selectionTemps > .3 || (px - v.x) ** 2 + (pz - v.z) ** 2 > 36;
+    // Les habitats sont immuables : à l'arrêt, garder la sélection. Les distances et
+    // fondus restent évalués chaque image ; un déplacement de 6 m renouvelle les foyers.
+    const change = v.selectionTemps === -Infinity || (px - v.x) ** 2 + (pz - v.z) ** 2 > 36;
     if (change) selectionner(etat, v, px, pz, temps);
     stats.habitats = v.nombre;
-    const budget = BUDGETS[qualite], jour = (1 - lisse(.15, .65, etat.nuit)) * (1 - etat.pluie * .65);
-    const nuitActive = etat.montagne ? lisse(.35, .85, etat.nuit) * (1 - etat.pluie * .45) : 0;
+    const budget = BUDGETS[qualite], jour = activite * (1 - lisse(.15, .65, etat.nuit)) * (1 - etat.pluie * .65);
+    const nuitActive = etat.montagne ? activite * lisse(.35, .85, etat.nuit) * (1 - etat.pluie * .45) : 0;
     affecter(v, v.abeilles, budget.abeilles * jour, change);
     affecter(v, v.insectes, budget.insectes * jour, change);
     affecter(v, v.lucioles, budget.lucioles * nuitActive, change);
@@ -289,5 +342,5 @@
     dessinerPool(etat, v, v.lucioles, temps, dt, px, pz, sortie);
     return stats;
   }
-  B.faune = { BUDGETS, MAX_VUES, MAX_HABITATS, MAX_OBJETS, PORTEE, creer, dessiner };
+  B.faune = { BUDGETS, MAX_VUES, MAX_HABITATS, MAX_OBJETS, PORTEE, PORTEE_JOUR, creer, dessiner };
 })(globalThis.BITUME = globalThis.BITUME || {});

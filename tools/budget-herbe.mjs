@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* Comptage des vrais brins et de leur densité locale. Aucune exécution GPU, aucun réseau. */
 import vm from 'node:vm';
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,7 +12,11 @@ const reference = option('--reference', null), qualite = option('--qualite', 'ul
 const carteSortie = option('--carte', null), biomeDemande = option('--biome', null);
 const comparaison = option('--baseline', null), precedent = comparaison ? JSON.parse(readFileSync(comparaison, 'utf8')) : null;
 const referenceComplete = reference ? execFileSync('git', ['-C', root, 'rev-parse', reference], { encoding: 'utf8' }).trim() : 'WORKTREE';
-const sources = Object.fromEntries(['circuit', 'vegetation', 'decor'].map(n => [n, reference
+const avecEcologie = reference ? !!execFileSync('git', ['-C', root, 'ls-tree', '--name-only', referenceComplete, 'src/ecologie.js'], { encoding: 'utf8' }).trim()
+  : existsSync(path.join(root, 'src/ecologie.js'));
+const avecSaisons = reference ? !!execFileSync('git', ['-C', root, 'ls-tree', '--name-only', referenceComplete, 'src/saisons.js'], { encoding: 'utf8' }).trim()
+  : existsSync(path.join(root, 'src/saisons.js'));
+const sources = Object.fromEntries(['circuit', ...(avecEcologie ? ['ecologie'] : []), ...(avecSaisons ? ['saisons'] : []), 'vegetation', 'decor'].map(n => [n, reference
   ? execFileSync('git', ['-C', root, 'show', referenceComplete + ':src/' + n + '.js'], { encoding: 'utf8', maxBuffer: 3000000 })
   : readFileSync(path.join(root, 'src', n + '.js'), 'utf8')]));
 const graines = [[11, 'foret', 4200], [29, 'cote', 3600], [47, 'montagne', 5200]], lignes = [];
@@ -83,18 +87,19 @@ for (const [graine, theme, longueur] of graines) {
   for (const d of disques) {
     d.brinsParMetreCarre = d.brins / d.aire;
     const avant = precedent?.lignes.find(l => l.biome === theme)?.disques.find(v => v.id === d.id);
-    if (avant) { d.reference031 = avant.brins; d.facteurDepuis031 = avant.brins ? d.brins / avant.brins : null; }
+    if (avant) { d.brinsReference = avant.brins; d.facteurDepuisReference = avant.brins ? d.brins / avant.brins : null; }
   }
   const avant = precedent?.lignes.find(l => l.biome === theme);
   lignes.push({ biome: theme, graine, longueur: c.longueur, qualite, constructionMs, brins, instances,
     instanceBufferBytesTheoriques: instances * 16 * 4 * 2, trianglesProches, trianglesLointains,
     lotsPrairie: decor.lots.filter(l => l.groundCover || l.tapis).length, surfaceCouverte: aire,
     vegetation: decor.vegetation, surfaceDisponible: decor.herbier?.aire ?? null,
-    facteurTotalDepuis031: avant ? brins / avant.brins : null, disques, memoireProcessus: process.memoryUsage() });
+    facteurTotalDepuisReference: avant ? brins / avant.brins : null, disques, memoireProcessus: process.memoryUsage() });
   if (carte) writeFileSync(carteSortie, JSON.stringify(carte));
   console.log(JSON.stringify({ biome: theme, brins, instances, localMin: Math.min(...disques.map(d => d.brinsParMetreCarre)),
-    facteurLocalMin: avant ? Math.min(...disques.map(d => d.facteurDepuis031).filter(Number.isFinite)) : null }));
+    facteurLocalMin: avant ? Math.min(...disques.map(d => d.facteurDepuisReference).filter(Number.isFinite)) : null }));
 }
-const rapport = { source: referenceComplete, qualite, mesure: 'Brins des maillages réellement instanciés, racines transformées dans des disques fixes de 2 m. Totaux géométriques et buffers théoriques ; aucune mesure FPS ou rasterisation GPU.', lignes };
+const rapport = { source: referenceComplete, referenceComparee: precedent?.source || null, qualite,
+  mesure: 'Brins des maillages réellement instanciés, racines transformées dans des disques fixes de 2 m. Totaux géométriques et buffers théoriques ; aucune mesure FPS ou rasterisation GPU.', lignes };
 if (sortie) { mkdirSync(path.dirname(path.resolve(sortie)), { recursive: true }); writeFileSync(sortie, JSON.stringify(rapport, null, 2) + '\n'); }
 else console.log(JSON.stringify(rapport, null, 2));

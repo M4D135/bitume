@@ -30,3 +30,9 @@ Travail en cours. Détection implémentée et contrôles ciblés passés (10 dé
 - Préparation en Circuit / Conditions / Pilotes ; réglages en Image / Pilotage / Son / Commandes. Manette : groupes, stick/croix, maintien, A/B et LB/RB.
 - FERRO 0.3.9 publié puis installé (34 modules) : `89c784163b8671676b11f3d4114fab22f6200a7e`.
 - Demande suivante isolée en lot11 : 16 circuits mondiaux très différents, examiner les sources Vroom officiel et Vroom Unreal personnel, Islande avec aurores. Ne pas mélanger cette expansion à la qualification courante.
+
+## Gel et reprise de publication — 18 novembre 2026
+
+La copie isolée a repassé les 61 suites, deux builds identiques au build préparé, et les 34 empreintes FERRO 0.3.9. Preuve : `rapports/nature-conditions-menus-2026-11-18/validation-reprise-publication.json`. La revue confirme les conditions communes de l’hôte et l’absence d’accès réseau météo en Manuel/Aléatoire. Les menus se parcourent à la manette ; les champs nom/code du salon nécessitent une saisie clavier ou tactile.
+
+Le contrôle visuel et les FPS matériels restent non mesurés. La publication GitHub est autorisée ; le déploiement `bitume.estrasse.fr` reste à lancer depuis le Mac disposant de l’accès `amiga`. Aucun accès SSH correspondant n’est présent dans la session de reprise.

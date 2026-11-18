@@ -1,0 +1,14 @@
+✔ halo et ombres au palier 0 (1.094878ms)
+✔ halo et ombres au palier 1 (0.227332ms)
+✔ halo et ombres au palier 2 (0.191388ms)
+✔ halo et ombres au palier 3 (0.158439ms)
+✔ halo et ombres au palier 4 (0.144017ms)
+✔ reflets préservés selon la météo et le GPU (0.224218ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7.423395

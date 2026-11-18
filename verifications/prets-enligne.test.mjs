@@ -7,12 +7,14 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 require('../src/conduite.js'); require('../src/meteo.js');
 require('../src/ambiance.js');
+require('../src/saisons.js');
 const B = globalThis.BITUME;
 const source = readFileSync(process.argv[2] || new URL('../src/jeu.js', import.meta.url), 'utf8');
 const debut = source.indexOf('  const EL = '), fin = source.indexOf('  function envoyerEtats(', debut);
 assert.ok(debut >= 0 && fin > debut);
 const creer = new Function('B', `
   let session = null, ecran = 'enligne', retourReglages = 'titre', graineCourse = 100, maintenant = 0, numero = 0;
+  let conditionsPreparation = null, conditionsPreparationCle = '';
   const temps = new Map(), messages = [], departs = [], elements = new Map();
   const setTimeout = (f, d) => { const id = ++numero; temps.set(id, { f, t: maintenant + d }); return id; };
   const clearTimeout = id => temps.delete(id);
@@ -20,7 +22,7 @@ const creer = new Function('B', `
   const document = { querySelector: $, querySelectorAll: () => [] };
   const texte = (e, t) => { e.textContent = t; }, classe = () => {};
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
-  const CATALOGUE = [{ nom: 'Circuit test' }, { nom: 'Haut-Col' }];
+  const CATALOGUE = [{ nom: 'Circuit test', theme: 'foret' }, { nom: 'Port-Sable', theme: 'cote' }, { nom: 'Haut-Col', theme: 'montagne' }];
   const NOMS_PNEUS = { slicks: 'Slicks', inter: 'Intermédiaires', pluie: 'Pluie' };
   const reglages = { circuit: 0, tours: 3, difficulte: 1, meteo: 'pluie', pneus: 'pluie', boite: 'auto', vue: 'cockpit', joueursLocaux: 1 };
   const aller = s => { ecran = s; }, lancer = (type, i, cfg) => departs.push({ type, i, cfg });
@@ -79,6 +81,19 @@ test('le moment choisi avant départ est annoncé et transmis aux pilotes', () =
   assert.equal(b.reglages.moment,'jour','préférence personnelle préservée après la course imposée');
   assert.equal(b.recevoirCourse({i:0,tours:3,meteo:'soleil',eau:0,moment:'invalide'}),true);
   assert.equal(b.EL.course.moment,'jour','messages anciens ou invalides reprennent le jour');
+});
+test('saison imposée par l’hôte, sans modifier les préférences des invités ; neige absente du Sud', () => {
+  const a = creer(B), R = a.connecter('hote'); a.reglages.circuit = 2; a.reglages.saison = 'hiver'; a.proposerCourse();
+  assert.equal(a.EL.course.saison, 'hiver'); tous(a, R); a.avancer(700);
+  assert.match(a.$('pr-course').textContent, /hiver/); assert.match(a.$('pr-course').textContent, /neige/);
+  const cfg = a.messages.find(x => x.m.t === 'depart').m.cfg;
+  assert.equal(cfg.saison, 'hiver');
+  const b = creer(B); b.connecter('invite'); b.reglages.saison = 'printemps'; b.surMessageEnLigne({t:'depart',cfg},0); b.avancer(5000);
+  assert.equal(b.departs[0].cfg.saison, 'hiver'); assert.equal(b.reglages.saison, 'printemps');
+  assert.equal(b.recevoirCourse({ i: 0, tours: 3, meteo: 'soleil', eau: 0, saison: 'inconnue' }), true);
+  assert.equal(b.EL.course.saison, 'ete');
+  a.reglages.circuit = 1; a.proposerCourse(); tous(a, R);
+  assert.match(a.$('pr-course').textContent, /pluie/); assert.doesNotMatch(a.$('pr-course').textContent, /neige/);
 });
 
 test('l’annonce ouvre la confirmation sans lancer la course', () => {

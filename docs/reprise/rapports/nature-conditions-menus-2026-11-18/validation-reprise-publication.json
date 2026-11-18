@@ -1,0 +1,24 @@
+{
+  "date_utc": "2026-11-18T11:12:26.788579+00:00",
+  "suites": 61,
+  "passed": 61,
+  "failed": [],
+  "source_stable": true,
+  "build_reproducible": true,
+  "matches_prior_build": true,
+  "ferro_lock": {
+    "returncode": 0,
+    "output": "FERRO 0.3.9: 34 reference modules verified"
+  },
+  "sha256": "9361a098392b9fa941b45d1622e91ca7bd05461b31f3022785985006499f899d",
+  "version": "0.2.33",
+  "bytes": 13204358,
+  "controle_visuel": "Non realise : refus navigateur local documente dans la reprise precedente.",
+  "mesure_fps_materielle": false,
+  "revue_ciblee": {
+    "conditions_hote": "valide",
+    "aucun_fetch_manuel_aleatoire": "valide",
+    "navigation_manette": "valide",
+    "saisie_nom_code_salon": "clavier ou tactile"
+  }
+}

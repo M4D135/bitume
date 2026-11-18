@@ -1,0 +1,33 @@
+✔ le moment choisi avant départ est annoncé et transmis aux pilotes (2.874098ms)
+✔ saison imposée par l’hôte, sans modifier les préférences des invités ; neige absente du Sud (0.635144ms)
+✔ l’annonce ouvre la confirmation sans lancer la course (0.162294ms)
+✔ départ unique avec 1+1 pilotes (0.644498ms)
+✔ départ unique avec 2+1 pilotes (0.228022ms)
+✔ départ unique avec 2+2 pilotes (0.191608ms)
+✔ départ unique avec 1+1+1+1 pilotes (0.240471ms)
+✔ cinq pilotes ne peuvent pas confirmer le départ (0.205669ms)
+✔ un pilote peut retirer son accord pendant les 700 ms (0.230096ms)
+✔ retour de l’hôte au salon annule le départ différé (0.243235ms)
+✔ quitter puis rejoindre une autre partie ne lance pas l’ancienne course (0.20614ms)
+✔ une nouvelle proposition remplace le compte à rebours précédent (0.263727ms)
+✔ un membre en cours de connexion n’est pas oublié (0.222685ms)
+✔ une arrivée pendant le compte à rebours impose sa confirmation (1.045901ms)
+✔ perdre une liaison pendant le compte à rebours ne lance pas une course incomplète (0.137897ms)
+✔ départ d’un membre nettoie ses pneus et permet aux autres de continuer (0.461283ms)
+✔ les accords répétés ne programment qu’un départ (0.222003ms)
+✔ ouvrir les réglages retire l’accord local (0.146671ms)
+✔ un inconnu ne peut se dire prêt ni imposer des pneus (0.086861ms)
+✔ l’invité choisit ses pneus sans modifier sa boîte ni sa vue (0.176876ms)
+✔ annulation par l’hôte depuis les réglages retourne au salon (0.0861ms)
+✔ fermeture du salon efface la confirmation et quitte son écran (0.104667ms)
+✔ confirmation invalide ignorée sans écran vide (0.043495ms)
+✔ messages nuls ignorés sans interrompre le jeu (0.103105ms)
+✔ quitter pendant les 30 ms de chargement annule le lancement (0.095954ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14.445671

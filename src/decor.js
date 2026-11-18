@@ -150,8 +150,24 @@
     return { sommets: new Float32Array(n.s), indices: new Uint32Array(n.i), centre, rayon };
   }
 
-  function nappesRoute(c, th, lim, naturel = false) {
+  const NUANCE_SOL_NU = [1.10, .86, .96];
+  const FLEURS_LOINTAINES = { feuillu: [.66, .55, .29], pin: [.73, .64, .35], conifere: [.53, .44, .61] };
+  function couleurPrairie(th, couleur, habitat) {
+    const pousse = lisse(.02, .85, habitat.herbe), fleurs = habitat.fleurs * .14;
+    const fleur = FLEURS_LOINTAINES[th.essence] || FLEURS_LOINTAINES.feuillu, resultat = new Array(3);
+    // Les nappes portent l'illusion à distance : ces mêmes poches restent lisibles quand les brins
+    // deviennent trop petits. Seules les couleurs changent, sans couche ou géométrie supplémentaire.
+    for (let k = 0; k < 3; k++) {
+      const nu = th.terre[k] * NUANCE_SOL_NU[k], riche = th.herbe[k] * .75 + th.herbeClaire[k] * .25;
+      const sol = nu + (riche - nu) * pousse;
+      resultat[k] = couleur[k] * .15 + (sol + (fleur[k] - sol) * fleurs) * .85;
+    }
+    return resultat;
+  }
+
+  function nappesRoute(c, th, lim, naturel = false, ecologie = null) {
     const w = c.largeur / 2, n = c.n, LIGNES = 60, liste = [];
+    const habitat = {};
     const asphalte = i => { const v = .165 + .035 * fbm(i * c.pas / 90, 3.7, c.graine + 5, 2); return [v, v, v * 1.04]; };
     const blanc = [.86, .86, .83], rouge = [.74, .09, .07], blancBordure = [.90, .90, .87];
     for (let debut = 0; debut < n; debut += LIGNES) {
@@ -185,7 +201,13 @@
             else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; col = th.herbe.map(v => v * .86); n0 = n1 = [0, 1, 0]; }
             if (cote < 0) { const t = d0; d0 = d1; d1 = t; const u = y0; y0 = y1; y1 = u; }
           }
-          const ia = sommet(nap, pointPlan(f, d0, y0), n0, mat, col), ib = sommet(nap, pointPlan(f, d1, y1), n1, mat, col);
+          const p0 = pointPlan(f, d0, y0), p1 = pointPlan(f, d1, y1);
+          let col0 = col, col1 = col;
+          if (ecologie && (type === 'herbe' || type === 'jupe')) {
+            col0 = couleurPrairie(th, col, ecologie.echantillonner(p0[0], p0[2], habitat));
+            col1 = couleurPrairie(th, col, ecologie.echantillonner(p1[0], p1[2], habitat));
+          }
+          const ia = sommet(nap, p0, n0, mat, col0), ib = sommet(nap, p1, n1, mat, col1);
           const prec = premiers[b];
           if (prec.length) {
             const [pa, pb] = prec;
@@ -203,7 +225,7 @@
   }
 
   // Terrain : grille autour du circuit, raccordée à la chaussée par une pondération continue des hauteurs de l'axe.
-  function nappesTerrain(c, th, interroger, g) {
+  function nappesTerrain(c, th, interroger, g, ecologie = null) {
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
     for (let i = 0; i < c.n; i++) { x0 = Math.min(x0, c.x[i]); x1 = Math.max(x1, c.x[i]); z0 = Math.min(z0, c.z[i]); z1 = Math.max(z1, c.z[i]); }
     const marge = th.marge, pasT = 24;
@@ -236,7 +258,7 @@
     for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
       const r = hauteur(x0 + i * pasT, z0 + j * pasT); H[j * nx + i] = r.h; D[j * nx + i] = r.d;
     }
-    const liste = [], TUILE = 14;
+    const liste = [], TUILE = 14, habitat = {};
     const couleur = (h, d, ny, x, z) => {
       const tache = fbm(x / 140, z / 140, g + 3, 3);
       let col = melange(th.herbe, th.terre, lisse(.45, .8, tache) * .7), mat = 8;
@@ -245,6 +267,9 @@
         if (ny < .8 || h > 120) { col = melange(th.roche, th.roche.map(v => v * .8), tache); mat = 9; }
         if (h > 250 + 40 * tache && ny > .6) { col = th.neige; mat = 3; }
       } else if (ny < .7) { col = th.terre; }
+      if (ecologie && mat === 8 && ny >= .7 && (th.eau === undefined || h >= th.eau + 2.2)) {
+        col = couleurPrairie(th, col, ecologie.echantillonner(x, z, habitat));
+      }
       return [mat, col];
     };
     for (let tj = 0; tj < nz - 1; tj += TUILE) for (let ti = 0; ti < nx - 1; ti += TUILE) {
@@ -545,6 +570,8 @@
   function construire(c, options = {}) {
     const th = Object.assign({}, THEMES[c.theme] || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
     const qualite = normaliserQualite(options.qualite);
+    const ecologie = B.ecologie ? B.ecologie.creer(c.graine, c.theme) : null;
+    const saison = B.saisons ? B.saisons.profil(options.saison, c.theme) : null;
     if (c.theme === 'foret' && options.matieres !== false) th.matieres = MATIERES_PILOTES;
     // l'eau ne noie jamais la piste : le niveau descend sous le point le plus bas de l'axe (le virage de
     // Port-Sable plongeait à −5,8 sous le niveau −4 du thème cote, David 14/11)
@@ -555,8 +582,24 @@
     }
     const w = c.largeur / 2, lim = limites(c), interroger = indexAxe(c);
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
-    const nappes = nappesRoute(c, th, lim, qualite !== 'low');
-    const terrain = nappesTerrain(c, th, interroger, g);
+    const nappes = nappesRoute(c, th, lim, qualite !== 'low', qualite === 'low' ? null : ecologie);
+    const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie);
+    if (saison) {
+      const habitat = {}, couleur = [0, 0, 0], teinte = [0, 0, 0];
+      for (const n of nappes.concat(terrain.liste)) {
+        const visites = new Uint8Array(n.sommets.length / 13);
+        for (const triangle of n.herbeTriangles || []) for (let j = 0; j < 3; j++) visites[n.indices[triangle + j]] = 1;
+        // Le bord sans vibreur est aussi herbeux, mais reste exclu de la plantation des brins.
+        if (n.surfaceType === 'accotement') for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 9] === 8) visites[v] = 1;
+        for (let v = 0; v < visites.length; v++) if (visites[v]) {
+          const k = v * 13, x = n.sommets[k], z = n.sommets[k + 2];
+          if (ecologie) ecologie.echantillonner(x, z, habitat);
+          for (let a = 0; a < 3; a++) couleur[a] = n.sommets[k + 10 + a];
+          B.saisons.teinte(saison, 'sol', couleur, x, z, ecologie ? habitat : null, teinte);
+          for (let a = 0; a < 3; a++) n.sommets[k + 10 + a] = teinte[a];
+        }
+      }
+    }
     const groupes = new Map();   // lots par portion de 150 m, plus lots lointains
     const TRONCON = 150;
     const lotDe = (x, z, i) => {
@@ -781,10 +824,24 @@
       break;
     }
 
-    // Arbres : forêt continue (lot 1) — d'abord une haie le long du tour qui garantit un arbre à moins de
-    // 200 m de chaque échantillon et 20 par tronçon de 300 m, puis la grille irrégulière en taches qui
-    // remplit la campagne jusqu'au plafond. Hors de l'enceinte du circuit, mêmes exclusions des deux côtés.
-    const positionsArbres = [];
+    // Les candidats historiques restent bornés et gardent leur hasard propre. Le champ de boisement
+    // laisse des trouées, indépendamment du côté de route ; un arbre absent n'a pas de solide résiduel.
+    const positionsArbres = [], sourcesFeuilles = [];
+    const habitatArbre = {};
+    function retenirArbre(objets, loin, x, z) {
+      const richesse = ecologie ? ecologie.echantillonner(x, z, habitatArbre).boisement : 1;
+      if (richesse < .08 || hache(Math.round(x * 8), Math.round(z * 8), g + 337) > richesse) return;
+      if (saison) {
+        for (const liste of [objets, loin]) for (const o of liste) if (o.collision !== 'tronc' && o.color) {
+          o.color = B.saisons.teinte(saison, 'feuillage', o.color, o.p[0], o.p[2], ecologie ? habitatArbre : null);
+        }
+        if (saison.feuilles && th.essence === 'feuillu') {
+          const pied = objets.find(o => o.collision === 'tronc'), h = pied.s[1] / .84, sol = pied.p[1] - h * .42 + .2;
+          sourcesFeuilles.push({ x, y: sol + h * .78, z, rayon: h * .36, sol });
+        }
+      }
+      ajouter(objets, loin, x, z); positionsArbres.push([x, z]);
+    }
     let nombre = 0;
     const MAX = options.arbres === undefined ? 2600 : options.arbres;
     for (let i = 0; i < c.n && nombre < MAX; i += 7) {   // un plan par 14 m de piste, de chaque côté
@@ -803,7 +860,7 @@
           if (th.montagnes && y > 160) continue;
           const objets = [], loin = [];
           arbre(objets, loin, jx, y - .2, jz, th.essence, r, qualite);
-          ajouter(objets, loin, jx, jz); positionsArbres.push([jx, jz]); nombre++;
+          retenirArbre(objets, loin, jx, jz); nombre++;
           break;
         }
       }
@@ -823,7 +880,7 @@
       if (q.i >= 0 && Math.abs(B.circuit.ecart(c, 0, q.i * c.pas)) < 320 && dist < 90) continue; // abords des tribunes et des stands
       const objets = [], loin = [];
       arbre(objets, loin, jx, y - .2, jz, th.essence, r, qualite);
-      ajouter(objets, loin, jx, jz); positionsArbres.push([jx, jz]); nombre++;
+      retenirArbre(objets, loin, jx, jz); nombre++;
     }
 
     // Repères lointains selon le thème : phare et cabanons sur la côte, chalets en montagne, fermes en forêt.
@@ -889,7 +946,8 @@
       if (o.shape === 'cylinder') obstacles.push(Object.assign(commun, { type: 'circle', r: o.s[0]/2 }));
       else obstacles.push(Object.assign(commun, { type: 'box', angle: -(o.r ? o.r[1] : 0), hx: o.s[0]/2, hz: o.s[2]/2 }));
     }
-    const atmosphere = Object.assign({ outdoorZones: [{ x: 0, z: 0, w: 1e7, d: 1e7 }] }, th.atmosphere);
+    const atmosphereBase = Object.assign({ outdoorZones: [{ x: 0, z: 0, w: 1e7, d: 1e7 }] }, th.atmosphere);
+    const atmosphere = saison ? B.saisons.atmosphere(saison, atmosphereBase) : atmosphereBase;
     // enceinte : portion de la ligne droite bordée de tribunes et de stands (abscisses comptées depuis la ligne) ; une
     // caméra de bord de piste s'y place devant eux, pas derrière la glissière où elle serait dans les gradins.
     const decor = { nappes: nappes.concat(terrain.liste), lots, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
@@ -899,12 +957,20 @@
     const ouvrirHerbier = () => {
       if (herbier) return herbier;
       let cache = HERBIERS.get(c); if (!cache) HERBIERS.set(c, cache = new Map());
-      const cle = (qualite === 'low' ? 'low' : 'naturel') + ':' + (options.arbres === undefined ? 2600 : options.arbres);
-      herbier = cache.get(cle);
-      if (!herbier) { herbier = creerHerbier(c, decor.nappes, lots, lim, decor.enceinte, terrain.niveauEau); cache.set(cle, herbier); }
+      const cle = (qualite === 'low' ? 'low' : 'naturel') + ':' + (options.arbres === undefined ? 2600 : options.arbres) + (ecologie ? ':ecologie' : '');
+      const entree = cache.get(cle), couleurSaison = saison ? saison.id : 'historique';
+      if (entree && entree.saison === couleurSaison) herbier = entree.herbier;
+      if (!herbier) {
+        herbier = creerHerbier(c, decor.nappes, lots, lim, decor.enceinte, terrain.niveauEau);
+        // Garder une seule palette par clé évite d'accumuler quatre grands caches de sol par circuit.
+        cache.set(cle, { saison: couleurSaison, herbier });
+      }
       return herbier;
     };
     Object.defineProperties(decor, {
+      ecologie: { value: ecologie },
+      saison: { value: saison },
+      sourcesFeuilles: { value: sourcesFeuilles },
       herbier: { get: ouvrirHerbier },
       surfaceHerbe: { value: (x, z, sortie) => ouvrirHerbier().surface(x, z, sortie) },
     });
@@ -917,13 +983,25 @@
       ? options.vegetationQualite : qualite;
     if (B.vegetation && options.vegetation !== false && vegetationQualite !== 'off') {
       const v = B.vegetation.construire(c, { limites: lim, interroger, qualite: vegetationQualite,
-        surfaces: vegetationQualite === 'low' ? null : ouvrirHerbier() });
+        surfaces: vegetationQualite === 'low' ? null : ouvrirHerbier(), ecologie });
+      if (saison) {
+        const habitat = {};
+        for (const lot of v.lots) for (let i = 0; i < lot.objets.length; i++) {
+          const o = lot.objets[i]; if (!o.color || o.shape === 'humus-val') continue;
+          if (ecologie) ecologie.echantillonner(o.p[0], o.p[2], habitat);
+          const famille = o.shape === 'fleurs-val' ? 'fleurs' : 'herbe';
+          const couleur = B.saisons.teinte(saison, famille, o.color, o.p[0], o.p[2], ecologie ? habitat : null);
+          o.color = couleur;
+          if (lot.loin[i]) lot.loin[i].color = couleur;
+        }
+      }
       lots.push(...v.lots);
       decor.vegetation = { herbes: v.herbes, fougeres: v.fougeres, fleurs: v.fleurs, taillis: v.taillis,
         lots: v.lots.length, qualite: v.qualite,
         brins: v.brins, tuiles: v.tuiles, brinsTapis: v.brinsTapis, objetsHerbe: v.objetsHerbe,
         brinsAccotements: v.brinsAccotements, brinsTerrain: v.brinsTerrain,
-        aireAccotements: v.aireAccotements, aireTerrain: v.aireTerrain };
+        aireAccotements: v.aireAccotements, aireTerrain: v.aireTerrain,
+        aireNue: v.aireNue, aireRiche: v.aireRiche, brinsRiches: v.brinsRiches };
     }
     // Le palier est une métadée de suivi, pas une donnée d'image : il reste non énumérable pour que les
     // empreintes historiques du décor (verifications/decor-identite.test.mjs) ne bougent pas d'un cran.

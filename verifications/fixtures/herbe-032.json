@@ -1,0 +1,79 @@
+{
+  "reference": "5292baffb0e2853560e089ee2ed18b1ed33ad8df",
+  "version": "0.2.32",
+  "sourceSha256": {
+    "src/vegetation.js": "17ac29cfed9cac36327439c1ecc56f184d1deb619436f0a212d15984855d2397",
+    "src/decor.js": "341ae69221b83df7638ba90d05d5dc4e087debb86e1dc89c9b5d3f7eacd9bdc4"
+  },
+  "mesures": {
+    "foret": {
+      "medium": {
+        "brins": 1682444,
+        "tuiles": 87433,
+        "lots": 3489,
+        "aireCouverte": 8226749.614250708,
+        "instanceBufferBytes": 11191424
+      },
+      "high": {
+        "brins": 6532316,
+        "tuiles": 87433,
+        "lots": 3489,
+        "aireCouverte": 8226749.614250708,
+        "instanceBufferBytes": 11191424
+      },
+      "ultra": {
+        "brins": 163010460,
+        "tuiles": 101628,
+        "lots": 5143,
+        "aireCouverte": 8226749.614250619,
+        "instanceBufferBytes": 13008384
+      }
+    },
+    "cote": {
+      "medium": {
+        "brins": 1266560,
+        "tuiles": 71932,
+        "lots": 2612,
+        "aireCouverte": 5282950.00365198,
+        "instanceBufferBytes": 9207296
+      },
+      "high": {
+        "brins": 4780472,
+        "tuiles": 71932,
+        "lots": 2612,
+        "aireCouverte": 5282950.00365198,
+        "instanceBufferBytes": 9207296
+      },
+      "ultra": {
+        "brins": 129057608,
+        "tuiles": 83344,
+        "lots": 4032,
+        "aireCouverte": 5282950.003651971,
+        "instanceBufferBytes": 10668032
+      }
+    },
+    "montagne": {
+      "medium": {
+        "brins": 1167341,
+        "tuiles": 75703,
+        "lots": 2556,
+        "aireCouverte": 2894677.086301253,
+        "instanceBufferBytes": 9689984
+      },
+      "high": {
+        "brins": 4320407,
+        "tuiles": 75703,
+        "lots": 2556,
+        "aireCouverte": 2894677.086301253,
+        "instanceBufferBytes": 9689984
+      },
+      "ultra": {
+        "brins": 167320367,
+        "tuiles": 94000,
+        "lots": 4547,
+        "aireCouverte": 2894677.086301265,
+        "instanceBufferBytes": 12032000
+      }
+    }
+  }
+}

@@ -58,7 +58,7 @@ for(const hz of [30,60,120]){
 assert.deepEqual(results[0],results[1]);assert.deepEqual(results[0],results[2]);controles+=2;
 const a=M.ambiance({pluie:1,nuage:1,eclair:1,mouille:.8,ventX:2,ventZ:.3});
 check(a.pluie===.72&&a.nuage===.86&&a.eclair===.3&&a.mouille===.8,'contrat ambiance borné et mouillage pour renderer');
-check(source.includes('dessinerMeteo(S, dtImage, cam, vue);'),'overlay reçoit secondes et caméra effectivement rendue');
+check(source.includes('dessinerMeteo(S, dtImage, cam, vue, P);'),'overlay reçoit secondes, caméra effectivement rendue et profil courant');
 // Exécuter les vrais appels de rendu avec une frontière instrumentée : le tampon
 // de météo et les sources de sillage doivent être communs à la scène et aux miroirs.
 const appelsRendu=[],rendu={draw:(cam,objets,fx)=>appelsRendu.push(fx)};

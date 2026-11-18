@@ -2,17 +2,25 @@
   "date": "2026-11-18",
   "etat_courant": {
     "branche": "main",
-    "base_commit": "5292baffb0e2853560e089ee2ed18b1ed33ad8df",
+    "base_commit": "63f4b53e6c9ae50e6cfc641332f7856f0b23e8c4",
     "base_version": "0.2.32",
     "version_cible": "0.2.33",
     "ferro_version_base": "0.3.8",
-    "statut": "lot_10_en_cours",
+    "statut": "lot_10_qualifie_publication_en_cours",
     "lot": "nature_saisons_detection_conditions_menus",
     "fiche": "docs/reprise/10-NATURE-ET-AUTODETECTION.md",
     "commit_publie": null,
-    "prochaine_action": "Finir intégration conditions, vitre et menus ; qualifier et publier BITUME 0.2.33 avec FERRO 0.3.9 déjà publié. Ensuite lot11 : 16 circuits globaux très distincts, sources Vroom officiel et dépôt personnel Vroom Unreal à examiner.",
+    "prochaine_action": "Publier le code et le build 0.2.33 verifies, confirmer la tete main, enregistrer le recu. Lot11 traite ensuite par petits lots.",
     "precision_utilisateur": "Clairières et poches riches ; herbe 3D proche puis grossière et simple terrain coloré au loin ; saisons, moment et météo seulement avant course, modes manuel/aléatoire/réel. Météo par IP et horloge réelle ; en ligne, données de l’hôte uniquement. Pluie/neige sur la vitre, flocons dans l’air. Menus regroupés et navigation manette.",
-    "checkpoint_commit": "b6ee54203e7cbceea252094e29d3f931d347ac65"
+    "checkpoint_commit": "b6ee54203e7cbceea252094e29d3f931d347ac65",
+    "qualification": {
+      "suites": 61,
+      "reussies": 61,
+      "ferro_modules": 34,
+      "build_reproductible": true,
+      "reverifiee": "2026-11-18",
+      "preuve": "docs/reprise/rapports/nature-conditions-menus-2026-11-18/validation-reprise-publication.json"
+    }
   },
   "integration": {
     "nouvelle_branche": false,

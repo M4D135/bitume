@@ -1,0 +1,541 @@
+{
+  "sources_avant": {
+    "src/ambiance.js": "4939c0c765a8cb074d92400df1cafb3737cebd61eeab1628df557f9bca3e08d2",
+    "src/autoconfig.js": "b987e78f7a4bf7c9fc6c1068317b7bde256510f0178b4851b71e43ab65df569b",
+    "src/botanique.js": "06a3a79f6f609a70a44912c75b16ef9d452df5d389772d528c5098605a298049",
+    "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+    "src/circuit.js": "24aad5f7b4c13a21c122d800cd3661dd3a71e1e32b94d2b12b9eb3abe8103061",
+    "src/conditions-course.js": "803b69e3fda24c073f619f745070f0bcc39190b45159ff7fc4b63aaf690d4f02",
+    "src/conduite.js": "8bfaef7957ee8698d16727afa4b440739ae4787f8e386089ba2d9e952506f08b",
+    "src/contacts.js": "3a3017f9133a61f9f71ac6958801af675ab2f3e77af2844be294c7b5231e5087",
+    "src/course.js": "21b5a1eea7b6aa0ade2adac71a7801dd3209a503029da86330e88e3a5b3ffa85",
+    "src/decor.js": "b203af04641674007a4ed71a284e19effe19399725256951da48913de4b20a5c",
+    "src/degats.js": "bdb6c02c3e9ac2251d2f5c77f97e4388a918c192beeb2972fe74a6d7fe2481f2",
+    "src/ecologie.js": "90c0720de150cea4e479eff553fdd85abaf6761046cd4d52b5851c149edf8b86",
+    "src/effets-saison.js": "12337e99af3102971e26816a8e8e096276b90c921a07fc9fdc904613779e9abe",
+    "src/faune.js": "c668c463a58a2f2a01506ee396195d4d433900e22aa191e33ee10ae61c8a5529",
+    "src/ferro/audio.js": "af0a6173d3c1db12e16c9a570d8aad86788f1dfde06508077cbee402d046f2a0",
+    "src/ferro/backends.js": "769e607b8349aa47bae32a8ef9f4747267119de49e7b057c874294049da9ccea",
+    "src/ferro/brain.js": "598175891738fbdef6788d2d5e0eee89e279a472837a49e4966ca19e0de7bcf9",
+    "src/ferro/crowd-webgpu.js": "bc2719bdbef13f74789bde0caad5d24fea70f44ac52148085a27d448ada9e9f8",
+    "src/ferro/crowd.js": "ee00aa7b358a71a1e8c93ab2779d0edc3d80828f4c4ad32d41900177221ceac9",
+    "src/ferro/demo.js": "1169679cfa96463222f6343a6f4f3feeadfc7b90cd65d8f1b7ece6e9e0600575",
+    "src/ferro/destruction.js": "c18d53831b23e55d798d02e698fd7eb670a28dd998de51a5bcd5195fe733eeea",
+    "src/ferro/effects.js": "e873e7def347fb205594351fc9f0fd8e08fdb42ced36254ec68f071790bb3b42",
+    "src/ferro/engine.js": "6770fea7fa42eac4f5b55d8e84e2348002e7d2e352fb1d0e24f84c81c136ab2a",
+    "src/ferro/fmath.js": "bb001302bd2d57239c86183615c921563cf21f0490d67eef42586d1fc3457c9f",
+    "src/ferro/gpu-profile.js": "513e7cb0523a50f62edb427f2ed563ec98d9bc771a70f357fce8409157faa9c4",
+    "src/ferro/imuse.js": "8aa71cb0cdc9a5d0d1a42dab965563bd810d26151745ceb1ad603ab1c0851e16",
+    "src/ferro/input.js": "2a7bfcf27c4dede79708882a604fa3264d32615fe3cf513deae807c07e109e68",
+    "src/ferro/jobs.js": "c027761f5d29d62ef542e444c95a17c551fececc1cbeb492668c2d35d7b13aa7",
+    "src/ferro/loop.js": "f6777ad3141ed9b9dae6b860aded5aa625433c87f3068077a5204324a7c42e2f",
+    "src/ferro/materials.js": "fd1789bd21ec43d4cd028d3ebffdb490e5bfe53d8b73fa0f7bdbd44ce7d2a954",
+    "src/ferro/motion.js": "3ea6ff872208b6c133a3f732d51d0706fc36a2d042725c7e6c59fba42ab4df4b",
+    "src/ferro/music.js": "e59d6d2ed84bb70bf108f54d8d1f8510a02533f36e1d0741ac1d144c8830ea20",
+    "src/ferro/navigation.js": "addfdb9bb3a30cc7a8fe747ca919c72a99d8bc8f79a44162757d6ac8113d0cb6",
+    "src/ferro/passages.js": "16fbe21b2dbd0bc0abf16a2e2c6346940f8703fc9513a9906ab1a38303dacdaa",
+    "src/ferro/physics-geometry.js": "fc73172463262947ced24017cc03ef73a00c113e2a850fab3460bd3c30fcd242",
+    "src/ferro/physics.js": "9a6e3dbd9115b13f6f5daf9d2843f6ffa219f0b2d4c53d2106ac9dec769f175a",
+    "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "src/ferro/physx.js": "7c424d7ff34a14952868d5d2bf2c5fa51a1d6bd65e47a2f687c34c4981cc5b5c",
+    "src/ferro/recipes.js": "a59e5737e9730594881cb71a60340c64f013bd1c5797618c74efe3b6afc823cd",
+    "src/ferro/reflections.js": "51467e58cfaabfe6d9f5c7a5ccdf73afd35e33159bddae4778dd5a0bdd43ffbf",
+    "src/ferro/schedule.js": "48a8b7cf0bba9a54ef6cff896110a654195b05606392c2d74ef3a3691edf9d12",
+    "src/ferro/skies.js": "bd4b38002c8c800a5f7551a73712c721909ed22ae145d15fbf7f853ff30eddea",
+    "src/ferro/surface.js": "46915edee28daa0408ea1c18abd664babef76e2e6bce52c2990a431f90cee77e",
+    "src/ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+    "src/ferro/webgpu-renderer.js": "0857350f2f8054a6f28bbfbab23e47200d51fe71eb988577ed8cc821ae6ecb9f",
+    "src/ferro/webgpu-shaders.js": "3a486aa0be217f7551b0fa985748e169e44724dffbe4682304c8443182756bd1",
+    "src/graphismes.js": "b70c5922c70889eb3d9ca5f5d6e9a6620663f8cd2262697148e5b731d0aa7070",
+    "src/humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+    "src/humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+    "src/index.html": "caeccc2780862014ef79d1a0e9a2ccb2ba108fa92d25c7734400e349ec2d3905",
+    "src/jeu.js": "956dbf095420d34ce25ad3302997858f3bea6d01d3e8f3e23aa9f47810c45141",
+    "src/main.js": "49e97a7cb481e6c987131148e12e941448c33d280d31bd2af9551d5e1c31f55a",
+    "src/mesures.js": "eda5e88bef61899e10df06deaedb5b1d382a61aa20d1a004795c10c804648f90",
+    "src/meteo.js": "20656b7cfd42acd01d9b57039a59a535823b35ac3401df517f579eaf25c104c8",
+    "src/moteur/PROVENANCE.md": "6012b1fed00c542ec7d528cfdb58d6ed0e6de056ec16568ea91f5a4cbc426e76",
+    "src/moteur/renderer.js": "4ca91f51633555c90b964355c39956e45d6a9089242a16355680dfb8618a5884",
+    "src/navigation-menu.js": "3636702958b24fb6f2bee9ee839186c17b1e080ec87d187b77ef1717a6e859e7",
+    "src/obstacles.js": "369e7527b910b850cbf88097a2e81f710462a03308b3c4c6c6cfe2be5523e10f",
+    "src/qualite.js": "2cd1a843bc778de1ec6b4a91aa488c9f12a715b103aabdd287dd505c0c8cad0a",
+    "src/realisateur.js": "667dcf36a6c7203b32902d631a19444d566621a344579a707b4a027965de5511",
+    "src/reseau.js": "beadab21365d5f4e68d68d5d3f897c915da0849e2f3b0cc87e84a53b744a0d11",
+    "src/saisons.js": "679d893997e06b3fab6185b58de02485962b313b6d3d0bbe867c85e110bd03c8",
+    "src/scene-bench.js": "36ae604b8bf2f3f39474728173744af3bdc15a462d794b2594770f66290849aa",
+    "src/sillage.js": "2f863f064a8dc8fad7e9afa05023bc46562fd52db35080e48d8a90204d4b2948",
+    "src/son.js": "69067977c09919265ebe73e0a614683e864d52427ce204e6ec64e26441a616f7",
+    "src/style.css": "a44bc2a59f1f4f67c777f135b3d7e2c4679c7996deea0e0e5d92895b3ce4c2df",
+    "src/traces.js": "8c52d9737c4fb93be231385210e83c610cce0ee342a4ff859870d442133a5c31",
+    "src/vegetation.js": "5297864ea5752e10482d9944f3bc97e959df73570995521437d283456ffc7673",
+    "src/vitre.js": "a2327a2ceacbbe9c16364adc7b7dd02e76e7b19ec8277b7390ae9806af2b3cfc",
+    "src/voiture.js": "97eb1d541e03fdd4136e557b6f072d0f0d221224662e440e7a69816a796e60d6"
+  },
+  "sources_apres": {
+    "src/ambiance.js": "4939c0c765a8cb074d92400df1cafb3737cebd61eeab1628df557f9bca3e08d2",
+    "src/autoconfig.js": "b987e78f7a4bf7c9fc6c1068317b7bde256510f0178b4851b71e43ab65df569b",
+    "src/botanique.js": "06a3a79f6f609a70a44912c75b16ef9d452df5d389772d528c5098605a298049",
+    "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+    "src/circuit.js": "24aad5f7b4c13a21c122d800cd3661dd3a71e1e32b94d2b12b9eb3abe8103061",
+    "src/conditions-course.js": "803b69e3fda24c073f619f745070f0bcc39190b45159ff7fc4b63aaf690d4f02",
+    "src/conduite.js": "8bfaef7957ee8698d16727afa4b440739ae4787f8e386089ba2d9e952506f08b",
+    "src/contacts.js": "3a3017f9133a61f9f71ac6958801af675ab2f3e77af2844be294c7b5231e5087",
+    "src/course.js": "21b5a1eea7b6aa0ade2adac71a7801dd3209a503029da86330e88e3a5b3ffa85",
+    "src/decor.js": "b203af04641674007a4ed71a284e19effe19399725256951da48913de4b20a5c",
+    "src/degats.js": "bdb6c02c3e9ac2251d2f5c77f97e4388a918c192beeb2972fe74a6d7fe2481f2",
+    "src/ecologie.js": "90c0720de150cea4e479eff553fdd85abaf6761046cd4d52b5851c149edf8b86",
+    "src/effets-saison.js": "12337e99af3102971e26816a8e8e096276b90c921a07fc9fdc904613779e9abe",
+    "src/faune.js": "c668c463a58a2f2a01506ee396195d4d433900e22aa191e33ee10ae61c8a5529",
+    "src/ferro/audio.js": "af0a6173d3c1db12e16c9a570d8aad86788f1dfde06508077cbee402d046f2a0",
+    "src/ferro/backends.js": "769e607b8349aa47bae32a8ef9f4747267119de49e7b057c874294049da9ccea",
+    "src/ferro/brain.js": "598175891738fbdef6788d2d5e0eee89e279a472837a49e4966ca19e0de7bcf9",
+    "src/ferro/crowd-webgpu.js": "bc2719bdbef13f74789bde0caad5d24fea70f44ac52148085a27d448ada9e9f8",
+    "src/ferro/crowd.js": "ee00aa7b358a71a1e8c93ab2779d0edc3d80828f4c4ad32d41900177221ceac9",
+    "src/ferro/demo.js": "1169679cfa96463222f6343a6f4f3feeadfc7b90cd65d8f1b7ece6e9e0600575",
+    "src/ferro/destruction.js": "c18d53831b23e55d798d02e698fd7eb670a28dd998de51a5bcd5195fe733eeea",
+    "src/ferro/effects.js": "e873e7def347fb205594351fc9f0fd8e08fdb42ced36254ec68f071790bb3b42",
+    "src/ferro/engine.js": "6770fea7fa42eac4f5b55d8e84e2348002e7d2e352fb1d0e24f84c81c136ab2a",
+    "src/ferro/fmath.js": "bb001302bd2d57239c86183615c921563cf21f0490d67eef42586d1fc3457c9f",
+    "src/ferro/gpu-profile.js": "513e7cb0523a50f62edb427f2ed563ec98d9bc771a70f357fce8409157faa9c4",
+    "src/ferro/imuse.js": "8aa71cb0cdc9a5d0d1a42dab965563bd810d26151745ceb1ad603ab1c0851e16",
+    "src/ferro/input.js": "2a7bfcf27c4dede79708882a604fa3264d32615fe3cf513deae807c07e109e68",
+    "src/ferro/jobs.js": "c027761f5d29d62ef542e444c95a17c551fececc1cbeb492668c2d35d7b13aa7",
+    "src/ferro/loop.js": "f6777ad3141ed9b9dae6b860aded5aa625433c87f3068077a5204324a7c42e2f",
+    "src/ferro/materials.js": "fd1789bd21ec43d4cd028d3ebffdb490e5bfe53d8b73fa0f7bdbd44ce7d2a954",
+    "src/ferro/motion.js": "3ea6ff872208b6c133a3f732d51d0706fc36a2d042725c7e6c59fba42ab4df4b",
+    "src/ferro/music.js": "e59d6d2ed84bb70bf108f54d8d1f8510a02533f36e1d0741ac1d144c8830ea20",
+    "src/ferro/navigation.js": "addfdb9bb3a30cc7a8fe747ca919c72a99d8bc8f79a44162757d6ac8113d0cb6",
+    "src/ferro/passages.js": "16fbe21b2dbd0bc0abf16a2e2c6346940f8703fc9513a9906ab1a38303dacdaa",
+    "src/ferro/physics-geometry.js": "fc73172463262947ced24017cc03ef73a00c113e2a850fab3460bd3c30fcd242",
+    "src/ferro/physics.js": "9a6e3dbd9115b13f6f5daf9d2843f6ffa219f0b2d4c53d2106ac9dec769f175a",
+    "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "src/ferro/physx.js": "7c424d7ff34a14952868d5d2bf2c5fa51a1d6bd65e47a2f687c34c4981cc5b5c",
+    "src/ferro/recipes.js": "a59e5737e9730594881cb71a60340c64f013bd1c5797618c74efe3b6afc823cd",
+    "src/ferro/reflections.js": "51467e58cfaabfe6d9f5c7a5ccdf73afd35e33159bddae4778dd5a0bdd43ffbf",
+    "src/ferro/schedule.js": "48a8b7cf0bba9a54ef6cff896110a654195b05606392c2d74ef3a3691edf9d12",
+    "src/ferro/skies.js": "bd4b38002c8c800a5f7551a73712c721909ed22ae145d15fbf7f853ff30eddea",
+    "src/ferro/surface.js": "46915edee28daa0408ea1c18abd664babef76e2e6bce52c2990a431f90cee77e",
+    "src/ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+    "src/ferro/webgpu-renderer.js": "0857350f2f8054a6f28bbfbab23e47200d51fe71eb988577ed8cc821ae6ecb9f",
+    "src/ferro/webgpu-shaders.js": "3a486aa0be217f7551b0fa985748e169e44724dffbe4682304c8443182756bd1",
+    "src/graphismes.js": "b70c5922c70889eb3d9ca5f5d6e9a6620663f8cd2262697148e5b731d0aa7070",
+    "src/humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+    "src/humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+    "src/index.html": "caeccc2780862014ef79d1a0e9a2ccb2ba108fa92d25c7734400e349ec2d3905",
+    "src/jeu.js": "956dbf095420d34ce25ad3302997858f3bea6d01d3e8f3e23aa9f47810c45141",
+    "src/main.js": "49e97a7cb481e6c987131148e12e941448c33d280d31bd2af9551d5e1c31f55a",
+    "src/mesures.js": "eda5e88bef61899e10df06deaedb5b1d382a61aa20d1a004795c10c804648f90",
+    "src/meteo.js": "20656b7cfd42acd01d9b57039a59a535823b35ac3401df517f579eaf25c104c8",
+    "src/moteur/PROVENANCE.md": "6012b1fed00c542ec7d528cfdb58d6ed0e6de056ec16568ea91f5a4cbc426e76",
+    "src/moteur/renderer.js": "4ca91f51633555c90b964355c39956e45d6a9089242a16355680dfb8618a5884",
+    "src/navigation-menu.js": "3636702958b24fb6f2bee9ee839186c17b1e080ec87d187b77ef1717a6e859e7",
+    "src/obstacles.js": "369e7527b910b850cbf88097a2e81f710462a03308b3c4c6c6cfe2be5523e10f",
+    "src/qualite.js": "2cd1a843bc778de1ec6b4a91aa488c9f12a715b103aabdd287dd505c0c8cad0a",
+    "src/realisateur.js": "667dcf36a6c7203b32902d631a19444d566621a344579a707b4a027965de5511",
+    "src/reseau.js": "beadab21365d5f4e68d68d5d3f897c915da0849e2f3b0cc87e84a53b744a0d11",
+    "src/saisons.js": "679d893997e06b3fab6185b58de02485962b313b6d3d0bbe867c85e110bd03c8",
+    "src/scene-bench.js": "36ae604b8bf2f3f39474728173744af3bdc15a462d794b2594770f66290849aa",
+    "src/sillage.js": "2f863f064a8dc8fad7e9afa05023bc46562fd52db35080e48d8a90204d4b2948",
+    "src/son.js": "69067977c09919265ebe73e0a614683e864d52427ce204e6ec64e26441a616f7",
+    "src/style.css": "a44bc2a59f1f4f67c777f135b3d7e2c4679c7996deea0e0e5d92895b3ce4c2df",
+    "src/traces.js": "8c52d9737c4fb93be231385210e83c610cce0ee342a4ff859870d442133a5c31",
+    "src/vegetation.js": "5297864ea5752e10482d9944f3bc97e959df73570995521437d283456ffc7673",
+    "src/vitre.js": "a2327a2ceacbbe9c16364adc7b7dd02e76e7b19ec8277b7390ae9806af2b3cfc",
+    "src/voiture.js": "97eb1d541e03fdd4136e557b6f072d0f0d221224662e440e7a69816a796e60d6"
+  },
+  "sources_stables": true,
+  "suites": 61,
+  "reussies": 61,
+  "echecs": [],
+  "resultats": [
+    {
+      "fichier": "verifications/ambiance.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.065,
+      "fin": "4 contrôles ambiance/nature réussis."
+    },
+    {
+      "fichier": "verifications/autoconfig-integration.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.056,
+      "fin": "7 contrôles d’intégration de la détection réussis."
+    },
+    {
+      "fichier": "verifications/autoconfig.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.072,
+      "fin": "12 contrôles de détection graphique réussis."
+    },
+    {
+      "fichier": "verifications/botanique.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.435,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/carene.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.091,
+      "fin": "carène : 14 vérifications passées"
+    },
+    {
+      "fichier": "verifications/circuit.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.525,
+      "fin": "ok  Ecart circuit 47"
+    },
+    {
+      "fichier": "verifications/collisions-orientees.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.047,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/commandes-partage.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.098,
+      "fin": "44/44 contrôles commandes partagées tenus"
+    },
+    {
+      "fichier": "verifications/conditions-course.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.095,
+      "fin": "14 contrôles conditions de course réussis."
+    },
+    {
+      "fichier": "verifications/conditions-integration.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.079,
+      "fin": "ℹ duration_ms 27.439635"
+    },
+    {
+      "fichier": "verifications/conduite-criteres.test.mjs",
+      "code": 0,
+      "duree_secondes": 1.662,
+      "fin": "46/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)"
+    },
+    {
+      "fichier": "verifications/conduite.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.238,
+      "fin": "18 vérifications réussies"
+    },
+    {
+      "fichier": "verifications/contacts.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.11,
+      "fin": "44/44 critères du Chantier 3 tenus"
+    },
+    {
+      "fichier": "verifications/controle-visuel.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.075,
+      "fin": "ℹ duration_ms 14.615517"
+    },
+    {
+      "fichier": "verifications/course.test.mjs",
+      "code": 0,
+      "duree_secondes": 3.008,
+      "fin": "8 tests passes"
+    },
+    {
+      "fichier": "verifications/crash.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.33,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/decor-identite.test.mjs",
+      "code": 0,
+      "duree_secondes": 1.949,
+      "fin": "décor : 9 géométries de référence inchangées (linux/x64/node-24.22.3)"
+    },
+    {
+      "fichier": "verifications/decor-obstacles.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.529,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/decor.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.44,
+      "fin": "forêt : 18 vérifications passées"
+    },
+    {
+      "fichier": "verifications/ecologie.test.mjs",
+      "code": 0,
+      "duree_secondes": 1.347,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/effets-saison.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.888,
+      "fin": "effets-saison : 10 contrôles passés"
+    },
+    {
+      "fichier": "verifications/faune.test.mjs",
+      "code": 0,
+      "duree_secondes": 3.957,
+      "fin": "faune : 15 contrôles passés"
+    },
+    {
+      "fichier": "verifications/formes-libres.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.233,
+      "fin": "formes libres : 31399 triangles émis dans l'ordre du registre"
+    },
+    {
+      "fichier": "verifications/glissiere-etats.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.09,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/glissiere-rebond.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.064,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/graphismes.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.057,
+      "fin": "graphismes : 22 contrôles passés"
+    },
+    {
+      "fichier": "verifications/ia-attaque.test.mjs",
+      "code": 0,
+      "duree_secondes": 10.368,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/ia-epaves.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.092,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/ia-reprise.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.098,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/ia.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.094,
+      "fin": "5/5 critères IA tenus"
+    },
+    {
+      "fichier": "verifications/main.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.087,
+      "fin": "main : 7 vérifications passées"
+    },
+    {
+      "fichier": "verifications/manette.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.063,
+      "fin": "17/17 contrôles manette tenus"
+    },
+    {
+      "fichier": "verifications/mesures.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.073,
+      "fin": "ℹ duration_ms 19.729309"
+    },
+    {
+      "fichier": "verifications/meteo-reelle.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.068,
+      "fin": "ℹ duration_ms 14.886142"
+    },
+    {
+      "fichier": "verifications/meteo.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.301,
+      "fin": "météo : 103 contrôles horloge, pause, projection, profondeur, paramètres et cadence tenus"
+    },
+    {
+      "fichier": "verifications/moteur-emprise.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.063,
+      "fin": "moteur EMPRISE : updateShape WebGL2, indices et sommets restaurés après perte du contexte"
+    },
+    {
+      "fichier": "verifications/nature-integration.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.048,
+      "fin": "3 contrôles intégration nature réussis."
+    },
+    {
+      "fichier": "verifications/navigation-menu.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.065,
+      "fin": "11 contrôles navigation menu validés"
+    },
+    {
+      "fichier": "verifications/obstacles.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.049,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/options-image.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.056,
+      "fin": "options image : 8 contrôles passés"
+    },
+    {
+      "fichier": "verifications/pieces.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.419,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/prets-enligne.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.066,
+      "fin": "ℹ duration_ms 14.445671"
+    },
+    {
+      "fichier": "verifications/qualite.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.077,
+      "fin": "qualité : 13 contrôles passés"
+    },
+    {
+      "fichier": "verifications/realisateur.test.mjs",
+      "code": 0,
+      "duree_secondes": 2.338,
+      "fin": "7 vérifications réussies"
+    },
+    {
+      "fichier": "verifications/relectures-phase2.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.356,
+      "fin": "6/6 tests passes"
+    },
+    {
+      "fichier": "verifications/rendu-halo.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.065,
+      "fin": "ℹ duration_ms 7.423395"
+    },
+    {
+      "fichier": "verifications/reprise-recul.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.077,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/saisons.test.mjs",
+      "code": 0,
+      "duree_secondes": 5.41,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/salon-protocole.test.mjs",
+      "code": 0,
+      "duree_secondes": 2.738,
+      "fin": "ℹ duration_ms 2680.27912"
+    },
+    {
+      "fichier": "verifications/scene-bench.test.mjs",
+      "code": 0,
+      "duree_secondes": 1.966,
+      "fin": "Scène de détection : vrais décors et voitures, trois zones chargées, options et absence de course/records vérifiés."
+    },
+    {
+      "fichier": "verifications/sillage.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.065,
+      "fin": "sillage et brume : 7 contrôles passés"
+    },
+    {
+      "fichier": "verifications/son.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.081,
+      "fin": "14 vérifications réussies"
+    },
+    {
+      "fichier": "verifications/stands.test.mjs",
+      "code": 0,
+      "duree_secondes": 5.902,
+      "fin": "stands : 18 verifications passees"
+    },
+    {
+      "fichier": "verifications/titre-signature.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.071,
+      "fin": "ℹ duration_ms 6.156935"
+    },
+    {
+      "fichier": "verifications/traces.test.mjs",
+      "code": 0,
+      "duree_secondes": 1.121,
+      "fin": "11 tests passes"
+    },
+    {
+      "fichier": "verifications/troncs.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.655,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/tunnel-transitions.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.252,
+      "fin": "ℹ duration_ms 26.805405"
+    },
+    {
+      "fichier": "verifications/tunnel.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.401,
+      "fin": "tunnel : 6 vérifications passées"
+    },
+    {
+      "fichier": "verifications/vegetation.test.mjs",
+      "code": 0,
+      "duree_secondes": 13.942,
+      "fin": "}"
+    },
+    {
+      "fichier": "verifications/vitre.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.184,
+      "fin": "vitre : 8 contrôles passés"
+    },
+    {
+      "fichier": "verifications/voiture.test.mjs",
+      "code": 0,
+      "duree_secondes": 2.193,
+      "fin": "33 vérifications réussies"
+    }
+  ],
+  "premier_passage": {
+    "reussies": 59,
+    "echecs": [
+      "verifications/meteo.test.mjs",
+      "verifications/qualite.test.mjs"
+    ]
+  },
+  "reprises_ciblees": [
+    {
+      "raison": "Frontière de test mise à jour pour signature/profil et contexte tactile, aucune source modifiée.",
+      "fichier": "verifications/meteo.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.301,
+      "fin": "météo : 103 contrôles horloge, pause, projection, profondeur, paramètres et cadence tenus"
+    },
+    {
+      "raison": "Frontière de test mise à jour pour signature/profil et contexte tactile, aucune source modifiée.",
+      "fichier": "verifications/qualite.test.mjs",
+      "code": 0,
+      "duree_secondes": 0.077,
+      "fin": "qualité : 13 contrôles passés"
+    }
+  ]
+}

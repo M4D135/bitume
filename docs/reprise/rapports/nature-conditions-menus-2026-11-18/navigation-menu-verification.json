@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-18T10:36:38.521705+00:00",
+  "controles": 11,
+  "sourceSha256": {
+    "src/navigation-menu.js": "3636702958b24fb6f2bee9ee839186c17b1e080ec87d187b77ef1717a6e859e7",
+    "verifications/navigation-menu.test.mjs": "152561e48adf96ae1faecd794280afb45f0aea93557a200d6edd989e073d9472"
+  },
+  "preuve": "navigation-menu-final.log",
+  "revueCroisee": "locate_reprise, lecture seule : aucun défaut concret trouvé",
+  "limites": [
+    "Frontière DOM contrôlée sous Node ; pas de rendu navigateur ni qualification matérielle de manette.",
+    "La coque reste responsable des fronts, de Start/pause, de la garde hors course et du rappel initialiser à chaque entrée."
+  ]
+}

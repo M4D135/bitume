@@ -1,0 +1,18 @@
+ok déconnexion neutralise pédales, volant et dérive
+ok clavier et tactile restent utilisables sans manette
+ok trous, manette déconnectée et indice sélectionné
+ok première manette connectée prioritaire et changement d’indice sans pause fantôme
+ok bouton tenu à reconnexion : aucune pause fantôme, nouvel appui unique
+ok autre contrôleur au même indice initialise ses boutons
+ok oracle : relâcher une dérive chargée déclenche réellement turboIII
+ok perte de manette annule sa dérive sans turbo fantôme
+ok dérive clavier maintenue : Space
+ok dérive clavier maintenue : ShiftLeft
+ok dérive clavier maintenue : ShiftRight
+ok dérive tactile maintenue
+ok perte en pause annule seulement la dérive issue du pad
+ok rejouer : ancien pad ne peut annuler la dérive de la nouvelle séance
+ok charge non commandée par le pad et turbo déjà lancé préservés
+ok API getGamepads refusée neutralise les commandes sans interrompre la boucle
+ok API refusée annule la dérive chargée sans turbo fantôme
+17/17 contrôles manette tenus

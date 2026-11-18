@@ -1,0 +1,303 @@
+{
+  "repository": "M4D135/FERRO",
+  "branch": "main",
+  "version": "0.3.9",
+  "published": true,
+  "baseCommit": "ef722c0c56e04a20574db53b057f339968d714c3",
+  "baseTree": "b691650ad9eb5f42006ac1e8791b109e922280c6",
+  "commit": "89c784163b8671676b11f3d4114fab22f6200a7e",
+  "tree": "8d5337c5457b523046b6652854e3949e74f1febd",
+  "commitUrl": "https://github.com/M4D135/FERRO/commit/89c784163b8671676b11f3d4114fab22f6200a7e",
+  "committedAt": "2026-11-18T10:23:35Z",
+  "expectedShaUsed": "ef722c0c56e04a20574db53b057f339968d714c3",
+  "force": false,
+  "manifestPath": "/workspace/scratch/91b494a5f0bb/FERRO/qa-wind-engine/039/publication-manifest.json",
+  "manifestSha256": "8b18a7ef9ee9d080b68b75af593f40f6fee3b80475f3771233c7240ee6efbeb6",
+  "archive": {
+    "path": "dist/FERRO-0.3.9.zip",
+    "bytes": 6227049,
+    "sha256": "229e9866f7c5d96a7aa3077fc1b71de879d9d053cbd8758b2df4cbe7ba9eca9f",
+    "gitBlobSha": "189ea1e5ca7147f6416a629d3bdb0e6748a78732"
+  },
+  "validation": {
+    "manifestFilesVerified": 74,
+    "changed": 38,
+    "preservedNonTreeEntries": 271,
+    "deletions": 0,
+    "unexpectedChanges": 0,
+    "baseHead": "ef722c0c56e04a20574db53b057f339968d714c3",
+    "tree": "8d5337c5457b523046b6652854e3949e74f1febd",
+    "treeEntries": 343,
+    "finalHeadVerified": "89c784163b8671676b11f3d4114fab22f6200a7e",
+    "finalTreeVerified": "8d5337c5457b523046b6652854e3949e74f1febd",
+    "localSha256AllVerified": true,
+    "remoteGitBlobShasAllVerified": true
+  },
+  "uploadedLargeBlobs": [
+    {
+      "path": "dist/FERRO-0.3.9.zip",
+      "sha": "189ea1e5ca7147f6416a629d3bdb0e6748a78732",
+      "sha256": "229e9866f7c5d96a7aa3077fc1b71de879d9d053cbd8758b2df4cbe7ba9eca9f",
+      "encoding": "base64"
+    },
+    {
+      "path": "dist/ferro-editor.html",
+      "sha": "62e6c1653d1d219b03e3e05ebeaabbed70f9aa31",
+      "sha256": "70fb045c54324c737acc84a8ea5fa0c2bc64349a8cbe895f1f290f3ef08961c7",
+      "encoding": "utf-8"
+    },
+    {
+      "path": "dist/ferro-runtime/ferro-runtime.js",
+      "sha": "2073e6db985c2b0dc50c0bf84c21f1c2864283a7",
+      "sha256": "57afa694615a538ce6aa4d03b4423dc851eefc8cfe280c4661549c93e124039b",
+      "encoding": "utf-8"
+    }
+  ],
+  "changedFiles": [
+    {
+      "path": "FERRO.json",
+      "bytes": 4171,
+      "sha256": "6504d7d94d80cf85a78c424cb64a6eb1c698327416ac301f9751df1093850b8c",
+      "gitBlobSha": "c5c462406e4d9045a4b75db549e6ee400995a6d8"
+    },
+    {
+      "path": "FERRO.lock.json",
+      "bytes": 5529,
+      "sha256": "34f38b1a617c6e807dada7d5719004a63b84af001cdb2d87bb7e537f0663be01",
+      "gitBlobSha": "57828de7ba355cb6a3676d4fb3fd6eda2dafffe9"
+    },
+    {
+      "path": "README.md",
+      "bytes": 8998,
+      "sha256": "ffcadc4189ff86abe8506268fd9be94d9baaf6838771acce4d7dac165550b365",
+      "gitBlobSha": "a6a7137232280f22950b2b25ce15e3cae9a8d77d"
+    },
+    {
+      "path": "dist/FERRO-0.3.9.zip",
+      "bytes": 6227049,
+      "sha256": "229e9866f7c5d96a7aa3077fc1b71de879d9d053cbd8758b2df4cbe7ba9eca9f",
+      "gitBlobSha": "189ea1e5ca7147f6416a629d3bdb0e6748a78732"
+    },
+    {
+      "path": "dist/ferro-editor.html",
+      "bytes": 832362,
+      "sha256": "70fb045c54324c737acc84a8ea5fa0c2bc64349a8cbe895f1f290f3ef08961c7",
+      "gitBlobSha": "62e6c1653d1d219b03e3e05ebeaabbed70f9aa31"
+    },
+    {
+      "path": "dist/ferro-runtime/README.md",
+      "bytes": 15182,
+      "sha256": "95016a57d4582896dd6e38e32322b8238259ed85634178116268ebaa42b1b3a3",
+      "gitBlobSha": "d9f4d8a70ee6a14829b7f6c42eeca7309b91f18f"
+    },
+    {
+      "path": "dist/ferro-runtime/ferro-music.js",
+      "bytes": 72065,
+      "sha256": "af32636706e83d002e05945d53296faad1f778b2a0a999dac41ced3ecaf2add9",
+      "gitBlobSha": "93c879f640ef8e1c936339cc77b472633fac5f90"
+    },
+    {
+      "path": "dist/ferro-runtime/ferro-render-extras.js",
+      "bytes": 40653,
+      "sha256": "690a83b11d2a28ad96c7d60f693dca8a0ac9049cbac3d98622b7fdb27ea938a7",
+      "gitBlobSha": "a39204e16b59d6028f848f8ce18aa2fda2c18647"
+    },
+    {
+      "path": "dist/ferro-runtime/ferro-runtime.js",
+      "bytes": 13279704,
+      "sha256": "57afa694615a538ce6aa4d03b4423dc851eefc8cfe280c4661549c93e124039b",
+      "gitBlobSha": "2073e6db985c2b0dc50c0bf84c21f1c2864283a7"
+    },
+    {
+      "path": "dist/ferro-runtime/ferro-simulation.js",
+      "bytes": 65456,
+      "sha256": "ab6791e9faf028867d384f26ae8ae7e2c10384ea812d7065c0df2451ef1a7a94",
+      "gitBlobSha": "cdd08c3cbfd7456cfdf7bb1b1f3d7243c002baee"
+    },
+    {
+      "path": "dist/ferro-runtime/manifest.json",
+      "bytes": 13697,
+      "sha256": "b88ebad127548dc1196ece666a9a0765aff8792af82b915ada7b9b65222b1c7e",
+      "gitBlobSha": "7bcbde3cb4ae7e58a15fa281c19f22092f7ae626"
+    },
+    {
+      "path": "dist/ferro-runtime/modules/engine.js",
+      "bytes": 2024,
+      "sha256": "6770fea7fa42eac4f5b55d8e84e2348002e7d2e352fb1d0e24f84c81c136ab2a",
+      "gitBlobSha": "6363e1da9c14a9ec71cec7b59128e570bc4ed81f"
+    },
+    {
+      "path": "dist/ferro-runtime/modules/renderer.js",
+      "bytes": 247023,
+      "sha256": "4ca91f51633555c90b964355c39956e45d6a9089242a16355680dfb8618a5884",
+      "gitBlobSha": "1be88bd268ce9bf1f1bbee1b735fdccfccc5ca9f"
+    },
+    {
+      "path": "dist/ferro-runtime/modules/webgpu-renderer.js",
+      "bytes": 51935,
+      "sha256": "0857350f2f8054a6f28bbfbab23e47200d51fe71eb988577ed8cc821ae6ecb9f",
+      "gitBlobSha": "f1ee58a897d1c092c2b06a578640cef54a696775"
+    },
+    {
+      "path": "docs/FERRO-UNIFIED.md",
+      "bytes": 15182,
+      "sha256": "95016a57d4582896dd6e38e32322b8238259ed85634178116268ebaa42b1b3a3",
+      "gitBlobSha": "d9f4d8a70ee6a14829b7f6c42eeca7309b91f18f"
+    },
+    {
+      "path": "docs/ground-cover-039/README.md",
+      "bytes": 7162,
+      "sha256": "b3491bd2036ca692ad8c6937c536ce242aadba0e5da768f394a75f60cc94bfeb",
+      "gitBlobSha": "a0ece6d6f8658e62e86e6d31c48b3a8f554ef70b"
+    },
+    {
+      "path": "docs/ground-cover-039/after-final-ultra.json",
+      "bytes": 12581,
+      "sha256": "fd7326585ace729dda39b272bf5285c5b1bee01fcc9f9bd0d03cf2988cda74c9",
+      "gitBlobSha": "204421950d7518d63ee3443f67b80b7fc1c4178b"
+    },
+    {
+      "path": "docs/ground-cover-039/after-lot10-ultra-repeat.json",
+      "bytes": 12634,
+      "sha256": "eb6d1c5815315129ed677269e558219a2e9495bb0e767c5760576bf6138d18d5",
+      "gitBlobSha": "346800f37af592006e609ade2116646b1bb145e8"
+    },
+    {
+      "path": "docs/ground-cover-039/after-lot10-ultra.json",
+      "bytes": 12622,
+      "sha256": "608f1bd5fcbd93e7aa75ea72600281ed8b7fd649b362f2ca5017d99dc5917221",
+      "gitBlobSha": "130b7574ffd9f0901bb930da9167ac72387ed014"
+    },
+    {
+      "path": "docs/ground-cover-039/before-final-ultra.json",
+      "bytes": 11557,
+      "sha256": "eea95679d8a5a06fc4dd1da3dbc6eb24de875916bc197655ccbe54c20f3b1e15",
+      "gitBlobSha": "46d6be3f765a67adcdabeae96b03c1724a7ffd96"
+    },
+    {
+      "path": "docs/ground-cover-039/before-lot10-ultra-repeat.json",
+      "bytes": 11597,
+      "sha256": "2d0ecd952fdbde0fd8358760aa8a1a551c9a31de3ba2be51eaffec2fff7e5dd7",
+      "gitBlobSha": "f3507a35b30d9681e061b2c7e4a994f4bb7b9983"
+    },
+    {
+      "path": "docs/ground-cover-039/before-lot10-ultra.json",
+      "bytes": 11563,
+      "sha256": "ba1a9e83e805d029de81ab6b2f5823ac216b526bfc5c18671fefadc264ed3d87",
+      "gitBlobSha": "8982a984d8eabcac19fbf354bef27043b3edd46f"
+    },
+    {
+      "path": "docs/ground-cover-039/build.log",
+      "bytes": 423,
+      "sha256": "1a5808fafadebbf2188a2382bb96c1af22b5929daad5bd1527a66c74da12dbbe",
+      "gitBlobSha": "46c390d548528a6b0f576bebe0356c68e465fdc5"
+    },
+    {
+      "path": "docs/ground-cover-039/egl.json",
+      "bytes": 28451,
+      "sha256": "00ad16cf410fc2cd4f2c398eb4b911e9b8493a5ddf8fe2bb1496bad6fe050225",
+      "gitBlobSha": "315051cc02fd0a8e23ba300e034f724262314648"
+    },
+    {
+      "path": "docs/ground-cover-039/final-profiles.json",
+      "bytes": 213,
+      "sha256": "c2ef22333d6080e4189fc18755136ca34e1f50657a1f265ac5977e685f3d3095",
+      "gitBlobSha": "d48e00950400c774c59e88ce62a61bb30b344472"
+    },
+    {
+      "path": "docs/ground-cover-039/node-tests.log",
+      "bytes": 22640,
+      "sha256": "30f567fcc30d35ef1d9252f4a8b7afce8d2f087e80eb7e2a8c21e1a728f91a6e",
+      "gitBlobSha": "67b62cc5c25f2c724adc55595caba70be74b5cee"
+    },
+    {
+      "path": "docs/ground-cover-039/summary.json",
+      "bytes": 12627,
+      "sha256": "294254318b58efce647b94b87dbe1f6f9173a0e175011e5e72fab4814121bfb5",
+      "gitBlobSha": "2b33ccb3ae86654edae44d7dae5f771b2e20f5bb"
+    },
+    {
+      "path": "docs/ground-cover-039/targeted.log",
+      "bytes": 2842,
+      "sha256": "32e2b3c66de96258646ff9cd4755b3110f3c3041bcf3ad076dc967c99a8b7967",
+      "gitBlobSha": "ca846e6275cbe6cbe27b3669be9a19e7be819808"
+    },
+    {
+      "path": "src/ferro/engine.js",
+      "bytes": 2024,
+      "sha256": "6770fea7fa42eac4f5b55d8e84e2348002e7d2e352fb1d0e24f84c81c136ab2a",
+      "gitBlobSha": "6363e1da9c14a9ec71cec7b59128e570bc4ed81f"
+    },
+    {
+      "path": "src/ferro/renderer.js",
+      "bytes": 247023,
+      "sha256": "4ca91f51633555c90b964355c39956e45d6a9089242a16355680dfb8618a5884",
+      "gitBlobSha": "1be88bd268ce9bf1f1bbee1b735fdccfccc5ca9f"
+    },
+    {
+      "path": "src/ferro/webgpu-renderer.js",
+      "bytes": 51935,
+      "sha256": "0857350f2f8054a6f28bbfbab23e47200d51fe71eb988577ed8cc821ae6ecb9f",
+      "gitBlobSha": "f1ee58a897d1c092c2b06a578640cef54a696775"
+    },
+    {
+      "path": "tests/ferro/ground-cover-cost-gl.js",
+      "bytes": 6183,
+      "sha256": "9de9a936bba474e15b4031c632921235b7858cf98fcf370785a3c980459dfb4f",
+      "gitBlobSha": "ce987473ae05066dfee91e3f70929c471fb1be60"
+    },
+    {
+      "path": "tests/ferro/ground-cover-fixture.mjs",
+      "bytes": 935,
+      "sha256": "22bdae1246e7608a7e0393be128c846b9a0da55fd75d8d43840e9160e123ace8",
+      "gitBlobSha": "051171fa53fb0bacf689276a74caaf8d8eb06450"
+    },
+    {
+      "path": "tests/ferro/renderer-ground-cover-cost.mjs",
+      "bytes": 6885,
+      "sha256": "9277540969525e7695cc661903590cf65e347a45259357b16f34e8f8cbaad988",
+      "gitBlobSha": "0bba42705437017007badf6acadbac6de95b631a"
+    },
+    {
+      "path": "tests/ferro/renderer-ground-cover-egl.py",
+      "bytes": 10185,
+      "sha256": "62e4cfa132d3902cfa7eaa56c12073589793cb7d64cb6e181c966f9dee4a3bf3",
+      "gitBlobSha": "da80cd423b4d4ea90aa477c88d7381f5b9025469"
+    },
+    {
+      "path": "tests/ferro/renderer-ground-cover.test.mjs",
+      "bytes": 4855,
+      "sha256": "5a209c437dd78e53beeb31d2b3069311febd720d5dae50b0d4ece1880411e95a",
+      "gitBlobSha": "342674e2d0b60fd3a16387980d9c062de86853d4"
+    },
+    {
+      "path": "tests/ferro/renderer-targets.test.mjs",
+      "bytes": 25594,
+      "sha256": "4acddd45c4faec18fad4ec5c12c20bb873daaa608a626aa45134b66d511297bb",
+      "gitBlobSha": "bd91773e2d86f617fe614807380eb7b7055c0d03"
+    },
+    {
+      "path": "tests/ferro/renderer-weather-webgpu.test.mjs",
+      "bytes": 9133,
+      "sha256": "b3674083916d0bcb27a0bdb4ecca30a98b9985ee54bc83870e9cf31c53738df5",
+      "gitBlobSha": "ebdf7aefe85c0cb875345ba962fdc469ee6c51b0"
+    }
+  ],
+  "qualification": {
+    "nodeTests": {
+      "total": 163,
+      "pass": 162,
+      "fail": 0,
+      "todo": 1
+    },
+    "eglComparisons": 168,
+    "rgbaDepthBitIdentical": true,
+    "generatedWgslUnchanged": true,
+    "lockModules": 34,
+    "hardwareFpsMeasured": false,
+    "hostInstalled": false
+  },
+  "hostInstallationPerformed": false,
+  "siteDeploymentPerformed": false,
+  "note": "Only the 38 changed manifest paths were overlaid on the exact remote base tree. All other remote files and archives were preserved; no delete. Re-read of main, commit parent, tree and all 74 manifest blob SHAs succeeded after compare-and-swap update."
+}

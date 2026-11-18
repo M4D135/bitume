@@ -1,0 +1,79 @@
+{
+  "date": "2026-11-18",
+  "status": "passed",
+  "checks": 14,
+  "network": {
+    "geojsOnlyIfRealNeedsLocation": true,
+    "openMeteoOnlyIfWeatherReal": true,
+    "timeoutTotalMs": 4000,
+    "volatileCacheMs": 720000,
+    "minimumServiceRetryMs": 30000,
+    "latestResolutionCancelsPrevious": true,
+    "callerAbortRejects": "AbortError",
+    "timeoutOrServiceFailure": "readable manual/local-date fallback"
+  },
+  "files": [
+    {
+      "path": "src/conditions-course.js",
+      "bytes": 17868,
+      "sha256": "803b69e3fda24c073f619f745070f0bcc39190b45159ff7fc4b63aaf690d4f02"
+    },
+    {
+      "path": "verifications/conditions-course.test.mjs",
+      "bytes": 13836,
+      "sha256": "4e0f46c31fc8bc3e13cf54f9b25d4a1db6bb53babee80b92269911a0516453c3"
+    }
+  ],
+  "api": {
+    "resoudre": "async (reglages, {date, hasard, fetch, signal, forcer, timeoutMs}) -> saison/moment/meteo + modes + mReelle/horlogeReelle/meta",
+    "nuitReelle": "(UTC milliseconds or Date, horlogeReelle) -> number 0..1",
+    "normaliserMode": "unknown -> manuel",
+    "pureHelpers": [
+      "saisonReelle(date, latitude, fuseau)",
+      "meteoWMO(current)"
+    ]
+  },
+  "privacy": {
+    "returnedCoordinates": false,
+    "returnedIp": false,
+    "storageWrites": false,
+    "browserGeolocationUsed": false,
+    "guestsShouldResolve": false
+  },
+  "weather": {
+    "time": "UTC milliseconds in metadata; provider unixtime seconds converted",
+    "source": "Open-Meteo current model data, not a player weather station",
+    "snowFlag": "mReelle.neige",
+    "coastSnowException": "host applies; this module reports the provider snow code"
+  },
+  "solar": {
+    "source": "NOAA approximate sunrise/sunset equations; Open-Meteo daily override if requested",
+    "horizonDegrees": 90.833,
+    "twilightBlendMinutesEitherSide": 25,
+    "preparedDays": 9,
+    "beyondDays": "repeat closest known solar schedule in real24h increments",
+    "noLocationFallback": "civil time 06:00/18:00, explicit metadata; north calendar for season"
+  },
+  "sources": [
+    {
+      "url": "https://www.geojs.io/docs/v1/endpoints/geo/",
+      "purpose": "endpoint/coordinate strings/timezone/approximate accuracy"
+    },
+    {
+      "url": "https://www.geojs.io/",
+      "purpose": "HTTPS and CORS"
+    },
+    {
+      "url": "https://open-meteo.com/en/docs",
+      "purpose": "current variables, WMO codes, units and UTC timestamps"
+    },
+    {
+      "url": "https://github.com/open-meteo/open-meteo/blob/main/README.md",
+      "purpose": "no API key, CORS and CC BY4.0 data attribution"
+    },
+    {
+      "url": "https://gml.noaa.gov/grad/solcalc/solareqns.PDF",
+      "purpose": "approximate solar equations"
+    }
+  ]
+}

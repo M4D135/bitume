@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 const require = createRequire(import.meta.url);
-for (const nom of ['circuit', 'carene', 'vegetation', 'decor']) require('../src/' + nom + '.js');
+for (const nom of ['circuit', 'carene', 'ecologie', 'vegetation', 'decor']) require('../src/' + nom + '.js');
 const B = globalThis.BITUME, V = B.vegetation;
 let controles = 0;
 const verifier = (nom, f) => { f(); controles++; console.log('ok ' + nom); };
@@ -314,6 +314,7 @@ function solRendu(decor) {
   };
 }
 const reference031 = JSON.parse(readFileSync(new URL('./fixtures/herbe-031.json', import.meta.url)));
+const reference032 = JSON.parse(readFileSync(new URL('./fixtures/herbe-032.json', import.meta.url)));
 const racinesFormes = new Map(), mesures = {};
 function racines(nom) {
   if (racinesFormes.has(nom)) return racinesFormes.get(nom);
@@ -335,9 +336,29 @@ function compterDisques(r, reference) {
       if (x * x + z * z <= d.rayon * d.rayon) d.brins++;
     }
   }
-  return disques.map(d => ({ id: d.id, avant: d.avant, brins: d.brins, facteur: d.brins / d.avant, parMetreCarre: d.brins / d.aire }));
+  return disques.map(d => ({ id: d.id, type: d.type || 'reference', avant: d.avant, brins: d.brins,
+    facteur: d.avant ? d.brins / d.avant : null, parMetreCarre: d.brins / d.aire }));
 }
-verifier('surfaces complètes, niveaux distincts et MAX au moins dix fois plus dense localement que la 0.2.31', () => {
+function disquesEcologiques(c, decor) {
+  const nus = [], riches = [], sortie = {};
+  for (let s = 440; s < c.longueur - 440 && (nus.length < 3 || riches.length < 3); s += 14) for (const cote of [-1, 1]) {
+    if (B.circuit.dansTunnel(c, s, 35)) continue;
+    const p = B.circuit.echantillon(c, s), x = p.x - Math.sin(p.cap) * cote * 10, z = p.z + Math.cos(p.cap) * cote * 10;
+    const valeur = decor.ecologie.echantillonner(x, z, sortie).herbe;
+    const type = valeur === 0 ? 'nu' : valeur >= .96 ? 'riche' : null, liste = type === 'nu' ? nus : riches;
+    if (!type || liste.length >= 3 || liste.some(d => Math.hypot(d.x - x, d.z - z) < 35)) continue;
+    let valide = !!decor.surfaceHerbe(x, z);
+    for (let k = 0; k < 8 && valide; k++) {
+      const a = k * Math.PI / 4, co = Math.cos(a), si = Math.sin(a), rayon = type === 'nu' ? 14 : 3;
+      const v = decor.ecologie.echantillonner(x + co * rayon, z + si * rayon, sortie).herbe;
+      if ((type === 'nu' ? v !== 0 : v < .90) || !decor.surfaceHerbe(x + co * 2.1, z + si * 2.1)) valide = false;
+    }
+    if (valide) liste.push({ id: type + ':' + Math.round(s) + ':' + cote, type, x, z, rayon: 2, aire: Math.PI * 4, brins: 0 });
+  }
+  assert.ok(nus.length >= 2 && riches.length >= 2, c.theme + ' : plusieurs clairières et poches riches admissibles');
+  return nus.concat(riches);
+}
+verifier('clairières sans brins, poches MAX très denses et coût inférieur à la 0.2.32', () => {
   for (const [graine, theme, longueur] of PISTES) {
     const piste = B.circuit.creer(graine, { theme, longueur }), decor = B.decor.construire(piste, { qualite: 'high', vegetation: false });
     const surfaces = decor.herbier, interroger = indexAxe(piste), rendu = solRendu(decor), ancienne = reference031.lignes.find(l => l.biome === theme);
@@ -345,8 +366,8 @@ verifier('surfaces complètes, niveaux distincts et MAX au moins dix fois plus d
     const trace = empreinte([piste.x, piste.y, piste.z, piste.cap, piste.devers]), solides = empreinte(decor.obstacles);
     let precedent = 0; mesures[theme] = {};
     for (const qualite of ['medium', 'high', 'ultra']) {
-      const r = V.construire(piste, { qualite, limites: decor.limites, interroger, surfaces });
-      let brins = 0, brinsTapis = 0, tuiles = 0, aire = 0, erreurSol = 0, controlesSol = 0;
+      const r = V.construire(piste, { qualite, limites: decor.limites, interroger, surfaces, ecologie: decor.ecologie });
+      let brins = 0, brinsTapis = 0, tuiles = 0, aire = 0, erreurSol = 0, controlesSol = 0, tuilesRichesProches = 0;
       for (const lot of r.lots) {
         assert.equal(lot.portee, Infinity, 'la portée effective ne vient qu’après le fondu GPU');
         assert.equal(lot.objets.length, lot.loin.length);
@@ -360,6 +381,7 @@ verifier('surfaces complètes, niveaux distincts et MAX au moins dix fois plus d
           if (o.shape === 'herbes-val') brins += 9;
           if (!o.groundCover) continue;
           const n = V.forme(o.shape).length / 6; brins += n; brinsTapis += n; tuiles++; aire += o.grassArea;
+          assert.ok(o.grassRichness >= .025, 'aucune instance dans un triangle éteint par le champ');
           assert.equal(n, V.BRINS_FORMES[o.shape]); assert.equal(V.BRINS_FORMES[lointain.shape], n / 8);
           assert.equal(o.windResponsive, true); assert.equal(o.mat, 27); assert.equal(o.collision, undefined);
           assert.deepEqual(o.p, lointain.p); assert.deepEqual(o.s, lointain.s); assert.deepEqual(o.r, lointain.r);
@@ -373,31 +395,56 @@ verifier('surfaces complètes, niveaux distincts et MAX au moins dix fois plus d
             assert.ok(erreur < .009, `${theme} : racine à ${erreur} m du vrai sol`);
             assert.ok(decor.surfaceHerbe(pied[0], pied[2]), 'empreinte admissible après tous les masques');
             if (decor.niveauEau !== undefined) assert.ok(pied[1] > decor.niveauEau + .03);
+            assert.ok(Math.abs(decor.ecologie.echantillonner(pied[0], pied[2]).herbe - o.grassRichness) < 1e-8);
+            if (o.grassRichness >= .8 && o.grassSurface === 'accotement') {
+              assert.ok(n / o.grassArea >= 200, 'les noyaux riches gardent leur forte densité par m²');
+              tuilesRichesProches++;
+            }
           }
         }
       }
       assert.equal(r.brins, brins); assert.equal(r.brinsTapis, brinsTapis); assert.equal(r.tuiles, tuiles);
       assert.ok(brins > precedent); precedent = brins;
       assert.ok(tuiles <= V.TAPIS[qualite].maximum);
-      assert.ok(aire / surfaces.aire > .9999, `${theme} ${qualite} : toute la surface admissible est couverte`);
+      assert.ok(aire / surfaces.aire > .1 && aire / surfaces.aire < .8, `${theme} ${qualite} : la carte comporte de vraies clairières`);
+      assert.ok(Math.abs(aire + r.aireNue - surfaces.aire) < 1e-3);
+      const avant032 = reference032.mesures[theme][qualite];
+      assert.ok(brins < avant032.brins * .65, `${theme} ${qualite} : les brins vides ne sont plus construits`);
+      assert.ok(tuiles < avant032.tuiles * .7, `${theme} ${qualite} : moins d'instances réelles`);
+      assert.ok(r.lots.length < avant032.lots, `${theme} ${qualite} : moins de lots réels`);
       assert.ok(r.brinsTerrain > 0 && r.brinsAccotements > 0);
       mesures[theme][qualite] = { brins, tuiles, lots: r.lots.length, aireCouverte: aire, couverture: aire / surfaces.aire,
         brinsAccotements: r.brinsAccotements, brinsTerrain: r.brinsTerrain, erreurSol, controlesSol,
-        instanceBufferBytes: tuiles * 16 * 4 * 2 };
+        instanceBufferBytes: tuiles * 16 * 4 * 2, aireNue: r.aireNue, aireRiche: r.aireRiche,
+        brinsRiches: r.brinsRiches, ratioBrins032: brins / avant032.brins,
+        ratioInstances032: tuiles / avant032.tuiles, tuilesRichesProches };
       if (qualite === 'ultra') {
-        assert.ok(brins >= ancienne.brins * 10, `${theme} : ×10 sur total réel de la 0.2.31`);
         const disques = compterDisques(r, ancienne.disques); mesures[theme][qualite].disques = disques;
         assert.ok(disques.length >= 6);
-        for (const d of disques) { assert.ok(d.facteur >= 10, `${theme} ${d.id} : ×${d.facteur}`); assert.ok(d.parMetreCarre >= 200); }
+        const habitats = compterDisques(r, disquesEcologiques(piste, decor)); mesures[theme][qualite].habitats = habitats;
+        assert.ok(tuilesRichesProches > 100);
+        for (const d of habitats) {
+          if (d.type === 'nu') assert.equal(d.brins, 0, `${theme} ${d.id} : clairière réellement vide`);
+          else assert.ok(d.parMetreCarre >= 200, `${theme} ${d.id} : poche riche à ${d.parMetreCarre} brins/m²`);
+        }
       }
     }
     assert.equal(empreinte([piste.x, piste.y, piste.z, piste.cap, piste.devers]), trace);
     assert.equal(empreinte(decor.obstacles), solides);
   }
 });
+verifier('un champ entièrement nu ne construit ni brin ni lot végétal', () => {
+  const piste = B.circuit.creer(11, { theme: 'foret', longueur: 4200 });
+  const decor = B.decor.construire(piste, { qualite: 'high', vegetation: false });
+  const ecologie = { echantillonner(x, z, sortie) { sortie.herbe = sortie.fleurs = sortie.insectes = sortie.boisement = 0; return sortie; } };
+  const r = V.construire(piste, { qualite: 'ultra', limites: decor.limites, interroger: indexAxe(piste), surfaces: decor.herbier, ecologie });
+  assert.equal(r.lots.length, 0); assert.equal(r.tuiles, 0); assert.equal(r.brins, 0);
+  assert.equal(r.aireNue, decor.herbier.aire);
+});
 verifier('surfaceHerbe existe en Off, refuse les routes et le tunnel et accepte une sortie réutilisable', () => {
   const piste = B.circuit.creer(47, { theme: 'montagne', longueur: 5200 }), decor = B.decor.construire(piste, { vegetation: false });
   assert.equal(decor.vegetation, undefined); assert.equal(typeof decor.surfaceHerbe, 'function');
+  assert.equal(typeof decor.ecologie.echantillonner, 'function');
   for (let i = 0; i < piste.n; i += 9) assert.equal(decor.surfaceHerbe(piste.x[i], piste.z[i]), null, 'chaussée toujours propre');
   for (const t of decor.herbier.triangles.slice(0, 1200)) {
     const p = [0, 1, 2].map(k => (t.points[0][k] + t.points[1][k] + t.points[2][k]) / 3), sortie = {};
@@ -407,6 +454,7 @@ verifier('surfaceHerbe existe en Off, refuse les routes et le tunnel et accepte 
   }
   assert.equal(Object.keys(decor).includes('herbier'), false, 'les empreintes historiques ne sérialisent pas le cache');
   assert.equal(Object.keys(decor).includes('surfaceHerbe'), false);
+  assert.equal(Object.keys(decor).includes('ecologie'), false);
 });
 verifier('implantation déterministe et aucune nouvelle consommation du hasard du circuit', () => {
   const piste = B.circuit.creer(29, { theme: 'cote', longueur: 3600 });

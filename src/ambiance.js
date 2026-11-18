@@ -38,6 +38,12 @@
     const elevation = Math.cos((t % DUREE_CYCLE) * Math.PI * 2 / DUREE_CYCLE);
     const nuit = mode === 'jour' ? 0 : mode === 'nuit' ? 1 : mode === 'crepuscule' ? .5
       : 1 - lisser((elevation + .25) / .8);
+    return appliquerReel(etat, nuit);
+  }
+
+  // Horloge réelle : le taux vient de la course (de l’hôte en ligne), sans accélération du temps.
+  function appliquerReel(etat, taux) {
+    const nuit = Number.isFinite(taux) ? Math.max(0, Math.min(1, taux)) : 0;
     etat.nuit = nuit;
     // Pas de normalisation/allocation moteur à chaque image : un changement de 1/512 suffit pour la lumière.
     const valeur = Math.round(nuit * 512);
@@ -53,5 +59,5 @@
     return etat;
   }
 
-  B.ambiance = { MODES, DUREE_CYCLE, normaliser, creer, appliquer };
+  B.ambiance = { MODES, DUREE_CYCLE, normaliser, creer, appliquer, appliquerReel };
 })(globalThis.BITUME = globalThis.BITUME || {});

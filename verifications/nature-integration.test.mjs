@@ -24,7 +24,7 @@ const ctx={B,S:session,session,co:{horloge:180},reglages:{moment:'nuit'},
   c:{},scene:{decor:{}},P:Grap.melange('high',0),ps:{x:1,y:2,z:3},meteo:{pluie:.3},horlogeReelle:5,sortie:[]};
 const lumiere=section('    if (S.nature) {','    if (B.meteo) B.meteo.actuel');
 const reflet=section('    if (S.nature && (retro.ambianceSource','    retro.rendu.draw(camR');
-const faune=section("    if (S.nature && B.faune && P.faune !== 'off') {",'    // voitures : toujours dessinées');
+const faune=section("    if (S.nature && B.faune && P.faune !== 'off'",'    // voitures : toujours dessinées');
 let controles=0;
 const verifier=(nom,f)=>{f();controles++;console.log('ok '+nom);};
 
@@ -63,10 +63,12 @@ verifier('faune et lumière chargées avant la coque et réglages restaurables',
   assert.ok(build.indexOf("'faune.js'")<build.indexOf("'jeu.js'"));
   assert.ok(build.indexOf("'ambiance.js'")<build.indexOf("'jeu.js'"));
   const html=readFileSync(new URL('../src/index.html',import.meta.url),'utf8');
-  for(const mode of A.MODES) for(const nom of ['moment','momentDepart']) assert.ok(html.includes(`name="${nom}" value="${mode}"`));
+  for(const mode of A.MODES) assert.ok(html.includes(`name="momentDepart" value="${mode}"`));
   const preparation=html.slice(html.indexOf('<section id="preparation"'),html.indexOf('<section id="reglages"'));
-  assert.ok(preparation.includes('id="o-meteo"') && preparation.includes('id="o-moment"'),'jour/nuit au même endroit que la météo avant départ');
+  assert.ok(preparation.includes('id="o-meteo"') && preparation.includes('id="o-moment"') && preparation.includes('id="o-saison"'),'météo, moment et saison ensemble avant départ');
+  const reglages=html.slice(html.indexOf('<section id="reglages"'),html.indexOf('<section id="pause"'));
+  assert.ok(!reglages.includes('name="moment"') && !reglages.includes('name="momentDepart"') && !reglages.includes('name="saisonDepart"') && !reglages.includes('name="meteo"'),'conditions de course absentes des Réglages');
   for(const q of Grap.OPTIONS.faune)assert.ok(html.includes(`name="faune" value="${q}"`));
-  assert.ok(source.includes("'vegetation', 'faune', 'moment', 'retro'"),'banc restitue tous les nouveaux réglages');
+  assert.ok(source.includes("'vegetation', 'faune', 'moment', 'saison', 'retro'"),'banc restitue tous les nouveaux réglages');
 });
 console.log(`${controles} contrôles intégration nature réussis.`);

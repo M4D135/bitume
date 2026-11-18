@@ -1,0 +1,35 @@
+{
+  "tests": {
+    "faune": 15,
+    "effetsSaison": 10,
+    "vitre": 8
+  },
+  "sources": [
+    {
+      "path": "src/faune.js",
+      "sha256": "c668c463a58a2f2a01506ee396195d4d433900e22aa191e33ee10ae61c8a5529"
+    },
+    {
+      "path": "src/effets-saison.js",
+      "sha256": "12337e99af3102971e26816a8e8e096276b90c921a07fc9fdc904613779e9abe"
+    },
+    {
+      "path": "src/vitre.js",
+      "sha256": "a2327a2ceacbbe9c16364adc7b7dd02e76e7b19ec8277b7390ae9806af2b3cfc"
+    },
+    {
+      "path": "verifications/faune.test.mjs",
+      "sha256": "c1521b647841c34c1afe969b478b63d93dbab0931f7e2b6404bcf8da672f7cfb"
+    },
+    {
+      "path": "verifications/effets-saison.test.mjs",
+      "sha256": "961c4b61d68fdbf31698c167edf37bf9b91e8288160aa9f50415afdf263c6c24"
+    },
+    {
+      "path": "verifications/vitre.test.mjs",
+      "sha256": "5b0280940c8cdd87c4e8b0e3cbd0e260dbc29d3d1f5fec942e840082151e638e"
+    }
+  ],
+  "browser": false,
+  "publication": false
+}

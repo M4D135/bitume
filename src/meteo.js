@@ -11,10 +11,30 @@
     n = Math.imul(n ^ (n >>> 13), 0xc2b2ae35);
     return ((n ^ (n >>> 16)) >>> 0) / 4294967296;
   }
+  // Copie bornée des seules observations utiles au jeu ; aucun lieu ni coordonnées dans l’état de course.
+  function depuisReel(source) {
+    if (!source || source.reel !== true) return null;
+    const nombre = (cle, a, b, defaut) => Number.isFinite(source[cle]) ? clamp(source[cle], a, b) : defaut;
+    return { reel: true, fixe: true, phase: PHASES.includes(source.phase) ? source.phase : 'couvre',
+      pluie: nombre('pluie', 0, 1, 0), nuage: nombre('nuage', 0, 1, .4), mouille: nombre('mouille', 0, 1, 0),
+      ventX: nombre('ventX', -60, 60, 0), ventZ: nombre('ventZ', -60, 60, 0),
+      neige: source.neige === true, t: 0, tp: 0, eclair: 0,
+      prochainEclair: source.phase === 'orage' ? 3 : 0 };
+  }
   function avancer(S, dt) {
     const m = S.meteo || (S.meteo = { t: 0, phase: 'clair', tp: 0, pluie: 0, nuage: .12,
       eclair: 0, prochainEclair: 0, mouille: 0, ventX: 1.8, ventZ: .9 });
     if (!(dt > 0) || !Number.isFinite(dt)) return m;
+    if (m.reel) {
+      // Le temps et l’eau évoluent ; les observations ne deviennent pas une météo variable de jeu.
+      const pas = Math.min(.1, dt);
+      m.t += pas; m.tp += pas; m.eclair = Math.max(0, m.eclair - pas * 6);
+      m.mouille = clamp((m.mouille || 0) + pas * (m.pluie * .039 - (m.pluie > 0 ? .004 : .012)), 0, 1);
+      if (m.phase === 'orage' && m.t >= m.prochainEclair) {
+        m.eclair = 1; m.prochainEclair = m.t + 2.8 + hasard(Math.round(m.t * 1000)) * 4.2;
+      }
+      return m;
+    }
     const fixe = m.fixe === true;
     let reste = Math.min(.1, dt);
     if (!Number.isFinite(m.mouille)) m.mouille = 0;
@@ -158,5 +178,5 @@
     if (mode === 'variable') return { t: 0, phase: 'clair', tp: 0, pluie: 0, nuage: .12, eclair: 0, prochainEclair: 0, mouille: 0, ventX: 1.8, ventZ: .9, fixe: false };
     return null;
   }
-  B.meteo = { avancer, ambiance, creerPluie, initial, pour };
+  B.meteo = { avancer, ambiance, creerPluie, initial, pour, depuisReel };
 })(globalThis.BITUME = globalThis.BITUME || {});

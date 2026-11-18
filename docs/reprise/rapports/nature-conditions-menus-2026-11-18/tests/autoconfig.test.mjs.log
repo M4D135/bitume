@@ -1,0 +1,13 @@
+ok le cache valide garde les choix manuels ; empreinte locale bornée
+ok mesures GPU incomplètes et disjointes exclues
+ok GPU faible : palier léger mesuré, aucune tentative coûteuse ensuite
+ok moyen stable mais haut trop lent : décision moyenne avec mesure GPU réelle
+ok sans extension GPU, un écran à 60 Hz ne suffit pas à sélectionner Extrême
+ok Extrême est réellement essayé et refusé si son coût dépasse la marge
+ok machine rapide : Extrême retenu seulement après sa propre mesure
+ok requêtes Extrême devenues incomplètes : conserver Fine déjà mesuré
+ok préparation lente : ne pas jeter un palier valide à cause du délai global
+ok écran 30 Hz : distinguer la cadence de la charge réelle
+ok annulation, onglet masqué, contexte perdu, redimensionnement et RAF bloqué ne donnent aucun réglage
+ok les réglages ne touchent ni au moment de la course ni aux commandes
+12 contrôles de détection graphique réussis.

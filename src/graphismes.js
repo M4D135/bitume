@@ -16,13 +16,15 @@
     faune: Object.freeze(['profil', 'off', 'low', 'medium', 'high', 'ultra']),
   });
 
-  // Le détail sous-pixel se fond dans le sol : les plafonds manuels restent indépendants du profil général.
+  // Brins proches → sous-ensemble grossier → prairie peinte par le champ écologique sur les nappes existantes.
+  // Les portées sont nominales (projection 60°/1080 px) : au loin, aucune géométrie de brin n'est nécessaire.
+  // Les plafonds manuels restent indépendants du profil général.
   // Auto peut alléger ce rendu sans rebâtir la prairie ni retirer des arbres/obstacles en cours de course.
   const PRAIRIE = Object.freeze({
-    low: Object.freeze({ density: Object.freeze([7, 24, .125]), distance: Object.freeze([55, 100]) }),
-    medium: Object.freeze({ density: Object.freeze([10, 35, .125]), distance: Object.freeze([80, 160]) }),
-    high: Object.freeze({ density: Object.freeze([18, 60, .125]), distance: Object.freeze([140, 250]) }),
-    ultra: Object.freeze({ density: Object.freeze([25, 90, .125]), distance: Object.freeze([250, 420]) }),
+    low: Object.freeze({ density: Object.freeze([7, 16, .125]), distance: Object.freeze([24, 45]) }),
+    medium: Object.freeze({ density: Object.freeze([10, 28, .125]), distance: Object.freeze([42, 80]) }),
+    high: Object.freeze({ density: Object.freeze([16, 38, .125]), distance: Object.freeze([65, 110]) }),
+    ultra: Object.freeze({ density: Object.freeze([20, 52, .125]), distance: Object.freeze([95, 150]) }),
   });
 
   // ---------------------------------------------------------------- bornes du moteur (à ne pas dépasser)

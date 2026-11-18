@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {execFileSync} from 'node:child_process';
-import {readFileSync,writeFileSync} from 'node:fs';
+import {readFileSync,writeFileSync,existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
@@ -21,7 +21,11 @@ const rendererSource=sourceOf('src/moteur/renderer.js');
 vm.runInThisContext(rendererSource,{filename:'src/moteur/renderer.js'});
 const registry=new Map(),register=globalThis.FRender.forme;
 globalThis.FRender.forme=(name,triangles)=>{registry.set(name,triangles);return register(name,triangles);};
-for(const name of ['graphismes','carene','circuit','vegetation','decor','botanique'])vm.runInThisContext(sourceOf('src/'+name+'.js'),{filename:'src/'+name+'.js'});
+const ecologyExists=ref==='WORKTREE'?existsSync(path.join(repo,'src/ecologie.js')):
+  execFileSync('git',['-C',repo,'ls-tree','--name-only',ref,'src/ecologie.js'],{encoding:'utf8'}).trim().length>0;
+const seasonsExist=ref==='WORKTREE'?existsSync(path.join(repo,'src/saisons.js')):
+  execFileSync('git',['-C',repo,'ls-tree','--name-only',ref,'src/saisons.js'],{encoding:'utf8'}).trim().length>0;
+for(const name of ['graphismes','carene','circuit',...(ecologyExists?['ecologie']:[]),...(seasonsExist?['saisons']:[]),'vegetation','decor','botanique'])vm.runInThisContext(sourceOf('src/'+name+'.js'),{filename:'src/'+name+'.js'});
 const fixtureSource=readFileSync(new URL('../docs/reprise/rapports/herbe-sillage-2026-11-18/fixture-webgl.js',import.meta.url),'utf8');
 const fixture=new Function('assert','vm','source','registry',fixtureSource+'\nreturn fixture;')(assert,vm,rendererSource,registry);
 const B=globalThis.BITUME,circuit=B.circuit.creer(11,{theme:'foret',longueur:4200});

@@ -1,0 +1,33 @@
+{
+  "checkedAt": "2026-11-18T10:44:24.384575+00:00",
+  "command": [
+    "node",
+    "--test",
+    "verifications/conditions-integration.test.mjs",
+    "verifications/meteo-reelle.test.mjs"
+  ],
+  "exitCode": 0,
+  "counts": {
+    "tests": 13,
+    "pass": 13,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "sourcesUnchangedDuringRun": true,
+  "sha256": {
+    "src/jeu.js": "956dbf095420d34ce25ad3302997858f3bea6d01d3e8f3e23aa9f47810c45141",
+    "src/meteo.js": "20656b7cfd42acd01d9b57039a59a535823b35ac3401df517f579eaf25c104c8",
+    "src/conditions-course.js": "803b69e3fda24c073f619f745070f0bcc39190b45159ff7fc4b63aaf690d4f02",
+    "src/ambiance.js": "4939c0c765a8cb074d92400df1cafb3737cebd61eeab1628df557f9bca3e08d2",
+    "verifications/conditions-integration.test.mjs": "ae8ca4182477b72f876b0cf081bc199a4c6fa16e1924c21d65ea312f7e0ef24b",
+    "verifications/meteo-reelle.test.mjs": "f295499ba96c579685a8f625e582c8e86391f38bb4297766d5a200f04b8000a0"
+  },
+  "scope": "Functions extracted directly from production jeu.js; actual meteo/ambiance/conditions modules; mocked DOM, service, transport and clocks. No actual location or weather query.",
+  "findings": [],
+  "filesAdded": [
+    "verifications/conditions-integration.test.mjs",
+    "verifications/meteo-reelle.test.mjs"
+  ]
+}

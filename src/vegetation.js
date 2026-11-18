@@ -9,8 +9,7 @@
   const BUDGET = Object.freeze({ stations: 76, herbes: 152, taillis: 76, formes: 4 });
 
   // low reproduit exactement l'existant (mêmes stations, mêmes comptes, matière 11, deux familles).
-  // Les paliers supérieurs ajoutent un tapis bas entre les massifs historiques. Ultra réemploie les formes High :
-  // plus d'instances, pas de nouvelle famille de maillage ni de nouvelle passe de rendu.
+  // Les paliers supérieurs plantent les poches du champ écologique. Les clairières n'allouent aucun tapis.
   // `groupes` = formes distinctes au plus par lot et par passe. `sol` = recette de terreau sous les fougères.
   const PALIERS = Object.freeze({
     low: Object.freeze({ stations: 76, herbes: 2, fougeres: 0, fleurs: 0, taillis: .58, mat: 11, sol: 11, groupes: 2, familles: ['herbes', 'taillis'] }),
@@ -24,8 +23,8 @@
   const BRINS_TUILE = 96;
   const LOT_TAPIS = 48;
   const BRINS_PRAIRIE = Object.freeze([8, 32, 64, 128, 256, 512, 1024, 2048, 4096]);
-  // Brins par m² de surface, avant arrondi au maillage disponible. La campagne est moins drue que les
-  // abords parcourus en voiture, mais chaque triangle herbeux reçoit des brins, jusque derrière les arbres.
+  // Brins par m² dans une poche riche, avant arrondi au maillage disponible. La campagne est moins drue
+  // que les abords parcourus en voiture ; le champ écologique module la présence avant toute allocation.
   const TAPIS = Object.freeze({
     medium: Object.freeze({ densite: 2, terrain: .04, maximum: 180000, maillages: [8, 32], variantes: 1, plafonner: true }),
     high: Object.freeze({ densite: 8, terrain: .10, maximum: 180000, maillages: [8, 128], variantes: 1, plafonner: true }),
@@ -338,6 +337,12 @@
     if (B.decor && B.decor.THEMES && !B.decor.THEMES[c.theme]) return vide;
     const palier = PALIERS[qualite];
     const r = hasard((c.graine ^ 0x53a98b17) >>> 0), groupes = new Map(), groupesTapis = new Map(), w = c.largeur / 2;
+    const ecologie = qualite === 'low' ? null : options.ecologie || (B.ecologie && B.ecologie.creer(c.graine, c.theme));
+    const habitat = {};
+    const tirageSpatial = (x, z, sel) => {
+      let h = Math.imul(Math.floor(x * 31), 374761393) ^ Math.imul(Math.floor(z * 31), 668265263) ^ c.graine ^ sel;
+      h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+    };
     let herbes = 0, fougeres = 0, fleurs = 0, taillis = 0;
     let tuiles = 0;
     const stations = Math.max(1, Math.round(palier.stations * biome.stations));
@@ -347,6 +352,12 @@
       // internes d'une touffe ne doivent pas rentrer par le portail ou dans la zone des stands.
       if (qualite !== 'low' && interdit(i)) return false;
       const a = c.cap[i], x = c.x[i] - Math.sin(a) * d, z = c.z[i] + Math.cos(a) * d;
+      if (ecologie) {
+        const e = ecologie.echantillonner(x, z, habitat);
+        const richesse = famille === 'fleurs' ? e.fleurs : famille === 'taillis' ? e.boisement
+          : famille === 'fougeres' ? e.herbe * (.35 + .65 * e.boisement) : e.herbe;
+        if (richesse < .08 || tirageSpatial(x, z, famille.length * 911) > richesse) return false;
+      }
       const q = interroger(x, z, 40), marge = Math.hypot(taille[0], taille[2]) / 2 + .18;
       if (q.i < 0 || q.d < w + 1.2 + marge || Math.abs(B.circuit.ecart(c, i * c.pas, q.i * c.pas)) > 20) return false;
       if (qualite !== 'low' && interdit(q.i)) return false;
@@ -368,7 +379,8 @@
       return Math.abs(B.circuit.ecart(c, 0, i * c.pas)) < 360 || (B.circuit.dansTunnel && B.circuit.dansTunnel(c, i * c.pas, 20));
     }
     for (let station = 0, i = 0; i < c.n && station < stations; i += pas, station++) {
-      const cote = station % 2 ? 1 : -1, hasardStation = [r(), r(), r(), r(), r(), r(), r(), r()];
+      const hasardStation = [r(), r(), r(), r(), r(), r(), r(), r()];
+      const cote = qualite === 'low' ? (station % 2 ? 1 : -1) : (hasardStation[6] < .5 ? -1 : 1);
       if (interdit(i)) continue;
       const limite = cote < 0 ? limites.G[i] : limites.D[i], espace = limite - w - 4.2;
       if (espace < 1.2) continue;
@@ -391,6 +403,7 @@
     // la route ; les limites suivent le sol, les bâtiments et les rochers, jusque dans la campagne.
     const tapis = TAPIS[qualite];
     let brinsTapis = 0, brinsAccotements = 0, brinsTerrain = 0, aireAccotements = 0, aireTerrain = 0;
+    let aireDisponible = 0, aireRiche = 0, brinsRiches = 0;
     if (tapis) {
       const surfaces = options.surfaces || (B.decor && B.decor.construire(c, { qualite: 'high', vegetation: false }).herbier);
       const hash = (x, z, sel = 0) => {
@@ -411,18 +424,36 @@
         const ab = moins(points[1], points[0]), ac = moins(points[2], points[0]);
         const aire = Math.hypot(...croix(ab, ac)) / 2;
         const axe = interroger(centre[0], centre[2], 100), d = axe.i < 0 ? Infinity : axe.d;
+        let richesse = 1, lisiere = false;
+        if (ecologie) {
+          richesse = ecologie.echantillonner(centre[0], centre[2], habitat).herbe;
+          if (source.type === 'accotement' || d < 140) {
+            let min = richesse, max = richesse;
+            for (const p of points) {
+              const v = ecologie.echantillonner(p[0], p[2], habitat).herbe;
+              min = Math.min(min, v); max = Math.max(max, v);
+            }
+            if (max < .025) return;
+            lisiere = max - min > .38 || (min === 0 && max > .15);
+          }
+          if (richesse < .025 && !lisiere) return;
+        }
         const proximite = source.type === 'accotement' ? 1 : 1 - lisse(28, 90, d);
         const masse = .90 + .20 * bruit(centre[0], centre[2], 31, 813);
-        const densite = (tapis.terrain + (tapis.densite - tapis.terrain) * proximite * proximite) * masse;
+        const densite = (tapis.terrain + (tapis.densite - tapis.terrain) * proximite * proximite) * masse * Math.min(1, richesse / .8);
         const souhait = aire * densite;
-        if (!tapis.plafonner && souhait > 4096 && profondeur < 9 && tuiles + 2 < tapis.maximum) {
+        if (((!tapis.plafonner && souhait > 4096) || lisiere) && profondeur < 9 && tuiles + 2 < tapis.maximum) {
           const longueurs = [0, 1, 2].map(i => Math.hypot(...moins(points[(i + 1) % 3], points[i])));
-          const k = longueurs.indexOf(Math.max(...longueurs)), a = points[k], b = points[(k + 1) % 3], c0 = points[(k + 2) % 3];
-          const milieu = a.map((v, j) => (v + b[j]) / 2);
-          planter(source, [a, milieu, c0], cle * 2 + 1, profondeur + 1);
-          planter(source, [milieu, b, c0], cle * 2 + 2, profondeur + 1);
-          return;
+          const longueur = Math.max(...longueurs);
+          if ((!tapis.plafonner && souhait > 4096) || (lisiere && longueur > 12)) {
+            const k = longueurs.indexOf(longueur), a = points[k], b = points[(k + 1) % 3], c0 = points[(k + 2) % 3];
+            const milieu = a.map((v, j) => (v + b[j]) / 2);
+            planter(source, [a, milieu, c0], cle * 2 + 1, profondeur + 1);
+            planter(source, [milieu, b, c0], cle * 2 + 2, profondeur + 1);
+            return;
+          }
         }
+        if (richesse < .025) return;
         const n = tapis.maillages.find(v => v >= souhait) || tapis.maillages[tapis.maillages.length - 1];
         // Le sommet d'angle le plus ouvert place le centre de l'instance sur le grand côté : sa sphère
         // est petite, et une pointe aiguë ne retarde pas le LOD de toutes les plantes du secteur.
@@ -448,14 +479,16 @@
         const objet = { shape: nom, p: a.map((v, k) => v + (ex[k] + ez[k]) / 2 + y[k] * h / 2 - (k === 1 ? .005 : 0)),
           s: [sx, h, sz], r: [Math.atan2(y[2], z[2]), -Math.asin(Math.max(-1, Math.min(1, x[2]))), Math.atan2(x[1], x[0])],
           mat: palier.mat, color, windResponsive: true, groundCover: true, groundShear: shear,
-          grassArea: aire, grassSurface: source.type };
+          grassArea: aire, grassSurface: source.type, grassRichness: richesse };
         let lot = groupesTapis.get(groupe); if (!lot) groupesTapis.set(groupe, lot = { objets: [], loin: [] });
         lot.objets.push(objet); lot.loin.push({ ...objet, shape: nom + '-loin' });
         herbes++; tuiles++; brinsTapis += n;
+        if (richesse >= .8) { aireRiche += aire; brinsRiches += n; }
         if (source.type === 'accotement') { brinsAccotements += n; aireAccotements += aire; }
         else { brinsTerrain += n; aireTerrain += aire; }
       }
       if (surfaces) {
+        aireDisponible = surfaces.aire;
         // Le plafond est réparti sur toute la surface en cas de circuit exceptionnellement grand.
         const sources = surfaces.triangles, saut = Math.max(1, Math.ceil(sources.length / tapis.maximum));
         for (let i = 0; i < sources.length; i += saut) planter(sources[i], sources[i].points, i + 1);
@@ -468,14 +501,14 @@
       const stationsF = Math.max(1, Math.round(stations * .82 * biome.densite)), pasF = Math.max(1, Math.ceil(c.n / stationsF));
       for (let station = 0, i = 0; i < c.n && station < stationsF; i += pasF, station++) {
         if (interdit(i)) continue;
-        const cote = station % 2 ? -1 : 1;
+        const t = [rf(), rf(), rf(), rf(), rf(), rf()];
+        const cote = t[5] < .5 ? -1 : 1;
         const limite = cote < 0 ? limites.G[i] : limites.D[i], espace = limite - w - 4.2;
         if (espace < 2.2) continue;
-        const t = [rf(), rf(), rf(), rf(), rf(), rf()];
         const d = cote * (w + 3.6 + t[0] * Math.min(espace - .8, 4.8));
         const nombre = 1 + Math.floor(t[1] * (palier.fougeres + .35));
         for (let k = 0; k < nombre; k++) {
-          const j = (i + k) % c.n, vert = .78 + t[2 + (k % 4)] * .34;
+          const j = (i + k + Math.floor(t[3] * pasF * .75)) % c.n, vert = .78 + t[2 + (k % 4)] * .34;
           const largeur = (1.05 + t[2] * .55) * biome.taille, h = (.52 + t[3] * .26) * biome.taille;
           const b = biome.fougere;
           const plant = ajouter(j, d + cote * k * .85, 'fougeres', t[4] * PI2 + k * 1.7,
@@ -498,14 +531,14 @@
       const stationsL = Math.max(1, Math.round(stations * .9 * biome.densite)), pasL = Math.max(1, Math.ceil(c.n / stationsL));
       for (let station = 0, i = 0; i < c.n && station < stationsL; i += pasL, station++) {
         if (interdit(i)) continue;
-        const cote = station % 3 ? 1 : -1;
+        const t = [rl(), rl(), rl(), rl(), rl(), rl()];
+        const cote = t[5] < .5 ? -1 : 1;
         const limite = cote < 0 ? limites.G[i] : limites.D[i], espace = limite - w - 4.2;
         if (espace < 2.6) continue;
-        const t = [rl(), rl(), rl(), rl(), rl(), rl()];
         const d = cote * (w + 4.4 + t[0] * Math.min(espace - 1.0, 5.4));
         const nombre = 1 + Math.floor(t[1] * (palier.fleurs + .4));
         for (let k = 0; k < nombre; k++) {
-          const j = (i + k) % c.n, vert = .84 + t[2 + (k % 4)] * .30;
+          const j = (i + k + Math.floor(t[3] * pasL * .75)) % c.n, vert = .84 + t[2 + (k % 4)] * .30;
           const largeur = (.62 + t[2] * .40) * biome.taille, h = (.30 + t[3] * .18) * biome.taille;
           const c0 = biome.fleurs[Math.floor(t[5] * biome.fleurs.length) % biome.fleurs.length];
           if (ajouter(j, d + cote * k * .6, 'fleurs', t[4] * PI2 + k * 2.1,
@@ -527,7 +560,8 @@
       lots.push(lot);
     }
     return { lots, herbes, fougeres, fleurs, taillis, brins: (herbes - tuiles) * 9 + brinsTapis,
-      brinsTapis, brinsAccotements, brinsTerrain, aireAccotements, aireTerrain, tuiles, objetsHerbe: herbes, qualite };
+      brinsTapis, brinsAccotements, brinsTerrain, aireAccotements, aireTerrain,
+      aireNue: Math.max(0, aireDisponible - aireAccotements - aireTerrain), aireRiche, brinsRiches, tuiles, objetsHerbe: herbes, qualite };
   }
 
   B.vegetation = { FORMES, FORMES_AJOUT, FORMES_PRAIRIE, BRINS_FORMES, BRINS_PRAIRIE, BUDGET, PALIERS, TAPIS, LOT_TAPIS, BRINS_TUILE, BIOMES, JEU_FORMES, forme, installer, construire };

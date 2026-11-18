@@ -15,7 +15,7 @@ const src = n => path.join(racine, 'src', n + '.js');
 const formes = new Map();
 globalThis.FRender = { forme: (nom, triangles) => { formes.set(nom, triangles); return nom; } };
 
-for (const n of ['graphismes', 'carene', 'circuit', 'vegetation', 'decor']) require(src(n));
+for (const n of ['graphismes', 'carene', 'circuit', 'ecologie', 'saisons', 'vegetation', 'decor']) require(src(n));
 // Botanique est optionnel : le budget du décor ne doit rien à ce module s'il n'existe pas encore.
 if (existsSync(src('botanique'))) require(src('botanique'));
 
@@ -34,6 +34,11 @@ const REFERENCE_031 = {
   foret: { low: 1116, medium: 114228, high: 362100, ultra: 720756 },
   cote: { low: 774, medium: 94848, high: 301080, ultra: 599832 },
   montagne: { low: 666, medium: 135309, high: 430743, ultra: 860439 },
+};
+const REFERENCE_032 = {
+  foret: { low: 1116, medium: 1682444, high: 6532316, ultra: 163010460 },
+  cote: { low: 774, medium: 1266560, high: 4780472, ultra: 129057608 },
+  montagne: { low: 666, medium: 1167341, high: 4320407, ultra: 167320367 },
 };
 
 function mesurer(theme, graine, longueur, qualite, vegetationDemandee = 'profil') {
@@ -66,6 +71,7 @@ function mesurer(theme, graine, longueur, qualite, vegetationDemandee = 'profil'
   for (const nom of formesUtilisees) trianglesFormes += formes.get(nom).length;
   const reference = (REFERENCE_029[theme]?.[v.qualite] || 0) * 9;
   const reference031 = REFERENCE_031[theme]?.[v.qualite] || 0;
+  const reference032 = REFERENCE_032[theme]?.[v.qualite] || 0;
   return {
     biome: theme, graine, longueur, qualite,
     lots: lots.length, objets,
@@ -80,8 +86,10 @@ function mesurer(theme, graine, longueur, qualite, vegetationDemandee = 'profil'
       groupesHerbe: lots.reduce((n, l) => n + new Set(l.objets.filter(o => o.shape === 'herbes-val' || o.shape.startsWith('prairie-val')).map(o => o.shape)).size, 0),
       brinsReference029: reference, facteurBrinsDepuis029: reference ? brins / reference : null,
       brinsReference031: reference031, facteurBrinsDepuis031: reference031 ? brins / reference031 : null,
+      brinsReference032: reference032, facteurBrinsDepuis032: reference032 ? brins / reference032 : null,
       brinsAccotements: v.brinsAccotements || 0, brinsTerrain: v.brinsTerrain || 0,
       aireAccotements: v.aireAccotements || 0, aireTerrain: v.aireTerrain || 0,
+      aireNue: v.aireNue || 0, aireRiche: v.aireRiche || 0, brinsRiches: v.brinsRiches || 0,
       instanceBufferBytesTheoriques: objetsHerbe * 16 * 4 * 2 },
     qualiteDemandee: qualite, qualiteAppliquee: d.qualite,
     vegetationDemandee, vegetationQualite: v.qualite,
@@ -97,7 +105,7 @@ const sortie = iSortie >= 0 ? argv[iSortie + 1] : null;
 const biomes = Object.keys(B.decor.THEMES);
 const rapport = {
   genere: 'tools/budget-decor.mjs', mode: densites ? 'densites' : 'profils',
-  mesure: 'Décor complet généré par graphismes.melange puis decor.construire ; triangles des formes libres proches, hors primitives moteur. Brins déduits des maillages réellement instanciés. Références 0.2.29 et 0.2.31. La densité locale est mesurée séparément par tools/budget-herbe.mjs. Totaux théoriques, pas une mesure de triangles soumis, visibles ou de FPS GPU.',
+  mesure: 'Décor complet généré par graphismes.melange puis decor.construire ; triangles des formes libres proches, hors primitives moteur. Brins déduits des maillages réellement instanciés. Référence principale 0.2.32, anciennes références 0.2.29 et 0.2.31 conservées. La densité locale est mesurée séparément par tools/budget-herbe.mjs. Totaux théoriques, pas une mesure de triangles soumis, visibles ou de FPS GPU.',
   biomes: {}, lignes: [],
 };
 for (const [i, biome] of biomes.entries()) {
@@ -114,10 +122,10 @@ let conflits = 0;
 if (json) {
   console.log(JSON.stringify(rapport, null, 2));
 } else {
-  const entetes = ['biome', 'palier', 'végétation', 'lots', 'objets', 'formes', 'triFormes', 'triRendus', 'instHerbe', 'brins', '×0.2.31', 'fougères', 'fleurs', 'taillis'];
+  const entetes = ['biome', 'palier', 'végétation', 'lots', 'objets', 'formes', 'triFormes', 'triRendus', 'instHerbe', 'brins', '×0.2.32', 'fougères', 'fleurs', 'taillis'];
   const lignes = rapport.lignes.map(l => [l.biome, l.qualite, l.vegetationQualite, String(l.lots), String(l.objets), String(l.formesUniques),
     String(l.trianglesFormes), String(l.trianglesRendus), String(l.vegetation.objetsHerbe), String(l.vegetation.brins),
-    l.vegetation.facteurBrinsDepuis031 === null ? '—' : l.vegetation.facteurBrinsDepuis031.toFixed(2), String(l.vegetation.fougeres),
+    l.vegetation.facteurBrinsDepuis032 === null ? '—' : l.vegetation.facteurBrinsDepuis032.toFixed(2), String(l.vegetation.fougeres),
     String(l.vegetation.fleurs), String(l.vegetation.taillis)]);
   const largeurs = entetes.map((h, i) => Math.max(h.length, ...lignes.map(l => l[i].length)));
   const ligne = c => c.map((v, i) => v.padEnd(largeurs[i])).join('  ');
@@ -142,18 +150,14 @@ for (const biome of biomes) {
         conflits++;
         console.error(`conflit : ${biome} ${l.vegetationDemandee} — densité non appliquée ou décor hors végétation modifié`);
       }
-      if (['medium', 'high', 'ultra'].includes(l.vegetationQualite) && l.vegetation.facteurBrinsDepuis029 < 10) {
+      if (['medium', 'high', 'ultra'].includes(l.vegetationQualite) && !(l.vegetation.aireNue > 0 && l.vegetation.brinsRiches > 0)) {
         conflits++;
-        console.error(`conflit : ${biome} ${l.vegetationQualite} — moins de dix fois les brins de la 0.2.29`);
-      }
-      if (l.vegetationQualite === 'ultra' && l.vegetation.facteurBrinsDepuis031 < 10) {
-        conflits++;
-        console.error(`conflit : ${biome} MAX — moins de dix fois les brins de la 0.2.31`);
+        console.error(`conflit : ${biome} ${l.vegetationQualite} — absence de clairières ou de poches riches`);
       }
     }
-    for (let i = 1; i < lignes.length; i++) if (lignes[i].vegetation.herbes <= lignes[i - 1].vegetation.herbes) {
+    for (let i = 1; i < lignes.length; i++) if (lignes[i].vegetation.brins <= lignes[i - 1].vegetation.brins) {
       conflits++;
-      console.error(`conflit : ${biome} — nombre de touffes non croissant entre ${lignes[i - 1].vegetationQualite} et ${lignes[i].vegetationQualite}`);
+      console.error(`conflit : ${biome} — nombre de brins non croissant entre ${lignes[i - 1].vegetationQualite} et ${lignes[i].vegetationQualite}`);
     }
   }
 }

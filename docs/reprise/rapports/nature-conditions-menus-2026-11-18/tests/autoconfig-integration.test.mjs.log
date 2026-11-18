@@ -1,0 +1,8 @@
+ok relance : remplace les six options, garde conduite/météo/moment et la course
+ok annulation et exception : aucune préférence écrite, interface et monde restitués
+ok aucune double détection et aucun lancement pendant une partie en ligne
+ok perte puis retour WebGL : restaurer le vrai décor après la fin du banc
+ok la vitrine suit immédiatement la densité sélectionnée, les préférences manuelles sont signalées
+ok premier lancement : attendre le benchmark avant le titre, la musique et la boucle
+ok démarrage suivant : cache compatible, choix manuels conservés et aucun nouveau bench
+7 contrôles d’intégration de la détection réussis.

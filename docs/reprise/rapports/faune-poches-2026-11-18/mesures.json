@@ -1,0 +1,4772 @@
+{
+  "protocole": "Même décor courant sans végétation affichée pour les deux modules. Source .32 figée comparée au lot10. 64 poses régulièrement espacées sur le tour, hors tunnel. Temps absolu et pools réutilisés. CPU Node, aucun GPU ni navigateur.",
+  "baselineSha256": "6580f8c30b01bb9b105e620a75af3dc25728c50209f7a3217e2dcf04f51b4198",
+  "candidateSha256": "4d0ba197266a102e6832b4f49540b611c9a0661621327b3ea2aafb7348d569ac",
+  "dependencies": {
+    "circuit": "24aad5f7b4c13a21c122d800cd3661dd3a71e1e32b94d2b12b9eb3abe8103061",
+    "ecologie": "90c0720de150cea4e479eff553fdd85abaf6761046cd4d52b5851c149edf8b86",
+    "decor": "d8e55532f22f6b75f570bed8ec51d16285150f6095bb6ba65c8ef0eb37b659d0"
+  },
+  "circuits": [
+    {
+      "theme": "foret",
+      "version": "0.2.32",
+      "habitats": 1536,
+      "preparationSolMs": 1074.54443,
+      "creationModuleMs": 893.3983169999999,
+      "distribution": {
+        "jour": {
+          "n": 64,
+          "zeros": 0,
+          "min": 48,
+          "p50": 48,
+          "p90": 48,
+          "max": 48,
+          "moyenne": 48,
+          "coefficientVariation": 0
+        }
+      },
+      "poses": [
+        {
+          "s": 32.984375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 98.953125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 164.921875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 230.890625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 296.859375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 362.828125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 428.796875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 494.765625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 560.734375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 626.703125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 692.671875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 758.640625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 824.609375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 890.578125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 956.546875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1022.515625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1088.484375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1154.453125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1220.421875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1286.390625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1352.359375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1418.328125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1484.296875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1550.265625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1616.234375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1682.203125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1748.171875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1814.140625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1880.109375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1946.078125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2012.046875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2078.015625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2143.984375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2209.953125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2275.921875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2341.890625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2407.859375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2473.828125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2539.796875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2605.765625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2671.734375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2737.703125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2803.671875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2869.640625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2935.609375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3001.578125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3067.546875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3133.515625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3199.484375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3265.453125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3331.421875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3397.390625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3463.359375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3529.328125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3595.296875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3661.265625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3727.234375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3793.203125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3859.171875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3925.140625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3991.109375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4057.078125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4123.046875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4189.015625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        }
+      ]
+    },
+    {
+      "theme": "foret",
+      "version": "lot10",
+      "habitats": 1536,
+      "preparationSolMs": 1074.54443,
+      "creationModuleMs": 106.67515299999968,
+      "distribution": {
+        "jour": {
+          "n": 64,
+          "zeros": 37,
+          "min": 0,
+          "p50": 0,
+          "p90": 22,
+          "max": 45,
+          "moyenne": 4.890625,
+          "coefficientVariation": 1.9880703523448233
+        }
+      },
+      "poses": [
+        {
+          "s": 32.984375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 98.953125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 3
+        },
+        {
+          "s": 164.921875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 230.890625,
+          "nuit": 0,
+          "abeilles": 13,
+          "insectes": 3,
+          "lucioles": 0,
+          "objets": 74
+        },
+        {
+          "s": 296.859375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 3
+        },
+        {
+          "s": 362.828125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 428.796875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 494.765625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 560.734375,
+          "nuit": 0,
+          "abeilles": 1,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 8
+        },
+        {
+          "s": 626.703125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 692.671875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 758.640625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 3
+        },
+        {
+          "s": 824.609375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 890.578125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 956.546875,
+          "nuit": 0,
+          "abeilles": 21,
+          "insectes": 10,
+          "lucioles": 0,
+          "objets": 135
+        },
+        {
+          "s": 1022.515625,
+          "nuit": 0,
+          "abeilles": 29,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 193
+        },
+        {
+          "s": 1088.484375,
+          "nuit": 0,
+          "abeilles": 22,
+          "insectes": 15,
+          "lucioles": 0,
+          "objets": 155
+        },
+        {
+          "s": 1154.453125,
+          "nuit": 0,
+          "abeilles": 11,
+          "insectes": 11,
+          "lucioles": 0,
+          "objets": 88
+        },
+        {
+          "s": 1220.421875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 3
+        },
+        {
+          "s": 1286.390625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1352.359375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1418.328125,
+          "nuit": 0,
+          "abeilles": 8,
+          "insectes": 5,
+          "lucioles": 0,
+          "objets": 55
+        },
+        {
+          "s": 1484.296875,
+          "nuit": 0,
+          "abeilles": 10,
+          "insectes": 5,
+          "lucioles": 0,
+          "objets": 65
+        },
+        {
+          "s": 1550.265625,
+          "nuit": 0,
+          "abeilles": 7,
+          "insectes": 4,
+          "lucioles": 0,
+          "objets": 47
+        },
+        {
+          "s": 1616.234375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 2,
+          "lucioles": 0,
+          "objets": 6
+        },
+        {
+          "s": 1682.203125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 3
+        },
+        {
+          "s": 1748.171875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1814.140625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1880.109375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1946.078125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 3
+        },
+        {
+          "s": 2012.046875,
+          "nuit": 0,
+          "abeilles": 8,
+          "insectes": 4,
+          "lucioles": 0,
+          "objets": 52
+        },
+        {
+          "s": 2078.015625,
+          "nuit": 0,
+          "abeilles": 9,
+          "insectes": 2,
+          "lucioles": 0,
+          "objets": 51
+        },
+        {
+          "s": 2143.984375,
+          "nuit": 0,
+          "abeilles": 12,
+          "insectes": 10,
+          "lucioles": 0,
+          "objets": 90
+        },
+        {
+          "s": 2209.953125,
+          "nuit": 0,
+          "abeilles": 2,
+          "insectes": 2,
+          "lucioles": 0,
+          "objets": 16
+        },
+        {
+          "s": 2275.921875,
+          "nuit": 0,
+          "abeilles": 6,
+          "insectes": 5,
+          "lucioles": 0,
+          "objets": 45
+        },
+        {
+          "s": 2341.890625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2407.859375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2473.828125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2539.796875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2605.765625,
+          "nuit": 0,
+          "abeilles": 14,
+          "insectes": 9,
+          "lucioles": 0,
+          "objets": 97
+        },
+        {
+          "s": 2671.734375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 2,
+          "lucioles": 0,
+          "objets": 6
+        },
+        {
+          "s": 2737.703125,
+          "nuit": 0,
+          "abeilles": 15,
+          "insectes": 8,
+          "lucioles": 0,
+          "objets": 99
+        },
+        {
+          "s": 2803.671875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2869.640625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2935.609375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3001.578125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3067.546875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3133.515625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3199.484375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3265.453125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3331.421875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3397.390625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3463.359375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3529.328125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3595.296875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3661.265625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3727.234375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3793.203125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3859.171875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 3
+        },
+        {
+          "s": 3925.140625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3991.109375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 2,
+          "lucioles": 0,
+          "objets": 6
+        },
+        {
+          "s": 4057.078125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 4123.046875,
+          "nuit": 0,
+          "abeilles": 1,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 8
+        },
+        {
+          "s": 4189.015625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        }
+      ]
+    },
+    {
+      "theme": "cote",
+      "version": "0.2.32",
+      "habitats": 1536,
+      "preparationSolMs": 884.8547779999999,
+      "creationModuleMs": 341.01103999999987,
+      "distribution": {
+        "jour": {
+          "n": 64,
+          "zeros": 0,
+          "min": 48,
+          "p50": 48,
+          "p90": 48,
+          "max": 48,
+          "moyenne": 48,
+          "coefficientVariation": 0
+        }
+      },
+      "poses": [
+        {
+          "s": 28.421875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 85.265625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 142.109375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 198.953125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 255.796875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 312.640625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 369.484375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 426.328125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 483.171875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 540.015625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 596.859375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 653.703125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 710.546875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 767.390625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 824.234375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 881.078125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 937.921875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 994.765625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1051.609375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1108.453125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1165.296875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1222.140625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1278.984375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1335.828125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1392.671875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1449.515625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1506.359375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1563.203125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1620.046875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1676.890625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1733.734375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1790.578125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1847.421875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1904.265625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1961.109375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2017.953125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2074.796875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2131.640625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2188.484375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2245.328125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2302.171875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2359.015625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2415.859375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2472.703125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2529.546875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2586.390625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2643.234375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2700.078125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2756.921875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2813.765625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2870.609375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2927.453125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2984.296875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3041.140625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3097.984375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3154.828125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3211.671875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3268.515625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3325.359375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3382.203125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3439.046875,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3495.890625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3552.734375,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3609.578125,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        }
+      ]
+    },
+    {
+      "theme": "cote",
+      "version": "lot10",
+      "habitats": 1536,
+      "preparationSolMs": 884.8547779999999,
+      "creationModuleMs": 117.96707400000014,
+      "distribution": {
+        "jour": {
+          "n": 64,
+          "zeros": 27,
+          "min": 0,
+          "p50": 3,
+          "p90": 42,
+          "max": 48,
+          "moyenne": 11.65625,
+          "coefficientVariation": 1.326140433197829
+        }
+      },
+      "poses": [
+        {
+          "s": 28.421875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 85.265625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 142.109375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 198.953125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 3
+        },
+        {
+          "s": 255.796875,
+          "nuit": 0,
+          "abeilles": 26,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 178
+        },
+        {
+          "s": 312.640625,
+          "nuit": 0,
+          "abeilles": 26,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 178
+        },
+        {
+          "s": 369.484375,
+          "nuit": 0,
+          "abeilles": 12,
+          "insectes": 9,
+          "lucioles": 0,
+          "objets": 87
+        },
+        {
+          "s": 426.328125,
+          "nuit": 0,
+          "abeilles": 3,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 18
+        },
+        {
+          "s": 483.171875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 540.015625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 596.859375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 653.703125,
+          "nuit": 0,
+          "abeilles": 1,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 5
+        },
+        {
+          "s": 710.546875,
+          "nuit": 0,
+          "abeilles": 26,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 178
+        },
+        {
+          "s": 767.390625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 824.234375,
+          "nuit": 0,
+          "abeilles": 17,
+          "insectes": 7,
+          "lucioles": 0,
+          "objets": 106
+        },
+        {
+          "s": 881.078125,
+          "nuit": 0,
+          "abeilles": 6,
+          "insectes": 4,
+          "lucioles": 0,
+          "objets": 42
+        },
+        {
+          "s": 937.921875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 994.765625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1051.609375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1108.453125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1165.296875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1222.140625,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1278.984375,
+          "nuit": 0,
+          "abeilles": 1,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 8
+        },
+        {
+          "s": 1335.828125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 3
+        },
+        {
+          "s": 1392.671875,
+          "nuit": 0,
+          "abeilles": 18,
+          "insectes": 11,
+          "lucioles": 0,
+          "objets": 123
+        },
+        {
+          "s": 1449.515625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1506.359375,
+          "nuit": 0,
+          "abeilles": 13,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 113
+        },
+        {
+          "s": 1563.203125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1620.046875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1676.890625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1733.734375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1790.578125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1847.421875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1904.265625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1961.109375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2017.953125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2074.796875,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 3
+        },
+        {
+          "s": 2131.640625,
+          "nuit": 0,
+          "abeilles": 15,
+          "insectes": 10,
+          "lucioles": 0,
+          "objets": 105
+        },
+        {
+          "s": 2188.484375,
+          "nuit": 0,
+          "abeilles": 8,
+          "insectes": 6,
+          "lucioles": 0,
+          "objets": 58
+        },
+        {
+          "s": 2245.328125,
+          "nuit": 0,
+          "abeilles": 29,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 193
+        },
+        {
+          "s": 2302.171875,
+          "nuit": 0,
+          "abeilles": 17,
+          "insectes": 12,
+          "lucioles": 0,
+          "objets": 121
+        },
+        {
+          "s": 2359.015625,
+          "nuit": 0,
+          "abeilles": 5,
+          "insectes": 6,
+          "lucioles": 0,
+          "objets": 43
+        },
+        {
+          "s": 2415.859375,
+          "nuit": 0,
+          "abeilles": 11,
+          "insectes": 8,
+          "lucioles": 0,
+          "objets": 79
+        },
+        {
+          "s": 2472.703125,
+          "nuit": 0,
+          "abeilles": 13,
+          "insectes": 4,
+          "lucioles": 0,
+          "objets": 77
+        },
+        {
+          "s": 2529.546875,
+          "nuit": 0,
+          "abeilles": 8,
+          "insectes": 6,
+          "lucioles": 0,
+          "objets": 58
+        },
+        {
+          "s": 2586.390625,
+          "nuit": 0,
+          "abeilles": 4,
+          "insectes": 4,
+          "lucioles": 0,
+          "objets": 32
+        },
+        {
+          "s": 2643.234375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2700.078125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2756.921875,
+          "nuit": 0,
+          "abeilles": 26,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 178
+        },
+        {
+          "s": 2813.765625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2870.609375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2927.453125,
+          "nuit": 0,
+          "abeilles": 13,
+          "insectes": 9,
+          "lucioles": 0,
+          "objets": 92
+        },
+        {
+          "s": 2984.296875,
+          "nuit": 0,
+          "abeilles": 4,
+          "insectes": 2,
+          "lucioles": 0,
+          "objets": 26
+        },
+        {
+          "s": 3041.140625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3097.984375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 5,
+          "lucioles": 0,
+          "objets": 15
+        },
+        {
+          "s": 3154.828125,
+          "nuit": 0,
+          "abeilles": 23,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 163
+        },
+        {
+          "s": 3211.671875,
+          "nuit": 0,
+          "abeilles": 13,
+          "insectes": 11,
+          "lucioles": 0,
+          "objets": 98
+        },
+        {
+          "s": 3268.515625,
+          "nuit": 0,
+          "abeilles": 8,
+          "insectes": 4,
+          "lucioles": 0,
+          "objets": 52
+        },
+        {
+          "s": 3325.359375,
+          "nuit": 0,
+          "abeilles": 1,
+          "insectes": 3,
+          "lucioles": 0,
+          "objets": 14
+        },
+        {
+          "s": 3382.203125,
+          "nuit": 0,
+          "abeilles": 26,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 178
+        },
+        {
+          "s": 3439.046875,
+          "nuit": 0,
+          "abeilles": 2,
+          "insectes": 10,
+          "lucioles": 0,
+          "objets": 40
+        },
+        {
+          "s": 3495.890625,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 8,
+          "lucioles": 0,
+          "objets": 24
+        },
+        {
+          "s": 3552.734375,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 3,
+          "lucioles": 0,
+          "objets": 9
+        },
+        {
+          "s": 3609.578125,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        }
+      ]
+    },
+    {
+      "theme": "montagne",
+      "version": "0.2.32",
+      "habitats": 1536,
+      "preparationSolMs": 1103.6666059999998,
+      "creationModuleMs": 270.6538179999998,
+      "distribution": {
+        "jour": {
+          "n": 60,
+          "zeros": 0,
+          "min": 48,
+          "p50": 48,
+          "p90": 48,
+          "max": 48,
+          "moyenne": 48,
+          "coefficientVariation": 0
+        },
+        "nuit": {
+          "n": 60,
+          "zeros": 0,
+          "min": 224,
+          "p50": 256,
+          "p90": 256,
+          "max": 256,
+          "moyenne": 254.48333333333332,
+          "coefficientVariation": 0.020811574483799857
+        }
+      },
+      "poses": [
+        {
+          "s": 40.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 122.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 203.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 285.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 366.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 448.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 529.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 611.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 692.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 774.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 855.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 937.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1018.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1100.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1181.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1263.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1344.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1426.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1507.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1589.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1670.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 1752.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2159.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2241.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2322.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2404.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2485.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2567.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2648.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2730.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2811.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2893.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 2974.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3056.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3137.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3219.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3300.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3382.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3463.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3545.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3626.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3708.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3789.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3871.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 3952.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4034.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4115.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4197.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4278.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4360.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4441.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4523.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4604.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4686.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4767.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4849.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 4930.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 5012.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 5093.75,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 5175.25,
+          "nuit": 0,
+          "abeilles": 32,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 208
+        },
+        {
+          "s": 40.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 240,
+          "objets": 480
+        },
+        {
+          "s": 122.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 240,
+          "objets": 480
+        },
+        {
+          "s": 203.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 224,
+          "objets": 448
+        },
+        {
+          "s": 285.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 366.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 251,
+          "objets": 502
+        },
+        {
+          "s": 448.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 529.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 611.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 692.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 774.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 855.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 937.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 1018.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 1100.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 1181.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 1263.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 1344.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 1426.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 1507.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 1589.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 1670.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 1752.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 2159.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 2241.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 2322.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 2404.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 2485.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 2567.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 2648.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 2730.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 2811.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 2893.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 2974.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 3056.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 3137.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 3219.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 3300.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 3382.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 3463.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 3545.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 3626.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 3708.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 3789.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 3871.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 3952.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 4034.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 4115.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 4197.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 4278.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 4360.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 4441.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 4523.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 4604.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 4686.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 4767.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 4849.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 4930.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 5012.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 5093.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 242,
+          "objets": 484
+        },
+        {
+          "s": 5175.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 248,
+          "objets": 496
+        }
+      ]
+    },
+    {
+      "theme": "montagne",
+      "version": "lot10",
+      "habitats": 1536,
+      "preparationSolMs": 1103.6666059999998,
+      "creationModuleMs": 89.15936099999999,
+      "distribution": {
+        "jour": {
+          "n": 60,
+          "zeros": 31,
+          "min": 0,
+          "p50": 0,
+          "p90": 21,
+          "max": 46,
+          "moyenne": 6.5,
+          "coefficientVariation": 1.54396451707294
+        },
+        "nuit": {
+          "n": 60,
+          "zeros": 12,
+          "min": 0,
+          "p50": 34,
+          "p90": 148,
+          "max": 256,
+          "moyenne": 57.6,
+          "coefficientVariation": 1.1082509846531012
+        }
+      },
+      "poses": [
+        {
+          "s": 40.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 122.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 203.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 285.25,
+          "nuit": 0,
+          "abeilles": 2,
+          "insectes": 2,
+          "lucioles": 0,
+          "objets": 16
+        },
+        {
+          "s": 366.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 448.25,
+          "nuit": 0,
+          "abeilles": 26,
+          "insectes": 13,
+          "lucioles": 0,
+          "objets": 169
+        },
+        {
+          "s": 529.75,
+          "nuit": 0,
+          "abeilles": 18,
+          "insectes": 14,
+          "lucioles": 0,
+          "objets": 132
+        },
+        {
+          "s": 611.25,
+          "nuit": 0,
+          "abeilles": 30,
+          "insectes": 16,
+          "lucioles": 0,
+          "objets": 198
+        },
+        {
+          "s": 692.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 5,
+          "lucioles": 0,
+          "objets": 15
+        },
+        {
+          "s": 774.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 855.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 937.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1018.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1100.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1181.75,
+          "nuit": 0,
+          "abeilles": 1,
+          "insectes": 4,
+          "lucioles": 0,
+          "objets": 17
+        },
+        {
+          "s": 1263.25,
+          "nuit": 0,
+          "abeilles": 5,
+          "insectes": 8,
+          "lucioles": 0,
+          "objets": 49
+        },
+        {
+          "s": 1344.75,
+          "nuit": 0,
+          "abeilles": 9,
+          "insectes": 2,
+          "lucioles": 0,
+          "objets": 51
+        },
+        {
+          "s": 1426.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1507.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1589.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1670.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1752.25,
+          "nuit": 0,
+          "abeilles": 1,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 8
+        },
+        {
+          "s": 2159.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2241.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2322.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2404.25,
+          "nuit": 0,
+          "abeilles": 5,
+          "insectes": 3,
+          "lucioles": 0,
+          "objets": 34
+        },
+        {
+          "s": 2485.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 3,
+          "lucioles": 0,
+          "objets": 9
+        },
+        {
+          "s": 2567.25,
+          "nuit": 0,
+          "abeilles": 7,
+          "insectes": 5,
+          "lucioles": 0,
+          "objets": 50
+        },
+        {
+          "s": 2648.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 2730.25,
+          "nuit": 0,
+          "abeilles": 8,
+          "insectes": 7,
+          "lucioles": 0,
+          "objets": 61
+        },
+        {
+          "s": 2811.75,
+          "nuit": 0,
+          "abeilles": 3,
+          "insectes": 5,
+          "lucioles": 0,
+          "objets": 30
+        },
+        {
+          "s": 2893.25,
+          "nuit": 0,
+          "abeilles": 7,
+          "insectes": 5,
+          "lucioles": 0,
+          "objets": 50
+        },
+        {
+          "s": 2974.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 6,
+          "lucioles": 0,
+          "objets": 18
+        },
+        {
+          "s": 3056.25,
+          "nuit": 0,
+          "abeilles": 12,
+          "insectes": 9,
+          "lucioles": 0,
+          "objets": 87
+        },
+        {
+          "s": 3137.75,
+          "nuit": 0,
+          "abeilles": 14,
+          "insectes": 8,
+          "lucioles": 0,
+          "objets": 94
+        },
+        {
+          "s": 3219.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3300.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3382.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3463.75,
+          "nuit": 0,
+          "abeilles": 15,
+          "insectes": 11,
+          "lucioles": 0,
+          "objets": 108
+        },
+        {
+          "s": 3545.25,
+          "nuit": 0,
+          "abeilles": 8,
+          "insectes": 2,
+          "lucioles": 0,
+          "objets": 46
+        },
+        {
+          "s": 3626.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3708.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3789.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 1,
+          "lucioles": 0,
+          "objets": 3
+        },
+        {
+          "s": 3871.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 3952.75,
+          "nuit": 0,
+          "abeilles": 1,
+          "insectes": 2,
+          "lucioles": 0,
+          "objets": 11
+        },
+        {
+          "s": 4034.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 4115.75,
+          "nuit": 0,
+          "abeilles": 6,
+          "insectes": 4,
+          "lucioles": 0,
+          "objets": 42
+        },
+        {
+          "s": 4197.25,
+          "nuit": 0,
+          "abeilles": 6,
+          "insectes": 2,
+          "lucioles": 0,
+          "objets": 36
+        },
+        {
+          "s": 4278.75,
+          "nuit": 0,
+          "abeilles": 10,
+          "insectes": 3,
+          "lucioles": 0,
+          "objets": 59
+        },
+        {
+          "s": 4360.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 4441.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 4523.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 4604.75,
+          "nuit": 0,
+          "abeilles": 8,
+          "insectes": 3,
+          "lucioles": 0,
+          "objets": 49
+        },
+        {
+          "s": 4686.25,
+          "nuit": 0,
+          "abeilles": 8,
+          "insectes": 3,
+          "lucioles": 0,
+          "objets": 49
+        },
+        {
+          "s": 4767.75,
+          "nuit": 0,
+          "abeilles": 5,
+          "insectes": 7,
+          "lucioles": 0,
+          "objets": 46
+        },
+        {
+          "s": 4849.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 4930.75,
+          "nuit": 0,
+          "abeilles": 15,
+          "insectes": 6,
+          "lucioles": 0,
+          "objets": 93
+        },
+        {
+          "s": 5012.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 5093.75,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 5175.25,
+          "nuit": 0,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 40.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 122.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 203.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 17,
+          "objets": 34
+        },
+        {
+          "s": 285.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 51,
+          "objets": 102
+        },
+        {
+          "s": 366.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 54,
+          "objets": 108
+        },
+        {
+          "s": 448.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 94,
+          "objets": 188
+        },
+        {
+          "s": 529.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 239,
+          "objets": 478
+        },
+        {
+          "s": 611.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 256,
+          "objets": 512
+        },
+        {
+          "s": 692.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 111,
+          "objets": 222
+        },
+        {
+          "s": 774.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 15,
+          "objets": 30
+        },
+        {
+          "s": 855.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 937.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1018.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1100.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 17,
+          "objets": 34
+        },
+        {
+          "s": 1181.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 72,
+          "objets": 144
+        },
+        {
+          "s": 1263.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 134,
+          "objets": 268
+        },
+        {
+          "s": 1344.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 56,
+          "objets": 112
+        },
+        {
+          "s": 1426.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 1,
+          "objets": 2
+        },
+        {
+          "s": 1507.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 1,
+          "objets": 2
+        },
+        {
+          "s": 1589.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1670.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 1752.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 18,
+          "objets": 36
+        },
+        {
+          "s": 2159.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 17,
+          "objets": 34
+        },
+        {
+          "s": 2241.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 6,
+          "objets": 12
+        },
+        {
+          "s": 2322.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 7,
+          "objets": 14
+        },
+        {
+          "s": 2404.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 35,
+          "objets": 70
+        },
+        {
+          "s": 2485.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 71,
+          "objets": 142
+        },
+        {
+          "s": 2567.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 111,
+          "objets": 222
+        },
+        {
+          "s": 2648.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 82,
+          "objets": 164
+        },
+        {
+          "s": 2730.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 104,
+          "objets": 208
+        },
+        {
+          "s": 2811.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 134,
+          "objets": 268
+        },
+        {
+          "s": 2893.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 132,
+          "objets": 264
+        },
+        {
+          "s": 2974.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 221,
+          "objets": 442
+        },
+        {
+          "s": 3056.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 188,
+          "objets": 376
+        },
+        {
+          "s": 3137.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 115,
+          "objets": 230
+        },
+        {
+          "s": 3219.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 21,
+          "objets": 42
+        },
+        {
+          "s": 3300.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 5,
+          "objets": 10
+        },
+        {
+          "s": 3382.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 59,
+          "objets": 118
+        },
+        {
+          "s": 3463.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 148,
+          "objets": 296
+        },
+        {
+          "s": 3545.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 93,
+          "objets": 186
+        },
+        {
+          "s": 3626.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 22,
+          "objets": 44
+        },
+        {
+          "s": 3708.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 15,
+          "objets": 30
+        },
+        {
+          "s": 3789.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 28,
+          "objets": 56
+        },
+        {
+          "s": 3871.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 54,
+          "objets": 108
+        },
+        {
+          "s": 3952.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 68,
+          "objets": 136
+        },
+        {
+          "s": 4034.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 34,
+          "objets": 68
+        },
+        {
+          "s": 4115.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 33,
+          "objets": 66
+        },
+        {
+          "s": 4197.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 81,
+          "objets": 162
+        },
+        {
+          "s": 4278.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 44,
+          "objets": 88
+        },
+        {
+          "s": 4360.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 4441.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 4523.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 4604.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 49,
+          "objets": 98
+        },
+        {
+          "s": 4686.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 155,
+          "objets": 310
+        },
+        {
+          "s": 4767.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 124,
+          "objets": 248
+        },
+        {
+          "s": 4849.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 29,
+          "objets": 58
+        },
+        {
+          "s": 4930.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 19,
+          "objets": 38
+        },
+        {
+          "s": 5012.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 16,
+          "objets": 32
+        },
+        {
+          "s": 5093.75,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        },
+        {
+          "s": 5175.25,
+          "nuit": 1,
+          "abeilles": 0,
+          "insectes": 0,
+          "lucioles": 0,
+          "objets": 0
+        }
+      ]
+    }
+  ],
+  "cpu": [
+    {
+      "theme": "foret",
+      "version": "0.2.32",
+      "site": "foyer_riche",
+      "s": 1022.515625,
+      "qualite": "off",
+      "nuit": 0,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "p50ms": 0.00013999999964653398,
+      "p95ms": 0.00039000000015221303,
+      "maximumMs": 0.12398699999994278
+    },
+    {
+      "theme": "foret",
+      "version": "lot10",
+      "site": "foyer_riche",
+      "s": 1022.515625,
+      "qualite": "off",
+      "nuit": 0,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "p50ms": 0.00013999999964653398,
+      "p95ms": 0.00028100000008635106,
+      "maximumMs": 0.021643000000040047
+    },
+    {
+      "theme": "foret",
+      "version": "0.2.32",
+      "site": "foyer_riche",
+      "s": 1022.515625,
+      "qualite": "low",
+      "nuit": 0,
+      "abeilles": 2,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 10,
+      "p50ms": 0.000931999999920663,
+      "p95ms": 0.0053079999997862615,
+      "maximumMs": 1.8260129999998753
+    },
+    {
+      "theme": "foret",
+      "version": "lot10",
+      "site": "foyer_riche",
+      "s": 1022.515625,
+      "qualite": "low",
+      "nuit": 0,
+      "abeilles": 2,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 10,
+      "p50ms": 0.003044999999929132,
+      "p95ms": 0.005948999999873195,
+      "maximumMs": 0.2513680000001841
+    },
+    {
+      "theme": "foret",
+      "version": "0.2.32",
+      "site": "foyer_riche",
+      "s": 1022.515625,
+      "qualite": "high",
+      "nuit": 0,
+      "abeilles": 12,
+      "insectes": 8,
+      "lucioles": 0,
+      "objets": 84,
+      "p50ms": 0.0046870000001035805,
+      "p95ms": 0.009665000000040891,
+      "maximumMs": 2.186206000000311
+    },
+    {
+      "theme": "foret",
+      "version": "lot10",
+      "site": "foyer_riche",
+      "s": 1022.515625,
+      "qualite": "high",
+      "nuit": 0,
+      "abeilles": 11,
+      "insectes": 8,
+      "lucioles": 0,
+      "objets": 79,
+      "p50ms": 0.005568999999923108,
+      "p95ms": 0.012038000000302418,
+      "maximumMs": 0.27725699999973585
+    },
+    {
+      "theme": "foret",
+      "version": "0.2.32",
+      "site": "foyer_riche",
+      "s": 1022.515625,
+      "qualite": "ultra",
+      "nuit": 0,
+      "abeilles": 32,
+      "insectes": 16,
+      "lucioles": 0,
+      "objets": 208,
+      "p50ms": 0.01080599999977494,
+      "p95ms": 0.031077000000095722,
+      "maximumMs": 1.202074000000266
+    },
+    {
+      "theme": "foret",
+      "version": "lot10",
+      "site": "foyer_riche",
+      "s": 1022.515625,
+      "qualite": "ultra",
+      "nuit": 0,
+      "abeilles": 29,
+      "insectes": 16,
+      "lucioles": 0,
+      "objets": 193,
+      "p50ms": 0.012388999999984662,
+      "p95ms": 0.018246999999973923,
+      "maximumMs": 0.6022370000000592
+    },
+    {
+      "theme": "foret",
+      "version": "0.2.32",
+      "site": "clairiere",
+      "s": 4189.015625,
+      "qualite": "off",
+      "nuit": 0,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "p50ms": 0.00004000000035375706,
+      "p95ms": 0.00005000000010113581,
+      "maximumMs": 0.07957000000033077
+    },
+    {
+      "theme": "foret",
+      "version": "lot10",
+      "site": "clairiere",
+      "s": 4189.015625,
+      "qualite": "off",
+      "nuit": 0,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "p50ms": 0.00004099999978279811,
+      "p95ms": 0.00007000000005064066,
+      "maximumMs": 0.017586999999821273
+    },
+    {
+      "theme": "foret",
+      "version": "0.2.32",
+      "site": "clairiere",
+      "s": 4189.015625,
+      "qualite": "low",
+      "nuit": 0,
+      "abeilles": 2,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 10,
+      "p50ms": 0.0005310000001372828,
+      "p95ms": 0.0033950000001823355,
+      "maximumMs": 0.12558899999976347
+    },
+    {
+      "theme": "foret",
+      "version": "lot10",
+      "site": "clairiere",
+      "s": 4189.015625,
+      "qualite": "low",
+      "nuit": 0,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "p50ms": 0.00010999999994965037,
+      "p95ms": 0.00011100000028818613,
+      "maximumMs": 0.0357930000000124
+    },
+    {
+      "theme": "foret",
+      "version": "0.2.32",
+      "site": "clairiere",
+      "s": 4189.015625,
+      "qualite": "high",
+      "nuit": 0,
+      "abeilles": 12,
+      "insectes": 8,
+      "lucioles": 0,
+      "objets": 84,
+      "p50ms": 0.00457700000015393,
+      "p95ms": 0.007732000000032713,
+      "maximumMs": 0.45048899999983405
+    },
+    {
+      "theme": "foret",
+      "version": "lot10",
+      "site": "clairiere",
+      "s": 4189.015625,
+      "qualite": "high",
+      "nuit": 0,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "p50ms": 0.00010999999994965037,
+      "p95ms": 0.00011100000028818613,
+      "maximumMs": 0.03871900000012829
+    },
+    {
+      "theme": "foret",
+      "version": "0.2.32",
+      "site": "clairiere",
+      "s": 4189.015625,
+      "qualite": "ultra",
+      "nuit": 0,
+      "abeilles": 32,
+      "insectes": 16,
+      "lucioles": 0,
+      "objets": 208,
+      "p50ms": 0.010745999999926426,
+      "p95ms": 0.022062999999889144,
+      "maximumMs": 0.6963479999999436
+    },
+    {
+      "theme": "foret",
+      "version": "lot10",
+      "site": "clairiere",
+      "s": 4189.015625,
+      "qualite": "ultra",
+      "nuit": 0,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "p50ms": 0.00010999999994965037,
+      "p95ms": 0.00014000000010128133,
+      "maximumMs": 0.05945899999960602
+    },
+    {
+      "theme": "foret",
+      "version": "0.2.32",
+      "site": "trajet_180kmh",
+      "qualite": "high",
+      "nuit": 0,
+      "vitesseKmh": 180,
+      "images": 4000,
+      "moyenneObjets": 204.70125,
+      "maximumObjets": 208,
+      "p50ms": 0.012338999999883526,
+      "p95ms": 0.03224899999986519,
+      "maximumMs": 1.9327690000000075
+    },
+    {
+      "theme": "foret",
+      "version": "lot10",
+      "site": "trajet_180kmh",
+      "qualite": "high",
+      "nuit": 0,
+      "vitesseKmh": 180,
+      "images": 4000,
+      "moyenneObjets": 18.766,
+      "maximumObjets": 168,
+      "p50ms": 0.0011610000001383014,
+      "p95ms": 0.016555000000153086,
+      "maximumMs": 0.1533439999998336
+    },
+    {
+      "theme": "foret",
+      "version": "0.2.32",
+      "site": "trajet_180kmh",
+      "qualite": "ultra",
+      "nuit": 0,
+      "vitesseKmh": 180,
+      "images": 4000,
+      "moyenneObjets": 205.5795,
+      "maximumObjets": 208,
+      "p50ms": 0.011568000000352185,
+      "p95ms": 0.0339920000001257,
+      "maximumMs": 1.4855259999999362
+    },
+    {
+      "theme": "foret",
+      "version": "lot10",
+      "site": "trajet_180kmh",
+      "qualite": "ultra",
+      "nuit": 0,
+      "vitesseKmh": 180,
+      "images": 4000,
+      "moyenneObjets": 34.90025,
+      "maximumObjets": 208,
+      "p50ms": 0.0006509999998343119,
+      "p95ms": 0.01784700000007433,
+      "maximumMs": 0.8368390000000545
+    },
+    {
+      "theme": "montagne",
+      "version": "0.2.32",
+      "site": "foyer_riche",
+      "s": 611.25,
+      "qualite": "off",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "p50ms": 0.00004999999964638846,
+      "p95ms": 0.00007000000005064066,
+      "maximumMs": 0.15309100000013132
+    },
+    {
+      "theme": "montagne",
+      "version": "lot10",
+      "site": "foyer_riche",
+      "s": 611.25,
+      "qualite": "off",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "p50ms": 0.00004999999964638846,
+      "p95ms": 0.000050999999984924216,
+      "maximumMs": 0.09354099999927712
+    },
+    {
+      "theme": "montagne",
+      "version": "0.2.32",
+      "site": "foyer_riche",
+      "s": 611.25,
+      "qualite": "low",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 6,
+      "objets": 12,
+      "p50ms": 0.0013019999996686238,
+      "p95ms": 0.00558900000032736,
+      "maximumMs": 0.8054119999997056
+    },
+    {
+      "theme": "montagne",
+      "version": "lot10",
+      "site": "foyer_riche",
+      "s": 611.25,
+      "qualite": "low",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 6,
+      "objets": 12,
+      "p50ms": 0.0014419999997699051,
+      "p95ms": 0.0017330000000583823,
+      "maximumMs": 0.7128929999998945
+    },
+    {
+      "theme": "montagne",
+      "version": "0.2.32",
+      "site": "foyer_riche",
+      "s": 611.25,
+      "qualite": "high",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 64,
+      "objets": 128,
+      "p50ms": 0.012467999999898893,
+      "p95ms": 0.0266299999993862,
+      "maximumMs": 0.6171790000007604
+    },
+    {
+      "theme": "montagne",
+      "version": "lot10",
+      "site": "foyer_riche",
+      "s": 611.25,
+      "qualite": "high",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 64,
+      "objets": 128,
+      "p50ms": 0.015092999999978929,
+      "p95ms": 0.03282000000035623,
+      "maximumMs": 1.1742679999997563
+    },
+    {
+      "theme": "montagne",
+      "version": "0.2.32",
+      "site": "foyer_riche",
+      "s": 611.25,
+      "qualite": "ultra",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 256,
+      "objets": 512,
+      "p50ms": 0.0531700000001365,
+      "p95ms": 0.12987500000053842,
+      "maximumMs": 1.072303999999349
+    },
+    {
+      "theme": "montagne",
+      "version": "lot10",
+      "site": "foyer_riche",
+      "s": 611.25,
+      "qualite": "ultra",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 256,
+      "objets": 512,
+      "p50ms": 0.06933400000070833,
+      "p95ms": 0.16563899999982823,
+      "maximumMs": 1.87643399999979
+    },
+    {
+      "theme": "montagne",
+      "version": "0.2.32",
+      "site": "clairiere",
+      "s": 5175.25,
+      "qualite": "off",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "p50ms": 0.00003999999989900971,
+      "p95ms": 0.00005000000055588316,
+      "maximumMs": 0.00044999999954598024
+    },
+    {
+      "theme": "montagne",
+      "version": "lot10",
+      "site": "clairiere",
+      "s": 5175.25,
+      "qualite": "off",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "p50ms": 0.00003999999989900971,
+      "p95ms": 0.00005000000055588316,
+      "maximumMs": 0.03054599999995844
+    },
+    {
+      "theme": "montagne",
+      "version": "0.2.32",
+      "site": "clairiere",
+      "s": 5175.25,
+      "qualite": "low",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 6,
+      "objets": 12,
+      "p50ms": 0.0012320000005274778,
+      "p95ms": 0.005328000000190514,
+      "maximumMs": 0.4017249999997148
+    },
+    {
+      "theme": "montagne",
+      "version": "lot10",
+      "site": "clairiere",
+      "s": 5175.25,
+      "qualite": "low",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "p50ms": 0.00014999999984866008,
+      "p95ms": 0.00017099999968195334,
+      "maximumMs": 0.06437699999969482
+    },
+    {
+      "theme": "montagne",
+      "version": "0.2.32",
+      "site": "clairiere",
+      "s": 5175.25,
+      "qualite": "high",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 64,
+      "objets": 128,
+      "p50ms": 0.012808999999833759,
+      "p95ms": 0.04180300000007264,
+      "maximumMs": 1.7666800000006333
+    },
+    {
+      "theme": "montagne",
+      "version": "lot10",
+      "site": "clairiere",
+      "s": 5175.25,
+      "qualite": "high",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "p50ms": 0.00010999999994965037,
+      "p95ms": 0.00011100000028818613,
+      "maximumMs": 0.04246400000010908
+    },
+    {
+      "theme": "montagne",
+      "version": "0.2.32",
+      "site": "clairiere",
+      "s": 5175.25,
+      "qualite": "ultra",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 248,
+      "objets": 496,
+      "p50ms": 0.05331999999998516,
+      "p95ms": 0.13562399999955232,
+      "maximumMs": 2.0971169999993435
+    },
+    {
+      "theme": "montagne",
+      "version": "lot10",
+      "site": "clairiere",
+      "s": 5175.25,
+      "qualite": "ultra",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "p50ms": 0.00010999999994965037,
+      "p95ms": 0.00011100000028818613,
+      "maximumMs": 0.04719100000056642
+    },
+    {
+      "theme": "montagne",
+      "version": "0.2.32",
+      "site": "trajet_180kmh",
+      "qualite": "high",
+      "nuit": 1,
+      "vitesseKmh": 180,
+      "images": 4000,
+      "moyenneObjets": 190.2705,
+      "maximumObjets": 212,
+      "p50ms": 0.02082200000040757,
+      "p95ms": 0.06627899999966758,
+      "maximumMs": 1.4325520000002143
+    },
+    {
+      "theme": "montagne",
+      "version": "lot10",
+      "site": "trajet_180kmh",
+      "qualite": "high",
+      "nuit": 1,
+      "vitesseKmh": 180,
+      "images": 4000,
+      "moyenneObjets": 38.7585,
+      "maximumObjets": 150,
+      "p50ms": 0.003855999999359483,
+      "p95ms": 0.01860800000031304,
+      "maximumMs": 0.6145349999987957
+    },
+    {
+      "theme": "montagne",
+      "version": "0.2.32",
+      "site": "trajet_180kmh",
+      "qualite": "ultra",
+      "nuit": 1,
+      "vitesseKmh": 180,
+      "images": 4000,
+      "moyenneObjets": 479.6395,
+      "maximumObjets": 512,
+      "p50ms": 0.05427200000121957,
+      "p95ms": 0.13427199999932782,
+      "maximumMs": 0.8574110000008659
+    },
+    {
+      "theme": "montagne",
+      "version": "lot10",
+      "site": "trajet_180kmh",
+      "qualite": "ultra",
+      "nuit": 1,
+      "vitesseKmh": 180,
+      "images": 4000,
+      "moyenneObjets": 136.0445,
+      "maximumObjets": 512,
+      "p50ms": 0.01093600000058359,
+      "p95ms": 0.06662999999934982,
+      "maximumMs": 1.131814000000304
+    },
+    {
+      "version": "0.2.32",
+      "site": "charge_maximale_synthetique",
+      "qualite": "ultra",
+      "nuit": 0,
+      "abeilles": 32,
+      "insectes": 16,
+      "lucioles": 0,
+      "objets": 208,
+      "p50ms": 0.01120699999955832,
+      "p95ms": 0.021603000001050532,
+      "maximumMs": 1.1508429999994405
+    },
+    {
+      "version": "0.2.32",
+      "site": "charge_maximale_synthetique",
+      "qualite": "ultra",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 256,
+      "objets": 512,
+      "p50ms": 0.05408100000022387,
+      "p95ms": 0.1316190000015922,
+      "maximumMs": 1.4917050000003655
+    },
+    {
+      "version": "lot10",
+      "site": "charge_maximale_synthetique",
+      "qualite": "ultra",
+      "nuit": 0,
+      "abeilles": 32,
+      "insectes": 16,
+      "lucioles": 0,
+      "objets": 208,
+      "p50ms": 0.013100000000122236,
+      "p95ms": 0.037105999999766937,
+      "maximumMs": 1.058063000000402
+    },
+    {
+      "version": "lot10",
+      "site": "charge_maximale_synthetique",
+      "qualite": "ultra",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 256,
+      "objets": 512,
+      "p50ms": 0.05942900000081863,
+      "p95ms": 0.1321989999996731,
+      "maximumMs": 1.5035439999992377
+    }
+  ]
+}

@@ -13,6 +13,8 @@
     <canvas id="meteo" aria-hidden="true"></canvas>
     <div id="glaces2" class="glaces2" aria-hidden="true"><canvas id="glace-g2" class="glace" hidden></canvas><canvas id="glace-d2" class="glace" hidden></canvas></div>
     <canvas id="meteo2" aria-hidden="true"></canvas>
+    <canvas id="vitre" class="vitre" aria-hidden="true"></canvas>
+    <canvas id="vitre2" class="vitre" aria-hidden="true"></canvas>
     <div id="vignette" aria-hidden="true"></div>
   </div>
 
@@ -168,12 +170,21 @@
     </div>
   </section>
 
-  <!-- Préparation d'une course ou d'un chrono -->
-  <section id="preparation" class="ecran preparation" hidden>
-    <header class="entete">
-      <button type="button" class="retour" data-aller="titre" aria-label="Retour">←</button>
-      <h2 id="p-titre">Course</h2>
-    </header>
+  <!-- Préparation : chaque condition est choisie avant la course. -->
+  <section id="preparation" class="ecran preparation menu-coquille" hidden>
+    <div class="menu-entete">
+      <header class="entete">
+        <button type="button" class="retour" data-aller="titre" aria-label="Retour">←</button>
+        <div><h2 id="p-titre">Course</h2><p class="sous">Préparez votre départ.</p></div>
+      </header>
+    <nav class="onglets-menu" data-menu-tabs role="tablist" aria-label="Préparation de la course">
+      <button type="button" id="onglet-p-piste" role="tab" data-menu-tab="p-piste" aria-controls="p-piste" aria-selected="true" tabindex="0">Circuit</button>
+      <button type="button" id="onglet-p-conditions" role="tab" data-menu-tab="p-conditions" aria-controls="p-conditions" aria-selected="false" tabindex="-1">Conditions</button>
+      <button type="button" id="onglet-p-pilotes" role="tab" data-menu-tab="p-pilotes" aria-controls="p-pilotes" aria-selected="false" tabindex="-1">Pilotes</button>
+    </nav>
+    </div>
+    <div class="panneaux-menu">
+      <div id="p-piste" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-p-piste">
     <div id="circuits" class="circuits" role="radiogroup" aria-label="Circuit"></div>
     <div class="options">
       <fieldset id="o-tours">
@@ -188,21 +199,65 @@
         <label><input type="radio" name="difficulte" value="1"><span>Normaux</span></label>
         <label><input type="radio" name="difficulte" value="2"><span>Coriaces</span></label>
       </fieldset>
-      <fieldset id="o-meteo">
-        <legend>Météo</legend>
-        <label><input type="radio" name="meteo" value="aleatoire"><span>Aléatoire</span></label>
-        <label><input type="radio" name="meteo" value="soleil"><span>Soleil</span></label>
-        <label><input type="radio" name="meteo" value="pluie"><span>Pluie</span></label>
-        <label><input type="radio" name="meteo" value="variable"><span>Variable</span></label>
+      <p id="o-chrono" class="note-chrono" hidden>Seul en piste. Le chrono part au premier passage de la ligne ; votre meilleur tour devient un fantôme bleu, gardé pour la prochaine fois.</p>
+    </div>
+      </div>
+      <div id="p-conditions" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-p-conditions" hidden>
+        <p class="intro-menu">Composez les conditions, laissez le hasard décider ou retrouvez celles du monde réel.</p>
+        <div class="conditions-grille">
+      <fieldset id="o-saison" aria-describedby="p-saison-note">
+        <legend>Saison</legend>
+        <div class="source-condition" role="group" aria-label="Source de la saison">
+          <label><input type="radio" name="saisonMode" value="manuel"><span>Manuel</span></label>
+          <label><input type="radio" name="saisonMode" value="aleatoire"><span>Aléatoire</span></label>
+          <label><input type="radio" name="saisonMode" value="reel"><span>Réel</span></label>
+        </div>
+        <div id="p-manuel-saison" class="valeurs-condition">
+        <label><input type="radio" name="saisonDepart" value="printemps"><span>Printemps</span></label>
+        <label><input type="radio" name="saisonDepart" value="ete"><span>Été</span></label>
+        <label><input type="radio" name="saisonDepart" value="automne"><span>Automne</span></label>
+        <label><input type="radio" name="saisonDepart" value="hiver"><span>Hiver</span></label>
+        </div>
+        <p class="note-graphismes" id="p-saison-note">La saison transforme le paysage. La météo reste réglable.</p>
       </fieldset>
       <fieldset id="o-moment" aria-describedby="p-moment-note">
         <legend>Moment de la course</legend>
+        <div class="source-condition" role="group" aria-label="Source du moment">
+          <label><input type="radio" name="momentMode" value="manuel"><span>Manuel</span></label>
+          <label><input type="radio" name="momentMode" value="aleatoire"><span>Aléatoire</span></label>
+          <label><input type="radio" name="momentMode" value="reel"><span>Réel</span></label>
+        </div>
+        <div id="p-manuel-moment" class="valeurs-condition">
         <label><input type="radio" name="momentDepart" value="jour"><span>Jour</span></label>
         <label><input type="radio" name="momentDepart" value="crepuscule"><span>Crépuscule</span></label>
         <label><input type="radio" name="momentDepart" value="nuit"><span>Nuit</span></label>
         <label><input type="radio" name="momentDepart" value="cycle"><span>Cycle jour / nuit</span></label>
+        </div>
         <p class="note-graphismes" id="p-moment-note">Cycle de six minutes. Les lucioles nocturnes sont propres à Haut-Col.</p>
       </fieldset>
+      <fieldset id="o-meteo">
+        <legend>Météo</legend>
+        <div class="source-condition" role="group" aria-label="Source de la météo">
+          <label><input type="radio" name="meteoMode" value="manuel"><span>Manuel</span></label>
+          <label><input type="radio" name="meteoMode" value="aleatoire"><span>Aléatoire</span></label>
+          <label><input type="radio" name="meteoMode" value="reel"><span>Réel</span></label>
+        </div>
+        <div id="p-manuel-meteo" class="valeurs-condition">
+        <label><input type="radio" name="meteo" value="soleil"><span>Soleil</span></label>
+        <label><input type="radio" name="meteo" value="pluie"><span id="p-type-precipitations">Pluie</span></label>
+        <label><input type="radio" name="meteo" value="variable"><span>Variable</span></label>
+        </div>
+      </fieldset>
+        </div>
+        <div class="conditions-retour">
+          <p id="p-conditions-etat" role="status" aria-live="polite">Conditions prêtes.</p>
+          <button type="button" class="discret" id="p-actualiser-conditions">Actualiser les conditions</button>
+        </div>
+        <p class="note-conditions" id="p-conditions-reel" hidden>En mode réel, la date et l’heure suivent le monde réel. La météo utilise votre zone approximative par IP. En ligne, les conditions de l’hôte s’appliquent à tous.</p>
+        <p class="note-conditions" id="p-meteo-sources" hidden>Météo : <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Localisation IP : <a href="https://www.geojs.io/" target="_blank" rel="noopener noreferrer">GeoJS</a></p>
+      </div>
+      <div id="p-pilotes" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-p-pilotes" hidden>
+    <div class="options options-pilotes">
       <fieldset id="o-pneus">
         <legend>Pneus</legend>
         <label><input type="radio" name="pneus" value="slicks"><span>Slicks</span></label>
@@ -222,67 +277,43 @@
         <label><input type="radio" name="partage" value="haut-bas"><span>L’un sur l’autre</span></label>
         <label><input type="radio" name="partage" value="cote"><span>Côte à côte</span></label>
       </fieldset>
-      <p id="o-chrono" class="note-chrono" hidden>Seul en piste. Le chrono part au premier passage de la ligne ; votre meilleur tour devient un fantôme bleu, gardé pour la prochaine fois.</p>
+      <fieldset id="o-pilotage">
+        <legend>Pilotage</legend>
+        <p class="note-graphismes">Vue, boîte de vitesses et commandes de chaque pilote.</p>
+        <button type="button" class="discret" id="p-reglages-pilote">Régler le pilotage</button>
+      </fieldset>
     </div>
-    <footer class="actions">
-      <p id="p-record" class="record"></p>
+      </div>
+    </div>
+    <footer class="actions depart-fixe">
+      <div class="resume-depart"><p id="p-resume" class="resume-course"></p><p id="p-record" class="record"></p></div>
       <button type="button" class="gros principal" id="b-depart">Départ</button>
     </footer>
+    <p class="aide-manette"><span><kbd>↑ ↓</kbd> Parcourir</span><span><kbd>← →</kbd> Régler</span><span><kbd>A</kbd> Valider</span><span><kbd>B</kbd> Retour</span><span><kbd>LB / RB</kbd> Onglets</span></p>
   </section>
 
-  <!-- Réglages -->
-  <section id="reglages" class="ecran reglages" hidden>
-    <header class="entete">
-      <button type="button" class="retour" id="r-retour" aria-label="Retour">←</button>
-      <h2>Réglages</h2>
-    </header>
+  <!-- Réglages persistants, séparés des conditions de course. -->
+  <section id="reglages" class="ecran reglages menu-coquille" hidden>
+    <div class="menu-entete">
+      <header class="entete">
+        <button type="button" class="retour" id="r-retour" aria-label="Retour">←</button>
+        <div><h2>Réglages</h2><p class="sous">Vos préférences restent mémorisées.</p></div>
+      </header>
+    <nav class="onglets-menu" data-menu-tabs role="tablist" aria-label="Catégories de réglages">
+      <button type="button" id="onglet-r-image" role="tab" data-menu-tab="r-image" aria-controls="r-image" aria-selected="true" tabindex="0">Image</button>
+      <button type="button" id="onglet-r-pilotage" role="tab" data-menu-tab="r-pilotage" aria-controls="r-pilotage" aria-selected="false" tabindex="-1">Pilotage</button>
+      <button type="button" id="onglet-r-audio" role="tab" data-menu-tab="r-audio" aria-controls="r-audio" aria-selected="false" tabindex="-1">Son</button>
+      <button type="button" id="onglet-r-commandes-panel" role="tab" data-menu-tab="r-commandes-panel" aria-controls="r-commandes-panel" aria-selected="false" tabindex="-1">Commandes</button>
+    </nav>
+    </div>
+    <div class="panneaux-menu">
+      <div id="r-image" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-r-image">
     <div class="grille-reglages">
-      <fieldset>
-        <legend>Vue</legend>
-        <label><input type="radio" name="vue" value="cockpit"><span>Cockpit</span></label>
-        <label><input type="radio" name="vue" value="poursuite"><span>Poursuite</span></label>
-      </fieldset>
-      <fieldset>
-        <legend>Boîte</legend>
-        <label><input type="radio" name="boite" value="auto"><span>Automatique</span></label>
-        <label><input type="radio" name="boite" value="manuelle"><span>Manuelle</span></label>
-      </fieldset>
-      <fieldset>
-        <legend>Aide au volant</legend>
-        <label><input type="radio" name="aide" value="0"><span>Aucune</span></label>
-        <label><input type="radio" name="aide" value="0.35"><span>Légère</span></label>
-        <label><input type="radio" name="aide" value="0.7"><span>Forte</span></label>
-      </fieldset>
-      <fieldset>
-        <legend>Tableau en cockpit</legend>
-        <label><input type="radio" name="tableau" value="reduit"><span>Planche seule</span></label>
-        <label><input type="radio" name="tableau" value="complet"><span>Compteurs supplémentaires</span></label>
-      </fieldset>
-      <fieldset>
-        <legend>Image des rétroviseurs</legend>
-        <label><input type="radio" name="retro" value="auto"><span>Auto</span></label>
-        <label><input type="radio" name="retro" value="oui"><span>Réelle</span></label>
-        <label><input type="radio" name="retro" value="non"><span>Simple</span></label>
-      </fieldset>
-      <fieldset>
-        <legend>Carte du circuit</legend>
-        <label><input type="checkbox" id="v-carte" checked><span>Afficher la carte</span></label>
-      </fieldset>
-      <fieldset>
-        <legend>Position de la carte</legend>
-        <label><input type="radio" name="cartePosition" value="gauche"><span>À gauche</span></label>
-        <label><input type="radio" name="cartePosition" value="droite" checked><span>À droite</span></label>
-      </fieldset>
-      <fieldset>
-        <legend>Taille de la carte</legend>
-        <label><input type="radio" name="carteTaille" value="petite"><span>Petite</span></label>
-        <label><input type="radio" name="carteTaille" value="normale" checked><span>Normale</span></label>
-        <label><input type="radio" name="carteTaille" value="grande"><span>Grande</span></label>
-      </fieldset>
-      <fieldset>
-        <legend>Démo sur l’écran titre</legend>
-        <label><input type="radio" name="demo" value="oui"><span>Après 5 s sans geste</span></label>
-        <label><input type="radio" name="demo" value="non"><span>Jamais</span></label>
+      <fieldset class="detection-reglages" aria-describedby="r-detection-etat">
+        <legend>Détection graphique</legend>
+        <button type="button" class="discret" id="r-detecter">Détecter et appliquer</button>
+        <p class="note-graphismes">Un court test choisit les réglages adaptés et remplace les choix graphiques actuels.</p>
+        <p class="note-graphismes" id="r-detection-etat" role="status">Aucune mesure enregistrée.</p>
       </fieldset>
       <fieldset>
         <legend>Qualité générale</legend>
@@ -313,7 +344,7 @@
         <label><input type="radio" name="vegetation" value="medium"><span>Moyenne</span></label>
         <label><input type="radio" name="vegetation" value="high"><span>Dense</span></label>
         <label><input type="radio" name="vegetation" value="ultra"><span>Extrême</span></label>
-        <p class="note-graphismes" id="note-vegetation">Prairies, fougères et fleurs sur les sols herbeux. Extrême maximise la densité. Appliquée à la prochaine course.</p>
+        <p class="note-graphismes" id="note-vegetation">Brins détaillés à proximité, prairie colorée au loin. Extrême densifie les zones proches. Appliquée à la prochaine course.</p>
       </fieldset>
       <fieldset aria-describedby="note-faune">
         <legend>Insectes et lucioles</legend>
@@ -325,28 +356,81 @@
         <label><input type="radio" name="faune" value="ultra"><span>Foisonnants</span></label>
         <p class="note-graphismes" id="note-faune">Abeilles et insectes le jour. Lucioles dans les prairies de Haut-Col à la nuit tombée.</p>
       </fieldset>
-      <fieldset aria-describedby="note-moment">
-        <legend>Moment de la course</legend>
-        <label><input type="radio" name="moment" value="jour"><span>Jour</span></label>
-        <label><input type="radio" name="moment" value="crepuscule"><span>Crépuscule</span></label>
-        <label><input type="radio" name="moment" value="nuit"><span>Nuit</span></label>
-        <label><input type="radio" name="moment" value="cycle"><span>Cycle jour / nuit</span></label>
-        <p class="note-graphismes" id="note-moment">Cycle de six minutes. À Haut-Col, la nuit fait apparaître les lucioles.</p>
+      <fieldset>
+        <legend>Image des rétroviseurs</legend>
+        <label><input type="radio" name="retro" value="auto"><span>Auto</span></label>
+        <label><input type="radio" name="retro" value="oui"><span>Réelle</span></label>
+        <label><input type="radio" name="retro" value="non"><span>Simple</span></label>
       </fieldset>
+      <fieldset>
+        <legend>Démo sur l’écran titre</legend>
+        <label><input type="radio" name="demo" value="oui"><span>Après 5 s sans geste</span></label>
+        <label><input type="radio" name="demo" value="non"><span>Jamais</span></label>
+      </fieldset>
+    </div>
+      </div>
+      <div id="r-pilotage" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-r-pilotage" hidden>
+    <div class="grille-reglages">
+      <fieldset>
+        <legend>Vue</legend>
+        <label><input type="radio" name="vue" value="cockpit"><span>Cockpit</span></label>
+        <label><input type="radio" name="vue" value="poursuite"><span>Poursuite</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Boîte</legend>
+        <label><input type="radio" name="boite" value="auto"><span>Automatique</span></label>
+        <label><input type="radio" name="boite" value="manuelle"><span>Manuelle</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Aide au volant</legend>
+        <label><input type="radio" name="aide" value="0"><span>Aucune</span></label>
+        <label><input type="radio" name="aide" value="0.35"><span>Légère</span></label>
+        <label><input type="radio" name="aide" value="0.7"><span>Forte</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Tableau en cockpit</legend>
+        <label><input type="radio" name="tableau" value="reduit"><span>Planche seule</span></label>
+        <label><input type="radio" name="tableau" value="complet"><span>Compteurs supplémentaires</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Carte du circuit</legend>
+        <label><input type="checkbox" id="v-carte" checked><span>Afficher la carte</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Position de la carte</legend>
+        <label><input type="radio" name="cartePosition" value="gauche"><span>À gauche</span></label>
+        <label><input type="radio" name="cartePosition" value="droite" checked><span>À droite</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Taille de la carte</legend>
+        <label><input type="radio" name="carteTaille" value="petite"><span>Petite</span></label>
+        <label><input type="radio" name="carteTaille" value="normale" checked><span>Normale</span></label>
+        <label><input type="radio" name="carteTaille" value="grande"><span>Grande</span></label>
+      </fieldset>
+      <div class="curseurs">
+        <label>Champ du cockpit <output id="v-champ-valeur">60°</output> <input type="range" id="v-champ" min="60" max="105" step="1"></label>
+        <label>Secousses <output id="v-secousses-valeur">100 %</output> <input type="range" id="v-secousses" min="0" max="1" step="0.05"></label>
+      </div>
+    </div>
+      </div>
+      <div id="r-audio" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-r-audio" hidden>
+        <p class="intro-menu">Équilibrez le son du moteur, de la piste et des effets.</p>
+        <div class="curseurs audio-curseurs">
+        <label>Volume général <input type="range" id="v-general" min="0" max="1" step="0.05"></label>
+        <label>Moteurs <input type="range" id="v-moteur" min="0" max="1" step="0.05"></label>
+        <label>Effets <input type="range" id="v-effets" min="0" max="1" step="0.05"></label>
+        </div>
+      </div>
+      <div id="r-commandes-panel" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-r-commandes-panel" hidden>
       <fieldset>
         <legend>Manette</legend>
         <label><input type="checkbox" id="v-vibrations"><span>Vibrations (moteur, route, chocs)</span></label>
         <label>Puissance des vibrations <output id="v-vibration-force-valeur">50 %</output> <input type="range" id="v-vibration-force" min="0" max="1" step="0.05"></label>
       </fieldset>
-      <div class="curseurs">
-        <label>Volume général <input type="range" id="v-general" min="0" max="1" step="0.05"></label>
-        <label>Moteurs <input type="range" id="v-moteur" min="0" max="1" step="0.05"></label>
-        <label>Effets <input type="range" id="v-effets" min="0" max="1" step="0.05"></label>
-        <label>Champ du cockpit <output id="v-champ-valeur">60°</output> <input type="range" id="v-champ" min="60" max="105" step="1"></label>
-        <label>Secousses <output id="v-secousses-valeur">100 %</output> <input type="range" id="v-secousses" min="0" max="1" step="0.05"></label>
+        <div id="r-commandes" class="commandes-joueurs"></div>
       </div>
-      <div id="r-commandes" class="commandes-joueurs"></div>
     </div>
+    <p class="aide-manette"><span><kbd>↑ ↓</kbd> Parcourir</span><span><kbd>← →</kbd> Régler</span><span><kbd>A</kbd> Valider</span><span><kbd>B</kbd> Retour</span><span><kbd>LB / RB</kbd> Onglets</span></p>
   </section>
 
   <!-- Pause -->
@@ -374,6 +458,16 @@
     </footer>
   </section>
 
+  <div id="autodetection" class="autodetection" role="dialog" aria-modal="true" aria-labelledby="detection-titre" hidden>
+    <div class="detection-carte">
+      <span class="detection-surtitre">BITUME</span>
+      <h2 id="detection-titre">Réglage automatique</h2>
+      <p id="detection-texte" role="status" aria-live="polite">Mesure de la fluidité…</p>
+      <progress id="detection-progres" max="1" value="0" aria-label="Progression de la détection"></progress>
+      <p class="detection-note">Quelques secondes pour adapter l’image à cet appareil. Bouton B pour passer.</p>
+      <button type="button" class="discret" id="detection-annuler">Passer</button>
+    </div>
+  </div>
   <div id="chargement" class="chargement" role="status"><span>Préparation du circuit…</span></div>
   <div id="erreur" class="erreur" role="alert" hidden></div>
 </main>

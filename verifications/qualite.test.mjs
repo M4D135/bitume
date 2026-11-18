@@ -86,7 +86,7 @@ const integration = new Function('B', `
     return elements.get(id);
   };
   const document = { hidden: false, activeElement: null, addEventListener: (nom, f) => ecouteurs.set(nom, f) };
-  const rendu = { resize: valeur => redimensions.push(valeur) }, gpuModeste = false;
+  const rendu = { resize: valeur => redimensions.push(valeur) }, gpuModeste = false, estTactile = true;
   const session = { type: 'course' }, son = null, hud2 = $('hud2'), pad2 = {}, EL = { role: null };
   const aDeux = () => session.type === 'duo', secouerManette = () => {}, tactile = () => {};
   const appliquerVolumes = () => {}, remplirReglages = () => {}, sauverReglages = () => {}, appliquerCarte = () => {};

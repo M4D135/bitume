@@ -1,0 +1,186 @@
+{
+  "mesure": "Soumissions WebGL instrumentées, sans GPU matériel",
+  "note": "Les clairières modifient la couverture ; bord-sol est désormais une clairière et ne compare pas une densité égale. Le gain inclut écologie, portée détaillée réduite et FERRO0.3.9.",
+  "cas": [
+    {
+      "qualite": "medium",
+      "camera": "cockpit",
+      "portee": "grass-only",
+      "triangles_avant": 233514,
+      "triangles_apres": 19572,
+      "variation_pourcent": -91.62,
+      "appels_avant": 161,
+      "appels_apres": 44
+    },
+    {
+      "qualite": "medium",
+      "camera": "poursuite",
+      "portee": "grass-only",
+      "triangles_avant": 196728,
+      "triangles_apres": 13968,
+      "variation_pourcent": -92.9,
+      "appels_avant": 153,
+      "appels_apres": 47
+    },
+    {
+      "qualite": "medium",
+      "camera": "bord-sol",
+      "portee": "grass-only",
+      "triangles_avant": 182616,
+      "triangles_apres": 144,
+      "variation_pourcent": -99.92,
+      "appels_avant": 146,
+      "appels_apres": 2
+    },
+    {
+      "qualite": "medium",
+      "camera": "cockpit",
+      "portee": "full-decor",
+      "triangles_avant": 6783105,
+      "triangles_apres": 2658702,
+      "variation_pourcent": -60.8,
+      "appels_avant": 244,
+      "appels_apres": 124
+    },
+    {
+      "qualite": "medium",
+      "camera": "poursuite",
+      "portee": "full-decor",
+      "triangles_avant": 712779,
+      "triangles_apres": 124088,
+      "variation_pourcent": -82.59,
+      "appels_avant": 215,
+      "appels_apres": 99
+    },
+    {
+      "qualite": "medium",
+      "camera": "bord-sol",
+      "portee": "full-decor",
+      "triangles_avant": 1895274,
+      "triangles_apres": 1035969,
+      "variation_pourcent": -45.34,
+      "appels_avant": 262,
+      "appels_apres": 107
+    },
+    {
+      "qualite": "high",
+      "camera": "cockpit",
+      "portee": "grass-only",
+      "triangles_avant": 963792,
+      "triangles_apres": 107734,
+      "variation_pourcent": -88.82,
+      "appels_avant": 285,
+      "appels_apres": 78
+    },
+    {
+      "qualite": "high",
+      "camera": "poursuite",
+      "portee": "grass-only",
+      "triangles_avant": 774144,
+      "triangles_apres": 118992,
+      "variation_pourcent": -84.63,
+      "appels_avant": 242,
+      "appels_apres": 73
+    },
+    {
+      "qualite": "high",
+      "camera": "bord-sol",
+      "portee": "grass-only",
+      "triangles_avant": 692386,
+      "triangles_apres": 504,
+      "variation_pourcent": -99.93,
+      "appels_avant": 251,
+      "appels_apres": 3
+    },
+    {
+      "qualite": "high",
+      "camera": "cockpit",
+      "portee": "full-decor",
+      "triangles_avant": 7537212,
+      "triangles_apres": 2754322,
+      "variation_pourcent": -63.46,
+      "appels_avant": 373,
+      "appels_apres": 166
+    },
+    {
+      "qualite": "high",
+      "camera": "poursuite",
+      "portee": "full-decor",
+      "triangles_avant": 1311027,
+      "triangles_apres": 232073,
+      "variation_pourcent": -82.3,
+      "appels_avant": 307,
+      "appels_apres": 128
+    },
+    {
+      "qualite": "high",
+      "camera": "bord-sol",
+      "portee": "full-decor",
+      "triangles_avant": 2424754,
+      "triangles_apres": 1036935,
+      "variation_pourcent": -57.24,
+      "appels_avant": 373,
+      "appels_apres": 109
+    },
+    {
+      "qualite": "ultra",
+      "camera": "cockpit",
+      "portee": "grass-only",
+      "triangles_avant": 35371278,
+      "triangles_apres": 3283372,
+      "variation_pourcent": -90.72,
+      "appels_avant": 1330,
+      "appels_apres": 197
+    },
+    {
+      "qualite": "ultra",
+      "camera": "poursuite",
+      "portee": "grass-only",
+      "triangles_avant": 34868044,
+      "triangles_apres": 3383996,
+      "variation_pourcent": -90.29,
+      "appels_avant": 775,
+      "appels_apres": 235
+    },
+    {
+      "qualite": "ultra",
+      "camera": "bord-sol",
+      "portee": "grass-only",
+      "triangles_avant": 34194206,
+      "triangles_apres": 504,
+      "variation_pourcent": -100.0,
+      "appels_avant": 909,
+      "appels_apres": 3
+    },
+    {
+      "qualite": "ultra",
+      "camera": "cockpit",
+      "portee": "full-decor",
+      "triangles_avant": 41944698,
+      "triangles_apres": 5929960,
+      "variation_pourcent": -85.86,
+      "appels_avant": 1418,
+      "appels_apres": 285
+    },
+    {
+      "qualite": "ultra",
+      "camera": "poursuite",
+      "portee": "full-decor",
+      "triangles_avant": 35404927,
+      "triangles_apres": 3497077,
+      "variation_pourcent": -90.12,
+      "appels_avant": 840,
+      "appels_apres": 290
+    },
+    {
+      "qualite": "ultra",
+      "camera": "bord-sol",
+      "portee": "full-decor",
+      "triangles_avant": 35926574,
+      "triangles_apres": 1036935,
+      "variation_pourcent": -97.11,
+      "appels_avant": 1031,
+      "appels_apres": 109
+    }
+  ]
+}

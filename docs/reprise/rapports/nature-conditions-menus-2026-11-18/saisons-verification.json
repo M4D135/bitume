@@ -1,0 +1,290 @@
+{
+  "date": "2026-11-18T10:26:42.983890+00:00",
+  "sourceSha256": {
+    "src/saisons.js": "679d893997e06b3fab6185b58de02485962b313b6d3d0bbe867c85e110bd03c8",
+    "src/ecologie.js": "90c0720de150cea4e479eff553fdd85abaf6761046cd4d52b5851c149edf8b86",
+    "src/vegetation.js": "5297864ea5752e10482d9944f3bc97e959df73570995521437d283456ffc7673",
+    "src/decor.js": "b203af04641674007a4ed71a284e19effe19399725256951da48913de4b20a5c",
+    "verifications/saisons.test.mjs": "302b4e3e672d8332d09582ceec9a1d92dd0ea44e0418e052ae050b6b5a8e41f7",
+    "verifications/ecologie.test.mjs": "6980aa0f31e4ab59f86703eb6a17643a32f7b7842679eb61897d696e0ae97a0c",
+    "verifications/vegetation.test.mjs": "3b7953a36f2dfed2b464a1c47ccab771aac195fa16b3eb2ce49d255a0a45ac8b",
+    "tools/budget-herbe.mjs": "45f72b4081774657679b691df1a0e459aa2e42b05810f2427e91d779c7d5ad22",
+    "tools/budget-decor.mjs": "3da7395ae8877605486bab937712602f820c44ed7857763d8de02437f0785616"
+  },
+  "controles": 3,
+  "mesures": [
+    {
+      "biome": "foret",
+      "saison": "printemps",
+      "sommetsHerbe": 40965,
+      "solHerbeMoyen": [
+        0.23553139603932408,
+        0.32567288037637326,
+        0.10979968231613785
+      ],
+      "canopeesClaires": 909,
+      "canopeesRoses": 620,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.3728,
+        1.186952,
+        0.9547200000000001
+      ],
+      "nappes": 117,
+      "objets": 9578,
+      "solides": 1723
+    },
+    {
+      "biome": "foret",
+      "saison": "ete",
+      "sommetsHerbe": 40965,
+      "solHerbeMoyen": [
+        0.3182008658116894,
+        0.32828799431306255,
+        0.1319200445568112
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.6199040000000002,
+        1.3467339999999997,
+        0.99828
+      ],
+      "nappes": 117,
+      "objets": 9578,
+      "solides": 1723
+    },
+    {
+      "biome": "foret",
+      "saison": "automne",
+      "sommetsHerbe": 40965,
+      "solHerbeMoyen": [
+        0.32947005964629195,
+        0.33046282651324593,
+        0.13463467598510692
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 2164,
+      "sourcesFeuilles": 1082,
+      "soleil": [
+        1.28898,
+        1.0193729999999999,
+        0.7281900000000001
+      ],
+      "nappes": 117,
+      "objets": 9578,
+      "solides": 1723
+    },
+    {
+      "biome": "foret",
+      "saison": "hiver",
+      "sommetsHerbe": 40965,
+      "solHerbeMoyen": [
+        0.8773362805056772,
+        0.9087496738432091,
+        0.9277974988316262
+      ],
+      "canopeesClaires": 1801,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.079496,
+        0.9830999999999999,
+        0.83781
+      ],
+      "nappes": 117,
+      "objets": 9578,
+      "solides": 1723
+    },
+    {
+      "biome": "cote",
+      "saison": "printemps",
+      "sommetsHerbe": 31375,
+      "solHerbeMoyen": [
+        0.38399691531572683,
+        0.41066090517879955,
+        0.19042585194823278
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.456,
+        1.26048,
+        0.997152
+      ],
+      "nappes": 104,
+      "objets": 7362,
+      "solides": 1019
+    },
+    {
+      "biome": "cote",
+      "saison": "ete",
+      "sommetsHerbe": 31375,
+      "solHerbeMoyen": [
+        0.4128947597784825,
+        0.3769611948799802,
+        0.1826232065152362
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.71808,
+        1.4301599999999999,
+        1.0426479999999998
+      ],
+      "nappes": 104,
+      "objets": 7362,
+      "solides": 1019
+    },
+    {
+      "biome": "cote",
+      "saison": "automne",
+      "sommetsHerbe": 31375,
+      "solHerbeMoyen": [
+        0.41545110207154934,
+        0.3741153297253339,
+        0.180561337336601
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.3671000000000002,
+        1.0825200000000001,
+        0.760554
+      ],
+      "nappes": 104,
+      "objets": 7362,
+      "solides": 1019
+    },
+    {
+      "biome": "cote",
+      "saison": "hiver",
+      "sommetsHerbe": 31375,
+      "solHerbeMoyen": [
+        0.37268648607227434,
+        0.372767599735602,
+        0.21402975373154143
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.14492,
+        1.044,
+        0.875046
+      ],
+      "nappes": 104,
+      "objets": 7362,
+      "solides": 1019
+    },
+    {
+      "biome": "montagne",
+      "saison": "printemps",
+      "sommetsHerbe": 37176,
+      "solHerbeMoyen": [
+        0.2600495636760579,
+        0.33374268262343865,
+        0.15420490208101742
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.352,
+        1.249976,
+        1.082016
+      ],
+      "nappes": 176,
+      "objets": 11100,
+      "solides": 1178
+    },
+    {
+      "biome": "montagne",
+      "saison": "ete",
+      "sommetsHerbe": 37176,
+      "solHerbeMoyen": [
+        0.33442344127552776,
+        0.33286307986536307,
+        0.16002076232137669
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.5953600000000001,
+        1.418242,
+        1.131384
+      ],
+      "nappes": 176,
+      "objets": 11100,
+      "solides": 1178
+    },
+    {
+      "biome": "montagne",
+      "saison": "automne",
+      "sommetsHerbe": 37176,
+      "solHerbeMoyen": [
+        0.34307648834343724,
+        0.3344083570115459,
+        0.16001150930712807
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.2694500000000002,
+        1.073499,
+        0.8252820000000001
+      ],
+      "nappes": 176,
+      "objets": 11100,
+      "solides": 1178
+    },
+    {
+      "biome": "montagne",
+      "saison": "hiver",
+      "sommetsHerbe": 37176,
+      "solHerbeMoyen": [
+        0.8788388883869366,
+        0.90936336139498,
+        0.9303655574125886
+      ],
+      "canopeesClaires": 1849,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.06314,
+        1.0352999999999999,
+        0.949518
+      ],
+      "nappes": 176,
+      "objets": 11100,
+      "solides": 1178
+    }
+  ],
+  "invariants": [
+    "12 scènes comparées : quatre saisons et trois circuits, mêmes positions, normales, indices, objets, formes, matrices, arbres et collisions.",
+    "Prairie High été/hiver : mêmes brins, lots, instances, LOD et bornes ; seules les couleurs changent.",
+    "Route, vibreurs, eau, roches et sable conservent leurs couleurs ; aucune neige ajoutée à Port-Sable.",
+    "1082 sources de feuilles forestières en automne avec altitude sol vérifiée ; aucune source hors saison ou sur conifères.",
+    "Faune=0 dans les deux biomes enneigés ; faune=.28 au Sud en hiver.",
+    "Profils figés et champ écologique inchangé ; aucun travail saisonnier par brin à chaque image."
+  ],
+  "limites": "Recoloration des géométries existantes et atmosphère ; chute de feuilles/neige en pools par un autre module. Aucun rendu navigateur ni mesure FPS matérielle. Les bancs écologie précédents utilisent la palette historique avant saisons ; le soleil et la palette été actuels diffèrent, sans nouvelle géométrie."
+}

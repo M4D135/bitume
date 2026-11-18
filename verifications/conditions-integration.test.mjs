@@ -1,0 +1,184 @@
+// Production preparation/network functions; only DOM, transport, clocks and the async service are mocked.
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+for (const file of ['conduite', 'meteo', 'ambiance', 'saisons', 'conditions-course']) require('../src/' + file + '.js');
+const production = globalThis.BITUME, source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
+const NOW = Date.UTC(2026, 10, 18, 12);
+function extrait(debut, fin, apres = 0) {
+  const a = source.indexOf(debut, apres), b = source.indexOf(fin, a + debut.length);
+  assert(a >= 0 && b > a, 'extrait de production présent : ' + debut); return source.slice(a, b);
+}
+const reseau = extrait('  const EL = ', '  function envoyerEtats(');
+const preparation = extrait('  function annulerConditions()', "  $('p-actualiser-conditions').addEventListener");
+const ecrans = extrait('  function aller(nom)', "  document.addEventListener('click'");
+const pneus = extrait('  function preselectionnerPneus()', '  function majPreparation()');
+const demarrer = extrait('  function demarrerSeance(', '  function basculerPause(');
+const departBouton = extrait("  $('b-depart').addEventListener", '  function demarrerSeance(');
+const etatConditions = extrait('  let conditionsPreparation = ', '  function lancer(');
+const fabriquer = new Function('B', 'options', `
+  let session = null, ecran = 'preparation', modePrepa = 'course', retourReglages = 'titre', graineCourse = 100;
+  let maintenant = 0, serial = 0, dernierGeste = 0;
+  const Date = { now: () => (options.epoque || ${NOW}) + maintenant };
+  const elements = new Map(), timers = new Map(), messages = [], departs = [], resolutions = [];
+  const setTimeout = (f, d) => { const id = ++serial; timers.set(id, { f, t: maintenant + d }); return id; };
+  const clearTimeout = id => timers.delete(id);
+  const $ = id => {
+    if (!elements.has(id)) elements.set(id, { hidden: false, disabled: false, textContent: '', innerHTML: '', dataset: {},
+      classList: { add() {}, remove() {} }, handlers: {}, addEventListener(n, f) { this.handlers[n] = f; }, querySelector() { return null; } });
+    return elements.get(id);
+  };
+  const document = { querySelector: $, querySelectorAll: () => [], activeElement: null };
+  const texte = (e, t) => { e.textContent = t; }, classe = () => {}, clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const ECRANS = ['titre','enligne','prets','preparation','reglages','pause','resultats'];
+  const CATALOGUE = [{ nom: 'Forêt', theme: 'foret' }, { nom: 'Port-Sable', theme: 'cote' }, { nom: 'Haut-Col', theme: 'montagne' }];
+  const NOMS_PNEUS = { slicks: 'Slicks', inter: 'Intermédiaires', pluie: 'Pluie' };
+  const reglages = { circuit: 0, tours: 3, difficulte: 1, saison: 'ete', moment: 'jour', meteo: 'soleil',
+    saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', pneus: 'slicks', boite: 'auto', vue: 'cockpit', joueursLocaux: 1 };
+  const son = null, palier = {}, pad2 = null, hud2 = $('hud2'), jeu = $('jeu'), estTactile = true;
+  const aDeux = () => false, secouerManette = () => {}, tactile = () => {}, appliquerVolumes = () => {};
+  const remplirReglages = () => {}, message = () => {}, sousMessage = () => {}, finirClassement = () => {}, montrerResultats = () => {};
+  const remplirPreparation = () => { actualiserConditions(); };
+  const lancer = (type, i, cfg, conditions) => {
+    departs.push({ type, i, cfg, conditions });
+    if (type === 'vitrine') session = { type, i, nature: { saison: B.saisons.profil((conditions || conditionsDuDepart()).saison, CATALOGUE[i].theme) } };
+  };
+  B.conditionsCourse.resoudre = (regles, opts) => {
+    const row = { regles: structuredClone(regles), options: opts }; resolutions.push(row);
+    if (options.resoudre) return options.resoudre(regles, opts, resolutions.length);
+    return new Promise((resolve, reject) => { row.resolve = resolve; row.reject = reject; });
+  };
+  ${etatConditions}
+  ${reseau}
+  ${preparation}
+  ${pneus}
+  ${ecrans}
+  ${demarrer}
+  ${departBouton}
+  return { $, EL, reglages, resolutions, messages, departs, actualiserConditions, annulerConditions, conditionsDuDepart,
+    conditionsCommunes, horlogePartagee, nomMeteoCourse, aller, departEnLigne, recevoirCourse, surMessageEnLigne,
+    etat: () => ({ ecran, conditionsPreparation, conditionsPreparationCle, conditionsEnCours, session }),
+    mode: mode => { modePrepa = mode; }, session: s => { session = s; },
+    mettreConditions: value => { conditionsPreparation = value; conditionsPreparationCle = cleConditions(); },
+    cliquerDepart: () => $('b-depart').handlers.click(),
+    avancer(d) { const cible = maintenant + d; for (;;) {
+      const p = [...timers].sort((a,b) => a[1].t-b[1].t).find(x => x[1].t <= cible); if (!p) break;
+      timers.delete(p[0]); maintenant = p[1].t; p[1].f(); } maintenant = cible;
+    },
+    connecter(role = 'hote') {
+      const id = role === 'hote' ? 0 : 1;
+      EL.role = role; EL.R = { id, etat: 'connecte', pairs: new Map(), membres: [{id:0,nom:'Hôte',joueurs:1},{id:1,nom:'Invité',joueurs:1}],
+        pretAvec: () => true, horloge: () => maintenant, envoyer(m, a) { messages.push({ m: structuredClone(m), a }); }, fermer() {} };
+      return EL.R;
+    }
+  };
+`);
+function fixture(options = {}) {
+  const B = { ...production, qualite: { avancer() {} }, conditionsCourse: { ...production.conditionsCourse } };
+  return fabriquer(B, options);
+}
+function snapshot(overrides = {}) {
+  return { saison: 'hiver', moment: 'nuit', meteo: 'pluie',
+    mReelle: { reel: true, neige: true, phase: 'pluie', pluie: .4, nuage: .8, mouille: .7, ventX: -3, ventZ: 2 },
+    horlogeReelle: { type: 'soleil', fuseau: 'Europe/Paris', jours: [{ midi: NOW, lever: NOW - 4 * 3600000, coucher: NOW + 4 * 3600000, polaire: 0 }] },
+    meta: { lieu: 'Lieu privé', ip: '203.0.113.10', latitude: 48.9, longitude: 2.4, message: 'Conditions de test' }, ...overrides };
+}
+
+test('même choix en cours et prêt : une résolution, aucun nouveau tirage avant le départ', async () => {
+  const f = fixture(); f.reglages.momentMode = 'aleatoire';
+  const a = f.actualiserConditions(), b = f.actualiserConditions();
+  assert.strictEqual(a, b); assert.equal(f.resolutions.length, 1); assert.equal(f.$('b-depart').disabled, true);
+  const k = snapshot(); f.resolutions[0].resolve(k); assert.strictEqual(await a, k);
+  for (let i = 0; i < 5; i++) assert.strictEqual(await f.actualiserConditions(), k);
+  assert.equal(f.resolutions.length, 1); assert.strictEqual(f.conditionsDuDepart(), k); assert.equal(f.$('b-depart').disabled, false);
+  await f.cliquerDepart(); f.avancer(30);
+  assert.strictEqual(f.departs.find(d => d.type === 'course').conditions, k); assert.equal(f.resolutions.length, 1);
+});
+
+test('changement de choix annule la recherche et une réponse tardive ne remplace pas le nouveau résultat', async () => {
+  const f = fixture(), a = f.actualiserConditions(); f.reglages.saison = 'automne'; const b = f.actualiserConditions();
+  assert(f.resolutions[0].options.signal.aborted); assert.equal(f.resolutions.length, 2);
+  f.resolutions[0].resolve(snapshot()); assert.equal(await a, null); assert.equal(f.$('b-depart').disabled, true);
+  const k = snapshot({ saison: 'automne' }); f.resolutions[1].resolve(k); assert.strictEqual(await b, k);
+  assert.strictEqual(f.conditionsDuDepart(), k); assert.equal(f.$('b-depart').disabled, false);
+});
+
+test('retour depuis la préparation annule sans départ ou réactivation par une réponse tardive', async () => {
+  const f = fixture(), attente = f.actualiserConditions(); f.aller('titre');
+  assert(f.resolutions[0].options.signal.aborted); f.resolutions[0].resolve(snapshot()); assert.equal(await attente, null);
+  assert.equal(f.etat().ecran, 'titre'); assert.equal(f.etat().conditionsPreparation, null);
+  assert(!f.departs.some(d => d.type === 'course')); assert.equal(f.$('b-depart').disabled, false);
+});
+
+test('retour des réglages conserve le tirage ; nouvelle préparation après le titre et forcer le renouvellent', async () => {
+  const f = fixture(), a = f.actualiserConditions(), k = snapshot(); f.resolutions[0].resolve(k); await a;
+  f.aller('reglages'); f.aller('preparation'); assert.equal(f.resolutions.length, 1); assert.strictEqual(f.conditionsDuDepart(), k);
+  const force = f.actualiserConditions(true); assert.equal(f.resolutions.length, 2); assert.equal(f.resolutions[1].options.forcer, true);
+  const nouveau = snapshot({ saison: 'printemps' }); f.resolutions[1].resolve(nouveau); await force;
+  assert.strictEqual(f.conditionsDuDepart(), nouveau);
+  f.aller('titre'); f.aller('preparation'); assert.equal(f.resolutions.length, 3); assert.equal(f.etat().conditionsPreparation, null);
+  f.resolutions[2].resolve(snapshot({ saison: 'ete' })); await f.etat().conditionsEnCours;
+});
+
+test('erreur inattendue : repli manuel utilisable, annulation explicite sans résultat', async () => {
+  const f = fixture(), attente = f.actualiserConditions(); f.resolutions[0].reject(new Error('service'));
+  const k = await attente; assert.equal(k.meta.statut, 'repli'); assert.equal(k.saison, 'ete'); assert.equal(k.mReelle, null); assert.equal(f.$('b-depart').disabled, false);
+  const b = f.actualiserConditions(true), e = new Error('cancel'); e.name = 'AbortError'; f.resolutions[1].reject(e);
+  assert.equal(await b, null); assert.equal(f.etat().conditionsPreparation, null); assert.equal(f.$('b-depart').disabled, false);
+});
+
+test('invité en ligne : aucun appel de résolution, préférences saison/moment/météo préservées', async () => {
+  const f = fixture(); f.connecter('invite'); f.mode('enligne');
+  Object.assign(f.reglages, { saison: 'ete', moment: 'jour', meteo: 'soleil', saisonMode: 'reel', momentMode: 'reel', meteoMode: 'reel' });
+  assert.equal(await f.actualiserConditions(), null); assert.equal(await f.actualiserConditions(true), null); assert.equal(f.resolutions.length, 0);
+  const prefs = { saison: f.reglages.saison, moment: f.reglages.moment, meteo: f.reglages.meteo };
+  assert(f.recevoirCourse({ ...snapshot(), i: 2, tours: 3, difficulte: 1, eau: .7 }));
+  for (const [k, v] of Object.entries(prefs)) assert.equal(f.reglages[k], v);
+  assert.equal(f.EL.course.saison, 'hiver'); assert(f.EL.course.mReelle.neige); assert.equal(f.resolutions.length, 0);
+});
+
+test('conditionsCommunes filtre lieu/IP/coordonnées et détache les observations et horaires', () => {
+  const f = fixture(), k = snapshot(); k.horlogeReelle.latitude = 48.9; k.horlogeReelle.jours[0].ip = '203.0.113.10'; k.mReelle.longitude = 2.4;
+  const commun = f.conditionsCommunes(k), texte = JSON.stringify(commun);
+  assert.deepEqual(Object.keys(commun).sort(), ['horlogeReelle', 'mReelle', 'meteo', 'moment', 'saison']);
+  for (const mot of ['Lieu privé', '203.0.113.10', 'latitude', 'longitude', 'meta', 'ip']) assert(!texte.includes(mot));
+  k.mReelle.pluie = 0; k.horlogeReelle.jours[0].lever = 0;
+  assert.equal(commun.mReelle.pluie, .4); assert.notEqual(commun.horlogeReelle.jours[0].lever, 0);
+  assert.equal(f.horlogePartagee({ type: 'soleil', jours: [null, {}, { midi: NOW, lever: 2, coucher: 1 }] }), null);
+  assert.deepEqual(f.horlogePartagee({ type: 'locale', fuseau: 'pas-un-fuseau', ip: 'x' }), { type: 'locale', fuseau: 'UTC' });
+});
+
+test('départ réseau : hôte et invité reçoivent mêmes saison, météo, soleil et date UTC malgré une horloge locale différente', () => {
+  const h = fixture({ epoque: NOW }), i = fixture({ epoque: NOW + 8 * 3600000 }); h.connecter('hote'); i.connecter('invite');
+  h.EL.course = { ...snapshot(), i: 2, tours: 5, difficulte: 1, eau: .7 };
+  h.departEnLigne(); const packet = h.messages.find(x => x.m.t === 'depart').m;
+  assert.equal(packet.cfg.dateDepart, NOW + 4000); assert.equal(packet.cfg.T0, 4000); assert(!JSON.stringify(packet).includes('Lieu privé'));
+  i.surMessageEnLigne(packet, 0); h.avancer(30); i.avancer(30);
+  const host = h.departs.find(d => d.cfg && d.cfg.role === 'hote').cfg, invite = i.departs.find(d => d.cfg && d.cfg.role === 'invite').cfg;
+  for (const key of ['saison', 'moment', 'meteo', 'mReelle', 'horlogeReelle', 'dateDepart', 'T0']) assert.deepEqual(invite[key], host[key], key);
+  assert.equal(i.reglages.saison, 'ete'); assert.equal(i.reglages.moment, 'jour'); assert.equal(i.resolutions.length, 0);
+});
+
+test('neige observée est libellée neige hors côte, pluie à Port-Sable, indépendamment de la saison manuelle', () => {
+  const f = fixture(), k = snapshot({ saison: 'ete' });
+  assert.match(f.nomMeteoCourse({ ...k, i: 0 }), /neige/); assert.match(f.nomMeteoCourse({ ...k, i: 2 }), /neige/);
+  assert.match(f.nomMeteoCourse({ ...k, i: 1 }), /pluie/); assert.doesNotMatch(f.nomMeteoCourse({ ...k, i: 1 }), /neige/);
+});
+
+const renduConditions = extrait('    if (S.nature) {', '    if (B.meteo) B.meteo.actuel', source.indexOf('    const meteo = majMeteo(S, dtImage)'));
+const appliquer = new Function('B', 'S', 'rendu', 'reglages', 'Date', 'const co = S.course;\n' + renduConditions);
+test('lumière réseau suit dateDepart + horloge de simulation de l’hôte, avec rafraîchissement borné', () => {
+  const times = [], environments = [], B = { ...production, conditionsCourse: { ...production.conditionsCourse,
+    nuitReelle(ms, clock) { times.push(ms); return production.conditionsCourse.nuitReelle(ms, clock); } } };
+  const base = { skyTop: [.2,.3,.5], skyBottom: [.7,.8,.8], fog: [.5,.6,.6], sunColor: [1,1,1], ambient: [.3,.3,.3] };
+  const S = { course: { horloge: 2 }, nature: { ambiance: B.ambiance.creer(base, false), horlogeReelle: snapshot().horlogeReelle, dateDepart: NOW + 4000, revisionRendu: -1 } };
+  const renderer = { setEnvironment(e) { environments.push(e); } }, wrongClock = { now: () => NOW + 8 * 3600000 };
+  appliquer(B, S, renderer, {}, wrongClock); assert.deepEqual(times, [NOW + 6000]);
+  S.course.horloge = 2.5; appliquer(B, S, renderer, {}, wrongClock); assert.equal(times.length, 1);
+  S.course.horloge = 3; appliquer(B, S, renderer, {}, wrongClock); assert.equal(times.at(-1), NOW + 7000);
+  S.course.horloge = 0; appliquer(B, S, renderer, {}, wrongClock); assert.equal(times.at(-1), NOW + 4000);
+  assert(environments.length > 0);
+  S.nature.dateDepart = null; appliquer(B, S, renderer, {}, wrongClock); assert.equal(times.at(-1), wrongClock.now(), 'en solo, vraie horloge locale UTC');
+});
