@@ -1398,7 +1398,7 @@
     const M = B.voiture.attitude(p.cap, p.tangage, p.roulis), pt = o => { const q = B.voiture.mul(M, o); return [p.x + q[0], p.y + q[1], p.z + q[2]]; };
     const vise = (pos, cible, fov) => { const dx = cible[0] - pos[0], dy = cible[1] - pos[1], dz = cible[2] - pos[2], d = Math.hypot(dx, dy, dz) || 1;
       return { pos, yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / d, -1, 1)), roll: 0, fov, near: .1, far: PORTEE_VUE }; };
-    const cote = plan.cote || 1, age = S.course.horloge - plan.debut;
+    const cote = plan.cote || 1, age = S.tRendu - plan.debut;   // temps rendu : la grue et l'orbite glissent sans sauts
     switch (plan.vue) {
       case 'roue':        // au ras du ponton, la roue avant au premier plan et la piste qui file
         return { pos: pt([-.05, .40, cote * 1.13]), yaw: p.cap + Math.PI / 2 - cote * .07, pitch: -.025 + p.tangage * .85, roll: -p.roulis * .85, fov: 66, near: .05, far: PORTEE_VUE };
@@ -1916,6 +1916,11 @@
     const co = S.course, j = co.joueur;
     const poses = tampons.poses;
     for (let k = 0; k < co.voitures.length; k++) poses[k] = melange(S.prec[k], S.cour[k], alpha, poses[k] || {});
+    // Temps rendu, une fois par image : les voitures sont dessinées entre leurs deux dernières poses, à l'instant
+    // horloge − pas + alpha × pas. Fantôme, caméras de la démo, secousses du casque, aurores et effets le suivent :
+    // pris au dernier pas, ils avançaient par sauts de 1/120 s (à 144 Hz, une image sur six sans pas les figeait) et
+    // devançaient les voitures d'un pas au plus. La vue du joueur 2 hérite des deux valeurs (Object.create).
+    S.retardImage = (1 - alpha) * DT; S.tRendu = co.horloge - S.retardImage;
     if (B.sillage) B.sillage.mettreAJour(S.sillage || (S.sillage = B.sillage.creer()), co.voitures, poses, co.c);
     if (B.mesures.actif) {
       let actives = 0;
@@ -1960,11 +1965,17 @@
     // Écran partagé : la vue du joueur 2 d'abord, copiée aussitôt dans sa toile 2D, puis celle du joueur 1, qui reste dans
     // la toile WebGL. Le moteur lit la taille affichée de sa toile à chaque image : il rend chaque vue à la moitié.
     if (S.type === 'duo' && S.vueJ2) {
-      // Cadence du second joueur (src/graphismes.js) : au palier serré, le joueur 2 tient sur une image sur deux et
-      // garde la dernière copiée ; le joueur 1 garde toute la fluidité de la sienne.
-      S.j2Image = (S.j2Image | 0) + 1;
-      if (P.secondaires.partage.hz >= 55 || S.j2Image % 2 === 0) {
-        rendreVue(S.vueJ2, co.voitures[S.locaux[1]], reglages.vue2, dtImage, meteo);
+      // Cadence du second joueur (src/graphismes.js) : au palier serré (30 Hz), sa vue est rendue au temps et garde
+      // entre-temps la dernière copiée ; le joueur 1 garde toute la fluidité de la sienne. Le compte d'images en
+      // faisait 72 Hz sur un écran 144 Hz et 15 Hz à 30 images par seconde, et la vue ne recevait que l'intervalle
+      // d'une image : caméras lissées, secousses, pluie et cadence de ses glaces tournaient à moitié. Elle reçoit
+      // maintenant tout le temps écoulé depuis son rendu précédent. Toujours rendue : à la première image d'une séance,
+      // et aux images arrêtées (pause, quatre par seconde, sans temps qui passe) où un réglage peut avoir changé.
+      const hzJ2 = P.secondaires.partage.hz;
+      S.dtJ2 = (S.dtJ2 || 0) + dtImage;
+      if (hzJ2 >= 55 || !S.j2Rendue || dtImage === 0 || S.dtJ2 + dtImage / 2 >= 1 / hzJ2) {
+        const dtJ2 = S.dtJ2; S.dtJ2 = 0; S.j2Rendue = true;
+        rendreVue(S.vueJ2, co.voitures[S.locaux[1]], reglages.vue2, dtJ2, meteo);
         const t2 = $('scene2'), ctx2 = t2._ctx || (t2._ctx = t2.getContext('2d'));
         if (t2.width !== canvas.width || t2.height !== canvas.height) { t2.width = canvas.width; t2.height = canvas.height; }
         ctx2.drawImage(canvas, 0, 0);
@@ -1999,7 +2010,7 @@
     else if (vue === 'helico') cam = cameraHelico(S, ps, dtImage);
     else if (vue === 'sol') cam = cameraSol(S, suivie, ps);
     else if (CAMERAS_DEMO.has(vue)) cam = cameraDemo(S, ps, S.planVu);
-    else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, co.horloge, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage);
+    else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, S.tRendu, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage);
     if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: PORTEE_VUE, fov: 40 }, cameraEssai(pj, cam));
     if (S.secousse > 0) {
       const a = S.secousse * .05 * reglages.secousses, t = horlogeReelle;
@@ -2044,7 +2055,7 @@
       contexte.qualite = P.palier; contexte.nuit = nature.ambiance.nuit;
       contexte.pluie = meteo.pluie || 0; contexte.neige = precipitationsNeige(S); contexte.nuages = meteo.nuage || 0;
       contexte.tunnel = sousLaVoute(c, cam.pos) && cam.pos[1] < ps.y + (c.tunnel ? c.tunnel.hauteur : 5) + .5;
-      B.aurores.dessiner(nature.aurores, co.horloge, contexte, sortie);
+      B.aurores.dessiner(nature.aurores, S.tRendu, contexte, sortie);
     }
 
     // voitures : toujours dessinées. Niveau de détail selon la taille à l'écran (detailVoiture) : la hauteur de la
@@ -2078,7 +2089,7 @@
     S.iVoitures1 = sortie.length;
     // fantôme du meilleur tour
     if (co.mode === 'chrono') {
-      const f = B.course.fantome(co);
+      const f = B.course.fantome(co, S.retardImage);
       if (f) {
         const e = B.circuit.echantillon(c, f.s), sa = Math.sin(e.cap), ca = Math.cos(e.cap);
         const x = e.x - sa * f.d, z = e.z + ca * f.d, dx = x - pj.x, dz = z - pj.z;
@@ -2100,8 +2111,9 @@
       }
     }
     // traces de pneus, fumée et étincelles ; plus de 4 m derrière le plan de la caméra, rien ne se voit (traces.js,
-    // MARGE_ARRIERE) : les glaces ont leur propre appel, au même instant (S.hEffets)
-    S.iEffets0 = sortie.length; S.hEffets = S.fx.acc;
+    // MARGE_ARRIERE) : les glaces ont leur propre appel, au même instant (S.hEffets). L'instant est celui des voitures
+    // (B.traces.extrapolation) : fx.acc seul figeait les effets entre deux pas et les mettait un pas devant elles.
+    S.iEffets0 = sortie.length; S.hEffets = B.traces.extrapolation(S.fx, S.retardImage);
     const tFx = (S.banc || B.mesures.actif) ? performance.now() : 0;
     B.traces.dessiner(S.fx, sortie, cam.pos, S.hEffets, axeCamera(cam, AXE_VUE), 0);
     if (tFx) { const dFx = performance.now() - tFx; if (S.banc) S.banc.effets += dFx; if (B.mesures.actif) B.mesures.section('effets', dFx); }
@@ -2375,7 +2387,7 @@
         ctx.lineWidth = moi ? 2 : 1; ctx.strokeStyle = moi ? '#f2ecdf' : 'rgba(10,12,15,.85)'; ctx.stroke();
       }
       if (chronoMode) {
-        const f = B.course.fantome(co);
+        const f = B.course.fantome(co, S.retardImage);
         if (f) { const e = B.circuit.echantillon(co.c, f.s); ctx.beginPath(); ctx.arc(p.ox + e.x * p.e, p.oz + e.z * p.e, 4, 0, Math.PI * 2); ctx.fillStyle = '#6fd0ff'; ctx.fill(); }
       }
     }

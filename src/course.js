@@ -711,11 +711,13 @@
     for(const x of ev)x.id=v.id;return ev;
   }
 
-  // Fantôme du meilleur tour (chrono) au temps du tour en cours : { s, d, angle } ou null.
-  function fantome(course) {
+  // Fantôme du meilleur tour (chrono) au temps du tour en cours : { s, d, angle } ou null. retard (facultatif) : durée
+  // dont l'instant dessiné précède le dernier pas (le jeu dessine les voitures entre leurs deux dernières poses) ; le
+  // fantôme est alors pris au même instant qu'elles, sans sauts d'un pas à l'autre.
+  function fantome(course, retard = 0) {
     const f = course.fantome.meilleur;
     if (!f || !course.chronoParti || f.n < 1) return null;
-    const c = course.c, D = f.donnees, m = f.n, t = course.temps - course.joueur.debutTour;
+    const c = course.c, D = f.donnees, m = f.n, t = course.temps - retard - course.joueur.debutTour;
     if (t < 0 || t > course.fantome.temps) return null;
     if (m === 1) return { s: D[1], d: D[2], angle: D[3] };
     let i = clamp(Math.floor(t / 0.05), 0, m - 2);
