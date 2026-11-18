@@ -1,0 +1,77 @@
+{
+ "resume": "Lot 22 (circuits et génération procédurale) étudié et planifié dans la branche etude/procedural, sans toucher aux sources du jeu. Le relief existe mais il est écrasé : un seul facteur s'applique à tout le tour, et ce facteur vient du raccord de 120 m de la ligne droite des stands (Haut-Col × 0,22). Hors raccords, les rayons verticaux vont de 2 950 à 25 800 m. Le dévers n'est qu'un reflet de la courbure (2,6° au plus). La chaussée est un seul quadrilatère. Les abords sont vides : 39 à 66 % des cases de 100 m n'ont au plus qu'une famille de mobilier. Un tour de 87 positions × 2 vues (14 planches) le confirme à l'image. Le prototype 22A relie le relief à la vitesse. Il reproduit exactement les tirages actuels et augmente le dénivelé (13,2 → 50,5 m à Haut-Col, 13,4 → 34,2 m à Cap-Séquoia), avec des charges sous les plafonds fixés. Les captures en jeu passent par un script injecté. Le plan découpe le travail en sous-lots livrables seuls : 22A (relief, dévers, terrain des abords, passages couverts), 22B, 22C, 22D et 22E. Chacun indique les fichiers touchés, les contraintes, le coût, les captures de validation et les questions. Un seul commit local (2807e0b), ni poussé ni fusionné.",
+ "documents": [
+  "/Users/david/Projects/bitume-wt/procedural/docs/reprise/22-CIRCUITS-PROCEDURAL.md"
+ ],
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/procedural/docs/reprise/22-CIRCUITS-PROCEDURAL.md",
+  "/Users/david/Projects/bitume-wt/procedural/tools/circuits-commun.mjs",
+  "/Users/david/Projects/bitume-wt/procedural/tools/profil-circuits.mjs",
+  "/Users/david/Projects/bitume-wt/procedural/tools/profil-svg.mjs",
+  "/Users/david/Projects/bitume-wt/procedural/tools/tour-captures.mjs",
+  "/Users/david/Projects/bitume-wt/procedural/tools/prototype-relief.mjs",
+  "/Users/david/Projects/bitume-wt/procedural/docs/reprise/rapports/procedural-2026-11-18/ (67 fichiers, 7,3 Mo)"
+ ],
+ "preuves": [
+  "/Users/david/Projects/bitume-wt/procedural/docs/reprise/rapports/procedural-2026-11-18/tableaux.md : tracé, relief, dévers, courbures, décor par famille, répartition par cases de 100 m, matières (node tools/profil-circuits.mjs --src ~/Projects/bitume/src)",
+  "/Users/david/Projects/bitume-wt/procedural/docs/reprise/rapports/procedural-2026-11-18/profils.json, axes/<id>.csv (axe tous les 10 m), profils/<id>.png et profils/sept-circuits.png",
+  "/Users/david/Projects/bitume-wt/procedural/docs/reprise/rapports/procedural-2026-11-18/captures/planche-<id>-{cockpit,bord}.jpg : 14 planches, 174 captures tous les 400 m (high, été, jour), données de chaque position dans captures/tour.json, 0 erreur",
+  "/Users/david/Projects/bitume-wt/procedural/docs/reprise/rapports/procedural-2026-11-18/prototype-22a/tableau.md et prototype-22a.json : avant → après par circuit ; reproductionCircuitJs = true sur les 7 circuits, 0 conflit de talus",
+  "/Users/david/Projects/bitume-wt/procedural/docs/reprise/rapports/procedural-2026-11-18/prototype-22a/<id>.png et sept-circuits-propose.png : profils avant/après avec charges",
+  "/Users/david/Projects/bitume-wt/procedural/docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-{haut-col,cap-sequoia,roche-fauve,val-brule}-{cockpit,bord}-prototype-22a.jpg : prototype en jeu par script injecté (tools/tour-captures.mjs --injecter), sources intactes",
+  "Contrôles refaits avant le commit : tirages des harmoniques et pente au raccord recalculés dans Node (Haut-Col 30,8 % au raccord contre 13,4 % pour les harmoniques seules), sommets d'asphalte (Val-Brûlé 4 294, identique à tableaux.md), node --check des 5 outils OK, src/ du dépôt principal identique à celui de l'arbre",
+  "Références web : 12 recherches ou lectures (Eau Rouge, Corkscrew, Nordschleife, ISO 8608, pente transversale FIA, chronologie de sécurité formula1-dictionary.net, postes de commissaires, gomme, panneaux de freinage, bosses de COTA) ; URL citées dans la section 3 du document"
+ ],
+ "constats": [
+  "Relief écrasé par un facteur unique 0,068/pmax : Haut-Col × 0,22 (13,2 m de dénivelé pour une amplitude prévue de 32 m), Cap-Séquoia × 0,46, Lande-Noire × 0,48, Roche-Fauve × 0,60, Val-Brûlé × 0,94. Le raccord de 120 m de la ligne droite fixe ce facteur : sans lui, Cap-Séquoia, Lande-Noire et Val-Brûlé ne seraient pas écrasés et Haut-Col le serait à × 0,51.",
+  "Hors raccords, les crêtes et cuvettes ont un rayon vertical de 2 952 à 25 819 m (±0,01 à 0,17 g). Une voiture n'est masquée par le relief à moins de 120 m que sur 1,0 à 2,7 % du tour. Sur 87 vues cockpit, la route ne disparaît derrière une crête qu'une fois (Roche-Fauve 400 m, sur un raccord).",
+  "Tirages actuels : Val-Brûlé tire trois fois la même harmonique (une sinusoïde de 844 m, toutes ses crêtes à R 2 952 m), Cap-Séquoia aussi (2 617 m, R 25 819 m). Sur les sept circuits, les longueurs d'onde vont de 728 à 2 617 m.",
+  "Dévers = courbure × 1,6, plafonné à 2,6°. Selon le circuit, 70 à 84 % du tour est à moins de 0,05°. Aucun contre-dévers, aucune pente d'écoulement, aucun bombement. Le modèle p9 et vitesses() ignorent la courbure verticale ; vitesses() ignore aussi la pente et le dévers.",
+  "Chaussée : 12 m partout, asphalte en un seul quadrilatère de −5,7 à +5,7 m (3 700 à 5 300 sommets), teinte qui varie sur 90 m, vibreurs plats relevés de 5 cm. Terrain collé à l'axe (−0,9 m) jusqu'à 26-34 m ; le relief naturel n'est complet qu'à 260 m. Les montagnes de Haut-Col (120 à 380 m) se lisent comme des rideaux verticaux à stries.",
+  "Mobilier : repères 150/100/50 m et murs de pneus seulement si R < 95 m (3 à 7 virages équipés), 57 à 85 panneaux publicitaires, 8 à 11 postes de commissaires (tous les 380 à 540 m), une passerelle. Selon le circuit, 2,1 à 15,3 % des cases de 100 m n'ont aucun mobilier à 40 m et 39,2 à 66,0 % en ont au plus une famille.",
+  "Matières : les recettes FERRO 21 à 24 ne servent qu'à Val-Brûlé. Anomalie : les cabanes de commissaires (matière 13,6) tombent dans la branche asphalte du shader et la pluie les mouille comme la chaussée. Le témoin forêt de graine 96 a la même palette et la même ambiance que Val-Brûlé : la graine ne change pas le style.",
+  "Captures : quatre à cinq vues cockpit interchangeables sur cinq circuits, mer invisible sur les 24 positions de Port-Sable et Cap-Séquoia, aucun arbre à Lande-Noire et Roche-Fauve, aucune brume à Brume-de-Jade. Le tunnel de Haut-Col a de petites lampes sans flaque de lumière et une sortie saturée ; aucune géométrie coupée sur les 2 vues prises dedans.",
+  "Prototype 22A, avant → après. Dénivelé : Haut-Col 13,2 → 50,5 m, Roche-Fauve 27,2 → 45,3 m, Cap-Séquoia 13,4 → 34,2 m, Lande-Noire 12,9 → 25,4 m. Pente max 6 à 10 %. Voiture masquée sur 2,7 à 11,6 % du tour.",
+  "Prototype 22A, sécurité : charges au plus −0,41 / +0,82 g (Haut-Col), sous les plafonds du thème ; dévers 2,4 à 4,9° avec contre-dévers. Talus entre branches 0,05 à 0,20 (aucune paire au-delà de 0,5). Calcul de 3 à 11 ms par circuit, reproduction des tirages actuels exacte (écart < 1e-6 m)."
+ ],
+ "plan": [
+  "22A relief, dévers, terrain des abords, passages couverts : génération 2 de relief() (fond actuel non écrasé, crêtes, compressions et ondulations bornées par la vitesse, plafonds par thème), dévers relevé, contraire ou plat, tranchées et remblais dans hauteur(), vitesses() avec dévers et crêtes, clé records et fantômes = physique + génération. Coût 1,5 à 2 j, plus 1,5 j pour les passages couverts. Validation : Haut-Col 1 460, 2 808 et 4 382 m, Cap-Séquoia 3 490 m.",
+  "22B irrégularités de chaussée : 22B-1 visuel et son seulement (bande d'asphalte à 7 sommets, normales et teinte en (s, d), ISO 8608 classe A à B, joints, rapiéçages, ornières, table d'événements pour le son et la manette), 1,5 j, +9 000 à +13 500 sommets par circuit. 22B-2 bombement de 1,5 à 2,5 % et bosses physiques, seulement avec p10 (lot 17) et le lot 24.",
+  "22C aménagements de course : catalogue par zone, chaque famille avec son générateur. Panneaux de freinage selon la vitesse d'arrivée, bacs à gravier, murs de pneus à la zone d'impact, filets, postes de commissaires en vue l'un de l'autre, publicités en séries à marques imaginaires, paddock, routes de service. Obstacles ajoutés après les historiques, +1 500 à +3 000 objets proches. Coût 2,5 à 3 j, par familles.",
+  "22D matières : asphalte en coordonnées de piste (neuf, ancien, rapiécé, peint, trajectoire gommée, billes), béton, gravier, sable, terre, herbe à bandes, roche litée. MATIERES_PILOTES étendu aux sept thèmes, correction de la matière 13,6 des cabanes, Légère garde l'asphalte 14. Coût 1,5 à 2 j.",
+  "22E diversité : par graine, dans le cadre du thème, palette, couleurs des vibreurs, glissières et toits, style des tribunes et des postes, mélange des essences, ciel (brume à Brume-de-Jade). Silhouettes de fond refaites (Haut-Col, Brume-de-Jade, Roche-Fauve, forêt près de la piste, mer visible). Coût 1 j.",
+  "Tunnels (demande du 18/11) : nouveaux passages couverts dans 22A (second tunnel court en montagne, pont de route, arche, canyon, galerie, tunnel de lave), murs aux limites, rien qui dépasse à l'intérieur, caméras extérieures basculées (DANS_LA_ROCHE) ; l'éclairage des tunnels va au lot 21."
+ ],
+ "integration": [
+  "Ordre : 22A (et passages couverts) → 22D → 22B-1 → 22B-2 avec p10 et le lot 24 → 22C par familles → 22E (ses couleurs peuvent avancer en parallèle de 22C).",
+  "Génération versionnée : c.generation = 2 dans circuit.js et options.generation côté décor. La génération 1 reste disponible et les 9 empreintes de decor-identite.test.mjs ne bougent pas ; de nouvelles empreintes figeront la génération 2.",
+  "Records et fantômes : aujourd'hui la clé est p9 et le fantôme n'est repris qu'à longueur égale ; un nouveau relief à longueur égale rejouerait d'anciens fantômes. Clé proposée : physique + génération.",
+  "Chaque nouveauté tire dans son propre générateur alea(graine ^ constante). Les tirages actuels du tracé et du décor gardent leur ordre et leur nombre, et rien ne puise dans le hasard de course.",
+  "Chaque étape passe par les tests Node, un tour-captures avant/après (tools/tour-captures.mjs --etiquette), budget-decor en Légère et en high, et vérifie que rien n'est coupé au loin et que tout est préparé au chargement.",
+  "Si le lot 17 (p10) n'est pas prêt, la génération 2 roule en p9 (pente et dévers seulement) ; allègement, écrasement et sauts attendent p10.",
+  "Branche etude/procedural, commit 2807e0b, seuls des fichiers neufs (plan, 5 outils, preuves). dist, VERSION.json et SIZE.json restaurés, arbre propre. Ni poussé ni fusionné."
+ ],
+ "questions_pour_david": [
+  "Dénivelés du prototype par thème : côte 10 m, forêt 17 m, islande 25 m, asie 24 m, pacifique 34 m, désert 45 m, montagne 50 m. Est-ce assez, ou faut-il viser plus (Spa environ 100 m, Nordschleife environ 300 m) ?",
+  "Pentes jusqu'à 10 % en montagne et contre-dévers jusqu'à −2° : d'accord ?",
+  "Crêtes qui allègent la voiture : jusqu'où (0,25 à 0,45 g dans le prototype) ? Voulez-vous de vrais sauts plus tard, avec p10 ?",
+  "Records et fantômes : les remettre à zéro avec la génération 2, ou garder l'ancien relief jouable (deux versions de chaque circuit) ?",
+  "Bombement de chaussée (9 à 15 cm au bord) : le faire avec p10, ou ne garder que l'aspect visuel ?",
+  "Époque du mobilier : fin des années 1970 (filets, Armco nu), début des années 1980 (bacs à gravier, murs de pneus), ou un mélange selon le circuit ? Bottes de paille pour une ambiance de circuit de club ?",
+  "Marques imaginaires des publicités : noms inventés tirés au hasard, ou une liste écrite par vous ?",
+  "Passages couverts : combien par circuit, et lesquels (pont de route, arche, galerie, second tunnel) ?"
+ ],
+ "non_fait": [
+  "Aucune source du jeu modifiée : 22A reste un prototype (outil Node et script injecté dans la page) et n'est pas porté dans circuit.js ni decor.js.",
+  "Prototype capturé en jeu sur 4 circuits seulement (Haut-Col, Cap-Séquoia, Roche-Fauve, Val-Brûlé) ; Port-Sable, Lande-Noire et Brume-de-Jade n'ont que les profils.",
+  "Terrain des abords (tranchées, remblais), passages couverts, 22B, 22C, 22D et 22E ne sont pas prototypés : plan seulement.",
+  "Annexe H de la FIA illisible ici (PDF compressé) : la distance réglementaire entre postes de commissaires n'a pas été lue ; seule la règle du contact visuel est citée.",
+  "Clipping des tunnels non contrôlé caméra par caméra : seulement 2 vues prises dans le tunnel de Haut-Col (cockpit et bord).",
+  "Les 278 images unitaires (960 × 540) ne sont pas versionnées et restent dans le dossier temporaire de session ; seules les planches sont commitées.",
+  "Pas de push, pas de fusion, pas de reconstruction ni de mise en ligne. Aucun appel au Spark ni à KBZA, conformément à la consigne de l'étape.",
+  "Les fichiers de preuve gardent des chemins absolus locaux (sources, page), comme d'autres documents déjà présents dans le dépôt."
+ ],
+ "commits": [
+  "2807e0b docs: étude du lot 22 (relief, chaussée, aménagements, matières, diversité) et prototype 22A — branche etude/procedural, 73 fichiers neufs, non poussé, non fusionné"
+ ]
+}

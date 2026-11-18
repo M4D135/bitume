@@ -1,0 +1,240 @@
+{
+ "synthese": "Constat général : douze sources croisées (cours, manuels reformatés, forums d'ingénieurs et de simulation, documents d'éditeurs). Beaucoup de pages sont secondaires ; je signale ce qui n'est que forum.\n\n1. Le pneu est un budget d'effort saturable. L'effort latéral monte presque linéairement avec l'angle de dérive, atteint un pic, puis décroît doucement. Beckman donne un pic latéral à environ 3,3° et un pic longitudinal à environ 8 % de glissement pour sa courbe d'exemple. Un pneu de F1 culmine près de 3°, un pneu routier entre 6 et 10° (Wikipedia, citant Milliken). Les ordres de grandeur concordent.\n\n2. La sensibilité à la charge fabrique l'équilibre de la voiture. Quand la charge double, l'effort maximal ne double pas (environ 1,76 fois dans l'exemple de Milliken, soit un exposant proche de 0,82). L'angle du pic grimpe de 5,6 à 6,7°. L'essieu qui encaisse le plus de transfert de charge perd donc de l'adhérence totale et sature le premier. Le transfert latéral total dépend uniquement de la masse, de la hauteur du centre de gravité, de la voie et de l'accélération latérale. Les barres antiroulis, les ressorts et les centres de roulis ne font que répartir ce total entre les essieux. Raidir l'avant donne du sous-virage, raidir l'arrière du survirage. Moins les pneus sont sensibles à la charge, plus il faut un grand écart de répartition pour obtenir le même effet (HP Academy).\n\n3. Le transfert longitudinal vaut masse × accélération × hauteur du centre de gravité ÷ empattement. Au freinage il charge l'avant, ce qui stabilise la voiture mais appauvrit l'arrière. Au lever de pied en courbe, la charge avant augmente et l'arrière s'allège : c'est le survirage au lever de pied, surtout sur une mid-engine à faible inertie en lacet. À la remise des gaz, la charge passe à l'arrière, l'avant s'allège et la voiture pousse. Le glissement des roues motrices ajoute au sous-virage sous puissance.\n\n4. Le glissement combiné limite le total. Beckman normalise chaque glissement par son propre pic (s = taux/pic, a = angle/pic) et évalue les deux courbes sur la norme du vecteur (s, a), puis redistribue. Il reconnaît que le freinage dégressif peut augmenter l'adhérence de braquage, ce qu'une ellipse stricte ne montre pas. Brach (SAE) déconseille l'ellipse comme modèle quantitatif ; c'est acceptable pour un jeu.\n\n5. Carcasse. Les sources s'accordent sur le fait que les radiales travaillent à des angles plus faibles, répondent plus vite au braquage, mais préviennent moins avant de lâcher. Elles divergent sur la diagonale : un forum parle d'un plateau plus large, un autre de glissades plus longues. Les diagonales \"pardonnent\" mieux dans de mauvaises conditions. La 312 T5 roulait sur Michelin radial (Ferrari, 1978-80) alors que Goodyear gardait la diagonale jusqu'au début des années 1980 : on peut donc justifier un pic net, mais atténué pour le plaisir.\n\n6. Traînée pneumatique. Le couple d'auto-alignement culmine avant l'effort latéral, donc le volant s'allège avant la saturation. Les ingénieurs sont partagés : le pilote ne peut pas lire le vrai pic par ce seul signe.\n\n7. Longueur de relaxation. Le pneu met environ une longueur de 0,12 à 0,45 m à établir l'effort après une consigne d'angle ; ordre de grandeur : le rayon de la roue. Le retard en secondes diminue avec la vitesse. C'est ce qui donne un tour d'entrée progressif à basse vitesse et franc à haute.\n\n8. Température et usure. La plage utile est étroite (quelques dizaines de degrés pour un F1 moderne). Un pneu froid glisse et \"grene\" ; un pneu trop chaud perd en tenue. Les explications de grainage divergent entre sources de fans, mais l'explication \"trop froid\" l'emporte chez les plus techniques.\n\n9. Simulateurs. rFactor 2 (TGM) : modèle à brosses sur anneau rigide à 6 degrés de liberté, avec table précalculée par analyse quasi statique et nœuds thermiques (document de l'éditeur). iRacing : formules fonction de charge, température, usure et surface, avec déflexion thermique de la carcasse (blog iRacing, extraits). Assetto Corsa Competizione : cinq points de température, glissements dynamiques (blog éditeur, extraits). Assetto Corsa EVO : l'angle nécessaire au pic a été réduit pour un braquage plus vif (source secondaire). Automobilista 2 : carcasse revue, analyse par cercle de traction ; le plateau de glisse \"indulgent\" est discuté sur le forum de l'éditeur. BeamNG : pneu en nœuds et poutres, banc d'essai intégré. Aucun éditeur ne publie ses coefficients.\n\nConséquence pour BITUME : un modèle à deux essieux, avec adhérence dépendant de la charge, transferts latéral et longitudinal filtrés, glissement combiné normalisé à la Beckman et courbe à pic net mais décroissance douce donne déjà les comportements voulus (sous-virage en entrée avec trop de freinage, rotation au lever de pied, poussée à la remise des gaz). La dérive chargée devient jouable si la décroissance reste douce et le volant informatif.",
+ "mecanismes": [
+  {
+   "nom": "Courbe d'effort latéral (angle de dérive) : montée, pic, décroissance",
+   "cause": "Le pneu se déforme, le patch de contact glisse d'abord à l'arrière puis partout. L'effort croît avec l'angle jusqu'à un pic, puis diminue lentement ; la zone au-delà du pic est instable (plus de glissement, moins d'adhérence).",
+   "effet_ressenti": "Réaction directe à gauche du pic, plateau puis glisse progressive à droite ; si la chute est brutale la voiture part en tête-à-queue, si elle est douce le pilote peut tenir la dérive.",
+   "ordre_de_grandeur": "Pic latéral à environ 3,3° dans l'exemple de Beckman, environ 3° pour un F1, 6 à 10° pour un pneu routier ; diagonales et radiales de course typiquement 3 à 6°. Au-delà du pic, perte lente (quelques pour cent à 15-20 % à 2 à 3 fois l'angle du pic selon la carcasse, ordre de grandeur de ma part, non chiffré par les sources).",
+   "recommandation": "Courbe lissée type Pacejka simplifiée : montée quasi linéaire, pic à angle_pic(Fz), chute douce vers 85 à 90 % à environ 3 fois l'angle du pic. Garder la chute assez lente pour que la dérive chargée reste contrôlable."
+  },
+  {
+   "nom": "Sensibilité à la charge verticale",
+   "cause": "Le coefficient de frottement baisse quand la charge monte ; l'effort maximal croît donc moins vite que la charge.",
+   "effet_ressenti": "Un essieu très chargé en transfert latéral perd de l'adhérence totale et sature le premier : sous-virage si c'est l'avant, survirage si c'est l'arrière.",
+   "ordre_de_grandeur": "Exemple Milliken : charge x2 (900 à 1800 lbf) donne effort max x1,76 (exposant environ 0,82) ; Fy/Fz passe de 1,10 à 0,97 ; angle du pic de 5,6 à 6,7° (environ Fz puissance 0,25). Wikipedia donne un exposant entre 0,7 et 0,9 avec la mention 'citation nécessaire'.",
+   "recommandation": "mu(Fz) = mu0 (Fz/Fz0)^-0,18 et angle_pic(Fz) = angle0 (Fz/Fz0)^0,25, évalués par pneu ou par essieu avec la charge réelle transférée."
+  },
+  {
+   "nom": "Transfert de charge latéral et répartition de raideur antiroulis",
+   "cause": "Le total est fixé par masse, hauteur du centre de gravité, voie et accélération latérale (ΔW = a_y × h × W / t). La raideur antiroulis (et la hauteur des centres de roulis) ne fait que répartir ce total entre l'avant et l'arrière (TLLTD).",
+   "effet_ressenti": "Plus de raideur à l'arrière : survirage plus facile ; plus à l'avant : sous-virage. Le transfert élastique est retardé, le transfert géométrique est immédiat (HP Academy).",
+   "ordre_de_grandeur": "Exemple Wikipedia : 0,9 g, voie 1650 mm, centre de gravité 550 mm, environ 30 % du poids transféré. Pour une monoplace aux cotes de la T5 (h environ 0,3 m, voie environ 1,5 m, estimations de ma part) : environ 40 % du poids à 2 g.",
+   "recommandation": "Un seul paramètre de répartition avant/arrière du transfert latéral (0 à 1) ; calculer le total à partir de a_y et h/t ; appliquer une constante de temps de 0,05 à 0,15 s pour la part élastique."
+  },
+  {
+   "nom": "Transfert de charge longitudinal (freinage, lever de pied, accélération)",
+   "cause": "ΔW = m × a_x × h / empattement. Le freinage charge l'avant, l'accélération charge l'arrière ; le lever de pied en courbe est un freinage moteur qui allège l'arrière.",
+   "effet_ressenti": "Freinage : avant accroché, arrière léger, rotation possible. Lever de pied à mi-courbe : survirage de lever de pied. Gaz à la sortie : l'avant s'allège et la voiture pousse. Les sources divergent : un lever peut aussi réduire le sous-virage si l'avant est surchargé en effort combiné.",
+   "ordre_de_grandeur": "Beckman : pour un centre de gravité à 20 % de l'empattement de hauteur, environ 20 % du poids passe à l'avant à 1 g de freinage, indépendamment de la masse. Avec h/L = 0,3/2,7 = 0,11 sur la T5, environ 11 % de la masse par g (calcul à partir des cotes fournies et d'une hauteur estimée).",
+   "recommandation": "Calculer le transfert avec h/L réel, le filtrer (tangage) avec une constante de 0,05 à 0,1 s ; laisser la sensation de lever de pied dépendre de h/L plus que d'une règle codée en dur."
+  },
+  {
+   "nom": "Glissement combiné (ellipse ou cercle d'adhérence)",
+   "cause": "Un pneu a un budget d'effort partagé entre le longitudinal et le latéral ; freiner ou accélérer fort réduit l'effort latéral disponible.",
+   "effet_ressenti": "Trop de frein en entrée : l'avant sous-vire ; trop de gaz en sortie avec les roues arrière à la limite : sous-virage sous puissance ou survirage de puissance. Le freinage dégressif relâche progressivement ce budget.",
+   "ordre_de_grandeur": "Exemple de Beckman : 0,6 g longitudinal laisse environ 0,8 g latéral sur un cercle de 1 g. Beckman normalise s = glissement/pic et a = angle/pic, évalue les deux courbes sur la norme et répartit. Brach (SAE) : l'ellipse est un idéal simplifié ; elle ne se vérifie pas en freinage combiné.",
+   "recommandation": "Normaliser les deux glissements par leur pic (taux environ 0,08, angle environ 3 à 4°), calculer ρ = norme, évaluer la courbe en ρ et projeter. Éviter le clamp brutal ; garder une pente douce près de la limite pour que le freinage dégressif reste possible."
+  },
+  {
+   "nom": "Carcasse radiale contre diagonale",
+   "cause": "Radiale : bande de roulement rigide, flancs souples, pic à angle plus faible. Diagonale : carcasse plus souple, angle plus grand, plateau plus étalé selon certains forums.",
+   "effet_ressenti": "Radiale : réponse nette au braquage, 'sur des rails', peu d'avertissement avant le lâcher. Diagonale : plus d'angle visible, plus de signal avant la limite, plus pardonnant.",
+   "ordre_de_grandeur": "Pas de chiffres publiés fiables ; fourchette de forums : radiales à 3 à 5° d'angle du pic, diagonales à 5 à 8°. Contradiction : un forum décrit la radiale comme 'peaky', un autre un plateau plus large pour la diagonale ; un fournisseur dit que la diagonale est plus pardonnante dans les mauvaises conditions.",
+   "recommandation": "Pour la T5 (radiale Michelin), pic modéré à 3,5 à 4,5° avec décroissance lente ; augmenter la tolérance par la largeur du plateau plutôt que par l'angle du pic."
+  },
+  {
+   "nom": "Couple d'auto-alignement et traînée pneumatique",
+   "cause": "La force latérale s'applique derrière le centre du patch ; cette distance se réduit à mesure que la glisse gagne le patch, donc le couple culmine avant le pic d'effort latéral.",
+   "effet_ressenti": "Le volant devient plus lourd, puis s'allège alors qu'il reste de l'adhérence. L'allègement avertit du sous-virage ; mais des ingénieurs d'un forum F1 estiment que le signe est trop précoce pour lire le vrai pic.",
+   "ordre_de_grandeur": "Le pic du couple se situe à un angle plus faible que le pic d'effort latéral sur 'presque tous les pneus' (forum fsae et F1technical).",
+   "recommandation": "Dériver le retour de volant ou l'animation de braquage de Mz = -t_p(α) × Fy, avec t_p qui décroît à zéro vers le pic ; ne pas s'en servir comme seul signal d'alerte ; ajouter le son et la fumée des pneus."
+  },
+  {
+   "nom": "Longueur de relaxation (retard du pneu)",
+   "cause": "L'effort latéral s'établit après que le pneu a roulé une certaine distance, pas en un temps fixe ; le retard en secondes diminue avec la vitesse.",
+   "effet_ressenti": "Entrée de virage progressive à basse vitesse, plus nerveuse à haute vitesse ; évite les oscillations d'angle à pas fixe de 1/120 s.",
+   "ordre_de_grandeur": "0,12 à 0,45 m, de l'ordre du rayon de roue selon Pacejka (Wikipedia). Constante de temps τ = L/v : environ 10 ms à 30 m/s, 30 ms à 10 m/s.",
+   "recommandation": "Filtre du premier ordre sur l'angle de dérive effectif avec L environ 0,3 m ; plancher de vitesse pour éviter la division par zéro à l'arrêt."
+  },
+  {
+   "nom": "Freinage : répartition et blocage",
+   "cause": "Le freinage charge l'avant et allège l'arrière ; trop de frein arrière bloque l'arrière, qui perd presque tout effort latéral ; l'avant bloqué ne tourne plus mais la voiture reste stable.",
+   "effet_ressenti": "Blocage arrière : survirage brutal, tête-à-queue. Blocage avant : sous-virage, plus pardonnant. Freinage dégressif : l'arrière limite l'adhérence utilisable au début du freinage, qui augmente à mesure que la pédale se relâche.",
+   "ordre_de_grandeur": "Pas de pourcentages dans les sources ; les guides de simulation insistent sur le sens : biais avant = stabilité, biais arrière = rotation.",
+   "recommandation": "Biais de freinage réglable, avec effort de freinage avant et arrière séparés par la charge dynamique ; un blocage avant doit rester récupérable, un blocage arrière doit prévenir."
+  },
+  {
+   "nom": "Température et usure",
+   "cause": "La gomme adhère au maximum dans une fenêtre de température ; trop froide elle ne se déforme pas dans les aspérités (grainage), trop chaude elle perd sa résistance mécanique ; l'usure réduit le frottement.",
+   "effet_ressenti": "Pneus froids : glisse et faible grip au début d'un relais ; pneus surchauffés : grip qui fond et glissade.",
+   "ordre_de_grandeur": "Fenêtre de 10 à 15 degrés pour un F1 actuel selon un podcast d'explication ; autour de 105 °C avec perte nette sous 100 et au-delà de 115 °C selon un autre. Contradiction : certaines pages attribuent le grainage à la chaleur, les plus techniques à un pneu trop froid.",
+   "recommandation": "Un scalaire de température par pneu (chauffe par glissement et charge, refroidissement par la vitesse) qui module mu de plus ou moins 5 à 8 % ; usure en perte lente de mu et de pic."
+  }
+ ],
+ "recommandations": [
+  "1. Adhérence dépendante de la charge : mu(Fz) = mu0 (Fz/Fz0)^-0,18, avec angle du pic croissant en Fz^0,25 ; c'est la cause physique du sous-virage et du survirage chargés par transfert, à implémenter avant tout.",
+  "2. Calculer les charges par roue avec transferts latéral et longitudinal à partir de h/t et h/L, plus un paramètre de répartition avant/arrière du transfert latéral (équivalent de la raideur antiroulis) ; ne pas régler le sous-virage par un coefficient arbitraire.",
+  "3. Filtrer les transferts de charge (0,05 à 0,15 s) : le transfert élastique est retardé, ce qui rend l'entrée progressive et évite les à-coups.",
+  "4. Courbe latérale avec pic net puis décroissance douce (environ 85 à 90 % à trois fois l'angle du pic) pour que la dérive chargée soit jouable et que le dépassement de la limite ne soit pas fatal.",
+  "5. Glissement combiné normalisé à la Beckman (s = taux/pic, a = angle/pic, ρ = norme) au lieu d'un clamp brutal ; le freinage dégressif et la sortie sous puissance en sortent naturellement.",
+  "6. Garder l'effort de braquage possible en freinage dégressif : n'imposer pas une ellipse parfaite, Beckman signale un gain réel d'adhérence de braquage sous freinage léger.",
+  "7. Pic longitudinal à environ 8 % de glissement ; limiter le couple sur les roues arrière au pic pour que la perte de motricité soit visible avant la patinage total.",
+  "8. Retard de pneu par longueur de relaxation (environ 0,3 m) : réponse douce à basse vitesse, franche à haute, sans oscillations.",
+  "9. Biais de freinage séparé par essieu, avec blocage avant récupérable et blocage arrière brutal ; la voiture peut ainsi tourner en entrée sans jamais être injuste.",
+  "10. Pour la sortie : charge arrière croissante, avant allégé, donc sous-virage de puissance ; pour le lever de pied : charge avant en hausse et arrière allégé, donc survirage proportionné à h/L et à la vitesse.",
+  "11. Couple d'auto-alignement dérivé de la traînée pneumatique pour le retour de volant (manette, clavier via vibration ou animation) ; l'allègement avant le pic prévient sans être un signal exact.",
+  "12. Traînée aérodynamique en v² qui décharge légèrement l'avant à haute vitesse ; coupler à la charge de chaque essieu pour un survirage haute vitesse cohérent.",
+  "13. Température par pneu avec fenêtre étroite et variation de mu de plus ou moins 5 à 8 % ; grainage par pneu froid glissant ; usure en perte lente de mu et de pic.",
+  "14. Aléas par voiture : tolérance de plus ou moins 2 à 4 % sur mu0, angle du pic et répartition de transfert, pour la diversité des douze voitures sans changer le modèle.",
+  "15. Pneu radial 1980 : pic modéré à 3,5 à 4,5°, avertissement par le son et la fumée plutôt que par un plateau très large ; rendre le lâcher plus doux pour l'arcade en jouant sur la pente de décroissance, pas sur l'angle.",
+  "16. Valider par des essais automatiques : gradient de sous-virage en degrés par g sur un virage en régime établi, freinage dégressif, lever de pied et remise des gaz ; vérifier que chaque comportement vient du transfert de charge et non d'un coefficient fixe."
+ ],
+ "chiffres": [
+  {
+   "grandeur": "Charge x2 (900 à 1800 lbf) : effort latéral maximal",
+   "valeur": "x1,76 environ (exposant environ 0,82) ; Fy/Fz de 1,10 à 0,97 ; angle du pic de 5,6 à 6,7°",
+   "source": "Wikipedia, Tire load sensitivity, citant Milliken"
+  },
+  {
+   "grandeur": "Angle du pic : F1 contre pneu routier",
+   "valeur": "environ 3° contre 6 à 10°",
+   "source": "Wikipedia, Tire load sensitivity"
+  },
+  {
+   "grandeur": "Pic de Beckman (courbes d'exemple)",
+   "valeur": "angle latéral environ 3,273° ; glissement longitudinal environ 0,0796",
+   "source": "Beckman, Physics of Racing, partie 25"
+  },
+  {
+   "grandeur": "Transfert longitudinal à 1 g",
+   "valeur": "environ 20 % du poids pour h = 20 % de l'empattement, indépendant de la masse",
+   "source": "Beckman, partie 7"
+  },
+  {
+   "grandeur": "Transfert latéral",
+   "valeur": "environ 30 % du poids à 0,9 g (voie 1650 mm, h 550 mm)",
+   "source": "Wikipedia, Weight transfer (par calcul à partir de l'exemple)"
+  },
+  {
+   "grandeur": "Formule du transfert longitudinal",
+   "valeur": "ΔW = m × a_x × h / L ; latéral ΔW = a_y × W × h / t",
+   "source": "Wikipedia, Weight transfer ; suspensionsecrets.co.uk"
+  },
+  {
+   "grandeur": "Cercle d'adhérence",
+   "valeur": "0,6 g longitudinal laisse environ 0,8 g latéral pour un budget de 1 g",
+   "source": "Beckman, partie 7"
+  },
+  {
+   "grandeur": "Longueur de relaxation",
+   "valeur": "0,12 à 0,45 m, de l'ordre du rayon de roue ; constante de temps L/v",
+   "source": "Wikipedia, Relaxation length"
+  },
+  {
+   "grandeur": "Fenêtre de température d'un pneu de F1 moderne",
+   "valeur": "10 à 15 degrés de plage utile ; autour de 105 °C selon un autre guide",
+   "source": "BoxBoxBox (podcast) ; guides F1 de fans"
+  },
+  {
+   "grandeur": "Charge dynamique sur l'avant au freinage",
+   "valeur": "répartition idéale de la masse dynamique à environ 50/50 en virage et en freinage",
+   "source": "designjudges.com, Critical Specifications for Balance"
+  },
+  {
+   "grandeur": "Angle du pic sous charge d'un pneu de course (peak forum)",
+   "valeur": "5 à 8° avec décroissance après le pic (forum LFS, anecdotique)",
+   "source": "lfs.net forum (extraits de recherche)"
+  }
+ ],
+ "sources": [
+  {
+   "url": "https://en.wikipedia.org/wiki/Tire_load_sensitivity",
+   "apport": "Sensibilité à la charge : exemple chiffré de Milliken (900 à 1800 lbf), exposant 0,7 à 0,9, angles de pic F1 contre route."
+  },
+  {
+   "url": "https://www.designjudges.com/articles/critical-specifications-for-balance",
+   "apport": "Total du transfert latéral fixé par la géométrie, rôle des barres antiroulis, saturation avant ou arrière, trainée et répartition dynamique."
+  },
+  {
+   "url": "https://www.hpacademy.com/courses/suspension-tuning-and-optimization/lateral-load-transfer-basics-total-lateral-load-transfer-distribution-and-tuning",
+   "apport": "TLLTD, transfert élastique retardé contre géométrique immédiat, effet de la sensibilité à la charge sur le réglage."
+  },
+  {
+   "url": "https://www.designjudges.com/articles/reverse-engineering-tires",
+   "apport": "Pneu comme budget partagé, sensibilité à la charge, effet de la raideur antiroulis sur la saturation du pneu extérieur."
+  },
+  {
+   "url": "https://designjudges.com/articles/brake-bias-and-stability",
+   "apport": "Biais de freinage, blocages avant et arrière, freinage dégressif et stabilité en lacet."
+  },
+  {
+   "url": "https://cygnus-supra.duckdns.org/Supra/Library/PhysicsOfRacing/physics_of_racing_25.html",
+   "apport": "Beckman, partie 25 : glissement combiné normalisé, pics à 3,27° et 0,0796, remarque sur le freinage dégressif."
+  },
+  {
+   "url": "https://cygnus-supra.duckdns.org/Supra/Library/PhysicsOfRacing/physics_of_racing_07.html",
+   "apport": "Beckman, partie 7 : cercle d'adhérence, transfert en pourcentage indépendant de la masse, sous-virage sous puissance."
+  },
+  {
+   "url": "https://cygnus-supra.duckdns.org/Supra/Library/PhysicsOfRacing/physics_of_racing_10.html",
+   "apport": "Beckman, partie 10 : angle d'adhérence, montée puis chute progressive, déformation de carcasse."
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Weight_transfer",
+   "apport": "Formule du transfert longitudinal et exemple latéral (0,9 g, environ 30 %)."
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Relaxation_length",
+   "apport": "Longueur de relaxation 0,12 à 0,45 m, ordre du rayon de roue, définition à 63 %."
+  },
+  {
+   "url": "https://f1technical.net/forum/viewtopic.php?p=67293",
+   "apport": "Débat radiales contre diagonales en F1 : angles de dérive, avertissement avant la limite, divergences entre posteurs."
+  },
+  {
+   "url": "https://www.studio-397.com/wp-content/uploads/2016/12/rF2_TGM_TyreTool_QuickStart_V3.pdf",
+   "apport": "Modèle TGM de rFactor 2 : brosses, anneau rigide à 6 degrés de liberté, table de recherche, nœuds thermiques."
+  },
+  {
+   "url": "https://www.bsimracing.com/automobilista-2-v1-5-physics-development-update-part-2/",
+   "apport": "Automobilista 2 : carcasse corrigée, analyse du cercle de traction, thermique du pneu ; pas de chiffres de pneu."
+  },
+  {
+   "url": "https://forum.reizastudios.com/threads/physics-discussion-thread.14874/page-39",
+   "apport": "Forum d'AMS2 : perception du plateau 'indulgent' de la courbe, avis divergents (extraits de recherche)."
+  },
+  {
+   "url": "https://www.overtake.gg/threads/assetto-corsa-competizione-the-5-point-tyre-model-blog.171148/",
+   "apport": "Blog éditeur ACC, cinq points de température et glissements dynamiques ; page en erreur 403, seuls les extraits de recherche sont utilisés."
+  },
+  {
+   "url": "https://boxthislap.org/assetto-corsa-evo-0-9-tyre-model/",
+   "apport": "Assetto Corsa EVO : angle de glisse du pic réduit pour un braquage plus vif ; page protégée, extrait de recherche seul."
+  },
+  {
+   "url": "https://iracing.com/?p=3826",
+   "apport": "Article iRacing sur le modèle de pneu (charge, température, usure, déflexion de carcasse), vu par extrait de recherche."
+  },
+  {
+   "url": "https://beamng.com/game/news/patch/a-look-at-tire-development-in-beamng-part-1",
+   "apport": "BeamNG : pneu en nœuds et poutres, banc d'essai, définitions de glissements."
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Slip_(vehicle_dynamics)",
+   "apport": "Définitions du taux de glissement et de l'angle de dérive, garde-fou à basse vitesse."
+  },
+  {
+   "url": "https://mozaracing.com/blogs/blog/self-aligning-torque-explained-how-force-feedback-tells-you-the-grip-limit",
+   "apport": "Couple d'auto-alignement, traînée pneumatique et retour de volant ; avis partagés sur la fiabilité du signe d'alerte."
+  },
+  {
+   "url": "https://www.motorsportmagazine.com/special-article/race-to-road-ferrari/116/ferrari-312-t3-the-michelin-gamble-behind-villeneuves-1978-breakthrough/",
+   "apport": "Contexte historique : Ferrari sur Michelin radial depuis 1978, face à la diagonale Goodyear."
+  },
+  {
+   "url": "https://lfs.net/forum/post/475258",
+   "apport": "Forum LFS sur la forme des courbes des slicks (plateau ou chute) ; page non lisible directement, extrait de recherche seul."
+  }
+ ]
+}

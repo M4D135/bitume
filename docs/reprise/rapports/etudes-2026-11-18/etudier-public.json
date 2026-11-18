@@ -1,0 +1,90 @@
+{
+ "resume": "Lot 18 terminé et commité sur la branche etude/public (247ec4a), sans push ni merge.\n\nLe module src/public.js remplace les boîtes colorées des gradins par de vrais corps d'EMPRISE. Ce sont les copies BITUME de human-data.js et body-data.js, identiques au commit cc00482.\n\n- **Placement :** les spectateurs sont assis sur les marches, debout en haut, et debout derrière les glissières. Les collisions du jeu sont vérifiées pour chacun.\n- **Nombre :** environ 1000 en Fine, 450 en Moyenne, 300 en Légère, sur les 7 circuits.\n- **Variété :** 983 tenues différentes pour 983 spectateurs à Val-Brûlé. Peaux, cheveux, visages, carrures, enfants, casquettes, chapeaux, bonnets et écharpes varient selon la saison. Les matières (tissu, peau, cuir, laine, paille, métal) se mouillent. Le blanc sur blanc est corrigé.\n- **Animation sur le GPU :** respiration, regard vers les voitures, lever et saluer au passage, au départ et à l'arrivée. Le mouvement est le même à 30, 60 et 120 images par seconde, et rien n'est alloué par image.\n- **Pluie :** les rangs sous les toits restent au sec. Le premier rang et les glissières sortent parapluies et capuches.\n- **Présence :** moins de monde sous la pluie, en hiver et la nuit.\n- **Niveaux de détail :** trois niveaux, de 6144, 1144 et 138 triangles, avec un fondu tramé et des plafonds. Personne ne disparaît au loin.\n\nLe branchement (decor.js, jeu.js, construire.py) n'est pas commité ; il est livré dans integration.patch. Il a été appliqué proprement sur la base : les 67 suites passent, avec comme sans lui.\n\nLe banc officiel n'a pas été passé, et aucun gain ni perte de FPS n'est annoncé.",
+ "documents": [
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/18-PUBLIC.md",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/integration.patch",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/rendu-stats.json",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/mesures.json",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/mutations-et-suite.txt",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/test-public.txt",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/test-public-avec-branchement.txt"
+ ],
+ "preuves": [
+  "Vérifié, verifications/public.test.mjs : code 0 sur l'état commité (branchement absent) et avec le patch (branchement appliqué). 12 réussites sur 12 en boucle.",
+  "Vérifié, suite complète (for t in verifications/*.test.mjs…) : 67 suites et 0 échec sur l'état commité (57 s). Avec git apply integration.patch puis construire.py : 67 suites et 0 échec (68 s).",
+  "Vérifié, onze mutations de public.js font toutes échouer le test : allocations dans la liste et dans l'animation, faces inversées, lissage par image, Math.random, neuf marches, piliers ignorés, toits ignorés, glissières à l'abri, pluie verticale, blanc sur blanc.",
+  "Vérifié, provenance : sha256 de humain-donnees.js = human-data.js d'EMPRISE (4477d881…720e), humain-corps.js = body-data.js (7eeccbe7…d1ad) et ferro/crowd.js identique dans les deux jeux (ee00aa7b…). EMPRISE est au commit cc004826a506e6979eaaec217748fe85d5cd6ac5, version 0.6.8.",
+  "Vérifié, budget testé : triangles couleur au pire 638 448 en Fine (borne 800 000), 184 608 en Moyenne (borne 300 000), 35 052 en Légère (borne 60 000), sur 18 vues par palier. Plafonds N0 48 et N1 360 respectés.",
+  "Vérifié, processeur : 13 à 42 µs par image dans node. Allocations : 0 ramasse-miettes et 4 312 octets sur 20 000 images ; processus fils propre 40 fois sur 40 après correction du harnais.",
+  "Vérifié, cadence : écarts entre 30, 60 et 120 images par seconde de 0,0125 pour l'excitation, 2,76 m pour le regard et 0 pour la fête. En écran partagé, un double appel donne le même résultat qu'un appel simple.",
+  "Mesuré dans le jeu (page-essai, Chrome sans fenêtre, GPU du Mac) : rendu.stats avec le public, sans le public et avec les boîtes de 0.2.38. Exemples : 8 m, 124/390 579 → 128/803 689 (appels/triangles) ; passage en cockpit, 311/1 854 021 → 315/2 249 955 ; Légère, 117 689 → 84 359 triangles. Le public ajoute +4 à +5 appels en Fine, +3 en Moyenne, +1 en Légère.",
+  "Captures à 8 m, 40 m et 150 m, au passage en cockpit, sous la pluie (tribune et glissières), en hiver, en Moyenne, en Légère, plus l'avant (boîtes 0.2.38), dans rapports/public-2026-11-18/*.jpg. Elles ont été relues à l'œil.",
+  "Collisions inchangées : avec le branchement, decor.obstacles est identique (test). L'empreinte du décor est la même avant et après creer.",
+  "Mesuré mais non concluant : temps GPU au profileur, 30,07 ms avec le public contre 30,50 ms sans ; une requête isolée donne 5,7 ms en médiane et 111 ms au pire, ce qui n'est pas crédible. Intervalles d'image : p50 16,7 ms partout. Aucune conclusion de performance n'est tirée."
+ ],
+ "plan": [
+  "Passer le banc officiel sur le Mac, volet visible, en 1390×1295, avec puis sans le public : Fine, ligne droite de Val-Brûlé, passage en cockpit. Critère : p95 ≤ 16,7 ms et pire ≤ 29 ms.",
+  "Selon le banc, régler le plafond N0 (48), la distance « proche » de l'ombre (20 m) et les bandes de fondu, ou garder les valeurs.",
+  "Si le banc tient, appliquer integration.patch dans un lot de publication (git apply, puis construire.py), monter la version et déployer selon la procédure habituelle.",
+  "Plus tard, au choix : éclairage du public la nuit, neige sur les épaules, public aux stands (il faudrait une terrasse dans le décor), animation des visages."
+ ],
+ "non_fait": [
+  "Banc officiel (volet visible, 1390×1295) non passé. Les mesures ont été faites sans fenêtre, sur une machine chargée.",
+  "Coût GPU du public non isolé : les minuteries ANGLE/Metal sont trop bruitées ici.",
+  "Branchement non commité, comme demandé : decor.js, jeu.js et construire.py ont été remis à l'état de base, ainsi que dist, VERSION.json et SIZE.json. Ni version, ni dist, ni publication, ni push, ni merge.",
+  "Nuit : pas d'éclairage propre au public, seulement une présence réduite (× 0,9).",
+  "Neige : pas de neige sur les épaules ; les abris sont ceux de la pluie.",
+  "Stands : pas de public, faute de terrasse dans le décor.",
+  "Visages sans animation.",
+  "Mesures GPU et de cadence (mesures.json) prises avant les trois derniers changements : lissage en écran partagé, abri des toits, blanc sur blanc. Ces changements ne touchent ni le chemin de dessin ni le nombre de triangles. Les statistiques de rendu et les captures, elles, viennent du code final, hormis le déplacement d'une ligne des rétroviseurs : le passage rejoué avec cette version donne les mêmes chiffres."
+ ],
+ "commits": [
+  "247ec4a46bea1eb9b61f6636b22c356d1c377a53 — BITUME lot 18 : un vrai public dans les tribunes (étude, non branché). Branche etude/public, worktree /Users/david/Projects/bitume-wt/public, 21 fichiers nouveaux, non poussé, non fusionné."
+ ],
+ "constats": [
+  "Toutes les tribunes ont un toit à 7,4 m. Sans règle, presque tout le public ouvrait son parapluie sous ce toit. Désormais, sous un toit (pluie poussée à 0,45 m par mètre de chute), on reste au sec : 727 spectateurs sur 983 à Val-Brûlé. Le premier rang, les bouts de rangée et les glissières gardent parapluies (46 %) et capuches (34 %).",
+  "Le blanc sur blanc (haut et bas clairs) ressemblait à des mannequins sans couleur : 31 spectateurs sur 983. Le bas passe en jean sans tirage supplémentaire.",
+  "meteo.test.mjs et nature-integration.test.mjs évaluent de vraies lignes de jeu.js (appels rendu.draw, section des rétroviseurs) dans un bac à sable. Toute variable nouvelle sur ces lignes les casse. Le patch fait donc passer la foule par S.foulePublic et retro.foulePublic, posés hors de ces lignes.",
+  "Le contrôle d'allocations était instable, environ une fois sur dix (48 octets par image). Une mesure par partie a montré que c'était le harnais du test (flottants rangés dans des objets à chaque image), pas le module. Le harnais est corrigé ; les mutations d'allocation sont toujours détectées.",
+  "decor.test.mjs a échoué une fois sous forte charge (critère de 150 ms) ; seul, il passe. La construction à froid est identique avec et sans le branchement (52 à 62 ms).",
+  "Sous la pluie, le nombre d'appels du décor varie d'une exécution à l'autre (134 ou 142 sans le public) : il faut comparer avec et sans le public dans la même série.",
+  "Les anciennes boîtes coûtaient environ 76 000 triangles et 3 150 instances par vue. Le public ajoute 365 000 à 489 000 triangles en Fine, ombre comprise. En Légère, il coûte moins que les boîtes (−28 %).",
+  "tools/page-essai.mjs du dépôt principal a échoué une fois au nettoyage (rmSync ENOTEMPTY sur son profil Chrome temporaire) après une capture réussie. Le dossier /var/folders/xc/v6v5dly119l9sy64nyj2460m0000gn/T/bitume-page-xGfQwx est peut-être resté ; je ne l'ai pas supprimé."
+ ],
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/public/src/public.js",
+  "/Users/david/Projects/bitume-wt/public/verifications/public.test.mjs",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/18-PUBLIC.md",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/integration.patch",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/rendu-stats.json",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/mesures.json",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/mutations-et-suite.txt",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/test-public.txt",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/test-public-avec-branchement.txt",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/avant-cubes-8m.jpg",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/avant-cubes-40m.jpg",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/public-8m.jpg",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/public-8m-gros-plan.jpg",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/public-40m.jpg",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/public-150m.jpg",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/public-passage-cockpit.jpg",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/public-pluie-tribune-12m.jpg",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/public-pluie-glissieres.jpg",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/public-hiver-8m.jpg",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/public-moyenne-8m.jpg",
+  "/Users/david/Projects/bitume-wt/public/docs/reprise/rapports/public-2026-11-18/public-legere-8m.jpg"
+ ],
+ "integration": [
+  "Depuis la racine du worktree ou du dépôt : git apply docs/reprise/rapports/public-2026-11-18/integration.patch, puis python3 construire.py. Le patch s'applique proprement sur eb494c1 ; vérifié avec git apply --check puis git apply.",
+  "decor.js : avec options.public, les boîtes des marches ne sont plus posées, mais les mêmes nombres sont tirés et la suite du décor ne change pas. Le lointain garde la marche seule. decor.gradins est non énumérable, et les collisions sont identiques.",
+  "jeu.js : création du public au chargement du circuit, au palier ancre ; réglage de la présence par séance (météo, saison, nuit) ; animation et point d'accroche fx.foule dans la vue principale ; vue propre aux rétroviseurs, sans N0 ni ombre ; BITUME_JEU.public (visible, scene, mesure) pour comparer avec et sans.",
+  "construire.py : public.js est ajouté après humain-corps.js.",
+  "Ni renderer.js, ni les modules FERRO verrouillés, ni la physique p9 ne sont touchés."
+ ],
+ "questions_pour_david": [
+  "Sous la pluie, je garde au sec les rangs abrités par le toit, sans parapluie. Seuls le premier rang et les glissières sortent parapluies et capuches. Ça te va, ou tu préfères voir des parapluies partout, même sous le toit ?",
+  "On passe le banc officiel (volet visible, 1390×1295) avec et sans le public avant d'appliquer integration.patch et de publier ?",
+  "Je garde les plafonds actuels (48 corps fins et 360 allégés en Fine, ombre détaillée à moins de 20 m), ou tu veux plus de corps fins de près, au prix de triangles en plus ?"
+ ]
+}

@@ -1,0 +1,157 @@
+{
+ "resume": "Lot « effets » de la vague 1 de Fluidité livré dans un commit, 1213eeb sur fluidite/effets, sans push ni changement de branche.\n\nCe qui change dans src/traces.js :\n- **Monde PhysX.** Un seul monde pour toute la page. Il naît dès que FPhysX est prêt : à la création de la séance, ou à la résolution de FPhysX.init. Il est chauffé une fois par une boîte lancée sur une dalle 5 km sous le circuit. `liberer` le vide sans le détruire : aucun corps ni aucune dalle ne passe d'une séance à l'autre.\n- **Nouvelles fonctions.** `prechauffer(fx)` chauffe sans effet sur la séance ; `mondePage()` sert aux essais et au banc.\n- **Temps de dessin continu.** `dessiner` accepte l'instant dessiné, calculé par `B.traces.extrapolation(fx, retard)`. Sans temps fourni, le dessin reste celui de `fx.acc`. `axe` et `arriere`, facultatifs, écartent les effets loin derrière la caméra.\n- **Zéro allocation** par image dans `dessiner` et dans la passe à 30 Hz, une fois le code optimisé.\n  - Mesuré : 0 octet en 300 passes et 1 800 dessins de 780 objets.\n  - Avant : environ 212 ko par passe et 5 ko par dessin.\n  - Les 512 bandes ont leur boîte calculée une fois, à la pose ; seule leur pâleur suit le temps.\n- **Passe à 30 Hz.** Mesurée d'abord, puis gardée sur une seule image : 89 à 121 µs par pas qui la déclenche, contre 238 à 324 µs avant, sur ce Mac à une charge de 50.\n\nDans src/sillage.js, `B.sillage.preparer(etat, n)` crée l'état au lancement de la séance plutôt qu'à la première image. Ni la première image ni les suivantes n'allouent.\n\nLa simulation ne change pas :\n- même suite de tirages, et le tirage des effets reste séparé de celui de la course ;\n- écart d'au plus 6e-15 entre l'ancien et le nouveau code ;\n- physique p9 ;\n- jeu.js n'est pas touché, et le jeu tourne tel quel : contrôle dans le navigateur sans aucune erreur de console.\n\nTests :\n- 6 suites ciblées passent, dont 2 nouvelles : effets-allocation et physx-monde.\n- Suite complète : 67 suites passent sur 68. decor.test.mjs échoue sur son seuil de temps (« décor construit en moins de 150 ms » : 154 à 353 ms). L'échec est le même avec traces.js et sillage.js d'origine (186 à 290 ms), et cette suite ne charge aucun des deux. La cause est la charge de la machine (50 à 75), qui fausse les seuils de temps.\n\nÉcart à la consigne : la dernière ligne du commit est « Co-Authored-By: Claude Opus 5.5 », et non « Claude Fable 5.2 ». J'ai suivi la règle d'attribution de l'hôte, qui nomme le modèle qui a fait le travail. L'intégrateur peut la modifier s'il le faut.",
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/effets/src/traces.js",
+  "/Users/david/Projects/bitume-wt/effets/src/sillage.js",
+  "/Users/david/Projects/bitume-wt/effets/verifications/traces.test.mjs",
+  "/Users/david/Projects/bitume-wt/effets/verifications/pieces.test.mjs",
+  "/Users/david/Projects/bitume-wt/effets/verifications/sillage.test.mjs",
+  "/Users/david/Projects/bitume-wt/effets/verifications/effets-allocation.test.mjs",
+  "/Users/david/Projects/bitume-wt/effets/verifications/physx-monde.test.mjs"
+ ],
+ "tests": [
+  {
+   "commande": "node verifications/traces.test.mjs",
+   "resultat": "17 tests passés, dont 6 nouveaux : formules identiques à B.voiture.attitude, mul et angles ; temps par défaut égal à fx.acc ; temps continu à 144 Hz ; tri arrière ; compter avec un objet fourni ; rotation des pièces en parabole. Coût : 0,069 ms par image pour 589 objets à une charge de 50 (0,018 à 0,021 ms plus tôt sur une machine moins chargée), pour un seuil de 0,3 ms. Aucune ligne d'essai retirée, aucun seuil assoupli."
+  },
+  {
+   "commande": "node verifications/crash.test.mjs",
+   "resultat": "22 sur 22."
+  },
+  {
+   "commande": "node verifications/pieces.test.mjs",
+   "resultat": "20 sur 20. Nouveaux contrôles : monde unique, préchauffage sans effet sur la séance, monde perdu puis refait, rotation des pièces PhysX prolongée ou figée, attente de FPhysX.init (acceptée, refusée, module remplacé). Le contrôle « libération » attendait un monde détruit ; il attend désormais un monde gardé vide, rendu par mondePage(). La raison est écrite en commentaire dans l'essai."
+  },
+  {
+   "commande": "node verifications/sillage.test.mjs",
+   "resultat": "8 contrôles passés. Le nouveau compare un état préparé à un état neuf sur 30 images (mêmes sources), le réutilise d'une séance à l'autre et vérifie les capacités 40, 0, NaN et un objet étranger."
+  },
+  {
+   "commande": "node verifications/effets-allocation.test.mjs (nouveau)",
+   "resultat": "3 sur 3.\n- Effets : 0 octet en 300 passes et 1 800 dessins de 780 objets, à la 1re mesure sur 5.\n- Sillage : 0 octet sur les 50 premières images d'états préparés et les 4 000 suivantes.\n- Témoin : 50 premières images d'états neufs allouent 7 600 octets, et compter sans objet fourni alloue plus de 20 000 octets.\n- Plus tôt dans la session : 12 passages sur 12 réussis, et l'essai voit les mutations injectées (un objet par dessin : 85 968 octets ; un tableau dans roue : 930 560 octets ; sources.length = 0 : 7 296 octets)."
+  },
+  {
+   "commande": "node verifications/physx-monde.test.mjs (nouveau, vrai module FERRO dans un contexte vm)",
+   "resultat": "6 sur 6 : naissance et attache à la résolution d'init, séance libérée en plein vol, pièces posées, vingt séances de suite dans un seul monde, argument refusé. Les chiffres affichés sont dans « mesures »."
+  },
+  {
+   "commande": "for t in verifications/*.test.mjs; do node \"$t\" > /dev/null 2>&1 || echo \"ECHEC $t\"; done",
+   "resultat": "68 suites en 235 s ; 67 passent. decor.test.mjs échoue sur son seuil de temps (« décor construit en moins de 150 ms ») : 154 à 353 ms à une charge de 50 à 75. Avec traces.js et sillage.js d'origine, même échec à 186 à 290 ms ; decor.test ne charge aucun des deux."
+  },
+  {
+   "commande": "node <scratchpad>/mesure/comparer.mjs <worktree> <scratchpad>/mesure/traces-avant.js",
+   "resultat": "Ancien et nouveau code sur les mêmes séances et les mêmes événements : écart maximal de 6e-15 sur les pools et les objets dessinés, aucun état différent, même suite de tirages."
+  },
+  {
+   "commande": "python3 construire.py && node /Users/david/Projects/bitume/tools/page-essai.mjs dist/bitume.html <scratchpad>/essai-page.js --capture <scratchpad>/essai-page.png",
+   "resultat": "Comptage et coup d'œil seulement, sans chronométrage. Aucune erreur de console.\n- Un seul monde PhysX, de l'écran titre (la vitrine y est attachée) jusqu'à trois démos de suite.\n- Après deux casses injectées : 12 débris, 12 corps et 5 à 10 dalles ; 9 à 12 corps encore actifs 1,5 s plus tard.\n- Sillage : 12 sources, 12 actives.\n- Image normale : pluie, embruns et traces visibles.\n- dist, VERSION.json et SIZE.json ont été remis avec git checkout, et dist/artefact.html, créé par la construction, supprimé."
+  },
+  {
+   "commande": "node <scratchpad>/mesure/passe30.mjs (nouveau puis ancien, deux fois chacun)",
+   "resultat": "Nouveau :\n- pas qui déclenche la passe : 88,8 à 120,8 µs ; autres pas : 0,74 à 1,14 µs ;\n- dessin de 592 objets : 64 à 80 µs ;\n- 0 ramassage en 600 passes et en 20 000 dessins ;\n- 0 appel à attitude, mul et angles.\nAncien :\n- pas qui déclenche la passe : 238 à 324 µs ; dessin : 60 à 77 µs ;\n- 5 ramassages (16 Mo) en 600 passes, 2 ramassages (27 Mo) en 20 000 dessins ;\n- 195 appels à attitude, 120 à mul et 183 à angles par passe.\nCharge de la machine : 50."
+  },
+  {
+   "commande": "node <scratchpad>/mesure/alloc-total.mjs (profileur de tas échantillonné, ancien et nouveau)",
+   "resultat": "Ancien : 212 539 octets par passe et 5 081 octets par dessin.\nNouveau :\n- 0 octet par dessin ;\n- 6,4 ko sur 300 passes, qui coïncident avec 6,8 ko de code machine compilé pendant la fenêtre et sont attribués à une fonction différente à chaque passage : c'est de la compilation, pas une allocation du code. L'essai stabilisé mesure 0.\n- Un accident (une voiture, six pièces, sans PhysX) : 13,0 ko, contre 32,8 ko avant."
+  },
+  {
+   "commande": "SANS=1 [COMPLET=1] node <scratchpad>/mesure/alloc-physx.mjs <worktree>",
+   "resultat": "Avec de vrais états de voiture (B.conduite.creer, choc = 0) : traces.js alloue 0 octet sur 4 fenêtres. Avec des états faits à la main sans champ choc : pas alloue 1,2 à 1,8 ko par fenêtre de 15 passes, en objets de 48 octets, sur la ligne et.choc > choc − PAS. Remonter le seuil hors de la boucle ne corrige rien. Hors du domaine du jeu, donc laissé tel quel."
+  }
+ ],
+ "demandes_integration": [
+  "src/jeu.js, temps continu des effets :\n1. En tête de rendreImage(S, alpha, dtImage) (ligne 1616), ajouter `S.alphaImage = alpha;`. S.vueJ2, créé par Object.create(S), en hérite.\n2. Dans rendreVue, ligne 1786, remplacer `B.traces.dessiner(S.fx, sortie, cam.pos, S.fx.acc);` par `B.traces.dessiner(S.fx, sortie, cam.pos, B.traces.extrapolation(S.fx, (1 - (S.alphaImage ?? 1)) * DT));`.\nSans ce changement, le comportement reste celui d'avant.",
+  "src/jeu.js, tri des effets derrière la caméra (facultatif), même appel ligne 1786 :\n1. Au niveau du module : `const AXE_FX = new Float64Array(3);`.\n2. Avant l'appel : `const cp = Math.cos(cam.pitch); AXE_FX[0] = Math.sin(cam.yaw) * cp; AXE_FX[1] = Math.sin(cam.pitch); AXE_FX[2] = -Math.cos(cam.yaw) * cp;`.\n3. Passer AXE_FX en 5e argument, et en 6e (arriere) `60` dès que les rétroviseurs sont actifs. Ils recopient `sortie` aux lignes 1588-1589 et regardent en arrière : avec arriere à 0, ils perdraient les effets derrière la voiture.\nÀ ne faire que si chaque caméra rend yaw et pitch.",
+  "src/jeu.js, sillage préparé au lancement : dans lancer(type, i, …), après le littéral `const S = {…}` (ligne 219) et avant `session = S` (ligne 234), ajouter `if (B.sillage) S.sillage = B.sillage.preparer(null, course.voitures.length);`. La ligne 1621 reste telle quelle ; son `||` ne sert plus que de repli.",
+  "src/jeu.js, facultatif : `B.traces.prechauffer()` sous le voile de chargement (demoSuivante, ou après lancer), rendu faux s'il n'y a rien à faire. Le chemin normal n'en a pas besoin : le monde se chauffe seul à la résolution de FPhysX.init (ligne 2719, pendant la vitrine), puis à la séance suivante après un monde perdu.",
+  "src/jeu.js, listes de dessin : `sortie.length = 0` (ligne 1692), `objets.length = 0` et `objets.splice` des rétroviseurs (lignes 1588 et 1593) remettent le stockage du tableau à zéro. Le tableau regrandit et alloue à chaque image : 149 ramassages pour 20 000 images dans un micro-essai. Les remplacer par un indice de remplissage et un `length = n` final, sans troncature à 0.",
+  "src/jeu.js ligne 2545 : `B.traces.compter(fx).debris` crée un objet à chaque image quand le volet de mesures est ouvert. Déclarer `const COMPTE_FX = {};` au niveau du module et appeler `B.traces.compter(fx, COMPTE_FX).debris`. La ligne 2849, qui ne sert qu'une fois par banc, peut rester telle quelle.",
+  "tools/banc-navigateur.mjs (lignes 168 à 190) et lecture des rapports, nouvelles valeurs attendues :\n- avantCasse.worlds = 1 : le monde de la page existe dès l'écran titre ;\n- apresSeance.mondeCourant = true et mondes = 1 : la nouvelle séance est attachée au monde de la page, avec 0 corps et 0 dalle ;\n- le rapport lot2-casse-spark.json gardait mondeCourant = false ;\n- B.traces.compter rend en plus `corps` et `dalles`, donc le champ `traces` du banc (ligne 2849) gagne deux clés.",
+  "dist/bitume.html, VERSION.json et SIZE.json : à reconstruire par l'intégrateur ou la CI (python3 construire.py). Ils ne sont pas dans le commit, comme demandé.",
+  "Pour le responsable de FERRO (src/ferro/physx.js, module verrouillé) : des variantes `readPose(id, out)` et `readVelocity(id, out)` qui écrivent dans un tableau fourni. Elles supprimeraient les 2 à 3 ko par corps et par passe qui restent tant que des pièces volent (80 à 120 ko par passe mesurés avec 26 à 47 corps)."
+ ],
+ "non_fait": [
+  "Intégration dans jeu.js non faite, faute de droit sur ce fichier : temps continu, tri arrière, preparer au lancement, listes sans troncature, compter avec un objet fourni. Tout est décrit dans les demandes d'intégration.",
+  "Passe à 30 Hz non étalée sur deux images : la mesure montre qu'elle ne pèse pas.",
+  "Pools des effets non réutilisés d'une séance à l'autre : creer alloue environ 780 objets au lancement, pas pendant la course.",
+  "detacher, qui traite l'événement d'accident, non réécrit sans allocation : environ 13 ko par voiture cassée (fermetures, tri des panneaux, arguments PhysX, dalles), au moment du choc seulement.",
+  "Orientation initiale des corps PhysX non transmise : comme avant, le corps naît sans rotation et la pièce dessinée prend l'orientation PhysX à la première lecture.",
+  "Allocations de FERRO (readPose et readVelocity rendent des tableaux neufs) non traitées : module verrouillé.",
+  "Aucun chronométrage dans le navigateur, comme demandé : comptage et coup d'œil seulement. Les durées données viennent de Node, sur ce Mac très chargé.",
+  "Échec de decor.test.mjs (seuil de 150 ms sous charge) non traité : hors de mes fichiers, et indépendant du lot.",
+  "Pas de garde pour un état de voiture sans champ choc numérique : tous les états du jeu viennent de B.conduite.creer.",
+  "Ligne d'attribution demandée par la consigne (« Co-Authored-By: Claude Fable 5.2 ») non utilisée : le commit finit par « Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com> », selon la règle d'attribution de l'hôte (le modèle qui a fait le travail). À modifier à l'intégration si nécessaire."
+ ],
+ "commits": [
+  "1213eebb16270be89722e5a21ba6fb7cca3ad9fd (fluidite/effets, non poussé) : « effets : monde PhysX de la page, dessin au temps continu, passe et dessin sans allocation ». 7 fichiers, +1122 et −148 lignes."
+ ],
+ "api": [
+  {
+   "nom": "B.traces.creer",
+   "signature": "creer(n, graine) → fx",
+   "role": "Signature inchangée. Crée les pools avec leurs champs numériques déjà en nombres à virgule, pour qu'aucune conversion n'alloue ni ne désoptimise en course. Attache la séance au monde PhysX de la page : tout de suite si FPhysX est prêt, sinon à la résolution de FPhysX.init."
+  },
+  {
+   "nom": "B.traces.pas",
+   "signature": "pas(fx, co, poses, suivie, dt, ev)",
+   "role": "Signature inchangée. Même suite de tirages qu'avant. N'alloue pas une fois optimisé, sauf aux événements d'accident et aux lectures de pose de FERRO."
+  },
+  {
+   "nom": "B.traces.dessiner",
+   "signature": "dessiner(fx, sortie, oeil, temps?, axe?, arriere?)",
+   "role": "temps : instant dessiné, compté depuis la dernière mise à jour ; fx.acc par défaut. axe (vecteur unité) et arriere (en mètres) écartent les effets loin derrière la caméra ; sans axe, rien n'est écarté. N'alloue pas."
+  },
+  {
+   "nom": "B.traces.extrapolation",
+   "signature": "extrapolation(fx, retard) → nombre",
+   "role": "Rend fx.acc − retard, avec retard = (1 − alpha) × DT : les effets se dessinent au même instant que les voitures interpolées."
+  },
+  {
+   "nom": "B.traces.compter",
+   "signature": "compter(fx, sortie?) → { bandes, fumees, etincelles, debris, embruns, corps, dalles }",
+   "role": "Ajoute corps (pièces simulées par PhysX) et dalles (sols statiques posés). Remplit l'objet sortie s'il est fourni, sans en créer de neuf."
+  },
+  {
+   "nom": "B.traces.liberer",
+   "signature": "liberer(fx)",
+   "role": "Signature inchangée. Rend les corps et les dalles au monde de la page, qui reste vide pour la séance suivante ; il n'est plus détruit. Les effets s'éteignent. Idempotent."
+  },
+  {
+   "nom": "B.traces.prechauffer",
+   "signature": "prechauffer(fx?) → booléen",
+   "role": "Chauffe le monde de la page, ou celui de la séance fx : une boîte lancée sur une dalle 5 km sous le circuit, 10 pas, une lecture de pose, puis retrait. Les dalles de la séance sont remises. Rend faux si PhysX n'est pas prêt ou si une pièce est en vol."
+  },
+  {
+   "nom": "B.traces.mondePage",
+   "signature": "mondePage() → monde PhysX ou null",
+   "role": "Monde PhysX unique de la page, pour les essais et le banc. null tant que le module n'est pas prêt."
+  },
+  {
+   "nom": "B.sillage.preparer",
+   "signature": "preparer(etat, n) → etat",
+   "role": "À appeler au lancement de la séance. Prépare l'état donné, ou en crée un neuf : liste à la taille de n, bornée à 16, et sources sans souffle, déjà en nombres à virgule. La première image n'alloue plus. mettreAJour n'écrit la longueur de la liste que si le nombre de voitures change."
+  }
+ ],
+ "changements_visibles": [
+  "Pièces en parabole : leur rotation suit désormais le temps dessiné, comme leur position, au lieu d'avancer par crans de 1/30 s.",
+  "Pièces PhysX :\n- l'orientation est prolongée par la vitesse de rotation déduite des deux dernières poses ;\n- au-delà d'un quart de tour par 1/30 s, la pièce garde sa dernière pose ;\n- une pièce posée reste figée dans sa dernière orientation.",
+  "Une étincelle née après l'instant dessiné (temps négatif, juste après une mise à jour) n'est pas encore montrée.",
+  "Une place de pièce réutilisée ne garde plus le quaternion de la pièce précédente.",
+  "Une fois jeu.js intégré, les effets avancent à chaque image, sans se figer une image sur six à 144 Hz, et se dessinent au même instant que les voitures. Par défaut, sans temps fourni, rien ne change.",
+  "Tri des effets derrière la caméra seulement si axe est passé ; par défaut, aucun changement.",
+  "Le monde PhysX est créé et chauffé à la résolution de FPhysX.init, pendant la vitrine de l'écran titre, au lieu du premier choc de chaque séance. Le premier débris d'une course ne paie plus la naissance du monde.",
+  "Pour le reste, aucun changement visible : mêmes pools, couleurs, tailles et positions (écart de 6e-15 au plus), même suite de tirages."
+ ],
+ "mesures": "Conditions : Node 24.18 sur ce Mac. Machine très chargée par d'autres exécutants (charge 50 à 75 pendant les mesures de la fin) : les durées sont gonflées et servent surtout à comparer l'ancien et le nouveau code dans les mêmes conditions.\n\nAllocations (profileur de tas échantillonné, douze voitures, tous les effets) :\n- Ancien : environ 212 539 octets par passe et 5 081 octets par dessin de 780 objets.\n- Nouveau : 0 octet en 300 passes et 1 800 dessins (essai effets-allocation).\n- Sillage : 0 octet sur 50 premières images préparées et 4 000 suivantes ; 7 296 à 7 600 octets pour 50 premières images d'états neufs.\n- Accident (une voiture, six pièces, sans PhysX) : 13,0 ko, contre 32,8 ko avant.\n- Ramassages : 0 en 600 passes et en 20 000 dessins, contre 5 (16 Mo) et 2 (27 Mo) avant.\n- Pièces PhysX en vol : FERRO alloue encore 80 à 120 ko par passe avec 26 à 47 corps (mesure faite avant la reprise).\n\nPasse à 30 Hz (passe30.mjs, à une charge de 50) :\n\n| | Nouveau | Ancien |\n|---|---|---|\n| Pas qui déclenche la passe | 88,8 à 120,8 µs | 238 à 324 µs |\n| Autres pas | 0,74 à 1,14 µs | 1,25 à 2,83 µs |\n| Dessin de 592 objets | 64 à 80 µs | 60 à 77 µs |\n| Appels attitude / mul / angles par passe | 0 / 0 / 0 | 195 / 120 / 183 |\n\nPlus tôt, la machine étant moins chargée, la passe de l'ancien code prenait 30 à 33 µs. traces.test donnait alors 0,018 à 0,021 ms par image (589 objets), contre 0,069 ms aujourd'hui sous charge.\n\nPhysX, vrai module dans Node (physx-monde.test) :\n\n| Cas | Machine moins chargée | Charge 50 |\n|---|---|---|\n| Monde né au premier débris : naissance | 1,5 à 1,6 ms | 4,27 ms |\n| Même monde : choc | 1,7 à 2,1 ms | 5,83 ms |\n| Même monde : premier pas | 5,7 à 6,3 ms | 32,38 ms |\n| Module prêt et monde chauffé, initialisation comprise | 17 à 22 ms | 83,77 ms |\n| Nouvelle chauffe | 0,36 à 0,72 ms | 0,98 ms |\n| Monde de la page chauffé : choc | 0,14 à 0,16 ms | 0,40 ms |\n| Monde de la page chauffé : premier pas | 0,13 à 0,14 ms | 0,37 ms |\n| Premier choc d'une séance, effets compris, code JS encore froid | 0,81 à 0,86 ms | 2,17 ms |\n| Première passe avec corps | 1,33 à 1,61 ms | 3,39 ms |\n\nProcessus neufs (charge vers 9) :\n- monde froid : choc de 3,2 à 9,4 ms, premier pas de 9,9 à 33,7 ms ;\n- monde chauffé : chauffe de 14,7 à 53 ms, puis choc de 0,49 à 2,99 ms et premier pas de 0,8 à 3,6 ms.\n\nNavigateur (comptage seulement) : un seul monde, de l'écran titre jusqu'à trois démos ; 12 corps après deux casses injectées ; aucune erreur.\n\nScripts de mesure dans /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/mesure/ : passe30.mjs, alloc-total.mjs, alloc-physx.mjs, comparer.mjs ; code d'origine dans traces-avant.js et sillage-avant.js.",
+ "risques": [
+  "Les trajectoires des pièces PhysX dépendent maintenant de l'histoire d'un monde partagé entre les séances (état interne du solveur, identifiants). Le budget, la parabole de repli, le repos et les durées de vie restent identiques, mais un même choc peut rouler un peu différemment d'un monde neuf. C'est visuel seulement : les pièces ne sont pas dans la simulation.",
+  "La chauffe automatique a lieu à la résolution de FPhysX.init. En temps normal, c'est pendant la vitrine de l'écran titre : un à-coup unique possible, de 15 à 53 ms dans Node en processus neuf. Si le module finissait son décodage pendant une course, l'à-coup tomberait en course, à la place de celui qui tombait avant au premier débris de chaque séance.",
+  "Temps continu : à chaque mise à jour à 30 Hz, un effet peut sauter d'au plus DT × l'écart de vitesse ; l'essai tolère un pas de 0,85 à 1,15 fois l'avance attendue.",
+  "Le zéro allocation ne tient qu'une fois le code optimisé : les premières images de la page tournent en code interprété. Un ramassage qui libère les objets d'une séance morte peut aussi jeter du code optimisé qui y faisait référence (vu en essai) : quelques images allouent alors après un changement de séance.",
+  "effets-allocation.test.mjs repose sur des mécanismes internes de V8 : profileur de tas, statistiques de code, ramassage par l'inspecteur. Une mise à jour de Node peut le faire échouer sans vraie régression. Il refait la mesure jusqu'à cinq fois quand du code se compile pendant la fenêtre, et son message le dit.",
+  "FPhysX.dispose() (au niveau du module) lève « dispose worlds first » tant que le monde de la page existe. Personne ne l'appelle aujourd'hui.",
+  "La passe suppose que B.circuit.dansTunnel et B.conduite.eauSurPiste n'allouent pas. Une version de ces fonctions qui allouerait ferait réapparaître des allocations dans la passe.",
+  "Un état de voiture sans champ choc numérique (fait à la main, sans B.conduite.creer) fait allouer environ 100 octets par passe à pas. C'est hors du domaine du jeu.",
+  "Banc et rapports : avantCasse.worlds vaut 1 et apresSeance.mondeCourant vaut true, alors que les relevés passés (lot2-casse-spark.json) attendaient 0 et false. Un lecteur qui comparerait à ces anciennes valeurs signalerait une fausse régression."
+ ]
+}

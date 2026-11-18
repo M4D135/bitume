@@ -1,0 +1,105 @@
+{
+ "resume": "I wrote the lot 21 study (ombres, lumière, eau), commit a9ac32e on etude/photo, not pushed. No game source changes: the shader mock-up is stored only as a diff in integration.patch. Nothing is implemented. Five things in the images most betray synthetic rendering. (1) The sea is milky and brighter than the sky: its material is partly metallic and the sky reflection is boosted ×1.6. (2) Ambient light is the same everywhere, with no occlusion, so cars float. (3) The tone curve is applied per channel, so red turns salmon. (4) The single-colour fog flattens far relief into plaster. (5) The wet-track reflections show stair-steps. The shadows are stable in the two measured scenes, so the 16/11 flicker is not reproduced. Two off-screen problems were measured: the tunnel eye adaptation has no effect (ratio 1.0011), and Légère with MSAA 4× gives a black screen (GL error INVALID_OPERATION). Measured costs: shadows 2.7 ms, screen reflections 0.6 ms (Fine, 2880×1514). The mock-up's calculated waves cost +2.2 ms on a full-screen sea. Important limit: the Mac was busy with other work (load average 33 to 79). A control run at 17:57 gave 44.6 ms against 18.8 ms. Every figure must be redone on an idle machine before any decision. The suite has 66 tests; 65 pass. decor.test.mjs fails only on its timing threshold (Val-Brûlé decor built in 182 to 304 ms against 150 ms allowed). No source file changed, so this is the machine load, not this lot. Rerun it on an idle machine.",
+ "documents": [
+  "/Users/david/Projects/bitume-wt/photo/docs/reprise/21-PHOTOREALISME.md",
+  "/Users/david/Projects/bitume-wt/photo/docs/reprise/rapports/photo-2026-11-18/README.md",
+  "/Users/david/Projects/bitume-wt/photo/docs/reprise/rapports/photo-2026-11-18/integration.patch"
+ ],
+ "preuves": [
+  "Captures (31 JPEG, 1280x720, Fine): /Users/david/Projects/bitume-wt/photo/docs/reprise/rapports/photo-2026-11-18/images/ — key ones: c1-eau-haut.jpg and c1-eau-rivage.jpg (milky sea), c4-voiture-34.jpg (salmon red), c2-bord.jpg (plaster fog), c0-piste-mouillee.jpg (stair-step reflections), c0-voiture-haut.jpg (car floats), c2-tunnel-sortie.jpg, annexe-legere-msaa4.jpg (black screen), and the *-maquette.jpg versions for before/after",
+  "Shadow costs: mesures/couts-fine-soleil-b.json (18.8 ms with shadows, 16.1 without), couts-fine-pluie.json (shadows 2.8 ms, screen reflections 0.6 ms), couts-fine-dpr1.json (1.8 ms at 1440x757), couts-moyenne-dpr2.json (0.8 ms)",
+  "Flicker: mesures/scint-tele-arbre-{high,medium,off}-fige.json, d1 0.008, 0.008 and 0.007 (shadows add nothing measurable with still scenery); scint-cockpit-*.json inconclusive (regions without shadow)",
+  "Inert tunnel adaptation: mesures/eclat.json, ratio 1.0011 between brightness 2 and 0.5",
+  "Légère + MSAA 4x black screen: mesures/noir.json, blitFramebuffer returns error 1282 (INVALID_OPERATION), context created without alpha",
+  "Base vs mock-up in alternating sessions: mesures/ab-origine-*.json and ab-maquette-*.json, forest same within noise, sea +2.2 ms median",
+  "Machine drift: couts-fine-soleil.json 21.9 ms (17:23), couts-fine-soleil-b.json 18.8 ms (17:24), ab-origine-c0 23.7–24.0 ms (17:39); controle-charge-1757.json 44.6 ms at load average 33",
+  "GPU: mesures/gpu.json — ANGLE Metal Renderer: Apple M5, HeadlessChrome 157",
+  "Patch check: git apply --check on integration.patch passes against 8bd3d86 (renderer.js, 43 insertions, 9 deletions)",
+  "Every URL in § 9 was checked: each appears in the session's web search results before the document was written"
+ ],
+ "constats": [
+  "Water: flat 5.2 km plane, metalness 0.35, sky reflection ×1.6 plus the Fine photo boost. It sends back more light than it gets, so it is milky and brighter than the sky. Giant blown-out sun ellipse; no depth, waves or foam.",
+  "Ambient light: depends only on n.y (renderer.js:833); no sky colour, ground bounce or shelter. Covered stands are lit, cars float, shadows look pasted on (5.5 % of the sun left in shadow).",
+  "Tone curve c/(c+0.76) applied per channel at six sites, so saturated colours wash out (red turns salmon); grey veil over the whole image.",
+  "Fog: one colour, exponential, capped at 86 %, independent of altitude and sun; far cliffs (Haut-Col) become plaster.",
+  "Shadows: one 200 m square (24 m behind to 176 m ahead in cockpit); 9.8 cm texels in Fine and 19.5 cm in Moyenne, with the same penumbra everywhere. Fade band 2–17 m from the edge that moves with the car. Car self-shadow is mushy and ground shadow detached from the tyres. Stable when the scenery is still.",
+  "The 16/11 flicker is not reproduced. Four leads: the Auto governor switching shadows, the edge of the shadow square, grass in the shadow pass with wind (5B-3), the cockpit self-shadow (not measured).",
+  "Wet track: half-resolution SSR with normals rebuilt from depth derivatives, so stair-steps and mirror-like reflections, with no blur or vertical stretch; spray drawn as spheres.",
+  "Dusk and night: the sun keeps its noon direction (fixed per circuit). Night ambient 0.15–0.30 lights like an overcast day. Night fog is brighter than the bottom of the sky, so the far sea looks brighter than the sky.",
+  "Tunnel: fx.brightness only acts through options.composition, which BITUME does not enable, so the eye adaptation is inert. No light pools; the exit is a hard white rectangle.",
+  "Légère with MSAA 4x: black screen, because the MSAA blit to a context without alpha is refused. FERRO-REFERENCE.md (0.3.6) says the opposite.",
+  "Matières: plastic-looking paint without clearcoat, uniform tyres, uniform asphalt, terrain coloured per triangle, flat grey snow.",
+  "Costs: about 2.4 ms per extra million pixels in Fine plus about 8 ms fixed; the Fine photo boost costs nothing measurable (18.9 vs 18.8 ms); bloom could not be isolated (black image without it).",
+  "Mock-up (tone curve that keeps hue, sky/ground hemisphere light, sun-tinted fog, dielectric water): no cost measured on the forest. The water is fixed and red is red again. The Haut-Col plaster stays (needs height fog). The calculated waves cost +2.2 ms, so use a texture."
+ ],
+ "plan": [
+  "Étape 1 Ombres — O1 analytic car contact (oriented box + 4 contacts), all tiers, estimated 0.1–0.3 ms, no texture",
+  "Étape 1 Ombres — O2 far shadows baked at load (fixed sun, 2048² depth map, about 1.5 m/texel, 8 MB), Moyenne and Fine, cut by uniform",
+  "Étape 1 Ombres — O3 shadow tile for the filmed car and the cockpit (512², 1.4 cm/texel, 1 MB), Moyenne and Fine, estimated 0.1–0.2 ms",
+  "Étape 1 Ombres — O4 lite PCSS (4 extra reads, fixed rotation) plus weather-driven penumbra, Fine (weather part free in Moyenne), estimated 0.3–0.6 ms",
+  "Étape 1 Ombres — O5 flicker check (scintillement.js tool, d1 < 0.01 on still scenery) and logging of the Auto governor level",
+  "Étape 1 Ombres — O6 screen-space contact shadows and GTAO set aside until after 5B (they need a depth pre-pass)",
+  "Étape 2 Lumière — L1 tone curve that keeps hue, at every tonemap site, plus palette retuning; measured cost nil; all tiers",
+  "Étape 2 Lumière — L2 exposure uniform before the tone curve (makes the tunnel adaptation work, allows a dark night); nil; all tiers",
+  "Étape 2 Lumière — L3 9-coefficient SH sky light (from FSky.radianceAt or the atmosphere colours), Float32Array reused; all tiers",
+  "Étape 2 Lumière — L4 FSky physical sky per circuit plus height-dependent fog, extinction and scattering, and lifting the 86 % cap; cost to measure",
+  "Étape 2 Lumière — L5 sky occlusion texture baked at load (trees, roofs, tunnel mouths; R8 2048², 4 MB, one read); all tiers",
+  "Étape 2 Lumière — L6 GPU auto-exposure (mips down to 1×1, no readback, ±1 EV), Moyenne and Fine, 0.05–0.1 ms",
+  "Étape 2 Lumière — L7 bloom pyramid (13 reads down, tent up) plus tunnel-exit glare, Fine, 0.3–0.5 ms; RGBA16F reserved for a tier above Fine",
+  "Étape 2 Lumière — L8 half-resolution GTAO on the ambient term, tier above Fine, 1–1.5 ms to measure",
+  "Étape 2 Lumière — L9 matières: clearcoat paint, tyres and rims (with 12B), two-scale asphalt, terrain without triangle patches, blue-tinted snow, specular AA extended to water",
+  "Étape 2 Lumière — L10 low sun at dusk, a truly dark night with track lamps, headlights and fog halos, light pools in the tunnel",
+  "Étape 2 Lumière — L11 god rays (radial blur at quarter resolution), optional, tier above Fine, about 0.2 ms",
+  "Étape 3 Eau — E1 dielectric water (F0 0.02–0.04, no gain or photo boost), measured cost nil, all tiers",
+  "Étape 3 Eau — E2 waves from a 256² normal texture baked at load (Gerstner), 2 reads (1 in Légère), fading and roughness with distance",
+  "Étape 3 Eau — E3 shore texture (water depth and distance to shore, RG8 1024²): Beer-Lambert absorption and animated foam, all tiers",
+  "Étape 3 Eau — E4 screen reflections enabled on water in dry weather, Fine, about 0.6 ms",
+  "Étape 3 Eau — E5 clean wet-track screen reflections (surface normal, depth-aware upsample, vertical stretch), Fine, 0.2–0.5 ms",
+  "Étape 3 Eau — E6 rain ripples in the puddles (array of 16 128² frames baked at load), all tiers in rain",
+  "Étape 3 Eau — E7 stretched reflections of lamps and headlights on the wet track, in the 12-light loop, all tiers",
+  "Étape 3 Eau — E8 spray as soft camera-facing particles (traces.js), all tiers",
+  "Proposed order: L1 + L2 + E1 first (nearly free, biggest gain), then O1, O3, O2, O4, then E2, E3, then L3, L5, L4, then the rest"
+ ],
+ "integration": [
+  "FERRO (M4D135/FERRO), opt-in options that keep the historical image by default: tone-curve option, uExposition (also fixes the tunnel), uCielSH, fx.contacts, fx.ombreProche, precalculerOmbre, fx.occlusionSol, water layer and dielectric water, height fog; regenerate webgpu-shaders.js (Naga); one test per option on the FERRO side, then tools/install-ferro.py and a new FERRO.lock.json",
+  "Fix the Légère + MSAA 4x black screen in FERRO: resolve into a texture then draw it, or create the context with alpha",
+  "BITUME: jeu.js (enable the options, pass nearby cars and the filmed car's box without allocation), decor.js (baked occlusion and shore textures), ambiance.js (dusk sun direction, dark night), voiture.js (per-part occlusion, clearcoat), traces.js (spray); each new module gets its test in verifications/ (deterministic at equal seed, no draw from the race randomness)",
+  "Qualification: full suite, the same framings before and after (outils/lot1.py to lot3.py), cost in alternating sessions on an idle machine, flicker index, a pass in a visible window (tools/profil-accrocs.mjs)",
+  "Do not apply integration.patch as is: it edits a locked shared copy without an option, its waves cost 2.2 ms, its value noise shows a grid in the sun reflections, and the other tonemap sites are missing",
+  "The effects that cost milliseconds in Fine (O4, L7, E4, E5) wait for the lot 5B gains: Fine already drops one frame in four with the mirrors on David's Mac"
+ ],
+ "questions_pour_david": [
+  "Where did you see the shadows flicker on 16/11: circuit, view, Auto or fixed quality, window size? The two measured scenes do not flicker.",
+  "The tone curve that keeps hue changes the look of every circuit (truly red red, deeper sky): apply it everywhere?",
+  "Night: truly dark and contrasted, where headlights and lamps matter, or keep today's readability?",
+  "Dusk: low sun and long shadows, so a sun direction that changes with the time of day?",
+  "A tier above Fine (« Photo ») for GTAO, the bloom pyramid, god rays and scenery reflected in water, rather than making Fine heavier?",
+  "Légère: add the zero-cost effects (car contact, tone curve, water, canopy occlusion), or keep it strictly identical?",
+  "Start with water (most visible) or with shadows (your 16/11 request)?",
+  "The Légère + MSAA 4x black screen: fix it in lot 5B, which already touches FERRO, or separately?"
+ ],
+ "non_fait": [
+  "No implementation: everything is study; the only shader change is the local mock-up, exported to integration.patch then removed (renderer.js, dist, VERSION.json and SIZE.json back at 8bd3d86)",
+  "The machine was not idle (load average 11 to 79; other browsers and Node processes running): absolute costs to redo on an idle machine; a control run gave 44.6 ms instead of 18.8",
+  "Suite: 65/66 green; verifications/decor.test.mjs fails only on its timing threshold (decor built in 182 to 304 ms against 150 ms) under this load, with no source changed; to rerun on an idle machine",
+  "Costs of GTAO, PCSS, FSky, bloom pyramid, SH, occlusion texture and the other effects not measured (estimates in § 5)",
+  "No test in a visible window or on mobile; captures and measurements in headless Chrome only",
+  "Cockpit self-shadow flicker not measured (the chosen regions had no shadow); the 16/11 flicker not reproduced",
+  "Cause of the horizontal stripes on the sea in rain not established",
+  "WebGPU (WGSL) parity not checked",
+  "Bloom cost not isolated (image is black without it)",
+  "Research done from search summaries and excerpts; full articles not all read; the iquilezles fog article could not be fetched",
+  "No push, no merge"
+ ],
+ "commits": [
+  "a9ac32e (etude/photo, not pushed) — Lot 21 : étude du photoréalisme (ombres, lumière, eau) — 77 new files: docs/reprise/21-PHOTOREALISME.md and docs/reprise/rapports/photo-2026-11-18/ (README, integration.patch, 31 images, 29 measurement files, 14 tools)"
+ ],
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/photo/docs/reprise/21-PHOTOREALISME.md",
+  "/Users/david/Projects/bitume-wt/photo/docs/reprise/rapports/photo-2026-11-18/README.md",
+  "/Users/david/Projects/bitume-wt/photo/docs/reprise/rapports/photo-2026-11-18/integration.patch",
+  "/Users/david/Projects/bitume-wt/photo/docs/reprise/rapports/photo-2026-11-18/images/",
+  "/Users/david/Projects/bitume-wt/photo/docs/reprise/rapports/photo-2026-11-18/mesures/",
+  "/Users/david/Projects/bitume-wt/photo/docs/reprise/rapports/photo-2026-11-18/outils/"
+ ]
+}

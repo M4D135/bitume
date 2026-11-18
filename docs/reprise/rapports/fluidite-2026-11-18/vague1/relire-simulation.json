@@ -1,0 +1,58 @@
+{
+ "verdict": "conforme",
+ "constats": [
+  {
+   "id": "R1",
+   "gravite": 1,
+   "fichier": "verifications/determinisme-simulation.test.mjs",
+   "lignes": "14-17, 432-441",
+   "probleme": "La fixture a été prise sous Node v24.18.0 sur ce Mac (arm64). La CI (.github/workflows/qualification.yml) tourne avec node-version '24' (version mineure flottante) sur un runner Linux x64. Si un bit change d'une plateforme à l'autre, le test sort en « KO … diverge à la seconde N » sans dire que la cause peut être l'environnement. Je n'ai pas pu le vérifier sur x64 : c'est un risque non prouvé, pas une casse.",
+   "preuve": "Lignes 14-17 : seul un commentaire signale la dépendance à la version. Le message KO (l. 436-438) n'imprime ni process.version ni process.arch, et ne les compare pas à fixture.node. Le workflow qualification.yml fixe node-version: '24' et lance la boucle verifications/*.test.mjs.",
+   "correctif": "Dans le message KO, afficher process.version et process.arch à côté de ref.node, et noter l'architecture dans la fixture. Regarder le premier passage CI de la branche intégrée : s'il diverge sur x64, cela vient de la plateforme, pas du lot."
+  },
+  {
+   "id": "R2",
+   "gravite": 1,
+   "fichier": "src/obstacles.js",
+   "lignes": "11-17",
+   "probleme": "Le raisonnement du commentaire de PORTEE est confus (« caisse orientée, de plus de 0,25 m sur l'un de ses propres axes, que tester essaie »). Le rejet est bien conservatif, mais pour une raison plus simple : une caisse dont le centre est hors de la boîte englobante élargie de plus que sa demi-diagonale est disjointe du solide. Pour deux polygones convexes disjoints, le test des axes séparateurs trouve toujours un axe à recouvrement ≤ 0, d'où null. Pour le prisme, son propre test de boîte rend déjà null. Le facteur √2 n'est qu'une marge.",
+   "preuve": "Lecture de tester (l. 111-131), de testerPrisme (l. 58-62) et de horsDePortee (l. 185-188). Mutation PORTEE = 0 : 5 cas KO dans determinisme-simulation et un échec dans simulation-sorties (« solides : cellules et boîtes… »). La marge est donc testée, et la valeur actuelle ne diverge sur aucune de mes 54 comparaisons.",
+   "correctif": "Réécrire le commentaire en deux lignes avec l'argument de disjonction (demi-diagonale + marge, test des axes séparateurs complet). Aucun changement de code."
+  },
+  {
+   "id": "R3",
+   "gravite": 1,
+   "fichier": "src/course.js",
+   "lignes": "494-515",
+   "probleme": "classer n'égale le tri stable d'avant que si la comparaison est un ordre cohérent. Elle ne l'est plus si progression vaut NaN (risque signalé par l'exécutant), ni si abandon ou fini cessent d'être de vrais booléens : avec undefined contre false, comparerRangs rend -1 dans les deux sens. Aujourd'hui, ces champs ne sont écrits qu'en booléens : course.creer et course.js l. 436, et rien dans reseau.js.",
+   "preuve": "Lecture de comparerRangs et grep des écritures de abandon, fini, progression et tempsFinal dans /Users/david/Projects/bitume/src. Mutation « > 0 » → « >= 0 » dans classer : détectée par simulation-sorties (« classement… essai 6 »), mais pas par le test de déterminisme (0 KO).",
+   "correctif": "Aucun correctif obligatoire. Dire dans le commentaire de classer que l'égalité suppose abandon et fini booléens et des scores non NaN. Le test de déterminisme ne voit pas un tri instable : seul simulation-sorties le garde."
+  },
+  {
+   "id": "R4",
+   "gravite": 1,
+   "fichier": "src/course.js",
+   "lignes": "567-573 (préexistant, hors diff)",
+   "probleme": "Je confirme le défaut préexistant signalé par l'exécutant. dansLaVoie et dansLeGarage comparent un écart signé sans Math.abs, et l'entrée aux stands ne regarde que le décalage latéral et la vitesse. Un pilote humain lent côté stands entre en voie n'importe où sur le tour. Le lot ne le corrige pas, à raison : le corriger changerait les résultats p9.",
+   "preuve": "Mes épreuves à pilote humain aléatoire comptent 678 événements « stand » (chrono roche-fauve, 300 s), 644 (chrono brume-de-jade) et 1485 (duo port-sable, 240 s), identiques entre base et tête.",
+   "correctif": "Hors lot : à traiter avec un passage de la physique à p10."
+  }
+ ],
+ "verifications_faites": [
+  "Diff complet 54e98c9..HEAD relu : circuit, conduite, contacts, course, dégâts, obstacles et les deux tests. Fichiers entiers relus autour des changements : tester et testerPrisme, la boucle pas des obstacles, la boucle des paires des contacts, commandesIA du début à la fin, majClassement, conduite.pas.",
+  "Seuls les fichiers de la liste et leurs tests sont touchés. Ni dist, ni VERSION.json, ni SIZE.json dans les commits. Deux commits, l'exception prévue : test et fixture seuls d'abord (8d47717), puis le code (59c8591). Ni push ni merge. L'arbre de travail est resté propre après mes passages (git status vide).",
+  "Fixture reproduite : git archive 54e98c9 dans un dossier temporaire, avec le test de la tête et son option --ecrire. Les 1259 empreintes des 19 cas et leurs résumés sont identiques à la fixture commitée, prise elle aussi sous Node v24.18.0 et sur 54e98c9. Le test passe aussi sur la tête (19 cas, 1259 empreintes).",
+  "Épreuve différentielle à moi (/private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecture-sim/epreuve.mjs), base contre tête : empreinte SHA-256 chaînée à CHAQUE pas de l'état complet (course hors tracé, voitures, IA, dégâts, événements), résumée par seconde. Cas joués : les 7 circuits du CATALOGUE × 2 graines (3 et 20261118), difficultés 0 à 2, 300 s ; 2 courses sous la pluie (0,8 et 0,5) ; 3 duos à deux humains aux commandes scriptées au hasard (boîte manuelle, dérive, guidage, recul, pneus slicks sous la pluie, stands, accidents, replacements toutes les 15 à 20 s) ; deux courses menées en alternance sur le même tracé ; 2 chronos de 300 s avec un humain aléatoire. Résultat : 54 comparaisons sur 54 IDENTIQUES.",
+  "Même épreuve avec le branchement de vague 2 simulé (--sortie) : course.pas avec un tableau d'événements réutilisé, commandesIA du joueur dans un objet gardé. Les 16 courses de 300 s sont identiques à la base.",
+  "Même épreuve avec B.course.chauffe(c, {secondes: 20}) avant la course (--chauffe) : les 16 courses sont identiques à la base sans chauffe.",
+  "Mutations (copies hors de l'arbre) : classer en « >= 0 », PORTEE des contacts réduite à diag-1,5 m, PORTEE des obstacles à 0. Les trois sont détectées : la première par simulation-sorties seul, la deuxième par le déterminisme (17 KO) seul, la troisième par les deux. Les tests peuvent donc échouer.",
+  "Rejets conservatifs prouvés par lecture. Contacts : tester rend null au-delà de √(L²+l²) entre centres, et une pose interpolée s'écarte au plus de |dx|+|dz| de la pose de fin. Obstacles : test des axes séparateurs complet pour des convexes disjoints, test de boîte du prisme, et n de l'itération 0 égal à samples (mêmes expressions). Les poses du trajet ne changent pas pendant la boucle des solides : l'état n'est modifié qu'après le choix de first.",
+  "Réécritures flottantes relues : echantillon (mêmes expressions tab[i] + (tab[j] - tab[i]) * t), expTauFixe (PARAMS est Object.freeze, et la mémoire est rafraîchie quand dt change), emprises en cache indexées par h (fonction pure), lectures vIci, kIci et lIci remontées (e.s inchangé pendant la décision), vIci*hab*.74 dans le même ordre, ecart du classement. Aucune réassociation trouvée.",
+  "Objets partagés : les LU.* de conduite, LU_POSE et LU_VITESSE des contacts, LU_MONDE, TRAJET, SAT, DEBUT et FIN des obstacles ne sortent jamais de leur fonction. conduite.pas ne lit ni ne vide le tableau d'événements reçu (grep). cmd n'est jamais gardé ni écrit par conduite. NEUTRE est rendu figé pendant le temps de réaction.",
+  "Appelants hors lot (jeu.js, traces.js, realisateur.js, reseau.js du dépôt principal) : ils appellent tous echantillon, course.pas et commandesIA sans sortie, et reçoivent donc des objets neufs comme avant. Aucun ne lit les champs IA ajoutés avec in ou Object.keys. course.classement reste un tableau neuf à chaque pas.",
+  "Jeu réel : construire.py dans des copies base et tête, puis page-essai.mjs avec le script de course de l'exécutant (référence circuit 0, 68 s). Classement, positions, vMax et statistiques de l'IA identiques, aucune erreur console. L'horloge diffère de quelques centièmes, par le nombre d'images de fin d'attente, pas par la simulation.",
+  "Mesure de ramasse-miettes refaite avec node --trace-gc, val-brule, 12 voitures, jusqu'à la fin de course (283 s) : 142 → 32 nettoyages mineurs, environ 4539 → 1022 Mo libérés, 0 majeur. C'est cohérent avec les 150 → 34 et 4790 → 1080 Mo annoncés (fenêtre un peu différente). Classement final identique. Je n'ai pas refait le temps par pas : charge de la machine de 40 à 62.",
+  "Commentaires : en français, ils disent le pourquoi, sans historique de session. Ligne d'attribution des commits « Claude Opus 5.5 » : l'exécutant a suivi la consigne du système hôte plutôt que le texte calculé (« Fable 5.2 »), sans autorité utilisateur. Ce n'est pas un constat."
+ ],
+ "tests": "Lancés par moi :\n- determinisme-simulation.test.mjs : OK sur la tête (19 cas, 1259 empreintes, sensibilité OK). Avec --ecrire sur la base, il reproduit la fixture à l'identique.\n- simulation-sorties.test.mjs : 8 sur 8 dans les passages de mutation, et vert dans la suite complète.\n- Suite complète dans /Users/david/Projects/bitume-wt/simulation : 67 sur 68. Le seul échec, decor.test.mjs (« décor construit en moins de 150 ms » : 153 ms), est chronométré. Il échoue aussi sur la BASE à la même charge (430 et 304 ms contre 304 et 233 ms sur la tête), avec une charge moyenne de 39 à 62 : fragilité préexistante, sans rapport avec le lot.\n- Épreuves à moi, base contre tête : 54 comparaisons sur 54 identiques au bit près (dans /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecture-sim/res-comparaison.txt).\n- 3 mutations, toutes détectées.\n- Essai en navigateur : base et tête identiques, aucune erreur console."
+}

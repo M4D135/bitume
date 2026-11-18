@@ -1,0 +1,196 @@
+{
+ "resume": "Lot nature (vague 1) fait dans /Users/david/Projects/bitume-wt/nature (branche fluidite/nature) : un seul commit f8ba80e, sans push. Rien n'a été modifié hors du périmètre ; src/jeu.js et src/ambiance.js sont intacts.\n\n1) Préparations statiques par scène. B.faune.preparer et B.faune.preparerParTranches, B.effetsSaison.preparer, B.aurores.preparer rendent un objet figé, indépendant du palier et de la vue, que l'appelant garde sur la scène. creer(c, decor, preparation) ne crée plus que les pools des vues. Il refuse une préparation venue d'un autre circuit ou d'un autre décor et la recalcule. creer(c, decor) seul marche comme avant.\n\n2) Travail inutile retiré, sans changer ce qui est dessiné. Faune : plus de remise à −1 des 12 288 entrées, tri stable des emplacements libres, clés numériques, tampon de sols commun, sortie directe quand le budget est nul. Neige et feuilles : seules les positions écrites de la table de 2 048 cases sont effacées ; plan vide traité tout de suite ; pas de tri quand aucune clé n'est nouvelle.\n\n3) Toile de pluie (#meteo) :\n- drapeau « propre » ;\n- au sec : ni lecture de mise en page, ni effacement, ni composition ; la toile est masquée par style.visibility jusqu'au premier trait ;\n- plafond de 2 Mpx ;\n- options largeur, hauteur et palier ;\n- opacité par globalAlpha avec une couleur constante ;\n- prechauffer().\n\n4) Visière : la simulation reste au pas de 1/30 s, mais le dessin se fait à chaque image, interpolé entre les deux derniers pas (exact à k = 0 et à k = 1). Autres changements :\n- au sec avec une visière vide, aucune mesure ni parcours des pools ;\n- toile vide masquée ;\n- définition figée par séance ;\n- prechauffer().\n\n5) Cadences : tests ajoutés pour 30, 60, 120 et 144 Hz et pour une vue rendue une image sur deux avec le temps cumulé.\n\n6) nuitReelle : pas fait, le code est dans conditions-course.js, hors périmètre ; voir les demandes d'intégration.\n\nVérifications :\n- différentiels ancien/nouveau à zéro écart (faune, effets de saison, aurores, pluie, simulation et dessin de la visière) ;\n- suite complète : 69 fichiers, 0 échec (66 au départ + 3 nouveaux) ;\n- contrôle dans Chrome sans erreur console.\n\nÉcart à signaler : la ligne de fin du commit est « Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com> » (consigne d'attribution de l'outil, modèle réel) et non « Claude Fable 5.2 » comme demandé.",
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/nature/src/faune.js",
+  "/Users/david/Projects/bitume-wt/nature/src/effets-saison.js",
+  "/Users/david/Projects/bitume-wt/nature/src/aurores.js",
+  "/Users/david/Projects/bitume-wt/nature/src/meteo.js",
+  "/Users/david/Projects/bitume-wt/nature/src/vitre.js",
+  "/Users/david/Projects/bitume-wt/nature/verifications/meteo.test.mjs",
+  "/Users/david/Projects/bitume-wt/nature/verifications/vitre.test.mjs",
+  "/Users/david/Projects/bitume-wt/nature/verifications/meteo-toile.test.mjs",
+  "/Users/david/Projects/bitume-wt/nature/verifications/vitre-cadence.test.mjs",
+  "/Users/david/Projects/bitume-wt/nature/verifications/nature-preparation.test.mjs"
+ ],
+ "api": [
+  {
+   "nom": "B.faune.preparer",
+   "signature": "preparer(c, decor) -> Object.freeze({ type: 'faune', circuit, decor, activite, montagne, habitats, index })",
+   "role": "Habitats et index d'une scène, calculés une fois (ouvre l'herbier s'il y a des candidats). Indépendant du palier, de la vue et de l'horloge ; à garder sur scene."
+  },
+  {
+   "nom": "B.faune.preparerParTranches",
+   "signature": "preparerParTranches(c, decor) -> { fini, resultat, habitats, avancer(budgetMs) -> boolean }",
+   "role": "Même calcul découpé : avancer(2) rend la main après environ 2 ms ; avancer(Infinity) termine d'un trait. Le résultat est identique à preparer()."
+  },
+  {
+   "nom": "B.faune.creer",
+   "signature": "creer(c, decor, preparation?) -> etat (avec etat.preparation)",
+   "role": "Avec la préparation de la même scène (circuit et décor identiques), ne crée que les pools des deux vues. Sinon, ou sans préparation, recalcule comme avant."
+  },
+  {
+   "nom": "B.effetsSaison.preparer",
+   "signature": "preparer(c, decor) -> Object.freeze({ type: 'effets-saison', circuit, source, saison, cote, graine, decor, interdits, route, sources, cacheCles, cacheSols })",
+   "role": "Masques de route, de tunnel et de toits, sources de feuilles et cache des sols. Le cache ne mémorise que des valeurs exactes : il se partage entre vues et séances."
+  },
+  {
+   "nom": "B.effetsSaison.creer",
+   "signature": "creer(c, decor, preparation?) -> etat",
+   "role": "Reprend la préparation de la même scène et ne crée que les deux vues de 608 objets et le vent lissé. Sans préparation, comportement inchangé."
+  },
+  {
+   "nom": "B.aurores.preparer",
+   "signature": "preparer(circuit) -> Object.freeze({ type: 'aurores', circuit, actif, rubans })",
+   "role": "Les trois rubans figés d'un circuit."
+  },
+  {
+   "nom": "B.aurores.creer",
+   "signature": "creer(circuit, preparation?) -> etat",
+   "role": "Reprend les rubans si la préparation vient du même circuit, sinon les recalcule."
+  },
+  {
+   "nom": "pluie.dessiner (B.meteo.creerPluie(canvas))",
+   "signature": "dessiner(m, cam, dt, options?) avec options { cockpit, dpr, largeur?, hauteur?, palier? } -> stats { candidats, visibles, traits, lots, lectures, pixels, propre, masquee }",
+   "role": "Au sec, efface une seule fois puis masque la toile (visibility). Plafond 2 Mpx. largeur et hauteur en pixels CSS évitent clientWidth et clientHeight. palier : low 420, medium 630, high et ultra 840 gouttes ; sans palier, 840."
+  },
+  {
+   "nom": "pluie.prechauffer",
+   "signature": "prechauffer(options?) -> boolean",
+   "role": "Sous le voile : un trait à 1/255 composé une fois. Le prochain appel au sec l'efface et masque la toile."
+  },
+  {
+   "nom": "B.meteo.GOUTTES / B.meteo.MAX_PIXELS",
+   "signature": "GOUTTES = { low: 420, medium: 630, high: 840, ultra: 840 } ; MAX_PIXELS = 2000000",
+   "role": "Bornes connues d'avance pour l'appelant."
+  },
+  {
+   "nom": "B.vitre.mettreAJour",
+   "signature": "mettreAJour(e, dt, contexte) -> stats (+ stats.fraction)",
+   "role": "Simulation au pas de 1/30 s inchangée ; dessin à chaque image à la fraction accumulateur / PAS. Au sec avec une visière vide : seulement l'horloge, sans mesure. Toile vide masquée."
+  },
+  {
+   "nom": "B.vitre.prechauffer",
+   "signature": "prechauffer(e, contexte) -> boolean",
+   "role": "Sous le voile : une goutte et un flocon à 1/255. Le prochain appel actif efface."
+  },
+  {
+   "nom": "B.vitre.effacer",
+   "signature": "effacer(e)",
+   "role": "Comme avant, et remet aussi à zéro la définition de séance : le palier du premier pas suivant la fixe."
+  }
+ ],
+ "tests": [
+  {
+   "commande": "node verifications/faune.test.mjs",
+   "resultat": "15 contrôles passés"
+  },
+  {
+   "commande": "node verifications/effets-saison.test.mjs",
+   "resultat": "10 contrôles passés"
+  },
+  {
+   "commande": "node verifications/aurores.test.mjs",
+   "resultat": "5 contrôles passés"
+  },
+  {
+   "commande": "node verifications/meteo.test.mjs",
+   "resultat": "103 contrôles. Deux attentes mises à jour et expliquées dans le test : toile 1920×1080 devenue floor(1280·k)×floor(720·k) sous 2 Mpx ; opacité lue dans globalAlpha avec la couleur constante rgb(190,210,225)."
+  },
+  {
+   "commande": "node verifications/meteo-toile.test.mjs (nouveau)",
+   "resultat": "25 contrôles passés. Contre l'ancien meteo.js, 5 sections sur 6 échouent ; seule la section demi-cadence passe aussi avant (garde-fou)."
+  },
+  {
+   "commande": "node verifications/vitre.test.mjs",
+   "resultat": "8 contrôles. Le test « 30 Hz indépendants » est mis à jour et expliqué : simulation identique à 30 et 120 Hz, dessins environ ×4 à 120 Hz, un appel sans nouveau pas redessine."
+  },
+  {
+   "commande": "node verifications/vitre-cadence.test.mjs (nouveau)",
+   "resultat": "8 contrôles passés. Contre l'ancien vitre.js, interpolation, sec, fondu, définition et préchauffage échouent ; « même image aux mêmes instants » et « demi-cadence » passent aussi avant (garde-fous)."
+  },
+  {
+   "commande": "node verifications/nature-preparation.test.mjs (nouveau)",
+   "resultat": "4 contrôles en 1,35 s, sur le vrai circuit forêt en automne : préparation reprise, mêmes images, scène étrangère refusée, tranches identiques, invariants des tables de propriétaires."
+  },
+  {
+   "commande": "for t in verifications/*.test.mjs; do node \"$t\" > /dev/null 2>&1 || echo \"ECHEC $t\"; done",
+   "resultat": "69 fichiers, 0 échec (66 au départ + 3 nouveaux), relancé après la dernière modification"
+  },
+  {
+   "commande": "node /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/diff-faune.mjs ete,automne",
+   "resultat": "{images: 113400, objets: 496831, ecarts: 0}, sur 7 circuits, 2 vues, 30/60/144 Hz ; préparation par tranches identique"
+  },
+  {
+   "commande": "node /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/diff-saison.mjs",
+   "resultat": "{images: 226800, objets: 2203826, ecarts: 0}, sur 6 circuits × 3 saisons, avec une seconde séance qui reprend la préparation et son cache"
+  },
+  {
+   "commande": "node /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/diff-aurores.mjs",
+   "resultat": "{images: 32000, ecarts: 0}"
+  },
+  {
+   "commande": "node /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/diff-meteo.mjs",
+   "resultat": "{images: 36000, traits: 1318574, ecarts: 0} ; lectures de taille 72000 (ancien), 34668 (nouveau sans taille fournie), 0 (avec taille fournie)"
+  },
+  {
+   "commande": "node /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/diff-meteo-plafond.mjs",
+   "resultat": "Géométrie identique (0 écart, transformation exclue) ; toiles 3840×2160, 1920×1080 et 2880×1620 ramenées à 1885×1060"
+  },
+  {
+   "commande": "node /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/diff-vitre.mjs",
+   "resultat": "{images: 63000, ecartsSim: 0, ecartsDessin: 0, comparaisons: 42000}, sur 7 cadences (dont gigue, demi-cadence et longues images). Le dessin à k égale l'ancien dessin de l'état interpolé ; à k = 1, il égale l'ancien dessin."
+  },
+  {
+   "commande": "python3 construire.py && node /Users/david/Projects/bitume/tools/page-essai.mjs dist/bitume.html /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/essai-page.js --taille 1440,900",
+   "resultat": "Aucune erreur console. Écran titre : #meteo masquée et jamais dimensionnée (300×150). reference({ meteo: 'pluie' }) : #meteo et #vitre visibles, 1440×900, pixels tracés. reference({ meteo: 'soleil' }) : les deux toiles masquées et vides. Retour à la pluie : visibles. Ensuite git checkout -- dist VERSION.json SIZE.json."
+  },
+  {
+   "commande": "node /Users/david/Projects/bitume/tools/page-essai.mjs dist/bitume.html /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/essai-pluie-look.js (1440×900 dpr 1, puis 2560×1440 dpr 1,5)",
+   "resultat": "Même image, ancien contre nouveau : 1627 pixels allumés, 0 pixel différent. En 2560×1440 à 1,5 : mêmes 62 traits, opacité moyenne par pixel 0,012895 contre 0,012897, toile 1333×1500 au lieu de 1920×2160. Traits un peu plus doux à l'œil (captures crop-ancien.png et crop-nouveau.png dans le dossier de travail)."
+  }
+ ],
+ "demandes_integration": [
+  "src/jeu.js, installer() (l. 134-165), juste avant « scene = { index: i, ... } » (l. 161). Préparer la nature sous le voile et la ranger sur la scène :\n```\nconst nature = { faune: B.faune ? B.faune.preparer(c, decor) : null, effetsSaison: B.effetsSaison ? B.effetsSaison.preparer(c, decor) : null, aurores: B.aurores && c.theme === 'islande' ? B.aurores.preparer(c) : null };\n```\nPuis ajouter « nature » dans l'objet scene. La faune est préparée même si le profil courant la coupe : l'Auto ou le réglage peuvent l'ouvrir en course. Coût d'un preparer : il ouvre l'herbier s'il y a des candidats (632 à 785 ms à froid en Node sur asie et pacifique). Pour les démos sans voile, on peut utiliser B.faune.preparerParTranches(c, decor).avancer(2) image par image (26 à 58 tranches de 2 ms), mais seulement après avoir ouvert decor.herbier : sa construction est d'un seul tenant dans decor.js.",
+  "src/jeu.js, lancer() : après la construction de S (l. 210-217) et avant « session = S » (l. 234), créer les états de la nature au lancement, avec les mêmes conditions que rendreVue pour ne rien changer à l'image :\n```\nconst N = S.nature, prep = sc.nature || {};\nif (B.faune && (!N.saison || N.saison.faune > 0)) N.faune = B.faune.creer(c, sc.decor, prep.faune);\nif (B.effetsSaison && N.saison && (N.saison.feuilles || N.saison.neige || meteoInit.neige)) N.effetsSaison = B.effetsSaison.creer(c, sc.decor, prep.effetsSaison);\nif (B.aurores && c.theme === 'islande') N.aurores = B.aurores.creer(c, prep.aurores);\n```",
+  "src/jeu.js, rendreVue l. 1714, 1722 et 1735 : garder la création paresseuse comme garde-fou, mais avec la préparation :\n```\nB.faune.creer(c, scene.decor, scene.nature && scene.nature.faune)\nB.effetsSaison.creer(c, scene.decor, scene.nature && scene.nature.effetsSaison)\nB.aurores.creer(c, scene.nature && scene.nature.aurores)\n```\nOption (carte jeu-seance-07) : compter ces créations tardives dans B.mesures pour prouver qu'il n'en reste aucune en course.",
+  "src/jeu.js, demarrerSeance (l. 2364-2374) : aujourd'hui le voile est retiré avant lancer(). Ordre proposé dans le setTimeout : test « if (ecran !== avant) return; », puis lancer(...), puis préchauffage, puis aller('course'), et seulement ensuite $('chargement').classList.add('fini'). Préchauffage :\n```\nif (pluieVue) pluieVue.prechauffer({ dpr: devicePixelRatio || 1, largeur, hauteur });\nif (vitreVue) B.vitre.prechauffer(vitreVue, { qualite: profilDe(session).palier, dpr: devicePixelRatio || 1, largeur, hauteur });\n```\nMême chose pour pluieVue2 et vitreVue2 à deux. B.vitre.prechauffer doit venir après B.vitre.effacer (l. 174), qui remet à zéro la définition de séance. Créer pluieVue, pluieVue2, vitreVue et vitreVue2 une fois au démarrage de la page, après le rendu ; les lignes 497-498 et 504-505 restent comme garde-fou.",
+  "src/jeu.js, dessinerMeteo (l. 494-515). Remplacer « Object.assign(METEO_ABRI, { t: S.meteo.t }) » par « (METEO_ABRI.t = S.meteo.t, METEO_ABRI) ». Réutiliser un objet d'options par vue (par exemple const OPTIONS_PLUIE = [{ cockpit: false, dpr: 1, largeur: 0, hauteur: 0 }, { ... }]) et le remplir à chaque appel (cockpit, dpr). Passer largeur et hauteur en pixels CSS entiers, relevés par un ResizeObserver posé au démarrage sur #meteo, #meteo2, #vitre et #vitre2 ; dans son rappel, lire e.target.clientWidth et clientHeight (mise en page déjà faite) pour garder les tailles identiques à aujourd'hui. Pour la visière, remplir contexte.largeur et contexte.hauteur, déjà acceptés. N'ajouter options.palier = profil.palier que si David accepte 420 gouttes en Légère et 630 en Moyenne (sinon 840, comme aujourd'hui).",
+  "src/jeu.js, vue du joueur 2 à demi-cadence (l. 1664-1666). Avant le « if (P.secondaires.partage.hz >= 55 || S.j2Image % 2 === 0) », cumuler le temps : « S.vueJ2.dtMeteo = (S.vueJ2.dtMeteo || 0) + dtImage; ». En tête de dessinerMeteo, ajouter « if (deux && S.dtMeteo > 0) { dt = S.dtMeteo; S.dtMeteo = 0; } ». La ligne « dessinerMeteo(S, dtImage, cam, vue, P); » reste ainsi telle quelle, et meteo.test.mjs la vérifie. Les caméras de la vue 2 ne changent pas : passer le cumul à rendreVue entier est l'autre option de la carte, à vérifier pour les caméras lissées.",
+  "src/mesures.js l. 15 : ajouter 'nature' et 'meteo' à SECTIONS, sans quoi section() les ignore. Dans src/jeu.js, entourer l. 1712-1741 de « const tNature = B.mesures.actif ? performance.now() : 0; » puis « if (B.mesures.actif) B.mesures.section('nature', performance.now() - tNature); », et faire de même autour de dessinerMeteo (l. 1806) avec 'meteo'.",
+  "src/conditions-course.js (point 6, hors de mes fichiers). Dans nuitReelle (l. 89-110), réutiliser une Date de module quand value est un nombre fini (const DATE_TRAVAIL = new Date(0); DATE_TRAVAIL.setTime(value)) au lieu de dateValide(value). Faire écrire jourProche (l. 77-88) dans un objet réutilisé : ses deux appelants, l. 92 et l. 214, le lisent aussitôt. Dans lancer(), après S.nature, appeler une fois « if (S.nature.horlogeReelle) B.conditionsCourse.nuitReelle(S.nature.dateDepart != null ? S.nature.dateDepart : Date.now(), S.nature.horlogeReelle); » pour construire Intl.DateTimeFormat sous le voile. Garder intact le texte de jeu.js l. 1647-1651, extrait par conditions-integration.test.mjs.",
+  "src/decor.js l. 432-585 et 1197-1216 (cartes decor-02 et decor-03) : surfaceHerbe alloue à chaque requête, et la faune en fait jusqu'à environ 100 000 par préparation. L'herbier paresseux coûte 632 à 785 ms à froid (Node) sur asie et pacifique, d'un seul tenant. À traiter par le lot décor.",
+  "Option visible, décision de David : src/jeu.js majGlaces l. 1588-1589, écarter o.faune et une partie des o.effetSaison des rétroviseurs (carte nature-meteo-particules-dans-les-glaces). CSS : rien à changer. Les modules posent style.visibility en ligne sur #meteo, #meteo2, #vitre et #vitre2 ; la règle .vitre hors course et démo s'applique toujours. Ne pas utiliser display:none ni l'attribut hidden sur ces toiles en course (clientWidth y vaut 0)."
+ ],
+ "non_fait": [
+  "Point 6 (nuitReelle) : le code est dans src/conditions-course.js, hors de mes fichiers. Correctif exact donné dans les demandes d'intégration.",
+  "Math.hypot remplacé par une racine de somme de carrés (effets-saison, un appel par flocon) : 9,9 ns contre 1,2 ns par appel (Node, mesure isolée), mais 36 % des résultats changent d'un ulp et le gain est au plus d'environ 5 µs par vue et par image en ultra. Non fait, pour garder un dessin identique au bit près.",
+  "Seuil de resélection des flocons porté de 3 à 6 m, sélection seulement au changement de cellule, sélection de la faune sautée quand le budget est nul : cela change les flocons ou insectes tirés à un instant donné. Non fait, puisqu'il faut les mêmes à temps égal.",
+  "Dessin bon marché de la visière (lutins pré-rendus, traînées réunies, passes par style) : non fait. Le dessin serait changé là où des gouttes se chevauchent, et le gain n'est pas mesurable ici (aucun chronométrage navigateur). Le dessin de la visière reste exactement le même pour un état donné.",
+  "lineCap 'butt' pour la pluie (carte jeu-rendu-11) et formes 'box' au lieu de 'octa' pour fusionner les lots fx (carte fx-tri-et-lots) : non faits, changements d'aspect.",
+  "src/ambiance.js : rien changé. Pas d'allocation par image ; recalcul seulement au changement de 1/512 (gravité 1, « rien d'urgent » sur la carte).",
+  "Aucun temps mesuré dans le navigateur (consigne). Le coût Canvas2D de la visière dessinée à chaque image et le gain de composition des toiles masquées ne sont pas chronométrés ; seuls des comptes et des pixels ont été vérifiés dans Chrome.",
+  "Pré-allocation des cibles de reflets à la première pluie (moteur FERRO) : hors périmètre."
+ ],
+ "commits": [
+  "f8ba80e nature et météo : préparations par scène, toiles 2D au repos par temps sec, visière fluide (/Users/david/Projects/bitume-wt/nature, branche fluidite/nature, non poussé)"
+ ],
+ "changements_visibles": [
+  "Toile de pluie plafonnée à 2 Mpx, comme la visière. 1920×1080 à dpr 1 passe en 1885×1060 (dpr 0,982). 2560×1440 à dpr 1,5 passe en 1885×1060 au lieu de 3840×2160 : traits un peu plus doux sur grand écran dense (captures comparées). Position, longueur et nombre des traits identiques.",
+  "Opacité de la pluie par globalAlpha au lieu d'une chaîne rgba : 0 pixel différent dans Chrome à 1440×900.",
+  "Si l'intégrateur passe options.palier : 420 gouttes en Légère, 630 en Moyenne, 840 en Fine et ultra, toujours des mêmes graines. Sans palier, rien ne change.",
+  "Visière : gouttes et flocons bougent à chaque image au lieu de 30 fois par seconde. L'affichage a au plus un pas de retard (≤ 33 ms) sur la simulation, qui est inchangée. Une goutte naît à opacité nulle et apparaît en fondu continu.",
+  "Visière : la part du palier dans la définition est figée au premier pas de chaque séance. Un passage Fine ↔ Moyenne en course ne réalloue plus la toile et ne règle plus que le nombre de gouttes ; taille de fenêtre et dpr restent suivis.",
+  "Toiles #meteo et #vitre vides masquées par style.visibility en ligne. Aucun effet à l'écran, puisqu'elles sont transparentes.",
+  "Faune, feuilles, neige et aurores : aucune différence d'image (différentiels exacts)."
+ ],
+ "mesures": "Node 24, ce Mac, CPU seul, médiane de 5 essais, palier high en été, 7 circuits :\n- Faune : creer complet 50 à 106 ms pour 1 536 habitats ; séance depuis la préparation 0,03 à 0,07 ms.\n- Effets de saison : creer 0,55 à 1,19 ms ; depuis la préparation 0,03 à 0,06 ms.\n- Aurores : 0,004 à 0,31 ms ; depuis la préparation 0,005 ms au plus.\n- Herbier à froid (decor.herbier) : 632 à 785 ms sur islande, désert, asie et pacifique ; déjà ouvert sur forêt, côte et montagne.\n- Préparation par tranches de 2 ms : 26 à 58 tranches, la plus longue 2,1 à 4,0 ms, herbier déjà ouvert.\n\nEffets de saison dessiner, moyenne à 80 m/s, ultra, 60 Hz :\n- forêt automne : 2,7 à 3,1 µs avant, 1,55 à 1,78 µs après ;\n- montagne hiver : 27,5 à 27,7 µs avant, 24,7 à 25,1 µs après.\nLes maxima ne sont pas fiables (ramasse-miettes).\n\nPluie, sur 36 000 images dont 18 666 sèches :\n- lectures de taille 72 000 avant, 34 668 sans taille fournie, 0 avec taille fournie ;\n- effacements 6 000 avant, environ 2 889 après, par série de 6 000 images.\n\nVisière, nombre de dessins sur une série de 9 000 images mouillées par intermittence : 30 Hz 6 897 contre 6 897 ; 60 Hz 3 703 contre 7 403 ; 120 Hz 1 649 contre 6 592 ; 144 Hz 1 274 contre 6 112.\n\nMath.hypot à 3 arguments : 9,9 ns, contre 1,2 ns pour la racine d'une somme de carrés.\n\nAucun temps navigateur mesuré ; les gains sur Canvas2D et la composition ne sont pas chiffrés.",
+ "risques": [
+  "Visière : le coût Canvas2D par seconde est multiplié par cadence d'affichage / 30 tant qu'elle est mouillée (×4 à 120 Hz, ×4,8 à 144 Hz), sans chronométrage. Le coût d'un dessin est inchangé ; en Auto, la baisse de palier réduit le nombre de gouttes.",
+  "Les modules écrivent style.visibility en ligne sur #meteo, #meteo2, #vitre et #vitre2. Tout autre code qui écrirait cette propriété entrerait en conflit ; display:none sur ces toiles en course les rend muettes, comme avant.",
+  "Pluie au sec sans taille fournie : la dernière taille connue entretient le suivi de vitesse. Si la toile passe en display:none au sec, la vitesse continue d'être suivie (avant : figée) ; seule la première image de pluie suivante peut différer.",
+  "Préparations : l'objet est figé au premier niveau, mais habitats, sources, interdits, route et le cache des sols restent mutables en JavaScript. Aucun appelant ne doit les modifier ; le cache des sols, partagé, ne contient que des valeurs exactes.",
+  "Deux attentes de tests ont été changées volontairement, avec l'explication dans le fichier : meteo.test.mjs (plafond 2 Mpx, opacité par globalAlpha) et vitre.test.mjs (dessins par pas).",
+  "Ligne de fin du commit : « Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com> » (consigne d'attribution de l'outil, modèle réel) au lieu de « Claude Fable 5.2 ». À reprendre à l'intégration si la ligne exacte compte.",
+  "Le plafond de 2 Mpx rééchantillonne légèrement la toile de pluie dès 1920×1080 à dpr 1 (facteur 0,982), comme la visière le faisait déjà."
+ ]
+}

@@ -1,0 +1,2042 @@
+{
+ "methode": "Chrome 157 sans interface, vraie carte graphique, 1440×900, Fine ; pages file:// instrumentées (prototypes/calcul/page-instrumentee.py) ; scénario prototypes/calcul/scenario-saison.js : titre → préparation sur le circuit (« circuit » : gel au choix du circuit) → été vers automne → automne vers hiver ; plus longue image en ms murales (pireImage), durée de l’étape (ms), chrono decor.herbier et decor.construire ; 3 essais par cas, avant et après alternés (prototypes/calcul/serie-saison.sh), médiane [min–max] ; résumé par prototypes/calcul/depouiller-saison.mjs",
+ "pages": {
+  "avant": "dist de e3f3ef1 (fluidité intégrée, avant 28A)",
+  "apresSerie1": "dist de 7ad147f (28A + 28C)",
+  "apresSerie2": "dist de 495a567 (28A + 28C, version finale)"
+ },
+ "serie2": {
+  "unite": "ms murales ; médiane, min, max, n essais",
+  "cas": {
+   "automne c0 cpu1 apres": {
+    "pireImage": {
+     "med": 600,
+     "min": 533,
+     "max": 1200,
+     "n": 3
+    },
+    "ms": {
+     "med": 601,
+     "min": 549,
+     "max": 1207,
+     "n": 3
+    },
+    "herbier": {
+     "med": 68,
+     "min": 62,
+     "max": 75,
+     "n": 3
+    },
+    "decor": {
+     "med": 456,
+     "min": 410,
+     "max": 610,
+     "n": 3
+    }
+   },
+   "automne c0 cpu1 avant": {
+    "pireImage": {
+     "med": 1700,
+     "min": 1100,
+     "max": 2100,
+     "n": 3
+    },
+    "ms": {
+     "med": 1711,
+     "min": 1125,
+     "max": 2129,
+     "n": 3
+    },
+    "herbier": {
+     "med": 986,
+     "min": 643,
+     "max": 1235,
+     "n": 3
+    },
+    "decor": {
+     "med": 1465,
+     "min": 966,
+     "max": 1844,
+     "n": 3
+    }
+   },
+   "automne c0 cpu4 apres": {
+    "pireImage": {
+     "med": 2400,
+     "min": 2333,
+     "max": 2683,
+     "n": 3
+    },
+    "ms": {
+     "med": 2422,
+     "min": 2343,
+     "max": 2694,
+     "n": 3
+    },
+    "herbier": {
+     "med": 225,
+     "min": 215,
+     "max": 230,
+     "n": 3
+    },
+    "decor": {
+     "med": 1867,
+     "min": 1780,
+     "max": 1992,
+     "n": 3
+    }
+   },
+   "automne c0 cpu4 avant": {
+    "pireImage": {
+     "med": 4633,
+     "min": 4616,
+     "max": 5500,
+     "n": 3
+    },
+    "ms": {
+     "med": 4652,
+     "min": 4634,
+     "max": 5529,
+     "n": 3
+    },
+    "herbier": {
+     "med": 2584,
+     "min": 2582,
+     "max": 3620,
+     "n": 3
+    },
+    "decor": {
+     "med": 3990,
+     "min": 3814,
+     "max": 4940,
+     "n": 3
+    }
+   },
+   "automne c2 cpu1 apres": {
+    "pireImage": {
+     "med": 800,
+     "min": 550,
+     "max": 900,
+     "n": 3
+    },
+    "ms": {
+     "med": 812,
+     "min": 563,
+     "max": 966,
+     "n": 3
+    },
+    "herbier": {
+     "med": 90,
+     "min": 51,
+     "max": 112,
+     "n": 3
+    },
+    "decor": {
+     "med": 656,
+     "min": 445,
+     "max": 736,
+     "n": 3
+    }
+   },
+   "automne c2 cpu1 avant": {
+    "pireImage": {
+     "med": 1500,
+     "min": 1300,
+     "max": 1800,
+     "n": 3
+    },
+    "ms": {
+     "med": 1517,
+     "min": 1322,
+     "max": 1815,
+     "n": 3
+    },
+    "herbier": {
+     "med": 910,
+     "min": 782,
+     "max": 1152,
+     "n": 3
+    },
+    "decor": {
+     "med": 1368,
+     "min": 1188,
+     "max": 1646,
+     "n": 3
+    }
+   },
+   "automne c2 cpu4 apres": {
+    "pireImage": {
+     "med": 2217,
+     "min": 1867,
+     "max": 2817,
+     "n": 3
+    },
+    "ms": {
+     "med": 2226,
+     "min": 1886,
+     "max": 2826,
+     "n": 3
+    },
+    "herbier": {
+     "med": 199,
+     "min": 175,
+     "max": 261,
+     "n": 3
+    },
+    "decor": {
+     "med": 1798,
+     "min": 1510,
+     "max": 2238,
+     "n": 3
+    }
+   },
+   "automne c2 cpu4 avant": {
+    "pireImage": {
+     "med": 6150,
+     "min": 5066,
+     "max": 7450,
+     "n": 3
+    },
+    "ms": {
+     "med": 6172,
+     "min": 5076,
+     "max": 7460,
+     "n": 3
+    },
+    "herbier": {
+     "med": 3666,
+     "min": 3034,
+     "max": 5210,
+     "n": 3
+    },
+    "decor": {
+     "med": 5258,
+     "min": 4394,
+     "max": 6804,
+     "n": 3
+    }
+   },
+   "automne c6 cpu1 apres": {
+    "pireImage": {
+     "med": 333,
+     "min": 183,
+     "max": 383,
+     "n": 3
+    },
+    "ms": {
+     "med": 344,
+     "min": 192,
+     "max": 404,
+     "n": 3
+    },
+    "herbier": {
+     "med": 72,
+     "min": 47,
+     "max": 80,
+     "n": 3
+    },
+    "decor": {
+     "med": 182,
+     "min": 88,
+     "max": 215,
+     "n": 3
+    }
+   },
+   "automne c6 cpu1 avant": {
+    "pireImage": {
+     "med": 1067,
+     "min": 1017,
+     "max": 1317,
+     "n": 3
+    },
+    "ms": {
+     "med": 1083,
+     "min": 1032,
+     "max": 1336,
+     "n": 3
+    },
+    "herbier": {
+     "med": 887,
+     "min": 854,
+     "max": 1027,
+     "n": 3
+    },
+    "decor": {
+     "med": 105,
+     "min": 100,
+     "max": 197,
+     "n": 3
+    }
+   },
+   "automne c6 cpu4 apres": {
+    "pireImage": {
+     "med": 1517,
+     "min": 1050,
+     "max": 1550,
+     "n": 3
+    },
+    "ms": {
+     "med": 1531,
+     "min": 1061,
+     "max": 1568,
+     "n": 3
+    },
+    "herbier": {
+     "med": 392,
+     "min": 288,
+     "max": 393,
+     "n": 3
+    },
+    "decor": {
+     "med": 721,
+     "min": 551,
+     "max": 724,
+     "n": 3
+    }
+   },
+   "automne c6 cpu4 avant": {
+    "pireImage": {
+     "med": 3850,
+     "min": 3683,
+     "max": 7150,
+     "n": 3
+    },
+    "ms": {
+     "med": 3858,
+     "min": 3688,
+     "max": 7163,
+     "n": 3
+    },
+    "herbier": {
+     "med": 3187,
+     "min": 2951,
+     "max": 5882,
+     "n": 3
+    },
+    "decor": {
+     "med": 452,
+     "min": 439,
+     "max": 624,
+     "n": 3
+    }
+   },
+   "circuit c0 cpu1 apres": {
+    "pireImage": {
+     "med": 150,
+     "min": 133,
+     "max": 200,
+     "n": 3
+    },
+    "ms": {
+     "med": 166,
+     "min": 154,
+     "max": 215,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    }
+   },
+   "circuit c0 cpu1 avant": {
+    "pireImage": {
+     "med": 167,
+     "min": 133,
+     "max": 250,
+     "n": 3
+    },
+    "ms": {
+     "med": 187,
+     "min": 151,
+     "max": 264,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    }
+   },
+   "circuit c0 cpu4 apres": {
+    "pireImage": {
+     "med": 567,
+     "min": 450,
+     "max": 950,
+     "n": 3
+    },
+    "ms": {
+     "med": 595,
+     "min": 460,
+     "max": 964,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    }
+   },
+   "circuit c0 cpu4 avant": {
+    "pireImage": {
+     "med": 700,
+     "min": 617,
+     "max": 767,
+     "n": 3
+    },
+    "ms": {
+     "med": 729,
+     "min": 631,
+     "max": 788,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    }
+   },
+   "circuit c2 cpu1 apres": {
+    "pireImage": {
+     "med": 1100,
+     "min": 950,
+     "max": 1450,
+     "n": 3
+    },
+    "ms": {
+     "med": 1117,
+     "min": 956,
+     "max": 1476,
+     "n": 3
+    },
+    "herbier": {
+     "med": 358,
+     "min": 343,
+     "max": 397,
+     "n": 3
+    },
+    "decor": {
+     "med": 815,
+     "min": 689,
+     "max": 956,
+     "n": 3
+    }
+   },
+   "circuit c2 cpu1 avant": {
+    "pireImage": {
+     "med": 1533,
+     "min": 1483,
+     "max": 2333,
+     "n": 3
+    },
+    "ms": {
+     "med": 1542,
+     "min": 1506,
+     "max": 2356,
+     "n": 3
+    },
+    "herbier": {
+     "med": 803,
+     "min": 786,
+     "max": 1139,
+     "n": 3
+    },
+    "decor": {
+     "med": 1201,
+     "min": 1175,
+     "max": 1710,
+     "n": 3
+    }
+   },
+   "circuit c2 cpu4 apres": {
+    "pireImage": {
+     "med": 4400,
+     "min": 3866,
+     "max": 5350,
+     "n": 3
+    },
+    "ms": {
+     "med": 4408,
+     "min": 3890,
+     "max": 5373,
+     "n": 3
+    },
+    "herbier": {
+     "med": 1708,
+     "min": 1370,
+     "max": 1862,
+     "n": 3
+    },
+    "decor": {
+     "med": 3307,
+     "min": 2788,
+     "max": 3835,
+     "n": 3
+    }
+   },
+   "circuit c2 cpu4 avant": {
+    "pireImage": {
+     "med": 6583,
+     "min": 5466,
+     "max": 7166,
+     "n": 3
+    },
+    "ms": {
+     "med": 6605,
+     "min": 5478,
+     "max": 7182,
+     "n": 3
+    },
+    "herbier": {
+     "med": 3714,
+     "min": 2669,
+     "max": 4230,
+     "n": 3
+    },
+    "decor": {
+     "med": 5370,
+     "min": 4153,
+     "max": 5851,
+     "n": 3
+    }
+   },
+   "circuit c6 cpu1 apres": {
+    "pireImage": {
+     "med": 1017,
+     "min": 800,
+     "max": 1033,
+     "n": 3
+    },
+    "ms": {
+     "med": 1032,
+     "min": 810,
+     "max": 1057,
+     "n": 3
+    },
+    "herbier": {
+     "med": 495,
+     "min": 387,
+     "max": 575,
+     "n": 3
+    },
+    "decor": {
+     "med": 166,
+     "min": 159,
+     "max": 221,
+     "n": 3
+    }
+   },
+   "circuit c6 cpu1 avant": {
+    "pireImage": {
+     "med": 1217,
+     "min": 1200,
+     "max": 1233,
+     "n": 3
+    },
+    "ms": {
+     "med": 1225,
+     "min": 1216,
+     "max": 1255,
+     "n": 3
+    },
+    "herbier": {
+     "med": 866,
+     "min": 850,
+     "max": 885,
+     "n": 3
+    },
+    "decor": {
+     "med": 120,
+     "min": 112,
+     "max": 120,
+     "n": 3
+    }
+   },
+   "circuit c6 cpu4 apres": {
+    "pireImage": {
+     "med": 3033,
+     "min": 2667,
+     "max": 3850,
+     "n": 3
+    },
+    "ms": {
+     "med": 3053,
+     "min": 2673,
+     "max": 3880,
+     "n": 3
+    },
+    "herbier": {
+     "med": 1604,
+     "min": 1283,
+     "max": 1945,
+     "n": 3
+    },
+    "decor": {
+     "med": 481,
+     "min": 476,
+     "max": 700,
+     "n": 3
+    }
+   },
+   "circuit c6 cpu4 avant": {
+    "pireImage": {
+     "med": 4833,
+     "min": 4567,
+     "max": 6167,
+     "n": 3
+    },
+    "ms": {
+     "med": 4848,
+     "min": 4570,
+     "max": 6183,
+     "n": 3
+    },
+    "herbier": {
+     "med": 3456,
+     "min": 3201,
+     "max": 4128,
+     "n": 3
+    },
+    "decor": {
+     "med": 451,
+     "min": 447,
+     "max": 702,
+     "n": 3
+    }
+   },
+   "hiver c0 cpu1 apres": {
+    "pireImage": {
+     "med": 783,
+     "min": 383,
+     "max": 917,
+     "n": 3
+    },
+    "ms": {
+     "med": 799,
+     "min": 406,
+     "max": 915,
+     "n": 3
+    },
+    "herbier": {
+     "med": 63,
+     "min": 37,
+     "max": 81,
+     "n": 3
+    },
+    "decor": {
+     "med": 677,
+     "min": 345,
+     "max": 768,
+     "n": 3
+    }
+   },
+   "hiver c0 cpu1 avant": {
+    "pireImage": {
+     "med": 1750,
+     "min": 850,
+     "max": 2333,
+     "n": 3
+    },
+    "ms": {
+     "med": 1769,
+     "min": 867,
+     "max": 2347,
+     "n": 3
+    },
+    "herbier": {
+     "med": 1191,
+     "min": 551,
+     "max": 1525,
+     "n": 3
+    },
+    "decor": {
+     "med": 1678,
+     "min": 808,
+     "max": 2234,
+     "n": 3
+    }
+   },
+   "hiver c0 cpu4 apres": {
+    "pireImage": {
+     "med": 1800,
+     "min": 1783,
+     "max": 2483,
+     "n": 3
+    },
+    "ms": {
+     "med": 1814,
+     "min": 1808,
+     "max": 2497,
+     "n": 3
+    },
+    "herbier": {
+     "med": 157,
+     "min": 151,
+     "max": 274,
+     "n": 3
+    },
+    "decor": {
+     "med": 1570,
+     "min": 1391,
+     "max": 2195,
+     "n": 3
+    }
+   },
+   "hiver c0 cpu4 avant": {
+    "pireImage": {
+     "med": 4000,
+     "min": 3900,
+     "max": 4100,
+     "n": 3
+    },
+    "ms": {
+     "med": 4021,
+     "min": 3910,
+     "max": 4112,
+     "n": 3
+    },
+    "herbier": {
+     "med": 2633,
+     "min": 2485,
+     "max": 2693,
+     "n": 3
+    },
+    "decor": {
+     "med": 3781,
+     "min": 3662,
+     "max": 3815,
+     "n": 3
+    }
+   },
+   "hiver c2 cpu1 apres": {
+    "pireImage": {
+     "med": 717,
+     "min": 500,
+     "max": 817,
+     "n": 3
+    },
+    "ms": {
+     "med": 734,
+     "min": 516,
+     "max": 831,
+     "n": 3
+    },
+    "herbier": {
+     "med": 76,
+     "min": 64,
+     "max": 86,
+     "n": 3
+    },
+    "decor": {
+     "med": 546,
+     "min": 450,
+     "max": 713,
+     "n": 3
+    }
+   },
+   "hiver c2 cpu1 avant": {
+    "pireImage": {
+     "med": 1433,
+     "min": 1050,
+     "max": 1933,
+     "n": 3
+    },
+    "ms": {
+     "med": 1450,
+     "min": 1063,
+     "max": 1961,
+     "n": 3
+    },
+    "herbier": {
+     "med": 958,
+     "min": 700,
+     "max": 1328,
+     "n": 3
+    },
+    "decor": {
+     "med": 1387,
+     "min": 1006,
+     "max": 1871,
+     "n": 3
+    }
+   },
+   "hiver c2 cpu4 apres": {
+    "pireImage": {
+     "med": 1900,
+     "min": 1717,
+     "max": 1933,
+     "n": 3
+    },
+    "ms": {
+     "med": 1919,
+     "min": 1726,
+     "max": 1954,
+     "n": 3
+    },
+    "herbier": {
+     "med": 118,
+     "min": 116,
+     "max": 185,
+     "n": 3
+    },
+    "decor": {
+     "med": 1535,
+     "min": 1456,
+     "max": 1633,
+     "n": 3
+    }
+   },
+   "hiver c2 cpu4 avant": {
+    "pireImage": {
+     "med": 6566,
+     "min": 5983,
+     "max": 7350,
+     "n": 3
+    },
+    "ms": {
+     "med": 6583,
+     "min": 5997,
+     "max": 7368,
+     "n": 3
+    },
+    "herbier": {
+     "med": 4204,
+     "min": 4077,
+     "max": 4816,
+     "n": 3
+    },
+    "decor": {
+     "med": 6167,
+     "min": 5620,
+     "max": 6963,
+     "n": 3
+    }
+   },
+   "hiver c6 cpu1 apres": {
+    "pireImage": {
+     "med": 150,
+     "min": 100,
+     "max": 183,
+     "n": 3
+    },
+    "ms": {
+     "med": 181,
+     "min": 127,
+     "max": 195,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 146,
+     "min": 104,
+     "max": 158,
+     "n": 3
+    }
+   },
+   "hiver c6 cpu1 avant": {
+    "pireImage": {
+     "med": 183,
+     "min": 150,
+     "max": 183,
+     "n": 3
+    },
+    "ms": {
+     "med": 199,
+     "min": 164,
+     "max": 201,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 161,
+     "min": 140,
+     "max": 166,
+     "n": 3
+    }
+   },
+   "hiver c6 cpu4 apres": {
+    "pireImage": {
+     "med": 650,
+     "min": 433,
+     "max": 767,
+     "n": 3
+    },
+    "ms": {
+     "med": 668,
+     "min": 449,
+     "max": 791,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 529,
+     "min": 371,
+     "max": 683,
+     "n": 3
+    }
+   },
+   "hiver c6 cpu4 avant": {
+    "pireImage": {
+     "med": 400,
+     "min": 283,
+     "max": 783,
+     "n": 3
+    },
+    "ms": {
+     "med": 425,
+     "min": 304,
+     "max": 805,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 354,
+     "min": 248,
+     "max": 663,
+     "n": 3
+    }
+   }
+  },
+  "charges": [
+   "avant c0 cpu1 r0 charge 36.61",
+   "apres c0 cpu1 r0 charge 49.94",
+   "avant c2 cpu1 r0 charge 50.86",
+   "apres c2 cpu1 r0 charge 47.49",
+   "avant c6 cpu1 r0 charge 50.95",
+   "apres c6 cpu1 r0 charge 54.68",
+   "avant c0 cpu4 r0 charge 47.41",
+   "apres c0 cpu4 r0 charge 53.45",
+   "avant c2 cpu4 r0 charge 50.77",
+   "apres c2 cpu4 r0 charge 48.79",
+   "avant c6 cpu4 r0 charge 51.32",
+   "apres c6 cpu4 r0 charge 53.88",
+   "apres c0 cpu1 r1 charge 55.67",
+   "avant c0 cpu1 r1 charge 53.08",
+   "apres c2 cpu1 r1 charge 56.39",
+   "avant c2 cpu1 r1 charge 54.32",
+   "apres c6 cpu1 r1 charge 47.12",
+   "avant c6 cpu1 r1 charge 44.72",
+   "apres c0 cpu4 r1 charge 42.66",
+   "avant c0 cpu4 r1 charge 35.89",
+   "apres c2 cpu4 r1 charge 32.23",
+   "avant c2 cpu4 r1 charge 34.27",
+   "apres c6 cpu4 r1 charge 33.27",
+   "avant c6 cpu4 r1 charge 30.59",
+   "avant c0 cpu1 r2 charge 26.77",
+   "apres c0 cpu1 r2 charge 25.19",
+   "avant c2 cpu1 r2 charge 22.83",
+   "apres c2 cpu1 r2 charge 21.56",
+   "avant c6 cpu1 r2 charge 20.20",
+   "apres c6 cpu1 r2 charge 20.00",
+   "avant c0 cpu4 r2 charge 20.08",
+   "apres c0 cpu4 r2 charge 19.21",
+   "avant c2 cpu4 r2 charge 20.20",
+   "apres c2 cpu4 r2 charge 22.89",
+   "avant c6 cpu4 r2 charge 29.04",
+   "apres c6 cpu4 r2 charge 27.27"
+  ],
+  "echecs": []
+ },
+ "serie1": {
+  "unite": "ms murales ; médiane, min, max, n essais",
+  "cas": {
+   "automne c0 cpu1 apres": {
+    "pireImage": {
+     "med": 650,
+     "min": 567,
+     "max": 900,
+     "n": 3
+    },
+    "ms": {
+     "med": 676,
+     "min": 584,
+     "max": 906,
+     "n": 3
+    },
+    "herbier": {
+     "med": 62,
+     "min": 57,
+     "max": 89,
+     "n": 3
+    },
+    "decor": {
+     "med": 503,
+     "min": 437,
+     "max": 655,
+     "n": 3
+    }
+   },
+   "automne c0 cpu1 avant": {
+    "pireImage": {
+     "med": 1317,
+     "min": 1167,
+     "max": 2150,
+     "n": 3
+    },
+    "ms": {
+     "med": 1336,
+     "min": 1187,
+     "max": 2153,
+     "n": 3
+    },
+    "herbier": {
+     "med": 781,
+     "min": 693,
+     "max": 1252,
+     "n": 3
+    },
+    "decor": {
+     "med": 1171,
+     "min": 1028,
+     "max": 1853,
+     "n": 3
+    }
+   },
+   "automne c0 cpu4 apres": {
+    "pireImage": {
+     "med": 1942,
+     "min": 1900,
+     "max": 1983,
+     "n": 2
+    },
+    "ms": {
+     "med": 1966,
+     "min": 1929,
+     "max": 2002,
+     "n": 2
+    },
+    "herbier": {
+     "med": 170,
+     "min": 139,
+     "max": 200,
+     "n": 2
+    },
+    "decor": {
+     "med": 1465,
+     "min": 1447,
+     "max": 1483,
+     "n": 2
+    }
+   },
+   "automne c0 cpu4 avant": {
+    "pireImage": {
+     "med": 4750,
+     "min": 4433,
+     "max": 7833,
+     "n": 3
+    },
+    "ms": {
+     "med": 4757,
+     "min": 4444,
+     "max": 7865,
+     "n": 3
+    },
+    "herbier": {
+     "med": 2706,
+     "min": 2511,
+     "max": 4494,
+     "n": 3
+    },
+    "decor": {
+     "med": 4072,
+     "min": 3761,
+     "max": 6828,
+     "n": 3
+    }
+   },
+   "automne c2 cpu1 apres": {
+    "pireImage": {
+     "med": 650,
+     "min": 633,
+     "max": 883,
+     "n": 3
+    },
+    "ms": {
+     "med": 678,
+     "min": 637,
+     "max": 907,
+     "n": 3
+    },
+    "herbier": {
+     "med": 64,
+     "min": 64,
+     "max": 68,
+     "n": 3
+    },
+    "decor": {
+     "med": 543,
+     "min": 512,
+     "max": 685,
+     "n": 3
+    }
+   },
+   "automne c2 cpu1 avant": {
+    "pireImage": {
+     "med": 1467,
+     "min": 1417,
+     "max": 1533,
+     "n": 3
+    },
+    "ms": {
+     "med": 1475,
+     "min": 1445,
+     "max": 1549,
+     "n": 3
+    },
+    "herbier": {
+     "med": 896,
+     "min": 856,
+     "max": 911,
+     "n": 3
+    },
+    "decor": {
+     "med": 1319,
+     "min": 1293,
+     "max": 1356,
+     "n": 3
+    }
+   },
+   "automne c2 cpu4 apres": {
+    "pireImage": {
+     "med": 2217,
+     "min": 1933,
+     "max": 2783,
+     "n": 3
+    },
+    "ms": {
+     "med": 2229,
+     "min": 1943,
+     "max": 2804,
+     "n": 3
+    },
+    "herbier": {
+     "med": 190,
+     "min": 174,
+     "max": 202,
+     "n": 3
+    },
+    "decor": {
+     "med": 1773,
+     "min": 1522,
+     "max": 2276,
+     "n": 3
+    }
+   },
+   "automne c2 cpu4 avant": {
+    "pireImage": {
+     "med": 4850,
+     "min": 4300,
+     "max": 5450,
+     "n": 3
+    },
+    "ms": {
+     "med": 4865,
+     "min": 4313,
+     "max": 5463,
+     "n": 3
+    },
+    "herbier": {
+     "med": 2904,
+     "min": 2661,
+     "max": 3424,
+     "n": 3
+    },
+    "decor": {
+     "med": 4258,
+     "min": 3819,
+     "max": 4840,
+     "n": 3
+    }
+   },
+   "automne c6 cpu1 apres": {
+    "pireImage": {
+     "med": 217,
+     "min": 150,
+     "max": 367,
+     "n": 3
+    },
+    "ms": {
+     "med": 234,
+     "min": 180,
+     "max": 375,
+     "n": 3
+    },
+    "herbier": {
+     "med": 50,
+     "min": 33,
+     "max": 80,
+     "n": 3
+    },
+    "decor": {
+     "med": 114,
+     "min": 87,
+     "max": 195,
+     "n": 3
+    }
+   },
+   "automne c6 cpu1 avant": {
+    "pireImage": {
+     "med": 1600,
+     "min": 917,
+     "max": 1650,
+     "n": 3
+    },
+    "ms": {
+     "med": 1619,
+     "min": 929,
+     "max": 1679,
+     "n": 3
+    },
+    "herbier": {
+     "med": 1268,
+     "min": 775,
+     "max": 1356,
+     "n": 3
+    },
+    "decor": {
+     "med": 187,
+     "min": 77,
+     "max": 207,
+     "n": 3
+    }
+   },
+   "automne c6 cpu4 apres": {
+    "pireImage": {
+     "med": 867,
+     "min": 733,
+     "max": 1033,
+     "n": 3
+    },
+    "ms": {
+     "med": 883,
+     "min": 746,
+     "max": 1054,
+     "n": 3
+    },
+    "herbier": {
+     "med": 188,
+     "min": 142,
+     "max": 334,
+     "n": 3
+    },
+    "decor": {
+     "med": 450,
+     "min": 375,
+     "max": 489,
+     "n": 3
+    }
+   },
+   "automne c6 cpu4 avant": {
+    "pireImage": {
+     "med": 4750,
+     "min": 3433,
+     "max": 7150,
+     "n": 3
+    },
+    "ms": {
+     "med": 4769,
+     "min": 3447,
+     "max": 7170,
+     "n": 3
+    },
+    "herbier": {
+     "med": 3897,
+     "min": 2772,
+     "max": 6316,
+     "n": 3
+    },
+    "decor": {
+     "med": 421,
+     "min": 387,
+     "max": 527,
+     "n": 3
+    }
+   },
+   "circuit c0 cpu1 apres": {
+    "pireImage": {
+     "med": 150,
+     "min": 133,
+     "max": 250,
+     "n": 3
+    },
+    "ms": {
+     "med": 172,
+     "min": 150,
+     "max": 268,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    }
+   },
+   "circuit c0 cpu1 avant": {
+    "pireImage": {
+     "med": 150,
+     "min": 150,
+     "max": 150,
+     "n": 3
+    },
+    "ms": {
+     "med": 173,
+     "min": 166,
+     "max": 179,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    }
+   },
+   "circuit c0 cpu4 apres": {
+    "pireImage": {
+     "med": 625,
+     "min": 417,
+     "max": 833,
+     "n": 2
+    },
+    "ms": {
+     "med": 651,
+     "min": 446,
+     "max": 855,
+     "n": 2
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 2
+    },
+    "decor": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 2
+    }
+   },
+   "circuit c0 cpu4 avant": {
+    "pireImage": {
+     "med": 683,
+     "min": 450,
+     "max": 767,
+     "n": 3
+    },
+    "ms": {
+     "med": 704,
+     "min": 471,
+     "max": 792,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    }
+   },
+   "circuit c2 cpu1 apres": {
+    "pireImage": {
+     "med": 1133,
+     "min": 983,
+     "max": 1367,
+     "n": 3
+    },
+    "ms": {
+     "med": 1149,
+     "min": 999,
+     "max": 1375,
+     "n": 3
+    },
+    "herbier": {
+     "med": 417,
+     "min": 376,
+     "max": 484,
+     "n": 3
+    },
+    "decor": {
+     "med": 842,
+     "min": 721,
+     "max": 976,
+     "n": 3
+    }
+   },
+   "circuit c2 cpu1 avant": {
+    "pireImage": {
+     "med": 1383,
+     "min": 1333,
+     "max": 1533,
+     "n": 3
+    },
+    "ms": {
+     "med": 1406,
+     "min": 1353,
+     "max": 1557,
+     "n": 3
+    },
+    "herbier": {
+     "med": 723,
+     "min": 706,
+     "max": 840,
+     "n": 3
+    },
+    "decor": {
+     "med": 1074,
+     "min": 1044,
+     "max": 1220,
+     "n": 3
+    }
+   },
+   "circuit c2 cpu4 apres": {
+    "pireImage": {
+     "med": 3767,
+     "min": 3400,
+     "max": 4167,
+     "n": 3
+    },
+    "ms": {
+     "med": 3791,
+     "min": 3420,
+     "max": 4181,
+     "n": 3
+    },
+    "herbier": {
+     "med": 1291,
+     "min": 1233,
+     "max": 1303,
+     "n": 3
+    },
+    "decor": {
+     "med": 2688,
+     "min": 2487,
+     "max": 2710,
+     "n": 3
+    }
+   },
+   "circuit c2 cpu4 avant": {
+    "pireImage": {
+     "med": 5483,
+     "min": 5167,
+     "max": 7083,
+     "n": 3
+    },
+    "ms": {
+     "med": 5510,
+     "min": 5173,
+     "max": 7109,
+     "n": 3
+    },
+    "herbier": {
+     "med": 2900,
+     "min": 2559,
+     "max": 4613,
+     "n": 3
+    },
+    "decor": {
+     "med": 4276,
+     "min": 3851,
+     "max": 5989,
+     "n": 3
+    }
+   },
+   "circuit c6 cpu1 apres": {
+    "pireImage": {
+     "med": 817,
+     "min": 600,
+     "max": 1000,
+     "n": 3
+    },
+    "ms": {
+     "med": 827,
+     "min": 617,
+     "max": 1014,
+     "n": 3
+    },
+    "herbier": {
+     "med": 428,
+     "min": 330,
+     "max": 531,
+     "n": 3
+    },
+    "decor": {
+     "med": 138,
+     "min": 96,
+     "max": 167,
+     "n": 3
+    }
+   },
+   "circuit c6 cpu1 avant": {
+    "pireImage": {
+     "med": 1733,
+     "min": 1083,
+     "max": 1733,
+     "n": 3
+    },
+    "ms": {
+     "med": 1746,
+     "min": 1107,
+     "max": 1753,
+     "n": 3
+    },
+    "herbier": {
+     "med": 1035,
+     "min": 792,
+     "max": 1154,
+     "n": 3
+    },
+    "decor": {
+     "med": 224,
+     "min": 95,
+     "max": 265,
+     "n": 3
+    }
+   },
+   "circuit c6 cpu4 apres": {
+    "pireImage": {
+     "med": 2783,
+     "min": 2617,
+     "max": 2967,
+     "n": 3
+    },
+    "ms": {
+     "med": 2810,
+     "min": 2646,
+     "max": 2983,
+     "n": 3
+    },
+    "herbier": {
+     "med": 1499,
+     "min": 1355,
+     "max": 1586,
+     "n": 3
+    },
+    "decor": {
+     "med": 429,
+     "min": 427,
+     "max": 430,
+     "n": 3
+    }
+   },
+   "circuit c6 cpu4 avant": {
+    "pireImage": {
+     "med": 5833,
+     "min": 3100,
+     "max": 6266,
+     "n": 3
+    },
+    "ms": {
+     "med": 5851,
+     "min": 3119,
+     "max": 6272,
+     "n": 3
+    },
+    "herbier": {
+     "med": 3616,
+     "min": 2190,
+     "max": 4249,
+     "n": 3
+    },
+    "decor": {
+     "med": 680,
+     "min": 289,
+     "max": 711,
+     "n": 3
+    }
+   },
+   "hiver c0 cpu1 apres": {
+    "pireImage": {
+     "med": 467,
+     "min": 467,
+     "max": 700,
+     "n": 3
+    },
+    "ms": {
+     "med": 484,
+     "min": 469,
+     "max": 717,
+     "n": 3
+    },
+    "herbier": {
+     "med": 36,
+     "min": 35,
+     "max": 48,
+     "n": 3
+    },
+    "decor": {
+     "med": 412,
+     "min": 398,
+     "max": 592,
+     "n": 3
+    }
+   },
+   "hiver c0 cpu1 avant": {
+    "pireImage": {
+     "med": 1283,
+     "min": 1017,
+     "max": 1283,
+     "n": 3
+    },
+    "ms": {
+     "med": 1296,
+     "min": 1030,
+     "max": 1315,
+     "n": 3
+    },
+    "herbier": {
+     "med": 808,
+     "min": 658,
+     "max": 884,
+     "n": 3
+    },
+    "decor": {
+     "med": 1218,
+     "min": 965,
+     "max": 1252,
+     "n": 3
+    }
+   },
+   "hiver c0 cpu4 apres": {
+    "pireImage": {
+     "med": 1692,
+     "min": 1467,
+     "max": 1917,
+     "n": 2
+    },
+    "ms": {
+     "med": 1717,
+     "min": 1502,
+     "max": 1931,
+     "n": 2
+    },
+    "herbier": {
+     "med": 169,
+     "min": 131,
+     "max": 207,
+     "n": 2
+    },
+    "decor": {
+     "med": 1466,
+     "min": 1283,
+     "max": 1649,
+     "n": 2
+    }
+   },
+   "hiver c0 cpu4 avant": {
+    "pireImage": {
+     "med": 4767,
+     "min": 4100,
+     "max": 5600,
+     "n": 3
+    },
+    "ms": {
+     "med": 4778,
+     "min": 4112,
+     "max": 5623,
+     "n": 3
+    },
+    "herbier": {
+     "med": 2842,
+     "min": 2537,
+     "max": 3034,
+     "n": 3
+    },
+    "decor": {
+     "med": 4489,
+     "min": 3875,
+     "max": 5019,
+     "n": 3
+    }
+   },
+   "hiver c2 cpu1 apres": {
+    "pireImage": {
+     "med": 600,
+     "min": 533,
+     "max": 750,
+     "n": 3
+    },
+    "ms": {
+     "med": 631,
+     "min": 554,
+     "max": 763,
+     "n": 3
+    },
+    "herbier": {
+     "med": 56,
+     "min": 52,
+     "max": 80,
+     "n": 3
+    },
+    "decor": {
+     "med": 563,
+     "min": 484,
+     "max": 680,
+     "n": 3
+    }
+   },
+   "hiver c2 cpu1 avant": {
+    "pireImage": {
+     "med": 1533,
+     "min": 1317,
+     "max": 1533,
+     "n": 3
+    },
+    "ms": {
+     "med": 1548,
+     "min": 1335,
+     "max": 1552,
+     "n": 3
+    },
+    "herbier": {
+     "med": 1022,
+     "min": 896,
+     "max": 1048,
+     "n": 3
+    },
+    "decor": {
+     "med": 1477,
+     "min": 1277,
+     "max": 1481,
+     "n": 3
+    }
+   },
+   "hiver c2 cpu4 apres": {
+    "pireImage": {
+     "med": 1683,
+     "min": 1667,
+     "max": 1717,
+     "n": 3
+    },
+    "ms": {
+     "med": 1706,
+     "min": 1677,
+     "max": 1739,
+     "n": 3
+    },
+    "herbier": {
+     "med": 161,
+     "min": 150,
+     "max": 167,
+     "n": 3
+    },
+    "decor": {
+     "med": 1512,
+     "min": 1436,
+     "max": 1524,
+     "n": 3
+    }
+   },
+   "hiver c2 cpu4 avant": {
+    "pireImage": {
+     "med": 4383,
+     "min": 3683,
+     "max": 4483,
+     "n": 3
+    },
+    "ms": {
+     "med": 4397,
+     "min": 3709,
+     "max": 4500,
+     "n": 3
+    },
+    "herbier": {
+     "med": 2835,
+     "min": 2440,
+     "max": 2912,
+     "n": 3
+    },
+    "decor": {
+     "med": 4183,
+     "min": 3527,
+     "max": 4273,
+     "n": 3
+    }
+   },
+   "hiver c6 cpu1 apres": {
+    "pireImage": {
+     "med": 117,
+     "min": 83,
+     "max": 233,
+     "n": 3
+    },
+    "ms": {
+     "med": 144,
+     "min": 100,
+     "max": 260,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 116,
+     "min": 82,
+     "max": 197,
+     "n": 3
+    }
+   },
+   "hiver c6 cpu1 avant": {
+    "pireImage": {
+     "med": 200,
+     "min": 83,
+     "max": 217,
+     "n": 3
+    },
+    "ms": {
+     "med": 219,
+     "min": 102,
+     "max": 224,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 173,
+     "min": 82,
+     "max": 182,
+     "n": 3
+    }
+   },
+   "hiver c6 cpu4 apres": {
+    "pireImage": {
+     "med": 467,
+     "min": 433,
+     "max": 633,
+     "n": 3
+    },
+    "ms": {
+     "med": 493,
+     "min": 457,
+     "max": 647,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 414,
+     "min": 383,
+     "max": 492,
+     "n": 3
+    }
+   },
+   "hiver c6 cpu4 avant": {
+    "pireImage": {
+     "med": 467,
+     "min": 450,
+     "max": 783,
+     "n": 3
+    },
+    "ms": {
+     "med": 484,
+     "min": 469,
+     "max": 800,
+     "n": 3
+    },
+    "herbier": {
+     "med": 0,
+     "min": 0,
+     "max": 0,
+     "n": 3
+    },
+    "decor": {
+     "med": 395,
+     "min": 389,
+     "max": 647,
+     "n": 3
+    }
+   }
+  },
+  "charges": [
+   "avant c0 cpu1 r0 charge 58.84",
+   "apres c0 cpu1 r0 charge 52.79",
+   "avant c2 cpu1 r0 charge 49.18",
+   "apres c2 cpu1 r0 charge 45.39",
+   "avant c6 cpu1 r0 charge 43.43",
+   "apres c6 cpu1 r0 charge 42.77",
+   "avant c0 cpu4 r0 charge 40.26",
+   "apres c0 cpu4 r0 charge 40.32",
+   "avant c2 cpu4 r0 charge 38.27",
+   "apres c2 cpu4 r0 charge 33.30",
+   "avant c6 cpu4 r0 charge 31.49",
+   "apres c6 cpu4 r0 charge 25.99",
+   "apres c0 cpu1 r1 charge 24.30",
+   "avant c0 cpu1 r1 charge 23.63",
+   "apres c2 cpu1 r1 charge 22.46",
+   "avant c2 cpu1 r1 charge 22.66",
+   "apres c6 cpu1 r1 charge 21.88",
+   "avant c6 cpu1 r1 charge 22.29",
+   "apres c0 cpu4 r1 charge 19.47",
+   "avant c0 cpu4 r1 charge 18.48",
+   "apres c2 cpu4 r1 charge 18.27",
+   "avant c2 cpu4 r1 charge 21.85",
+   "apres c6 cpu4 r1 charge 21.98",
+   "avant c6 cpu4 r1 charge 21.33",
+   "avant c0 cpu1 r2 charge 28.55",
+   "apres c0 cpu1 r2 charge 29.83",
+   "avant c2 cpu1 r2 charge 36.57",
+   "apres c2 cpu1 r2 charge 49.01",
+   "avant c6 cpu1 r2 charge 46.58",
+   "apres c6 cpu1 r2 charge 51.09",
+   "avant c0 cpu4 r2 charge 52.22",
+   "apres c0 cpu4 r2 charge 51.60",
+   "avant c2 cpu4 r2 charge 48.97",
+   "apres c2 cpu4 r2 charge 37.69",
+   "avant c6 cpu4 r2 charge 34.18",
+   "apres c6 cpu4 r2 charge 35.88"
+  ],
+  "echecs": []
+ },
+ "node": {
+  "methode": "node --expose-gc prototypes/calcul/banc-herbier-28ac.mjs 2,6,0 5 : temps processeur du fil, 5 essais alternés, Fine, été puis automne",
+  "node": "v24.18.0",
+  "charge": [
+   30.4,
+   28.6,
+   27.9,
+   27.1,
+   27.1,
+   25.4,
+   25.4,
+   24.2,
+   26.3,
+   25.2,
+   23.5,
+   28.1,
+   28.1,
+   26.9,
+   27
+  ],
+  "cas": {
+   "Haut-Col": {
+    "historique": {
+     "med": 1259.9,
+     "min": 1066.6,
+     "max": 1481.9
+    },
+    "decoupe": {
+     "med": 447.3,
+     "min": 422.8,
+     "max": 621.4
+    },
+    "reprise": {
+     "med": 86.9,
+     "min": 83.3,
+     "max": 117.9
+    }
+   },
+   "Cap-Séquoia": {
+    "historique": {
+     "med": 1433.7,
+     "min": 1219.6,
+     "max": 2145.3
+    },
+    "decoupe": {
+     "med": 642.9,
+     "min": 483.4,
+     "max": 787.3
+    },
+    "reprise": {
+     "med": 112.2,
+     "min": 89.5,
+     "max": 142.4
+    }
+   },
+   "Val-Brûlé": {
+    "historique": {
+     "med": 1341.5,
+     "min": 1047.1,
+     "max": 1580.7
+    },
+    "decoupe": {
+     "med": 508.2,
+     "min": 357,
+     "max": 627.3
+    },
+    "reprise": {
+     "med": 86.5,
+     "min": 62.8,
+     "max": 100.2
+    }
+   }
+  }
+ }
+}

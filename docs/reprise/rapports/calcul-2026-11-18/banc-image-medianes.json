@@ -1,0 +1,357 @@
+{
+ "unite": "ms par image, médiane [min, max] des séries ; majorant (démarrage de la course dans le profil, fonctions de démarrage connues retirées du total)",
+ "cas": {
+  "banc-c0-soleil-cpu1.json": {
+   "essais": 3,
+   "horsDemarrageParImage": [
+    5.81,
+    5.3,
+    6.65
+   ],
+   "rendu": [
+    2.1,
+    1.35,
+    3.14
+   ],
+   "rivaux": [
+    0.39,
+    0.21,
+    1.29
+   ],
+   "voitures": [
+    0.4,
+    0.39,
+    0.69
+   ],
+   "jeu": [
+    0.74,
+    0.41,
+    0.81
+   ],
+   "images": [
+    214,
+    458,
+    311
+   ],
+   "p50": [
+    33.4,
+    16.7,
+    33.3
+   ],
+   "pire": [
+    83.4,
+    33.4,
+    50
+   ],
+   "herbierRefait": [
+    false,
+    false,
+    false
+   ]
+  },
+  "banc-c0-soleil-cpu4.json": {
+   "essais": 3,
+   "horsDemarrageParImage": [
+    37.88,
+    26.56,
+    42.07
+   ],
+   "rendu": [
+    16.48,
+    11.73,
+    18.51
+   ],
+   "rivaux": [
+    2.34,
+    1.48,
+    2.5
+   ],
+   "voitures": [
+    3.58,
+    2.42,
+    3.78
+   ],
+   "jeu": [
+    3.61,
+    2.37,
+    5.45
+   ],
+   "images": [
+    291,
+    223,
+    204
+   ],
+   "p50": [
+    33.3,
+    33.3,
+    33.4
+   ],
+   "pire": [
+    50.1,
+    66.7,
+    66.6
+   ],
+   "herbierRefait": [
+    false,
+    false,
+    false
+   ]
+  },
+  "banc-c2-neige-cpu1.json": {
+   "essais": 1,
+   "horsDemarrageParImage": [
+    6.64,
+    6.64,
+    6.64
+   ],
+   "rendu": [
+    2.53,
+    2.53,
+    2.53
+   ],
+   "rivaux": [
+    0.16,
+    0.16,
+    0.16
+   ],
+   "voitures": [
+    0.81,
+    0.81,
+    0.81
+   ],
+   "jeu": [
+    0.7,
+    0.7,
+    0.7
+   ],
+   "images": [
+    437
+   ],
+   "p50": [
+    16.7
+   ],
+   "pire": [
+    1250
+   ],
+   "herbierRefait": [
+    true
+   ]
+  },
+  "banc-c2-neige-cpu4.json": {
+   "essais": 1,
+   "horsDemarrageParImage": [
+    45.01,
+    45.01,
+    45.01
+   ],
+   "rendu": [
+    17.14,
+    17.14,
+    17.14
+   ],
+   "rivaux": [
+    1.06,
+    1.06,
+    1.06
+   ],
+   "voitures": [
+    4.02,
+    4.02,
+    4.02
+   ],
+   "jeu": [
+    5.42,
+    5.42,
+    5.42
+   ],
+   "images": [
+    149
+   ],
+   "p50": [
+    33.3
+   ],
+   "pire": [
+    4266.4
+   ],
+   "herbierRefait": [
+    true
+   ]
+  },
+  "banc-c2-pluie-cpu1.json": {
+   "essais": 3,
+   "horsDemarrageParImage": [
+    5.45,
+    5.44,
+    6.05
+   ],
+   "rendu": [
+    1.88,
+    1.44,
+    2.58
+   ],
+   "rivaux": [
+    0.45,
+    0.2,
+    0.54
+   ],
+   "voitures": [
+    0.8,
+    0.55,
+    0.85
+   ],
+   "jeu": [
+    0.63,
+    0.54,
+    0.87
+   ],
+   "images": [
+    291,
+    361,
+    458
+   ],
+   "p50": [
+    33.3,
+    16.7,
+    16.7
+   ],
+   "pire": [
+    83.3,
+    33.4,
+    33.4
+   ],
+   "herbierRefait": [
+    false,
+    false,
+    false
+   ]
+  },
+  "banc-c2-pluie-cpu4.json": {
+   "essais": 3,
+   "horsDemarrageParImage": [
+    34.07,
+    20.68,
+    39.08
+   ],
+   "rendu": [
+    13.64,
+    8.5,
+    16.18
+   ],
+   "rivaux": [
+    1.81,
+    1.37,
+    2.08
+   ],
+   "voitures": [
+    3.42,
+    1.71,
+    4.55
+   ],
+   "jeu": [
+    5.85,
+    2.24,
+    6.25
+   ],
+   "images": [
+    285,
+    205,
+    252
+   ],
+   "p50": [
+    33.2,
+    33.4,
+    33.3
+   ],
+   "pire": [
+    116.6,
+    66.6,
+    66.7
+   ],
+   "herbierRefait": [
+    false,
+    false,
+    false
+   ]
+  },
+  "banc-c6-automne-moyenne-cpu1.json": {
+   "essais": 1,
+   "horsDemarrageParImage": [
+    4.8,
+    4.8,
+    4.8
+   ],
+   "rendu": [
+    1.2,
+    1.2,
+    1.2
+   ],
+   "rivaux": [
+    0.54,
+    0.54,
+    0.54
+   ],
+   "voitures": [
+    0.58,
+    0.58,
+    0.58
+   ],
+   "jeu": [
+    0.79,
+    0.79,
+    0.79
+   ],
+   "images": [
+    426
+   ],
+   "p50": [
+    16.7
+   ],
+   "pire": [
+    1833.2
+   ],
+   "herbierRefait": [
+    true
+   ]
+  },
+  "banc-c6-automne-moyenne-cpu4.json": {
+   "essais": 1,
+   "horsDemarrageParImage": [
+    14.35,
+    14.35,
+    14.35
+   ],
+   "rendu": [
+    4.33,
+    4.33,
+    4.33
+   ],
+   "rivaux": [
+    0.65,
+    0.65,
+    0.65
+   ],
+   "voitures": [
+    1.82,
+    1.82,
+    1.82
+   ],
+   "jeu": [
+    1.65,
+    1.65,
+    1.65
+   ],
+   "images": [
+    328
+   ],
+   "p50": [
+    16.7
+   ],
+   "pire": [
+    3549.8
+   ],
+   "herbierRefait": [
+    true
+   ]
+  }
+ }
+}

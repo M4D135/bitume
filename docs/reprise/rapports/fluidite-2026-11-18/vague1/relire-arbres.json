@@ -1,0 +1,102 @@
+{
+ "verdict": "corrections",
+ "constats": [
+  {
+   "id": "A1",
+   "gravite": 2,
+   "fichier": "src/decor.js",
+   "lignes": "691 (CASE_ARBRES, ARBRES_EPARS), 694-724 (lotsImage)",
+   "probleme": "Les cases de 60 m font baisser les triangles, mais elles augmentent beaucoup les appels de dessin, surtout face à la forêt. La consigne demandait explicitement de ne pas remplacer un coût par un autre. Le coût processeur de ces appels n'est mesuré nulle part. La seule piste de rattrapage (appels instanciés par forme) est renvoyée au moteur, en vague 2.",
+   "preuve": "Navigateur, page-essai, build de la tête et de 54e98c9 dans /private/tmp/relecture-arbres/copie-*, mesurer-navigateur.js du lot. Val-Brûlé Fine : 584 → 689 appels en image principale, 206 → 238 dans la glace, 85 → 127 lots visibles. Ma vue Haut-Col Fine à 100 m de l'arbre 90 (vue-capture.js.tpl) : 442 → 614 appels, 96 → 201 lots visibles. Ma vue Val-Brûlé Moyenne à 150 m de l'arbre 152 : 252 → 372 appels. L'exécutant annonce aussi 360 → 605 (+68 %) à Haut-Col à 600 m.",
+   "correctif": "Avant d'intégrer, chiffrer le compromis sans chrono : comptes d'appels et de lots visibles pour CASE_ARBRES = 90 et 120, ou pour ARBRES_EPARS = 5 et 6, aux mêmes poses que la doublure, avec les triangles restants. Garder le réglage qui tient ÷4 en moyenne avec le moins d'appels. Sinon, conditionner l'intégration au regroupement instancié par forme demandé au moteur, et faire mesurer par l'intégrateur le temps du fil principal avec le processeur ralenti ×4 (méthode de MESURES-BASE)."
+  },
+  {
+   "id": "A2",
+   "gravite": 2,
+   "fichier": "docs/reprise/rapports/fluidite-2026-11-18/arbres/LISEZ-MOI.md",
+   "lignes": "101-119",
+   "probleme": "Les captures rangées ne couvrent pas les points de vue demandés : bord de piste avec des arbres à 30, 100, 250 et 600 m, plus la vue cockpit, avant et après. Seules sont rangées une bande de 1440×180 le long de la piste, trois vues à 250 ou 335 m d'un arbre isolé ou d'un bosquet, et des paires proche/lointain forcées. Il manque les vues avant/après à 30, 100 et 600 m. L'écart de 0,54 % au bord de piste est attribué au vent et au chrono sans que la vue soit conservée.",
+   "preuve": "Liste du dossier : avant/apres-val-brule-piste.png (1440×180), haut-col-250m, port-sable-250m, cap-sequoia-335m (960×540), puis bascule-*.png. LISEZ-MOI ligne 116 : « vue non conservée ». J'ai refait trois vues (Val-Brûlé piste Moyenne, Haut-Col Fine à 100 m, Val-Brûlé Moyenne à 150 m) : aucune différence visible à l'œil entre base et tête. Le risque visuel est donc faible, mais la preuve reste incomplète.",
+   "correctif": "Ranger les paires avant/après manquantes (30, 100 et 600 m, vue cockpit en pleine image) produites avec vue-capture.js.tpl, plus la vue du bord de piste à 1 200 m, pour fonder l'explication des 0,54 %."
+  },
+  {
+   "id": "A3",
+   "gravite": 1,
+   "fichier": "docs/reprise/rapports/fluidite-2026-11-18/arbres/LISEZ-MOI.md",
+   "lignes": "38-53",
+   "probleme": "L'objectif « ÷4 au moins » n'est tenu qu'en moyenne. La pire pose descend à ÷2,8 (Brume-de-Jade), ÷3,5 (Cap-Séquoia Fine), ÷3,7 (Haut-Col Moyenne) et ÷3,8 (Val-Brûlé Fine). C'est dit honnêtement. Le reste vient surtout de la passe d'ombre des cases proches, que seul le moteur peut corriger.",
+   "preuve": "mesurer-arbres.mjs relancé (WORKTREE et 54e98c9) : 184 mesures identiques octet pour octet à mesures-apres.json et mesures-avant.json. Moyennes et pires poses recalculées identiques au tableau.",
+   "correctif": "Aucun dans ce lot. Garder en vague 2 la retouche d'ombre proposée (renderer.js:2754) et la regarder à l'écran avant de la livrer."
+  },
+  {
+   "id": "A4",
+   "gravite": 1,
+   "fichier": "src/decor.js",
+   "lignes": "691 (BASCULE_ARBRES = 80 à 1 080 px)",
+   "probleme": "En Moyenne (toile de 757 px), la bascule tombe à 56 m de la sphère, sous la plage de 90 à 180 m suggérée par la consigne. Le choix se justifie par la taille projetée, et les captures forcées à 60 m ne montrent qu'un écart de 0,028 à 0,072 % des pixels. Une bascule aussi proche reste un risque de pop visible à l'arrêt.",
+   "preuve": "Capture bascule-moyenne-feuillu-conifere-pin.png, lue : proche et lointain quasi indiscernables. lotDetailDistance (renderer.js:25-33) donne 80 × 757/1080 = 56 m.",
+   "correctif": "Facultatif : prévoir que l'intégrateur passe par basculeArbres(lots, 100) en Moyenne si un pop se voit en jeu réel."
+  },
+  {
+   "id": "A5",
+   "gravite": 1,
+   "fichier": "src/botanique.js",
+   "lignes": "12-14, 36-49",
+   "probleme": "Deux reliquats. BUDGETS.segments.loin n'est plus lu (donnée morte gardée pour la forme de la table). La silhouette du palier Légère change aussi (feuillu bas 410 → 144 triangles) ; le jeu n'utilise pas ces formes en Légère (habiller() n'est appelé qu'hors 'low'), mais elles restent enregistrées. Le commentaire de SILHOUETTE raconte aussi des essais de session (« à trois, une face … s'allumait en blanc », « à six, leur bord changeait »). C'est à la limite de l'historique, ce qui est contraire à la règle 5.",
+   "preuve": "formes.mjs (scratchpad) : feuillu low loin 410 → 144, pin low 454 → 286, conifère low 610 → 218. grep : aucun appel à nomForme hors decor.js:608-610, sous qualite !== 'low'.",
+   "correctif": "Reformuler le commentaire au présent (« quatre faces comme la forme proche, pour garder le même éclairage à la bascule »). Signaler, ou retirer, segments.loin."
+  },
+  {
+   "id": "A6",
+   "gravite": 1,
+   "fichier": "src/decor.js",
+   "lignes": "676-679",
+   "probleme": "Le commentaire de tête des lots d'arbres a une coupure de ligne fautive (« à 800 m de l'œil et plus. Les » puis « arbres prennent… » sur la ligne suivante).",
+   "preuve": "sed -n 676,680p src/decor.js",
+   "correctif": "Recoller le paragraphe."
+  },
+  {
+   "id": "A7",
+   "gravite": 1,
+   "fichier": "(demandes_integration du compte rendu)",
+   "lignes": "renderer.js:2754",
+   "probleme": "La retouche proposée de renderer.js ne rappelle pas la règle du projet : marque « BITUME » et ligne dans src/moteur/PROVENANCE.md (AGENTS.md).",
+   "preuve": "AGENTS.md, « Le moteur src/moteur/renderer.js ne se retouche qu'avec la marque « BITUME » et une ligne dans src/moteur/PROVENANCE.md ».",
+   "correctif": "Compléter la demande d'intégration."
+  },
+  {
+   "id": "A8",
+   "gravite": 1,
+   "fichier": "(commit edf7590)",
+   "lignes": "trailer",
+   "probleme": "Le trailer « Co-Authored-By: Claude Opus 5.5 » diffère de la consigne (« Claude Fable 5.2 »). L'écart est annoncé et suit le rappel du harnais, qui l'emporte sur un texte de script.",
+   "preuve": "git show --format=%B HEAD",
+   "correctif": "Rien, ou laisser l'intégrateur trancher."
+  },
+  {
+   "id": "A9",
+   "gravite": 1,
+   "fichier": "src/decor.js",
+   "lignes": "697-701",
+   "probleme": "Les lots de mobilier copiés sans leurs arbres gardent la sphère calculée avec les arbres. C'est conservateur et sans erreur, mais le culling et la bascule de ces lots ne gagnent rien.",
+   "preuve": "Lecture de lotsImage : Object.assign({}, l, { objets, loin }) garde centre et rayon.",
+   "correctif": "Facultatif : recalculer centre et rayon des lots de mobilier copiés, sans toucher à leur bascule."
+  }
+ ],
+ "verifications_faites": [
+  "Diff complet 54e98c9..HEAD : seuls src/botanique.js, src/decor.js, tools/budget-decor.mjs, verifications/botanique.test.mjs, verifications/arbres-lots.test.mjs (nouveau) et le dossier de preuves sont touchés. Ni dist, ni VERSION.json, ni SIZE.json, ni src/jeu.js. Arbre de travail propre.",
+  "Comparaison Node indépendante (/private/tmp/relecture-arbres/comparer.mjs, modules de 54e98c9 extraits par git show et chargés dans des contextes vm séparés) sur les 7 circuits du catalogue × 8 variantes (low, medium, high, sans végétation, sans matières, saisons automne et hiver, végétation ultra) : obstacles, arbres, nappes, sourcesFeuilles, atmosphère, vegetation et enceinte strictement identiques au JSON. obstacles.creer identique. Multiset des objets proches identique. Multiset des versions lointaines identique hors troncs lointains ajoutés. surfaceHerbe identique en 40 points. 0 écart.",
+  "Tirages aléatoires : rangerArbre et lotsImage ne consomment aucun hasard. plan() de botanique.js n'a pas changé. Les identités ci-dessus (positions, couleurs saisonnières, végétation) le confirment.",
+  "decor-identite.test.mjs n'est pas modifié. Il construit en qualité par défaut 'low', chemin inchangé (casesArbres = null) : aucune empreinte remplacée. Il passe sur darwin/arm64.",
+  "Formes (/private/tmp/relecture-arbres/formes.mjs) : les 9 formes proches sont identiques au JSON près à 54e98c9. Pied (yMin) et cime (yMax) de la silhouette égaux à ceux de la forme proche, et silhouette tenue dans la boîte proche. Aucune incohérence normale/enroulement dans les 18 formes. Toutes les faces d'amas extérieurs regardent hors du volume (108 à 168 par forme, 0 vers l'intérieur). Centres d'amas identiques en proche et en lointain.",
+  "Tronc lointain : 1 082 (forêt), 453 (côte), 799 (montagne), 46 (Asie) troncs, chacun aligné sur son tronc proche (s, r, matière, couleur), quatre saisons ; 0 pour Cap-Séquoia (son tronc géant est déjà au loin). Toutes les sphères de cases contiennent leurs objets. Bascule de 80 à 89,1 m (montagne), de 160,1 à 292,1 m (géants).",
+  "Lecture du moteur : lotDetailDistance, lotViewState et dessinerLots (renderer.js:25-45, 2741-2757). Le moteur des rétroviseurs partage FORMES_LIBRES (même module) : 'arbre-tronc-loin' y est enregistré. La copie de jeu.js:1554 emporte bascule, lodReferenceFov/Height et arbres.",
+  "Consommateurs de decor.lots (jeu.js, faune.js, scene-bench.js) : rien ne dépend de l'ordre ni du découpage des arbres. Les masques d'herbe relisent toujours les lots historiques.",
+  "Mesures doublure relancées (mesurer-arbres.mjs, WORKTREE et 54e98c9) : 184 + 184 mesures identiques à mesures-apres.json et mesures-avant.json. Rapports recalculés identiques au tableau du LISEZ-MOI (÷4,6 / ÷6,0 / ÷7,5 / ÷6,5 / ÷7,3 / ÷6,5 / ÷5,7 / ÷7,0 ; appels 25→71, 30→86, 19→15, 30→52).",
+  "Mesures navigateur relancées (page-essai, builds de la tête et de la base dans des copies sous /private/tmp, 1440×757 en densité 2) : Val-Brûlé Fine 4 448 772 → 1 688 910 triangles et 584 → 689 appels ; Haut-Col Fine 930 699 → 580 323 ; Cap-Séquoia Fine 1 110 957 → 633 675. Écart de moins de 1 % avec le compte rendu, aucune erreur de console.",
+  "Captures du dossier lues (bascule Fine, bascule Moyenne, Val-Brûlé piste, Haut-Col 250 m, Cap-Séquoia 335 m) : la bascule ne se voit pas. Trois captures avant/après faites moi-même (Val-Brûlé piste Moyenne, Haut-Col Fine à 100 m, Val-Brûlé Moyenne à 150 m) : aucune différence visible à l'œil. Haut-Col à 100 m : 442 → 614 appels.",
+  "tools/budget-decor.mjs, tête et base : sortie en 1 avec les mêmes 6 conflits préexistants (islande, desert).",
+  "Mutations dans une copie : couleur du tronc lointain changée, matière changée, enroulement du tronc lointain inversé. Les trois sont détectées par arbres-lots.test.mjs ou botanique.test.mjs."
+ ],
+ "tests": "Suite complète relancée dans /Users/david/Projects/bitume-wt/arbres (for t in verifications/*.test.mjs) : 67 suites sur 67 passent, aucun ECHEC (les 66 historiques et arbres-lots.test.mjs). arbres-lots.test.mjs : 12 contrôles ok, 3,1 s. botanique.test.mjs : ok, 0,2 s. decor-identite, decor-obstacles, troncs, collisions-orientees et obstacles passent sans retouche. Rien n'a été modifié dans l'arbre ; les épreuves sont dans /private/tmp/relecture-arbres/ (comparer.mjs, formes.mjs, troncs.mjs, apres.json, avant.json, nav-tete.txt, nav-base.txt, cap1 à cap3-base/tete.png)."
+}

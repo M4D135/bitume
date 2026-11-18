@@ -1,0 +1,138 @@
+{
+ "resume": "Correction du lot « cadence » (vague Fluidité de BITUME) dans /Users/david/Projects/bitume-wt/cadence, branche fluidite/cadence. J'ai ajouté le commit 6a0dda7 par-dessus bc957f0. Rien n'est poussé, fusionné ni rebasé.\n\nLes deux constats du relecteur sont reproduits avec ses sondes (/private/tmp/relecture-cadence/p12.mjs, p15.mjs, p13.mjs) et ils sont justes. Les deux sont corrigés.\n\nC1 : sur un écran 60 Hz, un fil principal de 18 à 30 ms rend une image toutes les deux périodes. L'amorce y voyait un écran à 30 Hz (k = 1), et la qualité Auto ne baissait jamais. Désormais, dans estimer(), une grille de plus de 20 ms (moins de 50 Hz) cède la place à la plus longue grille fine que le travail mesuré explique. Le travail doit couvrir (intervalle le plus court × m − 1) périodes fines, sans marge.\n- Une première version, sans le seuil de 20 ms et avec la marge 0,9, prenait un écran 60 Hz pour du 120 Hz dès 8 à 10 ms de travail. Cette version est abandonnée.\n\nC2 : la grille fausse « sans issue » est corrigée par deux sorties.\n1. tropFine() : au diviseur K_MAX, en mode autre que Écran, si plus de 12 % des images de la fenêtre sont ratées alors qu'elles tiennent 24 images/s ou plus, la grille est refaite sur les 32 derniers rappels, sans la période connue.\n2. Écart quadratique de la droite pleine (48 points, aucune confirmation en attente) supérieur à 2 ms ou à 0,15 période : la grille est refaite.\n- La seconde sortie traite un défaut que ma correction de C1 rendait atteignable. Machine à k = 2 sur 60 Hz qui passe sur un écran 75 Hz : les images arrivent toutes les 26,7 puis 40 ms, sous la tolérance de la grille 60 Hz. Le temps de jeu se trompait alors de 6,7 ms par image (11 graines sur 20).\n\nsrc/qualite.js n'est pas touché (aucun constat). L'API n'a pas changé, sauf un champ de plus dans etat() : grillesTropFines.\n\nTests :\n- cadence : 31 contrôles (29 + 2 nouveaux) ; qualité : 20 ; suite complète : 67/67.\n- Chacun des trois correctifs, retiré seul, fait échouer un des nouveaux tests. L'ancien code échoue aussi.\n\nÉcart ouvert, à décider : un écran réellement bridé à 30 Hz dès le départ, avec 18 à 28 ms de fil principal, voit maintenant sa qualité baisser de 1 à 3 niveaux. Elle remonte en partie une fois le bridage reconnu. La consigne disait « rien ne se dégrade » ; le cas est indiscernable d'une machine lente.\n\nLe simulateur ne remplace pas un vrai navigateur. Je n'ai rien vérifié dans le navigateur après ces corrections.",
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/cadence/src/cadence.js",
+  "/Users/david/Projects/bitume-wt/cadence/verifications/cadence.test.mjs",
+  "/Users/david/Projects/bitume-wt/cadence/src/qualite.js (inchangé par la correction, du commit bc957f0)",
+  "/Users/david/Projects/bitume-wt/cadence/verifications/qualite.test.mjs (inchangé par la correction, du commit bc957f0)"
+ ],
+ "api": [
+  {
+   "nom": "BITUME.cadence.creer",
+   "signature": "creer(options?: { hz = 120, maxPas = 14, mode = 'auto' }) → C",
+   "role": "Crée l'état de la cadence : tableaux typés et objet de sortie réutilisé. TypeError si hz n'est pas dans [1, 1000] ou si maxPas n'est pas un entier dans [1, 60]."
+  },
+  {
+   "nom": "BITUME.cadence.image",
+   "signature": "image(C, tMs, contexte?: { echelle = 1, qualiteReductible = false, actif = true }) → { rendre, pas, alpha, dt, periode, diviseur, ips, verrouille, intervalle, rate, travail }",
+   "role": "Appelée à chaque rappel de requestAnimationFrame, rend toujours le même objet. rendre faux : ni simulation ni dessin. pas : nombre de pas fixes ; alpha : interpolation ; dt : en s, recalé, borné à maxPas pas ; periode : période de l'écran, en s ; intervalle : dN × période, 0 à une reprise ; rate : image ratée. Aucune allocation en régime établi, mesurée après correction."
+  },
+  {
+   "nom": "BITUME.cadence.travail",
+   "signature": "travail(C, ms)",
+   "role": "Temps du fil principal de l'image rendue. Il bloque les essais de retour au-delà de 40 % de la période visée, sépare un écran bridé d'une machine lente et, depuis la correction, sert à l'amorce et aux réestimations à reconnaître une machine lente sous une grille de plus de 20 ms."
+  },
+  {
+   "nom": "BITUME.cadence.regler",
+   "signature": "regler(C, mode) → mode normalisé",
+   "role": "Modes 'auto', 'ecran', '120', '60', '30'. Une cible imposée est ramenée au diviseur de l'écran le plus proche (60 sur un écran 144 Hz donne 72)."
+  },
+  {
+   "nom": "BITUME.cadence.normaliser / MODES",
+   "signature": "normaliser(mode) → 'auto'|'ecran'|'120'|'60'|'30' ; MODES gelé",
+   "role": "Normalise un réglage enregistré ou saisi ('écran', 60, ' Auto ')."
+  },
+  {
+   "nom": "BITUME.cadence.oublier",
+   "signature": "oublier(C)",
+   "role": "Après un chargement, un retour d'onglet ou une pause : l'intervalle suivant n'est ni une image ratée ni du temps à rattraper. Le compte des essais ratés est gardé."
+  },
+  {
+   "nom": "BITUME.cadence.nouvelleSeance",
+   "signature": "nouvelleSeance(C)",
+   "role": "Rend les trois essais de retour et le délai de 20 s ; garde le diviseur."
+  },
+  {
+   "nom": "BITUME.cadence.etat",
+   "signature": "etat(C, sortie?) → { mode, periodeMs, hz, diviseur, diviseurStable, diviseurMax, cibleMs, ips, verrouille, pasParPeriode, grille, reestimations, grillesTropFines, bride, periodeAvantBridageMs, suiteBridage, images, ratees, hausses, pasAbandonnes, fenetre{images, ratees, part}, regulierS, travailMs, essais{enCours, faits, rates, reussis, restants, delaiS} }",
+   "role": "Instantané lisible, pour les tests et le volet de mesures ; sortie est réutilisée si elle est fournie. Nouveau champ : grillesTropFines, le nombre de grilles refaites parce qu'elles étaient trop fines au diviseur K_MAX."
+  },
+  {
+   "nom": "BITUME.qualite.avancer",
+   "signature": "avancer(palier, dtReel, { actif, min, max, periode?, travail? }) → bool",
+   "role": "Inchangé depuis bc957f0. Avec periode (s, écran × diviseur) : baisse si la moyenne sur 3 s dépasse 1,2 période ; intervalle de plus de 3 périodes ou de 0,25 s écarté ; remontée après 8 s de travail sous 0,5 période ; un niveau qui a échoué attend 20 s, doublées à chaque échec. Sans periode : logique d'avant."
+  },
+  {
+   "nom": "BITUME.qualite.nouvelleSeance",
+   "signature": "nouvelleSeance(palier)",
+   "role": "Inchangé : vide les fenêtres et efface la mémoire des échecs ; garde le niveau atteint."
+  }
+ ],
+ "tests": [
+  {
+   "commande": "node verifications/cadence.test.mjs",
+   "resultat": "31 contrôles passés, environ 0,3 s (29 d'avant, inchangés, plus 2). Nouveau : « fil principal de 18 à 30 ms en Fine sur 60 Hz » (4 charges × 3 graines) : période 16,67 ms, baisse de qualité avant 4,5 s, niveau final 1 ou 2, puis 60 images/s sans image ratée. Nouveau : « changement d'écran sous charge, sur 20 graines » (60 vers 75, 100, 144 et 165 Hz, 23,3 ms de fil principal) : au plus 2 images ratées sur les 10 dernières secondes, écart de temps de jeu < 0,5 ms, cadence visée égale à la cadence tenue, qualité stable sur les 10 dernières secondes et sous le plancher."
+  },
+  {
+   "commande": "node verifications/qualite.test.mjs",
+   "resultat": "20 contrôles passés (fichier inchangé)."
+  },
+  {
+   "commande": "for t in verifications/*.test.mjs; do node \"$t\" > /dev/null 2>&1 || echo \"ECHEC $t\"; done",
+   "resultat": "67 suites, aucun ECHEC (38 s)."
+  },
+  {
+   "commande": "copies de brouillon de src/cadence.js, chaque correctif retiré seul, contre le nouveau cadence.test.mjs",
+   "resultat": "Code de base bc957f0 : échec « 18 ms en Fine, graine 1 : période 33,34 ». Sans la règle du travail : même échec. Sans tropFine : échec « 60 → 100 Hz, graine 7 : 333 images ratées sur les 10 dernières secondes (période 3,33) ». Sans le contrôle de l'écart de la droite : échec « 60 → 75 Hz, graine 1 : écart 6,67 ms »."
+  },
+  {
+   "commande": "sondes du relecteur : node p12.mjs, p15.mjs, p13.mjs (/private/tmp/relecture-cadence)",
+   "resultat": "p12 : 18, 22, 26 et 30 ms donnent tous une période vue de 16,67 ms ; la qualité baisse à 3 s (et 6,1 s pour 26 et 30 ms), comme le gouverneur d'aujourd'hui. p15, graines 4 à 12 : période 6,94 ms, k = 4, 0 image ratée sur les 10 dernières secondes (avant : graine 7 à 3,47 ms, 541/541 ratées). p13, 60 vers 75 Hz chargé : 13,33 ms, k = 2 (avant : 3,33 ms, k = 6, 931 ratées)."
+  },
+  {
+   "commande": "balayage de brouillon des nouveaux scénarios sur d'autres graines",
+   "resultat": "C1, graines 4 à 60 × 4 charges : 0 échec sur 228. C2, graines 21 à 80 × 4 écrans : 0 échec sur 240."
+  },
+  {
+   "commande": "balayage de brouillon en régime établi : 8 écrans (30 à 240 Hz) × 6 charges × fil principal ou processeur graphique × 3 gigues × 4 graines, code de base contre code corrigé",
+   "resultat": "Dans l'enveloppe de gigue (±0,5 ms, arrondi à la ms, ±2 ms jusqu'à 120 Hz), 1 008 cas : plus de 12 % d'images ratées 157 contre 157 ; grille fausse 222 contre 192 ; aucun cas pire de plus de 10 points d'images ratées. Hors enveloppe (±2 ms à 144-240 Hz), 144 cas : plus de 12 % d'images ratées 30 contre 33 ; grille fausse 89 contre 83 ; quelques graines y passent de 0 % à environ 90 % d'images ratées."
+  },
+  {
+   "commande": "balayage de brouillon des changements d'écran sous charge (10 couples d'écrans × 3 charges × 2 variations × 20 graines)",
+   "resultat": "Cas nuisibles restants (plus de 12 % d'images ratées ou écart de temps de jeu > 0,5 ms) : seulement des machines sous le plancher de 24 images/s ou qui l'effleurent (charge de 2,3 périodes de 60 Hz sur 75, 90, 50, 100 et 165 Hz), plus 3 graines sur 20 à 60 vers 90 Hz, charge 1,4 avec ±10 % : 50 images ratées sur 305 et un écart de temps de jeu de 9 à 10 ms, non résolu. Le code de base avait en plus des grilles fausses à toutes les images ratées (60 vers 165, 60 vers 100) et des erreurs de 16,7 ms de temps de jeu (60 vers 144, 120 vers 60 à 2,3 périodes)."
+  }
+ ],
+ "demandes_integration": [
+  "construire.py, liste MODULES : insérer 'cadence.js' juste après 'qualite.js', avant 'jeu.js'. ferro/loop.js n'est pas requis.",
+  "src/jeu.js, DEFAUT (ligne 26) : ajouter cadence: 'auto'. Après la ligne 30 : reglages.cadence = B.cadence.normaliser(reglages.cadence); puis, avant tout appel à lancer : const cadence = B.cadence.creer({ hz: 120, maxPas: 14, mode: reglages.cadence }); const ctxCadence = { echelle: 1, qualiteReductible: false, actif: false }; let imageCadence = null;",
+  "src/jeu.js, image(t) (ligne 2477), dans cet ordre : 1) requestAnimationFrame(image); 2) if (detectionGraphiqueActive) { tPrec = 0; B.cadence.oublier(cadence); return; } 3) calculer S = session et tourne avant la cadence ; 4) ctxCadence.actif = !!S && tourne && !S.banc && !S.reference && !document.hidden; ctxCadence.qualiteReductible = ctxCadence.actif && reglages.qualite === 'auto' && palier.n < PALIERS; ctxCadence.echelle = S && tourne && S.type === 'demo' ? B.realisateur.vitesse(S.real, S.course) : 1; 5) const f = B.cadence.image(cadence, t, ctxCadence); if (!f.rendre) return; imageCadence = f; const tTravail = performance.now(); 6) const tBrut = tPrec ? (t - tPrec) / 1000 : DT; tPrec = t; (pour B.mesures seulement) puis const dtReel = f.dt; horlogeReelle += dtReel; dureeImage = lerp(dureeImage, dtReel * 1000, .1).",
+  "src/jeu.js, simulation hors ligne (lignes 2511-2516) : for (let i = 0; i < f.pas; i++) pasSimulation(S, !!(S.reference && S.reference.pilote)); à la place de l'accumulateur S.acc. Ligne 2521 : rendreImage(S, f.alpha, dtVu). En ligne (S.enLigne) : garder l'horloge commune et S.acc ; la cadence ne décide alors que de rendre. Ligne 2522 : if (tourne) majPalier(S, f.intervalle, f); à la fin de l'image rendue, après majSon et les mesures : B.cadence.travail(cadence, performance.now() - tTravail);. Ce temps de travail sert maintenant aussi à l'amorce de la grille : il doit couvrir tout le travail du fil principal de l'image (simulation, rendu, affichage), pas seulement une partie.",
+  "src/jeu.js, majPalier (ligne 1400) : objet réutilisé const optionsPalier = { actif: false, min: 0, max: PALIERS, periode: undefined, travail: undefined }; puis dans majPalier(S, dt, f) : optionsPalier.actif = (calcul actuel); optionsPalier.min = gpuModeste ? 1 : 0; optionsPalier.periode = f ? f.periode * f.diviseur : undefined; optionsPalier.travail = f ? f.travail : undefined; const change = B.qualite.avancer(palier, dt, optionsPalier);. Sans f, logique d'avant (qualite.test.mjs appelle majPalier(session, 1 / fps)).",
+  "src/jeu.js, oublierIntervalle (ligne 2471) : ajouter B.cadence.oublier(cadence);. Dans lancer() (ligne 234, après session = S;) : B.cadence.oublier(cadence); if (type !== 'vitrine') { B.cadence.nouvelleSeance(cadence); B.qualite.nouvelleSeance(palier); }",
+  "src/index.html, à côté des radios « Qualité » (lignes 320-323) : groupe name=\"cadence\", valeurs auto, ecran, 120, 60, 30, libellés « Auto », « Écran », « 120 », « 60 », « 30 ». src/jeu.js, gestionnaire 'change' : if (e.target.name === 'cadence') { reglages.cadence = B.cadence.regler(cadence, e.target.value); sauverReglages(); }. remplirReglages coche le bon bouton.",
+  "src/jeu.js, HUD (lignes 2005-2006) : const fps = Math.round(imageCadence && imageCadence.ips || 1000 / Math.max(.5, dureeImage)); const cible = imageCadence ? 1 / (imageCadence.periode * imageCadence.diviseur) : 60; classe(H['h-fps'], 'bas', fps < .9 * cible);",
+  "src/jeu.js, rendu.draw (ligne 1801) : le gouverneur de résolution du renderer (renderer.js lignes 1634-1650) a des seuils absolus de 25 et 18,5 ms. Passer frameMs: imageCadence && imageCadence.intervalle > 0 ? (1000 / 60) * imageCadence.intervalle / (imageCadence.periode * imageCadence.diviseur) : dureeImage, ou adaptive: false une fois la qualité branchée sur periode.",
+  "Bancs et mesures (S.banc, tools/profil-accrocs.mjs) : B.cadence.regler(cadence, 'ecran') pendant la mesure, puis B.cadence.regler(cadence, reglages.cadence) à la fin."
+ ],
+ "non_fait": [
+  "Aucune vérification dans le navigateur après la correction (page-essai non relancée) ; le contrôle de l'exécutant à 60 Hz dans Chrome sans interface date de bc957f0.",
+  "Écran 30 Hz dès le départ avec 18 à 28 ms de fil principal : la qualité baisse alors de 1 à 3 niveaux puis remonte en partie, alors que la consigne disait « rien ne se dégrade ». Le cas est indiscernable d'une machine lente ; décision de David attendue.",
+  "Machine liée au processeur graphique, régulière à deux périodes sur 60 Hz : toujours prise pour un écran à 30 Hz, qualité jamais baissée. Ce cas est déclaré, pas résolu : le travail du fil principal ne le montre pas.",
+  "60 vers 90 Hz, charge de 1,4 période avec ±10 % : 3 graines sur 20 gardent 50 images ratées sur 305 et un écart de temps de jeu de 9 à 10 ms (balayage de brouillon) ; non traité.",
+  "Gigue de ±2 ms à 144-240 Hz (hors enveloppe déclarée) : non amélioré, quelques graines y sont pires.",
+  "Mutants survivants de l'exécutant (protections redondantes) : non retravaillés.",
+  "Ni push, ni merge, ni rebase ; aucune note KBZA (outils interdits)."
+ ],
+ "commits": [
+  "bc957f0 cadence : grille de l'écran, pas verrouillés et diviseur d'images (vague Fluidité) — exécutant ; sa ligne d'attribution est « Claude Opus 5.5 »",
+  "6a0dda7 Corrige la cadence : machine lente prise pour un écran à 30 Hz, grilles fausses sans issue — correcteur, ligne Co-Authored-By: Claude Fable 5.2"
+ ],
+ "mesures": "Allocations : 0 octet en 100 000 rappels après correction, mesuré par l'échantillonneur de tas de V8 dans cadence.test.mjs (témoin vu). Trois régimes : 60 Hz verrouillé, 144 Hz recalé, 60 Hz à k = 2. Le calcul de l'écart de la droite ajoute une boucle de 48 points par rappel, sans allocation ; sa durée n'a pas été chronométrée.\n\nSonde p12 du relecteur (avant, puis après) :\n- 18, 22, 26 et 30 ms en Fine sur 60 Hz : période vue 33,34 ms puis 16,67 ms.\n- Qualité : jamais changée, puis baisse à 3,0 s (et 6,1 s pour 26 et 30 ms), comme le gouverneur d'aujourd'hui.\n\nSonde p15 (60 vers 144 Hz chargé), graines 4 à 12 : période 6,94 ms, k = 4, 0 image ratée sur les 10 dernières secondes. Avant : graine 7 à 3,47 ms, 541/541 ratées, qualité au plancher.\n\nSonde p13 (60 vers 75 Hz, charge 1,4) : 13,33 ms, k = 2 (avant : 3,33 ms, k = 6, 931 ratées).\n\nÉcran 30 Hz dès le départ, qualité réductible, 90 s (brouillon) :\n- 12 ms : rien ne bouge.\n- 18 ms : une baisse à 3,1 s, retour au niveau 0 à 23,1 s.\n- 22 ms : niveau 2 puis 1.\n- 28 ms : niveau 3 puis 2.\n- Code de base : aucun changement pour les quatre.\n\nGrilles refaites parce que trop fines : 1 déclenchement en 1 152 cas de régime établi. Durées : cadence.test.mjs environ 0,3 s ; suite complète 38 s.",
+ "changements_visibles": [
+  "Dans ces deux commits, rien ne change à l'écran : src/jeu.js n'est pas modifié et cadence.js n'est pas dans MODULES ; dist, VERSION.json et SIZE.json ne sont pas touchés.",
+  "Prévu après intégration, comme dans le compte rendu de l'exécutant : à 30, 60 et 120 Hz, pas et alpha constants ; ailleurs, intervalles recalés ; machine lente en Auto à une image sur k (30 images/s régulières sur 60 Hz plutôt qu'une alternance), jamais sous environ 24 images/s ; retours tentés après 20 s ; nouveau réglage « Cadence ».",
+  "Changé par la correction : sur un écran 60 Hz, une machine dont le fil principal prend plus d'une période n'est plus prise pour un écran à 30 Hz. Ses images comptent ratées et la qualité Auto baisse comme le gouverneur d'aujourd'hui, jusqu'à retrouver 60 images/s.",
+  "Changé par la correction, à déclarer : un écran réellement bridé à 30 Hz dès le chargement, avec 18 ms ou plus de fil principal, voit sa qualité Auto baisser de 1 à 3 niveaux. Le bridage est ensuite reconnu et la qualité remonte en partie. La consigne disait « rien ne se dégrade » ; le cas est indiscernable d'une machine lente.",
+  "Inchangé et déclaré : une machine liée au processeur graphique, régulière à deux périodes sur 60 Hz, reste prise pour un écran à 30 Hz. La qualité ne baisse jamais (30 images/s tenues en Fine), car le travail du fil principal ne montre pas la charge.",
+  "Changé par la correction : après un changement d'écran sous charge, une grille trop fine (fraction de la vraie période) est refaite. Le jeu ne reste plus à toutes images ratées avec la qualité au plancher, et une cadence de 75 Hz n'avance plus le temps de jeu de 33 ms pour des intervalles de 27 et 40 ms.",
+  "Déterminisme : physique p9, tirages et obstacles inchangés."
+ ],
+ "risques": [
+  "La règle du travail ne vaut que pour une grille de plus de 20 ms. Un écran 144 Hz où la machine rend une image sur deux ou quatre peut rester sur une grille de 72 Hz (k = 2 équivalent, sans dégât en régime établi).",
+  "Contrôle de l'écart de la droite : seuil de 2 ms ou 0,15 période ; la gigue de ±2 ms en donne 1,3 sur la droite. Avec plus de gigue (±2 ms à 144-240 Hz, hors enveloppe), il peut relancer des réestimations ; quelques graines y passent de 0 % à environ 90 % d'images ratées.",
+  "tropFine : sur un vrai écran de plus de 165 Hz où la machine a besoin de k = 7 ou 8 (que K_MAX = 6 interdit), la grille est revérifiée toutes les 1,5 s. Sans dégât observé, mais les réestimations se comptent.",
+  "60 vers 90 Hz, charge 1,4 avec ±10 % : 3 graines sur 20 gardent environ 16 % d'images ratées et 9 à 10 ms d'écart de temps de jeu (balayage de brouillon).",
+  "Risques de l'exécutant qui restent :\n- Gigue au-delà d'environ 0,3 période.\n- Peignes de coïncidence (9/8, 5/4) sous charge intenable.\n- Charge de X,1 périodes sous le seuil de 12 %.\n- Écrans 24/25 Hz vus comme 48/50 Hz.\n- Bridage qui n'est pas un sous-multiple de l'écran.\n- 0,9 % et 4,2 % de réestimations fausses à 120/144 Hz ±2 ms.\n- Après un changement d'écran vers plus rapide, k repart de 1 (environ 1,5 s d'images ratées, un ou deux niveaux de qualité).\n- Rappels en trop à +3 ms à 120 Hz ±2 ms.\n- Les 0,2 à 0,4 premières secondes tournent sur les intervalles bruts.\n- À 59,94 Hz verrouillé, 0,1 % de retard sur l'horloge murale.",
+  "Tout est vérifié au simulateur seulement. Après correction : aucun vrai navigateur, ni Firefox, ni Safari, ni VRR, ni écran réel à 120/144 Hz."
+ ]
+}

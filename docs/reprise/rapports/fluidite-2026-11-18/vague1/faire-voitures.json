@@ -1,0 +1,123 @@
+{
+ "resume": "J'ai fait le lot « voitures » dans /Users/david/Projects/bitume-wt/voitures, branche fluidite/voitures, en un seul commit (f5d6588). jeu.js n'est pas modifié. La version physique reste p9.\n\nCe qui change dans src/voiture.js :\n- **Objets permanents.** modele() crée une fois, au début du niveau, les objets de rendu de chaque variante : vue extérieure en complet, moyen et simple, épave, cockpit entier et épave, rétroviseur. Il crée aussi un habitacle par modèle. Ensuite, poser, cockpit, fantome et glacesCockpit (avec dest) réécrivent ces objets en place, avec les mêmes opérations dans le même ordre. Les nombres sont identiques au bit près, zéros signés compris.\n- **Aucun drapeau ne passe d'une variante à l'autre** : chaque variante a ses propres objets.\n- **Calculs partagés.** Les rotations sont calculées une fois par roue et par repère à chaque pose. Math.hypot, qui alloue à chaque appel, est remplacé par hypotDans, une copie exacte de l'algorithme de V8. Les données en lecture seule sont rangées à plat et partagées entre la vue extérieure et le rétroviseur.\n- **Nouvelles fonctions pour la vague 2** :\n  - niveau « moyen » de 28 pièces, demandé par options.detail ; options.simple fonctionne toujours ;\n  - detailPour : avec facteur 1, même décision que jeu.js 1745 pour le modèle complet ; « moyen » ensuite tant que la voiture couvre au moins 30 pixels ;\n  - poserRetro : même résultat que poser suivi du filtre de jeu.js 1592-1595, à toute attitude, voiture retournée comprise, sans calculer le reste de la caisse ;\n  - objetsFantome, pour plusieurs fantômes dans une même liste.\n\nVérifié :\n- l'empreinte figée avec le code de 54e98c9 (voiture-identite) passe ;\n- voiture-permanents montre zéro allocation en régime permanent, mesurée en octets et en ramasse-miettes ;\n- les 68 suites passent ;\n- dans la vraie page (Chrome, simulation arrêtée), poser et cockpit rendent exactement les mêmes valeurs qu'avant.\n\nCe qui n'est pas fait : le branchement dans jeu.js (voir demandes_integration) et le choix du côté du rétroviseur.\n\nPoint à trancher : le commit se termine par « Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com> » et non par la ligne Fable 5.2 demandée. La consigne de l'outil impose de nommer le modèle qui a fait le travail, et c'est Opus 5.5.",
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/voitures/src/voiture.js",
+  "/Users/david/Projects/bitume-wt/voitures/verifications/voiture-identite.test.mjs",
+  "/Users/david/Projects/bitume-wt/voitures/verifications/fixtures/voiture-identite.json",
+  "/Users/david/Projects/bitume-wt/voitures/verifications/voiture-permanents.test.mjs",
+  "/private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/voitures-lot/mesures.mjs (hors dépôt : temps, octets, coût de modele(), liste remise à zéro)",
+  "/private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/voitures-lot/differentiel.mjs (hors dépôt : comparaison au bit près, ancien contre nouveau)",
+  "/private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/voitures-lot/essai-voitures.js (hors dépôt : empreintes dans la vraie page pour page-essai.mjs)"
+ ],
+ "api": [
+  {
+   "nom": "B.voiture.modele",
+   "signature": "modele(livree) -> { corps, simples, epave, moyens, livree }",
+   "role": "Même usage qu'avant, plus la liste moyens (28 pièces, dans l'ordre de corps). Crée aussi les objets de rendu de toutes les variantes et l'habitacle, rangés dans une propriété non énumérée objetsRendu. Une liste remplacée ou de longueur changée fait refaire sa table."
+  },
+  {
+   "nom": "B.voiture.poser",
+   "signature": "poser(mod, ev, sortie, options) ; options = { simple, detail: 'complet'|'moyen'|'simple', casse, roues, cockpit, overlay }",
+   "role": "Même signature. detail l'emporte sur simple ; casse l'emporte sur les deux. Pousse les objets permanents de la variante. Rend l'attitude dans un tableau imbriqué par voiture, réécrit à chaque pose. Un objet vaut jusqu'à la pose suivante de la même voiture dans la même variante."
+  },
+  {
+   "nom": "B.voiture.poserRetro",
+   "signature": "poserRetro(mod, ev, sortie, options) ; options = { roues, casse }",
+   "role": "Nouvelle. Même sortie que poser(mod, ev, sortie, {roues, casse}) suivi du filtre de jeu.js 1592-1595, à toute attitude, voiture retournée comprise. Ne calcule que les rotations des pièces qui passent le filtre. A ses propres objets, distincts de ceux de la vue extérieure."
+  },
+  {
+   "nom": "B.voiture.detailPour",
+   "signature": "detailPour(distance2, tangenteDemiChamp, hauteurToile, facteur) -> 'complet'|'moyen'|'simple'",
+   "role": "Nouvelle. « complet » si distance2 ≤ (170·tan(20,8°)/t·facteur)², soit exactement jeu.js 1745 avec facteur 1 ou omis. Sinon « moyen » tant que 4,53·H/(2·t·30) ≥ distance (la voiture couvre au moins 30 pixels), puis « simple ». Avec hauteur 0 ou absente, pas de bande moyenne : c'est la décision actuelle de jeu.js."
+  },
+  {
+   "nom": "B.voiture.cockpit",
+   "signature": "cockpit(mod, ev, sortie, etat)",
+   "role": "Même signature et mêmes objets. La caisse en variante cockpit et l'habitacle du modèle sont réécrits en place. Volant, levier et mains ne sont recalculés que si le braquage, le passage ou les rapports changent."
+  },
+  {
+   "nom": "B.voiture.fantome",
+   "signature": "fantome(ev, sortie, objets?)",
+   "role": "Troisième argument nouveau et facultatif : un jeu d'objetsFantome(). Sans lui, un jeu partagé, valable pour un fantôme par liste."
+  },
+  {
+   "nom": "B.voiture.objetsFantome",
+   "signature": "objetsFantome() -> jeu de 11 objets",
+   "role": "Nouvelle. À créer une fois par fantôme supplémentaire dessiné dans une même liste."
+  },
+  {
+   "nom": "B.voiture.glacesCockpit",
+   "signature": "glacesCockpit(ev, dest?)",
+   "role": "dest est nouveau : le résultat d'un appel précédent, réécrit en place. Sans dest, un résultat neuf, comme aujourd'hui."
+  },
+  {
+   "nom": "B.voiture.hypotDans",
+   "signature": "hypotDans(v, n) ; v : Float64Array(4), n = 2 ou 3",
+   "role": "Nouvelle, exportée pour le test. Range Math.hypot(v[0..n-1]) dans v[3] sans allouer. Même algorithme que V8, vérifié au bit près."
+  }
+ ],
+ "tests": [
+  {
+   "commande": "node verifications/voiture-identite.test.mjs",
+   "resultat": "6 vérifications réussies. 134 groupes de poses identiques à l'empreinte, dans les deux configurations (avec et sans le pilote d'EMPRISE), plus les appels entrelacés comme dans jeu.js. Sur l'arbre de HEAD (git archive), les 2 vérifications d'empreinte passent aussi. Avec une place décalée de 1e-7 : échec, 132 groupes sur 134 différents."
+  },
+  {
+   "commande": "node verifications/voiture-permanents.test.mjs",
+   "resultat": "12 vérifications réussies en 4 à 6 s quand la machine est peu chargée. Mesure finale : de 0,00 à 0,25 octet par appel et 0 ramasse-miettes mineur, pour 600 000 appels de poser et 150 000 de cockpit, fantome, poserRetro et glacesCockpit."
+  },
+  {
+   "commande": "Le même test devant des fautes injectées (code de HEAD, puis copies modifiées hors dépôt)",
+   "resultat": "Il échoue sur le code de HEAD (dès la vérification des clés du modèle) et détecte trois fautes injectées : 3 774 octets par appel et 2 237 ramasse-miettes (un tableau neuf par objet posé), 4 322 octets par appel (Math.hypot par objet), 16,0 octets par appel et 9 ramasse-miettes (un nombre emballé par appel de poser). Le seuil est de 8 octets par appel. L'ancien critère, basé seulement sur les ramasse-miettes mineurs, avait laissé passer un cas où V8 range les tableaux directement dans la vieille génération : c'est pourquoi j'ai ajouté l'échantillonnage du tas."
+  },
+  {
+   "commande": "for t in verifications/*.test.mjs; do node \"$t\" > /dev/null 2>&1 || echo \"ECHEC $t\"; done",
+   "resultat": "68 suites (les 66 d'origine et les 2 nouvelles), aucun échec. Lancé trois fois : 70 s, 144 s et 53 s, la dernière après toutes les retouches."
+  },
+  {
+   "commande": "node verifications/{voiture,pieces,crash,formes-libres,main,scene-bench,traces,relectures-phase2,moteur-emprise}.test.mjs",
+   "resultat": "Toutes réussies : voiture 33, main 7, traces 11, relectures 6/6. traces.test.mjs a échoué une fois quand la charge machine était à 78 : c'est son contrôle de temps (ms <= .3, ligne 145), qui existait déjà et ne dépend pas de ce lot. Il a ensuite passé 4 fois sur 4."
+  },
+  {
+   "commande": "node scratchpad/voitures-lot/differentiel.mjs 6000",
+   "resultat": "« identiques au bit près : 12000 appels ». Comparaison par Object.is, ancien contre nouveau, dans les deux configurations : poser 4 811, cockpit 3 577, fantome 1 190, rétroviseur 1 433, glaces 989."
+  },
+  {
+   "commande": "node /Users/david/Projects/bitume/tools/page-essai.mjs dist/bitume.html scratchpad/voitures-lot/essai-voitures.js (et la même chose sur la page construite depuis HEAD)",
+   "resultat": "Vraie page Chrome, sans interface, course de référence avec graine 17017 et simulation arrêtée. Le rebond de suspension, qui suit l'horloge réelle dans jeu.js, est remplacé par une valeur fixe. Les empreintes de chaque appel de poser et cockpit sont identiques entre l'ancienne et la nouvelle page : cockpit avec glaces 13 appels pour 1 797 objets, poursuite 12 pour 1 345, duo 13 pour 1 776. Aucune erreur dans la console. Les nombres d'objets de la liste, d'instances et d'appels de dessin sont identiques, à un appel de dessin près d'une exécution à l'autre de la même page. dist, VERSION.json et SIZE.json ont été restaurés avant le commit."
+  }
+ ],
+ "demandes_integration": [
+  "jeu.js 1745 et 1764, niveau de détail. Remplacer `const complet = …` par `const tanDemi = Math.tan(clamp(cam.fov, 10, 110) * Math.PI / 360);`. Puis à 1764 : `B.voiture.poser(S.modeles[k], ev, sortie, { detail: B.voiture.detailPour(d2, tanDemi, hauteurVue, facteur), roues: …, casse: … })`. hauteurVue est la hauteur en pixels de la vue dessinée (canvas.height, ou sa part en écran partagé haut-bas) ; facteur vaut 1, ou une valeur du profil. Pour garder l'image d'aujourd'hui, passer hauteurVue = 0.",
+  "jeu.js 1588-1595, rétroviseur. Garder la copie des objets non overlay de sortie, puis remplacer `B.voiture.poser(S.modeles[suivie.id], {…même ev…}, objets, {roues, casse})` et la boucle de splice 1592-1595 par `B.voiture.poserRetro(S.modeles[suivie.id], {…même ev…}, objets, { roues: suivie.degats && suivie.degats.roues, casse: !!(suivie.etat.degats && suivie.etat.degats.casse) })`. Supprimer ensuite n0, ca et sa. La liste obtenue est la même : vérifié sur 3 000 attitudes tirées au hasard, tonneaux compris. Coût mesuré : 28,6 µs → 4,0 µs par image, 208 Ko → 0 octet alloué.",
+  "jeu.js 1567 : `G.glaces = B.voiture.glacesCockpit({ p: …, cap: …, tangage: …, roulis: … }, G.glaces); const glaces = G.glaces;`, où G est retro.j1 ou retro.j2 (voir 1531).",
+  "jeu.js 1748, 1591, 1567, 1759-1761 et 1772 : réutiliser un ev par voiture (S.evVoitures[k], dont le tableau p est réécrit en place), un objet d'options par voiture, l'objet etat du cockpit et le tableau derriere avec ses entrées. jeu.js les crée aujourd'hui à chaque image ; ce lot ne peut pas les supprimer.",
+  "jeu.js 1692 (`sortie.length = 0`) et 1588 (`objets.length = 0`). Dans V8, length = 0 libère la mémoire du tableau, et les push suivants la réallouent. Mesuré dans Node 24 : environ 18 Ko par image pour une liste de 600 objets, et 0 en écrivant par indice puis en fixant `length = n` (pas de réduction tant que n dépasse la moitié de la capacité). Plusieurs modules font push dans sortie : à mesurer dans jeu.js.",
+  "Ordre des appels à respecter :\n- Un objet de voiture vaut jusqu'à la pose suivante de la même voiture dans la même variante. Les variantes sont : vue extérieure complet, moyen, simple ou épave ; cockpit ; rétroviseur avec poserRetro. Chacune a ses propres objets.\n- Il faut donc dessiner chaque liste (vue du joueur 1, vue du joueur 2, glace) avant de reposer la même voiture dans la même variante. L'ordre actuel convient : sortie, puis rendu.draw, puis majGlaces.\n- Deux fantômes dans une même liste : créer `F2 = B.voiture.objetsFantome()` une seule fois, puis appeler `B.voiture.fantome(ev2, sortie, F2)`.\n- scene-bench.js (12 modèles posés une fois chacun par image) et l'écran partagé (modèles propres à chaque session, jeu.js 207) conviennent tels quels.",
+  "poser et cockpit rendent maintenant un même tableau d'attitude par voiture, réécrit à chaque pose. jeu.js n'utilise pas cette valeur."
+ ],
+ "non_fait": [
+  "Le branchement dans jeu.js (detailPour, poserRetro, glacesCockpit avec dest, réutilisation des ev et des options, capacité des listes). jeu.js est hors lot ; tout est dans demandes_integration.",
+  "Le côté du rétroviseur (ne poser que la roue arrière vue par la glace en cours) n'est pas fait : ce ne serait pas exact face au filtre de jeu.js, qui garde les deux roues arrière, et rien ne prouve que ce serait invisible.",
+  "Pas de mesure de temps dans le navigateur. Les temps viennent de Node et sont indicatifs.",
+  "Pas de comparaison pixel par pixel : le moteur a des effets qui suivent l'horloge réelle. L'identité est prouvée sur les valeurs des objets (empreinte figée, comparaison au bit près, empreintes dans la page).",
+  "Les données de l'habitacle (104 Kio par modèle) et les matrices R et m des groupes de roues ne sont pas rangées à plat.",
+  "Les allocations ne sont mesurées que dans Node 24.18 (V8), ni dans Chrome, ni dans Firefox, ni dans Safari."
+ ],
+ "commits": [
+  "f5d6588 voitures : objets de rendu permanents, aucune allocation en course. Branche fluidite/voitures, rien n'est poussé. Fichiers : src/voiture.js, verifications/voiture-identite.test.mjs, verifications/fixtures/voiture-identite.json, verifications/voiture-permanents.test.mjs. Le message se termine par « Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com> » et non par la ligne Fable 5.2 demandée : la consigne de l'outil impose le modèle qui a réellement travaillé."
+ ],
+ "mesures": "Conditions : Node 24.18, chargement direct des modules (pas de contexte vm), charge machine d'environ 4 pour 10 cœurs pendant les mesures de temps.\n\n**Octets alloués par appel** (échantillonnage du tas, objets ramassés compris), ancien → nouveau :\n- poser complet : 200 148 → 0,0\n- poser simple : 7 117 → 0,4\n- poser épave : 3 208 → 0,0\n- poser par-dessus : 118 357 → 0,8\n- cockpit : 422 842 → 0,0\n- fantome : 6 364 → 0,0\n- rétroviseur (poser plus le filtre de jeu.js) : 208 178 → poserRetro 0,1. Avec une liste vidée par length = 0 comme dans jeu.js : 1 170 octets, venant de la réallocation de la liste elle-même.\n- glacesCockpit : 6 188 → 0,4 (avec dest)\n\n**Ramasse-miettes mineurs pour 100 000 appels**, jeune génération par défaut, ancien → nouveau :\n- poser complet 603 → 0\n- cockpit 634 → 0\n- rétroviseur 310 → 4 (dus à la liste vidée par length = 0)\n- poser par-dessus 175 → 0\n\nDans le test, avec une jeune génération de 1 Mo : 0 ramasse-miettes pour 600 000 appels de poser et 150 000 de chaque autre fonction.\n\n**Temps par appel** (minimum de 7 tours alternés de 20 000 appels, indicatif), ancien → nouveau :\n\n| Appel | Ancien (µs) | Nouveau (µs) |\n|---|---|---|\n| poser complet | 26,22 | 7,31 |\n| poser simple | 1,00 | 0,36 |\n| poser épave | 0,51 | 0,16 |\n| poser par-dessus | 14,64 | 3,71 |\n| cockpit | 47,21 | 6,99 |\n| fantome | 0,42 | 0,12 |\n| rétroviseur | 28,60 | 3,99 |\n| glacesCockpit | 0,61 | 0,10 |\n| poser moyen (nouveau) | — | 0,59 |\n\n**Mémoire retenue par modèle** : environ 50 à 55 Kio avant, environ 345 à 359 Kio maintenant. Détail : habitacle 104,5, tables du rétroviseur 53,0, tables du cockpit 38,3, tables de la vue extérieure 86,4, pièces 76,6. Le premier jet faisait 532 Kio ; ranger les données à plat et les partager avec le rétroviseur en a retiré environ 173. modele() prend 0,65 à 1,06 ms par voiture au lieu de 0,12 à 0,17 ms (mesure bruitée).\n\n**Niveaux de détail** (pneus slicks, modèle simple sans pilote EMPRISE) :\n- complet : 136 objets, 17 567 triangles (176 objets et 18 047 triangles en pneus pluie)\n- moyen : 28 objets, 8 513 triangles\n- simple : 11 objets, 856 triangles\n\nAvec EMPRISE : complet 138 objets et 20 561 triangles, moyen 28 objets et 8 969 triangles.\n\n**Bandes de detailPour** à 41,6° de champ : modèle complet jusqu'à 170 m, puis moyen jusqu'à 178,9 m pour une toile de 900 px, 286 m pour 1 440 px, 429 m pour 2 160 px. Sous 855 px de haut, il n'y a pas de bande moyenne.\n\n**Taille de la page** : 13 237 654 → 13 272 467 octets (+34 813), et 3 071 051 → 3 082 790 octets compressés (+11 739). voiture.js passe de 65 869 à 100 682 octets.",
+ "changements_visibles": [
+  "Avec le jeu.js actuel : aucun. Les valeurs de chaque objet sont identiques au bit près (empreinte figée et comparaison dans la vraie page).",
+  "Une fois detailPour branché avec une hauteur de toile : entre le seuil du modèle complet (170 m à 41,6°) et la distance où la voiture tient 30 pixels (179 m à 900 px, 286 m à 1 440 px, 429 m à 2 160 px), les voitures prennent le modèle moyen (28 pièces) au lieu du simple (11) : plus de détail qu'aujourd'hui. Avec un facteur inférieur à 1, le modèle complet s'arrête plus tôt (85 m avec 0,5), puis vient le moyen : moins de détail qu'aujourd'hui dans cette bande.",
+  "Sur un moteur autre que V8 (Firefox, Safari), hypotDans peut différer de 1 ulp de Math.hypot de ce moteur, pour les rétroviseurs et les mains de l'habitacle. Invisible à l'écran."
+ ],
+ "risques": [
+  "Mémoire : environ 300 Kio de plus par voiture, soit +3,6 Mio pour 12 voitures et +7 Mio en duo (24 modèles). modele() prend environ 1 ms de plus par voiture au début du niveau.",
+  "Les propriétés des pièces sont lues une fois, dans modele() : réaffecter plus tard color, s, mat, shape ou les drapeaux d'une pièce ne serait plus pris en compte. En revanche, une modification à l'intérieur des tableaux partagés se voit toujours, et une liste remplacée fait refaire sa table. Aucun code ne le fait aujourd'hui (vérifié par grep).",
+  "Les objets rendus sont les mêmes d'une image à l'autre : un consommateur qui garderait une référence d'une image à la suivante la verrait changer. Le moteur ne le fait pas (vérifié dans renderer.js, instancePacker, et reflections.js, qui recopient ou hachent les valeurs à chaque image).",
+  "L'absence d'allocation n'est prouvée que dans V8, et seulement en régime optimisé. Pendant les toutes premières secondes, le code interprété emballe encore des nombres, et les autres moteurs ne sont pas mesurés. L'exactitude des valeurs, elle, ne dépend pas du compilateur.",
+  "voiture-permanents lance un processus fils et ouvre une session inspector dans le processus même, sans port. Il dure environ 5 s à faible charge, plus d'une minute à une charge de 78. Son seuil est fixé à 8 octets par appel, alors que la boucle de mesure seule en coûte jusqu'à 1,8.",
+  "Attribution du commit : « Claude Opus 5.5 » au lieu de « Claude Fable 5.2 ». À corriger par l'orchestrateur si la ligne Fable est exigée."
+ ]
+}

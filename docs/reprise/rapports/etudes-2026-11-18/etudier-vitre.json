@@ -1,0 +1,88 @@
+{
+ "resume": "Lot 19 (visière) terminé dans le worktree /Users/david/Projects/bitume-wt/vitre (branche etude/vitre), en un seul commit c5ae5ba, sans push ni merge. Le commit ne contient que des fichiers nouveaux : rien dans src/, ni moteur, ni dist. Le module visiere.js rassemble deux parties. La première est un modèle à pas fixe de 1/120 s pour l'eau posée, les gouttelettes, coulures, traînées et nappes, le nuage d'eau des voitures suivies, la neige collée, les bourrelets et la buée, avec des horloges intégrées. Il ne tire aucun hasard et n'alloue rien en course ; il coûte 0,2 µs par image (mesure sous Node sur M5). La seconde est un effet GLSL procédural à trois paliers : Fine et Moyenne lisent la scène nette et une copie floue au quart ; Légère se mélange par-dessus la scène sans la lire. Il couvre aussi l'objectif en vue extérieure. prototype.html est autonome (WebGL2, sans dépendance ni réseau) et tourne sur six vraies images du jeu 0.2.38. Il y a 14 captures, faites avec le code final. Contrôle à sec : 0 pixel différent sur les 4 variantes. Contrôle du rythme d'images : 0 pixel différent de 30 à 144 Hz. Le coût est mesuré en temps de mur sur Apple M5, deux passes complètes. En 1080p : Fine 1,2 à 2,6 ms, Moyenne 0,9 à 2,0 ms, Légère 0,45 à 0,93 ms, Légère à mi-résolution 0,23 à 0,43 ms, plus 0,1 à 0,2 ms pour la copie floue de Fine et Moyenne. À 3024 × 1964 (Fine sur un portable Retina) : 3 à 8 ms sous forte pluie ou neige. C'est le principal point à décider. Le chronomètre GPU d'ANGLE sur Metal surcompte de 3 à 5 fois ; il n'est pas retenu. Le test verifications/visiere.test.mjs compte 13 contrôles, la suite complète est verte, et il échoue sur 10 mutants sur 11 (le 11e est équivalent). docs/reprise/19-VITRE.md contient le modèle, les sources dans le jeu, la table des uniformes, le coût par palier, la spécification FERRO et jeu, les constats et les questions. Il n'y a ni intégration ni démonstration en jeu (donc pas d'integration.patch), ni mesure sur un GPU modeste.",
+ "documents": [
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/19-VITRE.md",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/ (prototype, module, captures, mesures, outils)"
+ ],
+ "preuves": [
+  "node verifications/visiere.test.mjs : 13 contrôles passés (même état à 30, 47, 60, 120 et 144 Hz et avec des images irrégulières ; horloges qui avancent à chaque image à 144 Hz ; pas de Math.random ni d'allocation ; pas fixe borné à 0,25 s ; l'air chasse l'eau ; montée et retombée du nuage d'eau ; seuils de embruns() alignés sur traces.js ; projection viser() ; neige et bourrelets ; buée dans le casque seulement ; tunnel et intensité ; objectif ; sortie à sec des deux entrées du shader ; source GLSL de chaque palier, préprocesseur résolu, équilibrée, sans lecture de la scène en Légère)",
+  "Suite complète `for t in verifications/*.test.mjs` : aucun ÉCHEC, après la dernière modification du test",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/mutants.txt (muter.py) : 10 mutants sur 11 font échouer le test ; le 11e (seuil des gerbes à 8 m/s) est équivalent, car lisse(14, …) y vaut déjà 0",
+  "mesures-1.jsonl et mesures-2.jsonl, controle=sec : écart max 0, 0 pixel différent sur 921 600, aux paliers Fine, Moyenne, Légère et Légère mi-résolution (deux passes)",
+  "mesures-1.jsonl et mesures-2.jsonl, controle=ips : 30, 47, 120 et 144 Hz contre 60 Hz, 0 pixel différent et écart des uniformes nul, sur pluie à 250, grille et neige",
+  "Coût en temps de mur, Apple M5, à 0,92, 2,07 et 5,94 Mpx, 5 états, 4 variantes, deux passes : tableaux au § 5 de 19-VITRE.md (lire-mesures.py)",
+  "Captures 01 à 14 (JPEG 1280 × 720, code final) : bruine 250, forte pluie 250, forte pluie à l'arrêt sur la grille, nuage d'eau d'une voiture, pluie en vue extérieure, neige légère, forte neige lente avec accumulation, sec, grille Moyenne, grille Légère, nuage Légère, buée, graine 7, Légère à mi-résolution",
+  "Capture de contrôle sans eau de la scène pluie-grille : les bandes verticales du fond viennent de la scène du jeu, pas de l'effet",
+  "capturer-scenes.sh rejoué : les 6 scènes du jeu se capturent depuis dist/bitume.html sans modifier de fichier suivi"
+ ],
+ "plan": [
+  "David juge le rendu sur les captures et dans le prototype (anim=1&panneau=1) et répond aux questions du § 10",
+  "Mesurer prototype.html?mesure=1 sur un GPU modeste (david-pc ou GPU intégré) avant de choisir pour Légère entre la nouvelle couche (pleine ou mi-résolution) et vitre.js",
+  "FERRO (référence M4D135/FERRO, module verrouillé) : option de dessin visiere, source GLSL fournie à la création, variantes compilées au chargement, deux cibles au quart pour la copie floue, substitution en passe 2, composition quand le halo est coupé, recouvrement Légère ; puis version qualifiée propagée par FERRO.lock.json",
+  "Jeu : src/visiere.js (copie du module), ajout à MODULES de construire.py, un état par joueur câblé dans dessinerMeteo (pluie, neige, vitesse, abri, vue, embruns et cible par voiture devant, froid et humidité à valider) ; B.vitre effacé quand l'effet est actif",
+  "Si Fine sur écran 2× doit coûter moins : prototyper la couche d'eau au quart des pixels avec composition à pleine résolution",
+  "Qualifier en jeu : captures et B.mesures sur M5 et david-pc, en écran partagé aussi"
+ ],
+ "non_fait": [
+  "Aucune intégration dans le jeu ni dans FERRO (lot de prototype ; moteur verrouillé) : pas de démonstration en jeu, donc pas d'integration.patch",
+  "Aucune mesure sur un GPU modeste ni sur david-pc : tous les chiffres viennent de l'Apple M5 ; pour un GPU intégré ancien, l'écart est un ordre de grandeur non mesuré",
+  "Couche d'eau au quart des pixels pour Moyenne et Fine : non prototypée (seule Légère à mi-résolution l'est)",
+  "Temps de compilation des shaders : non mesuré",
+  "Rétroviseurs (glaces DOM au-dessus de la scène) et pluie 2D #meteo : non traités, seulement décrits",
+  "« Essuyer la visière » : non fait, en attente de décision",
+  "Mouvement non filmé : les captures sont des images fixes ; la dynamique est vérifiée par les tests et se juge dans le prototype avec anim=1",
+  "Sources de froid et d'humidité dans le jeu : formules proposées, non validées",
+  "Séparation cockpit / monde par la profondeur de la scène : non faite (approximation par la hauteur uniforme proche)"
+ ],
+ "commits": [
+  "c5ae5ba docs: lot 19 visière — pluie et neige sur l'écran, prototype, mesures et spécification (worktree /Users/david/Projects/bitume-wt/vitre, branche etude/vitre ; 28 fichiers nouveaux ; non poussé, non fusionné)"
+ ],
+ "constats": [
+  "Fine sur un portable Retina (profil resolution 2, 5,94 Mpx) : 3 à 8 ms par image sous forte pluie ou forte neige sur un M5 ; le coût suit le nombre de pixels",
+  "Le chronomètre GPU d'ANGLE sur Metal (EXT_disjoint_timer_query_webgl2) donne 3 à 5 fois le temps de mur d'une même rafale de passes en série : à ne pas utiliser pour chiffrer un coût sur Mac",
+  "Sur un GPU à tuiles (Apple), répéter un dessin opaque plein écran sur la même cible n'en coûte qu'un (suppression des surfaces cachées) : pour mesurer, alterner deux cibles",
+  "Bandes verticales pâles dans le fond des images du jeu sous la pluie (pluie-grille, pluie-course), présentes sans l'effet ; origine non cherchée (rideaux de pluie ou gerbes 3D ?)",
+  "Les glaces des rétroviseurs (#glace-g, #glace-d) et la pluie 2D (#meteo) sont des toiles au-dessus de la scène WebGL : un effet intégré à FERRO ne passerait pas dessus, alors que #vitre passe aujourd'hui au-dessus des glaces",
+  "Dans la passe post de FERRO, les reflets d'écran se mélangent après la composition : ils passeraient devant l'eau de la visière, sauf à fournir au module une macro VISIERE_MONDE(uv)",
+  "BITUME crée FRender (WebGL2) directement (jeu.js:2698) : pas de portage WGSL nécessaire tant que le moteur WebGPU n'est pas employé",
+  "Une page ouverte depuis le disque ne peut pas donner à WebGL une image voisine (Chrome la tient pour étrangère) : les scènes du prototype sont en data:",
+  "Chrome sans interface écrit souvent la capture puis dépasse son délai de fermeture : seul le fichier écrit compte (capturer.sh)"
+ ],
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/19-VITRE.md",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/visiere.js",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/prototype.html",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/scenes.js",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/fabriquer-scenes.py",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/capturer-scenes.sh",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/capturer.sh",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/captures/ (01 à 14, JPEG)",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/mesurer.mjs",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/mesures-1.jsonl",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/mesures-2.jsonl",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/lire-mesures.py",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/muter.py",
+  "/Users/david/Projects/bitume-wt/vitre/docs/reprise/rapports/vitre-2026-11-18/mutants.txt",
+  "/Users/david/Projects/bitume-wt/vitre/verifications/visiere.test.mjs"
+ ],
+ "integration": [
+  "FERRO : draw(camera, objets, { visiere: { uniformes: Float32Array(28), ciel, palier } }) ; null ou absent = coût nul (le jeu passe null quand la somme des couvertures est ≤ 0,0008)",
+  "FERRO : source GLSL fournie à la création (B.visiere.source(palier, 'uScene', 'uVoile')) ; variantes post Moyenne, post Fine et recouvrement Légère compilées au chargement, pour que le gouverneur Auto ne compile rien en course",
+  "FERRO : copie floue = deux cibles au quart (post.voile, post.voile2), créées et libérées avec les cibles post ; une réduction puis deux flous séparables H+V (0,1 à 0,2 ms mesurés)",
+  "FERRO, passe 2 de POST_FRAG : c=scene.rgb+c*.28 devient c=visiere(vUV)+c*.28 ; une unité de texture libre (4) pour uVoile",
+  "FERRO, halo coupé mais cibles post présentes : rendre la scène dans post.scene quand la visière est active, puis passe de composition fragColor=vec4(visiere(vUV),1.)",
+  "FERRO, Légère (quality low, sans cibles post) : triangle plein écran visiereLegere, mélange ONE, ONE_MINUS_SRC_ALPHA, après la scène ; variante mi-résolution par une cible RGBA8 de demi-taille",
+  "Jeu : src/visiere.js et MODULES de construire.py ; un état par joueur ; entrées remplies dans dessinerMeteo (jeu.js:494-514) : pluie et neige comme B.vitre, vitesse de la voiture suivie, abri sousLaVoute, vue cockpit = visière sinon objectif, embruns = max de B.visiere.embruns sur les voitures à moins de 70 m (B.circuit.ecart, eauSurPiste), cible par viser(), graine = graineCourse & 0xffff (lue, jamais tirée)",
+  "Jeu : B.vitre.effacer quand l'effet est actif ; vitre.js reste le repli",
+  "Écran partagé : chaque appel à rendu.draw (vue du joueur 2 puis du joueur 1) reçoit la visière de son joueur"
+ ],
+ "questions_pour_david": [
+  "Essuyer la visière : un bouton (le gant passe, les nappes partent d'abord), un geste automatique à l'arrêt, ou rien pour garder toute la gêne ?",
+  "Ajouter un réglage « Gouttes sur l'écran » (intensité de 0 à 2, 1 par défaut, 0 = aucune) dans les réglages d'affichage ?",
+  "Légère : garder vitre.js (quelques contours en Canvas2D), ou prendre la nouvelle couche sans lecture de la scène, en pleine ou mi-résolution, une fois mesurée sur un GPU modeste ?",
+  "Fine sur un écran 2× : accepter 3 à 8 ms (M5) sous forte pluie ou neige, ou faire calculer l'eau au quart des pixels (travail FERRO en plus) ?",
+  "Vues du réalisateur (télé, hélico, orbite, travelling, sol) : des gouttes sur l'objectif comme une vraie caméra de bord de piste, atténuées, ou aucune ? Proposition : la poursuite en a, les vues du réalisateur à moitié",
+  "Rétroviseurs : les gouttes doivent-elles passer sur les glaces ? Il faudrait alors donner au rendu des glaces la même couche, recadrée",
+  "Buée : la ventilation l'efface entre 7 et 58 km/h ; la veut-on plus tenace au départ par temps froid ?"
+ ]
+}

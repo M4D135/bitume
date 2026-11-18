@@ -1,0 +1,75 @@
+{
+ "verdict": "corrections",
+ "constats": [
+  {
+   "id": "V1",
+   "gravite": 2,
+   "fichier": "src/voiture.js",
+   "lignes": "770-783 (detailPour), 428-433 et 441-533 (liste moyens) ; demande d'intégration « jeu.js 1745 et 1764 »",
+   "probleme": "Branché comme le demande l'exécutant (facteur 1 et hauteur réelle de la toile), detailPour ne retire de détail nulle part : le modèle complet garde exactement sa portée de 170 m. Le niveau moyen prend sur la bande où le jeu sert aujourd'hui le modèle simple. Chaque voiture de cette bande passe d'environ 856 à environ 8 500 triangles. Le compte rendu dit « plus de détail qu'aujourd'hui » mais ne chiffre pas ce coût, dans un lot dont le but est la fluidité. Le cas mesuré au départ (onze rivales à moins de 170 m, en modèle complet) n'est pas allégé avec facteur 1.",
+   "preuve": "Script /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecture/tri.mjs. Triangles des formes libres par niveau : moyen 7 641 + 15 primitives, simple 288 + 7 primitives, complet 19 403 + 86 primitives. L'exécutant donne lui-même 8 513 triangles (moyen) contre 856 (simple). Bande moyenne à 41,6° de champ : de 170 à 179 m pour 900 px, à 286 m pour 1 440 px, à 429 m pour 2 160 px. canvas.height est en pixels physiques : sur un écran HiDPI, la bande s'allonge encore. Avec onze rivales dans la bande, jusqu'à environ 84 000 triangles de plus, sans compter l'ombre. Dans le code, le test `if (!(d2 > complet * complet)) return 'complet'` est le même seuil qu'à jeu.js 1745.",
+   "correctif": "Corriger la demande d'intégration et le compte rendu : chiffrer ce coût, et ne pas recommander facteur 1 avec la hauteur réelle tel quel. Deux voies, à faire trancher par David ou l'intégrateur. (a) Brancher par défaut avec hauteur 0, ce qui garde l'image d'aujourd'hui, et ne servir « moyen » qu'avec un facteur de profil inférieur à 1 : le modèle complet s'arrête alors plus tôt et le moyen le remplace, ce qui allège vraiment. (b) Ajouter un mode où « moyen » couvre la bande de facteur·seuil à seuil, puis « simple » au-delà, pour n'être jamais plus lourd qu'aujourd'hui. À terme, des carènes moins fines pour le niveau moyen ; les roues restent réservées au lot 12A."
+  },
+  {
+   "id": "V2",
+   "gravite": 1,
+   "fichier": "compte rendu (demandes_integration, risques)",
+   "lignes": "jeu.js 207 et 227",
+   "probleme": "Le compte rendu dit que l'écran partagé a des « modèles propres à chaque session » et chiffre « +7 Mio en duo (24 modèles) ». C'est faux pour l'écran partagé local : la vue du joueur 2 hérite de la séance (Object.create(S)) et partage S.modeles et S.sortie. La conclusion tient quand même, parce que chaque vue est dessinée (rendu.draw, puis majGlaces) avant que la suivante repose les voitures. En duo local, il y a 12 modèles, pas 24.",
+   "preuve": "jeu.js 227 : `S.vueJ2 = Object.assign(Object.create(S), { camCap…, tele…, distances…, suivie… })`. Ni modeles ni sortie n'y sont redéfinis ; jeu.js 207 crée `modeles` et `sortie` dans S seulement. Ordre réel dans rendreVue : `sortie.length = 0` → poses → rendu.draw (1801) → majGlaces (1807).",
+   "correctif": "Corriger les deux phrases du compte rendu : modèles et liste de sortie partagés entre les deux vues locales, sûrs tant que chaque vue est dessinée avant la suivante ; 12 modèles en duo local. Garder cette contrainte d'ordre dans la note pour l'intégrateur."
+  },
+  {
+   "id": "V3",
+   "gravite": 1,
+   "fichier": "historique git (commit f5d6588)",
+   "lignes": "dernière ligne du message",
+   "probleme": "Le commit se termine par « Co-Authored-By: Claude Opus 5.5 » au lieu de la ligne « Claude Fable 5.2 » demandée par la consigne. L'exécutant l'a signalé lui-même.",
+   "preuve": "git -C /Users/david/Projects/bitume-wt/voitures log -1 --format=%B",
+   "correctif": "À trancher par l'orchestrateur ou David à l'intégration ; rien à refaire dans le code."
+  },
+  {
+   "id": "V4",
+   "gravite": 1,
+   "fichier": "src/voiture.js",
+   "lignes": "430-433, 441-533",
+   "probleme": "Au niveau moyen, le casque flotte au-dessus de la caisse : il n'y a ni buste, ni visage, ni arceau, et derrière la visière translucide le casque est vide (faces arrière éliminées). Il n'y a pas non plus de mécanique arrière : entre le capot moteur et l'aileron arrière, on voit le fond sous l'aileron. Aucun trou à travers la carrosserie dans les vues regardées (ouverture du cockpit fermée par la cuve sombre). Le modèle simple d'aujourd'hui a les mêmes manques ; ce n'est donc pas une régression dans la bande où le moyen le remplace.",
+   "preuve": "Captures dans la vraie page (Chrome, construction de HEAD dans /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecture/neuf), poser forcé en moyen puis en complet, vue de haut et de trois quarts arrière. Fichiers cap-moyen-haut.png, cap-complet-haut.png, cap-moyen-quart.png et cap-complet-quart.png, dans /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecture/. Aucune erreur dans la console.",
+   "correctif": "Facultatif : ajouter au niveau moyen le buste ou l'arceau sous le casque et le carter arrière (boite-transversale ou carter-arriere), ou dire ces manques dans le commentaire de Moy, pour qu'un lot suivant les traite en connaissance de cause."
+  },
+  {
+   "id": "V5",
+   "gravite": 1,
+   "fichier": "src/voiture.js",
+   "lignes": "626-627, 680-686, 712",
+   "probleme": "compiler() et poserTable() recopient en ligne le filtre de visible() et la logique de braquages() (braquagesDans). Si une future retouche change visible() ou braquages(), poser ne suivra plus : visible() est toujours exportée, braquages() reste utilisée ailleurs. L'empreinte figée signalerait l'écart, mais comme un échec de test, pas comme un rappel de l'endroit à corriger.",
+   "preuve": "Lecture du code : `if (cockpit && (pc.pilote || pc.arriere || pc.exterieur || pc.glace)) continue; if (!cockpit && pc.dedans) continue;` à 626-627 ; braquagesDans (680-686) duplique braquages (101-106).",
+   "correctif": "Commentaire qui renvoie à visible() et braquages(), et petit test : pour chaque pièce et chaque variante, la table contient exactement les pièces telles que visible(pc, cockpit, v) est vrai, et braquagesDans donne au bit près le même résultat que braquages."
+  },
+  {
+   "id": "V6",
+   "gravite": 1,
+   "fichier": "verifications/voiture-permanents.test.mjs",
+   "lignes": "vérification « hypotDans » et mesure par processus fils",
+   "probleme": "Le test « hypotDans : Math.hypot de ce moteur au bit près » fige l'algorithme de V8. Si V8 change un jour son Math.hypot, le test échouera alors que le jeu resterait juste à 1 ulp près. La mesure d'allocation ouvre une session inspector dans un processus fils et dure plus d'une minute sous forte charge, d'après l'exécutant. Elle ne mesure que V8 (Node 24), ce qui est dit dans le compte rendu.",
+   "preuve": "Relancé ici : 12/12 vérifications en 4,6 s à une charge d'environ 3,7 ; mesure : poser 0,11 octet par appel, cockpit 0,66, fantome, poserRetro et glacesCockpit 0,00 ; aucun ramasse-miettes mineur.",
+   "correctif": "Aucun changement exigé ; au besoin, faire du test hypot un avertissement plutôt qu'un échec, et rappeler en tête du fichier que la vérification ne vaut que pour V8."
+  }
+ ],
+ "verifications_faites": [
+  "Diff complet 54e98c9..f5d6588 : 4 fichiers seulement (src/voiture.js, voiture-identite.test.mjs, son fixture, voiture-permanents.test.mjs). src/jeu.js inchangé (git diff --quiet). dist, VERSION.json et SIZE.json ne sont pas commités ; arbre propre après mes essais.",
+  "Lecture entière de l'ancien voiture.js (git show 54e98c9) et du nouveau ; correspondance des opérations ligne à ligne : attitude, angles, rotations de roue, décalage, rebond, habitacle (ordre des pièces, plus(), mettre, posee, segments, lampe, témoins, volant, levier, mains, rétroviseurs) et fantôme.",
+  "Origine du fixture : verifications/voiture-identite.test.mjs et le fixture, copiés dans un git archive de 54e98c9, passent avec l'ancien voiture.js (134 groupes, deux configurations). L'empreinte a donc bien été produite par le code de base.",
+  "Épreuve différentielle maison (scratchpad/relecture/diff.mjs) : ancien et nouveau voiture.js dans deux contextes vm, avec et sans les modules d'EMPRISE. 3 000 images de course simulée sur 5 voitures, rejouées comme dans jeu.js. Chaque image : vue du joueur 2 (cockpit une fois sur deux), sa glace (copie, poser, filtre de jeu.js), vue du joueur 1 (cockpit ou poursuite), sa glace, glacesCockpit, plus une pose overlay seul ou cockpit seul. Le complet et le simple alternent pour la même voiture ; roues détachées et casses apparaissent puis se réparent, avec des tonneaux, cap 0 et −0, braquage autour du seuil d'Ackermann, changements de rapport sur plusieurs images, volant au-delà de ±1, kmh à NaN, entre 0 et 7 suiveurs avec ou sans couleur, ciel et brume absents, glaceVive alternée, fantôme. Les valeurs sont relevées au moment du draw, sur toutes les clés définies, les nombres comparés par Object.is. Résultat : 25 150 listes et 5 125 091 objets, 0 différence.",
+  "Sensibilité de cette épreuve : avec une faute injectée (émission jamais remise à undefined sur un segment éteint), 507 différences sur 300 images. Les fuites de drapeaux entre variantes sont donc bien détectées.",
+  "Lecture de src/moteur/renderer.js : le moteur relit les valeurs (instancePacker 1574/1594, mesh.emissive||0, répartition à 3089) et ne garde aucune identité d'objet dynamique d'une image à l'autre. Le WeakMap shadowGeometry ne s'applique qu'aux entrées setWorld. src/ferro/reflections.js hache les valeurs. src/ferro/loop.js (WeakMap par identité) n'est pas dans les modules de construire.py.",
+  "Lecture de jeu.js 1529-1600 et 1688-1810 : la glace n'est posée qu'en vue cockpit, où la voiture suivie est en variante cockpit dans la vue principale. Elle ne touche donc pas les objets copiés de la vue. Ordre réel : poses, draw, majGlaces, puis vue suivante.",
+  "traces.js et course.js n'utilisent que les fonctions sans état (attitude, mul, angles, ROUES), toujours exportées à l'identique. Aucun code ne modifie les pièces ou la livrée après modele() (grep).",
+  "Niveau moyen : 28 pièces. Captures réelles moyen contre complet dans Chrome, sur une page construite depuis HEAD dans un dossier temporaire : aucun trou à travers la caisse ; casque flottant et mécanique arrière absente, comme au niveau simple d'aujourd'hui.",
+  "Compte des triangles par niveau (formes libres) : moyen 7 641, simple 288, complet 19 403.",
+  "detailPour : relu ; même seuil que jeu.js 1745 avec facteur 1 (même ordre d'opérations).",
+  "Mesures recoupées, dans Node et à titre indicatif : poser complet 26,6 → 10,8 µs, cockpit 58,8 → 14,0 µs (volant changé à chaque appel, donc majVolant à chaque fois), fantome 0,74 → 0,26 µs. modele() 0,83 → 2,5 ms ; mémoire par modèle 66 → 394 Kio (avec EMPRISE et pneus pluie). Ordres de grandeur cohérents avec le compte rendu.",
+  "Commentaires : en français, ils disent le pourquoi, sans historique de session. Message de commit en français, qui dit le pourquoi ; ligne d'attribution différente de la consigne (V3)."
+ ],
+ "tests": "Relancés dans /Users/david/Projects/bitume-wt/voitures :\n- node verifications/voiture-identite.test.mjs : 6 vérifications réussies, 1,2 s ;\n- node verifications/voiture-permanents.test.mjs : 12 vérifications réussies, 4,6 s, à une charge d'environ 3,7. Mesure : poser 0,11 octet par appel, cockpit 0,66, les autres 0,00 ; 0 ramasse-miettes ;\n- suite complète (for t in verifications/*.test.mjs) : 68 suites, aucun échec ;\n- le fixture d'identité, posé dans un git archive de 54e98c9, passe avec l'ancien voiture.js (2/2).\n\nMes épreuves, dans /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecture/ :\n- diff.mjs : 0 différence sur 5,1 millions d'objets ;\n- diff-faute.mjs : détecte la faute injectée ;\n- mem.mjs, bench.mjs, tri.mjs ;\n- captures Chrome des niveaux moyen et complet (cap-*.png, sans erreur de console)."
+}

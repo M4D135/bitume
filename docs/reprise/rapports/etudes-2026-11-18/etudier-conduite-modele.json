@@ -1,0 +1,84 @@
+{
+ "resume": "J'ai décrit exactement le modèle de conduite actuel, écrit un banc de manœuvres normalisées et un test court, lancé le banc sur le code actuel et commenté les nombres. Tout est commité en local dans /Users/david/Projects/bitume-wt/conduite (branche conduite/etude, commit 912f17b), sans push ni merge. src/conduite.js et les autres fichiers existants sont intouchés, donc pas d'integration.patch.\n\nLe banc joue les manœuvres sur le vrai modèle, chargé comme dans les tests. Il couvre le sec et le mouillé avec chaque pneu, et quatre chaînes de commande tirées de jeu.js : voiture seule, manette, clavier, souris ou doigt. Il est déterministe : empreinte complète 52a7484e7589dd23, empreinte --court 6dc495a68695aec5. Ces empreintes serviront au lot « fluidité » pour vérifier que le retrait des allocations ne change aucun nombre.\n\nCe que disent les mesures :\n- **Adhérence et freinage** : au niveau d'une F1 de 1980 (2,2 à 2,6 g tenus entre 180 et 240 km/h, 2,1 à 2,7 g de décélération moyenne).\n- **Puissance** : courte (316 ch à la roue au mieux), et elle croît avec le rapport.\n- **Virages rapides** : à partir de R 250 m, ils se prennent à fond.\n- **Pédales tout ou rien** (clavier, souris, doigt) : elles coûtent 5 à 13 % en virage.\n- **Aide « Légère »** : elle écrête les grands rayons (−1,7 % en R 120, −3,4 % en R 180) et pousse la voiture dans l'herbe.\n- **Sans aide** : freinage plein ou plein gaz trop tôt en appui finissent en tête-à-queue.\n- **Lacet** : sous-amorti à 200 km/h (dépassement de 17 à 25 %).\n- **Dérive chargée** : trop simple. Le palier III « parfait » tombe à chaque fois, elle se tient 10 s, et elle ne fait gagner du temps qu'au clavier.\n\nTrois variantes mesurées sur copie temporaire montrent qu'une seule constante, l'exposant de motricité 1,3, cause les tête-à-queue de remise des gaz sur le sec, l'écrêtage par l'aide et une part de la perte du clavier. Elles montrent aussi que la puissance ne peut pas monter seule. Aucune recherche web ni sur les forums n'a été faite dans cette étape.",
+ "documents": [
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/MODELE.md — description exacte du modèle (sources sha 8bfaef79 / cd67cf8a / c439a812) : variables d'état ; ordre du pas ; équations de rouler() dans l'ordre du code ; les 147 PARAMS avec valeur, unité et rôle (paramètres morts signalés) ; constantes tirées ; chaînes de commande de jeu.js ; aides ; dérive et turbo ; surfaces, pneus, eau ; glissières, dégâts, vol ; aspiration ; rivaux ; ce que les tests figent ; liste franche de 25 points non physiques ou incohérents.",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/BANC-BASE.md — méthode du banc, résultats en tableaux, comparaison à une F1 de 1980 et à une conduite arcade (molle, brutale, incohérente, trop facile, trop punitive, ce qui marche), trois variantes mesurées, 11 pistes classées, preuves, limites.",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/banc-base.json — résultats bruts du banc complet sur le code actuel (empreinte 52a7484e7589dd23, sources 7dd27cbbaa1e, Node v24.18.0).",
+  "/Users/david/Projects/bitume-wt/conduite/tools/banc-conduite.mjs — le banc (Node, sans dépendance), avec les options --json, --court, --src, --regler, --script-page et --verifier-page.",
+  "/Users/david/Projects/bitume-wt/conduite/verifications/banc-conduite.test.mjs — test court : déterminisme, ordres de grandeur, sensibilité à une variante, fidélité des chaînes de commande à src/jeu.js."
+ ],
+ "preuves": [
+  "Empreintes du banc (Node v24.18.0) : complet 52a7484e7589dd236bd264c06b7f70df88e37b416d2e2206c7c94249359d2fda, --court 6dc495a68695aec5…, sources 7dd27cbbaa1efccc…",
+  "La section ajoutée en fin de travail (aide seule) ne change aucune autre valeur : 3 561 valeurs comparées à la passe précédente (empreinte 3bdb2ed29b22428b), seule virages.aideSeule diffère.",
+  "Test : node verifications/banc-conduite.test.mjs → 5/5. Les deux mutants échouent comme attendu, repassés le 18/11 : une « variante » de même valeur (freinMax 0,92) et un guidage attendu de 0,25 dans jeu.js.",
+  "Suite complète : for t in verifications/*.test.mjs … → aucun ECHEC (18:21:54 → 18:23:03).",
+  "conduite-criteres.test.mjs : 46/46 critères obligatoires, S8 ouverte à 1 031 °/s² (inchangé, modèle non touché).",
+  "Page construite (Chrome 157 sans interface, page 0.2.38) contre Node, sur le sous-ensemble court :\n- 214 nombres comparés, 40 diffèrent au dernier chiffre, écart relatif maximal 9,82e-14 → même modèle ;\n- empreinte page d17bebc01b642772, Node 6dc495a68695aec5 ; cause : Math.exp au dernier bit ;\n- témoin négatif (muPiste 1,73) : écart de 1,7e-1, « MODÈLES DIFFÉRENTS ».\nCe contrôle date d'avant le dernier ajout au banc. La partie court est inchangée : le script de page rejoué sous Node redonne 6dc495a68695aec5.",
+  "Variantes mesurées sur tout le banc (copies temporaires de conduite.js) :\n- A, coeffMoteur=18.4 et coeffTrainee=0.00092 : 90f700f849564ce0 ;\n- B, freinAvant=0.64 : 4d59bd005525fa63 ;\n- C, ellipseMotrice=2 : f0326e7a46089d87.",
+  "Mesures annexes (scripts temporaires du dossier de travail), toutes deux reprises dans MODELE.md :\n- répartition de freinage : /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/essieux-freinage.mjs ;\n- aide contre cadence : /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/aide-vs-cadence.mjs."
+ ],
+ "constats": [
+  "Ligne droite (sec) :\n- 0-100 en 2,53 s, 0-200 en 7,30 s, 400 m en 9,88 s ;\n- pointe 307,1 km/h, au rupteur de 6e ;\n- puissance maximale à la roue par rapport : 182 / 196 / 206 / 214 / 221 / 233 kW (316 ch). Elle croît avec le rapport parce que POUSSEE ∝ vPointe^−0,8 ;\n- le lancement sur la grille ne change presque rien (2,53 contre 2,54 s).",
+  "Freinage :\n- 200-0 en 75,6 m (2,08 g moyen, 2,61 g maxi) ; 300-100 en 116,2 m (2,71 g moyen, 3,67 g maxi) ;\n- slicks sur mouillé : 200-0 en 90,7 m ;\n- la demande ne dépend pas de l'adhérence : c'est un ABS parfait ;\n- à pleine pédale, l'arrière demande 1,11 à 1,17 fois son adhérence et l'avant 0,86 à 0,92 : c'est l'arrière qui sature.",
+  "Virages établis (voiture seule) :\n- R 30 : 84,3 km/h, 1,87 g ; R 120 : 182,4 km/h, 2,18 g ; R 180 : 242,3 km/h, 2,57 g ;\n- R 250 à fond (gaz 1,00) à 272,9 km/h, alors que l'adhérence tiendrait plus de 313 km/h ;\n- gradient de sous-virage K de 0,10 à 0,43 °/g.",
+  "Selon la commande, sur vraie piste :\n- clavier et souris à 90 % en R 30 et 95 % en R 120 sur le sec, 87 % en R 30 sur slicks mouillés ;\n- chicane −8 % (+0,68 s), slalom −13 % ;\n- la souris perd autant que le clavier : c'est la pédale tout ou rien qui coûte, pas le volant ;\n- 7 à 9 appuis par seconde pour tenir un R 500 au clavier.",
+  "Aide « Légère » seule, même pilote : R 120 182,9 → 179,7 km/h, R 180 243,0 → 234,8, rien en R 30. Elle entre à |β| > 3,55°, alors que la dérive de caisse naturelle à la limite va de 3,5 à 3,9° dans les grands rayons.",
+  "Échelon de volant :\n- lacet à 90 % en 113 à 121 ms à 100 km/h (ζ 0,74 à 0,81) et en 75 à 79 ms à 200 km/h ;\n- dépassement de 17 à 25 % à 200 km/h (ζ 0,41 à 0,49) : sous-amorti.",
+  "Lever de pied : lacet × 1,09 à 1,13 en 0,5 s, cohérent et lisible. Freinage léger (0,3) en entrée : courbure × 1,26, la voiture tourne.",
+  "Remise des gaz et freinage en appui :\n- remise des gaz à 45° de la sortie : tête-à-queue sans aide, 8 à 19 m dans l'herbe avec l'aide ;\n- freinage plein en appui sans aide : β +75°, et +87° en boucle fermée.",
+  "Dérive chargée :\n- entrée au pas suivant l'appui ;\n- paliers à 0,70 / 1,31 / 2,11 s et turbo III « parfait » de R 80 à R 250 pour toutes les chaînes ;\n- tenue 10 s partout, sans coût ;\n- gain manette de −0,22 à +0,03 s ; clavier +0,85 s en R 40, +0,18 s en R 80, −0,08 s en R 250 ;\n- slicks mouillés en R 80 : dérive annulée au clavier et à la souris (β 48,8°).",
+  "Herbe : 0,05 s perdus à 100 km/h pour 3 s dedans, 0,35 s à 200 km/h. La surface est jugée au centre de gravité et l'adhérence passe de 1,72 à 0,94 en un pas.",
+  "Variante A (441 ch à la roue, SCx 0,90 m²) :\n- 0-200 en 5,88 s ; pied levé 0,80 g à 290 km/h ;\n- R 250 toujours à fond ;\n- tête-à-queue à la remise des gaz même à 15° de la sortie ; dérive de R 40 impossible : la puissance ne peut pas monter seule.",
+  "Variante B (freinAvant 0,64) : 200-0 plus court de 1,9 m ; le freinage plein en appui sans aide reste un tête-à-queue (β 45° au lieu de 75°).",
+  "Variante C (ellipseMotrice 2) :\n- plus de tête-à-queue à la remise des gaz sur le sec, quelle que soit la chaîne ;\n- l'aide n'écrête plus rien ;\n- le clavier passe à 99 % en R 120 (au lieu de 95 %) et l'écart de chicane avec la manette passe de 0,68 à 0,24 s ;\n- revers : la dérive ne paie plus du tout.",
+  "Rivaux : ils roulent sur les constantes de l'essai 0.1 (MU 1,55, AERO 0,00155). Leur vitesse de référence vaut 94 % de la tenue de la voiture en R 30 et 113 % en R 250. Ils ont l'aide 0,35 et ne font jamais de dérive.",
+  "Incohérences de code et de documents :\n- empattement de 2,85 m contre 2,70 m pour la 312 T5 ; commentaire « monoplace de 1990 » ;\n- guidage nul au doigt, contre le commentaire de jeu.js l. 607 ;\n- 12 paramètres jamais lus, dont tous ceux du frottement au rail ;\n- aucune courbure verticale : bosses et compressions ne changent pas la charge ;\n- la neige n'est pas lue par la conduite."
+ ],
+ "plan": [
+  "1. Motricité : remplacer l'exposant 1,3, toujours actif, par une perte qui n'arrive qu'au patinage (ellipse entière tant que la demande reste sous l'adhérence, décrochage quand le joueur en met trop). D'après la variante C, cela supprime les tête-à-queue de remise des gaz sur le sec et l'écrêtage par l'aide, et reprend de 15 à 85 % de la perte du clavier. Risques : le critère S3 et le gain de la dérive.",
+  "2. Pédales tout ou rien dosées par le jeu (clavier, souris, doigt) : montée du gaz en 0,2 à 0,3 s, et anti-patinage léger pour ces appareils seulement. Perte actuelle : −5 à −13 %. À mesurer après la piste 1.",
+  "3. Aide « Légère » : la déclencher sur l'excès de lacet ou la glisse de l'arrière, pas sur |β| > 3,55°. Agir d'abord sur le gaz, rattraper sans renvoyer la voiture dans l'herbe. À vérifier contre le critère S4.",
+  "4. Dérive, après les pistes 1 à 3 :\n- charge tirée de la glisse et du lacet réels, pas de la courbure de la piste ;\n- un coût à la tenir trop longtemps ;\n- une fenêtre « parfait » qui demande un vrai geste ;\n- un gain de 0,1 à 0,3 s pour toutes les chaînes (S7), mesuré contre la référence exigeante du banc.",
+  "5. Freins :\n- demande tirée de l'adhérence réelle ;\n- répartition équilibrée avec le frein moteur (variante B : −1,9 m) ;\n- vrai blocage de l'avant, avec un ABS comme aide si David le veut ;\n- frein moteur selon le rapport.",
+  "6. Moteur : puissance constante d'un rapport à l'autre et régime proportionnel à la vitesse. Le niveau de puissance (316 ou environ 440 ch à la roue) est à décider après les pistes 1 et 2 (variante A).",
+  "7. Amortissement du lacet à haute vitesse : viser environ 10 % de dépassement à 200 km/h au lieu de 17 à 25 %, par relaxation des pneus ou un amortisseur selon la vitesse. À mesurer contre S4, S5, S7, S8 et S9 (voir SUIVI-PHASE-2.md).",
+  "8. Surfaces : herbe et vibreur jugés par essieu ou en transition ; herbe qui coûte aussi à basse vitesse et davantage mouillée ; frottement au rail (les paramètres existent mais ne sont pas lus).",
+  "9. Pluie : slicks plus pénalisés sur piste détrempée, aquaplanage, trajectoire qui sèche, une loi pour la neige.",
+  "10. Rivaux : profil de vitesse tiré des constantes actuelles de la voiture, puis l'allure et l'élastique réglés à nouveau.",
+  "11. Ménage : commentaire ou valeur du guidage au doigt ; paramètres morts ; empattement 2,85 contre 2,70 m ; commentaire « 1990 » ; zone morte et exposant de la manette dans FEUILLE-DE-ROUTE.md."
+ ],
+ "non_fait": [
+  "Pas de recherche web ni sur les forums de réglage de simulateurs. Elle n'était pas dans cette étape, alors que la demande de David la prévoit. Les ordres de grandeur de 1980 viennent de la consigne, et l'hypothèse de transmission à 90 % n'est pas sourcée.",
+  "Aucun réglage du modèle : src/conduite.js est intouché, comme la consigne l'exige. Les variantes A, B et C ne sont que des mesures sur copie temporaire, pas des propositions validées.",
+  "Les 46 critères n'ont pas été repassés sur les variantes ; S3 n'a pas été vérifié avec l'ellipse entière.",
+  "Aucun essai par un humain ; aucun tour de vrai circuit. Non mesurés : aide « Forte » (0,7), glissières, sauts, contacts, rivaux, pentes, dévers, circuit de montagne, vibreurs partiels.",
+  "Le contrôle dans la page ne couvre que le sous-ensemble court et n'est pas au bit près (Math.exp diffère au dernier bit entre Node et Chrome). Chrome n'a pas été relancé après le dernier ajout au banc, qui ne touche pas la partie courte.",
+  "Ni push ni merge."
+ ],
+ "commits": [
+  "912f17b « banc de conduite : chiffrer le modèle avant de le régler » — branche conduite/etude, arbre /Users/david/Projects/bitume-wt/conduite. Cinq fichiers nouveaux (tools/banc-conduite.mjs, verifications/banc-conduite.test.mjs, docs/reprise/rapports/conduite-2026-11-18/{MODELE.md, BANC-BASE.md, banc-base.json}). Non poussé, non fusionné."
+ ],
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/conduite/tools/banc-conduite.mjs",
+  "/Users/david/Projects/bitume-wt/conduite/verifications/banc-conduite.test.mjs",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/MODELE.md",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/BANC-BASE.md",
+  "/Users/david/Projects/bitume-wt/conduite/docs/reprise/rapports/conduite-2026-11-18/banc-base.json"
+ ],
+ "integration": [
+  "Aucun fichier existant n'est retouché : pas d'integration.patch. dist, VERSION.json et SIZE.json ont été remis en l'état avant le commit.",
+  "Lot « fluidité » : avec la même version de Node (v24.18.0), « node tools/banc-conduite.mjs --src <arbre>/src » doit rendre l'empreinte 52a7484e7589dd23, et « --court » 6dc495a68695aec5. Toute autre empreinte veut dire que l'arithmétique a changé.",
+  "Le banc copie les événements de pas() aussitôt après chaque appel : il reste juste si pas() réutilise un même tableau d'événements.",
+  "Risque à signaler à l'agent qui retouche jeu.js : verifications/banc-conduite.test.mjs reconnaît ces lignes à leur écriture exacte :\n- « guidage: analogique ? 0 : .15 » ;\n- « if (appuieSur(0, 'gaz')) gaz = 1; » ;\n- « gaz = Math.max(gaz, doigt.gaz ? 1 : 0) » ;\n- « pad.gaz = b(7); pad.frein = b(6) » ;\n- l'aide de DEFAUT.\nUne simple réécriture le ferait échouer sans changement de comportement ; il faudrait alors mettre à jour ses motifs, ou ENTREES dans le banc."
+ ],
+ "questions_pour_david": [
+  "Puissance : garder environ 316 ch à la roue (moins punitif, virages rapides à fond), ou monter vers 440 ch (accélérations et pied levé de 1980, mais un gaz à doser) ?",
+  "Motricité : peut-on remplacer la glisse permanente « plein gaz en 2e » (exposant 1,3, critère S3) par une vraie perte au patinage, qui ne vient que si l'on en met trop ?",
+  "Clavier, souris et tactile : le jeu peut-il doser lui-même les pédales tout ou rien (rampe, anti-patinage léger), comme il filtre déjà le volant au clavier ?",
+  "Aide « Légère » : doit-elle seulement rattraper les glisses, sans écrêter la limite des grands virages, et agir d'abord sur le gaz plutôt que sur le volant ?",
+  "Dérive chargée : doit-elle faire gagner 0,1 à 0,3 s quel que soit l'appareil, coûter quelque chose si on la tient longtemps, et le « parfait » doit-il demander un vrai geste ?",
+  "Sans aide, un freinage plein ou un plein gaz trop tôt en appui doit-il rester un tête-à-queue, ou plutôt un sous-virage (l'avant qui bloque) ? Et faut-il garder l'ABS parfait ou permettre de vrais blocages ?",
+  "Pluie : la rendre plus sévère (aquaplanage, slicks presque inutilisables sur piste détrempée, trajectoire qui sèche), ou la garder douce comme aujourd'hui ?",
+  "Empattement : aligner la physique sur les 2,70 m de la 312 T5 au lieu de 2,85 m ? Les nombres bougeront un peu."
+ ]
+}

@@ -1,0 +1,99 @@
+{
+ "verdict": "corrections",
+ "constats": [
+  {
+   "id": "P1-critere-non-calibre-M5",
+   "gravite": 3,
+   "fichier": "src/autoconfig.js",
+   "lignes": "25-37 (BUDGET, FRACTION = .6, LIMITE), 89-94 (bilanCout)",
+   "probleme": "Le critère d'acceptation (coût p95 au plus égal à 10 ms) n'est pas confronté au seul cas de référence connu : le M5 tient Moyenne à 60 i/s. Sur ce M5, avec la méthode « terminer » branchée à la main, la détection choisit encore Légère. Le parcours Moyenne coûte autant que la vue principale de la course au départ de Val-Brûlé, et ce coût dépasse déjà la limite de 10 ms. Rien ne montre que le lot corrige le défaut qui l'a motivé. FRACTION 0,6 est un raisonnement, pas une mesure.",
+   "preuve": "Script /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecteur-profils/cout-banc-course.js. Page construite depuis git archive HEAD dans .../relecteur-profils/arbre, puis page-essai.mjs en 1440×757 et dpr 2. Machine chargée (charge moyenne 5,5 à 8). Résultat : statut ok, méthode terminer, sélection 'low'. Moyenne : cout50 10,7, cout95 12,4, attente95 11,6, acceptable false. Légère : cout95 6,8. Avec rapport-banc-course.js (même dossier, deux tours, boucle du jeu suspendue), rapport parcours/course au p50 : Moyenne 0,99 et 1,10 ; Légère 1,15 et 1,02. La course de Val-Brûlé au départ 800 en Moyenne donne draw + readPixels p50 de 10,5 à 13,4 ms. Ces temps sont gonflés par la charge : seuls les rapports et le verdict obtenu sont des faits.",
+   "correctif": "Avant l'intégration, sur le M5 au repos et en fenêtre visible : lancer cinq fois la détection avec io.terminer branché et relever cout95 pour Moyenne et Fine. Fixer FRACTION (ou un critère p50/p95) pour que le M5 obtienne Moyenne et que Fine soit refusée. Remplacer le commentaire raisonné par les nombres mesurés. Ajouter un test à faux io qui fige ces coûts M5, avec Moyenne acceptée et Fine refusée."
+  },
+  {
+   "id": "P2-fine-acceptable-sans-tenir",
+   "gravite": 3,
+   "fichier": "src/scene-bench.js",
+   "lignes": "29-44 (endroitsCharges), 60-84 (dessiner : vue principale seule)",
+   "probleme": "En Fine, le parcours est nettement plus léger que la course : environ 0,6 à 0,8 fois la vue principale de Val-Brûlé, la moitié des triangles, et aucun rétroviseur. Or ce sont justement les rétroviseurs qui font rater 25 % des images au M5 en Fine (MESURES-BASE). Avec la limite de 10 ms, une machine dont le parcours Fine mesure 10 ms paierait en course environ 13 à 16 ms pour la seule vue principale, plus les glaces. Le critère peut donc choisir un profil que la machine ne tient pas. L'exécutant l'a écrit dans ses risques, mais sans parade.",
+   "preuve": "rapport-banc-course.js (même dossier). Fine : parcours cout50 16,1 et 20,3 ms pour 2,5 M de triangles ; course au départ 800 de Val-Brûlé, vue cockpit, 26,4 et 26,3 ms pour 4,9 M de triangles. Rapports 0,61 et 0,77. Le parcours ne dessine pas les glaces (non_fait de l'exécutant).",
+   "correctif": "Mettre parmi les points de vue du parcours l'endroit le plus chargé de la course : même circuit (graine 11), s = 800, hauteur de cockpit. Ajouter une passe des glaces : seconde vue réduite (495×150) à chaque image en Fine et une image sur deux en Moyenne. Si le second moteur est nécessaire, le demander à l'intégration. Sinon, appliquer à high une limite abaissée par le rapport mesuré. Ajouter un test : Fine refusée quand le coût glaces comprises dépasse la limite."
+  },
+  {
+   "id": "P3-revision-vague1-seule",
+   "gravite": 2,
+   "fichier": "src/autoconfig.js",
+   "lignes": "4-7 (REVISION = 2 et son commentaire), 61-66 (cacheValide)",
+   "probleme": "Si la vague 1 sort seule, REVISION 2 relance la détection chez tout le monde au lancement suivant, avec l'ancienne méthode au chronomètre (jeu.js ne fournit pas terminer) et sur un parcours plus lourd. appliquerDetection écrase alors les choix graphiques manuels. La vague 2 le refait une seconde fois par cacheValide(…, { terminer: true }). Les deux mécanismes font double emploi. Le commentaire laisse croire que la révision 2 ne juge plus au chronomètre, ce qui est faux tant que jeu.js n'est pas branché.",
+   "preuve": "jeu.js 2711 appelle cacheValide(mesure, empreinteDetection()) sans option. Un cache de révision 1 n'est plus valide (test « les détections de la révision 1 sont refaites »), donc detecterGraphismes(true) est appelé. jeu.js 2618-2632, appliquerDetection, contient Object.assign(reglages, choisis), avec le commentaire « remplacer TOUS les choix graphiques, y compris les overrides ». Le diff de scene-bench alourdit aussi le chemin ancien (12 modèles complets, sillage, photo).",
+   "correctif": "Garder REVISION à 1 dans ce lot : l'option { terminer: true } suffit à refaire une fois les détections prises au chronomètre. Ou bien écrire dans demandes_integration que REVISION 2 ne peut sortir que dans le même lot que io.terminer et { terminer: true }. Corriger le commentaire de REVISION."
+  },
+  {
+   "id": "P4-horloge-grossiere-ou-figee",
+   "gravite": 2,
+   "fichier": "src/autoconfig.js",
+   "lignes": "150-166 (chauffe et boucle de mesure « terminer »)",
+   "probleme": "La consigne demandait de vérifier l'horloge qui ne progresse pas. Quand l'horloge n'avance pas, la chauffe `while ((n < 12 || maintenant() - t0 < 180) && maintenant() - t0 < 450)` ne finit jamais tant que requestAnimationFrame tourne, et le délai de 14 s ne se déclenche jamais, puisqu'il lit la même horloge. Ce défaut existe déjà sur l'ancien chemin. Quand l'horloge est grossière (Firefox avec resistFingerprinting, pas de 16,7 ms ou 100 ms), un coût mesuré dans un même rappel vaut 0 ou un pas entier. Avec un pas de 16,7 ms, tout profil est refusé et Légère est toujours retenue, quelle que soit la machine.",
+   "preuve": "Script /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecteur-profils/diff-autoconfig.mjs, seconde partie. Horloge figée : 5000 images de chauffe avant que le faux io coupe (cadence_indisponible). Horloge à 16,7 ms : cout95 de 16,667 pour medium et low. Horloge à 100 ms : cout95 de 100.",
+   "correctif": "Borner aussi la chauffe et la mesure par un nombre d'images (par exemple 60 et 90). Relever la résolution de l'horloge (plus petit écart non nul pendant la cadence). Si elle dépasse 1 ms, ou si la plupart des coûts valent 0, conclure 'interrompu' avec le motif 'horloge_grossiere' et garder les réglages, au lieu de juger. Tester ces deux cas avec un faux io."
+  },
+  {
+   "id": "P5-diviseur-sans-periode",
+   "gravite": 1,
+   "fichier": "src/mesures.js",
+   "lignes": "180-185 (resumeSeance)",
+   "probleme": "cadence({ diviseur: k }) sans période donne un seuil faux. Le seuil vaut (k + 0,5) × référence estimée, mais quand le jeu tient un diviseur, la référence estimée vaut déjà environ k périodes. Le seuil est alors à peu près k fois trop haut et les images longues sont sous-comptées.",
+   "preuve": "Lecture : `periode = etat.periode || estimee, seuil = ((etat.diviseur || 1) + .5) * periode`. Avec diviseur 2 et des intervalles de 33,3 ms, le seuil vaut 83 ms au lieu de 41,7 ms.",
+   "correctif": "N'utiliser le diviseur que si une période est déclarée. Sinon, garder 1,5 × la référence estimée."
+  },
+  {
+   "id": "P6-mutants-survivants",
+   "gravite": 1,
+   "fichier": "verifications/autoconfig.test.mjs",
+   "lignes": "118-145 (appareilFin)",
+   "probleme": "Deux mutations survivent : chauffe sans io.terminer, et mesure sur un seul point de vue. Le faux appareil règle tout le travail GPU en attente à l'image suivante, donc il ne voit pas la différence. La mutation windStrength: 1 survit aussi, mais elle est équivalente, puisque P.windStrength vaut toujours 1 (graphismes.js 247).",
+   "preuve": "Mutations perl appliquées sur une copie dans /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecteur-profils/arbre. Six mutations sont détectées : FRACTION 0,62 et 0,58, coût sans CPU, limite stricte, arrêt précoce ×3, options du cache ignorées. Deux survivent : la chauffe sans terminer et le point de vue unique. L'ancien scene-bench.js est bien refusé par le nouveau test.",
+   "correctif": "Faire rapporter au faux appareil le retard GPU non terminé dans la première image mesurée. Ajouter une assertion sur les vues 0, 1 et 2 vues pendant la mesure."
+  },
+  {
+   "id": "P7-commentaires-et-duplication",
+   "gravite": 1,
+   "fichier": "src/autoconfig.js",
+   "lignes": "25-37 ; src/scene-bench.js 5-8",
+   "probleme": "Le commentaire de FRACTION présente un enchaînement non mesuré comme un fait : « devient sur un circuit courant 10 à 12 ms de GPU avec les glaces ». Il date aussi des relevés (« comptés le 18/11 »). La formule distanceComplete recopie jeu.js 1745 : si la course change sa règle, les deux divergeront sans que rien ne le signale.",
+   "preuve": "Lecture du diff. Formule identique : 170·tan 20,8° / tan(fov/2), dans jeu.js 1745 et scene-bench.js 8.",
+   "correctif": "Après le calibrage (P1), écrire les nombres mesurés et leur source. Demander à l'intégration que jeu.js utilise B.sceneBench.distanceComplete, ou une fonction commune."
+  },
+  {
+   "id": "P8-integration-terminer-inconditionnel",
+   "gravite": 1,
+   "fichier": "src/autoconfig.js",
+   "lignes": "61-66 ; demandes_integration n° 2",
+   "probleme": "La demande d'intégration passe { terminer: true } sans condition. Sur un rendu sans gl, parcours.terminer vaudrait null : le cache resterait en 'chrono-gpu' et la détection serait refaite à chaque lancement. En pratique ce cas n'arrive pas, puisque jeu.js refuse tout moteur qui n'est pas webgl2.",
+   "preuve": "Lecture : cacheValide rejette methode !== 'terminer' dès que options.terminer est vrai, et scene-bench met terminer à null sans rendu.gl.",
+   "correctif": "Dans la demande d'intégration, passer { terminer: typeof rendu.gl?.readPixels === 'function' }."
+  },
+  {
+   "id": "P9-attribution",
+   "gravite": 1,
+   "fichier": "(commit 49f7b93)",
+   "lignes": "message",
+   "probleme": "La ligne Co-Authored-By indique « Claude Opus 5.5 » et non « Claude Fable 5.2 » comme le demandait la consigne. L'exécutant l'a dit et justifié par le rappel système de sa session. À trancher par l'intégrateur.",
+   "preuve": "git log -1 49f7b93",
+   "correctif": "Aucun dans ce lot : l'intégrateur choisit la ligne à garder."
+  }
+ ],
+ "verifications_faites": [
+  "Diff complet 54e98c9..49f7b93 lu. Fichiers entiers lus autour des changements : src/autoconfig.js, src/scene-bench.js, src/mesures.js, src/sillage.js. Dans jeu.js : detecterGraphismes, demarrer, image(), reference, rendu d'une image 1600/1745-1801.",
+  "Règles communes : 6 fichiers touchés, tous dans la liste. Ni dist, ni VERSION.json, ni SIZE.json, ni src/jeu.js dans le commit. Un seul commit. Arbre /Users/david/Projects/bitume-wt/profils propre avant et après ma relecture (git status vide, HEAD 49f7b93).",
+  "Sans io.terminer, comportement identique : différentiel ancien/nouveau autoconfig.js dans deux contextes vm, 400 faux appareils tirés au hasard (60/120/30/144 Hz, accrocs, requêtes GPU invalides, annulation, onglet masqué, contexte perdu, taille modifiée, cadence absente). 0 différence en dehors de methode, revision et empreinte. Script /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecteur-profils/diff-autoconfig.mjs",
+  "Format BITUME_JEU.mesures : différentiel ancien/nouveau mesures.js sur 60 scénarios et 667 lectures (sections, vues, GPU, NaN, reinitialiser). Tous les anciens champs sont présents avec des valeurs identiques. Champs ajoutés : gpuChrono, periode, diviseur, verrou, periodeEstimee, seance, creations, creationsSeance. Script /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecteur-profils/diff-mesures.mjs",
+  "tools/profil-accrocs.mjs et tools/banc-navigateur.mjs lus : ils sérialisent BITUME_JEU.mesures entier. Le champ seance ajouté ne remplace aucun champ (le rapport.seance de profil-accrocs est un autre objet).",
+  "Fin forcée : la dernière passe du moteur lie le framebuffer par défaut (renderer.js 2981/2990), et readPixels attend réellement le GPU sous Chrome/ANGLE Metal (attente95 relevée de 6,1 à 11,6 ms).",
+  "Navigateur, page construite depuis git archive HEAD hors de l'arbre : détection avec terminer branché → méthode terminer, Légère retenue sur ce M5 chargé (Moyenne cout95 12,4 ms). Rapports parcours/course au départ 800 de Val-Brûlé : Légère 1,0 à 1,15 ; Moyenne 0,99 à 1,10 ; Fine 0,61 à 0,77. Aucune erreur console. Une première tentative sans boucle du jeu suspendue a été écartée : la vitrine polluait la lecture du pixel.",
+  "Cas limites : interruption, onglet masqué, contexte perdu, taille modifiée et délai passent par le même verifier() que l'ancien chemin ; le contexte perdu est testé sur le chemin terminer. Horloge figée ou grossière éprouvée (constat P4).",
+  "Mutations sur une copie : 6 détectées sur 8 dans autoconfig. L'ancien scene-bench.js échoue bien au nouveau test ; retirer l'option photo est détecté ; la mutation windStrength est équivalente.",
+  "Comptes du compte rendu recoupés : autoconfig 22 contrôles, autoconfig-integration 7, mesures 21 tests. scene-bench : 3,3 s mesurées ici, 1,5 s annoncées (machine chargée)."
+ ],
+ "tests": "Relancés dans /Users/david/Projects/bitume-wt/profils (HEAD 49f7b93) : node verifications/autoconfig.test.mjs, 22 contrôles ok ; autoconfig-integration.test.mjs, 7 contrôles ok ; scene-bench.test.mjs ok en 3,3 s ; mesures.test.mjs, 21 réussis et 0 échec. Suite complète `for t in verifications/*.test.mjs` : 66 suites, aucun ECHEC, 92 s sur machine chargée. Épreuves ajoutées, dans /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecteur-profils/ : diff-autoconfig.mjs (0 différence sur 400 tirages ; horloges figée et grossière, voir P4), diff-mesures.mjs (0 écart sur 667 lectures), cout-banc-course.js et rapport-banc-course.js (navigateur, rapports parcours/course, voir P1 et P2). Ces deux derniers ont tourné sur une machine chargée : les temps absolus sont indicatifs, seuls les rapports et le verdict de la détection comptent."
+}

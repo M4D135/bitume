@@ -1,0 +1,84 @@
+{
+ "methode": "sensibilite-ulp.mjs : Math.sin, cos, pow, exp, atan2, hypot, tan, log, acos, asin, atan décalés d’une unité au dernier rang (+1 ulp sur chaque résultat), monde rebâti (circuit, décor Fine, végétation) et comparé au monde de référence ; Node 24, V8. Ne prouve pas l’absence de bascule pour tout écart : un seul sens de perturbation, quatre circuits.",
+ "reseau": "src/reseau.js : état synchronisé (hôte autoritaire, 15 champs float32 par voiture), pas de pas à pas déterministe ; le monde vient de la graine partagée.",
+ "circuits": [
+  {
+   "circuit": 0,
+   "theme": "foret",
+   "longueurRef": 4222,
+   "longueurUlp": 4222,
+   "pointsRef": 2111,
+   "pointsUlp": 2111,
+   "ecartTraceMaxM": 1.1368683772161603e-13,
+   "objetsRef": 47609,
+   "objetsUlp": 47609,
+   "obstaclesRef": 1723,
+   "obstaclesUlp": 1723,
+   "arbresRef": 1082,
+   "arbresUlp": 1082,
+   "ecartObstacleMaxM": 6.76e-12,
+   "tunnelRef": null,
+   "tunnelUlp": null
+  },
+  {
+   "circuit": 2,
+   "theme": "montagne",
+   "longueurRef": 5216,
+   "longueurUlp": 5216,
+   "pointsRef": 2608,
+   "pointsUlp": 2608,
+   "ecartTraceMaxM": 6.0254023992456496e-12,
+   "objetsRef": 43157,
+   "objetsUlp": 43157,
+   "obstaclesRef": 1178,
+   "obstaclesUlp": 1178,
+   "arbresRef": 799,
+   "arbresUlp": 799,
+   "ecartObstacleMaxM": 6.89e-12,
+   "tunnelRef": [
+    1798,
+    2058
+   ],
+   "tunnelUlp": [
+    1798,
+    2058
+   ]
+  },
+  {
+   "circuit": 3,
+   "theme": "islande",
+   "longueurRef": 4616,
+   "longueurUlp": 4616,
+   "pointsRef": 2308,
+   "pointsUlp": 2308,
+   "ecartTraceMaxM": 7.389644451905042e-13,
+   "objetsRef": 7858,
+   "objetsUlp": 7858,
+   "obstaclesRef": 973,
+   "obstaclesUlp": 973,
+   "arbresRef": 0,
+   "arbresUlp": 0,
+   "ecartObstacleMaxM": 0,
+   "tunnelRef": null,
+   "tunnelUlp": null
+  },
+  {
+   "circuit": 6,
+   "theme": "pacifique",
+   "longueurRef": 5234,
+   "longueurUlp": 5234,
+   "pointsRef": 2617,
+   "pointsUlp": 2617,
+   "ecartTraceMaxM": 7.673861546209082e-13,
+   "objetsRef": 7502,
+   "objetsUlp": 7502,
+   "obstaclesRef": 968,
+   "obstaclesUlp": 968,
+   "arbresRef": 320,
+   "arbresUlp": 320,
+   "ecartObstacleMaxM": 9.93e-12,
+   "tunnelRef": null,
+   "tunnelUlp": null
+  }
+ ]
+}

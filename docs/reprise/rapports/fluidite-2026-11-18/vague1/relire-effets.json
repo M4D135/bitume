@@ -1,0 +1,94 @@
+{
+ "verdict": "corrections",
+ "constats": [
+  {
+   "id": "C1",
+   "gravite": 2,
+   "fichier": "verifications/traces.test.mjs",
+   "lignes": "150 (déterminisme), src/traces.js 108-118, 183-295",
+   "probleme": "Toutes les lectures du hasard des effets ont été réécrites (tirages groupés dans TIR par tirer(fx, n)). Aucune suite du dépôt ne fige pourtant l'ordre de ces tirages par rapport au code d'avant. Le seul garde-fou est un comparateur resté dans le dossier de travail de l'exécutant, hors du dépôt. Les essais de déterminisme existants comparent le nouveau code à lui-même : une régression de l'ordre passerait sans bruit.",
+   "preuve": "Mutation dans une copie (relecteur-effets/mut) : dans fumer, TIR[1] et TIR[3] échangés entre vx et vz. traces, crash, pieces, physx-monde et effets-allocation passent tous (rc=0). Mon comparateur relecteur-effets/comparer-base.mjs, ancien contre nouveau, la voit aussitôt : « champ 2 objet 26 : -172.809 / -172.811 ».",
+   "correctif": "Ajouter dans traces.test.mjs une empreinte de référence calculée une fois avec 54e98c9 : scénario fixe (12 voitures, glisse, mur, contacts, casse, pluie forcée), puis somme ou hachage des champs x/y/z/vx/vy/vz/vie/taille des pools, prochaine*, et les 5 tirages suivants de fx.alea(). Une autre voie : verser au dépôt le comparateur avec une copie figée de l'ancien traces.js."
+  },
+  {
+   "id": "C2",
+   "gravite": 2,
+   "fichier": "src/traces.js",
+   "lignes": "370-380 (pageDe, ECHEC)",
+   "probleme": "Un seul échec de createWorld coupe PhysX pour toute la vie de la page : ECHEC = X n'est jamais oublié. L'ancien code réessayait au débris suivant. Une panne passagère au moment de la naissance du monde fait donc rouler en parabole les pièces de toutes les courses suivantes, même quand le module fonctionne. Ce changement de comportement n'est cité ni dans « risques » ni dans « changements_visibles ».",
+   "preuve": "relecteur-effets/echecs.mjs, module factice dont createWorld lève une fois puis réussit : {\"createWorldTransitoire\":{\"premiereSeanceCorps\":0,\"secondeSeanceCorps\":0,\"mondePage\":false}}. La seconde séance n'a aucun corps alors que le module marche.",
+   "correctif": "Ne retenir l'échec que pour la séance en cours : remettre ECHEC = null dans creer (ou dans attendrePhysX) avant attacher, pour qu'une séance neuve retente une fois. Une autre voie : retenter après un délai. Ajouter le cas à pieces.test.mjs."
+  },
+  {
+   "id": "C3",
+   "gravite": 1,
+   "fichier": "src/traces.js",
+   "lignes": "412-434 (quitterMonde, figer), 427-430 (perdreMonde)",
+   "probleme": "Quand la séance quitte un monde avec des pièces en vol, figer met vitesse et spin à zéro et pose d.sol = d.y. Cela arrive sur un monde perdu après une erreur PhysX, ou sur une séance remplacée sans liberer. La pièce reste suspendue à sa hauteur en l'air jusqu'à sa fin de vie (12 s). L'ancien code, sur un monde perdu, la laissait tomber. Dans le jeu, cela ne se voit qu'après une erreur PhysX : liberer éteint les pièces de toute façon.",
+   "preuve": "Lecture : dans vieillir, une pièce figée suit la branche parabole avec vy = 0 et sol = y ; elle descend d'un pas, puis y est ramenée à sol (lignes 592-593). Le dessin la borne à max(d.sol, …) (ligne 659). Le commentaire de la ligne 411 annonce lui-même « une pièce encore en vol s'arrête où elle est ».",
+   "correctif": "Dans perdreMonde, garder la dernière vitesse lue et rendre à la pièce un sol plausible (la hauteur de la voiture au départ, gardée au lancer, ou p.y de dalles), pour qu'elle finisse sa chute en parabole. figer ne servirait plus qu'aux pièces posées."
+  },
+  {
+   "id": "C4",
+   "gravite": 1,
+   "fichier": "(compte rendu)",
+   "lignes": "changements_visibles, 4e point",
+   "probleme": "Le compte rendu présente comme un changement « Une place de pièce réutilisée ne garde plus le quaternion de la pièce précédente ». C'est inexact : l'ancien lancer faisait déjà d.q = null à chaque réutilisation.",
+   "preuve": "git show 54e98c9:src/traces.js, fonction detacher / lancer : « d.q = null; » juste avant l'appel à physique.",
+   "correctif": "Retirer ce point du compte rendu."
+  },
+  {
+   "id": "C5",
+   "gravite": 1,
+   "fichier": "(demandes_integration)",
+   "lignes": "2e demande (axe et arriere = 60 pour les rétroviseurs)",
+   "probleme": "Même avec arriere = 60, les rétroviseurs perdraient les effets placés à plus de 64 m derrière la caméra principale : bandes de gomme dessinées jusqu'à VUE = 190 m, fumée, débris. Les rétroviseurs recopient la liste de la vue principale. Une fois intégré, c'est un changement visible, que la demande ne chiffre pas.",
+   "preuve": "src/traces.js 644 : limite = -MARGE_ARRIERE - arriere (4 + 60 = 64 m) ; ligne 683 : les bandes sont écartées au-delà de cette limite, alors que la portée de dessin VUE vaut 190 m (ligne 20).",
+   "correctif": "À l'intégration, passer arriere = VUE (190) quand les rétroviseurs sont actifs, ou n'appliquer le tri qu'à une liste propre à la vue principale."
+  },
+  {
+   "id": "C6",
+   "gravite": 1,
+   "fichier": "src/traces.js",
+   "lignes": "402-410 (attendrePhysX)",
+   "probleme": "traces.creer appelle FPhysX.init() lui-même quand le module n'est pas prêt. Effet de bord caché : la création d'une séance déclenche le décodage du WebAssembly si personne ne l'a lancé. Aujourd'hui sans conséquence, car jeu.js 2719 appelle init avant lancer('vitrine'). Mais cela contredit l'intention écrite dans jeu.js (« jamais sur le chemin de l'écran titre ») si l'ordre change un jour.",
+   "preuve": "Lecture : ligne 408, attente = Promise.resolve(X.init()). Dans physx.js 7-11, decodeWasm s'exécute de façon synchrone au premier appel d'init.",
+   "correctif": "N'écouter init que si le module est déjà en cours de chargement. Ou laisser jeu.js transmettre la promesse, par exemple B.traces.attendre(promesse), et dire dans le commentaire que creer ne lance pas le module."
+  },
+  {
+   "id": "C7",
+   "gravite": 1,
+   "fichier": "src/traces.js",
+   "lignes": "13, 121-123, 366-367",
+   "probleme": "Quelques commentaires racontent l'historique du code plutôt que le pourquoi présent : « la passe à 30 Hz en tirait une vingtaine de tableaux », « faisait payer à chaque course sa naissance », « le premier choc ne paie plus ». Ce n'est pas un historique de session, mais la tournure en « avant / plus » vieillira mal.",
+   "preuve": "Lecture des lignes citées.",
+   "correctif": "Reformuler au présent, par exemple : « B.voiture.attitude rend un tableau par appel : développée ici pour que la passe n'alloue rien »."
+  },
+  {
+   "id": "C8",
+   "gravite": 1,
+   "fichier": "(commit 1213eeb)",
+   "lignes": "dernière ligne du message",
+   "probleme": "La ligne d'attribution est « Co-Authored-By: Claude Opus 5.5 » et non « Claude Fable 5.2 » comme le demandait la consigne. L'écart est déclaré dans le compte rendu ; l'exécutant a suivi la règle d'attribution de l'hôte.",
+   "preuve": "git log -1 --format=%B 1213eeb",
+   "correctif": "À trancher par l'intégrateur : réécrire le message à l'intégration si la consigne prime."
+  }
+ ],
+ "verifications_faites": [
+  "Diff complet 54e98c9..HEAD lu. Fichiers entiers lus : src/traces.js, src/sillage.js, physx-monde.test.mjs, effets-allocation.test.mjs, et le diff de pieces.test.mjs. src/ferro/physx.js lu en lecture seule (createWorld, setStatics, step et son reliquat _acc, dispose, _alive, _nextId).",
+  "Règles communes : seuls les 7 fichiers de la liste et leurs tests sont touchés. Ni dist, ni VERSION.json, ni SIZE.json dans le commit. src/jeu.js n'est pas modifié. Branche fluidite/effets, un seul commit 1213eeb, arbre propre (git status vide avant et après ma relecture).",
+  "Ancien contre nouveau (relecteur-effets/comparer-base.mjs) sur une vraie course de 20 s : 12 voitures avec B.course.pas, pluie forcée à 0,6, 7 casses injectées, contacts force 25, repositionnements, et 4 800 dessins, soit 988 107 objets comparés. Positions, tailles et pâleurs : écart max 1,8e-15. Rotations à h = 0 : écart 4,4e-16. État des pools : écart 0. Indices prochaine* identiques. Mêmes 5 tirages suivants de fx.alea. À h = fx.acc, écart de rotation jusqu'à 0,147 rad, uniquement sur les pièces en parabole, comme annoncé dans changements_visibles.",
+  "Quaternion vers angles (relecteur-effets/quat.mjs) : 20 000 quaternions au hasard, écart 0 avec l'ancien anglesQuaternion passant par B.voiture.angles. Formules de nouvellePose (Δ = q·q̄₀) et de l'extrapolation exp(ωh/2)⊗q vérifiées à la main (produit de Hamilton, repère du monde).",
+  "Vrai module FERRO dans un contexte vm (relecteur-effets/physx-invariants.mjs) : 6 séances de suite sur un vrai circuit, 12 voitures, casses, contacts violents, repositionnements et prechauffer en cours de séance. Une séance sur deux libérée en plein vol, l'autre remplacée sans liberer. 1 814 contrôles d'invariant, tous tenus : corps du monde = corps de la séance, dalles du monde = dalles de la séance, FPhysX.status().worlds = 1. Monde vide et sans dalle à chaque naissance de séance. État final : 0 corps, 0 dalle, _acc = 0.",
+  "Hasard de la course : traces.js n'écrit dans aucun état de voiture ni dans co, et son générateur a sa propre graine (Int32Array, même suite mulberry32). Ordre des tirages relu site par site contre l'ancien code (embrun 1+8, roue 1, fumer 4, etinceler 4, mur 1+4, casse 2+4 et 12×4) : identique.",
+  "Échecs de FPhysX avec modules factices (relecteur-effets/echecs.mjs) : init qui rejette, init qui lève, objet sans isReady, init qui ne se résout jamais : aucune erreur, les pièces restent en parabole. Un createWorld qui échoue une fois coupe PhysX pour toute la page (constat C2).",
+  "Navigateur : construction de HEAD dans une copie hors de l'arbre (git archive), puis page-essai sur trois démos de suite avec une casse injectée dans chacune. Un monde dès l'écran titre, la vitrine y est attachée, 0 corps et 0 dalle au départ de chaque séance. Après la casse : 6 débris, 6 corps et 5 dalles, les mêmes chiffres dans le monde. Toujours un seul monde. Aucune erreur de console.",
+  "Mesure de la passe reproduite avec le script de l'exécutant (mesure/passe30.mjs), deux fois par code, à une charge de 6 à 10. Nouveau : 14 à 30 µs par pas avec passe, 0 ramassage. Ancien : 59 à 113 µs, 5 et 2 ramassages, 195 appels à attitude, 120 à mul et 183 à angles par passe. Le sens du gain est confirmé ; les durées absolues annoncées étaient prises sous une charge de 50.",
+  "Pouvoir de détection d'effets-allocation.test.mjs : un objet alloué par bande dessinée (mutation dans relecteur-effets/mut2) le fait échouer (KO). 4 passages de suite sur le code livré, tous à 0 octet, mesure 1/5.",
+  "sillage.js relu : preparer et réutilisation d'un état. API de mettreAJour inchangée, et jeu.js 1621 reste compatible.",
+  "Consommateurs extérieurs : tools/banc-navigateur.mjs et tools/smoke-jeu.mjs lisent fx.monde._bodies, qui reste juste avec une seule séance à la fois. Les nouvelles valeurs attendues du banc sont bien déclarées (worlds = 1, mondeCourant = true).",
+  "Sémantique de la demande d'intégration 1 vérifiée dans jeu.js : alpha = clamp(S.acc/DT), et la pose dessinée est melange(prec, cour, alpha). Le retard (1 − alpha) × DT est donc juste.",
+  "Note : la suite complète écrivait sa sortie dans scratchpad/suite.log, fichier qui existait déjà dans le dossier de travail partagé avec l'exécutant ; il a été écrasé. Mes autres fichiers sont sous scratchpad/relecteur-effets/."
+ ],
+ "tests": "Suites ciblées relancées, toutes vertes : traces 17/17 (0,025 à 0,026 ms par image pour 589 objets, seuil 0,3 ms), crash 22/22, pieces 20/20, sillage 8/8, effets-allocation 3/3 (4 passages, tous à 0 octet), physx-monde 6/6. Suite complète, for t in verifications/*.test.mjs : 68 suites en 54 s, 68 passent, aucune ligne ECHEC, à une charge de 5 à 17. decor.test.mjs passe à cette charge, ce qui confirme que son échec annoncé (seuil de 150 ms) venait de la charge de 50 à 75 et non du lot. Épreuves écrites pour cette relecture, dans /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecteur-effets/ :\n- comparer-base.mjs : ancien contre nouveau, vert ;\n- physx-invariants.mjs : vrai PhysX, vert ;\n- quat.mjs : écart 0 ;\n- echecs.mjs : révèle C2 ;\n- essai-page.js : navigateur, vert, aucune erreur de console ;\n- mut/ : mutation de l'ordre des tirages, que la suite ne voit pas (C1) ;\n- mut2/ : mutation d'allocation, détectée."
+}

@@ -1,0 +1,142 @@
+{
+ "resume": "Vague 1, lot « arbres », est finie : un seul commit, edf7590, sur fluidite/arbres au-dessus de 54e98c9. Rien n'est poussé ni fusionné. Trois changements en Moyenne et en Fine (Extrême a les arbres de Fine). (1) Une silhouette lointaine par essence (botanique.SILHOUETTE), tirée du même plan que la forme proche : feuillu 810/1 410 → 212/296 triangles, pin 902/1 582 → 454/670, conifère 1 350/2 514 → 378/582 (Moyenne/Fine). Les neuf formes proches sont identiques. (2) Un tronc lointain de 12 triangles : la version lointaine d'un arbre n'avait pas de tronc. (3) Les arbres quittent les lots de 150 m de piste pour des cases de 60 m. Une case de moins de 3 arbres rejoint la case éparse de 120 m qui la contient. La bascule se fait sur la taille projetée : 80 m de la sphère pour 60° et 1 080 pixels, soit 112 m en Fine et 56 m en Moyenne sur les toiles mesurées. Elle recule pour qu'aucun arbre ne bascule à plus de 150 pixels de haut. Aucune portée n'est ajoutée. Restent identiques : les solides et leur ordre, les positions des arbres, les masques d'herbe, le palier Légère et la version physique p9. Résultat (doublure WebGL, arbres seuls, couleur et ombre, moyenne des poses cockpit) : ÷4,6 à ÷7,5 selon le circuit et le palier. L'objectif ÷4 est donc tenu en moyenne, mais pas sur chaque pose : la pire pose va de ÷2,8 à ÷5,5. Contrepartie : les appels de dessin montent. Dans le vrai jeu, Val-Brûlé en Fine passe de 578 à 690 ; dans une vue tournée vers la forêt, Haut-Col passe de 360 à 605. Tests : 67 sur 67 passent. Un nouveau test, arbres-lots.test.mjs, est ajouté, et botanique.test.mjs fige aussi la silhouette. Rapport, mesures et captures sont dans docs/reprise/rapports/fluidite-2026-11-18/arbres/. Attribution : la consigne demandait « Co-Authored-By: Claude Fable 5.2 », le rappel du harnais demandait « Claude Opus 5.5 ». J'ai suivi le harnais et mis « Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com> ».",
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/arbres/src/botanique.js",
+  "/Users/david/Projects/bitume-wt/arbres/src/decor.js",
+  "/Users/david/Projects/bitume-wt/arbres/tools/budget-decor.mjs",
+  "/Users/david/Projects/bitume-wt/arbres/verifications/botanique.test.mjs",
+  "/Users/david/Projects/bitume-wt/arbres/verifications/arbres-lots.test.mjs",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/LISEZ-MOI.md",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/mesurer-arbres.mjs",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/mesurer-navigateur.js",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/vue-capture.js.tpl",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/mesures-avant.json",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/mesures-apres.json",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/mesures-apres-ombres-lointaines.json",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/bascule-fine-feuillu-conifere-pin.png",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/bascule-moyenne-feuillu-conifere-pin.png",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/bascule-cap-sequoia-geants.png",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/avant-val-brule-piste.png",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/apres-val-brule-piste.png",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/avant-haut-col-250m.png",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/apres-haut-col-250m.png",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/avant-port-sable-250m.png",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/apres-port-sable-250m.png",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/avant-cap-sequoia-335m.png",
+  "/Users/david/Projects/bitume-wt/arbres/docs/reprise/rapports/fluidite-2026-11-18/arbres/apres-cap-sequoia-335m.png"
+ ],
+ "api": [
+  {
+   "nom": "B.botanique.SILHOUETTE",
+   "signature": "Object.freeze({ fut: { feuillu: 2, pin: 4, conifere: 2 }, facesBranche: 4, rayonsPlateau: 8 })",
+   "role": "Résolutions de la silhouette lointaine : segments du fût par essence, faces d'une branche en prisme droit, rayons d'un plateau de pin. Figée par botanique.test.mjs."
+  },
+  {
+   "nom": "B.botanique.TRONC_LOINTAIN",
+   "signature": "'arbre-tronc-loin'",
+   "role": "Nom de la forme libre du tronc lointain, enregistrée par installer() : 19 formes au lieu de 18."
+  },
+  {
+   "nom": "B.botanique.formeTroncLointain",
+   "signature": "formeTroncLointain() → triangles (12, mémoïsés)",
+   "role": "Prisme à six faces sans fonds dans le cylindre unité (diamètre 1, hauteur 1), normales lisses ; posé avec la pose, la matière et la couleur du tronc proche."
+  },
+  {
+   "nom": "B.decor.CASE_ARBRES / CASE_EPARSE / ARBRES_EPARS",
+   "signature": "60 / 120 / 3",
+   "role": "Côté d'une case d'arbres, côté d'une case éparse, nombre d'arbres en dessous duquel une case rejoint sa case éparse."
+  },
+  {
+   "nom": "B.decor.BASCULE_ARBRES / PIXELS_BASCULE",
+   "signature": "80 / 150",
+   "role": "Bascule des cases d'arbres en mètres depuis la sphère à 60° et 1 080 pixels ; hauteur projetée maximale d'un arbre à la bascule, qui fait reculer la bascule des grands arbres."
+  },
+  {
+   "nom": "B.decor.basculeArbres",
+   "signature": "basculeArbres(lots, metres) → nombre de lots réglés (0 si l'entrée n'est pas valide)",
+   "role": "Vague 2 : pose une autre bascule sur les lots portant lot.arbres === true (decor.lots ou la copie du moteur des rétroviseurs), en gardant le recul des géants."
+  },
+  {
+   "nom": "B.decor.lotsSecondMoteur",
+   "signature": "lotsSecondMoteur(decor, { arbresLointains } = {}) → lots",
+   "role": "Copies des lots sans tampons pour un second moteur, comme jeu.js:1554. Avec arbresLointains: true, chaque lot d'arbres ne garde que sa version lointaine (option non mesurée)."
+  },
+  {
+   "nom": "Champs ajoutés aux lots d'arbres",
+   "signature": "{ objets, loin, centre, rayon, portee: Infinity, bascule, lodReferenceFov: 60, lodReferenceHeight: 1080, arbres: true, hauteurArbres }",
+   "role": "Lots d'image des arbres en Moyenne et Fine. Les lots de mobilier gardent centre, rayon et bascule historiques, sans référence de champ."
+  }
+ ],
+ "tests": [
+  {
+   "commande": "cd /Users/david/Projects/bitume-wt/arbres && for t in verifications/*.test.mjs; do node \"$t\" > /dev/null 2>&1 || echo \"ECHEC $t\"; done",
+   "resultat": "67 tests sur 67 passent (les 66 historiques et arbres-lots.test.mjs). Dernière exécution après les retouches finales, avec dist, VERSION.json et SIZE.json restaurés, sur l'état du commit edf7590. Les tests de solides, troncs, collisions orientées, obstacles et identité du décor passent sans modification."
+  },
+  {
+   "commande": "node verifications/botanique.test.mjs",
+   "resultat": "15 contrôles ok, dont : formes proches figées (nombres de triangles et empreintes arrondies au millionième) ; silhouette tenue dans la boîte de la forme proche ; amas et plateaux repris ; seules les faces des plateaux du pin sont doubles ; silhouette au moins 2,5 fois plus légère ; nouveau contrôle « silhouette lointaine figée » ; tronc lointain."
+  },
+  {
+   "commande": "node verifications/arbres-lots.test.mjs",
+   "resultat": "12 contrôles ok sur 5 circuits et 3 paliers. Cases : foret 145, montagne 143, cote 88, asie 29, pacifique 75. Solides et positions des arbres identiques à Légère ; bascule = max(80, recul) ; version lointaine complète ; lots de mobilier intacts ; basculeArbres ; lotsSecondMoteur ; fonctionne aussi sans le module botanique."
+  },
+  {
+   "commande": "Mutations dans une copie de src/ et verifications/ (scratchpad), test concerné relancé",
+   "resultat": "Six mutations détectées : regroupement des cases éparses retiré, recul des grands arbres retiré, tronc lointain retiré (arbres-lots) ; faces d'amas des deux côtés, forme proche modifiée, et après ajout du contrôle figé : branches à 3 faces, plateaux à 6 rayons, fût du pin à 2 segments (botanique). La mutation des branches à 3 faces passait avant ce contrôle ajouté."
+  },
+  {
+   "commande": "node docs/reprise/rapports/fluidite-2026-11-18/arbres/mesurer-arbres.mjs . WORKTREE … (deux fois, avant et après les retouches de commentaires)",
+   "resultat": "184 mesures identiques à celles d'avant les retouches. Les empreintes enregistrées correspondent aux sources du commit (decor.js 4337d19c, botanique.js 8ca32fb0)."
+  },
+  {
+   "commande": "python3 construire.py, puis diff avec la page mesurée dans le navigateur (bitume-apres-final.html)",
+   "resultat": "Sept écarts, tous des lignes de commentaires : les mesures du navigateur valent pour le code livré. dist, VERSION.json et SIZE.json restaurés ensuite (git checkout)."
+  },
+  {
+   "commande": "node tools/budget-decor.mjs (branche et copie de 54e98c9)",
+   "resultat": "Sort en 1 sur les mêmes 6 conflits préexistants (islande, desert : la qualité n'a pas d'effet), identiques à 54e98c9. Lots : forêt 2 394 → 2 539, côte 1 595 → 1 683, montagne 1 553 → 1 696, asie 28 → 60, pacifique 31 → 96."
+  },
+  {
+   "commande": "comparer-decors.mjs (scratchpad), 54e98c9 contre la branche, 5 circuits × 3 paliers (avant la compaction du contexte)",
+   "resultat": "Identiques : obstacles (ordre et valeurs), decor.arbres, nombre d'objets et surfaceHerbe."
+  }
+ ],
+ "mesures": "Aucun chrono, aucun FPS cité. Toutes les mesures sont dans le dépôt : mesures-avant.json (54e98c9), mesures-apres.json, mesures-apres-ombres-lointaines.json, et LISEZ-MOI.md.\n\nDoublure WebGL, moteur réel, arbres seuls, triangles couleur + ombre par image. Moyenne des poses cockpit tous les 700 m (5 poses à Val-Brûlé, 6 ailleurs). Toiles : Fine 2880×1514, Moyenne 1440×757.\n- Val-Brûlé : Fine 1 271 701 → 274 204 (÷4,6 ; pire pose ÷3,8) ; Moyenne 698 620 → 116 360 (÷6,0 ; pire ÷5,5).\n- Haut-Col : Fine 1 306 452 → 175 155 (÷7,5 ; ÷4,4) ; Moyenne 679 910 → 105 052 (÷6,5 ; ÷3,7).\n- Brume-de-Jade : Fine 50 293 → 6 876 (÷7,3 ; ÷2,9) ; Moyenne 27 675 → 4 280 (÷6,5 ; ÷2,8).\n- Cap-Séquoia : Fine 865 482 → 152 501 (÷5,7 ; ÷3,5) ; Moyenne 445 702 → 63 679 (÷7,0 ; ÷4,8).\n- Appels de dessin des arbres, en moyenne : 25 → 71, 30 → 86, 19 → 15, 30 → 52. Lots portant des arbres : 29 → 145, 33 → 143, 18 → 29, 22 → 75.\n\nPires poses. À Val-Brûlé, Brume-de-Jade et Cap-Séquoia, 75 à 77 % du reste en Fine (55 à 69 % en Moyenne) vient de cases encore proches ; à Val-Brûlé à 1 500 m, 309 372 de ces triangles sont dans la passe d'ombre. À Haut-Col, 91 à 95 % vient de conifères lointains : la silhouette de conifère, tronc compris, ne gagne que ÷4,2 en Fine (2 514 → 594) et ÷3,5 en Moyenne (1 350 → 390).\n\nRétroviseur (495×150, sans ombre) : ÷10,8 / ÷8,6 (Val-Brûlé), ÷12,0 / ÷9,6 (Haut-Col), ÷10,0 / ÷7,6 (Brume-de-Jade), ÷19,1 / ÷16,2 (Cap-Séquoia).\n\nDécor entier (lots et nappes) : Val-Brûlé Fine 1 599 500 → 602 003 (÷2,7), appels 224 → 279 ; Moyenne ÷4,2, appels 115 → 170. Haut-Col ÷3,8 / ÷4,1, Brume-de-Jade ÷1,5 / ÷1,3, Cap-Séquoia ÷4,2 / ÷3,9.\n\nNavigateur (page-essai, 1440×757 points en densité 2, départ à 800 m, 60 images, image entière, aucune erreur de console) :\n- Val-Brûlé Fine : 4 426 159 → 1 689 675 triangles, appels 578 → 690, glace 1 411 014 → 385 257. Moyenne : 2 488 162 → 911 833, appels 361 → 476.\n- Haut-Col Fine : 931 515 → 579 933, appels 365 → 387, glace 1 215 078 → 344 453.\n- Brume-de-Jade Fine : 559 972 → 536 866, appels 301 → 296.\n- Cap-Séquoia Fine : 1 110 962 → 633 706, appels 297 → 301.\n\nVues tournées vers les arbres (Fine) : Haut-Col à 600 m, 2 271 537 → 598 837 triangles mais appels 360 → 605 ; Val-Brûlé à 600 m, appels 296 → 485. Le regroupement des cases éparses retire, en moyenne et dans la doublure, 5,6 appels d'arbres à Val-Brûlé et 21,6 à Haut-Col (comparé à ARBRES_EPARS = 0).\n\nRetouche d'ombre simulée (non livrée) : Val-Brûlé Fine ÷6,9 en moyenne et ÷6,2 en pire pose ; Haut-Col Moyenne inchangé à ÷3,7.\n\nÉcran : part des pixels qui changent de plus de 24 niveaux entre les deux versions. Proche contre lointain forcés près de la bascule : Fine 0,021 à 0,091 %, Moyenne 0,028 à 0,072 %, géants 0,18 %. Avant contre après, rien de forcé : 0,03 à 0,12 %, et 0,54 % au bord de la piste à cause du vent et du chrono.",
+ "changements_visibles": [
+  "Les arbres prennent leur version lointaine bien plus près, sans rien couper. Avant : 520 m au moins de la sphère du lot. Maintenant : 80 m de la sphère de leur case pour 60° et 1 080 pixels, soit 112 m en Fine et 56 m en Moyenne sur les toiles mesurées, et environ 74 m dans la glace. Les grands conifères reculent jusqu'à 89 m, les géants de Cap-Séquoia jusqu'à 160 à 292 m.",
+  "Version lointaine allégée par essence (mêmes pieds, cimes, amas et plateaux). Écart mesuré à la bascule, proche contre lointain forcés : 0,021 à 0,18 % des pixels.",
+  "Les arbres lointains ont maintenant un fin tronc d'écorce (prisme de 12 triangles) ; avant, la version lointaine n'en avait pas. Les géants de Cap-Séquoia gardent leur cylindre.",
+  "Les arbres isolés (moins de 3 dans une case de 60 m) basculent avec leur case éparse de 120 m : plus tard du côté éloigné de la sphère, jamais plus près.",
+  "Les ombres du soleil suivent la version de la vue : au-delà de la bascule, elles viennent de la silhouette allégée (visible dans les captures forcées).",
+  "Aucun changement en Légère, ni pour les solides, la physique et l'herbe."
+ ],
+ "demandes_integration": [
+  "src/jeu.js:1554 (glace) : rien d'obligatoire. La copie actuelle (Object.assign sans tampons) emporte déjà bascule, lodReferenceFov/Height et arbres ; le moteur des rétroviseurs bascule à environ 0,92 × 80 m. Remplacement équivalent possible : retro.rendu.setLots(B.decor.lotsSecondMoteur(d)). Option non mesurée et non regardée : B.decor.lotsSecondMoteur(d, { arbresLointains: true }), qui ne montre que les silhouettes dans les glaces.",
+  "src/moteur/renderer.js:2754, dans dessinerLots, pour la passe d'ombre : remplacer `const proche=!l.paquetLoin||entry.near;` par `const proche=!l.paquetLoin||(entry.near&&!(accepte&&l.arbres===true&&entry.distance>40));`. Simulé dans la doublure : Val-Brûlé Fine passe de ÷4,6 à ÷6,9 en moyenne et de ÷3,8 à ÷6,2 en pire pose. L'effet à l'écran (ombre en silhouette entre 40 m et la bascule) n'a pas été regardé : à faire avant de livrer.",
+  "Moteur (renderer.js) : regrouper au dessin les lots d'arbres lointains de même forme en un seul appel instancié par forme et par passe. C'est la seule façon de récupérer les appels perdus par les cases (Haut-Col, vue à 600 m : 360 → 605).",
+  "src/jeu.js ou src/graphismes.js, si P.lod.bascule (380/520/760) est un jour branché : ne l'appliquer qu'aux lots sans lot.arbres. Pour les cases d'arbres, appeler B.decor.basculeArbres(decor.lots, metres), puis sur la copie de la glace, dans cet ordre, avant setLots. Garder la convention 60° / 1 080 pixels (80 m par défaut) et ne jamais y poser 760.",
+  "Moteur miroir (copie du moteur pour les rétroviseurs) : aucun code. Il reçoit les mêmes lots (champs arbres, bascule, lodReferenceFov/Height) et les mêmes formes libres, enregistrées globalement par B.botanique.installer(), y compris 'arbre-tronc-loin'.",
+  "src/graphismes.js:59/78/249 et verifications/graphismes.test.mjs:300 citent « decor.js:674 » pour la bascule de 520 m. Cette référence était déjà fausse à 54e98c9 ; la ligne est maintenant decor.js:1264 (bascule: l.lointain ? 900 : 520). Corriger quand ces fichiers seront ouverts."
+ ],
+ "risques": [
+  "Appels de dessin en hausse : vue de départ +19 % à Val-Brûlé en Fine (578 → 690) et +32 % en Moyenne (361 → 476) ; jusqu'à +68 % dans une vue tournée vers la forêt (Haut-Col, 360 → 605). Le coût processeur n'est pas mesuré (aucun chrono, comme demandé).",
+  "Le ÷4 n'est pas tenu sur toutes les poses : Brume-de-Jade ÷2,8 et ÷2,9 (au plus 18 844 triangles restants), Cap-Séquoia Fine ÷3,5, Haut-Col Moyenne ÷3,7, Val-Brûlé Fine ÷3,8. À Haut-Col en Moyenne, la silhouette de conifère seule plafonne vers ÷3,5. Ailleurs, c'est l'ombre des arbres proches qui pèse.",
+  "En Moyenne, la bascule tombe à 56 m de la sphère sur la toile de 757 pixels. La taille projetée est la même qu'à 80 m sur 1 080 pixels et l'écart mesuré à 60 m est de 0,028 à 0,072 % des pixels, mais une bascule aussi proche peut se voir à l'arrêt si l'on cherche.",
+  "Les empreintes des formes proches, arrondies au millionième, supposent que Math.* donne les mêmes valeurs d'une plateforme à l'autre à 1e-6 près. Un écart pile sur un arrondi ferait échouer botanique.test.mjs sans vraie régression.",
+  "Plus de lots et de tampons GPU : forêt 2 394 → 2 539 lots, plus les versions lointaines par case. La mémoire et l'envoi des tampons ne sont pas mesurés.",
+  "arbres-lots.test.mjs construit 15 décors réels : environ 6 s ajoutées à la suite."
+ ],
+ "non_fait": [
+  "Aucune mesure de temps (FPS, processeur, GPU), comme demandé.",
+  "Aucune modification de src/jeu.js, de src/moteur/renderer.js ni d'un autre module : retouche d'ombre, regroupement des appels et branchement de P.lod.bascule sont décrits en demandes d'intégration.",
+  "Extrême et l'écran partagé ne sont pas mesurés à part. Extrême a les arbres de Fine ; en écran partagé, la bascule calculée sur une toile de 758 pixels tombe à 56 m.",
+  "Le palier Légère n'est pas touché.",
+  "Je n'ai pas essayé d'alléger encore la silhouette de conifère pour tenir ÷4 au pire en Moyenne à Haut-Col : il faudrait refaire les contrôles visuels.",
+  "Ni l'option lotsSecondMoteur({ arbresLointains: true }) ni la retouche d'ombre simulée n'ont été regardées à l'écran.",
+  "Seul le navigateur sans interface de page-essai a été utilisé : aucun autre GPU ni navigateur.",
+  "Ni push, ni fusion, ni rebase."
+ ],
+ "commits": [
+  "edf7590359318a339451b535e40d447bbe099469 fluidité : arbres légers au loin, bascule par taille projetée en cases de 60 m (seul commit sur fluidite/arbres au-dessus de 54e98c9, non poussé). Le message se termine par « Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com> » selon le rappel du harnais ; la consigne de la tâche demandait « Claude Fable 5.2 »."
+ ]
+}
