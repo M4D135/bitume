@@ -556,7 +556,8 @@
       for (const o of l.objets) rayon = Math.max(rayon, Math.hypot(...moins(o.p, centre)) + Math.hypot(o.s[0] + Math.abs(o.groundShear || 0), o.s[1], o.s[2]) / 2 + .25
         + (o.windResponsive ? o.s[1] * 2.3 : 0));
       const lot = { ...l, centre, rayon, portee: Infinity, bascule: tapis ? 60 : 520, lodReferenceFov: 60, lodReferenceHeight: 1080, vegetation: true };
-      if (tapis) { lot.tapis = true; lot.groundCover = true; }
+      // herbe rase : aucune ombre du soleil lisible (un texel d'ombre fait 10 cm), le moteur la saute en passe d'ombre
+      if (tapis) { lot.tapis = true; lot.groundCover = true; lot.ombre = false; }
       lots.push(lot);
     }
     return { lots, herbes, fougeres, fleurs, taillis, brins: (herbes - tuiles) * 9 + brinsTapis,

@@ -1586,7 +1586,7 @@
   const ETATS_GLACES = [0, 1].map(() => ({ vu: false, seance: null, dette: 0, ecoule: [0, 0], glaces: [nouvelleGlace(), nouvelleGlace()],
     poses: [nouvellePoseCss(), nouvellePoseCss()], toiles: null, aPoser: false }));
   // Caméra des glaces et objets de sa liste, réutilisés d'une glace à l'autre (le moteur relit tout à chaque draw)
-  const CAM_GLACE = { pos: [0, 0, 0], yaw: 0, pitch: 0, roll: 0, fov: 34, near: .3, far: 6000, sun: { center: [0, 0, 0], extent: 0, depth: 0 } };
+  const CAM_GLACE = { pos: [0, 0, 0], yaw: 0, pitch: 0, roll: 0, fov: 34, near: .3, far: 6000, allStatic: true, sun: { center: [0, 0, 0], extent: 0, depth: 0 } };
   const POSE_GLACES = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0 }, OPTIONS_RETRO = { roues: undefined, casse: false };
   const OPTIONS_GLACE = [], AXE_GLACE = [0, 0, 0], AXE_VUE = [0, 0, 0], COINS_ECRAN = new Float64Array(8);
   // caméra principale pour projeter les coins des glaces (axes comme le moteur, cameraAxes), réécrite à chaque image
@@ -1975,6 +1975,9 @@
     // ombres du soleil autour de ce que l'on regarde : devant le pilote (jusqu'à 176 m), ou autour de la voiture filmée.
     // Un soleil par vue, réécrit à chaque image : le moteur le relit à chaque draw sans le garder.
     cam.sun = soleilDe(S === session ? 0 : 1, exterieur ? ps.x : cam.pos[0] + avX * OMBRE_DEVANT, ps.y, exterieur ? ps.z : cam.pos[2] + avZ * OMBRE_DEVANT);
+    // Le jeu ne confie aucun objet statique au moteur (setWorld([], …) partout) : allStatic lui évite d'interroger à
+    // chaque draw un index spatial vide (clés de grille et tableaux temporaires). Image identique.
+    cam.allStatic = true;
 
     // Habitats partagés ; pools propres aux deux vues. Le temps absolu garde les mêmes vols dans les miroirs.
     if (S.nature && B.faune && P.faune !== 'off' && (!S.nature.saison || S.nature.saison.faune > 0)) {
