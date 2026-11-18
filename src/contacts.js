@@ -7,8 +7,21 @@
   const P=PARAMS, HL=P.LONGUEUR/2, HW=P.LARGEUR/2;
   const angle=a=>a-2*Math.PI*Math.round(a/(2*Math.PI));
   const ramener=(s,L)=>((s%L)+L)%L;
+  // Objets de travail réutilisés à chaque pas (lectures du tracé, poses intermédiaires du balayage) : le pas teste
+  // 66 paires de voitures, et chaque objet neuf y serait jeté aussitôt.
+  const LU_POSE={}, LU_VITESSE={}, AA={x:0,z:0,h:0,y:0}, BB={x:0,z:0,h:0,y:0};
+  // tester ne voit un contact qu'à moins de √(L² + l²) entre centres. Si les centres de fin de pas sont plus loin que
+  // cette distance, plus le chemin des deux voitures dans le pas (majoré par |dx| + |dz|) et un mètre de marge pour
+  // les arrondis, aucune pose du balayage (début, intermédiaires, fin) ne peut toucher : la paire est rendue sans
+  // contact sans fabriquer ces poses. Une coordonnée infinie ou NaN rend la comparaison fausse : balayage complet.
+  const PORTEE=Math.sqrt(P.LONGUEUR*P.LONGUEUR+P.LARGEUR*P.LARGEUR)+1;
+  function loin(a,b,pa,pb){
+    const dx=b.x-a.x,dz=b.z-a.z,r=PORTEE+Math.abs(a.x-pa.x)+Math.abs(a.z-pa.z)+Math.abs(b.x-pb.x)+Math.abs(b.z-pb.z);
+    return dx*dx+dz*dz>r*r;
+  }
+  const bloquee=e=>e.accident&&!e.recuperation;
   function pose(c,e,p={}) {
-    const q=B.circuit.echantillon(c,e.s),ca=Math.cos(q.cap),sa=Math.sin(q.cap);
+    const q=B.circuit.echantillon(c,e.s,LU_POSE),ca=Math.cos(q.cap),sa=Math.sin(q.cap);
     p.x=q.x-sa*e.d; p.z=q.z+ca*e.d; p.h=q.cap+e.psi+e.beta; p.y=e.y;
     p.tx=ca; p.tz=sa; p.k=q.courbure;
     p.vx=e.v*Math.cos(q.cap+e.psi); p.vz=e.v*Math.sin(q.cap+e.psi);
@@ -29,27 +42,34 @@
     return {nx,nz,depth};
   }
   function balayage(a,b,pa,pb){
+    if(pa&&pb&&loin(a,b,pa,pb))return null;
     let hit=tester(a,b);
     if(!pa||!pb||tester(pa,pb))return hit?{...hit,t:1}:null;
     const travel=Math.hypot(a.x-pa.x,a.z-pa.z,a.y-pa.y)+Math.hypot(b.x-pb.x,b.z-pb.z,b.y-pb.y),n=Math.max(1,Math.min(64,Math.max(Math.ceil(travel/.4),Math.ceil(Math.max(Math.abs(angle(a.h-pa.h)),Math.abs(angle(b.h-pb.h)))/.06))));
-    for(let k=1;k<n;k++){const t=k/n,aa={x:pa.x+(a.x-pa.x)*t,z:pa.z+(a.z-pa.z)*t,h:pa.h+angle(a.h-pa.h)*t,y:pa.y+(a.y-pa.y)*t},bb={x:pb.x+(b.x-pb.x)*t,z:pb.z+(b.z-pb.z)*t,h:pb.h+angle(b.h-pb.h)*t,y:pb.y+(b.y-pb.y)*t};hit=tester(aa,bb);if(hit)return {...hit,t};}
+    for(let k=1;k<n;k++){
+      const t=k/n;
+      AA.x=pa.x+(a.x-pa.x)*t;AA.z=pa.z+(a.z-pa.z)*t;AA.h=pa.h+angle(a.h-pa.h)*t;AA.y=pa.y+(a.y-pa.y)*t;
+      BB.x=pb.x+(b.x-pb.x)*t;BB.z=pb.z+(b.z-pb.z)*t;BB.h=pb.h+angle(b.h-pb.h)*t;BB.y=pb.y+(b.y-pb.y)*t;
+      hit=tester(AA,BB);if(hit)return {...hit,t};
+    }
     hit=tester(a,b);return hit?{...hit,t:1}:null;
   }
   function deplacer(e,c,p,x,z){e.s=ramener(e.s+(x*p.tx+z*p.tz)/Math.max(.1,1-p.k*e.d),c.longueur);e.d+=-x*p.tz+z*p.tx;const side=e.d<0?-1:1,limit=B.conduite.limiteCote(c,e.s,side)-.1;e.d=side*Math.min(Math.abs(e.d),limit);}
-  function vitesse(e,c,vx,vz,body){const theta=B.circuit.echantillon(c,e.s).cap;const sg=e.v<0?-1:1;e.v=sg*Math.hypot(vx,vz);if(Math.abs(e.v)>.001){e.psi=angle(Math.atan2(vz,vx)-theta-(sg<0?Math.PI:0));e.beta=angle(body-theta-e.psi);}}
+  function vitesse(e,c,vx,vz,body){const theta=B.circuit.echantillon(c,e.s,LU_VITESSE).cap;const sg=e.v<0?-1:1;e.v=sg*Math.hypot(vx,vz);if(Math.abs(e.v)>.001){e.psi=angle(Math.atan2(vz,vx)-theta-(sg<0?Math.PI:0));e.beta=angle(body-theta-e.psi);}}
   function pas(co,ev){
     const V=co.voitures,c=co.c,n=V.length,t=co.horloge;co._paire ||= {};
     const poses=co._contactPoses||(co._contactPoses=[]);
     for(let k=0;k<n;k++)pose(c,V[k].etat,poses[k]||(poses[k]={}));
+    // les poses du début du pas (avant) : les mêmes pour toutes les paires
+    const old=co._contactAvantTemps===co.horloge?co._contactAvant:null;
     for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){
       const va=V[i],vb=V[j],a=va.etat,b=vb.etat,key=i*n+j;
       const p=co._paire[key]||(co._paire[key]={tEvent:-9,tBond:-9,separe:true,tSeparation:0});
       const ia=a.recuperation||(a.degats&&a.degats.casse)?0:1,ib=b.recuperation||(b.degats&&b.degats.casse)?0:1;
       if(!ia&&!ib)continue;
-      const blocked=e=>e.accident&&!e.recuperation;
-      if(blocked(a)||blocked(b))continue;
+      if(bloquee(a)||bloquee(b))continue;
       let A=poses[i],Bv=poses[j];
-      const old=co._contactAvantTemps===co.horloge?co._contactAvant:null,pa=old&&old[i]&&old[i].repositionnements===(a.repositionnements||0)?old[i]:null,pb=old&&old[j]&&old[j].repositionnements===(b.repositionnements||0)?old[j]:null,hit=balayage(A,Bv,pa,pb);
+      const pa=old&&old[i]&&old[i].repositionnements===(a.repositionnements||0)?old[i]:null,pb=old&&old[j]&&old[j].repositionnements===(b.repositionnements||0)?old[j]:null,hit=balayage(A,Bv,pa,pb);
       if(!hit){if(!p.separe){p.separe=true;p.tSeparation=t;}continue;}
       // Corriger le chevauchement à chaque pas, même quand le son/dégât n'est pas réarmé.
       if(hit.t<1){for(const [e,o,inv] of [[a,pa,ia],[b,pb,ib]])if(inv){let ds=e.s-o.s;if(ds>c.longueur/2)ds-=c.longueur;else if(ds<-c.longueur/2)ds+=c.longueur;e.s=ramener(o.s+ds*hit.t,c.longueur);e.d=o.d+(e.d-o.d)*hit.t;e.psi=angle(o.psi+angle(e.psi-o.psi)*hit.t);e.beta=angle(o.beta+angle(e.beta-o.beta)*hit.t);e.y=o.y+(e.y-o.y)*hit.t;e.distance=o.distance+(e.distance-o.distance)*hit.t;}A=pose(c,a,poses[i]);Bv=pose(c,b,poses[j]);}

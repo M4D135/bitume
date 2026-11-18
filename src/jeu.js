@@ -23,11 +23,13 @@
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
   function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
   function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
-  const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
+  const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
   reglages.qualite = B.graphismes.normaliser(reglages.qualite);
+  // Cadence d'images (Auto, Écran, 120, 60, 30) : une valeur ancienne, inconnue ou mal écrite revient à Auto.
+  reglages.cadence = B.cadence.normaliser(reglages.cadence);
   Object.assign(reglages, B.graphismes.normaliserOptions(reglages));
   reglages.moment = B.ambiance.normaliser(reglages.moment);
   reglages.saison = B.saisons.normaliser(reglages.saison);
@@ -261,8 +263,8 @@
   // ---------------------------------------------------------------- commandes
   const touches = new Set();
   const impulsions = { haut: false, bas: false };
-  const pad = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, deriveEtat: null, rumbleF: -1, rumbleS: -1, rumbleT: 0, choc: 0, passe: 0 };
-  const pad2 = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, manette: null, deriveEtat: null, rumbleF: -1, rumbleS: -1, rumbleT: 0, choc: 0, passe: 0 };   // manette du joueur 2 (écran partagé)
+  const pad = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, deriveEtat: null };
+  const pad2 = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, manette: null, deriveEtat: null };   // manette du joueur 2 (écran partagé)
   let nbManettes = 0, manettes = [];
   const impulsions2 = { haut: false, bas: false };
   // Commandes de chaque joueur (David, 16/11 : « choix manette, clavier ou souris, et gérer les touches de chacun » ;
@@ -426,60 +428,80 @@
     }
   }
 
-  // vibration manette (David, 14/11) : un vrai système continu, pas de simples déclenchements. Le moteur fait
-  // vibrer les haut-parleurs de la manette selon son régime (de plus en plus fort en approchant la zone rouge,
-  // davantage en charge), la route ronronne selon la vitesse, les vibreurs martèlent, l'herbe trépigne, le
-  // patinage et la glisse de l'arrière sifflent sous les doigts, et les chocs déclenchent un pic qui retombe.
-  // Moteur lourd (grave) à droite, effets légers (aigus) à gauche ; rien si la manette ne sait pas vibrer.
-  function secouerManette(faible, fort, P = pad) {
-    const p = P.manette;
-    faible = clamp(faible || 0, 0, 1); fort = clamp(fort || 0, 0, 1);
-    if (!p || !p.vibrationActuator || !p.vibrationActuator.playEffect) return;
-    const maintenant = performance.now();
-    // le moteur à effet « dual-rumble » s'éteint seul au bout de sa durée : on le reprogramme au moins toutes
-    // les 40 ms pour tenir un grondement continu, et plus vite encore dès que l'intensité bouge (choc, vibreur)
-    if (Math.abs(faible - P.rumbleF) < .05 && Math.abs(fort - P.rumbleS) < .05 && maintenant - P.rumbleT < 40) return;
-    P.rumbleF = faible; P.rumbleS = fort; P.rumbleT = maintenant;
+  // Vibrations de manette (David, 14/11 puis 18/11 : « de meilleures vibrations ») : src/vibrations.js calcule quatre
+  // sorties continues (moteur léger, moteur lourd, gâchettes gauche et droite) une fois par image rendue, avec la durée
+  // réelle de l'image : le ressenti reste le même à 30, 60 ou 120 images par seconde. Chaque joueur a sa manette, son
+  // état (phases et enveloppes) et les événements de son image (chocs, contacts, rapports, réceptions), retenus pas
+  // après pas dans un tableau réutilisé. Moteur lourd (grave) à droite, léger (aigu) à gauche ; rien si la manette ne
+  // sait pas vibrer.
+  // Une manette ne suit pas une modulation plus fine qu'une quinzaine de hertz, et chaque reprogrammation passe par le
+  // pilote : une trentaine par seconde au plus (31 ms, pour qu'une image à 30 Hz un peu en avance passe encore). L'effet
+  // dure trois intervalles : une image en retard ne coupe pas le grondement, un onglet quitté l'éteint seul.
+  const VIB_INTERVALLE = 31, VIB_DUREE = 100, VIB_EVENEMENTS = 64;
+  const VIB_ATTERRISSAGE = Object.freeze({ type: 'atterrissage', force: 0 }), sansSuite = () => {};
+  function etatVibrations() {
+    return {
+      V: B.vibrations.creer(), evenements: [],
+      entree: { regime: 0, ralenti: 0, maxUtile: 0, gaz: 0, frein: 0, v: 0, surface: 'piste', vibreur: false, patinage: 0,
+        blocage: 0, glisseAr: 0, glisseAv: 0, bosse: 0, turbo: 0, force: .5, derive: null, evenements: null },
+      // paramètres des effets, réutilisés : le navigateur les lit pendant l'appel
+      double: { startDelay: 0, duration: VIB_DUREE, weakMagnitude: 0, strongMagnitude: 0 },
+      gachettes: { startDelay: 0, duration: VIB_DUREE, weakMagnitude: 0, strongMagnitude: 0, leftTrigger: 0, rightTrigger: 0 },
+      instant: -Infinity, arret: true
+    };
+  }
+  const vibrations = [etatVibrations(), etatVibrations()];
+  let vibreImage = false;   // garde-fou du dernier pas (manetteVibre), lu par l'image qui suit
+  // Envoie les quatre intensités à la manette du joueur P (pad ou pad2). Un arrêt (tout à zéro) part aussitôt et une
+  // seule fois ; une intensité attend la fin de l'intervalle. « trigger-rumble » quand la manette l'annonce (moteurs
+  // dans les gâchettes) porte aussi les deux moteurs du corps : deux effets joués coup sur coup s'interrompraient.
+  function secouerManette(faible, fort, P = pad, gauche = 0, droite = 0, maintenant = performance.now()) {
+    const J = P === pad2 ? vibrations[1] : vibrations[0], p = P.manette, a = p && p.vibrationActuator;
+    if (!a || typeof a.playEffect !== 'function') { J.arret = true; return; }
+    faible = clamp(faible || 0, 0, 1); fort = clamp(fort || 0, 0, 1); gauche = clamp(gauche || 0, 0, 1); droite = clamp(droite || 0, 0, 1);
+    const arret = !faible && !fort && !gauche && !droite;
+    if (arret ? J.arret : maintenant - J.instant < VIB_INTERVALLE) return;
+    J.arret = arret; J.instant = maintenant;
     try {
-      const effet = p.vibrationActuator.playEffect('dual-rumble', { startDelay: 0, duration: 90, weakMagnitude: faible, strongMagnitude: fort });
-      if (effet && typeof effet.catch === 'function') effet.catch(() => {});
+      const avecGachettes = !!a.effects && typeof a.effects.includes === 'function' && a.effects.includes('trigger-rumble');
+      const o = avecGachettes ? J.gachettes : J.double;
+      o.weakMagnitude = faible; o.strongMagnitude = fort;
+      if (avecGachettes) { o.leftTrigger = gauche; o.rightTrigger = droite; }
+      const effet = a.playEffect(avecGachettes ? 'trigger-rumble' : 'dual-rumble', o);
+      if (effet && typeof effet.catch === 'function') effet.catch(sansSuite);
     } catch (e) { /* manette sans vibration */ }
   }
-
-  // construit l'intensité continue (faible = aigu, fort = grave) à partir de l'état de la voiture et des
-  // événements du pas ; les chocs alimentent un pic qui décroît image après image
-  function vibrationManette(et, ev, horloge, P = pad, id = 0) {
-    const PR = B.conduite.PARAMS;
-    // pics transitoires des chocs et contacts, plafonnés et qui retombent ; le passage de rapport donne un coup sec
-    P.choc = Math.max(0, (P.choc || 0) - DT * 2.4);
-    P.passe = Math.max(0, (P.passe || 0) - DT * 3.4);
-    for (const e of ev) {
-      if (e.type === 'choc' && e.id === id) P.choc = Math.max(P.choc, clamp(((e.force || 0) - 2) / 28, 0, .9));
-      else if (e.type === 'contact' && (e.a === id || e.b === id)) P.choc = Math.max(P.choc, clamp(((e.force || 0) - 2) / 28, 0, .7));
-      else if ((e.type === 'roue' || e.type === 'casse') && e.id === id) P.choc = Math.max(P.choc, .85);
-      else if (e.repositionnement && e.id === id) P.choc = 0;
+  // Événements d'un pas qui touchent la voiture id, gardés pour l'image : la réception d'un saut devient l'atterrissage
+  // du module. Le tableau est vidé à chaque image rendue ; la borne ne sert qu'aux pas sans image (outils).
+  function retenirVibrations(J, ev, id) {
+    const liste = J.evenements;
+    for (let i = 0; i < ev.length && liste.length < VIB_EVENEMENTS; i++) {
+      const e = ev[i], type = e.type;
+      if (type === 'contact' ? e.a !== id && e.b !== id : e.id !== id) continue;
+      if (type === 'choc' || type === 'contact' || type === 'roue' || type === 'casse' || type === 'rapport') liste.push(e);
+      else if (type === 'reception') liste.push(VIB_ATTERRISSAGE);
     }
-    // grondement du moteur : doux au ralenti, il monte progressivement vers la zone rouge sans jamais saturer
-    const r = clamp((et.regime - PR.ralenti) / (PR.maxUtile - PR.ralenti), 0, 1);
-    const charge = .25 + .75 * (et.gaz || 0);
-    const moteur = .05 + .7 * r * r * charge;
-    const zoneRouge = r > .97 ? (Math.sin(horloge * 50) > 0 ? .2 : 0) : 0;   // le rupteur crépite à peine en haut
-    // route, vibreurs, herbe, patinage, glisse — tous en dessous de leur maximum pour rester fins
-    const route = clamp(Math.abs(et.v) / 90, 0, 1);
-    const martellement = et.vibreur ? .5 + .5 * Math.sin(horloge * 40) : 0;
-    const herbe = et.surface === 'herbe' ? clamp(Math.abs(et.v) / 26, 0, 1) : 0;
-    const patinage = clamp(et.patinage / .35, 0, 1);
-    const blocage = clamp(et.blocage / .35, 0, 1);
-    const glisse = clamp(Math.abs(et.glisseAr) / .5, 0, 1);
-    let faible = route * .16 + patinage * .5 + blocage * .38 + glisse * .3 + herbe * .3 + martellement * .42 + zoneRouge + moteur * .35;
-    let fort = moteur * 1.0 + route * .16 + herbe * .42 + martellement * .5 + (P.choc || 0) * .85 + (P.passe || 0) * .5;
-    // mise en forme : une courbe en puissance garde le bas de l'échelle subtil, puis la puissance maître du réglage
-    const f = clamp(reglages.vibrationForce != null ? +reglages.vibrationForce : .5, 0, 1);
-    faible = Math.pow(clamp(faible, 0, 1), 1.25) * f;
-    fort = Math.pow(clamp(fort, 0, 1), 1.25) * f;
-    if (faible < .04) faible = 0;   // sous ce seuil, la manette reste parfaitement silencieuse
-    if (fort < .04) fort = 0;
-    return [faible, fort];
+  }
+  // Voiture replacée en piste : ni événement de l'image ni pic d'un choc antérieur ne la suivent.
+  function calmerVibrations(n) { vibrations[n].evenements.length = 0; vibrations[n].V = B.vibrations.creer(); }
+  // Une fois par image rendue qui fait tourner la séance : dt est la durée réelle de l'image, t son horodatage.
+  function majVibrations(S, dt, t) {
+    const co = S.course, PR = B.conduite.PARAMS, pousseeMax = PR.turboAcc[PR.turboAcc.length - 1] || 1;
+    for (let n = 0; n < 2; n++) {
+      const J = vibrations[n], P = n ? pad2 : pad;
+      const v = !vibreImage || !P.manette ? null : n === 0 ? co.joueur : S.type === 'duo' ? co.voitures[S.locaux[1]] : null;
+      if (!v) { J.evenements.length = 0; secouerManette(0, 0, P); continue; }
+      const et = v.etat, e = J.entree;
+      e.regime = et.regime; e.ralenti = PR.ralenti; e.maxUtile = PR.maxUtile; e.gaz = et.gaz; e.frein = et.frein; e.v = et.v;
+      e.surface = et.surface; e.vibreur = et.vibreur; e.patinage = et.patinage; e.blocage = et.blocage;
+      e.glisseAr = et.glisseAr; e.glisseAv = et.glisseAv; e.derive = et.derive;
+      e.turbo = et.turbo && et.turbo.reste > 0 ? clamp(et.turbo.poussee / pousseeMax, 0, 1) : 0;
+      e.force = clamp(reglages.vibrationForce != null ? +reglages.vibrationForce : .5, 0, 1);
+      e.evenements = J.evenements;
+      const s = B.vibrations.calculer(J.V, e, dt);
+      J.evenements.length = 0;
+      if (t - J.instant >= VIB_INTERVALLE) secouerManette(s.faible, s.fort, P, s.gachetteG, s.gachetteD, t);
+    }
   }
 
 
@@ -703,10 +725,15 @@
         S.camCap = null; S.tete = null; S.tele.poste = null;
         S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; S.eclair = 0;
       }
-      if (e.id === S.course.joueur.id) { pad.choc = 0; pad.passe = 0; S.avertiContresens = false; }
-      if (S.locaux && e.id === S.locaux[1]) { pad2.choc = 0; pad2.passe = 0; }
+      if (e.id === S.course.joueur.id) { calmerVibrations(0); S.avertiContresens = false; }
+      if (S.locaux && S.type === 'duo' && e.id === S.locaux[1]) calmerVibrations(1);
     }
   }
+
+  // La manette ne vibre que sur l'écran de course, quand un joueur tient le volant (David, 18/11 : « je ne veux pas
+  // de vibration dans la manette pendant les menus »). La vitrine des menus et la démo font rouler la voiture « du
+  // joueur » à l'ordinateur : sans ce garde-fou, son moteur grondait dans les mains devant l'écran titre.
+  function manetteVibre(auto) { return !auto && reglages.vibrations === 'oui' && ecran === 'course'; }
 
   function pasSimulation(S, pilote) {
     if (B.meteo) B.meteo.actuel = S.meteo;
@@ -717,15 +744,13 @@
     else cmd = auto ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
     const ev = B.course.pas(co, cmd, DT);
     // vibration manette : le pilote la sent passer dans ses mains — le moteur selon les tours, la route, les
-    // vibreurs, l'herbe, le patinage, la glisse et les chocs ; la main reste calme si le réglage est à « non »
-    if (!pilote && reglages.vibrations === 'oui') {
-      const [faible, fort] = vibrationManette(co.joueur.etat, ev, co.horloge, pad, co.joueur.id);
-      secouerManette(faible, fort);
-    } else secouerManette(0, 0);
-    // à deux, la manette du joueur 2 vit sa propre voiture
-    if (S.type === 'duo' && pad2.manette) {
-      if (!pilote && reglages.vibrations === 'oui') { const [f2, s2] = vibrationManette(co.voitures[S.locaux[1]].etat, ev, co.horloge, pad2, S.locaux[1]); secouerManette(f2, s2, pad2); }
-      else secouerManette(0, 0, pad2);
+    // vibreurs, l'herbe, le patinage, la glisse et les chocs ; la main reste calme si le réglage est à « non ».
+    // Les événements du pas sont retenus pour l'image (majVibrations), à deux pour chaque joueur et sa voiture.
+    const vibre = manetteVibre(auto);
+    vibreImage = vibre;
+    if (vibre) {
+      retenirVibrations(vibrations[0], ev, co.joueur.id);
+      if (S.type === 'duo') retenirVibrations(vibrations[1], ev, S.locaux[1]);
     }
     for (const v of co.voitures) {
       v.roule = (v.roule || 0) + v.etat.v * DT; // distance roulée : fait tourner les roues
@@ -734,7 +759,7 @@
       // précédente (0,36 s) est consommé sans reprise — le trajet en cours vise déjà le rapport courant, et
       // tPassage ne repart pas à zéro (sinon la main se téléporte du pommeau à la jante)
       if (v.etat.rapport !== v.rapportVu) {
-        if (v.rapportVu !== undefined && (v.tPassage === undefined || co.horloge - v.tPassage >= .36)) { v.rapportAvant = v.rapportVu; v.tPassage = co.horloge; if (v === co.joueur) pad.passe = .5; else if (S.type === 'duo' && v.id === S.locaux[1]) pad2.passe = .5; }
+        if (v.rapportVu !== undefined && (v.tPassage === undefined || co.horloge - v.tPassage >= .36)) { v.rapportAvant = v.rapportVu; v.tPassage = co.horloge; }
         v.rapportVu = v.etat.rapport;
       }
     }
@@ -1370,12 +1395,28 @@
   }
 
   // ---------------------------------------------------------------- paliers de la qualité Auto
-  // En qualité Auto, quand les images ralentissent (moins de 50 i/s pendant 3 s, volet visible), le jeu
-  // retire un effet coûteux après l'autre : image réelle des rétroviseurs, ombres, halo et reflets, puis il baisse la
-  // résolution (palier 4). Il remonte d'un palier après 8 s sous 14 ms. Le gouverneur de résolution du moteur
-  // continue d'agir dans chaque palier. Les qualités Légère et Fine restent fixes.
+  // En qualité Auto, quand les images ralentissent (pendant 3 s, une image en moyenne au-delà de 1,2 fois la période
+  // visée, celle de l'écran multipliée par le diviseur de la cadence), le jeu retire un effet coûteux après l'autre :
+  // image réelle des rétroviseurs, ombres, halo et reflets, puis il baisse la résolution (palier 4). Il remonte d'un
+  // palier après 8 s d'un travail du fil principal sous la moitié de la période. Le gouverneur de résolution du moteur
+  // ne joue plus (adaptive: false) : il changeait la taille de l'image en pleine conduite. Les qualités Légère,
+  // Moyenne et Fine restent fixes.
   const palier = { n: 0, somme: 0, compte: 0, t: 0, aise: 0 };
   const PALIERS = 4;
+  // Palier appris par machine : la qualité Auto repart au démarrage du palier où elle s'était posée, au lieu de
+  // repayer à chaque lancement les secondes lentes qui l'y avaient menée. La clé suit l'empreinte de la détection
+  // graphique (processeur graphique, taille de fenêtre, densité de pixels) : une autre machine ou un autre écran
+  // repart de zéro.
+  const CLE_PALIER = 'bitume.palier.v1';
+  function retenirPalier() { ecrireStock(CLE_PALIER, { empreinte: empreinteDetection(), n: palier.n }); }
+  function restaurerPalier() {
+    if (reglages.qualite !== 'auto') return false;
+    const m = lireStock(CLE_PALIER, null);
+    if (!m || m.empreinte !== empreinteDetection() || !Number.isInteger(m.n)) return false;
+    palier.n = Math.max(gpuModeste ? 1 : 0, Math.min(PALIERS, m.n));
+    palier.somme = palier.compte = palier.t = palier.aise = 0;
+    return true;
+  }
   // ---------------------------------------------------------------- profils graphiques du menu
   // src/graphismes.js est la seule source des paliers : le menu (Légère, Moyenne, Fine, Auto), le gouverneur
   // Auto de src/qualite.js et les capacités réellement ouvertes par FRender.create s'y rejoignent. Le gouverneur
@@ -1391,20 +1432,47 @@
   // Le décor (matières et massifs) est bâti une fois par séance sur un palier « ancre ». Le gouverneur Auto ne le
   // fait jamais bouger en pleine course : rebâtir nappes, lots et tampons au milieu d'une course toucherait les
   // stands, les caméras et les rétroviseurs. Le budget du décor suit donc l'ancre et prend effet à la séance
-  // suivante ; tout le reste — résolution, ombres, halo, reflets, glaces, cadence du second joueur — s'applique
-  // à l'image, sans redémarrer la course.
+  // suivante ; ombres, halo, reflets, glaces et cadence du second joueur s'appliquent à l'image, sans redémarrer la
+  // course. La résolution attend un arrêt (voir appliquerPalierEnCourse).
   function majProfils(S) {
     return B.graphismes.stabiliser(etatProfils, S && S.banc ? S.banc.qualite : reglages.qualite,
       palier.n, horlogeProfils());
   }
-  function majPalier(S, dt) {
-    const actif = reglages.qualite === 'auto' && !S.banc && !S.reference && !document.hidden &&
+  // Le gouverneur ne juge que les séances où un joueur (ou la démo) roule, en qualité Auto, hors banc et référence.
+  function gouverneurActif(S) {
+    return reglages.qualite === 'auto' && !S.banc && !S.reference && !document.hidden &&
       (S.type === 'course' || S.type === 'chrono' || S.type === 'demo' || S.type === 'duo');
-    const change = B.qualite.avancer(palier, dt, { actif, min: gpuModeste ? 1 : 0, max: PALIERS });
-    majProfils(S);
-    if (change) appliquerPalier();
   }
-  function appliquerPalier() { if (rendu) rendu.resize(profilDe(session).rendu.resolution); }
+  const optionsPalier = { actif: false, min: 0, max: PALIERS, periode: undefined, travail: undefined };
+  // dt : intervalle de l'image sur la grille de l'écran (s). f : image de la cadence ; avec elle, les seuils suivent
+  // la période visée et la remontée juge le travail du fil principal. Sans elle (outils, contrôles), la règle à 60 Hz.
+  function majPalier(S, dt, f) {
+    const o = optionsPalier;
+    o.actif = gouverneurActif(S); o.min = gpuModeste ? 1 : 0; o.max = PALIERS;
+    o.periode = f ? f.periode * f.diviseur : undefined; o.travail = f ? f.travail : undefined;
+    const change = B.qualite.avancer(palier, dt, o);
+    majProfils(S);
+    if (change) { if (o.actif) retenirPalier(); appliquerPalierEnCourse(S); }
+  }
+  // Résolution réellement donnée au moteur. En changer réalloue ses cibles : un accroc, puis une image plus floue ou
+  // plus nette d'un coup. En pleine conduite, le changement attend donc un arrêt — grille et feux, pause, résultats,
+  // séance suivante (resolutionDifferee, appliquée par la boucle) ; les autres effets du palier suivent à l'image.
+  let resolutionMoteur = null, resolutionDifferee = false;
+  function appliquerPalier() {
+    if (!rendu) return;
+    resolutionMoteur = profilDe(session).rendu.resolution; resolutionDifferee = false;
+    rendu.resize(resolutionMoteur);
+  }
+  function conduiteEnCours(S) {
+    return !!S && (ecran === 'course' || ecran === 'demo') && !!S.course && S.course.phase !== 'grille' &&
+      S.course.phase !== 'feux' && !S.course.termine;
+  }
+  function appliquerPalierEnCourse(S) {
+    if (rendu && conduiteEnCours(S) && profilDe(session).rendu.resolution !== resolutionMoteur) { resolutionDifferee = true; return; }
+    appliquerPalier();
+  }
+  // À chaque image rendue : une résolution mise en attente passe dès que plus personne ne conduit.
+  function appliquerResolutionDifferee(S) { if (resolutionDifferee && !conduiteEnCours(S)) appliquerPalier(); }
   // effets permis par le profil résolu : menu, gouverneur et capacités du moteur, en un seul endroit
   const avecOmbres = P => P.effets.ombres;
   const avecHalo = P => P.effets.halo;
@@ -1798,7 +1866,10 @@
     // Halo/bloom : ouverts ou fermés par le profil résolu (menu, gouverneur et capacités du moteur)
     const haloInt = avecHalo(P);
     const tDraw = B.mesures.actif ? performance.now() : 0;
-    rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: P.qualite === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover });
+    // adaptive: false partout : le gouverneur du moteur baissait la taille de l'image au fil des images lentes, en
+    // pleine conduite, et la vitrine des menus léguait l'échelle réduite à la course suivante. La qualité Auto
+    // (paliers) et la cadence décident seules ; la résolution ne change qu'à un arrêt.
+    rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover });
     if (B.mesures.actif) {
       B.mesures.section('rendu', performance.now() - tDraw);
       B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
@@ -2001,9 +2072,12 @@
       const f = B.course.fantome(co);
       if (f) { const e = B.circuit.echantillon(co.c, f.s), [x, y] = p.vers(e.x, e.z); ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fillStyle = '#6fd0ff'; ctx.fill(); }
     }
-    // compteur d'images : le temps d'image lissé de la boucle, viré à l'ambre quand ça descend sous 50 i/s
-    const fps = Math.round(1000 / Math.max(.5, dureeImage));
-    if (H['h-fps']) { texte(H['h-fps'], fps + ' FPS'); classe(H['h-fps'], 'bas', fps < 50); }
+    // compteur d'images : la cadence réellement tenue (images rendues par seconde, lissées sur la grille de l'écran),
+    // virée à l'ambre sous 90 % de la cadence visée — l'écran divisé par le diviseur de la cadence, et non 60 d'office :
+    // 30 images tenues sur un écran bridé à 30 Hz ne sont pas une alerte, 100 sur un écran 144 Hz en sont une
+    const fps = Math.round(imageCadence && imageCadence.ips || 1000 / Math.max(.5, dureeImage));
+    const cible = imageCadence ? 1 / (imageCadence.periode * imageCadence.diviseur) : 60;
+    if (H['h-fps']) { texte(H['h-fps'], fps + ' FPS'); classe(H['h-fps'], 'bas', fps < .9 * cible); }
   }
 
   // ---------------------------------------------------------------- écrans
@@ -2023,7 +2097,7 @@
     if ((ecran === 'course' || ecran === 'demo') !== (nom === 'course' || nom === 'demo'))
       B.qualite.avancer(palier, 0, { actif: false });
     if (son && nom !== 'demo') son.evenement('clic');
-    if (nom !== 'course' && nom !== 'demo' && nom !== 'pause') { secouerManette(0, 0); secouerManette(0, 0, pad2); }
+    if (nom !== 'course') { secouerManette(0, 0); secouerManette(0, 0, pad2); }
     for (const e of ECRANS) $(e).hidden = e !== nom;
     $('hud').hidden = !(nom === 'course' || nom === 'pause' || nom === 'demo');
     hud2.hidden = !(aDeux() && (nom === 'course' || nom === 'pause'));
@@ -2261,6 +2335,9 @@
         if (rendu) appliquerPalier();
       }
     }
+    // Cadence d'images : la valeur normalisée par la cadence est celle qui est retenue (une cible fixe vise le
+    // diviseur de l'écran le plus proche) ; les essais en cours repartent de zéro.
+    if (t.name === 'cadence') { reglages.cadence = B.cadence.regler(cadence, t.value); sauverReglages(); }
     if (Object.prototype.hasOwnProperty.call(B.graphismes.OPTIONS, t.name)) {
       reglages[t.name] = B.graphismes.normaliserOptions({ [t.name]: t.value })[t.name];
       sauverReglages();
@@ -2337,7 +2414,7 @@
   function remplirReglages() {
     captureTouche = null; majCommandes();
     majDetectionGraphique();
-    for (const nom of ['vue', 'boite', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    for (const nom of ['vue', 'boite', 'qualite', 'cadence', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     $('v-carte').checked = reglages.carte !== 'non';
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
     $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';
@@ -2467,21 +2544,34 @@
   }
 
   // ---------------------------------------------------------------- boucle principale
+  // Cadence (src/cadence.js) : la boucle ne lit pas l'heure elle-même. Elle passe à la cadence l'horodatage de chaque
+  // rappel ; la cadence estime la période de l'écran, cale le temps de jeu sur elle (nombre de pas verrouillé, alpha
+  // stable) et, en Auto, ne fait rendre qu'un rappel sur k quand la machine ne tient pas la période. Une image qui
+  // alterne une et deux périodes se voit bien plus qu'une cadence moitié tenue.
+  const cadence = B.cadence.creer({ hz: 1 / DT, maxPas: 14, mode: reglages.cadence });
+  // contexte réutilisé : actif (une séance tourne et peut décider), qualiteReductible (la qualité Auto peut encore
+  // baisser : la cadence ne divise pas avant elle), echelle (ralenti de la démo)
+  const ctxCadence = { echelle: 1, qualiteReductible: false, actif: false };
+  const mesuresCadence = { periode: null, diviseur: 1, verrouille: false }, etatCadence = {};
+  let imageCadence = null, seanceVue = null;
+  // Le volet de mesures s'ouvre sans le chronomètre GPU : ses requêtes coupent les passes des processeurs graphiques
+  // à tuiles et coûtent elles-mêmes. BITUME_JEU.chronoGPU = true le rouvre.
+  B.mesures.chrono(false);
   let tPrec = 0;
   function oublierIntervalle() {
-    // Le temps passé dans un onglet masqué ne doit pas faire baisser la qualité au retour.
+    // Le temps passé dans un onglet masqué ne doit pas faire baisser la qualité au retour, ni compter comme une
+    // image ratée ou du temps à rattraper.
     tPrec = 0;
+    B.cadence.oublier(cadence);
     B.qualite.avancer(palier, 0, { actif: false });
     B.mesures.reinitialiser();
   }
   function image(t) {
     requestAnimationFrame(image);
-    // Le banc possède temporairement le renderer. Aucune seconde boucle de jeu ne pollue la mesure.
-    if (detectionGraphiqueActive) { tPrec = 0; return; }
-    const tMes = B.mesures.imageDebut();
-    const tBrut = tPrec ? (t - tPrec) / 1000 : DT;   // intervalle réellement subi, avant le bridage de la simulation
-    const dtReel = Math.min(.1, tBrut);
-    tPrec = t; horlogeReelle += dtReel; dureeImage = lerp(dureeImage, dtReel * 1000, .1);
+    // Le banc possède temporairement le renderer. Aucune seconde boucle de jeu ne pollue la mesure, et l'intervalle
+    // qui suit le banc n'est pas du temps à rattraper.
+    if (detectionGraphiqueActive) { tPrec = 0; B.cadence.oublier(cadence); return; }
+    // Commandes et menus à chaque rappel, même sans image : les pas de l'image suivante lisent l'état le plus frais.
     lireManette();
     majAttente();
     const sourisVue = souris.active && enCourse() ? 'oui' : 'non';
@@ -2496,10 +2586,32 @@
     // préparation d'une course à deux : qui joue avec quoi, selon les choix et les manettes branchées
     if (ecran === 'preparation' && modePrepa === 'duo') texte($('p-manettes'), [0, 1].map(n => 'Joueur ' + (n + 1) + ' : ' + entreeDe(n)).join(' · ') + '.');
     const S = session;
-    if (!S || !rendu) return;
+    // Nouvelle séance (chargement, référence, démo suivante) : l'intervalle du chargement n'est ni une image ratée ni
+    // du temps à rattraper. Une vraie séance rouvre les essais de retour de la cadence et les niveaux de la qualité
+    // Auto qui avaient échoué, et le volet de mesures repart d'elle (créations tardives, images longues). Le changement
+    // de séance est un arrêt : une résolution en attente y passe.
+    if (S !== seanceVue) {
+      seanceVue = S; tPrec = 0;
+      B.cadence.oublier(cadence);
+      if (S && S.type !== 'vitrine') { B.cadence.nouvelleSeance(cadence); B.qualite.nouvelleSeance(palier); B.mesures.reinitialiser(); }
+      if (resolutionDifferee && rendu) appliquerPalier();
+    }
     // la vitrine tourne derrière les menus ; une course ne tourne qu'à l'écran de course, la démo qu'à l'écran de démo
-    const tourne = S.type === 'vitrine' ? ecran !== 'chargement' : ecran === (S.type === 'demo' ? 'demo' : 'course') || (!!S.enLigne && (ecran === 'pause' || ecran === 'resultats'));
+    const tourne = !!S && (S.type === 'vitrine' ? ecran !== 'chargement' : ecran === (S.type === 'demo' ? 'demo' : 'course') || (!!S.enLigne && (ecran === 'pause' || ecran === 'resultats')));
+    const actif = tourne && !S.banc && !S.reference && !document.hidden;
+    ctxCadence.actif = actif;
+    ctxCadence.qualiteReductible = actif && reglages.qualite === 'auto' && palier.n < PALIERS;
+    // démo : un choc passe au ralenti (réalisateur) ; la cadence compte alors moins de pas par image
+    ctxCadence.echelle = tourne && S.type === 'demo' && !S.enLigne ? B.realisateur.vitesse(S.real, S.course) : 1;
+    const f = imageCadence = B.cadence.image(cadence, t, ctxCadence);
+    if (!S || !rendu || !f.rendre) return;
+    const tMes = B.mesures.imageDebut();
+    const tBrut = tPrec ? (t - tPrec) / 1000 : DT;   // intervalle réellement subi depuis l'image rendue précédente
+    const dtReel = f.dt;                             // temps de jeu de l'image, borné comme les pas (14 au plus)
+    tPrec = t; horlogeReelle += dtReel; dureeImage = lerp(dureeImage, dtReel * 1000, .1);
+    appliquerResolutionDifferee(S);
     const tSim = B.mesures.actif ? performance.now() : 0;
+    let alpha;
     if (tourne && S.enLigne) {
       // en ligne : la simulation suit l'horloge commune, pas à pas, depuis l'instant T0 du départ
       const cible = (EL.R ? EL.R.horloge() - S.enLigne.T0 : 0) / 1000;
@@ -2507,19 +2619,28 @@
       while (S.course.horloge + DT <= cible && n < 90 && !S.course.termine) { pasSimulation(S, false); n++; }
       if (n) envoyerEtats(S);   // une fois par image, l'état le plus récent : le moins vieux possible à l'arrivée
       S.acc = clamp(cible - S.course.horloge, 0, DT);
+      alpha = S.acc / DT;
       if (cible < 0) texte($('sous-message'), 'Départ dans ' + Math.ceil(-cible) + ' s');
     } else if (tourne) {
-      // démo : un choc passe au ralenti (réalisateur)
-      S.acc += dtReel * (S.type === 'demo' ? B.realisateur.vitesse(S.real, S.course) : 1);
-      let n = 0;
-      while (S.acc >= DT && n < 14) { pasSimulation(S, !!(S.reference && S.reference.pilote)); S.acc -= DT; n++; }
-      if (n === 14) S.acc = 0;
+      // hors ligne : les pas que la cadence a comptés (verrouillés sur la période de l'écran, rattrapage borné à 14)
+      // et sa phase pour l'interpolation ; S.acc garde la phase pour les images arrêtées qui suivent. La boucle ne
+      // rend jamais S.acc négatif : un S.acc négatif vient d'un outil d'essai qui fige la boucle pour avancer pas à
+      // pas (BITUME_JEU.avancer, scripts de captures). Elle ne fait alors aucun pas et montre l'état précédent
+      // (alpha nul), comme l'ancien accumulateur, dont ces scripts dépendent.
+      if (S.acc < 0) alpha = 0;
+      else {
+        const pilote = !!(S.reference && S.reference.pilote);
+        for (let k = 0; k < f.pas; k++) pasSimulation(S, pilote);
+        alpha = f.alpha; S.acc = alpha * DT;
+      }
     } else if (horlogeReelle - (S.imageFigee || 0) < .25) return; // image arrêtée : quatre images par seconde suffisent
+    else alpha = clamp(S.acc / DT, 0, 1);
     if (B.mesures.actif) B.mesures.section('simulation', performance.now() - tSim);
+    if (tourne) majVibrations(S, dtReel, t);
     S.imageFigee = horlogeReelle;
     if (S.type === 'vitrine') S.suiviRang = Math.floor(horlogeReelle / 18) % 4;
-    const dtVu = tourne ? dtReel : 0, cam = rendreImage(S, clamp(S.acc / DT, 0, 1), dtVu);
-    if (tourne) majPalier(S, tBrut);
+    const dtVu = tourne ? dtReel : 0, cam = rendreImage(S, alpha, dtVu);
+    if (tourne) majPalier(S, f.intervalle, f);
     const tHud = B.mesures.actif ? performance.now() : 0;
     if (S.type !== 'vitrine') {
       majHud(S);
@@ -2544,8 +2665,17 @@
       const fx = S && S.fx;
       B.mesures.pieces(fx ? B.traces.compter(fx).debris : 0, B.traces.DEBRIS,
         window.FPhysX && window.FPhysX.status ? window.FPhysX.status() : null);
+      // période de l'écran (inconnue tant que la cadence n'a pas sa grille : le volet l'estime alors), diviseur et
+      // verrou déclarés au volet : une image est longue au-delà de (diviseur + 0,5) périodes
+      B.cadence.etat(cadence, etatCadence);
+      mesuresCadence.periode = etatCadence.grille ? etatCadence.periodeMs : null;
+      mesuresCadence.diviseur = etatCadence.diviseur; mesuresCadence.verrouille = etatCadence.verrouille;
+      B.mesures.cadence(mesuresCadence);
       B.mesures.imageFin(tMes, tBrut); B.mesures.majAffichage(rendu, horlogeReelle);
     }
+    // travail du fil principal pour cette image : la cadence ne tente un diviseur plus bas que s'il laisse de la marge,
+    // et la qualité Auto ne remonte que sur lui. Une image qui a chargé la séance suivante (démo) ne compte pas.
+    if (session === S) B.cadence.travail(cadence, performance.now() - tMes);
   }
 
   // ---------------------------------------------------------------- démarrage
@@ -2645,14 +2775,20 @@
     $('detection-annuler').focus({ preventScroll: true });
     $('chargement').classList.add('fini');
     if (son) { son.musique(false); son.suspendre(); }
-    let parcours = null, resultat = null;
+    let parcours = null, resultat = null, glacesPretees = false;
     try {
       // Peindre l'indication avant de construire le parcours procédural.
       await imageDetection();
-      parcours = B.sceneBench.creer(rendu, { ...capacitesRendu, gpuModeste: false });
+      // Le moteur des rétroviseurs est prêté au parcours s'il existe déjà : la mesure paie alors les glaces comme la
+      // course ; sinon le parcours le dit et la détection resserre sa limite. Il rend ensuite le décor de la séance.
+      glacesPretees = !!retro.rendu;
+      parcours = B.sceneBench.creer(rendu, { ...capacitesRendu, gpuModeste: false }, glacesPretees ? { glaces: retro.rendu } : undefined);
+      // terminer : lecture d'un pixel qui force la fin du travail graphique ; la détection mesure alors l'image
+      // complète à l'horloge, sans ouvrir le chronomètre GPU (qui gonfle les temps des processeurs à tuiles)
       resultat = await B.autoconfig.executer({ empreinte: empreinteDetection, image: imageDetection,
         annule: () => annulerDetection, masque: () => document.hidden, perdu: () => contexteRenduPerdu,
-        preparer: parcours.preparer, dessiner: parcours.dessiner, profilGPU: () => rendu.profile ? rendu.profile() : null,
+        preparer: parcours.preparer, dessiner: parcours.dessiner, terminer: parcours.terminer,
+        profilGPU: () => rendu.profile ? rendu.profile() : null,
         progression: (texte, fraction) => { $('detection-texte').textContent = texte; $('detection-progres').value = Math.min(1, fraction); } });
       derniereDetection = resultat;
       appliquerDetection(resultat);
@@ -2661,6 +2797,8 @@
       console.warn('BITUME : détection graphique interrompue', e);
     } finally {
       if (parcours) parcours.liberer();
+      // le moteur prêté garde le décor du parcours : la prochaine glace réinstalle celui de la séance
+      if (glacesPretees) retro.scene = null;
       try {
         if (rendu.profile) { rendu.profile(false); if (profilAvant) rendu.profile(true); }
         // La séance et ses obstacles n'ont jamais été remplacés. Restituer uniquement son décor au renderer.
@@ -2707,13 +2845,19 @@
       B.graphismes.stabiliser(etatProfils, reglages.qualite, palier.n, horlogeProfils());
       appliquerPalier();
       const mesure = lireStock(B.autoconfig.CLE, null);
-      // Le cache évite de refaire le test et d'effacer des choix manuels à chaque ouverture.
-      if (!B.autoconfig.cacheValide(mesure, empreinteDetection())) await detecterGraphismes(true);
+      // Le cache évite de refaire le test et d'effacer des choix manuels à chaque ouverture. Une mesure faite au
+      // chronomètre GPU (avant la fin forcée par lecture d'un pixel) n'est plus valable : ce chronomètre gonfle les
+      // temps des processeurs graphiques à tuiles (Légère choisie sur un Apple M5 qui tient Moyenne à 60 images par
+      // seconde en course) ; elle est refaite une fois, à l'horloge.
+      const terminer = !!(rendu.gl && typeof rendu.gl.readPixels === 'function');
+      if (!B.autoconfig.cacheValide(mesure, empreinteDetection(), { terminer })) await detecterGraphismes(true);
       else {
         derniereDetection = mesure;
         gpuModeste = mesure.selection === 'low';
         capacitesRendu = Object.freeze({ ...capacitesRendu, gpuModeste });
       }
+      // qualité Auto : le palier appris sur cette machine, plutôt que de repayer les secondes lentes du premier départ
+      if (restaurerPalier()) { B.graphismes.stabiliser(etatProfils, reglages.qualite, palier.n, horlogeProfils()); appliquerPalier(); }
       // PhysX (FERRO) ne sert qu'aux pièces détachées et son décodage est lourd : lancé en tâche de fond, jamais
       // sur le chemin de l'écran titre, et l'absence du module ne doit pas empêcher la page de tourner.
       if (window.FPhysX && window.FPhysX.init) Promise.resolve(window.FPhysX.init()).catch(() => { /* pièces en parabole */ });
@@ -2824,6 +2968,8 @@
     if (!B.graphismes.QUALITES.includes(qualite)) return Promise.reject(new Error('qualité inconnue : ' + qualite));
     reference(Object.assign({}, options, { qualite, circuit: options.circuit ?? reglages.circuit }));
     const S = session; S.essai = true; S.banc = { qualite, effets: 0 };
+    // le banc mesure chaque image de l'écran : ni diviseur ni cible imposée pendant la mesure
+    B.cadence.regler(cadence, 'ecran');
     B.graphismes.stabiliser(etatProfils, qualite, palier.n, horlogeProfils());
     appliquerPalier();
     $('chargement').classList.add('fini');
@@ -2850,6 +2996,7 @@
         };
         S.banc = null;
         if (session === S) { restaurerReference(); if (ecran === 'course') aller('titre'); }
+        B.cadence.regler(cadence, reglages.cadence);
         console.info('BITUME banc', JSON.stringify(r));
         rendre(r);
       };
@@ -2865,6 +3012,9 @@
     get pilotageAuto() { return pilotageAuto; }, set pilotageAuto(v) { pilotageAuto = !!v; }, get enLigne() { return EL; },
     get camera() { return cameraEssai; }, set camera(f) { cameraEssai = typeof f === 'function' ? f : null; },
     // volet de mesures : BITUME_JEU.mesures = true l'ouvre, false le ferme ; la lecture donne l'instantané
-    get mesures() { return B.mesures.lire(rendu); }, set mesures(v) { B.mesures.afficher(!!v, rendu); } };
+    get mesures() { return B.mesures.lire(rendu); }, set mesures(v) { B.mesures.afficher(!!v, rendu); },
+    // chronomètre GPU du volet, fermé par défaut (ses requêtes coûtent) ; cadence : période, diviseur, essais
+    get chronoGPU() { return B.mesures.chronoGPU; }, set chronoGPU(v) { B.mesures.chrono(!!v, rendu); },
+    get cadence() { return B.cadence.etat(cadence); } };
   setTimeout(demarrer, 20);
 })(globalThis.BITUME = globalThis.BITUME || {});

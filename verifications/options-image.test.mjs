@@ -9,6 +9,8 @@ require('../src/ambiance.js');
 require('../src/saisons.js');
 require('../src/conditions-course.js');
 require('../src/qualite.js');
+// la lecture des réglages normalise aussi la cadence d'images (src/cadence.js, chargé avant jeu.js)
+require('../src/cadence.js');
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 function bloc(debut, fin) {
   const a = source.indexOf(debut), b = source.indexOf(fin, a);
@@ -56,12 +58,15 @@ const executer = new Function('B', 'stockage', `
     } };
     return session;
   }
+  // la cadence de la boucle, créée comme dans jeu.js avec le réglage lu
+  const cadence = B.cadence.creer({ hz: 120, maxPas: 14, mode: reglages.cadence });
   ${bloc("  document.addEventListener('change', e => {", "  for (const nom of ['general', 'moteur', 'effets'])")}
   ${bloc('  function restaurerReference()', '  // Banc (console)')}
   lancer('course',0);
   return { reglages, stockage, appels, radios, installer, reference, restaurerReference, lancer,
     preparer: () => { ecran = 'preparation'; },
     get session() { return session; }, get scene() { return scene; }, get profil() { return profilDe(session); },
+    etatCadence: () => B.cadence.etat(cadence),
     choisir: (name,value) => ecouteurs.get('change')({ target: { name, value } }) };
 `);
 function jeu(prefs = {}) {
@@ -92,6 +97,19 @@ verifier('gestionnaire change : les trois choix sont sauvegardés et rechargés'
   j.choisir('vegetation','inconnue');
   assert.equal(j.reglages.vegetation,'profil');
   assert.equal(JSON.parse(j.stockage['bitume.reglages']).vegetation,'profil');
+});
+
+verifier('cadence : valeur normalisée au chargement, choix du menu sauvegardé et donné à la cadence', () => {
+  for (const [stocke, attendu] of [[undefined, 'auto'], ['Écran', 'ecran'], [' 60 ', '60'], [120, '120'], ['144', 'auto'], ['n importe', 'auto']])
+    assert.equal(jeu(stocke === undefined ? {} : { cadence: stocke }).reglages.cadence, attendu, String(stocke));
+  const j = jeu();
+  assert.equal(j.etatCadence().mode, 'auto');
+  j.choisir('cadence', '30');
+  assert.equal(j.reglages.cadence, '30'); assert.equal(JSON.parse(j.stockage['bitume.reglages']).cadence, '30');
+  assert.equal(j.etatCadence().mode, '30', 'la boucle suit le menu sans redémarrer');
+  assert.equal(jeu(JSON.parse(j.stockage['bitume.reglages'])).reglages.cadence, '30', 'rechargé tel quel');
+  j.choisir('cadence', 'bidon');
+  assert.equal(j.reglages.cadence, 'auto'); assert.equal(j.etatCadence().mode, 'auto');
 });
 
 verifier('faune et moment avant départ : préférences indépendantes persistées', () => {
