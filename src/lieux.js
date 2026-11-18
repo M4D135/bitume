@@ -382,5 +382,98 @@
     return lots;
   }
 
-  B.lieux = { echantillonPiste, lot, nappe, sommet, finir, boite, alea, hache, bruit, fbm, muretsLacets, parapets, piliersGalerie, portailsTunnels };
+  function sapinsBoisNoir(circuit) {
+    const troncons = [
+      { s0: 790, s1: 970, cote: +1 },
+      { s0: 1146, s1: 1366, cote: -1 },
+      { s0: 1766, s1: 2026, cote: +1 }
+    ];
+    const pas_sapin = 2.5;
+    const lots = [];
+    const col_tronc = [0.30, 0.20, 0.12];
+    const col_houppier = [0.12, 0.28, 0.10];
+    const rayon_tronc = 0.15;
+    const h_tronc = 1.2;
+    const rayon_houppier = 1.4;
+    const h_houppier_base = 5.5;
+    const nb_faces_tronc = 4;
+    const nb_faces_houppier = 8;
+
+    for (let t = 0; t < troncons.length; t++) {
+      const tr = troncons[t];
+      const nSeg = Math.ceil((tr.s1 - tr.s0) / pas_sapin);
+      for (let i = 0; i < nSeg; i++) {
+        const s = tr.s0 + i * pas_sapin;
+        const piste = echantillonPiste(circuit, s);
+        const x = piste.x;
+        const z = piste.z;
+        const r0 = piste.r0;
+        const r1 = piste.r1;
+        const r2 = piste.r2;
+
+        const h_lat = hache(s, tr.cote, circuit.graine);
+        const distance_bord = 2.6 + h_lat * (6.0 - 2.6);
+        const lat = tr.cote * (circuit.largeur / 2 + distance_bord);
+        const cx = x + r2[0] * lat;
+        const cz = z + r2[2] * lat;
+
+        const h_var = (hache(s, tr.cote + 1000, circuit.graine) - 0.5) * 1.5;
+        const h_houppier = h_houppier_base + h_var;
+
+        // Tronc : cylindre 4 faces, de y=0 à y=h_tronc
+        const n_tronc = nappe();
+        const hh_t = h_tronc / 2;
+        const y_bot = hh_t + r1[1] * hh_t * (-1);
+        const y_top = hh_t + r1[1] * hh_t * 1;
+        for (let f = 0; f < nb_faces_tronc; f++) {
+          const a1 = (f / nb_faces_tronc) * Math.PI * 2;
+          const a2 = ((f + 1) % nb_faces_tronc) / nb_faces_tronc * Math.PI * 2;
+          const c1 = Math.cos(a1), sn1 = Math.sin(a1);
+          const c2 = Math.cos(a2), sn2 = Math.sin(a2);
+          const v0 = [cx + r0[0]*rayon_tronc*c1 + r2[0]*rayon_tronc*sn1, y_bot, cz + r0[2]*rayon_tronc*c1 + r2[2]*rayon_tronc*sn1];
+          const v1 = [cx + r0[0]*rayon_tronc*c2 + r2[0]*rayon_tronc*sn2, y_bot, cz + r0[2]*rayon_tronc*c2 + r2[2]*rayon_tronc*sn2];
+          const v2 = [cx + r0[0]*rayon_tronc*c2 + r2[0]*rayon_tronc*sn2, y_top, cz + r0[2]*rayon_tronc*c2 + r2[2]*rayon_tronc*sn2];
+          const v3 = [cx + r0[0]*rayon_tronc*c1 + r2[0]*rayon_tronc*sn1, y_top, cz + r0[2]*rayon_tronc*c1 + r2[2]*rayon_tronc*sn1];
+          const nm = (a1 + a2) / 2;
+          const nc = Math.cos(nm), ns = Math.sin(nm);
+          const no = [r0[0]*nc + r2[0]*ns, 0, r0[2]*nc + r2[2]*ns];
+          sommet(n_tronc, v0, no, 'bois', col_tronc);
+          sommet(n_tronc, v1, no, 'bois', col_tronc);
+          sommet(n_tronc, v2, no, 'bois', col_tronc);
+          sommet(n_tronc, v3, no, 'bois', col_tronc);
+          const base = n_tronc.s.length - 4;
+          n_tronc.i.push(base, base+1, base+2, base, base+2, base+3);
+        }
+        finir(n_tronc);
+
+        // Houppier : cône 8 segments, base à y=h_tronc, sommet à y=h_tronc+h_houppier
+        const n_houppier = nappe();
+        const y_base = h_tronc;
+        const y_apex = h_tronc + h_houppier;
+        for (let f = 0; f < nb_faces_houppier; f++) {
+          const a1 = (f / nb_faces_houppier) * Math.PI * 2;
+          const a2 = ((f + 1) % nb_faces_houppier) / nb_faces_houppier * Math.PI * 2;
+          const c1 = Math.cos(a1), sn1 = Math.sin(a1);
+          const c2 = Math.cos(a2), sn2 = Math.sin(a2);
+          const vb1 = [cx + r0[0]*rayon_houppier*c1 + r2[0]*rayon_houppier*sn1, y_base, cz + r0[2]*rayon_houppier*c1 + r2[2]*rayon_houppier*sn1];
+          const vb2 = [cx + r0[0]*rayon_houppier*c2 + r2[0]*rayon_houppier*sn2, y_base, cz + r0[2]*rayon_houppier*c2 + r2[2]*rayon_houppier*sn2];
+          const va = [cx, y_apex, cz];
+          const nm = (a1 + a2) / 2;
+          const nc = Math.cos(nm), ns = Math.sin(nm);
+          const no = [r0[0]*nc + r2[0]*ns, 0.3, r0[2]*nc + r2[2]*ns];
+          sommet(n_houppier, vb1, no, 'conifere', col_houppier);
+          sommet(n_houppier, vb2, no, 'conifere', col_houppier);
+          sommet(n_houppier, va, no, 'conifere', col_houppier);
+          const base = n_houppier.s.length - 3;
+          n_houppier.i.push(base, base+1, base+2);
+        }
+        finir(n_houppier);
+
+        lots.push(lot([n_tronc, n_houppier], 'sapin', { s, cote: tr.cote, distance_bord }));
+      }
+    }
+    return lots;
+  }
+
+  B.lieux = { echantillonPiste, lot, nappe, sommet, finir, boite, alea, hache, bruit, fbm, muretsLacets, parapets, piliersGalerie, portailsTunnels, sapinsBoisNoir };
 })(globalThis.BITUME = globalThis.BITUME || {});
