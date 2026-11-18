@@ -1,0 +1,7 @@
+base | charge 6.25 13.03 23.00 | titre apres ms 4127 { "valeur": { "titre": 4716, "premieres": [ 2, 17, 3600, 17, 700, 733, 450, 17 ], "images": 10, "mediane": 450, "pire": 3600, "reactifApresTitreMs": 8003 }, "erreurs": [] } 
+apres | charge 7.43 12.95 22.80 | titre apres ms 6201 { "valeur": { "titre": 6220, "premieres": [ 208, 1067, 450, 400, 500, 1150, 17, 1283 ], "images": 9, "mediane": 500, "pire": 2483, "reactifApresTitreMs": 7558 }, "erreurs": [] } 
+base | charge 8.22 12.84 22.58 | titre apres ms 3159 { "valeur": { "titre": 3793, "premieres": [ -7, 17, 3700, 17, 917, 950, 17, 2583 ], "images": 8, "mediane": 917, "pire": 3700, "reactifApresTitreMs": 8194 }, "erreurs": [] } 
+apres | charge 9.05 12.80 22.40 | titre apres ms 6011 { "valeur": { "titre": 6018, "premieres": [ 185, 967, 383, 367, 867, 17, 800, 17 ], "images": 12, "mediane": 783, "pire": 1867, "reactifApresTitreMs": 7087 }, "erreurs": [] } 
+base | charge 9.09 12.61 22.16 | titre apres ms 3111 { "valeur": { "titre": 3618, "premieres": [ 4787, 50, 1617 ], "images": 3, "mediane": 1617, "pire": 4787, "reactifApresTitreMs": 6454 }, "erreurs": [] } 
+apres | charge 9.01 12.48 22.00 | titre apres ms 11235 { "valeur": { "titre": 11253, "premieres": [ 498, 1850, 83, 4416 ], "images": 4, "mediane": 1850, "pire": 4416, "reactifApresTitreMs": 6847 }, "erreurs": [] } 
+FIN

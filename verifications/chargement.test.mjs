@@ -117,7 +117,53 @@ verifier('tous les lancements passent par la préparation : plus de lancement di
   const lancer = section('  function lancer(', '\n  }\n');
   assert.ok(lancer.includes('if (prepa.enCours && !prepa.interne) annulerPreparation();'));
   assert.ok(lancer.includes('if (!prepa.interne) prechargerSeance(S);'), 'un lancement direct précharge aussi');
-  assert.equal(source.match(/lancer\('vitrine'/g).length, 2, 'vitrine directe : seulement remettreVitrine et lancerVitrine');
+  assert.equal(source.match(/lancer\('vitrine'/g).length, 3, 'vitrine directe : seulement remettreVitrine, lancerVitrine et le repli du démarrage');
+  // une vitrine de démarrage abandonnée avant sa séance (contexte perdu) se lance d'un bloc au lieu d'arrêter le jeu
+  const repli = demarrer.slice(demarrer.indexOf("await preparerSeance('vitrine'"), demarrer.indexOf("aller('titre')"));
+  assert.ok(/if \(!session && R && R\.annule\) lancer\('vitrine'/.test(repli) && repli.indexOf("lancer('vitrine'") < repli.indexOf('throw new Error'),
+    'repli de la vitrine avant l’erreur fatale');
+  // la démo des outils reste synchrone, comme reference() : séance et scène en place au retour de BITUME_JEU.demo
+  const outil = section('  window.BITUME_JEU = {', '  setTimeout(demarrer, 20);');
+  assert.ok(/\bdemo: i => demoDirecte\(/.test(outil), 'BITUME_JEU.demo passe par demoDirecte');
+  const directe = section('  function demoDirecte(', '  function reference(');
+  assert.ok(directe.includes("lancer('demo'") && directe.includes("aller('demo')") && !/await|preparerSeance|Promise/.test(directe), 'demoDirecte sans attente');
+});
+
+verifier('chauffe : le voile court seulement quand rien ne manque, la vitrine ne chauffe que ce qu’elle montre', () => {
+  // la chauffe du code se note par type et par piste : une course sèche ne rend pas chaude la même course sous la pluie
+  const cles = new Function('meteoPeutMouiller', [ligne(/^  const pisteDe = [^\n]+;/m), ligne(/^  const cleCode = [^\n]+;/m), 'return cleCode;'].join('\n'))(meteoPeutMouiller);
+  assert.equal(cles('course', { meteo: { pluie: 0, mouille: 0, fixe: true } }), 'course:sec');
+  assert.equal(cles('course', { meteo: { pluie: .6, mouille: 0, fixe: true } }), 'course:mouille');
+  assert.equal(cles('duo', { meteo: { pluie: 0, mouille: 0, fixe: false } }), 'duo:mouille');
+  const corps = section('  async function preparerSeance(', '  function lancerVitrine(');
+  // le choix du voile court est revu sur la séance lancée : variante ou chemin froid → voile opaque avant la chauffe
+  const apres = corps.slice(corps.indexOf('S = lancer('), corps.indexOf("await etape('creations'"));
+  assert.ok(apres.includes('if (leger) {') && apres.includes('aChauffer(S)') && apres.includes('!prepa.chaud.has(cleCode(typeCode, S))'), 'manque recompté après lancer');
+  assert.ok(apres.indexOf('leger = false') < apres.indexOf('montrerVoile(true, false)') && /await suite\(\); await suite\(\);/.test(apres), 'voile opaque et peint deux fois');
+  assert.ok(/if \(!vitrine && !prepa\.chaud\.has\(cleCode\(typeCode, S\)\)\)/.test(corps) && corps.includes('prepa.chaud.add(cleCode(typeCode, S))'));
+  assert.ok(section('  async function chaufferCode(', '  // ---------------------------------------------------------------- voile').includes("'simulation:' + S.course.mode + ':' + pisteDe(S)"),
+    'course jetable par mode et par piste');
+  // la chauffe et le choix du voile comptent le même manque
+  const rendu = section('  async function chaufferRendu(', '  // ---------------------------------------------------------------- chauffe du code');
+  assert.ok(rendu.includes('aChauffer(S, voisins)'));
+  // la vitrine (écran titre, changement de circuit) ne passe pas par la chauffe des variantes et des témoins de course
+  assert.ok(corps.includes('if (!vitrine) R.rendu = await chaufferRendu('));
+});
+
+verifier('machine lente : la chauffe se resserre sur le palier courant et ses voisins', () => {
+  const fabriquer = new Function('B', 'reglages', 'etatProfils', 'capacitesRendu', 'palier', 'gpuModeste', 'PALIERS',
+    section('  function profilsAtteignables(', '  // La piste peut-elle') + 'return profilsAtteignables;');
+  const G = { graphismes: { normaliser: q => q, melange: (q, n) => n } };
+  const f = (n, modeste) => fabriquer(G, { qualite: 'auto' }, { decor: 'high' }, {}, { n }, modeste, 4);
+  assert.deepEqual(f(2, false)('course', null), [0, 1, 2, 3, 4], 'tous les paliers Auto');
+  assert.deepEqual(f(2, false)('course', null, true), [1, 2, 3]);
+  assert.deepEqual(f(0, false)('chrono', null, true), [0, 1]);
+  assert.deepEqual(f(1, true)('duo', null, true), [1, 2], 'jamais sous le plancher d’un processeur modeste');
+  assert.deepEqual(f(2, false)('vitrine', null, true), [2], 'hors gouverneur : le seul palier courant');
+  // le seuil est celui de la chauffe du code, et une mesure lente se retient pour les préparations suivantes
+  const code = section('  async function imagesDeChauffe(', '  async function chaufferCode(');
+  assert.ok(code.includes('if (machineLente()) return { n, lent: true };') && code.includes('> IMAGE_LENTE') && code.includes('prepa.lente = true'));
+  assert.ok(ligne(/^  const machineLente = [^\n]+;/m).includes('dureeImage > IMAGE_LENTE'));
 });
 
 verifier('sous le voile, la boucle ne simule ni ne dessine ; les étapes suivent l’ordre affiché', () => {

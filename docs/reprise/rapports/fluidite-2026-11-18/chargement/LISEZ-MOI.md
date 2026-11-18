@@ -137,6 +137,79 @@ Les autres essais dans la page :
   - un décor bâti par tranches : `B.decor.construire` reste synchrone (0,15 à 0,9 s) et fige le texte du voile,
     ou le menu quand c'est la vitrine qui change de circuit.
 
+## Correction après relecture
+
+Deux relectures ont rendu six constats ; ils sont vérifiés dans le code et dans le navigateur. Page corrigée :
+`33a28e95e67171ad…`. Les essais `titres.txt`, `reactif.txt`, `perte-au-demarrage.json` et `demo-synchrone.json` ont
+tourné sur `f39028cc…`, qui ne diffère que d'un commentaire. Tout est rangé dans `correction/`.
+
+Ce qui a été corrigé :
+
+- **`BITUME_JEU.demo` redevient synchrone**, comme `reference()`. `tools/controle-options.mjs` lit la scène juste
+  après l'appel, et `banc-navigateur --mode crash` attend 2,5 s. Le jeu, lui, prépare toujours la démo sous le voile.
+  Preuve dans `essais/demo-synchrone.json` : `{ memeScene: false, vegetation: 'high' }`, comme sur la base. La
+  version précédente donnait `{ memeScene: true, vegetation: 'off' }`.
+- **Le chemin léger ne cache plus de compilation.** Après `lancer`, la préparation recompte ce qui manque : les
+  variantes de cette météo et de cette taille d'image, les glaces, le code de cette piste. S'il manque quelque chose,
+  le voile passe opaque et se peint deux fois avant la chauffe. La chauffe du code se note désormais par type et par
+  piste (`course:sec`, `course:mouille`), et la course jetable par mode et par piste.
+  - Essai `essais/leger-puis-pluie.json` : une course sèche, puis la même piste sous la pluie, donne
+    `leger: false, promu: true`. Le voile est opaque (`net`, opacité 1) pendant la chauffe d'une variante de reflets
+    et de 5 images de code. 0 création tardive.
+- **La vitrine ne chauffe que ce qu'elle montre**, par sa première vraie image. Les variantes et les témoins de
+  course attendent la première préparation de course.
+- **Machine lente.** Une image de régime au-delà de 50 ms se mesure dans la boucle des menus ou pendant la chauffe du
+  code, et la page la retient. La chauffe ne couvre alors que le palier Auto courant et ses deux voisins, et saute
+  les images de code : la première vraie image, sous le voile, suffit.
+- **Contexte perdu pendant le voile de la vitrine du démarrage** : la vitrine se lance d'un bloc, comme avant.
+  - Reproduit dans `essais/perte-au-demarrage.*` (injection avant la page). La version précédente affichait « Le jeu
+    n'a pas pu démarrer ». La version corrigée atteint le titre en 981 ms ; la vitrine dessine (405 tracés) et une
+    course se prépare ensuite.
+
+### Temps jusqu'à l'écran titre
+
+Mesure `essais/titres.txt`, avec `page-essai-avant.mjs` (copie de `page-essai` qui chronomètre le titre). Charge 5 à 9.
+
+| Rendu | Base | Avant la correction | Après |
+|---|---|---|---|
+| GPU, 3 passes | 1,02 à 1,11 s | 1,39 à 1,52 s | 1,30 à 1,33 s |
+| SwiftShader 640×360, 2 passes | 1,6 et 2,0 s | 4,7 et 6,0 s | 3,5 et 5,9 s |
+
+En rendu logiciel, l'écart qui reste vient surtout de la première image de la vitrine, qui compile sous le voile :
+1,5 à 2,7 s. La base paie ce coût juste après le titre. Dans `essais/reactif.txt` (charge 6 à 9), la base montre le
+titre à 3,1–4,1 s puis le fige 3,6 à 4,8 s sur sa première image. Après la correction, le titre arrive à 6,0–11,2 s,
+mais sa première image ne dure que 0,2 à 0,5 s. Le titre reste saccadé dans les deux versions : aucun gain annoncé.
+
+### Accrocs, base et après la correction, passes intercalées
+
+Fichiers dans `correction/mesures/`, synthèse dans `correction/synthese.json`. La charge est passée de 4 à 84
+pendant les passes (voir `charge-machine.txt`). Durées en ms, une valeur par passe.
+
+| Scénario | Version | Clic → écran de course | Plus longue image du chargement | Pire image des 2 premières s | Images > 50 ms ensuite |
+|---|---|---|---|---|---|
+| Val-Brûlé, sec | base | 378, 231 | 333, 167 | 16,8, 33,4 | 0, 0 |
+| | après | 340, 440 | 83, 67 | 16,8, 16,8 | 0, 0 |
+| Haut-Col, pluie | base | 243, 294 | 184, 233 | 33,3, 33,3 | 1 (116,8 ms), 0 |
+| | après | 358, 397 | 67, 67 | 16,8, 16,8 | 0, 0 |
+| À deux | base | 220, 477 | 167, 400 | 16,8, 66,7 | 1, 1 |
+| | après | 648, 441 | 100, 83 | 50, 16,8 | 3, 0 |
+
+- **À deux, première passe après la correction** : la charge est montée à 23 pendant la passe. Les trois images de
+  66,6 ms viennent toutes de l'engorgement du processus graphique, sans aucune compilation (0 ms de shaders). La
+  base montre la même figure dans sa seconde passe.
+- **SwiftShader** (Légère, 640×360, 40 s), charge 25 à 84 :
+  - clic → course : 506 et 829 ms sur la base, 2,4 et 16,7 s après la correction. La passe de 16,7 s contient une
+    lecture de pixel de 12,2 s, l'attente de la chauffe par le processus graphique ;
+  - pire image des 2 premières s : 467 et 883 ms sur la base, 183 ms et 2,1 s après la correction ;
+  - la médiane des images va de 167 à 450 ms selon la passe, et presque toutes dépassent 50 ms.
+  - **Non concluant.**
+- **Essai par étapes sur SwiftShader** (`essais/etapes-swiftshader.json`, charge 18 à 30) : 2,85 s au total, dont
+  2,09 s de rendu pour une variante, 384 ms de code (une image, machine lente) et 283 ms pour la première image.
+
+**Tests** : 67 suites Node passent ; `chargement.test.mjs` compte maintenant 9 contrôles et échoue sur le
+`jeu.js` d'avant la correction. Le parcours smoke passe ses 7 contrôles (`correction/smoke.json`), sans erreur ni
+avertissement.
+
 ## Refaire
 
 ```bash

@@ -124,9 +124,10 @@
   // Préparation d'une séance (voir « préparation des séances ») : déclarée avant tout lancement possible. jeton :
   // une préparation plus récente ou une perte de contexte l'incrémente, et la préparation en cours s'arrête à son
   // prochain await ; interne : le lancement vient de la préparation elle-même ; precharge : prechargerSeance tourne ;
-  // attente : fondu d'entrée, l'ancienne séance tourne encore ; chaud : types de séance dont le code est déjà chauffé.
+  // attente : fondu d'entrée, l'ancienne séance tourne encore ; chaud : code déjà chauffé, par type de séance et par
+  // piste (« course:sec ») ; lente : une image de régime y dépasse 50 ms (chauffe resserrée).
   const prepa = { enCours: false, voile: false, attente: false, interne: false, precharge: false, jeton: 0, type: null, i: -1, saison: null,
-    conditions: null, etape: null, rapport: null, dernier: null, focus: null, chaud: new Set(), periode: 1000 / 60 };
+    conditions: null, etape: null, rapport: null, dernier: null, focus: null, chaud: new Set(), periode: 1000 / 60, lente: false };
   // Création tardive : un objet né dans le chemin d'une image au lieu de la préparation. Sous le voile (ou pendant
   // prechargerSeance) elle est permise et comptée à part ; une fois la séance montrée, elle doit rester à zéro.
   function creationTardive(nom, valeur) {
@@ -2537,19 +2538,20 @@
 
   // Profils que le gouverneur Auto peut atteindre pendant la séance : la chauffe les couvre tous, sinon le premier
   // changement de palier en pleine course compilerait ses programmes. Une qualité fixe n'en a qu'un.
-  function profilsAtteignables(type, S) {
+  // voisins : machine lente, seuls le palier courant et ses deux voisins (chaque variante y coûte une image complète)
+  function profilsAtteignables(type, S, voisins = false) {
     const q = S && S.banc ? S.banc.qualite : reglages.qualite, garde = { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages };
     const gouverne = B.graphismes.normaliser(q) === 'auto' && !(S && (S.banc || S.reference)) && ['course', 'chrono', 'demo', 'duo'].includes(type);
     if (!gouverne) return [B.graphismes.melange(q, palier.n, garde)];
     const l = [];
-    for (let n = gpuModeste ? 1 : 0; n <= PALIERS; n++) l.push(B.graphismes.melange(q, n, garde));
+    for (let n = gpuModeste ? 1 : 0; n <= PALIERS; n++) if (!voisins || Math.abs(n - palier.n) <= 1) l.push(B.graphismes.melange(q, n, garde));
     return l;
   }
   // La piste peut-elle se mouiller pendant la séance ? Alors les reflets d'écran viendront : leur variante se chauffe.
   const meteoPeutMouiller = m => !!m && ((m.pluie || 0) > 0 || (m.mouille || 0) > 0 || m.fixe !== true);
   const varianteDe = (P, reflections, lampes) => ({ msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: avecHalo(P), reflections, lampes, groundCover: P.groundCover, windStrength: P.windStrength });
   // Combinaisons d'effets que la séance peut demander au moteur : chacune a ses programmes, compilés au premier usage.
-  function variantesRendu(S) {
+  function variantesRendu(S, voisins = false) {
     const m = new Map(), mouille = meteoPeutMouiller(S.meteo), LT = scene && scene.decor.tunnelLampes, tunnelEclaire = !!(LT && LT.length);
     const ajouter = P => {
       for (const reflets of P.effets.reflets && mouille ? [false, true] : [false])
@@ -2558,7 +2560,7 @@
           m.delete(cle); m.set(cle, v);
         }
     };
-    for (const P of profilsAtteignables(S.type, S)) ajouter(P);
+    for (const P of profilsAtteignables(S.type, S, voisins)) ajouter(P);
     ajouter(profilDe(S));   // le profil courant en dernier : le moteur finit la chauffe dans l'état de la première image
     return m;
   }
@@ -2748,21 +2750,37 @@
   // si le tunnel est éclairé) est dessinée une fois sous le voile, sur les deux moteurs. Le travail fait est noté par
   // scène et par taille d'image : Recommencer ne refait rien, un autre circuit ou un écran partagé refait le nécessaire.
   function etatChauffe() { return scene.chauffe || (scene.chauffe = { rendu: new Set(), retro: new Set() }); }
-  async function chaufferRendu(S, suite, synchrone, alpha = 0) {
-    const t0 = performance.now(), E = etatChauffe(), r = { variantes: 0, retro: 0, prewarm: false, ms: 0 };
+  // Une image de régime au-delà de 50 ms (rendu logiciel, processeur graphique très modeste) : chaque variante chauffée
+  // y coûte une image complète, et la chauffe du code ne s'y verrait pas. Mesuré par la boucle des menus avant la
+  // préparation, ou par la chauffe du code d'une préparation précédente.
+  const IMAGE_LENTE = 50;
+  const machineLente = () => prepa.lente || dureeImage > IMAGE_LENTE;
+  // Ce qui manque au registre de la scène pour cette séance, sur les deux moteurs : la préparation s'en sert pour
+  // choisir le voile (rien ne manque : fondu court) et la chauffe pour savoir quoi dessiner.
+  function aChauffer(S, voisins = machineLente()) {
+    const E = etatChauffe();
     const suffixe = '@' + canvas.clientWidth + 'x' + canvas.clientHeight + ':' + profilDe(S).rendu.resolution;
     const manque = [];
-    for (const [cle, v] of variantesRendu(S)) if (!E.rendu.has(cle + suffixe)) manque.push([cle + suffixe, v]);
+    for (const [cle, v] of variantesRendu(S, voisins)) if (!E.rendu.has(cle + suffixe)) manque.push([cle + suffixe, v]);
     // miroirs : leurs propres variantes (lampes, couvert végétal et vent), aux paliers qui montrent des glaces vives
     const manqueR = [], source = $('retro-rendu');
     if (retro.rendu && glacesPossibles(S) && glacesPretes(retro.j1)) {
       const LT = scene.decor.tunnelLampes, suffixeR = '@' + source.clientWidth + 'x' + source.clientHeight;
-      for (const P of profilsAtteignables(S.type, S)) if (P.effets.retroImages)
+      for (const P of profilsAtteignables(S.type, S, voisins)) if (P.effets.retroImages)
         for (const lampes of LT && LT.length ? [false, true] : [false]) {
           const v = { lampes, groundCover: P.groundCover, windStrength: P.windStrength }, cle = JSON.stringify(v) + suffixeR;
           if (!E.retro.has(cle) && !manqueR.some(m => m[0] === cle)) manqueR.push([cle, v]);
         }
     }
+    return { manque, manqueR };
+  }
+  // La chauffe du code se note par type de séance et par piste (sèche, ou qui peut se mouiller : embruns et eau ont
+  // leur propre chemin) ; la course jetable, par mode et par piste.
+  const pisteDe = S => meteoPeutMouiller(S.meteo) ? 'mouille' : 'sec';
+  const cleCode = (type, S) => type + ':' + pisteDe(S);
+  async function chaufferRendu(S, suite, synchrone, alpha = 0) {
+    const t0 = performance.now(), E = etatChauffe(), voisins = machineLente(), r = { variantes: 0, retro: 0, prewarm: false, voisins, ms: 0 };
+    const { manque, manqueR } = aChauffer(S, voisins);
     if (!manque.length && !manqueR.length) { r.ms = +(performance.now() - t0).toFixed(1); return r; }
     // synchrone : aucun await, tout se fait dans la tâche de l'appelant (pause, Recommencer)
     let tranche = performance.now();
@@ -2823,13 +2841,15 @@
     const cockpit = vives ? 2 * Math.max(1, Math.round(30 / Math.max(1, hz))) : 1;
     let n = 0, tranche = performance.now();
     const souffler = async () => { if (performance.now() - tranche > 50) { attendreGPU(rendu); await suite(); tranche = performance.now(); } };
+    // machine déjà connue pour lente : la première vraie image, sous le voile, passe seule par ce chemin
+    if (machineLente()) return { n, lent: true };
     const t1 = performance.now();
     rendreImage(S, 0, 0); n++;
     attendreGPU(rendu);
-    // Une image complète, programmes déjà compilés, coûte plus de 50 ms (rendu logiciel, processeur graphique très
-    // modeste) : à cette cadence le code chaud ne se verrait pas, et chaque vue de plus coûterait autant sous le voile.
-    const lent = performance.now() - t1 > 50;
-    if (lent) return { n, lent };
+    // Une image complète, programmes déjà compilés, coûte plus de 50 ms : à cette cadence le code chaud ne se verrait
+    // pas, et chaque vue de plus coûterait autant sous le voile. Les préparations suivantes le savent.
+    const lent = performance.now() - t1 > IMAGE_LENTE;
+    if (lent) { prepa.lente = true; return { n, lent }; }
     await souffler();
     const meteo = majMeteo(S, 0);
     const vue = async (V, voiture, nom, fois = 1) => { for (let k = 0; k < fois; k++) { rendreVue(V, voiture, nom, 0, meteo); n++; } await souffler(); };
@@ -2857,8 +2877,8 @@
     const t0 = performance.now(), r = { images: 0, lent: false, simulation: null, ms: 0 };
     const v = await imagesDeChauffe(S, suite);
     r.images = v.n; r.lent = v.lent;
-    // la course jetable, une fois par mode et par page ; en ligne, pas quand le départ commun est trop proche
-    const cle = 'simulation:' + S.course.mode, reste = o.reste ? o.reste() : Infinity;
+    // la course jetable, une fois par mode et par piste ; en ligne, pas quand le départ commun est trop proche
+    const cle = 'simulation:' + S.course.mode + ':' + pisteDe(S), reste = o.reste ? o.reste() : Infinity;
     if (!prepa.chaud.has(cle) && !(reste < 1500)) {
       const J = courseJetable(S, 2.5);
       try {
@@ -2971,8 +2991,10 @@
     const conditions = enl || conditionsChoisies || conditionsDuDepart(), saison = B.saisons.normaliser(conditions.saison);
     const vitrine = type === 'vitrine', typeCode = enl && enl.locaux && enl.locaux.length === 2 ? 'duo' : type;
     const aBatir = !sceneEnPlace(i, saison), glaces = !vitrine && glacesPossibles({ type: typeCode });
-    // peu de travail : même scène, code déjà chaud pour ce type, rendu déjà chauffé sur cette scène, glaces prêtes
-    const leger = !vitrine && !aBatir && prepa.chaud.has(typeCode) && !!scene.chauffe && scene.chauffe.rendu.size > 0 && (!glaces || glacesPretes(retro.j1));
+    // peu de travail en vue : même scène, code déjà chaud pour ce type, rendu déjà chauffé sur cette scène, glaces
+    // prêtes. Le compte exact (variantes de cette météo, taille d'image, piste mouillable) se fait une fois la séance
+    // lancée : s'il manque quelque chose, le voile devient opaque avant de le faire.
+    let leger = !vitrine && !aBatir && (prepa.chaud.has(typeCode + ':sec') || prepa.chaud.has(typeCode + ':mouille')) && !!scene.chauffe && scene.chauffe.rendu.size > 0 && (!glaces || glacesPretes(retro.j1));
     const R = { type: typeCode, circuit: i, leger, etapes: [], date: Date.now() };
     Object.assign(prepa, { enCours: true, voile: !vitrine, attente: false, type: typeCode, i, saison, rapport: R, conditions: null, etape: null });
     let S = null, gel = null, glacesGel = null, restaure = true;
@@ -3038,6 +3060,16 @@
       const choisies = vitrine && prepa.conditions ? prepa.conditions : conditionsChoisies || (enl ? null : conditions);
       prepa.interne = true;
       try { S = lancer(type, i, enl, choisies); } finally { prepa.interne = false; }
+      if (leger) {
+        const a = aChauffer(S);
+        if (a.manque.length || a.manqueR.length || !prepa.chaud.has(cleCode(typeCode, S))) {
+          // la séance demande une variante ou un chemin encore froid (pluie après une course sèche, autre taille) : le
+          // fondu court ne cacherait pas leur compilation, le voile passe opaque et se peint avant
+          leger = false; R.leger = false; R.promu = true;
+          montrerVoile(true, false); majVoile('seance');
+          await suite(); await suite();
+        }
+      }
       // 6. ce que la séance créerait à ses premières images
       await etape('creations', !leger);
       const attentes = prechargerSeance(S);
@@ -3048,13 +3080,15 @@
       if (S.vueJ2) S.vueJ2.tele = { poste: null, alea: graine32(GRAINE_JETABLE + 1) };
       if (S.real) S.real = B.realisateur.creer(GRAINE_JETABLE);
       // 7. chauffe du rendu : variantes atteignables des deux moteurs
-      await etape('rendu', !leger);
-      R.rendu = await chaufferRendu(S, suite, leger);
+      // La vitrine ne chauffe que ce qu'elle montre, par sa première vraie image (étape 10) : les variantes et les
+      // témoins de course se chauffent à la première préparation de course, et l'écran titre n'attend pas pour eux.
+      await etape('rendu', !leger && !vitrine);
+      if (!vitrine) R.rendu = await chaufferRendu(S, suite, leger);
       // 8. chauffe du code : vues de la séance, puis la course jetable
-      if (!vitrine && !prepa.chaud.has(typeCode)) {
+      if (!vitrine && !prepa.chaud.has(cleCode(typeCode, S))) {
         await etape('code', true);
         R.code = await chaufferCode(S, suite, o);
-        prepa.chaud.add(typeCode);
+        prepa.chaud.add(cleCode(typeCode, S));
       }
       // 9. remise à zéro de ce que la chauffe a touché
       await etape('zero', false);
@@ -3374,7 +3408,10 @@
       son = B.son.creer();
       reglages.circuit = clamp(reglages.circuit | 0, 0, CATALOGUE.length - 1);
       // la vitrine du titre est préparée comme une séance, sous le voile de chargement de la page
-      await preparerSeance('vitrine', reglages.circuit, null, null);
+      const R = await preparerSeance('vitrine', reglages.circuit, null, null);
+      // préparation abandonnée avant la séance (contexte graphique perdu avant le décor) : la vitrine se lance
+      // d'un bloc, comme avant le voile ; le moteur reprend ses ressources à la restauration du contexte
+      if (!session && R && R.annule) lancer('vitrine', reglages.circuit, null, null);
       if (!session) throw new Error((prepa.dernier && prepa.dernier.erreur) || 'la vitrine ne démarre pas');
       $('chargement').classList.add('fini');
       aller('titre');
@@ -3403,6 +3440,13 @@
     delete session.reglagesReference;
     session.reference = null;
     if (rendu) appliquerPalier();
+  }
+  // Démo des outils (tools/controle-options.mjs, tools/banc-navigateur.mjs) : synchrone comme reference(), la séance
+  // et sa scène sont en place au retour. Le jeu, lui, la prépare sous le voile (lancerDemo, ou preparer({ type: 'demo' })).
+  function demoDirecte(i) {
+    lancer('demo', clamp(i | 0, 0, CATALOGUE.length - 1));
+    apresDemo();
+    aller('demo');
   }
   function reference(options = {}) {
     if (!rendu) throw new Error('rendu absent');
@@ -3517,7 +3561,7 @@
     // ce que le banc et le contrôle visuel vérifient sans toucher au jeu : la scène installée et le profil résolu
     get scene() { return scene; }, get profil() { return profilDe(session); }, get ancre() { return etatProfils.decor; },
     get son() { return son ? son.stats() : null; }, get palier() { return palier.n; }, get gpuModeste() { return gpuModeste; },
-    demo: i => lancerDemo(i === undefined ? reglages.circuit : i), // lance la démo sans attendre les cinq secondes (promesse de sa préparation)
+    demo: i => demoDirecte(i === undefined ? reglages.circuit : i), // lance la démo sans attendre les cinq secondes, dans la tâche de l'appelant
     // Prépare et lance une séance comme le menu : { type: course|chrono|duo|demo|vitrine, circuit, conditions }.
     // Rend la promesse du compte rendu (étapes et durées, chauffe, créations tardives).
     preparer: (o = {}) => {

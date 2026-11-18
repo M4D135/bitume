@@ -1,0 +1,591 @@
+{
+ "outil": "tools/profil-accrocs.mjs --scenario depart (Chrome sans interface, Apple M5 ; SwiftShader pour sw)",
+ "resume": {
+  "c0 base": {
+   "passes": 2,
+   "clicAuPremierEcranCourseMs": [
+    378,
+    231
+   ],
+   "plusLongueImagePendantChargementMs": [
+    333,
+    167
+   ],
+   "premieres2sPire": [
+    16.8,
+    33.4
+   ],
+   "premieres2sMediane": [
+    16.7,
+    16.7
+   ],
+   "ensuitePire": [
+    16.8,
+    50
+   ],
+   "ensuiteAuDela50ms": [
+    0,
+    0
+   ]
+  },
+  "c0 apres": {
+   "passes": 2,
+   "clicAuPremierEcranCourseMs": [
+    340,
+    440
+   ],
+   "plusLongueImagePendantChargementMs": [
+    83,
+    67
+   ],
+   "premieres2sPire": [
+    16.8,
+    16.8
+   ],
+   "premieres2sMediane": [
+    16.7,
+    16.7
+   ],
+   "ensuitePire": [
+    16.8,
+    16.8
+   ],
+   "ensuiteAuDela50ms": [
+    0,
+    0
+   ]
+  },
+  "c2 base": {
+   "passes": 2,
+   "clicAuPremierEcranCourseMs": [
+    243,
+    294
+   ],
+   "plusLongueImagePendantChargementMs": [
+    184,
+    233
+   ],
+   "premieres2sPire": [
+    33.3,
+    33.3
+   ],
+   "premieres2sMediane": [
+    16.7,
+    16.7
+   ],
+   "ensuitePire": [
+    116.8,
+    16.8
+   ],
+   "ensuiteAuDela50ms": [
+    1,
+    0
+   ]
+  },
+  "c2 apres": {
+   "passes": 2,
+   "clicAuPremierEcranCourseMs": [
+    358,
+    397
+   ],
+   "plusLongueImagePendantChargementMs": [
+    67,
+    67
+   ],
+   "premieres2sPire": [
+    16.8,
+    16.8
+   ],
+   "premieres2sMediane": [
+    16.7,
+    16.7
+   ],
+   "ensuitePire": [
+    33.4,
+    33.3
+   ],
+   "ensuiteAuDela50ms": [
+    0,
+    0
+   ]
+  },
+  "duo base": {
+   "passes": 2,
+   "clicAuPremierEcranCourseMs": [
+    220,
+    477
+   ],
+   "plusLongueImagePendantChargementMs": [
+    167,
+    400
+   ],
+   "premieres2sPire": [
+    16.8,
+    66.7
+   ],
+   "premieres2sMediane": [
+    16.7,
+    16.7
+   ],
+   "ensuitePire": [
+    66.6,
+    66.6
+   ],
+   "ensuiteAuDela50ms": [
+    1,
+    1
+   ]
+  },
+  "duo apres": {
+   "passes": 2,
+   "clicAuPremierEcranCourseMs": [
+    648,
+    441
+   ],
+   "plusLongueImagePendantChargementMs": [
+    100,
+    83
+   ],
+   "premieres2sPire": [
+    50,
+    16.8
+   ],
+   "premieres2sMediane": [
+    16.7,
+    16.7
+   ],
+   "ensuitePire": [
+    66.6,
+    50
+   ],
+   "ensuiteAuDela50ms": [
+    3,
+    0
+   ]
+  },
+  "sw base": {
+   "passes": 2,
+   "clicAuPremierEcranCourseMs": [
+    506,
+    829
+   ],
+   "plusLongueImagePendantChargementMs": [
+    483,
+    800
+   ],
+   "premieres2sPire": [
+    466.7,
+    883.2
+   ],
+   "premieres2sMediane": [
+    250,
+    16.8
+   ],
+   "ensuitePire": [
+    766.6,
+    3116.6
+   ],
+   "ensuiteAuDela50ms": [
+    167,
+    60
+   ]
+  },
+  "sw apres": {
+   "passes": 2,
+   "clicAuPremierEcranCourseMs": [
+    2421,
+    16720
+   ],
+   "plusLongueImagePendantChargementMs": [
+    1750,
+    12216
+   ],
+   "premieres2sPire": [
+    183.3,
+    2083.2
+   ],
+   "premieres2sMediane": [
+    150,
+    2083.2
+   ],
+   "ensuitePire": [
+    1683.3,
+    2316.6
+   ],
+   "ensuiteAuDela50ms": [
+    173,
+    108
+   ]
+  }
+ },
+ "passes": [
+  {
+   "fichier": "apres-c0-r1.json",
+   "build": "apres",
+   "scenario": "c0",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 340,
+   "plusLongueImagePendantChargementMs": 83,
+   "premieres2s": {
+    "images": 120,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 16.8,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1080,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "au_dela_50ms": 0
+   },
+   "sha256": "33a28e95e67171ad"
+  },
+  {
+   "fichier": "apres-c0-r2.json",
+   "build": "apres",
+   "scenario": "c0",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 440,
+   "plusLongueImagePendantChargementMs": 67,
+   "premieres2s": {
+    "images": 120,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1080,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 16.8,
+    "au_dela_50ms": 0
+   },
+   "sha256": "33a28e95e67171ad"
+  },
+  {
+   "fichier": "apres-c2-r1.json",
+   "build": "apres",
+   "scenario": "c2",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 358,
+   "plusLongueImagePendantChargementMs": 67,
+   "premieres2s": {
+    "images": 120,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1075,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 33.4,
+    "au_dela_50ms": 0
+   },
+   "sha256": "33a28e95e67171ad"
+  },
+  {
+   "fichier": "apres-c2-r2.json",
+   "build": "apres",
+   "scenario": "c2",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 397,
+   "plusLongueImagePendantChargementMs": 67,
+   "premieres2s": {
+    "images": 120,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 16.8,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1079,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 33.3,
+    "au_dela_50ms": 0
+   },
+   "sha256": "33a28e95e67171ad"
+  },
+  {
+   "fichier": "apres-duo-r1.json",
+   "build": "apres",
+   "scenario": "duo",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 648,
+   "plusLongueImagePendantChargementMs": 100,
+   "premieres2s": {
+    "images": 110,
+    "p50": 16.7,
+    "p95": 33.4,
+    "pire": 50,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 918,
+    "p50": 16.7,
+    "p95": 33.4,
+    "pire": 66.6,
+    "au_dela_50ms": 3
+   },
+   "sha256": "33a28e95e67171ad"
+  },
+  {
+   "fichier": "apres-duo-r2.json",
+   "build": "apres",
+   "scenario": "duo",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 441,
+   "plusLongueImagePendantChargementMs": 83,
+   "premieres2s": {
+    "images": 120,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1033,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 50,
+    "au_dela_50ms": 0
+   },
+   "sha256": "33a28e95e67171ad"
+  },
+  {
+   "fichier": "apres-sw-r1.json",
+   "build": "apres",
+   "scenario": "sw",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 2421,
+   "plusLongueImagePendantChargementMs": 1750,
+   "premieres2s": {
+    "images": 13,
+    "p50": 150,
+    "p95": 183.3,
+    "pire": 183.3,
+    "au_dela_50ms": 12
+   },
+   "ensuite": {
+    "images": 181,
+    "p50": 166.7,
+    "p95": 350,
+    "pire": 1683.3,
+    "au_dela_50ms": 173
+   },
+   "sha256": "33a28e95e67171ad"
+  },
+  {
+   "fichier": "apres-sw-r2.json",
+   "build": "apres",
+   "scenario": "sw",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 16720,
+   "plusLongueImagePendantChargementMs": 12216,
+   "premieres2s": {
+    "images": 1,
+    "p50": 2083.2,
+    "p95": 2083.2,
+    "pire": 2083.2,
+    "au_dela_50ms": 1
+   },
+   "ensuite": {
+    "images": 115,
+    "p50": 250.1,
+    "p95": 783.3,
+    "pire": 2316.6,
+    "au_dela_50ms": 108
+   },
+   "sha256": "33a28e95e67171ad"
+  },
+  {
+   "fichier": "base-c0-r1.json",
+   "build": "base",
+   "scenario": "c0",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 378,
+   "plusLongueImagePendantChargementMs": 333,
+   "premieres2s": {
+    "images": 120,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 16.8,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1080,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 16.8,
+    "au_dela_50ms": 0
+   },
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "base-c0-r2.json",
+   "build": "base",
+   "scenario": "c0",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 231,
+   "plusLongueImagePendantChargementMs": 167,
+   "premieres2s": {
+    "images": 120,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 33.4,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1066,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 50,
+    "au_dela_50ms": 0
+   },
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "base-c2-r1.json",
+   "build": "base",
+   "scenario": "c2",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 243,
+   "plusLongueImagePendantChargementMs": 184,
+   "premieres2s": {
+    "images": 120,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 33.3,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1074,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 116.8,
+    "au_dela_50ms": 1
+   },
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "base-c2-r2.json",
+   "build": "base",
+   "scenario": "c2",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 294,
+   "plusLongueImagePendantChargementMs": 233,
+   "premieres2s": {
+    "images": 120,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 33.3,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1080,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 16.8,
+    "au_dela_50ms": 0
+   },
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "base-duo-r1.json",
+   "build": "base",
+   "scenario": "duo",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 220,
+   "plusLongueImagePendantChargementMs": 167,
+   "premieres2s": {
+    "images": 120,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "au_dela_50ms": 0
+   },
+   "ensuite": {
+    "images": 1038,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 66.6,
+    "au_dela_50ms": 1
+   },
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "base-duo-r2.json",
+   "build": "base",
+   "scenario": "duo",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 477,
+   "plusLongueImagePendantChargementMs": 400,
+   "premieres2s": {
+    "images": 85,
+    "p50": 16.7,
+    "p95": 50,
+    "pire": 66.7,
+    "au_dela_50ms": 2
+   },
+   "ensuite": {
+    "images": 972,
+    "p50": 16.7,
+    "p95": 33.3,
+    "pire": 66.6,
+    "au_dela_50ms": 1
+   },
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "base-sw-r1.json",
+   "build": "base",
+   "scenario": "sw",
+   "passe": "r1",
+   "clicAuPremierEcranCourseMs": 506,
+   "plusLongueImagePendantChargementMs": 483,
+   "premieres2s": {
+    "images": 8,
+    "p50": 250,
+    "p95": 466.7,
+    "pire": 466.7,
+    "au_dela_50ms": 6
+   },
+   "ensuite": {
+    "images": 168,
+    "p50": 216.6,
+    "p95": 383.4,
+    "pire": 766.6,
+    "au_dela_50ms": 167
+   },
+   "sha256": "46a0b0af1311c310"
+  },
+  {
+   "fichier": "base-sw-r2.json",
+   "build": "base",
+   "scenario": "sw",
+   "passe": "r2",
+   "clicAuPremierEcranCourseMs": 829,
+   "plusLongueImagePendantChargementMs": 800,
+   "premieres2s": {
+    "images": 5,
+    "p50": 16.8,
+    "p95": 883.2,
+    "pire": 883.2,
+    "au_dela_50ms": 2
+   },
+   "ensuite": {
+    "images": 61,
+    "p50": 449.9,
+    "p95": 1566.6,
+    "pire": 3116.6,
+    "au_dela_50ms": 60
+   },
+   "sha256": "46a0b0af1311c310"
+  }
+ ]
+}

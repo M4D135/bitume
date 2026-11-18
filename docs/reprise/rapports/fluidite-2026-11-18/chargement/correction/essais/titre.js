@@ -1,0 +1,1 @@
+(() => { const R = BITUME_JEU.chargement.rapport; return { maintenant: Math.round(performance.now()), vitrine: R && { total: R.totalMs, etapes: R.etapes.map(e => e.nom + ':' + e.ms).join(' ') } }; })()
