@@ -27,19 +27,10 @@ const ramener = (s, L) => ((s % L) + L) % L;
 const course = (c, o) => B.course.creer(c, { mode: 'course', tours: 2, difficulte: 2, graine: 1, rivaux: 0, placeJoueur: 1, ...o });
 const pas = co => B.course.pas(co, B.course.commandesIA(co, co.joueur), DT);
 
-// Pré-calcul des vitesses pour la vérification des crêtes (point 2)
-// Utilisé par la vérification 1 pour la collecte et la vérification 2 pour le calcul.
+// Vitesses tenues au deuxième tour de l'IA du joueur, par échantillon de 2 m : relevées par la vérification 1,
+// lues par la vérification 2 (charge verticale aux vitesses vraiment roulées).
 let vvCache = null;
-const calculerVitesseParPosition = (c, co) => {
-  if (vvCache) return vvCache;
-  const vv = new Float64Array(c.n);
-  // On simule pour remplir vv si ce n'est pas déjà fait par la vérif 1
-  // Mais la vérif 1 remplit vv directement. On gère le cas où on l'appelle indépendamment.
-  // Pour simplifier, on suppose que la vérif 1 a déjà rempli vvCache.
-  // Si non, on ne peut pas le faire ici sans re-simuler.
-  // La tâche dit "réutilise vv du point 1". Donc on s'assure que la vérif 1 le remplit.
-  return vvCache;
-};
+const calculerVitesseParPosition = () => vvCache;
 
 verifier('l\'IA du joueur seule boucle deux tours sans sortir, dans le temps de référence', () => {
   const c = cree();
@@ -49,7 +40,7 @@ verifier('l\'IA du joueur seule boucle deux tours sans sortir, dans le temps de 
   vvCache = vv; // Partage avec la vérif 2
 
   while (!co.termine && t < 900) {
-    const evts = pas(co);
+    pas(co);
     t += DT;
     if (co.phase === 'course') {
       const d = Math.abs(co.joueur.etat.d);
@@ -171,54 +162,45 @@ verifier('douze voitures : tous les tours bouclés, le Mur monté à chaque pass
 });
 
 verifier('arrêtée dans le Mur, la voiture repart et passe la crête', () => {
-  const c = cree();
-  const co = course(c, { tours: 3 });
-  let t = 0;
-  
-  // Avancer jusqu'à la phase de course
-  while (co.phase !== 'course' && t < 60) {
-    pas(co);
-    t += DT;
-  }
-  if (co.phase !== 'course') throw new Error('Phase course non atteinte');
+  for (const s0 of [2480, 2600]) {
+    const c = cree();
+    const co = course(c, { tours: 3 });
+    let t = 0;
 
-  // Avancer jusqu'à t >= 2
-  while (co.temps < 2 && t < 60) {
-    pas(co);
-    t += DT;
-  }
+    // Avancer jusqu'à la phase de course, puis jusqu'à 2 s de course
+    while ((co.phase !== 'course' || co.temps < 2) && t < 60) {
+      pas(co);
+      t += DT;
+    }
+    if (co.phase !== 'course') throw new Error('Phase course non atteinte');
 
-  const e = co.joueur.etat;
-  const dist = e.distance;
-  const deg = co.joueur.degats;
-  
-  // Positionner la voiture dans le Mur (s0)
-  const s0 = 2480; // Test sur la première valeur de la liste demandée [2480, 2600]
-  const q = B.circuit.echantillon(c, s0);
-  
-  Object.assign(e, B.conduite.creer(s0, q.ligne));
-  e.distance = dist;
-  e.degats = deg;
-  e.y = q.y;
-  e.tangage = Math.atan(q.pente);
+    const e = co.joueur.etat;
+    const dist = e.distance;
+    const deg = co.joueur.degats;
 
-  if (q.pente <= 0.24) throw new Error('Pente insuffisante pour le test de démarrage');
+    // Voiture arrêtée dans le Mur, sur la trajectoire
+    const q = B.circuit.echantillon(c, s0);
+    Object.assign(e, B.conduite.creer(s0, q.ligne));
+    e.distance = dist;
+    e.degats = deg;
+    e.y = q.y;
+    e.tangage = Math.atan(q.pente);
 
-  let vitesseMax = 0;
-  let tStart = co.temps;
-  let tEnd = tStart + 16;
-  
-  while (co.temps < tEnd) {
-    pas(co);
-    if (e.v > vitesseMax) vitesseMax = e.v;
-  }
+    if (q.pente <= 0.24) throw new Error('Pente insuffisante pour le test de démarrage à ' + s0 + ' m');
 
-  const sFinal = ramener(e.s, c.longueur);
-  if (sFinal <= c.rampes[0].fin) {
-    throw new Error('La voiture n\'a pas dépassé la fin de la rampe');
-  }
-  if (vitesseMax <= 30) {
-    throw new Error('La vitesse n\'a pas dépassé 30 m/s : ' + vitesseMax);
+    let vitesseMax = 0;
+    for (let k = 0; k < 16 * 120; k++) {
+      pas(co);
+      if (e.v > vitesseMax) vitesseMax = e.v;
+    }
+
+    const sFinal = ramener(e.s, c.longueur);
+    if (sFinal <= c.rampes[0].fin) {
+      throw new Error('Partie de ' + s0 + ' m, la voiture n\'a pas dépassé la fin de la rampe (' + sFinal.toFixed(0) + ' m)');
+    }
+    if (vitesseMax <= 30) {
+      throw new Error('Partie de ' + s0 + ' m, la vitesse n\'a pas dépassé 30 m/s : ' + vitesseMax);
+    }
   }
 });
 
