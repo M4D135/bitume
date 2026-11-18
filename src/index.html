@@ -477,7 +477,7 @@
       <button type="button" class="discret" id="detection-annuler">Passer</button>
     </div>
   </div>
-  <div id="chargement" class="chargement" role="status"><span>Préparation du circuit…</span></div>
+  <div id="chargement" class="chargement" role="status" aria-live="polite"><span class="chargement-titre">Préparation du circuit…</span><span id="chargement-etape" class="chargement-etape"></span><progress id="chargement-progres" class="chargement-progres" max="1" value="0" aria-label="Progression du chargement"></progress></div>
   <div id="erreur" class="erreur" role="alert" hidden></div>
 </main>
 <!--MODULES-->

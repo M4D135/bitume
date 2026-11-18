@@ -18,7 +18,8 @@ function extraire(debutMarque, finMarque) {
 }
 
 const sourceTunnel = extraire('  const TUNNEL_PAS = 10', '  // ---------------------------------------------------------------- rétroviseurs');
-const tunnelF = new Function('scene', 'B', sourceTunnel + '\nreturn { preparerTunnel, sousLaVoute, lampesTunnel, LAMPE_RAYON, LAMPE_MAX, LAMPE_MIN, LAMPE_PUISSANCE };');
+// creationTardive : filet de jeu.js, qui compte ce qui naît dans le chemin d'une image au lieu de la préparation
+const tunnelF = new Function('scene', 'B', 'creationTardive', sourceTunnel + '\nreturn { preparerTunnel, sousLaVoute, lampesTunnel, remettreLampes, LAMPE_RAYON, LAMPE_MAX, LAMPE_MIN, LAMPE_PUISSANCE };');
 const sourceReflets = extraire('  const REFLET_PRISE =', '\n  // ---------------------------------------------------------------- tunnel : lampes');
 const refletsF = new Function('gpuModeste', 'palier', sourceReflets + '\nreturn avecReflets;');
 
@@ -26,7 +27,8 @@ const c = B.circuit.creer(47, { theme: 'montagne', longueur: 5200, nom: 'Haut-Co
 const decor = B.decor.construire(c);
 const LT = decor.tunnelLampes;
 const scene = { index: 7 };
-const T = tunnelF(scene, B);
+const tardives = [];
+const T = tunnelF(scene, B, (nom, valeur) => { tardives.push(nom); return valeur; });
 const axe = s => { const e = B.circuit.echantillon(c, s); return { pos: [e.x, e.y + 1.2, e.z] }; };
 
 test('le décor de Haut-Col fournit des lampes et le tunnel est droit', () => {
@@ -106,6 +108,22 @@ test('l état est repris quand la scène change', () => {
   T.lampesTunnel(porteur, 'vue', LT, axe((c.tunnel.debut + c.tunnel.fin) / 2), 1 / 60, 8);
   assert.equal(porteur.vue.rev, 8);
   assert.ok(porteur.vue.p.reduce((a, v) => a + v, 0) < avant, 'la lampe a survécu au changement de scène');
+});
+
+test('un état né dans l image est compté ; pas nul et remise à zéro ne réallouent rien', () => {
+  const porteur = {}, dedans = axe((c.tunnel.debut + c.tunnel.fin) / 2);
+  const avant = tardives.filter(n => n === 'lampes').length;
+  for (let i = 0; i < 40; i++) T.lampesTunnel(porteur, 'lampesTunnel', LT, dedans, 1 / 60, scene.index);
+  assert.equal(tardives.filter(n => n === 'lampes').length, avant + 1, 'un seul état né pour cette caméra, et compté');
+  const etat = porteur.lampesTunnel, figees = Array.from(etat.p);
+  assert.ok(figees.some(v => v > 0), 'la caméra sous la voûte voit des lampes');
+  // chauffe du code à dt nul : l'état temporel ne bouge pas, quelle que soit la caméra
+  for (let i = 0; i < 20; i++) T.lampesTunnel(porteur, 'lampesTunnel', LT, axe(c.tunnel.fin + 200), 0, scene.index);
+  assert.deepEqual(Array.from(etat.p), figees, 'un pas nul a changé le lissage des lampes');
+  T.remettreLampes(porteur);
+  assert.strictEqual(porteur.lampesTunnel, etat, 'la remise à zéro garde le même état');
+  assert.ok(etat.p.every(v => v === 0), 'toutes les lampes éteintes, comme un état neuf');
+  assert.equal(tardives.filter(n => n === 'lampes').length, avant + 1, 'aucune création de plus');
 });
 
 test('l abri de la pluie et l œil suivent la caméra, pas la voiture', () => {

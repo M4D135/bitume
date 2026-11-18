@@ -1,0 +1,106 @@
+{
+ "valeur": {
+  "premiere": {
+   "leger": false,
+   "total": 593.9,
+   "rendu": {
+    "variantes": 1,
+    "retro": 1,
+    "prewarm": false,
+    "voisins": false,
+    "ms": 67.8
+   },
+   "horlogeALaLevee": 0,
+   "phase": "grille",
+   "feux": "{\"allumes\":0,\"vert\":false}",
+   "meteo": "{\"t\":0,\"phase\":\"clair\",\"tp\":0,\"pluie\":0,\"nuage\":0.12,\"eclair\":0,\"prochainEclair\":0,\"mouille\":0,\"ventX\":1.8,\"ventZ\":0.9,\"fixe\":true}",
+   "apres2s": {
+    "horloge": 2.483,
+    "phase": "feux",
+    "tardives": {
+     "n": 0,
+     "sousVoile": 0,
+     "noms": {}
+    }
+   }
+  },
+  "pluie": {
+   "leger": false,
+   "promu": true,
+   "total": 446.8,
+   "ms": 468,
+   "etapes": [
+    {
+     "nom": "voile",
+     "ms": 11
+    },
+    {
+     "nom": "decor",
+     "ms": 0
+    },
+    {
+     "nom": "retro",
+     "ms": 0.1
+    },
+    {
+     "nom": "circuit",
+     "ms": 0
+    },
+    {
+     "nom": "seance",
+     "ms": 31.8
+    },
+    {
+     "nom": "creations",
+     "ms": 143.9
+    },
+    {
+     "nom": "rendu",
+     "ms": 25.8
+    },
+    {
+     "nom": "code",
+     "ms": 195.1
+    },
+    {
+     "nom": "zero",
+     "ms": 0
+    },
+    {
+     "nom": "image",
+     "ms": 20.6
+    }
+   ],
+   "rendu": {
+    "variantes": 1,
+    "retro": 0,
+    "prewarm": false,
+    "voisins": false,
+    "ms": 25.8
+   },
+   "code": {
+    "images": 5
+   },
+   "voile": [
+    "chargement etapes fini op=0",
+    "chargement op=0",
+    "chargement etapes net op=1",
+    "chargement etapes net op=1",
+    "chargement etapes net op=1",
+    "chargement etapes net op=1",
+    "chargement etapes net op=1",
+    "chargement etapes net op=1",
+    "chargement etapes net op=1",
+    "chargement etapes net op=1",
+    "chargement etapes net tiede op=0.99"
+   ],
+   "meteo": "{\"t\":0.008333333333333333,\"phase\":\"pluie\",\"tp\":0.008333333333333333,\"pluie\":0.75,\"nuage\":0.85,\"eclair\":0,\"prochainEclair\":0,\"mouille\":0.0002104166666666667,\"ven",
+   "tardives": {
+    "n": 0,
+    "sousVoile": 0,
+    "noms": {}
+   }
+  }
+ },
+ "erreurs": []
+}

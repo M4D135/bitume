@@ -1,0 +1,1147 @@
+{
+ "url": "file:///private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/chargement/apres/bitume.html",
+ "parametres": {
+  "scenario": "depart",
+  "duree": 20,
+  "cpu": 1,
+  "taille": [
+   1390,
+   1295
+  ],
+  "fenetre": false,
+  "angle": "native",
+  "jeu": {
+   "circuit": 2,
+   "qualite": "high",
+   "meteo": "pluie",
+   "vue": "cockpit",
+   "vue2": "cockpit",
+   "retro": "oui",
+   "mode": "solo",
+   "partage": "haut-bas",
+   "graine": 17017,
+   "saison": "ete",
+   "moment": "jour",
+   "tours": 3
+  }
+ },
+ "environnement": {
+  "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+  "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+  "toile": [
+   1390,
+   1295
+  ],
+  "fenetre": [
+   1390,
+   1295,
+   1
+  ],
+  "visible": true,
+  "coeurs": 10,
+  "version": "V0.2.39",
+  "compilationParallele": true,
+  "chronoGpu": true
+ },
+ "build": {
+  "sha256": "0502cc15304c3bb301c483c758e529287217af89043e6ca1322aef984cd44e63",
+  "octets": 13286605
+ },
+ "chargement": {
+  "clicAuPremierEcranCourseMs": 433,
+  "lancementSynchroneMs": null,
+  "plusLongueImagePendantChargement": 100
+ },
+ "images": {
+  "nominalMs": 16.7,
+  "course": {
+   "images": 1134,
+   "p50": 16.7,
+   "p95": 33.3,
+   "p99": 33.4,
+   "pire": 33.4,
+   "au_dela_1_5x": 65,
+   "au_dela_2x": 0,
+   "au_dela_50ms": 0,
+   "irregularite": 3.98
+  },
+  "premieres2s": {
+   "images": 100,
+   "p50": 16.7,
+   "p95": 33.4,
+   "p99": 33.4,
+   "pire": 33.4,
+   "au_dela_1_5x": 19,
+   "au_dela_2x": 0,
+   "au_dela_50ms": 0,
+   "irregularite": 7.25
+  },
+  "apres2s": {
+   "images": 1034,
+   "p50": 16.7,
+   "p95": 16.8,
+   "p99": 33.4,
+   "pire": 33.4,
+   "au_dela_1_5x": 46,
+   "au_dela_2x": 0,
+   "au_dela_50ms": 0,
+   "irregularite": 3.51
+  }
+ },
+ "accrocs": [
+  {
+   "tDepuisCourseS": -0.27,
+   "dtMs": 100.1,
+   "gcMs": 3.3,
+   "shadersMs": 0,
+   "evenements": [
+    "Renderer/CrRendererMain · FireAnimationFrame 98.4 ms",
+    "Renderer/CrRendererMain · MinorGC 3.3 ms",
+    "Renderer/CrRendererMain · V8.GCScavenger 3.2 ms",
+    "Renderer/CrRendererMain · V8.GC_SCAVENGER 3.2 ms",
+    "Renderer/CrRendererMain · V8.GC_SCAVENGER_SCAVENGE 3.2 ms",
+    "Renderer/ThreadPoolForegroundWorker · V8.GC_BACKGROUND_SAFEPOINT 2.9 ms",
+    "Renderer/ThreadPoolForegroundWorker · V8.GC_BACKGROUND_UNPARK 2.8 ms",
+    "Renderer/CrRendererMain · V8.GC_SCAVENGER_SCAVENGE_PARALLEL_PHASE 2.8 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": -0.2,
+   "dtMs": 66.6,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "Renderer/CrRendererMain · FireAnimationFrame 98.4 ms",
+    "Renderer/CrRendererMain · GLES2::ReadPixels 53.5 ms",
+    "Renderer/CrRendererMain · ImplementationBase::WaitForCmd 53.5 ms",
+    "Renderer/CrRendererMain · CommandBufferHelper::Finish 53.5 ms",
+    "Renderer/CrRendererMain · CommandBufferProxyImpl::WaitForGetOffset 53.5 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 38.0 ms",
+    "GPU Process/CrGpuMain · GPUTask 38.0 ms",
+    "GPU Process/CrGpuMain · WebGL 37.9 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": -0.1,
+   "dtMs": 83.4,
+   "gcMs": 1.5,
+   "shadersMs": 0,
+   "evenements": [
+    "Renderer/CrRendererMain · FireAnimationFrame 81.4 ms",
+    "Renderer/CrRendererMain · GLES2::ReadPixels 16.0 ms",
+    "Renderer/CrRendererMain · ImplementationBase::WaitForCmd 16.0 ms",
+    "Renderer/CrRendererMain · CommandBufferHelper::Finish 16.0 ms",
+    "Renderer/CrRendererMain · CommandBufferProxyImpl::WaitForGetOffset 15.9 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 13.2 ms",
+    "GPU Process/CrGpuMain · GPUTask 13.2 ms",
+    "GPU Process/CrGpuMain · WebGL 13.2 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": -0.05,
+   "dtMs": 49.9,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "Renderer/CrRendererMain · FireAnimationFrame 81.4 ms",
+    "Renderer/CrRendererMain · GLES2::ReadPixels 11.2 ms",
+    "Renderer/CrRendererMain · ImplementationBase::WaitForCmd 11.2 ms",
+    "Renderer/CrRendererMain · CommandBufferHelper::Finish 11.2 ms",
+    "Renderer/CrRendererMain · CommandBufferProxyImpl::WaitForGetOffset 11.2 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 11.0 ms",
+    "GPU Process/CrGpuMain · GPUTask 11.0 ms",
+    "GPU Process/CrGpuMain · WebGL 11.0 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 0.8,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 18.6 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 18.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 18.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 18.2 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 4.6 ms",
+    "Renderer/CrRendererMain · FunctionCall 4.6 ms",
+    "GPU Process/CrGpuMain · CommandBuffer::Flush 1.4 ms",
+    "GPU Process/CrGpuMain · CommandBufferStub::OnAsyncFlush 1.4 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 0.86,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 23.3 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 23.0 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 23.0 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 23.0 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 4.4 ms",
+    "Renderer/CrRendererMain · FunctionCall 4.3 ms",
+    "GPU Process/CrGpuMain · CommandBuffer::Flush 1.5 ms",
+    "GPU Process/CrGpuMain · CommandBufferStub::OnAsyncFlush 1.5 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 1.01,
+   "dtMs": 33.3,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 23.5 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 23.3 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 23.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 23.2 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 4.8 ms",
+    "Renderer/CrRendererMain · FunctionCall 4.8 ms",
+    "GPU Process/CrGpuMain · CommandBuffer::Flush 1.5 ms",
+    "GPU Process/CrGpuMain · CommandBufferStub::OnAsyncFlush 1.5 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 1.06,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 20.0 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 19.6 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 19.6 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 19.6 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 4.2 ms",
+    "Renderer/CrRendererMain · FunctionCall 4.2 ms",
+    "GPU Process/CrGpuMain · CommandBuffer::Flush 1.4 ms",
+    "GPU Process/CrGpuMain · CommandBufferStub::OnAsyncFlush 1.4 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 1.16,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 21.8 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 21.5 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 21.5 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 21.5 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 4.6 ms",
+    "Renderer/CrRendererMain · FunctionCall 4.5 ms",
+    "GPU Process/CrGpuMain · CommandBuffer::Flush 1.4 ms",
+    "GPU Process/CrGpuMain · CommandBufferStub::OnAsyncFlush 1.4 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 1.23,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 17.9 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 17.6 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 17.5 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 17.5 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 4.8 ms",
+    "Renderer/CrRendererMain · FunctionCall 4.8 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.6 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.6 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 1.28,
+   "dtMs": 33.3,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 19.1 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 18.8 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 18.8 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 18.8 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 4.6 ms",
+    "Renderer/CrRendererMain · FunctionCall 4.6 ms",
+    "GPU Process/CrGpuMain · CommandBuffer::Flush 1.5 ms",
+    "GPU Process/CrGpuMain · CommandBufferStub::OnAsyncFlush 1.5 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 1.61,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 23.7 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 23.5 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 23.4 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 23.4 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.0 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.0 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.6 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.6 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 1.85,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 21.2 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 20.9 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 20.9 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 20.9 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.3 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.2 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.5 ms",
+    "GPU Process/CrGpuMain · CommandBuffer::Flush 1.5 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 2.01,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 24.5 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 24.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 24.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 24.2 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 6.2 ms",
+    "Renderer/CrRendererMain · FunctionCall 6.2 ms",
+    "GPU Process/CrGpuMain · CommandBuffer::Flush 1.4 ms",
+    "GPU Process/CrGpuMain · CommandBufferStub::OnAsyncFlush 1.4 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 2.05,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 26.7 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 26.4 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 26.4 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 26.4 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 6.2 ms",
+    "Renderer/CrRendererMain · FunctionCall 6.2 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 2.0 ms",
+    "GPU Process/CrGpuMain · GPUTask 2.0 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 2.1,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 22.7 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 22.4 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 22.4 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 22.4 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.6 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.6 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.7 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.7 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 2.15,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 23.5 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 23.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 23.1 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 23.1 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.6 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.5 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.7 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.7 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 2.61,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 18.8 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 18.5 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 18.5 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 18.5 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.2 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.2 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.5 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.5 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 2.88,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 19.9 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 19.6 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 19.6 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 19.6 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.4 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.4 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.6 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.6 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 3.18,
+   "dtMs": 33.3,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 16.9 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 16.7 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 16.6 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 16.6 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.6 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.6 ms",
+    "GPU Process/CrGpuMain · CommandBuffer::Flush 1.1 ms",
+    "GPU Process/CrGpuMain · CommandBufferStub::OnAsyncFlush 1.1 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 3.41,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 20.4 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 20.1 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 20.1 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 20.1 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.9 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.9 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.7 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.7 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 3.5,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 17.8 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 17.5 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 17.5 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 17.4 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.4 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.3 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.8 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.8 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 3.58,
+   "dtMs": 33.3,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 19.9 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 19.6 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 19.5 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 19.5 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.1 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.0 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.5 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.5 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 3.73,
+   "dtMs": 33.3,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 19.3 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 19.0 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 19.0 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 19.0 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.3 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.3 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 2.0 ms",
+    "GPU Process/CrGpuMain · GPUTask 2.0 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 3.9,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 20.2 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 19.9 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 19.8 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 19.8 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.2 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.2 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.5 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.5 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 3.98,
+   "dtMs": 33.3,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 21.3 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 20.9 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 20.9 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 20.9 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.5 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.5 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 4.15,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 20.1 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 19.7 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 19.7 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 19.7 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.5 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.4 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.6 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.6 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 4.25,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 18.6 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 18.3 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 18.3 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 18.3 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.4 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.4 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.6 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.6 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 4.31,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 19.6 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 19.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 19.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 19.2 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.2 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.1 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.6 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.6 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 4.38,
+   "dtMs": 33.3,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 20.5 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 20.1 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 20.1 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 20.1 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.0 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.0 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.5 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.5 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 4.48,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 19.2 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 18.9 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 18.8 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 18.8 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.2 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.2 ms",
+    "GPU Process/CrGpuMain · CommandBuffer::Flush 1.1 ms",
+    "GPU Process/CrGpuMain · CommandBufferStub::OnAsyncFlush 1.1 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 4.55,
+   "dtMs": 33.3,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 21.6 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 21.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 21.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 21.2 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.1 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.1 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.5 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.5 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 4.63,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 20.8 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 20.4 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 20.4 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 20.4 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.4 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.3 ms",
+    "GPU Process/CrGpuMain · CommandBuffer::Flush 1.3 ms",
+    "GPU Process/CrGpuMain · CommandBufferStub::OnAsyncFlush 1.3 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 4.68,
+   "dtMs": 33.3,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 20.5 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 20.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 20.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 20.2 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.5 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.5 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.7 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.7 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 4.73,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 20.0 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 19.7 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 19.7 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 19.7 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.4 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.4 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.8 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.8 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 4.9,
+   "dtMs": 33.3,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 20.4 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 20.0 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 20.0 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 20.0 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.2 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.2 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.6 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.6 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 4.96,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 21.5 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 21.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 21.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 21.2 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.1 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.1 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 2.1 ms",
+    "GPU Process/CrGpuMain · GPUTask 2.1 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 5.05,
+   "dtMs": 33.3,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 22.4 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 22.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 22.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 22.2 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.2 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.2 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.6 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.6 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 5.11,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 22.5 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 22.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 22.2 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 22.2 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 5.2 ms",
+    "Renderer/CrRendererMain · FunctionCall 5.1 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.8 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.8 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": 19.81,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "GPU Process/CrGpuMain · SkiaOutputSurfaceImplOnGpu::SwapBuffers 15.3 ms",
+    "GPU Process/CrGpuMain · SkiaOutputDevice->ScheduleOverlays() 15.0 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled 14.9 ms",
+    "GPU Process/CrGpuMain · IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn 14.9 ms",
+    "Renderer/CrRendererMain · FireAnimationFrame 6.5 ms",
+    "Renderer/CrRendererMain · FunctionCall 6.4 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 1.6 ms",
+    "GPU Process/CrGpuMain · GPUTask 1.6 ms"
+   ]
+  }
+ ],
+ "ramasseMiettes": {
+  "mineurs": {
+   "n": 110,
+   "totalMs": 116,
+   "pireMs": 4.6
+  },
+  "majeurs": {
+   "n": 1,
+   "totalMs": 10,
+   "pireMs": 10
+  },
+  "parSeconde": 5.5
+ },
+ "graphique": {
+  "shadersEnCourse": [],
+  "shadersAuChargement": [],
+  "processusGraphiquePremiereSeconde": [
+   {
+    "nom": "SkiaOutputSurfaceImplOnGpu::SwapBuffers",
+    "n": 37,
+    "ms": 487.6,
+    "pire": 23.5
+   },
+   {
+    "nom": "SkiaOutputDevice->ScheduleOverlays()",
+    "n": 36,
+    "ms": 474.3,
+    "pire": 23.3
+   },
+   {
+    "nom": "IOSurfaceImageBacking::WaitForCommandsToBeScheduled",
+    "n": 36,
+    "ms": 473.7,
+    "pire": 23.2
+   },
+   {
+    "nom": "IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn",
+    "n": 36,
+    "ms": 473.6,
+    "pire": 23.2
+   },
+   {
+    "nom": "DawnPlatformImpl::RunWorkerTask",
+    "n": 3,
+    "ms": 7.2,
+    "pire": 2.6
+   },
+   {
+    "nom": "DisplayScheduler::OnBeginFrameDeadline",
+    "n": 1,
+    "ms": 6.1,
+    "pire": 6.1
+   },
+   {
+    "nom": "DisplayScheduler::DrawAndSwap",
+    "n": 1,
+    "ms": 6.1,
+    "pire": 6.1
+   },
+   {
+    "nom": "Display::DrawAndSwap",
+    "n": 1,
+    "ms": 6.1,
+    "pire": 6.1
+   },
+   {
+    "nom": "DirectRenderer::DrawFrame",
+    "n": 1,
+    "ms": 6,
+    "pire": 6
+   },
+   {
+    "nom": "DirectRenderer::DrawRenderPass",
+    "n": 1,
+    "ms": 5.9,
+    "pire": 5.9
+   }
+  ],
+  "processusGraphiqueEnsuite": [
+   {
+    "nom": "SkiaOutputSurfaceImplOnGpu::SwapBuffers",
+    "n": 315,
+    "ms": 4636.1,
+    "pire": 26.7
+   },
+   {
+    "nom": "SkiaOutputDevice->ScheduleOverlays()",
+    "n": 307,
+    "ms": 4499.9,
+    "pire": 26.4
+   },
+   {
+    "nom": "IOSurfaceImageBacking::WaitForCommandsToBeScheduled",
+    "n": 306,
+    "ms": 4490.5,
+    "pire": 26.4
+   },
+   {
+    "nom": "IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn",
+    "n": 306,
+    "ms": 4489.5,
+    "pire": 26.4
+   },
+   {
+    "nom": "GpuChannel::ExecuteDeferredRequest",
+    "n": 6,
+    "ms": 57.8,
+    "pire": 14.5
+   },
+   {
+    "nom": "GPUTask",
+    "n": 6,
+    "ms": 57.7,
+    "pire": 14.5
+   },
+   {
+    "nom": "GLContextEGL::MakeCurrent",
+    "n": 5,
+    "ms": 46.9,
+    "pire": 13.6
+   },
+   {
+    "nom": "RendererRasterWorker",
+    "n": 1,
+    "ms": 14.5,
+    "pire": 14.5
+   },
+   {
+    "nom": "CommandBuffer::Flush",
+    "n": 1,
+    "ms": 14.5,
+    "pire": 14.5
+   },
+   {
+    "nom": "CommandBufferStub::OnAsyncFlush",
+    "n": 1,
+    "ms": 14.5,
+    "pire": 14.5
+   }
+  ],
+  "filPrincipalEnCourse": [
+   {
+    "nom": "FireAnimationFrame",
+    "n": 1074,
+    "ms": 6982.5,
+    "pire": 10.5
+   },
+   {
+    "nom": "FunctionCall",
+    "n": 1074,
+    "ms": 6949.9,
+    "pire": 10.5
+   },
+   {
+    "nom": "MajorGC",
+    "n": 1,
+    "ms": 10,
+    "pire": 10
+   },
+   {
+    "nom": "V8.GCFinalizeMC",
+    "n": 1,
+    "ms": 9.9,
+    "pire": 9.9
+   },
+   {
+    "nom": "V8.GC_MARK_COMPACTOR",
+    "n": 1,
+    "ms": 9.9,
+    "pire": 9.9
+   },
+   {
+    "nom": "V8.GC_MC_EVACUATE",
+    "n": 1,
+    "ms": 5.2,
+    "pire": 5.2
+   },
+   {
+    "nom": "MinorGC",
+    "n": 1,
+    "ms": 4.6,
+    "pire": 4.6
+   },
+   {
+    "nom": "V8.GCScavenger",
+    "n": 1,
+    "ms": 4.5,
+    "pire": 4.5
+   }
+  ]
+ },
+ "erreurs": [],
+ "limites": [
+  "Chrome sans interface : cadence synthétique à 60 Hz, sans synchronisation verticale d un écran réel."
+ ],
+ "chargementPage": {
+  "jusquAuTitreMs": 1968
+ },
+ "seance": {
+  "phase": "course",
+  "horloge": 19.97,
+  "type": "course",
+  "circuit": "Haut-Col",
+  "vue": "cockpit",
+  "s": 484.9,
+  "v": 41.5,
+  "tours": 0
+ },
+ "profil": {
+  "palier": "high",
+  "qualite": "high",
+  "rendu": {
+   "msaa": 4,
+   "shadowMapScale": 2,
+   "vignette": 0.59,
+   "bloomThreshold": [
+    0.5,
+    0.8
+   ],
+   "resolution": 1
+  },
+  "effets": {
+   "ombres": true,
+   "halo": true,
+   "reflets": true,
+   "retroImages": true
+  }
+ },
+ "mesures": {
+  "actif": true,
+  "fps": 59.88023952095548,
+  "imageP50": 16.700000000000728,
+  "imageP95": 16.799999999999272,
+  "imagePire": 33.39999999999782,
+  "cpu": {
+   "boucle": 7.069999998807907,
+   "simulation": 0.6170833339293798,
+   "rendu": 2.674166668454806,
+   "effets": 0.027916667858759563,
+   "hud": 0.13208333402872086,
+   "son": 0.001250000298023224
+  },
+  "cpuP50": {
+   "boucle": 7,
+   "simulation": 0.6000000238418579,
+   "rendu": 2.600000023841858,
+   "effets": 0,
+   "hud": 0.10000002384185791,
+   "son": 0
+  },
+  "cpuP95": {
+   "boucle": 8.399999976158142,
+   "simulation": 0.9000000953674316,
+   "rendu": 3.200000047683716,
+   "effets": 0.10000002384185791,
+   "hud": 0.20000004768371582,
+   "son": 0
+  },
+  "vues": {
+   "principale": {
+    "images": 1134,
+    "drawCalls": 354.36596119929453,
+    "triangles": 3136622.2178130513,
+    "rendusParImage": 1,
+    "drawCallsParImage": 478.05833333333334,
+    "trianglesParImage": 1925578.425
+   },
+   "joueur2": {
+    "images": 0,
+    "drawCalls": 0,
+    "triangles": 0,
+    "rendusParImage": 0,
+    "drawCallsParImage": 0,
+    "trianglesParImage": 0
+   },
+   "retro": {
+    "images": 1134,
+    "drawCalls": 130.67283950617283,
+    "triangles": 2248923.1772486772,
+    "rendusParImage": 1,
+    "drawCallsParImage": 163.50416666666666,
+    "trianglesParImage": 2195053.658333333
+   }
+  },
+  "gpu": true,
+  "gpuValide": true,
+  "gpuMs": 29.064429,
+  "gpuPasses": {
+   "shadows": 3.1265273333333337,
+   "world": 8.306152,
+   "effects": 13.166819333333335,
+   "post": 4.464930333333333
+  },
+  "gpuPortee": "Moyenne des trois derniers rendus complets du moteur principal ; pas le total de l’image avec les rétroviseurs.",
+  "gpuDescartes": 0,
+  "gpuEnAttente": 20,
+  "voitures": 12,
+  "voituresTotal": 12,
+  "lampes": 0,
+  "ombres": true,
+  "palier": null,
+  "qualite": "high",
+  "profil": "high",
+  "images": 1134,
+  "pieces": 0,
+  "piecesTotal": 96,
+  "physx": {
+   "ready": true,
+   "version": "5.12.0",
+   "worlds": 0,
+   "queryCount": 0
+  },
+  "audio": {
+   "actif": false,
+   "voix": 0,
+   "joueurs": 0,
+   "rivaux": 0,
+   "fondus": 0,
+   "budget": 5,
+   "musique": false
+  }
+ },
+ "statsRendu": {
+  "drawCalls": 580,
+  "triangles": 1867206,
+  "instances": 6194,
+  "contextLost": false,
+  "webglVersion": 2,
+  "backend": "webgl2",
+  "engine": "ferro-reference",
+  "bloom": true,
+  "shadows": true,
+  "shadowMapSize": 2048,
+  "shadowTileSize": 1024,
+  "msaa": 4,
+  "reflections": true,
+  "pbrLayers": 0,
+  "renderScale": 1,
+  "pixelRatio": 1,
+  "width": 1390,
+  "height": 1295,
+  "staticTotal": 0,
+  "biome": "montagne",
+  "worldRevision": 0,
+  "nappeTriangles": 96728,
+  "lots": 1554,
+  "composition": false,
+  "windSources": 4,
+  "windCandidates": 12,
+  "windUpdates": 1135,
+  "windStrength": 1,
+  "groundCover": true,
+  "lotDistanceTests": 1554,
+  "lotInstanceTests": 2473,
+  "viewDistance": 64,
+  "staticSuperset": 0,
+  "staticVisible": 0,
+  "staticCulled": 0,
+  "dynamicLights": 0,
+  "blackoutLights": 0,
+  "shadowMaps": 1,
+  "shadowMode": "sun-atlas",
+  "uploadBytes": 151680,
+  "fxInstances": 227,
+  "crowdInstances": 0,
+  "pdrLotInstances": 0,
+  "backgroundWater": 0,
+  "backgroundDrawCalls": 0,
+  "lotsVisibles": 66,
+  "reflectionSteps": 48
+ },
+ "ecrans": [
+  [
+   5207,
+   "course"
+  ]
+ ],
+ "imagesLonguesNavigateur": [
+  {
+   "t": 4813.9,
+   "d": 105.5,
+   "bloc": 48.8,
+   "rendu": 6.6,
+   "style": 105.1,
+   "scripts": []
+  },
+  {
+   "t": 4919.7,
+   "d": 74.8,
+   "bloc": 24.7,
+   "rendu": 0.1,
+   "style": 74.7,
+   "scripts": []
+  },
+  {
+   "t": 5003.1,
+   "d": 82.3,
+   "bloc": 31.6,
+   "rendu": 0.8,
+   "style": 82.2,
+   "scripts": []
+  },
+  {
+   "t": 5085.6,
+   "d": 50.9,
+   "bloc": 0,
+   "rendu": 1.1,
+   "style": 50.7,
+   "scripts": []
+  }
+ ],
+ "trace": {
+  "evenementsRecus": 922603,
+  "gardes": 49038,
+  "synchronisee": true
+ }
+}

@@ -11,8 +11,11 @@ const B=globalThis.BITUME,M=B.meteo;
 let controles=0;const check=(v,msg)=>{assert.ok(v,msg);controles++};
 const signature='  function majMeteo(S, dt) { return B.meteo.avancer(S, dt); }';
 check(source.includes(signature),'jeu délègue la météo au module');
-const appel=source.match(/const meteo = majMeteo\(S,\s*\w+\);/g);
-check(appel?.length===1,'un raccord météo');
+// Un seul raccord fait avancer la météo ; la chauffe sous le voile la lit à dt = 0 (pas ignoré plus bas), sans l'avancer.
+const appels=source.match(/const meteo = majMeteo\(S,\s*\w+\);/g)||[];
+const appel=appels.filter(a=>!/majMeteo\(S,\s*0\)/.test(a));
+check(appel.length===1,'un raccord météo');
+check(appels.length-appel.length<=1,'au plus une lecture à dt = 0, celle de la chauffe');
 const image=new Function('B','S','dureeImage','dtImage',signature+'\n'+appel[0]+'return meteo;');
 const fin=[];
 for(const hz of [20,30,60,120,144]){
@@ -70,7 +73,9 @@ const contexte={B,S:{lumiere:1,sillage:{sources:[{id:0}]}},meteo:{pluie:1,nuage:
   cam:{},camR:{},ps:{},suivie:{},vue:'cockpit',sortie:[],objets:[],rendu,retro:{rendu},horlogeReelle:2,
   P:{rendu:{msaa:4,shadowMapScale:2},qualite:'high'},avecOmbres:()=>true,avecReflets:()=>false,
   haloInt:true,lampes:[],dureeImage:16,eclair:0,scene:{decor:{tunnelLampes:[]},index:0},
-  G:{},i:0,dtImage:1/60,dtGlace:1/30,lampesTunnel:()=>[]};
+  G:{},i:0,dtImage:1/60,dtGlace:1/30,lampesTunnel:()=>[],
+  // filet du chemin d'image (jeu.js) : le tampon manquant naît ici et compte comme création tardive
+  tardives:[],creationTardive(nom,valeur){contexte.tardives.push(nom);return valeur;}};
 const preparation=source.match(/^\s*S\.ambianceImage = B\.meteo\.ambiance\([^\n]+;/m)?.[0];
 check(!!preparation,'préparation de l’ambiance par image');
 vm.runInNewContext(preparation,contexte);
@@ -86,4 +91,5 @@ for(const expression of [/^\s*rendu\.draw\(cam, sortie, [^\n]+;/m,/^\s*retro\.re
 check(appelsRendu.length===2&&appelsRendu.every(fx=>fx.weather===tampon&&fx.windSources===contexte.S.sillage.sources),'même ambiance et sillage dans la scène et les miroirs');
 contexte.meteo.pluie=0;vm.runInNewContext(preparation,contexte);
 check(contexte.S.ambianceImage===tampon&&tampon.pluie<.72,'tampon conservé et actualisé à l’image suivante');
+check(contexte.tardives.length===1&&contexte.tardives[0]==='ambiance','tampon né une seule fois, compté comme création tardive');
 console.log(`météo : ${controles} contrôles horloge, pause, projection, profondeur, paramètres et cadence tenus`);

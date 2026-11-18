@@ -1,0 +1,13 @@
+{
+ "valeur": {
+  "sync": {
+   "memeScene": false,
+   "vegetation": "high",
+   "avant": "off"
+  },
+  "apres": {
+   "vegetation": "high"
+  }
+ },
+ "erreurs": []
+}

@@ -1,0 +1,32 @@
+{
+ "valeur": {
+  "totalMs": 618,
+  "ecran": "course",
+  "juste": {
+   "classes": "chargement etapes fini",
+   "opacite": "0.99",
+   "hud": true
+  },
+  "ensuite": {
+   "classes": "chargement etapes fini",
+   "opacite": "0",
+   "visibilite": "hidden"
+  },
+  "inertes": [
+   [
+    "titre",
+    false
+   ],
+   [
+    "hud",
+    false
+   ]
+  ],
+  "tardives": {
+   "n": 0,
+   "sousVoile": 0,
+   "noms": {}
+  }
+ },
+ "erreurs": []
+}

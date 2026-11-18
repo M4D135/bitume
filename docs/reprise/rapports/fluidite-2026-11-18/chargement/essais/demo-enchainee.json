@@ -1,0 +1,49 @@
+{
+ "valeur": {
+  "avance": {
+   "phase": "arrivee",
+   "tours": 3,
+   "position": 8,
+   "meilleur": 88.85565216725217,
+   "termine": true
+  },
+  "change": true,
+  "i0": 0,
+  "i1": 1,
+  "ecran": "demo",
+  "type": "demo",
+  "vuVoile": true,
+  "etapes": [
+   "voile",
+   "decor",
+   "seance",
+   "creations",
+   "rendu",
+   "image"
+  ],
+  "rapport": {
+   "type": "demo",
+   "leger": false,
+   "totalMs": 1467.9,
+   "etapes": [
+    "voile 378.5",
+    "decor 900.9",
+    "retro 19.8",
+    "circuit 0.1",
+    "seance 1.8",
+    "creations 93.2",
+    "rendu 34.8",
+    "zero 0",
+    "image 10.3"
+   ]
+  },
+  "tardives": {
+   "n": 0,
+   "sousVoile": 0,
+   "noms": {}
+  },
+  "voile": "0",
+  "horloge": 1.98
+ },
+ "erreurs": []
+}

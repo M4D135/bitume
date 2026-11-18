@@ -27,6 +27,11 @@ const creer = new Function('B', `
   const NOMS_PNEUS = { slicks: 'Slicks', inter: 'Intermédiaires', pluie: 'Pluie' };
   const reglages = { circuit: 0, tours: 3, difficulte: 1, meteo: 'pluie', pneus: 'pluie', boite: 'auto', vue: 'cockpit', joueursLocaux: 1 };
   const aller = s => { ecran = s; }, lancer = (type, i, cfg) => departs.push({ type, i, cfg });
+  // préparation sous voile (jeu.js) : la séance part au bout de ses étapes (30 ms ici), si la liaison tient encore
+  const preparerSeance = (type, i, enl, conditions, o = {}) => setTimeout(() => {
+    if (o.verifier && !o.verifier()) return;
+    lancer(type, i, enl, conditions); aller('course');
+  }, 30);
   const message = () => {}, sousMessage = () => {}, finirClassement = () => {}, montrerResultats = () => {};
   ${source.slice(debut, fin)}
   return {

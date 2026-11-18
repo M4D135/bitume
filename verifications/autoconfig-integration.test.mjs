@@ -44,6 +44,9 @@ const orchestration = new Function('base', 'scenario', `
   // moteur des rétroviseurs : prêté au parcours seulement s'il existe déjà ; scene dit quel décor il porte
   const retro = { rendu: scenario.glaces || null, scene: 'seance' }, annexes = [];
   let ioVu = null;
+  // préparation des séances (jeu.js) : aucune en cours ; la vitrine dont la scène est en place part directement
+  const prepa = { enCours: false }, abandonnerPreparation = () => appels.push('abandon-preparation');
+  const lancerVitrine = (i, k) => lancer('vitrine', i, null, k);
   const resultat = { revision: base.autoconfig.REVISION, statut: 'ok', selection: 'medium', empreinte: 'machine', mesures: [{}], reglages: base.autoconfig.reglages('medium') };
   const B = { ...base, autoconfig: { ...base.autoconfig, async executer(io) {
     ioVu = io;
@@ -126,7 +129,12 @@ const demarrage = new Function('base','mesure','attente','gl', `
   const restaurerPalier=()=>{appels.push('palier');return false;};
   const detecterGraphismes=async()=>{appels.push('bench');await attente;appels.push('bench-termine');};
   const contexteGraphiqueRetabli=()=>{};
-  const lancer=()=>appels.push('vitrine'),aller=nom=>appels.push(nom),requestAnimationFrame=()=>appels.push('boucle'),image=()=>{},erreur=()=>appels.push('erreur');
+  const aller=nom=>appels.push(nom),requestAnimationFrame=()=>appels.push('boucle'),image=()=>{},erreur=()=>appels.push('erreur');
+  // la vitrine du titre se prépare comme une séance (preparerSeance, sous le voile de la page) et le moteur des
+  // rétroviseurs naît avec la page, après la détection qui décide du profil
+  let session=null;const prepa={dernier:null},abandonnerPreparation=()=>{};
+  const glacesPossibles=()=>true,creerMoteurRetro=()=>appels.push('retro');
+  const preparerSeance=async(type,i)=>{appels.push('vitrine');session={type,i};};
   ${bloc('  async function demarrer()', "  // Outil d'essai")}
   return {demarrer,appels,reglages};
 `);
@@ -135,8 +143,9 @@ await verifier('premier lancement : attendre le benchmark avant le titre, la mus
   const execution = h.demarrer();
   assert.deepEqual(h.appels, ['renderer','bench']); assert.equal(h.appels.includes('titre'), false);
   finir(); await execution;
-  // le palier appris de la qualité Auto est repris après la détection, avant la vitrine
-  assert.deepEqual(h.appels, ['renderer','bench','bench-termine','palier','son','vitrine','titre','boucle']);
+  // le palier appris de la qualité Auto est repris après la détection ; le moteur des glaces naît ensuite (il
+  // dépend des paliers atteignables), avant la vitrine
+  assert.deepEqual(h.appels, ['renderer','bench','bench-termine','palier','retro','son','vitrine','titre','boucle']);
 });
 await verifier('démarrage : une mesure faite au chronomètre GPU est refaite une fois quand la fin forcée existe', async () => {
   const gl = { readPixels() {} };
