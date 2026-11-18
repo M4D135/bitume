@@ -16,7 +16,8 @@
     { id: 'haut-col', nom: 'Haut-Col', lieu: 'Montagne', theme: 'montagne', graine: 47, longueur: 5200 },
     { id: 'lande-noire', nom: 'Lande-Noire', lieu: 'Islande · plateau volcanique', theme: 'islande', graine: 83, longueur: 4600 },
     { id: 'roche-fauve', nom: 'Roche-Fauve', lieu: 'Afrique · hauts plateaux d’ocre', theme: 'desert', graine: 107, longueur: 4800 },
-    { id: 'brume-de-jade', nom: 'Brume-de-Jade', lieu: 'Asie · pics calcaires et terrasses', theme: 'asie', graine: 131, longueur: 5000 }
+    { id: 'brume-de-jade', nom: 'Brume-de-Jade', lieu: 'Asie · pics calcaires et terrasses', theme: 'asie', graine: 131, longueur: 5000 },
+    { id: 'cap-sequoia', nom: 'Cap-Séquoia', lieu: 'États-Unis · falaises du Pacifique', theme: 'pacifique', graine: 157, longueur: 5200 }
   ];
 
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
@@ -2002,7 +2003,7 @@
     }
     // compteur d'images : le temps d'image lissé de la boucle, viré à l'ambre quand ça descend sous 50 i/s
     const fps = Math.round(1000 / Math.max(.5, dureeImage));
-    if (H['h-fps']) { texte(H['h-fps'], fps + ' i/s'); classe(H['h-fps'], 'bas', fps < 50); }
+    if (H['h-fps']) { texte(H['h-fps'], fps + ' FPS'); classe(H['h-fps'], 'bas', fps < 50); }
   }
 
   // ---------------------------------------------------------------- écrans
@@ -2116,7 +2117,7 @@
     $('p-saison-note').textContent = (reglages.saisonMode === 'manuel' ? '' : NOMS_SAISON[k.saison] + ' · ')
       + (profil.neige ? 'Paysage enneigé. Les précipitations manuelles tombent en flocons.' : k.saison === 'hiver' ? 'Hiver doux à Port-Sable, sans neige.' : 'La saison transforme le paysage.');
     $('p-moment-note').textContent = reglages.momentMode === 'reel' ? 'L’éclairage suit l’heure réelle, à vitesse normale.'
-      : reglages.momentMode === 'aleatoire' ? 'Moment tiré au sort : ' + NOMS_MOMENT[k.moment] + '.' : 'Cycle de six minutes. Lucioles nocturnes à Haut-Col.';
+      : reglages.momentMode === 'aleatoire' ? 'Moment tiré au sort : ' + NOMS_MOMENT[k.moment] + '.' : 'Cycle jour/nuit de six minutes.';
     const resume = CATALOGUE[reglages.circuit].nom + ' · ' + NOMS_SAISON[k.saison] + ' · ' + NOMS_MOMENT[k.moment]
       + (k.horlogeReelle ? ' (heure réelle)' : '') + ' · ' + nomMeteoCourse({ ...k, i: reglages.circuit });
     texte($('p-resume'), resume);

@@ -79,6 +79,11 @@
       atmosphere: { skyTop: [.10, .31, .43], skyBottom: [.69, .81, .77], fog: [.51, .66, .63], sunDirection: [-.58, .52, -.38], sunColor: [1.20, 1.24, 1.06], ambient: [.30, .39, .36], fogDensity: .00056, wind: .45, biome: 'asie' },
       herbe: [.13, .35, .24], herbeClaire: [.30, .48, .30], terre: [.24, .31, .22], roche: [.52, .57, .53],
       relief: 24, echelle: 370, essence: 'feuillu', densite: .28, marge: 1120, karstique: true
+    },
+    pacifique: {
+      atmosphere: { skyTop: [.12, .32, .54], skyBottom: [.73, .82, .85], fog: [.59, .70, .73], sunDirection: [-.64, .48, .31], sunColor: [1.36, 1.19, .93], ambient: [.31, .37, .40], fogDensity: .00048, wind: .95, biome: 'pacifique' },
+      herbe: [.40, .39, .21], herbeClaire: [.62, .55, .32], terre: [.37, .29, .20], roche: [.40, .36, .31], sable: [.23, .27, .27],
+      relief: 31, echelle: 410, essence: 'conifere', densite: .35, marge: 1120, eau: -58, pacifique: true
     }
   };
   const PUBLICITES = [[.86, .12, .08], [.98, .78, .10], [.10, .28, .70], [.06, .52, .30], [.95, .95, .92], [.08, .08, .09], [.92, .40, .06], [.40, .14, .55]];
@@ -171,6 +176,8 @@
     if (th.aride) return couleur;   // sable et grès : aucune prairie ni fleur lointaine
     if (th.volcanique) return melange(couleur, th.herbeClaire, lisse(.22, .85, habitat.herbe) * .82);
     if (th.karstique) return melange(couleur, th.herbeClaire, lisse(.30, .90, habitat.herbe) * .18);
+    // Clairières blondes et sol sombre des bosquets : l'herbe lointaine reste une couleur de la grille.
+    if (th.pacifique) return melange(melange(th.terre, th.herbeClaire, .66), [.20, .28, .16], lisse(.05, .70, habitat.boisement) * .88);
     const pousse = lisse(.02, .85, habitat.herbe), fleurs = habitat.fleurs * .14;
     const fleur = FLEURS_LOINTAINES[th.essence] || FLEURS_LOINTAINES.feuillu, resultat = new Array(3);
     // Les nappes portent l'illusion à distance : ces mêmes poches restent lisibles quand les brins
@@ -266,7 +273,7 @@
     if (th.eau !== undefined) {
       merDebut = -Infinity;
       for (let i = 0; i < c.n; i++) merDebut = Math.max(merDebut, (c.x[i] - centreX) * mer[0] + (c.z[i] - centreZ) * mer[1]);
-      merDebut += 90;
+      merDebut += th.pacifique ? 70 : 90;
     }
     const hauteur = (x, z) => {
       const q = interroger(x, z, th.karstique ? 380 : 230), d = q.i < 0 ? 1e4 : q.d, yT = q.i < 0 ? 0 : q.y;
@@ -313,7 +320,18 @@
       }
       if (th.eau !== undefined) {
         const p = (x - centreX) * mer[0] + (z - centreZ) * mer[1];
-        h -= 34 * lisse(merDebut - 40, merDebut + 220, p) * lisse(60, 140, d);
+        if (th.pacifique) {
+          // Trois caps inégaux et des anses ouvertes : une côte haute, distincte de la plage de Port-Sable.
+          // Le raccord au relief est nul à moins de 50 m de tout axe, y compris de l'autre côté d'une épingle.
+          const t = -(x - centreX) * mer[1] + (z - centreZ) * mer[0];
+          const cap = 190 * Math.exp(-Math.pow((t + 540) / 210, 2)) + 110 * Math.exp(-Math.pow((t - 310) / 135, 2))
+            + 245 * Math.exp(-Math.pow((t - 850) / 290, 2));
+          const rivage = merDebut - 85 + cap + 48 * Math.sin(t / 137 + .8) + 24 * Math.sin(t / 61);
+          const crete = 38 * Math.exp(-Math.pow((p - merDebut + 270) / 230, 2)) * (.35 + .65 * fbm(t / 390, 4.7, g + 233, 3));
+          h += crete * lisse(120, 340, d);
+          const falaise = lisse(rivage - 42, rivage + 38, p) * lisse(50, 135, d);
+          h += (th.eau - 18 - h) * falaise;
+        } else h -= 34 * lisse(merDebut - 40, merDebut + 220, p) * lisse(60, 140, d);
       }
       return { h, d };
     };
@@ -348,6 +366,12 @@
           const fissures = fbm(x / 65, z / 65, g + 179, 3);
           col = melange(th.roche, [.28, .36, .31], .20 + .48 * fissures); mat = 9;
         }
+      }
+      if (th.pacifique) {
+        const strates = .5 + .5 * Math.sin(h * .35 + bruit(x / 230, z / 230, g + 241) * 2.6);
+        if (ny < .84 || h < th.eau + 5) {
+          col = melange(th.roche, [.22, .24, .23], .18 + .55 * strates); mat = 9;
+        } else col = melange(th.herbe, th.herbeClaire, .30 + .56 * tache);
       }
       if (ecologie && mat === 8 && ny >= .7 && (th.eau === undefined || h >= th.eau + 2.2)) {
         col = couleurPrairie(th, col, ecologie.echantillonner(x, z, habitat));
@@ -388,7 +412,7 @@
     }
     let eau = null;
     if (th.eau !== undefined) {
-      const nap = nappe(), y = th.eau, col = [.10, .30, .40];
+      const nap = nappe(), y = th.eau, col = th.pacifique ? [.075, .235, .29] : [.10, .30, .40];
       const e = 2600, coins = [[centreX - e, centreZ - e], [centreX + e, centreZ - e], [centreX + e, centreZ + e], [centreX - e, centreZ + e]];
       const k = coins.map(([x, z]) => sommet(nap, [x, y, z], [0, 1, 0], 12, col));
       nap.i.push(k[0], k[2], k[1], k[0], k[3], k[2]);
@@ -673,8 +697,8 @@
         for (const triangle of n.herbeTriangles || []) for (let j = 0; j < 3; j++) visites[n.indices[triangle + j]] = 1;
         // Le bord sans vibreur est aussi herbeux, mais reste exclu de la plantation des brins.
         if (n.surfaceType === 'accotement') for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 9] === 8) visites[v] = 1;
-        if ((th.volcanique || th.aride || th.karstique) && saison.neige && n.surfaceType === 'terrain') {
-          for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 4] > .45) visites[v] = 1;
+        if ((th.volcanique || th.aride || th.karstique || th.pacifique) && saison.neige && n.surfaceType === 'terrain') {
+          for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 4] > .45 && (!th.pacifique || n.sommets[v * 13 + 1] > th.eau + 1)) visites[v] = 1;
         }
         for (let v = 0; v < visites.length; v++) if (visites[v]) {
           const k = v * 13, x = n.sommets[k], z = n.sommets[k + 2];
@@ -915,7 +939,7 @@
     const habitatArbre = {};
     function retenirArbre(objets, loin, x, z) {
       const richesse = ecologie ? ecologie.echantillonner(x, z, habitatArbre).boisement : 1;
-      if (richesse < .08 || hache(Math.round(x * 8), Math.round(z * 8), g + 337) > richesse) return;
+      if (!th.pacifique && (richesse < .08 || hache(Math.round(x * 8), Math.round(z * 8), g + 337) > richesse)) return;
       if (saison) {
         for (const liste of [objets, loin]) for (const o of liste) if (o.collision !== 'tronc' && o.color) {
           o.color = B.saisons.teinte(saison, 'feuillage', o.color, o.p[0], o.p[2], ecologie ? habitatArbre : null);
@@ -928,7 +952,7 @@
       ajouter(objets, loin, x, z); positionsArbres.push([x, z]);
     }
     let nombre = 0;
-    const MAX = th.volcanique || th.aride ? 0 : options.arbres === undefined ? (th.karstique ? 160 : 2600) : options.arbres;
+    const MAX = th.volcanique || th.aride || th.pacifique ? 0 : options.arbres === undefined ? (th.karstique ? 160 : 2600) : options.arbres;
     // Le budget réduit du nouveau biome est distribué sur tout le tour, sans remplir seulement le départ.
     const pasArbres = th.karstique ? Math.max(7, Math.ceil(c.n / 72)) : 7;
     for (let i = 0; i < c.n && nombre < MAX; i += pasArbres) {   // historique : un plan par 14 m de piste
@@ -970,8 +994,65 @@
       retenirArbre(objets, loin, jx, jz); nombre++;
     }
 
+    if (th.pacifique) {
+      // Bosquets irréguliers de grands conifères, séparés par de vraies clairières. Un hasard dédié
+      // garde les barrières et les autres décors indépendants de ce budget ; aucune recherche par image.
+      const foretR = alea(g ^ 0x5d83e7a1), plafond = options.arbres === undefined ? 320 : Math.max(0, Math.min(320, Math.floor(options.arbres)));
+      for (let bosquet = 0; bosquet < 100 && positionsArbres.length < plafond; bosquet++) {
+        const f = cadre(c, Math.floor(foretR() * c.n)), cote = foretR() < .5 ? -1 : 1;
+        const centre = pointPlan(f, cote * (80 + foretR() * 320), 0);
+        const cx = centre[0] + (foretR() - .5) * 85, cz = centre[2] + (foretR() - .5) * 85;
+        if (ecologie && ecologie.echantillonner(cx, cz, habitatArbre).boisement < .19) continue;
+        const orientation = foretR() * Math.PI, rx = 23 + foretR() * 38, rz = 18 + foretR() * 28;
+        const sujets = 9 + Math.floor(foretR() * 12);
+        for (let j = 0; j < sujets && positionsArbres.length < plafond; j++) {
+          const a = foretR() * Math.PI * 2, rayon = Math.sqrt(foretR());
+          const u = Math.cos(a) * rx * rayon, v = Math.sin(a) * rz * rayon;
+          const x = cx + u * Math.cos(orientation) - v * Math.sin(orientation), z = cz + u * Math.sin(orientation) + v * Math.cos(orientation);
+          const q = interroger(x, z, 160);
+          if (q.i >= 0 && (q.d < 42 || (Math.abs(B.circuit.ecart(c, 0, q.i * c.pas)) < 330 && q.d < 108))) continue;
+          const y = terrain.sol(x, z);
+          if (y < th.eau + 20 || Math.max(Math.abs(terrain.sol(x + 8, z) - terrain.sol(x - 8, z)),
+            Math.abs(terrain.sol(x, z + 8) - terrain.sol(x, z - 8))) > 9) continue;
+          if (positionsArbres.some(p => Math.hypot(p[0] - x, p[1] - z) < 7)) continue;
+          const objets = [], loin = [], pied = y - .35;
+          arbre(objets, loin, x, pied, z, 'conifere', foretR, qualite);
+          // Le tronc géant reste visible au loin : la couronne ne doit jamais flotter après la bascule de détail.
+          const tronc = objets.find(o => o.collision === 'tronc');
+          if (tronc) loin.push(tronc);
+          const taille = 2.8 + foretR() * .5;
+          // La silhouette et le tronc solide grandissent ensemble ; les LOD gardent la même emprise.
+          for (const o of new Set(objets.concat(loin))) {
+            o.p = [x + (o.p[0] - x) * taille, pied + (o.p[1] - pied) * taille, z + (o.p[2] - z) * taille];
+            o.s = o.s.map(v => v * taille);
+            if (o.collision === 'tronc') { o.s[0] *= 1.3; o.s[2] *= 1.3; o.color = [.34, .17, .085]; }
+            else if (o.color) o.color = [o.color[0] * .80, o.color[1] * .90, o.color[2] * 1.20];
+          }
+          retenirArbre(objets, loin, x, z);
+        }
+      }
+      // Écueils et rochers côtiers irréguliers, enfouis sous toute leur emprise. Les falaises principales
+      // sont déjà dans les nappes ; ces quelques solides conservent leur silhouette au loin.
+      const rocheR = alea(g ^ 0x2fd76c89);
+      for (let k = 0; k < 90; k++) {
+        const f = cadre(c, Math.floor(rocheR() * c.n)), p = pointPlan(f, (rocheR() < .5 ? -1 : 1) * (95 + rocheR() * 390), 0);
+        const x = p[0], z = p[2], y = terrain.sol(x, z);
+        if (y < th.eau - 9 || y > th.eau + 40) continue;
+        const largeur = 4 + rocheR() * 8, profondeur = 3 + rocheR() * 8, h = 4 + rocheR() * 10, a = rocheR() * Math.PI;
+        const q = interroger(x, z, 200), rayon = Math.hypot(largeur, profondeur) / 2;
+        if (q.i >= 0 && (q.d < w + 30 + rayon || (Math.abs(B.circuit.ecart(c, 0, q.i * c.pas)) < 330 && q.d < 108))) continue;
+        let bas = y - .7;
+        for (const dx of [-largeur / 2, largeur / 2]) for (const dz of [-profondeur / 2, profondeur / 2]) {
+          bas = Math.min(bas, terrain.sol(x + dx * Math.cos(a) + dz * Math.sin(a), z - dx * Math.sin(a) + dz * Math.cos(a)) - .4);
+        }
+        if (bas + h < th.eau + .6) continue;
+        const objets = [{ shape: 'bevel', collision: 'roche', p: [x, bas + h * .5, z], s: [largeur, h, profondeur], r: [0, a, 0], mat: 9, color: varier(th.roche, rocheR, .35) }];
+        ajouter(objets, objets, x, z);
+      }
+    }
+
     // Repères lointains selon le thème : phare et cabanons sur la côte, chalets en montagne, fermes en forêt.
-    const villages = th.volcanique || th.aride || th.karstique ? 0 : th.eau !== undefined ? 3 : 4;
+    const villages = th.volcanique || th.aride || th.karstique || th.pacifique ? 0 : th.eau !== undefined ? 3 : 4;
     for (let v = 0; v < villages; v++) {
       for (let essai = 0; essai < 40; essai++) {
         const x = bx0 + 200 + r() * (bx1 - bx0 - 400), z = bz0 + 200 + r() * (bz1 - bz0 - 400), q = interroger(x, z, 300);
@@ -1143,7 +1224,7 @@
       ? options.vegetationQualite : qualite;
     if (B.vegetation && options.vegetation !== false && vegetationQualite !== 'off') {
       const v = B.vegetation.construire(c, { limites: lim, interroger, qualite: vegetationQualite,
-        surfaces: vegetationQualite === 'low' || th.volcanique || th.aride || th.karstique ? null : ouvrirHerbier(), ecologie });
+        surfaces: vegetationQualite === 'low' || th.volcanique || th.aride || th.karstique || th.pacifique ? null : ouvrirHerbier(), ecologie });
       if (saison) {
         const habitat = {};
         for (const lot of v.lots) for (let i = 0; i < lot.objets.length; i++) {

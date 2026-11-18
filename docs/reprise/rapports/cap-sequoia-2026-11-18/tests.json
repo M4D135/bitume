@@ -1,0 +1,344 @@
+{
+  "date_utc": "2026-11-18T12:56:47.344704+00:00",
+  "suites": 66,
+  "reussies": 66,
+  "duree_secondes": 73.49,
+  "resultats": [
+    {
+      "suite": "ambiance.test.mjs",
+      "code": 0,
+      "secondes": 0.11
+    },
+    {
+      "suite": "asie.test.mjs",
+      "code": 0,
+      "secondes": 2.77
+    },
+    {
+      "suite": "aurores.test.mjs",
+      "code": 0,
+      "secondes": 0.1
+    },
+    {
+      "suite": "autoconfig-integration.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "autoconfig.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "botanique.test.mjs",
+      "code": 0,
+      "secondes": 0.29
+    },
+    {
+      "suite": "carene.test.mjs",
+      "code": 0,
+      "secondes": 0.09
+    },
+    {
+      "suite": "circuit.test.mjs",
+      "code": 0,
+      "secondes": 0.47
+    },
+    {
+      "suite": "collisions-orientees.test.mjs",
+      "code": 0,
+      "secondes": 0.05
+    },
+    {
+      "suite": "commandes-partage.test.mjs",
+      "code": 0,
+      "secondes": 0.05
+    },
+    {
+      "suite": "conditions-course.test.mjs",
+      "code": 0,
+      "secondes": 0.09
+    },
+    {
+      "suite": "conditions-integration.test.mjs",
+      "code": 0,
+      "secondes": 0.08
+    },
+    {
+      "suite": "conduite-criteres.test.mjs",
+      "code": 0,
+      "secondes": 1.61
+    },
+    {
+      "suite": "conduite.test.mjs",
+      "code": 0,
+      "secondes": 0.23
+    },
+    {
+      "suite": "contacts.test.mjs",
+      "code": 0,
+      "secondes": 0.11
+    },
+    {
+      "suite": "controle-visuel.test.mjs",
+      "code": 0,
+      "secondes": 0.08
+    },
+    {
+      "suite": "course.test.mjs",
+      "code": 0,
+      "secondes": 3.2
+    },
+    {
+      "suite": "crash.test.mjs",
+      "code": 0,
+      "secondes": 0.26
+    },
+    {
+      "suite": "decor-identite.test.mjs",
+      "code": 0,
+      "secondes": 2.08
+    },
+    {
+      "suite": "decor-obstacles.test.mjs",
+      "code": 0,
+      "secondes": 0.48
+    },
+    {
+      "suite": "decor.test.mjs",
+      "code": 0,
+      "secondes": 0.4
+    },
+    {
+      "suite": "desert.test.mjs",
+      "code": 0,
+      "secondes": 2.17
+    },
+    {
+      "suite": "ecologie.test.mjs",
+      "code": 0,
+      "secondes": 1.27
+    },
+    {
+      "suite": "effets-saison.test.mjs",
+      "code": 0,
+      "secondes": 1.06
+    },
+    {
+      "suite": "faune.test.mjs",
+      "code": 0,
+      "secondes": 4.15
+    },
+    {
+      "suite": "formes-libres.test.mjs",
+      "code": 0,
+      "secondes": 0.23
+    },
+    {
+      "suite": "glissiere-etats.test.mjs",
+      "code": 0,
+      "secondes": 0.19
+    },
+    {
+      "suite": "glissiere-rebond.test.mjs",
+      "code": 0,
+      "secondes": 0.07
+    },
+    {
+      "suite": "graphismes.test.mjs",
+      "code": 0,
+      "secondes": 0.07
+    },
+    {
+      "suite": "ia-attaque.test.mjs",
+      "code": 0,
+      "secondes": 10.3
+    },
+    {
+      "suite": "ia-epaves.test.mjs",
+      "code": 0,
+      "secondes": 0.1
+    },
+    {
+      "suite": "ia-reprise.test.mjs",
+      "code": 0,
+      "secondes": 0.11
+    },
+    {
+      "suite": "ia.test.mjs",
+      "code": 0,
+      "secondes": 0.09
+    },
+    {
+      "suite": "islande.test.mjs",
+      "code": 0,
+      "secondes": 2.0
+    },
+    {
+      "suite": "main.test.mjs",
+      "code": 0,
+      "secondes": 0.09
+    },
+    {
+      "suite": "manette.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "mesures.test.mjs",
+      "code": 0,
+      "secondes": 0.07
+    },
+    {
+      "suite": "meteo-reelle.test.mjs",
+      "code": 0,
+      "secondes": 0.09
+    },
+    {
+      "suite": "meteo.test.mjs",
+      "code": 0,
+      "secondes": 0.1
+    },
+    {
+      "suite": "moteur-emprise.test.mjs",
+      "code": 0,
+      "secondes": 0.07
+    },
+    {
+      "suite": "nature-integration.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "navigation-menu.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "obstacles.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "options-image.test.mjs",
+      "code": 0,
+      "secondes": 0.05
+    },
+    {
+      "suite": "pacifique.test.mjs",
+      "code": 0,
+      "secondes": 3.95
+    },
+    {
+      "suite": "pieces.test.mjs",
+      "code": 0,
+      "secondes": 0.44
+    },
+    {
+      "suite": "prets-enligne.test.mjs",
+      "code": 0,
+      "secondes": 0.07
+    },
+    {
+      "suite": "qualite.test.mjs",
+      "code": 0,
+      "secondes": 0.05
+    },
+    {
+      "suite": "realisateur.test.mjs",
+      "code": 0,
+      "secondes": 2.07
+    },
+    {
+      "suite": "relectures-phase2.test.mjs",
+      "code": 0,
+      "secondes": 0.2
+    },
+    {
+      "suite": "rendu-halo.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "reprise-recul.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "saisons.test.mjs",
+      "code": 0,
+      "secondes": 4.97
+    },
+    {
+      "suite": "salon-protocole.test.mjs",
+      "code": 0,
+      "secondes": 2.33
+    },
+    {
+      "suite": "scene-bench.test.mjs",
+      "code": 0,
+      "secondes": 1.67
+    },
+    {
+      "suite": "sillage.test.mjs",
+      "code": 0,
+      "secondes": 0.05
+    },
+    {
+      "suite": "son.test.mjs",
+      "code": 0,
+      "secondes": 0.2
+    },
+    {
+      "suite": "stands.test.mjs",
+      "code": 0,
+      "secondes": 5.29
+    },
+    {
+      "suite": "titre-signature.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "traces.test.mjs",
+      "code": 0,
+      "secondes": 1.19
+    },
+    {
+      "suite": "troncs.test.mjs",
+      "code": 0,
+      "secondes": 0.6
+    },
+    {
+      "suite": "tunnel-transitions.test.mjs",
+      "code": 0,
+      "secondes": 0.26
+    },
+    {
+      "suite": "tunnel.test.mjs",
+      "code": 0,
+      "secondes": 0.36
+    },
+    {
+      "suite": "vegetation.test.mjs",
+      "code": 0,
+      "secondes": 12.27
+    },
+    {
+      "suite": "vitre.test.mjs",
+      "code": 0,
+      "secondes": 0.14
+    },
+    {
+      "suite": "voiture.test.mjs",
+      "code": 0,
+      "secondes": 2.01
+    }
+  ],
+  "recontrole_final": {
+    "suite": "pacifique.test.mjs",
+    "controles": 11,
+    "code": 0,
+    "raison": "Conservation des troncs proches/lointains, avec botanique réelle et collisions uniques après correction du LOD."
+  }
+}

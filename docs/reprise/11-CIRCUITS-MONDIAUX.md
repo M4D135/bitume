@@ -59,8 +59,17 @@ Le contrôle visuel reste bloqué au démarrage de Chromium. Aucun gain FPS mat�
 Fiche courte : `11C-BRUME-DE-JADE.md`. Rapports : `rapports/brume-de-jade-2026-11-18/`.
 Checkpoint de progression publié : `5368b4b` ; reçu du jeu qualifié dans `publication.json`.
 
+## 11D — Cap-Séquoia, États-Unis (0.2.38)
+
+- Septième circuit original, index 6, graine 157, **5 234 m** ; côte rocheuse du Pacifique, anses, océan et 320 grands conifères en bosquets.
+- Géométrie et collisions stables entre saisons/qualités ; grands troncs conservés au loin, aucun brin ajouté.
+- Onze rivaux accomplissent un tour avec les vrais obstacles ; **66/66 suites**, 24 anciens décors identiques, double build reproductible, 34 modules FERRO conformes.
+- Demandes de cette reprise : **FPS en démo** sur ordinateur et tactile ; réglage **Faune**.
+- Fiche : `11D-CAP-SEQUOIA.md` ; preuves et reçu dans `rapports/cap-sequoia-2026-11-18/`.
+- Aperçus CPU du terrain inspectés ; WebGL et déploiement Mac/amiga toujours non réalisés.
+
 ## Tranche suivante
 
 Contrôler le jeu en WebGL et déployer dès que l’accès Mac/amiga est disponible.
-Poursuivre le programme de 16 circuits par un seul circuit original aux États-Unis. Publier fréquemment les progrès,
+Poursuivre le programme de 16 circuits par un seul circuit original d’Europe du Nord ou de l’Est. Publier fréquemment les progrès,
 puis le code et le build qualifiés, sans force et sans nouvelle branche.

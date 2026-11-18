@@ -1,0 +1,18 @@
+{
+  "reproductible": true,
+  "builds": [
+    {
+      "numero": 1,
+      "sha256": "46a0b0af1311c310bff6de0304da3744df78a2f7ed0d1a5c2e809bae92d78d9b",
+      "octets": 13237654,
+      "version": "0.2.38"
+    },
+    {
+      "numero": 2,
+      "sha256": "46a0b0af1311c310bff6de0304da3744df78a2f7ed0d1a5c2e809bae92d78d9b",
+      "octets": 13237654,
+      "version": "0.2.38"
+    }
+  ],
+  "ferro": "FERRO 0.3.9: 34 reference modules verified"
+}
