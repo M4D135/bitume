@@ -34,7 +34,7 @@ M.avancer(old,1/60);check(Number.isFinite(old.meteo.mouille)&&old.meteo.phase===
 const after=JSON.stringify(old);for(const dt of [0,-1,NaN,Infinity])M.avancer(old,dt);check(JSON.stringify(old)===after,'pas invalide ignoré');
 function surface(w=1280,h=720){
  const traces=[],styles=[];let point=null,strokes=0;
- const ctx={setTransform(){},clearRect(){traces.length=styles.length=0;strokes=0},beginPath(){},moveTo(x,y){point=[x,y]},lineTo(x,y){traces.push([...point,x,y])},stroke(){strokes++;styles.push([this.lineWidth,this.strokeStyle])}};
+ const ctx={setTransform(){},clearRect(){traces.length=styles.length=0;strokes=0},beginPath(){},moveTo(x,y){point=[x,y]},lineTo(x,y){traces.push([...point,x,y])},stroke(){strokes++;styles.push([this.lineWidth,this.strokeStyle,this.globalAlpha])}};
  const canvas={clientWidth:w,clientHeight:h,width:0,height:0,getContext:()=>ctx};
  return {canvas,ctx,traces,styles,get strokes(){return strokes}};
 }
@@ -45,9 +45,13 @@ for(const hz of [30,60,120]){
  for(let i=1;i<=hz;i++){m.t=12+i/hz;cam.pos=[i/hz*2,1.2,-i/hz*20];p.dessiner(m,cam,1/hz,{cockpit:true,dpr:2})}
  check(p.stats.visibles>8&&p.stats.visibles<840,`${hz}Hz gouttes projetées`);
  check(s.strokes<=3&&s.strokes>0,'au plus 3 lots');
- check(s.canvas.width===1920&&s.canvas.height===1080,'DPR borné1.5 et taille CSS respectée');
+ // 1280 × 720 à dpr 2 : borné à 1,5, soit 1920 × 1080 = 2,07 Mpx, au-delà du plafond de 2 Mpx commun avec la
+ // visière ; la toile descend donc à la plus grande définition sous le plafond, aux proportions de la taille CSS.
+ const k=Math.sqrt(M.MAX_PIXELS/(1280*720));
+ check(s.canvas.width===Math.floor(1280*k)&&s.canvas.height===Math.floor(720*k)&&s.canvas.width*s.canvas.height<=M.MAX_PIXELS,'DPR borné à 1,5, plafond de 2 Mpx et taille CSS respectée');
  check(s.traces.every(v=>v.every(Number.isFinite)&&Math.hypot(v[2]-v[0],v[3]-v[1])<=18.0001),'traits finis et longueur bornée');
- check(s.styles.every(v=>v[0]<=1&&Number(v[1].match(/,([^,]+)\)$/)[1])<=.28),'traits fins et translucides');
+ // L'opacité des lots passe désormais par globalAlpha, la couleur restant une chaîne constante.
+ check(s.styles.every(v=>v[0]<=1&&v[1]==='rgb(190,210,225)'&&v[2]>0&&v[2]<=.28),'traits fins et translucides');
  const before=JSON.stringify(s.traces);p.dessiner(m,cam,0,{cockpit:true,dpr:2});check(JSON.stringify(s.traces)===before,'pause garde projection/traînée exactes');
  results.push(s.traces.map(v=>v.map(n=>Math.round(n*1000)/1000)));
  cam.yaw=.7;p.dessiner(m,cam,0,{cockpit:true});check(JSON.stringify(s.traces)!==before,'orientation caméra change projection');
