@@ -1,0 +1,30 @@
+{
+  "date_utc": "2026-11-18T07:43:51.888327+00:00",
+  "bitume": {
+    "version": "0.2.29",
+    "branch": "main",
+    "base": "b094dc4d25bf9a16d0c21044226d29879ab93dab",
+    "commit": "40b31d582e434b8d87379c360648997e940f6d64",
+    "tree": "0285d3f8073f17c21b46619d751eeac8e019b3d9",
+    "remote_head_verified": true,
+    "tree_equals_qualified_local_index": true,
+    "dist_git_blob": "c38dc906791c24723c7e5a167d722d638778a67a",
+    "dist_sha256": "969f211ec815ac28601761e5c5dfb1a7eea17e151f0c17d9ea9978e3bac5f2df"
+  },
+  "ferro": {
+    "version": "0.3.6",
+    "branch": "main",
+    "commit": "7d7f1018db33632ae448e6fd6e0b4f6b6f8fe5d1",
+    "remote_head_verified": true
+  },
+  "qualification": "publication-validation.json; preuves anterieures tests.json et tests.zip",
+  "deployment": {
+    "done": false,
+    "reason": "ssh amiga: Could not resolve hostname amiga: Temporary failure in name resolution",
+    "served_version": "0.2.28",
+    "served_sha256": "41f82e4cac4256fe3db92f032e9a4f2e4c498a5402ab1f79b9eef2aa71e329bd",
+    "http_status": 200
+  },
+  "browser_qualification": "non executee dans cette reprise",
+  "next": "Validation visuelle et deploiement depuis le Mac."
+}

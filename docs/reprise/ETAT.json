@@ -6,11 +6,11 @@
     "base_version": "0.2.28",
     "version": "0.2.29",
     "ferro_version": "0.3.6",
-    "statut": "qualifie_hors_navigateur_publication_en_cours",
+    "statut": "publie_validation_visuelle_et_deploiement_en_attente",
     "lot": "options_vegetation",
     "fiche": "docs/reprise/07-OPTIONS-VEGETATION.md",
-    "commit_publie": null,
-    "prochaine_action": "Publier BITUME 0.2.29 ; depuis le Mac, deployer et qualifier le rendu."
+    "commit_publie": "40b31d582e434b8d87379c360648997e940f6d64",
+    "prochaine_action": "Depuis le Mac : verifier image/options en solo et a deux, executer ./deposer.sh, puis comparer le SHA256 servi."
   },
   "qualification": {
     "historique_jeu": "46/46 suites Node reussies avant cette reprise",
@@ -34,9 +34,11 @@
     "derniere_production_documentee": {
       "version": "0.2.28",
       "commit": "46a5cce62c7c3beae8c66da2deed689802983050",
-      "date": "2026-11-17",
-      "reverifiee_dans_cette_reprise": false
-    }
+      "date": "2026-11-18",
+      "reverifiee_dans_cette_reprise": true,
+      "sha256": "41f82e4cac4256fe3db92f032e9a4f2e4c498a5402ab1f79b9eef2aa71e329bd"
+    },
+    "recu_publication": "docs/reprise/rapports/options-vegetation-2026-11-18/publication.json"
   },
   "reprise_courte": {
     "regle": "Lire REPRISE.md et cet etat ; un seul lot ; sorties et recherches bornees ; historique seulement si necessaire.",

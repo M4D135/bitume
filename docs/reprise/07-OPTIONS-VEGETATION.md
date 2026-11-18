@@ -54,3 +54,5 @@ Le déploiement Mac/amiga est déjà autorisé mais aucun accès SSH corresponda
 FERRO 0.3.6 publié sur `main` : `7d7f1018db33632ae448e6fd6e0b4f6b6f8fe5d1`. Les quatre suites jeu ciblées et le verrou 34/34 repassent ; reconstruction identique au build récupéré. Preuve : `rapports/options-vegetation-2026-11-18/publication-validation.json`. Les résultats 46/46 restent les preuves antérieures, pas une nouvelle exécution complète.
 
 `REPRISE.md` et `ETAT.json` sont réduits à l’état courant. Leur contenu précédent est conservé dans `archives/` ; les prochaines discussions ne lisent que le lot actif. La validation visuelle et le déploiement du build 0.2.29 restent à faire depuis le Mac.
+
+Publication du jeu vérifiée : `40b31d582e434b8d87379c360648997e940f6d64` sur `main`, arbre `0285d3f8073f17c21b46619d751eeac8e019b3d9` strictement identique à l’index local qualifié, comprenant sources et `dist/bitume.html`. Le site public a été relu : il sert encore **0.2.28** (SHA256 `41f82e4cac4256fe3db92f032e9a4f2e4c498a5402ab1f79b9eef2aa71e329bd`). L’hôte `amiga` n’est pas résolu dans cet environnement ; aucune mise en ligne 0.2.29 n’est revendiquée.

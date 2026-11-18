@@ -5,15 +5,15 @@
 - Branche : `main`. Base vérifiée : `b094dc4d25bf9a16d0c21044226d29879ab93dab` (0.2.28).
 - Lot repris : **0.2.29**, herbe plus dense et choix séparés anticrénelage, ombres, végétation.
 - Moteur **FERRO 0.3.6 publié** : `7d7f1018db33632ae448e6fd6e0b4f6b6f8fe5d1`.
-- Sources et build récupérés ; publication en cours. Reçus exacts dans `docs/reprise/ETAT.json`.
+- **Sources et build 0.2.29 publiés** : `40b31d582e434b8d87379c360648997e940f6d64`. Reçus dans `docs/reprise/ETAT.json`.
 - Preuves existantes : 46/46 suites jeu ; 136 contrôles moteur réussis et 1 TODO historique.
 - Reprise : 4 suites ciblées, verrou 34/34, build identique. Voir `publication-validation.json` dans le dossier de preuves.
 - Limite : image du build final et performances GPU réelles non validées.
-- Déploiement 0.2.29 autorisé, non exécuté ici : accès Mac/amiga indisponible. Dernière production documentée : 0.2.28.
+- Déploiement 0.2.29 autorisé, non exécuté ici : accès Mac/amiga indisponible. Production revérifiée dans cette reprise : 0.2.28.
 
 ## Prochain petit lot
 
-Terminer la publication du jeu. Depuis le Mac : suivre la fiche **07-OPTIONS-VEGETATION.md**, tester les trois réglages et les densités en solo/à deux, puis `./deposer.sh` et comparer l'empreinte servie.
+Depuis le Mac : suivre la fiche **07-OPTIONS-VEGETATION.md**, tester les trois réglages et les densités en solo/à deux, puis `./deposer.sh` et comparer l'empreinte servie.
 
 ## Méthode pour ne pas remplir le contexte
 
