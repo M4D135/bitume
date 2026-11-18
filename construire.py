@@ -43,6 +43,7 @@ MODULES = [
     'decor.js',
     'faune.js',
     'effets-saison.js',
+    'aurores.js',
     'carene.js',
     'humain-donnees.js',
     'humain-corps.js',

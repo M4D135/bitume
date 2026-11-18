@@ -64,6 +64,11 @@
     montagne: {
       atmosphere: { skyTop: [.09, .29, .62], skyBottom: [.62, .74, .87], fog: [.67, .75, .83], sunDirection: [.30, .70, -.46], sunColor: [1.30, 1.19, 1.02], ambient: [.32, .37, .43], fogDensity: .00075, wind: .7, biome: 'montagne' },
       herbe: [.21, .33, .14], herbeClaire: [.29, .40, .17], terre: [.28, .31, .17], roche: [.47, .46, .43], neige: [.94, .96, .99], relief: 44, echelle: 520, essence: 'conifere', densite: .5, marge: 1050, montagnes: true
+    },
+    islande: {
+      atmosphere: { skyTop: [.12, .25, .43], skyBottom: [.66, .73, .77], fog: [.54, .62, .67], sunDirection: [-.58, .37, .46], sunColor: [1.12, 1.17, 1.22], ambient: [.31, .36, .41], fogDensity: .00062, wind: 1.05, biome: 'islande' },
+      herbe: [.19, .26, .105], herbeClaire: [.31, .39, .16], terre: [.095, .105, .115], roche: [.14, .15, .165],
+      relief: 42, echelle: 300, essence: null, densite: 0, marge: 1050, volcanique: true
     }
   };
   const PUBLICITES = [[.86, .12, .08], [.98, .78, .10], [.10, .28, .70], [.06, .52, .30], [.95, .95, .92], [.08, .08, .09], [.92, .40, .06], [.40, .14, .55]];
@@ -153,6 +158,7 @@
   const NUANCE_SOL_NU = [1.10, .86, .96];
   const FLEURS_LOINTAINES = { feuillu: [.66, .55, .29], pin: [.73, .64, .35], conifere: [.53, .44, .61] };
   function couleurPrairie(th, couleur, habitat) {
+    if (th.volcanique) return melange(couleur, th.herbeClaire, lisse(.22, .85, habitat.herbe) * .82);
     const pousse = lisse(.02, .85, habitat.herbe), fleurs = habitat.fleurs * .14;
     const fleur = FLEURS_LOINTAINES[th.essence] || FLEURS_LOINTAINES.feuillu, resultat = new Array(3);
     // Les nappes portent l'illusion à distance : ces mêmes poches restent lisibles quand les brins
@@ -182,7 +188,8 @@
         const f = cadre(c, i), no = [Math.sin(f.devers) * f.r[0], Math.cos(f.devers), Math.sin(f.devers) * f.r[2]];
         const limG = lim.G[f.i], limD = lim.D[f.i];
         const vib = c.vibreur[f.i], tranche = Math.floor(f.i * c.pas / 4) % 2;
-        const tonte = naturel ? melange(th.herbe, th.herbeClaire, .2 + .65 * fbm(f.x / 65, f.z / 65, c.graine + 391, 3))
+        const tonte = th.volcanique ? melange(th.terre, th.herbe, lisse(.46, .73, fbm(f.x / 65, f.z / 65, c.graine + 391, 3)))
+          : naturel ? melange(th.herbe, th.herbeClaire, .2 + .65 * fbm(f.x / 65, f.z / 65, c.graine + 391, 3))
           : Math.floor(f.i * c.pas / 20) % 2 ? th.herbe : th.herbeClaire;
         for (let b = 0; b < bandes.length; b++) {
           const [type, cote] = bandes[b];
@@ -198,7 +205,7 @@
               y1 = yBord + (avec ? .05 : -.015);
               if (avec) { mat = 14; col = tranche ? rouge : blancBordure; } else { mat = 8; col = tonte; }
             } else if (type === 'herbe') { d0 = bord * (w + 1.2); d1 = bord * ext; y0 = yBord - .015; y1 = yBord - .02 * (ext - w - 1.2); col = tonte; n0 = n1 = [0, 1, 0]; }
-            else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; col = th.herbe.map(v => v * .86); n0 = n1 = [0, 1, 0]; }
+            else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; col = (th.volcanique ? th.terre : th.herbe).map(v => v * .86); n0 = n1 = [0, 1, 0]; }
             if (cote < 0) { const t = d0; d0 = d1; d1 = t; const u = y0; y0 = y1; y1 = u; }
           }
           const p0 = pointPlan(f, d0, y0), p1 = pointPlan(f, d1, y1);
@@ -249,6 +256,14 @@
         const crete = 1 - Math.abs(fbm(x / 900, z / 900, g + 9, 4) * 2 - 1);
         h += (120 + 260 * crete) * lisse(380, 1050, d);
       }
+      if (th.volcanique) {
+        // Deux caldeiras asymétriques dans la grille existante : aucune géométrie animée, aucun relief sur la piste.
+        const u = Math.hypot((x - x0 - 330) / 440, (z - z1 + 300) / 360);
+        const v = Math.hypot((x - x1 + 400) / 570, (z - z0 - 350) / 420);
+        const cones = 270 * (Math.exp(-u * u * .8) - .64 * Math.exp(-u * u * 7))
+          + 190 * (Math.exp(-v * v * .75) - .56 * Math.exp(-v * v * 6));
+        h += cones * lisse(150, 420, d);
+      }
       if (th.eau !== undefined) {
         const p = (x - centreX) * mer[0] + (z - centreZ) * mer[1];
         h -= 34 * lisse(merDebut - 40, merDebut + 220, p) * lisse(60, 140, d);
@@ -262,6 +277,11 @@
     const couleur = (h, d, ny, x, z) => {
       const tache = fbm(x / 140, z / 140, g + 3, 3);
       let col = melange(th.herbe, th.terre, lisse(.45, .8, tache) * .7), mat = 8;
+      if (th.volcanique) {
+        col = melange(th.terre, th.roche, tache);
+        if (ny < .78) mat = 9;
+        else if (!ecologie) col = melange(col, th.herbe, lisse(.48, .72, tache));
+      }
       if (th.eau !== undefined && h < th.eau + 2.2) { col = th.sable; }
       if (th.montagnes) {
         if (ny < .8 || h > 120) { col = melange(th.roche, th.roche.map(v => v * .8), tache); mat = 9; }
@@ -591,6 +611,9 @@
         for (const triangle of n.herbeTriangles || []) for (let j = 0; j < 3; j++) visites[n.indices[triangle + j]] = 1;
         // Le bord sans vibreur est aussi herbeux, mais reste exclu de la plantation des brins.
         if (n.surfaceType === 'accotement') for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 9] === 8) visites[v] = 1;
+        if (th.volcanique && saison.neige && n.surfaceType === 'terrain') {
+          for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 4] > .45) visites[v] = 1;
+        }
         for (let v = 0; v < visites.length; v++) if (visites[v]) {
           const k = v * 13, x = n.sommets[k], z = n.sommets[k + 2];
           if (ecologie) ecologie.echantillonner(x, z, habitat);
@@ -843,7 +866,7 @@
       ajouter(objets, loin, x, z); positionsArbres.push([x, z]);
     }
     let nombre = 0;
-    const MAX = options.arbres === undefined ? 2600 : options.arbres;
+    const MAX = th.volcanique ? 0 : options.arbres === undefined ? 2600 : options.arbres;
     for (let i = 0; i < c.n && nombre < MAX; i += 7) {   // un plan par 14 m de piste, de chaque côté
       const f = cadre(c, i);
       for (const cote of [-1, 1]) {
@@ -884,7 +907,7 @@
     }
 
     // Repères lointains selon le thème : phare et cabanons sur la côte, chalets en montagne, fermes en forêt.
-    const villages = th.eau !== undefined ? 3 : 4;
+    const villages = th.volcanique ? 0 : th.eau !== undefined ? 3 : 4;
     for (let v = 0; v < villages; v++) {
       for (let essai = 0; essai < 40; essai++) {
         const x = bx0 + 200 + r() * (bx1 - bx0 - 400), z = bz0 + 200 + r() * (bz1 - bz0 - 400), q = interroger(x, z, 300);
@@ -916,6 +939,26 @@
       if (q.i >= 0 && q.d < 34) continue;
       const y = terrain.sol(x, z), t = 2 + r() * 7;
       ajouter([{ shape: r() < .5 ? 'octa' : 'sphere', p: [x, y + t * .2, z], s: [t * (1 + r()), t, t * (1 + r())], r: [r(), r() * 6, r()], mat: 9, color: th.roche }], [], x, z);
+    }
+    // Basalte en poches irrégulières : silhouettes conservées au loin, une seule construction par circuit.
+    if (th.volcanique) {
+      const rocheR = alea(g ^ 0x6a41b391);
+      for (let k = 0; k < 120; k++) {
+        const f = cadre(c, Math.floor(rocheR() * c.n)), cote = rocheR() < .5 ? -1 : 1;
+        const p = pointPlan(f, cote * (46 + rocheR() * 210), 0), objets = [], nombre = 2 + Math.floor(rocheR() * 4);
+        for (let j = 0; j < nombre; j++) {
+          const x = p[0] + (rocheR() - .5) * 22, z = p[2] + (rocheR() - .5) * 22;
+          const q = interroger(x, z, 160), largeur = 1.6 + rocheR() * 4.2, hauteur = 2 + rocheR() * 7;
+          // Vérifier aussi l'autre côté d'une épingle et les stands, pas seulement le décalage du candidat.
+          if (q.i >= 0 && (q.d < 35 + largeur || (Math.abs(B.circuit.ecart(c, 0, q.i * c.pas)) < 330 && q.d < 100))) continue;
+          const y = terrain.sol(x, z), a = rocheR() * Math.PI, couleur = varier(th.roche, rocheR, .5), mousse = .38 + rocheR() * .4;
+          objets.push({ shape: 'box', collision: 'roche', p: [x, y + hauteur * .44, z], s: [largeur, hauteur, largeur * .78], r: [0, a, 0], mat: 9, color: couleur });
+          // Un sommet bas, moussu ou enneigé, laisse les flancs de basalte noirs même en hiver.
+          objets.push({ shape: 'box', p: [x, y + hauteur * .94 + .035, z], s: [largeur, .07, largeur * .78], r: [0, a, 0], mat: saison && saison.neige ? 3 : 8,
+            color: saison && saison.neige ? [.90, .93, .96] : melange(couleur, th.herbe, mousse) });
+        }
+        if (objets.length) ajouter(objets, objets, p[0], p[2]);
+      }
     }
 
     // Finition des lots : sphère englobante et portée.
@@ -983,7 +1026,7 @@
       ? options.vegetationQualite : qualite;
     if (B.vegetation && options.vegetation !== false && vegetationQualite !== 'off') {
       const v = B.vegetation.construire(c, { limites: lim, interroger, qualite: vegetationQualite,
-        surfaces: vegetationQualite === 'low' ? null : ouvrirHerbier(), ecologie });
+        surfaces: vegetationQualite === 'low' || th.volcanique ? null : ouvrirHerbier(), ecologie });
       if (saison) {
         const habitat = {};
         for (const lot of v.lots) for (let i = 0; i < lot.objets.length; i++) {

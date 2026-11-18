@@ -2,24 +2,22 @@
   "date": "2026-11-18",
   "etat_courant": {
     "branche": "main",
-    "base_commit": "63f4b53e6c9ae50e6cfc641332f7856f0b23e8c4",
-    "base_version": "0.2.32",
-    "version_cible": "0.2.33",
-    "ferro_version_base": "0.3.8",
-    "statut": "lot_10_qualifie_publication_en_cours",
-    "lot": "nature_saisons_detection_conditions_menus",
-    "fiche": "docs/reprise/10-NATURE-ET-AUTODETECTION.md",
+    "base_commit": "7a7ced67609ad8e505c58fc00493f72e4bad4b4c",
+    "base_version": "0.2.33",
+    "version_cible": "0.2.34",
+    "statut": "lot_11a_qualifie_publication_en_cours",
+    "lot": "lande_noire_islande_aurores",
+    "fiche": "docs/reprise/11-CIRCUITS-MONDIAUX.md",
     "commit_publie": null,
-    "prochaine_action": "Publier le code et le build 0.2.33 verifies, confirmer la tete main, enregistrer le recu. Lot11 traite ensuite par petits lots.",
-    "precision_utilisateur": "Clairières et poches riches ; herbe 3D proche puis grossière et simple terrain coloré au loin ; saisons, moment et météo seulement avant course, modes manuel/aléatoire/réel. Météo par IP et horloge réelle ; en ligne, données de l’hôte uniquement. Pluie/neige sur la vitre, flocons dans l’air. Menus regroupés et navigation manette.",
-    "checkpoint_commit": "b6ee54203e7cbceea252094e29d3f931d347ac65",
+    "catalogue_jouable": 4,
+    "prochaine_action": "Publier le lot 11A et le build 0.2.34 sans force ; enregistrer le reçu puis contrôle visuel et déploiement dès accès Mac/amiga.",
     "qualification": {
-      "suites": 61,
-      "reussies": 61,
+      "suites": 63,
+      "reussies": 63,
       "ferro_modules": 34,
       "build_reproductible": true,
-      "reverifiee": "2026-11-18",
-      "preuve": "docs/reprise/rapports/nature-conditions-menus-2026-11-18/validation-reprise-publication.json"
+      "visuel_realise": false,
+      "preuve": "docs/reprise/rapports/islande-2026-11-18/qualification.json"
     }
   },
   "integration": {
@@ -42,22 +40,26 @@
       "signature": "m4d135 telecharge BITUME.html",
       "controle_utc": "2026-11-18T08:39:55.041574+00:00"
     },
-    "deploiement_blocage": "Acces Mac/amiga indisponible dans cet environnement ; autorisation deja acquise.",
+    "deploiement_blocage": "Accès Mac/amiga absent ; contrôle SSH bloqué par les permissions de la configuration système, inchangée. Autorisation déjà acquise.",
     "deploiement_031_effectue": false,
     "deploiement_032_effectue": false,
     "publication_bitume": {
-      "version": "0.2.32",
-      "commit": "e90b08f550eae2bda47ad14d4093911d3fd793d2",
-      "arbre": "557ba44aeb3f2dc92c2b64c9fc1ebdee11e11c8e",
+      "version": "0.2.33",
+      "commit": "7a7ced67609ad8e505c58fc00493f72e4bad4b4c",
+      "arbre": "5451dc179787cf2a770a91bcf1885d16693dd052",
       "branche": "main",
       "verifiee": true,
-      "force": false,
-      "parent_attendu": "e4d3e74b76ed03222424077bad1939acbd5e60c0"
+      "force": false
     },
     "production_controle_final": {
-      "statut": "non_reconfirmee",
-      "raison": "Lecture web inaccessible ; GET HTTPS direct termine par timeout. Aucun deploiement ici.",
-      "note_enregistree_utc": "2026-11-18T09:42:03.755592+00:00"
+      "controle_utc": "2026-11-18T11:29:22.840841+00:00",
+      "url": "https://bitume.estrasse.fr/",
+      "http": 200,
+      "version": "0.2.32",
+      "sha256": "99f404b8df5dd6dc520545c79d572cd8af0254a71bd7e19a18a125909110b86b",
+      "octets": 13075203,
+      "deploiement_effectue": false,
+      "blocage": "Aucun accès Mac/amiga disponible ; la commande SSH de contrôle échoue sur les permissions de /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf. Configuration système laissée intacte."
     }
   },
   "reprise_courte": {
@@ -69,9 +71,9 @@
     "autres_chantiers": "Lots 0 a 4 termines ; optimisation lot 5 partielle. Details archives, ne pas rouvrir pendant la publication de ce lot."
   },
   "lot_precedent": {
-    "version": "0.2.32",
-    "commit": "e90b08f550eae2bda47ad14d4093911d3fd793d2",
-    "recu": "docs/reprise/rapports/prairies-vivantes-2026-11-18/publication.json"
+    "version": "0.2.33",
+    "commit": "7a7ced67609ad8e505c58fc00493f72e4bad4b4c",
+    "recu": "docs/reprise/rapports/nature-conditions-menus-2026-11-18/publication.json"
   },
   "lot_suivant": {
     "numero": 11,
@@ -89,6 +91,6 @@
       "Vroom officiel",
       "dépôt GitHub personnel Vroom Unreal"
     ],
-    "statut": "à examiner après gel du lot10"
+    "statut": "11A qualifié ; contrôler visuellement, publier puis poursuivre par un circuit contrasté Asie/Afrique."
   }
 }

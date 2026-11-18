@@ -115,6 +115,9 @@ test('les paramètres de capture fixent taille, graine, qualité et budget de pa
   const o = optionsCapture(['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/qa', '--scenario', 'duo', '--taille', '800x600', '--images', '3']);
   assert.deepEqual(o.taille, [800, 600]); assert.equal(o.referenceJeu.mode, 'duo'); assert.equal(o.images, 3);
   assert.equal(o.referenceJeu.graine, 17017); assert.equal(o.referenceJeu.qualite, 'high');
+  const nuit = optionsCapture(['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/nuit', '--scenario', 'piste', '--circuit', '3', '--moment', 'nuit', '--saison', 'hiver']);
+  assert.equal(nuit.referenceJeu.circuit, 3); assert.equal(nuit.referenceJeu.moment, 'nuit'); assert.equal(nuit.referenceJeu.saison, 'hiver');
+  assert.throws(() => optionsCapture(['--url', 'file:///a', '--sortie', '/tmp/a', '--moment', 'inconnu']), /moment/);
   assert.throws(() => optionsCapture(['--url', 'file:///a', '--sortie', '/tmp/a', '--pas', '.5']), /pas/);
   assert.throws(() => optionsCapture(['--url', 'file:///a', '--sortie', '/tmp/a', '--qualite', 'auto']), /qualite/);
   assert.throws(() => optionsCapture(['--inconnue', 'oui']), /inconnue/);

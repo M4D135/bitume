@@ -1,0 +1,343 @@
+{
+  "version_cible": "0.2.34",
+  "base": "7a7ced67609ad8e505c58fc00493f72e4bad4b4c",
+  "date_utc": "2026-11-18T11:28:23Z",
+  "suites": 63,
+  "reussies": 63,
+  "duree_secondes": 34.34,
+  "resultats": [
+    {
+      "suite": "verifications/ambiance.test.mjs",
+      "code": 0,
+      "secondes": 0.104
+    },
+    {
+      "suite": "verifications/aurores.test.mjs",
+      "code": 0,
+      "secondes": 0.166
+    },
+    {
+      "suite": "verifications/autoconfig-integration.test.mjs",
+      "code": 0,
+      "secondes": 0.121
+    },
+    {
+      "suite": "verifications/autoconfig.test.mjs",
+      "code": 0,
+      "secondes": 0.097
+    },
+    {
+      "suite": "verifications/botanique.test.mjs",
+      "code": 0,
+      "secondes": 0.532
+    },
+    {
+      "suite": "verifications/carene.test.mjs",
+      "code": 0,
+      "secondes": 0.161
+    },
+    {
+      "suite": "verifications/circuit.test.mjs",
+      "code": 0,
+      "secondes": 0.584
+    },
+    {
+      "suite": "verifications/collisions-orientees.test.mjs",
+      "code": 0,
+      "secondes": 0.096
+    },
+    {
+      "suite": "verifications/commandes-partage.test.mjs",
+      "code": 0,
+      "secondes": 0.076
+    },
+    {
+      "suite": "verifications/conditions-course.test.mjs",
+      "code": 0,
+      "secondes": 0.128
+    },
+    {
+      "suite": "verifications/conditions-integration.test.mjs",
+      "code": 0,
+      "secondes": 0.085
+    },
+    {
+      "suite": "verifications/conduite-criteres.test.mjs",
+      "code": 0,
+      "secondes": 2.12
+    },
+    {
+      "suite": "verifications/conduite.test.mjs",
+      "code": 0,
+      "secondes": 0.299
+    },
+    {
+      "suite": "verifications/contacts.test.mjs",
+      "code": 0,
+      "secondes": 0.156
+    },
+    {
+      "suite": "verifications/controle-visuel.test.mjs",
+      "code": 0,
+      "secondes": 0.09
+    },
+    {
+      "suite": "verifications/course.test.mjs",
+      "code": 0,
+      "secondes": 3.992
+    },
+    {
+      "suite": "verifications/crash.test.mjs",
+      "code": 0,
+      "secondes": 0.514
+    },
+    {
+      "suite": "verifications/decor-identite.test.mjs",
+      "code": 0,
+      "secondes": 2.809
+    },
+    {
+      "suite": "verifications/decor-obstacles.test.mjs",
+      "code": 0,
+      "secondes": 0.769
+    },
+    {
+      "suite": "verifications/decor.test.mjs",
+      "code": 0,
+      "secondes": 0.561
+    },
+    {
+      "suite": "verifications/ecologie.test.mjs",
+      "code": 0,
+      "secondes": 1.079
+    },
+    {
+      "suite": "verifications/effets-saison.test.mjs",
+      "code": 0,
+      "secondes": 1.098
+    },
+    {
+      "suite": "verifications/faune.test.mjs",
+      "code": 0,
+      "secondes": 4.831
+    },
+    {
+      "suite": "verifications/formes-libres.test.mjs",
+      "code": 0,
+      "secondes": 0.278
+    },
+    {
+      "suite": "verifications/glissiere-etats.test.mjs",
+      "code": 0,
+      "secondes": 0.092
+    },
+    {
+      "suite": "verifications/glissiere-rebond.test.mjs",
+      "code": 0,
+      "secondes": 0.07
+    },
+    {
+      "suite": "verifications/graphismes.test.mjs",
+      "code": 0,
+      "secondes": 0.075
+    },
+    {
+      "suite": "verifications/ia-attaque.test.mjs",
+      "code": 0,
+      "secondes": 13.175
+    },
+    {
+      "suite": "verifications/ia-epaves.test.mjs",
+      "code": 0,
+      "secondes": 0.11
+    },
+    {
+      "suite": "verifications/ia-reprise.test.mjs",
+      "code": 0,
+      "secondes": 0.12
+    },
+    {
+      "suite": "verifications/ia.test.mjs",
+      "code": 0,
+      "secondes": 0.111
+    },
+    {
+      "suite": "verifications/islande.test.mjs",
+      "code": 0,
+      "secondes": 2.68
+    },
+    {
+      "suite": "verifications/main.test.mjs",
+      "code": 0,
+      "secondes": 0.115
+    },
+    {
+      "suite": "verifications/manette.test.mjs",
+      "code": 0,
+      "secondes": 0.084
+    },
+    {
+      "suite": "verifications/mesures.test.mjs",
+      "code": 0,
+      "secondes": 0.086
+    },
+    {
+      "suite": "verifications/meteo-reelle.test.mjs",
+      "code": 0,
+      "secondes": 0.082
+    },
+    {
+      "suite": "verifications/meteo.test.mjs",
+      "code": 0,
+      "secondes": 0.1
+    },
+    {
+      "suite": "verifications/moteur-emprise.test.mjs",
+      "code": 0,
+      "secondes": 0.083
+    },
+    {
+      "suite": "verifications/nature-integration.test.mjs",
+      "code": 0,
+      "secondes": 0.061
+    },
+    {
+      "suite": "verifications/navigation-menu.test.mjs",
+      "code": 0,
+      "secondes": 0.076
+    },
+    {
+      "suite": "verifications/obstacles.test.mjs",
+      "code": 0,
+      "secondes": 0.074
+    },
+    {
+      "suite": "verifications/options-image.test.mjs",
+      "code": 0,
+      "secondes": 0.062
+    },
+    {
+      "suite": "verifications/pieces.test.mjs",
+      "code": 0,
+      "secondes": 0.576
+    },
+    {
+      "suite": "verifications/prets-enligne.test.mjs",
+      "code": 0,
+      "secondes": 0.09
+    },
+    {
+      "suite": "verifications/qualite.test.mjs",
+      "code": 0,
+      "secondes": 0.076
+    },
+    {
+      "suite": "verifications/realisateur.test.mjs",
+      "code": 0,
+      "secondes": 3.037
+    },
+    {
+      "suite": "verifications/relectures-phase2.test.mjs",
+      "code": 0,
+      "secondes": 0.293
+    },
+    {
+      "suite": "verifications/rendu-halo.test.mjs",
+      "code": 0,
+      "secondes": 0.08
+    },
+    {
+      "suite": "verifications/reprise-recul.test.mjs",
+      "code": 0,
+      "secondes": 0.081
+    },
+    {
+      "suite": "verifications/saisons.test.mjs",
+      "code": 0,
+      "secondes": 5.929
+    },
+    {
+      "suite": "verifications/salon-protocole.test.mjs",
+      "code": 0,
+      "secondes": 2.99
+    },
+    {
+      "suite": "verifications/scene-bench.test.mjs",
+      "code": 0,
+      "secondes": 2.109
+    },
+    {
+      "suite": "verifications/sillage.test.mjs",
+      "code": 0,
+      "secondes": 0.074
+    },
+    {
+      "suite": "verifications/son.test.mjs",
+      "code": 0,
+      "secondes": 0.095
+    },
+    {
+      "suite": "verifications/stands.test.mjs",
+      "code": 0,
+      "secondes": 7.099
+    },
+    {
+      "suite": "verifications/titre-signature.test.mjs",
+      "code": 0,
+      "secondes": 0.075
+    },
+    {
+      "suite": "verifications/traces.test.mjs",
+      "code": 0,
+      "secondes": 1.336
+    },
+    {
+      "suite": "verifications/troncs.test.mjs",
+      "code": 0,
+      "secondes": 0.674
+    },
+    {
+      "suite": "verifications/tunnel-transitions.test.mjs",
+      "code": 0,
+      "secondes": 0.233
+    },
+    {
+      "suite": "verifications/tunnel.test.mjs",
+      "code": 0,
+      "secondes": 0.404
+    },
+    {
+      "suite": "verifications/vegetation.test.mjs",
+      "code": 0,
+      "secondes": 14.709
+    },
+    {
+      "suite": "verifications/vitre.test.mjs",
+      "code": 0,
+      "secondes": 0.235
+    },
+    {
+      "suite": "verifications/voiture.test.mjs",
+      "code": 0,
+      "secondes": 2.901
+    }
+  ],
+  "navigateur": {
+    "statut": "bloque",
+    "raison": "Chromium socket() failed: Operation not permitted; aucun contournement."
+  },
+  "fps_materiels_mesures": false,
+  "build": {
+    "version": "0.2.34",
+    "reproductible": true,
+    "sha256": "812edd74f616cd6a31a4b419cfc89adcce0ba7ab84a0ba717dcac7f9821c8786",
+    "octets": 13215718,
+    "gzip": 3065026
+  },
+  "ferro": {
+    "version": "0.3.9",
+    "modules": 34,
+    "conformes": true,
+    "modifies": false
+  }
+}

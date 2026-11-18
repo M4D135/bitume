@@ -18,6 +18,7 @@ const aide = `Contrôle visuel de BITUME (Node >= 22 + Chrome/Chromium)
   --taille 960,540 --qualite high      résolution CSS ; DPR fixé à 1 (low, medium ou high)
   --graine 17017 --circuit 2          défaut circuit 2 pour tunnel, 0 pour les autres
   --meteo sec|pluie --vue cockpit --vue2 cockpit --partage haut-bas|cote
+  --moment jour|crepuscule|nuit|cycle --saison printemps|ete|automne|hiver
   --depart tunnel|<abscisse> --vitesse 75 --retro oui|non
   --decor reference|enrichi             variante visuelle, comparable à conditions identiques
   --reference <rapport.json>          comparaison avant/après, réglages et environnement identiques
@@ -27,7 +28,7 @@ Cette commande ne mesure pas les FPS ; utiliser séparément banc-navigateur.mjs
 
 export function optionsCapture(argv) {
   const a = {};
-  const connus = new Set(['url', 'sortie', 'scenario', 'images', 'pas', 'chauffe', 'taille', 'qualite', 'graine', 'circuit', 'meteo', 'vue', 'vue2', 'partage', 'depart', 'vitesse', 'retro', 'decor', 'reference', 'chrome', 'angle', 'attendre']);
+  const connus = new Set(['url', 'sortie', 'scenario', 'images', 'pas', 'chauffe', 'taille', 'qualite', 'graine', 'circuit', 'meteo', 'moment', 'saison', 'vue', 'vue2', 'partage', 'depart', 'vitesse', 'retro', 'decor', 'reference', 'chrome', 'angle', 'attendre']);
   for (let i = 0; i < argv.length; i += 2) {
     if (argv[i] === '--help' || argv[i] === '-h') return { aide: true };
     const nom = argv[i].replace(/^--/, '');
@@ -55,11 +56,14 @@ export function optionsCapture(argv) {
     chrome: a.chrome || process.env.CHROME || ['/usr/bin/chromium', '/usr/bin/google-chrome', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].find(existsSync) || 'google-chrome',
     angle: choix('angle', 'swiftshader', ['swiftshader', 'native']), attendre: nombre('attendre', 60000, 1000, 300000),
     scenario, taille, images: nombre('images', 48, 3, 1000, true), pas: nombre('pas', .1, 1 / 240, .1), chauffe: nombre('chauffe', 4, 0, 240, true),
-    referenceJeu: { graine: nombre('graine', 17017, 0, 0xffffffff, true), circuit: nombre('circuit', scenario === 'tunnel' ? 2 : 0, 0, 2, true),
+    // Le catalogue du jeu valide ensuite l'indice exact ; l'outil accompagne son extension par petits lots.
+    referenceJeu: { graine: nombre('graine', 17017, 0, 0xffffffff, true), circuit: nombre('circuit', scenario === 'tunnel' ? 2 : 0, 0, 255, true),
       qualite: choix('qualite', 'high', ['low', 'medium', 'high']), mode: scenario === 'duo' ? 'duo' : 'solo',
       vue: choix('vue', 'cockpit', ['cockpit', 'poursuite']),
       vue2: choix('vue2', 'cockpit', ['cockpit', 'poursuite']),
       meteo: choix('meteo', scenario === 'pluie' ? 'pluie' : 'sec', ['sec', 'pluie']),
+      moment: choix('moment', 'jour', ['jour', 'crepuscule', 'nuit', 'cycle']),
+      saison: choix('saison', 'ete', ['printemps', 'ete', 'automne', 'hiver']),
       partage: choix('partage', 'haut-bas', ['haut-bas', 'cote']), retro: choix('retro', 'oui', ['oui', 'non']),
       decor: choix('decor', 'enrichi', ['reference', 'enrichi']),
       depart: depart === 'tunnel' ? depart : Number(depart), vitesse: nombre('vitesse', 75, 0, 100) }

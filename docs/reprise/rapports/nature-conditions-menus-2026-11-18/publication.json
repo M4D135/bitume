@@ -1,0 +1,10 @@
+{
+  "version": "0.2.33",
+  "commit": "7a7ced67609ad8e505c58fc00493f72e4bad4b4c",
+  "arbre": "5451dc179787cf2a770a91bcf1885d16693dd052",
+  "branche": "main",
+  "verification_utc": "2026-11-18T11:30:12.398915+00:00",
+  "sha256_build": "9361a098392b9fa941b45d1622e91ca7bd05461b31f3022785985006499f899d",
+  "verification": "HEAD et refs/heads/main vérifiés par git ls-remote en début de reprise ; sources et build récupérés au même commit.",
+  "deploiement_effectue_dans_cette_session": false
+}

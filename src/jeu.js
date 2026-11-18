@@ -9,11 +9,12 @@
   const angle = a => a - 2 * Math.PI * Math.round(a / (2 * Math.PI));
   const ramener = (s, L) => ((s % L) + L) % L;
 
-  // Les trois circuits de l'essai : graines fixes, tracés générés par circuit.js.
+  // Catalogue progressif : graines originales fixes, tracés générés par circuit.js.
   const CATALOGUE = [
     { id: 'val-brule', nom: 'Val-Brûlé', lieu: 'Forêt', theme: 'foret', graine: 11, longueur: 4200 },
     { id: 'port-sable', nom: 'Port-Sable', lieu: 'Bord de mer', theme: 'cote', graine: 29, longueur: 3600 },
-    { id: 'haut-col', nom: 'Haut-Col', lieu: 'Montagne', theme: 'montagne', graine: 47, longueur: 5200 }
+    { id: 'haut-col', nom: 'Haut-Col', lieu: 'Montagne', theme: 'montagne', graine: 47, longueur: 5200 },
+    { id: 'lande-noire', nom: 'Lande-Noire', lieu: 'Islande · plateau volcanique', theme: 'islande', graine: 83, longueur: 4600 }
   ];
 
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
@@ -210,8 +211,8 @@
       meteo: meteoInit, conditions,
       nature: { ambiance: B.ambiance.creer(sc.decor.atmosphere, i === 2), moment: B.ambiance.normaliser(conditions.moment),
         horlogeReelle: horlogePartagee(conditions.horlogeReelle), dateDepart: enl && Number.isFinite(enl.dateDepart) ? enl.dateDepart : null,
-        saison: sc.decor.saison || B.saisons.profil(sc.saison, CATALOGUE[i].theme), revisionRendu: -1, faune: null, effetsSaison: null },
-      fauneVue: null, saisonVue: null, vitreContexte: null,
+        saison: sc.decor.saison || B.saisons.profil(sc.saison, CATALOGUE[i].theme), revisionRendu: -1, faune: null, effetsSaison: null, aurores: null },
+      fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null,
     };
     if (enl) {
       S.enLigne = { T0: enl.T0, role: enl.role, humains: enl.humains }; S.enLigneOrigine = true;
@@ -222,7 +223,7 @@
     // la vue du joueur 2 a son propre état de caméra, d'éclair et d'affichage, le reste vient de la séance.
     if (duo) S.vueJ2 = Object.assign(Object.create(S), { camCap: null, tete: null, secousse: 0, eclair: 0, lumiere: 1, sol: null, tele: { poste: null, alea: graine32(31 + i) },
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
-      suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, vitreContexte: null });
+      suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null });
     S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une, ou deux à l'écran partagé)
     jeu.dataset.partage = duo ? (reglages.partage === 'cote' ? 'cote' : 'haut-bas') : '';
     delete $('hud').dataset.reduit; delete hud2.dataset.reduit;
@@ -1723,6 +1724,17 @@
       contexte.ventX = meteo.ventX || 0; contexte.ventZ = meteo.ventZ || 0; contexte.pose = cam.pos;
       contexte.abri = sousLaVoute(c, cam.pos) && cam.pos[1] < ps.y + (c.tunnel ? c.tunnel.hauteur : 5) + .5;
       B.effetsSaison.dessiner(nature.effetsSaison, horlogeReelle, contexte, sortie);
+    }
+
+    // Rubans lointains en géométrie monde : occultés par le relief, repris dans les rétroviseurs.
+    if (S.nature && B.aurores && c.theme === 'islande') {
+      const nature = S.nature;
+      if (!nature.aurores) nature.aurores = B.aurores.creer(c);
+      const contexte = S.auroresVue || (S.auroresVue = { vue: S === session ? 0 : 1, qualite: 'low', nuit: 0, pluie: 0, neige: 0, nuages: 0, tunnel: false });
+      contexte.qualite = P.palier; contexte.nuit = nature.ambiance.nuit;
+      contexte.pluie = meteo.pluie || 0; contexte.neige = precipitationsNeige(S); contexte.nuages = meteo.nuage || 0;
+      contexte.tunnel = sousLaVoute(c, cam.pos) && cam.pos[1] < ps.y + (c.tunnel ? c.tunnel.hauteur : 5) + .5;
+      B.aurores.dessiner(nature.aurores, co.horloge, contexte, sortie);
     }
 
     // voitures : toujours dessinées ; modèle complet tant qu'il tient plus d'une trentaine de pixels de haut, allégé

@@ -1,0 +1,77 @@
+{
+  "reference": "7a7ced67609ad8e505c58fc00493f72e4bad4b4c",
+  "resultats": [
+    {
+      "theme": "foret",
+      "saison": "printemps",
+      "identique": true,
+      "sha256": "8eedc106ce5e3dc9fd3ad076c68942d83f6d26678106644bc1420f3236bd4d52"
+    },
+    {
+      "theme": "foret",
+      "saison": "ete",
+      "identique": true,
+      "sha256": "ef009e12e22735946fec7be1cedffccb8d12c019f4369b801b5480fd823d6947"
+    },
+    {
+      "theme": "foret",
+      "saison": "automne",
+      "identique": true,
+      "sha256": "688cf139020d50289d6210b52dfedcc70b36ddf7af71fba1966e1c6604c3195c"
+    },
+    {
+      "theme": "foret",
+      "saison": "hiver",
+      "identique": true,
+      "sha256": "142ce913dfa0c2ef3096640558116bfa5450f55f61bbfb70da923d0963c58962"
+    },
+    {
+      "theme": "cote",
+      "saison": "printemps",
+      "identique": true,
+      "sha256": "bfcc0f4e7f8ab6f7137fa47cd35361441279319a2974fe459f51dcd6342ecaa9"
+    },
+    {
+      "theme": "cote",
+      "saison": "ete",
+      "identique": true,
+      "sha256": "8cbf4d711f368ab32b22f49476061d9bdc0a9e1442658a560aa595c959d23efe"
+    },
+    {
+      "theme": "cote",
+      "saison": "automne",
+      "identique": true,
+      "sha256": "4a52d2dd5a84e865cc4aa1040dbeb12ebd9f4bb5125dea2cf38817c52cc6509e"
+    },
+    {
+      "theme": "cote",
+      "saison": "hiver",
+      "identique": true,
+      "sha256": "3257639b2e91cc065a637e6229cc94db865aa0ce0c756f76be68c803079f1099"
+    },
+    {
+      "theme": "montagne",
+      "saison": "printemps",
+      "identique": true,
+      "sha256": "5313ae146adc4b3c4ee1e90cbe0d803c327049031127ab4624a2e008b683d0d8"
+    },
+    {
+      "theme": "montagne",
+      "saison": "ete",
+      "identique": true,
+      "sha256": "323953b7e9b22abfc8281b6fc90ec4e5cdfe8b960a2cc7c238b878aeb8e5f5a4"
+    },
+    {
+      "theme": "montagne",
+      "saison": "automne",
+      "identique": true,
+      "sha256": "bacfb8b1023145da1feb61125beed851fd3428849001fada278d3f0e75d0490d"
+    },
+    {
+      "theme": "montagne",
+      "saison": "hiver",
+      "identique": true,
+      "sha256": "102c67e59debd3216d335200dbfaba0bc9811175bbb1b664842e797b2fb81974"
+    }
+  ]
+}

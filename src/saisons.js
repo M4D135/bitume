@@ -11,13 +11,13 @@
   const normaliser = id => IDS.includes(id) ? id : 'ete';
   const lisse = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
   const profils = {};
-  for (const id of IDS) for (const theme of ['foret', 'cote', 'montagne']) {
+  for (const id of IDS) for (const theme of ['foret', 'cote', 'montagne', 'islande']) {
     const d = DONNEES[id], neige = id === 'hiver' && theme !== 'cote';
     profils[id + ':' + theme] = Object.freeze({ id, theme, neige, feuilles: id === 'automne' && theme === 'foret',
-      faune: neige ? 0 : d.faune, soleil: d.soleil, teinteSoleil: Object.freeze(d.teinteSoleil.slice()) });
+      faune: neige || theme === 'islande' ? 0 : d.faune, soleil: d.soleil, teinteSoleil: Object.freeze(d.teinteSoleil.slice()) });
   }
   function profil(id, theme = 'foret') {
-    return profils[normaliser(id) + ':' + (theme === 'cote' || theme === 'montagne' ? theme : 'foret')];
+    return profils[normaliser(id) + ':' + (theme === 'cote' || theme === 'montagne' || theme === 'islande' ? theme : 'foret')];
   }
   function bruit(x, z, sel) {
     const px = (x * .8 - z * .6) / 73, pz = (x * .6 + z * .8) / 73;
@@ -39,6 +39,11 @@
     let cible = base, part = 0;
     if (p.neige) {
       cible = NEIGE; part = feuillage ? .55 + .32 * n : famille === 'sol' ? .93 + .04 * n : .78 + .12 * n;
+    } else if (p.theme === 'islande') {
+      // Les coulées restent sombres : seules les mousses changent de ton, sans forêt ni prairie sèche.
+      const mousse = Math.max(0, Math.min(1, (base[1] - base[0]) * 8));
+      cible = p.id === 'printemps' ? [.25, .36, .14] : p.id === 'automne' ? [.33, .29, .13] : [.31, .36, .17];
+      part = mousse * (p.id === 'automne' ? .35 : .16);
     } else if (p.id === 'printemps') {
       if (feuillage && p.theme === 'foret') {
         const floraison = lisse(.38, .72, n + (habitat ? habitat.fleurs : 0) * .24);

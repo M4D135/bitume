@@ -1,26 +1,27 @@
 # BITUME — reprise courte
 
-## État actuel — 18 novembre 2026
+## État — 18 novembre 2026
 
-- Branche `main` ; base BITUME **0.2.32**, code `e90b08f`, reçu `5292baf`, checkpoint `b6ee542`.
-- **FERRO 0.3.9 publié** : `89c784163b8671676b11f3d4114fab22f6200a7e` ; 34 copies identiques installées.
-- **Lot10 qualifié**, BITUME 0.2.33 à publier : nature irrégulière, herbe proche/sol coloré lointain, détection automatique.
-- Fiche active : `docs/reprise/10-NATURE-ET-AUTODETECTION.md` ; deux builds identiques, 61/61 suites revérifiées.
-- Saisons qualifiées sur 12 scènes : printemps blanc/rose, été sec/soleil fort, automne orange/feuilles, hiver neige sauf Port-Sable.
-- Conditions seulement avant course : manuel / aléatoire / réel par saison, heure et météo.
-- Réel : date/heure + météo de zone IP ; **en ligne, informations de l’hôte uniquement**, pas de localisation des invités.
-- Livrés et qualifiés : neige dans l’air, pluie/neige sur la vitre, menus à onglets et navigation complète manette.
-- Benchmark avant titre sur une nouvelle configuration ; bouton Image pour mesurer et remplacer les réglages graphiques.
-- **m4d135 enregistre BITUME.html** : préserver lien, avatar et placement ; ne pas ajouter de lien GitHub à sa place.
-- Vérifications terminées ; aucun FPS matériel annoncé. Contrôle navigateur local refusé, sans contournement.
+- Branche unique de travail : `main`, aucun push forcé.
+- **0.2.33 réellement publiée** : `7a7ced67609ad8e505c58fc00493f72e4bad4b4c` ; reçu corrigé.
+- **0.2.34, lot 11A qualifié, publication en cours** : Lande-Noire, premier circuit islandais original.
+- Catalogue jouable : les trois circuits historiques + Lande-Noire (4,616 km, graine 83).
+- Terrain basaltique, caldeiras et mousses en nappes ; aucun arbre ni brin supplémentaire en Islande.
+- Hiver enneigé, aurores nocturnes procédurales limitées à 1/2/3 rubans selon la qualité.
+- **63/63 suites**, deux builds identiques, **34 modules FERRO 0.3.9 conformes**.
+- Les 12 anciens décors testés (3 thèmes × 4 saisons, sans végétation additionnelle) gardent leurs empreintes.
+- Contrôle visuel non réalisé : Chromium ne démarre pas (`socket: Operation not permitted`). Aucun FPS matériel annoncé.
+- Production vérifiée : **0.2.32**. Déploiement toujours autorisé mais inaccessible depuis cette session ; aucune mise en ligne annoncée.
+- Préserver les conditions de l’hôte, les réglages avant course, les menus manette et le lien **m4d135 → BITUME.html**.
 
-## Lot suivant demandé, à traiter après gel et publication du lot10
+## Prochaine tranche
 
-**16 circuits mondiaux très distincts** ; Europe, Asie, Afrique, USA, Nord/Est européen, Islande avec aurores nocturnes.
-Examiner le dépôt personnel Vroom Unreal et les références Vroom officiel demandés par l’utilisateur.
+Lire `docs/reprise/ETAT.json` puis **seulement** `docs/reprise/11-CIRCUITS-MONDIAUX.md`.
+Contrôler visuellement Lande-Noire et ses aurores depuis un navigateur disponible, puis déployer depuis le Mac/amiga.
+Poursuivre ensuite le programme des 16 circuits par **un seul nouveau circuit par lot**, avec publication vérifiée à chaque étape.
 
 ## Méthode
 
-1. Lire ce fichier et `docs/reprise/ETAT.json`, une seule fiche/extraits utiles ; jamais tout l’historique ni le HTML généré.
-2. Qualifier, publier sur main sans force, garder les preuves sur disque et actualiser ce point court.
-3. Déploiement autorisé mais accès Mac/amiga absent ici. Une publication Git ne prouve pas la mise en ligne.
+Sources/extraits utiles uniquement ; ne pas ouvrir tout l’historique ni le HTML généré.
+Toute modification moteur passe par FERRO canonique. Actualiser cette reprise après publication.
+Une publication GitHub ne prouve jamais la mise en ligne.

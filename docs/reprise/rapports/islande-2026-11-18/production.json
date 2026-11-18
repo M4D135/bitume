@@ -1,0 +1,10 @@
+{
+  "controle_utc": "2026-11-18T11:29:22.840841+00:00",
+  "url": "https://bitume.estrasse.fr/",
+  "http": 200,
+  "version": "0.2.32",
+  "sha256": "99f404b8df5dd6dc520545c79d572cd8af0254a71bd7e19a18a125909110b86b",
+  "octets": 13075203,
+  "deploiement_effectue": false,
+  "blocage": "Aucun accès Mac/amiga disponible ; la commande SSH de contrôle échoue sur les permissions de /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf. Configuration système laissée intacte."
+}
