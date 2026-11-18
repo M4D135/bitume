@@ -41,8 +41,15 @@ verifier('30 Hz indépendants de l’affichage, même animation à 30 et 120 Hz'
   const a = V.creer(canvas()), b = V.creer(canvas()), c = contexte('ultra');
   avancer(a, c, 12, 30); avancer(b, c, 12, 120);
   assert.equal(a.stats.etapes, 360); assert.equal(b.stats.etapes, 360); assert(a.stats.dessins <= 360);
-  assert.equal(a.stats.dessins, b.stats.dessins); assert.deepEqual(capture(a), capture(b));
-  const dessins = b.stats.dessins; V.mettreAJour(b, 1 / 120, c); assert.equal(b.stats.dessins, dessins);
+  assert.deepEqual(capture(a), capture(b));
+  // La simulation reste au pas de 1/30 s, mais la visière se dessine à chaque image, entre les deux derniers pas,
+  // pour un ruissellement fluide à toute cadence : à 120 Hz, environ quatre dessins par pas au lieu d'un, et un
+  // appel sans nouveau pas redessine à une fraction plus avancée sans faire avancer les gouttes.
+  assert(b.stats.dessins > 3.9 * a.stats.dessins && b.stats.dessins <= 1440);
+  const dessins = b.stats.dessins, fraction = b.stats.fraction, etat = JSON.stringify(capture(b));
+  V.mettreAJour(b, 1 / 120, c);
+  assert.equal(b.stats.dessins, dessins + 1); assert(b.stats.fraction > fraction); assert.equal(b.stats.etapes, 360);
+  assert.equal(JSON.stringify(capture(b)), etat);
 });
 verifier('DPR et surface plafonnés ; dimensions propres à chaque viewport', () => {
   for (const qualite of ['low', 'medium', 'high', 'ultra']) {

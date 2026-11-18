@@ -1,11 +1,15 @@
 /* BITUME — faune des prairies, entièrement procédurale.
    Habitat préparé sur surfaceHerbe ; aucune requête de terrain ni création d'objet au dessin.
    Temps absolu commun aux vues, deux pools indépendants. Les halos sont de petits volumes 3D
-   translucides : le moteur conserve leur test de profondeur, sans lumière ponctuelle. */
+   translucides : le moteur conserve leur test de profondeur, sans lumière ponctuelle.
+   Les habitats ne dépendent que du circuit et du décor : preparer() les calcule une fois par scène
+   (d'un seul tenant, ou par tranches avec preparerParTranches()) et creer() n'y ajoute que les pools
+   des deux vues d'une séance. Une séance ne paie donc jamais les cent mille sondes du terrain. */
 (function (B) {
   'use strict';
   const TAU = Math.PI * 2, MAX_VUES = 2, MAX_HABITATS = 1536, ANCRES = 48, ECHANTILLONS = 32;
-  const PORTEE = 90, DEBUT_FONDU = 55, PORTEE_JOUR = 38, CELLULE = 48, MAX_OBJETS = 512;
+  const PORTEE = 90, DEBUT_FONDU = 55, PORTEE_JOUR = 38, CELLULE = 48, MAX_OBJETS = 512, MAX_EMPLACEMENTS = 256;
+  const PREPARATION = 'faune';
   const BUDGETS = Object.freeze({
     off: Object.freeze({ abeilles: 0, insectes: 0, lucioles: 0, objetsJour: 0, objetsNuit: 0 }),
     low: Object.freeze({ abeilles: 2, insectes: 0, lucioles: 6, objetsJour: 10, objetsNuit: 12 }),
@@ -18,16 +22,22 @@
   function melanger(n) { n = Math.imul(n ^ n >>> 16, 0x7feb352d); n = Math.imul(n ^ n >>> 15, 0x846ca68b); return (n ^ n >>> 16) >>> 0; }
   const hasard = n => melanger(n) / 4294967296;
   const herbe = o => o && (o.groundCover || typeof o.shape === 'string' && (o.shape.startsWith('prairie-val') || o.shape.startsWith('herbes-val')));
+  const maintenant = () => globalThis.performance && typeof globalThis.performance.now === 'function' ? globalThis.performance.now() : Date.now();
+  // Clé numérique d'une case de 3 m : bijective tant que |gx|, |gz| < 2^20 cases (3 000 km), sans chaîne ni Map.
+  const cleCase = (gx, gz) => (gx + 1048576) * 2097152 + gz + 1048576;
 
-  function habitats(c, decor) {
-    const resultat = [];
-    if (!decor || typeof decor.surfaceHerbe !== 'function') return resultat;
-    const cellules = new Map(), candidats = [], graine = c.graine >>> 0;
+  // Les habitats sont tirés par une suite de calculs interruptible : entre deux rangées de la grille ou deux
+  // candidats, le générateur rend la main dès que l'échéance de `controle.fin` est passée. Sans échéance, il va
+  // d'un trait au bout ; dans les deux cas l'ordre des calculs, donc le résultat, est le même.
+  function* etapesHabitats(c, decor, resultat, controle) {
+    if (!decor || typeof decor.surfaceHerbe !== 'function') return;
+    const cellules = new Set(), candidats = [], graine = c.graine >>> 0;
     const ecologie = decor.ecologie || B.ecologie && B.ecologie.creer(graine, c.theme);
     const milieu = { herbe: 0, fleurs: 0, insectes: 0, boisement: 0 };
+    const pause = () => controle.fin !== Infinity && maintenant() >= controle.fin;
     function proposer(x, z, hauteurHerbe) {
       if (!Number.isFinite(x) || !Number.isFinite(z)) return;
-      const gx = Math.floor(x / 3), gz = Math.floor(z / 3), cle = gx + ':' + gz;
+      const gx = Math.floor(x / 3), gz = Math.floor(z / 3), cle = cleCase(gx, gz);
       if (cellules.has(cle)) return;
       const seed = melanger(graine ^ Math.imul(gx, 73856093) ^ Math.imul(gz, 19349663));
       if (ecologie) ecologie.echantillonner(x, z, milieu);
@@ -46,7 +56,7 @@
         insectes: Math.min(8, Math.floor(activite * (.35 + floraison * .65) * (1 + hasard(seed + 101) * 4) + .5)),
         lucioles: Math.min(8, Math.floor(lisse(.12, .76, insectes) * (4 + hasard(seed + 109) * 5) + .5)) };
       if (!h.abeilles && !h.insectes && !h.lucioles) return;
-      cellules.set(cle, h); candidats.push(h);
+      cellules.add(cle); candidats.push(h);
     }
     const axe = c.n > 0 && c.x && c.z;
     if (axe) {
@@ -58,10 +68,13 @@
       // Le bord du domaine reste au-delà du fondu, même pour une vue de bord de piste.
       const marge = PORTEE + 48; x0 -= marge; z0 -= marge; x1 += marge; z1 += marge;
       const pas = Math.max(13, Math.sqrt((x1 - x0) * (z1 - z0) / 12000));
-      for (let iz = Math.floor(z0 / pas); iz <= Math.ceil(z1 / pas); iz++) for (let ix = Math.floor(x0 / pas); ix <= Math.ceil(x1 / pas); ix++) {
-        const seed = melanger(graine ^ Math.imul(ix, 83492791) ^ Math.imul(iz, 2654435761));
-        if (hasard(seed + 3) < .22) continue;
-        proposer((ix + .07 + hasard(seed + 7) * .86) * pas, (iz + .07 + hasard(seed + 11) * .86) * pas, .35);
+      for (let iz = Math.floor(z0 / pas); iz <= Math.ceil(z1 / pas); iz++) {
+        for (let ix = Math.floor(x0 / pas); ix <= Math.ceil(x1 / pas); ix++) {
+          const seed = melanger(graine ^ Math.imul(ix, 83492791) ^ Math.imul(iz, 2654435761));
+          if (hasard(seed + 3) < .22) continue;
+          proposer((ix + .07 + hasard(seed + 7) * .86) * pas, (iz + .07 + hasard(seed + 11) * .86) * pas, .35);
+        }
+        if (pause()) yield;
       }
     } else for (const lot of decor.lots || []) for (const o of lot.objets || []) {
       // Compatibilité des petits décors sans axe de circuit : noms historiques ou marqueur
@@ -69,9 +82,10 @@
       if (herbe(o) && o.p) proposer(o.p[0], o.p[2], clamp(Math.abs(o.s && o.s[1] || .35), .05, .9));
     }
     candidats.sort((a, b) => a.graine - b.graine || a.x - b.x || a.z - b.z);
-    const sonde = { y: 0, normal: [0, 1, 0], color: [0, 0, 0] };
+    const sonde = { y: 0, normal: [0, 1, 0], color: [0, 0, 0] }, sols = new Float64Array(ECHANTILLONS);
     for (const h of candidats) {
       if (resultat.length >= MAX_HABITATS) break;
+      if (pause()) yield;
       const centre = decor.surfaceHerbe(h.x, h.z, sonde);
       if (!centre || !Number.isFinite(centre.y)) continue;
       h.y = centre.y;
@@ -80,20 +94,20 @@
       h.phaseX = hasard(h.graine + 53) * TAU; h.phaseZ = hasard(h.graine + 59) * TAU;
       h.freqX = 2 + h.graine % 3; h.freqZ = 2 + (h.graine >>> 4) % 2;
       const angle = hasard(h.graine + 41) * TAU; h.cos = Math.cos(angle); h.sin = Math.sin(angle);
-      h.sols = new Float64Array(ECHANTILLONS); let valide = true;
+      let valide = true;
       // Points et milieux de la trajectoire sont validés ; les grandes bandes route/eau/tunnel
       // ne peuvent être franchies par l'orbite locale. Les mêmes coordonnées servent au vol.
+      // Les hauteurs passent par un tampon commun : seul un habitat retenu reçoit son tableau.
       for (let j = 0; j < ECHANTILLONS * 2; j++) {
         const a = j / (ECHANTILLONS * 2) * TAU;
         const lx = (Math.cos(a) + Math.sin(a * h.freqX + h.phaseX) * h.pliX) * h.rx;
         const lz = (Math.sin(a) + Math.cos(a * h.freqZ + h.phaseZ) * h.pliZ) * h.rz;
         const q = decor.surfaceHerbe(h.x + h.cos * lx - h.sin * lz, h.z + h.sin * lx + h.cos * lz, sonde);
         if (!q || !Number.isFinite(q.y) || q.normal && q.normal[1] < .65) { valide = false; break; }
-        if (!(j & 1)) h.sols[j / 2] = q.y;
+        if (!(j & 1)) sols[j / 2] = q.y;
       }
-      if (valide) { h.id = resultat.length; resultat.push(h); }
+      if (valide) { h.sols = Float64Array.from(sols); h.id = resultat.length; resultat.push(h); }
     }
-    return resultat;
   }
   function indexer(liste) {
     if (!liste.length) return { x: 0, z: 0, pas: CELLULE, colonnes: 0, lignes: 0, cases: [] };
@@ -108,6 +122,30 @@
     }
     return { x, z, pas, colonnes, lignes, cases };
   }
+  // Préparation statique d'une scène : ni palier, ni vue, ni horloge. Habitats et index ne sont jamais modifiés
+  // ensuite ; vues, séances et rétroviseurs les partagent. Le circuit et le décor d'origine sont gardés pour que
+  // creer() refuse une préparation venue d'une autre scène au lieu d'animer des essaims ailleurs.
+  function preparerParTranches(c, decor) {
+    const activite = decor && decor.saison && Number.isFinite(decor.saison.faune) ? clamp(decor.saison.faune, 0, 1) : 1;
+    const liste = [], controle = { fin: Infinity };
+    const etapes = activite === 0 ? null : etapesHabitats(c || {}, decor, liste, controle);
+    const travail = { fini: false, resultat: null, habitats: 0,
+      // budgetMs : temps accordé à cette tranche ; Infinity (ou rien) termine d'un trait. Rend vrai une fois prêt.
+      avancer(budgetMs) {
+        if (travail.fini) return true;
+        controle.fin = Number.isFinite(budgetMs) ? maintenant() + Math.max(0, budgetMs) : Infinity;
+        if (!etapes || etapes.next().done) {
+          travail.fini = true;
+          travail.resultat = Object.freeze({ type: PREPARATION, circuit: c, decor, activite, montagne: !!c && c.theme === 'montagne',
+            habitats: liste, index: indexer(liste) });
+        }
+        travail.habitats = liste.length;
+        return travail.fini;
+      } };
+    return travail;
+  }
+  function preparer(c, decor) { const travail = preparerParTranches(c, decor); travail.avancer(Infinity); return travail.resultat; }
+  const preparationDe = (p, c, decor) => !!p && p.type === PREPARATION && p.circuit === c && p.decor === decor;
   function objet(espece, fx = false) {
     return { shape: 'sphere', p: [0, 0, 0], s: [0, 0, 0], r: [0, 0, 0], color: [0, 0, 0],
       mat: 7, emissive: 0, surface: 'object', outdoor: true, overlay: false, windResponsive: false,
@@ -124,20 +162,25 @@
     }
     return { slots, limite: 0, especes: espece, capacite: espece === 'abeille' ? 'abeilles' : espece === 'insecte' ? 'insectes' : 'lucioles',
       portee: espece === 'luciole' ? PORTEE : PORTEE_JOUR, debutFondu: espece === 'luciole' ? DEBUT_FONDU : 22,
-      disponibles: new Int32Array(nombre), population: 0, composants, demande: -1, nombrePlan: -1, partiel: -1 };
+      disponibles: new Int32Array(nombre), population: 0, composants, demande: -1, nombrePlan: -1, partiel: -1,
+      // tables de l'affectation, allouées une fois : emplacements libres, tampon de tri et poids de fondu
+      libres: new Uint16Array(nombre), tampon: new Uint16Array(nombre), poids: new Float64Array(nombre) };
   }
   function vue(nombreHabitats) {
+    // La table des identités reste à −1 hors des entrées posées par la dernière affectation (ecrits) :
+    // seules celles-là sont effacées à la suivante.
     return { dernierTemps: null, selectionTemps: -Infinity, x: Infinity, z: Infinity, nombre: 0, generation: 0, epoque: 0,
-      indices: new Int32Array(ANCRES).fill(-1), distances: new Float64Array(ANCRES), proprietaires: new Int32Array(nombreHabitats * 8),
-      abeilles: pool('abeille', 32, 5), insectes: pool('insecte', 16, 3), lucioles: pool('luciole', 256, 2),
+      indices: new Int32Array(ANCRES).fill(-1), distances: new Float64Array(ANCRES), proprietaires: new Int32Array(nombreHabitats * 8).fill(-1),
+      ecrits: new Int32Array(MAX_EMPLACEMENTS), nEcrits: 0,
+      abeilles: pool('abeille', 32, 5), insectes: pool('insecte', 16, 3), lucioles: pool('luciole', MAX_EMPLACEMENTS, 2),
       stats: { abeilles: 0, insectes: 0, lucioles: 0, objets: 0, habitats: 0, requetes: 0 } };
   }
-  function creer(c, decor) {
-    const activite = decor && decor.saison && Number.isFinite(decor.saison.faune) ? clamp(decor.saison.faune, 0, 1) : 1;
-    const liste = activite === 0 ? [] : habitats(c || {}, decor);
-    return { habitats: liste, index: indexer(liste), montagne: !!c && c.theme === 'montagne',
-      activite,
-      vues: [vue(liste.length), vue(liste.length)], temps: null, nuit: 0, pluie: 0 };
+  // creer(c, decor) seul prépare puis crée ; creer(c, decor, preparation) reprend les habitats
+  // d'une préparation de la même scène et ne crée que l'état de la séance (pools des deux vues, lissages communs).
+  function creer(c, decor, preparation) {
+    const p = preparationDe(preparation, c, decor) ? preparation : preparer(c, decor);
+    return { habitats: p.habitats, index: p.index, montagne: p.montagne, activite: p.activite, preparation: p,
+      vues: [vue(p.habitats.length), vue(p.habitats.length)], temps: null, nuit: 0, pluie: 0 };
   }
   function selectionner(etat, v, x, z, temps) {
     const g = etat.index, indices = v.indices, distances = v.distances;
@@ -147,8 +190,8 @@
       const z0 = Math.max(0, Math.floor((z - PORTEE - g.z) / g.pas)), z1 = Math.min(g.lignes - 1, Math.floor((z + PORTEE - g.z) / g.pas));
       for (let iz = z0; iz <= z1; iz++) for (let ix = x0; ix <= x1; ix++) {
         const cellule = g.cases[iz * g.colonnes + ix]; if (!cellule) continue;
-        for (const id of cellule) {
-          const h = etat.habitats[id], dx = h.x - x, dz = h.z - z, d = dx * dx + dz * dz;
+        for (let m = 0; m < cellule.length; m++) {
+          const id = cellule[m], h = etat.habitats[id], dx = h.x - x, dz = h.z - z, d = dx * dx + dz * dz;
           if (d >= PORTEE * PORTEE || d >= distances[ANCRES - 1]) continue;
           let k = ANCRES - 1;
           while (k > 0 && (d < distances[k - 1] || d === distances[k - 1] && id < indices[k - 1])) {
@@ -179,6 +222,23 @@
       }
     }
   }
+  // Tri stable par fusion des emplacements libres selon leur poids de fondu. À poids égal, l'ordre d'origine (le
+  // numéro d'emplacement) est conservé : c'est exactement la suite que donnait la recherche répétée de
+  // l'emplacement le moins visible, en n log n au lieu d'un balayage complet par nouvel individu.
+  function trierLibres(ordre, tampon, poids, n) {
+    let a = ordre, b = tampon;
+    for (let largeur = 1; largeur < n; largeur *= 2) {
+      for (let debut = 0; debut < n; debut += 2 * largeur) {
+        const milieu = Math.min(debut + largeur, n), fin = Math.min(debut + 2 * largeur, n);
+        let i = debut, j = milieu, k = debut;
+        while (i < milieu && j < fin) b[k++] = poids[a[j]] < poids[a[i]] ? a[j++] : a[i++];
+        while (i < milieu) b[k++] = a[i++];
+        while (j < fin) b[k++] = a[j++];
+      }
+      const t = a; a = b; b = t;
+    }
+    return a;
+  }
   function affecter(v, p, nombre, change) {
     nombre *= p.population / p.slots.length;
     if (!change && p.demande === nombre) return;
@@ -190,33 +250,42 @@
     p.demande = nombre;
     p.nombrePlan = n; p.partiel = -1;
     const slots = p.slots, proprietaires = v.proprietaires;
-    proprietaires.fill(-1);
+    if (!n) {
+      // Aucun individu demandé (nuit hors montagne, forte pluie, budget nul) : libérer suffit, la table ne sert pas.
+      for (let i = 0; i < slots.length; i++) { slots[i].cible = -1; slots[i].demande = 0; }
+      return;
+    }
+    for (let k = 0; k < v.nEcrits; k++) proprietaires[v.ecrits[k]] = -1;
+    v.nEcrits = 0;
     for (let i = 0; i < slots.length; i++) {
       const s = slots[i]; s.cible = -1; s.demande = 0;
-      if (s.epoque === v.epoque && s.cle >= 0) proprietaires[s.cle] = i;
+      if (s.epoque === v.epoque && s.cle >= 0) { proprietaires[s.cle] = i; v.ecrits[v.nEcrits++] = s.cle; }
     }
     // Retenir d'abord les identités déjà présentes ; l'ordre des plus proches peut changer
     // sans téléporter tous les insectes d'un essaim. Une identité = habitat + individu local.
+    let nouveaux = 0;
     for (let i = 0; i < n; i++) {
       const cle = p.disponibles[i], ancien = proprietaires[cle];
       if (ancien >= 0) {
         slots[ancien].cible = cle; slots[ancien].demande = Math.min(1, nombre - i);
         if (i === n - 1) p.partiel = ancien;
-      }
+      } else nouveaux++;
     }
-    for (let i = 0; i < n; i++) {
+    if (!nouveaux) return;
+    // Les nouveaux individus prennent les emplacements libres du moins visible au plus visible.
+    let libres = 0;
+    for (let k = 0; k < slots.length; k++) {
+      const s = slots[k]; if (s.cible >= 0) continue;
+      p.poids[k] = s.epoque === v.epoque ? s.poids : 0; p.libres[libres++] = k;
+    }
+    const ordre = trierLibres(p.libres, p.tampon, p.poids, libres);
+    let suivant = 0;
+    for (let i = 0; i < n && suivant < libres; i++) {
       const cle = p.disponibles[i];
       if (proprietaires[cle] >= 0) continue;
-      let meilleur = -1, poids = Infinity;
-      for (let k = 0; k < slots.length; k++) {
-        const s = slots[k]; if (s.cible >= 0) continue;
-        const w = s.epoque === v.epoque ? s.poids : 0;
-        if (w < poids) { poids = w; meilleur = k; }
-      }
-      if (meilleur >= 0) {
-        const s = slots[meilleur]; s.cible = cle; s.demande = Math.min(1, nombre - i); p.limite = Math.max(p.limite, meilleur + 1);
-        if (i === n - 1) p.partiel = meilleur;
-      }
+      const meilleur = ordre[suivant++], s = slots[meilleur];
+      s.cible = cle; s.demande = Math.min(1, nombre - i); p.limite = Math.max(p.limite, meilleur + 1);
+      if (i === n - 1) p.partiel = meilleur;
     }
   }
   function identifier(s, cle, espece, etat, epoque) {
@@ -342,5 +411,5 @@
     dessinerPool(etat, v, v.lucioles, temps, dt, px, pz, sortie);
     return stats;
   }
-  B.faune = { BUDGETS, MAX_VUES, MAX_HABITATS, MAX_OBJETS, PORTEE, PORTEE_JOUR, creer, dessiner };
+  B.faune = { BUDGETS, MAX_VUES, MAX_HABITATS, MAX_OBJETS, PORTEE, PORTEE_JOUR, preparer, preparerParTranches, creer, dessiner };
 })(globalThis.BITUME = globalThis.BITUME || {});
