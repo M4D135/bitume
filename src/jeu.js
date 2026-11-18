@@ -3771,11 +3771,17 @@
       // la recommandation reste affichée ; les options que le joueur a gardées ou changées depuis sont nommées
       const choisis = B.autoconfig.reglages(dernier.selection), nom = B.autoconfig.profils[dernier.selection].nom;
       const gardes = B.autoconfig.CLES.filter(k => reglages[k] !== choisis[k]);
+      const encore = (dernier.tentatives | 0) < B.autoconfig.TENTATIVES;
+      const refuse = !dernier.cadenceBridee && dernier.provisoire && Array.isArray(dernier.mesures)
+        ? dernier.mesures.find(m => m && m.provisoire && B.autoconfig.profils[m.profil]) : null;
       etat.textContent = (gardes.length ? 'Recommandé : ' + nom + ' · vos choix gardés : ' + gardes.map(k => B.autoconfig.NOMS[k]).join(', ') + '.'
         : 'Dernière détection : ' + nom + ' · réglages appliqués.')
-        + (!dernier.cadenceBridee ? '' : (dernier.tentatives | 0) < B.autoconfig.TENTATIVES
+        + (dernier.cadenceBridee ? encore
           ? ' Écran bridé à 30 images par seconde pendant le test (économie d’énergie ?) : nouvelle mesure à la prochaine ouverture.'
-          : ' Écran bridé à 30 images par seconde à chaque test (économie d’énergie ?) : relancez la détection sans elle.');
+          : ' Écran bridé à 30 images par seconde à chaque test (économie d’énergie ?) : relancez la détection sans elle.'
+          : !refuse ? '' : encore
+            ? ' ' + B.autoconfig.profils[refuse.profil].nom + ' refusée de peu, peut-être parce qu’un autre programme occupait la machine : nouvelle mesure à la prochaine ouverture.'
+            : ' ' + B.autoconfig.profils[refuse.profil].nom + ' refusée de peu à chaque test : relancez la détection quand la machine est au repos.');
     } else etat.textContent = dernier && dernier.statut === 'interrompu'
       ? (dernier.motif === 'annule' ? 'Détection passée · réglages conservés.' : 'Détection interrompue · réglages conservés.') : 'Aucune mesure enregistrée.';
   }
@@ -3794,6 +3800,15 @@
       });
     });
   }
+  // Page en arrière-plan (lien ouvert dans un nouvel onglet, session du navigateur reprise) : un onglet caché ne
+  // dessine rien et ne dit rien de la machine. Le test attend que le joueur regarde la page.
+  function premierPlan() {
+    if (!document.hidden) return Promise.resolve();
+    return new Promise(resolve => {
+      const vu = () => { if (!document.hidden) { document.removeEventListener('visibilitychange', vu); resolve(); } };
+      document.addEventListener('visibilitychange', vu);
+    });
+  }
   // toutAppliquer (détection lancée à la main) : demande explicite de remplacer TOUS les choix graphiques. Une
   // détection automatique (nouvelle version) ne change que les options que le joueur n'a pas modifiées depuis la
   // précédente (sans détection précédente : depuis les valeurs d'usine) ; elle mémorise la recommandation, que
@@ -3806,12 +3821,15 @@
     }
     const choisis = B.autoconfig.reglages(resultat.selection);
     if (!choisis) return false;
+    // sans trace lisible de la précédente : la référence la plus proche des réglages actuels (valeurs d'usine ou palier)
     const usine = Object.fromEntries(B.autoconfig.CLES.map(k => [k, DEFAUT[k]]));
-    const f = B.autoconfig.fusionner(reglages, B.autoconfig.reference(precedent) || usine, choisis, !!toutAppliquer);
+    const ref = B.autoconfig.reference(precedent) || B.autoconfig.referenceProbable(reglages, usine);
+    const f = B.autoconfig.fusionner(reglages, ref, choisis, !!toutAppliquer);
     Object.assign(reglages, f.valeurs);
     resultat.appliques = f.reference; resultat.gardes = f.gardes;
-    // mesure sous un écran bridé à 30 Hz : appliquée, mais refaite à l'ouverture suivante (B.autoconfig.cacheValide)
-    if (resultat.cadenceBridee) resultat.tentatives = B.autoconfig.tentatives(precedent, resultat);
+    // mesure sous un écran bridé à 30 Hz, ou palier refusé de peu : appliquée, mais refaite à l'ouverture suivante
+    // (B.autoconfig.cacheValide)
+    if (resultat.cadenceBridee || resultat.provisoire) resultat.tentatives = B.autoconfig.tentatives(precedent, resultat);
     // Après une mesure réelle, l'ancien indice fondé sur le nom du GPU n'impose plus un faux plafond.
     gpuModeste = resultat.selection === 'low';
     capacitesRendu = Object.freeze({ ...capacitesRendu, gpuModeste });
@@ -3851,12 +3869,20 @@
       // du test. La mesure paie ainsi les glaces comme la course. Le moteur prêté rend ensuite le décor de la séance.
       glacesPretees = !!retro.rendu;
       parcours = B.sceneBench.creer(rendu, { ...capacitesRendu, gpuModeste: false }, glacesPretees ? { glaces: retro.rendu } : undefined);
-      // terminer : lecture d'un pixel qui force la fin du travail graphique, une fois par rafale d'images
-      resultat = await B.autoconfig.executer({ empreinte: empreinteDetection, image: imageDetection,
-        annule: () => annulerDetection, masque: () => document.hidden, perdu: () => contexteRenduPerdu,
-        sonder: parcours.sonder, preparer: parcours.preparer, activerGlaces: parcours.activerGlaces, simuler: parcours.simuler,
-        dessiner: parcours.dessiner, terminer: parcours.terminer,
-        progression: (texte, fraction) => { $('detection-texte').textContent = texte; $('detection-progres').value = Math.min(1, fraction); } });
+      // terminer : lecture d'un pixel qui force la fin du travail graphique, une fois par rafale d'images. Onglet passé
+      // en arrière-plan pendant le test : il reprend au retour du joueur, dans la même séance, sans compter d'échec
+      // (vingt reprises au plus : au-delà, le test reprendra à l'ouverture suivante).
+      for (let reprises = 0; ; reprises++) {
+        resultat = await B.autoconfig.executer({ empreinte: empreinteDetection, image: imageDetection,
+          annule: () => annulerDetection, masque: () => document.hidden, perdu: () => contexteRenduPerdu,
+          sonder: parcours.sonder, preparer: parcours.preparer, activerGlaces: parcours.activerGlaces, simuler: parcours.simuler,
+          dessiner: parcours.dessiner, terminer: parcours.terminer,
+          progression: (texte, fraction) => { $('detection-texte').textContent = texte; $('detection-progres').value = Math.min(1, fraction); } });
+        if (resultat.statut !== 'interrompu' || resultat.motif !== 'onglet_masque' || annulerDetection || reprises >= 20) break;
+        $('detection-texte').textContent = 'Test en pause : il reprend quand la page revient au premier plan.';
+        await premierPlan();
+        await imageDetection();
+      }
       // une détection à la main annulée laisse la précédente en place
       if (auDemarrage || resultat.statut === 'ok') derniereDetection = resultat;
       appliquerDetection(resultat, !auDemarrage);
@@ -3920,7 +3946,8 @@
       // Le test tourne au premier chargement d'une version sur cette machine, puis plus jamais pour elle (ni au
       // redimensionnement, ni sur un autre écran) ; il reste relançable dans l'onglet Image. Les détections des
       // révisions précédentes (dont celle qui choisissait Légère sur un Apple M5) sont refaites une fois.
-      if (!B.autoconfig.cacheValide(mesure, empreinteDetection())) await detecterGraphismes(true);
+      // Page ouverte en arrière-plan : le test attend qu'elle passe au premier plan (premierPlan).
+      if (!B.autoconfig.cacheValide(mesure, empreinteDetection())) { await premierPlan(); await detecterGraphismes(true); }
       else {
         derniereDetection = mesure;
         if (mesure.statut === 'ok') {
