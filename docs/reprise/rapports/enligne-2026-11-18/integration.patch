@@ -1,0 +1,421 @@
+diff --git a/src/index.html b/src/index.html
+index 9f10b6c..442cb20 100644
+--- a/src/index.html
++++ b/src/index.html
+@@ -111,21 +111,48 @@
+       <div class="enligne-choix">
+         <div class="carte-salon">
+           <h3>Créer une partie</h3>
+-          <p>Vous recevez un code de quatre lettres à donner aux autres pilotes. Vous choisirez ensuite la course.</p>
++          <p>Vous recevez un code à donner aux autres pilotes. Vous choisirez ensuite la course.</p>
+           <button type="button" class="gros principal" id="l-creer">Créer</button>
+         </div>
+         <div class="carte-salon rejoindre">
+           <h3>Rejoindre</h3>
+-          <p>Entrez le code que l’hôte vous a donné.</p>
++          <p>Entrez le code que l’hôte vous a donné, ou collez son lien.</p>
+           <div class="ligne-code">
+-            <input id="l-code" maxlength="4" autocomplete="off" spellcheck="false" placeholder="ABCD" aria-label="Code de la partie">
++            <input id="l-code" maxlength="11" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXXX-XXXXX" aria-label="Code de la partie">
+             <button type="button" class="gros" id="l-rejoindre">Rejoindre</button>
+           </div>
+         </div>
++        <div class="carte-salon a-la-main">
++          <h3>À la main</h3>
++          <p>Sans Internet sur le même réseau, ou quand le code ne trouve personne : l’hôte crée une invitation, l’invité la colle et lui renvoie sa réponse.</p>
++          <div class="ligne-code">
++            <button type="button" class="gros" id="l-inviter">Inviter</button>
++            <button type="button" class="gros" id="l-coller">Coller une invitation</button>
++          </div>
++        </div>
+       </div>
+       <div class="etat-salon">
+-        <button type="button" id="l-code-affiche" class="code-partie" title="Copier le code" hidden></button>
++        <button type="button" id="l-code-affiche" class="code-partie" title="Copier le code et le lien" hidden></button>
+         <ul id="l-pilotes" class="liste-pilotes" aria-label="Machines de la partie" hidden></ul>
++        <p id="l-relais" class="note-relais" hidden></p>
++        <div id="l-main" class="panneau-main" role="group" aria-labelledby="l-main-titre" hidden>
++          <h3 id="l-main-titre">Invitation à la main</h3>
++          <p id="l-main-aide" class="note-enligne" role="status" aria-live="polite"></p>
++          <div id="l-main-envoi" class="main-envoi" hidden>
++            <canvas id="l-qr" class="qr" width="232" height="232" role="img" aria-label="Code QR de l’invitation, à scanner avec un téléphone" hidden></canvas>
++            <div class="main-texte">
++              <textarea id="l-main-texte" rows="5" readonly spellcheck="false" aria-label="Texte à envoyer"></textarea>
++              <button type="button" class="gros" id="l-main-copier">Copier</button>
++            </div>
++          </div>
++          <div id="l-main-saisie-bloc" class="main-saisie" hidden>
++            <label class="champ-main" for="l-main-saisie"><span id="l-main-champ">Réponse de l’invité</span></label>
++            <textarea id="l-main-saisie" rows="4" spellcheck="false" autocomplete="off"></textarea>
++            <button type="button" class="gros principal" id="l-main-valider">Valider</button>
++          </div>
++          <button type="button" class="discret" id="l-main-fermer">Fermer</button>
++        </div>
++        <button type="button" class="discret" id="l-inviter-plus" hidden>Inviter une machine à la main</button>
+         <div id="l-course" class="prochaine-course" hidden>
+           <p id="l-course-texte" class="note-enligne"></p>
+           <button type="button" class="gros principal" id="l-vers-prets" hidden>Avant le départ</button>
+diff --git a/src/jeu.js b/src/jeu.js
+index a4d52d6..2de4b1c 100644
+--- a/src/jeu.js
++++ b/src/jeu.js
+@@ -901,16 +901,30 @@
+   // rivaux une image sur deux. Une voiture distante est prolongée jusqu'au pas courant et son écart se résorbe en
+   // 0,12 s. Les temps officiels arrivent par le canal fiable. Une machine qui part laisse ses voitures à l'ordinateur
+   // de l'hôte ; sans hôte, chacun finit la course seul.
+-  const EL = { R: null, role: null, recus: new Map(), corr: new Map(), pasEnvoi: 0, pred: {}, vieux: {}, course: null, pneusDe: new Map() };
++  // Se trouver (David, 18/11 : « je ne veux pas avoir de gestion de serveur pour ce jeu peer to peer ») : le code
++  // passe par des relais publics (MQTT, WebTorrent, Nostr), chiffré par une clé tirée du code ; sans Internet ou si
++  // rien ne passe, l'invitation à la main (texte ou code QR, puis la réponse en retour). ?salon=ws://… : salon d'essai.
++  // main : invitation à la main en cours ; statut : dernier texte de reseau.js ; relais : ligne d'état des relais.
++  const EL = { R: null, role: null, recus: new Map(), corr: new Map(), pasEnvoi: 0, pred: {}, vieux: {}, course: null, pneusDe: new Map(),
++    main: null, statut: '', relais: '' };
+   const nomPilote = () => (reglages.nom || '').trim().slice(0, 16) || 'Pilote';
+   const joueursIci = () => reglages.joueursLocaux === 2 ? 2 : 1;
+   const propre = t => String(t || '').replace(/[<>&"'`\\]/g, '').trim().slice(0, 16) || 'Pilote';
++  const salonEssai = () => !!(B.reseau && B.reseau.optionsPage().salon);
++  const NOMS_RELAIS = { mqtt: 'MQTT', torrent: 'WebTorrent', nostr: 'Nostr', salon: 'salon' };
++  function texteRelais(e) {
++    if (!e || e.mode === 'main') return 'Sans relais public : invitation à la main seulement.';
++    if (e.mode === 'salon') return e.prets ? 'Salon d’essai joint.' : 'Connexion au salon d’essai…';
++    if (!e.prets) return e.total === 0 || e.enEchec >= e.total ? 'Relais publics injoignables pour l’instant, nouvel essai en cours : l’invitation à la main reste possible.' : 'Relais publics : connexion…';
++    return 'Relais publics joints : ' + e.prets + ' (' + Object.keys(e.familles).map(f => NOMS_RELAIS[f] || f).join(', ') + ').';
++  }
+   function etatEnLigne(t) { texte($('l-etat'), t); }
+   const lienActif = () => !!(EL.R && EL.R.etat === 'connecte');
+   function quitterEnLigne() {
+     const R = EL.R;
+     annulerConfirmation(); EL.course = null; EL.pneusDe.clear();
+-    EL.R = null; EL.role = null;
++    EL.R = null; EL.role = null; EL.main = null; EL.statut = ''; EL.relais = '';
++    $('l-main').hidden = true;
+     if (R) R.fermer();
+     etatEnLigne('');
+     aller('titre');
+@@ -927,7 +941,8 @@
+   // l'écran du salon : choix créer / rejoindre sans partie, sinon le code, la liste des machines et l'état
+   function majSalon() {
+     const R = EL.R, ouvert = !!R && R.etat !== 'ferme', actif = lienActif();
+-    for (const sel of ['.enligne-choix', '.champ-nom', '.champ-joueurs']) document.querySelector(sel).hidden = ouvert;
++    for (const sel of ['.champ-nom', '.champ-joueurs']) document.querySelector(sel).hidden = ouvert;
++    document.querySelector('.enligne-choix').hidden = ouvert || !!EL.main;
+     $('l-code-affiche').hidden = !(ouvert && EL.role === 'hote' && R.code);
+     const liste = $('l-pilotes');
+     liste.hidden = !ouvert;
+@@ -935,16 +950,22 @@
+       let html = '';
+       for (const m of [...R.membres].sort((a, b) => a.id - b.id)) {
+         const moi = m.id === R.id, p = R.pairs.get(m.id);
+-        const lien = moi ? 'vous' : !p || !p.pret ? 'connexion…' : p.relais ? 'par le salon' : 'liaison directe';
++        // relayée : pas de chemin direct entre ces deux machines, la partie passe par une troisième
++        const lien = moi ? 'vous' : !p || !p.pret ? 'connexion…' : p.relais ? (p.via ? 'relayée par ' + propre(p.via) : 'relayée') : 'liaison directe';
+         html += '<li' + (moi ? ' class="moi"' : '') + '><b>' + propre(m.nom) + '</b><span>' + (m.joueurs === 2 ? '2 pilotes, écran partagé' : '1 pilote') + (m.id === 0 ? ' · hôte' : '') + '</span><em>' + lien + '</em></li>';
+       }
+       if (liste._html !== html) { liste._html = html; liste.innerHTML = html; }
+     }
++    const rel = $('l-relais');
++    rel.hidden = !(ouvert && EL.relais);
++    if (!rel.hidden) texte(rel, EL.relais);
+     const n = ouvert ? pilotesSalle(R).length : 0;
++    $('l-inviter-plus').hidden = !(ouvert && EL.role === 'hote' && !EL.main && n < 4);
+     $('l-choisir').hidden = !(actif && EL.role === 'hote');
+     $('l-choisir').disabled = n > 4;
+     majCourseSalon();
+-    if (ouvert && !actif) etatEnLigne(EL.role === 'hote' ? 'Partie créée. Donnez ce code aux autres pilotes : quatre pilotes au plus.' : 'Connexion aux autres pilotes…');
++    if (ouvert && !actif) etatEnLigne(EL.role === 'hote' && !R.code ? 'Partie créée : invitez les autres pilotes à la main.'
++      : EL.statut || (EL.role === 'hote' ? 'Partie créée. Donnez ce code aux autres pilotes : quatre pilotes au plus.' : 'Connexion aux autres pilotes…'));
+     else if (actif) etatEnLigne(n > 4 ? 'Plus de quatre pilotes : une machine doit passer à un seul pilote.'
+       : EL.role === 'hote' ? n + ' pilotes. Choisissez la course quand tout le monde est là.' : n + ' pilotes. L’hôte choisit la course…');
+   }
+@@ -1093,24 +1114,36 @@
+     annulerConfirmation();
+     if (EL.R) EL.R.fermer();
+     EL.course = null; EL.pneusDe.clear();
+-    const R = EL.R = B.reseau.creer({ url: B.reseau.adresseSalon(), nom: nomPilote(), joueurs: joueursIci() });
+-    EL.role = null;
++    // relais publics par défaut ; ?salon=ws://… (salon d'essai) ou ?relais=… (voir B.reseau.optionsPage)
++    const R = EL.R = B.reseau.creer(Object.assign(B.reseau.optionsPage(), { nom: nomPilote(), joueurs: joueursIci() }));
++    EL.role = null; EL.statut = ''; EL.relais = texteRelais(R.relaisEtat());
+     $('l-choisir').hidden = true; $('l-code-affiche').hidden = true;
+     R.on('salon', m => {
+       if (R !== EL.R) return;
+       EL.role = m.role;
+-      if (m.role === 'hote') texte($('l-code-affiche'), m.code);
++      if (m.role === 'hote' && m.code) texte($('l-code-affiche'), salonEssai() ? m.code : B.reseau.code.afficher(m.code));
+       majSalon();
+     }).on('salle', () => { if (R === EL.R) { majSalon(); if (EL.confirmation) { diffuserPrets(); majPrets(); } } })
+       .on('pair', id => {
+         if (R !== EL.R) return;
++        // une invitation à la main a abouti : le panneau se ferme (chez l'hôte, une fois la réponse collée)
++        if (EL.main && (EL.main.mode === 'invite' || EL.main.etape === 'acceptee')) { EL.main = null; majMain(); }
+         majSalon();
+         if (EL.role !== 'hote') { if (id === 0) envoyerPneus(); return; }
+         annoncerCourse();
+         // une machine arrive pendant la confirmation : elle la reçoit aussi
+         if (EL.confirmation) { R.envoyer({ t: 'confirmer', course: EL.course }, id); R.envoyer({ t: 'prets', liste: [...EL.confirmation.prets] }, id); diffuserPrets(); }
+       })
+-      .on('relais', () => { if (R !== EL.R) return; majSalon(); if (session && session.enLigne && ecran === 'course') sousMessage('Liaison directe perdue : la course passe par le salon'); })
++      .on('liens', () => { if (R === EL.R) majSalon(); })
++      .on('statut', (code, t) => { if (R === EL.R) { EL.statut = t; EL.relais = texteRelais(R.relaisEtat()); majSalon(); } })
++      .on('signalisation', e => { if (R === EL.R) { EL.relais = texteRelais(e); majSalon(); } })
++      .on('invitation', (n, quoi, raison) => { if (R === EL.R) surInvitation(n, quoi, raison); })
++      .on('relais', id => {
++        if (R !== EL.R) return;
++        majSalon();
++        const p = R.pairs.get(id);
++        if (session && session.enLigne && ecran === 'course') sousMessage('Liaison directe perdue : la course passe par ' + (p && p.via ? propre(p.via) : 'une autre machine'));
++      })
+       .on('parti', id => { if (R === EL.R) surDepart(id); })
+       .on('message', (m, de) => { if (R === EL.R) surMessageEnLigne(m, de); })
+       .on('etat', p => { if (R === EL.R) for (const e of p.voitures) { const r = EL.recus.get(e.id); if (!r || p.t >= r.t) EL.recus.set(e.id, { t: p.t, etat: e }); } })
+@@ -1176,10 +1209,12 @@
+   }
+   function surFermeture(raison) {
+     annulerConfirmation(); EL.course = null; EL.pneusDe.clear();
++    EL.main = null; $('l-main').hidden = true;
+     if (retourReglages === 'prets') retourReglages = 'enligne';
+     if (ecran === 'prets') aller('enligne');
+     const S = session;
+-    etatEnLigne(raison === 'parti' ? 'L’hôte a quitté la partie.' : raison === 'local' ? '' : 'La liaison est coupée.');
++    // refus (partie complète, autre version) : le texte de l'erreur, déjà affiché, reste
++    if (raison !== 'refus') etatEnLigne(raison === 'parti' ? 'L’hôte a quitté la partie.' : raison === 'local' ? '' : 'La liaison est coupée.');
+     if (S && S.enLigne && !S.course.termine) {
+       // la course continue : ce qui venait du réseau passe à l'IA de cette machine
+       for (const v of S.course.voitures) if (v.distant) { v.distant = false; v.joueur = false; }
+@@ -1236,25 +1271,175 @@
+   for (const r of document.querySelectorAll('input[name="joueursIci"]')) r.checked = String(joueursIci()) === r.value;
+   $('l-nom').value = reglages.nom || '';
+   $('l-nom').addEventListener('input', e => { reglages.nom = e.target.value.slice(0, 16); sauverReglages(); });
++  const echecCreation = () => salonEssai() ? 'Le salon ne répond pas. Réessayez plus tard.' : 'La partie n’a pas pu être créée. Réessayez.';
+   $('l-creer').addEventListener('click', async () => {
+-    const R = nouvelleLiaison(); etatEnLigne('Connexion au salon…');
+-    try { await R.creerSalon(); } catch (e) { etatEnLigne('Le salon ne répond pas. Réessayez plus tard.'); }
++    const R = nouvelleLiaison(); etatEnLigne(salonEssai() ? 'Connexion au salon…' : '');
++    try { await R.creerSalon(); } catch (e) { if (R === EL.R) etatEnLigne(echecCreation()); }
+   });
++  // Code de partie : dix caractères sans lettre ambiguë (O vaut 0, I et L valent 1), le dernier vérifie les autres ;
++  // le salon d'essai garde ses quatre lettres.
++  function formerCode(brut) {
++    if (salonEssai()) return brut.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
++    const s = brut.toUpperCase().replace(/O/g, '0').replace(/[IL]/g, '1').replace(/[^0-9A-HJKMNP-TV-Z]/g, '').slice(0, 10);
++    return s.length > 5 ? s.slice(0, 5) + '-' + s.slice(5) : s;
++  }
+   const rejoindre = async () => {
+-    const code = $('l-code').value.trim().toUpperCase();
+-    if (!/^[A-Z]{4}$/.test(code)) { etatEnLigne('Le code a quatre lettres.'); return; }
+-    const R = nouvelleLiaison(); etatEnLigne('Recherche de la partie ' + code + '…');
+-    try { await R.rejoindreSalon(code); } catch (e) { etatEnLigne('Le salon ne répond pas. Réessayez plus tard.'); }
++    const brut = $('l-code').value;
++    if (salonEssai()) {
++      const code = brut.trim().toUpperCase();
++      if (!/^[A-Z]{4}$/.test(code)) { etatEnLigne('Le code a quatre lettres.'); return; }
++      const R = nouvelleLiaison(); etatEnLigne('Recherche de la partie ' + code + '…');
++      try { await R.rejoindreSalon(code); } catch (e) { if (R === EL.R) etatEnLigne('Le salon ne répond pas. Réessayez plus tard.'); }
++      return;
++    }
++    const code = B.reseau.code.normaliser(brut);
++    if (!code) { etatEnLigne(B.reseau.TEXTES.codeInvalide); return; }
++    $('l-code').value = B.reseau.code.afficher(code);
++    const R = nouvelleLiaison();
++    // les refus (WebRTC absent, page non sécurisée) arrivent déjà par « statut » ou « erreur »
++    try { await R.rejoindreSalon(code); } catch (e) { /* texte déjà affiché */ }
+   };
+   $('l-rejoindre').addEventListener('click', rejoindre);
+   $('p-touches').addEventListener('click', () => { retourReglages = 'preparation'; aller('reglages'); B.navigationMenu.ouvrirOnglet($('reglages'), 'r-commandes-panel', true); });
+   $('p-reglages-pilote').addEventListener('click', () => { retourReglages = 'preparation'; aller('reglages'); B.navigationMenu.ouvrirOnglet($('reglages'), 'r-pilotage', true); });
+-  $('l-code').addEventListener('input', e => { const v = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4); if (v !== e.target.value) e.target.value = v; });
++  $('l-code').addEventListener('input', e => { const v = formerCode(e.target.value); if (v !== e.target.value) e.target.value = v; });
++  // un lien collé dans le champ : celui d'une partie la rejoint, celui d'une invitation ouvre l'invitation à la main
++  $('l-code').addEventListener('paste', e => {
++    const t = e.clipboardData ? e.clipboardData.getData('text') : '', p = !salonEssai() && B.reseau.lirePartage(t);
++    if (!p) return;
++    e.preventDefault();
++    if (p.code) { e.target.value = B.reseau.code.afficher(p.code); rejoindre(); } else ouvrirMain('invite', t);
++  });
++  // copier : le code et le lien de la partie, qui la rejoint d'un toucher
+   $('l-code-affiche').addEventListener('click', () => {
+-    const code = $('l-code-affiche').textContent;
+-    if (navigator.clipboard && code) navigator.clipboard.writeText(code).then(() => etatEnLigne('Code ' + code + ' copié. Envoyez-le à l’autre pilote.'), () => {});
++    const code = EL.R && EL.R.code;
++    if (!navigator.clipboard || !code) return;
++    const vu = salonEssai() ? code : B.reseau.code.afficher(code);
++    navigator.clipboard.writeText(salonEssai() ? code : vu + ' · ' + B.reseau.lienPartie(code))
++      .then(() => etatEnLigne('Code ' + vu + ' copié' + (salonEssai() ? '' : ', avec le lien de la partie') + '. Envoyez-le aux autres pilotes.'), () => {});
+   });
+   $('l-code').addEventListener('keydown', e => { if (e.key === 'Enter') rejoindre(); });
++
++  // Invitation à la main : sans Internet (même réseau local), ou quand le code ne trouve personne. L'hôte crée une
++  // invitation (texte, lien, code QR pour un téléphone) ; l'invité la colle et renvoie sa réponse ; l'hôte la colle à
++  // son tour. Une invitation par machine invitée ; l'hôte complète ensuite le maillage avec les autres.
++  function dessinerQr(t) {
++    const c = $('l-qr'), q = t ? B.reseau.qr(t) : null;
++    c.hidden = !q;
++    if (!q) return;
++    const n = q.taille, bord = 4, k = Math.max(2, Math.floor(256 / (n + 2 * bord)));
++    c.width = c.height = (n + 2 * bord) * k;
++    const g = c.getContext('2d');
++    g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
++    g.fillStyle = '#000';
++    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (q.modules[y * n + x]) g.fillRect((x + bord) * k, (y + bord) * k, k, k);
++  }
++  function majMain() {
++    const M = EL.main;
++    $('l-main').hidden = !M;
++    majSalon();
++    if (!M) return;
++    const hote = M.mode === 'hote';
++    texte($('l-main-titre'), hote ? 'Invitation à la main' : 'Invitation reçue');
++    texte($('l-main-aide'), M.aide || '');
++    $('l-main-envoi').hidden = !M.texte;
++    if (M.texte && $('l-main-texte').value !== M.texte) { $('l-main-texte').value = M.texte; dessinerQr(hote ? M.texte : null); }
++    texte($('l-main-copier'), 'Copier');
++    $('l-main-saisie-bloc').hidden = !(hote ? M.etape === 'attente' : M.etape === 'saisie');
++    texte($('l-main-champ'), hote ? 'Réponse de l’invité' : 'Invitation de l’hôte');
++    $('l-main-saisie').placeholder = hote ? 'Collez ici la réponse de l’invité' : 'Collez ici l’invitation de l’hôte';
++  }
++  const texteMain = e => B.reseau.TEXTES[e && e.message] || 'L’invitation n’a pas abouti (' + (e && e.message || 'erreur') + ').';
++  async function inviterMain() {
++    let R = EL.R;
++    if (!R || R.etat === 'ferme' || EL.role !== 'hote') {
++      R = nouvelleLiaison();
++      try { await R.creerSalon(); } catch (e) { if (R === EL.R) etatEnLigne(echecCreation()); return; }
++    }
++    if (R !== EL.R) return;
++    const M = EL.main = { mode: 'hote', etape: 'preparation', aide: 'Préparation de l’invitation…' };
++    majMain();
++    try {
++      const inv = await R.inviter();
++      if (R !== EL.R || EL.main !== M) { if (R === EL.R) R.annulerInvitation(inv.n); return; }
++      Object.assign(M, { etape: 'attente', n: inv.n, texte: inv.texte,
++        aide: 'Envoyez ce texte à l’autre pilote (messagerie, courriel, clé USB) ou faites-lui scanner le code QR, puis collez ici sa réponse. Valable dix minutes.' });
++    } catch (e) { if (EL.main === M) Object.assign(M, { etape: 'erreur', aide: texteMain(e) }); }
++    majMain();
++  }
++  function ouvrirMain(mode, texteColle) {
++    if (mode === 'hote') { inviterMain(); return; }
++    EL.main = { mode: 'invite', etape: 'saisie', aide: 'Collez l’invitation reçue de l’hôte, puis validez : une réponse s’affichera, à lui renvoyer.' };
++    $('l-main-saisie').value = texteColle || '';
++    majMain();
++    if (texteColle) validerMain();
++  }
++  async function validerMain() {
++    const M = EL.main, t = $('l-main-saisie').value.trim();
++    if (!M || !t) return;
++    if (M.mode === 'hote') {
++      const R = EL.R;
++      if (!R || M.etape !== 'attente') return;
++      try { await R.accepterReponse(t); } catch (e) { if (EL.main === M) { M.aide = texteMain(e); majMain(); } return; }
++      if (EL.main !== M) return;
++      Object.assign(M, { etape: 'acceptee', aide: 'Réponse acceptée : liaison en cours…' });
++      $('l-main-saisie').value = '';
++      majMain();
++      return;
++    }
++    if (M.etape !== 'saisie') return;
++    // une liaison précédente (invitation qui n'a pas abouti) se ferme sans emporter le panneau
++    const ancien = EL.R;
++    if (ancien) { EL.R = null; EL.role = null; ancien.fermer(); }
++    const R = nouvelleLiaison();
++    M.etape = 'preparation'; M.aide = 'Préparation de la réponse…'; majMain();
++    try {
++      const rep = await R.accepterInvitation(t);
++      if (R !== EL.R || EL.main !== M) return;
++      Object.assign(M, { etape: 'reponse', texte: rep.texte,
++        aide: 'Renvoyez cette réponse à l’hôte : il la colle chez lui et la liaison s’établit. Gardez cette page ouverte.' });
++    } catch (e) {
++      if (R === EL.R) { EL.R = null; EL.role = null; R.fermer(); }
++      if (EL.main === M) Object.assign(M, { etape: 'saisie', aide: texteMain(e) });
++    }
++    majMain();
++  }
++  // une liaison d'invitation ouverte ou perdue (réseaux qui ne se voient pas, dix minutes passées)
++  function surInvitation(n, quoi, raison) {
++    const M = EL.main;
++    if (!M || (M.mode === 'hote' && M.n !== n)) return;
++    if (quoi === 'ouverte') M.aide = 'Liaison établie : présentation des machines…';
++    else if (quoi === 'echec') Object.assign(M, { etape: M.mode === 'hote' ? 'erreur' : 'saisie', texte: null,
++      aide: B.reseau.TEXTES[raison === 'délai' ? 'invitationExpiree' : 'invitationEchec'] });
++    majMain();
++  }
++  function fermerMain() {
++    const M = EL.main, R = EL.R;
++    EL.main = null;
++    if (M && M.mode === 'hote' && M.etape === 'attente' && R) R.annulerInvitation(M.n);
++    // l'invité qui renonce avant d'être admis ne garde pas de partie à moitié ouverte
++    if (M && M.mode === 'invite' && R && R.etat !== 'connecte') { EL.R = null; EL.role = null; R.fermer(); etatEnLigne(''); }
++    majMain();
++  }
++  $('l-inviter').addEventListener('click', () => ouvrirMain('hote'));
++  $('l-inviter-plus').addEventListener('click', () => ouvrirMain('hote'));
++  $('l-coller').addEventListener('click', () => ouvrirMain('invite'));
++  $('l-main-valider').addEventListener('click', validerMain);
++  $('l-main-fermer').addEventListener('click', fermerMain);
++  $('l-main-copier').addEventListener('click', () => {
++    const t = $('l-main-texte').value;
++    if (navigator.clipboard && t) navigator.clipboard.writeText(t).then(() => texte($('l-main-copier'), 'Copié'), () => {});
++  });
++  $('l-main-texte').addEventListener('focus', e => e.target.select());
++  // Lien partagé à l'ouverture : #partie=… rejoint la partie, #invitation=… ouvre l'invitation reçue. Le fragment ne
++  // quitte jamais la machine ; il est effacé de l'adresse une fois lu.
++  function ouvrirPartage() {
++    const p = B.reseau.lirePartage();
++    if (!p) return;
++    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* adresse inchangée */ }
++    aller('enligne');
++    if (p.code) { $('l-code').value = B.reseau.code.afficher(p.code); rejoindre(); } else ouvrirMain('invite', p.invitation);
++  }
+   $('l-choisir').addEventListener('click', () => { modePrepa = 'enligne'; aller('preparation'); annoncerCourse(); });
+   $('l-reglages').addEventListener('click', () => { retirerPret(); retourReglages = 'enligne'; aller('reglages'); });
+   $('l-vers-prets').addEventListener('click', () => aller('prets'));
+@@ -2728,6 +2913,7 @@
+       lancer('vitrine', reglages.circuit);
+       $('chargement').classList.add('fini');
+       aller('titre');
++      ouvrirPartage();   // lien de partie ou d'invitation reçu
+       requestAnimationFrame(image);
+     } catch (e) {
+       console.error(e);
+diff --git a/src/style.css b/src/style.css
+index 467747d..7d8ec2b 100644
+--- a/src/style.css
++++ b/src/style.css
+@@ -475,7 +475,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
+ .gros .detecte { display: inline-block; margin-left: 14px; padding: 4px 8px 3px; vertical-align: middle; font: normal 700 12px/1 var(--f-texte); letter-spacing: .1em; text-transform: uppercase; color: var(--encre); background: var(--vert); border-radius: var(--rayon); }
+ /* Jeu en ligne : nom, puis deux cartes (créer, rejoindre), puis le code et l'état de la liaison */
+ .enligne { background: linear-gradient(180deg, rgba(8, 9, 11, .92), rgba(8, 9, 11, .8)); }
+-.salon { display: flex; flex-direction: column; gap: 22px; max-width: 920px; }
++.salon { display: flex; flex-direction: column; gap: 22px; max-width: 1000px; }
+ .champ-nom { display: flex; flex-direction: column; gap: 8px; max-width: 320px; font: 600 11px/1 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); }
+ .enligne input { font: 700 22px/1.2 var(--f-titre); padding: 11px 14px; background: rgba(8, 9, 11, .9); color: var(--papier); border: 1px solid var(--trait-fort); border-radius: var(--rayon); user-select: text; -webkit-user-select: text; }
+ .enligne input::placeholder { color: var(--papier-3); }
+@@ -488,13 +488,27 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
+ .carte-salon .gros { align-self: flex-start; min-width: 0; margin-top: auto; }
+ .ligne-code { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; margin-top: auto; }
+ .ligne-code .gros { margin-top: 0; }
+-.enligne #l-code { width: 9ch; font-size: 28px; text-transform: uppercase; letter-spacing: .3em; text-align: center; }
++.enligne #l-code { width: 16ch; max-width: 100%; box-sizing: border-box; font-size: 24px; text-transform: uppercase; letter-spacing: .06em; text-align: center; }
++.carte-salon.a-la-main { border-top-color: var(--ambre); }
++/* boutons de l'invitation à la main : plus sobres que les grands choix de l'écran */
++.carte-salon.a-la-main .gros, .panneau-main .gros { min-width: 0; padding: 11px 18px 9px 20px; font-size: clamp(21px, 2.4vw, 27px); }
+ .etat-salon { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+ .note-enligne { margin: 0; color: var(--papier); font-size: 16px; }
+ .note-enligne:empty { display: none; }
+-.code-partie { margin: 0; padding: 14px 24px 16px; font: italic 800 64px/1 var(--f-titre); letter-spacing: .22em; color: var(--papier); text-align: left; background: rgba(22, 24, 28, .9); border: 1px solid var(--trait-fort); border-left: 4px solid var(--ambre); border-radius: var(--rayon); cursor: copy; }
+-.code-partie::before { content: 'Code de la partie · toucher pour copier'; display: block; margin-bottom: 10px; font: normal 600 11px/1 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); }
++.code-partie { max-width: 100%; box-sizing: border-box; margin: 0; padding: 14px 24px 16px; font: italic 800 clamp(30px, 8vw, 56px)/1 var(--f-titre); letter-spacing: .1em; color: var(--papier); text-align: left; background: rgba(22, 24, 28, .9); border: 1px solid var(--trait-fort); border-left: 4px solid var(--ambre); border-radius: var(--rayon); cursor: copy; }
++.code-partie::before { content: 'Code de la partie · toucher pour copier, avec le lien'; display: block; margin-bottom: 10px; font: normal 600 11px/1.3 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); }
+ .code-partie:hover, .code-partie:focus-visible { border-color: var(--ambre); outline: none; }
++.note-relais { margin: 0; color: var(--papier-2); font-size: 13px; }
++/* invitation à la main : texte et code QR à envoyer, champ où coller ce qui revient */
++.panneau-main { display: flex; flex-direction: column; gap: 14px; align-self: stretch; max-width: 760px; padding: 18px 20px 20px; background: rgba(22, 24, 28, .9); border: 1px solid var(--trait); border-top: 3px solid var(--ambre); border-radius: var(--rayon); }
++.panneau-main h3 { margin: 0; font: italic 800 26px/1 var(--f-titre); font-stretch: condensed; text-transform: uppercase; }
++.main-envoi { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
++.main-envoi .qr { width: 216px; height: 216px; flex: none; background: #fff; border-radius: 4px; image-rendering: pixelated; }
++.main-texte, .main-saisie { flex: 1 1 260px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
++.main-texte .gros, .main-saisie .gros, .panneau-main > .discret { align-self: flex-start; }
++.champ-main { font: 600 11px/1 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); }
++.enligne textarea { width: 100%; box-sizing: border-box; padding: 10px 12px; font: 500 13px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--papier); background: rgba(8, 9, 11, .9); border: 1px solid var(--trait-fort); border-radius: var(--rayon); resize: vertical; word-break: break-all; user-select: text; -webkit-user-select: text; }
++.enligne textarea:focus { outline: 2px solid var(--ambre); outline-offset: 2px; }
+ 
+ /* Écran partagé à deux : deux moitiés, l'une sur l'autre ou côte à côte ; chaque affichage est mis en page dans une
+    boîte plus grande puis réduit à sa moitié (k = 0,72 l'un sur l'autre, 0,6 côte à côte) */

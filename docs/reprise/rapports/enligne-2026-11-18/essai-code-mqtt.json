@@ -1,0 +1,167 @@
+{
+ "date": "2026-11-18T19:43:50.255Z",
+ "scenario": "code",
+ "machines": 2,
+ "duree": 0,
+ "requete": "?relais=mqtt",
+ "page": {
+  "fichier": "dist/bitume.html",
+  "sha256": "ba130ee87834d09e",
+  "octets": 13330337
+ },
+ "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+ "contexteSecurise": true,
+ "limites": [
+  "Toutes les machines sont des navigateurs Chrome sans interface de ce Mac : leurs liaisons passent par la boucle locale ou le réseau de la maison. Cela ne prouve pas la traversée de deux box différentes.",
+  "Relais publics tiers : leur disponibilité au moment de l’essai ne promet rien pour demain."
+ ],
+ "mise_en_relation": {
+  "Essai H": {
+   "role": "hôte",
+   "code_affiche": "XXXXX-XXXXX",
+   "premier_relais_ms": 655
+  },
+  "Essai A": {
+   "role": "invité",
+   "clic_a_admis_ms": 2153,
+   "clic_a_tous_lies_ms": 2156,
+   "journal_ms": {
+    "premier_relais": 578,
+    "offre_recue": 1386,
+    "canaux_ouverts": 1909,
+    "bienvenue": 1911
+   },
+   "offre_par": "mqtt wss://test.mosquitto.org:8081/mqtt",
+   "premiers_par_famille": {
+    "mqtt": 1
+   },
+   "relais": {
+    "mode": "relais",
+    "prets": 3,
+    "total": 3,
+    "enEchec": 0,
+    "familles": {
+     "mqtt": 3
+    }
+   },
+   "transports": [
+    {
+     "famille": "mqtt",
+     "url": "wss://broker.hivemq.com:8884/mqtt",
+     "pret": true,
+     "latence": 477,
+     "ouvertures": 1,
+     "envoyes": 2,
+     "recus": 2,
+     "premiers": 0,
+     "echecs": 0,
+     "refus": null
+    },
+    {
+     "famille": "mqtt",
+     "url": "wss://broker.emqx.io:8084/mqtt",
+     "pret": true,
+     "latence": 1122,
+     "ouvertures": 1,
+     "envoyes": 2,
+     "recus": 2,
+     "premiers": 0,
+     "echecs": 0,
+     "refus": null
+    },
+    {
+     "famille": "mqtt",
+     "url": "wss://test.mosquitto.org:8081/mqtt",
+     "pret": true,
+     "latence": 473,
+     "ouvertures": 1,
+     "envoyes": 2,
+     "recus": 2,
+     "premiers": 1,
+     "echecs": 0,
+     "refus": null
+    }
+   ],
+   "sans_direct_avec": []
+  }
+ },
+ "invitation": null,
+ "liens": {
+  "Essai H": {
+   "id": 0,
+   "role": "hote",
+   "membres": [
+    {
+     "id": 0,
+     "nom": "Essai H",
+     "joueurs": 1
+    },
+    {
+     "id": 1,
+     "nom": "Essai A",
+     "joueurs": 1
+    }
+   ],
+   "pairs": [
+    {
+     "id": 1,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    }
+   ],
+   "etat": "connecte",
+   "synchro": false,
+   "rtt": 0,
+   "affichage": [
+    "Essai H1 pilote · hôtevous",
+    "Essai A1 piloteliaison directe"
+   ]
+  },
+  "Essai A": {
+   "id": 1,
+   "role": "invite",
+   "membres": [
+    {
+     "id": 0,
+     "nom": "Essai H",
+     "joueurs": 1
+    },
+    {
+     "id": 1,
+     "nom": "Essai A",
+     "joueurs": 1
+    }
+   ],
+   "pairs": [
+    {
+     "id": 0,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    }
+   ],
+   "etat": "connecte",
+   "synchro": false,
+   "rtt": 1,
+   "affichage": [
+    "Essai H1 pilote · hôteliaison directe",
+    "Essai A1 pilotevous"
+   ]
+  }
+ },
+ "course": null,
+ "depart": null,
+ "erreurs": {
+  "Essai H": {
+   "console": [],
+   "exceptions": []
+  },
+  "Essai A": {
+   "console": [],
+   "exceptions": []
+  }
+ },
+ "maillage_direct_apres_ms": 14,
+ "duree_essai_s": 11
+}

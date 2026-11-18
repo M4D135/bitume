@@ -1,0 +1,618 @@
+{
+ "date": "2026-11-18T19:42:50.937Z",
+ "scenario": "main",
+ "machines": 2,
+ "duree": 20,
+ "requete": "?relais=aucun",
+ "page": {
+  "fichier": "dist/bitume.html",
+  "sha256": "ba130ee87834d09e",
+  "octets": 13330337
+ },
+ "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+ "contexteSecurise": true,
+ "limites": [
+  "Toutes les machines sont des navigateurs Chrome sans interface de ce Mac : leurs liaisons passent par la boucle locale ou le réseau de la maison. Cela ne prouve pas la traversée de deux box différentes.",
+  "Relais publics tiers : leur disponibilité au moment de l’essai ne promet rien pour demain."
+ ],
+ "mise_en_relation": {
+  "Essai H": {
+   "mode": "main",
+   "premiers": {},
+   "relais": {
+    "mode": "main",
+    "prets": 0,
+    "total": 0,
+    "enEchec": 0,
+    "familles": {}
+   },
+   "transports": [],
+   "journal": [
+    {
+     "t": 1,
+     "quoi": "statut",
+     "code": "attente"
+    },
+    {
+     "t": 3194,
+     "quoi": "invitation",
+     "n": 56033,
+     "octets": 119
+    },
+    {
+     "t": 3960,
+     "quoi": "réponse collée",
+     "n": 56033
+    },
+    {
+     "t": 3972,
+     "quoi": "canaux ouverts",
+     "a": "?56033",
+     "ms": 3801,
+     "main": true
+    },
+    {
+     "t": 3973,
+     "quoi": "liaison établie",
+     "a": "4ORGr1",
+     "role": "invite",
+     "ms": 3802
+    },
+    {
+     "t": 3974,
+     "quoi": "admis",
+     "a": "4ORGr1",
+     "id": 1
+    },
+    {
+     "t": 3975,
+     "quoi": "chemins",
+     "prets": [
+      1
+     ],
+     "relayes": []
+    }
+   ],
+   "statut": "attente",
+   "ligne": "Sans relais public : invitation à la main seulement.",
+   "etat": "2 pilotes. Choisissez la course quand tout le monde est là."
+  },
+  "Essai A": {
+   "mode": "main",
+   "premiers": {},
+   "relais": {
+    "mode": "main",
+    "prets": 0,
+    "total": 0,
+    "enEchec": 0,
+    "familles": {}
+   },
+   "transports": [],
+   "journal": [
+    {
+     "t": 248,
+     "quoi": "réponse prête",
+     "n": 56033
+    },
+    {
+     "t": 436,
+     "quoi": "canaux ouverts",
+     "a": "?56033",
+     "ms": 224,
+     "main": true
+    },
+    {
+     "t": 437,
+     "quoi": "liaison établie",
+     "a": "hmti1x",
+     "role": "hote",
+     "ms": 225
+    },
+    {
+     "t": 437,
+     "quoi": "entrer",
+     "hote": "hmti1x"
+    },
+    {
+     "t": 439,
+     "quoi": "bienvenue",
+     "id": 1
+    },
+    {
+     "t": 439,
+     "quoi": "statut",
+     "code": "admis"
+    },
+    {
+     "t": 439,
+     "quoi": "chemins",
+     "prets": [
+      0
+     ],
+     "relayes": []
+    }
+   ],
+   "statut": "admis",
+   "ligne": "Sans relais public : invitation à la main seulement.",
+   "etat": "2 pilotes. L’hôte choisit la course…"
+  }
+ },
+ "invitation": {
+  "machines": [
+   {
+    "invite": "Essai A",
+    "invitation_caracteres": 198,
+    "reponse_caracteres": 150,
+    "qr": {
+     "cache": false,
+     "cote_px": 195,
+     "version": 10,
+     "niveau": "M",
+     "relu": true,
+     "candidats": {
+      "hote": 2,
+      "srflx": 1,
+      "mdns": 2
+     }
+    },
+    "preparation_invitation_ms": 3255,
+    "preparation_reponse_ms": 408,
+    "reponse_collee_a_tous_lies_ms": 5
+   }
+  ]
+ },
+ "liens": {
+  "Essai H": {
+   "id": 0,
+   "role": "hote",
+   "membres": [
+    {
+     "id": 0,
+     "nom": "Essai H",
+     "joueurs": 1
+    },
+    {
+     "id": 1,
+     "nom": "Essai A",
+     "joueurs": 1
+    }
+   ],
+   "pairs": [
+    {
+     "id": 1,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    }
+   ],
+   "etat": "connecte",
+   "synchro": false,
+   "rtt": 0,
+   "affichage": [
+    "Essai H1 pilote · hôtevous",
+    "Essai A1 piloteliaison directe"
+   ]
+  },
+  "Essai A": {
+   "id": 1,
+   "role": "invite",
+   "membres": [
+    {
+     "id": 0,
+     "nom": "Essai H",
+     "joueurs": 1
+    },
+    {
+     "id": 1,
+     "nom": "Essai A",
+     "joueurs": 1
+    }
+   ],
+   "pairs": [
+    {
+     "id": 0,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    }
+   ],
+   "etat": "connecte",
+   "synchro": false,
+   "rtt": 8,
+   "affichage": [
+    "Essai H1 pilote · hôteliaison directe",
+    "Essai A1 pilotevous"
+   ]
+  }
+ },
+ "course": {
+  "duree_ms": 20270,
+  "pret_a_course_ms": 1075,
+  "machines": {
+   "Essai H": {
+    "releves": 59,
+    "cadence_simulation": 1,
+    "voitures_locales": [
+     0,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11
+    ],
+    "paquets_recus_par_machine": {
+     "1": 1173
+    },
+    "paquets_par_seconde": {
+     "1": 57.9
+    },
+    "age_etat_ms_par_voiture": {
+     "1": {
+      "n": 59,
+      "p50": 13.57,
+      "p95": 18.57,
+      "max": 19.57
+     }
+    }
+   },
+   "Essai A": {
+    "releves": 59,
+    "cadence_simulation": 1,
+    "voitures_locales": [
+     1
+    ],
+    "paquets_recus_par_machine": {
+     "0": 1177
+    },
+    "paquets_par_seconde": {
+     "0": 58.1
+    },
+    "age_etat_ms_par_voiture": {
+     "0": {
+      "n": 59,
+      "p50": 14.93,
+      "p95": 22.52,
+      "max": 23.8
+     },
+     "2": {
+      "n": 59,
+      "p50": 25.97,
+      "p95": 38.62,
+      "max": 40.47
+     },
+     "3": {
+      "n": 59,
+      "p50": 25.97,
+      "p95": 38.62,
+      "max": 40.47
+     },
+     "4": {
+      "n": 59,
+      "p50": 25.97,
+      "p95": 38.62,
+      "max": 40.47
+     },
+     "5": {
+      "n": 59,
+      "p50": 25.97,
+      "p95": 38.62,
+      "max": 40.47
+     },
+     "6": {
+      "n": 59,
+      "p50": 25.97,
+      "p95": 38.62,
+      "max": 40.47
+     },
+     "7": {
+      "n": 59,
+      "p50": 25.97,
+      "p95": 38.62,
+      "max": 40.47
+     },
+     "8": {
+      "n": 59,
+      "p50": 25.97,
+      "p95": 38.62,
+      "max": 40.47
+     },
+     "9": {
+      "n": 59,
+      "p50": 25.97,
+      "p95": 38.62,
+      "max": 40.47
+     },
+     "10": {
+      "n": 59,
+      "p50": 25.97,
+      "p95": 38.62,
+      "max": 40.47
+     },
+     "11": {
+      "n": 59,
+      "p50": 25.97,
+      "p95": 38.62,
+      "max": 40.47
+     }
+    }
+   }
+  },
+  "accord": {
+   "0": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 59,
+     "p50": 0.02,
+     "p95": 0.96,
+     "max": 2.12
+    },
+    "ecart_lateral_m": {
+     "n": 59,
+     "p50": 0,
+     "p95": 0.08,
+     "max": 0.19
+    }
+   },
+   "1": {
+    "pilote": "Essai A",
+    "ecart_long_m": {
+     "n": 59,
+     "p50": 0,
+     "p95": 0.43,
+     "max": 2.12
+    },
+    "ecart_lateral_m": {
+     "n": 59,
+     "p50": 0,
+     "p95": 0.04,
+     "max": 0.12
+    }
+   },
+   "2": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 59,
+     "p50": 0.03,
+     "p95": 0.3,
+     "max": 0.84
+    },
+    "ecart_lateral_m": {
+     "n": 59,
+     "p50": 0,
+     "p95": 0.02,
+     "max": 0.13
+    }
+   },
+   "3": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 59,
+     "p50": 0.03,
+     "p95": 1.25,
+     "max": 2.04
+    },
+    "ecart_lateral_m": {
+     "n": 59,
+     "p50": 0,
+     "p95": 0.21,
+     "max": 0.39
+    }
+   },
+   "4": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 59,
+     "p50": 0.03,
+     "p95": 0.98,
+     "max": 2.16
+    },
+    "ecart_lateral_m": {
+     "n": 59,
+     "p50": 0,
+     "p95": 0.07,
+     "max": 0.15
+    }
+   },
+   "5": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 59,
+     "p50": 0.03,
+     "p95": 0.29,
+     "max": 0.82
+    },
+    "ecart_lateral_m": {
+     "n": 59,
+     "p50": 0,
+     "p95": 0.03,
+     "max": 0.1
+    }
+   },
+   "6": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 59,
+     "p50": 0.02,
+     "p95": 1.24,
+     "max": 2.64
+    },
+    "ecart_lateral_m": {
+     "n": 59,
+     "p50": 0,
+     "p95": 0.02,
+     "max": 0.28
+    }
+   },
+   "7": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 59,
+     "p50": 0.03,
+     "p95": 0.38,
+     "max": 0.83
+    },
+    "ecart_lateral_m": {
+     "n": 59,
+     "p50": 0,
+     "p95": 0.05,
+     "max": 0.5
+    }
+   },
+   "8": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 59,
+     "p50": 0.02,
+     "p95": 0.83,
+     "max": 2.59
+    },
+    "ecart_lateral_m": {
+     "n": 59,
+     "p50": 0,
+     "p95": 0.02,
+     "max": 0.24
+    }
+   },
+   "9": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 59,
+     "p50": 0.03,
+     "p95": 0.28,
+     "max": 0.81
+    },
+    "ecart_lateral_m": {
+     "n": 59,
+     "p50": 0,
+     "p95": 0.02,
+     "max": 0.04
+    }
+   },
+   "10": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 59,
+     "p50": 0.03,
+     "p95": 0.35,
+     "max": 0.84
+    },
+    "ecart_lateral_m": {
+     "n": 59,
+     "p50": 0,
+     "p95": 0.02,
+     "max": 0.02
+    }
+   },
+   "11": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 59,
+     "p50": 0.03,
+     "p95": 0.29,
+     "max": 0.84
+    },
+    "ecart_lateral_m": {
+     "n": 59,
+     "p50": 0,
+     "p95": 0.03,
+     "max": 0.07
+    }
+   }
+  }
+ },
+ "depart": {
+  "machine": "Essai A",
+  "voitures": [
+   1
+  ],
+  "reprise_constatee": true,
+  "avance_m_apres_depart": [
+   46.1
+  ],
+  "membres_restants": [
+   1
+  ],
+  "delai_reprise_ms": 143
+ },
+ "erreurs": {
+  "Essai H": {
+   "console": [],
+   "exceptions": []
+  },
+  "Essai A": {
+   "console": [],
+   "exceptions": []
+  }
+ },
+ "maillage_direct_apres_ms": 1,
+ "liens_fin_course": {
+  "Essai H": {
+   "id": 0,
+   "role": "hote",
+   "membres": [
+    {
+     "id": 0,
+     "nom": "Essai H",
+     "joueurs": 1
+    },
+    {
+     "id": 1,
+     "nom": "Essai A",
+     "joueurs": 1
+    }
+   ],
+   "pairs": [
+    {
+     "id": 1,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    }
+   ],
+   "etat": "connecte",
+   "synchro": false,
+   "rtt": 0,
+   "affichage": [
+    "Essai H1 pilote · hôtevous",
+    "Essai A1 piloteliaison directe"
+   ]
+  },
+  "Essai A": {
+   "id": 1,
+   "role": "invite",
+   "membres": [
+    {
+     "id": 0,
+     "nom": "Essai H",
+     "joueurs": 1
+    },
+    {
+     "id": 1,
+     "nom": "Essai A",
+     "joueurs": 1
+    }
+   ],
+   "pairs": [
+    {
+     "id": 0,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    }
+   ],
+   "etat": "connecte",
+   "synchro": true,
+   "rtt": 1,
+   "affichage": [
+    "Essai H1 pilote · hôteliaison directe",
+    "Essai A1 pilotevous"
+   ]
+  }
+ },
+ "duree_essai_s": 44
+}

@@ -1,0 +1,1371 @@
+{
+ "date": "2026-11-18T20:45:01.085Z",
+ "scenario": "sans-internet",
+ "machines": 3,
+ "duree": 20,
+ "requete": null,
+ "page": {
+  "fichier": "dist/bitume.html",
+  "sha256": "3f0749764146e0d9",
+  "octets": 13331812
+ },
+ "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+ "contexteSecurise": true,
+ "limites": [
+  "Toutes les machines sont des navigateurs Chrome sans interface de ce Mac : leurs liaisons passent par la boucle locale ou le réseau de la maison. Cela ne prouve pas la traversée de deux box différentes.",
+  "Relais publics tiers : leur disponibilité au moment de l’essai ne promet rien pour demain."
+ ],
+ "mise_en_relation": {
+  "Essai H": {
+   "mode": "relais",
+   "premiers": {},
+   "relais": {
+    "mode": "relais",
+    "prets": 0,
+    "total": 9,
+    "enEchec": 9,
+    "familles": {}
+   },
+   "transports": [
+    {
+     "famille": "mqtt",
+     "url": "wss://broker.hivemq.com:8884/mqtt",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "mqtt",
+     "url": "wss://broker.emqx.io:8084/mqtt",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "mqtt",
+     "url": "wss://test.mosquitto.org:8081/mqtt",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "torrent",
+     "url": "wss://tracker.openwebtorrent.com",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "torrent",
+     "url": "wss://tracker.webtorrent.dev",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "torrent",
+     "url": "wss://tracker.files.fm:7073/announce",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "nostr",
+     "url": "wss://relay.primal.net",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "nostr",
+     "url": "wss://nostr.mom",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "nostr",
+     "url": "wss://relay.nostr.net",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    }
+   ],
+   "journal": [
+    {
+     "t": 1,
+     "quoi": "statut",
+     "code": "attente"
+    },
+    {
+     "t": 88,
+     "quoi": "salle",
+     "familles": [
+      "mqtt",
+      "torrent",
+      "nostr"
+     ]
+    },
+    {
+     "t": 358,
+     "quoi": "invitation",
+     "n": 15748,
+     "octets": 119
+    },
+    {
+     "t": 835,
+     "quoi": "réponse collée",
+     "n": 15748
+    },
+    {
+     "t": 843,
+     "quoi": "canaux ouverts",
+     "a": "?15748",
+     "ms": 625,
+     "main": true
+    },
+    {
+     "t": 843,
+     "quoi": "liaison établie",
+     "a": "r4gW8F",
+     "role": "invite",
+     "ms": 625
+    },
+    {
+     "t": 844,
+     "quoi": "admis",
+     "a": "r4gW8F",
+     "id": 1
+    },
+    {
+     "t": 844,
+     "quoi": "chemins",
+     "prets": [
+      1
+     ],
+     "relayes": []
+    },
+    {
+     "t": 1059,
+     "quoi": "invitation",
+     "n": 27611,
+     "octets": 119
+    },
+    {
+     "t": 1617,
+     "quoi": "réponse collée",
+     "n": 27611
+    },
+    {
+     "t": 1625,
+     "quoi": "canaux ouverts",
+     "a": "?27611",
+     "ms": 682,
+     "main": true
+    },
+    {
+     "t": 1627,
+     "quoi": "liaison établie",
+     "a": "0YvpGf",
+     "role": "invite",
+     "ms": 684
+    },
+    {
+     "t": 1627,
+     "quoi": "admis",
+     "a": "0YvpGf",
+     "id": 2
+    },
+    {
+     "t": 1627,
+     "quoi": "chemins",
+     "prets": [
+      2
+     ],
+     "relayes": []
+    }
+   ],
+   "statut": "attente",
+   "ligne": "Relais publics injoignables pour l’instant, nouvel essai en cours : l’invitation à la main reste possible.",
+   "etat": "3 pilotes. Choisissez la course quand tout le monde est là."
+  },
+  "Essai A": {
+   "mode": "relais",
+   "premiers": {},
+   "relais": {
+    "mode": "relais",
+    "prets": 0,
+    "total": 9,
+    "enEchec": 9,
+    "familles": {}
+   },
+   "transports": [
+    {
+     "famille": "mqtt",
+     "url": "wss://broker.hivemq.com:8884/mqtt",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "mqtt",
+     "url": "wss://broker.emqx.io:8084/mqtt",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "mqtt",
+     "url": "wss://test.mosquitto.org:8081/mqtt",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "torrent",
+     "url": "wss://tracker.openwebtorrent.com",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "torrent",
+     "url": "wss://tracker.webtorrent.dev",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "torrent",
+     "url": "wss://tracker.files.fm:7073/announce",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "nostr",
+     "url": "wss://relay.primal.net",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "nostr",
+     "url": "wss://nostr.mom",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "nostr",
+     "url": "wss://relay.nostr.net",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    }
+   ],
+   "journal": [
+    {
+     "t": 147,
+     "quoi": "réponse prête",
+     "n": 15748
+    },
+    {
+     "t": 214,
+     "quoi": "salle",
+     "familles": [
+      "mqtt",
+      "torrent",
+      "nostr"
+     ]
+    },
+    {
+     "t": 272,
+     "quoi": "canaux ouverts",
+     "a": "?15748",
+     "ms": 149,
+     "main": true
+    },
+    {
+     "t": 273,
+     "quoi": "liaison établie",
+     "a": "oF773C",
+     "role": "hote",
+     "ms": 149
+    },
+    {
+     "t": 273,
+     "quoi": "entrer",
+     "hote": "oF773C"
+    },
+    {
+     "t": 274,
+     "quoi": "bienvenue",
+     "id": 1
+    },
+    {
+     "t": 274,
+     "quoi": "statut",
+     "code": "admis"
+    },
+    {
+     "t": 274,
+     "quoi": "chemins",
+     "prets": [
+      0
+     ],
+     "relayes": []
+    },
+    {
+     "t": 1057,
+     "quoi": "chemins",
+     "prets": [
+      2
+     ],
+     "relayes": []
+    },
+    {
+     "t": 1059,
+     "quoi": "appel",
+     "a": "0YvpGf",
+     "voie": "maillage"
+    },
+    {
+     "t": 1188,
+     "quoi": "réponse reçue",
+     "de": "0YvpGf",
+     "voie": "maillage"
+    }
+   ],
+   "statut": "admis",
+   "ligne": "Relais publics injoignables pour l’instant, nouvel essai en cours : l’invitation à la main reste possible.",
+   "etat": "3 pilotes. L’hôte choisit la course…"
+  },
+  "Essai B": {
+   "mode": "relais",
+   "premiers": {},
+   "relais": {
+    "mode": "relais",
+    "prets": 0,
+    "total": 9,
+    "enEchec": 9,
+    "familles": {}
+   },
+   "transports": [
+    {
+     "famille": "mqtt",
+     "url": "wss://broker.hivemq.com:8884/mqtt",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "mqtt",
+     "url": "wss://broker.emqx.io:8084/mqtt",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "mqtt",
+     "url": "wss://test.mosquitto.org:8081/mqtt",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "torrent",
+     "url": "wss://tracker.openwebtorrent.com",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "torrent",
+     "url": "wss://tracker.webtorrent.dev",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "torrent",
+     "url": "wss://tracker.files.fm:7073/announce",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "nostr",
+     "url": "wss://relay.primal.net",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "nostr",
+     "url": "wss://nostr.mom",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    },
+    {
+     "famille": "nostr",
+     "url": "wss://relay.nostr.net",
+     "pret": false,
+     "latence": null,
+     "ouvertures": 0,
+     "envoyes": 0,
+     "recus": 0,
+     "premiers": 0,
+     "echecs": 1,
+     "refus": null
+    }
+   ],
+   "journal": [
+    {
+     "t": 285,
+     "quoi": "salle",
+     "familles": [
+      "mqtt",
+      "torrent",
+      "nostr"
+     ]
+    },
+    {
+     "t": 322,
+     "quoi": "réponse prête",
+     "n": 27611
+    },
+    {
+     "t": 359,
+     "quoi": "canaux ouverts",
+     "a": "?27611",
+     "ms": 170,
+     "main": true
+    },
+    {
+     "t": 360,
+     "quoi": "liaison établie",
+     "a": "oF773C",
+     "role": "hote",
+     "ms": 170
+    },
+    {
+     "t": 360,
+     "quoi": "entrer",
+     "hote": "oF773C"
+    },
+    {
+     "t": 361,
+     "quoi": "bienvenue",
+     "id": 2
+    },
+    {
+     "t": 361,
+     "quoi": "statut",
+     "code": "admis"
+    },
+    {
+     "t": 361,
+     "quoi": "chemins",
+     "prets": [
+      0,
+      1
+     ],
+     "relayes": []
+    },
+    {
+     "t": 480,
+     "quoi": "offre reçue",
+     "de": "r4gW8F",
+     "voie": "maillage"
+    },
+    {
+     "t": 495,
+     "quoi": "canaux ouverts",
+     "a": "r4gW8F",
+     "ms": 14
+    },
+    {
+     "t": 495,
+     "quoi": "liaison établie",
+     "a": "r4gW8F",
+     "role": "invite",
+     "ms": 14
+    }
+   ],
+   "statut": "admis",
+   "ligne": "Relais publics injoignables pour l’instant, nouvel essai en cours : l’invitation à la main reste possible.",
+   "etat": "3 pilotes. L’hôte choisit la course…"
+  }
+ },
+ "invitation": {
+  "machines": [
+   {
+    "invite": "Essai A",
+    "invitation_caracteres": 198,
+    "reponse_caracteres": 150,
+    "qr": {
+     "cache": false,
+     "cote_px": 195,
+     "version": 10,
+     "niveau": "M",
+     "relu": true,
+     "candidats": {
+      "hote": 2,
+      "srflx": 0,
+      "mdns": 2
+     }
+    },
+    "reponse_candidats": {
+     "hote": 2,
+     "srflx": 0,
+     "mdns": 2
+    },
+    "preparation_invitation_ms": 433,
+    "preparation_reponse_ms": 263,
+    "reponse_collee_a_tous_lies_ms": 106
+   },
+   {
+    "invite": "Essai B",
+    "invitation_caracteres": 198,
+    "reponse_caracteres": 150,
+    "qr": {
+     "cache": false,
+     "cote_px": 195,
+     "version": 10,
+     "niveau": "M",
+     "relu": true,
+     "candidats": {
+      "hote": 2,
+      "srflx": 0,
+      "mdns": 2
+     }
+    },
+    "reponse_candidats": {
+     "hote": 2,
+     "srflx": 0,
+     "mdns": 2
+    },
+    "preparation_invitation_ms": 212,
+    "preparation_reponse_ms": 345,
+    "reponse_collee_a_tous_lies_ms": 134
+   }
+  ]
+ },
+ "liens": {
+  "Essai H": {
+   "id": 0,
+   "role": "hote",
+   "membres": [
+    {
+     "id": 0,
+     "nom": "Essai H",
+     "joueurs": 1
+    },
+    {
+     "id": 1,
+     "nom": "Essai A",
+     "joueurs": 1
+    },
+    {
+     "id": 2,
+     "nom": "Essai B",
+     "joueurs": 1
+    }
+   ],
+   "pairs": [
+    {
+     "id": 1,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    },
+    {
+     "id": 2,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    }
+   ],
+   "etat": "connecte",
+   "synchro": false,
+   "rtt": 0,
+   "affichage": [
+    "Essai H1 pilote · hôtevous",
+    "Essai A1 piloteliaison directe",
+    "Essai B1 piloteliaison directe"
+   ]
+  },
+  "Essai A": {
+   "id": 1,
+   "role": "invite",
+   "membres": [
+    {
+     "id": 0,
+     "nom": "Essai H",
+     "joueurs": 1
+    },
+    {
+     "id": 1,
+     "nom": "Essai A",
+     "joueurs": 1
+    },
+    {
+     "id": 2,
+     "nom": "Essai B",
+     "joueurs": 1
+    }
+   ],
+   "pairs": [
+    {
+     "id": 0,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    },
+    {
+     "id": 2,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    }
+   ],
+   "etat": "connecte",
+   "synchro": true,
+   "rtt": 1,
+   "affichage": [
+    "Essai H1 pilote · hôteliaison directe",
+    "Essai A1 pilotevous",
+    "Essai B1 piloteliaison directe"
+   ]
+  },
+  "Essai B": {
+   "id": 2,
+   "role": "invite",
+   "membres": [
+    {
+     "id": 0,
+     "nom": "Essai H",
+     "joueurs": 1
+    },
+    {
+     "id": 1,
+     "nom": "Essai A",
+     "joueurs": 1
+    },
+    {
+     "id": 2,
+     "nom": "Essai B",
+     "joueurs": 1
+    }
+   ],
+   "pairs": [
+    {
+     "id": 0,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    },
+    {
+     "id": 1,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    }
+   ],
+   "etat": "connecte",
+   "synchro": false,
+   "rtt": 1,
+   "affichage": [
+    "Essai H1 pilote · hôteliaison directe",
+    "Essai A1 piloteliaison directe",
+    "Essai B1 pilotevous"
+   ]
+  }
+ },
+ "course": {
+  "duree_ms": 20201,
+  "pret_a_course_ms": 1067,
+  "machines": {
+   "Essai H": {
+    "releves": 76,
+    "cadence_simulation": 1,
+    "voitures_locales": [
+     0,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11
+    ],
+    "paquets_recus_par_machine": {
+     "1": 1211,
+     "2": 1212
+    },
+    "paquets_par_seconde": {
+     "1": 59.9,
+     "2": 60
+    },
+    "age_etat_ms_par_voiture": {
+     "1": {
+      "n": 76,
+      "p50": 18.8,
+      "p95": 23.7,
+      "max": 37.7
+     },
+     "2": {
+      "n": 76,
+      "p50": 11.77,
+      "p95": 17.3,
+      "max": 21.97
+     }
+    }
+   },
+   "Essai A": {
+    "releves": 76,
+    "cadence_simulation": 1,
+    "voitures_locales": [
+     1
+    ],
+    "paquets_recus_par_machine": {
+     "0": 1212,
+     "2": 1212
+    },
+    "paquets_par_seconde": {
+     "0": 60,
+     "2": 60
+    },
+    "age_etat_ms_par_voiture": {
+     "0": {
+      "n": 76,
+      "p50": 12.93,
+      "p95": 21.32,
+      "max": 22.92
+     },
+     "2": {
+      "n": 76,
+      "p50": 11.97,
+      "p95": 18.98,
+      "max": 20.13
+     },
+     "3": {
+      "n": 76,
+      "p50": 25.17,
+      "p95": 35.6,
+      "max": 37.43
+     },
+     "4": {
+      "n": 76,
+      "p50": 25.17,
+      "p95": 35.6,
+      "max": 37.43
+     },
+     "5": {
+      "n": 76,
+      "p50": 25.17,
+      "p95": 35.6,
+      "max": 37.43
+     },
+     "6": {
+      "n": 76,
+      "p50": 25.17,
+      "p95": 35.6,
+      "max": 37.43
+     },
+     "7": {
+      "n": 76,
+      "p50": 25.17,
+      "p95": 35.6,
+      "max": 37.43
+     },
+     "8": {
+      "n": 76,
+      "p50": 25.17,
+      "p95": 35.6,
+      "max": 37.43
+     },
+     "9": {
+      "n": 76,
+      "p50": 25.17,
+      "p95": 35.6,
+      "max": 37.43
+     },
+     "10": {
+      "n": 76,
+      "p50": 25.17,
+      "p95": 35.6,
+      "max": 37.43
+     },
+     "11": {
+      "n": 76,
+      "p50": 25.17,
+      "p95": 35.6,
+      "max": 37.43
+     }
+    }
+   },
+   "Essai B": {
+    "releves": 76,
+    "cadence_simulation": 1,
+    "voitures_locales": [
+     2
+    ],
+    "paquets_recus_par_machine": {
+     "0": 1212,
+     "1": 1211
+    },
+    "paquets_par_seconde": {
+     "0": 60,
+     "1": 59.9
+    },
+    "age_etat_ms_par_voiture": {
+     "0": {
+      "n": 76,
+      "p50": 13,
+      "p95": 21.22,
+      "max": 23.13
+     },
+     "1": {
+      "n": 76,
+      "p50": 18.9,
+      "p95": 23.67,
+      "max": 37.9
+     },
+     "3": {
+      "n": 76,
+      "p50": 24.97,
+      "p95": 35.57,
+      "max": 37.88
+     },
+     "4": {
+      "n": 76,
+      "p50": 24.97,
+      "p95": 35.57,
+      "max": 37.88
+     },
+     "5": {
+      "n": 76,
+      "p50": 24.97,
+      "p95": 35.57,
+      "max": 37.88
+     },
+     "6": {
+      "n": 76,
+      "p50": 24.97,
+      "p95": 35.57,
+      "max": 37.88
+     },
+     "7": {
+      "n": 76,
+      "p50": 24.97,
+      "p95": 35.57,
+      "max": 37.88
+     },
+     "8": {
+      "n": 76,
+      "p50": 24.97,
+      "p95": 35.57,
+      "max": 37.88
+     },
+     "9": {
+      "n": 76,
+      "p50": 24.97,
+      "p95": 35.57,
+      "max": 37.88
+     },
+     "10": {
+      "n": 76,
+      "p50": 24.97,
+      "p95": 35.57,
+      "max": 37.88
+     },
+     "11": {
+      "n": 76,
+      "p50": 24.97,
+      "p95": 35.57,
+      "max": 37.88
+     }
+    }
+   }
+  },
+  "accord": {
+   "0": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 152,
+     "p50": 0.03,
+     "p95": 0.82,
+     "max": 1.23
+    },
+    "ecart_lateral_m": {
+     "n": 152,
+     "p50": 0,
+     "p95": 0.02,
+     "max": 0.11
+    }
+   },
+   "1": {
+    "pilote": "Essai A",
+    "ecart_long_m": {
+     "n": 152,
+     "p50": 0.16,
+     "p95": 0.47,
+     "max": 1.14
+    },
+    "ecart_lateral_m": {
+     "n": 152,
+     "p50": 0,
+     "p95": 0.06,
+     "max": 0.38
+    }
+   },
+   "2": {
+    "pilote": "Essai B",
+    "ecart_long_m": {
+     "n": 152,
+     "p50": 0.09,
+     "p95": 0.51,
+     "max": 0.95
+    },
+    "ecart_lateral_m": {
+     "n": 152,
+     "p50": 0,
+     "p95": 0.02,
+     "max": 0.16
+    }
+   },
+   "3": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 152,
+     "p50": 0.03,
+     "p95": 0.47,
+     "max": 1.48
+    },
+    "ecart_lateral_m": {
+     "n": 152,
+     "p50": 0,
+     "p95": 0.01,
+     "max": 0.03
+    }
+   },
+   "4": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 152,
+     "p50": 0.03,
+     "p95": 0.48,
+     "max": 1.43
+    },
+    "ecart_lateral_m": {
+     "n": 152,
+     "p50": 0,
+     "p95": 0.04,
+     "max": 0.14
+    }
+   },
+   "5": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 152,
+     "p50": 0.03,
+     "p95": 0.47,
+     "max": 0.74
+    },
+    "ecart_lateral_m": {
+     "n": 152,
+     "p50": 0,
+     "p95": 0.01,
+     "max": 0.02
+    }
+   },
+   "6": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 152,
+     "p50": 0.03,
+     "p95": 0.85,
+     "max": 1.33
+    },
+    "ecart_lateral_m": {
+     "n": 152,
+     "p50": 0,
+     "p95": 0.01,
+     "max": 0.03
+    }
+   },
+   "7": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 152,
+     "p50": 0.02,
+     "p95": 0.47,
+     "max": 0.9
+    },
+    "ecart_lateral_m": {
+     "n": 152,
+     "p50": 0,
+     "p95": 0.01,
+     "max": 0.03
+    }
+   },
+   "8": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 152,
+     "p50": 0.04,
+     "p95": 0.49,
+     "max": 0.9
+    },
+    "ecart_lateral_m": {
+     "n": 152,
+     "p50": 0,
+     "p95": 0.01,
+     "max": 0.05
+    }
+   },
+   "9": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 152,
+     "p50": 0.04,
+     "p95": 0.97,
+     "max": 1.4
+    },
+    "ecart_lateral_m": {
+     "n": 152,
+     "p50": 0,
+     "p95": 0.04,
+     "max": 0.08
+    }
+   },
+   "10": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 152,
+     "p50": 0.02,
+     "p95": 0.46,
+     "max": 1.18
+    },
+    "ecart_lateral_m": {
+     "n": 152,
+     "p50": 0,
+     "p95": 0.01,
+     "max": 0.03
+    }
+   },
+   "11": {
+    "pilote": "Essai H",
+    "ecart_long_m": {
+     "n": 152,
+     "p50": 0.04,
+     "p95": 0.97,
+     "max": 1.5
+    },
+    "ecart_lateral_m": {
+     "n": 152,
+     "p50": 0,
+     "p95": 0.06,
+     "max": 0.2
+    }
+   }
+  }
+ },
+ "depart": {
+  "machine": "Essai B",
+  "voitures": [
+   2
+  ],
+  "reprise_constatee": true,
+  "avance_m_apres_depart": [
+   55.5
+  ],
+  "membres_restants": [
+   2,
+   2
+  ],
+  "delai_reprise_ms": 51
+ },
+ "erreurs": {
+  "Essai H": {
+   "console": [],
+   "exceptions": []
+  },
+  "Essai A": {
+   "console": [],
+   "exceptions": []
+  },
+  "Essai B": {
+   "console": [],
+   "exceptions": []
+  }
+ },
+ "maillage_direct_apres_ms": 1,
+ "liens_fin_course": {
+  "Essai H": {
+   "id": 0,
+   "role": "hote",
+   "membres": [
+    {
+     "id": 0,
+     "nom": "Essai H",
+     "joueurs": 1
+    },
+    {
+     "id": 1,
+     "nom": "Essai A",
+     "joueurs": 1
+    },
+    {
+     "id": 2,
+     "nom": "Essai B",
+     "joueurs": 1
+    }
+   ],
+   "pairs": [
+    {
+     "id": 1,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    },
+    {
+     "id": 2,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    }
+   ],
+   "etat": "connecte",
+   "synchro": false,
+   "rtt": 0,
+   "affichage": [
+    "Essai H1 pilote · hôtevous",
+    "Essai A1 piloteliaison directe",
+    "Essai B1 piloteliaison directe"
+   ]
+  },
+  "Essai A": {
+   "id": 1,
+   "role": "invite",
+   "membres": [
+    {
+     "id": 0,
+     "nom": "Essai H",
+     "joueurs": 1
+    },
+    {
+     "id": 1,
+     "nom": "Essai A",
+     "joueurs": 1
+    },
+    {
+     "id": 2,
+     "nom": "Essai B",
+     "joueurs": 1
+    }
+   ],
+   "pairs": [
+    {
+     "id": 0,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    },
+    {
+     "id": 2,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    }
+   ],
+   "etat": "connecte",
+   "synchro": true,
+   "rtt": 1,
+   "affichage": [
+    "Essai H1 pilote · hôteliaison directe",
+    "Essai A1 pilotevous",
+    "Essai B1 piloteliaison directe"
+   ]
+  },
+  "Essai B": {
+   "id": 2,
+   "role": "invite",
+   "membres": [
+    {
+     "id": 0,
+     "nom": "Essai H",
+     "joueurs": 1
+    },
+    {
+     "id": 1,
+     "nom": "Essai A",
+     "joueurs": 1
+    },
+    {
+     "id": 2,
+     "nom": "Essai B",
+     "joueurs": 1
+    }
+   ],
+   "pairs": [
+    {
+     "id": 0,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    },
+    {
+     "id": 1,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    }
+   ],
+   "etat": "connecte",
+   "synchro": true,
+   "rtt": 1,
+   "affichage": [
+    "Essai H1 pilote · hôteliaison directe",
+    "Essai A1 piloteliaison directe",
+    "Essai B1 pilotevous"
+   ]
+  }
+ },
+ "duree_essai_s": 38
+}

@@ -1,0 +1,167 @@
+{
+ "date": "2026-11-18T19:44:10.098Z",
+ "scenario": "code",
+ "machines": 2,
+ "duree": 0,
+ "requete": "?relais=nostr",
+ "page": {
+  "fichier": "dist/bitume.html",
+  "sha256": "ba130ee87834d09e",
+  "octets": 13330337
+ },
+ "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+ "contexteSecurise": true,
+ "limites": [
+  "Toutes les machines sont des navigateurs Chrome sans interface de ce Mac : leurs liaisons passent par la boucle locale ou le réseau de la maison. Cela ne prouve pas la traversée de deux box différentes.",
+  "Relais publics tiers : leur disponibilité au moment de l’essai ne promet rien pour demain."
+ ],
+ "mise_en_relation": {
+  "Essai H": {
+   "role": "hôte",
+   "code_affiche": "XXXXX-XXXXX",
+   "premier_relais_ms": 311
+  },
+  "Essai A": {
+   "role": "invité",
+   "clic_a_admis_ms": 1179,
+   "clic_a_tous_lies_ms": 1180,
+   "journal_ms": {
+    "premier_relais": 232,
+    "offre_recue": 881,
+    "canaux_ouverts": 1081,
+    "bienvenue": 1082
+   },
+   "offre_par": "nostr wss://nostr.mom",
+   "premiers_par_famille": {
+    "nostr": 1
+   },
+   "relais": {
+    "mode": "relais",
+    "prets": 3,
+    "total": 3,
+    "enEchec": 0,
+    "familles": {
+     "nostr": 3
+    }
+   },
+   "transports": [
+    {
+     "famille": "nostr",
+     "url": "wss://relay.primal.net",
+     "pret": true,
+     "latence": 496,
+     "ouvertures": 1,
+     "envoyes": 2,
+     "recus": 1,
+     "premiers": 0,
+     "echecs": 0,
+     "refus": null
+    },
+    {
+     "famille": "nostr",
+     "url": "wss://nostr.mom",
+     "pret": true,
+     "latence": 166,
+     "ouvertures": 1,
+     "envoyes": 2,
+     "recus": 1,
+     "premiers": 1,
+     "echecs": 0,
+     "refus": null
+    },
+    {
+     "famille": "nostr",
+     "url": "wss://relay.nostr.net",
+     "pret": true,
+     "latence": 559,
+     "ouvertures": 1,
+     "envoyes": 2,
+     "recus": 1,
+     "premiers": 0,
+     "echecs": 0,
+     "refus": null
+    }
+   ],
+   "sans_direct_avec": []
+  }
+ },
+ "invitation": null,
+ "liens": {
+  "Essai H": {
+   "id": 0,
+   "role": "hote",
+   "membres": [
+    {
+     "id": 0,
+     "nom": "Essai H",
+     "joueurs": 1
+    },
+    {
+     "id": 1,
+     "nom": "Essai A",
+     "joueurs": 1
+    }
+   ],
+   "pairs": [
+    {
+     "id": 1,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    }
+   ],
+   "etat": "connecte",
+   "synchro": false,
+   "rtt": 0,
+   "affichage": [
+    "Essai H1 pilote · hôtevous",
+    "Essai A1 piloteliaison directe"
+   ]
+  },
+  "Essai A": {
+   "id": 1,
+   "role": "invite",
+   "membres": [
+    {
+     "id": 0,
+     "nom": "Essai H",
+     "joueurs": 1
+    },
+    {
+     "id": 1,
+     "nom": "Essai A",
+     "joueurs": 1
+    }
+   ],
+   "pairs": [
+    {
+     "id": 0,
+     "pret": true,
+     "relais": false,
+     "via": ""
+    }
+   ],
+   "etat": "connecte",
+   "synchro": false,
+   "rtt": 0,
+   "affichage": [
+    "Essai H1 pilote · hôteliaison directe",
+    "Essai A1 pilotevous"
+   ]
+  }
+ },
+ "course": null,
+ "depart": null,
+ "erreurs": {
+  "Essai H": {
+   "console": [],
+   "exceptions": []
+  },
+  "Essai A": {
+   "console": [],
+   "exceptions": []
+  }
+ },
+ "maillage_direct_apres_ms": 3,
+ "duree_essai_s": 5
+}

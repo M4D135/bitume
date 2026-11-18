@@ -1,0 +1,161 @@
+{
+ "origine": "file://",
+ "r": {
+  "mqtt": [
+   {
+    "url": "wss://broker.hivemq.com:8884/mqtt",
+    "ok": true,
+    "ms": 448,
+    "raison": "connack 0"
+   },
+   {
+    "url": "wss://broker.emqx.io:8084/mqtt",
+    "ok": true,
+    "ms": 368,
+    "raison": "connack 0"
+   },
+   {
+    "url": "wss://test.mosquitto.org:8081/mqtt",
+    "ok": true,
+    "ms": 429,
+    "raison": "connack 0"
+   },
+   {
+    "url": "wss://public.cloud.shiftr.io",
+    "ok": true,
+    "ms": 200,
+    "raison": "connack 0"
+   },
+   {
+    "url": "wss://mqtt-dashboard.com:8884/mqtt",
+    "ok": true,
+    "ms": 194,
+    "raison": "connack 0"
+   },
+   {
+    "url": "wss://broker-cn.emqx.io:8084/mqtt",
+    "ok": true,
+    "ms": 515,
+    "raison": "connack 0"
+   }
+  ],
+  "torrent": [
+   {
+    "url": "wss://tracker.openwebtorrent.com",
+    "ok": true,
+    "ms": 447,
+    "raison": "annonce"
+   },
+   {
+    "url": "wss://tracker.webtorrent.dev",
+    "ok": true,
+    "ms": 514,
+    "raison": "annonce"
+   },
+   {
+    "url": "wss://tracker.files.fm:7073/announce",
+    "ok": true,
+    "ms": 472,
+    "raison": "annonce"
+   },
+   {
+    "url": "wss://open.ftorrent.com",
+    "ok": true,
+    "ms": 872,
+    "raison": "annonce"
+   }
+  ],
+  "nostr": [
+   {
+    "url": "wss://relay.primal.net",
+    "ok": true,
+    "ms": 529,
+    "raison": "EOSE"
+   },
+   {
+    "url": "wss://nostr.mom",
+    "ok": true,
+    "ms": 170,
+    "raison": "EOSE"
+   },
+   {
+    "url": "wss://relay.nostr.net",
+    "ok": true,
+    "ms": 953,
+    "raison": "EOSE"
+   },
+   {
+    "url": "wss://relay.guggero.org",
+    "ok": true,
+    "ms": 491,
+    "raison": "EOSE"
+   },
+   {
+    "url": "wss://nostrelay.circum.space",
+    "ok": true,
+    "ms": 216,
+    "raison": "EOSE"
+   },
+   {
+    "url": "wss://relay.nostrhub.fr",
+    "ok": true,
+    "ms": 230,
+    "raison": "EOSE"
+   },
+   {
+    "url": "wss://relay.mostro.network",
+    "ok": true,
+    "ms": 577,
+    "raison": "EOSE"
+   },
+   {
+    "url": "wss://nostr.azzamo.net",
+    "ok": true,
+    "ms": 283,
+    "raison": "EOSE"
+   },
+   {
+    "url": "wss://soloco.nl",
+    "ok": true,
+    "ms": 596,
+    "raison": "EOSE"
+   },
+   {
+    "url": "wss://relay.angor.io",
+    "ok": true,
+    "ms": 792,
+    "raison": "EOSE"
+   },
+   {
+    "url": "wss://offchain.pub",
+    "ok": true,
+    "ms": 687,
+    "raison": "EOSE"
+   },
+   {
+    "url": "wss://relay.wavlake.com",
+    "ok": true,
+    "ms": 746,
+    "raison": "EOSE"
+   },
+   {
+    "url": "wss://nos.lol",
+    "ok": true,
+    "ms": 429,
+    "raison": "EOSE"
+   },
+   {
+    "url": "wss://yabu.me",
+    "ok": true,
+    "ms": 1721,
+    "raison": "EOSE"
+   },
+   {
+    "url": "wss://relay.damus.io",
+    "ok": false,
+    "ms": 3216,
+    "raison": "erreur"
+   }
+  ]
+ }
+}
