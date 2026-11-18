@@ -1,0 +1,14 @@
+{
+  "version": "0.2.37",
+  "branche": "main",
+  "commit": "2a0c9d94c985f8b9b679355139cffc8d11b07122",
+  "arbre": "9ac01b8bd99b0a8a44f96eb6debe8d9e6d892aca",
+  "publication_github_verifiee": true,
+  "verification": "Branche main relue via le connecteur GitHub le 18 novembre 2026 ; commit et arbre identiques à la copie locale. Le blob du build local correspond à HEAD:dist/bitume.html.",
+  "verification_utc": "2026-11-18T12:51:42.272271+00:00",
+  "build_blob": "b68edb1bac43996b75cc653853cfbec65650e4e1",
+  "build_sha256": "f2211f1c1cb4b2d2a62cfe43f34f4c603e7f48c41cb8c9f19e13a17e36a3d34a",
+  "deploiement_realise_dans_cette_session": false,
+  "visuel_webgl_realise": false,
+  "reste_a_faire": "Contrôle du jeu en WebGL et déploiement via Mac/amiga ; aucun accès SSH configuré dans cette session."
+}

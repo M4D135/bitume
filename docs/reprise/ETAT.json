@@ -2,16 +2,16 @@
   "date": "2026-11-18",
   "etat_courant": {
     "branche": "main",
-    "base_commit": "5368b4bebd77c7005c287d042050c28011f64e39",
-    "base_version": "0.2.36",
+    "base_commit": "2a0c9d94c985f8b9b679355139cffc8d11b07122",
+    "base_version": "0.2.37",
     "version_cible": "0.2.37",
-    "statut": "lot_11c_qualifie_publication_en_cours",
+    "statut": "lot_11c_publie_verifie",
     "lot": "brume_de_jade_asie",
     "fiche": "docs/reprise/11C-BRUME-DE-JADE.md",
-    "commit_publie": null,
-    "catalogue_jouable_publie": 5,
+    "commit_publie": "2a0c9d94c985f8b9b679355139cffc8d11b07122",
+    "catalogue_jouable_publie": 6,
     "catalogue_cible": 6,
-    "prochaine_action": "Publier le code et le build 0.2.37 qualifiés, enregistrer le reçu. Contrôle WebGL et déploiement dès accès Mac/amiga ; prochain circuit original aux États-Unis.",
+    "prochaine_action": "Lot 11D : Cap-Séquoia, septième circuit original aux États-Unis (côte du Pacifique). Publier un checkpoint réel puis le jeu qualifié. Contrôle WebGL et déploiement dès que l’accès Mac/amiga est disponible.",
     "checkpoint": "docs/reprise/rapports/brume-de-jade-2026-11-18/checkpoint.json",
     "qualification": {
       "suites": 65,
@@ -39,13 +39,13 @@
       "modules_identiques": 34
     },
     "publication_bitume": {
-      "version": "0.2.36",
-      "commit": "a7cdd5e3116dc294afbbca581ad87cb3973dd5fe",
-      "arbre": "e7bf0b6097ff6083e759e36b897244ed88c4a1b3",
+      "version": "0.2.37",
+      "commit": "2a0c9d94c985f8b9b679355139cffc8d11b07122",
+      "arbre": "9ac01b8bd99b0a8a44f96eb6debe8d9e6d892aca",
       "branche": "main",
       "verifiee": true,
       "force": false,
-      "recu": "docs/reprise/rapports/arriere-monoplace-2026-11-18/publication.json"
+      "recu": "docs/reprise/rapports/brume-de-jade-2026-11-18/publication.json"
     },
     "production_controle_final": {
       "url": "https://bitume.estrasse.fr/",
@@ -94,6 +94,6 @@
       "Vroom officiel",
       "dépôt GitHub personnel Vroom Unreal"
     ],
-    "statut": "11C qualifié en 0.2.37 : 6 circuits sur16. Publier et enregistrer le reçu ; contrôle WebGL et déploiement en attente. Prochain contenu : un seul circuit aux États-Unis."
+    "statut": "11C publié et vérifié : 6 circuits sur 16. Prochain contenu en préparation : Cap-Séquoia, côte du Pacifique aux États-Unis."
   }
 }
