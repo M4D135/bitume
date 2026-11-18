@@ -68,8 +68,10 @@
     var force = e.force == null ? 0.5 : +e.force;
     if (!(force > 0)) force = 0;
     if (force > 1) force = 1;
-    var pas = +dt || 0;
-    if (pas < 0) pas = 0;
+    // dt absent, négatif ou non fini vaut 0 ; un très grand dt (retour d'onglet) est borné à un quart de
+    // seconde, sinon une phase infinie donnerait un sinus NaN sur toutes les sorties.
+    var pas = +dt;
+    if (!(pas > 0)) pas = 0; else if (pas > 0.25) pas = 0.25;
 
     var absV = v < 0 ? -v : v;
 
@@ -116,7 +118,7 @@
     if (surface === 'herbe' || surface === 'gravier') {
       V.phHerbe1 += 7 * pas;    V.phHerbe1 -= (V.phHerbe1 | 0);
       V.phHerbe2 += 11.3 * pas; V.phHerbe2 -= (V.phHerbe2 | 0);
-      V.phHerbe3 += 17.9 * pas; V.phHerbe3 -= (V.phHerbe3 | 0);
+      V.phHerbe3 += 13.7 * pas; V.phHerbe3 -= (V.phHerbe3 | 0);
       var irr = (Math.sin(6.283185307179586 * V.phHerbe1)
         + Math.sin(6.283185307179586 * V.phHerbe2)
         + Math.sin(6.283185307179586 * V.phHerbe3)) / 3;
@@ -214,19 +216,19 @@
     // Décroissance exponentielle des enveloppes. La constante 4/durée amène un pic sous
     // le seuil bien avant 6× la durée, ce qui correspond au retour demandé par les tests.
     if (V.envFort > 0) {
+      cFort += V.envFort;
       V.envFort *= Math.exp(-pas * 4 / (V.decFort || 0.35));
       if (V.envFort < 1e-6) V.envFort = 0;
-      cFort += V.envFort;
     }
     if (V.envRapportGD > 0) {
+      cGD += V.envRapportGD;
       V.envRapportGD *= Math.exp(-pas * 4 / 0.09);
       if (V.envRapportGD < 1e-6) V.envRapportGD = 0;
-      cGD += V.envRapportGD;
     }
     if (V.envTic > 0) {
+      cFort += V.envTic;
       V.envTic *= Math.exp(-pas * 4 / 0.08);
       if (V.envTic < 1e-6) V.envTic = 0;
-      cFort += V.envTic;
     }
     // Battement de dérive : enveloppe déclenchée au tour de phase (pas une fenêtre étroite),
     // pour rester identique à 30, 60 ou 120 Hz ; retombée en 0,07 s sur le moteur léger.

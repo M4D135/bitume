@@ -262,4 +262,28 @@ verifier('même objet de sortie à chaque appel', () => {
   }
 });
 
+verifier('choc : le pic ressenti ne dépend pas de la cadence', () => {
+  // Le pic doit sortir entier avant de retomber : décroître d'abord le rabotait d'un tiers à 30 appels par seconde.
+  const pic = dt => { const V = VIB.creer(); let m = 0;
+    VIB.calculer(V, { evenements: [{ type: 'choc', force: 30 }] }, dt); m = V.sortie.fort;
+    for (let t = dt; t < .3; t += dt) { VIB.calculer(V, {}, dt); if (V.sortie.fort > m) m = V.sortie.fort; }
+    return m; };
+  const a = pic(1 / 30), b = pic(1 / 60), c = pic(1 / 120);
+  assert.ok(c > .5, 'pic trop faible : ' + c);
+  assert.ok(Math.abs(a - c) / c < .15, 'pic à 30 appels/s ' + a + ' contre ' + c + ' à 120');
+  assert.ok(Math.abs(b - c) / c < .15, 'pic à 60 appels/s ' + b + ' contre ' + c + ' à 120');
+});
+
+verifier('dt non fini ou énorme : sorties finies, puis retour au silence', () => {
+  for (const dt of [Infinity, NaN, -1, 1e9]) {
+    const V = VIB.creer();
+    const e = { v: 40, vibreur: true, surface: 'herbe', glisseAr: 1, glisseAv: 1, blocage: 1, patinage: 1, regime: 13900, ralenti: 1000, maxUtile: 14000,
+      gaz: 1, derive: { actif: true, niveau: 3, fenetre: .2 } };
+    VIB.calculer(V, e, dt); VIB.calculer(V, e, 1 / 60);
+    for (const k of ['faible', 'fort', 'gachetteG', 'gachetteD']) assert.ok(Number.isFinite(V.sortie[k]) && V.sortie[k] >= 0 && V.sortie[k] <= 1, k + ' = ' + V.sortie[k] + ' pour dt = ' + dt);
+    simuler(V, {}, 3, 1 / 60);
+    for (const k of ['faible', 'fort', 'gachetteG', 'gachetteD']) assert.equal(V.sortie[k], 0, k + ' ne retombe pas après dt = ' + dt);
+  }
+});
+
 console.log(`vibrations : ${controles} contrôles passés`);
