@@ -62,6 +62,17 @@
   "filet": "decor|herbier|cache"
  },
  {
+  "nom": "17B-controles",
+  "arbre": "/Users/david/Projects/bitume-wt/spark-conduite",
+  "texte": "Lot 17B (châssis, charges et pneus latéraux) : le code est livré dans cet arbre et tient ses 19 cibles et les 46 critères, mais deux contrôles restent rouges parce qu'ils lisent un nombre qui dépend du dernier bit. Décision : (1) dans verifications/glissiere-rebond.test.mjs, le contrôle qui lit l'écart au rail à un seul instant (1,00 s après le rebond) est remplacé par : l'écart maximal au rail dans les 0,3 s qui suivent le rebond vaut au moins 5 cm (mesuré : 84 mm en p9, 117 mm en 17B) ; (2) dans la comparaison page contre Node du banc de conduite (seuil relatif 1e-12), les deux nombres mal conditionnés, l'angle de dérive β et l'angle du volant à la vitesse d'adhérence exacte de R 120, reçoivent une tolérance écrite de 1e-6, avec un commentaire qui dit pourquoi (à la limite exacte d'adhérence, un bit de vitesse change β de 4,7e-6) ; tous les autres nombres restent à 1e-12. Ne change aucun autre seuil ni aucune ligne de src/.",
+  "fichiers": [
+   "verifications/glissiere-rebond.test.mjs",
+   "tools/banc-conduite.mjs",
+   "verifications/banc-conduite.test.mjs"
+  ],
+  "filet": "glissiere|banc|conduite"
+ },
+ {
   "nom": "17C",
   "arbre": "/Users/david/Projects/bitume-wt/spark-conduite",
   "plan": "docs/reprise/17-CONDUITE.md",
