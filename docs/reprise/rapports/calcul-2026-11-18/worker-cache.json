@@ -1,0 +1,797 @@
+{
+ "methode": "Chrome 157 sans interface, file://dist/bitume.html non modifié ; scenario-worker-cache.js ; palier Fine (high) ; ms murales ; « pire image » = plus long intervalle entre deux images relevé jusqu’à 100 ms après le bloc mesuré",
+ "series": {
+  "wc": {
+   "charges": [
+    "c2 high cpu1 r0 charge 48.62 code 0",
+    "c2 high cpu1 r1 charge 105.33 code 0",
+    "c2 high cpu1 r2 charge 161.68 code 0",
+    "c6 high cpu1 r0 charge 127.06 code 0",
+    "c6 high cpu1 r1 charge 116.96 code 0",
+    "c6 high cpu1 r2 charge 99.52 code 0",
+    "c2 high cpu4 r0 charge 91.71 code 0",
+    "webgpu r0 code 0 charge 60.93",
+    "webgpu r1 code 0 charge 57.34",
+    "webgpu r2 code 0 charge 54.35"
+   ],
+   "resume": {
+    "wc-c2-high-cpu1": {
+     "essais": 3,
+     "protocole": "file:",
+     "crossOriginIsolated": false,
+     "objets": 79586,
+     "octetsNappes": 5134784,
+     "trianglesHerbier": 57427,
+     "regenerationFilPrincipalMs": {
+      "med": 2374,
+      "min": 2123,
+      "max": 2441,
+      "n": 3
+     },
+     "pireImageRegenerationMs": {
+      "med": 2366.5,
+      "min": 2116.6,
+      "max": 2633.2,
+      "n": 3
+     },
+     "structuredCloneMs": {
+      "med": 749,
+      "min": 699.5,
+      "max": 799.2,
+      "n": 3
+     },
+     "workerGraphe": {
+      "calculDansWorkerMs": {
+       "med": 4608,
+       "min": 1515,
+       "max": 5981,
+       "n": 3
+      },
+      "receptionFilPrincipalMs": {
+       "med": 401.5,
+       "min": 234.5,
+       "max": 428.8,
+       "n": 3
+      },
+      "pireImageMs": {
+       "med": 50,
+       "min": 16.8,
+       "max": 1300,
+       "n": 3
+      },
+      "identiques": true
+     },
+     "workerPlat": null,
+     "indexedDBGraphe": {
+      "ecritureMs": {
+       "med": 583,
+       "min": 276,
+       "max": 873,
+       "n": 9
+      },
+      "lectureMs": {
+       "med": 398,
+       "min": 205,
+       "max": 713,
+       "n": 9
+      },
+      "pireImageLectureMs": {
+       "med": 483.3,
+       "min": 249.9,
+       "max": 883.4,
+       "n": 9
+      }
+     },
+     "indexedDBPlat": null,
+     "indexedDBBinaire": null,
+     "opfs": {
+      "erreur": "It was determined that certain files are unsafe for access within a Web application, or that too many calls are being made on file resources."
+     }
+    },
+    "wc-c2-high-cpu4": {
+     "essais": 1,
+     "protocole": "file:",
+     "crossOriginIsolated": false,
+     "objets": 79586,
+     "octetsNappes": 5134784,
+     "trianglesHerbier": 57427,
+     "regenerationFilPrincipalMs": {
+      "med": 2098,
+      "min": 2098,
+      "max": 2098,
+      "n": 1
+     },
+     "pireImageRegenerationMs": {
+      "med": 2083.3,
+      "min": 2083.3,
+      "max": 2083.3,
+      "n": 1
+     },
+     "structuredCloneMs": {
+      "med": 776.7,
+      "min": 776.7,
+      "max": 776.7,
+      "n": 1
+     },
+     "workerGraphe": {
+      "calculDansWorkerMs": {
+       "med": 1513,
+       "min": 1513,
+       "max": 1513,
+       "n": 1
+      },
+      "receptionFilPrincipalMs": {
+       "med": 834.1,
+       "min": 834.1,
+       "max": 834.1,
+       "n": 1
+      },
+      "pireImageMs": {
+       "med": 33.3,
+       "min": 33.3,
+       "max": 33.3,
+       "n": 1
+      },
+      "identiques": true
+     },
+     "workerPlat": {
+      "calculDansWorkerMs": {
+       "med": 1140,
+       "min": 1140,
+       "max": 1140,
+       "n": 1
+      },
+      "receptionMs": {
+       "med": 29.4,
+       "min": 29.4,
+       "max": 29.4,
+       "n": 1
+      },
+      "jsonParseMs": {
+       "med": 352,
+       "min": 352,
+       "max": 352,
+       "n": 1
+      },
+      "pireImageMs": {
+       "med": 16.8,
+       "min": 16.8,
+       "max": 16.8,
+       "n": 1
+      },
+      "octetsJson": 34310109
+     },
+     "indexedDBGraphe": {
+      "ecritureMs": {
+       "med": 853,
+       "min": 829,
+       "max": 1108,
+       "n": 3
+      },
+      "lectureMs": {
+       "med": 944,
+       "min": 671,
+       "max": 946,
+       "n": 3
+      },
+      "pireImageLectureMs": {
+       "med": 1366.6,
+       "min": 833.3,
+       "max": 1916.6,
+       "n": 3
+      }
+     },
+     "indexedDBPlat": {
+      "octetsJson": 34221776,
+      "ecritureMs": {
+       "med": 488,
+       "min": 463,
+       "max": 515,
+       "n": 3
+      },
+      "lectureMs": {
+       "med": 172,
+       "min": 171,
+       "max": 193,
+       "n": 3
+      },
+      "jsonParseMs": {
+       "med": 287,
+       "min": 275,
+       "max": 299,
+       "n": 3
+      },
+      "pireImageLectureMs": {
+       "med": 833.3,
+       "min": 833.3,
+       "max": 1766.6,
+       "n": 3
+      }
+     },
+     "indexedDBBinaire": null,
+     "opfs": {
+      "erreur": "It was determined that certain files are unsafe for access within a Web application, or that too many calls are being made on file resources."
+     }
+    },
+    "wc-c6-high-cpu1": {
+     "essais": 3,
+     "protocole": "file:",
+     "crossOriginIsolated": false,
+     "objets": 9618,
+     "octetsNappes": 5270688,
+     "trianglesHerbier": 84002,
+     "regenerationFilPrincipalMs": {
+      "med": 581,
+      "min": 521,
+      "max": 757,
+      "n": 3
+     },
+     "pireImageRegenerationMs": {
+      "med": 566.6,
+      "min": 500,
+      "max": 750,
+      "n": 3
+     },
+     "structuredCloneMs": {
+      "med": 175.9,
+      "min": 166.1,
+      "max": 188.3,
+      "n": 3
+     },
+     "workerGraphe": {
+      "calculDansWorkerMs": {
+       "med": 690,
+       "min": 523,
+       "max": 1060,
+       "n": 3
+      },
+      "receptionFilPrincipalMs": {
+       "med": 153,
+       "min": 94.4,
+       "max": 177.5,
+       "n": 3
+      },
+      "pireImageMs": {
+       "med": 16.8,
+       "min": 16.8,
+       "max": 16.8,
+       "n": 3
+      },
+      "identiques": true
+     },
+     "workerPlat": null,
+     "indexedDBGraphe": {
+      "ecritureMs": {
+       "med": 172,
+       "min": 98,
+       "max": 291,
+       "n": 9
+      },
+      "lectureMs": {
+       "med": 157,
+       "min": 95,
+       "max": 202,
+       "n": 9
+      },
+      "pireImageLectureMs": {
+       "med": 266.7,
+       "min": 83.4,
+       "max": 433.4,
+       "n": 9
+      }
+     },
+     "indexedDBPlat": null,
+     "indexedDBBinaire": null,
+     "opfs": {
+      "erreur": "It was determined that certain files are unsafe for access within a Web application, or that too many calls are being made on file resources."
+     }
+    }
+   }
+  },
+  "wc2": {
+   "charges": [
+    "c2 high cpu1 r0 charge 19.01 code 0",
+    "c2 high cpu1 r1 charge 18.07 code 0",
+    "c2 high cpu1 r2 charge 16.07 code 0",
+    "c6 high cpu1 r0 charge 14.50 code 0",
+    "c6 high cpu1 r1 charge 15.68 code 0",
+    "c6 high cpu1 r2 charge 16.21 code 0"
+   ],
+   "resume": {
+    "wc-c2-high-cpu1": {
+     "essais": 3,
+     "protocole": "file:",
+     "crossOriginIsolated": false,
+     "objets": 79586,
+     "octetsNappes": 5134784,
+     "trianglesHerbier": 57427,
+     "regenerationFilPrincipalMs": {
+      "med": 1649,
+      "min": 540,
+      "max": 1661,
+      "n": 3
+     },
+     "pireImageRegenerationMs": {
+      "med": 1633.3,
+      "min": 516.6,
+      "max": 1650,
+      "n": 3
+     },
+     "structuredCloneMs": {
+      "med": 595.9,
+      "min": 184.8,
+      "max": 625.8,
+      "n": 3
+     },
+     "workerGraphe": {
+      "calculDansWorkerMs": {
+       "med": 1094,
+       "min": 628,
+       "max": 2199,
+       "n": 3
+      },
+      "receptionFilPrincipalMs": {
+       "med": 225.8,
+       "min": 114,
+       "max": 332.7,
+       "n": 3
+      },
+      "pireImageMs": {
+       "med": 216.6,
+       "min": 100,
+       "max": 316.6,
+       "n": 3
+      },
+      "identiques": true
+     },
+     "workerPlat": {
+      "calculDansWorkerMs": {
+       "med": 1589,
+       "min": 574,
+       "max": 2042,
+       "n": 3
+      },
+      "receptionMs": {
+       "med": 5.8,
+       "min": 2.9,
+       "max": 10.3,
+       "n": 3
+      },
+      "jsonParseMs": {
+       "med": 92,
+       "min": 35.2,
+       "max": 101.1,
+       "n": 3
+      },
+      "pireImageMs": {
+       "med": 100,
+       "min": 33.3,
+       "max": 100,
+       "n": 3
+      },
+      "octetsJson": 34310109
+     },
+     "indexedDBGraphe": {
+      "erreur": "Cannot read properties of undefined (reading '0')"
+     },
+     "indexedDBPlat": null,
+     "indexedDBBinaire": null,
+     "opfs": {
+      "erreur": "It was determined that certain files are unsafe for access within a Web application, or that too many calls are being made on file resources."
+     }
+    },
+    "wc-c6-high-cpu1": {
+     "essais": 3,
+     "protocole": "file:",
+     "crossOriginIsolated": false,
+     "objets": 9618,
+     "octetsNappes": 5270688,
+     "trianglesHerbier": 84002,
+     "regenerationFilPrincipalMs": {
+      "med": 1135,
+      "min": 976,
+      "max": 1813,
+      "n": 3
+     },
+     "pireImageRegenerationMs": {
+      "med": 1116.6,
+      "min": 966.6,
+      "max": 1799.9,
+      "n": 3
+     },
+     "structuredCloneMs": {
+      "med": 346.3,
+      "min": 302.4,
+      "max": 576.2,
+      "n": 3
+     },
+     "workerGraphe": {
+      "calculDansWorkerMs": {
+       "med": 2005,
+       "min": 1204,
+       "max": 2087,
+       "n": 3
+      },
+      "receptionFilPrincipalMs": {
+       "med": 303.2,
+       "min": 190.4,
+       "max": 342.4,
+       "n": 3
+      },
+      "pireImageMs": {
+       "med": 300,
+       "min": 183.3,
+       "max": 333.3,
+       "n": 3
+      },
+      "identiques": true
+     },
+     "workerPlat": {
+      "calculDansWorkerMs": {
+       "med": 1983,
+       "min": 1305,
+       "max": 2073,
+       "n": 3
+      },
+      "receptionMs": {
+       "med": 0.8,
+       "min": 0.4,
+       "max": 0.8,
+       "n": 3
+      },
+      "jsonParseMs": {
+       "med": 10.8,
+       "min": 6.9,
+       "max": 11.6,
+       "n": 3
+      },
+      "pireImageMs": {
+       "med": 16.8,
+       "min": 16.8,
+       "max": 16.8,
+       "n": 3
+      },
+      "octetsJson": 2284245
+     },
+     "indexedDBGraphe": {
+      "erreur": "Cannot read properties of undefined (reading '0')"
+     },
+     "indexedDBPlat": null,
+     "indexedDBBinaire": null,
+     "opfs": {
+      "erreur": "It was determined that certain files are unsafe for access within a Web application, or that too many calls are being made on file resources."
+     }
+    }
+   }
+  },
+  "wc3": {
+   "charges": [
+    "c2 high cpu1 r0 charge 23.31 code 0",
+    "c2 high cpu1 r1 charge 40.76 code 0",
+    "c2 high cpu1 r2 charge 34.07 code 0",
+    "c6 high cpu1 r0 charge 30.47 code 0",
+    "c6 high cpu1 r1 charge 29.30 code 0",
+    "c6 high cpu1 r2 charge 25.10 code 0"
+   ],
+   "resume": {
+    "wc-c2-high-cpu1": {
+     "essais": 3,
+     "protocole": "file:",
+     "crossOriginIsolated": false,
+     "objets": 79586,
+     "octetsNappes": 5134784,
+     "trianglesHerbier": 57427,
+     "regenerationFilPrincipalMs": {
+      "med": 1641,
+      "min": 805,
+      "max": 2386,
+      "n": 3
+     },
+     "pireImageRegenerationMs": {
+      "med": 1633.3,
+      "min": 800,
+      "max": 2383.3,
+      "n": 3
+     },
+     "structuredCloneMs": {
+      "med": 388.8,
+      "min": 287.2,
+      "max": 887.1,
+      "n": 3
+     },
+     "workerGraphe": {
+      "calculDansWorkerMs": {
+       "med": 2151,
+       "min": 1288,
+       "max": 5718,
+       "n": 3
+      },
+      "receptionFilPrincipalMs": {
+       "med": 270.3,
+       "min": 227.4,
+       "max": 308.5,
+       "n": 3
+      },
+      "pireImageMs": {
+       "med": 266.6,
+       "min": 216.7,
+       "max": 300,
+       "n": 3
+      },
+      "identiques": true
+     },
+     "workerPlat": {
+      "calculDansWorkerMs": {
+       "med": 2213,
+       "min": 1559,
+       "max": 2891,
+       "n": 3
+      },
+      "receptionMs": {
+       "med": 7.5,
+       "min": 6.2,
+       "max": 10.7,
+       "n": 3
+      },
+      "jsonParseMs": {
+       "med": 121.5,
+       "min": 93.2,
+       "max": 128.4,
+       "n": 3
+      },
+      "pireImageMs": {
+       "med": 116.6,
+       "min": 100,
+       "max": 133.4,
+       "n": 3
+      },
+      "octetsJson": 34310109
+     },
+     "indexedDBGraphe": {
+      "ecritureMs": {
+       "med": 306,
+       "min": 223,
+       "max": 569,
+       "n": 9
+      },
+      "lectureMs": {
+       "med": 266,
+       "min": 202,
+       "max": 435,
+       "n": 9
+      },
+      "pireImageLectureMs": {
+       "med": 250,
+       "min": 183.2,
+       "max": 433.4,
+       "n": 9
+      }
+     },
+     "indexedDBPlat": {
+      "octetsJson": 34221776,
+      "ecritureMs": {
+       "med": 147,
+       "min": 107,
+       "max": 270,
+       "n": 9
+      },
+      "lectureMs": {
+       "med": 45,
+       "min": 30,
+       "max": 113,
+       "n": 9
+      },
+      "jsonParseMs": {
+       "med": 87,
+       "min": 63,
+       "max": 98,
+       "n": 9
+      },
+      "pireImageLectureMs": {
+       "med": 100.1,
+       "min": 83.3,
+       "max": 133.3,
+       "n": 9
+      }
+     },
+     "indexedDBBinaire": {
+      "octets": 14516536,
+      "objets": 79586,
+      "encoderMs": {
+       "med": 22,
+       "min": 17,
+       "max": 24,
+       "n": 3
+      },
+      "ecritureMs": {
+       "med": 42,
+       "min": 34,
+       "max": 69,
+       "n": 9
+      },
+      "lectureMs": {
+       "med": 19,
+       "min": 9,
+       "max": 28,
+       "n": 9
+      },
+      "reconstitutionObjetsMs": {
+       "med": 17,
+       "min": 4,
+       "max": 23,
+       "n": 9
+      },
+      "pireImageLectureMs": {
+       "med": 16.8,
+       "min": 16.7,
+       "max": 16.8,
+       "n": 9
+      }
+     },
+     "opfs": {
+      "erreur": "It was determined that certain files are unsafe for access within a Web application, or that too many calls are being made on file resources."
+     }
+    },
+    "wc-c6-high-cpu1": {
+     "essais": 3,
+     "protocole": "file:",
+     "crossOriginIsolated": false,
+     "objets": 9618,
+     "octetsNappes": 5270688,
+     "trianglesHerbier": 84002,
+     "regenerationFilPrincipalMs": {
+      "med": 1086,
+      "min": 1081,
+      "max": 1664,
+      "n": 3
+     },
+     "pireImageRegenerationMs": {
+      "med": 1066.7,
+      "min": 1066.6,
+      "max": 1650,
+      "n": 3
+     },
+     "structuredCloneMs": {
+      "med": 318.7,
+      "min": 316.8,
+      "max": 613.9,
+      "n": 3
+     },
+     "workerGraphe": {
+      "calculDansWorkerMs": {
+       "med": 1729,
+       "min": 1060,
+       "max": 2099,
+       "n": 3
+      },
+      "receptionFilPrincipalMs": {
+       "med": 187.7,
+       "min": 184.9,
+       "max": 318.8,
+       "n": 3
+      },
+      "pireImageMs": {
+       "med": 183.3,
+       "min": 166.6,
+       "max": 316.7,
+       "n": 3
+      },
+      "identiques": true
+     },
+     "workerPlat": {
+      "calculDansWorkerMs": {
+       "med": 1350,
+       "min": 1270,
+       "max": 2693,
+       "n": 3
+      },
+      "receptionMs": {
+       "med": 0.7,
+       "min": 0.7,
+       "max": 0.8,
+       "n": 3
+      },
+      "jsonParseMs": {
+       "med": 7.8,
+       "min": 7.5,
+       "max": 13.4,
+       "n": 3
+      },
+      "pireImageMs": {
+       "med": 16.8,
+       "min": 16.8,
+       "max": 16.8,
+       "n": 3
+      },
+      "octetsJson": 2284245
+     },
+     "indexedDBGraphe": {
+      "ecritureMs": {
+       "med": 272,
+       "min": 203,
+       "max": 583,
+       "n": 9
+      },
+      "lectureMs": {
+       "med": 260,
+       "min": 197,
+       "max": 449,
+       "n": 9
+      },
+      "pireImageLectureMs": {
+       "med": 216.7,
+       "min": 183.3,
+       "max": 399.9,
+       "n": 9
+      }
+     },
+     "indexedDBPlat": {
+      "octetsJson": 2219451,
+      "ecritureMs": {
+       "med": 61,
+       "min": 46,
+       "max": 415,
+       "n": 9
+      },
+      "lectureMs": {
+       "med": 29,
+       "min": 13,
+       "max": 67,
+       "n": 9
+      },
+      "jsonParseMs": {
+       "med": 12,
+       "min": 8,
+       "max": 13,
+       "n": 9
+      },
+      "pireImageLectureMs": {
+       "med": 16.7,
+       "min": 16.7,
+       "max": 16.8,
+       "n": 9
+      }
+     },
+     "indexedDBBinaire": {
+      "octets": 12568240,
+      "objets": 9618,
+      "encoderMs": {
+       "med": 7,
+       "min": 5,
+       "max": 7,
+       "n": 3
+      },
+      "ecritureMs": {
+       "med": 83,
+       "min": 38,
+       "max": 401,
+       "n": 9
+      },
+      "lectureMs": {
+       "med": 17,
+       "min": 12,
+       "max": 99,
+       "n": 9
+      },
+      "reconstitutionObjetsMs": {
+       "med": 5,
+       "min": 4,
+       "max": 7,
+       "n": 9
+      },
+      "pireImageLectureMs": {
+       "med": 16.7,
+       "min": 16.7,
+       "max": 16.8,
+       "n": 9
+      }
+     },
+     "opfs": {
+      "erreur": "It was determined that certain files are unsafe for access within a Web application, or that too many calls are being made on file resources."
+     }
+    }
+   }
+  }
+ },
+ "note": "wc : première version du scénario (pire image relevée trop tôt, pas de variante à plat) ; wc2 : variante à plat du Worker ajoutée, bloc IndexedDB en échec (objets lointains sans champ s/r) ; wc3 : version finale, fait foi pour IndexedDB."
+}

@@ -1,0 +1,1773 @@
+{
+ "date": "2026-11-18T19:57:42.521Z",
+ "node": "v24.18.0",
+ "machine": "Apple M5 x10",
+ "memoireMachineGo": 24,
+ "methode": "Un processus Node neuf par essai (froid = première construction du processus, JIT froid ; chaud = deuxième construction du même niveau dans le même processus). Temps processeur du fil principal (process.threadCpuUsage) autour des vraies fonctions, horloge murale à part (murMed) ; « propre » = temps hors étapes chronométrées imbriquées. Moteur sur doublure WebGL inerte : setNappes/setLots mesurent l’empaquetage processeur, pas le transfert au GPU. Somme des étapes = somme des temps propres médians (hors doublure WebGL et création du moteur).",
+ "circuits": [
+  {
+   "circuit": 0,
+   "id": "val-brule",
+   "palier": "high",
+   "essais": 3,
+   "charges": [
+    23.7,
+    26.1,
+    36
+   ],
+   "sommeEtapesFroidMs": 2214,
+   "sommeEtapesChaudMs": 2171,
+   "etapes": [
+    {
+     "etape": "decor.herbier",
+     "med": 1092.2,
+     "min": 863.4,
+     "max": 1256.6
+    },
+    {
+     "etape": "vegetation.construire",
+     "med": 384.8,
+     "min": 284.1,
+     "max": 423.8
+    },
+    {
+     "etape": "rendu.setLots",
+     "med": 188.1,
+     "min": 137.5,
+     "max": 219.4
+    },
+    {
+     "etape": "faune.creer",
+     "med": 172.5,
+     "min": 124.6,
+     "max": 215.4
+    },
+    {
+     "etape": "decor.construire",
+     "med": 116.1,
+     "min": 77.8,
+     "max": 128.6
+    },
+    {
+     "etape": "retro.setLots",
+     "med": 103.2,
+     "min": 52.8,
+     "max": 107.4
+    },
+    {
+     "etape": "decor.relief-terrain",
+     "med": 50.4,
+     "min": 45.9,
+     "max": 56.2
+    },
+    {
+     "etape": "circuit.creer",
+     "med": 35.6,
+     "min": 35.1,
+     "max": 45.8
+    },
+    {
+     "etape": "decor.chaussee",
+     "med": 29.4,
+     "min": 22.8,
+     "max": 30.6
+    },
+    {
+     "etape": "obstacles.creer",
+     "med": 19.8,
+     "min": 17.1,
+     "max": 22.5
+    },
+    {
+     "etape": "voiture.modele",
+     "med": 7.2,
+     "min": 5.4,
+     "max": 9
+    },
+    {
+     "etape": "rendu.setNappes",
+     "med": 3.6,
+     "min": 2.8,
+     "max": 5.5
+    }
+   ],
+   "poids": {
+    "circuit": {
+     "points": 2111,
+     "pas": 2
+    },
+    "nappes": {
+     "n": 117,
+     "sommets": 55271,
+     "triangles": 66702,
+     "octets": 3674516
+    },
+    "lots": {
+     "n": 2394,
+     "objetsProches": 47609,
+     "objetsLointains": 41478,
+     "formesDistinctes": 18,
+     "trianglesDesFormes": 5509,
+     "octetsInstances": 5701568
+    },
+    "vegetation": {
+     "lots": 2362,
+     "herbes": 39025,
+     "qualite": "high"
+    },
+    "obstacles": 1723,
+    "faune": {
+     "habitats": 1536
+    },
+    "tamponsGpuOctets": {
+     "principal": 24404272,
+     "retro": 24404272
+    },
+    "formesEnregistrees": {
+     "n": 72,
+     "triangles": 129115
+    }
+   },
+   "deltaTasMoMed": 109.7,
+   "tableauxTypesMo": 52.2
+  },
+  {
+   "circuit": 1,
+   "id": "port-sable",
+   "palier": "high",
+   "essais": 3,
+   "charges": [
+    22.2,
+    23.2,
+    36.7
+   ],
+   "sommeEtapesFroidMs": 1938,
+   "sommeEtapesChaudMs": 1401,
+   "etapes": [
+    {
+     "etape": "decor.herbier",
+     "med": 1039.2,
+     "min": 924.1,
+     "max": 1351.6
+    },
+    {
+     "etape": "vegetation.construire",
+     "med": 329.2,
+     "min": 207.7,
+     "max": 407.9
+    },
+    {
+     "etape": "faune.creer",
+     "med": 229.9,
+     "min": 149.8,
+     "max": 301.8
+    },
+    {
+     "etape": "decor.construire",
+     "med": 85,
+     "min": 75.1,
+     "max": 130.2
+    },
+    {
+     "etape": "rendu.setLots",
+     "med": 70.2,
+     "min": 63.9,
+     "max": 132.3
+    },
+    {
+     "etape": "retro.setLots",
+     "med": 48.3,
+     "min": 45.4,
+     "max": 91.9
+    },
+    {
+     "etape": "decor.relief-terrain",
+     "med": 40.4,
+     "min": 39.7,
+     "max": 73.3
+    },
+    {
+     "etape": "circuit.creer",
+     "med": 37.1,
+     "min": 32.4,
+     "max": 57.1
+    },
+    {
+     "etape": "decor.chaussee",
+     "med": 23.7,
+     "min": 20.5,
+     "max": 43
+    },
+    {
+     "etape": "obstacles.creer",
+     "med": 12.7,
+     "min": 8.3,
+     "max": 22
+    },
+    {
+     "etape": "voiture.modele",
+     "med": 7.2,
+     "min": 4.3,
+     "max": 10.4
+    },
+    {
+     "etape": "effetsSaison.creer",
+     "med": 6.1,
+     "min": 2.2,
+     "max": 6.5
+    }
+   ],
+   "poids": {
+    "circuit": {
+     "points": 1819,
+     "pas": 2
+    },
+    "nappes": {
+     "n": 104,
+     "sommets": 48772,
+     "triangles": 59524,
+     "octets": 3250432
+    },
+    "lots": {
+     "n": 1595,
+     "objetsProches": 34906,
+     "objetsLointains": 29577,
+     "formesDistinctes": 14,
+     "trianglesDesFormes": 5541,
+     "octetsInstances": 4126912
+    },
+    "vegetation": {
+     "lots": 1567,
+     "herbes": 27963,
+     "qualite": "high"
+    },
+    "obstacles": 1019,
+    "faune": {
+     "habitats": 1536
+    },
+    "tamponsGpuOctets": {
+     "principal": 22405532,
+     "retro": 22405532
+    },
+    "formesEnregistrees": {
+     "n": 72,
+     "triangles": 129115
+    }
+   },
+   "deltaTasMoMed": 76.7,
+   "tableauxTypesMo": 48.1
+  },
+  {
+   "circuit": 2,
+   "id": "haut-col",
+   "palier": "high",
+   "essais": 3,
+   "charges": [
+    19.9,
+    21.9,
+    38.6
+   ],
+   "sommeEtapesFroidMs": 2035,
+   "sommeEtapesChaudMs": 2362,
+   "etapes": [
+    {
+     "etape": "decor.herbier",
+     "med": 968.5,
+     "min": 903.3,
+     "max": 1311.8
+    },
+    {
+     "etape": "vegetation.construire",
+     "med": 364.5,
+     "min": 277.1,
+     "max": 405.1
+    },
+    {
+     "etape": "faune.creer",
+     "med": 216.3,
+     "min": 148.3,
+     "max": 306
+    },
+    {
+     "etape": "rendu.setLots",
+     "med": 115.2,
+     "min": 98.7,
+     "max": 145.6
+    },
+    {
+     "etape": "decor.construire",
+     "med": 95.7,
+     "min": 82.2,
+     "max": 119
+    },
+    {
+     "etape": "retro.setLots",
+     "med": 86.9,
+     "min": 50,
+     "max": 109.1
+    },
+    {
+     "etape": "decor.relief-terrain",
+     "med": 66.7,
+     "min": 54.3,
+     "max": 70
+    },
+    {
+     "etape": "circuit.creer",
+     "med": 48.9,
+     "min": 36.6,
+     "max": 51.1
+    },
+    {
+     "etape": "decor.chaussee",
+     "med": 32.2,
+     "min": 25.6,
+     "max": 37.9
+    },
+    {
+     "etape": "obstacles.creer",
+     "med": 13.6,
+     "min": 12.7,
+     "max": 26.5
+    },
+    {
+     "etape": "voiture.modele",
+     "med": 7,
+     "min": 6,
+     "max": 9.9
+    },
+    {
+     "etape": "rendu.setNappes",
+     "med": 6.1,
+     "min": 5.5,
+     "max": 12.2
+    }
+   ],
+   "poids": {
+    "circuit": {
+     "points": 2608,
+     "pas": 2
+    },
+    "nappes": {
+     "n": 176,
+     "sommets": 76424,
+     "triangles": 96728,
+     "octets": 5134784
+    },
+    "lots": {
+     "n": 1554,
+     "objetsProches": 43157,
+     "objetsLointains": 36429,
+     "formesDistinctes": 19,
+     "trianglesDesFormes": 8170,
+     "octetsInstances": 5093504
+    },
+    "vegetation": {
+     "lots": 1453,
+     "herbes": 33607,
+     "qualite": "high"
+    },
+    "obstacles": 1178,
+    "faune": {
+     "habitats": 1536
+    },
+    "tamponsGpuOctets": {
+     "principal": 25256476,
+     "retro": 25256476
+    },
+    "formesEnregistrees": {
+     "n": 72,
+     "triangles": 129115
+    }
+   },
+   "deltaTasMoMed": 85.8,
+   "tableauxTypesMo": 52.3
+  },
+  {
+   "circuit": 3,
+   "id": "lande-noire",
+   "palier": "high",
+   "essais": 3,
+   "charges": [
+    18.8,
+    21.9,
+    44.4
+   ],
+   "sommeEtapesFroidMs": 280,
+   "sommeEtapesChaudMs": 251,
+   "etapes": [
+    {
+     "etape": "decor.construire",
+     "med": 76.3,
+     "min": 44.2,
+     "max": 93
+    },
+    {
+     "etape": "decor.relief-terrain",
+     "med": 76.1,
+     "min": 56.3,
+     "max": 87.7
+    },
+    {
+     "etape": "circuit.creer",
+     "med": 48.2,
+     "min": 36.5,
+     "max": 51.8
+    },
+    {
+     "etape": "decor.chaussee",
+     "med": 29.4,
+     "min": 23.8,
+     "max": 35
+    },
+    {
+     "etape": "rendu.setLots",
+     "med": 13.5,
+     "min": 11.1,
+     "max": 14.1
+    },
+    {
+     "etape": "retro.setLots",
+     "med": 8,
+     "min": 6.8,
+     "max": 8.4
+    },
+    {
+     "etape": "voiture.modele",
+     "med": 6.9,
+     "min": 4.7,
+     "max": 8.5
+    },
+    {
+     "etape": "effetsSaison.creer",
+     "med": 4.4,
+     "min": 2.9,
+     "max": 6.1
+    },
+    {
+     "etape": "rendu.setNappes",
+     "med": 4.2,
+     "min": 4,
+     "max": 4.3
+    },
+    {
+     "etape": "retro.setNappes",
+     "med": 3.6,
+     "min": 3.5,
+     "max": 7.5
+    },
+    {
+     "etape": "obstacles.creer",
+     "med": 2.7,
+     "min": 1.8,
+     "max": 4.6
+    },
+    {
+     "etape": "course.creer",
+     "med": 1.8,
+     "min": 1.3,
+     "max": 1.9
+    }
+   ],
+   "poids": {
+    "circuit": {
+     "points": 2308,
+     "pas": 2
+    },
+    "nappes": {
+     "n": 160,
+     "sommets": 67526,
+     "triangles": 85278,
+     "octets": 4534688
+    },
+    "lots": {
+     "n": 31,
+     "objetsProches": 7858,
+     "objetsLointains": 2087,
+     "formesDistinctes": 2,
+     "trianglesDesFormes": 0,
+     "octetsInstances": 636480
+    },
+    "vegetation": {
+     "lots": 0,
+     "herbes": 0,
+     "qualite": "high"
+    },
+    "obstacles": 973,
+    "faune": {
+     "habitats": 0
+    },
+    "tamponsGpuOctets": {
+     "principal": 20199356,
+     "retro": 20199356
+    },
+    "formesEnregistrees": {
+     "n": 72,
+     "triangles": 129115
+    }
+   },
+   "deltaTasMoMed": 8.3,
+   "tableauxTypesMo": 40.7
+  },
+  {
+   "circuit": 4,
+   "id": "roche-fauve",
+   "palier": "high",
+   "essais": 3,
+   "charges": [
+    17.5,
+    21.1,
+    50.7
+   ],
+   "sommeEtapesFroidMs": 281,
+   "sommeEtapesChaudMs": 253,
+   "etapes": [
+    {
+     "etape": "decor.relief-terrain",
+     "med": 82.7,
+     "min": 77.2,
+     "max": 90.8
+    },
+    {
+     "etape": "decor.construire",
+     "med": 63.8,
+     "min": 57.6,
+     "max": 70.1
+    },
+    {
+     "etape": "circuit.creer",
+     "med": 52.1,
+     "min": 51.5,
+     "max": 53.3
+    },
+    {
+     "etape": "decor.chaussee",
+     "med": 31.4,
+     "min": 25.8,
+     "max": 36.5
+    },
+    {
+     "etape": "rendu.setLots",
+     "med": 12.4,
+     "min": 8.2,
+     "max": 14.9
+    },
+    {
+     "etape": "retro.setLots",
+     "med": 7.9,
+     "min": 5.3,
+     "max": 8.9
+    },
+    {
+     "etape": "effetsSaison.creer",
+     "med": 6.8,
+     "min": 3.3,
+     "max": 9.8
+    },
+    {
+     "etape": "voiture.modele",
+     "med": 6.7,
+     "min": 6.1,
+     "max": 7.8
+    },
+    {
+     "etape": "rendu.setNappes",
+     "med": 4.5,
+     "min": 3.4,
+     "max": 4.7
+    },
+    {
+     "etape": "retro.setNappes",
+     "med": 4,
+     "min": 2.5,
+     "max": 8.9
+    },
+    {
+     "etape": "obstacles.creer",
+     "med": 2.7,
+     "min": 1.8,
+     "max": 3.2
+    },
+    {
+     "etape": "course.creer",
+     "med": 1.4,
+     "min": 1.4,
+     "max": 1.8
+    }
+   ],
+   "poids": {
+    "circuit": {
+     "points": 2417,
+     "pas": 2
+    },
+    "nappes": {
+     "n": 173,
+     "sommets": 70458,
+     "triangles": 88650,
+     "octets": 4727616
+    },
+    "lots": {
+     "n": 33,
+     "objetsProches": 7049,
+     "objetsLointains": 1818,
+     "formesDistinctes": 2,
+     "trianglesDesFormes": 0,
+     "octetsInstances": 567488
+    },
+    "vegetation": {
+     "lots": 0,
+     "herbes": 0,
+     "qualite": "high"
+    },
+    "obstacles": 965,
+    "faune": {
+     "habitats": 0
+    },
+    "tamponsGpuOctets": {
+     "principal": 20323292,
+     "retro": 20323292
+    },
+    "formesEnregistrees": {
+     "n": 72,
+     "triangles": 129115
+    }
+   },
+   "deltaTasMoMed": 8,
+   "tableauxTypesMo": 40.8
+  },
+  {
+   "circuit": 5,
+   "id": "brume-de-jade",
+   "palier": "high",
+   "essais": 3,
+   "charges": [
+    17,
+    19.9,
+    113.3
+   ],
+   "sommeEtapesFroidMs": 1929,
+   "sommeEtapesChaudMs": 1866,
+   "etapes": [
+    {
+     "etape": "decor.herbier",
+     "med": 1418.6,
+     "min": 851.2,
+     "max": 1870.8
+    },
+    {
+     "etape": "faune.creer",
+     "med": 170.5,
+     "min": 106.2,
+     "max": 197.5
+    },
+    {
+     "etape": "decor.relief-terrain",
+     "med": 126.8,
+     "min": 91.1,
+     "max": 178.8
+    },
+    {
+     "etape": "decor.construire",
+     "med": 75.5,
+     "min": 47.4,
+     "max": 112.9
+    },
+    {
+     "etape": "circuit.creer",
+     "med": 51.6,
+     "min": 37.4,
+     "max": 90.9
+    },
+    {
+     "etape": "decor.chaussee",
+     "med": 34.3,
+     "min": 23,
+     "max": 53
+    },
+    {
+     "etape": "rendu.setLots",
+     "med": 14.3,
+     "min": 7.2,
+     "max": 21.7
+    },
+    {
+     "etape": "voiture.modele",
+     "med": 8.3,
+     "min": 4.3,
+     "max": 9.7
+    },
+    {
+     "etape": "retro.setLots",
+     "med": 6,
+     "min": 3.8,
+     "max": 10.9
+    },
+    {
+     "etape": "effetsSaison.creer",
+     "med": 4.7,
+     "min": 2.4,
+     "max": 5.5
+    },
+    {
+     "etape": "rendu.setNappes",
+     "med": 4.7,
+     "min": 2.6,
+     "max": 9.5
+    },
+    {
+     "etape": "obstacles.creer",
+     "med": 4.2,
+     "min": 2.6,
+     "max": 7
+    }
+   ],
+   "poids": {
+    "circuit": {
+     "points": 2509,
+     "pas": 2
+    },
+    "nappes": {
+     "n": 186,
+     "sommets": 75150,
+     "triangles": 95608,
+     "octets": 5055096
+    },
+    "lots": {
+     "n": 34,
+     "objetsProches": 7670,
+     "objetsLointains": 1680,
+     "formesDistinctes": 5,
+     "trianglesDesFormes": 3432,
+     "octetsInstances": 598400
+    },
+    "vegetation": {
+     "lots": 0,
+     "herbes": 0,
+     "qualite": "high"
+    },
+    "obstacles": 817,
+    "faune": {
+     "habitats": 1536
+    },
+    "tamponsGpuOctets": {
+     "principal": 20681684,
+     "retro": 20681684
+    },
+    "formesEnregistrees": {
+     "n": 72,
+     "triangles": 129115
+    }
+   },
+   "deltaTasMoMed": 75.7,
+   "tableauxTypesMo": 42
+  },
+  {
+   "circuit": 6,
+   "id": "cap-sequoia",
+   "palier": "high",
+   "essais": 3,
+   "charges": [
+    16.8,
+    19,
+    96.2
+   ],
+   "sommeEtapesFroidMs": 1906,
+   "sommeEtapesChaudMs": 1882,
+   "etapes": [
+    {
+     "etape": "decor.herbier",
+     "med": 1429,
+     "min": 945.9,
+     "max": 1578.3
+    },
+    {
+     "etape": "faune.creer",
+     "med": 131.7,
+     "min": 96.7,
+     "max": 140
+    },
+    {
+     "etape": "decor.relief-terrain",
+     "med": 103.2,
+     "min": 64,
+     "max": 120.5
+    },
+    {
+     "etape": "decor.construire",
+     "med": 86.7,
+     "min": 45,
+     "max": 91.4
+    },
+    {
+     "etape": "circuit.creer",
+     "med": 58.5,
+     "min": 37.2,
+     "max": 78.8
+    },
+    {
+     "etape": "decor.chaussee",
+     "med": 41.3,
+     "min": 29.8,
+     "max": 52.1
+    },
+    {
+     "etape": "rendu.setLots",
+     "med": 14,
+     "min": 7.8,
+     "max": 17.5
+    },
+    {
+     "etape": "obstacles.creer",
+     "med": 10.4,
+     "min": 5.7,
+     "max": 11.7
+    },
+    {
+     "etape": "retro.setLots",
+     "med": 8.2,
+     "min": 4.7,
+     "max": 8.9
+    },
+    {
+     "etape": "voiture.modele",
+     "med": 6.3,
+     "min": 4.7,
+     "max": 6.4
+    },
+    {
+     "etape": "rendu.setNappes",
+     "med": 4.3,
+     "min": 2.8,
+     "max": 6.8
+    },
+    {
+     "etape": "effetsSaison.creer",
+     "med": 3.6,
+     "min": 3,
+     "max": 3.9
+    }
+   ],
+   "poids": {
+    "circuit": {
+     "points": 2617,
+     "pas": 2
+    },
+    "nappes": {
+     "n": 189,
+     "sommets": 78336,
+     "triangles": 99768,
+     "octets": 5270688
+    },
+    "lots": {
+     "n": 39,
+     "objetsProches": 7502,
+     "objetsLointains": 2116,
+     "formesDistinctes": 5,
+     "trianglesDesFormes": 6216,
+     "octetsInstances": 615552
+    },
+    "vegetation": {
+     "lots": 0,
+     "herbes": 0,
+     "qualite": "high"
+    },
+    "obstacles": 968,
+    "faune": {
+     "habitats": 1536
+    },
+    "tamponsGpuOctets": {
+     "principal": 20914428,
+     "retro": 20914428
+    },
+    "formesEnregistrees": {
+     "n": 72,
+     "triangles": 129115
+    }
+   },
+   "deltaTasMoMed": 72.3,
+   "tableauxTypesMo": 42.2
+  },
+  {
+   "circuit": 0,
+   "id": "val-brule",
+   "palier": "medium",
+   "essais": 3,
+   "charges": [
+    26.5,
+    18.5,
+    84.6
+   ],
+   "sommeEtapesFroidMs": 2117,
+   "sommeEtapesChaudMs": 2720,
+   "etapes": [
+    {
+     "etape": "decor.herbier",
+     "med": 1013.7,
+     "min": 882.4,
+     "max": 1465.8
+    },
+    {
+     "etape": "vegetation.construire",
+     "med": 342.6,
+     "min": 291.6,
+     "max": 524.5
+    },
+    {
+     "etape": "rendu.setLots",
+     "med": 228,
+     "min": 190.4,
+     "max": 250.7
+    },
+    {
+     "etape": "faune.creer",
+     "med": 140.7,
+     "min": 121.6,
+     "max": 203.8
+    },
+    {
+     "etape": "retro.setLots",
+     "med": 135.9,
+     "min": 96.1,
+     "max": 203
+    },
+    {
+     "etape": "decor.construire",
+     "med": 94.8,
+     "min": 78.2,
+     "max": 148.7
+    },
+    {
+     "etape": "decor.relief-terrain",
+     "med": 53.3,
+     "min": 43.3,
+     "max": 75
+    },
+    {
+     "etape": "circuit.creer",
+     "med": 41.5,
+     "min": 39.1,
+     "max": 66.2
+    },
+    {
+     "etape": "decor.chaussee",
+     "med": 25.1,
+     "min": 22.3,
+     "max": 40.2
+    },
+    {
+     "etape": "obstacles.creer",
+     "med": 21.9,
+     "min": 12.1,
+     "max": 32.7
+    },
+    {
+     "etape": "voiture.modele",
+     "med": 5.5,
+     "min": 4.3,
+     "max": 8.6
+    },
+    {
+     "etape": "rendu.setNappes",
+     "med": 4.5,
+     "min": 3.5,
+     "max": 7.6
+    }
+   ],
+   "poids": {
+    "circuit": {
+     "points": 2111,
+     "pas": 2
+    },
+    "nappes": {
+     "n": 117,
+     "sommets": 55271,
+     "triangles": 66702,
+     "octets": 3674516
+    },
+    "lots": {
+     "n": 2394,
+     "objetsProches": 47523,
+     "objetsLointains": 41392,
+     "formesDistinctes": 16,
+     "trianglesDesFormes": 3238,
+     "octetsInstances": 5690560
+    },
+    "vegetation": {
+     "lots": 2362,
+     "herbes": 38996,
+     "qualite": "medium"
+    },
+    "obstacles": 1723,
+    "faune": {
+     "habitats": 1536
+    },
+    "tamponsGpuOctets": {
+     "principal": 24393264,
+     "retro": 24393264
+    },
+    "formesEnregistrees": {
+     "n": 72,
+     "triangles": 129115
+    }
+   },
+   "deltaTasMoMed": 109.6,
+   "tableauxTypesMo": 52.2
+  },
+  {
+   "circuit": 1,
+   "id": "port-sable",
+   "palier": "medium",
+   "essais": 3,
+   "charges": [
+    24.5,
+    17.3,
+    75
+   ],
+   "sommeEtapesFroidMs": 2269,
+   "sommeEtapesChaudMs": 1804,
+   "etapes": [
+    {
+     "etape": "decor.herbier",
+     "med": 1208.7,
+     "min": 1061.7,
+     "max": 1326.3
+    },
+    {
+     "etape": "vegetation.construire",
+     "med": 322.1,
+     "min": 299,
+     "max": 381.8
+    },
+    {
+     "etape": "faune.creer",
+     "med": 249.6,
+     "min": 195.9,
+     "max": 296.3
+    },
+    {
+     "etape": "decor.construire",
+     "med": 124.2,
+     "min": 105.4,
+     "max": 182.2
+    },
+    {
+     "etape": "rendu.setLots",
+     "med": 116,
+     "min": 99.8,
+     "max": 135.2
+    },
+    {
+     "etape": "retro.setLots",
+     "med": 85.5,
+     "min": 65.3,
+     "max": 87
+    },
+    {
+     "etape": "decor.relief-terrain",
+     "med": 53.6,
+     "min": 52.2,
+     "max": 68
+    },
+    {
+     "etape": "circuit.creer",
+     "med": 42.1,
+     "min": 41.6,
+     "max": 65.6
+    },
+    {
+     "etape": "decor.chaussee",
+     "med": 30.2,
+     "min": 26.3,
+     "max": 37.7
+    },
+    {
+     "etape": "obstacles.creer",
+     "med": 12.2,
+     "min": 10.8,
+     "max": 12.5
+    },
+    {
+     "etape": "voiture.modele",
+     "med": 8.1,
+     "min": 6.9,
+     "max": 15.3
+    },
+    {
+     "etape": "effetsSaison.creer",
+     "med": 5.2,
+     "min": 2.9,
+     "max": 6.8
+    }
+   ],
+   "poids": {
+    "circuit": {
+     "points": 1819,
+     "pas": 2
+    },
+    "nappes": {
+     "n": 104,
+     "sommets": 48772,
+     "triangles": 59524,
+     "octets": 3250432
+    },
+    "lots": {
+     "n": 1595,
+     "objetsProches": 34837,
+     "objetsLointains": 29508,
+     "formesDistinctes": 12,
+     "trianglesDesFormes": 3102,
+     "octetsInstances": 4118080
+    },
+    "vegetation": {
+     "lots": 1567,
+     "herbes": 27914,
+     "qualite": "medium"
+    },
+    "obstacles": 1019,
+    "faune": {
+     "habitats": 1536
+    },
+    "tamponsGpuOctets": {
+     "principal": 22396700,
+     "retro": 22396700
+    },
+    "formesEnregistrees": {
+     "n": 72,
+     "triangles": 129115
+    }
+   },
+   "deltaTasMoMed": 76.6,
+   "tableauxTypesMo": 48.1
+  },
+  {
+   "circuit": 2,
+   "id": "haut-col",
+   "palier": "medium",
+   "essais": 3,
+   "charges": [
+    30.7,
+    25.4,
+    69.4
+   ],
+   "sommeEtapesFroidMs": 2431,
+   "sommeEtapesChaudMs": 2484,
+   "etapes": [
+    {
+     "etape": "decor.herbier",
+     "med": 1299.3,
+     "min": 611,
+     "max": 1539.3
+    },
+    {
+     "etape": "vegetation.construire",
+     "med": 409.9,
+     "min": 188,
+     "max": 433.5
+    },
+    {
+     "etape": "faune.creer",
+     "med": 218.4,
+     "min": 109,
+     "max": 263.2
+    },
+    {
+     "etape": "decor.construire",
+     "med": 117.3,
+     "min": 66.2,
+     "max": 150.1
+    },
+    {
+     "etape": "rendu.setLots",
+     "med": 102,
+     "min": 53.7,
+     "max": 151.4
+    },
+    {
+     "etape": "retro.setLots",
+     "med": 90.4,
+     "min": 34.5,
+     "max": 110.9
+    },
+    {
+     "etape": "decor.relief-terrain",
+     "med": 65.8,
+     "min": 45.4,
+     "max": 87.1
+    },
+    {
+     "etape": "circuit.creer",
+     "med": 49.6,
+     "min": 32.5,
+     "max": 64.5
+    },
+    {
+     "etape": "decor.chaussee",
+     "med": 30.9,
+     "min": 21,
+     "max": 41.1
+    },
+    {
+     "etape": "obstacles.creer",
+     "med": 16.6,
+     "min": 7.4,
+     "max": 26.7
+    },
+    {
+     "etape": "rendu.setNappes",
+     "med": 10.2,
+     "min": 9.2,
+     "max": 10.4
+    },
+    {
+     "etape": "voiture.modele",
+     "med": 6.6,
+     "min": 3.7,
+     "max": 8.1
+    }
+   ],
+   "poids": {
+    "circuit": {
+     "points": 2608,
+     "pas": 2
+    },
+    "nappes": {
+     "n": 176,
+     "sommets": 76424,
+     "triangles": 96728,
+     "octets": 5134784
+    },
+    "lots": {
+     "n": 1553,
+     "objetsProches": 43089,
+     "objetsLointains": 36361,
+     "formesDistinctes": 19,
+     "trianglesDesFormes": 4558,
+     "octetsInstances": 5084800
+    },
+    "vegetation": {
+     "lots": 1452,
+     "herbes": 33566,
+     "qualite": "medium"
+    },
+    "obstacles": 1178,
+    "faune": {
+     "habitats": 1536
+    },
+    "tamponsGpuOctets": {
+     "principal": 25247772,
+     "retro": 25247772
+    },
+    "formesEnregistrees": {
+     "n": 72,
+     "triangles": 129115
+    }
+   },
+   "deltaTasMoMed": 85.7,
+   "tableauxTypesMo": 52.2
+  },
+  {
+   "circuit": 3,
+   "id": "lande-noire",
+   "palier": "medium",
+   "essais": 3,
+   "charges": [
+    30.3,
+    27.1,
+    64.6
+   ],
+   "sommeEtapesFroidMs": 282,
+   "sommeEtapesChaudMs": 240,
+   "etapes": [
+    {
+     "etape": "decor.relief-terrain",
+     "med": 72.1,
+     "min": 70,
+     "max": 78.2
+    },
+    {
+     "etape": "decor.construire",
+     "med": 66.6,
+     "min": 66.3,
+     "max": 71.7
+    },
+    {
+     "etape": "circuit.creer",
+     "med": 54.7,
+     "min": 52.5,
+     "max": 65.8
+    },
+    {
+     "etape": "decor.chaussee",
+     "med": 35.2,
+     "min": 34.1,
+     "max": 44.7
+    },
+    {
+     "etape": "rendu.setLots",
+     "med": 14.9,
+     "min": 12.5,
+     "max": 16.9
+    },
+    {
+     "etape": "voiture.modele",
+     "med": 7.8,
+     "min": 7.7,
+     "max": 8.1
+    },
+    {
+     "etape": "retro.setLots",
+     "med": 6.5,
+     "min": 6,
+     "max": 10.6
+    },
+    {
+     "etape": "retro.setNappes",
+     "med": 5.5,
+     "min": 2.3,
+     "max": 6.3
+    },
+    {
+     "etape": "rendu.setNappes",
+     "med": 4.9,
+     "min": 4,
+     "max": 6.5
+    },
+    {
+     "etape": "effetsSaison.creer",
+     "med": 4.4,
+     "min": 4,
+     "max": 4.4
+    },
+    {
+     "etape": "obstacles.creer",
+     "med": 3,
+     "min": 2.5,
+     "max": 3.7
+    },
+    {
+     "etape": "course.creer",
+     "med": 1.7,
+     "min": 1.5,
+     "max": 10
+    }
+   ],
+   "poids": {
+    "circuit": {
+     "points": 2308,
+     "pas": 2
+    },
+    "nappes": {
+     "n": 160,
+     "sommets": 67526,
+     "triangles": 85278,
+     "octets": 4534688
+    },
+    "lots": {
+     "n": 31,
+     "objetsProches": 7858,
+     "objetsLointains": 2087,
+     "formesDistinctes": 2,
+     "trianglesDesFormes": 0,
+     "octetsInstances": 636480
+    },
+    "vegetation": {
+     "lots": 0,
+     "herbes": 0,
+     "qualite": "medium"
+    },
+    "obstacles": 973,
+    "faune": {
+     "habitats": 0
+    },
+    "tamponsGpuOctets": {
+     "principal": 20199356,
+     "retro": 20199356
+    },
+    "formesEnregistrees": {
+     "n": 72,
+     "triangles": 129115
+    }
+   },
+   "deltaTasMoMed": 8.3,
+   "tableauxTypesMo": 40.7
+  },
+  {
+   "circuit": 4,
+   "id": "roche-fauve",
+   "palier": "medium",
+   "essais": 3,
+   "charges": [
+    33.8,
+    26.5,
+    64.6
+   ],
+   "sommeEtapesFroidMs": 281,
+   "sommeEtapesChaudMs": 241,
+   "etapes": [
+    {
+     "etape": "decor.relief-terrain",
+     "med": 84.6,
+     "min": 66.7,
+     "max": 85.6
+    },
+    {
+     "etape": "decor.construire",
+     "med": 64.5,
+     "min": 45.7,
+     "max": 67.8
+    },
+    {
+     "etape": "circuit.creer",
+     "med": 51.6,
+     "min": 41.7,
+     "max": 53
+    },
+    {
+     "etape": "decor.chaussee",
+     "med": 32.6,
+     "min": 25.6,
+     "max": 32.6
+    },
+    {
+     "etape": "rendu.setLots",
+     "med": 11.9,
+     "min": 8.5,
+     "max": 12.6
+    },
+    {
+     "etape": "voiture.modele",
+     "med": 7.1,
+     "min": 5.2,
+     "max": 12.7
+    },
+    {
+     "etape": "retro.setLots",
+     "med": 7.1,
+     "min": 4.9,
+     "max": 7.2
+    },
+    {
+     "etape": "rendu.setNappes",
+     "med": 4.3,
+     "min": 2.9,
+     "max": 4.3
+    },
+    {
+     "etape": "effetsSaison.creer",
+     "med": 4,
+     "min": 3.2,
+     "max": 6.6
+    },
+    {
+     "etape": "obstacles.creer",
+     "med": 3.7,
+     "min": 3.1,
+     "max": 6.2
+    },
+    {
+     "etape": "retro.setNappes",
+     "med": 3.6,
+     "min": 3.4,
+     "max": 4.6
+    },
+    {
+     "etape": "course.creer",
+     "med": 1.4,
+     "min": 1.4,
+     "max": 2.3
+    }
+   ],
+   "poids": {
+    "circuit": {
+     "points": 2417,
+     "pas": 2
+    },
+    "nappes": {
+     "n": 173,
+     "sommets": 70458,
+     "triangles": 88650,
+     "octets": 4727616
+    },
+    "lots": {
+     "n": 33,
+     "objetsProches": 7049,
+     "objetsLointains": 1818,
+     "formesDistinctes": 2,
+     "trianglesDesFormes": 0,
+     "octetsInstances": 567488
+    },
+    "vegetation": {
+     "lots": 0,
+     "herbes": 0,
+     "qualite": "medium"
+    },
+    "obstacles": 965,
+    "faune": {
+     "habitats": 0
+    },
+    "tamponsGpuOctets": {
+     "principal": 20323292,
+     "retro": 20323292
+    },
+    "formesEnregistrees": {
+     "n": 72,
+     "triangles": 129115
+    }
+   },
+   "deltaTasMoMed": 8,
+   "tableauxTypesMo": 40.8
+  },
+  {
+   "circuit": 5,
+   "id": "brume-de-jade",
+   "palier": "medium",
+   "essais": 3,
+   "charges": [
+    30.5,
+    25.9,
+    57.7
+   ],
+   "sommeEtapesFroidMs": 2030,
+   "sommeEtapesChaudMs": 2082,
+   "etapes": [
+    {
+     "etape": "decor.herbier",
+     "med": 1532.7,
+     "min": 1008.1,
+     "max": 1543.5
+    },
+    {
+     "etape": "faune.creer",
+     "med": 157.4,
+     "min": 152.2,
+     "max": 160
+    },
+    {
+     "etape": "decor.relief-terrain",
+     "med": 132.9,
+     "min": 120.2,
+     "max": 184.7
+    },
+    {
+     "etape": "decor.construire",
+     "med": 69.6,
+     "min": 58.2,
+     "max": 110.7
+    },
+    {
+     "etape": "circuit.creer",
+     "med": 52.6,
+     "min": 48.7,
+     "max": 61.9
+    },
+    {
+     "etape": "decor.chaussee",
+     "med": 33.2,
+     "min": 28.1,
+     "max": 42.5
+    },
+    {
+     "etape": "rendu.setLots",
+     "med": 14.4,
+     "min": 9.9,
+     "max": 15.8
+    },
+    {
+     "etape": "voiture.modele",
+     "med": 7.3,
+     "min": 6.3,
+     "max": 7.7
+    },
+    {
+     "etape": "retro.setLots",
+     "med": 7.2,
+     "min": 6.3,
+     "max": 9.5
+    },
+    {
+     "etape": "rendu.setNappes",
+     "med": 5,
+     "min": 3.6,
+     "max": 6.2
+    },
+    {
+     "etape": "retro.setNappes",
+     "med": 4.1,
+     "min": 3.4,
+     "max": 4.7
+    },
+    {
+     "etape": "effetsSaison.creer",
+     "med": 4,
+     "min": 3.7,
+     "max": 4.5
+    }
+   ],
+   "poids": {
+    "circuit": {
+     "points": 2509,
+     "pas": 2
+    },
+    "nappes": {
+     "n": 186,
+     "sommets": 75150,
+     "triangles": 95608,
+     "octets": 5055096
+    },
+    "lots": {
+     "n": 34,
+     "objetsProches": 7670,
+     "objetsLointains": 1680,
+     "formesDistinctes": 5,
+     "trianglesDesFormes": 1884,
+     "octetsInstances": 598400
+    },
+    "vegetation": {
+     "lots": 0,
+     "herbes": 0,
+     "qualite": "medium"
+    },
+    "obstacles": 817,
+    "faune": {
+     "habitats": 1536
+    },
+    "tamponsGpuOctets": {
+     "principal": 20681684,
+     "retro": 20681684
+    },
+    "formesEnregistrees": {
+     "n": 72,
+     "triangles": 129115
+    }
+   },
+   "deltaTasMoMed": 75.7,
+   "tableauxTypesMo": 42
+  },
+  {
+   "circuit": 6,
+   "id": "cap-sequoia",
+   "palier": "medium",
+   "essais": 3,
+   "charges": [
+    29,
+    40.6,
+    53
+   ],
+   "sommeEtapesFroidMs": 1995,
+   "sommeEtapesChaudMs": 2006,
+   "etapes": [
+    {
+     "etape": "decor.herbier",
+     "med": 1532.5,
+     "min": 1426.6,
+     "max": 1696.1
+    },
+    {
+     "etape": "faune.creer",
+     "med": 130.5,
+     "min": 119,
+     "max": 138.8
+    },
+    {
+     "etape": "decor.relief-terrain",
+     "med": 95.4,
+     "min": 91,
+     "max": 105.1
+    },
+    {
+     "etape": "decor.construire",
+     "med": 73.4,
+     "min": 72.5,
+     "max": 85.4
+    },
+    {
+     "etape": "circuit.creer",
+     "med": 60.2,
+     "min": 54.8,
+     "max": 67.9
+    },
+    {
+     "etape": "decor.chaussee",
+     "med": 44.7,
+     "min": 38.4,
+     "max": 45.3
+    },
+    {
+     "etape": "rendu.setLots",
+     "med": 14.3,
+     "min": 11,
+     "max": 21.1
+    },
+    {
+     "etape": "obstacles.creer",
+     "med": 10.1,
+     "min": 8.6,
+     "max": 10.1
+    },
+    {
+     "etape": "retro.setLots",
+     "med": 8.9,
+     "min": 7.5,
+     "max": 10.2
+    },
+    {
+     "etape": "voiture.modele",
+     "med": 6.8,
+     "min": 6.6,
+     "max": 7.2
+    },
+    {
+     "etape": "rendu.setNappes",
+     "med": 4,
+     "min": 3.3,
+     "max": 7.4
+    },
+    {
+     "etape": "retro.setNappes",
+     "med": 4,
+     "min": 4,
+     "max": 4.2
+    }
+   ],
+   "poids": {
+    "circuit": {
+     "points": 2617,
+     "pas": 2
+    },
+    "nappes": {
+     "n": 189,
+     "sommets": 78336,
+     "triangles": 99768,
+     "octets": 5270688
+    },
+    "lots": {
+     "n": 39,
+     "objetsProches": 7502,
+     "objetsLointains": 2116,
+     "formesDistinctes": 5,
+     "trianglesDesFormes": 3204,
+     "octetsInstances": 615552
+    },
+    "vegetation": {
+     "lots": 0,
+     "herbes": 0,
+     "qualite": "medium"
+    },
+    "obstacles": 968,
+    "faune": {
+     "habitats": 1536
+    },
+    "tamponsGpuOctets": {
+     "principal": 20914428,
+     "retro": 20914428
+    },
+    "formesEnregistrees": {
+     "n": 72,
+     "triangles": 129115
+    }
+   },
+   "deltaTasMoMed": 72.3,
+   "tableauxTypesMo": 42.2
+  }
+ ]
+}
