@@ -72,8 +72,8 @@ Checkpoint de progression publié : `5368b4b` ; reçu du jeu qualifié dans `pub
 
 La 0.2.38 et son build sont publiés (`baf4ddf`) ; la page publique a été vérifiée identique le 18 novembre à 14 h 47 (Paris). Le contrôle visuel WebGL reste à réaliser.
 
-**Nouvelle demande du 18 novembre : Russie et Monaco ultra fidèle**, avec refonte des roues, pneus neige/pluie, slicks lisses et usure progressive. Le plan actif est désormais **[12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md](12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md)**.
+**Nouvelles demandes : Russie, Monaco ultra fidèle et Spéciale Marseille issue d’EMPRISE avec relief**, ainsi que roues/pneus/usure. La liste complète des 16 destinations et la passation sont dans **[MASTER-LISTE-CLAUDE-FABLE.md](../../MASTER-LISTE-CLAUDE-FABLE.md)**.
 
-La Russie et Monaco occupent deux places de la cible de 16 : sept circuits actuels, deux prévus dans cette tranche, puis sept places restantes. Baïkal est la proposition de travail pour la Russie ; Monaco suit le tracé réel de référence 2026. Aucun de ces deux circuits n’est encore implémenté. Premier lot de code : 12A, contrat roues/pneus ; circuits ensuite, un à la fois.
+Comptage : **7 livrés + 3 ajouts demandés + 6 propositions = 16**. Baïkal est le thème proposé du circuit russe ; Monaco suit le parcours réel 2026 ; Marseille reprend la carte EMPRISE 0.6.8 et ajoute un terrain altimétrique cohérent. Les trois nouveaux circuits ne sont pas encore implémentés.
 
-Publier les progrès, puis le code et le build qualifiés, sans force et sans nouvelle branche. Conserver tous les IDs et graines existants.
+Premier lot de code : **12A**, contrat roues/pneus. Fiches : `12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md` et `15-SPECIALE-MARSEILLE-RELIEF.md`. Publier par petits lots sur `main`, conserver IDs/graines existants et vérifier séparément build publié et site servi.

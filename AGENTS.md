@@ -231,7 +231,14 @@ Les modules listés dans `FERRO.lock.json` sont désormais des copies exactes de
 
 - Préparer et publier le plan détaillé avant implémentation : `docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md`. Ce volet est la priorité actuelle du plan maître.
 - Ajouter un circuit en Russie et un **Monaco ultra fidèle**, reconstruit à partir du vrai parcours et de références vérifiables. La référence 2026 et le thème russe Baïkal sont les choix de départ documentés du plan ; Baïkal reste une proposition de localisation, pas une demande littérale de David.
-- Les deux circuits entrent dans l’objectif de 16 ; préserver les sept circuits actuels, leurs identifiants et graines. La reconstruction de Monaco est indépendante des tracés ou données de Vroom et des autres jeux.
+- Russie, Monaco et Spéciale Marseille entrent dans l’objectif de 16 ; préserver les sept circuits actuels, leurs identifiants et graines. La reconstruction de Monaco est indépendante des tracés ou données de Vroom et des autres jeux.
 - Refaire les roues rondes et plus réalistes ; slick lisse, intermédiaire conservé, sculptures pluie et neige distinctes ; usure progressive visible, attachée à chaque roue et liée au roulage.
 - Préserver les dimensions de la monoplace et distinguer les lots visuels des changements de physique. Le type neige, l’état de chaussée, les stands et le réseau doivent rester cohérents.
 - Un seul sous-lot actif, premier lot **12A** ; publications fréquentes sur `main`, reprise courte et preuves de validation. Les sources/builds réellement modifiés sont publiés à leur jalon, et les validations WebGL manquantes restent explicites.
+
+## Complément de David — 18 novembre 2026, Marseille et passation
+
+- Ajouter **Spéciale Marseille**, à partir de la carte de **M4D135/emprise**, et **du relief** : terrain altimétrique cohérent avec routes, bâtiments et collisions. Fiche `docs/reprise/15-SPECIALE-MARSEILLE-RELIEF.md`.
+- Source examinée : EMPRISE 0.6.8, commit `cc004826a506e6979eaaec217748fe85d5cd6ac5` ; centre plat, relief périphérique synthétique. Conserver provenance/attributions et adapter au FERRO BITUME.
+- Préparer la master liste complète pour reprise avec **Claude Fable** : `MASTER-LISTE-CLAUDE-FABLE.md`. Elle distingue 7 circuits livrés, 3 ajouts demandés et 6 propositions pour atteindre 16.
+- La reprise courante prépare les documents ; aucun des nouveaux lots de code n’est encore réalisé. Premier lot d’exécution : **12A**.

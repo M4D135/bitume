@@ -2,11 +2,11 @@
 
 ## Priorité actuelle — 18 novembre 2026
 
-Le volet actif est le **[plan maître Russie, Monaco, roues et pneus](docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md)**, demandé par David avant toute implémentation : circuit en Russie, Monaco fidèle au tracé réel 2026, roues rondes et réalistes, slicks lisses, sculptures intermédiaire/pluie/neige et usure progressive par roue.
+Entrée de reprise : **[MASTER-LISTE-CLAUDE-FABLE.md](MASTER-LISTE-CLAUDE-FABLE.md)**. David reprend avec Claude Fable ; la liste rassemble les 16 destinations prévues, les travaux roues/pneus/usure, les dépendances, critères de fin et consignes de publication.
 
-Base : **0.2.38 publiée**, sept circuits. Russie et Monaco occupent deux places de la cible de 16. Le document détaille les lots **12A–12F, 13A–13B et 14A–14F**, leurs dépendances, critères de fidélité, tests, performances et publications. **Premier lot de code : 12A**, contrat des roues et catalogue commun de pneus. La mise en œuvre n’a pas commencé lors de la publication du plan.
+Plans détaillés : **[roues, pneus, Russie et Monaco](docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md)** et **[Spéciale Marseille depuis EMPRISE, avec relief](docs/reprise/15-SPECIALE-MARSEILLE-RELIEF.md)**. Base : **0.2.38 publiée**, sept circuits ; trois ajouts demandés, puis six propositions de conception pour compléter 16. Premier lot de code : **12A**. **Implémentation non commencée** lors de cette passation.
 
-Lire `REPRISE.md` et `docs/reprise/ETAT.json` pour le statut courant. Les sections datées ci-dessous conservent l’historique ; leurs anciens états, budgets et consignes moteur sont remplacés par les décisions récentes d’`AGENTS.md` et du volet actif.
+Lire `REPRISE.md` et `docs/reprise/ETAT.json` pour le statut courant. Les sections datées ci-dessous conservent l’historique ; leurs anciens états, budgets et consignes moteur sont remplacés par les décisions récentes d’`AGENTS.md` et de la master liste.
 
 ## Historique du plan du 12 novembre
 

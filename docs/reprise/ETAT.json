@@ -4,13 +4,13 @@
     "branche": "main",
     "base_commit": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
     "base_version": "0.2.38",
-    "statut": "base_0_2_38_publiee_plan_russie_monaco_pneus_a_executer",
-    "lot": "plan_russie_monaco_roues_pneus",
+    "statut": "base_0_2_38_publiee_passation_claude_fable_prete",
+    "lot": "master_liste_roues_pneus_russie_monaco_marseille",
     "fiche": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
     "commit_publie": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
     "catalogue_jouable_publie": 7,
-    "catalogue_cible": 9,
-    "prochaine_action": "Ouvrir 12A : contrat commun des quatre roues et catalogue slicks/inter/pluie/neige. Implémentation non commencée ; suivre le plan maître détaillé.",
+    "catalogue_cible": 10,
+    "prochaine_action": "Claude Fable : lire MASTER-LISTE-CLAUDE-FABLE.md puis ouvrir 12A. Aucun nouveau lot de code commencé.",
     "checkpoint": "docs/reprise/rapports/cap-sequoia-2026-11-18/checkpoint.json",
     "catalogue_jouable": 7,
     "qualification": {
@@ -27,7 +27,8 @@
       "version_qualifiee": "0.2.38"
     },
     "version_courante": "0.2.38",
-    "recu": "docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json"
+    "recu": "docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json",
+    "entree_passation": "MASTER-LISTE-CLAUDE-FABLE.md"
   },
   "integration": {
     "nouvelle_branche": false,
@@ -78,7 +79,7 @@
       "docs/reprise/archives/REPRISE-2026-11-18.md",
       "docs/reprise/archives/ETAT-2026-11-18.json"
     ],
-    "autres_chantiers": "Historique conservé ; priorité au nouveau plan roues/pneus/Russie/Monaco, un sous-lot actif à la fois."
+    "autres_chantiers": "Priorité master liste Claude Fable : roues/pneus, Russie, Monaco, Marseille EMPRISE avec relief, puis six propositions ; un sous-lot actif."
   },
   "lot_precedent": {
     "version": "0.2.38",
@@ -90,11 +91,13 @@
     "numero": 12,
     "fiche": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
     "sous_lot": "12A",
-    "cible": "Roues et pneus réalistes, usure progressive, Russie et Monaco fidèle ; catalogue global de 16 circuits.",
+    "cible": "Roues/pneus/usure, Russie, Monaco fidèle et Spéciale Marseille EMPRISE avec relief ; 16 circuits au total.",
     "ordre": [
       "12A-12F : roues, pneus, usure, physique, stands et réseau",
-      "13A-13B : circuit russe original, proposition Baïkal",
-      "14A-14F : Monaco réel 2026, fidélité et qualification"
+      "13A-13B : Russie, proposition Baïkal",
+      "14A-14F : Monaco réel 2026",
+      "15A-15F : Spéciale Marseille, carte EMPRISE et relief mesuré",
+      "16A-16F : six propositions de circuits à affiner par petits lots"
     ],
     "regions_a_conserver": [
       "Europe",
@@ -107,22 +110,35 @@
     ],
     "ajouts_demandes": [
       "Russie",
-      "Monaco"
+      "Monaco",
+      "Spéciale Marseille depuis EMPRISE avec relief"
     ],
     "catalogue_publie": 7,
-    "catalogue_apres_tranche": 9,
+    "catalogue_apres_tranche": 10,
     "catalogue_objectif": 16,
-    "statut": "Plan détaillé rédigé ; aucune implémentation de ces nouvelles demandes."
+    "statut": "Master liste complète et passation Claude Fable ; implémentation non commencée.",
+    "catalogue_propositions_restantes": 6
   },
   "plan_courant": {
     "date": "2026-11-18",
     "fichier": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
     "base_reprise_commit": "9f9f97ca7dee3154f8ec517adaba675e0ec81ea4",
-    "statut": "plan_defini_implementation_non_commencee",
+    "statut": "passation_documentee_implementation_non_commencee",
     "premier_sous_lot": "12A",
     "reference_monaco": "Parcours réel 2026 ; sources Formula 1 et FIA, relevé métrique complémentaire à constituer.",
     "russie": "Baïkal proposé, circuit original ; nom/graine/longueur à fixer en 13A.",
     "physique_actuelle": "p9",
-    "publication_plan": "Documentation uniquement ; jeu et build conservés en 0.2.38."
+    "publication_plan": "Documentation uniquement ; jeu et build conservés en 0.2.38.",
+    "entree": "MASTER-LISTE-CLAUDE-FABLE.md",
+    "executant_souhaite": "Claude Fable",
+    "marseille_fiche": "docs/reprise/15-SPECIALE-MARSEILLE-RELIEF.md",
+    "marseille_source": {
+      "depot": "M4D135/emprise",
+      "branche": "main",
+      "commit": "cc004826a506e6979eaaec217748fe85d5cd6ac5",
+      "version": "0.6.8",
+      "terrain": "Centre plat ; relief périphérique synthétique ; MNT mesuré à préparer."
+    },
+    "catalogue_complet": "MASTER-LISTE-CLAUDE-FABLE.md#2-catalogue-complet--objectif-16-circuits"
   }
 }

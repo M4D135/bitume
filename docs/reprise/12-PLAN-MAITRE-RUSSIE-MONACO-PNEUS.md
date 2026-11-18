@@ -1,7 +1,9 @@
-# BITUME — plan maître Russie, Monaco, roues et pneus
+# BITUME — plan maître Russie, Monaco, Marseille, roues et pneus
 
 Date : **18 novembre 2026**. Statut : **plan d’exécution ; fonctionnalités à réaliser**.
 Demande de David : ajouter un circuit en Russie et un Monaco « ultra fidèle », refaire les roues bien rondes et plus réalistes, différencier les sculptures pluie/neige et les slicks lisses, montrer les traces d’usure au fil de la course, puis publier ce plan avant de commencer.
+
+Complément demandé dans la même reprise : **Spéciale Marseille à partir de la carte EMPRISE, avec ajout de relief**, et master liste complète pour Claude Fable. Entrée de passation : [MASTER-LISTE-CLAUDE-FABLE.md](../../MASTER-LISTE-CLAUDE-FABLE.md).
 
 Base vérifiée : **BITUME 0.2.38**, livraison `baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902`, reprise `9f9f97ca7dee3154f8ec517adaba675e0ec81ea4`, **FERRO 0.3.9**, sept circuits. Ce plan fait autorité pour ce nouveau chantier ; les décisions plus anciennes restent applicables lorsqu’elles ne sont pas remplacées ici.
 
@@ -11,6 +13,7 @@ Base vérifiée : **BITUME 0.2.38**, livraison `baf4ddfc2b4ab670bc4809d5e0ae3fb8
 |---|---|
 | Circuit en Russie | Un huitième circuit complet, reconnaissable, roulant dans toutes les conditions prévues, avec sa propre identité. |
 | Monaco ultra fidèle | Le véritable parcours de Monaco : géométrie, proportions, relief, murs, tunnel, stands et repères urbains reconnaissables depuis la piste. |
+| Spéciale Marseille avec relief | Carte EMPRISE réutilisée pour un parcours de course, terrain altimétrique et raccord cohérent des routes, bâtiments et collisions. |
 | Roues bien rondes | Silhouettes circulaires, flancs et épaules crédibles, jantes réellement creuses et détaillées, rotation et braquage cohérents. |
 | Pneus différenciés | Slick lisse ; intermédiaire conservé ; pluie avec canaux d’évacuation ; neige avec pavés, rainures et lamelles. |
 | Usure progressive | Chaque pneu commence neuf et acquiert ses propres traces selon la conduite ; le relief et la matière évoluent progressivement. |
@@ -20,8 +23,8 @@ Base vérifiée : **BITUME 0.2.38**, livraison `baf4ddfc2b4ab670bc4809d5e0ae3fb8
 
 - **Russie : « Baïkal »**, nom et identité de travail, avec un tracé original au bord d’un grand lac sibérien, forêts et relief rocheux. Le pays est demandé ; le Baïkal est une proposition de ce plan, pas une localisation imposée par David. Aucune prétention à reproduire un circuit réel autour du lac. Le cadre géographique est documenté par l’UNESCO [S5].
 - **Monaco : tracé de référence 2026**, figé dans un dossier de sources. Conserver la monoplace de style 1980 du jeu ; la demande de fidélité concerne le circuit et son environnement, sans transformer la voiture en modèle contemporain.
-- Les deux circuits occupent **deux des neuf places restantes** de la cible de 16. Après leur livraison : neuf circuits, puis sept places encore à concevoir. Ne pas retirer les régions déjà demandées.
-- Réaliser d’abord les roues et pneus, puis la Russie, puis Monaco. Le dossier de référence Monaco peut être préparé indépendamment pendant les premiers lots ; son intégration commence sur une base stabilisée.
+- Russie, Monaco et Spéciale Marseille occupent **trois des neuf places restantes** de la cible de 16. Après leur livraison : dix circuits. La master liste propose six identités supplémentaires pour les places 11 à 16 et les distingue des demandes explicites.
+- Réaliser d’abord les roues et pneus, puis la Russie, Monaco et Marseille. Les dossiers de références Monaco et EMPRISE peuvent être préparés indépendamment ; Marseille réemploie les fonctions de tracé explicite, largeurs et voies qualifiées pour Monaco.
 - La livraison de ce document ne modifie ni le jeu ni son numéro de version. Les numéros suivants seront attribués par `construire.py` lors des changements effectifs de sources.
 
 ## 2. État réel du code et points à traiter
@@ -64,7 +67,13 @@ Les cases ci-dessous décrivent des réalisations futures. **Aucune fonctionnali
 | 14C | Monaco : murs, collisions, grille et IA. | Épingle et chicanes franchies avec les vrais volumes ; peloton viable sans secours masquant les blocages. |
 | 14D | Monaco : tunnel et voie des stands. | Surfaces et passages raccordés, éclairage/exposition continus, aucun trajet à travers un mur. |
 | 14E | Monaco : architecture, port et repères. | Captures comparables aux références ; environnement reconnaissable depuis les positions du pilote. |
-| 14F | Qualification complète et livraison. | Rendu, conduite, réseau, performances et régressions documentés ; code/build puis reçu publiés. |
+| 14F | Qualification Monaco et livraison. | Rendu, conduite, réseau, performances et régressions documentés ; code/build puis reçu publiés. |
+| 15A | Marseille : source EMPRISE et corridor de course. | Commit figé, données et dépendances identifiées, parcours continu sélectionné. |
+| 15B | Marseille : terrain mesuré. | MNT sourcé, repère/datum contrôlés, profils et raccords vérifiés. |
+| 15C | Marseille : ville sur le relief. | Routes, quais, bâtiments et collisions ancrés sur les surfaces cohérentes. |
+| 15D | Marseille : course, stands et IA. | Peloton, pentes, voies, grille, service et replacements qualifiés. |
+| 15E | Marseille : rendu et performances. | Captures/tour filmé, détails et ressources mesurés sur le corridor. |
+| 15F | Marseille : livraison. | Sources/tests/build publiés, contrôle production séparé, reçu et reprise. |
 
 **Premier lot de code à ouvrir après le plan : 12A.** Créer sa fiche courte à ce moment, avec les seuls fichiers utiles. Ne pas lancer toutes les branches du programme dans la même discussion.
 
@@ -286,11 +295,19 @@ Ces chiffres sont **des cibles de validation**, pas des mesures prétendument d�
 
 Une longueur correcte seule ne suffit pas : le placement et l’enchaînement des lieux doivent également correspondre. Si les références nécessaires manquent, le lot reste « fidélité partielle, mesures à compléter » au lieu d’être déclaré ultra fidèle.
 
+## 9 bis. Spéciale Marseille : extension explicite de la demande
+
+Source vérifiée : **M4D135/emprise 0.6.8**, commit `cc004826a506e6979eaaec217748fe85d5cd6ac5`. Son centre du Vieux-Port est plat ; les reliefs de la Bonne-Mère, des îles et des Calanques sont synthétiques. Les compléments IGN de hauteur des bâtiments ne sont pas un MNT continu.
+
+La demande est donc un **portage de la carte avec relief jouable ajouté** : sélectionner un parcours réel dans les rues, préparer un terrain altimétrique sourcé, puis raccorder chaussées, quais, fondations, objets, collisions et replacements. Extraire le corridor et l’horizon utiles, préserver les repères et attributions, et adapter les générateurs au FERRO de BITUME sans remplacer son verrou par celui d’EMPRISE.
+
+La fiche **[15-SPECIALE-MARSEILLE-RELIEF.md](15-SPECIALE-MARSEILLE-RELIEF.md)** contient les chemins exacts, l’état des données, les six sous-lots 15A–15F et les contrôles. La master liste inclut Marseille comme dixième destination prévue et six propositions pour atteindre seize.
+
 ## 10. Intégration dans le jeu et performances
 
 ### 10.1 Catalogue et compatibilité
 
-Conserver les sept IDs/graines existants : `val-brule`, `port-sable`, `haut-col`, `lande-noire`, `roche-fauve`, `brume-de-jade`, `cap-sequoia`. Ajouter `baikal` puis `monaco` après qualification, sans réordonner les indices déjà utilisés. Mettre à jour menus, carte, démo, records, choix avant course et préparation réseau.
+Conserver les sept IDs/graines existants : `val-brule`, `port-sable`, `haut-col`, `lande-noire`, `roche-fauve`, `brume-de-jade`, `cap-sequoia`. Ajouter `baikal`, `monaco`, puis `speciale-marseille` après qualification, sans réordonner les indices déjà utilisés. Mettre à jour menus, carte, démo, records, choix avant course et préparation réseau.
 
 Les quatre pneus doivent fonctionner sur les anciens circuits comme sur les nouveaux. Conserver les conditions de l’hôte, les FPS de démo, le libellé Faune, les menus manette et le lien de téléchargement **m4d135 → BITUME.html**.
 
@@ -314,13 +331,14 @@ Ne pas accepter un surcoût non expliqué en disant que la roue « devrait être
 | Physique | Scénarios comparables sec/humide/très mouillé/neige ; avantages relatifs cohérents ; joueur et IA ; absence de valeurs invalides. |
 | Russie | Tracé, plusieurs tours des onze rivaux, saisons, obstacles stables et identité visuelle. |
 | Monaco | Géométrie comparée aux sources, épingle, largeur locale, portails, chicanes, murs proches, grille et voie des stands. |
+| Marseille | Carte source, corridor réel, MNT, pentes, raccords, fondations, couches de voie, collisions et placements. |
 | Réseau | Type/usure, remplacement, reconnexion, arrivée tardive, incompatibilité de circuit, 2+2, autorité des conditions. |
 | Régression | Empreintes des sept anciens circuits et de leurs 28 variantes saisonnières ; comparer aux scénarios de conduite avant chaque changement physique. |
 | Livraison | Verrou FERRO, tests concernés puis suite globale au bon jalon, double build déterministe, sources/build distants et reçu. |
 
 Adapter les suites existantes (`voiture`, `conduite`, `circuit`, `stands`, pré-départ réseau) et créer un test seulement pour un risque comportemental réellement nouveau. Une simple mise à jour de documentation ne justifie pas de relancer les 66 suites.
 
-**Matrice visuelle minimale :** quatre pneus × neuf/milieu/usé, cockpit/poursuite/démo/rétros, High/Medium/Low, paysage et portrait ; vues déterministes des principaux lieux de Russie et Monaco, jour/nuit et conditions représentatives. Faire des captures comparables, puis un tour réel : un aperçu CPU ne constitue pas une validation WebGL.
+**Matrice visuelle minimale :** quatre pneus × neuf/milieu/usé, cockpit/poursuite/démo/rétros, High/Medium/Low, paysage et portrait ; vues déterministes des principaux lieux de Russie, Monaco et Marseille, jour/nuit et conditions représentatives. Faire des captures comparables, puis un tour réel : un aperçu CPU ne constitue pas une validation WebGL.
 
 À la date du plan, Chromium ne démarre pas dans l’environnement de reprise (`socket(): Operation not permitted`). Conserver cette limite dans les reçus jusqu’à une validation sur machine réelle ; le travail peut être sauvegardé, mais les lots visuels ne sont pas clôturés sur la seule réussite des tests.
 
@@ -343,6 +361,7 @@ Les modifications de FERRO restent dans son dépôt canonique, puis sont propag�
 | Identité russe précise | Baïkal retenu comme proposition de travail ; fixer nom final, graine et longueur en 13A. |
 | Relevé métrique Monaco | Compléter coordonnées, largeurs et altitudes en 14A ; le plan FIA seul ne les fournit pas. |
 | Neige à Monaco | Documenter la règle de saison/surface et son articulation avec les modes Manuel/Aléatoire/Réel en 14A. |
+| Marseille : parcours et relief | Choisir le corridor EMPRISE et le MNT adapté en 15A–15B ; ne pas confondre hauteurs de bâti et terrain. |
 | Paramètres de caoutchouc FERRO | Audit en 12C ; évolution opt-in canonique uniquement si les capacités existantes sont insuffisantes. |
 | Intensité d’usure / courses longues | Calibrer en 12D–12F et intégrer la stratégie de stands IA avant de rendre ces arrêts nécessaires aux rivaux. |
 | Braquage dans l’épingle | Mesurer l’enveloppe en 14C ; adapter explicitement si nécessaire et versionner la physique. |
@@ -357,6 +376,8 @@ Sources externes consultées le **18 novembre 2026**. Les objectifs de performan
 - **[S3] Pirelli — familles de pneus de Formule 1**, référence générale slick/intermédiaire/pluie. <https://www.pirelli.com/tyres/en-gb/motorsport/car/formula-1>
 - **[S4] Pirelli — Sottozero Snow S**, référence de principes visuels pour les pavés et rainures d’un pneu neige de compétition. <https://www.pirelli.com/tires/en-us/motorsport/car/rally/catalog/sottozero-snow-s>
 - **[S5] UNESCO — Lake Baikal**, cadre géographique de l’identité russe proposée. <https://whc.unesco.org/en/list/754/>
+
+- **[S6] EMPRISE — WORLD.md**, source de la carte Marseille et limites du relief actuel : <https://github.com/M4D135/emprise/blob/cc004826a506e6979eaaec217748fe85d5cd6ac5/docs/WORLD.md>.
 
 Sources internes : `src/voiture.js`, `src/carene.js`, `src/conduite.js`, `src/degats.js`, `src/circuit.js`, `src/decor.js`, `src/course.js`, `src/jeu.js`, `src/reseau.js`, `FERRO.lock.json`, tests de `verifications/` et reçu `docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json`, à la base 0.2.38 précisée en tête.
 
@@ -378,3 +399,9 @@ Sources internes : `src/voiture.js`, `src/carene.js`, `src/conduite.js`, `src/de
 - [ ] 14D — Monaco, tunnel et stands.
 - [ ] 14E — Monaco, architecture et port.
 - [ ] 14F — qualification complète, publication et reçu.
+- [ ] 15A — Marseille, source EMPRISE et corridor.
+- [ ] 15B — Marseille, terrain altimétrique mesuré.
+- [ ] 15C — Marseille, routes, ville et collisions sur le relief.
+- [ ] 15D — Marseille, course, stands et IA.
+- [ ] 15E — Marseille, visuel et performances.
+- [ ] 15F — Marseille, publication et reçu.
