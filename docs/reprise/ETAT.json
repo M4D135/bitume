@@ -6,11 +6,12 @@
     "base_version": "0.2.29",
     "version": "0.2.31",
     "ferro_version": "0.3.7",
-    "statut": "lot_08_qualifie_publication_jeu_en_cours",
+    "statut": "publie_validation_visuelle_et_deploiement_en_attente",
     "lot": "herbe_sillage_brume",
     "fiche": "docs/reprise/08-HERBE-SILLAGE-BRUME.md",
-    "commit_publie": null,
-    "prochaine_action": "Publier BITUME 0.2.31, puis depuis le Mac verifier rendu/options, deployer et controler empreinte."
+    "commit_publie": "f6093f45c9f55f17c8f7b7035405ebfe1c9142bf",
+    "prochaine_action": "Depuis le Mac : verifier rendu/options/sillage et performances, deployer avec ./deposer.sh puis controler empreinte.",
+    "recu_publication": "docs/reprise/rapports/herbe-sillage-2026-11-18/publication.json"
   },
   "qualification": {
     "jeu": "47/47 suites du candidat graphique ; 4 tests de signature reexecutes sur integration finale Enregistrer",
@@ -35,7 +36,8 @@
       "date": "2026-11-18",
       "reverifiee_dans_cette_reprise": true,
       "sha256": "2f8c359838c4c92237fbafcfdec17427777bb1dbcc49e880712e1c05ccab6da1",
-      "signature": "m4d135 telecharge BITUME.html"
+      "signature": "m4d135 telecharge BITUME.html",
+      "controle_utc": "2026-11-18T08:39:55.041574+00:00"
     },
     "deploiement_blocage": "Acces Mac/amiga indisponible dans cet environnement ; autorisation deja acquise.",
     "deploiement_031_effectue": false

@@ -1,9 +1,9 @@
 # Lot 08 — herbe dense, souffle des voitures et horizon lisible
 
-## Livraison qualifiée — 18 novembre 2026
+## Livraison publiée — 18 novembre 2026
 
 Base BITUME : `e150378d6e547a8dc1510334643c061b7cba72dc`, 0.2.29. Nouvelle version : **0.2.31**.
-FERRO **0.3.7 publié** : `0250a5750d10789976186a1491ffdf011fb19611`. Le reçu BITUME sera consigné dans `ETAT.json` après publication.
+FERRO **0.3.7 publié** : `0250a5750d10789976186a1491ffdf011fb19611`. BITUME publié sur `main` : `f6093f45c9f55f17c8f7b7035405ebfe1c9142bf`. Reçu : `rapports/herbe-sillage-2026-11-18/publication.json`.
 
 ## Résultat
 
@@ -52,4 +52,4 @@ Chromium reste bloqué avant DevTools dans cet environnement. EGL vérifie l’e
 
 Dossier : `docs/reprise/rapports/herbe-sillage-2026-11-18/` : `tests.json`, `tests.zip`, `qualification.json`, densités et comparaison avant/après. Le script de soumission et sa fixture sont inclus pour reproduire les compteurs ; ils ne calculent aucune image.
 
-Sources et build à publier sur `main`, puis validation visuelle et `./deposer.sh` depuis le Mac. Le déploiement est autorisé ; accès Mac/amiga indisponible ici. Le site a été relu : il sert la version **0.2.30 du lien Enregistrer**, SHA256 `2f8c359838c4c92237fbafcfdec17427777bb1dbcc49e880712e1c05ccab6da1`. Le nouveau lot graphique prend donc **0.2.31**.
+Sources et build publiés sur `main` ; validation visuelle et `./deposer.sh` restent à effectuer depuis le Mac. Le déploiement est autorisé ; accès Mac/amiga indisponible ici. Le site a été relu : il sert la version **0.2.30 du lien Enregistrer**, SHA256 `2f8c359838c4c92237fbafcfdec17427777bb1dbcc49e880712e1c05ccab6da1`. Le nouveau lot graphique prend donc **0.2.31**.

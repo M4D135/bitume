@@ -4,16 +4,16 @@
 
 - Branche : `main`. Base du lot : `e150378d6e547a8dc1510334643c061b7cba72dc` (0.2.29).
 - **Lot 08 qualifié** : brume réduite, herbe au moins ×10, souffle des voitures, optimisation du rendu. m4d135 enregistre BITUME.html.
-- BITUME **0.2.31 qualifié**, publication en cours. Moteur **FERRO 0.3.7 publié**.
+- BITUME **0.2.31 publié** : `f6093f45c9f55f17c8f7b7035405ebfe1c9142bf`. Moteur **FERRO 0.3.7 publié**.
 - Référence moteur : `0250a5750d10789976186a1491ffdf011fb19611`. Reçus exacts dans `docs/reprise/ETAT.json`.
 - Fiche unique à lire : `docs/reprise/08-HERBE-SILLAGE-BRUME.md`.
-- Contrôles : jeu 47/47, moteur 147 réussis + 1 TODO historique, WGSL 18/18, verrou 34/34, build identique ; lien Enregistrer revalidé.
+- Contrôles : 47 suites graphiques, puis 4 tests du lien final ; moteur 147 réussis + 1 TODO historique, WGSL 18/18, verrou 34/34, build identique.
 - Limite : Chromium échoue avant DevTools ; aucune nouvelle image ni mesure FPS GPU réelle.
-- Déploiement autorisé depuis le Mac ; accès Mac/amiga indisponible ici.
+- Site contrôlé : encore **0.2.30**. Déploiement autorisé depuis le Mac ; accès Mac/amiga indisponible ici.
 
 ## Prochain petit lot
 
-Publier BITUME avec sources et build. Depuis le Mac, contrôler le rendu puis `./deposer.sh` et l'empreinte servie.
+Depuis le Mac, contrôler le rendu, les options, le sillage et les FPS ; lancer `./deposer.sh` puis vérifier l'empreinte servie.
 
 ## Méthode pour garder le contexte court
 

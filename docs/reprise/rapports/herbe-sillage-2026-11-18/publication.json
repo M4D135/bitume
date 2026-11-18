@@ -1,0 +1,51 @@
+{
+  "date_utc": "2026-11-18T08:42:23.012396+00:00",
+  "bitume": {
+    "version": "0.2.31",
+    "branche": "main",
+    "commit": "f6093f45c9f55f17c8f7b7035405ebfe1c9142bf",
+    "tree": "ef5ae8cc49aafdc0e70b07b03bc4aecd8694fa3b",
+    "parent": "7ea82388386dc9a2e893cfdfbcf686d6c3787012",
+    "tete_distante_verifiee": true,
+    "force_push": false
+  },
+  "ferro": {
+    "version": "0.3.7",
+    "commit": "0250a5750d10789976186a1491ffdf011fb19611",
+    "modules_conformes": 34
+  },
+  "build": {
+    "fichier": "dist/bitume.html",
+    "octets": 13025697,
+    "gzip_octets": 3010188,
+    "sha256": "7b20b827f870428ce0bd310dc6f1270d68b6282ef56e7b1b27bd5df8ff160599",
+    "git_blob": "466163116876de856b5dd8ef2db5ac630e219215",
+    "reproductible": true
+  },
+  "signature": {
+    "libelle": "m4d135",
+    "href": "https://bitume.estrasse.fr/",
+    "download": "BITUME.html",
+    "title": "Télécharger BITUME",
+    "tests_finaux": 4
+  },
+  "qualification": {
+    "suites_candidat_graphique": 47,
+    "signature_finale": 4,
+    "moteur_reussis": 147,
+    "moteur_todo_historique": 1,
+    "wgsl": 18,
+    "fps_materiels_mesures": false,
+    "image_finale_validee": false
+  },
+  "production_observee": {
+    "date_utc": "2026-11-18T08:39:55.041574+00:00",
+    "version": [
+      "0.2.30"
+    ],
+    "sha256": "2f8c359838c4c92237fbafcfdec17427777bb1dbcc49e880712e1c05ccab6da1",
+    "signature": "<a class=\"signature\" href=\"https://bitume.estrasse.fr/\" download=\"BITUME.html\" title=\"Télécharger BITUME\">"
+  },
+  "deploiement_031_effectue": false,
+  "prochaine_action": "Depuis le Mac : valider le rendu et les performances, puis ./deposer.sh et contrôler la même empreinte servie. Accès Mac/amiga indisponible ici."
+}
