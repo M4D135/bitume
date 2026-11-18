@@ -2,27 +2,24 @@
 
 ## État — 18 novembre 2026
 
-- Branche unique : `main`, aucun push forcé.
-- **0.2.35 réellement publiée** : `14fc9dcaa0e6ecfce1ddb98420adcfc2072fa2e3` ; tête GitHub vérifiée.
-- **0.2.36 publiée et vérifiée** : `a7cdd5e3116dc294afbbca581ad87cb3973dd5fe` ; arrière repris sur photos de 312 T5.
-- Cube gris remplacé par un carter nervuré ; quatre échappements creux, platines ajourées, suspension tubulaire,
-  freins intérieurs, mât métallique et joues d'aileron arrondies. Jeu toujours entièrement procédural.
-- **64/64 suites**, deux builds identiques, **34 modules FERRO 0.3.9 conformes** ; 12 contrôles géométriques par rayons.
-- Voiture détaillée : 138 instances / 20 561 triangles, contre 135 / 18 545 ; modèle lointain toujours 11 instances.
-- Aperçus CPU avant/après dans le rapport du lot 12. **Pas de capture WebGL** : Chromium bloqué au démarrage.
-- Catalogue conservé : **5 circuits**, dont Lande-Noire et Roche-Fauve. Cible ultérieure : 16 circuits mondiaux.
-- Production observée en **0.2.34** ; déploiement autorisé mais accès Mac/amiga absent dans cette session.
-- Préserver les conditions de l'hôte, réglages avant course, menus manette et lien **m4d135 → BITUME.html**.
+- Branche unique `main`, aucun push forcé.
+- Dernier jeu qualifié publié : **0.2.36**, commit `a7cdd5e3116dc294afbbca581ad87cb3973dd5fe`.
+- Arrière corrigé : carter nervuré, quatre échappements ouverts, platines ajourées ; 64 suites et FERRO 0.3.9 vérifiés.
+- **Lot 11C en cours : Brume-de-Jade**, sixième circuit en Asie, cible 0.2.37.
+- Le patch réel des sources/tests en cours est sauvegardé : `docs/reprise/rapports/brume-de-jade-2026-11-18/travail-en-cours.patch`.
+- Ce checkpoint n'est pas qualifié ; le jeu compilé publié reste 0.2.36. État détaillé dans `checkpoint.json` du même dossier.
+- Production observée en 0.2.34 ; accès Mac/amiga absent, déploiement autorisé mais non effectué ici.
+- WebGL non validé : Chromium bloqué et navigateur cloud refusant le fichier local. Les aperçus CPU sont identifiés comme tels.
 
-## Prochaine tranche
+## Reprendre
 
-Lire `docs/reprise/ETAT.json` puis **seulement** `docs/reprise/12-ARRIERE-MONOPLACE.md`.
-Reçu : `docs/reprise/rapports/arriere-monoplace-2026-11-18/publication.json`.
-Contrôler l'arrière dans le vrai jeu et déployer via `./deposer.sh` depuis le Mac/amiga.
-Ensuite seulement : fiche 11, un seul nouveau circuit en Asie, avec publication vérifiée.
+Lire `docs/reprise/ETAT.json`, puis seulement `docs/reprise/11C-BRUME-DE-JADE.md`.
+Finir le circuit, vérifier tests/IA/saisons et identité des 20 décors historiques ; reconstruire et publier.
+Conserver la correction de monoplace, les conditions de l'hôte, menus manette et lien **m4d135 → BITUME.html**.
 
 ## Méthode
 
-Sources et extraits utiles uniquement ; sorties complètes sur disque, pas de lecture intégrale du HTML généré.
-Toute modification moteur passe par FERRO canonique. Actualiser cette reprise après publication.
-Une publication GitHub ne prouve jamais la mise en ligne.
+**Publier souvent la progression sur GitHub**, avec patch de travail si le lot n'est pas encore qualifié.
+Après qualification, publier les sources et le build, puis le reçu et l'état court. Aucun push forcé.
+Un seul lot ; extraits utiles uniquement ; sorties complètes sur disque. Ne pas relire tout le HTML ou l'historique.
+Une publication GitHub ne prouve jamais la mise en ligne. Toute modification moteur passe par FERRO canonique.

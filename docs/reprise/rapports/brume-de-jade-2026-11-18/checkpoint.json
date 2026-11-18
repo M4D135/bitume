@@ -1,0 +1,20 @@
+{
+  "date_utc": "2026-11-18T12:39:04.150135+00:00",
+  "base_commit": "8d2c78460e1f5e15e29b8aa846a7a4cf98ce0f64",
+  "version_en_ligne_observee": "0.2.34",
+  "derniere_version_github_qualifiee": "0.2.36",
+  "cible": "0.2.37",
+  "lot": "11C Brume-de-Jade",
+  "statut": "travail_en_cours_non_qualifie",
+  "patch": "travail-en-cours.patch",
+  "fichiers": [
+    "src/circuit.js",
+    "src/decor.js",
+    "src/jeu.js",
+    "src/saisons.js",
+    "verifications/prets-enligne.test.mjs",
+    "verifications/asie.test.mjs"
+  ],
+  "prochaine_action": "Finir les appuis du décor, exécuter tests circuit/IA/saisons et comparer20 décors historiques, reconstruire puis publier les sources qualifiées.",
+  "limites": "Contrôle WebGL et déploiement Mac/amiga non réalisés."
+}

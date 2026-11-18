@@ -2,24 +2,21 @@
   "date": "2026-11-18",
   "etat_courant": {
     "branche": "main",
-    "base_commit": "14fc9dcaa0e6ecfce1ddb98420adcfc2072fa2e3",
-    "base_version": "0.2.35",
-    "version_cible": "0.2.36",
-    "statut": "lot_12_publie_github_deploiement_restant",
-    "lot": "arriere_monoplace_312t5",
-    "fiche": "docs/reprise/12-ARRIERE-MONOPLACE.md",
-    "commit_publie": "a7cdd5e3116dc294afbbca581ad87cb3973dd5fe",
-    "catalogue_jouable": 5,
-    "prochaine_action": "Contrôler l’arrière en WebGL puis déployer 0.2.36 via ./deposer.sh depuis le Mac/amiga. Ensuite un seul circuit en Asie.",
+    "base_commit": "8d2c78460e1f5e15e29b8aa846a7a4cf98ce0f64",
+    "base_version": "0.2.36",
+    "version_cible": "0.2.37",
+    "statut": "lot_11c_en_cours_checkpoint_patch",
+    "lot": "brume_de_jade_asie",
+    "fiche": "docs/reprise/11C-BRUME-DE-JADE.md",
+    "commit_publie": null,
+    "catalogue_jouable_publie": 5,
+    "catalogue_cible": 6,
+    "prochaine_action": "Finir les appuis du décor, exécuter tests circuit/IA/saisons et comparer20 décors historiques, reconstruire puis publier les sources qualifiées.",
+    "checkpoint": "docs/reprise/rapports/brume-de-jade-2026-11-18/checkpoint.json",
     "qualification": {
-      "suites": 64,
-      "reussies": 64,
-      "ferro_modules": 34,
-      "build_reproductible": true,
-      "apercus_geometrie_cpu": true,
-      "visuel_webgl_realise": false,
-      "controles_par_rayon": 12,
-      "preuve": "docs/reprise/rapports/arriere-monoplace-2026-11-18/qualification.json"
+      "realisee": false,
+      "baseline_historique": "8d2c78460e1f5e15e29b8aa846a7a4cf98ce0f64",
+      "variantes_a_comparer": 20
     }
   },
   "integration": {
@@ -55,7 +52,7 @@
     "deploiement_blocage": "Accès Mac/amiga absent : aucune configuration SSH utilisateur ni agent SSH. Autorisation déjà acquise."
   },
   "reprise_courte": {
-    "regle": "Lire REPRISE.md et cet etat ; un seul lot ; sorties et recherches bornees ; historique seulement si necessaire.",
+    "regle": "Un seul lot, sorties bornées, publications fréquentes de checkpoints réels puis code/build qualifiés ; pas de push forcé.",
     "archives": [
       "docs/reprise/archives/REPRISE-2026-11-18.md",
       "docs/reprise/archives/ETAT-2026-11-18.json"
@@ -63,10 +60,10 @@
     "autres_chantiers": "Lots 0 a 4 termines ; optimisation lot 5 partielle. Details archives, ne pas rouvrir pendant la publication de ce lot."
   },
   "lot_precedent": {
-    "version": "0.2.35",
-    "commit": "14fc9dcaa0e6ecfce1ddb98420adcfc2072fa2e3",
-    "lot": "roche_fauve_afrique",
-    "publication_verifiee": true
+    "version": "0.2.36",
+    "commit": "a7cdd5e3116dc294afbbca581ad87cb3973dd5fe",
+    "lot": "arriere_monoplace_312t5",
+    "recu": "docs/reprise/rapports/arriere-monoplace-2026-11-18/publication.json"
   },
   "lot_suivant": {
     "numero": 11,
@@ -84,6 +81,6 @@
       "Vroom officiel",
       "dépôt GitHub personnel Vroom Unreal"
     ],
-    "statut": "11B publié en 0.2.35 ; lot 12 arrière publié en 0.2.36. Après contrôle visuel et déploiement, un seul circuit en Asie, cible totale de 16."
+    "statut": "11C Brume-de-Jade en cours ; objectif6 circuits après qualification,16 au total. Déploiement Mac/amiga et contrôle WebGL restent en attente."
   }
 }

@@ -1,0 +1,384 @@
+diff --git a/src/circuit.js b/src/circuit.js
+index 72ecc42..0e93330 100644
+--- a/src/circuit.js
++++ b/src/circuit.js
+@@ -6,7 +6,7 @@
+   'use strict';
+ 
+   const PAS = 2, LARGEUR = 12, LIMITE = 20;
+-  const AMPLITUDE = { foret: 14, cote: 6, montagne: 32, islande: 21, desert: 26 };
++  const AMPLITUDE = { foret: 14, cote: 6, montagne: 32, islande: 21, desert: 26, asie: 23 };
+ 
+   function alea(graine) {
+     let a = graine >>> 0;
+diff --git a/src/decor.js b/src/decor.js
+index adce9d1..0bde2bc 100644
+--- a/src/decor.js
++++ b/src/decor.js
+@@ -74,6 +74,11 @@
+       atmosphere: { skyTop: [.12, .33, .60], skyBottom: [.88, .76, .56], fog: [.74, .58, .39], sunDirection: [.61, .59, -.34], sunColor: [1.43, 1.16, .82], ambient: [.40, .34, .29], fogDensity: .00055, wind: .8, biome: 'desert' },
+       herbe: [.63, .39, .18], herbeClaire: [.78, .56, .29], terre: [.56, .29, .13], roche: [.43, .19, .09], sable: [.80, .61, .36],
+       relief: 34, echelle: 390, essence: null, densite: 0, marge: 1050, aride: true
++    },
++    asie: {
++      atmosphere: { skyTop: [.10, .31, .43], skyBottom: [.69, .81, .77], fog: [.51, .66, .63], sunDirection: [-.58, .52, -.38], sunColor: [1.20, 1.24, 1.06], ambient: [.30, .39, .36], fogDensity: .00056, wind: .45, biome: 'asie' },
++      herbe: [.13, .35, .24], herbeClaire: [.30, .48, .30], terre: [.24, .31, .22], roche: [.52, .57, .53],
++      relief: 24, echelle: 370, essence: 'feuillu', densite: .28, marge: 1120, karstique: true
+     }
+   };
+   const PUBLICITES = [[.86, .12, .08], [.98, .78, .10], [.10, .28, .70], [.06, .52, .30], [.95, .95, .92], [.08, .08, .09], [.92, .40, .06], [.40, .14, .55]];
+@@ -165,6 +170,7 @@
+   function couleurPrairie(th, couleur, habitat) {
+     if (th.aride) return couleur;   // sable et grès : aucune prairie ni fleur lointaine
+     if (th.volcanique) return melange(couleur, th.herbeClaire, lisse(.22, .85, habitat.herbe) * .82);
++    if (th.karstique) return melange(couleur, th.herbeClaire, lisse(.30, .90, habitat.herbe) * .18);
+     const pousse = lisse(.02, .85, habitat.herbe), fleurs = habitat.fleurs * .14;
+     const fleur = FLEURS_LOINTAINES[th.essence] || FLEURS_LOINTAINES.feuillu, resultat = new Array(3);
+     // Les nappes portent l'illusion à distance : ces mêmes poches restent lisibles quand les brins
+@@ -247,6 +253,14 @@
+     const nx = Math.ceil((x1 - x0) / pasT) + 1, nz = Math.ceil((z1 - z0) / pasT) + 1;
+     const H = new Float32Array(nx * nz), D = new Float32Array(nx * nz);
+     const centreX = (x0 + x1) / 2, centreZ = (z0 + z1) / 2;
++    // Brume-de-Jade : sept sommets inégaux, répartis en deux massifs et un éperon isolé.
++    // Ce sont des hauteurs de la grille existante, jamais des objets ajoutés ni un travail par image.
++    const pics = th.karstique ? [
++      [x0 + 390, z1 - 420, 155, 220, 285], [x0 + 670, z1 - 620, 130, 180, 190],
++      [x0 + 920, z1 - 350, 190, 150, 240], [x1 - 370, z0 + 460, 175, 225, 255],
++      [x1 - 610, z0 + 710, 125, 160, 175], [x1 - 900, z0 + 400, 155, 130, 215],
++      [x1 - 450, z1 - 650, 185, 140, 160]
++    ] : null;
+     const merAngle = hache(g, 7, 3) * Math.PI * 2, mer = [Math.cos(merAngle), Math.sin(merAngle)];
+     let merDebut = -Infinity;
+     if (th.eau !== undefined) {
+@@ -255,10 +269,21 @@
+       merDebut += 90;
+     }
+     const hauteur = (x, z) => {
+-      const q = interroger(x, z, 230), d = q.i < 0 ? 1e4 : q.d, yT = q.i < 0 ? 0 : q.y;
++      const q = interroger(x, z, th.karstique ? 380 : 230), d = q.i < 0 ? 1e4 : q.d, yT = q.i < 0 ? 0 : q.y;
+       let h = yT - .9 * (1 - lisse(26, 34, d));
+       const nat = (fbm(x / th.echelle, z / th.echelle, g, 5) - .45) * th.relief * 2;
+-      h += nat * lisse(30, 260, d);
++      // Des paliers doux de 7 m forment les terrasses ; le raccord est nul près de toute chaussée.
++      const niveau = nat / 7, palier = th.karstique ? 7 * (Math.floor(niveau) + lisse(.72, 1, niveau - Math.floor(niveau))) : nat;
++      h += palier * lisse(30, 260, d);
++      if (pics) {
++        let sommets = 0;
++        for (const [px, pz, rx, rz, haut] of pics) {
++          const dx = x - px, dz = z - pz, u = (dx + 18 * Math.sin(dz / 95)) / rx, v = (dz + 25 * Math.sin(dx / 140)) / rz;
++          sommets += haut * Math.exp(-1.7 * Math.pow(u * u + v * v, 1.25));
++        }
++        const fond = Math.abs(z - centreZ + 130 - (x - centreX) * .31 - 95 * Math.sin((x - centreX) / 360));
++        h += sommets * lisse(120, 360, d) - 18 * (1 - lisse(30, 125, fond)) * lisse(70, 220, d);
++      }
+       if (th.montagnes) {
+         const crete = 1 - Math.abs(fbm(x / 900, z / 900, g + 9, 4) * 2 - 1);
+         h += (120 + 260 * crete) * lisse(380, 1050, d);
+@@ -315,6 +340,15 @@
+         col = melange(gres, th.sable, lisse(.54, .93, ny) * (.40 + .48 * tache));
+         mat = ny < .82 ? 9 : 8;
+       }
++      if (th.karstique) {
++        // Calcaire clair sur les parois, terrasses jade au fond ; les motifs restent dans les couleurs du sol.
++        const bandes = .5 + .5 * Math.sin(h * .84 + bruit(x / 310, z / 310, g + 171) * 2.8);
++        col = melange(th.herbe, th.herbeClaire, .16 + .64 * bandes);
++        if (ny < .74) {
++          const fissures = fbm(x / 65, z / 65, g + 179, 3);
++          col = melange(th.roche, [.28, .36, .31], .20 + .48 * fissures); mat = 9;
++        }
++      }
+       if (ecologie && mat === 8 && ny >= .7 && (th.eau === undefined || h >= th.eau + 2.2)) {
+         col = couleurPrairie(th, col, ecologie.echantillonner(x, z, habitat));
+       }
+@@ -639,7 +673,7 @@
+         for (const triangle of n.herbeTriangles || []) for (let j = 0; j < 3; j++) visites[n.indices[triangle + j]] = 1;
+         // Le bord sans vibreur est aussi herbeux, mais reste exclu de la plantation des brins.
+         if (n.surfaceType === 'accotement') for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 9] === 8) visites[v] = 1;
+-        if ((th.volcanique || th.aride) && saison.neige && n.surfaceType === 'terrain') {
++        if ((th.volcanique || th.aride || th.karstique) && saison.neige && n.surfaceType === 'terrain') {
+           for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 4] > .45) visites[v] = 1;
+         }
+         for (let v = 0; v < visites.length; v++) if (visites[v]) {
+@@ -894,8 +928,10 @@
+       ajouter(objets, loin, x, z); positionsArbres.push([x, z]);
+     }
+     let nombre = 0;
+-    const MAX = th.volcanique || th.aride ? 0 : options.arbres === undefined ? 2600 : options.arbres;
+-    for (let i = 0; i < c.n && nombre < MAX; i += 7) {   // un plan par 14 m de piste, de chaque côté
++    const MAX = th.volcanique || th.aride ? 0 : options.arbres === undefined ? (th.karstique ? 160 : 2600) : options.arbres;
++    // Le budget réduit du nouveau biome est distribué sur tout le tour, sans remplir seulement le départ.
++    const pasArbres = th.karstique ? Math.max(7, Math.ceil(c.n / 72)) : 7;
++    for (let i = 0; i < c.n && nombre < MAX; i += pasArbres) {   // historique : un plan par 14 m de piste
+       const f = cadre(c, i);
+       for (const cote of [-1, 1]) {
+         for (let essai = 0; essai < 3; essai++) {        // si la place est prise (eau, roche, tribunes), on tente une autre distance
+@@ -935,7 +971,7 @@
+     }
+ 
+     // Repères lointains selon le thème : phare et cabanons sur la côte, chalets en montagne, fermes en forêt.
+-    const villages = th.volcanique || th.aride ? 0 : th.eau !== undefined ? 3 : 4;
++    const villages = th.volcanique || th.aride || th.karstique ? 0 : th.eau !== undefined ? 3 : 4;
+     for (let v = 0; v < villages; v++) {
+       for (let essai = 0; essai < 40; essai++) {
+         const x = bx0 + 200 + r() * (bx1 - bx0 - 400), z = bz0 + 200 + r() * (bz1 - bz0 - 400), q = interroger(x, z, 300);
+@@ -1017,6 +1053,31 @@
+       }
+     }
+ 
++    // Petits éperons calcaires entre les bosquets, distincts des grandes pointes déjà sculptées dans le terrain.
++    if (th.karstique) {
++      const rocheR = alea(g ^ 0x37a9bd25);
++      for (let k = 0; k < 54; k++) {
++        const f = cadre(c, Math.floor(rocheR() * c.n)), cote = rocheR() < .5 ? -1 : 1;
++        const p = pointPlan(f, cote * (65 + rocheR() * 230), 0), objets = [], nombre = 1 + Math.floor(rocheR() * 3);
++        for (let j = 0; j < nombre; j++) {
++          const x = p[0] + (rocheR() - .5) * 38, z = p[2] + (rocheR() - .5) * 38;
++          const q = interroger(x, z, 200), largeur = 3 + rocheR() * 5, profondeur = largeur * (.7 + rocheR() * .35), h = 7 + rocheR() * 15;
++          const rayon = Math.hypot(largeur, profondeur) / 2;
++          if (q.i >= 0 && (q.d < w + 29 + rayon || (Math.abs(B.circuit.ecart(c, 0, q.i * c.pas)) < 330 && q.d < 105))) continue;
++          const a = rocheR() * Math.PI, couleur = varier(th.roche, rocheR, .28);
++          let bas = terrain.sol(x, z) - .6;
++          for (const dx of [-largeur / 2, largeur / 2]) for (const dz of [-profondeur / 2, profondeur / 2]) {
++            bas = Math.min(bas, terrain.sol(x + dx * Math.cos(a) + dz * Math.sin(a), z - dx * Math.sin(a) + dz * Math.cos(a)) - .6);
++          }
++          // Pieds enfouis sous toute leur emprise ; la boîte de collision englobe aussi le sommet végétalisé.
++          objets.push({ shape: 'bevel', collision: 'roche', p: [x, bas + h * .5, z], s: [largeur, h, profondeur], r: [0, a, 0], mat: 9, color: couleur });
++          objets.push({ shape: 'bevel', p: [x + largeur * .05, bas + h * .87, z], s: [largeur * .72, h * .24, profondeur * .69], r: [0, a, 0], mat: saison && saison.neige ? 3 : 8,
++            color: saison && saison.neige ? [.90, .93, .96] : th.herbe });
++        }
++        if (objets.length) ajouter(objets, objets, p[0], p[2]);
++      }
++    }
++
+     // Finition des lots : sphère englobante et portée.
+     const lots = [];
+     for (const l of groupes.values()) {
+@@ -1082,7 +1143,7 @@
+       ? options.vegetationQualite : qualite;
+     if (B.vegetation && options.vegetation !== false && vegetationQualite !== 'off') {
+       const v = B.vegetation.construire(c, { limites: lim, interroger, qualite: vegetationQualite,
+-        surfaces: vegetationQualite === 'low' || th.volcanique || th.aride ? null : ouvrirHerbier(), ecologie });
++        surfaces: vegetationQualite === 'low' || th.volcanique || th.aride || th.karstique ? null : ouvrirHerbier(), ecologie });
+       if (saison) {
+         const habitat = {};
+         for (const lot of v.lots) for (let i = 0; i < lot.objets.length; i++) {
+diff --git a/src/jeu.js b/src/jeu.js
+index f6c6d1c..fa5e5d9 100644
+--- a/src/jeu.js
++++ b/src/jeu.js
+@@ -15,7 +15,8 @@
+     { id: 'port-sable', nom: 'Port-Sable', lieu: 'Bord de mer', theme: 'cote', graine: 29, longueur: 3600 },
+     { id: 'haut-col', nom: 'Haut-Col', lieu: 'Montagne', theme: 'montagne', graine: 47, longueur: 5200 },
+     { id: 'lande-noire', nom: 'Lande-Noire', lieu: 'Islande · plateau volcanique', theme: 'islande', graine: 83, longueur: 4600 },
+-    { id: 'roche-fauve', nom: 'Roche-Fauve', lieu: 'Afrique · hauts plateaux d’ocre', theme: 'desert', graine: 107, longueur: 4800 }
++    { id: 'roche-fauve', nom: 'Roche-Fauve', lieu: 'Afrique · hauts plateaux d’ocre', theme: 'desert', graine: 107, longueur: 4800 },
++    { id: 'brume-de-jade', nom: 'Brume-de-Jade', lieu: 'Asie · pics calcaires et terrasses', theme: 'asie', graine: 131, longueur: 5000 }
+   ];
+ 
+   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
+diff --git a/src/saisons.js b/src/saisons.js
+index e396f6a..ce68a99 100644
+--- a/src/saisons.js
++++ b/src/saisons.js
+@@ -11,13 +11,13 @@
+   const normaliser = id => IDS.includes(id) ? id : 'ete';
+   const lisse = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+   const profils = {};
+-  for (const id of IDS) for (const theme of ['foret', 'cote', 'montagne', 'islande', 'desert']) {
++  for (const id of IDS) for (const theme of ['foret', 'cote', 'montagne', 'islande', 'desert', 'asie']) {
+     const d = DONNEES[id], neige = id === 'hiver' && theme !== 'cote';
+-    profils[id + ':' + theme] = Object.freeze({ id, theme, neige, feuilles: id === 'automne' && theme === 'foret',
++    profils[id + ':' + theme] = Object.freeze({ id, theme, neige, feuilles: id === 'automne' && (theme === 'foret' || theme === 'asie'),
+       faune: neige || theme === 'islande' || theme === 'desert' ? 0 : d.faune, soleil: d.soleil, teinteSoleil: Object.freeze(d.teinteSoleil.slice()) });
+   }
+   function profil(id, theme = 'foret') {
+-    return profils[normaliser(id) + ':' + (theme === 'cote' || theme === 'montagne' || theme === 'islande' || theme === 'desert' ? theme : 'foret')];
++    return profils[normaliser(id) + ':' + (theme === 'cote' || theme === 'montagne' || theme === 'islande' || theme === 'desert' || theme === 'asie' ? theme : 'foret')];
+   }
+   function bruit(x, z, sel) {
+     const px = (x * .8 - z * .6) / 73, pz = (x * .6 + z * .8) / 73;
+@@ -49,7 +49,7 @@
+       cible = p.id === 'printemps' ? [.67, .45, .25] : p.id === 'automne' ? [.59, .32, .14] : [.82, .59, .31];
+       part = (p.id === 'ete' ? .10 : .06) + .04 * n;
+     } else if (p.id === 'printemps') {
+-      if (feuillage && p.theme === 'foret') {
++      if (feuillage && (p.theme === 'foret' || p.theme === 'asie')) {
+         const floraison = lisse(.38, .72, n + (habitat ? habitat.fleurs : 0) * .24);
+         cible = nuance < .5 ? BLANC : ROSE; part = floraison * .94;
+       } else if (!feuillage) {
+@@ -58,10 +58,10 @@
+       }
+     } else if (p.id === 'ete') {
+       cible = SEC;
+-      part = feuillage ? (p.theme === 'foret' ? .18 : .09) + .18 * n
++      part = feuillage ? (p.theme === 'foret' || p.theme === 'asie' ? .18 : .09) + .18 * n
+         : fleurs ? .12 : .22 + .19 * n + (habitat ? (1 - habitat.herbe) * .10 : 0);
+     } else if (p.id === 'automne') {
+-      if (feuillage && p.theme === 'foret') {
++      if (feuillage && (p.theme === 'foret' || p.theme === 'asie')) {
+         cible = n < .34 ? CUIVRE : n < .67 ? ORANGE : OR; part = .79 + .18 * nuance;
+       } else if (!feuillage) { cible = SEC; part = fleurs ? .30 : .35 + .20 * nuance; }
+     } else {
+diff --git a/verifications/prets-enligne.test.mjs b/verifications/prets-enligne.test.mjs
+index 8e187e7..d3c5e5f 100644
+--- a/verifications/prets-enligne.test.mjs
++++ b/verifications/prets-enligne.test.mjs
+@@ -101,7 +101,7 @@ test('l’annonce ouvre la confirmation sans lancer la course', () => {
+   const { a } = hote(); assert.equal(a.etat().ecran, 'prets'); a.avancer(1000); assert.equal(compte(a), 0);
+   assert.ok(a.messages.some(x => x.m.t === 'confirmer'));
+ });
+-for (const [id, nom, index] of [['lande-noire', 'Lande-Noire', 3], ['roche-fauve', 'Roche-Fauve', 4]]) test(nom + ' conserve le circuit et les conditions de l’hôte jusqu’au départ invité', () => {
++for (const [id, nom, index] of [['lande-noire', 'Lande-Noire', 3], ['roche-fauve', 'Roche-Fauve', 4], ['brume-de-jade', 'Brume-de-Jade', 5]]) test(nom + ' conserve le circuit et les conditions de l’hôte jusqu’au départ invité', () => {
+   const catalogue = new Function(catalogueDeclaration + '; return CATALOGUE;')();
+   assert.deepEqual(catalogue.slice(0, 3).map(k => k.id), ['val-brule', 'port-sable', 'haut-col']);
+   const i = catalogue.findIndex(k => k.id === id);
+diff --git a/verifications/asie.test.mjs b/verifications/asie.test.mjs
+new file mode 100644
+index 0000000..032dd78
+--- /dev/null
++++ b/verifications/asie.test.mjs
+@@ -0,0 +1,144 @@
++// Brume-de-Jade : circuit original, relief en pics/terrasses, bosquets et saisons stables.
++import assert from 'node:assert/strict';
++import { createHash } from 'node:crypto';
++import { createRequire } from 'node:module';
++import { readFileSync } from 'node:fs';
++const require = createRequire(import.meta.url);
++for (const n of ['circuit', 'conduite', 'course', 'carene', 'ecologie', 'saisons', 'vegetation', 'decor']) require('../src/' + n + '.js');
++const B = globalThis.BITUME, options = { theme: 'asie', longueur: 5000, nom: 'Brume-de-Jade' };
++const c = B.circuit.creer(131, options), ete = B.decor.construire(c, { qualite: 'high', saison: 'ete' });
++const mesures = { longueur: c.longueur, denivelePiste: Math.max(...c.y) - Math.min(...c.y),
++  penteMax: Math.max(...Array.from(c.pente, Math.abs)), arbres: ete.arbres.length,
++  trianglesNappes: ete.nappes.reduce((n, v) => n + v.indices.length / 3, 0),
++  objets: ete.lots.reduce((n, l) => n + l.objets.length, 0), lots: ete.lots.length };
++let controles = 0;
++const verifier = (nom, f) => { f(); controles++; console.log('ok ' + nom); };
++function empreinte(objet) {
++  const h = createHash('sha256');
++  function visiter(v) {
++    if (ArrayBuffer.isView(v)) { h.update(v.constructor.name); h.update(Buffer.from(v.buffer, v.byteOffset, v.byteLength)); }
++    else if (v && typeof v === 'object') {
++      h.update(Array.isArray(v) ? '[' : '{');
++      for (const k of Object.keys(v)) { h.update(k); visiter(v[k]); }
++      h.update('}');
++    } else if (typeof v !== 'function') h.update(typeof v + ':' + String(v));
++  }
++  visiter(objet); return h.digest('hex');
++}
++function palette(d) {
++  let total = 0, jade = 0, plats = 0, neige = 0, min = Infinity, max = -Infinity;
++  const couleurs = new Set();
++  for (const n of d.nappes) if (n.surfaceType === 'terrain') for (let k = 0; k < n.sommets.length; k += 13) {
++    const v = n.sommets; total++; min = Math.min(min, v[k + 1]); max = Math.max(max, v[k + 1]);
++    if (v[k + 11] > v[k + 10] * 1.08 && v[k + 11] > v[k + 12] * 1.08) jade++;
++    couleurs.add([10, 11, 12].map(j => Math.round(v[k + j] * 32)).join(','));
++    if (v[k + 4] > .7) { plats++; if (v[k + 10] > .8 && v[k + 11] > .8 && v[k + 12] > .8) neige++; }
++  }
++  return { jade: jade / total, neige: neige / plats, nuances: couleurs.size, relief: [min, max] };
++}
++function memeGeometrie(a, b) {
++  assert.equal(a.nappes.length, b.nappes.length);
++  for (let i = 0; i < a.nappes.length; i++) {
++    assert.deepEqual(a.nappes[i].indices, b.nappes[i].indices);
++    assert.equal(a.nappes[i].sommets.length, b.nappes[i].sommets.length);
++    for (let k = 0; k < a.nappes[i].sommets.length; k += 13) {
++      for (let j = 0; j < 6; j++) assert.equal(a.nappes[i].sommets[k + j], b.nappes[i].sommets[k + j]);
++    }
++  }
++  assert.deepEqual(a.arbres, b.arbres);
++  assert.equal(empreinte(a.obstacles), empreinte(b.obstacles));
++}
++
++verifier('sixième entrée, les cinq identifiants et graines précédents restent en place', () => {
++  const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
++  const declaration = source.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/)[0];
++  const catalogue = new Function(declaration + '; return CATALOGUE;')();
++  assert.deepEqual(catalogue.slice(0, 5).map(k => [k.id, k.graine, k.longueur]), [
++    ['val-brule', 11, 4200], ['port-sable', 29, 3600], ['haut-col', 47, 5200],
++    ['lande-noire', 83, 4600], ['roche-fauve', 107, 4800]
++  ]);
++  assert.equal(catalogue.findIndex(k => k.id === 'brume-de-jade'), 5);
++  assert.deepEqual([catalogue[5].nom, catalogue[5].theme, catalogue[5].graine, catalogue[5].longueur],
++    [options.nom, options.theme, 131, options.longueur]);
++});
++verifier('boucle fermée, départ droit, pente et trajectoire praticables', () => {
++  assert.deepEqual(B.circuit.valider(c), []);
++  assert.ok(c.longueur >= 4800 && c.longueur <= 5300);
++  assert.ok(Math.hypot(c.x[0] - c.x[c.n - 1], c.z[0] - c.z[c.n - 1]) < 2.5);
++  assert.ok(mesures.penteMax <= .068001);
++  for (let s = -120; s <= 80; s += 2) assert.ok(Math.abs(B.circuit.echantillon(c, s).courbure) < 1 / 900);
++  for (let i = 0; i < c.n; i++) {
++    assert.ok(Number.isFinite(c.vitesse[i]) && c.vitesse[i] > 15 && c.vitesse[i] <= 86);
++    assert.ok(Math.abs(c.ligne[i]) <= c.largeur / 2 - 1.4);
++  }
++});
++verifier('terrain jade varié et relief asymétrique, bosquets bornés', () => {
++  assert.ok(ete.arbres.length > 0 && ete.arbres.length < 200, 'bosquets présents et coût borné');
++  assert.equal(ete.vegetation.brins, 0, 'les terrasses sont dessinées dans les nappes');
++  mesures.ete = palette(ete);
++  assert.ok(mesures.ete.jade > .15, 'végétation jade présente dans les nappes');
++  assert.ok(mesures.ete.nuances > 30);
++  assert.ok(mesures.ete.relief[1] - mesures.ete.relief[0] > 150, 'pics visibles au-dessus de la vallée');
++  const x0 = Math.min(...c.x), x1 = Math.max(...c.x), z0 = Math.min(...c.z), z1 = Math.max(...c.z);
++  const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
++  let asymetrie = 0, echantillons = 0;
++  for (let x = x0 - 900; x < x1 + 900; x += 120) for (let z = z0 - 900; z < z1 + 900; z += 120) {
++    asymetrie += Math.abs(ete.sol(x, z) - ete.sol(2 * cx - x, 2 * cz - z)); echantillons++;
++  }
++  mesures.asymetrie = asymetrie / echantillons; assert.ok(mesures.asymetrie > 10);
++  for (const n of ete.nappes) {
++    assert.ok(n.sommets.every(Number.isFinite));
++    assert.ok(n.indices.every(i => i < n.sommets.length / 13));
++  }
++  for (const l of ete.lots) for (const o of l.objets) {
++    assert.ok(o.p.every(Number.isFinite) && o.s.every(v => Number.isFinite(v) && v > 0));
++  }
++});
++verifier('rochers et troncs hors de toutes les portions de chaussée', () => {
++  const rochers = ete.obstacles.filter(o => o.genre === 'roche'), troncs = ete.obstacles.filter(o => o.genre === 'tronc');
++  mesures.rochers = rochers.length; assert.ok(rochers.length > 0 && rochers.length < 300);
++  assert.equal(troncs.length, ete.arbres.length, 'pas de tronc invisible résiduel');
++  let margeRochers = Infinity, margeArbres = Infinity;
++  for (const o of [...rochers, ...troncs]) {
++    const x = o.type === 'prism' ? o.p[0] : o.x, z = o.type === 'prism' ? o.p[2] : o.z;
++    const rayon = o.type === 'prism' ? Math.hypot(o.s[0], o.s[2]) / 2 : o.type === 'circle' ? o.r : Math.hypot(o.hx, o.hz);
++    let proche = Infinity;
++    for (let i = 0; i < c.n; i++) proche = Math.min(proche, Math.hypot(x - c.x[i], z - c.z[i]));
++    const libre = proche - rayon - c.largeur / 2;
++    if (o.genre === 'roche') { margeRochers = Math.min(margeRochers, libre); assert.ok(libre > 25, 'calcaire trop près de la piste'); }
++    else { margeArbres = Math.min(margeArbres, libre); assert.ok(libre > 10, 'tronc trop près de la piste'); }
++  }
++  mesures.margeRochers = margeRochers; mesures.margeArbres = margeArbres;
++});
++verifier('quatre saisons sans déplacement de la route, des arbres ou des solides', () => {
++  const couleurs = new Set([empreinte(ete.lots.map(l => l.objets.map(o => o.color)))]);
++  for (const saison of ['printemps', 'automne', 'hiver']) {
++    const d = B.decor.construire(c, { qualite: 'high', saison });
++    assert.equal(d.saison.theme, 'asie'); assert.equal(d.saison.feuilles, saison === 'automne');
++    assert.equal(d.saison.neige, saison === 'hiver'); memeGeometrie(ete, d);
++    couleurs.add(empreinte(d.lots.map(l => l.objets.map(o => o.color))));
++    if (saison === 'automne') assert.ok(d.sourcesFeuilles.length > 0 && d.sourcesFeuilles.length <= d.arbres.length);
++    if (saison === 'hiver') { mesures.hiver = palette(d); assert.ok(mesures.hiver.neige > .9, 'neige sur les surfaces peu inclinées'); }
++  }
++  assert.equal(couleurs.size, 4, 'quatre palettes de feuillage distinctes');
++  assert.equal(B.saisons.profil('hiver', 'cote').neige, false, 'exception Port-Sable conservée');
++});
++verifier('qualité basse conserve le terrain, les arbres et les collisions', () => {
++  const d = B.decor.construire(c, { qualite: 'low', saison: 'ete' });
++  memeGeometrie(ete, d); assert.equal(d.vegetation.brins, 0);
++});
++verifier('tracé et décor se reconstruisent sans dépendre du hasard global', () => {
++  const copie = B.circuit.creer(131, options);
++  assert.equal(empreinte(copie), empreinte(c));
++  assert.equal(empreinte(B.decor.construire(copie, { qualite: 'high', saison: 'ete' })), empreinte(ete));
++});
++verifier('onze rivaux accomplissent un tour sans rester bloqués', () => {
++  const course = B.course.creer(c, { mode: 'course', tours: 1, difficulte: 1, rivaux: 11, graine: 42, placeJoueur: 12 });
++  const commande = { gaz: 0, frein: 0, volant: 0, derive: false, haut: false, bas: false, boite: 'auto', aide: 0 };
++  let temps = 0;
++  while (temps < 330 && !course.termine) { B.course.pas(course, commande, 1 / 120); temps += 1 / 120; }
++  const rivaux = course.voitures.filter(v => !v.joueur);
++  assert.equal(rivaux.length, 11); assert.ok(rivaux.every(v => v.fini && v.tempsTours.length === 1));
++  mesures.course = { rivauxArrives: rivaux.length, duree: temps };
++});
++console.log(JSON.stringify({ controles, mesures }));
