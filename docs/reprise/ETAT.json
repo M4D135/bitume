@@ -2,9 +2,9 @@
   "date": "2026-11-18",
   "etat_courant": {
     "branche": "main",
-    "base_commit": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
-    "base_version": "0.2.38",
-    "statut": "lot_5B_fluidite_en_cours",
+    "base_commit": "b0523d8c7a16599184fd43b6fa4419c111a0c83e",
+    "base_version": "0.2.40",
+    "statut": "lot_5B_publie_suite_en_cours",
     "lot": "5B_fluidite_cadence_prechargement",
     "fiche": "docs/reprise/05B-FLUIDITE.md",
     "commit_publie": "8bd3d86a4b1635ad2dd90c5ae8a585711aa196f8",
@@ -28,14 +28,15 @@
     },
     "version_courante": "0.2.39",
     "recu": "docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json",
-    "entree_passation": "MASTER-LISTE-CLAUDE-FABLE.md"
+    "entree_passation": "MASTER-LISTE-CLAUDE-FABLE.md",
+    "pilotage": "docs/reprise/PILOTAGE-2026-11-18.md"
   },
   "integration": {
     "nouvelle_branche": false,
     "force_push": false,
     "publication_ferro": {
-      "version": "0.3.9",
-      "commit": "89c784163b8671676b11f3d4114fab22f6200a7e",
+      "version": "0.3.10",
+      "commit": "39eafeec91dc39dda09abe7a1cb8a568d6b55bbc",
       "arbre": "8d5337c5457b523046b6652854e3949e74f1febd",
       "branche": "main",
       "verifiee": true,
@@ -82,10 +83,10 @@
     "autres_chantiers": "Priorité master liste Claude Fable : roues/pneus, Russie, Monaco, Marseille EMPRISE avec relief, puis six propositions ; un sous-lot actif."
   },
   "lot_precedent": {
-    "version": "0.2.38",
-    "commit": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
-    "lot": "cap_sequoia_pacifique_fps_demo_faune",
-    "recu": "docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json"
+    "version": "0.2.40",
+    "commit": "b0523d8c7a16599184fd43b6fa4419c111a0c83e",
+    "lot": "5B_fluidite",
+    "recu": "docs/reprise/rapports/fluidite-2026-11-18/publication.json"
   },
   "lot_suivant": {
     "numero": 12,
@@ -170,7 +171,8 @@
         "son (préparation audio avant le départ)"
       ]
     },
-    "statut": "vague 1 en cours ; rien de fusionné ni de publié côté sources du jeu"
+    "statut": "vague 1 en cours ; rien de fusionné ni de publié côté sources du jeu",
+    "publication": "0.2.40 en ligne le 18/11/2026 à 23 h 45 ; limites connues dans le reçu"
   },
   "demandes_2026_11_18_soir": {
     "mots_exacts": "AGENTS.md, dernière section",

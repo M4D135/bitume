@@ -1,22 +1,22 @@
 # BITUME — reprise courte
 
-## Base publiée — 18 novembre 2026
+## Base publiée — 18 novembre 2026, 23 h 45
 
 - Branche unique `main`, sans push forcé ; publications fréquentes du travail réel.
-- **0.2.38**, livraison **`baf4ddf`**, sept circuits ; Cap-Séquoia, FPS en démo et **Faune** livrés.
-- Production vérifiée identique le 18 novembre à 14 h 47 (Paris) ; reçu `docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json`.
-- Qualification de la base : **66/66 suites**, 34 modules FERRO 0.3.9 conformes, build reproductible. WebGL et performances matérielles restent à contrôler : Chromium bloque ici.
+- **0.2.40**, livraison **`b0523d8`** : lot 5B « fluidité » (cadence d'images, chargement sous voile, arbres lointains allégés, herbier accéléré, détection une fois par version). Sept circuits.
+- Production vérifiée identique par `./deposer.sh` ; reçu `docs/reprise/rapports/fluidite-2026-11-18/publication.json` (mesures et limites connues).
+- Qualification : **81/81 suites**, parcours smoke à 7 contrôles, 34 modules FERRO **0.3.10** conformes (moteur poussé, `39eafee`).
 
-## Lot actif — 5B fluidité (18 novembre 2026)
+## En cours — suite du 18 novembre au soir
 
-Demande de David du 18/11 : moteur le plus fluide possible, aucun accroc en jeu, précache en début de niveau, 30/60/120 images par seconde tenues. **Ce lot passe avant 12A.** Fiche : `docs/reprise/05B-FLUIDITE.md` ; mesures : `docs/reprise/rapports/fluidite-2026-11-18/MESURES-BASE.md` ; cartes du code : `…/cartes/`.
-Constats mesurés sur le M5 : une image sur quatre ratée en Fine (rétroviseurs), 3,6 M de triangles d'arbres sur 4,2 M, première image du départ de 150 à 480 ms, qualité Auto calée sur 60 Hz, détection qui choisit « Légère ».
-En cours : vague 1 dans `~/Projects/bitume-wt/<lot>` (branches locales `fluidite/<lot>`) et moteur FERRO 0.3.10 dans `~/Projects/ferro`. Rien n'est fusionné dans les sources du jeu. Suite : intégrer, installer le moteur, vague 2 dans `jeu.js`, mesurer avant/après, publier.
+**Lire `docs/reprise/PILOTAGE-2026-11-18.md`** : il tient l'état de tous les chantiers, des branches locales et des arbres de travail (`~/Projects/bitume-wt`).
+Prochaine mise en ligne : corrections de la détection graphique, puis ce qui est écrit et testé sur les branches (animaux, bords de route, flammes d'échappement, public humain, ombres du moteur 0.3.11, jeu en ligne par invitation).
+Le Spark d'abord (`tools/spark/LISEZ-MOI.md`) : un pilote autonome mène les lots restants sur des branches `spark/*`, à relire avant toute intégration.
 
 ## Demandes du 18 novembre au soir et ordre de travail
 
 Mots exacts de David dans `AGENTS.md` (dernière section). Ordre retenu, dicté par les fichiers partagés :
-1. **5B fluidité** (en cours) : intégrer, mesurer, publier.
+1. **5B fluidité** : publié en **0.2.40** ; restes dans le pilotage (détection, gel au choix du circuit, Fine sous la pluie).
 2. **Moteur** : pluie et neige sur l'écran (lot 19), puis lumière, ombres et eau (lot 21), dans FERRO après la 0.3.10.
 3. **17 conduite** (physique `p10`), **18 public** en humains d'EMPRISE, **20 échappements** (flammes et pétarades).
    Puis **23 cockpit** (matières, reflets, relief, netteté ; s'appuie sur le lot 21) et **22 circuits et génération procédurale** (relief, irrégularités de chaussée, aménagements de course, matières, diversité). **24 vibrations de manette** avec la conduite.

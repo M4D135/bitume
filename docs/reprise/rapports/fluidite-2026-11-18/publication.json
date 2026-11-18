@@ -1,0 +1,41 @@
+{
+  "version": "0.2.40",
+  "lot": "5B_fluidite",
+  "date": "2026-11-18",
+  "heure_paris": "23 h 45",
+  "commit": "b0523d8c7a16599184fd43b6fa4419c111a0c83e",
+  "page": {
+    "fichier": "dist/bitume.html",
+    "octets": 13570399,
+    "sha256": "6362eb1596295f763122f34c8d3d1769c186cc461ac12f0b0fc1205c2eadc7db"
+  },
+  "production": {
+    "url": "https://bitume.estrasse.fr/",
+    "verifiee_par": "./deposer.sh (empreinte de la page servie comparée à celle du commit)",
+    "version_retiree": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902"
+  },
+  "moteur": {
+    "version": "FERRO 0.3.10",
+    "commit": "39eafeec91dc39dda09abe7a1cb8a568d6b55bbc",
+    "pousse": true,
+    "tests": "181 réussis, 0 échec, 1 todo"
+  },
+  "qualification": {
+    "suites": "81 sur 81 (sur 17eb95e, même code)",
+    "smoke": "tools/banc-navigateur.mjs --mode smoke --angle native : 7 contrôles, code 0, sur la page du commit",
+    "verrou": "34 modules FERRO conformes"
+  },
+  "mesures": {
+    "document": "docs/reprise/rapports/fluidite-2026-11-18/mesures-apres/MESURES-APRES.md",
+    "fenetre_reelle_alternee": "0.2.39 et 0.2.40 l'une après l'autre, 3 tours, charge de 8 à 13 (autres agents) : Moyenne et Légère identiques (300 images en 5 s, p95 18,6 ms des deux côtés) ; Fine en poursuite, images au-delà de 1,5 période : 8 → 0 ; Fine cockpit : 178 → 250 images en 5 s (image médiane 32,6 → 16,7 ms), 50 images lentes sur 250 sous cette charge",
+    "serie_de_l_integration": "Fine en fenêtre : 239 → 291 images en 5 s, images longues 25 % → 3 % ; Fine sous la pluie : 35 % → 22 % ; sans interface : plus aucune image longue en course sur huit scénarios ; ramasse-miettes de 4 à 6 passages par seconde à moins de 1,3 ; aucune création en course ; 3,47 M → 0,79 M de triangles au départ de Val-Brûlé en Fine"
+  },
+  "limites_connues": [
+    "Fine sous la pluie rate encore environ une image sur cinq en fenêtre réelle sur le M5.",
+    "Rendu logiciel : des images longues restent après le voile ; chargement de 1,3 à 5,7 s.",
+    "Départ d'une course plus long de 0,2 à 0,3 s (voile de chargement).",
+    "Détection graphique : version d'avant corrections (2fe4409). Relecture : verdict pris en une seule mesure et gardé pour la version, onglet en arrière-plan compté comme une tentative, palier choisi qui rate des images sous charge. Corrections en cours sur fluidite/detection, à publier ensuite.",
+    "Choix d'un circuit : encore environ 1 s d'image figée (28B, 28D, 28E à faire).",
+    "Aucun essai avec une vraie manette, ni sur Firefox, Safari ou téléphone."
+  ]
+}
