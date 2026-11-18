@@ -1,5 +1,7 @@
 // Node consumers retain the direct-load contract; browsers load the explicit build dependency.
 if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)require('./ferro/vehicle-dynamics.js');
+// De même pour la loi de pneu (src/pneu.js, lot 17) : déjà chargée (cache de Node), elle est rendue par son module.
+if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.BITUME.pneu))(globalThis.BITUME=globalThis.BITUME||{}).pneu=require('./pneu.js');
 (function (B) {
   'use strict';
   // BITUME : conduite d'une monoplace, dans le repère du circuit (abscisse s, décalage d).
@@ -98,7 +100,10 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   const IZ = P.masse * P.giration * P.giration;
 
   // Shared FERRO force equations; this adapter owns vehicle tuning and world coordinates.
-  const {clamp,borne01,sign,expTau,ramener,angle,rampe,regimeBrut,couple,forme,retombee,pneu,consigne,adherence,suivi,capaciteLaterale,geometrie,braquer,braquageMax}=FVehicleDynamics.create(P);
+  const FVD=FVehicleDynamics.create(P);
+  const {clamp,borne01,sign,expTau,ramener,angle,rampe,regimeBrut,couple,consigne,suivi,capaciteLaterale,geometrie,braquer,braquageMax}=FVD;
+  // Loi de pneu (src/pneu.js, lot 17) : en p9, les fonctions mêmes de FERRO, rendues par le module de pneu.
+  const {adherence,forme,retombee,pneu}=B.pneu.p9(FVD);
 
   // Filtres de constante de temps fixe : au pas fixe, expTau(tau, dt) redonne la même valeur pour chaque voiture et
   // à chaque pas (un Math.exp chaque fois). Elle est retenue pour le dernier dt vu : même fonction, mêmes entrées,
@@ -473,6 +478,16 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     const alphaAv = delta * sgnU - angAv;
     const fyAv = latAv * pneu(alphaAv / P.alphaAv), fyAr = latAr * fAr;
     etat.deriveAv = alphaAv; etat.deriveAr = alphaAr;
+    // Relevé facultatif pour le banc (tools/banc-conduite.mjs) : un objet `_mesure` posé sur l'état reçoit les
+    // grandeurs internes du pas (demandes et capacités des essieux, dérives rapportées au pic). Le jeu ne le pose
+    // jamais ; les champs « _ » n'entrent dans aucune empreinte d'état.
+    const M = etat._mesure;
+    if (M) {
+      M.demAv = demAv; M.demAr = demAr; M.capAv = capAv; M.capAr = capArG; M.fxAv = fxAv; M.fxAr = fxAr;
+      M.latAv = latAv; M.latAr = latAr; M.fyAv = fyAv; M.fyAr = fyAr;
+      M.alphaPicAv = P.alphaAv; M.alphaPicAr = P.alphaAr; M.xAv = alphaAv / P.alphaAv; M.xAr = xAr;
+      M.freinMoteur = freinMoteur; M.fFrein = fFrein;
+    }
 
     // Forces dans le repère de la caisse
     const cd = Math.cos(delta), sd = Math.sin(delta);

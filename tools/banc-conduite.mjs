@@ -24,32 +24,41 @@
 //   node tools/banc-conduite.mjs --script-page F    écrit dans F le script qui rejoue la partie pure du banc (--court)
 //                                                   dans la page construite : node tools/page-essai.mjs dist/bitume.html F > S
 //   node tools/banc-conduite.mjs --verifier-page S  compare cette sortie S aux nombres de Node, nombre par nombre
+//   node tools/banc-conduite.mjs --rivaux [--json F] profil des rivaux seul : vitesses d'adhérence de R 20 à R 400,
+//                                                   ajustement μ_eq, A_eq de la référence de circuit.js (lot 17)
+//
+// Banc v2 (lot 17, 17-CONDUITE.md § 5, 17A) : le banc complet joue aussi les essais du lot 17 (freinage pédale tenue,
+// départ sans aide, échelons à 150 et 250 km/h, plein gaz en appui, deux roues dans l'herbe, vibreur, sillage en
+// virage, x_ar en dérive, tenue de 10 s, régime, frein moteur par rapport, eau et neige, profil des rivaux). Leurs
+// résultats ont leur propre empreinte (empreinteP10) : celle des essais v1 ne bouge pas avec eux.
 import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
-import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 export const SRC = path.resolve(ICI, '..', 'src');
-export const VERSION_BANC = 1;
+export const VERSION_BANC = 2;   // v2 : essais du lot 17 ajoutés, essais v1 inchangés (même empreinte)
 const G = 9.81, DT = 1 / 120, DEG = 180 / Math.PI, KMH = 3.6, RHO = 1.225;
 const clamp = (x, a, b) => x < a ? a : x > b ? b : x;
 
 // ---------------------------------------------------------------- chargement du modèle
-// Le module de conduite se charge comme dans les tests : FERRO (équations partagées), circuit.js (lecture des
-// tableaux de piste), conduite.js. Rechargé à neuf à chaque appel, pour mesurer deux arbres dans le même processus.
+// Le module de conduite se charge comme dans les tests : FERRO (équations partagées), la loi de pneu (pneu.js, lot 17 ;
+// absente d'un arbre plus ancien), circuit.js (lecture des tableaux de piste), conduite.js. Rechargé à neuf à chaque
+// appel, pour mesurer deux arbres dans le même processus.
 // `reglages` { nom: valeur } : PARAMS est gelé et des constantes en sont tirées au chargement (poussées, géométrie,
 // inertie) ; une variante se mesure donc sur une copie temporaire de conduite.js dont le bloc PARAMS est réécrit.
-const FICHIERS = ['ferro/vehicle-dynamics.js', 'circuit.js', 'conduite.js'];
+const FICHIERS = ['ferro/vehicle-dynamics.js', 'pneu.js', 'circuit.js', 'conduite.js'];
 export function charger(src = SRC, reglages = null) {
   src = path.resolve(src);
   let dossier = src, tmp = null;
+  const presents = FICHIERS.filter(f => f !== 'pneu.js' || existsSync(path.join(src, f)));
   if (reglages && Object.keys(reglages).length) {
     tmp = mkdtempSync(path.join(tmpdir(), 'bitume-banc-'));
     mkdirSync(path.join(tmp, 'ferro'));
-    for (const f of FICHIERS.slice(0, 2)) copyFileSync(path.join(src, f), path.join(tmp, f));
+    for (const f of presents) if (f !== 'conduite.js') copyFileSync(path.join(src, f), path.join(tmp, f));
     const t = readFileSync(path.join(src, 'conduite.js'), 'utf8'), i = t.indexOf('const PARAMS = Object.freeze({'), j = t.indexOf('});', i);
     if (i < 0 || j < 0) throw new Error('banc-conduite : bloc PARAMS introuvable dans conduite.js');
     let bloc = t.slice(i, j);
@@ -62,7 +71,7 @@ export function charger(src = SRC, reglages = null) {
     dossier = tmp;
   }
   const req = createRequire(path.join(dossier, 'banc-conduite.cjs'));
-  const fichiers = FICHIERS.map(f => path.join(dossier, f));
+  const fichiers = presents.map(f => path.join(dossier, f));
   const avant = globalThis.BITUME, avantF = globalThis.FVehicleDynamics;
   let B, h;
   try {
@@ -170,7 +179,7 @@ function moduler(m, u, dt) {
 }
 
 function voiture(ctx, cond, s = 0, d = 0) {
-  ctx.B.meteo = { actuel: { pluie: cond.eau, mouille: 0 } };
+  ctx.B.meteo = { actuel: cond.neige != null ? { pluie: cond.eau, mouille: 0, neige: cond.neige } : { pluie: cond.eau, mouille: 0 } };
   const et = ctx.CD.creer(s, d); et.pneus = cond.pneus; return et;
 }
 // État lancé : rapport que la boîte automatique tiendrait à cette vitesse et régime qui va avec, sans à-coup.
@@ -188,7 +197,7 @@ function lancer(ctx, et, v) {
 export function seance(ctx, c, et, entree, pilote, duree, chaque) {
   const E = typeof entree === 'string' ? ENTREES[entree] : entree, CD = ctx.CD;
   const pasN = Math.max(1, Math.round(120 / E.hz)), dtD = pasN * DT, n = Math.round(duree / DT);
-  const cmd = { gaz: 0, frein: 0, volant: 0, derive: false, haut: false, bas: false, boite: 'auto', aide: E.aide, guidage: E.guidage };
+  const cmd = { gaz: 0, frein: 0, volant: 0, derive: false, haut: false, bas: false, boite: E.boite || 'auto', aide: E.aide, guidage: E.guidage };
   const mV = modulateur(3, E.tenue), mG = modulateur(2, E.tenue), mF = modulateur(2, E.tenue), evs = [];
   let appuis = 0, i = 0;
   for (; i < n; i++) {
@@ -384,11 +393,13 @@ function tenir(ctx, cond, R, v, o = {}) {
   }
   const et = voiture(ctx, cond);
   lancer(ctx, et, v); et.omega = v / c.rayon * Math.sign(R);
+  if (o.aspiration != null) et.aspiration = o.aspiration;
   if (o.degats) et.degats = { adher: o.degats.adher, trainee: o.degats.trainee, roues: [false, false, false, false], casse: false };
   const duree = o.duree || 8, fen = o.fenetre || 2, sg = Math.sign(R);
   let dMax = 0, dvMax = 0, tq = false, n = 0, volCmd = 0;
   const m = { braquage: 0, beta: 0, volant: 0, aAv: 0, aAr: 0, ay: 0, gaz: 0, omega: 0, rapport: 0 };
   const r = seance(ctx, c, et, E, piloteLigne(ctx, c, v, E), duree, (e, t, evs, cmd) => {
+    if (o.aspiration != null) e.aspiration = o.aspiration;   // course.js la recalcule à chaque pas ; ici, sillage tenu
     tq ||= Math.abs(e.beta) > Math.PI / 2;
     volCmd = cmd.volant;
     if (t > duree - fen) {
@@ -449,7 +460,7 @@ function virageEtabli(ctx, cond, R, o = {}) {
 // ---------------------------------------------------------------- 4. échelon de volant
 function echelon(ctx, cond, vkmh, entree, mode) {
   // gaz figé à sa valeur de croisière pour toutes les entrées : seul le volant diffère d'une chaîne à l'autre
-  const E = { ...ENTREES[entree], pedales: 'continu' }, c = droite(ctx, 30000, { largeur: 6000, limite: 6100 });
+  const E = { ...(typeof entree === 'object' ? entree : ENTREES[entree]), pedales: 'continu' }, c = droite(ctx, 30000, { largeur: 6000, limite: 6100 });
   const et = voiture(ctx, cond), v = vkmh / KMH;
   lancer(ctx, et, v);
   const reg = regulateur(); let gaz0 = .35;
@@ -613,6 +624,8 @@ function slalom(ctx, cond, entree) {
 function derive(ctx, cond, R, entree, vEntree, o = {}) {
   const E = ENTREES[entree], c = cercle(ctx, R, {}), et = voiture(ctx, cond), reg = regulateur(), dtD = dtDecision(E);
   lancer(ctx, et, vEntree); et.omega = vEntree / c.rayon;
+  if (o.xar) et._mesure = {};
+  const xs = [], vit = [];
   const tenueMax = o.tenueMax ?? 4, approche = 6;
   let phase = 'approche', tAppui = -1, tDepart = -1, tLacher = -1, tN3 = -1, prec = null;
   const r = { niveaux: [null, null, null], chargeMax: 0, qualiteMoy: 0, betaMoy_deg: 0, betaMax_deg: 0, ecartMax_m: 0, vibreur_s: 0, herbe_s: 0, turbo: null, annulee: false, teteAQueue: null };
@@ -640,6 +653,8 @@ function derive(ctx, cond, R, entree, vEntree, o = {}) {
     }
     if (phase === 'tenue') {
       const dt = t - tDepart, dr = e.derive;
+      if (o.xar && e._mesure.xAr != null) xs.push(Math.abs(e._mesure.xAr));
+      if (o.vitesses) vit.push([dt, e.v]);
       if (dt <= .3 + 1e-9) b03 = e.beta;
       r.chargeMax = Math.max(r.chargeMax, dr.charge); r.qualiteMoy += dr.qualite; r.betaMoy_deg += e.beta * DEG; nq++;
       r.betaMax_deg = Math.max(r.betaMax_deg, Math.abs(e.beta) * DEG); r.ecartMax_m = Math.max(r.ecartMax_m, Math.abs(e.d));
@@ -655,8 +670,11 @@ function derive(ctx, cond, R, entree, vEntree, o = {}) {
   });
   if (phase === 'appui' || phase === 'refus' || tDepart < 0) return { vEntree_kmh: vEntree * KMH, departRefuse: true };
   r.qualiteMoy /= Math.max(nq, 1); r.betaMoy_deg /= Math.max(nq, 1);
+  const extra = {};
+  if (o.xar) extra.xAr = quantiles(xs);
+  if (o.vitesses) extra.vitesse_kmh = vit.filter(([dt]) => Math.abs(dt - Math.round(dt)) < DT / 2 && dt > .5).map(([dt, v]) => [Math.round(dt), v * KMH]);
   return {
-    vEntree_kmh: vEntree * KMH, ...r, betaA03s_deg: b03 != null ? b03 * DEG : null,
+    vEntree_kmh: vEntree * KMH, ...r, ...extra, betaA03s_deg: b03 != null ? b03 * DEG : null,
     tenue_s: tLacher >= 0 ? tLacher - tDepart : null, vAuLacher_kmh: vLacher != null ? vLacher * KMH : null,
     stableApres_s: stable, contreDepassement_deg: depasse * DEG, ecartMaxApres_m: dApres, herbeApres_s: herbeApres
   };
@@ -752,7 +770,7 @@ function herbe(ctx, cond, vkmh, entree) {
 }
 
 // mesures élémentaires, pour les vérifications et les études ponctuelles
-export const essais = { tenir, vLimite, vPiste, depart, freinage, echelon, derive, gainDerive, remiseGaz, chicane, slalom, herbe };
+export const essais = { tenir, vLimite, vPiste, virageEtabli, depart, freinage, freinMoteur, echelon, boucleOuverte, boucleFermee, derive, gainDerive, remiseGaz, chicane, slalom, herbe };
 
 // ---------------------------------------------------------------- exécution
 const par = (cles, f) => Object.fromEntries(cles.map(k => [k, f(k)]));
@@ -855,17 +873,252 @@ export function mesurer(ctx, o = {}) {
   } finally { ctx.B.meteo = meteo; }   // la page garde sa vraie météo
   return R;
 }
+// ---------------------------------------------------------------- 9. essais du lot 17 (docs/reprise/17-CONDUITE.md § 5)
+// Ils s'ajoutent aux essais v1 sans les changer : leurs résultats ont leur propre empreinte (empreinteP10), et celle
+// des essais v1 reste comparable d'une version du modèle à l'autre. Ils lisent le relevé `_mesure` que conduite.js
+// remplit quand il est posé sur l'état : demandes et capacités des essieux, dérives rapportées à la dérive au pic.
+// En p9, une roue ne bloque ni ne patine vraiment (MODELE.md § 3.9) : « bloque » et « patine » y veulent dire que la
+// demande d'un essieu atteint sa capacité (la force transmise plafonne) ; quand la roue aura un état de rotation
+// (17C, 17D), le relevé donnera son glissement.
+function quantiles(xs) {
+  if (!xs.length) return null;
+  const s = Float64Array.from(xs).sort(), q = f => s[Math.min(s.length - 1, Math.floor(f * (s.length - 1) + .5))];
+  return { n: s.length, p10: q(.1), p50: q(.5), p90: q(.9), max: s[s.length - 1] };
+}
+function voitureMesuree(ctx, cond, s = 0, d = 0) { const et = voiture(ctx, cond, s, d); et._mesure = {}; return et; }
+// Sollicitation longitudinale d'un essieu : demande / capacité (> 0 en traction, < 0 au freinage).
+const sollicitation = (dem, cap) => dem / Math.max(cap, 1);
+
+// Freinage pédale tenue : quel essieu atteint sa capacité le premier, et à quelle vitesse ; distance et temps.
+function freinageBlocage(ctx, cond, v0kmh, v1kmh, o = {}) {
+  const E = typeof o.entree === 'object' ? o.entree : ENTREES[o.entree || 'physique'], c = droite(ctx, 8000, LARGE), et = voitureMesuree(ctx, cond), v0 = v0kmh / KMH, v1 = Math.max(v1kmh / KMH, .1);
+  lancer(ctx, et, v0);
+  seance(ctx, c, et, ENTREES.physique, piloteLigne(ctx, c, v0, ENTREES.physique), 1.5);
+  const d0 = et.distance, vDep = et.v, pedale = o.pedale ?? 1;
+  let vP = et.v, dP = 0, tP = 0, fin = null, vAv = null, vAr = null, sAvMax = 0, sArMax = 0;
+  seance(ctx, c, et, E, () => ({ volant: 0, gaz: 0, frein: pedale }), 40, (e, t) => {
+    const M = e._mesure, sAv = -sollicitation(M.demAv, M.capAv), sAr = -sollicitation(M.demAr, M.capAr), d = e.distance - d0;
+    sAvMax = Math.max(sAvMax, sAv); sArMax = Math.max(sArMax, sAr);
+    if (vAv == null && sAv >= 1) vAv = e.v * KMH;
+    if (vAr == null && sAr >= 1) vAr = e.v * KMH;
+    if (e.v <= v1) { const u = (vP - v1) / Math.max(vP - e.v, 1e-12); fin = { t: tP + u * DT, d: dP + u * (d - dP) }; return false; }
+    vP = e.v; dP = d; tP = t;
+  });
+  const corr = (v0 * v0 - v1 * v1) / Math.max(vDep * vDep - v1 * v1, 1e-9);
+  const premier = vAv == null && vAr == null ? null : vAr == null || (vAv != null && vAv >= vAr) ? 'avant' : 'arrière';
+  return { distance_m: fin ? fin.d * corr : null, temps_s: fin ? fin.t : null, premier, vBlocageAv_kmh: vAv, vBlocageAr_kmh: vAr, sollicitationAvMax: sAvMax, sollicitationArMax: sArMax };
+}
+// Départ arrêté plein gaz (2 s de grille au lancement) : sollicitation de l'arrière, durée du patinage, 0-100.
+function departPatinage(ctx, cond, o = {}) {
+  const c = droite(ctx, 3000, LARGE), et = voitureMesuree(ctx, cond), E = { ...ENTREES.physique, aide: o.aide ?? 0 };
+  const cmd = { gaz: 1, frein: 0, volant: 0, derive: false, haut: false, bas: false, boite: 'auto', aide: 0, guidage: 0 };
+  for (let i = 0; i < 240; i++) ctx.CD.pas(et, cmd, c, DT, true);
+  let sMax = 0, patine = 0, t100 = null, vP = 0, regMin = Infinity;
+  const gaz = o.gaz ?? 1;
+  seance(ctx, c, et, E, () => ({ volant: 0, gaz, frein: 0 }), 6, (e, t) => {
+    const M = e._mesure, s = sollicitation(M.demAr, M.capAr);
+    if (t <= 3) { sMax = Math.max(sMax, s); if (s >= 1) patine += DT; }
+    if (t <= .5 + 1e-9) regMin = Math.min(regMin, e.regime);
+    if (t100 == null && e.v * KMH >= 100) t100 = franchir(t, e.v * KMH, vP * KMH, 100);
+    vP = e.v;
+  });
+  return { sollicitationArMax: sMax, patinage_s: patine, t100_s: t100, regimeMin05s: regMin };
+}
+// Meilleur départ dosé : gaz constant de 0,5 à 1, le plus court 0-100.
+function departDose(ctx, cond) {
+  let mieux = null;
+  for (const g of [.5, .6, .7, .8, .9, 1]) { const r = departPatinage(ctx, cond, { gaz: g }); if (r.t100_s != null && (!mieux || r.t100_s < mieux.t100_s)) mieux = { gaz: g, t100_s: r.t100_s }; }
+  return mieux;
+}
+// Tenue d'un rayon à un décalage visé (m, > 0 à droite) : le pilote de ligne vise `cible` ; tenu à 0,6 m près.
+function tenirDecale(ctx, cond, c, v, cible, duree = 8) {
+  const E = ENTREES.physique, et = voitureMesuree(ctx, cond, 0, cible);
+  lancer(ctx, et, v); et.omega = v / (c.rayon - cible);
+  let dMax = 0, dvMax = 0, tq = false, cap = 0, n = 0;
+  seance(ctx, c, et, E, piloteLigne(ctx, c, v, E, cible), duree, (e, t) => {
+    tq ||= Math.abs(e.beta) > Math.PI / 2;
+    if (t > duree - 2) { dMax = Math.max(dMax, Math.abs(e.d - cible)); dvMax = Math.max(dvMax, Math.abs(e.v - v)); cap += e.capAv + e.capAr; n++; }
+    if (tq) return false;
+  });
+  return { tenu: !tq && dMax < .6 && dvMax < 1 && Math.abs(et.beta) < .15, capacite_N: cap / Math.max(n, 1), et };
+}
+// Deux roues dans l'herbe (R, roues extérieures `debord` m au-delà du bord, le centre sur la piste), à 0,9 × la
+// limite tenue au même décalage sur une piste large : 6 s sur l'axe, la cible glisse vers le décalage à 2 m/s, puis
+// 3 s au décalage. Capacité des essieux (capAv + capAr) sur la dernière seconde, vraie piste contre piste large (même
+// vitesse, même trajectoire) ; écart de β pris pendant l'entrée sur la vraie piste.
+function deuxRouesHerbe(ctx, cond, R, debord) {
+  const demi = ctx.CI.LARGEUR / 2, voie = ctx.P.voieAv ?? ctx.P.voie, cible = -(demi + debord - voie / 2);
+  const cH = cercle(ctx, R, { vibreurs: false, limite: 20 }), cL = cercle(ctx, R, { vibreurs: false, largeur: 40, limite: 20 });
+  const vL = limiteFranche(Math.max(8, .6 * vRefRivaux(R)), 95, v => tenirDecale(ctx, cond, cL, v, cible).tenu, { iter: 12 }).v;
+  if (vL == null) return null;
+  const v = .9 * vL, duree = 6 + Math.abs(cible) / 2 + 3, E = ENTREES.physique;
+  const entree = c => {
+    const et = voitureMesuree(ctx, cond);
+    lancer(ctx, et, v); et.omega = v / c.rayon;
+    let tVise = null, b0 = 0, bMax = 0, herbe = 0, cap = 0, n = 0, dMax = 0, tq = false;
+    seance(ctx, c, et, E, (e, t) => {
+      if (t < 6) return piloteLigne(ctx, c, v, E, 0)(e);
+      if (tVise == null) { tVise = t; b0 = e.beta; }
+      return piloteLigne(ctx, c, v, E, Math.max(cible, -2 * (t - tVise)))(e);
+    }, duree, (e, t) => {
+      if (tVise != null) { bMax = Math.max(bMax, Math.abs(e.beta - b0)); if (e.surface === 'herbe') herbe += DT; }
+      if (t > duree - 1) { cap += e.capAv + e.capAr; n++; dMax = Math.max(dMax, Math.abs(e.d - cible)); }
+      if (Math.abs(e.beta) > Math.PI / 2) { tq = true; return false; }
+    });
+    return { cap: cap / Math.max(n, 1), bMax, herbe, dMax, tq };
+  };
+  const h = entree(cH), l = entree(cL);
+  return {
+    decalage_m: cible, v_kmh: v * KMH, vLimiteLarge_kmh: vL * KMH, capaciteRelative: h.cap / l.cap, betaEntree_deg: h.bMax * DEG,
+    centreDansLHerbe_s: h.herbe, ecartFin_m: h.dMax, teteAQueue: h.tq
+  };
+}
+// Passage de vibreur en ligne droite : capacité des essieux (capAv + capAr), roues d'un côté sur la bande (centre sur
+// la piste), puis centre sur la bande, contre la même vitesse sur l'axe.
+function vibreurPassage(ctx, cond, vkmh) {
+  const c = droite(ctx, 3000, LARGE), demi = ctx.CI.LARGEUR / 2, voie = ctx.P.voieAv ?? ctx.P.voie, v = vkmh / KMH;
+  c.vibreur.fill(3); c.largeur = ctx.CI.LARGEUR;
+  const capa = d => {
+    const et = voitureMesuree(ctx, cond, 0, d); lancer(ctx, et, v);
+    let cap = 0, n = 0;
+    seance(ctx, c, et, ENTREES.physique, piloteLigne(ctx, c, v, ENTREES.physique, d), 2, (e, t) => { if (t > 1.5) { cap += e.capAv + e.capAr; n++; } });
+    return cap / Math.max(n, 1);
+  };
+  const ref = capa(0), roues = capa(demi + ctx.P.largeurVibreur / 2 - voie / 2), centre = capa(demi + ctx.P.largeurVibreur / 2);
+  return { rouesSurVibreur: roues / ref, centreSurVibreur: centre / ref };
+}
+// Plein gaz en appui, volant figé : après 8 s de tenue à f × la limite, gaz à fond 1,5 s, aide nulle, rapport tenu
+// (boîte manuelle) ; plus grande dérive arrière rapportée au pic.
+function pleinGazAppui(ctx, cond, R, f, rapport = 2) {
+  const vl = vLimite(ctx, cond, R), t0 = tenir(ctx, cond, R, f * vl), { et, c } = t0, P = ctx.P;
+  // rapport imposé si la vitesse le permet sous le rupteur (sinon celui de la boîte automatique)
+  if (et.v < .97 * P.vitessePointe[rapport - 1]) { et.rapport = rapport; et.regime = clamp(P.ralenti + (P.maxUtile - P.ralenti) * et.v / P.vitessePointe[rapport - 1], P.ralenti, P.rupteur); }
+  et._mesure = {};
+  let xMax = 0, aMax = 0, tq = false;
+  seance(ctx, c, et, { ...ENTREES.physique, boite: 'manuelle' }, () => ({ volant: t0.volCmd, gaz: 1, frein: 0 }), 1.5, e => {
+    if (e._mesure.xAr != null) xMax = Math.max(xMax, e._mesure.xAr);
+    aMax = Math.max(aMax, e.deriveAr);
+    if (Math.abs(e.beta) > Math.PI / 2) { tq = true; return false; }
+  });
+  return { rapport: et.rapport, xArMax: xMax, deriveArMax_deg: aMax * DEG, teteAQueue: tq };
+}
+// Sillage tenu en virage : limite de R à l'aspiration d'une voiture à `ds` mètres (part de course.js, 1 − ds/30),
+// contre la même sans sillage.
+function sillageVirage(ctx, cond, R, ds) {
+  const part = Math.max(0, 1 - ds / 30), seul = vLimite(ctx, cond, R), derriere = vLimite(ctx, cond, R, { aspiration: part });
+  return { part, seul_kmh: seul == null ? null : seul * KMH, derriere_kmh: derriere == null ? null : derriere * KMH, rapport: seul && derriere ? derriere / seul : null };
+}
+// Régime rapporté à la vitesse : régime × vPointe(rapport) / v pendant un départ plein gaz, hors passages.
+function regimeSurVitesse(ctx, cond) {
+  const c = droite(ctx, 12000, LARGE), et = voiture(ctx, cond), VP = ctx.P.vitessePointe, xs = [];
+  seance(ctx, c, et, ENTREES.physique, () => ({ volant: 0, gaz: 1, frein: 0 }), 30, e => { if (e.v > 15 && e.coupure <= 0 && e.rapport >= 1) xs.push(e.regime * VP[e.rapport - 1] / e.v); });
+  return quantiles(xs);
+}
+// Frein moteur à 10 000 tr/min en 2e et en 6e (boîte manuelle, pied levé) : force relevée et décélération.
+function freinMoteurRapports(ctx, cond) {
+  const c = droite(ctx, 12000, LARGE), VP = ctx.P.vitessePointe, E = { ...ENTREES.physique, boite: 'manuelle' };
+  const regimeA = (r, v) => { const et = voitureMesuree(ctx, cond); et.v = v; et.rapport = r; et.regime = 10000; seance(ctx, c, et, E, () => ({ volant: 0, gaz: 0, frein: 0 }), .3); return et.regime; };
+  const res = {};
+  for (const r of [2, 6]) {
+    let lo = .2 * VP[r - 1], hi = VP[r - 1];
+    for (let i = 0; i < 24; i++) { const m = (lo + hi) / 2; if (regimeA(r, m) < 10000) lo = m; else hi = m; }
+    const et = voitureMesuree(ctx, cond); et.v = lo; et.rapport = r; et.regime = 10000;
+    let f = 0, a = 0, n = 0;
+    seance(ctx, c, et, E, () => ({ volant: 0, gaz: 0, frein: 0 }), .5, (e, t) => { if (t > .25) { f += e._mesure.freinMoteur ?? 0; a += -e.along; n++; } });
+    res[r] = { kmh: lo * KMH, freinMoteur_N: f / n, decelPneus_g: a / n / G };
+  }
+  return { ...res, rapport2sur6: res[2].freinMoteur_N / Math.max(res[6].freinMoteur_N, 1e-9) };
+}
+// Profil des rivaux : limite d'adhérence (traînée compensée) de R 20 à R 400, ajustement de
+// v = √(μ·g / (k − μ·A)), soit a_y = μ·g + μ·A·v² (moindres carrés sur les rayons que la puissance ne borne pas),
+// et rapports à la vitesse de référence actuelle des rivaux (circuit.js, MU 1,55, AERO 0,00155).
+export const RAYONS_RIVAUX = Object.freeze([20, 30, 40, 60, 80, 120, 180, 250, 400]);
+function profilRivaux(ctx, cond) {
+  const pts = [], lignes = [];
+  for (const R of RAYONS_RIVAUX) {
+    const v = vLimite(ctx, cond, R, { compense: true }), r = cercle(ctx, R, LARGE).rayon, borne = v != null && v >= ctx.P.vitessePointe[5] - .5;
+    lignes.push({ R: r, vAdherence_kmh: v == null ? null : v * KMH, borne, vRefRivaux_kmh: vRefRivaux(r) * KMH });
+    if (v != null && !borne) pts.push([v * v, v * v / r]);
+  }
+  const b = pente(pts), n = pts.length, a = pts.reduce((s, p) => s + p[1], 0) / n - b * pts.reduce((s, p) => s + p[0], 0) / n;
+  const muEq = a / G, aEq = b / muEq, vFit = R => Math.min(ctx.P.vitessePointe[5], Math.sqrt(muEq * G / Math.max(1 / R - muEq * aEq, 1e-9)));
+  for (const l of lignes) { l.refSurAdherence = l.vAdherence_kmh ? l.vRefRivaux_kmh / l.vAdherence_kmh : null; l.vAjuste_kmh = vFit(l.R) * KMH; l.ajusteSurAdherence = l.vAdherence_kmh ? l.vAjuste_kmh / l.vAdherence_kmh : null; }
+  return { muEq, aeroEq: aEq, points: n, rayons: lignes };
+}
+// Limite d'adhérence (traînée compensée) : quel essieu la fixe. Une seconde de plus à la limite, relevé `_mesure` :
+// dérives rapportées au pic (x) et réserve de chaque essieu, 1 − |Fy| / ce que l'essieu peut donner en latéral.
+function limiteEssieux(ctx, cond, R) {
+  const v = vLimite(ctx, cond, R, { compense: true });
+  if (v == null) return null;
+  const t0 = tenir(ctx, cond, R, v, { compense: true }), { et, c } = t0, E = ENTREES.physique;
+  et._mesure = {};
+  let xAv = 0, xAr = 0, rAv = 0, rAr = 0, n = 0;
+  seance(ctx, c, et, E, piloteLigne(ctx, c, v, E), 1, e => {
+    const M = e._mesure;
+    xAv += Math.abs(M.xAv); xAr += Math.abs(M.xAr); rAv += 1 - Math.abs(M.fyAv) / Math.max(M.latAv, 1); rAr += 1 - Math.abs(M.fyAr) / Math.max(M.latAr, 1); n++;
+  });
+  return { v_kmh: v * KMH, xAv: xAv / n, xAr: xAr / n, reserveAv: rAv / n, reserveAr: rAr / n, limitePar: rAv <= rAr ? 'avant' : 'arrière' };
+}
+// Tenue longue en R 80 : dérive gardée 10 s, puis lâchée ; turbo obtenu et vitesse au fil de la tenue.
+function tenueLongue(ctx, cond, R, entree) {
+  const v = vPiste(ctx, cond, R, entree);
+  if (v == null) return null;
+  const d = derive(ctx, cond, R, entree, .95 * v, { tenueMax: 10, jusquAuBout: true, vitesses: true });
+  if (d.departRefuse) return { departRefuse: true };
+  const at = s => { const p = (d.vitesse_kmh || []).find(([t]) => t === s); return p ? p[1] : null; };
+  return { tenue_s: d.tenue_s, annulee: d.annulee, turbo: d.turbo, perte3a6s_kmh: at(3) != null && at(6) != null ? at(3) - at(6) : null, vitesse_kmh: d.vitesse_kmh };
+}
+
+export const essaisP10 = { freinageBlocage, departPatinage, departDose, deuxRouesHerbe, limiteEssieux, vibreurPassage, pleinGazAppui, sillageVirage, regimeSurVitesse, freinMoteurRapports, profilRivaux, tenueLongue, quantiles };
+// Tous les essais du lot 17 ; résultats bruts (doubles complets).
+export function mesurerP10(ctx, o = {}) {
+  const sec = CONDITIONS.sec, R = {}, meteo = ctx.B.meteo;
+  try {
+    R.freinageBlocage = {
+      '300-0': freinageBlocage(ctx, sec, 300, 0), '200-0': freinageBlocage(ctx, sec, 200, 0),
+      '300-0 manette': freinageBlocage(ctx, sec, 300, 0, { entree: { ...ENTREES.manette, aide: 0 } }), '200-0 clavier': freinageBlocage(ctx, sec, 200, 0, { entree: 'clavier' })
+    };
+    R.depart = { sansAide: departPatinage(ctx, sec), legere: departPatinage(ctx, sec, { aide: ENTREES.manette.aide }), dose: departDose(ctx, sec) };
+    R.echelon = par(['150', '250'], v => par(['mi', 'plein'], m => echelon(ctx, sec, +v, 'physique', m)));
+    R.echelonAucune = { '200 plein': echelon(ctx, sec, 200, { ...ENTREES.manette, aide: 0, nom: 'manette aucune' }, 'plein') };
+    R.limiteEssieux = par(['30', '60', '120', '180'], r => limiteEssieux(ctx, sec, +r));
+    R.pleinGaz = { 'R60 0.92': pleinGazAppui(ctx, sec, 60, .92) };
+    R.deuxRouesHerbe = { R120: deuxRouesHerbe(ctx, sec, 120, .5) };
+    R.vibreur = { '150': vibreurPassage(ctx, sec, 150) };
+    R.sillage = { 'R120 10 m': sillageVirage(ctx, sec, 120, 10) };
+    R.deriveXar = par(['40', '80', '120', '250', '400'], r => par(['physique', 'manette', 'clavier'], en => {
+      const v = vPiste(ctx, sec, +r, en); if (v == null) return null;
+      const d = derive(ctx, sec, +r, en, .95 * v, { xar: true });
+      return d.departRefuse ? null : { xAr: d.xAr, turbo: d.turbo, annulee: d.annulee };
+    }));
+    R.tenueLongue = { R80: par(['manette', 'clavier'], en => tenueLongue(ctx, sec, 80, en)) };
+    R.regime = regimeSurVitesse(ctx, sec);
+    R.freinMoteur = freinMoteurRapports(ctx, sec);
+    R.eau = {
+      // au-delà du régime maxi de la 6e, la limite n'est plus mesurée : la valeur est alors un minimum (bornee)
+      aquaplanageR500: par(['slicks', 'pluie'], p => { const v = vLimite(ctx, { eau: 1, pneus: p }, 500, { compense: true }); return v == null ? null : { kmh: v * KMH, bornee: v >= ctx.P.vitessePointe[5] - .5 }; }),
+      neigeR120: par(['slicks', 'pluie'], p => { const v = vLimite(ctx, { eau: 0, neige: 1, pneus: p }, 120); return v == null ? null : v * KMH; })
+    };
+    R.rivaux = profilRivaux(ctx, sec);
+  } finally { ctx.B.meteo = meteo; }
+  return R;
+}
 // ---------------------------------------------------------------- fin de la partie pure
 
 export function executer(o = {}) {
   const ctx = charger(o.src || SRC, o.reglages), R = mesurer(ctx, o), court = !!o.court, brut = JSON.stringify(R);
+  // essais du lot 17 : banc complet seulement, après les essais v1 (ils en reprennent les limites mémorisées) ;
+  // `p10: false` les saute
+  const R10 = court || o.p10 === false ? null : mesurerP10(ctx, o);
   return {
     banc: 'BITUME — banc de conduite', versionBanc: VERSION_BANC, court,
     reglages: { pas_s: DT, cadenceCommandes_hz: 60, clavierTenueMin_s: ENTREES.clavier.tenue, aideDefaut: ENTREES.manette.aide, guidageClavier: ENTREES.clavier.guidage, eauMouillee: CONDITIONS['mouille-slicks'].eau },
     reglagesPARAMS: ctx.reglages, empreinteSources: ctx.empreinteSources,
     // empreinte des résultats bruts (doubles complets) : identique si et seulement si le modèle rend les mêmes nombres
     empreinte: createHash('sha256').update(brut).digest('hex'),
-    resultats: arrondir(R)
+    empreinteP10: R10 ? createHash('sha256').update(JSON.stringify(R10)).digest('hex') : null,
+    resultats: arrondir(R),
+    resultatsP10: R10 ? arrondir(R10) : null
   };
 }
 function arrondir(x) {
@@ -979,7 +1232,39 @@ export function tableau(out) {
   L.push(col('v / condition', 24) + QUATRE.map(e => col(e, 36)).join(''));
   for (const [v, t] of Object.entries(R.herbe)) for (const [k, u] of Object.entries(t))
     L.push(col(v + ' ' + k, 24) + Object.keys(u).map(e => col(u[e].teteAQueue ? 'tête-à-queue' : 'perd ' + nb(u[e].tempsPerdu_s, 2) + ' s, ' + nb(u[e].herbe_s, 1) + ' s dedans, β' + nb(u[e].betaMaxRetour_deg, 1) + '°', 36)).join(''));
+  if (out.resultatsP10) tableauP10(out, L, titre);
   return L.join('\n');
+}
+// Essais du lot 17 (17-CONDUITE.md § 5) ; « capacité » : la demande d'un essieu atteint ce qu'il peut transmettre.
+function tableauP10(out, L, titre) {
+  const T = out.resultatsP10;
+  titre(`Essais du lot 17 — empreinte ${out.empreinteP10.slice(0, 16)}`);
+  L.push(col('freinage, pédale tenue', 26) + col('distance', 11) + col('temps', 9) + col('essieu à la capacité le 1er', 29) + 'à (km/h) avant / arrière');
+  for (const [k, f] of Object.entries(T.freinageBlocage)) L.push(col(k, 26) + col(nb(f.distance_m, 1) + ' m', 11) + col(nb(f.temps_s, 2) + ' s', 9) + col(f.premier || 'aucun', 29) + nb(f.vBlocageAv_kmh, 0) + ' / ' + nb(f.vBlocageAr_kmh, 0));
+  const D = T.depart, d0 = D.sansAide;
+  L.push(`départ plein gaz, aide 0 : sollicitation arrière maxi ${nb(d0.sollicitationArMax, 2)}, à la capacité ${nb(d0.patinage_s, 2)} s, 0-100 ${nb(d0.t100_s, 2)} s, régime mini sur 0,5 s ${nb(d0.regimeMin05s, 0)} tr/min · Légère : 0-100 ${nb(D.legere.t100_s, 2)} s · meilleur départ dosé ${D.dose ? nb(D.dose.t100_s, 2) + ' s (gaz ' + nb(D.dose.gaz, 1) + ')' : '—'}`);
+  for (const [v, t] of Object.entries(T.echelon)) for (const [m, e] of Object.entries(t))
+    L.push(col('échelon ' + v + ' km/h ' + m, 26) + (e.teteAQueue ? 'tête-à-queue' : `t90 lacet ${nb(e.lacetT90_ms, 0)} ms · dépassement ${nb(e.depassement_pct, 1)} % · a_y ${nb(e.ay_g, 2)} g · β ${nb(e.beta_deg, 2)}°`));
+  for (const [k, e] of Object.entries(T.echelonAucune)) L.push(col('échelon ' + k + ', manette Aucune', 26) + (e.teteAQueue ? 'tête-à-queue' : `t90 lacet ${nb(e.lacetT90_ms, 0)} ms · dépassement ${nb(e.depassement_pct, 1)} %`));
+  L.push('limite d’adhérence : ' + Object.entries(T.limiteEssieux).map(([r, x]) => !x ? 'R ' + r + ' —' : `R ${r} par l’${x.limitePar} (x av/ar ${nb(x.xAv, 2)}/${nb(x.xAr, 2)}, réserve ar ${nb(x.reserveAr * 100, 1)} %)`).join(' · '));
+  for (const [k, p] of Object.entries(T.pleinGaz)) L.push(`plein gaz en appui ${k} (rapport ${p.rapport}, aide 0) : x_ar maxi ${nb(p.xArMax, 2)} (dérive arrière ${nb(p.deriveArMax_deg, 1)}°)${p.teteAQueue ? ', tête-à-queue' : ''}`);
+  for (const [k, h] of Object.entries(T.deuxRouesHerbe)) L.push(!h ? `deux roues dans l’herbe ${k} : —` : `deux roues dans l’herbe ${k} (centre visé à ${nb(h.decalage_m, 2)} m, ${nb(h.v_kmh, 1)} km/h = 0,9 × la limite sur piste large) : capacité × ${nb(h.capaciteRelative, 3)} ; β à l’entrée ${nb(h.betaEntree_deg, 2)}° ; écart final ${nb(h.ecartFin_m, 2)} m${h.centreDansLHerbe_s > 0 ? ', centre dans l’herbe ' + nb(h.centreDansLHerbe_s, 2) + ' s' : ''}${h.teteAQueue ? ', tête-à-queue' : ''}`);
+  for (const [k, b] of Object.entries(T.vibreur)) L.push(`vibreur à ${k} km/h : capacité × ${nb(b.rouesSurVibreur, 3)} (roues d’un côté dessus), × ${nb(b.centreSurVibreur, 3)} (centre dessus)`);
+  for (const [k, s] of Object.entries(T.sillage)) L.push(`sillage ${k} (part ${nb(s.part, 2)}) : ${nb(s.derriere_kmh, 1)} km/h contre ${nb(s.seul_kmh, 1)} seul, × ${nb(s.rapport, 4)}`);
+  L.push(col('x_ar en dérive (p10/p50/p90)', 30) + ['physique', 'manette', 'clavier'].map(e => col(e, 24)).join(''));
+  for (const [r, t] of Object.entries(T.deriveXar)) L.push(col('R ' + r, 30) + ['physique', 'manette', 'clavier'].map(e => col(t[e] && t[e].xAr ? nb(t[e].xAr.p10, 2) + '/' + nb(t[e].xAr.p50, 2) + '/' + nb(t[e].xAr.p90, 2) + (t[e].turbo ? ' T' + t[e].turbo.niveau + (t[e].turbo.parfait ? 'p' : '') : '') : '—', 24)).join(''));
+  for (const [e, x] of Object.entries(T.tenueLongue.R80)) L.push(`dérive tenue 10 s, R 80, ${e} : ${!x || x.departRefuse ? 'départ refusé' : 'tenue ' + nb(x.tenue_s, 1) + ' s' + (x.annulee ? ' (annulée)' : '') + ', turbo ' + (x.turbo ? 'T' + x.turbo.niveau : 'aucun') + ', perte de 3 à 6 s ' + nb(x.perte3a6s_kmh, 1) + ' km/h'}`);
+  L.push(`régime × vPointe / v (départ plein gaz) : p10 ${nb(T.regime.p10, 0)} · p50 ${nb(T.regime.p50, 0)} · p90 ${nb(T.regime.p90, 0)}`);
+  const F = T.freinMoteur;
+  L.push(`frein moteur à 10 000 tr/min : 2e ${nb(F['2'].freinMoteur_N, 0)} N (${nb(F['2'].kmh, 0)} km/h), 6e ${nb(F['6'].freinMoteur_N, 0)} N (${nb(F['6'].kmh, 0)} km/h), rapport 2e/6e ${nb(F.rapport2sur6, 2)}`);
+  const aq = x => !x ? '—' : (x.bornee ? '≥ ' : '') + nb(x.kmh, 1);
+  L.push(`eau 1, R 500 (traînée compensée) : slicks ${aq(T.eau.aquaplanageR500.slicks)} km/h, pluie ${aq(T.eau.aquaplanageR500.pluie)} · neige 1, R 120 : slicks ${nb(T.eau.neigeR120.slicks, 1)}, pluie ${nb(T.eau.neigeR120.pluie, 1)} km/h`);
+  tableauRivaux(T.rivaux, L);
+}
+function tableauRivaux(r, L) {
+  L.push(`profil des rivaux : ajustement a_y = μ·g + μ·A·v² sur ${r.points} rayons → μ_eq ${nb(r.muEq, 3)}, A_eq ${nb(r.aeroEq * 1e5, 1)}e-5 (référence actuelle des rivaux : 1,55 et 155e-5)`);
+  L.push(col('R (m)', 8) + col('v adhérence', 13) + col('v réf. rivaux', 15) + col('réf./adh.', 11) + col('v ajustée', 11) + 'ajustée/adh.');
+  for (const x of r.rayons) L.push(col(nb(x.R, 0), 8) + col((x.borne ? '≥ ' : '') + nb(x.vAdherence_kmh, 1), 13) + col(nb(x.vRefRivaux_kmh, 1), 15) + col(nb(x.refSurAdherence, 3), 11) + col(nb(x.vAjuste_kmh, 1), 11) + nb(x.ajusteSurAdherence, 3));
 }
 
 // ---------------------------------------------------------------- ligne de commande
@@ -988,6 +1273,13 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const r = opt('regler'), reglages = typeof r !== 'string' ? null : r.trim().startsWith('{') ? JSON.parse(r)
     : Object.fromEntries(r.split(',').map(x => x.split('=').map(y => y.trim())).map(([k, v]) => [k, Number(v)]));
   if (opt('script-page')) { writeFileSync(opt('script-page'), scriptPage()); console.log('script écrit : ' + opt('script-page')); process.exit(0); }
+  if (opt('rivaux')) {
+    // profil des rivaux seul : vitesses d'adhérence de R 20 à R 400 et ajustement (μ_eq, A_eq) pour circuit.js
+    const ctx = charger(opt('src') || SRC, reglages), r = profilRivaux(ctx, CONDITIONS.sec), L = [];
+    tableauRivaux(r, L); console.log(L.join('\n'));
+    if (opt('json')) writeFileSync(opt('json'), JSON.stringify({ empreinteSources: ctx.empreinteSources, reglagesPARAMS: reglages, rivaux: arrondir(r) }, null, 1) + '\n');
+    process.exit(0);
+  }
   if (opt('verifier-page')) {
     // sortie de tools/page-essai.mjs sur le script ci-dessus, comparée au sous-ensemble court sous Node
     const page = JSON.parse(readFileSync(opt('verifier-page'), 'utf8')), node = executer({ src: opt('src') || SRC, court: true });
@@ -1008,6 +1300,6 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const t0 = Date.now(), out = executer({ src: opt('src') || SRC, court: !!opt('court'), reglages });
   out.calcul = { duree_s: (Date.now() - t0) / 1000, node: process.version };
   console.log(tableau(out));
-  console.log(`\n(calcul ${nb(out.calcul.duree_s, 1)} s)`);
+  console.log(`\n(calcul ${nb(out.calcul.duree_s, 1)} s)${out.empreinteP10 ? ' · empreinte des essais du lot 17 ' + out.empreinteP10.slice(0, 16) : ''}`);
   if (opt('json')) writeFileSync(opt('json'), JSON.stringify(out, null, 1) + '\n');
 }

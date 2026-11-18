@@ -30,6 +30,8 @@ MODULES = [
     'ferro/gpu-profile.js',
     'circuit.js',
     'ferro/vehicle-dynamics.js',
+    # loi de pneu du lot 17 (BITUME, hors de FERRO) : lue par conduite.js
+    'pneu.js',
     'conduite.js',
     'degats.js',
     'contacts.js',

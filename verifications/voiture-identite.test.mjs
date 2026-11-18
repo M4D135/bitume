@@ -24,9 +24,10 @@ function charger(fichiers) {
   for (const f of fichiers) vm.runInContext(fs.readFileSync(path.join(src, f), 'utf8'), ctx, { filename: f });
   return ctx.BITUME;
 }
+// conduite.js lit la loi de pneu (pneu.js, lot 17), placée avant elle comme dans la page (construire.py, MODULES)
 const CONFIGURATIONS = {
-  primitives: ['carene.js', 'main.js', 'ferro/vehicle-dynamics.js', 'conduite.js', 'voiture.js'],
-  emprise: ['carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js', 'ferro/vehicle-dynamics.js', 'conduite.js', 'voiture.js']
+  primitives: ['carene.js', 'main.js', 'ferro/vehicle-dynamics.js', 'pneu.js', 'conduite.js', 'voiture.js'],
+  emprise: ['carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js', 'ferro/vehicle-dynamics.js', 'pneu.js', 'conduite.js', 'voiture.js']
 };
 
 // ---------------------------------------------------------------- empreinte
