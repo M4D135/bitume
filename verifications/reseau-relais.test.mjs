@@ -119,9 +119,9 @@ function courtier(M, url, o = {}) {
           if (!abonnes.has(t)) abonnes.set(t, new Set());
           abonnes.get(t).add(conn); sujets.add(t); codes.push(0);
         }
-    conn.pousser(Buffer.concat([Buffer.from([0x90, 2 + codes.length]), Buffer.from(corps.subarray(0, 2)), Buffer.from(codes)]));
-    if (o.demesure) conn.pousser(Buffer.from([0x30, 0x80, 0x80, 0x40]));
-  } else if (type === 3) {   // PUBLISH (QoS 0 côté client), rendu à tous les abonnés du sujet, l'auteur compris
+        conn.pousser(Buffer.concat([Buffer.from([0x90, 2 + codes.length]), Buffer.from(corps.subarray(0, 2)), Buffer.from(codes)]));
+        if (o.demesure) conn.pousser(Buffer.from([0x30, 0x80, 0x80, 0x40]));
+      } else if (type === 3) {   // PUBLISH (QoS 0 côté client), rendu à tous les abonnés du sujet, l'auteur compris
         const [t, p] = lireChaine(corps, 0), charge = Buffer.from(corps.subarray(p));
         s.publications++;
         for (const c of abonnes.get(t) || []) c.livrer(t, charge);
