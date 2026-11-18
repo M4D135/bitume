@@ -50,6 +50,13 @@
   }
   // Primitive alignée sur un cap horizontal a (le x local suit la tangente (cos a, sin a)).
   const capRot = a => [0, -a, 0];
+  // Budget d'appels de dessin des circuits dessinés (lot 22, Route-des-Cimes). Découpé comme un tour de 5,2 km, le tour
+  // de 9,7 km avait presque deux fois plus de morceaux (chaussée, tuiles de terrain, lots de mobilier près de la piste
+  // et au loin), donc d'appels de dessin : 215 en Légère contre 162 au plus pour les sept autres (six poses). Pour la
+  // génération 3, chaque morceau s'agrandit dans le rapport du tour à 5,2 km, en long comme en large : le tour est
+  // découpé comme un tour de 5,2 km vu de plus loin. Rien n'est retiré ni coupé à distance ; les circuits d'avant
+  // (rapport 1) gardent leur découpe au bit près.
+  const echelleMorceaux = c => c && c.generation === 3 ? Math.max(1, c.longueur / 5200) : 1;
 
   // ---------------------------------------------------------------- thèmes
   const THEMES = {
@@ -191,7 +198,7 @@
   }
 
   function nappesRoute(c, th, lim, naturel = false, ecologie = null) {
-    const w = c.largeur / 2, n = c.n, LIGNES = 60, liste = [];
+    const w = c.largeur / 2, n = c.n, LIGNES = Math.round(60 * echelleMorceaux(c)), liste = [];
     const habitat = {};
     const asphalte = i => { const v = .165 + .035 * fbm(i * c.pas / 90, 3.7, c.graine + 5, 2); return [v, v, v * 1.04]; };
     const blanc = [.86, .86, .83], rouge = [.74, .09, .07], blancBordure = [.90, .90, .87];
@@ -338,7 +345,7 @@
     for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
       const r = hauteur(x0 + i * pasT, z0 + j * pasT); H[j * nx + i] = r.h; D[j * nx + i] = r.d;
     }
-    const liste = [], TUILE = 14, habitat = {};
+    const liste = [], TUILE = Math.round(14 * echelleMorceaux(c)), habitat = {};
     const couleur = (h, d, ny, x, z) => {
       const tache = fbm(x / 140, z / 140, g + 3, 3);
       let col = melange(th.herbe, th.terre, lisse(.45, .8, tache) * .7), mat = 8;
@@ -709,10 +716,10 @@
         }
       }
     }
-    const groupes = new Map();   // lots par portion de 150 m, plus lots lointains
-    const TRONCON = 150;
+    const groupes = new Map();   // lots par portion de 150 m, plus lots lointains par carré de 420 m (voir echelleMorceaux)
+    const TRONCON = 150 * echelleMorceaux(c), LOINTAIN = 420 * echelleMorceaux(c);
     const lotDe = (x, z, i) => {
-      const cle = i >= 0 ? 'p' + Math.floor(i * c.pas / TRONCON) : 'l' + Math.floor(x / 420) + ',' + Math.floor(z / 420);
+      const cle = i >= 0 ? 'p' + Math.floor(i * c.pas / TRONCON) : 'l' + Math.floor(x / LOINTAIN) + ',' + Math.floor(z / LOINTAIN);
       let l = groupes.get(cle); if (!l) groupes.set(cle, l = { objets: [], loin: [], lointain: i < 0 }); return l;
     };
     const ajouter = (objets, loin, x, z) => {
