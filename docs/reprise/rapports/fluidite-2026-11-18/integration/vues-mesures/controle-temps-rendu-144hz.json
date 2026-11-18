@@ -1,0 +1,18 @@
+{
+ "valeur": {
+  "horloge": {
+   "images": 143,
+   "sansAvance": 23,
+   "min": 0,
+   "max": 8.333
+  },
+  "tRendu": {
+   "images": 143,
+   "sansAvance": 0,
+   "min": 6.944,
+   "max": 6.944
+  },
+  "ecartEffetsMaxMs": 0
+ },
+ "erreurs": []
+}

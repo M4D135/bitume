@@ -1,0 +1,19 @@
+{
+ "valeur": {
+  "solo": {
+   "melangesParImage": 5,
+   "stabilisationsParImage": 1
+  },
+  "duo": {
+   "melangesParImage": 9,
+   "stabilisationsParImage": 1
+  },
+  "memeObjet": false,
+  "ombresCoupees": {
+   "avant": true,
+   "apres": false,
+   "rendu": true
+  }
+ },
+ "erreurs": []
+}

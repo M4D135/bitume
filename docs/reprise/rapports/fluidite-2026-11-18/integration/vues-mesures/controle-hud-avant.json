@@ -1,0 +1,104 @@
+{
+ "valeur": {
+  "phase": "course",
+  "mode": "course",
+  "a60": {
+   "actuel": 60,
+   "vitesse": 54,
+   "delta": 0,
+   "classementLignes": 3,
+   "classementCellules": 0,
+   "plans": 60,
+   "lecturesGeometrie": 0
+  },
+  "a144": {
+   "actuel": 119.5,
+   "vitesse": 3.5,
+   "delta": 0,
+   "classementLignes": 3.5,
+   "classementCellules": 0,
+   "plans": 142.5,
+   "lecturesGeometrie": 0
+  },
+  "carteMasquee60": {
+   "actuel": 60,
+   "vitesse": 4,
+   "delta": 0,
+   "classementLignes": 3,
+   "classementCellules": 0,
+   "plans": 60,
+   "lecturesGeometrie": 0
+  },
+  "carteRevenue60": {
+   "actuel": 60,
+   "vitesse": 25,
+   "delta": 0,
+   "classementLignes": 4,
+   "classementCellules": 0,
+   "plans": 60,
+   "lecturesGeometrie": 1
+  },
+  "lignesClassement": ":1OkaforTête | :2Duvernet+0,1 | :3Castagnet+1,2 | saut: | :9Lindgren+0,2 | joueur:10Vous+0,0 | :11Kowalczyk+0,2",
+  "messages": {
+   "avantRappel": {
+    "classe": "message visible court",
+    "texte": "Son coupé"
+   },
+   "apres1": {
+    "classe": "message visible court",
+    "texte": "Son coupé",
+    "anim": {
+     "nom": "message",
+     "t": 0
+    }
+   },
+   "vieilli": {
+    "nom": "message",
+    "t": 383
+   },
+   "apres2": {
+    "classe": "message visible court",
+    "texte": "Son rétabli",
+    "anim": {
+     "nom": "message",
+     "t": 0
+    }
+   },
+   "apres3": {
+    "classe": "message visible court",
+    "texte": "Son rétabli",
+    "anim": {
+     "nom": "message",
+     "t": 0
+    }
+   }
+  },
+  "eclat": {
+   "e0": {
+    "classe": "case eclat",
+    "position": 10
+   },
+   "e1": {
+    "classe": "case eclat",
+    "anim": {
+     "nom": "eclat",
+     "t": 0
+    }
+   },
+   "e1b": {
+    "nom": "eclat",
+    "t": 300
+   },
+   "e2": {
+    "classe": "case eclat",
+    "anim": {
+     "nom": "eclat",
+     "t": 0
+    }
+   },
+   "position": 10
+  },
+  "lecturesGeometrieTotal": 7
+ },
+ "erreurs": []
+}
