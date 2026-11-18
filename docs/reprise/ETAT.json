@@ -7,20 +7,24 @@
     "version_cible": "0.2.33",
     "ferro_version_base": "0.3.8",
     "statut": "lot_10_en_cours",
-    "lot": "irregularite_optimisation_autodetection",
+    "lot": "nature_saisons_detection_conditions_menus",
     "fiche": "docs/reprise/10-NATURE-ET-AUTODETECTION.md",
     "commit_publie": null,
-    "prochaine_action": "Terminer ecologie/faune/moteur et detection graphique, qualifier puis publier moteur et jeu.",
-    "precision_utilisateur": "Vraies zones riches et vides, priorite aux astuces allegeant le rendu de l’herbe ; benchmark avant titre et relancable en options pour reappliquer tous les reglages graphiques."
+    "prochaine_action": "Finir intégration conditions, vitre et menus ; qualifier et publier BITUME 0.2.33 avec FERRO 0.3.9 déjà publié. Ensuite lot11 : 16 circuits globaux très distincts, sources Vroom officiel et dépôt personnel Vroom Unreal à examiner.",
+    "precision_utilisateur": "Clairières et poches riches ; herbe 3D proche puis grossière et simple terrain coloré au loin ; saisons, moment et météo seulement avant course, modes manuel/aléatoire/réel. Météo par IP et horloge réelle ; en ligne, données de l’hôte uniquement. Pluie/neige sur la vitre, flocons dans l’air. Menus regroupés et navigation manette.",
+    "checkpoint_commit": "b6ee54203e7cbceea252094e29d3f931d347ac65"
   },
   "integration": {
     "nouvelle_branche": false,
     "force_push": false,
     "publication_ferro": {
-      "version": "0.3.8",
-      "commit": "ef722c0c56e04a20574db53b057f339968d714c3",
+      "version": "0.3.9",
+      "commit": "89c784163b8671676b11f3d4114fab22f6200a7e",
+      "arbre": "8d5337c5457b523046b6652854e3949e74f1febd",
       "branche": "main",
-      "verifiee": true
+      "verifiee": true,
+      "installee": true,
+      "modules_identiques": 34
     },
     "derniere_production_documentee": {
       "version": "0.2.30",
@@ -60,5 +64,23 @@
     "version": "0.2.32",
     "commit": "e90b08f550eae2bda47ad14d4093911d3fd793d2",
     "recu": "docs/reprise/rapports/prairies-vivantes-2026-11-18/publication.json"
+  },
+  "lot_suivant": {
+    "numero": 11,
+    "cible": "16 circuits mondiaux distincts",
+    "regions": [
+      "Europe",
+      "Asie",
+      "Afrique",
+      "USA",
+      "Europe du Nord",
+      "Europe de l’Est",
+      "Islande avec aurores nocturnes"
+    ],
+    "sources_demandees": [
+      "Vroom officiel",
+      "dépôt GitHub personnel Vroom Unreal"
+    ],
+    "statut": "à examiner après gel du lot10"
   }
 }

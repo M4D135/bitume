@@ -58,6 +58,20 @@ Node pour les tests. Ordre de chargement : celui de `MODULES` dans `construire.p
 obstacles, course, son, decor, carene, humain-donnees, humain-corps, main, voiture, traces, realisateur, meteo, reseau,
 jeu).
 
+## Décisions de David — 18 novembre 2026, nature et conditions
+
+- Conditions uniquement avant course : saison, moment et météo ont chacun les modes Manuel, Aléatoire et Réel.
+- Le mode réel demandé utilise la date et l’heure réelles, et la météo de la localisation approximative du joueur par IP.
+  Cette demande autorise les appels HTTPS de localisation IP et de météo uniquement pour ce mode ; aucun appel de ce
+  type en Manuel ou Aléatoire. Prévoir une reprise locale explicite en cas de réseau indisponible ; ne pas persister IP
+  ni coordonnées. Les pilotes en ligne utilisent les conditions choisies par l’hôte.
+- Printemps fleuri blanc/rose ; été ensoleillé à végétation sèche ; automne orangé avec feuilles qui tombent ; hiver
+  enneigé sauf Port-Sable, circuit du Sud. Neige visible dans l’air et sur la vitre, pluie ruisselant sur la vitre.
+- Menus regroupés en onglets, entièrement praticables à la manette. Préserver le lien m4d135 de téléchargement.
+- Vraies clairières et poches denses ; herbe détaillée proche, simplifiée au milieu, couleurs du terrain au loin.
+- Courte détection graphique avant le titre au premier lancement, mémorisée ; relance dans Image appliquant les
+  réglages recommandés même après modification manuelle. Ne pas annoncer de gain FPS sans mesure matérielle.
+
 Formes libres : `window.FRender.forme(nom, triangles)` enregistre une forme faite de triangles `[p0, p1, p2, n0, n1,
 n2]` tenus dans le cube unité (`B.carene.normaliser`) ; l'instance porte la vraie taille dans `s`. À appeler avant
 `FRender.create` : `voiture.js` le fait à son chargement.
