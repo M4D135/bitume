@@ -230,5 +230,157 @@
     return lots;
   }
 
-  B.lieux = { echantillonPiste, lot, nappe, sommet, finir, boite, alea, hache, bruit, fbm, muretsLacets, parapets };
+  function piliersGalerie(circuit) {
+    const s0 = 6000;
+    const s1 = 6300;
+    const pas_pilier = 15;
+    const rayon = 0.4;
+    const hauteur = 5;
+    const nb_faces = 8;
+    const decalage = circuit.largeur / 2 + 0.2;
+    const col = [0.45, 0.43, 0.40];
+    const lots = [];
+    const nSeg = Math.ceil((s1 - s0) / pas_pilier);
+    for (let i = 0; i < nSeg; i++) {
+      const s = s0 + i * pas_pilier;
+      const piste = echantillonPiste(circuit, s);
+      const x = piste.x;
+      const z = piste.z;
+      const r0 = piste.r0;
+      const r1 = piste.r1;
+      const r2 = piste.r2;
+      const lat = -1 * decalage;
+      const cx = x + r2[0] * lat;
+      const cz = z + r2[2] * lat;
+      const n = nappe();
+      const hh = hauteur / 2;
+      const y_bot = hh + r1[1] * hh * (-1);
+      const y_top = hh + r1[1] * hh * 1;
+      for (let f = 0; f < nb_faces; f++) {
+        const a1 = (f / nb_faces) * Math.PI * 2;
+        const a2 = ((f + 1) % nb_faces) / nb_faces * Math.PI * 2;
+        const c1 = Math.cos(a1), sn1 = Math.sin(a1);
+        const c2 = Math.cos(a2), sn2 = Math.sin(a2);
+        const v0 = [cx + r0[0]*rayon*c1 + r2[0]*rayon*sn1, y_bot, cz + r0[2]*rayon*c1 + r2[2]*rayon*sn1];
+        const v1 = [cx + r0[0]*rayon*c2 + r2[0]*rayon*sn2, y_bot, cz + r0[2]*rayon*c2 + r2[2]*rayon*sn2];
+        const v2 = [cx + r0[0]*rayon*c2 + r2[0]*rayon*sn2, y_top, cz + r0[2]*rayon*c2 + r2[2]*rayon*sn2];
+        const v3 = [cx + r0[0]*rayon*c1 + r2[0]*rayon*sn1, y_top, cz + r0[2]*rayon*c1 + r2[2]*rayon*sn1];
+        const nm = (a1 + a2) / 2;
+        const nc = Math.cos(nm), ns = Math.sin(nm);
+        const no = [r0[0]*nc + r2[0]*ns, 0, r0[2]*nc + r2[2]*ns];
+        sommet(n, v0, no, 'pierre', col);
+        sommet(n, v1, no, 'pierre', col);
+        sommet(n, v2, no, 'pierre', col);
+        sommet(n, v3, no, 'pierre', col);
+        const base = n.s.length - 4;
+        n.i.push(base, base+1, base+2, base, base+2, base+3);
+      }
+      sommet(n, [cx, y_bot, cz], [0, -1, 0], 'pierre', col);
+      const base_bot = n.s.length - 1;
+      for (let f = 0; f < nb_faces; f++) {
+        const a1 = (f / nb_faces) * Math.PI * 2;
+        const a2 = ((f + 1) % nb_faces) / nb_faces * Math.PI * 2;
+        const v1 = [cx + r0[0]*rayon*Math.cos(a1) + r2[0]*rayon*Math.sin(a1), y_bot, cz + r0[2]*rayon*Math.cos(a1) + r2[2]*rayon*Math.sin(a1)];
+        const v2 = [cx + r0[0]*rayon*Math.cos(a2) + r2[0]*rayon*Math.sin(a2), y_bot, cz + r0[2]*rayon*Math.cos(a2) + r2[2]*rayon*Math.sin(a2)];
+        sommet(n, v1, [0, -1, 0], 'pierre', col);
+        sommet(n, v2, [0, -1, 0], 'pierre', col);
+        const b = n.s.length - 2;
+        n.i.push(base_bot, b, b+1);
+      }
+      sommet(n, [cx, y_top, cz], [0, 1, 0], 'pierre', col);
+      const base_top = n.s.length - 1;
+      for (let f = 0; f < nb_faces; f++) {
+        const a1 = (f / nb_faces) * Math.PI * 2;
+        const a2 = ((f + 1) % nb_faces) / nb_faces * Math.PI * 2;
+        const v1 = [cx + r0[0]*rayon*Math.cos(a1) + r2[0]*rayon*Math.sin(a1), y_top, cz + r0[2]*rayon*Math.cos(a1) + r2[2]*rayon*Math.sin(a1)];
+        const v2 = [cx + r0[0]*rayon*Math.cos(a2) + r2[0]*rayon*Math.sin(a2), y_top, cz + r0[2]*rayon*Math.cos(a2) + r2[2]*rayon*Math.sin(a2)];
+        sommet(n, v1, [0, 1, 0], 'pierre', col);
+        sommet(n, v2, [0, 1, 0], 'pierre', col);
+        const b = n.s.length - 2;
+        n.i.push(base_top, b+1, b);
+      }
+      finir(n);
+      lots.push(lot([n], 'pilier', { s, cote: -1 }));
+    }
+    return lots;
+  }
+
+  function portailsTunnels(circuit) {
+    const tunnels = [
+      { nom: 'rocher', s_entree: 4200, s_sortie: 4505 },
+      { nom: 'echelles', s_entree: 6500, s_sortie: 6670 }
+    ];
+    const largeur_ouverture = circuit.largeur + 2;
+    const hauteur_ouverture = 5.5;
+    const epaisseur = 1.2;
+    const col = [0.38, 0.36, 0.34];
+    const lots = [];
+    for (let t = 0; t < tunnels.length; t++) {
+      const tun = tunnels[t];
+      const faces = [
+        { nom: 'entree', s: tun.s_entree },
+        { nom: 'sortie', s: tun.s_sortie }
+      ];
+      for (let f = 0; f < faces.length; f++) {
+        const face = faces[f];
+        const piste = echantillonPiste(circuit, face.s);
+        const x = piste.x;
+        const z = piste.z;
+        const r0 = piste.r0;
+        const r1 = piste.r1;
+        const r2 = piste.r2;
+        const n = nappe();
+        const he = epaisseur / 2;
+        const demi_larg = largeur_ouverture / 2;
+        const demi_haut = hauteur_ouverture / 2;
+        const poutres = [
+          { lat: -(demi_larg - he), y: demi_haut, hl: he, hh: demi_haut, he: he },
+          { lat: (demi_larg - he), y: demi_haut, hl: he, hh: demi_haut, he: he },
+          { lat: 0, y: hauteur_ouverture + he, hl: he, hh: he, he: demi_larg },
+          { lat: 0, y: -he, hl: he, hh: he, he: demi_larg }
+        ];
+        for (let p = 0; p < poutres.length; p++) {
+          const poutre = poutres[p];
+          const pcx = x + r2[0] * poutre.lat;
+          const pcz = z + r2[2] * poutre.lat;
+          const pcy = poutre.y;
+          const p_hl = poutre.hl;
+          const p_hh = poutre.hh;
+          const p_he = poutre.he;
+          for (let a = -1; a <= 1; a += 2) {
+            for (let b = -1; b <= 1; b += 2) {
+              for (let c = -1; c <= 1; c += 2) {
+                const vx = pcx + r0[0] * p_hl * a + r1[0] * p_hh * b + r2[0] * p_he * c;
+                const vy = pcy + r1[1] * p_hh * b;
+                const vz = pcz + r0[2] * p_hl * a + r1[2] * p_hh * b + r2[2] * p_he * c;
+                const no = [
+                  r0[0] * a + r1[0] * b + r2[0] * c,
+                  r0[1] * a + r1[1] * b + r2[1] * c,
+                  r0[2] * a + r1[2] * b + r2[2] * c
+                ];
+                sommet(n, [vx, vy, vz], no, 'pierre', col);
+              }
+            }
+          }
+          const idx = [
+            0,1,3, 0,3,2,
+            4,6,7, 4,7,5,
+            0,4,5, 0,5,1,
+            2,3,7, 2,7,6,
+            0,2,6, 0,6,4,
+            1,5,7, 1,7,3
+          ];
+          const base = n.s.length - 8;
+          for (let k = 0; k < idx.length; k++) {
+            n.i.push(base + idx[k]);
+          }
+        }
+        finir(n);
+        lots.push(lot([n], 'portail', { s: face.s, tunnel: tun.nom, face: face.nom }));
+      }
+    }
+    return lots;
+  }
+
+  B.lieux = { echantillonPiste, lot, nappe, sommet, finir, boite, alea, hache, bruit, fbm, muretsLacets, parapets, piliersGalerie, portailsTunnels };
 })(globalThis.BITUME = globalThis.BITUME || {});
