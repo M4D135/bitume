@@ -1461,18 +1461,36 @@
   const etatProfils = B.graphismes.etatStable();
   let capacitesRendu = B.graphismes.capacites({ msaa: 0, shadowMapScale: 1, reflections: false }, true, 1);
   const horlogeProfils = () => performance.now() / 1000;
+  // Profil résolu, mémorisé sur tout ce qui le décide : qualité (du banc ou du menu), niveau du gouverneur, ancre du
+  // décor, capacités du moteur et les quatre options du menu. melange normalise des chaînes, crée une vingtaine
+  // d'objets et les gèle ; rappelé deux à cinq fois par vue et par image (neuf à deux), il ne se recalcule plus que
+  // lorsqu'une de ces entrées change : réglage, palier du gouverneur, détection graphique. Même résultat, objet figé.
+  const profilVu = { qualite: null, n: -1, decor: null, capacites: null, anticrenelage: null, ombres: null, vegetation: null, faune: null, profil: null };
   function profilDe(S) {
-    return B.graphismes.melange(S && S.banc ? S.banc.qualite : reglages.qualite, palier.n,
-      { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages });
+    const q = S && S.banc ? S.banc.qualite : reglages.qualite, m = profilVu;
+    if (m.profil === null || m.qualite !== q || m.n !== palier.n || m.decor !== etatProfils.decor || m.capacites !== capacitesRendu ||
+        m.anticrenelage !== reglages.anticrenelage || m.ombres !== reglages.ombres || m.vegetation !== reglages.vegetation || m.faune !== reglages.faune) {
+      m.qualite = q; m.n = palier.n; m.decor = etatProfils.decor; m.capacites = capacitesRendu;
+      m.anticrenelage = reglages.anticrenelage; m.ombres = reglages.ombres; m.vegetation = reglages.vegetation; m.faune = reglages.faune;
+      m.profil = B.graphismes.melange(q, palier.n, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages });
+    }
+    return m.profil;
   }
   // Le décor (matières et massifs) est bâti une fois par séance sur un palier « ancre ». Le gouverneur Auto ne le
   // fait jamais bouger en pleine course : rebâtir nappes, lots et tampons au milieu d'une course toucherait les
   // stands, les caméras et les rétroviseurs. Le budget du décor suit donc l'ancre et prend effet à la séance
   // suivante ; ombres, halo, reflets, glaces et cadence du second joueur s'appliquent à l'image, sans redémarrer la
   // course. La résolution attend un arrêt (voir appliquerPalierEnCourse).
+  // majPalier l'appelle à chaque image. stabiliser ne change rien quand l'état a déjà le palier visé pour cette
+  // qualité et ce niveau du gouverneur, sans demande ni décor en attente (sa temporisation doit être rappelée tant
+  // que l'un des deux attend) : l'appel est alors sauté. Même état, sans le résultat figé ni la normalisation de
+  // chaîne qu'il allouait à chaque image. Le palier visé ne se recalcule que si la qualité ou le niveau change.
+  const cibleProfils = { qualite: null, n: -1, palier: null };
   function majProfils(S) {
-    return B.graphismes.stabiliser(etatProfils, S && S.banc ? S.banc.qualite : reglages.qualite,
-      palier.n, horlogeProfils());
+    const q = S && S.banc ? S.banc.qualite : reglages.qualite, e = etatProfils, c = cibleProfils;
+    if (c.qualite !== q || c.n !== palier.n) { c.qualite = q; c.n = palier.n; c.palier = B.graphismes.resoudre(q, palier.n); }
+    if (e.palier !== null && e.palier === c.palier && e.demande === null && e.decor === e.palier) return null;
+    return B.graphismes.stabiliser(e, q, palier.n, horlogeProfils());
   }
   // Le gouverneur ne juge que les séances où un joueur (ou la démo) roule, en qualité Auto, hors banc et référence.
   function gouverneurActif(S) {
