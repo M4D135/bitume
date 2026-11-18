@@ -93,9 +93,13 @@ await verifier('cache : même version gardée ; nouvelle version, autre carte ou
   const passe = { revision: A.REVISION, statut: 'interrompu', motif: 'annule', empreinte: ici, tentatives: 1 };
   assert.ok(A.cacheValide(passe, ici));
   assert.equal(A.cacheValide(passe, A.empreinte('GPU-A', '0.2.41')), false, 'la version suivante la refait');
-  const coupe = { ...passe, motif: 'onglet_masque' };
+  const coupe = { ...passe, motif: 'delai' };
   assert.equal(A.cacheValide(coupe, ici), false, 'première interruption : refaite à l’ouverture suivante');
   assert.ok(A.cacheValide({ ...coupe, tentatives: A.TENTATIVES }, ici), 'deuxième interruption : on n’insiste plus');
+  // C1 : un onglet passé en arrière-plan n'est jamais un verdict, quel que soit le compte
+  const cache = { ...passe, motif: 'onglet_masque' };
+  for (const t of [0, 1, A.TENTATIVES, 9]) assert.equal(A.cacheValide({ ...cache, tentatives: t }, ici), false, 'onglet caché, ' + t);
+  assert.equal(A.tentatives({ ...coupe, tentatives: 1 }, { empreinte: ici, motif: 'onglet_masque' }), 1, 'onglet caché : pas compté');
   // écran bridé à 30 Hz pendant la mesure : verdict provisoire, refait ; deux mesures bridées de suite valent verdict
   const bridee = { ...c, cadenceBridee: true, tentatives: 1 };
   assert.equal(A.cacheValide(bridee, ici), false, 'mesure bridée : refaite à l’ouverture suivante');
@@ -138,9 +142,12 @@ await verifier('fusion à la main : tout est remplacé, même les options touch�
 await verifier('trace d’une détection passée ou interrompue : tentatives comptées par version, référence gardée', () => {
   const ici = A.empreinte('GPU-A', '0.2.40'), ref = A.reglages('medium');
   const precedent = { revision: A.REVISION, statut: 'ok', empreinte: A.empreinte('GPU-A', '0.2.39'), appliques: ref };
-  let m = A.marquer(precedent, { statut: 'interrompu', motif: 'onglet_masque', empreinte: ici });
-  assert.equal(m.statut, 'interrompu'); assert.equal(m.motif, 'onglet_masque'); assert.equal(m.tentatives, 1);
+  let m = A.marquer(precedent, { statut: 'interrompu', motif: 'contexte_perdu', empreinte: ici });
+  assert.equal(m.statut, 'interrompu'); assert.equal(m.motif, 'contexte_perdu'); assert.equal(m.tentatives, 1);
   assert.deepEqual(m.appliques, ref); assert.equal(A.cacheValide(m, ici), false);
+  // C1 : l'onglet caché laisse une trace sans tentative de plus ; le test reviendra
+  m = A.marquer(m, { statut: 'interrompu', motif: 'onglet_masque', empreinte: ici });
+  assert.equal(m.tentatives, 1); assert.equal(A.cacheValide(m, ici), false); assert.deepEqual(m.appliques, ref);
   m = A.marquer(m, { statut: 'interrompu', motif: 'delai', empreinte: ici });
   assert.equal(m.tentatives, 2); assert.ok(A.cacheValide(m, ici)); assert.deepEqual(m.appliques, ref);
   m = A.marquer(m, { statut: 'interrompu', motif: 'annule', empreinte: A.empreinte('GPU-A', '0.2.41') });

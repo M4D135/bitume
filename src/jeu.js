@@ -2757,6 +2757,15 @@
       });
     });
   }
+  // Page en arrière-plan (lien ouvert dans un nouvel onglet, session du navigateur reprise) : un onglet caché ne
+  // dessine rien et ne dit rien de la machine. Le test attend que le joueur regarde la page.
+  function premierPlan() {
+    if (!document.hidden) return Promise.resolve();
+    return new Promise(resolve => {
+      const vu = () => { if (!document.hidden) { document.removeEventListener('visibilitychange', vu); resolve(); } };
+      document.addEventListener('visibilitychange', vu);
+    });
+  }
   // toutAppliquer (détection lancée à la main) : demande explicite de remplacer TOUS les choix graphiques. Une
   // détection automatique (nouvelle version) ne change que les options que le joueur n'a pas modifiées depuis la
   // précédente (sans détection précédente : depuis les valeurs d'usine) ; elle mémorise la recommandation, que
@@ -2812,12 +2821,20 @@
       // du test. La mesure paie ainsi les glaces comme la course. Le moteur prêté rend ensuite le décor de la séance.
       glacesPretees = !!retro.rendu;
       parcours = B.sceneBench.creer(rendu, { ...capacitesRendu, gpuModeste: false }, glacesPretees ? { glaces: retro.rendu } : undefined);
-      // terminer : lecture d'un pixel qui force la fin du travail graphique, une fois par rafale d'images
-      resultat = await B.autoconfig.executer({ empreinte: empreinteDetection, image: imageDetection,
-        annule: () => annulerDetection, masque: () => document.hidden, perdu: () => contexteRenduPerdu,
-        sonder: parcours.sonder, preparer: parcours.preparer, activerGlaces: parcours.activerGlaces, simuler: parcours.simuler,
-        dessiner: parcours.dessiner, terminer: parcours.terminer,
-        progression: (texte, fraction) => { $('detection-texte').textContent = texte; $('detection-progres').value = Math.min(1, fraction); } });
+      // terminer : lecture d'un pixel qui force la fin du travail graphique, une fois par rafale d'images. Onglet passé
+      // en arrière-plan pendant le test : il reprend au retour du joueur, dans la même séance, sans compter d'échec
+      // (vingt reprises au plus : au-delà, le test reprendra à l'ouverture suivante).
+      for (let reprises = 0; ; reprises++) {
+        resultat = await B.autoconfig.executer({ empreinte: empreinteDetection, image: imageDetection,
+          annule: () => annulerDetection, masque: () => document.hidden, perdu: () => contexteRenduPerdu,
+          sonder: parcours.sonder, preparer: parcours.preparer, activerGlaces: parcours.activerGlaces, simuler: parcours.simuler,
+          dessiner: parcours.dessiner, terminer: parcours.terminer,
+          progression: (texte, fraction) => { $('detection-texte').textContent = texte; $('detection-progres').value = Math.min(1, fraction); } });
+        if (resultat.statut !== 'interrompu' || resultat.motif !== 'onglet_masque' || annulerDetection || reprises >= 20) break;
+        $('detection-texte').textContent = 'Test en pause : il reprend quand la page revient au premier plan.';
+        await premierPlan();
+        await imageDetection();
+      }
       // une détection à la main annulée laisse la précédente en place
       if (auDemarrage || resultat.statut === 'ok') derniereDetection = resultat;
       appliquerDetection(resultat, !auDemarrage);
@@ -2879,7 +2896,8 @@
       // Le test tourne au premier chargement d'une version sur cette machine, puis plus jamais pour elle (ni au
       // redimensionnement, ni sur un autre écran) ; il reste relançable dans l'onglet Image. Les détections des
       // révisions précédentes (dont celle qui choisissait Légère sur un Apple M5) sont refaites une fois.
-      if (!B.autoconfig.cacheValide(mesure, empreinteDetection())) await detecterGraphismes(true);
+      // Page ouverte en arrière-plan : le test attend qu'elle passe au premier plan (premierPlan).
+      if (!B.autoconfig.cacheValide(mesure, empreinteDetection())) { await premierPlan(); await detecterGraphismes(true); }
       else {
         derniereDetection = mesure;
         if (mesure.statut === 'ok') {

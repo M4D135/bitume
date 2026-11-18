@@ -26,7 +26,12 @@ const orchestration = new Function('base', 'scenario', `
   const window = { devicePixelRatio: 1, screen: scenario.ecran || { width: 2560, height: 1440 } };
   const version = scenario.version || '0.2.40';
   const badge = { textContent: 'V' + version, getAttribute: n => n === 'aria-label' ? 'Version ' + version : null };
-  const document = { hidden: false, activeElement: $('r-detecter'), addEventListener() {}, querySelector: s => s === '.version-jeu' ? badge : null };
+  // visibilité de la page : scenario.cache (onglet en arrière-plan au départ) ; montrer() la ramène au premier plan
+  const ecouteurs = new Set();
+  const document = { hidden: !!scenario.cache, activeElement: $('r-detecter'), querySelector: s => s === '.version-jeu' ? badge : null,
+    addEventListener(t, f) { if (t === 'visibilitychange') ecouteurs.add(f); }, removeEventListener(t, f) { if (t === 'visibilitychange') ecouteurs.delete(f); } };
+  const montrer = () => { document.hidden = false; for (const f of [...ecouteurs]) f(); };
+  let executions = 0;
   // style de la toile : cssText rend ce que width et height valent, et les remet comme le navigateur
   const style = { width: '', height: '', autre: scenario.styleToile || '',
     get cssText() { return [this.autre, this.width && 'width: ' + this.width + ';', this.height && 'height: ' + this.height + ';'].filter(Boolean).join(' '); },
@@ -62,8 +67,10 @@ const orchestration = new Function('base', 'scenario', `
   const retro = { rendu: scenario.glaces || null, scene: 'seance' }, annexes = [];
   let ioVu = null, toileVue = null, parcoursVu = null;
   const B = { ...base, autoconfig: { ...base.autoconfig, async executer(io) {
-    ioVu = io; toileVue = [canvas.style.width, canvas.style.height];
+    ioVu = io; toileVue = [canvas.style.width, canvas.style.height]; executions++;
     if (scenario.attente) await scenario.attente;
+    // le joueur passe sur un autre onglet pendant les premières mesures
+    if (executions <= (scenario.masquages || 0)) { document.hidden = true; return { statut: 'interrompu', motif: 'onglet_masque', empreinte: io.empreinte() }; }
     if (scenario.echec) throw Error('driver');
     if (scenario.perteContexte) { contexteRenduPerdu = true; return { statut: 'interrompu', motif: 'contexte_perdu', empreinte: io.empreinte() }; }
     if (scenario.annulation) return { statut: 'interrompu', motif: 'annule', empreinte: io.empreinte() };
@@ -77,7 +84,8 @@ const orchestration = new Function('base', 'scenario', `
   return { detecterGraphismes, majDetectionGraphique, appliquerDetection, contexteGraphiqueRetabli, empreinteDetection, appels, stockage, reglages,
     scene, session, obstacles, nodes, get actif() { return detectionGraphiqueActive; }, get ecran() { return ecran; }, jeu, canvas,
     get gpuModeste() { return gpuModeste; }, get derniere() { return derniereDetection; }, retro, annexes, get io() { return ioVu; },
-    get toileVue() { return toileVue; }, get parcours() { return parcoursVu; } };
+    get toileVue() { return toileVue; }, get parcours() { return parcoursVu; }, montrer, get executions() { return executions; },
+    get ecouteurs() { return ecouteurs.size; }, document };
 `);
 const etat = h => h.nodes.get('r-detection-etat').textContent;
 let n = 0;
@@ -147,11 +155,32 @@ await verifier('« Passer » au démarrage : rien d’appliqué, et la question 
   assert.equal(A.cacheValide(trace, A.empreinte('GPU-A|16384|10', '0.2.41')), false, 'la version suivante la propose');
   h.majDetectionGraphique(); assert.equal(etat(h), 'Détection passée · réglages conservés.');
 });
-await verifier('interruption au démarrage (onglet caché) : refaite à l’ouverture suivante, deux fois au plus', async () => {
+await verifier('C1 : onglet passé en arrière-plan pendant le test : il attend le retour du joueur, puis reprend', async () => {
+  for (const auDemarrage of [true, false]) {
+    const h = orchestration(B, { masquages: 2, reglages: { ...USINE } });
+    const t = h.detecterGraphismes(auDemarrage);
+    await new Promise(r => setTimeout(r, 5));
+    assert.equal(h.executions, 1, 'le test s’arrête'); assert.equal(h.actif, true, 'et attend, voile affiché');
+    assert.equal(h.nodes.get('autodetection').hidden, false); assert.deepEqual(h.stockage, {}, 'rien de noté');
+    assert.match(h.nodes.get('detection-texte').textContent, /reprend quand la page revient au premier plan/);
+    h.montrer(); await new Promise(r => setTimeout(r, 5));
+    assert.equal(h.executions, 2, 'repris au retour'); assert.equal(h.actif, true, 'caché de nouveau : il attend encore');
+    h.montrer(); const r = await t;
+    assert.equal(r.statut, 'ok'); assert.equal(h.executions, 3); assert.equal(h.ecouteurs, 0, 'écoute retirée');
+    assert.deepEqual(six(h.reglages), A.reglages('medium'));
+    assert.ok(A.cacheValide(h.stockage[A.CLE], h.empreinteDetection()), 'verdict de la version');
+  }
+  // cas extrême (vingt et une interruptions de suite) : trace laissée sans tentative, le test reviendra
   const sortie = { revision: A.REVISION, statut: 'interrompu', motif: 'onglet_masque', mesures: [] };
+  const g = orchestration(B, { sortie }); await g.detecterGraphismes(true);
+  assert.equal(g.executions, 21); assert.equal(g.stockage[A.CLE].tentatives, 0);
+  assert.equal(A.cacheValide(g.stockage[A.CLE], g.empreinteDetection()), false);
+});
+await verifier('autre interruption au démarrage (délai, contexte perdu) : refaite à l’ouverture suivante, deux fois au plus', async () => {
+  const sortie = { revision: A.REVISION, statut: 'interrompu', motif: 'delai', mesures: [] };
   const h = orchestration(B, { sortie });
   await h.detecterGraphismes(true);
-  assert.equal(h.stockage[A.CLE].tentatives, 1); assert.equal(A.cacheValide(h.stockage[A.CLE], h.empreinteDetection()), false);
+  assert.equal(h.executions, 1); assert.equal(h.stockage[A.CLE].tentatives, 1); assert.equal(A.cacheValide(h.stockage[A.CLE], h.empreinteDetection()), false);
   const g = orchestration(B, { sortie, stock: h.stockage });
   await g.detecterGraphismes(true);
   assert.equal(g.stockage[A.CLE].tentatives, 2); assert.ok(A.cacheValide(g.stockage[A.CLE], g.empreinteDetection()));
@@ -271,8 +300,9 @@ await verifier('palier appris : gardé pour la même version et la même carte, 
   assert.equal(memoirePalier(B, { stockage, version: '0.2.40', materiel: 'GPU-B|16384|10' }).restaurerPalier(), false, 'autre carte');
 });
 
-// gl : contexte du moteur. mesure : détection enregistrée. version, materiel : ceux de la page.
-const demarrage = new Function('base', 'mesure', 'attente', 'version', 'materiel', `
+// gl : contexte du moteur. mesure : détection enregistrée. version, materiel : ceux de la page. visible : promesse du
+// retour de la page au premier plan (onglet ouvert en arrière-plan).
+const demarrage = new Function('base', 'mesure', 'attente', 'version', 'materiel', 'visible', `
   const appels = [], elements = new Map(); const $ = id => { if (!elements.has(id)) elements.set(id, { classList: { add() {} } }); return elements.get(id); };
   const canvas = { addEventListener() {} }, optionsRendu = {};
   let rendu = null, son = null, contexteRenduPerdu = false, gpuModeste = false, derniereDetection = null, capacitesRendu = null, session = null;
@@ -284,18 +314,33 @@ const demarrage = new Function('base', 'mesure', 'attente', 'version', 'materiel
   const empreinteDetection = () => base.autoconfig.empreinte(materiel || 'GPU-A', version || '0.2.40');
   const restaurerPalier = () => { appels.push('palier'); return false; };
   const detecterGraphismes = async () => { appels.push('bench'); await attente; appels.push('bench-termine'); };
+  const premierPlan = async () => { appels.push('premier-plan'); await visible; appels.push('visible'); };
   const contexteGraphiqueRetabli = () => {};
   const lancer = () => appels.push('vitrine'), aller = nom => appels.push(nom), requestAnimationFrame = () => appels.push('boucle'), image = () => {}, erreur = () => appels.push('erreur');
   ${bloc('  async function demarrer()', "  // Outil d'essai")}
   return { demarrer, appels, reglages, get derniere() { return derniereDetection; }, get gpuModeste() { return gpuModeste; } };
 `);
 await verifier('premier lancement : attendre la détection avant le titre, la musique et la boucle', async () => {
-  let finir; const attente = new Promise(r => { finir = r; }), h = demarrage(B, null, attente);
+  let finir; const attente = new Promise(r => { finir = r; }), h = demarrage(B, null, attente, undefined, undefined, Promise.resolve());
   const execution = h.demarrer();
-  assert.deepEqual(h.appels, ['renderer', 'bench']); assert.equal(h.appels.includes('titre'), false);
+  await new Promise(r => setTimeout(r, 0));
+  assert.deepEqual(h.appels, ['renderer', 'premier-plan', 'visible', 'bench']); assert.equal(h.appels.includes('titre'), false);
   finir(); await execution;
   // le palier appris de la qualité Auto est repris après la détection, avant la vitrine
-  assert.deepEqual(h.appels, ['renderer', 'bench', 'bench-termine', 'palier', 'son', 'vitrine', 'titre', 'boucle']);
+  assert.deepEqual(h.appels, ['renderer', 'premier-plan', 'visible', 'bench', 'bench-termine', 'palier', 'son', 'vitrine', 'titre', 'boucle']);
+});
+await verifier('C1 : page ouverte dans un onglet en arrière-plan : le test attend qu’elle passe au premier plan', async () => {
+  let montrer; const visible = new Promise(r => { montrer = r; });
+  const h = demarrage(B, null, Promise.resolve(), undefined, undefined, visible);
+  const execution = h.demarrer();
+  await new Promise(r => setTimeout(r, 5));
+  assert.deepEqual(h.appels, ['renderer', 'premier-plan'], 'ni test ni titre tant que l’onglet est caché');
+  montrer(); await execution;
+  assert.deepEqual(h.appels.slice(0, 5), ['renderer', 'premier-plan', 'visible', 'bench', 'bench-termine']);
+  // détection déjà faite pour cette version : aucune attente
+  const faite = { revision: A.REVISION, statut: 'ok', empreinte: A.empreinte('GPU-A', '0.2.40'), selection: 'medium', mesures: [{}] };
+  const g = demarrage(B, faite, Promise.resolve(), undefined, undefined, new Promise(() => {}));
+  await g.demarrer(); assert.equal(g.appels.includes('premier-plan'), false); assert.ok(g.appels.includes('titre'));
 });
 await verifier('ouverture suivante : une détection par version et par carte graphique, jamais plus', async () => {
   const ici = A.empreinte('GPU-A', '0.2.40');

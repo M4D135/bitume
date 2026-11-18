@@ -115,16 +115,20 @@
   // plus souvent de l'économie d'énergie de Chrome, signe d'une machine qui n'est pas dans son état ordinaire
   // (Moyenne mesurée de 7,8 à 23,9 ms sous bridage sur le M5 le 18/11, selon la charge, pour 7 à 10 d'ordinaire). Elle
   // est appliquée, puis refaite à l'ouverture suivante ; TENTATIVES mesures bridées de suite valent verdict.
+  // Un onglet passé en arrière-plan (onglet_masque) n'est jamais un verdict : la page attend le retour du joueur pour
+  // mesurer (src/jeu.js, premierPlan), et une trace laissée ainsi ne compte pas parmi les tentatives.
   function cacheValide(cache, cle) {
     if (!cache || cache.revision !== REVISION || cache.empreinte !== cle) return false;
     if (cache.statut === 'ok') return Object.prototype.hasOwnProperty.call(profils, cache.selection)
       && Array.isArray(cache.mesures) && cache.mesures.length > 0 && (!cache.cadenceBridee || (cache.tentatives | 0) >= TENTATIVES);
-    return cache.statut === 'interrompu' && (cache.motif === 'annule' || (cache.tentatives | 0) >= TENTATIVES);
+    return cache.statut === 'interrompu' && (cache.motif === 'annule'
+      || (cache.motif !== 'onglet_masque' && (cache.tentatives | 0) >= TENTATIVES));
   }
-  // Tentatives de la même version sans verdict définitif (interruptions, mesures sous un écran bridé), celle-ci comprise.
+  // Tentatives de la même version sans verdict définitif (interruptions, mesures sous un écran bridé), celle-ci
+  // comprise. Un onglet passé en arrière-plan n'en est pas une.
   function tentatives(precedent, resultat) {
     const meme = !!precedent && precedent.revision === REVISION && precedent.empreinte === resultat.empreinte;
-    return (meme ? precedent.tentatives | 0 : 0) + 1;
+    return (meme ? precedent.tentatives | 0 : 0) + (resultat.motif === 'onglet_masque' ? 0 : 1);
   }
   // D : valeurs posées par la dernière détection, référence des choix du joueur. Une détection de la révision 2
   // appliquait ses six réglages (cache.reglages) ; la révision 3 les note dans cache.appliques.
