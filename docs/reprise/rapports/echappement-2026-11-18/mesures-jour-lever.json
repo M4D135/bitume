@@ -1,0 +1,49 @@
+{
+ "valeur": {
+  "cas": "lever",
+  "moment": "jour",
+  "cible": {
+   "voiture": 0,
+   "genre": "crepitement",
+   "t": 21.10935841394291,
+   "force": 0.5422257886101703
+  },
+  "horloge": 21.133333333332686,
+  "apres": 0.0156,
+  "objets": 7,
+  "avec": {
+   "appels": 283,
+   "instances": 3784,
+   "effets": 47
+  },
+  "sans": {
+   "appels": 280,
+   "instances": 3777,
+   "effets": 40
+  },
+  "dessinUs": 2.2,
+  "pasUs": 0.53,
+  "voiture": {
+   "rapport": 4,
+   "kmh": 198
+  },
+  "son": {
+   "actif": false,
+   "voix": 0,
+   "joueurs": 0,
+   "rivaux": 0,
+   "fondus": 0,
+   "budget": 5,
+   "musique": false,
+   "echappement": {
+    "voix": 0,
+    "actives": 0,
+    "budget": 6,
+    "parImage": 6,
+    "joues": 0,
+    "ignores": 0
+   }
+  }
+ },
+ "erreurs": []
+}
