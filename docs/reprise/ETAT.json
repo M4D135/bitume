@@ -2,16 +2,15 @@
   "date": "2026-11-18",
   "etat_courant": {
     "branche": "main",
-    "base_commit": "896b1c801655414c43cd876ccd302f332e2ddbf0",
-    "base_version": "0.2.37",
-    "version_cible": "0.2.38",
-    "statut": "lot_11d_qualifie_publication_en_cours",
+    "base_commit": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
+    "base_version": "0.2.38",
+    "statut": "lot_11d_publie_production_conforme_webgl_restant",
     "lot": "cap_sequoia_pacifique_fps_demo_faune",
     "fiche": "docs/reprise/11D-CAP-SEQUOIA.md",
-    "commit_publie": null,
-    "catalogue_jouable_publie": 6,
+    "commit_publie": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
+    "catalogue_jouable_publie": 7,
     "catalogue_cible": 7,
-    "prochaine_action": "Publier les sources/tests et le build 0.2.38 qualifiés puis enregistrer le reçu. Contrôle WebGL et déploiement dès accès Mac/amiga.",
+    "prochaine_action": "Contrôler le rendu WebGL et les FPS sur machine réelle. Prochain lot de contenu : un seul circuit original d’Europe du Nord ou de l’Est.",
     "checkpoint": "docs/reprise/rapports/cap-sequoia-2026-11-18/checkpoint.json",
     "catalogue_jouable": 7,
     "qualification": {
@@ -25,7 +24,9 @@
       "apercus_cpu_realises": true,
       "visuel_webgl_realise": false,
       "preuve": "docs/reprise/rapports/cap-sequoia-2026-11-18/qualification.json"
-    }
+    },
+    "version_courante": "0.2.38",
+    "recu": "docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json"
   },
   "integration": {
     "nouvelle_branche": false,
@@ -40,30 +41,35 @@
       "modules_identiques": 34
     },
     "publication_bitume": {
-      "version": "0.2.37",
-      "commit": "2a0c9d94c985f8b9b679355139cffc8d11b07122",
-      "arbre": "9ac01b8bd99b0a8a44f96eb6debe8d9e6d892aca",
+      "version": "0.2.38",
+      "commit": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
+      "arbre": "b8f3467ec58d2fc443c75df1977633b217ce6c15",
       "branche": "main",
       "verifiee": true,
       "force": false,
-      "recu": "docs/reprise/rapports/brume-de-jade-2026-11-18/publication.json"
+      "recu": "docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json"
     },
     "production_controle_final": {
       "url": "https://bitume.estrasse.fr/",
-      "controle_utc": "2026-11-18T12:43:10.145604+00:00",
+      "controle_utc": "2026-11-18T13:47:36.622774+00:00",
       "deploiement_effectue": false,
       "http": 200,
-      "octets": 13215718,
-      "sha256": "812edd74f616cd6a31a4b419cfc89adcce0ba7ab84a0ba717dcac7f9821c8786",
-      "version": "0.2.34"
+      "octets": 13237654,
+      "sha256": "46a0b0af1311c310bff6de0304da3744df78a2f7ed0d1a5c2e809bae92d78d9b",
+      "version": "0.2.38",
+      "version_verifiee_par": "SHA-256 identique au build qualifié 0.2.38",
+      "conforme_au_build": true,
+      "deploiement_effectue_par_cette_session": false
     },
-    "deploiement_blocage": "Accès Mac/amiga absent : aucune configuration SSH utilisateur ni agent SSH. Autorisation déjà acquise.",
+    "deploiement_blocage": null,
     "publication_checkpoint": {
       "commit": "896b1c801655414c43cd876ccd302f332e2ddbf0",
       "branche": "main",
       "verifiee": true,
       "patch": "docs/reprise/rapports/cap-sequoia-2026-11-18/travail-en-cours.patch"
-    }
+    },
+    "acces_mac_amiga_disponible": false,
+    "deploiement_action_necessaire": false
   },
   "reprise_courte": {
     "regle": "Un seul lot, sorties bornées, publications fréquentes de checkpoints réels puis code/build qualifiés ; pas de push forcé.",
@@ -95,6 +101,6 @@
       "Vroom officiel",
       "dépôt GitHub personnel Vroom Unreal"
     ],
-    "statut": "11D qualifié en 0.2.38 : 7 circuits sur 16, FPS démo et Faune. Publier et enregistrer le reçu. Prochain contenu : un circuit original d’Europe du Nord ou de l’Est."
+    "statut": "11D publié et production conforme en 0.2.38 : 7 circuits sur 16, FPS démo et Faune. Rendu WebGL à contrôler sur machine réelle. Prochain contenu : un circuit original d’Europe du Nord ou de l’Est."
   }
 }

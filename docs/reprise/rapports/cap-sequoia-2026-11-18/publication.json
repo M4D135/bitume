@@ -1,0 +1,58 @@
+{
+  "date_utc": "2026-11-18T13:48:45.598584+00:00",
+  "version": "0.2.38",
+  "depot": "M4D135/bitume",
+  "branche": "main",
+  "commit": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
+  "parent": "896b1c801655414c43cd876ccd302f332e2ddbf0",
+  "arbre": "b8f3467ec58d2fc443c75df1977633b217ce6c15",
+  "verifie": true,
+  "force_push": false,
+  "publication": "GitHub Git Data API, avance de main avec SHA attendu, puis relecture API et git fetch",
+  "commit_local_prepare": "c7c82dec26eb20e8b281c68c68539c328b5e1690",
+  "arbre_identique_au_local_qualifie": true,
+  "sources_tests_et_build_publies": true,
+  "fichiers_livraison": 23,
+  "build": {
+    "fichier": "dist/bitume.html",
+    "octets": 13237654,
+    "sha256": "46a0b0af1311c310bff6de0304da3744df78a2f7ed0d1a5c2e809bae92d78d9b",
+    "blob_git": "ca41ae78275c7ed8ac9d4d13469ce6c9f2af18f0",
+    "reconstruction_de_reprise_identique": true
+  },
+  "qualification": {
+    "suites": 66,
+    "reussies": 66,
+    "nouvelle_execution_complete_dans_cette_reprise": false,
+    "empreintes_8_sources_tests_reverifiees": true,
+    "modules_ferro_verifies": 34,
+    "ferro_version": "0.3.9",
+    "anciens_decors_identiques": 24,
+    "double_build_qualifie_identique": true,
+    "preuve": "qualification.json"
+  },
+  "webgl": {
+    "controle_utc": "2026-11-18T13:46:42.802220+00:00",
+    "realise": false,
+    "lancement_chromium": {
+      "code": -6,
+      "raison": "socket() failed: Operation not permitted"
+    },
+    "controle_sur_machine_reelle_restant": true
+  },
+  "production": {
+    "url": "https://bitume.estrasse.fr/",
+    "controle_utc": "2026-11-18T13:47:36.622774+00:00",
+    "deploiement_effectue": false,
+    "http": 200,
+    "octets": 13237654,
+    "sha256": "46a0b0af1311c310bff6de0304da3744df78a2f7ed0d1a5c2e809bae92d78d9b",
+    "version": "0.2.38",
+    "version_verifiee_par": "SHA-256 identique au build qualifié 0.2.38",
+    "conforme_au_build": true,
+    "deploiement_effectue_par_cette_session": false
+  },
+  "acces_mac_amiga_disponible": false,
+  "deploiement_necessaire_pour_ce_build": false,
+  "prochain_lot": "Un seul circuit original d’Europe du Nord ou de l’Est ; objectif 16 circuits, 7 publiés."
+}

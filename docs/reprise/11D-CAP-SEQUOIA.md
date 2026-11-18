@@ -24,12 +24,12 @@ Le compteur existant reste actualisé depuis la durée d’image lissée ; le ma
 Preuves : `rapports/cap-sequoia-2026-11-18/qualification.json`, `tests.json`, `qualification-pacifique.json`, `decors-historiques.json`, `builds.json`.
 La carte et la projection CPU inspectées montrent le terrain réel et la route, sans arbres ni objets. **Ce ne sont pas des captures du jeu.**
 Le navigateur local ne démarre pas (`socket(): Operation not permitted`) ; WebGL et performances matérielles restent non validés.
-Aucun accès SSH à Mac/amiga dans cette session : déploiement autorisé mais non effectué.
+Reprise du 18 novembre à 14 h 47 (Paris) : la production sert exactement le build 0.2.38 (SHA-256 identique). Aucun déploiement effectué par cette reprise ; accès SSH Mac/amiga toujours absent. Chromium reste bloqué, donc le contrôle WebGL demeure à faire sur machine réelle.
 
 ## Publications et reprise
 
 Reçu précédent 0.2.37 complété : `2df8acc`. Checkpoint de travail réel : **`896b1c8`**, avant qualification.
 `travail-en-cours.patch` conserve ce checkpoint historique ; **ne pas le réappliquer** après la publication du code qualifié.
-La publication 0.2.38 contient sources, tests et jeu reconstruit. Le reçu final est dans `publication.json`.
-Maintenir `main` sans force ; contrôler le jeu puis déployer dès accès Mac/amiga. Programme : **7 circuits sur 16**.
+**Publication vérifiée : `baf4ddf` sur `main`**, sources, tests et jeu reconstruit ; arbre identique à la livraison locale qualifiée. Le reçu final est dans `rapports/cap-sequoia-2026-11-18/publication.json`.
+Maintenir `main` sans force ; contrôler le rendu du jeu sur machine réelle. La production est déjà conforme : aucun redéploiement requis pour ce build. Programme : **7 circuits sur 16**.
 Prochain lot de contenu : un seul circuit original d’Europe du Nord ou de l’Est, à choisir sans recharger les anciennes archives.
