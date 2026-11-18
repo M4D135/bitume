@@ -49,6 +49,7 @@ MODULES = [
     'humain-corps.js',
     'main.js',
     'voiture.js',
+    'animaux.js',
     'traces.js',
     'realisateur.js',
     'meteo.js',

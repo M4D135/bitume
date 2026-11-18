@@ -216,6 +216,18 @@
     scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, c, decor, fond, plan: p, ombre };
     return scene;
   }
+  // Animaux des abords (src/animaux.js) : bâtis une fois par scène, comme le décor qu'ils habitent (12 à 90 ms mesurés
+  // dans la page, une saccade si chaque course de la démo les recréait), puis repris de leurs places de départ à
+  // chaque séance. Le moment de la journée suit la séance ; à l'horloge réelle, la nuit du départ vaut pour la course
+  // (elle change trop lentement pour qu'une course le voie).
+  function animauxDe(sc, nature) {
+    if (!B.animaux) return null;
+    const reelle = nature.horlogeReelle && B.conditionsCourse && B.conditionsCourse.nuitReelle;
+    const options = { saison: sc.saison, moment: nature.moment,
+      nuit: reelle ? B.conditionsCourse.nuitReelle(nature.dateDepart != null ? nature.dateDepart : Date.now(), nature.horlogeReelle) : undefined };
+    if (sc.animaux) return B.animaux.repartir(sc.animaux, options);
+    return (sc.animaux = B.animaux.creer(sc.c, sc.decor, options));
+  }
 
   // ---------------------------------------------------------------- séances : vitrine (écran titre), démo, course, chrono
   // Vitrine et démo : les douze voitures sont à l'IA. La vitrine tourne sans fin derrière les menus ; la démo est
@@ -272,10 +284,12 @@
       nature: { ambiance: B.ambiance.creer(sc.decor.atmosphere, i === 2), moment: B.ambiance.normaliser(conditions.moment),
         horlogeReelle: horlogePartagee(conditions.horlogeReelle), dateDepart: enl && Number.isFinite(enl.dateDepart) ? enl.dateDepart : null,
         saison: sc.decor.saison || B.saisons.profil(sc.saison, CATALOGUE[i].theme), revisionRendu: -1, faune: null, effetsSaison: null, aurores: null },
-      fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null,
+      fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null, animaux: null, animauxVue: null,
       // créations tardives : objets nés dans le chemin d'une image au lieu de la préparation (doit rester à zéro)
       tardives: { n: 0, sousVoile: 0, noms: {} },
     };
+    // bâtis avec la scène (une fois par décor), repris ici de leurs places de départ : sous le voile de la préparation
+    S.animaux = animauxDe(sc, S.nature);
     if (enl) {
       S.enLigne = { T0: enl.T0, role: enl.role, humains: enl.humains }; S.enLigneOrigine = true;
       course.distant = (v, dt) => appliquerDistant(S, v, dt);
@@ -285,7 +299,7 @@
     // la vue du joueur 2 a son propre état de caméra, d'éclair et d'affichage, le reste vient de la séance.
     if (duo) S.vueJ2 = Object.assign(Object.create(S), { camCap: null, tete: null, secousse: 0, eclair: 0, lumiere: 1, sol: null, tele: { poste: null, alea: graine32(31 + i) },
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
-      suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null });
+      suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null, animauxVue: null });
     S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une, ou deux à l'écran partagé)
     jeu.dataset.partage = duo ? (reglages.partage === 'cote' ? 'cote' : 'haut-bas') : '';
     delete $('hud').dataset.reduit; delete hud2.dataset.reduit;
@@ -824,6 +838,9 @@
       }
     }
     const t = S.prec; S.prec = S.cour; S.cour = t; remplirPoses(S.cour, co);
+    // les bêtes lisent les voitures à chaque pas ; leur cerveau n'avance qu'aux instants k × 0,1 s de l'horloge de
+    // course, sans tirer sur le hasard de la course
+    if (S.animaux) B.animaux.pas(S.animaux, co.horloge, S.cour);
     synchroniserReplacement(S, ev);
     const tFx = S.banc ? performance.now() : 0;
     B.traces.pas(S.fx, co, S.cour, S.suivie || 0, DT, ev);
@@ -1724,10 +1741,10 @@
     axe[0] = Math.sin(cam.yaw) * cp; axe[1] = Math.sin(cam.pitch || 0); axe[2] = -Math.cos(cam.yaw) * cp;
     return axe;
   }
-  function retroVoulu(S, vue) {
+  function retroVoulu(S, vue, P) {
     const r = reglages.retro === 'auto' ? (estTactile ? 'non' : 'oui') : reglages.retro;
     // Le profil décide : image des glaces refusée d'office au palier bas et aux paliers Auto les plus serrés.
-    return r === 'oui' && vue === 'cockpit' && S.type !== 'vitrine' && !retro.echec && !cameraEssai && profilDe(S).effets.retroImages;
+    return r === 'oui' && vue === 'cockpit' && S.type !== 'vitrine' && !retro.echec && !cameraEssai && (P || profilDe(S)).effets.retroImages;
   }
   // Le second moteur, sa copie du décor et les toiles des quatre glaces naissent au chargement, jamais dans le
   // chemin d'une image : tant que la copie n'est pas prête, la glace reste peinte (fond dessiné du cockpit).
@@ -2124,6 +2141,19 @@
       contexte.qualite = P.faune; contexte.nuit = nature.ambiance.nuit; contexte.pluie = meteo.pluie || 0; contexte.pose = ps;
       contexte.activite = nature.saison ? nature.saison.faune : 1;
       B.faune.dessiner(nature.faune, horlogeReelle, contexte, sortie);
+    }
+    // Animaux des abords : poses du cerveau interpolées à l'instant affiché des voitures (même horloge de course,
+    // mêmes images à 30, 60 ou 120 images/s). Le réglage brut de la faune passe tel quel : en « profil », Légère garde
+    // quelques silhouettes lointaines là où le profil coupe les oiseaux et les insectes. Les glaces ne montrent que
+    // ce que la vue principale a posé : on garde derrière la caméra ce qu'elles reflètent. Contexte de vue créé par
+    // prechargerSeance.
+    if (S.animaux) {
+      const contexte = S.animauxVue || (S.animauxVue = creationTardive('contexteAnimaux', { vue: S === session ? 0 : 1, qualite: 'off', camera: null, hauteur: 720, aspect: 16 / 9, arriere: false, nuit: 0, pluie: 0 }));
+      contexte.qualite = B.animaux.qualite(reglages.faune, P.palier); contexte.camera = cam;
+      contexte.hauteur = canvas.height; contexte.aspect = canvas.width / Math.max(1, canvas.height);
+      contexte.arriere = retroVoulu(S, vue, P);
+      contexte.nuit = S.nature ? S.nature.ambiance.nuit : 0; contexte.pluie = meteo.pluie || 0;
+      B.animaux.dessiner(S.animaux, co.horloge - DT + clamp(S.acc, 0, DT), contexte, sortie);
     }
     if (S.nature && B.effetsSaison && S.nature.saison && (S.nature.effetsSaison || S.nature.saison.feuilles || S.nature.saison.neige || meteo.neige)) {
       const nature = S.nature;
@@ -3093,6 +3123,9 @@
         if (!N.faune) N.faune = B.faune.creer(c, scene.decor);
         for (const V of vues) if (!V.fauneVue) V.fauneVue = { qualite: 'off', nuit: 0, pluie: 0, pose: null, vue: V === S ? 0 : 1 };
       }
+      // animaux des abords : un contexte de vue par joueur (l'état vient de lancer, avec la scène)
+      if (S.animaux) for (const V of vues) if (!Object.prototype.hasOwnProperty.call(V, 'animauxVue') || !V.animauxVue)
+        V.animauxVue = { vue: V === S ? 0 : 1, qualite: 'off', camera: null, hauteur: 720, aspect: 16 / 9, arriere: false, nuit: 0, pluie: 0 };
       if (N && B.effetsSaison && sa && (N.effetsSaison || sa.feuilles || sa.neige || (S.meteo && S.meteo.neige))) {
         if (!N.effetsSaison) N.effetsSaison = B.effetsSaison.creer(c, scene.decor);
         for (const V of vues) if (!V.saisonVue) V.saisonVue = { qualite: 'low', nuit: 0, pluie: 0, neige: 0, ventX: 0, ventZ: 0, pose: null, vue: V === S ? 0 : 1, abri: false };
