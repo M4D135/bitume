@@ -1681,6 +1681,61 @@
   const tampons = { poses: [], mel: {} };
   let horlogeReelle = 0, dureeImage = 16;
 
+  // Objets passés à voiture.js et au moteur, réécrits à chaque image au lieu d'être recréés (ramasse-miettes) :
+  // voiture.js lit la pose et les options sans les garder, le moteur relit le soleil et les feux à chaque draw. Une
+  // vue (J2, puis J1, puis leurs glaces) finit de s'en servir avant que la suivante les réécrive. Seize voitures au
+  // plus (onze rivaux, quatre humains) ; au-delà, les tableaux grandissent.
+  const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0 });
+  const nouvellesOptions = () => ({ detail: 'complet', roues: undefined, casse: false });
+  const POSES_RENDU = Array.from({ length: 16 }, nouvellePose), OPTIONS_POSE = Array.from({ length: 16 }, nouvellesOptions);
+  const POSE_FANTOME = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0 };
+  const ETAT_COCKPIT = { regime: 0, volant: 0, rapport: 0, kmh: 0, roues: undefined, casse: false, passage: 1, rapportAvant: undefined,
+    derriere: null, ciel: null, brume: null, glaceVive: false };
+  const SUIVEURS = [], RESERVE_SUIVEURS = Array.from({ length: 16 }, () => ({ x: 0, z: 0, couleur: null })), AUCUN_SUIVEUR = Object.freeze([]);
+  const SOLEILS = [{ center: [0, 0, 0], extent: 0, depth: 0 }, { center: [0, 0, 0], extent: 0, depth: 0 }];
+  const LAMPES_PORTIQUE = [], FEU_ALLUME = [1, .14, .06], FEU_ETEINT = [.1, .03, .03], TAILLE_FEU = [.56, .05, .56];
+  function poseRendu(k, p, roule, v) {
+    const ev = POSES_RENDU[k] || (POSES_RENDU[k] = nouvellePose());
+    ev.p[0] = p.x; ev.p[1] = p.y; ev.p[2] = p.z;
+    ev.cap = p.cap; ev.tangage = p.tangage; ev.roulis = p.roulis; ev.braquage = p.braquage; ev.roule = roule; ev.rebond = p.rebond; ev.v = v;
+    return ev;
+  }
+  function optionsPose(k) { return OPTIONS_POSE[k] || (OPTIONS_POSE[k] = nouvellesOptions()); }
+  function soleilDe(i, x, y, z) {
+    const s = SOLEILS[i], o = scene.ombre;
+    s.center[0] = x; s.center[1] = y; s.center[2] = z; s.extent = o.extent; s.depth = o.depth;
+    return s;
+  }
+  function lampePortique(k) {
+    return LAMPES_PORTIQUE[k] || (LAMPES_PORTIQUE[k] = { shape: 'cylinder', p: null, s: TAILLE_FEU, r: null, mat: 7, color: FEU_ETEINT, emissive: 0 });
+  }
+  // Niveau de détail d'une voiture (voiture.js, detailPour) d'après sa taille à l'écran : jamais plus lourd que la
+  // règle d'avant (complet jusqu'au seuil du champ, simple au-delà). Sous 1 080 pixels de toile (petit écran, écran
+  // partagé, résolution réduite du profil), le seuil du modèle complet se rapproche au prorata ; entre les deux, le
+  // modèle moyen tant que la voiture couvre une trentaine de pixels.
+  function detailVoiture(d2, tanDemi, hauteur) {
+    if (B.voiture.detailPour(d2, tanDemi, 0) === 'simple') return 'simple';
+    return B.voiture.detailPour(d2, tanDemi, hauteur, Math.min(1, hauteur / 1080));
+  }
+  // Rivaux derrière la voiture k, dans son repère, du plus proche au plus lointain : la glace peinte du cockpit les
+  // montre. Insertion stable : même ordre que le tri d'avant, sans tableau ni fermeture neufs.
+  function suiveurs(co, poses, k, p) {
+    const ca = Math.cos(p.cap), sa = Math.sin(p.cap);
+    let n = 0;
+    for (let q = 0; q < co.voitures.length; q++) {
+      if (q === k) continue;
+      const ex = poses[q].x - p.x, ez = poses[q].z - p.z, x = ex * ca + ez * sa;
+      if (!(x < -1 && x > -95)) continue;
+      const e = RESERVE_SUIVEURS[n] || (RESERVE_SUIVEURS[n] = { x: 0, z: 0, couleur: null });
+      e.x = x; e.z = ez * ca - ex * sa; e.couleur = co.voitures[q].couleur;
+      let j = n++;
+      while (j > 0 && SUIVEURS[j - 1].x < x) { SUIVEURS[j] = SUIVEURS[j - 1]; j--; }
+      SUIVEURS[j] = e;
+    }
+    SUIVEURS.length = n;
+    return SUIVEURS;
+  }
+
   function rendreImage(S, alpha, dtImage) {
     appliquerCarte();
     const co = S.course, j = co.joueur;
@@ -1772,9 +1827,11 @@
       cam.pitch += Math.sin(t * 61) * a * .5; cam.yaw += Math.sin(t * 47) * a * .35;
       S.secousse = Math.max(0, S.secousse - dtImage * 2.6);
     }
-    const fwd = [Math.sin(cam.yaw), 0, -Math.cos(cam.yaw)];
-    // ombres du soleil autour de ce que l'on regarde : devant le pilote (jusqu'à 176 m), ou autour de la voiture filmée
-    cam.sun = Object.assign({ center: exterieur ? [ps.x, ps.y, ps.z] : [cam.pos[0] + fwd[0] * OMBRE_DEVANT, ps.y, cam.pos[2] + fwd[2] * OMBRE_DEVANT] }, scene.ombre);
+    // axe horizontal du regard, en deux nombres (plus de tableau neuf par image)
+    const avX = Math.sin(cam.yaw), avZ = -Math.cos(cam.yaw);
+    // ombres du soleil autour de ce que l'on regarde : devant le pilote (jusqu'à 176 m), ou autour de la voiture filmée.
+    // Un soleil par vue, réécrit à chaque image : le moteur le relit à chaque draw sans le garder.
+    cam.sun = soleilDe(S === session ? 0 : 1, exterieur ? ps.x : cam.pos[0] + avX * OMBRE_DEVANT, ps.y, exterieur ? ps.z : cam.pos[2] + avZ * OMBRE_DEVANT);
 
     // Habitats partagés ; pools propres aux deux vues. Le temps absolu garde les mêmes vols dans les miroirs.
     if (S.nature && B.faune && P.faune !== 'off' && (!S.nature.saison || S.nature.saison.faune > 0)) {
@@ -1808,28 +1865,28 @@
       B.aurores.dessiner(nature.aurores, co.horloge, contexte, sortie);
     }
 
-    // voitures : toujours dessinées ; modèle complet tant qu'il tient plus d'une trentaine de pixels de haut, allégé
-    // au-delà. Le seuil suit le champ : un téléobjectif garde le modèle complet bien plus loin.
-    const complet = 170 * Math.tan(20.8 * Math.PI / 180) / Math.tan(clamp(cam.fov, 10, 110) * Math.PI / 360);
+    // voitures : toujours dessinées. Niveau de détail selon la taille à l'écran (detailVoiture) : la hauteur de la
+    // toile suit l'écran et la résolution du profil ; le seuil suit le champ (un téléobjectif garde le modèle complet
+    // bien plus loin).
+    const tanDemi = Math.tan(clamp(cam.fov, 10, 110) * Math.PI / 360), hauteur = canvas.height;
     for (let k = 0; k < co.voitures.length; k++) {
       const p = poses[k], dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], d2 = dx * dx + dz * dz;
-      const ev = { p: [p.x, p.y, p.z], cap: p.cap, tangage: p.tangage, roulis: p.roulis, braquage: p.braquage, roule: RV[k], rebond: p.rebond, v: co.voitures[k].etat.v };
+      const ev = poseRendu(k, p, RV[k], co.voitures[k].etat.v);
       if (k === suivie.id && vue === 'cockpit') {
-        // voitures derrière, dans le repère de celle-ci, de la plus proche à la plus lointaine : les rétroviseurs les montrent
-        const et = suivie.etat, ca = Math.cos(p.cap), sa = Math.sin(p.cap), derriere = [];
-        for (let q = 0; q < co.voitures.length; q++) {
-          if (q === k) continue;
-          const ex = poses[q].x - p.x, ez = poses[q].z - p.z, x = ex * ca + ez * sa;
-          if (x < -1 && x > -95) derriere.push({ x, z: ez * ca - ex * sa, couleur: co.voitures[q].couleur });
-        }
-        derriere.sort((a, b) => b.x - a.x);
-      const atm = S.nature ? S.nature.ambiance.atmosphere : scene.decor.atmosphere;
-        B.voiture.cockpit(S.modeles[k], ev, sortie, { regime: et.regime, volant: et.volant, rapport: et.rapport, kmh: B.conduite.kmh(et), roues: co.voitures[k].degats && co.voitures[k].degats.roues, casse: !!(et.degats && et.degats.casse),
-          passage: suivie.tPassage === undefined ? 1 : (co.horloge - suivie.tPassage) / .36, rapportAvant: suivie.rapportAvant, derriere, ciel: atm.skyBottom, brume: atm.fog,
-          glaceVive: !!retro.rendu && retroVoulu(S, vue) });
+        const et = suivie.etat, atm = S.nature ? S.nature.ambiance.atmosphere : scene.decor.atmosphere, glaceVive = !!retro.rendu && retroVoulu(S, vue);
+        const etc = ETAT_COCKPIT;
+        etc.regime = et.regime; etc.volant = et.volant; etc.rapport = et.rapport; etc.kmh = B.conduite.kmh(et);
+        etc.roues = co.voitures[k].degats && co.voitures[k].degats.roues; etc.casse = !!(et.degats && et.degats.casse);
+        etc.passage = suivie.tPassage === undefined ? 1 : (co.horloge - suivie.tPassage) / .36; etc.rapportAvant = suivie.rapportAvant;
+        // les rivaux de la glace peinte ne servent que sans image réelle des glaces
+        etc.derriere = glaceVive ? AUCUN_SUIVEUR : suiveurs(co, poses, k, p);
+        etc.ciel = atm.skyBottom; etc.brume = atm.fog; etc.glaceVive = glaceVive;
+        B.voiture.cockpit(S.modeles[k], ev, sortie, etc);
         continue;
       }
-      B.voiture.poser(S.modeles[k], ev, sortie, { simple: d2 > complet * complet, roues: co.voitures[k].degats && co.voitures[k].degats.roues, casse: !!(co.voitures[k].degats && co.voitures[k].degats.casse) });
+      const o = optionsPose(k);
+      o.detail = detailVoiture(d2, tanDemi, hauteur); o.roues = co.voitures[k].degats && co.voitures[k].degats.roues; o.casse = !!(co.voitures[k].degats && co.voitures[k].degats.casse);
+      B.voiture.poser(S.modeles[k], ev, sortie, o);
     }
     // fantôme du meilleur tour
     if (co.mode === 'chrono') {
@@ -1837,16 +1894,21 @@
       if (f) {
         const e = B.circuit.echantillon(c, f.s), sa = Math.sin(e.cap), ca = Math.cos(e.cap);
         const x = e.x - sa * f.d, z = e.z + ca * f.d, dx = x - pj.x, dz = z - pj.z;
-        if (dx * dx + dz * dz > 9 || vue !== 'cockpit') B.voiture.fantome({ p: [x, e.y - f.d * Math.sin(e.devers), z], cap: e.cap + f.angle, tangage: Math.atan(e.pente), roulis: e.devers }, sortie);
+        if (dx * dx + dz * dz > 9 || vue !== 'cockpit') {
+          const g = POSE_FANTOME;
+          g.p[0] = x; g.p[1] = e.y - f.d * Math.sin(e.devers); g.p[2] = z; g.cap = e.cap + f.angle; g.tangage = Math.atan(e.pente); g.roulis = e.devers;
+          B.voiture.fantome(g, sortie);
+        }
       }
     }
-    // feux du portique
+    // feux du portique : objets permanents, réécrits (le moteur recopie leurs valeurs à chaque draw)
     const port = scene.decor.portique;
     if (port && co.mode === 'course') {
       if (!S.rotLampe) S.rotLampe = MATRICE_LAMPE(port.cap);
       for (let k = 0; k < port.feux.length; k++) {
-        const allume = !co.feux.vert && k < co.feux.allumes;
-        sortie.push({ shape: 'cylinder', p: port.feux[k], s: [.56, .05, .56], r: S.rotLampe, mat: allume ? 5 : 7, color: allume ? [1, .14, .06] : [.1, .03, .03], emissive: allume ? 3 : 0 });
+        const allume = !co.feux.vert && k < co.feux.allumes, o = lampePortique(k);
+        o.p = port.feux[k]; o.r = S.rotLampe; o.mat = allume ? 5 : 7; o.color = allume ? FEU_ALLUME : FEU_ETEINT; o.emissive = allume ? 3 : 0;
+        sortie.push(o);
       }
     }
     // traces de pneus, fumée et étincelles
