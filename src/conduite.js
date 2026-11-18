@@ -100,6 +100,19 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   // Shared FERRO force equations; this adapter owns vehicle tuning and world coordinates.
   const {clamp,borne01,sign,expTau,ramener,angle,rampe,regimeBrut,couple,forme,retombee,pneu,consigne,adherence,suivi,capaciteLaterale,geometrie,braquer,braquageMax}=FVehicleDynamics.create(P);
 
+  // Filtres de constante de temps fixe : au pas fixe, expTau(tau, dt) redonne la même valeur pour chaque voiture et
+  // à chaque pas (un Math.exp chaque fois). Elle est retenue pour le dernier dt vu : même fonction, mêmes entrées,
+  // donc mêmes bits qu'un calcul neuf. Une mémoire par constante : [dt, valeur].
+  const memoTau = () => new Float64Array([NaN, 0]);
+  function expTauFixe(m, tau, dt) { if (m[0] !== dt) { m[1] = expTau(tau, dt); m[0] = dt; } return m[1]; }
+  const TAU = {
+    contre: memoTau(), grilleMontee: memoTau(), grilleDescente: memoTau(), entree: memoTau(), sortie: memoTau(),
+    tirage: memoTau(), lancement: memoTau(), regime: memoTau(), charge: memoTau(), attitude: memoTau(), retour: memoTau()
+  };
+  // Lectures du tracé : un objet par appelant, rempli à chaque lecture (B.circuit.echantillon, troisième argument).
+  // Chaque appelant lit sa valeur rendue, jamais l'objet directement : un tracé de test peut rendre un objet neuf.
+  const LU = { cap: {}, rail: {}, rouler: {}, attitude: {}, replacer: {}, vol: {}, reculA: {}, reculB: {} };
+
   function creer(s, d) {
     return {
       s: s, d: d, psi: 0, beta: 0, v: 0, omega: 0,
@@ -136,7 +149,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     return clamp(Math.max(Number.isFinite(m.pluie) ? m.pluie : 0, .6 * (Number.isFinite(m.mouille) ? m.mouille : 0)), 0, 1);
   }
 
-  function cap(etat, c) { return B.circuit.echantillon(c, etat.s).cap + etat.psi + etat.beta; }
+  function cap(etat, c) { return B.circuit.echantillon(c, etat.s, LU.cap).cap + etat.psi + etat.beta; }
   function kmh(etat) { return Math.round(Math.abs(etat.v) * 3.6); }
 
   // glissière du côté donné ; repli sur c.limite pour un circuit sans limites par échantillon
@@ -195,7 +208,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
       // contre-braquage : volant opposé au sens de la dérive
       // compté aussitôt, il retombe en deriveContreRetombee : des appuis répétés au clavier valent un contre-braquage tenu
       const cb = Math.max(0, -dr.sens * etat.volant);
-      dr.contre = cb >= dr.contre ? cb : dr.contre + (cb - dr.contre) * expTau(P.deriveContreRetombee, dt);
+      dr.contre = cb >= dr.contre ? cb : dr.contre + (cb - dr.contre) * expTauFixe(TAU.contre, P.deriveContreRetombee, dt);
       const c = dr.contre;
       const QC = P.deriveContreQ, QA = P.deriveAngleQ;
       const qC = c <= QC[0] ? 0 : c < QC[1] ? (c - QC[0]) / (QC[1] - QC[0]) : c <= QC[2] ? 1 :
@@ -251,7 +264,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     couperTurbo(etat); etat.rapport = 1; etat.coupure = 0;
     etat.derive.amorce = 0; etat.derive.melange = 0; etat.derive.tirage = 0;
     const cible = P.ralenti + (P.rupteur - P.ralenti) * gaz;
-    etat.regime += (cible - etat.regime) * expTau(cible > etat.regime ? P.grilleMonteeTau : P.grilleDescenteTau, dt);
+    etat.regime += (cible - etat.regime) * (cible > etat.regime ? expTauFixe(TAU.grilleMontee, P.grilleMonteeTau, dt) : expTauFixe(TAU.grilleDescente, P.grilleDescenteTau, dt));
     if (etat.regime >= P.maxUtile) { etat.regime = P.maxUtile - P.rupteurRebond; ev.push({ type: 'rupteur' }); }
   }
 
@@ -274,7 +287,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     // Le rail dessiné culmine à 0,80 m au-dessus de l'accotement. Un bond bas reste solide,
     // un vrai survol n'est pas arrêté par un mur invisible. Même dévers et pente d'accotement que decor.js.
     if (enVol) {
-      const q = B.circuit.echantillon(c, etat.s), w = c.largeur / 2, L = limiteCote(c, etat.s, cdg);
+      const q = B.circuit.echantillon(c, etat.s, LU.rail), w = c.largeur / 2, L = limiteCote(c, etat.s, cdg);
       const haut = q.y - cdg * w * Math.sin(q.devers) - .02 * (L - w - 1.2) + .8;
       if (etat.y >= haut || etat.y + 1.1 <= haut - .8) { etat.auRail = false; return; }
     }
@@ -307,7 +320,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
 
   function rouler(etat, cmd, c, dt, gaz, frein, aide, guidage, ev) {
     const dr = etat.derive, m = P.masse;
-    const e = B.circuit.echantillon(c, etat.s), k = e.courbure, v = etat.v;
+    const e = B.circuit.echantillon(c, etat.s, LU.rouler), k = e.courbure, v = etat.v;
 
     // Surface sous la voiture
     const demi = c.largeur / 2, ad = Math.abs(etat.d), cote = etat.d < 0 ? -1 : 1;
@@ -329,10 +342,10 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     piloterDerive(etat, cmd, k, frein, surf, enPiste, dt, ev);
     // l'arrière passe en glisse par un fondu en S (deux filtres en cascade) ; le tirage de l'avant suit au
     // rythme du volant, pour que le contre-braquage ne creuse pas l'effort de l'avant au départ
-    const cible = dr.actif ? 1 : 0, kM = expTau(dr.actif ? P.deriveEntree : P.deriveSortie, dt);
+    const cible = dr.actif ? 1 : 0, kM = dr.actif ? expTauFixe(TAU.entree, P.deriveEntree, dt) : expTauFixe(TAU.sortie, P.deriveSortie, dt);
     dr.amorce += (cible - dr.amorce) * kM;
     dr.melange += (dr.amorce - dr.melange) * kM;
-    dr.tirage += (cible - dr.tirage) * expTau(P.deriveTirageTau, dt);
+    dr.tirage += (cible - dr.tirage) * expTauFixe(TAU.tirage, P.deriveTirageTau, dt);
     const bd = dr.melange < 1e-4 ? 0 : dr.melange, bt = dr.tirage < 1e-4 ? 0 : dr.tirage;
     const sensD = dr.actif ? dr.sens : sign(etat.beta);
 
@@ -366,7 +379,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     // départ : en première, l'embrayage patine et tient le moteur haut tant que les roues ne l'ont pas rattrapé
     const lance = etat.rapport === 1 ? P.ralenti + (P.rupteur - P.ralenti) * P.lancement * gaz : 0;
     const cibleR = Math.max(brut, lance);
-    etat.regime += (clamp(cibleR, P.ralenti, P.rupteur) - etat.regime) * expTau(lance > brut ? P.lancementTau : P.regimeTau, dt);
+    etat.regime += (clamp(cibleR, P.ralenti, P.rupteur) - etat.regime) * (lance > brut ? expTauFixe(TAU.lancement, P.lancementTau, dt) : expTauFixe(TAU.regime, P.regimeTau, dt));
     // en sixième sous turbo, le moteur reste à fond au-delà de sa pointe sans couper
     const libre = aTurbo > 0 && etat.rapport === 6;
     const auRupteur = brut >= P.maxUtile && !libre;
@@ -502,7 +515,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     if (etat.v > 0.05) etat.beta = -Math.atan2(w, u); else etat.beta = 0;
     etat.omega = r;
     etat.along = axPneus; etat.alat = ayPneus;
-    const kc = expTau(P.chargeTau, dt);
+    const kc = expTauFixe(TAU.charge, P.chargeTau, dt);
     etat.chargeX += (axPneus - etat.chargeX) * kc;
     etat.chargeY += (ayPneus - etat.chargeY) * kc;
 
@@ -539,7 +552,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   }
 
   function poserAttitude(etat, c, dt) {
-    const e = B.circuit.echantillon(c, etat.s), kA = expTau(P.attitudeTau, dt);
+    const e = B.circuit.echantillon(c, etat.s, LU.attitude), kA = expTauFixe(TAU.attitude, P.attitudeTau, dt);
     // sol sous la voiture, même profil que le décor : dévers sur la piste, vibreur, accotement à 2 %
     const w = c.largeur / 2, ad = Math.abs(etat.d);
     etat.vibreur=ad>w&&ad<=w+P.largeurVibreur&&B.circuit.vibreurA(c,etat.s,etat.d<0?-1:1);
@@ -564,8 +577,9 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   function filtrerVolant(etat, cible, dt) {
     const x = etat.volant;
     const retour = cible * x < 0 || Math.abs(cible) < Math.abs(x);
-    const tau = retour ? P.volantRetour : P.volantMontee + P.volantMonteeV * etat.v;
-    etat.volant = x + (cible - x) * expTau(tau, dt);
+    // la montée dépend de la vitesse : seul le retour, de constante fixe, se retient
+    const k = retour ? expTauFixe(TAU.retour, P.volantRetour, dt) : expTau(P.volantMontee + P.volantMonteeV * etat.v, dt);
+    etat.volant = x + (cible - x) * k;
     if (Math.abs(etat.volant) < 1e-6) etat.volant = 0;
   }
 
@@ -606,7 +620,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     annulerDerive(etat,true);couperTurbo(etat);
     if(degats&&B.degats)B.degats.reparerUrgence(degats);   // jouable, pas neuve : la réparation complète se fait aux stands
     Object.assign(etat,creer(s,0));etat.distance=distance;etat.degats=degats;etat.repositionnements=numero;etat.immunite=P.accidentImm;
-    const q=B.circuit.echantillon(c,s);etat.y=q.y;etat.tangage=Math.atan(q.pente||0);etat.roulis=q.devers||0;
+    const q=B.circuit.echantillon(c,s,LU.replacer);etat.y=q.y;etat.tangage=Math.atan(q.pente||0);etat.roulis=q.devers||0;
     return [{type:'retour',repositionnement:true}];
   }
   function recuperer(etat,c,dt,ev) {
@@ -636,7 +650,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     // légère traînée d'air, jamais de gain
     etat.v = Math.sign(etat.v) * Math.max(0, Math.abs(etat.v) - P.volTrainee * etat.v * etat.v * dt);
     // cinématique de Frenet, comme au sol, pour que cap et position restent continus
-    const e = B.circuit.echantillon(c, etat.s), k = e.courbure;
+    const e = B.circuit.echantillon(c, etat.s, LU.vol), k = e.courbure;
     const den = Math.max(1 - k * etat.d, 0.1);
     const psiV = angle(e.cap - etat.beta);
     const dsdt = etat.v * Math.cos(psiV) / den;
@@ -673,20 +687,22 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
     else etat.v=Math.min(0,etat.v+.8*dt);
     if(etat.v>=0){etat.v=0;etat.omega=0;etat.along=0;etat.alat=0;if(gaz>0||!autorise){etat.rapport=1;etat.freinRecul=0;}return;}
     etat.rapport=-1;etat.regime=P.ralenti+Math.abs(etat.v)/P.reculMax*1800;
-    const q=B.circuit.echantillon(c,etat.s),body=q.cap+etat.psi+etat.beta;
+    const q=B.circuit.echantillon(c,etat.s,LU.reculA),body=q.cap+etat.psi+etat.beta;
     etat.braquage=etat.volant*P.braquageMeca;etat.omega=etat.v*Math.tan(etat.braquage)/L;
     const rel=angle(body-q.cap),ds=etat.v*Math.cos(rel)/Math.max(.1,1-q.courbure*etat.d)*dt;
     etat.s=ramener(etat.s+ds,c.longueur);etat.d+=etat.v*Math.sin(rel)*dt;etat.distance+=ds;
-    etat.psi=angle(body+etat.omega*dt-B.circuit.echantillon(c,etat.s).cap);etat.beta=0;
+    etat.psi=angle(body+etat.omega*dt-B.circuit.echantillon(c,etat.s,LU.reculB).cap);etat.beta=0;
     etat.along=(etat.v-avant)/dt;etat.alat=etat.v*etat.omega;etat.glisse=0;
-    const kc=expTau(P.chargeTau,dt);
+    const kc=expTauFixe(TAU.charge,P.chargeTau,dt);
     etat.chargeX+=(etat.along-etat.chargeX)*kc;etat.chargeY+=(etat.alat-etat.chargeY)*kc;
     heurterGlissiere(etat,c,dt,ev);
   }
 
   // cmd = { gaz, frein, volant, derive, haut, bas, boite, aide, guidage, marcheArriere: true uniquement pour le joueur }
-  function pas(etat, cmd, c, dt, retenue = false) {
-    const ev=[];
+  // `sortie`, facultatif : tableau d'événements de l'appelant, complété (jamais vidé) et rendu au lieu d'un neuf ;
+  // la course y verse directement ceux de ses douze voitures à chaque pas.
+  function pas(etat, cmd, c, dt, retenue = false, sortie) {
+    const ev=sortie||[];
     if(!etat.recuperation&&(etat.accident||etat.reparation||(etat.degats&&(etat.degats.casse||B.degats?.uneRouePerdue(etat.degats)))))immobiliser(etat,ev);
     if(etat.recuperation){recuperer(etat,c,dt,ev);return ev;}
     const gaz=borne01(cmd.gaz),frein=borne01(cmd.frein),aide=borne01(cmd.aide),guidage=borne01(cmd.guidage);

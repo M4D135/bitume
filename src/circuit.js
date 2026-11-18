@@ -346,11 +346,21 @@
     return x > t.debut - marge && x < t.fin + marge;
   }
   const ramener = (c, s) => { const L = c.longueur; s %= L; return s < 0 ? s + L : s; };
-  function echantillon(c, s) {
+  // `sortie`, facultatif : objet de l'appelant, rempli et rendu au lieu d'un objet neuf. Le pas de simulation lit
+  // le tracé des dizaines de fois par voiture et par pas ; sans objet à remplir, chaque lecture est un objet jeté.
+  // Les nombres sont les mêmes au bit près dans les deux cas (mêmes opérations, même ordre).
+  function echantillon(c, s, sortie) {
     s = ramener(c, s);
     const f = s / PAS, i = Math.floor(f) % c.n, j = (i + 1) % c.n, t = f - Math.floor(f);
-    const m = (tab) => tab[i] + (tab[j] - tab[i]) * t;
-    return { x: m(c.x), y: m(c.y), z: m(c.z), cap: c.cap[i] + angle(c.cap[j] - c.cap[i]) * t, courbure: m(c.courbure), pente: m(c.pente), devers: m(c.devers), ligne: m(c.ligne), vitesse: m(c.vitesse) };
+    const X = c.x, Y = c.y, Z = c.z, K = c.courbure, Pe = c.pente, D = c.devers, Li = c.ligne, V = c.vitesse;
+    const x = X[i] + (X[j] - X[i]) * t, y = Y[i] + (Y[j] - Y[i]) * t, z = Z[i] + (Z[j] - Z[i]) * t;
+    const cap = c.cap[i] + angle(c.cap[j] - c.cap[i]) * t, courbure = K[i] + (K[j] - K[i]) * t;
+    const pente = Pe[i] + (Pe[j] - Pe[i]) * t, devers = D[i] + (D[j] - D[i]) * t;
+    const ligne = Li[i] + (Li[j] - Li[i]) * t, vitesse = V[i] + (V[j] - V[i]) * t;
+    if (!sortie) return { x, y, z, cap, courbure, pente, devers, ligne, vitesse };
+    sortie.x = x; sortie.y = y; sortie.z = z; sortie.cap = cap; sortie.courbure = courbure;
+    sortie.pente = pente; sortie.devers = devers; sortie.ligne = ligne; sortie.vitesse = vitesse;
+    return sortie;
   }
   function point(c, s, d, h = 0) {
     const e = echantillon(c, s), sa = Math.sin(e.cap), ca = Math.cos(e.cap), sd = Math.sin(e.devers), cd = Math.cos(e.devers);
