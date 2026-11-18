@@ -1,0 +1,131 @@
+{
+ "resume": "Lot profils (5B-8), vague 1, dans /Users/david/Projects/bitume-wt/profils, branche fluidite/profils, un seul commit 49f7b93. Rien n'est poussé ni fusionné. src/jeu.js n'est pas touché.\n(1) autoconfig : quand io.terminer() existe, chaque image se juge sur son coût complet, mesuré à l'horloge autour de « dessiner puis terminer ». terminer() lit un pixel 1×1, comme rendu.calibrate. Le chronomètre GPU n'est ni ouvert ni lu : preparer reçoit { chronoGPU: false }. La période de l'écran se relève sur 9 à 24 images à vide, distinctes des images de mesure. Un profil est accepté si au moins 24 images ont un coût p95 ≤ LIMITE = 1000/60 × 0,6 = 10 ms, à 60, 120 ou 30 Hz. Extrême n'est essayé que si Fine a un coût p95 ≤ 5 ms. Un profil sans espoir s'arrête après 8 images. Le résultat enregistre la méthode, le budget, la fraction, la limite, la période, son écart et, par profil, cout50/cout95/cpu95/attente95/p50/p95. Sans io.terminer, le chemin est celui d'avant (seul le champ methode 'chrono-gpu' est ajouté). REVISION passe à 2. cacheValide(cache, cle, { terminer: true }) refait une fois les caches pris au chronomètre.\n(2) scene-bench : la scène représente bien une course (12 voitures, ombres, végétation et prairie du palier, reflets sur piste mouillée). Ajouts :\n- même règle de modèle complet que la course (distanceComplete(fov), environ 112 m au champ de 60°, au lieu de « i > 6 ») ;\n- sources de vent du sillage ;\n- finition photo selon le halo du palier ;\n- windStrength du palier ;\n- terminer() par readPixels sur rendu.gl, avec un tampon réutilisé (null sans gl).\nLes voitures sont posées par le parcours lui-même : l'intégrateur n'a rien à fournir.\n(3) mesures :\n- ouverture sans chronomètre GPU (afficher({ gpu: false }, rendu), chrono(oui, rendu), getter chronoGPU) : GPU affiché « N/D (chronomètre coupé) », choix retenu pour F3 ;\n- séance au-delà des 240 images, tenue par un histogramme au 1/10 ms : images, images au-delà de (diviseur + 0,5) périodes, pire image et son instant, p95, p99, durée ;\n- période, diviseur et verrou via B.mesures.cadence(etat), qui accepte aussi l'image FLoop {period, locked}. Sans eux, une « référence estimée » (10e centile, au moins 30 intervalles) que le volet ne présente jamais comme la période de l'écran ;\n- créations tardives lues dans rendu.stats.creations (nombre, ou objet total/somme), N/D aujourd'hui ;\n- aucun nombre de ramassages inventé ; plus de tableaux temporaires lors de la lecture.\nLe format lu par les outils ne change pas : des champs sont seulement ajoutés.\nAttribution du commit : « Co-Authored-By: Claude Opus 5.5 », selon le rappel système, au lieu de « Claude Fable 5.2 » demandé par le texte du workflow (aucune consigne de David sur ce point).",
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/profils/src/autoconfig.js",
+  "/Users/david/Projects/bitume-wt/profils/src/scene-bench.js",
+  "/Users/david/Projects/bitume-wt/profils/src/mesures.js",
+  "/Users/david/Projects/bitume-wt/profils/verifications/autoconfig.test.mjs",
+  "/Users/david/Projects/bitume-wt/profils/verifications/scene-bench.test.mjs",
+  "/Users/david/Projects/bitume-wt/profils/verifications/mesures.test.mjs"
+ ],
+ "api": [
+  {
+   "nom": "B.autoconfig.executer",
+   "signature": "executer(io) -> Promise<resultat> ; io.terminer?: () => void",
+   "role": "Avec io.terminer : méthode 'terminer', coût = dessiner + terminer à l'horloge, chronomètre GPU jamais lu, preparer(id, profil, { chronoGPU: false }). Résultat : methode, budget, fraction, limite, cadenceIntervalles, cadenceEcart. Sans io.terminer : chemin inchangé, methode 'chrono-gpu'."
+  },
+  {
+   "nom": "B.autoconfig.cacheValide",
+   "signature": "cacheValide(cache, cle, options?) ; options.terminer === true",
+   "role": "Comme avant, et en plus : avec { terminer: true }, un cache pris au chronomètre (methode différente de 'terminer') n'est plus valide et la détection est refaite une fois."
+  },
+  {
+   "nom": "B.autoconfig.bilanCout",
+   "signature": "bilanCout(id, couts, cpu, attentes, intervalles) -> { profil, methode:'terminer', images, cout50, cout95, cpu95, attente95, p50, p95, budget, limite, acceptable }",
+   "role": "Verdict d'un profil : acceptable si au moins 24 images et un coût p95 ≤ LIMITE. Les intervalles sont consignés pour mémoire mais ne servent pas au verdict."
+  },
+  {
+   "nom": "B.autoconfig.BUDGET / FRACTION / LIMITE / REVISION",
+   "signature": "BUDGET = 1000/60, FRACTION = 0.6, LIMITE = 10 ms, REVISION = 2",
+   "role": "Constantes exportées. La justification de FRACTION est écrite en commentaire."
+  },
+  {
+   "nom": "B.sceneBench.creer",
+   "signature": "creer(rendu, capacites) -> { preparer(id, options, reglage?), dessiner(temps, vue), terminer: (() => void) | null, positions, images, liberer() }",
+   "role": "reglage.chronoGPU === false laisse le chronomètre fermé. terminer lit un pixel sur rendu.gl (null si rendu.gl n'existe pas)."
+  },
+  {
+   "nom": "B.sceneBench.distanceComplete",
+   "signature": "distanceComplete(fov) -> mètres",
+   "role": "Distance jusqu'à laquelle la course dessine le modèle complet d'une voiture (170·tan 20,8°/tan(fov/2)). Le parcours suit la même règle."
+  },
+  {
+   "nom": "B.mesures.afficher",
+   "signature": "afficher(oui | { gpu: false }, rendu)",
+   "role": "{ gpu: false } ouvre le volet sans chronomètre GPU (profile(false)). Le choix est retenu pour les ouvertures suivantes, F3 compris."
+  },
+  {
+   "nom": "B.mesures.chrono",
+   "signature": "chrono(oui, rendu?) -> boolean ; getter B.mesures.chronoGPU",
+   "role": "Coupe ou rouvre le chronomètre GPU. Volet ouvert, le moteur suit tout de suite ; coupé, l'état GPU est vidé."
+  },
+  {
+   "nom": "B.mesures.cadence",
+   "signature": "cadence({ periode|period, diviseur, verrouille|locked } | null)",
+   "role": "Période de l'écran (1 à 1000 ms), diviseur entier (1 à 16) et verrou déclarés par la boucle. Ils survivent à reinitialiser(). null revient à la référence estimée."
+  },
+  {
+   "nom": "B.mesures.lire (champs ajoutés)",
+   "signature": "lire(rendu) -> { ...anciens champs, gpuChrono, periode, diviseur, verrou, periodeEstimee, seance: { images, longues, seuil, reference: 'jeu'|'estimee'|null, pire, instantPire, p95, p99, duree }, creations, creationsSeance }",
+   "role": "Tous les anciens champs gardent le même calcul. Valeur null quand l'information manque (N/D)."
+  }
+ ],
+ "tests": [
+  {
+   "commande": "node verifications/autoconfig.test.mjs",
+   "resultat": "22 contrôles réussis. 10 sont nouveaux, sur une horloge simulée : trop cher refusé sans lecture du chronomètre ; 7,9+2 accepté et 8,3+2 refusé ; même verdict et même cout95 à 30 Hz qu'à 60 Hz ; un accroc toutes les 8 images refuse ; règle d'Extrême ; arrêt après 8 images ; contexte perdu ; absence de io.terminer ; cache ; limite de bilanCout. 10 mutations, toutes détectées."
+  },
+  {
+   "commande": "node verifications/autoconfig-integration.test.mjs",
+   "resultat": "7 contrôles réussis, fichier non modifié."
+  },
+  {
+   "commande": "node verifications/scene-bench.test.mjs",
+   "resultat": "Réussi en 1,5 s environ. Contrôle par palier que les options sont celles de la course. Échoue sur l'ancien scene-bench.js et si l'on remet l'ancienne règle des voitures."
+  },
+  {
+   "commande": "node verifications/mesures.test.mjs",
+   "resultat": "21 tests réussis, 13 anciens et 8 nouveaux. 28 mutations de src/mesures.js, toutes détectées (script : /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/profils-mut-mesures/muter.mjs)."
+  },
+  {
+   "commande": "for t in verifications/*.test.mjs; do node \"$t\" > /dev/null 2>&1 || echo \"ECHEC $t\"; done",
+   "resultat": "66 suites, aucun ECHEC. Lancée deux fois (57 s, puis 112 s sur machine chargée), la seconde après les dernières retouches."
+  },
+  {
+   "commande": "python3 construire.py ; node /Users/david/Projects/bitume/tools/page-essai.mjs dist/bitume.html <scratchpad>/profils-essai/detection-fin.js",
+   "resultat": "Construction 0.2.39 sans erreur. La détection, branchée à la main sur parcours.terminer (comme le fera l'intégration), donne statut ok, methode 'terminer', revision 2. Aucune lecture du chronomètre ; profile() ne reçoit que false, jamais true. Cache enregistré avec methode 'terminer'. Erreurs console : aucune. Verdict et temps non interprétés (machine chargée, sans interface)."
+  },
+  {
+   "commande": "page-essai.mjs ... compter.js puis repartition2.js et circuits.js (comptage seulement)",
+   "resultat": "Volet ouvert par chrono(false) puis BITUME_JEU.mesures = true : 0 lecture et 0 ouverture du chronomètre, 2 fermetures. GPU affiché « N/D (chronomètre coupé) ». Lignes séance, période, référence estimée et créations N/D présentes. Courses de référence low/medium/high sans erreur console. Ancien chemin de détection (sans terminer) sans erreur. Après l'essai : git checkout -- dist VERSION.json SIZE.json."
+  }
+ ],
+ "mesures": "Ce sont des comptages, pas des temps. Chrome sans interface, 1440×900, ANGLE Metal, machine chargée par d'autres exécutants.\nTriangles par image, parcours de détection (3 endroits, 60 images) :\n- low : médiane 0,33 M (max 0,37 M)\n- medium : médiane 1,30 M (max 1,56 M)\n- high : médiane 2,09 M (max 2,71 M)\n- extreme : 15,3 M au plus\nCourse de référence Val-Brûlé au départ 800, vue principale, 240 images :\n- low : médiane 0,53 M\n- medium : médiane 2,54 M, plus glaces 0,48 M par image (0,5 rendu par image)\n- high : médiane 4,28 M, plus glaces 1,56 M par image (1 rendu par image)\nCourse en Fine sur les 7 circuits du catalogue, 2 endroits chacun : 0,58 à 1,91 M sur 13 des 14 endroits. Seul le départ de Val-Brûlé atteint 4,26 M, soit environ 1,6 fois le maximum du parcours.\nUne première série de comptes au palier low était faussée : mon parcours de test laissait son décor dans le moteur (cache de scène du jeu). Elle a été recomptée course d'abord.\nDurées des tests : mesures.test 21 tests en moins de 10 ms chacun ; scene-bench.test 1,5 s environ ; suite complète 57 s puis 112 s.\nAucun gain de fluidité n'est annoncé : rien n'a été chronométré.",
+ "changements_visibles": [
+  "Détection : au premier lancement après mise à jour, elle est refaite une fois à cause de REVISION 2. Elle l'est encore une fois en vague 2 quand jeu.js passe { terminer: true }, sauf si les deux vagues sont publiées ensemble.",
+  "Image du parcours de détection, visible derrière l'indication : jusqu'à 12 voitures en modèle complet (au lieu de 7, selon la distance), herbe qui plie au passage du peloton, finition photo des surfaces aux paliers avec halo. Ce parcours est un peu plus lourd : avec l'ancienne méthode, encore active en vague 1, le verdict peut descendre d'un cran.",
+  "Volet F3 : deux lignes de plus. Exemple relevé : « séance 148 images · 128 au-delà de 1,5 période (86,5 %) · pire 100,0 ms à 0,0 s · p99 66,8 » et « écran période N/D · diviseur N/D · référence estimée 16,7 ms · créations tardives N/D ». Si le chronomètre est coupé, la ligne GPU affiche « N/D (chronomètre coupé) ».",
+  "Aucun changement de simulation, de tirages aléatoires, d'obstacles ni de physique (p9) : aucun de ces fichiers n'y touche."
+ ],
+ "demandes_integration": [
+  "src/jeu.js, detecterGraphismes (vers la ligne 2653), objet io de B.autoconfig.executer : ajouter « terminer: parcours.terminer || undefined, » à côté de preparer et dessiner. Sans cette ligne, la détection reste au chronomètre GPU.",
+  "src/jeu.js, demarrer (vers la ligne 2711) : remplacer B.autoconfig.cacheValide(mesure, empreinteDetection()) par B.autoconfig.cacheValide(mesure, empreinteDetection(), { terminer: true }), dans le même lot que la ligne précédente. Les caches pris au chronomètre sont alors refaits une fois.",
+  "src/jeu.js, BITUME_JEU (vers la ligne 2868) : setter « set mesures(v) { B.mesures.afficher(v && typeof v === 'object' ? v : !!v, rendu); } », pour que BITUME_JEU.mesures = { gpu: false } ouvre le volet sans chronomètre. Possible dès maintenant sans modification : BITUME.mesures.chrono(false); BITUME_JEU.mesures = true. Décision à prendre : F3 sans chronomètre par défaut ?",
+  "Lot cadence (5B-4/5B-10), src/jeu.js, boucle image(), avant B.mesures.imageFin : appeler B.mesures.cadence({ periode, diviseur, verrouille }) à chaque image ou à chaque changement. L'image de FLoop {period, locked} convient telle quelle. Sans cet appel, la séance juge les images longues contre la référence estimée.",
+  "src/jeu.js, fin de lancer()/demarrerSeance après la chauffe : appeler B.mesures.reinitialiser() pour une séance par course. Aujourd'hui la séance repart à l'ouverture du volet, à reference(), à oublierIntervalle (focus, visibilité, fin de détection).",
+  "FERRO 0.3.10 (5B-1) : exposer rendu.stats.creations en compteur cumulé, nombre ou objet { total } ou objet de compteurs. B.mesures le relève après chaque vue et dans lire(), principal et glaces sommés, remise à zéro détectée. Le lot 5B-9 pourra prouver qu'il reste à zéro en course.",
+  "tools/profil-accrocs.mjs et tools/banc-navigateur.mjs (dépôt principal) : option pour évaluer BITUME.mesures.chrono(false) avant BITUME_JEU.mesures = true. Le volet pourra alors rester ouvert sans fausser la mesure.",
+  "Calibrage, sur une machine au repos et en fenêtre visible : tools/profil-accrocs.mjs --detection oui, puis une course au palier choisi au départ de Val-Brûlé, l'endroit le plus chargé. À faire avant de publier, pour confirmer FRACTION 0,6 (le M5 devrait obtenir Moyenne ou Fine) ou la baisser."
+ ],
+ "non_fait": [
+  "Aucun chronométrage dans le navigateur, comme demandé : FRACTION 0,6 est raisonnée, pas mesurée ; aucun verdict de détection n'est interprété.",
+  "Les glaces et l'habitacle ne sont pas dessinés par le parcours : FRACTION les couvre par raisonnement seulement. Il n'y a pas d'option pour passer le moteur des glaces au parcours.",
+  "Pas de compteur des créations tardives du jeu lui-même (sillage, effets de saison, aurores, contextes 2D, que la carte jeu-seance-07 veut voir dans B.mesures) : seul le compteur du moteur est lu. Un crochet B.mesures.creation(nom) appelé dans les gardes « if (!x) » de jeu.js serait l'étape suivante.",
+  "Pas de journal des pires images (seulement la pire et son instant). Nombre de ramassages volontairement absent : non mesurable depuis la page.",
+  "banc() dans jeu.js n'est pas touché (il écarte toujours la première seconde).",
+  "La synchronisation de readPixels n'a été vérifiée que sur Chrome/ANGLE Metal, pas sur Firefox, Safari ou rendu logiciel."
+ ],
+ "risques": [
+  "Le parcours est plus lourd que 13 des 14 endroits de course comptés en Fine, mais il pèse environ 0,6 fois le départ de Val-Brûlé (4,3 M de triangles plus 1,6 M de glaces). Au pire endroit, un palier accepté à 10 ms sur le parcours peut ne pas tenir 16,7 ms en course. À vérifier à l'horloge avant de publier.",
+  "Lire un pixel met processeur et GPU en série : le coût mesuré est pessimiste, ce qui peut rendre le verdict trop prudent sur les machines lentes en processeur.",
+  "Un bridage à 30 Hz qui baisse aussi l'horloge du GPU (économie d'énergie) augmente le coût réel : le test prouve que la méthode ne dépend pas de la période de l'écran, pas des fréquences du GPU.",
+  "Vague 1 publiée seule : REVISION 2 fait refaire la détection avec l'ancienne méthode, sur un parcours plus lourd, donc avec un verdict possiblement plus bas que la révision 1, et sans gain. Elle est refaite à nouveau en vague 2.",
+  "Référence estimée : sans cadence() du jeu et avec un diviseur non déclaré, le seuil vaut 1,5 intervalle visé et non (diviseur + 0,5) périodes de l'écran. Le volet la nomme « référence estimée ».",
+  "Le seuil des images longues et les centiles de séance sont arrondis au 1/10 ms : une image à moins de 0,1 ms au-dessus du seuil n'est pas comptée.",
+  "Créations : je n'ai pas lu ~/Projects/ferro, l'arbre d'un autre exécutant, donc la forme exacte de stats.creations de FERRO 0.3.10 n'est pas connue. Le relevé accepte un nombre ou un objet, cumulé ; un compteur remis à zéro à chaque image serait sous-compté si deux images consécutives créent.",
+  "La séance est remise à zéro par oublierIntervalle (retour au premier plan) : une course avec alt-tab compte en deux séances."
+ ],
+ "commits": [
+  "49f7b93afbd069837b09b025d0a3ddeaca13fd95 — fluidite/profils, dans /Users/david/Projects/bitume-wt/profils : « détection : coût d'image à fin forcée, parcours comme en course, volet qui compte les accrocs » (6 fichiers, +554/−50). Non poussé, non fusionné. Arbre propre ; dist, VERSION.json et SIZE.json restaurés avant le commit."
+ ]
+}

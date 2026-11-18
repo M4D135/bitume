@@ -1,0 +1,119 @@
+{
+ "resume": "Lot profils (5B-8), vague 1, corrigé. Arbre : /Users/david/Projects/bitume-wt/profils, branche fluidite/profils. Deux commits au-dessus de 54e98c9 : 49f7b93 (exécutant) et be9fcb8 (correction). Rien n'est poussé ni fusionné. src/jeu.js et src/mesures.js ne sont pas touchés par la correction.\n\nConstat P2 (Fine acceptable sans tenir) : JUSTE, corrigé.\n- Le parcours a déjà la graine, le thème et la longueur de Val-Brûlé : un test le vérifie point par point.\n- Mais il mesurait trois points d'herbe en vue de poursuite, sans rétroviseurs.\n- En mesure à l'horloge (reglage.chronoGPU === false) seulement, le premier point de vue devient le départ de la séance de référence (s = 800), vu du cockpit avec l'habitacle (B.voiture.cockpit).\n- Les deux autres points de vue restent des points d'herbe, à plus de 300 m.\n- Avec le moteur des glaces prêté (nouvel argument creer(rendu, capacites, { glaces })), une glace est dessinée comme dans majGlaces de jeu.js : même géométrie, mêmes options, copies des nappes et des lots, une glace par image du cockpit en Fine, une sur deux en Moyenne, aucune en Légère.\n- terminer() lit aussi un pixel sur le contexte des glaces.\n- preparer renvoie { glaces: 'dessinees' | 'absentes' | 'aucune', glacesParImage, cockpit }.\n- Sans moteur des glaces, autoconfig retire leur part de la limite : LIMITE / (1 + 0,36 × glacesParImage). Le 0,36 vient des triangles comptés au départ de Val-Brûlé : 1,56 M de glaces pour 4,28 M en Fine ; en Moyenne 0,48 pour 2,54, soit 0,36 × 0,5.\n- L'ancienne méthode (chronomètre) garde ses points d'herbe et ne dessine jamais de glace.\n\nConstat P1 (critère non calibré sur le M5) : en partie juste, traité en partie.\n- Juste : FRACTION 0,6 est raisonnée, pas mesurée.\n- Inexact : la preuve que « la détection choisit encore Légère sur ce M5 » vient d'une machine chargée (charge moyenne 5,5 à 8, d'autres exécutants sur le GPU). Le relecteur écrit lui-même que ces temps sont gonflés : ce verdict ne dit rien du M5 au repos.\n- Fait : le parcours contient maintenant l'endroit chargé et les glaces que la fraction de 0,6 devait couvrir par raisonnement. La garder rendrait la mesure plus sévère deux fois, et Moyenne serait refusée plus souvent. FRACTION passe donc à 0,75 (LIMITE 12,5 ms). Cela laisse 4,2 ms pour ce qui reste hors mesure : ramassage jusqu'à 2,1 ms, composition et copie des glaces de l'ordre d'1 ms. Le recouvrement processeur/GPU en course, que la lecture d'un pixel met en série, ajoute encore de la marge.\n- Le cas de référence borne ce choix : Fine rate une image sur quatre au M5, glaces comprises elle coûte plus d'un budget, donc elle est refusée à toute fraction inférieure à 1.\n- Pas fait : la mesure à l'horloge sur le M5 au repos (cinq détections) que demande le correctif. La machine est chargée (charge 8,1 puis 5,3 pendant mon travail) et la consigne interdit de chronométrer dans le navigateur. Cette mesure reste une demande d'intégration avant publication.\n\nREVISION reste 2. Attribution du commit : « Co-Authored-By: Claude Opus 5.5 », selon le rappel système, et non « Claude Fable 5.2 » comme le demande le texte du workflow, qui n'est pas une consigne de David.",
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/profils/src/autoconfig.js",
+  "/Users/david/Projects/bitume-wt/profils/src/scene-bench.js",
+  "/Users/david/Projects/bitume-wt/profils/src/mesures.js",
+  "/Users/david/Projects/bitume-wt/profils/verifications/autoconfig.test.mjs",
+  "/Users/david/Projects/bitume-wt/profils/verifications/scene-bench.test.mjs",
+  "/Users/david/Projects/bitume-wt/profils/verifications/mesures.test.mjs"
+ ],
+ "api": [
+  {
+   "nom": "B.autoconfig.executer",
+   "signature": "executer(io) -> Promise<resultat> ; io.terminer?: () => void ; avec terminer, io.preparer(id, profil, { chronoGPU: false }) peut renvoyer { glaces, glacesParImage }",
+   "role": "Avec io.terminer : méthode 'terminer'. Coût = dessiner + terminer, mesuré à l'horloge ; le chronomètre GPU n'est jamais lu. Limite par profil calculée par limiteProfil(réponse de preparer). Résultat : methode, budget, fraction, limite, cadence, cadenceIntervalles, cadenceEcart ; chaque mesure a en plus glaces et sa limite. Sans io.terminer : chemin d'avant, methode 'chrono-gpu'."
+  },
+  {
+   "nom": "B.autoconfig.bilanCout",
+   "signature": "bilanCout(id, couts, cpu, attentes, intervalles, limite = LIMITE) -> { profil, methode:'terminer', images, cout50, cout95, cpu95, attente95, p50, p95, budget, limite, acceptable }",
+   "role": "Profil acceptable si au moins 24 images ont un coût p95 au plus égal à la limite du profil."
+  },
+  {
+   "nom": "B.autoconfig.limiteProfil",
+   "signature": "limiteProfil(info) -> ms",
+   "role": "LIMITE, sauf si info.glaces === 'absentes' : LIMITE / (1 + PART_GLACES × glacesParImage), avec glacesParImage = 1 par défaut."
+  },
+  {
+   "nom": "B.autoconfig.BUDGET / FRACTION / LIMITE / PART_GLACES / REVISION",
+   "signature": "BUDGET = 1000/60, FRACTION = 0.75, LIMITE = 12.5 ms, PART_GLACES = 0.36, REVISION = 2",
+   "role": "Constantes exportées ; justification en commentaire."
+  },
+  {
+   "nom": "B.autoconfig.cacheValide",
+   "signature": "cacheValide(cache, cle, options?) ; options.terminer === true",
+   "role": "Inchangé par la correction : avec { terminer: true }, un cache pris au chronomètre n'est plus valide."
+  },
+  {
+   "nom": "B.sceneBench.creer",
+   "signature": "creer(rendu, capacites, annexes?) -> { preparer(id, options, reglage?) -> { glaces: 'dessinees'|'absentes'|'aucune', glacesParImage: 0|0.5|1, cockpit: boolean }, dessiner(temps, vue), terminer: (() => void) | null, positions, images, imagesGlaces, liberer() } ; annexes.glaces : moteur FRender des rétroviseurs",
+   "role": "reglage.chronoGPU === false : chronomètre fermé ; vue 0 = départ s = 800 au cockpit avec habitacle ; glaces dessinées au rythme de la course si annexes.glaces est fourni. terminer lit un pixel sur rendu.gl, puis sur le contexte des glaces quand elles sont actives. Sans reglage : points d'herbe d'avant, aucune glace."
+  },
+  {
+   "nom": "B.sceneBench.distanceComplete",
+   "signature": "distanceComplete(fov) -> mètres",
+   "role": "Inchangé : même règle de modèle complet que la course."
+  },
+  {
+   "nom": "B.mesures.afficher / chrono / chronoGPU / cadence / lire",
+   "signature": "afficher(oui | { gpu: false }, rendu) ; chrono(oui, rendu?) -> boolean ; cadence({ periode|period, diviseur, verrouille|locked } | null) ; lire(rendu) -> { ...anciens champs, gpuChrono, periode, diviseur, verrou, periodeEstimee, seance: { images, longues, seuil, reference, pire, instantPire, p95, p99, duree }, creations, creationsSeance }",
+   "role": "Inchangé par la correction : aucun constat ne portait sur src/mesures.js. API telle que livrée en 49f7b93."
+  }
+ ],
+ "tests": [
+  {
+   "commande": "node verifications/autoconfig.test.mjs",
+   "resultat": "24 contrôles réussis, dont 2 nouveaux :\n- « Fine refusée quand ses glaces font passer le point de vue du cockpit au-dessus de la limite » : coût 10 ms sans glaces, 13 ms au cockpit avec la glace ; Moyenne 10,5 ms acceptée.\n- « glaces absentes du parcours, la limite perd leur part » : limites 10,59 et 9,19 ms.\nLe contrôle de bilanCout gagne la limite par profil et deux invariants : LIMITE + 2,1 + 1 ≤ BUDGET, et un coût au-dessus du budget toujours refusé.\nLes valeurs des contrôles à fin forcée sont remises autour de la nouvelle limite de 12,5 ms, et le commentaire du test dit pourquoi."
+  },
+  {
+   "commande": "node verifications/scene-bench.test.mjs",
+   "resultat": "Réussi, 5,5 s sur machine chargée. Nouveaux contrôles :\n- même tracé que Val-Brûlé à s = 0, 800 et 2100 ;\n- ancienne méthode : points d'herbe identiques, aucune glace même avec leur moteur prêté ;\n- mesure à l'horloge : vue 0 à s = 800, œil entre 0,5 et 1 m, habitacle de plus de 20 pièces, poursuite sans habitacle ;\n- copies des lots sans tampons pour les glaces ;\n- glaces : 4 sur 8 images du cockpit en Moyenne, 6 sur 6 en Fine, 0 en Légère ou en poursuite, options sans ombres, halo ni finition ;\n- terminer sur les deux contextes ;\n- 'absentes' sans moteur des glaces."
+  },
+  {
+   "commande": "mutations de src/autoconfig.js et src/scene-bench.js (une à la fois, fichier restauré par git checkout)",
+   "resultat": "9 mutations, toutes détectées après ajout du contrôle de l'habitacle (la mutation « habitacle absent » survivait au premier passage) : pénalité des glaces supprimée, médiane au lieu du p95, FRACTION 0,9, PART_GLACES 0,1, départ absent des points de vue, glaces non dessinées, glaces non terminées, habitacle absent, glaces dans l'ancienne méthode."
+  },
+  {
+   "commande": "node verifications/autoconfig-integration.test.mjs ; node verifications/mesures.test.mjs",
+   "resultat": "7 contrôles réussis ; mesures réussi (fichiers non modifiés par la correction)."
+  },
+  {
+   "commande": "for t in verifications/*.test.mjs; do node \"$t\" > /dev/null 2>&1 || echo \"ECHEC $t\"; done",
+   "resultat": "66 suites, aucun ECHEC. Lancée avant le commit (50 s), puis après l'ajout du contrôle de l'habitacle (75 s)."
+  },
+  {
+   "commande": "python3 construire.py ; node /Users/david/Projects/bitume/tools/page-essai.mjs dist/bitume.html <scratchpad>/correcteur-profils/glaces.js --taille 1440,757 --dpr 2",
+   "resultat": "Construction 0.2.39 sans erreur. Détection branchée à la main avec terminer et un moteur FRender des glaces (toile 495×150) :\n- statut ok, methode terminer ;\n- 0 lecture du chronomètre, profile(true) jamais appelé ;\n- positions [800, 1485, 4050] ;\n- Moyenne glaces 'dessinees' (9 glaces sur 54 images), Légère 'aucune' ;\n- aucune erreur console.\nVerdict non interprété : machine chargée. dist, VERSION.json et SIZE.json restaurés ensuite."
+  }
+ ],
+ "mesures": "Ce sont des comptages de triangles, pas des temps. Chrome sans interface, 1440×757, densité 2, ANGLE Metal, machine chargée (charge 5 à 8). Parcours en mesure à l'horloge :\n- Moyenne, vue du cockpit au départ : 2,26 à 2,44 M ; points d'herbe 1,44 à 1,55 M ; glace 0,94 M par rendu, une image sur deux.\n- Fine, vue du cockpit au départ : 3,93 M ; points d'herbe 2,55 à 3,02 M ; glace 1,75 M par rendu, à chaque image.\nRepères en course, comptés par l'exécutant au départ 800 de Val-Brûlé : Moyenne 2,54 M plus 0,48 M de glaces par image ; Fine 4,28 M plus 1,56 M. MESURES-BASE donne 4,9 M en cockpit.\nLe point de vue qui fixe le 95e centile pèse donc environ 0,9 fois la course en Fine, avec des glaces du même ordre. Avant la correction, il pesait 0,5 à 0,6 fois la course, sans glaces.\nDurées des tests : autoconfig moins de 0,1 s ; scene-bench 5,5 s ; suite complète 50 s puis 75 s.\nAucun temps de rendu n'est relevé ni annoncé.",
+ "changements_visibles": [
+  "Détection, avec la méthode « terminer » (vague 2) : un tiers des images du parcours se voit depuis le cockpit au départ de Val-Brûlé, habitacle compris. Les deux autres points de vue restent en poursuite.",
+  "Détection avec la méthode « terminer » : le seuil passe de 10 à 12,5 ms au 95e centile. Si les glaces ne sont pas prêtées, il descend à 10,6 ms en Moyenne et 9,2 ms en Fine.",
+  "Vague 1 publiée seule (méthode du chronomètre) : la correction ne change rien. Mêmes points de vue qu'en 49f7b93, aucune glace.",
+  "Volet de mesures : inchangé par la correction (lignes séance et écran de 49f7b93).",
+  "Aucun changement de simulation, de tirage aléatoire, d'obstacle ni de physique (p9)."
+ ],
+ "demandes_integration": [
+  "src/jeu.js, detecterGraphismes (vers 2652-2656) : passer le moteur des glaces au parcours et terminer à la détection.\n- Avant B.sceneBench.creer, créer retro.rendu s'il manque, avec le même code que majGlaces (vers 1545-1547) : FRender.create($('retro-rendu'), { msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' }) puis resize(Math.min(dpr, 1.5)), dans un try ; en cas d'échec, retro.echec = true et pas d'annexe.\n- Puis : parcours = B.sceneBench.creer(rendu, {...}, { glaces: reglagesGlacesPermises ? retro.rendu : null }). Glaces permises : reglages.retro vaut 'oui', ou 'auto' sur écran non tactile, et retro.echec est faux, comme dans retroVoulu.\n- Dans l'objet io : terminer: parcours.terminer || undefined.\n- Effet de bord utile : le moteur des glaces est créé et ses shaders sont compilés avant la course.",
+  "src/jeu.js, finally de detecterGraphismes, après parcours.liberer() : poser retro.scene = -1 et retro.ambianceSource = null. Le moteur des glaces garde sinon le décor du parcours, et majGlaces ne lui rendrait pas celui de la séance.",
+  "src/jeu.js, demarrer (vers 2711) : cacheValide(mesure, empreinteDetection(), { terminer: true }), dans le même lot que la ligne terminer.",
+  "src/jeu.js, BITUME_JEU (vers 2868) : setter « set mesures(v) { B.mesures.afficher(v && typeof v === 'object' ? v : !!v, rendu); } ». Décision à prendre : F3 sans chronomètre GPU par défaut ?",
+  "Lot cadence (5B-4/5B-10), boucle image() de jeu.js, avant B.mesures.imageFin : appeler B.mesures.cadence({ periode, diviseur, verrouille }). L'image FLoop {period, locked} convient.",
+  "src/jeu.js, fin de lancer()/demarrerSeance après la chauffe : appeler B.mesures.reinitialiser() pour une séance par course.",
+  "FERRO 0.3.10 (5B-1) : exposer rendu.stats.creations en compteur cumulé (nombre, ou objet { total }).",
+  "tools/profil-accrocs.mjs et tools/banc-navigateur.mjs : option pour évaluer BITUME.mesures.chrono(false) avant BITUME_JEU.mesures = true.",
+  "Calibrage obligatoire avant publication, sur le M5 au repos, en fenêtre visible, avec la vague 2 branchée (terminer et glaces) :\n- cinq détections, en relevant cout50/cout95 de Moyenne et de Fine (tools/profil-accrocs.mjs --detection oui) ;\n- critère attendu : Moyenne acceptée et Fine refusée ;\n- si Moyenne est refusée ou Fine acceptée, ajuster FRACTION dans src/autoconfig.js, remplacer le raisonnement du commentaire par les nombres relevés, et figer ces coûts dans un test à faux io."
+ ],
+ "non_fait": [
+  "P1, partie mesure : aucun chronométrage du M5 au repos. La machine est chargée par d'autres sessions, et la consigne interdit de chronométrer dans le navigateur. FRACTION 0,75 reste raisonnée, appuyée sur MESURES-BASE et sur les comptages de triangles. Le test « coûts M5 figés » n'existe pas faute de nombres mesurés au repos ; seuls les invariants (marge hors mesure, Fine au-dessus du budget refusée) sont testés.",
+  "P1, constat lui-même : la phrase « la détection choisit encore Légère sur ce M5 » n'est pas retenue comme fait, puisqu'elle vient d'une machine chargée. Mon essai, chargé lui aussi, refuse Moyenne : il n'est pas interprété non plus.",
+  "Glaces : la copie de l'image de la glace dans ses deux toiles 2D (drawImage, transformation projective) n'est pas reproduite. Elle est couverte par la marge de FRACTION, par raisonnement.",
+  "Habitacle : dessiné sans mouvements de tête ni tableau de bord animé. Vitre, pluie à l'écran et affichage tête haute ne sont pas dessinés.",
+  "Le facteur PART_GLACES = 0,36 s'appuie sur les triangles, pas sur des temps. Le surcoût propre au second contexte WebGL n'est pas compté.",
+  "src/mesures.js : aucun constat, rien de changé. Les limites de 49f7b93 restent : pas de journal des pires images, pas de compteur des créations tardives du jeu, ramassages non mesurés.",
+  "La synchronisation par readPixels sur deux contextes n'est vérifiée que sur Chrome/ANGLE Metal."
+ ],
+ "risques": [
+  "FRACTION 0,75 n'est pas calibrée. Si la mesure à fin forcée surestime beaucoup le coût réel, Moyenne peut encore être refusée sur le M5 ; si elle le sous-estime, une machine juste peut recevoir Moyenne et rater des images au départ chargé. Le calibrage au repos le tranchera.",
+  "Sans le moteur des glaces (intégrateur qui ne passe que terminer), la pénalité par les triangles peut être trop douce si le second contexte coûte plus que ses triangles.",
+  "La vue du cockpit au départ ne pèse que le tiers des images. Si un jour plus de 95 % des images mesurées étaient en poursuite (changement du cycle des vues dans autoconfig), le 95e centile ne la verrait plus. Le cycle n'a pas changé : 8 images par point de vue sur 3.",
+  "Le moteur des glaces prêté garde le décor du parcours tant que jeu.js ne remet pas retro.scene à -1 (demande d'intégration). Sans cette remise, les glaces de la course suivante montreraient le décor de Val-Brûlé.",
+  "Vague 1 publiée seule : REVISION 2 refait la détection avec l'ancienne méthode, sur le parcours alourdi par l'exécutant (12 voitures complètes, sillage, finition), donc avec un verdict possiblement plus bas. Ce risque était déjà signalé ; la correction n'y ajoute rien.",
+  "La séance du volet est remise à zéro par oublierIntervalle, et les seuils sont arrondis au 1/10 ms. Ces risques de 49f7b93 sont inchangés."
+ ],
+ "commits": [
+  "49f7b93afbd069837b09b025d0a3ddeaca13fd95 — exécutant : « détection : coût d'image à fin forcée, parcours comme en course, volet qui compte les accrocs ».",
+  "be9fcb8 — correcteur, branche fluidite/profils dans /Users/david/Projects/bitume-wt/profils : « Corrige la détection : mesurer le départ de Val-Brûlé au cockpit et les glaces, limite à 0,75 du budget » (4 fichiers : src/autoconfig.js, src/scene-bench.js, verifications/autoconfig.test.mjs, verifications/scene-bench.test.mjs). Non poussé, non fusionné ; arbre propre ; dist, VERSION.json et SIZE.json restaurés."
+ ]
+}

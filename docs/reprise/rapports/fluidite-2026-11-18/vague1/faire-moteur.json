@@ -1,0 +1,159 @@
+{
+ "resume": "FERRO 0.3.10 is done and committed locally on main as e915eb5 (base 89c7841). Nothing was pushed, tagged or installed in the games. The release is strictly additive: without a call to prewarm or retain, the image and the simulation do not change. In a copy of BITUME, 60-frame deterministic sequences are bit-identical between 0.3.9 and 0.3.10, with and without prewarm, at 960×540 and 2880×1800. No shader was modified.\n\nPoints 1 to 8 of the task are all delivered.\n1. prewarm(camera, dynamic, fx, options) returns a Promise. It renders 12 variants (MSAA × halo × shadows × reflections, bounded by the capabilities opened at creation) under a 1-pixel scissor. It draws every nappe and every near and far lot, grass subsets included, in the colour pass and the sun shadow pass. It retains the targets, waits for the GPU through a fence polled with clientWaitSync(sync,0,0) on each rAF (a 16 ms timer when the page is hidden, gl.finish after timeoutMs), then restores GL state, caches and stats.\n2. retain(true|false) suspends or restores the 120-render idle release. prewarm calls it automatically.\n3. stats.creations counts what draw creates; resetStats() and prewarm set it back to 0.\n4. An empty spatial index builds no cell key and no array (view, sun and lamp passes).\n5. A lot with ombre:false is skipped in the sun shadow pass only.\n6. Compilation is grouped: 8 compiles instead of 12. FX_VERT is textually identical to VERT; this is noted, not fixed.\n7. The per-frame object, effect and cockpit streams keep a reserved capacity, doubled when needed, still orphaned, then filled with bufferSubData.\n8. Several per-frame allocations were removed without changing any value.\n\nWebGPU has honest equivalents with the same signatures, and the Canvas renderer has stubs. Release notes are in README.md, docs/FERRO-UNIFIED.md and docs/prewarm-0310/.\n\nStatus of each claim:\n- **Tested in Node:** 175 tests, 174 pass, 1 historical physics TODO. The 12 new tests pass and all 20 mutations are detected.\n- **Tested in the browser, BITUME copy only (headless Chrome 157, ANGLE Metal, Apple M5; counts only, nothing timed):** prewarm exists, resolves with the fence signaled, gives the same image before and after, and no GL object is created after prewarm when effects are reserved.\n- **Not done:** the effect on the hitches measured by BITUME, and execution on a real WebGPU device.",
+ "fichiers": [
+  "/Users/david/Projects/ferro/src/ferro/renderer.js",
+  "/Users/david/Projects/ferro/src/ferro/webgpu-renderer.js",
+  "/Users/david/Projects/ferro/src/ferro/engine.js",
+  "/Users/david/Projects/ferro/tests/ferro/renderer-prewarm.test.mjs",
+  "/Users/david/Projects/ferro/FERRO.json",
+  "/Users/david/Projects/ferro/FERRO.lock.json",
+  "/Users/david/Projects/ferro/README.md",
+  "/Users/david/Projects/ferro/docs/FERRO-UNIFIED.md",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/README.md",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/build.log",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/node-tests.log",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/mutations.log",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/bitume-suites.log",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/navigateur-prechauffage.json",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/navigateur-origines.json",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/navigateur-sequences.json",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/navigateur-controle-visuel.json",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/navigateur/prechauffage.js",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/navigateur/sequence-sans.js",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/navigateur/sequence-prewarm.js",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/navigateur/sequence-reserve.js",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/navigateur/sequence-prewarm-journal.js",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/navigateur/origine-sans.js",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/navigateur/origine-prewarm.js",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/navigateur/origine-reserve.js",
+  "/Users/david/Projects/ferro/docs/prewarm-0310/navigateur/detection.js",
+  "/Users/david/Projects/ferro/dist/FERRO-0.3.10.zip",
+  "/Users/david/Projects/ferro/dist/ferro-editor.html",
+  "/Users/david/Projects/ferro/dist/ferro-runtime/manifest.json",
+  "/Users/david/Projects/ferro/dist/ferro-runtime/README.md",
+  "/Users/david/Projects/ferro/dist/ferro-runtime/ferro-runtime.js",
+  "/Users/david/Projects/ferro/dist/ferro-runtime/ferro-music.js",
+  "/Users/david/Projects/ferro/dist/ferro-runtime/ferro-render-extras.js",
+  "/Users/david/Projects/ferro/dist/ferro-runtime/ferro-simulation.js",
+  "/Users/david/Projects/ferro/dist/ferro-runtime/modules/renderer.js",
+  "/Users/david/Projects/ferro/dist/ferro-runtime/modules/webgpu-renderer.js",
+  "/Users/david/Projects/ferro/dist/ferro-runtime/modules/engine.js",
+  "/private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/essai/bitume (copie BITUME c1d349c + FERRO 0.3.10, temporaire)",
+  "/private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/essai/bitume-039 (copie témoin FERRO 0.3.9, temporaire)"
+ ],
+ "tests": [
+  {
+   "commande": "cd /Users/david/Projects/ferro && python3 tools/build.py",
+   "resultat": "OK. 34 modules conformes au verrou 0.3.10. dist/FERRO-0.3.10.zip : 43 fichiers, 6 248 538 octets, sha256 59549be2bfa763459e4e7e27e692a2cf9c845a632e14a0f762216e58c6d71112. dist/ferro-editor.html : 861 471 octets. physx-runtime.js régénéré à l'identique (aucune modification Git)."
+  },
+  {
+   "commande": "node --test tests/ferro/*.test.mjs tests/recipes.test.cjs",
+   "resultat": "175 tests : 174 réussis, 0 échec, 1 TODO physique historique (glissement du cube, inchangé). La base était de 163 tests."
+  },
+  {
+   "commande": "node --test tests/ferro/renderer-prewarm.test.mjs",
+   "resultat": "12/12. Couvre : le balayage proche, lointain, les sous-ensembles, les nappes et le ciseau ; les 12 variantes, les cibles retenues et les octets ; la trace GL suivante identique, avec un témoin qui change ; la barrière différée, timeout, failed, unsupported, page cachée et contexte perdu ; retain ; l'index vide ; ombre:false ; stats.creations ; la compilation groupée (statuts lus après le dernier lien, messages d'échec) ; les flux 16384, doublés à 32768, réserve 65536 ; les signatures Canvas ; le balayage et l'attente WebGPU."
+  },
+  {
+   "commande": "python3 mutate.py <copie scratchpad> (20 mutations du code ajouté)",
+   "resultat": "20 mutations détectées sur 20. Chacune fait échouer au moins un test (docs/prewarm-0310/mutations.log)."
+  },
+  {
+   "commande": "Comparaison des littéraux de gabarit HEAD et arbre (renderer.js, webgpu-renderer.js), puis git diff de webgpu-shaders.js",
+   "resultat": "17 et 3 littéraux, identiques à 0.3.9. webgpu-shaders.js n'a pas changé : les sources GLSL et WGSL sont inchangées."
+  },
+  {
+   "commande": "Copie BITUME : for t in verifications/*.test.mjs; do node \"$t\"; done",
+   "resultat": "66 suites sur 66 avec FERRO 0.3.9 et avec FERRO 0.3.10."
+  },
+  {
+   "commande": "node bitume/tools/page-essai.mjs <copie>/dist/bitume.html prechauffage.js --taille 1440,900 --dpr 2",
+   "resultat": "BITUME_JEU.rendu.prewarm, retain et resetStats existent. prewarm se résout avec fallback false (barrière signalée), 12 variantes, retain() === true, 273 385 216 octets tenus. L'image du jeu juste avant et juste après prewarm (SHA-256, toile 2880×1800) est identique au soleil et sous la pluie ; les deux PNG sont identiques octet pour octet. Rendus explicites coupant puis rallumant ombres, MSAA, halo et reflets : 0 création. Images libres après prewarm : 1 création au soleil (flux d'effets), 0 sous la pluie. La pluie chargée sans nouveau prewarm crée 8 objets (resize de qualité)."
+  },
+  {
+   "commande": "page-essai.mjs sequence-{sans,prewarm,reserve}.js (boucle gelée, instants commandés, hasard réamorcé ; 960×540 et 2880×1800)",
+   "resultat": "0.3.9 contre 0.3.9 : 60/60 identiques, 60 empreintes distinctes. 0.3.9 contre 0.3.10 sans prewarm : 60/60 au soleil et sous la pluie, aux deux tailles. 0.3.10 sans prewarm contre avec : 60/60. 0.3.9 contre 0.3.10 avec prewarm et reserve.effects 2048 : 60/60. Créations après prewarm avec réserve : 0 et 0. Sans réserve : 1 au soleil (journal : flux d'effets 16384 → 32768 à l'image 10)."
+  },
+  {
+   "commande": "page-essai.mjs origine-{sans,prewarm,reserve}.js (piles des créations pendant draw)",
+   "resultat": "Sans prewarm, les premières images créent 4 à 5 objets au soleil (MSAA, flux) et 8 à 9 sous la pluie (MSAA, cibles des reflets, flux). Après prewarm, 240 images libres font 0 création, avec ou sans réserve. reference() de BITUME appelle resize('auto') puis resize(2), ce qui libère toutes les cibles."
+  },
+  {
+   "commande": "bitume/tools/controle-visuel.mjs --angle native --reference (pluie 48 images, piste 40 images)",
+   "resultat": "Non concluant. La détection du premier lancement tourne au temps réel : pluie 25/48 entre deux séances 0.3.9 (27/48 avec 0.3.10). Piste : 40/40 entre deux séances 0.3.9, 32/40 avec 0.3.10 ; les 8 images restantes tombent pendant la boîte « Réglage automatique », à un autre point. Deux autres séances 0.3.10 ont quitté la course aux images 21 et 25, comme une séance 0.3.9 à l'image 47."
+  },
+  {
+   "commande": "page-essai.mjs detection.js (BITUME_JEU.detecterGraphismes), 3 séances par moteur",
+   "resultat": "Verdict « low » (Légère) dans les 6 séances, après essai de « medium », sur 0.3.9 comme sur 0.3.10. Aucune durée relevée."
+  }
+ ],
+ "demandes_integration": [
+  "BITUME : installer FERRO 0.3.10 (python3 tools/install-ferro.py bitume <checkout>) et refaire la qualification hôte : suites, contrôle visuel, profil-accrocs.mjs.",
+  "BITUME : à la première image de chaque niveau, après appliquerPalier() (dernier resize), appeler rendu.prewarm(cam, sortie, fx) juste avant rendu.draw(cam, sortie, fx), dans le même requestAnimationFrame ou sous l'écran de chargement. Sinon le navigateur peut présenter une image vide. En option, attendre la promesse avant de libérer le départ.",
+  "BITUME : passer options.reserve = { effects, dynamic, overlay } d'après son budget de particules et d'objets. Sans réserve, le flux d'effets double une fois en course au soleil.",
+  "BITUME : passer options.variants limitées aux bascules réelles du menu ou de la météo (par exemple reflets oui/non) pour un profil sans MSAA ou sans reflets. Appeler rendu.retain(false) en quittant la course (titre, résultats) pour rendre la mémoire.",
+  "BITUME : reference() et les changements de palier appellent resize avec une autre qualité ('auto' puis 2). Cela libère toutes les cibles : refaire prewarm après chaque changement de qualité.",
+  "BITUME (opt-in, change l'ombre) : marquer ombre:false les lots d'herbe courte ou de marquages au sol qui ne doivent pas projeter d'ombre du soleil.",
+  "BITUME : le moteur des rétroviseurs (second contexte FERRO, retro.rendu) n'est pas préchauffé ; il dispose de la même API s'il le faut.",
+  "Tous les hôtes : surveiller stats.creations en course après prewarm. Toute valeur non nulle signale une ressource née pendant le jeu (flux, cible, programme)."
+ ],
+ "non_fait": [
+  "Aucun push, tag, release GitHub ni installation dans un jeu, comme demandé. Le dépôt BITUME n'a pas été modifié : son verrou reste 0.3.9.",
+  "Aucune mesure de temps ni de FPS. L'effet de prewarm sur les accrocs mesurés par BITUME (MESURES-BASE) et sur le ramasse-miettes reste à mesurer après intégration. Les champs ms, submitMs et waitMs ne sont pas relevés.",
+  "FX_VERT n'est pas corrigé : il est textuellement identique à VERT, et c'est seulement documenté.",
+  "WebGPU n'a été exercé que sur un GPU simulé (tests Node), sans appareil WebGPU réel.",
+  "Les captures temporelles de FSceneReflections (sonde, écran) ne sont pas préchauffées.",
+  "Non comptés dans stats.creations : textures internes de FSceneReflections, requêtes FGPUProfile, groupes de liaison WebGPU, envois par image de la foule et des lots PDR, renvois des caches statiques.",
+  "Le test EGL de pixels de 0.3.9 n'a pas été rejoué (pas d'EGL sur ce Mac). Il est remplacé par les empreintes GPU réelles dans BITUME.",
+  "controle-visuel.mjs ne permet pas d'A/B ici, à cause de la détection en temps réel ; les séquences déterministes maison le remplacent.",
+  "Ligne Co-Authored-By : le commit porte « Claude Opus 5.5 <noreply@anthropic.com> » (attribution imposée à la session), et non la ligne Fable 5.2 de la consigne. Un git commit --amend local suffit si la ligne d'origine est voulue."
+ ],
+ "commits": [
+  "e915eb5fd5cd50241719323a0b72e249b8d562c7 perf(render): release FERRO 0.3.10 with level prewarm and retained targets (local, branche main, base 89c7841, non poussé, 37 fichiers)"
+ ],
+ "api": [
+  {
+   "nom": "prewarm",
+   "signature": "renderer.prewarm(camera, dynamic, fx, options?: { variants?: object[], allShapes?: boolean, timeoutMs?: number = 4000, reserve?: { dynamic?: number, overlay?: number, effects?: number } }) → Promise<{ variants, draws, drawCalls, triangles, lots, nappes, subsets, creations, bytes, keys: string[], ms, submitMs, waitMs, fallback: false | 'timeout' | 'failed' | 'unsupported' | 'lost' | 'busy' }>",
+   "role": "Préchauffe un niveau : rend chaque variante sous un ciseau 1×1 avec toutes les nappes et tous les lots proches et lointains (sous-ensembles inclus), en couleur et dans l'ombre du soleil ; retient les cibles ; attend le GPU (barrière, ou gl.finish après timeoutMs) ; rend l'état GL, les caches et les stats. Une erreur rejette la promesse après la remise en état. WebGPU : setScissorRect(0,0,1,1) et onSubmittedWorkDone. Canvas : résolution immédiate, fallback 'unsupported'."
+  },
+  {
+   "nom": "retain",
+   "signature": "renderer.retain(value?: boolean) → boolean",
+   "role": "true suspend la libération de l'atlas d'ombres, du MSAA et des cibles des reflets après 120 rendus sans usage. false rétablit le comportement de 0.3.9, compteurs remis à zéro. Sans argument, rend l'état. Un changement de taille ou de qualité libère toujours. WebGPU : mémorise seulement l'état, rien n'y est libéré à l'inactivité."
+  },
+  {
+   "nom": "resetStats",
+   "signature": "renderer.resetStats() → stats",
+   "role": "Remet stats.creations à 0 et rend l'objet stats (WebGL2, WebGPU, Canvas)."
+  },
+  {
+   "nom": "stats.creations",
+   "signature": "renderer.stats.creations: number",
+   "role": "Cumul des objets GL créés pendant draw (programmes, textures, cibles, tampons MSAA, atlas, morceaux, tampons de foule et de lots PDR) et des agrandissements de flux. Les créations du préchauffage vont dans rapport.creations."
+  },
+  {
+   "nom": "lot.ombre",
+   "signature": "renderer.setLots([{ ..., ombre: false }])",
+   "role": "Exclut le lot de la seule passe d'ombre du soleil (WebGL2 et WebGPU, en jeu et pendant prewarm). Le lot reste dessiné en couleur."
+  }
+ ],
+ "changements_visibles": [
+  "Aucun sans opt-in : les mêmes 60 images par scène sont identiques bit à bit entre 0.3.9 et 0.3.10 dans BITUME.",
+  "Avec prewarm : l'image suivante est identique (empreintes et PNG égaux). Si prewarm n'est pas suivi d'un draw dans la même tâche, le navigateur peut présenter une image vide ; en WebGPU, les cibles de l'image sont effacées.",
+  "Avec lot.ombre:false : le lot ne projette plus d'ombre du soleil (choix de l'hôte).",
+  "Avec retain(true) ou prewarm : plus de mémoire GPU tenue, sans effet sur l'image."
+ ],
+ "mesures": "Comptages et empreintes seulement, rien n'a été chronométré.\n\nDans la copie BITUME (Fine, toile 2880×1800, Chrome 157 sans interface, ANGLE Metal, Apple M5) :\n- **Mémoire tenue** (rapport.bytes) : 273 385 216 octets. Détail : MSAA 4× 165 888 000, scène 41 472 000, source des reflets 41 472 000, reflets 5 184 000, atlas 2048² 16 777 216, halo 2 592 000.\n- **Balayage au soleil** : 12 variantes, 139 972 appels, 382 362 684 triangles soumis, 86 184 lots, 1 404 nappes, 252 sous-ensembles, 5 créations (cibles des reflets).\n- **Balayage sous la pluie** : 94 690 appels, 313 211 946 triangles, 54 810 lots, 2 112 nappes, 252 sous-ensembles, 0 création.\n- **Créations dans draw après prewarm** : 0 sur 59 images commandées et 240 libres avec réserve, dans les deux scènes. Sans réserve, au soleil : 1 (flux d'effets), puis 1 et 0 en séances libres ; sous la pluie : 0.\n- **Sans prewarm** : 4 à 5 créations aux premières images au soleil, 8 à 9 sous la pluie.\n- **Empreintes** : 60/60 identiques, 0.3.9 contre 0.3.10, avec et sans prewarm, à 960×540 et 2880×1800.\n- **Suites BITUME** : 66/66 avec chaque moteur. Détection du premier lancement : « low » 6 fois sur 6.\n\nCôté moteur : 175 tests (174 réussis, 1 TODO) et 20 mutations sur 20 détectées.",
+ "risques": [
+  "Mémoire : avec les variantes par défaut, un niveau au soleil garde les cibles des reflets (46 656 000 octets à 2880×1800) qu'il n'utilise pas. Un profil sans MSAA garderait un tampon MSAA de 165 888 000 octets inutile. L'hôte doit restreindre options.variants ou appeler retain(false).",
+  "Coût du balayage : 300 à 380 millions de triangles soumis dans BITUME (sommets traités, non chronométré). Sur un GPU modeste, l'attente peut dépasser 4 s ; gl.finish bloque alors le fil principal jusqu'à la fin du travail. WebGPU résout 'timeout' sans attendre.",
+  "Image vide présentée si prewarm n'est pas suivi d'un draw dans la même tâche : à intégrer correctement côté hôte.",
+  "Tout resize de taille ou de qualité libère les cibles malgré retain. Dans BITUME, reference() et les paliers le font : un prewarm placé trop tôt est perdu.",
+  "Les flux d'instances ne rétrécissent jamais : leur capacité doublée reste réservée, quelques dizaines de Ko observés.",
+  "La compilation groupée ne gagne du temps que si le pilote parallélise ; cela n'a pas été mesuré. Les messages d'échec gardent leur forme.",
+  "Le dépôt BITUME a avancé pendant la séance (c1d349c → 268ec0f, par une autre session). Les contrôles ont porté sur une copie de c1d349c.",
+  "page-essai.mjs et controle-visuel.mjs ouvrent Chrome avec un port de débogage temporaire sur 127.0.0.1, fermé en fin de séance. Ces outils de BITUME ont été utilisés comme la consigne le demandait.",
+  "La ligne Co-Authored-By du commit diffère de celle de la consigne (Opus 5.5 au lieu de Fable 5.2)."
+ ]
+}

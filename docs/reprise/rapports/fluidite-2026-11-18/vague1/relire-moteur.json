@@ -1,0 +1,90 @@
+{
+ "verdict": "corrections",
+ "constats": [
+  {
+   "id": "C1",
+   "gravite": 2,
+   "fichier": "src/ferro/renderer.js",
+   "lignes": "3320-3337 (prechaufferLots), 3164-3190 et 3455-3470 (boucle des variantes de prewarm)",
+   "probleme": "Le balayage complet (tous les lots proches et lointains, les sous-ensembles des prairies et les nappes) est refait dans chacune des 12 variantes. Or un pipeline dépend du programme, du format de cible, des échantillons et du mélange, et la validation d'un tampon se fait une fois par tampon. Les 11 balayages suivants n'apportent donc rien, alors qu'ils sont soumis de façon synchrone dans une seule tâche. Dans BITUME, cela fait 140 032 appels et 382 millions de triangles, soit environ 240 images de jeu (581 appels chacune). Le coût n'est pas mesuré : ni submitMs ni waitMs ne sont relevés. Sur un GPU modeste, l'attente peut dépasser les 4 s, puis gl.finish bloque le fil principal, et une perte de contexte reste possible. Cela va contre l'objectif « n'importe quelle machine ».",
+   "preuve": "Relancé avec node bitume/tools/page-essai.mjs <copie>/dist/bitume.html prechauffage-relu.js --taille 1440,900 --dpr 2. Au soleil, le rapport donne variants 12, drawCalls 140032, triangles 382363548, lots 86184 (12 × ~7 182), subsets 252 (12 × 21), alors qu'une image du jeu fait 581 appels. Dans le code, prechaufferLots(true|false) est appelé sans condition à chaque render(warm), sans mémoire de ce qui est déjà tracé.",
+   "correctif": "Garder le balayage complet des tampons une seule fois par passe : la première variante avec ombres pour la passe du soleil, et la première variante de chaque format de cible et de chaque nombre d'échantillons pour la couleur. Dans les autres variantes, tracer un seul lot, une seule nappe et un seul sous-ensemble par programme. Un Set des clés (passe, cible, échantillons) tenu dans warm suffit. On peut aussi étaler les variantes sur plusieurs requestAnimationFrame. Mesurer ensuite submitMs sur un profil modeste avant l'intégration."
+  },
+  {
+   "id": "C2",
+   "gravite": 2,
+   "fichier": "src/ferro/renderer.js",
+   "lignes": "3404-3414 (effectiveKey, prewarmVariants), 2567 (shadowsEnabled), 2596 (wantMsaa)",
+   "probleme": "Les variantes par défaut posent msaa:true et shadows:true. Dans ce moteur, true force la fonction même quand elle est exclue en qualité 'low' : fx.shadows===true contourne quality==='low', et fx.msaa===true contourne l'absence de halo. Le préchauffage crée donc, puis RETIENT à vie (retain(true)), l'atlas d'ombres, le MSAA 4× et les cibles des reflets pour un profil qui les coupe explicitement. C'est le cas du palier Légère de BITUME : msaa:false, shadows:false, bloom:false, alors que le moteur est créé avec msaa:4 et reflections:true (jeu.js:2703). Ce sont précisément les machines faibles qui paient cette mémoire inutile, ainsi que les tracés des passes correspondantes. C'est conforme à la lettre de la consigne (« borné aux capacités ouvertes à la création »), mais un piège pour l'hôte.",
+   "preuve": "Lecture : prewarmVariants itère msaa∈{false,true} et shadows∈{false,true}, sans tenir compte de fx ; effectiveKey compte msaa:1 dès que fx.msaa===true. Le rapport BITUME donne 273 385 216 octets tenus, dont 165 888 000 pour le MSAA. Profils lus dans bitume/src/graphismes.js:48-58.",
+   "correctif": "Par défaut, faire varier chaque fonction entre la valeur du jeu et « coupé », jamais vers « forcé » : {msaa: fx.msaa, bloom: fx.bloom…} × {false}. Laisser options.variants déclarer explicitement ce qui peut s'allumer en cours de jeu. Documenter qu'un true force la fonction en qualité basse."
+  },
+  {
+   "id": "C3",
+   "gravite": 2,
+   "fichier": "tests/ferro/renderer-prewarm.test.mjs",
+   "lignes": "177-191 et l'ensemble du fichier",
+   "probleme": "Plusieurs garanties annoncées dans le README et les commentaires ne sont couvertes par aucun test : le gouverneur, le vent local, le suivi de caméra (trackMotion), le chronomètre GPU et les captures FSceneReflections n'avancent pas pendant prewarm ; le cache de vue du jeu n'est pas touché ; les projecteurs des lampes et le plan de lumières sont restaurés. Neuf mutations sur onze, qui cassent exactement ces garanties, laissent les 12 tests verts. Les « 20 mutations sur 20 détectées » portent sur un jeu choisi par l'exécutant. Leur script (mutate.py) n'est pas conservé dans le dépôt, donc le chiffre n'est pas reproductible. Le reset du gouverneur compte vraiment : governor.update avec adaptive:false remet mean, slow et fast à 0 (renderer.js:1643). Une régression future passerait donc inaperçue.",
+   "preuve": "Copie de HEAD sous /private/tmp/.../relecture/mut, avec node --test mut/tests/ferro/renderer-prewarm.test.mjs. Mutations non détectées (ℹ fail 0) : « if(warm)guard=… » → « if(false) » (cache de vue du jeu réécrit), lampCasters non restauré, trackMotion appelé en warm, gouverneur appelé en warm, localWind.update en warm, profiler actif en warm, sceneMode=reflectionMode en warm, actorLightPlan non restauré. Mutations détectées : suppression du clearTimeout du délai, suppression des pièces témoins.",
+   "correctif": "Ajouter au test de trace un contrôle de stats.cache (viewFrames, viewRebuilds, marginDistance) avant et après prewarm, avec un mouvement de caméra entre les deux. Ajouter fx.adaptive:true, quality 'auto' et frameMs pour suivre l'état du gouverneur à travers stats.renderScale sur plusieurs images. Ajouter fx.windSources à des temps différents, et un FGPUProfile espion compté. Mettre le script de mutation dans tests/ ou dans docs/prewarm-0310/."
+  },
+  {
+   "id": "C4",
+   "gravite": 2,
+   "fichier": "src/ferro/renderer.js",
+   "lignes": "2929-2939 (streamUpload, reserveStream)",
+   "probleme": "Point 7 de la consigne : « téléversement sans réallocation du stockage GPU à chaque image ». Or streamUpload refait gl.bufferData(capacité) à CHAQUE appel, puis bufferSubData. Il respécifie donc tout le stockage à chaque image, et jusqu'à 3 fois par image pour le flux d'effets (sonde, scène, habitacle). WebGL exige qu'un stockage créé sans données soit mis à zéro (ANGLE l'efface avec robust resource init) : le coût par image suit la capacité et non les octets utiles. Avec options.reserve, ce coût grandit : reserve.effects 2048 fait effacer 131 072 octets à chaque appel. Le commentaire affirme que le pilote recycle ce stockage de taille constante, sans mesure à l'appui.",
+   "preuve": "Lecture des lignes 2929-2939. Le test renderer-prewarm « per-frame instance streams » confirme lui-même un bufferData de 16384 à chaque image ([16384,16384,16384,16384]), puis de 65536 après la réserve.",
+   "correctif": "Ne pas respécifier quand la capacité suffit : faire seulement bufferSubData sur un anneau de 2 ou 3 tampons alternés par image, ce qui évite d'attendre le GPU sans orphelinage. À défaut, orphaner à la taille utile arrondie, comme en 0.3.9. Corriger le commentaire et ne rien annoncer sans mesure."
+  },
+  {
+   "id": "C5",
+   "gravite": 1,
+   "fichier": "src/ferro/renderer.js",
+   "lignes": "3455-3485 (restauration de prewarm)",
+   "probleme": "shadowMatrices n'est pas restauré. Sur une image sans ombres qui suit juste un prewarm fait d'une autre position, l'uniforme uShadowMatrix renvoyé au GPU contient les matrices du préchauffage. Elles ne sont pas lues (uShadowSettings vaut 0), donc l'image ne change pas, mais l'état n'est plus celui que le commentaire déclare rendu « tel quel ».",
+   "preuve": "Épreuve A/B /private/tmp/.../relecture/ab2.mjs (MODE=warm, prewarm à l'image 10 du scénario EMPRISE, où fx.shadows=false). Une seule différence sur 7 348 appels tracés : uniformMatrix4fv U2:uShadowMatrix (e6c029… contre ac2b0c…). Aucune différence aux images 8, 9, 11 et 12, ni dans les scénarios BITUME, PDR et composition/sonde.",
+   "correctif": "Sauvegarder shadowMatrices.slice() au début de prewarm et le reposer dans le finally, ou corriger le commentaire."
+  },
+  {
+   "id": "C6",
+   "gravite": 1,
+   "fichier": "src/ferro/renderer.js",
+   "lignes": "3446-3452, 3466-3470",
+   "probleme": "Trois cas limites mal signalés. (a) Si le contexte est perdu pendant la boucle des variantes, fenceSync rend null et le rapport dit fallback 'unsupported' au lieu de 'lost'. (b) prewarmExtras(camera) et prewarmVariants sont appelés hors du try, après retain(true) : une exception y sortirait de façon synchrone au lieu de rejeter la promesse, et laisserait retain à true. (c) Les sorties 'lost' et 'busy' ne remettent pas stats.creations à zéro, contrairement à ce que dit la documentation (« prewarm le remet à zéro »).",
+   "preuve": "Lecture : waitForGpu, `if(!sync||!later){finish('unsupported')}` avant tout test de stats.contextLost ; `warm={extra:prewarmExtras(…)}` précède `try{`.",
+   "correctif": "Tester stats.contextLost avant fenceSync (fallback 'lost'), entrer dans le try avant prewarmExtras et prewarmVariants, et préciser la remise à zéro dans les cas de repli."
+  },
+  {
+   "id": "C7",
+   "gravite": 1,
+   "fichier": "src/ferro/webgpu-renderer.js",
+   "lignes": "104 (ensureSlot)",
+   "probleme": "Le chemin par défaut de WebGPU change : un flux qui grandit double désormais sa capacité, alors qu'en 0.3.9 il prenait la taille exacte. Il n'y a pas d'effet sur l'image ; l'effet porte seulement sur la mémoire (au plus 2×) des flux de chaque image, et vaut sans opt-in. Ce n'est pas strictement additif, et le compte rendu ne le range pas dans les changements sans opt-in.",
+   "preuve": "Diff de ensureSlot : `const size=slot.buffer?Math.max(required,slot.capacity*2):required`.",
+   "correctif": "Le dire dans les changements visibles sans opt-in, ou réserver le doublement aux flux de chaque image (dynamicSlot, overlaySlot, fxSlot)."
+  },
+  {
+   "id": "C8",
+   "gravite": 1,
+   "fichier": "(commit e915eb5)",
+   "lignes": "",
+   "probleme": "Le message du commit est en anglais. La règle 8 commune demande un message en français ; le titre anglais imposé par la consigne FERRO et l'historique du dépôt le justifient en partie. La ligne Co-Authored-By porte Opus 5.5 au lieu de Fable 5.2 : l'attribution imposée à la session prime, et c'est signalé. L'identité d'auteur est celle de la machine locale et non celle des versions précédentes (89c7841 et suivantes) : à vérifier avant tout push.",
+   "preuve": "git log -1 --format='%an <%ae>' comparé à git show -s 89c7841.",
+   "correctif": "Avant le push, l'intégrateur choisit l'identité et la ligne d'attribution voulues (git commit --amend local)."
+  }
+ ],
+ "verifications_faites": [
+  "Lecture complète du diff 89c7841..HEAD de renderer.js (771 lignes) et de webgpu-renderer.js, de engine.js, FERRO.json, FERRO.lock.json, README.md, docs/FERRO-UNIFIED.md et docs/prewarm-0310/README.md, avec les fonctions voisines : renderBatch, packIndexed, selectionCache, shadowPass, sunShadowPass, ensureTargets, ensureOptionalTargets, lotViewState, prepareGroundCover, localWindState, bitumeWeather, resolutionGovernor, compile/link/linkAll, backends.js.",
+  "Chemin par défaut (0.3.9 contre 0.3.10, sans prewarm, retain ni ombre:false) : épreuve A/B maison (/private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecture/ab.mjs). Double GL qui simule le contenu des tampons, trace de tous les appels sauf bufferData, bufferSubData et bindBuffer, et empreinte des octets d'instances réellement lus à chaque drawElementsInstanced, plus JSON de stats après chaque image. Quatre scénarios : EMPRISE (monde de 60 objets, 3 lampes dont un projecteur, ombres et halo variables, effets, habitacle, phare), BITUME (index vide, nappes, lots et prairie, pluie), PDR (allStatic, foule fx.instances, fx.lots, sunOnly, chunked), composition avec FSky et FSceneReflections en sonde et en écran. Résultat : traces et stats IDENTIQUES (10 114, 8 448, 4 662 et 6 032 appels). Le contrôle par mutation de l'épreuve (out[at+15] altéré) est détecté.",
+  "Index spatial : aucun consommateur de spatialIndex ou query hors de renderer.js et webgpu-renderer.js dans ~/Projects (EMPRISE, METAL, Point de rupture compris), donc pas de risque d'écriture dans le tableau figé partagé. index.entries est toujours défini.",
+  "Restauration après prewarm (ab2.mjs, MODE=warm) : prewarm fait depuis une autre position (+37 m, autre cap, 3 objets dynamiques) à l'image 8, 9, 10, 11 ou 12, puis trace des images suivantes comparée à la même séquence sans prewarm, avec les options par défaut, allShapes + variants (dont probe et screen) et reserve. Résultat identique partout, sauf une seule matrice d'ombre inutilisée (constat C5).",
+  "Promesse : lecture de waitForGpu dans tous ses cas (barrière signalée, TIMEOUT_EXPIRED, WAIT_FAILED, absence de fenceSync, de rAF ou de minuterie, page cachée, contexte perdu, dispose pendant l'attente qui donne 'lost' sans gl.finish, délai qui sert de filet si un rappel rAF lève une exception) ; constats C6.",
+  "Tests ajoutés : 11 mutations maison ; seules 2 sont détectées (constat C3).",
+  "Procédure de version : FERRO.json et engine.js en 0.3.10 ; python3 tools/check-ferro-lock.py donne 34 modules vérifiés ; reconstruction de HEAD dans une copie git archive avec python3 tools/build.py ; ferro-runtime.js, modules/renderer.js, ferro-editor.html, FERRO-0.3.10.zip (sha256 59549be2…) et manifest.json sont identiques octet pour octet aux fichiers commités. dist commité, conforme à la release 0.3.9 précédente.",
+  "BITUME : src/moteur/renderer.js est identique à la base FERRO 0.3.9 (sha 4ca91f51…) et son verrou reste 0.3.9 ; dépôt BITUME non modifié. La copie d'essai de l'exécutant contient bien renderer.js 0.3.10 (sha 92e1d0a6…).",
+  "Navigateur (comptage seulement, rien de chronométré) : prechauffage.js relancé sans captures dans la copie BITUME. FERRO 0.3.10 ; prewarm, retain et resetStats présents ; fallback false ; 12 variantes ; 273 385 216 octets ; empreinte SHA-256 de l'image 2880×1800 identique avant prewarm, après et après les bascules, au soleil comme sous la pluie ; 0 création pendant les bascules ; 1 création en jeu libre au soleil, 0 sous la pluie ; pluie sans nouveau prewarm : 9 créations (8 annoncées, scène vivante) ; aucune erreur de console.",
+  "Commentaires nouveaux : en français, ils disent le pourquoi, sans historique de séance. Aucun chemin local ni donnée personnelle dans docs/prewarm-0310. Aucun shader modifié (lu : les sources GLSL passent seulement dans linkAll ; FX_VERT identique au texte de VERT, ce que prouve le compte de 8 compilations dédoublonnées par le texte)."
+ ],
+ "tests": "Relancés : node --test tests/ferro/*.test.mjs tests/recipes.test.cjs dans /Users/david/Projects/ferro (HEAD e915eb5) donne 175 tests, 174 réussis, 0 échec, 1 TODO physique historique : ce qui était annoncé. python3 tools/check-ferro-lock.py donne « FERRO 0.3.10: 34 reference modules verified ». python3 tools/build.py dans une copie git archive de HEAD rend un zip de 43 fichiers et 6 248 538 octets, sha256 59549be2bfa763459e4e7e27e692a2cf9c845a632e14a0f762216e58c6d71112, et des dist identiques à ceux du commit. Suites BITUME (for t in verifications/*.test.mjs) dans la copie de l'exécutant avec FERRO 0.3.10 : 66/66. Épreuves maison dans /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecture : ab.mjs (0.3.9 contre 0.3.10, chemin par défaut) IDENTIQUE dans 4 scénarios ; ab2.mjs (restauration après prewarm) identique dans 4 scénarios, 5 points de départ et 3 jeux d'options, sauf C5 ; 11 mutations sur tests/ferro/renderer-prewarm.test.mjs, dont 2 détectées. Navigateur : prechauffage-relu.js passé par page-essai.mjs (1440×900, dpr 2), résultats cohérents avec le compte rendu. Aucun fichier suivi par git n'a été modifié dans /Users/david/Projects/ferro (git status propre)."
+}

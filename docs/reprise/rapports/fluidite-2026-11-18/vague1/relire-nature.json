@@ -1,0 +1,90 @@
+{
+ "verdict": "corrections",
+ "constats": [
+  {
+   "id": "N1",
+   "gravite": 3,
+   "fichier": "src/vitre.js",
+   "lignes": "71-80 (dimensionner, dprPalier), 47-53 (effacer), 166-173 (raccourci au sec)",
+   "probleme": "La définition de la visière est figée au premier dimensionnement, et ce choix n'a pas été demandé. En qualité Auto (le réglage par défaut), une baisse de palier ne réduit donc plus la toile. Associé au dessin à chaque image, le coût de remplissage grimpe justement sur les machines faibles que l'Auto cherche à soulager. De plus, le raccourci au sec saute dimensionner : la définition se fige au premier pas mouillé, avec le palier du moment, et non « au premier pas de chaque séance » comme le disent le commentaire et le compte rendu. Les risques ne signalent que la baisse du nombre de gouttes, pas le nombre de pixels gardé.",
+   "preuve": "Épreuve /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecture/vitre-epreuve.mjs, cas 6 et 7, toile 1280×720 à dpr 2. Cas 6, passage ultra → low sous la pluie : la toile livrée reste à 1885×1060 (2,0 Mpx), la base revient à 1280×720 (0,92 Mpx), soit 2,17 fois plus de pixels effacés et redessinés à chaque image. Cas 7, séance commencée au sec en Fine, palier en Légère à la première averse puis en Ultra : dprPalier reste à 1 et la toile à 1280×720 pour toute la séance.",
+   "correctif": "Suivre les baisses et figer seulement les hausses, par exemple `e.dprPalier = e.dprPalier === null ? budget.dpr : Math.min(e.dprPalier, budget.dpr)`. La seule réallocation tombe alors quand l'Auto décide d'alléger. Autre voie : faire fixer la définition par l'appelant, par un contexte.dprSeance tiré du palier ancre du décor. Corriger aussi le commentaire et le compte rendu (« premier pas mouillé »), ou fixer dprPalier dès le premier appel actif, même au sec. Ajouter un test qui échoue avec le code actuel : ultra → low sous la pluie doit réduire la toile."
+  },
+  {
+   "id": "N2",
+   "gravite": 2,
+   "fichier": "src/vitre.js",
+   "lignes": "119-153 (dessiner), 181",
+   "probleme": "La visière est maintenant entièrement effacée (jusqu'à 2 Mpx) puis retracée à chaque image affichée. Le coût Canvas2D par seconde est multiplié par la cadence divisée par 30, et rien ne l'a mesuré. La consigne du point 3 demandait d'essayer un dessin bon marché (lutins pré-rendus, traînées réunies) en comparant par capture avant de garder. L'essai n'a pas été fait : il est écarté sur le seul raisonnement que les chevauchements changeraient, sans capture.",
+   "preuve": "Script de l'exécutant, relancé (diff-vitre.mjs) : longues images, 3 008 dessins avant contre 7 297 après pour les mêmes 4 866 pas. Compte rendu : à 144 Hz, 1 274 dessins avant contre 6 112 après. Dans mon épreuve (cas 8), l'interpolation est bien continue : rapport vitesse max / moyenne de 1,00 par goutte rapide, contre 8,01 avant.",
+   "correctif": "Avant l'intégration, faire l'essai demandé : un lutin par taille de goutte et de flocon, rendu une fois dans une toile hors écran puis posé par drawImage, et les traînées d'un même style réunies dans un seul chemin. Comparer des captures 1440×900 avant et après, et ne garder que si l'écart est imperceptible. Sinon, noter pour la vague 2 une mesure avec tools/profil-accrocs.mjs, sous la pluie à 60 et 120 Hz, avant de brancher."
+  },
+  {
+   "id": "N3",
+   "gravite": 2,
+   "fichier": "src/faune.js (demande d'intégration n° 1, src/jeu.js installer)",
+   "lignes": "faune.js 290-309 ; demande « préparer la faune même si le profil la coupe »",
+   "probleme": "La demande d'intégration fait appeler B.faune.preparer dans installer() à chaque construction de scène, même quand la faune est coupée. preparer ouvre l'herbier paresseux du décor, que l'ancien code n'ouvrait jamais faune coupée. Chaque scène (écran titre compris) coûterait jusqu'à environ 0,9 s de plus d'un seul tenant, aux joueurs qui coupent justement la faune pour alléger.",
+   "preuve": "/private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecture/temps.mjs, sur Brume-de-Jade (asie) en été, palier high : preparer à froid 909 ms, dont l'herbier ; creer complet 65,9 ms ; creer depuis la préparation 0,032 ms. Mêmes ordres de grandeur que ceux annoncés.",
+   "correctif": "Dans la demande : ne préparer sous le voile que si la faune peut être montrée (réglage faune différent de off, saison.faune > 0, profil ancre qui ne la coupe pas). Si l'Auto ou le réglage l'ouvre en course, la préparer à ce moment-là avec preparerParTranches(c, decor).avancer(2) image par image. La création paresseuse reste en garde-fou. Ouvrir l'herbier séparément de la course, ou le signaler au lot décor."
+  },
+  {
+   "id": "N4",
+   "gravite": 1,
+   "fichier": "src/scene-bench.js",
+   "lignes": "37",
+   "probleme": "La scène de détection graphique appelle aussi B.faune.creer(c, decor) dans le chemin d'une image. Les demandes d'intégration n'en parlent pas : la détection paie encore les habitats (50 à 106 ms) au milieu de ses mesures.",
+   "preuve": "grep : src/scene-bench.js:37 `if (!faune && P.faune !== 'off') faune = B.faune.creer(c, decor);`.",
+   "correctif": "Ajouter aux demandes d'intégration : dans parcours.preparer, préparer la faune (B.faune.preparer) et passer la préparation à creer."
+  },
+  {
+   "id": "N5",
+   "gravite": 1,
+   "fichier": "src/meteo.js",
+   "lignes": "498-506 (dimensionner)",
+   "probleme": "Le plafond de 2 Mpx, demandé et annoncé, rééchantillonne aussi la toile de pluie sur l'écran le plus courant (1920×1080 à dpr 1), pour 1,7 % de pixels en moins. Les captures comparées n'ont été faites qu'en 1440×900 (plafond inactif) et en 2560×1440.",
+   "preuve": "/private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecture/meteo-epreuve.mjs : 1920×1080 à dpr 1 donne une toile de 1885×1060.",
+   "correctif": "Question pour David : soit garder le plafond strict, soit ne jamais descendre sous dpr 1 tant que la taille CSS reste sous environ 2,1 Mpx. Dans les deux cas, faire une capture en 1920×1080."
+  },
+  {
+   "id": "N6",
+   "gravite": 1,
+   "fichier": "src/faune.js, src/vitre.js",
+   "lignes": "faune.js 4-7 ; vitre.js 71-73",
+   "probleme": "Deux commentaires affirment ce que le code ne garantit pas encore, et un troisième garde une tournure d'historique. Faune : « Une séance ne paie donc jamais les cent mille sondes » n'est vrai qu'après le branchement de la vague 2. Vitre : « figée au premier pas de la séance » est faux quand la séance commence au sec (voir N1). Vitre encore : « ne réalloue plus la toile » raconte un changement au lieu de dire le pourquoi.",
+   "preuve": "Lecture du diff ; épreuve vitre-epreuve.mjs, cas 7.",
+   "correctif": "Faune : « avec la préparation de la scène, une séance ne paie pas… ». Vitre : décrire la règle retenue après N1, au présent, sans « plus »."
+  },
+  {
+   "id": "N7",
+   "gravite": 1,
+   "fichier": "src/vitre.js (prechauffer) et demande d'intégration demarrerSeance",
+   "lignes": "vitre.js 185-201",
+   "probleme": "L'ordre proposé (lancer, puis préchauffage, puis aller('course')) préchauffe #vitre tant que la règle CSS `#jeu:not([data-ecran=course]):not([data-ecran=demo]) .vitre { visibility: hidden }` la cache encore. La surface 2D est bien créée, mais la toile n'est pas composée. Le bénéfice annoncé pour la première averse n'est pas prouvé, et aucun gain n'a été mesuré.",
+   "preuve": "src/style.css:39 ; ordre décrit dans demandes_integration n° 4.",
+   "correctif": "Dire dans la demande que le préchauffage ne couvre que la création de la surface et du tracé, pas la composition. Ou préchauffer après aller('course'), sous le voile de chargement encore posé."
+  },
+  {
+   "id": "N8",
+   "gravite": 1,
+   "fichier": "(commit f8ba80e)",
+   "probleme": "La ligne de fin du commit est « Co-Authored-By: Claude Opus 5.5 » et non « Claude Fable 5.2 » comme le demandait la consigne. L'écart est annoncé honnêtement dans le compte rendu : l'exécutant a suivi la consigne d'attribution de l'outil.",
+   "preuve": "git show -s --format=%B HEAD",
+   "correctif": "L'intégrateur tranche selon la règle d'attribution en vigueur ; rien à faire par l'exécutant."
+  }
+ ],
+ "verifications_faites": [
+  "Périmètre : git diff 54e98c9..HEAD ne touche que src/{faune,effets-saison,aurores,meteo,vitre}.js et 5 fichiers de verifications. src/jeu.js, src/ambiance.js, dist, VERSION.json et SIZE.json sont intacts. Arbre propre (git status vide), un seul commit f8ba80e, sans push.",
+  "Diff complet lu, puis lecture des fichiers entiers autour des changements : affecter et trierLibres de la faune (tri stable par fusion, équivalent au balayage du plus petit poids à premier indice), planifier des effets de saison (remise à −1 limitée aux positions écrites, sorties anticipées équivalentes), dessiner et mettreAJour de la vitre et de la pluie.",
+  "Différentiel indépendant (/private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecture/diff-nature.mjs). Modules de la base 54e98c9 contre modules livrés, sur le même décor : Val-Brûlé, Lande-Noire et Haut-Col, en automne et en hiver ; 30 et 144 Hz ; pluie, nuit et palier variables (avec off) ; vue 2 à demi-cadence ; retour arrière de l'horloge ; trois séances (préparation reprise deux fois, puis creer(c, decor) seul). Résultat : 1 691 280 images comparées, 5 968 068 objets, 0 écart. Préparations (habitats, sources) inchangées après usage. Aurores actives à Lande-Noire.",
+  "Préparation : aucun paramètre de palier ni de vue. Seules références gardées : circuit et décor de la scène. Le cache des sols, partagé, ne contient que des valeurs déterministes du décor (0 écart entre la première et la seconde séance). La scène est reconstruite quand la saison change (jeu.js, installer, l. 141), donc une préparation ne peut pas garder une saison périmée.",
+  "Vitre (épreuve vitre-epreuve.mjs). Continuité à 144 Hz avec gigue : 0 % d'images figées contre 79 % avant ; rapport vitesse max / moyenne par goutte 1,00 contre 8,01 avant. dt de 0, −1, NaN ou Infinity : aucun dessin, image identique. Longues images (0,5 s et 0,1 s) : 0 écart de simulation sur 2 000 appels, 1 307 pas des deux côtés. effacer en pleine pluie : un effacement, toile masquée, image suivante vide. Fin de pluie : propre et masquée après séchage, sans pixel restant. Palier et définition : voir N1.",
+  "Pluie (épreuve meteo-epreuve.mjs). Ancien contre nouveau sur 6 000 images d'averses entrecoupées de sec, avec redimensionnements, vue cockpit alternée et dt nuls : traits identiques sauf une image, au redimensionnement, due à ma toile factice qui ne se vide pas quand on change width (une vraie toile se vide). 0 trait laissé au sec ; effacements 6 000 avant, 2 858 après ; 16 écritures de visibility.",
+  "Nouveaux tests lancés contre les sources de la base : meteo-toile, vitre-cadence, nature-preparation, meteo et vitre échouent tous, donc ces tests peuvent échouer. Les deux attentes modifiées (plafond de 2 Mpx et globalAlpha dans meteo.test ; dessins par pas dans vitre.test) correspondent à des changements voulus et sont expliquées dans les tests.",
+  "Scripts de l'exécutant relancés, résultats reproduits à l'identique : diff-aurores (32 000 images, 0 écart), diff-meteo (36 000 images, 1 318 574 traits, lectures 72 000 / 34 668 / 0), diff-vitre (63 000 images, 0 écart de simulation, 0 écart de dessin), diff-saison (226 800 images, 0 écart), diff-faune ete,automne (113 400 images, 0 écart).",
+  "Durées relevées, en Node sur ce Mac (mêmes ordres que les mesures annoncées). Val-Brûlé : préparation à froid 113 ms, creer complet 97,7 ms, depuis la préparation 0,063 ms. Brume-de-Jade : préparation à froid 909 ms (herbier compris), creer complet 65,9 ms, depuis la préparation 0,032 ms.",
+  "Navigateur : construction dans une copie temporaire (git archive HEAD), sans toucher l'arbre, puis page-essai en 1440×900 sur quatre cas : Val-Brûlé automne sous la pluie ; Lande-Noire de nuit en hiver ; écran partagé à Haut-Col en hiver, où la neige sur la vitre fait que #meteo reste masquée ; retour au sec. Aucune erreur console. #meteo et #vitre sont visibles sous la pluie et masquées au sec ; faune avec préparation, effets de saison, aurores actives à Lande-Noire.",
+  "Rétroviseurs et seconde vue : modules partagés entre vues (vue 2 couverte par le différentiel), instances pluieVue2 et vitreVue2 séparées, aucune écriture de visibility en conflit dans jeu.js (l. 1572 ne touche que les glaces). scene-bench.js reste un appelant de B.faune.creer (N4)."
+ ],
+ "tests": "Suite complète relancée dans /Users/david/Projects/bitume-wt/nature : 69 fichiers, 0 échec, en 65 s. Tests ciblés relancés, tous verts : faune (15 contrôles), effets-saison (10), aurores (5), meteo (103), meteo-toile (25), vitre (8), vitre-cadence (8), nature-preparation (4, environ 1 s), nature-integration (3), saisons (code de sortie 0), scene-bench. Contre les sources de la base, meteo-toile, vitre-cadence, nature-preparation, meteo et vitre échouent. Mes épreuves sont dans /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/relecture/ : diff-nature.mjs, vitre-epreuve.mjs, meteo-epreuve.mjs, temps.mjs, essai.js."
+}

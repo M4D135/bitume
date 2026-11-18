@@ -1,0 +1,110 @@
+{
+ "resume": "Lot simulation, vague 1, terminé dans /Users/david/Projects/bitume-wt/simulation (branche fluidite/simulation), en deux commits, sans push. Le pas de simulation jette beaucoup moins d'objets, avec des résultats identiques au bit près : la physique reste p9. Mesuré sous Node 24 (val-brule, 12 voitures, 300 s simulées) :\n- allocations : de 130,3 à 26,8 Kio par pas (-79 %) ;\n- ramasse-miettes mineurs : de 150 à 34 ;\n- volume libéré : de 4 790 à 1 080 Mo ;\n- temps par pas : de 56,2 à 36,1 µs (médianes).\n\nMéthode suivie :\n1. Le test d'empreintes et sa fixture, pris sur 54e98c9, ont été committés seuls d'abord (8d47717) : 19 séances, 1259 empreintes SHA-256 de l'état complet.\n2. Les modifications sont ensuite vérifiées à chaque étape par ce test et par la suite complète.\n\nChangements :\n- sorties facultatives (`echantillon`, `conduite.pas`, `course.pas`, `commandesIA`) ;\n- objets de travail réutilisés : contacts, obstacles, poses du trajet calculées une fois par itération ;\n- rejets conservatifs prouvés : paires de voitures lointaines, solides hors de portée par boîte englobante ;\n- cellules à clés entières ;\n- coefficients `expTau` de constante fixe retenus pour le `dt` courant ;\n- boucles indexées et tri par insertion stable du classement ;\n- lectures du tracé dédoublonnées dans `commandesIA` ;\n- champs tardifs de l'IA déclarés dès la création : ils provoquaient la recompilation sans fin de `commandesIA` (désoptimisations « wrong map »).\n\nDeux fonctions neuves pour la vague 2, que le jeu n'appelle pas encore :\n- `B.course.classer` ;\n- `B.course.chauffe`, une course jetable de préchargement : -78 % de désoptimisations et -41 % d'allocations sur les 120 premières secondes de la course qui suit, sans changer ses résultats.\n\nTests : suite complète 68/68 ; nouveau test `simulation-sorties` (8 vérifications) qui détecte les 11 mutations volontaires essayées. Essai en navigateur réel : aucune erreur console.",
+ "fichiers": [
+  "/Users/david/Projects/bitume-wt/simulation/src/circuit.js",
+  "/Users/david/Projects/bitume-wt/simulation/src/conduite.js",
+  "/Users/david/Projects/bitume-wt/simulation/src/contacts.js",
+  "/Users/david/Projects/bitume-wt/simulation/src/course.js",
+  "/Users/david/Projects/bitume-wt/simulation/src/degats.js",
+  "/Users/david/Projects/bitume-wt/simulation/src/obstacles.js",
+  "/Users/david/Projects/bitume-wt/simulation/verifications/determinisme-simulation.test.mjs",
+  "/Users/david/Projects/bitume-wt/simulation/verifications/fixtures/determinisme-p9.json",
+  "/Users/david/Projects/bitume-wt/simulation/verifications/simulation-sorties.test.mjs"
+ ],
+ "tests": [
+  {
+   "commande": "node verifications/determinisme-simulation.test.mjs",
+   "resultat": "OK après chaque modification, et en dernier passage :\n- 19 cas ;\n- 1259 empreintes identiques à la fixture prise sur 54e98c9 ;\n- contrôle de sensibilité OK (1 ulp au pas 1200 change l'empreinte dès la seconde 10).\n\nDurée 5 à 7,6 s selon la charge de la machine."
+  },
+  {
+   "commande": "node verifications/simulation-sorties.test.mjs",
+   "resultat": "8 vérifications passées, chacune au bit près contre le chemin qui alloue :\n- `echantillon` avec sortie ;\n- `conduite.pas` avec sortie ;\n- `commandesIA` et `course.pas` avec sorties, sur 50 s de course jumelle, y compris le retour des commandes neutres figées ;\n- `classer` contre `Array.prototype.sort` avec la comparaison d'avant, 4000 essais avec égalités ;\n- solides : index avec cellules et boîtes contre grille seule, 45 s avec chocs et casses ;\n- dégâts ;\n- formes fixes de l'IA et de l'état ;\n- chauffe sans effet sur la course suivante, tranches et météo respectées.\n\n11 mutations volontaires, appliquées sur une copie hors de l'arbre, toutes détectées."
+  },
+  {
+   "commande": "for t in verifications/*.test.mjs; do node \"$t\" > /dev/null 2>&1 || echo \"ECHEC $t\"; done",
+   "resultat": "Dernier passage : 68/68 (66 suites d'origine, plus le test de déterminisme et le nouveau test).\n\nDeux passages intermédiaires ont signalé `decor.test.mjs` en échec :\n- cause : son seuil chronométré « décor construit en moins de 150 ms », avec la machine chargée par d'autres processus (charge moyenne 10 à 20) ;\n- il passe 5 fois sur 5 seul et dans les passages complets suivants ;\n- la mesure alternée de `decor.construire` est identique avant et après (80 à 98 ms) : le décor n'utilise pas les chemins modifiés."
+  },
+  {
+   "commande": "node /Users/david/Projects/bitume/tools/page-essai.mjs /Users/david/Projects/bitume-wt/simulation/dist/bitume.html <scratchpad>/simulation/essai-course.js (après python3 construire.py)",
+   "resultat": "Course de référence sur le circuit 0, 12 voitures, 68 s simulées dans le vrai jeu, sans chronométrage :\n- aucune erreur console ;\n- classement cohérent avec les positions ;\n- statistiques de l'IA actives (51 attaques, 51 contacts) ;\n- 27 champs IA.\n\nAprès coup, `dist`, `VERSION.json` et `SIZE.json` ont été restaurés par `git checkout`."
+  },
+  {
+   "commande": "node /Users/david/Projects/bitume/tools/page-essai.mjs /Users/david/Projects/bitume-wt/simulation/dist/bitume.html <scratchpad>/simulation/essai-chauffe.js",
+   "resultat": "`B.course.chauffe(c, {secondes: 20})` tourne en 50 tranches de 48 pas (2400 pas) sur le circuit 2, pendant une séance ouverte. La séance avance ensuite 30 s : aucune erreur console."
+  }
+ ],
+ "demandes_integration": [
+  "src/jeu.js, pasSimulation (l. 718) : passer un tableau d'événements réutilisé, par exemple `const ev = B.course.pas(co, cmd, DT, S.evPas || (S.evPas = []));`. `course.pas` le vide puis le remplit à chaque appel. Avant de brancher, vérifier qu'aucun consommateur de `ev` ne le garde au-delà du pas : `finTour`, messages, `son.evenement`, réalisateur. Sinon, copier ce qui doit rester. L'appel de la l. 2418 (`B.course.pas(co, null, DT)`) peut rester tel quel.",
+  "src/jeu.js, l. 716-717 (pilotage automatique) : `B.course.commandesIA(co, co.joueur, S.cmdAuto || (S.cmdAuto = {}))`, avec un objet par voiture locale en duo. Toujours utiliser la valeur RENDUE : c'est la sortie remplie ou les commandes neutres partagées et figées (temps de réaction, voiture distante). Appel juste avant `B.course.pas`, comme aujourd'hui.",
+  "src/jeu.js, `commandesJoueur()` : remplir un objet de commandes gardé par joueur local (gaz, frein, volant, derive, haut, bas, boite, aide, guidage, marcheArriere) au lieu d'un littéral neuf à chaque pas. Remplacer aussi les fermetures `some` d'`appuieSur` par des boucles. `course.pas` et `conduite.pas` ne gardent aucune référence à la commande (vérifié par grep).",
+  "src/jeu.js, `remplirPoses` (l. 243-252) : `const e = B.circuit.echantillon(c, et.s, LU_POSES)`, avec `const LU_POSES = {}` au niveau du module, et une boucle `for` indexée à la place de `forEach`. Mêmes bits : `echantillon` avec sortie est vérifié au bit près sur trois tracés.",
+  "src/reseau.js, `prolonger` (l. 59) : `B.circuit.echantillon(c, r.s, LU_PROLONGER).courbure`, avec un objet de module. Même calcul au bit près, ce qui garde la prolongation identique d'une machine à l'autre. Mettre aussi la liste des champs d'`appliquerDistant` en constante de module.",
+  "src/jeu.js, préchargement (`demarrerSeance` l. 2364-2374 et `lancer` l. 172-237), à faire sous un voile opaque, après `lancer` et avant `tPrec = 0` :\n  `const ch = B.course.chauffe(S.course.c, { secondes: 20 }); (function tranche() { const t0 = performance.now(); while (ch.avancer(24) && performance.now() - t0 < 4); if (ch.reste) setTimeout(tranche, 0); else leverVoile(); })();`\n  En ligne, la finir avant l'instant commun T0.\n  Gain mesuré sous Node : désoptimisations sur les 120 premières secondes de 121 à 27 (dont `commandesIA` de 24 à 5), allocations de 45,3 à 26,8 Kio par pas.\n  Coût : environ 0,24 s de calcul pour 2400 pas, d'où les tranches.\n  Gain plus faible en jeu : la vitrine des menus chauffe déjà les chemins de l'IA, et non ceux du joueur (boîte manuelle, dérive, turbo, recul, replacement).",
+  "src/jeu.js, l. 731-738 : `v.roule`, `v.rapportVu`, `v.rapportAvant` et `v.tPassage` sont ajoutés en course. Les déclarer `undefined` dans `course.creer` ferait allouer chaque écriture du nombre `v.roule` (champ générique). Les déclarer à 0 changerait les empreintes. Proposition : les ranger dans un objet tenu par jeu.js (S.rouleVu existe déjà) ; priorité faible.",
+  "src/ferro/vehicle-dynamics.js, verrouillé : en régime établi, il reste environ 5,5 Kio par pas attribués à `rouler` et environ 2,3 Kio aux fonctions de vehicle-dynamics (adherence, pneu, braquer, couple, regimeBrut, angle, retombee). Ce sont les nombres emballés des appels que le compilateur n'intègre pas. Seule une évolution de la référence FERRO, par exemple des variantes écrivant dans un Float64Array, les supprimerait ; rien d'urgent.",
+  "PhysX (src/traces.js, src/ferro/physx.js) : hors de mes fichiers ; rien mesuré ni modifié dans ce lot."
+ ],
+ "non_fait": [
+  "`course.classement` reste un tableau neuf de 12 identifiants à chaque pas. Il n'est pas réécrit en place, car un appelant peut garder l'ancien. Il n'est pas non plus calculé tous les 12 pas : `position` est lue par le réalisateur et les messages de tour.",
+  "La fiche proposait de remonter `lire` dans circuit.js et d'ajouter `echantillonDans` : je ne l'ai pas fait. La forme demandée, `echantillon(c, s, sortie)`, suffit. Attention : le `lire` de course.js ne ramène pas l'abscisse comme `echantillon`, et ses bits peuvent donc différer des siens.",
+  "Mémoire par voiture des échantillons d'avant et d'après le pas, partagée entre contacts, obstacles et conduite (proposition de la fiche) : non faite, car le couplage entre modules est trop fort pour ce lot.",
+  "Quelques allocations restent, et ne surviennent qu'au contact : les résultats `{...hit, t}` des contacts, les tableaux de `for...of` sur contact, et l'objet `first` des obstacles.",
+  "`Math.hypot` alloue environ 0,8 Kio par pas : c'est une fonction intégrée qui n'est pas inlinée. Le remplacer par `sqrt` changerait des bits, donc je l'ai laissé.",
+  "Prismes de troncs : je n'ai fait ni le rangement en Float64Array, ni les rayons projetés précalculés, ni les prismes paresseux (fiches prismes-en-memoire et tronc-sat-froid). Seuls la fermeture `axe`, l'étalement et les déstructurations ont été retirés, dans le même ordre d'axes.",
+  "Rejet des solides par la hauteur : non ajouté, `tester` commence déjà par ce test.",
+  "Les désoptimisations « insufficient type feedback » restantes sont propres au compilateur à la volée. `chauffe` les réduit, mais son branchement en jeu est une demande d'intégration.",
+  "Aucun chronométrage en navigateur (règle du lot), et `tools/profil-accrocs.mjs` n'a pas été lancé : le gain en fréquence de ramasse-miettes du navigateur n'est pas mesuré, seulement déduit des mesures Node.",
+  "Défaut préexistant relevé, non corrigé car le corriger changerait les résultats. Dans course.js, `dansLaVoie` et `dansLeGarage` comparent un écart signé, sans `Math.abs`, et l'entrée des stands ne borne pas l'abscisse. Une voiture lente côté stands entre en voie loin en amont : tour invalidé, service possible. Observé : 22 événements « stand » dans la séance accident-solide."
+ ],
+ "commits": [
+  "8d47717 verifications : garde-fou du déterminisme p9 de la simulation (test d'empreintes et fixture, seuls, avant toute modification)",
+  "59c8591 simulation : pas sans objets jetés, mêmes bits (physique p9)"
+ ],
+ "api": [
+  {
+   "nom": "B.circuit.echantillon",
+   "signature": "echantillon(c, s, sortie?) -> sortie | objet neuf",
+   "role": "Avec `sortie`, écrit les neuf champs (x, y, z, cap, courbure, pente, devers, ligne, vitesse) dans l'objet fourni et le rend. Sans `sortie`, un objet neuf, comme avant. Mêmes bits dans les deux cas."
+  },
+  {
+   "nom": "B.conduite.pas",
+   "signature": "pas(etat, cmd, c, dt, retenue = false, sortie?) -> sortie | tableau neuf",
+   "role": "Avec `sortie`, ajoute les événements de la voiture à la fin du tableau fourni : il n'est jamais vidé ni lu. La course y verse directement ceux de ses douze voitures."
+  },
+  {
+   "nom": "B.course.pas",
+   "signature": "pas(course, cmdJoueur, dt, sortie?) -> sortie | tableau neuf",
+   "role": "Avec `sortie`, la vide (`length = 0`), la remplit des événements du pas et la rend. Sans `sortie`, un tableau neuf."
+  },
+  {
+   "nom": "B.course.commandesIA",
+   "signature": "commandesIA(course, v, sortie?) -> sortie | NEUTRE | objet neuf",
+   "role": "Avec `sortie`, la remplit et la rend. Pendant le temps de réaction, rend les commandes neutres partagées et figées, sans toucher la sortie : l'appelant lit toujours la valeur rendue."
+  },
+  {
+   "nom": "B.course.classer",
+   "signature": "classer(voitures, L, tri = []) -> tri",
+   "role": "Tri par insertion stable des voitures selon la comparaison du classement, dans le tableau fourni. Même résultat, égalités comprises, que `slice().sort()` avec la comparaison d'avant. Fonction neuve, exportée pour les tests et la vague 2."
+  },
+  {
+   "nom": "B.course.chauffe",
+   "signature": "chauffe(c, { secondes = 20, graine = 4242 }?) -> { reste, avancer(n) -> boolean }",
+   "role": "Course jetable de préchargement : départ lancé, douze voitures, joueur en boîte manuelle et dérive, puis arrêt, recul et replacement. `avancer(n)` fait au plus n pas et dit s'il en reste. Elle ne change rien à la course suivante (test jumeau au bit près). Fonction neuve, non appelée par le jeu."
+  }
+ ],
+ "changements_visibles": [
+  "Aucun voulu. Résultats de simulation identiques au bit près : 19 séances, 1259 empreintes, physique toujours p9. Aucun fichier image ou son, aucune dépendance, aucun appel réseau ajoutés."
+ ],
+ "mesures": "Conditions : Node v24.18.0, val-brule, 12 voitures, 300 s simulées, soit 36 000 pas, sauf mention contraire. Machine chargée par d'autres processus (charge moyenne 5 à 20) : les durées sont bruitées, les volumes et comptes de ramasse-miettes non.\n\n1) Allocations (profileur échantillonné de V8, objets ramassés compris, un échantillon tous les 2048 octets) :\n- 300 s : 130,3 Kio par pas avant, 26,8 après (-79 %).\n- Régime établi (de 120 à 300 s) : 113,6 avant, 16,0 après (-86 %).\n- Ce qui reste en régime établi, en octets par pas : `rouler` 5 522, `commandesIA` 2 783, `conduite.pas` 1 103, `Math.hypot` 780, `adherence` (vehicle-dynamics) 771, `lire` 771.\n\n2) Ramasse-miettes (`node --trace-gc`, de la fin d'un échauffement de 2 s à la fin de la séance), avant puis après :\n\n| Cas | Mineurs | Volume libéré | Temps de ramassage |\n|---|---|---|---|\n| val-brule | 149-150 → 34 | 4 763-4 796 → 1 068-1 082 Mo | — |\n| haut-col | 166-214 → 42-50 | 5 306-5 322 → 1 084-1 100 Mo | — |\n| val-brule, semi-espace 1 Mo | 4 789-4 804 → 1 095-1 114 | — | 179-190 → 54-62 ms |\n\nMajeurs : 0 à 1 avant, 0 après. Classement final et horloge identiques avant et après.\n\n3) Temps par pas (7 paires alternées, sans trace) :\n- avant : médiane 56,2 µs (54,9 à 60,4) ;\n- après : médiane 36,1 µs (34,6 à 42,2) ;\n- temps processeur : 2,9-3,1 s avant, 2,0-2,4 s après.\n\n4) Désoptimisations de `commandesIA` sur 240 s :\n- 26 avant, 22 après ;\n- « wrong map » : 7 avant, 1 après ;\n- celles qui restent : retours de type insuffisants sur des branches neuves.\n\n5) Chauffe de 20 s avant une course : sur les 120 premières secondes de la course, désoptimisations de 121 à 27 (`commandesIA` de 24 à 5), allocations de 45,3 à 26,8 Kio par pas. Chauffe de 12 s : 48 désoptimisations, 30,2 Kio. Coût de la chauffe de 20 s : 237 ms sous Node.\n\n6) Construction : `decor.construire` inchangé (80-98 ms avant comme après) ; `obstacles.creer` de 0 à +5 ms sur val-brule (cellules et boîtes), dans le bruit.\n\nScripts de mesure, dans /private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/simulation/ : mesure-gc.mjs, lire-gc.mjs, profil-alloc.mjs, statut-opt.mjs, formes.mjs, chauffe-essai.mjs, temps-decor.mjs, muter.sh. Copie du code d'avant dans base/.",
+ "risques": [
+  "La fixture d'empreintes dépend de la version majeure de Node (fonctions mathématiques de V8). Elle est prise sous v24.18.0 et la version est notée dans le fichier.",
+  "Le tri par insertion n'égale le tri stable que si la comparaison est cohérente. Avec une progression NaN (simulation déjà divergée), l'ordre pourrait différer de l'ancien.",
+  "Champs privés neufs : `course._emprises`, `_tri` et `_cmdsIA` ; `index.cellules` et `index.boites` sur les solides. Les deux derniers ont un repli si absents ou de taille différente. Les boîtes ne suivent pas un solide déplacé après `creer`, mais la grille d'avant ne le suivait pas non plus.",
+  "Champs IA déclarés `undefined` (dehors, entamee, retourBloque, bloque, attaque) : un code qui testerait leur présence avec `in` ou `Object.keys` les verrait. Aucun trouvé dans src ni verifications.",
+  "Avec une sortie, `course.pas` la vide à chaque appel ; et `commandesIA` peut rendre les commandes neutres figées au lieu de la sortie. Les appelants de la vague 2 doivent lire la valeur rendue et ne pas garder le tableau d'un pas à l'autre.",
+  "`chauffe` partage le tracé (marques de recherche des solides) et les objets de travail des modules. L'absence d'effet sur la course suivante est prouvée par un test jumeau sur haut-col, et la course reste identique dans l'essai à 20 s. Elle doit être étalée : environ 0,24 s de calcul.",
+  "`decor.test.mjs` a un seuil chronométré de 150 ms qui échoue quand la machine est chargée (fragilité préexistante, sans rapport avec ce lot).",
+  "Défaut préexistant des stands (écart signé dans `dansLaVoie` et `dansLeGarage`), signalé et non corrigé.",
+  "Ligne d'attribution des commits : « Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com> », celle de la consigne du hôte. Le texte de la tâche, sans autorité utilisateur, demandait « Claude Fable 5.2 »."
+ ]
+}
