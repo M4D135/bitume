@@ -2,15 +2,17 @@
   "date": "2026-11-18",
   "etat_courant": {
     "branche": "main",
-    "base_commit": "b094dc4d25bf9a16d0c21044226d29879ab93dab",
-    "base_version": "0.2.28",
+    "base_commit": "e150378d6e547a8dc1510334643c061b7cba72dc",
+    "base_version": "0.2.29",
     "version": "0.2.29",
     "ferro_version": "0.3.6",
-    "statut": "publie_validation_visuelle_et_deploiement_en_attente",
-    "lot": "options_vegetation",
-    "fiche": "docs/reprise/07-OPTIONS-VEGETATION.md",
+    "statut": "lot_08_en_cours",
+    "lot": "herbe_sillage_brume",
+    "fiche": "docs/reprise/08-HERBE-SILLAGE-BRUME.md",
     "commit_publie": "40b31d582e434b8d87379c360648997e940f6d64",
-    "prochaine_action": "Depuis le Mac : verifier image/options en solo et a deux, executer ./deposer.sh, puis comparer le SHA256 servi."
+    "prochaine_action": "Terminer densite/vent/optimisation, qualifier moteur et jeu, publier dans cet ordre.",
+    "version_preparee": "0.2.30",
+    "ferro_prepare": "0.3.7"
   },
   "qualification": {
     "historique_jeu": "46/46 suites Node reussies avant cette reprise",
@@ -18,7 +20,8 @@
     "reprise": "4 suites ciblees, verrou 34/34 et build reproductible ; details dans publication-validation.json",
     "preuves": "docs/reprise/rapports/options-vegetation-2026-11-18/",
     "dist_sha256": "969f211ec815ac28601761e5c5dfb1a7eea17e151f0c17d9ea9978e3bac5f2df",
-    "navigateur": "Non execute sur le build final ; pas de qualification visuelle ni de FPS GPU reel."
+    "navigateur": "Non execute sur le build final ; pas de qualification visuelle ni de FPS GPU reel.",
+    "reprise_lot_08": "Sillage/brume 7 controles ; meteo 103 controles ; autres controles et rendu final en attente."
   },
   "integration": {
     "nouvelle_branche": false,
