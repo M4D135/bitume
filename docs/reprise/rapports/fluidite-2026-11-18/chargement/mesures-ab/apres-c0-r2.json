@@ -1,0 +1,476 @@
+{
+ "url": "file:///private/tmp/claude-501/-Users-david--claude-spares-spare-TcYPLH/435c90ed-0270-4f1d-b640-f317b1952b0e/scratchpad/chargement/apres/bitume.html",
+ "parametres": {
+  "scenario": "depart",
+  "duree": 20,
+  "cpu": 1,
+  "taille": [
+   1390,
+   1295
+  ],
+  "fenetre": false,
+  "angle": "native",
+  "jeu": {
+   "circuit": 0,
+   "qualite": "high",
+   "meteo": "soleil",
+   "vue": "cockpit",
+   "vue2": "cockpit",
+   "retro": "oui",
+   "mode": "solo",
+   "partage": "haut-bas",
+   "graine": 17017,
+   "saison": "ete",
+   "moment": "jour",
+   "tours": 3
+  }
+ },
+ "environnement": {
+  "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+  "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+  "toile": [
+   1390,
+   1295
+  ],
+  "fenetre": [
+   1390,
+   1295,
+   1
+  ],
+  "visible": true,
+  "coeurs": 10,
+  "version": "V0.2.39",
+  "compilationParallele": true,
+  "chronoGpu": true
+ },
+ "build": {
+  "sha256": "0502cc15304c3bb301c483c758e529287217af89043e6ca1322aef984cd44e63",
+  "octets": 13286605
+ },
+ "chargement": {
+  "clicAuPremierEcranCourseMs": 339,
+  "lancementSynchroneMs": null,
+  "plusLongueImagePendantChargement": 67
+ },
+ "images": {
+  "nominalMs": 16.7,
+  "course": {
+   "images": 1200,
+   "p50": 16.7,
+   "p95": 16.7,
+   "p99": 16.8,
+   "pire": 16.8,
+   "au_dela_1_5x": 0,
+   "au_dela_2x": 0,
+   "au_dela_50ms": 0,
+   "irregularite": 0.07
+  },
+  "premieres2s": {
+   "images": 120,
+   "p50": 16.7,
+   "p95": 16.7,
+   "p99": 16.8,
+   "pire": 16.8,
+   "au_dela_1_5x": 0,
+   "au_dela_2x": 0,
+   "au_dela_50ms": 0,
+   "irregularite": 0.06
+  },
+  "apres2s": {
+   "images": 1080,
+   "p50": 16.7,
+   "p95": 16.7,
+   "p99": 16.8,
+   "pire": 16.8,
+   "au_dela_1_5x": 0,
+   "au_dela_2x": 0,
+   "au_dela_50ms": 0,
+   "irregularite": 0.07
+  }
+ },
+ "accrocs": [
+  {
+   "tDepuisCourseS": -0.27,
+   "dtMs": 33.2,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "Renderer/CrRendererMain · FireAnimationFrame 31.2 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": -0.22,
+   "dtMs": 33.3,
+   "gcMs": 2.3,
+   "shadersMs": 0,
+   "evenements": [
+    "Renderer/CrRendererMain · FireAnimationFrame 37.9 ms",
+    "Renderer/CrRendererMain · MinorGC 2.3 ms",
+    "Renderer/CrRendererMain · V8.GCScavenger 2.2 ms",
+    "Renderer/ThreadPoolForegroundWorker · V8.GC_BACKGROUND_UNPARK 2.2 ms",
+    "Renderer/ThreadPoolForegroundWorker · V8.GC_BACKGROUND_SAFEPOINT 2.1 ms",
+    "Renderer/CrRendererMain · V8.GC_SCAVENGER 2.1 ms",
+    "Renderer/CrRendererMain · V8.GC_SCAVENGER_SCAVENGE 2.0 ms",
+    "Renderer/CrRendererMain · V8.GC_SCAVENGER_SCAVENGE_PARALLEL_PHASE 1.7 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": -0.19,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "Renderer/CrRendererMain · FireAnimationFrame 37.9 ms",
+    "Renderer/CrRendererMain · GLES2::ReadPixels 24.4 ms",
+    "Renderer/CrRendererMain · ImplementationBase::WaitForCmd 24.4 ms",
+    "Renderer/CrRendererMain · CommandBufferHelper::Finish 24.4 ms",
+    "Renderer/CrRendererMain · CommandBufferProxyImpl::WaitForGetOffset 24.4 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 20.7 ms",
+    "GPU Process/CrGpuMain · GPUTask 20.7 ms",
+    "GPU Process/CrGpuMain · WebGL 20.7 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": -0.12,
+   "dtMs": 66.6,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "Renderer/CrRendererMain · FireAnimationFrame 74.1 ms",
+    "Renderer/CrRendererMain · GLES2::ReadPixels 24.4 ms",
+    "Renderer/CrRendererMain · ImplementationBase::WaitForCmd 24.4 ms",
+    "Renderer/CrRendererMain · CommandBufferHelper::Finish 24.4 ms",
+    "Renderer/CrRendererMain · CommandBufferProxyImpl::WaitForGetOffset 24.4 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 20.7 ms",
+    "GPU Process/CrGpuMain · GPUTask 20.7 ms",
+    "GPU Process/CrGpuMain · WebGL 20.7 ms"
+   ]
+  },
+  {
+   "tDepuisCourseS": -0.09,
+   "dtMs": 33.4,
+   "gcMs": 0,
+   "shadersMs": 0,
+   "evenements": [
+    "Renderer/CrRendererMain · FireAnimationFrame 74.1 ms",
+    "Renderer/CrRendererMain · GLES2::ReadPixels 10.9 ms",
+    "Renderer/CrRendererMain · ImplementationBase::WaitForCmd 10.9 ms",
+    "Renderer/CrRendererMain · CommandBufferHelper::Finish 10.9 ms",
+    "Renderer/CrRendererMain · CommandBufferProxyImpl::WaitForGetOffset 10.9 ms",
+    "GPU Process/CrGpuMain · GpuChannel::ExecuteDeferredRequest 10.8 ms",
+    "GPU Process/CrGpuMain · GPUTask 10.8 ms",
+    "GPU Process/CrGpuMain · WebGL 10.8 ms"
+   ]
+  }
+ ],
+ "ramasseMiettes": {
+  "mineurs": {
+   "n": 75,
+   "totalMs": 35.1,
+   "pireMs": 0.6
+  },
+  "majeurs": {
+   "n": 0,
+   "totalMs": 0,
+   "pireMs": 0
+  },
+  "parSeconde": 3.75
+ },
+ "graphique": {
+  "shadersEnCourse": [
+   {
+    "nom": "CVDisplayLinkMac::GetForDisplay",
+    "n": 2,
+    "ms": 3.1,
+    "pire": 1.6
+   }
+  ],
+  "shadersAuChargement": [],
+  "processusGraphiquePremiereSeconde": [],
+  "processusGraphiqueEnsuite": [
+   {
+    "nom": "SkiaOutputSurfaceImplOnGpu::SwapBuffers",
+    "n": 2,
+    "ms": 10.9,
+    "pire": 5.9
+   },
+   {
+    "nom": "SkiaOutputDevice->ScheduleOverlays()",
+    "n": 2,
+    "ms": 10.4,
+    "pire": 5.7
+   },
+   {
+    "nom": "IOSurfaceImageBacking::WaitForCommandsToBeScheduled",
+    "n": 2,
+    "ms": 10.4,
+    "pire": 5.6
+   },
+   {
+    "nom": "IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn",
+    "n": 2,
+    "ms": 10.4,
+    "pire": 5.6
+   },
+   {
+    "nom": "GpuChannel::ExecuteDeferredRequest",
+    "n": 1,
+    "ms": 9.3,
+    "pire": 9.3
+   },
+   {
+    "nom": "GPUTask",
+    "n": 1,
+    "ms": 9.3,
+    "pire": 9.3
+   },
+   {
+    "nom": "RendererRasterWorker",
+    "n": 1,
+    "ms": 9.3,
+    "pire": 9.3
+   },
+   {
+    "nom": "CommandBuffer::Flush",
+    "n": 1,
+    "ms": 9.3,
+    "pire": 9.3
+   },
+   {
+    "nom": "CommandBufferStub::OnAsyncFlush",
+    "n": 1,
+    "ms": 9.3,
+    "pire": 9.3
+   },
+   {
+    "nom": "CommandBufferService:PutChanged",
+    "n": 1,
+    "ms": 9.3,
+    "pire": 9.3
+   }
+  ],
+  "filPrincipalEnCourse": [
+   {
+    "nom": "FireAnimationFrame",
+    "n": 5,
+    "ms": 21.9,
+    "pire": 4.7
+   },
+   {
+    "nom": "FunctionCall",
+    "n": 5,
+    "ms": 21.8,
+    "pire": 4.7
+   }
+  ]
+ },
+ "erreurs": [],
+ "limites": [
+  "Chrome sans interface : cadence synthétique à 60 Hz, sans synchronisation verticale d un écran réel."
+ ],
+ "chargementPage": {
+  "jusquAuTitreMs": 1319
+ },
+ "seance": {
+  "phase": "course",
+  "horloge": 20.05,
+  "type": "course",
+  "circuit": "Val-Brûlé",
+  "vue": "cockpit",
+  "s": 404.4,
+  "v": 24.6,
+  "tours": 0
+ },
+ "profil": {
+  "palier": "high",
+  "qualite": "high",
+  "rendu": {
+   "msaa": 4,
+   "shadowMapScale": 2,
+   "vignette": 0.59,
+   "bloomThreshold": [
+    0.5,
+    0.8
+   ],
+   "resolution": 1
+  },
+  "effets": {
+   "ombres": true,
+   "halo": true,
+   "reflets": true,
+   "retroImages": true
+  }
+ },
+ "mesures": {
+  "actif": true,
+  "fps": 59.880239520968516,
+  "imageP50": 16.69999999999709,
+  "imageP95": 16.700000000000728,
+  "imagePire": 16.80000000000291,
+  "cpu": {
+   "boucle": 2.3145833348234492,
+   "simulation": 0.3016666665673256,
+   "rendu": 0.908333336810271,
+   "effets": 0.00833333283662796,
+   "hud": 0.05791666756073634,
+   "son": 0.0004166667660077413
+  },
+  "cpuP50": {
+   "boucle": 2.299999952316284,
+   "simulation": 0.2999999523162842,
+   "rendu": 0.8999999761581421,
+   "effets": 0,
+   "hud": 0.09999990463256836,
+   "son": 0
+  },
+  "cpuP95": {
+   "boucle": 2.6999999284744263,
+   "simulation": 0.5,
+   "rendu": 1,
+   "effets": 0.10000002384185791,
+   "hud": 0.10000002384185791,
+   "son": 0
+  },
+  "vues": {
+   "principale": {
+    "images": 1204,
+    "drawCalls": 362.1843853820598,
+    "triangles": 2044098.5440199336,
+    "rendusParImage": 1,
+    "drawCallsParImage": 399.52916666666664,
+    "trianglesParImage": 2349685.0125
+   },
+   "joueur2": {
+    "images": 0,
+    "drawCalls": 0,
+    "triangles": 0,
+    "rendusParImage": 0,
+    "drawCallsParImage": 0,
+    "trianglesParImage": 0
+   },
+   "retro": {
+    "images": 1204,
+    "drawCalls": 119.75083056478405,
+    "triangles": 481718.38870431896,
+    "rendusParImage": 1,
+    "drawCallsParImage": 143.325,
+    "trianglesParImage": 631934.3666666667
+   }
+  },
+  "gpu": true,
+  "gpuValide": true,
+  "gpuMs": 22.262303,
+  "gpuPasses": {
+   "shadows": 2.5827076666666664,
+   "world": 8.641554666666666,
+   "effects": 8.627791333333333,
+   "post": 2.4102493333333332
+  },
+  "gpuPortee": "Moyenne des trois derniers rendus complets du moteur principal ; pas le total de l’image avec les rétroviseurs.",
+  "gpuDescartes": 0,
+  "gpuEnAttente": 8,
+  "voitures": 12,
+  "voituresTotal": 12,
+  "lampes": 0,
+  "ombres": true,
+  "palier": null,
+  "qualite": "high",
+  "profil": "high",
+  "images": 1204,
+  "pieces": 0,
+  "piecesTotal": 96,
+  "physx": {
+   "ready": true,
+   "version": "5.12.0",
+   "worlds": 0,
+   "queryCount": 0
+  },
+  "audio": {
+   "actif": false,
+   "voix": 0,
+   "joueurs": 0,
+   "rivaux": 0,
+   "fondus": 0,
+   "budget": 5,
+   "musique": false
+  }
+ },
+ "statsRendu": {
+  "drawCalls": 402,
+  "triangles": 3468076,
+  "instances": 5245,
+  "contextLost": false,
+  "webglVersion": 2,
+  "backend": "webgl2",
+  "engine": "ferro-reference",
+  "bloom": true,
+  "shadows": true,
+  "shadowMapSize": 2048,
+  "shadowTileSize": 1024,
+  "msaa": 4,
+  "reflections": false,
+  "pbrLayers": 0,
+  "renderScale": 1,
+  "pixelRatio": 1,
+  "width": 1390,
+  "height": 1295,
+  "staticTotal": 0,
+  "biome": "foret",
+  "worldRevision": 0,
+  "nappeTriangles": 66702,
+  "lots": 2394,
+  "composition": false,
+  "windSources": 4,
+  "windCandidates": 12,
+  "windUpdates": 1317,
+  "windStrength": 1,
+  "groundCover": true,
+  "lotDistanceTests": 2394,
+  "lotInstanceTests": 1672,
+  "viewDistance": 64,
+  "staticSuperset": 0,
+  "staticVisible": 0,
+  "staticCulled": 0,
+  "dynamicLights": 0,
+  "blackoutLights": 0,
+  "shadowMaps": 1,
+  "shadowMode": "sun-atlas",
+  "uploadBytes": 112448,
+  "fxInstances": 106,
+  "crowdInstances": 0,
+  "pdrLotInstances": 0,
+  "backgroundWater": 0,
+  "backgroundDrawCalls": 0,
+  "lotsVisibles": 47,
+  "reflectionSteps": 0
+ },
+ "ecrans": [
+  [
+   3515.8,
+   "course"
+  ]
+ ],
+ "imagesLonguesNavigateur": [
+  {
+   "t": 3310.1,
+   "d": 53.8,
+   "bloc": 0,
+   "rendu": 15.6,
+   "style": 53.5,
+   "scripts": []
+  },
+  {
+   "t": 3397.7,
+   "d": 74.3,
+   "bloc": 24.2,
+   "rendu": 0.1,
+   "style": 74.2,
+   "scripts": []
+  }
+ ],
+ "trace": {
+  "evenementsRecus": 853323,
+  "gardes": 16608,
+  "synchronisee": true
+ }
+}

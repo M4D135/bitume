@@ -121,6 +121,22 @@
   let restaurerDecorApresContexte = false;
   let materielRendu = 'webgl2', derniereDetection = null;
   let decorEnrichi = true; // l'outil de référence peut retrouver le décor historique pour une comparaison A/B
+  // Préparation d'une séance (voir « préparation des séances ») : déclarée avant tout lancement possible. jeton :
+  // une préparation plus récente ou une perte de contexte l'incrémente, et la préparation en cours s'arrête à son
+  // prochain await ; interne : le lancement vient de la préparation elle-même ; precharge : prechargerSeance tourne ;
+  // attente : fondu d'entrée, l'ancienne séance tourne encore ; chaud : types de séance dont le code est déjà chauffé.
+  const prepa = { enCours: false, voile: false, attente: false, interne: false, precharge: false, jeton: 0, type: null, i: -1, saison: null,
+    conditions: null, etape: null, rapport: null, dernier: null, focus: null, chaud: new Set(), periode: 1000 / 60 };
+  // Création tardive : un objet né dans le chemin d'une image au lieu de la préparation. Sous le voile (ou pendant
+  // prechargerSeance) elle est permise et comptée à part ; une fois la séance montrée, elle doit rester à zéro.
+  function creationTardive(nom, valeur) {
+    const T = session && session.tardives;
+    if (T) {
+      if (prepa.enCours || prepa.precharge) T.sousVoile++;
+      else { T.n++; T.noms[nom] = (T.noms[nom] || 0) + 1; }
+    }
+    return valeur;
+  }
   const canvas = $('scene'), jeu = $('jeu');
   function appliquerCarte() {
     for (const cle of ['carte', 'cartePosition', 'carteTaille'])
@@ -131,14 +147,21 @@
   // Rien ne se coupe à distance : le plan lointain passe derrière tout le décor (au plus à 4,4 km de la piste) et la
   // brume fait la limite. Les ombres du soleil prennent tout l'atlas du moteur sur un carré de 200 m de côté.
   const PORTEE_VUE = 6000, OMBRE = 100, OMBRE_DEVANT = 76;
+  // Clé du décor voulu : palier ancre, enrichissement, végétation et saison. La préparation des séances la compare à
+  // la scène installée pour savoir s'il reste un décor à bâtir avant de lancer la séance.
+  function voeuDecor(saisonDemandee) {
+    const ancre = etatProfils.decor;
+    const veut = B.graphismes.melange(ancre, 0, { decor: ancre, capacites: capacitesRendu, options: reglages }).decor;
+    return { ancre, veut, vegetationQualite: decorEnrichi ? veut.vegetationQualite : 'off', saison: B.saisons.normaliser(saisonDemandee ?? reglages.saison) };
+  }
+  function sceneEnPlace(i, saisonDemandee, v = voeuDecor(saisonDemandee)) {
+    return !!scene && scene.index === i && scene.enrichi === decorEnrichi && scene.palier === v.ancre && scene.vegetationQualite === v.vegetationQualite && scene.saison === v.saison;
+  }
   function installer(i, saisonDemandee) {
     // Le décor est bâti sur un palier « ancre » (voir « profils graphiques du menu ») : la même piste ne se
     // reconstruit pas à chaque fluctuation du gouverneur, seulement quand l'ancre ou l'enrichissement change.
-    const ancre = etatProfils.decor;
-    const veut = B.graphismes.melange(ancre, 0, { decor: ancre, capacites: capacitesRendu, options: reglages }).decor;
-    const vegetationQualite = decorEnrichi ? veut.vegetationQualite : 'off';
-    const saison = B.saisons.normaliser(saisonDemandee ?? reglages.saison);
-    if (scene && scene.index === i && scene.enrichi === decorEnrichi && scene.palier === ancre && scene.vegetationQualite === vegetationQualite && scene.saison === saison) return scene;
+    const v = voeuDecor(saisonDemandee), { ancre, veut, vegetationQualite, saison } = v;
+    if (sceneEnPlace(i, saisonDemandee, v)) return scene;
     const c = circuit(i), decor = B.decor.construire(c, {
       qualite: ancre,
       matieres: decorEnrichi && veut.matieres,
@@ -170,6 +193,8 @@
   let conditionsPreparation = null, conditionsPreparationCle = '', conditionsNumero = 0;
   let conditionsControle = null, conditionsEnCours = null;
   function lancer(type, i, enl, conditionsChoisies) {
+    // un lancement direct (référence, banc, démarrage, détection) remplace ce qui se préparait
+    if (prepa.enCours && !prepa.interne) annulerPreparation();
     restaurerReference();
     if (B.vitre) { if (vitreVue) B.vitre.effacer(vitreVue); if (vitreVue2) B.vitre.effacer(vitreVue2); }
     // la séance qui meurt rend ses corps PhysX : la démo enchaîne les courses sans fin et laisserait un monde
@@ -216,6 +241,8 @@
         horlogeReelle: horlogePartagee(conditions.horlogeReelle), dateDepart: enl && Number.isFinite(enl.dateDepart) ? enl.dateDepart : null,
         saison: sc.decor.saison || B.saisons.profil(sc.saison, CATALOGUE[i].theme), revisionRendu: -1, faune: null, effetsSaison: null, aurores: null },
       fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null,
+      // créations tardives : objets nés dans le chemin d'une image au lieu de la préparation (doit rester à zéro)
+      tardives: { n: 0, sousVoile: 0, noms: {} },
     };
     if (enl) {
       S.enLigne = { T0: enl.T0, role: enl.role, humains: enl.humains }; S.enLigneOrigine = true;
@@ -233,6 +260,8 @@
     remplirPoses(S.cour, course); remplirPoses(S.prec, course);
     session = S;
     tactile(!auto && !duo);
+    // hors préparation (référence, banc, démarrage), tout ce que la séance créerait à sa première image naît ici
+    if (!prepa.interne) prechargerSeance(S);
     return S;
   }
   function graine32(a) {
@@ -494,16 +523,16 @@
   function dessinerMeteo(S, dt, cam, vue, profil) {
     // à deux, les gouttes du joueur 2 tombent sur sa moitié (toile #meteo2)
     const deux = S !== session;
-    if (deux && !pluieVue2) pluieVue2 = B.meteo.creerPluie($('meteo2'));
-    if (!deux && !pluieVue) pluieVue = B.meteo.creerPluie($('meteo'));
+    if (deux && !pluieVue2) pluieVue2 = creationTardive('pluie', B.meteo.creerPluie($('meteo2')));
+    if (!deux && !pluieVue) pluieVue = creationTardive('pluie', B.meteo.creerPluie($('meteo')));
     // sous la voûte du tunnel, il ne pleut pas : la caméra décide, sinon les gouttes disparaissent pendant que la
     // vue extérieure montre encore la pluie
     const abri = !VUES_DEHORS.has(vue) && sousLaVoute(S.course.c, cam.pos), neige = precipitationsNeige(S);
     (deux ? pluieVue2 : pluieVue).dessiner(abri || neige > 0 ? Object.assign(METEO_ABRI, { t: S.meteo.t }) : S.meteo, cam, dt, { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1 });
     if (B.vitre) {
-      if (deux && !vitreVue2) vitreVue2 = B.vitre.creer($('vitre2'));
-      if (!deux && !vitreVue) vitreVue = B.vitre.creer($('vitre'));
-      const contexte = S.vitreContexte || (S.vitreContexte = {});
+      if (deux && !vitreVue2) vitreVue2 = creationTardive('vitre', B.vitre.creer($('vitre2')));
+      if (!deux && !vitreVue) vitreVue = creationTardive('vitre', B.vitre.creer($('vitre')));
+      const contexte = S.vitreContexte || (S.vitreContexte = creationTardive('contexteVitre', {}));
       contexte.pluie = neige > 0 ? 0 : S.meteo.pluie || 0; contexte.neige = neige;
       contexte.ventX = S.meteo.ventX || 0; contexte.ventZ = S.meteo.ventZ || 0;
       const voiture = S.course.voitures[S.suivie || 0] || S.course.joueur;
@@ -1112,15 +1141,12 @@
       .on('ferme', raison => { if (R === EL.R) surFermeture(raison); });
     return R;
   }
+  // la préparation s'abandonne si la liaison change ou tombe ; elle sait combien de temps reste avant le départ commun
   function lancerEnLigne(cfg) {
     reglages.circuit = cfg.i;
-    $('chargement').classList.remove('fini');
     const R = EL.R;
-    setTimeout(() => {
-      $('chargement').classList.add('fini');
-      if (EL.R !== R || !R || R.etat !== 'connecte') return;
-      lancer('course', cfg.i, cfg); aller('course');
-    }, 30);
+    return preparerSeance('course', cfg.i, cfg, null, { verifier: () => EL.R === R && !!R && R.etat === 'connecte',
+      reste: () => R && R.horloge ? cfg.T0 - R.horloge() : Infinity });
   }
   function surMessageEnLigne(m, de) {
     if (!m || typeof m !== 'object' || !EL.R) return;
@@ -1439,7 +1465,7 @@
     const t = c && c.tunnel;
     if (!t) return false;
     const n = Math.max(2, Math.round((t.fin - t.debut) / TUNNEL_PAS) + 1);
-    if (!tunnel.axe || tunnel.axe.length < n * 2) tunnel.axe = new Float64Array(n * 2);
+    if (!tunnel.axe || tunnel.axe.length < n * 2) tunnel.axe = creationTardive('axeTunnel', new Float64Array(n * 2));
     for (let i = 0; i < n; i++) { const e = B.circuit.echantillon(c, t.debut + (t.fin - t.debut) * i / (n - 1)); tunnel.axe[2 * i] = e.x; tunnel.axe[2 * i + 1] = e.z; }
     tunnel.n = n; tunnel.demi = t.mur + TUNNEL_MARGE;
     return true;
@@ -1466,12 +1492,19 @@
     for (let k = 0; k < LAMPE_MAX; k++) e.pool.push({ p: null, power: 0, range: LAMPE_PORTEE, color: COULEUR_LAMPE });
     return e;
   }
+  // état de départ d'une caméra sans rien réallouer : toutes les lampes éteintes, comme un état neuf
+  function remettreLampes(porteur) {
+    for (const cle of ['lampesTunnel', 'lampes0', 'lampes1']) {
+      const e = Object.prototype.hasOwnProperty.call(porteur, cle) && porteur[cle];
+      if (e && e.p) e.p.fill(0);
+    }
+  }
   // porteur/clé isolent l'état temporel de chaque caméra : la vue de J1, celle de J2 et chaque glace ont leur propre
   // lissage. Le tableau rendu est celui de l'état : le moteur le lit pendant le draw, rien n'est alloué par image.
   function lampesTunnel(porteur, cle, LT, cam, dtImage, rev) {
     if (!LT || !LT.length) return null;
     let et = porteur[cle];
-    if (!et || et.rev !== rev || et.n !== LT.length) et = porteur[cle] = nouvelEtatLampes(rev, LT.length);
+    if (!et || et.rev !== rev || et.n !== LT.length) et = porteur[cle] = creationTardive('lampes', nouvelEtatLampes(rev, LT.length));
     const k = 1 - Math.exp(-Math.max(0, dtImage) / LAMPE_LISSAGE), r = LAMPE_RAYON, plat = r * (1 - LAMPE_PLAT);
     const cx = cam.pos[0], cz = cam.pos[2], P = et.p, n = et.n;
     for (let i = 0; i < n; i++) {
@@ -1514,6 +1547,52 @@
     // Le profil décide : image des glaces refusée d'office au palier bas et aux paliers Auto les plus serrés.
     return r === 'oui' && vue === 'cockpit' && S.type !== 'vitrine' && !retro.echec && !cameraEssai && profilDe(S).effets.retroImages;
   }
+  // Le second moteur, sa copie du décor et les toiles des quatre glaces naissent au chargement, jamais dans le
+  // chemin d'une image : tant que la copie n'est pas prête, la glace reste peinte (fond dessiné du cockpit).
+  function glacesDe(cle) {
+    return retro[cle] || (retro[cle] = creationTardive('glaces', { toiles: cle === 'j2' ? [$('glace-g2'), $('glace-d2')] : [$('glace-g'), $('glace-d')], ctx: [], cote: 0 }));
+  }
+  // la séance (ou n'importe quelle course si S est nul) peut-elle montrer des glaces vives, à un palier quelconque
+  // que le gouverneur Auto peut atteindre ?
+  function glacesPossibles(S) {
+    const r = reglages.retro === 'auto' ? (estTactile ? 'non' : 'oui') : reglages.retro, type = S ? S.type : 'course';
+    if (r !== 'oui' || retro.echec || type === 'vitrine' || !window.FRender) return false;
+    return profilsAtteignables(type, S).some(P => P.effets.retroImages);
+  }
+  function creerMoteurRetro() {
+    if (retro.rendu || retro.echec) return !!retro.rendu;
+    try {
+      retro.rendu = window.FRender.create($('retro-rendu'), { msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' });
+      retro.rendu.resize(Math.min(window.devicePixelRatio || 1, 1.5));
+      if (retro.rendu.retain) retro.rendu.retain(true);   // FERRO 0.3.10 : cibles gardées malgré 120 rendus sans usage
+    } catch (e) {
+      console.warn('BITUME : image des rétroviseurs indisponible', e); retro.rendu = null; retro.echec = true;
+      for (const G of [retro.j1, retro.j2]) if (G) for (const t of G.toiles) t.hidden = true;
+    }
+    return !!retro.rendu;
+  }
+  // même décor et même clé de scène que le moteur principal ; le moteur range ses tampons dans les lots : copies
+  function installerRetro() {
+    if (!retro.rendu || !scene || retro.scene === scene) return;
+    const d = scene.decor;
+    retro.rendu.setWorld([], [], d.atmosphere);
+    retro.rendu.setNappes(d.nappes.map(n => Object.assign({}, n)));
+    retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })));
+    retro.scene = scene;
+  }
+  function preparerGlaces() {
+    if (!creerMoteurRetro()) return false;
+    installerRetro();
+    const source = $('retro-rendu'), LT = scene && scene.decor.tunnelLampes;
+    for (const cle of ['j1', 'j2']) {
+      const G = glacesDe(cle);
+      if (!G.ctx.length) G.toiles.forEach((t, i) => { t.width = source.width; t.height = source.height; t.style.width = source.clientWidth + 'px'; t.style.height = source.clientHeight + 'px'; G.ctx[i] = t.getContext('2d'); });
+      if (LT && LT.length) for (const k of ['lampes0', 'lampes1']) if (!G[k] || G[k].rev !== scene.index || G[k].n !== LT.length) G[k] = nouvelEtatLampes(scene.index, LT.length);
+    }
+    return true;
+  }
+  const glacesPretes = G => !!retro.rendu && retro.scene === scene && !!G && G.ctx.length === 2;
+  const glacesVives = (S, vue) => retroVoulu(S, vue) && glacesPretes(S !== session ? retro.j2 : retro.j1);
   // homographie du carré unité vers le quadrilatère q (images de (0,0), (1,0), (1,1), (0,1)), puis matrix3d CSS
   // pour une toile de l × h pixels CSS
   function matrice3d(q, l, h) {
@@ -1528,10 +1607,9 @@
   }
   function majGlaces(S, vue, cam, ps, sortie, ambiance, suivie, dtImage) {
     // à deux, le joueur 2 a ses deux glaces, posées sur sa moitié ; chaque joueur rafraîchit une glace par image
-    const G = S !== session ? (retro.j2 || (retro.j2 = { toiles: [$('glace-g2'), $('glace-d2')], ctx: [], cote: 0 }))
-      : (retro.j1 || (retro.j1 = { toiles: [$('glace-g'), $('glace-d')], ctx: [], cote: 0 }));
+    const G = glacesDe(S !== session ? 'j2' : 'j1');
     const toiles = G.toiles;
-    const voir = retroVoulu(S, vue);
+    const voir = glacesVives(S, vue);
     for (const t of toiles) if (t.hidden === voir) t.hidden = !voir;
     if (!voir) return;
     // Cadence des glaces (src/graphismes.js) : une glace par image donne déjà 30 images/s par glace. Les paliers
@@ -1542,18 +1620,6 @@
     G.pas = ((G.pas | 0) + 1) % saut;
     if (G.pas) return;
     const source = $('retro-rendu');
-    if (!retro.rendu) {
-      try { retro.rendu = window.FRender.create(source, { msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' }); retro.rendu.resize(Math.min(window.devicePixelRatio || 1, 1.5)); }
-      catch (e) { console.warn('BITUME : image des rétroviseurs indisponible', e); retro.echec = true; for (const t of toiles) t.hidden = true; return; }
-    }
-    if (!G.ctx.length) toiles.forEach((t, i) => { t.width = source.width; t.height = source.height; t.style.width = source.clientWidth + 'px'; t.style.height = source.clientHeight + 'px'; G.ctx[i] = t.getContext('2d'); });
-    if (retro.scene !== scene) {
-      const d = scene.decor;
-      retro.rendu.setWorld([], [], d.atmosphere);
-      retro.rendu.setNappes(d.nappes.map(n => Object.assign({}, n)));
-      retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })));
-      retro.scene = scene;
-    }
     // axes de la caméra principale, comme le moteur (cameraAxes) : chaque coin de glace projeté à l'écran
     const cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw), cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch), cr = Math.cos(cam.roll || 0), sr = Math.sin(cam.roll || 0);
     const r0 = [cy, 0, sy], u0 = [-sy * sp, cp, cy * sp];
@@ -1617,8 +1683,8 @@
     appliquerCarte();
     const co = S.course, j = co.joueur;
     const poses = tampons.poses;
-    for (let k = 0; k < co.voitures.length; k++) poses[k] = melange(S.prec[k], S.cour[k], alpha, poses[k] || {});
-    if (B.sillage) B.sillage.mettreAJour(S.sillage || (S.sillage = B.sillage.creer()), co.voitures, poses, co.c);
+    for (let k = 0; k < co.voitures.length; k++) poses[k] = melange(S.prec[k], S.cour[k], alpha, poses[k] || creationTardive('poses', {}));
+    if (B.sillage) B.sillage.mettreAJour(S.sillage || (S.sillage = creationTardive('sillage', B.sillage.creer())), co.voitures, poses, co.c);
     if (B.mesures.actif) {
       let actives = 0;
       for (let k = 0; k < co.voitures.length; k++) if (!co.voitures[k].abandon && !co.voitures[k].fini) actives++;
@@ -1632,16 +1698,16 @@
     // degrés par image, la rotation vraie se lit figée ou à l'envers (effet stroboscopique). L'angle dessiné suit la
     // distance roulée, mais avance d'au plus 0,11 m de bande par image (22° à l'avant) ; la suspension bat sur les
     // bosses, plus vite et un peu plus fort avec la vitesse (quelques millimètres, roue par roue).
-    const nV = co.voitures.length, RV = S.rouleVu || (S.rouleVu = new Float64Array(nV)), RP = S.rouleVrai || (S.rouleVrai = new Float64Array(nV).fill(NaN));
+    const nV = co.voitures.length, RV = S.rouleVu || (S.rouleVu = creationTardive('roues', new Float64Array(nV))), RP = S.rouleVrai || (S.rouleVrai = creationTardive('roues', new Float64Array(nV).fill(NaN)));
     for (let k = 0; k < nV; k++) {
       const p = poses[k], d = Number.isNaN(RP[k]) ? 0 : p.roule - RP[k];
       RP[k] = p.roule; RV[k] += Math.abs(d) > .11 ? Math.sign(d) * .11 : d;
       const v = Math.abs(co.voitures[k].etat.v), a = .0035 * clamp(v / 60, 0, 1) * (co.voitures[k].etat.surface === 'herbe' ? 3 : co.voitures[k].etat.surface === 'vibreur' ? 2.2 : 1);
-      const reb = p.rebond || (p.rebond = [0, 0, 0, 0]), t = horlogeReelle, s0 = p.roule * 1.7;
+      const reb = p.rebond || (p.rebond = creationTardive('rebond', [0, 0, 0, 0])), t = horlogeReelle, s0 = p.roule * 1.7;
       for (let r = 0; r < 4; r++) reb[r] = a * (Math.sin(s0 + r * 1.9) * .6 + Math.sin(s0 * 2.3 + r * .7 + t * 3) * .4);
     }
     const meteo = majMeteo(S, dtImage);
-    S.ambianceImage = B.meteo.ambiance(meteo, S.ambianceImage || {});
+    S.ambianceImage = B.meteo.ambiance(meteo, S.ambianceImage || creationTardive('ambiance', {}));
     if (S.nature) {
       const nature = S.nature;
       if (nature.horlogeReelle) {
@@ -1667,7 +1733,7 @@
       S.j2Image = (S.j2Image | 0) + 1;
       if (P.secondaires.partage.hz >= 55 || S.j2Image % 2 === 0) {
         rendreVue(S.vueJ2, co.voitures[S.locaux[1]], reglages.vue2, dtImage, meteo);
-        const t2 = $('scene2'), ctx2 = t2._ctx || (t2._ctx = t2.getContext('2d'));
+        const t2 = $('scene2'), ctx2 = t2._ctx || (t2._ctx = creationTardive('toileJ2', t2.getContext('2d')));
         if (t2.width !== canvas.width || t2.height !== canvas.height) { t2.width = canvas.width; t2.height = canvas.height; }
         ctx2.drawImage(canvas, 0, 0);
       }
@@ -1711,16 +1777,16 @@
     // Habitats partagés ; pools propres aux deux vues. Le temps absolu garde les mêmes vols dans les miroirs.
     if (S.nature && B.faune && P.faune !== 'off' && (!S.nature.saison || S.nature.saison.faune > 0)) {
       const nature = S.nature;
-      if (!nature.faune) nature.faune = B.faune.creer(c, scene.decor);
-      const contexte = S.fauneVue || (S.fauneVue = { qualite: P.faune, nuit: 0, pluie: 0, pose: ps, vue: S === session ? 0 : 1 });
+      if (!nature.faune) nature.faune = creationTardive('faune', B.faune.creer(c, scene.decor));
+      const contexte = S.fauneVue || (S.fauneVue = creationTardive('contexteFaune', { qualite: P.faune, nuit: 0, pluie: 0, pose: ps, vue: S === session ? 0 : 1 }));
       contexte.qualite = P.faune; contexte.nuit = nature.ambiance.nuit; contexte.pluie = meteo.pluie || 0; contexte.pose = ps;
       contexte.activite = nature.saison ? nature.saison.faune : 1;
       B.faune.dessiner(nature.faune, horlogeReelle, contexte, sortie);
     }
     if (S.nature && B.effetsSaison && S.nature.saison && (S.nature.effetsSaison || S.nature.saison.feuilles || S.nature.saison.neige || meteo.neige)) {
       const nature = S.nature;
-      if (!nature.effetsSaison) nature.effetsSaison = B.effetsSaison.creer(c, scene.decor);
-      const contexte = S.saisonVue || (S.saisonVue = { qualite: 'low', nuit: 0, pluie: 0, neige: 0, ventX: 0, ventZ: 0, pose: cam.pos, vue: S === session ? 0 : 1, abri: false });
+      if (!nature.effetsSaison) nature.effetsSaison = creationTardive('effetsSaison', B.effetsSaison.creer(c, scene.decor));
+      const contexte = S.saisonVue || (S.saisonVue = creationTardive('contexteSaison', { qualite: 'low', nuit: 0, pluie: 0, neige: 0, ventX: 0, ventZ: 0, pose: cam.pos, vue: S === session ? 0 : 1, abri: false }));
       contexte.qualite = P.decor.vegetationQualite === 'ultra' ? 'ultra' : P.palier;
       contexte.nuit = nature.ambiance.nuit; contexte.pluie = meteo.pluie || 0;
       contexte.neige = precipitationsNeige(S);
@@ -1732,8 +1798,8 @@
     // Rubans lointains en géométrie monde : occultés par le relief, repris dans les rétroviseurs.
     if (S.nature && B.aurores && c.theme === 'islande') {
       const nature = S.nature;
-      if (!nature.aurores) nature.aurores = B.aurores.creer(c);
-      const contexte = S.auroresVue || (S.auroresVue = { vue: S === session ? 0 : 1, qualite: 'low', nuit: 0, pluie: 0, neige: 0, nuages: 0, tunnel: false });
+      if (!nature.aurores) nature.aurores = creationTardive('aurores', B.aurores.creer(c));
+      const contexte = S.auroresVue || (S.auroresVue = creationTardive('contexteAurores', { vue: S === session ? 0 : 1, qualite: 'low', nuit: 0, pluie: 0, neige: 0, nuages: 0, tunnel: false }));
       contexte.qualite = P.palier; contexte.nuit = nature.ambiance.nuit;
       contexte.pluie = meteo.pluie || 0; contexte.neige = precipitationsNeige(S); contexte.nuages = meteo.nuage || 0;
       contexte.tunnel = sousLaVoute(c, cam.pos) && cam.pos[1] < ps.y + (c.tunnel ? c.tunnel.hauteur : 5) + .5;
@@ -1758,7 +1824,7 @@
       const atm = S.nature ? S.nature.ambiance.atmosphere : scene.decor.atmosphere;
         B.voiture.cockpit(S.modeles[k], ev, sortie, { regime: et.regime, volant: et.volant, rapport: et.rapport, kmh: B.conduite.kmh(et), roues: co.voitures[k].degats && co.voitures[k].degats.roues, casse: !!(et.degats && et.degats.casse),
           passage: suivie.tPassage === undefined ? 1 : (co.horloge - suivie.tPassage) / .36, rapportAvant: suivie.rapportAvant, derriere, ciel: atm.skyBottom, brume: atm.fog,
-          glaceVive: !!retro.rendu && retroVoulu(S, vue) });
+          glaceVive: glacesVives(S, vue) });
         continue;
       }
       B.voiture.poser(S.modeles[k], ev, sortie, { simple: d2 > complet * complet, roues: co.voitures[k].degats && co.voitures[k].degats.roues, casse: !!(co.voitures[k].degats && co.voitures[k].degats.casse) });
@@ -1775,7 +1841,7 @@
     // feux du portique
     const port = scene.decor.portique;
     if (port && co.mode === 'course') {
-      if (!S.rotLampe) S.rotLampe = MATRICE_LAMPE(port.cap);
+      if (!S.rotLampe) S.rotLampe = creationTardive('feuxPortique', MATRICE_LAMPE(port.cap));
       for (let k = 0; k < port.feux.length; k++) {
         const allume = !co.feux.vert && k < co.feux.allumes;
         sortie.push({ shape: 'cylinder', p: port.feux[k], s: [.56, .05, .56], r: S.rotLampe, mat: allume ? 5 : 7, color: allume ? [1, .14, .06] : [.1, .03, .03], emissive: allume ? 3 : 0 });
@@ -1854,7 +1920,7 @@
       }
       const v = co.voitures[k];
       // démo vue de l'extérieur : un micro d'ambiance rapproche les voitures (la caméra est à 30 à 120 m), l'effet Doppler reste celui de la caméra
-      const r = sonCandidats[k] || (sonCandidats[k] = {});
+      const r = sonCandidats[k] || (sonCandidats[k] = creationTardive('son', {}));
       r.id = k; r.distance = micro ? 2 + distance * .06 : distance; r.angle = direction;
       r.regime = v.etat.regime; r.gaz = v.etat.gaz; r.vRel = vitesseRelative;
       sonRivaux.push(r);
@@ -2032,7 +2098,7 @@
     ecran = nom;
     if (nom === 'titre') dernierGeste = performance.now();
     if (nom === 'titre' || nom === 'preparation' || nom === 'enligne' || nom === 'prets') {
-      if (!session || session.type !== 'vitrine' || (nom === 'preparation' && session.i !== reglages.circuit)) lancer('vitrine', nom === 'preparation' ? reglages.circuit : (session ? session.i : reglages.circuit));
+      if (!session || session.type !== 'vitrine' || (nom === 'preparation' && session.i !== reglages.circuit)) lancerVitrine(nom === 'preparation' ? reglages.circuit : (session ? session.i : reglages.circuit));
     }
     // en ligne, la pause n'arrête pas la course : pas de « Recommencer »
     if (nom === 'pause') { $('b-recommencer').hidden = !!(session && session.enLigne); $('b-replacer').hidden = aDeux(); }
@@ -2080,24 +2146,23 @@
     texte($('titre-attente-texte'), 'Démo dans ' + Math.max(1, Math.ceil(reste)) + ' s');
     style(z, '--part', clamp(1 - reste / ATTENTE_DEMO, 0, 1).toFixed(2));
   }
+  // L'écran de démo est montré dès le début de la préparation : un geste, sous le voile, rend déjà le titre.
+  const apresDemo = () => { H.message.className = 'message'; H['sous-message'].className = 'sous-message'; };
   function lancerDemo(i) {
-    lancer('demo', clamp(i | 0, 0, CATALOGUE.length - 1));
-    H.message.className = 'message'; H['sous-message'].className = 'sous-message';
-    aller('demo');
+    return preparerSeance('demo', clamp(i | 0, 0, CATALOGUE.length - 1), null, null, { ecran: 'demo', apres: apresDemo });
   }
-  // La course de démo est finie : la suivante part sur le circuit d'après, derrière le voile de préparation.
+  // La course de démo est finie : la suivante part sur le circuit d'après, derrière le voile de préparation. L'ancienne
+  // tourne encore pendant le fondu d'entrée (340 ms), comme avant.
   function demoSuivante(S) {
     S.enchaine = true;
-    $('chargement').classList.remove('fini');
-    setTimeout(() => {
-      if (ecran === 'demo' && session === S) lancerDemo((S.i + 1) % CATALOGUE.length);
-      $('chargement').classList.add('fini');
-    }, 340);
+    void preparerSeance('demo', (S.i + 1) % CATALOGUE.length, null, null, { ecran: 'demo', fondu: 340, verifier: () => ecran === 'demo', apres: apresDemo });
   }
   function sortirDemo() {
     if (ecran !== 'demo') return;
+    if (prepa.enCours) annulerPreparation();
     avalerJusque = performance.now() + 400;
     $('chargement').classList.add('fini');
+    remettreVitrine();
     aller('titre');
   }
 
@@ -2146,7 +2211,7 @@
       conditionsPreparation = k;
       preselectionnerPneus();
       if (session && session.type === 'vitrine') {
-        if (session.i !== reglages.circuit || session.nature.saison.id !== k.saison) lancer('vitrine', reglages.circuit, null, k);
+        if (session.i !== reglages.circuit || session.nature.saison.id !== k.saison) lancerVitrine(reglages.circuit, k);
         else {
           session.conditions = k; session.meteo = B.meteo.depuisReel(k.mReelle) || B.meteo.pour(k.meteo) || B.meteo.initial(graineCourse);
           session.nature.moment = k.moment; session.nature.horlogeReelle = horlogePartagee(k.horlogeReelle);
@@ -2190,7 +2255,7 @@
         const ctx = b.querySelector('canvas').getContext('2d');
         const p = plan(c, 320, 200, 14);
         dessinerTrace(ctx, c, p, 10, 'rgba(0,0,0,.55)'); dessinerTrace(ctx, c, p, 5, '#efe8da');
-        b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); lancer('vitrine', i); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
+        b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); lancerVitrine(i); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
         zone.appendChild(b);
       });
     }
@@ -2347,7 +2412,8 @@
     $('v-vibration-force').value = reglages.vibrationForce; $('v-vibration-force-valeur').textContent = Math.round(reglages.vibrationForce * 100) + ' %';
   }
   function retour() {
-    if (ecran === 'reglages') aller(retourReglages || 'titre');
+    if (prepa.voile) return;   // sous le voile, rien ne se quitte : la préparation finit ou s'annule seule
+    if (ecran === 'reglages') { aller(retourReglages || 'titre'); if (ecran === 'pause' && session && session.type !== 'vitrine') rechaufferEnPause(session); }
     else if (ecran === 'preparation' && modePrepa === 'enligne') aller('enligne');
     else if (ecran === 'enligne') quitterEnLigne();
     else if (ecran === 'prets') quitterPrets();
@@ -2361,18 +2427,14 @@
     if (!k || ecran !== 'preparation' || conditionsEnCours) return;
     if (modePrepa === 'enligne') proposerCourse(); else demarrerSeance(modePrepa, k);
   });
+  // Départ, Recommencer et Rejouer : la séance se prépare sous le voile, l'écran de course vient avec sa première image.
   function demarrerSeance(type, conditions) {
-    $('chargement').classList.remove('fini');
     const avant = ecran, choix = conditions || (session && session.conditions) || conditionsDuDepart();
-    setTimeout(() => {
-      $('chargement').classList.add('fini');
-      if (ecran !== avant) return;
-      lancer(type, reglages.circuit, null, choix);
-      aller('course');
-      if (type === 'chrono') sousMessage('Le chrono part à la ligne');
-    }, 30);
+    return preparerSeance(type, reglages.circuit, null, choix, { verifier: () => ecran === avant,
+      apres: type === 'chrono' ? () => sousMessage('Le chrono part à la ligne') : null });
   }
   function basculerPause(forcer) {
+    if (prepa.voile) return;
     if (ecran === 'course') aller('pause');
     else if (ecran === 'pause' && !forcer) aller('course');
   }
@@ -2466,6 +2528,585 @@
     }
   }
 
+  // ---------------------------------------------------------------- préparation des séances
+  // Lancer une séance coûtait sa première seconde de course : décor bâti, programmes du moteur compilés, objets créés
+  // et code froid au moment où la voiture partait. Chaque départ (Départ, Recommencer, Rejouer, en ligne, démo et
+  // vitrine dont le décor change) passe maintenant par preparerSeance : tout cela se fait sous un voile opaque, et la
+  // première image montrée est déjà une image de régime. Rien de ce qui suit ne touche aux règles ni à la course : la
+  // simulation de la séance n'avance pas d'un pas avant que le voile se lève.
+
+  // Profils que le gouverneur Auto peut atteindre pendant la séance : la chauffe les couvre tous, sinon le premier
+  // changement de palier en pleine course compilerait ses programmes. Une qualité fixe n'en a qu'un.
+  function profilsAtteignables(type, S) {
+    const q = S && S.banc ? S.banc.qualite : reglages.qualite, garde = { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages };
+    const gouverne = B.graphismes.normaliser(q) === 'auto' && !(S && (S.banc || S.reference)) && ['course', 'chrono', 'demo', 'duo'].includes(type);
+    if (!gouverne) return [B.graphismes.melange(q, palier.n, garde)];
+    const l = [];
+    for (let n = gpuModeste ? 1 : 0; n <= PALIERS; n++) l.push(B.graphismes.melange(q, n, garde));
+    return l;
+  }
+  // La piste peut-elle se mouiller pendant la séance ? Alors les reflets d'écran viendront : leur variante se chauffe.
+  const meteoPeutMouiller = m => !!m && ((m.pluie || 0) > 0 || (m.mouille || 0) > 0 || m.fixe !== true);
+  const varianteDe = (P, reflections, lampes) => ({ msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: avecHalo(P), reflections, lampes, groundCover: P.groundCover, windStrength: P.windStrength });
+  // Combinaisons d'effets que la séance peut demander au moteur : chacune a ses programmes, compilés au premier usage.
+  function variantesRendu(S) {
+    const m = new Map(), mouille = meteoPeutMouiller(S.meteo), LT = scene && scene.decor.tunnelLampes, tunnelEclaire = !!(LT && LT.length);
+    const ajouter = P => {
+      for (const reflets of P.effets.reflets && mouille ? [false, true] : [false])
+        for (const lampes of tunnelEclaire ? [false, true] : [false]) {
+          const v = varianteDe(P, reflets, lampes), cle = JSON.stringify(v);
+          m.delete(cle); m.set(cle, v);
+        }
+    };
+    for (const P of profilsAtteignables(S.type, S)) ajouter(P);
+    ajouter(profilDe(S));   // le profil courant en dernier : le moteur finit la chauffe dans l'état de la première image
+    return m;
+  }
+  // une lampe de tunnel devant la caméra : la variante éclairée compile sans attendre le tunnel
+  const lampeTemoin = cam => [{ p: [cam.pos[0] + Math.sin(cam.yaw) * 6, cam.pos[1] + 2.5, cam.pos[2] - Math.cos(cam.yaw) * 6], power: LAMPE_PUISSANCE, range: LAMPE_PORTEE, color: COULEUR_LAMPE }];
+  function fxVariante(S, v, cam) {
+    return { time: horlogeReelle, msaa: v.msaa, shadowMapScale: v.shadowMapScale, shadows: v.shadows, bloom: v.bloom, brightness: 1,
+      lights: v.lampes ? lampeTemoin(cam) : null, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0,
+      photo: v.bloom ? 1 : 0, reflections: v.reflections, weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources,
+      windStrength: v.windStrength, groundCover: v.groundCover };
+  }
+  // Objets de la chauffe : ceux de la vraie première image, plus un témoin de chaque sorte que la course peut faire
+  // naître (habitacle, traces, fumée, étincelles, débris, faune, saison, feux, aurores, fantôme). Ils sont posés devant
+  // la caméra pour que le moteur ne les écarte pas ; personne ne les voit, ils ne vivent que sous le voile.
+  function listeChauffe(S, cam, base, avecHabitacle = true) {
+    const l = base.slice(), fx = Math.sin(cam.yaw), fz = -Math.cos(cam.yaw), rx = Math.cos(cam.yaw), rz = Math.sin(cam.yaw);
+    const devant = (d, lat, h) => [cam.pos[0] + fx * d + rx * lat, cam.pos[1] + h, cam.pos[2] + fz * d + rz * lat];
+    const ajouter = o => l.push(Object.assign({ r: [0, 0, 0], color: [.5, .5, .5] }, o));
+    ajouter({ shape: 'box', p: devant(6, -1.2, 0), s: [.4, .4, .4], mat: 1 });
+    if (avecHabitacle) ajouter({ shape: 'box', p: devant(1.2, 0, -.3), s: [.1, .05, .1], mat: 2, overlay: true, surface: 'object' });
+    ajouter({ shape: 'box', p: devant(7, 0, -1), s: [1, .01, .3], fx: true, fxPriority: 'hazard', alpha: .5, color: [.02, .02, .022] });
+    ajouter({ shape: 'sphere', p: devant(8, 1, 0), s: [.6, .6, .6], fx: true, alpha: .3, color: [.82, .82, .8] });
+    ajouter({ shape: 'box', p: devant(8, -1, .2), s: [.05, .05, .2], fx: true, alpha: .8, color: [1, .6, .18], emissive: 2.4 });
+    ajouter({ shape: 'box', p: devant(9, .5, -.5), s: [.3, .1, .3], mat: 7, fx: true, fxPriority: 'hazard', alpha: 1, color: [.7, .1, .08] });
+    ajouter({ shape: 'sphere', p: devant(10, 2, 1), s: [.2, .2, .2], mat: 7, surface: 'object', outdoor: true });
+    ajouter({ shape: 'sphere', p: devant(10, -2, 1), s: [.2, .2, .2], mat: 7, surface: 'object', outdoor: true, fx: true, alpha: .5, emissive: 1 });
+    ajouter({ shape: 'octa', p: devant(11, 1.5, 1.5), s: [.1, .02, .1], mat: 7, surface: 'object', outdoor: true, fx: true, alpha: .7 });
+    ajouter({ shape: 'octa', p: devant(11, -1.5, 1.5), s: [.1, .1, .1], mat: 5, emissive: 2 });
+    ajouter({ shape: 'cylinder', p: devant(12, 0, 2), s: [.56, .05, .56], mat: 5, emissive: 3, color: [1, .14, .06] });
+    if (B.aurores && S.c && S.c.theme === 'islande') ajouter({ shape: 'bitume-aurore-0', p: devant(40, 0, 10), s: [1, 1, 1], mat: 7, fx: true, alpha: .2, emissive: 5, outdoor: true, surface: 'object' });
+    B.voiture.fantome({ p: devant(14, 2.5, -.6), cap: cam.yaw - Math.PI / 2, tangage: 0, roulis: 0 }, l);
+    return l;
+  }
+  // Un pixel lu après la chauffe : le processeur graphique a fini de compiler et de dessiner avant l'étape suivante.
+  const PIXEL = new Uint8Array(4);
+  function attendreGPU(r) {
+    const gl = r && r.gl;
+    if (!gl || (gl.isContextLost && gl.isContextLost())) return;
+    try {
+      if (gl.getParameter(gl.PIXEL_PACK_BUFFER_BINDING)) return;
+      const lu = gl.getParameter(gl.READ_FRAMEBUFFER_BINDING);
+      if (lu) gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+      gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, PIXEL);
+      if (lu) gl.bindFramebuffer(gl.READ_FRAMEBUFFER, lu);
+    } catch (e) { /* lecture refusée : la chauffe reste valable, seule l'attente manque */ }
+  }
+  // Céder la main entre deux étapes : une image (le voile et son texte se peignent), ou un message quand l'onglet est
+  // caché (requestAnimationFrame y dort) ; cent millisecondes au plus dans tous les cas.
+  const canalPrepa = typeof MessageChannel === 'function' ? new MessageChannel() : null, attentesCanal = [];
+  if (canalPrepa) canalPrepa.port1.onmessage = () => { const f = attentesCanal.shift(); if (f) f(); };
+  function attendreImage() {
+    return new Promise(resolve => {
+      let fini = false, delai = 0;
+      const finir = () => { if (fini) return; fini = true; clearTimeout(delai); resolve(); };
+      delai = setTimeout(finir, 100);
+      if (document.hidden && canalPrepa) { attentesCanal.push(finir); canalPrepa.port2.postMessage(0); }
+      else requestAnimationFrame(finir);
+    });
+  }
+  // Sous le voile, les boutons tenus restent « déjà appuyés » : Start, qui a lancé la course, ne la met pas en pause
+  // dès qu'elle apparaît ; rien d'autre n'est lu.
+  function tenirManettes() {
+    let liste = [];
+    try { if (navigator.getGamepads) liste = navigator.getGamepads() || []; } catch (e) { return; }
+    for (const p of [pad, pad2]) {
+      const m = p.manette, q = m && liste[m.index];
+      if (q && q.connected) for (let i = 0; i < q.buttons.length; i++) { const b = q.buttons[i]; p.precedent[i] = !!b && (b.value || (b.pressed ? 1 : 0)) > .5; }
+    }
+  }
+
+  // Tout ce qui naissait à la première image où il servait. Les filets « if (!x) » du chemin d'image restent, mais
+  // comptent ce qu'ils créent (creationTardive) : en course, ce compteur doit rester à zéro. Rend les attentes des
+  // modules qui préparent leurs propres ressources (traces, son), quand ils savent le faire.
+  function prechargerSeance(S) {
+    const attentes = [];
+    prepa.precharge = true;
+    try {
+      const co = S.course, c = co.c, n = co.voitures.length, duo = S.type === 'duo' && !!S.vueJ2, vues = duo ? [S, S.vueJ2] : [S];
+      for (let k = 0; k < n; k++) {
+        const p = tampons.poses[k] || (tampons.poses[k] = {});
+        if (!p.rebond) p.rebond = [0, 0, 0, 0];
+        if (!sonCandidats[k]) sonCandidats[k] = {};
+      }
+      if (!S.rouleVu) S.rouleVu = new Float64Array(n);
+      if (!S.rouleVrai) S.rouleVrai = new Float64Array(n).fill(NaN);
+      if (B.sillage && !S.sillage) S.sillage = B.sillage.creer();
+      if (!S.ambianceImage) S.ambianceImage = {};
+      // pluie projetée et vitre : celles du joueur 2 aussi, à deux
+      if (!pluieVue) pluieVue = B.meteo.creerPluie($('meteo'));
+      if (duo && !pluieVue2) pluieVue2 = B.meteo.creerPluie($('meteo2'));
+      if (B.vitre) {
+        if (!vitreVue) vitreVue = B.vitre.creer($('vitre'));
+        if (duo && !vitreVue2) vitreVue2 = B.vitre.creer($('vitre2'));
+        for (const V of vues) if (!V.vitreContexte) V.vitreContexte = {};
+      }
+      // tunnel : axe de la scène, puis un état de lampes par vue (le joueur 2 a son propre lissage)
+      if (scene) {
+        preparerTunnel(c);
+        const LT = scene.decor.tunnelLampes;
+        if (LT && LT.length) for (const V of vues) {
+          const et = Object.prototype.hasOwnProperty.call(V, 'lampesTunnel') ? V.lampesTunnel : null;
+          if (!et || et.rev !== scene.index || et.n !== LT.length) V.lampesTunnel = nouvelEtatLampes(scene.index, LT.length);
+        }
+      }
+      // Nature : habitats et contextes de vue dès que la saison les permet, même si le profil coupe la faune pour
+      // l'instant (le gouverneur Auto peut la rouvrir en pleine course).
+      const N = S.nature, sa = N && N.saison;
+      if (N && B.faune && (!sa || sa.faune > 0)) {
+        if (!N.faune) N.faune = B.faune.creer(c, scene.decor);
+        for (const V of vues) if (!V.fauneVue) V.fauneVue = { qualite: 'off', nuit: 0, pluie: 0, pose: null, vue: V === S ? 0 : 1 };
+      }
+      if (N && B.effetsSaison && sa && (N.effetsSaison || sa.feuilles || sa.neige || (S.meteo && S.meteo.neige))) {
+        if (!N.effetsSaison) N.effetsSaison = B.effetsSaison.creer(c, scene.decor);
+        for (const V of vues) if (!V.saisonVue) V.saisonVue = { qualite: 'low', nuit: 0, pluie: 0, neige: 0, ventX: 0, ventZ: 0, pose: null, vue: V === S ? 0 : 1, abri: false };
+      }
+      if (N && B.aurores && c.theme === 'islande') {
+        if (!N.aurores) N.aurores = B.aurores.creer(c);
+        for (const V of vues) if (!V.auroresVue) V.auroresVue = { vue: V === S ? 0 : 1, qualite: 'low', nuit: 0, pluie: 0, neige: 0, nuages: 0, tunnel: false };
+      }
+      const port = scene && scene.decor.portique;
+      if (port && co.mode === 'course' && !S.rotLampe) S.rotLampe = MATRICE_LAMPE(port.cap);
+      if (duo) { const t2 = $('scene2'); if (!t2._ctx) t2._ctx = t2.getContext('2d'); }
+      // rétroviseurs : glaces de chaque joueur, et moteur des miroirs avec sa copie du décor quand la séance peut en montrer
+      if (S.type !== 'vitrine') {
+        glacesDe('j1'); if (duo) glacesDe('j2');
+        if (glacesPossibles(S)) preparerGlaces();
+      }
+      // Raccords : les modules qui savent préparer leurs ressources le font ici (fonctions encore absentes de leur
+      // module : rien n'est appelé tant qu'elles n'existent pas).
+      const attendreSi = r => { if (r && typeof r.then === 'function') attentes.push(Promise.resolve(r).catch(e => console.warn('BITUME : préparation d’un module', e))); };
+      try { if (B.traces.prechauffer) attendreSi(B.traces.prechauffer(S.fx)); } catch (e) { console.warn('BITUME : préparation des traces', e); }
+      try { if (son && son.preparer) attendreSi(son.preparer({ type: S.type, voitures: n, joueurs: S.locaux ? S.locaux.length : 0, circuit: S.i })); } catch (e) { console.warn('BITUME : préparation du son', e); }
+    } finally { prepa.precharge = false; }
+    return attentes;
+  }
+
+  // Course jetable : deux à trois secondes d'une autre course, sur le même tracé, pour que le code de la simulation,
+  // des contacts, des traces, de la fumée, des étincelles, des débris et des embruns soit compilé avant le vrai
+  // départ. Elle a sa graine, ses voitures, ses effets et sa météo ; la course de la séance, son générateur et ses
+  // pneus ne bougent pas d'un bit (verifications/chargement.test.mjs le prouve).
+  const GRAINE_JETABLE = 0x5eed;
+  function courseJetable(S, secondes) {
+    const base = S.course, mode = base.mode;
+    const co = B.course.creer(base.c, { mode, tours: 2, difficulte: base.difficulte, rivaux: 11, graine: GRAINE_JETABLE, placeJoueur: 2 });
+    co.phase = 'course'; co.feux.vert = true; co.feux.allumes = 5; co.horloge = co.temps = 6;
+    for (const v of co.voitures) { co.sAvant[v.id] = v.etat.s; v.debutTour = co.temps; }
+    const n = co.voitures.length, fx = B.traces.creer(n, GRAINE_JETABLE), poses = [];
+    remplirPoses(poses, co);
+    // une piste qui peut se mouiller est chauffée mouillée : les embruns ont leur chemin de code
+    const meteo = Object.assign({}, S.meteo);
+    if (meteoPeutMouiller(S.meteo)) { meteo.pluie = Math.max(meteo.pluie || 0, .75); meteo.mouille = 1; }
+    const total = Math.max(1, Math.round(secondes / DT));
+    // la dernière seconde, gaz à fond et volant d'un bord à l'autre : glisse, fumée et traces
+    const force = { gaz: 1, frein: 0, volant: 0, derive: true, haut: false, bas: false, boite: 'auto', aide: 0, guidage: 0, marcheArriere: false };
+    let k = 0, ms = 0, rapport = null;
+    return {
+      course: co, effets: fx, get rapport() { return rapport; },
+      avancer(budget) {
+        if (rapport) return true;
+        const avant = B.meteo.actuel, t0 = performance.now();
+        B.meteo.actuel = meteo;
+        try {
+          while (k < total && performance.now() - t0 < budget) {
+            const j = co.joueur;
+            let cmd = B.course.commandesIA(co, j);
+            if (k >= total - 120) { force.volant = (k >> 4) & 1 ? 1 : -1; cmd = force; }
+            const ev = B.course.pas(co, cmd, DT);
+            for (const v of co.voitures) v.roule = (v.roule || 0) + v.etat.v * DT;
+            remplirPoses(poses, co);
+            // chemins rares, forcés une fois : contact violent (étincelles, panneau), roue perdue et casse (débris, PhysX)
+            if (k === total - 30 && n > 1) ev.push({ type: 'contact', a: j.id, b: (j.id + 1) % n, force: 40 });
+            if (k === total - 20) { ev.push({ type: 'roue', id: j.id, roue: 0 }); ev.push({ type: 'casse', id: (j.id + 1) % n, cote: 1, avant: true }); }
+            B.traces.pas(fx, co, poses, j.id, DT, ev);
+            k++;
+          }
+        } finally { B.meteo.actuel = avant; ms += performance.now() - t0; }
+        if (k >= total) rapport = { pas: k, ms: +ms.toFixed(1), effets: B.traces.compter(fx) };
+        return !!rapport;
+      },
+      dessiner(sortie, oeil) { B.traces.dessiner(fx, sortie, oeil, 0); },
+      liberer() { B.traces.liberer(fx); }
+    };
+  }
+
+  // ---------------------------------------------------------------- chauffe du rendu
+  // Chaque variante atteignable (ombres et atlas, anticrénelage, halo, reflets si la piste peut se mouiller, lampes
+  // si le tunnel est éclairé) est dessinée une fois sous le voile, sur les deux moteurs. Le travail fait est noté par
+  // scène et par taille d'image : Recommencer ne refait rien, un autre circuit ou un écran partagé refait le nécessaire.
+  function etatChauffe() { return scene.chauffe || (scene.chauffe = { rendu: new Set(), retro: new Set() }); }
+  async function chaufferRendu(S, suite, synchrone, alpha = 0) {
+    const t0 = performance.now(), E = etatChauffe(), r = { variantes: 0, retro: 0, prewarm: false, ms: 0 };
+    const suffixe = '@' + canvas.clientWidth + 'x' + canvas.clientHeight + ':' + profilDe(S).rendu.resolution;
+    const manque = [];
+    for (const [cle, v] of variantesRendu(S)) if (!E.rendu.has(cle + suffixe)) manque.push([cle + suffixe, v]);
+    // miroirs : leurs propres variantes (lampes, couvert végétal et vent), aux paliers qui montrent des glaces vives
+    const manqueR = [], source = $('retro-rendu');
+    if (retro.rendu && glacesPossibles(S) && glacesPretes(retro.j1)) {
+      const LT = scene.decor.tunnelLampes, suffixeR = '@' + source.clientWidth + 'x' + source.clientHeight;
+      for (const P of profilsAtteignables(S.type, S)) if (P.effets.retroImages)
+        for (const lampes of LT && LT.length ? [false, true] : [false]) {
+          const v = { lampes, groundCover: P.groundCover, windStrength: P.windStrength }, cle = JSON.stringify(v) + suffixeR;
+          if (!E.retro.has(cle) && !manqueR.some(m => m[0] === cle)) manqueR.push([cle, v]);
+        }
+    }
+    if (!manque.length && !manqueR.length) { r.ms = +(performance.now() - t0).toFixed(1); return r; }
+    // synchrone : aucun await, tout se fait dans la tâche de l'appelant (pause, Recommencer)
+    let tranche = performance.now();
+    const souffler = async moteur => { if (suite && performance.now() - tranche > 50) { attendreGPU(moteur); await suite(); tranche = performance.now(); } };
+    // la vraie première image d'abord : caméra, objets, environnement et poses de la séance
+    const cam = rendreImage(S, alpha, 0);
+    if (manque.length) {
+      const liste = listeChauffe(S, cam, S.sortie);
+      if (rendu.prewarm && !synchrone) {
+        // raccord FERRO : le moteur prépare lui-même chaque variante et toutes ses formes
+        r.prewarm = true;
+        await rendu.prewarm(cam, liste, fxVariante(S, manque[manque.length - 1][1], cam), { variants: manque.map(m => fxVariante(S, m[1], cam)), allShapes: true });
+      } else for (const [, v] of manque) { rendu.draw(cam, liste, fxVariante(S, v, cam)); r.variantes++; if (!synchrone) await souffler(rendu); }
+      attendreGPU(rendu);
+      for (const [cle] of manque) E.rendu.add(cle);
+    }
+    if (manqueR.length) {
+      const ps = tampons.poses[S.locaux && S.locaux.length ? S.locaux[0] : 0];
+      const camR = { pos: [ps.x, ps.y + 1, ps.z], yaw: ps.cap - Math.PI / 2, pitch: 0, roll: 0, fov: 34, near: .3, far: PORTEE_VUE };
+      camR.sun = Object.assign({ center: [ps.x, ps.y, ps.z] }, scene.ombre);
+      if (S.nature && (retro.ambianceSource !== S.nature.ambiance || retro.ambianceRevision !== S.nature.ambiance.revision)) {
+        if (retro.rendu.setEnvironment) retro.rendu.setEnvironment(S.nature.ambiance.atmosphere);
+        retro.ambianceSource = S.nature.ambiance; retro.ambianceRevision = S.nature.ambiance.revision;
+      }
+      const objets = listeChauffe(S, camR, S.sortie.filter(o => !o.overlay), false);
+      const fxR = v => ({ time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0,
+        weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: v.windStrength, groundCover: v.groundCover, lights: v.lampes ? lampeTemoin(camR) : null });
+      if (retro.rendu.prewarm && !synchrone) await retro.rendu.prewarm(camR, objets, fxR(manqueR[manqueR.length - 1][1]), { variants: manqueR.map(m => fxR(m[1])), allShapes: true });
+      else for (const [, v] of manqueR) { retro.rendu.draw(camR, objets, fxR(v)); r.retro++; if (!synchrone) await souffler(retro.rendu); }
+      attendreGPU(retro.rendu);
+      for (const [cle] of manqueR) E.retro.add(cle);
+    }
+    r.ms = +(performance.now() - t0).toFixed(1);
+    return r;
+  }
+
+  // ---------------------------------------------------------------- chauffe du code
+  // Vraies images à dt = 0 dans chaque vue que la séance peut montrer : le code des caméras, des glaces, de la pluie,
+  // de la nature et du dessin est compilé avant le départ. L'état des vues est figé avant et rendu après : la séance
+  // repart exactement de son état de lancement (caméras lissées, poste de télévision et son générateur, réalisateur).
+  const CLES_VUE = ['tete', 'camCap', 'sol', 'camera', 'vue', 'suivie', 'lumiere', 'secousse', 'eclair', 'refletsEcran', 'planVu', 'j2Image', 'tele', 'real'];
+  function figerVues(S) {
+    const gel = [];
+    for (const V of S.vueJ2 ? [S, S.vueJ2] : [S]) for (const cle of CLES_VUE) {
+      const propre = Object.prototype.hasOwnProperty.call(V, cle);
+      gel.push([V, cle, propre, propre ? V[cle] : undefined]);
+    }
+    return gel;
+  }
+  function rendreVues(gel) {
+    for (const [V, cle, propre, valeur] of gel) { if (propre) V[cle] = valeur; else delete V[cle]; }
+  }
+  async function imagesDeChauffe(S, suite) {
+    const co = S.course, j = co.joueur, hz = profilDe(S).secondaires.retroviseurs.hz;
+    // assez d'images cockpit pour que chaque glace vive soit rafraîchie au moins une fois à sa cadence ; une seule
+    // quand les glaces sont peintes (qualité basse) : rien d'autre ne change d'une image cockpit à la suivante
+    const vives = glacesVives(S, 'cockpit') || (!!S.vueJ2 && glacesVives(S.vueJ2, 'cockpit'));
+    const cockpit = vives ? 2 * Math.max(1, Math.round(30 / Math.max(1, hz))) : 1;
+    let n = 0, tranche = performance.now();
+    const souffler = async () => { if (performance.now() - tranche > 50) { attendreGPU(rendu); await suite(); tranche = performance.now(); } };
+    const t1 = performance.now();
+    rendreImage(S, 0, 0); n++;
+    attendreGPU(rendu);
+    // Une image complète, programmes déjà compilés, coûte plus de 50 ms (rendu logiciel, processeur graphique très
+    // modeste) : à cette cadence le code chaud ne se verrait pas, et chaque vue de plus coûterait autant sous le voile.
+    const lent = performance.now() - t1 > 50;
+    if (lent) return { n, lent };
+    await souffler();
+    const meteo = majMeteo(S, 0);
+    const vue = async (V, voiture, nom, fois = 1) => { for (let k = 0; k < fois; k++) { rendreVue(V, voiture, nom, 0, meteo); n++; } await souffler(); };
+    if (S.type === 'duo' && S.vueJ2) {
+      const j2 = co.voitures[S.locaux[1]], t2 = $('scene2');
+      for (const nom of ['cockpit', 'poursuite']) for (let k = 0; k < (nom === 'cockpit' ? cockpit : 1); k++) {
+        rendreVue(S.vueJ2, j2, nom, 0, meteo);
+        if (t2._ctx) { if (t2.width !== canvas.width || t2.height !== canvas.height) { t2.width = canvas.width; t2.height = canvas.height; } t2._ctx.drawImage(canvas, 0, 0); }
+        rendreVue(S, j, nom, 0, meteo); n += 2;
+        await souffler();
+      }
+    } else if (S.type === 'demo') {
+      // chaque plan du réalisateur, sans le consulter : son générateur reste celui de la séance
+      for (const nom of B.realisateur.VUES) {
+        S.planVu = { vue: nom, sujet: j.id, debut: co.horloge, fin: 1e9, motif: 'course', n: 0, cote: 1, angle: .6 };
+        await vue(S, j, nom, nom === 'cockpit' ? cockpit : 1);
+      }
+    } else {
+      // cockpit et ses deux glaces, poursuite, et la vue de télévision qui suit l'arrivée
+      await vue(S, j, 'cockpit', cockpit); await vue(S, j, 'poursuite'); await vue(S, j, 'tele');
+    }
+    return { n, lent: false };
+  }
+  async function chaufferCode(S, suite, o) {
+    const t0 = performance.now(), r = { images: 0, lent: false, simulation: null, ms: 0 };
+    const v = await imagesDeChauffe(S, suite);
+    r.images = v.n; r.lent = v.lent;
+    // la course jetable, une fois par mode et par page ; en ligne, pas quand le départ commun est trop proche
+    const cle = 'simulation:' + S.course.mode, reste = o.reste ? o.reste() : Infinity;
+    if (!prepa.chaud.has(cle) && !(reste < 1500)) {
+      const J = courseJetable(S, 2.5);
+      try {
+        while (!J.avancer(40)) { attendreGPU(rendu); await suite(); }
+        // ses effets passent par le vrai chemin de dessin, avec les témoins, puis par le moteur (pas sur une machine
+        // lente : leurs programmes sont déjà compilés par la chauffe du rendu, seul leur code de dessin restait froid)
+        const cam = S.camera || rendreImage(S, 0, 0), liste = listeChauffe(S, cam, S.sortie);
+        J.dessiner(liste, cam.pos);
+        if (!r.lent) { rendu.draw(cam, liste, fxVariante(S, varianteDe(profilDe(S), false, false), cam)); attendreGPU(rendu); }
+        prepa.chaud.add(cle);
+        r.simulation = J.rapport;
+      } finally { J.liberer(); }
+    }
+    r.ms = +(performance.now() - t0).toFixed(1);
+    return r;
+  }
+
+  // ---------------------------------------------------------------- voile de chargement
+  const ETAPES = { voile: 'Mise en place', decor: 'Construction du décor', retro: 'Rétroviseurs', circuit: 'Tracé et tunnel',
+    seance: 'Grille de départ', creations: 'Effets de la séance', rendu: 'Chauffe de l’image', code: 'Chauffe de la course',
+    zero: 'Remise à zéro', image: 'Première image' };
+  const ORDRE_ETAPES = Object.keys(ETAPES);
+  // Opaque d'emblée, sans transition, quand le travail est long (texte d'étape et barre sobre) ; quand il reste peu à
+  // faire (Recommencer), le fondu d'aujourd'hui, sans texte.
+  function montrerVoile(etapes, fondu) {
+    const v = $('chargement');
+    classe(v, 'etapes', !!etapes);
+    classe(v, 'net', !!etapes && !fondu);
+    v.classList.remove('fini');
+    if (etapes) { texte($('chargement-etape'), ''); $('chargement-progres').value = 0; }
+  }
+  function majVoile(nom) {
+    prepa.etape = nom;
+    if (!prepa.voile && ecran !== 'chargement') return;   // le voile de la page, avant le titre, montre aussi ses étapes
+    const k = ORDRE_ETAPES.indexOf(nom);
+    texte($('chargement-etape'), ETAPES[nom] || '');
+    $('chargement-progres').value = k < 0 ? 0 : k / (ORDRE_ETAPES.length - 1);
+  }
+  function leverVoile() { const v = $('chargement'); v.classList.remove('net', 'tiede'); v.classList.add('fini'); }
+  // Dernière image sous le voile : il passe à 99 % et l'affichage de course se montre dessous. Le compositeur du
+  // navigateur peint alors une fois la scène, les glaces et l'affichage (il ne peint rien de ce qu'un voile opaque
+  // cache) : ses programmes ne se compilent pas sur la première image du fondu.
+  function tiedirVoile(S) {
+    $('chargement').classList.add('tiede');
+    $('hud').hidden = false;
+    if (S.type === 'duo' && S.vueJ2) hud2.hidden = false;
+  }
+  // l'affichage de l'écran présent, comme aller() le pose (une préparation annulée a pu le montrer sous le voile)
+  function remettreHud() {
+    $('hud').hidden = !(ecran === 'course' || ecran === 'pause' || ecran === 'demo');
+    hud2.hidden = !(aDeux() && (ecran === 'course' || ecran === 'pause'));
+  }
+  // Sous le voile, menus et affichages ne prennent ni clic ni clavier ; le focus revient si la préparation s'annule.
+  function bloquerEntrees(oui) {
+    for (const el of [...ECRANS.map($), $('hud'), hud2, $('tactile')]) if (el) el.inert = !!oui;
+    if (oui) {
+      const a = document.activeElement;
+      if (a && a !== document.body) { if (!prepa.focus) prepa.focus = a; if (a.blur) a.blur(); }
+    }
+  }
+  // même règle que aller() : la vitrine des menus s'entend, une course arrêtée se tait ; musique au seul titre
+  function retablirSon() {
+    if (!son) return;
+    if (session && session.type !== 'vitrine' && ecran !== 'course' && ecran !== 'demo') son.suspendre(); else son.reprendre();
+    son.musique(ecran === 'titre' && !document.hidden);
+    appliquerVolumes();
+  }
+  // Une préparation plus récente, un lancement direct ou une perte de contexte arrêtent celle qui court : son jeton
+  // change, elle s'arrête à son prochain await. Le voile se lève, les entrées et le son reviennent.
+  function annulerPreparation() {
+    prepa.jeton++;
+    if (!prepa.enCours) return;
+    const voile = prepa.voile;
+    prepa.enCours = prepa.voile = prepa.attente = false; prepa.etape = null;
+    if (prepa.rapport) { prepa.rapport.annule = true; prepa.dernier = prepa.rapport; prepa.rapport = null; }
+    delete jeu.dataset.vitrine;
+    if (voile) {
+      bloquerEntrees(false); leverVoile(); remettreHud();
+      const f = prepa.focus; prepa.focus = null;
+      if (f && f.isConnected && !f.closest('[hidden]') && f.focus) f.focus({ preventScroll: true });
+    }
+    retablirSon();
+    tPrec = 0;
+  }
+  // abandon (perte de contexte, liaison perdue) : la démo rend le titre, sinon la vitrine reprend la scène installée
+  function abandonnerPreparation() {
+    const demo = ecran === 'demo';
+    annulerPreparation();
+    if (demo) sortirDemo(); else remettreVitrine();
+  }
+  // La séance doit correspondre à la scène installée : une préparation arrêtée a pu bâtir un autre décor, ou lancer une
+  // course que personne ne verra. Sur un menu, la vitrine reprend sur la scène en place, sans rebâtir.
+  function remettreVitrine() {
+    if (!rendu || !scene || detectionGraphiqueActive || prepa.enCours) return;
+    const menus = ['titre', 'preparation', 'enligne', 'prets'];
+    const menu = menus.includes(ecran) || (ecran === 'reglages' && menus.includes(retourReglages));
+    if (!session || session.i !== scene.index || (menu && session.type !== 'vitrine'))
+      lancer('vitrine', scene.index, null, Object.assign({}, conditionsDuDepart(), { saison: scene.saison }));
+  }
+
+  // Le point de passage de tous les lancements. o : ecran (écran montré dès le début), fondu (ms de fondu d'entrée,
+  // l'ancienne séance continuant derrière), verifier (la préparation s'abandonne s'il devient faux), apres (après
+  // l'écran de course), reste (ms avant un départ commun en ligne).
+  const ANNULE = { annule: true };
+  async function preparerSeance(type, i, enl, conditionsChoisies, o = {}) {
+    if (!rendu) return null;
+    annulerPreparation();
+    restaurerReference();
+    const jeton = ++prepa.jeton, debut = performance.now();
+    const conditions = enl || conditionsChoisies || conditionsDuDepart(), saison = B.saisons.normaliser(conditions.saison);
+    const vitrine = type === 'vitrine', typeCode = enl && enl.locaux && enl.locaux.length === 2 ? 'duo' : type;
+    const aBatir = !sceneEnPlace(i, saison), glaces = !vitrine && glacesPossibles({ type: typeCode });
+    // peu de travail : même scène, code déjà chaud pour ce type, rendu déjà chauffé sur cette scène, glaces prêtes
+    const leger = !vitrine && !aBatir && prepa.chaud.has(typeCode) && !!scene.chauffe && scene.chauffe.rendu.size > 0 && (!glaces || glacesPretes(retro.j1));
+    const R = { type: typeCode, circuit: i, leger, etapes: [], date: Date.now() };
+    Object.assign(prepa, { enCours: true, voile: !vitrine, attente: false, type: typeCode, i, saison, rapport: R, conditions: null, etape: null });
+    let S = null, gel = null, glacesGel = null, restaure = true;
+    const controler = () => {
+      if (jeton !== prepa.jeton) throw ANNULE;
+      if (contexteRenduPerdu || (o.verifier && !o.verifier())) { retablir(); abandonnerPreparation(); throw ANNULE; }
+    };
+    const suite = async () => { await attendreImage(); controler(); };
+    // état des vues et des glaces rendu tel qu'au lancement, que la préparation aboutisse ou non
+    const retablir = () => {
+      if (restaure) return;
+      restaure = true;
+      if (gel) rendreVues(gel);
+      if (glacesGel) for (const [G, pas, cote] of glacesGel) { G.pas = pas; G.cote = cote; }
+    };
+    const fermer = () => { const d = R.etapes[R.etapes.length - 1]; if (d && d.debut !== undefined) { d.ms = +(performance.now() - d.debut).toFixed(1); delete d.debut; } };
+    // une étape : son texte, puis une image cédée pour qu'il se peigne avant le travail qu'il annonce
+    const etape = async (nom, attendre) => { fermer(); majVoile(nom); if (attendre) await suite(); R.etapes.push({ nom, debut: performance.now() }); };
+    const terminer = () => {
+      fermer();
+      prepa.enCours = prepa.voile = prepa.attente = false; prepa.etape = null;
+      if (vitrine) { delete jeu.dataset.vitrine; retablirSon(); }
+      else {
+        aller(type === 'demo' ? 'demo' : 'course');
+        if (o.apres) o.apres();
+        bloquerEntrees(false); prepa.focus = null;
+        leverVoile();
+      }
+      // la première image montrée part d'une horloge propre : pas d'intervalle hérité du chargement, rien
+      // d'accumulé, la fenêtre d'observation du mode Auto vide, et la cadence de l'écran comme durée d'image
+      oublierIntervalle(); S.acc = 0; dureeImage = periode;
+      if (!vitrine && document.hidden && pauseAuto && ecran === 'course') basculerPause(true);
+      R.totalMs = +(performance.now() - debut).toFixed(1);
+      R.tardives = { n: S.tardives.n, sousVoile: S.tardives.sousVoile };
+      prepa.dernier = R; prepa.rapport = null;
+      return R;
+    };
+    let periode = dureeImage;
+    try {
+      // 1. voile opaque, peint deux fois avant le premier travail lourd
+      if (o.ecran && ecran !== o.ecran) aller(o.ecran);
+      if (vitrine) { jeu.dataset.vitrine = 'cache'; if (ecran === 'chargement') montrerVoile(true, false); }
+      else { bloquerEntrees(true); montrerVoile(!leger, o.fondu); }
+      await etape('voile', false);
+      if (o.fondu) {
+        prepa.attente = true;
+        try { const fin = performance.now() + o.fondu; while (performance.now() < fin) await suite(); } finally { prepa.attente = false; }
+      }
+      if (son) son.suspendre();
+      await suite();
+      if (!leger) { const t1 = performance.now(); await suite(); if (!document.hidden) prepa.periode = clamp(performance.now() - t1, 4, 60); }
+      // 2. décor, s'il change (le seul travail synchrone indivisible : B.decor.construire)
+      await etape('decor', aBatir);
+      if (aBatir) installer(i, saison);
+      // 3. moteur des rétroviseurs : sa copie du décor et les toiles des quatre glaces
+      await etape('retro', glaces && !leger && (!retro.rendu || retro.scene !== scene));
+      if (glaces) preparerGlaces();
+      // 4. axe du tunnel et registre de chauffe de la scène
+      await etape('circuit', false);
+      preparerTunnel(scene.c); etatChauffe();
+      // 5. la séance elle-même
+      await etape('seance', !leger);
+      const choisies = vitrine && prepa.conditions ? prepa.conditions : conditionsChoisies || (enl ? null : conditions);
+      prepa.interne = true;
+      try { S = lancer(type, i, enl, choisies); } finally { prepa.interne = false; }
+      // 6. ce que la séance créerait à ses premières images
+      await etape('creations', !leger);
+      const attentes = prechargerSeance(S);
+      if (attentes.length) { await Promise.race([Promise.all(attentes), new Promise(r => setTimeout(r, 2000))]); controler(); }
+      gel = figerVues(S); glacesGel = [retro.j1, retro.j2].filter(Boolean).map(G => [G, G.pas, G.cote]); restaure = false;
+      // la chauffe consulte un poste de télévision et un réalisateur jetables : les générateurs de la séance ne bougent pas
+      S.tele = { poste: null, alea: graine32(GRAINE_JETABLE) };
+      if (S.vueJ2) S.vueJ2.tele = { poste: null, alea: graine32(GRAINE_JETABLE + 1) };
+      if (S.real) S.real = B.realisateur.creer(GRAINE_JETABLE);
+      // 7. chauffe du rendu : variantes atteignables des deux moteurs
+      await etape('rendu', !leger);
+      R.rendu = await chaufferRendu(S, suite, leger);
+      // 8. chauffe du code : vues de la séance, puis la course jetable
+      if (!vitrine && !prepa.chaud.has(typeCode)) {
+        await etape('code', true);
+        R.code = await chaufferCode(S, suite, o);
+        prepa.chaud.add(typeCode);
+      }
+      // 9. remise à zéro de ce que la chauffe a touché
+      await etape('zero', false);
+      retablir();
+      if (S.rouleVu) S.rouleVu.fill(0);
+      if (S.rouleVrai) S.rouleVrai.fill(NaN);
+      if (B.sillage) S.sillage = B.sillage.creer();
+      if (B.vitre) { if (vitreVue) B.vitre.effacer(vitreVue); if (vitreVue2) B.vitre.effacer(vitreVue2); }
+      // 10. première vraie image, sous le voile
+      await etape('image', !leger);
+      periode = (B.cadence && B.cadence.periode && B.cadence.periode()) || prepa.periode || dureeImage;
+      dureeImage = periode;
+      rendreImage(S, 0, 0);
+      if (!vitrine) { majHud(S); if (S.type === 'duo' && S.vueJ2) majHud(S.vueJ2, HUD2, S.course.voitures[S.locaux[1]]); }
+      attendreGPU(rendu);
+      if (!leger) { if (!vitrine) tiedirVoile(S); await suite(); }
+      // 11. l'écran de course, puis le fondu
+      return terminer();
+    } catch (e) {
+      // l'état des vues appartient à la séance : toujours rendu ; les glaces sont communes : seulement si personne
+      // d'autre ne prépare
+      if (!restaure) { if (gel) rendreVues(gel); if (glacesGel && jeton === prepa.jeton) for (const [G, pas, cote] of glacesGel) { G.pas = pas; G.cote = cote; } restaure = true; }
+      fermer();
+      if (e === ANNULE) { R.annule = true; if (prepa.rapport === R) prepa.rapport = null; prepa.dernier = R; return R; }
+      console.error('BITUME : préparation de la séance', e);
+      R.erreur = String(e && e.message || e);
+      if (jeton === prepa.jeton) {
+        if (S && session === S) { try { return terminer(); } catch (f) { console.error(f); abandonnerPreparation(); } }
+        else abandonnerPreparation();
+      }
+      prepa.dernier = R;
+      return R;
+    }
+  }
+  // Vitrine des menus : directe quand sa scène est en place, préparée (vue cachée, menus vivants) quand le décor change.
+  function lancerVitrine(i, conditions) {
+    restaurerReference();
+    const k = conditions || conditionsDuDepart(), saison = B.saisons.normaliser(k.saison);
+    if (prepa.enCours && prepa.type === 'vitrine' && prepa.i === i && prepa.saison === saison) { if (conditions) prepa.conditions = conditions; return null; }
+    if (!rendu || detectionGraphiqueActive || contexteRenduPerdu || sceneEnPlace(i, saison)) return lancer('vitrine', i, null, conditions);
+    return preparerSeance('vitrine', i, null, conditions || null);
+  }
+  // Réglages changés pendant la pause : la nouvelle variante (anticrénelage, ombres, glaces) se chauffe au retour à
+  // l'écran de pause, dans le menu, et non à la première image de course.
+  function rechaufferEnPause(S) {
+    if (!rendu || contexteRenduPerdu || detectionGraphiqueActive || !S || S !== session) return;
+    prechargerSeance(S);
+    const a = clamp(S.acc / DT, 0, 1);
+    void chaufferRendu(S, null, true, a);   // sans attente : tout se fait dans cette tâche
+    rendreImage(S, a, 0);                    // et l'image de pause reste celle de la course, sans les témoins
+  }
+
   // ---------------------------------------------------------------- boucle principale
   let tPrec = 0;
   function oublierIntervalle() {
@@ -2478,6 +3119,9 @@
     requestAnimationFrame(image);
     // Le banc possède temporairement le renderer. Aucune seconde boucle de jeu ne pollue la mesure.
     if (detectionGraphiqueActive) { tPrec = 0; return; }
+    // Sous le voile d'une préparation, rien ne se simule ni ne se dessine et les entrées n'agissent pas ; en démo, un
+    // geste rend le titre. Pendant le fondu d'entrée (attente), l'ancienne séance tourne encore.
+    if (prepa.voile && !prepa.attente) { tPrec = 0; if (ecran === 'demo') lireManette(); else tenirManettes(); return; }
     const tMes = B.mesures.imageDebut();
     const tBrut = tPrec ? (t - tPrec) / 1000 : DT;   // intervalle réellement subi, avant le bridage de la simulation
     const dtReel = Math.min(.1, tBrut);
@@ -2496,7 +3140,8 @@
     // préparation d'une course à deux : qui joue avec quoi, selon les choix et les manettes branchées
     if (ecran === 'preparation' && modePrepa === 'duo') texte($('p-manettes'), [0, 1].map(n => 'Joueur ' + (n + 1) + ' : ' + entreeDe(n)).join(' · ') + '.');
     const S = session;
-    if (!S || !rendu) return;
+    // vitrine en préparation : les menus vivent, la séance attend la fin de la préparation
+    if (!S || !rendu || (prepa.enCours && !prepa.attente)) return;
     // la vitrine tourne derrière les menus ; une course ne tourne qu'à l'écran de course, la démo qu'à l'écran de démo
     const tourne = S.type === 'vitrine' ? ecran !== 'chargement' : ecran === (S.type === 'demo' ? 'demo' : 'course') || (!!S.enLigne && (ecran === 'pause' || ecran === 'resultats'));
     const tSim = B.mesures.actif ? performance.now() : 0;
@@ -2575,6 +3220,7 @@
   }
   function restaurerDecorApresDetection() {
     if (!scene || !rendu) { restaurerDecorApresContexte = false; return; }
+    scene.chauffe = null;   // le banc a remplacé le monde du moteur : la chauffe de cette scène est à refaire
     if (contexteRenduPerdu) { restaurerDecorApresContexte = true; return; }
     const atm = session && session.nature ? session.nature.ambiance.atmosphere : scene.decor.atmosphere;
     rendu.setWorld([], [], atm); rendu.setNappes(scene.decor.nappes); rendu.setLots(scene.decor.lots);
@@ -2583,6 +3229,7 @@
   }
   function contexteGraphiqueRetabli() {
     contexteRenduPerdu = false;
+    if (scene) scene.chauffe = null;   // nouveau contexte : programmes et cibles du moteur principal sont à refaire
     if (restaurerDecorApresContexte && !detectionGraphiqueActive) {
       try { restaurerDecorApresDetection(); appliquerPalier(); }
       catch (e) { console.warn('BITUME : restauration différée du décor', e); }
@@ -2633,6 +3280,8 @@
   }
   async function detecterGraphismes(auDemarrage = false) {
     if (detectionGraphiqueActive || !rendu || (session && session.enLigne) || (EL && EL.R)) return null;
+    // le banc prend le moteur : une préparation en cours s'arrête et la vitrine reprend sa scène
+    if (prepa.enCours) abandonnerPreparation();
     detectionGraphiqueActive = true; annulerDetection = false;
     const ecranAvant = ecran, partageAvant = jeu.dataset.partage, focusAvant = document.activeElement;
     const profilAvant = !!(rendu.profile && rendu.profile());
@@ -2674,7 +3323,7 @@
         if (!contexteRenduPerdu) appliquerPalier();
         oublierIntervalle();
         if (!auDemarrage) {
-          if (!contexteRenduPerdu && session && session.type === 'vitrine' && resultat && resultat.statut === 'ok') lancer('vitrine', session.i);
+          if (!contexteRenduPerdu && session && session.type === 'vitrine' && resultat && resultat.statut === 'ok') lancerVitrine(session.i);
           if (ecran === 'reglages') remplirReglages();
           if (son && session && session.type === 'vitrine') son.reprendre();
           if (son) son.musique(ecranAvant === 'titre');
@@ -2696,11 +3345,13 @@
     try {
       const optionsRendu = { msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world' };
       rendu = window.FRender.create(canvas, optionsRendu);
+      // raccord FERRO : cibles gardées malgré 120 rendus sans usage (sinon une variante chauffée peut être libérée)
+      if (rendu.retain) rendu.retain(true);
       // ce que le moteur a réellement ouvert, et non ce que le menu demande : src/graphismes.js ne promet pas
       // une capacité que FRender.create aurait refusée (msaa, atlas d'ombres, reflets d'écran)
       capacitesRendu = B.graphismes.capacites(optionsRendu, gpuModeste, window.devicePixelRatio || 1);
       // perte de contexte : les pièces détachées n'ont plus de scène où vivre ; on rend leurs corps sans attendre
-      canvas.addEventListener('webglcontextlost', () => { contexteRenduPerdu = true; if (session && session.fx) B.traces.liberer(session.fx); });
+      canvas.addEventListener('webglcontextlost', () => { contexteRenduPerdu = true; if (session && session.fx) B.traces.liberer(session.fx); if (prepa.enCours) abandonnerPreparation(); });
       canvas.addEventListener('webglcontextrestored', contexteGraphiqueRetabli);
       palier.n = gpuModeste ? 1 : 0;
       if (rendu.stats.backend !== 'webgl2') { erreur('WebGL2 indisponible', 'Le rendu de secours ne sait pas dessiner la piste. Activez l’accélération graphique du navigateur.'); return; }
@@ -2714,12 +3365,17 @@
         gpuModeste = mesure.selection === 'low';
         capacitesRendu = Object.freeze({ ...capacitesRendu, gpuModeste });
       }
+      // Moteur des rétroviseurs dès la page, quand une course pourra montrer des glaces vives : sa création ne tombe
+      // jamais sur le chemin d'une séance.
+      if (glacesPossibles(null)) creerMoteurRetro();
       // PhysX (FERRO) ne sert qu'aux pièces détachées et son décodage est lourd : lancé en tâche de fond, jamais
       // sur le chemin de l'écran titre, et l'absence du module ne doit pas empêcher la page de tourner.
       if (window.FPhysX && window.FPhysX.init) Promise.resolve(window.FPhysX.init()).catch(() => { /* pièces en parabole */ });
       son = B.son.creer();
       reglages.circuit = clamp(reglages.circuit | 0, 0, CATALOGUE.length - 1);
-      lancer('vitrine', reglages.circuit);
+      // la vitrine du titre est préparée comme une séance, sous le voile de chargement de la page
+      await preparerSeance('vitrine', reglages.circuit, null, null);
+      if (!session) throw new Error((prepa.dernier && prepa.dernier.erreur) || 'la vitrine ne démarre pas');
       $('chargement').classList.add('fini');
       aller('titre');
       requestAnimationFrame(image);
@@ -2806,7 +3462,8 @@
     remplirPoses(S.cour, co); remplirPoses(S.prec, co);
     cameraEssai = null; horlogeReelle = 0; tPrec = 0; dureeImage = 16;
     Object.assign(palier, { n: gpuModeste ? 1 : 0, somme: 0, compte: 0, t: 0, aise: 0 });
-    for (const G of [retro.j1, retro.j2]) if (G) { G.cote = 0; delete G.lampes0; delete G.lampes1; }
+    // glaces remises à leur état de départ sans réallouer : rien ne naît dans la première image de la référence
+    for (const G of [retro.j1, retro.j2]) if (G) { G.cote = 0; remettreLampes(G); }
     S.reference = { graine, circuit: i, circuitId: CATALOGUE[i].id, graineCircuit: CATALOGUE[i].graine,
       mode, qualite, ...B.graphismes.normaliserOptions(reglages), moment: reglages.moment, saison: reglages.saison, difficulte, tours, pilote, vue, vue2, partage, retro: glaces, meteo, mouille, depart: ramener(depart, c.longueur), vitesse,
       decor: decorEnrichi ? 'enrichi' : 'reference', tunnel: c.tunnel ? { debut: c.tunnel.debut, fin: c.tunnel.fin } : null };
@@ -2860,7 +3517,22 @@
     // ce que le banc et le contrôle visuel vérifient sans toucher au jeu : la scène installée et le profil résolu
     get scene() { return scene; }, get profil() { return profilDe(session); }, get ancre() { return etatProfils.decor; },
     get son() { return son ? son.stats() : null; }, get palier() { return palier.n; }, get gpuModeste() { return gpuModeste; },
-    demo: i => lancerDemo(i === undefined ? reglages.circuit : i), // lance la démo sans attendre les cinq secondes
+    demo: i => lancerDemo(i === undefined ? reglages.circuit : i), // lance la démo sans attendre les cinq secondes (promesse de sa préparation)
+    // Prépare et lance une séance comme le menu : { type: course|chrono|duo|demo|vitrine, circuit, conditions }.
+    // Rend la promesse du compte rendu (étapes et durées, chauffe, créations tardives).
+    preparer: (o = {}) => {
+      const type = o.type || 'course', i = Number.isInteger(o.circuit) ? clamp(o.circuit, 0, CATALOGUE.length - 1) : reglages.circuit;
+      if (type === 'demo') return lancerDemo(i);
+      if (!['course', 'chrono', 'duo', 'vitrine'].includes(type)) return Promise.reject(new Error('type de séance inconnu : ' + type));
+      return preparerSeance(type, i, null, o.conditions || null, { apres: type === 'chrono' ? () => sousMessage('Le chrono part à la ligne') : null });
+    },
+    // état du chargement : préparation en cours, étape, créations tardives de la séance (zéro en course), dernier compte rendu
+    get chargement() {
+      const T = session && session.tardives;
+      return { enCours: prepa.enCours, voile: prepa.voile, type: prepa.type, etape: prepa.etape,
+        tardives: T ? { n: T.n, sousVoile: T.sousVoile, noms: Object.assign({}, T.noms) } : null,
+        rapport: prepa.rapport || prepa.dernier, chaud: [...prepa.chaud] };
+    },
     get pauseAuto() { return pauseAuto; }, set pauseAuto(v) { pauseAuto = !!v; },
     get pilotageAuto() { return pilotageAuto; }, set pilotageAuto(v) { pilotageAuto = !!v; }, get enLigne() { return EL; },
     get camera() { return cameraEssai; }, set camera(f) { cameraEssai = typeof f === 'function' ? f : null; },

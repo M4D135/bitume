@@ -26,7 +26,9 @@ button, input { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
 
 #jeu { position: fixed; inset: 0; overflow: hidden; }
-#vue-course { position: absolute; inset: 0; overflow: hidden; }
+#vue-course { position: absolute; inset: 0; overflow: hidden; transition: opacity .3s; }
+/* Vitrine reconstruite derrière les menus : la vue reste cachée tant que la scène n'est pas chaude. */
+#jeu[data-vitrine="cache"] #vue-course { opacity: 0; transition: none; }
 #scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: var(--encre); }
 #meteo { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 /* Glaces des rétroviseurs en vue cockpit : image réelle de la scène arrière, posée sur la glace par une
@@ -224,8 +226,19 @@ button:disabled { cursor: wait; opacity: .55; }
 .tableau-resultats .pastille { display: inline-block; width: 10px; height: 18px; margin-right: 10px; vertical-align: -3px; transform: skewX(-14deg); }
 .tableau-resultats .record-tour { color: var(--ambre); }
 
-.chargement { position: absolute; inset: 0; display: grid; place-items: center; background: var(--encre); font: italic 700 22px/1 var(--f-titre); letter-spacing: .06em; text-transform: uppercase; color: var(--papier-2); transition: opacity .3s; }
-.chargement.fini { opacity: 0; pointer-events: none; }
+/* Voile de préparation : opaque d'un coup (.net), au-dessus des écrans ; il ne s'efface qu'une fois l'image chaude. */
+.chargement { position: absolute; inset: 0; z-index: 50; display: grid; place-content: center; justify-items: center; gap: 14px; background: var(--encre); font: italic 700 22px/1 var(--f-titre); letter-spacing: .06em; text-transform: uppercase; color: var(--papier-2); transition: opacity .3s; }
+.chargement.net { transition: none; }
+.chargement.tiede { opacity: .99; }
+.chargement.fini { opacity: 0; pointer-events: none; visibility: hidden; transition: opacity .3s, visibility 0s .3s; }
+.chargement-etape { min-height: 1em; font: 600 11px/1 var(--f-texte); font-style: normal; letter-spacing: .14em; color: var(--papier-3); }
+/* barre dessinée ici, pas celle du système (sur macOS, la native à 4 px ne montre presque pas sa part remplie) */
+.chargement-progres { -webkit-appearance: none; appearance: none; display: block; width: min(260px, 64vw); height: 3px; border: 0; border-radius: 2px; overflow: hidden; background: var(--trait); color: var(--ambre); }
+.chargement-progres::-webkit-progress-bar { background: var(--trait); }
+.chargement-progres::-webkit-progress-value { background: var(--ambre); }
+.chargement-progres::-moz-progress-bar { background: var(--ambre); }
+/* Peu de travail (vitrine, Recommencer à chaud) : le voile garde la séquence d'aujourd'hui, sans texte. */
+.chargement:not(.etapes) .chargement-etape, .chargement:not(.etapes) .chargement-progres { visibility: hidden; }
 .autodetection { position: absolute; inset: 0; z-index: 80; display: grid; place-items: center; padding: 24px; background: rgba(7,10,12,.38); }
 .autodetection[hidden] { display: none; }
 .detection-carte { width: min(440px,100%); box-sizing: border-box; padding: clamp(22px,4vw,36px); background: rgba(15,19,22,.96); border: 1px solid rgba(242,236,223,.22); box-shadow: 0 18px 80px rgba(0,0,0,.45); }
@@ -361,6 +374,7 @@ body.tactile #b-pause { display: block; }
 @media (prefers-reduced-motion: reduce) {
   .message.visible, .sous-message.visible { animation-duration: .01s; opacity: 1; }
   .gros, .carte-circuit { transition: none; }
+  .chargement, .chargement.fini, #vue-course { transition: none; }
 }
 
 /* La carte est indépendante des compteurs supplémentaires du cockpit. */

@@ -1,0 +1,2 @@
+21:22  up 7 days,  6:28, 2 users, load averages: 7.93 22.45 33.10
+21:24  up 7 days,  6:29, 2 users, load averages: 7.40 18.59 30.60

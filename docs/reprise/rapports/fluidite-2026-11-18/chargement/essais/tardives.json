@@ -1,0 +1,308 @@
+{
+ "valeur": [
+  {
+   "nom": "course Val-Brûlé haute, sec, vues changées",
+   "ms": 312,
+   "totalMs": 312.2,
+   "leger": false,
+   "etapes": [
+    "voile 24.1",
+    "retro 29.9",
+    "seance 2.8",
+    "creations 51.6",
+    "rendu 35.8",
+    "code 128.6",
+    "image 18"
+   ],
+   "rendu": {
+    "variantes": 1,
+    "retro": 1,
+    "prewarm": false,
+    "ms": 35.7
+   },
+   "code": {
+    "images": 5,
+    "lent": false,
+    "simulation": 84.8
+   },
+   "tardivesSousVoile": {
+    "n": 0,
+    "sousVoile": 0
+   },
+   "alaLevee": {
+    "ecran": "course",
+    "tardives": {
+     "n": 0,
+     "sousVoile": 0,
+     "noms": {}
+    }
+   },
+   "ensuite": {
+    "n": 0,
+    "sousVoile": 0,
+    "noms": {}
+   },
+   "ecran": "course",
+   "horloge": 7.88,
+   "vue": "poursuite"
+  },
+  {
+   "nom": "recommencer (même scène)",
+   "ms": 95,
+   "totalMs": 94.8,
+   "leger": true,
+   "etapes": [
+    "voile 13.7",
+    "seance 1.7",
+    "creations 58.7",
+    "image 18.5"
+   ],
+   "rendu": {
+    "variantes": 0,
+    "retro": 0,
+    "prewarm": false,
+    "ms": 0.9
+   },
+   "tardivesSousVoile": {
+    "n": 0,
+    "sousVoile": 0
+   },
+   "alaLevee": {
+    "ecran": "course",
+    "tardives": {
+     "n": 0,
+     "sousVoile": 0,
+     "noms": {}
+    }
+   },
+   "ensuite": {
+    "n": 0,
+    "sousVoile": 0,
+    "noms": {}
+   },
+   "ecran": "course",
+   "horloge": 3.5,
+   "vue": "poursuite"
+  },
+  {
+   "nom": "course Haut-Col (tunnel), pluie",
+   "ms": 1080,
+   "totalMs": 1079.4,
+   "leger": false,
+   "etapes": [
+    "voile 29.3",
+    "decor 836.9",
+    "retro 18",
+    "seance 1.2",
+    "creations 74.2",
+    "rendu 66.6",
+    "image 16.6"
+   ],
+   "rendu": {
+    "variantes": 4,
+    "retro": 2,
+    "prewarm": false,
+    "ms": 66.6
+   },
+   "tardivesSousVoile": {
+    "n": 0,
+    "sousVoile": 0
+   },
+   "alaLevee": {
+    "ecran": "course",
+    "tardives": {
+     "n": 0,
+     "sousVoile": 0,
+     "noms": {}
+    }
+   },
+   "ensuite": {
+    "n": 0,
+    "sousVoile": 0,
+    "noms": {}
+   },
+   "ecran": "course",
+   "horloge": 6.55,
+   "vue": "poursuite"
+  },
+  {
+   "nom": "duo Val-Brûlé",
+   "ms": 510,
+   "totalMs": 510.3,
+   "leger": false,
+   "etapes": [
+    "voile 26.6",
+    "decor 256.2",
+    "retro 28.6",
+    "seance 1.3",
+    "creations 51.9",
+    "rendu 40.9",
+    "code 25.8",
+    "image 46"
+   ],
+   "rendu": {
+    "variantes": 1,
+    "retro": 1,
+    "prewarm": false,
+    "ms": 40.9
+   },
+   "code": {
+    "images": 7,
+    "lent": false,
+    "simulation": null
+   },
+   "tardivesSousVoile": {
+    "n": 0,
+    "sousVoile": 0
+   },
+   "alaLevee": {
+    "ecran": "course",
+    "tardives": {
+     "n": 0,
+     "sousVoile": 0,
+     "noms": {}
+    }
+   },
+   "ensuite": {
+    "n": 0,
+    "sousVoile": 0,
+    "noms": {}
+   },
+   "ecran": "course",
+   "horloge": 5.5,
+   "vue": "cockpit"
+  },
+  {
+   "nom": "course Lande-Noire nuit (aurores)",
+   "ms": 261,
+   "totalMs": 261.2,
+   "leger": false,
+   "etapes": [
+    "voile 23.1",
+    "decor 148.5",
+    "retro 5.8",
+    "seance 2",
+    "rendu 25",
+    "image 11"
+   ],
+   "rendu": {
+    "variantes": 1,
+    "retro": 1,
+    "prewarm": false,
+    "ms": 25
+   },
+   "tardivesSousVoile": {
+    "n": 0,
+    "sousVoile": 0
+   },
+   "alaLevee": {
+    "ecran": "course",
+    "tardives": {
+     "n": 0,
+     "sousVoile": 0,
+     "noms": {}
+    }
+   },
+   "ensuite": {
+    "n": 0,
+    "sousVoile": 0,
+    "noms": {}
+   },
+   "ecran": "course",
+   "horloge": 4.48,
+   "vue": "cockpit"
+  },
+  {
+   "nom": "chrono Port-Sable, auto",
+   "ms": 1077,
+   "totalMs": 1076.9,
+   "leger": false,
+   "etapes": [
+    "voile 26.3",
+    "decor 834.3",
+    "retro 18.6",
+    "creations 86.7",
+    "rendu 30.9",
+    "code 35",
+    "image 13.3"
+   ],
+   "rendu": {
+    "variantes": 5,
+    "retro": 1,
+    "prewarm": false,
+    "ms": 30.9
+   },
+   "code": {
+    "images": 5,
+    "lent": false,
+    "simulation": 7.6
+   },
+   "tardivesSousVoile": {
+    "n": 0,
+    "sousVoile": 0
+   },
+   "alaLevee": {
+    "ecran": "course",
+    "tardives": {
+     "n": 0,
+     "sousVoile": 0,
+     "noms": {}
+    }
+   },
+   "ensuite": {
+    "n": 0,
+    "sousVoile": 0,
+    "noms": {}
+   },
+   "ecran": "course",
+   "horloge": 4.48,
+   "vue": "cockpit"
+  },
+  {
+   "nom": "démo Port-Sable",
+   "ms": 310,
+   "totalMs": 310,
+   "leger": false,
+   "etapes": [
+    "voile 29.6",
+    "seance 1.9",
+    "creations 78.1",
+    "rendu 48.3",
+    "code 28.6",
+    "image 90"
+   ],
+   "rendu": {
+    "variantes": 2,
+    "retro": 0,
+    "prewarm": false,
+    "ms": 48.3
+   },
+   "code": {
+    "images": 12,
+    "lent": false,
+    "simulation": null
+   },
+   "tardivesSousVoile": {
+    "n": 0,
+    "sousVoile": 0
+   },
+   "alaLevee": {
+    "ecran": "demo",
+    "tardives": {
+     "n": 0,
+     "sousVoile": 0,
+     "noms": {}
+    }
+   },
+   "ensuite": {
+    "n": 0,
+    "sousVoile": 0,
+    "noms": {}
+   },
+   "ecran": "demo",
+   "horloge": 10.5,
+   "vue": "cockpit"
+  }
+ ],
+ "erreurs": []
+}

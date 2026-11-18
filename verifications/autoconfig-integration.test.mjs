@@ -41,7 +41,10 @@ const orchestration = new Function('base', 'scenario', `
   const reglages = { qualite: 'high', anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra', faune: 'ultra', retro: 'oui', moment: 'nuit', meteo: 'pluie', pneus: 'pluie', tours: 9, commandes: ['clavier','manette'] };
   const appliquerPalier = () => appels.push('resize'), oublierIntervalle = () => appels.push('reset-clock');
   const remplirReglages = () => appels.push('refresh-options'), lancer = (...a) => appels.push(['lancer', ...a]);
-  const resultat = { revision: base.autoconfig.REVISION, statut: 'ok', selection: 'medium', empreinte: 'machine', mesures: [{}], reglages: base.autoconfig.reglages('medium') };
+  // préparation des séances (jeu.js) : aucune en cours ; la vitrine dont la scène est en place part directement
+  const prepa = { enCours: false }, abandonnerPreparation = () => appels.push('abandon-preparation');
+  const lancerVitrine = (i, k) => lancer('vitrine', i, null, k);
+  const resultat ={ revision: base.autoconfig.REVISION, statut: 'ok', selection: 'medium', empreinte: 'machine', mesures: [{}], reglages: base.autoconfig.reglages('medium') };
   const B = { ...base, autoconfig: { ...base.autoconfig, async executer(io) {
     if (scenario.attente) await scenario.attente;
     if (scenario.echec) throw Error('driver');
@@ -108,7 +111,12 @@ const demarrage = new Function('base','mesure','attente', `
   const webgl2=()=>true,appliquerPalier=()=>{},lireStock=()=>mesure,empreinteDetection=()=> 'machine';
   const detecterGraphismes=async()=>{appels.push('bench');await attente;appels.push('bench-termine');};
   const contexteGraphiqueRetabli=()=>{};
-  const lancer=()=>appels.push('vitrine'),aller=nom=>appels.push(nom),requestAnimationFrame=()=>appels.push('boucle'),image=()=>{},erreur=()=>appels.push('erreur');
+  const aller=nom=>appels.push(nom),requestAnimationFrame=()=>appels.push('boucle'),image=()=>{},erreur=()=>appels.push('erreur');
+  // la vitrine du titre se prépare comme une séance (preparerSeance, sous le voile de la page) et le moteur des
+  // rétroviseurs naît avec la page, après la détection qui décide du profil
+  let session=null;const prepa={dernier:null},abandonnerPreparation=()=>{};
+  const glacesPossibles=()=>true,creerMoteurRetro=()=>appels.push('retro');
+  const preparerSeance=async(type,i)=>{appels.push('vitrine');session={type,i};};
   ${bloc('  async function demarrer()', "  // Outil d'essai")}
   return {demarrer,appels,reglages};
 `);
@@ -117,7 +125,7 @@ await verifier('premier lancement : attendre le benchmark avant le titre, la mus
   const execution = h.demarrer();
   assert.deepEqual(h.appels, ['renderer','bench']); assert.equal(h.appels.includes('titre'), false);
   finir(); await execution;
-  assert.deepEqual(h.appels, ['renderer','bench','bench-termine','son','vitrine','titre','boucle']);
+  assert.deepEqual(h.appels, ['renderer','bench','bench-termine','retro','son','vitrine','titre','boucle']);
 });
 await verifier('démarrage suivant : cache compatible, choix manuels conservés et aucun nouveau bench', async () => {
   const mesure = { revision: B.autoconfig.REVISION, statut: 'ok', empreinte: 'machine', selection: 'medium', mesures: [{}] };
