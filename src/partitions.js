@@ -46,6 +46,11 @@
       { n: 6, nom: 'Pont de la Gorge', court: 'arche de pierre au-dessus de la gorge, cascade en aval' },
       { n: 7, nom: 'Virage du Vide', court: 'gauche convexe, contre-dévers, parapet bas au-dessus de la vallée' },
     ],
+    couverts: [
+      { type: 'tunnel', debut: 27, fin: 28, mur: true, hauteur: 6.4, abri: true, lumiere: true, ouvert: false, roche: true },
+      { type: 'galerie', debut: 34, fin: 34, mur: true, hauteur: 5.2, abri: true, lumiere: true, ouvert: true, roche: true },
+      { type: 'voute', debut: 40, fin: 41, mur: false, hauteur: 4.8, abri: true, lumiere: true, ouvert: false, roche: false }
+    ],
     seq: [
       D(300, { p: 0, stands: true, dv: 0 }),
       C(260, -30, { p: 1 }),
