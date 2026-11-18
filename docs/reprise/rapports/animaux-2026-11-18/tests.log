@@ -1,0 +1,109 @@
+# BITUME lot 26 — vérifications (2026-11-18 21:14 CET, Node v24.18.0, branche etude/animaux sur 268ec0f, retouches locales retirées : src/jeu.js, construire.py, dist, VERSION.json et SIZE.json tels que commités)
+
+## node verifications/animaux.test.mjs
+   196 formes, 46810 triangles, bâties en 250 ms
+ok formes bâties au chargement : finies, dans le cube unité, faces dans le sens des normales, noms propres
+   foret : 6 groupes, 34 bêtes au sol, 4 volants, 6 refuges, créé en 238 ms (176 ms de processeur)
+   cote : 4 groupes, 32 bêtes au sol, 11 volants, 4 refuges, créé en 108 ms (54 ms de processeur)
+   montagne : 6 groupes, 23 bêtes au sol, 1 volants, 4 refuges, créé en 101 ms (176 ms de processeur)
+   islande : 6 groupes, 30 bêtes au sol, 24 volants, 6 refuges, créé en 68 ms (125 ms de processeur)
+   desert : 7 groupes, 29 bêtes au sol, 5 volants, 7 refuges, créé en 49 ms (37 ms de processeur)
+   asie : 6 groupes, 24 bêtes au sol, 2 volants, 6 refuges, créé en 53 ms (39 ms de processeur)
+   pacifique : 3 groupes, 23 bêtes au sol, 15 volants, 3 refuges, créé en 59 ms (84 ms de processeur)
+ok sept circuits : toutes les espèces trouvent un habitat ; placement reproductible, sans Math.random ni retouche du décor
+   foret : plus près de l’axe 56.1 m ; échantillons en fuite 733, en vol 0 ; cerveau 103 ms pour 240 s (96 ms de processeur)
+   cote : plus près de l’axe 42.4 m ; échantillons en fuite 264, en vol 0 ; cerveau 90 ms pour 240 s (102 ms de processeur)
+   montagne : plus près de l’axe 51.0 m ; échantillons en fuite 2, en vol 0 ; cerveau 65 ms pour 240 s (35 ms de processeur)
+   islande : plus près de l’axe 37.0 m ; échantillons en fuite 604, en vol 0 ; cerveau 40 ms pour 240 s (43 ms de processeur)
+   desert : plus près de l’axe 53.2 m ; échantillons en fuite 1077, en vol 0 ; cerveau 33 ms pour 240 s (33 ms de processeur)
+   asie : plus près de l’axe 44.5 m ; échantillons en fuite 465, en vol 3659 ; cerveau 43 ms pour 240 s (30 ms de processeur)
+   pacifique : plus près de l’axe 45.1 m ; échantillons en fuite 275, en vol 0 ; cerveau 20 ms pour 240 s (28 ms de processeur)
+ok 240 s de course : aucune bête sur la route, son dégagement, l’enceinte ou le tunnel ; volants bas loin de la piste
+   cerfs : 39 m vers le refuge en 8 s, calme retrouvé 116 s après le passage
+ok fuite devant une voiture, refuge, puis retour au domaine ; accoutumance
+ok mêmes images à 30, 60 et 120 images par seconde ; le dessin ne touche pas au cerveau
+   galop à 11.0 m/s ; dans chaque dixième de seconde, pas d’image le plus court 80 % du plus long
+ok mouvement continu en pleine fuite : ni double pas ni arrêt aux pas du cerveau
+ok réserve réutilisée : mêmes objets d’une image à l’autre, dans le même ordre
+   octets par image à 60 i/s (deux vues, 70 objets par vue) : harnais seul 385, dessin 417, cerveau et dessin 726
+ok sans allocation en course : le dessin n’alloue rien, le cerveau presque rien
+   objets à 20/60/180/320 m : {"off":[0,0,0,0],"low":[14,14,14,14],"medium":[45,43,33,40],"high":[53,53,33,40],"ultra":[74,53,33,40]}
+ok budgets par palier : rien en off, Légère réduite à quelques silhouettes lointaines
+ok saisons : marmottes, moutons et oies absents l’hiver ; cerfs sans bois au printemps ; jeunes et robes d’hiver
+   bêtes au repos : 26 % le jour, 74 % la nuit
+ok nuit et averse : diurnes couchés, marmottes au terrier, rapaces posés
+ok sol exact : la hauteur suit les triangles du maillage rendu
+ok course reprise du départ : mêmes bêtes, mêmes trajets
+13 contrôles animaux
+code 0
+
+## suite complète : for t in verifications/*.test.mjs; do node "$t" > /dev/null 2>&1 || echo "ECHEC $t"; done
+ok    verifications/ambiance.test.mjs
+ok    verifications/animaux.test.mjs
+ok    verifications/asie.test.mjs
+ok    verifications/aurores.test.mjs
+ok    verifications/autoconfig-integration.test.mjs
+ok    verifications/autoconfig.test.mjs
+ok    verifications/botanique.test.mjs
+ok    verifications/carene.test.mjs
+ok    verifications/circuit.test.mjs
+ok    verifications/collisions-orientees.test.mjs
+ok    verifications/commandes-partage.test.mjs
+ok    verifications/conditions-course.test.mjs
+ok    verifications/conditions-integration.test.mjs
+ok    verifications/conduite-criteres.test.mjs
+ok    verifications/conduite.test.mjs
+ok    verifications/contacts.test.mjs
+ok    verifications/controle-visuel.test.mjs
+ok    verifications/course.test.mjs
+ok    verifications/crash.test.mjs
+ok    verifications/decor-identite.test.mjs
+ok    verifications/decor-obstacles.test.mjs
+ok    verifications/decor.test.mjs
+ok    verifications/desert.test.mjs
+ok    verifications/ecologie.test.mjs
+ok    verifications/effets-saison.test.mjs
+ok    verifications/faune.test.mjs
+ok    verifications/formes-libres.test.mjs
+ok    verifications/glissiere-etats.test.mjs
+ok    verifications/glissiere-rebond.test.mjs
+ok    verifications/graphismes.test.mjs
+ok    verifications/ia-attaque.test.mjs
+ok    verifications/ia-epaves.test.mjs
+ok    verifications/ia-reprise.test.mjs
+ok    verifications/ia.test.mjs
+ok    verifications/islande.test.mjs
+ok    verifications/main.test.mjs
+ok    verifications/manette.test.mjs
+ok    verifications/mesures.test.mjs
+ok    verifications/meteo-reelle.test.mjs
+ok    verifications/meteo.test.mjs
+ok    verifications/moteur-emprise.test.mjs
+ok    verifications/nature-integration.test.mjs
+ok    verifications/navigation-menu.test.mjs
+ok    verifications/obstacles.test.mjs
+ok    verifications/options-image.test.mjs
+ok    verifications/pacifique.test.mjs
+ok    verifications/pieces.test.mjs
+ok    verifications/prets-enligne.test.mjs
+ok    verifications/qualite.test.mjs
+ok    verifications/realisateur.test.mjs
+ok    verifications/relectures-phase2.test.mjs
+ok    verifications/rendu-halo.test.mjs
+ok    verifications/reprise-recul.test.mjs
+ok    verifications/saisons.test.mjs
+ok    verifications/salon-protocole.test.mjs
+ok    verifications/scene-bench.test.mjs
+ok    verifications/sillage.test.mjs
+ok    verifications/son.test.mjs
+ok    verifications/stands.test.mjs
+ok    verifications/titre-signature.test.mjs
+ok    verifications/traces.test.mjs
+ok    verifications/troncs.test.mjs
+ok    verifications/tunnel-transitions.test.mjs
+ok    verifications/tunnel.test.mjs
+ok    verifications/vegetation.test.mjs
+ok    verifications/vitre.test.mjs
+ok    verifications/voiture.test.mjs
+
+67 fichiers, 0 en échec
