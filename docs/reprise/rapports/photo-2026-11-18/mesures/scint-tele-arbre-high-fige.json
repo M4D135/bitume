@@ -1,0 +1,33 @@
+{
+ "valeur": {
+  "image": "1280x720",
+  "atlas": 2048,
+  "tuile": 1024,
+  "ombres": true,
+  "intervalleMoyenMs": 17.4,
+  "metresParImage": 0.88,
+  "info": {
+   "arbre": [
+    -64.57009998623543,
+    -775.9953632078955
+   ],
+   "distancePiste": 33.242087749451294
+  },
+  "regions": [
+   {
+    "region": [
+     256,
+     216,
+     896,
+     396
+    ],
+    "images": 80,
+    "niveauMoyen": 158.6,
+    "d1": 0.008,
+    "d2": 0.007,
+    "allersRetoursPourMille": 0.08
+   }
+  ]
+ },
+ "erreurs": []
+}

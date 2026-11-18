@@ -1,0 +1,26 @@
+{
+ "valeur": {
+  "toile": "2880x1514",
+  "fxDuJeu": {
+   "shadows": true,
+   "bloom": true,
+   "reflections": false,
+   "msaa": true,
+   "shadowMapScale": 2
+  },
+  "msaa": 4,
+  "atlasOmbres": 2048,
+  "triangles": 155605,
+  "appels": 105,
+  "variantes": [
+   {
+    "v": "{}",
+    "n": 51,
+    "p50": 14.6,
+    "p90": 14.7,
+    "niveauMoyen": 190.9
+   }
+  ]
+ },
+ "erreurs": []
+}

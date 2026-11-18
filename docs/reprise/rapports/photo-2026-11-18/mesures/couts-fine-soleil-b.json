@@ -1,0 +1,47 @@
+{
+ "valeur": {
+  "toile": "2880x1514",
+  "fxDuJeu": {
+   "shadows": true,
+   "bloom": true,
+   "reflections": false,
+   "msaa": true,
+   "shadowMapScale": 2
+  },
+  "msaa": 4,
+  "atlasOmbres": 2048,
+  "triangles": 5004006,
+  "appels": 603,
+  "variantes": [
+   {
+    "v": "{}",
+    "n": 51,
+    "p50": 18.8,
+    "p90": 19.4,
+    "niveauMoyen": 191.3
+   },
+   {
+    "v": "{\"bloom\":false}",
+    "n": 50,
+    "p50": 1.6,
+    "p90": 1.7,
+    "niveauMoyen": 0
+   },
+   {
+    "v": "{\"photo\":0}",
+    "n": 50,
+    "p50": 18.9,
+    "p90": 20.2,
+    "niveauMoyen": 192.1
+   },
+   {
+    "v": "{\"shadows\":false}",
+    "n": 50,
+    "p50": 16.1,
+    "p90": 17.3,
+    "niveauMoyen": 192.4
+   }
+  ]
+ },
+ "erreurs": []
+}

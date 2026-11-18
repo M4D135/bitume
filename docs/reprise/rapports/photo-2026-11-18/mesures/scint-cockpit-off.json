@@ -1,0 +1,39 @@
+{
+ "valeur": {
+  "image": "1280x720",
+  "atlas": 0,
+  "tuile": 0,
+  "ombres": false,
+  "intervalleMoyenMs": 17.3,
+  "metresParImage": 0.61,
+  "regions": [
+   {
+    "region": [
+     26,
+     22,
+     358,
+     101
+    ],
+    "images": 90,
+    "niveauMoyen": 121.6,
+    "d1": 0.467,
+    "d2": 0.334,
+    "allersRetoursPourMille": 1.91
+   },
+   {
+    "region": [
+     998,
+     50,
+     256,
+     86
+    ],
+    "images": 90,
+    "niveauMoyen": 121,
+    "d1": 0.991,
+    "d2": 0.858,
+    "allersRetoursPourMille": 8.71
+   }
+  ]
+ },
+ "erreurs": []
+}

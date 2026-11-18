@@ -1,0 +1,9 @@
+{
+ "valeur": {
+  "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+  "vendor": "Google Inc. (Apple)",
+  "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36"
+ },
+ "erreurs": []
+}

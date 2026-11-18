@@ -1,0 +1,42 @@
+{
+ "valeur": {
+  "erreurs": [
+   {
+    "blit": [
+     0,
+     0,
+     1024,
+     576,
+     0,
+     0,
+     1024,
+     576
+    ],
+    "erreur": 1282,
+    "lecture": true,
+    "ecriture": false
+   },
+   {
+    "blit": [
+     0,
+     0,
+     1024,
+     576,
+     0,
+     0,
+     1024,
+     576
+    ],
+    "erreur": 1282,
+    "lecture": true,
+    "ecriture": false
+   }
+  ],
+  "INVALID_OPERATION": 1282,
+  "alpha": false,
+  "antialias": false,
+  "msaa": 4,
+  "halo": false
+ },
+ "erreurs": []
+}

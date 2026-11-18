@@ -1,0 +1,15 @@
+{
+ "valeur": {
+  "image": "1280x720",
+  "appels": 40,
+  "brightnessDuJeu": [
+   1.2070640328404432,
+   1.2719341956602948
+  ],
+  "luminanceBrightness2": 50.08,
+  "luminanceBrightness05": 50.03,
+  "rapport": 1.0011,
+  "sousVoute": 1.2719341956602948
+ },
+ "erreurs": []
+}

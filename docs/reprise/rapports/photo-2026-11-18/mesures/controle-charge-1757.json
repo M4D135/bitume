@@ -1,0 +1,42 @@
+{
+ "valeur": {
+  "toile": "2880x1514",
+  "fxDuJeu": {
+   "shadows": true,
+   "bloom": true,
+   "reflections": false,
+   "msaa": true,
+   "shadowMapScale": 2
+  },
+  "msaa": 4,
+  "atlasOmbres": 2048,
+  "triangles": 3920960,
+  "appels": 559,
+  "variantes": [
+   {
+    "v": "{}",
+    "n": 51,
+    "p50": 44.6,
+    "p90": 130.5,
+    "niveauMoyen": 207.5
+   },
+   {
+    "v": "{\"shadows\":false}",
+    "n": 50,
+    "p50": 30.9,
+    "p90": 105,
+    "niveauMoyen": 207.3
+   }
+  ]
+ },
+ "erreurs": [],
+ "contexte": {
+  "heure": "17:57",
+  "chargeMoyenne": {
+   "1 min": 33.5,
+   "5 min": 14.73,
+   "15 min": 11.22
+  },
+  "note": "machine partagée avec d autres navigateurs et processus Node ; séance de contrôle de la commande du README"
+ }
+}
