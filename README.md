@@ -1,6 +1,6 @@
 # BITUME
 
-Course de monoplaces d'époque dans le navigateur, entièrement procédurale : quatre circuits générés, onze rivaux,
+Course de monoplaces d'époque dans le navigateur, entièrement procédurale : cinq circuits générés, onze rivaux,
 dérive et turbo. Moteur FERRO (WebGL2). Aucune image, aucun son enregistré, aucune police chargée : une seule page
 HTML autonome. Sa taille exacte, brute et compressée, est mesurée dans `SIZE.json` à chaque construction.
 

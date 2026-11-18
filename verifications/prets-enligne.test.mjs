@@ -101,17 +101,17 @@ test('l’annonce ouvre la confirmation sans lancer la course', () => {
   const { a } = hote(); assert.equal(a.etat().ecran, 'prets'); a.avancer(1000); assert.equal(compte(a), 0);
   assert.ok(a.messages.some(x => x.m.t === 'confirmer'));
 });
-test('Lande-Noire conserve le circuit et les conditions de l’hôte jusqu’au départ invité', () => {
+for (const [id, nom, index] of [['lande-noire', 'Lande-Noire', 3], ['roche-fauve', 'Roche-Fauve', 4]]) test(nom + ' conserve le circuit et les conditions de l’hôte jusqu’au départ invité', () => {
   const catalogue = new Function(catalogueDeclaration + '; return CATALOGUE;')();
   assert.deepEqual(catalogue.slice(0, 3).map(k => k.id), ['val-brule', 'port-sable', 'haut-col']);
-  const i = catalogue.findIndex(k => k.id === 'lande-noire');
-  assert.ok(i >= 3, 'nouveau circuit ajouté après les identifiants historiques');
+  const i = catalogue.findIndex(k => k.id === id);
+  assert.equal(i, index, 'identifiants et indices des circuits préservés');
   const a = creer(B), R = a.connecter('hote');
   Object.assign(a.reglages, { circuit: i, saison: 'hiver', moment: 'nuit', meteo: 'pluie' });
   a.proposerCourse(); tous(a, R); a.avancer(700);
   const cfg = a.messages.find(x => x.m.t === 'depart').m.cfg;
   assert.equal(cfg.i, i); assert.equal(cfg.saison, 'hiver'); assert.equal(cfg.moment, 'nuit');
-  assert.match(a.$('pr-course').textContent, /Lande-Noire/); assert.match(a.$('pr-course').textContent, /neige/);
+  assert.ok(a.$('pr-course').textContent.includes(nom)); assert.match(a.$('pr-course').textContent, /neige/);
   const b = creer(B); b.connecter('invite');
   Object.assign(b.reglages, { circuit: 0, saison: 'printemps', moment: 'jour' });
   assert.equal(b.recevoirCourse({ ...cfg, eau: .8 }), true);

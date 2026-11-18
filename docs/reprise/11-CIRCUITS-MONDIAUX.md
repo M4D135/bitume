@@ -34,8 +34,21 @@ Le site servi a été vérifié en 0.2.32 ; aucun accès de déploiement Mac/ami
 
 Retenir la diversité des reliefs, de l’éclairage et des décors. **Ne copier aucun tracé, table, valeur, image, son ni nom de circuit du Vroom original** ; ne pas importer `Content/Data/tracks.json` de Vroom Unreal. Lande-Noire emploie le générateur BITUME et ses constantes originales. Aucun module FERRO modifié.
 
+## 11B — Roche-Fauve, Afrique (0.2.35)
+
+- Cinquième circuit, ajouté après Lande-Noire sans déplacer les identifiants existants ; graine originale 107.
+- Hauts plateaux arides : tracé de **4 834 m**, dénivelé de piste de 27,22 m, pente maximale de 6,8 %.
+- Trois plateaux asymétriques, ravine sèche et strates de grès ocres, calculés dans les nappes de terrain existantes.
+- 321 strates solides, dégagées d’au moins 33,19 m de toute chaussée ; aucun arbre, brin, village, plan d’eau ni effet supplémentaire par image.
+- Saisons minérales, neige en hiver sur ce haut plateau ; géométrie et collisions stables entre saisons et qualités. Port-Sable conserve son exception sans neige.
+- Sélection dynamique dans les menus, conditions de l’hôte transmises jusqu’au départ invité ; les onze rivaux terminent un tour en 248,83 secondes simulées.
+- **64/64 suites**, deux builds identiques, **34/34 modules FERRO 0.3.9 conformes**. Les 16 variantes des quatre décors précédents restent identiques au commit `883f5ca`.
+- Preuves : `rapports/roche-fauve-2026-11-18/qualification.json`, `decors-historiques.json`, `production.json`.
+
+Le contrôle visuel reste bloqué au démarrage de Chromium. Aucun gain FPS matériel annoncé. Le site public sert désormais la **0.2.34**, contrôlée par empreinte ; la 0.2.35 n’a pas été déployée depuis cette session.
+
 ## Tranche suivante
 
-1. Vérifier en navigateur jour/nuit/hiver, aurores en mouvement, sélection manette, écran partagé et rétroviseurs ; ajuster seulement les défauts observés.
-2. Déployer le commit publié depuis le Mac avec `./deposer.sh` et confirmer l’empreinte servie.
-3. Choisir une seule prochaine identité très contrastée, en Asie ou en Afrique ; conserver les autres régions dans ce programme. Construire, tester, publier, puis actualiser le point court.
+1. Vérifier en navigateur Lande-Noire et Roche-Fauve, jour/nuit/hiver, aurores, sélection manette, écran partagé et rétroviseurs ; ajuster seulement les défauts observés.
+2. Déployer le commit 0.2.35 publié depuis le Mac avec `./deposer.sh` et confirmer l’empreinte servie.
+3. Choisir **un seul circuit en Asie** ; conserver les autres régions dans le programme des 16 au total. Construire, tester, publier, puis actualiser le point court.

@@ -1,15 +1,15 @@
 {
-  "version": "0.2.34",
-  "raw": 13215718,
-  "gzip": 3065026,
-  "sha256": "812edd74f616cd6a31a4b419cfc89adcce0ba7ab84a0ba717dcac7f9821c8786",
+  "version": "0.2.35",
+  "raw": 13220286,
+  "gzip": 3066260,
+  "sha256": "75e897dc0324f3bcef88a26cb85b69534bf8f52ce26371c98851ee1911512563",
   "sources": {
     "moteur/renderer.js": 247023,
     "ferro/engine.js": 2024,
     "ferro/physx-runtime.js": 12063280,
     "ferro/physx.js": 12834,
     "ferro/gpu-profile.js": 2548,
-    "circuit.js": 20943,
+    "circuit.js": 20955,
     "ferro/vehicle-dynamics.js": 3980,
     "conduite.js": 45321,
     "degats.js": 5785,
@@ -19,9 +19,9 @@
     "son.js": 27105,
     "botanique.js": 13682,
     "ecologie.js": 3051,
-    "saisons.js": 4628,
+    "saisons.js": 4975,
     "vegetation.js": 36949,
-    "decor.js": 72128,
+    "decor.js": 76202,
     "faune.js": 22933,
     "effets-saison.js": 15206,
     "aurores.js": 6593,
@@ -44,8 +44,8 @@
     "navigation-menu.js": 12161,
     "autoconfig.js": 7438,
     "scene-bench.js": 4335,
-    "jeu.js": 199906,
-    "index.html": 49594,
+    "jeu.js": 200043,
+    "index.html": 49592,
     "style.css": 49988
   }
 }

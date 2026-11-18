@@ -1,0 +1,628 @@
+{
+  "reference": "883f5ca9618157730d6212ecd0f7b79ea857f671",
+  "date": "2026-11-18T11:50:33.293Z",
+  "qualite": "high",
+  "vegetation": false,
+  "methode": "SHA-256 structure canonique, nombres float64 et tableaux typés en octets exacts ; géométrie et palettes, objets, collisions, atmosphère, saisons, arbres et sources de feuilles. Deux contextes VM isolés ; base via git show, courant capturé avant contrôle.",
+  "sourcesCourantes": {
+    "src/circuit.js": "98151e222e0f5abe59962e4e13ecbe8e0c04faa187264a282946d10ce805d02a",
+    "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+    "src/ecologie.js": "90c0720de150cea4e479eff553fdd85abaf6761046cd4d52b5851c149edf8b86",
+    "src/saisons.js": "3e57d0079aa1a82c47e451eb0f7b7eecfc01635def19f2ae8b3883017f4e16fe",
+    "src/vegetation.js": "5297864ea5752e10482d9944f3bc97e959df73570995521437d283456ffc7673",
+    "src/decor.js": "ed002a139dd428c591a6255504b809acb1a8c7df5409c97b69d349d81507cc6e"
+  },
+  "sourcesModifieesPendantControle": [],
+  "resultats": [
+    {
+      "theme": "foret",
+      "graine": 11,
+      "longueur": 4200,
+      "saison": "printemps",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "0c359be2ac0f7a38cfb7d80761c5409a3e14cddde46e96af406f961c13891511",
+        "decor": "907c220fcd753c8deb1619d571d5221928d652fcddb5e06070fe4f4e559c3ba1",
+        "geometrieEtPalettesNappes": "a421fd1752a9c58c3f6474b5361976a5ae91f0273b04284a48bae00f43ccc74d",
+        "objets": "000d12e8d5db04a7c2d3fa766f292e5a4e5c10e5cf2c4ba6348870041693aa87",
+        "collisions": "7b392e8064a95f5b071a2f5cc73b347dec5ae82b57f492fa9ef777b34611a7e5",
+        "palettesEtSaison": "8d9b89edb6e70bf398ef16387bf7fc14fc3918f2d7544a4040dda8747527d590",
+        "arbresEtFeuilles": "2f8a433d97b74eb3c25db6539fd17df16ab86d825d693e5c7101200bdd49723c",
+        "mesures": {
+          "nappes": 117,
+          "lots": 32,
+          "objets": 9578,
+          "obstacles": 1723
+        }
+      },
+      "actuel": {
+        "circuit": "0c359be2ac0f7a38cfb7d80761c5409a3e14cddde46e96af406f961c13891511",
+        "decor": "907c220fcd753c8deb1619d571d5221928d652fcddb5e06070fe4f4e559c3ba1",
+        "geometrieEtPalettesNappes": "a421fd1752a9c58c3f6474b5361976a5ae91f0273b04284a48bae00f43ccc74d",
+        "objets": "000d12e8d5db04a7c2d3fa766f292e5a4e5c10e5cf2c4ba6348870041693aa87",
+        "collisions": "7b392e8064a95f5b071a2f5cc73b347dec5ae82b57f492fa9ef777b34611a7e5",
+        "palettesEtSaison": "8d9b89edb6e70bf398ef16387bf7fc14fc3918f2d7544a4040dda8747527d590",
+        "arbresEtFeuilles": "2f8a433d97b74eb3c25db6539fd17df16ab86d825d693e5c7101200bdd49723c",
+        "mesures": {
+          "nappes": 117,
+          "lots": 32,
+          "objets": 9578,
+          "obstacles": 1723
+        }
+      }
+    },
+    {
+      "theme": "foret",
+      "graine": 11,
+      "longueur": 4200,
+      "saison": "ete",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "0c359be2ac0f7a38cfb7d80761c5409a3e14cddde46e96af406f961c13891511",
+        "decor": "002113702924bd7958396463de2d03ca26d6be4faddc5ecf6bfa7ef98aadf793",
+        "geometrieEtPalettesNappes": "77f3b95db3dd2ec46fe703ad0b2b5532549be8f460522b532081ec11f076b0d0",
+        "objets": "81c24fa27a2a0f9e25ae1796cadf74524ab338f803d7c741337d39c00261fc9b",
+        "collisions": "7b392e8064a95f5b071a2f5cc73b347dec5ae82b57f492fa9ef777b34611a7e5",
+        "palettesEtSaison": "4d1f2a3b1f381a2b3577a42f488d06fcdb44fd21b8557a5a6e9bb464b0c3e0ea",
+        "arbresEtFeuilles": "2f8a433d97b74eb3c25db6539fd17df16ab86d825d693e5c7101200bdd49723c",
+        "mesures": {
+          "nappes": 117,
+          "lots": 32,
+          "objets": 9578,
+          "obstacles": 1723
+        }
+      },
+      "actuel": {
+        "circuit": "0c359be2ac0f7a38cfb7d80761c5409a3e14cddde46e96af406f961c13891511",
+        "decor": "002113702924bd7958396463de2d03ca26d6be4faddc5ecf6bfa7ef98aadf793",
+        "geometrieEtPalettesNappes": "77f3b95db3dd2ec46fe703ad0b2b5532549be8f460522b532081ec11f076b0d0",
+        "objets": "81c24fa27a2a0f9e25ae1796cadf74524ab338f803d7c741337d39c00261fc9b",
+        "collisions": "7b392e8064a95f5b071a2f5cc73b347dec5ae82b57f492fa9ef777b34611a7e5",
+        "palettesEtSaison": "4d1f2a3b1f381a2b3577a42f488d06fcdb44fd21b8557a5a6e9bb464b0c3e0ea",
+        "arbresEtFeuilles": "2f8a433d97b74eb3c25db6539fd17df16ab86d825d693e5c7101200bdd49723c",
+        "mesures": {
+          "nappes": 117,
+          "lots": 32,
+          "objets": 9578,
+          "obstacles": 1723
+        }
+      }
+    },
+    {
+      "theme": "foret",
+      "graine": 11,
+      "longueur": 4200,
+      "saison": "automne",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "0c359be2ac0f7a38cfb7d80761c5409a3e14cddde46e96af406f961c13891511",
+        "decor": "ac9d506faf8cb821eb765b0c21124c9e2fecf946ef81d0b252cd62e6c1ba401e",
+        "geometrieEtPalettesNappes": "80ae2d20552b86a260440c412fabf37193676171caff5156cc10e2cc859e16f3",
+        "objets": "8ce672b40ae290ed7476479321acfaac3814619b196c2666aa4908882c72d21d",
+        "collisions": "7b392e8064a95f5b071a2f5cc73b347dec5ae82b57f492fa9ef777b34611a7e5",
+        "palettesEtSaison": "baf180fccda2dff242e91dcde269e47b3c1845919bd5d10597dd95742737214a",
+        "arbresEtFeuilles": "8a60bdfe71584417d4b635ca2319abaf2722082745fbaedc11df7c19249a81ce",
+        "mesures": {
+          "nappes": 117,
+          "lots": 32,
+          "objets": 9578,
+          "obstacles": 1723
+        }
+      },
+      "actuel": {
+        "circuit": "0c359be2ac0f7a38cfb7d80761c5409a3e14cddde46e96af406f961c13891511",
+        "decor": "ac9d506faf8cb821eb765b0c21124c9e2fecf946ef81d0b252cd62e6c1ba401e",
+        "geometrieEtPalettesNappes": "80ae2d20552b86a260440c412fabf37193676171caff5156cc10e2cc859e16f3",
+        "objets": "8ce672b40ae290ed7476479321acfaac3814619b196c2666aa4908882c72d21d",
+        "collisions": "7b392e8064a95f5b071a2f5cc73b347dec5ae82b57f492fa9ef777b34611a7e5",
+        "palettesEtSaison": "baf180fccda2dff242e91dcde269e47b3c1845919bd5d10597dd95742737214a",
+        "arbresEtFeuilles": "8a60bdfe71584417d4b635ca2319abaf2722082745fbaedc11df7c19249a81ce",
+        "mesures": {
+          "nappes": 117,
+          "lots": 32,
+          "objets": 9578,
+          "obstacles": 1723
+        }
+      }
+    },
+    {
+      "theme": "foret",
+      "graine": 11,
+      "longueur": 4200,
+      "saison": "hiver",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "0c359be2ac0f7a38cfb7d80761c5409a3e14cddde46e96af406f961c13891511",
+        "decor": "1a4d89eaf18d021f7c9707a81dba323a2d3c5ae7ee8d8d8e2852343ebb75a68d",
+        "geometrieEtPalettesNappes": "00563affc31bf2aab604bce23c77efab61fcc0117ea5139de3947c3f58dcf8cc",
+        "objets": "2d70ca3ae9dc419808e70a3995fe356c991c9634d3d95c46fcf5a5ed51ca58cf",
+        "collisions": "7b392e8064a95f5b071a2f5cc73b347dec5ae82b57f492fa9ef777b34611a7e5",
+        "palettesEtSaison": "4917df350bbf9f22b9ec2d6ba48c74dd6a81ddc813c722d7ce357194f31d3dad",
+        "arbresEtFeuilles": "2f8a433d97b74eb3c25db6539fd17df16ab86d825d693e5c7101200bdd49723c",
+        "mesures": {
+          "nappes": 117,
+          "lots": 32,
+          "objets": 9578,
+          "obstacles": 1723
+        }
+      },
+      "actuel": {
+        "circuit": "0c359be2ac0f7a38cfb7d80761c5409a3e14cddde46e96af406f961c13891511",
+        "decor": "1a4d89eaf18d021f7c9707a81dba323a2d3c5ae7ee8d8d8e2852343ebb75a68d",
+        "geometrieEtPalettesNappes": "00563affc31bf2aab604bce23c77efab61fcc0117ea5139de3947c3f58dcf8cc",
+        "objets": "2d70ca3ae9dc419808e70a3995fe356c991c9634d3d95c46fcf5a5ed51ca58cf",
+        "collisions": "7b392e8064a95f5b071a2f5cc73b347dec5ae82b57f492fa9ef777b34611a7e5",
+        "palettesEtSaison": "4917df350bbf9f22b9ec2d6ba48c74dd6a81ddc813c722d7ce357194f31d3dad",
+        "arbresEtFeuilles": "2f8a433d97b74eb3c25db6539fd17df16ab86d825d693e5c7101200bdd49723c",
+        "mesures": {
+          "nappes": 117,
+          "lots": 32,
+          "objets": 9578,
+          "obstacles": 1723
+        }
+      }
+    },
+    {
+      "theme": "cote",
+      "graine": 29,
+      "longueur": 3600,
+      "saison": "printemps",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "3de6269500f458586736b7d7e1a24a6819f25de7d9c887196b299f2b89fee608",
+        "decor": "02eeba341906aa625912bf7c62c83277835f9f1ef1e0a27e469f035b43e7b731",
+        "geometrieEtPalettesNappes": "fb108f552ef8ab339e8a414c5786adc6149e25e34e586b0418234cc5ca0f8273",
+        "objets": "f2a1fa99f0bfdaac57a73d7bd1eab7b4c35c24511e22cc5e541c4150dabeeff9",
+        "collisions": "4b59b0f708486d21d88244cba80cf1b5eafb43e08b1284fe47e1c43a6cf12fc3",
+        "palettesEtSaison": "ae6bda781e44b42d22c0d7952bc5889534a93e89cec8055bb2b635c12e43ba1e",
+        "arbresEtFeuilles": "6ced9ee6d00b90d631acb83d3b2e26c0431675cb79c73959cdc92045f19f51c1",
+        "mesures": {
+          "nappes": 104,
+          "lots": 28,
+          "objets": 7362,
+          "obstacles": 1019
+        }
+      },
+      "actuel": {
+        "circuit": "3de6269500f458586736b7d7e1a24a6819f25de7d9c887196b299f2b89fee608",
+        "decor": "02eeba341906aa625912bf7c62c83277835f9f1ef1e0a27e469f035b43e7b731",
+        "geometrieEtPalettesNappes": "fb108f552ef8ab339e8a414c5786adc6149e25e34e586b0418234cc5ca0f8273",
+        "objets": "f2a1fa99f0bfdaac57a73d7bd1eab7b4c35c24511e22cc5e541c4150dabeeff9",
+        "collisions": "4b59b0f708486d21d88244cba80cf1b5eafb43e08b1284fe47e1c43a6cf12fc3",
+        "palettesEtSaison": "ae6bda781e44b42d22c0d7952bc5889534a93e89cec8055bb2b635c12e43ba1e",
+        "arbresEtFeuilles": "6ced9ee6d00b90d631acb83d3b2e26c0431675cb79c73959cdc92045f19f51c1",
+        "mesures": {
+          "nappes": 104,
+          "lots": 28,
+          "objets": 7362,
+          "obstacles": 1019
+        }
+      }
+    },
+    {
+      "theme": "cote",
+      "graine": 29,
+      "longueur": 3600,
+      "saison": "ete",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "3de6269500f458586736b7d7e1a24a6819f25de7d9c887196b299f2b89fee608",
+        "decor": "6e6ebac7b67563046d25f2d385a0a9b3b8e7de51182e955da5bf85dc2babb840",
+        "geometrieEtPalettesNappes": "4c5f1964bc7b60a4b1eba65198431e2be6597a5d86dfca5d1b533bebb23b453d",
+        "objets": "89873f9184210be6b039d4086d0f7be3966e48aeceea0ec8cc5e2007d4b359f9",
+        "collisions": "4b59b0f708486d21d88244cba80cf1b5eafb43e08b1284fe47e1c43a6cf12fc3",
+        "palettesEtSaison": "20befd8924b3f703998c313afd7be49d16b7ff62bd70b68089899992531f0a1b",
+        "arbresEtFeuilles": "6ced9ee6d00b90d631acb83d3b2e26c0431675cb79c73959cdc92045f19f51c1",
+        "mesures": {
+          "nappes": 104,
+          "lots": 28,
+          "objets": 7362,
+          "obstacles": 1019
+        }
+      },
+      "actuel": {
+        "circuit": "3de6269500f458586736b7d7e1a24a6819f25de7d9c887196b299f2b89fee608",
+        "decor": "6e6ebac7b67563046d25f2d385a0a9b3b8e7de51182e955da5bf85dc2babb840",
+        "geometrieEtPalettesNappes": "4c5f1964bc7b60a4b1eba65198431e2be6597a5d86dfca5d1b533bebb23b453d",
+        "objets": "89873f9184210be6b039d4086d0f7be3966e48aeceea0ec8cc5e2007d4b359f9",
+        "collisions": "4b59b0f708486d21d88244cba80cf1b5eafb43e08b1284fe47e1c43a6cf12fc3",
+        "palettesEtSaison": "20befd8924b3f703998c313afd7be49d16b7ff62bd70b68089899992531f0a1b",
+        "arbresEtFeuilles": "6ced9ee6d00b90d631acb83d3b2e26c0431675cb79c73959cdc92045f19f51c1",
+        "mesures": {
+          "nappes": 104,
+          "lots": 28,
+          "objets": 7362,
+          "obstacles": 1019
+        }
+      }
+    },
+    {
+      "theme": "cote",
+      "graine": 29,
+      "longueur": 3600,
+      "saison": "automne",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "3de6269500f458586736b7d7e1a24a6819f25de7d9c887196b299f2b89fee608",
+        "decor": "ceca5fea30accb8813e44e77ee2f6423fac90f37a8648e291554ea7644555eb5",
+        "geometrieEtPalettesNappes": "db4fe00ec59fd58b9b64cd3b86452f3e2b13d9cb439acfeff5458b3ecbbe7dc8",
+        "objets": "f2a1fa99f0bfdaac57a73d7bd1eab7b4c35c24511e22cc5e541c4150dabeeff9",
+        "collisions": "4b59b0f708486d21d88244cba80cf1b5eafb43e08b1284fe47e1c43a6cf12fc3",
+        "palettesEtSaison": "31bc363c9fb961d8533148e906315d0a8f7ac7aa0366a84ef31a79f38224e730",
+        "arbresEtFeuilles": "6ced9ee6d00b90d631acb83d3b2e26c0431675cb79c73959cdc92045f19f51c1",
+        "mesures": {
+          "nappes": 104,
+          "lots": 28,
+          "objets": 7362,
+          "obstacles": 1019
+        }
+      },
+      "actuel": {
+        "circuit": "3de6269500f458586736b7d7e1a24a6819f25de7d9c887196b299f2b89fee608",
+        "decor": "ceca5fea30accb8813e44e77ee2f6423fac90f37a8648e291554ea7644555eb5",
+        "geometrieEtPalettesNappes": "db4fe00ec59fd58b9b64cd3b86452f3e2b13d9cb439acfeff5458b3ecbbe7dc8",
+        "objets": "f2a1fa99f0bfdaac57a73d7bd1eab7b4c35c24511e22cc5e541c4150dabeeff9",
+        "collisions": "4b59b0f708486d21d88244cba80cf1b5eafb43e08b1284fe47e1c43a6cf12fc3",
+        "palettesEtSaison": "31bc363c9fb961d8533148e906315d0a8f7ac7aa0366a84ef31a79f38224e730",
+        "arbresEtFeuilles": "6ced9ee6d00b90d631acb83d3b2e26c0431675cb79c73959cdc92045f19f51c1",
+        "mesures": {
+          "nappes": 104,
+          "lots": 28,
+          "objets": 7362,
+          "obstacles": 1019
+        }
+      }
+    },
+    {
+      "theme": "cote",
+      "graine": 29,
+      "longueur": 3600,
+      "saison": "hiver",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "3de6269500f458586736b7d7e1a24a6819f25de7d9c887196b299f2b89fee608",
+        "decor": "b2325fd03c2856a17b171f1f0cb02925e47873257325dd2194f3c0761f6e4a59",
+        "geometrieEtPalettesNappes": "acd8c83cc5a8adb41a5dbd55853402338ac0013d1ab7ba58c57f4090dd426ba1",
+        "objets": "bbfc6ccd1bc67a9dc3098fb04b08bc0638184fe41a228b70654e761aae03b208",
+        "collisions": "4b59b0f708486d21d88244cba80cf1b5eafb43e08b1284fe47e1c43a6cf12fc3",
+        "palettesEtSaison": "173d822976c0badf2c68b2eefca5c7328451ea0131dc6a15eaa79a6117c51278",
+        "arbresEtFeuilles": "6ced9ee6d00b90d631acb83d3b2e26c0431675cb79c73959cdc92045f19f51c1",
+        "mesures": {
+          "nappes": 104,
+          "lots": 28,
+          "objets": 7362,
+          "obstacles": 1019
+        }
+      },
+      "actuel": {
+        "circuit": "3de6269500f458586736b7d7e1a24a6819f25de7d9c887196b299f2b89fee608",
+        "decor": "b2325fd03c2856a17b171f1f0cb02925e47873257325dd2194f3c0761f6e4a59",
+        "geometrieEtPalettesNappes": "acd8c83cc5a8adb41a5dbd55853402338ac0013d1ab7ba58c57f4090dd426ba1",
+        "objets": "bbfc6ccd1bc67a9dc3098fb04b08bc0638184fe41a228b70654e761aae03b208",
+        "collisions": "4b59b0f708486d21d88244cba80cf1b5eafb43e08b1284fe47e1c43a6cf12fc3",
+        "palettesEtSaison": "173d822976c0badf2c68b2eefca5c7328451ea0131dc6a15eaa79a6117c51278",
+        "arbresEtFeuilles": "6ced9ee6d00b90d631acb83d3b2e26c0431675cb79c73959cdc92045f19f51c1",
+        "mesures": {
+          "nappes": 104,
+          "lots": 28,
+          "objets": 7362,
+          "obstacles": 1019
+        }
+      }
+    },
+    {
+      "theme": "montagne",
+      "graine": 47,
+      "longueur": 5200,
+      "saison": "printemps",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "d2cf97159f44860095527c10da957bca9f72b0f832e96a30c9b7b90ea541b33f",
+        "decor": "35f41e66397e52fed6786baa8c5ed2ada5f6d38b62f925c5275217fcc9160914",
+        "geometrieEtPalettesNappes": "88a9aac8d865112d821796a9a001fdaed0f876c543299be7e994c4acb540ed46",
+        "objets": "688d08a4a422d8cdd08f297af173202c1dac28b6d60322db0ff1360088aee883",
+        "collisions": "fd6f26bbb72044141c725c4bf796227b8f9af8216c8f5dfb4745d9098aa55026",
+        "palettesEtSaison": "f2af1cbe765814773ddeddc48b25b641e2eb8076df37b291585147fc63e46661",
+        "arbresEtFeuilles": "ad1d1bc99ea198d0022e327c032497415c85938b9aa58991704c35b584b162e5",
+        "mesures": {
+          "nappes": 176,
+          "lots": 101,
+          "objets": 11100,
+          "obstacles": 1178
+        }
+      },
+      "actuel": {
+        "circuit": "d2cf97159f44860095527c10da957bca9f72b0f832e96a30c9b7b90ea541b33f",
+        "decor": "35f41e66397e52fed6786baa8c5ed2ada5f6d38b62f925c5275217fcc9160914",
+        "geometrieEtPalettesNappes": "88a9aac8d865112d821796a9a001fdaed0f876c543299be7e994c4acb540ed46",
+        "objets": "688d08a4a422d8cdd08f297af173202c1dac28b6d60322db0ff1360088aee883",
+        "collisions": "fd6f26bbb72044141c725c4bf796227b8f9af8216c8f5dfb4745d9098aa55026",
+        "palettesEtSaison": "f2af1cbe765814773ddeddc48b25b641e2eb8076df37b291585147fc63e46661",
+        "arbresEtFeuilles": "ad1d1bc99ea198d0022e327c032497415c85938b9aa58991704c35b584b162e5",
+        "mesures": {
+          "nappes": 176,
+          "lots": 101,
+          "objets": 11100,
+          "obstacles": 1178
+        }
+      }
+    },
+    {
+      "theme": "montagne",
+      "graine": 47,
+      "longueur": 5200,
+      "saison": "ete",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "d2cf97159f44860095527c10da957bca9f72b0f832e96a30c9b7b90ea541b33f",
+        "decor": "a5adb85e03763fe195dd55cb77fccdf3ba67dd48f4e963e2c57ea2c51c6f65fd",
+        "geometrieEtPalettesNappes": "a86b10f667fe71d4061dd772f1bbec601132bb7853c5271ab71f4e242c5eb00c",
+        "objets": "cc25f525905f6acf75419dfa7e642c1974807affcf98b4af144e93b8606e6e66",
+        "collisions": "fd6f26bbb72044141c725c4bf796227b8f9af8216c8f5dfb4745d9098aa55026",
+        "palettesEtSaison": "ce08d08b4acf895a448d6d51ad681edfa384aeefe82f2b9c0bc848b29ee88d20",
+        "arbresEtFeuilles": "ad1d1bc99ea198d0022e327c032497415c85938b9aa58991704c35b584b162e5",
+        "mesures": {
+          "nappes": 176,
+          "lots": 101,
+          "objets": 11100,
+          "obstacles": 1178
+        }
+      },
+      "actuel": {
+        "circuit": "d2cf97159f44860095527c10da957bca9f72b0f832e96a30c9b7b90ea541b33f",
+        "decor": "a5adb85e03763fe195dd55cb77fccdf3ba67dd48f4e963e2c57ea2c51c6f65fd",
+        "geometrieEtPalettesNappes": "a86b10f667fe71d4061dd772f1bbec601132bb7853c5271ab71f4e242c5eb00c",
+        "objets": "cc25f525905f6acf75419dfa7e642c1974807affcf98b4af144e93b8606e6e66",
+        "collisions": "fd6f26bbb72044141c725c4bf796227b8f9af8216c8f5dfb4745d9098aa55026",
+        "palettesEtSaison": "ce08d08b4acf895a448d6d51ad681edfa384aeefe82f2b9c0bc848b29ee88d20",
+        "arbresEtFeuilles": "ad1d1bc99ea198d0022e327c032497415c85938b9aa58991704c35b584b162e5",
+        "mesures": {
+          "nappes": 176,
+          "lots": 101,
+          "objets": 11100,
+          "obstacles": 1178
+        }
+      }
+    },
+    {
+      "theme": "montagne",
+      "graine": 47,
+      "longueur": 5200,
+      "saison": "automne",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "d2cf97159f44860095527c10da957bca9f72b0f832e96a30c9b7b90ea541b33f",
+        "decor": "d73f8f2562fa8236247cc8dc8176b2616ddf2a33fa02c66d0881dc8b017a7a41",
+        "geometrieEtPalettesNappes": "87c2f61e33646e617a27d2a463dafa26c9a1da872dbad55ea52209e4a096e772",
+        "objets": "688d08a4a422d8cdd08f297af173202c1dac28b6d60322db0ff1360088aee883",
+        "collisions": "fd6f26bbb72044141c725c4bf796227b8f9af8216c8f5dfb4745d9098aa55026",
+        "palettesEtSaison": "dd781e4d2e4845e97c1d551657a7f3fc37a398ef9da624dd3e7663605e36bb60",
+        "arbresEtFeuilles": "ad1d1bc99ea198d0022e327c032497415c85938b9aa58991704c35b584b162e5",
+        "mesures": {
+          "nappes": 176,
+          "lots": 101,
+          "objets": 11100,
+          "obstacles": 1178
+        }
+      },
+      "actuel": {
+        "circuit": "d2cf97159f44860095527c10da957bca9f72b0f832e96a30c9b7b90ea541b33f",
+        "decor": "d73f8f2562fa8236247cc8dc8176b2616ddf2a33fa02c66d0881dc8b017a7a41",
+        "geometrieEtPalettesNappes": "87c2f61e33646e617a27d2a463dafa26c9a1da872dbad55ea52209e4a096e772",
+        "objets": "688d08a4a422d8cdd08f297af173202c1dac28b6d60322db0ff1360088aee883",
+        "collisions": "fd6f26bbb72044141c725c4bf796227b8f9af8216c8f5dfb4745d9098aa55026",
+        "palettesEtSaison": "dd781e4d2e4845e97c1d551657a7f3fc37a398ef9da624dd3e7663605e36bb60",
+        "arbresEtFeuilles": "ad1d1bc99ea198d0022e327c032497415c85938b9aa58991704c35b584b162e5",
+        "mesures": {
+          "nappes": 176,
+          "lots": 101,
+          "objets": 11100,
+          "obstacles": 1178
+        }
+      }
+    },
+    {
+      "theme": "montagne",
+      "graine": 47,
+      "longueur": 5200,
+      "saison": "hiver",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "d2cf97159f44860095527c10da957bca9f72b0f832e96a30c9b7b90ea541b33f",
+        "decor": "0ba73ce3eeaec27141f4b14d37d5944a1adc1aafdd83b522f1ff83c2cf5fb9f1",
+        "geometrieEtPalettesNappes": "52098a316fd71002c57fd6f84dcac0e691e48a8816f9c8a3d433c4e59d5e04ec",
+        "objets": "02eeed0fa607581603d80e301b9d188869751160a0721c260229eff8a6e67fd8",
+        "collisions": "fd6f26bbb72044141c725c4bf796227b8f9af8216c8f5dfb4745d9098aa55026",
+        "palettesEtSaison": "4f880eab48647466737c13a3549ad2fa8189fce1f275760fcdd64d250784e777",
+        "arbresEtFeuilles": "ad1d1bc99ea198d0022e327c032497415c85938b9aa58991704c35b584b162e5",
+        "mesures": {
+          "nappes": 176,
+          "lots": 101,
+          "objets": 11100,
+          "obstacles": 1178
+        }
+      },
+      "actuel": {
+        "circuit": "d2cf97159f44860095527c10da957bca9f72b0f832e96a30c9b7b90ea541b33f",
+        "decor": "0ba73ce3eeaec27141f4b14d37d5944a1adc1aafdd83b522f1ff83c2cf5fb9f1",
+        "geometrieEtPalettesNappes": "52098a316fd71002c57fd6f84dcac0e691e48a8816f9c8a3d433c4e59d5e04ec",
+        "objets": "02eeed0fa607581603d80e301b9d188869751160a0721c260229eff8a6e67fd8",
+        "collisions": "fd6f26bbb72044141c725c4bf796227b8f9af8216c8f5dfb4745d9098aa55026",
+        "palettesEtSaison": "4f880eab48647466737c13a3549ad2fa8189fce1f275760fcdd64d250784e777",
+        "arbresEtFeuilles": "ad1d1bc99ea198d0022e327c032497415c85938b9aa58991704c35b584b162e5",
+        "mesures": {
+          "nappes": 176,
+          "lots": 101,
+          "objets": 11100,
+          "obstacles": 1178
+        }
+      }
+    },
+    {
+      "theme": "islande",
+      "graine": 83,
+      "longueur": 4600,
+      "saison": "printemps",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "c7338a629702365f61905b0eac3a716c3f673c53641116f57440cb339c461439",
+        "decor": "db4baf42c21b4613877cbe0e6b050000789e30f61a74b494029ed26bf28b7426",
+        "geometrieEtPalettesNappes": "3c51c2551ebc0d549faa5a1d4358bc2f7afc36f0fa6d8f23b4c163542ba9ca24",
+        "objets": "cdd26b5beec57cf66412bd5f4ab443887198a850037823986573409dcbad454a",
+        "collisions": "ccb3196794377f4a12a36655fb06fb39ed2ac59ee3be1bd9b8843a725c067de0",
+        "palettesEtSaison": "c295c0d5a0b22123d991bf3b7954bbfe8e709285f8beed0ca93e7e8721bf232e",
+        "arbresEtFeuilles": "73952fe5ecd6c0c27e885087ddf6825a96da6549a866bf989cdcd85908262117",
+        "mesures": {
+          "nappes": 160,
+          "lots": 31,
+          "objets": 7858,
+          "obstacles": 973
+        }
+      },
+      "actuel": {
+        "circuit": "c7338a629702365f61905b0eac3a716c3f673c53641116f57440cb339c461439",
+        "decor": "db4baf42c21b4613877cbe0e6b050000789e30f61a74b494029ed26bf28b7426",
+        "geometrieEtPalettesNappes": "3c51c2551ebc0d549faa5a1d4358bc2f7afc36f0fa6d8f23b4c163542ba9ca24",
+        "objets": "cdd26b5beec57cf66412bd5f4ab443887198a850037823986573409dcbad454a",
+        "collisions": "ccb3196794377f4a12a36655fb06fb39ed2ac59ee3be1bd9b8843a725c067de0",
+        "palettesEtSaison": "c295c0d5a0b22123d991bf3b7954bbfe8e709285f8beed0ca93e7e8721bf232e",
+        "arbresEtFeuilles": "73952fe5ecd6c0c27e885087ddf6825a96da6549a866bf989cdcd85908262117",
+        "mesures": {
+          "nappes": 160,
+          "lots": 31,
+          "objets": 7858,
+          "obstacles": 973
+        }
+      }
+    },
+    {
+      "theme": "islande",
+      "graine": 83,
+      "longueur": 4600,
+      "saison": "ete",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "c7338a629702365f61905b0eac3a716c3f673c53641116f57440cb339c461439",
+        "decor": "ad60e07cb376a54f803a6a5dad9331e7e5ae97ad83bbc596af6edec1b954e8de",
+        "geometrieEtPalettesNappes": "d287d969391c46aa8f8fd80075e05bd0a3f5a863273942113c1fb64f72f12d0c",
+        "objets": "cdd26b5beec57cf66412bd5f4ab443887198a850037823986573409dcbad454a",
+        "collisions": "ccb3196794377f4a12a36655fb06fb39ed2ac59ee3be1bd9b8843a725c067de0",
+        "palettesEtSaison": "c1d44ca5c336cb6b6c473f2afd77e2848a48386146f3459d0c70b487a1b65f26",
+        "arbresEtFeuilles": "73952fe5ecd6c0c27e885087ddf6825a96da6549a866bf989cdcd85908262117",
+        "mesures": {
+          "nappes": 160,
+          "lots": 31,
+          "objets": 7858,
+          "obstacles": 973
+        }
+      },
+      "actuel": {
+        "circuit": "c7338a629702365f61905b0eac3a716c3f673c53641116f57440cb339c461439",
+        "decor": "ad60e07cb376a54f803a6a5dad9331e7e5ae97ad83bbc596af6edec1b954e8de",
+        "geometrieEtPalettesNappes": "d287d969391c46aa8f8fd80075e05bd0a3f5a863273942113c1fb64f72f12d0c",
+        "objets": "cdd26b5beec57cf66412bd5f4ab443887198a850037823986573409dcbad454a",
+        "collisions": "ccb3196794377f4a12a36655fb06fb39ed2ac59ee3be1bd9b8843a725c067de0",
+        "palettesEtSaison": "c1d44ca5c336cb6b6c473f2afd77e2848a48386146f3459d0c70b487a1b65f26",
+        "arbresEtFeuilles": "73952fe5ecd6c0c27e885087ddf6825a96da6549a866bf989cdcd85908262117",
+        "mesures": {
+          "nappes": 160,
+          "lots": 31,
+          "objets": 7858,
+          "obstacles": 973
+        }
+      }
+    },
+    {
+      "theme": "islande",
+      "graine": 83,
+      "longueur": 4600,
+      "saison": "automne",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "c7338a629702365f61905b0eac3a716c3f673c53641116f57440cb339c461439",
+        "decor": "0a61eda25d3be7581a568918e0803e92c8b2290a97e44fe703d9d70e6bd9f09c",
+        "geometrieEtPalettesNappes": "5af13c623cdc1b13d2d1c56465fffb6d9f381580184deceea0492d20337d7d50",
+        "objets": "cdd26b5beec57cf66412bd5f4ab443887198a850037823986573409dcbad454a",
+        "collisions": "ccb3196794377f4a12a36655fb06fb39ed2ac59ee3be1bd9b8843a725c067de0",
+        "palettesEtSaison": "a3137c010de2f86aa170e45a65d3acb0ba0aafb634a4c8ed520786b9e24b2cf8",
+        "arbresEtFeuilles": "73952fe5ecd6c0c27e885087ddf6825a96da6549a866bf989cdcd85908262117",
+        "mesures": {
+          "nappes": 160,
+          "lots": 31,
+          "objets": 7858,
+          "obstacles": 973
+        }
+      },
+      "actuel": {
+        "circuit": "c7338a629702365f61905b0eac3a716c3f673c53641116f57440cb339c461439",
+        "decor": "0a61eda25d3be7581a568918e0803e92c8b2290a97e44fe703d9d70e6bd9f09c",
+        "geometrieEtPalettesNappes": "5af13c623cdc1b13d2d1c56465fffb6d9f381580184deceea0492d20337d7d50",
+        "objets": "cdd26b5beec57cf66412bd5f4ab443887198a850037823986573409dcbad454a",
+        "collisions": "ccb3196794377f4a12a36655fb06fb39ed2ac59ee3be1bd9b8843a725c067de0",
+        "palettesEtSaison": "a3137c010de2f86aa170e45a65d3acb0ba0aafb634a4c8ed520786b9e24b2cf8",
+        "arbresEtFeuilles": "73952fe5ecd6c0c27e885087ddf6825a96da6549a866bf989cdcd85908262117",
+        "mesures": {
+          "nappes": 160,
+          "lots": 31,
+          "objets": 7858,
+          "obstacles": 973
+        }
+      }
+    },
+    {
+      "theme": "islande",
+      "graine": 83,
+      "longueur": 4600,
+      "saison": "hiver",
+      "identique": true,
+      "differences": [],
+      "base": {
+        "circuit": "c7338a629702365f61905b0eac3a716c3f673c53641116f57440cb339c461439",
+        "decor": "789fe57d2075a3d426c39ff8ae1367e09ff2b913c2033ed40bb0a02edb0b84c9",
+        "geometrieEtPalettesNappes": "6b52322eee5372dee7b098d1bd95a6e4033df05562a1e330a0db1a9f97f350f9",
+        "objets": "47fbc47356f7868fe663d786ed9917883712396393232ccfbed81f73eac15556",
+        "collisions": "ccb3196794377f4a12a36655fb06fb39ed2ac59ee3be1bd9b8843a725c067de0",
+        "palettesEtSaison": "44a279568fc5345fe72b257ab477d2fe5b6af29e113b41e42f36d704cd49bd3b",
+        "arbresEtFeuilles": "73952fe5ecd6c0c27e885087ddf6825a96da6549a866bf989cdcd85908262117",
+        "mesures": {
+          "nappes": 160,
+          "lots": 31,
+          "objets": 7858,
+          "obstacles": 973
+        }
+      },
+      "actuel": {
+        "circuit": "c7338a629702365f61905b0eac3a716c3f673c53641116f57440cb339c461439",
+        "decor": "789fe57d2075a3d426c39ff8ae1367e09ff2b913c2033ed40bb0a02edb0b84c9",
+        "geometrieEtPalettesNappes": "6b52322eee5372dee7b098d1bd95a6e4033df05562a1e330a0db1a9f97f350f9",
+        "objets": "47fbc47356f7868fe663d786ed9917883712396393232ccfbed81f73eac15556",
+        "collisions": "ccb3196794377f4a12a36655fb06fb39ed2ac59ee3be1bd9b8843a725c067de0",
+        "palettesEtSaison": "44a279568fc5345fe72b257ab477d2fe5b6af29e113b41e42f36d704cd49bd3b",
+        "arbresEtFeuilles": "73952fe5ecd6c0c27e885087ddf6825a96da6549a866bf989cdcd85908262117",
+        "mesures": {
+          "nappes": 160,
+          "lots": 31,
+          "objets": 7858,
+          "obstacles": 973
+        }
+      }
+    }
+  ],
+  "total": 16,
+  "identiques": 16
+}

@@ -69,6 +69,11 @@
       atmosphere: { skyTop: [.12, .25, .43], skyBottom: [.66, .73, .77], fog: [.54, .62, .67], sunDirection: [-.58, .37, .46], sunColor: [1.12, 1.17, 1.22], ambient: [.31, .36, .41], fogDensity: .00062, wind: 1.05, biome: 'islande' },
       herbe: [.19, .26, .105], herbeClaire: [.31, .39, .16], terre: [.095, .105, .115], roche: [.14, .15, .165],
       relief: 42, echelle: 300, essence: null, densite: 0, marge: 1050, volcanique: true
+    },
+    desert: {
+      atmosphere: { skyTop: [.12, .33, .60], skyBottom: [.88, .76, .56], fog: [.74, .58, .39], sunDirection: [.61, .59, -.34], sunColor: [1.43, 1.16, .82], ambient: [.40, .34, .29], fogDensity: .00055, wind: .8, biome: 'desert' },
+      herbe: [.63, .39, .18], herbeClaire: [.78, .56, .29], terre: [.56, .29, .13], roche: [.43, .19, .09], sable: [.80, .61, .36],
+      relief: 34, echelle: 390, essence: null, densite: 0, marge: 1050, aride: true
     }
   };
   const PUBLICITES = [[.86, .12, .08], [.98, .78, .10], [.10, .28, .70], [.06, .52, .30], [.95, .95, .92], [.08, .08, .09], [.92, .40, .06], [.40, .14, .55]];
@@ -158,6 +163,7 @@
   const NUANCE_SOL_NU = [1.10, .86, .96];
   const FLEURS_LOINTAINES = { feuillu: [.66, .55, .29], pin: [.73, .64, .35], conifere: [.53, .44, .61] };
   function couleurPrairie(th, couleur, habitat) {
+    if (th.aride) return couleur;   // sable et grès : aucune prairie ni fleur lointaine
     if (th.volcanique) return melange(couleur, th.herbeClaire, lisse(.22, .85, habitat.herbe) * .82);
     const pousse = lisse(.02, .85, habitat.herbe), fleurs = habitat.fleurs * .14;
     const fleur = FLEURS_LOINTAINES[th.essence] || FLEURS_LOINTAINES.feuillu, resultat = new Array(3);
@@ -188,7 +194,8 @@
         const f = cadre(c, i), no = [Math.sin(f.devers) * f.r[0], Math.cos(f.devers), Math.sin(f.devers) * f.r[2]];
         const limG = lim.G[f.i], limD = lim.D[f.i];
         const vib = c.vibreur[f.i], tranche = Math.floor(f.i * c.pas / 4) % 2;
-        const tonte = th.volcanique ? melange(th.terre, th.herbe, lisse(.46, .73, fbm(f.x / 65, f.z / 65, c.graine + 391, 3)))
+        const tonte = th.aride ? melange(th.terre, th.sable, fbm(f.x / 95, f.z / 95, c.graine + 391, 3))
+          : th.volcanique ? melange(th.terre, th.herbe, lisse(.46, .73, fbm(f.x / 65, f.z / 65, c.graine + 391, 3)))
           : naturel ? melange(th.herbe, th.herbeClaire, .2 + .65 * fbm(f.x / 65, f.z / 65, c.graine + 391, 3))
           : Math.floor(f.i * c.pas / 20) % 2 ? th.herbe : th.herbeClaire;
         for (let b = 0; b < bandes.length; b++) {
@@ -264,6 +271,21 @@
           + 190 * (Math.exp(-v * v * .75) - .56 * Math.exp(-v * v * 6));
         h += cones * lisse(150, 420, d);
       }
+      if (th.aride) {
+        // Trois tables de grès décentrées et un oued sec, dans la grille déjà rendue.
+        // Les formes s'effacent avant les abords de piste : aucun mur sous la chaussée.
+        const table = (cx, cz, rx, rz, angle, haut) => {
+          const dx = x - cx, dz = z - cz, ca = Math.cos(angle), sa = Math.sin(angle);
+          const rayon = Math.hypot((dx * ca + dz * sa) / rx, (-dx * sa + dz * ca) / rz);
+          return haut * (1 - lisse(.58, 1.08, rayon));
+        };
+        const plateaux = table(x0 + 440, z1 - 490, 560, 370, .38, 210)
+          + table(x1 - 430, z0 + 520, 450, 610, -.63, 165)
+          + table(x1 - 800, z1 - 360, 310, 420, .92, 112);
+        const lit = Math.abs(z - centreZ - 170 - (x - centreX) * .24 - 85 * Math.sin((x - centreX) / 420));
+        const ravine = 42 * (1 - lisse(28, 130, lit));
+        h += plateaux * lisse(135, 350, d) - ravine * lisse(65, 180, d);
+      }
       if (th.eau !== undefined) {
         const p = (x - centreX) * mer[0] + (z - centreZ) * mer[1];
         h -= 34 * lisse(merDebut - 40, merDebut + 220, p) * lisse(60, 140, d);
@@ -287,6 +309,12 @@
         if (ny < .8 || h > 120) { col = melange(th.roche, th.roche.map(v => v * .8), tache); mat = 9; }
         if (h > 250 + 40 * tache && ny > .6) { col = th.neige; mat = 3; }
       } else if (ny < .7) { col = th.terre; }
+      if (th.aride) {
+        const strate = .5 + .5 * Math.sin(h * .43 + bruit(x / 370, z / 370, g + 63) * 2.4);
+        const gres = melange(th.roche, th.terre, .24 + .66 * strate);
+        col = melange(gres, th.sable, lisse(.54, .93, ny) * (.40 + .48 * tache));
+        mat = ny < .82 ? 9 : 8;
+      }
       if (ecologie && mat === 8 && ny >= .7 && (th.eau === undefined || h >= th.eau + 2.2)) {
         col = couleurPrairie(th, col, ecologie.echantillonner(x, z, habitat));
       }
@@ -611,7 +639,7 @@
         for (const triangle of n.herbeTriangles || []) for (let j = 0; j < 3; j++) visites[n.indices[triangle + j]] = 1;
         // Le bord sans vibreur est aussi herbeux, mais reste exclu de la plantation des brins.
         if (n.surfaceType === 'accotement') for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 9] === 8) visites[v] = 1;
-        if (th.volcanique && saison.neige && n.surfaceType === 'terrain') {
+        if ((th.volcanique || th.aride) && saison.neige && n.surfaceType === 'terrain') {
           for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 4] > .45) visites[v] = 1;
         }
         for (let v = 0; v < visites.length; v++) if (visites[v]) {
@@ -866,7 +894,7 @@
       ajouter(objets, loin, x, z); positionsArbres.push([x, z]);
     }
     let nombre = 0;
-    const MAX = th.volcanique ? 0 : options.arbres === undefined ? 2600 : options.arbres;
+    const MAX = th.volcanique || th.aride ? 0 : options.arbres === undefined ? 2600 : options.arbres;
     for (let i = 0; i < c.n && nombre < MAX; i += 7) {   // un plan par 14 m de piste, de chaque côté
       const f = cadre(c, i);
       for (const cote of [-1, 1]) {
@@ -907,7 +935,7 @@
     }
 
     // Repères lointains selon le thème : phare et cabanons sur la côte, chalets en montagne, fermes en forêt.
-    const villages = th.volcanique ? 0 : th.eau !== undefined ? 3 : 4;
+    const villages = th.volcanique || th.aride ? 0 : th.eau !== undefined ? 3 : 4;
     for (let v = 0; v < villages; v++) {
       for (let essai = 0; essai < 40; essai++) {
         const x = bx0 + 200 + r() * (bx1 - bx0 - 400), z = bz0 + 200 + r() * (bz1 - bz0 - 400), q = interroger(x, z, 300);
@@ -956,6 +984,34 @@
           // Un sommet bas, moussu ou enneigé, laisse les flancs de basalte noirs même en hiver.
           objets.push({ shape: 'box', p: [x, y + hauteur * .94 + .035, z], s: [largeur, .07, largeur * .78], r: [0, a, 0], mat: saison && saison.neige ? 3 : 8,
             color: saison && saison.neige ? [.90, .93, .96] : melange(couleur, th.herbe, mousse) });
+        }
+        if (objets.length) ajouter(objets, objets, p[0], p[2]);
+      }
+    }
+    // Grès érodé en poches, avec des bancs de roche superposés plutôt que des colonnes volcaniques.
+    if (th.aride) {
+      const rocheR = alea(g ^ 0xa5139d6b);
+      for (let k = 0; k < 64; k++) {
+        const f = cadre(c, Math.floor(rocheR() * c.n)), cote = rocheR() < .5 ? -1 : 1;
+        const p = pointPlan(f, cote * (58 + rocheR() * 240), 0), objets = [], nombre = 1 + Math.floor(rocheR() * 3);
+        for (let j = 0; j < nombre; j++) {
+          const x = p[0] + (rocheR() - .5) * 36, z = p[2] + (rocheR() - .5) * 36;
+          const q = interroger(x, z, 200), largeur = 5 + rocheR() * 10, profondeur = largeur * (.55 + rocheR() * .30);
+          const rayon = Math.hypot(largeur, profondeur) / 2;
+          if (q.i >= 0 && (q.d < w + 28 + rayon || (Math.abs(B.circuit.ecart(c, 0, q.i * c.pas)) < 330 && q.d < 105))) continue;
+          const a = rocheR() * Math.PI, niveaux = 2 + Math.floor(rocheR() * 2), h = 2.2 + rocheR() * 2.8;
+          // Enfouir le socle sous le point le plus bas de son emprise évite un bloc suspendu sur les pentes.
+          let bas = terrain.sol(x, z) - .5;
+          for (const dx of [-largeur / 2, largeur / 2]) for (const dz of [-profondeur / 2, profondeur / 2]) {
+            bas = Math.min(bas, terrain.sol(x + dx * Math.cos(a) + dz * Math.sin(a), z - dx * Math.sin(a) + dz * Math.cos(a)) - .25);
+          }
+          for (let etage = 0; etage < niveaux; etage++) {
+            const taille = 1 - etage * .16, couleur = melange(th.roche, etage % 2 ? th.sable : th.terre, .38 + rocheR() * .25);
+            objets.push({ shape: 'box', collision: 'roche', p: [x, bas + h * (etage + .5), z], s: [largeur * taille, h, profondeur * taille], r: [0, a, 0], mat: 9, color: couleur });
+          }
+          const sommet = 1 - (niveaux - 1) * .16;
+          objets.push({ shape: 'box', p: [x, bas + h * niveaux + .035, z], s: [largeur * sommet, .07, profondeur * sommet], r: [0, a, 0], mat: saison && saison.neige ? 3 : 9,
+            color: saison && saison.neige ? [.90, .93, .96] : th.sable });
         }
         if (objets.length) ajouter(objets, objets, p[0], p[2]);
       }
@@ -1026,7 +1082,7 @@
       ? options.vegetationQualite : qualite;
     if (B.vegetation && options.vegetation !== false && vegetationQualite !== 'off') {
       const v = B.vegetation.construire(c, { limites: lim, interroger, qualite: vegetationQualite,
-        surfaces: vegetationQualite === 'low' || th.volcanique ? null : ouvrirHerbier(), ecologie });
+        surfaces: vegetationQualite === 'low' || th.volcanique || th.aride ? null : ouvrirHerbier(), ecologie });
       if (saison) {
         const habitat = {};
         for (const lot of v.lots) for (let i = 0; i < lot.objets.length; i++) {

@@ -11,13 +11,13 @@
   const normaliser = id => IDS.includes(id) ? id : 'ete';
   const lisse = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
   const profils = {};
-  for (const id of IDS) for (const theme of ['foret', 'cote', 'montagne', 'islande']) {
+  for (const id of IDS) for (const theme of ['foret', 'cote', 'montagne', 'islande', 'desert']) {
     const d = DONNEES[id], neige = id === 'hiver' && theme !== 'cote';
     profils[id + ':' + theme] = Object.freeze({ id, theme, neige, feuilles: id === 'automne' && theme === 'foret',
-      faune: neige || theme === 'islande' ? 0 : d.faune, soleil: d.soleil, teinteSoleil: Object.freeze(d.teinteSoleil.slice()) });
+      faune: neige || theme === 'islande' || theme === 'desert' ? 0 : d.faune, soleil: d.soleil, teinteSoleil: Object.freeze(d.teinteSoleil.slice()) });
   }
   function profil(id, theme = 'foret') {
-    return profils[normaliser(id) + ':' + (theme === 'cote' || theme === 'montagne' || theme === 'islande' ? theme : 'foret')];
+    return profils[normaliser(id) + ':' + (theme === 'cote' || theme === 'montagne' || theme === 'islande' || theme === 'desert' ? theme : 'foret')];
   }
   function bruit(x, z, sel) {
     const px = (x * .8 - z * .6) / 73, pz = (x * .6 + z * .8) / 73;
@@ -44,6 +44,10 @@
       const mousse = Math.max(0, Math.min(1, (base[1] - base[0]) * 8));
       cible = p.id === 'printemps' ? [.25, .36, .14] : p.id === 'automne' ? [.33, .29, .13] : [.31, .36, .17];
       part = mousse * (p.id === 'automne' ? .35 : .16);
+    } else if (p.theme === 'desert') {
+      // Hauts plateaux minéraux : les saisons modulent l'ocre sans inventer de prairie.
+      cible = p.id === 'printemps' ? [.67, .45, .25] : p.id === 'automne' ? [.59, .32, .14] : [.82, .59, .31];
+      part = (p.id === 'ete' ? .10 : .06) + .04 * n;
     } else if (p.id === 'printemps') {
       if (feuillage && p.theme === 'foret') {
         const floraison = lisse(.38, .72, n + (habitat ? habitat.fleurs : 0) * .24);

@@ -1,0 +1,387 @@
+{
+  "date_utc": "2026-11-18T11:49:29.112875+00:00",
+  "suites": 64,
+  "reussies": 64,
+  "duree_secondes": 27.68,
+  "resultats": [
+    {
+      "suite": "verifications/ambiance.test.mjs",
+      "code": 0,
+      "secondes": 0.118
+    },
+    {
+      "suite": "verifications/aurores.test.mjs",
+      "code": 0,
+      "secondes": 0.204
+    },
+    {
+      "suite": "verifications/autoconfig-integration.test.mjs",
+      "code": 0,
+      "secondes": 0.109
+    },
+    {
+      "suite": "verifications/autoconfig.test.mjs",
+      "code": 0,
+      "secondes": 0.141
+    },
+    {
+      "suite": "verifications/botanique.test.mjs",
+      "code": 0,
+      "secondes": 0.612
+    },
+    {
+      "suite": "verifications/carene.test.mjs",
+      "code": 0,
+      "secondes": 0.158
+    },
+    {
+      "suite": "verifications/circuit.test.mjs",
+      "code": 0,
+      "secondes": 0.711
+    },
+    {
+      "suite": "verifications/collisions-orientees.test.mjs",
+      "code": 0,
+      "secondes": 0.125
+    },
+    {
+      "suite": "verifications/commandes-partage.test.mjs",
+      "code": 0,
+      "secondes": 0.08
+    },
+    {
+      "suite": "verifications/conditions-course.test.mjs",
+      "code": 0,
+      "secondes": 0.181
+    },
+    {
+      "suite": "verifications/conditions-integration.test.mjs",
+      "code": 0,
+      "secondes": 0.108
+    },
+    {
+      "suite": "verifications/conduite-criteres.test.mjs",
+      "code": 0,
+      "secondes": 2.373
+    },
+    {
+      "suite": "verifications/conduite.test.mjs",
+      "code": 0,
+      "secondes": 0.356
+    },
+    {
+      "suite": "verifications/contacts.test.mjs",
+      "code": 0,
+      "secondes": 0.177
+    },
+    {
+      "suite": "verifications/controle-visuel.test.mjs",
+      "code": 0,
+      "secondes": 0.104
+    },
+    {
+      "suite": "verifications/course.test.mjs",
+      "code": 0,
+      "secondes": 3.984
+    },
+    {
+      "suite": "verifications/crash.test.mjs",
+      "code": 0,
+      "secondes": 0.589
+    },
+    {
+      "suite": "verifications/decor-identite.test.mjs",
+      "code": 0,
+      "secondes": 3.139
+    },
+    {
+      "suite": "verifications/decor-obstacles.test.mjs",
+      "code": 0,
+      "secondes": 0.931
+    },
+    {
+      "suite": "verifications/decor.test.mjs",
+      "code": 0,
+      "secondes": 0.542
+    },
+    {
+      "suite": "verifications/desert.test.mjs",
+      "code": 0,
+      "secondes": 2.7
+    },
+    {
+      "suite": "verifications/ecologie.test.mjs",
+      "code": 0,
+      "secondes": 1.32
+    },
+    {
+      "suite": "verifications/effets-saison.test.mjs",
+      "code": 0,
+      "secondes": 1.292
+    },
+    {
+      "suite": "verifications/faune.test.mjs",
+      "code": 0,
+      "secondes": 5.307
+    },
+    {
+      "suite": "verifications/formes-libres.test.mjs",
+      "code": 0,
+      "secondes": 0.395
+    },
+    {
+      "suite": "verifications/glissiere-etats.test.mjs",
+      "code": 0,
+      "secondes": 0.087
+    },
+    {
+      "suite": "verifications/glissiere-rebond.test.mjs",
+      "code": 0,
+      "secondes": 0.057
+    },
+    {
+      "suite": "verifications/graphismes.test.mjs",
+      "code": 0,
+      "secondes": 0.096
+    },
+    {
+      "suite": "verifications/ia-attaque.test.mjs",
+      "code": 0,
+      "secondes": 13.492
+    },
+    {
+      "suite": "verifications/ia-epaves.test.mjs",
+      "code": 0,
+      "secondes": 0.111
+    },
+    {
+      "suite": "verifications/ia-reprise.test.mjs",
+      "code": 0,
+      "secondes": 0.139
+    },
+    {
+      "suite": "verifications/ia.test.mjs",
+      "code": 0,
+      "secondes": 0.122
+    },
+    {
+      "suite": "verifications/islande.test.mjs",
+      "code": 0,
+      "secondes": 2.535
+    },
+    {
+      "suite": "verifications/main.test.mjs",
+      "code": 0,
+      "secondes": 0.154
+    },
+    {
+      "suite": "verifications/manette.test.mjs",
+      "code": 0,
+      "secondes": 0.093
+    },
+    {
+      "suite": "verifications/mesures.test.mjs",
+      "code": 0,
+      "secondes": 0.096
+    },
+    {
+      "suite": "verifications/meteo-reelle.test.mjs",
+      "code": 0,
+      "secondes": 0.099
+    },
+    {
+      "suite": "verifications/meteo.test.mjs",
+      "code": 0,
+      "secondes": 0.141
+    },
+    {
+      "suite": "verifications/moteur-emprise.test.mjs",
+      "code": 0,
+      "secondes": 0.134
+    },
+    {
+      "suite": "verifications/nature-integration.test.mjs",
+      "code": 0,
+      "secondes": 0.093
+    },
+    {
+      "suite": "verifications/navigation-menu.test.mjs",
+      "code": 0,
+      "secondes": 0.079
+    },
+    {
+      "suite": "verifications/obstacles.test.mjs",
+      "code": 0,
+      "secondes": 0.08
+    },
+    {
+      "suite": "verifications/options-image.test.mjs",
+      "code": 0,
+      "secondes": 0.085
+    },
+    {
+      "suite": "verifications/pieces.test.mjs",
+      "code": 0,
+      "secondes": 0.695
+    },
+    {
+      "suite": "verifications/prets-enligne.test.mjs",
+      "code": 0,
+      "secondes": 0.092
+    },
+    {
+      "suite": "verifications/qualite.test.mjs",
+      "code": 0,
+      "secondes": 0.066
+    },
+    {
+      "suite": "verifications/realisateur.test.mjs",
+      "code": 0,
+      "secondes": 3.232
+    },
+    {
+      "suite": "verifications/relectures-phase2.test.mjs",
+      "code": 0,
+      "secondes": 0.318
+    },
+    {
+      "suite": "verifications/rendu-halo.test.mjs",
+      "code": 0,
+      "secondes": 0.102
+    },
+    {
+      "suite": "verifications/reprise-recul.test.mjs",
+      "code": 0,
+      "secondes": 0.104
+    },
+    {
+      "suite": "verifications/saisons.test.mjs",
+      "code": 0,
+      "secondes": 6.041
+    },
+    {
+      "suite": "verifications/salon-protocole.test.mjs",
+      "code": 0,
+      "secondes": 2.789
+    },
+    {
+      "suite": "verifications/scene-bench.test.mjs",
+      "code": 0,
+      "secondes": 2.248
+    },
+    {
+      "suite": "verifications/sillage.test.mjs",
+      "code": 0,
+      "secondes": 0.07
+    },
+    {
+      "suite": "verifications/son.test.mjs",
+      "code": 0,
+      "secondes": 0.108
+    },
+    {
+      "suite": "verifications/stands.test.mjs",
+      "code": 0,
+      "secondes": 6.392
+    },
+    {
+      "suite": "verifications/titre-signature.test.mjs",
+      "code": 0,
+      "secondes": 0.087
+    },
+    {
+      "suite": "verifications/traces.test.mjs",
+      "code": 0,
+      "secondes": 1.376
+    },
+    {
+      "suite": "verifications/troncs.test.mjs",
+      "code": 0,
+      "secondes": 0.65
+    },
+    {
+      "suite": "verifications/tunnel-transitions.test.mjs",
+      "code": 0,
+      "secondes": 0.259
+    },
+    {
+      "suite": "verifications/tunnel.test.mjs",
+      "code": 0,
+      "secondes": 0.555
+    },
+    {
+      "suite": "verifications/vegetation.test.mjs",
+      "code": 0,
+      "secondes": 12.453
+    },
+    {
+      "suite": "verifications/vitre.test.mjs",
+      "code": 0,
+      "secondes": 0.153
+    },
+    {
+      "suite": "verifications/voiture.test.mjs",
+      "code": 0,
+      "secondes": 2.473
+    }
+  ],
+  "version_cible": "0.2.35",
+  "base": "883f5ca9618157730d6212ecd0f7b79ea857f671",
+  "build": {
+    "version": "0.2.35",
+    "reproductible": true,
+    "sha256": "75e897dc0324f3bcef88a26cb85b69534bf8f52ce26371c98851ee1911512563",
+    "octets": 13220286,
+    "gzip": 3066260
+  },
+  "ferro": {
+    "version": "0.3.9",
+    "modules": 34,
+    "conformes": true,
+    "modifies": false
+  },
+  "nouveau_circuit": {
+    "controles": 6,
+    "mesures": {
+      "longueur": 4834,
+      "denivelePiste": 27.21766063841511,
+      "penteMax": 0.06799999999999995,
+      "arbres": 0,
+      "trianglesNappes": 88650,
+      "objets": 7049,
+      "lots": 33,
+      "ete": {
+        "ocre": 1,
+        "neige": 0,
+        "nuances": 46,
+        "relief": [
+          -57.68999481201172,
+          235.8329620361328
+        ]
+      },
+      "asymetrie": 19.410073246607787,
+      "rochers": 321,
+      "margeRochers": 33.19293171680859,
+      "hiver": {
+        "ocre": 0,
+        "neige": 1,
+        "nuances": 5,
+        "relief": [
+          -57.68999481201172,
+          235.8329620361328
+        ]
+      },
+      "course": {
+        "rivauxArrives": 11,
+        "duree": 248.83333333327136
+      }
+    }
+  },
+  "navigateur": {
+    "statut": "bloque_avant_ouverture",
+    "base_essayee": "0.2.34",
+    "raison": "Chromium process_singleton_posix.cc:297 : socket() failed: Operation not permitted (1).",
+    "controle_visuel_035_realise": false
+  },
+  "fps_materiels_mesures": false
+}

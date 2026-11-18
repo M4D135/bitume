@@ -1,0 +1,18 @@
+{
+  "version": "0.2.34",
+  "branche": "main",
+  "commit": "883f5ca9618157730d6212ecd0f7b79ea857f671",
+  "arbre": "aef39c3efe6c09eab7e968fb3f1f48f0649eb3b3",
+  "publication_github_verifiee": true,
+  "build_sha256": "812edd74f616cd6a31a4b419cfc89adcce0ba7ab84a0ba717dcac7f9821c8786",
+  "production_verifiee": {
+    "controle_utc": "2026-11-18T11:49:01.450272+00:00",
+    "url": "https://bitume.estrasse.fr/",
+    "deploiement_effectue": false,
+    "http": 200,
+    "version": "0.2.34",
+    "sha256": "812edd74f616cd6a31a4b419cfc89adcce0ba7ab84a0ba717dcac7f9821c8786",
+    "octets": 13215718
+  },
+  "deploiement_realise_dans_cette_session": false
+}
