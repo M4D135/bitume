@@ -5,12 +5,12 @@
     "base_commit": "14fc9dcaa0e6ecfce1ddb98420adcfc2072fa2e3",
     "base_version": "0.2.35",
     "version_cible": "0.2.36",
-    "statut": "lot_12_qualifie_publication_en_cours",
+    "statut": "lot_12_publie_github_deploiement_restant",
     "lot": "arriere_monoplace_312t5",
     "fiche": "docs/reprise/12-ARRIERE-MONOPLACE.md",
-    "commit_publie": null,
+    "commit_publie": "a7cdd5e3116dc294afbbca581ad87cb3973dd5fe",
     "catalogue_jouable": 5,
-    "prochaine_action": "Publier sources et build 0.2.36 sans force, enregistrer le reçu ; contrôler WebGL puis déployer via Mac/amiga. Ensuite un seul circuit en Asie.",
+    "prochaine_action": "Contrôler l’arrière en WebGL puis déployer 0.2.36 via ./deposer.sh depuis le Mac/amiga. Ensuite un seul circuit en Asie.",
     "qualification": {
       "suites": 64,
       "reussies": 64,
@@ -35,16 +35,17 @@
       "modules_identiques": 34
     },
     "publication_bitume": {
-      "version": "0.2.35",
-      "commit": "14fc9dcaa0e6ecfce1ddb98420adcfc2072fa2e3",
-      "arbre": "e14d106ff39a42b7b9f3113ea918be27e43016f5",
+      "version": "0.2.36",
+      "commit": "a7cdd5e3116dc294afbbca581ad87cb3973dd5fe",
+      "arbre": "e7bf0b6097ff6083e759e36b897244ed88c4a1b3",
       "branche": "main",
       "verifiee": true,
-      "force": false
+      "force": false,
+      "recu": "docs/reprise/rapports/arriere-monoplace-2026-11-18/publication.json"
     },
     "production_controle_final": {
       "url": "https://bitume.estrasse.fr/",
-      "controle_utc": "2026-11-18T12:02:30.840125+00:00",
+      "controle_utc": "2026-11-18T12:13:26.062918+00:00",
       "deploiement_effectue": false,
       "http": 200,
       "octets": 13215718,
@@ -83,6 +84,6 @@
       "Vroom officiel",
       "dépôt GitHub personnel Vroom Unreal"
     ],
-    "statut": "11B publié en 0.2.35 ; lot 12 arrière de monoplace prioritaire. Après contrôle visuel et déploiement, un seul circuit en Asie, cible totale de 16."
+    "statut": "11B publié en 0.2.35 ; lot 12 arrière publié en 0.2.36. Après contrôle visuel et déploiement, un seul circuit en Asie, cible totale de 16."
   }
 }

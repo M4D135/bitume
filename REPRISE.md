@@ -4,7 +4,7 @@
 
 - Branche unique : `main`, aucun push forcé.
 - **0.2.35 réellement publiée** : `14fc9dcaa0e6ecfce1ddb98420adcfc2072fa2e3` ; tête GitHub vérifiée.
-- **0.2.36 qualifiée, publication en cours** : arrière de la monoplace repris sur photos de 312 T5.
+- **0.2.36 publiée et vérifiée** : `a7cdd5e3116dc294afbbca581ad87cb3973dd5fe` ; arrière repris sur photos de 312 T5.
 - Cube gris remplacé par un carter nervuré ; quatre échappements creux, platines ajourées, suspension tubulaire,
   freins intérieurs, mât métallique et joues d'aileron arrondies. Jeu toujours entièrement procédural.
 - **64/64 suites**, deux builds identiques, **34 modules FERRO 0.3.9 conformes** ; 12 contrôles géométriques par rayons.
@@ -17,7 +17,8 @@
 ## Prochaine tranche
 
 Lire `docs/reprise/ETAT.json` puis **seulement** `docs/reprise/12-ARRIERE-MONOPLACE.md`.
-Vérifier le reçu GitHub du lot 12, contrôler l'arrière dans le vrai jeu et déployer via `./deposer.sh` depuis le Mac/amiga.
+Reçu : `docs/reprise/rapports/arriere-monoplace-2026-11-18/publication.json`.
+Contrôler l'arrière dans le vrai jeu et déployer via `./deposer.sh` depuis le Mac/amiga.
 Ensuite seulement : fiche 11, un seul nouveau circuit en Asie, avec publication vérifiée.
 
 ## Méthode
