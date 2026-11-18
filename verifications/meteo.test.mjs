@@ -70,7 +70,7 @@ const contexte={B,S:{lumiere:1,sillage:{sources:[{id:0}]}},meteo:{pluie:1,nuage:
   cam:{},camR:{},ps:{},suivie:{},vue:'cockpit',sortie:[],objets:[],rendu,retro:{rendu},horlogeReelle:2,
   P:{rendu:{msaa:4,shadowMapScale:2},qualite:'high'},avecOmbres:()=>true,avecReflets:()=>false,
   haloInt:true,lampes:[],dureeImage:16,eclair:0,scene:{decor:{tunnelLampes:[]},index:0},
-  G:{},i:0,dtImage:1/60,lampesTunnel:()=>[]};
+  G:{},i:0,dtImage:1/60,dtGlace:1/30,lampesTunnel:()=>[]};
 const preparation=source.match(/^\s*S\.ambianceImage = B\.meteo\.ambiance\([^\n]+;/m)?.[0];
 check(!!preparation,'préparation de l’ambiance par image');
 vm.runInNewContext(preparation,contexte);

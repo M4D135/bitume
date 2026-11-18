@@ -1571,44 +1571,121 @@
   // ---------------------------------------------------------------- rétroviseurs
   // David (16/11) : « les deux rétros bien visibles et bien foutus ». En vue cockpit, chaque glace reçoit l'image
   // réelle de la scène arrière : un second rendu FERRO, sur une petite toile hors de l'écran, depuis la glace et dans
-  // la direction qu'elle renvoie à l'œil (glace légèrement bombée : 34° de champ), une glace par image (30 Hz chacune).
+  // la direction qu'elle renvoie à l'œil (glace légèrement bombée : 34° de champ), les deux glaces en alternance au
+  // rythme du profil, compté en temps (30 Hz chacune en Fine, quelle que soit la fréquence de l'écran).
   // L'image est copiée dans la toile de la glace, retournée comme dans un miroir et posée sur les quatre coins
   // projetés de la glace par une transformation projective (matrix3d). Ce rendu a ses propres copies des nappes et
   // des lots : le moteur range ses tampons dans les lots. Réglage « Image des rétroviseurs » : image simple (fond
   // dessiné dans la glace) en qualité basse et, par défaut, sur écran tactile.
   const retro = { rendu: null, scene: -1, cote: 0, echec: false, objets: [], toiles: null, ctx: [], l: 0, h: 0 };
+  // État des glaces de chaque joueur (J1, J2), créé ici une fois : cadence au temps (dette, secondes écoulées depuis
+  // la dernière image de chaque glace), coins des glaces (voiture.js, glacesCockpit, sortie réécrite) et pose CSS de
+  // chaque toile, calculée à chaque image et écrite en fin d'image seulement si elle a changé (poserGlaces).
+  const nouvelleGlace = () => ({ k: 0, coins: [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]], centre: [0, 0, 0], normale: [0, 0, 0], droite: [0, 0, 0] });
+  const nouvellePoseCss = () => ({ v: new Float64Array(16), w: new Float64Array(16), ok: false, chaine: '', ecrite: null, visible: null });
+  const ETATS_GLACES = [0, 1].map(() => ({ vu: false, seance: null, dette: 0, ecoule: [0, 0], glaces: [nouvelleGlace(), nouvelleGlace()],
+    poses: [nouvellePoseCss(), nouvellePoseCss()], toiles: null, aPoser: false }));
+  // Caméra des glaces et objets de sa liste, réutilisés d'une glace à l'autre (le moteur relit tout à chaque draw)
+  const CAM_GLACE = { pos: [0, 0, 0], yaw: 0, pitch: 0, roll: 0, fov: 34, near: .3, far: 6000, sun: { center: [0, 0, 0], extent: 0, depth: 0 } };
+  const POSE_GLACES = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0 }, OPTIONS_RETRO = { roues: undefined, casse: false };
+  const OPTIONS_GLACE = [], AXE_GLACE = [0, 0, 0], AXE_VUE = [0, 0, 0], COINS_ECRAN = new Float64Array(8);
+  // caméra principale pour projeter les coins des glaces (axes comme le moteur, cameraAxes), réécrite à chaque image
+  const PROJ = { x: 0, y: 0, z: 0, dr0: 0, dr1: 0, dr2: 0, up0: 0, up1: 0, up2: 0, av0: 0, av1: 0, av2: 0, L: 1, H: 1, t: 1, asp: 1 };
+  // coin p d'une glace projeté à l'écran, rangé en Q[2j], Q[2j + 1] ; faux s'il est derrière la caméra
+  function projeterCoin(p, j, Q) {
+    const C = PROJ, q0 = p[0] - C.x, q1 = p[1] - C.y, q2 = p[2] - C.z, z = q0 * C.av0 + q1 * C.av1 + q2 * C.av2;
+    if (z < .05) return false;
+    Q[2 * j] = ((q0 * C.dr0 + q1 * C.dr1 + q2 * C.dr2) / (z * C.t * C.asp) + 1) / 2 * C.L;
+    Q[2 * j + 1] = (1 - (q0 * C.up0 + q1 * C.up1 + q2 * C.up2) / (z * C.t)) / 2 * C.H;
+    return true;
+  }
+  // Ce qui est derrière la glace au-delà de la taille de l'objet et d'un mètre n'y paraîtrait pas. Les aurores
+  // (rubans lointains) et les objets sans position restent.
+  function devantGlace(o, axe, ox, oy, oz) {
+    if (o.overlay) return false;
+    const p = o.p, s = o.s;
+    if (!p || o.aurore) return true;
+    const marge = 1 + (s ? Math.max(Math.abs(s[0]) || 0, Math.abs(s[1]) || 0, Math.abs(s[2]) || 0) : 0);
+    return (p[0] - ox) * axe[0] + (p[1] - oy) * axe[1] + (p[2] - oz) * axe[2] >= -marge;
+  }
+  // niveaux de détail du plus lourd au plus léger : le plus léger des deux
+  const RANG_DETAIL = { complet: 2, moyen: 1, simple: 0 };
+  const plusLeger = (a, b) => RANG_DETAIL[a] <= RANG_DETAIL[b] ? a : b;
+  // Chrome ne confie au processeur graphique qu'une toile 2D d'au moins 256 × 257 pixels : en deçà, chaque copie de
+  // l'image WebGL vers la toile d'une glace repasse par le processeur central. La toile du moteur des glaces (et donc
+  // celles des glaces, de même taille) garde au moins 66 000 pixels quelle que soit la densité de l'écran.
+  const PIXELS_GLACE = 66000;
+  function ratioGlaces(l, h, dpr) {
+    let r = Math.min(dpr || 1, 1.5);
+    if (!(l > 0 && h > 0) || Math.round(l * r) * Math.round(h * r) >= PIXELS_GLACE) return r;
+    r = Math.max(r, Math.sqrt(PIXELS_GLACE / (l * h)));
+    while (Math.round(l * r) * Math.round(h * r) < PIXELS_GLACE && r < 2) r += .005;
+    return Math.min(r, 2);
+  }
+  // Lots du décor pour le moteur des glaces : copies sans les tampons du moteur principal (chaque moteur range les
+  // siens dans le lot) et sans les tapis d'herbe rase (lot.tapis, vegetation.js). Préparée pour la création du moteur
+  // des glaces au chargement (lot « chargement ») : la course copie encore tous les lots (majGlaces), retirer l'herbe
+  // des glaces est un changement d'image à vérifier par captures avant de la brancher.
+  function lotsGlaces(decor) {
+    const lots = [];
+    for (const l of decor.lots) if (!l.tapis) lots.push(Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null }));
+    return lots;
+  }
+  // Axe du regard (vecteur unité) d'une caméra, comme le moteur (cameraAxes)
+  function axeCamera(cam, axe) {
+    const cp = Math.cos(cam.pitch || 0);
+    axe[0] = Math.sin(cam.yaw) * cp; axe[1] = Math.sin(cam.pitch || 0); axe[2] = -Math.cos(cam.yaw) * cp;
+    return axe;
+  }
   function retroVoulu(S, vue) {
     const r = reglages.retro === 'auto' ? (estTactile ? 'non' : 'oui') : reglages.retro;
     // Le profil décide : image des glaces refusée d'office au palier bas et aux paliers Auto les plus serrés.
     return r === 'oui' && vue === 'cockpit' && S.type !== 'vitrine' && !retro.echec && !cameraEssai && profilDe(S).effets.retroImages;
   }
-  // homographie du carré unité vers le quadrilatère q (images de (0,0), (1,0), (1,1), (0,1)), puis matrix3d CSS
-  // pour une toile de l × h pixels CSS
-  function matrice3d(q, l, h) {
-    const [x0, y0] = q[0], [x1, y1] = q[1], [x2, y2] = q[2], [x3, y3] = q[3];
+  // Homographie du carré unité vers le quadrilatère Q (images de (0,0), (1,0), (1,1), (0,1), rangées x0, y0, … x3, y3),
+  // pour une toile de l × h pixels CSS : v reçoit les seize valeurs de la matrix3d CSS. Faux si elle n'existe pas
+  // (coins alignés, valeur non finie). Sans tableau ni chaîne : la chaîne n'est refaite que si une valeur change.
+  function homographie(Q, l, h, v) {
+    const x0 = Q[0], y0 = Q[1], x1 = Q[2], y1 = Q[3], x2 = Q[4], y2 = Q[5], x3 = Q[6], y3 = Q[7];
     const dx1 = x1 - x2, dx2 = x3 - x2, dy1 = y1 - y2, dy2 = y3 - y2, sx = x0 - x1 + x2 - x3, sy = y0 - y1 + y2 - y3;
     const det = dx1 * dy2 - dx2 * dy1;
-    if (Math.abs(det) < 1e-9) return null;
+    if (Math.abs(det) < 1e-9) return false;
     const g = (sx * dy2 - dx2 * sy) / det, k = (dx1 * sy - sx * dy1) / det;
     const a = x1 - x0 + g * x1, b = x3 - x0 + k * x3, d = y1 - y0 + g * y1, e = y3 - y0 + k * y3;
-    const v = [a / l, d / l, 0, g / l, b / h, e / h, 0, k / h, 0, 0, 1, 0, x0, y0, 0, 1];
-    return v.every(Number.isFinite) ? 'matrix3d(' + v.map(x => +x.toFixed(6)).join(',') + ')' : null;
+    v[0] = a / l; v[1] = d / l; v[2] = 0; v[3] = g / l; v[4] = b / h; v[5] = e / h; v[6] = 0; v[7] = k / h;
+    v[8] = 0; v[9] = 0; v[10] = 1; v[11] = 0; v[12] = x0; v[13] = y0; v[14] = 0; v[15] = 1;
+    for (let i = 0; i < 16; i++) if (!Number.isFinite(v[i])) return false;
+    return true;
+  }
+  // chaîne CSS de la matrice (six décimales)
+  function chaineMatrice(v) {
+    let c = 'matrix3d(';
+    for (let i = 0; i < 16; i++) c += (i ? ',' : '') + (+v[i].toFixed(6));
+    return c + ')';
+  }
+  // Écrit en fin d'image (après tous les rendus de l'image) les poses des toiles qui ont changé : une écriture de
+  // style avant un draw forçait un recalcul de style au draw suivant (le moteur lit la taille de sa toile).
+  function poserGlaces() {
+    for (const J of ETATS_GLACES) {
+      if (!J.aPoser) continue;
+      J.aPoser = false;
+      for (let i = 0; i < 2; i++) {
+        const t = J.toiles[i], P = J.poses[i];
+        if (P.visible !== P.ok) { t.style.visibility = P.ok ? '' : 'hidden'; P.visible = P.ok; }
+        if (P.ok && P.ecrite !== P.chaine) { t.style.transform = P.chaine; P.ecrite = P.chaine; }
+      }
+    }
   }
   function majGlaces(S, vue, cam, ps, sortie, ambiance, suivie, dtImage) {
-    // à deux, le joueur 2 a ses deux glaces, posées sur sa moitié ; chaque joueur rafraîchit une glace par image
+    // à deux, le joueur 2 a ses deux glaces, posées sur sa moitié
     const G = S !== session ? (retro.j2 || (retro.j2 = { toiles: [$('glace-g2'), $('glace-d2')], ctx: [], cote: 0 }))
       : (retro.j1 || (retro.j1 = { toiles: [$('glace-g'), $('glace-d')], ctx: [], cote: 0 }));
-    const toiles = G.toiles;
+    const toiles = G.toiles, J = ETATS_GLACES[S !== session ? 1 : 0];
     const voir = retroVoulu(S, vue);
     for (const t of toiles) if (t.hidden === voir) t.hidden = !voir;
+    // nouvelle séance (course, référence) : les glaces repartent comme à leur premier affichage
+    if (!voir || J.seance !== session) { J.vu = false; J.seance = session; }
     if (!voir) return;
-    // Cadence des glaces (src/graphismes.js) : une glace par image donne déjà 30 images/s par glace. Les paliers
-    // serrés peignent une image sur deux, sur quatre, et laissent à l'écran la dernière image faite, au lieu de
-    // payer un rendu complet pour un miroir que l'œil ne distingue plus.
-    const P = profilDe(S), hzGlaces = P.secondaires.retroviseurs.hz;
-    const saut = Math.max(1, Math.round(30 / Math.max(1, hzGlaces)));
-    G.pas = ((G.pas | 0) + 1) % saut;
-    if (G.pas) return;
     const source = $('retro-rendu');
     if (!retro.rendu) {
       try { retro.rendu = window.FRender.create(source, { msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' }); retro.rendu.resize(Math.min(window.devicePixelRatio || 1, 1.5)); }
@@ -1622,55 +1699,115 @@
       retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })));
       retro.scene = scene;
     }
-    // axes de la caméra principale, comme le moteur (cameraAxes) : chaque coin de glace projeté à l'écran
+    // Toile du moteur des glaces : au moins PIXELS_GLACE pixels (voir ratioGlaces). Sa taille CSS est fixe (style.css,
+    // .retro-rendu) : relue seulement quand la densité de l'écran change.
+    const dpr = window.devicePixelRatio || 1;
+    if (retro.dpr !== dpr) {
+      retro.dpr = dpr; retro.l = source.clientWidth; retro.h = source.clientHeight;
+      const r = ratioGlaces(retro.l, retro.h, dpr);
+      if (retro.rendu.stats.pixelRatio !== r) retro.rendu.resize(r);
+    }
+    const l = retro.l, h = retro.h;
+    // Coins des glaces projetés à l'écran à chaque image, quelle que soit la cadence : la glace suit son boîtier même
+    // les images où elle n'est pas repeinte. Axes de la caméra principale comme le moteur (cameraAxes).
     const cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw), cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch), cr = Math.cos(cam.roll || 0), sr = Math.sin(cam.roll || 0);
-    const r0 = [cy, 0, sy], u0 = [-sy * sp, cp, cy * sp];
-    const dr = r0.map((v, i) => v * cr + u0[i] * sr), up = u0.map((v, i) => v * cr - r0[i] * sr), av = [sy * cp, sp, -cy * cp];
-    const L = canvas.clientWidth, H = canvas.clientHeight, t = Math.tan(cam.fov * Math.PI / 360), asp = L / Math.max(1, H);
-    const ecran = p => {
-      const q = [p[0] - cam.pos[0], p[1] - cam.pos[1], p[2] - cam.pos[2]], z = q[0] * av[0] + q[1] * av[1] + q[2] * av[2];
-      if (z < .05) return null;
-      return [((q[0] * dr[0] + q[1] * dr[1] + q[2] * dr[2]) / (z * t * asp) + 1) / 2 * L, (1 - (q[0] * up[0] + q[1] * up[1] + q[2] * up[2]) / (z * t)) / 2 * H];
-    };
-    const glaces = B.voiture.glacesCockpit({ p: [ps.x, ps.y, ps.z], cap: ps.cap, tangage: ps.tangage, roulis: ps.roulis });
-    const l = source.clientWidth, h = source.clientHeight;
-    glaces.forEach((g, i) => {
+    const r00 = cy, r01 = 0, r02 = sy, u00 = -sy * sp, u01 = cp, u02 = cy * sp, C = PROJ;
+    C.dr0 = r00 * cr + u00 * sr; C.dr1 = r01 * cr + u01 * sr; C.dr2 = r02 * cr + u02 * sr;
+    C.up0 = u00 * cr - r00 * sr; C.up1 = u01 * cr - r01 * sr; C.up2 = u02 * cr - r02 * sr; C.av0 = sy * cp; C.av1 = sp; C.av2 = -cy * cp;
+    C.L = canvas.clientWidth; C.H = canvas.clientHeight; C.t = Math.tan(cam.fov * Math.PI / 360); C.asp = C.L / Math.max(1, C.H);
+    C.x = cam.pos[0]; C.y = cam.pos[1]; C.z = cam.pos[2];
+    const Q = COINS_ECRAN;
+    const ev = POSE_GLACES;
+    ev.p[0] = ps.x; ev.p[1] = ps.y; ev.p[2] = ps.z; ev.cap = ps.cap; ev.tangage = ps.tangage; ev.roulis = ps.roulis;
+    const glaces = B.voiture.glacesCockpit(ev, J.glaces);
+    J.toiles = toiles;
+    for (let i = 0; i < 2; i++) {
       // image retournée : son coin haut gauche va au coin haut droit de la glace
-      const q = [g.coins[1], g.coins[0], g.coins[3], g.coins[2]].map(ecran), m = q.every(Boolean) ? matrice3d(q, l, h) : null;
-      if (!m) { toiles[i].style.visibility = 'hidden'; return; }
-      toiles[i].style.visibility = ''; toiles[i].style.transform = m;
-    });
-    // une glace par image : la caméra est à la glace et regarde dans la direction réfléchie du regard
-    const g = glaces[G.cote], i = G.cote; G.cote = 1 - G.cote;
+      const g = glaces[i], PC = J.poses[i], v = PC.v;
+      const ok = projeterCoin(g.coins[1], 0, Q) && projeterCoin(g.coins[0], 1, Q) && projeterCoin(g.coins[3], 2, Q) && projeterCoin(g.coins[2], 3, Q) && homographie(Q, l, h, v);
+      if (changee(v, PC) || (ok && PC.chaine === '')) PC.chaine = ok ? chaineMatrice(v) : '';
+      PC.ok = ok;
+    }
+    J.aPoser = true;
+    // Cadence au temps (src/graphismes.js, hz par glace) : une glace toutes les 1/(2 hz) s, les côtés en alternance,
+    // deux au plus par image ; le même coût par seconde à 30, 60, 120 ou 144 Hz. À l'image la plus proche de
+    // l'échéance (demi-image de tolérance) ; une dette bornée à deux glaces : après un accroc, les deux glaces sont
+    // repeintes, sans rafale de rattrapage. La première image où les glaces se montrent, les deux sont peintes.
+    const P = profilDe(S), hz = P.secondaires.retroviseurs.hz;
+    if (!(hz > 0)) return;
+    const intervalle = 1 / (2 * hz), dt = Math.max(0, dtImage || 0);
+    if (!J.vu) { J.vu = true; J.dette = 2 * intervalle; J.ecoule[0] = J.ecoule[1] = 0; }
+    else J.dette = Math.min(J.dette + dt, 2 * intervalle);
+    J.ecoule[0] += dt; J.ecoule[1] += dt;
+    for (let n = 0; n < 2 && J.dette >= intervalle - dt / 2; n++) {
+      J.dette -= intervalle;
+      const i = G.cote; G.cote = 1 - G.cote;
+      const dtGlace = J.ecoule[i]; J.ecoule[i] = 0;
+      peindreGlace(S, G, i, glaces[i], cam, ps, sortie, ambiance, suivie, P, source, l, h, dtGlace);
+    }
+  }
+  // quelque valeur de la matrice a-t-elle changé depuis la dernière chaîne ? (mémorise les valeurs)
+  function changee(v, P) {
+    const w = P.w;
+    let diff = false;
+    for (let i = 0; i < 16; i++) if (w[i] !== v[i]) { w[i] = v[i]; diff = true; }
+    return diff;
+  }
+  // Une glace : la caméra est à la glace et regarde dans la direction réfléchie du regard.
+  function peindreGlace(S, G, i, g, cam, ps, sortie, ambiance, suivie, P, source, l, h, dtGlace) {
+    const toiles = G.toiles;
     // Comme un vrai rétroviseur réglé par le pilote, le regard est ouvert de 9° vers l'extérieur et passe un peu
     // au-dessus de la caisse : la roue arrière et le ponton n'occupent que le bord intérieur de la glace.
-    const d0 = g.centre.map((v, k) => v - cam.pos[k]), dn = Math.hypot(d0[0], d0[1], d0[2]) || 1, dv = d0.map(v => v / dn);
-    const pn = dv[0] * g.normale[0] + dv[1] * g.normale[1] + dv[2] * g.normale[2], rf = dv.map((v, k) => v - 2 * pn * g.normale[k]);
-    const ouvre = g.k * .16, co = Math.cos(ouvre), so = Math.sin(ouvre), rx = rf[0] * co - rf[2] * so, rz = rf[0] * so + rf[2] * co;
-    const pos = [g.centre[0], g.centre[1] + .1, g.centre[2]];
-    const camR = { pos, yaw: Math.atan2(rx, -rz), pitch: Math.asin(clamp(rf[1], -1, 1)) + .06, roll: ps.roulis * .85, fov: 2 * Math.atan(Math.tan(16 * Math.PI / 180) * h / l) * 180 / Math.PI, near: .3, far: PORTEE_VUE };
-    camR.sun = Object.assign({ center: [ps.x, ps.y, ps.z] }, scene.ombre);
-    // tout sauf l'habitacle (pièces « overlay »), plus la roue arrière de la voiture elle-même, qui entre au bord
-    // extérieur de la glace comme dans un vrai rétroviseur (le reste de la caisse boucherait la vue ; les dérives de
-    // l'aileron arrière faisaient deux « carrés rouges », David 16/11)
-    const objets = retro.objets; objets.length = 0;
-    for (const o of sortie) if (!o.overlay) objets.push(o);
-    const n0 = objets.length, ca = Math.cos(ps.cap), sa = Math.sin(ps.cap);
-    B.voiture.poser(S.modeles[suivie.id], { p: [ps.x, ps.y, ps.z], cap: ps.cap, tangage: ps.tangage, roulis: ps.roulis, braquage: ps.braquage, roule: S.rouleVu ? S.rouleVu[suivie.id] : ps.roule, rebond: ps.rebond, v: suivie.etat.v }, objets, { roues: suivie.degats && suivie.degats.roues, casse: !!(suivie.etat.degats && suivie.etat.degats.casse) });
-    for (let k = objets.length - 1; k >= n0; k--) {
-      const o = objets[k], dx = o.p[0] - ps.x, dz = o.p[2] - ps.z, x = dx * ca + dz * sa, z = dz * ca - dx * sa;
-      if (!(Math.abs(x - B.voiture.ROUES[2].x) < .5 && Math.abs(z) > .55)) objets.splice(k, 1);
-    }
+    const d00 = g.centre[0] - cam.pos[0], d01 = g.centre[1] - cam.pos[1], d02 = g.centre[2] - cam.pos[2], dn = Math.hypot(d00, d01, d02) || 1;
+    const dv0 = d00 / dn, dv1 = d01 / dn, dv2 = d02 / dn, n = g.normale;
+    const pn = dv0 * n[0] + dv1 * n[1] + dv2 * n[2], rf0 = dv0 - 2 * pn * n[0], rf1 = dv1 - 2 * pn * n[1], rf2 = dv2 - 2 * pn * n[2];
+    const ouvre = g.k * .16, co = Math.cos(ouvre), so = Math.sin(ouvre), rx = rf0 * co - rf2 * so, rz = rf0 * so + rf2 * co;
+    const camR = CAM_GLACE;
+    camR.pos[0] = g.centre[0]; camR.pos[1] = g.centre[1] + .1; camR.pos[2] = g.centre[2];
+    camR.yaw = Math.atan2(rx, -rz); camR.pitch = Math.asin(clamp(rf1, -1, 1)) + .06; camR.roll = ps.roulis * .85;
+    camR.fov = 2 * Math.atan(Math.tan(16 * Math.PI / 180) * h / l) * 180 / Math.PI; camR.near = .3; camR.far = PORTEE_VUE;
+    const sun = camR.sun;
+    sun.center[0] = ps.x; sun.center[1] = ps.y; sun.center[2] = ps.z; sun.extent = scene.ombre.extent; sun.depth = scene.ombre.depth;
+    const objets = listeGlace(S, camR, sortie, suivie, source.height);
     if (S.nature && (retro.ambianceSource !== S.nature.ambiance || retro.ambianceRevision !== S.nature.ambiance.revision)) {
       if (retro.rendu.setEnvironment) retro.rendu.setEnvironment(S.nature.ambiance.atmosphere);
       retro.ambianceSource = S.nature.ambiance; retro.ambianceRevision = S.nature.ambiance.revision;
     }
-    retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, lights: lampesTunnel(G, 'lampes' + i, scene.decor.tunnelLampes, camR, dtImage, scene.index) });
+    retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, lights: lampesTunnel(G, i ? 'lampes1' : 'lampes0', scene.decor.tunnelLampes, camR, dtGlace, scene.index) });
     if (B.mesures.actif) B.mesures.vue('retro', retro.rendu);
     const ctx = G.ctx[i];
     if (toiles[i].width !== source.width || toiles[i].height !== source.height) { toiles[i].width = source.width; toiles[i].height = source.height; }
     ctx.drawImage(source, 0, 0);
   }
+  // Liste propre à une glace (avant : tous les objets de la vue). Décor vivant (faune, effets de saison, aurores),
+  // fantôme et feux : ce qui n'est pas derrière la glace (devantGlace). Voitures : reposées au niveau de détail de
+  // leur taille dans la toile de la glace, jamais plus lourd que la règle de la vue (plafond, avant le passage au
+  // modèle moyen derrière la caméra), aucune à plus de 8 m derrière la glace ; la voiture suivie n'y montre que sa
+  // roue arrière (voiture.js, poserRetro). Effets : leur propre appel, au même instant que la vue, sans coupure à
+  // distance. Même ordre qu'avant : décor, voitures, fantôme et feux, effets, roue arrière. Les objets de la vue sont
+  // réécrits : elle est déjà dessinée.
+  function listeGlace(S, camR, sortie, suivie, hauteur) {
+    const objets = retro.objets; objets.length = 0;
+    const axe = axeCamera(camR, AXE_GLACE), ox = camR.pos[0], oy = camR.pos[1], oz = camR.pos[2];
+    for (let k = 0, n = S.iVoitures0; k < n; k++) if (devantGlace(sortie[k], axe, ox, oy, oz)) objets.push(sortie[k]);
+    const co = S.course, poses = tampons.poses, tanDemi = Math.tan(clamp(camR.fov, 10, 110) * Math.PI / 360);
+    for (let k = 0; k < co.voitures.length; k++) {
+      if (k === suivie.id) continue;
+      const p = poses[k], ex = p.x - ox, ez = p.z - oz;
+      if (ex * axe[0] + (p.y - oy) * axe[1] + ez * axe[2] < -DERRIERE_CAMERA) continue;
+      const o = optionsGlace(k), v = co.voitures[k];
+      o.detail = plusLeger(OPTIONS_POSE[k].plafond, detailVoiture(ex * ex + ez * ez, tanDemi, hauteur));
+      o.roues = v.degats && v.degats.roues; o.casse = !!(v.degats && v.degats.casse);
+      B.voiture.poser(S.modeles[k], POSES_RENDU[k], objets, o);
+    }
+    for (let k = S.iVoitures1, n = S.iEffets0; k < n; k++) if (devantGlace(sortie[k], axe, ox, oy, oz)) objets.push(sortie[k]);
+    B.traces.dessiner(S.fx, objets, camR.pos, S.hEffets, axe, 0);
+    const R = OPTIONS_RETRO;
+    R.roues = suivie.degats && suivie.degats.roues; R.casse = !!(suivie.etat.degats && suivie.etat.degats.casse);
+    B.voiture.poserRetro(S.modeles[suivie.id], POSES_RENDU[suivie.id], objets, R);
+    return objets;
+  }
+  function optionsGlace(k) { return OPTIONS_GLACE[k] || (OPTIONS_GLACE[k] = nouvellesOptions()); }
 
   // ---------------------------------------------------------------- rendu d'une image
   const MATRICE_LAMPE = cap => {
@@ -1686,7 +1823,7 @@
   // vue (J2, puis J1, puis leurs glaces) finit de s'en servir avant que la suivante les réécrive. Seize voitures au
   // plus (onze rivaux, quatre humains) ; au-delà, les tableaux grandissent.
   const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0 });
-  const nouvellesOptions = () => ({ detail: 'complet', roues: undefined, casse: false });
+  const nouvellesOptions = () => ({ detail: 'complet', roues: undefined, casse: false, plafond: 'complet' });
   const POSES_RENDU = Array.from({ length: 16 }, nouvellePose), OPTIONS_POSE = Array.from({ length: 16 }, nouvellesOptions);
   const POSE_FANTOME = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0 };
   const ETAT_COCKPIT = { regime: 0, volant: 0, rapport: 0, kmh: 0, roues: undefined, casse: false, passage: 1, rapportAvant: undefined,
@@ -1694,6 +1831,8 @@
   const SUIVEURS = [], RESERVE_SUIVEURS = Array.from({ length: 16 }, () => ({ x: 0, z: 0, couleur: null })), AUCUN_SUIVEUR = Object.freeze([]);
   const SOLEILS = [{ center: [0, 0, 0], extent: 0, depth: 0 }, { center: [0, 0, 0], extent: 0, depth: 0 }];
   const LAMPES_PORTIQUE = [], FEU_ALLUME = [1, .14, .06], FEU_ETEINT = [.1, .03, .03], TAILLE_FEU = [.56, .05, .56];
+  // une voiture plus loin que ces 8 m derrière le plan d'une caméra ne s'y voit que par son ombre portée vers l'avant
+  const DERRIERE_CAMERA = 8;
   function poseRendu(k, p, roule, v) {
     const ev = POSES_RENDU[k] || (POSES_RENDU[k] = nouvellePose());
     ev.p[0] = p.x; ev.p[1] = p.y; ev.p[2] = p.z;
@@ -1794,7 +1933,9 @@
         if (t2.width !== canvas.width || t2.height !== canvas.height) { t2.width = canvas.width; t2.height = canvas.height; }
         ctx2.drawImage(canvas, 0, 0);
       }
-      return rendreVue(S, j, reglages.vue, dtImage, meteo);
+      const camJ1 = rendreVue(S, j, reglages.vue, dtImage, meteo);
+      poserGlaces();
+      return camJ1;
     }
     // caméra : celle du joueur, ou celle que choisit le réalisateur de la démo
     let vue = reglages.vue, suivie = j;
@@ -1805,7 +1946,9 @@
       if (S.planVu !== pl) { S.planVu = pl; S.camCap = null; S.tete = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; }
       vue = pl.vue; suivie = co.voitures[pl.sujet];
     } else if (j.fini && S.finA !== null && co.horloge - S.finA > 2.5) vue = 'tele';
-    return rendreVue(S, suivie, vue, dtImage, meteo);
+    const camVue = rendreVue(S, suivie, vue, dtImage, meteo);
+    poserGlaces();
+    return camVue;
   }
   // Une vue : caméra, objets, effets et rendu, pour la voiture suivie. S est l'état de la vue (la séance, ou celui du
   // joueur 2 à deux, qui hérite de la séance).
@@ -1869,6 +2012,7 @@
     // toile suit l'écran et la résolution du profil ; le seuil suit le champ (un téléobjectif garde le modèle complet
     // bien plus loin).
     const tanDemi = Math.tan(clamp(cam.fov, 10, 110) * Math.PI / 360), hauteur = canvas.height;
+    S.iVoitures0 = sortie.length;   // repères de la liste pour celle des glaces (listeGlace)
     for (let k = 0; k < co.voitures.length; k++) {
       const p = poses[k], dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], d2 = dx * dx + dz * dz;
       const ev = poseRendu(k, p, RV[k], co.voitures[k].etat.v);
@@ -1884,10 +2028,15 @@
         B.voiture.cockpit(S.modeles[k], ev, sortie, etc);
         continue;
       }
+      // Derrière le plan de la caméra, une voiture ne se voit que par son ombre : modèle moyen au plus, même
+      // silhouette. Les glaces la reposent à leur propre niveau, plafonné par la règle de la vue.
       const o = optionsPose(k);
-      o.detail = detailVoiture(d2, tanDemi, hauteur); o.roues = co.voitures[k].degats && co.voitures[k].degats.roues; o.casse = !!(co.voitures[k].degats && co.voitures[k].degats.casse);
+      o.plafond = detailVoiture(d2, tanDemi, hauteur);
+      o.detail = o.plafond === 'complet' && dx * avX + dz * avZ < -DERRIERE_CAMERA ? 'moyen' : o.plafond;
+      o.roues = co.voitures[k].degats && co.voitures[k].degats.roues; o.casse = !!(co.voitures[k].degats && co.voitures[k].degats.casse);
       B.voiture.poser(S.modeles[k], ev, sortie, o);
     }
+    S.iVoitures1 = sortie.length;
     // fantôme du meilleur tour
     if (co.mode === 'chrono') {
       const f = B.course.fantome(co);
@@ -1911,9 +2060,11 @@
         sortie.push(o);
       }
     }
-    // traces de pneus, fumée et étincelles
+    // traces de pneus, fumée et étincelles ; plus de 4 m derrière le plan de la caméra, rien ne se voit (traces.js,
+    // MARGE_ARRIERE) : les glaces ont leur propre appel, au même instant (S.hEffets)
+    S.iEffets0 = sortie.length; S.hEffets = S.fx.acc;
     const tFx = (S.banc || B.mesures.actif) ? performance.now() : 0;
-    B.traces.dessiner(S.fx, sortie, cam.pos, S.fx.acc);
+    B.traces.dessiner(S.fx, sortie, cam.pos, S.hEffets, axeCamera(cam, AXE_VUE), 0);
     if (tFx) { const dFx = performance.now() - tFx; if (S.banc) S.banc.effets += dFx; if (B.mesures.actif) B.mesures.section('effets', dFx); }
     // uEffects.z colore tout l'écran : la rougeur suit seulement l'éclair du choc, jamais les dégâts persistants.
     const eclair = S.eclair || 0;
