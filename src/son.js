@@ -31,6 +31,62 @@
   const panoramique = angle => clamp(Math.sin(angle), -1, 1);
   const MAX_RIVAUX = 3;
 
+  // Claquements d'échappement (lot 20 ; décidés par src/echappement.js) : tampons synthétisés hors ligne, une fois au
+  // démarrage. Bruit blanc d'un hasard propre (jamais Math.random : deux démarrages donnent les mêmes sons), filtres
+  // biquadratiques (formules de R. Bristow-Johnson), enveloppes brèves ; chaque composante est ramenée à une crête de 1
+  // avant le mélange, pour doser à l'oreille et non au hasard des gains de filtre. Aucune hauteur jouée : du bruit
+  // mis en forme (règle « pas de musique en course »).
+  // - détonation (passage) : coup sourd du corps (passe-bas résonant 85 à 150 Hz), anneau du tube (passe-bande), attaque
+  //   sèche (bruit aigu très bref) ; une variante sur deux claque en deux temps (« ba-bang ») ;
+  // - crépitement (pied levé) : grappe de deux à quatre claquements très brefs sur un petit pop sourd ;
+  // - raté (rupteur) : « bouf » étouffé, attaque lente, presque sans aigu.
+  function synthEchappement(sr = 48000) {
+    let x = 0x2F6B1D35;
+    const bruit = () => { x ^= x << 13; x >>>= 0; x ^= x >>> 17; x ^= x << 5; x >>>= 0; return x / 2147483648 - 1; };
+    function biquad(type, f, q) {
+      const w = 2 * Math.PI * Math.min(f, sr * .45) / sr, cw = Math.cos(w), al = Math.sin(w) / (2 * q);
+      const b0 = type === 'pb' ? (1 - cw) / 2 : type === 'ph' ? (1 + cw) / 2 : al;
+      const b1 = type === 'pb' ? 1 - cw : type === 'ph' ? -(1 + cw) : 0, b2 = type === 'pbd' ? -al : b0;
+      const a0 = 1 + al, a1 = -2 * cw, a2 = 1 - al;
+      let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+      return v => { const y = (b0 * v + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2) / a0; x2 = x1; x1 = v; y2 = y1; y1 = y; return y; };
+    }
+    const crete = (d, c) => { let m = 0; for (let i = 0; i < d.length; i++) m = Math.max(m, Math.abs(d[i])); if (m > 0) for (let i = 0; i < d.length; i++) d[i] *= c / m; return d; };
+    // une composante : bruit filtré par la chaîne `filtres`, porté par l'enveloppe env(t), crête 1
+    const composante = (n, filtres, env) => {
+      const d = new Float32Array(n);
+      for (let i = 0; i < n; i++) { let v = bruit(); for (let j = 0; j < filtres.length; j++) v = filtres[j](v); d[i] = v * env(i / sr); }
+      return crete(d, 1);
+    };
+    const coup = (t, a, b) => t < 0 ? 0 : (1 - Math.exp(-t / a)) * Math.exp(-t / b);      // montée a, chute b
+    const melanger = (n, parts, c) => { const d = new Float32Array(n); for (const [p, g] of parts) for (let i = 0; i < n; i++) d[i] += g * p[i]; return crete(d, c); };
+    const detonation = v => {
+      const n = Math.round(.17 * sr), double = v % 2 === 1, t2 = .016 + .006 * v;
+      const env = (a, b) => t => coup(t, a, b) + (double ? .55 * coup(t - t2, a, b * .8) : 0);
+      const corps = composante(n, [biquad('pb', 85 + 22 * v, 2.2)], env(.0015, .045));
+      const tube = composante(n, [biquad('pbd', 380 + 70 * ((v * 3) % 4), 3)], env(.001, .022));
+      const sec = composante(n, [biquad('ph', 900, .7), biquad('pb', 5200, .7)], t => Math.exp(-t / .005) + (double && t > t2 ? .6 * Math.exp(-(t - t2) / .004) : 0));
+      return melanger(n, [[corps, .75], [tube, .3], [sec, .4]], .95);
+    };
+    const crepitement = v => {
+      const n = Math.round(.07 * sr), k = 2 + v % 3, instants = [0];
+      for (let j = 1; j < k; j++) instants.push(instants[j - 1] + .004 + .012 * (bruit() * .5 + .5));
+      const clics = composante(n, [biquad('pbd', 1600 + 450 * v, 1.2)], t => { let e = 0; for (let j = 0; j < k; j++) e += Math.pow(.7, j) * (t >= instants[j] ? Math.exp(-(t - instants[j]) / .0012) : 0); return e; });
+      const pop = composante(n, [biquad('pb', 230 + 40 * v, 1.5)], t => coup(t, .001, .012));
+      return melanger(n, [[clics, .6], [pop, .5]], .9);
+    };
+    const rate = v => {
+      const n = Math.round(.13 * sr);
+      const sourd = composante(n, [biquad('pb', 160 + 40 * v, 1.8)], t => coup(t, .004, .05));
+      const souffle = composante(n, [biquad('pbd', 700 + 150 * v, .8)], t => coup(t, .002, .02));
+      return melanger(n, [[sourd, .85], [souffle, .2]], .9);
+    };
+    return { detonation: [0, 1, 2, 3].map(detonation), crepitement: [0, 1, 2, 3, 4, 5].map(crepitement), rate: [0, 1, 2].map(rate) };
+  }
+  const GENRES_ECH = ['detonation', 'crepitement', 'rate'];
+  const NIVEAU_ECH = { detonation: .42, crepitement: .24, rate: .3 };   // à pleine force, voiture tout près
+  const ECH_VOIX = 6, ECH_PAR_IMAGE = 6, ECH_LATENCE = .035;
+
   // Trois références dans un tampon réutilisé : pas de copie, tri global ni objet temporaire par image.
   // Les ids départagent les distances égales, indépendamment de l'ordre de parcours des voitures.
   function selectionnerRivaux(rivaux, sortie, joueur = -1, joueur2 = -1) {
@@ -81,6 +137,9 @@
     let maitre = null, busMot = null, busEff = null, bruit = null, m = null, m2 = null, pneus = null, vib = null, herbe = null;
     let deuxJoueurs = false, joueur2LibereA = 0;
     const voix = [], proches = [];
+    // échappement : voix préparées, tampons, lecture de la file de src/echappement.js
+    const voixEch = [], tamponsEch = {};
+    let echFile = null, echLu = 0, echVu = -1, echJoues = 0, echIgnores = 0;
 
     // rampe linéaire courte vers une valeur exacte (un 0 coupe vraiment)
     function rampe(p, v, t, d) { p.cancelScheduledValues(t); p.setValueAtTime(p.value, t); p.linearRampToValueAtTime(v, t + d); }
@@ -172,6 +231,20 @@
         const s = bruitEnBoucle(), pb = filtre('lowpass', 400, 0.7), g = gain(0);
         s.connect(pb).connect(g).connect(busEff); s.start(t);
         herbe = { g };
+      }
+      { // échappement : tampons et voix préparés ici, avant le départ (rien n'est construit en course)
+        const sr = ctx.sampleRate, synth = synthEchappement(sr);
+        for (const genre of GENRES_ECH) tamponsEch[genre] = synth[genre].map(d => {
+          const b = ctx.createBuffer(1, d.length, sr);
+          b.getChannelData(0).set(d);
+          return { buffer: b, duree: d.length / sr };
+        });
+        // sur le bus moteur : le curseur « moteur » les règle et le thème du titre les couvre comme les moteurs
+        for (let i = 0; i < ECH_VOIX; i++) {
+          const pb = filtre('lowpass', 8000, .7), g = gain(0), pan = ctx.createStereoPanner();
+          pb.connect(g).connect(pan).connect(busMot);
+          voixEch.push({ pb, g, pan, source: null, finA: 0, niveau: 0, duree: 1 });
+        }
       }
     }
 
@@ -314,13 +387,73 @@
       ponctuelle(s, [ph, g], t, 0.45);
     }
 
+    // ---------------------------------------------------------------- échappement
+    // Une source à usage unique sur un tampon préparé, branchée sur une voix préparée ; elle se débranche seule.
+    function finSource() { try { this.disconnect(); } catch (e) { /* déjà débranchée */ } }
+    // Voix libre, sinon la plus faible de celles qui sonnent encore, si elle l'est nettement plus que le nouveau son.
+    function voixPour(t, niveau) {
+      let libre = null, faible = null, reste = Infinity;
+      for (const v of voixEch) {
+        if (v.finA <= t) { libre = libre || v; continue; }
+        const r = v.niveau * (v.finA - t) / v.duree;
+        if (r < reste) { reste = r; faible = v; }
+      }
+      return libre || (faible && reste < niveau * .7 ? faible : null);
+    }
+    function jouerEchappement(v, tampon, hauteur, quand, niveau, frequence, pan) {
+      if (v.source) { try { v.source.stop(quand); } catch (e) { /* déjà finie */ } }
+      const s = ctx.createBufferSource();
+      s.buffer = tampon.buffer;
+      if (s.playbackRate) s.playbackRate.value = hauteur;
+      s.connect(v.pb); s.onended = finSource;
+      const g = v.g.gain;
+      g.cancelScheduledValues(quand); g.setValueAtTime(niveau, quand);
+      v.pb.frequency.setValueAtTime(frequence, quand); v.pan.pan.setValueAtTime(pan, quand);
+      const duree = tampon.duree / hauteur;
+      s.start(quand); s.stop(quand + duree + .01);
+      v.source = s; v.finA = quand + duree; v.niveau = niveau; v.duree = duree;
+    }
+    // Joue les claquements nouveaux de la file F de src/echappement.js (circulaire : n, taille, liste, horloge).
+    // ecoute : par voiture (adaptateur du jeu, majSon) { dedans: 1 pour la voiture entendue du cockpit, distance (m, < 0
+    // inconnue), angle (rad, 0 devant, positif à droite) }. Placés dans le temps comme dans la course, avec un léger
+    // retard constant (ECH_LATENCE) qui garde l'écart entre deux claquements d'une même image ; atténués et assourdis
+    // par la distance, placés par l'angle ; vus du cockpit, étouffés par la caisse. Six voix au plus, six départs par
+    // image au plus : le reste est compté comme ignoré.
+    function echappement(F, ecoute) {
+      if (!pret || !F || !F.liste) return;
+      const t = ctx.currentTime;
+      echVu = t;
+      if (F !== echFile) { echFile = F; echLu = Math.max(0, F.n - F.taille); }
+      if (enPause) { echLu = F.n; return; }
+      let joues = 0;
+      for (let i = Math.max(echLu, F.n - F.taille); i < F.n; i++) {
+        const e = F.liste[i % F.taille], k = e.voiture, retard = e.t - F.horloge;
+        const tampons = tamponsEch[e.genre];
+        if (!tampons || retard < -.25 || joues >= ECH_PAR_IMAGE) { echIgnores++; continue; }   // trop vieux : pas de rattrapage
+        const dedans = !!(ecoute && ecoute.dedans && ecoute.dedans[k]);
+        const d = dedans ? 0 : ecoute && ecoute.distance ? ecoute.distance[k] : 0;
+        const niveau = NIVEAU_ECH[e.genre] * clamp(+e.force || 0, 0, 1.2) * (dedans ? .7 : gainDistance(d));
+        if (!(d >= 0) || !(niveau >= .004)) { echIgnores++; continue; }
+        const v = voixPour(t, niveau);
+        if (!v) { echIgnores++; continue; }
+        const frequence = dedans ? 2600 : clamp(9500 / (1 + d / 35), 700, 9500);
+        const pan = dedans ? 0 : panoramique(ecoute && ecoute.angle ? +ecoute.angle[k] || 0 : 0) * .9;
+        jouerEchappement(v, tampons[(e.variante >>> 0) % tampons.length], clamp(+e.hauteur || 1, .8, 1.25), Math.max(t, t + ECH_LATENCE + retard), niveau, frequence, pan);
+        joues++; echJoues++;
+      }
+      echLu = F.n;
+    }
+
     function evenement(nom, p) {
       if (!pret) return;
       p = p || {};
       const t = ctx.currentTime;
+      // quand src/echappement.js mène les claquements (appel récent d'echappement), le passage et le rupteur ne
+      // coupent plus que le moteur : le claquement vient de la file, au même instant que la flamme
+      const echappe = echVu >= 0 && t - echVu < .5;
       switch (nom) {
-        case 'rapport': coupureMoteur(t); detonation(t, p.haut ? 0.7 : 0.5); break;
-        case 'rupteur': coupureMoteur(t); detonation(t, 0.8); break;
+        case 'rapport': coupureMoteur(t); if (!echappe) detonation(t, p.haut ? 0.7 : 0.5); break;
+        case 'rupteur': coupureMoteur(t); if (!echappe) detonation(t, 0.8); break;
         case 'choc': choc(t, clamp((p.force ?? 8) / 12, 0.2, 1)); break;           // vitesse perdue, m/s
         case 'contact': choc(t, clamp((p.force ?? 3) / 8, 0.15, 1) * 0.8); break;    // vitesse de rapprochement, m/s
         case 'reception': choc(t, clamp(0.3 + (p.force ?? 1) / 8, 0.2, 0.7)); break;  // la caisse retombe de son saut
@@ -413,17 +546,22 @@
       for (const g of [m.sortie.gain, m.echoG.gain, pneus.g1.gain, pneus.g2.gain, vib.g.gain, herbe.g.gain]) vise(g, 0, t, 0.03);
       if (m2) { vise(m2.sortie.gain, 0, t, .03); vise(m2.echoG.gain, 0, t, .03); }
       for (const v of voix) vise(v.sortie.gain, 0, t, .03);
+      for (const v of voixEch) vise(v.g.gain, 0, t, .03);
     }
     function reprendre() { enPause = false; }
     function stats() {
-      let rivaux = 0, fondus = 0;
+      let rivaux = 0, fondus = 0, actives = 0;
       if (pret) for (const v of voix) { if (v.id >= 0) rivaux++; else if (ctx.currentTime < v.libereA) fondus++; }
+      if (pret) for (const v of voixEch) if (ctx.currentTime < v.finA) actives++;
       const joueurs = pret ? 1 + (deuxJoueurs || ctx.currentTime < joueur2LibereA ? 1 : 0) : 0;
-      return { actif: pret, voix: joueurs + rivaux + fondus, joueurs, rivaux, fondus, budget: 2 + MAX_RIVAUX, musique: musiqueOn };
+      // les claquements d'échappement ont leur propre budget, à part de celui des moteurs
+      return { actif: pret, voix: joueurs + rivaux + fondus, joueurs, rivaux, fondus, budget: 2 + MAX_RIVAUX, musique: musiqueOn,
+        echappement: { voix: pret ? voixEch.length : 0, actives, budget: ECH_VOIX, parImage: ECH_PAR_IMAGE, joues: echJoues, ignores: echIgnores } };
     }
 
-    return { demarrer, regler, mettreAJour, evenement, musique, suspendre, reprendre, stats };
+    return { demarrer, regler, mettreAJour, evenement, echappement, musique, suspendre, reprendre, stats };
   }
 
-  B.son = { creer, frequenceAllumage, frequenceCycle, spectreMoteur, coupure, gainDistance, doppler, panoramique, selectionnerRivaux, MAX_RIVAUX, THEME };
+  B.son = { creer, frequenceAllumage, frequenceCycle, spectreMoteur, coupure, gainDistance, doppler, panoramique, selectionnerRivaux, MAX_RIVAUX, THEME,
+    synthEchappement, NIVEAU_ECH, ECH_VOIX, ECH_PAR_IMAGE, ECH_LATENCE };
 })(globalThis.BITUME = globalThis.BITUME || {});
