@@ -4,13 +4,13 @@
     "branche": "main",
     "base_commit": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
     "base_version": "0.2.38",
-    "statut": "lot_11d_publie_production_conforme_webgl_restant",
-    "lot": "cap_sequoia_pacifique_fps_demo_faune",
-    "fiche": "docs/reprise/11D-CAP-SEQUOIA.md",
+    "statut": "base_0_2_38_publiee_plan_russie_monaco_pneus_a_executer",
+    "lot": "plan_russie_monaco_roues_pneus",
+    "fiche": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
     "commit_publie": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
     "catalogue_jouable_publie": 7,
-    "catalogue_cible": 7,
-    "prochaine_action": "Contrôler le rendu WebGL et les FPS sur machine réelle. Prochain lot de contenu : un seul circuit original d’Europe du Nord ou de l’Est.",
+    "catalogue_cible": 9,
+    "prochaine_action": "Ouvrir 12A : contrat commun des quatre roues et catalogue slicks/inter/pluie/neige. Implémentation non commencée ; suivre le plan maître détaillé.",
     "checkpoint": "docs/reprise/rapports/cap-sequoia-2026-11-18/checkpoint.json",
     "catalogue_jouable": 7,
     "qualification": {
@@ -23,7 +23,8 @@
       "baseline_historique": "2a0c9d94c985f8b9b679355139cffc8d11b07122",
       "apercus_cpu_realises": true,
       "visuel_webgl_realise": false,
-      "preuve": "docs/reprise/rapports/cap-sequoia-2026-11-18/qualification.json"
+      "preuve": "docs/reprise/rapports/cap-sequoia-2026-11-18/qualification.json",
+      "version_qualifiee": "0.2.38"
     },
     "version_courante": "0.2.38",
     "recu": "docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json"
@@ -77,18 +78,25 @@
       "docs/reprise/archives/REPRISE-2026-11-18.md",
       "docs/reprise/archives/ETAT-2026-11-18.json"
     ],
-    "autres_chantiers": "Lots 0 a 4 termines ; optimisation lot 5 partielle. Details archives, ne pas rouvrir pendant la publication de ce lot."
+    "autres_chantiers": "Historique conservé ; priorité au nouveau plan roues/pneus/Russie/Monaco, un sous-lot actif à la fois."
   },
   "lot_precedent": {
-    "version": "0.2.37",
-    "commit": "2a0c9d94c985f8b9b679355139cffc8d11b07122",
-    "lot": "brume_de_jade_asie",
-    "recu": "docs/reprise/rapports/brume-de-jade-2026-11-18/publication.json"
+    "version": "0.2.38",
+    "commit": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
+    "lot": "cap_sequoia_pacifique_fps_demo_faune",
+    "recu": "docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json"
   },
   "lot_suivant": {
-    "numero": 11,
-    "cible": "16 circuits mondiaux distincts",
-    "regions": [
+    "numero": 12,
+    "fiche": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
+    "sous_lot": "12A",
+    "cible": "Roues et pneus réalistes, usure progressive, Russie et Monaco fidèle ; catalogue global de 16 circuits.",
+    "ordre": [
+      "12A-12F : roues, pneus, usure, physique, stands et réseau",
+      "13A-13B : circuit russe original, proposition Baïkal",
+      "14A-14F : Monaco réel 2026, fidélité et qualification"
+    ],
+    "regions_a_conserver": [
       "Europe",
       "Asie",
       "Afrique",
@@ -97,10 +105,24 @@
       "Europe de l’Est",
       "Islande avec aurores nocturnes"
     ],
-    "sources_demandees": [
-      "Vroom officiel",
-      "dépôt GitHub personnel Vroom Unreal"
+    "ajouts_demandes": [
+      "Russie",
+      "Monaco"
     ],
-    "statut": "11D publié et production conforme en 0.2.38 : 7 circuits sur 16, FPS démo et Faune. Rendu WebGL à contrôler sur machine réelle. Prochain contenu : un circuit original d’Europe du Nord ou de l’Est."
+    "catalogue_publie": 7,
+    "catalogue_apres_tranche": 9,
+    "catalogue_objectif": 16,
+    "statut": "Plan détaillé rédigé ; aucune implémentation de ces nouvelles demandes."
+  },
+  "plan_courant": {
+    "date": "2026-11-18",
+    "fichier": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
+    "base_reprise_commit": "9f9f97ca7dee3154f8ec517adaba675e0ec81ea4",
+    "statut": "plan_defini_implementation_non_commencee",
+    "premier_sous_lot": "12A",
+    "reference_monaco": "Parcours réel 2026 ; sources Formula 1 et FIA, relevé métrique complémentaire à constituer.",
+    "russie": "Baïkal proposé, circuit original ; nom/graine/longueur à fixer en 13A.",
+    "physique_actuelle": "p9",
+    "publication_plan": "Documentation uniquement ; jeu et build conservés en 0.2.38."
   }
 }

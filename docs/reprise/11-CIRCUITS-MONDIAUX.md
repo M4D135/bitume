@@ -70,6 +70,10 @@ Checkpoint de progression publié : `5368b4b` ; reçu du jeu qualifié dans `pub
 
 ## Tranche suivante
 
-Contrôler le jeu en WebGL et déployer dès que l’accès Mac/amiga est disponible.
-Poursuivre le programme de 16 circuits par un seul circuit original d’Europe du Nord ou de l’Est. Publier fréquemment les progrès,
-puis le code et le build qualifiés, sans force et sans nouvelle branche.
+La 0.2.38 et son build sont publiés (`baf4ddf`) ; la page publique a été vérifiée identique le 18 novembre à 14 h 47 (Paris). Le contrôle visuel WebGL reste à réaliser.
+
+**Nouvelle demande du 18 novembre : Russie et Monaco ultra fidèle**, avec refonte des roues, pneus neige/pluie, slicks lisses et usure progressive. Le plan actif est désormais **[12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md](12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md)**.
+
+La Russie et Monaco occupent deux places de la cible de 16 : sept circuits actuels, deux prévus dans cette tranche, puis sept places restantes. Baïkal est la proposition de travail pour la Russie ; Monaco suit le tracé réel de référence 2026. Aucun de ces deux circuits n’est encore implémenté. Premier lot de code : 12A, contrat roues/pneus ; circuits ensuite, un à la fois.
+
+Publier les progrès, puis le code et le build qualifiés, sans force et sans nouvelle branche. Conserver tous les IDs et graines existants.

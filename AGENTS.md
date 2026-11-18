@@ -84,7 +84,7 @@ n2]` tenus dans le cube unité (`B.carene.normaliser`) ; l'instance porte la vra
 - `voiture.attitude(cap, tangage, roulis)` = Ry(−cap)·Rz(tangage)·Rx(roulis), tangage > 0 nez levé.
 - Caméra FERRO : `yaw = cap + π/2`, `roll = −roulis`. Le champ (`fov`) est vertical, en degrés, borné de 10 à 110.
 - Simulation déterministe au pas fixe de 1/120 s, hasard par mulberry32 à graine.
-- Records et fantômes portent la version de la physique (`bitume.records.p8`) : changer la conduite oblige à la monter.
+- Records et fantômes portent la version de la physique (`PHYSIQUE` dans `src/jeu.js`, actuellement `p9` en 0.2.38) : changer effectivement la conduite oblige à incrémenter depuis la valeur présente ; une refonte visuelle seule la conserve.
 - Mouvement : le réglage « Secousses » (0 à 100 %) règle les secousses des chocs et le tremblement du casque ; nul à
   0 %, il part de 0 quand le système demande moins de mouvement (`prefers-reduced-motion`).
 
@@ -226,3 +226,12 @@ Les modules listés dans `FERRO.lock.json` sont désormais des copies exactes de
   `TOUCHES_DEFAUT` de `src/jeu.js` : flèches et ZQSD pour le joueur 1, pavé numérique pour le joueur 2), réglables
   dans les réglages. Manettes : deux pour deux ; une seule va au joueur 2. Souris refaite ici : position du pointeur
   pour tourner, bouton gauche gaz, droit frein, molette rapports ; en Auto, au joueur seul ou au joueur 2.
+
+## Décisions de David — 18 novembre 2026, Russie, Monaco et pneus
+
+- Préparer et publier le plan détaillé avant implémentation : `docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md`. Ce volet est la priorité actuelle du plan maître.
+- Ajouter un circuit en Russie et un **Monaco ultra fidèle**, reconstruit à partir du vrai parcours et de références vérifiables. La référence 2026 et le thème russe Baïkal sont les choix de départ documentés du plan ; Baïkal reste une proposition de localisation, pas une demande littérale de David.
+- Les deux circuits entrent dans l’objectif de 16 ; préserver les sept circuits actuels, leurs identifiants et graines. La reconstruction de Monaco est indépendante des tracés ou données de Vroom et des autres jeux.
+- Refaire les roues rondes et plus réalistes ; slick lisse, intermédiaire conservé, sculptures pluie et neige distinctes ; usure progressive visible, attachée à chaque roue et liée au roulage.
+- Préserver les dimensions de la monoplace et distinguer les lots visuels des changements de physique. Le type neige, l’état de chaussée, les stands et le réseau doivent rester cohérents.
+- Un seul sous-lot actif, premier lot **12A** ; publications fréquentes sur `main`, reprise courte et preuves de validation. Les sources/builds réellement modifiés sont publiés à leur jalon, et les validations WebGL manquantes restent explicites.
