@@ -223,7 +223,7 @@ const integration = new Function('B', `
   const rendu = { resize: valeur => redimensions.push(valeur) }, gpuModeste = false, estTactile = true;
   const session = { type: 'course' }, son = null, hud2 = $('hud2'), pad2 = {}, EL = { role: null };
   const aDeux = () => session.type === 'duo', secouerManette = () => {}, tactile = () => {};
-  const appliquerVolumes = () => {}, remplirReglages = () => {}, sauverReglages = () => {}, appliquerCarte = () => {};
+  const appliquerVolumes = () => {}, remplirReglages = () => {}, sauverReglages = () => {}, appliquerCarte = () => {}, viderStock = () => {};
   // stockage local et empreinte de la détection : le palier appris est rangé par machine
   const stockage = {}, lireStock = (k, d) => stockage[k] ?? d, ecrireStock = (k, v) => { stockage[k] = JSON.parse(JSON.stringify(v)); };
   let empreinte = 'machine';

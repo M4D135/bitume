@@ -21,8 +21,32 @@
   ];
 
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
-  function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
-  function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
+  // localStorage est synchrone, et un fantôme pèse jusqu'à 43 ko de base64. Ce que la course écrit (records, fantôme,
+  // réglages changés en roulant) passe donc par une file, vidée au repos du navigateur, en quittant l'écran de course
+  // (pause, résultats) et quand la page est masquée ou quittée : jamais dans le pas de simulation ni dans l'image.
+  // Une valeur en attente peut être une fonction : le fantôme n'est encodé qu'à la vidange. Lire ou écrire une clé en
+  // attente vide d'abord la file : on relit toujours ce qu'on a écrit.
+  function lireStock(cle, defaut) { if (stockEnAttente.has(cle)) viderStock(); try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
+  function ecrireStock(cle, valeur) { stockEnAttente.delete(cle); try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
+  const stockEnAttente = new Map();
+  let vidangePrevue = false;
+  function differerStock(cle, valeur) {
+    stockEnAttente.set(cle, valeur);
+    if (vidangePrevue) return;
+    vidangePrevue = true;
+    // Safari n'a pas requestIdleCallback : une seconde plus tard, hors de toute image
+    if (typeof requestIdleCallback === 'function') requestIdleCallback(viderAuRepos, { timeout: 4000 });
+    else setTimeout(viderStock, 1000);
+  }
+  function viderAuRepos(repos) {
+    // trop peu de marge avant l'image suivante : la vidange attend le repos suivant (au plus 4 s)
+    if (!repos.didTimeout && repos.timeRemaining() < 4) { requestIdleCallback(viderAuRepos, { timeout: 4000 }); return; }
+    viderStock();
+  }
+  function viderStock() {
+    vidangePrevue = false;
+    for (const [cle, valeur] of [...stockEnAttente]) ecrireStock(cle, typeof valeur === 'function' ? valeur() : valeur);
+  }
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
@@ -44,11 +68,15 @@
   for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['gauche', 'droite'], carteTaille: ['petite', 'normale', 'grande'] }))
     if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
   const sauverReglages = () => {
-    if (!session || !session.reglagesReference) ecrireStock('bitume.reglages', reglages);
+    // en course (changement de vue au clavier ou à la manette), l'écriture attend la file
+    if (!session || !session.reglagesReference) (ecran === 'course' ? differerStock : ecrireStock)('bitume.reglages', reglages);
   };
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
   const PHYSIQUE = 'p9', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
+  // temps et longueur du fantôme gardé, par circuit : lus une fois, puis tenus à jour à chaque écriture (finTour
+  // relisait et analysait le fantôme entier à chaque tour de chrono)
+  const fantomesGardes = new Map();
 
   function enBase64(f32) {
     const o = new Uint8Array(f32.buffer, f32.byteOffset, f32.byteLength);
@@ -105,7 +133,8 @@
     for (let i = 0; i < c.n; i++) { x0 = Math.min(x0, c.x[i]); x1 = Math.max(x1, c.x[i]); z0 = Math.min(z0, c.z[i]); z1 = Math.max(z1, c.z[i]); }
     const e = Math.min((largeur - 2 * marge) / (x1 - x0), (hauteur - 2 * marge) / (z1 - z0));
     const ox = (largeur - (x1 - x0) * e) / 2 - x0 * e, oz = (hauteur - (z1 - z0) * e) / 2 - z0 * e;
-    return { e, vers: (x, z) => [ox + x * e, oz + z * e] };
+    // ox, oz et e servent aussi tels quels au plan de course (ox + x × e), qui projette sans créer de tableau
+    return { e, ox, oz, vers: (x, z) => [ox + x * e, oz + z * e] };
   }
   function dessinerTrace(ctx, c, p, epaisseur, couleur) {
     ctx.beginPath();
@@ -349,11 +378,12 @@
   addEventListener('blur', () => { touches.clear(); souris.gaz = souris.frein = souris.derive = false; relacherTactile(); if (pauseAuto && enCourse()) basculerPause(true); });
   document.addEventListener('visibilitychange', () => {
     oublierIntervalle();
-    if (document.hidden) relacherTactile();
+    if (document.hidden) { relacherTactile(); viderStock(); }   // un onglet masqué peut être tué sans autre avis
     if (pauseAuto && document.hidden && enCourse()) basculerPause(true);
     if (son) son.musique(!document.hidden && ecran === 'titre'); // onglet caché : le minuteur du thème serait bridé
   });
   addEventListener('focus', oublierIntervalle);
+  addEventListener('pagehide', viderStock);   // page fermée ou rechargée : la file part avant
   addEventListener('pointerdown', activerSon, { passive: true });
   // Gestes : ils remettent à zéro l'attente de la démo sur l'écran titre ; pendant la démo, le premier ramène au
   // titre et ne compte pas comme un clic sur le menu qui revient.
@@ -860,18 +890,24 @@
     let texte = 'Tour ' + e.tour + ' · ' + chrono(e.temps);
     if (!S.essai && e.valide !== false && (!ancien || e.temps < ancien)) {
       records[id] = { tour: e.temps, date: new Date().toISOString().slice(0, 10), mode: co.mode };
-      ecrireStock(CLE_RECORDS, records);
+      differerStock(CLE_RECORDS, records);   // finTour tourne dans le pas de simulation : l'écriture attend la file
       if (ancien) texte += ' · record du circuit';
     }
     if (e.valide === false) texte += ' · hors classement chrono';
     const qui = co.duo ? 0 : undefined;
     sousMessage(texte, qui);
     if (co.mode === 'chrono') {
-      // le fantôme gardé est celui du meilleur tour jamais fait ici
+      // le fantôme gardé est celui du meilleur tour jamais fait ici ; seuls son temps et sa longueur comptent pour
+      // décider, lus une fois par circuit. Le tour retenu est une copie que la course ne touche plus (course.js) :
+      // il n'est encodé en base64 qu'à la vidange de la file.
       const f = co.fantome;
-      const garde = lireStock(CLE_FANTOME + id, null);
-      if (!S.essai && e.valide !== false && f.meilleur && f.temps === e.temps && (!garde || garde.longueur !== co.c.longueur || e.temps < garde.temps))
-        ecrireStock(CLE_FANTOME + id, { temps: f.temps, n: f.meilleur.n, longueur: co.c.longueur, b64: enBase64(f.meilleur.donnees) });
+      let garde = fantomesGardes.get(id);
+      if (garde === undefined) { const g = lireStock(CLE_FANTOME + id, null); garde = g && { temps: g.temps, longueur: g.longueur }; fantomesGardes.set(id, garde); }
+      if (!S.essai && e.valide !== false && f.meilleur && f.temps === e.temps && (!garde || garde.longueur !== co.c.longueur || e.temps < garde.temps)) {
+        const m = f.meilleur, temps = f.temps, longueur = co.c.longueur;
+        fantomesGardes.set(id, { temps, longueur });
+        differerStock(CLE_FANTOME + id, () => ({ temps, n: m.n, longueur, b64: enBase64(m.donnees) }));
+      }
       message(e.valide === false ? 'Tour non chronométré' : e.meilleur ? 'Meilleur tour' : chrono(e.temps), e.valide !== false && e.meilleur ? 'vert' : '', true);
     } else if (co.toursTotal - j.tours === 1) message('Dernier tour', 'ambre', false, qui);
     else if (e.meilleur && j.tours > 1) message('Meilleur tour', 'vert', true, qui);
@@ -2176,54 +2212,103 @@
   function style(el, nom, v) { if (el['_s' + nom] !== v) { el['_s' + nom] = v; el.style.setProperty(nom, v); } }
   function classe(el, nom, oui) { if (el.classList.contains(nom) !== !!oui) el.classList.toggle(nom, !!oui); }
 
+  // Classement en tour de piste : sept lignes faites une fois par affichage, dans l'ordre où elles peuvent servir (les
+  // trois de tête, la coupure, le joueur et ses deux voisins ; la seule coupure possible suit la troisième ligne).
+  // Une mise à jour ne réécrit que les cellules qui changent ; innerHTML recréait six lignes et vingt-quatre cellules
+  // toutes les 250 ms, avec analyse HTML, style et mise en page.
+  function lignesClassement(liste) {
+    const lignes = [];
+    for (let k = 0; k < 7; k++) {
+      const li = document.createElement('li');
+      if (k === 3) li.className = 'saut';
+      else for (const c of ['p', 'c', 'n', 'e']) { const s = document.createElement('span'); s.className = c; li.appendChild(s); li['_' + c] = s; }
+      li.hidden = true;
+      liste.appendChild(li); lignes.push(li);
+    }
+    return lignes;
+  }
+  HUD1.lignes = lignesClassement(H.classement); HUD2.lignes = lignesClassement(H2.classement);
+  // couleur CSS d'une voiture (pastilles du plan et du classement) : calculée une fois par voiture, plus à chaque image
+  const couleursCss = new WeakMap();
+  function couleurCss(v) {
+    let c = couleursCss.get(v);
+    if (c === undefined) { c = 'rgb(' + v.couleur.map(x => Math.round(x * 255)).join(',') + ')'; couleursCss.set(v, c); }
+    return c;
+  }
+
   const aDeux = () => !!session && session.type === 'duo';
   // à deux : qui = 0 pour l'affichage du joueur 1 seul, 1 pour celui du joueur 2, rien pour les deux
   const affichages = (cle, qui) => !aDeux() || qui === 0 ? [H[cle]] : qui === 1 ? [H2[cle]] : [H[cle], H2[cle]];
+  // Messages : relancer l'animation CSS passait par une lecture de géométrie (void offsetWidth), soit un calcul forcé
+  // du style et de la mise en page au milieu du pas de simulation. Le message attend maintenant le rappel d'image
+  // suivant (appliquerMessages, en tête de image) et s'y relance en changeant de nom d'animation : message et
+  // message-bis sont identiques (style.css), et un nom qui change relance l'animation sans rien mesurer. Une seule
+  // bascule par élément et par rappel : deux bascules avant le même calcul de style s'annuleraient, d'où la file.
+  const messagesEnAttente = new Map();
   function message(t, ton, court, qui) {
-    for (const el of affichages('message', qui)) {
-      el.textContent = t; el.className = 'message';
-      void el.offsetWidth;
-      el.className = 'message visible' + (ton ? ' ' + ton : '') + (court ? ' court' : '');
-    }
+    const classes = 'message visible' + (ton ? ' ' + ton : '') + (court ? ' court' : '');
+    for (const el of affichages('message', qui)) messagesEnAttente.set(el, [t, classes]);
   }
   function sousMessage(t, qui) {
-    for (const el of affichages('sous-message', qui)) {
-      el.textContent = t; el.className = 'sous-message'; void el.offsetWidth; el.className = 'sous-message visible';
+    for (const el of affichages('sous-message', qui)) messagesEnAttente.set(el, [t, 'sous-message visible']);
+  }
+  function appliquerMessages() {
+    if (!messagesEnAttente.size) return;
+    for (const [el, [t, classes]] of messagesEnAttente) {
+      el._bis = !el._bis;
+      el.textContent = t; el.className = classes + (el._bis ? ' bis' : '');
     }
+    messagesEnAttente.clear();
+  }
+  // place gagnée : même bascule de nom (eclat, eclat-bis) ; majHud ne passe qu'une fois par image et par affichage
+  function eclat(el) {
+    el._bis = !el._bis;
+    el.classList.add('eclat'); classe(el, 'bis', el._bis);
   }
 
   const LIBELLES_PLAN = { tele: 'bord de piste', cockpit: 'caméra embarquée', poursuite: 'poursuite', helico: 'hélicoptère',
     roue: 'caméra de roue', aileron: 'au-dessus de l’arceau', arriere: 'caméra arrière', travelling: 'travelling', orbite: 'autour de la voiture', sol: 'au ras de la piste' };
+  // Cadences de l'affichage : chrono, écart, vitesse et régime changent à chaque image mais ne se lisent pas au-delà
+  // de 30 Hz ; le plan se redessine à 15 Hz, décalé des chiffres, et jamais quand il est masqué. Position, tour,
+  // santé, dérive et feux restent à chaque image : ils ne s'écrivent que lorsqu'ils changent. La marge d'une
+  // demi-image à 120 Hz tient le rythme quand l'intervalle tombe pile sur la période (à 60 Hz : les chiffres une
+  // image sur deux, le plan une sur quatre, jamais la même).
+  const PERIODE_CHIFFRES = 1 / 30 - 1 / 240, PERIODE_PLAN = 1 / 15 - 1 / 240;
   function majHud(S, x = HUD1, jForce = null) {
     // en démo, l'affichage est celui de la voiture filmée ; à deux, chaque affichage a sa voiture (x : ses éléments)
     const H = x.h, segments = x.segments, lampes = x.lampes, etiquetteDerive = x.etiquette, barre = x.barre;
     const co = S.course, demo = S.type === 'demo', j = jForce || (demo ? co.voitures[S.suivie || 0] : co.joueur), et = j.etat, chronoMode = co.mode === 'chrono';
     const nb = co.voitures.length;
+    // nouvelle séance : tout s'écrit dès sa première image
+    if (x.seance !== S) { x.seance = S; x.tChiffres = x.tPlan = -Infinity; }
     if (demo && S.planVu) texte($('demo-plan'), CATALOGUE[S.i].nom + ' · ' + LIBELLES_PLAN[S.planVu.vue] + ' · ' + j.nom);
     texte(H['h-pos'], chronoMode ? '–' : String(j.position)); texte(H['h-sur'], chronoMode ? '' : '/' + nb);
-    if (!chronoMode && !demo && S.positionPrec && j.position < S.positionPrec && co.phase === 'course') { H['c-position'].classList.remove('eclat'); void H['c-position'].offsetWidth; H['c-position'].classList.add('eclat'); }
+    if (!chronoMode && !demo && S.positionPrec && j.position < S.positionPrec && co.phase === 'course') eclat(H['c-position']);
     S.positionPrec = j.position;
     const tourAff = chronoMode ? j.tours + (co.chronoParti ? 1 : 0) : Math.min(co.toursTotal, j.tours + 1);
     texte(H['h-tour'], co.phase === 'grille' || co.phase === 'feux' || (chronoMode && !co.chronoParti) ? '–' : String(tourAff));
     texte(H['h-tours'], chronoMode ? '' : '/' + co.toursTotal);
-    const enLice = chronoMode ? co.chronoParti : (co.phase === 'course' || co.phase === 'arrivee');
-    const actuel = j.fini ? j.tempsTours[j.tempsTours.length - 1] : enLice ? co.temps - j.debutTour : null;
-    texte(H['h-actuel'], chrono(actuel));
-    texte(H['h-meilleur'], chrono(j.meilleur));
-    // écart en direct avec le meilleur tour, à distance égale
-    let delta = null;
-    if (enLice && !j.fini && S.profilMeilleur) {
-      const dans = j.progression - j.tours * co.c.longueur, k = Math.floor(dans / 10), u = dans / 10 - k;
-      const a = S.profilMeilleur[k], b = S.profilMeilleur[k + 1];
-      if (a >= 0 && b >= 0) delta = (co.temps - j.debutTour) - lerp(a, b, u);
-    }
-    texte(H['h-delta'], delta === null ? '–' : ecartTexte(delta, 2));
-    classe(H['h-delta'], 'avance', delta !== null && delta < 0); classe(H['h-delta'], 'retard', delta !== null && delta > 0);
+    if (horlogeReelle >= x.tChiffres) {
+      x.tChiffres = horlogeReelle + PERIODE_CHIFFRES;
+      const enLice = chronoMode ? co.chronoParti : (co.phase === 'course' || co.phase === 'arrivee');
+      const actuel = j.fini ? j.tempsTours[j.tempsTours.length - 1] : enLice ? co.temps - j.debutTour : null;
+      texte(H['h-actuel'], chrono(actuel));
+      texte(H['h-meilleur'], chrono(j.meilleur));
+      // écart en direct avec le meilleur tour, à distance égale
+      let delta = null;
+      if (enLice && !j.fini && S.profilMeilleur) {
+        const dans = j.progression - j.tours * co.c.longueur, k = Math.floor(dans / 10), u = dans / 10 - k;
+        const a = S.profilMeilleur[k], b = S.profilMeilleur[k + 1];
+        if (a >= 0 && b >= 0) delta = (co.temps - j.debutTour) - lerp(a, b, u);
+      }
+      texte(H['h-delta'], delta === null ? '–' : ecartTexte(delta, 2));
+      classe(H['h-delta'], 'avance', delta !== null && delta < 0); classe(H['h-delta'], 'retard', delta !== null && delta > 0);
 
-    texte(H['h-vitesse'], String(B.conduite.kmh(et)));
-    texte(H['h-rapport'], et.rapport < 0 ? 'R' : String(et.rapport));
-    style(barre, '--r', clamp((et.regime - 4000) / 9000, 0, 1).toFixed(3));
-    classe(H['h-regime'], 'passer', et.regime > (reglages.boite === 'manuelle' ? 12100 : 12600) && et.rapport > 0 && et.rapport < 6);
+      texte(H['h-vitesse'], String(B.conduite.kmh(et)));
+      texte(H['h-rapport'], et.rapport < 0 ? 'R' : String(et.rapport));
+      style(barre, '--r', clamp((et.regime - 4000) / 9000, 0, 1).toFixed(3));
+      classe(H['h-regime'], 'passer', et.regime > (reglages.boite === 'manuelle' ? 12100 : 12600) && et.rapport > 0 && et.rapport < 6);
+    }
 
     // Santé (lot 4) : la jauge vient du même état que les pénalités et la réparation (B.degats.sante), jamais d'un
     // compteur monté pour le seul affichage. Le stand y ajoute son fil : voie, service avec le temps restant, sortie.
@@ -2253,40 +2338,46 @@
     H.feux.hidden = !feuxVisibles;
     if (feuxVisibles) lampes.forEach((l, k) => classe(l, 'allume', k < co.feux.allumes));
 
-    // tour de classement : tête de course et voisins du joueur
+    // tour de classement : tête de course et voisins du joueur (rangs 0 à 2, puis du rang devant le joueur à celui
+    // derrière lui), sur les lignes faites une fois ; la coupure suit la troisième ligne quand les rangs sautent
     if (!chronoMode && (!S.prochainClassement || co.horloge >= S.prochainClassement)) {
       S.prochainClassement = co.horloge + .25;
-      const ordre = co.classement.map(id => co.voitures[id]);
-      const rangs = new Set([0, 1, 2, j.position - 2, j.position - 1, j.position].filter(r => r >= 0 && r < nb));
-      const liste = [...rangs].sort((a, b) => a - b);
-      let html = '', prec = -1;
-      for (const r of liste) {
-        if (prec >= 0 && r > prec + 1) html += '<li class="saut"></li>';
-        const v = ordre[r], col = 'rgb(' + v.couleur.map(x => Math.round(x * 255)).join(',') + ')';
-        const lance = co.phase === 'course' || co.phase === 'arrivee';
-        const ecart = v.abandon ? 'Abandon' : !lance ? '' : r === 0 ? 'Tête' : ecartTexte(v.ecart);
-        html += '<li' + (v === j ? ' class="joueur"' : '') + '><span class="p">' + (r + 1) + '</span><span class="c" style="background:' + col + '"></span><span class="n">' + nomCourt(v) + '</span><span class="e">' + ecart + '</span></li>';
-        prec = r;
+      const lignes = x.lignes, lance = co.phase === 'course' || co.phase === 'arrivee';
+      let n = 0, prec = -1, saut = false;
+      for (let r = 0; r < nb && n < 6; r++) {
+        if (r > 2 && (r < j.position - 2 || r > j.position)) continue;
+        if (prec >= 0 && r > prec + 1) saut = true;
+        const v = co.voitures[co.classement[r]], li = lignes[n < 3 ? n : n + 1];
+        if (li._v !== v) { li._v = v; li._c.style.background = couleurCss(v); }
+        texte(li._p, String(r + 1)); texte(li._n, nomCourt(v));
+        texte(li._e, v.abandon ? 'Abandon' : !lance ? '' : r === 0 ? 'Tête' : ecartTexte(v.ecart));
+        classe(li, 'joueur', v === j);
+        if (li.hidden) li.hidden = false;
+        n++; prec = r;
       }
-      if (H.classement._html !== html) { H.classement._html = html; H.classement.innerHTML = html; }
+      for (let k = n; k < 6; k++) { const li = lignes[k < 3 ? k : k + 1]; if (!li.hidden) li.hidden = true; }
+      if (lignes[3].hidden === saut) lignes[3].hidden = !saut;
     }
     H.classement.hidden = chronoMode;
 
-    // plan du circuit
-    const ctx = H.carte.getContext('2d');
-    ctx.clearRect(0, 0, 220, 220); ctx.drawImage(scene.fond, 0, 0);
-    const p = scene.plan;
-    for (let k = co.voitures.length - 1; k >= 0; k--) {
-      const v = co.voitures[k], ps = tampons.poses[k]; if (!ps) continue;
-      const [x, y] = p.vers(ps.x, ps.z);
-      const moi = v === j;
-      ctx.beginPath(); ctx.arc(x, y, moi ? 5.5 : 3.6, 0, Math.PI * 2);
-      ctx.fillStyle = moi && !demo ? '#e0301e' : 'rgb(' + v.couleur.map(x => Math.round(x * 255)).join(',') + ')'; ctx.fill();
-      ctx.lineWidth = moi ? 2 : 1; ctx.strokeStyle = moi ? '#f2ecdf' : 'rgba(10,12,15,.85)'; ctx.stroke();
-    }
-    if (chronoMode) {
-      const f = B.course.fantome(co);
-      if (f) { const e = B.circuit.echantillon(co.c, f.s), [x, y] = p.vers(e.x, e.z); ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fillStyle = '#6fd0ff'; ctx.fill(); }
+    // plan du circuit : 15 Hz, rien quand il est masqué (redessiné dès qu'il revient). Le premier dessin d'une séance
+    // tombe avec les chiffres, les suivants une image plus tard (à 60 Hz) ; projection ox + x × e sans tableau.
+    if (reglages.carte === 'non') x.tPlan = -Infinity;
+    else if (horlogeReelle >= x.tPlan) {
+      x.tPlan = horlogeReelle + PERIODE_PLAN + (x.tPlan === -Infinity ? 1 / 60 : 0);
+      const ctx = H.carte.getContext('2d'), p = scene.plan;
+      ctx.clearRect(0, 0, 220, 220); ctx.drawImage(scene.fond, 0, 0);
+      for (let k = co.voitures.length - 1; k >= 0; k--) {
+        const v = co.voitures[k], ps = tampons.poses[k]; if (!ps) continue;
+        const moi = v === j;
+        ctx.beginPath(); ctx.arc(p.ox + ps.x * p.e, p.oz + ps.z * p.e, moi ? 5.5 : 3.6, 0, Math.PI * 2);
+        ctx.fillStyle = moi && !demo ? '#e0301e' : couleurCss(v); ctx.fill();
+        ctx.lineWidth = moi ? 2 : 1; ctx.strokeStyle = moi ? '#f2ecdf' : 'rgba(10,12,15,.85)'; ctx.stroke();
+      }
+      if (chronoMode) {
+        const f = B.course.fantome(co);
+        if (f) { const e = B.circuit.echantillon(co.c, f.s); ctx.beginPath(); ctx.arc(p.ox + e.x * p.e, p.oz + e.z * p.e, 4, 0, Math.PI * 2); ctx.fillStyle = '#6fd0ff'; ctx.fill(); }
+      }
     }
     // compteur d'images : la cadence réellement tenue (images rendues par seconde, lissées sur la grille de l'écran),
     // virée à l'ambre sous 90 % de la cadence visée — l'écran divisé par le diviseur de la cadence, et non 60 d'office :
@@ -2314,6 +2405,8 @@
       B.qualite.avancer(palier, 0, { actif: false });
     if (son && nom !== 'demo') son.evenement('clic');
     if (nom !== 'course') { secouerManette(0, 0); secouerManette(0, 0, pad2); }
+    // pause, résultats, menus : les écritures différées de la course (records, fantôme, réglages) partent ici
+    if (nom !== 'course') viderStock();
     for (const e of ECRANS) $(e).hidden = e !== nom;
     $('hud').hidden = !(nom === 'course' || nom === 'pause' || nom === 'demo');
     hud2.hidden = !(aDeux() && (nom === 'course' || nom === 'pause'));
@@ -2788,8 +2881,10 @@
     // qui suit le banc n'est pas du temps à rattraper.
     if (detectionGraphiqueActive) { tPrec = 0; B.cadence.oublier(cadence); return; }
     // Commandes et menus à chaque rappel, même sans image : les pas de l'image suivante lisent l'état le plus frais.
+    // Les messages demandés depuis le rappel précédent s'affichent ici, une fois (voir message).
     lireManette();
     majAttente();
+    appliquerMessages();
     const sourisVue = souris.active && enCourse() ? 'oui' : 'non';
     if (jeu.dataset.souris !== sourisVue) jeu.dataset.souris = sourisVue;
     // deux manettes branchées : « À deux » le signale, et Start sur la seconde, au titre, ouvre la course à deux

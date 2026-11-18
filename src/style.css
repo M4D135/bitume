@@ -267,6 +267,10 @@ body.tactile .case .barre-sante { height: 4px; margin-top: 3px; }
 .case .grand small { font-size: 22px; color: var(--papier-2); margin-left: 2px; }
 .case.eclat { animation: eclat .7s ease-out; }
 @keyframes eclat { from { background: rgba(224, 48, 30, .8); } to { background: transparent; } }
+/* Relance sans mesure (jeu.js, eclat et appliquerMessages) : la classe bis passe sur une copie identique de
+   l'animation ; un nom d'animation qui change la relance, sans le calcul de mise en page forcé de offsetWidth. */
+.case.eclat.bis { animation-name: eclat-bis; }
+@keyframes eclat-bis { from { background: rgba(224, 48, 30, .8); } to { background: transparent; } }
 .chronos { min-width: 220px; padding: 8px 14px 10px; display: grid; gap: 5px; }
 .ligne-chrono { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
 .ligne-chrono .temps { font: 700 22px/1 var(--f-titre); font-stretch: condensed; letter-spacing: .02em; }
@@ -302,6 +306,8 @@ body.tactile .case .barre-sante { height: 4px; margin-top: 3px; }
 @keyframes message { 0% { opacity: 0; transform: scale(1.18); } 10% { opacity: 1; transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
 .sous-message { position: absolute; left: 0; right: 0; top: calc(30% + clamp(44px, 8vw, 96px)); text-align: center; font: 700 clamp(16px, 2.2vw, 24px)/1.2 var(--f-titre); letter-spacing: .06em; text-transform: uppercase; color: var(--papier-2); text-shadow: 0 2px 12px rgba(0, 0, 0, .6); opacity: 0; }
 .sous-message.visible { animation: message 2.2s ease-out forwards; }
+.message.visible.bis, .sous-message.visible.bis { animation-name: message-bis; }
+@keyframes message-bis { 0% { opacity: 0; transform: scale(1.18); } 10% { opacity: 1; transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
 
 .hud-bas { position: absolute; left: var(--marge); right: var(--marge); bottom: max(var(--marge), env(safe-area-inset-bottom)); display: flex; justify-content: flex-end; align-items: flex-end; gap: 16px; }
 .carte { display: block; width: 100%; height: 100%; aspect-ratio: 1; background: transparent; border: 0; border-radius: 0; filter: drop-shadow(0 1px 2px rgba(0,0,0,.9)); }
@@ -311,7 +317,9 @@ body.tactile .case .barre-sante { height: 4px; margin-top: 3px; }
 .regime { display: flex; align-items: center; gap: 10px; width: 100%; }
 .regime .barre { --r: 0; position: relative; flex: 1; height: 14px; border-radius: 2px; overflow: hidden; background: rgba(242, 236, 223, .1);
   -webkit-mask: repeating-linear-gradient(90deg, #000 0 9px, transparent 9px 12px); mask: repeating-linear-gradient(90deg, #000 0 9px, transparent 9px 12px); }
-.regime .barre::before { content: ""; position: absolute; inset: 0; width: calc(var(--r) * 100%); background: linear-gradient(90deg, #d8d2c2 0%, #d8d2c2 58%, var(--ambre) 76%, var(--rouge) 92%); }
+/* régime en transform plutôt qu'en largeur : 30 fois par seconde sans recalcul de mise en page. Le dégradé suit
+   l'échelle comme il suivait la largeur (il couvre la partie allumée) ; le masque des graduations reste sur .barre. */
+.regime .barre::before { content: ""; position: absolute; inset: 0; transform: scaleX(var(--r)); transform-origin: 0 50%; background: linear-gradient(90deg, #d8d2c2 0%, #d8d2c2 58%, var(--ambre) 76%, var(--rouge) 92%); }
 .regime.passer .barre::before { background: var(--rouge); animation: passer .12s steps(2) infinite; }
 @keyframes passer { 50% { opacity: .35; } }
 .rapport { min-width: 30px; text-align: center; font: italic 900 34px/1 var(--f-titre); font-stretch: condensed; }
