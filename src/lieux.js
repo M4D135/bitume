@@ -166,5 +166,69 @@
     return lots;
   }
 
-  B.lieux = { echantillonPiste, lot, nappe, sommet, finir, boite, alea, hache, bruit, fbm, muretsLacets };
+  function parapets(circuit) {
+    const troncons = [
+      { s0: 4511, s1: 5478, cote: -1, nom: 'balcon' },
+      { s0: 8523, s1: 8719, cote: 1, nom: 'virage-du-vide' }
+    ];
+    const pas_parapet = 3;
+    const hauteur_base = 0.65;
+    const epaisseur = 0.30;
+    const decalage = circuit.largeur / 2 + 0.15;
+    const col = [0.55, 0.53, 0.50];
+    const lots = [];
+    for (let t = 0; t < troncons.length; t++) {
+      const tr = troncons[t];
+      const nSeg = Math.ceil((tr.s1 - tr.s0) / pas_parapet);
+      for (let i = 0; i < nSeg; i++) {
+        const s = tr.s0 + i * pas_parapet;
+        const piste = echantillonPiste(circuit, s);
+        const x = piste.x;
+        const z = piste.z;
+        const r0 = piste.r0;
+        const r1 = piste.r1;
+        const r2 = piste.r2;
+        const lat = tr.cote * decalage;
+        const cx = x + r2[0] * lat;
+        const cz = z + r2[2] * lat;
+        const hVar = (hache(s, tr.cote, circuit.graine) - 0.5) * 0.08;
+        const h = hauteur_base + hVar;
+        const hl = pas_parapet / 2;
+        const hh = h / 2;
+        const he = epaisseur / 2;
+        const n = nappe();
+        for (let a = -1; a <= 1; a += 2) {
+          for (let b = -1; b <= 1; b += 2) {
+            for (let c = -1; c <= 1; c += 2) {
+              const px = cx + r0[0] * hl * a + r1[0] * hh * b + r2[0] * he * c;
+              const py = hh + r1[1] * hh * b;
+              const pz = cz + r0[2] * hl * a + r1[2] * hh * b + r2[2] * he * c;
+              const no = [
+                r0[0] * a + r1[0] * b + r2[0] * c,
+                r0[1] * a + r1[1] * b + r2[1] * c,
+                r0[2] * a + r1[2] * b + r2[2] * c
+              ];
+              sommet(n, [px, py, pz], no, 'parapet', col);
+            }
+          }
+        }
+        const idx = [
+          0,1,3, 0,3,2,
+          4,6,7, 4,7,5,
+          0,4,5, 0,5,1,
+          2,3,7, 2,7,6,
+          0,2,6, 0,6,4,
+          1,5,7, 1,7,3
+        ];
+        for (let k = 0; k < idx.length; k++) {
+          n.i.push(idx[k]);
+        }
+        finir(n);
+        lots.push(lot([n], 'parapet', { s0: tr.s0, s1: tr.s1, cote: tr.cote, nom: tr.nom }));
+      }
+    }
+    return lots;
+  }
+
+  B.lieux = { echantillonPiste, lot, nappe, sommet, finir, boite, alea, hache, bruit, fbm, muretsLacets, parapets };
 })(globalThis.BITUME = globalThis.BITUME || {});
