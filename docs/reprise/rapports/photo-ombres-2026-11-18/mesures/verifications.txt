@@ -1,0 +1,17 @@
+Vérifications du 18 novembre 2026 (lot 21, étape 1)
+
+FERRO (/Users/david/Projects/ferro-wt/photo, branche lot/photo, base 39eafee = 0.3.10)
+  node --test tests/ferro/*.test.mjs tests/recipes.test.cjs : 191 tests, 190 réussis, 0 échec, 1 « todo » déjà
+  présent en 0.3.10 (fphysics, glissement du cube) ; 182 tests avant le lot.
+  tests/ferro/renderer-ombres-photo.test.mjs : 9 tests (identité sans l'option par empreintes SHA-256 des shaders et
+  du journal des appels GL, ressources, creations à 0, partage du lot, bornes, modes, precalculerOmbre, préchauffage).
+  python3 tools/build.py : FERRO 0.3.11, 34 modules de référence vérifiés ; dist/FERRO-0.3.11.zip, 43 fichiers,
+  6 270 652 octets, sha256 4e4476e4dcb7cbdc5ab99626f80366287cebde8803572594f25a745917b9a23a.
+
+BITUME (/Users/david/Projects/bitume-wt/moteur, branche moteur/photo)
+  python3 tools/install-ferro.py bitume … puis tools/check-ferro-lock.py : 34 modules, empreintes identiques.
+  python3 construire.py : dist/bitume.html, version 0.2.40, 13 486 787 octets, sha256 b18cbf3473b7d94b…
+  verifications/*.test.mjs : 78 suites, 78 codes de sortie 0 (suites-hote.log), dont ombres.test.mjs (9 tests).
+  tools/banc-navigateur.mjs --mode smoke --angle native (Chrome sans fenêtre) : 7 contrôles, 0 erreur,
+  0 avertissement.
+  tools/controle-ombres.mjs dist/bitume.html : tous les contrôles passés (controle-ombres.json).

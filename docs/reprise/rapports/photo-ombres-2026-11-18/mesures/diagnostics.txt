@@ -1,0 +1,42 @@
+Diagnostics des réglages écartés — tools/controle-ombres.mjs (Chrome sans fenêtre, 1280 × 720, boucle menée image
+par image à 1/60 s, hasard réamorcé). d1 : variation moyenne de luminance d'une image à l'autre (sur 255) ; d2 : écart
+à la droite des deux voisines ; a/r : part (‰) des pixels qui montent puis redescendent d'au moins 4 niveaux.
+
+1. Arbre de Val-Brûlé (arbre 457, à 33,2 m de la piste), caméra fixe à 13 m, vent figé, voiture qui passe : le carré
+   d'ombre et la tuile avancent de 0,9 m par image. Fine. Seuil O5 : d1 < 0,01.
+
+   FERRO 0.3.10 (avant le lot)                         d1 0,0085   a/r 0,10 ‰
+   0.3.11, aucun effet photo                            d1 0,0085   a/r 0,10 ‰
+   0.3.11, ombres du soleil coupées                     d1 0,0080   a/r 0,14 ‰
+   0.3.11, PCSS première version (grille de l'atlas)    d1 0,0326   a/r 0,95 ‰   KO
+     (sans la carte lointaine 0,0332, sans la tuile 0,0326 : la cause est PCSS)
+   0.3.11, PCSS, grille accrochée au monde              d1 0,0119   a/r 0,11 ‰   KO
+   0.3.11, PCSS, recherche pesée et repartie du point   d1 0,0120   a/r 0,11 ‰   KO
+   0.3.11, pénombre météo (réglage retenu)              d1 0,0080   a/r 0,09 ‰   ok
+   Moyenne, réglage retenu                              d1 0,0052   a/r 0,06 ‰   ok
+
+2. Habitacle immobile à l'écran : caméra liée à la caisse (champ figé), voiture sans pilote en ligne droite (s 2300),
+   Fine. Écart « avec tuile − même passe sans tuile ». Seuils : d2 +0,05, a/r +1 ‰. Région 1 : planche sous la
+   casquette ; région 2 : bas du volant et bras ; région 3 (relevée, sans verdict) : flanc droit, que traversent les
+   ombres des autres voitures.
+
+                       région 1                 région 2                 région 3
+   tuile 1024²         d2 +0,109  a/r +1,06 ‰   d2 +0,011  a/r +0,18 ‰   d2 +0,188  a/r −0,17 ‰   KO (dents qui rampent)
+   tuile 512² (retenue) d2 +0,023 a/r +0,38 ‰   d2 +0,024  a/r +0,09 ‰   d2 +0,133  a/r −0,64 ‰   ok
+
+   Virage (s 800, avec pilote : le volant et les bras bougent, leurs ombres aussi), relevé seulement :
+   tuile 1024²         région 1 d2 −0,081 ; région 2 d2 +0,066
+   tuile 512²          région 1 d2 −0,068 ; région 2 d2 +0,083
+   L'habitacle n'y est pas immobile ; l'écart de la région 2 vient d'ombres nettes qui suivent le volant. Ce cas n'est
+   pas un contrôle de scintillement et n'a pas été retenu comme tel.
+
+3. Journal du gouverneur (10 s de course en qualité Auto, cadence réelle) : 1 changement, t 0,0 s, niveau 0, ombres
+   allumées.
+
+4. Chronométrage GPU par effet (essai écarté) : requêtes TIME_ELAPSED d'EXT_disjoint_timer_query_webgl2, présentes
+   dans Chrome sans fenêtre, sans lecture de pixel, variantes alternées image par image. Une séance par scène, Fine,
+   essai PCSS. Les résultats se contredisent : en cockpit, tout allumé 35,2 ms et tous les effets coupés 38,1 ms ;
+   en poursuite 0.3.10, ombres du soleil coupées 33,3 ms contre 32,7 ms allumées. Sur ce Mac, ces requêtes ne
+   séparent pas le coût d'un effet. Les coûts du rapport sont donc des temps synchronisés (couts.txt).
+
+Fichier complet du réglage retenu : controle-ombres.json (page finale, sha256 b18cbf3473b7d94b…).

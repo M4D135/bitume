@@ -1,0 +1,68 @@
+# Séances de coût, une ligne par séance : variante = p50 de l'image (ms), lecture d'un pixel après chaque image.
+# Lot final (BITUME 0.2.40, FERRO 0.3.11, tuile 512², pénombre météo), 18/11/2026 vers 23 h 10–23 h 18.
+## Tous les effets, Fine (6 séances, charge 3 à 5)
+fine-cockpit-tout apres t1 8s charge 3 toile 2880x1514 créations 0 | {}=18.4 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=17.5
+fine-poursuite-tout apres t1 7s charge 3 toile 2880x1514 créations 1 | {}=16.1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.2
+fine-cockpit-tout apres t2 7s charge 3 toile 2880x1514 créations 0 | {}=18.7 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=17.8
+fine-poursuite-tout apres t2 7s charge 3 toile 2880x1514 créations 0 | {}=15.5 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.5
+fine-cockpit-tout apres t3 9s charge 4 toile 2880x1514 créations 0 | {}=19.4 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18.2
+fine-poursuite-tout apres t3 7s charge 3 toile 2880x1514 créations 0 | {}=16.6 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.6
+fine-cockpit-tout apres t4 8s charge 4 toile 2880x1514 créations 0 | {}=19.6 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18.8
+fine-poursuite-tout apres t4 7s charge 4 toile 2880x1514 créations 1 | {}=17.3 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.7
+fine-cockpit-tout apres t5 10s charge 4 toile 2880x1514 créations 0 | {}=20.7 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19.7
+fine-poursuite-tout apres t5 8s charge 5 toile 2880x1514 créations 1 | {}=16.6 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.6
+fine-cockpit-tout apres t6 8s charge 5 toile 2880x1514 créations 0 | {}=21 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=20.2
+fine-poursuite-tout apres t6 8s charge 5 toile 2880x1514 créations 0 | {}=19.2 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18.2
+
+## Chaque effet, par palier (3 séances, charge 4 à 6)
+fine-cockpit-contact apres t1 9s charge 4 toile 2880x1514 créations 0 | {}=21.9 {"contacts":null}=21.6
+fine-cockpit-tuile apres t1 10s charge 5 toile 2880x1514 créations 0 | {}=21.7 {"ombreProche":null}=21.2
+fine-cockpit-loin apres t1 9s charge 5 toile 2880x1514 créations 0 | {}=21.5 {"ombreLoin":false}=21.5
+fine-cockpit-meteo apres t1 9s charge 5 toile 2880x1514 créations 0 | {}=20.7 {"penombre":null}=21
+fine-cockpit-tout apres t1 10s charge 5 toile 2880x1514 créations 0 | {}=19.9 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19 {"shadows":false}=16.2
+fine-poursuite-contact apres t1 8s charge 5 toile 2880x1514 créations 0 | {}=18.5 {"contacts":null}=17.9
+fine-poursuite-tuile apres t1 8s charge 5 toile 2880x1514 créations 1 | {}=18.2 {"ombreProche":null}=18
+fine-poursuite-loin apres t1 8s charge 4 toile 2880x1514 créations 0 | {}=17.3 {"ombreLoin":false}=17.3
+fine-poursuite-meteo apres t1 8s charge 5 toile 2880x1514 créations 1 | {}=18.5 {"penombre":null}=18.6
+fine-poursuite-tout apres t1 10s charge 5 toile 2880x1514 créations 1 | {}=17.3 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.5 {"shadows":false}=14.3
+moyenne-cockpit-contact apres t1 8s charge 5 toile 1440x757 créations 0 | {}=15.9 {"contacts":null}=15.2
+moyenne-cockpit-tuile apres t1 8s charge 5 toile 1440x757 créations 0 | {}=15.2 {"ombreProche":null}=14.7
+moyenne-cockpit-loin apres t1 8s charge 5 toile 1440x757 créations 0 | {}=14.1 {"ombreLoin":false}=15.8
+moyenne-cockpit-meteo apres t1 7s charge 5 toile 1440x757 créations 0 | {}=15.9 {"penombre":null}=14.3
+moyenne-cockpit-tout apres t1 9s charge 5 toile 1440x757 créations 0 | {}=14.3 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.3 {"shadows":false}=11.3
+legere-cockpit-contact apres t1 7s charge 5 toile 1152x606 créations 0 | {}=4.8 {"contacts":null}=4.7
+legere-poursuite-contact apres t1 7s charge 5 toile 1152x606 créations 0 | {}=5.5 {"contacts":null}=6.4
+fine-cockpit-contact apres t2 9s charge 4 toile 2880x1514 créations 0 | {}=21.3 {"contacts":null}=20.8
+fine-cockpit-tuile apres t2 9s charge 5 toile 2880x1514 créations 0 | {}=22 {"ombreProche":null}=21.3
+fine-cockpit-loin apres t2 9s charge 5 toile 2880x1514 créations 0 | {}=20.9 {"ombreLoin":false}=20.9
+fine-cockpit-meteo apres t2 9s charge 5 toile 2880x1514 créations 0 | {}=20.7 {"penombre":null}=20.7
+fine-cockpit-tout apres t2 11s charge 5 toile 2880x1514 créations 0 | {}=21 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19.7 {"shadows":false}=17.1
+fine-poursuite-contact apres t2 8s charge 6 toile 2880x1514 créations 1 | {}=16.6 {"contacts":null}=16
+fine-poursuite-tuile apres t2 8s charge 6 toile 2880x1514 créations 1 | {}=18.6 {"ombreProche":null}=18.2
+fine-poursuite-loin apres t2 12s charge 6 toile 2880x1514 créations 0 | {}=24.4 {"ombreLoin":false}=24.4
+fine-poursuite-meteo apres t2 8s charge 5 toile 2880x1514 créations 1 | {}=17 {"penombre":null}=17
+fine-poursuite-tout apres t2 10s charge 5 toile 2880x1514 créations 1 | {}=18.6 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=17.5 {"shadows":false}=15.4
+moyenne-cockpit-contact apres t2 7s charge 5 toile 1440x757 créations 0 | {}=15.2 {"contacts":null}=14
+moyenne-cockpit-tuile apres t2 7s charge 5 toile 1440x757 créations 0 | {}=13.6 {"ombreProche":null}=13.6
+moyenne-cockpit-loin apres t2 7s charge 5 toile 1440x757 créations 0 | {}=14.1 {"ombreLoin":false}=14.2
+moyenne-cockpit-meteo apres t2 7s charge 5 toile 1440x757 créations 0 | {}=14.5 {"penombre":null}=15.4
+moyenne-cockpit-tout apres t2 9s charge 5 toile 1440x757 créations 0 | {}=14.7 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7 {"shadows":false}=11.5
+legere-cockpit-contact apres t2 7s charge 5 toile 1152x606 créations 0 | {}=8.3 {"contacts":null}=8
+legere-poursuite-contact apres t2 7s charge 4 toile 1152x606 créations 0 | {}=6.4 {"contacts":null}=6.3
+fine-cockpit-contact apres t3 9s charge 4 toile 2880x1514 créations 0 | {}=20.5 {"contacts":null}=20.2
+fine-cockpit-tuile apres t3 9s charge 4 toile 2880x1514 créations 0 | {}=20.3 {"ombreProche":null}=20.1
+fine-cockpit-loin apres t3 9s charge 4 toile 2880x1514 créations 0 | {}=20.7 {"ombreLoin":false}=20.6
+fine-cockpit-meteo apres t3 9s charge 4 toile 2880x1514 créations 0 | {}=20.8 {"penombre":null}=20.7
+fine-cockpit-tout apres t3 10s charge 4 toile 2880x1514 créations 0 | {}=20.1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18.8 {"shadows":false}=16.1
+fine-poursuite-contact apres t3 7s charge 4 toile 2880x1514 créations 1 | {}=17.5 {"contacts":null}=17
+fine-poursuite-tuile apres t3 8s charge 4 toile 2880x1514 créations 0 | {}=17.6 {"ombreProche":null}=17.5
+fine-poursuite-loin apres t3 7s charge 5 toile 2880x1514 créations 1 | {}=16.7 {"ombreLoin":false}=16.9
+fine-poursuite-meteo apres t3 8s charge 4 toile 2880x1514 créations 0 | {}=17.4 {"penombre":null}=17.4
+fine-poursuite-tout apres t3 9s charge 4 toile 2880x1514 créations 1 | {}=16.6 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.6 {"shadows":false}=13.6
+moyenne-cockpit-contact apres t3 7s charge 4 toile 1440x757 créations 0 | {}=13.8 {"contacts":null}=15.3
+moyenne-cockpit-tuile apres t3 7s charge 5 toile 1440x757 créations 0 | {}=13.7 {"ombreProche":null}=13.6
+moyenne-cockpit-loin apres t3 7s charge 5 toile 1440x757 créations 0 | {}=14.8 {"ombreLoin":false}=14.9
+moyenne-cockpit-meteo apres t3 7s charge 5 toile 1440x757 créations 0 | {}=14.2 {"penombre":null}=15.4
+moyenne-cockpit-tout apres t3 9s charge 5 toile 1440x757 créations 0 | {}=11.3 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=10.8 {"shadows":false}=9.3
+legere-cockpit-contact apres t3 9s charge 5 toile 1152x606 créations 0 | {}=6.7 {"contacts":null}=5.5
+legere-poursuite-contact apres t3 10s charge 6 toile 1152x606 créations 0 | {}=4.8 {"contacts":null}=4.5

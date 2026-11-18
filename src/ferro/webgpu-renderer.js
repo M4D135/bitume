@@ -326,7 +326,7 @@ async function create(canvas,options={}){
  for(const samples of config.msaa?[1,4]:[1]){pipeline('world',{samples});pipeline('world',{samples,background:true});pipeline('world',{samples,overlay:true});pipeline('world',{samples,nappe:true});pipeline('fx',{samples});pipeline('sky',{samples});}
  pipeline('depth',{samples:1});pipeline('ssr',{samples:1});pipeline('post',{samples:1});pipeline('post',{samples:1,target:canvasFormat});copyPipeline(canvasFormat);
  resize();const validation=await device.popErrorScope();if(validation){dispose();throw Error('WebGPU initialization: '+validation.message);}
- return {setEnvironment(value){environment=S.environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,updateShape,gpu,prewarm,retain,resetStats,...(primitiveIndexing?{setPrimitiveIndexing}:{}),setProfiling,getProfiling(){return {available:stats.gpuTimingAvailable,enabled:profiling,samples:timingSamples.slice(),dropped:timingDropped};}};
+ return {setEnvironment(value){environment=S.environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,updateShape,gpu,prewarm,retain,resetStats,precalculerOmbre(){return null;},...(primitiveIndexing?{setPrimitiveIndexing}:{}),setProfiling,getProfiling(){return {available:stats.gpuTimingAvailable,enabled:profiling,samples:timingSamples.slice(),dropped:timingDropped};}};
  }catch(error){initializeCleanup();throw error;}
 }
 G.FRenderWebGPU={create,writeUniforms};

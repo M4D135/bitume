@@ -219,6 +219,7 @@
     const pub = decor.gradins && B.public ? B.public.creer(c, decor, { qualite: ancre, saison }) : null;
     let vuePublic = null;
     if (pub) try { vuePublic = B.public.vue(rendu, pub); } catch (e) { console.warn('BITUME : public indisponible', e); }
+    B.ombres.carte(rendu, gpuModeste); // ombre lointaine du circuit, une passe au chargement (src/ombres.js)
     // plan du circuit pour l'affichage de course, dessiné une fois
     const fond = document.createElement('canvas'); fond.width = fond.height = 220;
     const p = plan(c, 220, 220, 16), ctx = fond.getContext('2d');
@@ -1990,6 +1991,7 @@
     return B.voiture.angles(m);
   };
   const tampons = { poses: [], mel: {} };
+  const etatOmbres = B.ombres.creer(); // contact, tuile et pénombre de chaque vue (src/ombres.js)
   let horlogeReelle = 0, dureeImage = 16;
 
   // Objets passés à voiture.js et au moteur, réécrits à chaque image au lieu d'être recréés (ramasse-miettes) :
@@ -2214,9 +2216,11 @@
     // bien plus loin).
     const tanDemi = Math.tan(clamp(cam.fov, 10, 110) * Math.PI / 360), hauteur = canvas.height;
     S.iVoitures0 = sortie.length;   // repères de la liste pour celle des glaces (listeGlace)
+    let ombreDebut = 0, ombreFin = 0; // objets de la voiture filmée dans sortie : sa tuile d'ombre (src/ombres.js)
     for (let k = 0; k < co.voitures.length; k++) {
       const p = poses[k], dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], d2 = dx * dx + dz * dz;
       const ev = poseRendu(k, p, RV[k], co.voitures[k].etat.v);
+      if (k === suivie.id) ombreDebut = sortie.length;
       if (k === suivie.id && vue === 'cockpit') {
         const et = suivie.etat, atm = S.nature ? S.nature.ambiance.atmosphere : scene.decor.atmosphere, glaceVive = glacesVives(S, vue);
         const etc = ETAT_COCKPIT;
@@ -2227,6 +2231,7 @@
         etc.derriere = glaceVive ? AUCUN_SUIVEUR : suiveurs(co, poses, k, p);
         etc.ciel = atm.skyBottom; etc.brume = atm.fog; etc.glaceVive = glaceVive;
         B.voiture.cockpit(S.modeles[k], ev, sortie, etc);
+        ombreFin = sortie.length;
         continue;
       }
       // Derrière le plan de la caméra, une voiture ne se voit que par son ombre : modèle moyen au plus, même
@@ -2236,6 +2241,7 @@
       o.detail = o.plafond === 'complet' && dx * avX + dz * avZ < -DERRIERE_CAMERA ? 'moyen' : o.plafond;
       o.roues = co.voitures[k].degats && co.voitures[k].degats.roues; o.casse = !!(co.voitures[k].degats && co.voitures[k].degats.casse);
       B.voiture.poser(S.modeles[k], ev, sortie, o);
+      if (k === suivie.id) ombreFin = sortie.length;
     }
     S.iVoitures1 = sortie.length;
     // fantôme du meilleur tour
@@ -2294,11 +2300,12 @@
       if (S.palierPublic !== P.palier) { vuePublic.qualite(P.palier); S.palierPublic = P.palier; }
     }
     S.foulePublic = vuePublic ? vuePublic.fx : null;
+    const ombresVue = B.ombres.preparer(etatOmbres, P, cam, poses, co.voitures.length, suivie.id, ombreDebut, ombreFin, (S.banc ? S.banc.qualite : reglages.qualite) === 'auto' ? palier.n : -1, horlogeReelle);
     const tDraw = B.mesures.actif ? performance.now() : 0;
     // adaptive: false partout : le gouverneur du moteur baissait la taille de l'image au fil des images lentes, en
     // pleine conduite, et la vitrine des menus léguait l'échelle réduite à la course suivante. La qualité Auto
     // (paliers) et la cadence décident seules ; la résolution ne change qu'à un arrêt.
-    rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, foule: S.foulePublic });
+    rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, foule: S.foulePublic, contacts: ombresVue.contacts, ombreProche: ombresVue.ombreProche, penombre: ombresVue.penombre });
     if (B.mesures.actif) {
       B.mesures.section('rendu', performance.now() - tDraw);
       B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
@@ -4027,7 +4034,8 @@
   async function demarrer() {
     if (!webgl2()) { erreur('WebGL2 indisponible', 'BITUME dessine la piste avec WebGL2. Ouvrez la page dans un navigateur récent (Chrome, Edge, Firefox, Safari 15 ou plus) avec l’accélération graphique active.'); return; }
     try {
-      const optionsRendu = { msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world' };
+      // ombres photo (src/ombres.js) : tuile de 512² ; à 1024², des dents rampent sous la casquette de la planche
+      const optionsRendu = { msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512 } };
       rendu = window.FRender.create(canvas, optionsRendu);
       // raccord FERRO : cibles gardées malgré 120 rendus sans usage (sinon une variante chauffée peut être libérée)
       if (rendu.retain) rendu.retain(true);

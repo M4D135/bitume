@@ -1565,6 +1565,32 @@
       }return batch;
     };
   }
+
+  // FERRO 0.3.11 (ombresPhoto) : packer à deux listes. Dans chaque groupe de forme, les instances de `near` suivent
+  // celles de `meshes` et group.near en garde le nombre : la passe couleur trace les groupes entiers (mêmes appels), la
+  // passe du soleil leurs seules premières instances, la tuile de la voiture filmée les seules dernières. Aucune
+  // allocation tant que la capacité suffit.
+  function splitPacker(){
+    let counts=new Uint32Array(0),nears=new Uint32Array(0),next=new Uint32Array(0),storage=new Float32Array(0),active=new Float32Array(0),required=0;
+    const groups=[],records=[],zero=[0,0,0],one=[1,1,1];
+    const batch={groups,storage,length:0,nearTotal:0,get values(){if(active.buffer!==storage.buffer||active.length!==required)active=storage.subarray(0,required);return active;}};
+    const write=(mesh,environment)=>{const i=shapeIndices.get(mesh.shape||'box');if(i===undefined)return;const at=next[i],out=storage;next[i]+=16;
+      const p=mesh.p||zero,s=mesh.s||one,r=mesh.r||zero,c=mesh.color||zero;
+      out[at]=p[0];out[at+1]=p[1];out[at+2]=p[2];out[at+3]=mesh.mat||0;out[at+4]=s[0];out[at+5]=s[1];out[at+6]=s[2];out[at+7]=instanceDataW(mesh);out[at+8]=r[0];out[at+9]=r[1];out[at+10]=r[2];out[at+11]=surfaceFlags(mesh,environment,true);out[at+12]=c[0];out[at+13]=c[1];out[at+14]=c[2];out[at+15]=mesh.color?1:0;};
+    return (meshes,near,environment)=>{
+      if(counts.length<names.length){counts=new Uint32Array(names.length);nears=new Uint32Array(names.length);next=new Uint32Array(names.length);}
+      else{counts.fill(0);nears.fill(0);}
+      let total=0,nearTotal=0;
+      for(const mesh of meshes){const i=shapeIndices.get(mesh.shape||'box');if(i!==undefined){counts[i]++;total++;}}
+      for(const mesh of near){const i=shapeIndices.get(mesh.shape||'box');if(i!==undefined){counts[i]++;nears[i]++;total++;nearTotal++;}}
+      required=total*16;if(storage.length<required)storage=new Float32Array(Math.max(required,storage.length*2,256));
+      batch.storage=storage;batch.length=required;batch.nearTotal=nearTotal;groups.length=0;
+      let offset=0;for(let i=0;i<names.length;i++){next[i]=offset;if(counts[i]){const group=records[i]||(records[i]={name:names[i],offset:0,count:0,near:0});group.offset=offset*4;group.count=counts[i];group.near=nears[i];groups.push(group);offset+=counts[i]*16;}}
+      for(const mesh of meshes)write(mesh,environment);
+      for(const mesh of near)write(mesh,environment);
+      return batch;
+    };
+  }
   function packEffects(meshes,environment,eye){
     const distance=m=>(m.p[0]-eye[0])**2+(m.p[1]-eye[1])**2+(m.p[2]-eye[2])**2;
     const list=meshes.filter(m=>shapeIndices.has(m.shape||'sphere')&&m.alpha>.003).sort((a,b)=>distance(b)-distance(a));
@@ -2352,7 +2378,7 @@
     // Rendu logiciel : aucun pipeline ni cible GPU à préparer ; mêmes signatures que WebGL 2, réponse immédiate.
     const prewarm=()=>Promise.resolve({variants:0,draws:0,drawCalls:0,triangles:0,lots:0,nappes:0,subsets:0,creations:0,bytes:0,keys:[],ms:0,submitMs:0,waitMs:0,fallback:'unsupported'});
     let retained=false;const retain=value=>value===undefined?retained:(retained=!!value);
-    return {setEnvironment(value){environment=environmentInfo(value);environmentRevision++;},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,prewarm,retain,resetStats(){stats.creations=0;return stats;},setRenderScale:value=>surface?.setScale(value)};
+    return {setEnvironment(value){environment=environmentInfo(value);environmentRevision++;},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,prewarm,retain,resetStats(){stats.creations=0;return stats;},precalculerOmbre:()=>null,setRenderScale:value=>surface?.setScale(value)};
   }
 
   // FERRO 0.2 : réglages de création, tous facultatifs. Sans eux, l'image et les commandes GPU sont celles de FERRO 0.1.
@@ -2386,6 +2412,167 @@
     const bloom=Array.isArray(o.bloomThreshold)?[unit(o.bloomThreshold[0],.56),unit(o.bloomThreshold[1],.86)]:[.56,.86];
     return {reflections:o.reflections!==false,msaa:o.msaa===4, // BITUME : SSR optionnel ; aucune cible miroir par défaut.
       shadowMapScale:o.shadowMapScale===2?2:1,vignette:unit(o.vignette,.59),bloom:bloom[1]>bloom[0]?bloom:[.56,.86]};
+  }
+
+  // FERRO 0.3.11 : shader du monde avec l'option ombresPhoto. Chaque ancre existe une seule fois dans FRAG ; sans
+  // l'option, create garde FRAG tel quel (mêmes sources, même image : tests/ferro/renderer-ombres-photo.test.mjs).
+  const PHOTO_GLSL=`
+  // FERRO 0.3.11, option de création ombresPhoto (absente du shader par défaut) : contact analytique des voitures
+  // (fx.contacts), carte lointaine précalculée (precalculerOmbre), tuile de la voiture filmée (fx.ombreProche) et
+  // pénombre selon la distance et la météo (fx.penombre).
+  uniform vec4 uContact[36];
+  uniform int uContactCount;
+  uniform vec4 uContactReglages;
+  uniform highp sampler2D uOmbreTuile;
+  uniform mat4 uOmbreTuileMatrice;
+  uniform vec4 uOmbreTuileReglages;
+  uniform highp sampler2DShadow uOmbreLoin;
+  uniform mat4 uOmbreLoinMatrice;
+  uniform vec4 uOmbreLoinReglages;
+  uniform highp sampler2DShadow uOmbreComparee;
+  uniform vec4 uPenombre;
+  // Occlusion d'un ellipsoïde (centre à -d du point, axes ax/ay/az, demi-axes r) vue d'un point de normale n : dans
+  // l'espace où l'ellipsoïde devient la sphère unité, cos(θ)·(1/l)² (Quilez), bornée à 1 au contact.
+  float photoEllipsoide(vec3 d,vec3 n,vec3 ax,vec3 ay,vec3 az,vec3 r){
+    vec3 q=vec3(dot(d,ax),dot(d,ay),dot(d,az))/r;
+    vec3 m=normalize(vec3(dot(n,ax),dot(n,ay),dot(n,az))*r);
+    float l2=dot(q,q),l=sqrt(l2);
+    return clamp(max(dot(m,-q),0.)/(max(l2,1.)*max(l,.0001)),0.,1.);
+  }
+  // Voitures proches : six vec4 chacune (centre et force ; axe avant et demi-longueur ; axe haut et demi-hauteur ;
+  // demi-largeur, hauteur du centre au-dessus du sol, essieux avant et arrière ; rayon, demi-voie et demi-largeur des
+  // roues avant ; idem arrière). Caisse et quatre appuis, combinés en produit des parts de ciel libres.
+  float photoContact(vec3 p,vec3 n){
+    float libre=1.;
+    for(int i=0;i<6;i++){
+      if(i>=uContactCount)break;
+      vec4 c0=uContact[i*6],c1=uContact[i*6+1];
+      vec3 d=p-c0.xyz;float portee=c1.w+uContactReglages.w,d2=dot(d,d);
+      if(d2>=portee*portee||c0.w<=0.)continue;
+      vec4 c2=uContact[i*6+2],c3=uContact[i*6+3],c4=uContact[i*6+4],c5=uContact[i*6+5];
+      vec3 ax=c1.xyz,ay=c2.xyz,az=cross(ax,ay);
+      float reste=1.-photoEllipsoide(d,n,ax,ay,az,vec3(c1.w,c2.w,c3.x));
+      vec3 sol=d+ay*c3.y;
+      for(int k=0;k<4;k++){
+        vec4 w=k<2?c4:c5;float cote=k==0||k==2?-1.:1.;
+        vec3 dw=sol-ax*(k<2?c3.z:c3.w)-az*(cote*w.y)-ay*w.x;
+        reste*=1.-photoEllipsoide(dw,n,ax,ay,az,w.xxz);
+      }
+      libre*=1.-(1.-reste)*c0.w*(1.-smoothstep(portee*.7,portee,sqrt(d2)));
+    }
+    return 1.-libre;
+  }
+  vec2 photoPente(vec3 p){
+    vec3 dx=dFdx(p),dy=dFdy(p);
+    float determinant=dx.x*dy.y-dx.y*dy.x;
+    return abs(determinant)>.00000000001?vec2(dx.z*dy.y-dy.z*dx.y,dy.z*dx.x-dx.z*dy.x)/determinant:vec2(0.);
+  }
+  // B-spline quadratique à neuf comparaisons, comme shadow() (plan du récepteur compris).
+  float photoBspline(highp sampler2D carte,vec2 uv,float z,vec2 slope,float texel){
+    vec2 cell=uv/texel,f=fract(cell)-.5,centre=(floor(cell)+.5)*texel;
+    vec3 wx=vec3(.5*(.5-f.x)*(.5-f.x),.75-f.x*f.x,.5*(.5+f.x)*(.5+f.x));
+    vec3 wy=vec3(.5*(.5-f.y)*(.5-f.y),.75-f.y*f.y,.5*(.5+f.y)*(.5+f.y));
+    float v=0.;
+    for(int y=0;y<3;y++)for(int x=0;x<3;x++){
+      vec2 tap=centre+vec2(float(x-1),float(y-1))*texel;
+      v+=wx[x]*wy[y]*step(z+dot(slope,tap-uv),texture(carte,tap).r);
+    }
+    return v;
+  }
+  // Soleil avec l'option : carré proche (B-spline de shadow, élargi par PCSS en Fine), carte lointaine hors du carré
+  // et dans sa bande de bord, tuile de la voiture filmée, plancher selon la couverture nuageuse.
+  float photoSoleil(vec3 n,vec3 l){
+    if(vOverlay>.5&&uOverlayMode<.5)return 1.;
+    // Sans soleil dans l'atlas (w = 0 : ombres coupées ou sans environnement), shadow() d'origine, à l'identique.
+    if(uShadowSettings.w<.5)return shadow(n,l,1);
+    float nl=max(dot(n,l),0.),nuage=clamp(uWeather.y,0.,1.);
+    // Projections et pentes avant tout branchement non uniforme : les dérivées y restent définies.
+    vec4 projected=uShadowMatrix[1]*vec4(vWorld+n*.014,1.);
+    vec3 p=projected.xyz/projected.w*.5+.5;
+    vec2 slope=photoPente(p)*(uShadowSettings.w>1.5?1.:2.);
+    vec3 t=(uOmbreTuileMatrice*vec4(vWorld+n*uOmbreTuileReglages.w,1.)).xyz*.5+.5;
+    float proche=1.,poids=0.;
+    if(uShadowSettings.w>.5&&!(projected.w<=0.||p.z<=0.||p.z>=1.||min(p.x,p.y)<=.001||max(p.x,p.y)>=.999)){
+      bool full=uShadowSettings.w>1.5;
+      float texel=uShadowSettings.y,z=p.z-(.00014+.00024*(1.-nl));
+      vec2 uv=full?p.xy:p.xy*.5+vec2(.5,0.);
+      vec2 cell=uv/texel,f=fract(cell)-.5,centre=(floor(cell)+.5)*texel;
+      vec3 wx=vec3(.5*(.5-f.x)*(.5-f.x),.75-f.x*f.x,.5*(.5+f.x)*(.5+f.x));
+      vec3 wy=vec3(.5*(.5-f.y)*(.5-f.y),.75-f.y*f.y,.5*(.5+f.y)*(.5+f.y));
+      float v=0.,zb=0.,nb=0.;
+      for(int y=0;y<3;y++)for(int x=0;x<3;x++){
+        vec2 tap=centre+vec2(float(x-1),float(y-1))*texel;
+        float ref=z+dot(slope,tap-uv),d=texture(uShadowMap,tap).r,w=wx[x]*wy[y];
+        v+=w*step(ref,d);
+        if(d<ref){zb+=w*d;nb+=w;}
+      }
+      if(uPenombre.x>1.5&&full){
+        // PCSS allégé : quatre lectures de recherche au rayon maximal, motif fixe (aucun bruit, rien ne varie
+        // d'une image à l'autre), puis la même B-spline sur une grille de pas égal au rayon de pénombre, en
+        // comparaisons filtrées par le matériel. Fondu avec le filtre fin entre 1,25 et 2 texels de rayon. La
+        // grille large est accrochée au monde (repère du soleil, en texels), pas à l'origine de l'atlas qui suit
+        // la caméra : quand le carré avance d'un texel, chaque lecture garde sa place autour du point reçu. La
+        // moyenne des bloqueurs pèse les neuf lectures fines comme la B-spline (continue d'un texel à l'autre) ;
+        // les quatre lectures de recherche partent de uvS, le point reçu sans le bruit de calcul de la matrice
+        // du carré (décalage entier de texels arrondi), qui ne change plus de texel d'une image à l'autre.
+        float r=uPenombre.z*texel*.7071;
+        vec2 g=(mat3(uShadowMatrix[1])*(vWorld+n*.014)).xy*(.5/texel),uvS=(g+floor(uv/texel-g+.5))*texel;
+        for(int k=0;k<4;k++){
+          vec2 o=vec2(k==0||k==3?r:-r,k<2?r:-r);
+          float ref=z+dot(slope,o),d=texture(uShadowMap,uvS+o).r;
+          if(d<ref){zb+=.25*d;nb+=.25;}
+        }
+        if(nb>0.){
+          float rayon=clamp((p.z-zb/nb)*uPenombre.y*(1.+2.*nuage),1.,uPenombre.z);
+          if(rayon>1.25){
+            float large=0.,marge=.00006*rayon;
+            vec2 vc=g/rayon,vf=fract(vc)-.5,vcentre=(floor(vc)+.5)*rayon;
+            vec3 ux=vec3(.5*(.5-vf.x)*(.5-vf.x),.75-vf.x*vf.x,.5*(.5+vf.x)*(.5+vf.x));
+            vec3 uy=vec3(.5*(.5-vf.y)*(.5-vf.y),.75-vf.y*vf.y,.5*(.5+vf.y)*(.5+vf.y));
+            for(int y=0;y<3;y++)for(int x=0;x<3;x++){
+              vec2 tap=uvS+(vcentre+vec2(float(x-1),float(y-1))*rayon-g)*texel;
+              large+=ux[x]*uy[y]*texture(uOmbreComparee,vec3(tap,z-marge+dot(slope,tap-uv)));
+            }
+            v=mix(v,large,smoothstep(1.25,2.,rayon));
+          }
+        }
+      }
+      float edge=min(min(p.x,p.y),min(1.-p.x,1.-p.y));
+      proche=v;poids=smoothstep(.012,.085,edge);
+    }
+    float loin=1.;
+    if(uOmbreLoinReglages.x>.5&&poids<.999){
+      vec3 q=(uOmbreLoinMatrice*vec4(vWorld+n*uOmbreLoinReglages.w,1.)).xyz*.5+.5;
+      if(q.z<1.&&min(q.x,q.y)>0.&&max(q.x,q.y)<1.){
+        float tl=uOmbreLoinReglages.y*.5,zl=q.z-uOmbreLoinReglages.z*(1.+(1.-nl));
+        float a=texture(uOmbreLoin,vec3(q.xy+vec2(-tl,-tl),zl))+texture(uOmbreLoin,vec3(q.xy+vec2(tl,-tl),zl))
+          +texture(uOmbreLoin,vec3(q.xy+vec2(-tl,tl),zl))+texture(uOmbreLoin,vec3(q.xy+vec2(tl,tl),zl));
+        float bord=min(min(q.x,q.y),min(1.-q.x,1.-q.y));
+        loin=mix(1.,a*.25,smoothstep(0.,.02,bord));
+      }
+    }
+    float v=mix(loin,proche,poids);
+    if(uOmbreTuileReglages.x>.5&&t.z>0.&&t.z<1.&&min(t.x,t.y)>0.&&max(t.x,t.y)<1.){
+      // Tuile tracée par les faces arrière : une face éclairée est loin de la profondeur gardée, un biais constant
+      // suffit ; sans plan du récepteur, dont les dérivées s'affolent sur les petites pièces courbes de l'habitacle.
+      float vt=photoBspline(uOmbreTuile,t.xy,t.z-(.0005+.0012*(1.-nl)),vec2(0.),uOmbreTuileReglages.y);
+      float bord=min(min(t.x,t.y),min(1.-t.x,1.-t.y));
+      v*=mix(1.,vt,smoothstep(0.,uOmbreTuileReglages.z,bord));
+    }
+    float plancher=uPenombre.x>.5?mix(.055,.45,smoothstep(.25,.9,nuage)):.055;
+    return mix(plancher,1.,v);
+  }
+`;
+  function photoFragment(source){
+    const once=(text,anchor,replacement)=>{
+      const at=text.indexOf(anchor);if(at<0||text.indexOf(anchor,at+anchor.length)>=0)throw new Error('ombresPhoto : ancre introuvable ou double : '+anchor);
+      return text.slice(0,at)+replacement+text.slice(at+anchor.length);
+    };
+    source=once(source,'  void main() {\n    groundCoverDiscard();',PHOTO_GLSL+'  void main() {\n    groundCoverDiscard();');
+    source=once(source,'    if(recipe>4.5)light*=cavity;\n','    if(recipe>4.5)light*=cavity;\n    float contactOcc=uContactCount>0&&vObject<.5&&vOverlay<.5?photoContact(vWorld,geometricNormal):0.;\n    light*=1.-uContactReglages.x*contactOcc;\n');
+    source=once(source,'    float sunlight=outdoors>.5?shadow(geometricNormal,uSunDirection,1):0.;\n','    float sunlight=outdoors>.5?photoSoleil(geometricNormal,uSunDirection):0.;\n    sunlight*=1.-uContactReglages.y*pow(contactOcc,uContactReglages.z);\n');
+    source=once(source,'    environmentReflection=mix(environmentReflection,uAmbient*.85,roughness*roughness*.8);\n','    environmentReflection=mix(environmentReflection,uAmbient*.85,roughness*roughness*.8);\n    environmentReflection*=1.-uContactReglages.x*contactOcc;\n');
+    return source;
   }
   const glslFloat=v=>v.toFixed(4);
   function worldFragment(config){
@@ -2423,7 +2610,7 @@
       const distance=Math.max(1,Math.min(16,motion.speed*.15)),tilt=Math.min(demiDiag*.5,Math.max(4*Math.PI/180,Math.min(12*Math.PI/180,motion.turn*.1)));
       out.distance=distance;out.tilt=tilt;return out;
     }
-    const config=settings(options.sceneReflections?{...options,msaa:0}:options),worldFrag=worldFragment(config),postFrag=postFragment(config);
+    const config=settings(options.sceneReflections?{...options,msaa:0}:options),worldFrag=options.ombresPhoto?photoFragment(worldFragment(config)):worldFragment(config),postFrag=postFragment(config);
     const source=geometry(),primitiveIndex=indexPrimitiveVertices(source),groundIndex=groundCoverGeometry(source,primitiveIndex.indices),view=new Float32Array(16),projection=new Float32Array(16),vp=new Float32Array(16),overlayProjection=new Float32Array(16),overlayVP=new Float32Array(16);
     const shadowView=new Float32Array(16),shadowProjection=new Float32Array(16),shadowMatrix=new Float32Array(16),shadowMatrices=new Float32Array(48);
     const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12),lightDirections=new Float32Array(36),lightCones=new Float32Array(24);
@@ -2439,6 +2626,17 @@
     let world=[],worldIndex=spatialIndex([]),backgroundIndex=spatialIndex([]),lights=[],environment=null,worldBatch=pack([]),quality='auto',disposed=false,worldRevision=0,partitionState=null;
     let staticCaches=[],lampCasters=[],actorLightPlan=null,dynamicStream=null,overlayStream=null,fxStream=null;
     const packDynamic=instancePacker(),packOverlay=instancePacker(),packFx=effectsPacker();
+
+    // FERRO 0.3.11 (ombresPhoto) : rien de ceci ne fait d'appel GL sans l'option. photoTile : tuile de la voiture filmée
+    // (créée à l'initialisation, jamais en course) ; photoFar : carte lointaine (precalculerOmbre, au chargement) ;
+    // photoDepth : profondeur 1 × 1 liée aux échantillonneurs de comparaison inactifs ; photoSampler : comparaison filtrée.
+    const photo=!!options.ombresPhoto,photoTileSize=photo&&options.ombresPhoto.tuile===512?512:photo?1024:0;
+    let photoUniforms=null,photoSampler=null,photoDepth=null,photoTile=null,photoFar=null,photoFarRequest=null,photoSplit=false,photoOverlay=null;
+    let photoSunRange=1,photoSunTexel=1,photoTileExtent=3.5;
+    const photoTileMatrix=new Float32Array(16),photoFarMatrix=new Float32Array(16),photoMatrix=new Float32Array(16),photoProjection=new Float32Array(16);
+    const packSplit=photo?splitPacker():null,nearOrdinary=[],photoWarmTile={centre:[0,0,0],etendue:3.5,debut:0,fin:0};
+    const photoState={contacts:0,tuile:false,loin:false,penombre:'off',loinTaille:0};
+    if(photo)stats.ombresPhoto=photoState;
     const ordinary=[],overlay=[],particles=[],overlayParticles=[];
     const native=options.resolution==='native',maxSize=native?Math.min(Number(gl.getParameter(gl.MAX_RENDERBUFFER_SIZE))||16384,Number(gl.getParameter(gl.MAX_TEXTURE_SIZE))||16384):16384;
     const surface=native?window.FSurface.create(canvas,{limit:maxSize,maxPixels:options.maxPixels,scale:options.renderScale}):null;
@@ -2737,6 +2935,7 @@
       pdrSlots=[];pdrLots.length=0;pdrGeneration++;
       gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);
       gl.clearColor(.035,.06,.073,1);
+      if(photo)photoInitialize();
       post=null;msaaBuffer=undefined;msaaIdle=0;shadowTarget=null;shadowIdle=0;targetKey=shadowKey='';shadowLight=null;
       stats.msaa=0;stats.reflections=false;stats.shadowMapSize=stats.shadowTileSize=0;
       governor.reset();autoScale=1;
@@ -2933,6 +3132,19 @@
         stats.drawCalls++;stats.triangles+=shape.count/3*group.count;if(!shadowPass)stats.instances+=group.count;
       }
     }
+    // FERRO 0.3.11 (ombresPhoto) : part 1, les instances de chaque groupe hors de la tuile ; part 2, celles de la tuile.
+    function renderPart(batch,buffer,part){
+      if(!batch.groups.length)return;
+      gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+      for(const group of batch.groups){
+        const near=group.near||0,count=part===2?near:group.count-near;if(!count)continue;
+        const start=group.offset+(part===2?(group.count-near)*64:0);
+        for(let i=2;i<6;i++)gl.vertexAttribPointer(i,4,gl.FLOAT,false,64,start+(i-2)*16);
+        const shape=source.ranges[group.name];
+        gl.drawElementsInstanced(gl.TRIANGLES,shape.count,gl.UNSIGNED_INT,shape.offset,count);
+        stats.drawCalls++;stats.triangles+=shape.count/3*count;
+      }
+    }
     // Flux d'instances de chaque image (objets, effets, habitacle) : chaque envoi re-spécifie le stockage à sa taille
     // utile, données comprises (bufferData avec srcOffset et longueur, depuis l'espace de travail du packer, sans
     // sous-vue). C'est l'orphelinage de 0.3.9 : l'ancien stockage revient au pilote sans attendre le GPU, et rien n'est
@@ -3041,6 +3253,7 @@
       const lift=area?area.depth*.5:55,p=center.map((v,k)=>v+sun[k]*lift);
       shadowView.set([r[0],u[0],-fw[0],0,r[1],u[1],-fw[1],0,r[2],u[2],-fw[2],0,-(r[0]*p[0]+r[1]*p[1]+r[2]*p[2]),-(u[0]*p[0]+u[1]*p[1]+u[2]*p[2]),fw[0]*p[0]+fw[1]*p[1]+fw[2]*p[2],1]);
       const near=1,far=area?area.depth:115;shadowProjection.fill(0);shadowProjection[0]=shadowProjection[5]=1/extent;shadowProjection[10]=-2/(far-near);shadowProjection[14]=-(far+near)/(far-near);shadowProjection[15]=1;
+      if(photo){photoSunRange=far-near;photoSunTexel=texel;}
       multiply(shadowProjection,shadowView,shadowMatrix);shadowMatrices.set(shadowMatrix,16);
       gl.bindFramebuffer(gl.FRAMEBUFFER,shadowTarget.framebuffer);
       if(full)gl.viewport(0,0,tile,tile);else gl.viewport(shadowTarget.size,0,shadowTarget.size,shadowTarget.size);
@@ -3057,7 +3270,7 @@
       // BITUME : les lots dont la sphère touche le volume du soleil projettent leur ombre (version proche ou lointaine).
       const viewTangent=Math.tan(Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/360);
       if(warm){warm.cible='ombre';prechaufferLots(true);}else dessinerLots(eye,axes,0,viewTangent,0,inside);
-      renderBatch(dynamicBatch,dynamicBuffer,false,true);if(crowd)renderBatch(crowd,crowdBuffer,false,true);gl.disable(gl.POLYGON_OFFSET_FILL);
+      if(photoSplit)renderPart(dynamicBatch,dynamicBuffer,1);else renderBatch(dynamicBatch,dynamicBuffer,false,true);if(crowd)renderBatch(crowd,crowdBuffer,false,true);gl.disable(gl.POLYGON_OFFSET_FILL);
       // PDR (lots) : les lots du jeu (fx.lots) entrent dans la même vue du soleil, au même biais, rétabli pour eux.
       // PDR (foule) : la foule sur le GPU aussi (fx.foule.ombre) ; au retour, le moteur reprend son état GL.
       const pdrOmbre=fx.foule&&typeof fx.foule.ombre==='function';
@@ -3232,7 +3445,9 @@
       ordinary.length=overlay.length=particles.length=overlayParticles.length=0;for(const mesh of dynamic||[]) (mesh.overlay?(mesh.fx?overlayParticles:overlay):mesh.fx?particles:ordinary).push(mesh);
       // Préchauffage : quelques pièces témoins garantissent chaque passe (objets, effets translucides, habitacle).
       if(warm)for(const mesh of warm.extra)(mesh.overlay?(mesh.fx?overlayParticles:overlay):mesh.fx?particles:ordinary).push(mesh);
-      const dynamicBatch=packDynamic(ordinary,environment,true);
+      // FERRO 0.3.11 (ombresPhoto) : sans l'option, tuile est null et rien ne change.
+      const tuile=photo?photoTuile(fx,dynamic,camera):null;photoSplit=!!tuile;photoOverlay=null;
+      const dynamicBatch=tuile?packSplit(ordinary,nearOrdinary,environment):packDynamic(ordinary,environment,true);
       const torchPosition=eye.map((v,i)=>v+right[i]*.16-up[i]*.08);
       stats.drawCalls=0;stats.triangles=0;stats.instances=0;stats.bloom=!!post&&fx.bloom!==false;stats.shadows=!!shadowTarget&&shadowsEnabled(fx);stats.shadowMaps=stats.shadows?shadowLights.length+1+(environment?1:0):0;stats.shadowMode=environment?'sun-atlas':'atlas';
       stats.uploadBytes=0;stats.fxInstances=0;
@@ -3259,6 +3474,7 @@
         if(!sunOnly)shadowLights.forEach((light,i)=>{const fw=light.dir,axes=fw?{forward:fw,right:[-fw[2],0,fw[0]],up:[0,1,0]}:null;shadowPass(light,dynamicBatch,i,axes,t);});
         if(environment)sunShadowPass(eye,axes,dynamicBatch,t,camera,fx,crowd);
         if(!sunOnly&&fx.torch!==false)shadowPass({p:torchPosition},dynamicBatch,2,axes,t);
+        if(tuile)photoTilePass(tuile,dynamicBatch,overlay,t);
       }
       prof?.end();
       if(!warm)reflections?.beginScreen(post?.scene,reflectionMode);if(sceneMode==='screen'){gl.clearBufferfv(gl.COLOR,1,ZERO4);gl.drawBuffers([gl.COLOR_ATTACHMENT0]);}
@@ -3278,6 +3494,7 @@
       gl.uniform2f(uniforms.uResolution,canvas.width,canvas.height);gl.uniform4f(uniforms.uEffects,t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0)));
       gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,stats.shadows?shadowTarget.texture:whiteTexture);gl.uniform1i(uniforms.uShadowMap,2);
       gl.uniformMatrix4fv(uniforms.uShadowMatrix,false,shadowMatrices);gl.uniform4f(uniforms.uShadowSettings,stats.shadows&&!sunOnly?shadowLights.length:0,shadowTarget?1/(shadowTarget.size*2):1,stats.shadows&&!sunOnly&&fx.torch!==false?1:0,stats.shadows&&environment?(sunOnly?2:1):0);
+      if(photo)photoBind(fx,tuile,sunOnly);
       // PDR : sans lampe torche (fx.torch === false), sa source est renvoyée assez loin pour ne plus rien éclairer.
       gl.uniform3fv(uniforms.uTorchPosition,fx.torch===false?TORCH_OFF:torchPosition);
       // PDR (voile) : fx.voile = { texture R8, origine [x0, z0], taille [largeur, profondeur], force } sur l'unité 4. Sans
@@ -3342,7 +3559,7 @@
         let overlayClip=vp;
         if(overlayNear!==near){overlayProjection.set(projection);overlayProjection[10]=(far+overlayNear)/(overlayNear-far);overlayProjection[14]=2*far*overlayNear/(overlayNear-far);multiply(overlayProjection,view,overlayVP);overlayClip=overlayVP;gl.uniformMatrix4fv(uniforms.uViewProjection,false,overlayClip);}
         if(blackout){for(let i=0;i<selected.length;i++){const light=selected[i].light,c=light.color||WHITE,power=light.power===undefined?1:light.power;lightColors[i*3]=c[0]*power;lightColors[i*3+1]=c[1]*power;lightColors[i*3+2]=c[2]*power;}gl.uniform3fv(uniforms.uLightColor,lightColors);}
-        gl.clear(gl.DEPTH_BUFFER_BIT);if(overlay.length){const cockpit=packOverlay(overlay,environment,true);streamUpload(overlayStream,cockpit);renderBatch(cockpit,overlayBuffer,false);}
+        gl.clear(gl.DEPTH_BUFFER_BIT);if(overlay.length){const cockpit=photoOverlay||packOverlay(overlay,environment,true);if(cockpit!==photoOverlay)streamUpload(overlayStream,cockpit);renderBatch(cockpit,overlayBuffer,false);}
         if(overlayParticles.length)renderEffects(overlayParticles,eye,t,overlayClip);
         if(overlayClip!==vp)gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);
       }
@@ -3353,6 +3570,195 @@
       }
       prof?.begin('post');if(stats.reflections)reflectionsPass();if(stats.bloom||composeScreen)postPass();prof?.end();
     }
+
+    // ------------------------------------------------------------------ FERRO 0.3.11 : option ombresPhoto
+    function photoDepthTexture(size){
+      const t=gl.createTexture();created(1);gl.bindTexture(gl.TEXTURE_2D,t);
+      gl.texImage2D(gl.TEXTURE_2D,0,gl.DEPTH_COMPONENT16,size,size,0,gl.DEPTH_COMPONENT,gl.UNSIGNED_SHORT,null);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+      return t;
+    }
+    function photoDepthTarget(size){
+      const target={framebuffer:gl.createFramebuffer(),texture:photoDepthTexture(size),size};created(1);
+      gl.bindFramebuffer(gl.FRAMEBUFFER,target.framebuffer);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,target.texture,0);
+      gl.drawBuffers([gl.NONE]);gl.readBuffer(gl.NONE);
+      const ok=gl.checkFramebufferStatus(gl.FRAMEBUFFER)===gl.FRAMEBUFFER_COMPLETE;
+      gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+      if(!ok){deleteTarget(target);return null;}
+      return target;
+    }
+    // Créé avec le contexte (et après sa restauration) : la course ne crée jamais ces objets.
+    function photoInitialize(){
+      photoUniforms={};for(const name of ['uContact','uContactCount','uContactReglages','uOmbreTuile','uOmbreTuileMatrice','uOmbreTuileReglages','uOmbreLoin','uOmbreLoinMatrice','uOmbreLoinReglages','uOmbreComparee','uPenombre'])photoUniforms[name]=gl.getUniformLocation(program,name);
+      photoSampler=gl.createSampler();
+      gl.samplerParameteri(photoSampler,gl.TEXTURE_COMPARE_MODE,gl.COMPARE_REF_TO_TEXTURE);gl.samplerParameteri(photoSampler,gl.TEXTURE_COMPARE_FUNC,gl.LEQUAL);
+      gl.samplerParameteri(photoSampler,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.samplerParameteri(photoSampler,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+      gl.samplerParameteri(photoSampler,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.samplerParameteri(photoSampler,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+      // Les textures naissent sur l'unité 9, réservée à l'option : les unités du moteur gardent leurs liaisons.
+      gl.activeTexture(gl.TEXTURE9);photoDepth=photoDepthTexture(1);photoTile=photoDepthTarget(photoTileSize);photoFar=null;
+      gl.useProgram(program);gl.uniform1i(photoUniforms.uOmbreComparee,8);gl.uniform1i(photoUniforms.uOmbreTuile,9);gl.uniform1i(photoUniforms.uOmbreLoin,10);
+      gl.activeTexture(gl.TEXTURE8);gl.bindTexture(gl.TEXTURE_2D,photoDepth);gl.bindSampler(8,photoSampler);
+      gl.activeTexture(gl.TEXTURE9);gl.bindTexture(gl.TEXTURE_2D,whiteTexture);
+      gl.activeTexture(gl.TEXTURE10);gl.bindTexture(gl.TEXTURE_2D,photoDepth);gl.bindSampler(10,photoSampler);
+      gl.activeTexture(gl.TEXTURE0);
+      photoState.contacts=0;photoState.tuile=photoState.loin=false;photoState.penombre='off';photoState.loinTaille=0;
+    }
+    function photoDispose(){
+      if(photoTile)deleteTarget(photoTile);if(photoFar)deleteTarget(photoFar);if(photoDepth)gl.deleteTexture(photoDepth);if(photoSampler)gl.deleteSampler(photoSampler);
+      photoTile=photoFar=photoDepth=photoSampler=null;
+    }
+    // Vue orthographique selon le soleil : centre c, demi-côté e, axe x suivant `axe` projeté (sinon l'horizontale du
+    // soleil), oeil relevé de lift, profondeur de near à far. Écrit dans out ; rend le pas de grille (m par texel).
+    function photoSunMatrix(out,c,e,size,lift,near,far,axe,snap){
+      const sun=environment.sunDirection,sl=Math.hypot(sun[0],sun[1],sun[2])||1;
+      const fx=-sun[0]/sl,fy=-sun[1]/sl,fz=-sun[2]/sl;
+      let rx,ry,rz;
+      if(axe){rx=axe[0];ry=axe[1];rz=axe[2];}else{const h=Math.hypot(fx,fz);if(h>.0001){rx=-fz/h;ry=0;rz=fx/h;}else{rx=1;ry=0;rz=0;}}
+      const k=rx*fx+ry*fy+rz*fz;rx-=k*fx;ry-=k*fy;rz-=k*fz;let rl=Math.hypot(rx,ry,rz);
+      if(rl<.0001){rx=1-fx*fx;ry=-fx*fy;rz=-fx*fz;rl=Math.hypot(rx,ry,rz)||1;}
+      rx/=rl;ry/=rl;rz/=rl;
+      const ux=ry*fz-rz*fy,uy=rz*fx-rx*fz,uz=rx*fy-ry*fx,texel=e*2/size;
+      let cx=c[0],cy=c[1],cz=c[2];
+      if(snap){const a=rx*cx+ry*cy+rz*cz,b=ux*cx+uy*cy+uz*cz,da=Math.round(a/texel)*texel-a,db=Math.round(b/texel)*texel-b;cx+=rx*da+ux*db;cy+=ry*da+uy*db;cz+=rz*da+uz*db;}
+      const px=cx-fx*lift,py=cy-fy*lift,pz=cz-fz*lift;
+      photoMatrix[0]=rx;photoMatrix[1]=ux;photoMatrix[2]=-fx;photoMatrix[3]=0;photoMatrix[4]=ry;photoMatrix[5]=uy;photoMatrix[6]=-fy;photoMatrix[7]=0;
+      photoMatrix[8]=rz;photoMatrix[9]=uz;photoMatrix[10]=-fz;photoMatrix[11]=0;
+      photoMatrix[12]=-(rx*px+ry*py+rz*pz);photoMatrix[13]=-(ux*px+uy*py+uz*pz);photoMatrix[14]=fx*px+fy*py+fz*pz;photoMatrix[15]=1;
+      photoProjection.fill(0);photoProjection[0]=photoProjection[5]=1/e;photoProjection[10]=-2/(far-near);photoProjection[14]=-(far+near)/(far-near);photoProjection[15]=1;
+      multiply(photoProjection,photoMatrix,out);
+      return texel;
+    }
+    // Tuile de l'image : fx.ombreProche = { centre, etendue, debut, fin, axe } (debut et fin : indices de dynamic). Les
+    // pièces ordinaires de cet intervalle passent dans nearOrdinary ; le préchauffage en prend une pièce témoin.
+    function photoTuile(fx,dynamic,camera){
+      let o=fx.ombreProche;
+      if(!o&&warm){const p=camera.pos||[0,1.6,0];photoWarmTile.centre[0]=p[0];photoWarmTile.centre[1]=p[1];photoWarmTile.centre[2]=p[2];o=photoWarmTile;}
+      if(!o||!photoTile||!environment||!shadowTarget||!shadowsEnabled(fx))return null;
+      const c=o.centre;if(!c||!Number.isFinite(c[0])||!Number.isFinite(c[1])||!Number.isFinite(c[2]))return null;
+      const list=dynamic||EMPTY_ENTRIES,debut=Math.max(0,Math.floor(o.debut)||0),fin=Math.min(list.length,Math.floor(o.fin)||0);
+      ordinary.length=0;nearOrdinary.length=0;
+      for(let i=0;i<list.length;i++){const mesh=list[i];if(mesh.overlay||mesh.fx)continue;(i>=debut&&i<fin?nearOrdinary:ordinary).push(mesh);}
+      if(warm){let first=true;for(const mesh of warm.extra){if(mesh.overlay||mesh.fx)continue;(first?nearOrdinary:ordinary).push(mesh);first=false;}}
+      return o;
+    }
+    // Profondeur de la voiture filmée : ses pièces ordinaires (part 2 du lot dynamique) et l'habitacle (overlay, empaqueté
+    // ici une fois, repris par la passe de l'habitacle). Grille liée à la voiture quand l'axe est donné, sinon au monde.
+    function photoTilePass(tuile,dynamicBatch,overlayList,time){
+      const e=Number.isFinite(tuile.etendue)&&tuile.etendue>.5?tuile.etendue:3.5;photoTileExtent=e;
+      const axe=tuile.axe&&Number.isFinite(tuile.axe[0])&&Number.isFinite(tuile.axe[1])&&Number.isFinite(tuile.axe[2])?tuile.axe:null;
+      photoSunMatrix(photoTileMatrix,tuile.centre,e,photoTile.size,8,.5,16,axe,!axe);
+      if(overlayList.length){photoOverlay=packOverlay(overlayList,environment,true);streamUpload(overlayStream,photoOverlay);}
+      gl.bindFramebuffer(gl.FRAMEBUFFER,photoTile.framebuffer);gl.viewport(0,0,photoTile.size,photoTile.size);gl.clear(gl.DEPTH_BUFFER_BIT);
+      gl.useProgram(depthProgram);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1.1,2);
+      // Faces arrière seules : les pièces de la voiture sont des solides fermés ; la profondeur gardée est celle de leur
+      // face cachée, et une face éclairée ne s'ombre plus elle-même (points d'acné des surfaces rasantes à 7 mm).
+      gl.cullFace(gl.FRONT);
+      gl.uniformMatrix4fv(depthMatrix,false,photoTileMatrix);gl.uniform2f(depthWind,weather.wind,time);bindLocalWind(depthLocalWind);
+      if(warm)warm.cible='tuile';
+      renderPart(dynamicBatch,dynamicBuffer,2);if(photoOverlay)renderBatch(photoOverlay,overlayBuffer,false,true);
+      gl.disable(gl.POLYGON_OFFSET_FILL);gl.cullFace(gl.BACK);
+    }
+    const PHOTO_PENOMBRE={off:0,meteo:1,pcss:2};
+    // Uniformes de la passe couleur. Unités : 8 l'atlas du soleil en comparaison, 9 la tuile, 10 la carte lointaine.
+    function photoBind(fx,tuile,full){
+      const u=photoUniforms,c=fx.contacts;
+      const n=c&&c.boites&&c.boites.length>=24&&Number.isFinite(c.nombre)?Math.max(0,Math.min(6,Math.floor(c.nombre),Math.floor(c.boites.length/24))):0;
+      gl.uniform1i(u.uContactCount,n);if(n)gl.uniform4fv(u.uContact,c.boites,0,n*24);
+      const num=(v,d)=>Number.isFinite(v)?v:d;
+      gl.uniform4f(u.uContactReglages,n?num(c.ambiance,.85):0,n?num(c.soleil,.6):0,Math.max(.5,num(c&&c.exposant,4)),Math.max(0,num(c&&c.marge,1.6)));
+      const tileOn=!!(tuile&&stats.shadows&&photoTile);
+      gl.activeTexture(gl.TEXTURE9);gl.bindTexture(gl.TEXTURE_2D,tileOn?photoTile.texture:whiteTexture);
+      gl.uniformMatrix4fv(u.uOmbreTuileMatrice,false,photoTileMatrix);
+      const tileTexel=photoTile?1/photoTile.size:1;
+      gl.uniform4f(u.uOmbreTuileReglages,tileOn?1:0,tileTexel,.3/(2*photoTileExtent),photoTileExtent*2*tileTexel);
+      const sun=environment&&environment.sunDirection,far=photoFar;
+      const farOn=!!(far&&stats.shadows&&fx.ombreLoin!==false&&sun&&sun[0]===far.sun[0]&&sun[1]===far.sun[1]&&sun[2]===far.sun[2]&&photoMemesLots(far));
+      gl.activeTexture(gl.TEXTURE10);gl.bindTexture(gl.TEXTURE_2D,farOn?far.texture:photoDepth);
+      if(farOn){gl.uniformMatrix4fv(u.uOmbreLoinMatrice,false,photoFarMatrix);gl.uniform4f(u.uOmbreLoinReglages,1,1/far.size,far.bias,far.normal);}
+      else gl.uniform4f(u.uOmbreLoinReglages,0,1,0,0);
+      const p=fx.penombre,mode=stats.shadows?PHOTO_PENOMBRE[typeof p==='string'?p:p&&p.mode]||0:0,pcss=mode===2&&full;
+      const k=p&&typeof p==='object'&&Number.isFinite(p.k)?p.k:.02,rayon=p&&typeof p==='object'&&Number.isFinite(p.rayonMax)?Math.max(1,Math.min(6,p.rayonMax)):4;
+      gl.activeTexture(gl.TEXTURE8);gl.bindTexture(gl.TEXTURE_2D,pcss?shadowTarget.texture:photoDepth);
+      gl.uniform4f(u.uPenombre,pcss?2:mode?1:0,photoSunRange*k/Math.max(.0001,photoSunTexel),rayon,0);
+      gl.activeTexture(gl.TEXTURE2);
+      photoState.contacts=n;photoState.tuile=tileOn;photoState.loin=farOn;photoState.penombre=pcss?'pcss':mode?'meteo':'off';
+    }
+    // Carte lointaine, dessinée une fois au chargement (jamais pendant draw) : lots statiques dans leur version lointaine
+    // (ni prairies ni lots « ombre: false »), vus du soleil, au repos (sans vent). Les nappes n'y entrent pas, comme
+    // dans le carré proche. Invalide si setLots reçoit d'autres lots ou si la direction du soleil change ; refaite après
+    // une perte de contexte. demande = { taille (texels, 2048), marge (m, 20), dessous (m, 300) } : emprise calculée sur les lots ;
+    // ou { centre, etendue (demi-côté, m), taille, hauteur (profondeur du volume, m) } : emprise imposée. null la
+    // libère. Rend { taille, texel, etendue, profondeur, centre, octets, appels, instances, ms } ou null.
+    // La carte vaut pour ces lots-là : mêmes objets dans le même ordre (setLots refiltre un tableau neuf à chaque appel,
+    // même pour le décor déjà chargé). Comparés une fois par nouvel appel à setLots, pas à chaque image.
+    function photoMemesLots(far){
+      if(far.lots===lots)return true;
+      const a=far.liste;if(a.length!==lots.length)return false;
+      for(let i=0;i<a.length;i++)if(a[i]!==lots[i])return false;
+      far.lots=lots;return true;
+    }
+    // Emprise automatique dans le repère du soleil (axes de photoSunMatrix sans axe imposé) : sphères des lots qui
+    // projettent, marge latérale m ; en profondeur, de m devant le lot le plus proche du soleil à `dessous` au-delà du
+    // plus lointain (le sol qui reçoit). Les récepteurs partagent les coordonnées de leurs bloqueurs : le carré des
+    // lots suffit, quelle que soit la hauteur du soleil.
+    function photoEmprise(m,dessous){
+      const sun=environment.sunDirection,sl=Math.hypot(sun[0],sun[1],sun[2])||1,fx=-sun[0]/sl,fy=-sun[1]/sl,fz=-sun[2]/sl,h=Math.hypot(fx,fz);
+      const rx=h>.0001?-fz/h:1,rz=h>.0001?fx/h:0,ux=-rz*fy,uy=rz*fx-rx*fz,uz=rx*fy;
+      let a0=Infinity,a1=-Infinity,b0=Infinity,b1=-Infinity,d0=Infinity,d1=-Infinity;
+      for(const l of lots){
+        const c=l.centre,r=Math.max(0,Number(l.rayon)||0);
+        if(l.ombre===false||l.groundCover||!c||!Number.isFinite(c[0])||!Number.isFinite(c[1])||!Number.isFinite(c[2]))continue;
+        const a=rx*c[0]+rz*c[2],b=ux*c[0]+uy*c[1]+uz*c[2],d=fx*c[0]+fy*c[1]+fz*c[2];
+        a0=Math.min(a0,a-r);a1=Math.max(a1,a+r);b0=Math.min(b0,b-r);b1=Math.max(b1,b+r);d0=Math.min(d0,d-r);d1=Math.max(d1,d+r);
+      }
+      if(!(a1>=a0))return null;
+      const a=(a0+a1)/2,b=(b0+b1)/2,d=(d0+d1)/2;
+      return {centre:[rx*a+ux*b+fx*d,uy*b+fy*d,rz*a+uz*b+fz*d],etendue:Math.max(a1-a0,b1-b0)/2+m,lift:d-d0+m,profondeur:d1-d0+m+dessous};
+    }
+    function precalculerOmbre(demande){
+      if(!photo)return null;
+      if(!demande){photoFarRequest=null;if(photoFar){deleteTarget(photoFar);photoFar=null;}photoState.loin=false;photoState.loinTaille=0;return null;}
+      const c=demande.centre,auto=c===undefined||c===null;
+      const size=Math.max(256,Math.min(Math.floor(Number(demande.taille)||2048),maxShadowTileSize*2));
+      if(auto){
+        const m=Number.isFinite(demande.marge)?Math.max(0,demande.marge):20,dessous=Number.isFinite(demande.dessous)?Math.max(0,demande.dessous):300;
+        photoFarRequest={taille:size,marge:m,dessous};
+      }else{
+        const e=Number(demande.etendue),h=Number(demande.hauteur)||Math.max(400,e*3);
+        if(!c||![c[0],c[1],c[2],e,h].every(Number.isFinite)||e<=0||h<=0)throw new Error('precalculerOmbre : centre et etendue requis');
+        photoFarRequest={centre:[c[0],c[1],c[2]],etendue:e,taille:size,hauteur:h};
+      }
+      if(disposed||stats.contextLost||!environment)return null;
+      const r=photoFarRequest,zone=auto?photoEmprise(r.marge,r.dessous):{centre:r.centre,etendue:r.etendue,lift:r.hauteur*.5,profondeur:r.hauteur};
+      if(!zone){if(photoFar){deleteTarget(photoFar);photoFar=null;}photoState.loin=false;photoState.loinTaille=0;return null;}
+      const start=clock(),e=zone.etendue,h=zone.profondeur;
+      gl.activeTexture(gl.TEXTURE10);if(!photoFar||photoFar.size!==size){if(photoFar)deleteTarget(photoFar);photoFar=photoDepthTarget(size);}
+      gl.bindTexture(gl.TEXTURE_2D,photoDepth);gl.activeTexture(gl.TEXTURE0);
+      if(!photoFar)return null;
+      const texel=photoSunMatrix(photoFarMatrix,zone.centre,e,size,zone.lift,0,h,null,false);
+      const sun=environment.sunDirection;photoFar.sun=[sun[0],sun[1],sun[2]];photoFar.lots=lots;photoFar.liste=lots.slice();
+      photoFar.bias=Math.min(.02,.6/h);photoFar.normal=Math.min(2,texel);
+      const before=stats.drawCalls,beforeTriangles=stats.triangles;let instances=0;
+      gl.bindFramebuffer(gl.FRAMEBUFFER,photoFar.framebuffer);gl.viewport(0,0,size,size);gl.disable(gl.SCISSOR_TEST);gl.depthMask(true);gl.clear(gl.DEPTH_BUFFER_BIT);
+      gl.useProgram(depthProgram);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1.1,2);
+      gl.uniformMatrix4fv(depthMatrix,false,photoFarMatrix);gl.uniform2f(depthWind,0,0);
+      gl.uniform1f(depthLocalWind.uWindStrength,0);gl.uniform1i(depthLocalWind.uLocalWindCount,0);depthLocalWind.localWindActive=true;
+      for(const l of lots){
+        if(l.ombre===false||l.groundCover||!l.tampon)continue;
+        const loin=!!(l.paquetLoin&&l.tamponLoin),batch=loin?l.paquetLoin:l.paquet;
+        renderBatch(batch,loin?l.tamponLoin:l.tampon,false,true);for(const g of batch.groups)instances+=g.count;
+      }
+      if(worldIndex.entries.length){
+        const batch=pack(worldIndex.entries.map(entry=>entry.mesh),environment),buffer=gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,batch.values,gl.STATIC_DRAW);renderBatch(batch,buffer,false,true);gl.deleteBuffer(buffer);
+        for(const g of batch.groups)instances+=g.count;
+      }
+      gl.disable(gl.POLYGON_OFFSET_FILL);gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,canvas.width,canvas.height);
+      const report={taille:size,texel,etendue:e,profondeur:h,centre:zone.centre,octets:size*size*2,appels:stats.drawCalls-before,instances,ms:clock()-start};
+      stats.drawCalls=before;stats.triangles=beforeTriangles;photoState.loinTaille=size;
+      return report;
+    }
     // Rendu du jeu : seules ses créations d'objets GL entrent dans stats.creations.
     function draw(camera,dynamic,fx){counting=true;try{render(camera,dynamic,fx);}finally{counting=false;}}
     function lost(event){event.preventDefault();stats.contextLost=true;}
@@ -3360,6 +3766,7 @@
       // BITUME : les anciens objets GL appartiennent au contexte perdu ; oublier leurs poignées avant recharge.
       nappeVao=nappeVbo=nappeIbo=null;for(const l of lots)l.tampon=l.tamponLoin=null;
       chunks.clear();initialize();chargerNappes();chargerLots();rebuildChunks();
+      if(photo&&photoFarRequest)precalculerOmbre(photoFarRequest);
     }}
     canvas.addEventListener('webglcontextlost',lost);canvas.addEventListener('webglcontextrestored',restored);
     function dispose() {
@@ -3374,7 +3781,7 @@
       for(const l of lots)for(const cle of ['tampon','tamponLoin'])if(l[cle])gl.deleteBuffer(l[cle]);
       // PDR (lots) : tampons des lots du jeu.
       for(const slot of pdrSlots)if(slot)gl.deleteBuffer(slot.buffer);pdrSlots=[];pdrLots.length=0;
-      freePost();deleteTarget(shadowTarget);gl.deleteTexture(whiteTexture);for(const tex of pbrTextures)gl.deleteTexture(tex);pbrTextures=[];
+      freePost();deleteTarget(shadowTarget);if(photo)photoDispose();gl.deleteTexture(whiteTexture);for(const tex of pbrTextures)gl.deleteTexture(tex);pbrTextures=[];
       gl.deleteVertexArray(vao);gl.deleteVertexArray(postVao);gl.deleteProgram(program);gl.deleteProgram(depthProgram);gl.deleteProgram(postProgram);gl.deleteProgram(skyProgram);gl.deleteProgram(fxProgram);gl.deleteProgram(ssrProgram);
     }
     async function calibrate(camera,dynamic,fx={},frames=30){
@@ -3540,7 +3947,7 @@
           gl.uniform3fv(u.uPdrLumiereDirection,l.directions);gl.uniform2fv(u.uPdrLumiereCone,l.cones);gl.uniform1fv(u.uPdrLumierePortee,l.portees);gl.uniform1i(u.uPdrLumieres,l.nombre);
         };
       }};
-    return {setEnvironment(value){environment=environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,updateShape,gl,pdr,calibrate,profile,prewarm,retain,resetStats,setRenderScale:value=>surface?.setScale(value),setBudgetTarget:value=>watch?.setTarget(value)};
+    return {setEnvironment(value){environment=environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,updateShape,gl,pdr,calibrate,profile,prewarm,retain,resetStats,precalculerOmbre,setRenderScale:value=>surface?.setScale(value),setBudgetTarget:value=>watch?.setTarget(value)};
   }
   // Both GPU backends share the procedural shapes, instance layout and visibility
   // rules. No rendering calls or GPU state are shared between the APIs.

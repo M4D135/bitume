@@ -1,0 +1,468 @@
+{
+ "outil": "tools/page-essai.mjs (Chrome sans fenêtre), 1280 × 720, densité 1, séance de référence BITUME_JEU.reference, n images rendues avant la prise ; même graine, même pose avant et après",
+ "avant": {
+  "page": "BITUME 0.2.40 sur FERRO 0.3.10 (construction de la branche sans le lot)",
+  "sha256": "ec0c279ac28cd55374525f422585edf3310888c6349946fb0f7c2ec1dffcb16d"
+ },
+ "apres": {
+  "page": "BITUME 0.2.40 sur FERRO 0.3.11 (ce lot : tuile 512², pénombre météo, PCSS coupée)",
+  "verification": "les neuf vues reprises sur la page finale (dist/bitume.html, sha256 b18cbf3473b7d94b…) : 5 identiques au pixel près, 4 au bruit de prise près (moins de 0,1 % des pixels, sauf 2-poursuite-fine 2 % et 4-exterieur-legere, voir bruit)"
+ },
+ "vues": [
+  {
+   "nom": "1-cockpit-fine",
+   "reference": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "cockpit",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "images": 50,
+   "avant": {
+    "moteur": "0.3.10",
+    "s": 847.71,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 4174610,
+    "appels": 338,
+    "photo": null,
+    "png_sha256": "5918574b66f53a8587cb63c3c880d565d74543736276f5c52d363068d4daf2f9"
+   },
+   "apres": {
+    "moteur": "0.3.11",
+    "s": 847.71,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 4206549,
+    "appels": 369,
+    "photo": {
+     "contacts": 6,
+     "tuile": true,
+     "loin": true,
+     "penombre": "meteo",
+     "loinTaille": 2048
+    },
+    "png_sha256": "acd9ca770d31970f25e461f1a2dd52f3cac78a27ae521629a752ba059abb6672"
+   }
+  },
+  {
+   "nom": "2-poursuite-fine",
+   "reference": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "poursuite",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "images": 50,
+   "avant": {
+    "moteur": "0.3.10",
+    "s": 847.71,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 4137596,
+    "appels": 248,
+    "photo": null,
+    "png_sha256": "8b04b3ce80f788c225019115eb47e3af0527b0aa45f61519389003936bd0db83"
+   },
+   "apres": {
+    "moteur": "0.3.11",
+    "s": 847.71,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 4137596,
+    "appels": 283,
+    "photo": {
+     "contacts": 6,
+     "tuile": true,
+     "loin": true,
+     "penombre": "meteo",
+     "loinTaille": 2048
+    },
+    "png_sha256": "160052ddf79295e7bba5e3997994a4406e2c7d2fa127f76c0d209b021b4d2f5c"
+   }
+  },
+  {
+   "nom": "3-cockpit-moyenne",
+   "reference": {
+    "circuit": 0,
+    "qualite": "medium",
+    "vue": "cockpit",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "images": 50,
+   "avant": {
+    "moteur": "0.3.10",
+    "s": 847.71,
+    "image": "1280x720",
+    "ombre": 1024,
+    "msaa": 4,
+    "triangles": 2474327,
+    "appels": 261,
+    "photo": null,
+    "png_sha256": "383c6ceebce929477a13f6a988e18be225b0bc3e6f540073e7aa3bd4b3d1f4fb"
+   },
+   "apres": {
+    "moteur": "0.3.11",
+    "s": 847.71,
+    "image": "1280x720",
+    "ombre": 1024,
+    "msaa": 4,
+    "triangles": 2506266,
+    "appels": 292,
+    "photo": {
+     "contacts": 6,
+     "tuile": true,
+     "loin": true,
+     "penombre": "meteo",
+     "loinTaille": 2048
+    },
+    "png_sha256": "fbb081d4a3127d9cf129bf2195bba314b5425cfc9b883af2a7e88be6fa577fbc"
+   }
+  },
+  {
+   "nom": "4-exterieur-legere",
+   "reference": {
+    "circuit": 0,
+    "qualite": "low",
+    "vue": "poursuite",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "images": 50,
+   "avant": {
+    "moteur": "0.3.10",
+    "s": 847.71,
+    "image": "1024x576",
+    "ombre": 0,
+    "msaa": 0,
+    "triangles": 471342,
+    "appels": 140,
+    "photo": null,
+    "png_sha256": "17f67991b27208848d2099331e34730f3b8c22126e0382bb128607cc39ea105b"
+   },
+   "apres": {
+    "moteur": "0.3.11",
+    "s": 847.71,
+    "image": "1024x576",
+    "ombre": 0,
+    "msaa": 0,
+    "triangles": 471342,
+    "appels": 140,
+    "photo": {
+     "contacts": 4,
+     "tuile": false,
+     "loin": false,
+     "penombre": "off",
+     "loinTaille": 2048
+    },
+    "png_sha256": "29f1fc4d2685b99bea2a50f250d2d383e234bf011cb98deb202aa6701149228f"
+   }
+  },
+  {
+   "nom": "5-depart-grille",
+   "reference": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "poursuite",
+    "depart": 0,
+    "vitesse": 0
+   },
+   "images": 30,
+   "camera": "{ const a = ech(-44), b = ech(18), ca = Math.cos(a.cap), sa = Math.sin(a.cap), cb = Math.cos(b.cap), sb = Math.sin(b.cap); const P = [a.x - sa * 8, a.y + 3.6, a.z + ca * 8], C = [b.x + sb * 1.5, b.y + .4, b.z - cb * 1.5]; const v = viser(P, C, 46); J.camera = () => v; info.cam = v; }",
+   "avant": {
+    "moteur": "0.3.10",
+    "s": 1.27,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 1908318,
+    "appels": 246,
+    "photo": null,
+    "png_sha256": "1666566570898ed19c5c23a3d3ab03613be4078820c2ed39b03a18daeef23b0a"
+   },
+   "apres": {
+    "moteur": "0.3.11",
+    "s": 1.27,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 1908318,
+    "appels": 281,
+    "photo": {
+     "contacts": 6,
+     "tuile": true,
+     "loin": true,
+     "penombre": "meteo",
+     "loinTaille": 2048
+    },
+    "png_sha256": "158216975d4476618ff121f6157102a7473166537f4b7b508be749df9da248e5"
+   }
+  },
+  {
+   "nom": "6-tribune",
+   "reference": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "poursuite",
+    "depart": 22,
+    "vitesse": 40
+   },
+   "images": 40,
+   "camera": "{ const a = ech(6), b = ech(52), ca = Math.cos(a.cap), sa = Math.sin(a.cap), cb = Math.cos(b.cap), sb = Math.sin(b.cap); const P = [a.x - sa * 7.5, a.y + 2.2, a.z + ca * 7.5], C = [b.x + sb * 13, b.y + 2.4, b.z - cb * 13]; const v = viser(P, C, 56); J.camera = () => v; info.cam = v; }",
+   "avant": {
+    "moteur": "0.3.10",
+    "s": 49.1,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 1797978,
+    "appels": 221,
+    "photo": null,
+    "png_sha256": "25bc255b86e4233014e350e675abe6e62d19aea9d437e97888494c2a68f8da43"
+   },
+   "apres": {
+    "moteur": "0.3.11",
+    "s": 49.1,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 1797978,
+    "appels": 256,
+    "photo": {
+     "contacts": 6,
+     "tuile": true,
+     "loin": true,
+     "penombre": "meteo",
+     "loinTaille": 2048
+    },
+    "png_sha256": "992d38a3b31dabb1e44a3239059d20d4714c5d991fb3ecb0ee700c6dc1603bd3"
+   }
+  },
+  {
+   "nom": "7-vue-haute",
+   "reference": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "poursuite",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "images": 50,
+   "camera": "{ const a = ech(790), ca = Math.cos(a.cap), sa = Math.sin(a.cap); const P = [a.x - sa * 2, a.y + 24, a.z + ca * 2]; const v = { pos: P, yaw: a.cap + Math.PI / 2 + .55, pitch: -.16, fov: 62 }; J.camera = () => v; info.cam = v; }",
+   "avant": {
+    "moteur": "0.3.10",
+    "s": 847.71,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 3745090,
+    "appels": 298,
+    "photo": null,
+    "png_sha256": "748522b0a0b96a4ceec2b1d7589af44ec97a2c18b74ab2997b31834aae29bc13"
+   },
+   "apres": {
+    "moteur": "0.3.11",
+    "s": 847.71,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 3745090,
+    "appels": 333,
+    "photo": {
+     "contacts": 4,
+     "tuile": true,
+     "loin": true,
+     "penombre": "meteo",
+     "loinTaille": 2048
+    },
+    "png_sha256": "9521d8023931ad8f689d048ed1103e028b709cf9f06e09daafe60bd37585c1a8"
+   }
+  },
+  {
+   "nom": "8-poursuite-pluie",
+   "reference": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "poursuite",
+    "depart": 800,
+    "vitesse": 60,
+    "meteo": "pluie"
+   },
+   "images": 50,
+   "avant": {
+    "moteur": "0.3.10",
+    "s": 847.22,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 4197828,
+    "appels": 304,
+    "photo": null,
+    "png_sha256": "9a9aa890193a19652646380e0e5ca59d10fe7ab97ae4f11974810ede7f23ad79"
+   },
+   "apres": {
+    "moteur": "0.3.11",
+    "s": 847.22,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 4197828,
+    "appels": 339,
+    "photo": {
+     "contacts": 6,
+     "tuile": true,
+     "loin": true,
+     "penombre": "meteo",
+     "loinTaille": 2048
+    },
+    "png_sha256": "936df95c0d50018f602bf91a3148abf6c97f67a1b014a9b0fd1f744d2455e1b4"
+   }
+  },
+  {
+   "nom": "9-cockpit-fine-volant",
+   "reference": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "cockpit",
+    "depart": 2300,
+    "vitesse": 60
+   },
+   "images": 50,
+   "avant": {
+    "moteur": "0.3.10",
+    "s": 2341.13,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 774661,
+    "appels": 348,
+    "photo": null,
+    "png_sha256": "1c2baa49d98c73217a21bdacdf44161cc30875ca56d6d9602aab4772ea84e8be"
+   },
+   "apres": {
+    "moteur": "0.3.11",
+    "s": 2341.13,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 806600,
+    "appels": 379,
+    "photo": {
+     "contacts": 6,
+     "tuile": true,
+     "loin": true,
+     "penombre": "meteo",
+     "loinTaille": 2048
+    },
+    "png_sha256": "8e12ada5926bf3d01b297db557d6c85f51611e46e0893687f64be20f7a096c0a"
+   }
+  },
+  {
+   "nom": "10-voiture-34",
+   "cadrage_du_plan": "c0-voiture-34 (lot 3 de l'outil du plan, voir mesures/cadrages-plan.txt)",
+   "reference": {
+    "circuit": 0,
+    "qualite": "high",
+    "depart": 800,
+    "vue": "poursuite",
+    "vitesse": 20
+   },
+   "images": 45,
+   "camera": "J.camera = (p) => { const ca = Math.cos(p.cap), sa = Math.sin(p.cap); const pos = [p.x + ca * 3.4 + sa * 2.6, p.y + 1.15, p.z + sa * 3.4 - ca * 2.6]; return viser(pos, [p.x + ca * .2, p.y + .35, p.z + sa * .2], 38); };",
+   "outil": "outils/prendre.py et outils/prise.js (pas de 1/60 s, hasard à graine fixe) ; JPEG par sips, qualité 82",
+   "avant": {
+    "moteur": "0.3.10",
+    "s": 816.97,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 3068161,
+    "appels": 310,
+    "photo": null,
+    "png_sha256": "3a1fddff7d735d1fd248925e10c9319e6e049e2c5171284797243291d43e7ff8"
+   },
+   "apres": {
+    "moteur": "0.3.11",
+    "s": 816.97,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 3068161,
+    "appels": 345,
+    "photo": {
+     "contacts": 6,
+     "tuile": true,
+     "loin": true,
+     "penombre": "meteo",
+     "loinTaille": 2048
+    },
+    "png_sha256": "c5174a7f2e4d5befc784823d9dea5d7b767915c59364bcd32657525e26ad4f1c"
+   }
+  },
+  {
+   "nom": "11-voiture-haut",
+   "cadrage_du_plan": "c0-voiture-haut (lot 3 de l'outil du plan, voir mesures/cadrages-plan.txt)",
+   "reference": {
+    "circuit": 0,
+    "qualite": "high",
+    "depart": 800,
+    "vue": "poursuite",
+    "vitesse": 20
+   },
+   "images": 45,
+   "camera": "J.camera = (p) => { const ca = Math.cos(p.cap), sa = Math.sin(p.cap); const pos = [p.x - ca * 1.5 + sa * 3.2, p.y + 4.2, p.z - sa * 1.5 - ca * 3.2]; return viser(pos, [p.x + ca * .6, p.y + .1, p.z + sa * .6], 45); };",
+   "outil": "outils/prendre.py et outils/prise.js (pas de 1/60 s, hasard à graine fixe) ; JPEG par sips, qualité 82",
+   "avant": {
+    "moteur": "0.3.10",
+    "s": 816.97,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 3606796,
+    "appels": 239,
+    "photo": null,
+    "png_sha256": "a2e24b9e18368156800fdcbd9464ff09caf3599962bb2373e772dd21214d5d1b"
+   },
+   "apres": {
+    "moteur": "0.3.11",
+    "s": 816.97,
+    "image": "1280x720",
+    "ombre": 2048,
+    "msaa": 4,
+    "triangles": 3606796,
+    "appels": 274,
+    "photo": {
+     "contacts": 6,
+     "tuile": true,
+     "loin": true,
+     "penombre": "meteo",
+     "loinTaille": 2048
+    },
+    "png_sha256": "1b35b978b5fa632a217a1e4cf046de76c1e81b2173a14a87bbcd6c071f89bc8a"
+   }
+  }
+ ],
+ "zooms": {
+  "zoom-a-poursuite-ombre": "2-poursuite-fine, x 440, y 380, 360 × 200, ×2",
+  "zoom-b-cockpit-horizon": "1-cockpit-fine, x 0, y 262, 640 × 150, ×2",
+  "zoom-c-legere-contact": "4-exterieur-legere, x 300, y 340, 460 × 180, ×2",
+  "zoom-d-arbres-loin": "7-vue-haute, x 0, y 280, 460 × 130, ×2",
+  "zoom-e-grille": "5-depart-grille, x 290, y 380, 250 × 200, ×2",
+  "zoom-f-pluie-ombre": "8-poursuite-pluie, x 440, y 380, 360 × 200, ×2",
+  "zoom-g-cockpit-bras": "9-cockpit-fine-volant, x 700, y 540, 320 × 180, ×3",
+  "zoom-h-casquette": "9-cockpit-fine-volant, x 430, y 470, 420 × 100, ×3 ; tuile1024 = essai écarté (tuile 1024², PCSS), tuile512 = construction finale"
+ },
+ "bruit": {
+  "note": "deux prises de la même construction (0.3.11, essai PCSS), même pose",
+  "2-poursuite-fine": "0,06 % des pixels bougent de plus de 1,5 niveau, moitié plus clairs, moitié plus sombres",
+  "4-exterieur-legere": "1,9 % des pixels, moitié plus clairs, moitié plus sombres (image de 1024 × 576 agrandie, sans MSAA)",
+  "fondu": "une prise Légère sur treize a saisi la fin du fondu de l'écran « Préparation du circuit… » (opacité CSS en 0,3 s) : toute l'image plus sombre de 3,5 niveaux, texte visible. Course de l'outil de prise, pas du rendu ; dix prises refaites (cinq avant, cinq après) sont identiques à celle du rapport."
+ }
+}

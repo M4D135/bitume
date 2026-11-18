@@ -1,0 +1,399 @@
+{
+ "pages": {
+  "apres": "dist/bitume.html"
+ },
+ "scenes": [
+  {
+   "nom": "fine-cockpit-contact",
+   "ref": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "contacts": null
+     }
+    ]
+   }
+  },
+  {
+   "nom": "fine-cockpit-tuile",
+   "ref": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "ombreProche": null
+     }
+    ]
+   }
+  },
+  {
+   "nom": "fine-cockpit-loin",
+   "ref": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "ombreLoin": false
+     }
+    ]
+   }
+  },
+  {
+   "nom": "fine-cockpit-meteo",
+   "ref": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "penombre": null
+     }
+    ]
+   }
+  },
+  {
+   "nom": "fine-cockpit-tout",
+   "ref": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     },
+     {
+      "shadows": false
+     }
+    ]
+   }
+  },
+  {
+   "nom": "fine-poursuite-contact",
+   "ref": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "poursuite",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "contacts": null
+     }
+    ]
+   }
+  },
+  {
+   "nom": "fine-poursuite-tuile",
+   "ref": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "poursuite",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "ombreProche": null
+     }
+    ]
+   }
+  },
+  {
+   "nom": "fine-poursuite-loin",
+   "ref": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "poursuite",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "ombreLoin": false
+     }
+    ]
+   }
+  },
+  {
+   "nom": "fine-poursuite-meteo",
+   "ref": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "poursuite",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "penombre": null
+     }
+    ]
+   }
+  },
+  {
+   "nom": "fine-poursuite-tout",
+   "ref": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "poursuite",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     },
+     {
+      "shadows": false
+     }
+    ]
+   }
+  },
+  {
+   "nom": "moyenne-cockpit-contact",
+   "ref": {
+    "circuit": 0,
+    "qualite": "medium",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "contacts": null
+     }
+    ]
+   }
+  },
+  {
+   "nom": "moyenne-cockpit-tuile",
+   "ref": {
+    "circuit": 0,
+    "qualite": "medium",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "ombreProche": null
+     }
+    ]
+   }
+  },
+  {
+   "nom": "moyenne-cockpit-loin",
+   "ref": {
+    "circuit": 0,
+    "qualite": "medium",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "ombreLoin": false
+     }
+    ]
+   }
+  },
+  {
+   "nom": "moyenne-cockpit-meteo",
+   "ref": {
+    "circuit": 0,
+    "qualite": "medium",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "penombre": null
+     }
+    ]
+   }
+  },
+  {
+   "nom": "moyenne-cockpit-tout",
+   "ref": {
+    "circuit": 0,
+    "qualite": "medium",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     },
+     {
+      "shadows": false
+     }
+    ]
+   }
+  },
+  {
+   "nom": "legere-cockpit-contact",
+   "ref": {
+    "circuit": 0,
+    "qualite": "low",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "contacts": null
+     }
+    ]
+   }
+  },
+  {
+   "nom": "legere-poursuite-contact",
+   "ref": {
+    "circuit": 0,
+    "qualite": "low",
+    "vue": "poursuite",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "apres": [
+     {},
+     {
+      "contacts": null
+     }
+    ]
+   }
+  }
+ ]
+}

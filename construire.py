@@ -72,6 +72,9 @@ MODULES = [
     'scene-bench.js',
     # vibrations de manette : quatre sorties calculées une fois par image rendue, branchées par jeu.js
     'vibrations.js',
+    # ombres photo (FERRO 0.3.11, ombresPhoto) : contact des voitures, tuile de la voiture filmée, pénombre, carte
+    # lointaine et journal du gouverneur, préparés par jeu.js avant chaque rendu.draw
+    'ombres.js',
     'jeu.js',
 ]
 # Version affichée au titre (David, 16/11/2026 : « incrémente les versions à chaque maj, je veux la vraie version »).

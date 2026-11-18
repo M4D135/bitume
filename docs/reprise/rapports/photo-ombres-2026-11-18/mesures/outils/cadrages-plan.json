@@ -1,0 +1,907 @@
+[
+ {
+  "nom": "c0-cockpit",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit"
+  },
+  "n": 45
+ },
+ {
+  "nom": "c0-bord",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c0-haut",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "cam": "J.camera = () => { const e = ech(700); return { pos: [e.x, e.y + 38, e.z], yaw: e.cap + Math.PI / 2, pitch: -.38, fov: 60 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c1-cockpit",
+  "ref": {
+   "circuit": 1,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit"
+  },
+  "n": 45
+ },
+ {
+  "nom": "c1-bord",
+  "ref": {
+   "circuit": 1,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c1-haut",
+  "ref": {
+   "circuit": 1,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "cam": "J.camera = () => { const e = ech(700); return { pos: [e.x, e.y + 38, e.z], yaw: e.cap + Math.PI / 2, pitch: -.38, fov: 60 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c2-cockpit",
+  "ref": {
+   "circuit": 2,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit"
+  },
+  "n": 45
+ },
+ {
+  "nom": "c2-bord",
+  "ref": {
+   "circuit": 2,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c2-haut",
+  "ref": {
+   "circuit": 2,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "cam": "J.camera = () => { const e = ech(700); return { pos: [e.x, e.y + 38, e.z], yaw: e.cap + Math.PI / 2, pitch: -.38, fov: 60 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c3-cockpit",
+  "ref": {
+   "circuit": 3,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit"
+  },
+  "n": 45
+ },
+ {
+  "nom": "c3-bord",
+  "ref": {
+   "circuit": 3,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c3-haut",
+  "ref": {
+   "circuit": 3,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "cam": "J.camera = () => { const e = ech(700); return { pos: [e.x, e.y + 38, e.z], yaw: e.cap + Math.PI / 2, pitch: -.38, fov: 60 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c4-cockpit",
+  "ref": {
+   "circuit": 4,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit"
+  },
+  "n": 45
+ },
+ {
+  "nom": "c4-bord",
+  "ref": {
+   "circuit": 4,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c4-haut",
+  "ref": {
+   "circuit": 4,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "cam": "J.camera = () => { const e = ech(700); return { pos: [e.x, e.y + 38, e.z], yaw: e.cap + Math.PI / 2, pitch: -.38, fov: 60 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c5-cockpit",
+  "ref": {
+   "circuit": 5,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit"
+  },
+  "n": 45
+ },
+ {
+  "nom": "c5-bord",
+  "ref": {
+   "circuit": 5,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c5-haut",
+  "ref": {
+   "circuit": 5,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "cam": "J.camera = () => { const e = ech(700); return { pos: [e.x, e.y + 38, e.z], yaw: e.cap + Math.PI / 2, pitch: -.38, fov: 60 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c6-cockpit",
+  "ref": {
+   "circuit": 6,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit"
+  },
+  "n": 45
+ },
+ {
+  "nom": "c6-bord",
+  "ref": {
+   "circuit": 6,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c6-haut",
+  "ref": {
+   "circuit": 6,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "cam": "J.camera = () => { const e = ech(700); return { pos: [e.x, e.y + 38, e.z], yaw: e.cap + Math.PI / 2, pitch: -.38, fov: 60 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c0-cockpit-crepuscule",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit",
+   "moment": "crepuscule"
+  },
+  "n": 240
+ },
+ {
+  "nom": "c0-bord-crepuscule",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "moment": "crepuscule"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 240
+ },
+ {
+  "nom": "c0-cockpit-nuit",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit",
+   "moment": "nuit"
+  },
+  "n": 240
+ },
+ {
+  "nom": "c0-bord-nuit",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "moment": "nuit"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 240
+ },
+ {
+  "nom": "c1-cockpit-crepuscule",
+  "ref": {
+   "circuit": 1,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit",
+   "moment": "crepuscule"
+  },
+  "n": 240
+ },
+ {
+  "nom": "c1-bord-crepuscule",
+  "ref": {
+   "circuit": 1,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "moment": "crepuscule"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 240
+ },
+ {
+  "nom": "c1-cockpit-nuit",
+  "ref": {
+   "circuit": 1,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit",
+   "moment": "nuit"
+  },
+  "n": 240
+ },
+ {
+  "nom": "c1-bord-nuit",
+  "ref": {
+   "circuit": 1,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "moment": "nuit"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 240
+ },
+ {
+  "nom": "c2-cockpit-crepuscule",
+  "ref": {
+   "circuit": 2,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit",
+   "moment": "crepuscule"
+  },
+  "n": 240
+ },
+ {
+  "nom": "c2-bord-crepuscule",
+  "ref": {
+   "circuit": 2,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "moment": "crepuscule"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 240
+ },
+ {
+  "nom": "c2-cockpit-nuit",
+  "ref": {
+   "circuit": 2,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit",
+   "moment": "nuit"
+  },
+  "n": 240
+ },
+ {
+  "nom": "c2-bord-nuit",
+  "ref": {
+   "circuit": 2,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "moment": "nuit"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 240
+ },
+ {
+  "nom": "c6-cockpit-crepuscule",
+  "ref": {
+   "circuit": 6,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit",
+   "moment": "crepuscule"
+  },
+  "n": 240
+ },
+ {
+  "nom": "c6-bord-crepuscule",
+  "ref": {
+   "circuit": 6,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "moment": "crepuscule"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 240
+ },
+ {
+  "nom": "c6-cockpit-nuit",
+  "ref": {
+   "circuit": 6,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit",
+   "moment": "nuit"
+  },
+  "n": 240
+ },
+ {
+  "nom": "c6-bord-nuit",
+  "ref": {
+   "circuit": 6,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "moment": "nuit"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 240
+ },
+ {
+  "nom": "c6-haut-crepuscule",
+  "ref": {
+   "circuit": 6,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "moment": "crepuscule"
+  },
+  "cam": "J.camera = () => { const e = ech(700); return { pos: [e.x, e.y + 38, e.z], yaw: e.cap + Math.PI / 2, pitch: -.38, fov: 60 }; };",
+  "n": 240
+ },
+ {
+  "nom": "c0-cockpit-pluie",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit",
+   "meteo": "pluie"
+  },
+  "n": 60
+ },
+ {
+  "nom": "c0-bord-pluie",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "meteo": "pluie"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 60
+ },
+ {
+  "nom": "c1-cockpit-pluie",
+  "ref": {
+   "circuit": 1,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit",
+   "meteo": "pluie"
+  },
+  "n": 60
+ },
+ {
+  "nom": "c1-bord-pluie",
+  "ref": {
+   "circuit": 1,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "meteo": "pluie"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 60
+ },
+ {
+  "nom": "c2-cockpit-pluie",
+  "ref": {
+   "circuit": 2,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit",
+   "meteo": "pluie"
+  },
+  "n": 60
+ },
+ {
+  "nom": "c2-bord-pluie",
+  "ref": {
+   "circuit": 2,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "meteo": "pluie"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 60
+ },
+ {
+  "nom": "c0-poursuite-pluie",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "meteo": "pluie"
+  },
+  "n": 60
+ },
+ {
+  "nom": "c0-poursuite",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "n": 60
+ },
+ {
+  "nom": "c0-poursuite-nuit-pluie",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "meteo": "pluie",
+   "moment": "nuit"
+  },
+  "n": 240
+ },
+ {
+  "nom": "c0-bord-printemps",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "saison": "printemps"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c0-bord-automne",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "saison": "automne"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c0-bord-hiver",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "saison": "hiver"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c0-cockpit-hiver",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "cockpit",
+   "saison": "hiver"
+  },
+  "n": 45
+ },
+ {
+  "nom": "c3-bord-hiver",
+  "ref": {
+   "circuit": 3,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "saison": "hiver"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c5-bord-automne",
+  "ref": {
+   "circuit": 5,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "saison": "automne"
+  },
+  "cam": "J.camera = () => { const e = ech(880); return { pos: [e.x + Math.sin(e.cap) * 9, e.y + 2.4, e.z - Math.cos(e.cap) * 9], yaw: e.cap + Math.PI / 2 + .12, pitch: -.03, fov: 52 }; };",
+  "n": 45
+ },
+ {
+  "nom": "c1-eau-rivage",
+  "ref": {
+   "circuit": 1,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "n": 45,
+  "cam": "const eauA = (s, cote) => { const e = ech(s), ca = Math.cos(e.cap), sa = Math.sin(e.cap); for (let l = 10; l < 700; l += 2) { const x = e.x - sa * l * cote, z = e.z + ca * l * cote; if (d.sol(x, z) < d.niveauEau) return { x, z, l, e }; } return null; };\nconst w = eauA(800, 1), ca = Math.cos(w.e.cap), sa = Math.sin(w.e.cap);\nconst pos = [w.x + sa * 25, d.niveauEau + 5, w.z - ca * 25];\nJ.camera = () => viser(pos, [w.x - sa * 60, d.niveauEau, w.z + ca * 60], 60); info = { eau: w.l, niveau: d.niveauEau };"
+ },
+ {
+  "nom": "c1-eau-haut",
+  "ref": {
+   "circuit": 1,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "n": 45,
+  "cam": "const eauA = (s, cote) => { const e = ech(s), ca = Math.cos(e.cap), sa = Math.sin(e.cap); for (let l = 10; l < 700; l += 2) { const x = e.x - sa * l * cote, z = e.z + ca * l * cote; if (d.sol(x, z) < d.niveauEau) return { x, z, l, e }; } return null; };\nconst w = eauA(800, 1), ca = Math.cos(w.e.cap), sa = Math.sin(w.e.cap);\nconst pos = [w.x + sa * 20, d.niveauEau + 28, w.z - ca * 20];\nJ.camera = () => viser(pos, [w.x - sa * 25, d.niveauEau, w.z + ca * 25], 60);"
+ },
+ {
+  "nom": "c1-eau-contre-jour",
+  "ref": {
+   "circuit": 1,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "n": 45,
+  "cam": "const eauA = (s, cote) => { const e = ech(s), ca = Math.cos(e.cap), sa = Math.sin(e.cap); for (let l = 10; l < 700; l += 2) { const x = e.x - sa * l * cote, z = e.z + ca * l * cote; if (d.sol(x, z) < d.niveauEau) return { x, z, l, e }; } return null; };const sol0 = J.scene.decor.atmosphere.sunDirection, sh = Math.hypot(sol0[0], sol0[2]), sx = sol0[0] / sh, sz = sol0[2] / sh;\nconst w = eauA(800, 1), ca = Math.cos(w.e.cap), sa = Math.sin(w.e.cap);\nconst P = [w.x - sa * 60, d.niveauEau, w.z + ca * 60];\nconst pos = [P[0] - sx * 70, d.niveauEau + 3.5, P[2] - sz * 70];\nJ.camera = () => viser(pos, [P[0] + sx * 200, d.niveauEau + 6, P[2] + sz * 200], 60);"
+ },
+ {
+  "nom": "c1-eau-rivage-pluie",
+  "ref": {
+   "circuit": 1,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "meteo": "pluie"
+  },
+  "n": 60,
+  "cam": "const eauA = (s, cote) => { const e = ech(s), ca = Math.cos(e.cap), sa = Math.sin(e.cap); for (let l = 10; l < 700; l += 2) { const x = e.x - sa * l * cote, z = e.z + ca * l * cote; if (d.sol(x, z) < d.niveauEau) return { x, z, l, e }; } return null; };\nconst w = eauA(800, 1), ca = Math.cos(w.e.cap), sa = Math.sin(w.e.cap);\nconst pos = [w.x + sa * 25, d.niveauEau + 5, w.z - ca * 25];\nJ.camera = () => viser(pos, [w.x - sa * 60, d.niveauEau, w.z + ca * 60], 60);"
+ },
+ {
+  "nom": "c1-eau-rivage-nuit",
+  "ref": {
+   "circuit": 1,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "moment": "nuit"
+  },
+  "n": 240,
+  "cam": "const eauA = (s, cote) => { const e = ech(s), ca = Math.cos(e.cap), sa = Math.sin(e.cap); for (let l = 10; l < 700; l += 2) { const x = e.x - sa * l * cote, z = e.z + ca * l * cote; if (d.sol(x, z) < d.niveauEau) return { x, z, l, e }; } return null; };\nconst w = eauA(800, 1), ca = Math.cos(w.e.cap), sa = Math.sin(w.e.cap);\nconst pos = [w.x + sa * 25, d.niveauEau + 5, w.z - ca * 25];\nJ.camera = () => viser(pos, [w.x - sa * 60, d.niveauEau, w.z + ca * 60], 60);"
+ },
+ {
+  "nom": "c6-falaise-haut",
+  "ref": {
+   "circuit": 6,
+   "qualite": "high",
+   "depart": 350,
+   "vue": "poursuite"
+  },
+  "n": 45,
+  "cam": "const eauA = (s, cote) => { const e = ech(s), ca = Math.cos(e.cap), sa = Math.sin(e.cap); for (let l = 10; l < 700; l += 2) { const x = e.x - sa * l * cote, z = e.z + ca * l * cote; if (d.sol(x, z) < d.niveauEau) return { x, z, l, e }; } return null; };\nconst w = eauA(350, -1), ca = Math.cos(w.e.cap), sa = Math.sin(w.e.cap);\nconst pos = [w.x + sa * 12, d.sol(w.x + sa * 12, w.z - ca * 12) + 3, w.z - ca * 12];\nJ.camera = () => viser(pos, [w.x + sa * 80, d.niveauEau, w.z - ca * 80], 62); info = { eau: w.l, niveau: d.niveauEau, piste: w.e.y };"
+ },
+ {
+  "nom": "c6-falaise-mer",
+  "ref": {
+   "circuit": 6,
+   "qualite": "high",
+   "depart": 350,
+   "vue": "poursuite"
+  },
+  "n": 45,
+  "cam": "const eauA = (s, cote) => { const e = ech(s), ca = Math.cos(e.cap), sa = Math.sin(e.cap); for (let l = 10; l < 700; l += 2) { const x = e.x - sa * l * cote, z = e.z + ca * l * cote; if (d.sol(x, z) < d.niveauEau) return { x, z, l, e }; } return null; };\nconst w = eauA(350, -1), ca = Math.cos(w.e.cap), sa = Math.sin(w.e.cap);\nconst pos = [w.x + sa * 120, d.niveauEau + 6, w.z - ca * 120];\nJ.camera = () => viser(pos, [w.x, d.niveauEau + 25, w.z], 60);"
+ },
+ {
+  "nom": "c6-falaise-contre-jour",
+  "ref": {
+   "circuit": 6,
+   "qualite": "high",
+   "depart": 350,
+   "vue": "poursuite"
+  },
+  "n": 45,
+  "cam": "const eauA = (s, cote) => { const e = ech(s), ca = Math.cos(e.cap), sa = Math.sin(e.cap); for (let l = 10; l < 700; l += 2) { const x = e.x - sa * l * cote, z = e.z + ca * l * cote; if (d.sol(x, z) < d.niveauEau) return { x, z, l, e }; } return null; };const sol0 = J.scene.decor.atmosphere.sunDirection, sh = Math.hypot(sol0[0], sol0[2]), sx = sol0[0] / sh, sz = sol0[2] / sh;\nconst w = eauA(350, -1), ca = Math.cos(w.e.cap), sa = Math.sin(w.e.cap);\nconst P = [w.x + sa * 150, d.niveauEau, w.z - ca * 150];\nconst pos = [P[0] - sx * 60, d.niveauEau + 4, P[2] - sz * 60];\nJ.camera = () => viser(pos, [P[0] + sx * 200, d.niveauEau + 8, P[2] + sz * 200], 60);"
+ },
+ {
+  "nom": "c0-ombre-arbre",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "n": 45,
+  "cam": "\nconst [tx, tz] = d.arbres[457]; let best = Infinity, bi = 0;\nfor (let j = 0; j < c.n; j++) { const q = (c.x[j] - tx) ** 2 + (c.z[j] - tz) ** 2; if (q < best) { best = q; bi = j; } }\nJ.reference(Object.assign({}, REF, { depart: bi * 2 - 20, vitesse: 8 }));\nconst vx = c.x[bi] - tx, vz = c.z[bi] - tz, l = Math.hypot(vx, vz);\nconst pos = [tx + vx / l * 13, d.sol(tx + vx / l * 13, tz + vz / l * 13) + 1.7, tz + vz / l * 13];\nconst cible = [tx, d.sol(tx, tz) + 2.2, tz];\nJ.camera = () => viser(pos, cible, 60); info = { arbre: [tx, tz], distancePiste: Math.sqrt(best) };"
+ },
+ {
+  "nom": "c0-ombre-arbre-loin",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "n": 45,
+  "cam": "\nconst [tx, tz] = d.arbres[651]; let best = Infinity, bi = 0;\nfor (let j = 0; j < c.n; j++) { const q = (c.x[j] - tx) ** 2 + (c.z[j] - tz) ** 2; if (q < best) { best = q; bi = j; } }\nJ.reference(Object.assign({}, REF, { depart: bi * 2 - 20, vitesse: 8 }));\nconst vx = c.x[bi] - tx, vz = c.z[bi] - tz, l = Math.hypot(vx, vz);\nconst pos = [tx + vx / l * 26, d.sol(tx + vx / l * 26, tz + vz / l * 26) + 1.7, tz + vz / l * 26];\nconst cible = [tx, d.sol(tx, tz) + 3, tz];\nJ.camera = () => viser(pos, cible, 60); info = { arbre: [tx, tz], distancePiste: Math.sqrt(best) };"
+ },
+ {
+  "nom": "c0-voiture-34",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "vitesse": 20
+  },
+  "n": 45,
+  "cam": "J.camera = (p) => { const ca = Math.cos(p.cap), sa = Math.sin(p.cap); const pos = [p.x + ca * 3.4 + sa * 2.6, p.y + 1.15, p.z + sa * 3.4 - ca * 2.6]; return viser(pos, [p.x + ca * .2, p.y + .35, p.z + sa * .2], 38); };"
+ },
+ {
+  "nom": "c0-voiture-haut",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "vitesse": 20
+  },
+  "n": 45,
+  "cam": "J.camera = (p) => { const ca = Math.cos(p.cap), sa = Math.sin(p.cap); const pos = [p.x - ca * 1.5 + sa * 3.2, p.y + 4.2, p.z - sa * 1.5 - ca * 3.2]; return viser(pos, [p.x + ca * .6, p.y + .1, p.z + sa * .6], 45); };"
+ },
+ {
+  "nom": "c4-voiture-34",
+  "ref": {
+   "circuit": 4,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "vitesse": 20
+  },
+  "n": 45,
+  "cam": "J.camera = (p) => { const ca = Math.cos(p.cap), sa = Math.sin(p.cap); const pos = [p.x + ca * 3.4 + sa * 2.6, p.y + 1.15, p.z + sa * 3.4 - ca * 2.6]; return viser(pos, [p.x + ca * .2, p.y + .35, p.z + sa * .2], 38); };"
+ },
+ {
+  "nom": "c0-voiture-arriere-pluie",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "vitesse": 20,
+   "meteo": "pluie"
+  },
+  "n": 60,
+  "cam": "J.camera = (p) => { const ca = Math.cos(p.cap), sa = Math.sin(p.cap); const pos = [p.x - ca * 4.5 - sa * 1.6, p.y + .55, p.z - sa * 4.5 + ca * 1.6]; return viser(pos, [p.x + ca * .5, p.y + .3, p.z + sa * .5], 40); };"
+ },
+ {
+  "nom": "c0-voiture-34-crepuscule",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "vitesse": 20,
+   "moment": "crepuscule"
+  },
+  "n": 240,
+  "cam": "J.camera = (p) => { const ca = Math.cos(p.cap), sa = Math.sin(p.cap); const pos = [p.x + ca * 3.4 + sa * 2.6, p.y + 1.15, p.z + sa * 3.4 - ca * 2.6]; return viser(pos, [p.x + ca * .2, p.y + .35, p.z + sa * .2], 38); };"
+ },
+ {
+  "nom": "c0-portique",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "n": 45,
+  "cam": "\nJ.reference(Object.assign({}, REF, { depart: 25, vitesse: 6 }));\nconst f = d.portique.feux[2], e0 = ech(0), ca = Math.cos(e0.cap), sa = Math.sin(e0.cap);\nconst pos = [e0.x - ca * 26 + sa * 12, e0.y + 2.2, e0.z - sa * 26 - ca * 12];\nJ.camera = () => viser(pos, [f[0] + ca * 6, f[1] - 4.5, f[2] + sa * 6], 62);"
+ },
+ {
+  "nom": "c4-portique",
+  "ref": {
+   "circuit": 4,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "n": 45,
+  "cam": "\nJ.reference(Object.assign({}, REF, { depart: 25, vitesse: 6 }));\nconst f = d.portique.feux[2], e0 = ech(0), ca = Math.cos(e0.cap), sa = Math.sin(e0.cap);\nconst pos = [e0.x - ca * 26 + sa * 12, e0.y + 2.2, e0.z - sa * 26 - ca * 12];\nJ.camera = () => viser(pos, [f[0] + ca * 6, f[1] - 4.5, f[2] + sa * 6], 62);"
+ },
+ {
+  "nom": "c6-portique",
+  "ref": {
+   "circuit": 6,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite"
+  },
+  "n": 45,
+  "cam": "\nJ.reference(Object.assign({}, REF, { depart: 25, vitesse: 6 }));\nconst f = d.portique.feux[2], e0 = ech(0), ca = Math.cos(e0.cap), sa = Math.sin(e0.cap);\nconst pos = [e0.x - ca * 26 + sa * 12, e0.y + 2.2, e0.z - sa * 26 - ca * 12];\nJ.camera = () => viser(pos, [f[0] + ca * 6, f[1] - 4.5, f[2] + sa * 6], 62);"
+ },
+ {
+  "nom": "c0-piste-mouillee",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "meteo": "pluie",
+   "vitesse": 12
+  },
+  "n": 70,
+  "cam": "const surPiste = (s, lat, h, lacet, tangage, fov) => { const e = ech(s), ca = Math.cos(e.cap), sa = Math.sin(e.cap); return { pos: [e.x - sa * lat, e.y + h, e.z + ca * lat], yaw: e.cap + Math.PI / 2 + lacet, pitch: tangage, fov }; };J.camera = () => surPiste(780, 2.5, .75, 0, -.03, 50);"
+ },
+ {
+  "nom": "c0-piste-mouillee-soleil",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "meteo": "pluie",
+   "vitesse": 12
+  },
+  "n": 70,
+  "cam": "const surPiste = (s, lat, h, lacet, tangage, fov) => { const e = ech(s), ca = Math.cos(e.cap), sa = Math.sin(e.cap); return { pos: [e.x - sa * lat, e.y + h, e.z + ca * lat], yaw: e.cap + Math.PI / 2 + lacet, pitch: tangage, fov }; };const sol0 = J.scene.decor.atmosphere.sunDirection, sh = Math.hypot(sol0[0], sol0[2]), sx = sol0[0] / sh, sz = sol0[2] / sh;const yawS = Math.atan2(sx, -sz); J.camera = () => { const q = surPiste(790, 0, .9, 0, -.05, 55); q.yaw = yawS; return q; };"
+ },
+ {
+  "nom": "c0-piste-seche-soleil",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "vitesse": 12
+  },
+  "n": 70,
+  "cam": "const surPiste = (s, lat, h, lacet, tangage, fov) => { const e = ech(s), ca = Math.cos(e.cap), sa = Math.sin(e.cap); return { pos: [e.x - sa * lat, e.y + h, e.z + ca * lat], yaw: e.cap + Math.PI / 2 + lacet, pitch: tangage, fov }; };const sol0 = J.scene.decor.atmosphere.sunDirection, sh = Math.hypot(sol0[0], sol0[2]), sx = sol0[0] / sh, sz = sol0[2] / sh;const yawS = Math.atan2(sx, -sz); J.camera = () => { const q = surPiste(790, 0, .9, 0, -.05, 55); q.yaw = yawS; return q; };"
+ },
+ {
+  "nom": "c2-piste-mouillee-nuit",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "meteo": "pluie",
+   "moment": "nuit",
+   "vitesse": 12
+  },
+  "n": 240,
+  "cam": "const surPiste = (s, lat, h, lacet, tangage, fov) => { const e = ech(s), ca = Math.cos(e.cap), sa = Math.sin(e.cap); return { pos: [e.x - sa * lat, e.y + h, e.z + ca * lat], yaw: e.cap + Math.PI / 2 + lacet, pitch: tangage, fov }; };J.camera = () => surPiste(780, 2.5, .75, 0, -.03, 50);"
+ },
+ {
+  "nom": "c2-tunnel-entree",
+  "ref": {
+   "circuit": 2,
+   "qualite": "high",
+   "depart": "tunnel",
+   "vue": "cockpit"
+  },
+  "n": 40
+ },
+ {
+  "nom": "c2-tunnel-dedans",
+  "ref": {
+   "circuit": 2,
+   "qualite": "high",
+   "depart": "tunnel",
+   "vue": "cockpit"
+  },
+  "n": 150
+ },
+ {
+  "nom": "c2-tunnel-libre",
+  "ref": {
+   "circuit": 2,
+   "qualite": "high",
+   "depart": "tunnel",
+   "vue": "poursuite"
+  },
+  "n": 150,
+  "cam": "const surPiste = (s, lat, h, lacet, tangage, fov) => { const e = ech(s), ca = Math.cos(e.cap), sa = Math.sin(e.cap); return { pos: [e.x - sa * lat, e.y + h, e.z + ca * lat], yaw: e.cap + Math.PI / 2 + lacet, pitch: tangage, fov }; };J.camera = () => surPiste(c.tunnel.debut + 90, -3.5, 1.4, .05, .02, 60);"
+ },
+ {
+  "nom": "c2-tunnel-sortie",
+  "ref": {
+   "circuit": 2,
+   "qualite": "high",
+   "depart": "tunnel",
+   "vue": "poursuite"
+  },
+  "n": 150,
+  "cam": "const surPiste = (s, lat, h, lacet, tangage, fov) => { const e = ech(s), ca = Math.cos(e.cap), sa = Math.sin(e.cap); return { pos: [e.x - sa * lat, e.y + h, e.z + ca * lat], yaw: e.cap + Math.PI / 2 + lacet, pitch: tangage, fov }; };J.camera = () => surPiste(c.tunnel.fin - 70, 2.5, 1.2, 0, .0, 60);"
+ },
+ {
+  "nom": "c2-tunnel-nuit",
+  "ref": {
+   "circuit": 2,
+   "qualite": "high",
+   "depart": "tunnel",
+   "vue": "cockpit",
+   "moment": "nuit"
+  },
+  "n": 240
+ }
+]

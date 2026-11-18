@@ -1,0 +1,78 @@
+0 verifications/ambiance.test.mjs 4 contrôles ambiance/nature réussis.
+0 verifications/asie.test.mjs {"controles":8,"mesures":{"longueur":5018,"denivelePiste":24.760682908152948,"penteMax":0.05445045924781644,"arbres":46,
+0 verifications/aurores.test.mjs 5 contrôles des aurores réussis
+0 verifications/autoconfig-integration.test.mjs 9 contrôles d’intégration de la détection réussis.
+0 verifications/autoconfig.test.mjs 24 contrôles de détection graphique réussis.
+0 verifications/botanique.test.mjs }
+0 verifications/cadence.test.mjs cadence : 35 contrôles passés
+0 verifications/carene.test.mjs carène : 14 vérifications passées
+0 verifications/circuit.test.mjs ok  Ecart circuit 47
+0 verifications/collisions-orientees.test.mjs }
+0 verifications/commandes-partage.test.mjs 44/44 contrôles commandes partagées tenus
+0 verifications/conditions-course.test.mjs 14 contrôles conditions de course réussis.
+0 verifications/conditions-integration.test.mjs ℹ duration_ms 14.152916
+0 verifications/conduite-criteres.test.mjs 46/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)
+0 verifications/conduite.test.mjs 18 vérifications réussies
+0 verifications/contacts.test.mjs 44/44 critères du Chantier 3 tenus
+0 verifications/controle-visuel.test.mjs ℹ duration_ms 8.883416
+0 verifications/course.test.mjs 8 tests passes
+0 verifications/crash.test.mjs }
+0 verifications/decor-identite.test.mjs décor : 9 géométries de référence inchangées (darwin/arm64/node-24.18.0)
+0 verifications/decor-obstacles.test.mjs }
+0 verifications/decor.test.mjs forêt : 18 vérifications passées
+0 verifications/desert.test.mjs {"controles":6,"mesures":{"longueur":4834,"denivelePiste":27.21766063841511,"penteMax":0.06799999999999995,"arbres":0,"t
+0 verifications/determinisme-simulation.test.mjs ok  déterminisme p9 : 19 cas, 1259 empreintes, 5.4 s
+0 verifications/ecologie.test.mjs }
+0 verifications/effets-allocation.test.mjs 3 tests passes
+0 verifications/effets-saison.test.mjs effets-saison : 10 contrôles passés
+0 verifications/faune.test.mjs faune : 15 contrôles passés
+0 verifications/formes-libres.test.mjs formes libres : 33639 triangles émis dans l'ordre du registre
+0 verifications/glissiere-etats.test.mjs }
+0 verifications/glissiere-rebond.test.mjs }
+0 verifications/graphismes.test.mjs graphismes : 22 contrôles passés
+0 verifications/ia-attaque.test.mjs }
+0 verifications/ia-epaves.test.mjs }
+0 verifications/ia-reprise.test.mjs }
+0 verifications/ia.test.mjs 5/5 critères IA tenus
+0 verifications/islande.test.mjs {"controles":7,"mesures":{"longueur":4616,"denivelePiste":12.953321051959556,"penteMax":0.06799999999999995,"arbres":0,"
+0 verifications/main.test.mjs main : 7 vérifications passées
+0 verifications/manette.test.mjs 39/39 contrôles manette tenus
+0 verifications/mesures.test.mjs ℹ duration_ms 16.256583
+0 verifications/meteo-reelle.test.mjs ℹ duration_ms 7.312166
+0 verifications/meteo-toile.test.mjs toile de pluie : 25 contrôles passés
+0 verifications/meteo.test.mjs météo : 103 contrôles horloge, pause, projection, profondeur, paramètres et cadence tenus
+0 verifications/moteur-emprise.test.mjs moteur EMPRISE : updateShape WebGL2, indices et sommets restaurés après perte du contexte
+0 verifications/nature-integration.test.mjs 3 contrôles intégration nature réussis.
+0 verifications/nature-preparation.test.mjs préparations de la nature : 4 contrôles passés
+0 verifications/navigation-menu.test.mjs 11 contrôles navigation menu validés
+0 verifications/obstacles.test.mjs }
+0 verifications/ombres.test.mjs 9 tests passes
+0 verifications/options-image.test.mjs options image : 9 contrôles passés
+0 verifications/pacifique.test.mjs {"controles":11,"mesures":{"longueur":5234,"denivelePiste":13.43877871246655,"penteMax":0.06799999999999995,"arbres":320
+0 verifications/physx-monde.test.mjs 6 tests passes
+0 verifications/pieces.test.mjs }
+0 verifications/prets-enligne.test.mjs ℹ duration_ms 8.208
+0 verifications/qualite.test.mjs qualité : 23 contrôles passés
+0 verifications/realisateur.test.mjs 7 vérifications réussies
+0 verifications/relectures-phase2.test.mjs 6/6 tests passes
+0 verifications/rendu-halo.test.mjs ℹ duration_ms 4.303042
+0 verifications/reprise-recul.test.mjs }
+0 verifications/saisons.test.mjs }
+0 verifications/salon-protocole.test.mjs ℹ duration_ms 1661.415458
+0 verifications/scene-bench.test.mjs Scène de détection : vrais décors, douze voitures comme en course, sillage, options de chaque palier, fin forcée, chrono
+0 verifications/sillage.test.mjs sillage et brume : 8 contrôles passés
+0 verifications/simulation-sorties.test.mjs sorties de simulation : 8 vérifications passées
+0 verifications/son.test.mjs 14 vérifications réussies
+0 verifications/stands.test.mjs stands : 18 verifications passees
+0 verifications/titre-signature.test.mjs ℹ duration_ms 4.203375
+0 verifications/traces.test.mjs 18 tests passes
+0 verifications/troncs.test.mjs }
+0 verifications/tunnel-transitions.test.mjs ℹ duration_ms 15.767041
+0 verifications/tunnel.test.mjs tunnel : 6 vérifications passées
+0 verifications/vegetation.test.mjs }
+0 verifications/vibrations.test.mjs vibrations : 24 contrôles passés
+0 verifications/vitre-cadence.test.mjs visière, cadence : 10 contrôles passés
+0 verifications/vitre.test.mjs vitre : 8 contrôles passés
+0 verifications/voiture-identite.test.mjs 6 vérifications réussies (1.8 s)
+0 verifications/voiture-permanents.test.mjs 12 vérifications réussies (6.3 s)
+0 verifications/voiture.test.mjs 33 vérifications réussies

@@ -1,0 +1,12 @@
+# Écart de luminance par pixel, après (0.3.11) − avant (0.3.10), mêmes poses, 1280 × 720.
+# changes : pixels dont la luminance bouge de plus de 1,5 niveau (sur 255) ; part : leur proportion ;
+# partSombre : part de ceux qui s'assombrissent ; moyenne : écart moyen de ceux-là ; max : plus grand écart ; boite : rectangle qui les contient.
+1-cockpit-fine         {"image":"1280x720","zone":[0,0,1280,720],"changes":21734,"part":0.0236,"partSombre":1,"moyenne":-8.47,"max":-55.7,"boite":[0,269,1247,719]}
+2-poursuite-fine       {"image":"1280x720","zone":[0,0,1280,720],"changes":39338,"part":0.0427,"partSombre":0.693,"moyenne":-3.65,"max":-61,"boite":[0,232,1279,719]}
+3-cockpit-moyenne      {"image":"1280x720","zone":[0,0,1280,720],"changes":19853,"part":0.0215,"partSombre":1,"moyenne":-8.28,"max":-58.7,"boite":[0,270,1224,719]}
+4-exterieur-legere     {"image":"1280x720","zone":[0,0,1280,720],"changes":39681,"part":0.0431,"partSombre":0.996,"moyenne":-5.35,"max":-93.3,"boite":[7,257,1235,719]}
+5-depart-grille        {"image":"1280x720","zone":[0,0,1280,720],"changes":10665,"part":0.0116,"partSombre":0.989,"moyenne":-5.56,"max":-69.3,"boite":[119,304,823,595]}
+6-tribune              {"image":"1280x720","zone":[0,0,1280,720],"changes":6485,"part":0.007,"partSombre":0.993,"moyenne":-5.31,"max":-28.3,"boite":[588,355,1005,526]}
+7-vue-haute            {"image":"1280x720","zone":[0,0,1280,720],"changes":8914,"part":0.0097,"partSombre":0.99,"moyenne":-8.39,"max":-38.7,"boite":[0,272,1247,719]}
+8-poursuite-pluie      {"image":"1280x720","zone":[0,0,1280,720],"changes":40051,"part":0.0435,"partSombre":0.406,"moyenne":1.12,"max":44,"boite":[0,36,1279,719]}
+9-cockpit-fine-volant  {"image":"1280x720","zone":[0,0,1280,720],"changes":33709,"part":0.0366,"partSombre":1,"moyenne":-18.24,"max":-72,"boite":[0,305,1023,719]}
