@@ -2,25 +2,25 @@
 
 ## État actuel — 18 novembre 2026
 
-- Branche : `main`. Base du lot : `e150378d6e547a8dc1510334643c061b7cba72dc` (0.2.29).
-- **Lot 08 qualifié** : brume réduite, herbe au moins ×10, souffle des voitures, optimisation du rendu. m4d135 enregistre BITUME.html.
-- BITUME **0.2.31 publié** : `f6093f45c9f55f17c8f7b7035405ebfe1c9142bf`. Moteur **FERRO 0.3.7 publié**.
-- Référence moteur : `0250a5750d10789976186a1491ffdf011fb19611`. Reçus exacts dans `docs/reprise/ETAT.json`.
-- Fiche unique à lire : `docs/reprise/08-HERBE-SILLAGE-BRUME.md`.
-- Contrôles : 47 suites graphiques, puis 4 tests du lien final ; moteur 147 réussis + 1 TODO historique, WGSL 18/18, verrou 34/34, build identique.
-- Limite : Chromium échoue avant DevTools ; aucune nouvelle image ni mesure FPS GPU réelle.
-- Site contrôlé : encore **0.2.30**. Déploiement autorisé depuis le Mac ; accès Mac/amiga indisponible ici.
+- Branche : `main`. BITUME **0.2.31 publié** ; base du nouveau lot : `ff40baa98069ecb64dd7d263672b2c040d4adc09`.
+- Moteur **FERRO 0.3.7 publié** : `0250a5750d10789976186a1491ffdf011fb19611`.
+- **Lot 09 en cours** : tapis aléatoire sur sols herbeux, maximum encore ×10, vent visible, insectes et nuit féerique à Haut-Col.
+- Fiche active unique : `docs/reprise/09-PRAIRIES-VIVANTES.md`.
+- Travaux parallèles bornés : prairie/sol, moteur/vent, faune ; intégration/options et publication par le responsable.
+- La signature **m4d135 enregistre BITUME.html** ; préserver exactement son rôle, avatar et placement.
+- Preuves du lot précédent : `docs/reprise/rapports/herbe-sillage-2026-11-18/publication.json`.
+- Aucune nouvelle qualification du lot 09 à ce stade. Ne pas reprendre les chiffres du lot 08 comme preuves du lot 09.
+- Déploiement autorisé depuis le Mac ; accès Mac/amiga indisponible ici au dernier contrôle.
 
 ## Prochain petit lot
 
-Depuis le Mac, contrôler le rendu, les options, le sillage et les FPS ; lancer `./deposer.sh` puis vérifier l'empreinte servie.
+Terminer les trois modules, intégrer réglages/ambiance, mesurer puis publier moteur et jeu. Actualiser ce point après publication.
 
 ## Méthode pour garder le contexte court
 
-1. Lire ce fichier, `docs/reprise/ETAT.json` et les consignes applicables. Vérifier les têtes distantes avant toute écriture.
-2. Lire seulement la fiche active et les extraits de source utiles ; jamais tout l'historique ni le HTML généré.
-3. Un lot borné à la fois ; sorties complètes sur disque et résumés courts dans le chat.
-4. Après qualification : commit/push sans forcer, vérifier la tête, actualiser ce point court.
+1. Lire ce fichier, `docs/reprise/ETAT.json` et les consignes applicables ; vérifier les têtes distantes.
+2. Lire seulement la fiche active et les extraits utiles ; jamais tout l’historique ni le HTML généré.
+3. Garder les sorties complètes sur disque, faire un lot borné à la fois et publier les points de reprise.
+4. Ne pas forcer les références Git ; un commit publié ne prouve pas le déploiement du site.
 
-Historique dans `docs/reprise/archives/` et dans Git ; l'ouvrir seulement pour une question précise.
-Un commit publié ne prouve pas que le site public a été déployé.
+Historique dans `docs/reprise/archives/` et Git ; l’ouvrir seulement pour une question précise.

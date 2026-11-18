@@ -2,25 +2,15 @@
   "date": "2026-11-18",
   "etat_courant": {
     "branche": "main",
-    "base_commit": "e150378d6e547a8dc1510334643c061b7cba72dc",
-    "base_version": "0.2.29",
-    "version": "0.2.31",
-    "ferro_version": "0.3.7",
-    "statut": "publie_validation_visuelle_et_deploiement_en_attente",
-    "lot": "herbe_sillage_brume",
-    "fiche": "docs/reprise/08-HERBE-SILLAGE-BRUME.md",
-    "commit_publie": "f6093f45c9f55f17c8f7b7035405ebfe1c9142bf",
-    "prochaine_action": "Depuis le Mac : verifier rendu/options/sillage et performances, deployer avec ./deposer.sh puis controler empreinte.",
-    "recu_publication": "docs/reprise/rapports/herbe-sillage-2026-11-18/publication.json"
-  },
-  "qualification": {
-    "jeu": "47/47 suites du candidat graphique ; 4 tests de signature reexecutes sur integration finale Enregistrer",
-    "moteur": "147 reussis, zero echec, 1 TODO physique historique ; WGSL 18/18",
-    "verrou": "34/34 modules conformes",
-    "build_reproductible": true,
-    "dist_sha256": "7b20b827f870428ce0bd310dc6f1270d68b6282ef56e7b1b27bd5df8ff160599",
-    "preuves": "docs/reprise/rapports/herbe-sillage-2026-11-18/",
-    "navigateur": "Chromium bloque avant DevTools ; EGL logiciel valide le shader, pas l’image finale ni les FPS materiels."
+    "base_commit": "ff40baa98069ecb64dd7d263672b2c040d4adc09",
+    "base_version": "0.2.31",
+    "version_cible": "0.2.32",
+    "ferro_version_base": "0.3.7",
+    "statut": "lot_09_en_cours",
+    "lot": "prairies_vivantes",
+    "fiche": "docs/reprise/09-PRAIRIES-VIVANTES.md",
+    "commit_publie": null,
+    "prochaine_action": "Terminer modules et options, qualifier puis publier moteur et jeu."
   },
   "integration": {
     "nouvelle_branche": false,
@@ -49,5 +39,19 @@
       "docs/reprise/archives/ETAT-2026-11-18.json"
     ],
     "autres_chantiers": "Lots 0 a 4 termines ; optimisation lot 5 partielle. Details archives, ne pas rouvrir pendant la publication de ce lot."
+  },
+  "lot_precedent": {
+    "version": "0.2.31",
+    "commit": "f6093f45c9f55f17c8f7b7035405ebfe1c9142bf",
+    "qualification": {
+      "jeu": "47/47 suites du candidat graphique ; 4 tests de signature reexecutes sur integration finale Enregistrer",
+      "moteur": "147 reussis, zero echec, 1 TODO physique historique ; WGSL 18/18",
+      "verrou": "34/34 modules conformes",
+      "build_reproductible": true,
+      "dist_sha256": "7b20b827f870428ce0bd310dc6f1270d68b6282ef56e7b1b27bd5df8ff160599",
+      "preuves": "docs/reprise/rapports/herbe-sillage-2026-11-18/",
+      "navigateur": "Chromium bloque avant DevTools ; EGL logiciel valide le shader, pas l’image finale ni les FPS materiels."
+    },
+    "recu": "docs/reprise/rapports/herbe-sillage-2026-11-18/publication.json"
   }
 }
