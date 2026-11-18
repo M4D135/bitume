@@ -1,0 +1,11 @@
+ÉCHOUE  sans extrapolation du reliquat  (0 contrôles passés avant) AssertionError [ERR_ASSERTION]: horloge 0 contre 0.006944444444444444
+ÉCHOUE  hasard de la course  (1 contrôles passés avant)   const alea = Math.random; Math.random = () => { throw Error('hasard partagé'); };
+ÉCHOUE  allocation par image  (1 contrôles passés avant) AssertionError [ERR_ASSERTION]: Expected "actual" to be reference-equal to "expected":
+ÉCHOUE  buée en vue extérieure  (8 contrôles passés avant) AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+ÉCHOUE  l'air ne chasse plus l'eau  (0 contrôles passés avant) AssertionError [ERR_ASSERTION]: horloge 2 figée à l'image 2
+ÉCHOUE  pas fixe à 1/60  (0 contrôles passés avant) AssertionError [ERR_ASSERTION]: horloge 2 figée à l'image 2
+PASSE   seuil des gerbes à 8 m/s (mutant équivalent : lisse(14, …) y vaut déjà 0)  (13 contrôles passés avant) 
+ÉCHOUE  gerbes portées à 90 m  (5 contrôles passés avant) AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+ÉCHOUE  accolade en trop au palier Fine  (12 contrôles passés avant) AssertionError [ERR_ASSERTION]: palier 2 {}
+ÉCHOUE  Légère lit la scène  (12 contrôles passés avant) AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+ÉCHOUE  pas de sortie à sec dans Légère  (11 contrôles passés avant) AssertionError [ERR_ASSERTION]: sortie à sec de Légère

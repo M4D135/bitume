@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Visière sous la pluie</title>
+<!-- BITUME, lot 19 : prototype autonome de l'effet de visière (pluie, embruns, neige, buée).
+     Sans dépendance ni réseau : scenes.js porte les images du jeu (base64), visiere.js le modèle et l'effet.
+     Paramètres d'URL :
+       scene=pluie-course|pluie-grille|pluie-suivi|pluie-poursuite|hiver-neige|sec-cockpit
+       pluie, neige, embruns, froid, humidite, intensite (0 à 1) ; vitesse (km/h) ; vue=cockpit|exterieur
+       palier=fine|moyenne|legere ; histoire (s simulées avant l'image) ; ips (pas de la simulation d'histoire)
+       graine (arrangement) ; cible=x,y,demi-largeur (voiture qui projette le nuage d'eau, uv et hauteurs d'écran)
+       anim=1 (temps réel), panneau=1 (curseurs), mesure=1 (temps GPU), controle=sec|ips, etat=1 (uniformes),
+       demi=1 (palier Légère dessiné à mi-résolution puis posé), proche (haut du cockpit, uv), legende=texte -->
+
+<style>
+  :root { color-scheme: dark; --fond: #0b0d10; --texte: #f3f5f7; --voile: rgba(8, 10, 13, .58); }
+  html, body { margin: 0; height: 100%; background: var(--fond); overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #legende { position: fixed; left: 14px; bottom: 12px; font: 600 13px/1.35 system-ui, -apple-system, sans-serif;
+    color: var(--texte); background: var(--voile); padding: 5px 9px; border-radius: 4px; letter-spacing: .02em; }
+  #journal { position: fixed; right: 12px; top: 12px; max-width: 46vw; margin: 0; font: 12px/1.4 ui-monospace, monospace;
+    color: var(--texte); background: var(--voile); padding: 8px 10px; border-radius: 4px; white-space: pre-wrap; }
+  #panneau { position: fixed; left: 12px; top: 12px; display: grid; grid-template-columns: auto 150px 44px; gap: 4px 8px;
+    align-items: center; font: 12px/1.3 system-ui, sans-serif; color: var(--texte); background: var(--voile);
+    padding: 10px 12px; border-radius: 6px; }
+  #panneau output { text-align: right; font-variant-numeric: tabular-nums; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<canvas id="toile"></canvas>
+<div id="legende" hidden></div>
+<form id="panneau" hidden></form>
+<pre id="journal" hidden></pre>
+<script src="scenes.js"></script>
+<script src="visiere.js"></script>
+<script>
+'use strict';
+const V = BITUME.visiere;
+const Q = new URLSearchParams(location.search);
+const num = (k, d) => { const v = parseFloat(Q.get(k)); return Number.isFinite(v) ? v : d; };
+// Voiture qui projette le nuage d'eau, relevée sur chaque scène : centre (uv, y vers le haut), demi-largeur.
+const CIBLES = { 'pluie-course': [.355, .48, .17], 'pluie-grille': [.56, .45, .09], 'pluie-suivi': [.5, .555, .105],
+  'pluie-poursuite': [.5, .36, .12], 'hiver-neige': [.5, .5, .1], 'sec-cockpit': [.5, .5, .1] };
+const R = {
+  scene: Q.get('scene') in SCENES ? Q.get('scene') : 'pluie-course',
+  pluie: num('pluie', .7), neige: num('neige', 0), vitesse: num('vitesse', 250), embruns: num('embruns', 0),
+  froid: num('froid', 0), humidite: num('humidite', 0), intensite: num('intensite', 1), graine: num('graine', 0),
+  vue: Q.get('vue') === 'exterieur' ? 'exterieur' : 'cockpit',
+  palier: { legere: 0, moyenne: 1, fine: 2 }[Q.get('palier')] ?? 2,
+  histoire: num('histoire', 40), ips: num('ips', 60), demi: Q.get('demi') === '1',
+  anim: Q.get('anim') === '1', panneau: Q.get('panneau') === '1', mesure: Q.get('mesure') === '1'
+};
+// Haut du cockpit à l'écran (uv) dans les vues cockpit : planche et capot à 8° sous l'horizon, champ de 60°.
+R.proche = num('proche', R.vue === 'cockpit' ? .5 - Math.tan(8 * Math.PI / 180) / (2 * Math.tan(30 * Math.PI / 180)) : 0);
+const cible = (Q.get('cible') || '').split(',').map(Number);
+R.cible = cible.length === 3 && cible.every(Number.isFinite) ? cible : CIBLES[R.scene];
+const journal = document.getElementById('journal');
+function ecrire(objet) { journal.hidden = false; journal.textContent = typeof objet === 'string' ? objet : JSON.stringify(objet, null, 1); }
+
+// Entrées du modèle : un seul objet, réutilisé (aucune allocation par image, comme en jeu).
+const entrees = { pluie: 0, neige: 0, vitesse: 0, embruns: 0, froid: 0, humidite: 0, vue: 'cockpit', abri: false,
+  intensite: 1, graine: 0, cibleX: .5, cibleY: .45, cibleTaille: .1, proche: 0, fondu: .03 };
+function majEntrees() {
+  Object.assign(entrees, { pluie: R.pluie, neige: R.neige, vitesse: R.vitesse / 3.6, embruns: R.embruns, froid: R.froid,
+    humidite: R.humidite, vue: R.vue, intensite: R.intensite, graine: R.graine,
+    cibleX: R.cible[0], cibleY: R.cible[1], cibleTaille: R.cible[2], proche: R.proche, fondu: .03 });
+}
+
+const VERT = `#version 300 es
+out vec2 vUV;
+void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);vUV=p;gl_Position=vec4(p*2.-1.,0.,1.);}`;
+const COPIE = `#version 300 es
+precision highp float;in vec2 vUV;out vec4 o;uniform sampler2D uSrc;
+void main(){o=vec4(texture(uSrc,vUV).rgb,1.);}`;
+// Réduction au quart : quatre lectures bilinéaires couvrent les 4 × 4 pixels de la source.
+const REDUIRE = `#version 300 es
+precision highp float;in vec2 vUV;out vec4 o;uniform sampler2D uSrc;uniform vec2 uTexel;
+void main(){vec3 c=texture(uSrc,vUV+uTexel*vec2(-1,-1)).rgb+texture(uSrc,vUV+uTexel*vec2(1,-1)).rgb
++texture(uSrc,vUV+uTexel*vec2(-1,1)).rgb+texture(uSrc,vUV+uTexel*vec2(1,1)).rgb;o=vec4(c*.25,1.);}`;
+// Flou séparable à cinq lectures linéaires (mêmes poids que le halo de FERRO).
+const FLOU = `#version 300 es
+precision highp float;in vec2 vUV;out vec4 o;uniform sampler2D uSrc;uniform vec2 uAxe;
+void main(){vec3 c=texture(uSrc,vUV).rgb*.227027;
+c+=texture(uSrc,vUV+uAxe*1.384615).rgb*.316216;c+=texture(uSrc,vUV-uAxe*1.384615).rgb*.316216;
+c+=texture(uSrc,vUV+uAxe*3.230769).rgb*.070270;c+=texture(uSrc,vUV-uAxe*3.230769).rgb*.070270;o=vec4(c,1.);}`;
+// Palier Légère à mi-résolution (demi=1) : la couche d'eau seule, prémultipliée, est dessinée dans une cible de
+// demi-taille puis posée, agrandie, sur la scène ; seule une passe triviale reste à la pleine résolution.
+const POSER = `#version 300 es
+precision highp float;in vec2 vUV;out vec4 o;uniform sampler2D uSrc;
+void main(){o=texture(uSrc,vUV);}`;
+const FINAL = palier => `#version 300 es
+precision highp float;
+in vec2 vUV;out vec4 o;
+uniform sampler2D uScene;uniform sampler2D uVoile;
+${V.source(palier, 'uScene', 'uVoile')}
+void main(){${palier > 0 ? 'o=vec4(visiere(vUV),1.);' : 'o=visiereLegere(vUV);'}}`;
+
+let gl, toile, programmes = {}, scene, quartA, quartB, demi = null, etat, ciel = [.6, .63, .66], vao;
+function compiler(type, source) {
+  const s = gl.createShader(type); gl.shaderSource(s, source); gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) + '\n' + source.split('\n').map((l, i) => (i + 1) + ': ' + l).join('\n').slice(0, 4000));
+  return s;
+}
+function programme(frag) {
+  const p = gl.createProgram();
+  gl.attachShader(p, compiler(gl.VERTEX_SHADER, VERT)); gl.attachShader(p, compiler(gl.FRAGMENT_SHADER, frag));
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  const u = {}; for (const n of ['uSrc', 'uTexel', 'uAxe', 'uScene', 'uVoile', 'uVisiere', 'uVisiereTaille', 'uVisiereCiel']) u[n] = gl.getUniformLocation(p, n);
+  return { p, u };
+}
+function cibleTexture(w, h) {
+  const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, w, h);
+  for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
+  const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
+  return { t, f, w, h };
+}
+// Cible des passes « à l'écran » : la toile, sauf pendant la mesure (deux cibles alternées, voir mesurer()).
+let ecran = null;
+function passe(prog, sortie, w, h) {
+  gl.bindFramebuffer(gl.FRAMEBUFFER, sortie ? sortie.f : ecran ? ecran.f : null); gl.viewport(0, 0, w, h);
+  gl.useProgram(prog.p); gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+function lier(prog, nom, unite, texture) { gl.activeTexture(gl.TEXTURE0 + unite); gl.bindTexture(gl.TEXTURE_2D, texture); gl.useProgram(prog.p); gl.uniform1i(prog.u[nom], unite); }
+
+// La copie floue : réduction au quart puis deux flous séparables (comme le ferait la passe post du moteur).
+function voile() {
+  const P = programmes;
+  lier(P.reduire, 'uSrc', 0, scene.t); gl.uniform2f(P.reduire.u.uTexel, 1 / scene.w, 1 / scene.h); passe(P.reduire, quartA, quartA.w, quartA.h);
+  for (let i = 0; i < 2; i++) {
+    lier(P.flou, 'uSrc', 0, quartA.t); gl.uniform2f(P.flou.u.uAxe, 1 / quartA.w, 0); passe(P.flou, quartB, quartB.w, quartB.h);
+    lier(P.flou, 'uSrc', 0, quartB.t); gl.uniform2f(P.flou.u.uAxe, 0, 1 / quartB.h); passe(P.flou, quartA, quartA.w, quartA.h);
+  }
+}
+function effet() {
+  const P = programmes.final, u = V.uniformes(etat);
+  if (R.palier === 0) {
+    lier(programmes.copie, 'uSrc', 0, scene.t); passe(programmes.copie, null, toile.width, toile.height);
+    if (demi) {
+      gl.useProgram(P.p); gl.uniform4fv(P.u.uVisiere, u); gl.uniform2f(P.u.uVisiereTaille, demi.w, demi.h);
+      gl.uniform3f(P.u.uVisiereCiel, ciel[0], ciel[1], ciel[2]);
+      passe(P, demi, demi.w, demi.h);
+      gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      lier(programmes.poser, 'uSrc', 0, demi.t); passe(programmes.poser, null, toile.width, toile.height);
+      gl.disable(gl.BLEND);
+      return;
+    }
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+  }
+  gl.useProgram(P.p);
+  if (R.palier > 0) { lier(P, 'uScene', 0, scene.t); lier(P, 'uVoile', 1, quartA.t); }
+  gl.uniform4fv(P.u.uVisiere, u); gl.uniform2f(P.u.uVisiereTaille, toile.width, toile.height);
+  gl.uniform3f(P.u.uVisiereCiel, ciel[0], ciel[1], ciel[2]);
+  passe(P, null, toile.width, toile.height);
+  gl.disable(gl.BLEND);
+}
+function dessiner() { if (R.palier > 0) voile(); effet(); }
+
+function chargerImage(src) {
+  return new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ko(new Error('image ' + R.scene)); i.src = src; });
+}
+// Lumière du ciel pour le palier Légère (le jeu la tient de sa météo) : moyenne du haut de l'image.
+function lumiereCiel(img) {
+  const c = document.createElement('canvas'); c.width = 32; c.height = 18;
+  const x = c.getContext('2d'); x.drawImage(img, 0, 0, 32, 18);
+  const d = x.getImageData(8, 1, 16, 4).data; let r = 0, g = 0, b = 0;
+  for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i + 1]; b += d[i + 2]; }
+  const n = d.length / 4 * 255; return [r / n, g / n, b / n];
+}
+
+function simulerHistoire() {
+  etat = V.creer(); majEntrees();
+  const n = Math.round(R.histoire * R.ips);
+  for (let i = 0; i < n; i++) V.avancer(etat, 1 / R.ips, entrees);
+}
+
+function panneau() {
+  const f = document.getElementById('panneau'); f.hidden = false;
+  const champs = [['pluie', 0, 1, .01], ['neige', 0, 1, .01], ['vitesse', 0, 330, 1], ['embruns', 0, 1, .01],
+    ['froid', 0, 1, .01], ['humidite', 0, 1, .01], ['intensite', 0, 2, .01]];
+  for (const [k, a, b, pas] of champs) {
+    const l = document.createElement('label'); l.textContent = k; l.htmlFor = 'c-' + k;
+    const i = document.createElement('input'); i.type = 'range'; i.id = 'c-' + k; i.min = a; i.max = b; i.step = pas; i.value = R[k];
+    const o = document.createElement('output'); o.textContent = R[k];
+    i.addEventListener('input', () => { R[k] = parseFloat(i.value); o.textContent = i.value; majEntrees(); });
+    f.append(l, i, o);
+  }
+  const vue = document.createElement('label'); vue.textContent = 'vue extérieure';
+  const c = document.createElement('input'); c.type = 'checkbox'; c.checked = R.vue === 'exterieur';
+  c.addEventListener('change', () => { R.vue = c.checked ? 'exterieur' : 'cockpit'; majEntrees(); });
+  f.append(vue, c, document.createElement('span'));
+}
+
+function boucle() {
+  let avant = performance.now();
+  const image = maintenant => {
+    const dt = Math.min(.1, (maintenant - avant) / 1000); avant = maintenant;
+    V.avancer(etat, dt, entrees); effet();
+    requestAnimationFrame(image);
+  };
+  requestAnimationFrame(image);
+}
+
+// Contrôles écrits dans le journal (mesurer.mjs les relève) :
+//   controle=sec : sans eau ni neige, l'effet rend la scène telle quelle (écart maximal par canal, de 0 à 255) ;
+//   controle=ips : la même histoire simulée à 30, 47, 120 et 144 images par seconde donne l'image de 60.
+function lirePixels() {
+  const a = new Uint8Array(toile.width * toile.height * 4);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.readPixels(0, 0, toile.width, toile.height, gl.RGBA, gl.UNSIGNED_BYTE, a);
+  return a;
+}
+function comparer(a, b) {
+  let max = 0, n = 0;
+  for (let i = 0; i < a.length; i += 4) {
+    const d = Math.max(Math.abs(a[i] - b[i]), Math.abs(a[i + 1] - b[i + 1]), Math.abs(a[i + 2] - b[i + 2]));
+    if (d) n++;
+    if (d > max) max = d;
+  }
+  return { ecart_max: max, pixels_differents: n, pixels: a.length / 4 };
+}
+function controler() {
+  const quoi = Q.get('controle');
+  if (quoi === 'sec') {
+    // référence : la scène recopiée sur la toile par le même chemin WebGL, sans l'effet (le décodage JPEG de la toile
+    // 2D diffère de celui de WebGL de quelques niveaux : il ne sert pas de référence)
+    lier(programmes.copie, 'uSrc', 0, scene.t); passe(programmes.copie, null, toile.width, toile.height);
+    const ref = lirePixels();
+    dessiner();
+    return Object.assign({ controle: 'sec', scene: R.scene, palier: R.palier }, comparer(lirePixels(), ref));
+  }
+  if (quoi === 'ips') {
+    R.ips = 60; simulerHistoire(); dessiner();
+    const ref = lirePixels(), uRef = Float32Array.from(V.uniformes(etat));
+    const res = { controle: 'ips', scene: R.scene, histoire: R.histoire, reference: 60 };
+    for (const ips of [30, 47, 120, 144]) {
+      R.ips = ips; simulerHistoire(); dessiner();
+      const u = V.uniformes(etat); let du = 0;
+      for (let i = 0; i < u.length; i++) du = Math.max(du, Math.abs(u[i] - uRef[i]));
+      res['ips' + ips] = Object.assign({ ecart_uniformes: +du.toExponential(2) }, comparer(lirePixels(), ref));
+    }
+    return res;
+  }
+  return null;
+}
+
+// Les processeurs graphiques en tuiles (Apple) ne colorient pas un fragment opaque recouvert plus tard dans la même
+// passe de rendu : mille copies plein écran d'affilée sur la même cible n'en coûteraient qu'une. Chaque dessin mesuré
+// va donc sur l'une de deux cibles alternées, soit une passe de rendu par dessin, avec son écriture en mémoire, comme
+// la passe post du jeu.
+// Coût des passes, en rafales : n passes identiques d'affilée (environ un quart de seconde de travail), entre deux
+// files vides. Deux mesures qui se recoupent : le chronomètre GPU autour de la rafale (EXT_disjoint_timer_query_webgl2)
+// et le temps de mur jusqu'au signal de fin (à une image près, moins de 7 % sur 250 ms). Une rafale tient le processeur
+// graphique à sa fréquence haute, comme une course. Un chronomètre par passe isolée s'est montré trop bruité sur Metal
+// (ANGLE), où il compte aussi le travail encore en file ; gl.finish n'y aide pas (Chrome en fait un simple flush).
+// Postes : copie seule (une passe plein écran, pour référence), voile (réduction au quart et deux flous), effet complet.
+// Au palier Légère, « effet » compte aussi la copie de la scène qui précède le mélange : son coût propre est
+// effet − copie. Le coût à sec se mesure avec pluie=0.
+async function mesurer() {
+  const ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
+  const image = () => new Promise(r => requestAnimationFrame(r));
+  const X = cibleTexture(toile.width, toile.height), Y = cibleTexture(toile.width, toile.height);
+  const un = nom => {
+    ecran = ecran === X ? Y : X;
+    if (nom === 'copie') { lier(programmes.copie, 'uSrc', 0, scene.t); passe(programmes.copie, null, toile.width, toile.height); }
+    else if (nom === 'voile') voile(); else effet();
+  };
+  const fileVide = async () => {
+    const f = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0); gl.flush();
+    let t; do t = await image(); while (gl.getSyncParameter(f, gl.SYNC_STATUS) !== gl.SIGNALED);
+    gl.deleteSync(f); return t;
+  };
+  const rafale = async (nom, n) => {
+    await fileVide();
+    const q = ext ? gl.createQuery() : null, t0 = performance.now();
+    if (q) gl.beginQuery(ext.TIME_ELAPSED_EXT, q);
+    for (let i = 0; i < n; i++) un(nom);
+    if (q) gl.endQuery(ext.TIME_ELAPSED_EXT);
+    const t1 = await fileVide();
+    let gpu = null;
+    if (q) {
+      while (!gl.getQueryParameter(q, gl.QUERY_RESULT_AVAILABLE)) await image();
+      if (!gl.getParameter(ext.GPU_DISJOINT_EXT)) gpu = gl.getQueryParameter(q, gl.QUERY_RESULT) / 1e6 / n;
+      gl.deleteQuery(q);
+    }
+    return { gpu, mur: (t1 - t0) / n };
+  };
+  const med = a => a.length ? +a.slice().sort((x, y) => x - y)[a.length >> 1].toFixed(3) : null;
+  const res = { taille: [toile.width, toile.height], palier: R.palier, scene: R.scene, rafales: 3 };
+  for (const nom of R.palier > 0 ? ['copie', 'voile', 'effet'] : ['copie', 'effet']) {
+    let n = 20;
+    for (let k = 0; k < 2; k++) n = Math.max(20, Math.min(4000, Math.round(250 / Math.max((await rafale(nom, n)).mur, .01))));
+    const g = [], m = [];
+    for (let k = 0; k < 3; k++) { const r = await rafale(nom, n); if (r.gpu !== null) g.push(r.gpu); m.push(r.mur); }
+    res[nom + '_ms'] = med(g); res[nom + '_mur_ms'] = med(m); res[nom + '_n'] = n;
+  }
+  ecran = null;
+  if (R.palier === 0 && res.effet_ms !== null) res.effet_seul_ms = +Math.max(0, res.effet_ms - res.copie_ms).toFixed(3);
+
+  res.gpu = (() => { const d = gl.getExtension('WEBGL_debug_renderer_info'); return d ? gl.getParameter(d.UNMASKED_RENDERER_WEBGL) : ''; })();
+  ecrire(res); document.title = 'mesure-finie';
+}
+
+async function principal() {
+  toile = document.getElementById('toile');
+  toile.width = Math.round(innerWidth * (devicePixelRatio || 1)); toile.height = Math.round(innerHeight * (devicePixelRatio || 1));
+  gl = toile.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+  if (!gl) { ecrire('WebGL2 indisponible'); return; }
+  vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+  programmes = { copie: programme(COPIE), reduire: programme(REDUIRE), flou: programme(FLOU), poser: programme(POSER), final: programme(FINAL(R.palier)) };
+  const img = await chargerImage(SCENES[R.scene]);
+  ciel = lumiereCiel(img);
+  // L'image du jeu devient la « scène » à la taille de la toile, comme la cible de scène du moteur.
+  const src = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, src);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  scene = cibleTexture(toile.width, toile.height);
+  quartA = cibleTexture(Math.ceil(toile.width / 4), Math.ceil(toile.height / 4));
+  quartB = cibleTexture(quartA.w, quartA.h);
+  if (R.palier === 0 && R.demi) demi = cibleTexture(Math.ceil(toile.width / 2), Math.ceil(toile.height / 2));
+
+  lier(programmes.copie, 'uSrc', 0, src); passe(programmes.copie, scene, scene.w, scene.h);
+  simulerHistoire();
+  dessiner();
+  const legende = Q.get('legende');
+  if (legende) { const l = document.getElementById('legende'); l.textContent = legende; l.hidden = false; }
+  if (Q.get('etat') === '1') ecrire({ etapes: etat.etapes, uniformes: Array.from(V.uniformes(etat), x => +x.toFixed(6)) });
+  const controle = controler();
+  if (controle) ecrire(controle);
+  document.title = 'pret';
+  if (R.panneau) panneau();
+  if (R.anim) boucle();
+  if (R.mesure) await mesurer();
+}
+principal().catch(e => { ecrire('ERREUR\n' + (e && e.message || e)); document.title = 'erreur'; });
+</script>
+</body>
+</html>
