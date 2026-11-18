@@ -7,7 +7,7 @@
     "statut": "lot_5B_fluidite_en_cours",
     "lot": "5B_fluidite_cadence_prechargement",
     "fiche": "docs/reprise/05B-FLUIDITE.md",
-    "commit_publie": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
+    "commit_publie": "8bd3d86a4b1635ad2dd90c5ae8a585711aa196f8",
     "catalogue_jouable_publie": 7,
     "catalogue_cible": 10,
     "prochaine_action": "Intégrer la vague 1 (arbres de travail ~/Projects/bitume-wt/*, branches fluidite/*, moteur dans ~/Projects/ferro), installer FERRO 0.3.10, puis vague 2 (boucle et vues dans jeu.js), mesures avant/après, publication. 12A reprend ensuite.",
@@ -26,7 +26,7 @@
       "preuve": "docs/reprise/rapports/cap-sequoia-2026-11-18/qualification.json",
       "version_qualifiee": "0.2.38"
     },
-    "version_courante": "0.2.38",
+    "version_courante": "0.2.39",
     "recu": "docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json",
     "entree_passation": "MASTER-LISTE-CLAUDE-FABLE.md"
   },
@@ -171,5 +171,18 @@
       ]
     },
     "statut": "vague 1 en cours ; rien de fusionné ni de publié côté sources du jeu"
+  },
+  "demandes_2026_11_18_soir": {
+    "mots_exacts": "AGENTS.md, dernière section",
+    "lots": {
+      "5B": "fluidité (en cours)",
+      "17": "conduite, physique p10",
+      "18": "public en humains d EMPRISE",
+      "19": "pluie et neige sur l écran",
+      "20": "échappements : flammes et pétarades",
+      "21": "photoréalisme : lumière, ombres, eau"
+    },
+    "fait": "0.2.39 en ligne (8bd3d86, sha256 acbea8562b828aeb…) : plus de vibration de manette dans les menus",
+    "etudes": "~/Projects/bitume-wt/{conduite,public,vitre,son,echappement,photo}, branches locales conduite/etude et etude/* ; rien de fusionné"
   }
 }

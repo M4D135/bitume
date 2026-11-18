@@ -13,6 +13,16 @@ Demande de David du 18/11 : moteur le plus fluide possible, aucun accroc en jeu,
 Constats mesurés sur le M5 : une image sur quatre ratée en Fine (rétroviseurs), 3,6 M de triangles d'arbres sur 4,2 M, première image du départ de 150 à 480 ms, qualité Auto calée sur 60 Hz, détection qui choisit « Légère ».
 En cours : vague 1 dans `~/Projects/bitume-wt/<lot>` (branches locales `fluidite/<lot>`) et moteur FERRO 0.3.10 dans `~/Projects/ferro`. Rien n'est fusionné dans les sources du jeu. Suite : intégrer, installer le moteur, vague 2 dans `jeu.js`, mesurer avant/après, publier.
 
+## Demandes du 18 novembre au soir et ordre de travail
+
+Mots exacts de David dans `AGENTS.md` (dernière section). Ordre retenu, dicté par les fichiers partagés :
+1. **5B fluidité** (en cours) : intégrer, mesurer, publier.
+2. **Moteur** : pluie et neige sur l'écran (lot 19), puis lumière, ombres et eau (lot 21), dans FERRO après la 0.3.10.
+3. **17 conduite** (physique `p10`), **18 public** en humains d'EMPRISE, **20 échappements** (flammes et pétarades).
+4. Reprise de la master liste : **12A** roues et pneus, puis Russie, Monaco, Marseille.
+Fait : **0.2.39** en ligne (`8bd3d86`), plus de vibration de manette dans les menus.
+Études lancées le 18/11 au soir dans `~/Projects/bitume-wt/{conduite,public,vitre,son,echappement,photo}` (branches locales `conduite/etude`, `etude/*`) : elles rendent un plan, un prototype et des captures par lot, rien n'est fusionné.
+
 ## Passation Claude Fable
 
 **Entrée : `MASTER-LISTE-CLAUDE-FABLE.md`.** Catalogue complet : **7 livrés + Russie + Monaco + Spéciale Marseille + 6 propositions = 16**.

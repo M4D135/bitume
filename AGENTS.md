@@ -242,3 +242,15 @@ Les modules listés dans `FERRO.lock.json` sont désormais des copies exactes de
 - Source examinée : EMPRISE 0.6.8, commit `cc004826a506e6979eaaec217748fe85d5cd6ac5` ; centre plat, relief périphérique synthétique. Conserver provenance/attributions et adapter au FERRO BITUME.
 - Préparer la master liste complète pour reprise avec **Claude Fable** : `MASTER-LISTE-CLAUDE-FABLE.md`. Elle distingue 7 circuits livrés, 3 ajouts demandés et 6 propositions pour atteindre 16.
 - La reprise courante prépare les documents ; aucun des nouveaux lots de code n’est encore réalisé. Premier lot d’exécution : **12A**.
+
+## Décisions de David — 18 novembre 2026, soir : fluidité, conduite, public, pluie, échappements, photoréalisme
+
+Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre de travail est dans `REPRISE.md`.
+
+- **Fluidité (lot 5B)** : « optimise son moteur pour le rendre le plus fluide possible sur n'importe quelle machine, aucun accro de buffering ou autre pendant le jeu, precache en debut de niveau, fais tout pour tout avoir en ram et que ça soit 100% fluide 30fps ou 60 fps ou 120fps ». Fiche `docs/reprise/05B-FLUIDITE.md`.
+- **Conduite (lot 17)** : « il faut aussi améliorer la réaction du vehicule sur la route, la sensation de conduite doit être la plus fidèle et la plus logique et cohérente niveau physique. regarde les meilleures info forum etc de fans de reglages de simulateurs de f1 pour comprendre les mecanismes, renseigne toi un max pour rendre le pilotage realiste et surtout ultra fun et arcade à la fois ». Changer la conduite change la version de physique (`p9` → `p10`).
+- **Vibration** : « je ne veux pas de vibration dans la manette pendant les menus accueil et selecton course etc ». Fait en 0.2.39 : la manette ne vibre que sur l'écran de course, quand un joueur conduit (`manetteVibre` de `src/jeu.js`).
+- **Public (lot 18)** : « je veux que tu prennes les beaux modeles human body de notre jeu emprise et que tu remplace les cubes dans le public par des vrais modeles humains, animés etc ». Source : `M4D135/emprise` (jeu de David), provenance à consigner.
+- **Pluie et neige sur l'écran (lot 19)** : « améliore enorement les effets de gouttes de pluie et de neige sur l'ecran, faut meme que ça devienne genant parfois, comme si on était dans la réalité ».
+- **Échappements (lot 20)** : « aussi flamme dans les pots d'echappement quand surregime et pop and bang quand passage vitesse comme dans la realité et ça permet de voir pour le passage vitesse en vue extérieure, fais cet effet aussi sur les voitures concurentes pour plus de realism ».
+- **Photoréalisme (lot 21)** : « améliore aussi les effets dans l'eau et les ombres » ; « les effets de lumière aussi, je veux du photoréalisme à fond ! ». À concilier avec le lot 5B : les effets coûteux vivent dans les paliers hauts et se coupent sans accroc ; la qualité Légère reste légère.
