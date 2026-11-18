@@ -1,0 +1,146 @@
+{
+ "id": "brume-de-jade",
+ "nom": "Brume-de-Jade",
+ "theme": "asie",
+ "mesures": {
+  "longueur": 4762,
+  "denivele": 50.04,
+  "altitudeMin": -3.1,
+  "altitudeMax": 46.94,
+  "penteMax": 4,
+  "penteMin": -5,
+  "longueurAu10": 0,
+  "longueurAu20": 0,
+  "rayonMin": 60,
+  "partDroite": 0.48,
+  "virages": 1,
+  "separation": "au moins 60 m",
+  "separationOu": null,
+  "chargeMin": 0.66,
+  "chargeMinOu": 2226.08,
+  "chargeMax": 1.18,
+  "chargeMaxOu": 232.01,
+  "tourP9": 83.96,
+  "tourP10": 83.87,
+  "couverts": 2,
+  "longueurCouverte": 352.36,
+  "ponts": 1,
+  "bords": 4
+ },
+ "problemes": [],
+ "lieux": [
+  {
+   "n": 1,
+   "nom": "Les Terrasses",
+   "debut": 339,
+   "fin": 1030,
+   "court": "courbes de niveau à travers les rizières, miroirs d'eau au printemps"
+  },
+  {
+   "n": 2,
+   "nom": "Pont du Vent et de la Pluie",
+   "debut": 1491,
+   "fin": 1591,
+   "court": "pont couvert de bois, galerie ouverte sur la rivière"
+  },
+  {
+   "n": 3,
+   "nom": "La Grotte",
+   "debut": 1654,
+   "fin": 1907,
+   "court": "tunnel naturel, stalactites, lanternes de couleur"
+  },
+  {
+   "n": 4,
+   "nom": "La Spirale",
+   "debut": 2107,
+   "fin": 2699,
+   "court": "boucle de 270° autour du piton du temple, on repasse sous l'approche"
+  }
+ ],
+ "couverts": [
+  {
+   "nom": "Pont du Vent et de la Pluie",
+   "type": "pont-couvert",
+   "debut": 1491,
+   "fin": 1591,
+   "longueur": 100
+  },
+  {
+   "nom": "La Grotte",
+   "type": "tunnel",
+   "debut": 1654,
+   "fin": 1907,
+   "longueur": 252
+  }
+ ],
+ "ponts": [
+  {
+   "nom": "Pont du Vent et de la Pluie",
+   "type": "bois",
+   "debut": 1491,
+   "fin": 1591
+  }
+ ],
+ "bords": [
+  {
+   "nom": "Murets des Terrasses",
+   "type": "muret",
+   "cote": "G",
+   "debut": 435,
+   "fin": 574
+  },
+  {
+   "nom": "Murets des Terrasses (bas)",
+   "type": "muret",
+   "cote": "D",
+   "debut": 574,
+   "fin": 689
+  },
+  {
+   "nom": "Murets des Terrasses (haut)",
+   "type": "muret",
+   "cote": "G",
+   "debut": 820,
+   "fin": 935
+  },
+  {
+   "nom": "Bord de la Spirale",
+   "type": "vide",
+   "cote": "G",
+   "debut": 2257,
+   "fin": 2539
+  }
+ ],
+ "croisements": [
+  {
+   "nom": "Spirale",
+   "ecartVertical": 14.85,
+   "s1": 2196,
+   "s2": 2602
+  }
+ ],
+ "fermeture": {
+  "angleAjuste": 15,
+  "allongements": [
+   [
+    8,
+    0
+   ],
+   [
+    19,
+    -170
+   ],
+   [
+    21,
+    331
+   ]
+  ]
+ },
+ "tunnelDuJeu": {
+  "debut": 1654,
+  "fin": 1906,
+  "mur": 7.6,
+  "hauteur": 6.4
+ }
+}

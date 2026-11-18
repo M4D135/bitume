@@ -1,0 +1,158 @@
+diff --git a/construire.py b/construire.py
+index b04b0a9..7f51ef0 100644
+--- a/construire.py
++++ b/construire.py
+@@ -40,6 +40,8 @@ MODULES = [
+     'ecologie.js',
+     'saisons.js',
+     'vegetation.js',
++    # bords de route du lot 22F (publicités en séries, bords dangereux) : lu par decor.js et jeu.js s'il est présent
++    'bords.js',
+     'decor.js',
+     'faune.js',
+     'effets-saison.js',
+diff --git a/src/decor.js b/src/decor.js
+index fdc083b..1a98b05 100644
+--- a/src/decor.js
++++ b/src/decor.js
+@@ -687,6 +687,8 @@
+       th.eau = Math.min(th.eau, yMin - 2.5);
+     }
+     const w = c.largeur / 2, lim = limites(c), interroger = indexAxe(c);
++    // bords de route (lot 22F) : plan tiré avec la graine propre de bords.js, jamais avec le hasard du décor
++    const planBords = B.bords ? B.bords.planifier(c) : null;
+     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
+     const nappes = nappesRoute(c, th, lim, qualite !== 'low', qualite === 'low' ? null : ecologie);
+     const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie);
+@@ -745,6 +747,9 @@
+           objets.push({ shape: 'box', p: [pp[0] - az[0] * cote * .04, pp[1] + .12, pp[2] - az[2] * cote * .04], s: [long * .55, .26, .03], r: rot, mat: 16, color: coul2 });
+           loin.push(objets[objets.length - 2]);
+         }
++        // lot 22F : le parapet d'un vide, le muret ou les balises d'un fossé remplacent la glissière ; le hasard du décor
++        // est déjà tiré et le lot est créé au même moment, l'ordre des lots ne change pas
++        if (planBords && B.bords.sansGlissiere(c, i, cote)) { objets.splice(0, 2); loin.splice(0, 1); }
+         ajouter(objets, loin, milieu[0], milieu[2]);
+       }
+     }
+@@ -1159,6 +1164,16 @@
+       }
+     }
+ 
++    // Bords de route (lot 22F) : posés après tout le reste, dans des lots à eux (clé préfixée « b ») ajoutés à la fin :
++    // les lots et les solides historiques gardent leur contenu, leur ordre et leurs identifiants.
++    if (planBords) B.bords.poser(c, planBords, { limites: lim, qualite, ajouter: (objets, loin, x, z) => {
++      const q = interroger(x, z, 300), proche = q.i >= 0 && q.d < 330;
++      const cle = 'b' + (proche ? 'p' + Math.floor(q.i * c.pas / TRONCON) : 'l' + Math.floor(x / 420) + ',' + Math.floor(z / 420));
++      let l = groupes.get(cle); if (!l) groupes.set(cle, l = { objets: [], loin: [], lointain: !proche });
++      for (const o of objets) l.objets.push(o);
++      for (const o of loin) l.loin.push(o);
++    } });
++
+     // Finition des lots : sphère englobante et portée.
+     const lots = [];
+     for (const l of groupes.values()) {
+diff --git a/src/jeu.js b/src/jeu.js
+index a4d52d6..af06f6c 100644
+--- a/src/jeu.js
++++ b/src/jeu.js
+@@ -78,7 +78,12 @@
+   // ---------------------------------------------------------------- circuits
+   const circuits = [];
+   function circuit(i) {
+-    if (!circuits[i]) { const k = CATALOGUE[i]; circuits[i] = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom }); }
++    if (!circuits[i]) {
++      const k = CATALOGUE[i];
++      circuits[i] = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom });
++      // lot 22F : le parapet, le muret ou le bord du fossé d'un bord dangereux devient la limite (une fois, à la création)
++      if (B.bords) B.bords.limites(circuits[i], B.bords.planifier(circuits[i]));
++    }
+     return circuits[i];
+   }
+   function nombreVirages(c) {
+@@ -1367,7 +1372,9 @@
+       if (B.circuit.dansTunnel(c, sp, 25)) sp = ramener(c.tunnel.fin + 30, c.longueur);
+       const e = B.circuit.echantillon(c, sp);
+       const cote = e.courbure > 1e-4 ? 1 : e.courbure < -1e-4 ? -1 : plan.cote;
+-      const d = cote * (c.largeur / 2 + 1.1), x = e.x - Math.sin(e.cap) * d, z = e.z + Math.cos(e.cap) * d;
++      // lot 22F : un muret (limite à 1 m du bord) ou un parapet (1,4 m) commence à la limite ; à 1,1 m du bord, la
++      // caméra serait dans le mur. Elle reste 40 cm devant la limite ; ailleurs (limites d'au moins 3,2 m), rien ne change.
++      const d = cote * Math.min(c.largeur / 2 + 1.1, B.conduite.limiteCote(c, sp, cote) - .4), x = e.x - Math.sin(e.cap) * d, z = e.z + Math.cos(e.cap) * d;
+       const sol = scene.decor.sol ? scene.decor.sol(x, z) : e.y;
+       S.sol = { plan, pos: [x, Math.max(e.y, isFinite(sol) ? sol : e.y) + .32, z] };
+     }
+diff --git a/verifications/bords-integration.test.mjs b/verifications/bords-integration.test.mjs
+new file mode 100644
+index 0000000..33b7628
+--- /dev/null
++++ b/verifications/bords-integration.test.mjs
+@@ -0,0 +1,70 @@
++// Bords de route du lot 22F branchés sur le décor (integration.patch du rapport docs/reprise/rapports/lieux-2026-11-18) :
++// avec src/bords.js chargé, le décor garde ses tirages, ses arbres, ses lots et ses solides historiques dans le même
++// ordre et avec les mêmes identifiants ; les objets des bords arrivent dans des lots à eux, à la fin, et leurs solides
++// après tous les autres ; la glissière disparaît seulement derrière un parapet, un muret ou les balises d'un fossé.
++import { createRequire } from 'node:module';
++import assert from 'node:assert/strict';
++const require = createRequire(import.meta.url);
++for (const f of ['carene', 'circuit', 'decor', 'obstacles', 'bords']) require('../src/' + f + '.js');
++const B = globalThis.BITUME;
++let n = 0;
++const verifier = (nom, f) => { f(); n++; console.log('ok  ' + nom); };
++const CATALOGUE = [[11, 'foret', 4200, 'Val-Brûlé'], [29, 'cote', 3600, 'Port-Sable'], [47, 'montagne', 5200, 'Haut-Col'], [83, 'islande', 4600, 'Lande-Noire'],
++  [107, 'desert', 4800, 'Roche-Fauve'], [131, 'asie', 5000, 'Brume-de-Jade'], [157, 'pacifique', 5200, 'Cap-Séquoia']];
++// le circuit tel que jeu.js le prépare : création, puis limites resserrées une fois
++const preparer = ([graine, theme, longueur, nom]) => { const c = B.circuit.creer(graine, { theme, longueur, nom }); B.bords.limites(c, B.bords.planifier(c)); return c; };
++const sansBords = (c, options) => { const m = B.bords; delete B.bords; try { return B.decor.construire(c, options); } finally { B.bords = m; } };
++const glissiere = o => o.shape === 'box' && Math.abs(o.s[1] - .34) < 1e-9 && Math.abs(o.s[2] - .07) < 1e-9 && o.mat === 0;
++
++for (const k of CATALOGUE) for (const qualite of ['low', 'high']) verifier(`${k[3]} (${qualite}) : décor historique intact, bords ajoutés à la fin`, () => {
++  const c = preparer(k), plan = B.bords.planifier(c), avant = sansBords(c, { qualite }), apres = B.decor.construire(c, { qualite });
++  // tirages du décor inchangés : mêmes arbres au même endroit
++  assert.deepEqual(apres.arbres, avant.arbres);
++  // solides historiques : mêmes descripteurs, même ordre, donc mêmes identifiants ; ceux des bords suivent
++  assert.ok(apres.obstacles.length >= avant.obstacles.length);
++  assert.deepEqual(apres.obstacles.slice(0, avant.obstacles.length), avant.obstacles);
++  const idx = B.obstacles.creer(apres.obstacles);
++  assert.equal(idx.objets.length, apres.obstacles.length, 'tout solide des bords est accepté par l\'index de collision');
++  // l'ordre des solides suit celui des lots (comme verifications/decor-obstacles.test.mjs l'exige)
++  const portes = apres.lots.flatMap(l => l.objets).filter(o => o.collision);
++  assert.equal(portes.length, apres.obstacles.length);
++  portes.forEach((o, i) => { const d = apres.obstacles[i]; assert.equal(d.type === 'prism' ? d.p[0] : d.x, o.p[0]); });
++  // lots : les lots historiques d'abord (glissières retirées mises à part), puis ceux des bords
++  const nb = avant.lots.length;
++  assert.ok(apres.lots.length > nb);
++  for (let i = 0; i < nb; i++) {
++    const a = avant.lots[i].objets.filter(o => !glissiere(o) && !(o.shape === 'box' && Math.abs(o.s[1] - .8) < 1e-9 && o.mat === 0)), b = apres.lots[i].objets.filter(o => !glissiere(o) && !(o.shape === 'box' && Math.abs(o.s[1] - .8) < 1e-9 && o.mat === 0));
++    assert.deepEqual(b, a, `lot historique ${i} modifié`);
++  }
++  // glissières retirées : seulement derrière un parapet, un muret ou les balises d'un fossé
++  const retirees = avant.lots.flatMap(l => l.objets).filter(glissiere).length - apres.lots.flatMap(l => l.objets).filter(glissiere).length;
++  let attendu = 0;
++  for (const d of plan.dangers) if (d.type === 'vide' || d.type === 'muret' || d.type === 'fosse') { const b = B.bords.bornes(c, d); attendu += (b.i1 - b.i0) / 4 + 1; }
++  assert.equal(retirees, attendu, `${retirees} glissières retirées pour ${attendu} segments de parapet`);
++});
++
++// La caméra au sol de la démo (jeu.js, cameraSol) se pose à min(w + 1,1 ; limite − 0,4) du centre : devant un muret ou
++// un parapet, elle reste sur l'accotement, à 40 cm du mur ; partout ailleurs, elle garde sa place historique (w + 1,1).
++verifier('la caméra au sol ne se pose jamais dans un muret ou un parapet des bords', () => {
++  const placeSol = (c, s, cote) => Math.min(c.largeur / 2 + 1.1, B.circuit.limiteA(c, s, cote) - .4);
++  for (const k of CATALOGUE) {
++    const c = preparer(k), plan = B.bords.planifier(c), w = c.largeur / 2;
++    for (const d of plan.dangers) {
++      if (d.type !== 'vide' && d.type !== 'muret') continue;
++      const { i0, i1 } = B.bords.bornes(c, d);
++      for (let i = i0; i <= i1 + 4; i++) {
++        const s = i * c.pas, lim = B.circuit.limiteA(c, s, d.cote), place = placeSol(c, s, d.cote);
++        assert.ok(place <= lim - .4 + 1e-9, `${k[3]} : caméra à ${place} pour un mur à ${lim}`);
++        assert.ok(place >= w + .5, `${k[3]} : caméra sur la chaussée (${place})`);
++      }
++    }
++    // hors des bords, la place historique ne bouge pas
++    for (let s = 0; s < c.longueur; s += 50) for (const cote of [-1, 1]) {
++      if (plan.dangers.some(d => d.cote === cote && (d.type === 'vide' || d.type === 'muret') && s > d.debut - 150 && s < d.fin + 150)) continue;
++      if (B.circuit.dansTunnel(c, s, 30)) continue;
++      assert.equal(placeSol(c, s, cote), w + 1.1, `${k[3]} : place changée à ${s}`);
++    }
++  }
++});
++
++console.log(`${n} vérifications de l'intégration des bords de route`);
