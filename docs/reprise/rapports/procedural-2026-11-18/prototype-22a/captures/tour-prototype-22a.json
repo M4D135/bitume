@@ -1,0 +1,1569 @@
+{
+ "date": "2026-11-18T16:35:25.535Z",
+ "page": "/Users/david/Projects/bitume-wt/procedural/dist/bitume.html",
+ "etiquette": "prototype-22a",
+ "pas": 400,
+ "taille": [
+  960,
+  540
+ ],
+ "qualite": "high",
+ "saison": "ete",
+ "moment": "jour",
+ "graine": 17017,
+ "injection": true,
+ "circuits": [
+  {
+   "id": "val-brule",
+   "nom": "Val-Brûlé",
+   "theme": "foret",
+   "longueur": 4222,
+   "positions": [
+    {
+     "rang": 0,
+     "s": 0,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 253,
+     "tunnel": false,
+     "joueur": {
+      "s": 5.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-prototype-22a-0000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.82,
+      "pos": [
+       -688.8,
+       1.6,
+       -84.6
+      ]
+     },
+     "bord": "val-brule-prototype-22a-0000-bord.jpg"
+    },
+    {
+     "rang": 1,
+     "s": 400,
+     "y": -0.46,
+     "pentePct": -0.71,
+     "deversDeg": 1.32,
+     "rayon": 63,
+     "sens": "droite",
+     "vitesseRefKmh": 103,
+     "tunnel": false,
+     "joueur": {
+      "s": 404.8,
+      "v": 37.4
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-prototype-22a-0400-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -0.82,
+      "pos": [
+       -741.1,
+       1.7,
+       -463.9
+      ]
+     },
+     "bord": "val-brule-prototype-22a-0400-bord.jpg"
+    },
+    {
+     "rang": 2,
+     "s": 800,
+     "y": -2.13,
+     "pentePct": -6.11,
+     "deversDeg": -1.2,
+     "rayon": 1175,
+     "sens": "droite",
+     "vitesseRefKmh": 237,
+     "tunnel": false,
+     "joueur": {
+      "s": 805.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-prototype-22a-0800-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -4.31,
+      "pos": [
+       -410.3,
+       -2.1,
+       -679.5
+      ]
+     },
+     "bord": "val-brule-prototype-22a-0800-bord.jpg"
+    },
+    {
+     "rang": 3,
+     "s": 1200,
+     "y": -8.61,
+     "pentePct": 1.23,
+     "deversDeg": -0.52,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 222,
+     "tunnel": false,
+     "joueur": {
+      "s": 1205,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-prototype-22a-1200-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -8.3,
+      "pos": [
+       -22.2,
+       -5.7,
+       -760.7
+      ]
+     },
+     "bord": "val-brule-prototype-22a-1200-bord.jpg"
+    },
+    {
+     "rang": 4,
+     "s": 1600,
+     "y": 2.19,
+     "pentePct": -2.81,
+     "deversDeg": -0.54,
+     "rayon": 1537,
+     "sens": "droite",
+     "vitesseRefKmh": 160,
+     "tunnel": false,
+     "joueur": {
+      "s": 1604.5,
+      "v": 37.6
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-prototype-22a-1600-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 0.49,
+      "pos": [
+       327.9,
+       3,
+       -570.2
+      ]
+     },
+     "bord": "val-brule-prototype-22a-1600-bord.jpg"
+    },
+    {
+     "rang": 5,
+     "s": 2000,
+     "y": -7.45,
+     "pentePct": 2.51,
+     "deversDeg": 1.59,
+     "rayon": 83,
+     "sens": "gauche",
+     "vitesseRefKmh": 138,
+     "tunnel": false,
+     "joueur": {
+      "s": 2004.5,
+      "v": 38
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-prototype-22a-2000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -7.51,
+      "pos": [
+       316.2,
+       -5.2,
+       -163.2
+      ]
+     },
+     "bord": "val-brule-prototype-22a-2000-bord.jpg"
+    },
+    {
+     "rang": 6,
+     "s": 2400,
+     "y": 2.72,
+     "pentePct": -2.14,
+     "deversDeg": 1.13,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 176,
+     "tunnel": false,
+     "joueur": {
+      "s": 2404.7,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-prototype-22a-2400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 1.12,
+      "pos": [
+       352.5,
+       3.5,
+       98
+      ]
+     },
+     "bord": "val-brule-prototype-22a-2400-bord.jpg"
+    },
+    {
+     "rang": 7,
+     "s": 2800,
+     "y": -9.97,
+     "pentePct": 2.03,
+     "deversDeg": -0.89,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 248,
+     "tunnel": false,
+     "joueur": {
+      "s": 2804.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-prototype-22a-2800-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -10.05,
+      "pos": [
+       189.2,
+       -7.7,
+       450.5
+      ]
+     },
+     "bord": "val-brule-prototype-22a-2800-bord.jpg"
+    },
+    {
+     "rang": 8,
+     "s": 3200,
+     "y": 4.14,
+     "pentePct": -4.38,
+     "deversDeg": 2.61,
+     "rayon": 372,
+     "sens": "droite",
+     "vitesseRefKmh": 134,
+     "tunnel": false,
+     "joueur": {
+      "s": 3204.5,
+      "v": 37.6
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-prototype-22a-3200-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 2.06,
+      "pos": [
+       -108.9,
+       5,
+       696.9
+      ]
+     },
+     "bord": "val-brule-prototype-22a-3200-bord.jpg"
+    },
+    {
+     "rang": 9,
+     "s": 3600,
+     "y": -10.96,
+     "pentePct": -0.48,
+     "deversDeg": -0.94,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 231,
+     "tunnel": false,
+     "joueur": {
+      "s": 3604.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-prototype-22a-3600-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -11.67,
+      "pos": [
+       -452.8,
+       -9.4,
+       478
+      ]
+     },
+     "bord": "val-brule-prototype-22a-3600-bord.jpg"
+    },
+    {
+     "rang": 10,
+     "s": 4000,
+     "y": 0.36,
+     "pentePct": -2.78,
+     "deversDeg": 0.12,
+     "rayon": 211,
+     "sens": "droite",
+     "vitesseRefKmh": 226,
+     "tunnel": false,
+     "joueur": {
+      "s": 4004.6,
+      "v": 39
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-prototype-22a-4000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.82,
+      "pos": [
+       -638,
+       1.6,
+       130.7
+      ]
+     },
+     "bord": "val-brule-prototype-22a-4000-bord.jpg"
+    }
+   ]
+  },
+  {
+   "id": "haut-col",
+   "nom": "Haut-Col",
+   "theme": "montagne",
+   "longueur": 5216,
+   "positions": [
+    {
+     "rang": 0,
+     "s": 0,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 212,
+     "tunnel": false,
+     "joueur": {
+      "s": 4.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-prototype-22a-0000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.87,
+      "pos": [
+       -90.8,
+       1.6,
+       -873.7
+      ]
+     },
+     "bord": "haut-col-prototype-22a-0000-bord.jpg"
+    },
+    {
+     "rang": 1,
+     "s": 400,
+     "y": 0,
+     "pentePct": 0.01,
+     "deversDeg": 0,
+     "rayon": 538,
+     "sens": "gauche",
+     "vitesseRefKmh": 199,
+     "tunnel": false,
+     "joueur": {
+      "s": 405.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-prototype-22a-0400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -1.33,
+      "pos": [
+       -415.2,
+       1.3,
+       -650
+      ]
+     },
+     "bord": "haut-col-prototype-22a-0400-bord.jpg"
+    },
+    {
+     "rang": 2,
+     "s": 800,
+     "y": 3.96,
+     "pentePct": 0.55,
+     "deversDeg": 1.15,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 240,
+     "tunnel": false,
+     "joueur": {
+      "s": 805.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-prototype-22a-0800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 2.87,
+      "pos": [
+       -524.6,
+       5.1,
+       -269.3
+      ]
+     },
+     "bord": "haut-col-prototype-22a-0800-bord.jpg"
+    },
+    {
+     "rang": 3,
+     "s": 1200,
+     "y": 2.8,
+     "pentePct": -5.68,
+     "deversDeg": 1.15,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 273,
+     "tunnel": false,
+     "joueur": {
+      "s": 1205.1,
+      "v": 40.9
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-prototype-22a-1200-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 0.21,
+      "pos": [
+       -608.7,
+       2.9,
+       115.2
+      ]
+     },
+     "bord": "haut-col-prototype-22a-1200-bord.jpg"
+    },
+    {
+     "rang": 4,
+     "s": 1600,
+     "y": -8.01,
+     "pentePct": -2.47,
+     "deversDeg": -3.92,
+     "rayon": 28,
+     "sens": "gauche",
+     "vitesseRefKmh": 70,
+     "tunnel": false,
+     "joueur": {
+      "s": 1604.8,
+      "v": 37.4
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-prototype-22a-1600-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -9.5,
+      "pos": [
+       -695.2,
+       -6.5,
+       487.6
+      ]
+     },
+     "bord": "haut-col-prototype-22a-1600-bord.jpg"
+    },
+    {
+     "rang": 5,
+     "s": 2000,
+     "y": 6.29,
+     "pentePct": 4.58,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 234,
+     "tunnel": true,
+     "joueur": {
+      "s": 2005,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-prototype-22a-2000-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": true,
+      "sol": 6.65,
+      "pos": [
+       -326.7,
+       9.1,
+       650.8
+      ]
+     },
+     "bord": "haut-col-prototype-22a-2000-bord.jpg"
+    },
+    {
+     "rang": 6,
+     "s": 2400,
+     "y": -0.26,
+     "pentePct": -5.99,
+     "deversDeg": -1.13,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 270,
+     "tunnel": false,
+     "joueur": {
+      "s": 2405.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-prototype-22a-2400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -2.93,
+      "pos": [
+       47.8,
+       -0.3,
+       795
+      ]
+     },
+     "bord": "haut-col-prototype-22a-2400-bord.jpg"
+    },
+    {
+     "rang": 7,
+     "s": 2800,
+     "y": -23.08,
+     "pentePct": -0.45,
+     "deversDeg": 1.21,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 194,
+     "tunnel": false,
+     "joueur": {
+      "s": 2805.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-prototype-22a-2800-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -24.44,
+      "pos": [
+       408,
+       -21.7,
+       697.9
+      ]
+     },
+     "bord": "haut-col-prototype-22a-2800-bord.jpg"
+    },
+    {
+     "rang": 8,
+     "s": 3200,
+     "y": -6.69,
+     "pentePct": 9.59,
+     "deversDeg": 1.21,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 256,
+     "tunnel": false,
+     "joueur": {
+      "s": 3205,
+      "v": 40.6
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-prototype-22a-3200-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -4.65,
+      "pos": [
+       718.1,
+       -2.4,
+       432.1
+      ]
+     },
+     "bord": "haut-col-prototype-22a-3200-bord.jpg"
+    },
+    {
+     "rang": 9,
+     "s": 3600,
+     "y": 16.66,
+     "pentePct": -2.89,
+     "deversDeg": 1.08,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 241,
+     "tunnel": false,
+     "joueur": {
+      "s": 3605.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-prototype-22a-3600-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 14.76,
+      "pos": [
+       808.3,
+       17.5,
+       57.7
+      ]
+     },
+     "bord": "haut-col-prototype-22a-3600-bord.jpg"
+    },
+    {
+     "rang": 10,
+     "s": 4000,
+     "y": -16.18,
+     "pentePct": -9.99,
+     "deversDeg": -0.47,
+     "rayon": 21250,
+     "sens": "gauche",
+     "vitesseRefKmh": 225,
+     "tunnel": false,
+     "joueur": {
+      "s": 4005.1,
+      "v": 40.9
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-prototype-22a-4000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -19.91,
+      "pos": [
+       733,
+       -17.2,
+       -321.6
+      ]
+     },
+     "bord": "haut-col-prototype-22a-4000-bord.jpg"
+    },
+    {
+     "rang": 11,
+     "s": 4400,
+     "y": -30.53,
+     "pentePct": 9.24,
+     "deversDeg": 1.33,
+     "rayon": 300,
+     "sens": "droite",
+     "vitesseRefKmh": 266,
+     "tunnel": false,
+     "joueur": {
+      "s": 4405,
+      "v": 40.6
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-prototype-22a-4400-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -28.55,
+      "pos": [
+       418.8,
+       -25.6,
+       -570.7
+      ]
+     },
+     "bord": "haut-col-prototype-22a-4400-bord.jpg"
+    },
+    {
+     "rang": 12,
+     "s": 4800,
+     "y": 4.43,
+     "pentePct": 7.26,
+     "deversDeg": 1.02,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 241,
+     "tunnel": false,
+     "joueur": {
+      "s": 4805,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-prototype-22a-4800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 5.44,
+      "pos": [
+       243.5,
+       7.8,
+       -934.5
+      ]
+     },
+     "bord": "haut-col-prototype-22a-4800-bord.jpg"
+    },
+    {
+     "rang": 13,
+     "s": 5200,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 209,
+     "tunnel": false,
+     "joueur": {
+      "s": 5205.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-prototype-22a-5200-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -0.87,
+      "pos": [
+       -66.1,
+       1.6,
+       -865.1
+      ]
+     },
+     "bord": "haut-col-prototype-22a-5200-bord.jpg"
+    }
+   ]
+  },
+  {
+   "id": "roche-fauve",
+   "nom": "Roche-Fauve",
+   "theme": "desert",
+   "longueur": 4834,
+   "positions": [
+    {
+     "rang": 0,
+     "s": 0,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 209,
+     "tunnel": false,
+     "joueur": {
+      "s": 5.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-prototype-22a-0000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.82,
+      "pos": [
+       -53.8,
+       1.6,
+       824.6
+      ]
+     },
+     "bord": "roche-fauve-prototype-22a-0000-bord.jpg"
+    },
+    {
+     "rang": 1,
+     "s": 400,
+     "y": 1.91,
+     "pentePct": 7.97,
+     "deversDeg": -0.2,
+     "rayon": 133,
+     "sens": "gauche",
+     "vitesseRefKmh": 134,
+     "tunnel": false,
+     "joueur": {
+      "s": 404.9,
+      "v": 38.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-prototype-22a-0400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 3.39,
+      "pos": [
+       302.8,
+       6,
+       648.4
+      ]
+     },
+     "bord": "roche-fauve-prototype-22a-0400-bord.jpg"
+    },
+    {
+     "rang": 2,
+     "s": 800,
+     "y": -2.42,
+     "pentePct": -2.02,
+     "deversDeg": -1.3,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 242,
+     "tunnel": false,
+     "joueur": {
+      "s": 804.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-prototype-22a-0800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -3.88,
+      "pos": [
+       455.6,
+       -1.2,
+       279.3
+      ]
+     },
+     "bord": "roche-fauve-prototype-22a-0800-bord.jpg"
+    },
+    {
+     "rang": 3,
+     "s": 1200,
+     "y": -1.05,
+     "pentePct": -6.7,
+     "deversDeg": 1.43,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 175,
+     "tunnel": false,
+     "joueur": {
+      "s": 1204.7,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-prototype-22a-1200-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -3.6,
+      "pos": [
+       370.4,
+       -1.4,
+       -69.6
+      ]
+     },
+     "bord": "roche-fauve-prototype-22a-1200-bord.jpg"
+    },
+    {
+     "rang": 4,
+     "s": 1600,
+     "y": -9.69,
+     "pentePct": -3.82,
+     "deversDeg": 2.32,
+     "rayon": 280,
+     "sens": "droite",
+     "vitesseRefKmh": 250,
+     "tunnel": false,
+     "joueur": {
+      "s": 1604.7,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-prototype-22a-1600-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -11.52,
+      "pos": [
+       39.8,
+       -8.7,
+       -304.9
+      ]
+     },
+     "bord": "roche-fauve-prototype-22a-1600-bord.jpg"
+    },
+    {
+     "rang": 5,
+     "s": 2000,
+     "y": -7.85,
+     "pentePct": 5.41,
+     "deversDeg": -1.97,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 153,
+     "tunnel": false,
+     "joueur": {
+      "s": 2004.5,
+      "v": 37.5
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-prototype-22a-2000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -6.82,
+      "pos": [
+       -118,
+       -3.7,
+       -679.6
+      ]
+     },
+     "bord": "roche-fauve-prototype-22a-2000-bord.jpg"
+    },
+    {
+     "rang": 6,
+     "s": 2400,
+     "y": 16.33,
+     "pentePct": 5.39,
+     "deversDeg": -1.09,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 226,
+     "tunnel": false,
+     "joueur": {
+      "s": 2404.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-prototype-22a-2400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 17.25,
+      "pos": [
+       -516.7,
+       19.9,
+       -652.4
+      ]
+     },
+     "bord": "roche-fauve-prototype-22a-2400-bord.jpg"
+    },
+    {
+     "rang": 7,
+     "s": 2800,
+     "y": 10.37,
+     "pentePct": -8,
+     "deversDeg": 0.98,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 208,
+     "tunnel": false,
+     "joueur": {
+      "s": 2804.7,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-prototype-22a-2800-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 7.07,
+      "pos": [
+       -625,
+       9.7,
+       -339.6
+      ]
+     },
+     "bord": "roche-fauve-prototype-22a-2800-bord.jpg"
+    },
+    {
+     "rang": 8,
+     "s": 3200,
+     "y": -17.27,
+     "pentePct": -4.92,
+     "deversDeg": 1.39,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 205,
+     "tunnel": false,
+     "joueur": {
+      "s": 3204.7,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-prototype-22a-3200-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -19.64,
+      "pos": [
+       -714.7,
+       -17.4,
+       27.5
+      ]
+     },
+     "bord": "roche-fauve-prototype-22a-3200-bord.jpg"
+    },
+    {
+     "rang": 9,
+     "s": 3600,
+     "y": -7.83,
+     "pentePct": 6.33,
+     "deversDeg": -4.49,
+     "rayon": 34,
+     "sens": "gauche",
+     "vitesseRefKmh": 79,
+     "tunnel": false,
+     "joueur": {
+      "s": 3604.5,
+      "v": 37.4
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-prototype-22a-3600-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -6.68,
+      "pos": [
+       -901.1,
+       -3.3,
+       373.4
+      ]
+     },
+     "bord": "roche-fauve-prototype-22a-3600-bord.jpg"
+    },
+    {
+     "rang": 10,
+     "s": 4000,
+     "y": 6.12,
+     "pentePct": 0.31,
+     "deversDeg": -1.66,
+     "rayon": 59,
+     "sens": "droite",
+     "vitesseRefKmh": 107,
+     "tunnel": false,
+     "joueur": {
+      "s": 4004.5,
+      "v": 37.5
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-prototype-22a-4000-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 5.21,
+      "pos": [
+       -495.9,
+       7.4,
+       382.6
+      ]
+     },
+     "bord": "roche-fauve-prototype-22a-4000-bord.jpg"
+    },
+    {
+     "rang": 11,
+     "s": 4400,
+     "y": -4.13,
+     "pentePct": -1.76,
+     "deversDeg": -1.2,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 232,
+     "tunnel": false,
+     "joueur": {
+      "s": 4404.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-prototype-22a-4400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -5.35,
+      "pos": [
+       -395.6,
+       -2.6,
+       770.6
+      ]
+     },
+     "bord": "roche-fauve-prototype-22a-4400-bord.jpg"
+    },
+    {
+     "rang": 12,
+     "s": 4800,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 201,
+     "tunnel": false,
+     "joueur": {
+      "s": 4804.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-prototype-22a-4800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.9,
+      "pos": [
+       -85.3,
+       1.6,
+       837.1
+      ]
+     },
+     "bord": "roche-fauve-prototype-22a-4800-bord.jpg"
+    }
+   ]
+  },
+  {
+   "id": "cap-sequoia",
+   "nom": "Cap-Séquoia",
+   "theme": "pacifique",
+   "longueur": 5234,
+   "positions": [
+    {
+     "rang": 0,
+     "s": 0,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 274,
+     "tunnel": false,
+     "joueur": {
+      "s": 4.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-prototype-22a-0000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.88,
+      "pos": [
+       37.4,
+       1.6,
+       -741.8
+      ]
+     },
+     "bord": "cap-sequoia-prototype-22a-0000-bord.jpg"
+    },
+    {
+     "rang": 1,
+     "s": 400,
+     "y": -2.22,
+     "pentePct": -8,
+     "deversDeg": 1.87,
+     "rayon": 43,
+     "sens": "droite",
+     "vitesseRefKmh": 88,
+     "tunnel": false,
+     "joueur": {
+      "s": 404.5,
+      "v": 37.6
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-prototype-22a-0400-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -5.53,
+      "pos": [
+       382.3,
+       -2.7,
+       -859.2
+      ]
+     },
+     "bord": "cap-sequoia-prototype-22a-0400-bord.jpg"
+    },
+    {
+     "rang": 2,
+     "s": 800,
+     "y": -12.38,
+     "pentePct": -1.72,
+     "deversDeg": 1.04,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 236,
+     "tunnel": false,
+     "joueur": {
+      "s": 804.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-prototype-22a-0800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -13.16,
+      "pos": [
+       482.6,
+       -11,
+       -470
+      ]
+     },
+     "bord": "cap-sequoia-prototype-22a-0800-bord.jpg"
+    },
+    {
+     "rang": 3,
+     "s": 1200,
+     "y": -2.43,
+     "pentePct": 2.58,
+     "deversDeg": 1.36,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 215,
+     "tunnel": false,
+     "joueur": {
+      "s": 1204.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-prototype-22a-1200-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -2.44,
+      "pos": [
+       697.3,
+       0.3,
+       -129.4
+      ]
+     },
+     "bord": "cap-sequoia-prototype-22a-1200-bord.jpg"
+    },
+    {
+     "rang": 4,
+     "s": 1600,
+     "y": 12.78,
+     "pentePct": 5.55,
+     "deversDeg": 0.99,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 232,
+     "tunnel": false,
+     "joueur": {
+      "s": 1604.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-prototype-22a-1600-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 13.31,
+      "pos": [
+       691.4,
+       16,
+       268.6
+      ]
+     },
+     "bord": "cap-sequoia-prototype-22a-1600-bord.jpg"
+    },
+    {
+     "rang": 5,
+     "s": 2000,
+     "y": 16.46,
+     "pentePct": 0.37,
+     "deversDeg": -1.1,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 206,
+     "tunnel": false,
+     "joueur": {
+      "s": 2004.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-prototype-22a-2000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 15.65,
+      "pos": [
+       386.3,
+       18.3,
+       379.3
+      ]
+     },
+     "bord": "cap-sequoia-prototype-22a-2000-bord.jpg"
+    },
+    {
+     "rang": 6,
+     "s": 2400,
+     "y": 12.25,
+     "pentePct": 1.18,
+     "deversDeg": -0.97,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 193,
+     "tunnel": false,
+     "joueur": {
+      "s": 2404.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-prototype-22a-2400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 11.43,
+      "pos": [
+       100.1,
+       14.1,
+       568.6
+      ]
+     },
+     "bord": "cap-sequoia-prototype-22a-2400-bord.jpg"
+    },
+    {
+     "rang": 7,
+     "s": 2800,
+     "y": -4.83,
+     "pentePct": -3.86,
+     "deversDeg": 0.93,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 160,
+     "tunnel": false,
+     "joueur": {
+      "s": 2804.7,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-prototype-22a-2800-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -6.89,
+      "pos": [
+       -129.4,
+       -4.2,
+       833.1
+      ]
+     },
+     "bord": "cap-sequoia-prototype-22a-2800-bord.jpg"
+    },
+    {
+     "rang": 8,
+     "s": 3200,
+     "y": -15.8,
+     "pentePct": -1.18,
+     "deversDeg": 1.17,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 162,
+     "tunnel": false,
+     "joueur": {
+      "s": 3204.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-prototype-22a-3200-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -16.78,
+      "pos": [
+       -417.8,
+       -14.6,
+       679.1
+      ]
+     },
+     "bord": "cap-sequoia-prototype-22a-3200-bord.jpg"
+    },
+    {
+     "rang": 9,
+     "s": 3600,
+     "y": -13.35,
+     "pentePct": 0.55,
+     "deversDeg": -1.72,
+     "rayon": 107,
+     "sens": "gauche",
+     "vitesseRefKmh": 164,
+     "tunnel": false,
+     "joueur": {
+      "s": 3604.6,
+      "v": 39
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-prototype-22a-3600-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -13.82,
+      "pos": [
+       -499.4,
+       -10.9,
+       285.4
+      ]
+     },
+     "bord": "cap-sequoia-prototype-22a-3600-bord.jpg"
+    },
+    {
+     "rang": 10,
+     "s": 4000,
+     "y": -3.04,
+     "pentePct": 3.49,
+     "deversDeg": 1.73,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 182,
+     "tunnel": false,
+     "joueur": {
+      "s": 4004.7,
+      "v": 40.6
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-prototype-22a-4000-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -2.83,
+      "pos": [
+       -822.8,
+       0.2,
+       43.2
+      ]
+     },
+     "bord": "cap-sequoia-prototype-22a-4000-bord.jpg"
+    },
+    {
+     "rang": 11,
+     "s": 4400,
+     "y": 7.56,
+     "pentePct": 1.06,
+     "deversDeg": 1.37,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 224,
+     "tunnel": false,
+     "joueur": {
+      "s": 4404.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-prototype-22a-4400-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 7.01,
+      "pos": [
+       -655,
+       9.8,
+       -301.3
+      ]
+     },
+     "bord": "cap-sequoia-prototype-22a-4400-bord.jpg"
+    },
+    {
+     "rang": 12,
+     "s": 4800,
+     "y": 7.62,
+     "pentePct": -1.88,
+     "deversDeg": -1.38,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 240,
+     "tunnel": false,
+     "joueur": {
+      "s": 4804.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-prototype-22a-4800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 6.36,
+      "pos": [
+       -343.3,
+       9.1,
+       -538.8
+      ]
+     },
+     "bord": "cap-sequoia-prototype-22a-4800-bord.jpg"
+    },
+    {
+     "rang": 13,
+     "s": 5200,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 273,
+     "tunnel": false,
+     "joueur": {
+      "s": 5204.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-prototype-22a-5200-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -0.9,
+      "pos": [
+       -2.3,
+       1.6,
+       -745.3
+      ]
+     },
+     "bord": "cap-sequoia-prototype-22a-5200-bord.jpg"
+    }
+   ]
+  }
+ ],
+ "erreurs": [],
+ "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+ "planches": [
+  "planche-val-brule-cockpit-prototype-22a.jpg",
+  "planche-val-brule-bord-prototype-22a.jpg",
+  "planche-haut-col-cockpit-prototype-22a.jpg",
+  "planche-haut-col-bord-prototype-22a.jpg",
+  "planche-roche-fauve-cockpit-prototype-22a.jpg",
+  "planche-roche-fauve-bord-prototype-22a.jpg",
+  "planche-cap-sequoia-cockpit-prototype-22a.jpg",
+  "planche-cap-sequoia-bord-prototype-22a.jpg"
+ ]
+}

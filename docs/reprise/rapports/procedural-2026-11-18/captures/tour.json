@@ -1,0 +1,2614 @@
+{
+ "date": "2026-11-18T16:24:44.102Z",
+ "page": "/Users/david/Projects/bitume-wt/procedural/dist/bitume.html",
+ "etiquette": "",
+ "pas": 400,
+ "taille": [
+  960,
+  540
+ ],
+ "qualite": "high",
+ "saison": "ete",
+ "moment": "jour",
+ "graine": 17017,
+ "injection": false,
+ "circuits": [
+  {
+   "id": "val-brule",
+   "nom": "Val-Brûlé",
+   "theme": "foret",
+   "longueur": 4222,
+   "positions": [
+    {
+     "rang": 0,
+     "s": 0,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 253,
+     "tunnel": false,
+     "joueur": {
+      "s": 5.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-0000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.82,
+      "pos": [
+       -688.8,
+       1.6,
+       -84.6
+      ]
+     },
+     "bord": "val-brule-0000-bord.jpg"
+    },
+    {
+     "rang": 1,
+     "s": 400,
+     "y": -0.69,
+     "pentePct": 0.29,
+     "deversDeg": 0.66,
+     "rayon": 63,
+     "sens": "droite",
+     "vitesseRefKmh": 103,
+     "tunnel": false,
+     "joueur": {
+      "s": 404.8,
+      "v": 37.3
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-0400-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -0.95,
+      "pos": [
+       -741.1,
+       1.5,
+       -463.9
+      ]
+     },
+     "bord": "val-brule-0400-bord.jpg"
+    },
+    {
+     "rang": 2,
+     "s": 800,
+     "y": 2.41,
+     "pentePct": -4.19,
+     "deversDeg": 0.13,
+     "rayon": 1175,
+     "sens": "droite",
+     "vitesseRefKmh": 237,
+     "tunnel": false,
+     "joueur": {
+      "s": 805.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-0800-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 0.26,
+      "pos": [
+       -410.3,
+       2.8,
+       -679.5
+      ]
+     },
+     "bord": "val-brule-0800-bord.jpg"
+    },
+    {
+     "rang": 3,
+     "s": 1200,
+     "y": -3.3,
+     "pentePct": 3.84,
+     "deversDeg": 0.01,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 222,
+     "tunnel": false,
+     "joueur": {
+      "s": 1205,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-1200-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -2.98,
+      "pos": [
+       -22.2,
+       -0.4,
+       -760.7
+      ]
+     },
+     "bord": "val-brule-1200-bord.jpg"
+    },
+    {
+     "rang": 4,
+     "s": 1600,
+     "y": 4.1,
+     "pentePct": -3.38,
+     "deversDeg": 0.28,
+     "rayon": 1537,
+     "sens": "droite",
+     "vitesseRefKmh": 160,
+     "tunnel": false,
+     "joueur": {
+      "s": 1604.5,
+      "v": 37.6
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-1600-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 2.1,
+      "pos": [
+       327.9,
+       4.8,
+       -570.2
+      ]
+     },
+     "bord": "val-brule-1600-bord.jpg"
+    },
+    {
+     "rang": 5,
+     "s": 2000,
+     "y": -4.79,
+     "pentePct": 2.83,
+     "deversDeg": -1.09,
+     "rayon": 83,
+     "sens": "gauche",
+     "vitesseRefKmh": 138,
+     "tunnel": false,
+     "joueur": {
+      "s": 2004.5,
+      "v": 38
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-2000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -4.73,
+      "pos": [
+       316.2,
+       -2.1,
+       -163.2
+      ]
+     },
+     "bord": "val-brule-2000-bord.jpg"
+    },
+    {
+     "rang": 6,
+     "s": 2400,
+     "y": 5.36,
+     "pentePct": -2.21,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 176,
+     "tunnel": false,
+     "joueur": {
+      "s": 2404.7,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-2400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 3.65,
+      "pos": [
+       352.5,
+       6.2,
+       98
+      ]
+     },
+     "bord": "val-brule-2400-bord.jpg"
+    },
+    {
+     "rang": 7,
+     "s": 2800,
+     "y": -5.77,
+     "pentePct": 1.52,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 248,
+     "tunnel": false,
+     "joueur": {
+      "s": 2804.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-2800-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -6.05,
+      "pos": [
+       189.2,
+       -3.6,
+       450.5
+      ]
+     },
+     "bord": "val-brule-2800-bord.jpg"
+    },
+    {
+     "rang": 8,
+     "s": 3200,
+     "y": 6.03,
+     "pentePct": -0.79,
+     "deversDeg": 0.57,
+     "rayon": 372,
+     "sens": "droite",
+     "vitesseRefKmh": 134,
+     "tunnel": false,
+     "joueur": {
+      "s": 3204.5,
+      "v": 37.5
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-3200-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 4.78,
+      "pos": [
+       -108.9,
+       7.6,
+       696.9
+      ]
+     },
+     "bord": "val-brule-3200-bord.jpg"
+    },
+    {
+     "rang": 9,
+     "s": 3600,
+     "y": -6.12,
+     "pentePct": 0.05,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 231,
+     "tunnel": false,
+     "joueur": {
+      "s": 3604.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-3600-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -6.85,
+      "pos": [
+       -452.8,
+       -4.4,
+       478
+      ]
+     },
+     "bord": "val-brule-3600-bord.jpg"
+    },
+    {
+     "rang": 10,
+     "s": 4000,
+     "y": 1.44,
+     "pentePct": -6.37,
+     "deversDeg": 0.09,
+     "rayon": 211,
+     "sens": "droite",
+     "vitesseRefKmh": 226,
+     "tunnel": false,
+     "joueur": {
+      "s": 4004.6,
+      "v": 39.1
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "val-brule-4000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.59,
+      "pos": [
+       -638,
+       1.7,
+       130.7
+      ]
+     },
+     "bord": "val-brule-4000-bord.jpg"
+    }
+   ]
+  },
+  {
+   "id": "port-sable",
+   "nom": "Port-Sable",
+   "theme": "cote",
+   "longueur": 3638,
+   "positions": [
+    {
+     "rang": 0,
+     "s": 0,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 257,
+     "tunnel": false,
+     "joueur": {
+      "s": 4.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "port-sable-0000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.9,
+      "pos": [
+       19.2,
+       1.6,
+       -356.2
+      ]
+     },
+     "bord": "port-sable-0000-bord.jpg"
+    },
+    {
+     "rang": 1,
+     "s": 400,
+     "y": 0.98,
+     "pentePct": -1.2,
+     "deversDeg": -0.24,
+     "rayon": 410,
+     "sens": "gauche",
+     "vitesseRefKmh": 157,
+     "tunnel": false,
+     "joueur": {
+      "s": 405.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "port-sable-0400-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -0.61,
+      "pos": [
+       -363.5,
+       1.9,
+       -342.4
+      ]
+     },
+     "bord": "port-sable-0400-bord.jpg"
+    },
+    {
+     "rang": 2,
+     "s": 800,
+     "y": -4.08,
+     "pentePct": 2.61,
+     "deversDeg": -0.01,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 150,
+     "tunnel": false,
+     "joueur": {
+      "s": 805,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "port-sable-0800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -4.08,
+      "pos": [
+       -561.3,
+       -1.6,
+       -68.6
+      ]
+     },
+     "bord": "port-sable-0800-bord.jpg"
+    },
+    {
+     "rang": 3,
+     "s": 1200,
+     "y": 2.28,
+     "pentePct": -1.23,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 208,
+     "tunnel": false,
+     "joueur": {
+      "s": 1205.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "port-sable-1200-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 0.98,
+      "pos": [
+       -275.3,
+       3.5,
+       187.6
+      ]
+     },
+     "bord": "port-sable-1200-bord.jpg"
+    },
+    {
+     "rang": 4,
+     "s": 1600,
+     "y": 0.98,
+     "pentePct": 1.27,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 229,
+     "tunnel": false,
+     "joueur": {
+      "s": 1605.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "port-sable-1600-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 0.54,
+      "pos": [
+       -4.5,
+       3,
+       463.3
+      ]
+     },
+     "bord": "port-sable-1600-bord.jpg"
+    },
+    {
+     "rang": 5,
+     "s": 2000,
+     "y": 0.38,
+     "pentePct": -1.32,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 181,
+     "tunnel": false,
+     "joueur": {
+      "s": 2005.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "port-sable-2000-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -0.89,
+      "pos": [
+       251.1,
+       1.6,
+       471.1
+      ]
+     },
+     "bord": "port-sable-2000-bord.jpg"
+    },
+    {
+     "rang": 6,
+     "s": 2400,
+     "y": -1.09,
+     "pentePct": -0.32,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 175,
+     "tunnel": false,
+     "joueur": {
+      "s": 2405.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "port-sable-2400-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -2.05,
+      "pos": [
+       331.2,
+       0.4,
+       142.9
+      ]
+     },
+     "bord": "port-sable-2400-bord.jpg"
+    },
+    {
+     "rang": 7,
+     "s": 2800,
+     "y": -2.76,
+     "pentePct": 1.39,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 212,
+     "tunnel": false,
+     "joueur": {
+      "s": 2805,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "port-sable-2800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -3.17,
+      "pos": [
+       544.9,
+       -0.7,
+       -140.5
+      ]
+     },
+     "bord": "port-sable-2800-bord.jpg"
+    },
+    {
+     "rang": 8,
+     "s": 3200,
+     "y": 4.13,
+     "pentePct": -0.86,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 185,
+     "tunnel": false,
+     "joueur": {
+      "s": 3205.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "port-sable-3200-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 2.88,
+      "pos": [
+       454.7,
+       5.4,
+       -317.9
+      ]
+     },
+     "bord": "port-sable-3200-bord.jpg"
+    },
+    {
+     "rang": 9,
+     "s": 3600,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 253,
+     "tunnel": false,
+     "joueur": {
+      "s": 3605.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "port-sable-3600-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -0.9,
+      "pos": [
+       54.1,
+       1.6,
+       -330.3
+      ]
+     },
+     "bord": "port-sable-3600-bord.jpg"
+    }
+   ]
+  },
+  {
+   "id": "haut-col",
+   "nom": "Haut-Col",
+   "theme": "montagne",
+   "longueur": 5216,
+   "positions": [
+    {
+     "rang": 0,
+     "s": 0,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 212,
+     "tunnel": false,
+     "joueur": {
+      "s": 5.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-0000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.87,
+      "pos": [
+       -90.8,
+       1.6,
+       -873.7
+      ]
+     },
+     "bord": "haut-col-0000-bord.jpg"
+    },
+    {
+     "rang": 1,
+     "s": 400,
+     "y": 0,
+     "pentePct": -0.29,
+     "deversDeg": 0,
+     "rayon": 538,
+     "sens": "gauche",
+     "vitesseRefKmh": 199,
+     "tunnel": false,
+     "joueur": {
+      "s": 405.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-0400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -1.52,
+      "pos": [
+       -415.2,
+       1,
+       -650
+      ]
+     },
+     "bord": "haut-col-0400-bord.jpg"
+    },
+    {
+     "rang": 2,
+     "s": 800,
+     "y": 1.09,
+     "pentePct": 1.15,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 240,
+     "tunnel": false,
+     "joueur": {
+      "s": 805.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-0800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 0.58,
+      "pos": [
+       -524.6,
+       3,
+       -269.3
+      ]
+     },
+     "bord": "haut-col-0800-bord.jpg"
+    },
+    {
+     "rang": 3,
+     "s": 1200,
+     "y": 0.63,
+     "pentePct": -1.19,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 273,
+     "tunnel": false,
+     "joueur": {
+      "s": 1205.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-1200-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -0.63,
+      "pos": [
+       -608.7,
+       1.9,
+       115.2
+      ]
+     },
+     "bord": "haut-col-1200-bord.jpg"
+    },
+    {
+     "rang": 4,
+     "s": 1600,
+     "y": -2.24,
+     "pentePct": 0.44,
+     "deversDeg": -2.26,
+     "rayon": 28,
+     "sens": "gauche",
+     "vitesseRefKmh": 70,
+     "tunnel": false,
+     "joueur": {
+      "s": 1604.8,
+      "v": 37.3
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-1600-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -2.9,
+      "pos": [
+       -695.2,
+       -0.4,
+       487.6
+      ]
+     },
+     "bord": "haut-col-1600-bord.jpg"
+    },
+    {
+     "rang": 5,
+     "s": 2000,
+     "y": 2.95,
+     "pentePct": 1.23,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 234,
+     "tunnel": true,
+     "joueur": {
+      "s": 2005,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-2000-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": true,
+      "sol": 2.39,
+      "pos": [
+       -326.7,
+       4.9,
+       650.8
+      ]
+     },
+     "bord": "haut-col-2000-bord.jpg"
+    },
+    {
+     "rang": 6,
+     "s": 2400,
+     "y": 1.4,
+     "pentePct": -1.98,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 270,
+     "tunnel": false,
+     "joueur": {
+      "s": 2404.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-2400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.06,
+      "pos": [
+       47.8,
+       2.4,
+       795
+      ]
+     },
+     "bord": "haut-col-2400-bord.jpg"
+    },
+    {
+     "rang": 7,
+     "s": 2800,
+     "y": -5.64,
+     "pentePct": -0.37,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 194,
+     "tunnel": false,
+     "joueur": {
+      "s": 2804.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-2800-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -6.59,
+      "pos": [
+       408,
+       -4.1,
+       697.9
+      ]
+     },
+     "bord": "haut-col-2800-bord.jpg"
+    },
+    {
+     "rang": 8,
+     "s": 3200,
+     "y": 0.89,
+     "pentePct": 2.79,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 256,
+     "tunnel": false,
+     "joueur": {
+      "s": 3204.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-3200-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 0.88,
+      "pos": [
+       718.1,
+       3.3,
+       432.1
+      ]
+     },
+     "bord": "haut-col-3200-bord.jpg"
+    },
+    {
+     "rang": 9,
+     "s": 3600,
+     "y": 6.31,
+     "pentePct": -0.92,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 241,
+     "tunnel": false,
+     "joueur": {
+      "s": 3604.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-3600-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 5.07,
+      "pos": [
+       808.3,
+       7.6,
+       57.7
+      ]
+     },
+     "bord": "haut-col-3600-bord.jpg"
+    },
+    {
+     "rang": 10,
+     "s": 4000,
+     "y": -3.33,
+     "pentePct": -2.53,
+     "deversDeg": -0.08,
+     "rayon": 21250,
+     "sens": "gauche",
+     "vitesseRefKmh": 225,
+     "tunnel": false,
+     "joueur": {
+      "s": 4004.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-4000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -4.9,
+      "pos": [
+       733,
+       -2.5,
+       -321.6
+      ]
+     },
+     "bord": "haut-col-4000-bord.jpg"
+    },
+    {
+     "rang": 11,
+     "s": 4400,
+     "y": -4.8,
+     "pentePct": 1.93,
+     "deversDeg": 0.26,
+     "rayon": 300,
+     "sens": "droite",
+     "vitesseRefKmh": 266,
+     "tunnel": false,
+     "joueur": {
+      "s": 4404.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-4400-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -5.07,
+      "pos": [
+       418.8,
+       -2.5,
+       -570.7
+      ]
+     },
+     "bord": "haut-col-4400-bord.jpg"
+    },
+    {
+     "rang": 12,
+     "s": 4800,
+     "y": 4.51,
+     "pentePct": 1.38,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 241,
+     "tunnel": false,
+     "joueur": {
+      "s": 4804.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-4800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 3.97,
+      "pos": [
+       243.5,
+       6.5,
+       -934.5
+      ]
+     },
+     "bord": "haut-col-4800-bord.jpg"
+    },
+    {
+     "rang": 13,
+     "s": 5200,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 209,
+     "tunnel": false,
+     "joueur": {
+      "s": 5204.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "haut-col-5200-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -0.87,
+      "pos": [
+       -66.1,
+       1.6,
+       -865.1
+      ]
+     },
+     "bord": "haut-col-5200-bord.jpg"
+    }
+   ]
+  },
+  {
+   "id": "lande-noire",
+   "nom": "Lande-Noire",
+   "theme": "islande",
+   "longueur": 4616,
+   "positions": [
+    {
+     "rang": 0,
+     "s": 0,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 209,
+     "tunnel": false,
+     "joueur": {
+      "s": 4.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "lande-noire-0000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.86,
+      "pos": [
+       419.4,
+       1.6,
+       561.2
+      ]
+     },
+     "bord": "lande-noire-0000-bord.jpg"
+    },
+    {
+     "rang": 1,
+     "s": 400,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 230,
+     "tunnel": false,
+     "joueur": {
+      "s": 404.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "lande-noire-0400-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -0.38,
+      "pos": [
+       491.9,
+       2.1,
+       172.5
+      ]
+     },
+     "bord": "lande-noire-0400-bord.jpg"
+    },
+    {
+     "rang": 2,
+     "s": 800,
+     "y": -0.19,
+     "pentePct": -1.58,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 265,
+     "tunnel": false,
+     "joueur": {
+      "s": 804.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "lande-noire-0800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -1.54,
+      "pos": [
+       627.6,
+       1,
+       -198.3
+      ]
+     },
+     "bord": "lande-noire-0800-bord.jpg"
+    },
+    {
+     "rang": 3,
+     "s": 1200,
+     "y": -1.31,
+     "pentePct": 0.81,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 181,
+     "tunnel": false,
+     "joueur": {
+      "s": 1204.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "lande-noire-1200-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -1.93,
+      "pos": [
+       520.6,
+       0.5,
+       -510.3
+      ]
+     },
+     "bord": "lande-noire-1200-bord.jpg"
+    },
+    {
+     "rang": 4,
+     "s": 1600,
+     "y": 0.1,
+     "pentePct": -0.53,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 197,
+     "tunnel": false,
+     "joueur": {
+      "s": 1604.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "lande-noire-1600-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.98,
+      "pos": [
+       161,
+       1.5,
+       -471.5
+      ]
+     },
+     "bord": "lande-noire-1600-bord.jpg"
+    },
+    {
+     "rang": 5,
+     "s": 2000,
+     "y": -1.57,
+     "pentePct": 0.51,
+     "deversDeg": 0.99,
+     "rayon": 77,
+     "sens": "droite",
+     "vitesseRefKmh": 132,
+     "tunnel": false,
+     "joueur": {
+      "s": 2004.5,
+      "v": 38
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "lande-noire-2000-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -2.19,
+      "pos": [
+       -168.5,
+       0.3,
+       -232
+      ]
+     },
+     "bord": "lande-noire-2000-bord.jpg"
+    },
+    {
+     "rang": 6,
+     "s": 2400,
+     "y": 3.63,
+     "pentePct": 1.03,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 240,
+     "tunnel": false,
+     "joueur": {
+      "s": 2404.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "lande-noire-2400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 3,
+      "pos": [
+       -571.1,
+       5.5,
+       -245.5
+      ]
+     },
+     "bord": "lande-noire-2400-bord.jpg"
+    },
+    {
+     "rang": 7,
+     "s": 2800,
+     "y": -0.04,
+     "pentePct": -2.54,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 174,
+     "tunnel": false,
+     "joueur": {
+      "s": 2804.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "lande-noire-2800-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -1.71,
+      "pos": [
+       -719.4,
+       0.8,
+       -55.9
+      ]
+     },
+     "bord": "lande-noire-2800-bord.jpg"
+    },
+    {
+     "rang": 8,
+     "s": 3200,
+     "y": -5.83,
+     "pentePct": 0.89,
+     "deversDeg": -0.07,
+     "rayon": 5090,
+     "sens": "gauche",
+     "vitesseRefKmh": 250,
+     "tunnel": false,
+     "joueur": {
+      "s": 3204.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "lande-noire-3200-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -6.38,
+      "pos": [
+       -560.1,
+       -3.9,
+       316.4
+      ]
+     },
+     "bord": "lande-noire-3200-bord.jpg"
+    },
+    {
+     "rang": 9,
+     "s": 3600,
+     "y": 4.45,
+     "pentePct": 2.5,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 241,
+     "tunnel": false,
+     "joueur": {
+      "s": 3604.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "lande-noire-3600-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 4.31,
+      "pos": [
+       -362.2,
+       6.8,
+       668.5
+      ]
+     },
+     "bord": "lande-noire-3600-bord.jpg"
+    },
+    {
+     "rang": 10,
+     "s": 4000,
+     "y": 3.29,
+     "pentePct": -2.89,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 238,
+     "tunnel": false,
+     "joueur": {
+      "s": 4004.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "lande-noire-4000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 1.49,
+      "pos": [
+       12.3,
+       4,
+       794.4
+      ]
+     },
+     "bord": "lande-noire-4000-bord.jpg"
+    },
+    {
+     "rang": 11,
+     "s": 4400,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 119,
+     "tunnel": false,
+     "joueur": {
+      "s": 4404.5,
+      "v": 37.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "lande-noire-4400-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -0.9,
+      "pos": [
+       349.5,
+       1.6,
+       763.4
+      ]
+     },
+     "bord": "lande-noire-4400-bord.jpg"
+    }
+   ]
+  },
+  {
+   "id": "roche-fauve",
+   "nom": "Roche-Fauve",
+   "theme": "desert",
+   "longueur": 4834,
+   "positions": [
+    {
+     "rang": 0,
+     "s": 0,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 209,
+     "tunnel": false,
+     "joueur": {
+      "s": 4.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-0000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.82,
+      "pos": [
+       -53.8,
+       1.6,
+       824.6
+      ]
+     },
+     "bord": "roche-fauve-0000-bord.jpg"
+    },
+    {
+     "rang": 1,
+     "s": 400,
+     "y": 2.67,
+     "pentePct": 6.75,
+     "deversDeg": -0.31,
+     "rayon": 133,
+     "sens": "gauche",
+     "vitesseRefKmh": 134,
+     "tunnel": false,
+     "joueur": {
+      "s": 404.6,
+      "v": 38.9
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-0400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 3.43,
+      "pos": [
+       302.8,
+       6,
+       648.4
+      ]
+     },
+     "bord": "roche-fauve-0400-bord.jpg"
+    },
+    {
+     "rang": 2,
+     "s": 800,
+     "y": -1.78,
+     "pentePct": -1.26,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 242,
+     "tunnel": false,
+     "joueur": {
+      "s": 804.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-0800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -3.02,
+      "pos": [
+       455.6,
+       -0.5,
+       279.3
+      ]
+     },
+     "bord": "roche-fauve-0800-bord.jpg"
+    },
+    {
+     "rang": 3,
+     "s": 1200,
+     "y": -2.4,
+     "pentePct": 0.13,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 175,
+     "tunnel": false,
+     "joueur": {
+      "s": 1204.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-1200-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -3.28,
+      "pos": [
+       370.4,
+       -0.8,
+       -69.6
+      ]
+     },
+     "bord": "roche-fauve-1200-bord.jpg"
+    },
+    {
+     "rang": 4,
+     "s": 1600,
+     "y": -5.92,
+     "pentePct": -1.51,
+     "deversDeg": 0.33,
+     "rayon": 280,
+     "sens": "droite",
+     "vitesseRefKmh": 250,
+     "tunnel": false,
+     "joueur": {
+      "s": 1604.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-1600-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -7.23,
+      "pos": [
+       39.8,
+       -4.7,
+       -304.9
+      ]
+     },
+     "bord": "roche-fauve-1600-bord.jpg"
+    },
+    {
+     "rang": 5,
+     "s": 2000,
+     "y": -4.76,
+     "pentePct": 3.01,
+     "deversDeg": -0.06,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 153,
+     "tunnel": false,
+     "joueur": {
+      "s": 2004.5,
+      "v": 37.5
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-2000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -4.69,
+      "pos": [
+       -118,
+       -2,
+       -679.6
+      ]
+     },
+     "bord": "roche-fauve-2000-bord.jpg"
+    },
+    {
+     "rang": 6,
+     "s": 2400,
+     "y": 12.21,
+     "pentePct": 3.3,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 226,
+     "tunnel": false,
+     "joueur": {
+      "s": 2404.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-2400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 12.26,
+      "pos": [
+       -516.7,
+       14.7,
+       -652.4
+      ]
+     },
+     "bord": "roche-fauve-2400-bord.jpg"
+    },
+    {
+     "rang": 7,
+     "s": 2800,
+     "y": 8.52,
+     "pentePct": -4.94,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 208,
+     "tunnel": false,
+     "joueur": {
+      "s": 2804.7,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-2800-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 6.08,
+      "pos": [
+       -625,
+       8.6,
+       -339.6
+      ]
+     },
+     "bord": "roche-fauve-2800-bord.jpg"
+    },
+    {
+     "rang": 8,
+     "s": 3200,
+     "y": -10.98,
+     "pentePct": -2.35,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 205,
+     "tunnel": false,
+     "joueur": {
+      "s": 3204.7,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-3200-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -12.45,
+      "pos": [
+       -714.7,
+       -10,
+       27.5
+      ]
+     },
+     "bord": "roche-fauve-3200-bord.jpg"
+    },
+    {
+     "rang": 9,
+     "s": 3600,
+     "y": -5,
+     "pentePct": 3.85,
+     "deversDeg": -2.43,
+     "rayon": 34,
+     "sens": "gauche",
+     "vitesseRefKmh": 79,
+     "tunnel": false,
+     "joueur": {
+      "s": 3604.5,
+      "v": 37.5
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-3600-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -4.76,
+      "pos": [
+       -901.1,
+       -1.8,
+       373.4
+      ]
+     },
+     "bord": "roche-fauve-3600-bord.jpg"
+    },
+    {
+     "rang": 10,
+     "s": 4000,
+     "y": 3.7,
+     "pentePct": -0.49,
+     "deversDeg": 1.51,
+     "rayon": 59,
+     "sens": "droite",
+     "vitesseRefKmh": 107,
+     "tunnel": false,
+     "joueur": {
+      "s": 4004.5,
+      "v": 37.5
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-4000-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 2.59,
+      "pos": [
+       -495.9,
+       5.4,
+       382.6
+      ]
+     },
+     "bord": "roche-fauve-4000-bord.jpg"
+    },
+    {
+     "rang": 11,
+     "s": 4400,
+     "y": -2.47,
+     "pentePct": -0.88,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 232,
+     "tunnel": false,
+     "joueur": {
+      "s": 4405.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-4400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -3.58,
+      "pos": [
+       -395.6,
+       -1.1,
+       770.6
+      ]
+     },
+     "bord": "roche-fauve-4400-bord.jpg"
+    },
+    {
+     "rang": 12,
+     "s": 4800,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 201,
+     "tunnel": false,
+     "joueur": {
+      "s": 4805.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "roche-fauve-4800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.9,
+      "pos": [
+       -85.3,
+       1.6,
+       837.1
+      ]
+     },
+     "bord": "roche-fauve-4800-bord.jpg"
+    }
+   ]
+  },
+  {
+   "id": "brume-de-jade",
+   "nom": "Brume-de-Jade",
+   "theme": "asie",
+   "longueur": 5018,
+   "positions": [
+    {
+     "rang": 0,
+     "s": 0,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 214,
+     "tunnel": false,
+     "joueur": {
+      "s": 5.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "brume-de-jade-0000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.82,
+      "pos": [
+       242,
+       1.6,
+       775.2
+      ]
+     },
+     "bord": "brume-de-jade-0000-bord.jpg"
+    },
+    {
+     "rang": 1,
+     "s": 400,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 209,
+     "tunnel": false,
+     "joueur": {
+      "s": 405.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "brume-de-jade-0400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.81,
+      "pos": [
+       617.8,
+       1.6,
+       633.7
+      ]
+     },
+     "bord": "brume-de-jade-0400-bord.jpg"
+    },
+    {
+     "rang": 2,
+     "s": 800,
+     "y": -9.43,
+     "pentePct": -4.35,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 225,
+     "tunnel": false,
+     "joueur": {
+      "s": 805.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "brume-de-jade-0800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -11.52,
+      "pos": [
+       783.7,
+       -9.1,
+       276.3
+      ]
+     },
+     "bord": "brume-de-jade-0800-bord.jpg"
+    },
+    {
+     "rang": 3,
+     "s": 1200,
+     "y": -13.63,
+     "pentePct": 2.69,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 187,
+     "tunnel": false,
+     "joueur": {
+      "s": 1205.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "brume-de-jade-1200-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -13.65,
+      "pos": [
+       707.8,
+       -11.2,
+       -73.4
+      ]
+     },
+     "bord": "brume-de-jade-1200-bord.jpg"
+    },
+    {
+     "rang": 4,
+     "s": 1600,
+     "y": 2.3,
+     "pentePct": 3.33,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 254,
+     "tunnel": false,
+     "joueur": {
+      "s": 1605.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "brume-de-jade-1600-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 2.37,
+      "pos": [
+       500.2,
+       4.8,
+       -413
+      ]
+     },
+     "bord": "brume-de-jade-1600-bord.jpg"
+    },
+    {
+     "rang": 5,
+     "s": 2000,
+     "y": 5.84,
+     "pentePct": -0.9,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 154,
+     "tunnel": false,
+     "joueur": {
+      "s": 2005.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "brume-de-jade-2000-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 4.73,
+      "pos": [
+       230.6,
+       7.2,
+       -566.6
+      ]
+     },
+     "bord": "brume-de-jade-2000-bord.jpg"
+    },
+    {
+     "rang": 6,
+     "s": 2400,
+     "y": 5.04,
+     "pentePct": 1.13,
+     "deversDeg": 0.21,
+     "rayon": 447,
+     "sens": "droite",
+     "vitesseRefKmh": 246,
+     "tunnel": false,
+     "joueur": {
+      "s": 2405,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "brume-de-jade-2400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 4.5,
+      "pos": [
+       -114.8,
+       7,
+       -376.5
+      ]
+     },
+     "bord": "brume-de-jade-2400-bord.jpg"
+    },
+    {
+     "rang": 7,
+     "s": 2800,
+     "y": 8.99,
+     "pentePct": -0.63,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 275,
+     "tunnel": false,
+     "joueur": {
+      "s": 2805.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "brume-de-jade-2800-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 7.89,
+      "pos": [
+       -484.9,
+       10.3,
+       -232.7
+      ]
+     },
+     "bord": "brume-de-jade-2800-bord.jpg"
+    },
+    {
+     "rang": 8,
+     "s": 3200,
+     "y": -4.28,
+     "pentePct": -4.93,
+     "deversDeg": -2.25,
+     "rayon": 32,
+     "sens": "gauche",
+     "vitesseRefKmh": 76,
+     "tunnel": false,
+     "joueur": {
+      "s": 3204.8,
+      "v": 37.4
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "brume-de-jade-3200-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -6.67,
+      "pos": [
+       -823.7,
+       -4,
+       -43.2
+      ]
+     },
+     "bord": "brume-de-jade-3200-bord.jpg"
+    },
+    {
+     "rang": 9,
+     "s": 3600,
+     "y": -15.51,
+     "pentePct": 0.68,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 187,
+     "tunnel": false,
+     "joueur": {
+      "s": 3605,
+      "v": 40.3
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "brume-de-jade-3600-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -16.07,
+      "pos": [
+       -714.1,
+       -13.5,
+       343.8
+      ]
+     },
+     "bord": "brume-de-jade-3600-bord.jpg"
+    },
+    {
+     "rang": 10,
+     "s": 4000,
+     "y": -1.91,
+     "pentePct": 4.29,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 223,
+     "tunnel": false,
+     "joueur": {
+      "s": 4005,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "brume-de-jade-4000-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -1.55,
+      "pos": [
+       -332.2,
+       1,
+       328.7
+      ]
+     },
+     "bord": "brume-de-jade-4000-bord.jpg"
+    },
+    {
+     "rang": 11,
+     "s": 4400,
+     "y": 6.54,
+     "pentePct": -0.27,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 201,
+     "tunnel": false,
+     "joueur": {
+      "s": 4405.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "brume-de-jade-4400-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 5.57,
+      "pos": [
+       -110.8,
+       8,
+       568.2
+      ]
+     },
+     "bord": "brume-de-jade-4400-bord.jpg"
+    },
+    {
+     "rang": 12,
+     "s": 4800,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 135,
+     "tunnel": false,
+     "joueur": {
+      "s": 4805,
+      "v": 39.6
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "brume-de-jade-4800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.84,
+      "pos": [
+       37.3,
+       1.6,
+       852.3
+      ]
+     },
+     "bord": "brume-de-jade-4800-bord.jpg"
+    }
+   ]
+  },
+  {
+   "id": "cap-sequoia",
+   "nom": "Cap-Séquoia",
+   "theme": "pacifique",
+   "longueur": 5234,
+   "positions": [
+    {
+     "rang": 0,
+     "s": 0,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 274,
+     "tunnel": false,
+     "joueur": {
+      "s": 5.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-0000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -0.88,
+      "pos": [
+       37.4,
+       1.6,
+       -741.8
+      ]
+     },
+     "bord": "cap-sequoia-0000-bord.jpg"
+    },
+    {
+     "rang": 1,
+     "s": 400,
+     "y": -2.46,
+     "pentePct": -6.71,
+     "deversDeg": 0.92,
+     "rayon": 43,
+     "sens": "droite",
+     "vitesseRefKmh": 88,
+     "tunnel": false,
+     "joueur": {
+      "s": 404.8,
+      "v": 37.4
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-0400-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -5.25,
+      "pos": [
+       382.3,
+       -2.8,
+       -859.2
+      ]
+     },
+     "bord": "cap-sequoia-0400-bord.jpg"
+    },
+    {
+     "rang": 2,
+     "s": 800,
+     "y": -6.57,
+     "pentePct": 0.34,
+     "deversDeg": -0.05,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 236,
+     "tunnel": false,
+     "joueur": {
+      "s": 805.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-0800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -7.29,
+      "pos": [
+       482.6,
+       -4.8,
+       -470
+      ]
+     },
+     "bord": "cap-sequoia-0800-bord.jpg"
+    },
+    {
+     "rang": 3,
+     "s": 1200,
+     "y": -2.6,
+     "pentePct": 1.49,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 215,
+     "tunnel": false,
+     "joueur": {
+      "s": 1205,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-1200-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -3.03,
+      "pos": [
+       697.3,
+       -0.5,
+       -129.4
+      ]
+     },
+     "bord": "cap-sequoia-1200-bord.jpg"
+    },
+    {
+     "rang": 4,
+     "s": 1600,
+     "y": 3.59,
+     "pentePct": 1.36,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 232,
+     "tunnel": false,
+     "joueur": {
+      "s": 1605,
+      "v": 40.7
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-1600-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 3.11,
+      "pos": [
+       691.4,
+       5.6,
+       268.6
+      ]
+     },
+     "bord": "cap-sequoia-1600-bord.jpg"
+    },
+    {
+     "rang": 5,
+     "s": 2000,
+     "y": 6.71,
+     "pentePct": 0.08,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 206,
+     "tunnel": false,
+     "joueur": {
+      "s": 2005.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-2000-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 5.88,
+      "pos": [
+       386.3,
+       8.3,
+       379.3
+      ]
+     },
+     "bord": "cap-sequoia-2000-bord.jpg"
+    },
+    {
+     "rang": 6,
+     "s": 2400,
+     "y": 4.11,
+     "pentePct": -1.28,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 193,
+     "tunnel": false,
+     "joueur": {
+      "s": 2405.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-2400-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 2.86,
+      "pos": [
+       100.1,
+       5.3,
+       568.6
+      ]
+     },
+     "bord": "cap-sequoia-2400-bord.jpg"
+    },
+    {
+     "rang": 7,
+     "s": 2800,
+     "y": -2,
+     "pentePct": -1.54,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 160,
+     "tunnel": false,
+     "joueur": {
+      "s": 2805.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-2800-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -3.36,
+      "pos": [
+       -129.4,
+       -0.9,
+       833.1
+      ]
+     },
+     "bord": "cap-sequoia-2800-bord.jpg"
+    },
+    {
+     "rang": 8,
+     "s": 3200,
+     "y": -6.4,
+     "pentePct": -0.49,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 162,
+     "tunnel": false,
+     "joueur": {
+      "s": 3205.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-3200-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -7.35,
+      "pos": [
+       -417.8,
+       -4.9,
+       679.1
+      ]
+     },
+     "bord": "cap-sequoia-3200-bord.jpg"
+    },
+    {
+     "rang": 9,
+     "s": 3600,
+     "y": -5.34,
+     "pentePct": 0.98,
+     "deversDeg": -0.74,
+     "rayon": 107,
+     "sens": "gauche",
+     "vitesseRefKmh": 164,
+     "tunnel": false,
+     "joueur": {
+      "s": 3604.9,
+      "v": 38.9
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-3600-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": -5.92,
+      "pos": [
+       -499.4,
+       -3.3,
+       285.4
+      ]
+     },
+     "bord": "cap-sequoia-3600-bord.jpg"
+    },
+    {
+     "rang": 10,
+     "s": 4000,
+     "y": 0.28,
+     "pentePct": 1.61,
+     "deversDeg": 0.11,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 182,
+     "tunnel": false,
+     "joueur": {
+      "s": 4005,
+      "v": 40.6
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-4000-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -0.14,
+      "pos": [
+       -822.8,
+       2.5,
+       43.2
+      ]
+     },
+     "bord": "cap-sequoia-4000-bord.jpg"
+    },
+    {
+     "rang": 11,
+     "s": 4400,
+     "y": 5.66,
+     "pentePct": 0.87,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 224,
+     "tunnel": false,
+     "joueur": {
+      "s": 4405,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-4400-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": 5.01,
+      "pos": [
+       -655,
+       7.5,
+       -301.3
+      ]
+     },
+     "bord": "cap-sequoia-4400-bord.jpg"
+    },
+    {
+     "rang": 12,
+     "s": 4800,
+     "y": 6.21,
+     "pentePct": -0.62,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 240,
+     "tunnel": false,
+     "joueur": {
+      "s": 4805.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-4800-cockpit.jpg",
+     "camera": {
+      "cote": 1,
+      "tunnel": false,
+      "sol": 5.11,
+      "pos": [
+       -343.3,
+       7.6,
+       -538.8
+      ]
+     },
+     "bord": "cap-sequoia-4800-bord.jpg"
+    },
+    {
+     "rang": 13,
+     "s": 5200,
+     "y": 0,
+     "pentePct": 0,
+     "deversDeg": 0,
+     "rayon": null,
+     "sens": "",
+     "vitesseRefKmh": 273,
+     "tunnel": false,
+     "joueur": {
+      "s": 5205.1,
+      "v": 40.8
+     },
+     "palier": 0,
+     "ecran": "course",
+     "cockpit": "cap-sequoia-5200-cockpit.jpg",
+     "camera": {
+      "cote": -1,
+      "tunnel": false,
+      "sol": -0.9,
+      "pos": [
+       -2.3,
+       1.6,
+       -745.3
+      ]
+     },
+     "bord": "cap-sequoia-5200-bord.jpg"
+    }
+   ]
+  }
+ ],
+ "erreurs": [],
+ "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+ "planches": [
+  "planche-val-brule-cockpit.jpg",
+  "planche-val-brule-bord.jpg",
+  "planche-port-sable-cockpit.jpg",
+  "planche-port-sable-bord.jpg",
+  "planche-haut-col-cockpit.jpg",
+  "planche-haut-col-bord.jpg",
+  "planche-lande-noire-cockpit.jpg",
+  "planche-lande-noire-bord.jpg",
+  "planche-roche-fauve-cockpit.jpg",
+  "planche-roche-fauve-bord.jpg",
+  "planche-brume-de-jade-cockpit.jpg",
+  "planche-brume-de-jade-bord.jpg",
+  "planche-cap-sequoia-cockpit.jpg",
+  "planche-cap-sequoia-bord.jpg"
+ ]
+}

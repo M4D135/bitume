@@ -1,0 +1,984 @@
+{
+ "date": "2026-11-18T16:35:15.424Z",
+ "src": "/Users/david/Projects/bitume/src",
+ "resultats": [
+  {
+   "id": "val-brule",
+   "nom": "Val-Brûlé",
+   "theme": "foret",
+   "graine": 11,
+   "facteurEcrasementActuel": 0.942,
+   "reproductionCircuitJs": true,
+   "fermeture": 0,
+   "evenements": [
+    {
+     "type": "compression en courbe",
+     "i": 610,
+     "s": 1220,
+     "amp": -4.99,
+     "sigma": 55
+    },
+    {
+     "type": "compression en courbe",
+     "i": 408,
+     "s": 816,
+     "amp": -4.94,
+     "sigma": 64
+    },
+    {
+     "type": "bosse de ligne droite",
+     "i": 1714,
+     "s": 3428,
+     "amp": 3.57,
+     "sigma": 63
+    },
+    {
+     "type": "crête avant freinage",
+     "i": 1548,
+     "s": 3096,
+     "amp": 4.04,
+     "sigma": 77
+    }
+   ],
+   "virages": [
+    {
+     "s": 384,
+     "rayon": 39,
+     "sorte": "relevé"
+    },
+    {
+     "s": 840,
+     "rayon": 173,
+     "sorte": "contraire"
+    },
+    {
+     "s": 1252,
+     "rayon": 112,
+     "sorte": "relevé"
+    },
+    {
+     "s": 1636,
+     "rayon": 57,
+     "sorte": "plat"
+    },
+    {
+     "s": 2030,
+     "rayon": 82,
+     "sorte": "contraire"
+    },
+    {
+     "s": 2244,
+     "rayon": 32,
+     "sorte": "relevé"
+    },
+    {
+     "s": 2644,
+     "rayon": 164,
+     "sorte": "relevé"
+    },
+    {
+     "s": 2894,
+     "rayon": 79,
+     "sorte": "plat"
+    },
+    {
+     "s": 3230,
+     "rayon": 35,
+     "sorte": "relevé"
+    },
+    {
+     "s": 3712,
+     "rayon": 77,
+     "sorte": "relevé"
+    },
+    {
+     "s": 4008,
+     "rayon": 181,
+     "sorte": "plat"
+    }
+   ],
+   "avant": {
+    "denivele": 12.24,
+    "penteMaxPct": 6.8,
+    "penteMoyennePct": 2.57,
+    "montee": 54.3,
+    "partPenteSup3Pct": 47.9,
+    "cretes": 5,
+    "cuvettes": 4,
+    "rvMinCrete": 475,
+    "rvMinCuvette": 462,
+    "allegementMaxG": -0.745,
+    "ecrasementMaxG": 0.902,
+    "partVoitureMasqueeSous120Pct": 2.1,
+    "visibiliteMinM": 70,
+    "deversMaxDeg": 2.49,
+    "deversPartSup1Pct": 4.9,
+    "deversPartNulPct": 70.2,
+    "virages": {
+     "releves": 10,
+     "contraires": 0,
+     "plats": 1
+    },
+    "talusPire": 0.07,
+    "talusConflits": 0
+   },
+   "propose": {
+    "denivele": 17.13,
+    "penteMaxPct": 8,
+    "penteMoyennePct": 2.87,
+    "montee": 60.6,
+    "partPenteSup3Pct": 47,
+    "cretes": 4,
+    "cuvettes": 4,
+    "rvMinCrete": 855,
+    "rvMinCuvette": 498,
+    "allegementMaxG": -0.322,
+    "ecrasementMaxG": 0.631,
+    "partVoitureMasqueeSous120Pct": 6.1,
+    "visibiliteMinM": 96,
+    "deversMaxDeg": 4.34,
+    "deversPartSup1Pct": 48.9,
+    "deversPartNulPct": 15.9,
+    "virages": {
+     "releves": 6,
+     "contraires": 3,
+     "plats": 2
+    },
+    "talusPire": 0.07,
+    "talusConflits": 0
+   },
+   "conflitsTalus": []
+  },
+  {
+   "id": "port-sable",
+   "nom": "Port-Sable",
+   "theme": "cote",
+   "graine": 29,
+   "facteurEcrasementActuel": 1,
+   "reproductionCircuitJs": true,
+   "fermeture": 0,
+   "evenements": [
+    {
+     "type": "crête avant freinage",
+     "i": 487,
+     "s": 974,
+     "amp": 2.49,
+     "sigma": 67
+    },
+    {
+     "type": "crête en sortie de virage",
+     "i": 958,
+     "s": 1916,
+     "amp": 1.72,
+     "sigma": 38
+    }
+   ],
+   "virages": [
+    {
+     "s": 370,
+     "rayon": 84,
+     "sorte": "plat"
+    },
+    {
+     "s": 746,
+     "rayon": 59,
+     "sorte": "relevé"
+    },
+    {
+     "s": 1100,
+     "rayon": 123,
+     "sorte": "relevé"
+    },
+    {
+     "s": 1380,
+     "rayon": 132,
+     "sorte": "plat"
+    },
+    {
+     "s": 1824,
+     "rayon": 34,
+     "sorte": "plat"
+    },
+    {
+     "s": 2260,
+     "rayon": 31,
+     "sorte": "relevé"
+    },
+    {
+     "s": 2534,
+     "rayon": 37,
+     "sorte": "relevé"
+    },
+    {
+     "s": 2994,
+     "rayon": 33,
+     "sorte": "relevé"
+    },
+    {
+     "s": 3442,
+     "rayon": 376,
+     "sorte": "relevé"
+    }
+   ],
+   "avant": {
+    "denivele": 10.11,
+    "penteMaxPct": 3.51,
+    "penteMoyennePct": 1.13,
+    "montee": 20.5,
+    "partPenteSup3Pct": 6,
+    "cretes": 4,
+    "cuvettes": 3,
+    "rvMinCrete": 1057,
+    "rvMinCuvette": 1023,
+    "allegementMaxG": -0.18,
+    "ecrasementMaxG": 0.258,
+    "partVoitureMasqueeSous120Pct": 1,
+    "visibiliteMinM": 108,
+    "deversMaxDeg": 2.58,
+    "deversPartSup1Pct": 9.3,
+    "deversPartNulPct": 73.9,
+    "virages": {
+     "releves": 8,
+     "contraires": 0,
+     "plats": 1
+    },
+    "talusPire": 0.1,
+    "talusConflits": 0
+   },
+   "propose": {
+    "denivele": 10.05,
+    "penteMaxPct": 5.99,
+    "penteMoyennePct": 1.25,
+    "montee": 22.7,
+    "partPenteSup3Pct": 9.5,
+    "cretes": 3,
+    "cuvettes": 3,
+    "rvMinCrete": 686,
+    "rvMinCuvette": 1108,
+    "allegementMaxG": -0.226,
+    "ecrasementMaxG": 0.227,
+    "partVoitureMasqueeSous120Pct": 2.7,
+    "visibiliteMinM": 90,
+    "deversMaxDeg": 3.92,
+    "deversPartSup1Pct": 62.6,
+    "deversPartNulPct": 16.6,
+    "virages": {
+     "releves": 5,
+     "contraires": 0,
+     "plats": 4
+    },
+    "talusPire": 0.09,
+    "talusConflits": 0
+   },
+   "conflitsTalus": []
+  },
+  {
+   "id": "haut-col",
+   "nom": "Haut-Col",
+   "theme": "montagne",
+   "graine": 47,
+   "facteurEcrasementActuel": 0.221,
+   "reproductionCircuitJs": true,
+   "fermeture": 0,
+   "evenements": [
+    {
+     "type": "crête avant freinage",
+     "i": 1265,
+     "s": 2530,
+     "amp": 4.98,
+     "sigma": 72
+    },
+    {
+     "type": "compression en courbe",
+     "i": 1703,
+     "s": 3406,
+     "amp": -5.09,
+     "sigma": 51
+    },
+    {
+     "type": "compression en courbe",
+     "i": 2191,
+     "s": 4382,
+     "amp": -6.73,
+     "sigma": 73
+    },
+    {
+     "type": "crête en sortie de virage",
+     "i": 1404,
+     "s": 2808,
+     "amp": 7.54,
+     "sigma": 81
+    },
+    {
+     "type": "crête avant freinage",
+     "i": 1884,
+     "s": 3768,
+     "amp": 3.67,
+     "sigma": 74
+    },
+    {
+     "type": "crête avant freinage",
+     "i": 730,
+     "s": 1460,
+     "amp": 6.79,
+     "sigma": 95
+    },
+    {
+     "type": "creux de ligne droite",
+     "i": 459,
+     "s": 918,
+     "amp": -7.07,
+     "sigma": 72
+    }
+   ],
+   "virages": [
+    {
+     "s": 430,
+     "rayon": 111,
+     "sorte": "relevé"
+    },
+    {
+     "s": 1596,
+     "rayon": 26,
+     "sorte": "relevé"
+    },
+    {
+     "s": 2242,
+     "rayon": 254,
+     "sorte": "contraire"
+    },
+    {
+     "s": 2620,
+     "rayon": 31,
+     "sorte": "relevé"
+    },
+    {
+     "s": 3416,
+     "rayon": 149,
+     "sorte": "plat"
+    },
+    {
+     "s": 3962,
+     "rayon": 157,
+     "sorte": "contraire"
+    },
+    {
+     "s": 4402,
+     "rayon": 298,
+     "sorte": "relevé"
+    },
+    {
+     "s": 4966,
+     "rayon": 53,
+     "sorte": "plat"
+    }
+   ],
+   "avant": {
+    "denivele": 13.17,
+    "penteMaxPct": 6.8,
+    "penteMoyennePct": 1.36,
+    "montee": 35.5,
+    "partPenteSup3Pct": 2.7,
+    "cretes": 4,
+    "cuvettes": 4,
+    "rvMinCrete": 498,
+    "rvMinCuvette": 541,
+    "allegementMaxG": -0.361,
+    "ecrasementMaxG": 0.29,
+    "partVoitureMasqueeSous120Pct": 1.4,
+    "visibiliteMinM": 80,
+    "deversMaxDeg": 2.31,
+    "deversPartSup1Pct": 1.7,
+    "deversPartNulPct": 78.4,
+    "virages": {
+     "releves": 7,
+     "contraires": 0,
+     "plats": 1
+    },
+    "talusPire": 0.05,
+    "talusConflits": 0
+   },
+   "propose": {
+    "denivele": 50.55,
+    "penteMaxPct": 10,
+    "penteMoyennePct": 4.62,
+    "montee": 120.6,
+    "partPenteSup3Pct": 63,
+    "cretes": 5,
+    "cuvettes": 5,
+    "rvMinCrete": 292,
+    "rvMinCuvette": 211,
+    "allegementMaxG": -0.408,
+    "ecrasementMaxG": 0.816,
+    "partVoitureMasqueeSous120Pct": 11.6,
+    "visibiliteMinM": 58,
+    "deversMaxDeg": 4.04,
+    "deversPartSup1Pct": 67.5,
+    "deversPartNulPct": 18.6,
+    "virages": {
+     "releves": 4,
+     "contraires": 2,
+     "plats": 2
+    },
+    "talusPire": 0.08,
+    "talusConflits": 0
+   },
+   "conflitsTalus": []
+  },
+  {
+   "id": "lande-noire",
+   "nom": "Lande-Noire",
+   "theme": "islande",
+   "graine": 83,
+   "facteurEcrasementActuel": 0.485,
+   "reproductionCircuitJs": true,
+   "fermeture": 0,
+   "evenements": [
+    {
+     "type": "compression en courbe",
+     "i": 1859,
+     "s": 3718,
+     "amp": -3.63,
+     "sigma": 39
+    },
+    {
+     "type": "creux de ligne droite",
+     "i": 346,
+     "s": 692,
+     "amp": -4.27,
+     "sigma": 60
+    },
+    {
+     "type": "crête en sortie de virage",
+     "i": 561,
+     "s": 1122,
+     "amp": 2.13,
+     "sigma": 34
+    }
+   ],
+   "virages": [
+    {
+     "s": 408,
+     "rayon": 63,
+     "sorte": "plat"
+    },
+    {
+     "s": 1038,
+     "rayon": 42,
+     "sorte": "contraire"
+    },
+    {
+     "s": 1398,
+     "rayon": 68,
+     "sorte": "contraire"
+    },
+    {
+     "s": 2008,
+     "rayon": 74,
+     "sorte": "relevé"
+    },
+    {
+     "s": 2642,
+     "rayon": 31,
+     "sorte": "plat"
+    },
+    {
+     "s": 3728,
+     "rayon": 123,
+     "sorte": "relevé"
+    },
+    {
+     "s": 4360,
+     "rayon": 32,
+     "sorte": "relevé"
+    }
+   ],
+   "avant": {
+    "denivele": 12.95,
+    "penteMaxPct": 6.8,
+    "penteMoyennePct": 1.32,
+    "montee": 30.5,
+    "partPenteSup3Pct": 9.8,
+    "cretes": 4,
+    "cuvettes": 4,
+    "rvMinCrete": 461,
+    "rvMinCuvette": 498,
+    "allegementMaxG": -0.727,
+    "ecrasementMaxG": 0.633,
+    "partVoitureMasqueeSous120Pct": 2.7,
+    "visibiliteMinM": 82,
+    "deversMaxDeg": 2.56,
+    "deversPartSup1Pct": 4.3,
+    "deversPartNulPct": 83.5,
+    "virages": {
+     "releves": 6,
+     "contraires": 0,
+     "plats": 1
+    },
+    "talusPire": 0.05,
+    "talusConflits": 0
+   },
+   "propose": {
+    "denivele": 25.37,
+    "penteMaxPct": 7.93,
+    "penteMoyennePct": 2.55,
+    "montee": 58.8,
+    "partPenteSup3Pct": 36.6,
+    "cretes": 6,
+    "cuvettes": 5,
+    "rvMinCrete": 317,
+    "rvMinCuvette": 269,
+    "allegementMaxG": -0.363,
+    "ecrasementMaxG": 0.718,
+    "partVoitureMasqueeSous120Pct": 7.7,
+    "visibiliteMinM": 68,
+    "deversMaxDeg": 2.41,
+    "deversPartSup1Pct": 72,
+    "deversPartNulPct": 14.9,
+    "virages": {
+     "releves": 3,
+     "contraires": 2,
+     "plats": 2
+    },
+    "talusPire": 0.09,
+    "talusConflits": 0
+   },
+   "conflitsTalus": []
+  },
+  {
+   "id": "roche-fauve",
+   "nom": "Roche-Fauve",
+   "theme": "desert",
+   "graine": 107,
+   "facteurEcrasementActuel": 0.604,
+   "reproductionCircuitJs": true,
+   "fermeture": 0,
+   "evenements": [
+    {
+     "type": "crête en sortie de virage",
+     "i": 567,
+     "s": 1134,
+     "amp": 5.65,
+     "sigma": 54
+    },
+    {
+     "type": "compression en courbe",
+     "i": 1508,
+     "s": 3016,
+     "amp": -2.34,
+     "sigma": 36
+    },
+    {
+     "type": "creux de ligne droite",
+     "i": 1675,
+     "s": 3350,
+     "amp": -5.35,
+     "sigma": 61
+    },
+    {
+     "type": "crête en sortie de virage",
+     "i": 1074,
+     "s": 2148,
+     "amp": 5.11,
+     "sigma": 56
+    }
+   ],
+   "virages": [
+    {
+     "s": 378,
+     "rayon": 66,
+     "sorte": "plat"
+    },
+    {
+     "s": 612,
+     "rayon": 247,
+     "sorte": "plat"
+    },
+    {
+     "s": 1062,
+     "rayon": 31,
+     "sorte": "contraire"
+    },
+    {
+     "s": 1670,
+     "rayon": 280,
+     "sorte": "relevé"
+    },
+    {
+     "s": 2028,
+     "rayon": 45,
+     "sorte": "relevé"
+    },
+    {
+     "s": 2598,
+     "rayon": 74,
+     "sorte": "plat"
+    },
+    {
+     "s": 3052,
+     "rayon": 114,
+     "sorte": "relevé"
+    },
+    {
+     "s": 3628,
+     "rayon": 34,
+     "sorte": "relevé"
+    },
+    {
+     "s": 4018,
+     "rayon": 36,
+     "sorte": "contraire"
+    },
+    {
+     "s": 4568,
+     "rayon": 64,
+     "sorte": "relevé"
+    }
+   ],
+   "avant": {
+    "denivele": 27.22,
+    "penteMaxPct": 6.8,
+    "penteMoyennePct": 1.95,
+    "montee": 47,
+    "partPenteSup3Pct": 26.9,
+    "cretes": 3,
+    "cuvettes": 3,
+    "rvMinCrete": 512,
+    "rvMinCuvette": 448,
+    "allegementMaxG": -0.416,
+    "ecrasementMaxG": 0.428,
+    "partVoitureMasqueeSous120Pct": 1.6,
+    "visibiliteMinM": 76,
+    "deversMaxDeg": 2.58,
+    "deversPartSup1Pct": 7.6,
+    "deversPartNulPct": 73.1,
+    "virages": {
+     "releves": 10,
+     "contraires": 0,
+     "plats": 0
+    },
+    "talusPire": 0.12,
+    "talusConflits": 0
+   },
+   "propose": {
+    "denivele": 45.31,
+    "penteMaxPct": 8,
+    "penteMoyennePct": 3.45,
+    "montee": 83.4,
+    "partPenteSup3Pct": 48.1,
+    "cretes": 4,
+    "cuvettes": 4,
+    "rvMinCrete": 530,
+    "rvMinCuvette": 339,
+    "allegementMaxG": -0.362,
+    "ecrasementMaxG": 0.679,
+    "partVoitureMasqueeSous120Pct": 6.7,
+    "visibiliteMinM": 72,
+    "deversMaxDeg": 4.88,
+    "deversPartSup1Pct": 70.1,
+    "deversPartNulPct": 13.5,
+    "virages": {
+     "releves": 6,
+     "contraires": 2,
+     "plats": 2
+    },
+    "talusPire": 0.2,
+    "talusConflits": 0
+   },
+   "conflitsTalus": []
+  },
+  {
+   "id": "brume-de-jade",
+   "nom": "Brume-de-Jade",
+   "theme": "asie",
+   "graine": 131,
+   "facteurEcrasementActuel": 1,
+   "reproductionCircuitJs": true,
+   "fermeture": 0,
+   "evenements": [
+    {
+     "type": "crête en sortie de virage",
+     "i": 1897,
+     "s": 3794,
+     "amp": 4.31,
+     "sigma": 59
+    },
+    {
+     "type": "crête avant freinage",
+     "i": 1776,
+     "s": 3552,
+     "amp": 4.22,
+     "sigma": 80
+    },
+    {
+     "type": "compression en courbe",
+     "i": 1331,
+     "s": 2662,
+     "amp": -3.77,
+     "sigma": 63
+    },
+    {
+     "type": "crête avant freinage",
+     "i": 1106,
+     "s": 2212,
+     "amp": 2.73,
+     "sigma": 62
+    }
+   ],
+   "virages": [
+    {
+     "s": 490,
+     "rayon": 58,
+     "sorte": "relevé"
+    },
+    {
+     "s": 1032,
+     "rayon": 36,
+     "sorte": "relevé"
+    },
+    {
+     "s": 1888,
+     "rayon": 55,
+     "sorte": "contraire"
+    },
+    {
+     "s": 2380,
+     "rayon": 223,
+     "sorte": "plat"
+    },
+    {
+     "s": 2700,
+     "rayon": 211,
+     "sorte": "plat"
+    },
+    {
+     "s": 3194,
+     "rayon": 31,
+     "sorte": "relevé"
+    },
+    {
+     "s": 3698,
+     "rayon": 54,
+     "sorte": "relevé"
+    },
+    {
+     "s": 4214,
+     "rayon": 64,
+     "sorte": "relevé"
+    },
+    {
+     "s": 4740,
+     "rayon": 32,
+     "sorte": "plat"
+    }
+   ],
+   "avant": {
+    "denivele": 24.76,
+    "penteMaxPct": 5.45,
+    "penteMoyennePct": 2.07,
+    "montee": 52,
+    "partPenteSup3Pct": 34.9,
+    "cretes": 4,
+    "cuvettes": 3,
+    "rvMinCrete": 673,
+    "rvMinCuvette": 518,
+    "allegementMaxG": -0.321,
+    "ecrasementMaxG": 0.344,
+    "partVoitureMasqueeSous120Pct": 2.1,
+    "visibiliteMinM": 80,
+    "deversMaxDeg": 2.29,
+    "deversPartSup1Pct": 7,
+    "deversPartNulPct": 79.2,
+    "virages": {
+     "releves": 9,
+     "contraires": 0,
+     "plats": 0
+    },
+    "talusPire": 0.06,
+    "talusConflits": 0
+   },
+   "propose": {
+    "denivele": 24.19,
+    "penteMaxPct": 7.91,
+    "penteMoyennePct": 2.12,
+    "montee": 53.2,
+    "partPenteSup3Pct": 32.1,
+    "cretes": 7,
+    "cuvettes": 6,
+    "rvMinCrete": 468,
+    "rvMinCuvette": 588,
+    "allegementMaxG": -0.317,
+    "ecrasementMaxG": 0.591,
+    "partVoitureMasqueeSous120Pct": 4.1,
+    "visibiliteMinM": 72,
+    "deversMaxDeg": 4.66,
+    "deversPartSup1Pct": 69.2,
+    "deversPartNulPct": 15.3,
+    "virages": {
+     "releves": 5,
+     "contraires": 2,
+     "plats": 2
+    },
+    "talusPire": 0.05,
+    "talusConflits": 0
+   },
+   "conflitsTalus": []
+  },
+  {
+   "id": "cap-sequoia",
+   "nom": "Cap-Séquoia",
+   "theme": "pacifique",
+   "graine": 157,
+   "facteurEcrasementActuel": 0.459,
+   "reproductionCircuitJs": true,
+   "fermeture": 0,
+   "evenements": [
+    {
+     "type": "crête avant freinage",
+     "i": 1745,
+     "s": 3490,
+     "amp": 3.36,
+     "sigma": 73
+    },
+    {
+     "type": "compression en courbe",
+     "i": 2285,
+     "s": 4570,
+     "amp": -3.16,
+     "sigma": 52
+    },
+    {
+     "type": "crête avant freinage",
+     "i": 819,
+     "s": 1638,
+     "amp": 3.27,
+     "sigma": 73
+    },
+    {
+     "type": "compression en courbe",
+     "i": 407,
+     "s": 814,
+     "amp": -2.64,
+     "sigma": 47
+    },
+    {
+     "type": "bosse de ligne droite",
+     "i": 1241,
+     "s": 2482,
+     "amp": 4.41,
+     "sigma": 76
+    },
+    {
+     "type": "crête en sortie de virage",
+     "i": 954,
+     "s": 1908,
+     "amp": 2.1,
+     "sigma": 44
+    }
+   ],
+   "virages": [
+    {
+     "s": 376,
+     "rayon": 29,
+     "sorte": "relevé"
+    },
+    {
+     "s": 850,
+     "rayon": 231,
+     "sorte": "contraire"
+    },
+    {
+     "s": 1270,
+     "rayon": 54,
+     "sorte": "plat"
+    },
+    {
+     "s": 1810,
+     "rayon": 76,
+     "sorte": "relevé"
+    },
+    {
+     "s": 2198,
+     "rayon": 57,
+     "sorte": "contraire"
+    },
+    {
+     "s": 2698,
+     "rayon": 30,
+     "sorte": "relevé"
+    },
+    {
+     "s": 3110,
+     "rayon": 49,
+     "sorte": "relevé"
+    },
+    {
+     "s": 3604,
+     "rayon": 103,
+     "sorte": "relevé"
+    },
+    {
+     "s": 4116,
+     "rayon": 74,
+     "sorte": "relevé"
+    },
+    {
+     "s": 4602,
+     "rayon": 152,
+     "sorte": "plat"
+    }
+   ],
+   "avant": {
+    "denivele": 13.44,
+    "penteMaxPct": 6.8,
+    "penteMoyennePct": 1.03,
+    "montee": 26.9,
+    "partPenteSup3Pct": 3.4,
+    "cretes": 2,
+    "cuvettes": 2,
+    "rvMinCrete": 575,
+    "rvMinCuvette": 527,
+    "allegementMaxG": -0.886,
+    "ecrasementMaxG": 0.771,
+    "partVoitureMasqueeSous120Pct": 2.1,
+    "visibiliteMinM": 88,
+    "deversMaxDeg": 2.12,
+    "deversPartSup1Pct": 6.8,
+    "deversPartNulPct": 76.7,
+    "virages": {
+     "releves": 10,
+     "contraires": 0,
+     "plats": 0
+    },
+    "talusPire": 0.07,
+    "talusConflits": 0
+   },
+   "propose": {
+    "denivele": 34.23,
+    "penteMaxPct": 8,
+    "penteMoyennePct": 2.31,
+    "montee": 60.5,
+    "partPenteSup3Pct": 33.4,
+    "cretes": 4,
+    "cuvettes": 4,
+    "rvMinCrete": 321,
+    "rvMinCuvette": 290,
+    "allegementMaxG": -0.321,
+    "ecrasementMaxG": 0.635,
+    "partVoitureMasqueeSous120Pct": 4.9,
+    "visibiliteMinM": 68,
+    "deversMaxDeg": 4.17,
+    "deversPartSup1Pct": 61.5,
+    "deversPartNulPct": 11.2,
+    "virages": {
+     "releves": 8,
+     "contraires": 2,
+     "plats": 0
+    },
+    "talusPire": 0.09,
+    "talusConflits": 0
+   },
+   "conflitsTalus": []
+  }
+ ]
+}
