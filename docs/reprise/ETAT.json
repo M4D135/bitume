@@ -186,7 +186,8 @@
       "24": "vibrations de manette enrichies, en course seulement",
       "25": "voiture photoréaliste : matières, reflets, effets",
       "22F": "circuits mémorables : lieux exceptionnels par biome, tracés repensés",
-      "26": "animaux propres à chaque biome, animés"
+      "26": "animaux propres à chaque biome, animés",
+      "27": "jeu en ligne sans serveur à gérer : relais publics pour se trouver, invitation manuelle, retrait du salon du VPS"
     },
     "fait": "0.2.39 en ligne (8bd3d86, sha256 acbea8562b828aeb…) : plus de vibration de manette dans les menus",
     "etudes": "~/Projects/bitume-wt/{conduite,public,vitre,son,echappement,photo}, branches locales conduite/etude et etude/* ; rien de fusionné",
