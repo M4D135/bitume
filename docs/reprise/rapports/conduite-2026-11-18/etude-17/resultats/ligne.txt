@@ -1,0 +1,50 @@
+1. Proche de l'actuel : 0-100 2.40 s (banc 2,53) · 0-200 6.52 s (banc 7,30) · 400 m 9.76 s (banc 9,88) · pointe 302.6 km/h (banc 307,1, rupteur) · P roue 233 kW
+2. Châssis p10, deux jeux cohérents (puissance et traînée vont ensemble)
+   niveau actuel (216 N·m, SCx 0,58)    0-100 2.26 · 0-200 6.83 · 0-300 29.4 · 400 m 9.81 · pointe 302.1 · P roue 233 kW · pied levé 290/200/120 0.51/0.33/0.26 g · 200-0 70.5 m · 300-100 124.4 m
+   niveau actuel, SCx 0,70              0-100 2.27 · 0-200 7.02 · 0-300 - · 400 m 9.89 · pointe 286.0 · P roue 233 kW · pied levé 290/200/120 0.59/0.36/0.27 g · 200-0 70.0 m · 300-100 122.3 m
+   intermédiaire (270 N·m, SCx 0,74)    0-100 2.22 · 0-200 5.89 · 0-300 24.7 · 400 m 9.42 · pointe 301.7 · P roue 291 kW · pied levé 290/200/120 0.61/0.37/0.28 g · 200-0 69.8 m · 300-100 121.8 m
+   fidèle (320 N·m, SCx 0,88)           0-100 2.20 · 0-200 5.31 · 0-300 20.7 · 400 m 9.15 · pointe 302.0 · P roue 345 kW · pied levé 290/200/120 0.70/0.41/0.29 g · 200-0 69.2 m · 300-100 119.3 m
+   fidèle, SCx 0,80                     0-100 2.20 · 0-200 5.25 · 0-300 16.2 · 400 m 9.18 · pointe 306.8 · P roue 345 kW · pied levé 290/200/120 0.65/0.39/0.28 g · 200-0 69.5 m · 300-100 120.7 m
+3a. Grille Fb × répartition (frein moteur 55 N·m à 10 000 tr/min, montée 0,1 s)
+   Fb 2.2 g, b 0.58, 200-0   ABS 69.5 m (2.26 g) · pédale pleine 74.2 m, bloque av 73 / ar 185 km/h · sans montée 74.6 m, av 200
+   Fb 2.2 g, b 0.58, 300-100 ABS 121.6 m (2.59 g) · pédale pleine 124.4 m, bloque av - / ar 196 km/h · sans montée 121.0 m, av -
+   Fb 2.2 g, b 0.58, 100-0   ABS 19.7 m (1.99 g) · pédale pleine 22.9 m, bloque av 96 / ar 96 km/h · sans montée 22.0 m, av 100
+   Fb 2.2 g, b 0.62, 200-0   ABS 68.3 m (2.30 g) · pédale pleine 74.2 m, bloque av 110 / ar 180 km/h · sans montée 74.7 m, av 200
+   Fb 2.2 g, b 0.62, 300-100 ABS 120.3 m (2.61 g) · pédale pleine 122.8 m, bloque av 109 / ar 179 km/h · sans montée 119.4 m, av 109
+   Fb 2.2 g, b 0.62, 100-0   ABS 19.7 m (1.99 g) · pédale pleine 22.9 m, bloque av 96 / ar 95 km/h · sans montée 22.0 m, av 100
+   Fb 2.2 g, b 0.66, 200-0   ABS 67.6 m (2.33 g) · pédale pleine 76.5 m, bloque av 195 / ar 160 km/h · sans montée 74.5 m, av 200
+   Fb 2.2 g, b 0.66, 300-100 ABS 119.6 m (2.63 g) · pédale pleine 123.1 m, bloque av 137 / ar 172 km/h · sans montée 119.7 m, av 137
+   Fb 2.2 g, b 0.66, 100-0   ABS 19.8 m (1.99 g) · pédale pleine 22.9 m, bloque av 96 / ar 95 km/h · sans montée 22.0 m, av 100
+   Fb 2.4 g, b 0.58, 200-0   ABS 67.5 m (2.33 g) · pédale pleine 74.1 m, bloque av 119 / ar 190 km/h · sans montée 74.6 m, av 200
+   Fb 2.4 g, b 0.58, 300-100 ABS 115.5 m (2.72 g) · pédale pleine 119.7 m, bloque av 119 / ar 217 km/h · sans montée 116.3 m, av 119
+   Fb 2.4 g, b 0.58, 100-0   ABS 19.7 m (2.00 g) · pédale pleine 22.8 m, bloque av 96 / ar 96 km/h · sans montée 22.0 m, av 100
+   Fb 2.4 g, b 0.62, 200-0   ABS 66.7 m (2.36 g) · pédale pleine 76.6 m, bloque av 194 / ar 183 km/h · sans montée 74.6 m, av 200
+   Fb 2.4 g, b 0.62, 300-100 ABS 114.3 m (2.75 g) · pédale pleine 119.2 m, bloque av 147 / ar 203 km/h · sans montée 115.8 m, av 147
+   Fb 2.4 g, b 0.62, 100-0   ABS 19.7 m (2.00 g) · pédale pleine 22.8 m, bloque av 96 / ar 96 km/h · sans montée 22.0 m, av 100
+   Fb 2.4 g, b 0.66, 200-0   ABS 66.5 m (2.36 g) · pédale pleine 76.8 m, bloque av 195 / ar 179 km/h · sans montée 74.8 m, av 200
+   Fb 2.4 g, b 0.66, 300-100 ABS 113.8 m (2.76 g) · pédale pleine 119.1 m, bloque av 170 / ar 180 km/h · sans montée 115.9 m, av 170
+   Fb 2.4 g, b 0.66, 100-0   ABS 19.7 m (2.00 g) · pédale pleine 22.8 m, bloque av 97 / ar 95 km/h · sans montée 22.0 m, av 100
+   Fb 2.6 g, b 0.58, 200-0   ABS 66.3 m (2.37 g) · pédale pleine 76.6 m, bloque av 194 / ar 192 km/h · sans montée 74.6 m, av 200
+   Fb 2.6 g, b 0.58, 300-100 ABS 111.1 m (2.83 g) · pédale pleine 117.2 m, bloque av 152 / ar 236 km/h · sans montée 113.7 m, av 152
+   Fb 2.6 g, b 0.58, 100-0   ABS 19.6 m (2.01 g) · pédale pleine 22.8 m, bloque av 97 / ar 97 km/h · sans montée 22.1 m, av 100
+   Fb 2.6 g, b 0.62, 200-0   ABS 66.1 m (2.38 g) · pédale pleine 76.6 m, bloque av 195 / ar 189 km/h · sans montée 74.6 m, av 200
+   Fb 2.6 g, b 0.62, 300-100 ABS 109.9 m (2.86 g) · pédale pleine 116.9 m, bloque av 177 / ar 217 km/h · sans montée 113.4 m, av 177
+   Fb 2.6 g, b 0.62, 100-0   ABS 19.6 m (2.01 g) · pédale pleine 22.8 m, bloque av 97 / ar 96 km/h · sans montée 22.0 m, av 100
+   Fb 2.6 g, b 0.66, 200-0   ABS 66.2 m (2.38 g) · pédale pleine 76.4 m, bloque av 196 / ar 180 km/h · sans montée 74.5 m, av 200
+   Fb 2.6 g, b 0.66, 300-100 ABS 109.7 m (2.87 g) · pédale pleine 117.3 m, bloque av 198 / ar 206 km/h · sans montée 116.9 m, av 300
+   Fb 2.6 g, b 0.66, 100-0   ABS 19.6 m (2.01 g) · pédale pleine 22.8 m, bloque av 97 / ar 96 km/h · sans montée 22.0 m, av 100
+3b. Premier essieu bloqué à pédale pleine, 300-0, selon la force du frein moteur et la répartition
+   frein moteur ×1, Fb 2.2 g : b 0.58 AR@196 · b 0.60 AR@185 · b 0.62 AR@180 · b 0.64 AR@180 · b 0.66 AR@172 · b 0.68 AR@158 · b 0.70 av@155 · b 0.72 av@169
+   frein moteur ×1, Fb 2.4 g : b 0.58 AR@217 · b 0.60 AR@213 · b 0.62 AR@204 · b 0.64 AR@192 · b 0.66 AR@180 · b 0.68 AR@179 · b 0.70 av@190 · b 0.72 av@204
+   frein moteur ×0.7, Fb 2.2 g : b 0.58 AR@180 · b 0.60 AR@180 · b 0.62 AR@170 · b 0.64 AR@157 · b 0.66 AR@143 · b 0.68 av@144 · b 0.70 av@159 · b 0.72 av@174
+   frein moteur ×0.7, Fb 2.4 g : b 0.58 AR@207 · b 0.60 AR@196 · b 0.62 AR@185 · b 0.64 AR@180 · b 0.66 AR@176 · b 0.68 av@180 · b 0.70 av@194 · b 0.72 av@207
+   frein moteur ×0.5, Fb 2.2 g : b 0.58 AR@175 · b 0.60 AR@164 · b 0.62 AR@152 · b 0.64 AR@138 · b 0.66 AR@138 · b 0.68 av@147 · b 0.70 av@162 · b 0.72 av@177
+   frein moteur ×0.5, Fb 2.4 g : b 0.58 AR@196 · b 0.60 AR@184 · b 0.62 AR@180 · b 0.64 AR@171 · b 0.66 av@165 · b 0.68 av@182 · b 0.70 av@196 · b 0.72 av@209
+3c. Jeu retenu (Fb 2,3 g, frein moteur 45 N·m à 10 000 tr/min, montée 0,15 s)
+   b 0.6 : 300-0 ABS 139.4 m · plein 146.2 m, 1er arrière · 200-0 ABS 69.8 m · plein 76.2 m, 1er arrière · 300-100 ABS 120.5 m · plein 123.9 m, 1er arrière · 100-0 ABS 20.5 m · plein 23.6 m, 1er arrière
+   b 0.64 : 300-0 ABS 138.5 m · plein 146.1 m, 1er arrière · 200-0 ABS 69.1 m · plein 76.7 m, 1er arrière · 300-100 ABS 119.6 m · plein 123.8 m, 1er arrière · 100-0 ABS 20.5 m · plein 23.6 m, 1er avant
+   b 0.66 : 300-0 ABS 138.3 m · plein 146.5 m, 1er arrière · 200-0 ABS 68.9 m · plein 78.6 m, 1er avant · 300-100 ABS 119.3 m · plein 124.2 m, 1er arrière · 100-0 ABS 20.5 m · plein 23.6 m, 1er avant
+   b 0.68 : 300-0 ABS 138.2 m · plein 146.6 m, 1er arrière · 200-0 ABS 68.9 m · plein 78.1 m, 1er avant · 300-100 ABS 119.3 m · plein 124.2 m, 1er arrière · 100-0 ABS 20.5 m · plein 23.6 m, 1er avant
+   b 0.7 : 300-0 ABS 138.3 m · plein 146.6 m, 1er avant · 200-0 ABS 69.2 m · plein 78.6 m, 1er avant · 300-100 ABS 119.3 m · plein 124.2 m, 1er avant · 100-0 ABS 20.5 m · plein 23.7 m, 1er avant
+   part de pédale à la limite de l'avant : 300 km/h 100 % · 250 km/h 100 % · 200 km/h 100 % · 150 km/h 90 % · 100 km/h 81 % · 60 km/h 75 %
+   frein moteur seul : 300 km/h 904 N (0.14 g) · 200 km/h 1155 N (0.18 g) · 100 km/h 1551 N (0.24 g) · 50 km/h 1917 N (0.29 g)

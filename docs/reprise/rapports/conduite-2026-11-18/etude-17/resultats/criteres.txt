@@ -1,0 +1,239 @@
+=== empattement=2.85
+ok S3 lever de pied R120 : lacet après/avant : 1.126 (cible ≥ 1,05)
+ok S11 frein 0,3 entrée R120 : courbure après/avant : 1.532 (cible ≥ 1,05)
+ok S3 plein gaz 2e/3e : dérive arrière maximale : 7.763 (cible ≥ 6° pour un cas) — 2e/R63 7.8° · 3e/R98 4.5° · 3e/R120 4.2°
+ok S9 plein braquage : lacet / limite : 1.161 (cible ≤ 1,2) — droit/120:1.099 · droit/200:1.157 · droit/300:1.153 · 150/120:1.098 · 150/200:1.161 · 150/300:1.156 · 300/120:1.098 · 300/200:1.159 · 300/300:1.155
+ok S6 tenue manette R40 : 2.395 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R120 : 1.124 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R250 : 0.328 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R400 : 1.083 (cible < 5,5 m pendant 3 s)
+mesure S8 lissage β à 60 et 120 Hz, pire scénario : 1031 (cible ≤ 300°/s²) — paliers 287.9 · clavier 496.6 / 873.4 / 840.4 / 1030.7
+ok S7 R80 : dérive puis turbo III et gain : 0.283 (cible 0,1 à 0,3 s) — adhérence 14.41 s, dérive 14.12 s, turbo III true
+46/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)
+=== empattement=2.70
+ok S3 lever de pied R120 : lacet après/avant : 1.130 (cible ≥ 1,05)
+ok S11 frein 0,3 entrée R120 : courbure après/avant : 1.565 (cible ≥ 1,05)
+ok S3 plein gaz 2e/3e : dérive arrière maximale : 6.799 (cible ≥ 6° pour un cas) — 2e/R63 6.8° · 3e/R98 4.4° · 3e/R120 4.1°
+KO S4 contre-braquage après 0,3 s : rattrapée (cible rattrapée)
+ok S9 plein braquage : lacet / limite : 1.167 (cible ≤ 1,2) — droit/120:1.105 · droit/200:1.163 · droit/300:1.160 · 150/120:1.105 · 150/200:1.167 · 150/300:1.163 · 300/120:1.105 · 300/200:1.165 · 300/300:1.162
+KO S5 clavier impulsions 0.2s à 30 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.46 m
+KO S5 clavier impulsions 0.2s à 60 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.46 m
+KO S5 clavier impulsions 0.2s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.46 m
+ok S6 tenue manette R40 : 2.397 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R120 : 1.298 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R250 : 0.321 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R400 : 1.079 (cible < 5,5 m pendant 3 s)
+mesure S8 lissage β à 60 et 120 Hz, pire scénario : 989 (cible ≤ 300°/s²) — paliers 321.2 · clavier 370.2 / 900.3 / 828.6 / 989.2
+ok S7 R80 : dérive puis turbo III et gain : 0.283 (cible 0,1 à 0,3 s) — adhérence 14.43 s, dérive 14.15 s, turbo III true
+42/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)
+KO  S4 contre-braquage après 0,3 s
+KO  S5 clavier impulsions 0.2s à 30 Hz
+KO  S5 clavier impulsions 0.2s à 60 Hz
+KO  S5 clavier impulsions 0.2s à 120 Hz
+=== empattement=2.70 giration=1.23
+ok S3 lever de pied R120 : lacet après/avant : 1.120 (cible ≥ 1,05)
+ok S11 frein 0,3 entrée R120 : courbure après/avant : 1.566 (cible ≥ 1,05)
+ok S3 plein gaz 2e/3e : dérive arrière maximale : 6.727 (cible ≥ 6° pour un cas) — 2e/R63 6.7° · 3e/R98 4.3° · 3e/R120 4.1°
+ok S9 plein braquage : lacet / limite : 1.168 (cible ≤ 1,2) — droit/120:1.103 · droit/200:1.164 · droit/300:1.156 · 150/120:1.102 · 150/200:1.168 · 150/300:1.159 · 300/120:1.102 · 300/200:1.166 · 300/300:1.158
+KO S5 clavier impulsions 0.2s à 30 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.43 m
+KO S5 clavier impulsions 0.2s à 60 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.43 m
+KO S5 clavier impulsions 0.2s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.43 m
+ok S6 tenue manette R40 : 2.396 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R120 : 1.274 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R250 : 0.316 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R400 : 1.078 (cible < 5,5 m pendant 3 s)
+mesure S8 lissage β à 60 et 120 Hz, pire scénario : 988 (cible ≤ 300°/s²) — paliers 341.0 · clavier 403.1 / 904.3 / 828.1 / 988.3
+ok S7 R80 : dérive puis turbo III et gain : 0.283 (cible 0,1 à 0,3 s) — adhérence 14.42 s, dérive 14.14 s, turbo III true
+43/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)
+KO  S5 clavier impulsions 0.2s à 30 Hz
+KO  S5 clavier impulsions 0.2s à 60 Hz
+KO  S5 clavier impulsions 0.2s à 120 Hz
+=== empattement=2.70 alphaAv=0.075 alphaAr=0.068
+ok S3 lever de pied R120 : lacet après/avant : 1.111 (cible ≥ 1,05)
+ok S11 frein 0,3 entrée R120 : courbure après/avant : 1.527 (cible ≥ 1,05)
+ok S3 plein gaz 2e/3e : dérive arrière maximale : 6.180 (cible ≥ 6° pour un cas) — 2e/R63 6.2° · 3e/R98 3.3° · 3e/R120 3.1°
+KO S4 contre-braquage après 0,3 s : tête-à-queue (cible rattrapée)
+ok S9 plein braquage : lacet / limite : 1.094 (cible ≤ 1,2) — droit/120:1.067 · droit/200:1.090 · droit/300:1.078 · 150/120:1.067 · 150/200:1.094 · 150/300:1.081 · 300/120:1.067 · 300/200:1.092 · 300/300:1.080
+KO S5 clavier impulsions 0.2s à 30 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.37 m
+KO S5 clavier impulsions 0.2s à 60 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.34 m
+KO S5 clavier impulsions 0.2s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.32 m
+KO S5 clavier impulsions 0.1s à 60 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.34 m
+KO S5 clavier impulsions 0.1s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.32 m
+ok S6 tenue manette R40 : 2.467 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R120 : 1.538 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R250 : 0.307 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R400 : 1.064 (cible < 5,5 m pendant 3 s)
+mesure S8 lissage β à 60 et 120 Hz, pire scénario : 911 (cible ≤ 300°/s²) — paliers 169.2 · clavier 372.6 / 911.1 / 455.0 / 732.0
+ok S7 R80 : dérive puis turbo III et gain : 0.125 (cible 0,1 à 0,3 s) — adhérence 14.33 s, dérive 14.21 s, turbo III true
+40/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)
+KO  S4 contre-braquage après 0,3 s
+KO  S5 clavier impulsions 0.2s à 30 Hz
+KO  S5 clavier impulsions 0.2s à 60 Hz
+KO  S5 clavier impulsions 0.2s à 120 Hz
+KO  S5 clavier impulsions 0.1s à 60 Hz
+KO  S5 clavier impulsions 0.1s à 120 Hz
+=== empattement=2.70 alphaAv=0.085 alphaAr=0.077 amortGlisse=0.6
+ok S3 lever de pied R120 : lacet après/avant : 1.110 (cible ≥ 1,05)
+ok S11 frein 0,3 entrée R120 : courbure après/avant : 1.481 (cible ≥ 1,05)
+KO S3 plein gaz 2e/3e : dérive arrière maximale : 5.595 (cible ≥ 6° pour un cas) — 2e/R63 5.6° · 3e/R98 3.5° · 3e/R120 3.4°
+KO S4 contre-braquage après 0,3 s : tête-à-queue (cible rattrapée)
+ok S9 plein braquage : lacet / limite : 1.050 (cible ≤ 1,2) — droit/120:1.050 · droit/200:1.046 · droit/300:1.033 · 150/120:1.050 · 150/200:1.049 · 150/300:1.034 · 300/120:1.050 · 300/200:1.048 · 300/300:1.033
+KO S5 clavier impulsions 0.2s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.49 m
+ok S6 tenue manette R40 : 2.415 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R120 : 1.373 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R250 : 0.318 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R400 : 1.069 (cible < 5,5 m pendant 3 s)
+mesure S8 lissage β à 60 et 120 Hz, pire scénario : 1058 (cible ≤ 300°/s²) — paliers 167.9 · clavier 499.0 / 921.9 / 807.0 / 1058.4
+ok S7 R80 : dérive puis turbo III et gain : 0.217 (cible 0,1 à 0,3 s) — adhérence 14.38 s, dérive 14.17 s, turbo III true
+43/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)
+KO  S3 plein gaz 2e/3e : dérive arrière maximale
+KO  S4 contre-braquage après 0,3 s
+KO  S5 clavier impulsions 0.2s à 120 Hz
+=== empattement=2.70 alphaAv=0.094 alphaAr=0.085 amortGlisse=0.6
+ok S3 lever de pied R120 : lacet après/avant : 1.122 (cible ≥ 1,05)
+ok S11 frein 0,3 entrée R120 : courbure après/avant : 1.497 (cible ≥ 1,05)
+KO S3 plein gaz 2e/3e : dérive arrière maximale : 5.835 (cible ≥ 6° pour un cas) — 2e/R63 5.8° · 3e/R98 3.9° · 3e/R120 3.7°
+KO S4 contre-braquage après 0,3 s : tête-à-queue (cible rattrapée)
+ok S9 plein braquage : lacet / limite : 1.065 (cible ≤ 1,2) — droit/120:1.058 · droit/200:1.062 · droit/300:1.050 · 150/120:1.057 · 150/200:1.065 · 150/300:1.051 · 300/120:1.057 · 300/200:1.064 · 300/300:1.051
+KO S5 clavier impulsions 0.2s à 30 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.42 m
+KO S5 clavier impulsions 0.2s à 60 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.42 m
+KO S5 clavier impulsions 0.2s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.42 m
+KO S5 clavier impulsions 0.1s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.42 m
+ok S6 tenue manette R40 : 2.394 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R120 : 1.357 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R250 : 0.331 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R400 : 1.074 (cible < 5,5 m pendant 3 s)
+mesure S8 lissage β à 60 et 120 Hz, pire scénario : 884 (cible ≤ 300°/s²) — paliers 280.1 · clavier 373.9 / 884.3 / 813.1 / 738.9
+ok S7 R80 : dérive puis turbo III et gain : 0.267 (cible 0,1 à 0,3 s) — adhérence 14.42 s, dérive 14.15 s, turbo III true
+40/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)
+KO  S3 plein gaz 2e/3e : dérive arrière maximale
+KO  S4 contre-braquage après 0,3 s
+KO  S5 clavier impulsions 0.2s à 30 Hz
+KO  S5 clavier impulsions 0.2s à 60 Hz
+KO  S5 clavier impulsions 0.2s à 120 Hz
+KO  S5 clavier impulsions 0.1s à 120 Hz
+=== empattement=2.70 amortGlisse=0.6
+ok S3 lever de pied R120 : lacet après/avant : 1.134 (cible ≥ 1,05)
+ok S11 frein 0,3 entrée R120 : courbure après/avant : 1.497 (cible ≥ 1,05)
+ok S3 plein gaz 2e/3e : dérive arrière maximale : 6.171 (cible ≥ 6° pour un cas) — 2e/R63 6.2° · 3e/R99 4.2° · 3e/R120 4.1°
+ok S9 plein braquage : lacet / limite : 1.084 (cible ≤ 1,2) — droit/120:1.067 · droit/200:1.081 · droit/300:1.070 · 150/120:1.067 · 150/200:1.084 · 150/300:1.071 · 300/120:1.067 · 300/200:1.083 · 300/300:1.071
+KO S5 clavier impulsions 0.2s à 30 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.91 m
+KO S5 clavier impulsions 0.2s à 60 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.91 m
+KO S5 clavier impulsions 0.2s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.91 m
+KO S5 clavier impulsions 0.1s à 30 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.91 m
+KO S5 clavier impulsions 0.1s à 60 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.91 m
+KO S5 clavier impulsions 0.1s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.91 m
+ok S6 tenue manette R40 : 2.373 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R120 : 1.532 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R250 : 0.330 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R400 : 1.079 (cible < 5,5 m pendant 3 s)
+mesure S8 lissage β à 60 et 120 Hz, pire scénario : 904 (cible ≤ 300°/s²) — paliers 235.3 · clavier 360.0 / 904.2 / 504.5 / 904.4
+KO S7 R80 : dérive puis turbo III et gain : 0.325 (cible 0,1 à 0,3 s) — adhérence 14.46 s, dérive 14.13 s, turbo III true
+39/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)
+KO  S5 clavier impulsions 0.2s à 30 Hz
+KO  S5 clavier impulsions 0.2s à 60 Hz
+KO  S5 clavier impulsions 0.2s à 120 Hz
+KO  S5 clavier impulsions 0.1s à 30 Hz
+KO  S5 clavier impulsions 0.1s à 60 Hz
+KO  S5 clavier impulsions 0.1s à 120 Hz
+KO  S7 R80 : dérive puis turbo III et gain
+=== empattement=2.70 amortGlisse=0.7
+ok S3 lever de pied R120 : lacet après/avant : 1.109 (cible ≥ 1,05)
+ok S11 frein 0,3 entrée R120 : courbure après/avant : 1.459 (cible ≥ 1,05)
+KO S3 plein gaz 2e/3e : dérive arrière maximale : 5.751 (cible ≥ 6° pour un cas) — 2e/R63 5.8° · 3e/R99 4.1° · 3e/R120 4.0°
+KO S4 contre-braquage après 0,3 s : rattrapée (cible rattrapée)
+ok S9 plein braquage : lacet / limite : 1.035 (cible ≤ 1,2) — droit/120:1.035 · droit/200:1.013 · droit/300:1.003 · 150/120:1.035 · 150/200:1.015 · 150/300:1.003 · 300/120:1.035 · 300/200:1.014 · 300/300:1.003
+KO S5 clavier impulsions 0.2s à 30 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.00 m
+KO S5 clavier impulsions 0.2s à 60 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.00 m
+KO S5 clavier impulsions 0.2s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.00 m
+KO S5 clavier impulsions 0.1s à 30 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.00 m
+KO S5 clavier impulsions 0.1s à 60 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.00 m
+KO S5 clavier impulsions 0.1s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.00 m
+KO S5 30 appuis martelés : un seul départ : 0.000 (cible exactement 1)
+KO S6 paliers au mieux sur piste réelle : ∞ (cible ≤ 0,05 s) — aucun essai
+ok S6 tenue manette R40 : 2.351 (cible < 5,5 m pendant 3 s)
+KO S6 tenue manette R120 : 0.000 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R250 : 0.374 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R400 : 1.079 (cible < 5,5 m pendant 3 s)
+mesure S8 lissage β à 60 et 120 Hz, pire scénario : 6771 (cible ≤ 300°/s²) — paliers 0.0 · clavier 112.2 / 6771.1 / 112.2 / 6771.1
+KO S7 R80 : dérive puis turbo III et gain : 0.342 (cible 0,1 à 0,3 s) — adhérence 14.48 s, dérive 14.14 s, turbo III true
+34/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)
+KO  S3 plein gaz 2e/3e : dérive arrière maximale
+KO  S4 contre-braquage après 0,3 s
+KO  S5 clavier impulsions 0.2s à 30 Hz
+KO  S5 clavier impulsions 0.2s à 60 Hz
+KO  S5 clavier impulsions 0.2s à 120 Hz
+KO  S5 clavier impulsions 0.1s à 30 Hz
+KO  S5 clavier impulsions 0.1s à 60 Hz
+KO  S5 clavier impulsions 0.1s à 120 Hz
+KO  S5 30 appuis martelés : un seul départ
+KO  S6 paliers au mieux sur piste réelle
+KO  S6 tenue manette R120
+KO  S7 R80 : dérive puis turbo III et gain
+=== empattement=2.70 giration=1.23 amortGlisse=0.6
+ok S3 lever de pied R120 : lacet après/avant : 1.137 (cible ≥ 1,05)
+ok S11 frein 0,3 entrée R120 : courbure après/avant : 1.501 (cible ≥ 1,05)
+ok S3 plein gaz 2e/3e : dérive arrière maximale : 6.121 (cible ≥ 6° pour un cas) — 2e/R63 6.1° · 3e/R99 4.2° · 3e/R120 4.0°
+KO S4 coup de glisse : témoin tête-à-queue : non (cible oui)
+KO S4 contre-braquage après 0,3 s : rattrapée (cible rattrapée)
+ok S9 plein braquage : lacet / limite : 1.084 (cible ≤ 1,2) — droit/120:1.067 · droit/200:1.080 · droit/300:1.066 · 150/120:1.066 · 150/200:1.084 · 150/300:1.068 · 300/120:1.067 · 300/200:1.082 · 300/300:1.067
+KO S5 clavier impulsions 0.2s à 30 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.84 m
+KO S5 clavier impulsions 0.2s à 60 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.84 m
+KO S5 clavier impulsions 0.2s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.84 m
+KO S5 clavier impulsions 0.1s à 30 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.84 m
+KO S5 clavier impulsions 0.1s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.84 m
+ok S6 tenue manette R40 : 2.374 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R120 : 1.494 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R250 : 0.328 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R400 : 1.078 (cible < 5,5 m pendant 3 s)
+mesure S8 lissage β à 60 et 120 Hz, pire scénario : 911 (cible ≤ 300°/s²) — paliers 273.4 · clavier 506.4 / 911.0 / 706.5 / 719.3
+KO S7 R80 : dérive puis turbo III et gain : 0.325 (cible 0,1 à 0,3 s) — adhérence 14.45 s, dérive 14.12 s, turbo III true
+38/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)
+KO  S4 coup de glisse : témoin tête-à-queue
+KO  S4 contre-braquage après 0,3 s
+KO  S5 clavier impulsions 0.2s à 30 Hz
+KO  S5 clavier impulsions 0.2s à 60 Hz
+KO  S5 clavier impulsions 0.2s à 120 Hz
+KO  S5 clavier impulsions 0.1s à 30 Hz
+KO  S5 clavier impulsions 0.1s à 120 Hz
+KO  S7 R80 : dérive puis turbo III et gain
+=== empattement=2.70 aideSeuil=0.055
+ok S3 lever de pied R120 : lacet après/avant : 1.130 (cible ≥ 1,05)
+ok S11 frein 0,3 entrée R120 : courbure après/avant : 1.565 (cible ≥ 1,05)
+ok S3 plein gaz 2e/3e : dérive arrière maximale : 6.799 (cible ≥ 6° pour un cas) — 2e/R63 6.8° · 3e/R98 4.4° · 3e/R120 4.1°
+KO S4 contre-braquage après 0,3 s : rattrapée (cible rattrapée)
+ok S9 plein braquage : lacet / limite : 1.167 (cible ≤ 1,2) — droit/120:1.105 · droit/200:1.163 · droit/300:1.160 · 150/120:1.105 · 150/200:1.167 · 150/300:1.163 · 300/120:1.105 · 300/200:1.165 · 300/300:1.162
+KO S5 clavier impulsions 0.2s à 30 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.46 m
+KO S5 clavier impulsions 0.2s à 60 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.46 m
+KO S5 clavier impulsions 0.2s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.46 m
+ok S6 tenue manette R40 : 2.397 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R120 : 1.298 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R250 : 0.321 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R400 : 1.079 (cible < 5,5 m pendant 3 s)
+mesure S8 lissage β à 60 et 120 Hz, pire scénario : 989 (cible ≤ 300°/s²) — paliers 321.2 · clavier 370.2 / 900.3 / 828.6 / 989.2
+ok S7 R80 : dérive puis turbo III et gain : 0.283 (cible 0,1 à 0,3 s) — adhérence 14.43 s, dérive 14.15 s, turbo III true
+42/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)
+KO  S4 contre-braquage après 0,3 s
+KO  S5 clavier impulsions 0.2s à 30 Hz
+KO  S5 clavier impulsions 0.2s à 60 Hz
+KO  S5 clavier impulsions 0.2s à 120 Hz
+=== empattement=2.70 deriveFenDur=0.26
+ok S3 lever de pied R120 : lacet après/avant : 1.130 (cible ≥ 1,05)
+ok S11 frein 0,3 entrée R120 : courbure après/avant : 1.565 (cible ≥ 1,05)
+ok S3 plein gaz 2e/3e : dérive arrière maximale : 6.799 (cible ≥ 6° pour un cas) — 2e/R63 6.8° · 3e/R98 4.4° · 3e/R120 4.1°
+KO S4 contre-braquage après 0,3 s : rattrapée (cible rattrapée)
+ok S9 plein braquage : lacet / limite : 1.167 (cible ≤ 1,2) — droit/120:1.105 · droit/200:1.163 · droit/300:1.160 · 150/120:1.105 · 150/200:1.167 · 150/300:1.163 · 300/120:1.105 · 300/200:1.165 · 300/300:1.162
+KO S5 clavier impulsions 0.2s à 30 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.46 m
+KO S5 clavier impulsions 0.2s à 60 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.46 m
+KO S5 clavier impulsions 0.2s à 120 Hz : 0.000 (cible 162 dont au moins 1) — meilleur palier non, |d| 0.46 m
+ok S6 tenue manette R40 : 2.397 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R120 : 1.298 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R250 : 0.321 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R400 : 1.079 (cible < 5,5 m pendant 3 s)
+mesure S8 lissage β à 60 et 120 Hz, pire scénario : 989 (cible ≤ 300°/s²) — paliers 321.2 · clavier 370.2 / 900.3 / 828.6 / 989.2
+ok S7 R80 : dérive puis turbo III et gain : 0.283 (cible 0,1 à 0,3 s) — adhérence 14.43 s, dérive 14.15 s, turbo III true
+42/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)
+KO  S4 contre-braquage après 0,3 s
+KO  S5 clavier impulsions 0.2s à 30 Hz
+KO  S5 clavier impulsions 0.2s à 60 Hz
+KO  S5 clavier impulsions 0.2s à 120 Hz

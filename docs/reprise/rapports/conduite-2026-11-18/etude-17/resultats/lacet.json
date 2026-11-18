@@ -1,0 +1,1039 @@
+{
+ "premiere": [
+  {
+   "nom": "base (p9)",
+   "reglages": {},
+   "empreinteSources": "7dd27cbbaa1e",
+   "200-mi": {
+    "depassement_pct": 17.11144146220161,
+    "amortissement": 0.4898979890049161,
+    "lacetT90_ms": 78.56614036127738,
+    "lacetPic_ms": 158.33333333333331,
+    "etabli5pc_ms": 316.6666666666667,
+    "ay_g": 1.2671403628433686,
+    "beta_deg": 1.5150345608799858
+   },
+   "200-plein": {
+    "depassement_pct": 21.10778065505633,
+    "amortissement": 0.44372598535112917,
+    "lacetT90_ms": 77.17804926471744,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 408.33333333333337,
+    "ay_g": 2.325581458019923,
+    "beta_deg": 3.8184850886124777
+   },
+   "100-mi": {
+    "depassement_pct": 1.3758418090987161,
+    "amortissement": 0.8065441189926948,
+    "lacetT90_ms": 112.50063069998563,
+    "lacetPic_ms": 216.66666666666669,
+    "etabli5pc_ms": 125,
+    "ay_g": 0.9644394606918394,
+    "beta_deg": 0.8233361598963447
+   }
+  },
+  {
+   "nom": "pic 4,3/3,9°",
+   "reglages": {
+    "alphaAv": 0.075,
+    "alphaAr": 0.068
+   },
+   "empreinteSources": "af6c5ee10d21",
+   "200-mi": {
+    "depassement_pct": 9.299752859778193,
+    "amortissement": 0.6030811042103441,
+    "lacetT90_ms": 80.60731077808556,
+    "lacetPic_ms": 158.33333333333331,
+    "etabli5pc_ms": 241.66666666666666,
+    "ay_g": 1.2693306086685598,
+    "beta_deg": 1.0020265694291595
+   },
+   "200-plein": {
+    "depassement_pct": 14.132802764362093,
+    "amortissement": 0.5286724796100586,
+    "lacetT90_ms": 78.37173950534087,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 341.6666666666667,
+    "ay_g": 2.3368789952466176,
+    "beta_deg": 2.5676214306081633
+   },
+   "100-mi": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 111.91035222458306,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 133.33333333333334,
+    "ay_g": 0.9651968469733381,
+    "beta_deg": 0.3384484469034127
+   }
+  },
+  {
+   "nom": "pic 6,9/6,2°",
+   "reglages": {
+    "alphaAv": 0.12,
+    "alphaAr": 0.108
+   },
+   "empreinteSources": "4c9c4a79de56",
+   "200-mi": {
+    "depassement_pct": 20.383616839052205,
+    "amortissement": 0.4516706393116119,
+    "lacetT90_ms": 78.07235790582865,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 350.00000000000006,
+    "ay_g": 1.2661809761221727,
+    "beta_deg": 1.7620776239296176
+   },
+   "200-plein": {
+    "depassement_pct": 23.96335437355332,
+    "amortissement": 0.4139584922826026,
+    "lacetT90_ms": 77.00181969213389,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 441.6666666666667,
+    "ay_g": 2.3198684329326262,
+    "beta_deg": 4.420450445970928
+   },
+   "100-mi": {
+    "depassement_pct": 2.74549149468136,
+    "amortissement": 0.7530141572691263,
+    "lacetT90_ms": 112.73767419305837,
+    "lacetPic_ms": 208.33333333333334,
+    "etabli5pc_ms": 125,
+    "ay_g": 0.9641486622611275,
+    "beta_deg": 1.056936421160864
+   }
+  },
+  {
+   "nom": "amortGlisse 0,8",
+   "reglages": {
+    "amortGlisse": 0.8
+   },
+   "empreinteSources": "20407f45204a",
+   "200-mi": {
+    "depassement_pct": 0.46144301730031084,
+    "amortissement": null,
+    "lacetT90_ms": 104.81477770040162,
+    "lacetPic_ms": 291.6666666666667,
+    "etabli5pc_ms": 125,
+    "ay_g": 1.2658168573763187,
+    "beta_deg": 1.5128304652509519
+   },
+   "200-plein": {
+    "depassement_pct": 2.45202870443651,
+    "amortissement": 0.7629966573051464,
+    "lacetT90_ms": 98.45290205103643,
+    "lacetPic_ms": 258.33333333333337,
+    "etabli5pc_ms": 116.66666666666667,
+    "ay_g": 2.3149285657252014,
+    "beta_deg": 3.739093971408218
+   },
+   "100-mi": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 156.01625095098206,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 225,
+    "ay_g": 0.9645893873071882,
+    "beta_deg": 0.8238805627261829
+   }
+  },
+  {
+   "nom": "amortGlisse 1,1",
+   "reglages": {
+    "amortGlisse": 1.1
+   },
+   "empreinteSources": "398bafeb1775",
+   "200-mi": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 212.85433798219717,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 325,
+    "ay_g": 1.26246225130611,
+    "beta_deg": 1.5075442182051522
+   },
+   "200-plein": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 190.24217626735833,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 291.6666666666667,
+    "ay_g": 2.2946252469249,
+    "beta_deg": 3.6312387643659005
+   },
+   "100-mi": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 226.1256122445746,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 325,
+    "ay_g": 0.9645610952158132,
+    "beta_deg": 0.8240868001125741
+   }
+  },
+  {
+   "nom": "giration 1,15",
+   "reglages": {
+    "giration": 1.15
+   },
+   "empreinteSources": "00a7b6e979b2",
+   "200-mi": {
+    "depassement_pct": 16.55514189374772,
+    "amortissement": 0.4968213444363363,
+    "lacetT90_ms": 69.33341377468376,
+    "lacetPic_ms": 141.66666666666666,
+    "etabli5pc_ms": 300.00000000000006,
+    "ay_g": 1.267126049998351,
+    "beta_deg": 1.5150535759779202
+   },
+   "200-plein": {
+    "depassement_pct": 20.52752261230981,
+    "amortissement": 0.45007817238481623,
+    "lacetT90_ms": 67.86976622188278,
+    "lacetPic_ms": 150,
+    "etabli5pc_ms": 391.6666666666667,
+    "ay_g": 2.325106039076985,
+    "beta_deg": 3.8167981826250132
+   },
+   "100-mi": {
+    "depassement_pct": 1.1739742784056268,
+    "amortissement": 0.8166124598608352,
+    "lacetT90_ms": 99.27196079002981,
+    "lacetPic_ms": 199.99999999999997,
+    "etabli5pc_ms": 108.33333333333334,
+    "ay_g": 0.964498474515671,
+    "beta_deg": 0.8235047327262487
+   }
+  },
+  {
+   "nom": "giration 1,45",
+   "reglages": {
+    "giration": 1.45
+   },
+   "empreinteSources": "beed3d15eaac",
+   "200-mi": {
+    "depassement_pct": 17.167711627235647,
+    "amortissement": 0.48920513830606727,
+    "lacetT90_ms": 88.49805117283277,
+    "lacetPic_ms": 175,
+    "etabli5pc_ms": 341.6666666666667,
+    "ay_g": 1.2671527095441157,
+    "beta_deg": 1.5150081713774712
+   },
+   "200-plein": {
+    "depassement_pct": 21.202949398043206,
+    "amortissement": 0.4426945173409744,
+    "lacetT90_ms": 87.2086296710537,
+    "lacetPic_ms": 183.33333333333331,
+    "etabli5pc_ms": 433.33333333333337,
+    "ay_g": 2.3261799149498827,
+    "beta_deg": 3.8208663564960665
+   },
+   "100-mi": {
+    "depassement_pct": 1.3971579119514217,
+    "amortissement": 0.8055294744283967,
+    "lacetT90_ms": 127.46580852919234,
+    "lacetPic_ms": 241.66666666666666,
+    "etabli5pc_ms": 141.66666666666666,
+    "ay_g": 0.9643722919859926,
+    "beta_deg": 0.8231378043498286
+   }
+  },
+  {
+   "nom": "aeroAvant 0,42",
+   "reglages": {
+    "aeroAvant": 0.42
+   },
+   "empreinteSources": "3dbe7747ffef",
+   "200-mi": {
+    "depassement_pct": 17.06023448189481,
+    "amortissement": 0.49052967059489433,
+    "lacetT90_ms": 78.69365260079866,
+    "lacetPic_ms": 158.33333333333331,
+    "etabli5pc_ms": 316.6666666666667,
+    "ay_g": 1.2672373919686786,
+    "beta_deg": 1.4822651113296996
+   },
+   "200-plein": {
+    "depassement_pct": 20.83066996455821,
+    "amortissement": 0.44674591315745704,
+    "lacetT90_ms": 77.41556777870241,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 391.6666666666667,
+    "ay_g": 2.283394601162181,
+    "beta_deg": 3.4913244402989037
+   },
+   "100-mi": {
+    "depassement_pct": 1.3789233747107281,
+    "amortissement": 0.8063969100708364,
+    "lacetT90_ms": 112.7224668117993,
+    "lacetPic_ms": 216.66666666666669,
+    "etabli5pc_ms": 125,
+    "ay_g": 0.9645860574628896,
+    "beta_deg": 0.8131192633084553
+   }
+  },
+  {
+   "nom": "aeroAvant 0,40",
+   "reglages": {
+    "aeroAvant": 0.4
+   },
+   "empreinteSources": "6a3a9ae0f070",
+   "200-mi": {
+    "depassement_pct": 17.027340050993523,
+    "amortissement": 0.49093604348279374,
+    "lacetT90_ms": 78.77954600903112,
+    "lacetPic_ms": 158.33333333333331,
+    "etabli5pc_ms": 308.33333333333337,
+    "ay_g": 1.2673042247270891,
+    "beta_deg": 1.4611943815001447
+   },
+   "200-plein": {
+    "depassement_pct": 20.623629852944635,
+    "amortissement": 0.44901847297854713,
+    "lacetT90_ms": 77.59394033667729,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 383.33333333333337,
+    "ay_g": 2.2541122083192238,
+    "beta_deg": 3.3118274688151295
+   },
+   "100-mi": {
+    "depassement_pct": 1.3807357005273935,
+    "amortissement": 0.8063104174373179,
+    "lacetT90_ms": 112.8713569240157,
+    "lacetPic_ms": 216.66666666666669,
+    "etabli5pc_ms": 125,
+    "ay_g": 0.9646857205417964,
+    "beta_deg": 0.8063846868713429
+   }
+  },
+  {
+   "nom": "roulisAvant 0,60",
+   "reglages": {
+    "roulisAvant": 0.6
+   },
+   "empreinteSources": "04581ff33f3d",
+   "200-mi": {
+    "depassement_pct": 17.40641896123317,
+    "amortissement": 0.486280826356326,
+    "lacetT90_ms": 78.27037337411367,
+    "lacetPic_ms": 158.33333333333331,
+    "etabli5pc_ms": 316.6666666666667,
+    "ay_g": 1.2635394787652179,
+    "beta_deg": 1.5064674660491688
+   },
+   "200-plein": {
+    "depassement_pct": 22.132866574258788,
+    "amortissement": 0.4327641928207727,
+    "lacetT90_ms": 76.20896371442825,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 408.33333333333337,
+    "ay_g": 2.3060145498591007,
+    "beta_deg": 3.669507809349706
+   },
+   "100-mi": {
+    "depassement_pct": 1.5155522706410862,
+    "amortissement": 0.8000412523474754,
+    "lacetT90_ms": 112.01614809217597,
+    "lacetPic_ms": 216.66666666666669,
+    "etabli5pc_ms": 125,
+    "ay_g": 0.96237261322884,
+    "beta_deg": 0.8187605086279941
+   }
+  },
+  {
+   "nom": "roulisAvant 0,48",
+   "reglages": {
+    "roulisAvant": 0.48
+   },
+   "empreinteSources": "78670bc8e463",
+   "200-mi": {
+    "depassement_pct": 16.846839911200505,
+    "amortissement": 0.4931742194358123,
+    "lacetT90_ms": 78.83351152747446,
+    "lacetPic_ms": 158.33333333333331,
+    "etabli5pc_ms": 316.6666666666667,
+    "ay_g": 1.2703925886355607,
+    "beta_deg": 1.5237327759603831
+   },
+   "200-plein": {
+    "depassement_pct": 20.120693306054807,
+    "amortissement": 0.454598110996408,
+    "lacetT90_ms": 78.12060588930636,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 416.6666666666667,
+    "ay_g": 2.3420933431516433,
+    "beta_deg": 3.9915230290025114
+   },
+   "100-mi": {
+    "depassement_pct": 1.2508420610370663,
+    "amortissement": 0.8126745785874787,
+    "lacetT90_ms": 112.93648397447788,
+    "lacetPic_ms": 216.66666666666669,
+    "etabli5pc_ms": 125,
+    "ay_g": 0.9663025637264402,
+    "beta_deg": 0.8280972215082433
+   }
+  },
+  {
+   "nom": "empattement 2,70",
+   "reglages": {
+    "empattement": 2.7
+   },
+   "empreinteSources": "8d3984bc2dba",
+   "200-mi": {
+    "depassement_pct": 17.879878619315644,
+    "amortissement": 0.48055044711171296,
+    "lacetT90_ms": 80.66287815106557,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 325,
+    "ay_g": 1.2671505231560345,
+    "beta_deg": 1.5274777456868298
+   },
+   "200-plein": {
+    "depassement_pct": 21.818000418976304,
+    "amortissement": 0.4360968657753618,
+    "lacetT90_ms": 79.3721965023786,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 416.6666666666667,
+    "ay_g": 2.322307443422627,
+    "beta_deg": 3.8175050965654616
+   },
+   "100-mi": {
+    "depassement_pct": 1.779388482560701,
+    "amortissement": 0.7885924431775332,
+    "lacetT90_ms": 115.79990002755714,
+    "lacetPic_ms": 216.66666666666669,
+    "etabli5pc_ms": 125,
+    "ay_g": 0.964420099847973,
+    "beta_deg": 0.8694785951828115
+   }
+  },
+  {
+   "nom": "2,70 + pic 4,9/4,4° + amort 0,8",
+   "reglages": {
+    "empattement": 2.7,
+    "alphaAv": 0.085,
+    "alphaAr": 0.077,
+    "amortGlisse": 0.8
+   },
+   "empreinteSources": "fefbf69c0de9",
+   "200-mi": {
+    "depassement_pct": 0.02827940530616223,
+    "amortissement": null,
+    "lacetT90_ms": 112.0888110533187,
+    "lacetPic_ms": 358.3333333333333,
+    "etabli5pc_ms": 141.66666666666666,
+    "ay_g": 1.2676887288338778,
+    "beta_deg": 1.1849098826647635
+   },
+   "200-plein": {
+    "depassement_pct": 1.9514907168677436,
+    "amortissement": 0.7816109982902099,
+    "lacetT90_ms": 103.30403240506709,
+    "lacetPic_ms": 266.6666666666667,
+    "etabli5pc_ms": 125,
+    "ay_g": 2.3246913043442956,
+    "beta_deg": 2.9541554922396474
+   },
+   "100-mi": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 156.33478714076773,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 216.66666666666669,
+    "ay_g": 0.9650235453363952,
+    "beta_deg": 0.546578229120051
+   }
+  }
+ ],
+ "seconde": [
+  {
+   "nom": "6,0/5,4° amort 0.5",
+   "reglages": {
+    "empattement": 2.7,
+    "alphaAv": 0.105,
+    "alphaAr": 0.095,
+    "amortGlisse": 0.5
+   },
+   "empreinteSources": "8d3984bc2dba",
+   "200-mi": {
+    "depassement_pct": 17.879878619315644,
+    "amortissement": 0.48055044711171296,
+    "lacetT90_ms": 80.66287815106557,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 325,
+    "ay_g": 1.2671505231560345,
+    "beta_deg": 1.5274777456868298
+   },
+   "200-plein": {
+    "depassement_pct": 21.818000418976304,
+    "amortissement": 0.4360968657753618,
+    "lacetT90_ms": 79.3721965023786,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 416.6666666666667,
+    "ay_g": 2.322307443422627,
+    "beta_deg": 3.8175050965654616
+   },
+   "100-mi": {
+    "depassement_pct": 1.779388482560701,
+    "amortissement": 0.7885924431775332,
+    "lacetT90_ms": 115.79990002755714,
+    "lacetPic_ms": 216.66666666666669,
+    "etabli5pc_ms": 125,
+    "ay_g": 0.964420099847973,
+    "beta_deg": 0.8694785951828115
+   },
+   "100-plein": {
+    "depassement_pct": 3.627446819873155,
+    "amortissement": 0.7260060615180024,
+    "lacetT90_ms": 124.7524197509144,
+    "lacetPic_ms": 233.33333333333334,
+    "etabli5pc_ms": 133.33333333333334,
+    "ay_g": 1.8475953502672426,
+    "beta_deg": 2.5090545885968605
+   },
+   "vLimite30_kmh": 84.27917583398657,
+   "vLimite120_kmh": 182.043144115147,
+   "vLimite180_kmh": 241.5419583800657
+  },
+  {
+   "nom": "6,0/5,4° amort 0.6",
+   "reglages": {
+    "empattement": 2.7,
+    "alphaAv": 0.105,
+    "alphaAr": 0.095,
+    "amortGlisse": 0.6
+   },
+   "empreinteSources": "98e0060f880a",
+   "200-mi": {
+    "depassement_pct": 10.371191813529613,
+    "amortissement": 0.5850171380311523,
+    "lacetT90_ms": 84.90081154459345,
+    "lacetPic_ms": 175,
+    "etabli5pc_ms": 291.6666666666667,
+    "ay_g": 1.266837113214253,
+    "beta_deg": 1.5269316748753592
+   },
+   "200-plein": {
+    "depassement_pct": 13.618516569652387,
+    "amortissement": 0.5358314859212226,
+    "lacetT90_ms": 82.96278745161831,
+    "lacetPic_ms": 175,
+    "etabli5pc_ms": 375,
+    "ay_g": 2.320393483092295,
+    "beta_deg": 3.7975614458682463
+   },
+   "100-mi": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 122.19157087809621,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 141.66666666666666,
+    "ay_g": 0.964474720230244,
+    "beta_deg": 0.8696767905555115
+   },
+   "100-plein": {
+    "depassement_pct": 0.39938050589320273,
+    "amortissement": null,
+    "lacetT90_ms": 129.79838752489383,
+    "lacetPic_ms": 258.33333333333337,
+    "etabli5pc_ms": 150,
+    "ay_g": 1.8491724160433503,
+    "beta_deg": 2.52440444327839
+   },
+   "vLimite30_kmh": 84.36874444333246,
+   "vLimite120_kmh": 181.66465418224803,
+   "vLimite180_kmh": 240.6679864121331
+  },
+  {
+   "nom": "6,0/5,4° amort 0.7",
+   "reglages": {
+    "empattement": 2.7,
+    "alphaAv": 0.105,
+    "alphaAr": 0.095,
+    "amortGlisse": 0.7
+   },
+   "empreinteSources": "f2707db9ada3",
+   "200-mi": {
+    "depassement_pct": 4.382952671814698,
+    "amortissement": 0.7055095114489845,
+    "lacetT90_ms": 91.66669944537041,
+    "lacetPic_ms": 199.99999999999997,
+    "etabli5pc_ms": 99.99999999999999,
+    "ay_g": 1.266426636874514,
+    "beta_deg": 1.5262384410115009
+   },
+   "200-plein": {
+    "depassement_pct": 7.122289367884093,
+    "amortissement": 0.6436209346836351,
+    "lacetT90_ms": 88.89533887767197,
+    "lacetPic_ms": 199.99999999999997,
+    "etabli5pc_ms": 308.33333333333337,
+    "ay_g": 2.316871458611693,
+    "beta_deg": 3.7717278427771768
+   },
+   "100-mi": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 134.7959261011545,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 183.33333333333331,
+    "ay_g": 0.9645186230285141,
+    "beta_deg": 0.8698520147975841
+   },
+   "100-plein": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 139.2879178683642,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 175,
+    "ay_g": 1.850311760433076,
+    "beta_deg": 2.533701563130608
+   },
+   "vLimite30_kmh": 84.46157009301822,
+   "vLimite120_kmh": 181.27565064010187,
+   "vLimite180_kmh": 239.79946579699765
+  },
+  {
+   "nom": "5,4/4,9° amort 0.5",
+   "reglages": {
+    "empattement": 2.7,
+    "alphaAv": 0.094,
+    "alphaAr": 0.085,
+    "amortGlisse": 0.5
+   },
+   "empreinteSources": "cc92326d3b10",
+   "200-mi": {
+    "depassement_pct": 15.177856411831513,
+    "amortissement": 0.5145714210066957,
+    "lacetT90_ms": 81.10697680769103,
+    "lacetPic_ms": 158.33333333333331,
+    "etabli5pc_ms": 300.00000000000006,
+    "ay_g": 1.2679272325838296,
+    "beta_deg": 1.3377915580118158
+   },
+   "200-plein": {
+    "depassement_pct": 19.43194816700373,
+    "amortissement": 0.46237960784682947,
+    "lacetT90_ms": 79.58767348435165,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 391.6666666666667,
+    "ay_g": 2.326366101210938,
+    "beta_deg": 3.356938393131138
+   },
+   "100-mi": {
+    "depassement_pct": 0.8001933975180126,
+    "amortissement": 0.8381780997507735,
+    "lacetT90_ms": 115.55965210405176,
+    "lacetPic_ms": 225,
+    "etabli5pc_ms": 133.33333333333334,
+    "ay_g": 0.9646717151399705,
+    "beta_deg": 0.6898813353530503
+   },
+   "100-plein": {
+    "depassement_pct": 2.732385327414541,
+    "amortissement": 0.7534476073595296,
+    "lacetT90_ms": 124.87662619895778,
+    "lacetPic_ms": 233.33333333333334,
+    "etabli5pc_ms": 133.33333333333334,
+    "ay_g": 1.8493300612772061,
+    "beta_deg": 2.0671865396702436
+   },
+   "vLimite30_kmh": 84.3720014836723,
+   "vLimite120_kmh": 182.53728374976504,
+   "vLimite180_kmh": 242.4655468980331
+  },
+  {
+   "nom": "5,4/4,9° amort 0.6",
+   "reglages": {
+    "empattement": 2.7,
+    "alphaAv": 0.094,
+    "alphaAr": 0.085,
+    "amortGlisse": 0.6
+   },
+   "empreinteSources": "a919dcc5619f",
+   "200-mi": {
+    "depassement_pct": 8.369823475047468,
+    "amortissement": 0.6196954848789631,
+    "lacetT90_ms": 85.76686923483138,
+    "lacetPic_ms": 175,
+    "etabli5pc_ms": 258.33333333333337,
+    "ay_g": 1.2676442848517497,
+    "beta_deg": 1.3373757775129929
+   },
+   "200-plein": {
+    "depassement_pct": 11.92687828081172,
+    "amortissement": 0.560522861272252,
+    "lacetT90_ms": 83.33477455735147,
+    "lacetPic_ms": 175,
+    "etabli5pc_ms": 350.00000000000006,
+    "ay_g": 2.3252799647416844,
+    "beta_deg": 3.344577385556126
+   },
+   "100-mi": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 122.44156677257946,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 150,
+    "ay_g": 0.9647219444215287,
+    "beta_deg": 0.6900330128754768
+   },
+   "100-plein": {
+    "depassement_pct": 0.016024738938816625,
+    "amortissement": null,
+    "lacetT90_ms": 129.7526879116778,
+    "lacetPic_ms": 266.6666666666667,
+    "etabli5pc_ms": 150,
+    "ay_g": 1.8504219913695212,
+    "beta_deg": 2.077737872010579
+   },
+   "vLimite30_kmh": 84.46319861318814,
+   "vLimite120_kmh": 182.2078573266863,
+   "vLimite180_kmh": 241.69274834218277
+  },
+  {
+   "nom": "5,4/4,9° amort 0.7",
+   "reglages": {
+    "empattement": 2.7,
+    "alphaAv": 0.094,
+    "alphaAr": 0.085,
+    "amortGlisse": 0.7
+   },
+   "empreinteSources": "2177f216918c",
+   "200-mi": {
+    "depassement_pct": 3.1612407538860965,
+    "amortissement": 0.7397902006369079,
+    "lacetT90_ms": 93.41778534322994,
+    "lacetPic_ms": 199.99999999999997,
+    "etabli5pc_ms": 99.99999999999999,
+    "ay_g": 1.267314700769097,
+    "beta_deg": 1.336897536120059
+   },
+   "200-plein": {
+    "depassement_pct": 6.144392188484008,
+    "amortissement": 0.6639786364079745,
+    "lacetT90_ms": 89.71220930605583,
+    "lacetPic_ms": 208.33333333333334,
+    "etabli5pc_ms": 275,
+    "ay_g": 2.322856913066911,
+    "beta_deg": 3.327530682764629
+   },
+   "100-mi": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 136.05478989915116,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 183.33333333333331,
+    "ay_g": 0.9647673202964236,
+    "beta_deg": 0.6901740688646464
+   },
+   "100-plein": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 138.8090696357167,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 175,
+    "ay_g": 1.8513930258226723,
+    "beta_deg": 2.0857840393111697
+   },
+   "vLimite30_kmh": 84.5560242628739,
+   "vLimite120_kmh": 181.87492636719188,
+   "vLimite180_kmh": 240.92207488996524
+  },
+  {
+   "nom": "4,9/4,4° amort 0.5",
+   "reglages": {
+    "empattement": 2.7,
+    "alphaAv": 0.085,
+    "alphaAr": 0.077,
+    "amortGlisse": 0.5
+   },
+   "empreinteSources": "bb7255c283a7",
+   "200-mi": {
+    "depassement_pct": 12.85653820845241,
+    "amortissement": 0.5467263733623444,
+    "lacetT90_ms": 81.58300584007807,
+    "lacetPic_ms": 158.33333333333331,
+    "etabli5pc_ms": 275,
+    "ay_g": 1.268570993985948,
+    "beta_deg": 1.1860180798365414
+   },
+   "200-plein": {
+    "depassement_pct": 17.342706703127533,
+    "amortissement": 0.4870590000110927,
+    "lacetT90_ms": 79.85231064009676,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 366.6666666666667,
+    "ay_g": 2.3295505655932076,
+    "beta_deg": 2.987936848271504
+   },
+   "100-mi": {
+    "depassement_pct": 0.138716256986561,
+    "amortissement": null,
+    "lacetT90_ms": 115.3030123102047,
+    "lacetPic_ms": 233.33333333333334,
+    "etabli5pc_ms": 133.33333333333334,
+    "ay_g": 0.9648891874872638,
+    "beta_deg": 0.5462445511593416
+   },
+   "100-plein": {
+    "depassement_pct": 2.056207787991022,
+    "amortissement": 0.7775234103440453,
+    "lacetT90_ms": 124.96447565467001,
+    "lacetPic_ms": 241.66666666666666,
+    "etabli5pc_ms": 141.66666666666666,
+    "ay_g": 1.8508855223232599,
+    "beta_deg": 1.7160286939453113
+   },
+   "vLimite30_kmh": 84.4599415728483,
+   "vLimite120_kmh": 182.93329636474266,
+   "vLimite180_kmh": 243.18651140440565
+  },
+  {
+   "nom": "4,9/4,4° amort 0.6",
+   "reglages": {
+    "empattement": 2.7,
+    "alphaAv": 0.085,
+    "alphaAr": 0.077,
+    "amortGlisse": 0.6
+   },
+   "empreinteSources": "49b0b2737d98",
+   "200-mi": {
+    "depassement_pct": 6.683974240201149,
+    "amortissement": 0.6525504315247964,
+    "lacetT90_ms": 86.7006863244359,
+    "lacetPic_ms": 175,
+    "etabli5pc_ms": 233.33333333333334,
+    "ay_g": 1.268309647184644,
+    "beta_deg": 1.1856883402331366
+   },
+   "200-plein": {
+    "depassement_pct": 10.473431813853766,
+    "amortissement": 0.5833476949231289,
+    "lacetT90_ms": 83.86603172409498,
+    "lacetPic_ms": 183.33333333333331,
+    "etabli5pc_ms": 333.33333333333337,
+    "ay_g": 2.328989434655033,
+    "beta_deg": 2.9801415986878657
+   },
+   "100-mi": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 122.62890781982513,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 150,
+    "ay_g": 0.9649368630990808,
+    "beta_deg": 0.5463624218058686
+   },
+   "100-plein": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 129.68377695229205,
+    "lacetPic_ms": 275,
+    "etabli5pc_ms": 150,
+    "ay_g": 1.851579131088204,
+    "beta_deg": 1.7228903086135918
+   },
+   "vLimite30_kmh": 84.55113870236411,
+   "vLimite120_kmh": 182.64241984223696,
+   "vLimite180_kmh": 242.49382001593008
+  },
+  {
+   "nom": "4,9/4,4° amort 0.7",
+   "reglages": {
+    "empattement": 2.7,
+    "alphaAv": 0.085,
+    "alphaAr": 0.077,
+    "amortGlisse": 0.7
+   },
+   "empreinteSources": "b1fd68f0377f",
+   "200-mi": {
+    "depassement_pct": 2.22353361795106,
+    "amortissement": 0.7712158163341685,
+    "lacetT90_ms": 95.27587754615217,
+    "lacetPic_ms": 216.66666666666669,
+    "etabli5pc_ms": 108.33333333333334,
+    "ay_g": 1.2680252230383346,
+    "beta_deg": 1.185331008222081
+   },
+   "200-plein": {
+    "depassement_pct": 5.351709656049295,
+    "amortissement": 0.6817705882844689,
+    "lacetT90_ms": 90.61789107711775,
+    "lacetPic_ms": 208.33333333333334,
+    "etabli5pc_ms": 241.66666666666666,
+    "ay_g": 2.3273332913354583,
+    "beta_deg": 2.9687092457308966
+   },
+   "100-mi": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 136.75089710230165,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 183.33333333333331,
+    "ay_g": 0.9649821901224926,
+    "beta_deg": 0.5464744763922051
+   },
+   "100-plein": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 138.2483180462505,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 175,
+    "ay_g": 1.8523323637608335,
+    "beta_deg": 1.7291488165282378
+   },
+   "vLimite30_kmh": 84.6455928722198,
+   "vLimite120_kmh": 182.3480387833156,
+   "vLimite180_kmh": 241.80584081377057
+  },
+  {
+   "nom": "4,3/3,9° amort 0.5",
+   "reglages": {
+    "empattement": 2.7,
+    "alphaAv": 0.075,
+    "alphaAr": 0.068,
+    "amortGlisse": 0.5
+   },
+   "empreinteSources": "c0949e772eaa",
+   "200-mi": {
+    "depassement_pct": 10.079674653051187,
+    "amortissement": 0.5898272198653476,
+    "lacetT90_ms": 82.32071632356282,
+    "lacetPic_ms": 158.33333333333331,
+    "etabli5pc_ms": 250,
+    "ay_g": 1.2693254495158954,
+    "beta_deg": 1.0152711839516797
+   },
+   "200-plein": {
+    "depassement_pct": 14.834296115771531,
+    "amortissement": 0.5191436770203652,
+    "lacetT90_ms": 80.30581512758441,
+    "lacetPic_ms": 166.66666666666666,
+    "etabli5pc_ms": 341.6666666666667,
+    "ay_g": 2.3331327644575293,
+    "beta_deg": 2.573596915600855
+   },
+   "100-mi": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 114.94684576908237,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 133.33333333333334,
+    "ay_g": 0.9651578466999915,
+    "beta_deg": 0.3846815996686051
+   },
+   "100-plein": {
+    "depassement_pct": 1.3783314500637225,
+    "amortissement": 0.8064251728842051,
+    "lacetT90_ms": 125.11244759380303,
+    "lacetPic_ms": 241.66666666666666,
+    "etabli5pc_ms": 141.66666666666666,
+    "ay_g": 1.8527695916715057,
+    "beta_deg": 1.3230265583183125
+   },
+   "vLimite30_kmh": 84.57393798474308,
+   "vLimite120_kmh": 183.37479786239643,
+   "vLimite180_kmh": 243.9828708918368
+  },
+  {
+   "nom": "4,3/3,9° amort 0.6",
+   "reglages": {
+    "empattement": 2.7,
+    "alphaAv": 0.075,
+    "alphaAr": 0.068,
+    "amortGlisse": 0.6
+   },
+   "empreinteSources": "c95bc69edd3b",
+   "200-mi": {
+    "depassement_pct": 4.756412687035926,
+    "amortissement": 0.6960614452839353,
+    "lacetT90_ms": 88.13194996985281,
+    "lacetPic_ms": 175,
+    "etabli5pc_ms": 91.66666666666666,
+    "ay_g": 1.2690895651528504,
+    "beta_deg": 1.0150251349226629
+   },
+   "200-plein": {
+    "depassement_pct": 8.808306410040275,
+    "amortissement": 0.6117439666615888,
+    "lacetT90_ms": 84.73983154250975,
+    "lacetPic_ms": 183.33333333333331,
+    "etabli5pc_ms": 308.33333333333337,
+    "ay_g": 2.3329989793623485,
+    "beta_deg": 2.5694155630620212
+   },
+   "100-mi": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 122.73200555013659,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 158.33333333333331,
+    "ay_g": 0.9652043121282188,
+    "beta_deg": 0.38476559482711437
+   },
+   "100-plein": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 129.54632103490323,
+    "lacetPic_ms": 275,
+    "etabli5pc_ms": 150,
+    "ay_g": 1.8530825609207087,
+    "beta_deg": 1.326567598219109
+   },
+   "vLimite30_kmh": 84.6651351142589,
+   "vLimite120_kmh": 183.12814858945725,
+   "vLimite180_kmh": 243.3844232296844
+  },
+  {
+   "nom": "4,3/3,9° amort 0.7",
+   "reglages": {
+    "empattement": 2.7,
+    "alphaAv": 0.075,
+    "alphaAr": 0.068,
+    "amortGlisse": 0.7
+   },
+   "empreinteSources": "44c972c3949c",
+   "200-mi": {
+    "depassement_pct": 1.2936978605310503,
+    "amortissement": 0.8105365606675117,
+    "lacetT90_ms": 98.00622609438257,
+    "lacetPic_ms": 233.33333333333334,
+    "etabli5pc_ms": 116.66666666666667,
+    "ay_g": 1.2688447586528324,
+    "beta_deg": 1.0147699186152448
+   },
+   "200-plein": {
+    "depassement_pct": 4.472734201042562,
+    "amortissement": 0.7032008945236511,
+    "lacetT90_ms": 92.09344509468507,
+    "lacetPic_ms": 216.66666666666669,
+    "etabli5pc_ms": 99.99999999999999,
+    "ay_g": 2.3320557814460106,
+    "beta_deg": 2.5627622940941497
+   },
+   "100-mi": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 136.65419054042795,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 183.33333333333331,
+    "ay_g": 0.9652498131420731,
+    "beta_deg": 0.38484626265692473
+   },
+   "100-plein": {
+    "depassement_pct": 0,
+    "amortissement": null,
+    "lacetT90_ms": 137.27598072778616,
+    "lacetPic_ms": 1000,
+    "etabli5pc_ms": 175,
+    "ay_g": 1.8535520425617795,
+    "beta_deg": 1.3305708526934812
+   },
+   "vLimite30_kmh": 84.75796076394467,
+   "vLimite120_kmh": 182.88072831850667,
+   "vLimite180_kmh": 242.79068775384823
+  }
+ ]
+}
