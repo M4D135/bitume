@@ -446,14 +446,79 @@ verifier('écran bridé pendant que k > 1 : la cadence tenue ne change ni pendan
     assert.ok(depuis(images, 17500).every(i => i.k === 4 && !i.rate), nom + ' : 30 images par seconde aussitôt après');
     assert.ok(depuis(images, 17000).filter(i => i.rate).length <= 1, nom + ' : fin du bridage sans images ratées');
   }
-  // Fin d'un vrai bridage : la suite exigée, doublée par des hypothèses démenties au départ, redevient courte.
+  // Fin d'un vrai bridage : la suite exigée, doublée par des hypothèses démenties au départ, redevient courte, mais
+  // seulement après un bridage de 30 s au moins. Plus court (10 s), il peut être une machine liée au processeur
+  // graphique qui tient une hypothèse quelques secondes puis la dément : la suite reste longue (voir le contrôle
+  // « machine liée au processeur graphique » plus bas).
+  for (const [fin, attendu] of [[20000, null], [42000, 8]]) {
+    const C = K.creer({});
+    let suite = 0;
+    jouer(C, { hz: s => s >= 10000 && s < fin ? 60 : 120, duree: fin / 1000 + 6, gigue: .5, cpu: 1, gpu: s => s < 8000 ? 2.05 * H : 3,
+      apres: (f, s) => { if (s < 10000) suite = K.etat(C).suiteBridage; } });
+    assert.ok(suite >= 16, 'suite exigée doublée avant le bridage (' + suite + ')');
+    assert.equal(K.etat(C).suiteBridage, attendu || suite, attendu ? 'puis remise à huit après 32 s de bridage' : 'gardée après 10 s de bridage');
+    assert.equal(K.etat(C).bride, false);
+  }
+});
+// Machine bloquante : le rappel suivant n'a lieu qu'à la première synchronisation après la fin de l'image (aucune
+// image d'avance dans la file du processeur graphique). Une image de 1,5 à 1,7 période, à ±30 %, en tient tantôt
+// deux, tantôt trois : des suites de deux périodes font croire à un écran bridé, qu'un rappel à trois périodes dément.
+function jouerBloquant(C, o) {
+  const r = hasard(o.graine), cout = hasard(o.graine * 97 + 3), P = 1000 / o.hz, images = [];
+  let vs = 1000, libre = -1e9, jeu = 0;
+  while (vs < 1000 + o.duree * 1000) {
+    vs += P;
+    if (vs < libre) continue;
+    const f = K.image(C, vs + (r() * 2 - 1) * o.gigue, contexte());
+    if (!f.rendre) continue;
+    libre = vs + P * o.base * (1 + o.bruit * (cout() * 2 - 1));
+    K.travail(C, 1); jeu += f.pas;
+    images.push({ s: vs - 1000, vs, jeu: (jeu + f.alpha) * H });
+  }
+  return images;
+}
+verifier('machine liée au processeur graphique, images de 1,5 à 1,7 période : aucun saut du temps de jeu en 2 min', () => {
+  // Chaque hypothèse de bridage démentie faisait perdre une période bridée au temps de jeu (sauts de 16,7 à 33 ms,
+  // 233 à 350 ms de retard en 2 min) et la suite exigée, remise à huit, relançait le cycle sans fin.
+  for (const [hz, base, bruit] of [[60, 1.6, .3], [60, 1.5, .35], [60, 1.7, .3], [144, 1.6, .3]]) for (let graine = 1; graine <= 3; graine++) {
+    const C = K.creer({}), nom = `${hz} Hz, image de ${base} période ±${bruit * 100} %, graine ${graine}`;
+    const images = jouerBloquant(C, { hz, base, bruit, graine, duree: 120, gigue: .5 }).filter(i => i.s >= 7000);
+    let sauts = 0;
+    for (let i = 1; i < images.length; i++) if (Math.abs(images[i].jeu - images[i - 1].jeu - (images[i].vs - images[i - 1].vs)) > 1) sauts++;
+    const a = images[0], b = images.at(-1), derive = b.jeu - a.jeu - (b.vs - a.vs);
+    assert.equal(sauts, 0, nom + ' : ' + sauts + ' sauts de plus de 1 ms');
+    assert.ok(Math.abs(derive) < 1, nom + ' : dérive de ' + derive.toFixed(2) + ' ms');
+    // les réestimations restantes ne coûtent plus rien à l'écran ; leur nombre reste borné
+    assert.ok(K.etat(C).reestimations <= 90, nom + ' : ' + K.etat(C).reestimations + ' réestimations');
+  }
+});
+verifier('horodatage qui recule de 10 s : reprise aussitôt, l’écran ne fige pas', () => {
   const C = K.creer({});
-  let suite = 0;
-  jouer(C, { hz: s => s >= 10000 && s < 20000 ? 60 : 120, duree: 26, gigue: .5, cpu: 1, gpu: s => s < 8000 ? 2.05 * H : 3,
-    apres: (f, s) => { if (s < 10000) suite = K.etat(C).suiteBridage; } });
-  assert.ok(suite >= 16, 'suite exigée doublée avant le bridage (' + suite + ')');
-  assert.equal(K.etat(C).suiteBridage, 8, 'puis remise à huit');
-  assert.equal(K.etat(C).bride, false);
+  const { vs } = jouer(C, { hz: 60, duree: 5, gigue: .5 });
+  let t = vs - 10000, rendus = 0;
+  for (let i = 0; i < 600; i++) { t += 1000 / 60; if (K.image(C, t, contexte()).rendre) rendus++; }
+  assert.equal(rendus, 600, rendus + ' images rendues sur 600 après le recul');
+  // un rappel en double ou à peine en arrière reste sans image
+  assert.equal(K.image(C, t, contexte()).rendre, false);
+  assert.equal(K.image(C, t - 1, contexte()).rendre, false);
+});
+verifier('machine à moins de 4 images par seconde : rattrapage borné par maxPas ; une coupure isolée vaut un pas', () => {
+  // 300 ms par image : chaque image avance de maxPas pas (14 à 120 Hz, 117 ms), comme la boucle d'avant ; un seul
+  // pas par image ramenait le temps de jeu à 3 % du temps réel.
+  for (const cout of [260, 300, 400]) {
+    const C = K.creer({});
+    const pas = [];
+    for (let t = 1000; t < 31000; t += cout) { const f = K.image(C, t, contexte()); if (f.rendre) pas.push(f.pas); }
+    assert.ok(pas.slice(2).every(p => p === 14), cout + ' ms par image : pas ' + [...new Set(pas.slice(2))]);
+  }
+  // Intervalle long isolé (onglet, chargement sans oublier) après des images normales : un seul pas, rien à
+  // rattraper, puis la cadence reprend ses deux pas par image à 60 Hz.
+  const C = K.creer({});
+  const { vs } = jouer(C, { hz: 60, duree: 5, gigue: .5 });
+  const f = K.image(C, vs + 400, contexte());
+  assert.ok(f.rendre && f.pas === 1, 'coupure de 400 ms : ' + f.pas + ' pas');
+  let t = vs + 400;
+  for (let i = 0; i < 3; i++) { t += 1000 / 60; assert.equal(K.image(C, t, contexte()).pas, 2); }
 });
 verifier('fil principal de 18 à 30 ms en Fine sur 60 Hz : la grille est l’écran, pas un écran à 30 Hz, la qualité baisse', () => {
   // Des rappels réguliers toutes les deux périodes ressemblent à un écran bridé à 30 Hz ; le travail du fil

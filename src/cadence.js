@@ -14,6 +14,7 @@
 
   const MODES = Object.freeze(['auto', 'ecran', '120', '60', '30']);
   const COUPURE = 250;          // ms : au-delà, l'intervalle est une coupure (onglet, chargement), pas une image
+  const NORMAUX = 3;            // intervalles normaux après lesquels un intervalle long est une coupure isolée
   const AMORCE = 24, AMORCE_MIN = 12, AMORCE_MS = 300; // intervalles avant la première grille (moins s'ils sont longs)
   const BRUTS = 32;             // intervalles bruts gardés
   const REEST = 16;             // intervalles récents d'une réestimation (le régime précédent en sort vite)
@@ -24,6 +25,10 @@
   const SUITE = 8;              // rappels de suite sur un même multiple de la période : l'écran est peut-être bridé
   const SUITE_MAX = 32;         // suite exigée au plus, doublée à chaque bridage démenti aussitôt
   const BRIDE_COURTE = 3000;    // ms : un bridage démenti plus tôt était la machine
+  // ms : seul un bridage tenu au moins aussi longtemps rend la suite exigée courte. Une machine liée au processeur
+  // graphique, aux images de une et demie à deux périodes, tient une hypothèse de bridage plus de 3 s puis la dément :
+  // remettre la suite à 8 à chaque fois faisait osciller la grille sans fin entre une et deux périodes.
+  const BRIDE_LONGUE = 30000;
   const CHARGE = .9;            // travail du fil principal (en périodes) qui explique à lui seul des rappels espacés
   const DESACCORDS = 4;         // rappels en avance ou hors grille parmi les 16 derniers : la grille est à refaire
   // Écart quadratique moyen des synchronisations retenues à la droite (2 ms, ou 0,15 période si c'est plus) au-delà
@@ -71,7 +76,7 @@
     const C = {
       pasMs: 1000 / hz, maxPas, mode: 'auto',
       // horloge de l'écran : période estimée et droite des horodatages (numéro de synchronisation → temps)
-      periode: 0, grille: false, reprise: true, tPrec: NaN, brut: 0,
+      periode: 0, grille: false, reprise: true, tPrec: NaN, brut: 0, normaux: NORMAUX, lent: 0,
       bruts: new Float64Array(BRUTS), nBruts: 0, iBruts: 0, sBruts: 0,
       eT: new Float64Array(BRUTS + 1), eN: new Float64Array(BRUTS + 1), ePente: 0, eB: 0, eNombre: 0,
       cP: new Float64Array(CANDIDATS), cR: new Float64Array(CANDIDATS), cG: new Float64Array(CANDIDATS),
@@ -314,17 +319,18 @@
         // le début du bridage, le diviseur d'avant revient aussitôt (30 images par seconde sur un écran 120 Hz bridé
         // à 60 restent 30 ; 60 sur un écran 60 Hz bridé à 30 redeviennent 60), sans repartir de la cadence de
         // l'écran ni rater toutes ses images pendant 1,5 s. Si elle a changé (hausse, essai réussi, machine ralentie
-        // prise pour un bridage plus fort), c'est elle qui est convertie. La suite exigée redevient courte.
+        // prise pour un bridage plus fort), c'est elle qui est convertie. La suite exigée ne redevient courte
+        // qu'après un bridage long (BRIDE_LONGUE).
         const pareille = Math.abs(C.k * ancien - C.cadenceBride) <= MEME * C.cadenceBride;
         if (auto) C.k = pareille ? C.kAvant : Math.max(1, Math.round(C.k * ancien / P));
-        C.suiteMin = SUITE;
+        if (t - C.brideDebut >= BRIDE_LONGUE) C.suiteMin = SUITE;
       }
       C.fine = 0;
     } else {
       // Autre écran. Période plus courte : le mode Auto repart de la cadence de l'écran et réapprend. Un bridage
-      // tenu plus de 3 s était un vrai écran bridé : la suite exigée redevient courte.
+      // tenu longtemps (BRIDE_LONGUE) était un vrai écran bridé : la suite exigée redevient courte.
       if (auto) C.k = P > ancien ? Math.max(1, Math.round(C.k * ancien / P)) : 1;
-      if (C.fine > 0 && t - C.brideDebut >= BRIDE_COURTE) C.suiteMin = SUITE;
+      if (C.fine > 0 && t - C.brideDebut >= BRIDE_LONGUE) C.suiteMin = SUITE;
       C.fine = 0;
     }
     ajusterK(C);
@@ -336,14 +342,33 @@
   // (premier rappel, après oublier ou une coupure), 0 pour un rappel en double ou en avance sur la grille.
   function horloge(C, t) {
     if (C.reprise || C.tPrec !== C.tPrec) {
-      C.reprise = false; C.tPrec = t; C.nBruts = 0; C.sBruts = 0;
+      C.reprise = false; C.tPrec = t; C.nBruts = 0; C.sBruts = 0; C.normaux = NORMAUX; C.lent = 0;
       if (C.grille) ancrer(C, t);
       return -1;
     }
     C.brut = t - C.tPrec;
-    if (!(C.brut > 0)) return 0;
+    if (!(C.brut > 0)) {
+      // Rappel en double ou un peu en avance : rien. Un horodatage qui recule de plus d'une demi-période (horloge
+      // changée, page restaurée) est une reprise, comme dans FLoop : sinon plus rien n'était rendu tant que
+      // l'horloge n'avait pas rattrapé l'ancien instant (dix secondes d'écran figé pour un recul de dix secondes).
+      if (C.brut < -TOT * (C.periode > 0 ? C.periode : 1000 / 60)) {
+        C.tPrec = t; C.nBruts = 0; C.sBruts = 0; C.normaux = NORMAUX; C.lent = 0;
+        if (C.grille) ancrer(C, t);
+        return -1;
+      }
+      return 0;
+    }
     C.tPrec = t;
-    if (C.brut > COUPURE) { C.nBruts = 0; C.sBruts = 0; if (C.grille) ancrer(C, t); return -1; }
+    if (C.brut > COUPURE) {
+      // Coupure isolée, après des intervalles normaux (onglet, chargement) : un seul pas, rien à rattraper. Des
+      // intervalles longs rapprochés sont une machine qui tient moins de quatre images par seconde : image() les
+      // rattrape (C.lent), bornés par maxPas comme la boucle d'avant ; un seul pas par image ramenait le temps de jeu
+      // à 2 ou 3 % du temps réel. Aucun n'entre dans la grille.
+      C.lent = C.normaux >= NORMAUX ? 0 : C.brut; C.normaux = 0;
+      C.nBruts = 0; C.sBruts = 0; if (C.grille) ancrer(C, t); return -1;
+    }
+    if (C.normaux < NORMAUX) C.normaux++;
+    C.lent = 0;
     noter(C);
     if (!C.grille) {
       // 24 intervalles, ou 12 s'ils couvrent déjà 300 ms : un écran à 30 Hz a sa grille en 0,4 s
@@ -378,6 +403,19 @@
     let base = P;
     if (C.fine > 0) base = C.fine;
     const n = Math.round(ecart / P), hors = Math.abs(ecart - n * P) > ACCORD * base;
+    // Un rappel sur la grille d'avant mais hors de la grille bridée (trois périodes d'avant quand la bridée en vaut
+    // deux) dément aussitôt le bridage : un écran bridé ne présente rien entre ses synchronisations. Attendre quatre
+    // désaccords laissait le temps de jeu sauter d'une période à chaque bascule.
+    if (hors && C.fine > 0) {
+      const m = Math.round(ecart / C.fine);
+      if (m > 0 && Math.abs(ecart - m * C.fine) <= ACCORD * C.fine) {
+        // le rappel compte les périodes de la nouvelle grille écoulées depuis la synchronisation précédente : en
+        // compter une seule ferait perdre au temps de jeu une période bridée à chaque démenti
+        reestimer(C, REEST, t, false);
+        const nouvelles = Math.round(ecart / C.periode);
+        return nouvelles > 1 ? nouvelles : 1;
+      }
+    }
     C.desaccords = (C.desaccords << 1 | (hors ? 1 : 0)) & 0xffff;
     suivre(C, n);
     if (C.suite >= C.suiteMin && bridePossible(C)) { reestimer(C, C.suiteMin, t, true); return 1; }
@@ -501,10 +539,16 @@
     verrouiller(C);
     let ajout;
     if (n < 0) {
-      // Reprise : ni rattrapage ni image ratée. Un seul pas, la phase est gardée, et la fenêtre de décision repart
-      // (ses images datent d'avant la coupure).
-      ajout = echelle; C.attente = 0;
-      C.dtCumul = C.pasMs; annulerEssai(C); viderFenetre(C);
+      if (C.lent > 0) {
+        // Machine durablement très lente (voir horloge) : l'intervalle réel est rattrapé, borné par maxPas plus bas,
+        // sans image ratée ni décision.
+        ajout = C.lent / C.pasMs * echelle; C.dtCumul = C.lent;
+      } else {
+        // Reprise : ni rattrapage ni image ratée. Un seul pas, la phase est gardée.
+        ajout = echelle; C.attente = 0; C.dtCumul = C.pasMs;
+      }
+      // La fenêtre de décision repart : ses images datent d'avant la coupure.
+      annulerEssai(C); viderFenetre(C);
     } else if (C.verrou) {
       // verrouillé : n synchronisations valent exactement n × m pas
       ajout = n * C.pasSync * echelle;
