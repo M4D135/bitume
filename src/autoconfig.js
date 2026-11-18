@@ -5,8 +5,10 @@
   // REVISION entre dans l'empreinte et dans la validité du cache : la monter fait refaire une fois les détections
   // enregistrées. Révision 1 : chronomètre GPU. Révision 2 : image dessinée puis terminée, une par une (la lecture
   // d'un pixel mettait le fil principal, le processus graphique et la carte en série : Légère choisie sur un Apple M5
-  // qui tient Moyenne à 60 images par seconde). Révision 3 : rafales d'images en vol, simulation comprise.
-  const REVISION = 3, CLE = 'bitume.detection.v1', METHODE = 'rafales';
+  // qui tient Moyenne à 60 images par seconde). Révision 3 : rafales d'images en vol, simulation comprise. Révision 4 :
+  // fil principal mesuré une image par rappel, comme en course ; palier proche de la limite mesuré deux ou trois fois,
+  // refus de peu provisoire.
+  const REVISION = 4, CLE = 'bitume.detection.v1', METHODE = 'rafales';
   const CLES = Object.freeze(['qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'retro']);
   // Noms courts des options, pour dire dans l'onglet Image lesquelles le joueur a gardées.
   const NOMS = Object.freeze({ qualite: 'qualité', anticrenelage: 'anticrénelage', ombres: 'ombres', vegetation: 'végétation',
@@ -34,18 +36,34 @@
   // est relevée pour mémoire ; elle ne juge pas.
   // FRACTION : part du budget que l'image mesurée peut prendre. Le reste couvre la composition de la page, un
   // ramassage mineur de la mémoire, les endroits du circuit plus chargés que les trois points de vue et les écarts
-  // d'une image à l'autre. Elle est confirmée en fenêtre réelle (docs/reprise/rapports/detection-2026-11-18).
+  // d'une image à l'autre. Vérifiée le 19/11 sur le M5 en fenêtre réelle : Moyenne mesurée de 7,9 à 8,9 ms, puis
+  // tenue en course sept fois sur sept (0 image ratée, temps clair et pluie) ; Fine mesurée de 22,9 à 24,5 ms, 161
+  // images ratées sur 400. Elle ne couvre pas un autre programme qui occupe la carte pendant la course : Moyenne sous
+  // la pluie, à la taille de l'écran, carte occupée par d'autres agents, a raté 31 et 63 images en 10 s (Légère aucune).
   const BUDGET = 1000 / 60, FRACTION = .8, LIMITE = BUDGET * FRACTION;
-  // Fil principal : la course y fait bien plus que le parcours (caméra, glaces, météo, habitacle, affichage, son, puis
-  // la mise en page du navigateur). Relevé le 18/11 sur le M5 avec le volet de mesures, en Moyenne au départ de
-  // Val-Brûlé : boucle de la course 4,6 à 5,2 ms par image pour 1,6 à 1,75 ms au parcours (deux séances, 2,7 à 3,1
-  // fois) ; processeur ralenti quatre fois, 18,6 à 21,8 ms pour 8,35 ms (le ralentissement émulé gonfle le parcours
-  // plus que la course). COURSE_PROCESSEUR estime ainsi le fil principal de la course d'après celui du parcours, au
-  // rapport du processeur réel ; l'estimation doit tenir dans PART_PROCESSEUR du budget, pour que les images les plus
-  // lourdes (une fois et demie la médiane) et un ramassage de mémoire y tiennent encore. Sans cette règle, le
-  // processeur ralenti quatre fois passait Moyenne (11 ms en rafale, sous la limite) et la course y ratait 14 à 95
-  // images en 10 s ; au rapport 2,5, il la passait encore machine peu chargée (3,3 ms au parcours, 8,25 estimés).
-  const COURSE_PROCESSEUR = 3, PART_PROCESSEUR = .5, LIMITE_PROCESSEUR = BUDGET * PART_PROCESSEUR;
+  // Fil principal (C5 de la relecture du 18/11). La course rend une image par rappel d'image : une tâche courte,
+  // suivie d'un temps libre. Le parcours mesure donc le fil principal de la même façon, IMAGES_SEULES images une par
+  // rappel, sans fin forcée. Dans la rafale, les images se suivent d'un seul tenant et paient une fois ce que la course
+  // paie à chaque image (sur le M5, 0,8 à 1,1 ms par image en rafale, 1,2 à 1,6 ms en image seule). Par point de vue,
+  // la moyenne de ses images (le cockpit alterne images avec et sans glace) ; le point de vue le plus chargé juge.
+  // COURSE_PROCESSEUR fois cette image estime la boucle de la course, qui doit tenir dans PART_PROCESSEUR du budget
+  // (le reste : mise en page et composition du navigateur, images les plus lourdes, ramassage de la mémoire). Relevés
+  // des 18 et 19/11, volet de mesures, Moyenne à la taille de l'écran au départ de Val-Brûlé : sur le M5, image seule
+  // de 1,2 à 1,6 ms, boucle de la course de 1,7 à 2,6 ms au 50e centile et de 2,6 à 4,9 ms au 95e ; processeur ralenti
+  // par Chrome deux fois, image seule de 1,9 à 2,1 ms et course tenue par temps clair ; trois ou quatre fois, 5,4 à
+  // 6,2 ms et 12 à 24 images ratées en 10 s. Au rapport de 3, Moyenne n'est retenue que sous 2,8 ms par image seule :
+  // entre ce qui tient et ce qui rate, du côté prudent. Le ralentissement émulé est irrégulier (Moyenne a coûté 22 et
+  // 25 ms ralentie trois fois, 13 ms quatre fois) ; une vraie petite machine reste à mesurer.
+  const IMAGES_SEULES = 12, COURSE_PROCESSEUR = 3, PART_PROCESSEUR = .5, LIMITE_PROCESSEUR = BUDGET * PART_PROCESSEUR;
+  // Zone grise (C2 et C4 de la relecture du 18/11). Une mesure seule, gardée pour toute la version, se trompe quand
+  // un autre programme occupe la machine ce jour-là (le M5 a donné Légère, Moyenne puis Fine en une minute, la carte
+  // occupée à 85 % par d'autres travaux), ou quand elle tombe juste sous la limite (Moyenne acceptée à 12,45 ms pour
+  // 13,33, puis 17 images ratées en course). Un palier dont la série tombe entre GRIS_BAS et GRIS_HAUT fois ses
+  // limites est donc mesuré une seconde fois ; si les deux séries se contredisent, une troisième tranche. Deux séries
+  // doivent passer toutes les deux ; sur trois, la médiane juge. Un palier refusé de peu (sous GRIS_HAUT fois ses
+  // limites) rend le verdict provisoire, comme un écran bridé : appliqué, puis refait à l'ouverture suivante, deux
+  // fois au plus (TENTATIVES).
+  const GRIS_BAS = .85, GRIS_HAUT = 1.6, SERIES_MAX = 3;
   // Glaces que la course dessinerait mais que le parcours ne peut pas dessiner (moteur des glaces impossible à
   // créer) : leur part est retirée de la limite. Comptée le 18/11 au départ de Val-Brûlé, une image de glace pèse
   // 0,36 fois les triangles de la vue principale en Fine (une glace par image) ; en Moyenne, une image sur deux.
@@ -115,17 +133,20 @@
   // plus souvent de l'économie d'énergie de Chrome, signe d'une machine qui n'est pas dans son état ordinaire
   // (Moyenne mesurée de 7,8 à 23,9 ms sous bridage sur le M5 le 18/11, selon la charge, pour 7 à 10 d'ordinaire). Elle
   // est appliquée, puis refaite à l'ouverture suivante ; TENTATIVES mesures bridées de suite valent verdict.
+  // Un palier refusé de peu (provisoire, voir GRIS_HAUT) l'est de même : la machine était peut-être occupée par un
+  // autre programme pendant le test.
   // Un onglet passé en arrière-plan (onglet_masque) n'est jamais un verdict : la page attend le retour du joueur pour
   // mesurer (src/jeu.js, premierPlan), et une trace laissée ainsi ne compte pas parmi les tentatives.
   function cacheValide(cache, cle) {
     if (!cache || cache.revision !== REVISION || cache.empreinte !== cle) return false;
     if (cache.statut === 'ok') return Object.prototype.hasOwnProperty.call(profils, cache.selection)
-      && Array.isArray(cache.mesures) && cache.mesures.length > 0 && (!cache.cadenceBridee || (cache.tentatives | 0) >= TENTATIVES);
+      && Array.isArray(cache.mesures) && cache.mesures.length > 0
+      && (!(cache.cadenceBridee || cache.provisoire) || (cache.tentatives | 0) >= TENTATIVES);
     return cache.statut === 'interrompu' && (cache.motif === 'annule'
       || (cache.motif !== 'onglet_masque' && (cache.tentatives | 0) >= TENTATIVES));
   }
-  // Tentatives de la même version sans verdict définitif (interruptions, mesures sous un écran bridé), celle-ci
-  // comprise. Un onglet passé en arrière-plan n'en est pas une.
+  // Tentatives de la même version sans verdict définitif (interruptions, mesures provisoires), celle-ci comprise. Un
+  // onglet passé en arrière-plan n'en est pas une.
   function tentatives(precedent, resultat) {
     const meme = !!precedent && precedent.revision === REVISION && precedent.empreinte === resultat.empreinte;
     return (meme ? precedent.tentatives | 0 : 0) + (resultat.motif === 'onglet_masque' ? 0 : 1);
@@ -176,22 +197,48 @@
     if (ref) r.appliques = ref;
     return r;
   }
-  // Rafales d'un palier : coût (ms par image) de chaque point de vue au 50e centile, le plus cher juge ; de même, le
-  // point de vue au fil principal le plus chargé juge l'estimation de la course (processeur). Chaque point de vue doit
-  // avoir au moins deux rafales.
-  function bilanRafales(id, rafales, limite = LIMITE) {
+  // Une série d'un palier : coût (ms par image) de chaque point de vue au 50e centile de ses rafales, le plus cher
+  // juge ; fil principal de chaque point de vue (moyenne de ses images seules, ms), le plus chargé juge l'estimation
+  // de la course (processeur). Sans images seules (anciens relevés, essais), le fil principal de la rafale en tient
+  // lieu. Chaque point de vue doit avoir au moins deux rafales.
+  const moyenne = l => { const a = l.filter(Number.isFinite); return a.length ? a.reduce((s, x) => s + x, 0) / a.length : null; };
+  function bilanRafales(id, rafales, limite = LIMITE, seules = null) {
+    const avecSeules = Array.isArray(seules) && seules.length > 0;
     const parVue = [0, 1, 2].map(v => {
-      const l = rafales.filter(r => r.vue === v);
-      return { vue: v, rafales: l.length, cout: arrondir(q(l.map(r => r.cout), .5)), cpu: arrondir(q(l.map(r => r.cpu), .5)) };
+      const l = rafales.filter(r => r.vue === v), s = avecSeules ? seules.filter(x => x.vue === v).map(x => x.ms) : [];
+      return { vue: v, rafales: l.length, cout: arrondir(q(l.map(r => r.cout), .5)), cpu: arrondir(q(l.map(r => r.cpu), .5)),
+        seule: arrondir(moyenne(s)) };
     });
     const vues = parVue.filter(p => p.rafales > 0), complet = parVue.every(p => p.rafales >= 2);
     const cout = vues.length ? Math.max(...vues.map(p => p.cout)) : null;
-    const cpus = vues.map(p => p.cpu).filter(Number.isFinite);
+    const cpus = (avecSeules ? parVue.map(p => p.seule) : vues.map(p => p.cpu)).filter(Number.isFinite);
     const processeur = cpus.length ? Math.max(...cpus) * COURSE_PROCESSEUR : null;
-    return { profil: id, methode: METHODE, rafales: rafales.length, images: rafales.reduce((s, r) => s + r.n, 0),
+    return { profil: id, methode: METHODE, rafales: rafales.length, images: rafales.reduce((s, r) => s + r.n, 0), complet,
       cout: arrondir(cout), cout90: arrondir(q(rafales.map(r => r.cout), .9)), cpu: arrondir(q(rafales.map(r => r.cpu), .5)),
-      processeur: arrondir(processeur), parVue, budget: arrondir(BUDGET), limite: arrondir(limite), limiteProcesseur: arrondir(LIMITE_PROCESSEUR),
+      seule: arrondir(cpus.length ? Math.max(...cpus) : null), processeur: arrondir(processeur), parVue, budget: arrondir(BUDGET),
+      limite: arrondir(limite), limiteProcesseur: arrondir(LIMITE_PROCESSEUR),
       acceptable: complet && cout !== null && cout <= limite && processeur !== null && processeur <= LIMITE_PROCESSEUR };
+  }
+  // Zone d'une série (voir GRIS_BAS) : 'nette' (sous GRIS_BAS fois ses deux limites), 'perdue' (incomplète, ou
+  // au-delà de GRIS_HAUT fois l'une d'elles) ou 'grise'.
+  function zone(s) {
+    if (!s || !s.complet || !Number.isFinite(s.cout) || !Number.isFinite(s.processeur)) return 'perdue';
+    if (s.cout > s.limite * GRIS_HAUT || s.processeur > LIMITE_PROCESSEUR * GRIS_HAUT) return 'perdue';
+    return s.cout <= s.limite * GRIS_BAS && s.processeur <= LIMITE_PROCESSEUR * GRIS_BAS ? 'nette' : 'grise';
+  }
+  // Verdict d'un palier sur ses séries : une seule, la sienne ; deux, la plus lourde (les deux doivent passer) ; trois,
+  // la médiane. provisoire : refusé de peu, sous GRIS_HAUT fois ses limites.
+  function combiner(series) {
+    const n = series.length, valeur = k => {
+      const l = series.map(s => s[k]);
+      return l.every(Number.isFinite) ? n === 2 ? Math.max(...l) : q(l, .5) : null;
+    };
+    const s0 = series[0], cout = valeur('cout'), processeur = valeur('processeur'), complet = series.every(s => s.complet);
+    const acceptable = complet && cout !== null && cout <= s0.limite && processeur !== null && processeur <= LIMITE_PROCESSEUR;
+    const provisoire = !acceptable && complet && cout !== null && processeur !== null
+      && cout <= s0.limite * GRIS_HAUT && processeur <= LIMITE_PROCESSEUR * GRIS_HAUT;
+    return { cout: arrondir(cout), processeur: arrondir(processeur), seule: arrondir(valeur('seule')), cpu: arrondir(valeur('cpu')),
+      acceptable, provisoire, series: n };
   }
   function choisir(mesures) {
     for (const id of ['extreme', 'high', 'medium']) if (mesures.some(m => m.profil === id && m.acceptable)) return id;
@@ -221,8 +268,9 @@
       progression('Réglages adaptés', 1);
       // periode : période de l'écran relevée sur des images à vide, pour mémoire ; cadenceBridee : 30 Hz ou moins
       // (économie d'énergie, onglet ralenti). Le bridage ne change pas le coût mesuré, mais rend le verdict
-      // provisoire (cacheValide).
+      // provisoire (cacheValide), comme un palier refusé de peu (provisoire).
       return { revision: REVISION, statut: 'ok', empreinte: cle, selection, reglages: reglages(selection), mesures, sonde, simulation,
+        provisoire: mesures.some(m => m.provisoire === true),
         methode: METHODE, budget: arrondir(BUDGET), fraction: FRACTION, limite: arrondir(LIMITE), limiteProcesseur: arrondir(LIMITE_PROCESSEUR),
         cadence: arrondir(periode), cadenceIntervalles: cadence.length, cadenceEcart: arrondir(q(cadence, .9) - q(cadence, .1)),
         cadenceBridee: Number.isFinite(periode) && periode > 25, duree: arrondir((maintenant() - debut) / 1000), date: Date.now(), partiel: !!partiel };
@@ -313,26 +361,52 @@
           if (info.glaces === 'dessinees') for (let i = 0; i < 2; i++) { const t = await trame(); io.dessiner(t / 1000, 0); io.terminer(); }
         }
         const limite = limiteProfil(info), R = Math.max(R_MIN, Math.min(R_MAX, Math.floor(RAFALE_MS / Math.max(1, serie))));
-        const rafales = [], depart = maintenant();
-        for (let k = 0; ; k++) {
-          const vue = k % 3, t = await trame(), a = maintenant();
-          for (let j = 0; j < R; j++) io.dessiner(t / 1000 + j / 60, vue);
-          const b = maintenant();
-          io.terminer();
-          const w = maintenant() - a;
-          rafales.push({ vue, n: R, cout: w / R, cpu: (b - a) / R });
-          const tours = Math.floor(rafales.length / 3);
-          if (tours >= RAFALES_PAR_VUE && rafales.length % 3 === 0) break;
-          if (tours >= 2 && rafales.length % 3 === 0) {
-            const b2 = bilanRafales(id, rafales, limite);
-            // sans espoir ou hors du temps alloué : deux rafales par point de vue suffisent
-            if (b2.cout > limite * 1.6 || maintenant() - depart > MESURE_MS) break;
+        // Une série : IMAGES_SEULES images, une par rappel et sans fin forcée (fil principal, comme en course), puis
+        // les rafales (coût d'une image).
+        const mesurerSerie = async () => {
+          const t1 = maintenant(), seules = [];
+          for (let k = 0; k < IMAGES_SEULES; k++) {
+            const vue = k % 3, t = await trame(), a = maintenant();
+            io.dessiner(t / 1000, vue);
+            seules.push({ vue, ms: maintenant() - a });
           }
+          // le travail que la carte doit encore à ces images ne compte pas dans la première rafale
+          io.terminer();
+          const rafales = [], depart = maintenant();
+          for (let k = 0; ; k++) {
+            const vue = k % 3, t = await trame(), a = maintenant();
+            for (let j = 0; j < R; j++) io.dessiner(t / 1000 + j / 60, vue);
+            const b = maintenant();
+            io.terminer();
+            const w = maintenant() - a;
+            rafales.push({ vue, n: R, cout: w / R, cpu: (b - a) / R });
+            const tours = Math.floor(rafales.length / 3);
+            if (tours >= RAFALES_PAR_VUE && rafales.length % 3 === 0) break;
+            if (tours >= 2 && rafales.length % 3 === 0) {
+              const b2 = bilanRafales(id, rafales, limite, seules);
+              // sans espoir ou hors du temps alloué : deux rafales par point de vue suffisent
+              if (b2.cout > limite * GRIS_HAUT || maintenant() - depart > MESURE_MS) break;
+            }
+          }
+          return Object.assign(bilanRafales(id, rafales, limite, seules), { duree: arrondir(maintenant() - t1),
+            detail: rafales.map(r => [r.vue, arrondir(r.cout), arrondir(r.cpu)]), seules: seules.map(s => [s.vue, arrondir(s.ms)]) });
+        };
+        const series = [await mesurerSerie()];
+        // zone grise : une seconde série, et une troisième si les deux se contredisent, tant qu'elles tiennent dans
+        // DUREE_MAX
+        const encore = () => series.length < SERIES_MAX && maintenant() - debut + series[0].duree <= DUREE_MAX;
+        const controle = async () => { progression('Mesure de contrôle · ' + nom, .2 + rang * .3); series.push(await mesurerSerie()); };
+        if (zone(series[0]) === 'grise' && encore()) {
+          await controle();
+          if (series[0].acceptable !== series[1].acceptable && encore()) await controle();
         }
-        const resultat = bilanRafales(id, rafales, limite);
+        const resultat = Object.assign({}, series[0], combiner(series));
         // preparation, glacesMs, duree : millisecondes du décor du palier, du chargement des glaces, et du palier en tout
         Object.assign(resultat, { R, chauffe, glaces: info.glaces || null, glacesParImage: info.glacesParImage ?? null, toile: info.toile || null,
-          preparation, glacesMs, duree: arrondir(maintenant() - t0), detail: rafales.map(r => [r.vue, arrondir(r.cout), arrondir(r.cpu)]) });
+          preparation, glacesMs, duree: arrondir(maintenant() - t0),
+          series: series.map(s => ({ cout: s.cout, processeur: s.processeur, seule: s.seule, cpu: s.cpu, acceptable: s.acceptable, duree: s.duree,
+            detail: s.detail, seules: s.seules })) });
+        delete resultat.seules;
         mesures.push(resultat); return resultat;
       };
       const tient = m => maintenant() - debut + (Number.isFinite(m.duree) ? m.duree : 0) <= DUREE_MAX;
@@ -349,8 +423,8 @@
       return { revision: REVISION, statut: 'interrompu', motif: e && e.motif || 'erreur', empreinte: cle, mesures, methode: METHODE };
     }
   }
-  B.autoconfig = { REVISION, CLE, CLES, NOMS, METHODE, BUDGET, FRACTION, LIMITE, COURSE_PROCESSEUR, PART_PROCESSEUR, LIMITE_PROCESSEUR,
-    PART_GLACES, EXTREME, ESPOIR, ESPOIR_VITE, SONDE_MS, COURSE_SIMULATION, TENTATIVES, DUREE_MAX, DELAI, PREPARATION_MAX, profils,
-    empreinte, reglages, cacheValide, tentatives, reference, referenceProbable, fusionner, marquer, bilanRafales, limiteProfil, choisir,
-    peutEssayerExtreme, executer };
+  B.autoconfig = { REVISION, CLE, CLES, NOMS, METHODE, BUDGET, FRACTION, LIMITE, IMAGES_SEULES, COURSE_PROCESSEUR, PART_PROCESSEUR,
+    LIMITE_PROCESSEUR, GRIS_BAS, GRIS_HAUT, SERIES_MAX, PART_GLACES, EXTREME, ESPOIR, ESPOIR_VITE, SONDE_MS, COURSE_SIMULATION, TENTATIVES,
+    DUREE_MAX, DELAI, PREPARATION_MAX, profils, empreinte, reglages, cacheValide, tentatives, reference, referenceProbable, fusionner, marquer,
+    bilanRafales, zone, combiner, limiteProfil, choisir, peutEssayerExtreme, executer };
 })(globalThis.BITUME = globalThis.BITUME || {});

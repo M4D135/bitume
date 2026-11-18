@@ -197,6 +197,24 @@ await verifier('C7 : trace illisible, réglages gardés : seules les options ret
   const u = orchestration(B, { reglages: { ...USINE }, selection: 'low' }); await u.detecterGraphismes(true);
   assert.deepEqual(six(u.reglages), A.reglages('low'));
 });
+await verifier('C2 : palier au-dessus refusé de peu : appliqué, refait à l’ouverture suivante, deux fois au plus', async () => {
+  const refuse = [{ profil: 'medium', acceptable: false, provisoire: true, cout: 15.9 }];
+  const h = orchestration(B, { reglages: { ...USINE }, sortie: { revision: A.REVISION, statut: 'ok', selection: 'low', mesures: refuse, reglages: A.reglages('low'), provisoire: true } });
+  await h.detecterGraphismes(true);
+  assert.deepEqual(six(h.reglages), A.reglages('low'));
+  assert.equal(h.stockage[A.CLE].tentatives, 1); assert.equal(A.cacheValide(h.stockage[A.CLE], h.empreinteDetection()), false);
+  h.majDetectionGraphique();
+  assert.equal(etat(h), 'Dernière détection : Légère · réglages appliqués. Moyenne refusée de peu, peut-être parce qu’un autre programme occupait la machine : nouvelle mesure à la prochaine ouverture.');
+  // ouverture suivante, machine au repos : Moyenne, verdict
+  const libre = orchestration(B, { stock: h.stockage, reglages: six(h.reglages), selection: 'medium' });
+  await libre.detecterGraphismes(true);
+  assert.deepEqual(six(libre.reglages), A.reglages('medium')); assert.ok(A.cacheValide(libre.stockage[A.CLE], libre.empreinteDetection()));
+  // refusée de peu deux fois : verdict, l'onglet Image dit quand relancer
+  const encore = orchestration(B, { stock: h.stockage, reglages: six(h.reglages), sortie: { revision: A.REVISION, statut: 'ok', selection: 'low', mesures: refuse, reglages: A.reglages('low'), provisoire: true } });
+  await encore.detecterGraphismes(true);
+  assert.equal(encore.stockage[A.CLE].tentatives, 2); assert.ok(A.cacheValide(encore.stockage[A.CLE], encore.empreinteDetection()));
+  encore.majDetectionGraphique(); assert.match(etat(encore), /Moyenne refusée de peu à chaque test : relancez la détection quand la machine est au repos\.$/);
+});
 await verifier('annulation et exception à la main : aucune préférence écrite, interface et monde restitués', async () => {
   const precedente = { revision: A.REVISION, statut: 'ok', selection: 'medium', empreinte: 'x', mesures: [{}], appliques: A.reglages('medium') };
   for (const scenario of [{ annulation: true }, { echec: true }, { echec: true, restaurationImpossible: true }, { annulation: true, stock: { [A.CLE]: precedente } }]) {

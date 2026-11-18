@@ -2734,11 +2734,17 @@
       // la recommandation reste affichée ; les options que le joueur a gardées ou changées depuis sont nommées
       const choisis = B.autoconfig.reglages(dernier.selection), nom = B.autoconfig.profils[dernier.selection].nom;
       const gardes = B.autoconfig.CLES.filter(k => reglages[k] !== choisis[k]);
+      const encore = (dernier.tentatives | 0) < B.autoconfig.TENTATIVES;
+      const refuse = !dernier.cadenceBridee && dernier.provisoire && Array.isArray(dernier.mesures)
+        ? dernier.mesures.find(m => m && m.provisoire && B.autoconfig.profils[m.profil]) : null;
       etat.textContent = (gardes.length ? 'Recommandé : ' + nom + ' · vos choix gardés : ' + gardes.map(k => B.autoconfig.NOMS[k]).join(', ') + '.'
         : 'Dernière détection : ' + nom + ' · réglages appliqués.')
-        + (!dernier.cadenceBridee ? '' : (dernier.tentatives | 0) < B.autoconfig.TENTATIVES
+        + (dernier.cadenceBridee ? encore
           ? ' Écran bridé à 30 images par seconde pendant le test (économie d’énergie ?) : nouvelle mesure à la prochaine ouverture.'
-          : ' Écran bridé à 30 images par seconde à chaque test (économie d’énergie ?) : relancez la détection sans elle.');
+          : ' Écran bridé à 30 images par seconde à chaque test (économie d’énergie ?) : relancez la détection sans elle.'
+          : !refuse ? '' : encore
+            ? ' ' + B.autoconfig.profils[refuse.profil].nom + ' refusée de peu, peut-être parce qu’un autre programme occupait la machine : nouvelle mesure à la prochaine ouverture.'
+            : ' ' + B.autoconfig.profils[refuse.profil].nom + ' refusée de peu à chaque test : relancez la détection quand la machine est au repos.');
     } else etat.textContent = dernier && dernier.statut === 'interrompu'
       ? (dernier.motif === 'annule' ? 'Détection passée · réglages conservés.' : 'Détection interrompue · réglages conservés.') : 'Aucune mesure enregistrée.';
   }
@@ -2784,8 +2790,9 @@
     const f = B.autoconfig.fusionner(reglages, ref, choisis, !!toutAppliquer);
     Object.assign(reglages, f.valeurs);
     resultat.appliques = f.reference; resultat.gardes = f.gardes;
-    // mesure sous un écran bridé à 30 Hz : appliquée, mais refaite à l'ouverture suivante (B.autoconfig.cacheValide)
-    if (resultat.cadenceBridee) resultat.tentatives = B.autoconfig.tentatives(precedent, resultat);
+    // mesure sous un écran bridé à 30 Hz, ou palier refusé de peu : appliquée, mais refaite à l'ouverture suivante
+    // (B.autoconfig.cacheValide)
+    if (resultat.cadenceBridee || resultat.provisoire) resultat.tentatives = B.autoconfig.tentatives(precedent, resultat);
     // Après une mesure réelle, l'ancien indice fondé sur le nom du GPU n'impose plus un faux plafond.
     gpuModeste = resultat.selection === 'low';
     capacitesRendu = Object.freeze({ ...capacitesRendu, gpuModeste });
