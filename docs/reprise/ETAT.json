@@ -6,11 +6,11 @@
     "base_version": "0.2.31",
     "version_cible": "0.2.32",
     "ferro_version_base": "0.3.7",
-    "statut": "lot_09_qualifie_publication_en_cours",
+    "statut": "lot_09_publie",
     "lot": "prairies_vivantes",
     "fiche": "docs/reprise/09-PRAIRIES-VIVANTES.md",
-    "commit_publie": null,
-    "prochaine_action": "Publier le jeu et son reçu ; déploiement Mac puis contrôle visuel et FPS réels.",
+    "commit_publie": "e90b08f550eae2bda47ad14d4093911d3fd793d2",
+    "prochaine_action": "Deployer depuis le Mac, puis controler Haut-Col Jour/Nuit/Cycle, prairie/vent et FPS sur materiel reel.",
     "precision_utilisateur": "Choix jour/nuit avant départ avec météo ; lumière sur les trois circuits, lucioles et palette féerique seulement Haut-Col.",
     "version": "0.2.32",
     "ferro_version": "0.3.8",
@@ -37,7 +37,9 @@
       "foret": 14.87,
       "cote": 14.71,
       "montagne": 14.18
-    }
+    },
+    "arbre_publie": "557ba44aeb3f2dc92c2b64c9fc1ebdee11e11c8e",
+    "recu": "docs/reprise/rapports/prairies-vivantes-2026-11-18/publication.json"
   },
   "integration": {
     "nouvelle_branche": false,
@@ -58,7 +60,21 @@
     },
     "deploiement_blocage": "Acces Mac/amiga indisponible dans cet environnement ; autorisation deja acquise.",
     "deploiement_031_effectue": false,
-    "deploiement_032_effectue": false
+    "deploiement_032_effectue": false,
+    "publication_bitume": {
+      "version": "0.2.32",
+      "commit": "e90b08f550eae2bda47ad14d4093911d3fd793d2",
+      "arbre": "557ba44aeb3f2dc92c2b64c9fc1ebdee11e11c8e",
+      "branche": "main",
+      "verifiee": true,
+      "force": false,
+      "parent_attendu": "e4d3e74b76ed03222424077bad1939acbd5e60c0"
+    },
+    "production_controle_final": {
+      "statut": "non_reconfirmee",
+      "raison": "Lecture web inaccessible ; GET HTTPS direct termine par timeout. Aucun deploiement ici.",
+      "note_enregistree_utc": "2026-11-18T09:42:03.755592+00:00"
+    }
   },
   "reprise_courte": {
     "regle": "Lire REPRISE.md et cet etat ; un seul lot ; sorties et recherches bornees ; historique seulement si necessaire.",

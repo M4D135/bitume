@@ -2,9 +2,9 @@
 
 ## État actuel — 18 novembre 2026
 
-- Branche : `main`. BITUME **0.2.32 qualifié**, publication en cours ; base distante `e4d3e74b76ed03222424077bad1939acbd5e60c0`.
+- Branche : `main`. BITUME **0.2.32 publié** : `e90b08f550eae2bda47ad14d4093911d3fd793d2`.
 - Moteur **FERRO 0.3.8 publié** : `ef722c0c56e04a20574db53b057f339968d714c3` ; 34 modules installés et verrouillés.
-- **Lot 09 terminé côté code** : prairie aléatoire sur sols herbeux, Extrême local ≥ ×14, vent, insectes, lucioles à Haut-Col.
+- **Lot 09 publié** : prairie aléatoire sur sols herbeux, Extrême local ≥ ×14, vent, insectes, lucioles à Haut-Col.
 - **Jour / Crépuscule / Nuit / Cycle** avant départ près de la météo et dans Réglages ; choix de l’hôte en ligne.
 - Fiche active unique : `docs/reprise/09-PRAIRIES-VIVANTES.md`.
 - La signature **m4d135 enregistre BITUME.html** ; rôle, avatar et placement préservés.
@@ -15,7 +15,7 @@
 
 ## Prochain petit lot
 
-Terminer le reçu de publication, puis déployer depuis le Mac et contrôler jour/nuit, prairie et FPS sur matériel réel. Ne pas refaire le lot 09 sans défaut constaté.
+Déployer depuis le Mac et contrôler jour/nuit, prairie et FPS sur matériel réel. Ne pas refaire le lot 09 sans défaut constaté.
 
 ## Méthode pour garder le contexte court
 

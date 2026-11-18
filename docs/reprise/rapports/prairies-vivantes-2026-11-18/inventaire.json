@@ -1,96 +1,101 @@
 {
+  "date_utc": "2026-11-18T09:42:03.755592+00:00",
+  "note": "Fichiers du rapport apres ajout du recu, hors inventaire lui-meme. Le commit_code du recu identifie le build qualifie ; le commit suivant ne porte que la documentation de publication.",
   "fichiers": [
     {
-      "fichier": "LISEZ-MOI.md",
-      "octets": 3326,
+      "path": "LISEZ-MOI.md",
+      "bytes": 3326,
       "sha256": "3a759e29896fdcdf4e0c1c3fc72efe8dda9319cbd3d5897184c29c2ae406f211"
     },
     {
-      "fichier": "build-candidat.json",
-      "octets": 148,
+      "path": "build-candidat.json",
+      "bytes": 148,
       "sha256": "8c703990615860c9dd40041558085bb3a3951543f4b22eba7a7b7330b98750b7"
     },
     {
-      "fichier": "build-final-verification.json",
-      "octets": 1007,
+      "path": "build-final-verification.json",
+      "bytes": 1007,
       "sha256": "eea3829a4c877b896bd0fd5da296c91bb1df15efbb199c27a4e1904b34c2fdbf"
     },
     {
-      "fichier": "construction-reproduite.log",
-      "octets": 189,
+      "path": "construction-reproduite.log",
+      "bytes": 189,
       "sha256": "da88ff175ffa3a1f7210e1fa80d2c9102b336828c480e67d8d436dc3cb04ae65"
     },
     {
-      "fichier": "densite-locale-031.json",
-      "octets": 11478,
+      "path": "densite-locale-031.json",
+      "bytes": 11478,
       "sha256": "9abc961b8305cb68e0c1c8b3042b37348f9f8858b1e3459781ba4b9d6dbbdb8b"
     },
     {
-      "fichier": "densites-final.json",
-      "octets": 18811,
+      "path": "densites-final.json",
+      "bytes": 18811,
       "sha256": "499134a09a327018539480ccdd64280bb46cf6ff2f654c20536ae1e009d99f7f"
     },
     {
-      "fichier": "empreinte-racines-031-max.png",
-      "octets": 502974,
+      "path": "empreinte-racines-031-max.png",
+      "bytes": 502974,
       "sha256": "199bfcd29e35d7b07ba26fc6c3df1417e7fb28cbfa59e56c30fbc19b416cdbcf"
     },
     {
-      "fichier": "prairie-rapport.md",
-      "octets": 4475,
+      "path": "prairie-rapport.md",
+      "bytes": 4475,
       "sha256": "cd64f29ee8f017daa9c743a5a7b34c6151feece3a681031c4277303013e79f0b"
     },
     {
-      "fichier": "prairie-sourcehashes.json",
-      "octets": 590,
+      "path": "prairie-sourcehashes.json",
+      "bytes": 590,
       "sha256": "9d83bcf0daccc0dab69861f3ccc0def8299660a68b417e5549f8aa483ab63c5f"
     },
     {
-      "fichier": "soumission-031-high.json",
-      "octets": 11106,
+      "path": "publication.json",
+      "bytes": 4102,
+      "sha256": "ae5cce096eb8cfa77eb4d4a24dbaa0f700950d3aff1e38463724df53aac21097"
+    },
+    {
+      "path": "soumission-031-high.json",
+      "bytes": 11106,
       "sha256": "3f626dc876183d7905a60ce212d418030374360100bbfda89db5d52f541d8654"
     },
     {
-      "fichier": "soumission-031-ultra.json",
-      "octets": 11125,
+      "path": "soumission-031-ultra.json",
+      "bytes": 11125,
       "sha256": "d221ac447148d366cc74be14882aa93c06f6cf46530b627dc1f969a3ff5dd29a"
     },
     {
-      "fichier": "soumission-032-high.json",
-      "octets": 11435,
+      "path": "soumission-032-high.json",
+      "bytes": 11435,
       "sha256": "934146447b873f1f3b4ea956eb9c59f9ace121638a5a4c8eaf0ea82e377631a6"
     },
     {
-      "fichier": "soumission-032-medium.json",
-      "octets": 11424,
+      "path": "soumission-032-medium.json",
+      "bytes": 11424,
       "sha256": "294f60689fecde201a4602f5930319b2c3406b7704a57717f755f7c900d14274"
     },
     {
-      "fichier": "soumission-032-ultra.json",
-      "octets": 11486,
+      "path": "soumission-032-ultra.json",
+      "bytes": 11486,
       "sha256": "5d10a21160efc775094e41b443c8bf7afa83d170905f3c0cc9942aa20683754f"
     },
     {
-      "fichier": "tests-integration-49-logs.zip",
-      "octets": 29970,
+      "path": "tests-integration-49-logs.zip",
+      "bytes": 29970,
       "sha256": "1cf72e561c8ffd6051e42ff2d02e8513f1e5de1801f492cf3e4e06cc5d0c028f"
     },
     {
-      "fichier": "tests-integration-49-summary.json",
-      "octets": 24409,
+      "path": "tests-integration-49-summary.json",
+      "bytes": 24409,
       "sha256": "754e5d72f80e170d9c64c4ad3bd76ed5ac505afb6e956d3bfc031ebd2a943474"
     },
     {
-      "fichier": "vegetation-final.log",
-      "octets": 11153,
+      "path": "vegetation-final.log",
+      "bytes": 11153,
       "sha256": "0dd7d94047141655bd1e24dc546f67186cc8944f2be4fdb917896a8c51bfded2"
     },
     {
-      "fichier": "vegetation-verification.json",
-      "octets": 16100,
+      "path": "vegetation-verification.json",
+      "bytes": 16100,
       "sha256": "e63fac32ccb250ac567bfc09253678ab469d4f8aa590d1dc06fc3b7066f2bbe5"
     }
-  ],
-  "nombreHorsInventaire": 18,
-  "octetsHorsInventaire": 681206
+  ]
 }

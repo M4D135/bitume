@@ -1,0 +1,121 @@
+{
+  "date_utc": "2026-11-18T09:42:03.755592+00:00",
+  "repository": "M4D135/bitume",
+  "branche": "main",
+  "version": "0.2.32",
+  "commit_code": "e90b08f550eae2bda47ad14d4093911d3fd793d2",
+  "arbre_code": "557ba44aeb3f2dc92c2b64c9fc1ebdee11e11c8e",
+  "parent": "e4d3e74b76ed03222424077bad1939acbd5e60c0",
+  "reference_distante_relue": true,
+  "arbre_distant_egal_index_local": true,
+  "force_push": false,
+  "ferro": {
+    "version": "0.3.8",
+    "commit": "ef722c0c56e04a20574db53b057f339968d714c3",
+    "publie_avant_jeu": true,
+    "modules_verifies": 34
+  },
+  "build": {
+    "controle_utc": "2026-11-18T09:38:33.244801+00:00",
+    "version": "0.2.32",
+    "octets": 13075203,
+    "sha256": "99f404b8df5dd6dc520545c79d572cd8af0254a71bd7e19a18a125909110b86b",
+    "blob_git": "36ed05cc0c61080583911a73b956619fd2f4225a",
+    "double_construction_meme_sha256": true,
+    "log_construction_reproduite": "construction-reproduite.log",
+    "radios_avant_depart_et_reglages": {
+      "momentDepart": [
+        "jour",
+        "crepuscule",
+        "nuit",
+        "cycle"
+      ],
+      "moment": [
+        "jour",
+        "crepuscule",
+        "nuit",
+        "cycle"
+      ]
+    },
+    "signature_enregistrer_preservee": true,
+    "suites_integration": {
+      "scheduled": 49,
+      "finished": 49,
+      "passed": 49,
+      "failed": 0
+    },
+    "sources_modifiees_apres_49_suites": [
+      "src/vegetation.js"
+    ],
+    "qualification_separee": "vegetation-final.log et vegetation-verification.json, 16 controles sur vegetation.js finale",
+    "ferro_lock_cles": [
+      "format",
+      "version",
+      "reference",
+      "game",
+      "modules"
+    ]
+  },
+  "qualification": {
+    "suites_generales": 49,
+    "suite_vegetation_finale": 1,
+    "controles_vegetation_finale": 16,
+    "failures": 0,
+    "limite": "Les 49 suites ont precede le dernier regroupement de vegetation.js ; ce seul fichier modifie ensuite a sa qualification finale separee. Voir empreintes et journaux.",
+    "moteur": {
+      "passed": 156,
+      "failed": 0,
+      "todo_historique": 1,
+      "wgsl_stages_passed": 18
+    }
+  },
+  "publication_blobs_binaires": {
+    "repository": "M4D135/bitume",
+    "version": "0.2.32",
+    "uploadedAt": "2026-11-18T09:40:58.080Z",
+    "success": true,
+    "encoding": "base64",
+    "files": [
+      {
+        "path": "docs/reprise/rapports/prairies-vivantes-2026-11-18/empreinte-racines-031-max.png",
+        "bytes": 502974,
+        "sha256": "199bfcd29e35d7b07ba26fc6c3df1417e7fb28cbfa59e56c30fbc19b416cdbcf",
+        "gitSha": "c6d8d7c71d8baff1ba29ed431b5815e7e0f5931c",
+        "serverSha": "c6d8d7c71d8baff1ba29ed431b5815e7e0f5931c",
+        "sha256After": "199bfcd29e35d7b07ba26fc6c3df1417e7fb28cbfa59e56c30fbc19b416cdbcf",
+        "verified": true
+      },
+      {
+        "path": "docs/reprise/rapports/prairies-vivantes-2026-11-18/tests-integration-49-logs.zip",
+        "bytes": 29970,
+        "sha256": "1cf72e561c8ffd6051e42ff2d02e8513f1e5de1801f492cf3e4e06cc5d0c028f",
+        "gitSha": "c858658615502bcf8b241c54affa4dd488152b42",
+        "serverSha": "c858658615502bcf8b241c54affa4dd488152b42",
+        "sha256After": "1cf72e561c8ffd6051e42ff2d02e8513f1e5de1801f492cf3e4e06cc5d0c028f",
+        "verified": true
+      }
+    ],
+    "operations": {
+      "blobs": 2,
+      "trees": 0,
+      "commits": 0,
+      "refs": 0,
+      "repoEdits": 0,
+      "htmlUploaded": false
+    }
+  },
+  "deploiement": {
+    "effectue": false,
+    "autorisation_deja_acquise": true,
+    "methode": "./deposer.sh depuis le Mac avec acces SSH amiga",
+    "blocage": "Mac et acces amiga indisponibles dans cet environnement",
+    "site_actuel_non_reconfirme": true,
+    "raison_controle": "Outil web inaccessible ; GET HTTPS termine par timeout"
+  },
+  "limites": [
+    "Aucun FPS materiel mesure.",
+    "Rendu final complet du jeu et placement visuel des commandes non controles dans le navigateur : ouverture locale refusee par la politique de securite CUA.",
+    "Extreme volontairement manuel et lourd ; les mesures CPU WebGL inerte ne mesurent pas le GPU."
+  ],
+  "reprise_lignes": 27
+}

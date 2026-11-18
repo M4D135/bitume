@@ -2,7 +2,7 @@
 
 ## Résultat — 18 novembre 2026
 
-BITUME **0.2.32**, FERRO **0.3.8**. Base du jeu : 0.2.31 (`ff40baa98069ecb64dd7d263672b2c040d4adc09`), checkpoint de reprise `e4d3e74b76ed03222424077bad1939acbd5e60c0`. FERRO a été publié en premier : [`ef722c0`](https://github.com/M4D135/FERRO/commit/ef722c0c56e04a20574db53b057f339968d714c3), puis ses 34 modules exacts installés avec le verrou. Le reçu du jeu est ajouté après la publication vérifiée.
+BITUME **0.2.32**, FERRO **0.3.8**. Base du jeu : 0.2.31 (`ff40baa98069ecb64dd7d263672b2c040d4adc09`), checkpoint de reprise `e4d3e74b76ed03222424077bad1939acbd5e60c0`. FERRO a été publié en premier : [`ef722c0`](https://github.com/M4D135/FERRO/commit/ef722c0c56e04a20574db53b057f339968d714c3), puis ses 34 modules exacts installés avec le verrou. Jeu publié et relu : [`e90b08f`](https://github.com/M4D135/bitume/commit/e90b08f550eae2bda47ad14d4093911d3fd793d2), arbre `557ba44aeb3f2dc92c2b64c9fc1ebdee11e11c8e`. [Reçu vérifié](rapports/prairies-vivantes-2026-11-18/publication.json).
 
 ### Choix avant la course
 
