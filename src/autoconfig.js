@@ -139,6 +139,20 @@
     if (cache.statut === 'ok' && sixValeurs(cache.reglages)) return Object.fromEntries(CLES.map(k => [k, cache.reglages[k]]));
     return null;
   }
+  // D, trace perdue (illisible ou effacée alors que les réglages du joueur restent) : la référence est, parmi les
+  // valeurs d'usine et les réglages des quatre paliers, celle qui ressemble le plus aux six valeurs actuelles (le plus
+  // d'options égales ; à égalité, la première, les valeurs d'usine en tête). Une détection appliquée puis retouchée
+  // est ainsi reconnue : seules les options retouchées passent pour des choix du joueur, et non toutes celles que la
+  // détection avait posées.
+  function referenceProbable(actuels, usine) {
+    let meilleure = null, score = -1;
+    for (const c of [usine, ...Object.keys(profils).map(reglages)]) {
+      if (!sixValeurs(c)) continue;
+      const s = CLES.reduce((n, k) => n + (!!actuels && actuels[k] === c[k] ? 1 : 0), 0);
+      if (s > score) { score = s; meilleure = c; }
+    }
+    return meilleure && Object.fromEntries(CLES.map(k => [k, meilleure[k]]));
+  }
   // D : une détection automatique ne change que les options que le joueur n'a pas modifiées depuis la détection
   // précédente (reference : ce qu'elle avait posé ; sans détection précédente, les valeurs d'usine). Les autres gardent
   // le choix du joueur, et la référence garde, pour elles, ce que la détection avait posé : la version suivante les
@@ -337,5 +351,6 @@
   }
   B.autoconfig = { REVISION, CLE, CLES, NOMS, METHODE, BUDGET, FRACTION, LIMITE, COURSE_PROCESSEUR, PART_PROCESSEUR, LIMITE_PROCESSEUR,
     PART_GLACES, EXTREME, ESPOIR, ESPOIR_VITE, SONDE_MS, COURSE_SIMULATION, TENTATIVES, DUREE_MAX, DELAI, PREPARATION_MAX, profils,
-    empreinte, reglages, cacheValide, tentatives, reference, fusionner, marquer, bilanRafales, limiteProfil, choisir, peutEssayerExtreme, executer };
+    empreinte, reglages, cacheValide, tentatives, reference, referenceProbable, fusionner, marquer, bilanRafales, limiteProfil, choisir,
+    peutEssayerExtreme, executer };
 })(globalThis.BITUME = globalThis.BITUME || {});

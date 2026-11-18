@@ -2778,8 +2778,10 @@
     }
     const choisis = B.autoconfig.reglages(resultat.selection);
     if (!choisis) return false;
+    // sans trace lisible de la précédente : la référence la plus proche des réglages actuels (valeurs d'usine ou palier)
     const usine = Object.fromEntries(B.autoconfig.CLES.map(k => [k, DEFAUT[k]]));
-    const f = B.autoconfig.fusionner(reglages, B.autoconfig.reference(precedent) || usine, choisis, !!toutAppliquer);
+    const ref = B.autoconfig.reference(precedent) || B.autoconfig.referenceProbable(reglages, usine);
+    const f = B.autoconfig.fusionner(reglages, ref, choisis, !!toutAppliquer);
     Object.assign(reglages, f.valeurs);
     resultat.appliques = f.reference; resultat.gardes = f.gardes;
     // mesure sous un écran bridé à 30 Hz : appliquée, mais refaite à l'ouverture suivante (B.autoconfig.cacheValide)

@@ -186,6 +186,17 @@ await verifier('autre interruption au démarrage (délai, contexte perdu) : refa
   assert.equal(g.stockage[A.CLE].tentatives, 2); assert.ok(A.cacheValide(g.stockage[A.CLE], g.empreinteDetection()));
   g.majDetectionGraphique(); assert.equal(etat(g), 'Détection interrompue · réglages conservés.');
 });
+await verifier('C7 : trace illisible, réglages gardés : seules les options retouchées passent pour des choix du joueur', async () => {
+  // relecture du 18/11 (hs.json) : Moyenne appliquée, végétation montée à Ultra, trace effacée ; verdict Légère
+  const h = orchestration(B, { stock: { [A.CLE]: 'pas du json' }, reglages: { ...A.reglages('medium'), vegetation: 'ultra' }, selection: 'low' });
+  await h.detecterGraphismes(true);
+  assert.deepEqual(six(h.reglages), { ...A.reglages('low'), vegetation: 'ultra' });
+  assert.deepEqual(h.stockage[A.CLE].gardes, ['vegetation']);
+  assert.deepEqual(h.stockage[A.CLE].appliques, { ...A.reglages('low'), vegetation: 'medium' });
+  // sans aucune trace ni choix : les valeurs d'usine sont la référence, tout est appliqué
+  const u = orchestration(B, { reglages: { ...USINE }, selection: 'low' }); await u.detecterGraphismes(true);
+  assert.deepEqual(six(u.reglages), A.reglages('low'));
+});
 await verifier('annulation et exception à la main : aucune préférence écrite, interface et monde restitués', async () => {
   const precedente = { revision: A.REVISION, statut: 'ok', selection: 'medium', empreinte: 'x', mesures: [{}], appliques: A.reglages('medium') };
   for (const scenario of [{ annulation: true }, { echec: true }, { echec: true, restaurationImpossible: true }, { annulation: true, stock: { [A.CLE]: precedente } }]) {

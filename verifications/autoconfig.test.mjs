@@ -117,6 +117,21 @@ await verifier('référence des choix : celle notée par la détection, ou les r
   assert.equal(A.reference({ statut: 'ok', reglages: { qualite: 'medium' } }), null, 'six valeurs ou rien');
   assert.equal(A.reference(null), null);
 });
+await verifier('C7, trace perdue : la référence la plus proche des réglages actuels, pas les valeurs d’usine', () => {
+  const usine = { qualite: 'auto', anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', retro: 'auto' };
+  const moyen = A.reglages('medium');
+  // relecture du 18/11 : Moyenne appliquée, végétation montée par le joueur, trace illisible
+  assert.deepEqual(A.referenceProbable({ ...moyen, vegetation: 'ultra' }, usine), moyen);
+  const f = A.fusionner({ ...moyen, vegetation: 'ultra' }, A.referenceProbable({ ...moyen, vegetation: 'ultra' }, usine), A.reglages('low'), false);
+  assert.deepEqual(f.valeurs, { ...A.reglages('low'), vegetation: 'ultra' }, 'Légère appliquée, seule la végétation du joueur gardée');
+  assert.deepEqual(f.gardes, ['vegetation']);
+  // valeurs d'usine, ou un seul choix fait avant toute détection : référence d'usine (à égalité, l'usine en tête)
+  assert.deepEqual(A.referenceProbable(usine, usine), usine);
+  assert.deepEqual(A.referenceProbable({ ...usine, qualite: 'high' }, usine), usine);
+  assert.deepEqual(A.referenceProbable(A.reglages('extreme'), usine), A.reglages('extreme'));
+  assert.deepEqual(A.referenceProbable(null, usine), usine, 'rien de lisible : usine');
+  assert.deepEqual(A.referenceProbable({ ...moyen, vegetation: 'ultra' }, null), moyen, 'sans usine : les paliers seuls');
+});
 await verifier('fusion automatique : les options touchées par le joueur restent, les autres suivent la recommandation', () => {
   const avant = A.reglages('medium'), fine = A.reglages('high');
   const joueur = { ...avant, vegetation: 'ultra', ombres: 'off' };
