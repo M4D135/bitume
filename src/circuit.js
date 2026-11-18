@@ -730,10 +730,14 @@
   // (src/partitions.js) ; graine, nom et thème viennent du catalogue. Les mesures de l'étude (charges, croisements)
   // ne servent qu'aux outils : le jeu ne les calcule pas. `separation` (plus petit écart en plan entre deux portions
   // à plus de 150 m l'une de l'autre le long du tour) règle l'épaisseur des traits du plan de l'affichage.
+  // Vitesse de référence des rivaux : p9, celle de la conduite actuelle (conduite.js : la charge des roues ne dépend
+  // ni de la pente ni de la courbure verticale). p10 compte l'appui d'un creux : à la sortie de la Scierie, au pied
+  // du Mur, elle visait 10 km/h de plus que ce que la voiture tient (13 sorties en 5 courses, contre 2 avec p9,
+  // toutes deux juste après un contact). p10 reste dans c.vitesseP10 pour une conduite qui compterait la charge.
   function creerPartition(graine, options) {
     const p = typeof options.partition === 'string' ? (B.partitions || {})[options.partition] : options.partition;
     if (!p || !p.seq) throw new Error('BITUME : partition inconnue « ' + options.partition + ' »');
-    const c = construirePartition(p, { mesures: false, graine, nom: options.nom, theme: options.theme });
+    const c = construirePartition(p, { mesures: false, graine, nom: options.nom, theme: options.theme, vitesse: options.vitesse || 'p9' });
     c.separation = separation(c.x, c.z, c.n);
     return c;
   }
