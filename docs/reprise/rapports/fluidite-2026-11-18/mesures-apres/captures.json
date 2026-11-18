@@ -1,0 +1,206 @@
+{
+ "page_apres": "dist/bitume.html de 17eb95e (V0.2.40, sha256 6362eb1596295f76…)",
+ "page_base": "~/Projects/bitume/dist/bitume.html (0.2.39, lecture seule)",
+ "outil": "tools/page-essai.mjs, 1280 x 720, 45 images (vues de jeu) ou 40 (vues d arbres, arbres/vue-capture.js.tpl)",
+ "ecart": "vues-outils/diff.mjs : moyen = écart moyen par canal (0-255), part16 = part des pixels qui changent de plus de 16 niveaux",
+ "vues": {
+  "c0-cockpit": {
+   "base": {
+    "triangles": 4171711,
+    "appels": 410,
+    "lotsVisibles": 20,
+    "erreurs": 0
+   },
+   "apres": {
+    "triangles": 1062153,
+    "appels": 400,
+    "lotsVisibles": 68,
+    "erreurs": 0
+   },
+   "ecart": {
+    "moyen": 7.1011,
+    "part16": 0.11263
+   }
+  },
+  "c0-poursuite": {
+   "base": {
+    "triangles": 4147324,
+    "appels": 326,
+    "lotsVisibles": 15,
+    "erreurs": 0
+   },
+   "apres": {
+    "triangles": 928206,
+    "appels": 409,
+    "lotsVisibles": 78,
+    "erreurs": 0
+   },
+   "ecart": {
+    "moyen": 3.9798,
+    "part16": 0.05272
+   }
+  },
+  "c2-cockpit-pluie": {
+   "base": {
+    "triangles": 974378,
+    "appels": 433,
+    "lotsVisibles": 27,
+    "erreurs": 0
+   },
+   "apres": {
+    "triangles": 513252,
+    "appels": 351,
+    "lotsVisibles": 48,
+    "erreurs": 0
+   },
+   "ecart": {
+    "moyen": 12.479,
+    "part16": 0.17163
+   }
+  },
+  "c2-cockpit-pluie-moyenne": {
+   "base": {
+    "triangles": 802373,
+    "appels": 457,
+    "lotsVisibles": 25,
+    "erreurs": 0
+   },
+   "apres": {
+    "triangles": 501051,
+    "appels": 346,
+    "lotsVisibles": 47,
+    "erreurs": 0
+   },
+   "ecart": {
+    "moyen": 14.1688,
+    "part16": 0.19731
+   }
+  },
+  "c0-duo": {
+   "base": {
+    "triangles": 4138657,
+    "appels": 357,
+    "lotsVisibles": 16,
+    "erreurs": 0
+   },
+   "apres": {
+    "triangles": 935331,
+    "appels": 446,
+    "lotsVisibles": 81,
+    "erreurs": 0
+   },
+   "ecart": {
+    "moyen": 19.8012,
+    "part16": 0.32638
+   }
+  },
+  "c0-cockpit-legere": {
+   "base": {
+    "triangles": 491202,
+    "appels": 244,
+    "lotsVisibles": 9,
+    "erreurs": 0
+   },
+   "apres": {
+    "triangles": 446130,
+    "appels": 189,
+    "lotsVisibles": 9,
+    "erreurs": 0
+   },
+   "ecart": {
+    "moyen": 8.7926,
+    "part16": 0.14223
+   }
+  },
+  "arbre-30m": {
+   "base": {
+    "triangles": 1023578,
+    "appels": 206,
+    "lotsVisibles": 22,
+    "erreurs": 0
+   },
+   "apres": {
+    "triangles": 271448,
+    "appels": 275,
+    "lotsVisibles": 82,
+    "erreurs": 0
+   },
+   "ecart": {
+    "moyen": 0.0395,
+    "part16": 0.00048
+   }
+  },
+  "arbre-250m-hc": {
+   "base": {
+    "triangles": 2363715,
+    "appels": 350,
+    "lotsVisibles": 79,
+    "erreurs": 0
+   },
+   "apres": {
+    "triangles": 648059,
+    "appels": 542,
+    "lotsVisibles": 196,
+    "erreurs": 0
+   },
+   "ecart": {
+    "moyen": 0.0532,
+    "part16": 0.00067
+   }
+  },
+  "arbre-600m": {
+   "base": {
+    "triangles": 2267897,
+    "appels": 358,
+    "lotsVisibles": 83,
+    "erreurs": 0
+   },
+   "apres": {
+    "triangles": 670593,
+    "appels": 599,
+    "lotsVisibles": 223,
+    "erreurs": 0
+   },
+   "ecart": {
+    "moyen": 0.0443,
+    "part16": 0.0005
+   }
+  },
+  "arbre-600m-vb": {
+   "base": {
+    "triangles": 1584715,
+    "appels": 249,
+    "lotsVisibles": 41,
+    "erreurs": 0
+   },
+   "apres": {
+    "triangles": 417263,
+    "appels": 431,
+    "lotsVisibles": 150,
+    "erreurs": 0
+   },
+   "ecart": {
+    "moyen": 0.0166,
+    "part16": 5e-05
+   }
+  },
+  "piste-1500m-vb": {
+   "base": {
+    "triangles": 2130075,
+    "appels": 264,
+    "lotsVisibles": 24,
+    "erreurs": 0
+   },
+   "apres": {
+    "triangles": 501831,
+    "appels": 251,
+    "lotsVisibles": 45,
+    "erreurs": 0
+   },
+   "ecart": {
+    "moyen": 0.0538,
+    "part16": 0.00071
+   }
+  }
+ }
+}
