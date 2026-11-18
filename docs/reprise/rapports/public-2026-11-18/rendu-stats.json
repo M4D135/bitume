@@ -1,0 +1,371 @@
+{
+ "date": "2026-11-18",
+ "outil": "tools/page-essai.mjs du dépôt principal (Chrome sans fenêtre sur le GPU du Mac), 1440×900, circuit Val-Brûlé (forêt), BITUME_JEU.reference, caméra posée par BITUME_JEU.camera, capture 3 s après le départ (fête du départ vers 0,55)",
+ "constructions": {
+  "avec_et_sans": "dist/bitume.html 0.2.39 construit avec integration.patch (non commité), sha256 66f78d4ad81ac8c64ffe39123eefbd8c53ee3be463fafd58d9225f1edffd3d5d ; le correctif final (3069c4a91efd47133260d38e5db20977506cf22709eda7a7058095a9bee49d68) ne déplace qu une ligne du code des rétroviseurs, passage rejoué : mêmes 315 appels et 2 249 955 triangles",
+  "boites_0_2_38": "dist/bitume.html du commit baf4ddf (0.2.38, sources inchangées depuis), sha256 46a0b0af1311c310bff6de0304da3744df78a2f7ed0d1a5c2e809bae92d78d9b"
+ },
+ "lecture": [
+  "rendu.stats compte ce que le public dessine par les points d'accroche fx.foule (couleur et ombre) : appels, triangles, instances.",
+  "sans_public : branchement appliqué, public caché (BITUME_JEU.public.visible = false) ; les marches restent, sans boîtes ni corps.",
+  "boites_0_2_38 : le jeu d'avant, avec ses boîtes colorées sur les marches.",
+  "Les triangles du public sont des triangles soumis, parties cachées comprises (cheveux, parapluie… repliés dans le shader).",
+  "Sous la pluie, le nombre d'appels du décor varie d'une exécution à l'autre (134 et 142 sans le public sur deux séries) : comparer avec et sans dans la même série."
+ ],
+ "vues": [
+  {
+   "vue": "8m",
+   "camera": "8 m du front d'une tribune, 2,2 m de haut, vers la tribune",
+   "qualite": "high",
+   "meteo": "soleil",
+   "boites_0_2_38": {
+    "appels": 124,
+    "triangles": 390579,
+    "instances": 4211
+   },
+   "sans_public": {
+    "appels": 124,
+    "triangles": 314787,
+    "instances": 1053
+   },
+   "avec_public": {
+    "appels": 128,
+    "triangles": 803689,
+    "instances": 1152
+   },
+   "ecart": {
+    "appels": 4,
+    "triangles": 488902
+   },
+   "public": {
+    "presence": 1,
+    "couverture": 0,
+    "fete": 0.55,
+    "vus": 74,
+    "niveaux_N0_N1_N2": [
+     40,
+     59,
+     0
+    ],
+    "trianglesCouleur": 313256,
+    "appelsCouleur": 2,
+    "ombreInstances": 624,
+    "trianglesOmbre": 175646,
+    "plafondAtteint": true
+   }
+  },
+  {
+   "vue": "40m",
+   "camera": "40 m (19 m du front, 35 m en arrière le long de la piste), visée sur le milieu de la tribune",
+   "qualite": "high",
+   "meteo": "soleil",
+   "boites_0_2_38": {
+    "appels": 163,
+    "triangles": 919699,
+    "instances": 4991
+   },
+   "sans_public": {
+    "appels": 163,
+    "triangles": 843907,
+    "instances": 1833
+   },
+   "avec_public": {
+    "appels": 168,
+    "triangles": 1293393,
+    "instances": 2704
+   },
+   "ecart": {
+    "appels": 5,
+    "triangles": 449486
+   },
+   "public": {
+    "presence": 1,
+    "couverture": 0,
+    "fete": 0.55,
+    "vus": 810,
+    "niveaux_N0_N1_N2": [
+     3,
+     207,
+     661
+    ],
+    "trianglesCouleur": 346458,
+    "appelsCouleur": 3,
+    "ombreInstances": 732,
+    "trianglesOmbre": 103028,
+    "plafondAtteint": false
+   }
+  },
+  {
+   "vue": "150m",
+   "camera": "150 m (13 m du front, 150 m plus loin le long de la piste), visée sur le milieu de la tribune",
+   "qualite": "high",
+   "meteo": "soleil",
+   "boites_0_2_38": {
+    "appels": 247,
+    "triangles": 683819,
+    "instances": 5025
+   },
+   "sans_public": {
+    "appels": 247,
+    "triangles": 607163,
+    "instances": 1864
+   },
+   "avec_public": {
+    "appels": 252,
+    "triangles": 1071113,
+    "instances": 2545
+   },
+   "ecart": {
+    "appels": 5,
+    "triangles": 463950
+   },
+   "public": {
+    "presence": 1,
+    "couverture": 0,
+    "fete": 0.55,
+    "vus": 613,
+    "niveaux_N0_N1_N2": [
+     5,
+     181,
+     495
+    ],
+    "trianglesCouleur": 306094,
+    "appelsCouleur": 3,
+    "ombreInstances": 845,
+    "trianglesOmbre": 157856,
+    "plafondAtteint": false
+   }
+  },
+  {
+   "vue": "passage",
+   "camera": "vue cockpit en course, 59 m avant le milieu de la tribune, 63,6 m/s",
+   "qualite": "high",
+   "meteo": "soleil",
+   "boites_0_2_38": {
+    "appels": 311,
+    "triangles": 1854021,
+    "instances": 6810
+   },
+   "sans_public": {
+    "appels": 311,
+    "triangles": 1778229,
+    "instances": 3652
+   },
+   "avec_public": {
+    "appels": 315,
+    "triangles": 2249955,
+    "instances": 4527
+   },
+   "ecart": {
+    "appels": 4,
+    "triangles": 471726
+   },
+   "public": {
+    "presence": 1,
+    "couverture": 0,
+    "fete": 0.26,
+    "vus": 785,
+    "niveaux_N0_N1_N2": [
+     0,
+     245,
+     630
+    ],
+    "trianglesCouleur": 367220,
+    "appelsCouleur": 2,
+    "ombreInstances": 750,
+    "trianglesOmbre": 104506,
+    "plafondAtteint": false
+   }
+  },
+  {
+   "vue": "pluie-12m",
+   "camera": "12 m du front, sous la pluie (présence 0,62)",
+   "qualite": "high",
+   "meteo": "pluie",
+   "boites_0_2_38": {
+    "appels": 134,
+    "triangles": 426655,
+    "instances": 4375
+   },
+   "sans_public": {
+    "appels": 134,
+    "triangles": 350863,
+    "instances": 1217
+   },
+   "avec_public": {
+    "appels": 138,
+    "triangles": 716187,
+    "instances": 1305
+   },
+   "ecart": {
+    "appels": 4,
+    "triangles": 365324
+   },
+   "public": {
+    "presence": 0.62,
+    "couverture": 0.75,
+    "fete": 0.55,
+    "vus": 59,
+    "niveaux_N0_N1_N2": [
+     34,
+     54,
+     0
+    ],
+    "trianglesCouleur": 270672,
+    "appelsCouleur": 2,
+    "ombreInstances": 387,
+    "trianglesOmbre": 94652,
+    "plafondAtteint": false
+   }
+  },
+  {
+   "vue": "8m-medium",
+   "camera": "8 m, palier Moyenne",
+   "qualite": "medium",
+   "meteo": "soleil",
+   "boites_0_2_38": {
+    "appels": 108,
+    "triangles": 284301,
+    "instances": 4209
+   },
+   "sans_public": {
+    "appels": 108,
+    "triangles": 208509,
+    "instances": 1051
+   },
+   "avec_public": {
+    "appels": 111,
+    "triangles": 342065,
+    "instances": 1094
+   },
+   "ecart": {
+    "appels": 3,
+    "triangles": 133556
+   },
+   "public": {
+    "presence": 1,
+    "couverture": 0,
+    "fete": 0.54,
+    "vus": 43,
+    "niveaux_N0_N1_N2": [
+     0,
+     43,
+     0
+    ],
+    "trianglesCouleur": 49192,
+    "appelsCouleur": 1,
+    "ombreInstances": 276,
+    "trianglesOmbre": 84364,
+    "plafondAtteint": false
+   }
+  },
+  {
+   "vue": "8m-low",
+   "camera": "8 m, palier Légère",
+   "qualite": "low",
+   "meteo": "soleil",
+   "boites_0_2_38": {
+    "appels": 71,
+    "triangles": 117689,
+    "instances": 4245
+   },
+   "sans_public": {
+    "appels": 71,
+    "triangles": 79793,
+    "instances": 1087
+   },
+   "avec_public": {
+    "appels": 72,
+    "triangles": 84359,
+    "instances": 1119
+   },
+   "ecart": {
+    "appels": 1,
+    "triangles": 4566
+   },
+   "public": {
+    "presence": 1,
+    "couverture": 0,
+    "fete": 0.54,
+    "vus": 31,
+    "niveaux_N0_N1_N2": [
+     0,
+     0,
+     31
+    ],
+    "trianglesCouleur": 4278,
+    "appelsCouleur": 1,
+    "ombreInstances": 0,
+    "trianglesOmbre": 0,
+    "plafondAtteint": false
+   }
+  },
+  {
+   "vue": "hiver-8m",
+   "camera": "8 m, hiver (présence 0,82)",
+   "qualite": "high",
+   "meteo": "soleil",
+   "boites_0_2_38": null,
+   "sans_public": null,
+   "avec_public": {
+    "appels": 128,
+    "triangles": 794409,
+    "instances": 1130
+   },
+   "public": {
+    "presence": 0.82,
+    "couverture": 0,
+    "fete": 0.54,
+    "vus": 61,
+    "niveaux_N0_N1_N2": [
+     48,
+     40,
+     0
+    ],
+    "trianglesCouleur": 340672,
+    "appelsCouleur": 2,
+    "ombreInstances": 505,
+    "trianglesOmbre": 144134,
+    "plafondAtteint": true
+   }
+  },
+  {
+   "vue": "pluie-glissieres",
+   "camera": "pluie, 9 m devant les spectateurs des glissières (à découvert)",
+   "qualite": "high",
+   "meteo": "pluie",
+   "boites_0_2_38": null,
+   "sans_public": null,
+   "avec_public": {
+    "appels": 246,
+    "triangles": 2702337,
+    "instances": 3305
+   },
+   "public": {
+    "presence": 0.62,
+    "couverture": 0.75,
+    "fete": 0.55,
+    "vus": 21,
+    "niveaux_N0_N1_N2": [
+     21,
+     0,
+     0
+    ],
+    "trianglesCouleur": 129024,
+    "appelsCouleur": 1,
+    "ombreInstances": 162,
+    "trianglesOmbre": 47506,
+    "plafondAtteint": false
+   },
+   "glissieres": {
+    "presentes": 100,
+    "abris": {
+     "aucun": 19,
+     "parapluie": 43,
+     "capuche": 38,
+     "toit": 0
+    }
+   }
+  }
+ ]
+}

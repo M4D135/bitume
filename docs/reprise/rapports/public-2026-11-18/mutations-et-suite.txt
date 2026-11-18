@@ -1,0 +1,44 @@
+Mutations de src/public.js : chacune doit faire échouer verifications/public.test.mjs (version finale, 18/11/2026, 18 h 45 à 19 h 10).
+Mutation -> premier échec relevé
+
+- allocation par image dans la liste (resultat.trace = [nv] ajouté à chaque liste)
+  AssertionError [ERR_ASSERTION]: 2244664 octets alloués en 20000 images
+- allocation par image dans l'animation (E.trace = [temps] à chaque appel d'animer)
+  AssertionError [ERR_ASSERTION]: 1124472 octets alloués en 20000 images
+- sens des faces inversé (idx.push(a, c, d) et idx.push(a, d, c) échangés)
+  AssertionError [ERR_ASSERTION]: sens des faces du niveau 0 : 58.3 % directs
+- lissage par image au lieu du temps (facteurs fixes 0,1 et 0,01 par image)
+  AssertionError [ERR_ASSERTION]: même mouvement à 30, 60 et 120 i/s : {"excitation":0.46021465957164764,"regard":2.761083140487005,"poids":0.010345637798309326,"fete":0,"couverture":0.003512376611562007}
+- Math.random dans les tenues (l'âge tiré par Math.random)
+  AssertionError [ERR_ASSERTION]: public.js ne doit pas employer Math.random
+- neuf marches au lieu de huit (description des gradins faussée)
+  AssertionError [ERR_ASSERTION]: foret : spectateur 131 (debout) hors des marches
+- sans contrôle des piliers et des solides (libre = true)
+  AssertionError [ERR_ASSERTION]: foret : genoux du spectateur 160 dans un objet
+- toits ignorés (abrite toujours faux sur les marches)
+  AssertionError [ERR_ASSERTION]: foret : spectateur 28 sous le toit avec un parapluie ou une capuche
+- glissières à l'abri (abrite toujours vrai aux glissières)
+  AssertionError [ERR_ASSERTION]: foret : spectateur 826 au sec à découvert
+- pluie verticale (marge nulle sous le toit, PENTE_PLUIE ignorée)
+  AssertionError [ERR_ASSERTION]: foret : spectateur 0 au sec à découvert
+- blanc sur blanc permis (correction du bas supprimée)
+  AssertionError [ERR_ASSERTION]: blanc sur blanc : 31 l'été, 10 l'hiver
+
+Suite complète : for t in verifications/*.test.mjs; do node "$t" > /dev/null 2>&1 || echo "ECHEC $t"; done
+
+- état commité (sans le branchement) : 67 suites, terminé en 57 s ; 0 échec(s)
+- branchement appliqué (git apply integration.patch sur le commit de base, puis construire.py) : 67 suites, terminé
+  en 68 s ; 0 échec(s)
+
+Avant correction, le branchement cassait meteo.test.mjs et nature-integration.test.mjs : ces tests évaluent des
+lignes réelles de jeu.js (appels rendu.draw, section des rétroviseurs) dans un bac à sable où publicVisible et
+vuePublic n'existent pas. Corrigé : la foule passe par S.foulePublic et retro.foulePublic, posés hors de ces lignes.
+decor.test.mjs a échoué une fois dans la boucle sous forte charge (critère : décor construit en moins de 150 ms) ;
+seul, il passe ; construction à froid mesurée 5 fois : 52 à 62 ms sans le branchement, 52 à 61 ms avec.
+
+Contrôle des allocations rendu fiable : environ une exécution sur dix du processus fils relevait 964 312 octets
+(48 octets par image, exactement). Mesure séparée par partie, sur 16 exécutions : animer, lister et listerOmbre
+n'allouent rien ; les 48 octets viennent du harnais du test, qui rangeait des flottants dans les objets voitures et
+ambiance à chaque image (selon les choix de l'optimiseur). Le harnais passe désormais des objets préparés d'avance.
+Après correction : 40 exécutions propres sur 40 du processus fils, 12 réussites sur 12 du test complet ; les deux
+mutations d'allocation ci-dessus échouent toujours.
