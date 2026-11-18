@@ -1,6 +1,7 @@
-// Garde-fou du déterminisme de la simulation (version de physique p9). Les records et les fantômes des joueurs
-// portent la version de la physique : tant qu'elle reste « p9 », un remaniement du pas de simulation (course,
-// conduite, contacts, obstacles, dégâts, circuit) ne doit pas changer un seul bit de ce que la course produit.
+// Garde-fou du déterminisme de la simulation (physique p10 du lot 17, en cours). Les records et les fantômes des
+// joueurs portent la version de la physique : entre deux changements de physique voulus, un remaniement du pas de
+// simulation (course, conduite, contacts, obstacles, dégâts, circuit) ne doit pas changer un seul bit de ce que la
+// course produit.
 //
 // Chaque cas simule une séance réelle (vrais tracés du catalogue, solides du décor, douze voitures) et prend, à
 // chaque seconde de simulation, une empreinte SHA-256 de l'état complet : tous les champs de chaque voiture (état
@@ -9,10 +10,13 @@
 // Les champs dont le nom commence par « _ » sont des caches internes des modules ; ils n'entrent pas dans
 // l'empreinte, leur effet sur la suite de la course y entre.
 //
-// Les empreintes de référence (verifications/fixtures/determinisme-p9.json) ont été prises sur le code d'avant
-// le lot « Fluidité » de la simulation (commit 54e98c9). Elles ne se réécrivent qu'avec un changement de physique
-// voulu, qui fait aussi passer PHYSIQUE (src/jeu.js) à « p10 » :
+// Les empreintes de référence (verifications/fixtures/determinisme-p10.json) sont celles de la physique du dernier
+// sous-lot livré du lot 17 (champ « lot ») ; celles de p9 (determinisme-p9.json, prises avant le lot « Fluidité »,
+// commit 54e98c9) restent dans l'historique, au commit 4799fb6. Elles ne se réécrivent qu'avec un changement de
+// physique voulu, à chaque sous-lot du lot 17 (docs/reprise/17-CONDUITE.md § 6) :
 //   node verifications/determinisme-simulation.test.mjs --ecrire
+// PHYSIQUE (src/jeu.js), qui nomme les clés des records et des fantômes, ne passe à « p10 » qu'à la publication du
+// lot (17J, § 3.14).
 // Les fonctions mathématiques de Node (V8) donnent les mêmes bits d'une machine à l'autre à version égale ; une
 // autre version majeure de Node peut, en principe, en changer quelques-uns (version notée dans la fixture).
 import { createRequire } from 'node:module';
@@ -25,7 +29,7 @@ const ici = path.dirname(fileURLToPath(import.meta.url));
 const req = createRequire(import.meta.url);
 for (const f of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'course', 'carene', 'decor']) req(path.join(ici, '..', 'src', f + '.js'));
 const B = globalThis.BITUME;
-const FIXTURE = path.join(ici, 'fixtures', 'determinisme-p9.json');
+const FIXTURE = path.join(ici, 'fixtures', 'determinisme-p10.json'), PHYSIQUE = 'p10', LOT = '17B';
 const ECRIRE = process.argv.includes('--ecrire');
 const DT = 1 / 120, PAS_SECONDE = 120;
 
@@ -443,7 +447,7 @@ for (const [nom, gestes] of Object.entries(GESTES)) for (const geste of gestes)
 
 if (ECRIRE) {
   const fixture = {
-    format: 'bitume-determinisme-1', physique: 'p9', base: '54e98c9', node: process.version,
+    format: 'bitume-determinisme-1', physique: PHYSIQUE, lot: LOT, base: '4799fb6', node: process.version,
     explication: 'Empreintes SHA-256, à chaque seconde de simulation, de l’état complet des voitures, de la course et des événements (verifications/determinisme-simulation.test.mjs).',
     cas: Object.fromEntries(Object.entries(resultats).map(([nom, r]) => [nom, { secondes: r.secondes, resume: r.resume, empreintes: r.empreintes }]))
   };
@@ -452,7 +456,7 @@ if (ECRIRE) {
 }
 
 const ref = JSON.parse(readFileSync(FIXTURE, 'utf8'));
-if (ref.physique !== 'p9') { console.error('KO  la fixture ne porte pas la physique p9'); process.exit(1); }
+if (ref.physique !== PHYSIQUE || ref.lot !== LOT) { console.error(`KO  la fixture ne porte pas la physique ${PHYSIQUE} du sous-lot ${LOT}`); process.exit(1); }
 for (const [nom, r] of Object.entries(resultats)) {
   const attendu = ref.cas[nom];
   if (!attendu) { echecs++; console.error(`KO  ${nom} : absent de la fixture`); continue; }
@@ -484,5 +488,5 @@ for (const nom of Object.keys(ref.cas)) if (!resultats[nom]) { echecs++; console
 }
 
 const total = Object.values(resultats).reduce((a, r) => a + r.secondes, 0);
-console.log(`${echecs ? 'KO' : 'ok'}  déterminisme p9 : ${Object.keys(resultats).length} cas, ${total} empreintes, ${((performance.now() - t0) / 1000).toFixed(1)} s`);
+console.log(`${echecs ? 'KO' : 'ok'}  déterminisme ${PHYSIQUE} (${LOT}) : ${Object.keys(resultats).length} cas, ${total} empreintes, ${((performance.now() - t0) / 1000).toFixed(1)} s`);
 if (echecs) process.exit(1);

@@ -19,21 +19,37 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
   // volant (plein volant = braquageMax(v), comme pour l'IA) ; le contre-braquage de la dérive compte aussitôt et
   // retombe lentement (des appuis répétés au clavier tiennent la dérive) ; centre de gravité à 0,33 m.
   // La mécanique de la dérive chargée vient de vroom-unreal ; constantes et code sont ceux de BITUME.
+  // Lot 17B, Claude (18/11/2026), docs/reprise/17-CONDUITE.md § 3.1, 3.2, 3.4 et 3.8 : châssis de la 312 T5
+  // (665 kg, empattement 2,70 m, voies 1,70 / 1,615 m) ; charge normale selon la pente, le dévers et la courbure
+  // verticale (un creux plaque la voiture, une crête l'allège), transferts en partie immédiats ; loi de pneu p10 par
+  // roue (src/pneu.js) : adhérence en puissance de la charge, angle du pic qui croît avec la charge, plateau après le
+  // pic (avant 85 %, arrière 76 %) atteint avec un retard de 0,15 s ; amortisseur de glisse plus fort à haute vitesse ;
+  // une crête franchie trop vite fait décoller la voiture (sous 10 % du poids, appui compris). Le couplage longitudinal
+  // (ellipse de motricité, `transmis`) et la force de freinage restent ceux de p9 jusqu'aux lots 17C et 17D.
   // Conventions : d > 0 à droite ; psi (axe de vitesse positive sur la tangente), beta (caisse − axe) et omega
   // (lacet de la caisse) > 0 vers la droite ; v est signée (recul<0), la caisse garde le cap psi+beta.
   // Tangage > 0 nez levé ; roulis > 0 côté droit plus bas.
 
   const G = 9.81;
   const PARAMS = Object.freeze({
-    // châssis : monoplace de 1990, pilote et essence compris
-    masse: 600, empattement: 2.85, repartition: 0.44, hauteurCG: 0.33, voie: 1.75, giration: 1.30,
-    roulisAvant: 0.54, chargeTau: 0.062,
+    // châssis (§ 3.1) : monoplace de 1980, la 312 T5, 665 kg pilote compris (carburant non modélisé) ; voies avant et
+    // arrière ; giration (garde l'indice dynamique k²/(a·b) 0,84 de p9 ; 1,30 rendait S7 mais rapprochait l'épave
+    // du contact, rapport 17B) ; part du
+    // roulis sur l'avant ; transferts : une part immédiate (géométrique, centres de roulis), le reste élastique, retardé
+    // de chargeTau (s) ; courbure verticale du profil (bosses, crêtes, creux) lissée sur courbureVLissage mètres
+    masse: 665, empattement: 2.70, repartition: 0.44, hauteurCG: 0.33, voieAv: 1.70, voieAr: 1.615, giration: 1.23,
+    roulisAvant: 0.55, chargeTau: 0.062, transfertImmediat: 0.3, courbureVLissage: 6,
     // air : appui (m/s² par (m/s)²), part de l'appui sur l'avant, traînée, roulement, aspiration
     aero: 0.0016, aeroAvant: 0.45, coeffTrainee: 0.00059, roulement: 0.25, aspirationMax: 0.35,
-    // pneus : adhérence au pic, sensibilité à la charge, dérive au pic, retombée après le pic (plus basse et plus
-    // étalée à l'arrière)
-    muPiste: 1.72, muVibreur: 1.58, muHerbe: 0.94, sensibilite: 0.06, chargeNominale: 1500, gripArriere: 1.08,
-    alphaAv: 0.105, alphaAr: 0.095, chute: 0.15, chuteLargeur: 1.0, chuteAr: 0.3, chuteArLargeur: 2.0,
+    // pneus (§ 3.2, loi de src/pneu.js) : adhérence à la charge statique d'une roue de l'essieu, sensibilité à la charge
+    // (adhérence en (Fz/Fz0)^−q), adhérence arrière, angles du pic à la charge statique (rad : 5,2° et 4,9°) et leur
+    // exposant de charge, retombée après le pic vers le plateau 1 − c (largeur l ; 85 % devant, 76 % derrière),
+    // mémoire du pic (la perte arrive en picTau secondes, l'adhérence revient aussitôt), relaxation (longueur σ en m,
+    // 0 : sans ; vitesse plancher, m/s ; gardée parce qu'elle adoucit S8 sans rien casser, § 3.4). Valeurs réglées au
+    // banc en 17B (docs/reprise/rapports/conduite-2026-11-18/17B-CHASSIS-PNEUS.md).
+    muPiste: 1.85, muVibreur: 1.70, muHerbe: 1.01, sensibiliteQ: 0.22, gripArriere: 1.05,
+    alphaAv: 0.090757, alphaAr: 0.085521, picCharge: 0.10,
+    chute: 0.15, chuteLargeur: 1.0, chuteAr: 0.24, chuteArLargeur: 1.0, picTau: 0.15, relaxation: 0.3, relaxationV: 5,
     glissement: 0.97,
     // motricité : exposant de l'ellipse d'adhérence arrière sous la poussée du moteur (2 : ellipse ; moins : la
     // poussée prend plus d'adhérence latérale, et plein gaz sur un petit rapport fait glisser l'arrière)
@@ -45,11 +61,14 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
     couple: Object.freeze([[4000, 0.62], [7000, 0.86], [10500, 1.0], [12800, 0.88]]),
     coeffMoteur: 13, freinMoteur: 1.6, rapportDuree: 0.08, regimeTau: 0.05,
     lancement: 0.70, lancementTau: 0.09,
-    // freins : part de l'adhérence totale à pleine pédale, part de l'avant
-    freinMax: 0.92, freinAvant: 0.58,
-    // direction : le volant commande une part de l'adhérence avant ; plein volant un peu après le pic ;
-    // amortisseur de glisse, lâché entre amortSeuil et amortSeuil + amortPlage fois la dérive arrière au pic
-    braquageMeca: 0.38, marge: 1.0, vSuivi0: 2, vSuivi1: 6, amortGlisse: 0.5, amortSeuil: 3.0, amortPlage: 0.5,
+    // freins : part de l'adhérence totale à pleine pédale, adhérence de référence de la pédale (celle de p9, gardée
+    // jusqu'au lot 17D : même force de freinage), part de l'avant
+    freinMax: 0.92, freinMu: 1.72, freinAvant: 0.58,
+    // direction : le volant commande une part de l'adhérence avant ; plein volant au pic ; amortisseur de glisse
+    // (§ 3.8) amortGlisse jusqu'à amortV0 (m/s), amortGlisseV au-delà de amortV1, lâché entre amortSeuil et
+    // amortSeuil + amortPlage fois la dérive arrière au pic
+    braquageMeca: 0.38, marge: 1.0, vSuivi0: 2, vSuivi1: 6, amortGlisse: 0.5, amortGlisseV: 0.62, amortV0: 30, amortV1: 60,
+    amortSeuil: 3.0, amortPlage: 0.5,
     volantMontee: 0.030, volantMonteeV: 0.0002, volantRetour: 0.026,
     // aide au volant : rattrape les glisses (niveaux 0,35 et 0,7)
     aideSeuil: 0.062, aidePlage: 0.118, aideGain: 2.15, aideLacet: 0.28,
@@ -63,8 +82,9 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
     deriveAmort: 0.25,
     // contre-braquage compté pour la qualité : pris aussitôt, retombée lente (s) ; le clavier contre-braque par appuis
     deriveContreRetombee: 0.25,
-    // qualité de la dérive : contre-braquage (nul, plein, au-delà) et angle de caisse (rad) qui comptent
-    deriveContreQ: Object.freeze([0.10, 0.22, 0.78]), deriveContreTrop: 0.30, deriveAngleQ: Object.freeze([0.02, 0.06, 0.66, 0.84]),
+    // qualité de la dérive : contre-braquage (nul, plein, au-delà) et angle de caisse (rad) qui comptent ; 17B : bas de
+    // la fenêtre d'angle 0,02 → 0,025 rad (avec p10, l'arrière trop contré revient vers 2,2° et la dérive tenait encore)
+    deriveContreQ: Object.freeze([0.10, 0.22, 0.78]), deriveContreTrop: 0.30, deriveAngleQ: Object.freeze([0.025, 0.06, 0.66, 0.84]),
     deriveAngleMax: 0.85, deriveBond: 0.18, deriveBondDuree: 0.24,
     // turbo : durée par palier, bonus du lâcher parfait, poussée par palier, fondus
     turboDurees: Object.freeze([0, 0.6, 1.1, 1.6]), turboBonus: 0.2, turboAcc: Object.freeze([0, 9, 13, 16]),
@@ -86,6 +106,7 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
     sautTangLim: 0.55, sautRoulLim: 0.72,                  // au-delà à la réception, la voiture tonne (accident)
     contreBon: 0.4, contreMauvais: -0.4,                   // contre-braquage : 100 % / 97 % / 94 % de la vitesse
     volBraquage: 0.15, volTrainee: 0.0011,                 // en l'air on dirige peu ; légère traînée d'air
+    decollage: 0.10, volMax: 2.0,                          // crête : décolle sous 10 % du poids (appui compris) ; vol ≤ 2 s
     accidentDuree: .65, accidentImm: 1, accidentFrein: 3.2, // remise en piste rapide, puis immunité
     // Paramètres historiques conservés ; la roue perdue utilise désormais le retour rapide.
     rouePerdueBraquage: 0.06, rouePerdueTraine: 0.05, rouePerdueLacet: 0.7, rouePerdueFrein: 9,
@@ -98,12 +119,23 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
   // géométrie tirée des constantes
   const L = P.empattement, A = L * (1 - P.repartition), BR = L * P.repartition; // CG → avant, CG → arrière
   const IZ = P.masse * P.giration * P.giration;
+  // charge statique d'une roue de chaque essieu (N) : la loi de pneu y norme la charge (§ 3.2)
+  const FZ0AV = P.masse * G * P.repartition / 2, FZ0AR = P.masse * G * (1 - P.repartition) / 2;
 
   // Shared FERRO force equations; this adapter owns vehicle tuning and world coordinates.
   const FVD=FVehicleDynamics.create(P);
-  const {clamp,borne01,sign,expTau,ramener,angle,rampe,regimeBrut,couple,consigne,suivi,capaciteLaterale,geometrie,braquer,braquageMax}=FVD;
-  // Loi de pneu (src/pneu.js, lot 17) : en p9, les fonctions mêmes de FERRO, rendues par le module de pneu.
-  const {adherence,forme,retombee,pneu}=B.pneu.p9(FVD);
+  const {clamp,borne01,sign,expTau,ramener,angle,rampe,regimeBrut,couple,consigne,suivi,capaciteLaterale,geometrie,braquageMax}=FVD;
+  // Loi de pneu p10 (src/pneu.js, lot 17) : fonctions pures, sans création d'objet.
+  const {forceMax,alphaPic,chute,courbe,courbeAvec,suivreChute,relaxer}=B.pneu;
+  // courbe normalisée de l'avant (x = dérive / dérive au pic), exportée comme en p9
+  function pneu(x) { return courbe(x, P.chute, P.chuteLargeur); }
+  // Braquage (rad) par rapport à la vitesse du centre de gravité pour une part rho de l'adhérence avant : `braquer`
+  // de FERRO, avec l'angle du pic de l'avant du moment (il croît avec la charge, § 3.2) au lieu de celui de la charge
+  // statique. braquageMax (FERRO, pour l'IA et les critères) garde celui de la charge statique.
+  function braquerPic(rho, v, amax, pic) {
+    const l = suivi(v), x = consigne(rho);
+    return l * (rho * geometrie(v, amax) + x * pic) + (1 - l) * clamp(rho, -1, 1) * P.braquageMeca;
+  }
 
   // Filtres de constante de temps fixe : au pas fixe, expTau(tau, dt) redonne la même valeur pour chaque voiture et
   // à chaque pas (un Math.exp chaque fois). Elle est retenue pour le dernier dt vu : même fonction, mêmes entrées,
@@ -112,11 +144,22 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
   function expTauFixe(m, tau, dt) { if (m[0] !== dt) { m[1] = expTau(tau, dt); m[0] = dt; } return m[1]; }
   const TAU = {
     contre: memoTau(), grilleMontee: memoTau(), grilleDescente: memoTau(), entree: memoTau(), sortie: memoTau(),
-    tirage: memoTau(), lancement: memoTau(), regime: memoTau(), charge: memoTau(), attitude: memoTau(), retour: memoTau()
+    tirage: memoTau(), lancement: memoTau(), regime: memoTau(), charge: memoTau(), attitude: memoTau(), retour: memoTau(),
+    pic: memoTau()
   };
   // Lectures du tracé : un objet par appelant, rempli à chaque lecture (B.circuit.echantillon, troisième argument).
   // Chaque appelant lit sa valeur rendue, jamais l'objet directement : un tracé de test peut rendre un objet neuf.
-  const LU = { cap: {}, rail: {}, rouler: {}, attitude: {}, replacer: {}, vol: {}, reculA: {}, reculB: {} };
+  const LU = { cap: {}, rail: {}, rouler: {}, attitude: {}, replacer: {}, vol: {}, reculA: {}, reculB: {}, reliefA: {}, reliefB: {}, envolA: {} };
+
+  // Courbure verticale du profil (rad/m), > 0 dans un creux, < 0 sur une crête : variation de l'angle de la pente sur
+  // courbureVLissage mètres centrés sur s (deux lectures du tracé), ce qui lisse les raccords et les petites bosses.
+  function courbureVerticale(c, s) {
+    const h = P.courbureVLissage / 2;
+    if (!(h > 0)) return 0;
+    const a = B.circuit.echantillon(c, ramener(s - h, c.longueur), LU.reliefA).pente;
+    const b = B.circuit.echantillon(c, ramener(s + h, c.longueur), LU.reliefB).pente;
+    return (Math.atan(Number.isFinite(b) ? b : 0) - Math.atan(Number.isFinite(a) ? a : 0)) / (2 * h);
+  }
 
   function creer(s, d) {
     return {
@@ -124,8 +167,10 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
       rapport: 1, regime: P.ralenti, volant: 0, gaz: 0, frein: 0, braquage: 0,
       surface: 'piste', vibreur: false, glisse: 0, alat: 0, along: 0,
       chargeX: 0, chargeY: 0, chargeAv: P.repartition, capAv: 0, capAr: 0,
-      roues: [0, 1, 2, 3].map(() => ({ charge: 0, glisse: 0 })), // avant gauche, avant droite, arrière gauche, arrière droite
-      glisseAv: 0, glisseAr: 0, deriveAv: 0, deriveAr: 0, patinage: 0, blocage: 0, aspiration: 0, pente: 0,
+      // avant gauche, avant droite, arrière gauche, arrière droite ; chute : retombée de la roue après le pic, retenue
+      roues: [0, 1, 2, 3].map(() => ({ charge: 0, glisse: 0, chute: 0 })),
+      // dérives des essieux (rad) et rapportées à l'angle du pic de l'essieu (x)
+      glisseAv: 0, glisseAr: 0, deriveAv: 0, deriveAr: 0, xAv: 0, xAr: 0, patinage: 0, blocage: 0, aspiration: 0, pente: 0,
       derive: {
         actif: false, sens: 0, duree: 0, charge: 0, niveau: 0, palier: 0, fenetre: 0, qualite: 0, contre: 0,
         perte: 0, grace: 0, amorce: 0, melange: 0, tirage: 0, verrou: false, arme: 0, relache: P.deriveRearmement
@@ -396,34 +441,59 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
     // Vitesses dans le repère de la caisse (u vers l'avant, w vers la droite)
     let u = v * Math.cos(etat.beta), w = -v * Math.sin(etat.beta), r = etat.omega;
 
-    // Charges : statique, appui, transferts filtrés (accélérations des pneus du pas précédent)
+    // Charges (§ 3.1). Charge normale de la piste : le poids selon la pente et le dévers, plus la charge de relief
+    // u²·κv (un creux plaque la voiture, une crête l'allège) ; puis l'appui, et les transferts longitudinal et latéral,
+    // pour une part immédiats (géométriques), le reste filtré (accélérations des pneus du pas précédent), chacun sur la
+    // voie de son essieu. Une charge ne descend jamais sous zéro : une roue délestée ne transmet plus rien. Le transfert
+    // de la pente vient des pneus : en montée, ils poussent contre la gravité et chargent l'arrière (m·g·sin θ·h/L).
+    const pente = Number.isFinite(e.pente) ? e.pente : 0, devers = Number.isFinite(e.devers) ? e.devers : 0;
+    const kv = courbureVerticale(c, etat.s);
+    const fN = m * (G * Math.cos(devers) / Math.sqrt(1 + pente * pente) + u * u * kv);
     const appui = m * P.aero * v * v;
-    const dx = m * etat.chargeX * P.hauteurCG / L;
-    const dy = m * etat.chargeY * P.hauteurCG / P.voie;
-    const fzAv = Math.max(0, m * G * P.repartition + appui * P.aeroAvant - dx);
-    const fzAr = Math.max(0, m * G * (1 - P.repartition) + appui * (1 - P.aeroAvant) + dx);
-    const tAv = dy * P.roulisAvant, tAr = dy * (1 - P.roulisAvant);
+    const gI = P.transfertImmediat;
+    const dx = m * (gI * etat.along + (1 - gI) * etat.chargeX) * P.hauteurCG / L;
+    const dy = m * (gI * etat.alat + (1 - gI) * etat.chargeY) * P.hauteurCG;
+    // Garde au décollage (fiche 22F § 3.4) : sous `decollage` fois le poids, appui compris, les roues ne guident plus
+    // et la voiture vole jusqu'à ce que son arc recoupe le profil (decoller, voler).
+    const fzTot = fN + appui;
+    if (fzTot < P.decollage * m * G) { decoller(etat, pente, Number.isFinite(e.y) ? e.y : 0); return; }
+    // Les charges se conservent : un essieu ou une roue délestés à zéro reportent leur part sur l'autre.
+    const fzAv = clamp(fN * P.repartition + appui * P.aeroAvant - dx, 0, fzTot), fzAr = fzTot - fzAv;
+    const tAv = clamp(dy * P.roulisAvant / P.voieAv, -fzAv / 2, fzAv / 2);
+    const tAr = clamp(dy * (1 - P.roulisAvant) / P.voieAr, -fzAr / 2, fzAr / 2);
     const R = etat.roues;
     // virage à droite (chargeY > 0) : la charge passe sur les roues gauches
-    R[0].charge = Math.max(0, fzAv / 2 + tAv); R[1].charge = Math.max(0, fzAv / 2 - tAv);
-    R[2].charge = Math.max(0, fzAr / 2 + tAr); R[3].charge = Math.max(0, fzAr / 2 - tAr);
-    const muAr = mu * P.gripArriere * (1 - (1 - P.deriveMuAr) * bd);
-    const capAv = adherence(mu, R[0].charge) + adherence(mu, R[1].charge);
-    const capAr = adherence(muAr, R[2].charge) + adherence(muAr, R[3].charge);
-    etat.capAv = capAv; etat.capAr = capAr; etat.chargeAv = (fzAv + fzAr) > 0 ? fzAv / (fzAv + fzAr) : P.repartition;
+    R[0].charge = fzAv / 2 + tAv; R[1].charge = fzAv / 2 - tAv;
+    R[2].charge = fzAr / 2 + tAr; R[3].charge = fzAr / 2 - tAr;
+    // Pneus (§ 3.2, src/pneu.js) : force maximale et angle du pic de chaque roue selon sa charge, normée sur la charge
+    // statique d'une roue de son essieu ; l'angle du pic d'un essieu est la moyenne de ceux de ses roues, pesée par
+    // leurs forces maximales.
+    const Q = P.sensibiliteQ, PC = P.picCharge, muAr = mu * P.gripArriere * (1 - (1 - P.deriveMuAr) * bd);
+    const f0 = forceMax(mu, R[0].charge, FZ0AV, Q), f1 = forceMax(mu, R[1].charge, FZ0AV, Q);
+    const f2 = forceMax(muAr, R[2].charge, FZ0AR, Q), f3 = forceMax(muAr, R[3].charge, FZ0AR, Q);
+    const p0 = alphaPic(P.alphaAv, R[0].charge, FZ0AV, PC), p1 = alphaPic(P.alphaAv, R[1].charge, FZ0AV, PC);
+    const p2 = alphaPic(P.alphaAr, R[2].charge, FZ0AR, PC), p3 = alphaPic(P.alphaAr, R[3].charge, FZ0AR, PC);
+    const capAv = f0 + f1, capAr = f2 + f3;
+    const picAv = capAv > 0 ? (f0 * p0 + f1 * p1) / capAv : P.alphaAv, picAr = capAr > 0 ? (f2 * p2 + f3 * p3) / capAr : P.alphaAr;
+    etat.capAv = capAv; etat.capAr = capAr; etat.chargeAv = fzAv / fzTot;
 
-    // Longitudinal : moteur et frein moteur à l'arrière, freins répartis
+    // Longitudinal : moteur et frein moteur à l'arrière, freins répartis (force de pédale de p9, sur la charge normale)
     const pied = 1 - gaz;
     const freinMoteur = u > 0.5 ? m * P.freinMoteur * pied : 0;
-    const fFrein = frein * P.freinMax * P.muPiste * (m * G + appui) * (u > 0.05 ? 1 : 0);
-    // Vitesses des essieux, dérive et adhérence de l'arrière. Au-delà du pic, un arrière qui glisse perd de
-    // l'adhérence totale, partagée ensuite entre motricité et virage : sous le gaz, une glisse franche ne se rattrape
-    // plus seule. En dérive au bouton, l'arrière suit une courbe adoucie, sans retombée.
+    const fFrein = frein * P.freinMax * P.freinMu * fzTot * (u > 0.05 ? 1 : 0);
+    // Vitesses des essieux, dérive et adhérence de l'arrière. Au-delà du pic, la roue arrière qui glisse perd de
+    // l'adhérence totale (la retombée de sa courbe, retenue : elle arrive en picTau, revient aussitôt), partagée ensuite
+    // entre motricité et virage : sous le gaz, une glisse franche ne se rattrape plus seule. En dérive au bouton,
+    // l'arrière suit une courbe adoucie, sans retombée.
     const ua = Math.max(Math.abs(u), 1);
     const angCG = Math.atan2(w, ua), angAv = Math.atan2(w + A * r, ua), angAr = Math.atan2(w - BR * r, ua);
-    const alphaAr = -angAr, xAr = alphaAr / P.alphaAr;
-    const capArG = capAr * (1 - (1 - retombee(xAr, P.chuteAr, P.chuteArLargeur)) * (1 - bd));
-    let fAr = forme(xAr);
+    const kPic = expTauFixe(TAU.pic, P.picTau, dt);
+    const alphaAr = relaxer(etat.deriveAr, -angAr, u, dt, P.relaxation, P.relaxationV), xAr = alphaAr / picAr;
+    const x2 = alphaAr / p2, x3 = alphaAr / p3;
+    R[2].chute = suivreChute(R[2].chute, chute(x2, P.chuteAr, P.chuteArLargeur), kPic);
+    R[3].chute = suivreChute(R[3].chute, chute(x3, P.chuteAr, P.chuteArLargeur), kPic);
+    const nd = 1 - bd, g2 = f2 * (1 - nd * R[2].chute), g3 = f3 * (1 - nd * R[3].chute), capArG = g2 + g3;
+    let fAr = capArG > 0 ? (g2 * courbeAvec(x2, 0) + g3 * courbeAvec(x3, 0)) / capArG : 0;
     if (bd > 0) fAr = (1 - bd) * fAr + bd * Math.tanh(alphaAr / P.deriveAlpha);
     // le turbo ne pousse qu'avec l'adhérence arrière que le virage laisse libre (1 − f², en deçà de l'ellipse
     // √(1 − f²)) et que le moteur n'a pas déjà prise : il accélère sans faire décrocher l'arrière
@@ -466,18 +536,25 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
     // amortisseur de glisse : quand la caisse tourne plus vite que sa trajectoire (dérapage qui grandit), l'avant
     // rend une part de son effort ; nul en virage établi. Il lâche quand l'arrière glisse franchement : la glisse
     // se rattrape alors au volant, en levant le pied ou par l'aide. La dérive au bouton et son turbo le gardent.
+    // Il est plus fort à haute vitesse (κ_D selon u, § 3.8), où le lacet est le moins amorti.
     const lache = rampe(Math.abs(xAr), P.amortSeuil, P.amortSeuil + P.amortPlage) * (1 - Math.max(bd, envTurbo));
     const glisseLacet = r - etat.alat / ua;
-    rho -= suivi(v) * P.amortGlisse * (1 - lache) * (1 - (1 - P.deriveAmort) * bd) * glisseLacet * Math.max(v, 1) / Math.max(amaxAv, 1);
-    let delta = suivi(v) * angCG + braquer(rho, v, amaxAv);
+    const kD = P.amortGlisse + (P.amortGlisseV - P.amortGlisse) * rampe(u, P.amortV0, P.amortV1);
+    rho -= suivi(v) * kD * (1 - lache) * (1 - (1 - P.deriveAmort) * bd) * glisseLacet * Math.max(v, 1) / Math.max(amaxAv, 1);
+    let delta = suivi(v) * angCG + braquerPic(rho, v, amaxAv, picAv);
     delta = clamp(delta, -P.braquageMeca, P.braquageMeca);
     etat.braquage = delta;
 
-    // Pneus : dérives et forces latérales (fAr et la retombée de l'arrière, dans capArG, sont calculées plus haut)
+    // Pneus : dérive et force latérale de chaque roue avant, la retombée retenue comme à l'arrière (fAr et la
+    // retombée de l'arrière, dans capArG, sont calculées plus haut) ; l'ellipse de l'avant (latAv) est celle de p9
     const sgnU = u >= 0 ? 1 : -1;
-    const alphaAv = delta * sgnU - angAv;
-    const fyAv = latAv * pneu(alphaAv / P.alphaAv), fyAr = latAr * fAr;
-    etat.deriveAv = alphaAv; etat.deriveAr = alphaAr;
+    const alphaAv = relaxer(etat.deriveAv, delta * sgnU - angAv, u, dt, P.relaxation, P.relaxationV);
+    const x0 = alphaAv / p0, x1 = alphaAv / p1;
+    R[0].chute = suivreChute(R[0].chute, chute(x0, P.chute, P.chuteLargeur), kPic);
+    R[1].chute = suivreChute(R[1].chute, chute(x1, P.chute, P.chuteLargeur), kPic);
+    const fyAv = capAv > 0 ? latAv * (f0 * courbeAvec(x0, R[0].chute) + f1 * courbeAvec(x1, R[1].chute)) / capAv : 0;
+    const fyAr = latAr * fAr, xAv = alphaAv / picAv;
+    etat.deriveAv = alphaAv; etat.deriveAr = alphaAr; etat.xAv = xAv; etat.xAr = xAr;
     // Relevé facultatif pour le banc (tools/banc-conduite.mjs) : un objet `_mesure` posé sur l'état reçoit les
     // grandeurs internes du pas (demandes et capacités des essieux, dérives rapportées au pic). Le jeu ne le pose
     // jamais ; les champs « _ » n'entrent dans aucune empreinte d'état.
@@ -485,8 +562,8 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
     if (M) {
       M.demAv = demAv; M.demAr = demAr; M.capAv = capAv; M.capAr = capArG; M.fxAv = fxAv; M.fxAr = fxAr;
       M.latAv = latAv; M.latAr = latAr; M.fyAv = fyAv; M.fyAr = fyAr;
-      M.alphaPicAv = P.alphaAv; M.alphaPicAr = P.alphaAr; M.xAv = alphaAv / P.alphaAv; M.xAr = xAr;
-      M.freinMoteur = freinMoteur; M.fFrein = fFrein;
+      M.alphaPicAv = picAv; M.alphaPicAr = picAr; M.xAv = xAv; M.xAr = xAr;
+      M.freinMoteur = freinMoteur; M.fFrein = fFrein; M.fN = fN; M.kv = kv; M.fzAv = fzAv; M.fzAr = fzAr;
     }
 
     // Forces dans le repère de la caisse
@@ -503,7 +580,6 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
     if (vv > 1e-6) { fx -= m * resist * u / vv; fy -= m * resist * w / vv; }
     // pente et dévers : gravité le long de la tangente et vers la droite de la piste
     const thetaB = etat.psi + etat.beta, ct = Math.cos(thetaB), st = Math.sin(thetaB);
-    const pente = Number.isFinite(e.pente) ? e.pente : 0, devers = Number.isFinite(e.devers) ? e.devers : 0;
     const gT = -G * pente / Math.sqrt(1 + pente * pente), gN = G * Math.sin(devers);
     etat.pente = pente;
     fx += m * (gT * ct + gN * st); fy += m * (-gT * st + gN * ct);
@@ -547,14 +623,14 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
 
     heurterGlissiere(etat, c, dt, ev);
 
-    // Glisse par essieu et par roue, pour le son et les effets
-    const gAv = rampe(Math.abs(alphaAv) / P.alphaAv, 0.8, 1.6);
-    const gAr = Math.max(rampe(Math.abs(alphaAr) / P.alphaAr, 0.8, 1.6), etat.patinage);
+    // Glisse par essieu et par roue, pour le son et les effets (dérive rapportée à l'angle du pic de l'essieu)
+    const gAv = rampe(Math.abs(xAv), 0.8, 1.6);
+    const gAr = Math.max(rampe(Math.abs(xAr), 0.8, 1.6), etat.patinage);
     etat.glisseAv = Math.max(gAv, etat.blocage); etat.glisseAr = Math.max(gAr, etat.blocage);
     const pAv = Math.max(fzAv, 1), pAr = Math.max(fzAr, 1);
     R[0].glisse = etat.glisseAv * clamp(2 * R[0].charge / pAv, 0, 1); R[1].glisse = etat.glisseAv * clamp(2 * R[1].charge / pAv, 0, 1);
     R[2].glisse = etat.glisseAr * clamp(2 * R[2].charge / pAr, 0, 1); R[3].glisse = etat.glisseAr * clamp(2 * R[3].charge / pAr, 0, 1);
-    etat.sousVirage = Math.max(0, Math.abs(alphaAv) / P.alphaAv - 1);
+    etat.sousVirage = Math.max(0, Math.abs(xAv) - 1);
     etat.glisse = etat.v > 3 ? clamp(Math.max(etat.glisseAv, etat.glisseAr), 0, 1) : 0;
   }
 
@@ -608,10 +684,26 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
       duree: o.duree || (grand ? P.sautDuree : P.bondDuree),
       h: o.h != null ? o.h : (grand ? P.sautH : P.bondH),
       ySol: etat.y, tang0: etat.tangage, roul0: etat.roulis,
-      tangV: o.tangV || 0, roulV: o.roulV || 0, pouss: o.pouss || 0, contre: 0
+      tangV: o.tangV || 0, roulV: o.roulV || 0, pouss: o.pouss || 0, contre: 0,
+      // vol de crête (decoller) : vitesse verticale et accélération vers le sol de l'arc, hauteur de la piste au départ
+      crete: !!o.crete, vz: o.vz || 0, gz: o.gz || 0, yPiste: o.yPiste || 0
     };
     if (o.omega) etat.omega = o.omega;
     annuler(etat, []); // plus de dérive ni de turbo pendant le vol
+  }
+
+  // Décollage d'une crête (lot 17B, garde de la fiche 22F § 3.4) : la voiture quitte le sol avec la vitesse verticale
+  // que lui donne la piste (pente × vitesse) et retombe sous la gravité et l'appui ; voler la pose quand cet arc
+  // recoupe le profil là où la piste la porte de nouveau (au plus volMax s). Sans perte à la réception : rien ne l'a
+  // poussée.
+  function decoller(etat, pente, yPiste) {
+    const v = Math.abs(etat.v);
+    lancerSaut(etat, { duree: P.volMax, h: 0, crete: true, vz: v * pente, gz: G + P.aero * v * v, yPiste });
+  }
+  // Appui de la piste par unité de masse (m/s²) : poids selon la pente et le dévers, relief, appui aérodynamique.
+  function appuiPiste(c, s, q, u, v) {
+    const pe = Number.isFinite(q.pente) ? q.pente : 0, dv = Number.isFinite(q.devers) ? q.devers : 0;
+    return G * Math.cos(dv) / Math.sqrt(1 + pe * pe) + u * u * courbureVerticale(c, s) + P.aero * v * v;
   }
 
   // Déclencher un accident : la caisse n'obéit plus, freine et revient seule sur le revêtement, puis immunité.
@@ -672,19 +764,27 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
     etat.s = ramener(etat.s + etat.v * Math.cos(etat.psi) / den * dt, c.longueur);
     etat.d += etat.v * Math.sin(etat.psi) * dt;
     etat.psi = angle(etat.psi + etat.omega * dt);
-    // hauteur et attitude
-    const p = clamp(s.t / s.duree, 0, 1);
-    etat.y = s.ySol + s.h * 4 * p * (1 - p);
+    // hauteur et attitude ; un vol de crête suit l'arc de la gravité et de l'appui, jamais sous le profil, et se pose
+    // quand il le recoupe là où la piste porte de nouveau `decollage` fois le poids (au plus volMax s)
     etat.tangage = s.tang0 + s.tangV * s.t;
     etat.roulis = s.roul0 + s.roulV * s.t;
-    if (s.t < s.duree) return;
+    if (s.crete) {
+      const q = B.circuit.echantillon(c, etat.s, LU.envolA), ya = s.ySol + s.vz * s.t - s.gz * s.t * s.t / 2;
+      const yp = s.ySol + ((Number.isFinite(q.y) ? q.y : s.yPiste) - s.yPiste), v = Math.abs(etat.v);
+      etat.y = Math.max(ya, yp);
+      if (s.t < s.duree && (ya > yp || appuiPiste(c, etat.s, q, v, v) < P.decollage * G)) return;
+    } else {
+      const p = clamp(s.t / s.duree, 0, 1);
+      etat.y = s.ySol + s.h * 4 * p * (1 - p);
+      if (s.t < s.duree) return;
+    }
     // réception
     if (Math.abs(etat.tangage) > P.sautTangLim || Math.abs(etat.roulis) > P.sautRoulLim) {
       etat.saut = null; declencherAccident(etat, { reception: true });
       ev.push({ type: 'tonneau' });
       return;
     }
-    const corr = s.contre >= P.contreBon ? 1 : (s.contre <= P.contreMauvais ? 0.94 : 0.97);
+    const corr = s.crete || s.contre >= P.contreBon ? 1 : (s.contre <= P.contreMauvais ? 0.94 : 0.97);
     etat.v *= corr; // jamais de gain : corr ≤ 1
     etat.saut = null;
     etat.bondT = P.deriveBondDuree; // petit écrasement visuel à l'atterrissage

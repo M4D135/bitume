@@ -15,7 +15,7 @@ import path from 'node:path';
 import { executer, charger, CONDITIONS, essaisP10, SRC } from '../tools/banc-conduite.mjs';
 
 // Sous-lots livrés : leurs cibles sont obligatoires.
-export const OBLIGATOIRES = new Set([]);
+export const OBLIGATOIRES = new Set(['17B']);
 
 const ici = path.dirname(fileURLToPath(import.meta.url));
 const a = process.argv.slice(2), iJ = a.indexOf('--json');
@@ -74,7 +74,8 @@ const CIBLES = [
   ['17B', 'clavier R 30, part de la voiture seule (%)', 90, 'pas moins (≥ 89,5)', pc(R.virages.commandes.sec['30'].clavier && R.virages.commandes.sec['30'].clavier.surPhysiqueLarge), v => fin(v) && v >= 89.5],
   ['17B', 'clavier R 120, part de la voiture seule (%)', 95, 'pas moins (≥ 94,5)', pc(R.virages.commandes.sec['120'].clavier && R.virages.commandes.sec['120'].clavier.surPhysiqueLarge), v => fin(v) && v >= 94.5],
   ['17B', 'critères de la phase 2 tenus', '46/46', '46/46', C.get('bilan') ? `${C.get('bilan').tenus}/${C.get('bilan').total}` : null, v => v === '46/46'],
-  ['17B', 'plein gaz en 2e, R 60, 0,92 × limite : x_ar maxi (S3 en fois le pic)', '1,36 (mesure 17A)', '≥ 1,25', T.pleinGaz['R60 0.92'].xArMax, v => fin(v) && v >= 1.25],
+  // S3 « plein gaz » en fois le pic arrière (§ 5, 17B ; § 6) ; p9 : la même mesure sur le code de 17A
+  ['17B', 'S3 plein gaz 2e/3e (critère) : dérive arrière en fois le pic', '1,43 (mesure 17B)', '≥ 1,25', crit('S3 plein gaz 2e/3e : dérive arrière maximale, en fois le pic'), v => fin(v) && v >= 1.25],
   // ---- 17C moteur, boîte, roues motrices
   ['17C', 'puissance à la roue, 1re à 6e (kW)', '182 → 233', '233 ± 4 % à chaque rapport', [min(R.ligneDroite.depart.sec.puissanceRoue_kW), max(R.ligneDroite.depart.sec.puissanceRoue_kW)], v => dans(v[0], 233 * .96, 233 * 1.04) && dans(v[1], 233 * .96, 233 * 1.04)],
   ['17C', 'régime × vPointe / v, p10 à p90 (tr/min)', 'affine', '12 800 ± 1 %', [T.regime && T.regime.p10, T.regime && T.regime.p90], v => dans(v[0], 12672, 12928) && dans(v[1], 12672, 12928)],
@@ -86,6 +87,8 @@ const CIBLES = [
   ['17C', 'départ plein gaz sans aide : arrière au-delà du pic (s)', '1,33 à la capacité (mesure 17A)', '0,2 à 1,0', T.depart.sansAide.patinage_s, v => dans(v, .2, 1)],
   ['17C', 'départ : régime mini sur 0,5 s (tr/min)', 10309, '≥ 9 000', T.depart.sansAide.regimeMin05s, v => fin(v) && v >= 9000],
   ['17C', 'départ Légère / meilleur départ dosé (0-100)', '1,00', '≤ 1,03', T.depart.dose ? T.depart.legere.t100_s / T.depart.dose.t100_s : null, v => fin(v) && v <= 1.03],
+  // au tableau de 17C dans le plan (§ 5) ; 17A l'avait rangée sous 17B
+  ['17C', 'plein gaz en 2e, R 60, 0,92 × limite, aide 0 : x_ar maxi (en fois le pic)', '1,36 (mesure 17A)', '≥ 1,25', T.pleinGaz['R60 0.92'].xArMax, v => fin(v) && v >= 1.25],
   ...['30', '60'].map(r => ['17C', `remise des gaz à 45°, R ${r}, Légère (manette) : écart maxi (m)`, r === '30' ? 15.8 : 8.1, '≤ 4, sans tête-à-queue', remise45(r, 'manette') && !remise45(r, 'manette').teteAQueue ? remise45(r, 'manette').ecartMax_m : null, v => fin(v) && v <= 4]),
   ['17C', 'remise des gaz à 15°, R 30, voiture seule', 'passe (β 13,4°)', 'passe', R.remiseDesGaz.sortie['30'].sec['15'].physique.teteAQueue ? 'tête-à-queue' : 'passe', v => v === 'passe'],
   ...['120', '180'].map(r => ['17C', `aide seule R ${r} (%)`, r === '120' ? -1.7 : -3.4, '≥ −0,5', pc(R.virages.aideSeule.sec[r].rapport - 1), v => fin(v) && v >= -.5]),

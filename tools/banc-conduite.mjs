@@ -40,7 +40,9 @@ import { fileURLToPath } from 'node:url';
 
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 export const SRC = path.resolve(ICI, '..', 'src');
-export const VERSION_BANC = 2;   // v2 : essais du lot 17 ajoutés, essais v1 inchangés (même empreinte)
+// v2 : essais du lot 17 ajoutés, essais v1 inchangés (même empreinte) ; v3 (lot 17B) : traînée compensée sans pente
+// (voir tenir), la pente chargeant désormais les roues
+export const VERSION_BANC = 3;
 const G = 9.81, DT = 1 / 120, DEG = 180 / Math.PI, KMH = 3.6, RHO = 1.225;
 const clamp = (x, a, b) => x < a ? a : x > b ? b : x;
 
@@ -63,7 +65,8 @@ export function charger(src = SRC, reglages = null) {
     if (i < 0 || j < 0) throw new Error('banc-conduite : bloc PARAMS introuvable dans conduite.js');
     let bloc = t.slice(i, j);
     for (const [k, v] of Object.entries(reglages)) {
-      const re = Array.isArray(v) ? new RegExp('(\\b' + k + ':\\s*)\\[[^\\]]*\\]') : new RegExp('(\\b' + k + ':\\s*)-?[\\d.]+(?:e-?\\d+)?');
+      // un tableau de PARAMS est gelé : `k: Object.freeze([…])`
+      const re = Array.isArray(v) ? new RegExp('(\\b' + k + ':\\s*(?:Object\\.freeze\\()?)\\[[^\\]]*\\]') : new RegExp('(\\b' + k + ':\\s*)-?[\\d.]+(?:e-?\\d+)?');
       if (!re.test(bloc) || (!Array.isArray(v) && !Number.isFinite(+v))) throw new Error('banc-conduite : réglage inconnu ou invalide ' + k + '=' + v);
       bloc = bloc.replace(re, '$1' + (Array.isArray(v) ? '[' + v.map(Number).join(', ') + ']' : String(+v)));
     }
@@ -291,7 +294,9 @@ function constantes(ctx) {
   const par = f => Object.fromEntries(Object.entries(V).map(([k, v]) => [k, f(v)]));
   const W = EAUX.map(Number);
   return {
-    masse_kg: m, empattement_m: P.empattement, voie_m: P.voie, hauteurCG_m: P.hauteurCG, repartitionAvant: P.repartition,
+    // p10 (lot 17B) : une voie par essieu (voie_m est celle de l'avant) ; p9 : une seule voie, sortie inchangée
+    masse_kg: m, empattement_m: P.empattement, voie_m: P.voie ?? P.voieAv, ...(P.voieAr != null ? { voieArriere_m: P.voieAr } : {}),
+    hauteurCG_m: P.hauteurCG, repartitionAvant: P.repartition,
     inertieLacet_kgm2: m * P.giration * P.giration,
     // ½ ρ S Cx v² = m · coeffTrainee · v², de même pour l'appui : surfaces équivalentes à ρ = 1,225 kg/m³
     SCx_m2: 2 * m * P.coeffTrainee / RHO, SCz_m2: 2 * m * P.aero / RHO, appuiAvant: P.aeroAvant,
@@ -380,21 +385,19 @@ function freinMoteur(ctx, cond) {
 // ---------------------------------------------------------------- 3. virages établis
 // Tenue d'un rayon à vitesse donnée : le pilote de ligne tient l'axe et la vitesse. « tenu » : sur la fenêtre de fin,
 // l'axe à moins de dTol, la vitesse à moins de vTol, la caisse à moins de 0,15 rad, jamais de tête-à-queue.
-// `compense` : une pente descendante rend à la voiture sa traînée d'air et son roulement à cette vitesse. Dans
-// conduite.js, la pente n'agit que le long de la piste (aucun report de charge) : l'essai sépare ainsi la limite
-// d'adhérence de la limite de puissance, qui se confondent sinon dans les grands virages.
+// `compense` : la voiture roule sans traînée d'air ni roulement (l'état de dégâts de conduite.js, traînée × 0, adhérence
+// × 1), sur piste plate : l'essai sépare ainsi la limite d'adhérence de la limite de puissance, qui se confondent sinon
+// dans les grands virages. Banc v3 : jusqu'au banc v2, une pente descendante rendait la traînée ; la pente change la
+// charge normale en p10 (lot 17B, m·g·cos θ : −4,5 % à R 180), la mesure n'en était plus une de l'adhérence. Sur p9, les
+// deux façons donnent les mêmes vitesses à 0,07 % près.
 function tenir(ctx, cond, R, v, o = {}) {
-  const E = typeof o.entree === 'object' ? o.entree : ENTREES[o.entree || 'physique'], P = ctx.P;
-  let c = o.c;
-  if (!c) {
-    const po = { ...(o.piste || LARGE) };
-    if (o.compense) { const a = (P.coeffTrainee * v * v + P.roulement) * (o.degats ? o.degats.trainee : 1); po.pente = -a / Math.sqrt(G * G - a * a); }
-    c = cercle(ctx, R, po);
-  }
+  const E = typeof o.entree === 'object' ? o.entree : ENTREES[o.entree || 'physique'];
+  const c = o.c || cercle(ctx, R, o.piste || LARGE);
   const et = voiture(ctx, cond);
   lancer(ctx, et, v); et.omega = v / c.rayon * Math.sign(R);
   if (o.aspiration != null) et.aspiration = o.aspiration;
-  if (o.degats) et.degats = { adher: o.degats.adher, trainee: o.degats.trainee, roues: [false, false, false, false], casse: false };
+  const dg = o.compense ? { adher: o.degats ? o.degats.adher : 1, trainee: 0 } : o.degats;
+  if (dg) et.degats = { adher: dg.adher, trainee: dg.trainee, roues: [false, false, false, false], casse: false };
   const duree = o.duree || 8, fen = o.fenetre || 2, sg = Math.sign(R);
   let dMax = 0, dvMax = 0, tq = false, n = 0, volCmd = 0;
   const m = { braquage: 0, beta: 0, volant: 0, aAv: 0, aAr: 0, ay: 0, gaz: 0, omega: 0, rapport: 0 };
@@ -444,7 +447,8 @@ function virageEtabli(ctx, cond, R, o = {}) {
   return {
     R: c.rayon, vLimite_kmh: vl * KMH, ayLimite_g: lim.ay_g, gazLimite: lim.gaz, volantLimite: lim.volant, braquageLimite_deg: lim.braquage_deg,
     betaLimite_deg: lim.beta_deg, deriveAvLimite_deg: lim.deriveAv_deg, deriveArLimite_deg: lim.deriveAr_deg, rapportLimite: lim.rapport,
-    // limite d'adhérence, traînée compensée par la pente : au-dessus de la vitesse tenue, la voiture manque de puissance
+    // limite d'adhérence, traînée compensée (sans traînée ni roulement) : au-dessus de la vitesse tenue, la voiture
+    // manque de puissance
     vAdherence_kmh: vA != null ? vA * KMH : null, ayAdherence_g: vA != null ? vA * vA / c.rayon / G : null,
     // au régime maxi de la 6e, le moteur coupe : la limite d'adhérence est alors au-delà de ce qui est mesuré
     adherenceBornee: vA != null && vA >= ctx.P.vitessePointe[5] - .5 ? 'régime maxi en 6e' : null,

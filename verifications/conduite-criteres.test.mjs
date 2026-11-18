@@ -217,13 +217,19 @@ for (const v0 of [86, 92]) {
 {
   const pointe = r => P.vitessePointe[r - 1];
   const rayon = rap => { let lo = 20, hi = 300; for (let i = 0; i < 18; i++) { const m = (lo + hi) / 2; if (.93 * vLimite(m) < .8 * pointe(rap)) lo = m; else hi = m; } return Math.round((lo + hi) / 2); };
+  // Lot 17B (docs/reprise/17-CONDUITE.md § 5) : la dérive arrière se compte en fois l'angle du pic de l'essieu (x_ar,
+  // qui suit la charge en p10) et non plus en degrés : ≥ 1,25 × α_pic,ar au lieu de ≥ 6° (1,11 × le pic de p9).
+  // Sur une conduite qui n'expose pas x_ar (p9), il se lit sur la dérive et le pic fixe.
   let maxAr = 0, details = [];
   for (const [rap, R] of [[2, rayon(2)], [3, rayon(3)], [3, 120]]) {
-    const { et, c, cmd } = tenir(R, .93 * vLimite(R), 8, { rapport: rap }); let ar = 0;
-    rouler(et, c, commande({ volant: cmd.volant, gaz: 1, boite: 'manuelle' }), 1.5, e => { ar = Math.max(ar, e.deriveAr); });
-    maxAr = Math.max(maxAr, ar); details.push(`${rap}e/R${R} ${ (ar * deg).toFixed(1)}°`);
+    const { et, c, cmd } = tenir(R, .93 * vLimite(R), 8, { rapport: rap }); let ar = 0, deg0 = 0;
+    rouler(et, c, commande({ volant: cmd.volant, gaz: 1, boite: 'manuelle' }), 1.5, e => {
+      const x = Number.isFinite(e.xAr) ? e.xAr : e.deriveAr / P.alphaAr;
+      if (x > ar) { ar = x; deg0 = e.deriveAr * deg; }
+    });
+    maxAr = Math.max(maxAr, ar); details.push(`${rap}e/R${R} ${ar.toFixed(2)} × le pic (${deg0.toFixed(1)}°)`);
   }
-  noter('S3 plein gaz 2e/3e : dérive arrière maximale', maxAr * deg, '≥ 6° pour un cas', maxAr * deg >= 6, details.join(' · '));
+  noter('S3 plein gaz 2e/3e : dérive arrière maximale, en fois le pic', maxAr, '≥ 1,25 pour un cas', maxAr >= 1.25, details.join(' · '));
 }
 {
   const sans = coupGlisse(false), avec = coupGlisse(true);
