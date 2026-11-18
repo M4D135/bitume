@@ -43,31 +43,17 @@
   
   const arrondi = (v) => Math.round(v * 10) / 10;
 
+  // Les rivaux partent à l'autre bout du tour, à l'arrêt, en file (même geste que ECARTER_RIVAUX de
+  // tools/tour-captures.mjs) : la vue ne compte que le circuit, son décor et la voiture du joueur.
   const ecarter = () => {
-    if (!J.session || !J.session.reference || !J.session.reference.depart) return;
-    const s0 = J.session.reference.depart;
-    const c = J.session.course.c;
-    const voitures = J.session.course.voitures;
-    if (!voitures) return;
-    
-    for (const v of voitures) {
-      if (v.joueur) continue;
-      // Rivaux à l'autre bout du tour, à l'arrêt
-      const s = (s0 + c.longueur / 2) % c.longueur;
-      const e = B.circuit.echantillon(c, s);
-      const tunnel = B.circuit.dansTunnel(c, s, 6);
-      const cote = (v.id % 2 === 0) ? 1 : -1;
-      const d = cote * (tunnel ? c.largeur / 2 - .8 : c.largeur / 2 + 4.5);
-      const x = e.x - Math.sin(e.cap) * d;
-      const z = e.z + Math.cos(e.cap) * d;
-      const sol = J.scene && J.scene.decor && J.scene.decor.sol ? J.scene.decor.sol(x, z) : NaN;
-      const y = (tunnel || !isFinite(sol) ? e.y - d * Math.sin(e.devers) : Math.max(sol, e.y - d * Math.sin(e.devers))) + 1.6;
-      
-      v.etat.s = s;
-      v.etat.d = 0;
-      v.etat.v = 0;
-      v.etat.y = y;
-    }
+    const S = J.session, co = S.course, c = co.c, L = c.longueur, s0 = S.reference.depart;
+    co.voitures.forEach((v, n) => {
+      if (v.joueur) return;
+      const et = v.etat;
+      et.s = (s0 + L / 2 + n * 14) % L; et.d = n % 2 ? 3 : -3; et.v = 0;
+      const e = B.circuit.echantillon(c, et.s);
+      et.y = e.y - et.d * Math.sin(e.devers); co.sAvant[v.id] = et.s; v.roule = et.s;
+    });
   };
 
   const base = { 
