@@ -286,4 +286,20 @@ verifier('dt non fini ou énorme : sorties finies, puis retour au silence', () =
   }
 });
 
+verifier('force 1 vs 0.5 : somme strictement supérieure et sorties bornées à 1', () => {
+  const e = { v: 5, vibreur: true, surface: 'herbe' };
+  const V05 = VIB.creer();
+  const s05 = simuler(V05, { ...e, force: 0.5 }, 1, 1 / 120);
+  const somme05 = s05.faible + s05.fort + s05.gachetteG + s05.gachetteD;
+  assert.ok(somme05 > 0, 'somme à force 0.5 doit être non nulle : ' + somme05);
+
+  const V1 = VIB.creer();
+  const s1 = simuler(V1, { ...e, force: 1 }, 1, 1 / 120);
+  const somme1 = s1.faible + s1.fort + s1.gachetteG + s1.gachetteD;
+  assert.ok(somme1 > somme05, 'somme à force 1 (' + somme1 + ') pas > somme à force 0.5 (' + somme05 + ')');
+  for (const k of ['faible', 'fort', 'gachetteG', 'gachetteD']) {
+    assert.ok(s1[k] <= 1, k + ' dépasse 1 à force 1 : ' + s1[k]);
+  }
+});
+
 console.log(`vibrations : ${controles} contrôles passés`);

@@ -246,24 +246,24 @@
 
     // k. Mise en forme : compression douce pour garder de la marge, gain joueur, lissage
     // au temps (montée vive 15 ms, descente plus lente 60 ms) puis coupure sous le seuil.
-    var gain = force * 2; if (gain > 1) gain = 1;
+    var gain = force * 2;
     var s = V.sortie;
     s.faible = cFaible; s.fort = cFort; s.gachetteG = cGG; s.gachetteD = cGD;
 
     // Faible
-    var x = s.faible; if (x < 0) x = 0; x = x / (1 + 0.6 * x) * 1.6; if (x > 1) x = 1; x *= gain;
+    var x = s.faible; if (x < 0) x = 0; x = x / (1 + 0.6 * x) * 1.6; if (x > 1) x = 1; x *= gain; if (x > 1) x = 1;
     var coef = x > V.lFaible ? (1 - Math.exp(-pas / 0.015)) : (1 - Math.exp(-pas / 0.06));
     V.lFaible += (x - V.lFaible) * coef; if (V.lFaible < SEUIL) V.lFaible = 0; s.faible = V.lFaible;
     // Fort
-    x = s.fort; if (x < 0) x = 0; x = x / (1 + 0.6 * x) * 1.6; if (x > 1) x = 1; x *= gain;
+    x = s.fort; if (x < 0) x = 0; x = x / (1 + 0.6 * x) * 1.6; if (x > 1) x = 1; x *= gain; if (x > 1) x = 1;
     coef = x > V.lFort ? (1 - Math.exp(-pas / 0.015)) : (1 - Math.exp(-pas / 0.06));
     V.lFort += (x - V.lFort) * coef; if (V.lFort < SEUIL) V.lFort = 0; s.fort = V.lFort;
     // Gâchette gauche
-    x = s.gachetteG; if (x < 0) x = 0; x = x / (1 + 0.6 * x) * 1.6; if (x > 1) x = 1; x *= gain;
+    x = s.gachetteG; if (x < 0) x = 0; x = x / (1 + 0.6 * x) * 1.6; if (x > 1) x = 1; x *= gain; if (x > 1) x = 1;
     coef = x > V.lGG ? (1 - Math.exp(-pas / 0.015)) : (1 - Math.exp(-pas / 0.06));
     V.lGG += (x - V.lGG) * coef; if (V.lGG < SEUIL) V.lGG = 0; s.gachetteG = V.lGG;
     // Gâchette droite
-    x = s.gachetteD; if (x < 0) x = 0; x = x / (1 + 0.6 * x) * 1.6; if (x > 1) x = 1; x *= gain;
+    x = s.gachetteD; if (x < 0) x = 0; x = x / (1 + 0.6 * x) * 1.6; if (x > 1) x = 1; x *= gain; if (x > 1) x = 1;
     coef = x > V.lGD ? (1 - Math.exp(-pas / 0.015)) : (1 - Math.exp(-pas / 0.06));
     V.lGD += (x - V.lGD) * coef; if (V.lGD < SEUIL) V.lGD = 0; s.gachetteD = V.lGD;
 
