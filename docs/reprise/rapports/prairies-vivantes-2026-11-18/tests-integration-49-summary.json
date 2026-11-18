@@ -1,0 +1,627 @@
+{
+  "scope": "Existing BITUME verification suites, excluding vegetation.test.mjs as requested; no source edits or engine requalification.",
+  "root": "/workspace/scratch/91b494a5f0bb/bitume",
+  "startedUTC": "2026-11-18T09:24:25.931849+00:00",
+  "node": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+  "nodeVersion": "v24.22.3",
+  "excluded": [
+    "verifications/vegetation.test.mjs"
+  ],
+  "sourceHashesAtStart": {
+    "src/jeu.js": "ccc7fde0700e6453b51d4fb8ab7bd4b66d07e94976ebbcebf018b1e605ed69a7",
+    "src/graphismes.js": "e33e5987d0b1c1c59b6abc734102cfb13bccb99d0f4ba8b9ea5e644d7ee0c251",
+    "src/ambiance.js": "5c832b2297fbe734639fa0e13314ed201fcea3b06b89d50286ef932820ea4b20",
+    "src/faune.js": "6580f8c30b01bb9b105e620a75af3dc25728c50209f7a3217e2dcf04f51b4198",
+    "src/vegetation.js": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+    "src/decor.js": "341ae69221b83df7638ba90d05d5dc4e087debb86e1dc89c9b5d3f7eacd9bdc4",
+    "FERRO.lock.json": "f41c19b3ca9f36e3314620221f3ac2d07dbbcfb74d7157ce2b26dfca0292f967"
+  },
+  "results": [
+    {
+      "suite": "verifications/ambiance.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/ambiance.test.log",
+      "startedUTC": "2026-11-18T09:24:25.938647+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.114,
+      "tail": [
+        "4 contr\u00f4les ambiance/nature r\u00e9ussis."
+      ]
+    },
+    {
+      "suite": "verifications/botanique.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/botanique.test.log",
+      "startedUTC": "2026-11-18T09:24:26.053701+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.523,
+      "tail": [
+        "}"
+      ]
+    },
+    {
+      "suite": "verifications/carene.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/carene.test.log",
+      "startedUTC": "2026-11-18T09:24:26.578013+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.165,
+      "tail": [
+        "car\u00e8ne : 14 v\u00e9rifications pass\u00e9es"
+      ]
+    },
+    {
+      "suite": "verifications/circuit.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/circuit.test.log",
+      "startedUTC": "2026-11-18T09:24:26.743274+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.567,
+      "tail": [
+        "ok  Ecart circuit 47"
+      ]
+    },
+    {
+      "suite": "verifications/collisions-orientees.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/collisions-orientees.test.log",
+      "startedUTC": "2026-11-18T09:24:27.310611+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.064,
+      "tail": [
+        "}"
+      ]
+    },
+    {
+      "suite": "verifications/commandes-partage.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/commandes-partage.test.log",
+      "startedUTC": "2026-11-18T09:24:27.375576+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.064,
+      "tail": [
+        "44/44 contr\u00f4les commandes partag\u00e9es tenus"
+      ]
+    },
+    {
+      "suite": "verifications/conduite-criteres.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/conduite-criteres.test.log",
+      "startedUTC": "2026-11-18T09:24:27.440372+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 1.875,
+      "tail": [
+        "46/46 crit\u00e8res obligatoires tenus; 1 mesure(s) ouverte(s)"
+      ]
+    },
+    {
+      "suite": "verifications/conduite.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/conduite.test.log",
+      "startedUTC": "2026-11-18T09:24:29.316205+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.315,
+      "tail": [
+        "18 v\u00e9rifications r\u00e9ussies"
+      ]
+    },
+    {
+      "suite": "verifications/contacts.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/contacts.test.log",
+      "startedUTC": "2026-11-18T09:24:29.631904+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.115,
+      "tail": [
+        "44/44 crit\u00e8res du Chantier 3 tenus"
+      ]
+    },
+    {
+      "suite": "verifications/controle-visuel.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/controle-visuel.test.log",
+      "startedUTC": "2026-11-18T09:24:29.747460+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.115,
+      "tail": [
+        "\u2139 duration_ms 17.271102"
+      ]
+    },
+    {
+      "suite": "verifications/course.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/course.test.log",
+      "startedUTC": "2026-11-18T09:24:29.862770+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 3.128,
+      "tail": [
+        "8 tests passes"
+      ]
+    },
+    {
+      "suite": "verifications/crash.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/crash.test.log",
+      "startedUTC": "2026-11-18T09:24:32.991662+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.315,
+      "tail": [
+        "}"
+      ]
+    },
+    {
+      "suite": "verifications/decor-identite.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/decor-identite.test.log",
+      "startedUTC": "2026-11-18T09:24:33.307225+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 2.22,
+      "tail": [
+        "d\u00e9cor : 9 g\u00e9om\u00e9tries de r\u00e9f\u00e9rence inchang\u00e9es (linux/x64/node-24.22.3)"
+      ]
+    },
+    {
+      "suite": "verifications/decor-obstacles.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/decor-obstacles.test.log",
+      "startedUTC": "2026-11-18T09:24:35.527747+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.516,
+      "tail": [
+        "}"
+      ]
+    },
+    {
+      "suite": "verifications/decor.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/decor.test.log",
+      "startedUTC": "2026-11-18T09:24:36.044045+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.417,
+      "tail": [
+        "for\u00eat : 18 v\u00e9rifications pass\u00e9es"
+      ]
+    },
+    {
+      "suite": "verifications/faune.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/faune.test.log",
+      "startedUTC": "2026-11-18T09:24:36.461640+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 5.493,
+      "tail": [
+        "faune : 12 contr\u00f4les pass\u00e9s"
+      ]
+    },
+    {
+      "suite": "verifications/formes-libres.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/formes-libres.test.log",
+      "startedUTC": "2026-11-18T09:24:41.955895+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.267,
+      "tail": [
+        "formes libres : 31399 triangles \u00e9mis dans l'ordre du registre"
+      ]
+    },
+    {
+      "suite": "verifications/glissiere-etats.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/glissiere-etats.test.log",
+      "startedUTC": "2026-11-18T09:24:42.224052+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.114,
+      "tail": [
+        "}"
+      ]
+    },
+    {
+      "suite": "verifications/glissiere-rebond.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/glissiere-rebond.test.log",
+      "startedUTC": "2026-11-18T09:24:42.339270+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.115,
+      "tail": [
+        "}"
+      ]
+    },
+    {
+      "suite": "verifications/graphismes.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/graphismes.test.log",
+      "startedUTC": "2026-11-18T09:24:42.454644+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.115,
+      "tail": [
+        "graphismes : 22 contr\u00f4les pass\u00e9s"
+      ]
+    },
+    {
+      "suite": "verifications/ia-attaque.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/ia-attaque.test.log",
+      "startedUTC": "2026-11-18T09:24:42.570298+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 11.676,
+      "tail": [
+        "}"
+      ]
+    },
+    {
+      "suite": "verifications/ia-epaves.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/ia-epaves.test.log",
+      "startedUTC": "2026-11-18T09:24:54.247449+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.115,
+      "tail": [
+        "}"
+      ]
+    },
+    {
+      "suite": "verifications/ia-reprise.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/ia-reprise.test.log",
+      "startedUTC": "2026-11-18T09:24:54.362811+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.114,
+      "tail": [
+        "}"
+      ]
+    },
+    {
+      "suite": "verifications/ia.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/ia.test.log",
+      "startedUTC": "2026-11-18T09:24:54.478093+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.115,
+      "tail": [
+        "5/5 crit\u00e8res IA tenus"
+      ]
+    },
+    {
+      "suite": "verifications/main.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/main.test.log",
+      "startedUTC": "2026-11-18T09:24:54.593310+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.165,
+      "tail": [
+        "main : 7 v\u00e9rifications pass\u00e9es"
+      ]
+    },
+    {
+      "suite": "verifications/manette.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/manette.test.log",
+      "startedUTC": "2026-11-18T09:24:54.758837+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.115,
+      "tail": [
+        "17/17 contr\u00f4les manette tenus"
+      ]
+    },
+    {
+      "suite": "verifications/mesures.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/mesures.test.log",
+      "startedUTC": "2026-11-18T09:24:54.874051+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.114,
+      "tail": [
+        "\u2139 duration_ms 19.062858"
+      ]
+    },
+    {
+      "suite": "verifications/meteo.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/meteo.test.log",
+      "startedUTC": "2026-11-18T09:24:54.989494+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.115,
+      "tail": [
+        "m\u00e9t\u00e9o : 103 contr\u00f4les horloge, pause, projection, profondeur, param\u00e8tres et cadence tenus"
+      ]
+    },
+    {
+      "suite": "verifications/moteur-emprise.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/moteur-emprise.test.log",
+      "startedUTC": "2026-11-18T09:24:55.105125+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.115,
+      "tail": [
+        "moteur EMPRISE : updateShape WebGL2, indices et sommets restaur\u00e9s apr\u00e8s perte du contexte"
+      ]
+    },
+    {
+      "suite": "verifications/nature-integration.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/nature-integration.test.log",
+      "startedUTC": "2026-11-18T09:24:55.220979+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.22,
+      "tail": [
+        "3 contr\u00f4les int\u00e9gration nature r\u00e9ussis."
+      ]
+    },
+    {
+      "suite": "verifications/obstacles.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/obstacles.test.log",
+      "startedUTC": "2026-11-18T09:24:55.443287+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.115,
+      "tail": [
+        "}"
+      ]
+    },
+    {
+      "suite": "verifications/options-image.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/options-image.test.log",
+      "startedUTC": "2026-11-18T09:24:55.558946+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.066,
+      "tail": [
+        "options image : 7 contr\u00f4les pass\u00e9s"
+      ]
+    },
+    {
+      "suite": "verifications/pieces.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/pieces.test.log",
+      "startedUTC": "2026-11-18T09:24:55.625642+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.518,
+      "tail": [
+        "}"
+      ]
+    },
+    {
+      "suite": "verifications/prets-enligne.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/prets-enligne.test.log",
+      "startedUTC": "2026-11-18T09:24:56.144049+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.115,
+      "tail": [
+        "\u2139 duration_ms 16.206101"
+      ]
+    },
+    {
+      "suite": "verifications/qualite.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/qualite.test.log",
+      "startedUTC": "2026-11-18T09:24:56.259389+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.115,
+      "tail": [
+        "qualit\u00e9 : 13 contr\u00f4les pass\u00e9s"
+      ]
+    },
+    {
+      "suite": "verifications/realisateur.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/realisateur.test.log",
+      "startedUTC": "2026-11-18T09:24:56.374906+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 2.625,
+      "tail": [
+        "7 v\u00e9rifications r\u00e9ussies"
+      ]
+    },
+    {
+      "suite": "verifications/relectures-phase2.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/relectures-phase2.test.log",
+      "startedUTC": "2026-11-18T09:24:59.001521+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.316,
+      "tail": [
+        "6/6 tests passes"
+      ]
+    },
+    {
+      "suite": "verifications/rendu-halo.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/rendu-halo.test.log",
+      "startedUTC": "2026-11-18T09:24:59.318630+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.119,
+      "tail": [
+        "\u2139 duration_ms 13.198782"
+      ]
+    },
+    {
+      "suite": "verifications/reprise-recul.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/reprise-recul.test.log",
+      "startedUTC": "2026-11-18T09:24:59.441726+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.169,
+      "tail": [
+        "}"
+      ]
+    },
+    {
+      "suite": "verifications/salon-protocole.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/salon-protocole.test.log",
+      "startedUTC": "2026-11-18T09:24:59.612587+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 3.034,
+      "tail": [
+        "\u2139 duration_ms 2935.067164"
+      ]
+    },
+    {
+      "suite": "verifications/sillage.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/sillage.test.log",
+      "startedUTC": "2026-11-18T09:25:02.647108+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.064,
+      "tail": [
+        "sillage et brume : 7 contr\u00f4les pass\u00e9s"
+      ]
+    },
+    {
+      "suite": "verifications/son.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/son.test.log",
+      "startedUTC": "2026-11-18T09:25:02.712088+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.116,
+      "tail": [
+        "14 v\u00e9rifications r\u00e9ussies"
+      ]
+    },
+    {
+      "suite": "verifications/stands.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/stands.test.log",
+      "startedUTC": "2026-11-18T09:25:02.830139+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 5.739,
+      "tail": [
+        "stands : 18 verifications passees"
+      ]
+    },
+    {
+      "suite": "verifications/titre-signature.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/titre-signature.test.log",
+      "startedUTC": "2026-11-18T09:25:08.571524+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.115,
+      "tail": [
+        "\u2139 duration_ms 6.833643"
+      ]
+    },
+    {
+      "suite": "verifications/traces.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/traces.test.log",
+      "startedUTC": "2026-11-18T09:25:08.687376+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 1.168,
+      "tail": [
+        "11 tests passes"
+      ]
+    },
+    {
+      "suite": "verifications/troncs.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/troncs.test.log",
+      "startedUTC": "2026-11-18T09:25:09.856405+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.825,
+      "tail": [
+        "}"
+      ]
+    },
+    {
+      "suite": "verifications/tunnel-transitions.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/tunnel-transitions.test.log",
+      "startedUTC": "2026-11-18T09:25:10.682311+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.316,
+      "tail": [
+        "\u2139 duration_ms 26.563098"
+      ]
+    },
+    {
+      "suite": "verifications/tunnel.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/tunnel.test.log",
+      "startedUTC": "2026-11-18T09:25:10.999781+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 0.416,
+      "tail": [
+        "tunnel : 6 v\u00e9rifications pass\u00e9es"
+      ]
+    },
+    {
+      "suite": "verifications/voiture.test.mjs",
+      "log": "/workspace/scratch/91b494a5f0bb/qa-nature09/integration-tests/voiture.test.log",
+      "startedUTC": "2026-11-18T09:25:11.416343+00:00",
+      "vegetationSha256": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+      "exitCode": 0,
+      "status": "passed",
+      "durationSeconds": 2.729,
+      "tail": [
+        "33 v\u00e9rifications r\u00e9ussies"
+      ]
+    }
+  ],
+  "status": "passed",
+  "totals": {
+    "scheduled": 49,
+    "finished": 49,
+    "passed": 49,
+    "failed": 0
+  },
+  "finishedUTC": "2026-11-18T09:25:14.146367+00:00",
+  "sourceHashesAtEnd": {
+    "src/jeu.js": "ccc7fde0700e6453b51d4fb8ab7bd4b66d07e94976ebbcebf018b1e605ed69a7",
+    "src/graphismes.js": "e33e5987d0b1c1c59b6abc734102cfb13bccb99d0f4ba8b9ea5e644d7ee0c251",
+    "src/ambiance.js": "5c832b2297fbe734639fa0e13314ed201fcea3b06b89d50286ef932820ea4b20",
+    "src/faune.js": "6580f8c30b01bb9b105e620a75af3dc25728c50209f7a3217e2dcf04f51b4198",
+    "src/vegetation.js": "f42a6cc9da83168511528397be500151ecc1a9cc855dc3c34e1fc8733d0ab42f",
+    "src/decor.js": "341ae69221b83df7638ba90d05d5dc4e087debb86e1dc89c9b5d3f7eacd9bdc4",
+    "FERRO.lock.json": "f41c19b3ca9f36e3314620221f3ac2d07dbbcfb74d7157ce2b26dfca0292f967"
+  },
+  "changedSourcesDuringRun": []
+}

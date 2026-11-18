@@ -2,19 +2,20 @@
 
 ## État actuel — 18 novembre 2026
 
-- Branche : `main`. BITUME **0.2.31 publié** ; base du nouveau lot : `ff40baa98069ecb64dd7d263672b2c040d4adc09`.
-- Moteur **FERRO 0.3.7 publié** : `0250a5750d10789976186a1491ffdf011fb19611`.
-- **Lot 09 en cours** : tapis aléatoire sur sols herbeux, maximum encore ×10, vent visible, insectes et nuit féerique à Haut-Col.
+- Branche : `main`. BITUME **0.2.32 qualifié**, publication en cours ; base distante `e4d3e74b76ed03222424077bad1939acbd5e60c0`.
+- Moteur **FERRO 0.3.8 publié** : `ef722c0c56e04a20574db53b057f339968d714c3` ; 34 modules installés et verrouillés.
+- **Lot 09 terminé côté code** : prairie aléatoire sur sols herbeux, Extrême local ≥ ×14, vent, insectes, lucioles à Haut-Col.
+- **Jour / Crépuscule / Nuit / Cycle** avant départ près de la météo et dans Réglages ; choix de l’hôte en ligne.
 - Fiche active unique : `docs/reprise/09-PRAIRIES-VIVANTES.md`.
-- Travaux parallèles bornés : prairie/sol, moteur/vent, faune ; intégration/options et publication par le responsable.
-- La signature **m4d135 enregistre BITUME.html** ; préserver exactement son rôle, avatar et placement.
-- Preuves du lot précédent : `docs/reprise/rapports/herbe-sillage-2026-11-18/publication.json`.
-- Aucune nouvelle qualification du lot 09 à ce stade. Ne pas reprendre les chiffres du lot 08 comme preuves du lot 09.
-- Déploiement autorisé depuis le Mac ; accès Mac/amiga indisponible ici au dernier contrôle.
+- La signature **m4d135 enregistre BITUME.html** ; rôle, avatar et placement préservés.
+- Preuves : `docs/reprise/rapports/prairies-vivantes-2026-11-18/` et `rapports/faune-2026-11-18/`.
+- Qualification : 49 suites d’intégration + suite végétation finale (16 contrôles), build reproductible ; pas de mesure FPS matérielle.
+- Extrême est manuel et coûteux ; Moyen/Élevé bornés, Léger/Désactivé conservés. Rendu complet à contrôler sur navigateur réel.
+- Déploiement autorisé depuis le Mac ; accès Mac/amiga indisponible ici. Publication Git et site servi restent distincts.
 
 ## Prochain petit lot
 
-Terminer les trois modules, intégrer réglages/ambiance, mesurer puis publier moteur et jeu. Actualiser ce point après publication.
+Terminer le reçu de publication, puis déployer depuis le Mac et contrôler jour/nuit, prairie et FPS sur matériel réel. Ne pas refaire le lot 09 sans défaut constaté.
 
 ## Méthode pour garder le contexte court
 

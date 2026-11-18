@@ -39,6 +39,7 @@ MODULES = [
     'botanique.js',
     'vegetation.js',
     'decor.js',
+    'faune.js',
     'carene.js',
     'humain-donnees.js',
     'humain-corps.js',
@@ -52,6 +53,7 @@ MODULES = [
     'mesures.js',
     'qualite.js',
     'graphismes.js',
+    'ambiance.js',
     'jeu.js',
 ]
 # Version affichée au titre (David, 16/11/2026 : « incrémente les versions à chaque maj, je veux la vraie version »).

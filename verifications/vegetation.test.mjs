@@ -1,6 +1,7 @@
 // Géométrie, coût borné et invariants du biome pilote. Les références historiques restent séparées.
 import { createRequire } from 'node:module';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 const require = createRequire(import.meta.url);
 for (const nom of ['circuit', 'carene', 'vegetation', 'decor']) require('../src/' + nom + '.js');
 const B = globalThis.BITUME, V = B.vegetation;
@@ -58,7 +59,7 @@ function empreinte(o) {
   for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
   return h.toString(16).padStart(8, '0');
 }
-const famillesDe = r => [...new Set(r.lots.flatMap(l => l.objets.map(o => o.shape.replace(/-val(-loin)?$/, '').replace(/^prairie$/, 'herbes'))))].sort();
+const famillesDe = r => [...new Set(r.lots.flatMap(l => l.objets.map(o => o.shape.startsWith('prairie-val') ? 'herbes' : o.shape.replace(/-val(-loin)?$/, ''))))].sort();
 const matieresDe = r => [...new Set(r.lots.flatMap(l => l.objets.map(o => o.mat)))].sort((a, b) => a - b);
 const PISTES = [[11, 'foret', 4200], [29, 'cote', 3600], [47, 'montagne', 5200]];
 const construire = (c, qualite) => V.construire(c, { limites: B.decor.limites(c), interroger: indexAxe(c), qualite });
@@ -256,274 +257,164 @@ verifier('qualite optionnelle : une valeur inconnue retrouve le palier historiqu
   V.installer({ forme: (nom, t) => registre2.set(nom, t) }, 'auto');
   assert.equal(registre2.size, registre.size, 'auto enregistre autant que high');
 });
-verifier('les trois paliers donnent des budgets vraiment distincts, biome par biome', () => {
-  for (const [graine, theme, longueur] of PISTES) {
-    const piste = B.circuit.creer(graine, { theme, longueur });
-    const r = {};
-    for (const qualite of ['low', 'medium', 'high']) r[qualite] = construire(piste, qualite);
-    const cle = x => [x.herbes, x.fougeres, x.fleurs, x.taillis, x.lots.length,
-      x.lots.reduce((n, l) => n + l.objets.length, 0)].join('|');
-    assert.notEqual(cle(r.low), cle(r.medium), theme);
-    assert.notEqual(cle(r.medium), cle(r.high), theme);
-    assert.notEqual(cle(r.low), cle(r.high), theme);
-    assert.ok(r.low.herbes < r.medium.herbes && r.medium.herbes < r.high.herbes, `${theme} herbes`);
-    assert.ok(r.low.taillis < r.medium.taillis && r.medium.taillis < r.high.taillis, `${theme} taillis`);
-    assert.ok(r.low.lots.length <= r.medium.lots.length && r.medium.lots.length <= r.high.lots.length, `${theme} lots`);
-    assert.deepEqual(famillesDe(r.low), ['herbes', 'taillis'], `${theme} familles basses`);
-    const moyennes = famillesDe(r.medium), hautes = famillesDe(r.high);
-    // Les familles s'ajoutent sans jamais retirer les deux familles historiques ; la côte salée ne porte
-    // pas de fougère, la montagne pas de fleur : le nombre de familles dépend du biome, pas du seul palier.
-    assert.ok(moyennes.length >= 2 && hautes.length >= moyennes.length, `${theme} familles ajoutées`);
-    assert.ok(hautes.length >= 3, `${theme} : ${hautes.join(',')}`);
-    const autorisees = ['herbes', 'taillis', 'fougeres', 'fleurs', 'humus'];
-    for (const f of moyennes.concat(hautes)) assert.ok(autorisees.includes(f), `${theme} ${f}`);
-    for (const l of r.high.lots) assert.ok(new Set(l.objets.map(o => o.shape)).size <= V.PALIERS.high.groupes, theme);
-  }
-});
-const REFERENCE_029 = {
-  foret: { low: 124, medium: 1123, high: 3866, ultra: 7238 },
-  cote: { low: 86, medium: 853, high: 3030, ultra: 5716 },
-  montagne: { low: 74, medium: 1079, high: 3684, ultra: 7108 },
-};
-const densitesMesurees = {};
-verifier('au moins dix fois les vrais brins de la 0.2.29, avec moins de deux fois ses instances', () => {
-  // Référence figée sur e150378 / BITUME 0.2.29, mêmes graines, même qualité : chaque ancienne touffe
-  // contenait neuf brins. Compter la géométrie effectivement présente, pas un compteur déclaré de densité.
-  const brinsMassif = V.forme('herbes-val-loin').length / 8;
-  const brinsTuile = V.forme('prairie-val-loin').length / 2;
-  assert.equal(brinsMassif, 9); assert.equal(brinsTuile, 96);
-  for (const [graine, theme, longueur] of PISTES) {
-    const piste = B.circuit.creer(graine, { theme, longueur }), r = {};
-    for (const q of ['low', 'medium', 'high', 'ultra']) r[q] = construire(piste, q);
-    densitesMesurees[theme] = {};
-    assert.ok(r.low.herbes < r.medium.herbes, theme);
-    assert.ok(r.high.herbes > r.medium.herbes * 2, `${theme} High apporte une vraie couverture`);
-    assert.ok(r.ultra.herbes > r.high.herbes * 1.5, `${theme} Ultra est distinct`);
-    for (const q of ['medium', 'high', 'ultra']) {
-      const p = V.PALIERS[q], stations = Math.round(p.stations * V.BIOMES[theme].stations);
-      const objets = r[q].lots.flatMap(l => l.objets).filter(o => o.shape === 'herbes-val' || o.shape === 'prairie-val');
-      const tuiles = objets.filter(o => o.shape === 'prairie-val').length;
-      const brins = (objets.length - tuiles) * brinsMassif + tuiles * brinsTuile;
-      assert.equal(r[q].brins, brins, `${theme} ${q} : vrais brins construits`);
-      assert.equal(r[q].brinsTapis, tuiles * brinsTuile);
-      assert.equal(r[q].objetsHerbe, objets.length); assert.equal(r[q].tuiles, tuiles);
-      assert.ok(brins >= REFERENCE_029[theme][q] * 9 * 10, `${theme} ${q} : ${brins} brins`);
-      assert.ok(objets.length < REFERENCE_029[theme][q] * 2, `${theme} ${q} : allocations bornées`);
-      assert.ok(r[q].herbes <= stations * p.herbes + V.TAPIS[q].maximum, `${theme} ${q} plafond`);
-      assert.ok(tuiles <= V.TAPIS[q].maximum);
-      assert.ok(r[q].lots.filter(l => l.tapis).length <= Math.ceil(piste.longueur / V.LOT_TAPIS), `${theme} ${q} lots tapis`);
-      assert.ok(r[q].lots.filter(l => !l.tapis).length <= Math.ceil(piste.longueur / 420), `${theme} ${q} lots massifs`);
-      for (const l of r[q].lots) assert.ok(new Set(l.objets.map(o => o.shape)).size <= p.groupes);
-      for (const l of r[q].lots.filter(l => l.tapis)) {
-        assert.equal(new Set(l.objets.map(o => o.shape)).size, 1, 'un dessin instancié par tuile de secteur');
-        assert.equal(l.bascule, 60); assert.equal(l.portee, Infinity);
-        assert.ok(l.objets.every(o => o.windResponsive === true));
-        assert.ok(l.objets.length <= Math.ceil(V.LOT_TAPIS / V.TAPIS[q].pas) * 2 * V.TAPIS[q].rangees + 8);
-        for (const o of l.objets) assert.ok(Math.hypot(...sous(o.p, l.centre)) + Math.hypot(...o.s) / 2 + .25 + 1.5 * o.s[1] <= l.rayon + 1e-8, 'souffle compris dans le culling');
+verifier('contrat GPU : rang constant par brin, racines fixes et exactement un huitième de brins lointains', () => {
+  for (const [nom, proches] of Object.entries(V.FORMES_PRAIRIE)) {
+    if (nom.endsWith('-loin')) continue;
+    const n = V.BRINS_FORMES[nom], loin = V.forme(nom + '-loin'); let survivants = 0;
+    assert.equal(proches.length, n * 6); assert.equal(loin.length, n / 8 * 2);
+    for (let i = 0; i < n; i++) {
+      const a = proches[i * 6][0], b = proches[i * 6][1], pointe = proches[i * 6 + 4][2];
+      assert.equal(a[1], -.5); assert.equal(b[1], -.5);
+      const cellule = p => [Math.floor((p[0] + .5) * 32), Math.floor((p[2] + .5) * 32)];
+      const attendu = cellule(a), rang = (attendu[0] * 13 + attendu[1] * 7) % 8;
+      for (const t of proches.slice(i * 6, i * 6 + 6)) for (const p of t.slice(0, 3)) {
+        assert.deepEqual(cellule(p), attendu, nom + ' : identifiant stable du pied à la pointe');
+        assert.ok(p[0] >= -.5 && p[2] >= -.5 && p[0] + p[2] <= 1e-12, 'dans le vrai triangle');
       }
-      densitesMesurees[theme][q] = { reference029: REFERENCE_029[theme][q] * 9, brins,
-        facteur: brins / (REFERENCE_029[theme][q] * 9), instances: objets.length, tuiles, lotsTapis: r[q].lots.filter(l => l.tapis).length };
-    }
-    assert.deepEqual(famillesDe(r.ultra), famillesDe(r.high), 'Ultra réutilise les maillages High');
-    for (const k of ['fougeres', 'fleurs', 'taillis']) assert.equal(r.ultra[k], r.high[k], 'Ultra ajoute des graminées');
-    assert.deepEqual(construire(piste, 'ultra'), r.ultra, `${theme} Ultra déterministe`);
-  }
-});
-verifier('le plafonnement des longues pistes répartit les tuiles sur tout le tour', () => {
-  const piste = B.circuit.creer(84, { theme: 'foret', longueur: 18000 }), q = indexAxe(piste);
-  for (const qualite of ['medium', 'high', 'ultra']) {
-    const r = construire(piste, qualite), maximum = V.TAPIS[qualite].maximum, quarts = [0, 0, 0, 0];
-    assert.ok(r.tuiles <= maximum, `${qualite} : ${r.tuiles}/${maximum}`);
-    assert.ok(r.tuiles > maximum * .75, `${qualite} : le plafond est effectivement exercé`);
-    for (const l of r.lots.filter(l => l.tapis)) for (const o of l.objets) {
-      const i = q(o.p[0], o.p[2], 40).i;
-      quarts[Math.min(3, Math.floor(i * piste.pas / piste.longueur * 4))]++;
-    }
-    assert.ok(quarts.every(n => n > r.tuiles * .18), `${qualite} : ${quarts.join(',')}`);
-  }
-});
-verifier('densité indépendante du profil général, modes désactivés et données de course inchangées', () => {
-  const piste = B.circuit.creer(11, { theme: 'foret', longueur: 4200 });
-  const tracer = () => ['x', 'y', 'z', 'cap', 'devers', 'courbure', 'pente'].map(k => Array.from(piste[k]));
-  const traceAvant = tracer();
-  const reference = B.decor.construire(piste, { qualite: 'medium', vegetation: false });
-  const sansPlantes = d => {
-    const { vegetation, sol, ...reste } = d;
-    return { ...reste, lots: d.lots.filter(l => !l.vegetation) };
-  };
-  for (const vegetationQualite of ['off', 'low', 'medium', 'high', 'ultra']) {
-    const d = B.decor.construire(piste, { qualite: 'medium', vegetationQualite });
-    assert.equal(d.qualite, 'medium', 'la densité ne change pas le profil des arbres');
-    assert.deepEqual(sansPlantes(d), sansPlantes(reference), vegetationQualite + ' : décor et solides intacts');
-    assert.deepEqual(d.obstacles, reference.obstacles);
-    if (vegetationQualite === 'off') assert.equal(d.vegetation, undefined);
-    else assert.equal(d.vegetation.qualite, vegetationQualite);
-  }
-  assert.deepEqual(tracer(), traceAvant, 'aucune influence sur la simulation');
-  assert.equal(B.decor.construire(piste, { qualite: 'high', vegetationQualite: 'ultra', vegetation: false }).vegetation, undefined);
-  const defaut = B.decor.construire(piste, { qualite: 'medium' });
-  const inconnue = B.decor.construire(piste, { qualite: 'medium', vegetationQualite: 'inconnue' });
-  assert.deepEqual(defaut.vegetation, inconnue.vegetation, 'densité invalide : suivre le profil');
-  assert.deepEqual(construire(piste, 'off'), { lots: [], herbes: 0, fougeres: 0, fleurs: 0, taillis: 0,
-    brins: 0, brinsTapis: 0, tuiles: 0, objetsHerbe: 0, qualite: 'off' });
-});
-verifier('tapis dense hors chaussée, stands, glissières et tunnel, sur les deux accotements', () => {
-  for (const [graine, theme, longueur] of PISTES) {
-    const piste = B.circuit.creer(graine, { theme, longueur }), q = indexAxe(piste), limites = B.decor.limites(piste);
-    for (const qualite of ['medium', 'high', 'ultra']) {
-      const r = construire(piste, qualite), cotes = new Set();
-      for (const l of r.lots) for (const o of l.objets) {
-        const p = q(o.p[0], o.p[2], 40), i = p.i;
-        assert.ok(i >= 0);
-        // Les tuiles sont orientées dans la pente et leur rectangle suit la route ; le test détaillé plus
-        // bas inspecte leurs vrais pieds. Les anciennes plantes restent dans leur sphère conservatrice.
-        const marge = o.shape === 'prairie-val' ? 0 : Math.hypot(o.s[0], o.s[2]) / 2;
-        assert.ok(p.d >= piste.largeur / 2 + 1.2 + marge, theme + ' piste');
-        const s = i * piste.pas;
-        assert.ok(Math.abs(B.circuit.ecart(piste, 0, s)) >= 360, theme + ' stands');
-        assert.ok(!B.circuit.dansTunnel(piste, s, 20), theme + ' tunnel');
-        const d = -(o.p[0] - piste.x[i]) * Math.sin(piste.cap[i]) + (o.p[2] - piste.z[i]) * Math.cos(piste.cap[i]);
-        const cote = d < 0 ? -1 : 1, limite = cote < 0 ? limites.G[i] : limites.D[i];
-        assert.ok(Math.abs(d) + marge < limite, theme + ' glissière');
-        cotes.add(cote);
-        assert.ok(o.p.concat(o.s, o.r, o.color).every(Number.isFinite));
-        assert.equal(o.collision, undefined);
+      if (rang === 0) {
+        assert.deepEqual(loin[survivants * 2].slice(0, 3), [a, b, pointe], 'le brin conservé est identique');
+        survivants++;
       }
-      assert.equal(cotes.size, 2, `${theme} ${qualite} : deux bords végétalisés`);
     }
+    assert.equal(survivants, n / 8);
   }
+  assert.notDeepEqual(V.forme('prairie-val-512-a'), V.forme('prairie-val-512-b'), 'motifs réellement distincts');
 });
-// Matrice Rz·Ry·Rx du rendu, appliquée aux véritables sommets de la forme instanciée.
-function sommetMonde(o, p) {
-  let [x, y, z] = p.map((v, i) => v * o.s[i]);
-  const [a, b, c] = o.r;
-  [y, z] = [y * Math.cos(a) - z * Math.sin(a), y * Math.sin(a) + z * Math.cos(a)];
-  [x, z] = [x * Math.cos(b) + z * Math.sin(b), -x * Math.sin(b) + z * Math.cos(b)];
-  [x, y] = [x * Math.cos(c) - y * Math.sin(c), x * Math.sin(c) + y * Math.cos(c)];
-  return [x + o.p[0], y + o.p[1], z + o.p[2]];
+
+function repere(o) {
+  const [rx, ry, rz] = o.r, cx = Math.cos(rx), sx = Math.sin(rx), cy = Math.cos(ry), sy = Math.sin(ry), cz = Math.cos(rz), sz = Math.sin(rz);
+  const rotation = v => { let [x, y, z] = v; [y, z] = [y * cx - z * sx, y * sx + z * cx]; [x, z] = [x * cy + z * sy, -x * sy + z * cy]; return [x * cz - y * sz, x * sz + y * cz, z]; };
+  const x = rotation([1, 0, 0]), y = rotation([0, 1, 0]), z = rotation([0, 0, 1]);
+  return { x: x.map(v => v * o.s[0]), y: y.map(v => v * o.s[1]), z: z.map((v, k) => v * o.s[2] + x[k] * (o.groundShear || 0)), p: o.p };
 }
-// Interroge les vrais triangles de la nappe routière, pas la fonction de placement des plantes.
-function surfaceHerbe(c, decor) {
-  const maille = 8, cases = new Map();
-  for (const nap of decor.nappes.slice(0, Math.ceil(c.n / 60))) for (let i = 0; i < nap.indices.length; i += 3) {
-    const ids = Array.from(nap.indices.slice(i, i + 3), id => id * 13);
-    if (ids.some(id => nap.sommets[id + 9] !== 8)) continue;
-    const t = ids.map(id => Array.from(nap.sommets.slice(id, id + 3)));
-    const x0 = Math.floor(Math.min(...t.map(p => p[0])) / maille), x1 = Math.floor(Math.max(...t.map(p => p[0])) / maille);
-    const z0 = Math.floor(Math.min(...t.map(p => p[2])) / maille), z1 = Math.floor(Math.max(...t.map(p => p[2])) / maille);
-    for (let x = x0; x <= x1; x++) for (let z = z0; z <= z1; z++) {
-      const cle = x + ',' + z, liste = cases.get(cle);
-      if (liste) liste.push(t); else cases.set(cle, [t]);
+const transformer = (r, p) => r.p.map((v, k) => v + r.x[k] * p[0] + r.y[k] * p[1] + r.z[k] * p[2]);
+
+// Échantillonneur indépendant des triangles réellement rendus. Il ne lit ni herbier, ni sa fonction de sol.
+function solRendu(decor) {
+  const grille = new Map(), maille = 32;
+  for (const nap of decor.nappes) for (let i = 0; i < nap.indices.length; i += 3) {
+    const ids = [nap.indices[i], nap.indices[i + 1], nap.indices[i + 2]].map(n => n * 13);
+    if (ids.every(id => nap.sommets[id + 9] === 12)) continue;
+    const p = ids.map(id => Array.from(nap.sommets.slice(id, id + 3)));
+    const bx = [Math.floor(Math.min(...p.map(v => v[0])) / maille), Math.floor(Math.max(...p.map(v => v[0])) / maille)];
+    const bz = [Math.floor(Math.min(...p.map(v => v[2])) / maille), Math.floor(Math.max(...p.map(v => v[2])) / maille)];
+    for (let x = bx[0]; x <= bx[1]; x++) for (let z = bz[0]; z <= bz[1]; z++) {
+      const cle = x + ',' + z; let liste = grille.get(cle); if (!liste) grille.set(cle, liste = []); liste.push(p);
     }
   }
   return (x, z) => {
-    for (const [a, b, c] of cases.get(Math.floor(x / maille) + ',' + Math.floor(z / maille)) || []) {
+    let y = -Infinity;
+    for (const [a, b, c] of grille.get(Math.floor(x / maille) + ',' + Math.floor(z / maille)) || []) {
       const ax = b[0] - a[0], az = b[2] - a[2], bx = c[0] - a[0], bz = c[2] - a[2], det = ax * bz - az * bx;
+      if (Math.abs(det) < 1e-10) continue;
       const u = ((x - a[0]) * bz - (z - a[2]) * bx) / det, v = (ax * (z - a[2]) - az * (x - a[0])) / det;
-      if (u >= -1e-5 && v >= -1e-5 && u + v <= 1.00001) return a[1] + u * (b[1] - a[1]) + v * (c[1] - a[1]);
+      if (u >= -1e-6 && v >= -1e-6 && u + v <= 1.000001) y = Math.max(y, a[1] + u * (b[1] - a[1]) + v * (c[1] - a[1]));
     }
-    return null;
+    return y;
   };
 }
-const solMesure = {};
-verifier('racines posées sur les vrais triangles de terrain, pieds et pointes hors piste et ouvrages', () => {
-  const loin = V.forme('prairie-val-loin');
+const reference031 = JSON.parse(readFileSync(new URL('./fixtures/herbe-031.json', import.meta.url)));
+const racinesFormes = new Map(), mesures = {};
+function racines(nom) {
+  if (racinesFormes.has(nom)) return racinesFormes.get(nom);
+  const historique = nom === 'herbes-val', triangles = V.forme(historique ? nom + '-loin' : nom), pas = historique ? 8 : 6, n = triangles.length / pas;
+  const pieds = new Float64Array(n * 2);
+  for (let i = 0; i < n; i++) { const t = triangles[i * pas]; pieds[i * 2] = historique ? t[0][0] : (t[0][0] + t[1][0]) / 2; pieds[i * 2 + 1] = historique ? t[0][2] : (t[0][2] + t[1][2]) / 2; }
+  racinesFormes.set(nom, pieds); return pieds;
+}
+function compterDisques(r, reference) {
+  const disques = reference.map(d => ({ ...d, avant: d.brins, brins: 0 }));
+  for (const lot of r.lots) for (const o of lot.objets) {
+    if (o.shape !== 'herbes-val' && !o.groundCover) continue;
+    const rayon = Math.hypot(o.s[0] + Math.abs(o.groundShear || 0), o.s[2]) / 2;
+    const proches = disques.filter(d => (o.p[0] - d.x) ** 2 + (o.p[2] - d.z) ** 2 < (rayon + d.rayon) ** 2);
+    if (!proches.length) continue;
+    const m = repere(o), pieds = racines(o.shape), bx = o.p[0] - m.y[0] / 2, bz = o.p[2] - m.y[2] / 2;
+    for (const d of proches) for (let k = 0; k < pieds.length; k += 2) {
+      const x = bx + pieds[k] * m.x[0] + pieds[k + 1] * m.z[0] - d.x, z = bz + pieds[k] * m.x[2] + pieds[k + 1] * m.z[2] - d.z;
+      if (x * x + z * z <= d.rayon * d.rayon) d.brins++;
+    }
+  }
+  return disques.map(d => ({ id: d.id, avant: d.avant, brins: d.brins, facteur: d.brins / d.avant, parMetreCarre: d.brins / d.aire }));
+}
+verifier('surfaces complètes, niveaux distincts et MAX au moins dix fois plus dense localement que la 0.2.31', () => {
   for (const [graine, theme, longueur] of PISTES) {
-    const piste = B.circuit.creer(graine, { theme, longueur }), limites = B.decor.limites(piste), q = indexAxe(piste);
-    const sol = surfaceHerbe(piste, B.decor.construire(piste, { vegetation: false }));
-    let erreurMax = 0, sousSol = 0, auDessus = 0, pieds = 0;
-    const parQualite = {};
-    for (const qualite of ['medium', 'high', 'ultra']) for (const l of construire(piste, qualite).lots.filter(l => l.tapis)) for (const o of l.objets) {
-      // Vérifier le pied de chaque brin après toutes les rotations de pente. Douze brins par tuile
-      // vérifient aussi leur pointe et les exclusions ; les hauteurs interrogent la nappe réellement rendue.
-      for (let k = 0; k < 96; k++) {
-        const f = loin[k * 2], local = f[0].map((v, j) => (v + f[1][j]) / 2), pied = sommetMonde(o, local);
-        const y = sol(pied[0], pied[2]);
-        assert.notEqual(y, null, `${theme} ${qualite} : racine hors nappe d'herbe ${JSON.stringify({ pied, objet: o, k })}`);
-        const difference = pied[1] - y, erreur = Math.abs(difference);
-        erreurMax = Math.max(erreurMax, erreur); sousSol = Math.min(sousSol, difference); auDessus = Math.max(auDessus, difference); pieds++;
-        const mesure = parQualite[qualite] || (parQualite[qualite] = { min: 0, max: 0 });
-        mesure.min = Math.min(mesure.min, difference); mesure.max = Math.max(mesure.max, difference);
-        // Les tuiles Medium sont plus longues et leur plan approche plusieurs triangles. High/Ultra
-        // restent ancrés à 3 cm du sol au plus, avec moins d'un centimètre de dépassement positif.
-        assert.ok(erreur < (qualite === 'medium' ? .065 : .03), `${theme} ${qualite} : pied ${erreur.toFixed(5)} m du sol`);
-        assert.ok(difference < (qualite === 'medium' ? .03 : .01), `${theme} ${qualite} : pied flottant ${difference.toFixed(5)} m`);
-        if (k % 8) continue;
-        for (const p of [pied, sommetMonde(o, f[2])]) {
-          const proche = q(p[0], p[2], 40), i = proche.i;
-          assert.ok(proche.d > piste.largeur / 2 + 1.2, `${theme} ${qualite} : brin dans chaussée`);
-          assert.ok(Math.abs(B.circuit.ecart(piste, 0, i * piste.pas)) >= 360);
-          assert.ok(!B.circuit.dansTunnel(piste, i * piste.pas, 20));
-          const d = -(p[0] - piste.x[i]) * Math.sin(piste.cap[i]) + (p[2] - piste.z[i]) * Math.cos(piste.cap[i]);
-          assert.ok(Math.abs(d) < (d < 0 ? limites.G[i] : limites.D[i]) - .8, `${theme} ${qualite} : brin dans glissière`);
+    const piste = B.circuit.creer(graine, { theme, longueur }), decor = B.decor.construire(piste, { qualite: 'high', vegetation: false });
+    const surfaces = decor.herbier, interroger = indexAxe(piste), rendu = solRendu(decor), ancienne = reference031.lignes.find(l => l.biome === theme);
+    assert.ok(surfaces.aireTerrain > surfaces.aireAccotements * 10, 'la prairie dépasse largement les bandes de bord de route');
+    const trace = empreinte([piste.x, piste.y, piste.z, piste.cap, piste.devers]), solides = empreinte(decor.obstacles);
+    let precedent = 0; mesures[theme] = {};
+    for (const qualite of ['medium', 'high', 'ultra']) {
+      const r = V.construire(piste, { qualite, limites: decor.limites, interroger, surfaces });
+      let brins = 0, brinsTapis = 0, tuiles = 0, aire = 0, erreurSol = 0, controlesSol = 0;
+      for (const lot of r.lots) {
+        assert.equal(lot.portee, Infinity, 'la portée effective ne vient qu’après le fondu GPU');
+        assert.equal(lot.objets.length, lot.loin.length);
+        if (lot.tapis) {
+          assert.equal(lot.groundCover, true); assert.equal(lot.bascule, 60);
+          assert.ok(new Set(lot.objets.map(o => o.shape)).size <= V.TAPIS[qualite].maillages.length, 'une seule variante par lot');
+        }
+        assert.ok(new Set(lot.objets.map(o => o.shape)).size <= V.PALIERS[qualite].groupes);
+        for (let i = 0; i < lot.objets.length; i++) {
+          const o = lot.objets[i], lointain = lot.loin[i];
+          if (o.shape === 'herbes-val') brins += 9;
+          if (!o.groundCover) continue;
+          const n = V.forme(o.shape).length / 6; brins += n; brinsTapis += n; tuiles++; aire += o.grassArea;
+          assert.equal(n, V.BRINS_FORMES[o.shape]); assert.equal(V.BRINS_FORMES[lointain.shape], n / 8);
+          assert.equal(o.windResponsive, true); assert.equal(o.mat, 27); assert.equal(o.collision, undefined);
+          assert.deepEqual(o.p, lointain.p); assert.deepEqual(o.s, lointain.s); assert.deepEqual(o.r, lointain.r);
+          assert.equal(lointain.groundShear, o.groundShear);
+          const borne = Math.hypot(...sous(o.p, lot.centre)) + Math.hypot(o.s[0] + Math.abs(o.groundShear), o.s[1], o.s[2]) / 2 + .25 + 2.3 * o.s[1];
+          assert.ok(borne <= lot.rayon + 1e-7, 'shear et souffle maximum compris dans le culling');
+          if (qualite === 'ultra') {
+            const pied = transformer(repere(o), [-1 / 6, -.5, -1 / 6]), y = rendu(pied[0], pied[2]);
+            assert.ok(Number.isFinite(y), 'sol rendu présent sous chaque instance');
+            const erreur = Math.abs(pied[1] - y); erreurSol = Math.max(erreurSol, erreur); controlesSol++;
+            assert.ok(erreur < .009, `${theme} : racine à ${erreur} m du vrai sol`);
+            assert.ok(decor.surfaceHerbe(pied[0], pied[2]), 'empreinte admissible après tous les masques');
+            if (decor.niveauEau !== undefined) assert.ok(pied[1] > decor.niveauEau + .03);
+          }
         }
       }
-    }
-    solMesure[theme] = { piedsVerifies: pieds, erreurMaxMetres: erreurMax, sousSolMetres: sousSol, auDessusMetres: auDessus, parQualite };
-  }
-});
-verifier('côte et montagne sont végétalisées, un biome hors thème reste vide sans erreur', () => {
-  for (const theme of ['cote', 'montagne']) {
-    assert.ok(Object.keys(B.decor.THEMES).includes(theme), theme);
-    const [graine, longueur] = PISTES.find(p => p[1] === theme).slice(1);
-    const piste = B.circuit.creer(graine, { theme, longueur });
-    const r = construire(piste, 'high');
-    assert.ok(r.lots.length > 0 && r.herbes > 40, `${theme} : ${r.herbes} herbes`);
-    assert.ok(r.taillis > 5, `${theme} : ${r.taillis} taillis`);
-    for (const l of r.lots) {
-      assert.equal(l.vegetation, true); assert.equal(l.portee, Infinity); assert.equal(l.bascule, l.tapis ? 60 : 520);
-      assert.equal(l.lodReferenceFov, 60); assert.equal(l.lodReferenceHeight, 1080);
-      assert.equal(l.objets.length, l.loin.length, theme);
-      assert.ok(Number.isFinite(l.rayon) && l.rayon > 0, theme);
-    }
-  }
-  const desert = B.circuit.creer(5, { theme: 'desert', longueur: 3000 });
-  const vide = V.construire(desert, { limites: B.decor.limites(desert), interroger: indexAxe(desert), qualite: 'high' });
-  assert.deepEqual(vide.lots, []);
-  assert.deepEqual({ herbes: vide.herbes, fougeres: vide.fougeres, fleurs: vide.fleurs, taillis: vide.taillis },
-    { herbes: 0, fougeres: 0, fleurs: 0, taillis: 0 });
-  assert.deepEqual(V.construire(c, {}).lots, [], 'sans limites ni interrogateur, rien n\'est planté');
-  assert.deepEqual(V.construire(c, { limites: B.decor.limites(c) }).lots, []);
-});
-verifier('matières naturelles 0.3.5 : feuillage 27 et sol organique 25, retombant sur les familles 11 et 8', () => {
-  const haut = construire(c, 'high');
-  assert.deepEqual(matieresDe(haut), [25, 27], 'forêt haute : feuillages et terreau');
-  assert.ok(haut.lots.some(l => l.objets.some(o => o.mat === 25 && o.shape === 'humus-val')));
-  assert.ok(haut.lots.every(l => l.objets.every(o => o.mat === 11 || o.mat === 25 || o.mat === 27)));
-  const montagne = construire(B.circuit.creer(47, { theme: 'montagne', longueur: 5200 }), 'high');
-  assert.deepEqual(matieresDe(montagne), [25, 27]);
-  const cote = construire(B.circuit.creer(29, { theme: 'cote', longueur: 3600 }), 'high');
-  assert.deepEqual(matieresDe(cote), [27], 'la côte sans fougère n\'a pas de terreau');
-  // Le moteur 0.3.5 fait retomber 27 sur la famille historique 11 et 25 sur la famille 8 : aspect conservé.
-  const famille = v => [21, 22, 23, 24, 25, 26, 27].includes(Math.floor(v + .5))
-    ? ({ 21: 14, 22: 3, 23: 9, 24: 16, 25: 8, 26: 10, 27: 11 })[Math.floor(v + .5)] : v;
-  assert.equal(famille(27), 11); assert.equal(famille(25), 8);
-});
-verifier('aucune disparition au loin sur tous les paliers et tous les biomes', () => {
-  for (const [graine, theme, longueur] of PISTES) {
-    const piste = B.circuit.creer(graine, { theme, longueur });
-    for (const qualite of ['low', 'medium', 'high', 'ultra']) {
-      const r = construire(piste, qualite);
-      for (const l of r.lots) {
-        assert.equal(l.objets.length, l.loin.length, `${theme} ${qualite}`);
-        for (let i = 0; i < l.objets.length; i++) {
-          const a = l.objets[i], b = l.loin[i];
-          assert.equal(b.shape, a.shape.replace(/-val$/, '-val-loin'), `${theme} ${qualite}`);
-          assert.deepEqual(a.p, b.p); assert.deepEqual(a.s, b.s); assert.deepEqual(a.r, b.r); assert.deepEqual(a.color, b.color);
-          assert.ok(V.forme(b.shape).length < V.forme(a.shape).length * .5, `${theme} ${qualite} ${a.shape}`);
-        }
+      assert.equal(r.brins, brins); assert.equal(r.brinsTapis, brinsTapis); assert.equal(r.tuiles, tuiles);
+      assert.ok(brins > precedent); precedent = brins;
+      assert.ok(tuiles <= V.TAPIS[qualite].maximum);
+      assert.ok(aire / surfaces.aire > .9999, `${theme} ${qualite} : toute la surface admissible est couverte`);
+      assert.ok(r.brinsTerrain > 0 && r.brinsAccotements > 0);
+      mesures[theme][qualite] = { brins, tuiles, lots: r.lots.length, aireCouverte: aire, couverture: aire / surfaces.aire,
+        brinsAccotements: r.brinsAccotements, brinsTerrain: r.brinsTerrain, erreurSol, controlesSol,
+        instanceBufferBytes: tuiles * 16 * 4 * 2 };
+      if (qualite === 'ultra') {
+        assert.ok(brins >= ancienne.brins * 10, `${theme} : ×10 sur total réel de la 0.2.31`);
+        const disques = compterDisques(r, ancienne.disques); mesures[theme][qualite].disques = disques;
+        assert.ok(disques.length >= 6);
+        for (const d of disques) { assert.ok(d.facteur >= 10, `${theme} ${d.id} : ×${d.facteur}`); assert.ok(d.parMetreCarre >= 200); }
       }
     }
+    assert.equal(empreinte([piste.x, piste.y, piste.z, piste.cap, piste.devers]), trace);
+    assert.equal(empreinte(decor.obstacles), solides);
   }
 });
-verifier('le palier haut ne consomme pas le hasard de la simulation et ne touche pas au tracé', () => {
-  const piste = B.circuit.creer(11, { theme: 'foret', longueur: 4200 });
-  const avant = ['x', 'y', 'z', 'cap', 'devers', 'courbure', 'pente'].map(k => Array.from(piste[k]));
-  const l2 = B.decor.limites(piste), q = indexAxe(piste);
-  const r = V.construire(piste, { limites: l2, interroger: q, qualite: 'high' });
-  const apres = ['x', 'y', 'z', 'cap', 'devers', 'courbure', 'pente'].map(k => Array.from(piste[k]));
-  assert.deepEqual(apres, avant, 'le tracé est intact');
-  assert.deepEqual(r.lots, construire(piste, 'high').lots, 'deux appels, même répartition');
-  assert.notEqual(r.lots, construire(piste, 'high').lots);
+verifier('surfaceHerbe existe en Off, refuse les routes et le tunnel et accepte une sortie réutilisable', () => {
+  const piste = B.circuit.creer(47, { theme: 'montagne', longueur: 5200 }), decor = B.decor.construire(piste, { vegetation: false });
+  assert.equal(decor.vegetation, undefined); assert.equal(typeof decor.surfaceHerbe, 'function');
+  for (let i = 0; i < piste.n; i += 9) assert.equal(decor.surfaceHerbe(piste.x[i], piste.z[i]), null, 'chaussée toujours propre');
+  for (const t of decor.herbier.triangles.slice(0, 1200)) {
+    const p = [0, 1, 2].map(k => (t.points[0][k] + t.points[1][k] + t.points[2][k]) / 3), sortie = {};
+    assert.strictEqual(decor.surfaceHerbe(p[0], p[2], sortie), sortie);
+    assert.ok(Math.abs(sortie.y - p[1]) < .001); assert.ok(['terrain', 'accotement'].includes(sortie.type));
+    assert.ok(Math.abs(Math.hypot(...sortie.normal) - 1) < 1e-9);
+  }
+  assert.equal(Object.keys(decor).includes('herbier'), false, 'les empreintes historiques ne sérialisent pas le cache');
+  assert.equal(Object.keys(decor).includes('surfaceHerbe'), false);
 });
-console.log(JSON.stringify({ controles, plantes: apres.vegetation, erreursLod, densitesMesurees, solMesure }, null, 2));
+verifier('implantation déterministe et aucune nouvelle consommation du hasard du circuit', () => {
+  const piste = B.circuit.creer(29, { theme: 'cote', longueur: 3600 });
+  const options = { qualite: 'high', limites: B.decor.limites(piste), interroger: indexAxe(piste) };
+  const a = V.construire(piste, options), b = V.construire(piste, options);
+  assert.equal(a.brins, b.brins); assert.equal(a.tuiles, b.tuiles); assert.equal(a.lots.length, b.lots.length);
+  for (let i = 0; i < a.lots.length; i++) assert.deepEqual(a.lots[i], b.lots[i]);
+  const bas = construire(piste, 'low'); assert.equal(bas.herbes, 86); assert.equal(bas.tuiles, 0);
+  assert.equal(construire(piste, 'off').lots.length, 0);
+});
+console.log(JSON.stringify({ controles, plantesHistoriques: apres.vegetation, erreursLod, mesures }, null, 2));

@@ -1,0 +1,8 @@
+{
+  "src/vegetation.js": "17ac29cfed9cac36327439c1ecc56f184d1deb619436f0a212d15984855d2397",
+  "src/decor.js": "341ae69221b83df7638ba90d05d5dc4e087debb86e1dc89c9b5d3f7eacd9bdc4",
+  "verifications/vegetation.test.mjs": "941fa6230cd246e2be97768090197e2416fa38b484c0367b77cd7b129daaabe2",
+  "verifications/fixtures/herbe-031.json": "ea56e70a4919d468c30e15d386d2acee4bdb73f54b4c25f1dc7af02dd39d31a6",
+  "tools/budget-herbe.mjs": "52cd4db52eab5618b170316a9bf98c74418b8f6e6851125670ce55e42d84f4ae",
+  "tools/budget-decor.mjs": "a863b7caba74aa4b7e0ab9ec4c2f8ef166fdca2324a47d5878ad787520f8855b"
+}

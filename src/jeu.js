@@ -20,11 +20,12 @@
   function lireStock(cle, defaut) { try { const t = localStorage.getItem(cle); return t ? JSON.parse(t) : defaut; } catch (e) { return defaut; } }
   function ecrireStock(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } }
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
-    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil',
+    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
   reglages.qualite = B.graphismes.normaliser(reglages.qualite);
   Object.assign(reglages, B.graphismes.normaliserOptions(reglages));
+  reglages.moment = B.ambiance.normaliser(reglages.moment);
   // Champ du cockpit : 69° n'a été le défaut que l'après-midi du 16/11, et David le trouve trop large (« fov moins
   // prononcé »). Une valeur restée à 69 revient une seule fois au défaut ; tout autre choix du pilote est gardé.
   if (!reglages.champRevu) { if (+reglages.champ === 69) reglages.champ = DEFAUT.champ; reglages.champRevu = true; }
@@ -196,7 +197,9 @@
       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
       real: demo ? B.realisateur.creer(graineCourse) : null, planVu: null, suivie: 0, enchaine: false,
       fx: B.traces.creer(course.voitures.length, graineCourse),
-      meteo: meteoInit
+      meteo: meteoInit,
+      nature: { ambiance: B.ambiance.creer(sc.decor.atmosphere, i === 2), moment: enl ? B.ambiance.normaliser(enl.moment) : null, revisionRendu: -1, faune: null },
+      fauneVue: null,
     };
     if (enl) {
       S.enLigne = { T0: enl.T0, role: enl.role, humains: enl.humains }; S.enLigneOrigine = true;
@@ -207,7 +210,7 @@
     // la vue du joueur 2 a son propre état de caméra, d'éclair et d'affichage, le reste vient de la séance.
     if (duo) S.vueJ2 = Object.assign(Object.create(S), { camCap: null, tete: null, secousse: 0, eclair: 0, lumiere: 1, sol: null, tele: { poste: null, alea: graine32(31 + i) },
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
-      suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null });
+      suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null });
     S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une, ou deux à l'écran partagé)
     jeu.dataset.partage = duo ? (reglages.partage === 'cote' ? 'cote' : 'haut-bas') : '';
     delete $('hud').dataset.reduit; delete hud2.dataset.reduit;
@@ -921,10 +924,11 @@
   // circuit, tours et météo prévue (la même graine que la course qui partira) ; chaque machine choisit ses pneus, que
   // l'hôte reprend au départ. Boîte, vue, aide et commandes restent les réglages de chaque machine.
   const NOMS_METEO = { soleil: 'soleil', pluie: 'pluie', variable: 'variable' };
+  const NOMS_MOMENT = { jour: 'jour', crepuscule: 'crépuscule', nuit: 'nuit', cycle: 'cycle jour / nuit' };
   function annoncerCourse() {
     if (EL.role !== 'hote' || !EL.R) return;
     const prevue = (reglages.meteo && reglages.meteo !== 'aleatoire' && B.meteo.pour(reglages.meteo)) || B.meteo.initial(graineCourse + 1);
-    EL.course = { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, meteo: reglages.meteo || 'aleatoire', eau: B.conduite.eauSurPiste(prevue) };
+    EL.course = { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, meteo: reglages.meteo || 'aleatoire', moment: B.ambiance.normaliser(reglages.moment), eau: B.conduite.eauSurPiste(prevue) };
     EL.R.envoyer(Object.assign({ t: 'course' }, EL.course));
     majCourseSalon();
   }
@@ -933,7 +937,7 @@
     $('l-course').hidden = !(ouvert && k);
     if (!k) return;
     const conseil = B.conduite.pneusConseilles(k.eau), meteo = NOMS_METEO[k.meteo] || (k.eau > .25 ? 'pluie, tirée au sort' : 'sec, tirée au sort');
-    texte($('l-course-texte'), 'Prochaine course : ' + CATALOGUE[k.i].nom + ' · ' + k.tours + ' tours · météo : ' + meteo + ' (pneus conseillés : ' + NOMS_PNEUS[conseil].toLowerCase() + ').');
+    texte($('l-course-texte'), 'Prochaine course : ' + CATALOGUE[k.i].nom + ' · ' + k.tours + ' tours · ' + NOMS_MOMENT[B.ambiance.normaliser(k.moment)] + ' · météo : ' + meteo + ' (pneus conseillés : ' + NOMS_PNEUS[conseil].toLowerCase() + ').');
     $('l-vers-prets').hidden = !EL.confirmation;
   }
   // Avant le départ (David, 16/11 : « un écran de confirmation quand tout le monde est prêt, pour régler ses options
@@ -952,7 +956,7 @@
     const k = EL.course, R = EL.R, C = EL.confirmation;
     if (!k || !R || !C) return;
     const meteo = NOMS_METEO[k.meteo] || (k.eau > .25 ? 'pluie, tirée au sort' : 'sec, tirée au sort');
-    texte($('pr-course'), CATALOGUE[k.i].nom + ' · ' + k.tours + ' tours · météo : ' + meteo);
+    texte($('pr-course'), CATALOGUE[k.i].nom + ' · ' + k.tours + ' tours · ' + NOMS_MOMENT[B.ambiance.normaliser(k.moment)] + ' · météo : ' + meteo);
     texte($('pr-pneus-conseil'), 'Conseillés pour cette météo : ' + NOMS_PNEUS[B.conduite.pneusConseilles(k.eau)].toLowerCase() + '.');
     for (const [nom, val] of [['pneusPret', reglages.pneus], ['boitePret', reglages.boite], ['vuePret', reglages.vue]]) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = r.value === val;
     let html = '', n = 0, m = 0;
@@ -1013,7 +1017,7 @@
     if (!m || !Number.isInteger(m.i) || !CATALOGUE[m.i]) return false;
     // nouvelle annonce : les pneus conseillés sont présélectionnés quand la météo change, le pilote peut changer
     const eau = clamp(+m.eau || 0, 0, 1), avant = EL.course;
-    EL.course = { i: m.i | 0, tours: clamp(m.tours | 0, 1, 99), difficulte: m.difficulte | 0, meteo: String(m.meteo || ''), eau };
+    EL.course = { i: m.i | 0, tours: clamp(m.tours | 0, 1, 99), difficulte: m.difficulte | 0, meteo: String(m.meteo || ''), moment: B.ambiance.normaliser(m.moment), eau };
     if (!avant || Math.abs(avant.eau - eau) > .05 || !B.conduite.PNEUS[reglages.pneus]) { reglages.pneus = B.conduite.pneusConseilles(eau); envoyerPneus(); }
     majCourseSalon();
     if (ecran === 'prets') majPrets();
@@ -1132,7 +1136,7 @@
     if (humains.length > 4) { etatEnLigne('Quatre pilotes au plus.'); aller('enligne'); return; }
     const meteo = reglages.meteo || 'aleatoire', graine = ++graineCourse;
     const conseil = B.conduite.pneusConseilles(B.conduite.eauSurPiste(B.meteo.pour(meteo) || B.meteo.initial(graine)));
-    const cfg = { graine, i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, meteo, T0: R.horloge() + 4000, humains,
+    const cfg = { graine, i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, meteo, moment: B.ambiance.normaliser(reglages.moment), T0: R.horloge() + 4000, humains,
       pneus: humains.map(h => { const p = h.machine === 0 ? reglages.pneus : EL.pneusDe.get(h.machine); return B.conduite.PNEUS[p] ? p : conseil; }) };
     R.envoyer({ t: 'depart', cfg });
     lancerEnLigne(Object.assign({}, cfg, { locaux: humains.map((h, k) => h.machine === 0 ? k : -1).filter(k => k >= 0), role: 'hote' }));
@@ -1474,7 +1478,7 @@
     // Cadence des glaces (src/graphismes.js) : une glace par image donne déjà 30 images/s par glace. Les paliers
     // serrés peignent une image sur deux, sur quatre, et laissent à l'écran la dernière image faite, au lieu de
     // payer un rendu complet pour un miroir que l'œil ne distingue plus.
-    const hzGlaces = profilDe(S).secondaires.retroviseurs.hz;
+    const P = profilDe(S), hzGlaces = P.secondaires.retroviseurs.hz;
     const saut = Math.max(1, Math.round(30 / Math.max(1, hzGlaces)));
     G.pas = ((G.pas | 0) + 1) % saut;
     if (G.pas) return;
@@ -1530,7 +1534,11 @@
       const o = objets[k], dx = o.p[0] - ps.x, dz = o.p[2] - ps.z, x = dx * ca + dz * sa, z = dz * ca - dx * sa;
       if (!(Math.abs(x - B.voiture.ROUES[2].x) < .5 && Math.abs(z) > .55)) objets.splice(k, 1);
     }
-    retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, windSources: S.sillage && S.sillage.sources, lights: lampesTunnel(G, 'lampes' + i, scene.decor.tunnelLampes, camR, dtImage, scene.index) });
+    if (S.nature && (retro.ambianceSource !== S.nature.ambiance || retro.ambianceRevision !== S.nature.ambiance.revision)) {
+      if (retro.rendu.setEnvironment) retro.rendu.setEnvironment(S.nature.ambiance.atmosphere);
+      retro.ambianceSource = S.nature.ambiance; retro.ambianceRevision = S.nature.ambiance.revision;
+    }
+    retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, lights: lampesTunnel(G, 'lampes' + i, scene.decor.tunnelLampes, camR, dtImage, scene.index) });
     if (B.mesures.actif) B.mesures.vue('retro', retro.rendu);
     const ctx = G.ctx[i];
     if (toiles[i].width !== source.width || toiles[i].height !== source.height) { toiles[i].width = source.width; toiles[i].height = source.height; }
@@ -1575,6 +1583,13 @@
     }
     const meteo = majMeteo(S, dtImage);
     S.ambianceImage = B.meteo.ambiance(meteo, S.ambianceImage || {});
+    if (S.nature) {
+      const nature = S.nature, ambiance = B.ambiance.appliquer(nature.ambiance, nature.moment || reglages.moment, co.horloge);
+      if (nature.revisionRendu !== ambiance.revision) {
+        if (rendu.setEnvironment) rendu.setEnvironment(ambiance.atmosphere);
+        nature.revisionRendu = ambiance.revision;
+      }
+    }
     if (B.meteo) B.meteo.actuel = meteo;
     const P = profilDe(S);
     // Écran partagé : la vue du joueur 2 d'abord, copiée aussitôt dans sa toile 2D, puis celle du joueur 1, qui reste dans
@@ -1626,6 +1641,15 @@
     // ombres du soleil autour de ce que l'on regarde : devant le pilote (jusqu'à 176 m), ou autour de la voiture filmée
     cam.sun = Object.assign({ center: exterieur ? [ps.x, ps.y, ps.z] : [cam.pos[0] + fwd[0] * OMBRE_DEVANT, ps.y, cam.pos[2] + fwd[2] * OMBRE_DEVANT] }, scene.ombre);
 
+    // Habitats partagés ; pools propres aux deux vues. Le temps absolu garde les mêmes vols dans les miroirs.
+    if (S.nature && B.faune && P.faune !== 'off') {
+      const nature = S.nature;
+      if (!nature.faune) nature.faune = B.faune.creer(c, scene.decor);
+      const contexte = S.fauneVue || (S.fauneVue = { qualite: P.faune, nuit: 0, pluie: 0, pose: ps, vue: S === session ? 0 : 1 });
+      contexte.qualite = P.faune; contexte.nuit = nature.ambiance.nuit; contexte.pluie = meteo.pluie || 0; contexte.pose = ps;
+      B.faune.dessiner(nature.faune, horlogeReelle, contexte, sortie);
+    }
+
     // voitures : toujours dessinées ; modèle complet tant qu'il tient plus d'une trentaine de pixels de haut, allégé
     // au-delà. Le seuil suit le champ : un téléobjectif garde le modèle complet bien plus loin.
     const complet = 170 * Math.tan(20.8 * Math.PI / 180) / Math.tan(clamp(cam.fov, 10, 110) * Math.PI / 360);
@@ -1641,7 +1665,7 @@
           if (x < -1 && x > -95) derriere.push({ x, z: ez * ca - ex * sa, couleur: co.voitures[q].couleur });
         }
         derriere.sort((a, b) => b.x - a.x);
-        const atm = scene.decor.atmosphere;
+      const atm = S.nature ? S.nature.ambiance.atmosphere : scene.decor.atmosphere;
         B.voiture.cockpit(S.modeles[k], ev, sortie, { regime: et.regime, volant: et.volant, rapport: et.rapport, kmh: B.conduite.kmh(et), roues: co.voitures[k].degats && co.voitures[k].degats.roues, casse: !!(et.degats && et.degats.casse),
           passage: suivie.tPassage === undefined ? 1 : (co.horloge - suivie.tPassage) / .36, rapportAvant: suivie.rapportAvant, derriere, ciel: atm.skyBottom, brume: atm.fog,
           glaceVive: !!retro.rendu && retroVoulu(S, vue) });
@@ -1684,7 +1708,7 @@
     // Halo/bloom : ouverts ou fermés par le profil résolu (menu, gouverneur et capacités du moteur)
     const haloInt = avecHalo(P);
     const tDraw = B.mesures.actif ? performance.now() : 0;
-    rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: P.qualite === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources });
+    rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: P.qualite === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover });
     if (B.mesures.actif) {
       B.mesures.section('rendu', performance.now() - tDraw);
       B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
@@ -2013,12 +2037,17 @@
   }
   function majPreparation() {
     preselectionnerPneus();
+    for (const r of document.querySelectorAll('input[name="momentDepart"]')) r.checked = r.value === reglages.moment;
     for (const b of $('circuits').children) b.setAttribute('aria-checked', String(+b.dataset.index === reglages.circuit));
     const r = records[CATALOGUE[reglages.circuit].id];
     $('p-record').innerHTML = r ? 'Votre record sur ' + CATALOGUE[reglages.circuit].nom + ' : <b>' + chrono(r.tour) + '</b>' : 'Pas encore de temps sur ' + CATALOGUE[reglages.circuit].nom + '.';
   }
   document.addEventListener('change', e => {
     const t = e.target;
+    if (t.name === 'moment' || t.name === 'momentDepart') {
+      reglages.moment = B.ambiance.normaliser(t.value); sauverReglages();
+      for (const nom of ['moment', 'momentDepart']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = r.value === reglages.moment;
+    }
     if (t.name === 'tours' || t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
     if (t.name === 'meteo') { reglages.meteo = t.value; sauverReglages(); preselectionnerPneus(); }
     if (t.name === 'pneus' && B.conduite.PNEUS[t.value]) { reglages.pneus = t.value; sauverReglages(); }
@@ -2028,7 +2057,7 @@
     }
     if (t.name === 'boitePret' && ['auto', 'manuelle'].includes(t.value)) { reglages.boite = t.value; sauverReglages(); }
     if (t.name === 'vuePret' && ['cockpit', 'poursuite'].includes(t.value)) { reglages.vue = t.value; sauverReglages(); }
-    if (EL.role === 'hote' && lienActif() && ['tours', 'difficulte', 'meteo', 'pneus'].includes(t.name)) annoncerCourse();
+    if (EL.role === 'hote' && lienActif() && ['tours', 'difficulte', 'meteo', 'moment', 'momentDepart', 'pneus'].includes(t.name)) annoncerCourse();
     if (t.name === 'joueursIci') { reglages.joueursLocaux = t.value === '2' ? 2 : 1; sauverReglages(); }
     if (t.name === 'partage') { reglages.partage = t.value === 'cote' ? 'cote' : 'haut-bas'; sauverReglages(); }
     if (/^r?cmd[01]$/.test(t.name) && NOMS_COMMANDES[t.value]) {
@@ -2122,7 +2151,7 @@
   }, { capture: true });
   function remplirReglages() {
     captureTouche = null; majCommandes();
-    for (const nom of ['vue', 'boite', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    for (const nom of ['vue', 'boite', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'moment', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     $('v-carte').checked = reglages.carte !== 'non';
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
     $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';
@@ -2418,11 +2447,12 @@
     const depart = options.depart === 'tunnel' ? c.tunnel.debut - 40 : (options.depart ?? 800);
     if (!Number.isFinite(depart)) throw new Error('abscisse de départ invalide');
     restaurerReference();
-    const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'retro', 'meteo', 'pneus', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
+    const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'moment', 'retro', 'meteo', 'pneus', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
     const avant = Object.fromEntries(cles.map(k => [k, reglages[k]])), decorAvant = decorEnrichi;
     Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, secousses: 0, vibrations: 'non', champ: 60,
       pneus: B.conduite.pneusConseilles(B.conduite.eauSurPiste(B.meteo.pour(meteo))) });
     Object.assign(reglages, B.graphismes.normaliserOptions(options));
+    reglages.moment = B.ambiance.normaliser(options.moment ?? 'jour');
     decorEnrichi = options.decor !== 'reference';
     graineCourse = graine - 1;
     // l'ancre du décor se fixe avant la construction de la scène : une séance de référence est filmée au palier demandé
@@ -2452,7 +2482,7 @@
     Object.assign(palier, { n: gpuModeste ? 1 : 0, somme: 0, compte: 0, t: 0, aise: 0 });
     for (const G of [retro.j1, retro.j2]) if (G) { G.cote = 0; delete G.lampes0; delete G.lampes1; }
     S.reference = { graine, circuit: i, circuitId: CATALOGUE[i].id, graineCircuit: CATALOGUE[i].graine,
-      mode, qualite, ...B.graphismes.normaliserOptions(reglages), difficulte, tours, pilote, vue, vue2, partage, retro: glaces, meteo, mouille, depart: ramener(depart, c.longueur), vitesse,
+      mode, qualite, ...B.graphismes.normaliserOptions(reglages), moment: reglages.moment, difficulte, tours, pilote, vue, vue2, partage, retro: glaces, meteo, mouille, depart: ramener(depart, c.longueur), vitesse,
       decor: decorEnrichi ? 'enrichi' : 'reference', tunnel: c.tunnel ? { debut: c.tunnel.debut, fin: c.tunnel.fin } : null };
     $('chargement').classList.add('fini'); aller('course'); appliquerPalier();
     B.mesures.reinitialiser();

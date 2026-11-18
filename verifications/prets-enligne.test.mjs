@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 require('../src/conduite.js'); require('../src/meteo.js');
+require('../src/ambiance.js');
 const B = globalThis.BITUME;
 const source = readFileSync(process.argv[2] || new URL('../src/jeu.js', import.meta.url), 'utf8');
 const debut = source.indexOf('  const EL = '), fin = source.indexOf('  function envoyerEtats(', debut);
@@ -63,6 +64,22 @@ function invite() {
   a.surMessageEnLigne({ t: 'confirmer', course: { i: 1, tours: 5, difficulte: 2, meteo: 'pluie', eau: .8 } }, 0);
   return { a, R };
 }
+
+test('le moment choisi avant départ est annoncé et transmis aux pilotes', () => {
+  const a=creer(B),R=a.connecter('hote');
+  a.reglages.moment='nuit';a.proposerCourse();
+  assert.equal(a.EL.course.moment,'nuit');
+  tous(a,R);a.avancer(700);
+  assert.ok(a.$('pr-course').textContent.includes('nuit'));
+  const cfg=a.messages.find(x=>x.m.t==='depart').m.cfg;
+  assert.equal(cfg.moment,'nuit');
+  const b=creer(B);b.connecter('invite');b.reglages.moment='jour';
+  b.surMessageEnLigne({t:'depart',cfg},0);b.avancer(5000);
+  assert.equal(b.departs[0].cfg.moment,'nuit');
+  assert.equal(b.reglages.moment,'jour','préférence personnelle préservée après la course imposée');
+  assert.equal(b.recevoirCourse({i:0,tours:3,meteo:'soleil',eau:0,moment:'invalide'}),true);
+  assert.equal(b.EL.course.moment,'jour','messages anciens ou invalides reprennent le jour');
+});
 
 test('l’annonce ouvre la confirmation sans lancer la course', () => {
   const { a } = hote(); assert.equal(a.etat().ecran, 'prets'); a.avancer(1000); assert.equal(compte(a), 0);

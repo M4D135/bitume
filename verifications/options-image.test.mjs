@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 const require = createRequire(import.meta.url);
 require('../src/graphismes.js');
+require('../src/ambiance.js');
 require('../src/qualite.js');
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 function bloc(debut, fin) {
@@ -14,10 +15,16 @@ function bloc(debut, fin) {
 }
 
 const executer = new Function('B', 'stockage', `
-  const appels = { decor: [], rendu: [], ecritures: [] }, elements = new Map(), ecouteurs = new Map();
+  const appels = { decor: [], rendu: [], ecritures: [] }, elements = new Map(), ecouteurs = new Map(), radios = new Map();
   const $ = id => { if (!elements.has(id)) elements.set(id, { classList: { add() {} }, dataset: {}, hidden: false }); return elements.get(id); };
   const localStorage = { getItem: k => stockage[k] ?? null, setItem: (k,v) => { stockage[k] = v; appels.ecritures.push(k); } };
   const document = { hidden: false, addEventListener: (k,f) => ecouteurs.set(k,f),
+    querySelectorAll: sel => {
+      if (!sel.includes('name="moment')) return [];
+      const nom=sel.includes('momentDepart')?'momentDepart':'moment';
+      if(!radios.has(nom))radios.set(nom,['jour','crepuscule','nuit','cycle'].map(value=>({value,checked:false})));
+      return radios.get(nom);
+    },
     createElement: () => ({ width: 0, height: 0, getContext: () => ({}) }) };
   const clamp = (x,a,b) => Math.max(a,Math.min(b,x)), ramener = (s,l) => ((s%l)+l)%l;
   const CATALOGUE = [{ id: 'essai', graine: 11 }], c = { longueur: 1000 };
@@ -50,7 +57,7 @@ const executer = new Function('B', 'stockage', `
   ${bloc("  document.addEventListener('change', e => {", "  for (const nom of ['general', 'moteur', 'effets'])")}
   ${bloc('  function restaurerReference()', '  // Banc (console)')}
   lancer('course',0);
-  return { reglages, stockage, appels, installer, reference, restaurerReference, lancer,
+  return { reglages, stockage, appels, radios, installer, reference, restaurerReference, lancer,
     get session() { return session; }, get scene() { return scene; }, get profil() { return profilDe(session); },
     choisir: (name,value) => ecouteurs.get('change')({ target: { name, value } }) };
 `);
@@ -84,6 +91,18 @@ verifier('gestionnaire change : les trois choix sont sauvegardés et rechargés'
   assert.equal(JSON.parse(j.stockage['bitume.reglages']).vegetation,'profil');
 });
 
+verifier('faune et moment de la course : préférences indépendantes persistées', () => {
+  const j=jeu({qualite:'low'}), sc=j.scene;
+  assert.equal(j.reglages.moment,'jour');assert.equal(j.profil.faune,'off');
+  j.choisir('faune','ultra');j.choisir('momentDepart','nuit');
+  for(const nom of ['moment','momentDepart']) assert.equal(j.radios.get(nom).find(r=>r.checked).value,'nuit');
+  assert.equal(j.profil.faune,'ultra');assert.strictEqual(j.scene,sc,'aucune reconstruction du terrain');
+  const prefs=JSON.parse(j.stockage['bitume.reglages']), recharge=jeu(prefs);
+  assert.equal(recharge.reglages.faune,'ultra');assert.equal(recharge.reglages.moment,'nuit');
+  j.choisir('moment','inconnu');assert.equal(j.reglages.moment,'jour');
+  j.choisir('faune','off');assert.equal(j.profil.faune,'off');
+});
+
 verifier('AA et ombres changent le profil sans reconstruire le circuit ni la séance', () => {
   const j = jeu({ qualite: 'low' }), s = j.session, sc = j.scene, obstacles = sc.c.obstacles;
   const n = j.appels.decor.length;
@@ -115,11 +134,12 @@ verifier('végétation : application à la séance suivante et cache distinguant
 });
 
 verifier('reference(options) applique les surcharges et restitue les préférences précédentes', () => {
-  const initial = { qualite: 'medium', anticrenelage: 'off', ombres: 'medium', vegetation: 'low' };
+  const initial = { qualite: 'medium', anticrenelage: 'off', ombres: 'medium', vegetation: 'low', faune: 'low', moment: 'crepuscule' };
   const j = jeu(initial), stockAvant = j.stockage['bitume.reglages'];
-  const ref = j.reference({ qualite: 'low', anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra', retro: 'non' });
+  const ref = j.reference({ qualite: 'low', anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra', faune: 'ultra', moment: 'nuit', retro: 'non' });
   assert.deepEqual(options(ref), { anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra' });
   assert.equal(j.scene.vegetationQualite,'ultra');
+  assert.equal(j.reglages.moment,'nuit');assert.equal(j.profil.faune,'ultra');
   assert.equal(j.session.essai,true); assert.equal(j.session.course.phase,'course');
   assert.equal(j.profil.rendu.msaa,4); assert.equal(j.profil.effets.halo,false);
   j.choisir('ombres','off');
@@ -127,6 +147,7 @@ verifier('reference(options) applique les surcharges et restitue les préférenc
   j.lancer('course',0);
   assert.deepEqual(options(j.reglages),options(initial));
   assert.equal(j.reglages.qualite,initial.qualite);
+  assert.equal(j.reglages.moment,initial.moment);assert.equal(j.profil.faune,initial.faune);
   assert.equal(j.scene.vegetationQualite,'low');
   assert.equal(j.stockage['bitume.reglages'],stockAvant);
 });

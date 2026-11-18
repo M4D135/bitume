@@ -30,6 +30,11 @@ const REFERENCE_029 = {
   cote: { low: 86, medium: 853, high: 3030, ultra: 5716 },
   montagne: { low: 74, medium: 1079, high: 3684, ultra: 7108 },
 };
+const REFERENCE_031 = {
+  foret: { low: 1116, medium: 114228, high: 362100, ultra: 720756 },
+  cote: { low: 774, medium: 94848, high: 301080, ultra: 599832 },
+  montagne: { low: 666, medium: 135309, high: 430743, ultra: 860439 },
+};
 
 function mesurer(theme, graine, longueur, qualite, vegetationDemandee = 'profil') {
   const c = B.circuit.creer(graine, { theme, longueur });
@@ -40,7 +45,7 @@ function mesurer(theme, graine, longueur, qualite, vegetationDemandee = 'profil'
   const lots = d.lots;
   const v = d.vegetation || { herbes: 0, fougeres: 0, fleurs: 0, taillis: 0, lots: 0, qualite: 'off' };
   const formesUtilisees = new Set();
-  let objets = 0, rendus = 0, brins = 0, tuiles = 0, objetsHerbe = 0, trianglesHerbe = 0, trianglesHerbeLoin = 0;
+  let objets = 0, rendus = 0, brins = 0, brinsTapis = 0, tuiles = 0, objetsHerbe = 0, trianglesHerbe = 0, trianglesHerbeLoin = 0;
   const inconnues = new Set();
   for (const l of lots) for (const o of l.objets) {
     objets++;
@@ -48,17 +53,19 @@ function mesurer(theme, graine, longueur, qualite, vegetationDemandee = 'profil'
     if (t === undefined) { inconnues.add(o.shape); continue; }
     if (!formesUtilisees.has(o.shape)) formesUtilisees.add(o.shape);
     rendus += t.length;
-    if (o.shape === 'herbes-val' || o.shape === 'prairie-val') {
-      const tuile = o.shape === 'prairie-val';
+    if (o.shape === 'herbes-val' || o.shape.startsWith('prairie-val')) {
+      const tuile = o.shape.startsWith('prairie-val');
       // Le test géométrique vérifie 24 triangles par ancien brin, 6 par brin du tapis : compter les
       // formes vraiment instanciées détecte aussi un compteur de densité modifié sans ajout de géométrie.
-      brins += t.length / (tuile ? 6 : 24); objetsHerbe++; if (tuile) tuiles++;
+      const n = t.length / (tuile ? 6 : 24);
+      brins += n; objetsHerbe++; if (tuile) { tuiles++; brinsTapis += n; }
       trianglesHerbe += t.length; trianglesHerbeLoin += formes.get(o.shape + '-loin').length;
     }
   }
   let trianglesFormes = 0;
   for (const nom of formesUtilisees) trianglesFormes += formes.get(nom).length;
   const reference = (REFERENCE_029[theme]?.[v.qualite] || 0) * 9;
+  const reference031 = REFERENCE_031[theme]?.[v.qualite] || 0;
   return {
     biome: theme, graine, longueur, qualite,
     lots: lots.length, objets,
@@ -67,11 +74,15 @@ function mesurer(theme, graine, longueur, qualite, vegetationDemandee = 'profil'
     objetsHorsVegetation: lots.filter(l => !l.vegetation).reduce((s, l) => s + l.objets.length, 0),
     solides: d.obstacles.length,
     vegetation: { herbes: v.herbes, fougeres: v.fougeres, fleurs: v.fleurs, taillis: v.taillis, lots: v.lots,
-      objetsHerbe, tuiles, brins, brinsTapis: tuiles * B.vegetation.BRINS_TUILE,
+      objetsHerbe, tuiles, brins, brinsTapis,
       trianglesHerbeProches: trianglesHerbe, trianglesHerbeLointains: trianglesHerbeLoin,
       lotsTapis: lots.filter(l => l.tapis).length,
-      groupesHerbe: lots.reduce((n, l) => n + new Set(l.objets.filter(o => o.shape === 'herbes-val' || o.shape === 'prairie-val').map(o => o.shape)).size, 0),
-      brinsReference029: reference, facteurBrinsDepuis029: reference ? brins / reference : null },
+      groupesHerbe: lots.reduce((n, l) => n + new Set(l.objets.filter(o => o.shape === 'herbes-val' || o.shape.startsWith('prairie-val')).map(o => o.shape)).size, 0),
+      brinsReference029: reference, facteurBrinsDepuis029: reference ? brins / reference : null,
+      brinsReference031: reference031, facteurBrinsDepuis031: reference031 ? brins / reference031 : null,
+      brinsAccotements: v.brinsAccotements || 0, brinsTerrain: v.brinsTerrain || 0,
+      aireAccotements: v.aireAccotements || 0, aireTerrain: v.aireTerrain || 0,
+      instanceBufferBytesTheoriques: objetsHerbe * 16 * 4 * 2 },
     qualiteDemandee: qualite, qualiteAppliquee: d.qualite,
     vegetationDemandee, vegetationQualite: v.qualite,
   };
@@ -86,7 +97,7 @@ const sortie = iSortie >= 0 ? argv[iSortie + 1] : null;
 const biomes = Object.keys(B.decor.THEMES);
 const rapport = {
   genere: 'tools/budget-decor.mjs', mode: densites ? 'densites' : 'profils',
-  mesure: 'Décor complet généré par graphismes.melange puis decor.construire ; triangles des formes libres proches, hors primitives moteur. Les brins sont déduits des maillages réellement instanciés. Référence e150378 / 0.2.29 : 9 brins par touffe. Ces totaux ne sont ni les triangles visibles par image ni une mesure GPU.',
+  mesure: 'Décor complet généré par graphismes.melange puis decor.construire ; triangles des formes libres proches, hors primitives moteur. Brins déduits des maillages réellement instanciés. Références 0.2.29 et 0.2.31. La densité locale est mesurée séparément par tools/budget-herbe.mjs. Totaux théoriques, pas une mesure de triangles soumis, visibles ou de FPS GPU.',
   biomes: {}, lignes: [],
 };
 for (const [i, biome] of biomes.entries()) {
@@ -103,10 +114,10 @@ let conflits = 0;
 if (json) {
   console.log(JSON.stringify(rapport, null, 2));
 } else {
-  const entetes = ['biome', 'palier', 'végétation', 'lots', 'objets', 'formes', 'triFormes', 'triRendus', 'instHerbe', 'brins', '×0.2.29', 'fougères', 'fleurs', 'taillis'];
+  const entetes = ['biome', 'palier', 'végétation', 'lots', 'objets', 'formes', 'triFormes', 'triRendus', 'instHerbe', 'brins', '×0.2.31', 'fougères', 'fleurs', 'taillis'];
   const lignes = rapport.lignes.map(l => [l.biome, l.qualite, l.vegetationQualite, String(l.lots), String(l.objets), String(l.formesUniques),
     String(l.trianglesFormes), String(l.trianglesRendus), String(l.vegetation.objetsHerbe), String(l.vegetation.brins),
-    l.vegetation.facteurBrinsDepuis029 === null ? '—' : l.vegetation.facteurBrinsDepuis029.toFixed(2), String(l.vegetation.fougeres),
+    l.vegetation.facteurBrinsDepuis031 === null ? '—' : l.vegetation.facteurBrinsDepuis031.toFixed(2), String(l.vegetation.fougeres),
     String(l.vegetation.fleurs), String(l.vegetation.taillis)]);
   const largeurs = entetes.map((h, i) => Math.max(h.length, ...lignes.map(l => l[i].length)));
   const ligne = c => c.map((v, i) => v.padEnd(largeurs[i])).join('  ');
@@ -134,6 +145,10 @@ for (const biome of biomes) {
       if (['medium', 'high', 'ultra'].includes(l.vegetationQualite) && l.vegetation.facteurBrinsDepuis029 < 10) {
         conflits++;
         console.error(`conflit : ${biome} ${l.vegetationQualite} — moins de dix fois les brins de la 0.2.29`);
+      }
+      if (l.vegetationQualite === 'ultra' && l.vegetation.facteurBrinsDepuis031 < 10) {
+        conflits++;
+        console.error(`conflit : ${biome} MAX — moins de dix fois les brins de la 0.2.31`);
       }
     }
     for (let i = 1; i < lignes.length; i++) if (lignes[i].vegetation.herbes <= lignes[i - 1].vegetation.herbes) {

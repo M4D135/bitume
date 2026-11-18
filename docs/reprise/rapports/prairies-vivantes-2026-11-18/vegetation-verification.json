@@ -1,0 +1,520 @@
+{
+  "date": "2026-11-18T09:34:00.002871+00:00",
+  "base": "ff40baa98069ecb64dd7d263672b2c040d4adc09",
+  "versionBase": "0.2.31",
+  "sourceSha256": {
+    "src/vegetation.js": "17ac29cfed9cac36327439c1ecc56f184d1deb619436f0a212d15984855d2397",
+    "src/decor.js": "341ae69221b83df7638ba90d05d5dc4e087debb86e1dc89c9b5d3f7eacd9bdc4",
+    "verifications/vegetation.test.mjs": "941fa6230cd246e2be97768090197e2416fa38b484c0367b77cd7b129daaabe2",
+    "verifications/fixtures/herbe-031.json": "ea56e70a4919d468c30e15d386d2acee4bdb73f54b4c25f1dc7af02dd39d31a6",
+    "tools/budget-herbe.mjs": "52cd4db52eab5618b170316a9bf98c74418b8f6e6851125670ce55e42d84f4ae",
+    "tools/budget-decor.mjs": "a863b7caba74aa4b7e0ab9ec4c2f8ef166fdca2324a47d5878ad787520f8855b"
+  },
+  "resultat": "16 contrôles végétation réussis ; 15 combinaisons densité/biome du budget réussies ; identité du décor Low réussie.",
+  "limitesMesure": "Totaux = brins construits, non brins simultanément visibles. Racines vérifiées au centre de chaque instance MAX contre les triangles réellement rendus ; test des formes exhaustif sur toutes leurs racines locales. Banc de soumission WebGL inerte : compte aussi les triangles rejetés ensuite par shader, sans mesure FPS, GPU matériel ou capture finale du jeu.",
+  "syntheseMAX": [
+    {
+      "biome": "foret",
+      "brins031": 720756,
+      "brinsMAX": 163010460,
+      "facteurTotal": 226.16594242711818,
+      "minimumFacteurLocal": 14.86829268292683,
+      "minimumBrinsParM2": 242.5521332720485,
+      "disquesMesures": 10,
+      "surfaceM2": 8226749.614250619,
+      "couverture": 0.9999999918491971,
+      "erreurSolMaxM": 0.0050000085689067,
+      "racinesControlees": 101628,
+      "tuiles": 101628
+    },
+    {
+      "biome": "cote",
+      "brins031": 599832,
+      "brinsMAX": 129057608,
+      "facteurTotal": 215.15625708531724,
+      "minimumFacteurLocal": 14.708133971291867,
+      "minimumBrinsParM2": 244.3824151176053,
+      "disquesMesures": 10,
+      "surfaceM2": 5282950.003651971,
+      "couverture": 0.9999999434050513,
+      "erreurSolMaxM": 0.005000000112081793,
+      "racinesControlees": 83344,
+      "tuiles": 83344
+    },
+    {
+      "biome": "montagne",
+      "brins031": 860439,
+      "brinsMAX": 167320367,
+      "facteurTotal": 194.45930158907257,
+      "minimumFacteurLocal": 14.175675675675675,
+      "minimumBrinsParM2": 239.92607671103224,
+      "disquesMesures": 8,
+      "surfaceM2": 2894677.086301265,
+      "couverture": 0.9999999177688854,
+      "erreurSolMaxM": 0.005000000014871553,
+      "racinesControlees": 94000,
+      "tuiles": 94000
+    }
+  ],
+  "tests": {
+    "controles": 16,
+    "plantesHistoriques": {
+      "herbes": 124,
+      "fougeres": 0,
+      "fleurs": 0,
+      "taillis": 34,
+      "lots": 10,
+      "qualite": "low",
+      "brins": 1116,
+      "tuiles": 0,
+      "brinsTapis": 0,
+      "objetsHerbe": 124,
+      "brinsAccotements": 0,
+      "brinsTerrain": 0,
+      "aireAccotements": 0,
+      "aireTerrain": 0
+    },
+    "erreursLod": {
+      "herbes": {
+        "metres": 0.021013878261790717,
+        "pixels": 0.03779699346016133
+      },
+      "taillis": {
+        "metres": 0.030015847563754975,
+        "pixels": 0.05398854889776867
+      },
+      "fougeres": {
+        "metres": 0.08195574962053627,
+        "pixels": 0.14741119625036112
+      },
+      "fleurs": {
+        "metres": 0.12420602100961978,
+        "pixels": 0.22340541357134538
+      },
+      "humus": {
+        "metres": 0.16198358989879955,
+        "pixels": 0.2913547233777801
+      },
+      "prairie": {
+        "metresAuRepos": 1.670444188832582e-16,
+        "trianglesParBrin": {
+          "proche": 6,
+          "loin": 2
+        }
+      }
+    },
+    "mesures": {
+      "foret": {
+        "medium": {
+          "brins": 1682444,
+          "tuiles": 87433,
+          "lots": 3489,
+          "aireCouverte": 8226749.614250708,
+          "couverture": 0.999999991849208,
+          "brinsAccotements": 380976,
+          "brinsTerrain": 1298984,
+          "erreurSol": 0,
+          "controlesSol": 0,
+          "instanceBufferBytes": 11191424
+        },
+        "high": {
+          "brins": 6532316,
+          "tuiles": 87433,
+          "lots": 3489,
+          "aireCouverte": 8226749.614250708,
+          "couverture": 0.999999991849208,
+          "brinsAccotements": 1351104,
+          "brinsTerrain": 5177000,
+          "erreurSol": 0,
+          "controlesSol": 0,
+          "instanceBufferBytes": 11191424
+        },
+        "ultra": {
+          "brins": 163010460,
+          "tuiles": 101628,
+          "lots": 5143,
+          "aireCouverte": 8226749.614250619,
+          "couverture": 0.9999999918491971,
+          "brinsAccotements": 50847088,
+          "brinsTerrain": 112159160,
+          "erreurSol": 0.0050000085689067,
+          "controlesSol": 101628,
+          "instanceBufferBytes": 13008384,
+          "disques": [
+            {
+              "id": "0.2:-1",
+              "avant": 197,
+              "brins": 3469,
+              "facteur": 17.609137055837564,
+              "parMetreCarre": 276.05424879289245
+            },
+            {
+              "id": "0.2:1",
+              "avant": 213,
+              "brins": 3294,
+              "facteur": 15.464788732394366,
+              "parMetreCarre": 262.1281912723516
+            },
+            {
+              "id": "0.37:-1",
+              "avant": 221,
+              "brins": 5318,
+              "facteur": 24.063348416289593,
+              "parMetreCarre": 423.1929936813497
+            },
+            {
+              "id": "0.37:1",
+              "avant": 197,
+              "brins": 6182,
+              "facteur": 31.380710659898476,
+              "parMetreCarre": 491.94792909704853
+            },
+            {
+              "id": "0.53:-1",
+              "avant": 160,
+              "brins": 5298,
+              "facteur": 33.1125,
+              "parMetreCarre": 421.60144425043075
+            },
+            {
+              "id": "0.53:1",
+              "avant": 286,
+              "brins": 4936,
+              "facteur": 17.25874125874126,
+              "parMetreCarre": 392.7943995507977
+            },
+            {
+              "id": "0.69:-1",
+              "avant": 180,
+              "brins": 4482,
+              "facteur": 24.9,
+              "parMetreCarre": 356.66622746893745
+            },
+            {
+              "id": "0.69:1",
+              "avant": 220,
+              "brins": 3305,
+              "facteur": 15.022727272727273,
+              "parMetreCarre": 263.00354345935705
+            },
+            {
+              "id": "0.84:-1",
+              "avant": 216,
+              "brins": 3605,
+              "facteur": 16.689814814814813,
+              "parMetreCarre": 286.8767849231414
+            },
+            {
+              "id": "0.84:1",
+              "avant": 205,
+              "brins": 3048,
+              "facteur": 14.86829268292683,
+              "parMetreCarre": 242.5521332720485
+            }
+          ]
+        }
+      },
+      "cote": {
+        "medium": {
+          "brins": 1266560,
+          "tuiles": 71932,
+          "lots": 2612,
+          "aireCouverte": 5282950.00365198,
+          "couverture": 0.999999943405053,
+          "brinsAccotements": 323688,
+          "brinsTerrain": 941144,
+          "erreurSol": 0,
+          "controlesSol": 0,
+          "instanceBufferBytes": 9207296
+        },
+        "high": {
+          "brins": 4780472,
+          "tuiles": 71932,
+          "lots": 2612,
+          "aireCouverte": 5282950.00365198,
+          "couverture": 0.999999943405053,
+          "brinsAccotements": 1127784,
+          "brinsTerrain": 3649592,
+          "erreurSol": 0,
+          "controlesSol": 0,
+          "instanceBufferBytes": 9207296
+        },
+        "ultra": {
+          "brins": 129057608,
+          "tuiles": 83344,
+          "lots": 4032,
+          "aireCouverte": 5282950.003651971,
+          "couverture": 0.9999999434050513,
+          "brinsAccotements": 41044072,
+          "brinsTerrain": 88010440,
+          "erreurSol": 0.005000000112081793,
+          "controlesSol": 83344,
+          "instanceBufferBytes": 10668032,
+          "disques": [
+            {
+              "id": "0.2:-1",
+              "avant": 251,
+              "brins": 3728,
+              "facteur": 14.852589641434262,
+              "parMetreCarre": 296.6648139232929
+            },
+            {
+              "id": "0.2:1",
+              "avant": 175,
+              "brins": 4942,
+              "facteur": 28.24,
+              "parMetreCarre": 393.2718643800734
+            },
+            {
+              "id": "0.37:-1",
+              "avant": 198,
+              "brins": 3920,
+              "facteur": 19.7979797979798,
+              "parMetreCarre": 311.94368846011486
+            },
+            {
+              "id": "0.37:1",
+              "avant": 208,
+              "brins": 5860,
+              "facteur": 28.173076923076923,
+              "parMetreCarre": 466.32398325925334
+            },
+            {
+              "id": "0.53:-1",
+              "avant": 209,
+              "brins": 3074,
+              "facteur": 14.708133971291867,
+              "parMetreCarre": 244.62114753224313
+            },
+            {
+              "id": "0.53:1",
+              "avant": 207,
+              "brins": 3071,
+              "facteur": 14.83574879227053,
+              "parMetreCarre": 244.3824151176053
+            },
+            {
+              "id": "0.69:-1",
+              "avant": 171,
+              "brins": 5252,
+              "facteur": 30.71345029239766,
+              "parMetreCarre": 417.9408805593172
+            },
+            {
+              "id": "0.69:1",
+              "avant": 239,
+              "brins": 3710,
+              "facteur": 15.523012552301255,
+              "parMetreCarre": 295.2324194354659
+            },
+            {
+              "id": "0.84:-1",
+              "avant": 241,
+              "brins": 6356,
+              "facteur": 26.37344398340249,
+              "parMetreCarre": 505.7944091460434
+            },
+            {
+              "id": "0.84:1",
+              "avant": 185,
+              "brins": 5454,
+              "facteur": 29.481081081081083,
+              "parMetreCarre": 434.0155298115986
+            }
+          ]
+        }
+      },
+      "montagne": {
+        "medium": {
+          "brins": 1167341,
+          "tuiles": 75703,
+          "lots": 2556,
+          "aireCouverte": 2894677.086301253,
+          "couverture": 0.9999999177688814,
+          "brinsAccotements": 424632,
+          "brinsTerrain": 741224,
+          "erreurSol": 0,
+          "controlesSol": 0,
+          "instanceBufferBytes": 9689984
+        },
+        "high": {
+          "brins": 4320407,
+          "tuiles": 75703,
+          "lots": 2556,
+          "aireCouverte": 2894677.086301253,
+          "couverture": 0.9999999177688814,
+          "brinsAccotements": 1458600,
+          "brinsTerrain": 2859224,
+          "erreurSol": 0,
+          "controlesSol": 0,
+          "instanceBufferBytes": 9689984
+        },
+        "ultra": {
+          "brins": 167320367,
+          "tuiles": 94000,
+          "lots": 4547,
+          "aireCouverte": 2894677.086301265,
+          "couverture": 0.9999999177688854,
+          "brinsAccotements": 60298672,
+          "brinsTerrain": 107019112,
+          "erreurSol": 0.005000000014871553,
+          "controlesSol": 94000,
+          "instanceBufferBytes": 12032000,
+          "disques": [
+            {
+              "id": "0.2:-1",
+              "avant": 222,
+              "brins": 3147,
+              "facteur": 14.175675675675675,
+              "parMetreCarre": 250.43030295509732
+            },
+            {
+              "id": "0.2:1",
+              "avant": 208,
+              "brins": 3142,
+              "facteur": 15.10576923076923,
+              "parMetreCarre": 250.0324155973676
+            },
+            {
+              "id": "0.53:-1",
+              "avant": 205,
+              "brins": 3015,
+              "facteur": 14.707317073170731,
+              "parMetreCarre": 239.92607671103224
+            },
+            {
+              "id": "0.53:1",
+              "avant": 199,
+              "brins": 5963,
+              "facteur": 29.964824120603016,
+              "parMetreCarre": 474.52046282848596
+            },
+            {
+              "id": "0.69:-1",
+              "avant": 210,
+              "brins": 6100,
+              "facteur": 29.047619047619047,
+              "parMetreCarre": 485.4225764302808
+            },
+            {
+              "id": "0.69:1",
+              "avant": 208,
+              "brins": 6097,
+              "facteur": 29.3125,
+              "parMetreCarre": 485.18384401564293
+            },
+            {
+              "id": "0.84:-1",
+              "avant": 204,
+              "brins": 3023,
+              "facteur": 14.818627450980392,
+              "parMetreCarre": 240.5626964833998
+            },
+            {
+              "id": "0.84:1",
+              "avant": 207,
+              "brins": 5413,
+              "facteur": 26.14975845410628,
+              "parMetreCarre": 430.7528534782147
+            }
+          ]
+        }
+      }
+    }
+  },
+  "bancsSoumission": [
+    {
+      "qualite": "medium",
+      "rssMaximumKiB": 602300,
+      "cases": [
+        {
+          "camera": "cockpit",
+          "trianglesSoumisCouleurEtOmbre": 233514,
+          "appelsCouleurEtOmbre": 161,
+          "cpuInerteMedianeMs": 3.483202999999776,
+          "instanceBufferBytes": 11226752,
+          "buffersDemandesBytes": 22041500
+        },
+        {
+          "camera": "poursuite",
+          "trianglesSoumisCouleurEtOmbre": 196728,
+          "appelsCouleurEtOmbre": 153,
+          "cpuInerteMedianeMs": 3.3595470000000205,
+          "instanceBufferBytes": 11226752,
+          "buffersDemandesBytes": 22041500
+        },
+        {
+          "camera": "bord-sol",
+          "trianglesSoumisCouleurEtOmbre": 182616,
+          "appelsCouleurEtOmbre": 146,
+          "cpuInerteMedianeMs": 3.228439999999864,
+          "instanceBufferBytes": 11226752,
+          "buffersDemandesBytes": 22041500
+        }
+      ]
+    },
+    {
+      "qualite": "high",
+      "rssMaximumKiB": 600612,
+      "cases": [
+        {
+          "camera": "cockpit",
+          "trianglesSoumisCouleurEtOmbre": 963792,
+          "appelsCouleurEtOmbre": 285,
+          "cpuInerteMedianeMs": 4.0509669999999005,
+          "instanceBufferBytes": 11251328,
+          "buffersDemandesBytes": 22066076
+        },
+        {
+          "camera": "poursuite",
+          "trianglesSoumisCouleurEtOmbre": 774144,
+          "appelsCouleurEtOmbre": 242,
+          "cpuInerteMedianeMs": 3.978699000000006,
+          "instanceBufferBytes": 11251328,
+          "buffersDemandesBytes": 22066076
+        },
+        {
+          "camera": "bord-sol",
+          "trianglesSoumisCouleurEtOmbre": 692386,
+          "appelsCouleurEtOmbre": 251,
+          "cpuInerteMedianeMs": 3.7051480000000083,
+          "instanceBufferBytes": 11251328,
+          "buffersDemandesBytes": 22066076
+        }
+      ]
+    },
+    {
+      "qualite": "ultra",
+      "rssMaximumKiB": 627052,
+      "cases": [
+        {
+          "camera": "cockpit",
+          "trianglesSoumisCouleurEtOmbre": 35371278,
+          "appelsCouleurEtOmbre": 1330,
+          "cpuInerteMedianeMs": 6.287845000000061,
+          "instanceBufferBytes": 13068288,
+          "buffersDemandesBytes": 23883036
+        },
+        {
+          "camera": "poursuite",
+          "trianglesSoumisCouleurEtOmbre": 34868044,
+          "appelsCouleurEtOmbre": 775,
+          "cpuInerteMedianeMs": 6.334344000000328,
+          "instanceBufferBytes": 13068288,
+          "buffersDemandesBytes": 23883036
+        },
+        {
+          "camera": "bord-sol",
+          "trianglesSoumisCouleurEtOmbre": 34194206,
+          "appelsCouleurEtOmbre": 909,
+          "cpuInerteMedianeMs": 6.2072330000000875,
+          "instanceBufferBytes": 13068288,
+          "buffersDemandesBytes": 23883036
+        }
+      ]
+    }
+  ],
+  "carte": "empreinte-racines-031-max.png",
+  "log": "vegetation-final.log",
+  "budget": "densites-final.json"
+}

@@ -30,6 +30,14 @@ const COUPURES = ['portee', 'porteeCulling', 'distance', 'culling', 'lointain', 
 function sansCoupure(o, chemin) {
   if (o === null || typeof o !== 'object') return;
   for (const k of Object.keys(o)) {
+    if (k === 'groundCover') {
+      // La prairie seule se fond vers le sol, jamais une coupure dure du décor : intervalle non nul obligatoire.
+      const { density, distance } = o[k];
+      assert.equal(density.length,3);assert.equal(distance.length,2);
+      assert.ok(density[0]>=0 && density[1]>density[0] && density[2]>0 && density[2]<=1);
+      assert.ok(distance[0]>=density[1] && distance[1]>distance[0]);
+      continue;
+    }
     assert.ok(COUPURES.indexOf(k) < 0, 'aucune clé de coupure à distance : ' + chemin + '.' + k);
     sansCoupure(o[k], chemin + '.' + k);
   }
@@ -52,14 +60,14 @@ verifier('normalisation : valeurs inconnues, anciennes et casse tolérées', () 
 });
 
 verifier('anciens réglages et valeurs corrompues gardent les options du profil', () => {
-  const herite = { anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil' };
+  const herite = { anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil' };
   for (const valeur of [undefined, null, {}, { qualite: 'high' }, { anticrenelage: true, ombres: 3, vegetation: 'dense?' }]) {
     assert.deepEqual(G.normaliserOptions(valeur), herite);
   }
   const existant = { qualite: 'medium', anticrenelage: ' MSAA4 ', ombres: 'HIGH', vegetation: ' Ultra ' };
   const avant = JSON.stringify(existant);
   const normalise = G.normaliserOptions(existant);
-  assert.deepEqual(normalise, { anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra' });
+  assert.deepEqual(normalise, { anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra', faune: 'profil' });
   assert.equal(JSON.stringify(existant), avant, 'la lecture ne réécrit pas les préférences enregistrées');
   assert.ok(Object.isFrozen(normalise));
   for (const cle of Object.keys(G.OPTIONS)) for (const valeur of G.OPTIONS[cle]) {

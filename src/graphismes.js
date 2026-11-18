@@ -13,6 +13,16 @@
     anticrenelage: Object.freeze(['profil', 'off', 'msaa4']),
     ombres: Object.freeze(['profil', 'off', 'medium', 'high']),
     vegetation: Object.freeze(['profil', 'off', 'low', 'medium', 'high', 'ultra']),
+    faune: Object.freeze(['profil', 'off', 'low', 'medium', 'high', 'ultra']),
+  });
+
+  // Le détail sous-pixel se fond dans le sol : les plafonds manuels restent indépendants du profil général.
+  // Auto peut alléger ce rendu sans rebâtir la prairie ni retirer des arbres/obstacles en cours de course.
+  const PRAIRIE = Object.freeze({
+    low: Object.freeze({ density: Object.freeze([7, 24, .125]), distance: Object.freeze([55, 100]) }),
+    medium: Object.freeze({ density: Object.freeze([10, 35, .125]), distance: Object.freeze([80, 160]) }),
+    high: Object.freeze({ density: Object.freeze([18, 60, .125]), distance: Object.freeze([140, 250]) }),
+    ultra: Object.freeze({ density: Object.freeze([25, 90, .125]), distance: Object.freeze([250, 420]) }),
   });
 
   // ---------------------------------------------------------------- bornes du moteur (à ne pas dépasser)
@@ -224,12 +234,15 @@
     const ancre = estPalier(g.decor) ? g.decor : p.palier;
     const decorProfil = PROFILS[ancre];
     const vegetationQualite = options.vegetation === 'profil' ? (decorProfil.decor.vegetation ? ancre : 'off') : options.vegetation;
+    const detailPrairie = options.vegetation === 'profil' ? p.palier : vegetationQualite;
+    const faune = options.faune === 'profil' ? (p.palier === 'low' ? 'off' : p.palier) : options.faune;
     const glaces = effets.retroImages ? p.secondaires.retroviseurs.glaces : 0;
     const hz = effets.retroImages ? p.secondaires.retroviseurs.hz : 0;
 
     return figer({
       palier: p.palier, libelle: p.libelle, qualite: q,
       rendu, effets,
+      faune, groundCover: PRAIRIE[detailPrairie] || PRAIRIE.low, windStrength: 1,
       decor: { matieres: decorProfil.decor.matieres, vegetation: vegetationQualite !== 'off', vegetationQualite },
       // Le module ne produit jamais de portée de culling : le moteur coupe par fondu (decor.js:674, portee Infinity).
       lod: { bascule: p.lod.bascule },
@@ -331,7 +344,7 @@
   }
 
   B.graphismes = {
-    PALIERS, QUALITES, OPTIONS, PROFILS, TABLE_GOUVERNEUR, NIVEAU_MAX, RESOLUTION_PALIER_4, STABILISATION, RECONSTRUCTION,
+    PALIERS, QUALITES, OPTIONS, PROFILS, PRAIRIE, TABLE_GOUVERNEUR, NIVEAU_MAX, RESOLUTION_PALIER_4, STABILISATION, RECONSTRUCTION,
     normaliser, normaliserOptions, estPalier, profil, resoudre, capacites, melange, budget, budgets, stabiliser, etatStable,
     atmosphere, BRUME,
   };

@@ -1,10 +1,10 @@
 {
-  "version": "0.2.31",
-  "raw": 13025697,
-  "gzip": 3010188,
-  "sha256": "7b20b827f870428ce0bd310dc6f1270d68b6282ef56e7b1b27bd5df8ff160599",
+  "version": "0.2.32",
+  "raw": 13075203,
+  "gzip": 3025129,
+  "sha256": "99f404b8df5dd6dc520545c79d572cd8af0254a71bd7e19a18a125909110b86b",
   "sources": {
-    "moteur/renderer.js": 231729,
+    "moteur/renderer.js": 239226,
     "ferro/engine.js": 2024,
     "ferro/physx-runtime.js": 12063280,
     "ferro/physx.js": 12834,
@@ -18,8 +18,9 @@
     "course.js": 43375,
     "son.js": 27105,
     "botanique.js": 13682,
-    "vegetation.js": 32257,
-    "decor.js": 52594,
+    "vegetation.js": 35007,
+    "decor.js": 64187,
+    "faune.js": 18981,
     "carene.js": 16443,
     "humain-donnees.js": 4559,
     "humain-corps.js": 3116,
@@ -32,9 +33,10 @@
     "reseau.js": 15157,
     "mesures.js": 11599,
     "qualite.js": 1936,
-    "graphismes.js": 21255,
-    "jeu.js": 175395,
-    "index.html": 40041,
+    "graphismes.js": 22306,
+    "ambiance.js": 2726,
+    "jeu.js": 178070,
+    "index.html": 42189,
     "style.css": 43012
   }
 }

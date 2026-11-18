@@ -1,0 +1,41 @@
+{
+  "controle_utc": "2026-11-18T09:38:33.244801+00:00",
+  "version": "0.2.32",
+  "octets": 13075203,
+  "sha256": "99f404b8df5dd6dc520545c79d572cd8af0254a71bd7e19a18a125909110b86b",
+  "blob_git": "36ed05cc0c61080583911a73b956619fd2f4225a",
+  "double_construction_meme_sha256": true,
+  "log_construction_reproduite": "construction-reproduite.log",
+  "radios_avant_depart_et_reglages": {
+    "momentDepart": [
+      "jour",
+      "crepuscule",
+      "nuit",
+      "cycle"
+    ],
+    "moment": [
+      "jour",
+      "crepuscule",
+      "nuit",
+      "cycle"
+    ]
+  },
+  "signature_enregistrer_preservee": true,
+  "suites_integration": {
+    "scheduled": 49,
+    "finished": 49,
+    "passed": 49,
+    "failed": 0
+  },
+  "sources_modifiees_apres_49_suites": [
+    "src/vegetation.js"
+  ],
+  "qualification_separee": "vegetation-final.log et vegetation-verification.json, 16 controles sur vegetation.js finale",
+  "ferro_lock_cles": [
+    "format",
+    "version",
+    "reference",
+    "game",
+    "modules"
+  ]
+}

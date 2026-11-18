@@ -1,0 +1,401 @@
+{
+  "protocole": "Node CPU uniquement : vrais circuits/décors, végétation off, création paresseuse de surfaceHerbe comprise ; aucun rendu ni FPS GPU.",
+  "circuits": [
+    {
+      "theme": "foret",
+      "creationMs": 1310.774468,
+      "vegetation": null,
+      "positions": [
+        {
+          "s": 591.08,
+          "tunnel": false,
+          "min": 8.932295592224003,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 992.1700000000001,
+          "tunnel": false,
+          "min": 8.965256466915031,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 1393.26,
+          "tunnel": false,
+          "min": 8.574623473246023,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 1794.3500000000001,
+          "tunnel": false,
+          "min": 8.44184984545176,
+          "proches15m": 11,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 2195.44,
+          "tunnel": false,
+          "min": 8.469690004509605,
+          "proches15m": 11,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 2596.5299999999997,
+          "tunnel": false,
+          "min": 8.629013015545473,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 2997.6200000000003,
+          "tunnel": false,
+          "min": 8.822079746719528,
+          "proches15m": 9,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 3398.71,
+          "tunnel": false,
+          "min": 8.706119098280336,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        }
+      ],
+      "habitats": 1536
+    },
+    {
+      "theme": "cote",
+      "creationMs": 858.7008100000003,
+      "vegetation": null,
+      "positions": [
+        {
+          "s": 509.32000000000005,
+          "tunnel": false,
+          "min": 8.512579228911354,
+          "proches15m": 9,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 854.9300000000001,
+          "tunnel": false,
+          "min": 9.069941635441456,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 1200.54,
+          "tunnel": false,
+          "min": 8.406152694626046,
+          "proches15m": 9,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 31.666666666666668
+        },
+        {
+          "s": 1546.15,
+          "tunnel": false,
+          "min": 8.640031450757016,
+          "proches15m": 9,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 1891.76,
+          "tunnel": false,
+          "min": 8.686902853738479,
+          "proches15m": 9,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 2237.37,
+          "tunnel": false,
+          "min": 8.479726332474641,
+          "proches15m": 11,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 2582.9800000000005,
+          "tunnel": false,
+          "min": 9.100210267362389,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 2928.59,
+          "tunnel": false,
+          "min": 8.47602194297282,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        }
+      ],
+      "habitats": 1536
+    },
+    {
+      "theme": "montagne",
+      "creationMs": 871.2045810000004,
+      "vegetation": null,
+      "positions": [
+        {
+          "s": 730.2400000000001,
+          "tunnel": false,
+          "min": 8.6495684682552,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 1225.76,
+          "tunnel": false,
+          "min": 8.635173801952472,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 1721.28,
+          "tunnel": false,
+          "min": 8.493262138046752,
+          "proches15m": 9,
+          "habitats90m": 47,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 2216.8,
+          "tunnel": false,
+          "min": 9.065277120306813,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 2712.32,
+          "tunnel": false,
+          "min": 8.477104623337663,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 31
+        },
+        {
+          "s": 3207.84,
+          "tunnel": false,
+          "min": 8.779423977355842,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 3703.3600000000006,
+          "tunnel": false,
+          "min": 8.718893386409798,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        },
+        {
+          "s": 4198.88,
+          "tunnel": false,
+          "min": 8.50110537282572,
+          "proches15m": 8,
+          "habitats90m": 48,
+          "abeilles": 32,
+          "insectes": 16,
+          "abeilles15m": 32
+        }
+      ],
+      "habitats": 1536
+    }
+  ],
+  "cpu": [
+    {
+      "qualite": "off",
+      "nuit": 0,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "habitats": 0,
+      "requetes": 80,
+      "p50ms": 0.00014000000010128133,
+      "p95ms": 0.0002600000002530578,
+      "maxMs": 0.024077000000033877
+    },
+    {
+      "qualite": "low",
+      "nuit": 0,
+      "abeilles": 2,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 10,
+      "habitats": 48,
+      "requetes": 260,
+      "p50ms": 0.001261999999769614,
+      "p95ms": 0.005137000000104308,
+      "maxMs": 1.260917999999947
+    },
+    {
+      "qualite": "medium",
+      "nuit": 0,
+      "abeilles": 5,
+      "insectes": 3,
+      "lucioles": 0,
+      "objets": 34,
+      "habitats": 48,
+      "requetes": 440,
+      "p50ms": 0.0027440000003480236,
+      "p95ms": 0.006879999999910069,
+      "maxMs": 0.16556900000023234
+    },
+    {
+      "qualite": "high",
+      "nuit": 0,
+      "abeilles": 12,
+      "insectes": 8,
+      "lucioles": 0,
+      "objets": 84,
+      "habitats": 48,
+      "requetes": 615,
+      "p50ms": 0.0050369999999020365,
+      "p95ms": 0.009494000000358938,
+      "maxMs": 0.10901400000011563
+    },
+    {
+      "qualite": "ultra",
+      "nuit": 0,
+      "abeilles": 32,
+      "insectes": 16,
+      "lucioles": 0,
+      "objets": 208,
+      "habitats": 48,
+      "requetes": 785,
+      "p50ms": 0.011727999999948224,
+      "p95ms": 0.016816000000289932,
+      "maxMs": 0.9420680000002903
+    },
+    {
+      "qualite": "off",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 0,
+      "objets": 0,
+      "habitats": 0,
+      "requetes": 785,
+      "p50ms": 5.000000010113581e-05,
+      "p95ms": 6.100000018705032e-05,
+      "maxMs": 0.03499299999975847
+    },
+    {
+      "qualite": "low",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 6,
+      "objets": 12,
+      "habitats": 48,
+      "requetes": 956,
+      "p50ms": 0.0018129999998564017,
+      "p95ms": 0.00607899999977235,
+      "maxMs": 0.12187300000005052
+    },
+    {
+      "qualite": "medium",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 16,
+      "objets": 32,
+      "habitats": 48,
+      "requetes": 1127,
+      "p50ms": 0.004206999999951222,
+      "p95ms": 0.008132000000387052,
+      "maxMs": 0.4451699999999619
+    },
+    {
+      "qualite": "high",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 64,
+      "objets": 128,
+      "habitats": 48,
+      "requetes": 1297,
+      "p50ms": 0.013150000000223372,
+      "p95ms": 0.028001999999560212,
+      "maxMs": 0.14695199999960096
+    },
+    {
+      "qualite": "ultra",
+      "nuit": 1,
+      "abeilles": 0,
+      "insectes": 0,
+      "lucioles": 256,
+      "objets": 512,
+      "habitats": 48,
+      "requetes": 1468,
+      "p50ms": 0.05487199999970471,
+      "p95ms": 0.09513300000025993,
+      "maxMs": 2.91451700000016
+    }
+  ]
+}

@@ -195,6 +195,14 @@
         <label><input type="radio" name="meteo" value="pluie"><span>Pluie</span></label>
         <label><input type="radio" name="meteo" value="variable"><span>Variable</span></label>
       </fieldset>
+      <fieldset id="o-moment" aria-describedby="p-moment-note">
+        <legend>Moment de la course</legend>
+        <label><input type="radio" name="momentDepart" value="jour"><span>Jour</span></label>
+        <label><input type="radio" name="momentDepart" value="crepuscule"><span>Crépuscule</span></label>
+        <label><input type="radio" name="momentDepart" value="nuit"><span>Nuit</span></label>
+        <label><input type="radio" name="momentDepart" value="cycle"><span>Cycle jour / nuit</span></label>
+        <p class="note-graphismes" id="p-moment-note">Cycle de six minutes. Les lucioles nocturnes sont propres à Haut-Col.</p>
+      </fieldset>
       <fieldset id="o-pneus">
         <legend>Pneus</legend>
         <label><input type="radio" name="pneus" value="slicks"><span>Slicks</span></label>
@@ -304,8 +312,26 @@
         <label><input type="radio" name="vegetation" value="low"><span>Légère</span></label>
         <label><input type="radio" name="vegetation" value="medium"><span>Moyenne</span></label>
         <label><input type="radio" name="vegetation" value="high"><span>Dense</span></label>
-        <label><input type="radio" name="vegetation" value="ultra"><span>Très dense</span></label>
-        <p class="note-graphismes" id="note-vegetation">Herbes, fougères et fleurs. Appliquée à la prochaine course.</p>
+        <label><input type="radio" name="vegetation" value="ultra"><span>Extrême</span></label>
+        <p class="note-graphismes" id="note-vegetation">Prairies, fougères et fleurs sur les sols herbeux. Extrême maximise la densité. Appliquée à la prochaine course.</p>
+      </fieldset>
+      <fieldset aria-describedby="note-faune">
+        <legend>Insectes et lucioles</legend>
+        <label><input type="radio" name="faune" value="profil"><span>Selon qualité</span></label>
+        <label><input type="radio" name="faune" value="off"><span>Désactivés</span></label>
+        <label><input type="radio" name="faune" value="low"><span>Discrets</span></label>
+        <label><input type="radio" name="faune" value="medium"><span>Modérés</span></label>
+        <label><input type="radio" name="faune" value="high"><span>Nombreux</span></label>
+        <label><input type="radio" name="faune" value="ultra"><span>Foisonnants</span></label>
+        <p class="note-graphismes" id="note-faune">Abeilles et insectes le jour. Lucioles dans les prairies de Haut-Col à la nuit tombée.</p>
+      </fieldset>
+      <fieldset aria-describedby="note-moment">
+        <legend>Moment de la course</legend>
+        <label><input type="radio" name="moment" value="jour"><span>Jour</span></label>
+        <label><input type="radio" name="moment" value="crepuscule"><span>Crépuscule</span></label>
+        <label><input type="radio" name="moment" value="nuit"><span>Nuit</span></label>
+        <label><input type="radio" name="moment" value="cycle"><span>Cycle jour / nuit</span></label>
+        <p class="note-graphismes" id="note-moment">Cycle de six minutes. À Haut-Col, la nuit fait apparaître les lucioles.</p>
       </fieldset>
       <fieldset>
         <legend>Manette</legend>
