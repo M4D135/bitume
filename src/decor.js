@@ -672,6 +672,74 @@
     liste.push({ shape: 'box', collision: 'muret', p: vers(cote * (w + 6.2), 1.2), s: [longueur + 30, .2, .54], r: rot, mat: 16, color: [.86, .12, .08] });
   }
 
+  // ---------------------------------------------------------------- lots d'arbres (Moyenne et Fine)
+  // Un lot historique tient 150 m de piste et tous les arbres à moins de 330 m : sa sphère atteint 280 m de rayon à
+  // Val-Brûlé et 320 m à Haut-Col, et la version détaillée y vaut pour tous ses arbres jusqu'à 520 m au-delà de sa
+  // surface, à 800 m de l'œil et plus. Les
+  // arbres prennent donc des cases de 60 m (une case plus petite bascule plus juste mais ajoute des appels de
+  // dessin), et chaque case bascule sur la taille projetée de ses arbres, mesurée pour un champ vertical de 60° sur
+  // 1 080 pixels (le moteur l'adapte au champ et à la hauteur réels, rétroviseurs compris) : à BASCULE_ARBRES mètres
+  // de sa sphère, un feuillu moyen (7 m) fait au plus 82 pixels de haut et le plus grand pin (11,7 m) 137. Aucun
+  // arbre ne bascule plus grand que PIXELS_BASCULE : une case dont un arbre dépasse 12,8 m (grands conifères,
+  // géants de Cap-Séquoia jusqu'à 47 m) recule sa bascule d'autant, jusqu'à près de 300 m. À cette taille la forme
+  // lointaine garde pied, couronne et amas de la proche ; seuls les rameaux s'allègent. Aucune portée : rien ne se
+  // coupe à distance, la version lointaine reste dessinée jusqu'au plan lointain.
+  // Arbres isolés : une case de 60 m sur deux ne porte qu'un ou deux arbres, et un lot coûte un appel de dessin par
+  // forme et par passe quel que soit son nombre d'arbres. Une case de moins de ARBRES_EPARS arbres rejoint donc la
+  // case éparse de CASE_EPARSE mètres (quatre cases) qui la contient : peu d'arbres, qui basculent plus tôt du côté
+  // proche de la sphère et plus tard de l'autre, jamais plus près.
+  const CASE_ARBRES = 60, BASCULE_ARBRES = 80, PIXELS_BASCULE = 150, ARBRES_EPARS = 3, CASE_EPARSE = 2 * CASE_ARBRES;
+  const reculGeant = hauteur => hauteur * 1080 / (2 * Math.tan(Math.PI / 6) * PIXELS_BASCULE);
+  const basculeCase = (hauteur, base = BASCULE_ARBRES) => Math.max(base, reculGeant(hauteur));
+  function lotsImage(lots, cases, objetsArbres) {
+    // Le mobilier garde ses lots, leurs sphères et leurs bascules : seuls les arbres en sortent.
+    const sortie = [];
+    for (const l of lots) {
+      const objets = l.objets.filter(o => !objetsArbres.has(o)), loin = l.loin.filter(o => !objetsArbres.has(o));
+      if (objets.length === l.objets.length && loin.length === l.loin.length) sortie.push(l);
+      else if (objets.length) sortie.push(Object.assign({}, l, { objets, loin }));
+    }
+    // Cases denses telles quelles, cases éparses regroupées, dans l'ordre où leur premier arbre est apparu.
+    const groupes = [], eparses = new Map();
+    for (const [cle, c] of cases) {
+      if (c.objets.filter(o => o.collision === 'tronc').length >= ARBRES_EPARS) { groupes.push(c); continue; }
+      const [i, j] = cle.split(',').map(Number), grande = Math.floor(i / 2) + ',' + Math.floor(j / 2);
+      let e = eparses.get(grande);
+      if (!e) { eparses.set(grande, e = { objets: [], loin: [] }); groupes.push(e); }
+      e.objets.push(...c.objets); e.loin.push(...c.loin);
+    }
+    for (const c of groupes) {
+      // Centre de la boîte des positions (et non leur moyenne) : la sphère la plus juste décide de la bascule.
+      const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
+      for (const o of c.objets) for (let k = 0; k < 3; k++) { min[k] = Math.min(min[k], o.p[k]); max[k] = Math.max(max[k], o.p[k]); }
+      const mx = (min[0] + max[0]) / 2, my = (min[1] + max[1]) / 2, mz = (min[2] + max[2]) / 2;
+      let rayon = 0, hauteur = 0;
+      for (const o of c.objets.concat(c.loin)) rayon = Math.max(rayon, Math.hypot(o.p[0] - mx, o.p[1] - my, o.p[2] - mz) + Math.hypot(o.s[0], o.s[1], o.s[2]) / 2);
+      // Le tronc porte 84 % de la hauteur de son arbre (arbre(), géants compris).
+      for (const o of c.objets) if (o.collision === 'tronc') hauteur = Math.max(hauteur, o.s[1] / .84);
+      sortie.push({ objets: c.objets, loin: c.loin, centre: [mx, my, mz], rayon, portee: Infinity, bascule: basculeCase(hauteur),
+        lodReferenceFov: 60, lodReferenceHeight: 1080, arbres: true, hauteurArbres: hauteur });
+    }
+    return sortie;
+  }
+  // Distance de bascule des lots d'arbres (mètres à 60° et 1 080 pixels, BASCULE_ARBRES par défaut), à poser sur
+  // decor.lots ou sur la copie du moteur des rétroviseurs ; le moteur relit lot.bascule à chaque image. La case d'un
+  // géant garde son recul (PIXELS_BASCULE). Rend le nombre de lots réglés.
+  function basculeArbres(lots, metres) {
+    if (!Array.isArray(lots) || !Number.isFinite(metres) || metres <= 0) return 0;
+    let n = 0;
+    for (const l of lots) if (l && l.arbres === true) {
+      l.bascule = basculeCase(l.hauteurArbres || 0, metres); n++;
+    }
+    return n;
+  }
+  // Lots pour un second moteur (rétroviseurs) : copies sans tampons, comme celles que jeu.js donne à la glace. Avec
+  // { arbresLointains: true }, chaque lot d'arbres ne garde que sa version lointaine, à toute distance.
+  function lotsSecondMoteur(decor, options = {}) {
+    return (decor && decor.lots || []).map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null },
+      options.arbresLointains && l.arbres === true ? { objets: l.loin } : null));
+  }
+
   const HERBIERS = new WeakMap();
   function construire(c, options = {}) {
     const th = Object.assign({}, THEMES[c.theme] || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
@@ -937,6 +1005,22 @@
     // laisse des trouées, indépendamment du côté de route ; un arbre absent n'a pas de solide résiduel.
     const positionsArbres = [], sourcesFeuilles = [];
     const habitatArbre = {};
+    // Moyenne et Fine : chaque arbre retenu est aussi rangé dans sa case d'arbres, qui deviendra son lot d'image
+    // (voir lotsImage). Les lots historiques le gardent : solides et masques d'herbe n'en dépendent pas.
+    const casesArbres = qualite === 'low' ? null : new Map(), objetsArbres = new Set();
+    function rangerArbre(objets, loin, x, z) {
+      const cle = Math.floor(x / CASE_ARBRES) + ',' + Math.floor(z / CASE_ARBRES);
+      let l = casesArbres.get(cle); if (!l) casesArbres.set(cle, l = { objets: [], loin: [] });
+      for (const o of objets) { l.objets.push(o); objetsArbres.add(o); }
+      for (const o of loin) { l.loin.push(o); objetsArbres.add(o); }
+      // La version lointaine se montre dès 80 m de la sphère de la case sur une toile de 1 080 pixels (plus près sur
+      // une toile plus basse), où le tronc d'écorce fait encore quelques pixels de large : elle le garde, allégé
+      // (même pose, même matière, même couleur, aucune collision).
+      // Cap-Séquoia met déjà son tronc géant dans la version lointaine ; un arbre en blobs n'a pas d'écorce.
+      const tronc = objets.find(o => o.collision === 'tronc');
+      if (B.botanique && B.botanique.TRONC_LOINTAIN && tronc && tronc.mat === B.botanique.matiere('ecorce') && !loin.includes(tronc))
+        l.loin.push({ shape: B.botanique.TRONC_LOINTAIN, p: tronc.p.slice(), s: tronc.s.slice(), r: tronc.r.slice(), mat: tronc.mat, color: tronc.color.slice() });
+    }
     function retenirArbre(objets, loin, x, z) {
       const richesse = ecologie ? ecologie.echantillonner(x, z, habitatArbre).boisement : 1;
       if (!th.pacifique && (richesse < .08 || hache(Math.round(x * 8), Math.round(z * 8), g + 337) > richesse)) return;
@@ -950,6 +1034,7 @@
         }
       }
       ajouter(objets, loin, x, z); positionsArbres.push([x, z]);
+      if (casesArbres) rangerArbre(objets, loin, x, z);
     }
     let nombre = 0;
     const MAX = th.volcanique || th.aride || th.pacifique ? 0 : options.arbres === undefined ? (th.karstique ? 160 : 2600) : options.arbres;
@@ -1187,11 +1272,12 @@
       if (o.shape === 'cylinder') obstacles.push(Object.assign(commun, { type: 'circle', r: o.s[0]/2 }));
       else obstacles.push(Object.assign(commun, { type: 'box', angle: -(o.r ? o.r[1] : 0), hx: o.s[0]/2, hz: o.s[2]/2 }));
     }
+    const lotsDessin = casesArbres ? lotsImage(lots, casesArbres, objetsArbres) : lots;
     const atmosphereBase = Object.assign({ outdoorZones: [{ x: 0, z: 0, w: 1e7, d: 1e7 }] }, th.atmosphere);
     const atmosphere = saison ? B.saisons.atmosphere(saison, atmosphereBase) : atmosphereBase;
     // enceinte : portion de la ligne droite bordée de tribunes et de stands (abscisses comptées depuis la ligne) ; une
     // caméra de bord de piste s'y place devant eux, pas derrière la glissière où elle serait dans les gradins.
-    const decor = { nappes: nappes.concat(terrain.liste), lots, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
+    const decor = { nappes: nappes.concat(terrain.liste), lots: lotsDessin, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
     let herbier = null;
@@ -1236,7 +1322,10 @@
           if (lot.loin[i]) lot.loin[i].color = couleur;
         }
       }
+      // Les masques d'herbe ouverts plus tard relisent `lots`, qui reçoit donc les massifs ; les lots d'image les
+      // reçoivent aussi, à la fin.
       lots.push(...v.lots);
+      if (lotsDessin !== lots) lotsDessin.push(...v.lots);
       decor.vegetation = { herbes: v.herbes, fougeres: v.fougeres, fleurs: v.fleurs, taillis: v.taillis,
         lots: v.lots.length, qualite: v.qualite,
         brins: v.brins, tuiles: v.tuiles, brinsTapis: v.brinsTapis, objetsHerbe: v.objetsHerbe,
@@ -1250,5 +1339,6 @@
     return decor;
   }
 
-  B.decor = { construire, THEMES, angles, base, limites, hauteurRoute, cadre };
+  B.decor = { construire, THEMES, angles, base, limites, hauteurRoute, cadre, CASE_ARBRES, BASCULE_ARBRES, PIXELS_BASCULE,
+    ARBRES_EPARS, CASE_EPARSE, basculeArbres, lotsSecondMoteur };
 })(globalThis.BITUME = globalThis.BITUME || {});
