@@ -1,0 +1,432 @@
+{
+ "date": "2026-11-18",
+ "note": "Node v24.18.0, décor de verifications (sans végétation enrichie du navigateur) ; temps médians sur 9 poses, une construction de décor par cas",
+ "circuits": [
+  {
+   "id": "Val-Brûlé",
+   "longueur": 4222,
+   "dangers": [
+    {
+     "type": "fosse",
+     "cote": "D",
+     "debut": 513,
+     "fin": 713
+    },
+    {
+     "type": "arbres",
+     "cote": "G",
+     "debut": 1172,
+     "fin": 1360
+    },
+    {
+     "type": "arbres",
+     "cote": "D",
+     "debut": 1724,
+     "fin": 1924
+    },
+    {
+     "type": "arbres",
+     "cote": "G",
+     "debut": 2846,
+     "fin": 3070
+    }
+   ],
+   "limitesTouchees": 137,
+   "marques": 9,
+   "bandeaux": 65,
+   "series": 16,
+   "bandeauxParKm": 15.4,
+   "affiches": 3,
+   "passerelles": 1,
+   "low": {
+    "objetsBords": 422,
+    "solidesBords": 40,
+    "objetsDecorAvant": 14132,
+    "objetsDecorApres": 14502,
+    "hausse": 2.6,
+    "lotsAvant": 32,
+    "lotsApres": 54,
+    "solidesAvant": 3241,
+    "solidesApres": 3281,
+    "poseMs": 0.21,
+    "decorAvantMs": 70.4,
+    "decorApresMs": 62.4
+   },
+   "high": {
+    "objetsBords": 864,
+    "solidesBords": 40,
+    "objetsDecorAvant": 14132,
+    "objetsDecorApres": 14944,
+    "hausse": 5.7,
+    "lotsAvant": 32,
+    "lotsApres": 54,
+    "solidesAvant": 3241,
+    "solidesApres": 3281,
+    "poseMs": 0.28,
+    "decorAvantMs": 56.9,
+    "decorApresMs": 59.2
+   },
+   "planMs": 0.26
+  },
+  {
+   "id": "Port-Sable",
+   "longueur": 3638,
+   "dangers": [
+    {
+     "type": "vide",
+     "cote": "G",
+     "debut": 1302,
+     "fin": 1478
+    },
+    {
+     "type": "muret",
+     "cote": "D",
+     "debut": 1957,
+     "fin": 2157
+    }
+   ],
+   "limitesTouchees": 268,
+   "marques": 12,
+   "bandeaux": 99,
+   "series": 22,
+   "bandeauxParKm": 27.2,
+   "affiches": 4,
+   "passerelles": 1,
+   "low": {
+    "objetsBords": 302,
+    "solidesBords": 0,
+    "objetsDecorAvant": 13803,
+    "objetsDecorApres": 14007,
+    "hausse": 1.5,
+    "lotsAvant": 28,
+    "lotsApres": 47,
+    "solidesAvant": 3166,
+    "solidesApres": 3166,
+    "poseMs": 0.14,
+    "decorAvantMs": 65.2,
+    "decorApresMs": 62
+   },
+   "high": {
+    "objetsBords": 1029,
+    "solidesBords": 0,
+    "objetsDecorAvant": 13803,
+    "objetsDecorApres": 14734,
+    "hausse": 6.7,
+    "lotsAvant": 28,
+    "lotsApres": 47,
+    "solidesAvant": 3166,
+    "solidesApres": 3166,
+    "poseMs": 0.26,
+    "decorAvantMs": 58.2,
+    "decorApresMs": 57.6
+   },
+   "planMs": 0.18
+  },
+  {
+   "id": "Haut-Col",
+   "longueur": 5216,
+   "dangers": [
+    {
+     "type": "rochers",
+     "cote": "G",
+     "debut": 2357,
+     "fin": 2557
+    },
+    {
+     "type": "muret",
+     "cote": "G",
+     "debut": 3543,
+     "fin": 3743
+    },
+    {
+     "type": "vide",
+     "cote": "G",
+     "debut": 4332,
+     "fin": 4526
+    }
+   ],
+   "limitesTouchees": 276,
+   "marques": 9,
+   "bandeaux": 89,
+   "series": 20,
+   "bandeauxParKm": 17.1,
+   "affiches": 8,
+   "passerelles": 1,
+   "low": {
+    "objetsBords": 324,
+    "solidesBords": 15,
+    "objetsDecorAvant": 18304,
+    "objetsDecorApres": 18526,
+    "hausse": 1.2,
+    "lotsAvant": 101,
+    "lotsApres": 125,
+    "solidesAvant": 2979,
+    "solidesApres": 2994,
+    "poseMs": 0.13,
+    "decorAvantMs": 72.6,
+    "decorApresMs": 66.7
+   },
+   "high": {
+    "objetsBords": 1009,
+    "solidesBords": 15,
+    "objetsDecorAvant": 18304,
+    "objetsDecorApres": 19211,
+    "hausse": 5,
+    "lotsAvant": 101,
+    "lotsApres": 125,
+    "solidesAvant": 2979,
+    "solidesApres": 2994,
+    "poseMs": 0.17,
+    "decorAvantMs": 66.1,
+    "decorApresMs": 67.7
+   },
+   "planMs": 0.14
+  },
+  {
+   "id": "Lande-Noire",
+   "longueur": 4616,
+   "dangers": [
+    {
+     "type": "fosse",
+     "cote": "G",
+     "debut": 1620,
+     "fin": 1820
+    },
+    {
+     "type": "rochers",
+     "cote": "G",
+     "debut": 2225,
+     "fin": 2425
+    },
+    {
+     "type": "rochers",
+     "cote": "G",
+     "debut": 2833,
+     "fin": 3033
+    },
+    {
+     "type": "vide",
+     "cote": "D",
+     "debut": 3582,
+     "fin": 3790
+    }
+   ],
+   "limitesTouchees": 280,
+   "marques": 10,
+   "bandeaux": 62,
+   "series": 16,
+   "bandeauxParKm": 13.4,
+   "affiches": 6,
+   "passerelles": 1,
+   "low": {
+    "objetsBords": 379,
+    "solidesBords": 32,
+    "objetsDecorAvant": 7858,
+    "objetsDecorApres": 8131,
+    "hausse": 3.5,
+    "lotsAvant": 31,
+    "lotsApres": 53,
+    "solidesAvant": 973,
+    "solidesApres": 1005,
+    "poseMs": 0.14,
+    "decorAvantMs": 54.8,
+    "decorApresMs": 39.2
+   },
+   "high": {
+    "objetsBords": 839,
+    "solidesBords": 32,
+    "objetsDecorAvant": 7858,
+    "objetsDecorApres": 8591,
+    "hausse": 9.3,
+    "lotsAvant": 31,
+    "lotsApres": 53,
+    "solidesAvant": 973,
+    "solidesApres": 1005,
+    "poseMs": 0.28,
+    "decorAvantMs": 36.6,
+    "decorApresMs": 39.5
+   },
+   "planMs": 0.12
+  },
+  {
+   "id": "Roche-Fauve",
+   "longueur": 4834,
+   "dangers": [
+    {
+     "type": "rochers",
+     "cote": "D",
+     "debut": 757,
+     "fin": 957
+    },
+    {
+     "type": "rochers",
+     "cote": "G",
+     "debut": 2203,
+     "fin": 2403
+    },
+    {
+     "type": "fosse",
+     "cote": "D",
+     "debut": 2727,
+     "fin": 2927
+    }
+   ],
+   "limitesTouchees": 137,
+   "marques": 9,
+   "bandeaux": 72,
+   "series": 18,
+   "bandeauxParKm": 14.9,
+   "affiches": 7,
+   "passerelles": 1,
+   "low": {
+    "objetsBords": 364,
+    "solidesBords": 33,
+    "objetsDecorAvant": 7049,
+    "objetsDecorApres": 7361,
+    "hausse": 4.4,
+    "lotsAvant": 33,
+    "lotsApres": 57,
+    "solidesAvant": 965,
+    "solidesApres": 998,
+    "poseMs": 0.15,
+    "decorAvantMs": 49.2,
+    "decorApresMs": 43.6
+   },
+   "high": {
+    "objetsBords": 868,
+    "solidesBords": 33,
+    "objetsDecorAvant": 7049,
+    "objetsDecorApres": 7865,
+    "hausse": 11.6,
+    "lotsAvant": 33,
+    "lotsApres": 57,
+    "solidesAvant": 965,
+    "solidesApres": 998,
+    "poseMs": 0.24,
+    "decorAvantMs": 43.1,
+    "decorApresMs": 45.9
+   },
+   "planMs": 0.19
+  },
+  {
+   "id": "Brume-de-Jade",
+   "longueur": 5018,
+   "dangers": [
+    {
+     "type": "arbres",
+     "cote": "G",
+     "debut": 1540,
+     "fin": 1740
+    },
+    {
+     "type": "muret",
+     "cote": "D",
+     "debut": 2628,
+     "fin": 2756
+    },
+    {
+     "type": "muret",
+     "cote": "D",
+     "debut": 3331,
+     "fin": 3531
+    }
+   ],
+   "limitesTouchees": 246,
+   "marques": 8,
+   "bandeaux": 115,
+   "series": 26,
+   "bandeauxParKm": 22.9,
+   "affiches": 8,
+   "passerelles": 1,
+   "low": {
+    "objetsBords": 392,
+    "solidesBords": 13,
+    "objetsDecorAvant": 8058,
+    "objetsDecorApres": 8364,
+    "hausse": 3.8,
+    "lotsAvant": 34,
+    "lotsApres": 60,
+    "solidesAvant": 931,
+    "solidesApres": 944,
+    "poseMs": 0.09,
+    "decorAvantMs": 88.7,
+    "decorApresMs": 77.8
+   },
+   "high": {
+    "objetsBords": 1242,
+    "solidesBords": 13,
+    "objetsDecorAvant": 8058,
+    "objetsDecorApres": 9214,
+    "hausse": 14.3,
+    "lotsAvant": 34,
+    "lotsApres": 60,
+    "solidesAvant": 931,
+    "solidesApres": 944,
+    "poseMs": 0.2,
+    "decorAvantMs": 77,
+    "decorApresMs": 80.4
+   },
+   "planMs": 0.1
+  },
+  {
+   "id": "Cap-Séquoia",
+   "longueur": 5234,
+   "dangers": [
+    {
+     "type": "muret",
+     "cote": "D",
+     "debut": 1429,
+     "fin": 1629
+    },
+    {
+     "type": "arbres",
+     "cote": "G",
+     "debut": 2789,
+     "fin": 2989
+    },
+    {
+     "type": "vide",
+     "cote": "G",
+     "debut": 4524,
+     "fin": 4684
+    }
+   ],
+   "limitesTouchees": 260,
+   "marques": 10,
+   "bandeaux": 119,
+   "series": 27,
+   "bandeauxParKm": 22.7,
+   "affiches": 10,
+   "passerelles": 1,
+   "low": {
+    "objetsBords": 440,
+    "solidesBords": 13,
+    "objetsDecorAvant": 8142,
+    "objetsDecorApres": 8488,
+    "hausse": 4.2,
+    "lotsAvant": 41,
+    "lotsApres": 70,
+    "solidesAvant": 968,
+    "solidesApres": 981,
+    "poseMs": 0.15,
+    "decorAvantMs": 55.1,
+    "decorApresMs": 54.5
+   },
+   "high": {
+    "objetsBords": 1308,
+    "solidesBords": 13,
+    "objetsDecorAvant": 8142,
+    "objetsDecorApres": 9356,
+    "hausse": 14.9,
+    "lotsAvant": 41,
+    "lotsApres": 70,
+    "solidesAvant": 968,
+    "solidesApres": 981,
+    "poseMs": 0.27,
+    "decorAvantMs": 60,
+    "decorApresMs": 48.8
+   },
+   "planMs": 0.11
+  }
+ ]
+}

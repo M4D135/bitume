@@ -1,0 +1,98 @@
+{
+ "date": "2026-11-18",
+ "outil": "tools/banc-navigateur.mjs --mode banc --duree 20 --circuit 6 (Cap-Séquoia, le circuit où les bords ajoutent le plus d objets)",
+ "conditions": "Chrome sans interface, rendu logiciel SwiftShader (ANGLE Vulkan), 1390×1295, départ à 280 m, vue cockpit, rétroviseurs en Fine ; les deux pages construites depuis le même arbre, avec et sans integration.patch",
+ "avertissement": "Rendu logiciel : les temps d image (imageP50ms) ne qualifient pas un GPU réel et ne se comparent pas. Seuls les appels de dessin et les triangles par image sont comparables. Le critère du projet (p95 ≤ 16,7 ms, pire ≤ 29 ms sur le Mac, volet visible) reste à mesurer.",
+ "suite": {
+  "commande": "for t in verifications/*.test.mjs; do node \"$t\" > /dev/null 2>&1 || echo ECHEC $t; done",
+  "etatCommite": "68 fichiers, 0 échec (sans le patch)",
+  "avecPatch": "69 fichiers, 0 échec (avec integration.patch, retouche de cameraSol comprise, et verifications/bords-integration.test.mjs : 15 vérifications)"
+ },
+ "passages": [
+  {
+   "page": "avec bords (integration.patch)",
+   "qualite": "high",
+   "passage": 1,
+   "images": 29,
+   "imageP50ms": 666.7,
+   "appelsParImage": 265.5,
+   "trianglesParImage": 494390,
+   "retroAppelsParImage": 219.3,
+   "retroTrianglesParImage": 443840,
+   "erreurs": 0,
+   "octetsPage": 13268163,
+   "sha256": "3e31fede67c62e41a0a117349f8b155a2c1ff219ca44c6db2d62692831e4eee5"
+  },
+  {
+   "page": "avec bords (integration.patch)",
+   "qualite": "high",
+   "passage": 2,
+   "images": 29,
+   "imageP50ms": 683.3,
+   "appelsParImage": 267.1,
+   "trianglesParImage": 498502,
+   "retroAppelsParImage": 221.9,
+   "retroTrianglesParImage": 450249,
+   "erreurs": 0,
+   "octetsPage": 13268163,
+   "sha256": "3e31fede67c62e41a0a117349f8b155a2c1ff219ca44c6db2d62692831e4eee5"
+  },
+  {
+   "page": "sans bords",
+   "qualite": "high",
+   "passage": 1,
+   "images": 32,
+   "imageP50ms": 633.4,
+   "appelsParImage": 262.2,
+   "trianglesParImage": 500639,
+   "retroAppelsParImage": 211.4,
+   "retroTrianglesParImage": 439986,
+   "erreurs": 0,
+   "octetsPage": 13238037,
+   "sha256": "08c66416548a7703fccb5874f0018874d81e93c82b8db5dc6771b2eb0fcf968a"
+  },
+  {
+   "page": "sans bords",
+   "qualite": "high",
+   "passage": 2,
+   "images": 30,
+   "imageP50ms": 683.3,
+   "appelsParImage": 266.9,
+   "trianglesParImage": 498929,
+   "retroAppelsParImage": 216.5,
+   "retroTrianglesParImage": 441888,
+   "erreurs": 0,
+   "octetsPage": 13238037,
+   "sha256": "08c66416548a7703fccb5874f0018874d81e93c82b8db5dc6771b2eb0fcf968a"
+  },
+  {
+   "page": "avec bords (integration.patch)",
+   "qualite": "low",
+   "passage": 1,
+   "images": 54,
+   "imageP50ms": 383.3,
+   "appelsParImage": 226.8,
+   "trianglesParImage": 277656,
+   "retroAppelsParImage": 0,
+   "retroTrianglesParImage": 0,
+   "erreurs": 0,
+   "octetsPage": 13268163,
+   "sha256": "3e31fede67c62e41a0a117349f8b155a2c1ff219ca44c6db2d62692831e4eee5"
+  },
+  {
+   "page": "sans bords",
+   "qualite": "low",
+   "passage": 1,
+   "images": 56,
+   "imageP50ms": 366.6,
+   "appelsParImage": 228.9,
+   "trianglesParImage": 278923,
+   "retroAppelsParImage": 0,
+   "retroTrianglesParImage": 0,
+   "erreurs": 0,
+   "octetsPage": 13238037,
+   "sha256": "08c66416548a7703fccb5874f0018874d81e93c82b8db5dc6771b2eb0fcf968a"
+  }
+ ],
+ "note": "Pages construites avant que le patch ne reçoive la retouche de cameraSol (jeu.js, une ligne : caméra au sol de la démo tenue devant les murets) ; sans effet en vue cockpit, donc sur ces comptes."
+}

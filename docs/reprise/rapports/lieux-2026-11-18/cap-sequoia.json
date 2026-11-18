@@ -1,0 +1,147 @@
+{
+ "id": "cap-sequoia",
+ "nom": "Cap-Séquoia",
+ "theme": "pacifique",
+ "mesures": {
+  "longueur": 5872,
+  "denivele": 47.3,
+  "altitudeMin": -47.3,
+  "altitudeMax": 0,
+  "penteMax": 6.51,
+  "penteMin": -3,
+  "longueurAu10": 0,
+  "longueurAu20": 0,
+  "rayonMin": 65,
+  "partDroite": 0.61,
+  "virages": 1,
+  "separation": "au moins 60 m",
+  "separationOu": null,
+  "chargeMin": 0.62,
+  "chargeMinOu": 5792.11,
+  "chargeMax": 1.32,
+  "chargeMaxOu": 5076.1,
+  "tourP9": 91.69,
+  "tourP10": 91.61,
+  "couverts": 2,
+  "longueurCouverte": 240,
+  "ponts": 1,
+  "bords": 4
+ },
+ "problemes": [],
+ "lieux": [
+  {
+   "n": 1,
+   "nom": "Bosquet des Géants",
+   "debut": 260,
+   "fin": 1440,
+   "court": "esses entre les troncs de séquoias, passage sous le Tronc couché"
+  },
+  {
+   "n": 2,
+   "nom": "Corniche du Pacifique",
+   "debut": 3606,
+   "fin": 4829,
+   "court": "route en balcon à 100 m au-dessus de l'océan, muret bas, contre-dévers"
+  },
+  {
+   "n": 3,
+   "nom": "Pont de l'Anse",
+   "debut": 4829,
+   "fin": 5049,
+   "court": "arc de béton ajouré au-dessus de l'embouchure, la plage 60 m plus bas"
+  },
+  {
+   "n": 4,
+   "nom": "Tunnel de la Pointe",
+   "debut": 3227,
+   "fin": 3606,
+   "court": "on entre dans la roche face à la forêt, on sort face à l'océan"
+  }
+ ],
+ "couverts": [
+  {
+   "nom": "Le Tronc couché",
+   "type": "arche",
+   "debut": 1186,
+   "fin": 1236,
+   "longueur": 50
+  },
+  {
+   "nom": "Tunnel de la Pointe",
+   "type": "tunnel",
+   "debut": 3227,
+   "fin": 3417,
+   "longueur": 190
+  }
+ ],
+ "ponts": [
+  {
+   "nom": "Pont de l'Anse",
+   "type": "arc",
+   "debut": 4829,
+   "fin": 5049
+  }
+ ],
+ "bords": [
+  {
+   "nom": "Troncs des Géants",
+   "type": "arbres",
+   "cote": "D",
+   "debut": 1028,
+   "fin": 1095
+  },
+  {
+   "nom": "Troncs des Géants (ouest)",
+   "type": "arbres",
+   "cote": "G",
+   "debut": 1095,
+   "fin": 1186
+  },
+  {
+   "nom": "Troncs des Géants (sud)",
+   "type": "arbres",
+   "cote": "D",
+   "debut": 1236,
+   "fin": 1322
+  },
+  {
+   "nom": "Corniche du Pacifique",
+   "type": "vide",
+   "cote": "G",
+   "debut": 3606,
+   "fin": 4829
+  }
+ ],
+ "croisements": [],
+ "fermeture": {
+  "angleAjuste": -10,
+  "allongements": [
+   [
+    2,
+    371
+   ],
+   [
+    8,
+    433
+   ],
+   [
+    10,
+    436
+   ],
+   [
+    22,
+    0
+   ],
+   [
+    24,
+    0
+   ]
+  ]
+ },
+ "tunnelDuJeu": {
+  "debut": 3228,
+  "fin": 3418,
+  "mur": 7.6,
+  "hauteur": 6.4
+ }
+}

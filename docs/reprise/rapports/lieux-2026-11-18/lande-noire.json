@@ -1,0 +1,143 @@
+{
+ "id": "lande-noire",
+ "nom": "Lande-Noire",
+ "theme": "islande",
+ "mesures": {
+  "longueur": 4624,
+  "denivele": 33.85,
+  "altitudeMin": -8.46,
+  "altitudeMax": 25.39,
+  "penteMax": 4.35,
+  "penteMin": -4,
+  "longueurAu10": 0,
+  "longueurAu20": 0,
+  "rayonMin": 50,
+  "partDroite": 0.67,
+  "virages": 1,
+  "separation": "au moins 60 m",
+  "separationOu": null,
+  "chargeMin": 0.66,
+  "chargeMinOu": 4532.79,
+  "chargeMax": 1.34,
+  "chargeMaxOu": 4332.76,
+  "tourP9": 73.61,
+  "tourP10": 73.51,
+  "couverts": 1,
+  "longueurCouverte": 249.81,
+  "ponts": 1,
+  "bords": 5
+ },
+ "problemes": [],
+ "lieux": [
+  {
+   "n": 1,
+   "nom": "La Faille",
+   "debut": 3034,
+   "fin": 3658,
+   "court": "la piste au fond d'un rift entre deux murs de basalte, pont sur une fissure d'eau claire"
+  },
+  {
+   "n": 2,
+   "nom": "Les Geysers",
+   "debut": 1297,
+   "fin": 2123,
+   "court": "plateau fumant, la vapeur traverse la piste, un geyser jaillit à heure fixe"
+  },
+  {
+   "n": 3,
+   "nom": "La Coulée",
+   "debut": 417,
+   "fin": 847,
+   "court": "tranchée dans la lave noire, blocs au bord, fissure rougeoyante la nuit"
+  },
+  {
+   "n": 4,
+   "nom": "Virage de la Cascade",
+   "debut": 2818,
+   "fin": 2914,
+   "court": "la chute sur les orgues de basalte, vue du virage"
+  }
+ ],
+ "couverts": [
+  {
+   "nom": "Tube de lave",
+   "type": "tunnel",
+   "debut": 847,
+   "fin": 1097,
+   "longueur": 250
+  }
+ ],
+ "ponts": [
+  {
+   "nom": "Pont de la Fissure",
+   "type": "basalte",
+   "debut": 3558,
+   "fin": 3658
+  }
+ ],
+ "bords": [
+  {
+   "nom": "Blocs de la Coulée",
+   "type": "rochers",
+   "cote": "G",
+   "debut": 417,
+   "fin": 617
+  },
+  {
+   "nom": "Blocs de la Coulée (est)",
+   "type": "rochers",
+   "cote": "D",
+   "debut": 417,
+   "fin": 617
+  },
+  {
+   "nom": "Rebord de la Cascade",
+   "type": "vide",
+   "cote": "D",
+   "debut": 2818,
+   "fin": 2914
+  },
+  {
+   "nom": "Murs de la Faille",
+   "type": "rochers",
+   "cote": "G",
+   "debut": 3034,
+   "fin": 3454
+  },
+  {
+   "nom": "Murs de la Faille (est)",
+   "type": "rochers",
+   "cote": "D",
+   "debut": 3034,
+   "fin": 3454
+  }
+ ],
+ "croisements": [],
+ "fermeture": {
+  "angleAjuste": 0,
+  "allongements": [
+   [
+    9,
+    117
+   ],
+   [
+    12,
+    195
+   ],
+   [
+    19,
+    167
+   ],
+   [
+    21,
+    0
+   ]
+  ]
+ },
+ "tunnelDuJeu": {
+  "debut": 848,
+  "fin": 1098,
+  "mur": 7.6,
+  "hauteur": 6.4
+ }
+}

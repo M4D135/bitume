@@ -1,0 +1,196 @@
+{
+ "id": "haut-col",
+ "nom": "Haut-Col",
+ "theme": "montagne",
+ "mesures": {
+  "longueur": 9618,
+  "denivele": 270.58,
+  "altitudeMin": 0,
+  "altitudeMax": 270.58,
+  "penteMax": 30,
+  "penteMin": -10,
+  "longueurAu10": 468.03,
+  "longueurAu20": 290.02,
+  "rayonMin": 32,
+  "partDroite": 0.54,
+  "virages": 5,
+  "separation": "au moins 60 m",
+  "separationOu": null,
+  "chargeMin": 0.55,
+  "chargeMinOu": 2698.19,
+  "chargeMax": 1.7,
+  "chargeMaxOu": 9312.67,
+  "tourP9": 167.36,
+  "tourP10": 168.51,
+  "couverts": 3,
+  "longueurCouverte": 774.72,
+  "ponts": 1,
+  "bords": 7
+ },
+ "problemes": [],
+ "lieux": [
+  {
+   "n": 1,
+   "nom": "Le Bois Noir",
+   "debut": 790,
+   "fin": 2174,
+   "court": "forêt dense de sapins, esses en montée, troncs à 3 m du bord"
+  },
+  {
+   "n": 2,
+   "nom": "Le Mur",
+   "debut": 2344,
+   "fin": 2824,
+   "court": "rampe droite, près de 300 m au-delà de 20 % et une pointe à 30 %, après la gauche lente de la Scierie"
+  },
+  {
+   "n": 3,
+   "nom": "Les Lacets",
+   "debut": 2824,
+   "fin": 4007,
+   "court": "trois épingles empilées, murs de pierre sèche entre les branches"
+  },
+  {
+   "n": 4,
+   "nom": "Le Balcon du Cirque",
+   "debut": 4511,
+   "fin": 5478,
+   "court": "corniche taillée dans la paroi, grand virage, le vide à gauche"
+  },
+  {
+   "n": 5,
+   "nom": "Col de l'Aiglière",
+   "debut": 5478,
+   "fin": 5989,
+   "court": "replat sommital, lac, refuge, galerie paravalanche"
+  },
+  {
+   "n": 6,
+   "nom": "Pont de la Gorge",
+   "debut": 7865,
+   "fin": 7995,
+   "court": "arche de pierre au-dessus de la gorge, cascade en aval"
+  },
+  {
+   "n": 7,
+   "nom": "Virage du Vide",
+   "debut": 8523,
+   "fin": 8719,
+   "court": "gauche convexe, contre-dévers, parapet bas au-dessus de la vallée"
+  }
+ ],
+ "couverts": [
+  {
+   "nom": "Tunnel du Rocher",
+   "type": "tunnel",
+   "debut": 4207,
+   "fin": 4511,
+   "longueur": 305
+  },
+  {
+   "nom": "Galerie des Avalanches",
+   "type": "galerie",
+   "debut": 5989,
+   "fin": 6289,
+   "longueur": 300
+  },
+  {
+   "nom": "Tunnel des Échelles",
+   "type": "tunnel",
+   "debut": 6463,
+   "fin": 6633,
+   "longueur": 170
+  }
+ ],
+ "ponts": [
+  {
+   "nom": "Pont de la Gorge",
+   "type": "arche",
+   "debut": 7865,
+   "fin": 7995
+  }
+ ],
+ "bords": [
+  {
+   "nom": "Sapins du Bois Noir",
+   "type": "arbres",
+   "cote": "D",
+   "debut": 790,
+   "fin": 970
+  },
+  {
+   "nom": "Sapins du Bois Noir",
+   "type": "arbres",
+   "cote": "G",
+   "debut": 1146,
+   "fin": 1366
+  },
+  {
+   "nom": "Sapins du Bois Noir",
+   "type": "arbres",
+   "cote": "D",
+   "debut": 1766,
+   "fin": 2026
+  },
+  {
+   "nom": "Murs des Lacets",
+   "type": "muret",
+   "cote": "D",
+   "debut": 3339,
+   "fin": 3569
+  },
+  {
+   "nom": "Murs des Lacets",
+   "type": "muret",
+   "cote": "G",
+   "debut": 3670,
+   "fin": 3900
+  },
+  {
+   "nom": "Balcon du Cirque",
+   "type": "vide",
+   "cote": "G",
+   "debut": 4511,
+   "fin": 5478
+  },
+  {
+   "nom": "Virage du Vide",
+   "type": "vide",
+   "cote": "D",
+   "debut": 8523,
+   "fin": 8719
+  }
+ ],
+ "croisements": [],
+ "fermeture": {
+  "angleAjuste": 0,
+  "allongements": [
+   [
+    2,
+    0
+   ],
+   [
+    40,
+    -50
+   ],
+   [
+    47,
+    0
+   ],
+   [
+    49,
+    19
+   ],
+   [
+    51,
+    0
+   ]
+  ]
+ },
+ "tunnelDuJeu": {
+  "debut": 4206,
+  "fin": 4512,
+  "mur": 7.6,
+  "hauteur": 6.4
+ }
+}

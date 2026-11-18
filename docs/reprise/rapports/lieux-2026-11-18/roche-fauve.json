@@ -1,0 +1,116 @@
+{
+ "id": "roche-fauve",
+ "nom": "Roche-Fauve",
+ "theme": "desert",
+ "mesures": {
+  "longueur": 4698,
+  "denivele": 61.72,
+  "altitudeMin": -35.61,
+  "altitudeMax": 26.11,
+  "penteMax": 12,
+  "penteMin": -9,
+  "longueurAu10": 202.03,
+  "longueurAu20": 0,
+  "rayonMin": 70,
+  "partDroite": 0.6,
+  "virages": 0,
+  "separation": "au moins 60 m",
+  "separationOu": null,
+  "chargeMin": 0.67,
+  "chargeMinOu": 2316.38,
+  "chargeMax": 1.42,
+  "chargeMaxOu": 4606.76,
+  "tourP9": 74.93,
+  "tourP10": 76.35,
+  "couverts": 1,
+  "longueurCouverte": 80,
+  "ponts": 0,
+  "bords": 4
+ },
+ "problemes": [],
+ "lieux": [
+  {
+   "n": 1,
+   "nom": "L'Arche",
+   "debut": 1439,
+   "fin": 1602,
+   "court": "arche de grès rouge de 40 m au-dessus de la piste, vue de loin dans l'allée"
+  },
+  {
+   "n": 2,
+   "nom": "Le Canyon",
+   "debut": 1602,
+   "fin": 2321,
+   "court": "descente entre les strates, radier dans l'oued, rampe de sortie à 12 %"
+  },
+  {
+   "n": 3,
+   "nom": "L'Allée des Baobabs",
+   "debut": 583,
+   "fin": 1271,
+   "court": "600 m droits entre les baobabs, le soleil couchant dans l'axe"
+  },
+  {
+   "n": 4,
+   "nom": "Le Kopje",
+   "debut": 3038,
+   "fin": 3331,
+   "court": "esses entre les boules de granit, rochers à trois mètres du bord"
+  }
+ ],
+ "couverts": [
+  {
+   "nom": "Arche de Roche-Fauve",
+   "type": "arche",
+   "debut": 1439,
+   "fin": 1519,
+   "longueur": 80
+  }
+ ],
+ "ponts": [],
+ "bords": [
+  {
+   "nom": "Parois du Canyon",
+   "type": "rochers",
+   "cote": "D",
+   "debut": 1782,
+   "fin": 1866
+  },
+  {
+   "nom": "Parois du Canyon (nord)",
+   "type": "rochers",
+   "cote": "G",
+   "debut": 1866,
+   "fin": 1950
+  },
+  {
+   "nom": "Boules du Kopje",
+   "type": "rochers",
+   "cote": "D",
+   "debut": 3038,
+   "fin": 3107
+  },
+  {
+   "nom": "Boules du Kopje (ouest)",
+   "type": "rochers",
+   "cote": "G",
+   "debut": 3107,
+   "fin": 3247
+  }
+ ],
+ "croisements": [],
+ "fermeture": {
+  "angleAjuste": 0,
+  "allongements": [
+   [
+    2,
+    -12
+   ],
+   [
+    20,
+    215
+   ]
+  ]
+ },
+ "tunnelDuJeu": null
+}
