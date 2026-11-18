@@ -1,5 +1,5 @@
 // Visière : simulation au pas de 1/30 s, dessin interpolé à chaque image ; même mouvement à 30, 60, 120 et
-// 144 Hz et pour une vue rendue à demi-cadence ; au sec ni mesure ni dessin ; définition figée par séance.
+// 144 Hz et pour une vue rendue à demi-cadence ; au sec ni mesure ni dessin ; définition qui suit les baisses de palier.
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -103,18 +103,50 @@ verifier('une goutte naît transparente puis apparaît en fondu', () => {
   }
   assert(alphas.every((a, i) => !i || a >= alphas[i - 1] - 1e-12) && alphas[alphas.length - 1] > .05, 'opacité croissante : ' + alphas.map(a => a.toFixed(3)));
 });
-verifier('définition figée par séance : un changement de palier ne réalloue pas la toile', () => {
+// La définition suit les baisses de palier (l'Auto allège, la toile redessinée à chaque image doit coûter moins
+// de pixels) et ignore les remontées en pleine course (pas de réallocation) ; le premier appel actif de la
+// séance la fixe, même au sec.
+verifier('définition : suit les baisses de palier, ignore les remontées jusqu’à la séance suivante', () => {
   const t = toile(1280, 720), e = V.creer(t.canvas), c = pluie('high'); c.dpr = 2;
   for (let i = 0; i < 120; i++) V.mettreAJour(e, 1 / 60, c);
   assert.equal(t.canvas.width, 1600); assert.equal(t.canvas.height, 900);
+  // Baisse sous la pluie : la toile rétrécit tout de suite.
   c.qualite = 'medium'; for (let i = 0; i < 600; i++) V.mettreAJour(e, 1 / 60, c);
-  assert.equal(t.canvas.width, 1600); assert(e.stats.gouttes <= V.BUDGETS.medium.gouttes, 'le palier règle toujours le nombre de gouttes');
+  assert.equal(t.canvas.width, 1280); assert.equal(t.canvas.height, 720);
+  assert(e.stats.gouttes <= V.BUDGETS.medium.gouttes, 'le palier règle toujours le nombre de gouttes');
+  // Remontée : ni réallocation ni définition plus fine, seulement plus de gouttes.
+  let tailles = 0; const largeur = Object.getOwnPropertyDescriptor(t.canvas, 'width');
+  Object.defineProperty(t.canvas, 'width', { get: () => largeur.value, set: v => { tailles++; largeur.value = v; }, configurable: true });
+  c.qualite = 'ultra'; for (let i = 0; i < 600; i++) V.mettreAJour(e, 1 / 60, c);
+  assert.equal(tailles, 0, 'aucune réallocation à la remontée'); assert.equal(t.canvas.width, 1280);
+  assert(e.stats.gouttes > V.BUDGETS.medium.gouttes, 'les gouttes suivent la remontée : ' + e.stats.gouttes);
+  Object.defineProperty(t.canvas, 'width', { value: largeur.value, writable: true, configurable: true });
   // La taille de la fenêtre reste suivie, avec la définition de la séance.
   t.etat.w = 1000; t.etat.h = 500; for (let i = 0; i < 4; i++) V.mettreAJour(e, 1 / 60, c);
-  assert.equal(t.canvas.width, 1250); assert.equal(t.canvas.height, 625);
-  // Nouvelle séance (effacer, appelé au lancement) : le palier courant redonne la définition.
-  V.effacer(e); for (let i = 0; i < 120; i++) V.mettreAJour(e, 1 / 60, c);
   assert.equal(t.canvas.width, 1000); assert.equal(t.canvas.height, 500);
+  // Nouvelle séance (effacer, appelé au lancement) : le palier courant redonne la définition.
+  c.qualite = 'high'; V.effacer(e); for (let i = 0; i < 120; i++) V.mettreAJour(e, 1 / 60, c);
+  assert.equal(t.canvas.width, 1250); assert.equal(t.canvas.height, 625);
+});
+verifier('définition : Auto passé d’ultra à Légère en pleine pluie, 2,0 Mpx ramenés à 0,92 Mpx', () => {
+  const t = toile(1280, 720), e = V.creer(t.canvas), c = pluie('ultra'); c.dpr = 2;
+  for (let i = 0; i < 240; i++) V.mettreAJour(e, 1 / 120, c);
+  assert(e.stats.pixels > 1.9e6, 'ultra plafonné à 2 Mpx : ' + e.stats.pixels);
+  c.qualite = 'low'; V.mettreAJour(e, PAS, c);
+  assert.equal(e.stats.pixels, 1280 * 720, 'la baisse réduit la toile dès le pas suivant');
+});
+verifier('définition : fixée au premier appel actif de la séance, même au sec', () => {
+  const t = toile(1280, 720), e = V.creer(t.canvas), c = pluie('medium'); c.dpr = 2; c.pluie = 0;
+  for (let i = 0; i < 300; i++) V.mettreAJour(e, 1 / 60, c);   // séance commencée au sec en Moyenne
+  c.qualite = 'ultra'; for (let i = 0; i < 300; i++) V.mettreAJour(e, 1 / 60, c);   // l'Auto remonte, toujours au sec
+  c.pluie = 1; for (let i = 0; i < 120; i++) V.mettreAJour(e, 1 / 60, c);   // première averse
+  assert.equal(t.canvas.width, 1280, 'la remontée au sec ne change pas la définition de la séance');
+  // Et l'inverse : séance commencée en Ultra au sec, palier tombé en Légère avant la première averse.
+  const t2 = toile(1280, 720), e2 = V.creer(t2.canvas), c2 = pluie('ultra'); c2.dpr = 2; c2.pluie = 0;
+  for (let i = 0; i < 300; i++) V.mettreAJour(e2, 1 / 60, c2);
+  c2.qualite = 'low'; for (let i = 0; i < 300; i++) V.mettreAJour(e2, 1 / 60, c2);
+  c2.pluie = 1; for (let i = 0; i < 120; i++) V.mettreAJour(e2, 1 / 60, c2);
+  assert.equal(t2.canvas.width, 1280, 'la baisse au sec vaut pour la première averse');
 });
 verifier('visière propre masquée sans réécrire le style à chaque image', () => {
   const t = toile(), ecritures = [];

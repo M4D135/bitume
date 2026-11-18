@@ -49,15 +49,20 @@
     for (let i = 0; i < e.gouttes.length; i++) e.gouttes[i].vivant = false;
     for (let i = 0; i < e.neige.length; i++) e.neige[i].vivant = false;
     e.stats.gouttes = e.stats.neige = 0; e.accumulateur = e.creditEau = e.creditNeige = 0;
-    e.dprPalier = null; // nouvelle séance : la définition sera reprise du palier courant
+    e.dprPalier = null; // nouvelle séance : le prochain appel actif reprend la définition du palier courant
   }
   function liberer(e) {
     if (!e || e.libere) return;
     effacer(e); e.canvas = null; e.contexte = null; e.libere = true;
   }
-  // La part du palier dans la définition est figée au premier pas de la séance : un changement de palier en
-  // course (qualité Auto) ne réalloue plus la toile, il ne change que le nombre de gouttes. Taille de fenêtre
-  // et devicePixelRatio restent suivis, avec le même plafond de pixels.
+  // La part du palier dans la définition ne fait que descendre pendant une séance : le premier appel actif la
+  // fixe, même au sec, et chaque baisse de palier (qualité Auto qui allège) la réduit aussitôt, puisque la visière
+  // se redessine à chaque image et que ses pixels coûtent justement sur la machine qui peine. Une remontée ne
+  // réalloue pas la toile en pleine course : elle ne rend que le nombre de gouttes, la définition revient à la
+  // séance suivante (effacer). Taille de fenêtre et devicePixelRatio restent suivis, avec le même plafond.
+  function suivrePalier(e, budget) {
+    e.dprPalier = e.dprPalier === null ? budget.dpr : Math.min(e.dprPalier, budget.dpr);
+  }
   function dimensionner(e, c, budget) {
     if (e.dprPalier === null) e.dprPalier = budget.dpr;
     const largeur = Math.max(1, Number(c.largeur) || e.canvas.clientWidth || e.largeur);
@@ -155,6 +160,7 @@
     if (!e || e.libere) return e ? e.stats : null;
     const c = contexte || {}, budget = BUDGETS[c.qualite] || BUDGETS.high;
     if (!e.contexte || c.actif === false || budget === BUDGETS.off) { effacer(e); return e.stats; }
+    suivrePalier(e, budget);
     if (!Number.isFinite(dt) || dt <= 0) return e.stats;
     e.accumulateur += Math.min(.25, dt);
     const vide = !e.stats.gouttes && !e.stats.neige;
@@ -180,7 +186,7 @@
     if (!e || e.libere || !e.contexte || !e.canvas) return false;
     const c = contexte || {}, budget = BUDGETS[c.qualite] || BUDGETS.high;
     if (budget === BUDGETS.off) return false;
-    dimensionner(e, c, budget); viderPixels(e);
+    suivrePalier(e, budget); dimensionner(e, c, budget); viderPixels(e);
     const ctx = e.contexte, x = e.largeur * .5, y = e.hauteur * .5;
     ctx.setTransform(e.dpr, 0, 0, e.dpr, 0, 0); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.globalAlpha = 1 / 255;
     ctx.strokeStyle = 'rgba(182,213,230,0.13)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, y - 9);
