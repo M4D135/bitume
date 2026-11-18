@@ -285,6 +285,8 @@
       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
       real: demo ? B.realisateur.creer(graineCourse) : null, planVu: null, suivie: 0, enchaine: false,
       fx: B.traces.creer(course.voitures.length, graineCourse),
+      // flammes et détonations d'échappement (lot 20) : hasard propre, tiré de la graine de la course
+      ech: B.echappement ? B.echappement.creer(course.voitures.length, graineCourse) : null,
       meteo: meteoInit, conditions,
       nature: { ambiance: B.ambiance.creer(sc.decor.atmosphere, i === 2), moment: B.ambiance.normaliser(conditions.moment),
         horlogeReelle: horlogePartagee(conditions.horlogeReelle), dateDepart: enl && Number.isFinite(enl.dateDepart) ? enl.dateDepart : null,
@@ -849,6 +851,7 @@
     synchroniserReplacement(S, ev);
     const tFx = S.banc ? performance.now() : 0;
     B.traces.pas(S.fx, co, S.cour, S.suivie || 0, DT, ev);
+    if (S.ech) B.echappement.pas(S.ech, co.voitures, co.horloge);
     if (S.banc) S.banc.effets += performance.now() - tFx;
     if (S.type === 'demo') traiterDemo(S, ev);
     else if (S.type !== 'vitrine') { traiter(S, ev); suivreJoueur(S); }
@@ -1952,6 +1955,8 @@
     }
     for (let k = S.iVoitures1, n = S.iEffets0; k < n; k++) if (devantGlace(sortie[k], axe, ox, oy, oz)) objets.push(sortie[k]);
     B.traces.dessiner(S.fx, objets, camR.pos, S.hEffets, axe, 0);
+    // flammes d'échappement des autres voitures, au même instant que la vue (la voiture suivie n'y montre que sa roue)
+    if (S.ech) B.echappement.dessiner(S.ech, objets, poses, S.tRendu, suivie.id);
     const R = OPTIONS_RETRO;
     R.roues = suivie.degats && suivie.degats.roues; R.casse = !!(suivie.etat.degats && suivie.etat.degats.casse);
     B.voiture.poserRetro(S.modeles[suivie.id], POSES_RENDU[suivie.id], objets, R);
@@ -2160,7 +2165,7 @@
       contexte.hauteur = canvas.height; contexte.aspect = canvas.width / Math.max(1, canvas.height);
       contexte.arriere = retroVoulu(S, vue, P);
       contexte.nuit = S.nature ? S.nature.ambiance.nuit : 0; contexte.pluie = meteo.pluie || 0;
-      B.animaux.dessiner(S.animaux, co.horloge - DT + clamp(S.acc, 0, DT), contexte, sortie);
+      B.animaux.dessiner(S.animaux, S.tRendu, contexte, sortie);
     }
     if (S.nature && B.effetsSaison && S.nature.saison && (S.nature.effetsSaison || S.nature.saison.feuilles || S.nature.saison.neige || meteo.neige)) {
       const nature = S.nature;
@@ -2243,6 +2248,8 @@
     S.iEffets0 = sortie.length; S.hEffets = B.traces.extrapolation(S.fx, S.retardImage);
     const tFx = (S.banc || B.mesures.actif) ? performance.now() : 0;
     B.traces.dessiner(S.fx, sortie, cam.pos, S.hEffets, axeCamera(cam, AXE_VUE), 0);
+    // flammes d'échappement (lot 20), à l'instant rendu des voitures ; en cockpit, pas celles de la voiture suivie
+    if (S.ech) B.echappement.dessiner(S.ech, sortie, poses, S.tRendu, vue === 'cockpit' ? suivie.id : -1);
     if (tFx) { const dFx = performance.now() - tFx; if (S.banc) S.banc.effets += dFx; if (B.mesures.actif) B.mesures.section('effets', dFx); }
     // uEffects.z colore tout l'écran : la rougeur suit seulement l'éclair du choc, jamais les dégâts persistants.
     const eclair = S.eclair || 0;
@@ -2289,6 +2296,8 @@
     sortie.turbo = et.turbo.reste > 0; sortie.vue = S.vue === 'cockpit' ? 'cockpit' : 'poursuite';
     sortie.muet = exterieur; sortie.tunnel = !exterieur && sousLaVoute(S.course.c, cam.pos);
   }
+  // écoute des claquements d'échappement par voiture (src/son.js, echappement) : entendue du cockpit, distance, angle
+  const ecouteEchappement = n => ({ dedans: new Uint8Array(n), distance: new Float64Array(n), angle: new Float64Array(n) });
   function majSon(S, cam, dtImage) {
     if (!son || !sonActif) return;
     // la voiture entendue de l'intérieur est celle que l'on suit de près : le joueur, ou celle du plan de la démo
@@ -2299,7 +2308,9 @@
     const rx2 = cam2 ? Math.cos(cam2.yaw) : 0, rz2 = cam2 ? Math.sin(cam2.yaw) : 0;
     sonRivaux.length = 0;
     const exterieur = VUES_DEHORS.has(S.vue), exterieur2 = S2 && VUES_DEHORS.has(S2.vue), micro = exterieur && S.type === 'demo';
+    const ec = S.ech && son.echappement ? (S.ecouteEch || (S.ecouteEch = creationTardive('ecouteEchappement', ecouteEchappement(co.voitures.length)))) : null;
     for (let k = 0; k < co.voitures.length; k++) {
+      if (ec) { ec.dedans[k] = (k === ks && !exterieur) || (k === k2 && !exterieur2) ? 1 : 0; ec.distance[k] = -1; }
       if (k === ks && !exterieur) continue;
       if (k === k2 && !exterieur2) continue;
       const p = poses[k], dx = p.x - cam.pos[0], dy = p.y - cam.pos[1], dz = p.z - cam.pos[2], d = Math.hypot(dx, dy, dz);
@@ -2319,6 +2330,7 @@
       const r = sonCandidats[k] || (sonCandidats[k] = creationTardive('son', {}));
       r.id = k; r.distance = micro ? 2 + distance * .06 : distance; r.angle = direction;
       r.regime = v.etat.regime; r.gaz = v.etat.gaz; r.vRel = vitesseRelative;
+      if (ec) { ec.distance[k] = r.distance; ec.angle[k] = r.angle; }
       sonRivaux.push(r);
     }
     etatSon.pause = ecran === 'pause';
@@ -2326,6 +2338,7 @@
     etatSon.joueur2 = cam2 ? sonJoueur2 : null;
     if (cam2) decrireMoteur(sonJoueur2, S2, co.voitures[k2], cam2);
     son.mettreAJour(etatSon, dtImage);
+    if (ec) son.echappement(S.ech.son, ec);
   }
 
   // ---------------------------------------------------------------- affichage de course
@@ -3153,6 +3166,7 @@
       // module : rien n'est appelé tant qu'elles n'existent pas).
       const attendreSi = r => { if (r && typeof r.then === 'function') attentes.push(Promise.resolve(r).catch(e => console.warn('BITUME : préparation d’un module', e))); };
       try { if (B.traces.prechauffer) attendreSi(B.traces.prechauffer(S.fx)); } catch (e) { console.warn('BITUME : préparation des traces', e); }
+      if (S.ech && son && son.echappement && !S.ecouteEch) S.ecouteEch = ecouteEchappement(n);
       try { if (son && son.preparer) attendreSi(son.preparer({ type: S.type, voitures: n, joueurs: S.locaux ? S.locaux.length : 0, circuit: S.i })); } catch (e) { console.warn('BITUME : préparation du son', e); }
     } finally { prepa.precharge = false; }
     return attentes;

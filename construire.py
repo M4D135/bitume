@@ -53,6 +53,7 @@ MODULES = [
     'voiture.js',
     'animaux.js',
     'traces.js',
+    'echappement.js',
     'realisateur.js',
     'meteo.js',
     'vitre.js',
