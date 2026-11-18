@@ -101,6 +101,7 @@
     };
     fx.alea = () => { tirer(fx, 1); return TIR[0]; };
     former(fx, ['acc']);
+    ECHEC = null;            // une séance neuve retente une fois la création du monde (voir pageDe)
     attendrePhysX(fx);
     return fx;
   }
@@ -367,7 +368,10 @@
   // chaque course sa naissance (scène, répartiteur, filtre) au premier débris, au moment du choc. Une séance s'y
   // attache à sa création, ou dès que le module PhysX est prêt (son décodage se fait en tâche de fond au démarrage) ;
   // elle en ressort à sa mort avec ses corps et ses dalles, et le monde attend la suivante.
-  let PAGE = null, ECHEC = null;   // PAGE : { X (module FPhysX), monde, seance, chaud } ; ECHEC : module qui a refusé
+  // PAGE : { X (module FPhysX), monde, seance, chaud }. ECHEC : module dont la création du monde a échoué pendant la
+  // séance en cours ; la séance n'insiste pas à chaque débris, mais la suivante retente une fois (creer l'oublie) :
+  // une panne passagère ne condamne pas toutes les courses de la page à la parabole.
+  let PAGE = null, ECHEC = null;
   function pageDe(X) {
     if (PAGE && PAGE.X === X) return PAGE;
     if (ECHEC === X) return null;

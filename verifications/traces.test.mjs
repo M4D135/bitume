@@ -3,13 +3,14 @@
 // Fluidité : formules d'attitude identiques à celles de B.voiture, temps de dessin continu, tri derrière la caméra.
 // L'absence d'allocation par image se vérifie à part (effets-allocation.test.mjs), dans un processus neuf.
 import { createRequire } from 'node:module';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
 const ici = path.dirname(fileURLToPath(import.meta.url));
 const charger = f => createRequire(import.meta.url)(path.join(ici, '..', 'src', f));
-for (const f of ['circuit.js', 'conduite.js', 'course.js', 'carene.js', 'main.js', 'voiture.js', 'traces.js']) charger(f);
+for (const f of ['circuit.js', 'conduite.js', 'degats.js', 'course.js', 'carene.js', 'main.js', 'voiture.js', 'traces.js']) charger(f);
 const B = globalThis.BITUME, T = B.traces, DT = 1 / 120;
 
 let compte = 0;
@@ -155,6 +156,55 @@ verifier('déterminisme : même graine, mêmes effets', () => {
     return JSON.stringify(sortie.map(o => [o.p, o.s, o.alpha]));
   };
   assert.equal(tirer(), tirer());
+});
+
+// Les tirages des effets sont groupés (tirer(fx, n)) pour que la passe n'alloue rien : leur ordre doit rester celui
+// du code d'avant, sans quoi la même course ne laisse plus les mêmes traces. L'empreinte ci-dessous a été prise une
+// fois avec le traces.js de 54e98c9 (avant la réécriture) sur ce scénario : glisse, herbe, glissière, sauts, pluie
+// forcée, contacts, roues, casses, panneaux et replacements. Elle couvre l'état de tous les pools, les indices de
+// remplissage, les tableaux par roue et les cinq tirages suivants. Le champ repos des pièces jamais lancées n'existait
+// pas avant (lu comme 0) : une valeur absente compte pour 0.
+verifier('déterminisme : mêmes effets et mêmes tirages que le code d’avant la réécriture (empreinte figée)', () => {
+  const R = 300, n = 12, voitures = [], poses = [];
+  for (let k = 0; k < n; k++) {
+    voitures.push({ id: k, couleur: [.1 + .05 * k, .2, .3], etat: { s: k * 9, d: 2, v: 32 + 2 * k, beta: .25 + .01 * k, bond: 0,
+      surface: k % 4 === 3 ? 'herbe' : 'piste', choc: 0, roues: [0, 1, 2, 3].map(r => ({ glisse: .3 + .7 * (((k + r) % 4) / 3) })) } });
+    poses.push({ x: 0, y: 0, z: 0, cap: 0, tangage: 0, roulis: 0 });
+  }
+  const co = { c: { longueur: 2 * Math.PI * R }, voitures };
+  const fx = T.creer(n, 20261118), eauAvant = B.conduite.eauSurPiste;
+  B.conduite.eauSurPiste = () => .6;
+  try {
+    for (let i = 0; i < 12 * 120; i++) {
+      for (let k = 0; k < n; k++) {
+        const et = voitures[k].etat, p = poses[k], a = et.s / R;
+        et.s += et.v * DT;
+        et.bond = (i + k) % 97 < 6 ? .05 : 0;
+        if (k % 3 === 0 && i % 180 < 40) et.choc = B.conduite.PARAMS.chocDuree;
+        p.x = R * Math.cos(a); p.z = R * Math.sin(a); p.y = .1 * Math.sin(a * 3);
+        p.cap = a + Math.PI / 2 + et.beta; p.tangage = .02 * Math.sin(i / 50 + k); p.roulis = -.03 * Math.cos(i / 70 + k);
+      }
+      let ev = null;
+      if (i % 50 === 7) ev = [{ type: 'contact', a: i % n, b: (i + 1) % n, force: 4 + i % 30 }];
+      else if (i % 300 === 120) { const k = (i / 300 | 0) % n; ev = [0, 1, 2, 3].map(w => ({ type: 'roue', roue: w, id: k })); ev.push({ type: 'casse', id: k, force: 40, cote: k % 2 ? 1 : -1, avant: k % 3 === 0 }); }
+      else if (i % 300 === 220) ev = [{ type: 'panneau', id: (i / 300 | 0) % n, cote: 1, avant: true }];
+      else if (i % 400 === 333) ev = [{ type: 'retour', id: 2, repositionnement: true }];
+      T.pas(fx, co, poses, 0, DT, ev);
+    }
+  } finally { B.conduite.eauSurPiste = eauAvant; }
+  const h = createHash('sha256'), f = new Float64Array(1), u = new Uint8Array(f.buffer);
+  const nombre = x => { f[0] = x === undefined ? 0 : +x; h.update(u); };
+  const champs = (liste, noms) => { for (const o of liste) for (const k of noms) nombre(o[k]); };
+  champs(fx.bandes, ['actif', 'age', 'a0', 'larg', 'roulis', 'x0', 'y0', 'z0', 'x1', 'y1', 'z1']);
+  for (const l of [fx.fumees, fx.etincelles, fx.embruns]) champs(l, ['actif', 'age', 'vie', 'x', 'y', 'z', 'vx', 'vy', 'vz', 'sol', 'taille', 'a0']);
+  champs(fx.debris, ['actif', 'age', 'x', 'y', 'z', 'vx', 'vy', 'vz', 'sol', 'spin', 'repos']);
+  for (const k of ['prochaine', 'prochaineFumee', 'prochaineEtincelle', 'prochainEmbrun', 'prochainDebris', 'acc']) nombre(fx[k]);
+  for (const t of [fx.pieces, fx.ouverte, fx.genOuverte, fx.valide, fx.dernier]) for (const x of t) nombre(x);
+  for (let k = 0; k < 5; k++) nombre(fx.alea());
+  const c = T.compter(fx);
+  assert.deepEqual([c.bandes, c.fumees, c.etincelles, c.debris, c.embruns], [512, 48, 48, 54, 160], 'tous les effets servent');
+  assert.equal(h.digest('hex'), '575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee',
+    'empreinte des effets différente de celle de 54e98c9 : ordre des tirages ou calcul des pools changé');
 });
 
 verifier('vraie course de 60 s : traces des voitures proches, rien ne casse', () => {

@@ -236,6 +236,28 @@ check('monde perdu : un pas PhysX qui échoue rend le monde, les pièces restent
     assert.equal(X.mondes.length, 2); assert.strictEqual(fx.monde, X.mondes[1]); assert.equal(X.mondes[1].corps.size, PIECES);
   } finally { delete globalThis.FPhysX; }
 });
+// Une création de monde qui échoue une fois (mémoire du module, contexte passager) ne doit couper PhysX que pour la
+// séance en cours : elle n'insiste pas à chaque débris, la suivante retente une fois.
+check('création refusée une fois : la séance garde ses paraboles sans insister, la suivante retente et roule en PhysX', () => {
+  let refus = 1, essais = 0;
+  const X = { mondes: [], isReady: () => true,
+    createWorld: () => { essais++; if (refus > 0) { refus--; throw new Error('mémoire du module'); } const w = fauxMonde(); X.mondes.push(w); return w; } };
+  globalThis.FPhysX = X;
+  try {
+    const co = courseDe(2), poses = posesDe(2), fx = B.traces.creer(2, 33);
+    assert.equal(fx.monde, null); assert.equal(essais, 1);
+    B.traces.pas(fx, co, poses, 0, DT, evements(1));
+    B.traces.pas(fx, co, poses, 0, DT, [{ type: 'roue', roue: 0, id: 1 }]);
+    assert.equal(essais, 1, 'la séance n insiste pas à chaque débris');
+    assert.equal(B.traces.compter(fx).corps, 0); assert.ok(B.traces.compter(fx).debris > 0, 'pièces en parabole');
+    B.traces.liberer(fx);
+    const g = B.traces.creer(2, 34);
+    assert.equal(essais, 2, 'la séance suivante retente'); assert.equal(X.mondes.length, 1); assert.strictEqual(g.monde, X.mondes[0]);
+    B.traces.pas(g, co, poses, 0, DT, evements(1));
+    assert.equal(X.mondes[0].corps.size, PIECES, 'ses pièces roulent dans PhysX');
+    B.traces.liberer(g);
+  } finally { delete globalThis.FPhysX; }
+});
 // Pose factice qui tourne autour de la verticale à omega rad/s (temps du monde) ; la pièce ne s'arrête pas tant que
 // `vitesse` n'est pas nulle. Rend les orientations dessinées à 0 et à 20 ms après la dernière pose, et l'angle vrai.
 function rotation(omega, graine) {
