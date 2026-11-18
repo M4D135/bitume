@@ -1,6 +1,8 @@
 // Lot 2 : pièces détachées sous budget, corps qui s'éteignent, libération sûre, dégâts persistants.
 // Les pièces roulent avec FPhysX en navigateur ; ici un faux monde tient la comptabilité des corps, ce qui ne
 // qualifie pas la physique du navigateur (le dit la fiche) mais bien la gestion des corps par le jeu.
+// Fluidité : un seul monde PhysX pour la page, chauffé à sa naissance, vidé (jamais détruit) d'une séance à l'autre ;
+// le vrai module FERRO est essayé à part (physx-monde.test.mjs).
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -44,6 +46,14 @@ function brancherPhysX(monde) {
   globalThis.FPhysX = { isReady: () => true, createWorld: () => monde };
   return () => { delete globalThis.FPhysX; };
 }
+// Module factice qui garde les mondes qu'il a créés ; fabrique() en rend un neuf à chaque création.
+function modulePhysX(fabrique = fauxMonde) {
+  const X = { mondes: [], isReady: () => true, createWorld: () => { const w = fabrique(); X.mondes.push(w); return w; } };
+  globalThis.FPhysX = X;
+  return X;
+}
+const PIECES = B.traces.PIECES_PAR_VOITURE;
+const dalles = fx => fx.sols.reduce((a, g) => a.concat(g.boites), []);
 
 // ------------------------------------------------------------------ budget de pièces
 check('budget : douze voitures en casse simultanée tiennent sous le plafond du pool', () => {
@@ -135,20 +145,132 @@ check('repos : une pièce encore en mouvement garde son corps', () => {
 });
 
 // ------------------------------------------------------------------ libération
-check('libération : corps retirés, monde détruit, effets éteints, plus rien ne bouge', () => {
+// Le monde n'est plus détruit avec la séance : il appartient à la page, qui le garde vide pour la suivante (un monde
+// par séance faisait payer à chaque course sa naissance au premier débris, au moment du choc). Ce qui ne doit pas
+// survivre à la séance, ce sont ses corps et ses dalles.
+check('libération : corps et dalles rendus, le monde de la page reste vide pour la suivante, effets éteints, plus rien ne bouge', () => {
   const monde = fauxMonde(), debrancher = brancherPhysX(monde);
   try {
     const fx = B.traces.creer(2, 13), co = courseDe(2), poses = posesDe(2);
     B.traces.pas(fx, co, poses, 0, DT, evements(2));
     assert.ok(monde.corps.size > 0 && monde.statiques.length > 0);
     B.traces.liberer(fx);
-    assert.equal(monde.corps.size, 0); assert.equal(monde.detruit, true);
+    assert.equal(monde.corps.size, 0); assert.equal(monde.statiques.length, 0);
+    assert.equal(monde.detruit, false); assert.strictEqual(B.traces.mondePage(), monde);
     assert.equal(fx.monde, null); assert.equal(fx.sols.length, 0);
     assert.equal(B.traces.compter(fx).debris + B.traces.compter(fx).bandes + B.traces.compter(fx).fumees + B.traces.compter(fx).etincelles, 0);
     B.traces.pas(fx, co, poses, 0, DT, evements(2));                                // plus rien ne doit vivre
     assert.equal(B.traces.compter(fx).debris, 0);
     B.traces.liberer(fx);                                                            // idempotent
   } finally { debrancher(); }
+});
+check('monde unique : les séances se suivent dans un seul monde, chauffé une fois, sans corps ni dalle de l une chez l autre', () => {
+  const X = modulePhysX();
+  try {
+    const co = courseDe(2), poses = posesDe(2), a = B.traces.creer(2, 20), monde = X.mondes[0];
+    assert.equal(X.mondes.length, 1); assert.strictEqual(a.monde, monde);
+    assert.equal(monde.pas, 10, 'chauffé à sa naissance'); assert.equal(monde.corps.size, 0); assert.equal(monde.statiques.length, 0);
+    B.traces.pas(a, co, poses, 0, DT, evements(2));
+    const corpsA = [...monde.corps.keys()];
+    assert.equal(corpsA.length, 2 * PIECES); assert.ok(monde.statiques.length > 0);
+    B.traces.liberer(a);
+    assert.equal(monde.corps.size, 0); assert.equal(monde.statiques.length, 0);
+    const b = B.traces.creer(2, 21);
+    assert.equal(X.mondes.length, 1, 'aucun monde neuf'); assert.strictEqual(b.monde, monde); assert.equal(monde.pas, 10, 'une seule chauffe pour la page');
+    for (const v of co.voitures) v.etat.s += 3000;
+    B.traces.pas(b, co, poses, 0, DT, evements(2));
+    assert.equal(monde.corps.size, 2 * PIECES); assert.ok([...monde.corps.keys()].every(id => !corpsA.includes(id)));
+    assert.deepEqual(monde.statiques, dalles(b), 'les seules dalles de la séance en cours');
+    // une séance qui en remplace une autre sans qu'on l'ait libérée (essais, perte de contexte) prend le monde vide
+    const c = B.traces.creer(2, 22);
+    assert.equal(b.monde, null); assert.strictEqual(c.monde, monde);
+    assert.equal(monde.corps.size, 0); assert.equal(monde.statiques.length, 0); assert.ok(b.debris.every(d => d.corps === 0));
+    B.traces.pas(c, co, poses, 0, DT, evements(1));
+    const n = monde.corps.size;
+    B.traces.liberer(b);                                                             // libérée trop tard : sans effet sur c
+    assert.equal(monde.corps.size, n); assert.ok(n > 0); assert.deepEqual(monde.statiques, dalles(c));
+    B.traces.liberer(c);
+    assert.equal(monde.corps.size, 0); assert.equal(monde.statiques.length, 0); assert.equal(X.mondes.length, 1); assert.equal(monde.detruit, false);
+  } finally { delete globalThis.FPhysX; }
+});
+check('préchauffage : une boîte lancée sur une dalle 5 km sous le circuit, puis plus rien ; la séance n en voit rien', () => {
+  const X = modulePhysX();
+  try {
+    const co = courseDe(1), poses = posesDe(1), fx = B.traces.creer(1, 23), monde = X.mondes[0];
+    B.traces.pas(fx, co, poses, 0, DT, evements(1));
+    assert.equal(B.traces.prechauffer(fx), false, 'pièces en vol : les pas de chauffe les feraient avancer');
+    for (const id of monde.corps.keys()) monde.vitesses.set(id, [0, 0, 0]);
+    for (let k = 0; k < 90; k++) B.traces.pas(fx, co, poses, 0, DT, []);
+    assert.equal(monde.corps.size, 0); assert.ok(fx.sols.length > 0);
+    const instantane = () => JSON.stringify({ d: fx.debris, b: fx.bandes, f: fx.fumees, e: fx.etincelles, m: fx.embruns, sols: fx.sols, pieces: [...fx.pieces], acc: fx.acc, graine: fx.graine[0] });
+    const avant = instantane(), statiques = JSON.stringify(monde.statiques), pas0 = monde.pas, ids0 = monde.next, vues = [];
+    const poser = monde.setStatics;
+    monde.setStatics = l => { vues.push(l); poser(l); };
+    assert.equal(B.traces.prechauffer(fx), true);
+    assert.equal(B.traces.prechauffer(), true, 'sans séance donnée : le monde de la page et sa séance');
+    monde.setStatics = poser;
+    assert.equal(instantane(), avant, 'pièces, effets, dalles et tirage de la séance intacts');
+    assert.equal(JSON.stringify(monde.statiques), statiques, 'les dalles de la séance sont remises');
+    assert.equal(monde.corps.size, 0); assert.equal(monde.next - ids0, 2, 'une boîte par chauffe'); assert.equal(monde.pas - pas0, 20);
+    assert.ok(vues[0].length === 1 && vues[0][0].center[1] < -4000, 'la chauffe se fait loin sous le circuit');
+    delete globalThis.FPhysX;
+    assert.equal(B.traces.prechauffer(B.traces.creer(1, 24)), false, 'PhysX absent : rien à chauffer');
+    assert.equal(B.traces.prechauffer(), false);
+  } finally { delete globalThis.FPhysX; }
+});
+check('monde perdu : un pas PhysX qui échoue rend le monde, les pièces restent dessinées, le débris suivant en a un neuf', () => {
+  let panne = false;
+  const X = modulePhysX(() => { const w = fauxMonde(), pas = w.step; w.step = h => { if (panne) throw new Error('mémoire du module'); pas(h); }; return w; });
+  try {
+    const co = courseDe(1), poses = posesDe(1), fx = B.traces.creer(1, 27), m1 = X.mondes[0];
+    B.traces.pas(fx, co, poses, 0, DT, evements(1));
+    assert.equal(m1.corps.size, PIECES);
+    panne = true;
+    for (let k = 0; k < 4; k++) B.traces.pas(fx, co, poses, 0, DT, []);           // une passe à 30 Hz
+    assert.equal(fx.monde, null); assert.equal(m1.detruit, true); assert.equal(B.traces.mondePage(), null);
+    const vivants = B.traces.compter(fx);
+    assert.equal(vivants.debris, PIECES); assert.equal(vivants.corps, 0);
+    for (const d of fx.debris) if (d.actif) assert.ok(Number.isFinite(d.x + d.y + d.z));
+    panne = false; fx.pieces[0] = 0;
+    B.traces.pas(fx, co, poses, 0, DT, evements(1));
+    assert.equal(X.mondes.length, 2); assert.strictEqual(fx.monde, X.mondes[1]); assert.equal(X.mondes[1].corps.size, PIECES);
+  } finally { delete globalThis.FPhysX; }
+});
+// Pose factice qui tourne autour de la verticale à omega rad/s (temps du monde) ; la pièce ne s'arrête pas tant que
+// `vitesse` n'est pas nulle. Rend les orientations dessinées à 0 et à 20 ms après la dernière pose, et l'angle vrai.
+function rotation(omega, graine) {
+  const X = modulePhysX(() => {
+    const w = fauxMonde(), pas = w.step; w.t = 0; w.vitesse = [6, 0, 6];
+    w.step = h => { pas(h); w.t += h; };
+    w.readPose = id => { const e = w.corps.get(id); if (!e) return null; const a = omega * w.t / 2; return [e.pos[0], e.pos[1], e.pos[2], 0, Math.sin(a), 0, Math.cos(a)]; };
+    w.readVelocity = id => (w.corps.has(id) ? w.vitesse : null);
+    return w;
+  });
+  const co = courseDe(1), poses = posesDe(1), fx = B.traces.creer(1, graine), w = X.mondes[0];
+  B.traces.pas(fx, co, poses, 0, DT, evements(1));
+  for (let k = 0; k < 12; k++) B.traces.pas(fx, co, poses, 0, DT, []);              // trois poses lues
+  const angles = h => { const s = []; B.traces.dessiner(fx, s, [0, 0, 0], h); return s.filter(o => o.mat === 7).map(o => o.r.slice()); };
+  return { fx, w, co, poses, angles, vrai: h => omega * (w.t + h) };
+}
+check('rotation : l orientation d une pièce PhysX se prolonge au dessin ; trop rapide, elle tient sa dernière pose ; posée, elle se fige', () => {
+  try {
+    const r = rotation(3, 28), a0 = r.angles(0), a2 = r.angles(.02);
+    assert.equal(a0.length, PIECES);
+    for (let i = 0; i < a0.length; i++) {
+      assert.ok(Math.abs(a0[i][1] - r.vrai(0)) < 1e-9, a0[i][1] + ' pour ' + r.vrai(0));
+      assert.ok(Math.abs(a2[i][1] - r.vrai(.02)) < 1e-9, a2[i][1] + ' pour ' + r.vrai(.02));
+      assert.ok(Math.abs(a2[i][0]) < 1e-9 && Math.abs(a2[i][2]) < 1e-9);
+    }
+    // posée : la pièce sort du monde, son orientation reste celle de la dernière pose, à tout instant dessiné
+    r.w.vitesse = [0, 0, 0];
+    for (let k = 0; k < 4 * 16; k++) B.traces.pas(r.fx, r.co, r.poses, 0, DT, []);
+    assert.equal(r.w.corps.size, 0);
+    const p0 = r.angles(0), p1 = r.angles(.03);
+    assert.deepEqual(p1, p0); assert.ok(Math.abs(p0[0][1]) > .5, 'la dernière pose lue, pas l orientation de départ');
+    // un quart de tour par trentième de seconde ou plus : la vitesse déduite n'est plus sûre, pas de prolongement
+    const vite = rotation(60, 29);
+    assert.deepEqual(vite.angles(.02), vite.angles(0));
+  } finally { delete globalThis.FPhysX; }
 });
 check('sans PhysX, la pièce suit sa parabole et rien ne lève une exception', () => {
   delete globalThis.FPhysX;
@@ -222,6 +344,41 @@ check('collisions multiples en chaîne : pas de NaN, pas de blocage, corps born�
     assert.ok(monde.corps.size <= B.traces.DEBRIS);
     assert.ok(co.voitures.some(v => v.etat.v > 1), 'toutes les voitures sont bloquées');
   } finally { debrancher(); }
+});
+
+// ------------------------------------------------------------------ module PhysX encore en chargement
+// Le module se décode en tâche de fond au démarrage : une séance née avant (vitrine) s'attache au monde dès qu'il est
+// prêt, et le chauffe ; un module refusé, ou remplacé entre-temps, laisse les pièces en parabole.
+async function checkAsync(name, fn) { try { await fn(); results.push({ name, ok: true }); } catch (e) { results.push({ name, ok: false, error: e && e.message }); } }
+await checkAsync('attente : une séance née avant PhysX s y attache dès que le module est prêt ; refusé ou remplacé, rien ne casse', async () => {
+  const attendre = () => new Promise(r => setTimeout(r, 0));
+  try {
+    let pret = false, ouvrir = null;
+    const X = { mondes: [], isReady: () => pret, init: () => new Promise(r => { ouvrir = () => { pret = true; r(); }; }), createWorld: () => { const w = fauxMonde(); X.mondes.push(w); return w; } };
+    globalThis.FPhysX = X;
+    const fx = B.traces.creer(1, 30);
+    assert.equal(fx.monde, null); assert.equal(X.mondes.length, 0);
+    ouvrir(); await attendre();
+    assert.equal(X.mondes.length, 1); assert.strictEqual(fx.monde, X.mondes[0]); assert.equal(X.mondes[0].pas, 10, 'chauffé dès le rattachement');
+    const co = courseDe(1), poses = posesDe(1);
+    B.traces.pas(fx, co, poses, 0, DT, evements(1));
+    assert.equal(X.mondes[0].corps.size, PIECES);
+    B.traces.liberer(fx);
+    // refusé : la séance garde ses paraboles
+    globalThis.FPhysX = { isReady: () => false, init: () => Promise.reject(new Error('module refusé')), createWorld: () => { throw new Error('jamais'); } };
+    const g = B.traces.creer(1, 31);
+    await attendre();
+    B.traces.pas(g, co, poses, 0, DT, evements(1));
+    assert.equal(g.monde, null); assert.equal(B.traces.compter(g).debris, PIECES); assert.equal(B.traces.compter(g).corps, 0);
+    // remplacé avant d'être prêt : l'ancien module ne rattache plus rien
+    let ouvrirY = null;
+    const Y = { mondes: [], isReady: () => false, init: () => new Promise(r => { ouvrirY = r; }), createWorld: () => { const w = fauxMonde(); Y.mondes.push(w); return w; } };
+    globalThis.FPhysX = Y;
+    const h = B.traces.creer(1, 32);
+    globalThis.FPhysX = undefined;
+    ouvrirY(); await attendre();
+    assert.equal(h.monde, null); assert.equal(Y.mondes.length, 0);
+  } finally { delete globalThis.FPhysX; }
 });
 
 console.log(JSON.stringify({ passed: results.filter(r => r.ok).length, total: results.length, results }, null, 2));
