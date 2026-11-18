@@ -1,0 +1,373 @@
+{
+  "before": {
+    "instances": 135,
+    "triangles": 18545,
+    "simpleInstances": 11
+  },
+  "after": {
+    "instances": 138,
+    "triangles": 20561,
+    "simpleInstances": 11
+  },
+  "checks": [
+    {
+      "test": "platine-hole",
+      "side": -1,
+      "hits": [],
+      "expected": 0
+    },
+    {
+      "test": "platine-ring",
+      "side": -1,
+      "hits": [
+        0.47647,
+        0.58235
+      ],
+      "expected": 2
+    },
+    {
+      "test": "exhaust-mouth-open",
+      "height": "hauts",
+      "side": -1,
+      "hits": [],
+      "expected": 0
+    },
+    {
+      "test": "exhaust-mouth-lip",
+      "height": "hauts",
+      "side": -1,
+      "hits": [
+        0.36364
+      ],
+      "expected": 1
+    },
+    {
+      "test": "exhaust-mouth-open",
+      "height": "bas",
+      "side": -1,
+      "hits": [],
+      "expected": 0
+    },
+    {
+      "test": "exhaust-mouth-lip",
+      "height": "bas",
+      "side": -1,
+      "hits": [
+        0.36364
+      ],
+      "expected": 1
+    },
+    {
+      "test": "platine-hole",
+      "side": 1,
+      "hits": [],
+      "expected": 0
+    },
+    {
+      "test": "platine-ring",
+      "side": 1,
+      "hits": [
+        0.47647,
+        0.58235
+      ],
+      "expected": 2
+    },
+    {
+      "test": "exhaust-mouth-open",
+      "height": "hauts",
+      "side": 1,
+      "hits": [],
+      "expected": 0
+    },
+    {
+      "test": "exhaust-mouth-lip",
+      "height": "hauts",
+      "side": 1,
+      "hits": [
+        0.36364
+      ],
+      "expected": 1
+    },
+    {
+      "test": "exhaust-mouth-open",
+      "height": "bas",
+      "side": 1,
+      "hits": [],
+      "expected": 0
+    },
+    {
+      "test": "exhaust-mouth-lip",
+      "height": "bas",
+      "side": 1,
+      "hits": [
+        0.36364
+      ],
+      "expected": 1
+    }
+  ],
+  "newShapes": [
+    {
+      "name": "bitume-suspension-arriere",
+      "triangles": 96,
+      "nonfinite": 0,
+      "degenerate": 0,
+      "oppositeNormals": 0,
+      "bounds": [
+        [
+          -1.6796662523128798,
+          0.19961934572421963,
+          -0.5971108062991299
+        ],
+        [
+          -1.090332187848207,
+          0.43037369730166725,
+          0.5971108062991299
+        ]
+      ]
+    },
+    {
+      "name": "bitume-cardans-arriere",
+      "triangles": 24,
+      "nonfinite": 0,
+      "degenerate": 0,
+      "oppositeNormals": 0,
+      "bounds": [
+        [
+          -1.372,
+          0.3159474411167424,
+          -0.59
+        ],
+        [
+          -1.328,
+          0.35405255888325765,
+          0.59
+        ]
+      ]
+    },
+    {
+      "name": "bitume-freins-arriere",
+      "triangles": 96,
+      "nonfinite": 0,
+      "degenerate": 0,
+      "oppositeNormals": 0,
+      "bounds": [
+        [
+          -1.455,
+          0.23000000000000004,
+          -0.35200000000000004
+        ],
+        [
+          -1.245,
+          0.44,
+          0.35200000000000004
+        ]
+      ]
+    },
+    {
+      "name": "bitume-boite-transversale",
+      "triangles": 72,
+      "nonfinite": 0,
+      "degenerate": 0,
+      "oppositeNormals": 0,
+      "bounds": [
+        [
+          -1.4,
+          0.16000000000000003,
+          -0.34
+        ],
+        [
+          -1.0699999999999998,
+          0.39,
+          0.34
+        ]
+      ]
+    },
+    {
+      "name": "bitume-carter-arriere",
+      "triangles": 168,
+      "nonfinite": 0,
+      "degenerate": 0,
+      "oppositeNormals": 0,
+      "bounds": [
+        [
+          -1.8599999999999999,
+          0.15999999999999998,
+          -0.25
+        ],
+        [
+          -1.35,
+          0.41,
+          0.25
+        ]
+      ]
+    },
+    {
+      "name": "bitume-nervures-boite",
+      "triangles": 384,
+      "nonfinite": 0,
+      "degenerate": 0,
+      "oppositeNormals": 0,
+      "bounds": [
+        [
+          -1.767,
+          0.15451993413679305,
+          -0.24524214505635675
+        ],
+        [
+          -1.4529999999999998,
+          0.4154800658632069,
+          0.24524214505635675
+        ]
+      ]
+    },
+    {
+      "name": "bitume-platines-arriere",
+      "triangles": 128,
+      "nonfinite": 0,
+      "degenerate": 0,
+      "oppositeNormals": 0,
+      "bounds": [
+        [
+          -1.729,
+          0.22999999999999998,
+          -0.45
+        ],
+        [
+          -1.7110000000000003,
+          0.53,
+          0.45
+        ]
+      ]
+    },
+    {
+      "name": "bitume-echappements-hauts",
+      "triangles": 320,
+      "nonfinite": 0,
+      "degenerate": 0,
+      "oppositeNormals": 0,
+      "bounds": [
+        [
+          -2.03,
+          0.2954220905735683,
+          -0.4110910865316565
+        ],
+        [
+          -1.0548500476692335,
+          0.5897684844586306,
+          0.4110910865316565
+        ]
+      ]
+    },
+    {
+      "name": "bitume-echappements-bas",
+      "triangles": 240,
+      "nonfinite": 0,
+      "degenerate": 0,
+      "oppositeNormals": 0,
+      "bounds": [
+        [
+          -2.0,
+          0.12161897049003098,
+          -0.41789503652331594
+        ],
+        [
+          -1.1107822884132474,
+          0.21704014946005837,
+          0.41789503652331594
+        ]
+      ]
+    },
+    {
+      "name": "bitume-echappements-interieurs",
+      "triangles": 560,
+      "nonfinite": 0,
+      "degenerate": 0,
+      "oppositeNormals": 0,
+      "bounds": [
+        [
+          -2.03,
+          0.12637935888874496,
+          -0.4130366985075062
+        ],
+        [
+          -1.0589372514286253,
+          0.5849262188239062,
+          0.4130366985075062
+        ]
+      ]
+    },
+    {
+      "name": "bitume-echappements-levres",
+      "triangles": 80,
+      "nonfinite": 0,
+      "degenerate": 0,
+      "oppositeNormals": 0,
+      "bounds": [
+        [
+          -2.0299999999999994,
+          0.122908795864489,
+          -0.33299999999999996
+        ],
+        [
+          -1.9999999999999998,
+          0.5808954302006917,
+          0.33299999999999996
+        ]
+      ]
+    },
+    {
+      "name": "bitume-mat-aileron",
+      "triangles": 16,
+      "nonfinite": 0,
+      "degenerate": 0,
+      "oppositeNormals": 0,
+      "bounds": [
+        [
+          -2.1,
+          0.29999999999999993,
+          -0.018
+        ],
+        [
+          -1.7799999999999998,
+          0.88,
+          0.018
+        ]
+      ]
+    },
+    {
+      "name": "bitume-derives-arriere",
+      "triangles": 56,
+      "nonfinite": 0,
+      "degenerate": 0,
+      "oppositeNormals": 0,
+      "bounds": [
+        [
+          -2.23,
+          0.72,
+          -0.57
+        ],
+        [
+          -1.85,
+          1.02,
+          0.57
+        ]
+      ]
+    }
+  ],
+  "source_sha256": "80287222e224fb37fe630900606c7d79039da4a9dbfa93dda052de648188cc91",
+  "connections": {
+    "suspension_rear_inner_endpoints_z": [
+      0.155,
+      0.17
+    ],
+    "mast_intersects_carter": true,
+    "plates_intersect_carter": true,
+    "mast_top_overlaps_wing_underside": true,
+    "rear_halfshafts_reach_hubs": true
+  },
+  "limitations": [
+    "Aper\u00e7u CPU de g\u00e9om\u00e9trie uniquement, pas de capture du jeu.",
+    "Chromium bloqu\u00e9 avant chargement par socket Operation not permitted.",
+    "Mat\u00e9riaux, ombres, WebGL et performances non valid\u00e9s."
+  ]
+}

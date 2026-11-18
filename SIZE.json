@@ -1,8 +1,8 @@
 {
-  "version": "0.2.35",
-  "raw": 13220286,
-  "gzip": 3066260,
-  "sha256": "75e897dc0324f3bcef88a26cb85b69534bf8f52ce26371c98851ee1911512563",
+  "version": "0.2.36",
+  "raw": 13226376,
+  "gzip": 3068124,
+  "sha256": "c55b6aba45b594d23423cc2afeb91040a9980d1f7f3296c8b2691ea12164a904",
   "sources": {
     "moteur/renderer.js": 247023,
     "ferro/engine.js": 2024,
@@ -29,7 +29,7 @@
     "humain-donnees.js": 4559,
     "humain-corps.js": 3116,
     "main.js": 7825,
-    "voiture.js": 59779,
+    "voiture.js": 65869,
     "traces.js": 23935,
     "realisateur.js": 10265,
     "meteo.js": 10938,

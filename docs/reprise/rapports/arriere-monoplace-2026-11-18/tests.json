@@ -1,0 +1,327 @@
+{
+  "suites": 64,
+  "reussies": 64,
+  "duree_secondes": 70.9,
+  "resultats": [
+    {
+      "suite": "ambiance.test.mjs",
+      "code": 0,
+      "secondes": 0.08
+    },
+    {
+      "suite": "aurores.test.mjs",
+      "code": 0,
+      "secondes": 0.08
+    },
+    {
+      "suite": "autoconfig-integration.test.mjs",
+      "code": 0,
+      "secondes": 0.05
+    },
+    {
+      "suite": "autoconfig.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "botanique.test.mjs",
+      "code": 0,
+      "secondes": 0.45
+    },
+    {
+      "suite": "carene.test.mjs",
+      "code": 0,
+      "secondes": 0.09
+    },
+    {
+      "suite": "circuit.test.mjs",
+      "code": 0,
+      "secondes": 0.49
+    },
+    {
+      "suite": "collisions-orientees.test.mjs",
+      "code": 0,
+      "secondes": 0.05
+    },
+    {
+      "suite": "commandes-partage.test.mjs",
+      "code": 0,
+      "secondes": 0.05
+    },
+    {
+      "suite": "conditions-course.test.mjs",
+      "code": 0,
+      "secondes": 0.13
+    },
+    {
+      "suite": "conditions-integration.test.mjs",
+      "code": 0,
+      "secondes": 0.09
+    },
+    {
+      "suite": "conduite-criteres.test.mjs",
+      "code": 0,
+      "secondes": 1.59
+    },
+    {
+      "suite": "conduite.test.mjs",
+      "code": 0,
+      "secondes": 0.24
+    },
+    {
+      "suite": "contacts.test.mjs",
+      "code": 0,
+      "secondes": 0.12
+    },
+    {
+      "suite": "controle-visuel.test.mjs",
+      "code": 0,
+      "secondes": 0.08
+    },
+    {
+      "suite": "course.test.mjs",
+      "code": 0,
+      "secondes": 2.98
+    },
+    {
+      "suite": "crash.test.mjs",
+      "code": 0,
+      "secondes": 0.39
+    },
+    {
+      "suite": "decor-identite.test.mjs",
+      "code": 0,
+      "secondes": 2.35
+    },
+    {
+      "suite": "decor-obstacles.test.mjs",
+      "code": 0,
+      "secondes": 0.5
+    },
+    {
+      "suite": "decor.test.mjs",
+      "code": 0,
+      "secondes": 0.43
+    },
+    {
+      "suite": "desert.test.mjs",
+      "code": 0,
+      "secondes": 2.0
+    },
+    {
+      "suite": "ecologie.test.mjs",
+      "code": 0,
+      "secondes": 0.93
+    },
+    {
+      "suite": "effets-saison.test.mjs",
+      "code": 0,
+      "secondes": 0.91
+    },
+    {
+      "suite": "faune.test.mjs",
+      "code": 0,
+      "secondes": 3.79
+    },
+    {
+      "suite": "formes-libres.test.mjs",
+      "code": 0,
+      "secondes": 0.26
+    },
+    {
+      "suite": "glissiere-etats.test.mjs",
+      "code": 0,
+      "secondes": 0.09
+    },
+    {
+      "suite": "glissiere-rebond.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "graphismes.test.mjs",
+      "code": 0,
+      "secondes": 0.07
+    },
+    {
+      "suite": "ia-attaque.test.mjs",
+      "code": 0,
+      "secondes": 10.61
+    },
+    {
+      "suite": "ia-epaves.test.mjs",
+      "code": 0,
+      "secondes": 0.07
+    },
+    {
+      "suite": "ia-reprise.test.mjs",
+      "code": 0,
+      "secondes": 0.1
+    },
+    {
+      "suite": "ia.test.mjs",
+      "code": 0,
+      "secondes": 0.07
+    },
+    {
+      "suite": "islande.test.mjs",
+      "code": 0,
+      "secondes": 1.84
+    },
+    {
+      "suite": "main.test.mjs",
+      "code": 0,
+      "secondes": 0.12
+    },
+    {
+      "suite": "manette.test.mjs",
+      "code": 0,
+      "secondes": 0.05
+    },
+    {
+      "suite": "mesures.test.mjs",
+      "code": 0,
+      "secondes": 0.08
+    },
+    {
+      "suite": "meteo-reelle.test.mjs",
+      "code": 0,
+      "secondes": 0.07
+    },
+    {
+      "suite": "meteo.test.mjs",
+      "code": 0,
+      "secondes": 0.1
+    },
+    {
+      "suite": "moteur-emprise.test.mjs",
+      "code": 0,
+      "secondes": 0.08
+    },
+    {
+      "suite": "nature-integration.test.mjs",
+      "code": 0,
+      "secondes": 0.05
+    },
+    {
+      "suite": "navigation-menu.test.mjs",
+      "code": 0,
+      "secondes": 0.1
+    },
+    {
+      "suite": "obstacles.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "options-image.test.mjs",
+      "code": 0,
+      "secondes": 0.09
+    },
+    {
+      "suite": "pieces.test.mjs",
+      "code": 0,
+      "secondes": 0.49
+    },
+    {
+      "suite": "prets-enligne.test.mjs",
+      "code": 0,
+      "secondes": 0.08
+    },
+    {
+      "suite": "qualite.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "realisateur.test.mjs",
+      "code": 0,
+      "secondes": 2.22
+    },
+    {
+      "suite": "relectures-phase2.test.mjs",
+      "code": 0,
+      "secondes": 0.23
+    },
+    {
+      "suite": "rendu-halo.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "reprise-recul.test.mjs",
+      "code": 0,
+      "secondes": 0.06
+    },
+    {
+      "suite": "saisons.test.mjs",
+      "code": 0,
+      "secondes": 5.39
+    },
+    {
+      "suite": "salon-protocole.test.mjs",
+      "code": 0,
+      "secondes": 2.33
+    },
+    {
+      "suite": "scene-bench.test.mjs",
+      "code": 0,
+      "secondes": 1.76
+    },
+    {
+      "suite": "sillage.test.mjs",
+      "code": 0,
+      "secondes": 0.07
+    },
+    {
+      "suite": "son.test.mjs",
+      "code": 0,
+      "secondes": 0.09
+    },
+    {
+      "suite": "stands.test.mjs",
+      "code": 0,
+      "secondes": 5.38
+    },
+    {
+      "suite": "titre-signature.test.mjs",
+      "code": 0,
+      "secondes": 0.07
+    },
+    {
+      "suite": "traces.test.mjs",
+      "code": 0,
+      "secondes": 1.12
+    },
+    {
+      "suite": "troncs.test.mjs",
+      "code": 0,
+      "secondes": 0.5
+    },
+    {
+      "suite": "tunnel-transitions.test.mjs",
+      "code": 0,
+      "secondes": 0.24
+    },
+    {
+      "suite": "tunnel.test.mjs",
+      "code": 0,
+      "secondes": 0.36
+    },
+    {
+      "suite": "vegetation.test.mjs",
+      "code": 0,
+      "secondes": 14.51
+    },
+    {
+      "suite": "vitre.test.mjs",
+      "code": 0,
+      "secondes": 0.51
+    },
+    {
+      "suite": "voiture.test.mjs",
+      "code": 0,
+      "secondes": 3.47
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "sha256": "c55b6aba45b594d23423cc2afeb91040a9980d1f7f3296c8b2691ea12164a904",
+  "octets": 13226376,
+  "caracteres": 13221219,
+  "utf16_units": 13221219,
+  "git_blob": "cd280865d3f1c9a0da600ea768d3c93d50ae1072",
+  "version": "0.2.36",
+  "build_reproductible": true,
+  "suites": 64,
+  "reussies": 64,
+  "ferro_modules": 34,
+  "ferro_version": "0.3.9",
+  "visuel_webgl_realise": false,
+  "apercu_geometrie_cpu_realise": true,
+  "blocage_webgl": "Chromium: socket() failed: Operation not permitted (1)",
+  "geometrie": {
+    "instances_avant": 135,
+    "instances_apres": 138,
+    "triangles_avant": 18545,
+    "triangles_apres": 20561,
+    "instances_lointaines": 11,
+    "controles_par_rayon": 12
+  },
+  "source_voiture_sha256": "80287222e224fb37fe630900606c7d79039da4a9dbfa93dda052de648188cc91"
+}

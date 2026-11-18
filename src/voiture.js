@@ -146,7 +146,7 @@
   const S_GOUTTE = [{ x: 1.30, y0: .36, y1: .40, l: .03, n: 2 }, { x: .90, y0: .38, y1: .54, l: .20, n: 2.5 }, { x: .55, y0: .38, y1: .63, l: .29, n: 3 },
     { x: .10, y0: .38, y1: .65, l: .31, n: 3 }, { x: -.35, y0: .40, y1: .66, l: .27, n: 3 }];
   const OUVERTURE = { de: .52, a: -.24, angle: 1.2 };
-  const S_MOTEUR = [{ x: -.35, y0: .40, y1: .70, l: .30, n: 3 }, { x: -1.00, y0: .42, y1: .60, l: .34, n: 4 }, { x: -1.65, y0: .30, y1: .50, l: .26, n: 4 }];
+  const S_MOTEUR = [{ x: -.35, y0: .40, y1: .70, l: .30, n: 3 }, { x: -1.00, y0: .42, y1: .60, l: .34, n: 4 }, { x: -1.40, y0: .38, y1: .51, l: .31, n: 4 }];
   const S_BULLE = [{ x: .64, y0: .60, y1: .62, l: .05, n: 2 }, { x: .50, y0: .58, y1: .76, l: .22, n: 2.2 }, { x: .34, y0: .58, y1: .80, l: .27, n: 2.4 }, { x: .16, y0: .58, y1: .78, l: .29, n: 2.4 }];
   forme('quille', C.carene(S_QUILLE, { cotes: 16 }));
   forme('fleche', C.carene(S_FLECHE, { cotes: 28, pas: 5 }));
@@ -222,6 +222,103 @@
   }
   // arceau de sécurité derrière le casque
   forme('arceau', C.tube([[-.28, .62, -.17], [-.27, .88, -.14], [-.265, .995, 0], [-.27, .88, .14], [-.28, .62, .17]], .015, { cotes: 8 }));
+  // Arrière 312 T5 : photos Bonhams du châssis 046 (vues 65 et 79), références dans la fiche 12.
+  // Boîte transversale près de l'essieu, carter terminal moulé, platines ajourées et QUATRE sorties creuses.
+  // Chaque groupe de même matière est un seul maillage partagé par les douze livrées, construit ici une fois.
+  {
+    const carter = [
+      { x: -1.35, y0: .18, y1: .40, l: .25, n: 3 }, { x: -1.52, y0: .16, y1: .41, l: .23, n: 3 },
+      { x: -1.70, y0: .18, y1: .39, l: .18, n: 2.8 }, { x: -1.86, y0: .22, y1: .35, l: .10, n: 2.4 }
+    ];
+    forme('boite-transversale', C.carene([
+      { x: -1.07, y0: .18, y1: .37, l: .28, n: 3 }, { x: -1.22, y0: .16, y1: .39, l: .34, n: 3 },
+      { x: -1.40, y0: .18, y1: .39, l: .30, n: 3 }
+    ], { cotes: 12, pas: 1 }));
+    forme('carter-arriere', C.carene(carter, { cotes: 12, pas: 2 }));
+    const nervures = [], profilCarter = C.profil(carter);
+    for (const x of [-1.46, -1.56, -1.66, -1.76]) {
+      const s = profilCarter(x), bord = Array.from({ length: 12 }, (_, i) => C.pointSection(s, i * Math.PI / 6));
+      nervures.push(...C.tube(bord, .007, { cotes: 4, pas: 1, ferme: true }));
+    }
+    forme('nervures-boite', nervures);
+
+    const bras = [], cardans = [], freins = [];
+    const tube = (a, b, r = .012) => C.tube([a, b], r, { cotes: 6, pas: 1, bouts: false });
+    // Triangles inférieurs et bras supérieurs, au lieu des quatre lattes rectangulaires.
+    for (const [a, b] of [
+      [[-1.10, .21, .25], [-1.35, .23, .59]], [[-1.67, .22, .155], [-1.35, .23, .59]],
+      [[-1.30, .40, .26], [-1.35, .42, .59]], [[-1.62, .35, .17], [-1.46, .33, .59]]
+    ]) bras.push(...tube(a, b));
+    cardans.push(...tube([-1.35, .335, .24], [-1.35, .335, .59], .022));
+    const disque = C.carene([{ x: -.012, y0: -.105, y1: .105, l: .105, n: 2 },
+      { x: .012, y0: -.105, y1: .105, l: .105, n: 2 }], { cotes: 12, pas: 1 });
+    freins.push(...C.transformer(disque, euler(0, -Math.PI / 2, 0), [-1.35, .335, .34]));
+    forme('suspension-arriere', deuxCotes(bras));
+    forme('cardans-arriere', deuxCotes(cardans));
+    forme('freins-arriere', deuxCotes(freins));
+
+    const face = (dest, a, b, c, n) => {
+      const v = croix(b.map((x, i) => x - a[i]), c.map((x, i) => x - a[i]));
+      dest.push(v.reduce((s, x, i) => s + x * n[i], 0) < 0 ? [a, c, b] : [a, b, c]);
+    };
+    // Deux platines en aluminium : le trou central est réellement ouvert, avec sa paroi intérieure.
+    const platines = [], cy = .335, cz = .30;
+    const contour = [[.45, .335], [.40, .42], [.30, .53], [.235, .40], [.16, .335], [.205, .25], [.30, .23], [.35, .28]];
+    const anneau = (i, x, interieur) => {
+      const a = i * Math.PI / 4, q = contour[i % 8];
+      return interieur ? [x, cy + .035 * Math.sin(a), cz + .035 * Math.cos(a)] : [x, q[1], q[0]];
+    };
+    for (let i = 0; i < 8; i++) {
+      const j = (i + 1) % 8;
+      for (const sens of [-1, 1]) {
+        const x = -1.72 + sens * .009, a = anneau(i, x, false), b = anneau(j, x, false), c = anneau(j, x, true), d = anneau(i, x, true);
+        face(platines, a, b, c, [sens, 0, 0]); face(platines, a, c, d, [sens, 0, 0]);
+      }
+      for (const interieur of [false, true]) {
+        const a = anneau(i, -1.729, interieur), b = anneau(j, -1.729, interieur), c = anneau(j, -1.711, interieur), d = anneau(i, -1.711, interieur);
+        const signe = interieur ? -1 : 1, n = [0, signe * ((a[1] + b[1]) / 2 - cy), signe * ((a[2] + b[2]) / 2 - cz)];
+        face(platines, a, b, c, n); face(platines, a, c, d, n);
+      }
+    }
+    forme('platines-arriere', deuxCotes(C.lisser(platines)));
+
+    const dedans = [], levres = [];
+    for (const [nom, points, rayon] of [
+      ['hauts', [[-1.09, .32, .37], [-1.28, .53, .32], [-1.60, .54, .29], [-1.82, .54, .29], [-2.03, .54, .29]], .043],
+      ['bas', [[-1.12, .18, .38], [-1.52, .16, .29], [-1.76, .16, .29], [-2.00, .16, .29]], .039]
+    ]) {
+      const options = { cotes: 10, pas: 2, bouts: false }, interieur = rayon - .005;
+      forme('echappements-' + nom, deuxCotes(C.tube(points, rayon, options)));
+      // Retourner la peau intérieure, normales comprises ; aucun disque ne bouche les quatre embouchures.
+      const peau = C.tube(points, interieur, options);
+      dedans.push(...peau.map(t => [t[0], t[2], t[1], t[3].map(v => -v), t[5].map(v => -v), t[4].map(v => -v)]));
+      const fin = points[points.length - 1], precedent = points[points.length - 2];
+      const axe = norme(fin.map((v, i) => v - precedent[i])), cadre = selonAxe(axe);
+      const cercle = (i, r) => fin.map((v, k) => v + r * (cadre[0][k] * Math.cos(i * Math.PI / 5) + cadre[2][k] * Math.sin(i * Math.PI / 5)));
+      for (let i = 0; i < 10; i++) {
+        const a = cercle(i, rayon), b = cercle(i + 1, rayon), c = cercle(i + 1, interieur), d = cercle(i, interieur);
+        face(levres, a, b, c, axe); face(levres, a, c, d, axe);
+      }
+    }
+    forme('echappements-interieurs', deuxCotes(dedans));
+    forme('echappements-levres', deuxCotes(C.lisser(levres)));
+
+    // Plaques extrudées suivant z, contour convexe antihoraire : mât profilé et joues aux coins arrondis.
+    const plaque = (points, z0, z1) => {
+      const faces = [], p = (i, z) => [points[i][0], points[i][1], z];
+      for (let i = 1; i < points.length - 1; i++) {
+        faces.push([p(0, z0), p(i + 1, z0), p(i, z0)], [p(0, z1), p(i, z1), p(i + 1, z1)]);
+      }
+      for (let i = 0; i < points.length; i++) {
+        const j = (i + 1) % points.length;
+        faces.push([p(i, z0), p(j, z0), p(j, z1)], [p(i, z0), p(j, z1), p(i, z1)]);
+      }
+      return C.lisser(faces);
+    };
+    forme('mat-aileron', plaque([[-1.89, .30], [-1.78, .36], [-1.95, .88], [-2.10, .88], [-2.05, .38]], -.018, .018));
+    forme('derives-arriere', deuxCotes(plaque([[-1.87, .74], [-1.85, .78], [-1.85, 1.02], [-2.13, 1.02],
+      [-2.23, .98], [-2.23, .79], [-2.20, .74], [-2.13, .72]], .55, .57)));
+  }
   // version lointaine : trois carènes à huit côtés
   forme('loin-caisse', C.carene([{ x: 2.08, y0: .20, y1: .25, l: .05, n: 3 }, { x: 1.60, y0: .12, y1: .34, l: .26, n: 4 }, { x: 1.05, y0: .11, y1: .40, l: .52, n: 5 },
     { x: .60, y0: .10, y1: .43, l: .72, n: 5 }, { x: -.88, y0: .10, y1: .45, l: .70, n: 5 }, { x: -1.08, y0: .12, y1: .43, l: .50, n: 5 }, { x: -1.30, y0: .16, y1: .40, l: .30, n: 4 }], { cotes: 8, pas: 1 }));
@@ -319,11 +416,9 @@
     }
     // Glaces des rétroviseurs, tournées vers le pilote (en vue cockpit : glace vivante)
     for (const k of [-1, 1]) P('box', [.527, .566, k * .47], [.004, .048, .132], METAL_MAT, [.2, .23, .27], { glace: true });
-    // Suspension arrière : deux bras noirs
-    for (const k of [-1, 1]) {
-      P('box', [-1.35, .40, k * .45], [.05, .02, .32], MAT, CARBONE, AR());
-      P('box', [-1.35, .22, k * .45], [.07, .02, .32], MAT, CARBONE, AR());
-    }
+    L('suspension-arriere', MAT, CARBONE, AR());
+    L('cardans-arriere', METAL_MAT, SOMBRE, AR());
+    L('freins-arriere', METAL_MAT, ACIER, AR());
     // Numéro : grand chiffre penché, posé directement sur la caisse (lisible de face) et sur les flancs des pontons.
     // BITUME (voi-2) : blanc sur le rouge du joueur, noir sur les caisses claires — encre choisie pour un contraste ≥ 3
     if (livree.numero) {
@@ -350,13 +445,19 @@
       // voi-3 : numéro de flanc calé entre la bande basse (haut y 0,17) et le filet (bas y 0,357)
       for (const k of [-1, 1]) chiffres([-.62, .262, k * .72], [k, 0, 0], [0, 1, 0], .15, c => [c[0], c[1], k * (flanc(p(c[0]), c[1]) + .004)], AR());
     }
-    // Boîte, échappements du douze-cylindres à plat, aileron arrière blanc sur mât central, dérives rouges
-    P('box', [-1.80, .28, 0], [.50, .28, .34], METAL_MAT, [.3, .31, .33], AR());
-    for (const k of [-1, 1]) P('cylinder', [-1.85, .38, k * .22], [.09, .36, .09], METAL_MAT, [.34, .31, .28], AR({ m: VERS_AVANT }));
-    P('box', [-2.02, .66, 0], [.20, .48, .05], PEINTURE, c1, AR());
+    // Mécanique arrière visible : carter moulé, quatre sorties creuses, mât métallique et dérives arrondies.
+    L('boite-transversale', METAL_MAT, [.38, .39, .40], AR());
+    L('carter-arriere', METAL_MAT, [.43, .44, .44], AR());
+    L('nervures-boite', METAL_MAT, [.53, .54, .53], AR());
+    L('platines-arriere', METAL_MAT, [.57, .58, .57], AR());
+    L('echappements-hauts', METAL_MAT, [.53, .52, .50], AR());
+    L('echappements-bas', METAL_MAT, [.28, .27, .25], AR());
+    L('echappements-interieurs', MAT, [.018, .019, .021], AR());
+    L('echappements-levres', METAL_MAT, [.46, .44, .40], AR());
+    L('mat-aileron', METAL_MAT, ARGENT, AR());
     P('box', [-2.05, .90, 0], [.32, .035, 1.10], PEINTURE, c2, AR({ m: euler(0, 0, -.12) }));
     P('box', [-2.18, .95, 0], [.12, .025, 1.08], PEINTURE, c2, AR({ m: euler(0, 0, -.5) }));
-    for (const k of [-1, 1]) P('box', [-2.05, .87, k * .56], [.36, .30, .02], PEINTURE, c1, AR());
+    L('derives-arriere', PEINTURE, c1, AR());
     // Roues : pneu, jante sombre, six rayons qui tournent, moyeu ; les avant braquent
     ROUES.forEach((w, i) => {
       const base = { roue: i, m: ROUE_AXE, arriere: !w.avant };
@@ -391,7 +492,7 @@
     simples.push(loin('loin-caisse'), loin('loin-dessus'), loin('loin-quille'),
       piece('box', [2.11, .13, 0], [.38, .04, 1.62], LAQUE, ARGENT),
       piece('box', [-2.05, .90, 0], [.34, .06, 1.10], PEINTURE, c2),
-      piece('box', [-2.02, .66, 0], [.20, .48, .05], PEINTURE, c1),
+      piece(FORMES['mat-aileron'].nom, FORMES['mat-aileron'].centre, FORMES['mat-aileron'].taille, METAL_MAT, ARGENT),
       piece('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque));
     ROUES.forEach((w, i) => simples.push(piece('cylinder', [w.x, w.r, w.z], [2 * w.r, w.l, 2 * w.r], MAT, PNEU, { m: ROUE_AXE, roue: i })));
     // Après casse, ne reste que la cellule du pilote et l'arceau ; roues et carrosserie sont des débris.
