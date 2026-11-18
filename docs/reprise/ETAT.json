@@ -184,7 +184,9 @@
       "22": "circuits et génération procédurale : relief, irrégularités de chaussée, aménagements de course, matières, diversité",
       "23": "cockpit : matières, reflets, grain, relief, netteté",
       "24": "vibrations de manette enrichies, en course seulement",
-      "25": "voiture photoréaliste : matières, reflets, effets"
+      "25": "voiture photoréaliste : matières, reflets, effets",
+      "22F": "circuits mémorables : lieux exceptionnels par biome, tracés repensés",
+      "26": "animaux propres à chaque biome, animés"
     },
     "fait": "0.2.39 en ligne (8bd3d86, sha256 acbea8562b828aeb…) : plus de vibration de manette dans les menus",
     "etudes": "~/Projects/bitume-wt/{conduite,public,vitre,son,echappement,photo}, branches locales conduite/etude et etude/* ; rien de fusionné",
@@ -192,6 +194,7 @@
     "opencode": "tools/opencode/lancer.sh (réglage isolé) ; premier emploi : module src/vibrations.js confié à opencode/iceman-free dans ~/Projects/bitume-wt/vibrations (branche etude/vibrations), à relire",
     "lot_22_valide": "Plan rendu (etude/procedural, 2807e0b) ; David a validé les choix par défaut le 18/11 (voir AGENTS.md). 22A (relief) à livrer avec la physique p10 ; 22C à 22E après la fluidité.",
     "haut_col": "Pentes au-delà de 10 % et portion en bord de falaise le long d un grand virage (lot 22A) ; tracé en plan et graine conservés.",
-    "montagne": "Circuit long et roulant en montagne : portion à 20-30 %, tunnels, paysage, forêt dense. À trancher : refaire Haut-Col (tracé changé) ou nouveau circuit."
+    "montagne": "Circuit long et roulant en montagne : portion à 20-30 %, tunnels, paysage, forêt dense. À trancher : refaire Haut-Col (tracé changé) ou nouveau circuit.",
+    "etudes_2": "~/Projects/bitume-wt/{lieux,animaux}, branches etude/lieux et etude/animaux"
   }
 }
