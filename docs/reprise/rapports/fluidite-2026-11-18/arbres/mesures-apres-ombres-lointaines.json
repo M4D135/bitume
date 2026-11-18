@@ -1,0 +1,2973 @@
+{
+ "date": "2026-11-18T17:45:47.064Z",
+ "node": "v24.18.0",
+ "plateforme": "darwin/arm64",
+ "ref": "WORKTREE",
+ "variante": "ombres-lointaines",
+ "empreintes": {
+  "src/moteur/renderer.js": "4ca91f51633555c90b964355c39956e45d6a9089242a16355680dfb8618a5884",
+  "src/graphismes.js": "b70c5922c70889eb3d9ca5f5d6e9a6620663f8cd2262697148e5b731d0aa7070",
+  "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+  "src/circuit.js": "c439a8124cd788e88095b6f80b5ea72a4bcba83d7d89aff3286220cb3cdfb47c",
+  "src/ecologie.js": "90c0720de150cea4e479eff553fdd85abaf6761046cd4d52b5851c149edf8b86",
+  "src/saisons.js": "332afcde7865aac79e7da88ef02bd19e8da2d489a63c2e22e0f8876827c675d3",
+  "src/vegetation.js": "5297864ea5752e10482d9944f3bc97e959df73570995521437d283456ffc7673",
+  "src/decor.js": "4337d19cd911ec0f4363278da38a332b357e53dac05c4c36d5e8b4947fffa9c1",
+  "src/botanique.js": "8ca32fb0aa467ea1ac4ce65b9f175254f3eb11ee14305f247f6015160b39bf8a"
+ },
+ "empreinteDoublure": "9de9a936bba474e15b4031c632921235b7858cf98fcf370785a3c980459dfb4f",
+ "poses": [
+  800,
+  1500,
+  2200,
+  2900,
+  3600,
+  4300
+ ],
+ "resultats": [
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-800",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 380730,
+   "couleurAppels": 122,
+   "ombreTriangles": 149226,
+   "ombreAppels": 36,
+   "lotsVisibles": 61,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 24332,
+   "couleurAppels": 26,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 13,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-1500",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 84378,
+   "couleurAppels": 46,
+   "ombreTriangles": 205772,
+   "ombreAppels": 40,
+   "lotsVisibles": 23,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 121002,
+   "couleurAppels": 44,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 22,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-2200",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 2394,
+   "couleurAppels": 4,
+   "ombreTriangles": 2772,
+   "ombreAppels": 10,
+   "lotsVisibles": 2,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 212212,
+   "couleurAppels": 124,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 62,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-2900",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 7252,
+   "couleurAppels": 10,
+   "ombreTriangles": 924,
+   "ombreAppels": 4,
+   "lotsVisibles": 5,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 90860,
+   "couleurAppels": 76,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 38,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-3600",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 79324,
+   "couleurAppels": 78,
+   "ombreTriangles": 3080,
+   "ombreAppels": 6,
+   "lotsVisibles": 39,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 3696,
+   "couleurAppels": 10,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 5,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-800",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 512062,
+   "couleurAppels": 239,
+   "ombreTriangles": 285687,
+   "ombreAppels": 134,
+   "lotsVisibles": 93,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 87306,
+   "couleurAppels": 72,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 28,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-1500",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 318683,
+   "couleurAppels": 179,
+   "ombreTriangles": 585539,
+   "ombreAppels": 256,
+   "lotsVisibles": 71,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 295757,
+   "couleurAppels": 130,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 49,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-2200",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 207246,
+   "couleurAppels": 118,
+   "ombreTriangles": 406823,
+   "ombreAppels": 193,
+   "lotsVisibles": 44,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 397746,
+   "couleurAppels": 242,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 98,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-2900",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 34834,
+   "couleurAppels": 57,
+   "ombreTriangles": 17570,
+   "ombreAppels": 32,
+   "lotsVisibles": 22,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 146109,
+   "couleurAppels": 152,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 56,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-3600",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 153319,
+   "couleurAppels": 151,
+   "ombreTriangles": 33084,
+   "ombreAppels": 35,
+   "lotsVisibles": 62,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 29748,
+   "couleurAppels": 39,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 10,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-800",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 195960,
+   "couleurAppels": 122,
+   "ombreTriangles": 96018,
+   "ombreAppels": 36,
+   "lotsVisibles": 61,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 17696,
+   "couleurAppels": 26,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 13,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-1500",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 49614,
+   "couleurAppels": 46,
+   "ombreTriangles": 123116,
+   "ombreAppels": 40,
+   "lotsVisibles": 23,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 77766,
+   "couleurAppels": 44,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 22,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-2200",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 448,
+   "couleurAppels": 4,
+   "ombreTriangles": 2016,
+   "ombreAppels": 10,
+   "lotsVisibles": 2,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 154336,
+   "couleurAppels": 124,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 62,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-2900",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 2688,
+   "couleurAppels": 10,
+   "ombreTriangles": 672,
+   "ombreAppels": 4,
+   "lotsVisibles": 5,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 66080,
+   "couleurAppels": 76,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 38,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-3600",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 55104,
+   "couleurAppels": 78,
+   "ombreTriangles": 2240,
+   "ombreAppels": 6,
+   "lotsVisibles": 39,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 2688,
+   "couleurAppels": 10,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 5,
+   "lots": 145
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-800",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 231583,
+   "couleurAppels": 190,
+   "ombreTriangles": 112011,
+   "ombreAppels": 75,
+   "lotsVisibles": 79,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 69872,
+   "couleurAppels": 65,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 26,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-1500",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 107859,
+   "couleurAppels": 137,
+   "ombreTriangles": 155554,
+   "ombreAppels": 107,
+   "lotsVisibles": 47,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 126793,
+   "couleurAppels": 119,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 44,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-2200",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 26957,
+   "couleurAppels": 59,
+   "ombreTriangles": 33313,
+   "ombreAppels": 68,
+   "lotsVisibles": 16,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 215240,
+   "couleurAppels": 231,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 92,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-2900",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 28442,
+   "couleurAppels": 41,
+   "ombreTriangles": 15460,
+   "ombreAppels": 13,
+   "lotsVisibles": 10,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 115635,
+   "couleurAppels": 144,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 56,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-3600",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 127009,
+   "couleurAppels": 140,
+   "ombreTriangles": 30415,
+   "ombreAppels": 20,
+   "lotsVisibles": 55,
+   "lots": 2539
+  },
+  {
+   "circuit": "val-brule",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 28740,
+   "couleurAppels": 39,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 10,
+   "lots": 2539
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-800",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 38016,
+   "couleurAppels": 62,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 31,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 42768,
+   "couleurAppels": 40,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 20,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-1500",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 2970,
+   "couleurAppels": 10,
+   "ombreTriangles": 4752,
+   "ombreAppels": 6,
+   "lotsVisibles": 5,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 168696,
+   "couleurAppels": 104,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 52,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-2200",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 24354,
+   "couleurAppels": 44,
+   "ombreTriangles": 3564,
+   "ombreAppels": 6,
+   "lotsVisibles": 22,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 9504,
+   "couleurAppels": 14,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 7,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-2900",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 97428,
+   "couleurAppels": 72,
+   "ombreTriangles": 7722,
+   "ombreAppels": 12,
+   "lotsVisibles": 36,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 9504,
+   "couleurAppels": 14,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 7,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-3600",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 400380,
+   "couleurAppels": 144,
+   "ombreTriangles": 18034,
+   "ombreAppels": 6,
+   "lotsVisibles": 72,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 1782,
+   "couleurAppels": 4,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 2,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-4300",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 377190,
+   "couleurAppels": 148,
+   "ombreTriangles": 3564,
+   "ombreAppels": 4,
+   "lotsVisibles": 74,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-4300",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 9504,
+   "couleurAppels": 12,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 6,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-800",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 106323,
+   "couleurAppels": 186,
+   "ombreTriangles": 17190,
+   "ombreAppels": 37,
+   "lotsVisibles": 66,
+   "lots": 1697
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 109950,
+   "couleurAppels": 104,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 40,
+   "lots": 1697
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-1500",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 42518,
+   "couleurAppels": 77,
+   "ombreTriangles": 25746,
+   "ombreAppels": 50,
+   "lotsVisibles": 24,
+   "lots": 1697
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 223637,
+   "couleurAppels": 199,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 78,
+   "lots": 1697
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-2200",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 145482,
+   "couleurAppels": 192,
+   "ombreTriangles": 86430,
+   "ombreAppels": 90,
+   "lotsVisibles": 78,
+   "lots": 1697
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 78518,
+   "couleurAppels": 78,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 23,
+   "lots": 1697
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-2900",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 360150,
+   "couleurAppels": 305,
+   "ombreTriangles": 382374,
+   "ombreAppels": 215,
+   "lotsVisibles": 129,
+   "lots": 1697
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 182954,
+   "couleurAppels": 103,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 32,
+   "lots": 1697
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-3600",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 469035,
+   "couleurAppels": 314,
+   "ombreTriangles": 114195,
+   "ombreAppels": 127,
+   "lotsVisibles": 134,
+   "lots": 1697
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 51254,
+   "couleurAppels": 70,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 23,
+   "lots": 1697
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-4300",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 482166,
+   "couleurAppels": 276,
+   "ombreTriangles": 93052,
+   "ombreAppels": 58,
+   "lotsVisibles": 112,
+   "lots": 1697
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-4300",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 85578,
+   "couleurAppels": 103,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 33,
+   "lots": 1697
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-800",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 24960,
+   "couleurAppels": 62,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 31,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 28080,
+   "couleurAppels": 40,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 20,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-1500",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 1950,
+   "couleurAppels": 10,
+   "ombreTriangles": 3120,
+   "ombreAppels": 6,
+   "lotsVisibles": 5,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 110760,
+   "couleurAppels": 104,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 52,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-2200",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 15990,
+   "couleurAppels": 44,
+   "ombreTriangles": 2340,
+   "ombreAppels": 6,
+   "lotsVisibles": 22,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 6240,
+   "couleurAppels": 14,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 7,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-2900",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 57720,
+   "couleurAppels": 72,
+   "ombreTriangles": 5070,
+   "ombreAppels": 12,
+   "lotsVisibles": 36,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 6240,
+   "couleurAppels": 14,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 7,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-3600",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 256492,
+   "couleurAppels": 144,
+   "ombreTriangles": 9622,
+   "ombreAppels": 6,
+   "lotsVisibles": 72,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 1170,
+   "couleurAppels": 4,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 2,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-4300",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 247650,
+   "couleurAppels": 148,
+   "ombreTriangles": 2340,
+   "ombreAppels": 4,
+   "lotsVisibles": 74,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-4300",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 6240,
+   "couleurAppels": 12,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 6,
+   "lots": 143
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-800",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 88662,
+   "couleurAppels": 181,
+   "ombreTriangles": 7160,
+   "ombreAppels": 14,
+   "lotsVisibles": 64,
+   "lots": 1696
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 90237,
+   "couleurAppels": 93,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 35,
+   "lots": 1696
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-1500",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 41292,
+   "couleurAppels": 73,
+   "ombreTriangles": 23292,
+   "ombreAppels": 26,
+   "lotsVisibles": 23,
+   "lots": 1696
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 162677,
+   "couleurAppels": 195,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 77,
+   "lots": 1696
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-2200",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 72514,
+   "couleurAppels": 157,
+   "ombreTriangles": 15710,
+   "ombreAppels": 41,
+   "lotsVisibles": 59,
+   "lots": 1696
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 52824,
+   "couleurAppels": 80,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 22,
+   "lots": 1696
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-2900",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 123129,
+   "couleurAppels": 218,
+   "ombreTriangles": 37429,
+   "ombreAppels": 84,
+   "lotsVisibles": 84,
+   "lots": 1696
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 54021,
+   "couleurAppels": 102,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 29,
+   "lots": 1696
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-3600",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 317760,
+   "couleurAppels": 279,
+   "ombreTriangles": 21641,
+   "ombreAppels": 36,
+   "lotsVisibles": 112,
+   "lots": 1696
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 27727,
+   "couleurAppels": 61,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 18,
+   "lots": 1696
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-4300",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 350712,
+   "couleurAppels": 276,
+   "ombreTriangles": 14436,
+   "ombreAppels": 35,
+   "lotsVisibles": 113,
+   "lots": 1696
+  },
+  {
+   "circuit": "haut-col",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-4300",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 41177,
+   "couleurAppels": 87,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 30,
+   "lots": 1696
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-800",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 6160,
+   "couleurAppels": 14,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 7,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 924,
+   "couleurAppels": 6,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 3,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-1500",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 7392,
+   "couleurAppels": 22,
+   "ombreTriangles": 616,
+   "ombreAppels": 4,
+   "lotsVisibles": 11,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 0,
+   "couleurAppels": 0,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 0,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-2200",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 4312,
+   "couleurAppels": 20,
+   "ombreTriangles": 1232,
+   "ombreAppels": 8,
+   "lotsVisibles": 10,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 4928,
+   "couleurAppels": 6,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 3,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-2900",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 308,
+   "couleurAppels": 2,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 1,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 7392,
+   "couleurAppels": 22,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 11,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-3600",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 616,
+   "couleurAppels": 4,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 2,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 308,
+   "couleurAppels": 2,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 1,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-4300",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 9268,
+   "couleurAppels": 10,
+   "ombreTriangles": 6020,
+   "ombreAppels": 8,
+   "lotsVisibles": 5,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-4300",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 924,
+   "couleurAppels": 6,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 3,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-800",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 49504,
+   "couleurAppels": 88,
+   "ombreTriangles": 18300,
+   "ombreAppels": 18,
+   "lotsVisibles": 17,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 52784,
+   "couleurAppels": 52,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 10,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-1500",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 48146,
+   "couleurAppels": 90,
+   "ombreTriangles": 18644,
+   "ombreAppels": 25,
+   "lotsVisibles": 20,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 33806,
+   "couleurAppels": 58,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 9,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-2200",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 67934,
+   "couleurAppels": 139,
+   "ombreTriangles": 9400,
+   "ombreAppels": 22,
+   "lotsVisibles": 30,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 27312,
+   "couleurAppels": 40,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 8,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-2900",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 39704,
+   "couleurAppels": 60,
+   "ombreTriangles": 11852,
+   "ombreAppels": 11,
+   "lotsVisibles": 7,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 44458,
+   "couleurAppels": 87,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 23,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-3600",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 46876,
+   "couleurAppels": 96,
+   "ombreTriangles": 13104,
+   "ombreAppels": 16,
+   "lotsVisibles": 14,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 32286,
+   "couleurAppels": 42,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 7,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-4300",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 105002,
+   "couleurAppels": 91,
+   "ombreTriangles": 78740,
+   "ombreAppels": 36,
+   "lotsVisibles": 15,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-4300",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 33258,
+   "couleurAppels": 59,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 14,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-800",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 4480,
+   "couleurAppels": 14,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 7,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 672,
+   "couleurAppels": 6,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 3,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-1500",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 5376,
+   "couleurAppels": 22,
+   "ombreTriangles": 448,
+   "ombreAppels": 4,
+   "lotsVisibles": 11,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 0,
+   "couleurAppels": 0,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 0,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-2200",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 3136,
+   "couleurAppels": 20,
+   "ombreTriangles": 896,
+   "ombreAppels": 8,
+   "lotsVisibles": 10,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 3584,
+   "couleurAppels": 6,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 3,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-2900",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 224,
+   "couleurAppels": 2,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 1,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 5376,
+   "couleurAppels": 22,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 11,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-3600",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 448,
+   "couleurAppels": 4,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 2,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 224,
+   "couleurAppels": 2,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 1,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-4300",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 5224,
+   "couleurAppels": 10,
+   "ombreTriangles": 3620,
+   "ombreAppels": 8,
+   "lotsVisibles": 5,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-4300",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 672,
+   "couleurAppels": 6,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 3,
+   "lots": 29
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-800",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 47824,
+   "couleurAppels": 88,
+   "ombreTriangles": 18300,
+   "ombreAppels": 18,
+   "lotsVisibles": 17,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 52532,
+   "couleurAppels": 52,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 10,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-1500",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 46130,
+   "couleurAppels": 90,
+   "ombreTriangles": 18476,
+   "ombreAppels": 25,
+   "lotsVisibles": 20,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 33806,
+   "couleurAppels": 58,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 9,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-2200",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 66758,
+   "couleurAppels": 139,
+   "ombreTriangles": 9064,
+   "ombreAppels": 22,
+   "lotsVisibles": 30,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 25968,
+   "couleurAppels": 40,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 8,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-2900",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 39620,
+   "couleurAppels": 60,
+   "ombreTriangles": 11852,
+   "ombreAppels": 11,
+   "lotsVisibles": 7,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 42442,
+   "couleurAppels": 87,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 23,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-3600",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 46708,
+   "couleurAppels": 96,
+   "ombreTriangles": 13104,
+   "ombreAppels": 16,
+   "lotsVisibles": 14,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 32202,
+   "couleurAppels": 42,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 7,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-4300",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 100958,
+   "couleurAppels": 91,
+   "ombreTriangles": 76340,
+   "ombreAppels": 36,
+   "lotsVisibles": 15,
+   "lots": 63
+  },
+  {
+   "circuit": "brume-de-jade",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-4300",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 33006,
+   "couleurAppels": 59,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 14,
+   "lots": 63
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-800",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 117764,
+   "couleurAppels": 68,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 34,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 0,
+   "couleurAppels": 0,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 0,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-1500",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 85780,
+   "couleurAppels": 42,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 21,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 18088,
+   "couleurAppels": 16,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 8,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-2200",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 118218,
+   "couleurAppels": 82,
+   "ombreTriangles": 2584,
+   "ombreAppels": 2,
+   "lotsVisibles": 41,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 9690,
+   "couleurAppels": 6,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 3,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-2900",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 82866,
+   "couleurAppels": 26,
+   "ombreTriangles": 8398,
+   "ombreAppels": 6,
+   "lotsVisibles": 13,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 11628,
+   "couleurAppels": 12,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 6,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-3600",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 206072,
+   "couleurAppels": 42,
+   "ombreTriangles": 53164,
+   "ombreAppels": 16,
+   "lotsVisibles": 21,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 41866,
+   "couleurAppels": 18,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 9,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "cockpit-4300",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 55748,
+   "couleurAppels": 22,
+   "ombreTriangles": 47130,
+   "ombreAppels": 6,
+   "lotsVisibles": 11,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "arbres",
+   "camera": "retro-4300",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 22596,
+   "couleurAppels": 4,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 2,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-800",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 174800,
+   "couleurAppels": 165,
+   "ombreTriangles": 3144,
+   "ombreAppels": 4,
+   "lotsVisibles": 50,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 31716,
+   "couleurAppels": 32,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 7,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-1500",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 143954,
+   "couleurAppels": 125,
+   "ombreTriangles": 16828,
+   "ombreAppels": 12,
+   "lotsVisibles": 35,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 48208,
+   "couleurAppels": 55,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 14,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-2200",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 185050,
+   "couleurAppels": 175,
+   "ombreTriangles": 22736,
+   "ombreAppels": 17,
+   "lotsVisibles": 56,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 48400,
+   "couleurAppels": 50,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 12,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-2900",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 121294,
+   "couleurAppels": 88,
+   "ombreTriangles": 24170,
+   "ombreAppels": 18,
+   "lotsVisibles": 24,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 38990,
+   "couleurAppels": 52,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 12,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-3600",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 259554,
+   "couleurAppels": 128,
+   "ombreTriangles": 64992,
+   "ombreAppels": 27,
+   "lotsVisibles": 36,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 72104,
+   "couleurAppels": 58,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 18,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "cockpit-4300",
+   "toile": [
+    2880,
+    1514
+   ],
+   "couleurTriangles": 111912,
+   "couleurAppels": 116,
+   "ombreTriangles": 59030,
+   "ombreAppels": 17,
+   "lotsVisibles": 28,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "high",
+   "portee": "tout",
+   "camera": "retro-4300",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 43096,
+   "couleurAppels": 35,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 6,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-800",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 59228,
+   "couleurAppels": 68,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 34,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 0,
+   "couleurAppels": 0,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 0,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-1500",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 30940,
+   "couleurAppels": 42,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 21,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 12376,
+   "couleurAppels": 16,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 8,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-2200",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 80886,
+   "couleurAppels": 82,
+   "ombreTriangles": 1768,
+   "ombreAppels": 2,
+   "lotsVisibles": 41,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 6630,
+   "couleurAppels": 6,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 3,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-2900",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 22542,
+   "couleurAppels": 26,
+   "ombreTriangles": 5746,
+   "ombreAppels": 6,
+   "lotsVisibles": 13,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 7956,
+   "couleurAppels": 12,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 6,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-3600",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 65756,
+   "couleurAppels": 42,
+   "ombreTriangles": 29788,
+   "ombreAppels": 16,
+   "lotsVisibles": 21,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 24034,
+   "couleurAppels": 18,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 9,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "cockpit-4300",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 16796,
+   "couleurAppels": 22,
+   "ombreTriangles": 24342,
+   "ombreAppels": 6,
+   "lotsVisibles": 11,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "arbres",
+   "camera": "retro-4300",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 11508,
+   "couleurAppels": 4,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 2,
+   "lots": 75
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-800",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 116264,
+   "couleurAppels": 165,
+   "ombreTriangles": 3144,
+   "ombreAppels": 4,
+   "lotsVisibles": 50,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-800",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 31716,
+   "couleurAppels": 32,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 7,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-1500",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 89114,
+   "couleurAppels": 125,
+   "ombreTriangles": 16828,
+   "ombreAppels": 12,
+   "lotsVisibles": 35,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-1500",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 42496,
+   "couleurAppels": 55,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 14,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-2200",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 147718,
+   "couleurAppels": 175,
+   "ombreTriangles": 21920,
+   "ombreAppels": 17,
+   "lotsVisibles": 56,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-2200",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 45340,
+   "couleurAppels": 50,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 12,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-2900",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 60970,
+   "couleurAppels": 88,
+   "ombreTriangles": 21518,
+   "ombreAppels": 18,
+   "lotsVisibles": 24,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-2900",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 35318,
+   "couleurAppels": 52,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 12,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-3600",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 119238,
+   "couleurAppels": 128,
+   "ombreTriangles": 41616,
+   "ombreAppels": 27,
+   "lotsVisibles": 36,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-3600",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 54272,
+   "couleurAppels": 58,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 18,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "cockpit-4300",
+   "toile": [
+    1440,
+    757
+   ],
+   "couleurTriangles": 72960,
+   "couleurAppels": 116,
+   "ombreTriangles": 36242,
+   "ombreAppels": 17,
+   "lotsVisibles": 28,
+   "lots": 110
+  },
+  {
+   "circuit": "cap-sequoia",
+   "qualite": "medium",
+   "portee": "tout",
+   "camera": "retro-4300",
+   "toile": [
+    495,
+    150
+   ],
+   "couleurTriangles": 32008,
+   "couleurAppels": 35,
+   "ombreTriangles": 0,
+   "ombreAppels": 0,
+   "lotsVisibles": 6,
+   "lots": 110
+  }
+ ]
+}

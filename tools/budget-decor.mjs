@@ -69,6 +69,15 @@ function mesurer(theme, graine, longueur, qualite, vegetationDemandee = 'profil'
   }
   let trianglesFormes = 0;
   for (const nom of formesUtilisees) trianglesFormes += formes.get(nom).length;
+  // Cases d'arbres (Moyenne et Fine) : leur nombre pèse sur les appels de dessin, leurs versions lointaines sur les
+  // triangles au-delà de la bascule. Formes libres seulement : le cylindre du moteur (tronc proche) n'est pas compté.
+  const cases = lots.filter(l => l.arbres === true);
+  const trianglesListe = liste => liste.reduce((s, o) => s + (formes.get(o.shape)?.length || 0), 0);
+  const arbres = { lots: cases.length, troncs: cases.reduce((s, l) => s + l.objets.filter(o => o.collision === 'tronc').length, 0),
+    trianglesFormesProches: cases.reduce((s, l) => s + trianglesListe(l.objets), 0),
+    trianglesFormesLointaines: cases.reduce((s, l) => s + trianglesListe(l.loin), 0),
+    basculeMin: cases.length ? Math.min(...cases.map(l => l.bascule)) : null,
+    basculeMax: cases.length ? Math.max(...cases.map(l => l.bascule)) : null };
   const reference = (REFERENCE_029[theme]?.[v.qualite] || 0) * 9;
   const reference031 = REFERENCE_031[theme]?.[v.qualite] || 0;
   const reference032 = REFERENCE_032[theme]?.[v.qualite] || 0;
@@ -79,6 +88,7 @@ function mesurer(theme, graine, longueur, qualite, vegetationDemandee = 'profil'
     primitivesMoteur: inconnues.size,
     objetsHorsVegetation: lots.filter(l => !l.vegetation).reduce((s, l) => s + l.objets.length, 0),
     solides: d.obstacles.length,
+    arbres,
     vegetation: { herbes: v.herbes, fougeres: v.fougeres, fleurs: v.fleurs, taillis: v.taillis, lots: v.lots,
       objetsHerbe, tuiles, brins, brinsTapis,
       trianglesHerbeProches: trianglesHerbe, trianglesHerbeLointains: trianglesHerbeLoin,
@@ -122,8 +132,9 @@ let conflits = 0;
 if (json) {
   console.log(JSON.stringify(rapport, null, 2));
 } else {
-  const entetes = ['biome', 'palier', 'végétation', 'lots', 'objets', 'formes', 'triFormes', 'triRendus', 'instHerbe', 'brins', '×0.2.32', 'fougères', 'fleurs', 'taillis'];
-  const lignes = rapport.lignes.map(l => [l.biome, l.qualite, l.vegetationQualite, String(l.lots), String(l.objets), String(l.formesUniques),
+  const entetes = ['biome', 'palier', 'végétation', 'lots', 'casesArbres', 'triArbresLoin', 'objets', 'formes', 'triFormes', 'triRendus', 'instHerbe', 'brins', '×0.2.32', 'fougères', 'fleurs', 'taillis'];
+  const lignes = rapport.lignes.map(l => [l.biome, l.qualite, l.vegetationQualite, String(l.lots), String(l.arbres.lots),
+    String(l.arbres.trianglesFormesLointaines), String(l.objets), String(l.formesUniques),
     String(l.trianglesFormes), String(l.trianglesRendus), String(l.vegetation.objetsHerbe), String(l.vegetation.brins),
     l.vegetation.facteurBrinsDepuis032 === null ? '—' : l.vegetation.facteurBrinsDepuis032.toFixed(2), String(l.vegetation.fougeres),
     String(l.vegetation.fleurs), String(l.vegetation.taillis)]);
