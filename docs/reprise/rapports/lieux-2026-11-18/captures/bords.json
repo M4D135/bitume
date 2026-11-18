@@ -1,0 +1,860 @@
+{
+ "date": "2026-11-18T18:23:31.923Z",
+ "page": "dist/bitume.html",
+ "qualite": "high",
+ "taille": [
+  960,
+  540
+ ],
+ "trace": null,
+ "vues": "bords",
+ "images": [
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-danger-fosse-d-513-approche.jpg",
+   "s": 363,
+   "y": -0.2,
+   "pente": -1.8,
+   "rayon": 56,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-danger-fosse-d-513-portion.jpg",
+   "s": 538,
+   "y": 4.3,
+   "pente": 3.2,
+   "rayon": null,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-danger-fosse-d-513-travers.jpg",
+   "s": 568,
+   "y": 5.2,
+   "pente": 2.4,
+   "rayon": null,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-danger-arbres-g-1172-approche.jpg",
+   "s": 1022,
+   "y": -5.8,
+   "pente": -1.4,
+   "rayon": null,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-danger-arbres-g-1172-portion.jpg",
+   "s": 1197,
+   "y": -3.4,
+   "pente": 3.8,
+   "rayon": null,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-danger-arbres-g-1172-travers.jpg",
+   "s": 1221,
+   "y": -2.5,
+   "pente": 4.2,
+   "rayon": 634,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-danger-arbres-d-1724-approche.jpg",
+   "s": 1574,
+   "y": 4.9,
+   "pente": -2.7,
+   "rayon": null,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-danger-arbres-d-1724-portion.jpg",
+   "s": 1749,
+   "y": -2.2,
+   "pente": -4.2,
+   "rayon": null,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-danger-arbres-d-1724-travers.jpg",
+   "s": 1779,
+   "y": -3.4,
+   "pente": -3.8,
+   "rayon": null,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-danger-arbres-g-2846-approche.jpg",
+   "s": 2696,
+   "y": -5.6,
+   "pente": -1.9,
+   "rayon": null,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-danger-arbres-g-2846-portion.jpg",
+   "s": 2871,
+   "y": -4,
+   "pente": 3.5,
+   "rayon": null,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-danger-arbres-g-2846-travers.jpg",
+   "s": 2913,
+   "y": -2.3,
+   "pente": 4.2,
+   "rayon": 143,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-bandeaux-2488.jpg",
+   "s": 2448,
+   "y": 4,
+   "pente": -3.5,
+   "rayon": null,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-bandeaux-1056.jpg",
+   "s": 1016,
+   "y": -5.7,
+   "pente": -1.6,
+   "rayon": null,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-affiche-500.jpg",
+   "s": 425,
+   "y": -0.3,
+   "pente": 3.2,
+   "rayon": null,
+   "installationMs": 16
+  },
+  {
+   "circuit": "val-brule",
+   "fichier": "val-brule-passerelle-222.jpg",
+   "s": 102,
+   "y": 0,
+   "pente": 0,
+   "rayon": null,
+   "installationMs": 16
+  },
+  {
+   "circuit": "port-sable",
+   "fichier": "port-sable-danger-vide-g-1302-approche.jpg",
+   "s": 1152,
+   "y": 2.7,
+   "pente": -0.7,
+   "rayon": null,
+   "installationMs": 458
+  },
+  {
+   "circuit": "port-sable",
+   "fichier": "port-sable-danger-vide-g-1302-portion.jpg",
+   "s": 1327,
+   "y": 0.5,
+   "pente": -1.3,
+   "rayon": null,
+   "installationMs": 458
+  },
+  {
+   "circuit": "port-sable",
+   "fichier": "port-sable-danger-vide-g-1302-travers.jpg",
+   "s": 1345,
+   "y": 0.3,
+   "pente": -1.1,
+   "rayon": 2105,
+   "installationMs": 458
+  },
+  {
+   "circuit": "port-sable",
+   "fichier": "port-sable-danger-muret-d-1957-approche.jpg",
+   "s": 1807,
+   "y": 2.4,
+   "pente": -0.3,
+   "rayon": 53,
+   "installationMs": 458
+  },
+  {
+   "circuit": "port-sable",
+   "fichier": "port-sable-danger-muret-d-1957-portion.jpg",
+   "s": 1982,
+   "y": 0.6,
+   "pente": -1.3,
+   "rayon": null,
+   "installationMs": 458
+  },
+  {
+   "circuit": "port-sable",
+   "fichier": "port-sable-danger-muret-d-1957-travers.jpg",
+   "s": 2012,
+   "y": 0.2,
+   "pente": -1.3,
+   "rayon": null,
+   "installationMs": 458
+  },
+  {
+   "circuit": "port-sable",
+   "fichier": "port-sable-bandeaux-2568.jpg",
+   "s": 2528,
+   "y": -2,
+   "pente": -1,
+   "rayon": 37,
+   "installationMs": 458
+  },
+  {
+   "circuit": "port-sable",
+   "fichier": "port-sable-bandeaux-2848.jpg",
+   "s": 2808,
+   "y": -2.6,
+   "pente": 1.5,
+   "rayon": null,
+   "installationMs": 458
+  },
+  {
+   "circuit": "port-sable",
+   "fichier": "port-sable-affiche-1530.jpg",
+   "s": 1455,
+   "y": -0.3,
+   "pente": 0.2,
+   "rayon": 5967,
+   "installationMs": 458
+  },
+  {
+   "circuit": "port-sable",
+   "fichier": "port-sable-passerelle-194.jpg",
+   "s": 74,
+   "y": 0,
+   "pente": 0,
+   "rayon": null,
+   "installationMs": 458
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-danger-rochers-g-2357-approche.jpg",
+   "s": 2207,
+   "y": 3.9,
+   "pente": -0.5,
+   "rayon": 4064,
+   "installationMs": 538
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-danger-rochers-g-2357-portion.jpg",
+   "s": 2382,
+   "y": 1.7,
+   "pente": -1.9,
+   "rayon": null,
+   "installationMs": 538
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-danger-rochers-g-2357-travers.jpg",
+   "s": 2412,
+   "y": 1.2,
+   "pente": -2,
+   "rayon": null,
+   "installationMs": 538
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-danger-muret-g-3543-approche.jpg",
+   "s": 3393,
+   "y": 5.5,
+   "pente": 1.6,
+   "rayon": 149,
+   "installationMs": 538
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-danger-muret-g-3543-portion.jpg",
+   "s": 3568,
+   "y": 6.5,
+   "pente": -0.5,
+   "rayon": null,
+   "installationMs": 538
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-danger-muret-g-3543-travers.jpg",
+   "s": 3598,
+   "y": 6.3,
+   "pente": -0.9,
+   "rayon": null,
+   "installationMs": 538
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-danger-vide-g-4332-approche.jpg",
+   "s": 4182,
+   "y": -6.4,
+   "pente": -0.6,
+   "rayon": null,
+   "installationMs": 538
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-danger-vide-g-4332-portion.jpg",
+   "s": 4357,
+   "y": -5.5,
+   "pente": 1.5,
+   "rayon": null,
+   "installationMs": 538
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-danger-vide-g-4332-travers.jpg",
+   "s": 4384,
+   "y": -5.1,
+   "pente": 1.8,
+   "rayon": 532,
+   "installationMs": 538
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-bandeaux-560.jpg",
+   "s": 520,
+   "y": -2.8,
+   "pente": 1.1,
+   "rayon": null,
+   "installationMs": 538
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-bandeaux-4672.jpg",
+   "s": 4632,
+   "y": 1,
+   "pente": 2.6,
+   "rayon": null,
+   "installationMs": 538
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-affiche-586.jpg",
+   "s": 511,
+   "y": -2.8,
+   "pente": 0.2,
+   "rayon": 30216,
+   "installationMs": 538
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-passerelle-278.jpg",
+   "s": 158,
+   "y": 0,
+   "pente": 0,
+   "rayon": null,
+   "installationMs": 538
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-danger-fosse-g-1620-approche.jpg",
+   "s": 1470,
+   "y": 0.4,
+   "pente": 0.1,
+   "rayon": 1880,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-danger-fosse-g-1620-portion.jpg",
+   "s": 1645,
+   "y": -0.2,
+   "pente": -0.7,
+   "rayon": null,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-danger-fosse-g-1620-travers.jpg",
+   "s": 1675,
+   "y": -0.4,
+   "pente": -0.7,
+   "rayon": null,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-danger-rochers-g-2225-approche.jpg",
+   "s": 2075,
+   "y": -1,
+   "pente": 1,
+   "rayon": null,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-danger-rochers-g-2225-portion.jpg",
+   "s": 2250,
+   "y": 1.5,
+   "pente": 1.6,
+   "rayon": null,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-danger-rochers-g-2225-travers.jpg",
+   "s": 2280,
+   "y": 2,
+   "pente": 1.6,
+   "rayon": null,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-danger-rochers-g-2833-approche.jpg",
+   "s": 2683,
+   "y": 2.6,
+   "pente": -1.8,
+   "rayon": 59,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-danger-rochers-g-2833-portion.jpg",
+   "s": 2858,
+   "y": -1.5,
+   "pente": -2.6,
+   "rayon": null,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-danger-rochers-g-2833-travers.jpg",
+   "s": 2888,
+   "y": -2.3,
+   "pente": -2.5,
+   "rayon": null,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-danger-vide-d-3582-approche.jpg",
+   "s": 3432,
+   "y": -0.6,
+   "pente": 3.2,
+   "rayon": null,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-danger-vide-d-3582-portion.jpg",
+   "s": 3607,
+   "y": 4.6,
+   "pente": 2.4,
+   "rayon": null,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-danger-vide-d-3582-travers.jpg",
+   "s": 3641,
+   "y": 5.4,
+   "pente": 2,
+   "rayon": 233,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-bandeaux-920.jpg",
+   "s": 880,
+   "y": -1.3,
+   "pente": -1.1,
+   "rayon": null,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-bandeaux-1936.jpg",
+   "s": 1896,
+   "y": -1.7,
+   "pente": -0.2,
+   "rayon": null,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-affiche-548.jpg",
+   "s": 473,
+   "y": 2.6,
+   "pente": 5.3,
+   "rayon": null,
+   "installationMs": 81
+  },
+  {
+   "circuit": "lande-noire",
+   "fichier": "lande-noire-passerelle-286.jpg",
+   "s": 166,
+   "y": 0,
+   "pente": 0,
+   "rayon": null,
+   "installationMs": 81
+  },
+  {
+   "circuit": "roche-fauve",
+   "fichier": "roche-fauve-danger-rochers-d-757-approche.jpg",
+   "s": 607,
+   "y": 1.8,
+   "pente": -2.2,
+   "rayon": 263,
+   "installationMs": 76
+  },
+  {
+   "circuit": "roche-fauve",
+   "fichier": "roche-fauve-danger-rochers-d-757-portion.jpg",
+   "s": 782,
+   "y": -1.5,
+   "pente": -1.4,
+   "rayon": null,
+   "installationMs": 76
+  },
+  {
+   "circuit": "roche-fauve",
+   "fichier": "roche-fauve-danger-rochers-d-757-travers.jpg",
+   "s": 812,
+   "y": -1.9,
+   "pente": -1.2,
+   "rayon": null,
+   "installationMs": 76
+  },
+  {
+   "circuit": "roche-fauve",
+   "fichier": "roche-fauve-danger-rochers-g-2203-approche.jpg",
+   "s": 2053,
+   "y": -3,
+   "pente": 3.7,
+   "rayon": 52,
+   "installationMs": 76
+  },
+  {
+   "circuit": "roche-fauve",
+   "fichier": "roche-fauve-danger-rochers-g-2203-portion.jpg",
+   "s": 2228,
+   "y": 4.8,
+   "pente": 4.8,
+   "rayon": null,
+   "installationMs": 76
+  },
+  {
+   "circuit": "roche-fauve",
+   "fichier": "roche-fauve-danger-rochers-g-2203-travers.jpg",
+   "s": 2258,
+   "y": 6.3,
+   "pente": 4.8,
+   "rayon": null,
+   "installationMs": 76
+  },
+  {
+   "circuit": "roche-fauve",
+   "fichier": "roche-fauve-danger-fosse-d-2727-approche.jpg",
+   "s": 2577,
+   "y": 15,
+   "pente": -0.4,
+   "rayon": 74,
+   "installationMs": 76
+  },
+  {
+   "circuit": "roche-fauve",
+   "fichier": "roche-fauve-danger-fosse-d-2727-portion.jpg",
+   "s": 2752,
+   "y": 10.7,
+   "pente": -4.2,
+   "rayon": null,
+   "installationMs": 76
+  },
+  {
+   "circuit": "roche-fauve",
+   "fichier": "roche-fauve-danger-fosse-d-2727-travers.jpg",
+   "s": 2782,
+   "y": 9.4,
+   "pente": -4.7,
+   "rayon": null,
+   "installationMs": 76
+  },
+  {
+   "circuit": "roche-fauve",
+   "fichier": "roche-fauve-bandeaux-3280.jpg",
+   "s": 3240,
+   "y": -11.7,
+   "pente": -1.5,
+   "rayon": null,
+   "installationMs": 76
+  },
+  {
+   "circuit": "roche-fauve",
+   "fichier": "roche-fauve-bandeaux-3800.jpg",
+   "s": 3760,
+   "y": 0.7,
+   "pente": 2.9,
+   "rayon": null,
+   "installationMs": 76
+  },
+  {
+   "circuit": "roche-fauve",
+   "fichier": "roche-fauve-affiche-764.jpg",
+   "s": 689,
+   "y": 0,
+   "pente": -2,
+   "rayon": 2102,
+   "installationMs": 76
+  },
+  {
+   "circuit": "roche-fauve",
+   "fichier": "roche-fauve-passerelle-224.jpg",
+   "s": 104,
+   "y": 0,
+   "pente": 0,
+   "rayon": null,
+   "installationMs": 76
+  },
+  {
+   "circuit": "brume-de-jade",
+   "fichier": "brume-de-jade-danger-arbres-g-1540-approche.jpg",
+   "s": 1390,
+   "y": -6.4,
+   "pente": 4.5,
+   "rayon": 36185,
+   "installationMs": 92
+  },
+  {
+   "circuit": "brume-de-jade",
+   "fichier": "brume-de-jade-danger-arbres-g-1540-portion.jpg",
+   "s": 1565,
+   "y": 1.1,
+   "pente": 3.7,
+   "rayon": null,
+   "installationMs": 92
+  },
+  {
+   "circuit": "brume-de-jade",
+   "fichier": "brume-de-jade-danger-arbres-g-1540-travers.jpg",
+   "s": 1595,
+   "y": 2.1,
+   "pente": 3.4,
+   "rayon": null,
+   "installationMs": 92
+  },
+  {
+   "circuit": "brume-de-jade",
+   "fichier": "brume-de-jade-danger-muret-d-2628-approche.jpg",
+   "s": 2478,
+   "y": 6.1,
+   "pente": 1.5,
+   "rayon": null,
+   "installationMs": 92
+  },
+  {
+   "circuit": "brume-de-jade",
+   "fichier": "brume-de-jade-danger-muret-d-2628-portion.jpg",
+   "s": 2653,
+   "y": 8.6,
+   "pente": 1.1,
+   "rayon": null,
+   "installationMs": 92
+  },
+  {
+   "circuit": "brume-de-jade",
+   "fichier": "brume-de-jade-danger-muret-d-2628-travers.jpg",
+   "s": 2647,
+   "y": 8.5,
+   "pente": 1.1,
+   "rayon": null,
+   "installationMs": 92
+  },
+  {
+   "circuit": "brume-de-jade",
+   "fichier": "brume-de-jade-danger-muret-d-3331-approche.jpg",
+   "s": 3181,
+   "y": -3.3,
+   "pente": -4.9,
+   "rayon": 44,
+   "installationMs": 92
+  },
+  {
+   "circuit": "brume-de-jade",
+   "fichier": "brume-de-jade-danger-muret-d-3331-portion.jpg",
+   "s": 3356,
+   "y": -11.4,
+   "pente": -3.8,
+   "rayon": null,
+   "installationMs": 92
+  },
+  {
+   "circuit": "brume-de-jade",
+   "fichier": "brume-de-jade-danger-muret-d-3331-travers.jpg",
+   "s": 3386,
+   "y": -12.4,
+   "pente": -3.4,
+   "rayon": null,
+   "installationMs": 92
+  },
+  {
+   "circuit": "brume-de-jade",
+   "fichier": "brume-de-jade-bandeaux-688.jpg",
+   "s": 648,
+   "y": -2.2,
+   "pente": -4.9,
+   "rayon": null,
+   "installationMs": 92
+  },
+  {
+   "circuit": "brume-de-jade",
+   "fichier": "brume-de-jade-bandeaux-3496.jpg",
+   "s": 3456,
+   "y": -14.4,
+   "pente": -2.2,
+   "rayon": null,
+   "installationMs": 92
+  },
+  {
+   "circuit": "brume-de-jade",
+   "fichier": "brume-de-jade-affiche-606.jpg",
+   "s": 531,
+   "y": 2.6,
+   "pente": -0.1,
+   "rayon": null,
+   "installationMs": 92
+  },
+  {
+   "circuit": "brume-de-jade",
+   "fichier": "brume-de-jade-passerelle-324.jpg",
+   "s": 204,
+   "y": 0,
+   "pente": 0,
+   "rayon": null,
+   "installationMs": 92
+  },
+  {
+   "circuit": "cap-sequoia",
+   "fichier": "cap-sequoia-danger-muret-d-1429-approche.jpg",
+   "s": 1279,
+   "y": -1.4,
+   "pente": 1.6,
+   "rayon": 169,
+   "installationMs": 82
+  },
+  {
+   "circuit": "cap-sequoia",
+   "fichier": "cap-sequoia-danger-muret-d-1429-portion.jpg",
+   "s": 1454,
+   "y": 1.4,
+   "pente": 1.6,
+   "rayon": null,
+   "installationMs": 82
+  },
+  {
+   "circuit": "cap-sequoia",
+   "fichier": "cap-sequoia-danger-muret-d-1429-travers.jpg",
+   "s": 1484,
+   "y": 1.9,
+   "pente": 1.5,
+   "rayon": null,
+   "installationMs": 82
+  },
+  {
+   "circuit": "cap-sequoia",
+   "fichier": "cap-sequoia-danger-arbres-g-2789-approche.jpg",
+   "s": 2639,
+   "y": 0.6,
+   "pente": -1.6,
+   "rayon": null,
+   "installationMs": 82
+  },
+  {
+   "circuit": "cap-sequoia",
+   "fichier": "cap-sequoia-danger-arbres-g-2789-portion.jpg",
+   "s": 2814,
+   "y": -2.2,
+   "pente": -1.5,
+   "rayon": null,
+   "installationMs": 82
+  },
+  {
+   "circuit": "cap-sequoia",
+   "fichier": "cap-sequoia-danger-arbres-g-2789-travers.jpg",
+   "s": 2844,
+   "y": -2.7,
+   "pente": -1.5,
+   "rayon": null,
+   "installationMs": 82
+  },
+  {
+   "circuit": "cap-sequoia",
+   "fichier": "cap-sequoia-danger-vide-g-4524-approche.jpg",
+   "s": 4374,
+   "y": 5.4,
+   "pente": 1,
+   "rayon": null,
+   "installationMs": 82
+  },
+  {
+   "circuit": "cap-sequoia",
+   "fichier": "cap-sequoia-danger-vide-g-4524-portion.jpg",
+   "s": 4549,
+   "y": 6.6,
+   "pente": 0.3,
+   "rayon": null,
+   "installationMs": 82
+  },
+  {
+   "circuit": "cap-sequoia",
+   "fichier": "cap-sequoia-danger-vide-g-4524-travers.jpg",
+   "s": 4559,
+   "y": 6.6,
+   "pente": 0.3,
+   "rayon": null,
+   "installationMs": 82
+  },
+  {
+   "circuit": "cap-sequoia",
+   "fichier": "cap-sequoia-bandeaux-624.jpg",
+   "s": 584,
+   "y": -6.4,
+   "pente": -0.5,
+   "rayon": null,
+   "installationMs": 82
+  },
+  {
+   "circuit": "cap-sequoia",
+   "fichier": "cap-sequoia-bandeaux-1920.jpg",
+   "s": 1880,
+   "y": 6.3,
+   "pente": 0.5,
+   "rayon": null,
+   "installationMs": 82
+  },
+  {
+   "circuit": "cap-sequoia",
+   "fichier": "cap-sequoia-affiche-504.jpg",
+   "s": 429,
+   "y": -4.4,
+   "pente": -5.9,
+   "rayon": null,
+   "installationMs": 82
+  },
+  {
+   "circuit": "cap-sequoia",
+   "fichier": "cap-sequoia-passerelle-220.jpg",
+   "s": 100,
+   "y": 0,
+   "pente": 0,
+   "rayon": null,
+   "installationMs": 82
+  }
+ ],
+ "erreurs": []
+}

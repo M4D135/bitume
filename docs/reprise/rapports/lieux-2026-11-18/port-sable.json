@@ -1,0 +1,131 @@
+{
+ "id": "port-sable",
+ "nom": "Port-Sable",
+ "theme": "cote",
+ "mesures": {
+  "longueur": 4388,
+  "denivele": 10.18,
+  "altitudeMin": 0,
+  "altitudeMax": 10.18,
+  "penteMax": 3,
+  "penteMin": -4.48,
+  "longueurAu10": 0,
+  "longueurAu20": 0,
+  "rayonMin": 32,
+  "partDroite": 0.65,
+  "virages": 3,
+  "separation": "au moins 60 m",
+  "separationOu": null,
+  "chargeMin": 0.61,
+  "chargeMinOu": 2429.94,
+  "chargeMax": 1.35,
+  "chargeMaxOu": 4295.9,
+  "tourP9": 79.21,
+  "tourP10": 79.06,
+  "couverts": 1,
+  "longueurCouverte": 160,
+  "ponts": 1,
+  "bords": 4
+ },
+ "problemes": [],
+ "lieux": [
+  {
+   "n": 1,
+   "nom": "Le Grand Môle",
+   "debut": 280,
+   "fin": 1129,
+   "court": "aller et retour sur la digue, épingle autour du phare, embruns"
+  },
+  {
+   "n": 2,
+   "nom": "Les Salins",
+   "debut": 1485,
+   "fin": 1845,
+   "court": "digue droite entre les bassins roses, l'eau des deux côtés"
+  },
+  {
+   "n": 3,
+   "nom": "Le Cordon dunaire",
+   "debut": 2033,
+   "fin": 2543,
+   "court": "dos-d'âne sans visibilité, sable sur les bas-côtés, ganivelles"
+  },
+  {
+   "n": 4,
+   "nom": "Pont du Canal",
+   "debut": 3968,
+   "fin": 4128,
+   "court": "pont tournant à poutres d'acier, on passe sous le treillis"
+  }
+ ],
+ "couverts": [
+  {
+   "nom": "Pont du Canal",
+   "type": "pont-couvert",
+   "debut": 3968,
+   "fin": 4128,
+   "longueur": 160
+  }
+ ],
+ "ponts": [
+  {
+   "nom": "Pont du Canal",
+   "type": "treillis",
+   "debut": 3968,
+   "fin": 4128
+  }
+ ],
+ "bords": [
+  {
+   "nom": "Quai du Môle",
+   "type": "vide",
+   "cote": "G",
+   "debut": 374,
+   "fin": 654
+  },
+  {
+   "nom": "Quai du Môle",
+   "type": "vide",
+   "cote": "D",
+   "debut": 755,
+   "fin": 1035
+  },
+  {
+   "nom": "Bassins des Salins",
+   "type": "fosse",
+   "cote": "G",
+   "debut": 1485,
+   "fin": 1845
+  },
+  {
+   "nom": "Bassins des Salins (est)",
+   "type": "fosse",
+   "cote": "D",
+   "debut": 1485,
+   "fin": 1845
+  }
+ ],
+ "croisements": [],
+ "fermeture": {
+  "angleAjuste": 0,
+  "allongements": [
+   [
+    6,
+    0
+   ],
+   [
+    14,
+    208
+   ],
+   [
+    17,
+    238
+   ],
+   [
+    20,
+    0
+   ]
+  ]
+ },
+ "tunnelDuJeu": null
+}
