@@ -115,6 +115,113 @@ await verifier('annulation, onglet masqué, contexte perdu, redimensionnement et
     assert.equal(r.statut, 'interrompu', option); assert.equal(r.motif, motif); assert.equal(r.reglages, undefined);
   }
 });
+// Appareil à fin forcée : dessiner occupe le processeur, terminer attend la fin du travail graphique (en série,
+// comme la lecture d'un pixel). La synchronisation suivante tombe à la première période d'écran libre.
+function appareilFin(charges, options = {}) {
+  const periode = options.periode || 1000 / 60;
+  let horloge = 0, vsync = 0, id = null, gpuEnCours = 0, image = 0, appels = 0, lecturesGPU = 0, fins = 0, dessinsAvant = 0;
+  const visites = [], preparations = [];
+  const io = {
+    maintenant: () => horloge,
+    empreinte: () => 'machine',
+    perdu: () => options.perdre && appels > 20,
+    image: async () => {
+      appels++;
+      const libre = horloge + gpuEnCours; gpuEnCours = 0;
+      vsync = Math.max(vsync + periode, Math.ceil(libre / periode - 1e-9) * periode);
+      horloge = vsync; return horloge;
+    },
+    preparer: (choix, profil, reglage) => { id = choix; visites.push(choix); preparations.push(reglage); image = 0; },
+    dessiner: (temps, vue) => {
+      assert.ok(vue >= 0 && vue < 3);
+      if (id === null) dessinsAvant++;
+      const c = charges[id] || { cpu: 1, gpu: 2 }, pic = c.pic && ++image % c.pic.tous === 0;
+      horloge += c.cpu; gpuEnCours = pic ? c.pic.gpu : c.gpu;
+    },
+    terminer: () => { fins++; horloge += gpuEnCours; gpuEnCours = 0; },
+    profilGPU: () => { lecturesGPU++; return { gpu: true, frames: 0, history: [] }; },
+  };
+  return { io, visites, preparations, get lecturesGPU() { return lecturesGPU; }, get fins() { return fins; }, get dessinsAvant() { return dessinsAvant; } };
+}
+const proche = (a, b, nom) => assert.ok(Math.abs(a - b) < 1e-3, nom + ' : ' + a + ' au lieu de ' + b);
+await verifier('fin forcée : un profil trop cher est refusé, sans jamais lire le chronomètre GPU', async () => {
+  const f = appareilFin({ medium: { cpu: 3, gpu: 8 }, low: { cpu: 1, gpu: 2 } }), r = await A.executer(f.io);
+  assert.equal(r.statut, 'ok'); assert.equal(r.methode, 'terminer'); assert.equal(r.selection, 'low');
+  assert.deepEqual(f.visites, ['medium', 'low']);
+  assert.equal(r.mesures[0].acceptable, false); proche(r.mesures[0].cout95, 11, 'coût de Moyenne');
+  assert.equal(r.mesures[1].acceptable, true); proche(r.mesures[1].cout95, 3, 'coût de Légère');
+  proche(r.mesures[0].cpu95, 3, 'processeur'); proche(r.mesures[0].attente95, 8, 'attente du GPU');
+  assert.equal(f.lecturesGPU, 0, 'le chronomètre GPU n est plus consulté');
+  assert.ok(f.preparations.every(p => p && p.chronoGPU === false), 'le parcours n ouvre pas le chronomètre');
+  assert.ok(f.fins >= r.mesures[0].images + r.mesures[1].images, 'chaque image mesurée est terminée');
+  // la période vient d'images à vide, avant tout dessin
+  assert.equal(f.dessinsAvant, 0); assert.ok(r.cadenceIntervalles >= 9 && r.cadenceIntervalles <= 24);
+  proche(r.cadence, 1000 / 60, 'période'); assert.equal(r.cadenceEcart, 0);
+  proche(r.budget, 1000 / 60, 'budget'); assert.equal(r.limite, 10); assert.equal(r.fraction, A.FRACTION);
+});
+await verifier('fin forcée : juste sous la limite accepté, juste au-dessus refusé', async () => {
+  const f = appareilFin({ medium: { cpu: 2, gpu: 7.9 }, high: { cpu: 2, gpu: 8.3 } }), r = await A.executer(f.io);
+  assert.equal(r.selection, 'medium'); assert.deepEqual(f.visites, ['medium', 'high']);
+  assert.equal(r.mesures[0].acceptable, true); assert.equal(r.mesures[1].acceptable, false);
+  assert.ok(r.mesures[0].images >= 24);
+});
+await verifier('fin forcée : un écran bridé à 30 Hz ne change plus le verdict', async () => {
+  const charges = { medium: { cpu: 2, gpu: 7.9 }, high: { cpu: 2, gpu: 8.3 } };
+  const a60 = await A.executer(appareilFin(charges).io), a30 = await A.executer(appareilFin(charges, { periode: 1000 / 30 }).io);
+  assert.equal(a60.selection, 'medium'); assert.equal(a30.selection, 'medium');
+  proche(a30.cadence, 1000 / 30, 'période consignée'); proche(a30.mesures[0].p50, 1000 / 30, 'intervalles consignés');
+  assert.deepEqual(a30.mesures.map(m => m.acceptable), a60.mesures.map(m => m.acceptable));
+  assert.deepEqual(a30.mesures.map(m => m.cout95), a60.mesures.map(m => m.cout95));
+});
+await verifier('fin forcée : un accroc sur huit images refuse un profil dont la médiane passe', async () => {
+  const f = appareilFin({ medium: { cpu: 2, gpu: 5, pic: { tous: 8, gpu: 12 } } }), r = await A.executer(f.io);
+  proche(r.mesures[0].cout50, 7, 'médiane'); proche(r.mesures[0].cout95, 14, '95e centile');
+  assert.equal(r.mesures[0].acceptable, false); assert.equal(r.selection, 'low');
+});
+await verifier('fin forcée : Extrême essayé seulement si Fine tient dans la moitié de la limite', async () => {
+  const large = appareilFin({ medium: { cpu: 1, gpu: 2 }, high: { cpu: 1, gpu: 3.5 }, extreme: { cpu: 1, gpu: 8 } });
+  let r = await A.executer(large.io);
+  assert.deepEqual(large.visites, ['medium', 'high', 'extreme']); assert.equal(r.selection, 'extreme');
+  const juste = appareilFin({ medium: { cpu: 1, gpu: 2 }, high: { cpu: 1, gpu: 4.5 } });
+  r = await A.executer(juste.io);
+  assert.deepEqual(juste.visites, ['medium', 'high']); assert.equal(r.selection, 'high');
+  const lourd = appareilFin({ medium: { cpu: 1, gpu: 2 }, high: { cpu: 1, gpu: 3.5 }, extreme: { cpu: 1, gpu: 9.5 } });
+  r = await A.executer(lourd.io);
+  assert.deepEqual(lourd.visites, ['medium', 'high', 'extreme']); assert.equal(r.selection, 'high');
+});
+await verifier('fin forcée : un profil sans espoir est mesuré sur huit images seulement', async () => {
+  const f = appareilFin({ medium: { cpu: 5, gpu: 20 } }), r = await A.executer(f.io);
+  assert.equal(r.mesures[0].images, 8); assert.equal(r.mesures[0].acceptable, false);
+  assert.equal(r.selection, 'low'); assert.deepEqual(f.visites, ['medium', 'low']);
+});
+await verifier('fin forcée : un contexte perdu interrompt sans réglage', async () => {
+  const r = await A.executer(appareilFin({}, { perdre: true }).io);
+  assert.equal(r.statut, 'interrompu'); assert.equal(r.motif, 'contexte_perdu'); assert.equal(r.reglages, undefined);
+  assert.equal(r.methode, 'terminer');
+});
+await verifier('sans io.terminer : méthode du chronomètre GPU et appel de préparation inchangés', async () => {
+  const f = appareil({ medium: { cpu: 2, gpu: 8 }, high: { cpu: 2, gpu: 22 } }), arguments_ = [], preparer = f.io.preparer;
+  f.io.preparer = (...a) => { arguments_.push(a.length); return preparer(...a); };
+  const r = await A.executer(f.io);
+  assert.equal(r.methode, 'chrono-gpu'); assert.equal(r.selection, 'medium');
+  assert.equal(r.limite, undefined); assert.equal(r.mesures[0].methode, undefined);
+  assert.deepEqual(arguments_, [2, 2]);
+});
+await verifier('cache : la fin forcée refait une fois les détections prises au chronomètre GPU', () => {
+  const e = A.empreinte('GPU-A', 1280, 720, 1);
+  const ancien = { revision: A.REVISION, statut: 'ok', selection: 'low', empreinte: e, mesures: [{}], methode: 'chrono-gpu' };
+  assert.ok(A.cacheValide(ancien, e), 'sans fin forcée, la validité ne change pas');
+  assert.equal(A.cacheValide(ancien, e, { terminer: true }), false);
+  assert.ok(A.cacheValide({ ...ancien, methode: 'terminer' }, e, { terminer: true }));
+  assert.equal(A.cacheValide({ ...ancien, revision: 1 }, e), false, 'les détections de la révision 1 sont refaites');
+});
+await verifier('bilan de coût : le 95e centile juge, la limite est incluse', () => {
+  const vingtQuatre = v => Array(24).fill(v);
+  assert.equal(A.bilanCout('medium', vingtQuatre(10), [], [], []).acceptable, true);
+  assert.equal(A.bilanCout('medium', vingtQuatre(10.01), [], [], []).acceptable, false);
+  assert.equal(A.bilanCout('medium', Array(23).fill(1), [], [], []).acceptable, false, 'trop peu d images');
+  assert.equal(A.LIMITE, A.BUDGET * A.FRACTION);
+});
 await verifier('les réglages ne touchent ni au moment de la course ni aux commandes', () => {
   for (const id of Object.keys(A.profils)) assert.deepEqual(Object.keys(A.reglages(id)), [...A.CLES]);
   assert.equal(A.reglages('inconnu'), null);
