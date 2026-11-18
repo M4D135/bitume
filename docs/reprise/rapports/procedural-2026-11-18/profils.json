@@ -1,0 +1,6122 @@
+{
+ "date": "2026-11-18T16:17:01.200Z",
+ "src": "/Users/david/Projects/bitume/src",
+ "qualite": "high",
+ "saison": "ete",
+ "note": "Mesures sur les sources lues sans modification. Charges verticales : v²/R vertical à la vitesse de référence de circuit.js, en g (le modèle de conduite p9 ne les applique pas).",
+ "circuits": [
+  {
+   "id": "val-brule",
+   "nom": "Val-Brûlé",
+   "theme": "foret",
+   "graine": 11,
+   "longueurVisee": 4200,
+   "mesures": {
+    "relief": {
+     "altitudeMin": -6.12,
+     "sAltitudeMin": 1910,
+     "altitudeMax": 6.12,
+     "sAltitudeMax": 2332,
+     "denivele": 12.24,
+     "montéeCumulée": 54.3,
+     "penteMaxPct": 6.8,
+     "penteMonteeMaxPct": 4.76,
+     "penteDescenteMaxPct": -6.8,
+     "penteMoyennePct": 2.57,
+     "penteP95Pct": 4.55,
+     "cretes": 5,
+     "cuvettes": 4,
+     "listeCretes": [
+      {
+       "s": 644,
+       "y": 6.12,
+       "proeminence": 6.81,
+       "rayonVertical": 2952,
+       "vitesseKmh": 211,
+       "chargeG": -0.119,
+       "sens": "crête"
+      },
+      {
+       "s": 1488,
+       "y": 6.12,
+       "proeminence": 12.16,
+       "rayonVertical": 2952,
+       "vitesseKmh": 220,
+       "chargeG": -0.129,
+       "sens": "crête"
+      },
+      {
+       "s": 2332,
+       "y": 6.12,
+       "proeminence": 12.16,
+       "rayonVertical": 2952,
+       "vitesseKmh": 144,
+       "chargeG": -0.055,
+       "sens": "crête"
+      },
+      {
+       "s": 3176,
+       "y": 6.12,
+       "proeminence": 12.16,
+       "rayonVertical": 2952,
+       "vitesseKmh": 167,
+       "chargeG": -0.074,
+       "sens": "crête"
+      },
+      {
+       "s": 3932,
+       "y": 4.65,
+       "proeminence": 4.65,
+       "rayonVertical": 481,
+       "vitesseKmh": 213,
+       "chargeG": -0.741,
+       "sens": "crête"
+      }
+     ],
+     "listeCuvettes": [
+      {
+       "s": 1066,
+       "y": -6.12,
+       "proeminence": 12.15,
+       "rayonVertical": 2952,
+       "vitesseKmh": 256,
+       "chargeG": 0.174,
+       "sens": "cuvette"
+      },
+      {
+       "s": 1910,
+       "y": -6.12,
+       "proeminence": 12.16,
+       "rayonVertical": 2952,
+       "vitesseKmh": 214,
+       "chargeG": 0.122,
+       "sens": "cuvette"
+      },
+      {
+       "s": 2754,
+       "y": -6.12,
+       "proeminence": 12.16,
+       "rayonVertical": 2952,
+       "vitesseKmh": 243,
+       "chargeG": 0.158,
+       "sens": "cuvette"
+      },
+      {
+       "s": 3598,
+       "y": -6.12,
+       "proeminence": 10.77,
+       "rayonVertical": 2952,
+       "vitesseKmh": 230,
+       "chargeG": 0.141,
+       "sens": "cuvette"
+      }
+     ],
+     "rayonVerticalMinCrete": 475,
+     "rayonVerticalMinCuvette": 462,
+     "chargeVerticaleMaxG": 0.902,
+     "allegementMaxG": -0.745
+    },
+    "devers": {
+     "maxDeg": 2.49,
+     "partSup1DegPct": 4.9,
+     "partNulPct": 70.2
+    },
+    "virages": [
+     {
+      "debut": 342,
+      "longueur": 78,
+      "sens": "droite",
+      "rayonMin": 39,
+      "angle": 70,
+      "deversApexDeg": 0.56,
+      "deversApexPct": 0.98,
+      "deversMaxDeg": 0.68,
+      "relation": "relevé",
+      "penteApexPct": -1.24,
+      "vitesseApexKmh": 86,
+      "apex": 384
+     },
+     {
+      "debut": 808,
+      "longueur": 78,
+      "sens": "droite",
+      "rayonMin": 173,
+      "angle": 21,
+      "deversApexDeg": 0.51,
+      "deversApexPct": 0.89,
+      "deversMaxDeg": 0.52,
+      "relation": "relevé",
+      "penteApexPct": -4.53,
+      "vitesseApexKmh": 233,
+      "apex": 840
+     },
+     {
+      "debut": 1224,
+      "longueur": 104,
+      "sens": "droite",
+      "rayonMin": 112,
+      "angle": 43,
+      "deversApexDeg": 0.73,
+      "deversApexPct": 1.27,
+      "deversMaxDeg": 0.82,
+      "relation": "relevé",
+      "penteApexPct": 4.48,
+      "vitesseApexKmh": 168,
+      "apex": 1252
+     },
+     {
+      "debut": 1604,
+      "longueur": 88,
+      "sens": "droite",
+      "rayonMin": 57,
+      "angle": 62,
+      "deversApexDeg": 1.43,
+      "deversApexPct": 2.49,
+      "deversMaxDeg": 1.55,
+      "relation": "relevé",
+      "penteApexPct": -4.07,
+      "vitesseApexKmh": 108,
+      "apex": 1636
+     },
+     {
+      "debut": 1958,
+      "longueur": 104,
+      "sens": "gauche",
+      "rayonMin": 82,
+      "angle": 56,
+      "deversApexDeg": -0.98,
+      "deversApexPct": -1.72,
+      "deversMaxDeg": -1.11,
+      "relation": "relevé",
+      "penteApexPct": 3.55,
+      "vitesseApexKmh": 137,
+      "apex": 2030
+     },
+     {
+      "debut": 2210,
+      "longueur": 86,
+      "sens": "droite",
+      "rayonMin": 32,
+      "angle": 99,
+      "deversApexDeg": 2.37,
+      "deversApexPct": 4.13,
+      "deversMaxDeg": 2.49,
+      "relation": "relevé",
+      "penteApexPct": 2.77,
+      "vitesseApexKmh": 76,
+      "apex": 2244
+     },
+     {
+      "debut": 2552,
+      "longueur": 118,
+      "sens": "gauche",
+      "rayonMin": 164,
+      "angle": 36,
+      "deversApexDeg": -0.49,
+      "deversApexPct": -0.86,
+      "deversMaxDeg": -0.56,
+      "relation": "relevé",
+      "penteApexPct": -3.33,
+      "vitesseApexKmh": 228,
+      "apex": 2644
+     },
+     {
+      "debut": 2888,
+      "longueur": 150,
+      "sens": "droite",
+      "rayonMin": 79,
+      "angle": 55,
+      "deversApexDeg": 0.4,
+      "deversApexPct": 0.7,
+      "deversMaxDeg": 0.64,
+      "relation": "relevé",
+      "penteApexPct": 3.93,
+      "vitesseApexKmh": 217,
+      "apex": 2894
+     },
+     {
+      "debut": 3200,
+      "longueur": 62,
+      "sens": "droite",
+      "rayonMin": 35,
+      "angle": 56,
+      "deversApexDeg": 1.85,
+      "deversApexPct": 3.23,
+      "deversMaxDeg": 1.85,
+      "relation": "relevé",
+      "penteApexPct": -1.77,
+      "vitesseApexKmh": 82,
+      "apex": 3230
+     },
+     {
+      "debut": 3680,
+      "longueur": 64,
+      "sens": "droite",
+      "rayonMin": 77,
+      "angle": 30,
+      "deversApexDeg": 0.95,
+      "deversApexPct": 1.65,
+      "deversMaxDeg": 0.95,
+      "relation": "relevé",
+      "penteApexPct": 3.4,
+      "vitesseApexKmh": 132,
+      "apex": 3712
+     },
+     {
+      "debut": 3984,
+      "longueur": 48,
+      "sens": "droite",
+      "rayonMin": 181,
+      "angle": 11,
+      "deversApexDeg": 0.06,
+      "deversApexPct": 0.1,
+      "deversMaxDeg": 0.1,
+      "relation": "plat",
+      "penteApexPct": -5.64,
+      "vitesseApexKmh": 227,
+      "apex": 4008
+     }
+    ],
+    "nombreVirages": 11,
+    "courbures": {
+     "droite": 75,
+     "rapide": 2.5,
+     "moyen": 9.2,
+     "lent": 9.1,
+     "serré": 3.6,
+     "épingle": 0.6
+    },
+    "droites": {
+     "nombre": 11,
+     "plusLongue": 526,
+     "total": 3166,
+     "liste": [
+      {
+       "debut": 4038,
+       "longueur": 526
+      },
+      {
+       "debut": 3264,
+       "longueur": 412
+      },
+      {
+       "debut": 420,
+       "longueur": 382
+      },
+      {
+       "debut": 892,
+       "longueur": 328
+      },
+      {
+       "debut": 1332,
+       "longueur": 270
+      },
+      {
+       "debut": 1694,
+       "longueur": 262
+      },
+      {
+       "debut": 2298,
+       "longueur": 248
+      },
+      {
+       "debut": 3748,
+       "longueur": 230
+      },
+      {
+       "debut": 2676,
+       "longueur": 208
+      },
+      {
+       "debut": 3042,
+       "longueur": 156
+      },
+      {
+       "debut": 2064,
+       "longueur": 144
+      }
+     ]
+    },
+    "largeur": 12,
+    "degagement": {
+     "min": 11.9,
+     "p10": 14,
+     "median": 14,
+     "max": 14
+    },
+    "vitesse": {
+     "minKmh": 76,
+     "maxKmh": 269,
+     "tempsReference": 81.03
+    },
+    "tunnel": null,
+    "stands": {
+     "debut": 30,
+     "fin": 240
+    },
+    "ligneDroiteDepart": {
+     "debut": -184,
+     "fin": 342
+    }
+   },
+   "decor": {
+    "familles": {
+     "arbres": {
+      "objets": 2164,
+      "loin": 1082,
+      "solides": 1082,
+      "formes": 2,
+      "matieres": {
+       "26": 1082,
+       "27": 1082
+      },
+      "distanceMedianeAxe": 111,
+      "casesOccupees40m": 9
+     },
+     "glissières : lisses": {
+      "objets": 1056,
+      "loin": 1056,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "0": 1056
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 43
+     },
+     "glissières : poteaux": {
+      "objets": 1056,
+      "loin": 0,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "0": 1056
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 43
+     },
+     "marquages de grille": {
+      "objets": 48,
+      "loin": 0,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "14": 48
+      },
+      "distanceMedianeAxe": 2,
+      "casesOccupees40m": 3
+     },
+     "murs de pneus": {
+      "objets": 504,
+      "loin": 0,
+      "solides": 504,
+      "formes": 1,
+      "matieres": {
+       "7": 504
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 10
+     },
+     "panneaux publicitaires": {
+      "objets": 120,
+      "loin": 60,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "16": 120
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 33
+     },
+     "passerelle": {
+      "objets": 5,
+      "loin": 5,
+      "solides": 3,
+      "formes": 1,
+      "matieres": {
+       "16": 2,
+       "22": 3
+      },
+      "distanceMedianeAxe": 0,
+      "casesOccupees40m": 2
+     },
+     "portique des feux": {
+      "objets": 9,
+      "loin": 3,
+      "solides": 3,
+      "formes": 1,
+      "matieres": {
+       "0": 3,
+       "7": 5,
+       "16": 1
+      },
+      "distanceMedianeAxe": 1,
+      "casesOccupees40m": 1
+     },
+     "postes de commissaires": {
+      "objets": 36,
+      "loin": 0,
+      "solides": 27,
+      "formes": 2,
+      "matieres": {
+       "0": 9,
+       "16": 18,
+       "13.6": 9
+      },
+      "distanceMedianeAxe": 23,
+      "casesOccupees40m": 10
+     },
+     "repères de freinage": {
+      "objets": 84,
+      "loin": 21,
+      "solides": 0,
+      "formes": 2,
+      "matieres": {
+       "0": 21,
+       "16": 63
+      },
+      "distanceMedianeAxe": 9,
+      "casesOccupees40m": 14
+     },
+     "stands": {
+      "objets": 84,
+      "loin": 6,
+      "solides": 24,
+      "formes": 1,
+      "matieres": {
+       "7": 60,
+       "16": 6,
+       "22": 6,
+       "24": 6,
+       "13.2": 6
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 6
+     },
+     "tribunes et public": {
+      "objets": 3243,
+      "loin": 45,
+      "solides": 80,
+      "formes": 2,
+      "matieres": {
+       "0": 35,
+       "16": 5,
+       "18": 3158,
+       "22": 45
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 6
+     },
+     "végétation : fleurs": {
+      "objets": 25,
+      "loin": 25,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "27": 25
+      },
+      "distanceMedianeAxe": 14,
+      "casesOccupees40m": 13
+     },
+     "végétation : fougères": {
+      "objets": 16,
+      "loin": 16,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "27": 16
+      },
+      "distanceMedianeAxe": 12,
+      "casesOccupees40m": 10
+     },
+     "végétation : herbe": {
+      "objets": 39025,
+      "loin": 39025,
+      "solides": 0,
+      "formes": 3,
+      "matieres": {
+       "27": 39025
+      },
+      "distanceMedianeAxe": 24,
+      "casesOccupees40m": 34
+     },
+     "végétation : humus": {
+      "objets": 16,
+      "loin": 16,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "25": 16
+      },
+      "distanceMedianeAxe": 12,
+      "casesOccupees40m": 10
+     },
+     "végétation : taillis": {
+      "objets": 31,
+      "loin": 31,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "27": 31
+      },
+      "distanceMedianeAxe": 13,
+      "casesOccupees40m": 17
+     },
+     "villages : maisons": {
+      "objets": 87,
+      "loin": 87,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "1": 58,
+       "13.2": 14,
+       "13.3": 7,
+       "13.1": 4,
+       "13.4": 4
+      },
+      "distanceMedianeAxe": 292,
+      "casesOccupees40m": 0
+     }
+    },
+    "autres": {},
+    "cases": 43,
+    "pasCase": 100,
+    "mobilierParCase": [
+     995,
+     973,
+     83,
+     52,
+     26,
+     4,
+     4,
+     8,
+     0,
+     6,
+     2,
+     4,
+     4,
+     4,
+     9,
+     9,
+     76,
+     2,
+     17,
+     8,
+     77,
+     17,
+     72,
+     2,
+     4,
+     4,
+     0,
+     15,
+     43,
+     36,
+     11,
+     13,
+     76,
+     4,
+     6,
+     15,
+     11,
+     68,
+     2,
+     4,
+     247,
+     994,
+     126
+    ],
+    "natureParCase": [
+     8,
+     4,
+     2,
+     2,
+     8,
+     30,
+     124,
+     98,
+     214,
+     38,
+     100,
+     60,
+     48,
+     102,
+     220,
+     60,
+     38,
+     8,
+     4,
+     8,
+     2,
+     8,
+     4,
+     0,
+     0,
+     0,
+     2,
+     2,
+     0,
+     4,
+     4,
+     0,
+     0,
+     0,
+     4,
+     0,
+     4,
+     4,
+     6,
+     4,
+     6,
+     6,
+     2
+    ],
+    "vegetationParCase": [
+     200,
+     226,
+     519,
+     529,
+     407,
+     523,
+     334,
+     406,
+     238,
+     490,
+     839,
+     621,
+     231,
+     334,
+     772,
+     477,
+     569,
+     398,
+     49,
+     487,
+     1104,
+     946,
+     882,
+     0,
+     0,
+     288,
+     628,
+     659,
+     0,
+     0,
+     0,
+     5,
+     377,
+     0,
+     0,
+     0,
+     0,
+     359,
+     748,
+     372,
+     594,
+     77,
+     5
+    ],
+    "diversiteParCase": [
+     4,
+     4,
+     5,
+     2,
+     2,
+     1,
+     1,
+     2,
+     0,
+     1,
+     1,
+     1,
+     1,
+     1,
+     2,
+     2,
+     2,
+     1,
+     3,
+     3,
+     2,
+     3,
+     1,
+     1,
+     1,
+     1,
+     0,
+     2,
+     3,
+     1,
+     3,
+     3,
+     2,
+     1,
+     1,
+     3,
+     3,
+     2,
+     1,
+     1,
+     4,
+     4,
+     3
+    ],
+    "partCasesAuPlusUneFamillePct": 44.2,
+    "zonesSansMobilier": {
+     "total": 200,
+     "partPct": 4.7,
+     "plusLongues": [
+      {
+       "debut": 800,
+       "longueur": 100
+      },
+      {
+       "debut": 2600,
+       "longueur": 100
+      }
+     ]
+    },
+    "zonesVides": {
+     "total": 0,
+     "partPct": 0,
+     "plusLongues": []
+    },
+    "zonesSansVegetationProche": {
+     "total": 900,
+     "partPct": 21.3
+    },
+    "nappes": {
+     "accotement": {
+      "sommets": 38646,
+      "triangles": 37998,
+      "matieres": {
+       "8": 24340,
+       "14": 10012,
+       "21": 4294
+      }
+     },
+     "terrain": {
+      "sommets": 16625,
+      "triangles": 28704,
+      "matieres": {
+       "8": 16625
+      }
+     }
+    },
+    "lots": 2394,
+    "vegetation": {
+     "herbes": 39025,
+     "fougeres": 16,
+     "fleurs": 25,
+     "taillis": 31,
+     "lots": 2362,
+     "qualite": "high",
+     "brins": 2719234,
+     "tuiles": 38951,
+     "brinsTapis": 2718568,
+     "objetsHerbe": 39025,
+     "brinsAccotements": 614272,
+     "brinsTerrain": 2104296,
+     "aireAccotements": 46208.961861786556,
+     "aireTerrain": 3891901.116482322,
+     "aireNue": 4289006.365993417,
+     "aireRiche": 2332203.1459190887,
+     "brinsRiches": 1581824
+    }
+   },
+   "palette": {
+    "herbe": [
+     0.19,
+     0.33,
+     0.1
+    ],
+    "herbeClaire": [
+     0.26,
+     0.4,
+     0.13
+    ],
+    "terre": [
+     0.25,
+     0.3,
+     0.12
+    ],
+    "roche": null,
+    "sable": null,
+    "ciel": [
+     [
+      0.15,
+      0.35,
+      0.62
+     ],
+     [
+      0.66,
+      0.77,
+      0.85
+     ]
+    ],
+    "brume": [
+     0.62,
+     0.7,
+     0.75
+    ],
+    "densiteBrume": 0.0011,
+    "essence": "feuillu",
+    "densiteArbres": 0.62,
+    "reliefTerrain": 26,
+    "echelleTerrain": 430,
+    "matieresRecettes": true
+   }
+  },
+  {
+   "id": "port-sable",
+   "nom": "Port-Sable",
+   "theme": "cote",
+   "graine": 29,
+   "longueurVisee": 3600,
+   "mesures": {
+    "relief": {
+     "altitudeMin": -5.79,
+     "sAltitudeMin": 680,
+     "altitudeMax": 4.31,
+     "sAltitudeMax": 3158,
+     "denivele": 10.11,
+     "montéeCumulée": 20.5,
+     "penteMaxPct": 3.51,
+     "penteMonteeMaxPct": 3.21,
+     "penteDescenteMaxPct": -3.51,
+     "penteMoyennePct": 1.13,
+     "penteP95Pct": 3.09,
+     "cretes": 4,
+     "cuvettes": 3,
+     "listeCretes": [
+      {
+       "s": 388,
+       "y": 1.06,
+       "proeminence": 1.06,
+       "rayonVertical": 1084,
+       "vitesseKmh": 150,
+       "chargeG": -0.164,
+       "sens": "crête"
+      },
+      {
+       "s": 1112,
+       "y": 2.89,
+       "proeminence": 3.19,
+       "rayonVertical": 5598,
+       "vitesseKmh": 184,
+       "chargeG": -0.048,
+       "sens": "crête"
+      },
+      {
+       "s": 1778,
+       "y": 2.46,
+       "proeminence": 2.76,
+       "rayonVertical": 8731,
+       "vitesseKmh": 150,
+       "chargeG": -0.02,
+       "sens": "crête"
+      },
+      {
+       "s": 3158,
+       "y": 4.31,
+       "proeminence": 4.49,
+       "rayonVertical": 4750,
+       "vitesseKmh": 170,
+       "chargeG": -0.048,
+       "sens": "crête"
+      }
+     ],
+     "listeCuvettes": [
+      {
+       "s": 680,
+       "y": -5.79,
+       "proeminence": 6.85,
+       "rayonVertical": 3870,
+       "vitesseKmh": 134,
+       "chargeG": 0.037,
+       "sens": "cuvette"
+      },
+      {
+       "s": 1440,
+       "y": -0.3,
+       "proeminence": 2.76,
+       "rayonVertical": 7861,
+       "vitesseKmh": 196,
+       "chargeG": 0.039,
+       "sens": "cuvette"
+      },
+      {
+       "s": 2708,
+       "y": -3.39,
+       "proeminence": 2.39,
+       "rayonVertical": 7376,
+       "vitesseKmh": 189,
+       "chargeG": 0.038,
+       "sens": "cuvette"
+      }
+     ],
+     "rayonVerticalMinCrete": 1057,
+     "rayonVerticalMinCuvette": 1023,
+     "chargeVerticaleMaxG": 0.258,
+     "allegementMaxG": -0.18
+    },
+    "devers": {
+     "maxDeg": 2.58,
+     "partSup1DegPct": 9.3,
+     "partNulPct": 73.9
+    },
+    "virages": [
+     {
+      "debut": 316,
+      "longueur": 86,
+      "sens": "gauche",
+      "rayonMin": 84,
+      "angle": 43,
+      "deversApexDeg": -0.43,
+      "deversApexPct": -0.76,
+      "deversMaxDeg": -0.46,
+      "relation": "relevé",
+      "penteApexPct": 1.41,
+      "vitesseApexKmh": 140,
+      "apex": 370
+     },
+     {
+      "debut": 664,
+      "longueur": 116,
+      "sens": "gauche",
+      "rayonMin": 59,
+      "angle": 87,
+      "deversApexDeg": -1.38,
+      "deversApexPct": -2.4,
+      "deversMaxDeg": -1.55,
+      "relation": "relevé",
+      "penteApexPct": 1.62,
+      "vitesseApexKmh": 111,
+      "apex": 746
+     },
+     {
+      "debut": 1038,
+      "longueur": 92,
+      "sens": "gauche",
+      "rayonMin": 123,
+      "angle": 34,
+      "deversApexDeg": -0.66,
+      "deversApexPct": -1.16,
+      "deversMaxDeg": -0.75,
+      "relation": "relevé",
+      "penteApexPct": 0.21,
+      "vitesseApexKmh": 180,
+      "apex": 1100
+     },
+     {
+      "debut": 1352,
+      "longueur": 96,
+      "sens": "droite",
+      "rayonMin": 132,
+      "angle": 33,
+      "deversApexDeg": 0.62,
+      "deversApexPct": 1.08,
+      "deversMaxDeg": 0.7,
+      "relation": "relevé",
+      "penteApexPct": -0.75,
+      "vitesseApexKmh": 190,
+      "apex": 1380
+     },
+     {
+      "debut": 1788,
+      "longueur": 94,
+      "sens": "gauche",
+      "rayonMin": 34,
+      "angle": 107,
+      "deversApexDeg": -2.38,
+      "deversApexPct": -4.15,
+      "deversMaxDeg": -2.54,
+      "relation": "relevé",
+      "penteApexPct": -0.5,
+      "vitesseApexKmh": 79,
+      "apex": 1824
+     },
+     {
+      "debut": 2232,
+      "longueur": 58,
+      "sens": "gauche",
+      "rayonMin": 31,
+      "angle": 61,
+      "deversApexDeg": -2.01,
+      "deversApexPct": -3.52,
+      "deversMaxDeg": -2.01,
+      "relation": "relevé",
+      "penteApexPct": 0.12,
+      "vitesseApexKmh": 75,
+      "apex": 2260
+     },
+     {
+      "debut": 2492,
+      "longueur": 78,
+      "sens": "droite",
+      "rayonMin": 37,
+      "angle": 73,
+      "deversApexDeg": 2.09,
+      "deversApexPct": 3.65,
+      "deversMaxDeg": 2.12,
+      "relation": "relevé",
+      "penteApexPct": -1.05,
+      "vitesseApexKmh": 84,
+      "apex": 2534
+     },
+     {
+      "debut": 2960,
+      "longueur": 110,
+      "sens": "gauche",
+      "rayonMin": 33,
+      "angle": 139,
+      "deversApexDeg": -2.34,
+      "deversApexPct": -4.09,
+      "deversMaxDeg": -2.58,
+      "relation": "relevé",
+      "penteApexPct": 2.62,
+      "vitesseApexKmh": 78,
+      "apex": 2994
+     },
+     {
+      "debut": 3436,
+      "longueur": 26,
+      "sens": "droite",
+      "rayonMin": 376,
+      "angle": 4,
+      "deversApexDeg": 0.02,
+      "deversApexPct": 0.04,
+      "deversMaxDeg": 0.03,
+      "relation": "plat",
+      "penteApexPct": 0.57,
+      "vitesseApexKmh": 236,
+      "apex": 3442
+     }
+    ],
+    "nombreVirages": 9,
+    "courbures": {
+     "droite": 78,
+     "rapide": 2.1,
+     "moyen": 4.7,
+     "lent": 7,
+     "serré": 5.6,
+     "épingle": 2.6
+    },
+    "droites": {
+     "nombre": 9,
+     "plusLongue": 484,
+     "total": 2838,
+     "liste": [
+      {
+       "debut": 3468,
+       "longueur": 484
+      },
+      {
+       "debut": 2570,
+       "longueur": 388
+      },
+      {
+       "debut": 3072,
+       "longueur": 358
+      },
+      {
+       "debut": 1882,
+       "longueur": 348
+      },
+      {
+       "debut": 1452,
+       "longueur": 336
+      },
+      {
+       "debut": 404,
+       "longueur": 258
+      },
+      {
+       "debut": 782,
+       "longueur": 252
+      },
+      {
+       "debut": 1134,
+       "longueur": 214
+      },
+      {
+       "debut": 2292,
+       "longueur": 200
+      }
+     ]
+    },
+    "largeur": 12,
+    "degagement": {
+     "min": 11.1,
+     "p10": 14,
+     "median": 14,
+     "max": 14
+    },
+    "vitesse": {
+     "minKmh": 75,
+     "maxKmh": 271,
+     "tempsReference": 75.64
+    },
+    "tunnel": null,
+    "stands": {
+     "debut": 30,
+     "fin": 234
+    },
+    "ligneDroiteDepart": {
+     "debut": -170,
+     "fin": 314
+    }
+   },
+   "decor": {
+    "familles": {
+     "arbres": {
+      "objets": 906,
+      "loin": 453,
+      "solides": 453,
+      "formes": 2,
+      "matieres": {
+       "26": 453,
+       "27": 453
+      },
+      "distanceMedianeAxe": 92,
+      "casesOccupees40m": 5
+     },
+     "glissières : lisses": {
+      "objets": 910,
+      "loin": 910,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "0": 910
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 37
+     },
+     "glissières : poteaux": {
+      "objets": 910,
+      "loin": 0,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "0": 910
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 37
+     },
+     "marquages de grille": {
+      "objets": 48,
+      "loin": 0,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "14": 48
+      },
+      "distanceMedianeAxe": 2,
+      "casesOccupees40m": 3
+     },
+     "murs de pneus": {
+      "objets": 432,
+      "loin": 0,
+      "solides": 432,
+      "formes": 1,
+      "matieres": {
+       "7": 432
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 7
+     },
+     "panneaux publicitaires": {
+      "objets": 114,
+      "loin": 57,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "16": 114
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 29
+     },
+     "passerelle": {
+      "objets": 5,
+      "loin": 5,
+      "solides": 3,
+      "formes": 1,
+      "matieres": {
+       "3": 3,
+       "16": 2
+      },
+      "distanceMedianeAxe": 0,
+      "casesOccupees40m": 1
+     },
+     "portique des feux": {
+      "objets": 9,
+      "loin": 3,
+      "solides": 3,
+      "formes": 1,
+      "matieres": {
+       "0": 3,
+       "7": 5,
+       "16": 1
+      },
+      "distanceMedianeAxe": 1,
+      "casesOccupees40m": 1
+     },
+     "postes de commissaires": {
+      "objets": 32,
+      "loin": 0,
+      "solides": 24,
+      "formes": 2,
+      "matieres": {
+       "0": 8,
+       "16": 16,
+       "13.6": 8
+      },
+      "distanceMedianeAxe": 23,
+      "casesOccupees40m": 8
+     },
+     "repères de freinage": {
+      "objets": 72,
+      "loin": 18,
+      "solides": 0,
+      "formes": 2,
+      "matieres": {
+       "0": 18,
+       "16": 54
+      },
+      "distanceMedianeAxe": 9,
+      "casesOccupees40m": 12
+     },
+     "stands": {
+      "objets": 84,
+      "loin": 6,
+      "solides": 24,
+      "formes": 1,
+      "matieres": {
+       "0": 6,
+       "3": 6,
+       "7": 60,
+       "16": 6,
+       "13.2": 6
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 5
+     },
+     "tribunes et public": {
+      "objets": 3304,
+      "loin": 45,
+      "solides": 80,
+      "formes": 2,
+      "matieres": {
+       "0": 35,
+       "3": 45,
+       "16": 5,
+       "18": 3219
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 5
+     },
+     "végétation : fleurs": {
+      "objets": 16,
+      "loin": 16,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "27": 16
+      },
+      "distanceMedianeAxe": 12,
+      "casesOccupees40m": 9
+     },
+     "végétation : herbe": {
+      "objets": 27963,
+      "loin": 27963,
+      "solides": 0,
+      "formes": 3,
+      "matieres": {
+       "27": 27963
+      },
+      "distanceMedianeAxe": 25,
+      "casesOccupees40m": 31
+     },
+     "végétation : taillis": {
+      "objets": 18,
+      "loin": 18,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "27": 18
+      },
+      "distanceMedianeAxe": 13,
+      "casesOccupees40m": 12
+     },
+     "villages : maisons": {
+      "objets": 78,
+      "loin": 78,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "1": 52,
+       "13.3": 8,
+       "13.2": 10,
+       "13.1": 4,
+       "13.4": 4
+      },
+      "distanceMedianeAxe": 549,
+      "casesOccupees40m": 0
+     },
+     "villages : phare": {
+      "objets": 5,
+      "loin": 5,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "5": 1,
+       "16": 4
+      },
+      "distanceMedianeAxe": 714,
+      "casesOccupees40m": 0
+     }
+    },
+    "autres": {},
+    "cases": 37,
+    "pasCase": 100,
+    "mobilierParCase": [
+     922,
+     970,
+     239,
+     72,
+     4,
+     13,
+     11,
+     72,
+     4,
+     4,
+     0,
+     8,
+     2,
+     4,
+     4,
+     4,
+     20,
+     5,
+     72,
+     8,
+     13,
+     13,
+     72,
+     13,
+     5,
+     76,
+     2,
+     6,
+     11,
+     43,
+     36,
+     2,
+     6,
+     4,
+     12,
+     902,
+     446
+    ],
+    "natureParCase": [
+     0,
+     0,
+     10,
+     64,
+     18,
+     0,
+     2,
+     8,
+     30,
+     0,
+     2,
+     50,
+     16,
+     2,
+     8,
+     0,
+     0,
+     0,
+     0,
+     0,
+     4,
+     18,
+     4,
+     36,
+     0,
+     8,
+     16,
+     12,
+     4,
+     76,
+     168,
+     100,
+     12,
+     2,
+     2,
+     0,
+     0
+    ],
+    "vegetationParCase": [
+     23,
+     75,
+     504,
+     1037,
+     161,
+     0,
+     211,
+     824,
+     470,
+     1,
+     0,
+     96,
+     687,
+     456,
+     244,
+     204,
+     0,
+     0,
+     0,
+     0,
+     751,
+     868,
+     1217,
+     573,
+     601,
+     824,
+     29,
+     821,
+     48,
+     685,
+     215,
+     835,
+     427,
+     738,
+     811,
+     356,
+     73
+    ],
+    "diversiteParCase": [
+     5,
+     4,
+     5,
+     1,
+     1,
+     2,
+     3,
+     1,
+     1,
+     1,
+     0,
+     2,
+     1,
+     1,
+     1,
+     1,
+     4,
+     2,
+     1,
+     1,
+     3,
+     2,
+     1,
+     2,
+     2,
+     2,
+     1,
+     1,
+     2,
+     3,
+     1,
+     1,
+     1,
+     1,
+     2,
+     4,
+     4
+    ],
+    "partCasesAuPlusUneFamillePct": 51.4,
+    "zonesSansMobilier": {
+     "total": 100,
+     "partPct": 2.7,
+     "plusLongues": [
+      {
+       "debut": 1000,
+       "longueur": 100
+      }
+     ]
+    },
+    "zonesVides": {
+     "total": 0,
+     "partPct": 0,
+     "plusLongues": []
+    },
+    "zonesSansVegetationProche": {
+     "total": 600,
+     "partPct": 16.5
+    },
+    "nappes": {
+     "accotement": {
+      "sommets": 33300,
+      "triangles": 32742,
+      "matieres": {
+       "8": 20576,
+       "14": 12724
+      }
+     },
+     "terrain": {
+      "sommets": 15468,
+      "triangles": 26780,
+      "matieres": {
+       "8": 15468
+      }
+     },
+     "eau": {
+      "sommets": 4,
+      "triangles": 2,
+      "matieres": {
+       "12": 4
+      }
+     }
+    },
+    "lots": 1595,
+    "vegetation": {
+     "herbes": 27963,
+     "fougeres": 0,
+     "fleurs": 16,
+     "taillis": 18,
+     "lots": 1567,
+     "qualite": "high",
+     "brins": 1961887,
+     "tuiles": 27860,
+     "brinsTapis": 1960960,
+     "objetsHerbe": 27963,
+     "brinsAccotements": 617464,
+     "brinsTerrain": 1343496,
+     "aireAccotements": 48393.14932790202,
+     "aireTerrain": 2007240.3561134853,
+     "aireNue": 3228022.4870228665,
+     "aireRiche": 1137379.9533920933,
+     "brinsRiches": 1141888
+    }
+   },
+   "palette": {
+    "herbe": [
+     0.34,
+     0.4,
+     0.17
+    ],
+    "herbeClaire": [
+     0.42,
+     0.47,
+     0.21
+    ],
+    "terre": [
+     0.4,
+     0.4,
+     0.22
+    ],
+    "roche": null,
+    "sable": [
+     0.8,
+     0.72,
+     0.52
+    ],
+    "ciel": [
+     [
+      0.11,
+      0.39,
+      0.72
+     ],
+     [
+      0.74,
+      0.84,
+      0.91
+     ]
+    ],
+    "brume": [
+     0.7,
+     0.79,
+     0.86
+    ],
+    "densiteBrume": 0.0009,
+    "essence": "pin",
+    "densiteArbres": 0.38,
+    "reliefTerrain": 14,
+    "echelleTerrain": 380,
+    "matieresRecettes": false
+   }
+  },
+  {
+   "id": "haut-col",
+   "nom": "Haut-Col",
+   "theme": "montagne",
+   "graine": 47,
+   "longueurVisee": 5200,
+   "mesures": {
+    "relief": {
+     "altitudeMin": -6.53,
+     "sAltitudeMin": 4230,
+     "altitudeMax": 6.64,
+     "sAltitudeMax": 3528,
+     "denivele": 13.17,
+     "montéeCumulée": 35.5,
+     "penteMaxPct": 6.8,
+     "penteMonteeMaxPct": 2.79,
+     "penteDescenteMaxPct": -6.8,
+     "penteMoyennePct": 1.36,
+     "penteP95Pct": 2.85,
+     "cretes": 4,
+     "cuvettes": 4,
+     "listeCretes": [
+      {
+       "s": 976,
+       "y": 2.17,
+       "proeminence": 3.64,
+       "rayonVertical": 13878,
+       "vitesseKmh": 258,
+       "chargeG": -0.038,
+       "sens": "crête"
+      },
+      {
+       "s": 2158,
+       "y": 4,
+       "proeminence": 4.72,
+       "rayonVertical": 10775,
+       "vitesseKmh": 252,
+       "chargeG": -0.047,
+       "sens": "crête"
+      },
+      {
+       "s": 3528,
+       "y": 6.64,
+       "proeminence": 7.74,
+       "rayonVertical": 7640,
+       "vitesseKmh": 231,
+       "chargeG": -0.055,
+       "sens": "crête"
+      },
+      {
+       "s": 4884,
+       "y": 5.28,
+       "proeminence": 5.28,
+       "rayonVertical": 659,
+       "vitesseKmh": 152,
+       "chargeG": -0.277,
+       "sens": "crête"
+      }
+     ],
+     "listeCuvettes": [
+      {
+       "s": 508,
+       "y": -2.83,
+       "proeminence": 2.83,
+       "rayonVertical": 881,
+       "vitesseKmh": 180,
+       "chargeG": 0.289,
+       "sens": "cuvette"
+      },
+      {
+       "s": 1540,
+       "y": -2.37,
+       "proeminence": 3.67,
+       "rayonVertical": 13524,
+       "vitesseKmh": 159,
+       "chargeG": 0.015,
+       "sens": "cuvette"
+      },
+      {
+       "s": 2832,
+       "y": -5.7,
+       "proeminence": 6.44,
+       "rayonVertical": 8576,
+       "vitesseKmh": 202,
+       "chargeG": 0.038,
+       "sens": "cuvette"
+      },
+      {
+       "s": 4230,
+       "y": -6.53,
+       "proeminence": 7.49,
+       "rayonVertical": 7743,
+       "vitesseKmh": 253,
+       "chargeG": 0.065,
+       "sens": "cuvette"
+      }
+     ],
+     "rayonVerticalMinCrete": 498,
+     "rayonVerticalMinCuvette": 541,
+     "chargeVerticaleMaxG": 0.29,
+     "allegementMaxG": -0.361
+    },
+    "devers": {
+     "maxDeg": 2.31,
+     "partSup1DegPct": 1.7,
+     "partNulPct": 78.4
+    },
+    "virages": [
+     {
+      "debut": 402,
+      "longueur": 100,
+      "sens": "gauche",
+      "rayonMin": 111,
+      "angle": 41,
+      "deversApexDeg": -0.13,
+      "deversApexPct": -0.22,
+      "deversMaxDeg": -0.49,
+      "relation": "plat",
+      "penteApexPct": -3.32,
+      "vitesseApexKmh": 166,
+      "apex": 430
+     },
+     {
+      "debut": 1564,
+      "longueur": 66,
+      "sens": "gauche",
+      "rayonMin": 26,
+      "angle": 81,
+      "deversApexDeg": -2.31,
+      "deversApexPct": -4.03,
+      "deversMaxDeg": -2.31,
+      "relation": "relevé",
+      "penteApexPct": 0.41,
+      "vitesseApexKmh": 67,
+      "apex": 1596
+     },
+     {
+      "debut": 2224,
+      "longueur": 74,
+      "sens": "gauche",
+      "rayonMin": 254,
+      "angle": 15,
+      "deversApexDeg": -0.32,
+      "deversApexPct": -0.56,
+      "deversMaxDeg": -0.36,
+      "relation": "relevé",
+      "penteApexPct": -0.79,
+      "vitesseApexKmh": 260,
+      "apex": 2242
+     },
+     {
+      "debut": 2614,
+      "longueur": 122,
+      "sens": "gauche",
+      "rayonMin": 31,
+      "angle": 51,
+      "deversApexDeg": -0.57,
+      "deversApexPct": -1,
+      "deversMaxDeg": -0.82,
+      "relation": "relevé",
+      "penteApexPct": -1.97,
+      "vitesseApexKmh": 95,
+      "apex": 2620
+     },
+     {
+      "debut": 3308,
+      "longueur": 136,
+      "sens": "gauche",
+      "rayonMin": 149,
+      "angle": 46,
+      "deversApexDeg": -0.55,
+      "deversApexPct": -0.95,
+      "deversMaxDeg": -0.62,
+      "relation": "relevé",
+      "penteApexPct": 1.4,
+      "vitesseApexKmh": 211,
+      "apex": 3416
+     },
+     {
+      "debut": 3842,
+      "longueur": 148,
+      "sens": "gauche",
+      "rayonMin": 157,
+      "angle": 48,
+      "deversApexDeg": -0.52,
+      "deversApexPct": -0.9,
+      "deversMaxDeg": -0.58,
+      "relation": "relevé",
+      "penteApexPct": -2.75,
+      "vitesseApexKmh": 218,
+      "apex": 3962
+     },
+     {
+      "debut": 4386,
+      "longueur": 106,
+      "sens": "droite",
+      "rayonMin": 298,
+      "angle": 19,
+      "deversApexDeg": 0.27,
+      "deversApexPct": 0.48,
+      "deversMaxDeg": 0.31,
+      "relation": "relevé",
+      "penteApexPct": 1.95,
+      "vitesseApexKmh": 267,
+      "apex": 4402
+     },
+     {
+      "debut": 4884,
+      "longueur": 116,
+      "sens": "gauche",
+      "rayonMin": 53,
+      "angle": 96,
+      "deversApexDeg": -0.33,
+      "deversApexPct": -0.58,
+      "deversMaxDeg": -1.22,
+      "relation": "relevé",
+      "penteApexPct": -5.65,
+      "vitesseApexKmh": 103,
+      "apex": 4966
+     }
+    ],
+    "nombreVirages": 8,
+    "courbures": {
+     "droite": 81.4,
+     "rapide": 2.8,
+     "moyen": 8.3,
+     "lent": 5.2,
+     "serré": 1.9,
+     "épingle": 0.5
+    },
+    "droites": {
+     "nombre": 9,
+     "plusLongue": 612,
+     "total": 4244,
+     "liste": [
+      {
+       "debut": 5002,
+       "longueur": 612
+      },
+      {
+       "debut": 1632,
+       "longueur": 584
+      },
+      {
+       "debut": 2740,
+       "longueur": 564
+      },
+      {
+       "debut": 1026,
+       "longueur": 536
+      },
+      {
+       "debut": 506,
+       "longueur": 488
+      },
+      {
+       "debut": 3448,
+       "longueur": 390
+      },
+      {
+       "debut": 3994,
+       "longueur": 384
+      },
+      {
+       "debut": 4500,
+       "longueur": 382
+      },
+      {
+       "debut": 2306,
+       "longueur": 304
+      }
+     ]
+    },
+    "largeur": 12,
+    "degagement": {
+     "min": 1.6,
+     "p10": 14,
+     "median": 14,
+     "max": 14
+    },
+    "vitesse": {
+     "minKmh": 67,
+     "maxKmh": 283,
+     "tempsReference": 87.31
+    },
+    "tunnel": {
+     "debut": 1798,
+     "fin": 2058,
+     "longueur": 260
+    },
+    "stands": {
+     "debut": 30,
+     "fin": 240
+    },
+    "ligneDroiteDepart": {
+     "debut": -214,
+     "fin": 398
+    }
+   },
+   "decor": {
+    "familles": {
+     "arbres": {
+      "objets": 1598,
+      "loin": 799,
+      "solides": 799,
+      "formes": 2,
+      "matieres": {
+       "26": 799,
+       "27": 799
+      },
+      "distanceMedianeAxe": 127,
+      "casesOccupees40m": 4
+     },
+     "glissières : lisses": {
+      "objets": 1238,
+      "loin": 1238,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "0": 1238
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 51
+     },
+     "glissières : poteaux": {
+      "objets": 1238,
+      "loin": 0,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "0": 1238
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 51
+     },
+     "marquages de grille": {
+      "objets": 48,
+      "loin": 0,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "14": 48
+      },
+      "distanceMedianeAxe": 2,
+      "casesOccupees40m": 3
+     },
+     "murs de pneus": {
+      "objets": 216,
+      "loin": 0,
+      "solides": 216,
+      "formes": 1,
+      "matieres": {
+       "7": 216
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 4
+     },
+     "panneaux publicitaires": {
+      "objets": 162,
+      "loin": 81,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "16": 162
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 39
+     },
+     "passerelle": {
+      "objets": 5,
+      "loin": 5,
+      "solides": 3,
+      "formes": 1,
+      "matieres": {
+       "3": 3,
+       "16": 2
+      },
+      "distanceMedianeAxe": 0,
+      "casesOccupees40m": 1
+     },
+     "portique des feux": {
+      "objets": 9,
+      "loin": 3,
+      "solides": 3,
+      "formes": 1,
+      "matieres": {
+       "0": 3,
+       "7": 5,
+       "16": 1
+      },
+      "distanceMedianeAxe": 1,
+      "casesOccupees40m": 1
+     },
+     "postes de commissaires": {
+      "objets": 44,
+      "loin": 0,
+      "solides": 33,
+      "formes": 2,
+      "matieres": {
+       "0": 11,
+       "16": 22,
+       "13.6": 11
+      },
+      "distanceMedianeAxe": 23,
+      "casesOccupees40m": 11
+     },
+     "repères de freinage": {
+      "objets": 36,
+      "loin": 9,
+      "solides": 0,
+      "formes": 2,
+      "matieres": {
+       "0": 9,
+       "16": 27
+      },
+      "distanceMedianeAxe": 9,
+      "casesOccupees40m": 6
+     },
+     "rochers": {
+      "objets": 155,
+      "loin": 0,
+      "solides": 0,
+      "formes": 2,
+      "matieres": {
+       "9": 155
+      },
+      "distanceMedianeAxe": 359,
+      "casesOccupees40m": 0
+     },
+     "stands": {
+      "objets": 98,
+      "loin": 7,
+      "solides": 28,
+      "formes": 1,
+      "matieres": {
+       "0": 7,
+       "3": 7,
+       "7": 70,
+       "16": 7,
+       "13.2": 7
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 6
+     },
+     "tribunes et public": {
+      "objets": 3900,
+      "loin": 54,
+      "solides": 96,
+      "formes": 2,
+      "matieres": {
+       "0": 42,
+       "3": 54,
+       "16": 6,
+       "18": 3798
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 6
+     },
+     "tunnel : colline": {
+      "objets": 279,
+      "loin": 278,
+      "solides": 0,
+      "formes": 2,
+      "matieres": {
+       "9": 279
+      },
+      "distanceMedianeAxe": 25,
+      "casesOccupees40m": 4
+     },
+     "tunnel : structure": {
+      "objets": 380,
+      "loin": 204,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "3": 138,
+       "5": 22,
+       "7": 132,
+       "16": 88
+      },
+      "distanceMedianeAxe": 8,
+      "casesOccupees40m": 4
+     },
+     "végétation : fougères": {
+      "objets": 14,
+      "loin": 14,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "27": 14
+      },
+      "distanceMedianeAxe": 12,
+      "casesOccupees40m": 9
+     },
+     "végétation : herbe": {
+      "objets": 33607,
+      "loin": 33607,
+      "solides": 0,
+      "formes": 3,
+      "matieres": {
+       "27": 33607
+      },
+      "distanceMedianeAxe": 24,
+      "casesOccupees40m": 42
+     },
+     "végétation : humus": {
+      "objets": 14,
+      "loin": 14,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "25": 14
+      },
+      "distanceMedianeAxe": 12,
+      "casesOccupees40m": 9
+     },
+     "végétation : taillis": {
+      "objets": 20,
+      "loin": 20,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "27": 20
+      },
+      "distanceMedianeAxe": 13,
+      "casesOccupees40m": 17
+     },
+     "villages : maisons": {
+      "objets": 96,
+      "loin": 96,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "1": 64,
+       "13.2": 14,
+       "13.3": 10,
+       "13.4": 6,
+       "13.1": 2
+      },
+      "distanceMedianeAxe": 223,
+      "casesOccupees40m": 0
+     }
+    },
+    "autres": {},
+    "cases": 53,
+    "pasCase": 100,
+    "mobilierParCase": [
+     987,
+     891,
+     529,
+     8,
+     0,
+     4,
+     4,
+     6,
+     4,
+     4,
+     2,
+     6,
+     4,
+     4,
+     13,
+     41,
+     46,
+     4,
+     0,
+     0,
+     4,
+     4,
+     0,
+     9,
+     13,
+     15,
+     72,
+     2,
+     4,
+     4,
+     6,
+     0,
+     6,
+     0,
+     4,
+     6,
+     4,
+     8,
+     0,
+     2,
+     4,
+     4,
+     8,
+     4,
+     4,
+     6,
+     4,
+     9,
+     5,
+     76,
+     611,
+     898,
+     165
+    ],
+    "natureParCase": [
+     10,
+     32,
+     14,
+     4,
+     8,
+     12,
+     10,
+     4,
+     0,
+     0,
+     0,
+     0,
+     2,
+     5,
+     2,
+     0,
+     2,
+     8,
+     8,
+     2,
+     6,
+     2,
+     2,
+     0,
+     4,
+     2,
+     12,
+     4,
+     8,
+     6,
+     14,
+     3,
+     0,
+     2,
+     6,
+     10,
+     8,
+     10,
+     2,
+     2,
+     6,
+     15,
+     5,
+     0,
+     0,
+     46,
+     90,
+     100,
+     198,
+     20,
+     20,
+     13,
+     2
+    ],
+    "vegetationParCase": [
+     0,
+     16,
+     443,
+     306,
+     683,
+     796,
+     813,
+     124,
+     0,
+     0,
+     7,
+     538,
+     755,
+     494,
+     0,
+     0,
+     32,
+     484,
+     0,
+     0,
+     6,
+     83,
+     362,
+     246,
+     375,
+     555,
+     540,
+     806,
+     859,
+     745,
+     865,
+     758,
+     481,
+     461,
+     764,
+     589,
+     33,
+     138,
+     577,
+     164,
+     261,
+     739,
+     646,
+     0,
+     0,
+     5,
+     600,
+     757,
+     43,
+     1042,
+     2,
+     0,
+     0
+    ],
+    "diversiteParCase": [
+     5,
+     3,
+     4,
+     1,
+     0,
+     1,
+     1,
+     2,
+     1,
+     1,
+     1,
+     2,
+     1,
+     1,
+     2,
+     4,
+     2,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     2,
+     2,
+     3,
+     1,
+     1,
+     1,
+     1,
+     2,
+     0,
+     1,
+     0,
+     1,
+     2,
+     1,
+     1,
+     0,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     2,
+     2,
+     3,
+     4,
+     3
+    ],
+    "partCasesAuPlusUneFamillePct": 66,
+    "zonesSansMobilier": {
+     "total": 700,
+     "partPct": 13.4,
+     "plusLongues": [
+      {
+       "debut": 1800,
+       "longueur": 200
+      },
+      {
+       "debut": 400,
+       "longueur": 100
+      },
+      {
+       "debut": 2200,
+       "longueur": 100
+      },
+      {
+       "debut": 3100,
+       "longueur": 100
+      },
+      {
+       "debut": 3300,
+       "longueur": 100
+      },
+      {
+       "debut": 3800,
+       "longueur": 100
+      }
+     ]
+    },
+    "zonesVides": {
+     "total": 0,
+     "partPct": 0,
+     "plusLongues": []
+    },
+    "zonesSansVegetationProche": {
+     "total": 1100,
+     "partPct": 21.1
+    },
+    "nappes": {
+     "accotement": {
+      "sommets": 47736,
+      "triangles": 46944,
+      "matieres": {
+       "8": 30920,
+       "14": 16816
+      }
+     },
+     "terrain": {
+      "sommets": 28688,
+      "triangles": 49784,
+      "matieres": {
+       "3": 18704,
+       "8": 6284,
+       "9": 3700
+      }
+     }
+    },
+    "lots": 1554,
+    "vegetation": {
+     "herbes": 33607,
+     "fougeres": 14,
+     "fleurs": 0,
+     "taillis": 20,
+     "lots": 1453,
+     "qualite": "high",
+     "brins": 1892184,
+     "tuiles": 33519,
+     "brinsTapis": 1891392,
+     "objetsHerbe": 33607,
+     "brinsAccotements": 729016,
+     "brinsTerrain": 1162376,
+     "aireAccotements": 63979.71035108342,
+     "aireTerrain": 1044058.3755479577,
+     "aireNue": 1787414.4543344174,
+     "aireRiche": 605013.7194667134,
+     "brinsRiches": 1030904
+    }
+   },
+   "palette": {
+    "herbe": [
+     0.21,
+     0.33,
+     0.14
+    ],
+    "herbeClaire": [
+     0.29,
+     0.4,
+     0.17
+    ],
+    "terre": [
+     0.28,
+     0.31,
+     0.17
+    ],
+    "roche": [
+     0.47,
+     0.46,
+     0.43
+    ],
+    "sable": null,
+    "ciel": [
+     [
+      0.09,
+      0.29,
+      0.62
+     ],
+     [
+      0.62,
+      0.74,
+      0.87
+     ]
+    ],
+    "brume": [
+     0.67,
+     0.75,
+     0.83
+    ],
+    "densiteBrume": 0.00075,
+    "essence": "conifere",
+    "densiteArbres": 0.5,
+    "reliefTerrain": 44,
+    "echelleTerrain": 520,
+    "matieresRecettes": false
+   }
+  },
+  {
+   "id": "lande-noire",
+   "nom": "Lande-Noire",
+   "theme": "islande",
+   "graine": 83,
+   "longueurVisee": 4600,
+   "mesures": {
+    "relief": {
+     "altitudeMin": -6.1,
+     "sAltitudeMin": 3140,
+     "altitudeMax": 6.85,
+     "sAltitudeMax": 3778,
+     "denivele": 12.95,
+     "montéeCumulée": 30.5,
+     "penteMaxPct": 6.8,
+     "penteMonteeMaxPct": 6.8,
+     "penteDescenteMaxPct": -3.24,
+     "penteMoyennePct": 1.32,
+     "penteP95Pct": 3.19,
+     "cretes": 4,
+     "cuvettes": 4,
+     "listeCretes": [
+      {
+       "s": 520,
+       "y": 4.15,
+       "proeminence": 4.15,
+       "rayonVertical": 642,
+       "vitesseKmh": 239,
+       "chargeG": -0.7,
+       "sens": "crête"
+      },
+      {
+       "s": 1490,
+       "y": 0.4,
+       "proeminence": 2.11,
+       "rayonVertical": 18676,
+       "vitesseKmh": 158,
+       "chargeG": -0.011,
+       "sens": "crête"
+      },
+      {
+       "s": 2510,
+       "y": 4.22,
+       "proeminence": 4.82,
+       "rayonVertical": 9281,
+       "vitesseKmh": 241,
+       "chargeG": -0.049,
+       "sens": "crête"
+      },
+      {
+       "s": 3778,
+       "y": 6.85,
+       "proeminence": 9.09,
+       "rayonVertical": 6204,
+       "vitesseKmh": 196,
+       "chargeG": -0.049,
+       "sens": "crête"
+      }
+     ],
+     "listeCuvettes": [
+      {
+       "s": 1030,
+       "y": -2.13,
+       "proeminence": 2.43,
+       "rayonVertical": 14089,
+       "vitesseKmh": 98,
+       "chargeG": 0.005,
+       "sens": "cuvette"
+      },
+      {
+       "s": 1926,
+       "y": -1.75,
+       "proeminence": 2.12,
+       "rayonVertical": 15281,
+       "vitesseKmh": 220,
+       "chargeG": 0.025,
+       "sens": "cuvette"
+      },
+      {
+       "s": 3140,
+       "y": -6.1,
+       "proeminence": 7.51,
+       "rayonVertical": 6866,
+       "vitesseKmh": 244,
+       "chargeG": 0.068,
+       "sens": "cuvette"
+      },
+      {
+       "s": 4288,
+       "y": -4.93,
+       "proeminence": 4.93,
+       "rayonVertical": 498,
+       "vitesseKmh": 173,
+       "chargeG": 0.472,
+       "sens": "cuvette"
+      }
+     ],
+     "rayonVerticalMinCrete": 461,
+     "rayonVerticalMinCuvette": 498,
+     "chargeVerticaleMaxG": 0.633,
+     "allegementMaxG": -0.727
+    },
+    "devers": {
+     "maxDeg": 2.56,
+     "partSup1DegPct": 4.3,
+     "partNulPct": 83.5
+    },
+    "virages": [
+     {
+      "debut": 406,
+      "longueur": 6,
+      "sens": "droite",
+      "rayonMin": 63,
+      "angle": 4,
+      "deversApexDeg": 0,
+      "deversApexPct": 0,
+      "deversMaxDeg": 0,
+      "relation": "plat",
+      "penteApexPct": 0.37,
+      "vitesseApexKmh": 222,
+      "apex": 408
+     },
+     {
+      "debut": 1004,
+      "longueur": 88,
+      "sens": "gauche",
+      "rayonMin": 42,
+      "angle": 79,
+      "deversApexDeg": -1.93,
+      "deversApexPct": -3.37,
+      "deversMaxDeg": -2.05,
+      "relation": "relevé",
+      "penteApexPct": 0.05,
+      "vitesseApexKmh": 89,
+      "apex": 1038
+     },
+     {
+      "debut": 1366,
+      "longueur": 102,
+      "sens": "gauche",
+      "rayonMin": 68,
+      "angle": 63,
+      "deversApexDeg": -1.19,
+      "deversApexPct": -2.07,
+      "deversMaxDeg": -1.33,
+      "relation": "relevé",
+      "penteApexPct": 0.47,
+      "vitesseApexKmh": 122,
+      "apex": 1398
+     },
+     {
+      "debut": 1974,
+      "longueur": 68,
+      "sens": "droite",
+      "rayonMin": 74,
+      "angle": 34,
+      "deversApexDeg": 1.02,
+      "deversApexPct": 1.77,
+      "deversMaxDeg": 1.02,
+      "relation": "relevé",
+      "penteApexPct": 0.56,
+      "vitesseApexKmh": 129,
+      "apex": 2008
+     },
+     {
+      "debut": 2608,
+      "longueur": 92,
+      "sens": "gauche",
+      "rayonMin": 31,
+      "angle": 114,
+      "deversApexDeg": -2.39,
+      "deversApexPct": -4.17,
+      "deversMaxDeg": -2.56,
+      "relation": "relevé",
+      "penteApexPct": -1.44,
+      "vitesseApexKmh": 75,
+      "apex": 2642
+     },
+     {
+      "debut": 3632,
+      "longueur": 126,
+      "sens": "gauche",
+      "rayonMin": 123,
+      "angle": 49,
+      "deversApexDeg": -0.66,
+      "deversApexPct": -1.16,
+      "deversMaxDeg": -0.75,
+      "relation": "relevé",
+      "penteApexPct": 0.81,
+      "vitesseApexKmh": 181,
+      "apex": 3728
+     },
+     {
+      "debut": 4318,
+      "longueur": 78,
+      "sens": "gauche",
+      "rayonMin": 32,
+      "angle": 87,
+      "deversApexDeg": -0.55,
+      "deversApexPct": -0.97,
+      "deversMaxDeg": -0.89,
+      "relation": "relevé",
+      "penteApexPct": 6.32,
+      "vitesseApexKmh": 75,
+      "apex": 4360
+     }
+    ],
+    "nombreVirages": 7,
+    "courbures": {
+     "droite": 86.7,
+     "rapide": 1.5,
+     "moyen": 2.4,
+     "lent": 4.9,
+     "serré": 3.3,
+     "épingle": 1.3
+    },
+    "droites": {
+     "nombre": 8,
+     "plusLongue": 624,
+     "total": 4000,
+     "liste": [
+      {
+       "debut": 4398,
+       "longueur": 624
+      },
+      {
+       "debut": 412,
+       "longueur": 592
+      },
+      {
+       "debut": 2044,
+       "longueur": 562
+      },
+      {
+       "debut": 3762,
+       "longueur": 554
+      },
+      {
+       "debut": 1470,
+       "longueur": 500
+      },
+      {
+       "debut": 2702,
+       "longueur": 462
+      },
+      {
+       "debut": 3194,
+       "longueur": 434
+      },
+      {
+       "debut": 1092,
+       "longueur": 272
+      }
+     ]
+    },
+    "largeur": 12,
+    "degagement": {
+     "min": 11.2,
+     "p10": 14,
+     "median": 14,
+     "max": 14
+    },
+    "vitesse": {
+     "minKmh": 75,
+     "maxKmh": 275,
+     "tempsReference": 84.91
+    },
+    "tunnel": null,
+    "stands": {
+     "debut": 30,
+     "fin": 240
+    },
+    "ligneDroiteDepart": {
+     "debut": -218,
+     "fin": 406
+    }
+   },
+   "decor": {
+    "familles": {
+     "glissières : lisses": {
+      "objets": 1154,
+      "loin": 1154,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "0": 1154
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 47
+     },
+     "glissières : poteaux": {
+      "objets": 1154,
+      "loin": 0,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "0": 1154
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 47
+     },
+     "marquages de grille": {
+      "objets": 48,
+      "loin": 0,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "14": 48
+      },
+      "distanceMedianeAxe": 2,
+      "casesOccupees40m": 3
+     },
+     "murs de pneus": {
+      "objets": 432,
+      "loin": 0,
+      "solides": 432,
+      "formes": 1,
+      "matieres": {
+       "7": 432
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 9
+     },
+     "panneaux publicitaires": {
+      "objets": 156,
+      "loin": 78,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "16": 156
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 41
+     },
+     "passerelle": {
+      "objets": 5,
+      "loin": 5,
+      "solides": 3,
+      "formes": 1,
+      "matieres": {
+       "3": 3,
+       "16": 2
+      },
+      "distanceMedianeAxe": 0,
+      "casesOccupees40m": 1
+     },
+     "portique des feux": {
+      "objets": 9,
+      "loin": 3,
+      "solides": 3,
+      "formes": 1,
+      "matieres": {
+       "0": 3,
+       "7": 5,
+       "16": 1
+      },
+      "distanceMedianeAxe": 1,
+      "casesOccupees40m": 1
+     },
+     "postes de commissaires": {
+      "objets": 36,
+      "loin": 0,
+      "solides": 27,
+      "formes": 2,
+      "matieres": {
+       "0": 9,
+       "16": 18,
+       "13.6": 9
+      },
+      "distanceMedianeAxe": 23,
+      "casesOccupees40m": 9
+     },
+     "repères de freinage": {
+      "objets": 72,
+      "loin": 18,
+      "solides": 0,
+      "formes": 2,
+      "matieres": {
+       "0": 18,
+       "16": 54
+      },
+      "distanceMedianeAxe": 9,
+      "casesOccupees40m": 12
+     },
+     "rochers": {
+      "objets": 768,
+      "loin": 768,
+      "solides": 384,
+      "formes": 1,
+      "matieres": {
+       "8": 384,
+       "9": 384
+      },
+      "distanceMedianeAxe": 148,
+      "casesOccupees40m": 0
+     },
+     "stands": {
+      "objets": 98,
+      "loin": 7,
+      "solides": 28,
+      "formes": 1,
+      "matieres": {
+       "0": 7,
+       "3": 7,
+       "7": 70,
+       "16": 7,
+       "13.2": 7
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 6
+     },
+     "tribunes et public": {
+      "objets": 3926,
+      "loin": 54,
+      "solides": 96,
+      "formes": 2,
+      "matieres": {
+       "0": 42,
+       "3": 54,
+       "16": 6,
+       "18": 3824
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 6
+     }
+    },
+    "autres": {},
+    "cases": 47,
+    "pasCase": 100,
+    "mobilierParCase": [
+     1000,
+     894,
+     491,
+     25,
+     64,
+     0,
+     2,
+     6,
+     9,
+     13,
+     72,
+     2,
+     15,
+     35,
+     44,
+     4,
+     6,
+     8,
+     13,
+     17,
+     69,
+     4,
+     8,
+     2,
+     11,
+     11,
+     72,
+     6,
+     4,
+     6,
+     2,
+     8,
+     4,
+     4,
+     8,
+     4,
+     4,
+     2,
+     4,
+     8,
+     8,
+     9,
+     13,
+     72,
+     650,
+     896,
+     173
+    ],
+    "natureParCase": [
+     0,
+     0,
+     2,
+     0,
+     8,
+     8,
+     0,
+     0,
+     4,
+     8,
+     0,
+     4,
+     4,
+     18,
+     2,
+     20,
+     0,
+     16,
+     0,
+     8,
+     12,
+     0,
+     2,
+     2,
+     6,
+     6,
+     4,
+     0,
+     22,
+     6,
+     10,
+     4,
+     0,
+     14,
+     10,
+     4,
+     2,
+     12,
+     6,
+     0,
+     0,
+     28,
+     6,
+     4,
+     0,
+     0,
+     0
+    ],
+    "vegetationParCase": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "diversiteParCase": [
+     5,
+     3,
+     5,
+     3,
+     2,
+     0,
+     1,
+     2,
+     2,
+     2,
+     1,
+     1,
+     3,
+     3,
+     2,
+     1,
+     1,
+     2,
+     2,
+     3,
+     3,
+     1,
+     2,
+     1,
+     2,
+     2,
+     1,
+     2,
+     1,
+     1,
+     1,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     2,
+     2,
+     2,
+     1,
+     3,
+     4,
+     3
+    ],
+    "partCasesAuPlusUneFamillePct": 44.7,
+    "zonesSansMobilier": {
+     "total": 100,
+     "partPct": 2.2,
+     "plusLongues": [
+      {
+       "debut": 500,
+       "longueur": 100
+      }
+     ]
+    },
+    "zonesVides": {
+     "total": 0,
+     "partPct": 0,
+     "plusLongues": []
+    },
+    "zonesSansVegetationProche": {
+     "total": 4616,
+     "partPct": 100
+    },
+    "nappes": {
+     "accotement": {
+      "sommets": 42246,
+      "triangles": 41544,
+      "matieres": {
+       "8": 26840,
+       "14": 15406
+      }
+     },
+     "terrain": {
+      "sommets": 25280,
+      "triangles": 43734,
+      "matieres": {
+       "8": 25274,
+       "9": 6
+      }
+     }
+    },
+    "lots": 31,
+    "vegetation": {
+     "herbes": 0,
+     "fougeres": 0,
+     "fleurs": 0,
+     "taillis": 0,
+     "lots": 0,
+     "qualite": "high",
+     "brins": 0,
+     "tuiles": 0,
+     "brinsTapis": 0,
+     "objetsHerbe": 0
+    }
+   },
+   "palette": {
+    "herbe": [
+     0.19,
+     0.26,
+     0.105
+    ],
+    "herbeClaire": [
+     0.31,
+     0.39,
+     0.16
+    ],
+    "terre": [
+     0.095,
+     0.105,
+     0.115
+    ],
+    "roche": [
+     0.14,
+     0.15,
+     0.165
+    ],
+    "sable": null,
+    "ciel": [
+     [
+      0.12,
+      0.25,
+      0.43
+     ],
+     [
+      0.66,
+      0.73,
+      0.77
+     ]
+    ],
+    "brume": [
+     0.54,
+     0.62,
+     0.67
+    ],
+    "densiteBrume": 0.00062,
+    "essence": null,
+    "densiteArbres": 0,
+    "reliefTerrain": 42,
+    "echelleTerrain": 300,
+    "matieresRecettes": false
+   }
+  },
+  {
+   "id": "roche-fauve",
+   "nom": "Roche-Fauve",
+   "theme": "desert",
+   "graine": 107,
+   "longueurVisee": 4800,
+   "mesures": {
+    "relief": {
+     "altitudeMin": -12.23,
+     "sAltitudeMin": 3306,
+     "altitudeMax": 14.99,
+     "sAltitudeMax": 2560,
+     "denivele": 27.22,
+     "montéeCumulée": 47,
+     "penteMaxPct": 6.8,
+     "penteMonteeMaxPct": 6.8,
+     "penteDescenteMaxPct": -5.8,
+     "penteMoyennePct": 1.95,
+     "penteP95Pct": 5.31,
+     "cretes": 3,
+     "cuvettes": 3,
+     "listeCretes": [
+      {
+       "s": 454,
+       "y": 4.95,
+       "proeminence": 4.95,
+       "rayonVertical": 512,
+       "vitesseKmh": 164,
+       "chargeG": -0.414,
+       "sens": "crête"
+      },
+      {
+       "s": 2560,
+       "y": 14.99,
+       "proeminence": 13.41,
+       "rayonVertical": 4230,
+       "vitesseKmh": 128,
+       "chargeG": -0.031,
+       "sens": "crête"
+      },
+      {
+       "s": 3964,
+       "y": 3.79,
+       "proeminence": 5.88,
+       "rayonVertical": 6962,
+       "vitesseKmh": 162,
+       "chargeG": -0.03,
+       "sens": "crête"
+      }
+     ],
+     "listeCuvettes": [
+      {
+       "s": 1796,
+       "y": -7.76,
+       "proeminence": 4.63,
+       "rayonVertical": 7851,
+       "vitesseKmh": 266,
+       "chargeG": 0.071,
+       "sens": "cuvette"
+      },
+      {
+       "s": 3306,
+       "y": -12.23,
+       "proeminence": 11.19,
+       "rayonVertical": 4581,
+       "vitesseKmh": 226,
+       "chargeG": 0.087,
+       "sens": "cuvette"
+      },
+      {
+       "s": 4476,
+       "y": -2.82,
+       "proeminence": 2.82,
+       "rayonVertical": 8305,
+       "vitesseKmh": 204,
+       "chargeG": 0.04,
+       "sens": "cuvette"
+      }
+     ],
+     "rayonVerticalMinCrete": 512,
+     "rayonVerticalMinCuvette": 448,
+     "chargeVerticaleMaxG": 0.428,
+     "allegementMaxG": -0.416
+    },
+    "devers": {
+     "maxDeg": 2.58,
+     "partSup1DegPct": 7.6,
+     "partNulPct": 73.1
+    },
+    "virages": [
+     {
+      "debut": 346,
+      "longueur": 68,
+      "sens": "gauche",
+      "rayonMin": 66,
+      "angle": 36,
+      "deversApexDeg": -0.22,
+      "deversApexPct": -0.38,
+      "deversMaxDeg": -0.33,
+      "relation": "relevé",
+      "penteApexPct": 6.08,
+      "vitesseApexKmh": 119,
+      "apex": 378
+     },
+     {
+      "debut": 592,
+      "longueur": 86,
+      "sens": "gauche",
+      "rayonMin": 247,
+      "angle": 18,
+      "deversApexDeg": -0.33,
+      "deversApexPct": -0.57,
+      "deversMaxDeg": -0.37,
+      "relation": "relevé",
+      "penteApexPct": -2.23,
+      "vitesseApexKmh": 212,
+      "apex": 612
+     },
+     {
+      "debut": 1034,
+      "longueur": 60,
+      "sens": "gauche",
+      "rayonMin": 31,
+      "angle": 63,
+      "deversApexDeg": -2.05,
+      "deversApexPct": -3.58,
+      "deversMaxDeg": -2.05,
+      "relation": "relevé",
+      "penteApexPct": 0.26,
+      "vitesseApexKmh": 75,
+      "apex": 1062
+     },
+     {
+      "debut": 1550,
+      "longueur": 138,
+      "sens": "droite",
+      "rayonMin": 280,
+      "angle": 27,
+      "deversApexDeg": 0.29,
+      "deversApexPct": 0.51,
+      "deversMaxDeg": 0.33,
+      "relation": "relevé",
+      "penteApexPct": -1.22,
+      "vitesseApexKmh": 257,
+      "apex": 1670
+     },
+     {
+      "debut": 2016,
+      "longueur": 92,
+      "sens": "gauche",
+      "rayonMin": 45,
+      "angle": 75,
+      "deversApexDeg": -0.99,
+      "deversApexPct": -1.72,
+      "deversMaxDeg": -1.72,
+      "relation": "relevé",
+      "penteApexPct": 3.4,
+      "vitesseApexKmh": 108,
+      "apex": 2028
+     },
+     {
+      "debut": 2498,
+      "longueur": 132,
+      "sens": "gauche",
+      "rayonMin": 74,
+      "angle": 84,
+      "deversApexDeg": -1.1,
+      "deversApexPct": -1.92,
+      "deversMaxDeg": -1.24,
+      "relation": "relevé",
+      "penteApexPct": -0.93,
+      "vitesseApexKmh": 128,
+      "apex": 2598
+     },
+     {
+      "debut": 3024,
+      "longueur": 98,
+      "sens": "droite",
+      "rayonMin": 114,
+      "angle": 39,
+      "deversApexDeg": 0.71,
+      "deversApexPct": 1.24,
+      "deversMaxDeg": 0.8,
+      "relation": "relevé",
+      "penteApexPct": -4.99,
+      "vitesseApexKmh": 171,
+      "apex": 3052
+     },
+     {
+      "debut": 3562,
+      "longueur": 104,
+      "sens": "gauche",
+      "rayonMin": 34,
+      "angle": 125,
+      "deversApexDeg": -2.38,
+      "deversApexPct": -4.16,
+      "deversMaxDeg": -2.58,
+      "relation": "relevé",
+      "penteApexPct": 3.84,
+      "vitesseApexKmh": 78,
+      "apex": 3628
+     },
+     {
+      "debut": 3982,
+      "longueur": 76,
+      "sens": "droite",
+      "rayonMin": 36,
+      "angle": 73,
+      "deversApexDeg": 2.13,
+      "deversApexPct": 3.72,
+      "deversMaxDeg": 2.13,
+      "relation": "relevé",
+      "penteApexPct": -0.72,
+      "vitesseApexKmh": 82,
+      "apex": 4018
+     },
+     {
+      "debut": 4514,
+      "longueur": 132,
+      "sens": "gauche",
+      "rayonMin": 64,
+      "angle": 94,
+      "deversApexDeg": -1.06,
+      "deversApexPct": -1.85,
+      "deversMaxDeg": -1.22,
+      "relation": "relevé",
+      "penteApexPct": 3.37,
+      "vitesseApexKmh": 116,
+      "apex": 4568
+     }
+    ],
+    "nombreVirages": 10,
+    "courbures": {
+     "droite": 77.7,
+     "rapide": 2.6,
+     "moyen": 7,
+     "lent": 6.6,
+     "serré": 5.1,
+     "épingle": 1.1
+    },
+    "droites": {
+     "nombre": 11,
+     "plusLongue": 530,
+     "total": 3754,
+     "liste": [
+      {
+       "debut": 4648,
+       "longueur": 530
+      },
+      {
+       "debut": 4058,
+       "longueur": 454
+      },
+      {
+       "debut": 3126,
+       "longueur": 436
+      },
+      {
+       "debut": 2634,
+       "longueur": 386
+      },
+      {
+       "debut": 2110,
+       "longueur": 384
+      },
+      {
+       "debut": 684,
+       "longueur": 348
+      },
+      {
+       "debut": 1698,
+       "longueur": 316
+      },
+      {
+       "debut": 3666,
+       "longueur": 316
+      },
+      {
+       "debut": 1096,
+       "longueur": 208
+      },
+      {
+       "debut": 1334,
+       "longueur": 206
+      },
+      {
+       "debut": 416,
+       "longueur": 170
+      }
+     ]
+    },
+    "largeur": 12,
+    "degagement": {
+     "min": 11.2,
+     "p10": 14,
+     "median": 14,
+     "max": 14
+    },
+    "vitesse": {
+     "minKmh": 75,
+     "maxKmh": 271,
+     "tempsReference": 95.76
+    },
+    "tunnel": null,
+    "stands": {
+     "debut": 30,
+     "fin": 240
+    },
+    "ligneDroiteDepart": {
+     "debut": -186,
+     "fin": 344
+    }
+   },
+   "decor": {
+    "familles": {
+     "glissières : lisses": {
+      "objets": 1210,
+      "loin": 1210,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "0": 1210
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 49
+     },
+     "glissières : poteaux": {
+      "objets": 1210,
+      "loin": 0,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "0": 1210
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 49
+     },
+     "marquages de grille": {
+      "objets": 48,
+      "loin": 0,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "14": 48
+      },
+      "distanceMedianeAxe": 2,
+      "casesOccupees40m": 3
+     },
+     "murs de pneus": {
+      "objets": 504,
+      "loin": 0,
+      "solides": 504,
+      "formes": 1,
+      "matieres": {
+       "7": 504
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 9
+     },
+     "panneaux publicitaires": {
+      "objets": 158,
+      "loin": 79,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "16": 158
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 36
+     },
+     "passerelle": {
+      "objets": 5,
+      "loin": 5,
+      "solides": 3,
+      "formes": 1,
+      "matieres": {
+       "3": 3,
+       "16": 2
+      },
+      "distanceMedianeAxe": 0,
+      "casesOccupees40m": 1
+     },
+     "portique des feux": {
+      "objets": 9,
+      "loin": 3,
+      "solides": 3,
+      "formes": 1,
+      "matieres": {
+       "0": 3,
+       "7": 5,
+       "16": 1
+      },
+      "distanceMedianeAxe": 1,
+      "casesOccupees40m": 1
+     },
+     "postes de commissaires": {
+      "objets": 40,
+      "loin": 0,
+      "solides": 30,
+      "formes": 2,
+      "matieres": {
+       "0": 10,
+       "16": 20,
+       "13.6": 10
+      },
+      "distanceMedianeAxe": 23,
+      "casesOccupees40m": 10
+     },
+     "repères de freinage": {
+      "objets": 84,
+      "loin": 21,
+      "solides": 0,
+      "formes": 2,
+      "matieres": {
+       "0": 21,
+       "16": 63
+      },
+      "distanceMedianeAxe": 9,
+      "casesOccupees40m": 14
+     },
+     "rochers": {
+      "objets": 449,
+      "loin": 449,
+      "solides": 321,
+      "formes": 1,
+      "matieres": {
+       "9": 449
+      },
+      "distanceMedianeAxe": 157,
+      "casesOccupees40m": 0
+     },
+     "stands": {
+      "objets": 84,
+      "loin": 6,
+      "solides": 24,
+      "formes": 1,
+      "matieres": {
+       "0": 6,
+       "3": 6,
+       "7": 60,
+       "16": 6,
+       "13.2": 6
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 5
+     },
+     "tribunes et public": {
+      "objets": 3248,
+      "loin": 45,
+      "solides": 80,
+      "formes": 2,
+      "matieres": {
+       "0": 35,
+       "3": 45,
+       "16": 5,
+       "18": 3163
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 6
+     }
+    },
+    "autres": {},
+    "cases": 49,
+    "pasCase": 100,
+    "mobilierParCase": [
+     999,
+     979,
+     67,
+     62,
+     14,
+     2,
+     4,
+     8,
+     9,
+     15,
+     72,
+     10,
+     2,
+     4,
+     2,
+     2,
+     6,
+     4,
+     5,
+     13,
+     76,
+     13,
+     4,
+     11,
+     9,
+     34,
+     42,
+     6,
+     2,
+     8,
+     4,
+     4,
+     4,
+     0,
+     21,
+     7,
+     72,
+     8,
+     13,
+     5,
+     76,
+     4,
+     6,
+     9,
+     7,
+     76,
+     120,
+     993,
+     267
+    ],
+    "natureParCase": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0,
+     12,
+     4,
+     11,
+     0,
+     0,
+     3,
+     10,
+     0,
+     7,
+     0,
+     0,
+     7,
+     0,
+     3,
+     0,
+     0,
+     0,
+     0,
+     7,
+     4,
+     4,
+     8,
+     0,
+     0,
+     3,
+     8,
+     8,
+     0,
+     0,
+     15,
+     0,
+     4,
+     0,
+     0,
+     0,
+     0
+    ],
+    "vegetationParCase": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "diversiteParCase": [
+     5,
+     4,
+     5,
+     2,
+     2,
+     1,
+     1,
+     2,
+     2,
+     2,
+     1,
+     2,
+     1,
+     1,
+     1,
+     1,
+     2,
+     1,
+     1,
+     2,
+     2,
+     2,
+     1,
+     2,
+     2,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     0,
+     3,
+     2,
+     1,
+     1,
+     2,
+     2,
+     2,
+     1,
+     1,
+     2,
+     1,
+     2,
+     1,
+     4,
+     3
+    ],
+    "partCasesAuPlusUneFamillePct": 49,
+    "zonesSansMobilier": {
+     "total": 100,
+     "partPct": 2.1,
+     "plusLongues": [
+      {
+       "debut": 3300,
+       "longueur": 100
+      }
+     ]
+    },
+    "zonesVides": {
+     "total": 0,
+     "partPct": 0,
+     "plusLongues": []
+    },
+    "zonesSansVegetationProche": {
+     "total": 4834,
+     "partPct": 100
+    },
+    "nappes": {
+     "accotement": {
+      "sommets": 44244,
+      "triangles": 43506,
+      "matieres": {
+       "8": 27756,
+       "14": 16488
+      }
+     },
+     "terrain": {
+      "sommets": 26214,
+      "triangles": 45144,
+      "matieres": {
+       "8": 24526,
+       "9": 1688
+      }
+     }
+    },
+    "lots": 33,
+    "vegetation": {
+     "herbes": 0,
+     "fougeres": 0,
+     "fleurs": 0,
+     "taillis": 0,
+     "lots": 0,
+     "qualite": "high",
+     "brins": 0,
+     "tuiles": 0,
+     "brinsTapis": 0,
+     "objetsHerbe": 0
+    }
+   },
+   "palette": {
+    "herbe": [
+     0.63,
+     0.39,
+     0.18
+    ],
+    "herbeClaire": [
+     0.78,
+     0.56,
+     0.29
+    ],
+    "terre": [
+     0.56,
+     0.29,
+     0.13
+    ],
+    "roche": [
+     0.43,
+     0.19,
+     0.09
+    ],
+    "sable": [
+     0.8,
+     0.61,
+     0.36
+    ],
+    "ciel": [
+     [
+      0.12,
+      0.33,
+      0.6
+     ],
+     [
+      0.88,
+      0.76,
+      0.56
+     ]
+    ],
+    "brume": [
+     0.74,
+     0.58,
+     0.39
+    ],
+    "densiteBrume": 0.00055,
+    "essence": null,
+    "densiteArbres": 0,
+    "reliefTerrain": 34,
+    "echelleTerrain": 390,
+    "matieresRecettes": false
+   }
+  },
+  {
+   "id": "brume-de-jade",
+   "nom": "Brume-de-Jade",
+   "theme": "asie",
+   "graine": 131,
+   "longueurVisee": 5000,
+   "mesures": {
+    "relief": {
+     "altitudeMin": -15.63,
+     "sAltitudeMin": 3566,
+     "altitudeMax": 9.13,
+     "sAltitudeMax": 2754,
+     "denivele": 24.76,
+     "montéeCumulée": 52,
+     "penteMaxPct": 5.45,
+     "penteMonteeMaxPct": 4.61,
+     "penteDescenteMaxPct": -5.45,
+     "penteMoyennePct": 2.07,
+     "penteP95Pct": 4.82,
+     "cretes": 4,
+     "cuvettes": 3,
+     "listeCretes": [
+      {
+       "s": 530,
+       "y": 2.59,
+       "proeminence": 2.59,
+       "rayonVertical": 675,
+       "vitesseKmh": 141,
+       "chargeG": -0.231,
+       "sens": "crête"
+      },
+      {
+       "s": 1862,
+       "y": 6.57,
+       "proeminence": 2.42,
+       "rayonVertical": 9892,
+       "vitesseKmh": 139,
+       "chargeG": -0.015,
+       "sens": "crête"
+      },
+      {
+       "s": 2754,
+       "y": 9.13,
+       "proeminence": 4.55,
+       "rayonVertical": 7773,
+       "vitesseKmh": 273,
+       "chargeG": -0.075,
+       "sens": "crête"
+      },
+      {
+       "s": 4372,
+       "y": 6.57,
+       "proeminence": 6.54,
+       "rayonVertical": 9935,
+       "vitesseKmh": 193,
+       "chargeG": -0.03,
+       "sens": "crête"
+      }
+     ],
+     "listeCuvettes": [
+      {
+       "s": 1058,
+       "y": -15.63,
+       "proeminence": 12.28,
+       "rayonVertical": 4892,
+       "vitesseKmh": 111,
+       "chargeG": 0.02,
+       "sens": "cuvette"
+      },
+      {
+       "s": 2250,
+       "y": 4.15,
+       "proeminence": 2.42,
+       "rayonVertical": 12791,
+       "vitesseKmh": 225,
+       "chargeG": 0.031,
+       "sens": "cuvette"
+      },
+      {
+       "s": 3566,
+       "y": -15.63,
+       "proeminence": 12.23,
+       "rayonVertical": 4891,
+       "vitesseKmh": 221,
+       "chargeG": 0.079,
+       "sens": "cuvette"
+      }
+     ],
+     "rayonVerticalMinCrete": 673,
+     "rayonVerticalMinCuvette": 518,
+     "chargeVerticaleMaxG": 0.344,
+     "allegementMaxG": -0.321
+    },
+    "devers": {
+     "maxDeg": 2.29,
+     "partSup1DegPct": 7,
+     "partNulPct": 79.2
+    },
+    "virages": [
+     {
+      "debut": 446,
+      "longueur": 78,
+      "sens": "gauche",
+      "rayonMin": 58,
+      "angle": 51,
+      "deversApexDeg": -0.45,
+      "deversApexPct": -0.79,
+      "deversMaxDeg": -0.52,
+      "relation": "relevé",
+      "penteApexPct": 4.43,
+      "vitesseApexKmh": 110,
+      "apex": 490
+     },
+     {
+      "debut": 1004,
+      "longueur": 54,
+      "sens": "gauche",
+      "rayonMin": 36,
+      "angle": 54,
+      "deversApexDeg": -1.9,
+      "deversApexPct": -3.31,
+      "deversMaxDeg": -1.91,
+      "relation": "relevé",
+      "penteApexPct": -0.52,
+      "vitesseApexKmh": 81,
+      "apex": 1032
+     },
+     {
+      "debut": 1852,
+      "longueur": 116,
+      "sens": "gauche",
+      "rayonMin": 55,
+      "angle": 92,
+      "deversApexDeg": -1.55,
+      "deversApexPct": -2.7,
+      "deversMaxDeg": -1.66,
+      "relation": "relevé",
+      "penteApexPct": -0.24,
+      "vitesseApexKmh": 106,
+      "apex": 1888
+     },
+     {
+      "debut": 2320,
+      "longueur": 82,
+      "sens": "droite",
+      "rayonMin": 223,
+      "angle": 19,
+      "deversApexDeg": 0.36,
+      "deversApexPct": 0.63,
+      "deversMaxDeg": 0.41,
+      "relation": "relevé",
+      "penteApexPct": 1,
+      "vitesseApexKmh": 243,
+      "apex": 2380
+     },
+     {
+      "debut": 2680,
+      "longueur": 44,
+      "sens": "gauche",
+      "rayonMin": 211,
+      "angle": 9,
+      "deversApexDeg": -0.33,
+      "deversApexPct": -0.57,
+      "deversMaxDeg": -0.33,
+      "relation": "relevé",
+      "penteApexPct": 0.63,
+      "vitesseApexKmh": 270,
+      "apex": 2700
+     },
+     {
+      "debut": 3160,
+      "longueur": 74,
+      "sens": "gauche",
+      "rayonMin": 31,
+      "angle": 80,
+      "deversApexDeg": -2.28,
+      "deversApexPct": -3.98,
+      "deversMaxDeg": -2.29,
+      "relation": "relevé",
+      "penteApexPct": -4.94,
+      "vitesseApexKmh": 75,
+      "apex": 3194
+     },
+     {
+      "debut": 3628,
+      "longueur": 104,
+      "sens": "gauche",
+      "rayonMin": 54,
+      "angle": 83,
+      "deversApexDeg": -1.52,
+      "deversApexPct": -2.65,
+      "deversMaxDeg": -1.71,
+      "relation": "relevé",
+      "penteApexPct": 2.51,
+      "vitesseApexKmh": 105,
+      "apex": 3698
+     },
+     {
+      "debut": 4122,
+      "longueur": 126,
+      "sens": "droite",
+      "rayonMin": 64,
+      "angle": 89,
+      "deversApexDeg": 1.28,
+      "deversApexPct": 2.23,
+      "deversMaxDeg": 1.44,
+      "relation": "relevé",
+      "penteApexPct": 1.97,
+      "vitesseApexKmh": 117,
+      "apex": 4214
+     },
+     {
+      "debut": 4690,
+      "longueur": 86,
+      "sens": "gauche",
+      "rayonMin": 32,
+      "angle": 101,
+      "deversApexDeg": -0.56,
+      "deversApexPct": -0.98,
+      "deversMaxDeg": -1.09,
+      "relation": "relevé",
+      "penteApexPct": -4.54,
+      "vitesseApexKmh": 76,
+      "apex": 4740
+     }
+    ],
+    "nombreVirages": 9,
+    "courbures": {
+     "droite": 83,
+     "rapide": 2.1,
+     "moyen": 4.3,
+     "lent": 3.1,
+     "serré": 6.5,
+     "épingle": 1
+    },
+    "droites": {
+     "nombre": 10,
+     "plusLongue": 684,
+     "total": 4166,
+     "liste": [
+      {
+       "debut": 4778,
+       "longueur": 684
+      },
+      {
+       "debut": 526,
+       "longueur": 476
+      },
+      {
+       "debut": 4250,
+       "longueur": 438
+      },
+      {
+       "debut": 2730,
+       "longueur": 428
+      },
+      {
+       "debut": 1434,
+       "longueur": 416
+      },
+      {
+       "debut": 3236,
+       "longueur": 390
+      },
+      {
+       "debut": 3734,
+       "longueur": 386
+      },
+      {
+       "debut": 1060,
+       "longueur": 342
+      },
+      {
+       "debut": 1970,
+       "longueur": 342
+      },
+      {
+       "debut": 2410,
+       "longueur": 264
+      }
+     ]
+    },
+    "largeur": 12,
+    "degagement": {
+     "min": 11.4,
+     "p10": 14,
+     "median": 14,
+     "max": 14
+    },
+    "vitesse": {
+     "minKmh": 75,
+     "maxKmh": 284,
+     "tempsReference": 97.27
+    },
+    "tunnel": null,
+    "stands": {
+     "debut": 30,
+     "fin": 240
+    },
+    "ligneDroiteDepart": {
+     "debut": -240,
+     "fin": 444
+    }
+   },
+   "decor": {
+    "familles": {
+     "arbres": {
+      "objets": 92,
+      "loin": 46,
+      "solides": 46,
+      "formes": 2,
+      "matieres": {
+       "26": 46,
+       "27": 46
+      },
+      "distanceMedianeAxe": 81,
+      "casesOccupees40m": 0
+     },
+     "glissières : lisses": {
+      "objets": 1256,
+      "loin": 1256,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "0": 1256
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 51
+     },
+     "glissières : poteaux": {
+      "objets": 1256,
+      "loin": 0,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "0": 1256
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 51
+     },
+     "marquages de grille": {
+      "objets": 48,
+      "loin": 0,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "14": 48
+      },
+      "distanceMedianeAxe": 2,
+      "casesOccupees40m": 3
+     },
+     "murs de pneus": {
+      "objets": 504,
+      "loin": 0,
+      "solides": 504,
+      "formes": 1,
+      "matieres": {
+       "7": 504
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 10
+     },
+     "panneaux publicitaires": {
+      "objets": 160,
+      "loin": 80,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "16": 160
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 43
+     },
+     "passerelle": {
+      "objets": 5,
+      "loin": 5,
+      "solides": 3,
+      "formes": 1,
+      "matieres": {
+       "3": 3,
+       "16": 2
+      },
+      "distanceMedianeAxe": 0,
+      "casesOccupees40m": 1
+     },
+     "portique des feux": {
+      "objets": 9,
+      "loin": 3,
+      "solides": 3,
+      "formes": 1,
+      "matieres": {
+       "0": 3,
+       "7": 5,
+       "16": 1
+      },
+      "distanceMedianeAxe": 1,
+      "casesOccupees40m": 1
+     },
+     "postes de commissaires": {
+      "objets": 44,
+      "loin": 0,
+      "solides": 33,
+      "formes": 2,
+      "matieres": {
+       "0": 11,
+       "16": 22,
+       "13.6": 11
+      },
+      "distanceMedianeAxe": 23,
+      "casesOccupees40m": 12
+     },
+     "repères de freinage": {
+      "objets": 84,
+      "loin": 21,
+      "solides": 0,
+      "formes": 2,
+      "matieres": {
+       "0": 21,
+       "16": 63
+      },
+      "distanceMedianeAxe": 9,
+      "casesOccupees40m": 14
+     },
+     "rochers": {
+      "objets": 208,
+      "loin": 208,
+      "solides": 104,
+      "formes": 1,
+      "matieres": {
+       "8": 104,
+       "9": 104
+      },
+      "distanceMedianeAxe": 161,
+      "casesOccupees40m": 0
+     },
+     "stands": {
+      "objets": 98,
+      "loin": 7,
+      "solides": 28,
+      "formes": 1,
+      "matieres": {
+       "0": 7,
+       "3": 7,
+       "7": 70,
+       "16": 7,
+       "13.2": 7
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 6
+     },
+     "tribunes et public": {
+      "objets": 3906,
+      "loin": 54,
+      "solides": 96,
+      "formes": 2,
+      "matieres": {
+       "0": 42,
+       "3": 54,
+       "16": 6,
+       "18": 3804
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 6
+     }
+    },
+    "autres": {},
+    "cases": 51,
+    "pasCase": 100,
+    "mobilierParCase": [
+     905,
+     984,
+     237,
+     15,
+     42,
+     34,
+     8,
+     2,
+     5,
+     13,
+     76,
+     4,
+     4,
+     2,
+     4,
+     6,
+     4,
+     11,
+     49,
+     32,
+     5,
+     9,
+     9,
+     0,
+     4,
+     2,
+     6,
+     2,
+     4,
+     6,
+     17,
+     43,
+     38,
+     2,
+     15,
+     11,
+     72,
+     0,
+     8,
+     13,
+     9,
+     72,
+     4,
+     2,
+     6,
+     13,
+     7,
+     76,
+     793,
+     976,
+     197
+    ],
+    "natureParCase": [
+     0,
+     0,
+     0,
+     2,
+     2,
+     0,
+     4,
+     6,
+     0,
+     0,
+     0,
+     2,
+     0,
+     8,
+     0,
+     4,
+     2,
+     4,
+     30,
+     2,
+     6,
+     2,
+     0,
+     4,
+     0,
+     8,
+     0,
+     0,
+     0,
+     0,
+     4,
+     2,
+     0,
+     0,
+     8,
+     4,
+     0,
+     2,
+     0,
+     8,
+     6,
+     0,
+     2,
+     4,
+     4,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "vegetationParCase": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "diversiteParCase": [
+     4,
+     3,
+     5,
+     2,
+     1,
+     2,
+     2,
+     1,
+     1,
+     2,
+     2,
+     1,
+     1,
+     1,
+     1,
+     2,
+     1,
+     2,
+     3,
+     2,
+     2,
+     2,
+     2,
+     0,
+     1,
+     1,
+     2,
+     1,
+     1,
+     1,
+     3,
+     3,
+     2,
+     1,
+     3,
+     2,
+     1,
+     0,
+     2,
+     2,
+     2,
+     1,
+     1,
+     1,
+     2,
+     2,
+     2,
+     2,
+     4,
+     4,
+     4
+    ],
+    "partCasesAuPlusUneFamillePct": 39.2,
+    "zonesSansMobilier": {
+     "total": 200,
+     "partPct": 4,
+     "plusLongues": [
+      {
+       "debut": 2300,
+       "longueur": 100
+      },
+      {
+       "debut": 3700,
+       "longueur": 100
+      }
+     ]
+    },
+    "zonesVides": {
+     "total": 0,
+     "partPct": 0,
+     "plusLongues": []
+    },
+    "zonesSansVegetationProche": {
+     "total": 5018,
+     "partPct": 100
+    },
+    "nappes": {
+     "accotement": {
+      "sommets": 45918,
+      "triangles": 45162,
+      "matieres": {
+       "8": 29096,
+       "14": 16822
+      }
+     },
+     "terrain": {
+      "sommets": 29232,
+      "triangles": 50446,
+      "matieres": {
+       "8": 28066,
+       "9": 1166
+      }
+     }
+    },
+    "lots": 34,
+    "vegetation": {
+     "herbes": 0,
+     "fougeres": 0,
+     "fleurs": 0,
+     "taillis": 0,
+     "lots": 0,
+     "qualite": "high",
+     "brins": 0,
+     "tuiles": 0,
+     "brinsTapis": 0,
+     "objetsHerbe": 0
+    }
+   },
+   "palette": {
+    "herbe": [
+     0.13,
+     0.35,
+     0.24
+    ],
+    "herbeClaire": [
+     0.3,
+     0.48,
+     0.3
+    ],
+    "terre": [
+     0.24,
+     0.31,
+     0.22
+    ],
+    "roche": [
+     0.52,
+     0.57,
+     0.53
+    ],
+    "sable": null,
+    "ciel": [
+     [
+      0.1,
+      0.31,
+      0.43
+     ],
+     [
+      0.69,
+      0.81,
+      0.77
+     ]
+    ],
+    "brume": [
+     0.51,
+     0.66,
+     0.63
+    ],
+    "densiteBrume": 0.00056,
+    "essence": "feuillu",
+    "densiteArbres": 0.28,
+    "reliefTerrain": 24,
+    "echelleTerrain": 370,
+    "matieresRecettes": false
+   }
+  },
+  {
+   "id": "cap-sequoia",
+   "nom": "Cap-Séquoia",
+   "theme": "pacifique",
+   "graine": 157,
+   "longueurVisee": 5200,
+   "mesures": {
+    "relief": {
+     "altitudeMin": -6.72,
+     "sAltitudeMin": 3328,
+     "altitudeMax": 6.72,
+     "sAltitudeMax": 2020,
+     "denivele": 13.44,
+     "montéeCumulée": 26.9,
+     "penteMaxPct": 6.8,
+     "penteMonteeMaxPct": 1.61,
+     "penteDescenteMaxPct": -6.8,
+     "penteMoyennePct": 1.03,
+     "penteP95Pct": 1.61,
+     "cretes": 2,
+     "cuvettes": 2,
+     "listeCretes": [
+      {
+       "s": 2020,
+       "y": 6.72,
+       "proeminence": 2.86,
+       "rayonVertical": 25819,
+       "vitesseKmh": 210,
+       "chargeG": -0.013,
+       "sens": "crête"
+      },
+      {
+       "s": 4636,
+       "y": 6.72,
+       "proeminence": 2.88,
+       "rayonVertical": 25819,
+       "vitesseKmh": 214,
+       "chargeG": -0.014,
+       "sens": "crête"
+      }
+     ],
+     "listeCuvettes": [
+      {
+       "s": 712,
+       "y": -6.72,
+       "proeminence": 2.88,
+       "rayonVertical": 25819,
+       "vitesseKmh": 222,
+       "chargeG": 0.015,
+       "sens": "cuvette"
+      },
+      {
+       "s": 3328,
+       "y": -6.72,
+       "proeminence": 2.87,
+       "rayonVertical": 25819,
+       "vitesseKmh": 204,
+       "chargeG": 0.013,
+       "sens": "cuvette"
+      }
+     ],
+     "rayonVerticalMinCrete": 575,
+     "rayonVerticalMinCuvette": 527,
+     "chargeVerticaleMaxG": 0.771,
+     "allegementMaxG": -0.886
+    },
+    "devers": {
+     "maxDeg": 2.12,
+     "partSup1DegPct": 6.8,
+     "partNulPct": 76.7
+    },
+    "virages": [
+     {
+      "debut": 342,
+      "longueur": 80,
+      "sens": "droite",
+      "rayonMin": 29,
+      "angle": 99,
+      "deversApexDeg": 0.52,
+      "deversApexPct": 0.92,
+      "deversMaxDeg": 0.93,
+      "relation": "relevé",
+      "penteApexPct": -5.14,
+      "vitesseApexKmh": 71,
+      "apex": 376
+     },
+     {
+      "debut": 820,
+      "longueur": 52,
+      "sens": "gauche",
+      "rayonMin": 231,
+      "angle": 11,
+      "deversApexDeg": -0.34,
+      "deversApexPct": -0.6,
+      "deversMaxDeg": -0.35,
+      "relation": "relevé",
+      "penteApexPct": 0.53,
+      "vitesseApexKmh": 242,
+      "apex": 850
+     },
+     {
+      "debut": 1262,
+      "longueur": 96,
+      "sens": "droite",
+      "rayonMin": 54,
+      "angle": 37,
+      "deversApexDeg": 0.48,
+      "deversApexPct": 0.84,
+      "deversMaxDeg": 0.73,
+      "relation": "relevé",
+      "penteApexPct": 1.57,
+      "vitesseApexKmh": 131,
+      "apex": 1270
+     },
+     {
+      "debut": 1702,
+      "longueur": 140,
+      "sens": "droite",
+      "rayonMin": 76,
+      "angle": 88,
+      "deversApexDeg": 1.07,
+      "deversApexPct": 1.87,
+      "deversMaxDeg": 1.21,
+      "relation": "relevé",
+      "penteApexPct": 0.78,
+      "vitesseApexKmh": 131,
+      "apex": 1810
+     },
+     {
+      "debut": 2166,
+      "longueur": 100,
+      "sens": "gauche",
+      "rayonMin": 57,
+      "angle": 74,
+      "deversApexDeg": -1.43,
+      "deversApexPct": -2.5,
+      "deversMaxDeg": -1.61,
+      "relation": "relevé",
+      "penteApexPct": -0.67,
+      "vitesseApexKmh": 109,
+      "apex": 2198
+     },
+     {
+      "debut": 2666,
+      "longueur": 64,
+      "sens": "droite",
+      "rayonMin": 30,
+      "angle": 68,
+      "deversApexDeg": 2.12,
+      "deversApexPct": 3.7,
+      "deversMaxDeg": 2.12,
+      "relation": "relevé",
+      "penteApexPct": -1.61,
+      "vitesseApexKmh": 74,
+      "apex": 2698
+     },
+     {
+      "debut": 3050,
+      "longueur": 94,
+      "sens": "droite",
+      "rayonMin": 49,
+      "angle": 79,
+      "deversApexDeg": 1.66,
+      "deversApexPct": 2.89,
+      "deversMaxDeg": 1.84,
+      "relation": "relevé",
+      "penteApexPct": -0.81,
+      "vitesseApexKmh": 99,
+      "apex": 3110
+     },
+     {
+      "debut": 3576,
+      "longueur": 92,
+      "sens": "gauche",
+      "rayonMin": 103,
+      "angle": 40,
+      "deversApexDeg": -0.78,
+      "deversApexPct": -1.37,
+      "deversMaxDeg": -0.88,
+      "relation": "relevé",
+      "penteApexPct": 0.99,
+      "vitesseApexKmh": 160,
+      "apex": 3604
+     },
+     {
+      "debut": 4012,
+      "longueur": 136,
+      "sens": "droite",
+      "rayonMin": 74,
+      "angle": 87,
+      "deversApexDeg": 1.1,
+      "deversApexPct": 1.91,
+      "deversMaxDeg": 1.24,
+      "relation": "relevé",
+      "penteApexPct": 1.53,
+      "vitesseApexKmh": 128,
+      "apex": 4116
+     },
+     {
+      "debut": 4576,
+      "longueur": 76,
+      "sens": "droite",
+      "rayonMin": 152,
+      "angle": 22,
+      "deversApexDeg": 0.54,
+      "deversApexPct": 0.94,
+      "deversMaxDeg": 0.58,
+      "relation": "relevé",
+      "penteApexPct": 0.13,
+      "vitesseApexKmh": 211,
+      "apex": 4602
+     }
+    ],
+    "nombreVirages": 10,
+    "courbures": {
+     "droite": 80.3,
+     "rapide": 2.3,
+     "moyen": 5.2,
+     "lent": 8.3,
+     "serré": 3.1,
+     "épingle": 0.8
+    },
+    "droites": {
+     "nombre": 11,
+     "plusLongue": 524,
+     "total": 4202,
+     "liste": [
+      {
+       "debut": 5050,
+       "longueur": 524
+      },
+      {
+       "debut": 3146,
+       "longueur": 426
+      },
+      {
+       "debut": 4152,
+       "longueur": 420
+      },
+      {
+       "debut": 2268,
+       "longueur": 396
+      },
+      {
+       "debut": 424,
+       "longueur": 388
+      },
+      {
+       "debut": 880,
+       "longueur": 378
+      },
+      {
+       "debut": 4656,
+       "longueur": 364
+      },
+      {
+       "debut": 1362,
+       "longueur": 336
+      },
+      {
+       "debut": 3672,
+       "longueur": 336
+      },
+      {
+       "debut": 1846,
+       "longueur": 318
+      },
+      {
+       "debut": 2732,
+       "longueur": 316
+      }
+     ]
+    },
+    "largeur": 12,
+    "degagement": {
+     "min": 9.9,
+     "p10": 14,
+     "median": 14,
+     "max": 14
+    },
+    "vitesse": {
+     "minKmh": 71,
+     "maxKmh": 282,
+     "tempsReference": 99.85
+    },
+    "tunnel": null,
+    "stands": {
+     "debut": 30,
+     "fin": 240
+    },
+    "ligneDroiteDepart": {
+     "debut": -184,
+     "fin": 340
+    }
+   },
+   "decor": {
+    "familles": {
+     "arbres": {
+      "objets": 640,
+      "loin": 640,
+      "solides": 320,
+      "formes": 2,
+      "matieres": {
+       "26": 320,
+       "27": 320
+      },
+      "distanceMedianeAxe": 227,
+      "casesOccupees40m": 0
+     },
+     "glissières : lisses": {
+      "objets": 1310,
+      "loin": 1310,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "0": 1310
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 53
+     },
+     "glissières : poteaux": {
+      "objets": 1310,
+      "loin": 0,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "0": 1310
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 53
+     },
+     "marquages de grille": {
+      "objets": 48,
+      "loin": 0,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "14": 48
+      },
+      "distanceMedianeAxe": 2,
+      "casesOccupees40m": 3
+     },
+     "murs de pneus": {
+      "objets": 504,
+      "loin": 0,
+      "solides": 504,
+      "formes": 1,
+      "matieres": {
+       "7": 504
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 11
+     },
+     "panneaux publicitaires": {
+      "objets": 170,
+      "loin": 85,
+      "solides": 0,
+      "formes": 1,
+      "matieres": {
+       "16": 170
+      },
+      "distanceMedianeAxe": 20,
+      "casesOccupees40m": 39
+     },
+     "passerelle": {
+      "objets": 5,
+      "loin": 5,
+      "solides": 3,
+      "formes": 1,
+      "matieres": {
+       "3": 3,
+       "16": 2
+      },
+      "distanceMedianeAxe": 0,
+      "casesOccupees40m": 1
+     },
+     "portique des feux": {
+      "objets": 9,
+      "loin": 3,
+      "solides": 3,
+      "formes": 1,
+      "matieres": {
+       "0": 3,
+       "7": 5,
+       "16": 1
+      },
+      "distanceMedianeAxe": 1,
+      "casesOccupees40m": 1
+     },
+     "postes de commissaires": {
+      "objets": 44,
+      "loin": 0,
+      "solides": 33,
+      "formes": 2,
+      "matieres": {
+       "0": 11,
+       "16": 22,
+       "13.6": 11
+      },
+      "distanceMedianeAxe": 23,
+      "casesOccupees40m": 11
+     },
+     "repères de freinage": {
+      "objets": 84,
+      "loin": 21,
+      "solides": 0,
+      "formes": 2,
+      "matieres": {
+       "0": 21,
+       "16": 63
+      },
+      "distanceMedianeAxe": 9,
+      "casesOccupees40m": 14
+     },
+     "rochers": {
+      "objets": 1,
+      "loin": 1,
+      "solides": 1,
+      "formes": 1,
+      "matieres": {
+       "9": 1
+      },
+      "distanceMedianeAxe": 265,
+      "casesOccupees40m": 0
+     },
+     "stands": {
+      "objets": 84,
+      "loin": 6,
+      "solides": 24,
+      "formes": 1,
+      "matieres": {
+       "0": 6,
+       "3": 6,
+       "7": 60,
+       "16": 6,
+       "13.2": 6
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 5
+     },
+     "tribunes et public": {
+      "objets": 3293,
+      "loin": 45,
+      "solides": 80,
+      "formes": 2,
+      "matieres": {
+       "0": 35,
+       "3": 45,
+       "16": 5,
+       "18": 3208
+      },
+      "distanceMedianeAxe": 19,
+      "casesOccupees40m": 6
+     }
+    },
+    "autres": {},
+    "cases": 53,
+    "pasCase": 100,
+    "mobilierParCase": [
+     1019,
+     988,
+     92,
+     62,
+     14,
+     4,
+     8,
+     2,
+     0,
+     6,
+     0,
+     17,
+     77,
+     0,
+     6,
+     7,
+     15,
+     72,
+     0,
+     6,
+     11,
+     41,
+     42,
+     9,
+     4,
+     13,
+     41,
+     46,
+     2,
+     15,
+     19,
+     60,
+     8,
+     0,
+     4,
+     8,
+     0,
+     6,
+     9,
+     13,
+     4,
+     72,
+     8,
+     4,
+     2,
+     12,
+     0,
+     8,
+     4,
+     0,
+     126,
+     974,
+     281
+    ],
+    "natureParCase": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     24,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     6,
+     0,
+     0,
+     0,
+     4,
+     2,
+     10,
+     14,
+     0,
+     12,
+     0,
+     0,
+     0,
+     30,
+     0,
+     0,
+     0,
+     8,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "vegetationParCase": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "diversiteParCase": [
+     5,
+     4,
+     5,
+     2,
+     2,
+     1,
+     2,
+     1,
+     0,
+     1,
+     0,
+     3,
+     3,
+     0,
+     1,
+     2,
+     3,
+     1,
+     0,
+     1,
+     2,
+     4,
+     1,
+     2,
+     1,
+     2,
+     4,
+     2,
+     1,
+     2,
+     3,
+     1,
+     1,
+     0,
+     1,
+     2,
+     0,
+     1,
+     2,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     2,
+     0,
+     1,
+     1,
+     0,
+     3,
+     4,
+     4
+    ],
+    "partCasesAuPlusUneFamillePct": 52.8,
+    "zonesSansMobilier": {
+     "total": 800,
+     "partPct": 15.3,
+     "plusLongues": [
+      {
+       "debut": 800,
+       "longueur": 100
+      },
+      {
+       "debut": 1000,
+       "longueur": 100
+      },
+      {
+       "debut": 1300,
+       "longueur": 100
+      },
+      {
+       "debut": 1800,
+       "longueur": 100
+      },
+      {
+       "debut": 3300,
+       "longueur": 100
+      },
+      {
+       "debut": 3600,
+       "longueur": 100
+      }
+     ]
+    },
+    "zonesVides": {
+     "total": 500,
+     "partPct": 9.6,
+     "plusLongues": [
+      {
+       "debut": 800,
+       "longueur": 100
+      },
+      {
+       "debut": 1000,
+       "longueur": 100
+      },
+      {
+       "debut": 1300,
+       "longueur": 100
+      },
+      {
+       "debut": 1800,
+       "longueur": 100
+      },
+      {
+       "debut": 4900,
+       "longueur": 100
+      }
+     ]
+    },
+    "zonesSansVegetationProche": {
+     "total": 5234,
+     "partPct": 100
+    },
+    "nappes": {
+     "accotement": {
+      "sommets": 47898,
+      "triangles": 47106,
+      "matieres": {
+       "8": 30124,
+       "14": 17774
+      }
+     },
+     "terrain": {
+      "sommets": 30434,
+      "triangles": 52660,
+      "matieres": {
+       "8": 22281,
+       "9": 8153
+      }
+     },
+     "eau": {
+      "sommets": 4,
+      "triangles": 2,
+      "matieres": {
+       "12": 4
+      }
+     }
+    },
+    "lots": 39,
+    "vegetation": {
+     "herbes": 0,
+     "fougeres": 0,
+     "fleurs": 0,
+     "taillis": 0,
+     "lots": 0,
+     "qualite": "high",
+     "brins": 0,
+     "tuiles": 0,
+     "brinsTapis": 0,
+     "objetsHerbe": 0
+    }
+   },
+   "palette": {
+    "herbe": [
+     0.4,
+     0.39,
+     0.21
+    ],
+    "herbeClaire": [
+     0.62,
+     0.55,
+     0.32
+    ],
+    "terre": [
+     0.37,
+     0.29,
+     0.2
+    ],
+    "roche": [
+     0.4,
+     0.36,
+     0.31
+    ],
+    "sable": [
+     0.23,
+     0.27,
+     0.27
+    ],
+    "ciel": [
+     [
+      0.12,
+      0.32,
+      0.54
+     ],
+     [
+      0.73,
+      0.82,
+      0.85
+     ]
+    ],
+    "brume": [
+     0.59,
+     0.7,
+     0.73
+    ],
+    "densiteBrume": 0.00048,
+    "essence": "conifere",
+    "densiteArbres": 0.35,
+    "reliefTerrain": 31,
+    "echelleTerrain": 410,
+    "matieresRecettes": false
+   }
+  }
+ ],
+ "temoinMemeTheme": {
+  "id": "foret-96",
+  "mesures": {
+   "relief": {
+    "altitudeMin": -10.86,
+    "sAltitudeMin": 1112,
+    "altitudeMax": 11.72,
+    "sAltitudeMax": 2596,
+    "denivele": 22.58,
+    "montéeCumulée": 23.3,
+    "penteMaxPct": 6.45,
+    "penteMonteeMaxPct": 2.47,
+    "penteDescenteMaxPct": -6.45,
+    "penteMoyennePct": 1.1,
+    "penteP95Pct": 2.44,
+    "cretes": 1,
+    "cuvettes": 1,
+    "listeCretes": [
+     {
+      "s": 2596,
+      "y": 11.72,
+      "proeminence": 3.04,
+      "rayonVertical": 21637,
+      "vitesseKmh": 191,
+      "chargeG": -0.013,
+      "sens": "crête"
+     }
+    ],
+    "listeCuvettes": [
+     {
+      "s": 1112,
+      "y": -10.86,
+      "proeminence": 2.64,
+      "rayonVertical": 23884,
+      "vitesseKmh": 265,
+      "chargeG": 0.023,
+      "sens": "cuvette"
+     }
+    ],
+    "rayonVerticalMinCrete": 657,
+    "rayonVerticalMinCuvette": 567,
+    "chargeVerticaleMaxG": 0.222,
+    "allegementMaxG": -0.268
+   },
+   "devers": {
+    "maxDeg": 2.52,
+    "partSup1DegPct": 5.7,
+    "partNulPct": 77.7
+   },
+   "virages": [
+    {
+     "debut": 338,
+     "longueur": 126,
+     "sens": "droite",
+     "rayonMin": 59,
+     "angle": 96,
+     "deversApexDeg": 1.21,
+     "deversApexPct": 2.11,
+     "deversMaxDeg": 1.22,
+     "relation": "relevé",
+     "penteApexPct": -5.19,
+     "vitesseApexKmh": 112,
+     "apex": 430
+    },
+    {
+     "debut": 764,
+     "longueur": 120,
+     "sens": "droite",
+     "rayonMin": 247,
+     "angle": 26,
+     "deversApexDeg": 0.33,
+     "deversApexPct": 0.57,
+     "deversMaxDeg": 0.37,
+     "relation": "relevé",
+     "penteApexPct": -0.85,
+     "vitesseApexKmh": 242,
+     "apex": 862
+    },
+    {
+     "debut": 1216,
+     "longueur": 38,
+     "sens": "gauche",
+     "rayonMin": 206,
+     "angle": 9,
+     "deversApexDeg": -0.33,
+     "deversApexPct": -0.58,
+     "deversMaxDeg": -0.34,
+     "relation": "relevé",
+     "penteApexPct": 0.52,
+     "vitesseApexKmh": 272,
+     "apex": 1230
+    },
+    {
+     "debut": 1724,
+     "longueur": 92,
+     "sens": "droite",
+     "rayonMin": 34,
+     "angle": 104,
+     "deversApexDeg": 2.43,
+     "deversApexPct": 4.24,
+     "deversMaxDeg": 2.52,
+     "relation": "relevé",
+     "penteApexPct": 2.42,
+     "vitesseApexKmh": 79,
+     "apex": 1776
+    },
+    {
+     "debut": 2290,
+     "longueur": 74,
+     "sens": "gauche",
+     "rayonMin": 121,
+     "angle": 25,
+     "deversApexDeg": -0.67,
+     "deversApexPct": -1.17,
+     "deversMaxDeg": -0.7,
+     "relation": "relevé",
+     "penteApexPct": 1.25,
+     "vitesseApexKmh": 178,
+     "apex": 2334
+    },
+    {
+     "debut": 2634,
+     "longueur": 94,
+     "sens": "droite",
+     "rayonMin": 42,
+     "angle": 86,
+     "deversApexDeg": 1.92,
+     "deversApexPct": 3.35,
+     "deversMaxDeg": 2.11,
+     "relation": "relevé",
+     "penteApexPct": -0.32,
+     "vitesseApexKmh": 90,
+     "apex": 2668
+    },
+    {
+     "debut": 3132,
+     "longueur": 42,
+     "sens": "droite",
+     "rayonMin": 180,
+     "angle": 10,
+     "deversApexDeg": 0.38,
+     "deversApexPct": 0.66,
+     "deversMaxDeg": 0.38,
+     "relation": "relevé",
+     "penteApexPct": -1.43,
+     "vitesseApexKmh": 243,
+     "apex": 3150
+    },
+    {
+     "debut": 3522,
+     "longueur": 132,
+     "sens": "droite",
+     "rayonMin": 82,
+     "angle": 76,
+     "deversApexDeg": 0.99,
+     "deversApexPct": 1.72,
+     "deversMaxDeg": 1.11,
+     "relation": "relevé",
+     "penteApexPct": -0.93,
+     "vitesseApexKmh": 138,
+     "apex": 3552
+    },
+    {
+     "debut": 4006,
+     "longueur": 30,
+     "sens": "gauche",
+     "rayonMin": 288,
+     "angle": 5,
+     "deversApexDeg": -0.02,
+     "deversApexPct": -0.04,
+     "deversMaxDeg": -0.04,
+     "relation": "plat",
+     "penteApexPct": 0.79,
+     "vitesseApexKmh": 242,
+     "apex": 4020
+    }
+   ],
+   "nombreVirages": 9,
+   "courbures": {
+    "droite": 80.9,
+    "rapide": 2.5,
+    "moyen": 7,
+    "lent": 4.9,
+    "serré": 4.1,
+    "épingle": 0.7
+   },
+   "droites": {
+    "nombre": 9,
+    "plusLongue": 518,
+    "total": 3418,
+    "liste": [
+     {
+      "debut": 4044,
+      "longueur": 518
+     },
+     {
+      "debut": 1816,
+      "longueur": 470
+     },
+     {
+      "debut": 1258,
+      "longueur": 466
+     },
+     {
+      "debut": 2728,
+      "longueur": 400
+     },
+     {
+      "debut": 3178,
+      "longueur": 342
+     },
+     {
+      "debut": 3656,
+      "longueur": 342
+     },
+     {
+      "debut": 890,
+      "longueur": 322
+     },
+     {
+      "debut": 466,
+      "longueur": 292
+     },
+     {
+      "debut": 2368,
+      "longueur": 266
+     }
+    ]
+   },
+   "largeur": 12,
+   "degagement": {
+    "min": 13.1,
+    "p10": 14,
+    "median": 14,
+    "max": 14
+   },
+   "vitesse": {
+    "minKmh": 79,
+    "maxKmh": 286,
+    "tempsReference": 75.49
+   },
+   "tunnel": null,
+   "stands": {
+    "debut": 30,
+    "fin": 240
+   },
+   "ligneDroiteDepart": {
+    "debut": -182,
+    "fin": 336
+   }
+  },
+  "familles": {
+   "arbres": {
+    "objets": 2036,
+    "loin": 1018,
+    "solides": 1018,
+    "formes": 2,
+    "matieres": {
+     "26": 1018,
+     "27": 1018
+    },
+    "distanceMedianeAxe": 105,
+    "casesOccupees40m": 8
+   },
+   "glissières : lisses": {
+    "objets": 1058,
+    "loin": 1058,
+    "solides": 0,
+    "formes": 1,
+    "matieres": {
+     "0": 1058
+    },
+    "distanceMedianeAxe": 20,
+    "casesOccupees40m": 43
+   },
+   "glissières : poteaux": {
+    "objets": 1058,
+    "loin": 0,
+    "solides": 0,
+    "formes": 1,
+    "matieres": {
+     "0": 1058
+    },
+    "distanceMedianeAxe": 20,
+    "casesOccupees40m": 43
+   },
+   "marquages de grille": {
+    "objets": 48,
+    "loin": 0,
+    "solides": 0,
+    "formes": 1,
+    "matieres": {
+     "14": 48
+    },
+    "distanceMedianeAxe": 2,
+    "casesOccupees40m": 3
+   },
+   "murs de pneus": {
+    "objets": 288,
+    "loin": 0,
+    "solides": 288,
+    "formes": 1,
+    "matieres": {
+     "7": 288
+    },
+    "distanceMedianeAxe": 19,
+    "casesOccupees40m": 5
+   },
+   "panneaux publicitaires": {
+    "objets": 148,
+    "loin": 74,
+    "solides": 0,
+    "formes": 1,
+    "matieres": {
+     "16": 148
+    },
+    "distanceMedianeAxe": 20,
+    "casesOccupees40m": 36
+   },
+   "passerelle": {
+    "objets": 5,
+    "loin": 5,
+    "solides": 3,
+    "formes": 1,
+    "matieres": {
+     "16": 2,
+     "22": 3
+    },
+    "distanceMedianeAxe": 0,
+    "casesOccupees40m": 2
+   },
+   "portique des feux": {
+    "objets": 9,
+    "loin": 3,
+    "solides": 3,
+    "formes": 1,
+    "matieres": {
+     "0": 3,
+     "7": 5,
+     "16": 1
+    },
+    "distanceMedianeAxe": 1,
+    "casesOccupees40m": 1
+   },
+   "postes de commissaires": {
+    "objets": 40,
+    "loin": 0,
+    "solides": 30,
+    "formes": 2,
+    "matieres": {
+     "0": 10,
+     "16": 20,
+     "13.6": 10
+    },
+    "distanceMedianeAxe": 23,
+    "casesOccupees40m": 10
+   },
+   "repères de freinage": {
+    "objets": 48,
+    "loin": 12,
+    "solides": 0,
+    "formes": 2,
+    "matieres": {
+     "0": 12,
+     "16": 36
+    },
+    "distanceMedianeAxe": 9,
+    "casesOccupees40m": 8
+   },
+   "stands": {
+    "objets": 84,
+    "loin": 6,
+    "solides": 24,
+    "formes": 1,
+    "matieres": {
+     "7": 60,
+     "16": 6,
+     "22": 6,
+     "24": 6,
+     "13.2": 6
+    },
+    "distanceMedianeAxe": 19,
+    "casesOccupees40m": 6
+   },
+   "tribunes et public": {
+    "objets": 3236,
+    "loin": 45,
+    "solides": 80,
+    "formes": 2,
+    "matieres": {
+     "0": 35,
+     "16": 5,
+     "18": 3151,
+     "22": 45
+    },
+    "distanceMedianeAxe": 19,
+    "casesOccupees40m": 6
+   },
+   "végétation : fleurs": {
+    "objets": 35,
+    "loin": 35,
+    "solides": 0,
+    "formes": 1,
+    "matieres": {
+     "27": 35
+    },
+    "distanceMedianeAxe": 13,
+    "casesOccupees40m": 15
+   },
+   "végétation : fougères": {
+    "objets": 39,
+    "loin": 39,
+    "solides": 0,
+    "formes": 1,
+    "matieres": {
+     "27": 39
+    },
+    "distanceMedianeAxe": 12,
+    "casesOccupees40m": 20
+   },
+   "végétation : herbe": {
+    "objets": 43013,
+    "loin": 43013,
+    "solides": 0,
+    "formes": 3,
+    "matieres": {
+     "27": 43013
+    },
+    "distanceMedianeAxe": 24,
+    "casesOccupees40m": 39
+   },
+   "végétation : humus": {
+    "objets": 39,
+    "loin": 39,
+    "solides": 0,
+    "formes": 1,
+    "matieres": {
+     "25": 39
+    },
+    "distanceMedianeAxe": 12,
+    "casesOccupees40m": 20
+   },
+   "végétation : taillis": {
+    "objets": 32,
+    "loin": 32,
+    "solides": 0,
+    "formes": 1,
+    "matieres": {
+     "27": 32
+    },
+    "distanceMedianeAxe": 13,
+    "casesOccupees40m": 16
+   },
+   "villages : maisons": {
+    "objets": 93,
+    "loin": 93,
+    "solides": 0,
+    "formes": 1,
+    "matieres": {
+     "1": 62,
+     "13.3": 6,
+     "13.1": 5,
+     "13.2": 13,
+     "13.4": 7
+    },
+    "distanceMedianeAxe": 376,
+    "casesOccupees40m": 0
+   }
+  },
+  "paletteIdentique": true
+ }
+}
