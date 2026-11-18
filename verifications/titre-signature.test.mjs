@@ -19,9 +19,10 @@ const marque = (() => {
   return titre.slice(d, titre.indexOf('</div>', d));
 })();
 
-test("l'écran titre porte la signature m4d135 vers GitHub", () => {
-  assert.match(titre, /<a class="signature" href="https:\/\/github\.com\/M4D135"/);
-  assert.match(titre, /target="_blank" rel="noopener"/);
+test("l'écran titre télécharge le jeu par la signature m4d135", () => {
+  // Comme METAL sur fps.estrasse.fr : le lien pointe la page elle-même et le navigateur la télécharge.
+  assert.match(titre, /<a class="signature" href="https:\/\/bitume\.estrasse\.fr\/" download="BITUME\.html"/);
+  assert.match(titre, /title="Télécharger BITUME"/);
   assert.match(titre, />m4d135<\/a>/);
   assert.match(titre, /<img class="signature-avatar" src="data:image\/jpeg;base64,[A-Za-z0-9+/]+"/,
     "l'avatar de la signature doit être embarqué, sans appel réseau");
