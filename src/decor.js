@@ -896,6 +896,8 @@
       th.eau = Math.min(th.eau, yMin - 2.5);
     }
     const w = c.largeur / 2, lim = limites(c), interroger = indexAxe(c);
+    // bords de route (lot 22F) : plan tiré avec la graine propre de bords.js, jamais avec le hasard du décor
+    const planBords = B.bords ? B.bords.planifier(c) : null;
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
     const nappes = nappesRoute(c, th, lim, qualite !== 'low', qualite === 'low' ? null : ecologie);
     const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie);
@@ -954,6 +956,9 @@
           objets.push({ shape: 'box', p: [pp[0] - az[0] * cote * .04, pp[1] + .12, pp[2] - az[2] * cote * .04], s: [long * .55, .26, .03], r: rot, mat: 16, color: coul2 });
           loin.push(objets[objets.length - 2]);
         }
+        // lot 22F : le parapet d'un vide, le muret ou les balises d'un fossé remplacent la glissière ; le hasard du décor
+        // est déjà tiré et le lot est créé au même moment, l'ordre des lots ne change pas
+        if (planBords && B.bords.sansGlissiere(c, i, cote)) { objets.splice(0, 2); loin.splice(0, 1); }
         ajouter(objets, loin, milieu[0], milieu[2]);
       }
     }
@@ -1384,6 +1389,16 @@
         if (objets.length) ajouter(objets, objets, p[0], p[2]);
       }
     }
+
+    // Bords de route (lot 22F) : posés après tout le reste, dans des lots à eux (clé préfixée « b ») ajoutés à la fin :
+    // les lots et les solides historiques gardent leur contenu, leur ordre et leurs identifiants.
+    if (planBords) B.bords.poser(c, planBords, { limites: lim, qualite, ajouter: (objets, loin, x, z) => {
+      const q = interroger(x, z, 300), proche = q.i >= 0 && q.d < 330;
+      const cle = 'b' + (proche ? 'p' + Math.floor(q.i * c.pas / TRONCON) : 'l' + Math.floor(x / 420) + ',' + Math.floor(z / 420));
+      let l = groupes.get(cle); if (!l) groupes.set(cle, l = { objets: [], loin: [], lointain: !proche });
+      for (const o of objets) l.objets.push(o);
+      for (const o of loin) l.loin.push(o);
+    } });
 
     // Finition des lots : sphère englobante et portée.
     const lots = [];

@@ -108,7 +108,12 @@
   // ---------------------------------------------------------------- circuits
   const circuits = [];
   function circuit(i) {
-    if (!circuits[i]) { const k = CATALOGUE[i]; circuits[i] = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom }); }
+    if (!circuits[i]) {
+      const k = CATALOGUE[i];
+      circuits[i] = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom });
+      // lot 22F : le parapet, le muret ou le bord du fossé d'un bord dangereux devient la limite (une fois, à la création)
+      if (B.bords) B.bords.limites(circuits[i], B.bords.planifier(circuits[i]));
+    }
     return circuits[i];
   }
   function nombreVirages(c) {
@@ -1466,7 +1471,9 @@
       if (B.circuit.dansTunnel(c, sp, 25)) sp = ramener(c.tunnel.fin + 30, c.longueur);
       const e = B.circuit.echantillon(c, sp);
       const cote = e.courbure > 1e-4 ? 1 : e.courbure < -1e-4 ? -1 : plan.cote;
-      const d = cote * (c.largeur / 2 + 1.1), x = e.x - Math.sin(e.cap) * d, z = e.z + Math.cos(e.cap) * d;
+      // lot 22F : un muret (limite à 1 m du bord) ou un parapet (1,4 m) commence à la limite ; à 1,1 m du bord, la
+      // caméra serait dans le mur. Elle reste 40 cm devant la limite ; ailleurs (limites d'au moins 3,2 m), rien ne change.
+      const d = cote * Math.min(c.largeur / 2 + 1.1, B.conduite.limiteCote(c, sp, cote) - .4), x = e.x - Math.sin(e.cap) * d, z = e.z + Math.cos(e.cap) * d;
       const sol = scene.decor.sol ? scene.decor.sol(x, z) : e.y;
       S.sol = { plan, pos: [x, Math.max(e.y, isFinite(sol) ? sol : e.y) + .32, z] };
     }

@@ -40,6 +40,8 @@ MODULES = [
     'ecologie.js',
     'saisons.js',
     'vegetation.js',
+    # bords de route du lot 22F (publicités en séries, bords dangereux) : lu par decor.js et jeu.js s'il est présent
+    'bords.js',
     'decor.js',
     'faune.js',
     'effets-saison.js',
