@@ -1,0 +1,214 @@
+{
+  "format": "bitume-github-publication-2",
+  "date": "2026-11-19",
+  "repository": "M4D135/bitume",
+  "version": "0.2.56",
+  "physics": "p14",
+  "ferro": "0.3.14",
+  "local": {
+    "code_commit": "15f033747e4d004b471a803f75a4d63073f2e6f6",
+    "code_tree": "24299b302d894db340b7e8cbadd440047cccdc00",
+    "final_commit": "93556bf27639911903dae403c55705bacc7f669d",
+    "final_tree": "9963201f4c7f25167535b094efea1f2064fb1d8e"
+  },
+  "publication": {
+    "branch": "codex/bitume-physx-sols-pilotes-20261119-qualifie",
+    "code_commit": "edf660e5e2cfe2894382460aee0cbec48fa3a748",
+    "documentary_commit": "253322d311a8b0cda01f5846dcc03ebd3af3f7cd",
+    "documentary_parents": [
+      "edf660e5e2cfe2894382460aee0cbec48fa3a748",
+      "293f4faef9e4c195c6f617f3f43f61874e183e83"
+    ],
+    "code_tree_matches_local": true,
+    "documentary_tree_matches_local": true,
+    "force": false,
+    "expected_ref_before_documentary_update": "edf660e5e2cfe2894382460aee0cbec48fa3a748"
+  },
+  "pull_request": {
+    "number": 11,
+    "url": "https://github.com/M4D135/bitume/pull/11",
+    "state": "closed",
+    "draft": false,
+    "merged": true,
+    "merged_at": "2026-11-19T18:53:19Z",
+    "expected_head_sha": "253322d311a8b0cda01f5846dcc03ebd3af3f7cd",
+    "head_sha": "253322d311a8b0cda01f5846dcc03ebd3af3f7cd",
+    "method": "merge",
+    "base_before_merge": "293f4faef9e4c195c6f617f3f43f61874e183e83"
+  },
+  "main": {
+    "sha": "a2b89f5cff2779ec0b7158609c53e18dd607a49e",
+    "tree": "9963201f4c7f25167535b094efea1f2064fb1d8e",
+    "parents": [
+      "293f4faef9e4c195c6f617f3f43f61874e183e83",
+      "253322d311a8b0cda01f5846dcc03ebd3af3f7cd"
+    ],
+    "ref_read_matches_merge_result": true,
+    "tree_matches_qualified_local": true
+  },
+  "build": {
+    "version": "0.2.56",
+    "bytes": 14162317,
+    "gzip": 3363224,
+    "sha256": "d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65",
+    "git_blob": "c82a2207ff36c3d4dda4a4639e20d05a798e1a12",
+    "remote_version_read": true,
+    "remote_size_read": true,
+    "remote_tree_html_identity_verified": true,
+    "sha256_verified_on_uploaded_blob": true,
+    "canonical_modules": 34,
+    "inline_scripts": 56,
+    "two_local_builds_identical": true,
+    "both_code_ci_builds_identical": true
+  },
+  "validation": {
+    "local_consolidated": {
+      "passed": 122,
+      "suites": 123,
+      "scope": "Passage initial, reprises et suites ajoutées ; pas un balayage intégral unique du dernier commit."
+    },
+    "targeted_final": {
+      "passed": 12,
+      "suites": 12,
+      "qualified_files_stable": 234
+    },
+    "documentary_identity": {
+      "compared_to": "edf660e5e2cfe2894382460aee0cbec48fa3a748",
+      "qualified_files": 234,
+      "total_files": 239,
+      "differences": 0,
+      "report": "publication-0256/final-0256-doc-identity.json"
+    },
+    "native_p14_hashes": 54,
+    "active_fixture_regenerated_after_ferro_0314": false
+  },
+  "ci": {
+    "repository": "M4D135/bitume",
+    "version": "0.2.56",
+    "physics": "p14",
+    "code_head": "edf660e5e2cfe2894382460aee0cbec48fa3a748",
+    "code_tree": "24299b302d894db340b7e8cbadd440047cccdc00",
+    "pr_number": 11,
+    "pr_merge_commit_tested": "d40a4b818ca52960709a6137cfc33764af45e6a9",
+    "pr_merge_tree_matches_code_tree": true,
+    "build_sha256": "d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65",
+    "build_bytes": 14162317,
+    "build_rebuilt_identically_in_both_runs": true,
+    "runs": [
+      {
+        "id": 44590352977,
+        "event": "pull_request",
+        "url": "https://github.com/M4D135/bitume/actions/runs/44590352977",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_sha": "edf660e5e2cfe2894382460aee0cbec48fa3a748",
+        "created_at": "2026-11-19T18:40:47Z",
+        "updated_at": "2026-11-19T18:49:53Z",
+        "run_attempt": 1
+      },
+      {
+        "id": 44590341323,
+        "event": "push",
+        "url": "https://github.com/M4D135/bitume/actions/runs/44590341323",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_sha": "edf660e5e2cfe2894382460aee0cbec48fa3a748",
+        "created_at": "2026-11-19T18:40:42Z",
+        "updated_at": "2026-11-19T18:47:58Z",
+        "run_attempt": 1
+      }
+    ],
+    "logs": [
+      {
+        "log": "job-135794323761.log",
+        "sha256": "696ce075289f8246e7e43f3e117b8027c589a094ad88d04bf71a7f938a272ff4",
+        "bytes": 28966,
+        "passed": 122,
+        "suite_count": 123,
+        "failed": [
+          "verifications/traces.test.mjs"
+        ],
+        "trace_actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+        "trace_expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+        "build_lines": [
+          "2026-11-19T18:40:55.6268059Z FERRO 0.3.14: 34 reference modules verified",
+          "2026-11-19T18:40:56.4611573Z CONSTRUIT  /home/runner/work/bitume/bitume/dist/bitume.html  version 0.2.56, 14162317 octets, 3363224 compressés, sha256 d93139352b308a1b"
+        ],
+        "decor_ms": null,
+        "decor_threshold_ms": 150
+      },
+      {
+        "log": "job-135794362233.log",
+        "sha256": "410541e4090705df83fc251b909103975b0355603414031f60e1c86620f6c9fe",
+        "bytes": 29809,
+        "passed": 121,
+        "suite_count": 123,
+        "failed": [
+          "verifications/decor.test.mjs",
+          "verifications/traces.test.mjs"
+        ],
+        "trace_actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+        "trace_expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+        "build_lines": [
+          "2026-11-19T18:40:58.4395377Z FERRO 0.3.14: 34 reference modules verified",
+          "2026-11-19T18:40:59.3894714Z CONSTRUIT  /home/runner/work/bitume/bitume/dist/bitume.html  version 0.2.56, 14162317 octets, 3363224 compressés, sha256 d93139352b308a1b"
+        ],
+        "decor_ms": 152,
+        "decor_threshold_ms": 150
+      }
+    ],
+    "all_green": false,
+    "only_documented_reserves": true,
+    "reruns_requested": false,
+    "thresholds_or_fixtures_changed": false,
+    "note": "Deux passages complets du même arbre de code : push 122/123, traces héritées ; PR 121/123, traces héritées et durée du décor 152 ms pour 150 ms. Aucun autre échec. Les chiffres locaux consolidés restent distincts."
+  },
+  "reserves": [
+    "Signature héritée des traces : identique dans les deux CI, fixture inchangée.",
+    "Décor Val-Brûlé : 152 ms pour seuil 150 ms dans la CI PR ; seuil inchangé et réserve de durée conservée.",
+    "Rendu complet navigateur, FPS matériels et partie réseau entre machines non validés.",
+    "Quatre replacements après accident à Haut-Col dans les sondes natives 0.3.13 ; récupération existante, distincte des scénarios de file sans contact ni replacement."
+  ],
+  "documentary_ci_handling": {
+    "message_marker": "[skip ci]",
+    "code_tests_finished_before_documentary_ref_update": true,
+    "reason": "Les 234 fichiers qualifiés et 239 fichiers au total sont identiques à la tête de code testée ; la réconciliation finale et sa fusion ne changent que la documentation.",
+    "workflow_or_checks_modified": false,
+    "rerun_requested": false,
+    "all_green_claimed": false
+  },
+  "history_preserved": {
+    "concurrent_checkpoints": [
+      "6e9c1ea09eb22a1d8c1f1deea99ed09b41ccdf1d",
+      "b8f050745c68e2c7a9e482611cfdc980efe1ada3"
+    ],
+    "previous_release_and_closures": [
+      "1e4579c5c09d561ef7a6412ec4415a8ffbe360a8",
+      "4497832403aed738bcffbb19c00cf64877c6935b",
+      "293f4faef9e4c195c6f617f3f43f61874e183e83"
+    ],
+    "demos_request_preserved": true
+  },
+  "source_tree_modified_by_publisher": false,
+  "local_refs_modified_by_publisher": false,
+  "site_deployed": false,
+  "hardware_fps_validated": false,
+  "evidence": {
+    "code_manifest": "publication-0256/final-0256-reconciled-manifest.json",
+    "documentary_manifest": "publication-0256/final-0256-documentary-manifest.json",
+    "html_upload": "publication-0256/physx-final-html-uploaded.json",
+    "preuploaded_blobs": "publication-0256/physx-preuploaded.json",
+    "ci": "github-0256/RECU-CI.json",
+    "remote_commits": "publication-0256/final-0256-remote-commits.json"
+  },
+  "rootIndependentVerification": {
+    "ref": "a2b89f5cff2779ec0b7158609c53e18dd607a49e",
+    "commit_tree": "9963201f4c7f25167535b094efea1f2064fb1d8e",
+    "pull_request": 11,
+    "state": "closed",
+    "merged": true,
+    "head": "253322d311a8b0cda01f5846dcc03ebd3af3f7cd",
+    "size_json_sha256": "d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65",
+    "source": "Independent root reads of GitHub ref, commit, PR and SIZE.json plus raw CI logs."
+  }
+}

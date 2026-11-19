@@ -39,7 +39,9 @@ relancés à cette reprise et ne qualifient pas une intégration sur 0.2.55. Ré
 réconcilier les trois fichiers modifiés, puis qualifier raccords, transitions et cadrages. Ne pas écraser la copie
 avancée avec `/workspace/scratch/2540d1a213f9/bitume-demo`, plus ancienne et différente.
 
-Avant intégration, vérifier la PR #11 / **0.2.56**, ouverte en parallèle à la clôture 0.2.55 (tête observée
-`edf660e5e2cfe2894382460aee0cbec48fa3a748`). Elle modifie notamment PhysX et `src/jeu.js` ; ses preuves sont
-distinctes de celles de 0.2.55. Contrôler son état et sa CI, puis retenir le main publié pour les démos afin de
-préserver ces changements éventuels. Ne pas réutiliser la qualification 0.2.55 comme preuve du nouveau code.
+La PR #11 / **0.2.56** est désormais fusionnée : main `a2b89f5cff2779ec0b7158609c53e18dd607a49e`.
+Retenir cette version publiée, avec PhysX et les raccords finaux de `src/jeu.js`, comme base des démos.
+Ses CI du code donnent 122/123 et 121/123 (traces héritées et réserve de temps du décor), avec build identique.
+Preuves : `rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0256.json` et `github-0256/RECU-CI.json`.
+La qualification 0.2.55 ne remplace pas ces preuves ; les anciens journaux de la préparation démos restent
+à reprendre après réconciliation de ses trois fichiers partagés.

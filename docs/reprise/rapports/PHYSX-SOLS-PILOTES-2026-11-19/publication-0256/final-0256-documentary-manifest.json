@@ -1,0 +1,273 @@
+{
+  "format": "bitume-github-publication-1",
+  "repository": "M4D135/bitume",
+  "repo": "/workspace/scratch/1b28de5a23b5/bitume-physx",
+  "local_commit": "93556bf27639911903dae403c55705bacc7f669d",
+  "base_commit": "edf660e5e2cfe2894382460aee0cbec48fa3a748",
+  "base_tree": "24299b302d894db340b7e8cbadd440047cccdc00",
+  "expected_tree": "9963201f4c7f25167535b094efea1f2064fb1d8e",
+  "parents": [
+    "8d1087a9c32f1dc50a0591306224c46a7a798322"
+  ],
+  "message": "BITUME : conserver les deux CI de la 0.2.56 [skip ci]",
+  "entries": [
+    {
+      "path": "REPRISE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5a8c991d1b92fe8a1dbd641003d9994b64a1c88c"
+    },
+    {
+      "path": "docs/reprise/DEMOS-CINEMA-2026-11-19.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f6fa08759b758970c8b860dcd6ac4874070f278a"
+    },
+    {
+      "path": "docs/reprise/ETAT.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "68175a13f9875709dea77d6f734af018c875a1ee"
+    },
+    {
+      "path": "docs/reprise/PHYSX-SOLS-PILOTES-2026-11-19.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "497983e29ef97a2ca8e46b29be9162355e91c152"
+    },
+    {
+      "path": "docs/reprise/SUIVI-2026-11-19.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2d3f686d4cd01e12cfcb7a0b39b25f4def6b132a"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0255.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bb262ae9282b1c8dfb1f5a8ebf7f2ab8510e5423"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/RECONCILIATION-293F.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "27b9ad8c12e8cc0845de76be35ca94d0af0d634e"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/RECU-CI.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "29a230ab23514fbf910c6c1044d3d711a1fc2dba"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/RECU-CI.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f129dbd47dda614c0ca85f27ad3372502c675835"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/SHA256SUMS.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "51c393b9b3e0de5613d8c40f4db0e30e233643cc"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/analysis.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bdfb39518a898c6c9a8099e69840ca281b36bf95"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/job-135794323761.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d3a7e43b1181da8c6024a4b9bc40eeef94066a0"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/job-135794362233.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "89d639e554e6e65d7a144f2b9004dc2c9772bed0"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github/RECU-CI-MAIN.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2944fc4c82a31ae2d403c5bbb25e537c0b9b1d89"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github/RECU-CI.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a5233e163850152f09debad14552cbe1a4f53fb6"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github/ci-main-44589031280.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "645688a24485f5f1bf2aa042c31f9697ceca647d"
+    }
+  ],
+  "objects": [
+    {
+      "sha": "5a8c991d1b92fe8a1dbd641003d9994b64a1c88c",
+      "bytes": 3278,
+      "sha256": "bf4aac9e0a0a0554acc74ccd5502cdb34305cc912d83dc4334cced4dcb05a005",
+      "encoding": "utf-8",
+      "content_chars": 3185,
+      "paths": [
+        "REPRISE.md"
+      ]
+    },
+    {
+      "sha": "f6fa08759b758970c8b860dcd6ac4874070f278a",
+      "bytes": 3229,
+      "sha256": "5f63fd64171642d6ab1f3f321cbfa45f1c5a511567a7ed803edcdcced121561e",
+      "encoding": "utf-8",
+      "content_chars": 3131,
+      "paths": [
+        "docs/reprise/DEMOS-CINEMA-2026-11-19.md"
+      ]
+    },
+    {
+      "sha": "68175a13f9875709dea77d6f734af018c875a1ee",
+      "bytes": 7224,
+      "sha256": "5ed51042e820f2c47ccf5ccd30905613801b18b52b94de2ba288a952544cfc7f",
+      "encoding": "utf-8",
+      "content_chars": 7137,
+      "paths": [
+        "docs/reprise/ETAT.json"
+      ]
+    },
+    {
+      "sha": "497983e29ef97a2ca8e46b29be9162355e91c152",
+      "bytes": 9859,
+      "sha256": "b86536c5f822d580ed151a3ed706ad9f0469d506c874c1a811ca1f90d798bb6e",
+      "encoding": "utf-8",
+      "content_chars": 9555,
+      "paths": [
+        "docs/reprise/PHYSX-SOLS-PILOTES-2026-11-19.md"
+      ]
+    },
+    {
+      "sha": "2d3f686d4cd01e12cfcb7a0b39b25f4def6b132a",
+      "bytes": 55638,
+      "sha256": "114a91482ef89b3502af084483079ea5d39717819692e27416aba14a03725405",
+      "encoding": "utf-8",
+      "content_chars": 53838,
+      "paths": [
+        "docs/reprise/SUIVI-2026-11-19.md"
+      ]
+    },
+    {
+      "sha": "bb262ae9282b1c8dfb1f5a8ebf7f2ab8510e5423",
+      "bytes": 3069,
+      "sha256": "879bd99c3720d1877af31604f59c26806571d6cf56ff8310a768a570d7677d60",
+      "encoding": "utf-8",
+      "content_chars": 3041,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0255.json"
+      ]
+    },
+    {
+      "sha": "27b9ad8c12e8cc0845de76be35ca94d0af0d634e",
+      "bytes": 873,
+      "sha256": "df56daf11119e1e0897c5b53ad2313de882e68200ea5032ae2f3ed478df2cddb",
+      "encoding": "utf-8",
+      "content_chars": 867,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/RECONCILIATION-293F.json"
+      ]
+    },
+    {
+      "sha": "29a230ab23514fbf910c6c1044d3d711a1fc2dba",
+      "bytes": 3279,
+      "sha256": "ccb2cbc474e332eee3f624fd8f8c803e0466a90b9f40c9a3f39ca357456ae4e6",
+      "encoding": "utf-8",
+      "content_chars": 3268,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/RECU-CI.json"
+      ]
+    },
+    {
+      "sha": "f129dbd47dda614c0ca85f27ad3372502c675835",
+      "bytes": 1604,
+      "sha256": "5523644eb0b9962d8f3fff025ad3a88837a9cce7487d5a68054f681021146a39",
+      "encoding": "utf-8",
+      "content_chars": 1562,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/RECU-CI.md"
+      ]
+    },
+    {
+      "sha": "51c393b9b3e0de5613d8c40f4db0e30e233643cc",
+      "bytes": 361,
+      "sha256": "aa3e546a694ec3c0a00686b6904478e201343a97c0ba02e8c826e98885e3b450",
+      "encoding": "utf-8",
+      "content_chars": 361,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/SHA256SUMS.json"
+      ]
+    },
+    {
+      "sha": "bdfb39518a898c6c9a8099e69840ca281b36bf95",
+      "bytes": 21500,
+      "sha256": "8d022699f5dc9e47b684ee77dba9a97601d262737d664e484fc1df7e8010e56a",
+      "encoding": "utf-8",
+      "content_chars": 21412,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/analysis.json"
+      ]
+    },
+    {
+      "sha": "9d3a7e43b1181da8c6024a4b9bc40eeef94066a0",
+      "bytes": 28966,
+      "sha256": "696ce075289f8246e7e43f3e117b8027c589a094ad88d04bf71a7f938a272ff4",
+      "encoding": "utf-8",
+      "content_chars": 28933,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/job-135794323761.log"
+      ]
+    },
+    {
+      "sha": "89d639e554e6e65d7a144f2b9004dc2c9772bed0",
+      "bytes": 29809,
+      "sha256": "410541e4090705df83fc251b909103975b0355603414031f60e1c86620f6c9fe",
+      "encoding": "utf-8",
+      "content_chars": 29773,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/job-135794362233.log"
+      ]
+    },
+    {
+      "sha": "2944fc4c82a31ae2d403c5bbb25e537c0b9b1d89",
+      "bytes": 1339,
+      "sha256": "0a6a718334387c4882be69e7860418f10ff26465a4ca6453eb71e84b5a72a9f3",
+      "encoding": "utf-8",
+      "content_chars": 1339,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github/RECU-CI-MAIN.json"
+      ]
+    },
+    {
+      "sha": "a5233e163850152f09debad14552cbe1a4f53fb6",
+      "bytes": 4719,
+      "sha256": "30fecc5a042ae2fccdc08f12eb3e2d7a6cea2736ff2138db63a6c67685e9f1f9",
+      "encoding": "utf-8",
+      "content_chars": 4719,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github/RECU-CI.json"
+      ]
+    },
+    {
+      "sha": "645688a24485f5f1bf2aa042c31f9697ceca647d",
+      "bytes": 28436,
+      "sha256": "acad991be00e7aeb55ac23870fec01de1f8521bb030b27123fefe1a1005fa5ee",
+      "encoding": "utf-8",
+      "content_chars": 28400,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github/ci-main-44589031280.log"
+      ]
+    }
+  ]
+}

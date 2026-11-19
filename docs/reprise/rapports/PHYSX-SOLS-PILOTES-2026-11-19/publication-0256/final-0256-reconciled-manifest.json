@@ -1,0 +1,4061 @@
+{
+  "format": "bitume-github-publication-1",
+  "repository": "M4D135/bitume",
+  "repo": "/workspace/scratch/1b28de5a23b5/bitume-physx",
+  "local_commit": "15f033747e4d004b471a803f75a4d63073f2e6f6",
+  "base_commit": "4497832403aed738bcffbb19c00cf64877c6935b",
+  "base_tree": "6feccbc2e3bdaa1a77a9cc02c887507efeb01ef1",
+  "expected_tree": "24299b302d894db340b7e8cbadd440047cccdc00",
+  "parents": [
+    "6d4dd086b117ae35bba1e98037c888f63a038efe",
+    "4497832403aed738bcffbb19c00cf64877c6935b"
+  ],
+  "message": "BITUME : conserver la cloture parallele 0.2.55 avant publication 0.2.56",
+  "entries": [
+    {
+      "path": "FERRO-REFERENCE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d29187b91521831398292287bce8933e03045dd7"
+    },
+    {
+      "path": "REPRISE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1df64b77357d2a9de983a99378cfb4f00e8ea58b"
+    },
+    {
+      "path": "SIZE.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "565fda8efc7aa0c78d85001092c2e0b2e5b02bb8"
+    },
+    {
+      "path": "VERSION.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b497065be67230a48e2b257a041b54c43b810c67"
+    },
+    {
+      "path": "dist/bitume.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c82a2207ff36c3d4dda4a4639e20d05a798e1a12"
+    },
+    {
+      "path": "docs/reprise/ETAT.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d7362372ed1ef524fe868b6c80ae56ec2742142d"
+    },
+    {
+      "path": "docs/reprise/PHYSX-SOLS-PILOTES-2026-11-19.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5a2190cb1c14bd06e1bf6b2a30618a179eb28d0c"
+    },
+    {
+      "path": "docs/reprise/SUIVI-2026-11-19.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0a1c9cc39ccc10e13d3b03f9cf51d3ffb3a2ced3"
+    },
+    {
+      "path": "docs/reprise/archives/ETAT-AVANT-CLOTURE-PHYSX-2026-11-19.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "36cb7a528f7a42abf36e91f4dfd62e983328e875"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/AUDIT-CONTACTS-NATIFS.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab4e25279c7f91db9eee890fbfe2efec0f6e8690"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/BUILD.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "404c5c1191c9d10a4e47248301172e8b3b2fcc1c"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/CHAUFFE-PHYSX.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "51088307729dda39d6ba9ddf75b74e6538944f8b"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/COURSES-NATIVES.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7abebfe9067d7be06fdb26659b1ba17f779550a1"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0255-CONCURRENTE.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1b744575f8505ffb8857a1df26130482330359b3"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-FERRO-0313.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0cbfe7c6057e7fa71a7f0df1238c82a61fa04b93"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-FERRO-0314.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f35020576968a57a6f55d0c0a8ca39923d897710"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/QUALIFICATION-FINALE.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e3f6b7b3370b4d233ea4d28a876415f3c94dfa29"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/QUALIFICATION-FINALE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b3355379e24417d204b5d09d209d248f8068d1f6"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/QUALIFICATION-SOLIDES-STANDS-SOLS.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0e2fdcbcfc7c33f10e9754f54a5de4acb6e184e8"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/RECONCILIATION-6E9C.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8c05030262a4682d31e79bed994248e4a966de83"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/RECONCILIATION-B8F.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6b054144a7d5c523513755d49a114b87a9bd7c0f"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/RECONCILIATION-BRANCHE.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "822e6ebe6bd1b51aa8ac786ec4c9a0d22d5d9955"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/audit-contacts-natifs.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0acc0d0f1367747c30757a6789762a05b3ec12b8"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/autoconfig-integration-final.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "231d282d7c5af5145e3568a1a974d3d5db652c07"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/build-1.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab0a9b1861fb0ff5fef9f8cb43e76cf8f3a9e322"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/build-2.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab0a9b1861fb0ff5fef9f8cb43e76cf8f3a9e322"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/chargement-chauffe.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce3c5d7a21473cfa2c233c3865871bfebde26096"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/checkpoints/62c9461/BUILD.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5858eb8b0dc5918691832dcdd3a21dfea4eec662"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/checkpoints/62c9461/QUALIFICATION-FINALE.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3754b901286c81445c18314fa3a0d888fefc0e2a"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/checkpoints/62c9461/QUALIFICATION-FINALE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "46442cd98502fe5376b407ad9ccbc718095d4979"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/checkpoints/62c9461/build-1.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce8e3743497273c3a691a2a6d3030d2b2cc121cb"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/checkpoints/62c9461/build-2.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce8e3743497273c3a691a2a6d3030d2b2cc121cb"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/concurrent-b8f0507/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d828b1070179d158928782f3734808ec2692e01"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/concurrent-b8f0507/docs/reprise/SUIVI-2026-11-19.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4c4cc0d671b038eafa88d82a85d21b3c53efbaf8"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/concurrent-b8f0507/tools/qualification/physx-courses.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "66ed088bc70c9c5ef80772de6844cbd60ad56de0"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/concurrent-b8f0507/verifications/fixtures/determinisme-p14.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e68e71bdd5208d6f438415c75ad9611d42903fea"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/concurrent-b8f0507/verifications/helpers/determinisme-physx.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "df7f56983f0971c15b22f3c99dba3b2150dd4da2"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/courses-8circuits.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8f254d2d20bb5cfa70981a4d4a982d8a7f4b312b"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/courses-8circuits.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3e31fb085f0453ba41c66bfa83209f133ecc2712"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/courses-baikal-neige.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8994014aa769ad23d3774498d3311fa77daab5c9"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/courses-baikal-neige.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "80bde7a3ee212d208853414152ccf8599fe3b7f7"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/courses-baikal-pluie.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0914e9afc1d94799ba0ad431bffecde304f3ef83"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/courses-baikal-pluie.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aee9b8f82f11bffb86f5f07a1b7dff4073072da3"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/determinisme-p14-creation.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e6c3e5ed8e49729faed2e6055fbf03ef0c9c2137"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/determinisme-p14-final.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0b3f2c81ff839e5308739c6e94e0ed5c3198f6ca"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/ferro-0314/AUDIT.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9a08745727d3d95b9edc930d94a44127928fd2ea"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/ferro-0314/PROVENANCE-EXPORT.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "23536e9949d10a398e8302785c262c1d78113742"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/ferro-0314/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cd2dc9e38e6f145be504cb7c5a21c37495f55fd4"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/ferro-0314/qualification.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce51dc0dc0de7ae28d74c08da3ca392921312ccc"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/ferro-0314/tests-canonical.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9b3d883506281a54a640bb39f4aa51616cd96c7e"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/ferro-0314/tests-physx.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "96ec17df88bfce81027073a83ee1c33a61183c08"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-cycle-seances-chauffe.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a8ea55882bd29e7b88a32edd07b99d0bb06869be"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-cycle-seances-chauffe.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "21bf14576f44375dd8855d8d8c786ec87a5bb5e8"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-cycle-seances.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5dafabf980a6f96303f3f3512ac522dc45692ec8"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-cycle-seances.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b328268e6c2a2e9b6668b5a578336cec07e8c740"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-stands.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b18bca96637933f42f8a748084b7ae72fd351b6e"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-stands.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3cc55dc83803db9657d9354d09a70224ea983d63"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-voitures-final.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "30f073a52bed59c4f30b0829f0c860dc6c91199a"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physx-autorite-reseau.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7a8ae8ec57e96f6bcf060a29fb627fd13a468331"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physx-cycle-vie.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ae42281282a82b800e2fa98b7727b159a162ea7"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physx-stands-concurrent.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "88e9b969b46651c128def78f6c235c978ca1dd99"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physx-stands-concurrent.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "062308885e941aa5453b16d6b8d6819e8436b819"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c3267092f55a7f507470df4818e5d39a5247935e"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/SHA256SUMS.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "51c24ad9bf214f269713646ab1fb883a91116e2b"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/avant-correction/bras-isoles.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa7e05e9ca2719f06f2b863bded227b74f757fc5"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/avant-correction/bras-masques.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5b4dae0ecc8798a5877a60fae71fabe3f776c023"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/avant-correction/diagnostic.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8fcbb8bbcf5ce7605e746743dbef2ffe0c21a3f6"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/avant-correction/premiere-correction-penetrations.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d2c0b8b113723c9b6c5c134a60442a01fed9832b"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/egl-context-reference.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d0f94ebf959e07ddca853f56bbff0b166ca6641"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/encombrement.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8c7824e860fd6441f7e196f7f2050286c5f74270"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/main-au-levier-complet.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "14a436eda49724ea2898e7d1e1e27df535494407"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/main-au-levier-moyen.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c99f9aadbf7dbd5e984c2734dc08dcc04641ff69"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/main-au-levier-simple.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d615da770c116e6d486057a4f67563d16b4f6f44"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-collisions.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "807e5c04803e42c72e6a27fe3e81262e884ecd93"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-egl.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "30a161ecd19df9da6e9984cbd611eee26195bd26"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-exterieur-identite.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3ef936ffecea837afcf916d42dd1ff0685ab4b80"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-exterieur-permanents.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bf4222e3df2866c7470af5dcc9b856b88ad32b37"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-exterieur-tests.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a4c79208b0e16bdd9234fef32452feddc50697ab"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-exterieur-voiture.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ac1cda321858db2ac350380eee435fec5fa1667e"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-poses-egl.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6afde038677337322234bd6da8336c88392c991e"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-poses.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "69f8fef5c2b54e3a66103e983c5016dd1b368628"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/poses.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8fd1c4a3b8f01a5c8bc24dffb21ac8ff4dec072c"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/qualification.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a812027d450cf293118186032b89c4a11751cd45"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/report.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8025949d5e7af9ba30e0064d16dc5c033dbb0b46"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/retour-du-levier-complet.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c98f0a1cce582fc955a7ebbe42de086bc3f5e2e4"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/retour-du-levier-moyen.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6651beb64df66d0a6db5d5726628111a5ad2392a"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/retour-du-levier-simple.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b62d1e258e9cb3f267c78f1207f0c47fe6a66dba"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/virage-droite-complet.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "65b01b06b75c0bbba2b287ea978eb241c45155eb"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/virage-droite-moyen.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "97c09892deed4b83c2550eba8d407996ecf9d704"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/virage-droite-simple.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "61a42e1bdc1fa46e1e49888813bd6d4455c11da6"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/volant-centre-complet.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20ce642da31f66c46ea0fc0fd66581541f38d354"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/volant-centre-moyen.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8be95fe6fc93c6fe3370cf257e33b2f3faa6017a"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/volant-centre-simple.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "91b05b273d65a4faf0da841ba1b8c034d6b23c71"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/adherence-chaussee.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a5a3c14a3b8e505b520c8862703a6b1e58231da4"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/ambiance.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4103db26896d5259c7972b450c3dbd3902207e13"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/animaux.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aff29735e196377dd81e1f93ed348de2fc0f2e2f"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/arbres-lots.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0386b163706eda383a24ced99cdea674d8ec7a32"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/asie.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ffa4e0bdb764d9c3d4cb72bac7e6694fa3f2d808"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/aurores.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5db5dd9ca28c254d131310548dd8f685be0d9405"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/autoconfig-integration.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e57621856d375e399b38d766cdd5f0d340f9b82e"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/autoconfig.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c695572771e7575cdc6cf7dd4904be32186f6ee6"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/bords-integration.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1f760831f6bd510c44512b45158f6f0f4343d6eb"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/bords.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c36aa22ae32185a2d657ab86bd6908b9db8e04d"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/botanique.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "820a8ec657681c24bc4b45584e5406784efeefc8"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/cadence.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3799674b5ea8fabc3bef7b84b700d1a95aeede7b"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/carene.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "532420f46d06fb7bc4b0b2633ee259c6e2be09ec"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/chargement.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce3c5d7a21473cfa2c233c3865871bfebde26096"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/chaussee-preparation.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1635ed57466fe307b2a6f58890fe04d8acf00567"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/chaussee-visuelle.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2cadcf6325b905c29864f1a70511d93a981a5d0a"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/chaussee.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9dde49f915aed3afd0d7d8d57ec66339a333ba38"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/choix-pneus-integration.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "26253354848230f40b72700c77ac0c6ee7c703c3"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/circuit.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa5144a6c365c7036e9df53f39105e5a670da615"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/collisions-orientees.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "54b9df2ecac094effc0929ac69681fd023fcb9bc"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/commandes-partage.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c301ff624976aa53c52c548fe256924a48ac5127"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/conditions-course.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b21cf69b14a3d7e146e789daa2f0f8abae3b358c"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/conditions-integration.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "83ccf0192a1a54e7a82c628bf82a1993470ba3b8"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/conduite-criteres.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c16240aa8db8e0bceb866dbb77e2e63498574856"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/conduite.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "017c39f25df76a6a54dc0f4d3d3add3a409c8743"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/contacts.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c8090a7855b5da8612b6438e60a968569f509d40"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/controle-visuel.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d1906f7e36c7f5cc57bfe81464fd065a0e5107fe"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/course.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3de5444442a42269c89fdbc03b5c10fb4c54fb6d"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/crash.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8eb14c64a9604b160331515cca7c35fc725f71bc"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/decor-identite.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d002d8d85b9d1c48fdfd2b1d3e27971fda4517c"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/decor-obstacles.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5e58fcf482720c399b89f4da72d9f8c2b9fb6992"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/decor.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eb02859478177fac5dd1640d2b7de364093755fa"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/desert.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d43a927fdfaecfe7f12543c965120e87356c677a"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/determinisme-simulation.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bcd552218553cc1cf16cdfad0462371e96af5477"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/echappement.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "231569ae4d33aed8093ac541085bdbd342de9efa"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/ecologie.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20d3c8127e647672a654b86c99388030fd57b0b3"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/effets-allocation.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8654a6ee44f754921f9a26f003bd14c2cbff9967"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/effets-saison.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7830f688c6d2cc3db90897ee0b86766b6557e7d8"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/faune.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "88de1a4880bf2f108f3ed88d99b8e8fe01d4a0a7"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/formes-libres.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4029d3acf06769bff217b1dbd27bb5dfdd1ec644"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/glissiere-etats.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d6b63f8a627dc18dfabbcd43c0d96ab8abb2f94"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/glissiere-rebond.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b5febbcba8a7bdbf7a929e9927fbe7de297af8c"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/graphismes.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "881cef18bc8b2c3d493b901f01204fad27c433c8"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/herbier-identite.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8cc65318bcb584f495bd3dfe2652c253abc1465b"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/herbier-saisons.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4fd17c6d9dc570b486dea0f941f60cdeb032ae34"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/hud-pneus.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cac57d0f6c3af7b010775ac949096c769ce08ad1"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/ia-attaque.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7dc25b76f1f16858139ded0591d9b93694eec7ac"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/ia-epaves.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a83a146ad43abc50b5c408a5f1ad358cce93a788"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/ia-reprise.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8c18e212ee24e6229d3f3d9829fdc983bdd7861e"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/ia.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a26fc712304da555f168493f9f80eeffa6295f9d"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/islande.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d5f80b02397b475d4e9d662e2041b8472457d67e"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/lieux-traces.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "182948d678069abe3797f7dc802235b2dfd66946"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/main.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c0a927b632d17b595a15c10e22499e2746e7192f"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/manette.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "42e9c398b0aa4b9e9bd9757d0bf95469bd825bdd"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/mesures.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67a2bccaee06571ab826616bed0d27a9c78bf7d8"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/meteo-reelle.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c8c12f584f74ccece9d10f2a1b1afc0b3545b67d"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/meteo-toile.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b5cf820adf4eb46745c2df69a8f1dff8a7f48383"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/meteo.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d7465b1e196167fac2c60fef0905af67967580e3"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/moteur-emprise.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "339d8c42832c5fa6ba1666f3b746d63dcd4b9b8f"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/nature-integration.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e2d77a58b24eda8202d6755e9f92cf8b4cd579fb"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/nature-preparation.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2978c4e089e707df5e1613113412800d94541cbb"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/navigation-menu.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3951f5cfd55a44190bed14c1479e180f57eee732"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/obstacles-degagement.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6b5161f941e4e9abaf7095e53834196285c2124c"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/obstacles.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b88553170969160d9e4923cd84a147cebca73cb4"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/ombres.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e8dde9de342c81729e0579799a295402d8655d54"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/options-image.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6282627f268aed73aef3996da537419760bf2ee7"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pacifique.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4967c26995a2eeda2380a60b2bbdf60001e907c6"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/physique-cycle-seances.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d71dd6321a7826ab3cef3bfb3e5685802c0c520a"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/physique-stands.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "38162c7e3e8c91e34d6cf2562ce0bb1b33e41803"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/physique-voitures.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0eeeeb59236616140c6f2af7a2961c2ce48c0765"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/physx-monde.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a0dff21471a9eb28aa708e9220c2e471b8384aed"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pieces.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3a6550dfe8fc5b6f17c8d1835eed913a8eb97e4a"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pilote-exterieur.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cb78fb98ae75240859a1456f32d4bea13b72afa3"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pneus-pilotes.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "384b110a3b49ea15610930e431789dff78c3cf24"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pneus-reseau-integration.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c74dca4f88ed5877b44bb2b86bd6622d038f388b"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pneus-reseau.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "568dfecf842dd2138982f7555c8c06c2f790f4e2"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pneus-service-visuel.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32fd16272ed1f9550334a25647fd5027aa6436a5"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pneus.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2157b66d4e98245d836e9333f8ee37453d98654c"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/prets-enligne.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d6c3e61b0b90744f225054f609e223b531377af5"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/public.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc58c663ff78c3df7abb67ad5ce875f2e64085e7"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/qualite.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8ae2e6eb832ae294658095cc8d0c2ed72afdff39"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/realisateur.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f0b888b71da27dd2f9a864d42cf3df77c112eda5"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/relectures-phase2.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3b8a1820c67c172101162e27ce57a6341b00210a"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/rendu-halo.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "350e74cfff8426a5462c1de62f0f3b1f06770e8f"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/reperes-virages.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "363f0480ffd1cf1b2a5c7c2bcaf26d45ccffeeda"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/reprise-recul.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "37e287d7f052ec0024b3a2540a2a8fb4da174538"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/resultats.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a1bb3e01d7654947adbb57e92de5594104e8f5cd"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/roues-detail.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4481f111d7ebc8fe9aec4016c4600ceb1f35250a"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/russie.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e403a4a9b493d8c070c574e03b551cdccf9bf954"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/saisons.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2240f7b1c07edbe9688ac2c518010fd4e95c1fe1"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/salon-protocole.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d3abc83d94fb56a8d1116daa22772292f2f7125"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/scene-bench.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b967641e9bce203449358f09f018925fa44a44e6"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/sillage.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b6f5b6eec936c5d5f9f76712c775d024f37475a0"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/simulation-sorties.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58e5c73233618e526e35d5f807359626dbdb71e1"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/solides-physx-geometrie.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58bd6fbf8a485fbfb24cef5e43181a503cba6db4"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/solides-physx-wasm.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c34e852b87677dddeaadeaf5bc0ff014cb071507"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/sols-proceduraux.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "93f38b965b0bd57d9208cff1cd6d9b71cdbfced6"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/son.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8bd4f117a7a71b2b94f2193cfba744abfdf6045f"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/stands-pneus.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0c70fa81f079f3657754930123afe109595d8ffd"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/stands.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9f40a71d96260705e5dc9d6474e76f252ed6b316"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/strategie-stands-decisions.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c67bb4690e05e1d867aea2943dfc0ea92314565a"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/strategie-stands-sortie-file.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fc07fde07bc39eaeb58d3708e5915637dcabf060"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/strategie-stands.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4fb42a54637d7f970a66583fd72c306c2635c5f4"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/titre-signature.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9ce040dd8a1f04f8193a13c1425db056c140b28e"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/traces.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ca95e31849049e3ab01303ff80b59165e8c0158"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/troncs.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "68d43bfb00607dec0b057b214ac84ebada4b4a54"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/tunnel-transitions.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e456a84e98739255dc78ac6dbafccc58e4078cfa"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/tunnel.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa4deaf3c57c6ca017e10eb77df9ee62acfe4615"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/usure-integration.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "45eca843b1c69578b0a8b8a70d57713c48959a51"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/usure-pneus.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b3edba00e4cb88c7a100aeb243aeadce4027ba30"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/usure-visuelle.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cbb799bdd58991d38dcb834072b2190a05b16bfa"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/vegetation.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d0ae76d84f4104b871abc0094fa2e5b9e3d7e31"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/vibrations.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c04a1dcd37f29fb8a8b930c680ebb899e03f4a2f"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/virages.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c1927da333724fc8082caad80ff904ce8b9b057e"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/vitre-cadence.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0f30070e3c5db5edc5bee45c4a3aea844baff15d"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/vitre.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6289642014bc491ad72820567891e89744f23f8d"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/voiture-identite.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f138368aecef8066343f190310e8ec9e43ff22f1"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/voiture-permanents.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d8d200b7d67e0f600197c18817ac7667650f275"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/voiture.test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ac1cda321858db2ac350380eee435fec5fa1667e"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7e976b19de16aeb676de8591a5400380254c58b3"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/autoconfig-integration.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "649e2a40fb1962e692b967502ace752fcd4c7c04"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/chargement.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce3c5d7a21473cfa2c233c3865871bfebde26096"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/circuits/physx-circuits.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fde28ddc9b0b7376ffe852e4a1f756cea0e96d74"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/cycle-seances.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a8ea55882bd29e7b88a32edd07b99d0bb06869be"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/determinisme-simulation.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0b3f2c81ff839e5308739c6e94e0ed5c3198f6ca"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/empreintes-apres.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "21a8b888f390fc20cc94771564ac9d480c602630"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/empreintes-avant.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "21a8b888f390fc20cc94771564ac9d480c602630"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/physique-cycle-seances.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dce53633624a3ae8f4de15cec3d2214ea5d2e1e6"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/physique-voitures.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "30f073a52bed59c4f30b0829f0c860dc6c91199a"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/physx-autorite-reseau.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "185ad8da1aec1dc6dbe8a2d75918702dab8776c6"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/physx-circuits.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bac50e3862fb80dd5d793e213634ad206f047e25"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/physx-cycle-vie.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3147525a05c7f7c3a82d4e19b8bf1f3207ab701d"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/physx-monde.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "59cff1d946b216d27c4457fb69a634837d792cf1"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/physx-stands.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c35e5e6f3fb972b11942ca50fec954a096da629"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/reprises.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3ec2cba53211672b06c431fc11a78e2922380305"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/russie.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ebb6328b926b3417c1868e8809ec64fe5a0bd93e"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/russie/russie.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ef23ff3b94ed6307a980d70ce020447bf8ea2fc3"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/solides-physx-wasm.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c34e852b87677dddeaadeaf5bc0ff014cb071507"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/stands/stands-physx.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5fb9d15785a7280d51c3e7bfad0606da7bc3627c"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reseau/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e2e2d036d89e882442b9835601229661a30e486c"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reseau/physx-reseau.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5e17f904f1d2dde05c4da9f354e328ec8b12707f"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reseau/qualification.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ad72d01200e2a5fe875c61628aede528360df08c"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reseau/reseau-historique.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a87d989f26b857172a69287e45cbf0abad89fe2e"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/solides-physx-geometrie.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58bd6fbf8a485fbfb24cef5e43181a503cba6db4"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/solides-physx-wasm.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c34e852b87677dddeaadeaf5bc0ff014cb071507"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/sols-proceduraux.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c514eeecf6c89e4e570da001cf4e8528e54163c"
+    },
+    {
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/sols-proceduraux.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "93f38b965b0bd57d9208cff1cd6d9b71cdbfced6"
+    },
+    {
+      "path": "src/conduite.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e3e1254699cfb5958f8bef81787f9215b00c0d3"
+    },
+    {
+      "path": "src/course.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c50efb87520f0c359a2276119423f9b12973424e"
+    },
+    {
+      "path": "src/decor.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2e6f619c74829de3680dc68b2727ef46cb7f0ad3"
+    },
+    {
+      "path": "src/jeu.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "002b0f8c5896a0e6fd7cc03e1af7124810b712f3"
+    },
+    {
+      "path": "src/physique.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c5d060b7314c0d863324b65eeb200008b3c45c3"
+    },
+    {
+      "path": "src/reseau.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "de9d3dbb6d84eb0b169a8e6c0de3f33cee299f1c"
+    },
+    {
+      "path": "src/traces.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a8ce54661966d35eabb63ab26dd0f083e3c2a520"
+    },
+    {
+      "path": "src/voiture.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0d50e5dd040505658cd8c50999bbd6ea55c36bcb"
+    },
+    {
+      "path": "tools/qualification/physx-courses.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eac1e49a291fd2c66593910fdee29e6361ceb6bd"
+    },
+    {
+      "path": "verifications/determinisme-simulation.test.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5f54150938cc7aa8bce3158eea9df35cd46322b0"
+    },
+    {
+      "path": "verifications/fixtures/determinisme-p14.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "723f86b89d1a60f6cc0ff55e67f1f137bd0311ce"
+    },
+    {
+      "path": "verifications/helpers/determinisme-physx.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e937105c329797270b810f4475b9674f0fad4f66"
+    },
+    {
+      "path": "verifications/physique-cycle-seances.test.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "01b4da047fb4b3e2417b990a597c158cec0b69e2"
+    },
+    {
+      "path": "verifications/physique-stands.test.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9889899b9a4de2018f086b29d79a326dab04aa5f"
+    },
+    {
+      "path": "verifications/physique-voitures.test.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d68195baa46d55a9c2fbdcdaf011efbae1c8e34"
+    },
+    {
+      "path": "verifications/physx-autorite-reseau.test.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7173afc2e5dc7103b725bf25d490daeea93da0f1"
+    },
+    {
+      "path": "verifications/physx-cycle-vie.test.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b813df2bfa9ff8c29d192e6b9f1595af8e4ba3b6"
+    },
+    {
+      "path": "verifications/physx-reseau.test.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c19e3d9e91ba06f753c757743c3a8fcc2ba1ae4"
+    },
+    {
+      "path": "verifications/pilote-exterieur.test.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c21660e9f0e15b747cd82958b552c2438fe443f0"
+    },
+    {
+      "path": "verifications/sols-proceduraux.test.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d1c0698e11ed8f09ccb969e265518cbe81f5cdef"
+    }
+  ],
+  "objects": [
+    {
+      "sha": "d29187b91521831398292287bce8933e03045dd7",
+      "bytes": 6643,
+      "sha256": "e771b28bcb8e549304eaa8a370925df4e2fad77830a3a100e6efbf9c3bf25c95",
+      "encoding": "utf-8",
+      "content_chars": 6464,
+      "paths": [
+        "FERRO-REFERENCE.md"
+      ]
+    },
+    {
+      "sha": "1df64b77357d2a9de983a99378cfb4f00e8ea58b",
+      "bytes": 3057,
+      "sha256": "ff0fa535118d0501937f7c80c267c2c8aecf48dd95998d637869444a04dc7e2e",
+      "encoding": "utf-8",
+      "content_chars": 2975,
+      "paths": [
+        "REPRISE.md"
+      ]
+    },
+    {
+      "sha": "565fda8efc7aa0c78d85001092c2e0b2e5b02bb8",
+      "bytes": 1719,
+      "sha256": "f70eaae7d354c894747975e5a62fbbf73215877116b5195dbfcc961925bca1cf",
+      "encoding": "utf-8",
+      "content_chars": 1719,
+      "paths": [
+        "SIZE.json"
+      ]
+    },
+    {
+      "sha": "b497065be67230a48e2b257a041b54c43b810c67",
+      "bytes": 151,
+      "sha256": "585ae618630183bae729831f5f12a49a219380fe02843033a76ba5fc9e0f72b1",
+      "encoding": "utf-8",
+      "content_chars": 151,
+      "paths": [
+        "VERSION.json"
+      ]
+    },
+    {
+      "sha": "c82a2207ff36c3d4dda4a4639e20d05a798e1a12",
+      "bytes": 14162317,
+      "sha256": "d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65",
+      "encoding": "utf-8",
+      "content_chars": 14150496,
+      "paths": [
+        "dist/bitume.html"
+      ]
+    },
+    {
+      "sha": "d7362372ed1ef524fe868b6c80ae56ec2742142d",
+      "bytes": 6346,
+      "sha256": "45e1d79565226d5476e397b15837f2f0025b9694e0d1ec9cafb74f309c2e02aa",
+      "encoding": "utf-8",
+      "content_chars": 6269,
+      "paths": [
+        "docs/reprise/ETAT.json"
+      ]
+    },
+    {
+      "sha": "5a2190cb1c14bd06e1bf6b2a30618a179eb28d0c",
+      "bytes": 9351,
+      "sha256": "b003b15a9450d03c94add5587dc09d22704665d30468150a4c6f6c890386ec44",
+      "encoding": "utf-8",
+      "content_chars": 9064,
+      "paths": [
+        "docs/reprise/PHYSX-SOLS-PILOTES-2026-11-19.md"
+      ]
+    },
+    {
+      "sha": "0a1c9cc39ccc10e13d3b03f9cf51d3ffb3a2ced3",
+      "bytes": 54756,
+      "sha256": "c595f35a845a2ceef24bfb05889efa6499d28513ec7c5f1845e45a82bd5a93cc",
+      "encoding": "utf-8",
+      "content_chars": 52991,
+      "paths": [
+        "docs/reprise/SUIVI-2026-11-19.md"
+      ]
+    },
+    {
+      "sha": "36cb7a528f7a42abf36e91f4dfd62e983328e875",
+      "bytes": 9272,
+      "sha256": "5c478df2780919edb9ee9c761ad8138f005bfd3066e5b67a48a09fe0eec0f73d",
+      "encoding": "utf-8",
+      "content_chars": 9165,
+      "paths": [
+        "docs/reprise/archives/ETAT-AVANT-CLOTURE-PHYSX-2026-11-19.json"
+      ]
+    },
+    {
+      "sha": "ab4e25279c7f91db9eee890fbfe2efec0f6e8690",
+      "bytes": 4668,
+      "sha256": "dcd4f464c2c6016ed8da67ff93a2e2bdd5f8d3342a78c9e746902be656e0582a",
+      "encoding": "utf-8",
+      "content_chars": 4666,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/AUDIT-CONTACTS-NATIFS.json"
+      ]
+    },
+    {
+      "sha": "404c5c1191c9d10a4e47248301172e8b3b2fcc1c",
+      "bytes": 375,
+      "sha256": "93c5ec8f38646c4de283f9d6b404a96da05769860d9d7ed3d3c35430e93ca6b6",
+      "encoding": "utf-8",
+      "content_chars": 375,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/BUILD.json"
+      ]
+    },
+    {
+      "sha": "51088307729dda39d6ba9ddf75b74e6538944f8b",
+      "bytes": 2220,
+      "sha256": "c65ab43406e8e7429f3053255749f704cfb08dde596dc9395a562bb78d95c7d0",
+      "encoding": "utf-8",
+      "content_chars": 2214,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/CHAUFFE-PHYSX.json"
+      ]
+    },
+    {
+      "sha": "7abebfe9067d7be06fdb26659b1ba17f779550a1",
+      "bytes": 4134,
+      "sha256": "a591235b8c639280d62c132bcdda5a93d16aca42998b6f20c52a6d1478a11d2b",
+      "encoding": "utf-8",
+      "content_chars": 4106,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/COURSES-NATIVES.json"
+      ]
+    },
+    {
+      "sha": "1b744575f8505ffb8857a1df26130482330359b3",
+      "bytes": 697,
+      "sha256": "b53c9f4b3fc08ef9ea7cae264a55f0966df7d04d8123778d78a26c2d67aa48d2",
+      "encoding": "utf-8",
+      "content_chars": 691,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0255-CONCURRENTE.json"
+      ]
+    },
+    {
+      "sha": "0cbfe7c6057e7fa71a7f0df1238c82a61fa04b93",
+      "bytes": 12153,
+      "sha256": "55d0d08387251248a67b589800d18c572c530edf853c5df1f71910ca10452255",
+      "encoding": "utf-8",
+      "content_chars": 12136,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-FERRO-0313.json"
+      ]
+    },
+    {
+      "sha": "f35020576968a57a6f55d0c0a8ca39923d897710",
+      "bytes": 827,
+      "sha256": "3849811b40deab8f15746093a193dd9ee1ea18629ece79546fa329afe06fd7e4",
+      "encoding": "utf-8",
+      "content_chars": 827,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-FERRO-0314.json"
+      ]
+    },
+    {
+      "sha": "e3f6b7b3370b4d233ea4d28a876415f3c94dfa29",
+      "bytes": 77295,
+      "sha256": "670bae9f4b7c27b5bcc3186a26b64a5662de4bc6890cc14c12b246bf1a3e8b76",
+      "encoding": "utf-8",
+      "content_chars": 77139,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/QUALIFICATION-FINALE.json"
+      ]
+    },
+    {
+      "sha": "b3355379e24417d204b5d09d209d248f8068d1f6",
+      "bytes": 12675,
+      "sha256": "8f40ea69687ef18562e934ed5b33e6bc2aa12ae8757b7ec3b1b25b2ad6258669",
+      "encoding": "utf-8",
+      "content_chars": 12300,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/QUALIFICATION-FINALE.md"
+      ]
+    },
+    {
+      "sha": "0e2fdcbcfc7c33f10e9754f54a5de4acb6e184e8",
+      "bytes": 11665,
+      "sha256": "0dcd405c1e726a77d564fc0ea324537978f9cafb40709cbdd8b1b20d776cd2a8",
+      "encoding": "utf-8",
+      "content_chars": 11609,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/QUALIFICATION-SOLIDES-STANDS-SOLS.json"
+      ]
+    },
+    {
+      "sha": "8c05030262a4682d31e79bed994248e4a966de83",
+      "bytes": 493,
+      "sha256": "b1e8c7b7f14af6b85399b9af5e36fffaada4f5b6c8eec1fd1ab96ceb4111f048",
+      "encoding": "utf-8",
+      "content_chars": 483,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/RECONCILIATION-6E9C.json"
+      ]
+    },
+    {
+      "sha": "6b054144a7d5c523513755d49a114b87a9bd7c0f",
+      "bytes": 1269,
+      "sha256": "21d1e4c9715cc722f89ce6f20aafa121d41f9f2fab5535afa6bd5b16ba5d150e",
+      "encoding": "utf-8",
+      "content_chars": 1269,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/RECONCILIATION-B8F.json"
+      ]
+    },
+    {
+      "sha": "822e6ebe6bd1b51aa8ac786ec4c9a0d22d5d9955",
+      "bytes": 24465,
+      "sha256": "e1ba275ca9e2efd1dd048d52491dafd95ccca53c4ab0f0107268124cdb990209",
+      "encoding": "utf-8",
+      "content_chars": 24434,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/RECONCILIATION-BRANCHE.json"
+      ]
+    },
+    {
+      "sha": "0acc0d0f1367747c30757a6789762a05b3ec12b8",
+      "bytes": 7842,
+      "sha256": "fb43647d89f6b0182b13c406f15b842a3bb297dac450652550e2e8d6252968b0",
+      "encoding": "utf-8",
+      "content_chars": 7826,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/audit-contacts-natifs.mjs"
+      ]
+    },
+    {
+      "sha": "231d282d7c5af5145e3568a1a974d3d5db652c07",
+      "bytes": 2723,
+      "sha256": "45c8b8fc4c21e329aa7eba976286d9907e7bf30bde22b21182dd8acc735455ec",
+      "encoding": "utf-8",
+      "content_chars": 2631,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/autoconfig-integration-final.log"
+      ]
+    },
+    {
+      "sha": "ab0a9b1861fb0ff5fef9f8cb43e76cf8f3a9e322",
+      "bytes": 196,
+      "sha256": "9e2cd3f12befb06650def89c021c44e13a7690ce636fe1346f2707dc2b1d21a2",
+      "encoding": "utf-8",
+      "content_chars": 195,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/build-1.log",
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/build-2.log"
+      ]
+    },
+    {
+      "sha": "ce3c5d7a21473cfa2c233c3865871bfebde26096",
+      "bytes": 898,
+      "sha256": "7e6b85a80734bcd1791f7110e25d176361955c71f3590d1ebc605967b4ac3e7a",
+      "encoding": "utf-8",
+      "content_chars": 860,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/chargement-chauffe.log",
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/chargement.test.log",
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/chargement.log"
+      ]
+    },
+    {
+      "sha": "5858eb8b0dc5918691832dcdd3a21dfea4eec662",
+      "bytes": 162,
+      "sha256": "8f8b4f50852739634dd3f06ad50b19562371dc3bf40697719007d558a7e909da",
+      "encoding": "utf-8",
+      "content_chars": 162,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/checkpoints/62c9461/BUILD.json"
+      ]
+    },
+    {
+      "sha": "3754b901286c81445c18314fa3a0d888fefc0e2a",
+      "bytes": 65664,
+      "sha256": "767b4468401d7395326e114afe8715f97fe17e130ba0595b73734005a871114c",
+      "encoding": "utf-8",
+      "content_chars": 65557,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/checkpoints/62c9461/QUALIFICATION-FINALE.json"
+      ]
+    },
+    {
+      "sha": "46442cd98502fe5376b407ad9ccbc718095d4979",
+      "bytes": 9823,
+      "sha256": "1cf4eb02c224f8bec20c500f6999c685b43860a13105e32a16b2471f9842774e",
+      "encoding": "utf-8",
+      "content_chars": 9507,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/checkpoints/62c9461/QUALIFICATION-FINALE.md"
+      ]
+    },
+    {
+      "sha": "ce8e3743497273c3a691a2a6d3030d2b2cc121cb",
+      "bytes": 196,
+      "sha256": "a149648391fbd6f19f1c35fbbea0d2ccb19fb5ae68260866189e0d92e01ec18e",
+      "encoding": "utf-8",
+      "content_chars": 195,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/checkpoints/62c9461/build-1.log",
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/checkpoints/62c9461/build-2.log"
+      ]
+    },
+    {
+      "sha": "1d828b1070179d158928782f3734808ec2692e01",
+      "bytes": 869,
+      "sha256": "15ae57c1cfd2f8f1f8ad88645f879b1e2284d49956144fbd23c08be4dd9dfa16",
+      "encoding": "utf-8",
+      "content_chars": 850,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/concurrent-b8f0507/README.md"
+      ]
+    },
+    {
+      "sha": "4c4cc0d671b038eafa88d82a85d21b3c53efbaf8",
+      "bytes": 51284,
+      "sha256": "4fd9e70feeb4d69c09c449d67b9162a92b2cb105737a79957ed91aa81ca2b8a4",
+      "encoding": "utf-8",
+      "content_chars": 49621,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/concurrent-b8f0507/docs/reprise/SUIVI-2026-11-19.md"
+      ]
+    },
+    {
+      "sha": "66ed088bc70c9c5ef80772de6844cbd60ad56de0",
+      "bytes": 5489,
+      "sha256": "94056d30bfb868c1f3c4df08a658657f30e7adf0bd3e24f6ebbef58e900f12a7",
+      "encoding": "utf-8",
+      "content_chars": 5487,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/concurrent-b8f0507/tools/qualification/physx-courses.mjs"
+      ]
+    },
+    {
+      "sha": "e68e71bdd5208d6f438415c75ad9611d42903fea",
+      "bytes": 24846,
+      "sha256": "bc0c9fb98f91cbada6fdd531094ae2ab5e59196528d75828d6efaac929da4844",
+      "encoding": "utf-8",
+      "content_chars": 24837,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/concurrent-b8f0507/verifications/fixtures/determinisme-p14.json"
+      ]
+    },
+    {
+      "sha": "df7f56983f0971c15b22f3c99dba3b2150dd4da2",
+      "bytes": 22683,
+      "sha256": "f8da0b5e20c2b2a1d5ab45de0b9c98f180c617521783bff5d70666651fbde1d0",
+      "encoding": "utf-8",
+      "content_chars": 22592,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/concurrent-b8f0507/verifications/helpers/determinisme-physx.mjs"
+      ]
+    },
+    {
+      "sha": "8f254d2d20bb5cfa70981a4d4a982d8a7f4b312b",
+      "bytes": 546281,
+      "sha256": "c764c7f31b19089eaa1d13e01829ac1f6f2bdf6ba30d2e9963d01be9fbed49df",
+      "encoding": "utf-8",
+      "content_chars": 546281,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/courses-8circuits.json"
+      ]
+    },
+    {
+      "sha": "3e31fb085f0453ba41c66bfa83209f133ecc2712",
+      "bytes": 228092,
+      "sha256": "dd4e0370f27534d7e4d77106c89ca76b1bacfa8f8862c7da0f14961a68ffe76a",
+      "encoding": "utf-8",
+      "content_chars": 228092,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/courses-8circuits.log"
+      ]
+    },
+    {
+      "sha": "8994014aa769ad23d3774498d3311fa77daab5c9",
+      "bytes": 69197,
+      "sha256": "6051aa4af51d6efd8fba9421eb3132e4c374f32a44ae40f0bd65dcf9a367a1e2",
+      "encoding": "utf-8",
+      "content_chars": 69197,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/courses-baikal-neige.json"
+      ]
+    },
+    {
+      "sha": "80bde7a3ee212d208853414152ccf8599fe3b7f7",
+      "bytes": 28360,
+      "sha256": "3bf9b80bbb2a59b16452517616e5c13e84d94f05e623f05e55996e30301d7b2b",
+      "encoding": "utf-8",
+      "content_chars": 28360,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/courses-baikal-neige.log"
+      ]
+    },
+    {
+      "sha": "0914e9afc1d94799ba0ad431bffecde304f3ef83",
+      "bytes": 69104,
+      "sha256": "6b71816e0324522279e2b71a22ba2ee3610107dfb2360fb11c7616bbf6e6aa8a",
+      "encoding": "utf-8",
+      "content_chars": 69104,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/courses-baikal-pluie.json"
+      ]
+    },
+    {
+      "sha": "aee9b8f82f11bffb86f5f07a1b7dff4073072da3",
+      "bytes": 28273,
+      "sha256": "31a3587f15371781592a5f538d3b40ba5265dad121714e9b4731ad7e7962268c",
+      "encoding": "utf-8",
+      "content_chars": 28273,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/courses-baikal-pluie.log"
+      ]
+    },
+    {
+      "sha": "e6c3e5ed8e49729faed2e6055fbf03ef0c9c2137",
+      "bytes": 647,
+      "sha256": "971cbe4080761aaa4f86e11d436044afc5c0b60cc78bcfde5aed143b99a5d704",
+      "encoding": "utf-8",
+      "content_chars": 636,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/determinisme-p14-creation.log"
+      ]
+    },
+    {
+      "sha": "0b3f2c81ff839e5308739c6e94e0ed5c3198f6ca",
+      "bytes": 473,
+      "sha256": "22196003eac21fd824fbeff2ff13a8bd6bb32aecd3da81b3139f8e0e684aae49",
+      "encoding": "utf-8",
+      "content_chars": 465,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/determinisme-p14-final.log",
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/determinisme-simulation.log"
+      ]
+    },
+    {
+      "sha": "9a08745727d3d95b9edc930d94a44127928fd2ea",
+      "bytes": 2282,
+      "sha256": "b7a7332fa63211dcd31eea374c29c6ce0eb7e193f87bc5e1471e2ad90f2e1e82",
+      "encoding": "utf-8",
+      "content_chars": 2282,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/ferro-0314/AUDIT.json"
+      ]
+    },
+    {
+      "sha": "23536e9949d10a398e8302785c262c1d78113742",
+      "bytes": 12970,
+      "sha256": "9b30c88a0a50de5e4a0981c699c360e4d1546d3588e5ec35ecdee25c4d091234",
+      "encoding": "utf-8",
+      "content_chars": 12970,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/ferro-0314/PROVENANCE-EXPORT.json"
+      ]
+    },
+    {
+      "sha": "cd2dc9e38e6f145be504cb7c5a21c37495f55fd4",
+      "bytes": 3824,
+      "sha256": "b33fdfc97565aeae15d3b4f1f9aeae035f0994f8a733787ae8ee23fb4ffe0f79",
+      "encoding": "utf-8",
+      "content_chars": 3721,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/ferro-0314/README.md"
+      ]
+    },
+    {
+      "sha": "ce51dc0dc0de7ae28d74c08da3ca392921312ccc",
+      "bytes": 4690,
+      "sha256": "3c4c5bf94f4dc17c7f7b187061568900d5c7e9e104b2ec47f31a6f0170a023e8",
+      "encoding": "utf-8",
+      "content_chars": 4690,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/ferro-0314/qualification.json"
+      ]
+    },
+    {
+      "sha": "9b3d883506281a54a640bb39f4aa51616cd96c7e",
+      "bytes": 55878,
+      "sha256": "7eafb9b3cf7d23677497ee39a788ef5a7dafe0638afad996af636483c191b58a",
+      "encoding": "utf-8",
+      "content_chars": 55483,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/ferro-0314/tests-canonical.log"
+      ]
+    },
+    {
+      "sha": "96ec17df88bfce81027073a83ee1c33a61183c08",
+      "bytes": 5758,
+      "sha256": "db7392cc91396018ce01dda899b4c0ddc6d6c1cb2867e7329eb02b483a4c6651",
+      "encoding": "utf-8",
+      "content_chars": 5758,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/ferro-0314/tests-physx.log"
+      ]
+    },
+    {
+      "sha": "a8ea55882bd29e7b88a32edd07b99d0bb06869be",
+      "bytes": 1122,
+      "sha256": "f8d6423fa3218cc63c48c128e50895b73ccad2e6b6dd0ab481451e152cf26f08",
+      "encoding": "utf-8",
+      "content_chars": 1122,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-cycle-seances-chauffe.json",
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/cycle-seances.json"
+      ]
+    },
+    {
+      "sha": "21bf14576f44375dd8855d8d8c786ec87a5bb5e8",
+      "bytes": 1278,
+      "sha256": "8d3a2fc0b8e3dc825f62bbcda5faa7d47517d1a743e035f2d3d0170377a4e80e",
+      "encoding": "utf-8",
+      "content_chars": 1244,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-cycle-seances-chauffe.log"
+      ]
+    },
+    {
+      "sha": "5dafabf980a6f96303f3f3512ac522dc45692ec8",
+      "bytes": 832,
+      "sha256": "9dda8c203136066f643ce7272d1d644358531a389b5f07b0d81f7f0d8145e357",
+      "encoding": "utf-8",
+      "content_chars": 832,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-cycle-seances.json"
+      ]
+    },
+    {
+      "sha": "b328268e6c2a2e9b6668b5a578336cec07e8c740",
+      "bytes": 979,
+      "sha256": "d53119c2c0aaf4803b98ebe2d983767ba21b1b70e368e50fccda62c805341817",
+      "encoding": "utf-8",
+      "content_chars": 952,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-cycle-seances.log"
+      ]
+    },
+    {
+      "sha": "b18bca96637933f42f8a748084b7ae72fd351b6e",
+      "bytes": 399935,
+      "sha256": "ae5dbd720f1e8240f04f349e5623ecec12484fc5b826f58f2f2f76a38c6ceb18",
+      "encoding": "utf-8",
+      "content_chars": 399923,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-stands.json"
+      ]
+    },
+    {
+      "sha": "3cc55dc83803db9657d9354d09a70224ea983d63",
+      "bytes": 1476,
+      "sha256": "bc7d3089bde695c5816b008f45d8a0e85544ab19892af6531d25438ac09ddbfc",
+      "encoding": "utf-8",
+      "content_chars": 1426,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-stands.log"
+      ]
+    },
+    {
+      "sha": "30f073a52bed59c4f30b0829f0c860dc6c91199a",
+      "bytes": 1181,
+      "sha256": "c5d41b1451c541333c5273619930ef60dbbccf3549f48378152e4b477e669f2a",
+      "encoding": "utf-8",
+      "content_chars": 1153,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-voitures-final.log",
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/physique-voitures.log"
+      ]
+    },
+    {
+      "sha": "7a8ae8ec57e96f6bcf060a29fb627fd13a468331",
+      "bytes": 338,
+      "sha256": "6c2d72dac82315c4f6dedfc769642c7242331c465a6098555ceef88201065fb3",
+      "encoding": "utf-8",
+      "content_chars": 314,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physx-autorite-reseau.log"
+      ]
+    },
+    {
+      "sha": "5ae42281282a82b800e2fa98b7727b159a162ea7",
+      "bytes": 347,
+      "sha256": "b8ef55751085fd0c2f0d373f8ff3500252685084d53a886e3de45af721cc2319",
+      "encoding": "utf-8",
+      "content_chars": 317,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physx-cycle-vie.log"
+      ]
+    },
+    {
+      "sha": "88e9b969b46651c128def78f6c235c978ca1dd99",
+      "bytes": 5388,
+      "sha256": "4f9247b3e16ff70c15bc5309945568ed2b8a16f36ee94cd0342d7b03b3e4804e",
+      "encoding": "utf-8",
+      "content_chars": 5374,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physx-stands-concurrent.json"
+      ]
+    },
+    {
+      "sha": "062308885e941aa5453b16d6b8d6819e8436b819",
+      "bytes": 927,
+      "sha256": "d2631fc692e9475753746f4efd4813ade1c46caf7ecb3fea8f983fab6dad8097",
+      "encoding": "utf-8",
+      "content_chars": 881,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physx-stands-concurrent.log"
+      ]
+    },
+    {
+      "sha": "c3267092f55a7f507470df4818e5d39a5247935e",
+      "bytes": 3041,
+      "sha256": "66991f5d0e25e01283ec6b9a22eafacd6703caa7c8f1f1fbb9dcd54630453b81",
+      "encoding": "utf-8",
+      "content_chars": 2988,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/README.md"
+      ]
+    },
+    {
+      "sha": "51c24ad9bf214f269713646ab1fb883a91116e2b",
+      "bytes": 2946,
+      "sha256": "5188e4314f2a26a5bb40a66554537ab01cbafa60b276d729af319d92226d4a99",
+      "encoding": "utf-8",
+      "content_chars": 2946,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/SHA256SUMS.json"
+      ]
+    },
+    {
+      "sha": "fa7e05e9ca2719f06f2b863bded227b74f757fc5",
+      "bytes": 33038,
+      "sha256": "43cf65e8f45725093d6077e66c59a017f04207479e9513f5a77e71f9dfebf8a2",
+      "encoding": "base64",
+      "content_chars": 44052,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/avant-correction/bras-isoles.png"
+      ]
+    },
+    {
+      "sha": "5b4dae0ecc8798a5877a60fae71fabe3f776c023",
+      "bytes": 115844,
+      "sha256": "a25327d977d846a25c1898ec01fef63361234d77ec7504e43c6b1bfa9205f4e4",
+      "encoding": "base64",
+      "content_chars": 154460,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/avant-correction/bras-masques.png"
+      ]
+    },
+    {
+      "sha": "8fcbb8bbcf5ce7605e746743dbef2ffe0c21a3f6",
+      "bytes": 556,
+      "sha256": "caa75212fb6a2a25cf78f639c06ffa8d96eb9a4d28d2f09930a0ced866c626d3",
+      "encoding": "utf-8",
+      "content_chars": 549,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/avant-correction/diagnostic.json"
+      ]
+    },
+    {
+      "sha": "d2c0b8b113723c9b6c5c134a60442a01fed9832b",
+      "bytes": 7817,
+      "sha256": "2cfc5ac3e1e9fb5c3f87caed08f5be04cf5be64fdf83609141018c6b11cca15a",
+      "encoding": "utf-8",
+      "content_chars": 7817,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/avant-correction/premiere-correction-penetrations.json"
+      ]
+    },
+    {
+      "sha": "1d0f94ebf959e07ddca853f56bbff0b166ca6641",
+      "bytes": 13271,
+      "sha256": "d51a8160fa3532b4a31b8b421f1a7f9efec12f747ae6f7d6d9300efb134766a1",
+      "encoding": "utf-8",
+      "content_chars": 13271,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/egl-context-reference.py"
+      ]
+    },
+    {
+      "sha": "8c7824e860fd6441f7e196f7f2050286c5f74270",
+      "bytes": 499724,
+      "sha256": "b98faf2abd0c7c7db9d7f9c3ce731ad2b212e76d6333dddb04be9e0be99697c0",
+      "encoding": "utf-8",
+      "content_chars": 499724,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/encombrement.json"
+      ]
+    },
+    {
+      "sha": "14a436eda49724ea2898e7d1e1e27df535494407",
+      "bytes": 113611,
+      "sha256": "ed72f0b9c34301d1e32e6d8e169b109caa5c9fecf74be230fff6f0f2edc77914",
+      "encoding": "base64",
+      "content_chars": 151484,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/main-au-levier-complet.png"
+      ]
+    },
+    {
+      "sha": "c99f9aadbf7dbd5e984c2734dc08dcc04641ff69",
+      "bytes": 85787,
+      "sha256": "5e30a13723dfeeb264f4be2ffd53c2050f46a084052363995cfd99c7b890268d",
+      "encoding": "base64",
+      "content_chars": 114384,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/main-au-levier-moyen.png"
+      ]
+    },
+    {
+      "sha": "d615da770c116e6d486057a4f67563d16b4f6f44",
+      "bytes": 54780,
+      "sha256": "7a48f9d38e588addb4be9d3f2fdd95a5a926d02a028b7618f454833032b36fb1",
+      "encoding": "base64",
+      "content_chars": 73040,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/main-au-levier-simple.png"
+      ]
+    },
+    {
+      "sha": "807e5c04803e42c72e6a27fe3e81262e884ecd93",
+      "bytes": 4201,
+      "sha256": "9508a7c3a9dbf4010b5bdf7cdbcadc69ffaa8552186cd9622a7500cbc95d783f",
+      "encoding": "utf-8",
+      "content_chars": 4201,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-collisions.py"
+      ]
+    },
+    {
+      "sha": "30a161ecd19df9da6e9984cbd611eee26195bd26",
+      "bytes": 6320,
+      "sha256": "4877afb1cb76e85bb8f26995deb2541ba673a1223514a26a1749914bc94ff8ef",
+      "encoding": "utf-8",
+      "content_chars": 6320,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-egl.py"
+      ]
+    },
+    {
+      "sha": "3ef936ffecea837afcf916d42dd1ff0685ab4b80",
+      "bytes": 562,
+      "sha256": "413c61b1a235cc9c4a56712bf0537a5c6ab66d962de0509096925e173206b09f",
+      "encoding": "utf-8",
+      "content_chars": 538,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-exterieur-identite.log"
+      ]
+    },
+    {
+      "sha": "bf4222e3df2866c7470af5dcc9b856b88ad32b37",
+      "bytes": 1206,
+      "sha256": "f354c2e2306659563073d2312e6e798f068c9222f9cd3d0351a0ba4aba6ce046",
+      "encoding": "utf-8",
+      "content_chars": 1164,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-exterieur-permanents.log"
+      ]
+    },
+    {
+      "sha": "a4c79208b0e16bdd9234fef32452feddc50697ab",
+      "bytes": 1536,
+      "sha256": "2b7c9028a5a44bc72d4d98dbdb54bb360ff74d9c93c367b2aa9ae60ae9ae4f46",
+      "encoding": "utf-8",
+      "content_chars": 1469,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-exterieur-tests.log"
+      ]
+    },
+    {
+      "sha": "ac1cda321858db2ac350380eee435fec5fa1667e",
+      "bytes": 2760,
+      "sha256": "4f8da76d81336c2e32bb3318844d7f275f9ccbdb994c67aafef3a80714e8c57e",
+      "encoding": "utf-8",
+      "content_chars": 2696,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-exterieur-voiture.log",
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/voiture.test.log"
+      ]
+    },
+    {
+      "sha": "6afde038677337322234bd6da8336c88392c991e",
+      "bytes": 815470,
+      "sha256": "234b2797d39d4d67eda34c3e23a8a62ec23d2366f5ff794a5782f96f8e4da362",
+      "encoding": "base64",
+      "content_chars": 1087296,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-poses-egl.png"
+      ]
+    },
+    {
+      "sha": "69f8fef5c2b54e3a66103e983c5016dd1b368628",
+      "bytes": 3497,
+      "sha256": "76c6b8b82e2415c1e4eb49b821a312d1529372b4b0251581c4d4048494441d05",
+      "encoding": "utf-8",
+      "content_chars": 3497,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-poses.mjs"
+      ]
+    },
+    {
+      "sha": "8fd1c4a3b8f01a5c8bc24dffb21ac8ff4dec072c",
+      "bytes": 613959,
+      "sha256": "6c993768d3cc7712ede287e6ccd50532e7381712a815f95c644974fc5b2c77fc",
+      "encoding": "utf-8",
+      "content_chars": 613959,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/poses.json"
+      ]
+    },
+    {
+      "sha": "a812027d450cf293118186032b89c4a11751cd45",
+      "bytes": 3557,
+      "sha256": "d0e4d78d813740355bf202c9f8995ad8d1c42745509193f00c266281a2e87118",
+      "encoding": "utf-8",
+      "content_chars": 3528,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/qualification.json"
+      ]
+    },
+    {
+      "sha": "8025949d5e7af9ba30e0064d16dc5c033dbb0b46",
+      "bytes": 3203,
+      "sha256": "7fcfa907bf0070d0ba206332bfbb312cb629b11592fcce9612a83476302304a0",
+      "encoding": "utf-8",
+      "content_chars": 3203,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/report.json"
+      ]
+    },
+    {
+      "sha": "c98f0a1cce582fc955a7ebbe42de086bc3f5e2e4",
+      "bytes": 113799,
+      "sha256": "c4342d60eccad98629df376e6a6295d23f06f4631fbf10655575620281a53a6d",
+      "encoding": "base64",
+      "content_chars": 151732,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/retour-du-levier-complet.png"
+      ]
+    },
+    {
+      "sha": "6651beb64df66d0a6db5d5726628111a5ad2392a",
+      "bytes": 85669,
+      "sha256": "242354718944ca2fa2d3d0905a069646b67114c00fc841cb891d67e65d68f958",
+      "encoding": "base64",
+      "content_chars": 114228,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/retour-du-levier-moyen.png"
+      ]
+    },
+    {
+      "sha": "b62d1e258e9cb3f267c78f1207f0c47fe6a66dba",
+      "bytes": 54061,
+      "sha256": "df7b8af243b6f7bedbe24fee3aad4779eeaa52fd805faaa2ffc48da22064475d",
+      "encoding": "base64",
+      "content_chars": 72084,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/retour-du-levier-simple.png"
+      ]
+    },
+    {
+      "sha": "65b01b06b75c0bbba2b287ea978eb241c45155eb",
+      "bytes": 113879,
+      "sha256": "b4e8912f7967d9ee788023dc198d158f6cc91df646e7e11a72be9f945064b29f",
+      "encoding": "base64",
+      "content_chars": 151840,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/virage-droite-complet.png"
+      ]
+    },
+    {
+      "sha": "97c09892deed4b83c2550eba8d407996ecf9d704",
+      "bytes": 86066,
+      "sha256": "662ee51eebded005cb3263900020e8d682a4a8059f23d3a1eca6a67a567c9e30",
+      "encoding": "base64",
+      "content_chars": 114756,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/virage-droite-moyen.png"
+      ]
+    },
+    {
+      "sha": "61a42e1bdc1fa46e1e49888813bd6d4455c11da6",
+      "bytes": 55536,
+      "sha256": "1f0b39fb9fc19fc70e70887de9a867f1d6f481fa4d453c9c57f554cd0d61d85f",
+      "encoding": "base64",
+      "content_chars": 74048,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/virage-droite-simple.png"
+      ]
+    },
+    {
+      "sha": "20ce642da31f66c46ea0fc0fd66581541f38d354",
+      "bytes": 112960,
+      "sha256": "086ea07be15ed7292d66f599d25fadd34aec632e9f4c5c03f975d49ed8d7e4d7",
+      "encoding": "base64",
+      "content_chars": 150616,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/volant-centre-complet.png"
+      ]
+    },
+    {
+      "sha": "8be95fe6fc93c6fe3370cf257e33b2f3faa6017a",
+      "bytes": 84879,
+      "sha256": "da5f04687fad62f4a7600d935782842b59357b859520ea0058cad9bf28505eef",
+      "encoding": "base64",
+      "content_chars": 113172,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/volant-centre-moyen.png"
+      ]
+    },
+    {
+      "sha": "91b05b273d65a4faf0da841ba1b8c034d6b23c71",
+      "bytes": 53427,
+      "sha256": "d3613211dc70a5638cf83401eda82aed0af24c0ccb428f43d4a5b96bbf6756ce",
+      "encoding": "base64",
+      "content_chars": 71236,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/volant-centre-simple.png"
+      ]
+    },
+    {
+      "sha": "a5a3c14a3b8e505b520c8862703a6b1e58231da4",
+      "bytes": 1114,
+      "sha256": "03eb48798788bc16cf051b534285ac64e15029c0dbbfacb8c765d4da6bf96f6a",
+      "encoding": "utf-8",
+      "content_chars": 1072,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/adherence-chaussee.test.log"
+      ]
+    },
+    {
+      "sha": "4103db26896d5259c7972b450c3dbd3902207e13",
+      "bytes": 354,
+      "sha256": "3c2764cbff57112ae73f0ae5b2b869f606ad9744fe1877acc8bedcbc57f7d90f",
+      "encoding": "utf-8",
+      "content_chars": 342,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/ambiance.test.log"
+      ]
+    },
+    {
+      "sha": "aff29735e196377dd81e1f93ed348de2fc0f2e2f",
+      "bytes": 3353,
+      "sha256": "63b4859c20b4d1889840a5d960d1d32b1e561b426c08643cd99df70e253986be",
+      "encoding": "utf-8",
+      "content_chars": 3256,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/animaux.test.log"
+      ]
+    },
+    {
+      "sha": "0386b163706eda383a24ced99cdea674d8ec7a32",
+      "bytes": 1257,
+      "sha256": "fa184a94e7df300aa5d364ddc3bbbeb68a518c8b1fa0fdfe8380a4fdf9ab91ba",
+      "encoding": "utf-8",
+      "content_chars": 1219,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/arbres-lots.test.log"
+      ]
+    },
+    {
+      "sha": "ffa4e0bdb764d9c3d4cb72bac7e6694fa3f2d808",
+      "bytes": 1086,
+      "sha256": "65cc64d30fcea4d1caea40ebab7cc7c028872f7da4f8d57ec140c64e03cc765e",
+      "encoding": "utf-8",
+      "content_chars": 1070,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/asie.test.log"
+      ]
+    },
+    {
+      "sha": "5db5dd9ca28c254d131310548dd8f685be0d9405",
+      "bytes": 492,
+      "sha256": "96e4bc0a1aa2fb91e59afa0136d2d16de2bddd388c9e7f199b5ff564d11928ca",
+      "encoding": "utf-8",
+      "content_chars": 471,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/aurores.test.log"
+      ]
+    },
+    {
+      "sha": "e57621856d375e399b38d766cdd5f0d340f9b82e",
+      "bytes": 3451,
+      "sha256": "04a22df0eb84435077705262c1041e1c03cecfaf36bb52980d9fb606f7408091",
+      "encoding": "utf-8",
+      "content_chars": 3371,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/autoconfig-integration.test.log"
+      ]
+    },
+    {
+      "sha": "c695572771e7575cdc6cf7dd4904be32186f6ee6",
+      "bytes": 2822,
+      "sha256": "8201a11e8e80de8aaf73ef64df4d865e76193b1c612a75e4c602d1cdf0134d02",
+      "encoding": "utf-8",
+      "content_chars": 2719,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/autoconfig.test.log"
+      ]
+    },
+    {
+      "sha": "1f760831f6bd510c44512b45158f6f0f4343d6eb",
+      "bytes": 1188,
+      "sha256": "3285d8eacafe8041bafda9eb62b0181600b557b967822ed65f4f4bd32feb8c24",
+      "encoding": "utf-8",
+      "content_chars": 1137,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/bords-integration.test.log"
+      ]
+    },
+    {
+      "sha": "5c36aa22ae32185a2d657ab86bd6908b9db8e04d",
+      "bytes": 751,
+      "sha256": "3ef5d7a2f92bebe57103a6d7926bd3ae8f6cd53af142a227d753b9938c291e7d",
+      "encoding": "utf-8",
+      "content_chars": 724,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/bords.test.log"
+      ]
+    },
+    {
+      "sha": "820a8ec657681c24bc4b45584e5406784efeefc8",
+      "bytes": 2042,
+      "sha256": "9a9fda8eed989fbd4eec283c261eeb1fb714c7e1713b8f8148ffba15b6fa3e30",
+      "encoding": "utf-8",
+      "content_chars": 2005,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/botanique.test.log"
+      ]
+    },
+    {
+      "sha": "3799674b5ea8fabc3bef7b84b700d1a95aeede7b",
+      "bytes": 3327,
+      "sha256": "22d90966ae53029ef79f4b332a249c6f25e9e2de081fce2eb29be0ad10cc8e58",
+      "encoding": "utf-8",
+      "content_chars": 3180,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/cadence.test.log"
+      ]
+    },
+    {
+      "sha": "532420f46d06fb7bc4b0b2633ee259c6e2be09ec",
+      "bytes": 1087,
+      "sha256": "31e13dbaf09da4f7b0e32013cbaa20a402aac75bf6fbb010b8cb763826e37eb4",
+      "encoding": "utf-8",
+      "content_chars": 1047,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/carene.test.log"
+      ]
+    },
+    {
+      "sha": "1635ed57466fe307b2a6f58890fe04d8acf00567",
+      "bytes": 657,
+      "sha256": "d61abce8c87ae38f98a1a49c2eb53dc23fd45cabbfa02159cef7369377515444",
+      "encoding": "utf-8",
+      "content_chars": 633,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/chaussee-preparation.test.log"
+      ]
+    },
+    {
+      "sha": "2cadcf6325b905c29864f1a70511d93a981a5d0a",
+      "bytes": 1035,
+      "sha256": "3c656e6e981e78165fc4ab1ea80e591f48107261c8b2e2d9d3a2aedbb30ab1d9",
+      "encoding": "utf-8",
+      "content_chars": 1011,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/chaussee-visuelle.test.log"
+      ]
+    },
+    {
+      "sha": "9dde49f915aed3afd0d7d8d57ec66339a333ba38",
+      "bytes": 1339,
+      "sha256": "3680989081d702a7eb69d7d976d01e589a9ed70c6bd45ce991dce7eeb567e32b",
+      "encoding": "utf-8",
+      "content_chars": 1287,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/chaussee.test.log"
+      ]
+    },
+    {
+      "sha": "26253354848230f40b72700c77ac0c6ee7c703c3",
+      "bytes": 1541,
+      "sha256": "97f7a230db8612ddfa489a75af77330c024de6cc6203e39ab7a0004d1c2603e5",
+      "encoding": "utf-8",
+      "content_chars": 1464,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/choix-pneus-integration.test.log"
+      ]
+    },
+    {
+      "sha": "fa5144a6c365c7036e9df53f39105e5a670da615",
+      "bytes": 1001,
+      "sha256": "b46f02efb4a3197eff35ae791970cef4f34de64c871e033483554b61495ebfa3",
+      "encoding": "utf-8",
+      "content_chars": 983,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/circuit.test.log"
+      ]
+    },
+    {
+      "sha": "54b9df2ecac094effc0929ac69681fd023fcb9bc",
+      "bytes": 2204,
+      "sha256": "997372eeb8c10fe25416db2c7272caf3a1ea9e15ecd10a11fe11e2a35d594e21",
+      "encoding": "utf-8",
+      "content_chars": 2151,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/collisions-orientees.test.log"
+      ]
+    },
+    {
+      "sha": "c301ff624976aa53c52c548fe256924a48ac5127",
+      "bytes": 3235,
+      "sha256": "171426dcb49a15f97dcf502ad6f30db3ad31b4652ce4f5b65553ae0128c19277",
+      "encoding": "utf-8",
+      "content_chars": 3144,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/commandes-partage.test.log"
+      ]
+    },
+    {
+      "sha": "b21cf69b14a3d7e146e789daa2f0f8abae3b358c",
+      "bytes": 1219,
+      "sha256": "d2133431c8af5cac380e47a75c7b587887d646b071844139ae96697060922e02",
+      "encoding": "utf-8",
+      "content_chars": 1172,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/conditions-course.test.log"
+      ]
+    },
+    {
+      "sha": "83ccf0192a1a54e7a82c628bf82a1993470ba3b8",
+      "bytes": 1393,
+      "sha256": "41c26523fe6cabfaac8511b889cd2b73b40fd38f77fa5eed4de9dea496e6b55a",
+      "encoding": "utf-8",
+      "content_chars": 1303,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/conditions-integration.test.log"
+      ]
+    },
+    {
+      "sha": "c16240aa8db8e0bceb866dbb77e2e63498574856",
+      "bytes": 3910,
+      "sha256": "8c1c4fe26e7b7e3224c85fc7eaa7a5f56088665a376c822999e9f90673e9b243",
+      "encoding": "utf-8",
+      "content_chars": 3738,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/conduite-criteres.test.log"
+      ]
+    },
+    {
+      "sha": "017c39f25df76a6a54dc0f4d3d3add3a409c8743",
+      "bytes": 454,
+      "sha256": "1529ab394092c5c5498d18bc99857bc8490bd1a89b55cfa36c7e1addb7787c71",
+      "encoding": "utf-8",
+      "content_chars": 432,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/conduite.test.log"
+      ]
+    },
+    {
+      "sha": "c8090a7855b5da8612b6438e60a968569f509d40",
+      "bytes": 3232,
+      "sha256": "7faa7de1b5d6384dc76acd8de3a1e5b681b504555473e2de9d99f471dd55b0ca",
+      "encoding": "utf-8",
+      "content_chars": 3081,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/contacts.test.log"
+      ]
+    },
+    {
+      "sha": "d1906f7e36c7f5cc57bfe81464fd065a0e5107fe",
+      "bytes": 889,
+      "sha256": "a430c43a02652b621ca8a362570b700e0c1ec4f0b379bec4bf09915e5e4fe4f9",
+      "encoding": "utf-8",
+      "content_chars": 836,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/controle-visuel.test.log"
+      ]
+    },
+    {
+      "sha": "3de5444442a42269c89fdbc03b5c10fb4c54fb6d",
+      "bytes": 144,
+      "sha256": "fdab0d8ffa61b4184e46d31447636fd43464128f118990b6f9ae3d408f0eefa1",
+      "encoding": "utf-8",
+      "content_chars": 144,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/course.test.log"
+      ]
+    },
+    {
+      "sha": "8eb14c64a9604b160331515cca7c35fc725f71bc",
+      "bytes": 2561,
+      "sha256": "54a9c0321017904cf960b93c419520be93576b5ed1ea995551049bdd6d5b75cc",
+      "encoding": "utf-8",
+      "content_chars": 2505,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/crash.test.log"
+      ]
+    },
+    {
+      "sha": "3d002d8d85b9d1c48fdfd2b1d3e27971fda4517c",
+      "bytes": 76,
+      "sha256": "b6af6569a3dba0e2e58c4bbdc030c3a009be39dadac91565fed92ac8bf41f6c2",
+      "encoding": "utf-8",
+      "content_chars": 70,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/decor-identite.test.log"
+      ]
+    },
+    {
+      "sha": "5e58fcf482720c399b89f4da72d9f8c2b9fb6992",
+      "bytes": 1611,
+      "sha256": "100895629fbae6d55cb654d4e400c051fc5772399339069731d806716336dc68",
+      "encoding": "utf-8",
+      "content_chars": 1611,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/decor-obstacles.test.log"
+      ]
+    },
+    {
+      "sha": "eb02859478177fac5dd1640d2b7de364093755fa",
+      "bytes": 36,
+      "sha256": "9816345560e4ddb0b6a3f4109110e3af9299c5d3a4f8e99c00102b303f6b2018",
+      "encoding": "utf-8",
+      "content_chars": 33,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/decor.test.log"
+      ]
+    },
+    {
+      "sha": "d43a927fdfaecfe7f12543c965120e87356c677a",
+      "bytes": 840,
+      "sha256": "67f480dc7b4943b0e0549b85d5f4cf0940f3023a8b1eb76b1da7ffc8ca0992fc",
+      "encoding": "utf-8",
+      "content_chars": 823,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/desert.test.log"
+      ]
+    },
+    {
+      "sha": "bcd552218553cc1cf16cdfad0462371e96af5477",
+      "bytes": 767,
+      "sha256": "96279335f1b6140a54852c8ee0a7b593f159d717ee54fd0cf28a45588229298f",
+      "encoding": "utf-8",
+      "content_chars": 767,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/determinisme-simulation.test.log"
+      ]
+    },
+    {
+      "sha": "231569ae4d33aed8093ac541085bdbd342de9efa",
+      "bytes": 1915,
+      "sha256": "36ddafcc3155accb0e97a4453074aada18fe01b6998a80ed5ccae76df13c4440",
+      "encoding": "utf-8",
+      "content_chars": 1835,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/echappement.test.log"
+      ]
+    },
+    {
+      "sha": "20d3c8127e647672a654b86c99388030fd57b0b3",
+      "bytes": 1836,
+      "sha256": "891960f37670fb192ef7904d306f244b17db814a432a52de9301be4ad3904a43",
+      "encoding": "utf-8",
+      "content_chars": 1827,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/ecologie.test.log"
+      ]
+    },
+    {
+      "sha": "8654a6ee44f754921f9a26f003bd14c2cbff9967",
+      "bytes": 523,
+      "sha256": "8bfe2869ebb24cc1eb206d5317b5cccc6b9eaa51c0d89e04796f5cf6946a0374",
+      "encoding": "utf-8",
+      "content_chars": 509,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/effets-allocation.test.log"
+      ]
+    },
+    {
+      "sha": "7830f688c6d2cc3db90897ee0b86766b6557e7d8",
+      "bytes": 841,
+      "sha256": "c47f4449ca74f6c9263c2be23ba9b9d9630ff7571d753127a98b96c87c76a83a",
+      "encoding": "utf-8",
+      "content_chars": 816,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/effets-saison.test.log"
+      ]
+    },
+    {
+      "sha": "88de1a4880bf2f108f3ed88d99b8e8fe01d4a0a7",
+      "bytes": 1335,
+      "sha256": "3cc84f55fadb17ca8899c2953904711a2c3419458fd72d500486a55feaf92a95",
+      "encoding": "utf-8",
+      "content_chars": 1293,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/faune.test.log"
+      ]
+    },
+    {
+      "sha": "4029d3acf06769bff217b1dbd27bb5dfdd1ec644",
+      "bytes": 64,
+      "sha256": "108816b74409c50dce7a5978bb537cbed97d2a2ac6a6ea6082ff0352e22e5a65",
+      "encoding": "utf-8",
+      "content_chars": 63,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/formes-libres.test.log"
+      ]
+    },
+    {
+      "sha": "9d6b63f8a627dc18dfabbcd43c0d96ab8abb2f94",
+      "bytes": 975,
+      "sha256": "87823fec46c54e453653d2c714e46e256ad94d1efa3963ca69f504cc46db1ed5",
+      "encoding": "utf-8",
+      "content_chars": 965,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/glissiere-etats.test.log"
+      ]
+    },
+    {
+      "sha": "7b5febbcba8a7bdbf7a929e9927fbe7de297af8c",
+      "bytes": 1489,
+      "sha256": "c08a1acf0dba7ce3a5bdb29acfa41767621ef3e043c680a2ab844367879ad9db",
+      "encoding": "utf-8",
+      "content_chars": 1489,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/glissiere-rebond.test.log"
+      ]
+    },
+    {
+      "sha": "881cef18bc8b2c3d493b901f01204fad27c433c8",
+      "bytes": 1579,
+      "sha256": "7ad47c7ac4090f1878bca161e4fb12f1298df97538df429013ec87991ef85edd",
+      "encoding": "utf-8",
+      "content_chars": 1533,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/graphismes.test.log"
+      ]
+    },
+    {
+      "sha": "8cc65318bcb584f495bd3dfe2652c253abc1465b",
+      "bytes": 2189,
+      "sha256": "46e047f7561b555370dfe47caa3f27cc29ada723d9320c44f7320a378bdd1ffb",
+      "encoding": "utf-8",
+      "content_chars": 2148,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/herbier-identite.test.log"
+      ]
+    },
+    {
+      "sha": "4fd17c6d9dc570b486dea0f941f60cdeb032ae34",
+      "bytes": 506,
+      "sha256": "2300ce144e011ea60c5ef6b6227493230e8df96798d1a640125ae688d00c2de7",
+      "encoding": "utf-8",
+      "content_chars": 493,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/herbier-saisons.test.log"
+      ]
+    },
+    {
+      "sha": "cac57d0f6c3af7b010775ac949096c769ce08ad1",
+      "bytes": 1322,
+      "sha256": "486a33fd368946d72f5d16001314e86dd507609f799839adc4577f68af31fa63",
+      "encoding": "utf-8",
+      "content_chars": 1268,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/hud-pneus.test.log"
+      ]
+    },
+    {
+      "sha": "7dc25b76f1f16858139ded0591d9b93694eec7ac",
+      "bytes": 1319,
+      "sha256": "de7b035e39186bcf232aada08bd7fb07f9204337953560494721bd3c5a402d27",
+      "encoding": "utf-8",
+      "content_chars": 1296,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/ia-attaque.test.log"
+      ]
+    },
+    {
+      "sha": "a83a146ad43abc50b5c408a5f1ad358cce93a788",
+      "bytes": 952,
+      "sha256": "ca5423ef09a9b8a569e56728e16e6554ae1d10062d19ad40c7f165409cccf966",
+      "encoding": "utf-8",
+      "content_chars": 952,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/ia-epaves.test.log"
+      ]
+    },
+    {
+      "sha": "8c18e212ee24e6229d3f3d9829fdc983bdd7861e",
+      "bytes": 1046,
+      "sha256": "7930811d150b7e3a57350e14f3e88f40cdfad3e42941b8c79045e324939b7109",
+      "encoding": "utf-8",
+      "content_chars": 1023,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/ia-reprise.test.log"
+      ]
+    },
+    {
+      "sha": "a26fc712304da555f168493f9f80eeffa6295f9d",
+      "bytes": 423,
+      "sha256": "371b77ff405d94335a6bf0600cd2a7b49d36a654359733fa65dc08ec8f8fd405",
+      "encoding": "utf-8",
+      "content_chars": 402,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/ia.test.log"
+      ]
+    },
+    {
+      "sha": "d5f80b02397b475d4e9d662e2041b8472457d67e",
+      "bytes": 941,
+      "sha256": "c4270931702d9e5eef8323ac9432ad4bc1b39a95a559b200f08875acc26ad5e3",
+      "encoding": "utf-8",
+      "content_chars": 932,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/islande.test.log"
+      ]
+    },
+    {
+      "sha": "182948d678069abe3797f7dc802235b2dfd66946",
+      "bytes": 560,
+      "sha256": "72bf83bdd4c0067b056ddd98845bdb82961f8d6511a0664a365cc219d3a60010",
+      "encoding": "utf-8",
+      "content_chars": 544,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/lieux-traces.test.log"
+      ]
+    },
+    {
+      "sha": "c0a927b632d17b595a15c10e22499e2746e7192f",
+      "bytes": 616,
+      "sha256": "dca764c8503bb4871b664b997a1cfa89ed547f3d62d159d743688cf821fc2ded",
+      "encoding": "utf-8",
+      "content_chars": 597,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/main.test.log"
+      ]
+    },
+    {
+      "sha": "42e9c398b0aa4b9e9bd9757d0bf95469bd825bdd",
+      "bytes": 2444,
+      "sha256": "527fe2f9af5cfc2e58856be62dfe704b26638740ff6c9033f33332096787238d",
+      "encoding": "utf-8",
+      "content_chars": 2358,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/manette.test.log"
+      ]
+    },
+    {
+      "sha": "67a2bccaee06571ab826616bed0d27a9c78bf7d8",
+      "bytes": 1847,
+      "sha256": "b748ce3cb791b7afdac649c77ab085be5a9fdb6142142601b874826d7e2b8dfe",
+      "encoding": "utf-8",
+      "content_chars": 1734,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/mesures.test.log"
+      ]
+    },
+    {
+      "sha": "c8c12f584f74ccece9d10f2a1b1afc0b3545b67d",
+      "bytes": 425,
+      "sha256": "cf506c0f113920532bd4b468299f55541d980c191ae8a7fbda9d14a21570dcda",
+      "encoding": "utf-8",
+      "content_chars": 398,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/meteo-reelle.test.log"
+      ]
+    },
+    {
+      "sha": "b5cf820adf4eb46745c2df69a8f1dff8a7f48383",
+      "bytes": 39,
+      "sha256": "3e9672ae1f7c75d1dd260b69d4a243d76280328d3bfe4774fc71b42b4cca572c",
+      "encoding": "utf-8",
+      "content_chars": 37,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/meteo-toile.test.log"
+      ]
+    },
+    {
+      "sha": "d7465b1e196167fac2c60fef0905af67967580e3",
+      "bytes": 94,
+      "sha256": "ce4d2634938dca99f702adef9f95278e9b4155e002a6a17b6093ebec8cd57411",
+      "encoding": "utf-8",
+      "content_chars": 90,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/meteo.test.log"
+      ]
+    },
+    {
+      "sha": "339d8c42832c5fa6ba1666f3b746d63dcd4b9b8f",
+      "bytes": 409,
+      "sha256": "f6e5a43c07e443f074e8d667162e729271c0d67f9bddb5f523ac09ea7b110ff2",
+      "encoding": "utf-8",
+      "content_chars": 405,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/moteur-emprise.test.log"
+      ]
+    },
+    {
+      "sha": "e2d77a58b24eda8202d6755e9f92cf8b4cd579fb",
+      "bytes": 275,
+      "sha256": "8301bfd515ef4462f1a08e75eff0b93c3854b55338ff8de450957fd9b0adfbfd",
+      "encoding": "utf-8",
+      "content_chars": 265,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/nature-integration.test.log"
+      ]
+    },
+    {
+      "sha": "2978c4e089e707df5e1613113412800d94541cbb",
+      "bytes": 398,
+      "sha256": "79841675f9a7c73e86c2afc671cb79fc055da0ae506109ff68e56c1e673d71c2",
+      "encoding": "utf-8",
+      "content_chars": 376,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/nature-preparation.test.log"
+      ]
+    },
+    {
+      "sha": "3951f5cfd55a44190bed14c1479e180f57eee732",
+      "bytes": 941,
+      "sha256": "e5f7d14f12bf6edaf380073a3825046d59ea38fdd085a87238613a51da1577eb",
+      "encoding": "utf-8",
+      "content_chars": 909,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/navigation-menu.test.log"
+      ]
+    },
+    {
+      "sha": "6b5161f941e4e9abaf7095e53834196285c2124c",
+      "bytes": 549,
+      "sha256": "3ff4db403b22db7f12954b85b42f95a25baef1d905beb3ae9ac188104f4617fd",
+      "encoding": "utf-8",
+      "content_chars": 532,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/obstacles-degagement.test.log"
+      ]
+    },
+    {
+      "sha": "b88553170969160d9e4923cd84a147cebca73cb4",
+      "bytes": 2708,
+      "sha256": "05cb010d4e76823ec212470db21486eb19ba269ee77e71ab752d85ef00173278",
+      "encoding": "utf-8",
+      "content_chars": 2657,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/obstacles.test.log"
+      ]
+    },
+    {
+      "sha": "e8dde9de342c81729e0579799a295402d8655d54",
+      "bytes": 1058,
+      "sha256": "8ed362157128b120481a9e4cd523c2609de266a3295a45a204811e378e8c1463",
+      "encoding": "utf-8",
+      "content_chars": 1034,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/ombres.test.log"
+      ]
+    },
+    {
+      "sha": "6282627f268aed73aef3996da537419760bf2ee7",
+      "bytes": 965,
+      "sha256": "6862512aaaa3bf07ac29dbe8dfbbe06bcdf5835ae08c8ca8fe8682720c54b561",
+      "encoding": "utf-8",
+      "content_chars": 925,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/options-image.test.log"
+      ]
+    },
+    {
+      "sha": "4967c26995a2eeda2380a60b2bbdf60001e907c6",
+      "bytes": 1519,
+      "sha256": "bc0e0dedce630ec505a81c7f803039f8b2c2900ee3b7e47523c545193965c45e",
+      "encoding": "utf-8",
+      "content_chars": 1493,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pacifique.test.log"
+      ]
+    },
+    {
+      "sha": "d71dd6321a7826ab3cef3bfb3e5685802c0c520a",
+      "bytes": 978,
+      "sha256": "4fcfacd9f3227d6a690c898ab2a6f03714f3bc2473a27b209fa71e09beb2ed18",
+      "encoding": "utf-8",
+      "content_chars": 951,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/physique-cycle-seances.test.log"
+      ]
+    },
+    {
+      "sha": "38162c7e3e8c91e34d6cf2562ce0bb1b33e41803",
+      "bytes": 1478,
+      "sha256": "2fedd826f9f5aa1c5fcab39c01fa9090725353bc575e783419cf02e8af99320f",
+      "encoding": "utf-8",
+      "content_chars": 1428,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/physique-stands.test.log"
+      ]
+    },
+    {
+      "sha": "0eeeeb59236616140c6f2af7a2961c2ce48c0765",
+      "bytes": 1005,
+      "sha256": "c36af6383de97bfd6c89cdb53de62e5fb0d107af8e7f3b6c602f2bfdced9c363",
+      "encoding": "utf-8",
+      "content_chars": 980,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/physique-voitures.test.log"
+      ]
+    },
+    {
+      "sha": "a0dff21471a9eb28aa708e9220c2e471b8384aed",
+      "bytes": 1002,
+      "sha256": "30cd1d21c350d3cbe06a653668b1b0dc40794e665b366da7a42dfedcee3edb3b",
+      "encoding": "utf-8",
+      "content_chars": 976,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/physx-monde.test.log"
+      ]
+    },
+    {
+      "sha": "3a6550dfe8fc5b6f17c8d1835eed913a8eb97e4a",
+      "bytes": 2907,
+      "sha256": "1e7409c5cb4388c264801774ba429beed2321d1c154ee723ea67c61e6d7a9068",
+      "encoding": "utf-8",
+      "content_chars": 2851,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pieces.test.log"
+      ]
+    },
+    {
+      "sha": "cb78fb98ae75240859a1456f32d4bea13b72afa3",
+      "bytes": 1524,
+      "sha256": "b44885241ce72046dfe2e77b1e463d735ce566a8bbfbfbf320c91a7cc14e98b5",
+      "encoding": "utf-8",
+      "content_chars": 1457,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pilote-exterieur.test.log"
+      ]
+    },
+    {
+      "sha": "384b110a3b49ea15610930e431789dff78c3cf24",
+      "bytes": 518,
+      "sha256": "dd0fbd8450c3908b5648235e811f7e080717c2d384b26ff7c624d29b1656335e",
+      "encoding": "utf-8",
+      "content_chars": 498,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pneus-pilotes.test.log"
+      ]
+    },
+    {
+      "sha": "c74dca4f88ed5877b44bb2b86bd6622d038f388b",
+      "bytes": 1465,
+      "sha256": "4fcd92b3cca77b6629327a955681e4e4742624cd6c4de22a11dbb3438a468f70",
+      "encoding": "utf-8",
+      "content_chars": 1368,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pneus-reseau-integration.test.log"
+      ]
+    },
+    {
+      "sha": "568dfecf842dd2138982f7555c8c06c2f790f4e2",
+      "bytes": 1613,
+      "sha256": "26fe6caa484a9f8a553391f47acc4e2148c67030f6557468774c514d7636af2c",
+      "encoding": "utf-8",
+      "content_chars": 1548,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pneus-reseau.test.log"
+      ]
+    },
+    {
+      "sha": "32fd16272ed1f9550334a25647fd5027aa6436a5",
+      "bytes": 611,
+      "sha256": "41fdc421203ba53be734895bb8772a8af3c79e1c47d3d7ceac98ec7364b107bf",
+      "encoding": "utf-8",
+      "content_chars": 594,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pneus-service-visuel.test.log"
+      ]
+    },
+    {
+      "sha": "2157b66d4e98245d836e9333f8ee37453d98654c",
+      "bytes": 868,
+      "sha256": "dd2f77b3ceeb8dba2173c2a66dfb454fcb6cacf605c97c47640945f76a9e29f5",
+      "encoding": "utf-8",
+      "content_chars": 845,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/pneus.test.log"
+      ]
+    },
+    {
+      "sha": "d6c3e61b0b90744f225054f609e223b531377af5",
+      "bytes": 5576,
+      "sha256": "1368ba97f6929a902ef13bb883897a1358a75dcc963f73c45aa89fe8b46d53a8",
+      "encoding": "utf-8",
+      "content_chars": 5262,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/prets-enligne.test.log"
+      ]
+    },
+    {
+      "sha": "dc58c663ff78c3df7abb67ad5ce875f2e64085e7",
+      "bytes": 1711,
+      "sha256": "f6b8cfaccef4301eb0a301d36e5addaaa8af545d9c7fa39a79e2d47647f737d6",
+      "encoding": "utf-8",
+      "content_chars": 1710,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/public.test.log"
+      ]
+    },
+    {
+      "sha": "8ae2e6eb832ae294658095cc8d0c2ed72afdff39",
+      "bytes": 1829,
+      "sha256": "ea5dedd26752a9992b06f65411015a1050a7847f3e10b5b194621571146ca236",
+      "encoding": "utf-8",
+      "content_chars": 1760,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/qualite.test.log"
+      ]
+    },
+    {
+      "sha": "f0b888b71da27dd2f9a864d42cf3df77c112eda5",
+      "bytes": 603,
+      "sha256": "8b94edf39359b7f641106fcd903b8f168e2ab1eab15a300e739ee29573057bef",
+      "encoding": "utf-8",
+      "content_chars": 579,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/realisateur.test.log"
+      ]
+    },
+    {
+      "sha": "3b8a1820c67c172101162e27ce57a6341b00210a",
+      "bytes": 406,
+      "sha256": "fe81a756f0818b97adbbc5219302fa6e8e71d7cff92a39aaaea8c51dc88bb885",
+      "encoding": "utf-8",
+      "content_chars": 400,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/relectures-phase2.test.log"
+      ]
+    },
+    {
+      "sha": "350e74cfff8426a5462c1de62f0f3b1f06770e8f",
+      "bytes": 398,
+      "sha256": "5a21c777300aae1f9a4f03cffe48bdd9d1840ba93db45e5f23fa12b4b4930515",
+      "encoding": "utf-8",
+      "content_chars": 366,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/rendu-halo.test.log"
+      ]
+    },
+    {
+      "sha": "363f0480ffd1cf1b2a5c7c2bcaf26d45ccffeeda",
+      "bytes": 5135,
+      "sha256": "4422b0d3c8e17bc1fe05d956887f846e60663855b19f8a806dc22b5603bb1a65",
+      "encoding": "utf-8",
+      "content_chars": 5008,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/reperes-virages.test.log"
+      ]
+    },
+    {
+      "sha": "37e287d7f052ec0024b3a2540a2a8fb4da174538",
+      "bytes": 2433,
+      "sha256": "0f7b3274a6c561310547216e6be49a01db56de95df65860c7f19145ac59afd07",
+      "encoding": "utf-8",
+      "content_chars": 2379,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/reprise-recul.test.log"
+      ]
+    },
+    {
+      "sha": "a1bb3e01d7654947adbb57e92de5594104e8f5cd",
+      "bytes": 34789,
+      "sha256": "b4ad4ff633e15d391ce36dadac2e719bcfb4d19035140e667b33f0a93b7493d8",
+      "encoding": "utf-8",
+      "content_chars": 34789,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/resultats.json"
+      ]
+    },
+    {
+      "sha": "4481f111d7ebc8fe9aec4016c4600ceb1f35250a",
+      "bytes": 814,
+      "sha256": "f5d9f24732fbcc808d74729fffe296d435fff08fb5954b3c363e1c848e4d2982",
+      "encoding": "utf-8",
+      "content_chars": 785,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/roues-detail.test.log"
+      ]
+    },
+    {
+      "sha": "e403a4a9b493d8c070c574e03b551cdccf9bf954",
+      "bytes": 3103,
+      "sha256": "e72f74b49eb18597ac5f72fffdf9d7f6f0b0c376ac6a7a3e3bfed573b5c20438",
+      "encoding": "utf-8",
+      "content_chars": 3050,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/russie.test.log"
+      ]
+    },
+    {
+      "sha": "2240f7b1c07edbe9688ac2c518010fd4e95c1fe1",
+      "bytes": 6034,
+      "sha256": "2eab7156bb5739fb2644d71234963006eda11adef00090339ef1f51e958e49d8",
+      "encoding": "utf-8",
+      "content_chars": 6025,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/saisons.test.log"
+      ]
+    },
+    {
+      "sha": "3d3abc83d94fb56a8d1116daa22772292f2f7125",
+      "bytes": 1922,
+      "sha256": "398260e2e6e11d6c9292e92b5a9fe4e37b8a02407133c0f76663235224c0dc82",
+      "encoding": "utf-8",
+      "content_chars": 1842,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/salon-protocole.test.log"
+      ]
+    },
+    {
+      "sha": "b967641e9bce203449358f09f018925fa44a44e6",
+      "bytes": 295,
+      "sha256": "0abe318cf18b1450c3c0bd3fd5c54f3546ec3b7288d17de02ad073e532e70914",
+      "encoding": "utf-8",
+      "content_chars": 281,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/scene-bench.test.log"
+      ]
+    },
+    {
+      "sha": "b6f5b6eec936c5d5f9f76712c775d024f37475a0",
+      "bytes": 761,
+      "sha256": "049cb02f94047fa81b1670f0476a2c4a13f146d1390d9b32445d5a221d547f0c",
+      "encoding": "utf-8",
+      "content_chars": 722,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/sillage.test.log"
+      ]
+    },
+    {
+      "sha": "58e5c73233618e526e35d5f807359626dbdb71e1",
+      "bytes": 855,
+      "sha256": "2e1a7d011c7363e112f7360372ccb4409391a48cde8f22d39dfdfb783c2b2285",
+      "encoding": "utf-8",
+      "content_chars": 825,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/simulation-sorties.test.log"
+      ]
+    },
+    {
+      "sha": "58bd6fbf8a485fbfb24cef5e43181a503cba6db4",
+      "bytes": 4597,
+      "sha256": "ab0fd0dd1c29457d651cd72c6e53844a08de61e733e09df53f7483f4d227c8fa",
+      "encoding": "utf-8",
+      "content_chars": 4517,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/solides-physx-geometrie.test.log",
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/solides-physx-geometrie.log"
+      ]
+    },
+    {
+      "sha": "c34e852b87677dddeaadeaf5bc0ff014cb071507",
+      "bytes": 2133,
+      "sha256": "1722c482662fe63e6f35b6d4141048da65ce7034c2a8587932bc89b934839e40",
+      "encoding": "utf-8",
+      "content_chars": 2083,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/solides-physx-wasm.test.log",
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/solides-physx-wasm.log",
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/solides-physx-wasm.log"
+      ]
+    },
+    {
+      "sha": "93f38b965b0bd57d9208cff1cd6d9b71cdbfced6",
+      "bytes": 5270,
+      "sha256": "43b1bcbf1c27c10537ed847f64abc6db3e3470d988ea23e6865ac953b8de904d",
+      "encoding": "utf-8",
+      "content_chars": 5126,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/sols-proceduraux.test.log",
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/sols-proceduraux.log"
+      ]
+    },
+    {
+      "sha": "8bd4f117a7a71b2b94f2193cfba744abfdf6045f",
+      "bytes": 1485,
+      "sha256": "6e0d6e542ba4f419146b4272a6bb664297048d4b8d275515c20815cd35813a3b",
+      "encoding": "utf-8",
+      "content_chars": 1442,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/son.test.log"
+      ]
+    },
+    {
+      "sha": "0c70fa81f079f3657754930123afe109595d8ffd",
+      "bytes": 2817,
+      "sha256": "7e41a548a5613d7b1b842f0569414825e8644fe73b2c180b0d3e3a5a4ac5b53e",
+      "encoding": "utf-8",
+      "content_chars": 2712,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/stands-pneus.test.log"
+      ]
+    },
+    {
+      "sha": "9f40a71d96260705e5dc9d6474e76f252ed6b316",
+      "bytes": 1248,
+      "sha256": "77799d5e390a2281922e1e0eecaf2b6e786a0735b4356ef80ef0c276c35f13a6",
+      "encoding": "utf-8",
+      "content_chars": 1248,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/stands.test.log"
+      ]
+    },
+    {
+      "sha": "c67bb4690e05e1d867aea2943dfc0ea92314565a",
+      "bytes": 735,
+      "sha256": "fe4f0d1b98c7122e79cc3ce39eb30e607934ada29106b63f1cd5b0a7e1126b33",
+      "encoding": "utf-8",
+      "content_chars": 689,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/strategie-stands-decisions.test.log"
+      ]
+    },
+    {
+      "sha": "fc07fde07bc39eaeb58d3708e5915637dcabf060",
+      "bytes": 1070,
+      "sha256": "b76d58dca2b1612166b10eba9aa2fbb16fae374a1ed77744a6f121e4ccd1ce57",
+      "encoding": "utf-8",
+      "content_chars": 1003,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/strategie-stands-sortie-file.test.log"
+      ]
+    },
+    {
+      "sha": "4fb42a54637d7f970a66583fd72c306c2635c5f4",
+      "bytes": 1860,
+      "sha256": "99e84ba0c4757e94df3b307271d52b6bbbe8c67e2a1a8feb093b551c56883324",
+      "encoding": "utf-8",
+      "content_chars": 1774,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/strategie-stands.test.log"
+      ]
+    },
+    {
+      "sha": "9ce040dd8a1f04f8193a13c1425db056c140b28e",
+      "bytes": 401,
+      "sha256": "48936b3537e026e4bef1d7c5bd4edd25ea8abf3a8ba7bc9b0ddb73caddd25b36",
+      "encoding": "utf-8",
+      "content_chars": 374,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/titre-signature.test.log"
+      ]
+    },
+    {
+      "sha": "7ca95e31849049e3ab01303ff80b59165e8c0158",
+      "bytes": 1754,
+      "sha256": "05bd01a9a6ba1155b4e4b39d0e8437999d852552aa8ac4b6063fbe8fc7c3295a",
+      "encoding": "utf-8",
+      "content_chars": 1724,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/traces.test.log"
+      ]
+    },
+    {
+      "sha": "68d43bfb00607dec0b057b214ac84ebada4b4a54",
+      "bytes": 2169,
+      "sha256": "5aaf97f33eaec88243b9cbadea22c62747910e83255e26c78a1ab59b2b5f7b1d",
+      "encoding": "utf-8",
+      "content_chars": 2133,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/troncs.test.log"
+      ]
+    },
+    {
+      "sha": "e456a84e98739255dc78ac6dbafccc58e4078cfa",
+      "bytes": 825,
+      "sha256": "5a815294076f98608e89f8f3dc5ea45106dbdc616a91fc1387bcebd8aec3d968",
+      "encoding": "utf-8",
+      "content_chars": 770,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/tunnel-transitions.test.log"
+      ]
+    },
+    {
+      "sha": "fa4deaf3c57c6ca017e10eb77df9ee62acfe4615",
+      "bytes": 457,
+      "sha256": "8a576d718b7607027664b72d208c9b17ff336574b785c9cb92a3a91ea5782b05",
+      "encoding": "utf-8",
+      "content_chars": 449,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/tunnel.test.log"
+      ]
+    },
+    {
+      "sha": "45eca843b1c69578b0a8b8a70d57713c48959a51",
+      "bytes": 803,
+      "sha256": "ebca48cba20d4bd83f416c08e32b5904f2b56640bc36f6b08ea061bd9a9893df",
+      "encoding": "utf-8",
+      "content_chars": 772,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/usure-integration.test.log"
+      ]
+    },
+    {
+      "sha": "b3edba00e4cb88c7a100aeb243aeadce4027ba30",
+      "bytes": 1540,
+      "sha256": "471a80e341db1ce24b7a8436478d316924a2fd3418b92fb6646cda47e0e7ec63",
+      "encoding": "utf-8",
+      "content_chars": 1490,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/usure-pneus.test.log"
+      ]
+    },
+    {
+      "sha": "cbb799bdd58991d38dcb834072b2190a05b16bfa",
+      "bytes": 743,
+      "sha256": "ec3b316f5b951af4317ee53db830373e254cf883af4fa3583cf8c1a6a267f09d",
+      "encoding": "utf-8",
+      "content_chars": 717,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/usure-visuelle.test.log"
+      ]
+    },
+    {
+      "sha": "8d0ae76d84f4104b871abc0094fa2e5b9e3d7e31",
+      "bytes": 17433,
+      "sha256": "f7574b1f15e441564bbe9d68f2bbbed23f4059fb7bd88f59a78db8e982fd6368",
+      "encoding": "utf-8",
+      "content_chars": 17383,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/vegetation.test.log"
+      ]
+    },
+    {
+      "sha": "c04a1dcd37f29fb8a8b930c680ebb899e03f4a2f",
+      "bytes": 1654,
+      "sha256": "fa4a7f7e5402d5b35752edd7492bd4beee62bada27d7b5c6fe08638e05d34917",
+      "encoding": "utf-8",
+      "content_chars": 1583,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/vibrations.test.log"
+      ]
+    },
+    {
+      "sha": "c1927da333724fc8082caad80ff904ce8b9b057e",
+      "bytes": 4011,
+      "sha256": "48caca2584a6867852f97f8d10a795179552bee3c3add98e46fc6ad8f26631f0",
+      "encoding": "utf-8",
+      "content_chars": 3804,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/virages.test.log"
+      ]
+    },
+    {
+      "sha": "0f30070e3c5db5edc5bee45c4a3aea844baff15d",
+      "bytes": 873,
+      "sha256": "b48e588fd7f6317a4bc917b8492fba0fec30b01b0b4619900d07ded0feb5a5ea",
+      "encoding": "utf-8",
+      "content_chars": 829,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/vitre-cadence.test.log"
+      ]
+    },
+    {
+      "sha": "6289642014bc491ad72820567891e89744f23f8d",
+      "bytes": 670,
+      "sha256": "5f9967efbed6a96f06134e2de550b396dcd2e608e00766f95eaa53b416e4e503",
+      "encoding": "utf-8",
+      "content_chars": 642,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/vitre.test.log"
+      ]
+    },
+    {
+      "sha": "f138368aecef8066343f190310e8ec9e43ff22f1",
+      "bytes": 562,
+      "sha256": "64bd18302096cab5d30856a2ab59308138b62d6d6de48ec079e0716fa363230e",
+      "encoding": "utf-8",
+      "content_chars": 538,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/voiture-identite.test.log"
+      ]
+    },
+    {
+      "sha": "3d8d200b7d67e0f600197c18817ac7667650f275",
+      "bytes": 1206,
+      "sha256": "63090e5e716bb2879b9ddc1f9b2dc2bbc6e5fe4425596c30e29435f5fc18d4ca",
+      "encoding": "utf-8",
+      "content_chars": 1164,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/qualification-complete/voiture-permanents.test.log"
+      ]
+    },
+    {
+      "sha": "7e976b19de16aeb676de8591a5400380254c58b3",
+      "bytes": 2118,
+      "sha256": "26308c636df72ff97b4f4c59ff660d2fb85cfbe3d61eba999f0b64b03fb650d9",
+      "encoding": "utf-8",
+      "content_chars": 2050,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/README.md"
+      ]
+    },
+    {
+      "sha": "649e2a40fb1962e692b967502ace752fcd4c7c04",
+      "bytes": 2139,
+      "sha256": "732f1b372640d414c657836bc25bd00c27e1bd90f51b88aa7c2c3c654db10f09",
+      "encoding": "utf-8",
+      "content_chars": 2046,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/autoconfig-integration.log"
+      ]
+    },
+    {
+      "sha": "fde28ddc9b0b7376ffe852e4a1f756cea0e96d74",
+      "bytes": 8398,
+      "sha256": "4e36203c308cbbed02d9b18637ac294898dc31bd6b2ba01c421f522fb20a4832",
+      "encoding": "utf-8",
+      "content_chars": 8366,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/circuits/physx-circuits.json"
+      ]
+    },
+    {
+      "sha": "21a8b888f390fc20cc94771564ac9d480c602630",
+      "bytes": 24111,
+      "sha256": "f576d09c440b3fdfb7c53651249af526e58d5b68c77ce09dcf4dca2c59e1260b",
+      "encoding": "utf-8",
+      "content_chars": 24111,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/empreintes-apres.json",
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/empreintes-avant.json"
+      ]
+    },
+    {
+      "sha": "dce53633624a3ae8f4de15cec3d2214ea5d2e1e6",
+      "bytes": 1276,
+      "sha256": "ed4686f192963aaee81242f374ffef72d35c1612a9c2925b07ea701d855f7729",
+      "encoding": "utf-8",
+      "content_chars": 1242,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/physique-cycle-seances.log"
+      ]
+    },
+    {
+      "sha": "185ad8da1aec1dc6dbe8a2d75918702dab8776c6",
+      "bytes": 336,
+      "sha256": "5a62b46ae34c8ea41bddc7589c8b1b498b318f800e0a09f12726b4def2634f46",
+      "encoding": "utf-8",
+      "content_chars": 312,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/physx-autorite-reseau.log"
+      ]
+    },
+    {
+      "sha": "bac50e3862fb80dd5d793e213634ad206f047e25",
+      "bytes": 6407,
+      "sha256": "c2c7aa7178bbbd1147031d832278ff28c3e2010c0c19b15169cafee1a74b4862",
+      "encoding": "utf-8",
+      "content_chars": 6349,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/physx-circuits.log"
+      ]
+    },
+    {
+      "sha": "3147525a05c7f7c3a82d4e19b8bf1f3207ab701d",
+      "bytes": 347,
+      "sha256": "53fd7b0e9675cef40d87d3f209484665e523388cdf34c5040642a3fa951f3a05",
+      "encoding": "utf-8",
+      "content_chars": 317,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/physx-cycle-vie.log"
+      ]
+    },
+    {
+      "sha": "59cff1d946b216d27c4457fb69a634837d792cf1",
+      "bytes": 1004,
+      "sha256": "b993db667d39ff312db9922782a29954efc5f53160092da0c5934174a653be36",
+      "encoding": "utf-8",
+      "content_chars": 978,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/physx-monde.log"
+      ]
+    },
+    {
+      "sha": "7c35e5e6f3fb972b11942ca50fec954a096da629",
+      "bytes": 1194,
+      "sha256": "23b293bf6e9732dc08f155cc9ac5b08c505df6c4c5b7bb574bf1cb390b985513",
+      "encoding": "utf-8",
+      "content_chars": 1142,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/physx-stands.log"
+      ]
+    },
+    {
+      "sha": "3ec2cba53211672b06c431fc11a78e2922380305",
+      "bytes": 20218,
+      "sha256": "993198788ec38169ee6af1e3092872e9ceff8c9b40cf9ac15d9fc20aeaa702c4",
+      "encoding": "utf-8",
+      "content_chars": 20059,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/reprises.json"
+      ]
+    },
+    {
+      "sha": "ebb6328b926b3417c1868e8809ec64fe5a0bd93e",
+      "bytes": 893,
+      "sha256": "b597095c29df2da70a002e248e5dd3a6e46b006b8741fb786841d4420b43f391",
+      "encoding": "utf-8",
+      "content_chars": 847,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/russie.log"
+      ]
+    },
+    {
+      "sha": "ef23ff3b94ed6307a980d70ce020447bf8ea2fc3",
+      "bytes": 44397,
+      "sha256": "c76205c894f00d7ba7882024cb13669b86dd7f6b9a6ee03249eec048138eb672",
+      "encoding": "utf-8",
+      "content_chars": 44383,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/russie/russie.json"
+      ]
+    },
+    {
+      "sha": "5fb9d15785a7280d51c3e7bfad0606da7bc3627c",
+      "bytes": 7562,
+      "sha256": "0ff117bed006f2b7a9064bd563442794c8d071e67e0be8d99557b15dece48466",
+      "encoding": "utf-8",
+      "content_chars": 7548,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reconciliation-0314/stands/stands-physx.json"
+      ]
+    },
+    {
+      "sha": "e2e2d036d89e882442b9835601229661a30e486c",
+      "bytes": 2217,
+      "sha256": "190b8f7ef6b137320811ab18dbb6ca22cd44b41c7ea4475ea7486ca42987b71a",
+      "encoding": "utf-8",
+      "content_chars": 2158,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reseau/README.md"
+      ]
+    },
+    {
+      "sha": "5e17f904f1d2dde05c4da9f354e328ec8b12707f",
+      "bytes": 1169,
+      "sha256": "996495c94385b69a607a8bfb0002be29955a024db77843ee2253f6dbb13fbd5a",
+      "encoding": "utf-8",
+      "content_chars": 1102,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reseau/physx-reseau.log"
+      ]
+    },
+    {
+      "sha": "ad72d01200e2a5fe875c61628aede528360df08c",
+      "bytes": 2626,
+      "sha256": "eabfd4ee8c90a8add40672f2d1edb2f61fddb94a6050cb73c4d9efc385369cf4",
+      "encoding": "utf-8",
+      "content_chars": 2626,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reseau/qualification.json"
+      ]
+    },
+    {
+      "sha": "a87d989f26b857172a69287e45cbf0abad89fe2e",
+      "bytes": 7598,
+      "sha256": "0f257b8be52c1baf721e73ce9e06d7ef6780d39e0cef3cd26dea8c4796734e51",
+      "encoding": "utf-8",
+      "content_chars": 7136,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/reseau/reseau-historique.log"
+      ]
+    },
+    {
+      "sha": "5c514eeecf6c89e4e570da001cf4e8528e54163c",
+      "bytes": 14822,
+      "sha256": "f1275c4f21b12c69b2ef484934fb26ef139f4c95c390321c8d4ace629d6c2540",
+      "encoding": "utf-8",
+      "content_chars": 14682,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/sols-proceduraux.json"
+      ]
+    },
+    {
+      "sha": "4e3e1254699cfb5958f8bef81787f9215b00c0d3",
+      "bytes": 54135,
+      "sha256": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+      "encoding": "utf-8",
+      "content_chars": 53692,
+      "paths": [
+        "src/conduite.js"
+      ]
+    },
+    {
+      "sha": "c50efb87520f0c359a2276119423f9b12973424e",
+      "bytes": 59080,
+      "sha256": "6b3ec1ab4dc526d8da81f1fcf9410d68927d9a65743ac45c9335f3386f93b53f",
+      "encoding": "utf-8",
+      "content_chars": 58568,
+      "paths": [
+        "src/course.js"
+      ]
+    },
+    {
+      "sha": "2e6f619c74829de3680dc68b2727ef46cb7f0ad3",
+      "bytes": 119439,
+      "sha256": "001273b9b31d6f9005f98e32f86e94c20e57405ecd4cc88f9bc71197de2c91b2",
+      "encoding": "utf-8",
+      "content_chars": 118874,
+      "paths": [
+        "src/decor.js"
+      ]
+    },
+    {
+      "sha": "002b0f8c5896a0e6fd7cc03e1af7124810b712f3",
+      "bytes": 331241,
+      "sha256": "709e03f9cf469b0d7ee1e6fd7d3773bfcea8ab6308b3fc5a9448c091cf0e01ed",
+      "encoding": "utf-8",
+      "content_chars": 328657,
+      "paths": [
+        "src/jeu.js"
+      ]
+    },
+    {
+      "sha": "1c5d060b7314c0d863324b65eeb200008b3c45c3",
+      "bytes": 20158,
+      "sha256": "2dc2dede6b8f8e3a863a09c754bed30baf2cdf38af0dc6b71e9d839eb153a089",
+      "encoding": "utf-8",
+      "content_chars": 20123,
+      "paths": [
+        "src/physique.js"
+      ]
+    },
+    {
+      "sha": "de9d3dbb6d84eb0b169a8e6c0de3f33cee299f1c",
+      "bytes": 19415,
+      "sha256": "4fd5451e05a9a906bde39059e5cb14a67d9e6fce15459ee320b2ed383fa95067",
+      "encoding": "utf-8",
+      "content_chars": 19320,
+      "paths": [
+        "src/reseau.js"
+      ]
+    },
+    {
+      "sha": "a8ce54661966d35eabb63ab26dd0f083e3c2a520",
+      "bytes": 45631,
+      "sha256": "a163a43fd2ea165464db220286b80e10768e18d2de0f045ca1591caa017f6f4d",
+      "encoding": "utf-8",
+      "content_chars": 45201,
+      "paths": [
+        "src/traces.js"
+      ]
+    },
+    {
+      "sha": "0d50e5dd040505658cd8c50999bbd6ea55c36bcb",
+      "bytes": 130178,
+      "sha256": "a0d5b4b89458aaefc9330d96ea80b04ea44bf6835d082b51113a18c93e0ee890",
+      "encoding": "utf-8",
+      "content_chars": 129403,
+      "paths": [
+        "src/voiture.js"
+      ]
+    },
+    {
+      "sha": "eac1e49a291fd2c66593910fdee29e6361ceb6bd",
+      "bytes": 4517,
+      "sha256": "b700e993649274ea7196fca6f31574176bfcc8d639b112b24fbc9745780cafa5",
+      "encoding": "utf-8",
+      "content_chars": 4517,
+      "paths": [
+        "tools/qualification/physx-courses.mjs"
+      ]
+    },
+    {
+      "sha": "5f54150938cc7aa8bce3158eea9df35cd46322b0",
+      "bytes": 37075,
+      "sha256": "af1644dbf83bf8ab9fa5186dcd400feb7be25ad7c13348e2bd2fba410e48404b",
+      "encoding": "utf-8",
+      "content_chars": 36832,
+      "paths": [
+        "verifications/determinisme-simulation.test.mjs"
+      ]
+    },
+    {
+      "sha": "723f86b89d1a60f6cc0ff55e67f1f137bd0311ce",
+      "bytes": 33077,
+      "sha256": "d8dfa60fc2d237c8dbc2b3d23689f2d81fe1562e1b14b30eda608fcd4f46d655",
+      "encoding": "utf-8",
+      "content_chars": 33065,
+      "paths": [
+        "verifications/fixtures/determinisme-p14.json"
+      ]
+    },
+    {
+      "sha": "e937105c329797270b810f4475b9674f0fad4f66",
+      "bytes": 13991,
+      "sha256": "e5fc998d458368a37c66f1a96de3e6c218fcba35671d80167f0de823679a726e",
+      "encoding": "utf-8",
+      "content_chars": 13928,
+      "paths": [
+        "verifications/helpers/determinisme-physx.mjs"
+      ]
+    },
+    {
+      "sha": "01b4da047fb4b3e2417b990a597c158cec0b69e2",
+      "bytes": 15125,
+      "sha256": "9993ed29186d538d3c734eaf329c3948c6285ba5c67662047756066957cd9289",
+      "encoding": "utf-8",
+      "content_chars": 15067,
+      "paths": [
+        "verifications/physique-cycle-seances.test.mjs"
+      ]
+    },
+    {
+      "sha": "9889899b9a4de2018f086b29d79a326dab04aa5f",
+      "bytes": 13463,
+      "sha256": "d2d9585edc5d6a21614a4b6f749c3177693dc2c5ee73b2e1945b6e6be46c897e",
+      "encoding": "utf-8",
+      "content_chars": 13417,
+      "paths": [
+        "verifications/physique-stands.test.mjs"
+      ]
+    },
+    {
+      "sha": "8d68195baa46d55a9c2fbdcdaf011efbae1c8e34",
+      "bytes": 16132,
+      "sha256": "c85a77ae104fee8325f9bf2710718935ab06848967144da4b9f3a867bb3a1a34",
+      "encoding": "utf-8",
+      "content_chars": 16059,
+      "paths": [
+        "verifications/physique-voitures.test.mjs"
+      ]
+    },
+    {
+      "sha": "7173afc2e5dc7103b725bf25d490daeea93da0f1",
+      "bytes": 5099,
+      "sha256": "24569a4c0d32b400b1f7d2e7880b253eacecd1b10408afcc39b321813854354b",
+      "encoding": "utf-8",
+      "content_chars": 5078,
+      "paths": [
+        "verifications/physx-autorite-reseau.test.mjs"
+      ]
+    },
+    {
+      "sha": "b813df2bfa9ff8c29d192e6b9f1595af8e4ba3b6",
+      "bytes": 4693,
+      "sha256": "cc14f441637d7bc70824feb3fddbebdbbe147140b1b42fcd10a533e669782224",
+      "encoding": "utf-8",
+      "content_chars": 4663,
+      "paths": [
+        "verifications/physx-cycle-vie.test.mjs"
+      ]
+    },
+    {
+      "sha": "1c19e3d9e91ba06f753c757743c3a8fcc2ba1ae4",
+      "bytes": 9415,
+      "sha256": "3606b8137fbdd7c688b1ad8d8fbcb20f73a3e873c0a5d8100f50d8c852055667",
+      "encoding": "utf-8",
+      "content_chars": 9369,
+      "paths": [
+        "verifications/physx-reseau.test.mjs"
+      ]
+    },
+    {
+      "sha": "c21660e9f0e15b747cd82958b552c2438fe443f0",
+      "bytes": 13897,
+      "sha256": "bc3448419328092852cc0fccc0da1b520b15c2153d813c0ab2f83768adc5d2bb",
+      "encoding": "utf-8",
+      "content_chars": 13858,
+      "paths": [
+        "verifications/pilote-exterieur.test.mjs"
+      ]
+    },
+    {
+      "sha": "d1c0698e11ed8f09ccb969e265518cbe81f5cdef",
+      "bytes": 8796,
+      "sha256": "97c018b5138227d7d51e2ca90e3f2b5dbf0c739b78668a19348336d444b55889",
+      "encoding": "utf-8",
+      "content_chars": 8724,
+      "paths": [
+        "verifications/sols-proceduraux.test.mjs"
+      ]
+    }
+  ]
+}
