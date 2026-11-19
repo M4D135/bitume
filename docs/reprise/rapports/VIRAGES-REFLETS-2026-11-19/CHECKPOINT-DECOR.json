@@ -1,0 +1,33 @@
+{
+  "date_utc": "2026-11-19T16:47:13.884518+00:00",
+  "resultats": [
+    {
+      "test": "reperes-virages",
+      "exit": 0,
+      "resume": [
+        "ok  Baïkal : les vibreurs ne changent que de couleur, les décors aléatoires restent identiques",
+        "ok  Baïkal : Légère conserve les positions, couleurs et symboles, ainsi que les solides",
+        "ok  Baïkal enneigé : mêmes repères complets et aucune incidence physique",
+        "{\"controles\":50,\"oracle\":\"f53449f4326d03a2e6385e8067ad2abc54cbe33d9bc39da86a098129b7651e41\",\"environnement\":\"linux/x64\",\"rapport\":[{\"circuit\":\"val-brule\",\"virages\":7,\"panneaux\":37,\"solides\":1763},{\"circuit\":\"port-sable\",\"virages\":6,\"panneaux\":32,\"solides\":1019},{\"circuit\":\"haut-col\",\"virages\":3,\"panneaux\":18,\"solides\":1193},{\"circuit\":\"lande-noire\",\"virages\":5,\"panneaux\":28,\"solides\":1005},{\"circuit\":\"roche-fauve\",\"virages\":7,\"panneaux\":39,\"solides\":998},{\"circuit\":\"brume-de-jade\",\"virages\":7,\"panneaux\":39,\"solides\":830},{\"circuit\":\"cap-sequoia\",\"virages\":7,\"panneaux\":40,\"solides\":981},{\"circuit\":\"baikal\",\"virages\":4,\"panneaux\":24,\"solides\":1134}]}"
+      ]
+    },
+    {
+      "test": "decor-identite",
+      "exit": 0,
+      "resume": [
+        "décor : 9 géométries de référence inchangées (linux/x64/node-24.22.3)"
+      ]
+    },
+    {
+      "test": "decor-obstacles",
+      "exit": 0,
+      "resume": [
+        "      \"repriseRapide\": true",
+        "    }",
+        "  ]",
+        "}"
+      ]
+    }
+  ],
+  "build_maj": false
+}
