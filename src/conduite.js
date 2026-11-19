@@ -730,6 +730,15 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
     const roul = e.devers + clamp(-P.roulisCoef * etat.chargeY, -P.roulisMax, P.roulisMax);
     etat.tangage += (tang - etat.tangage) * kA;
     etat.roulis += (roul - etat.roulis) * kA;
+    // Composante verticale liée à la courbure de la piste (non-énumérable : hors empreinte déterministe)
+    const kappa_v = courbureVerticale(c, etat.s) || 0;
+    const u2 = (etat.u || 0) * (etat.u || 0);
+    let u_vert = u2 * kappa_v / 30;
+    if (!isFinite(u_vert)) u_vert = 0;
+    Object.defineProperty(etat, 'teteU', { value: clamp(u_vert, -0.02, 0.02), enumerable: false, writable: true, configurable: true });
+    // Facteur de champ (FOV) : +5 % à v/85, borné à 1,15 (non-énumérable)
+    const fovFactor = clamp(1 + 0.05 * (Math.abs(etat.v || 0) / 85), 1, 1.15);
+    Object.defineProperty(etat, 'fov', { value: fovFactor, enumerable: false, writable: true, configurable: true });
   }
 
   // Volant filtré : montée un peu plus douce à haute vitesse, retour et contre-braquage vifs.
