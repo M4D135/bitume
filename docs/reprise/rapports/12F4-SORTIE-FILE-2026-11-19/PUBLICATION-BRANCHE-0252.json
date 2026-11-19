@@ -1,0 +1,67 @@
+{
+  "date_utc": "2026-11-19T15:19:15.165Z",
+  "repository": "M4D135/bitume",
+  "branch": "codex/bitume-12f4-sortie-file-20261119",
+  "local_commit": "56461c46af517c3128b614fedc26cd7d9f40b1f0",
+  "remote_commit": "b8c670283112a35c7ae447537c8cab58bbd88b6f",
+  "parents": [
+    "74aba2d30073bbf187e7aac935c1978d957709c0",
+    "db3e8da1f7facc2606e380d6a47c95e6626e2614"
+  ],
+  "tree": "58b82eab3ad82c7879eb07951f4cf2ebc520c154",
+  "tree_identical": true,
+  "changed_files_since_checkpoint": 419,
+  "blobs_and_modes_verified": 419,
+  "version": "0.2.52",
+  "physics": "p13",
+  "build": {
+    "bytes": 14060666,
+    "sha256": "4c8f43204fa79323d652202d12c534570b67fa85a2980fdbc4f589559e94f976",
+    "blob": "cd32f8999b4044a3f7fa9bdf9c9ead0878e581b0",
+    "reproductible": true
+  },
+  "archive": {
+    "sha": "646ffc1a55d2309be1f3ab4af2f3506c41511e30",
+    "bytes": 805638,
+    "sha256": "352b6a3472b63c04947696a18d6de073469e20153f063240f9cf1dd3d54d7f59",
+    "path": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/parcours-physiques.tar.gz",
+    "chunks": 3
+  },
+  "validation": {
+    "suites": 108,
+    "passed": 107,
+    "known_failure": "traces.test.mjs : signature héritée identique",
+    "new_manoeuvre_checks": 9,
+    "determinism_scenarios": 22,
+    "determinism_fingerprints": 1415,
+    "valid_scripts": 53,
+    "unchanged_ferro_modules": 34,
+    "webgl_validated": false,
+    "hardware_validated": false,
+    "deployed": false
+  },
+  "pull_request": {
+    "number": 6,
+    "url": "https://github.com/M4D135/bitume/pull/6",
+    "state": "open",
+    "draft": false,
+    "merged": false,
+    "head_sha": "b8c670283112a35c7ae447537c8cab58bbd88b6f",
+    "base_sha": "db3e8da1f7facc2606e380d6a47c95e6626e2614",
+    "mergeable": true,
+    "mergeable_state": "unstable"
+  },
+  "main_observed": "db3e8da1f7facc2606e380d6a47c95e6626e2614",
+  "main_modified_by_this_agent": false,
+  "merge_executed": false,
+  "force": false,
+  "concurrent_source_followup": {
+    "commit": "db3e8da1f7facc2606e380d6a47c95e6626e2614",
+    "integrated": true,
+    "source_entry": "021",
+    "current_entry": "022-SORTIE-FILE"
+  },
+  "transport": "GitHub API ; blobs immuables lus par blocs bornés ; contrôle SHA des gros blobs, arbre exact et 419 entrées relues dans l'arbre distant.",
+  "verified": true,
+  "status": "sources_build_preuves_publies_PR_prete_revue"
+}

@@ -1,19 +1,19 @@
 {
   "date": "2026-11-19",
   "etat_courant": {
-    "branche": "codex/bitume-12f4-sortie-file-20261119",
+    "branche": "main",
     "base_commit": "cb0235085431acbc044f785e27b26ca382c5556a",
     "base_version": "0.2.50",
     "version_courante": "0.2.52",
-    "version_publiee_verifiee": "0.2.51",
-    "commit_main_verifie": "db3e8da1f7facc2606e380d6a47c95e6626e2614",
-    "statut": "CPU_qualifie_publication_finale_en_cours",
-    "lot": "12F4_sortie_file_serree",
+    "version_publiee_verifiee": "0.2.52",
+    "commit_main_verifie": "b5b4c0c693e6f47199c31384c9217831d10acd0f",
+    "statut": "12F4_et_sortie_file_publies_verifies",
+    "lot": "12F4_sortie_file_termine",
     "fiche": "docs/reprise/12F4-SORTIE-FILE.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "022-SORTIE-FILE",
+    "derniere_entree": "023",
     "publication_base": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json",
-    "prochaine_action": "Publier et vérifier 0.2.52 ; enregistrer le reçu puis ouvrir 13A Russie, tracé et relief.",
+    "prochaine_action": "Lire le résultat final des CI puis ouvrir13A Russie, tracé et relief ; ne pas refaire12F4.",
     "physique": "p13",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
     "comportement": "Stratégie de stands des IA locales : usure forte ou monte durablement inadaptée, guidage physique et file, admission relue après contacts, service réel et sortie sans remise à neuf cachée.",
@@ -31,7 +31,8 @@
     "checkpoint_sources": "74aba2d30073bbf187e7aac935c1978d957709c0",
     "checkpoint_distant_verifie": true,
     "base_p12_publiee": "6a3fb86a51db46f2d3b2483bedb34d406ebff705",
-    "qualification": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/qualification-execution.json"
+    "qualification": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/qualification-execution.json",
+    "publication": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/PUBLICATION-0252.json"
   },
   "validation": {
     "date_utc": "2026-11-19T15:09:07.852480+00:00",
@@ -189,6 +190,25 @@
       "tests": 9,
       "reussis": 9,
       "rapport": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/sortie-file-final.json"
+    },
+    "ci_finale": {
+      "commit": "b8c670283112a35c7ae447537c8cab58bbd88b6f",
+      "statut": "en_cours_au_controle",
+      "checks": [
+        {
+          "id": 135662707394,
+          "status": "in_progress",
+          "conclusion": null,
+          "url": "https://github.com/M4D135/bitume/actions/runs/44553356629/job/135662707394"
+        },
+        {
+          "id": 135662277393,
+          "status": "in_progress",
+          "conclusion": null,
+          "url": "https://github.com/M4D135/bitume/actions/runs/44553239269/job/135662277393"
+        }
+      ],
+      "aucune_ci_verte_revendiquee": true
     }
   },
   "catalogue": {
@@ -205,7 +225,7 @@
   "suite": {
     "lot": "13A_Russie_trace_relief",
     "statut": "non_commence",
-    "prerequis": "Publication vérifiée de 0.2.52 / p13",
+    "prerequis": "Atteint : 0.2.52/p13 publiée et vérifiée sur main.",
     "objectif": "Tracé et relief d’un circuit russe ; Baïkal proposé, identité exacte à fixer depuis le plan.",
     "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
     "demandes_conservees": [
@@ -218,7 +238,7 @@
   "acces": {
     "mac_spark_amiga_disponibles": false,
     "travaux_mac_non_fusionnes": "Branches absentes de GitHub ; ne pas les compter livrées.",
-    "publication": "12F4 / 0.2.51 qualifié CPU, publication finale en cours ; aucune PR créée à ce stade. Main vérifié reste c8afbd49 / 0.2.50.",
+    "publication": "0.2.52/p13 publiée sur main b5b4c0c693e6f47199c31384c9217831d10acd0f ; PR6 fusionnée et vérifiée, reprise documentaire close.",
     "deploiement_effectue": false,
     "site_verifie": false
   },
@@ -228,23 +248,75 @@
   ],
   "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé.",
   "publication_precedente": {
-    "version": "0.2.50",
-    "recu": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json"
+    "branche": "codex/bitume-12f4-20261119",
+    "statut": "fusion_verifiee_livre_sur_main",
+    "base_main": "c8afbd49594eaac51876286e471413856117418d",
+    "version_main_verifiee": "0.2.51",
+    "version_cible": "0.2.51",
+    "main_modifie_par_ce_lot": true,
+    "build_courant": "0.2.51",
+    "checkpoint_sources": "cb0235085431acbc044f785e27b26ca382c5556a",
+    "checkpoint_distant_verifie": true,
+    "version_qualifiee": "0.2.51",
+    "pr_creee": true,
+    "pr": {
+      "numero": 5,
+      "url": "https://github.com/M4D135/bitume/pull/5",
+      "etat": "closed",
+      "merged": true,
+      "merged_at": "2026-11-19T15:10:18Z"
+    },
+    "commit_main": "4710a4001bd4f37111901934dea6421866d0d3c0",
+    "head_qualifie": "6a3fb86a51db46f2d3b2483bedb34d406ebff705",
+    "tree": "1054a9a3e49e70d0f79431fe67b3da868a65edc8",
+    "tree_identique_tete_qualifiee": true,
+    "fusion_verifiee": true,
+    "recu": "docs/reprise/rapports/12F4-2026-11-19/PUBLICATION-0251.json",
+    "controles_ou_regles_modifies": false,
+    "ci": {
+      "statut": "terminees_failure",
+      "suites_par_run": 107,
+      "reussies_par_run": 106,
+      "seul_echec": "traces.test.mjs",
+      "signature_heritee_identique": true,
+      "build_reconstruit_identique": true,
+      "runs": [
+        {
+          "evenement": "push",
+          "id": 44550520260,
+          "job": 135652679851,
+          "conclusion": "failure"
+        },
+        {
+          "evenement": "pull_request",
+          "id": 44550618625,
+          "job": 135653025414,
+          "conclusion": "failure"
+        }
+      ]
+    },
+    "recu_final_verifie": true
   },
   "publication": {
-    "branche": "codex/bitume-12f4-sortie-file-20261119",
-    "statut": "qualification_acquise_publication_finale_en_cours",
-    "base_main": "db3e8da1f7facc2606e380d6a47c95e6626e2614",
-    "version_main_verifiee": "0.2.50",
-    "version_cible": "0.2.52",
-    "main_modifie_par_ce_lot": false,
-    "recu_final_verifie": false,
-    "checkpoint_reprise": "446a350f736d583471950b8e089ac7d8ab57e4d9",
-    "build_courant": "0.2.50",
-    "parents_distants_attendus": [
-      "74aba2d30073bbf187e7aac935c1978d957709c0",
-      "6a3fb86a51db46f2d3b2483bedb34d406ebff705"
-    ]
+    "branche": "main",
+    "statut": "fusion_main_verifiee",
+    "version": "0.2.52",
+    "commit_revue": "b8c670283112a35c7ae447537c8cab58bbd88b6f",
+    "commit_fusion": "b5b4c0c693e6f47199c31384c9217831d10acd0f",
+    "main_verifie": "b5b4c0c693e6f47199c31384c9217831d10acd0f",
+    "version_main_verifiee": "0.2.52",
+    "arbre": "58b82eab3ad82c7879eb07951f4cf2ebc520c154",
+    "arbre_identique_au_lot_qualifie": true,
+    "main_modifie_par_ce_lot": true,
+    "recu_final_verifie": true,
+    "recu": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/PUBLICATION-0252.json",
+    "pr": 6,
+    "url": "https://github.com/M4D135/bitume/pull/6",
+    "etat_pr": "closed",
+    "fusionnee": true,
+    "brouillon": false,
+    "fusion_le_utc": "2026-11-19T15:20:29Z",
+    "suivi": "Le commit documentaire courant ajoute le reçu sans modifier sources/build."
   },
   "qualification_precedente": "docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json",
   "validation_precedente_p12": {

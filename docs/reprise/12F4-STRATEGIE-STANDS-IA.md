@@ -1,6 +1,6 @@
 # 12F4 — stratégie de stands IA
 
-**Complément qualifié 0.2.52/p13 :** dégagement des files serrées et joueur qui repart, voir [la fiche de correction](12F4-SORTIE-FILE.md). Le texte ci-dessous conserve la livraison initiale 0.2.51/p12.
+**Complément publié sur main en 0.2.52/p13 :** dégagement des files serrées et joueur qui repart, voir [la fiche de correction](12F4-SORTIE-FILE.md). Le texte ci-dessous conserve la livraison initiale 0.2.51/p12.
 
 ## Base et périmètre
 

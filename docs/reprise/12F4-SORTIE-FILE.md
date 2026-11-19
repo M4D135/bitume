@@ -1,12 +1,10 @@
 # 12F4 — dégagement de la file des stands
 
-## Reprise du 19 novembre 2026
+## Livraison du 19 novembre 2026
 
-Demande de David : continuer le lot IA aux stands et résoudre le joueur durablement garé devant un rival.
-Base sources p12 publiée : `cb0235085431acbc044f785e27b26ca382c5556a`, branche `codex/bitume-12f4-20261119`.
-La session source termine séparément la publication 0.2.51. Cette reprise est isolée dans
-`codex/bitume-12f4-sortie-file-20261119` ; **cible 0.2.52 / p13**, qualification complète en cours.
-Le build conservé au checkpoint sources n'est pas le livrable de cette correction.
+**0.2.52 / p13 livrée et vérifiée sur main**, commit `b5b4c0c693e6f47199c31384c9217831d10acd0f`, PR n°6 fusionnée.
+Sources, build et preuves correspondent au lot qualifié ; la clôture 0.2.51 est préservée.
+Reçu : `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/PUBLICATION-0252.json`. **Ce sous-lot est terminé.**
 
 ## Défauts reproduits et correction
 
@@ -38,14 +36,10 @@ Rapports : `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/`.
 
 ## Publication et suite
 
-Terminer les suites sur sources figées, intégrer le reçu et le build 0.2.51 de la session source sans l'écraser,
-construire deux fois 0.2.52, publier sources/build/preuves et contrôler le distant. Ne pas requalifier les anciens
-lots ni rouvrir Safari. Les tests CPU ne valent ni validation WebGL ni essai entre navigateurs réels.
-Le déploiement du site reste distinct ; Mac/Spark/amiga indisponibles dans cette session.
-
-Demandes conservées : Russie, Monaco fidèle, Spéciale Marseille issue d'EMPRISE avec relief, huitième circuit
-de montagne distinct de Haut-Col et six propositions. Le choix du lot suivant se fera depuis la liste maître.
+Sources, build et preuves publiés et vérifiés. Prochain lot : **13A Russie, tracé et relief**, non commencé.
+Les demandes Monaco, Marseille avec relief, huitième montagne et six propositions restent conservées.
+WebGL, performances matérielles, multi-navigateur réel et déploiement restent distincts des preuves CPU.
 
 ## Qualification finale acquise
 
-**107/108 suites**, seul échec traces hérité identique ; **22 scénarios / 1 415 empreintes p13**, deux builds identiques de **14 060 666 octets**, 53 scripts valides et 34 modules FERRO inchangés. Neuf scénarios de dégagement réussis ; rapport `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/qualification-execution.json`. Publication finale en cours, reçu à vérifier avant de déclarer la livraison.
+**107/108 suites**, seul échec traces hérité identique ; **22 scénarios / 1 415 empreintes p13**, deux builds identiques de **14 060 666 octets**, 53 scripts valides et 34 modules FERRO inchangés. Neuf scénarios de dégagement réussis ; rapport `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/qualification-execution.json`. Publication finale vérifiée sur main ; reçu enregistré.

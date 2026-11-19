@@ -1,0 +1,85 @@
+{
+  "repository": "M4D135/bitume",
+  "version": "0.2.52",
+  "physique": "p13",
+  "statut": "fusion_main_verifiee",
+  "branche": "main",
+  "branche_revue": "codex/bitume-12f4-sortie-file-20261119",
+  "commit_revue": "b8c670283112a35c7ae447537c8cab58bbd88b6f",
+  "commit_fusion": "b5b4c0c693e6f47199c31384c9217831d10acd0f",
+  "tree": "58b82eab3ad82c7879eb07951f4cf2ebc520c154",
+  "tree_identique_au_lot_qualifie": true,
+  "commit_local_qualifie": "56461c46af517c3128b614fedc26cd7d9f40b1f0",
+  "parents_fusion": [
+    "db3e8da1f7facc2606e380d6a47c95e6626e2614",
+    "b8c670283112a35c7ae447537c8cab58bbd88b6f"
+  ],
+  "base_main_preservee": "db3e8da1f7facc2606e380d6a47c95e6626e2614",
+  "pr": {
+    "number": 6,
+    "url": "https://github.com/M4D135/bitume/pull/6",
+    "state": "closed",
+    "draft": false,
+    "merged": true,
+    "merged_at": "2026-11-19T15:20:29Z"
+  },
+  "build": {
+    "path": "dist/bitume.html",
+    "blob": "cd32f8999b4044a3f7fa9bdf9c9ead0878e581b0",
+    "bytes": 14060666,
+    "sha256": "4c8f43204fa79323d652202d12c534570b67fa85a2980fdbc4f589559e94f976",
+    "deux_constructions_identiques": true
+  },
+  "qualification": {
+    "suites": 108,
+    "reussies": 107,
+    "unique_echec": "traces.test.mjs",
+    "signature_heritee_identique": true,
+    "cas_degagement": 9,
+    "cas_degagement_reussis": 9,
+    "scenarios_deterministes": 22,
+    "empreintes": 1415,
+    "anciennes_references_intactes": [
+      "p9",
+      "p10",
+      "p11",
+      "p12"
+    ],
+    "scripts_valides": 53,
+    "modules_ferro_intacts": 34,
+    "rapport": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/qualification-execution.json"
+  },
+  "ci_code": {
+    "commit": "b8c670283112a35c7ae447537c8cab58bbd88b6f",
+    "statut": "en_cours_au_controle",
+    "checks": [
+      {
+        "id": 135662707394,
+        "status": "in_progress",
+        "conclusion": null,
+        "url": "https://github.com/M4D135/bitume/actions/runs/44553356629/job/135662707394"
+      },
+      {
+        "id": 135662277393,
+        "status": "in_progress",
+        "conclusion": null,
+        "url": "https://github.com/M4D135/bitume/actions/runs/44553239269/job/135662277393"
+      }
+    ],
+    "aucune_ci_verte_revendiquee": true
+  },
+  "regles": {
+    "push_force": false,
+    "controles_obligatoires_modifies": false,
+    "rulesets_modifies": false
+  },
+  "limites": {
+    "webgl_valide": false,
+    "performance_materielle_mesuree": false,
+    "parties_reelles_entre_navigateurs_validees": false,
+    "deploiement_effectue": false,
+    "site_verifie": false
+  },
+  "prochaine_action": "13A Russie — tracé et relief, non commencé. Relire aussi le résultat final des deux CI du commit de code.",
+  "note": "Ce reçu et le suivi sont ajoutés dans un commit documentaire suivant la fusion ; le commit_fusion désigne la livraison des sources et du build qualifiés."
+}
