@@ -1,0 +1,19 @@
+{
+  "echec": "traces.test.mjs",
+  "base_version": "0.2.49",
+  "base_commit": "56086eccd5d3085b6f8e8b86fd65c33c81d15b1b",
+  "base_log": "../12F2-2026-11-19/tests/traces.test.mjs.log",
+  "actuel_log": "tests/traces.test.mjs.log",
+  "logs_identiques_hors_chemin_et_duree_cpu": true,
+  "sha256_base": "a688910ce01a481a27c921da92cc224d5e7a60c66e029ad75b10f49369120032",
+  "sha256_actuel": "4c51c0068a15493366ee4aaf14a2b814e43f24e308ffdf71200097dc1b840dfe",
+  "signature": {
+    "actual": [
+      "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf"
+    ],
+    "expected": [
+      "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee"
+    ]
+  },
+  "unique_ecart_observe": "0.024 ms par image en12F2, 0.026 en12F3 ;589objets et erreur identiques. Mesure CPU, pas des FPS matériels."
+}

@@ -1,0 +1,38 @@
+{
+  "passed": 8,
+  "total": 8,
+  "results": [
+    {
+      "name": "petit bond contre rail -1 : casse unique, quatre roues, puis reprise rapide",
+      "ok": true
+    },
+    {
+      "name": "roue perdue près du rail -1 : arrêt puis reprise sans traversée",
+      "ok": true
+    },
+    {
+      "name": "survol haut -1 : pas de mur invisible au-dessus de la glissière",
+      "ok": true
+    },
+    {
+      "name": "frôlement rapide en bond -1 : vitesse normale faible, pas de casse",
+      "ok": true
+    },
+    {
+      "name": "petit bond contre rail 1 : casse unique, quatre roues, puis reprise rapide",
+      "ok": true
+    },
+    {
+      "name": "roue perdue près du rail 1 : arrêt puis reprise sans traversée",
+      "ok": true
+    },
+    {
+      "name": "survol haut 1 : pas de mur invisible au-dessus de la glissière",
+      "ok": true
+    },
+    {
+      "name": "frôlement rapide en bond 1 : vitesse normale faible, pas de casse",
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "date_utc": "2026-11-19T11:50:27.476054+00:00",
+  "version": "0.2.50",
+  "physique": "p11",
+  "suites": 105,
+  "reussies": 104,
+  "echecs": [
+    "traces.test.mjs"
+  ],
+  "sources_stables": true,
+  "determinisme": {
+    "scenarios": 20,
+    "empreintes": 1300,
+    "fixture_regeneree": false,
+    "fixture_inchangee": true,
+    "verification": 0,
+    "archives": {
+      "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+      "verifications/fixtures/determinisme-p11.json": "c2453f9f896014a45020678c071a10aed656243ef542565538c571d7fc9430b7",
+      "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a"
+    }
+  },
+  "build": {
+    "sha256": "b1154b9b8a03641f2b166c44bd7cd191589e2375a9cc490733edd90934d5dc21",
+    "bytes": 14042272,
+    "reproductible": true,
+    "codes": [
+      0,
+      0
+    ],
+    "hashes": {
+      "VERSION.json": "9f0ab222d7970984b4c85ecfd4029d6c566a63b9cc00cf0dc10cd6ea3fcb9a63",
+      "SIZE.json": "d03fb9b81cc72082d053feaadbe40c3e7b84c479515b30c3d11fd75a4ff106ce",
+      "dist/bitume.html": "b1154b9b8a03641f2b166c44bd7cd191589e2375a9cc490733edd90934d5dc21"
+    }
+  },
+  "bundle": {
+    "scripts": 52,
+    "codes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "ferro": {
+    "version": "0.3.11",
+    "modules": 34,
+    "ecarts": []
+  },
+  "webgl_valide": false,
+  "deploiement_effectue": false,
+  "lot": "12F3",
+  "contrat_pistes": {
+    "sha256": "47d571ee06b635c215ac8bbaf2bc014b7afc630307c0afb2cc21c662fea67f50",
+    "build_verifie": true
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "root": "/workspace/scratch/67676bee9b18/bitume",
+  "normalImpactMps": 35.34517439934782,
+  "passed": 22,
+  "total": 22,
+  "results": [
+    {
+      "name": "mur 180 km/h à45° : dégâts normaux et casse",
+      "ok": true
+    },
+    {
+      "name": "casse : quatre roues et événement unique",
+      "ok": true
+    },
+    {
+      "name": "casse visible puis retour en moins1s et accélération possible",
+      "ok": true
+    },
+    {
+      "name": "replacement manuel répare immédiatement sans gain longitudinal",
+      "ok": true
+    },
+    {
+      "name": "rasant 198 km/h à5° reste roulant",
+      "ok": true
+    },
+    {
+      "name": "faible vitesse normale : coup léger à45° reste récupérable",
+      "ok": true
+    },
+    {
+      "name": "impact 180 km/h à20° : normale17m/s, aucune roue perdue",
+      "ok": true
+    },
+    {
+      "name": "frottement devenu violent : auRail ne masque pas une casse",
+      "ok": true
+    },
+    {
+      "name": "caisse qui s’éloigne du rail ne subit pas un nouveau choc",
+      "ok": true
+    },
+    {
+      "name": "seuil20/30 : roue perdue distincte de grosse casse",
+      "ok": true
+    },
+    {
+      "name": "casse prioritaire sur vol/accident/stand, sans nouveau détachement",
+      "ok": true
+    },
+    {
+      "name": "rival : choc longitudinal violent détruit les deux caisses",
+      "ok": true
+    },
+    {
+      "name": "rival : vitesse commune élevée, faible rapprochement conservé",
+      "ok": true
+    },
+    {
+      "name": "rival face àface : vitesse relative projetée, pas différence des normes",
+      "ok": true
+    },
+    {
+      "name": "réparation directe remet toutes les roues et capacités",
+      "ok": true
+    },
+    {
+      "name": "nouvelle séance : voiture neuve et accélération possible",
+      "ok": true
+    },
+    {
+      "name": "chrono : casse puis reprise sans DNF ni tour/fantôme",
+      "ok": true
+    },
+    {
+      "name": "course : récupération garde le pilote en lice, sans progression gratuite",
+      "ok": true
+    },
+    {
+      "name": "casse près de ligne : replacement sans tour ; franchissement réel invalidé course/chrono",
+      "ok": true
+    },
+    {
+      "name": "débris : budget de six pièces par voiture (4 roues + 2 panneaux), fumée/étincelles et objets réutilisés",
+      "ok": true
+    },
+    {
+      "name": "débris : pool borné, déterministe, disparaît après12s",
+      "ok": true
+    },
+    {
+      "name": "épave dépouillée et roues cachées aussi au loin",
+      "ok": true
+    }
+  ]
+}

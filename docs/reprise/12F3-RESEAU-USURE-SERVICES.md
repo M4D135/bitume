@@ -3,11 +3,12 @@
 ## Point de départ et périmètre
 
 19 novembre 2026. Base publiée **0.2.49**, suivi main `56086ecc` ; 12F2 est fusionné.
-Branche de travail : `codex/bitume-12f3-20261119`. Lot en cours, aucune nouvelle version qualifiée à ce checkpoint.
+Branche de travail : `codex/bitume-12f3-20261119`. **12F3 qualifié CPU en 0.2.50 ; publication finale EN COURS.**
+Checkpoint sources distant `7c908b17` vérifié ; sources et build gelés. Main reste vérifié en **0.2.49 / `56086ecc`**.
 
-Transmettre le type et les quatre états de pneus, les remplacements terminés et le transfert vers l’IA.
-Activer ensuite le choix de la prochaine monte en ligne. Garder les commandes locales, la physique **p11**,
-les positions à quinze flottants et les modules FERRO inchangés. Le site et WebGL restent non validés.
+Le type et les quatre états de pneus, les remplacements terminés et le transfert vers l’IA sont transmis.
+Le choix de la prochaine monte est actif en ligne. Commandes locales, physique **p11**, positions à quinze
+flottants et modules FERRO inchangés. Le site et WebGL restent non validés.
 
 ## Contrat retenu
 
@@ -31,13 +32,20 @@ les positions à quinze flottants et les modules FERRO inchangés. Le site et We
   Un départ dupliqué ne crée pas une nouvelle course. La fin de chargement demande un instantané.
   Une machine absente de la grille attend toujours la prochaine course ; ce lot n’ajoute pas d’entrée en pleine course.
 
-## Jalons et preuves
+## Qualification et publication
 
-1. Protocole pur : validation, quantification, ordre, autorité, reprise et atomicité.
-2. Intégration réelle : 2+2, 2+1, 1+2 ; service du deuxième pilote ; relais et arrivée tardive de la liaison ;
-   changement de séance, déconnexion et absence de remise à neuf cachée.
-3. Régressions ciblées, puis qualification globale sur sources figées, sans régénérer p11.
-   Deux builds identiques ; contrôler le verrou FERRO et publier sources, build et preuves.
+- **104/105 suites** réussies sur sources figées. Seul `traces.test.mjs` reste en échec hérité identique,
+  confirmé par `rapports/12F3-2026-11-19/reserve-traces.json`.
+- **20 scénarios / 1 300 empreintes p11** identiques ; fixtures p9/p10/p11 intactes, sans régénération.
+- Deux builds **0.2.50** identiques, **14 042 272 octets**, SHA-256
+  `b1154b9b8a03641f2b166c44bd7cd191589e2375a9cc490733edd90934d5dc21`.
+  **52 scripts valides**, **34 modules FERRO 0.3.11 inchangés**.
+- Tests avec les vrais contrôleurs et un **transport simulé** : 2+2, 2+1, 1+2, deuxième pilote,
+  service perdu, liaison tardive, séance, annulation, incompatibilité et reprise sans pneus neufs.
+  **Parties réelles entre navigateurs non validées.** WebGL, performances matérielles et déploiement non validés.
+- Rapport : `rapports/12F3-2026-11-19/qualification-execution.json` ; synthèse `VALIDATION.md` dans le même dossier.
+  Charges utiles mesurées et débits théoriques dans `transport-mesure.json` ; aucune mesure réseau matérielle.
 
-Réserve de base : 102/103 suites en 12F2, seul `traces.test.mjs` déjà en échec.
-La stratégie de stands des rivaux et les circuits restent des lots suivants.
+Terminer la publication sources/tests/build/preuves, vérifier le distant et enregistrer le reçu.
+**Prochain sous-lot : stratégie de stands IA**, non commencé, à borner séparément avant les courses longues.
+Russie, Monaco, Marseille, huitième circuit de montagne et six propositions restent conservés.
