@@ -14,10 +14,13 @@ const proche = (a, b, nom, ecart = 1e-3) => assert.ok(Math.abs(a - b) < ecart, n
 // Les glaces ne coûtent qu'une fois activées (activerGlaces), une toutes les « tous » images du cockpit (vue 0).
 // options.pas : temps d'un pas de simulation (ms), ou liste par appel de simuler ; options.pics[id][k] : millisecondes
 // de carte ajoutées à la k-ième image du palier id (0 : la première après son décor).
+// charges[id].reprise : millisecondes de processeur que paie la première image de chaque rappel (fréquence qui
+// remonte après un temps libre) ; options.occupee(id, n) : millisecondes de carte prises par un autre programme à
+// chaque image du palier id pendant sa série n (0 : la première, 1 et 2 : les mesures de contrôle).
 function machine(charges, options = {}) {
   const periode = options.periode || 1000 / 60;
   let horloge = 0, vsync = 0, carte = 0, id = null, appels = 0, cockpit = 0, glacesActives = false, premiere = false;
-  let imagesPalier = 0, appelsSimulation = 0;
+  let imagesPalier = 0, appelsSimulation = 0, debutRappel = false;
   const visites = [], preparations = [], suivi = { dessins: 0, avant: 0, simulation: 0, activations: 0, fins: 0, sondes: 0, progressions: [] };
   const io = {
     maintenant: () => horloge,
@@ -29,7 +32,7 @@ function machine(charges, options = {}) {
       appels++;
       if (options.sansCadence && appels > 20) return null;
       vsync = Math.max(vsync + periode, Math.ceil(horloge / periode - 1e-9) * periode);
-      horloge = vsync; return horloge;
+      horloge = vsync; debutRappel = true; return horloge;
     },
     preparer: (choix, profil, reglage) => {
       assert.equal(profil, A.profils[choix]);
@@ -51,9 +54,11 @@ function machine(charges, options = {}) {
       if (id === null) suivi.avant++;
       const c = charges[id] || { cpu: 1, gpu: 2 };
       const glace = glacesActives && c.glace && vue === 0 && ++cockpit % c.glace.tous === 0 ? c.glace.gpu : 0;
-      horloge += c.cpu + (premiere ? c.premiere || 0 : 0); premiere = false;
+      horloge += c.cpu + (premiere ? c.premiere || 0 : 0) + (debutRappel ? c.reprise || 0 : 0); premiere = false; debutRappel = false;
       const pic = options.pics?.[id]?.[imagesPalier++] || 0;
-      carte = Math.max(carte, horloge) + (c.vues ? c.vues[vue] : c.gpu) + glace + pic;
+      const controles = id === null ? 0 : suivi.progressions.filter(p => p.texte === 'Mesure de contrôle · ' + A.profils[id].nom).length;
+      const autre = options.occupee ? options.occupee(id, controles) || 0 : 0;
+      carte = Math.max(carte, horloge) + (c.vues ? c.vues[vue] : c.gpu) + glace + pic + autre;
       suivi.dessins++;
     },
     terminer: () => { suivi.fins++; horloge = Math.max(horloge, carte); },
@@ -93,9 +98,17 @@ await verifier('cache : même version gardée ; nouvelle version, autre carte ou
   const passe = { revision: A.REVISION, statut: 'interrompu', motif: 'annule', empreinte: ici, tentatives: 1 };
   assert.ok(A.cacheValide(passe, ici));
   assert.equal(A.cacheValide(passe, A.empreinte('GPU-A', '0.2.41')), false, 'la version suivante la refait');
-  const coupe = { ...passe, motif: 'onglet_masque' };
+  const coupe = { ...passe, motif: 'delai' };
   assert.equal(A.cacheValide(coupe, ici), false, 'première interruption : refaite à l’ouverture suivante');
   assert.ok(A.cacheValide({ ...coupe, tentatives: A.TENTATIVES }, ici), 'deuxième interruption : on n’insiste plus');
+  // C1 : un onglet passé en arrière-plan n'est jamais un verdict, quel que soit le compte
+  const cache = { ...passe, motif: 'onglet_masque' };
+  for (const t of [0, 1, A.TENTATIVES, 9]) assert.equal(A.cacheValide({ ...cache, tentatives: t }, ici), false, 'onglet caché, ' + t);
+  assert.equal(A.tentatives({ ...coupe, tentatives: 1 }, { empreinte: ici, motif: 'onglet_masque' }), 1, 'onglet caché : pas compté');
+  // C2 : palier refusé de peu, verdict provisoire, comme un écran bridé
+  const occupee = { ...c, provisoire: true, tentatives: 1 };
+  assert.equal(A.cacheValide(occupee, ici), false, 'refus de peu : refait à l’ouverture suivante');
+  assert.ok(A.cacheValide({ ...occupee, tentatives: A.TENTATIVES }, ici), 'refusé de peu deux fois : verdict');
   // écran bridé à 30 Hz pendant la mesure : verdict provisoire, refait ; deux mesures bridées de suite valent verdict
   const bridee = { ...c, cadenceBridee: true, tentatives: 1 };
   assert.equal(A.cacheValide(bridee, ici), false, 'mesure bridée : refaite à l’ouverture suivante');
@@ -112,6 +125,21 @@ await verifier('référence des choix : celle notée par la détection, ou les r
   assert.equal(A.reference({ statut: 'interrompu', motif: 'annule' }), null);
   assert.equal(A.reference({ statut: 'ok', reglages: { qualite: 'medium' } }), null, 'six valeurs ou rien');
   assert.equal(A.reference(null), null);
+});
+await verifier('C7, trace perdue : la référence la plus proche des réglages actuels, pas les valeurs d’usine', () => {
+  const usine = { qualite: 'auto', anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', retro: 'auto' };
+  const moyen = A.reglages('medium');
+  // relecture du 18/11 : Moyenne appliquée, végétation montée par le joueur, trace illisible
+  assert.deepEqual(A.referenceProbable({ ...moyen, vegetation: 'ultra' }, usine), moyen);
+  const f = A.fusionner({ ...moyen, vegetation: 'ultra' }, A.referenceProbable({ ...moyen, vegetation: 'ultra' }, usine), A.reglages('low'), false);
+  assert.deepEqual(f.valeurs, { ...A.reglages('low'), vegetation: 'ultra' }, 'Légère appliquée, seule la végétation du joueur gardée');
+  assert.deepEqual(f.gardes, ['vegetation']);
+  // valeurs d'usine, ou un seul choix fait avant toute détection : référence d'usine (à égalité, l'usine en tête)
+  assert.deepEqual(A.referenceProbable(usine, usine), usine);
+  assert.deepEqual(A.referenceProbable({ ...usine, qualite: 'high' }, usine), usine);
+  assert.deepEqual(A.referenceProbable(A.reglages('extreme'), usine), A.reglages('extreme'));
+  assert.deepEqual(A.referenceProbable(null, usine), usine, 'rien de lisible : usine');
+  assert.deepEqual(A.referenceProbable({ ...moyen, vegetation: 'ultra' }, null), moyen, 'sans usine : les paliers seuls');
 });
 await verifier('fusion automatique : les options touchées par le joueur restent, les autres suivent la recommandation', () => {
   const avant = A.reglages('medium'), fine = A.reglages('high');
@@ -138,9 +166,12 @@ await verifier('fusion à la main : tout est remplacé, même les options touch�
 await verifier('trace d’une détection passée ou interrompue : tentatives comptées par version, référence gardée', () => {
   const ici = A.empreinte('GPU-A', '0.2.40'), ref = A.reglages('medium');
   const precedent = { revision: A.REVISION, statut: 'ok', empreinte: A.empreinte('GPU-A', '0.2.39'), appliques: ref };
-  let m = A.marquer(precedent, { statut: 'interrompu', motif: 'onglet_masque', empreinte: ici });
-  assert.equal(m.statut, 'interrompu'); assert.equal(m.motif, 'onglet_masque'); assert.equal(m.tentatives, 1);
+  let m = A.marquer(precedent, { statut: 'interrompu', motif: 'contexte_perdu', empreinte: ici });
+  assert.equal(m.statut, 'interrompu'); assert.equal(m.motif, 'contexte_perdu'); assert.equal(m.tentatives, 1);
   assert.deepEqual(m.appliques, ref); assert.equal(A.cacheValide(m, ici), false);
+  // C1 : l'onglet caché laisse une trace sans tentative de plus ; le test reviendra
+  m = A.marquer(m, { statut: 'interrompu', motif: 'onglet_masque', empreinte: ici });
+  assert.equal(m.tentatives, 1); assert.equal(A.cacheValide(m, ici), false); assert.deepEqual(m.appliques, ref);
   m = A.marquer(m, { statut: 'interrompu', motif: 'delai', empreinte: ici });
   assert.equal(m.tentatives, 2); assert.ok(A.cacheValide(m, ici)); assert.deepEqual(m.appliques, ref);
   m = A.marquer(m, { statut: 'interrompu', motif: 'annule', empreinte: A.empreinte('GPU-A', '0.2.41') });
@@ -209,6 +240,80 @@ await verifier('fil principal : estimé en course à 3 fois celui du parcours, i
   assert.equal(A.bilanRafales('medium', rafales(seuil + .01)).acceptable, false);
   proche(A.bilanRafales('medium', rafales(3)).processeur, 3 * A.COURSE_PROCESSEUR, 'la poursuite juge ici');
   assert.equal(A.bilanRafales('medium', rafales(NaN).map(x => ({ ...x, cpu: NaN }))).acceptable, false, 'sans relevé du processeur');
+});
+await verifier('C5 : fil principal mesuré une image par rappel, comme en course, et non en rafale', async () => {
+  // un processeur qui paie la reprise de chaque rappel (fréquence remontée après le temps libre de l'image) : une
+  // rafale partage cette reprise entre ses images, la course la paie à chaque image
+  const LP = A.LIMITE_PROCESSEUR / A.COURSE_PROCESSEUR, reprise = .55 * LP, cpu = .65 * LP;
+  const f = machine({ medium: { cpu, reprise, gpu: 6 } }), r = await A.executer(f.io), m = r.mesures[0];
+  assert.equal(m.R, 4);
+  proche(m.seule, cpu + reprise, 'image seule : la reprise comprise', .01);
+  proche(m.cpu, cpu + reprise / 4, 'en rafale, la reprise est partagée', .01);
+  assert.ok((cpu + reprise / 4) * A.COURSE_PROCESSEUR <= A.LIMITE_PROCESSEUR, 'la rafale seule passerait');
+  proche(m.processeur, (cpu + reprise) * A.COURSE_PROCESSEUR, 'course estimée sur l’image seule', .01);
+  assert.equal(m.acceptable, false); assert.equal(r.selection, 'low');
+  for (const s of m.series) {
+    assert.equal(s.seules.length, A.IMAGES_SEULES);
+    assert.deepEqual([0, 1, 2].map(v => s.seules.filter(([vue]) => vue === v).length), [4, 4, 4], 'autant d’images par point de vue');
+  }
+  // les images seules ne sont pas terminées une à une : la carte n'est attendue qu'une fois, avant les rafales
+  const g = machine({ medium: { cpu: 1, gpu: 6 }, high: { cpu: 1, gpu: 30 } }), s = await A.executer(g.io);
+  const finsAttendues = s.mesures.reduce((n, x) => n + (x.chauffe ? x.chauffe.length : 0) + 2 + x.series.reduce((k, y) => k + 1 + y.detail.length, 0), 0);
+  assert.equal(g.suivi.fins, finsAttendues, 'chauffe, glaces, une fin par série et une par rafale');
+  // la moyenne des images d'un point de vue : le cockpit alterne images avec et sans glace
+  const b = A.bilanRafales('medium', [0, 1, 2].flatMap(vue => [{ vue, n: 4, cout: 5, cpu: 1 }, { vue, n: 4, cout: 5, cpu: 1 }]), A.LIMITE,
+    [[0, 2], [0, 4], [1, 1], [1, 1], [2, 1], [2, 1]].map(([vue, ms]) => ({ vue, ms })));
+  proche(b.parVue[0].seule, 3, 'moyenne du cockpit'); proche(b.seule, 3, 'le plus chargé juge'); proche(b.processeur, 3 * A.COURSE_PROCESSEUR, 'estimation');
+});
+await verifier('C2, C4 : zone grise mesurée deux fois ; deux séries doivent passer, la troisième tranche ; refus de peu provisoire', async () => {
+  const L = A.LIMITE, fine = { cpu: 1, gpu: L * 2.2 };
+  // nette : une série ; Fine sans espoir : une série, pas de verdict provisoire
+  const nette = await A.executer(machine({ medium: { cpu: 1, gpu: L * .6 }, high: fine }).io);
+  assert.deepEqual(nette.mesures.map(m => m.series.length), [1, 1]); assert.equal(nette.selection, 'medium'); assert.equal(nette.provisoire, false);
+  assert.equal(A.zone(nette.mesures[0]), 'nette'); assert.equal(A.zone(nette.mesures[1]), 'perdue');
+  // C4 : acceptée juste sous la limite : refaite, gardée si la seconde passe aussi
+  const juste = await A.executer(machine({ medium: { cpu: 1, gpu: L * .93 }, high: fine }).io);
+  assert.equal(juste.mesures[0].series.length, 2); assert.equal(juste.selection, 'medium');
+  // C4 : la seconde ne passe plus (la carte prise par un autre travail) ; la troisième tranche
+  const pris = n => n >= 1 ? L * .2 : 0, refus = await A.executer(machine({ medium: { cpu: 1, gpu: L * .93 }, high: fine }, { occupee: (id, n) => id === 'medium' ? pris(n) : 0 }).io);
+  const r0 = refus.mesures[0];
+  assert.equal(r0.series.length, 3); assert.deepEqual(r0.series.map(s => s.acceptable), [true, false, false]);
+  assert.equal(r0.acceptable, false, 'la médiane refuse'); assert.equal(refus.selection, 'low');
+  assert.equal(r0.provisoire, true); assert.equal(refus.provisoire, true, 'refusée de peu : nouvelle mesure à l’ouverture suivante');
+  // C2 : un autre programme occupe la carte pendant la première série seulement : refusée de peu, puis deux séries
+  // libres : Moyenne
+  const passe = await A.executer(machine({ medium: { cpu: 1, gpu: L * .7 }, high: fine }, { occupee: (id, n) => id === 'medium' && n === 0 ? L * .5 : 0 }).io);
+  const p0 = passe.mesures[0];
+  assert.equal(p0.series[0].acceptable, false); assert.ok(p0.series[0].cout <= L * A.GRIS_HAUT, 'refus de peu : ' + p0.series[0].cout);
+  assert.equal(p0.series.length, 3); assert.equal(p0.acceptable, true); assert.equal(passe.selection, 'medium'); assert.equal(passe.provisoire, false);
+  // C2 : carte occupée tout le test : refusée deux fois, de peu : Légère, provisoire
+  const occupe = await A.executer(machine({ medium: { cpu: 1, gpu: L * 1.15 }, high: fine }).io);
+  assert.equal(occupe.mesures[0].series.length, 2); assert.equal(occupe.selection, 'low'); assert.equal(occupe.provisoire, true);
+  // refusée de loin : une série, verdict définitif
+  const loin = await A.executer(machine({ medium: { cpu: 1, gpu: L * 1.8 } }).io);
+  assert.equal(loin.mesures[0].series.length, 1); assert.equal(loin.provisoire, false); assert.equal(loin.selection, 'low');
+  // fil principal dans la zone grise : de même
+  const LP = A.LIMITE_PROCESSEUR / A.COURSE_PROCESSEUR;
+  const fil = await A.executer(machine({ medium: { cpu: LP * 1.1, gpu: 6 } }).io);
+  assert.equal(fil.mesures[0].series.length, 2); assert.equal(fil.selection, 'low'); assert.equal(fil.provisoire, true);
+  // combiner : une série la sienne, deux la plus lourde, trois la médiane
+  const s = (cout, processeur) => ({ cout, processeur, seule: processeur / A.COURSE_PROCESSEUR, cpu: 1, complet: true, limite: L });
+  assert.equal(A.combiner([s(9, 3)]).cout, 9); assert.equal(A.combiner([s(9, 3), s(12, 4)]).cout, 12);
+  assert.equal(A.combiner([s(9, 3), s(15, 4), s(11, 2)]).cout, 11); assert.equal(A.combiner([s(9, 3), s(15, 4), s(11, 2)]).processeur, 3);
+  assert.equal(A.combiner([s(L * 1.7, 3)]).provisoire, false); assert.equal(A.combiner([s(L * 1.2, 3)]).provisoire, true);
+  assert.equal(A.combiner([s(L * .9, 3)]).provisoire, false, 'accepté : rien de provisoire');
+});
+await verifier('mesure de contrôle seulement si elle tient dans les six secondes', async () => {
+  const L = A.LIMITE, charges = { medium: { cpu: 1, gpu: L * .5 }, high: { cpu: 1, gpu: L * 1.15 } };
+  const vite = await A.executer(machine(charges).io);
+  assert.deepEqual(vite.mesures.map(m => m.series.length), [1, 2], 'Fine refusée de peu, mesurée deux fois');
+  assert.equal(vite.selection, 'medium'); assert.equal(vite.provisoire, true);
+  // décors longs : Fine commence tard, sa mesure de contrôle sortirait des six secondes
+  const lent = machine(charges, { preparation: { medium: 1500, high: A.PREPARATION_MAX - 100 } }), r = await A.executer(lent.io);
+  assert.deepEqual(lent.visites, ['medium', 'high']);
+  assert.equal(r.mesures[1].series.length, 1, 'pas de mesure de contrôle');
+  assert.equal(r.selection, 'medium'); assert.equal(r.provisoire, true, 'refus de peu sur une seule série : provisoire');
+  assert.ok(r.duree * 1000 < A.DELAI, r.duree + ' s');
 });
 await verifier('carte très lente : Légère conclue en trois images de Moyenne, sans créer le moteur des glaces', async () => {
   const f = machine({ medium: { cpu: 25, gpu: 400, premiere: 900 } }), r = await A.executer(f.io);

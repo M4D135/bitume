@@ -1,0 +1,239 @@
+{
+ "date": "2026-11-18T18:24:32.411Z",
+ "page": "dist/bitume.html",
+ "qualite": "high",
+ "taille": [
+  960,
+  540
+ ],
+ "trace": "haut-col",
+ "vues": "lieux",
+ "images": [
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-lieu-1-le-bois-noir.jpg",
+   "s": 850,
+   "y": 8.1,
+   "pente": 3.5,
+   "rayon": null,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-survol-1-le-bois-noir.jpg",
+   "s": 790,
+   "y": 6.1,
+   "pente": 2.8,
+   "rayon": 261,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-lieu-2-le-mur.jpg",
+   "s": 2319,
+   "y": 63.7,
+   "pente": 5.5,
+   "rayon": 45,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-survol-2-le-mur.jpg",
+   "s": 2344,
+   "y": 66,
+   "pente": 13.1,
+   "rayon": 91,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-lieu-3-les-lacets.jpg",
+   "s": 2884,
+   "y": 165.8,
+   "pente": 2,
+   "rayon": 60,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-survol-3-les-lacets.jpg",
+   "s": 2824,
+   "y": 164.2,
+   "pente": 4.5,
+   "rayon": 119,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-lieu-4-le-balcon-du-cirque.jpg",
+   "s": 4571,
+   "y": 257.2,
+   "pente": 1.5,
+   "rayon": 420,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-survol-4-le-balcon-du-cirque.jpg",
+   "s": 4511,
+   "y": 256.1,
+   "pente": 2.7,
+   "rayon": 821,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-lieu-5-col-de-l-aigliere.jpg",
+   "s": 5538,
+   "y": 270.3,
+   "pente": 0.5,
+   "rayon": 180,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-survol-5-col-de-l-aigliere.jpg",
+   "s": 5478,
+   "y": 269.9,
+   "pente": 0.7,
+   "rayon": 350,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-lieu-6-pont-de-la-gorge.jpg",
+   "s": 7891,
+   "y": 113.1,
+   "pente": -1.4,
+   "rayon": null,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-survol-6-pont-de-la-gorge.jpg",
+   "s": 7865,
+   "y": 113.9,
+   "pente": -4.4,
+   "rayon": 333,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-lieu-7-virage-du-vide.jpg",
+   "s": 8562,
+   "y": 66.4,
+   "pente": -5,
+   "rayon": 140,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-survol-7-virage-du-vide.jpg",
+   "s": 8523,
+   "y": 68.5,
+   "pente": -6,
+   "rayon": 269,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-couvert-tunnel-du-rocher.jpg",
+   "s": 4117,
+   "y": 239.6,
+   "pente": 5,
+   "rayon": null,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-couvert-galerie-des-avalanches.jpg",
+   "s": 5899,
+   "y": 269.5,
+   "pente": -3,
+   "rayon": 180,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-couvert-tunnel-des-echelles.jpg",
+   "s": 6373,
+   "y": 239,
+   "pente": -8,
+   "rayon": 250,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-pont-pont-de-la-gorge.jpg",
+   "s": 7930,
+   "y": 112.7,
+   "pente": -1,
+   "rayon": null,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-bord-sapins-du-bois-noir-790.jpg",
+   "s": 810,
+   "y": 6.7,
+   "pente": 3.3,
+   "rayon": null,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-bord-sapins-du-bois-noir-1146.jpg",
+   "s": 1166,
+   "y": 21,
+   "pente": 3.7,
+   "rayon": null,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-bord-sapins-du-bois-noir-1766.jpg",
+   "s": 1786,
+   "y": 43.5,
+   "pente": 3.5,
+   "rayon": null,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-bord-murs-des-lacets-3339.jpg",
+   "s": 3359,
+   "y": 192.8,
+   "pente": 6.9,
+   "rayon": 1498,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-bord-murs-des-lacets-3670.jpg",
+   "s": 3690,
+   "y": 214.1,
+   "pente": 6.9,
+   "rayon": 1571,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-bord-balcon-du-cirque-4511.jpg",
+   "s": 4531,
+   "y": 256.5,
+   "pente": 1.9,
+   "rayon": 420,
+   "installationMs": 692
+  },
+  {
+   "circuit": "haut-col",
+   "fichier": "haut-col-bord-virage-du-vide-8523.jpg",
+   "s": 8543,
+   "y": 67.3,
+   "pente": -5.3,
+   "rayon": 140,
+   "installationMs": 692
+  }
+ ],
+ "erreurs": []
+}

@@ -1,0 +1,49 @@
+{
+ "valeur": {
+  "cas": "passage",
+  "moment": "nuit",
+  "cible": {
+   "voiture": 0,
+   "genre": "detonation",
+   "t": 11.312185042709181,
+   "force": 0.8769783973693848
+  },
+  "horloge": 11.349999999999909,
+  "apres": 0.0295,
+  "objets": 34,
+  "avec": {
+   "appels": 330,
+   "instances": 4847,
+   "effets": 75
+  },
+  "sans": {
+   "appels": 322,
+   "instances": 4813,
+   "effets": 41
+  },
+  "dessinUs": 11.45,
+  "pasUs": 1.5,
+  "voiture": {
+   "rapport": 4,
+   "kmh": 176
+  },
+  "son": {
+   "actif": false,
+   "voix": 0,
+   "joueurs": 0,
+   "rivaux": 0,
+   "fondus": 0,
+   "budget": 5,
+   "musique": false,
+   "echappement": {
+    "voix": 0,
+    "actives": 0,
+    "budget": 6,
+    "parImage": 6,
+    "joues": 0,
+    "ignores": 0
+   }
+  }
+ },
+ "erreurs": []
+}

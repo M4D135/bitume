@@ -1,0 +1,49 @@
+{
+ "valeur": {
+  "cas": "rival",
+  "moment": "jour",
+  "cible": {
+   "voiture": 3,
+   "genre": "detonation",
+   "t": 8.5612386549937,
+   "force": 0.9919337034225464
+  },
+  "horloge": 8.591666666666733,
+  "apres": 0.0221,
+  "objets": 24,
+  "avec": {
+   "appels": 307,
+   "instances": 5069,
+   "effets": 65
+  },
+  "sans": {
+   "appels": 304,
+   "instances": 5045,
+   "effets": 41
+  },
+  "dessinUs": 7,
+  "pasUs": 1.05,
+  "voiture": {
+   "rapport": 3,
+   "kmh": 135
+  },
+  "son": {
+   "actif": false,
+   "voix": 0,
+   "joueurs": 0,
+   "rivaux": 0,
+   "fondus": 0,
+   "budget": 5,
+   "musique": false,
+   "echappement": {
+    "voix": 0,
+    "actives": 0,
+    "budget": 6,
+    "parImage": 6,
+    "joues": 0,
+    "ignores": 0
+   }
+  }
+ },
+ "erreurs": []
+}

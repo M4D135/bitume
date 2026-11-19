@@ -108,7 +108,12 @@
   // ---------------------------------------------------------------- circuits
   const circuits = [];
   function circuit(i) {
-    if (!circuits[i]) { const k = CATALOGUE[i]; circuits[i] = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom }); }
+    if (!circuits[i]) {
+      const k = CATALOGUE[i];
+      circuits[i] = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom });
+      // lot 22F : le parapet, le muret ou le bord du fossé d'un bord dangereux devient la limite (une fois, à la création)
+      if (B.bords) B.bords.limites(circuits[i], B.bords.planifier(circuits[i]));
+    }
     return circuits[i];
   }
   function nombreVirages(c) {
@@ -152,6 +157,7 @@
   let restaurerDecorApresContexte = false;
   let materielRendu = 'webgl2', derniereDetection = null;
   let decorEnrichi = true; // l'outil de référence peut retrouver le décor historique pour une comparaison A/B
+  let publicVisible = true; // BITUME_JEU.public.visible : mesurer l'image avec et sans le public
   // Préparation d'une séance (voir « préparation des séances ») : déclarée avant tout lancement possible. jeton :
   // une préparation plus récente ou une perte de contexte l'incrémente, et la préparation en cours s'arrête à son
   // prochain await ; interne : le lancement vient de la préparation elle-même ; precharge : prechargerSeance tourne ;
@@ -200,12 +206,19 @@
       vegetation: decorEnrichi && veut.vegetation,
       vegetationQualite,
       saison,
+      public: decorEnrichi && !!B.public,
     });
     decor.atmosphere = B.graphismes.atmosphere(decor.atmosphere);
     if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
     rendu.setNappes(decor.nappes);
     rendu.setLots(decor.lots);
+    // Le public (public.js) : de vrais spectateurs à la place des boîtes des gradins, dessinés par le point d'accroche
+    // « foule » du moteur. Bâti au palier ancre, comme le décor ; la vue de l'ancienne scène rend ses tampons.
+    if (scene && scene.vuePublic) scene.vuePublic.liberer();
+    const pub = decor.gradins && B.public ? B.public.creer(c, decor, { qualite: ancre, saison }) : null;
+    let vuePublic = null;
+    if (pub) try { vuePublic = B.public.vue(rendu, pub); } catch (e) { console.warn('BITUME : public indisponible', e); }
     // plan du circuit pour l'affichage de course, dessiné une fois
     const fond = document.createElement('canvas'); fond.width = fond.height = 220;
     const p = plan(c, 220, 220, 16), ctx = fond.getContext('2d');
@@ -213,8 +226,20 @@
     // profondeur du volume d'ombre : un point du sol au bord du carré est décalé de OMBRE × cotangente de la hauteur du soleil
     const sol = decor.atmosphere.sunDirection, sinus = sol[1] / Math.hypot(sol[0], sol[1], sol[2]);
     const ombre = { extent: OMBRE, depth: 2 * (OMBRE * Math.sqrt(Math.max(0, 1 - sinus * sinus)) / Math.max(.25, sinus) + 30) };
-    scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, c, decor, fond, plan: p, ombre };
+    scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, c, decor, fond, plan: p, ombre, public: pub, vuePublic };
     return scene;
+  }
+  // Animaux des abords (src/animaux.js) : bâtis une fois par scène, comme le décor qu'ils habitent (12 à 90 ms mesurés
+  // dans la page, une saccade si chaque course de la démo les recréait), puis repris de leurs places de départ à
+  // chaque séance. Le moment de la journée suit la séance ; à l'horloge réelle, la nuit du départ vaut pour la course
+  // (elle change trop lentement pour qu'une course le voie).
+  function animauxDe(sc, nature) {
+    if (!B.animaux) return null;
+    const reelle = nature.horlogeReelle && B.conditionsCourse && B.conditionsCourse.nuitReelle;
+    const options = { saison: sc.saison, moment: nature.moment,
+      nuit: reelle ? B.conditionsCourse.nuitReelle(nature.dateDepart != null ? nature.dateDepart : Date.now(), nature.horlogeReelle) : undefined };
+    if (sc.animaux) return B.animaux.repartir(sc.animaux, options);
+    return (sc.animaux = B.animaux.creer(sc.c, sc.decor, options));
   }
 
   // ---------------------------------------------------------------- séances : vitrine (écran titre), démo, course, chrono
@@ -268,14 +293,23 @@
       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
       real: demo ? B.realisateur.creer(graineCourse) : null, planVu: null, suivie: 0, enchaine: false,
       fx: B.traces.creer(course.voitures.length, graineCourse),
+      // flammes et détonations d'échappement (lot 20) : hasard propre, tiré de la graine de la course
+      ech: B.echappement ? B.echappement.creer(course.voitures.length, graineCourse) : null,
       meteo: meteoInit, conditions,
       nature: { ambiance: B.ambiance.creer(sc.decor.atmosphere, i === 2), moment: B.ambiance.normaliser(conditions.moment),
         horlogeReelle: horlogePartagee(conditions.horlogeReelle), dateDepart: enl && Number.isFinite(enl.dateDepart) ? enl.dateDepart : null,
         saison: sc.decor.saison || B.saisons.profil(sc.saison, CATALOGUE[i].theme), revisionRendu: -1, faune: null, effetsSaison: null, aurores: null },
-      fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null,
+      fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null, animaux: null, animauxVue: null,
       // créations tardives : objets nés dans le chemin d'une image au lieu de la préparation (doit rester à zéro)
       tardives: { n: 0, sousVoile: 0, noms: {} },
     };
+    // bâtis avec la scène (une fois par décor), repris ici de leurs places de départ : sous le voile de la préparation
+    S.animaux = animauxDe(sc, S.nature);
+    // Le public de la séance : moins nombreux sous la pluie, en hiver et la nuit ; son animation repart de zéro.
+    if (sc.public) {
+      B.public.reinitialiser(sc.public);
+      B.public.regler(sc.public, { presence: B.public.presencePour(conditions.meteo, sc.saison, conditions.moment === 'nuit') });
+    }
     if (enl) {
       S.enLigne = { T0: enl.T0, role: enl.role, humains: enl.humains }; S.enLigneOrigine = true;
       course.distant = (v, dt) => appliquerDistant(S, v, dt);
@@ -285,7 +319,7 @@
     // la vue du joueur 2 a son propre état de caméra, d'éclair et d'affichage, le reste vient de la séance.
     if (duo) S.vueJ2 = Object.assign(Object.create(S), { camCap: null, tete: null, secousse: 0, eclair: 0, lumiere: 1, sol: null, tele: { poste: null, alea: graine32(31 + i) },
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
-      suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null });
+      suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null, animauxVue: null });
     S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une, ou deux à l'écran partagé)
     jeu.dataset.partage = duo ? (reglages.partage === 'cote' ? 'cote' : 'haut-bas') : '';
     delete $('hud').dataset.reduit; delete hud2.dataset.reduit;
@@ -569,6 +603,7 @@
   function majMeteo(S, dt) { return B.meteo.avancer(S, dt); }
   let pluieVue = null, pluieVue2 = null, vitreVue = null, vitreVue2 = null;
   const METEO_ABRI = { pluie: 0, nuage: 0, eclair: 0, mouille: 0, ventX: 0, ventZ: 0, t: 0 };
+  const ambiancePublic = () => ({ pluie: 0, neige: 0, mouille: 0, feux: 0, vert: false, termine: false });
   function precipitationsNeige(S) {
     if (!S.nature || CATALOGUE[S.i].theme === 'cote') return 0;
     return (S.meteo.reel ? S.meteo.neige : S.nature.saison && S.nature.saison.neige) ? S.meteo.pluie || 0 : 0;
@@ -824,9 +859,13 @@
       }
     }
     const t = S.prec; S.prec = S.cour; S.cour = t; remplirPoses(S.cour, co);
+    // les betes lisent les voitures à chaque pas ; leur cerveau n'avance qu'aux instants k × 0,1 s de l'horloge de
+    // course, sans tirer sur le hasard de la course
+    if (S.animaux) B.animaux.pas(S.animaux, co.horloge, S.cour);
     synchroniserReplacement(S, ev);
     const tFx = S.banc ? performance.now() : 0;
     B.traces.pas(S.fx, co, S.cour, S.suivie || 0, DT, ev);
+    if (S.ech) B.echappement.pas(S.ech, co.voitures, co.horloge);
     if (S.banc) S.banc.effets += performance.now() - tFx;
     if (S.type === 'demo') traiterDemo(S, ev);
     else if (S.type !== 'vitrine') { traiter(S, ev); suivreJoueur(S); }
@@ -1449,7 +1488,9 @@
       if (B.circuit.dansTunnel(c, sp, 25)) sp = ramener(c.tunnel.fin + 30, c.longueur);
       const e = B.circuit.echantillon(c, sp);
       const cote = e.courbure > 1e-4 ? 1 : e.courbure < -1e-4 ? -1 : plan.cote;
-      const d = cote * (c.largeur / 2 + 1.1), x = e.x - Math.sin(e.cap) * d, z = e.z + Math.cos(e.cap) * d;
+      // lot 22F : un muret (limite à 1 m du bord) ou un parapet (1,4 m) commence à la limite ; à 1,1 m du bord, la
+      // caméra serait dans le mur. Elle reste 40 cm devant la limite ; ailleurs (limites d'au moins 3,2 m), rien ne change.
+      const d = cote * Math.min(c.largeur / 2 + 1.1, B.conduite.limiteCote(c, sp, cote) - .4), x = e.x - Math.sin(e.cap) * d, z = e.z + Math.cos(e.cap) * d;
       const sol = scene.decor.sol ? scene.decor.sol(x, z) : e.y;
       S.sol = { plan, pos: [x, Math.max(e.y, isFinite(sol) ? sol : e.y) + .32, z] };
     }
@@ -1724,10 +1765,10 @@
     axe[0] = Math.sin(cam.yaw) * cp; axe[1] = Math.sin(cam.pitch || 0); axe[2] = -Math.cos(cam.yaw) * cp;
     return axe;
   }
-  function retroVoulu(S, vue) {
+  function retroVoulu(S, vue, P) {
     const r = reglages.retro === 'auto' ? (estTactile ? 'non' : 'oui') : reglages.retro;
     // Le profil décide : image des glaces refusée d'office au palier bas et aux paliers Auto les plus serrés.
-    return r === 'oui' && vue === 'cockpit' && S.type !== 'vitrine' && !retro.echec && !cameraEssai && profilDe(S).effets.retroImages;
+    return r === 'oui' && vue === 'cockpit' && S.type !== 'vitrine' && !retro.echec && !cameraEssai && (P || profilDe(S)).effets.retroImages;
   }
   // Le second moteur, sa copie du décor et les toiles des quatre glaces naissent au chargement, jamais dans le
   // chemin d'une image : tant que la copie n'est pas prête, la glace reste peinte (fond dessiné du cockpit).
@@ -1770,6 +1811,10 @@
     retro.rendu.setWorld([], [], d.atmosphere);
     retro.rendu.setNappes(d.nappes.map(n => Object.assign({}, n)));
     retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })));
+    // le public dans les glaces : son propre contexte WebGL, sans le niveau proche ni les ombres (glace sans ombre)
+    if (retro.vuePublic) retro.vuePublic.liberer();
+    retro.vuePublic = null;
+    if (scene.public) try { retro.vuePublic = B.public.vue(retro.rendu, scene.public, { niveauMin: 1, ombre: false }); } catch (e) { console.warn('BITUME : public des rétroviseurs indisponible', e); }
     retro.scene = scene;
   }
   function preparerGlaces() {
@@ -1895,11 +1940,12 @@
     const sun = camR.sun;
     sun.center[0] = ps.x; sun.center[1] = ps.y; sun.center[2] = ps.z; sun.extent = scene.ombre.extent; sun.depth = scene.ombre.depth;
     const objets = listeGlace(S, camR, sortie, suivie, source.height);
+    retro.foulePublic = publicVisible && retro.vuePublic ? retro.vuePublic.fx : null;
     if (S.nature && (retro.ambianceSource !== S.nature.ambiance || retro.ambianceRevision !== S.nature.ambiance.revision)) {
       if (retro.rendu.setEnvironment) retro.rendu.setEnvironment(S.nature.ambiance.atmosphere);
       retro.ambianceSource = S.nature.ambiance; retro.ambianceRevision = S.nature.ambiance.revision;
     }
-    retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, lights: lampesTunnel(G, i ? 'lampes1' : 'lampes0', scene.decor.tunnelLampes, camR, dtGlace, scene.index) });
+    retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, lights: lampesTunnel(G, i ? 'lampes1' : 'lampes0', scene.decor.tunnelLampes, camR, dtGlace, scene.index), foule: retro.foulePublic });
     if (B.mesures.actif) B.mesures.vue('retro', retro.rendu);
     const ctx = G.ctx[i];
     if (toiles[i].width !== source.width || toiles[i].height !== source.height) { toiles[i].width = source.width; toiles[i].height = source.height; }
@@ -1928,6 +1974,8 @@
     }
     for (let k = S.iVoitures1, n = S.iEffets0; k < n; k++) if (devantGlace(sortie[k], axe, ox, oy, oz)) objets.push(sortie[k]);
     B.traces.dessiner(S.fx, objets, camR.pos, S.hEffets, axe, 0);
+    // flammes d'échappement des autres voitures, au même instant que la vue (la voiture suivie n'y montre que sa roue)
+    if (S.ech) B.echappement.dessiner(S.ech, objets, poses, S.tRendu, suivie.id);
     const R = OPTIONS_RETRO;
     R.roues = suivie.degats && suivie.degats.roues; R.casse = !!(suivie.etat.degats && suivie.etat.degats.casse);
     B.voiture.poserRetro(S.modeles[suivie.id], POSES_RENDU[suivie.id], objets, R);
@@ -2125,6 +2173,19 @@
       contexte.activite = nature.saison ? nature.saison.faune : 1;
       B.faune.dessiner(nature.faune, horlogeReelle, contexte, sortie);
     }
+    // Animaux des abords : poses du cerveau interpolées à l'instant affiché des voitures (même horloge de course,
+    // mêmes images à 30, 60 ou 120 images/s). Le réglage brut de la faune passe tel quel : en « profil », Légère garde
+    // quelques silhouettes lointaines là où le profil coupe les oiseaux et les insectes. Les glaces ne montrent que
+    // ce que la vue principale a posé : on garde derrière la caméra ce qu'elles reflètent. Contexte de vue créé par
+    // prechargerSeance.
+    if (S.animaux) {
+      const contexte = S.animauxVue || (S.animauxVue = creationTardive('contexteAnimaux', { vue: S === session ? 0 : 1, qualite: 'off', camera: null, hauteur: 720, aspect: 16 / 9, arriere: false, nuit: 0, pluie: 0 }));
+      contexte.qualite = B.animaux.qualite(reglages.faune, P.palier); contexte.camera = cam;
+      contexte.hauteur = canvas.height; contexte.aspect = canvas.width / Math.max(1, canvas.height);
+      contexte.arriere = retroVoulu(S, vue, P);
+      contexte.nuit = S.nature ? S.nature.ambiance.nuit : 0; contexte.pluie = meteo.pluie || 0;
+      B.animaux.dessiner(S.animaux, S.tRendu, contexte, sortie);
+    }
     if (S.nature && B.effetsSaison && S.nature.saison && (S.nature.effetsSaison || S.nature.saison.feuilles || S.nature.saison.neige || meteo.neige)) {
       const nature = S.nature;
       if (!nature.effetsSaison) nature.effetsSaison = creationTardive('effetsSaison', B.effetsSaison.creer(c, scene.decor));
@@ -2206,6 +2267,8 @@
     S.iEffets0 = sortie.length; S.hEffets = B.traces.extrapolation(S.fx, S.retardImage);
     const tFx = (S.banc || B.mesures.actif) ? performance.now() : 0;
     B.traces.dessiner(S.fx, sortie, cam.pos, S.hEffets, axeCamera(cam, AXE_VUE), 0);
+    // flammes d'échappement (lot 20), à l'instant rendu des voitures ; en cockpit, pas celles de la voiture suivie
+    if (S.ech) B.echappement.dessiner(S.ech, sortie, poses, S.tRendu, vue === 'cockpit' ? suivie.id : -1);
     if (tFx) { const dFx = performance.now() - tFx; if (S.banc) S.banc.effets += dFx; if (B.mesures.actif) B.mesures.section('effets', dFx); }
     // uEffects.z colore tout l'écran : la rougeur suit seulement l'éclair du choc, jamais les dégâts persistants.
     const eclair = S.eclair || 0;
@@ -2219,11 +2282,23 @@
     const lampes = lampesTunnel(S, 'lampesTunnel', LT, cam, dtImage, scene.index);
     // Halo/bloom : ouverts ou fermés par le profil résolu (menu, gouverneur et capacités du moteur)
     const haloInt = avecHalo(P);
+    // Le public : excitation et regard par section d'après les voitures, abris d'après la pluie et la neige, fête au
+    // départ et au drapeau à damier. Le temps fait l'animation (même mouvement à toute cadence) ; aucune allocation
+    // (l'ambiance est créée par prechargerSeance).
+    const vuePublic = publicVisible && scene.vuePublic;
+    if (vuePublic) {
+      const A = S.ambiancePublic || (S.ambiancePublic = creationTardive('ambiancePublic', ambiancePublic()));
+      A.pluie = meteo.pluie || 0; A.neige = precipitationsNeige(S); A.mouille = Math.max(meteo.mouille || 0, A.pluie);
+      A.feux = co.feux ? co.feux.allumes : 0; A.vert = !co.feux || co.feux.vert; A.termine = co.drapeau !== null && co.drapeau !== undefined;
+      B.public.animer(scene.public, horlogeReelle, poses, co.voitures.length, A);
+      if (S.palierPublic !== P.palier) { vuePublic.qualite(P.palier); S.palierPublic = P.palier; }
+    }
+    S.foulePublic = vuePublic ? vuePublic.fx : null;
     const tDraw = B.mesures.actif ? performance.now() : 0;
     // adaptive: false partout : le gouverneur du moteur baissait la taille de l'image au fil des images lentes, en
     // pleine conduite, et la vitrine des menus léguait l'échelle réduite à la course suivante. La qualité Auto
     // (paliers) et la cadence décident seules ; la résolution ne change qu'à un arrêt.
-    rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover });
+    rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, foule: S.foulePublic });
     if (B.mesures.actif) {
       B.mesures.section('rendu', performance.now() - tDraw);
       B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
@@ -2252,6 +2327,8 @@
     sortie.turbo = et.turbo.reste > 0; sortie.vue = S.vue === 'cockpit' ? 'cockpit' : 'poursuite';
     sortie.muet = exterieur; sortie.tunnel = !exterieur && sousLaVoute(S.course.c, cam.pos);
   }
+  // écoute des claquements d'échappement par voiture (src/son.js, echappement) : entendue du cockpit, distance, angle
+  const ecouteEchappement = n => ({ dedans: new Uint8Array(n), distance: new Float64Array(n), angle: new Float64Array(n) });
   function majSon(S, cam, dtImage) {
     if (!son || !sonActif) return;
     // la voiture entendue de l'intérieur est celle que l'on suit de près : le joueur, ou celle du plan de la démo
@@ -2262,7 +2339,9 @@
     const rx2 = cam2 ? Math.cos(cam2.yaw) : 0, rz2 = cam2 ? Math.sin(cam2.yaw) : 0;
     sonRivaux.length = 0;
     const exterieur = VUES_DEHORS.has(S.vue), exterieur2 = S2 && VUES_DEHORS.has(S2.vue), micro = exterieur && S.type === 'demo';
+    const ec = S.ech && son.echappement ? (S.ecouteEch || (S.ecouteEch = creationTardive('ecouteEchappement', ecouteEchappement(co.voitures.length)))) : null;
     for (let k = 0; k < co.voitures.length; k++) {
+      if (ec) { ec.dedans[k] = (k === ks && !exterieur) || (k === k2 && !exterieur2) ? 1 : 0; ec.distance[k] = -1; }
       if (k === ks && !exterieur) continue;
       if (k === k2 && !exterieur2) continue;
       const p = poses[k], dx = p.x - cam.pos[0], dy = p.y - cam.pos[1], dz = p.z - cam.pos[2], d = Math.hypot(dx, dy, dz);
@@ -2282,6 +2361,7 @@
       const r = sonCandidats[k] || (sonCandidats[k] = creationTardive('son', {}));
       r.id = k; r.distance = micro ? 2 + distance * .06 : distance; r.angle = direction;
       r.regime = v.etat.regime; r.gaz = v.etat.gaz; r.vRel = vitesseRelative;
+      if (ec) { ec.distance[k] = r.distance; ec.angle[k] = r.angle; }
       sonRivaux.push(r);
     }
     etatSon.pause = ecran === 'pause';
@@ -2289,6 +2369,7 @@
     etatSon.joueur2 = cam2 ? sonJoueur2 : null;
     if (cam2) decrireMoteur(sonJoueur2, S2, co.voitures[k2], cam2);
     son.mettreAJour(etatSon, dtImage);
+    if (ec) son.echappement(S.ech.son, ec);
   }
 
   // ---------------------------------------------------------------- affichage de course
@@ -2991,7 +3072,7 @@
     return { time: horlogeReelle, msaa: v.msaa, shadowMapScale: v.shadowMapScale, shadows: v.shadows, bloom: v.bloom, brightness: 1,
       lights: v.lampes ? lampeTemoin(cam) : null, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0,
       photo: v.bloom ? 1 : 0, reflections: v.reflections, weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources,
-      windStrength: v.windStrength, groundCover: v.groundCover };
+      windStrength: v.windStrength, groundCover: v.groundCover, foule: publicVisible && scene && scene.vuePublic ? scene.vuePublic.fx : null };
   }
   // Objets de la chauffe : ceux de la vraie première image, plus un témoin de chaque sorte que la course peut faire
   // naître (habitacle, traces, fumée, étincelles, débris, faune, saison, feux, aurores, fantôme). Ils sont posés devant
@@ -3093,6 +3174,11 @@
         if (!N.faune) N.faune = B.faune.creer(c, scene.decor);
         for (const V of vues) if (!V.fauneVue) V.fauneVue = { qualite: 'off', nuit: 0, pluie: 0, pose: null, vue: V === S ? 0 : 1 };
       }
+      // public des tribunes : ambiance de chaque vue (l'animation lit la pluie, les feux et le drapeau)
+      if (scene && scene.vuePublic) for (const V of vues) if (!Object.prototype.hasOwnProperty.call(V, 'ambiancePublic') || !V.ambiancePublic) V.ambiancePublic = ambiancePublic();
+      // animaux des abords : un contexte de vue par joueur (l'état vient de lancer, avec la scène)
+      if (S.animaux) for (const V of vues) if (!Object.prototype.hasOwnProperty.call(V, 'animauxVue') || !V.animauxVue)
+        V.animauxVue = { vue: V === S ? 0 : 1, qualite: 'off', camera: null, hauteur: 720, aspect: 16 / 9, arriere: false, nuit: 0, pluie: 0 };
       if (N && B.effetsSaison && sa && (N.effetsSaison || sa.feuilles || sa.neige || (S.meteo && S.meteo.neige))) {
         if (!N.effetsSaison) N.effetsSaison = B.effetsSaison.creer(c, scene.decor);
         for (const V of vues) if (!V.saisonVue) V.saisonVue = { qualite: 'low', nuit: 0, pluie: 0, neige: 0, ventX: 0, ventZ: 0, pose: null, vue: V === S ? 0 : 1, abri: false };
@@ -3113,6 +3199,7 @@
       // module : rien n'est appelé tant qu'elles n'existent pas).
       const attendreSi = r => { if (r && typeof r.then === 'function') attentes.push(Promise.resolve(r).catch(e => console.warn('BITUME : préparation d’un module', e))); };
       try { if (B.traces.prechauffer) attendreSi(B.traces.prechauffer(S.fx)); } catch (e) { console.warn('BITUME : préparation des traces', e); }
+      if (S.ech && son && son.echappement && !S.ecouteEch) S.ecouteEch = ecouteEchappement(n);
       try { if (son && son.preparer) attendreSi(son.preparer({ type: S.type, voitures: n, joueurs: S.locaux ? S.locaux.length : 0, circuit: S.i })); } catch (e) { console.warn('BITUME : préparation du son', e); }
     } finally { prepa.precharge = false; }
     return attentes;
@@ -3199,6 +3286,17 @@
   // leur propre chemin) ; la course jetable, par mode et par piste.
   const pisteDe = S => meteoPeutMouiller(S.meteo) ? 'mouille' : 'sec';
   const cleCode = (type, S) => type + ':' + pisteDe(S);
+  // Réserve des flux d'instances du moteur (raccord FERRO, options.reserve de prewarm) : ce que la course ajoute à la
+  // première image (betes des abords au plafond de leur palier, flammes de toutes les sorties), et autant de jeu que
+  // la première image pour le reste. Le moteur relève sa taille retenue sans appel GL : une course qui reste dessous
+  // ne compte aucune création.
+  function reserveFlux(S, liste) {
+    let dynamic = 0, overlay = 0, effects = 0;
+    for (const o of liste) { if (o.fx) effects++; else if (o.overlay) overlay++; else dynamic++; }
+    const betes = B.animaux && S.animaux ? B.animaux.BUDGETS[reglages.faune === 'ultra' ? 'ultra' : 'high'].objets : 0;
+    const flammes = B.echappement && S.ech ? S.course.voitures.length * B.echappement.OBJETS_PAR_VOITURE : 0;
+    return { dynamic: 2 * dynamic + betes, overlay: 2 * overlay, effects: 2 * effects + flammes + 8 };
+  }
   async function chaufferRendu(S, suite, synchrone, alpha = 0) {
     const t0 = performance.now(), E = etatChauffe(), voisins = machineLente(), r = { variantes: 0, retro: 0, prewarm: false, voisins, ms: 0 };
     const { manque, manqueR } = aChauffer(S, voisins);
@@ -3213,7 +3311,7 @@
       if (rendu.prewarm && !synchrone) {
         // raccord FERRO : le moteur prépare lui-même chaque variante et toutes ses formes
         r.prewarm = true;
-        await rendu.prewarm(cam, liste, fxVariante(S, manque[manque.length - 1][1], cam), { variants: manque.map(m => fxVariante(S, m[1], cam)), allShapes: true });
+        await rendu.prewarm(cam, liste, fxVariante(S, manque[manque.length - 1][1], cam), { variants: manque.map(m => fxVariante(S, m[1], cam)), allShapes: true, reserve: reserveFlux(S, liste) });
       } else for (const [, v] of manque) { rendu.draw(cam, liste, fxVariante(S, v, cam)); r.variantes++; if (!synchrone) await souffler(rendu); }
       attendreGPU(rendu);
       for (const [cle] of manque) E.rendu.add(cle);
@@ -3228,8 +3326,9 @@
       }
       const objets = listeChauffe(S, camR, S.sortie.filter(o => !o.overlay), false);
       const fxR = v => ({ time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0,
-        weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: v.windStrength, groundCover: v.groundCover, lights: v.lampes ? lampeTemoin(camR) : null });
-      if (retro.rendu.prewarm && !synchrone) await retro.rendu.prewarm(camR, objets, fxR(manqueR[manqueR.length - 1][1]), { variants: manqueR.map(m => fxR(m[1])), allShapes: true });
+        weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: v.windStrength, groundCover: v.groundCover, lights: v.lampes ? lampeTemoin(camR) : null,
+        foule: publicVisible && retro.vuePublic ? retro.vuePublic.fx : null });
+      if (retro.rendu.prewarm && !synchrone) await retro.rendu.prewarm(camR, objets, fxR(manqueR[manqueR.length - 1][1]), { variants: manqueR.map(m => fxR(m[1])), allShapes: true, reserve: reserveFlux(S, objets) });
       else for (const [, v] of manqueR) { retro.rendu.draw(camR, objets, fxR(v)); r.retro++; if (!synchrone) await souffler(retro.rendu); }
       attendreGPU(retro.rendu);
       for (const [cle] of manqueR) E.retro.add(cle);
@@ -3771,11 +3870,17 @@
       // la recommandation reste affichée ; les options que le joueur a gardées ou changées depuis sont nommées
       const choisis = B.autoconfig.reglages(dernier.selection), nom = B.autoconfig.profils[dernier.selection].nom;
       const gardes = B.autoconfig.CLES.filter(k => reglages[k] !== choisis[k]);
+      const encore = (dernier.tentatives | 0) < B.autoconfig.TENTATIVES;
+      const refuse = !dernier.cadenceBridee && dernier.provisoire && Array.isArray(dernier.mesures)
+        ? dernier.mesures.find(m => m && m.provisoire && B.autoconfig.profils[m.profil]) : null;
       etat.textContent = (gardes.length ? 'Recommandé : ' + nom + ' · vos choix gardés : ' + gardes.map(k => B.autoconfig.NOMS[k]).join(', ') + '.'
         : 'Dernière détection : ' + nom + ' · réglages appliqués.')
-        + (!dernier.cadenceBridee ? '' : (dernier.tentatives | 0) < B.autoconfig.TENTATIVES
+        + (dernier.cadenceBridee ? encore
           ? ' Écran bridé à 30 images par seconde pendant le test (économie d’énergie ?) : nouvelle mesure à la prochaine ouverture.'
-          : ' Écran bridé à 30 images par seconde à chaque test (économie d’énergie ?) : relancez la détection sans elle.');
+          : ' Écran bridé à 30 images par seconde à chaque test (économie d’énergie ?) : relancez la détection sans elle.'
+          : !refuse ? '' : encore
+            ? ' ' + B.autoconfig.profils[refuse.profil].nom + ' refusée de peu, peut-être parce qu’un autre programme occupait la machine : nouvelle mesure à la prochaine ouverture.'
+            : ' ' + B.autoconfig.profils[refuse.profil].nom + ' refusée de peu à chaque test : relancez la détection quand la machine est au repos.');
     } else etat.textContent = dernier && dernier.statut === 'interrompu'
       ? (dernier.motif === 'annule' ? 'Détection passée · réglages conservés.' : 'Détection interrompue · réglages conservés.') : 'Aucune mesure enregistrée.';
   }
@@ -3794,6 +3899,15 @@
       });
     });
   }
+  // Page en arrière-plan (lien ouvert dans un nouvel onglet, session du navigateur reprise) : un onglet caché ne
+  // dessine rien et ne dit rien de la machine. Le test attend que le joueur regarde la page.
+  function premierPlan() {
+    if (!document.hidden) return Promise.resolve();
+    return new Promise(resolve => {
+      const vu = () => { if (!document.hidden) { document.removeEventListener('visibilitychange', vu); resolve(); } };
+      document.addEventListener('visibilitychange', vu);
+    });
+  }
   // toutAppliquer (détection lancée à la main) : demande explicite de remplacer TOUS les choix graphiques. Une
   // détection automatique (nouvelle version) ne change que les options que le joueur n'a pas modifiées depuis la
   // précédente (sans détection précédente : depuis les valeurs d'usine) ; elle mémorise la recommandation, que
@@ -3806,12 +3920,15 @@
     }
     const choisis = B.autoconfig.reglages(resultat.selection);
     if (!choisis) return false;
+    // sans trace lisible de la précédente : la référence la plus proche des réglages actuels (valeurs d'usine ou palier)
     const usine = Object.fromEntries(B.autoconfig.CLES.map(k => [k, DEFAUT[k]]));
-    const f = B.autoconfig.fusionner(reglages, B.autoconfig.reference(precedent) || usine, choisis, !!toutAppliquer);
+    const ref = B.autoconfig.reference(precedent) || B.autoconfig.referenceProbable(reglages, usine);
+    const f = B.autoconfig.fusionner(reglages, ref, choisis, !!toutAppliquer);
     Object.assign(reglages, f.valeurs);
     resultat.appliques = f.reference; resultat.gardes = f.gardes;
-    // mesure sous un écran bridé à 30 Hz : appliquée, mais refaite à l'ouverture suivante (B.autoconfig.cacheValide)
-    if (resultat.cadenceBridee) resultat.tentatives = B.autoconfig.tentatives(precedent, resultat);
+    // mesure sous un écran bridé à 30 Hz, ou palier refusé de peu : appliquée, mais refaite à l'ouverture suivante
+    // (B.autoconfig.cacheValide)
+    if (resultat.cadenceBridee || resultat.provisoire) resultat.tentatives = B.autoconfig.tentatives(precedent, resultat);
     // Après une mesure réelle, l'ancien indice fondé sur le nom du GPU n'impose plus un faux plafond.
     gpuModeste = resultat.selection === 'low';
     capacitesRendu = Object.freeze({ ...capacitesRendu, gpuModeste });
@@ -3851,12 +3968,20 @@
       // du test. La mesure paie ainsi les glaces comme la course. Le moteur prêté rend ensuite le décor de la séance.
       glacesPretees = !!retro.rendu;
       parcours = B.sceneBench.creer(rendu, { ...capacitesRendu, gpuModeste: false }, glacesPretees ? { glaces: retro.rendu } : undefined);
-      // terminer : lecture d'un pixel qui force la fin du travail graphique, une fois par rafale d'images
-      resultat = await B.autoconfig.executer({ empreinte: empreinteDetection, image: imageDetection,
-        annule: () => annulerDetection, masque: () => document.hidden, perdu: () => contexteRenduPerdu,
-        sonder: parcours.sonder, preparer: parcours.preparer, activerGlaces: parcours.activerGlaces, simuler: parcours.simuler,
-        dessiner: parcours.dessiner, terminer: parcours.terminer,
-        progression: (texte, fraction) => { $('detection-texte').textContent = texte; $('detection-progres').value = Math.min(1, fraction); } });
+      // terminer : lecture d'un pixel qui force la fin du travail graphique, une fois par rafale d'images. Onglet passé
+      // en arrière-plan pendant le test : il reprend au retour du joueur, dans la même séance, sans compter d'échec
+      // (vingt reprises au plus : au-delà, le test reprendra à l'ouverture suivante).
+      for (let reprises = 0; ; reprises++) {
+        resultat = await B.autoconfig.executer({ empreinte: empreinteDetection, image: imageDetection,
+          annule: () => annulerDetection, masque: () => document.hidden, perdu: () => contexteRenduPerdu,
+          sonder: parcours.sonder, preparer: parcours.preparer, activerGlaces: parcours.activerGlaces, simuler: parcours.simuler,
+          dessiner: parcours.dessiner, terminer: parcours.terminer,
+          progression: (texte, fraction) => { $('detection-texte').textContent = texte; $('detection-progres').value = Math.min(1, fraction); } });
+        if (resultat.statut !== 'interrompu' || resultat.motif !== 'onglet_masque' || annulerDetection || reprises >= 20) break;
+        $('detection-texte').textContent = 'Test en pause : il reprend quand la page revient au premier plan.';
+        await premierPlan();
+        await imageDetection();
+      }
       // une détection à la main annulée laisse la précédente en place
       if (auDemarrage || resultat.statut === 'ok') derniereDetection = resultat;
       appliquerDetection(resultat, !auDemarrage);
@@ -3920,7 +4045,8 @@
       // Le test tourne au premier chargement d'une version sur cette machine, puis plus jamais pour elle (ni au
       // redimensionnement, ni sur un autre écran) ; il reste relançable dans l'onglet Image. Les détections des
       // révisions précédentes (dont celle qui choisissait Légère sur un Apple M5) sont refaites une fois.
-      if (!B.autoconfig.cacheValide(mesure, empreinteDetection())) await detecterGraphismes(true);
+      // Page ouverte en arrière-plan : le test attend qu'elle passe au premier plan (premierPlan).
+      if (!B.autoconfig.cacheValide(mesure, empreinteDetection())) { await premierPlan(); await detecterGraphismes(true); }
       else {
         derniereDetection = mesure;
         if (mesure.statut === 'ok') {
@@ -4114,6 +4240,9 @@
     get pauseAuto() { return pauseAuto; }, set pauseAuto(v) { pauseAuto = !!v; },
     get pilotageAuto() { return pilotageAuto; }, set pilotageAuto(v) { pilotageAuto = !!v; }, get enLigne() { return EL; },
     get camera() { return cameraEssai; }, set camera(f) { cameraEssai = typeof f === 'function' ? f : null; },
+    // le public des tribunes : visible ou non (mesures avec et sans), scène et mesures de la dernière image
+    public: { get visible() { return publicVisible; }, set visible(v) { publicVisible = !!v; },
+      get scene() { return scene && scene.public; }, get mesure() { return scene && scene.vuePublic ? scene.vuePublic.mesure : null; } },
     // volet de mesures : BITUME_JEU.mesures = true l'ouvre, false le ferme ; la lecture donne l'instantané
     get mesures() { return B.mesures.lire(rendu); }, set mesures(v) { B.mesures.afficher(!!v, rendu); },
     // chronomètre GPU du volet, fermé par défaut (ses requêtes coûtent) ; cadence : période, diviseur, essais

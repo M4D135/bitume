@@ -1,0 +1,167 @@
+{
+ "date": "2026-11-18",
+ "avertissement": [
+  "Mesures faites sans le banc officiel (volet visible, 1390×1295 : p95 ≤ 16,7 ms, pire ≤ 29 ms), dans Chrome sans fenêtre, machine chargée par d'autres travaux (charge moyenne 4 à 11).",
+  "Les requêtes de temps GPU d'ANGLE/Metal sont bruitées ici : elles ne permettent ni d'annoncer un coût ni un gain. Aucun gain ni perte d'images par seconde n'est annoncé.",
+  "Mesures GPU et cadence prises avec la version du module d'avant les trois derniers changements (lissage en écran partagé, abri des toits, blanc sur blanc), qui ne touchent ni le chemin de dessin ni le nombre de triangles."
+ ],
+ "gpu_profileur_moteur_8m": {
+  "methode": "profileur du moteur (rendu.profile), blocs alternés de 2,5 s avec et sans le public, même vue fixe à 12,6 m du milieu de la tribune",
+  "qualite": "high",
+  "meteo": "soleil",
+  "vue": "fixe",
+  "distance": 12.6,
+  "ecran": "1390×1295",
+  "avec": {
+   "images": 593,
+   "totalP50": 30.068,
+   "totalP90": 33.354,
+   "shadowsP50": 1.075,
+   "worldP50": 10.597,
+   "effectsP50": 10.245,
+   "postP50": 8.944
+  },
+  "sans": {
+   "images": 593,
+   "totalP50": 30.502,
+   "totalP90": 33.438,
+   "shadowsP50": 0.741,
+   "worldP50": 10.46,
+   "effectsP50": 9.512,
+   "postP50": 10.685
+  },
+  "public": {
+   "vus": 58,
+   "niveaux": [
+    45,
+    29,
+    0
+   ],
+   "triangles": 309656,
+   "ombreInstances": 624,
+   "ombreTriangles": 175646
+  }
+ },
+ "gpu_requetes_autour_du_public_8m": {
+  "methode": "une requête TIME_ELAPSED autour de fx.foule.couleur et de chaque fx.foule.ombre (profileur coupé)",
+  "lecture": "médiane 5,7 ms, pire 111 ms pour ~300 000 triangles : non crédible, le même outil donne des valeurs erratiques sur de petites sections",
+  "qualite": "high",
+  "meteo": "soleil",
+  "vue": "fixe",
+  "distance": 12.6,
+  "ecran": "1390×1295",
+  "images": 483,
+  "couleurP50": 5.746,
+  "couleurP90": 15.859,
+  "ombreP50": 0.359,
+  "ombreP90": 4.445,
+  "tuilesOmbre": 1,
+  "totalP50": 6.426,
+  "totalP90": 19.761,
+  "totalPire": 110.916,
+  "public": {
+   "vus": 58,
+   "niveaux": [
+    45,
+    29,
+    0
+   ],
+   "triangles": 309656,
+   "ombreInstances": 624,
+   "ombreTriangles": 175646
+  }
+ },
+ "cadence_passage": {
+  "methode": "même passage cockpit rejoué six fois (simulation déterministe), avec et sans le public en alternance ; intervalles d'image (requestAnimationFrame) et temps JavaScript de la section « rendu » du volet de mesures",
+  "lecture": "p50 16,7 ms partout ; p95 à 33 ms dans 5 passages sur 6, avec comme sans public (machine chargée) ; JavaScript du rendu 2,2 à 2,4 ms avec, 2,0 à 2,2 ms sans",
+  "qualite": "high",
+  "ecran": "1390×1295",
+  "runs": [
+   {
+    "visible": true,
+    "images": 207,
+    "p50": 16.7,
+    "p95": 33.4,
+    "pire": 66.6,
+    "renduCpuP50": 2.4,
+    "renduCpuP95": 2.9,
+    "gpuMs": 45.33
+   },
+   {
+    "visible": false,
+    "images": 248,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 50,
+    "renduCpuP50": 2,
+    "renduCpuP95": 2.6,
+    "gpuMs": 72.06
+   },
+   {
+    "visible": false,
+    "images": 225,
+    "p50": 16.7,
+    "p95": 33.4,
+    "pire": 50,
+    "renduCpuP50": 2.2,
+    "renduCpuP95": 2.6,
+    "gpuMs": 50.43
+   },
+   {
+    "visible": true,
+    "images": 238,
+    "p50": 16.7,
+    "p95": 33.3,
+    "pire": 49.9,
+    "renduCpuP50": 2.4,
+    "renduCpuP95": 2.8,
+    "gpuMs": 22.34
+   },
+   {
+    "visible": true,
+    "images": 227,
+    "p50": 16.7,
+    "p95": 33.3,
+    "pire": 50,
+    "renduCpuP50": 2.2,
+    "renduCpuP95": 2.9,
+    "gpuMs": 15.31
+   },
+   {
+    "visible": false,
+    "images": 195,
+    "p50": 16.7,
+    "p95": 33.4,
+    "pire": 66.7,
+    "renduCpuP50": 2.2,
+    "renduCpuP95": 2.7,
+    "gpuMs": 20.03
+   }
+  ]
+ },
+ "chargement_node": {
+  "methode": "node, Val-Brûlé, décor branché (public: true), une fois les modules chargés",
+  "maillagesMs": 11.9,
+  "high": {
+   "premierMs": 16.9,
+   "medianeMs": 9.1
+  },
+  "medium": {
+   "premierMs": 6.3,
+   "medianeMs": 6.8
+  },
+  "low": {
+   "premierMs": 6.7,
+   "medianeMs": 6
+  },
+  "octetsTextures": 65536
+ },
+ "par_image_node": {
+  "methode": "verifications/public.test.mjs : liste des niveaux et animation, 18 vues par palier ; processus fils --expose-gc pour les allocations",
+  "processeurUsParImage": "13 à 42 µs selon la charge de la machine",
+  "allocations": {
+   "ramassages": 0,
+   "octetsSur20000Images": 4312
+  }
+ }
+}

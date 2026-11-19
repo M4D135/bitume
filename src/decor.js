@@ -774,7 +774,7 @@
     if (qualite && qualite !== 'low') habiller(liste, loin, essence, qualite, h, penche, v);
   }
 
-  function tribune(liste, loin, f, w, cote, longueur, r) {
+  function tribune(liste, loin, f, w, cote, longueur, r, gradins = null) {
     // Gradins face à la piste, côté gauche (cote −1) ou droit (+1), alignés sur la ligne droite.
     const recul = cote * (w + 9), rot = capRot(f.a), y0 = hauteurRoute(f, cote * w, w) - .2;
     const vers = (d, h, l = 0) => [f.x + f.r[0] * d + f.t[0] * l, y0 + h, f.z + f.r[2] * d + f.t[2] * l];
@@ -782,15 +782,21 @@
     for (let m = 0; m < marches; m++) {
       const d = recul + cote * (m * profondeur + profondeur / 2);
       liste.push({ shape: 'box', collision: 'gradin', p: vers(d, (m + 1) * haut / 2), s: [longueur, (m + 1) * haut, profondeur], r: rot, mat: 3, color: [.62, .62, .6] });
-      // spectateurs : une rangée de silhouettes colorées par marche, avec des trous
+      // spectateurs : une rangée de silhouettes colorées par marche, avec des trous. Avec le public (public.js), ce
+      // sont de vrais corps dessinés à part : les mêmes nombres sont tirés, pour que la suite du décor ne change pas,
+      // mais les boîtes ne sont pas posées.
       const rangee = [];
       for (let k = -longueur / 2 + .6; k < longueur / 2 - .4; k += .62) {
         if (r() < .22) continue;
         rangee.push(k);
-        liste.push({ shape: 'box', p: vers(d + cote * .1, (m + 1) * haut + .34, k), s: [.42, .68, .36], r: rot, mat: 18, color: PUBLICITES[Math.floor(r() * PUBLICITES.length)].map(v => v * (.6 + r() * .4)) });
+        const silhouette = { shape: 'box', p: vers(d + cote * .1, (m + 1) * haut + .34, k), s: [.42, .68, .36], r: rot, mat: 18, color: PUBLICITES[Math.floor(r() * PUBLICITES.length)].map(v => v * (.6 + r() * .4)) };
+        if (!gradins) liste.push(silhouette);
       }
-      loin.push({ shape: 'box', p: vers(d, (m + 1) * haut / 2 + .3, 0), s: [longueur, (m + 1) * haut + .6, profondeur], r: rot, mat: 18, color: [.42, .36, .34] });
+      // au loin, la marche et sa foule en un bloc ; avec le public, la marche seule (les silhouettes restent des corps)
+      loin.push(gradins ? { shape: 'box', p: vers(d, (m + 1) * haut / 2), s: [longueur, (m + 1) * haut, profondeur], r: rot, mat: 3, color: [.62, .62, .6] }
+        : { shape: 'box', p: vers(d, (m + 1) * haut / 2 + .3, 0), s: [longueur, (m + 1) * haut + .6, profondeur], r: rot, mat: 18, color: [.42, .36, .34] });
     }
+    if (gradins) gradins.push({ s: f.s, x: f.x, z: f.z, y: y0, a: f.a, cote, recul, longueur, marches, profondeur, haut });
     const fond = recul + cote * (marches * profondeur + .3);
     liste.push({ shape: 'box', collision: 'gradin', p: vers(fond, 3.6), s: [longueur, 7.2, .4], r: rot, mat: 3, color: [.55, .55, .53] });
     liste.push({ shape: 'box', collision: 'toit', p: vers(recul + cote * marches * profondeur * .5, 7.4), s: [longueur + 2, .3, marches * profondeur + 2.4], r: rot, mat: 0, color: [.80, .82, .84] });
@@ -896,6 +902,8 @@
       th.eau = Math.min(th.eau, yMin - 2.5);
     }
     const w = c.largeur / 2, lim = limites(c), interroger = indexAxe(c);
+    // bords de route (lot 22F) : plan tiré avec la graine propre de bords.js, jamais avec le hasard du décor
+    const planBords = B.bords ? B.bords.planifier(c) : null;
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
     const nappes = nappesRoute(c, th, lim, qualite !== 'low', qualite === 'low' ? null : ecologie);
     const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie);
@@ -954,6 +962,9 @@
           objets.push({ shape: 'box', p: [pp[0] - az[0] * cote * .04, pp[1] + .12, pp[2] - az[2] * cote * .04], s: [long * .55, .26, .03], r: rot, mat: 16, color: coul2 });
           loin.push(objets[objets.length - 2]);
         }
+        // lot 22F : le parapet d'un vide, le muret ou les balises d'un fossé remplacent la glissière ; le hasard du décor
+        // est déjà tiré et le lot est créé au même moment, l'ordre des lots ne change pas
+        if (planBords && B.bords.sansGlissiere(c, i, cote)) { objets.splice(0, 2); loin.splice(0, 1); }
         ajouter(objets, loin, milieu[0], milieu[2]);
       }
     }
@@ -1118,14 +1129,18 @@
     // tribunes à gauche, stands à droite, le long de la ligne droite
     const droite = c.ligneDroite || { debut: -200, fin: 200 };
     const avant = Math.max(-300, B.circuit.ecart(c, 0, droite.debut) + 40), apres = Math.min(260, B.circuit.ecart(c, 0, droite.fin) - 60);
+    // public.js : la description des gradins, pour y asseoir de vrais spectateurs (options.public)
+    const gradins = options.public ? { tribunes: [], stands: [], enceinte: { debut: avant - 10, fin: apres + 50 } } : null;
     for (let s = avant + 30; s < apres - 30; s += 72) {
       const f = cadre(c, Math.round(s / c.pas)), objets = [], loin = [];
-      tribune(objets, loin, f, w, -1, 64, r);
+      tribune(objets, loin, f, w, -1, 64, r, gradins && gradins.tribunes);
+      if (gradins) gradins.tribunes[gradins.tribunes.length - 1].s = s;
       const l = lotDe(f.x, f.z, f.i); l.objets.push(...objets); l.loin.push(...loin);
     }
     for (let s = avant + 40; s < apres - 20; s += 60) {
       const f = cadre(c, Math.round(s / c.pas)), objets = [], loin = [];
       batimentStands(objets, loin, f, w, 1, 60, th.matieres);
+      if (gradins) gradins.stands.push({ s, cote: 1, longueur: 60 });
       const l = lotDe(f.x, f.z, f.i); l.objets.push(...objets); l.loin.push(...loin);
     }
 
@@ -1385,6 +1400,16 @@
       }
     }
 
+    // Bords de route (lot 22F) : posés après tout le reste, dans des lots à eux (clé préfixée « b ») ajoutés à la fin :
+    // les lots et les solides historiques gardent leur contenu, leur ordre et leurs identifiants.
+    if (planBords) B.bords.poser(c, planBords, { limites: lim, qualite, ajouter: (objets, loin, x, z) => {
+      const q = interroger(x, z, 300), proche = q.i >= 0 && q.d < 330;
+      const cle = 'b' + (proche ? 'p' + Math.floor(q.i * c.pas / TRONCON) : 'l' + Math.floor(x / 420) + ',' + Math.floor(z / 420));
+      let l = groupes.get(cle); if (!l) groupes.set(cle, l = { objets: [], loin: [], lointain: !proche });
+      for (const o of objets) l.objets.push(o);
+      for (const o of loin) l.loin.push(o);
+    } });
+
     // Finition des lots : sphère englobante et portée.
     const lots = [];
     for (const l of groupes.values()) {
@@ -1482,6 +1507,8 @@
     // Le palier est une métadée de suivi, pas une donnée d'image : il reste non énumérable pour que les
     // empreintes historiques du décor (verifications/decor-identite.test.mjs) ne bougent pas d'un cran.
     Object.defineProperty(decor, 'qualite', { value: qualite, enumerable: false });
+    // Les gradins pour public.js : non énumérables eux aussi, hors des empreintes du décor.
+    if (gradins) Object.defineProperty(decor, 'gradins', { value: gradins, enumerable: false });
     return decor;
   }
 

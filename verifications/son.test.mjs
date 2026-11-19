@@ -72,14 +72,15 @@ verifier('panoramique(pi/2)=1 et borne', function () {
 // Faux Web Audio minimal : vérifie que tout le graphe se construit et que chaque méthode tourne.
 function fauxAudio() {
   let noeuds = 0, actifs = 0, enRetard = 0;
-  const oscillateurs = [], contextes = [], parametres = [];
+  const oscillateurs = [], contextes = [], parametres = [], sources = [], tampons = [];
   const param = v => {
     const p = { value: v, cibles: [], valeurs: [],
       setValueAtTime(v, t) { p.valeurs.push({ v, t }); }, setTargetAtTime(v, t, tc) { p.cibles.push({ v, t, tc }); },
       linearRampToValueAtTime() {}, exponentialRampToValueAtTime(x) { if (!(x > 0)) throw new Error('rampe exponentielle vers ' + x); }, cancelScheduledValues() {} };
     parametres.push(p); return p;
   };
-  const noeud = extra => { noeuds++; return Object.assign({ connect(x) { return x; }, disconnect() {} }, extra); };
+  // chaque nœud porte son rang de création et retient le nœud auquel il se branche (suite)
+  const noeud = extra => Object.assign({ rang: noeuds++, connect(x) { this.suite = x; return x; }, disconnect() {} }, extra);
   const source = extra => noeud(Object.assign({ start(t) { actifs++; this.debut = t; if (t < contextes[contextes.length - 1].currentTime - 1e-9) enRetard++; }, stop() {}, set onended(f) { this._fin = f; } }, extra));
   class Ctx {
     constructor() { this.currentTime = 0; this.sampleRate = 48000; this.state = 'running'; this.destination = noeud({}); contextes.push(this); }
@@ -92,10 +93,10 @@ function fauxAudio() {
     createWaveShaper() { return noeud({ curve: null, oversample: 'none' }); }
     createDynamicsCompressor() { return noeud({ threshold: param(-24), knee: param(30), ratio: param(12), attack: param(.003), release: param(.25) }); }
     createStereoPanner() { return noeud({ pan: param(0) }); }
-    createBuffer(c, n) { const d = new Float32Array(n); return { getChannelData: () => d }; }
-    createBufferSource() { return source({ buffer: null, loop: false }); }
+    createBuffer(c, n) { const d = new Float32Array(n), b = { getChannelData: () => d }; tampons.push(b); return b; }
+    createBufferSource() { const s = source({ buffer: null, loop: false, playbackRate: param(1) }); sources.push(s); return s; }
   }
-  return { Ctx, compte: () => ({ noeuds, actifs, enRetard }), oscillateurs, contextes, parametres };
+  return { Ctx, compte: () => ({ noeuds, actifs, enRetard }), oscillateurs, contextes, parametres, sources, tampons };
 }
 
 verifier('sélection bornée sans modifier ni recopier les rivaux', function () {
@@ -200,6 +201,147 @@ verifier('signaux de course sans musique : une seule hauteur au plus par signal'
     }
     assert.equal(son.stats().musique, false, 'aucun signal ne lance le thème');
   } finally { delete globalThis.window; }
+});
+
+// ---------------------------------------------------------------- claquements d'échappement (lot 20)
+// File comme celle de src/echappement.js : circulaire, n événements écrits, horloge de la course au dernier pas.
+function fileEch(evenements, horloge) {
+  const F = { n: 0, taille: 64, horloge, liste: Array.from({ length: 64 }, () => ({})) };
+  F.ajouter = (e, h) => { Object.assign(F.liste[F.n % F.taille], { voiture: 1, genre: 'detonation', t: F.horloge, force: 1, variante: 0, hauteur: 1 }, e); F.n++; if (h !== undefined) F.horloge = h; };
+  for (const e of evenements) F.ajouter(e);
+  return F;
+}
+const ecouteEch = (n = 12) => ({ dedans: new Uint8Array(n), distance: new Float64Array(n).fill(10), angle: new Float64Array(n) });
+// voix d'une source jouée : la source se branche sur le passe-bas, puis gain, puis panoramique
+const voixDe = s => { const pb = s.suite, g = pb.suite, pan = g.suite; return { pb, g, pan, gain: g.gain.valeurs.at(-1).v, frequence: pb.frequency.valeurs.at(-1).v, pan: pan.pan.valeurs.at(-1).v }; };
+function avecSon(f) {
+  const fa = fauxAudio(); globalThis.window = { AudioContext: fa.Ctx };
+  try { const son = B.son.creer(); son.demarrer(); f(son, fa, fa.contextes[0]); } finally { delete globalThis.window; }
+}
+
+verifier('échappement : tampons et voix préparés au démarrage ; ensuite une source par claquement joué, rien d’autre', () => {
+  avecSon((son, fa, ctx) => {
+    const st = son.stats().echappement, prets = new Set(fa.tampons), avant = fa.compte().noeuds, osc = fa.oscillateurs.length, src = fa.sources.length;
+    assert.equal(st.voix, B.son.ECH_VOIX); assert.equal(st.budget, 6);
+    assert.ok(fa.tampons.length >= 1 + 4 + 6 + 3, 'bruit, puis 4 détonations, 6 crépitements, 3 ratés');
+    const F = fileEch([{ genre: 'detonation' }, { genre: 'crepitement', voiture: 2, variante: 5 }, { genre: 'rate', voiture: 3, variante: 4 }], 10);
+    son.echappement(F, ecouteEch());
+    const nouvelles = fa.sources.slice(src);
+    assert.equal(nouvelles.length, 3); assert.equal(son.stats().echappement.joues, 3);
+    assert.equal(fa.compte().noeuds - avant, 3, 'trois sources, aucun autre nœud');
+    assert.equal(fa.oscillateurs.length, osc, 'aucun oscillateur : aucune hauteur jouée');
+    for (const s of nouvelles) {
+      assert.ok(prets.has(s.buffer), 'tampon préparé au démarrage');
+      assert.ok(s.suite && s.suite.rang < avant, 'branchée sur une voix préparée');
+      assert.ok(s.debut >= ctx.currentTime, 'jamais dans le passé');
+    }
+    for (let i = 0; i < 60; i++) { ctx.currentTime += 1 / 60; son.echappement(F, ecouteEch()); son.mettreAJour({ joueur: { regime: 9000, gaz: 1 }, rivaux: [] }); }
+    assert.equal(fa.compte().noeuds - avant, 3, 'relire la file ne rejoue rien');
+  });
+});
+
+verifier('échappement : six voix et six départs par image au plus ; la plus faible cède la place au plus fort', () => {
+  avecSon((son, fa, ctx) => {
+    const F = fileEch([], 5), ec = ecouteEch();
+    for (let i = 0; i < 20; i++) F.ajouter({ genre: 'crepitement', voiture: i % 12, force: .3, t: 5 - .001 * i });
+    const src = fa.sources.length;
+    son.echappement(F, ec);
+    assert.equal(fa.sources.length - src, 6, 'six départs');
+    assert.equal(son.stats().echappement.actives, 6); assert.equal(son.stats().echappement.ignores, 14);
+    // une détonation forte, toute proche : elle prend la voix la plus faible ; un crépitement faible lointain est ignoré
+    ctx.currentTime += .01; ec.distance[4] = 0; ec.distance[5] = 200;
+    F.ajouter({ genre: 'detonation', voiture: 4, force: 1 }); F.ajouter({ genre: 'crepitement', voiture: 5, force: .2 });
+    son.echappement(F, ec);
+    assert.equal(fa.sources.length - src, 7, 'la détonation passe, le crépitement lointain non');
+    assert.ok(son.stats().echappement.actives <= 6);
+    // les voix se libèrent quand leur son est fini
+    ctx.currentTime += 1; son.echappement(F, ec);
+    assert.equal(son.stats().echappement.actives, 0);
+  });
+});
+
+verifier('échappement : proche plus fort et plus clair que lointain, placé par l’angle ; du cockpit, étouffé et au centre', () => {
+  avecSon((son, fa, ctx) => {
+    const F = fileEch([], 3), ec = ecouteEch();
+    ec.distance[1] = 5; ec.angle[1] = Math.PI / 2; ec.distance[2] = 80; ec.angle[2] = -Math.PI / 2; ec.dedans[0] = 1;
+    F.ajouter({ voiture: 1 }); F.ajouter({ voiture: 2 }); F.ajouter({ voiture: 0 });
+    const src = fa.sources.length;
+    son.echappement(F, ec);
+    const [pres, loin, cockpit] = fa.sources.slice(src).map(voixDe);
+    assert.ok(pres.gain > 4 * loin.gain, `gain ${pres.gain.toFixed(3)} contre ${loin.gain.toFixed(4)}`);
+    assert.ok(pres.frequence > 2 * loin.frequence, 'l’air mange les aigus');
+    assert.ok(pres.pan > .8 && loin.pan < -.8, 'à droite, puis à gauche');
+    assert.equal(cockpit.pan, 0); assert.equal(cockpit.frequence, 2600);
+    assert.ok(Math.abs(cockpit.gain - B.son.NIVEAU_ECH.detonation * .7) < 1e-9, 'étouffé par la caisse');
+  });
+});
+
+verifier('échappement : niveaux bornés, écarts de la course gardés, rien en pause, la file qui déborde ne joue que le récent', () => {
+  avecSon((son, fa, ctx) => {
+    const F = fileEch([], 20), ec = ecouteEch();
+    ec.dedans.fill(1);
+    for (const genre of ['detonation', 'crepitement', 'rate']) F.ajouter({ genre, force: 5 });
+    let src = fa.sources.length;
+    son.echappement(F, ec);
+    for (const s of fa.sources.slice(src)) assert.ok(voixDe(s).gain <= .42 * 1.2 * .7 + 1e-9, 'pas de claquement assourdissant');
+    // deux claquements d'une même image, à 15 ms d'écart dans la course : 15 ms d'écart à l'oreille
+    ctx.currentTime += 1; ec.dedans.fill(0);
+    F.ajouter({ t: 20.98 }); F.ajouter({ t: 20.995 }, 21);
+    src = fa.sources.length;
+    son.echappement(F, ec);
+    const [a, b] = fa.sources.slice(src);
+    assert.ok(Math.abs(b.debut - a.debut - .015) < 1e-9 && a.debut >= ctx.currentTime, 'écart gardé, rien dans le passé');
+    // trop vieux (image très lente) : ignoré
+    ctx.currentTime += 1; F.ajouter({ t: 20 }, 22); src = fa.sources.length; son.echappement(F, ec);
+    assert.equal(fa.sources.length, src, 'pas de rattrapage');
+    // pause : rien ne part, les voix sont coupées en fondu
+    son.suspendre(); F.ajouter({ t: 22 }); son.echappement(F, ec);
+    assert.equal(fa.sources.length, src);
+    son.reprendre();
+    // la file déborde (cent claquements entre deux images) : seuls les plus récents comptent, sans erreur
+    ctx.currentTime += 1;
+    for (let i = 0; i < 100; i++) F.ajouter({ t: 23 + i * .001, voiture: i % 12 }, 23.1);
+    const ign = son.stats().echappement.ignores;
+    son.echappement(F, ec);
+    assert.equal(fa.sources.length - src, 6);
+    assert.equal(son.stats().echappement.ignores - ign, 64 - 6, 'les 36 plus anciens sont sortis de la file');
+  });
+});
+
+verifier('échappement : quand la file mène, passage et rupteur ne doublent plus le claquement', () => {
+  avecSon((son, fa, ctx) => {
+    let src = fa.sources.length;
+    son.evenement('rapport', { haut: true });
+    assert.equal(fa.sources.length - src, 1, 'sans le module : la détonation d’avant');
+    son.echappement(fileEch([], 1), ecouteEch());
+    src = fa.sources.length;
+    son.evenement('rapport', { haut: true }); son.evenement('rupteur');
+    assert.equal(fa.sources.length, src, 'avec le module : la coupure du moteur seule');
+    ctx.currentTime += .6;
+    son.evenement('rupteur');
+    assert.equal(fa.sources.length - src, 1, 'module muet depuis 0,6 s : retour à l’ancien claquement');
+  });
+});
+
+verifier('tampons de claquements : identiques à chaque démarrage, sans Math.random, brefs, crêtes bornées, qui s’éteignent', () => {
+  const vrai = Math.random;
+  let appels = 0;
+  Math.random = () => { appels++; return vrai(); };
+  let a, b;
+  try { a = B.son.synthEchappement(48000); b = B.son.synthEchappement(48000); } finally { Math.random = vrai; }
+  assert.equal(appels, 0);
+  for (const [genre, n, duree] of [['detonation', 4, .17], ['crepitement', 6, .07], ['rate', 3, .13]]) {
+    assert.equal(a[genre].length, n);
+    a[genre].forEach((d, i) => {
+      assert.ok(Math.abs(d.length / 48000 - duree) < 1e-3, genre + ' bref');
+      assert.deepEqual(d, b[genre][i], genre + ' identique');
+      let crete = 0, debut = 0, fin = 0;
+      d.forEach((v, j) => { assert.ok(Number.isFinite(v)); crete = Math.max(crete, Math.abs(v)); if (j < d.length / 5) debut += v * v; if (j >= d.length * .8) fin += v * v; });
+      assert.ok(crete > .5 && crete <= .95 + 1e-6, genre + ' crête ' + crete);
+      assert.ok(debut > 10 * fin, genre + ' ' + i + ' s’éteint');
+    });
+    assert.notDeepEqual(a[genre][0], a[genre][1], genre + ' : variantes distinctes');
+  }
 });
 
 verifier('thème du titre : huit mesures de mélodie en la mineur sur huit accords', function () {

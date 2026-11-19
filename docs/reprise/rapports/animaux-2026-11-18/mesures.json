@@ -1,0 +1,3495 @@
+{
+ "format": "bitume-planche-animaux",
+ "date": "2026-11-18T19:53:27.399Z",
+ "page": "dist/bitume.html",
+ "qualite": "high",
+ "saison": "ete",
+ "taille": [
+  1280,
+  720
+ ],
+ "circuits": [
+  {
+   "circuit": 0,
+   "id": "val-brule",
+   "especes": null,
+   "choix": {
+    "cible": {
+     "mode": "fuite",
+     "g": 1,
+     "espece": "cerf",
+     "famille": "troupeau",
+     "n": 7,
+     "dAxe": 97,
+     "refuge": true,
+     "arbres": 2,
+     "fuite": 15.599999999999667,
+     "alerte": 13.599999999999781
+    },
+    "loin": {
+     "g": 2,
+     "espece": "cerf",
+     "famille": "troupeau",
+     "n": 7,
+     "dAxe": 172,
+     "refuge": true,
+     "arbres": 1,
+     "fuite": null,
+     "alerte": 75.60000000000615
+    }
+   },
+   "stats": {
+    "theme": "foret",
+    "saison": "ete",
+    "especes": [
+     {
+      "cle": "cerf",
+      "groupes": 3
+     },
+     {
+      "cle": "sanglier",
+      "groupes": 3
+     },
+     {
+      "cle": "buse",
+      "groupes": 2
+     }
+    ],
+    "absentes": [],
+    "groupes": 6,
+    "animaux": 34,
+    "volants": 4,
+    "refuges": 6,
+    "etats": {
+     "calme": 1,
+     "alerte": 1,
+     "fuite": 0,
+     "refuge": 0,
+     "retour": 4
+    },
+    "creationMs": 79,
+    "formes": 196,
+    "trianglesFormes": 46810,
+    "chargementMs": 70.5,
+    "cases": 310300
+   },
+   "groupes": [
+    {
+     "g": 0,
+     "espece": "cerf",
+     "famille": "troupeau",
+     "n": 5,
+     "dAxe": 63,
+     "refuge": true,
+     "arbres": 11,
+     "fuite": 6.100000000000005,
+     "alerte": 6.100000000000005
+    },
+    {
+     "g": 1,
+     "espece": "cerf",
+     "famille": "troupeau",
+     "n": 7,
+     "dAxe": 97,
+     "refuge": true,
+     "arbres": 2,
+     "fuite": 15.599999999999667,
+     "alerte": 13.599999999999781
+    },
+    {
+     "g": 2,
+     "espece": "cerf",
+     "famille": "troupeau",
+     "n": 7,
+     "dAxe": 172,
+     "refuge": true,
+     "arbres": 1,
+     "fuite": null,
+     "alerte": 75.60000000000615
+    },
+    {
+     "g": 3,
+     "espece": "sanglier",
+     "famille": "troupeau",
+     "n": 4,
+     "dAxe": 71,
+     "refuge": true,
+     "arbres": 10,
+     "fuite": 7.8000000000000895,
+     "alerte": 6.60000000000003
+    },
+    {
+     "g": 4,
+     "espece": "sanglier",
+     "famille": "troupeau",
+     "n": 6,
+     "dAxe": 74,
+     "refuge": true,
+     "arbres": 15,
+     "fuite": 15.499999999999673,
+     "alerte": 14.099999999999753
+    },
+    {
+     "g": 5,
+     "espece": "sanglier",
+     "famille": "troupeau",
+     "n": 5,
+     "dAxe": 64,
+     "refuge": true,
+     "arbres": 11,
+     "fuite": null,
+     "alerte": null
+    }
+   ],
+   "prises": [
+    "val-brule-proche.jpg",
+    "val-brule-loin.jpg",
+    "val-brule-fuite.jpg",
+    "val-brule-passage.jpg",
+    "val-brule-vol.jpg"
+   ],
+   "cockpit": {
+    "images": 240,
+    "secondes": 8,
+    "echauffement": 120,
+    "courses": [
+     {
+      "avecAnimaux": true,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 16.574166668454804,
+       "p50": 16,
+       "p95": 31.600000023841858
+      },
+      "animaux": {
+       "moyenne": 20.166666666666668,
+       "max": 22
+      },
+      "objets": {
+       "moyenne": 57.22083333333333,
+       "max": 72
+      },
+      "triangles": {
+       "moyenne": 8364.658333333333,
+       "max": 9786
+      },
+      "dessin": {
+       "n": 240,
+       "ms": 18.59999990463257,
+       "max": 0.20000004768371582
+      },
+      "cerveau": {
+       "n": 79,
+       "ms": 2.700000047683716,
+       "max": 0.10000002384185791
+      }
+     },
+     {
+      "avecAnimaux": false,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 11.805416667461396,
+       "p50": 11,
+       "p95": 20.199999928474426
+      }
+     },
+     {
+      "avecAnimaux": true,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 11.966250001390774,
+       "p50": 11.200000047683716,
+       "p95": 21.200000047683716
+      },
+      "animaux": {
+       "moyenne": 20.166666666666668,
+       "max": 22
+      },
+      "objets": {
+       "moyenne": 57.22083333333333,
+       "max": 72
+      },
+      "triangles": {
+       "moyenne": 8364.658333333333,
+       "max": 9786
+      },
+      "dessin": {
+       "n": 240,
+       "ms": 15.999999761581421,
+       "max": 0.20000004768371582
+      },
+      "cerveau": {
+       "n": 79,
+       "ms": 2.6999998092651367,
+       "max": 0.20000004768371582
+      }
+     },
+     {
+      "avecAnimaux": false,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 13.460833333432674,
+       "p50": 12.100000023841858,
+       "p95": 25.399999976158142
+      }
+     }
+    ],
+    "avec": {
+     "moyenne": 14.270208334922788,
+     "p50": 13.600000023841858,
+     "p95": 26.400000035762787
+    },
+    "sans": {
+     "moyenne": 12.633125000447034,
+     "p50": 11.550000011920929,
+     "p95": 22.799999952316284
+    },
+    "ecartMs": 1.6370833344757543,
+    "bruitMs": 4.60791666706403,
+    "dessin": {
+     "n": 480,
+     "ms": 34.59999966621399,
+     "max": 0.20000004768371582
+    },
+    "cerveau": {
+     "n": 158,
+     "ms": 5.3999998569488525,
+     "max": 0.20000004768371582
+    },
+    "dAxeCible": 97
+   }
+  },
+  {
+   "circuit": 1,
+   "id": "port-sable",
+   "especes": null,
+   "choix": {
+    "cible": {
+     "mode": "fuite",
+     "g": 1,
+     "espece": "camarguais",
+     "famille": "troupeau",
+     "n": 7,
+     "dAxe": 67,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 48.899999999997775,
+     "alerte": 46.89999999999789
+    },
+    "loin": {
+     "g": 3,
+     "espece": "flamant",
+     "famille": "echassier",
+     "n": 10,
+     "dAxe": 162,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": 6.100000000000005
+    }
+   },
+   "stats": {
+    "theme": "cote",
+    "saison": "ete",
+    "especes": [
+     {
+      "cle": "camarguais",
+      "groupes": 3
+     },
+     {
+      "cle": "flamant",
+      "groupes": 1
+     },
+     {
+      "cle": "goeland",
+      "groupes": 2
+     }
+    ],
+    "absentes": [],
+    "groupes": 4,
+    "animaux": 32,
+    "volants": 11,
+    "refuges": 4,
+    "etats": {
+     "calme": 2,
+     "alerte": 0,
+     "fuite": 1,
+     "refuge": 1,
+     "retour": 0
+    },
+    "creationMs": 79.60000002384186,
+    "formes": 196,
+    "trianglesFormes": 46810,
+    "chargementMs": 70.5,
+    "cases": 252520
+   },
+   "groupes": [
+    {
+     "g": 0,
+     "espece": "camarguais",
+     "famille": "troupeau",
+     "n": 8,
+     "dAxe": 50,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 79.00000000000885,
+     "alerte": 6.100000000000005
+    },
+    {
+     "g": 1,
+     "espece": "camarguais",
+     "famille": "troupeau",
+     "n": 7,
+     "dAxe": 67,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 48.899999999997775,
+     "alerte": 46.89999999999789
+    },
+    {
+     "g": 2,
+     "espece": "camarguais",
+     "famille": "troupeau",
+     "n": 7,
+     "dAxe": 313,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": null
+    },
+    {
+     "g": 3,
+     "espece": "flamant",
+     "famille": "echassier",
+     "n": 10,
+     "dAxe": 162,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": 6.100000000000005
+    }
+   ],
+   "prises": [
+    "port-sable-proche.jpg",
+    "port-sable-loin.jpg",
+    "port-sable-fuite.jpg",
+    "port-sable-passage.jpg",
+    "port-sable-vol.jpg"
+   ],
+   "cockpit": {
+    "images": 240,
+    "secondes": 8,
+    "echauffement": 120,
+    "courses": [
+     {
+      "avecAnimaux": true,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 8.806666665772598,
+       "p50": 7,
+       "p95": 18
+      },
+      "animaux": {
+       "moyenne": 7.7625,
+       "max": 17
+      },
+      "objets": {
+       "moyenne": 16.095833333333335,
+       "max": 37
+      },
+      "triangles": {
+       "moyenne": 2692.358333333333,
+       "max": 4794
+      },
+      "dessin": {
+       "n": 240,
+       "ms": 9.900001049041748,
+       "max": 0.20000004768371582
+      },
+      "cerveau": {
+       "n": 79,
+       "ms": 1.8999996185302734,
+       "max": 0.10000002384185791
+      }
+     },
+     {
+      "avecAnimaux": false,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 12.398749999701977,
+       "p50": 9.399999976158142,
+       "p95": 25.5
+      }
+     },
+     {
+      "avecAnimaux": true,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 8.85458333392938,
+       "p50": 7.200000047683716,
+       "p95": 15.899999976158142
+      },
+      "animaux": {
+       "moyenne": 7.7625,
+       "max": 17
+      },
+      "objets": {
+       "moyenne": 16.095833333333335,
+       "max": 37
+      },
+      "triangles": {
+       "moyenne": 2692.358333333333,
+       "max": 4794
+      },
+      "dessin": {
+       "n": 240,
+       "ms": 10.900000810623169,
+       "max": 0.20000004768371582
+      },
+      "cerveau": {
+       "n": 79,
+       "ms": 1.600000023841858,
+       "max": 0.10000002384185791
+      }
+     },
+     {
+      "avecAnimaux": false,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 7.152916666368643,
+       "p50": 6.5,
+       "p95": 10.600000023841858
+      }
+     }
+    ],
+    "avec": {
+     "moyenne": 8.83062499985099,
+     "p50": 7.100000023841858,
+     "p95": 16.94999998807907
+    },
+    "sans": {
+     "moyenne": 9.77583333303531,
+     "p50": 7.949999988079071,
+     "p95": 18.05000001192093
+    },
+    "ecartMs": -0.9452083331843202,
+    "bruitMs": 5.245833333333334,
+    "dessin": {
+     "n": 480,
+     "ms": 20.800001859664917,
+     "max": 0.20000004768371582
+    },
+    "cerveau": {
+     "n": 158,
+     "ms": 3.4999996423721313,
+     "max": 0.10000002384185791
+    },
+    "dAxeCible": 67
+   }
+  },
+  {
+   "circuit": 2,
+   "id": "haut-col",
+   "especes": null,
+   "choix": {
+    "cible": {
+     "mode": "fuite",
+     "g": 4,
+     "espece": "marmotte",
+     "famille": "terrier",
+     "n": 5,
+     "dAxe": 66,
+     "refuge": false,
+     "arbres": 0,
+     "fuite": 71.10000000000257,
+     "alerte": 70.20000000000185
+    },
+    "loin": {
+     "g": 0,
+     "espece": "bouquetin",
+     "famille": "troupeau",
+     "n": 5,
+     "dAxe": 422,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": null
+    }
+   },
+   "stats": {
+    "theme": "montagne",
+    "saison": "ete",
+    "especes": [
+     {
+      "cle": "bouquetin",
+      "groupes": 4
+     },
+     {
+      "cle": "marmotte",
+      "groupes": 2
+     },
+     {
+      "cle": "aigle",
+      "groupes": 1
+     }
+    ],
+    "absentes": [],
+    "groupes": 6,
+    "animaux": 23,
+    "volants": 1,
+    "refuges": 4,
+    "etats": {
+     "calme": 5,
+     "alerte": 0,
+     "fuite": 0,
+     "refuge": 1,
+     "retour": 0
+    },
+    "creationMs": 79.60000002384186,
+    "formes": 196,
+    "trianglesFormes": 46810,
+    "chargementMs": 70.5,
+    "cases": 410190
+   },
+   "groupes": [
+    {
+     "g": 0,
+     "espece": "bouquetin",
+     "famille": "troupeau",
+     "n": 5,
+     "dAxe": 422,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": null
+    },
+    {
+     "g": 1,
+     "espece": "bouquetin",
+     "famille": "troupeau",
+     "n": 3,
+     "dAxe": 323,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": null
+    },
+    {
+     "g": 2,
+     "espece": "bouquetin",
+     "famille": "troupeau",
+     "n": 3,
+     "dAxe": 364,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": null
+    },
+    {
+     "g": 3,
+     "espece": "bouquetin",
+     "famille": "troupeau",
+     "n": 4,
+     "dAxe": 436,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": null
+    },
+    {
+     "g": 4,
+     "espece": "marmotte",
+     "famille": "terrier",
+     "n": 5,
+     "dAxe": 66,
+     "refuge": false,
+     "arbres": 0,
+     "fuite": 71.10000000000257,
+     "alerte": 70.20000000000185
+    },
+    {
+     "g": 5,
+     "espece": "marmotte",
+     "famille": "terrier",
+     "n": 3,
+     "dAxe": 55,
+     "refuge": false,
+     "arbres": 0,
+     "fuite": 49.89999999999772,
+     "alerte": 49.09999999999776
+    }
+   ],
+   "prises": [
+    "haut-col-proche.jpg",
+    "haut-col-loin.jpg",
+    "haut-col-fuite.jpg",
+    "haut-col-passage.jpg",
+    "haut-col-vol.jpg"
+   ],
+   "cockpit": {
+    "images": 240,
+    "secondes": 8,
+    "echauffement": 120,
+    "courses": [
+     {
+      "avecAnimaux": true,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 13.798333334426085,
+       "p50": 8.800000071525574,
+       "p95": 37.700000047683716
+      },
+      "animaux": {
+       "moyenne": 2.6,
+       "max": 6
+      },
+      "objets": {
+       "moyenne": 2.6,
+       "max": 6
+      },
+      "triangles": {
+       "moyenne": 1128.725,
+       "max": 2212
+      },
+      "dessin": {
+       "n": 240,
+       "ms": 6.0000001192092896,
+       "max": 0.10000002384185791
+      },
+      "cerveau": {
+       "n": 79,
+       "ms": 1.5000001192092896,
+       "max": 0.20000004768371582
+      }
+     },
+     {
+      "avecAnimaux": false,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 14.873333333432674,
+       "p50": 12.399999976158142,
+       "p95": 31.899999976158142
+      }
+     },
+     {
+      "avecAnimaux": true,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 12.81624999990066,
+       "p50": 10.700000047683716,
+       "p95": 26.300000071525574
+      },
+      "animaux": {
+       "moyenne": 2.6,
+       "max": 6
+      },
+      "objets": {
+       "moyenne": 2.6,
+       "max": 6
+      },
+      "triangles": {
+       "moyenne": 1128.725,
+       "max": 2212
+      },
+      "dessin": {
+       "n": 240,
+       "ms": 6.4000004529953,
+       "max": 0.20000004768371582
+      },
+      "cerveau": {
+       "n": 79,
+       "ms": 2.2000001668930054,
+       "max": 0.10000002384185791
+      }
+     },
+     {
+      "avecAnimaux": false,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 14.989999999602636,
+       "p50": 12.899999976158142,
+       "p95": 31.600000023841858
+      }
+     }
+    ],
+    "avec": {
+     "moyenne": 13.307291667163373,
+     "p50": 9.750000059604645,
+     "p95": 32.000000059604645
+    },
+    "sans": {
+     "moyenne": 14.931666666517655,
+     "p50": 12.649999976158142,
+     "p95": 31.75
+    },
+    "ecartMs": -1.6243749993542824,
+    "bruitMs": 0.9820833345254254,
+    "dessin": {
+     "n": 480,
+     "ms": 12.40000057220459,
+     "max": 0.20000004768371582
+    },
+    "cerveau": {
+     "n": 158,
+     "ms": 3.700000286102295,
+     "max": 0.20000004768371582
+    },
+    "dAxeCible": 66
+   }
+  },
+  {
+   "circuit": 3,
+   "id": "lande-noire",
+   "especes": null,
+   "choix": {
+    "cible": {
+     "mode": "fuite",
+     "g": 0,
+     "espece": "islandais",
+     "famille": "troupeau",
+     "n": 7,
+     "dAxe": 57,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 62.39999999999701,
+     "alerte": 60.7999999999971
+    },
+    "loin": {
+     "g": 4,
+     "espece": "mouton",
+     "famille": "troupeau",
+     "n": 4,
+     "dAxe": 279,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": null
+    }
+   },
+   "stats": {
+    "theme": "islande",
+    "saison": "ete",
+    "especes": [
+     {
+      "cle": "islandais",
+      "groupes": 3
+     },
+     {
+      "cle": "mouton",
+      "groupes": 3
+     },
+     {
+      "cle": "oie",
+      "groupes": 2
+     }
+    ],
+    "absentes": [],
+    "groupes": 6,
+    "animaux": 30,
+    "volants": 24,
+    "refuges": 6,
+    "etats": {
+     "calme": 3,
+     "alerte": 0,
+     "fuite": 1,
+     "refuge": 0,
+     "retour": 2
+    },
+    "creationMs": 42.5,
+    "formes": 196,
+    "trianglesFormes": 46810,
+    "chargementMs": 70.5,
+    "cases": 336938
+   },
+   "groupes": [
+    {
+     "g": 0,
+     "espece": "islandais",
+     "famille": "troupeau",
+     "n": 7,
+     "dAxe": 57,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 62.39999999999701,
+     "alerte": 60.7999999999971
+    },
+    {
+     "g": 1,
+     "espece": "islandais",
+     "famille": "troupeau",
+     "n": 5,
+     "dAxe": 68,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 34.49999999999859,
+     "alerte": 32.49999999999871
+    },
+    {
+     "g": 2,
+     "espece": "islandais",
+     "famille": "troupeau",
+     "n": 9,
+     "dAxe": 259,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": null
+    },
+    {
+     "g": 3,
+     "espece": "mouton",
+     "famille": "troupeau",
+     "n": 2,
+     "dAxe": 48,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 34.099999999998616,
+     "alerte": 32.79999999999869
+    },
+    {
+     "g": 4,
+     "espece": "mouton",
+     "famille": "troupeau",
+     "n": 4,
+     "dAxe": 279,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": null
+    },
+    {
+     "g": 5,
+     "espece": "mouton",
+     "famille": "troupeau",
+     "n": 3,
+     "dAxe": 150,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": null
+    }
+   ],
+   "prises": [
+    "lande-noire-proche.jpg",
+    "lande-noire-loin.jpg",
+    "lande-noire-fuite.jpg",
+    "lande-noire-passage.jpg",
+    "lande-noire-vol.jpg"
+   ],
+   "cockpit": {
+    "images": 240,
+    "secondes": 8,
+    "echauffement": 120,
+    "courses": [
+     {
+      "avecAnimaux": true,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 5.567499999205271,
+       "p50": 5.399999976158142,
+       "p95": 7.5
+      },
+      "animaux": {
+       "moyenne": 15.216666666666667,
+       "max": 18
+      },
+      "objets": {
+       "moyenne": 15.216666666666667,
+       "max": 18
+      },
+      "triangles": {
+       "moyenne": 3748.8,
+       "max": 4350
+      },
+      "dessin": {
+       "n": 240,
+       "ms": 13.200000882148743,
+       "max": 0.20000004768371582
+      },
+      "cerveau": {
+       "n": 79,
+       "ms": 2.7000001668930054,
+       "max": 0.10000002384185791
+      }
+     },
+     {
+      "avecAnimaux": false,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 5.75,
+       "p50": 5.100000023841858,
+       "p95": 10.299999952316284
+      }
+     },
+     {
+      "avecAnimaux": true,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 6.958333333333333,
+       "p50": 5.5,
+       "p95": 15.5
+      },
+      "animaux": {
+       "moyenne": 15.216666666666667,
+       "max": 18
+      },
+      "objets": {
+       "moyenne": 15.216666666666667,
+       "max": 18
+      },
+      "triangles": {
+       "moyenne": 3748.8,
+       "max": 4350
+      },
+      "dessin": {
+       "n": 240,
+       "ms": 13.300000667572021,
+       "max": 0.40000009536743164
+      },
+      "cerveau": {
+       "n": 79,
+       "ms": 2.800000309944153,
+       "max": 0.20000004768371582
+      }
+     },
+     {
+      "avecAnimaux": false,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 6.904166667163372,
+       "p50": 5.399999976158142,
+       "p95": 14.599999904632568
+      }
+     }
+    ],
+    "avec": {
+     "moyenne": 6.262916666269302,
+     "p50": 5.449999988079071,
+     "p95": 11.5
+    },
+    "sans": {
+     "moyenne": 6.327083333581686,
+     "p50": 5.25,
+     "p95": 12.449999928474426
+    },
+    "ecartMs": -0.06416666731238418,
+    "bruitMs": 1.3908333341280619,
+    "dessin": {
+     "n": 480,
+     "ms": 26.500001549720764,
+     "max": 0.40000009536743164
+    },
+    "cerveau": {
+     "n": 158,
+     "ms": 5.500000476837158,
+     "max": 0.20000004768371582
+    },
+    "dAxeCible": 57
+   }
+  },
+  {
+   "circuit": 4,
+   "id": "roche-fauve",
+   "especes": null,
+   "choix": {
+    "cible": {
+     "mode": "fuite",
+     "g": 2,
+     "espece": "oryx",
+     "famille": "troupeau",
+     "n": 8,
+     "dAxe": 106,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 23.7999999999992,
+     "alerte": 21.999999999999304
+    },
+    "loin": {
+     "g": 6,
+     "espece": "autruche",
+     "famille": "coureur",
+     "n": 4,
+     "dAxe": 144,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 6.100000000000005,
+     "alerte": 6.100000000000005
+    }
+   },
+   "stats": {
+    "theme": "desert",
+    "saison": "ete",
+    "especes": [
+     {
+      "cle": "girafe",
+      "groupes": 2
+     },
+     {
+      "cle": "oryx",
+      "groupes": 3
+     },
+     {
+      "cle": "autruche",
+      "groupes": 2
+     },
+     {
+      "cle": "vautour",
+      "groupes": 2
+     }
+    ],
+    "absentes": [],
+    "groupes": 7,
+    "animaux": 29,
+    "volants": 5,
+    "refuges": 7,
+    "etats": {
+     "calme": 1,
+     "alerte": 0,
+     "fuite": 1,
+     "refuge": 0,
+     "retour": 5
+    },
+    "creationMs": 79.69999992847443,
+    "formes": 196,
+    "trianglesFormes": 46810,
+    "chargementMs": 70.5,
+    "cases": 354591
+   },
+   "groupes": [
+    {
+     "g": 0,
+     "espece": "girafe",
+     "famille": "troupeau",
+     "n": 3,
+     "dAxe": 82,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": 6.100000000000005
+    },
+    {
+     "g": 1,
+     "espece": "girafe",
+     "famille": "troupeau",
+     "n": 2,
+     "dAxe": 126,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 6.100000000000005,
+     "alerte": 6.100000000000005
+    },
+    {
+     "g": 2,
+     "espece": "oryx",
+     "famille": "troupeau",
+     "n": 8,
+     "dAxe": 106,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 23.7999999999992,
+     "alerte": 21.999999999999304
+    },
+    {
+     "g": 3,
+     "espece": "oryx",
+     "famille": "troupeau",
+     "n": 5,
+     "dAxe": 78,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 64.89999999999763,
+     "alerte": 57.79999999999727
+    },
+    {
+     "g": 4,
+     "espece": "oryx",
+     "famille": "troupeau",
+     "n": 5,
+     "dAxe": 93,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 35.99999999999851,
+     "alerte": 34.099999999998616
+    },
+    {
+     "g": 5,
+     "espece": "autruche",
+     "famille": "coureur",
+     "n": 2,
+     "dAxe": 63,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 25.699999999999093,
+     "alerte": 24.099999999999184
+    },
+    {
+     "g": 6,
+     "espece": "autruche",
+     "famille": "coureur",
+     "n": 4,
+     "dAxe": 144,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 6.100000000000005,
+     "alerte": 6.100000000000005
+    }
+   ],
+   "prises": [
+    "roche-fauve-proche.jpg",
+    "roche-fauve-loin.jpg",
+    "roche-fauve-fuite.jpg",
+    "roche-fauve-passage.jpg",
+    "roche-fauve-vol.jpg"
+   ],
+   "cockpit": {
+    "images": 240,
+    "secondes": 8,
+    "echauffement": 120,
+    "courses": [
+     {
+      "avecAnimaux": true,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 5.504583331942558,
+       "p50": 5.099999904632568,
+       "p95": 8.300000071525574
+      },
+      "animaux": {
+       "moyenne": 15,
+       "max": 15
+      },
+      "objets": {
+       "moyenne": 15,
+       "max": 15
+      },
+      "triangles": {
+       "moyenne": 4742,
+       "max": 4742
+      },
+      "dessin": {
+       "n": 240,
+       "ms": 12.000000238418579,
+       "max": 0.20000004768371582
+      },
+      "cerveau": {
+       "n": 79,
+       "ms": 2.200000047683716,
+       "max": 0.19999992847442627
+      }
+     },
+     {
+      "avecAnimaux": false,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 4.946666666368643,
+       "p50": 4.600000023841858,
+       "p95": 6.699999928474426
+      }
+     },
+     {
+      "avecAnimaux": true,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 4.84375,
+       "p50": 4.600000023841858,
+       "p95": 6.200000047683716
+      },
+      "animaux": {
+       "moyenne": 15,
+       "max": 15
+      },
+      "objets": {
+       "moyenne": 15,
+       "max": 15
+      },
+      "triangles": {
+       "moyenne": 4742,
+       "max": 4742
+      },
+      "dessin": {
+       "n": 240,
+       "ms": 12.80000114440918,
+       "max": 0.20000004768371582
+      },
+      "cerveau": {
+       "n": 79,
+       "ms": 2.600000500679016,
+       "max": 0.10000002384185791
+      }
+     },
+     {
+      "avecAnimaux": false,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 5.115416666368644,
+       "p50": 4.899999976158142,
+       "p95": 7.899999976158142
+      }
+     }
+    ],
+    "avec": {
+     "moyenne": 5.1741666659712795,
+     "p50": 4.849999964237213,
+     "p95": 7.250000059604645
+    },
+    "sans": {
+     "moyenne": 5.031041666368644,
+     "p50": 4.75,
+     "p95": 7.299999952316284
+    },
+    "ecartMs": 0.14312499960263558,
+    "bruitMs": 0.6608333319425581,
+    "dessin": {
+     "n": 480,
+     "ms": 24.80000138282776,
+     "max": 0.20000004768371582
+    },
+    "cerveau": {
+     "n": 158,
+     "ms": 4.800000548362732,
+     "max": 0.19999992847442627
+    },
+    "dAxeCible": 106
+   }
+  },
+  {
+   "circuit": 5,
+   "id": "brume-de-jade",
+   "especes": null,
+   "choix": {
+    "cible": {
+     "mode": "fuite",
+     "g": 3,
+     "espece": "aigrette",
+     "famille": "echassier",
+     "n": 6,
+     "dAxe": 60,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 22.999999999999247,
+     "alerte": 21.999999999999304
+    },
+    "loin": {
+     "g": 1,
+     "espece": "buffle",
+     "famille": "troupeau",
+     "n": 4,
+     "dAxe": 84,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": 35.39999999999854
+    }
+   },
+   "stats": {
+    "theme": "asie",
+    "saison": "ete",
+    "especes": [
+     {
+      "cle": "buffle",
+      "groupes": 3
+     },
+     {
+      "cle": "aigrette",
+      "groupes": 3
+     },
+     {
+      "cle": "milan",
+      "groupes": 2
+     }
+    ],
+    "absentes": [],
+    "groupes": 6,
+    "animaux": 24,
+    "volants": 2,
+    "refuges": 6,
+    "etats": {
+     "calme": 5,
+     "alerte": 1,
+     "fuite": 0,
+     "refuge": 0,
+     "retour": 0
+    },
+    "creationMs": 33.60000002384186,
+    "formes": 196,
+    "trianglesFormes": 46810,
+    "chargementMs": 70.5,
+    "cases": 376040
+   },
+   "groupes": [
+    {
+     "g": 0,
+     "espece": "buffle",
+     "famille": "troupeau",
+     "n": 2,
+     "dAxe": 59,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": 77.20000000000742
+    },
+    {
+     "g": 1,
+     "espece": "buffle",
+     "famille": "troupeau",
+     "n": 4,
+     "dAxe": 84,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": 35.39999999999854
+    },
+    {
+     "g": 2,
+     "espece": "buffle",
+     "famille": "troupeau",
+     "n": 4,
+     "dAxe": 141,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": null
+    },
+    {
+     "g": 3,
+     "espece": "aigrette",
+     "famille": "echassier",
+     "n": 6,
+     "dAxe": 60,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 22.999999999999247,
+     "alerte": 21.999999999999304
+    },
+    {
+     "g": 4,
+     "espece": "aigrette",
+     "famille": "echassier",
+     "n": 3,
+     "dAxe": 197,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": null
+    },
+    {
+     "g": 5,
+     "espece": "aigrette",
+     "famille": "echassier",
+     "n": 5,
+     "dAxe": 169,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": null
+    }
+   ],
+   "prises": [
+    "brume-de-jade-proche.jpg",
+    "brume-de-jade-loin.jpg",
+    "brume-de-jade-fuite.jpg",
+    "brume-de-jade-passage.jpg",
+    "brume-de-jade-vol.jpg"
+   ],
+   "cockpit": {
+    "images": 240,
+    "secondes": 8,
+    "echauffement": 120,
+    "courses": [
+     {
+      "avecAnimaux": true,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 6.035833332935969,
+       "p50": 4.700000047683716,
+       "p95": 10.400000095367432
+      },
+      "animaux": {
+       "moyenne": 9.433333333333334,
+       "max": 11
+      },
+      "objets": {
+       "moyenne": 9.433333333333334,
+       "max": 11
+      },
+      "triangles": {
+       "moyenne": 2503.775,
+       "max": 3108
+      },
+      "dessin": {
+       "n": 240,
+       "ms": 10.09999966621399,
+       "max": 0.20000004768371582
+      },
+      "cerveau": {
+       "n": 79,
+       "ms": 3.40000057220459,
+       "max": 0.20000004768371582
+      }
+     },
+     {
+      "avecAnimaux": false,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 5.294583333532016,
+       "p50": 4.599999904632568,
+       "p95": 7.300000071525574
+      }
+     },
+     {
+      "avecAnimaux": true,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 6.967083332935969,
+       "p50": 5.399999976158142,
+       "p95": 16.100000023841858
+      },
+      "animaux": {
+       "moyenne": 9.433333333333334,
+       "max": 11
+      },
+      "objets": {
+       "moyenne": 9.433333333333334,
+       "max": 11
+      },
+      "triangles": {
+       "moyenne": 2503.775,
+       "max": 3108
+      },
+      "dessin": {
+       "n": 240,
+       "ms": 10.200000405311584,
+       "max": 0.20000004768371582
+      },
+      "cerveau": {
+       "n": 79,
+       "ms": 2.500000238418579,
+       "max": 0.20000004768371582
+      }
+     },
+     {
+      "avecAnimaux": false,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 11.10708333303531,
+       "p50": 8.5,
+       "p95": 21.600000023841858
+      }
+     }
+    ],
+    "avec": {
+     "moyenne": 6.501458332935969,
+     "p50": 5.050000011920929,
+     "p95": 13.250000059604645
+    },
+    "sans": {
+     "moyenne": 8.200833333283663,
+     "p50": 6.549999952316284,
+     "p95": 14.450000047683716
+    },
+    "ecartMs": -1.6993750003476942,
+    "bruitMs": 5.812499999503295,
+    "dessin": {
+     "n": 480,
+     "ms": 20.300000071525574,
+     "max": 0.20000004768371582
+    },
+    "cerveau": {
+     "n": 158,
+     "ms": 5.900000810623169,
+     "max": 0.20000004768371582
+    },
+    "dAxeCible": 60
+   }
+  },
+  {
+   "circuit": 6,
+   "id": "cap-sequoia",
+   "especes": null,
+   "choix": {
+    "cible": {
+     "mode": "fuite",
+     "g": 0,
+     "espece": "wapiti",
+     "famille": "troupeau",
+     "n": 7,
+     "dAxe": 52,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 13.79999999999977,
+     "alerte": 10.199999999999974
+    },
+    "loin": {
+     "g": 2,
+     "espece": "wapiti",
+     "famille": "troupeau",
+     "n": 8,
+     "dAxe": 131,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": 53.099999999997536
+    }
+   },
+   "stats": {
+    "theme": "pacifique",
+    "saison": "ete",
+    "especes": [
+     {
+      "cle": "wapiti",
+      "groupes": 3
+     },
+     {
+      "cle": "pelican",
+      "groupes": 2
+     },
+     {
+      "cle": "baleine",
+      "groupes": 1
+     },
+     {
+      "cle": "urubu",
+      "groupes": 2
+     }
+    ],
+    "absentes": [],
+    "groupes": 3,
+    "animaux": 23,
+    "volants": 15,
+    "refuges": 3,
+    "etats": {
+     "calme": 2,
+     "alerte": 0,
+     "fuite": 0,
+     "refuge": 0,
+     "retour": 1
+    },
+    "creationMs": 90.10000002384186,
+    "formes": 196,
+    "trianglesFormes": 46810,
+    "chargementMs": 70.5,
+    "cases": 397110
+   },
+   "groupes": [
+    {
+     "g": 0,
+     "espece": "wapiti",
+     "famille": "troupeau",
+     "n": 7,
+     "dAxe": 52,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": 13.79999999999977,
+     "alerte": 10.199999999999974
+    },
+    {
+     "g": 1,
+     "espece": "wapiti",
+     "famille": "troupeau",
+     "n": 8,
+     "dAxe": 254,
+     "refuge": true,
+     "arbres": 2,
+     "fuite": null,
+     "alerte": null
+    },
+    {
+     "g": 2,
+     "espece": "wapiti",
+     "famille": "troupeau",
+     "n": 8,
+     "dAxe": 131,
+     "refuge": true,
+     "arbres": 0,
+     "fuite": null,
+     "alerte": 53.099999999997536
+    }
+   ],
+   "prises": [
+    "cap-sequoia-proche.jpg",
+    "cap-sequoia-loin.jpg",
+    "cap-sequoia-fuite.jpg",
+    "cap-sequoia-passage.jpg",
+    "cap-sequoia-vol.jpg",
+    "cap-sequoia-baleine.jpg"
+   ],
+   "cockpit": {
+    "images": 240,
+    "secondes": 8,
+    "echauffement": 120,
+    "courses": [
+     {
+      "avecAnimaux": true,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 13.102083335320154,
+       "p50": 9.399999976158142,
+       "p95": 30.600000023841858
+      },
+      "animaux": {
+       "moyenne": 7.079166666666667,
+       "max": 9
+      },
+      "objets": {
+       "moyenne": 32.954166666666666,
+       "max": 49
+      },
+      "triangles": {
+       "moyenne": 3702.275,
+       "max": 4592
+      },
+      "dessin": {
+       "n": 240,
+       "ms": 15.200000762939453,
+       "max": 0.2999999523162842
+      },
+      "cerveau": {
+       "n": 80,
+       "ms": 6.900000333786011,
+       "max": 5.100000023841858
+      }
+     },
+     {
+      "avecAnimaux": false,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 13.636666666467985,
+       "p50": 9.199999928474426,
+       "p95": 33.199999928474426
+      }
+     },
+     {
+      "avecAnimaux": true,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 14.563749998311202,
+       "p50": 12.200000047683716,
+       "p95": 34.200000047683716
+      },
+      "animaux": {
+       "moyenne": 7.079166666666667,
+       "max": 9
+      },
+      "objets": {
+       "moyenne": 32.954166666666666,
+       "max": 49
+      },
+      "triangles": {
+       "moyenne": 3702.275,
+       "max": 4592
+      },
+      "dessin": {
+       "n": 240,
+       "ms": 12.600000619888306,
+       "max": 0.20000004768371582
+      },
+      "cerveau": {
+       "n": 80,
+       "ms": 2.199999690055847,
+       "max": 0.10000002384185791
+      }
+     },
+     {
+      "avecAnimaux": false,
+      "images": 240,
+      "imageMs": {
+       "moyenne": 14.852500000099342,
+       "p50": 10.699999928474426,
+       "p95": 34.699999928474426
+      }
+     }
+    ],
+    "avec": {
+     "moyenne": 13.832916666815677,
+     "p50": 10.800000011920929,
+     "p95": 32.40000003576279
+    },
+    "sans": {
+     "moyenne": 14.244583333283664,
+     "p50": 9.949999928474426,
+     "p95": 33.949999928474426
+    },
+    "ecartMs": -0.4116666664679869,
+    "bruitMs": 1.461666662991048,
+    "dessin": {
+     "n": 480,
+     "ms": 27.80000138282776,
+     "max": 0.2999999523162842
+    },
+    "cerveau": {
+     "n": 160,
+     "ms": 9.100000023841858,
+     "max": 5.100000023841858
+    },
+    "dAxeCible": 52
+   }
+  }
+ ],
+ "erreurs": [],
+ "environnement": {
+  "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+  "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+  "version": "V0.2.40",
+  "ecran": [
+   1280,
+   720,
+   1
+  ],
+  "formes": 196,
+  "trianglesFormes": 46810,
+  "chargementMs": 70.5
+ },
+ "legere": {
+  "circuit": "val-brule",
+  "groupe": {
+   "g": 2,
+   "espece": "cerf",
+   "n": 7,
+   "dAxe": 172
+  },
+  "camera": {
+   "pos": [
+    -1028.7225115477984,
+    3.913364921202999,
+    -114.86766609846302
+   ],
+   "yaw": 1.3386905251384946,
+   "pitch": -0.06319694579998002,
+   "fov": 20,
+   "gene": 0,
+   "cache": 0,
+   "distance": 145.00000000000006
+  }
+ },
+ "prises": [
+  {
+   "fichier": "val-brule-proche.jpg",
+   "legende": "cerf (7) de près, 14 m, avant le passage du peloton",
+   "horloge": 10.124999999999979,
+   "avec": {
+    "drawCalls": 147,
+    "triangles": 2626289,
+    "instances": 2030,
+    "animaux": 13,
+    "proches": 7,
+    "moyens": 0,
+    "lointains": 6,
+    "objetsAnimaux": 105,
+    "trianglesAnimaux": 22590
+   },
+   "sans": {
+    "drawCalls": 125,
+    "triangles": 2581109,
+    "instances": 1925
+   },
+   "ecart": {
+    "drawCalls": 22,
+    "triangles": 45180,
+    "instances": 105
+   },
+   "camera": {
+    "pos": [
+     148.0952350727501,
+     6.867801228692778,
+     -547.6126921065866
+    ],
+    "yaw": 0.5822625376129373,
+    "pitch": -0.052307921743491234,
+    "fov": 52,
+    "gene": 1.5,
+    "cache": 0,
+    "distance": 14.235735782203099
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 1,
+    "espece": "cerf",
+    "famille": "troupeau",
+    "n": 7,
+    "dAxe": 97,
+    "refuge": true,
+    "arbres": 2,
+    "fuite": 15.599999999999667,
+    "alerte": 13.599999999999781
+   }
+  },
+  {
+   "fichier": "val-brule-loin.jpg",
+   "legende": "cerf (7) de loin, 120 m",
+   "horloge": 10.124999999999979,
+   "avec": {
+    "drawCalls": 193,
+    "triangles": 3078946,
+    "instances": 6313,
+    "animaux": 25,
+    "proches": 0,
+    "moyens": 7,
+    "lointains": 18,
+    "objetsAnimaux": 67,
+    "trianglesAnimaux": 11324
+   },
+   "sans": {
+    "drawCalls": 175,
+    "triangles": 3056298,
+    "instances": 6246
+   },
+   "ecart": {
+    "drawCalls": 18,
+    "triangles": 22648,
+    "instances": 67
+   },
+   "camera": {
+    "pos": [
+     -1004.2891496539788,
+     4.8613250156190935,
+     -121.13976393335682
+    ],
+    "yaw": 1.3403686798636796,
+    "pitch": -0.08415218581397416,
+    "fov": 28,
+    "gene": 0,
+    "cache": 0,
+    "distance": 120
+   },
+   "groupe": {
+    "g": 2,
+    "espece": "cerf",
+    "famille": "troupeau",
+    "n": 7,
+    "dAxe": 172,
+    "refuge": true,
+    "arbres": 1,
+    "fuite": null,
+    "alerte": 75.60000000000615
+   }
+  },
+  {
+   "fichier": "val-brule-fuite.jpg",
+   "legende": "cerf en fuite au passage du peloton",
+   "horloge": 16.91666666666626,
+   "avec": {
+    "drawCalls": 154,
+    "triangles": 2579369,
+    "instances": 1967,
+    "animaux": 13,
+    "proches": 7,
+    "moyens": 0,
+    "lointains": 6,
+    "objetsAnimaux": 105,
+    "trianglesAnimaux": 22590
+   },
+   "sans": {
+    "drawCalls": 132,
+    "triangles": 2534189,
+    "instances": 1862
+   },
+   "ecart": {
+    "drawCalls": 22,
+    "triangles": 45180,
+    "instances": 105
+   },
+   "camera": {
+    "pos": [
+     141.9656348937424,
+     7.427664630197496,
+     -537.3703646740677
+    ],
+    "yaw": 0.5823120200824146,
+    "pitch": -0.05219812804951822,
+    "fov": 60,
+    "gene": 1,
+    "cache": 0,
+    "distance": 25.30797472391662
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 1,
+    "espece": "cerf",
+    "famille": "troupeau",
+    "n": 7,
+    "dAxe": 97,
+    "refuge": true,
+    "arbres": 2,
+    "fuite": 15.599999999999667,
+    "alerte": 13.599999999999781
+   },
+   "etat": 2
+  },
+  {
+   "fichier": "val-brule-passage.jpg",
+   "legende": "le peloton passe, cerf en fuite à 144 m de l'œil",
+   "horloge": 16.91666666666626,
+   "avec": {
+    "drawCalls": 310,
+    "triangles": 3832456,
+    "instances": 4737,
+    "animaux": 23,
+    "proches": 0,
+    "moyens": 7,
+    "lointains": 16,
+    "objetsAnimaux": 65,
+    "trianglesAnimaux": 10184
+   },
+   "sans": {
+    "drawCalls": 294,
+    "triangles": 3812088,
+    "instances": 4672
+   },
+   "ecart": {
+    "drawCalls": 16,
+    "triangles": 20368,
+    "instances": 65
+   },
+   "camera": {
+    "pos": [
+     267.3457818698466,
+     23.36459015094816,
+     -641.4233117042152
+    ],
+    "yaw": -2.07420837141351,
+    "pitch": -0.1624885661692876,
+    "fov": 42,
+    "gene": 15.799999999999995,
+    "decalage": 50,
+    "distance": 143.81105461319567
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 1,
+    "espece": "cerf",
+    "famille": "troupeau",
+    "n": 7,
+    "dAxe": 97,
+    "refuge": true,
+    "arbres": 2,
+    "fuite": 15.599999999999667,
+    "alerte": 13.599999999999781
+   }
+  },
+  {
+   "fichier": "val-brule-vol.jpg",
+   "legende": "buse en vol",
+   "horloge": 16.94999999999959,
+   "avec": {
+    "drawCalls": 125,
+    "triangles": 1218810,
+    "instances": 1115,
+    "animaux": 9,
+    "proches": 1,
+    "moyens": 1,
+    "lointains": 7,
+    "objetsAnimaux": 17,
+    "trianglesAnimaux": 4938
+   },
+   "sans": {
+    "drawCalls": 109,
+    "triangles": 1208934,
+    "instances": 1098
+   },
+   "ecart": {
+    "drawCalls": 16,
+    "triangles": 9876,
+    "instances": 17
+   },
+   "volant": {
+    "v": 0,
+    "espece": "buse",
+    "famille": "plane",
+    "n": 2
+   }
+  },
+  {
+   "fichier": "port-sable-proche.jpg",
+   "legende": "camarguais (7) de près, 16 m, avant le passage du peloton",
+   "horloge": 43.424999999998086,
+   "avec": {
+    "drawCalls": 142,
+    "triangles": 584444,
+    "instances": 1762,
+    "animaux": 6,
+    "proches": 6,
+    "moyens": 0,
+    "lointains": 0,
+    "objetsAnimaux": 84,
+    "trianglesAnimaux": 17844
+   },
+   "sans": {
+    "drawCalls": 124,
+    "triangles": 548756,
+    "instances": 1678
+   },
+   "ecart": {
+    "drawCalls": 18,
+    "triangles": 35688,
+    "instances": 84
+   },
+   "camera": {
+    "pos": [
+     391.0351540201873,
+     -0.7520921583961324,
+     -136.9980850929013
+    ],
+    "yaw": 2.4800330641996484,
+    "pitch": -0.08275650654374168,
+    "fov": 52,
+    "gene": 0.5,
+    "cache": 0,
+    "distance": 16.371199714235257
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 1,
+    "espece": "camarguais",
+    "famille": "troupeau",
+    "n": 7,
+    "dAxe": 67,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 48.899999999997775,
+    "alerte": 46.89999999999789
+   }
+  },
+  {
+   "fichier": "port-sable-loin.jpg",
+   "legende": "flamant (10) de loin, 120 m",
+   "horloge": 43.424999999998086,
+   "avec": {
+    "drawCalls": 112,
+    "triangles": 377827,
+    "instances": 1038,
+    "animaux": 21,
+    "proches": 0,
+    "moyens": 10,
+    "lointains": 11,
+    "objetsAnimaux": 51,
+    "trianglesAnimaux": 8256
+   },
+   "sans": {
+    "drawCalls": 104,
+    "triangles": 361315,
+    "instances": 987
+   },
+   "ecart": {
+    "drawCalls": 8,
+    "triangles": 16512,
+    "instances": 51
+   },
+   "camera": {
+    "pos": [
+     -810.3950362639166,
+     4.381870017997042,
+     -281.7501971795997
+    ],
+    "yaw": 2.6799519490605945,
+    "pitch": -0.10042978219316814,
+    "fov": 28,
+    "gene": 2.1,
+    "cache": 0,
+    "distance": 120
+   },
+   "groupe": {
+    "g": 3,
+    "espece": "flamant",
+    "famille": "echassier",
+    "n": 10,
+    "dAxe": 162,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": null,
+    "alerte": 6.100000000000005
+   }
+  },
+  {
+   "fichier": "port-sable-fuite.jpg",
+   "legende": "camarguais en fuite au passage du peloton",
+   "horloge": 50.216666666664366,
+   "avec": {
+    "drawCalls": 256,
+    "triangles": 739968,
+    "instances": 2093,
+    "animaux": 7,
+    "proches": 3,
+    "moyens": 4,
+    "lointains": 0,
+    "objetsAnimaux": 66,
+    "trianglesAnimaux": 11258
+   },
+   "sans": {
+    "drawCalls": 232,
+    "triangles": 717452,
+    "instances": 2027
+   },
+   "ecart": {
+    "drawCalls": 24,
+    "triangles": 22516,
+    "instances": 66
+   },
+   "camera": {
+    "pos": [
+     381.2580645693731,
+     0.5762052235833233,
+     -145.5028140718988
+    ],
+    "yaw": 2.480037096462535,
+    "pitch": -0.09183128780299307,
+    "fov": 60,
+    "gene": 1,
+    "cache": 0,
+    "distance": 29.104355047529356
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 1,
+    "espece": "camarguais",
+    "famille": "troupeau",
+    "n": 7,
+    "dAxe": 67,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 48.899999999997775,
+    "alerte": 46.89999999999789
+   },
+   "etat": 2
+  },
+  {
+   "fichier": "port-sable-passage.jpg",
+   "legende": "le peloton passe, camarguais en fuite à 102 m de l'œil",
+   "horloge": 50.216666666664366,
+   "avec": {
+    "drawCalls": 263,
+    "triangles": 1364480,
+    "instances": 7239,
+    "animaux": 21,
+    "proches": 0,
+    "moyens": 7,
+    "lointains": 14,
+    "objetsAnimaux": 56,
+    "trianglesAnimaux": 8036
+   },
+   "sans": {
+    "drawCalls": 255,
+    "triangles": 1348408,
+    "instances": 7183
+   },
+   "ecart": {
+    "drawCalls": 8,
+    "triangles": 16072,
+    "instances": 56
+   },
+   "camera": {
+    "pos": [
+     458.2864160949553,
+     14.332862719941252,
+     -40.87327517008208
+    ],
+    "yaw": -0.6821665135050939,
+    "pitch": -0.23423602884671202,
+    "fov": 42,
+    "gene": 0,
+    "decalage": 0,
+    "distance": 102.1360758148879
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 1,
+    "espece": "camarguais",
+    "famille": "troupeau",
+    "n": 7,
+    "dAxe": 67,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 48.899999999997775,
+    "alerte": 46.89999999999789
+   }
+  },
+  {
+   "fichier": "port-sable-vol.jpg",
+   "legende": "goeland en vol",
+   "horloge": 50.2499999999977,
+   "avec": {
+    "drawCalls": 126,
+    "triangles": 456978,
+    "instances": 1248,
+    "animaux": 32,
+    "proches": 1,
+    "moyens": 1,
+    "lointains": 30,
+    "objetsAnimaux": 42,
+    "trianglesAnimaux": 8898
+   },
+   "sans": {
+    "drawCalls": 106,
+    "triangles": 439182,
+    "instances": 1206
+   },
+   "ecart": {
+    "drawCalls": 20,
+    "triangles": 17796,
+    "instances": 42
+   },
+   "volant": {
+    "v": 0,
+    "espece": "goeland",
+    "famille": "cotier",
+    "n": 6
+   }
+  },
+  {
+   "fichier": "haut-col-proche.jpg",
+   "legende": "marmotte (5) de près, 8 m, avant le passage du peloton",
+   "horloge": 66.72499999999908,
+   "avec": {
+    "drawCalls": 192,
+    "triangles": 2278138,
+    "instances": 4289,
+    "animaux": 8,
+    "proches": 2,
+    "moyens": 2,
+    "lointains": 4,
+    "objetsAnimaux": 42,
+    "trianglesAnimaux": 8564
+   },
+   "sans": {
+    "drawCalls": 166,
+    "triangles": 2261010,
+    "instances": 4247
+   },
+   "ecart": {
+    "drawCalls": 26,
+    "triangles": 17128,
+    "instances": 42
+   },
+   "camera": {
+    "pos": [
+     242.56226566401466,
+     2.730475222649571,
+     -758.510135128872
+    ],
+    "yaw": 1.0997510206740875,
+    "pitch": -0.10743959032955651,
+    "fov": 52,
+    "gene": 160,
+    "cache": 4,
+    "distance": 7.999999999999987
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 4,
+    "espece": "marmotte",
+    "famille": "terrier",
+    "n": 5,
+    "dAxe": 66,
+    "refuge": false,
+    "arbres": 0,
+    "fuite": 71.10000000000257,
+    "alerte": 70.20000000000185
+   }
+  },
+  {
+   "fichier": "haut-col-loin.jpg",
+   "legende": "bouquetin (5) de loin, 120 m",
+   "horloge": 66.72499999999908,
+   "avec": {
+    "drawCalls": 86,
+    "triangles": 159800,
+    "instances": 350,
+    "animaux": 8,
+    "proches": 0,
+    "moyens": 5,
+    "lointains": 3,
+    "objetsAnimaux": 38,
+    "trianglesAnimaux": 5362
+   },
+   "sans": {
+    "drawCalls": 70,
+    "triangles": 149076,
+    "instances": 312
+   },
+   "ecart": {
+    "drawCalls": 16,
+    "triangles": 10724,
+    "instances": 38
+   },
+   "camera": {
+    "pos": [
+     -848.2755114369986,
+     386.5284750204752,
+     -457.09525130929757
+    ],
+    "yaw": -2.5783791656117816,
+    "pitch": -0.29042990174848515,
+    "fov": 28,
+    "gene": 3.8,
+    "cache": 0,
+    "distance": 119.99999999999997
+   },
+   "groupe": {
+    "g": 0,
+    "espece": "bouquetin",
+    "famille": "troupeau",
+    "n": 5,
+    "dAxe": 422,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": null,
+    "alerte": null
+   }
+  },
+  {
+   "fichier": "haut-col-fuite.jpg",
+   "legende": "marmotte dressées à l'alerte, à l'approche du peloton (au terrier une seconde plus tard)",
+   "horloge": 70.81666666666901,
+   "avec": {
+    "drawCalls": 176,
+    "triangles": 2707820,
+    "instances": 4059,
+    "animaux": 9,
+    "proches": 0,
+    "moyens": 5,
+    "lointains": 4,
+    "objetsAnimaux": 34,
+    "trianglesAnimaux": 4616
+   },
+   "sans": {
+    "drawCalls": 166,
+    "triangles": 2698588,
+    "instances": 4025
+   },
+   "ecart": {
+    "drawCalls": 10,
+    "triangles": 9232,
+    "instances": 34
+   },
+   "camera": {
+    "pos": [
+     233.83465389681126,
+     3.960473270264579,
+     -755.7795991555801
+    ],
+    "yaw": 1.0997521051275154,
+    "pitch": -0.1502985502725187,
+    "fov": 60,
+    "gene": 40,
+    "cache": 1,
+    "distance": 14.000000000000012
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 4,
+    "espece": "marmotte",
+    "famille": "terrier",
+    "n": 5,
+    "dAxe": 66,
+    "refuge": false,
+    "arbres": 0,
+    "fuite": 71.10000000000257,
+    "alerte": 70.20000000000185
+   },
+   "etat": 1
+  },
+  {
+   "fichier": "haut-col-passage.jpg",
+   "legende": "le peloton passe, marmotte en alerte à 105 m de l'œil",
+   "horloge": 70.81666666666901,
+   "avec": {
+    "drawCalls": 341,
+    "triangles": 3451253,
+    "instances": 8635,
+    "animaux": 12,
+    "proches": 0,
+    "moyens": 0,
+    "lointains": 12,
+    "objetsAnimaux": 12,
+    "trianglesAnimaux": 4378
+   },
+   "sans": {
+    "drawCalls": 335,
+    "triangles": 3442497,
+    "instances": 8623
+   },
+   "ecart": {
+    "drawCalls": 6,
+    "triangles": 8756,
+    "instances": 12
+   },
+   "camera": {
+    "pos": [
+     323.1633937012352,
+     20.517655622608146,
+     -833.3062015026097
+    ],
+    "yaw": -2.399685723158079,
+    "pitch": -0.2303532003005496,
+    "fov": 42,
+    "gene": 3.650000000000001,
+    "decalage": 25,
+    "distance": 104.52576356780314
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 4,
+    "espece": "marmotte",
+    "famille": "terrier",
+    "n": 5,
+    "dAxe": 66,
+    "refuge": false,
+    "arbres": 0,
+    "fuite": 71.10000000000257,
+    "alerte": 70.20000000000185
+   }
+  },
+  {
+   "fichier": "haut-col-vol.jpg",
+   "legende": "aigle en vol",
+   "horloge": 70.85000000000237,
+   "avec": {
+    "drawCalls": 93,
+    "triangles": 1335394,
+    "instances": 703,
+    "animaux": 5,
+    "proches": 1,
+    "moyens": 0,
+    "lointains": 4,
+    "objetsAnimaux": 11,
+    "trianglesAnimaux": 2968
+   },
+   "sans": {
+    "drawCalls": 79,
+    "triangles": 1329458,
+    "instances": 692
+   },
+   "ecart": {
+    "drawCalls": 14,
+    "triangles": 5936,
+    "instances": 11
+   },
+   "volant": {
+    "v": 0,
+    "espece": "aigle",
+    "famille": "plane",
+    "n": 1
+   }
+  },
+  {
+   "fichier": "lande-noire-proche.jpg",
+   "legende": "islandais (7) de près, 15 m, avant le passage du peloton",
+   "horloge": 57.324999999997296,
+   "avec": {
+    "drawCalls": 159,
+    "triangles": 162860,
+    "instances": 2889,
+    "animaux": 26,
+    "proches": 7,
+    "moyens": 0,
+    "lointains": 19,
+    "objetsAnimaux": 117,
+    "trianglesAnimaux": 25618
+   },
+   "sans": {
+    "drawCalls": 133,
+    "triangles": 111624,
+    "instances": 2772
+   },
+   "ecart": {
+    "drawCalls": 26,
+    "triangles": 51236,
+    "instances": 117
+   },
+   "camera": {
+    "pos": [
+     -400.89361412491115,
+     8.106586775352673,
+     727.4758959016979
+    ],
+    "yaw": 0.9153110445496005,
+    "pitch": -0.09436378747032402,
+    "fov": 52,
+    "gene": 0,
+    "cache": 0,
+    "distance": 14.977906121534405
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 0,
+    "espece": "islandais",
+    "famille": "troupeau",
+    "n": 7,
+    "dAxe": 57,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 62.39999999999701,
+    "alerte": 60.7999999999971
+   }
+  },
+  {
+   "fichier": "lande-noire-loin.jpg",
+   "legende": "mouton (4) de loin, 120 m",
+   "horloge": 57.324999999997296,
+   "avec": {
+    "drawCalls": 73,
+    "triangles": 64922,
+    "instances": 847,
+    "animaux": 15,
+    "proches": 0,
+    "moyens": 4,
+    "lointains": 11,
+    "objetsAnimaux": 35,
+    "trianglesAnimaux": 5718
+   },
+   "sans": {
+    "drawCalls": 61,
+    "triangles": 53486,
+    "instances": 812
+   },
+   "ecart": {
+    "drawCalls": 12,
+    "triangles": 11436,
+    "instances": 35
+   },
+   "camera": {
+    "pos": [
+     -3.4364505197087567,
+     31.4912218237989,
+     113.3103504436615
+    ],
+    "yaw": -0.365187939913413,
+    "pitch": -0.061348185372515046,
+    "fov": 28,
+    "gene": 0,
+    "cache": 0,
+    "distance": 120.00000000000003
+   },
+   "groupe": {
+    "g": 4,
+    "espece": "mouton",
+    "famille": "troupeau",
+    "n": 4,
+    "dAxe": 279,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": null,
+    "alerte": null
+   }
+  },
+  {
+   "fichier": "lande-noire-fuite.jpg",
+   "legende": "islandais en fuite au passage du peloton",
+   "horloge": 63.7166666666636,
+   "avec": {
+    "drawCalls": 231,
+    "triangles": 225756,
+    "instances": 3178,
+    "animaux": 23,
+    "proches": 4,
+    "moyens": 3,
+    "lointains": 16,
+    "objetsAnimaux": 90,
+    "trianglesAnimaux": 17434
+   },
+   "sans": {
+    "drawCalls": 203,
+    "triangles": 190888,
+    "instances": 3088
+   },
+   "ecart": {
+    "drawCalls": 28,
+    "triangles": 34868,
+    "instances": 90
+   },
+   "camera": {
+    "pos": [
+     -404.10293114469687,
+     9.396464736921143,
+     735.4781952564907
+    ],
+    "yaw": 0.9153129023528456,
+    "pitch": -0.10040815440477706,
+    "fov": 60,
+    "gene": 0,
+    "cache": 0,
+    "distance": 26.627388660505567
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 0,
+    "espece": "islandais",
+    "famille": "troupeau",
+    "n": 7,
+    "dAxe": 57,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 62.39999999999701,
+    "alerte": 60.7999999999971
+   },
+   "etat": 2
+  },
+  {
+   "fichier": "lande-noire-passage.jpg",
+   "legende": "le peloton passe, islandais en fuite à 93 m de l'œil",
+   "horloge": 63.7166666666636,
+   "avec": {
+    "drawCalls": 127,
+    "triangles": 164008,
+    "instances": 885,
+    "animaux": 7,
+    "proches": 0,
+    "moyens": 7,
+    "lointains": 0,
+    "objetsAnimaux": 42,
+    "trianglesAnimaux": 4088
+   },
+   "sans": {
+    "drawCalls": 121,
+    "triangles": 155832,
+    "instances": 843
+   },
+   "ecart": {
+    "drawCalls": 6,
+    "triangles": 8176,
+    "instances": 42
+   },
+   "camera": {
+    "pos": [
+     -311.81166849772274,
+     23.22399975806779,
+     665.1104993606027
+    ],
+    "yaw": -2.2162171387889282,
+    "pitch": -0.2501869991145492,
+    "fov": 42,
+    "gene": 0,
+    "decalage": 0,
+    "distance": 93.42725759746378
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 0,
+    "espece": "islandais",
+    "famille": "troupeau",
+    "n": 7,
+    "dAxe": 57,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 62.39999999999701,
+    "alerte": 60.7999999999971
+   }
+  },
+  {
+   "fichier": "lande-noire-vol.jpg",
+   "legende": "oie en vol",
+   "horloge": 247.7416666666056,
+   "avec": {
+    "drawCalls": 100,
+    "triangles": 84008,
+    "instances": 1096,
+    "animaux": 17,
+    "proches": 5,
+    "moyens": 5,
+    "lointains": 7,
+    "objetsAnimaux": 67,
+    "trianglesAnimaux": 10414
+   },
+   "sans": {
+    "drawCalls": 84,
+    "triangles": 63180,
+    "instances": 1029
+   },
+   "ecart": {
+    "drawCalls": 16,
+    "triangles": 20828,
+    "instances": 67
+   },
+   "volant": {
+    "v": 0,
+    "espece": "oie",
+    "famille": "migrateur",
+    "n": 11
+   }
+  },
+  {
+   "fichier": "roche-fauve-proche.jpg",
+   "legende": "oryx (8) de près, 14 m, avant le passage du peloton",
+   "horloge": 18.5249999999995,
+   "avec": {
+    "drawCalls": 90,
+    "triangles": 108518,
+    "instances": 838,
+    "animaux": 8,
+    "proches": 8,
+    "moyens": 0,
+    "lointains": 0,
+    "objetsAnimaux": 128,
+    "trianglesAnimaux": 28656
+   },
+   "sans": {
+    "drawCalls": 66,
+    "triangles": 51206,
+    "instances": 710
+   },
+   "ecart": {
+    "drawCalls": 24,
+    "triangles": 57312,
+    "instances": 128
+   },
+   "camera": {
+    "pos": [
+     -156.3480168823143,
+     -4.572844464986833,
+     -449.5653978736449
+    ],
+    "yaw": 1.1394232915253308,
+    "pitch": -0.07923444975440219,
+    "fov": 52,
+    "gene": 0,
+    "cache": 0,
+    "distance": 14.121252801511167
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 2,
+    "espece": "oryx",
+    "famille": "troupeau",
+    "n": 8,
+    "dAxe": 106,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 23.7999999999992,
+    "alerte": 21.999999999999304
+   }
+  },
+  {
+   "fichier": "roche-fauve-loin.jpg",
+   "legende": "autruche (4) de loin, 120 m",
+   "horloge": 18.5249999999995,
+   "avec": {
+    "drawCalls": 138,
+    "triangles": 117324,
+    "instances": 1983,
+    "animaux": 22,
+    "proches": 0,
+    "moyens": 7,
+    "lointains": 15,
+    "objetsAnimaux": 56,
+    "trianglesAnimaux": 11912
+   },
+   "sans": {
+    "drawCalls": 116,
+    "triangles": 93500,
+    "instances": 1927
+   },
+   "ecart": {
+    "drawCalls": 22,
+    "triangles": 23824,
+    "instances": 56
+   },
+   "camera": {
+    "pos": [
+     732.4226182872094,
+     34.6525456771663,
+     418.74248411713126
+    ],
+    "yaw": -1.352874705641039,
+    "pitch": -0.18267442713446017,
+    "fov": 28,
+    "gene": 0,
+    "cache": 0,
+    "distance": 119.99999999999999
+   },
+   "groupe": {
+    "g": 6,
+    "espece": "autruche",
+    "famille": "coureur",
+    "n": 4,
+    "dAxe": 144,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 6.100000000000005,
+    "alerte": 6.100000000000005
+   }
+  },
+  {
+   "fichier": "roche-fauve-fuite.jpg",
+   "legende": "oryx en fuite au passage du peloton",
+   "horloge": 25.116666666665793,
+   "avec": {
+    "drawCalls": 94,
+    "triangles": 105558,
+    "instances": 913,
+    "animaux": 7,
+    "proches": 7,
+    "moyens": 0,
+    "lointains": 0,
+    "objetsAnimaux": 112,
+    "trianglesAnimaux": 25074
+   },
+   "sans": {
+    "drawCalls": 70,
+    "triangles": 55410,
+    "instances": 801
+   },
+   "ecart": {
+    "drawCalls": 24,
+    "triangles": 50148,
+    "instances": 112
+   },
+   "camera": {
+    "pos": [
+     -163.34505694537873,
+     -4.094681326281421,
+     -446.2480074457619
+    ],
+    "yaw": 1.1393976837551216,
+    "pitch": -0.06516083653286683,
+    "fov": 60,
+    "gene": 0,
+    "cache": 0,
+    "distance": 25.104449424908776
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 2,
+    "espece": "oryx",
+    "famille": "troupeau",
+    "n": 8,
+    "dAxe": 106,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 23.7999999999992,
+    "alerte": 21.999999999999304
+   },
+   "etat": 2
+  },
+  {
+   "fichier": "roche-fauve-passage.jpg",
+   "legende": "le peloton passe, oryx en fuite à 142 m de l'œil",
+   "horloge": 25.116666666665793,
+   "avec": {
+    "drawCalls": 204,
+    "triangles": 378970,
+    "instances": 2695,
+    "animaux": 21,
+    "proches": 0,
+    "moyens": 8,
+    "lointains": 13,
+    "objetsAnimaux": 77,
+    "trianglesAnimaux": 11824
+   },
+   "sans": {
+    "drawCalls": 186,
+    "triangles": 355322,
+    "instances": 2618
+   },
+   "ecart": {
+    "drawCalls": 18,
+    "triangles": 23648,
+    "instances": 77
+   },
+   "camera": {
+    "pos": [
+     -15.18656871667742,
+     10.10076253777615,
+     -514.4377368876809
+    ],
+    "yaw": -2.007768723095124,
+    "pitch": -0.17356793413281676,
+    "fov": 42,
+    "gene": 0,
+    "decalage": 0,
+    "distance": 141.9368877708012
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 2,
+    "espece": "oryx",
+    "famille": "troupeau",
+    "n": 8,
+    "dAxe": 106,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 23.7999999999992,
+    "alerte": 21.999999999999304
+   }
+  },
+  {
+   "fichier": "roche-fauve-vol.jpg",
+   "legende": "vautour en vol",
+   "horloge": 25.149999999999125,
+   "avec": {
+    "drawCalls": 111,
+    "triangles": 115316,
+    "instances": 4031,
+    "animaux": 9,
+    "proches": 1,
+    "moyens": 0,
+    "lointains": 8,
+    "objetsAnimaux": 15,
+    "trianglesAnimaux": 4470
+   },
+   "sans": {
+    "drawCalls": 97,
+    "triangles": 106376,
+    "instances": 4016
+   },
+   "ecart": {
+    "drawCalls": 14,
+    "triangles": 8940,
+    "instances": 15
+   },
+   "volant": {
+    "v": 0,
+    "espece": "vautour",
+    "famille": "plane",
+    "n": 2
+   }
+  },
+  {
+   "fichier": "brume-de-jade-proche.jpg",
+   "legende": "aigrette (6) de près, 8 m, avant le passage du peloton",
+   "horloge": 18.5249999999995,
+   "avec": {
+    "drawCalls": 219,
+    "triangles": 227278,
+    "instances": 2008,
+    "animaux": 12,
+    "proches": 6,
+    "moyens": 0,
+    "lointains": 6,
+    "objetsAnimaux": 54,
+    "trianglesAnimaux": 6948
+   },
+   "sans": {
+    "drawCalls": 203,
+    "triangles": 213382,
+    "instances": 1954
+   },
+   "ecart": {
+    "drawCalls": 16,
+    "triangles": 13896,
+    "instances": 54
+   },
+   "camera": {
+    "pos": [
+     487.088641460987,
+     6.989257775183374,
+     -539.5557842831364
+    ],
+    "yaw": -2.152251897382759,
+    "pitch": -0.08468970060973144,
+    "fov": 52,
+    "gene": 0,
+    "cache": 0,
+    "distance": 8.470800000000029
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 3,
+    "espece": "aigrette",
+    "famille": "echassier",
+    "n": 6,
+    "dAxe": 60,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 22.999999999999247,
+    "alerte": 21.999999999999304
+   }
+  },
+  {
+   "fichier": "brume-de-jade-loin.jpg",
+   "legende": "buffle (4) de loin, 120 m",
+   "horloge": 18.5249999999995,
+   "avec": {
+    "drawCalls": 91,
+    "triangles": 92570,
+    "instances": 556,
+    "animaux": 4,
+    "proches": 0,
+    "moyens": 4,
+    "lointains": 0,
+    "objetsAnimaux": 24,
+    "trianglesAnimaux": 2696
+   },
+   "sans": {
+    "drawCalls": 81,
+    "triangles": 87178,
+    "instances": 532
+   },
+   "ecart": {
+    "drawCalls": 10,
+    "triangles": 5392,
+    "instances": 24
+   },
+   "camera": {
+    "pos": [
+     151.14203454885495,
+     28.320578392070473,
+     -272.23798222644496
+    ],
+    "yaw": -0.61855457549769,
+    "pitch": -0.1753304052203623,
+    "fov": 28,
+    "gene": 0,
+    "cache": 0,
+    "distance": 120.00000000000001
+   },
+   "groupe": {
+    "g": 1,
+    "espece": "buffle",
+    "famille": "troupeau",
+    "n": 4,
+    "dAxe": 84,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": null,
+    "alerte": 35.39999999999854
+   }
+  },
+  {
+   "fichier": "brume-de-jade-fuite.jpg",
+   "legende": "aigrette en fuite au passage du peloton",
+   "horloge": 24.31666666666584,
+   "avec": {
+    "drawCalls": 313,
+    "triangles": 459404,
+    "instances": 2526,
+    "animaux": 12,
+    "proches": 5,
+    "moyens": 1,
+    "lointains": 6,
+    "objetsAnimaux": 60,
+    "trianglesAnimaux": 8596
+   },
+   "sans": {
+    "drawCalls": 291,
+    "triangles": 442212,
+    "instances": 2466
+   },
+   "ecart": {
+    "drawCalls": 22,
+    "triangles": 17192,
+    "instances": 60
+   },
+   "camera": {
+    "pos": [
+     492.8140756866752,
+     8.290395560415304,
+     -543.873412448901
+    ],
+    "yaw": -2.1522826277957297,
+    "pitch": -0.1329505985873924,
+    "fov": 60,
+    "gene": 0,
+    "cache": 0,
+    "distance": 15.059199999999993
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 3,
+    "espece": "aigrette",
+    "famille": "echassier",
+    "n": 6,
+    "dAxe": 60,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 22.999999999999247,
+    "alerte": 21.999999999999304
+   },
+   "etat": 2
+  },
+  {
+   "fichier": "brume-de-jade-passage.jpg",
+   "legende": "le peloton passe, aigrette en fuite à 98 m de l'œil",
+   "horloge": 24.31666666666584,
+   "avec": {
+    "drawCalls": 181,
+    "triangles": 578740,
+    "instances": 1861,
+    "animaux": 6,
+    "proches": 0,
+    "moyens": 6,
+    "lointains": 0,
+    "objetsAnimaux": 24,
+    "trianglesAnimaux": 3624
+   },
+   "sans": {
+    "drawCalls": 175,
+    "triangles": 571492,
+    "instances": 1837
+   },
+   "ecart": {
+    "drawCalls": 6,
+    "triangles": 7248,
+    "instances": 24
+   },
+   "camera": {
+    "pos": [
+     400.5166714610592,
+     23.450701284917223,
+     -486.059161350053
+    ],
+    "yaw": 1.0017875269721406,
+    "pitch": -0.24059825332940002,
+    "fov": 42,
+    "gene": 0,
+    "decalage": 0,
+    "distance": 97.80213405914988
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 3,
+    "espece": "aigrette",
+    "famille": "echassier",
+    "n": 6,
+    "dAxe": 60,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 22.999999999999247,
+    "alerte": 21.999999999999304
+   }
+  },
+  {
+   "fichier": "brume-de-jade-vol.jpg",
+   "legende": "milan en vol",
+   "horloge": 24.34999999999917,
+   "avec": {
+    "drawCalls": 87,
+    "triangles": 145544,
+    "instances": 519,
+    "animaux": 1,
+    "proches": 1,
+    "moyens": 0,
+    "lointains": 0,
+    "objetsAnimaux": 7,
+    "trianglesAnimaux": 1212
+   },
+   "sans": {
+    "drawCalls": 77,
+    "triangles": 143120,
+    "instances": 512
+   },
+   "ecart": {
+    "drawCalls": 10,
+    "triangles": 2424,
+    "instances": 7
+   },
+   "volant": {
+    "v": 0,
+    "espece": "milan",
+    "famille": "plane",
+    "n": 1
+   }
+  },
+  {
+   "fichier": "cap-sequoia-proche.jpg",
+   "legende": "wapiti (7) de près, 19 m, avant le passage du peloton",
+   "horloge": 6.725000000000036,
+   "avec": {
+    "drawCalls": 88,
+    "triangles": 613870,
+    "instances": 923,
+    "animaux": 7,
+    "proches": 7,
+    "moyens": 0,
+    "lointains": 0,
+    "objetsAnimaux": 99,
+    "trianglesAnimaux": 20898
+   },
+   "sans": {
+    "drawCalls": 68,
+    "triangles": 572074,
+    "instances": 824
+   },
+   "ecart": {
+    "drawCalls": 20,
+    "triangles": 41796,
+    "instances": 99
+   },
+   "camera": {
+    "pos": [
+     650.3707628820018,
+     2.1920818175643744,
+     3.355395409673635
+    ],
+    "yaw": 1.6974972066603535,
+    "pitch": -0.055865289743840446,
+    "fov": 52,
+    "gene": 0,
+    "cache": 0,
+    "distance": 18.506456516864034
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 0,
+    "espece": "wapiti",
+    "famille": "troupeau",
+    "n": 7,
+    "dAxe": 52,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 13.79999999999977,
+    "alerte": 10.199999999999974
+   }
+  },
+  {
+   "fichier": "cap-sequoia-loin.jpg",
+   "legende": "wapiti (8) de loin, 120 m",
+   "horloge": 6.725000000000036,
+   "avec": {
+    "drawCalls": 196,
+    "triangles": 1147720,
+    "instances": 2463,
+    "animaux": 36,
+    "proches": 0,
+    "moyens": 8,
+    "lointains": 28,
+    "objetsAnimaux": 84,
+    "trianglesAnimaux": 16966
+   },
+   "sans": {
+    "drawCalls": 178,
+    "triangles": 1113788,
+    "instances": 2379
+   },
+   "ecart": {
+    "drawCalls": 18,
+    "triangles": 33932,
+    "instances": 84
+   },
+   "camera": {
+    "pos": [
+     -492.73722288922954,
+     8.572567943394866,
+     1034.9614993272862
+    ],
+    "yaw": 0.46076550989704274,
+    "pitch": -0.08117686753808959,
+    "fov": 28,
+    "gene": 0,
+    "cache": 0,
+    "distance": 119.99999999999996
+   },
+   "groupe": {
+    "g": 2,
+    "espece": "wapiti",
+    "famille": "troupeau",
+    "n": 8,
+    "dAxe": 131,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": null,
+    "alerte": 53.099999999997536
+   }
+  },
+  {
+   "fichier": "cap-sequoia-fuite.jpg",
+   "legende": "wapiti en fuite au passage du peloton",
+   "horloge": 15.108333333333029,
+   "avec": {
+    "drawCalls": 206,
+    "triangles": 1205344,
+    "instances": 2364,
+    "animaux": 7,
+    "proches": 6,
+    "moyens": 1,
+    "lointains": 0,
+    "objetsAnimaux": 92,
+    "trianglesAnimaux": 18584
+   },
+   "sans": {
+    "drawCalls": 178,
+    "triangles": 1168176,
+    "instances": 2272
+   },
+   "ecart": {
+    "drawCalls": 28,
+    "triangles": 37168,
+    "instances": 92
+   },
+   "camera": {
+    "pos": [
+     634.5863569564665,
+     3.178193341303343,
+     2.192297294070417
+    ],
+    "yaw": 1.6974972066603535,
+    "pitch": -0.061296698098186185,
+    "fov": 60,
+    "gene": 0,
+    "cache": 0,
+    "distance": 32.90036714109163
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 0,
+    "espece": "wapiti",
+    "famille": "troupeau",
+    "n": 7,
+    "dAxe": 52,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 13.79999999999977,
+    "alerte": 10.199999999999974
+   },
+   "etat": 2
+  },
+  {
+   "fichier": "cap-sequoia-passage.jpg",
+   "legende": "le peloton passe, wapiti en fuite à 89 m de l'œil",
+   "horloge": 15.108333333333029,
+   "avec": {
+    "drawCalls": 274,
+    "triangles": 1752584,
+    "instances": 3502,
+    "animaux": 15,
+    "proches": 0,
+    "moyens": 7,
+    "lointains": 8,
+    "objetsAnimaux": 57,
+    "trianglesAnimaux": 7388
+   },
+   "sans": {
+    "drawCalls": 260,
+    "triangles": 1737808,
+    "instances": 3445
+   },
+   "ecart": {
+    "drawCalls": 14,
+    "triangles": 14776,
+    "instances": 57
+   },
+   "camera": {
+    "pos": [
+     750.4644165990683,
+     17.94754431102743,
+     17.402073433579115
+    ],
+    "yaw": -1.4317190850476909,
+    "pitch": -0.26181194334279073,
+    "fov": 42,
+    "gene": 0,
+    "decalage": 0,
+    "distance": 88.74032120345703
+   },
+   "groupe": {
+    "mode": "fuite",
+    "g": 0,
+    "espece": "wapiti",
+    "famille": "troupeau",
+    "n": 7,
+    "dAxe": 52,
+    "refuge": true,
+    "arbres": 0,
+    "fuite": 13.79999999999977,
+    "alerte": 10.199999999999974
+   }
+  },
+  {
+   "fichier": "cap-sequoia-vol.jpg",
+   "legende": "urubu en vol",
+   "horloge": 15.149999999999693,
+   "avec": {
+    "drawCalls": 165,
+    "triangles": 722584,
+    "instances": 1395,
+    "animaux": 19,
+    "proches": 1,
+    "moyens": 0,
+    "lointains": 18,
+    "objetsAnimaux": 25,
+    "trianglesAnimaux": 8442
+   },
+   "sans": {
+    "drawCalls": 149,
+    "triangles": 705700,
+    "instances": 1370
+   },
+   "ecart": {
+    "drawCalls": 16,
+    "triangles": 16884,
+    "instances": 25
+   },
+   "volant": {
+    "v": 3,
+    "espece": "urubu",
+    "famille": "plane",
+    "n": 1
+   }
+  },
+  {
+   "fichier": "cap-sequoia-baleine.jpg",
+   "legende": "baleine au large",
+   "horloge": 33.67499999999864,
+   "avec": {
+    "drawCalls": 97,
+    "triangles": 523722,
+    "instances": 729,
+    "animaux": 1,
+    "proches": 1,
+    "moyens": 0,
+    "lointains": 0,
+    "objetsAnimaux": 3,
+    "trianglesAnimaux": 1254
+   },
+   "sans": {
+    "drawCalls": 91,
+    "triangles": 520926,
+    "instances": 725
+   },
+   "ecart": {
+    "drawCalls": 6,
+    "triangles": 2796,
+    "instances": 4
+   },
+   "volant": {
+    "v": 2,
+    "espece": "baleine",
+    "famille": "marin",
+    "n": 1
+   }
+  },
+  {
+   "fichier": "val-brule-legere.jpg",
+   "legende": "Légère : cerf à 145 m, silhouettes lointaines d'une pièce",
+   "horloge": 8.041666666666764,
+   "avec": {
+    "drawCalls": 102,
+    "triangles": 212170,
+    "instances": 6013,
+    "animaux": 9,
+    "proches": 0,
+    "moyens": 0,
+    "lointains": 9,
+    "objetsAnimaux": 9,
+    "trianglesAnimaux": 3906
+   },
+   "sans": {
+    "drawCalls": 99,
+    "triangles": 208264,
+    "instances": 6004
+   },
+   "ecart": {
+    "drawCalls": 3,
+    "triangles": 3906,
+    "instances": 9
+   },
+   "camera": {
+    "pos": [
+     -1028.7225115477984,
+     3.913364921202999,
+     -114.86766609846302
+    ],
+    "yaw": 1.3386905251384946,
+    "pitch": -0.06319694579998002,
+    "fov": 20,
+    "gene": 0,
+    "cache": 0,
+    "distance": 145.00000000000006
+   },
+   "groupe": {
+    "g": 2,
+    "espece": "cerf",
+    "n": 7,
+    "dAxe": 172
+   }
+  }
+ ]
+}

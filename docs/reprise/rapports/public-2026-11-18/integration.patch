@@ -1,0 +1,188 @@
+diff --git a/construire.py b/construire.py
+index b04b0a9..8017c0c 100644
+--- a/construire.py
++++ b/construire.py
+@@ -47,6 +47,7 @@ MODULES = [
+     'carene.js',
+     'humain-donnees.js',
+     'humain-corps.js',
++    'public.js',
+     'main.js',
+     'voiture.js',
+     'traces.js',
+diff --git a/src/decor.js b/src/decor.js
+index fdc083b..e2a4110 100644
+--- a/src/decor.js
++++ b/src/decor.js
+@@ -633,7 +633,7 @@
+     if (qualite && qualite !== 'low') habiller(liste, loin, essence, qualite, h, penche, v);
+   }
+ 
+-  function tribune(liste, loin, f, w, cote, longueur, r) {
++  function tribune(liste, loin, f, w, cote, longueur, r, gradins = null) {
+     // Gradins face à la piste, côté gauche (cote −1) ou droit (+1), alignés sur la ligne droite.
+     const recul = cote * (w + 9), rot = capRot(f.a), y0 = hauteurRoute(f, cote * w, w) - .2;
+     const vers = (d, h, l = 0) => [f.x + f.r[0] * d + f.t[0] * l, y0 + h, f.z + f.r[2] * d + f.t[2] * l];
+@@ -641,15 +641,21 @@
+     for (let m = 0; m < marches; m++) {
+       const d = recul + cote * (m * profondeur + profondeur / 2);
+       liste.push({ shape: 'box', collision: 'gradin', p: vers(d, (m + 1) * haut / 2), s: [longueur, (m + 1) * haut, profondeur], r: rot, mat: 3, color: [.62, .62, .6] });
+-      // spectateurs : une rangée de silhouettes colorées par marche, avec des trous
++      // spectateurs : une rangée de silhouettes colorées par marche, avec des trous. Avec le public (public.js), ce
++      // sont de vrais corps dessinés à part : les mêmes nombres sont tirés, pour que la suite du décor ne change pas,
++      // mais les boîtes ne sont pas posées.
+       const rangee = [];
+       for (let k = -longueur / 2 + .6; k < longueur / 2 - .4; k += .62) {
+         if (r() < .22) continue;
+         rangee.push(k);
+-        liste.push({ shape: 'box', p: vers(d + cote * .1, (m + 1) * haut + .34, k), s: [.42, .68, .36], r: rot, mat: 18, color: PUBLICITES[Math.floor(r() * PUBLICITES.length)].map(v => v * (.6 + r() * .4)) });
++        const silhouette = { shape: 'box', p: vers(d + cote * .1, (m + 1) * haut + .34, k), s: [.42, .68, .36], r: rot, mat: 18, color: PUBLICITES[Math.floor(r() * PUBLICITES.length)].map(v => v * (.6 + r() * .4)) };
++        if (!gradins) liste.push(silhouette);
+       }
+-      loin.push({ shape: 'box', p: vers(d, (m + 1) * haut / 2 + .3, 0), s: [longueur, (m + 1) * haut + .6, profondeur], r: rot, mat: 18, color: [.42, .36, .34] });
++      // au loin, la marche et sa foule en un bloc ; avec le public, la marche seule (les silhouettes restent des corps)
++      loin.push(gradins ? { shape: 'box', p: vers(d, (m + 1) * haut / 2), s: [longueur, (m + 1) * haut, profondeur], r: rot, mat: 3, color: [.62, .62, .6] }
++        : { shape: 'box', p: vers(d, (m + 1) * haut / 2 + .3, 0), s: [longueur, (m + 1) * haut + .6, profondeur], r: rot, mat: 18, color: [.42, .36, .34] });
+     }
++    if (gradins) gradins.push({ s: f.s, x: f.x, z: f.z, y: y0, a: f.a, cote, recul, longueur, marches, profondeur, haut });
+     const fond = recul + cote * (marches * profondeur + .3);
+     liste.push({ shape: 'box', collision: 'gradin', p: vers(fond, 3.6), s: [longueur, 7.2, .4], r: rot, mat: 3, color: [.55, .55, .53] });
+     liste.push({ shape: 'box', collision: 'toit', p: vers(recul + cote * marches * profondeur * .5, 7.4), s: [longueur + 2, .3, marches * profondeur + 2.4], r: rot, mat: 0, color: [.80, .82, .84] });
+@@ -909,14 +915,18 @@
+     // tribunes à gauche, stands à droite, le long de la ligne droite
+     const droite = c.ligneDroite || { debut: -200, fin: 200 };
+     const avant = Math.max(-300, B.circuit.ecart(c, 0, droite.debut) + 40), apres = Math.min(260, B.circuit.ecart(c, 0, droite.fin) - 60);
++    // public.js : la description des gradins, pour y asseoir de vrais spectateurs (options.public)
++    const gradins = options.public ? { tribunes: [], stands: [], enceinte: { debut: avant - 10, fin: apres + 50 } } : null;
+     for (let s = avant + 30; s < apres - 30; s += 72) {
+       const f = cadre(c, Math.round(s / c.pas)), objets = [], loin = [];
+-      tribune(objets, loin, f, w, -1, 64, r);
++      tribune(objets, loin, f, w, -1, 64, r, gradins && gradins.tribunes);
++      if (gradins) gradins.tribunes[gradins.tribunes.length - 1].s = s;
+       const l = lotDe(f.x, f.z, f.i); l.objets.push(...objets); l.loin.push(...loin);
+     }
+     for (let s = avant + 40; s < apres - 20; s += 60) {
+       const f = cadre(c, Math.round(s / c.pas)), objets = [], loin = [];
+       batimentStands(objets, loin, f, w, 1, 60, th.matieres);
++      if (gradins) gradins.stands.push({ s, cote: 1, longueur: 60 });
+       const l = lotDe(f.x, f.z, f.i); l.objets.push(...objets); l.loin.push(...loin);
+     }
+ 
+@@ -1247,6 +1257,8 @@
+     // Le palier est une métadée de suivi, pas une donnée d'image : il reste non énumérable pour que les
+     // empreintes historiques du décor (verifications/decor-identite.test.mjs) ne bougent pas d'un cran.
+     Object.defineProperty(decor, 'qualite', { value: qualite, enumerable: false });
++    // Les gradins pour public.js : non énumérables eux aussi, hors des empreintes du décor.
++    if (gradins) Object.defineProperty(decor, 'gradins', { value: gradins, enumerable: false });
+     return decor;
+   }
+ 
+diff --git a/src/jeu.js b/src/jeu.js
+index 506635a..4cfcbe8 100644
+--- a/src/jeu.js
++++ b/src/jeu.js
+@@ -121,6 +121,7 @@
+   let restaurerDecorApresContexte = false;
+   let materielRendu = 'webgl2', derniereDetection = null;
+   let decorEnrichi = true; // l'outil de référence peut retrouver le décor historique pour une comparaison A/B
++  let publicVisible = true; // BITUME_JEU.public.visible : mesurer l'image avec et sans le public
+   const canvas = $('scene'), jeu = $('jeu');
+   function appliquerCarte() {
+     for (const cle of ['carte', 'cartePosition', 'carteTaille'])
+@@ -145,12 +146,19 @@
+       vegetation: decorEnrichi && veut.vegetation,
+       vegetationQualite,
+       saison,
++      public: decorEnrichi && !!B.public,
+     });
+     decor.atmosphere = B.graphismes.atmosphere(decor.atmosphere);
+     if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
+     rendu.setWorld([], [], decor.atmosphere);
+     rendu.setNappes(decor.nappes);
+     rendu.setLots(decor.lots);
++    // Le public (public.js) : de vrais spectateurs à la place des boîtes des gradins, dessinés par le point d'accroche
++    // « foule » du moteur. Bâti au palier ancre, comme le décor ; la vue de l'ancienne scène rend ses tampons.
++    if (scene && scene.vuePublic) scene.vuePublic.liberer();
++    const pub = decor.gradins && B.public ? B.public.creer(c, decor, { qualite: ancre, saison }) : null;
++    let vuePublic = null;
++    if (pub) try { vuePublic = B.public.vue(rendu, pub); } catch (e) { console.warn('BITUME : public indisponible', e); }
+     // plan du circuit pour l'affichage de course, dessiné une fois
+     const fond = document.createElement('canvas'); fond.width = fond.height = 220;
+     const p = plan(c, 220, 220, 16), ctx = fond.getContext('2d');
+@@ -158,7 +166,7 @@
+     // profondeur du volume d'ombre : un point du sol au bord du carré est décalé de OMBRE × cotangente de la hauteur du soleil
+     const sol = decor.atmosphere.sunDirection, sinus = sol[1] / Math.hypot(sol[0], sol[1], sol[2]);
+     const ombre = { extent: OMBRE, depth: 2 * (OMBRE * Math.sqrt(Math.max(0, 1 - sinus * sinus)) / Math.max(.25, sinus) + 30) };
+-    scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, c, decor, fond, plan: p, ombre };
++    scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, c, decor, fond, plan: p, ombre, public: pub, vuePublic };
+     return scene;
+   }
+ 
+@@ -217,6 +225,11 @@
+         saison: sc.decor.saison || B.saisons.profil(sc.saison, CATALOGUE[i].theme), revisionRendu: -1, faune: null, effetsSaison: null, aurores: null },
+       fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null,
+     };
++    // Le public de la séance : moins nombreux sous la pluie, en hiver et la nuit ; son animation repart de zéro.
++    if (sc.public) {
++      B.public.reinitialiser(sc.public);
++      B.public.regler(sc.public, { presence: B.public.presencePour(conditions.meteo, sc.saison, conditions.moment === 'nuit') });
++    }
+     if (enl) {
+       S.enLigne = { T0: enl.T0, role: enl.role, humains: enl.humains }; S.enLigneOrigine = true;
+       course.distant = (v, dt) => appliquerDistant(S, v, dt);
+@@ -1552,6 +1565,10 @@
+       retro.rendu.setWorld([], [], d.atmosphere);
+       retro.rendu.setNappes(d.nappes.map(n => Object.assign({}, n)));
+       retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })));
++      // le public dans les glaces : son propre contexte WebGL, sans le niveau proche ni les ombres (glace sans ombre)
++      if (retro.vuePublic) retro.vuePublic.liberer();
++      retro.vuePublic = null;
++      if (scene.public) try { retro.vuePublic = B.public.vue(retro.rendu, scene.public, { niveauMin: 1, ombre: false }); } catch (e) { console.warn('BITUME : public des rétroviseurs indisponible', e); }
+       retro.scene = scene;
+     }
+     // axes de la caméra principale, comme le moteur (cameraAxes) : chaque coin de glace projeté à l'écran
+@@ -1593,11 +1610,12 @@
+       const o = objets[k], dx = o.p[0] - ps.x, dz = o.p[2] - ps.z, x = dx * ca + dz * sa, z = dz * ca - dx * sa;
+       if (!(Math.abs(x - B.voiture.ROUES[2].x) < .5 && Math.abs(z) > .55)) objets.splice(k, 1);
+     }
++    retro.foulePublic = publicVisible && retro.vuePublic ? retro.vuePublic.fx : null;
+     if (S.nature && (retro.ambianceSource !== S.nature.ambiance || retro.ambianceRevision !== S.nature.ambiance.revision)) {
+       if (retro.rendu.setEnvironment) retro.rendu.setEnvironment(S.nature.ambiance.atmosphere);
+       retro.ambianceSource = S.nature.ambiance; retro.ambianceRevision = S.nature.ambiance.revision;
+     }
+-    retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, lights: lampesTunnel(G, 'lampes' + i, scene.decor.tunnelLampes, camR, dtImage, scene.index) });
++    retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, lights: lampesTunnel(G, 'lampes' + i, scene.decor.tunnelLampes, camR, dtImage, scene.index), foule: retro.foulePublic });
+     if (B.mesures.actif) B.mesures.vue('retro', retro.rendu);
+     const ctx = G.ctx[i];
+     if (toiles[i].width !== source.width || toiles[i].height !== source.height) { toiles[i].width = source.width; toiles[i].height = source.height; }
+@@ -1797,8 +1815,19 @@
+     const lampes = lampesTunnel(S, 'lampesTunnel', LT, cam, dtImage, scene.index);
+     // Halo/bloom : ouverts ou fermés par le profil résolu (menu, gouverneur et capacités du moteur)
+     const haloInt = avecHalo(P);
++    // Le public : excitation et regard par section d'après les voitures, abris d'après la pluie et la neige, fête au
++    // départ et au drapeau à damier. Le temps fait l'animation (même mouvement à toute cadence) ; aucune allocation.
++    const vuePublic = publicVisible && scene.vuePublic;
++    if (vuePublic) {
++      const A = S.ambiancePublic || (S.ambiancePublic = { pluie: 0, neige: 0, mouille: 0, feux: 0, vert: false, termine: false });
++      A.pluie = meteo.pluie || 0; A.neige = precipitationsNeige(S); A.mouille = Math.max(meteo.mouille || 0, A.pluie);
++      A.feux = co.feux ? co.feux.allumes : 0; A.vert = !co.feux || co.feux.vert; A.termine = co.drapeau !== null && co.drapeau !== undefined;
++      B.public.animer(scene.public, horlogeReelle, poses, co.voitures.length, A);
++      if (S.palierPublic !== P.palier) { vuePublic.qualite(P.palier); S.palierPublic = P.palier; }
++    }
++    S.foulePublic = vuePublic ? vuePublic.fx : null;
+     const tDraw = B.mesures.actif ? performance.now() : 0;
+-    rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: P.qualite === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover });
++    rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: P.qualite === 'auto', frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, foule: S.foulePublic });
+     if (B.mesures.actif) {
+       B.mesures.section('rendu', performance.now() - tDraw);
+       B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
+@@ -2864,6 +2893,9 @@
+     get pauseAuto() { return pauseAuto; }, set pauseAuto(v) { pauseAuto = !!v; },
+     get pilotageAuto() { return pilotageAuto; }, set pilotageAuto(v) { pilotageAuto = !!v; }, get enLigne() { return EL; },
+     get camera() { return cameraEssai; }, set camera(f) { cameraEssai = typeof f === 'function' ? f : null; },
++    // le public des tribunes : visible ou non (mesures avec et sans), scène et mesures de la dernière image
++    public: { get visible() { return publicVisible; }, set visible(v) { publicVisible = !!v; },
++      get scene() { return scene && scene.public; }, get mesure() { return scene && scene.vuePublic ? scene.vuePublic.mesure : null; } },
+     // volet de mesures : BITUME_JEU.mesures = true l'ouvre, false le ferme ; la lecture donne l'instantané
+     get mesures() { return B.mesures.lire(rendu); }, set mesures(v) { B.mesures.afficher(!!v, rendu); } };
+   setTimeout(demarrer, 20);
