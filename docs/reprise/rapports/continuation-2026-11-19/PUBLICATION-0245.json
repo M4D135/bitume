@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-19",
+  "depot": "M4D135/bitume",
+  "branche": "main",
+  "commit": "71354f05e59dcfcbc98cabc0a690f86d5a8419b4",
+  "tree": "06fbb90ba53daabb148ff6dc6b7ab890ead0dc7a",
+  "version": "0.2.45",
+  "verification": "HEAD main lu via GitHub ; tree de la récupération locale strictement identique ; objet commit reconstruit avec SHA exact",
+  "build_sha256": "38b9897316d510bc0e8ccf67562358c6b1020bb9993bba737075384fcf2e1ffc",
+  "reserve_webgl": true,
+  "deploiement_effectue": false,
+  "site_verifie": false
+}
