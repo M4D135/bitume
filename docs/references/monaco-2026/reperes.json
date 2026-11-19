@@ -1,0 +1,283 @@
+{
+  "format": "bitume-monaco-reference-controls",
+  "version": 1,
+  "official": {
+    "centrelineLengthM": 3337,
+    "turnCount": 19,
+    "sectorLengthsM": [
+      1051,
+      1419,
+      867
+    ],
+    "sectorBoundariesM": [
+      1051,
+      2470
+    ],
+    "sourceIds": [
+      "fia-2026",
+      "f1-guide-2026"
+    ],
+    "sectorNotes": [
+      {
+        "id": "S1",
+        "beforeTurn": 5,
+        "distanceM": 60
+      },
+      {
+        "id": "S2",
+        "beforeTurn": 13,
+        "distanceM": 70
+      }
+    ],
+    "startAndControlLinesAreDistinct": true
+  },
+  "annotationMethod": "Les numeros et sens sont lus sur la page 2 FIA ; les noms viennent des rubriques F1. Le rattachement aux noeuds OSM est une reconnaissance manuelle des enchainements, pas un releve des apex FIA. Les intervalles servent seulement a verifier ordre et sens. Aucune coordonnee n est obtenue en recalant ou etirant le plan FIA.",
+  "locationStatus": "candidate_osm_anchor_not_surveyed_apex",
+  "horizontalAccuracyM": null,
+  "turns": [
+    {
+      "number": 1,
+      "name": "Sainte-Devote",
+      "direction": "right",
+      "approachNodeId": 272958770,
+      "representativeNodeId": 12851688399,
+      "exitNodeId": 1726583800,
+      "labelOffsetPx": [
+        -20,
+        -12
+      ]
+    },
+    {
+      "number": 2,
+      "name": "Beau Rivage",
+      "direction": "left",
+      "approachNodeId": 1737366166,
+      "representativeNodeId": 6485591450,
+      "exitNodeId": 6485591452,
+      "labelOffsetPx": [
+        -10,
+        -18
+      ]
+    },
+    {
+      "number": 3,
+      "name": "Massenet",
+      "direction": "left",
+      "approachNodeId": 6485591461,
+      "representativeNodeId": 25239182,
+      "exitNodeId": 6485591470,
+      "labelOffsetPx": [
+        20,
+        0
+      ]
+    },
+    {
+      "number": 4,
+      "name": "Casino",
+      "direction": "right",
+      "approachNodeId": 21913159,
+      "representativeNodeId": 1204288436,
+      "exitNodeId": 11146700934,
+      "labelOffsetPx": [
+        -24,
+        -5
+      ]
+    },
+    {
+      "number": 5,
+      "name": "Mirabeau Haut",
+      "direction": "right",
+      "approachNodeId": 6485591483,
+      "representativeNodeId": 1737114648,
+      "exitNodeId": 1736930314,
+      "labelOffsetPx": [
+        -9,
+        -20
+      ]
+    },
+    {
+      "number": 6,
+      "name": "Epingle Fairmont",
+      "direction": "left",
+      "approachNodeId": 9416148973,
+      "representativeNodeId": 25240095,
+      "exitNodeId": 1720684299,
+      "labelOffsetPx": [
+        10,
+        20
+      ]
+    },
+    {
+      "number": 7,
+      "name": "Mirabeau Bas",
+      "direction": "right",
+      "approachNodeId": 1720684310,
+      "representativeNodeId": 1720684322,
+      "exitNodeId": 6485591888,
+      "labelOffsetPx": [
+        -24,
+        0
+      ]
+    },
+    {
+      "number": 8,
+      "name": "Portier",
+      "direction": "right",
+      "approachNodeId": 10687075419,
+      "representativeNodeId": 10683095897,
+      "exitNodeId": 1685061923,
+      "labelOffsetPx": [
+        20,
+        -12
+      ]
+    },
+    {
+      "number": 9,
+      "name": "Tunnel",
+      "direction": "right",
+      "approachNodeId": 519323656,
+      "representativeNodeId": 6485591907,
+      "exitNodeId": 11407697331,
+      "labelOffsetPx": [
+        20,
+        0
+      ]
+    },
+    {
+      "number": 10,
+      "name": "Nouvelle Chicane, entree",
+      "direction": "left",
+      "approachNodeId": 13312466205,
+      "representativeNodeId": 6340961574,
+      "exitNodeId": 2422123083,
+      "labelOffsetPx": [
+        20,
+        -12
+      ]
+    },
+    {
+      "number": 11,
+      "name": "Nouvelle Chicane, sortie",
+      "direction": "right",
+      "approachNodeId": 9416148882,
+      "representativeNodeId": 9416149039,
+      "exitNodeId": 9416148889,
+      "labelOffsetPx": [
+        -18,
+        18
+      ]
+    },
+    {
+      "number": 12,
+      "name": "Tabac",
+      "direction": "left",
+      "approachNodeId": 6444966428,
+      "representativeNodeId": 917957146,
+      "exitNodeId": 9416148869,
+      "labelOffsetPx": [
+        22,
+        0
+      ]
+    },
+    {
+      "number": 13,
+      "name": "Piscine, premier gauche",
+      "direction": "left",
+      "approachNodeId": 6485591957,
+      "representativeNodeId": 9416149007,
+      "exitNodeId": 9416148906,
+      "labelOffsetPx": [
+        -23,
+        0
+      ]
+    },
+    {
+      "number": 14,
+      "name": "Piscine, premier droite",
+      "direction": "right",
+      "approachNodeId": 9416148906,
+      "representativeNodeId": 6485591968,
+      "exitNodeId": 25191729,
+      "labelOffsetPx": [
+        21,
+        0
+      ]
+    },
+    {
+      "number": 15,
+      "name": "Piscine, second droite",
+      "direction": "right",
+      "approachNodeId": 8740874113,
+      "representativeNodeId": 9416148909,
+      "exitNodeId": 9416148912,
+      "labelOffsetPx": [
+        24,
+        -10
+      ]
+    },
+    {
+      "number": 16,
+      "name": "Piscine, second gauche",
+      "direction": "left",
+      "approachNodeId": 9416149060,
+      "representativeNodeId": 9416149059,
+      "exitNodeId": 9974218889,
+      "labelOffsetPx": [
+        -23,
+        10
+      ]
+    },
+    {
+      "number": 17,
+      "name": "Courbe sans nom",
+      "direction": "left",
+      "approachNodeId": 9416148917,
+      "representativeNodeId": 9416148920,
+      "exitNodeId": 9416148924,
+      "labelOffsetPx": [
+        -24,
+        0
+      ]
+    },
+    {
+      "number": 18,
+      "name": "La Rascasse",
+      "direction": "right",
+      "approachNodeId": 9416148925,
+      "representativeNodeId": 1737389119,
+      "exitNodeId": 25191609,
+      "labelOffsetPx": [
+        24,
+        0
+      ]
+    },
+    {
+      "number": 19,
+      "name": "Antony Noghes",
+      "direction": "right",
+      "approachNodeId": 9416148989,
+      "representativeNodeId": 9416148943,
+      "exitNodeId": 4938436896,
+      "labelOffsetPx": [
+        -25,
+        16
+      ]
+    }
+  ],
+  "missingMeasurements": {
+    "altitudes": null,
+    "leftWidths": null,
+    "rightWidths": null,
+    "bankAngles": null,
+    "walls": null,
+    "fiaStartLineCoordinates": null,
+    "fiaControlLineCoordinates": null,
+    "sectorLineCoordinates": null,
+    "pitLaneRaceBoundaries": null,
+    "tunnelClearances": null
+  },
+  "seasonPolicy": {
+    "status": "not_decided_in_source_preparation",
+    "note": "Aucun circuit jouable ni exception meteorologique ajoutee. Regle saisonniere Monaco a expliciter avant integration ; conditions Manuel/Aleatoire/Reel du joueur ou de l hote conservees."
+  }
+}

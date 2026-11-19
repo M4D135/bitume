@@ -1,0 +1,34 @@
+{
+    "title": "IGN - LIDAR HD - MNT - France enti\u00e8re - avec interpolation",
+    "abstract": "Donn\u00e9es sources issues des relev\u00e9s LIDAR HD. La couverture de ce r\u00e9f\u00e9rentiel est compl\u00e9t\u00e9e au fur et \u00e0 mesure. Certains territoires peuvent \u00eatre absents au moment de l'interrogation du service. La valeur d'altitude -99 999 sera alors renvoy\u00e9e. La donn\u00e9e source est pr\u00e9sent\u00e9e en projection mondiale. Il est donc possible de rencontrer des valeurs interpol\u00e9es dues \u00e0 la reprojection lors des transition zones sans donn\u00e9es - zones avec donn\u00e9es.",
+    "keywords": [
+        "IGN",
+        "MNT",
+        "LIDAR_HD",
+        "ALTI"
+    ],
+    "bbox": {
+        "east": 7.6279958746375085,
+        "north": 50.39357929423857,
+        "west": -2.6040058043246,
+        "south": 45.87666894037257
+    },
+    "_id": "ign_lidar_hd_mnt_mono_wld",
+    "data": [
+        {
+            "title": "IGN - LIDAR HD - MNT - France M\u00e9tropolitaine (dont Corse)- avec interpolation",
+            "bbox": {
+                "east": 7.6279958746,
+                "north": 50.3935792942,
+                "west": -2.6040058043,
+                "south": 45.8766689404
+            },
+            "source": {
+                "value": "LIDAR HD IGN"
+            },
+            "accuracy": {
+                "value": "Pas de 50 cm"
+            }
+        }
+    ]
+}

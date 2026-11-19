@@ -52,6 +52,12 @@
       fougere: [.14, .26, .15], humus: [.13, .12, .09],
       fleurs: [[.56, .34, .62], [.88, .82, .28], [.90, .36, .44]],
     }),
+    baikal: Object.freeze({
+      stations: .76, densite: .78, taille: .82, familles: ['herbes', 'fougères', 'fleurs', 'taillis'],
+      herbe: [.24, .36, .18], taillis: [.16, .28, .14], taillisNuance: [.035, .05, .025],
+      fougere: [.13, .28, .16], humus: [.18, .16, .12],
+      fleurs: [[.68, .60, .77], [.90, .88, .82], [.82, .65, .24]],
+    }),
   });
 
   // Sans palier demandé, le profil historique : un appel qui ne nomme pas le palier (tests, outil de

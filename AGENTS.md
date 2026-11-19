@@ -321,3 +321,22 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
 - Adapter les ancrages et le trajet des mains à l'habitacle extérieur, avec des dégagements vérifiés sur
   les vrais maillages ; ne pas transposer simplement le cadrage intérieur à la silhouette extérieure.
 - Tout consigner dans le résumé GitHub et la reprise courte. Fiche : `docs/reprise/COCKPIT-PILOTES-2026-11-19.md`.
+
+
+## Décisions de David — 19 novembre 2026, continuation autonome et réalisme
+
+- Poursuivre en autonomie toute la liste de Claude, en préservant les demandes et les travaux préparés.
+  La file complète réconciliée se trouve dans `docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md`.
+- Priorité aux bras : les coudes étaient pliés à l'envers et les avant-bras trop hauts. Replier les coudes
+  vers le bas, contenir les bras dans l'habitacle et employer le même modèle articulé en vue intérieure
+  et extérieure ; seul le cadrage peut changer. Vérifier mains, commandes, manches et coque ensemble.
+- Enrichir les matières du cockpit et la pluie/neige sur l'écran. Garder le grain et le relief procéduraux,
+  leurs repères attachés aux objets et leur filtrage à distance ; les changements du moteur passent par FERRO.
+- Supprimer l'aspect de barres blanches à l'intérieur des pneus. Préférer des profils ronds, des matières
+  sobres et une usure naturelle, en conservant les dimensions, les quatre montes et leurs effets physiques.
+- Éviter les cubes, les zones de texture carrées et les répétitions symétriques artificielles : contours
+  arrondis, variations organiques à graine stable. Préserver la symétrie mécanique nécessaire des pièces.
+- Détailler les bâtiments et réaliser les stands : garages, ouvertures, auvents, matériel et signalétique
+  raccordés à la voie et aux emplacements de service existants. Conserver les dégagements des voitures.
+- Ces priorités passent avant les nouveaux circuits. Le décor Baïkal et la base des tracés explicites
+  déjà préparés sont conservés, puis le programme complet continue sans attendre un nouveau « go ».

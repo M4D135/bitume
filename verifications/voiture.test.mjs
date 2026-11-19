@@ -60,12 +60,13 @@ const vusDehors = mod.corps.filter(p => V.visible(p, false, 0));
 verifier('roues : rotation propre = distance / rayon à 1 % près', () => {
   const ev = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0 };
   for (const roue of [0, 2]) {
-    const k = vusDehors.findIndex(p => p.roue === roue && p.tourne === 0), r = V.ROUES[roue].r;
+    const k = vusDehors.findIndex(p => p.roue === roue && p.usureRoue === 1), r = V.ROUES[roue].r, origine = vusDehors[k].tourne;
     for (const d of [.05, .1, .14]) {
       const sortie = []; V.poser(mod, Object.assign({ roule: d }, ev), sortie);
-      const m = V.euler(...sortie[k].r), angle = Math.atan2(m[0][1], m[0][0]);
+      const m = V.euler(...sortie[k].r), orientation = Math.atan2(m[0][1], m[0][0]);
+      const angle = Math.atan2(Math.sin(orientation - origine), Math.cos(orientation - origine));
       assert.ok(Math.abs(angle + d / r) <= .01 * d / r, `roue ${roue}, ${d} m : ${angle.toFixed(4)} au lieu de ${(-d / r).toFixed(4)}`);
-      assert.ok(m[0][1] < 0 || d === 0, 'le haut de la roue part vers l’avant');
+      assert.ok(angle < 0 || d === 0, 'le haut de la roue part vers l’avant');
     }
   }
 });
@@ -156,7 +157,7 @@ verifier('cockpit : pilote, arrière, capot et glaces de la vue extérieure abse
   const sortie = []; V.poser(mod, { p: [0, 0, 0], cap: 0 }, sortie, { cockpit: true, overlay: true });
   // Les sous-surfaces d'usure sont préallouées, mais un pneu neuf n'en dessine aucune.
   assert.equal(sortie.length, mod.corps.filter(p => !(p.pilote || p.arriere || p.exterieur || p.glace || p.vite || p.usureRoue > 1)).length);
-  assert.ok(sortie.every(m => m.overlay) && sortie.some(m => m.shape === 'cylinder' && m.p[0] > 1.3));
+  assert.ok(sortie.every(m => m.overlay) && sortie.some(m => m.shape.startsWith('bitume-pneu-av') && m.p[0] > 1.3));
 });
 
 // ---------------------------------------------------------------- détails de la voiture et cockpit vivant
@@ -165,7 +166,7 @@ const bord = extra => { const sortie = []; V.cockpit(mod, Object.assign({ v: 40 
 const reel = v => v.map((x, i) => V.OEIL[i] + V.K * x);      // position dans la voiture d'un point composé vu de l'œil
 const ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 
-verifier('numéro en géométrie sur le nez et les pontons ; repères de flanc à toute vitesse', () => {
+verifier('numéro en géométrie ; roues sans barrettes blanches, valves extérieures à toute vitesse', () => {
   const sans = V.modele(Object.assign({}, livree, { numero: undefined })), un = V.modele(Object.assign({}, livree, { numero: 1 }));
   assert.equal(un.corps.length - sans.corps.length, 3 * 2, 'trois « 1 » de deux segments, sans panneau');
   assert.equal(mod.corps.length - sans.corps.length, 3 * (5 + 3), '« 27 » : cinq et trois segments, trois fois');
@@ -175,23 +176,27 @@ verifier('numéro en géométrie sur le nez et les pontons ; repères de flanc �
   // David (16/11) : les roues doivent se voir tourner à toute vitesse ; plus de bande floue qui les figeait
   const lent = [], vite = [];
   V.poser(mod, Object.assign({ v: 10 }, repos), lent); V.poser(mod, Object.assign({ v: 50 }, repos), vite);
-  const reperes = mod.corps.filter(p => p.roue !== undefined && p.tourne !== undefined && p.decale && p.decale[0] !== 0);
-  assert.equal(reperes.length, 16, 'deux repères sur chaque flanc ; aucune fausse rainure sur un slick neuf');
-  assert.ok(reperes.every(p => Math.abs(p.decale[0]) < V.ROUES[p.roue].r - .035), 'marques sur le flanc, pas sur la bande');
+  const reperes = mod.corps.filter(p => p.shape === 'bitume-valve-roue');
+  assert.equal(reperes.length, 4, 'une valve, sans paire de bandes blanches, sur chaque roue');
+  assert.ok(!mod.corps.some(p => p.roue !== undefined && p.shape === 'box'), 'aucun pavé rapporté sur les roues');
+  assert.ok(reperes.every(p => Math.abs(p.decale[0]) < .165 && Math.sign(p.decale[1]) === Math.sign(V.ROUES[p.roue].z)), 'valves sur la jante extérieure');
+  assert.ok(reperes.every(p => Math.max(...p.color) < .3), 'petites valves sombres, pas de repère blanc');
+  assert.equal(new Set(reperes.map(p => p.tourne)).size, 4, 'orientations de montage distinctes');
   assert.ok(!mod.corps.some(p => p.lent || p.vite), 'aucune pièce réservée à une vitesse');
   const vus = mod.corps.filter(p => !p.dedans && !(p.usureRoue > 1)).length;
   assert.equal(lent.length, vus);
   assert.equal(vite.length, vus);
 });
 
-verifier('repère de pneu : il tourne autour de l’axe de la roue, à mi-flanc', () => {
-  const w = V.ROUES[0], flanc = (.165 + w.r) / 2, k = mod.corps.filter(p => V.visible(p, false, 5)).findIndex(p => p.roue === 0 && p.tourne === 0 && p.decale && Math.abs(p.decale[0] - flanc) < 1e-9);
+verifier('valve : elle suit exactement la rotation de sa roue depuis son orientation de montage', () => {
+  const w = V.ROUES[0], visibles = mod.corps.filter(p => V.visible(p, false, 5));
+  const k = visibles.findIndex(p => p.roue === 0 && p.shape === 'bitume-valve-roue'), valve = visibles[k], rayon = valve.decale[0];
   for (const d of [0, .2, .7, 1.3]) {
     const sortie = []; V.poser(mod, Object.assign({ v: 5, roule: d }, repos), sortie);
-    const q = sortie[k].p, a = -d / w.r;
-    assert.ok(Math.abs(Math.hypot(q[0] - w.x, q[1] - w.r) - flanc) < 1e-9, 'à mi-flanc');
+    const q = sortie[k].p, a = valve.tourne - d / w.r;
+    assert.ok(Math.abs(Math.hypot(q[0] - w.x, q[1] - w.r) - rayon) < 1e-9, 'rayon constant dans la jante');
     // la roue avance : son point avant descend
-    assert.ok(Math.abs(q[0] - (w.x + flanc * Math.cos(a))) < 1e-9 && Math.abs(q[1] - (w.r + flanc * Math.sin(a))) < 1e-9, `après ${d} m : ${q.map(v => v.toFixed(3))}`);
+    assert.ok(Math.abs(q[0] - (w.x + rayon * Math.cos(a))) < 1e-9 && Math.abs(q[1] - (w.r + rayon * Math.sin(a))) < 1e-9, `après ${d} m : ${q.map(v => v.toFixed(3))}`);
   }
 });
 

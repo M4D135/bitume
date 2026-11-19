@@ -3,7 +3,7 @@
 (function (B) {
   'use strict';
 
-  const BIOMES = Object.freeze({ foret: 0x25ab3d71, cote: 0x6c8e19f3, montagne: 0x438db527 });
+  const BIOMES = Object.freeze({ foret: 0x25ab3d71, cote: 0x6c8e19f3, montagne: 0x438db527, baikal: 0x71cd923f });
   const lisse = (a, b, x) => {
     const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
     return t * t * (3 - 2 * t);
@@ -38,7 +38,8 @@
       const px = rx + (bruit(rx / 510, rz / 510, 31) - .5) * 170;
       const pz = rz + (bruit((rx + 713) / 430, (rz - 319) / 430, 47) - .5) * 170;
       const paysage = .78 * bruit(px / 280, pz / 280, 101) + .22 * bruit(px / 610, pz / 610, 131);
-      const ouverture = biome === 'foret' ? lisse(.20, .46, paysage) : lisse(.38, .62, paysage);
+      const ouverture = biome === 'foret' ? lisse(.20, .46, paysage)
+        : biome === 'baikal' ? lisse(.24, .51, paysage) : lisse(.38, .62, paysage);
       const poche = bruit(px / 63, pz / 63, 173), fin = bruit(rx / 15, rz / 15, 211);
       const prairie = ouverture * lisse(.35, .65, poche * .83 + fin * .17);
       // Une plage entière vaut zéro : les clairières n'allouent ni brins ni habitats d'insectes.

@@ -1,4 +1,4 @@
-# FERRO — référence commune 0.3.14
+# FERRO — référence commune 0.3.15
 
 Décision de David du 16 novembre 2026 : entièrement procédural, aucun plafond de taille du code ni du build. Moteur prioritaire, atelier secondaire.
 
@@ -52,3 +52,21 @@ EMPRISE ciblé : 10/12 sur les deux versions (contrat PhysX ajouté aux onze pr�
 Ni tas natif ni FPS matériels mesurés. BITUME : 34 modules installés officiellement, douze reprises finales
 réussies, 54 empreintes p14 exactes et fixture inchangée. Preuves et reçu sous
 `docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/ferro-0314/` et `PUBLICATION-FERRO-0314.json`.
+
+## Version 0.3.15 — cuir et textile procéduraux
+
+Canon publié : main `47a1f7662028f9c84966b7c335b6cd10f3021086`,
+[PR #4 fusionnée](https://github.com/M4D135/FERRO/pull/4), arbre
+`11559c8e72320a99d171b9af3a8b67c90f3277d2`. Les recettes opt-in `fineLeather` 28 et `wovenFabric` 29
+ajoutent un grain local irrégulier, une rugosité et un micro-relief filtrés à distance, sans changer les
+matières 0–27 ni les maillages. Les quatre modules modifiés sont `renderer`, `webgpu-shaders`, `recipes`
+et `engine` ; les 34 modules proviennent de l'installateur officiel et gardent les empreintes canoniques.
+BITUME les choisit dans `cockpit-matieres.js`, chargé avant `voiture.js`. Les replis sont les matières 7 et 18.
+
+Qualification locale canonique : 213 réussites, 0 échec, 1 TODO hérité. Les sondes GLSL sous EGL/Mesa
+conservent exactement les pixels des 28 anciennes matières dans la scène analytique. EMPRISE isolé :
+10/12 avant et après, deux échecs hérités identiques ; son build complet reste bloqué par `city-data.js`
+indisponible. Ces mesures logicielles ne qualifient ni le rendu navigateur complet, ni les pixels WebGPU,
+ni les FPS matériels. La CI GitHub n'a exécuté aucune étape : le compte est bloqué par un problème de
+paiement ou de limite de dépenses, consigné sur la PR avant fusion. Notice et synthèse canoniques :
+[`docs/upholstery-0315/`](https://github.com/M4D135/FERRO/tree/47a1f7662028f9c84966b7c335b6cd10f3021086/docs/upholstery-0315).

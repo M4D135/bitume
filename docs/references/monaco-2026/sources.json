@@ -1,0 +1,79 @@
+{
+  "format": "bitume-monaco-sources",
+  "version": 1,
+  "checkedDate": "2026-11-19",
+  "referenceYear": 2026,
+  "sources": [
+    {
+      "id": "osm-relation",
+      "role": "geometry",
+      "file": "sources/osm-148194-v61.osm",
+      "url": "https://www.openstreetmap.org/api/0.6/relation/148194/full",
+      "relationVersion": 61,
+      "relationTimestamp": "2026-08-21T07:53:53Z",
+      "acquiredUtc": null,
+      "sha256": "136631f09e7780470c22ec1b8f7ceaffb39b4427b64bf1863aed0008ba5fc762",
+      "bytes": 117107,
+      "license": "ODbL-1.0",
+      "note": "Instantane fourni lors de la preparation. La version de relation ne fige pas les versions de ses membres : celles de chaque noeud et voie sont conservees. L'URL full est une URL d'acquisition, pas une adresse historique immuable."
+    },
+    {
+      "id": "osm-gap-area",
+      "role": "geometry",
+      "file": "sources/osm-ostende-monte-carlo.osm",
+      "url": null,
+      "replayUrl": "https://www.openstreetmap.org/api/0.6/map?bbox=7.4261,43.7377,7.4271,43.73815",
+      "bbox": [7.4261, 43.7377, 7.4271, 43.73815],
+      "acquiredUtc": null,
+      "sha256": "53ec40d95005f3876b5776b26c9e6fb9b488006f667aad8d117f20d7cb909e5e",
+      "bytes": 279194,
+      "license": "ODbL-1.0",
+      "note": "Le recu initial ne consigne ni URL exacte ni date. L'URL de repetition est reconstruite a partir de bounds dans le XML ; ne pas la presenter comme un recu d'acquisition."
+    },
+    {
+      "id": "osm-way-history",
+      "role": "topology-history",
+      "file": "sources/osm-way-1551240829-v1.osm",
+      "url": "https://www.openstreetmap.org/api/0.6/way/1551240829/1",
+      "acquiredUtc": "2026-11-19T21:10:35.927210+00:00",
+      "sha256": "f198f9622e77631beabae483606c0e51ecf090bb8ebd588675bdad1b9382f646",
+      "bytes": 774,
+      "license": "ODbL-1.0",
+      "note": "La sequence de noeuds de cette voie etait deja identique en version 1. Le raccord ne doit donc pas etre explique par un changement de geometrie de la version 2."
+    },
+    {
+      "id": "fia-2026",
+      "role": "official-reference",
+      "url": "https://www.fia.com/system/files/decision-document/2026_monaco_grand_prix_-_competition_notes_-_circuit_map_pit_lane_drawing_emergency_exits_map_and_red_zone.pdf",
+      "sourceSha256": "d7334536ab4bd791d5410d3aa86c2d0a70305257259dd8ff08ebbf0980262b62",
+      "sourceBytes": 2647335,
+      "document": 7,
+      "documentDate": "2026-06-04",
+      "circuitMap": {"page": 2, "version": 2, "issuedDate": "2026-05-31"},
+      "pitLaneDrawing": {"page": 3, "version": 1, "issuedDate": "2026-06-04"},
+      "snapshotInRepository": "Extrait factuel dans reperes.json, empreinte du PDF et URL ; aucune image ni plan FIA integre au jeu.",
+      "rights": "FIA / Formula One World Championship Limited, droits reserves. Reference documentaire, pas une source de coordonnees georeferencees."
+    },
+    {
+      "id": "f1-guide-2026",
+      "role": "official-reference",
+      "url": "https://www.formula1.com/en/latest/article/circuit-guide-everything-you-need-to-know-about-the-circuit-de-monaco.vFsmfGHr6RWyLFtxi58wi",
+      "publishedDate": "2026-06-04",
+      "use": "Controle independant des 3337 m et 19 virages."
+    },
+    {
+      "id": "f1-corner-names-2026",
+      "role": "official-reference",
+      "url": "https://www.formula1.com/en/latest/article/explained-how-every-monaco-corner-got-its-name.5ClYqWmfpeUpsRJA6mDNaX",
+      "publishedDate": "2026-06-04",
+      "use": "Noms et ordre des virages ; T17 sans nom, T18 Rascasse, T19 Antony Noghes.",
+      "conflict": "L'introduction dit 18 virages alors que les sections vont jusqu'a T19. Le plan FIA et le guide officiel fixent le total a 19."
+    }
+  ],
+  "geometryAttribution": "© les contributeurs d'OpenStreetMap",
+  "geometryLicense": "https://opendatacommons.org/licenses/odbl/1-0/",
+  "attributionUrl": "https://www.openstreetmap.org/copyright",
+  "excludedSources": [
+    {"id": "SIGM_Topographie_OGC_2", "reason": "Service ecarte de la preparation : licence restreinte au Gouvernement de Monaco dans le dossier initial. Aucun raster ni cote de ce service ne figure dans les donnees."}
+  ]
+}

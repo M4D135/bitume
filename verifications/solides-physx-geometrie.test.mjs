@@ -95,7 +95,13 @@ for (const k of catalogue) {
       triangles += physique.indices.length / 3;
     }
     assert.equal(triangles, m.statistiques.trianglesSol);
-    assert.equal(m.statistiques.trianglesEauIgnores, ['cote', 'pacifique'].includes(k.theme) ? 2 : 0);
+    // Compter les triangles réellement dessinés avec la matière eau, y compris le nouveau lac du Baïkal.
+    // La géométrie transmise plus haut reste contrôlée indépendamment pour chaque nappe solide.
+    let trianglesEau = 0;
+    for (const n of d.nappes) for (let t = 0; t < n.indices.length; t += 3) {
+      if ([0, 1, 2].every(j => n.sommets[n.indices[t + j] * 13 + 9] === 12)) trianglesEau++;
+    }
+    assert.equal(m.statistiques.trianglesEauIgnores, trianglesEau);
     assert.equal(hash({ x: c.x, y: c.y, z: c.z, cap: c.cap, G: c.limiteG, D: c.limiteD, obstacles: d.obstacles }), avant);
   });
   verifier(k.nom + ' : tous les solides historiques et le mobilier marqué sont enregistrés une fois', () => {

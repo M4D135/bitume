@@ -1,0 +1,23 @@
+{
+  "source": "https://data.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevation.json",
+  "resource": "ign_lidar_hd_mnt_mono_wld",
+  "requested_grid": {
+    "width": 65,
+    "height": 65,
+    "lon0": 5.3658,
+    "lon1": 5.381,
+    "lat0": 43.2906,
+    "lat1": 43.3018
+  },
+  "count": 4225,
+  "nodata": 0,
+  "range": [
+    -3.77,
+    41.74
+  ],
+  "sha256": "eba0bca0ff828a052254bf77047e3a0fdc54fdb31499a2020360bdda808f89c0",
+  "bytes": 302653,
+  "seconds": 9.46,
+  "sampling_purpose": "Reconnaissance du relief du cœur; densification près de la chaussée nécessaire; pas une certification de précision verticale",
+  "acquired_utc": "2026-11-19T20:27:06Z"
+}

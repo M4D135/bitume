@@ -1,0 +1,57 @@
+{
+  "lot": "Dégagement de la signalisation des stands",
+  "commit_preparation_local": "a345007f9846946e0cf063f885f186d0120c007c",
+  "commit_integre_local": "23586a8",
+  "cause": {
+    "foret": {
+      "premiere_divergence_pas": 1172,
+      "premier_contact_secondes": 3.2583333333333333,
+      "sequence": "Impact du rival 3 sur le nouveau poteau, roue cassée, replacement puis collision en chaîne ; rival 2 replacé à 5,192 s."
+    },
+    "baikal": {
+      "premiere_divergence_pas": 1191,
+      "premier_contact_secondes": 3.3,
+      "sequence": "Impact du rival 4 sur le même type de poteau, roue cassée, replacement puis collision en chaîne ; rival 2 replacé à 4,775 s."
+    },
+    "comparaison": "États des douze voitures identiques pas à pas avant le premier impact dans les comparaisons avec/sans architecture."
+  },
+  "correction": "Panneau complet et poteau en amont de c.stands.debut, derrière le vrai muret et hors du bord extérieur de la voie ; marge de 20 cm. Collision du poteau conservée et vérifiée au lieu dessiné.",
+  "qualification": [
+    {
+      "suite": "batiments-stands",
+      "succes": 31
+    },
+    {
+      "suite": "obstacles-degagement",
+      "succes": 5
+    },
+    {
+      "suite": "russie",
+      "succes": 9
+    },
+    {
+      "suite": "stands-pneus",
+      "succes": 30
+    },
+    {
+      "suite": "physx-stands",
+      "succes": 11
+    },
+    {
+      "suite": "physique-stands",
+      "succes": 5
+    }
+  ],
+  "total": 91,
+  "echecs": 0,
+  "huit_circuits_controles": true,
+  "empreintes_sources": {
+    "src/batiments.js": "67fd03ce58096e60aee06f31160ec849bf950fb6d500c8731a62a1bb08938025",
+    "verifications/batiments-stands.test.mjs": "a2122981a02c5826a9a0edef02a7db7173b39858d05141600baa766f79a81999"
+  },
+  "limites": [
+    "Les deux courses de régression neige utilisent le chemin historique B.obstacles ; les suites de stands couvrent également le vrai montage PhysX.",
+    "Qualification ciblée de la correction ; le passage complet de l’union est consigné séparément.",
+    "Aucun seuil de course, fixture de simulation ou réglage de conduite n’a été modifié."
+  ]
+}

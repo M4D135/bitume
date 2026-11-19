@@ -1,0 +1,26 @@
+{
+  "relationId": 148194,
+  "relationVersion": 61,
+  "originNodeId": 4937755860,
+  "directionWayId": 166399479,
+  "directionForward": true,
+  "excludedWays": [
+    {"wayId": 850261588, "reason": "Voie des stands, role pit_lane explicite ; conservee comme voie auxiliaire."},
+    {"wayId": 1388331347, "reason": "Sortie des stands nommee dans OSM, role de relation vide ; double la portion principale Sainte-Devote et cree deux sommets de degre 3. Conservee comme voie auxiliaire."}
+  ],
+  "restrictedWays": [
+    {"wayId": 1551240829, "fromNodeId": 14109303023, "toNodeId": 21912962, "reason": "Garder la continuation commune vers Monte-Carlo. Le prefixe 14109303022 vers 14109303023 est une branche de voirie, pas un second passage du tour."}
+  ],
+  "addedWays": [
+    {"wayId": 35092475, "fromNodeId": 918118157, "toNodeId": 12571844664, "reason": "Sous-chaine de l'avenue Princesse Alice relevee dans l'extrait de zone : raccord continu entre Ostende et la voie 1551240830, sans segment cree."}
+  ],
+  "selectionStatus": "Boucle de reconnaissance sur les voies OSM ; la ligne centrale et les limites de course FIA restent a mesurer.",
+  "alternateGapPath": {
+    "description": "L'autre branche via le noeud 14109303022 est egalement une voirie OSM. Elle est conservee pour l'audit, sans etre fusionnee ni moyenne avec le candidat principal.",
+    "replaceWays": [35092475, 1551240830, 1551240829],
+    "ranges": [
+      {"wayId": 35092475, "fromNodeId": 918118157, "toNodeId": 14109303022},
+      {"wayId": 1551240829, "fromNodeId": 14109303022, "toNodeId": 21912962}
+    ]
+  }
+}

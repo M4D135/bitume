@@ -28,7 +28,7 @@ verifier('type de pneu invalide ou hérité : repli slick sans plantage, avec ou
 });
 
 verifier('tous les maillages de roue ont des faces finies, non dégénérées, orientées vers leurs normales', () => {
-  const formes = Object.values(V.FORMES).filter(f => /^bitume-(pneu-|jante-|rayons-|bague-pneu-|disque-roue-)/.test(f.nom));
+  const formes = Object.values(V.FORMES).filter(f => /^bitume-(pneu-|jante-|rayons-|moyeu-roue-|valve-roue|bague-pneu-|disque-roue-)/.test(f.nom));
   assert.ok(formes.length > 30);
   for (const f of formes) for (const tr of f.tri) {
     assert.ok(tr.flat().every(Number.isFinite), f.nom);

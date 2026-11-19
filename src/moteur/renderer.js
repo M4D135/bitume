@@ -13,10 +13,10 @@
   // Optional surface recipes. Existing material IDs keep their original appearance;
   // hosts opt in per mesh (or terrain vertex), without another draw pass or texture.
   const MATERIALS = Object.freeze({weatheredAsphalt:21,weatheredConcrete:22,weatheredStone:23,weatheredPaint:24,
-    organicSoil:25,fibrousBark:26,botanicalFoliage:27});
+    organicSoil:25,fibrousBark:26,botanicalFoliage:27,fineLeather:28,wovenFabric:29});
   function materialFamily(value){
     const recipe=Math.floor(value+.5);
-    return recipe===21?14:recipe===22?3:recipe===23?9:recipe===24?16:recipe===25?8:recipe===26?10:recipe===27?11:value;
+    return recipe===21?14:recipe===22?3:recipe===23?9:recipe===24?16:recipe===25?8:recipe===26?10:recipe===27?11:recipe===28?7:recipe===29?18:value;
   }
 
   // A lot may describe the FOV and viewport at which its near/far threshold was
@@ -416,6 +416,15 @@
     gradient*=min(1.,scale*.35/max(length(gradient),.000001));
     return normalize(scale*n-gradient);
   }
+  vec3 microReliefNormal(vec3 n,float height) {
+    // The historical relief helper has a metre-scale determinant floor. Small
+    // objects need its scale-invariant equivalent; old materials keep that path.
+    vec3 dx=dFdx(vWorld),dy=dFdy(vWorld),r1=cross(dy,n),r2=cross(n,dx);
+    float det=dot(dx,r1);
+    vec3 gradient=sign(det)*(dFdx(height)*r1+dFdy(height)*r2)/max(abs(det),1e-14);
+    gradient*=min(1.,.35/max(length(gradient),1e-7));
+    return normalize(n-gradient);
+  }
   vec3 fresnelSchlick(float cosine,vec3 f0){
     float q=1.-clamp(cosine,0.,1.),q2=q*q;
     return f0+(1.-f0)*q2*q2*q;
@@ -481,8 +490,8 @@
     groundCoverDiscard();
     vec3 geometricNormal=normalize(vNormal), n=geometricNormal, an=abs(normalize(vSurfaceNormal));
     vec2 uv=an.y>.65?vSurface.xz:(an.x>an.z?vSurface.zy:vSurface.xy);
-    float recipe=vMaterial>20.5&&vMaterial<27.5?floor(vMaterial+.5)-20.:0.;
-    float m=recipe==1.?14.:recipe==2.?3.:recipe==3.?9.:recipe==4.?16.:recipe==5.?8.:recipe==6.?10.:recipe==7.?11.:vMaterial, emission=vEmission;
+    float recipe=vMaterial>20.5&&vMaterial<29.5?floor(vMaterial+.5)-20.:0.;
+    float m=recipe==1.?14.:recipe==2.?3.:recipe==3.?9.:recipe==4.?16.:recipe==5.?8.:recipe==6.?10.:recipe==7.?11.:recipe==8.?7.:recipe==9.?18.:vMaterial, emission=vEmission;
     vec3 base=vec3(.105,.135,.15),windowGlow=vec3(0.);
     float night=clamp(uNightHour.x,0.,1.)*vOutdoor;float lateHour=uNightHour.y<12.?uNightHour.y+24.:uNightHour.y;float evening=1.-smoothstep(23.,26.,lateHour);
     float roughness=.47,metalness=.65,organicHeight=0.,urbanHeight=0.,pbrWeight=0.,pbrLayer=1.,recipeHeight=0.;
@@ -576,7 +585,7 @@
         roughness=.93+.04*structure;metalness=0.;
         recipeHeight=(fibres-.5)*.018+(fine-.5)*.003;
         cavity=1.-split*.16-collar*.06;
-      }else{
+      }else if(recipe<7.5){
         // Veins and wax follow the plant, rather than sliding through it in wind.
         // Broad variations remain when distant fine detail has been integrated.
         if(vColor.w<.5)tint=vec3(.20,.34,.09);
@@ -595,6 +604,47 @@
         recipeHeight=(tissue-.5)*.0012+veins*.0005;
         cavity=.79+.21*top;
         leafTransmission=(.26+.16*pigment)*(.65+.35*top);
+      }else{
+        // Upholstery is measured in object metres, even on a static mesh which
+        // did not opt into surface:'object'. Translation/rotation never resample
+        // its grain. Only the normal changes: silhouettes and depth stay exact.
+        vec3 local=vLocal*vDimensions;
+        vec3 localNormal=abs(normalize(vFaceNormal/max(vDimensions,vec3(.0001))));
+        vec2 clothUV=localNormal.y>.65?local.xz:(localNormal.x>localNormal.z?local.zy:local.xy);
+        float span=max(fwidth(clothUV).x,fwidth(clothUV).y);
+        if(vColor.w<.5)tint=recipe<8.5?vec3(.07,.06,.05):vec3(.42,.44,.46);
+        // A colour-derived seed is stable on animated parts: unlike world
+        // position or their changing length, it cannot make the grain swim.
+        float seed=hash(tint.rg*vec2(71.3,93.1)+tint.bb*37.4);
+        vec2 oriented=mat2(.819152,-.573576,.573576,.819152)*clothUV+seed*17.;
+        vec2 warp=vec2(surfaceNoise(oriented+5.1,57.,span),surfaceNoise(oriented+19.7,83.,span))-.5;
+        vec2 grainUV=oriented+warp*.0011;
+        float grainSpan=max(fwidth(grainUV).x,fwidth(grainUV).y);
+        metalness=0.;
+        if(recipe<8.5){
+          // Rounded pores and subdued broad folds, no regular tile or seam.
+          float folds=surfaceNoise(oriented*vec2(1.,.55)+17.,35.,span);
+          float pores=surfaceNoise(grainUV+3.7,410.,grainSpan);
+          float fine=surfaceNoise(grainUV+23.1,1050.,grainSpan);
+          float valleys=(1.-pores)*(1.-pores);
+          base=tint*(.94+(pores-.5)*.10+(folds-.5)*.045);
+          roughness=.60+(pores-.5)*.10+(fine-.5)*.035;
+          recipeHeight=(pores-.5)*.00032+(fine-.5)*.000045+(folds-.5)*.00014;
+          cavity=1.-valleys*.045;
+        }else{
+          // Smooth periodic yarns cross over/under; both frequencies tend to
+          // their analytic mean before Nyquist. No unfiltered checkerboard.
+          vec2 phase=grainUV*820.;
+          vec2 detail=vec2(1.)-smoothstep(vec2(.30),vec2(.80),fwidth(phase));
+          vec2 yarn=cos(phase*6.2831853)*detail;
+          float crossing=.5+.5*sin(phase.x*3.14159265)*sin(phase.y*3.14159265)*detail.x*detail.y;
+          float weave=mix(yarn.x,yarn.y,crossing);
+          float fibre=surfaceNoise(grainUV+29.4,1550.,grainSpan);
+          base=tint*(.94+weave*.035+(fibre-.5)*.035);
+          roughness=.88-weave*.035+(fibre-.5)*.045;
+          recipeHeight=weave*.000030+(fibre-.5)*.000015;
+          cavity=.985+weave*.015;
+        }
       }
     } else if (m<.5) {
       base*=.82+grain*.27+broad*.17;
@@ -813,7 +863,8 @@
       float tread=(1.-smoothstep(.26,.34,abs(fract(treadUV.x)-.5)))*(1.-smoothstep(.08,.16,abs(fract(treadUV.y)-.5)));
       height=(1.-grid(uv*.5,.007)*architectural)*.006+tread*.0018*fineDetail;
     }
-    if(recipe>.5)n=reliefNormal(n,recipeHeight);
+    if(recipe>7.5)n=microReliefNormal(n,recipeHeight);
+    else if(recipe>.5)n=reliefNormal(n,recipeHeight);
     else{
       if(m<3.5)n=reliefNormal(n,height);
       if(m>7.5&&m<9.5)n=reliefNormal(n,(noise(uv*7.)-.5)*.009*fineDetail);
@@ -2065,7 +2116,7 @@
         [x,z]=[c[1]*x+sn[1]*z,-sn[1]*x+c[1]*z];
         return [c[2]*x-sn[2]*y+p[0],sn[2]*x+c[2]*y+p[1],z+p[2]];
       }
-      const recipe=mesh.mat||0,mat=Math.max(0,Math.min(12,Math.floor(recipe>24.5&&recipe<27.5?materialFamily(recipe):recipe))),outdoor=outdoorMesh(mesh,environment),color=mesh.color?(mat<4?mesh.color.map(v=>v*.65):mat>=8?mesh.color.map((v,k)=>v*.65+palette[mat][k]*.35):mesh.color):palette[mat],shape=mesh.shape||'box';
+      const recipe=mesh.mat||0,mat=Math.max(0,Math.min(12,Math.floor(recipe>27.5&&recipe<29.5?7:recipe>24.5&&recipe<27.5?materialFamily(recipe):recipe))),outdoor=outdoorMesh(mesh,environment),color=mesh.color?(mat<4?mesh.color.map(v=>v*.65):mat>=8?mesh.color.map((v,k)=>v*.65+palette[mat][k]*.35):mesh.color):palette[mat],shape=mesh.shape||'box';
       const object=(surfaceFlags(mesh,environment,objects)&4)!==0;
       const emission=(mesh.groundCover===true?0:mesh.emissive||0)+(mat===4?.72:mat===5?.68:mat===6?.18:0);
       const shapeSet=coarse?coarseBase:base,template=shapeSet[shape]||shapeSet.box,vertices=template.vertices.map(transform),faces=template.faces.map((v,index)=>{

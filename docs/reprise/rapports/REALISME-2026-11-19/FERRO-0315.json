@@ -1,0 +1,51 @@
+{
+  "version": "0.3.15",
+  "modulesChecked": 34,
+  "changedModules": [
+    {
+      "id": "render",
+      "path": "src/moteur/renderer.js",
+      "sha256": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8"
+    },
+    {
+      "id": "webgpu-shaders",
+      "path": "src/ferro/webgpu-shaders.js",
+      "sha256": "e2bbd9acc7aa6b5eee46bf82efb6ce3fb920b6300a6d435ae7769b044d376cc7"
+    },
+    {
+      "id": "recipes",
+      "path": "src/ferro/recipes.js",
+      "sha256": "4f1d43f7209a1d398a966a4bb2ddd8f1b8b47bb40328d51257328b6dec8c71cc"
+    },
+    {
+      "id": "host",
+      "path": "src/ferro/engine.js",
+      "sha256": "2742e470aecbd0f0a890c403d72da633012498592bdd9563c9a967b40468f9a6"
+    }
+  ],
+  "canonicalCommit": "47a1f7662028f9c84966b7c335b6cd10f3021086",
+  "canonicalTree": "11559c8e72320a99d171b9af3a8b67c90f3277d2",
+  "canonicalHead": "f77f5b0c474dddc0adf3348e8d869c03ee6a8a03",
+  "canonicalPR": "https://github.com/M4D135/FERRO/pull/4",
+  "archiveSha256": "2dc6f47538bc29b1400bbc852654fb8b9f9a88b1f4a0945a4eeb31c7c45797e7",
+  "archiveBytes": 6295979,
+  "canonicalLocalTests": {
+    "tests": 214,
+    "pass": 213,
+    "fail": 0,
+    "todo": 1
+  },
+  "ci": {
+    "pullRequestRun": 44614706968,
+    "mainRun": 44615070257,
+    "status": "not_started_infrastructure_failure",
+    "stepsExecuted": 0,
+    "observation": "GitHub Actions reports recent account payments failed or a spending limit increase is needed. No billing or protection settings were changed."
+  },
+  "limitations": [
+    "No complete browser visual qualification or WebGPU pixels.",
+    "Software EGL timing is not a hardware FPS measurement.",
+    "EMPRISE isolated comparison remains 10/12 with two identical inherited failures; full build lacks city-data.js."
+  ],
+  "portee": "Recettes cuir/tissu procédurales opt-in, distribuées par le FERRO canonique puis installées officiellement dans BITUME. Les empreintes verrouillées sont vérifiées avant le build."
+}

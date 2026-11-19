@@ -340,6 +340,111 @@
     throw new Error('BITUME : aucun tracé valide pour la graine ' + graine);
   }
 
+  // ---------------------------------------------------------------- tracé métrique fourni (fondation 14B1)
+  // Contrat v1 : { unite: 'm', points: [{ x, y, z, largeurG, largeurD, devers?, limiteG?, limiteD? }], pasMax?: 2 }.
+  // x/z sont des coordonnées locales métriques, y une altitude dans le même repère ; dévers en radians,
+  // largeurs et limites des distances positives depuis l'axe. Le dernier point répète exactement le premier,
+  // profils compris : aucune fermeture forcée, transformation géographique, mise à l'échelle ou lissage caché.
+  // L'abscisse est la distance EN PLAN de cette polyligne (pente = dy/ds). Les sommets source sont conservés
+  // séparément pour le futur raffinement visuel : la grille uniforme ne prétend pas passer par chaque sommet.
+  // Géométrie seulement : pas de largeur scalaire, de ligne idéale, de vitesse, de grille ni de stands inventés.
+  // Les consommateurs de course/décor à largeur fixe, les croisements et couches restent à raccorder et qualifier.
+  const CHAMPS_TRACE = Object.freeze(['x', 'y', 'z', 'largeurG', 'largeurD', 'devers', 'limiteG', 'limiteD']);
+  const CHAMPS_LECTURE_TRACE = Object.freeze([...CHAMPS_TRACE, 'courbure', 'pente']);
+  function creerDepuisTrace(donnees) {
+    const erreur = message => { throw new RangeError('BITUME : tracé explicite — ' + message); };
+    if (!donnees || donnees.unite !== 'm') erreur('unité locale métrique « m » requise');
+    const points = donnees.points;
+    if (!Array.isArray(points) || points.length < 4 || points.length > 250001) erreur('au moins trois sommets et leur fermeture explicite requis (250 000 segments maximum)');
+    const pasMax = donnees.pasMax === undefined ? PAS : donnees.pasMax;
+    if (!Number.isFinite(pasMax) || pasMax <= 0) erreur('pasMax doit être strictement positif et fini');
+    if (donnees.nom !== undefined && (typeof donnees.nom !== 'string' || !donnees.nom.trim())) erreur('nom invalide');
+    const champs = CHAMPS_TRACE;
+    const source = points.map((p, i) => {
+      if (!p || typeof p !== 'object') erreur('point ' + i + ' invalide');
+      const q = { x: p.x, y: p.y, z: p.z, largeurG: p.largeurG, largeurD: p.largeurD,
+        devers: p.devers === undefined ? 0 : p.devers,
+        limiteG: p.limiteG === undefined ? p.largeurG : p.limiteG,
+        limiteD: p.limiteD === undefined ? p.largeurD : p.limiteD };
+      if (!champs.every(k => Number.isFinite(q[k]))) erreur('point ' + i + ' : coordonnées/profils non finis ou manquants');
+      if (q.largeurG <= 0 || q.largeurD <= 0 || q.limiteG < q.largeurG || q.limiteD < q.largeurD) erreur('point ' + i + ' : largeurs positives et limites au-delà des bords requises');
+      if (Math.abs(q.devers) >= Math.PI / 2) erreur('point ' + i + ' : dévers hors du domaine de la chaussée');
+      return Object.freeze(q);
+    });
+    const m = source.length - 1;
+    if (!champs.every(k => source[0][k] === source[m][k])) erreur('boucle non fermée : dernier point et profils différents du premier');
+    const abscisses = new Float64Array(m + 1);
+    for (let i = 0; i < m; i++) {
+      const a = source[i], b = source[i + 1], ds = Math.hypot(b.x - a.x, b.z - a.z);
+      if (!Number.isFinite(ds) || ds <= 1e-9) erreur('segment ' + i + ' nul, vertical ou non fini');
+      abscisses[i + 1] = abscisses[i] + ds;
+      if (!Number.isFinite(abscisses[i + 1]) || abscisses[i + 1] <= abscisses[i]) erreur('longueur non représentable');
+    }
+    for (let i = 0; i < m; i++) {
+      const a = source[(i + m - 1) % m], b = source[i], d = source[i + 1];
+      const ux = b.x - a.x, uz = b.z - a.z, vx = d.x - b.x, vz = d.z - b.z;
+      const lu = Math.hypot(ux, uz), lv = Math.hypot(vx, vz);
+      if (Math.hypot(ux / lu + vx / lv, uz / lu + vz / lv) < 1e-8) erreur('demi-tour ponctuel au sommet ' + i);
+    }
+    const L = abscisses[m], n = Math.max(8, Math.ceil(L / pasMax));
+    if (!Number.isSafeInteger(n) || n > 250000) erreur('résolution supérieure à 250 000 échantillons');
+    const pas = L / n, c = { type: 'trace-explicite', formatTrace: 1, unite: 'm', pretPourCourse: false,
+      nom: donnees.nom || 'Tracé explicite', longueur: L, pas, n, depart: 0,
+      sourceTrace: Object.freeze(source), abscissesSource: abscisses };
+    for (const k of champs) c[k] = new Float64Array(n);
+    let segment = 0;
+    for (let i = 0; i < n; i++) {
+      const s = i * pas;
+      while (segment < m - 1 && s >= abscisses[segment + 1]) segment++;
+      const a = source[segment], b = source[segment + 1];
+      const t = (s - abscisses[segment]) / (abscisses[segment + 1] - abscisses[segment]);
+      for (const k of champs) c[k][i] = a[k] + (b[k] - a[k]) * t;
+    }
+    c.cap = new Float64Array(n); c.courbure = new Float64Array(n); c.pente = new Float64Array(n);
+    // Dérivées centrées sur la grille périodique. Le cap est une direction, sa différence est donc repliée à ±π.
+    // Une résolution qui écrase une boucle ou un demi-tour est rejetée, pas réparée en déplaçant les points.
+    for (let i = 0; i < n; i++) {
+      const a = (i + n - 1) % n, b = (i + 1) % n, dx = c.x[b] - c.x[a], dz = c.z[b] - c.z[a];
+      if (Math.hypot(dx, dz) < 1e-9 || Math.hypot(c.x[b] - c.x[i], c.z[b] - c.z[i]) < 1e-9) erreur('tangente dégénérée : diminuer pasMax ou corriger le relevé');
+      c.cap[i] = Math.atan2(dz, dx);
+      c.pente[i] = (c.y[b] - c.y[a]) / (2 * pas);
+    }
+    for (let i = 0; i < n; i++) c.courbure[i] = angle(c.cap[(i + 1) % n] - c.cap[(i + n - 1) % n]) / (2 * pas);
+    const problemes = validerTrace(c);
+    if (problemes.length) erreur(problemes.join(' ; '));
+    return c;
+  }
+
+  function validerTrace(c) {
+    const pb = [], n = c && c.n;
+    if (!Number.isSafeInteger(n) || n < 8 || n > 250000 || !Number.isFinite(c.pas) || c.pas <= 0 || !Number.isFinite(c.longueur) || c.longueur <= 0) return ['grille métrique invalide'];
+    if (Math.abs(c.longueur - n * c.pas) > Math.max(1e-9, c.longueur * 1e-12)) pb.push('longueur différente de n × pas');
+    const champs = ['x', 'y', 'z', 'cap', 'courbure', 'pente', 'devers', 'largeurG', 'largeurD', 'limiteG', 'limiteD'];
+    if (!champs.every(k => c[k] && c[k].length === n && c[k].every(Number.isFinite))) return pb.concat('valeurs non finies ou tableaux de mauvaise taille');
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n;
+      if (Math.hypot(c.x[j] - c.x[i], c.z[j] - c.z[i]) < 1e-9) { pb.push('segment échantillonné nul'); break; }
+      if (c.largeurG[i] <= 0 || c.largeurD[i] <= 0 || c.limiteG[i] < c.largeurG[i] || c.limiteD[i] < c.largeurD[i] || Math.abs(c.devers[i]) >= Math.PI / 2) { pb.push('profil de chaussée invalide'); break; }
+    }
+    return pb;
+  }
+
+  function lireTrace(c, s, champ) {
+    const f = ramener(c, s) / c.pas, entier = Math.floor(f), i = entier % c.n, j = (i + 1) % c.n;
+    return c[champ][i] + (c[champ][j] - c[champ][i]) * (f - entier);
+  }
+  function echantillonTrace(c, s, sortie) {
+    if (!sortie) sortie = {};
+    const f = ramener(c, s) / c.pas, entier = Math.floor(f), i = entier % c.n, j = (i + 1) % c.n;
+    for (const k of CHAMPS_LECTURE_TRACE) sortie[k] = c[k][i] + (c[k][j] - c[k][i]) * (f - entier);
+    sortie.cap = c.cap[i] + angle(c.cap[j] - c.cap[i]) * (f - entier);
+    return sortie;
+  }
+  // Demi-largeur gauche/droite ; le générateur historique reste à largeur constante.
+  function largeurA(c, s, cote) {
+    return c.type === 'trace-explicite' ? lireTrace(c, s, cote < 0 ? 'largeurG' : 'largeurD') : c.largeur / 2;
+  }
+
   // Premier échantillon du tunnel (N échantillons) : au milieu de la plus longue portion droite (rayon > 400 m) entre 30 et
   // 92 % du tour ; −1 s'il n'y en a pas d'assez longue.
   function choisirTunnel(courbure, n, N) {
@@ -368,6 +473,7 @@
   // le tracé des dizaines de fois par voiture et par pas ; sans objet à remplir, chaque lecture est un objet jeté.
   // Les nombres sont les mêmes au bit près dans les deux cas (mêmes opérations, même ordre).
   function echantillon(c, s, sortie) {
+    if (c.type === 'trace-explicite') return echantillonTrace(c, s, sortie);
     s = ramener(c, s);
     const f = s / PAS, i = Math.floor(f) % c.n, j = (i + 1) % c.n, t = f - Math.floor(f);
     const X = c.x, Y = c.y, Z = c.z, K = c.courbure, Pe = c.pente, D = c.devers, Li = c.ligne, V = c.vitesse;
@@ -405,14 +511,17 @@
     return d;
   }
   function vibreurA(c, s, cote) {
+    if (c.type === 'trace-explicite') return false; // aucun vibreur déduit du seul relevé de l'axe
     const i = Math.round(ramener(c, s) / PAS) % c.n;
     return !!(c.vibreur[i] & (cote < 0 ? 1 : 2));
   }
   function limiteA(c, s, cote) {
+    if (c.type === 'trace-explicite') return lireTrace(c, s, cote < 0 ? 'limiteG' : 'limiteD');
     const i = Math.round(ramener(c, s) / PAS) % c.n;
     return cote < 0 ? c.limiteG[i] : c.limiteD[i];
   }
   function valider(c) {
+    if (c && c.type === 'trace-explicite') return validerTrace(c);
     const pb = [];
     const finis = ['x', 'y', 'z', 'cap', 'courbure', 'pente', 'devers', 'ligne', 'vitesse'].every(k => c[k].length === c.n && c[k].every(Number.isFinite));
     if (!finis) pb.push('valeurs non finies ou tableaux de mauvaise taille');
@@ -427,5 +536,5 @@
     return pb;
   }
 
-  B.circuit = { creer, echantillon, point, repere, ecart, vibreurA, limiteA, valider, dansTunnel, choisirTunnel, PAS, LARGEUR };
+  B.circuit = { creer, creerDepuisTrace, echantillon, point, repere, ecart, vibreurA, limiteA, largeurA, valider, dansTunnel, choisirTunnel, PAS, LARGEUR };
 })(globalThis.BITUME = globalThis.BITUME || {});

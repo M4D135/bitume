@@ -79,7 +79,7 @@ test('main droite au levier puis retour ; main gauche reste au volant', () => {
   ev.pilote.passage = .5; dessiner(mod, ev);
   const milieu = Array.from(rig.articulations);
   assert.deepEqual(milieu.slice(0, 9), debut.slice(0, 9), 'bras gauche indépendant du passage');
-  assert.ok(distance(point(milieu, 15), point(debut, 15)) > .1, 'main droite quitte sa prise');
+  assert.ok(distance(point(milieu, 15), point(debut, 15)) > .045, 'main droite quitte sa prise pour le levier rapproché');
   assert.ok(distance(Array.from(role(rig, 0, 'gant-1-0').p), Array.from(role(rig, 0, 'pommeau').p)) < .09, 'gant rejoint le pommeau');
   assert.ok(rig.tete[1] < 0, 'regard accompagne le levier vers le bas');
   ev.pilote.passage = 1; dessiner(mod, ev);
@@ -98,16 +98,16 @@ test('le volant entraîne les deux mains et le regard suit la direction', () => 
   assert.ok(rig.tete[2] < 0, 'avant du casque vers la gauche');
 });
 
-test('630 poses : segments de 22/23 cm, coudes contenus et matrices finies', () => {
+test('630 poses : segments de 21/23 cm, coudes repliés dans la cuve et matrices finies', () => {
   const mod = modele(), ev = pose();
   for (const volant of [-1, -.5, 0, .5, 1]) for (let rapport = 1; rapport <= 6; rapport++) for (let f = 0; f <= 20; f++) {
     Object.assign(ev.pilote, { volant, rapport, rapportAvant: rapport - 1, passage: f / 20 });
     const sortie = dessiner(mod, ev), A = mod.objetsRendu.pilote.articulations;
     for (let h = 0; h < 2; h++) {
       const j = h * 9;
-      proche(distance(point(A, j), point(A, j + 3)), .22);
+      proche(distance(point(A, j), point(A, j + 3)), .21);
       proche(distance(point(A, j + 3), point(A, j + 6)), .23);
-      assert.ok(A[j + 4] > .69 && Math.abs(A[j + 5]) < .39, 'coude au-dessus du bord, dans une enveloppe bornée');
+      assert.ok(A[j + 4] > .515 && A[j + 4] < .64 && Math.abs(A[j + 5]) < .18, 'coude sous le bord, au-dessus du fond et proche du buste');
     }
     for (const o of sortie) for (const k of ['p', 'r', 's', 'color']) assert.ok(Array.from(o[k]).every(Number.isFinite), k);
   }
@@ -129,7 +129,7 @@ test('les trois LOD conservent les mêmes articulations et transformations des b
   assert.deepEqual(tetes[1], tetes[0]); assert.deepEqual(tetes[2], tetes[0]);
 });
 
-test('les cylindres rendus rejoignent les articulations sous toute attitude de caisse', () => {
+test('les volumes des bras rejoignent les articulations sous toute attitude de caisse', () => {
   const mod = modele(), ev = pose(); ev.pilote.volant = .7; ev.pilote.passage = .55;
   dessiner(mod, ev);
   const R = mod.objetsRendu.pilote, caisse = V.attitude(ev.cap, ev.tangage, ev.roulis);
@@ -165,13 +165,13 @@ test('les gants gardent formes, repères et prises autour des ancrages extérieu
   }
 });
 
-test('bras continus au centre et au levier : coudes et poignets au-dessus du bord du cockpit', () => {
+test('bras contenus au centre et au levier : coudes abaissés et prise naturelle', () => {
   const mod = modele(), ev = pose();
   for (const passage of [0, .15, .3, .45, .65, .82, 1]) {
     ev.pilote.passage = passage; dessiner(mod, ev); const A = mod.objetsRendu.pilote.articulations;
     for (const j of [0, 9]) {
-      assert.ok(A[j + 4] - .0375 > .65, 'manche au coude hors du jonc');
-      assert.ok(A[j + 7] - .0325 > .65, 'avant-bras raccordé au gant sans passer sous le bord');
+      assert.ok(A[j + 4] + .0375 < .65 && A[j + 4] - .0375 > .48, 'coude dans la profondeur utile de la cuve');
+      assert.ok(Math.abs(A[j + 8]) < .18 && A[j + 7] < .74, 'prise contenue près du volant ou du levier');
     }
   }
 });

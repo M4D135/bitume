@@ -5,7 +5,11 @@ import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import { createContext, runInContext } from 'node:vm';
 const require = createRequire(import.meta.url);
-for (const n of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'course', 'carene', 'ecologie', 'saisons', 'vegetation', 'decor']) require('../src/' + n + '.js');
+// La comparaison avec/sans botanique doit porter sur le même décor. Ces dépendances de decor.js
+// sont automatiques en CommonJS, mais pas dans le contexte navigateur simulé par la VM.
+const MODULES_DECOR = ['carene', 'ecologie', 'saisons', 'vegetation',
+  'chaussee', 'virages', 'baikal', 'batiments', 'decor'];
+for (const n of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'course', ...MODULES_DECOR]) require('../src/' + n + '.js');
 const B = globalThis.BITUME, options = { theme: 'pacifique', longueur: 5200, nom: 'Cap-Séquoia' };
 const c = B.circuit.creer(157, options), ete = B.decor.construire(c, { qualite: 'high', saison: 'ete' });
 const mesures = { longueur: c.longueur, denivelePiste: Math.max(...c.y) - Math.min(...c.y),
@@ -142,11 +146,13 @@ verifier('chaque grand tronc reste visible au loin avec une seule collision', ()
 verifier('la vraie botanique garde aussi les troncs proches et lointains identiques', () => {
   // Contexte séparé : activer les couronnes de production ne change pas les autres contrôles de cette suite.
   const contexte = createContext({});
-  for (const module of ['circuit', 'carene', 'botanique', 'ecologie', 'saisons', 'vegetation', 'decor']) {
+  for (const module of ['circuit', ...MODULES_DECOR, 'botanique']) {
     runInContext(readFileSync(new URL('../src/' + module + '.js', import.meta.url), 'utf8'), contexte, { filename: module + '.js' });
   }
   const prod = contexte.BITUME, circuit = prod.circuit.creer(157, options);
   const decor = prod.decor.construire(circuit, { qualite: 'high', saison: 'ete' });
+  assert.ok(prod.baikal && prod.batiments && decor.architecture, 'mêmes modules de décor dans Node et la VM');
+  assert.equal(JSON.stringify(decor.architecture), JSON.stringify(ete.architecture), 'mêmes sites architecturaux avec/sans botanique');
   const pres = prod.botanique.nomForme('conifere', false, 'high'), loin = prod.botanique.nomForme('conifere', true, 'high');
   assert.equal(decor.lots.reduce((n, l) => n + l.objets.filter(o => o.shape === pres).length, 0), decor.arbres.length);
   assert.equal(decor.lots.reduce((n, l) => n + l.loin.filter(o => o.shape === loin).length, 0), decor.arbres.length);

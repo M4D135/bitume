@@ -632,14 +632,15 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <div id="vue-course">
     <canvas id="scene" aria-label="Vue de la course"></canvas>
     <canvas id="scene2" aria-label="Vue du joueur 2"></canvas>
-    <canvas id="glace-g" class="glace" aria-hidden="true" hidden></canvas>
-    <canvas id="glace-d" class="glace" aria-hidden="true" hidden></canvas>
     <canvas id="retro-rendu" class="retro-rendu" aria-hidden="true"></canvas>
     <canvas id="meteo" aria-hidden="true"></canvas>
-    <div id="glaces2" class="glaces2" aria-hidden="true"><canvas id="glace-g2" class="glace" hidden></canvas><canvas id="glace-d2" class="glace" hidden></canvas></div>
     <canvas id="meteo2" aria-hidden="true"></canvas>
     <canvas id="vitre" class="vitre" aria-hidden="true"></canvas>
     <canvas id="vitre2" class="vitre" aria-hidden="true"></canvas>
+    <!-- Les glaces restent nettes : leurs images se composent après les précipitations et les dépôts. -->
+    <canvas id="glace-g" class="glace" aria-hidden="true" hidden></canvas>
+    <canvas id="glace-d" class="glace" aria-hidden="true" hidden></canvas>
+    <div id="glaces2" class="glaces2" aria-hidden="true"><canvas id="glace-g2" class="glace" hidden></canvas><canvas id="glace-d2" class="glace" hidden></canvas></div>
     <div id="vignette" aria-hidden="true"></div>
   </div>
 
@@ -710,7 +711,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.59">V0.2.59</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.60">V0.2.60</b>
     </div>
     <a class="signature" href="https://bitume.estrasse.fr/" download="BITUME.html" title="Télécharger BITUME"><img class="signature-avatar" src="data:image/jpeg;base64,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" alt="" />m4d135</a>
     <nav class="choix" aria-label="Menu principal">
@@ -1078,6 +1079,8 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       <div class="curseurs">
         <label>Champ du cockpit <output id="v-champ-valeur">60°</output> <input type="range" id="v-champ" min="60" max="105" step="1"></label>
         <label>Secousses <output id="v-secousses-valeur">100 %</output> <input type="range" id="v-secousses" min="0" max="1" step="0.05"></label>
+        <label>Gouttes sur l’écran <output id="v-gouttes-valeur">1,0 ×</output> <input type="range" id="v-gouttes" min="0" max="2" step="0.1" value="1" aria-describedby="v-gouttes-aide"></label>
+        <p class="aide-reglage" id="v-gouttes-aide">Pluie et neige sur la vitre. La vitesse les évacue ; à zéro, la vitre reste dégagée.</p>
       </div>
     </div>
       </div>
@@ -1178,10 +1181,10 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   // Optional surface recipes. Existing material IDs keep their original appearance;
   // hosts opt in per mesh (or terrain vertex), without another draw pass or texture.
   const MATERIALS = Object.freeze({weatheredAsphalt:21,weatheredConcrete:22,weatheredStone:23,weatheredPaint:24,
-    organicSoil:25,fibrousBark:26,botanicalFoliage:27});
+    organicSoil:25,fibrousBark:26,botanicalFoliage:27,fineLeather:28,wovenFabric:29});
   function materialFamily(value){
     const recipe=Math.floor(value+.5);
-    return recipe===21?14:recipe===22?3:recipe===23?9:recipe===24?16:recipe===25?8:recipe===26?10:recipe===27?11:value;
+    return recipe===21?14:recipe===22?3:recipe===23?9:recipe===24?16:recipe===25?8:recipe===26?10:recipe===27?11:recipe===28?7:recipe===29?18:value;
   }
 
   // A lot may describe the FOV and viewport at which its near/far threshold was
@@ -1581,6 +1584,15 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
     gradient*=min(1.,scale*.35/max(length(gradient),.000001));
     return normalize(scale*n-gradient);
   }
+  vec3 microReliefNormal(vec3 n,float height) {
+    // The historical relief helper has a metre-scale determinant floor. Small
+    // objects need its scale-invariant equivalent; old materials keep that path.
+    vec3 dx=dFdx(vWorld),dy=dFdy(vWorld),r1=cross(dy,n),r2=cross(n,dx);
+    float det=dot(dx,r1);
+    vec3 gradient=sign(det)*(dFdx(height)*r1+dFdy(height)*r2)/max(abs(det),1e-14);
+    gradient*=min(1.,.35/max(length(gradient),1e-7));
+    return normalize(n-gradient);
+  }
   vec3 fresnelSchlick(float cosine,vec3 f0){
     float q=1.-clamp(cosine,0.,1.),q2=q*q;
     return f0+(1.-f0)*q2*q2*q;
@@ -1646,8 +1658,8 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
     groundCoverDiscard();
     vec3 geometricNormal=normalize(vNormal), n=geometricNormal, an=abs(normalize(vSurfaceNormal));
     vec2 uv=an.y>.65?vSurface.xz:(an.x>an.z?vSurface.zy:vSurface.xy);
-    float recipe=vMaterial>20.5&&vMaterial<27.5?floor(vMaterial+.5)-20.:0.;
-    float m=recipe==1.?14.:recipe==2.?3.:recipe==3.?9.:recipe==4.?16.:recipe==5.?8.:recipe==6.?10.:recipe==7.?11.:vMaterial, emission=vEmission;
+    float recipe=vMaterial>20.5&&vMaterial<29.5?floor(vMaterial+.5)-20.:0.;
+    float m=recipe==1.?14.:recipe==2.?3.:recipe==3.?9.:recipe==4.?16.:recipe==5.?8.:recipe==6.?10.:recipe==7.?11.:recipe==8.?7.:recipe==9.?18.:vMaterial, emission=vEmission;
     vec3 base=vec3(.105,.135,.15),windowGlow=vec3(0.);
     float night=clamp(uNightHour.x,0.,1.)*vOutdoor;float lateHour=uNightHour.y<12.?uNightHour.y+24.:uNightHour.y;float evening=1.-smoothstep(23.,26.,lateHour);
     float roughness=.47,metalness=.65,organicHeight=0.,urbanHeight=0.,pbrWeight=0.,pbrLayer=1.,recipeHeight=0.;
@@ -1741,7 +1753,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
         roughness=.93+.04*structure;metalness=0.;
         recipeHeight=(fibres-.5)*.018+(fine-.5)*.003;
         cavity=1.-split*.16-collar*.06;
-      }else{
+      }else if(recipe<7.5){
         // Veins and wax follow the plant, rather than sliding through it in wind.
         // Broad variations remain when distant fine detail has been integrated.
         if(vColor.w<.5)tint=vec3(.20,.34,.09);
@@ -1760,6 +1772,47 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
         recipeHeight=(tissue-.5)*.0012+veins*.0005;
         cavity=.79+.21*top;
         leafTransmission=(.26+.16*pigment)*(.65+.35*top);
+      }else{
+        // Upholstery is measured in object metres, even on a static mesh which
+        // did not opt into surface:'object'. Translation/rotation never resample
+        // its grain. Only the normal changes: silhouettes and depth stay exact.
+        vec3 local=vLocal*vDimensions;
+        vec3 localNormal=abs(normalize(vFaceNormal/max(vDimensions,vec3(.0001))));
+        vec2 clothUV=localNormal.y>.65?local.xz:(localNormal.x>localNormal.z?local.zy:local.xy);
+        float span=max(fwidth(clothUV).x,fwidth(clothUV).y);
+        if(vColor.w<.5)tint=recipe<8.5?vec3(.07,.06,.05):vec3(.42,.44,.46);
+        // A colour-derived seed is stable on animated parts: unlike world
+        // position or their changing length, it cannot make the grain swim.
+        float seed=hash(tint.rg*vec2(71.3,93.1)+tint.bb*37.4);
+        vec2 oriented=mat2(.819152,-.573576,.573576,.819152)*clothUV+seed*17.;
+        vec2 warp=vec2(surfaceNoise(oriented+5.1,57.,span),surfaceNoise(oriented+19.7,83.,span))-.5;
+        vec2 grainUV=oriented+warp*.0011;
+        float grainSpan=max(fwidth(grainUV).x,fwidth(grainUV).y);
+        metalness=0.;
+        if(recipe<8.5){
+          // Rounded pores and subdued broad folds, no regular tile or seam.
+          float folds=surfaceNoise(oriented*vec2(1.,.55)+17.,35.,span);
+          float pores=surfaceNoise(grainUV+3.7,410.,grainSpan);
+          float fine=surfaceNoise(grainUV+23.1,1050.,grainSpan);
+          float valleys=(1.-pores)*(1.-pores);
+          base=tint*(.94+(pores-.5)*.10+(folds-.5)*.045);
+          roughness=.60+(pores-.5)*.10+(fine-.5)*.035;
+          recipeHeight=(pores-.5)*.00032+(fine-.5)*.000045+(folds-.5)*.00014;
+          cavity=1.-valleys*.045;
+        }else{
+          // Smooth periodic yarns cross over/under; both frequencies tend to
+          // their analytic mean before Nyquist. No unfiltered checkerboard.
+          vec2 phase=grainUV*820.;
+          vec2 detail=vec2(1.)-smoothstep(vec2(.30),vec2(.80),fwidth(phase));
+          vec2 yarn=cos(phase*6.2831853)*detail;
+          float crossing=.5+.5*sin(phase.x*3.14159265)*sin(phase.y*3.14159265)*detail.x*detail.y;
+          float weave=mix(yarn.x,yarn.y,crossing);
+          float fibre=surfaceNoise(grainUV+29.4,1550.,grainSpan);
+          base=tint*(.94+weave*.035+(fibre-.5)*.035);
+          roughness=.88-weave*.035+(fibre-.5)*.045;
+          recipeHeight=weave*.000030+(fibre-.5)*.000015;
+          cavity=.985+weave*.015;
+        }
       }
     } else if (m<.5) {
       base*=.82+grain*.27+broad*.17;
@@ -1978,7 +2031,8 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       float tread=(1.-smoothstep(.26,.34,abs(fract(treadUV.x)-.5)))*(1.-smoothstep(.08,.16,abs(fract(treadUV.y)-.5)));
       height=(1.-grid(uv*.5,.007)*architectural)*.006+tread*.0018*fineDetail;
     }
-    if(recipe>.5)n=reliefNormal(n,recipeHeight);
+    if(recipe>7.5)n=microReliefNormal(n,recipeHeight);
+    else if(recipe>.5)n=reliefNormal(n,recipeHeight);
     else{
       if(m<3.5)n=reliefNormal(n,height);
       if(m>7.5&&m<9.5)n=reliefNormal(n,(noise(uv*7.)-.5)*.009*fineDetail);
@@ -3230,7 +3284,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
         [x,z]=[c[1]*x+sn[1]*z,-sn[1]*x+c[1]*z];
         return [c[2]*x-sn[2]*y+p[0],sn[2]*x+c[2]*y+p[1],z+p[2]];
       }
-      const recipe=mesh.mat||0,mat=Math.max(0,Math.min(12,Math.floor(recipe>24.5&&recipe<27.5?materialFamily(recipe):recipe))),outdoor=outdoorMesh(mesh,environment),color=mesh.color?(mat<4?mesh.color.map(v=>v*.65):mat>=8?mesh.color.map((v,k)=>v*.65+palette[mat][k]*.35):mesh.color):palette[mat],shape=mesh.shape||'box';
+      const recipe=mesh.mat||0,mat=Math.max(0,Math.min(12,Math.floor(recipe>27.5&&recipe<29.5?7:recipe>24.5&&recipe<27.5?materialFamily(recipe):recipe))),outdoor=outdoorMesh(mesh,environment),color=mesh.color?(mat<4?mesh.color.map(v=>v*.65):mat>=8?mesh.color.map((v,k)=>v*.65+palette[mat][k]*.35):mesh.color):palette[mat],shape=mesh.shape||'box';
       const object=(surfaceFlags(mesh,environment,objects)&4)!==0;
       const emission=(mesh.groundCover===true?0:mesh.emissive||0)+(mat===4?.72:mat===5?.68:mat===6?.18:0);
       const shapeSet=coarse?coarseBase:base,template=shapeSet[shape]||shapeSet.box,vertices=template.vertices.map(transform),faces=template.faces.map((v,index)=>{
@@ -5259,7 +5313,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 (function(G){'use strict';
  const names={passages:'FPassages',tacticalNetwork:'FBrain',loop:'FLoop',scheduler:'FSchedule',jobs:'FJobs',demo:'FDemo',surface:'FSurface',gpuProfile:'FGPUProfile',skies:'FSky',reflections:'FSceneReflections',render:'FRender',backends:'FRenderBackends',physics:'FPhysics',physx:'FPhysX',physicsGeometry:'FPhysicsGeometry',geometry:'FGeometry',vehicleDynamics:'FVehicleDynamics',navigation:'FNavigation',crowd:'FCrowd',crowdWebGPU:'FCrowdWebGPU',materials:'FMaterials',destruction:'FDestruction',input:'FInput',audio:'FAudio',motion:'FMotion',effects:'FEffects',recipes:'FRecipes',math:'FMath',music:'FMusic',musicTransitions:'FImuse'};
  function requireModule(name){const module=G[names[name]];if(!module)throw new Error('FERRO : module '+name+' non chargé.');return module;}
- const api={version:'0.3.14',apiVersion:1,
+ const api={version:'0.3.15',apiVersion:1,
   capabilities(){return Object.fromEntries(Object.entries(names).map(([name,key])=>[name,!!G[key]]));},
   require:requireModule,
   async createRenderer(canvas,options={}){const materials=options.materials||requireModule('materials').create();if(!materials.layers.length)await materials.load();return requireModule('backends').create(canvas,{...options,materials});},
@@ -59168,6 +59222,111 @@ G.FPhysX=Object.freeze({init,isReady,status,createWorld,sweepBox,overlapBox,disp
     throw new Error('BITUME : aucun tracé valide pour la graine ' + graine);
   }
 
+  // ---------------------------------------------------------------- tracé métrique fourni (fondation 14B1)
+  // Contrat v1 : { unite: 'm', points: [{ x, y, z, largeurG, largeurD, devers?, limiteG?, limiteD? }], pasMax?: 2 }.
+  // x/z sont des coordonnées locales métriques, y une altitude dans le même repère ; dévers en radians,
+  // largeurs et limites des distances positives depuis l'axe. Le dernier point répète exactement le premier,
+  // profils compris : aucune fermeture forcée, transformation géographique, mise à l'échelle ou lissage caché.
+  // L'abscisse est la distance EN PLAN de cette polyligne (pente = dy/ds). Les sommets source sont conservés
+  // séparément pour le futur raffinement visuel : la grille uniforme ne prétend pas passer par chaque sommet.
+  // Géométrie seulement : pas de largeur scalaire, de ligne idéale, de vitesse, de grille ni de stands inventés.
+  // Les consommateurs de course/décor à largeur fixe, les croisements et couches restent à raccorder et qualifier.
+  const CHAMPS_TRACE = Object.freeze(['x', 'y', 'z', 'largeurG', 'largeurD', 'devers', 'limiteG', 'limiteD']);
+  const CHAMPS_LECTURE_TRACE = Object.freeze([...CHAMPS_TRACE, 'courbure', 'pente']);
+  function creerDepuisTrace(donnees) {
+    const erreur = message => { throw new RangeError('BITUME : tracé explicite — ' + message); };
+    if (!donnees || donnees.unite !== 'm') erreur('unité locale métrique « m » requise');
+    const points = donnees.points;
+    if (!Array.isArray(points) || points.length < 4 || points.length > 250001) erreur('au moins trois sommets et leur fermeture explicite requis (250 000 segments maximum)');
+    const pasMax = donnees.pasMax === undefined ? PAS : donnees.pasMax;
+    if (!Number.isFinite(pasMax) || pasMax <= 0) erreur('pasMax doit être strictement positif et fini');
+    if (donnees.nom !== undefined && (typeof donnees.nom !== 'string' || !donnees.nom.trim())) erreur('nom invalide');
+    const champs = CHAMPS_TRACE;
+    const source = points.map((p, i) => {
+      if (!p || typeof p !== 'object') erreur('point ' + i + ' invalide');
+      const q = { x: p.x, y: p.y, z: p.z, largeurG: p.largeurG, largeurD: p.largeurD,
+        devers: p.devers === undefined ? 0 : p.devers,
+        limiteG: p.limiteG === undefined ? p.largeurG : p.limiteG,
+        limiteD: p.limiteD === undefined ? p.largeurD : p.limiteD };
+      if (!champs.every(k => Number.isFinite(q[k]))) erreur('point ' + i + ' : coordonnées/profils non finis ou manquants');
+      if (q.largeurG <= 0 || q.largeurD <= 0 || q.limiteG < q.largeurG || q.limiteD < q.largeurD) erreur('point ' + i + ' : largeurs positives et limites au-delà des bords requises');
+      if (Math.abs(q.devers) >= Math.PI / 2) erreur('point ' + i + ' : dévers hors du domaine de la chaussée');
+      return Object.freeze(q);
+    });
+    const m = source.length - 1;
+    if (!champs.every(k => source[0][k] === source[m][k])) erreur('boucle non fermée : dernier point et profils différents du premier');
+    const abscisses = new Float64Array(m + 1);
+    for (let i = 0; i < m; i++) {
+      const a = source[i], b = source[i + 1], ds = Math.hypot(b.x - a.x, b.z - a.z);
+      if (!Number.isFinite(ds) || ds <= 1e-9) erreur('segment ' + i + ' nul, vertical ou non fini');
+      abscisses[i + 1] = abscisses[i] + ds;
+      if (!Number.isFinite(abscisses[i + 1]) || abscisses[i + 1] <= abscisses[i]) erreur('longueur non représentable');
+    }
+    for (let i = 0; i < m; i++) {
+      const a = source[(i + m - 1) % m], b = source[i], d = source[i + 1];
+      const ux = b.x - a.x, uz = b.z - a.z, vx = d.x - b.x, vz = d.z - b.z;
+      const lu = Math.hypot(ux, uz), lv = Math.hypot(vx, vz);
+      if (Math.hypot(ux / lu + vx / lv, uz / lu + vz / lv) < 1e-8) erreur('demi-tour ponctuel au sommet ' + i);
+    }
+    const L = abscisses[m], n = Math.max(8, Math.ceil(L / pasMax));
+    if (!Number.isSafeInteger(n) || n > 250000) erreur('résolution supérieure à 250 000 échantillons');
+    const pas = L / n, c = { type: 'trace-explicite', formatTrace: 1, unite: 'm', pretPourCourse: false,
+      nom: donnees.nom || 'Tracé explicite', longueur: L, pas, n, depart: 0,
+      sourceTrace: Object.freeze(source), abscissesSource: abscisses };
+    for (const k of champs) c[k] = new Float64Array(n);
+    let segment = 0;
+    for (let i = 0; i < n; i++) {
+      const s = i * pas;
+      while (segment < m - 1 && s >= abscisses[segment + 1]) segment++;
+      const a = source[segment], b = source[segment + 1];
+      const t = (s - abscisses[segment]) / (abscisses[segment + 1] - abscisses[segment]);
+      for (const k of champs) c[k][i] = a[k] + (b[k] - a[k]) * t;
+    }
+    c.cap = new Float64Array(n); c.courbure = new Float64Array(n); c.pente = new Float64Array(n);
+    // Dérivées centrées sur la grille périodique. Le cap est une direction, sa différence est donc repliée à ±π.
+    // Une résolution qui écrase une boucle ou un demi-tour est rejetée, pas réparée en déplaçant les points.
+    for (let i = 0; i < n; i++) {
+      const a = (i + n - 1) % n, b = (i + 1) % n, dx = c.x[b] - c.x[a], dz = c.z[b] - c.z[a];
+      if (Math.hypot(dx, dz) < 1e-9 || Math.hypot(c.x[b] - c.x[i], c.z[b] - c.z[i]) < 1e-9) erreur('tangente dégénérée : diminuer pasMax ou corriger le relevé');
+      c.cap[i] = Math.atan2(dz, dx);
+      c.pente[i] = (c.y[b] - c.y[a]) / (2 * pas);
+    }
+    for (let i = 0; i < n; i++) c.courbure[i] = angle(c.cap[(i + 1) % n] - c.cap[(i + n - 1) % n]) / (2 * pas);
+    const problemes = validerTrace(c);
+    if (problemes.length) erreur(problemes.join(' ; '));
+    return c;
+  }
+
+  function validerTrace(c) {
+    const pb = [], n = c && c.n;
+    if (!Number.isSafeInteger(n) || n < 8 || n > 250000 || !Number.isFinite(c.pas) || c.pas <= 0 || !Number.isFinite(c.longueur) || c.longueur <= 0) return ['grille métrique invalide'];
+    if (Math.abs(c.longueur - n * c.pas) > Math.max(1e-9, c.longueur * 1e-12)) pb.push('longueur différente de n × pas');
+    const champs = ['x', 'y', 'z', 'cap', 'courbure', 'pente', 'devers', 'largeurG', 'largeurD', 'limiteG', 'limiteD'];
+    if (!champs.every(k => c[k] && c[k].length === n && c[k].every(Number.isFinite))) return pb.concat('valeurs non finies ou tableaux de mauvaise taille');
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n;
+      if (Math.hypot(c.x[j] - c.x[i], c.z[j] - c.z[i]) < 1e-9) { pb.push('segment échantillonné nul'); break; }
+      if (c.largeurG[i] <= 0 || c.largeurD[i] <= 0 || c.limiteG[i] < c.largeurG[i] || c.limiteD[i] < c.largeurD[i] || Math.abs(c.devers[i]) >= Math.PI / 2) { pb.push('profil de chaussée invalide'); break; }
+    }
+    return pb;
+  }
+
+  function lireTrace(c, s, champ) {
+    const f = ramener(c, s) / c.pas, entier = Math.floor(f), i = entier % c.n, j = (i + 1) % c.n;
+    return c[champ][i] + (c[champ][j] - c[champ][i]) * (f - entier);
+  }
+  function echantillonTrace(c, s, sortie) {
+    if (!sortie) sortie = {};
+    const f = ramener(c, s) / c.pas, entier = Math.floor(f), i = entier % c.n, j = (i + 1) % c.n;
+    for (const k of CHAMPS_LECTURE_TRACE) sortie[k] = c[k][i] + (c[k][j] - c[k][i]) * (f - entier);
+    sortie.cap = c.cap[i] + angle(c.cap[j] - c.cap[i]) * (f - entier);
+    return sortie;
+  }
+  // Demi-largeur gauche/droite ; le générateur historique reste à largeur constante.
+  function largeurA(c, s, cote) {
+    return c.type === 'trace-explicite' ? lireTrace(c, s, cote < 0 ? 'largeurG' : 'largeurD') : c.largeur / 2;
+  }
+
   // Premier échantillon du tunnel (N échantillons) : au milieu de la plus longue portion droite (rayon > 400 m) entre 30 et
   // 92 % du tour ; −1 s'il n'y en a pas d'assez longue.
   function choisirTunnel(courbure, n, N) {
@@ -59196,6 +59355,7 @@ G.FPhysX=Object.freeze({init,isReady,status,createWorld,sweepBox,overlapBox,disp
   // le tracé des dizaines de fois par voiture et par pas ; sans objet à remplir, chaque lecture est un objet jeté.
   // Les nombres sont les mêmes au bit près dans les deux cas (mêmes opérations, même ordre).
   function echantillon(c, s, sortie) {
+    if (c.type === 'trace-explicite') return echantillonTrace(c, s, sortie);
     s = ramener(c, s);
     const f = s / PAS, i = Math.floor(f) % c.n, j = (i + 1) % c.n, t = f - Math.floor(f);
     const X = c.x, Y = c.y, Z = c.z, K = c.courbure, Pe = c.pente, D = c.devers, Li = c.ligne, V = c.vitesse;
@@ -59233,14 +59393,17 @@ G.FPhysX=Object.freeze({init,isReady,status,createWorld,sweepBox,overlapBox,disp
     return d;
   }
   function vibreurA(c, s, cote) {
+    if (c.type === 'trace-explicite') return false; // aucun vibreur déduit du seul relevé de l'axe
     const i = Math.round(ramener(c, s) / PAS) % c.n;
     return !!(c.vibreur[i] & (cote < 0 ? 1 : 2));
   }
   function limiteA(c, s, cote) {
+    if (c.type === 'trace-explicite') return lireTrace(c, s, cote < 0 ? 'limiteG' : 'limiteD');
     const i = Math.round(ramener(c, s) / PAS) % c.n;
     return cote < 0 ? c.limiteG[i] : c.limiteD[i];
   }
   function valider(c) {
+    if (c && c.type === 'trace-explicite') return validerTrace(c);
     const pb = [];
     const finis = ['x', 'y', 'z', 'cap', 'courbure', 'pente', 'devers', 'ligne', 'vitesse'].every(k => c[k].length === c.n && c[k].every(Number.isFinite));
     if (!finis) pb.push('valeurs non finies ou tableaux de mauvaise taille');
@@ -59255,7 +59418,7 @@ G.FPhysX=Object.freeze({init,isReady,status,createWorld,sweepBox,overlapBox,disp
     return pb;
   }
 
-  B.circuit = { creer, echantillon, point, repere, ecart, vibreurA, limiteA, valider, dansTunnel, choisirTunnel, PAS, LARGEUR };
+  B.circuit = { creer, creerDepuisTrace, echantillon, point, repere, ecart, vibreurA, limiteA, largeurA, valider, dansTunnel, choisirTunnel, PAS, LARGEUR };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -63301,7 +63464,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
 (function (B) {
   'use strict';
 
-  const BIOMES = Object.freeze({ foret: 0x25ab3d71, cote: 0x6c8e19f3, montagne: 0x438db527 });
+  const BIOMES = Object.freeze({ foret: 0x25ab3d71, cote: 0x6c8e19f3, montagne: 0x438db527, baikal: 0x71cd923f });
   const lisse = (a, b, x) => {
     const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
     return t * t * (3 - 2 * t);
@@ -63336,7 +63499,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       const px = rx + (bruit(rx / 510, rz / 510, 31) - .5) * 170;
       const pz = rz + (bruit((rx + 713) / 430, (rz - 319) / 430, 47) - .5) * 170;
       const paysage = .78 * bruit(px / 280, pz / 280, 101) + .22 * bruit(px / 610, pz / 610, 131);
-      const ouverture = biome === 'foret' ? lisse(.20, .46, paysage) : lisse(.38, .62, paysage);
+      const ouverture = biome === 'foret' ? lisse(.20, .46, paysage)
+        : biome === 'baikal' ? lisse(.24, .51, paysage) : lisse(.38, .62, paysage);
       const poche = bruit(px / 63, pz / 63, 173), fin = bruit(rx / 15, rz / 15, 211);
       const prairie = ouverture * lisse(.35, .65, poche * .83 + fin * .17);
       // Une plage entière vaut zéro : les clairières n'allouent ni brins ni habitats d'insectes.
@@ -63370,7 +63534,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
   const profils = {};
   for (const id of IDS) for (const theme of ['foret', 'cote', 'montagne', 'islande', 'desert', 'asie', 'pacifique', 'baikal']) {
     const d = DONNEES[id], neige = id === 'hiver' && theme !== 'cote';
-    profils[id + ':' + theme] = Object.freeze({ id, theme, neige, feuilles: id === 'automne' && (theme === 'foret' || theme === 'asie'),
+    profils[id + ':' + theme] = Object.freeze({ id, theme, neige, feuilles: id === 'automne' && (theme === 'foret' || theme === 'asie' || theme === 'baikal'),
       faune: neige || theme === 'islande' || theme === 'desert' ? 0 : d.faune, soleil: d.soleil, teinteSoleil: Object.freeze(d.teinteSoleil.slice()) });
   }
   function profil(id, theme = 'foret') {
@@ -63392,7 +63556,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
   const SEC = [.43, .36, .16], FROID = [.25, .32, .28], NEIGE = [.91, .94, .97];
   function teinte(p, famille, base, x, z, habitat, sortie) {
     const resultat = sortie || new Array(3), n = bruit(x, z, 139), nuance = bruit(x + 197, z - 311, 277);
-    const feuillage = famille === 'feuillage', fleurs = famille === 'fleurs';
+    const feuillage = famille === 'feuillage' || famille === 'feuillage-caduque', fleurs = famille === 'fleurs';
     let cible = base, part = 0;
     if (p.neige) {
       cible = NEIGE; part = feuillage ? .55 + .32 * n : famille === 'sol' ? .93 + .04 * n : .78 + .12 * n;
@@ -63418,8 +63582,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       part = feuillage ? (p.theme === 'foret' || p.theme === 'asie' ? .18 : .09) + .18 * n
         : fleurs ? .12 : .22 + .19 * n + (habitat ? (1 - habitat.herbe) * .10 : 0);
     } else if (p.id === 'automne') {
-      if (feuillage && (p.theme === 'foret' || p.theme === 'asie')) {
-        cible = n < .34 ? CUIVRE : n < .67 ? ORANGE : OR; part = .79 + .18 * nuance;
+      if (feuillage && (p.theme === 'foret' || p.theme === 'asie' || famille === 'feuillage-caduque')) {
+        cible = p.theme === 'baikal' ? OR : n < .34 ? CUIVRE : n < .67 ? ORANGE : OR; part = .79 + .18 * nuance;
       } else if (!feuillage) { cible = SEC; part = fleurs ? .30 : .35 + .20 * nuance; }
     } else {
       // Le Sud reste sans neige, y compris sur les pins, les plantes et leurs sources d'effets.
@@ -63495,6 +63659,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       herbe: [.21, .33, .14], taillis: [.15, .23, .13], taillisNuance: [.03, .05, .03],
       fougere: [.14, .26, .15], humus: [.13, .12, .09],
       fleurs: [[.56, .34, .62], [.88, .82, .28], [.90, .36, .44]],
+    }),
+    baikal: Object.freeze({
+      stations: .76, densite: .78, taille: .82, familles: ['herbes', 'fougères', 'fleurs', 'taillis'],
+      herbe: [.24, .36, .18], taillis: [.16, .28, .14], taillisNuance: [.035, .05, .025],
+      fougere: [.13, .28, .16], humus: [.18, .16, .12],
+      fleurs: [[.68, .60, .77], [.90, .88, .82], [.82, .65, .24]],
     }),
   });
 
@@ -64399,11 +64569,351 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
+// ---- baikal.js ----
+/* BITUME — rive du Baïkal : paysage original, calculé une fois à la préparation.
+   La piste garde son tracé. Le lac, les caps, les bois et le hameau ont leur propre plan déterministe. */
+(function (B) {
+  'use strict';
+  const lisse = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  const cloche = (x, centre, rayon) => Math.exp(-Math.pow((x - centre) / rayon, 2));
+  function hache(x, z, g) {
+    let h = Math.imul(Math.floor(x * 8), 374761393) ^ Math.imul(Math.floor(z * 8), 668265263) ^ g;
+    h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+  }
+  function planifier(c, niveauEau) {
+    let xmin = Infinity, xmax = -Infinity, zmin = Infinity, zmax = -Infinity;
+    for (let i = 0; i < c.n; i++) {
+      xmin = Math.min(xmin, c.x[i]); xmax = Math.max(xmax, c.x[i]);
+      zmin = Math.min(zmin, c.z[i]); zmax = Math.max(zmax, c.z[i]);
+    }
+    const centre = [(xmin + xmax) * .5, (zmin + zmax) * .5];
+    // La rive regarde un secteur exposé et bas du tour, sans passer entre deux branches de la piste.
+    // Une projection de TOUS les échantillons fixe la garde : aucune baie ne peut couper une épingle.
+    let meilleur = null;
+    for (let a = 0; a < 32; a++) {
+      const angle = a * Math.PI / 16, ux = Math.cos(angle), uz = Math.sin(angle);
+      let bord = -Infinity;
+      for (let i = 0; i < c.n; i++) bord = Math.max(bord, (c.x[i] - centre[0]) * ux + (c.z[i] - centre[1]) * uz);
+      let compte = 0, hauteur = 0;
+      for (let i = 0; i < c.n; i += 4) {
+        const p = (c.x[i] - centre[0]) * ux + (c.z[i] - centre[1]) * uz;
+        if (bord - p < 125) { compte++; hauteur += c.y[i]; }
+      }
+      const score = compte - (compte ? hauteur / compte : 0) * .7;
+      if (!meilleur || score > meilleur.score) meilleur = { ux, uz, bord, score };
+    }
+    const g = (c.graine ^ 0x61b42a9d) >>> 0;
+    return Object.freeze({ centre: Object.freeze(centre), axe: Object.freeze([meilleur.ux, meilleur.uz]),
+      tangente: Object.freeze([-meilleur.uz, meilleur.ux]), depart: meilleur.bord + 90,
+      niveauEau, graine: g, cap: -260, baie: 350 });
+  }
+  function local(p, x, z) {
+    const dx = x - p.centre[0], dz = z - p.centre[1];
+    return [dx * p.axe[0] + dz * p.axe[1], dx * p.tangente[0] + dz * p.tangente[1]];
+  }
+  function monde(p, u, v) { return [p.centre[0] + u * p.axe[0] + v * p.tangente[0], p.centre[1] + u * p.axe[1] + v * p.tangente[1]]; }
+  function rivage(p, t) {
+    return p.depart + 70 + 205 * cloche(t, p.cap, 210) + 105 * cloche(t, 880, 150)
+      - 48 * cloche(t, p.baie, 185) + 19 * Math.sin(t / 111) + 9 * Math.sin(t / 47);
+  }
+  function relief(p, x, z, distanceRoute, base) {
+    if (distanceRoute <= 72) return base;
+    const [u, t] = local(p, x, z), rive = rivage(p, t), garde = lisse(72, 175, distanceRoute);
+    // Le promontoire et la petite crête sont des hauteurs de la nappe, pas des blocs empilés.
+    const promontoire = 66 * cloche(t, p.cap, 230) * cloche(u, rive - 120, 150);
+    const crete = 95 * cloche(u, p.depart - 970, 350) * (.44 + .56 * cloche(t, -520, 730));
+    let h = base + (promontoire + crete) * garde;
+    const fond = p.niveauEau - 16 - 4 * (.5 + .5 * Math.sin(t / 180));
+    h += (fond - h) * lisse(rive - 45, rive + 100, u) * garde;
+    return h;
+  }
+  function riveRocheuse(p, x, z) {
+    const [u, t] = local(p, x, z); return 1 - lisse(25, 140, Math.abs(u - rivage(p, t)));
+  }
+  function coinsEau(p) {
+    return [[p.depart - 64, -2600], [p.depart + 2800, -2600], [p.depart + 2800, 2600], [p.depart - 64, 2600]].map(([u, v]) => monde(p, u, v));
+  }
+  function essence(p, x, z) {
+    // Des petits bois de feuillus clairs au milieu des conifères ; aucun tirage de la course consommé.
+    const poche = hache(Math.floor(x / 56), Math.floor(z / 56), p.graine);
+    return hache(x, z, p.graine ^ 0x31ef92a5) < .18 + .46 * poche ? 'feuillu' : 'conifere';
+  }
+  function habitations(c, terrain, interroger, plan) {
+    const sites = [];
+    for (const portion of [.24, .53, .76]) {
+      let place = null;
+      for (let essai = 0; essai < 64 && !place; essai++) {
+        const i = (Math.floor(c.n * portion) + Math.floor(essai / 2) * 13) % c.n;
+        const a = c.cap[i], cote = essai % 2 ? -1 : 1, recul = 110 + (Math.floor(essai / 8) % 4) * 24;
+        const x = c.x[i] - Math.sin(a) * recul * cote, z = c.z[i] + Math.cos(a) * recul * cote;
+        const q = interroger(x, z, 220);
+        if (q.i < 0 || q.d < 90 || Math.abs(B.circuit.ecart(c, 0, q.i * c.pas)) < 380) continue;
+        const y = terrain.sol(x, z), hx = terrain.sol(x + 12, z) - terrain.sol(x - 12, z), hz = terrain.sol(x, z + 12) - terrain.sol(x, z - 12);
+        if (y < plan.niveauEau + 8 || Math.hypot(hx, hz) > 3.8) continue;
+        place = { x, z, a, s: i * c.pas };
+      }
+      if (!place) continue;
+      for (let j = 0; j < 2; j++) {
+        const x = place.x + Math.cos(place.a) * j * 25, z = place.z + Math.sin(place.a) * j * 25;
+        const q = interroger(x, z, 220), a = place.a + (j ? .12 : -.08), l = 9 + j, w = 6.2, coins = [];
+        for (const dx of [-l / 2 - .6, l / 2 + .6]) for (const dz of [-w / 2 - .6, w / 2 + .6]) {
+          const px = x + Math.cos(a) * dx - Math.sin(a) * dz, pz = z + Math.sin(a) * dx + Math.cos(a) * dz;
+          coins.push(terrain.sol(px, pz));
+        }
+        const bas = Math.min(...coins), haut = Math.max(...coins);
+        if (q.i < 0 || q.d < 85 || bas < plan.niveauEau + 6 || haut - bas > 2.5) continue;
+        sites.push(Object.freeze({ x, z, a, l, w, bas: bas - .55, sol: haut + .08, s: place.s, variante: sites.length % 3 }));
+      }
+    }
+    return Object.freeze(sites);
+  }
+  function objetsMaison(site, neige) {
+    const { x, z, a, l, w, sol, bas, variante } = site, objets = [];
+    const bois = [[.36, .24, .15], [.46, .31, .18], [.32, .30, .23]][variante];
+    const cadre = [[.56, .73, .78], [.72, .76, .65], [.64, .30, .18]][variante];
+    const toit = neige ? [.86, .90, .93] : [[.24, .32, .31], [.42, .20, .14], [.25, .30, .35]][variante];
+    const point = (dx, y, dz) => [x + Math.cos(a) * dx - Math.sin(a) * dz, y, z + Math.sin(a) * dx + Math.cos(a) * dz];
+    function boite(p, s, color, mat = 10, collision, inclinaison = 0) {
+      const o = { shape: 'box', p, s, r: [inclinaison, -a, 0], color, mat, lieu: 'hameau-baikal' };
+      if (collision) o.collision = collision;
+      objets.push(o); return o;
+    }
+    boite(point(0, (sol + bas) / 2, 0), [l + .25, sol - bas, w + .25], [.39, .40, .39], 9, 'batiment');
+    boite(point(0, sol + 1.6, 0), [l, 3.2, w], bois, 10, 'batiment');
+    // Deux pans réels : le faîtage ne flotte pas sur un cube, et la silhouette est gardée au loin.
+    const pente = .53, demi = (w / 2 + .55) / 2, longueurPan = (w / 2 + .55) / Math.cos(pente);
+    for (const cote of [-1, 1]) boite(point(0, sol + 3.22 + demi * Math.tan(pente), cote * demi),
+      [l + 1.1, .24, longueurPan], toit, 0, 'toit', cote * pente);
+    // Le faîtage est au-dessus de 5 m : le conduit traverse la couverture et dépasse réellement le toit.
+    boite(point(-l * .22, sol + 4.8, 0), [.65, 3.2, .7], [.33, .28, .24], 3, 'batiment');
+    for (const cote of [-1, 1]) for (const dx of [-l * .29, l * .27]) {
+      boite(point(dx, sol + 1.9, cote * (w / 2 + .035)), [1.55, 1.45, .14], cadre, 0);
+      boite(point(dx, sol + 1.9, cote * (w / 2 + .12)), [1.13, 1.03, .045], [.11, .18, .20], 7);
+      boite(point(dx, sol + 1.9, cote * (w / 2 + .16)), [.075, 1.06, .06], cadre, 0);
+    }
+    boite(point(l / 2 + .04, sol + 1.14, 0), [.15, 2.28, 1.25], [.22, .17, .12], 10);
+    return objets;
+  }
+  B.baikal = { planifier, local, monde, rivage, relief, riveRocheuse, coinsEau, essence, habitations, objetsMaison };
+})(globalThis.BITUME = globalThis.BITUME || {});
+</script>
+<script>
+// ---- batiments.js ----
+/* BITUME — architecture procédurale : garages, maisons et postes de commissaires.
+   Primitives FERRO existantes seulement. Hasard propre aux bâtiments ; aucun tirage consommé dans le décor. */
+(function (B) {
+  'use strict';
+  const gris = [.45, .48, .49], acier = [.34, .38, .40], vitre = [.12, .23, .27], noir = [.075, .08, .085];
+  const MURET = Object.freeze({ recul: 6.2, epaisseur: .5, epaisseurLisse: .54 });
+  function hache(n) { n = Math.imul(n ^ n >>> 16, 0x45d9f3b); n = Math.imul(n ^ n >>> 16, 0x45d9f3b); return ((n ^ n >>> 16) >>> 0) / 4294967296; }
+  function chantier(site, genre, detail) {
+    const proche = [], loin = [], a = site.a || 0, cos = Math.cos(a), sin = Math.sin(a);
+    const graine = (site.graine | 0) ^ Math.imul(Math.round(site.x * 4), 374761393) ^ Math.imul(Math.round(site.z * 4), 668265263);
+    const hasard = i => hache(graine ^ Math.imul(i + 1, 1274126177));
+    const point = (x, y, z) => [site.x + cos * x - sin * z, site.sol + y, site.z + sin * x + cos * z];
+    const teinte = (c, i, amplitude = .18) => c.map((v, k) => Math.max(.015, Math.min(1, v * (1 + (hasard(i + k) - .5) * amplitude))));
+    function objet(shape, x, y, z, s, color, mat, partie, solide = null, distant = false, r = [0, -a, 0]) {
+      const o = { shape, p: point(x, y, z), s, r, color, mat, architecture: genre, partie };
+      if (solide) {
+        if(shape==='box'||shape==='cylinder'&&!r[0]&&!r[2])o.collision=solide;
+        else Object.defineProperty(o,'solidePhysX',{value:Object.freeze({genre:solide,groupe:2,surface:null})});
+      }
+      proche.push(o); if (distant) loin.push(o); return o;
+    }
+    const boite = (x,y,z,s,c,mat,partie,solide,distant,r) => objet('box',x,y,z,s,c,mat,partie,solide,distant,r);
+    const biseau = (x,y,z,s,c,mat,partie,solide,distant,r) => objet('bevel',x,y,z,s,c,mat,partie,solide,distant,r);
+    function tube(p, q, diametre, color, mat, partie, solide = null, distant = false) {
+      const u = point(...p), v = point(...q), dx = v[0] - u[0], dy = v[1] - u[1], dz = v[2] - u[2], l = Math.hypot(dx,dy,dz);
+      const o = { shape: 'cylinder', p: u.map((x,i) => (x+v[i])/2), s: [diametre,l,diametre],
+        r: [Math.acos(Math.max(-1,Math.min(1,dy/l))),Math.atan2(dx,dz),0], color, mat, architecture: genre, partie };
+      if (solide) o.collision = solide; proche.push(o); if (distant) loin.push(o); return o;
+    }
+    function auvent(x,y,z,l,profondeur,couleur,solide = null) {
+      // Six pans suivent une courbe douce. Leurs rotations sont aussi celles des collisions : aucune
+      // boîte invisible ne rebouche une ouverture. La rive est ronde et ne demande pas de forme moteur.
+      for (let j=0;j<6;j++) {
+        const z0=(j/6-.5)*profondeur,z1=((j+1)/6-.5)*profondeur;
+        const y0=.34*Math.cos((j/6-.5)*Math.PI),y1=.34*Math.cos(((j+1)/6-.5)*Math.PI);
+        boite(x,y+(y0+y1)/2,z+(z0+z1)/2,[l,.09,Math.hypot(z1-z0,y1-y0)+.025],couleur,24,'auvent',solide,true,[-Math.atan2(y1-y0,z1-z0),-a,0]);
+      }
+      tube([x-l/2,y,z-profondeur/2],[x+l/2,y,z-profondeur/2],.11,acier,0,'cheneau',null,true);
+    }
+    const SEGMENTS = ['abcdef','bc','abdeg','abcdg','bcfg','acdfg','acdefg','abc','abcdefg','abcdfg'];
+    function numero(n,x,y,z,taille=.75) {
+      const positions={a:[0,.45,1,.14],b:[.43,.23,.14,.45],c:[.43,-.23,.14,.45],d:[0,-.45,1,.14],e:[-.43,-.23,.14,.45],f:[-.43,.23,.14,.45],g:[0,0,1,.14]};
+      for (const segment of SEGMENTS[n%10]) {
+        const [dx,dy,w,h]=positions[segment]; biseau(x+dx*taille,y+dy*taille,z,[w*taille,h*taille,.045],[.94,.91,.78],16,'numero');
+      }
+    }
+    function fenetre(x,y,z,l,h,cadre,volets = false) {
+      biseau(x,y,z,[l+.22,h+.24,.16],cadre,10,'cadre-fenetre');
+      boite(x,y,z-.10,[l,h,.045],vitre,7,'vitrage');
+      boite(x,y,z-.13,[.065,h,.06],cadre,10,'meneau');
+      boite(x,y,z-.13,[l,.065,.06],cadre,10,'traverse');
+      biseau(x,y-h/2-.16,z-.13,[l+.38,.14,.32],cadre,3,'appui');
+      if (volets) for(const cote of [-1,1]) {
+        const ouverture=(.12+hasard(Math.round(x*41)+cote+81)*.35)*cote;
+        biseau(x+cote*(l*.66+.12),y,z-.08,[l*.31,h+.12,.11],cadre,10,'volet',null,false,[0,-a+ouverture,0]);
+      }
+    }
+    function pneus(x,z,n) {
+      if(!detail)return;
+      for(let k=0;k<n;k++)objet('ring',x,.26+k*.25,z,[.84,1.6,.84],noir,7,'pneus');
+    }
+    return {proche,loin,point,hasard,teinte,objet,boite,biseau,tube,auvent,numero,fenetre,pneus};
+  }
+
+  function stands(site, options = {}) {
+    const t=chantier(site,'stands',options.detail!==false), {boite,biseau,tube,objet,auvent,numero,hasard,teinte}=t;
+    const l=site.longueur||60,w=site.demiRoute,front=w+13,fond=front+12,n=6,pas=l/n,detail=options.detail!==false;
+    const mur=teinte([.82,.80,.73],3), beton=[.57,.58,.56], equipe=[[.66,.12,.08],[.14,.32,.46],[.25,.40,.23],[.63,.46,.12]];
+    // Une enveloppe faite de parois, planchers et séparations. Le rayon à hauteur de voiture entre
+    // effectivement dans une baie ouverte ; le grand volume plein de l'ancien bâtiment n'existe plus.
+    boite(0,4,fond-.18,[l,8,.36],mur,13.2,'mur-arriere','batiment',true);
+    for(const cote of [-1,1])boite(cote*(l/2-.20),4,front+6,[.4,8,12],mur,13.2,'mur-lateral','batiment',true);
+    boite(0,.11,front+6,[l,.22,12],beton,3,'dalle','batiment',true);
+    boite(0,4.35,front+6,[l,.26,12],beton,3,'plancher-etage','batiment',true);
+    boite(0,8.12,front+6,[l+1,.24,13],acier,24,'toiture','toit',true);
+    boite(0,4.85,front-.04,[l,.72,.30],mur,13.2,'allege','batiment',true);
+    boite(0,7.78,front-.04,[l,.40,.30],mur,13.2,'corniche','batiment',true);
+    for(let j=0;j<=n;j++) {
+      const x=-l/2+j*pas;
+      if(j>0&&j<n)boite(x,2.1,front+6,[.22,4.2,11.65],beton,3,'separation','batiment',true);
+      biseau(x,2.1,front,[.52,4.2,.48],beton,3,'pilastre','batiment',true);
+      boite(x,6.35,front-.02,[.25,2.55,.38],mur,3,'pilier-etage','batiment',true);
+      tube([x,.08,front-2.1],[x,3.69,front-2.1],.16,acier,0,'poteau-auvent','pilier',true);
+      tube([x,3.68,front-2.1],[x,4.06,front+.3],.09,acier,0,'console-auvent');
+    }
+    for(let j=0;j<n;j++) {
+      const x=-l/2+(j+.5)*pas, couleur=teinte(equipe[Math.floor(hasard(j+21)*equipe.length)],j+32), ouvert=hasard(j+51)>.28;
+      boite(x,6.35,front-.025,[pas-.4,2.4,.18],vitre,7,'baie-etage','batiment',true);
+      for(const dx of [-pas*.25,0,pas*.25])boite(x+dx,6.35,front-.15,[.09,2.4,.10],acier,0,'meneau');
+      boite(x,6.35,front-.15,[pas-.4,.09,.10],acier,0,'traverse');
+      auvent(x,3.7,front-1,pas-.08,2.8,teinte([.75,.76,.72],j+80),'toit');
+      boite(x,4.05,front-.14,[pas-.48,.43,.20],couleur,24,'enseigne',null,true);
+      // Un rideau relevé laisse une profondeur de douze mètres, limitée au fond par le mur réel.
+      const hauteur=ouvert?.58:3.35,y=ouvert?3.5:1.78;
+      boite(x,y,front-.06,[pas-.75,hauteur,.13],teinte([.35,.38,.39],j+11),24,'rideau','batiment',true);
+      tube([x-pas*.44,3.84,front+.05],[x+pas*.44,3.84,front+.05],.25,acier,0,'tambour');
+      if(detail) {
+        numero(j+1,x,4.07,front-.27,.29);
+        for(let k=0;k<(ouvert?2:8);k++)boite(x,y-hauteur/2+.12+k*(hauteur-.2)/(ouvert?2:8),front-.135,[pas-.9,.025,.026],[.17,.19,.20],0,'lame-rideau');
+        if(ouvert) {
+          const mobilierX=x+(hasard(j+121)-.5)*2, meubleZ=fond-2.1;
+          biseau(mobilierX,.59,meubleZ,[2.15,1.12,.72],couleur,24,'servante');
+          for(let k=0;k<3;k++)boite(mobilierX,.37+k*.26,meubleZ-.38,[1.82,.035,.05],acier,0,'tiroir');
+          for(const cote of [-1,1])tube([mobilierX+cote*.8,.16,meubleZ-.3],[mobilierX+cote*.8,.16,meubleZ+.3],.23,noir,7,'roulettes');
+          t.pneus(x-pas*.33,front+2.4,2+Math.floor(hasard(j+131)*3));
+          objet('cylinder',x+pas*.29,.6,front+3.2,[.6,1.2,.6],couleur,24,'bidon');
+          biseau(x+pas*.18,.10,front+1.1,[1.8,.12,2.6],[.18,.21,.22],7,'tapis');
+          // Lampe d'atelier sous l'auvent, sans nouveau point lumineux ni coût par image.
+          boite(x,3.58,front+.6,[2.7,.08,.18],[.83,.85,.72],16,'reglette');
+        }
+      }
+    }
+    // Chéneaux et descentes arrondis, ventilation décentrée : pas de motif copié en miroir.
+    for(const z of [front-.38,fond+.38])tube([-l/2,8.08,z],[l/2,8.08,z],.16,acier,0,'cheneau',null,true);
+    for(const x of [-l/2+.4,l/2-.4])tube([x,.3,front+.2],[x,7.94,front+.2],.13,acier,0,'descente',null,true);
+    for(let k=0;k<3;k++) {
+      const x=-l*.3+hasard(k+170)*l*.6,z=front+3+hasard(k+177)*5;
+      biseau(x,8.58,z,[1.4,.65,1.15],acier,24,'extracteur',null,true);
+      tube([x,8.7,z],[x,9.03,z],.55,acier,0,'ventilation',null,true);
+    }
+    // Même muret, même passage : la nouvelle architecture ne transforme pas l'espace derrière le mur
+    // en seconde voie de service. Le pilote s'arrête toujours dans c.stands, sur le bord de la chaussée.
+    boite(0,.55,w+MURET.recul,[l+30,1.1,MURET.epaisseur],[.82,.82,.8],3,'muret','muret',true);
+    boite(0,1.2,w+MURET.recul,[l+30,.2,MURET.epaisseurLisse],[.86,.12,.08],16,'lisse-muret','muret',true);
+    return { objets:t.proche, loin:t.loin };
+  }
+
+  function maison(site, options = {}) {
+    const t=chantier(site,site.cabane?'commissaires':'maison',options.detail!==false), {boite,biseau,tube,objet,auvent,fenetre,hasard,teinte}=t;
+    const l=site.l,w=site.w,h=site.h, a=site.a||0, detail=options.detail!==false;
+    const bois=teinte(site.theme==='montagne'||site.theme==='baikal'?[.38,.25,.16]:[.58,.65,.58],14);
+    if(!site.cabane) {
+      // Les pignons ferment l'espace sous les deux pans existants, avec de vrais triangles.
+      const base=site.baikal?.02+.55*Math.tan(.53):0,montee=site.baikal?w*.5*Math.tan(.53):w*.27;
+      const teintePignon=site.baikal?[[.36,.24,.15],[.46,.31,.18],[.32,.30,.23]][site.variante||0]:site.enduit||[.8,.75,.66];
+      if(base)boite(0,h+base/2,0,[l-.06,base,w],teintePignon,10,'haut-mur','batiment',true);
+      for(const cote of [-1,1])objet('wedge',0,h+base+montee/2,cote*w*.25,[w*.5,montee,l-.06],teintePignon,site.baikal?10:13.2,'pignon','batiment',true,[0,-a-cote*Math.PI/2,0]);
+    }
+    for(const cote of [-1,1]) {
+      const z=cote*(w*.5+.19);
+      tube([-l*.5-.25,h+.02,z],[l*.5+.25,h+.02,z],.12,acier,0,'cheneau',null,true);
+      if(detail)tube([l*.5-.15,.15,z],[l*.5-.15,h,z],.09,acier,0,'descente');
+    }
+    if(site.baikal) {
+      biseau(-l*.22,6.45,0,[.85,.14,.95],[.29,.30,.29],3,'chapeau-cheminee',null,true);
+    } else if(!site.cabane) {
+      const x=l*(.12+hasard(31)*.22),z=(hasard(32)-.5)*w*.45;
+      biseau(x,h+w*.16+.65,z,[.55,1.45,.7],[.39,.35,.29],3,'cheminee','batiment',true);
+      biseau(x,h+w*.16+1.42,z,[.78,.14,.90],[.29,.30,.29],3,'chapeau-cheminee',null,true);
+    }
+    const porteX=site.cabane?l*.3:(hasard(48)-.5)*l*.26;
+    if(detail) {
+      if(!site.baikal)for(const x of (site.cabane?[-l*.22]:[-l*.29,l*.28]))fenetre(x,h*.57,-w/2-.07,site.cabane?.7:1.35,site.cabane?.8:1.5,bois,!site.cabane);
+      // Porte décalée, imposte et poignée : aucune façade strictement dupliquée de sa voisine.
+      const x=porteX,porte=site.cabane?.65:1.05,haut=Math.min(2.2,h*.86);
+      biseau(x,haut/2,-w/2-.065,[porte+.2,haut+.18,.13],bois,10,'encadrement-porte');
+      biseau(x,haut/2,-w/2-.15,[porte,haut,.075],[.19,.17,.13],10,'porte');
+      tube([x+porte*.3,haut*.48,-w/2-.21],[x+porte*.3,haut*.59,-w/2-.21],.045,[.54,.47,.28],0,'poignee');
+    }
+    // Les volumes physiques ne dépendent jamais du palier de détail.
+    if(!site.cabane) {
+      const profondeur=1.55+hasard(52)*.35;
+      const bas=Number.isFinite(site.bas)?Math.min(-.24,site.bas-site.sol):-.24;
+      biseau(porteX,(bas+.18)/2,-w/2-.34,[2.4,.18-bas,.72],[.44,.43,.38],3,'perron','batiment');
+      const marches=Math.max(1,Math.min(8,Math.ceil((.18-bas)/.28)));
+      for(let k=0;k<marches;k++) {
+        const haut=bas+(k+1)*(.18-bas)/marches;
+        boite(porteX,(bas+haut)/2,-w/2-.68-(marches-1-k+.5)*.32,[2.15,haut-bas,.33],[.44,.43,.38],3,'marche','batiment');
+      }
+      for(const cote of [-1,1])tube([porteX+cote*1.02,bas,-w/2-1.35],[porteX+cote*1.02,2.5,-w/2-1.35],.14,bois,10,'poteau-porche','pilier');
+      auvent(porteX,2.48,-w/2-.65,2.6,profondeur,options.neige?[.84,.87,.89]:bois,'toit');
+    }
+    return {objets:t.proche,loin:t.loin};
+  }
+
+  function voieService(c) {
+    const S=c.stands; if(!S)return {objets:[],loin:[]};
+    const objets=[],loin=[],couleur=[.95,.75,.20];
+    function marque(s,d,longueur,largeur,partie) {
+      const q=B.circuit.echantillon(c,s),a=q.cap;
+      const o={shape:'box',p:[q.x-Math.sin(a)*d,q.y-d*Math.sin(q.devers)+.018,q.z+Math.cos(a)*d],
+        s:[longueur,.018,largeur],r:[q.devers,-a,0],mat:16,color:couleur,architecture:'voie-service',partie};
+      objets.push(o);loin.push(o);
+    }
+    // Jalons discontinus du côté intérieur, ouverts aux deux bouts. Aucun plot ne coupe la trajectoire.
+    for(let s=S.debut+2;s<S.fin-3;s+=8)marque(s,S.d-S.demi+.14,3,.12,'ligne-voie');
+    for(const s of [S.garage0,S.garage1])marque(s,S.d,.15,2*S.demi-.34,'limite-service');
+    for(let s=S.garage0+4;s<S.garage1-3;s+=12) {
+      marque(s,S.d,.16,Math.min(1.9,S.demi*1.4),'arret');
+      marque(s-1.2,S.d-S.demi+.34,2.3,.12,'guide-arret');
+      marque(s-1.2,S.d+S.demi-.34,2.3,.12,'guide-arret');
+    }
+    // Prévenir avant l'entrée, sans planter le poteau dans le dégagement que partage la voie avec la
+    // chaussée. Toute la largeur du panneau reste derrière la face extérieure du muret, avec 20 cm de jeu.
+    const q=B.circuit.echantillon(c,S.debut-8),w=c.largeur/2,largeurPanneau=1.3;
+    const recul=Math.max(w,S.d+S.demi)+MURET.recul+MURET.epaisseurLisse/2+largeurPanneau/2+.2;
+    const t=chantier({x:q.x-Math.sin(q.cap)*recul,z:q.z+Math.cos(q.cap)*recul,sol:q.y-w*Math.sin(q.devers),a:q.cap-Math.PI/2,graine:c.graine},'voie-service',true);
+    t.tube([0,0,0],[0,2.4,0],.10,acier,0,'poteau-panneau','pilier',true);
+    t.biseau(0,2.05,0,[largeurPanneau,1.25,.13],[.18,.25,.27],16,'panneau',null,true);
+    // 40 km/h, arrondi du plafond de voie existant (11 m/s) ; aucun nouveau règlement.
+    const kmh=Math.round(S.vitesse*3.6);t.numero(Math.floor(kmh/10),-.31,2.05,-.1,.42);t.numero(kmh%10,.31,2.05,-.1,.42);
+    objets.push(...t.proche);loin.push(...t.loin);
+    return {objets,loin};
+  }
+  B.batiments={stands,maison,voieService};
+})(globalThis.BITUME=globalThis.BITUME||{});
+</script>
+<script>
 // ---- decor.js ----
 /* BITUME — décor calculé depuis le circuit : chaussée, accotements, terrain, eau, arbres, tribunes, glissières.
    Aucune image ni modèle : des nappes de triangles (matière et couleur par sommet) et des primitives du moteur FERRO. */
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaussee) require('./chaussee.js');
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virages) require('./virages.js');
+if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.baikal) require('./baikal.js');
+if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batiments) require('./batiments.js');
 (function (B) {
   'use strict';
 
@@ -64491,12 +65001,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
       herbe: [.13, .35, .24], herbeClaire: [.30, .48, .30], terre: [.24, .31, .22], roche: [.52, .57, .53],
       relief: 24, echelle: 370, essence: 'feuillu', densite: .28, marge: 1120, karstique: true
     },
-    // Base de roulage du lot 13A. Berges, lac et lieux détaillés sont le lot 13B ; ce thème ne se replie pas
-    // silencieusement sur Val-Brûlé et conserve des conifères/solides dès la qualification du tracé.
+    // Baïkal : rive rocheuse, promontoire, forêt boréale mixte et hameaux. Le relief de la piste 13A est conservé.
     baikal: {
       atmosphere: { skyTop: [.12, .31, .54], skyBottom: [.70, .80, .85], fog: [.60, .70, .76], sunDirection: [.48, .62, -.39], sunColor: [1.22, 1.18, 1.08], ambient: [.31, .37, .41], fogDensity: .0007, wind: .65, biome: 'baikal' },
       herbe: [.20, .32, .17], herbeClaire: [.34, .42, .23], terre: [.30, .32, .25], roche: [.45, .46, .44],
-      relief: 30, echelle: 470, essence: 'conifere', densite: .48, marge: 1050
+      sable: [.42, .45, .43], relief: 30, echelle: 470, essence: 'conifere', densite: .48, marge: 1050, eau: -8, baikal: true
     },
     pacifique: {
       atmosphere: { skyTop: [.12, .32, .54], skyBottom: [.73, .82, .85], fog: [.59, .70, .73], sunDirection: [-.64, .48, .31], sunColor: [1.36, 1.19, .93], ambient: [.31, .37, .40], fogDensity: .00048, wind: .95, biome: 'pacifique' },
@@ -64548,10 +65057,19 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
       if (x < x0) x0 = x; if (x > x1) x1 = x;
       if (z < z0) z0 = z; if (z > z1) z1 = z;
     }
-    const nz = z1 - z0 + 1, cases = new Array((x1 - x0 + 1) * nz);
+    const nz = z1 - z0 + 1, nombreCases = (x1 - x0 + 1) * nz;
+    // Les échantillons d'une même ligne de cases sont contigus, dans l'ordre case puis indice.
+    // Les préfixes permettent de traverser directement une plage de cases, sans visiter les vides.
+    const debuts = new Uint32Array(nombreCases + 1), indices = new Uint32Array(c.n);
     for (let i = 0; i < c.n; i++) {
       const k = (Math.floor(c.x[i] / T) - x0) * nz + Math.floor(c.z[i] / T) - z0;
-      let l = cases[k]; if (!l) cases[k] = l = []; l.push(i);
+      debuts[k + 1]++;
+    }
+    for (let k = 1; k <= nombreCases; k++) debuts[k] += debuts[k - 1];
+    const curseurs = debuts.slice(0, nombreCases);
+    for (let i = 0; i < c.n; i++) {
+      const k = (Math.floor(c.x[i] / T) - x0) * nz + Math.floor(c.z[i] / T) - z0;
+      indices[curseurs[k]++] = i;
     }
     // Plus proche échantillon et hauteur pondérée (inverse de la distance à la puissance 8 : continue, et exacte sur l'axe).
     function interroger(x, z, rayon) {
@@ -64561,9 +65079,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
       // conserve la somme pondérée et les départages, donc la géométrie produite.
       const amin = Math.max(cx - r, x0), amax = Math.min(cx + r, x1);
       const bmin = Math.max(cz - r, z0), bmax = Math.min(cz + r, z1);
-      for (let a = amin; a <= amax; a++) for (let b = bmin; b <= bmax; b++) {
-        const l = cases[(a - x0) * nz + b - z0]; if (!l) continue;
-        for (const i of l) {
+      for (let a = amin; a <= amax && bmin <= bmax; a++) {
+        const ligne = (a - x0) * nz, fin = debuts[ligne + bmax - z0 + 1];
+        for (let k = debuts[ligne + bmin - z0]; k < fin; k++) {
+          const i = indices[k];
           const dx = c.x[i] - x, dz = c.z[i] - z, d2 = dx * dx + dz * dz;
           if (d2 < d2min) { d2min = d2; meilleur = i; }
           const q = d2 + 1, w = 1 / (q * q * q * q);
@@ -64576,16 +65095,26 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
   }
 
   // ---------------------------------------------------------------- nappes
-  function nappe() { return { s: [], i: [], min: [Infinity, Infinity, Infinity], max: [-Infinity, -Infinity, -Infinity] }; }
+  function nappe(nombreSommets) {
+    return { s: new Float32Array(nombreSommets * 13), ns: 0, i: [], min: [Infinity, Infinity, Infinity], max: [-Infinity, -Infinity, -Infinity] };
+  }
   function sommet(n, p, no, mat, col) {
-    n.s.push(p[0], p[1], p[2], no[0], no[1], no[2], 0, 0, 0, mat, col[0], col[1], col[2]);
+    // Les sommets ne sont relus qu'une fois la nappe finie : leur stockage Float32 est déjà celui
+    // de la sortie. Les bornes gardent les Number d'origine, sans arrondi intermédiaire.
+    const k = n.ns, s = n.s; n.ns += 13;
+    s[k] = p[0]; s[k + 1] = p[1]; s[k + 2] = p[2];
+    s[k + 3] = no[0]; s[k + 4] = no[1]; s[k + 5] = no[2];
+    // Les trois composantes non utilisées, initialisées à zéro, ne sont jamais réécrites.
+    s[k + 9] = mat; s[k + 10] = col[0]; s[k + 11] = col[1]; s[k + 12] = col[2];
     for (let k = 0; k < 3; k++) { if (p[k] < n.min[k]) n.min[k] = p[k]; if (p[k] > n.max[k]) n.max[k] = p[k]; }
-    return n.s.length / 13 - 1;
+    return k / 13;
   }
   function finir(n) {
+    if (n.ns > n.s.length) throw new RangeError('Capacité de la nappe dépassée');
     const centre = n.min.map((v, k) => (v + n.max[k]) / 2);
     const rayon = Math.hypot(n.max[0] - n.min[0], n.max[1] - n.min[1], n.max[2] - n.min[2]) / 2;
-    return { sommets: new Float32Array(n.s), indices: new Uint32Array(n.i), centre, rayon };
+    const sommets = n.ns === n.s.length ? n.s : n.s.slice(0, n.ns);
+    return { sommets, indices: new Uint32Array(n.i), centre, rayon };
   }
 
   const NUANCE_SOL_NU = [1.10, .86, .96];
@@ -64626,11 +65155,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
     const blanc = [.86, .86, .83], rouge = [.74, .09, .07], blancBordure = [.90, .90, .87];
     const rougeVirage = [.82, .025, .02], blancVirage = [.98, .99, .96];
     for (let debut = 0; debut < n; debut += LIGNES) {
-      const fin = Math.min(n, debut + LIGNES), nap = nappe(), herbeTriangles = [], surfacesPhysX = [];
+      const fin = Math.min(n, debut + LIGNES);
       // bandes : d0, d1 (fonctions de la ligne), type
       const bandes = [
         ['jupe', -1], ['herbe', -1], ['bord', -1], ['ligne', -1], ['asphalte', 0], ['ligne', 1], ['bord', 1], ['herbe', 1], ['jupe', 1]
       ];
+      const nap = nappe((fin - debut + 1) * bandes.length * 2), herbeTriangles = [], surfacesPhysX = [];
       const premiers = [];
       for (let b = 0; b < bandes.length; b++) premiers.push([]);
       for (let i = debut; i <= fin; i++) {
@@ -64702,6 +65232,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
       [x1 - 610, z0 + 710, 125, 160, 175], [x1 - 900, z0 + 400, 155, 130, 215],
       [x1 - 450, z1 - 650, 185, 140, 160]
     ] : null;
+    const paysageBaikal = th.baikal ? B.baikal.planifier(c, th.eau) : null;
     const merAngle = hache(g, 7, 3) * Math.PI * 2, mer = [Math.cos(merAngle), Math.sin(merAngle)];
     let merDebut = -Infinity;
     if (th.eau !== undefined) {
@@ -64752,7 +65283,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
         const ravine = 42 * (1 - lisse(28, 130, lit));
         h += plateaux * lisse(135, 350, d) - ravine * lisse(65, 180, d);
       }
-      if (th.eau !== undefined) {
+      if (paysageBaikal) h = B.baikal.relief(paysageBaikal, x, z, d, h);
+      else if (th.eau !== undefined) {
         const p = (x - centreX) * mer[0] + (z - centreZ) * mer[1];
         if (th.pacifique) {
           // Trois caps inégaux et des anses ouvertes : une côte haute, distincte de la plage de Port-Sable.
@@ -64807,13 +65339,20 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
           col = melange(th.roche, [.22, .24, .23], .18 + .55 * strates); mat = 9;
         } else col = melange(th.herbe, th.herbeClaire, .30 + .56 * tache);
       }
+      if (paysageBaikal) {
+        const rive = B.baikal.riveRocheuse(paysageBaikal, x, z);
+        if ((rive > .15 && d > 55) || ny < .80) {
+          const strates = .5 + .5 * Math.sin(h * .56 + bruit(x / 200, z / 200, g + 449));
+          col = melange(th.roche, [.24, .31, .30], .12 + .42 * strates); mat = 9;
+        }
+      }
       if (ecologie && mat === 8 && ny >= .7 && (th.eau === undefined || h >= th.eau + 2.2)) {
         col = couleurPrairie(th, col, ecologie.echantillonner(x, z, habitat));
       }
       return [mat, col];
     };
     for (let tj = 0; tj < nz - 1; tj += TUILE) for (let ti = 0; ti < nx - 1; ti += TUILE) {
-      const nap = nappe(), id = new Map();
+      const nap = nappe((Math.min(nx - 1, ti + TUILE) - ti + 1) * (Math.min(nz - 1, tj + TUILE) - tj + 1)), id = new Map();
       const prendre = (i, j) => {
         const cle = j * nx + i; if (id.has(cle)) return id.get(cle);
         const x = x0 + i * pasT, z = z0 + j * pasT, h = H[cle];
@@ -64846,11 +65385,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
     }
     let eau = null;
     if (th.eau !== undefined) {
-      const nap = nappe(), y = th.eau, col = th.pacifique ? [.075, .235, .29] : [.10, .30, .40];
-      const e = 2600, coins = [[centreX - e, centreZ - e], [centreX + e, centreZ - e], [centreX + e, centreZ + e], [centreX - e, centreZ + e]];
+      const nap = nappe(4), y = th.eau, col = th.baikal ? [.055, .23, .32] : th.pacifique ? [.075, .235, .29] : [.10, .30, .40];
+      const e = 2600, coins = paysageBaikal ? B.baikal.coinsEau(paysageBaikal)
+        : [[centreX - e, centreZ - e], [centreX + e, centreZ - e], [centreX + e, centreZ + e], [centreX - e, centreZ + e]];
       const k = coins.map(([x, z]) => sommet(nap, [x, y, z], [0, 1, 0], 12, col));
       nap.i.push(k[0], k[2], k[1], k[0], k[3], k[2]);
       eau = finir(nap);
+      if (paysageBaikal) Object.defineProperty(eau, 'surfaceType', { value: 'eau' });
     }
     const sol = (x, z) => {
       const fi = (x - x0) / pasT, fj = (z - z0) / pasT, i = Math.max(0, Math.min(nx - 2, Math.floor(fi))), j = Math.max(0, Math.min(nz - 2, Math.floor(fj)));
@@ -64858,7 +65399,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
       const h00 = H[j * nx + i], h10 = H[j * nx + i + 1], h01 = H[(j + 1) * nx + i], h11 = H[(j + 1) * nx + i + 1];
       return h00 * (1 - u) * (1 - v) + h10 * u * (1 - v) + h01 * (1 - u) * v + h11 * u * v;
     };
-    return { liste: eau ? liste.concat([eau]) : liste, sol, bornes: [x0, z0, x1, z1], niveauEau: th.eau };
+    return { liste: eau ? liste.concat([eau]) : liste, sol, bornes: [x0, z0, x1, z1], niveauEau: th.eau, paysageBaikal };
   }
 
   // Surface réellement disponible pour les plantes et la petite faune. Les polygones sont découpés
@@ -65434,6 +65975,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
     const nappes = nappesRoute(c, th, lim, qualite !== 'low', qualite === 'low' ? null : ecologie, saison, reperes);
     const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie);
+    const maisonsBaikal = terrain.paysageBaikal ? B.baikal.habitations(c, terrain, interroger, terrain.paysageBaikal) : null;
+    // Hasard architectural séparé ; le repli sert seulement à relire l'oracle historique du décor.
+    const architecture = options.batiments !== false && B.batiments ? { maisons: [], stands: [] } : null;
     if (saison) {
       const habitat = {}, couleur = [0, 0, 0], teinte = [0, 0, 0];
       for (const n of nappes.concat(terrain.liste)) {
@@ -65441,8 +65985,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
         for (const triangle of n.herbeTriangles || []) for (let j = 0; j < 3; j++) visites[n.indices[triangle + j]] = 1;
         // Le bord sans vibreur est aussi herbeux, mais reste exclu de la plantation des brins.
         if (n.surfaceType === 'accotement') for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 9] === 8) visites[v] = 1;
-        if ((th.volcanique || th.aride || th.karstique || th.pacifique) && saison.neige && n.surfaceType === 'terrain') {
-          for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 4] > .45 && (!th.pacifique || n.sommets[v * 13 + 1] > th.eau + 1)) visites[v] = 1;
+        if ((th.volcanique || th.aride || th.karstique || th.pacifique || th.baikal) && saison.neige && n.surfaceType === 'terrain') {
+          for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 4] > .45 && (!(th.pacifique || th.baikal) || n.sommets[v * 13 + 1] > th.eau + 1)) visites[v] = 1;
         }
         for (let v = 0; v < visites.length; v++) if (visites[v]) {
           const k = v * 13, x = n.sommets[k], z = n.sommets[k + 2];
@@ -65632,6 +66176,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
         { shape: 'box', collision: 'toit', p: [p[0], p[1] + 2.3, p[2]], s: [2.6, .2, 2.4], r: rot, mat: 16, color: [.9, .42, .06] },
         { shape: 'cylinder', collision: 'pilier', p: [p[0] + 1.3, p[1] + 2.2, p[2]], s: [.05, 4.4, .05], mat: 0, color: [.6, .6, .6] },
         { shape: 'box', p: [p[0] + 1.3, p[1] + 4.0, p[2] + .45], s: [.02, .55, .8], r: rot, mat: 16, color: [.95, .78, .08] }], [], p[0], p[2]);
+      if (architecture) architecture.maisons.push({ x: p[0], sol: p[1], z: p[2], a: f.a + (cote < 0 ? Math.PI : 0), l: 2.2, w: 2, h: 2.2, cabane: true, graine: c.graine });
     }
 
     // Ligne droite principale : grille, ligne d'arrivée, portique des feux, tribunes et bâtiment des stands.
@@ -65678,7 +66223,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
     }
     for (let s = avant + 40; s < apres - 20; s += 60) {
       const f = cadre(c, Math.round(s / c.pas)), objets = [], loin = [];
-      batimentStands(objets, loin, f, w, 1, 60, th.matieres);
+      if (architecture) {
+        const site = { x: f.x, z: f.z, sol: hauteurRoute(f, w, w) - .2, a: f.a, demiRoute: w, longueur: 60, graine: c.graine, s };
+        const batiment = B.batiments.stands(site, { detail: qualite !== 'low' });
+        objets.push(...batiment.objets); loin.push(...batiment.loin); architecture.stands.push(site);
+      } else batimentStands(objets, loin, f, w, 1, 60, th.matieres);
       if (gradins) gradins.stands.push({ s, cote: 1, longueur: 60 });
       const l = lotDe(f.x, f.z, f.i); l.objets.push(...objets); l.loin.push(...loin);
     }
@@ -65716,17 +66265,22 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
       if (B.botanique && B.botanique.TRONC_LOINTAIN && tronc && tronc.mat === B.botanique.matiere('ecorce') && !loin.includes(tronc))
         l.loin.push({ shape: B.botanique.TRONC_LOINTAIN, p: tronc.p.slice(), s: tronc.s.slice(), r: tronc.r.slice(), mat: tronc.mat, color: tronc.color.slice() });
     }
-    function retenirArbre(objets, loin, x, z) {
+    function retenirArbre(objets, loin, x, z, essence = th.essence) {
+      if (maisonsBaikal && maisonsBaikal.some(m => Math.hypot(m.x - x, m.z - z) < 18)) return;
       const richesse = ecologie ? ecologie.echantillonner(x, z, habitatArbre).boisement : 1;
       if (!th.pacifique && (richesse < .08 || hache(Math.round(x * 8), Math.round(z * 8), g + 337) > richesse)) return;
       if (saison) {
         for (const liste of [objets, loin]) for (const o of liste) if (o.collision !== 'tronc' && o.color) {
-          o.color = B.saisons.teinte(saison, 'feuillage', o.color, o.p[0], o.p[2], ecologie ? habitatArbre : null);
+          o.color = B.saisons.teinte(saison, th.baikal && essence === 'feuillu' ? 'feuillage-caduque' : 'feuillage', o.color, o.p[0], o.p[2], ecologie ? habitatArbre : null);
         }
-        if (saison.feuilles && th.essence === 'feuillu') {
+        if (saison.feuilles && essence === 'feuillu') {
           const pied = objets.find(o => o.collision === 'tronc'), h = pied.s[1] / .84, sol = pied.p[1] - h * .42 + .2;
           sourcesFeuilles.push({ x, y: sol + h * .78, z, rayon: h * .36, sol });
         }
+      }
+      if (th.baikal) for (const o of new Set(objets.concat(loin))) {
+        Object.defineProperty(o, 'essenceBaikal', { value: essence });
+        if (o.collision === 'tronc' && essence === 'feuillu') o.color = [.70, .72, .65];
       }
       ajouter(objets, loin, x, z); positionsArbres.push([x, z]);
       if (casesArbres) rangerArbre(objets, loin, x, z);
@@ -65750,8 +66304,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
           if (th.eau !== undefined && y < th.eau + 2.5) continue;
           if (th.montagnes && y > 160) continue;
           const objets = [], loin = [];
-          arbre(objets, loin, jx, y - .2, jz, th.essence, r, qualite);
-          retenirArbre(objets, loin, jx, jz); nombre++;
+          const essence = th.baikal ? B.baikal.essence(terrain.paysageBaikal, jx, jz) : th.essence;
+          arbre(objets, loin, jx, y - .2, jz, essence, r, qualite);
+          retenirArbre(objets, loin, jx, jz, essence); nombre++;
           break;
         }
       }
@@ -65770,8 +66325,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
       if (th.montagnes && y > 160) continue;
       if (q.i >= 0 && Math.abs(B.circuit.ecart(c, 0, q.i * c.pas)) < 320 && dist < 90) continue; // abords des tribunes et des stands
       const objets = [], loin = [];
-      arbre(objets, loin, jx, y - .2, jz, th.essence, r, qualite);
-      retenirArbre(objets, loin, jx, jz); nombre++;
+      const essence = th.baikal ? B.baikal.essence(terrain.paysageBaikal, jx, jz) : th.essence;
+      arbre(objets, loin, jx, y - .2, jz, essence, r, qualite);
+      retenirArbre(objets, loin, jx, jz, essence); nombre++;
     }
 
     if (th.pacifique) {
@@ -65848,6 +66404,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
           // deux pans de toit inclinés de 0,5 rad autour de l'axe long de la maison (rotation Ry(a)·Rx(±0,5))
           const ez = [Math.sin(a), 0, Math.cos(a)];
           for (const sens of [-1, 1]) objets.push({ shape: 'box', p: [mx + ez[0] * sens * lz * .25, my + h - .3 + lz * .14, mz + ez[2] * sens * lz * .25], s: [lx + .6, .22, lz * .6], r: [sens * .5, a, 0], mat: 1, color: th.montagnes ? [.30, .20, .14] : [.62, .26, .14] });
+          if (architecture) architecture.maisons.push({ x: mx, z: mz, sol: my - .3, a: -a, l: lx, w: lz, h, enduit, theme: c.theme, graine: c.graine });
         }
         if (th.eau !== undefined && v === 0) {
           objets.push({ shape: 'cylinder', p: [x, y + 11, z], s: [3, 22, 3], mat: 16, color: [.94, .94, .9] });
@@ -65940,6 +66497,23 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
       }
     }
 
+    // Le hameau boréal reste dans les deux niveaux de détail ; fondations calculées sur les quatre coins.
+    if (maisonsBaikal) for (const m of maisonsBaikal) {
+      const objets = B.baikal.objetsMaison(m, saison && saison.neige);
+      ajouter(objets, objets.slice(), m.x, m.z);
+      if (architecture) architecture.maisons.push({ ...m, h: 3.2, baikal: true, theme: c.theme, graine: c.graine });
+    }
+
+    if (architecture) {
+      // Les détails ont leurs petits lots et leur propre bascule ; ils ne retardent pas le LOD d'une forêt.
+      for (let i = 0; i < architecture.maisons.length; i++) {
+        const batiment = B.batiments.maison(architecture.maisons[i], { detail: qualite !== 'low', neige: !!(saison && saison.neige) });
+        groupes.set('architecture' + i, { objets: batiment.objets, loin: batiment.loin, bascule: 180 });
+      }
+      const voie = B.batiments.voieService(c);
+      if (voie.objets.length) groupes.set('architecture-voie', { objets: voie.objets, loin: voie.loin, bascule: 260 });
+    }
+
     // Bords de route (lot 22F) : posés après tout le reste, dans des lots à eux (clé préfixée « b ») ajoutés à la fin :
     // les lots et les solides historiques gardent leur contenu, leur ordre et leurs identifiants.
     if (planBords) B.bords.poser(c, planBords, { limites: lim, qualite, ajouter: (objets, loin, x, z) => {
@@ -65974,7 +66548,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
       for (const o of l.objets) { const s = o.s || [1, 1, 1]; rayon = Math.max(rayon, Math.hypot(o.p[0] - mx, o.p[1] - my, o.p[2] - mz) + Math.hypot(s[0], s[1], s[2]) / 2); }
       // Aucune portée propre : un lot se dessine jusqu'au plan lointain de la caméra, la brume fait la limite (un massif
       // qui surgit à 1 900 m se voit). La bascule vers la version allégée se fait là où un tronc tient en un pixel.
-      lots.push({ objets: l.objets, loin: l.loin, centre: [mx, my, mz], rayon, portee: Infinity, bascule: l.lointain ? 900 : 520 });
+      lots.push({ objets: l.objets, loin: l.loin, centre: [mx, my, mz], rayon, portee: Infinity, bascule: l.bascule || (l.lointain ? 900 : 520) });
     }
     // Collision et image partagent les mêmes primitives ; aucune consommation du hasard supplémentaire.
     // Les troncs gardent le prisme à 16 côtés et la rotation du cylindre WebGL, indépendants de la qualité.
@@ -65993,6 +66567,14 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
     const decor = { nappes: nappes.concat(terrain.liste), lots: lotsDessin, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
+    if (architecture) Object.defineProperty(decor, 'architecture', { value: architecture });
+    if (terrain.paysageBaikal) Object.defineProperty(decor, 'baikal', { value: Object.freeze({
+      plan: terrain.paysageBaikal, maisons: maisonsBaikal,
+      lieux: Object.freeze([{ nom: 'Cap des Pins', t: terrain.paysageBaikal.cap }, { nom: 'Anse Claire', t: terrain.paysageBaikal.baie }, { nom: 'Éperon du Nord', t: 880 }].map(l => {
+        const p = B.baikal.monde(terrain.paysageBaikal, B.baikal.rivage(terrain.paysageBaikal, l.t) - 90, l.t);
+        return Object.freeze({ nom: l.nom, x: p[0], y: terrain.sol(p[0], p[1]), z: p[1] });
+      }))
+    }) });
     let herbier = null;
     const ouvrirHerbier = () => {
       if (herbier) return herbier;
@@ -69003,6 +69585,9 @@ globalThis.FGeometry=globalThis.BITUME.carene;
 
   function construire(ouvert) {
     const C = B.carene;
+    // Les booléens gardent exactement les deux maillages historiques. Une fraction prépare une prise
+    // intermédiaire au chargement : aucun sommet n'est reconstruit pendant l'animation des doigts.
+    const ouverture = typeof ouvert === 'number' ? Math.max(0, Math.min(1, ouvert)) : ouvert ? 1 : 0;
     const K = AUTOUR(0, JOINTURES.theta, JOINTURES.d);            // jointure du majeur et de l'annulaire : origine du dos
     const a = AXE, bz = [0, 1, 0], Y = croix(bz, a);              // Y : normale au dos de la main, vers le dehors
     const m = [a, Y, bz];
@@ -69011,7 +69596,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     // --- Doigts : de l'intérieur du dos à la jointure, puis autour du tube ---
     // cockpit-3 : variante ouverte pour le trajet au pommeau — les doigts ne serrent plus le tube (ils le
     // traversaient, fermés, jusqu'à 12,5 mm) ; ils restent ouverts vers le dehors, à plat sur la paume levée
-    const serrage = ouvert ? .28 : 1;
+    const serrage = ouverture === 0 ? 1 : ouverture === 1 ? .28 : 1 - .72 * ouverture;
     const gant = [], pointsDoigts = [], jointures = [];
     for (const doigt of DOIGTS) {
       const psi = doigt.s / JANTE.R, jointure = AUTOUR(psi, JOINTURES.theta, JOINTURES.d), r = doigt.r;
@@ -69033,7 +69618,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
 
     // --- Pouce : de l'éminence, côté index et paume, jusque sur la face de la jante tournée vers le pilote ---
     const eminence = POUCE.eminence.map(([x, y, z]) => additionner(additionner(W, multiplier(a, -x)), additionner(multiplier(bz, y), multiplier(Y, -z))));
-    const pouce = [...eminence, ...POUCE.tour.map(([s, t], i) => AUTOUR(s / JANTE.R, t * deg * (ouvert ? .3 : 1), JANTE.r + POUCE.r[i + 2] + 4 * JEU))];
+    const pliPouce = ouverture === 0 ? 1 : ouverture === 1 ? .3 : 1 - .7 * ouverture;
+    const pouce = [...eminence, ...POUCE.tour.map(([s, t], i) => AUTOUR(s / JANTE.R, t * deg * pliPouce, JANTE.r + POUCE.r[i + 2] + 4 * JEU))];
     gant.push(...C.tube(pouce, POUCE.r, { cotes: 12, pas: 4, bouts: true }));
 
     // --- Paume : cuir sombre côté jante, sous le dos ---
@@ -69064,6 +69650,38 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   function multiplier(v, s) { return [v[0] * s, v[1] * s, v[2] * s]; }
 
   B.main = { construire, AUTOUR, JANTE, JEU, BRANCHE, AXE, DOIGTS, EFFILE, POUCE };
+})(globalThis.BITUME = globalThis.BITUME || {});
+</script>
+<script>
+// ---- cockpit-matieres.js ----
+/* BITUME — matières du cockpit, sans texture ni changement de maillage.
+   Les recettes FERRO sont opt-in ; les outils sans moteur gardent un cuir mat
+   et un tissu non métallique. Le métal brossé et la peinture restent ceux du moteur. */
+(function (B) {
+  'use strict';
+  const moteur = globalThis.FRender || globalThis.window?.FRender;
+  const recettes = moteur?.materials || {};
+  const cuir = Number.isFinite(recettes.fineLeather) ? recettes.fineLeather : 7;
+  const tissu = Number.isFinite(recettes.wovenFabric) ? recettes.wovenFabric : 18;
+  const metal = 0;
+
+  // Seulement à la préparation du modèle. L'animation réutilise ensuite les
+  // mêmes objets, matières et tableaux dans le cockpit et tous les LOD extérieurs.
+  function habitacle(H) {
+    H.planche[0].objet.mat = metal;
+    H.jante.objet.mat = cuir;
+    H.ruban.objet.mat = tissu;
+    for (const main of H.mains) {
+      main.pieces.forEach((piece, i) => { piece.objet.mat = i === 1 || i === 2 ? cuir : tissu; });
+      for (const piece of main.tubes) piece.objet.mat = tissu;
+      for (const piece of main.boules) piece.objet.mat = tissu;
+    }
+    return H;
+  }
+  function pilote(corps) {
+    for (const piece of corps) if (piece.pilote && piece.mat === 18) piece.mat = tissu;
+  }
+  B.cockpitMatieres = Object.freeze({ cuir, tissu, metal, habitacle, pilote });
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -69161,9 +69779,9 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   const LAQUE = 16, PEINTURE = 17, MAT = 7, METAL_MAT = 0, TISSU = 18;
   // Le catalogue commun peut être absent des outils qui chargent seulement le modèle.
   const PNEUS_TYPES = B.pneus ? B.pneus.CATALOGUE : { slicks: { cercle: [.95, .76, .08] }, inter: { cercle: [.16, .72, .30] }, pluie: { cercle: [.16, .46, .90] }, neige: { cercle: [.82, .85, .89] } };
-  const PNEU = [.035, .035, .04], FOND_JANTE = [.11, .11, .12], JANTE = [.72, .73, .74], NOIR = [.03, .03, .035],
+  const PNEU = [.035, .035, .04], FOND_JANTE = [.11, .11, .12], JANTE = [.32, .33, .34], NOIR = [.03, .03, .035],
     CARBONE = [.06, .065, .07], ARGENT = [.76, .77, .79], BLANC = [.95, .94, .9], GANT = [.9, .9, .87],
-    ACIER = [.56, .57, .59], SOMBRE = [.17, .175, .19], CRAIE = [.82, .82, .78], IVOIRE = [.93, .92, .87];
+    ACIER = [.56, .57, .59], SOMBRE = [.17, .175, .19], IVOIRE = [.93, .92, .87];
   const VITESSE_FLOU = 30;   // m/s : au-delà, la rotation des roues ne se lit plus image par image
 
   // Braquage d'Ackermann : la roue intérieure au virage braque plus que l'extérieure. d > 0 : virage à droite.
@@ -69518,8 +70136,11 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   function pneu(r, w, segments, type) {
     const h = w / 2, b = h - .049, detail = segments >= 64, sculpte = detail && type !== 'slicks';
     const profondeur = sculpte ? type === 'neige' ? .009 : type === 'pluie' ? .007 : .004 : 0;
+    // La peau lisse est découpée finement dans sa largeur pour porter des traces courbes. Les subdivisions
+    // restent sur le même cylindre : aucune bosse, aucune surépaisseur, aucun pavé ajouté au slick neuf.
+    const bande = [-1, -.78, -.43, -.16, .11, .39, .67, 1].map(f => [f * b, r - profondeur]);
     const profil = segments >= 64 ? [[-h, JANTE_R + .009], [-h, r - .060], [-h + .007, r - .036], [-h + .021, r - .014],
-      [-h + .035, r - .003], [-b - .006, r], [-b, r - profondeur], [b, r - profondeur], [b + .006, r],
+      [-h + .035, r - .003], [-b - .006, r], ...bande, [b + .006, r],
       [h - .035, r - .003], [h - .021, r - .014], [h - .007, r - .036], [h, r - .060], [h, JANTE_R + .009],
       [h - .009, JANTE_R + .005], [-h + .009, JANTE_R + .005]]
       : [[-h, JANTE_R + .009], [-h, r - .060], [-h + .013, r - .026], [-b, r], [b, r], [h - .013, r - .026],
@@ -69549,16 +70170,25 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       forme('pneu-' + essieu + (type === 'slicks' && niveau === 0 ? '' : '-' + type + '-' + niveau), pneu(r, w, segments, type)));
     f.fut = SEGMENTS_ROUE.map((segments, n) => forme('jante-' + essieu + '-' + n, revolutionRoue([
       [-h - .005, .155], [-h - .004, .174], [-h + .006, .174], [-h + .013, .158],
-      [h - .013, .158], [h - .006, .174], [h + .004, .174], [h + .005, .155]], segments, false)));
+      [h - .013, .158], [h - .006, .174], [h + .004, .174], [h + .005, .155]], segments)));
     f.rayons = SEGMENTS_ROUE.map((segments, n) => {
       const tris = [];
       for (const cote of [-1, 1]) for (let j = 0; j < 6; j++) {
         const a = 2 * Math.PI * j / 6, ca = Math.cos(a), sa = Math.sin(a);
-        const sections = [[.035, .026, .038], [.085, .018, .028], [.155, .012, .018]].map(([x, l, creux]) => ({ x, y0: cote * (h - creux) - .008, y1: cote * (h - creux) + .008, l, n: 3 }));
-        tris.push(...C.transformer(C.carene(sections, { cotes: n < 2 ? 8 : 4, pas: 1 }), [[ca, 0, sa], [0, 1, 0], [-sa, 0, ca]]));
+        // Six branches moulées équilibrées : profil ovale et raccords galbés, sans lattes plates claires.
+        const sections = [[.031, .012, .038, 0], [.052, .018, .034, .002], [.088, .014, .026, .004],
+          [.125, .010, .020, .002], [.160, .014, .016, 0]].map(([x, l, creux, z]) =>
+          ({ x, y0: cote * (h - creux) - .008, y1: cote * (h - creux) + .008, l, n: 2, z }));
+        tris.push(...C.transformer(C.carene(sections, { cotes: n < 2 ? 8 : 6, pas: n < 2 ? 2 : 1 }), [[ca, 0, sa], [0, 1, 0], [-sa, 0, ca]]));
       }
       return forme('rayons-' + essieu + '-' + n, tris);
     });
+    // Axe aminci dans l'ombre, écrous arrondis aux extrémités. Le cylindre argenté qui traversait toute
+    // la largeur donnait une barre blanche dans le creux de la roue, particulièrement depuis le cockpit.
+    f.moyeu = SEGMENTS_ROUE.map((segments, n) => forme('moyeu-roue-' + essieu + '-' + n, revolutionRoue([
+      [-h - .010, .012], [-h - .010, .025], [-h - .006, .034], [-h + .007, .038], [-h + .025, .035],
+      [-h + .037, .023], [h - .037, .023], [h - .025, .035], [h - .007, .038], [h + .006, .034],
+      [h + .010, .025], [h + .010, .012]], [32, 24, 16, 12][n])));
     f.bague = SEGMENTS_ROUE.map((segments, n) => {
       const tris = [];
       for (const cote of [-1, 1]) {
@@ -69568,6 +70198,12 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       return forme('bague-pneu-' + essieu + '-' + n, tris);
     });
   }
+  forme('valve-roue', C.carene([
+    { x: -.007, y0: -.0025, y1: .0025, l: .0025, n: 2 },
+    { x: -.004, y0: -.0045, y1: .0045, l: .0045, n: 2 },
+    { x: .004, y0: -.0045, y1: .0045, l: .0045, n: 2 },
+    { x: .007, y0: -.0025, y1: .0025, l: .0025, n: 2 }
+  ], { cotes: 8, pas: 2 }));
   // 12D : les surfaces usées sont une partition des triangles d'origine. Ni décalque flottant, ni
   // seconde peau coplanaire : coordonnées, normales et diamètre restent strictement les mêmes.
   // Les quatre pièces gardent le même repère normalisé que le pneu entier, même si leur boîte est plus petite.
@@ -69594,9 +70230,13 @@ globalThis.FGeometry=globalThis.BITUME.carene;
           let groupe = 0;
           if (fond) groupe = 4;
           else if (dessus) {
-            const angle = (Math.atan2(z, x) + 2 * Math.PI) % (2 * Math.PI), secteur = Math.floor(angle * 48 / (2 * Math.PI));
-            const voie = y < -b / 3 ? 0 : y > b / 3 ? 2 : 1, h = Math.imul(secteur + voie * 79 + 1, 0x45d9f3b);
-            groupe = 1 + ((h ^ h >>> 16) >>> 0) % 3;
+            // Champ continu autour du pneu, gauchi dans la largeur : pas de damier secteur × voie ni de
+            // répétition en miroir. Calculé une fois au chargement, il reste fixe dans le caoutchouc qui tourne.
+            const angle = Math.atan2(z, x), travers = y / b, phase = essieu === 'av' ? .73 : 2.17;
+            const grain = Math.sin(3 * angle + phase + 2.1 * travers)
+              + .48 * Math.sin(7 * angle - 5.3 * travers + 2 * phase)
+              + .22 * Math.cos(13 * angle + 3 * travers + 3 * phase);
+            groupe = grain < -.38 ? 1 : grain > .42 ? 3 : 2;
           }
           groupes[groupe].push(tri);
         }
@@ -69738,14 +70378,16 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     Moy(P('box', [-2.05, .90, 0], [.32, .035, 1.10], PEINTURE, c2, AR({ m: euler(0, 0, -.12) })));
     Moy(P('box', [-2.18, .95, 0], [.12, .025, 1.08], PEINTURE, c2, AR({ m: euler(0, 0, -.5) })));
     Moy(L('derives-arriere', PEINTURE, c1, AR()));
-    // Chaque pneu porte sa vraie sculpture. La bande neuve d'un slick reste lisse ; les marques de craie sont sur
-    // ses flancs. Les variantes gardent les cotes et tournent dans le même repère (braquage, distance, suspension).
+    // Chaque pneu porte sa vraie sculpture. La bande neuve d'un slick reste lisse ; pas de barrettes de craie
+    // blanches sur ses flancs. Une petite valve arrondie reste un repère de rotation sur le côté extérieur.
+    // L'orientation de montage varie d'une roue à l'autre, déterministe pour la livrée et sans hasard par image.
+    const phasesRoues = ROUES.map((w, i) => (Math.imul((livree.numero || 0) ^ Math.imul(i + 1, 0x9e3779b9), 0x85ebca6b) >>> 0) / 4294967296 * 2 * Math.PI);
     const typePneus = B.pneus ? B.pneus.normaliserType(livree.pneus)
       : typeof livree.pneus === 'string' && Object.prototype.hasOwnProperty.call(PNEUS_TYPES, livree.pneus) ? livree.pneus : 'slicks';
     const pneus = PNEUS_TYPES[typePneus];
     ROUES.forEach((w, i) => {
-      const base = { roue: i, m: ROUE_AXE, arriere: !w.avant, tourne: 0 }, essieu = w.avant ? 'av' : 'ar';
-      const jante = JANTES_FORMES[essieu], k = Math.sign(w.z), flanc = (JANTE_R + w.r) / 2;
+      const base = { roue: i, m: ROUE_AXE, arriere: !w.avant, tourne: phasesRoues[i] }, essieu = w.avant ? 'av' : 'ar';
+      const jante = JANTES_FORMES[essieu], k = Math.sign(w.z);
       const pieceRoue = (formes, mat, couleur, extra) => P(formes[0].nom, [w.x, w.r, w.z], formes[0].taille, mat, couleur,
         Object.assign({ formesRoues: formes }, base, extra));
       const surfaces = MATIERES_PNEUS[essieu][typePneus];
@@ -69757,11 +70399,12 @@ globalThis.FGeometry=globalThis.BITUME.carene;
         { pneu: typePneus, usureRoue: 5, profondeur: typePneus === 'neige' ? .009 : typePneus === 'pluie' ? .007 : .004, detailRoueMax: 1 }));
       Moy(pieceRoue(jante.fut, METAL_MAT, SOMBRE));
       Moy(pieceRoue(jante.rayons, METAL_MAT, JANTE));
-      Moy(P('cylinder', [w.x, w.r, w.z], [.07, w.l + .032, .07], METAL_MAT, JANTE, base));
+      Moy(pieceRoue(jante.moyeu, METAL_MAT, FOND_JANTE));
       pieceRoue(DISQUES_ROUE, METAL_MAT, [.40, .40, .42], { decale: [0, -k * (w.l / 2 - .055), 0], detailRoueMax: 1 });
       pieceRoue(jante.bague, MAT, pneus.cercle, { pneus: typePneus, detailRoueMax: 1 });
-      for (const cote of [-1, 1]) for (const a of [0, Math.PI]) P('box', [w.x, w.r, w.z], [.045, .002, .010], MAT, CRAIE,
-        Object.assign({}, base, { tourne: a, decale: [flanc, cote * (w.l / 2 + .0025), 0], detailRoueMax: 1 }));
+      const valve = FORMES['valve-roue'];
+      P(valve.nom, [w.x, w.r, w.z], valve.taille, MAT, [.20, .18, .13],
+        Object.assign({}, base, { decale: [.145, k * (w.l / 2 - .016), 0], detailRoueMax: 1 }));
     });
 
     // Version lointaine : trois carènes à huit côtés, les ailerons, le casque et les quatre roues
@@ -69773,11 +70416,12 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       piece('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque, { tetePilote: true }));
     ROUES.forEach((w, i) => {
       const formes = ROUES_FORMES[w.avant ? 'av' : 'ar'][typePneus], f = formes[3];
-      simples.push(piece(f.nom, [w.x, w.r, w.z], f.taille, MAT, PNEU, { m: ROUE_AXE, roue: i, tourne: 0, formesRoues: formes, usureRoue: 1 }));
+      simples.push(piece(f.nom, [w.x, w.r, w.z], f.taille, MAT, PNEU, { m: ROUE_AXE, roue: i, tourne: phasesRoues[i], formesRoues: formes, usureRoue: 1 }));
     });
     // Après casse, ne reste que la cellule du pilote et l'arceau ; roues et carrosserie sont des débris.
     const epave = corps.filter(p => p.pilote || ['cuve', 'goutte', 'goutte-dedans', 'arceau'].some(n => p.shape === FORMES[n].nom));
     const mod = { corps, simples, epave, moyens: corps.filter(p => moyennes.has(p)), livree };
+    B.cockpitMatieres?.pilote(corps);
     preparer(mod);
     return mod;
   }
@@ -69805,8 +70449,9 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     for (let i = 0; i < ROUES.length; i++) {
       if (mod.corps.some(p => p.roue === i && p.usureRoue === 5)) continue;
       const w = ROUES[i], surfaces = MATIERES_PNEUS[w.avant ? 'av' : 'ar'].slicks[0];
+      const pneu = mod.corps.find(p => p.roue === i && p.usureRoue === 1);
       const support = piece(surfaces[0].nom, [w.x, w.r, w.z], surfaces[0].taille, MAT, PNEU,
-        { roue: i, m: ROUE_AXE, arriere: !w.avant, tourne: 0, formesRoues: surfaces,
+        { roue: i, m: ROUE_AXE, arriere: !w.avant, tourne: pneu.tourne, formesRoues: surfaces,
           pneu: 'slicks', usureRoue: 5, profondeur: 0, detailRoueMax: -1 });
       for (const liste of [mod.corps, mod.moyens]) {
         const k = liste.findIndex(p => p.roue === i && p.usureRoue === 4);
@@ -70019,9 +70664,9 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       for (let k = 0; k < 3; k++) {
         const base = PNEU[k] + .012 * u + (k === 0 ? .052 : k === 1 ? .042 : .025) * s;
         valeurs[j + 1 + k] = base;
-        valeurs[j + 4 + k] = base + .026 * u * (1 - .5 * g) * a;
-        valeurs[j + 7 + k] = base + (.036 * u + .032 * g) * b;
-        valeurs[j + 10 + k] = base + (k === 0 ? .11 : k === 1 ? .077 : .037) * s * c - .004 * u * c;
+        valeurs[j + 4 + k] = base + .012 * u * (1 - .5 * g) * a;
+        valeurs[j + 7 + k] = base + (.018 * u + .012 * g) * b;
+        valeurs[j + 10 + k] = base + (k === 0 ? .040 : k === 1 ? .030 : .017) * s * c - .003 * u * c;
       }
     }
   }
@@ -70230,6 +70875,10 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   const MAIN = B.main.construire(), MAIN_OUVERT = B.main.construire(true);
   for (const [cote, t] of [['d', x => x], ['g', C.miroir]]) for (const piece of ['gant', 'paume', 'garde', 'poignet', 'sangle']) forme('main-' + piece + '-' + cote, t(MAIN[piece]));
   forme('main-gant-d-ouvert', MAIN_OUVERT.gant);                  // cockpit-3 : doigts ouverts pendant le trajet au pommeau
+  // Quatre prises intermédiaires, préparées une fois : les doigts se délient avant que le poignet recule.
+  const PRISES_MAIN = ['main-gant-d'];
+  for (let n = 1; n < 5; n++) { const nom = 'main-gant-d-prise-' + n; forme(nom, B.main.construire(n / 5).gant); PRISES_MAIN.push(nom); }
+  PRISES_MAIN.push('main-gant-d-ouvert');
   const clarte = c => .3 * c[0] + .59 * c[1] + .11 * c[2], ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
   // Courbes de l'habitacle, écrites en place dans habitacle et majVolant (aucun appel par pose) : borner(x, a, b) vaut
   // x < a ? a : x > b ? b : x ; lisse(a, b, x) vaut u·u·(3 − 2u), u = borner((x − a) / (b − a), 0, 1). Position du
@@ -70244,7 +70893,10 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const e = etatRendu(mod), M = attitudeDans(MS, ev);
     poserTable(tableDe(e, mod, etat.casse ? EPAVE : CORPS, 3), M, ev, sortie, etat.roues, false,
       etat.rouesDetail === undefined ? 0 : Math.max(0, Math.min(3, etat.rouesDetail | 0)));
-    habitacle(e.habitacle || (e.habitacle = construireHabitacle(mod)), M, ev, sortie, etat);
+    const H = e.habitacle || (e.habitacle = construireHabitacle(mod));
+    const articule = !!ev.pilote;
+    if (H.piloteReel !== articule) { H.piloteReel = articule; H.pret = false; }
+    habitacle(H, M, ev, sortie, etat);
     return imbriquee(e.M3, M);
   }
 
@@ -70287,7 +70939,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const liv = mod.livree, c1 = liv.couleur, c2 = liv.seconde || BLANC;
     const H = { rotM: trois(), epoque: 0, c2, pret: false, cle: new Float64Array(6), planche: [], lampe: null, alerte: null, aiguilles: [],
       rapport: null, diagonale: null, vitesse: [], volant: [], rJante: null, jante: null, branches: null, rCaches: null, caches: [], vis: [],
-      ruban: null, tige: null, pommeau: null, mains: null, glaces: [] };
+      ruban: null, tige: null, pommeau: null, mains: null, glaces: [],
+      piloteReel: false, articulations: new Float64Array(18) };
     const reperes = [];
     const repere = m => {   // repère fixe, partagé par les pièces de même rotation
       const f = aplatir(m);
@@ -70374,6 +71027,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       PIECES_MAIN.forEach((nom, q) => {
         const ferme = variante('main-' + nom + '-' + cote), e = emplacement(ferme.nom, ferme.s, TISSU, couleurs[q], rep, undefined);
         e.ferme = ferme; e.ouvert = k > 0 && nom === 'gant' ? variante('main-gant-d-ouvert') : ferme;
+        e.prises = k > 0 && nom === 'gant' ? PRISES_MAIN.map(variante) : null;
         main.pieces.push(e); V.push(e);
       });
       for (let n = 1; n <= 6; n++) {
@@ -70402,33 +71056,35 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       }
       H.glaces.push(G);
     }
-    return H;
+    return B.cockpitMatieres ? B.cockpitMatieres.habitacle(H) : H;
   }
 
   // Pilote extérieur : la même cinématique de prise/levier que le cockpit, ramenée à la taille du corps réel.
   // ev.pilote = { volant, rapport, rapportAvant, passage } est un objet permanent fourni par jeu.js. L'animation
   // est une fonction de cette pose : ni horloge cachée, ni avancement par caméra, ni écriture dans la simulation.
   // Sans ce champ, les anciennes poses et leurs empreintes restent strictement inchangées.
-  const PILOTE_COU = [0, .772, 0], PILOTE_RECUL = -.10, PILOTE_VOLANT = [.28, .77, 0], PILOTE_ECHELLE = .9 / K;
+  const PILOTE_COU = [0, .772, 0], PILOTE_RECUL = -.10, PILOTE_VOLANT = [.25, .70, 0], PILOTE_ECHELLE = .9 / K;
   const PILOTE_DECALAGE = PILOTE_VOLANT.map((v, i) => v - (OEIL[i] + K * CV[i]) * PILOTE_ECHELLE);
   // Les places du cockpit sont choisies pour son cadrage. Leur homothétie seule plaçait le pied du levier dans
   // le flanc droit. Les ancrages extérieurs sont mesurés dans la cellule : volant avancé, levier à l'intérieur
   // du jonc. La main droite applique le même déplacement à la cible de sa courbe, sans déformer le gant.
-  const PILOTE_LEVIER = [.20, .745, .17];
+  const PILOTE_LEVIER = [.18, .57, .16];
   const PILOTE_LEVIER_DECALAGE = PILOTE_LEVIER.map((v, i) => v - PILOTE_DECALAGE[i] - PILOTE_ECHELLE * (OEIL[i] + K * LEVIER[i]));
-  const PILOTE_PIED_LEVIER = PILOTE_LEVIER.map((v, i) => v + .9 * (PIED[i] - LEVIER[i]));
+  // Pied au-dessus du fond réel de la cuve (y ≈ .48), serti dans la console à y .50.
+  const PILOTE_PIED_LEVIER = [PILOTE_LEVIER[0], .50, PILOTE_LEVIER[2] + .0108];
   // Le pied est fixé à une petite console arrondie, elle-même ancrée dans le fond de la cuve. Son sommet
   // reçoit les deux derniers millimètres de la tige ; le reste du débattement est libre dans l'habitacle.
   forme('console-levier-pilote', C.carene([
-    { x: PILOTE_PIED_LEVIER[0] - .06, y0: .43, y1: .57, l: .012, n: 3, z: PILOTE_PIED_LEVIER[2] },
-    { x: PILOTE_PIED_LEVIER[0] - .025, y0: .43, y1: PILOTE_PIED_LEVIER[1] + .002, l: .030, n: 4, z: PILOTE_PIED_LEVIER[2] },
-    { x: PILOTE_PIED_LEVIER[0] + .025, y0: .43, y1: PILOTE_PIED_LEVIER[1] + .002, l: .030, n: 4, z: PILOTE_PIED_LEVIER[2] },
-    { x: PILOTE_PIED_LEVIER[0] + .06, y0: .43, y1: .57, l: .012, n: 3, z: PILOTE_PIED_LEVIER[2] }
+    { x: PILOTE_PIED_LEVIER[0] - .06, y0: .415, y1: PILOTE_PIED_LEVIER[1] - .012, l: .012, n: 3, z: PILOTE_PIED_LEVIER[2] },
+    { x: PILOTE_PIED_LEVIER[0] - .025, y0: .415, y1: PILOTE_PIED_LEVIER[1] + .002, l: .030, n: 4, z: PILOTE_PIED_LEVIER[2] },
+    { x: PILOTE_PIED_LEVIER[0] + .025, y0: .415, y1: PILOTE_PIED_LEVIER[1] + .002, l: .030, n: 4, z: PILOTE_PIED_LEVIER[2] },
+    { x: PILOTE_PIED_LEVIER[0] + .06, y0: .415, y1: PILOTE_PIED_LEVIER[1] - .012, l: .012, n: 3, z: PILOTE_PIED_LEVIER[2] }
   ], { cotes: 16, pas: 3 }));
 
   function construirePiloteExterieur(mod, H) {
     const liv = mod.livree, combi = liv.combinaison || liv.couleur.map(v => v * .7);
-    const R = { habitacle: H, tete: new Float64Array(9), articulations: new Float64Array(18), decalageMain: new Float64Array(3), variantes: [] };
+    const tissuPilote = B.cockpitMatieres ? B.cockpitMatieres.tissu : TISSU;
+    const R = { habitacle: H, tete: new Float64Array(9), articulations: H.articulations, variantes: [] };
     // Une réserve par LOD/overlay et par rétroviseur : aucune place, rotation ou taille ne passe d'une vue à l'autre.
     for (let variante = 0; variante < 10; variante++) {
       const li = variante < 8 ? variante >> 1 : variante === 8 ? CORPS : EPAVE;
@@ -70442,7 +71098,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       const ajouter = (role, source, simple) => {
         const o = objet(simple || source.objet.shape, source.objet.mat, source.objet.color);
         if (!source.rep) o.r = V.rotM;
-        V.pieces.push({ role, source, simple, levier: role === 'levier' || role === 'pommeau', mainLevier: role.startsWith('gant-1-'), objet: o });
+        V.pieces.push({ role, source, simple, objet: o });
       };
       ajouter('volant', H.jante, niveau === 2 ? 'cylinder' : null);
       if (niveau < 2) ajouter('branches', H.branches, null);
@@ -70453,19 +71109,24 @@ globalThis.FGeometry=globalThis.BITUME.carene;
         V.pieces.push({ role: 'console-levier', fixe: f.centre, objet: o });
       }
       if (niveau > 0) {
-        const o = objet('sphere', TISSU, combi); o.s[0] = .30; o.s[1] = .20; o.s[2] = .38; o.r = V.rotM;
+        const o = objet('sphere', tissuPilote, combi); o.s[0] = .30; o.s[1] = .20; o.s[2] = .38; o.r = V.rotM;
         V.pieces.push({ role: 'buste', fixe: [-.04 + PILOTE_RECUL, .66, 0], objet: o });
       }
       for (let h = 0; h < 2; h++) {
         const main = H.mains[h], j = h * 9;
         for (let q = 0; q < (niveau === 0 ? main.pieces.length : 1); q++)
           ajouter('gant-' + h + '-' + q, main.pieces[q], niveau === 2 ? 'sphere' : null);
-        for (let os = 0; os < 2; os++) {
-          const o = objet('cylinder', TISSU, combi); o.s[0] = o.s[2] = os === 0 ? .075 : .065;
-          V.pieces.push({ role: (os === 0 ? 'bras-' : 'avant-bras-') + h, de: j + os * 3, a: j + (os + 1) * 3,
+        {
+          const o = objet('sphere', tissuPilote, combi); o.s[0] = o.s[2] = .075;
+          V.pieces.push({ role: 'bras-' + h, de: j, a: j + 3,
             m: new Float64Array(9), objet: o });
         }
-        const o = objet('sphere', TISSU, combi); o.s[0] = o.s[1] = o.s[2] = .075; o.r = V.rotM;
+        // Les avant-bras sont les mêmes manches articulées que dans l'habitacle : aucune seconde pose IK.
+        for (let n = 0; n < main.tubes.length; n++) {
+          ajouter(n === 0 ? 'avant-bras-' + h : 'avant-bras-' + h + '-' + n, main.tubes[n], null);
+          ajouter('manche-joint-' + h + '-' + n, main.boules[n], null);
+        }
+        const o = objet('sphere', tissuPilote, combi); o.s[0] = o.s[1] = o.s[2] = .075; o.r = V.rotM;
         V.pieces.push({ role: 'coude-' + h, joint: j + 3, objet: o });
       }
       R.variantes.push(V);
@@ -70475,6 +71136,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
 
   function preparerPiloteExterieur(R, etat) {
     const H = R.habitacle, cle = H.cle;
+    if (!H.piloteReel) { H.piloteReel = true; H.pret = false; }
     let volant = Number.isFinite(etat.volant) ? etat.volant : 0;
     volant = volant < -1 ? -1 : volant > 1 ? 1 : volant;
     let t = Number.isFinite(etat.passage) ? etat.passage : 1;
@@ -70493,34 +71155,35 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     let u = t / .3, retour = (t - .65) / .35;
     u = u < 0 ? 0 : u > 1 ? 1 : u; retour = retour < 0 ? 0 : retour > 1 ? 1 : retour;
     const prise = u * u * (3 - 2 * u) * (1 - retour * retour * (3 - 2 * retour));
-    // La cible figure dans le point de contrôle et l'arrivée du Bézier : poids 2p(1-p)+p².
-    const poidsLevier = prise * (2 - prise);
-    for (let k = 0; k < 3; k++) R.decalageMain[k] = PILOTE_LEVIER_DECALAGE[k] * poidsLevier;
     ANG[0] = -(.22 * volant + .10 * prise); ANG[1] = -.10 * prise; ANG[2] = -.035 * volant;
     produitDans(R.tete, eulerDe(T_A, ANG, 0, 1), produitDans(T_B, eulerDe(T_C, ANG, 1, 2), eulerDe(T_D, ANG, 2, 0)));
 
-    // Deux segments de longueur constante, coudes écartés au-dessus du bord du cockpit. Les trois LOD
-    // lisent ces mêmes articulations ; seul le détail des gants et du volant change avec la caméra.
-    const A = R.articulations, haut = .22, avant = .23;
-    for (let h = 0; h < 2; h++) {
-      const j = h * 9, cote = h === 0 ? -1 : 1, poignet = H.mains[h].pieces[3].o;
-      A[j] = -.025 + PILOTE_RECUL; A[j + 1] = .705; A[j + 2] = cote * .165;
-      A[j + 6] = PILOTE_DECALAGE[0] + PILOTE_ECHELLE * poignet[0] + (h === 1 ? R.decalageMain[0] : 0);
-      A[j + 7] = PILOTE_DECALAGE[1] + PILOTE_ECHELLE * poignet[1] + (h === 1 ? R.decalageMain[1] : 0);
-      A[j + 8] = PILOTE_DECALAGE[2] + PILOTE_ECHELLE * poignet[2] + (h === 1 ? R.decalageMain[2] : 0);
-      const dx = A[j + 6] - A[j], dy = A[j + 7] - A[j + 1], dz = A[j + 8] - A[j + 2];
-      const distance = Math.max(1e-9, Math.sqrt(dx * dx + dy * dy + dz * dz)), ux = dx / distance, uy = dy / distance, uz = dz / distance;
-      const projection = .65 * uy + cote * uz;
-      let bx = -ux * projection, by = .65 - uy * projection, bz = cote - uz * projection;
-      let normeB = Math.sqrt(bx * bx + by * by + bz * bz);
-      if (normeB < 1e-9) { bx = -uz; by = 0; bz = ux; normeB = Math.sqrt(bx * bx + bz * bz); }
-      if (normeB < 1e-9) { bx = 1; by = 0; bz = 0; normeB = 1; }
-      const avance = (haut * haut - avant * avant + distance * distance) / (2 * distance);
-      const ecartCoude = Math.sqrt(Math.max(0, haut * haut - avance * avance)) / normeB;
-      A[j + 3] = A[j] + ux * avance + bx * ecartCoude;
-      A[j + 4] = A[j + 1] + uy * avance + by * ecartCoude;
-      A[j + 5] = A[j + 2] + uz * avance + bz * ecartCoude;
-    }
+    // Les articulations sont calculées dans majVolant, en même temps que les mains et les manches.
+    // R partage directement les tableaux de l'habitacle : changer de vue ne peut pas inverser les coudes.
+  }
+
+  function articulationPilote(H, h) {
+    const A = H.articulations, j = h * 9, cote = h === 0 ? -1 : 1;
+    // La prise dégagée demande jusqu'à 43,6 cm de portée. Ces 21/23 cm gardent les os constants,
+    // avec le coude au-dessus du fond réel de la cuve ; aucun allongement pendant le geste.
+    const poignet = H.mains[h].pieces[3].o, haut = .21, avant = .23;
+    A[j] = -.025 + PILOTE_RECUL; A[j + 1] = .73; A[j + 2] = cote * .14;
+    for (let k = 0; k < 3; k++) A[j + 6 + k] = PILOTE_DECALAGE[k] + PILOTE_ECHELLE * poignet[k];
+    const dx = A[j + 6] - A[j], dy = A[j + 7] - A[j + 1], dz = A[j + 8] - A[j + 2];
+    const distance = Math.max(1e-9, Math.sqrt(dx * dx + dy * dy + dz * dz)), ux = dx / distance, uy = dy / distance, uz = dz / distance;
+    // Pli vers le bas de la cuve. L'ancien pôle positif (.65, ±1) levait et écartait les coudes.
+    // Aucun terme latéral : la flexion reste près du buste, à l'intérieur des flancs.
+    let bx = ux * uy, by = -1 + uy * uy, bz = uz * uy;
+    let norme = Math.sqrt(bx * bx + by * by + bz * bz);
+    if (norme < 1e-9) { bx = -uz; by = 0; bz = ux; norme = Math.sqrt(bx * bx + bz * bz); }
+    if (norme < 1e-9) { bx = 1; by = 0; bz = 0; norme = 1; }
+    const avance = (haut * haut - avant * avant + distance * distance) / (2 * distance);
+    const rayon = Math.sqrt(Math.max(0, haut * haut - avance * avance)) / norme;
+    A[j + 3] = A[j] + ux * avance + bx * rayon;
+    A[j + 4] = A[j + 1] + uy * avance + by * rayon;
+    A[j + 5] = A[j + 2] + uz * avance + bz * rayon;
+    const co = H.mains[h].coude;
+    for (let k = 0; k < 3; k++) co[k] = ((A[j + 3 + k] - PILOTE_DECALAGE[k]) / PILOTE_ECHELLE - OEIL[k]) / K;
   }
 
   function poserPiloteExterieur(R, variante, M, ev, sortie, retro) {
@@ -70535,8 +71198,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
         x = PILOTE_DECALAGE[0] + PILOTE_ECHELLE * local[0];
         y = PILOTE_DECALAGE[1] + PILOTE_ECHELLE * local[1];
         z = PILOTE_DECALAGE[2] + PILOTE_ECHELLE * local[2];
-        if (e.levier) { x += PILOTE_LEVIER_DECALAGE[0]; y += PILOTE_LEVIER_DECALAGE[1]; z += PILOTE_LEVIER_DECALAGE[2]; }
-        else if (e.mainLevier) { x += R.decalageMain[0]; y += R.decalageMain[1]; z += R.decalageMain[2]; }
+        // Les décalages de commandes appartiennent désormais au modèle commun préparé dans majVolant.
+        // Ici il ne reste que le changement d'échelle/cadrage global de la vue extérieure.
         objet.shape = e.simple || source.objet.shape;
         objet.s[0] = PILOTE_ECHELLE * taille[0]; objet.s[1] = PILOTE_ECHELLE * taille[1]; objet.s[2] = PILOTE_ECHELLE * taille[2];
         if (source.rep) anglesProduit(objet.r, M, source.rep.m);
@@ -70643,9 +71306,9 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   // Volant : jante gainée, trois branches d'aluminium ajourées, flasque, cache et vis, ruban blanc en haut de la jante.
   // Mains : un seul maillage par main (src/main.js), fixe dans le repère de la jante, à 9 h et 3 h sur les branches,
   // comme dans vroom-unreal : doigts serrés autour du tube, pouce couché le long de la jante. La manche de la
-  // combinaison sort de la manchette dans l'axe de la main, droite sur 8 cm, puis descend vers le coude fixé à la
-  // caisse sous l'image (courbe de Bézier de vroom-unreal). Pendant un changement de rapport, la main droite va au
-  // pommeau, s'y pose paume vers le bas, puis revient.
+  // combinaison sort de la manchette dans l'axe de la main, puis descend vers le coude articulé dans la cuve.
+  // L'ancien cadrage isolé conserve son coude sous l'image. Pendant un changement de rapport, la main droite
+  // va au pommeau, s'y pose paume vers le bas, puis revient.
   function majVolant(H) {
     const cle = H.cle, phi = cle[0], t = cle[1], gAx = cle[2], gAy = cle[3], gBx = cle[4], gBy = cle[5];
     const cp = Math.cos(phi), sp = Math.sin(phi), J = H.rJante.m;
@@ -70670,47 +71333,87 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     { const o = H.ruban.o; o[0] = CV[0] + U[0] * RV; o[1] = CV[1] + U[1] * RV; o[2] = CV[2] + U[2] * RV; versVoiture(o); }
     AXE[0] = RD[0]; AXE[1] = RD[1]; AXE[2] = RD[2]; selonAxeDans(H.ruban.rep.m, AXE);
     // Levier de vitesses à droite : tige et pommeau d'aluminium, qui passe d'une position de la grille à l'autre
-    let u = (t - .25) / (.6 - .25); u = u < 0 ? 0 : u > 1 ? 1 : u;
-    const w = u * u * (3 - 2 * u), pX = LEVIER[0] + gAx + (gBx - gAx) * w, pY = LEVIER[1], pZ = LEVIER[2] + gAy + (gBy - gAy) * w;
-    const tx = pX - PIED[0], ty = pY - PIED[1], tz = pZ - PIED[2];
-    { const o = H.tige.o; o[0] = PIED[0] + tx * .5; o[1] = PIED[1] + ty * .5; o[2] = PIED[2] + tz * .5; versVoiture(o); }
+    let u = H.piloteReel ? (t - .46) / (.62 - .46) : (t - .25) / (.6 - .25); u = u < 0 ? 0 : u > 1 ? 1 : u;
+    const ax = H.piloteReel ? PILOTE_LEVIER_DECALAGE[0] / .9 : 0;
+    const ay = H.piloteReel ? PILOTE_LEVIER_DECALAGE[1] / .9 : 0;
+    const az = H.piloteReel ? PILOTE_LEVIER_DECALAGE[2] / .9 : 0;
+    const w = u * u * (3 - 2 * u), pX = LEVIER[0] + gAx + (gBx - gAx) * w + ax, pY = LEVIER[1] + ay, pZ = LEVIER[2] + gAy + (gBy - gAy) * w + az;
+    const piedY = H.piloteReel ? LEVIER[1] + ay + (PILOTE_PIED_LEVIER[1] - PILOTE_LEVIER[1]) / .9 : PIED[1];
+    const tx = pX - (PIED[0] + ax), ty = pY - piedY, tz = pZ - (PIED[2] + az);
+    { const o = H.tige.o; o[0] = PIED[0] + ax + tx * .5; o[1] = piedY + ty * .5; o[2] = PIED[2] + az + tz * .5; versVoiture(o); }
     AXE[0] = tx; AXE[1] = ty; AXE[2] = tz; hypotDans(AXE, 3);
     H.tige.objet.s[1] = AXE[3] * K;
     selonAxeDans(H.tige.rep.m, AXE);
     { const o = H.pommeau.o; o[0] = pX; o[1] = pY; o[2] = pZ; versVoiture(o); }
-    u = (t - 0) / (.3 - 0); u = u < 0 ? 0 : u > 1 ? 1 : u;
-    let u2 = (t - .65) / (1 - .65); u2 = u2 < 0 ? 0 : u2 > 1 ? 1 : u2;
+    u = H.piloteReel ? (t - .24) / (.44 - .24) : t / .3; u = u < 0 ? 0 : u > 1 ? 1 : u;
+    let u2 = H.piloteReel ? (t - .64) / (.80 - .64) : (t - .65) / (1 - .65); u2 = u2 < 0 ? 0 : u2 > 1 ? 1 : u2;
     const vl = u * u * (3 - 2 * u) * (1 - u2 * u2 * (3 - 2 * u2)), cP = Math.cos(PRISE), sP = Math.sin(PRISE);
+    // Un passage dure .36 s : 36 ms pour déplier les doigts, puis recul doux du poignet avant son trajet.
+    // Au retour, la main rejoint la jante avant de refermer la prise. Les deux vues lisent ces mêmes phases.
+    let ouvrir = t / .10, fermer = (t - .94) / .06, sortir = (t - .10) / .04, rentrer = (t - .90) / .04;
+    ouvrir = ouvrir < 0 ? 0 : ouvrir > 1 ? 1 : ouvrir; fermer = fermer < 0 ? 0 : fermer > 1 ? 1 : fermer;
+    sortir = sortir < 0 ? 0 : sortir > 1 ? 1 : sortir; rentrer = rentrer < 0 ? 0 : rentrer > 1 ? 1 : rentrer;
+    const ouverture = ouvrir * ouvrir * (3 - 2 * ouvrir) * (1 - fermer * fermer * (3 - 2 * fermer));
+    const radial = sortir * sortir * (3 - 2 * sortir) * (1 - rentrer * rentrer * (3 - 2 * rentrer));
+    let reculer = (t - .14) / .10, avancer = (t - .80) / .10;
+    reculer = reculer < 0 ? 0 : reculer > 1 ? 1 : reculer; avancer = avancer < 0 ? 0 : avancer > 1 ? 1 : avancer;
+    const retrait = reculer * reculer * (3 - 2 * reculer) * (1 - avancer * avancer * (3 - 2 * avancer));
     for (let h = 0; h < 2; h++) {
       const main = H.mains[h], k = main.k, F = main.rep.m, co = main.coude;
       // repère de la prise : x vers le pilote, y le long de la jante vers le haut, z vers le moyeu (miroir à gauche)
       for (let i = 0; i < 3; i++) { const rk = RD[i] * k; EX[i] = U[i] * cP + rk * sP; HT[i] = U[i] * sP - rk * cP; }
       let gx = CV[0] + EX[0] * RV, gy = CV[1] + EX[1] * RV, gz = CV[2] + EX[2] * RV, ecart = 0;
       F[0] = WN[0]; F[1] = WN[1]; F[2] = WN[2]; F[3] = HT[0]; F[4] = HT[1]; F[5] = HT[2]; F[6] = -k * EX[0]; F[7] = -k * EX[1]; F[8] = -k * EX[2];
-      if (k > 0 && vl > 0) {
-        const ciX = (pX + WN[0] * .020) + WU[0] * .030, ciY = (pY + WN[1] * .020) + WU[1] * .030, ciZ = (pZ + WN[2] * .020) + WU[2] * .030;
+      if (k > 0 && (vl > 0 || H.piloteReel && ouverture > 0)) {
+        // La paume rejoint réellement le pommeau (jeu de 0,9 mm), au lieu de flotter 18 mm au-dessus.
+        const reculPaume = H.piloteReel ? 0 : .020, leveePaume = H.piloteReel ? .008 : .030;
+        const ciX = (pX + WN[0] * reculPaume) + WU[0] * leveePaume, ciY = (pY + WN[1] * reculPaume) + WU[1] * leveePaume, ciZ = (pZ + WN[2] * reculPaume) + WU[2] * leveePaume;
         // cockpit-3 : doigts fermés, ils traversaient le tore de la jante (jusqu'à 12,5 mm) et la branche de 3 h
         // pendant le trajet ; la main s'écarte d'abord vers le dehors et vers le pilote avant de tourner, et le
         // gant passe en variante doigts ouverts dès qu'il ne touche plus le tube (ecart à fond)
-        ecart = Math.min(t, 1 - t) / .02; ecart = ecart < 0 ? 0 : ecart > 1 ? 1 : ecart;
-        gx = gx + EX[0] * .016 * ecart + WN[0] * .016 * ecart; gy = gy + EX[1] * .016 * ecart + WN[1] * .016 * ecart; gz = gz + EX[2] * .016 * ecart + WN[2] * .016 * ecart;
-        // cockpit-3 (suite) : en ligne droite les doigts piquaient dans la boule du pommeau en vol (35 mm à
-        // t 0,15) ; le trajet devient un arc de Bézier qui passe 15 cm au-dessus, la main retombe dessus
-        const soX = ciX + WU[0] * .15, soY = ciY + WU[1] * .15, soZ = ciZ + WU[2] * .15;
-        gx = gx * (1 - vl) ** 2 + soX * 2 * vl * (1 - vl) + ciX * vl ** 2; gy = gy * (1 - vl) ** 2 + soY * 2 * vl * (1 - vl) + ciY * vl ** 2; gz = gz * (1 - vl) ** 2 + soZ * 2 * vl * (1 - vl) + ciZ * vl ** 2;
+        ecart = H.piloteReel ? ouverture : Math.min(t, 1 - t) / .02; ecart = ecart < 0 ? 0 : ecart > 1 ? 1 : ecart;
+        const mouvement = H.piloteReel ? retrait : ecart, dehors = H.piloteReel ? radial : ecart, degagement = H.piloteReel ? .020 : .016, reculPrise = H.piloteReel ? .060 : .016;
+        gx = gx + EX[0] * degagement * dehors + WN[0] * reculPrise * mouvement; gy = gy + EX[1] * degagement * dehors + WN[1] * reculPrise * mouvement; gz = gz + EX[2] * degagement * dehors + WN[2] * reculPrise * mouvement;
+        // Point de contrôle surélevé du Bézier : la main contourne le pommeau avant de s'y poser.
+        // Le cadrage isolé garde sa courbe historique ; le pilote commun porte cette courbe au poignet.
+        const reculTrajet = 0, hauteurTrajet = H.piloteReel ? .28 : .15;
+        // Courbe du poignet, puis pose du gant autour de ce poignet. La courbe de l'ancien cadrage portait
+        // le point de prise : le pivot du gant emportait alors la manchette au travers du pommeau.
+        const poignet = main.pieces[3].ferme.c;
+        let cibleX = ciX, cibleY = ciY, cibleZ = ciZ;
+        if (H.piloteReel) {
+          const wx = F[0] * poignet[0] + F[3] * poignet[1] + F[6] * poignet[2], wy = F[1] * poignet[0] + F[4] * poignet[1] + F[7] * poignet[2], wz = F[2] * poignet[0] + F[5] * poignet[1] + F[8] * poignet[2];
+          const c = Math.cos(Math.PI / 2 + phi), s = Math.sin(Math.PI / 2 + phi), d = WN[0] * wx + WN[1] * wy;
+          gx += wx; gy += wy; gz += wz;
+          cibleX += wx * c + WN[1] * wz * s + WN[0] * d * (1 - c);
+          cibleY += wy * c - WN[0] * wz * s + WN[1] * d * (1 - c);
+          cibleZ += wz * c + (WN[0] * wy - WN[1] * wx) * s;
+        }
+        // La main passe au-dessus et à l'intérieur du pommeau, puis repose sa paume dessus.
+        const soX = cibleX + WU[0] * hauteurTrajet + WN[0] * reculTrajet, soY = cibleY + WU[1] * hauteurTrajet + WN[1] * reculTrajet, soZ = cibleZ + WU[2] * hauteurTrajet + WN[2] * reculTrajet - (H.piloteReel ? .10 : 0);
+        gx = gx * (1 - vl) ** 2 + soX * 2 * vl * (1 - vl) + cibleX * vl ** 2; gy = gy * (1 - vl) ** 2 + soY * 2 * vl * (1 - vl) + cibleY * vl ** 2; gz = gz * (1 - vl) ** 2 + soZ * 2 * vl * (1 - vl) + cibleZ * vl ** 2;
         // cockpit-4 : le repère de départ porte déjà −phi ; sans le +phi, la paume restait tournée du braquage au
         // pommeau (91,5° du bas volant à fond)
-        let a = (t - 0) / (.10 - 0); a = a < 0 ? 0 : a > 1 ? 1 : a;
-        let b = (t - .86) / (1 - .86); b = b < 0 ? 0 : b > 1 ? 1 : b;
+        // La main se dégage avant de pivoter et retrouve l'angle de la jante avant de s'en rapprocher.
+        let a = H.piloteReel ? (t - .24) / (.42 - .24) : t / .10; a = a < 0 ? 0 : a > 1 ? 1 : a;
+        let b = H.piloteReel ? (t - .66) / (.79 - .66) : (t - .86) / (1 - .86); b = b < 0 ? 0 : b > 1 ? 1 : b;
         ANGLE[0] = a * a * (3 - 2 * a) * (1 - b * b * (3 - 2 * b)) * (Math.PI / 2 + phi);
         tournerColonnes(F, WN, ANGLE);
+        if (H.piloteReel) {
+          gx -= F[0] * poignet[0] + F[3] * poignet[1] + F[6] * poignet[2];
+          gy -= F[1] * poignet[0] + F[4] * poignet[1] + F[7] * poignet[2];
+          gz -= F[2] * poignet[0] + F[5] * poignet[1] + F[8] * poignet[2];
+        }
+
       }
       for (let q = 0; q < 5; q++) {
-        const e = main.pieces[q], fo = ecart >= .25 ? e.ouvert : e.ferme, c = fo.c, o = e.objet, p = e.o;
+        const e = main.pieces[q], fo = H.piloteReel && e.prises ? e.prises[Math.min(5, Math.floor(ecart * 5 + 1e-8))] : ecart >= .25 ? e.ouvert : e.ferme, c = fo.c, o = e.objet, p = e.o;
         p[0] = ((gx + F[0] * c[0]) + F[3] * c[1]) + F[6] * c[2]; p[1] = ((gy + F[1] * c[0]) + F[4] * c[1]) + F[7] * c[2]; p[2] = ((gz + F[2] * c[0]) + F[5] * c[1]) + F[8] * c[2]; versVoiture(p);
         if (o.shape !== fo.nom) { o.shape = fo.nom; o.s = fo.s; }
       }
-      // manche : elle part de l'intérieur de la manchette, puis tronçons le long de la courbe, du poignet au coude
+      if (H.piloteReel) articulationPilote(H, h);
+      else { co[0] = COUDE[0]; co[1] = COUDE[1]; co[2] = k * COUDE[2]; }
+      // Manche commune aux deux vues : du même poignet au même coude, plié dans la cuve.
       GC[0] = gx; GC[1] = gy; GC[2] = gz;
       localDans(BOUT, F, GC, VERS_A, k); localDans(ICI, F, GC, VERS_B, k);
       AXE[0] = ICI[0] - BOUT[0]; AXE[1] = ICI[1] - BOUT[1]; AXE[2] = ICI[2] - BOUT[2]; hypotDans(AXE, 3);
@@ -71574,6 +72277,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     desert: Object.freeze(['girafe', 'oryx', 'autruche', 'vautour']),
     asie: Object.freeze(['buffle', 'aigrette', 'milan']),
     pacifique: Object.freeze(['wapiti', 'pelican', 'baleine', 'urubu']),
+    baikal: Object.freeze(['cerf', 'sanglier', 'aigle', 'oie']),
   });
 
   // Construction des modèles, une fois au chargement (formes partagées par les espèces qui se ressemblent : le wapiti
@@ -74685,7 +75389,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
 /* BITUME — dépôts et ruissellement sur la visière, Canvas2D transparent sous le HUD. */
 (function (B) {
   'use strict';
-  const PAS = 1 / 30, MAX_PIXELS = 2000000, TAU = Math.PI * 2;
+  const PAS = 1 / 30, MAX_PIXELS = 2000000, TAU = Math.PI * 2, MAX_RAYON_EAU = 12, MAX_RAYON_NEIGE = 19;
   const BUDGETS = Object.freeze({
     off: Object.freeze({ gouttes: 0, neige: 0, dpr: 1 }),
     low: Object.freeze({ gouttes: 10, neige: 4, dpr: 1 }),
@@ -74702,7 +75406,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     // px, py, pa et pp gardent position, âge et poids d'avant le dernier pas, pour dessiner entre deux pas.
     for (let i = 0; i < nombre; i++) p[i] = { vivant: false, x: 0, y: 0, age: 0, duree: 0,
       taille: 0, vitesse: 0, phase: 0, frequence: 0, glisse: 0, poids: 0, fondu: false, cos: 1, sin: 0,
-      px: 0, py: 0, pa: 0, pp: 0 };
+      px: 0, py: 0, pa: 0, pp: 0, pr: 0, fonte: 0, traceAge: 0,
+      traceX: new Float64Array(6), traceY: new Float64Array(6) };
     return p;
   }
   // Toile propre (aucun pixel) : masquée par visibility, qui garde sa taille, elle n'est plus composée au-dessus
@@ -74712,12 +75417,14 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     e.masquee = !visible;
     if (e.canvas && e.canvas.style) e.canvas.style.visibility = visible ? '' : 'hidden';
   }
-  function creer(canvas) {
+  function creer(canvas, options) {
     const contexte = canvas && typeof canvas.getContext === 'function' ? canvas.getContext('2d', { alpha: true }) : null;
     const e = { canvas, contexte, gouttes: pool(112), neige: pool(36), accumulateur: 0, temps: 0, sequence: 0, masquee: false,
+      graine: options && Number.isInteger(options.graine) ? options.graine | 0 : 0,
       creditEau: 0, creditNeige: 0, largeur: canvas ? canvas.clientWidth || canvas.width || 1 : 1,
       hauteur: canvas ? canvas.clientHeight || canvas.height || 1 : 1, dpr: 1, dprPalier: null, propre: true, libere: false,
-      stats: { gouttes: 0, neige: 0, dessins: 0, etapes: 0, largeur: 0, hauteur: 0, dpr: 1, pixels: 0, fraction: 0 } };
+      opacite: 1, stats: { gouttes: 0, neige: 0, dessins: 0, etapes: 0, largeur: 0, hauteur: 0, dpr: 1, pixels: 0, fraction: 0,
+        fusionsEau: 0, fusionsNeige: 0, fonte: 0, expulses: 0, eauEvacuee: 0, paires: 0 } };
     montrer(e, false); // toile neuve, vide
     return e;
   }
@@ -74762,80 +75469,162 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     let p = null;
     for (let i = 0; i < limite; i++) if (!liste[i].vivant) { p = liste[i]; break; }
     if (!p) return false;
-    const seed = Math.imul(++e.sequence, 2654435761) ^ 731;
+    const seed = Math.imul(++e.sequence, 2654435761) ^ 731 ^ Math.imul(e.graine, 374761393);
     p.vivant = true; p.x = Number.isFinite(x) ? x : .025 + hache(seed) * .95;
     p.y = Number.isFinite(y) ? y : .025 + hache(seed + 17) * .93;
     p.age = 0; p.duree = (neige ? 7 : 8) + hache(seed + 23) * (neige ? 10 : 13);
-    p.taille = Number.isFinite(taille) ? taille : neige ? 2.4 + hache(seed + 31) * 5.5 : .8 + hache(seed + 31) * 2.6;
+    // Beaucoup de perles fines et quelques impacts larges, sans agrandir toute la pluie uniformément.
+    p.taille = Number.isFinite(taille) ? taille : neige ? 4 + hache(seed + 31) * 7 : 1.1 + hache(seed + 31) ** 2 * 6.4;
+    p.taille = clamp(p.taille, .5, neige ? MAX_RAYON_NEIGE : MAX_RAYON_EAU);
     p.vitesse = .5 + hache(seed + 37) * 2.5; p.phase = hache(seed + 41) * TAU;
     p.frequence = .27 + hache(seed + 43) * .65; p.glisse = hache(seed + 47) > .68 ? 1 : .04;
     p.poids = 0; p.fondu = false; p.cos = Math.cos(p.phase); p.sin = Math.sin(p.phase);
-    p.px = p.x; p.py = p.y; p.pa = 0; p.pp = 0; return true;
+    p.px = p.x; p.py = p.y; p.pa = 0; p.pp = 0; p.pr = p.taille; p.fonte = 0; p.traceAge = 0;
+    p.traceX.fill(p.x); p.traceY.fill(p.y); return true;
   }
-  function avancer(e, c, budget, pluie, neige, vitesse, vent) {
+  // Six points d'une coulure réelle, gardés dans le pool. L'histoire suit le vent et les fusions ; elle ne
+  // dépend pas du nombre d'images dessinées. Les gouttes immobiles ne se voient pas affublées d'un trait vertical.
+  function garderTrajet(p) {
+    p.traceAge += PAS;
+    if (p.traceAge < .1 - 1e-10) return;
+    p.traceAge -= .1;
+    for (let j = 5; j > 0; j--) { p.traceX[j] = p.traceX[j - 1]; p.traceY[j] = p.traceY[j - 1]; }
+    p.traceX[0] = p.px; p.traceY[0] = p.py;
+  }
+  // Une rencontre rassemble la surface d'eau et son centre de masse. Test balayé : une coulure rapide peut
+  // ramasser une perle entre deux pas. 112 gouttes et 36 amas au plus, donc 6 846 paires au pire par pas.
+  // Le rayon est plafonné : l'excédent s'écoule hors du dépôt, au lieu de former une lentille géante sur l'écran.
+  function fusionner(e, liste, limite, neige) {
+    let nombre = 0;
+    const maximum = neige ? MAX_RAYON_NEIGE : MAX_RAYON_EAU;
+    for (let i = 0; i < limite; i++) {
+      const a = liste[i]; if (!a.vivant) continue;
+      for (let j = i + 1; j < limite; j++) {
+        const b = liste[j]; if (!b.vivant) continue;
+        e.stats.paires++;
+        const dx = (a.px - b.px) * e.largeur, dy = (a.py - b.py) * e.hauteur;
+        const vx = (a.x - a.px - b.x + b.px) * e.largeur, vy = (a.y - a.py - b.y + b.py) * e.hauteur;
+        const vv = vx * vx + vy * vy, t = vv > 1e-9 ? clamp(-(dx * vx + dy * vy) / vv, 0, 1) : 0;
+        const r = (a.taille + b.taille) * (neige ? .7 : .8);
+        if ((dx + vx * t) ** 2 + (dy + vy * t) ** 2 > r * r) continue;
+        const ma = a.taille * a.taille, mb = b.taille * b.taille, masse = ma + mb;
+        a.x = (a.x * ma + b.x * mb) / masse; a.y = (a.y * ma + b.y * mb) / masse;
+        a.taille = Math.min(maximum, Math.sqrt(masse));
+        a.vitesse = (a.vitesse * ma + b.vitesse * mb) / masse;
+        a.poids = Math.max(a.poids, b.poids); a.glisse = 1;
+        // L'amas conserve la part fondue des deux dépôts. Une fusion ne fait pas renaître de neige sèche.
+        const fraction = (a.age / a.duree * ma + b.age / b.duree * mb) / masse;
+        a.age = fraction * a.duree;
+        a.fonte = Math.max(a.fonte, b.fonte); a.fondu = a.fonte > 0;
+        e.stats.eauEvacuee += Math.max(0, masse - maximum * maximum);
+        b.vivant = false; nombre++;
+        if (neige) e.stats.fusionsNeige++; else e.stats.fusionsEau++;
+      }
+    }
+    return nombre;
+  }
+  function avancer(e, c, budget, pluie, neige, vitesse, vent, intensite) {
     e.temps += PAS; e.stats.etapes++;
     const couvert = !!c.abri, eau = couvert || neige ? 0 : pluie, flocons = couvert ? 0 : neige;
-    const rythme = 2 + vitesse * .10;
-    e.creditEau = Math.min(3, e.creditEau + PAS * eau * rythme * budget.gouttes / 24);
-    e.creditNeige = Math.min(2, e.creditNeige + PAS * flocons * (1 + vitesse * .045) * budget.neige / 12);
+    const air = clamp((vitesse - 18) / 102, 0, 1) ** 2, rythme = 2 + vitesse * .07;
+    // À grande vitesse, l'air chasse aussi les nouveaux impacts avant qu'ils adhèrent. Augmenter seulement
+    // leur défilement laisserait une vitre constamment pleine sous l'averse malgré le dégagement demandé.
+    const exposition = (c.cockpit === false ? .42 : 1) * intensite / (1 + air * 3.5);
+    e.creditEau = Math.min(3, e.creditEau + PAS * eau * rythme * budget.gouttes / 24 * exposition);
+    e.creditNeige = Math.min(2, e.creditNeige + PAS * flocons * (1 + vitesse * .035) * budget.neige / 12 * exposition);
     while (e.creditEau >= 1) { deposer(e, false, budget.gouttes); e.creditEau--; }
     while (e.creditNeige >= 1) { deposer(e, true, budget.neige); e.creditNeige--; }
     let gouttes = 0, restes = 0;
     for (let i = 0; i < e.gouttes.length; i++) {
       const p = e.gouttes[i]; if (!p.vivant) continue;
-      p.px = p.x; p.py = p.y; p.pa = p.age; p.pp = p.poids;
-      p.age += PAS * (eau > .05 ? 1 : 1.55);
+      p.px = p.x; p.py = p.y; p.pa = p.age; p.pp = p.poids; p.pr = p.taille;
+      garderTrajet(p);
+      p.age += PAS * ((eau > .05 ? 1 : 1.55) + air * 5);
       p.poids = clamp(p.poids + PAS * (i < budget.gouttes ? 5 : -2), 0, 1);
-      const ruisselle = p.glisse * (8 + vitesse * .42) * (p.taille * .35 + p.vitesse);
-      p.y += PAS * ruisselle / e.hauteur;
-      p.x += PAS * (vent * (.5 + p.glisse) + Math.sin(e.temps * p.frequence + p.phase) * p.vitesse) / e.largeur;
-      if (p.age >= p.duree || p.y > 1.04 || p.x < -.04 || p.x > 1.04 || i >= budget.gouttes && !p.poids) p.vivant = false;
+      const mobilite = Math.max(p.glisse, clamp((p.taille - 3.4) / 3, .04, 1));
+      const ruisselle = mobilite * (8 + vitesse * .42) * (p.taille * .35 + p.vitesse);
+      p.y += PAS * (ruisselle + (p.y - .45) * air * 130) / e.hauteur;
+      p.x += PAS * (vent * (.5 + mobilite) + Math.sin(e.temps * p.frequence + p.phase) * p.vitesse + (p.x - .5) * air * 210) / e.largeur;
+      if (p.age >= p.duree || p.y < -.04 || p.y > 1.04 || p.x < -.04 || p.x > 1.04 || i >= budget.gouttes && !p.poids) { p.vivant = false; if (air > .1) e.stats.expulses++; }
       else gouttes++;
     }
     for (let i = 0; i < e.neige.length; i++) {
       const p = e.neige[i]; if (!p.vivant) continue;
-      p.px = p.x; p.py = p.y; p.pa = p.age; p.pp = p.poids;
-      p.age += PAS * (flocons > .05 ? 1 : 1.35);
+      p.px = p.x; p.py = p.y; p.pa = p.age; p.pp = p.poids; p.pr = p.taille;
+      p.age += PAS * ((flocons > .05 ? 1 : 1.35) + air * 4);
       p.poids = clamp(p.poids + PAS * (i < budget.neige ? 4 : -2), 0, 1);
       const fraction = p.age / p.duree;
-      p.y += PAS * p.vitesse * Math.max(0, fraction - .3) * 4 / e.hauteur;
-      p.x += PAS * vent * .07 / e.largeur;
-      if (fraction > .62 && !p.fondu) { if (deposer(e, false, budget.gouttes, p.x, p.y, p.taille * .32)) gouttes++; p.fondu = true; }
-      if (fraction >= 1 || p.y > 1.03 || i >= budget.neige && !p.poids) p.vivant = false;
+      p.y += PAS * (p.vitesse * Math.max(0, fraction - .22) * 7 + (p.y - .4) * air * 220) / e.hauteur;
+      p.x += PAS * (vent * .12 + (p.x - .5) * air * 280) / e.largeur;
+      // Deux écoulements distincts : la neige devient d'abord humide, puis transparente et ruisselante.
+      if (fraction > (p.fonte ? .72 : .42) && p.fonte < 2) {
+        if (deposer(e, false, budget.gouttes, p.x, p.y, p.taille * (p.fonte ? .48 : .34))) { gouttes++; p.fonte++; p.fondu = true; e.stats.fonte++; }
+      }
+      if (fraction >= 1 || p.y < -.03 || p.y > 1.03 || p.x < -.03 || p.x > 1.03 || i >= budget.neige && !p.poids) { p.vivant = false; if (air > .1) e.stats.expulses++; }
       else restes++;
     }
+    e.stats.paires = 0;
+    gouttes -= fusionner(e, e.gouttes, budget.gouttes, false);
+    restes -= fusionner(e, e.neige, budget.neige, true);
     e.stats.gouttes = gouttes; e.stats.neige = restes;
   }
   // Dessin à la fraction k du pas en cours, entre l'état d'avant le dernier pas et celui d'après : la
   // simulation reste à 30 Hz, le mouvement suit la cadence d'affichage. À k = 1, tracés exacts de l'état du dernier pas.
   function dessiner(e, k) {
-    const ctx = e.contexte, w = e.largeur, h = e.hauteur, temps = melange(e.temps - PAS, e.temps, k);
+    const ctx = e.contexte, w = e.largeur, h = e.hauteur;
     viderPixels(e); ctx.setTransform(e.dpr, 0, 0, e.dpr, 0, 0);
     // Quelques traits et contours : ni lecture de pixels, ni réfraction plein écran.
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     for (let i = 0; i < e.gouttes.length; i++) {
       const p = e.gouttes[i]; if (!p.vivant) continue;
-      const age = melange(p.pa, p.age, k), a = Math.min(1, age / .24, (p.duree - age) / 1.5) * melange(p.pp, p.poids, k);
+      const age = melange(p.pa, p.age, k), a = clamp(Math.min(1, age / .24, (p.duree - age) / 1.5) * melange(p.pp, p.poids, k) * e.opacite, 0, 1);
       if (a <= .005) continue;
-      const x = melange(p.px, p.x, k) * w, y = melange(p.py, p.y, k) * h, r = p.taille, longueur = p.glisse * Math.min(34, 7 + age * p.vitesse * 2);
-      ctx.globalAlpha = a; ctx.strokeStyle = 'rgba(182,213,230,0.13)'; ctx.lineWidth = Math.max(.5, r * .55);
-      ctx.beginPath(); ctx.moveTo(x - Math.sin(p.phase) * r, y - longueur);
-      ctx.quadraticCurveTo(x + Math.sin(temps * p.frequence + p.phase) * r * 1.8, y - longueur * .45, x, y); ctx.stroke();
-      ctx.fillStyle = 'rgba(32,63,78,0.10)'; ctx.beginPath(); ctx.ellipse(x, y, r, r * 1.36, .12 * p.sin, 0, TAU); ctx.fill();
-      ctx.strokeStyle = 'rgba(222,241,249,0.28)'; ctx.lineWidth = .65; ctx.beginPath(); ctx.ellipse(x - r * .16, y - r * .24, r * .72, r * .87, .12 * p.sin, 3.4, 5.9); ctx.stroke();
+      const x = melange(p.px, p.x, k) * w, y = melange(p.py, p.y, k) * h, r = melange(p.pr, p.taille, k);
+      ctx.globalAlpha = a;
+      const dx = x - p.traceX[5] * w, dy = y - p.traceY[5] * h;
+      if (dx * dx + dy * dy > r * r) {
+        // Deux bords d'un film d'eau, suivant la trajectoire des six derniers échantillons. Pas de
+        // lecture du framebuffer : l'effet de lentille vient des bords clairs/sombres, pas d'une réfraction.
+        for (let bord = 0; bord < 2; bord++) {
+          ctx.strokeStyle = bord ? 'rgba(221,241,250,0.20)' : 'rgba(21,43,53,0.14)';
+          ctx.lineWidth = Math.max(.55, r * (bord ? .20 : .65));
+          const decale = bord ? -r * .24 : 0;
+          ctx.beginPath(); ctx.moveTo(p.traceX[5] * w + decale, p.traceY[5] * h);
+          for (let j = 4; j >= 0; j--) {
+            const tx = p.traceX[j] * w, ty = p.traceY[j] * h;
+            const nx = j ? p.traceX[j - 1] * w : x, ny = j ? p.traceY[j - 1] * h : y;
+            ctx.quadraticCurveTo(tx + decale, ty, (tx + nx) * .5 + decale, (ty + ny) * .5);
+          }
+          ctx.lineTo(x + decale, y); ctx.stroke();
+        }
+      }
+      ctx.fillStyle = 'rgba(23,48,61,0.16)'; ctx.beginPath(); ctx.ellipse(x, y, r, r * 1.36, .12 * p.sin, 0, TAU); ctx.fill();
+      ctx.strokeStyle = 'rgba(12,31,40,0.35)'; ctx.lineWidth = Math.max(.6, r * .22);
+      ctx.beginPath(); ctx.ellipse(x + r * .08, y + r * .13, r * .82, r * 1.04, .12 * p.sin, -.1, 2.5); ctx.stroke();
+      ctx.strokeStyle = 'rgba(225,245,253,0.61)'; ctx.lineWidth = Math.max(.65, r * .17);
+      ctx.beginPath(); ctx.ellipse(x - r * .13, y - r * .21, r * .73, r * .94, .12 * p.sin, 3.35, 5.8); ctx.stroke();
+      ctx.fillStyle = 'rgba(242,252,255,0.48)'; ctx.beginPath();
+      ctx.ellipse(x - r * .28, y - r * .55, Math.max(.32, r * .14), Math.max(.4, r * .22), -.3, 0, TAU); ctx.fill();
     }
     for (let i = 0; i < e.neige.length; i++) {
       const p = e.neige[i]; if (!p.vivant) continue;
-      const age = melange(p.pa, p.age, k), f = age / p.duree, a = Math.min(1, age / .3, (1 - f) * 3) * melange(p.pp, p.poids, k);
+      const age = melange(p.pa, p.age, k), f = age / p.duree, a = clamp(Math.min(1, age / .3, (1 - f) * 3) * melange(p.pp, p.poids, k) * e.opacite, 0, 1);
       if (a <= .005) continue;
-      const x = melange(p.px, p.x, k) * w, y = melange(p.py, p.y, k) * h, r = p.taille * (1 - f * .72);
-      ctx.globalAlpha = a; ctx.fillStyle = 'rgba(232,242,249,0.43)'; ctx.beginPath();
+      const x = melange(p.px, p.x, k) * w, y = melange(p.py, p.y, k) * h, rayon = melange(p.pr, p.taille, k);
+      const humide = clamp((f - .18) / .66, 0, 1), r = rayon * (1 - humide * .68), impact = 1 + Math.max(0, 1 - age / .24) * .32;
+      // L'impact s'étale en une empreinte humide ; le cœur granuleux se réduit et laisse un ménisque
+      // transparent pendant la fonte. La neige ne se transforme pas en croix dessinées sur le verre.
+      ctx.globalAlpha = a; ctx.fillStyle = 'rgba(71,103,117,0.14)'; ctx.beginPath();
+      ctx.ellipse(x, y + rayon * .12, rayon * (1 + humide * .15) * impact, rayon * .72 * impact, p.phase, 0, TAU); ctx.fill();
+      ctx.strokeStyle = 'rgba(217,237,247,0.38)'; ctx.lineWidth = .75; ctx.beginPath();
+      ctx.ellipse(x - rayon * .12, y - rayon * .10, rayon * .92, rayon * .65, p.phase, 3.2, 5.8); ctx.stroke();
+      ctx.globalAlpha = a * (1 - humide * .83); ctx.fillStyle = 'rgba(239,247,251,0.72)'; ctx.beginPath();
       ctx.ellipse(x, y, r, r * .63, p.phase, 0, TAU);
       ctx.ellipse(x + p.cos * r * .62, y + p.sin * r * .62, r * .48, r * .55, p.phase + .7, 0, TAU);
       ctx.ellipse(x - p.sin * r * .4, y + p.cos * r * .4, r * .5, r * .36, p.phase - .9, 0, TAU); ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,0.38)'; ctx.lineWidth = .55; ctx.beginPath();
-      ctx.moveTo(x - p.cos * r * .8, y - p.sin * r * .8); ctx.lineTo(x + p.cos * r * .8, y + p.sin * r * .8);
-      ctx.moveTo(x - p.sin * r * .65, y + p.cos * r * .65); ctx.lineTo(x + p.sin * r * .65, y - p.cos * r * .65); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.beginPath();
+      ctx.ellipse(x - p.cos * r * .38, y - p.sin * r * .38, r * .24, r * .16, p.phase, 0, TAU);
+      ctx.ellipse(x + p.sin * r * .35, y - p.cos * r * .35, r * .18, r * .22, p.phase, 0, TAU); ctx.fill();
     }
     ctx.globalAlpha = 1; e.propre = e.stats.gouttes === 0 && e.stats.neige === 0; e.stats.dessins++; e.stats.fraction = k;
     montrer(e, !e.propre);
@@ -74843,7 +75632,10 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   function mettreAJour(e, dt, contexte) {
     if (!e || e.libere) return e ? e.stats : null;
     const c = contexte || {}, budget = BUDGETS[c.qualite] || BUDGETS.high;
-    if (!e.contexte || c.actif === false || budget === BUDGETS.off) { effacer(e); return e.stats; }
+    const intensite = Number.isFinite(Number(c.intensite)) && c.intensite != null ? clamp(Number(c.intensite), 0, 2) : 1;
+    if (!e.contexte || c.actif === false || c.retro === true || !intensite || budget === BUDGETS.off) { effacer(e); return e.stats; }
+    if (c.pause === true) return e.stats;
+    e.opacite = Math.min(1.25, intensite) * (c.cockpit === false ? .48 : 1);
     suivrePalier(e, budget);
     if (!Number.isFinite(dt) || dt <= 0) return e.stats;
     e.accumulateur += Math.min(.25, dt);
@@ -74859,7 +75651,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       dimensionner(e, c, budget);
       const vitesse = clamp(Math.abs(Number(c.vitesse) || 0), 0, 120);
       const vent = clamp((Number(c.ventX) || 0) * .20 + (Number(c.ventZ) || 0) * .08, -8, 8);
-      while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, vitesse, vent); e.accumulateur -= PAS; }
+      while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, vitesse, vent, intensite); e.accumulateur -= PAS; }
     } else if (vide && e.propre) return e.stats;
     if (e.stats.gouttes || e.stats.neige || !e.propre) dessiner(e, clamp(e.accumulateur / PAS, 0, 1));
     return e.stats;
@@ -74869,7 +75661,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   function prechauffer(e, contexte) {
     if (!e || e.libere || !e.contexte || !e.canvas) return false;
     const c = contexte || {}, budget = BUDGETS[c.qualite] || BUDGETS.high;
-    if (budget === BUDGETS.off) return false;
+    if (budget === BUDGETS.off || c.actif === false || c.retro === true || c.intensite === 0) return false;
     suivrePalier(e, budget); dimensionner(e, c, budget); viderPixels(e);
     const ctx = e.contexte, x = e.largeur * .5, y = e.hauteur * .5;
     ctx.setTransform(e.dpr, 0, 0, e.dpr, 0, 0); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.globalAlpha = 1 / 255;
@@ -78630,7 +79422,7 @@ FERRO.initPhysics().then(function(){
     for (const [cle, valeur] of [...stockEnAttente]) ecrireStock(cle, typeof valeur === 'function' ? valeur() : valeur);
   }
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
-    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'ecran',
+    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'ecran', gouttes: 1,
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglagesEnregistres = lireStock('bitume.reglages', {});
   const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
@@ -78648,6 +79440,7 @@ FERRO.initPhysics().then(function(){
   // prononcé »). Une valeur restée à 69 revient une seule fois au défaut ; tout autre choix du pilote est gardé.
   if (!reglages.champRevu) { if (+reglages.champ === 69) reglages.champ = DEFAUT.champ; reglages.champRevu = true; }
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
+  reglages.gouttes = reglages.gouttes != null && Number.isFinite(+reglages.gouttes) ? clamp(+reglages.gouttes, 0, 2) : DEFAUT.gouttes;
   // Les anciens placements auto/haut/bas reviennent en haut à droite ; taille et visibilité sont conservées.
   for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['gauche', 'droite'], carteTaille: ['petite', 'normale', 'grande'], annoncesVirages: ['non', 'ecran', 'voix'] }))
     if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
@@ -79235,14 +80028,16 @@ FERRO.initPhysics().then(function(){
     const abri = !VUES_DEHORS.has(vue) && sousLaVoute(S.course.c, cam.pos), neige = precipitationsNeige(S);
     (deux ? pluieVue2 : pluieVue).dessiner(abri || neige > 0 ? Object.assign(METEO_ABRI, { t: S.meteo.t }) : S.meteo, cam, dt, { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1 });
     if (B.vitre) {
-      if (deux && !vitreVue2) vitreVue2 = creationTardive('vitre', B.vitre.creer($('vitre2')));
+      if (deux && !vitreVue2) vitreVue2 = creationTardive('vitre', B.vitre.creer($('vitre2'), { graine: 2 }));
       if (!deux && !vitreVue) vitreVue = creationTardive('vitre', B.vitre.creer($('vitre')));
       const contexte = S.vitreContexte || (S.vitreContexte = creationTardive('contexteVitre', {}));
       contexte.pluie = neige > 0 ? 0 : S.meteo.pluie || 0; contexte.neige = neige;
       contexte.ventX = S.meteo.ventX || 0; contexte.ventZ = S.meteo.ventZ || 0;
       const voiture = S.course.voitures[S.suivie || 0] || S.course.joueur;
       contexte.vitesse = Math.abs(voiture.etat.v || 0); contexte.qualite = profil.palier;
-      contexte.actif = ecran === 'course' || ecran === 'demo'; contexte.abri = abri;
+      contexte.pause = ecran === 'pause' || (ecran === 'reglages' && retourReglages === 'pause');
+      contexte.actif = ecran === 'course' || ecran === 'demo' || contexte.pause;
+      contexte.intensite = reglages.gouttes; contexte.cockpit = vue === 'cockpit'; contexte.abri = abri;
       contexte.dpr = window.devicePixelRatio || 1;
       B.vitre.mettreAJour(deux ? vitreVue2 : vitreVue, dt, contexte);
     }
@@ -79651,7 +80446,7 @@ FERRO.initPhysics().then(function(){
     numeroSeance: 0, seanceAcceptee: null, dernierDepart: -Infinity };
   const VERSION_CHOIX_PNEUS = 2, VERSION_PNEUS_RESEAU = 1;
   // Empreinte des sources du build, incluant catalogue, générateur, limites et collisions : même piste, même jeu.
-  const REVISION_PISTES = 'c0b7004ebde04a9707c3c9b993e2a9b209fc4f5ddcad9db09b456971ad9e2804';
+  const REVISION_PISTES = '72b42623a01a0614adebdaf5ce7825a2ee0dd38d7aa26a31b08c9949af62b21d';
   function contratPiste(i) {
     return Number.isInteger(i) && CATALOGUE[i] ? { id: CATALOGUE[i].id, revision: REVISION_PISTES } : null;
   }
@@ -81873,6 +82668,7 @@ FERRO.initPhysics().then(function(){
   for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).addEventListener('input', e => { reglages[nom] = +e.target.value; sauverReglages(); appliquerVolumes(); });
   $('v-champ').addEventListener('input', e => { reglages.champ = clamp(+e.target.value, 60, 105); $('v-champ-valeur').textContent = reglages.champ + '°'; sauverReglages(); });
   $('v-secousses').addEventListener('input', e => { reglages.secousses = clamp(+e.target.value, 0, 1); $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %'; sauverReglages(); });
+  $('v-gouttes').addEventListener('input', e => { reglages.gouttes = clamp(+e.target.value, 0, 2); $('v-gouttes-valeur').textContent = reglages.gouttes.toFixed(1).replace('.', ',') + ' ×'; sauverReglages(); });
   $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) { secouerManette(0, 0); secouerManette(0, 0, pad2); } sauverReglages(); });
   $('v-carte').addEventListener('change', e => { reglages.carte = e.target.checked ? 'oui' : 'non'; sauverReglages(); appliquerCarte(); });
   $('v-vibration-force').addEventListener('input', e => { reglages.vibrationForce = clamp(+e.target.value, 0, 1); $('v-vibration-force-valeur').textContent = Math.round(reglages.vibrationForce * 100) + ' %'; sauverReglages(); });
@@ -81942,6 +82738,7 @@ FERRO.initPhysics().then(function(){
     $('v-carte').checked = reglages.carte !== 'non';
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
     $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';
+    $('v-gouttes').value = reglages.gouttes; $('v-gouttes-valeur').textContent = reglages.gouttes.toFixed(1).replace('.', ',') + ' ×';
     for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).value = reglages[nom];
     $('v-vibrations').checked = reglages.vibrations !== 'non';
     reglages.vibrationForce = clamp(reglages.vibrationForce != null ? +reglages.vibrationForce : 0.5, 0, 1);
@@ -82188,7 +82985,7 @@ FERRO.initPhysics().then(function(){
       if (duo && !pluieVue2) pluieVue2 = B.meteo.creerPluie($('meteo2'));
       if (B.vitre) {
         if (!vitreVue) vitreVue = B.vitre.creer($('vitre'));
-        if (duo && !vitreVue2) vitreVue2 = B.vitre.creer($('vitre2'));
+        if (duo && !vitreVue2) vitreVue2 = B.vitre.creer($('vitre2'), { graine: 2 });
         for (const V of vues) if (!V.vitreContexte) V.vitreContexte = {};
       }
       // tunnel : axe de la scène, puis un état de lampes par vue (le joueur 2 a son propre lissage)

@@ -1,0 +1,42 @@
+{
+  "format": "bitume-monaco-source-qualification",
+  "date": "2026-11-19",
+  "scope": "14A source preparation only",
+  "baseCommit": "891efb10d19f89b0b367f4d46ad82ea81d788690",
+  "commands": [
+    "python3 tools/preparer-monaco-14a.py",
+    "python3 tools/preparer-monaco-14a.py --check",
+    "node --test verifications/monaco-sources.test.mjs"
+  ],
+  "tests": {"total": 6, "pass": 6, "fail": 0},
+  "checks": [
+    "Exact SHA256 and byte lengths of all three saved OSM snapshots",
+    "Byte-identical regeneration of donnees.json, comparaison.json and plan.svg",
+    "Every main point retains its OSM coordinates, version and timestamp",
+    "Every edge exists as an adjacent pair in its attributed OSM way version",
+    "One simple closed loop with no synthetic edge, displaced point or rescaling",
+    "Pit lanes separated from main loop and omitted urban branch preserved in source",
+    "19 candidate turn windows ordered and oriented consistently with the FIA map",
+    "Unknown road heights, widths and bank angles remain null",
+    "Corrupted source snapshot refused before output mutation"
+  ],
+  "visualInspection": {
+    "source": "FIA PDF pages 2 and 3 read as references; generated OSM plan.svg rendered for inspection",
+    "generatedPlanInspected": true,
+    "gameRenderingTested": false,
+    "surveyedFiaApexes": 0
+  },
+  "runtimeChanged": false,
+  "gameVersionOrBuildChanged": false,
+  "complete14AClosed": false,
+  "remaining": [
+    "WGS84 projected OSM loop differs from official centreline by -13.390492 m; 1 m target not met",
+    "Race centreline choice at the Ostende / Monte-Carlo road branching not surveyed",
+    "Road elevations, left/right widths, bank, walls and tunnel clearance unavailable",
+    "FIA start, control and sector lines not georeferenced",
+    "Pit lane race boundaries and connections not qualified",
+    "Two initial OSM acquisition times and the original gap-area request URL were not recorded",
+    "Current OSM member versions are later than the 2026 race reference; no race-day snapshot claimed",
+    "Monaco season policy remains to be set before playable integration"
+  ]
+}

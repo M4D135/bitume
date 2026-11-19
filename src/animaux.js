@@ -728,6 +728,7 @@
     desert: Object.freeze(['girafe', 'oryx', 'autruche', 'vautour']),
     asie: Object.freeze(['buffle', 'aigrette', 'milan']),
     pacifique: Object.freeze(['wapiti', 'pelican', 'baleine', 'urubu']),
+    baikal: Object.freeze(['cerf', 'sanglier', 'aigle', 'oie']),
   });
 
   // Construction des modèles, une fois au chargement (formes partagées par les espèces qui se ressemblent : le wapiti

@@ -94,7 +94,7 @@ Les reliefs synthétiques d’EMPRISE, notamment la colline de la Bonne-Mère, d
 
 ## 7. Adaptation à BITUME et FERRO
 
-L’EMPRISE examiné porte un verrou **FERRO 0.3.3**, tandis que BITUME utilise **0.3.9**. Réutiliser les données et recettes utiles, puis adapter leurs interfaces au moteur BITUME. **Ne pas remplacer son moteur par une ancienne copie EMPRISE.** Tout besoin commun nouveau passe par FERRO canonique et une propagation qualifiée.
+L’EMPRISE examiné porte un verrou **FERRO 0.3.3**, tandis que le candidat BITUME du 19 novembre utilise **0.3.15**. La cible de portage est toujours le verrou BITUME courant, pas la version historique de cette étude. Réutiliser les données et recettes utiles, puis adapter leurs interfaces au moteur BITUME. **Ne pas remplacer son moteur par une ancienne copie EMPRISE.** Tout besoin commun nouveau passe par FERRO canonique et une propagation qualifiée.
 
 Réemployer, une fois validée, l’infrastructure de tracé explicite, limites variables, voies et stands préparée pour Monaco. Les circuits originaux à graine conservent leur génération antérieure.
 

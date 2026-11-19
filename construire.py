@@ -47,6 +47,8 @@ MODULES = [
     'vegetation.js',
     # bords de route du lot 22F (publicités en séries, bords dangereux) : lu par decor.js et jeu.js s'il est présent
     'bords.js',
+    'baikal.js',  # décor boréal préparé avant la construction des nappes
+    'batiments.js',  # façades, garages et repères de la voie de service, préparés une fois
     'decor.js',
     'solides-physx.js',
     'physique.js',
@@ -58,6 +60,7 @@ MODULES = [
     'humain-corps.js',
     'public.js',
     'main.js',
+    'cockpit-matieres.js',
     'voiture.js',
     'animaux.js',
     'traces.js',

@@ -1,0 +1,116 @@
+{
+  "format": "bitume-traces-fiabilite-1",
+  "date": "2026-11-19",
+  "base": "891efb10d19f89b0b367f4d46ad82ea81d788690",
+  "portee": "Vérification des effets uniquement ; aucun runtime, moteur FERRO, physique p14, fixture de simulation, version, build ou publication modifié.",
+  "diagnostic": {
+    "cause_verifiee": "L’empreinte figée échoue aussi avec son code de référence exact. L’ancien et l’actuel sont identiques sur les 10071 valeurs comparées ; l’oracle ne démontre donc pas une régression des traces.",
+    "cause_non_etablie": "L’origine précise de l’ancienne empreinte ne peut pas être reconstituée dans cet environnement. Aucune attribution à la plateforme, au processeur ou à une version de Node n’est affirmée.",
+    "ancienne_reserve": {
+      "attendu": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+      "obtenu": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "resultat_test_base": "échec reproduit avant correction",
+      "journal_sha256": "0a109390890c8c65ee95b559a86e404d1eb8a76d546f56e400858b62bda7527a"
+    },
+    "source_reference": {
+      "commit": "54e98c9d809312e549013f1ce5ffe9836279209b",
+      "url": "https://github.com/M4D135/bitume/blob/54e98c9d809312e549013f1ce5ffe9836279209b/src/traces.js",
+      "git_blob": "40d9e0222849d0df7a2d9295249806b45840efa4",
+      "sha256": "8c52d9737c4fb93be231385210e83c610cce0ee342a4ff859870d442133a5c31"
+    },
+    "introduction_oracle": {
+      "commit": "99b32cc9144056daa357c279543849ff80c40504",
+      "url": "https://github.com/M4D135/bitume/commit/99b32cc9144056daa357c279543849ff80c40504",
+      "bloc_test_identique_a_la_base": true,
+      "bloc_sha256": "a7553c2069ce66aabd0bd2741dd12822d670bc4d7ec31fc56246a1f6452a7539"
+    },
+    "dependances_comparees": [
+      "chocRoue = 20",
+      "chocDuree = 0.4",
+      "cotes des quatre roues : x, z, rayon, largeur",
+      "euler, mul, mulM, attitude, angles ; pas de tunnel dans le scénario"
+    ],
+    "rejeu": {
+      "node": "v24.22.3",
+      "v8": "13.6.233.17-node.63",
+      "plateforme": "linux",
+      "architecture": "x64",
+      "secondes": 12,
+      "voitures": 12,
+      "champs_pools_indices_et_roues": 10066,
+      "tirages_suivants": 5,
+      "differences_bit_a_bit": 0,
+      "empreinte_historique": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "empreinte_actuelle": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "meme_resultat_avec_jitless": true,
+      "nouveaux_contrats_sur_source_historique": {
+        "reussis": 5,
+        "total": 5
+      },
+      "meme_resultat_avec_helpers_et_cotes_voiture_54e98c9": true
+    }
+  },
+  "correction": [
+    "Le hash de comparaison figé est supprimé ; il n’est pas remplacé par un nouveau hash attendu.",
+    "Le scénario complet reste exercé ; relecture exacte des 10066 champs, influence effective de la graine et cinq tirages entiers futurs historiques vérifiés.",
+    "Contrats de bandes : positions du centre, longueur, largeur, épaisseur, durée, alpha ; chacun des cinq effets doit apparaître dans le dessin.",
+    "Quatre contrats de naissance indépendants du runtime sous test : fumée, étincelles, embruns et roue détachée, avec positions, vitesses, durées, suite du générateur, géométrie, alpha, déplacement et expiration.",
+    "Tolérance de 1e-12 sur les mesures géométriques ; comparaison exacte sur la relecture et les tirages entiers. Aucun arrondi des données de simulation."
+  ],
+  "verification": {
+    "traces": {
+      "commande": "node verifications/traces.test.mjs",
+      "reussis": 22,
+      "total": 22,
+      "journal_sha256": "994be12c009b77133ab868ca08deebca4a1ced4378de381b13af4b68f962537a"
+    },
+    "pieces": {
+      "commande": "node verifications/pieces.test.mjs",
+      "reussis": 21,
+      "total": 21,
+      "journal_sha256": "1e7409c5cb4388c264801774ba429beed2321d1c154ee723ea67c61e6d7a9068"
+    },
+    "mutations_rejetees": [
+      {
+        "mutation": "ordre",
+        "description": "Permutation de TIR[0] et TIR[1] entre durée et vitesse x de la fumée",
+        "resultat": "échec attendu",
+        "assertion": "AssertionError [ERR_ASSERTION]: fumees.vie : 1.588453816389665, attendu 1.1309791287872941",
+        "journal_sha256": "7f864b90bee59a22f1d588bbb9104c12d30c741f1d4062dea4c79889a1482ff5"
+      },
+      {
+        "mutation": "position",
+        "description": "Décalage de la naissance de fumée de 2 cm en hauteur",
+        "resultat": "échec attendu",
+        "assertion": "AssertionError [ERR_ASSERTION]: fumees.y : 2.238, attendu 2.218",
+        "journal_sha256": "4d363b89263534fdcef175ae9b133aa64e28e834c138f6efa8f06d5c49739237"
+      },
+      {
+        "mutation": "alpha",
+        "description": "Opacité de fumée divisée par deux",
+        "resultat": "échec attendu",
+        "assertion": "AssertionError [ERR_ASSERTION]: opacité à un huitième de vie : 0.15344985620138257, attendu 0.30689971240276515",
+        "journal_sha256": "6ba52617e8fb8e04eee06335e27b5716bddca83648ce9b34360c04c722d4c6d8"
+      }
+    ],
+    "git_diff_check": "réussi",
+    "diff_src_et_fixtures": "vide",
+    "ci_distante": "non lancée dans ce lot",
+    "build": "non lancé dans ce lot",
+    "syntaxe": "node --check réussi sur le test et le reproducteur"
+  },
+  "reproduction": {
+    "script": "docs/reprise/rapports/TRACES-FIABILITE-2026-11-19/preuve-historique.mjs",
+    "entree": "src/traces.js exact du commit 54e98c9d809312e549013f1ce5ffe9836279209b, SHA256 contrôlé par le script",
+    "commande": "node docs/reprise/rapports/TRACES-FIABILITE-2026-11-19/preuve-historique.mjs /chemin/traces-54e98c9.js"
+  },
+  "empreintes_fichiers": {
+    "src/traces.js": "a163a43fd2ea165464db220286b80e10768e18d2de0f045ca1591caa017f6f4d",
+    "src/voiture.js": "d30e374fc63f6913e027ff57fe4b91343767c3769189833980c5be92fe170df9",
+    "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+    "src/jeu.js": "fce1e718c581a7da842fb292f7616e8e9a4026d8ad6f8d415e382517f03173b6",
+    "verifications/traces.test.mjs": "c0c8175ff7a99e8cbaf8d1e7a8e74047d65b73532b8ec3b69d0d9429bd13c610",
+    "docs/reprise/rapports/TRACES-FIABILITE-2026-11-19/preuve-historique.mjs": "5e14dc9a2a9aca78d63261a5eb10bfc590ee937d387e9f0fc02a6439af4f65b1",
+    "verifications/fixtures/determinisme-p14.json": "d8dfa60fc2d237c8dbc2b3d23689f2d81fe1562e1b14b30eda608fcd4f46d655"
+  }
+}

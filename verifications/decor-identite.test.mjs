@@ -108,6 +108,7 @@ for (const reference of expected) {
   // Oracle du décor historique, sans les recettes ni la végétation du biome pilote ajoutés ensuite.
   // Les empreintes restent celles des sources historiques ; vegetation.test.mjs et reperes-virages.test.mjs
   // contrôlent les ajouts actifs et les solides. Les nouveaux repères visuels ne font pas partie de cet oracle.
-  assert.equal(digest(B.decor.construire(c, { matieres: false, vegetation: false, reperesVirages: false })), ref, `${environnement} : ${JSON.stringify(spec)}`);
+  // L'architecture détaillée est contrôlée dans batiments-stands.test.mjs ; aucune empreinte n'est remplacée.
+  assert.equal(digest(B.decor.construire(c, { matieres: false, vegetation: false, reperesVirages: false, batiments: false })), ref, `${environnement} : ${JSON.stringify(spec)}`);
 }
 console.log(`décor : 9 géométries de référence inchangées (${environnement})`);

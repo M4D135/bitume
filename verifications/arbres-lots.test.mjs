@@ -7,7 +7,10 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 const require = createRequire(import.meta.url);
-const MODULES = ['graphismes', 'carene', 'circuit', 'ecologie', 'saisons', 'vegetation', 'decor', 'botanique'];
+// Même décor dans Node et dans la VM sans botanique. decor.js charge ces quatre dépendances
+// automatiquement en CommonJS ; la VM ne possède pas require et doit les recevoir explicitement.
+const MODULES = ['graphismes', 'carene', 'circuit', 'ecologie', 'saisons', 'vegetation',
+  'chaussee', 'virages', 'baikal', 'batiments', 'decor', 'botanique'];
 for (const n of MODULES) require('../src/' + n + '.js');
 const B = globalThis.BITUME, D = B.decor;
 let controles = 0;
@@ -119,15 +122,34 @@ verifier('version lointaine : silhouette de la même essence et tronc allégé, 
     assert.ok(l.loin.length <= l.objets.length, `${d.theme} ${q} : version lointaine plus chargée que la proche`);
   }
 });
-verifier('mobilier : lots historiques conservés, ou copiés sans leurs arbres avec la même sphère et la même bascule', () => {
+verifier('mobilier : bascules historiques conservées, seuils propres aux seuls lots d\'architecture identifiés', () => {
+  let detailsVerifies = 0, voiesVerifiees = 0;
   for (const d of DECORS) for (const q of ['medium', 'high']) {
     const meubles = d[q].lots.filter(l => l.arbres !== true);
     assert.ok(meubles.length > 0 && meubles.length <= d.low.lots.length, d.theme);
+    assert.ok(d[q].architecture, `${d.theme} ${q} : architecture active`);
+    let details = 0;
     for (const l of meubles) {
       assert.ok(l.objets.length > 0, `${d.theme} ${q} : lot vide conservé`);
-      assert.ok([520, 900].includes(l.bascule) && l.portee === Infinity && !('lodReferenceFov' in l), `${d.theme} ${q} : bascule du mobilier`);
+      assert.ok(l.portee === Infinity && !('lodReferenceFov' in l), `${d.theme} ${q} : portée du mobilier`);
+      const genres = new Set(l.objets.concat(l.loin).map(o => o.architecture));
+      if (genres.has('maison') || genres.has('commissaires')) {
+        // Un lot dédié de détails, jamais un lot historique mélangé auquel on accorderait 180 m.
+        assert.equal(genres.size, 1, `${d.theme} ${q} : détails architecturaux mélangés au mobilier`);
+        assert.equal(l.bascule, 180, `${d.theme} ${q} : détails des maisons/postes`);
+        details++; detailsVerifies++;
+      } else if (genres.has('voie-service')) {
+        assert.equal(genres.size, 1, `${d.theme} ${q} : voie de service mélangée au mobilier`);
+        assert.equal(l.bascule, 260, `${d.theme} ${q} : repères de la voie de service`);
+        voiesVerifiees++;
+      } else {
+        // Les stands restent dans les lots de mobilier historiques : aucun élargissement global des seuils.
+        assert.ok([520, 900].includes(l.bascule), `${d.theme} ${q} : bascule du mobilier historique`);
+      }
     }
+    assert.equal(details, d[q].architecture.maisons.length, `${d.theme} ${q} : un lot dédié par maison/poste`);
   }
+  assert.ok(detailsVerifies > 0 && voiesVerifiees > 0, 'les contrats architecturaux doivent être exercés');
 });
 verifier('basculeArbres règle les seules cases d\'arbres et garde le recul des grands arbres', () => {
   // Cap-Séquoia : ses géants (jusqu'à 47 m) reculent la bascule bien au-delà de 120 m.
@@ -172,6 +194,8 @@ verifier('sans module botanique, les cases se font quand même et aucun tronc al
     vm.runInContext(readFileSync(new URL('../src/' + n + '.js', import.meta.url), 'utf8'), ctx, { filename: n + '.js' });
   const [g, th, L] = CIRCUITS[0], X = ctx.BITUME;
   const d = X.decor.construire(X.circuit.creer(g, { theme: th, longueur: L }), { qualite: 'medium', vegetation: false });
+  assert.ok(X.baikal && X.batiments && d.architecture, 'les modules de décor sont présents aussi dans la VM');
+  assert.equal(JSON.stringify(d.architecture), JSON.stringify(DECORS[0].low.architecture), 'mêmes sites architecturaux Node/VM');
   assert.ok(d.lots.some(l => l.arbres === true));
   assert.ok(!d.lots.some(l => l.loin.some(o => o.shape === 'arbre-tronc-loin')));
   assert.equal(JSON.stringify(d.obstacles), JSON.stringify(DECORS[0].low.obstacles));

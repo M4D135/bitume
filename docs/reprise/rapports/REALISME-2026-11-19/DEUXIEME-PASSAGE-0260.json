@@ -1,0 +1,220 @@
+{
+  "version": "0.2.60",
+  "statut": "deuxieme_passage_complet_avec_echec_de_duree_non_publie",
+  "execution": "locale Node, chaque fichier séparément comme le workflow",
+  "debut": "2026-11-19T22:05:17+00:00",
+  "fin": "2026-11-19T22:15:28+00:00",
+  "node": "v24.22.3",
+  "physique": "p14",
+  "ferro": "0.3.15",
+  "suites": {
+    "reussies": 136,
+    "echecs": 1,
+    "total": 137,
+    "non_executees": []
+  },
+  "echecs": [
+    "verifications/decor.test.mjs"
+  ],
+  "integrite": {
+    "source_unchanged": true,
+    "tests_unchanged": true,
+    "verification_support_unchanged": true,
+    "provenance_unchanged": true,
+    "auxiliary_inputs_unchanged": true,
+    "changed_files": {
+      "source": [],
+      "tests": [],
+      "verification_support": [],
+      "auxiliary_inputs": [],
+      "provenance": []
+    }
+  },
+  "empreintes_entrees": {
+    "source": {
+      "sha256": "c0fda00351fa8fd479d0879500d8ae0b90496c4bbb1d29b67aa99e1b3411d997",
+      "fichiers": 91
+    },
+    "tests": {
+      "sha256": "7d0bb74cadc570b20c378001ed7624954ced3ff70d024fa3b736959516289cfb",
+      "fichiers": 137
+    },
+    "verification_support": {
+      "sha256": "a8fd7d78d128255e653e5147cb473f1eb6aab81c04f02c0cca9d0800cac8ecc1",
+      "fichiers": 25
+    },
+    "auxiliary_inputs": {
+      "sha256": "242667d469047a09ad4129fd723fdbb0f9a72c84298216a87a1c68328e42ea3d",
+      "fichiers": 59
+    },
+    "provenance": {
+      "sha256": "46da225245917978de1ffcc5feb2149702c63440e02348999b6eaab7adb63610",
+      "fichiers": 5
+    }
+  },
+  "builds_reproductibles": true,
+  "build": {
+    "sha256": "16f9da20a9de91339dda417448a4aa4ae52daf6893dc747921160ce6880a8695",
+    "bytes": 14241000
+  },
+  "constat": "Port-Sable : 402 ms pour un seuil de construction du décor de 150 ms. Aucun échec fonctionnel observé dans les 136 autres suites ; traces, scènes et états p14 passent.",
+  "passages_isoles": {
+    "date_utc": "2026-11-19T22:15:42.942041+00:00",
+    "test_sha256": "a676c24abe914cbfdff66452e0cf330da9dc8797ead7a30e00cea9f4cc162a1c",
+    "test_inchange": true,
+    "total": 3,
+    "reussis": 0,
+    "resultats": [
+      {
+        "passage": 1,
+        "code": 1,
+        "secondes": 0.473,
+        "resultat": "FAIL Val-Brûlé : décor construit en moins de 150 ms: 324 ms",
+        "journal_sha256": "e3e7f96db6f5a140a83dd39820639147d4d7142fdf3fd3d297086f39f652759a"
+      },
+      {
+        "passage": 2,
+        "code": 1,
+        "secondes": 0.271,
+        "resultat": "FAIL Val-Brûlé : décor construit en moins de 150 ms: 158 ms",
+        "journal_sha256": "6c540fe865cce8f8ab0b39b15fbecb685a20975e00eb10d7fd6755b7a0a12179"
+      },
+      {
+        "passage": 3,
+        "code": 1,
+        "secondes": 0.271,
+        "resultat": "FAIL Val-Brûlé : décor construit en moins de 150 ms: 163 ms",
+        "journal_sha256": "8da3ce84e0d3bee8e419fe22dba66242940038b904a3969969386a9c24d776ea"
+      }
+    ]
+  },
+  "diagnostic_construction": {
+    "refs": {
+      "base": "90d43108660d5b4fb12a52613a1824c49f334970",
+      "finale": "67556b8a75e7950ec885a1000ebced46f895c930"
+    },
+    "sources_differentes": [
+      "src/batiments.js"
+    ],
+    "source_finale_stable": true,
+    "statistiques": [
+      {
+        "variante": "base",
+        "circuit": "val-brule",
+        "mesures": 3,
+        "mural_mediane_ms": 111.32241499999999,
+        "mural_min_ms": 111.31511400000001,
+        "mural_max_ms": 162.942895,
+        "cpu_mediane_ms": 249.299,
+        "depassements_150_ms": 1,
+        "comptages_constants": true,
+        "contenu": {
+          "arbres": 2600,
+          "obstacles": 3970,
+          "lots": 85,
+          "nappes": 117,
+          "objets_proches": 15866,
+          "objets_lointains": 5381
+        }
+      },
+      {
+        "variante": "base",
+        "circuit": "port-sable",
+        "mesures": 3,
+        "mural_mediane_ms": 128.08196199999998,
+        "mural_min_ms": 96.18777800000001,
+        "mural_max_ms": 132.800992,
+        "cpu_mediane_ms": 258.534,
+        "depassements_150_ms": 0,
+        "comptages_constants": true,
+        "contenu": {
+          "arbres": 2600,
+          "obstacles": 3865,
+          "lots": 78,
+          "nappes": 104,
+          "objets_proches": 15439,
+          "objets_lointains": 5133
+        }
+      },
+      {
+        "variante": "base",
+        "circuit": "haut-col",
+        "mesures": 3,
+        "mural_mediane_ms": 180.03734000000003,
+        "mural_min_ms": 169.26565600000004,
+        "mural_max_ms": 221.82347300000004,
+        "cpu_mediane_ms": 289.952,
+        "depassements_150_ms": 3,
+        "comptages_constants": true,
+        "contenu": {
+          "arbres": 2600,
+          "obstacles": 3811,
+          "lots": 153,
+          "nappes": 176,
+          "objets_proches": 20043,
+          "objets_lointains": 6003
+        }
+      },
+      {
+        "variante": "finale",
+        "circuit": "val-brule",
+        "mesures": 3,
+        "mural_mediane_ms": 159.471444,
+        "mural_min_ms": 129.83450699999997,
+        "mural_max_ms": 209.98245399999996,
+        "cpu_mediane_ms": 322.626,
+        "depassements_150_ms": 2,
+        "comptages_constants": true,
+        "contenu": {
+          "arbres": 2600,
+          "obstacles": 3970,
+          "lots": 85,
+          "nappes": 117,
+          "objets_proches": 15866,
+          "objets_lointains": 5381
+        }
+      },
+      {
+        "variante": "finale",
+        "circuit": "port-sable",
+        "mesures": 3,
+        "mural_mediane_ms": 106.00915800000001,
+        "mural_min_ms": 96.05403199999998,
+        "mural_max_ms": 113.07207499999998,
+        "cpu_mediane_ms": 211.149,
+        "depassements_150_ms": 0,
+        "comptages_constants": true,
+        "contenu": {
+          "arbres": 2600,
+          "obstacles": 3865,
+          "lots": 78,
+          "nappes": 104,
+          "objets_proches": 15439,
+          "objets_lointains": 5133
+        }
+      },
+      {
+        "variante": "finale",
+        "circuit": "haut-col",
+        "mesures": 3,
+        "mural_mediane_ms": 228.54244399999993,
+        "mural_min_ms": 121.449568,
+        "mural_max_ms": 235.614776,
+        "cpu_mediane_ms": 330.094,
+        "depassements_150_ms": 2,
+        "comptages_constants": true,
+        "contenu": {
+          "arbres": 2600,
+          "obstacles": 3811,
+          "lots": 153,
+          "nappes": 176,
+          "objets_proches": 20043,
+          "objets_lointains": 6003
+        }
+      }
+    ],
+    "limites": "Diagnostic de construction seulement : les vérifications de densité et de géométrie entre circuits de decor.test.mjs ne sont pas rejouées. Instrumentation CPU et comptages ajoutés. Ne remplace pas les passages isolés du test inchangé ; ne conclut pas à une cause de charge système.",
+    "conclusion": "Des dépassements apparaissent avant et après le seul déplacement du panneau. La cause du coût reste à profiler ; aucune cause de charge système affirmée."
+  },
+  "suite": "Profilage puis optimisation ciblée préservant exactement géométrie, RNG et seuils. Requalifier la source retenue avant publication."
+}

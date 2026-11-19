@@ -1,5 +1,11 @@
 # Lot 22F — Des circuits mémorables
 
+> **Mise au point du 19 novembre :** cette étude conserve son état initial. David a depuis choisi
+> un nouveau circuit de montagne, distinct de Haut-Col ; cette question n’est plus à poser. Haut-Col
+> garde son tracé et reçoit ses fortes rampes, sa corniche et son second tunnel. La conduite est désormais
+> p14, et le programme complet conserve 17 destinations. Les bords de route sont déjà intégrés.
+> Voir `CONTINUATION-AUTONOME-2026-11-19.md` pour les travaux réellement restants.
+
 Date : **18 novembre 2026**. Statut : **bords de route prêts à intégrer** (module, vérifications, patch d'intégration) ;
 **tracés, tunnels, caméras et physique p10 proposés**. Aucune source existante du jeu n'est modifiée par ce lot.
 

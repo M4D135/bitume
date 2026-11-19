@@ -48,6 +48,9 @@
 
   function construire(ouvert) {
     const C = B.carene;
+    // Les booléens gardent exactement les deux maillages historiques. Une fraction prépare une prise
+    // intermédiaire au chargement : aucun sommet n'est reconstruit pendant l'animation des doigts.
+    const ouverture = typeof ouvert === 'number' ? Math.max(0, Math.min(1, ouvert)) : ouvert ? 1 : 0;
     const K = AUTOUR(0, JOINTURES.theta, JOINTURES.d);            // jointure du majeur et de l'annulaire : origine du dos
     const a = AXE, bz = [0, 1, 0], Y = croix(bz, a);              // Y : normale au dos de la main, vers le dehors
     const m = [a, Y, bz];
@@ -56,7 +59,7 @@
     // --- Doigts : de l'intérieur du dos à la jointure, puis autour du tube ---
     // cockpit-3 : variante ouverte pour le trajet au pommeau — les doigts ne serrent plus le tube (ils le
     // traversaient, fermés, jusqu'à 12,5 mm) ; ils restent ouverts vers le dehors, à plat sur la paume levée
-    const serrage = ouvert ? .28 : 1;
+    const serrage = ouverture === 0 ? 1 : ouverture === 1 ? .28 : 1 - .72 * ouverture;
     const gant = [], pointsDoigts = [], jointures = [];
     for (const doigt of DOIGTS) {
       const psi = doigt.s / JANTE.R, jointure = AUTOUR(psi, JOINTURES.theta, JOINTURES.d), r = doigt.r;
@@ -78,7 +81,8 @@
 
     // --- Pouce : de l'éminence, côté index et paume, jusque sur la face de la jante tournée vers le pilote ---
     const eminence = POUCE.eminence.map(([x, y, z]) => additionner(additionner(W, multiplier(a, -x)), additionner(multiplier(bz, y), multiplier(Y, -z))));
-    const pouce = [...eminence, ...POUCE.tour.map(([s, t], i) => AUTOUR(s / JANTE.R, t * deg * (ouvert ? .3 : 1), JANTE.r + POUCE.r[i + 2] + 4 * JEU))];
+    const pliPouce = ouverture === 0 ? 1 : ouverture === 1 ? .3 : 1 - .7 * ouverture;
+    const pouce = [...eminence, ...POUCE.tour.map(([s, t], i) => AUTOUR(s / JANTE.R, t * deg * pliPouce, JANTE.r + POUCE.r[i + 2] + 4 * JEU))];
     gant.push(...C.tube(pouce, POUCE.r, { cotes: 12, pas: 4, bouts: true }));
 
     // --- Paume : cuir sombre côté jante, sous le dos ---
