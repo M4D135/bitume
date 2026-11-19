@@ -1,0 +1,39 @@
+✔ 13A catalogue : Baïkal ajouté après les sept circuits conservés (1.85847ms)
+✔ 13A les 84 tableaux numériques des sept anciens tracés restent identiques bit à bit (193.488136ms)
+✔ 13A boucle praticable, relief significatif et raccord continu (24.423296ms)
+✔ 13A départ et stands plats, droits et compatibles avec douze voitures (24.088023ms)
+✔ 13A reconstruction du tracé indépendante du hasard global (63.557538ms)
+✔ 13A les solides réels restent hors de toutes les portions de chaussée (1384.963814ms)
+✔ 13A sec : onze rivaux accomplissent trois tours sans secours (4508.075092ms)
+✔ 13A pluie : onze rivaux accomplissent trois tours sans secours (3962.719442ms)
+✖ 13A neige : onze rivaux accomplissent trois tours sans secours (5350.744644ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 8
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15677.290236
+
+✖ failing tests:
+
+test at verifications/russie.test.mjs:39:3
+✖ 13A neige : onze rivaux accomplissent trois tours sans secours (5350.744644ms)
+  AssertionError [ERR_ASSERTION]: neige : course inachevée pour R. Castagnet — {"id":1,"nom":"R. Castagnet","rival":true,"contacts":26,"chocs":0,"accidents":0,"replacements":0,"railSecondes":0,"serviceSecondes":0,"stagnationMaxSecondes":0,"stagnationHorsStandsMaxSecondes":0,"services":0,"fini":false,"abandon":false,"tours":2,"tempsTours":[125.30999754284731,115.98087502637587],"tempsFinal":null,"distance":15952.7864143344,"sFinal":5043.241677656872,"vitesseFinale":49.82150131470352}
+      at parcourir (file:///workspace/scratch/1b28de5a23b5/bitume/verifications/russie.test.mjs:230:14)
+      at file:///workspace/scratch/1b28de5a23b5/bitume/verifications/russie.test.mjs:244:91
+      at TestContext.<anonymous> (file:///workspace/scratch/1b28de5a23b5/bitume/verifications/russie.test.mjs:42:30)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

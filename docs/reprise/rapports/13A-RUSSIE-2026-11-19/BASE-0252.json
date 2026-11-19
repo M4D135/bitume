@@ -1,0 +1,42 @@
+{
+  "base_commit": "18451e0eeb701d720f08c069b841d79c2439755d",
+  "version": "0.2.52",
+  "physique": "p13",
+  "lois_et_archives_a_conserver": [
+    "src/conduite.js",
+    "src/usure-pneus.js",
+    "src/pneus.js",
+    "src/degats.js",
+    "src/contacts.js",
+    "src/obstacles.js",
+    "src/course.js",
+    "src/strategie-stands.js",
+    "src/pneus-reseau.js",
+    "src/reseau.js",
+    "FERRO.lock.json",
+    "verifications/fixtures/determinisme-p9.json",
+    "verifications/fixtures/determinisme-p10.json",
+    "verifications/fixtures/determinisme-p11.json",
+    "verifications/fixtures/determinisme-p12.json",
+    "verifications/fixtures/determinisme-p13.json"
+  ],
+  "hashes_base": {
+    "src/conduite.js": "ed17946c7d15f58bfd72143635aeeb5fac81fbf8438476bf3ccacfeef73eeabc",
+    "src/usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+    "src/pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+    "src/degats.js": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247",
+    "src/contacts.js": "d6e583db729c91df8de21621c05b3b24835e6dc996e9dd4df7cb0464b27e1b7a",
+    "src/obstacles.js": "02626c61720ba5aa6bc1f06ee103725efed1a0c52f243b3ba2443f6f6cbf914e",
+    "src/course.js": "9950001b518363cefe3bd3cd013e96046a460b96db02192cc7a21ee3ddbd0d93",
+    "src/strategie-stands.js": "c0b8326627e0225bf8197719472062b181038346eb3d1b3ca4b6ef320d0dee50",
+    "src/pneus-reseau.js": "7a4ec53a40049e3f868d8fbf7d32b6582edd949959c6b5dd6d2aecec2ea2a1c7",
+    "src/reseau.js": "beadab21365d5f4e68d68d5d3f897c915da0849e2f3b0cc87e84a53b744a0d11",
+    "FERRO.lock.json": "cb6d1150c85b03bfaf5f32432256538a92237315e1cd1796cdaf5aaacddd9f55",
+    "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a",
+    "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+    "verifications/fixtures/determinisme-p11.json": "c2453f9f896014a45020678c071a10aed656243ef542565538c571d7fc9430b7",
+    "verifications/fixtures/determinisme-p12.json": "fb8f96e5a770fcdd6ee3da520a9c8e0e2ae81c6c0b6b34d5a20758730f790e5f",
+    "verifications/fixtures/determinisme-p13.json": "a3063bc825609519582bb26fe011ee07dbb0f98aad0b5d4666c0f3cf6111acd5"
+  },
+  "circuits_historiques": "verifications/fixtures/circuits-historiques-0252.json"
+}

@@ -102,7 +102,17 @@
       const loin = k => !dangers.some(d => Math.abs(ramener(c, d.debut - k.debut + L / 2) - L / 2) < 500);
       for (let essai = 0; essai < 8 && dangers.length < voulus; essai++) {
         const voulu = types[dangers.length % types.length], courbes = candidats.filter(k => k.courbe && loin(k));
-        const type = voulu === 'vide' && !courbes.length ? 'muret' : voulu, possibles = type === 'vide' ? courbes : candidats.filter(loin);
+        const type = voulu === 'vide' && !courbes.length ? 'muret' : voulu;
+        let possibles = type === 'vide' ? courbes : candidats.filter(loin);
+        // Baïkal : l'allée de conifères proches appartient à la partie forestière roulante. À l'extérieur
+        // d'une courbe en descente, un simple contact sur neige projetait une voiture contre un tronc avant
+        // la glissière. Garder ces arbres sur une droite peu pentue ; les solides restent tous actifs.
+        if (theme === 'baikal' && type === 'arbres') possibles = possibles.filter(k => {
+          if (k.courbe) return false;
+          for (let s = k.debut; s <= k.fin; s += pas)
+            if (Math.abs(c.pente[Math.floor(ramener(c, s) / pas)]) > .025) return false;
+          return true;
+        });
         if (!possibles.length) break;
         const cand = possibles[Math.floor(r() * possibles.length)];
         candidats.splice(candidats.indexOf(cand), 1);

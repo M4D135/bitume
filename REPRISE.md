@@ -7,15 +7,14 @@ Base publiée : **0.2.52 / p13**, main `18451e0eeb701d720f08c069b841d79c2439755d
 Lire seulement `docs/reprise/ETAT.json`, la dernière entrée du suivi et `docs/reprise/13A-RUSSIE-TRACE-RELIEF.md`.
 Ne pas refaire 12A–12F4, la sortie de file ni Safari : ces travaux et leurs publications sont clos.
 
-## Sources initiales de 13A
+## Tracé qualifié par les parcours ciblés
 
 Baïkal est le choix de conception issu du plan, pas une localisation imposée par David. Circuit original ajouté
 à l'indice 7, ID `baikal`, graine 179, **5 424 m**, dénivelé **62,9477 m**, pente maximale **6,8 %**.
-Ligne droite de 816 m et stands plats. Les sept circuits historiques et la physique p13 restent à préserver bit à bit.
+Ligne droite de 816 m et stands plats. Les 84 tableaux des sept circuits historiques sont identiques bit à bit ; physique p13 conservée.
 Le thème de base permet le roulage ; lac, berges, lieux, végétation et faune détaillés restent **13B**.
 
-**Prochaine action :** terminer les tests du tracé, les parcours sec/pluie/neige avec onze rivaux et vrais solides,
-qualifier puis construire et publier. Les sources 13A sont en cours ; le build reste pour l'instant **0.2.52**.
+**Prochaine action :** terminer la qualification globale en cours puis publier la 0.2.53. Les neuf contrôles ciblés passent : douze voitures font trois tours sur sec/pluie/neige sans accident ni replacement. Les allées d’arbres proches ont été déplacées hors des courbes descendantes. Le build reste 0.2.52 jusqu’à la construction finale.
 
 ## Base qualifiée conservée
 

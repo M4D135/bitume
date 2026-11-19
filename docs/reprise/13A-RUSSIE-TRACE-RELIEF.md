@@ -2,7 +2,7 @@
 
 ## Point actif — 19 novembre 2026
 
-**En cours, sources initiales ; parcours physiques et qualification finale à terminer.**
+**9/9 contrôles ciblés réussis ; qualification globale et build en cours.**
 Base livrée : `18451e0eeb701d720f08c069b841d79c2439755d`, BITUME **0.2.52 / p13**.
 Branche : `codex/bitume-13a-russie-20261119`. Build conservé à 0.2.52 jusqu'à la qualification.
 
@@ -16,7 +16,7 @@ la Russie sans imposer de région. Ce parcours original ne reproduit aucune rout
 | Élément | Choix et mesure initiale |
 |---|---|
 | Catalogue | ID `baikal`, indice 7, nom Baïkal, thème `baikal` |
-| Graine | 179, à figer après qualification des parcours |
+| Graine | 179, figée après qualification des trois parcours |
 | Longueur | Visée 5 400 m ; générée **5 424 m** |
 | Relief de piste | **62,9477 m** ; pente absolue maximale **6,8 %** |
 | Ligne droite principale | **816 m**, grille et stands plats |
@@ -51,3 +51,7 @@ Le wrapper Spark `~/bin/kbza` est absent ici ; travail local et revue par agents
 Pas de mesure FPS matérielle ni de validation WebGL déclarée. Le dépôt GitHub et le déploiement sont suivis séparément.
 Après clôture de 13A : **13B — Russie, décor et saisons** ; Monaco, Marseille avec relief, montagne et six propositions
 restent dans le plan maître.
+
+## Parcours ciblés terminés
+
+Douze voitures, trois tours dans chacune des conditions sec/pluie/neige : zéro accident, replacement ou stagnation. Les contacts et frottements aux rails restent mesurés. 1 134 solides actifs ; 84 tableaux historiques inchangés. Le diagnostic neige et la correction des allées proches sont conservés dans `rapports/13A-RUSSIE-2026-11-19/DIAGNOSTIC-NEIGE.md`. Source checkpoint publiée `0cbea2047a2a6150fe8e0643cdd7121a9171fc01`. Carte de conception : `rapports/13A-RUSSIE-2026-11-19/carte-relief.png` ; ce n’est pas une capture WebGL.

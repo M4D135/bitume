@@ -7,16 +7,18 @@
     "version_courante": "0.2.52",
     "version_cible": "0.2.53",
     "version_publiee_verifiee": "0.2.52",
-    "statut": "13A_sources_initiales",
+    "statut": "13A_qualification_globale_en_cours",
     "lot": "13A_Russie_trace_relief",
     "fiche": "docs/reprise/13A-RUSSIE-TRACE-RELIEF.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "025",
-    "prochaine_action": "Terminer les tests de Baïkal et les parcours sec/pluie/neige avec onze rivaux et vrais solides, puis qualifier et publier sources/build/preuves.",
+    "derniere_entree": "026",
+    "prochaine_action": "Terminer qualifier.py (session en cours), vérifier qualification-execution.json et build0.2.53, publier sources/build/preuves et clore13A.",
     "physique": "p13",
-    "sources_tests_geles": false,
+    "sources_tests_geles": true,
     "build_courant": "0.2.52",
-    "safari": "Corrigé, confirmé par David ; chantier clos."
+    "safari": "Corrigé, confirmé par David ; chantier clos.",
+    "checkpoint_sources": "0cbea2047a2a6150fe8e0643cdd7121a9171fc01",
+    "qualification_ciblee": "docs/reprise/rapports/13A-RUSSIE-2026-11-19/amenagement-corrige/russie.json"
   },
   "validation": {
     "date_utc": "2026-11-19T15:09:07.852480+00:00",
