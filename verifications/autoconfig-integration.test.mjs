@@ -343,6 +343,8 @@ const demarrage = new Function('base', 'mesure', 'attente', 'version', 'materiel
   const B = { ...base, son: { creer() { appels.push('son'); return {}; } } };
   const window = { devicePixelRatio: 1, FRender: { create() { appels.push('renderer'); return { stats: { backend: 'webgl2' }, gl: {} }; } } };
   const webgl2 = () => true, appliquerPalier = () => {}, lireStock = () => mesure;
+  // Safari : la préférence graphique (contexte par défaut au lieu de haute performance) se pose avant de créer le moteur
+  let avantMoteur = null; const preferenceGraphique = () => { avantMoteur = appels.length; };
   const empreinteDetection = () => base.autoconfig.empreinte(materiel || 'GPU-A', version || '0.2.40');
   const restaurerPalier = () => { appels.push('palier'); return false; };
   const detecterGraphismes = async () => { appels.push('bench'); await attente; appels.push('bench-termine'); };
@@ -355,13 +357,14 @@ const demarrage = new Function('base', 'mesure', 'attente', 'version', 'materiel
   const glacesPossibles = () => true, creerMoteurRetro = () => appels.push('retro');
   const preparerSeance = async (type, i) => { appels.push('vitrine'); session = { type, i }; };
   ${bloc('  async function demarrer()', "  // Outil d'essai")}
-  return { demarrer, appels, reglages, get derniere() { return derniereDetection; }, get gpuModeste() { return gpuModeste; } };
+  return { demarrer, appels, reglages, get derniere() { return derniereDetection; }, get gpuModeste() { return gpuModeste; }, get preference() { return avantMoteur; } };
 `);
 await verifier('premier lancement : attendre la détection avant le titre, la musique et la boucle', async () => {
   let finir; const attente = new Promise(r => { finir = r; }), h = demarrage(B, null, attente, undefined, undefined, Promise.resolve());
   const execution = h.demarrer();
   await new Promise(r => setTimeout(r, 0));
   assert.deepEqual(h.appels, ['renderer', 'premier-plan', 'visible', 'bench']); assert.equal(h.appels.includes('titre'), false);
+  assert.equal(h.preference, 0, 'préférence graphique posée avant la création du moteur');
   finir(); await execution;
   // le palier appris de la qualité Auto est repris après la détection ; le moteur des glaces naît ensuite (il
   // dépend des paliers atteignables), avant la vitrine

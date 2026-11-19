@@ -4032,12 +4032,39 @@
   });
   addEventListener('keydown', e => { if (detectionGraphiqueActive && e.code === 'Escape') { annulerDetection = true; e.preventDefault(); } });
 
+  // Safari perd un contexte WebGL demandé en « haute performance » : dès sa création quand la page n'est pas au premier
+  // plan, ou plus tard, et l'image principale reste noire alors que le jeu continue. Mesuré le 19/11/2026 sur Safari
+  // 27.2 (puce Apple) : contexte par défaut intact, contexte haute performance perdu à la naissance. Le moteur demande
+  // la haute performance ; dans Safari, ou quand un contexte d'essai naît perdu, le jeu la remplace par le réglage par
+  // défaut pour toutes ses toiles. Sur une machine à une seule carte graphique, cela ne change rien au rendu.
+  function preferenceGraphique() {
+    const proto = window.HTMLCanvasElement && window.HTMLCanvasElement.prototype;
+    if (!proto || proto.getContextOrigine) return;
+    let fragile = /^((?!chrome|chromium|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent || '');
+    if (!fragile) {
+      try {
+        const essai = document.createElement('canvas').getContext('webgl2', { powerPreference: 'high-performance' });
+        fragile = !!essai && essai.isContextLost();
+        const perdre = essai && essai.getExtension('WEBGL_lose_context');
+        if (perdre) perdre.loseContext();
+      } catch (e) { /* pas de contexte d'essai : rien à adapter */ }
+    }
+    if (!fragile) return;
+    const origine = proto.getContext;
+    proto.getContextOrigine = origine;
+    proto.getContext = function (type, attributs) {
+      const doux = type === 'webgl2' && attributs && attributs.powerPreference === 'high-performance';
+      return origine.call(this, type, doux ? Object.assign({}, attributs, { powerPreference: 'default' }) : attributs);
+    };
+  }
+
   async function demarrer() {
     if (!webgl2()) { erreur('WebGL2 indisponible', 'BITUME dessine la piste avec WebGL2. Ouvrez la page dans un navigateur récent (Chrome, Edge, Firefox, Safari 15 ou plus) avec l’accélération graphique active.'); return; }
     try {
       // ombres photo (src/ombres.js) : tuile de 512² ; à 1024², des dents rampent sous la casquette de la planche.
       // Bloc PCSS compilé seulement si la pénombre variable sert (B.ombres.reglages.pcssFine) : shader plus court sinon.
       const optionsRendu = { msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: !!(B.ombres && B.ombres.reglages.pcssFine) } };
+      preferenceGraphique();
       rendu = window.FRender.create(canvas, optionsRendu);
       // raccord FERRO : cibles gardées malgré 120 rendus sans usage (sinon une variante chauffée peut être libérée)
       if (rendu.retain) rendu.retain(true);
