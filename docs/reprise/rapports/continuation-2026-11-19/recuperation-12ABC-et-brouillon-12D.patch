@@ -1,0 +1,951 @@
+diff --git a/construire.py b/construire.py
+index 92db870..2341eae 100644
+--- a/construire.py
++++ b/construire.py
+@@ -30,6 +30,7 @@ MODULES = [
+     'ferro/gpu-profile.js',
+     'circuit.js',
+     'ferro/vehicle-dynamics.js',
++    'pneus.js',
+     'conduite.js',
+     'degats.js',
+     'contacts.js',
+diff --git a/src/conduite.js b/src/conduite.js
+index 04f9509..a4e53a2 100644
+--- a/src/conduite.js
++++ b/src/conduite.js
+@@ -1,5 +1,6 @@
+ // Node consumers retain the direct-load contract; browsers load the explicit build dependency.
+ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)require('./ferro/vehicle-dynamics.js');
++if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)require('./pneus.js');
+ (function (B) {
+   'use strict';
+   // BITUME : conduite d'une monoplace, dans le repère du circuit (abscisse s, décalage d).
+@@ -139,7 +140,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
+   // Adhérence relative selon l'eau sur la piste w (0 sec, 1 détrempée) : [sur le sec, pente avec w]. Les slicks sont
+   // les meilleurs au sec et glissent sous la pluie ; les pneus pluie chauffent et se déforment au sec ; les
+   // intermédiaires tiennent l'entre-deux. Meilleur choix : slicks sous w 0,2, intermédiaires jusqu'à 0,47, pluie au-delà.
+-  const PNEUS = Object.freeze({ slicks: Object.freeze([1, -.30]), inter: Object.freeze([.96, -.10]), pluie: Object.freeze([.88, .07]) });
++  const PNEUS = B.pneus.PNEUS;
+   function adherencePneus(type, eau) { const p = PNEUS[type] || PNEUS.slicks; return p[0] + p[1] * clamp(eau || 0, 0, 1); }
+   function pneusConseilles(eau) { return eau < .2 ? 'slicks' : eau < .47 ? 'inter' : 'pluie'; }
+   // eau sur la piste : la pluie qui tombe, ou la piste qui reste mouillée après l'averse (séchage de meteo.js)
+diff --git a/src/course.js b/src/course.js
+index f7044cd..3a814fd 100644
+--- a/src/course.js
++++ b/src/course.js
+@@ -115,6 +115,7 @@
+     ordre.forEach((v, k) => {
+       const s = chrono ? -40 : -10 - 8 * k, d = chrono ? 0 : (k % 2 === 0 ? -2.4 : 2.4);
+       v.etat = B.conduite.creer(ramener((c.depart || 0) + s, L), d);
++      Object.assign(v.etat, B.pneus.creerEtat('slicks', { seance: graine, voiture: v.id }));
+       v.degats = B.degats ? B.degats.creer() : null; v.etat.degats = v.degats;
+       v.progression = s; v.position = k + 1;
+     });
+diff --git a/src/degats.js b/src/degats.js
+index 79cb31c..d81b0b4 100644
+--- a/src/degats.js
++++ b/src/degats.js
+@@ -1,3 +1,4 @@
++if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)require('./pneus.js');
+ /* BITUME — dégâts de la caisse (Chantier 3). Un choc coûte de l'adhérence et de la traînée, dans la limite
+    des critères (adhérence −8 % au plus, traînée +8 % au plus) ; au-delà d'un seuil de violence, une roue
+    se détache et la caisse attend une remise en piste rapide. L'état des dégâts vit sur
+@@ -77,7 +78,7 @@
+   // Santé (lot 4) : un seul chiffre, 1 = neuve, 0 = au plus bas des critères. Il se lit dans le MÊME état que les
+   // pénalités et la réparation — adhérence, traînée, roues manquantes — et n'est jamais une simulation parallèle
+   // montée pour le seul affichage. Le flash rouge d'un impact est autre chose (jeu.js) : la santé, elle, persiste.
+-  const NOMS_ROUES = ['roue avant droite', 'roue avant gauche', 'roue arrière droite', 'roue arrière gauche'];
++  const NOMS_ROUES = B.pneus.NOMS_ROUES;
+   function sante(d) {
+     if (!d) return 1;
+     const gA = (1 - d.adher) / (1 - P.adherMin);           // 0 à 1 sur la plage utile des critères
+diff --git a/src/jeu.js b/src/jeu.js
+index 4a4c025..c66d25f 100644
+--- a/src/jeu.js
++++ b/src/jeu.js
+@@ -2774,7 +2774,7 @@
+   }
+   // Présélection des pneus selon la météo prévue (David, 16/11) : au soleil des slicks, sous la pluie des pneus
+   // pluie ; la météo aléatoire est tirée d'avance (même graine que la course qui va partir). Le pilote peut changer.
+-  const NOMS_PNEUS = { slicks: 'Slicks', inter: 'Intermédiaires', pluie: 'Pluie' };
++  const NOMS_PNEUS = B.pneus.NOMS_PNEUS;
+   function preselectionnerPneus() {
+     const k = conditionsDuDepart();
+     const prevue = B.meteo.depuisReel(k.mReelle) || B.meteo.pour(k.meteo) || B.meteo.initial(graineCourse + 1);
+diff --git a/src/voiture.js b/src/voiture.js
+index 41d4e2c..ad02686 100644
+--- a/src/voiture.js
++++ b/src/voiture.js
+@@ -83,14 +83,14 @@
+   // ---------------------------------------------------------------- cotes de la 312 T5
+   // Empattement 2,70 m, voies 1,70 m à l'avant et 1,615 m à l'arrière, longueur 4,53 m, largeur 2,12 m, hauteur 1,02 m.
+   const EMPATTEMENT = 2.70, DEMI_VOIE_AV = .85, DEMI_VOIE_AR = .8075, JANTE_R = .165; // jantes de 13 pouces
+-  const ROUES = [
++  const ROUES = B.pneus ? B.pneus.ROUES : [
+     { x: 1.35, z: -DEMI_VOIE_AV, r: .29, l: .28, avant: true }, { x: 1.35, z: DEMI_VOIE_AV, r: .29, l: .28, avant: true },
+     { x: -1.35, z: -DEMI_VOIE_AR, r: .335, l: .46, avant: false }, { x: -1.35, z: DEMI_VOIE_AR, r: .335, l: .46, avant: false }
+   ];
+ 
+   const LAQUE = 16, PEINTURE = 17, MAT = 7, METAL_MAT = 0, TISSU = 18;
+-  // types de pneus : couleur du cercle peint sur le flanc, rainures transversales de la bande de roulement
+-  const PNEUS_TYPES = { slicks: { cercle: [.95, .76, .08], rainures: 0 }, inter: { cercle: [.16, .72, .30], rainures: 8 }, pluie: { cercle: [.16, .46, .90], rainures: 14 } };
++  // Le catalogue commun peut être absent des outils qui chargent seulement le modèle.
++  const PNEUS_TYPES = B.pneus ? B.pneus.CATALOGUE : { slicks: { cercle: [.95, .76, .08] }, inter: { cercle: [.16, .72, .30] }, pluie: { cercle: [.16, .46, .90] }, neige: { cercle: [.82, .85, .89] } };
+   const PNEU = [.035, .035, .04], FOND_JANTE = [.11, .11, .12], JANTE = [.72, .73, .74], NOIR = [.03, .03, .035],
+     CARBONE = [.06, .065, .07], ARGENT = [.76, .77, .79], BLANC = [.95, .94, .9], GANT = [.9, .9, .87],
+     ACIER = [.56, .57, .59], SOMBRE = [.17, .175, .19], CRAIE = [.82, .82, .78], IVOIRE = [.93, .92, .87];
+@@ -385,14 +385,111 @@
+     { x: .60, y0: .10, y1: .43, l: .72, n: 5 }, { x: -.88, y0: .10, y1: .45, l: .70, n: 5 }, { x: -1.08, y0: .12, y1: .43, l: .50, n: 5 }, { x: -1.30, y0: .16, y1: .40, l: .30, n: 4 }], { cotes: 8, pas: 1 }));
+   forme('loin-dessus', C.carene([S_GOUTTE[0], S_GOUTTE[2], S_GOUTTE[3], S_MOTEUR[0], S_MOTEUR[1], S_MOTEUR[2]], { cotes: 8, pas: 1 }));
+   forme('loin-quille', C.carene(S_QUILLE, { cotes: 8, pas: 1 }));
+-  // Pneus : carène de révolution autour de l'axe y local (celui des cylindres de roue), flanc presque droit depuis la
+-  // jante, épaule arrondie, bande de roulement plate
+-  function pneu(r, w) {
+-    const profil = [[-w / 2, JANTE_R + .012], [-w / 2 + .004, r - .05], [-w / 2 + .018, r - .012], [-w / 2 + .045, r], [w / 2 - .045, r], [w / 2 - .018, r - .012], [w / 2 - .004, r - .05], [w / 2, JANTE_R + .012]];
+-    return C.transformer(C.carene(profil.map(([x, q]) => ({ x, y0: -q, y1: q, l: q, n: 2 })), { cotes: 24, pas: 2 }), [[0, 1, 0], [-1, 0, 0], [0, 0, 1]]);
++  // Roues : formes partagées, préparées avant le moteur. Aucun cylindre générique du décor n'est alourdi.
++  // L'axe local y traverse la jante. Le profil est annulaire : aucune face en éventail ne bouche le moyeu.
++  const SEGMENTS_ROUE = Object.freeze([96, 64, 32, 16]);
++  const LIMITES_ROUE_PIXELS = Object.freeze([Infinity, 360, 84, 20]);
++  const ROUES_FORMES = { av: {}, ar: {} }, JANTES_FORMES = { av: {}, ar: {} };
++  function revolutionRoue(profil, segments, lisse = true) {
++    const faces = [], n = profil.length;
++    const tangente = (a, b) => { const y = b[0] - a[0], r = b[1] - a[1], h = Math.hypot(y, r); return [y / h, r / h]; };
++    const directions = profil.map((p, i) => {
++      const a = tangente(profil[(i + n - 1) % n], p), b = tangente(p, profil[(i + 1) % n]);
++      const h = Math.hypot(a[0] + b[0], a[1] + b[1]);
++      return [(a[0] + b[0]) / h, (a[1] + b[1]) / h];
++    });
++    const point = (p, j) => { const a = 2 * Math.PI * (j % segments) / segments; return [p[1] * Math.cos(a), p[0], p[1] * Math.sin(a)]; };
++    const normale = (t, j) => { const a = 2 * Math.PI * (j % segments) / segments; return [t[0] * Math.cos(a), -t[1], t[0] * Math.sin(a)]; };
++    for (let i = 0; i < n; i++) {
++      const k = (i + 1) % n, t = tangente(profil[i], profil[k]), A = lisse ? directions[i] : t, D = lisse ? directions[k] : t;
++      for (let j = 0; j < segments; j++) {
++        const a = point(profil[i], j), b = point(profil[k], j), c = point(profil[k], j + 1), d = point(profil[i], j + 1);
++        const na = normale(A, j), nb = normale(D, j), nc = normale(D, j + 1), nd = normale(A, j + 1);
++        faces.push([a, b, c, na, nb, nc], [a, c, d, na, nc, nd]);
++      }
++    }
++    return faces;
++  }
++  // Pavé courbe, avec ses quatre parois et son sommet à la vraie hauteur du pneu. Les fonds des rainures font
++  // partie du profil de base ; pas de boîtes noires superposées ni de géométrie sous la surface qui scintille.
++  function pavePneu(faces, r, profondeur, y0, y1, a0, a1, biais, pas) {
++    const point = (a, y, rayon) => [rayon * Math.cos(a), y, rayon * Math.sin(a)];
++    const normal = a => [Math.cos(a), 0, Math.sin(a)];
++    const triangle = (a, b, c, dehors, na, nb, nc) => {
++      const u = b.map((x, i) => x - a[i]), v = c.map((x, i) => x - a[i]);
++      let n = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]];
++      if (n[0] * dehors[0] + n[1] * dehors[1] + n[2] * dehors[2] < 0) { [b, c] = [c, b]; [nb, nc] = [nc, nb]; n = n.map(x => -x); }
++      const h = Math.hypot(...n); if (h < 1e-12) return;
++      n = n.map(x => x / h); faces.push([a, b, c, na || n, nb || n, nc || n]);
++    };
++    const quad = (a, b, c, d, dehors) => { triangle(a, b, c, dehors); triangle(a, c, d, dehors); };
++    for (let j = 0; j < pas; j++) {
++      const t0 = a0 + (a1 - a0) * j / pas, t1 = a0 + (a1 - a0) * (j + 1) / pas;
++      const a = point(t0, y0, r), b = point(t0 + biais, y1, r), c = point(t1 + biais, y1, r), d = point(t1, y0, r);
++      const na = normal(t0), nb = normal(t0 + biais), nc = normal(t1 + biais), nd = normal(t1);
++      triangle(a, b, c, normal((t0 + t1 + biais) / 2), na, nb, nc);
++      triangle(a, c, d, normal((t0 + t1) / 2), na, nc, nd);
++      quad(point(t0, y0, r - profondeur), a, d, point(t1, y0, r - profondeur), [0, -1, 0]);
++      quad(b, point(t0 + biais, y1, r - profondeur), point(t1 + biais, y1, r - profondeur), c, [0, 1, 0]);
++    }
++    for (const [a, signe] of [[a0, -1], [a1, 1]]) quad(point(a, y0, r), point(a, y0, r - profondeur),
++      point(a + biais, y1, r - profondeur), point(a + biais, y1, r), [-signe * Math.sin(a), 0, signe * Math.cos(a)]);
+   }
+-  forme('pneu-av', pneu(ROUES[0].r, ROUES[0].l));
+-  forme('pneu-ar', pneu(ROUES[2].r, ROUES[2].l));
++  function pneu(r, w, segments, type) {
++    const h = w / 2, b = h - .049, detail = segments >= 64, sculpte = detail && type !== 'slicks';
++    const profondeur = sculpte ? type === 'neige' ? .009 : type === 'pluie' ? .007 : .004 : 0;
++    const profil = segments >= 64 ? [[-h, JANTE_R + .009], [-h, r - .060], [-h + .007, r - .036], [-h + .021, r - .014],
++      [-h + .035, r - .003], [-b - .006, r], [-b, r - profondeur], [b, r - profondeur], [b + .006, r],
++      [h - .035, r - .003], [h - .021, r - .014], [h - .007, r - .036], [h, r - .060], [h, JANTE_R + .009],
++      [h - .009, JANTE_R + .005], [-h + .009, JANTE_R + .005]]
++      : [[-h, JANTE_R + .009], [-h, r - .060], [-h + .013, r - .026], [-b, r], [b, r], [h - .013, r - .026],
++        [h, r - .060], [h, JANTE_R + .009], [h - .009, JANTE_R + .005], [-h + .009, JANTE_R + .005]];
++    const faces = revolutionRoue(profil, segments);
++    if (!sculpte) return faces;
++    const lignes = type === 'neige' ? 5 : type === 'pluie' ? 4 : 3;
++    const repetitions = type === 'neige' ? 20 : type === 'pluie' ? 24 : 16, periode = 2 * Math.PI / repetitions;
++    const canal = type === 'neige' ? .012 : type === 'pluie' ? .009 : .005, coupure = (type === 'neige' ? .018 : type === 'pluie' ? .012 : .006) / r;
++    const largeur = 2 * b / lignes, lamelles = type === 'neige' && segments >= 96 ? 2 : 1;
++    for (let ligne = 0; ligne < lignes; ligne++) {
++      const y0 = -b + ligne * largeur + canal / 2, y1 = y0 + largeur - canal;
++      const biais = (ligne < lignes / 2 ? 1 : -1) * periode * (type === 'inter' ? .36 : .2);
++      for (let k = 0; k < repetitions; k++) for (let s = 0; s < lamelles; s++) {
++        const debut = (k + (ligne % 2) * .22) * periode + coupure / 2, fin = debut + periode - coupure;
++        const a0 = debut + (fin - debut) * s / lamelles + (s ? .0015 / r : 0);
++        const a1 = debut + (fin - debut) * (s + 1) / lamelles;
++        pavePneu(faces, r, profondeur, y0, y1, a0, a1, biais, Math.max(2, Math.ceil(segments / repetitions / lamelles)));
++      }
++    }
++    return faces;
++  }
++  for (const [essieu, roue] of [['av', ROUES[0]], ['ar', ROUES[2]]]) {
++    const { r, l: w } = roue, h = w / 2, f = JANTES_FORMES[essieu];
++    const lointains = SEGMENTS_ROUE.map((segments, niveau) => niveau >= 2 ? forme('pneu-' + essieu + '-' + niveau, pneu(r, w, segments, 'slicks')) : null);
++    for (const type of ['slicks', 'inter', 'pluie', 'neige']) ROUES_FORMES[essieu][type] = SEGMENTS_ROUE.map((segments, niveau) => lointains[niveau] ||
++      forme('pneu-' + essieu + (type === 'slicks' && niveau === 0 ? '' : '-' + type + '-' + niveau), pneu(r, w, segments, type)));
++    f.fut = SEGMENTS_ROUE.map((segments, n) => forme('jante-' + essieu + '-' + n, revolutionRoue([
++      [-h - .005, .155], [-h - .004, .174], [-h + .006, .174], [-h + .013, .158],
++      [h - .013, .158], [h - .006, .174], [h + .004, .174], [h + .005, .155]], segments, false)));
++    f.rayons = SEGMENTS_ROUE.map((segments, n) => {
++      const tris = [];
++      for (const cote of [-1, 1]) for (let j = 0; j < 6; j++) {
++        const a = 2 * Math.PI * j / 6, ca = Math.cos(a), sa = Math.sin(a);
++        const sections = [[.035, .026, .038], [.085, .018, .028], [.155, .012, .018]].map(([x, l, creux]) => ({ x, y0: cote * (h - creux) - .008, y1: cote * (h - creux) + .008, l, n: 3 }));
++        tris.push(...C.transformer(C.carene(sections, { cotes: n < 2 ? 8 : 4, pas: 1 }), [[ca, 0, sa], [0, 1, 0], [-sa, 0, ca]]));
++      }
++      return forme('rayons-' + essieu + '-' + n, tris);
++    });
++    f.bague = SEGMENTS_ROUE.map((segments, n) => {
++      const tris = [];
++      for (const cote of [-1, 1]) {
++        const y = cote * (h + .001), q = r - .073;
++        tris.push(...revolutionRoue([[y - .0003, q - .004], [y - .0003, q], [y + .0003, q], [y + .0003, q - .004]], segments, false));
++      }
++      return forme('bague-pneu-' + essieu + '-' + n, tris);
++    });
++  }
++  const DISQUES_ROUE = SEGMENTS_ROUE.map((segments, n) => forme('disque-roue-' + n,
++    revolutionRoue([[-.008, .045], [-.008, .135], [.008, .135], [.008, .045]], segments, false)));
+   // Habitacle de la vue cockpit. L'œil du cockpit est plus bas et plus en arrière que celui du pilote : la goutte de la
+   // vue extérieure boucherait la vue. À sa place, deux épaules galbées qui montent des coins du bas vers la planche et
+   // se rejoignent devant elle, un dôme devant la planche, une cuve sombre entre les épaules, un saute-vent en arc.
+@@ -523,33 +620,22 @@
+     Moy(P('box', [-2.05, .90, 0], [.32, .035, 1.10], PEINTURE, c2, AR({ m: euler(0, 0, -.12) })));
+     Moy(P('box', [-2.18, .95, 0], [.12, .025, 1.08], PEINTURE, c2, AR({ m: euler(0, 0, -.5) })));
+     Moy(L('derives-arriere', PEINTURE, c1, AR()));
+-    // Roues : pneu, jante sombre, six rayons qui tournent, moyeu ; les avant braquent
+-    ROUES.forEach((w, i) => {
+-      const base = { roue: i, m: ROUE_AXE, arriere: !w.avant };
+-      const f = FORMES[w.avant ? 'pneu-av' : 'pneu-ar'];
+-      Moy(P(f.nom, [w.x, w.r, w.z], f.taille, MAT, PNEU, base));
+-      Moy(P('cylinder', [w.x, w.r, w.z], [2 * JANTE_R, w.l + .012, 2 * JANTE_R], METAL_MAT, FOND_JANTE, base));
+-      for (let b = 0; b < 3; b++) P('box', [w.x, w.r, w.z], [2 * JANTE_R * .94, w.l + .02, .04], METAL_MAT, JANTE, Object.assign({ tourne: b * Math.PI / 3 }, base));
+-      Moy(P('cylinder', [w.x, w.r, w.z], [.09, w.l + .05, .09], METAL_MAT, JANTE, base));
+-    });
+-    // Disques de frein avant, dans la roue, côté coque ; deux repères à la craie sur chaque flanc et quatre traces de
+-    // gomme plus claires sur la bande de roulement, qui se voient tourner depuis le cockpit (David, 16/11 : « on voit
+-    // pas les roues rouler, on dirait qu'on glisse »). Leur angle dessiné est borné par image (jeu.js) : plus d'effet
+-    // stroboscopique qui figeait la roue au-delà de 100 km/h.
+-    // Pneus montés (livree.pneus, David 16/11 : « distinguer les types de pneus en jeu ») : un cercle peint sur chaque
+-    // flanc, jaune pour les slicks, vert pour les intermédiaires, bleu pour la pluie, et des rainures sur la bande de
+-    // roulement des pneus rainurés, qui se voient tourner depuis le cockpit ; les slicks gardent leurs traces de gomme.
++    // Chaque pneu porte sa vraie sculpture. La bande neuve d'un slick reste lisse ; les marques de craie sont sur
++    // ses flancs. Les variantes gardent les cotes et tournent dans le même repère (braquage, distance, suspension).
+     const typePneus = PNEUS_TYPES[livree.pneus] ? livree.pneus : 'slicks', pneus = PNEUS_TYPES[typePneus];
+     ROUES.forEach((w, i) => {
+-      const base = { roue: i, m: ROUE_AXE, arriere: !w.avant }, k = Math.sign(w.z), flanc = (JANTE_R + w.r) / 2;
+-      if (w.avant) P('cylinder', [w.x, w.r, w.z], [.27, .016, .27], METAL_MAT, [.40, .40, .42], Object.assign({ decale: [0, -k * (w.l / 2 + .03), 0] }, base));
+-      for (const cote of [-1, 1]) {
+-        P('cylinder', [w.x, w.r, w.z], [2 * (w.r - .03), .002, 2 * (w.r - .03)], MAT, pneus.cercle, Object.assign({ decale: [0, cote * (w.l / 2 + .001), 0], pneus: typePneus }, base));
+-        P('cylinder', [w.x, w.r, w.z], [2 * (w.r - .052), .002, 2 * (w.r - .052)], MAT, PNEU, Object.assign({ decale: [0, cote * (w.l / 2 + .0025), 0] }, base));
+-        for (const a of [0, Math.PI]) P('box', [w.x, w.r, w.z], [.07, .004, .016], MAT, CRAIE, Object.assign({ tourne: a, decale: [flanc, cote * (w.l / 2 + .0045), 0] }, base));
+-      }
+-      if (pneus.rainures) for (let g = 0; g < pneus.rainures; g++) P('box', [w.x, w.r, w.z], [.008, w.l * .8, .022], MAT, [.008, .008, .01], Object.assign({ tourne: (g + .5) * 2 * Math.PI / pneus.rainures, decale: [w.r - .004, 0, 0], rainure: true }, base));
+-      else for (let g = 0; g < 4; g++) P('box', [w.x, w.r, w.z], [.006, w.l * .86, .045], MAT, [.15, .15, .16], Object.assign({ tourne: (g + .25) * Math.PI / 2, decale: [w.r - .001, 0, 0] }, base));
++      const base = { roue: i, m: ROUE_AXE, arriere: !w.avant, tourne: 0 }, essieu = w.avant ? 'av' : 'ar';
++      const jante = JANTES_FORMES[essieu], k = Math.sign(w.z), flanc = (JANTE_R + w.r) / 2;
++      const pieceRoue = (formes, mat, couleur, extra) => P(formes[0].nom, [w.x, w.r, w.z], formes[0].taille, mat, couleur,
++        Object.assign({ formesRoues: formes }, base, extra));
++      Moy(pieceRoue(ROUES_FORMES[essieu][typePneus], MAT, PNEU, { pneu: typePneus }));
++      Moy(pieceRoue(jante.fut, METAL_MAT, SOMBRE));
++      Moy(pieceRoue(jante.rayons, METAL_MAT, JANTE));
++      Moy(P('cylinder', [w.x, w.r, w.z], [.07, w.l + .032, .07], METAL_MAT, JANTE, base));
++      pieceRoue(DISQUES_ROUE, METAL_MAT, [.40, .40, .42], { decale: [0, -k * (w.l / 2 - .055), 0], detailRoueMax: 1 });
++      pieceRoue(jante.bague, MAT, pneus.cercle, { pneus: typePneus, detailRoueMax: 1 });
++      for (const cote of [-1, 1]) for (const a of [0, Math.PI]) P('box', [w.x, w.r, w.z], [.045, .002, .010], MAT, CRAIE,
++        Object.assign({}, base, { tourne: a, decale: [flanc, cote * (w.l / 2 + .0025), 0], detailRoueMax: 1 }));
+     });
+ 
+     // Version lointaine : trois carènes à huit côtés, les ailerons, le casque et les quatre roues
+@@ -559,7 +645,10 @@
+       piece('box', [-2.05, .90, 0], [.34, .06, 1.10], PEINTURE, c2),
+       piece(FORMES['mat-aileron'].nom, FORMES['mat-aileron'].centre, FORMES['mat-aileron'].taille, METAL_MAT, ARGENT),
+       piece('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque));
+-    ROUES.forEach((w, i) => simples.push(piece('cylinder', [w.x, w.r, w.z], [2 * w.r, w.l, 2 * w.r], MAT, PNEU, { m: ROUE_AXE, roue: i })));
++    ROUES.forEach((w, i) => {
++      const formes = ROUES_FORMES[w.avant ? 'av' : 'ar'][typePneus], f = formes[3];
++      simples.push(piece(f.nom, [w.x, w.r, w.z], f.taille, MAT, PNEU, { m: ROUE_AXE, roue: i, tourne: 0, formesRoues: formes }));
++    });
+     // Après casse, ne reste que la cellule du pilote et l'arceau ; roues et carrosserie sont des débris.
+     const epave = corps.filter(p => p.pilote || ['cuve', 'goutte', 'goutte-dedans', 'arceau'].some(n => p.shape === FORMES[n].nom));
+     const mod = { corps, simples, epave, moyens: corps.filter(p => moyennes.has(p)), livree };
+@@ -619,7 +708,7 @@
+   // pour une pièce seule. Les données de lecture seule sont rangées à plat (o, d : trois nombres par pièce) : un
+   // tableau typé par table plutôt qu'un par pièce, quelques dizaines de Kio de moins par voiture.
+   function compiler(liste, overlay, cockpit) {
+-    const t = { liste, longueur: liste.length, n: 0, objets: [], o: null, roue: null, groupe: [], fixe: [], decale: null, d: null, portee: null,
++    const t = { liste, longueur: liste.length, n: 0, objets: [], formesRoues: [], detailRoueMax: [], o: null, roue: null, groupe: [], fixe: [], decale: null, d: null, portee: null,
+       lent: null, vite: null, rotM: trois(), fixes: [], groupes: [], faitG: null, faitF: null };
+     const o = [], roues = [], decale = [], d = [], portee = [], lent = [], vite = [];
+     for (const pc of liste) {
+@@ -642,7 +731,8 @@
+         objet.r = fixe.r;
+       }
+       const dc = roue >= 0 && pc.decale ? Float64Array.from(pc.decale) : null, oc = Float64Array.from(pc.o);
+-      t.objets.push(objet); t.groupe.push(groupe); t.fixe.push(fixe);
++      t.objets.push(objet); t.formesRoues.push(pc.formesRoues || null); t.detailRoueMax.push(pc.detailRoueMax === undefined ? 3 : pc.detailRoueMax);
++      t.groupe.push(groupe); t.fixe.push(fixe);
+       o.push(oc[0], oc[1], oc[2]); roues.push(roue); decale.push(dc === null ? 0 : 1);
+       if (dc === null) d.push(0, 0, 0); else d.push(dc[0], dc[1], dc[2]);
+       portee.push(dc === null ? 0 : Math.hypot(dc[0], dc[1], dc[2]));
+@@ -698,7 +788,7 @@
+   const X_ARRIERE = ROUES[2].x, MARGE_RETRO = 1e-6, LOIN_RETRO = 1e8;
+   // Pose d'une table : rotations partagées, puis place de chaque pièce. retro : seules les pièces qui passent le
+   // filtre des rétroviseurs sont rendues, et seules leurs rotations sont calculées.
+-  function poserTable(t, M, ev, sortie, roues, retro) {
++  function poserTable(t, M, ev, sortie, roues, retro, detailRoues = 0) {
+     const px = ev.p[0], py = ev.p[1], pz = ev.p[2], v = ev.v || 0, rebond = ev.rebond, fixes = t.fixes, groupes = t.groupes;
+     anglesDans(t.rotM, M);
+     if (groupes.length > 0) braquagesDans(ev);
+@@ -709,6 +799,7 @@
+     const ca = retro ? Math.cos(ev.cap) : 0, sa = retro ? Math.sin(ev.cap) : 0;
+     const borne = retro && Math.abs(px) < LOIN_RETRO && Math.abs(pz) < LOIN_RETRO;   // arrondis de px + a − px négligeables
+     for (let i = 0; i < t.n; i++) {
++      if (detailRoues > t.detailRoueMax[i]) continue;
+       if ((t.lent[i] === 1 && v > VITESSE_FLOU) || (t.vite[i] === 1 && !(v > VITESSE_FLOU))) continue;
+       const roue = t.roue[i];
+       // Chantier 3 : une roue détachée (degats.roues[i]) n'est plus dessinée
+@@ -740,11 +831,15 @@
+         else { const f = t.fixe[i]; if (f !== null && t.faitF[f.n] === 0) { anglesProduit(f.r, M, f.m); t.faitF[f.n] = 1; } }
+       }
+       const objet = t.objets[i], p = objet.p;
++      const variantes = t.formesRoues[i];
++      if (variantes) { const f = variantes[detailRoues]; objet.shape = f.nom; objet.s = f.taille; }
+       p[0] = X; p[1] = Y; p[2] = Z;
+       sortie.push(objet);
+     }
+   }
+-  // options = { simple, detail, casse, roues, cockpit, overlay } ; detail ('complet', 'moyen' ou 'simple', voir
++  // options = { simple, detail, rouesDetail, casse, roues, cockpit, overlay } ; rouesDetail : 0/1/2/3 = 96/64/32/16
++  // segments, choisi par caméra avec detailRouesPour ; sans indication, suit le niveau de la voiture.
++  // detail ('complet', 'moyen' ou 'simple', voir
+   // detailPour) l'emporte sur simple quand il est donné. Rend l'attitude de la caisse (valable jusqu'à la pose
+   // suivante de cette voiture).
+   function poser(mod, ev, sortie, options) {
+@@ -753,7 +848,8 @@
+     const li = o.casse ? EPAVE : detail === 'simple' ? SIMPLES : detail === 'moyen' ? MOYENS : CORPS;
+     const t = tableDe(e, mod, li, (o.overlay ? 1 : 0) + (o.cockpit ? 2 : 0));
+     const M = attitudeDans(MS, ev);
+-    poserTable(t, M, ev, sortie, o.roues, false);
++    const detailRoues = o.rouesDetail === undefined ? li === SIMPLES ? 3 : li === MOYENS ? 2 : 0 : Math.max(0, Math.min(3, o.rouesDetail | 0));
++    poserTable(t, M, ev, sortie, o.roues, false, detailRoues);
+     return imbriquee(e.M3, M);
+   }
+   // Rétroviseurs (jeu.js, majGlaces) : de la voiture suivie, vue de dehors, la glace ne garde que ce qui passe le
+@@ -764,7 +860,7 @@
+   function poserRetro(mod, ev, sortie, options) {
+     const o = options || SANS_OPTIONS, e = etatRendu(mod), t = tableRetro(e, mod, o.casse ? EPAVE : CORPS);
+     const M = attitudeDans(MS, ev);
+-    poserTable(t, M, ev, sortie, o.roues, true);
++    poserTable(t, M, ev, sortie, o.roues, true, o.rouesDetail === undefined ? 0 : Math.max(0, Math.min(3, o.rouesDetail | 0)));
+     return imbriquee(e.M3, M);
+   }
+   // Niveau de détail d'une voiture à l'écran. d2 : carré de sa distance horizontale à la caméra (m²) ; t : tangente du
+@@ -781,6 +877,18 @@
+     const moyen = LONGUEUR * hauteur / (2 * t * PIXELS_MOYEN);
+     return d2 <= moyen * moyen ? 'moyen' : 'simple';
+   }
++  // Taille du plus grand pneu à l'écran. Les seuils gardent une erreur de corde inférieure à 0,5 px ; une marge
++  // de 15 % évite les bascules répétées. L'état précédent appartient à la caméra (jamais partagé entre les vues).
++  function detailRouesPour(d2, t, hauteur, precedent) {
++    const rayonPixels = ROUES[2].r * hauteur / (2 * Math.max(.001, t) * Math.sqrt(Math.max(.01, d2)));
++    const limites = LIMITES_ROUE_PIXELS;
++    let niveau = rayonPixels > limites[1] ? 0 : rayonPixels > limites[2] ? 1 : rayonPixels > limites[3] ? 2 : 3;
++    if (precedent >= 0 && precedent <= 3) {
++      if (niveau > precedent && rayonPixels > limites[precedent + 1] * .85) niveau = precedent;
++      if (niveau < precedent && rayonPixels < limites[precedent] * 1.15) niveau = precedent;
++    }
++    return niveau;
++  }
+ 
+   // ---------------------------------------------------------------- cockpit
+   // Œil du cockpit dans le repère de la voiture. Ce n'est pas l'œil du pilote : il est plus bas et 0,30 m plus en
+@@ -1277,5 +1385,5 @@
+     for (let i = 0; i < F.objets.length; i++) { monde(F.objets[i].p, M, F.o[i], P); sortie.push(F.objets[i]); }
+   }
+ 
+-  B.voiture = { modele, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES };
++  B.voiture = { modele, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, detailRouesPour, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES, SEGMENTS_ROUE, ROUES_FORMES, JANTES_FORMES };
+ })(globalThis.BITUME = globalThis.BITUME || {});
+diff --git a/verifications/voiture-permanents.test.mjs b/verifications/voiture-permanents.test.mjs
+index f475921..4fa03e9 100644
+--- a/verifications/voiture-permanents.test.mjs
++++ b/verifications/voiture-permanents.test.mjs
+@@ -156,11 +156,11 @@ verifier('niveaux de détail : complet par défaut, simple comme options.simple,
+   assert.ok(simple.length < moyen.length && moyen.length < complet.length, `${simple.length} < ${moyen.length} < ${complet.length}`);
+   assert.ok(mod.moyens.every(p => mod.corps.includes(p)) && mod.moyens.every((p, i, l) => i === 0 || mod.corps.indexOf(l[i - 1]) < mod.corps.indexOf(p)), 'pièces du modèle complet, dans son ordre');
+   const formes = new Set(moyen.map(o => o.shape));
+-  for (const nom of ['quille', 'fleche', 'pontons', 'goutte', 'moteur', 'pneu-av', 'pneu-ar', 'mat-aileron']) assert.ok(formes.has(V.FORMES[nom].nom), nom);
+-  assert.equal(moyen.filter(o => o.shape === V.FORMES['pneu-av'].nom || o.shape === V.FORMES['pneu-ar'].nom).length, 4, 'quatre pneus');
+-  assert.equal(moyen.filter(o => o.shape === V.FORMES['pneu-ar'].nom).length, 2);
++  for (const nom of ['quille', 'fleche', 'pontons', 'goutte', 'moteur', 'mat-aileron']) assert.ok(formes.has(V.FORMES[nom].nom), nom);
++  assert.equal(moyen.filter(o => o.shape === V.ROUES_FORMES.av.slicks[2].nom || o.shape === V.ROUES_FORMES.ar.slicks[2].nom).length, 4, 'quatre pneus avec leur vrai maillage moyen');
++  assert.equal(moyen.filter(o => o.shape === V.ROUES_FORMES.ar.slicks[2].nom).length, 2);
+   const sansRoues = []; V.poser(mod, ev, sansRoues, { detail: 'moyen', roues: [true, false, false, true] });
+-  assert.equal(sansRoues.length, moyen.length - 6, 'roues détachées : pneu, fond de jante et moyeu en moins');
++  assert.equal(sansRoues.length, moyen.length - 8, 'roues détachées : pneu, fût creux, rayons et moyeu en moins');
+ });
+ 
+ verifier('detailPour : décision de jeu.js au bit près avec facteur 1, bande moyenne au-delà', () => {
+diff --git a/verifications/voiture.test.mjs b/verifications/voiture.test.mjs
+index 304830c..ec7b5a8 100644
+--- a/verifications/voiture.test.mjs
++++ b/verifications/voiture.test.mjs
+@@ -164,7 +164,7 @@ const bord = extra => { const sortie = []; V.cockpit(mod, Object.assign({ v: 40
+ const reel = v => v.map((x, i) => V.OEIL[i] + V.K * x);      // position dans la voiture d'un point composé vu de l'œil
+ const ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+ 
+-verifier('numéro en géométrie sur le nez et les pontons ; repères et traces des pneus à toute vitesse', () => {
++verifier('numéro en géométrie sur le nez et les pontons ; repères de flanc à toute vitesse', () => {
+   const sans = V.modele(Object.assign({}, livree, { numero: undefined })), un = V.modele(Object.assign({}, livree, { numero: 1 }));
+   assert.equal(un.corps.length - sans.corps.length, 3 * 2, 'trois « 1 » de deux segments, sans panneau');
+   assert.equal(mod.corps.length - sans.corps.length, 3 * (5 + 3), '« 27 » : cinq et trois segments, trois fois');
+@@ -174,8 +174,9 @@ verifier('numéro en géométrie sur le nez et les pontons ; repères et traces
+   // David (16/11) : les roues doivent se voir tourner à toute vitesse ; plus de bande floue qui les figeait
+   const lent = [], vite = [];
+   V.poser(mod, Object.assign({ v: 10 }, repos), lent); V.poser(mod, Object.assign({ v: 50 }, repos), vite);
+-  const tournent = mod.corps.filter(p => p.roue !== undefined && p.tourne !== undefined && p.decale).length;
+-  assert.ok(tournent === 16 + 16, `${tournent} repères et traces de gomme`);
++  const reperes = mod.corps.filter(p => p.roue !== undefined && p.tourne !== undefined && p.decale && p.decale[0] !== 0);
++  assert.equal(reperes.length, 16, 'deux repères sur chaque flanc ; aucune fausse rainure sur un slick neuf');
++  assert.ok(reperes.every(p => Math.abs(p.decale[0]) < V.ROUES[p.roue].r - .035), 'marques sur le flanc, pas sur la bande');
+   assert.ok(!mod.corps.some(p => p.lent || p.vite), 'aucune pièce réservée à une vitesse');
+   const vus = mod.corps.filter(p => !p.dedans).length;
+   assert.equal(lent.length, vus);
+diff --git a/src/pneus.js b/src/pneus.js
+new file mode 100644
+index 0000000..5da64f4
+--- /dev/null
++++ b/src/pneus.js
+@@ -0,0 +1,94 @@
++/* BITUME — lot 12A : contrat commun des roues et des pneus.
++   Le catalogue prépare la neige ; la conduite p9 garde ses trois montes et ses coefficients.
++   Ce module ne fait avancer ni l'usure ni un service et ne tire rien au hasard de la course. */
++(function (B) {
++  'use strict';
++
++  const VERSION_ETAT = 1;
++  const DISTANCE_MAX = 1e9, SOLLICITATION_MAX = 1e9, SERVICE_MAX = 0xffffffff;
++  const EMPATTEMENT = 2.70, DEMI_VOIE_AV = .85, DEMI_VOIE_AR = .8075, JANTE_R = .165;
++  // z < 0 = gauche dans le repère de la voiture ; indices déjà employés par la physique et le dessin.
++  const ROUES = Object.freeze([
++    Object.freeze({ id: 'AVG', indice: 0, nom: 'roue avant gauche', avant: true, cote: -1, x: 1.35, z: -DEMI_VOIE_AV, r: .29, l: .28 }),
++    Object.freeze({ id: 'AVD', indice: 1, nom: 'roue avant droite', avant: true, cote: 1, x: 1.35, z: DEMI_VOIE_AV, r: .29, l: .28 }),
++    Object.freeze({ id: 'ARG', indice: 2, nom: 'roue arrière gauche', avant: false, cote: -1, x: -1.35, z: -DEMI_VOIE_AR, r: .335, l: .46 }),
++    Object.freeze({ id: 'ARD', indice: 3, nom: 'roue arrière droite', avant: false, cote: 1, x: -1.35, z: DEMI_VOIE_AR, r: .335, l: .46 })
++  ]);
++  const ORDRE_ROUES = Object.freeze(ROUES.map(r => r.id));
++  const NOMS_ROUES = Object.freeze(ROUES.map(r => r.nom));
++  const INDICES_ROUES = Object.freeze({ AVG: 0, AVD: 1, ARG: 2, ARD: 3 });
++
++  // Ces trois paires sont les valeurs publiées de p9 : base au sec, variation avec l'eau.
++  const PNEUS = Object.freeze({
++    slicks: Object.freeze([1, -.30]),
++    inter: Object.freeze([.96, -.10]),
++    pluie: Object.freeze([.88, .07])
++  });
++  const CATALOGUE = Object.freeze({
++    slicks: Object.freeze({ id: 'slicks', nom: 'Slicks', sculpture: 'lisse', cercle: Object.freeze([.95, .76, .08]), rainures: 0, disponible: true, adherence: PNEUS.slicks }),
++    inter: Object.freeze({ id: 'inter', nom: 'Intermédiaires', sculpture: 'intermediaire', cercle: Object.freeze([.16, .72, .30]), rainures: 8, disponible: true, adherence: PNEUS.inter }),
++    pluie: Object.freeze({ id: 'pluie', nom: 'Pluie', sculpture: 'pluie', cercle: Object.freeze([.16, .46, .90]), rainures: 14, disponible: true, adherence: PNEUS.pluie }),
++    // Le type existe dans les données ; sa physique et son ouverture au choix appartiennent au lot 12E.
++    neige: Object.freeze({ id: 'neige', nom: 'Neige', sculpture: 'paves-lamelles', cercle: Object.freeze([.86, .90, .96]), rainures: 18, disponible: false, adherence: null })
++  });
++  const TYPES = Object.freeze(Object.keys(CATALOGUE));
++  const TYPES_JOUABLES = Object.freeze(TYPES.filter(t => CATALOGUE[t].disponible));
++  const NOMS_PNEUS = Object.freeze(Object.fromEntries(TYPES.map(t => [t, CATALOGUE[t].nom])));
++  const possede = (o, cle) => Object.prototype.hasOwnProperty.call(o, cle);
++  function estType(type) { return typeof type === 'string' && possede(CATALOGUE, type); }
++  function normaliserType(type, repli = 'slicks') { return estType(type) ? type : estType(repli) ? repli : 'slicks'; }
++  function lire(type) { return CATALOGUE[normaliserType(type)]; }
++  function estJouable(type) { return estType(type) && CATALOGUE[type].disponible; }
++
++  function borner(n, maximum, repli = 0) {
++    return typeof n === 'number' && Number.isFinite(n) ? Math.max(0, Math.min(maximum, n)) : repli;
++  }
++  function entier(n, maximum, repli = 0) { return Math.floor(borner(n, maximum, repli)); }
++  function identifiant(n) { return typeof n === 'string' || typeof n === 'number' && Number.isFinite(n) ? String(n) : '0'; }
++  function melanger(n) {
++    n = Math.imul(n ^ n >>> 16, 0x7feb352d);
++    n = Math.imul(n ^ n >>> 15, 0x846ca68b);
++    return (n ^ n >>> 16) >>> 0;
++  }
++  function graineIdentite(identite, service) {
++    identite = identite && typeof identite === 'object' ? identite : {};
++    const s = identifiant(identite.seance), v = identifiant(identite.voiture);
++    // Préfixes de longueur pour distinguer les identifiants qui contiennent eux-mêmes des séparateurs.
++    const texte = s.length + ':' + s + v.length + ':' + v + ':' + service;
++    let h = 0x811c9dc5;
++    for (let i = 0; i < texte.length; i++) h = Math.imul(h ^ texte.charCodeAt(i), 0x01000193);
++    return h >>> 0;
++  }
++  function roueNeuve(base, i) {
++    return { usure: 0, salete: 0, grainage: 0, distance: 0, sollicitation: 0,
++      graine: melanger((base + Math.imul(i + 1, 0x9e3779b9)) >>> 0) };
++  }
++
++  // Le retour peut être copié dans l'état de conduite. Les quatre objets restent indépendants et mutables.
++  // servicePneus est la révision du dernier remplacement terminé, initialement zéro ; aucun service n'est lancé ici.
++  function creerEtat(type = 'slicks', identite = {}) {
++    const base = graineIdentite(identite, 0);
++    return { versionPneus: VERSION_ETAT, pneus: normaliserType(type), servicePneus: 0,
++      etatPneus: ROUES.map((_, i) => roueNeuve(base, i)) };
++  }
++
++  // Copie locale bornée, pour sauvegarde et reprise. La compatibilité d'un protocole réseau sera vérifiée avant
++  // cet appel par le lot 12F ; cette fonction n'accepte ni ne négocie une future version de paquet réseau.
++  function normaliserEtat(source, identite = {}) {
++    if (typeof source === 'string') return creerEtat(source, identite); // ancienne préférence : un seul identifiant
++    source = source && typeof source === 'object' ? source : {};
++    const service = entier(source.servicePneus, SERVICE_MAX), base = graineIdentite(identite, service);
++    const roues = Array.isArray(source.etatPneus) ? source.etatPneus : [];
++    return { versionPneus: VERSION_ETAT, pneus: normaliserType(source.pneus), servicePneus: service,
++      etatPneus: ROUES.map((_, i) => {
++        const neuf = roueNeuve(base, i), r = roues[i] && typeof roues[i] === 'object' ? roues[i] : {};
++        return { usure: borner(r.usure, 1), salete: borner(r.salete, 1), grainage: borner(r.grainage, 1),
++          distance: borner(r.distance, DISTANCE_MAX), sollicitation: borner(r.sollicitation, SOLLICITATION_MAX),
++          graine: typeof r.graine === 'number' && Number.isInteger(r.graine) && r.graine >= 0 && r.graine <= SERVICE_MAX ? r.graine : neuf.graine };
++      }) };
++  }
++
++  B.pneus = Object.freeze({ VERSION_ETAT, DISTANCE_MAX, SOLLICITATION_MAX, SERVICE_MAX,
++    EMPATTEMENT, DEMI_VOIE_AV, DEMI_VOIE_AR, JANTE_R, ROUES, ORDRE_ROUES, NOMS_ROUES, INDICES_ROUES,
++    PNEUS, CATALOGUE, TYPES, TYPES_JOUABLES, NOMS_PNEUS, estType, normaliserType, lire, estJouable, creerEtat, normaliserEtat });
++})(globalThis.BITUME = globalThis.BITUME || {});
+diff --git a/src/usure-pneus.js b/src/usure-pneus.js
+new file mode 100644
+index 0000000..cf71238
+--- /dev/null
++++ b/src/usure-pneus.js
+@@ -0,0 +1,99 @@
++/* BITUME — lot 12D : usure visuelle au pas de simulation, sans effet sur l'adhérence p9.
++   Les coefficients sont des réglages de jeu, pas des mesures thermomécaniques de pneus réels.
++   Les charges viennent de conduite.js (newtons), les glisses par roue sont sans unité, de 0 à 1. */
++if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus) require('./pneus.js');
++(function (B) {
++  'use strict';
++  const P = B.pneus;
++  const PARAMS = Object.freeze({
++    chargeReference: 1500, chargeMax: 4,
++    abrasionParMetre: 1 / 250000, surcroitGlisse: 8,
++    vitessePatinage: 2, // mètres de frottement équivalents/seconde, faute de vitesse angulaire simulée
++    distanceGrainage: 180, distanceSalissure: 24, distanceNettoyage: 110,
++    pasMax: .1, vitesseContactMax: 180 // garde contre un delta de coordonnées issu d'un replacement
++  });
++  const TYPES = Object.freeze({
++    slicks: Object.freeze({ sec: 1, mouille: .85, neige: .18 }),
++    inter: Object.freeze({ sec: 1.35, mouille: .9, neige: .20 }),
++    pluie: Object.freeze({ sec: 1.8, mouille: .95, neige: .22 }),
++    neige: Object.freeze({ sec: 2.4, mouille: 1.8, neige: .32 })
++  });
++  const SURFACES = Object.freeze({
++    piste: Object.freeze({ abrasion: 1, salete: 0 }),
++    vibreur: Object.freeze({ abrasion: 1.12, salete: .04 }),
++    herbe: Object.freeze({ abrasion: .35, salete: .85 }),
++    terre: Object.freeze({ abrasion: .65, salete: .95 }),
++    gravier: Object.freeze({ abrasion: 1.4, salete: 1 }),
++    neige: Object.freeze({ abrasion: 1, salete: .45 })
++  });
++  function borne(n, maximum = 1) {
++    return typeof n === 'number' && Number.isFinite(n) ? Math.max(0, Math.min(maximum, n)) : 0;
++  }
++  function exclu(e) {
++    return !e || !!(e.saut || e.recuperation || e.accident || e.reparation || e.bond > 0 || e.bondT > 0 ||
++      e.degats?.casse || e.stands?.phase === 'service');
++  }
++
++  // distanceSignee : déplacement au sol de CE pas, en mètres, jamais la différence de s après un replacement.
++  // eau/neige : couverture réelle de chaussée [0,1], déjà corrigée pour un passage couvert ; aucune lecture de saison.
++  // contactsFrais doit être false en grille/pause et si rouler/reculer n'a pas actualisé les quatre contacts.
++  // Aucun objet, tableau, événement ou tirage aléatoire n'est créé dans cette boucle.
++  function pas(e, dt, distanceSignee, eau = 0, neige = 0, contactsFrais = true) {
++    if (contactsFrais !== true || exclu(e) || !Number.isFinite(dt) || dt <= 0 || dt > PARAMS.pasMax ||
++      !Number.isFinite(distanceSignee) || !e.etatPneus || e.etatPneus.length !== 4 || !e.roues) return 0;
++    const d = Math.abs(distanceSignee);
++    if (d > PARAMS.vitesseContactMax * dt + 1e-9) return 0;
++    eau = borne(eau); neige = e.surface === 'neige' ? 1 : borne(neige);
++    const type = P.normaliserType(e.pneus), t = TYPES[type];
++    const surf = Object.prototype.hasOwnProperty.call(SURFACES, e.surface) ? SURFACES[e.surface] : SURFACES.piste;
++    const climat = (t.sec + (t.mouille - t.sec) * eau) * (1 - neige) + t.neige * neige;
++    const patinage = borne(e.patinage);
++    const saleteCible = Math.max(surf.salete, .45 * neige);
++    let touches = 0;
++    for (let i = 0; i < 4; i++) {
++      const r = e.roues[i], u = e.etatPneus[i];
++      if (!r || !u || r.contact === false || !Number.isFinite(r.charge) || r.charge <= 0 || e.degats?.roues?.[i]) continue;
++      const charge = borne(r.charge / PARAMS.chargeReference, PARAMS.chargeMax), glisse = borne(r.glisse);
++      // Le patinage est simulé sur l'essieu moteur arrière. Une glisse latérale résiduelle à l'arrêt n'use rien.
++      const frottementArret = i >= 2 ? PARAMS.vitessePatinage * patinage * glisse * dt : 0;
++      const distanceActive = d + frottementArret;
++      if (!(distanceActive > 0)) continue;
++      const sollicitation = charge * (d * (1 + PARAMS.surcroitGlisse * glisse * glisse) +
++        (1 + PARAMS.surcroitGlisse) * frottementArret);
++      u.distance = Math.min(P.DISTANCE_MAX, borne(u.distance, P.DISTANCE_MAX) + d);
++      u.sollicitation = Math.min(P.SOLLICITATION_MAX, borne(u.sollicitation, P.SOLLICITATION_MAX) + sollicitation);
++      u.usure = Math.min(1, borne(u.usure) + sollicitation * PARAMS.abrasionParMetre * climat * surf.abrasion);
++      const grainCible = glisse * glisse * Math.min(charge, 1) * (1 - .55 * eau) * (1 - .6 * neige);
++      u.grainage = borne(u.grainage);
++      u.grainage += (grainCible - u.grainage) * (1 - Math.exp(-distanceActive / PARAMS.distanceGrainage));
++      u.salete = borne(u.salete);
++      const nettoyage = saleteCible > u.salete ? PARAMS.distanceSalissure : PARAMS.distanceNettoyage / (1 + 2 * eau);
++      u.salete += (saleteCible - u.salete) * (1 - Math.exp(-distanceActive / nettoyage));
++      touches++;
++    }
++    return touches;
++  }
++
++  // Unique remise à neuf explicite ; à appeler uniquement à la fin d'un vrai service pneus (lot 12F).
++  // La révision attendue est réservée au début de ce service. Répéter le même événement est sans effet.
++  // Une réparation de carrosserie, une caméra ou un replacement ne doivent jamais appeler ce helper.
++  function terminerService(e, service, identite) {
++    if (!e || !service || service.termine !== true || !P.estType(service.pneus) ||
++      !Number.isInteger(service.revision) || service.revision < 1 || service.revision > P.SERVICE_MAX ||
++      !Number.isInteger(e.servicePneus) || service.revision !== e.servicePneus + 1 ||
++      !e.etatPneus || e.etatPneus.length !== 4) return false;
++    for (let i = 0; i < 4; i++) if (!e.etatPneus[i] || typeof e.etatPneus[i] !== 'object') return false;
++    // Sans identité explicite, la première graine stable distingue déjà séance et voiture.
++    const neuf = P.normaliserEtat({ pneus: service.pneus, servicePneus: service.revision },
++      identite || { seance: e.etatPneus[0].graine, voiture: e.pneus });
++    for (let i = 0; i < 4; i++) {
++      const u = e.etatPneus[i];
++      u.usure = 0; u.salete = 0; u.grainage = 0; u.distance = 0; u.sollicitation = 0;
++      u.graine = neuf.etatPneus[i].graine;
++    }
++    e.pneus = neuf.pneus; e.servicePneus = neuf.servicePneus; e.versionPneus = P.VERSION_ETAT;
++    return true;
++  }
++
++  B.usurePneus = Object.freeze({ PARAMS, TYPES, SURFACES, exclu, pas, terminerService });
++})(globalThis.BITUME = globalThis.BITUME || {});
+diff --git a/verifications/pneus.test.mjs b/verifications/pneus.test.mjs
+new file mode 100644
+index 0000000..45da6d6
+--- /dev/null
++++ b/verifications/pneus.test.mjs
+@@ -0,0 +1,157 @@
++import '../src/pneus.js';
++import assert from 'node:assert/strict';
++import vm from 'node:vm';
++import { readFileSync } from 'node:fs';
++
++const P = globalThis.BITUME.pneus;
++let controles = 0;
++const verifier = (nom, f) => { f(); controles++; console.log('ok ' + nom); };
++
++verifier('ordre AVG, AVD, ARG, ARD : gauche/droite et essieux gardent les indices du jeu', () => {
++  assert.deepEqual(P.ORDRE_ROUES, ['AVG', 'AVD', 'ARG', 'ARD']);
++  assert.deepEqual(P.NOMS_ROUES, ['roue avant gauche', 'roue avant droite', 'roue arrière gauche', 'roue arrière droite']);
++  for (const [i, r] of P.ROUES.entries()) {
++    assert.equal(r.indice, i);
++    assert.equal(P.INDICES_ROUES[r.id], i);
++    assert.equal(Math.sign(r.z), i % 2 ? 1 : -1);
++    assert.equal(r.cote, Math.sign(r.z));
++    assert.equal(r.avant, i < 2);
++  }
++  assert.equal(P.ROUES[0].x - P.ROUES[2].x, 2.7);
++  assert.equal(P.ROUES[0].r, .29);
++  assert.equal(P.ROUES[0].l, .28);
++  assert.equal(P.ROUES[2].r, .335);
++  assert.equal(P.ROUES[2].l, .46);
++});
++
++verifier('quatre types définis ; anciennes préférences intactes et neige réservée au lot physique', () => {
++  assert.deepEqual(P.TYPES, ['slicks', 'inter', 'pluie', 'neige']);
++  assert.deepEqual(P.TYPES_JOUABLES, ['slicks', 'inter', 'pluie']);
++  for (const type of P.TYPES) {
++    assert.equal(P.normaliserType(type), type);
++    assert.equal(P.lire(type).id, type);
++    assert.equal(P.NOMS_PNEUS[type], P.lire(type).nom);
++    assert.equal(P.creerEtat(type).pneus, type);
++  }
++  assert.equal(P.lire('slicks').rainures, 0);
++  assert.equal(P.lire('neige').adherence, null);
++  assert.equal(P.estJouable('neige'), false);
++  assert.equal(P.estJouable('inter'), true);
++});
++
++verifier('les trois coefficients de p9 restent identiques au catalogue publié', () => {
++  assert.deepEqual(P.PNEUS, { slicks: [1, -.30], inter: [.96, -.10], pluie: [.88, .07] });
++  assert.deepEqual(Object.keys(P.PNEUS), ['slicks', 'inter', 'pluie']);
++  for (const type of P.TYPES_JOUABLES) assert.equal(P.lire(type).adherence, P.PNEUS[type]);
++});
++
++verifier('catalogue partagé immuable et types invalides sans accès au prototype', () => {
++  for (const type of [null, undefined, 3, {}, 'constructor', '__proto__', 'toString', '']) {
++    assert.equal(P.estType(type), false);
++    assert.equal(P.normaliserType(type), 'slicks');
++    assert.equal(P.lire(type).id, 'slicks');
++    assert.equal(P.estJouable(type), false);
++  }
++  assert.equal(P.normaliserType('inconnu', 'pluie'), 'pluie');
++  assert.equal(P.normaliserType('inconnu', 'constructor'), 'slicks');
++  assert.throws(() => { P.CATALOGUE.slicks.cercle[0] = 0; }, TypeError);
++  assert.throws(() => { P.ROUES[0].nom = 'droite'; }, TypeError);
++  assert.throws(() => { P.PNEUS.slicks[0] = .5; }, TypeError);
++});
++
++verifier('quatre pneus neufs indépendants ; modifier une roue ne restaure ni ne salit les autres', () => {
++  const e = P.creerEtat('inter', { seance: 81, voiture: 3 });
++  assert.equal(e.versionPneus, 1);
++  assert.equal(e.servicePneus, 0);
++  assert.equal(new Set(e.etatPneus).size, 4);
++  for (const r of e.etatPneus) assert.deepEqual([r.usure, r.salete, r.grainage, r.distance, r.sollicitation], [0, 0, 0, 0, 0]);
++  e.etatPneus[0].usure = .7;
++  e.etatPneus[0].salete = .4;
++  assert.equal(e.etatPneus[1].usure, 0);
++  assert.equal(e.etatPneus[1].salete, 0);
++  assert.equal(P.creerEtat('inter', { seance: 81, voiture: 3 }).etatPneus[0].usure, 0);
++});
++
++verifier('motifs reproductibles, différents par roue, séance, voiture et révision de service', () => {
++  const ids = { seance: 'course|12', voiture: 6 };
++  const a = P.creerEtat('slicks', ids), b = P.creerEtat('slicks', ids);
++  assert.deepEqual(a, b);
++  assert.equal(new Set(a.etatPneus.map(r => r.graine)).size, 4);
++  assert.notDeepEqual(a.etatPneus, P.creerEtat('slicks', { ...ids, voiture: 7 }).etatPneus);
++  assert.notDeepEqual(a.etatPneus, P.creerEtat('slicks', { ...ids, seance: 'autre' }).etatPneus);
++  assert.notDeepEqual(a.etatPneus, P.normaliserEtat({ pneus: 'slicks', servicePneus: 1 }, ids).etatPneus);
++  assert.notDeepEqual(P.creerEtat('slicks', { seance: 'a', voiture: 'b|c' }).etatPneus,
++    P.creerEtat('slicks', { seance: 'a|b', voiture: 'c' }).etatPneus);
++});
++
++verifier('ancienne préférence migrée et sauvegarde JSON reproduite sans remise à neuf', () => {
++  const ids = { seance: 42, voiture: 2 };
++  const e = P.normaliserEtat('pluie', ids);
++  assert.equal(e.pneus, 'pluie');
++  e.servicePneus = 3;
++  e.etatPneus[0].usure = .63;
++  e.etatPneus[1].salete = .38;
++  e.etatPneus[2].grainage = .12;
++  e.etatPneus[3].distance = 5102;
++  const copie = P.normaliserEtat(JSON.parse(JSON.stringify(e)), ids);
++  assert.deepEqual(copie, e);
++  assert.notEqual(copie.etatPneus[0], e.etatPneus[0]);
++  copie.etatPneus[0].salete = 1;
++  assert.equal(e.etatPneus[0].salete, 0);
++});
++
++verifier('état malformé borné, quatre roues finies, aucune mutation de la source', () => {
++  const source = { pneus: '__proto__', servicePneus: 8.9, etatPneus: [
++    { usure: 8, salete: -4, grainage: NaN, distance: Infinity, sollicitation: 9e15, graine: -1 },
++    { usure: '0.4', distance: -20, graine: 0 }, null, { graine: 4294967295 }, { usure: .5 }
++  ] };
++  const e = P.normaliserEtat(source, { seance: 3, voiture: 4 });
++  assert.equal(e.pneus, 'slicks');
++  assert.equal(e.servicePneus, 8);
++  assert.equal(e.etatPneus.length, 4);
++  assert.deepEqual([e.etatPneus[0].usure, e.etatPneus[0].salete, e.etatPneus[0].grainage, e.etatPneus[0].distance, e.etatPneus[0].sollicitation], [1, 0, 0, 0, P.SOLLICITATION_MAX]);
++  assert.equal(e.etatPneus[1].graine, 0);
++  assert.equal(e.etatPneus[3].graine, 4294967295);
++  assert.equal(source.etatPneus[0].usure, 8);
++  assert.ok(Number.isNaN(source.etatPneus[0].grainage));
++  for (const r of e.etatPneus) assert.ok(Object.values(r).every(Number.isFinite));
++  assert.doesNotThrow(() => JSON.parse(JSON.stringify(e)));
++  assert.equal(P.normaliserEtat({ servicePneus: Infinity }).servicePneus, 0);
++});
++
++verifier('création et normalisation sans Math.random, générateur partagé ni accès au navigateur', () => {
++  const contexte = vm.createContext({});
++  vm.runInContext('Math.random = () => { throw new Error("tirage interdit"); };', contexte);
++  vm.runInContext(readFileSync(new URL('../src/pneus.js', import.meta.url), 'utf8'), contexte);
++  const sortie = vm.runInContext('JSON.stringify(BITUME.pneus.normaliserEtat(BITUME.pneus.creerEtat("pluie", { seance: 9, voiture: 4 })))', contexte);
++  assert.equal(JSON.parse(sortie).etatPneus.length, 4);
++});
++
++await import('../src/circuit.js');
++await import('../src/conduite.js');
++await import('../src/degats.js');
++await import('../src/course.js');
++verifier('contrat commun branché dans la conduite, les avaries et chaque voiture de la grille', () => {
++  const B = globalThis.BITUME;
++  assert.equal(B.conduite.PNEUS, P.PNEUS);
++  assert.equal(B.degats.NOMS_ROUES, P.NOMS_ROUES);
++  const circuit = B.circuit.creer(11, { theme: 'foret', longueur: 4200 });
++  const a = B.course.creer(circuit, { graine: 4242 }), b = B.course.creer(circuit, { graine: 4242 });
++  assert.equal(a.voitures.length, 12);
++  for (const v of a.voitures) {
++    assert.equal(v.etat.etatPneus.length, 4);
++    assert.deepEqual(v.etat.etatPneus, b.voitures[v.id].etat.etatPneus);
++    assert.equal(v.etat.servicePneus, 0);
++    assert.ok(v.etat.etatPneus.every(r => r.usure === 0 && r.distance === 0));
++    assert.equal(new Set(v.etat.etatPneus.map(r => r.graine)).size, 4);
++  }
++  a.voitures[0].etat.etatPneus[0].usure = .4;
++  assert.equal(a.voitures[1].etat.etatPneus[0].usure, 0);
++  assert.equal(a.voitures[0].etat.etatPneus[1].usure, 0);
++  for (let i = 0; i < 4; i++) {
++    const d = B.degats.creer(); d.roues[i] = true;
++    assert.ok(B.degats.avaries(d).includes(P.NOMS_ROUES[i]));
++  }
++});
++
++console.log(controles + ' contrôles pneus réussis');
+diff --git a/verifications/usure-pneus.test.mjs b/verifications/usure-pneus.test.mjs
+new file mode 100644
+index 0000000..f00999e
+--- /dev/null
++++ b/verifications/usure-pneus.test.mjs
+@@ -0,0 +1,158 @@
++import '../src/pneus.js';
++import '../src/usure-pneus.js';
++import '../src/degats.js';
++import assert from 'node:assert/strict';
++import vm from 'node:vm';
++import { readFileSync } from 'node:fs';
++
++const B = globalThis.BITUME, P = B.pneus, U = B.usurePneus;
++let controles = 0;
++const verifier = (nom, f) => { f(); controles++; console.log('ok ' + nom); };
++function etat(type = 'slicks') {
++  return Object.assign({ v: 30, surface: 'piste', patinage: 0, roues: Array.from({ length: 4 }, () => ({ charge: 1500, glisse: 0 })),
++    degats: B.degats.creer() }, P.creerEtat(type, { seance: 7, voiture: 3 }));
++}
++function rouler(e, secondes, hz = 120, eau = 0, neige = 0) {
++  for (let i = 0; i < Math.round(secondes * hz); i++) U.pas(e, 1 / hz, e.v / hz, eau, neige);
++}
++const proche = (a, b, epsilon = 1e-10) => assert.ok(Math.abs(a - b) <= epsilon, `${a} contre ${b}`);
++
++verifier('roulage propre, agressif et charge asymétrique produisent des usures différentes', () => {
++  const propre = etat(), agressif = etat();
++  agressif.roues[0].glisse = .9; agressif.roues[0].charge = 2400;
++  agressif.roues[1].glisse = .2; agressif.roues[1].charge = 600;
++  rouler(propre, 120); rouler(agressif, 120);
++  assert.ok(propre.etatPneus[0].usure > 0);
++  assert.ok(agressif.etatPneus[0].usure > 4 * propre.etatPneus[0].usure);
++  assert.ok(agressif.etatPneus[0].usure > agressif.etatPneus[1].usure);
++  assert.ok(agressif.etatPneus[0].grainage > .5);
++  assert.equal(propre.etatPneus[0].grainage, 0);
++});
++
++verifier('marche arrière : distance positive d’usure, identique au même roulage en avant', () => {
++  const a = etat(), b = etat(); a.v = 3; b.v = -3;
++  rouler(a, 50); rouler(b, 50);
++  assert.deepEqual(a.etatPneus, b.etatPneus);
++  proche(b.etatPneus[0].distance, 150);
++});
++
++verifier('pas fixes regroupés en images : mêmes valeurs ; subdivision constante à 30/60/120 Hz', () => {
++  const reference = etat('inter'); reference.surface = 'herbe'; reference.roues[0].glisse = .45;
++  const copies = [30, 60, 120].map(() => structuredClone(reference));
++  [30, 60, 120].forEach((hz, i) => rouler(copies[i], 20, hz, .2));
++  for (const e of copies) for (let i = 0; i < 4; i++) for (const champ of ['usure', 'salete', 'grainage', 'distance', 'sollicitation'])
++    proche(e.etatPneus[i][champ], copies[2].etatPneus[i][champ], 1e-7);
++  const a = etat(), b = etat();
++  rouler(a, 10);
++  for (let image = 0; image < 300; image++) for (let pas = 0; pas < 4; pas++) U.pas(b, 1 / 120, b.v / 120);
++  assert.deepEqual(a.etatPneus, b.etatPneus);
++});
++
++verifier('pause, grille, arrêt sans patinage et contacts périmés ne changent rien', () => {
++  const e = etat(); e.roues.forEach(r => { r.glisse = 1; });
++  const avant = structuredClone(e.etatPneus);
++  assert.equal(U.pas(e, 0, 10), 0);
++  assert.equal(U.pas(e, 1 / 120, 0), 0);
++  assert.equal(U.pas(e, 1 / 120, .25, 0, 0, false), 0);
++  assert.equal(U.pas(e, NaN, .25), 0);
++  assert.equal(U.pas(e, 10, 300), 0);
++  assert.equal(U.pas(e, 1 / 120, 5000), 0); // déplacement discontinu, pas du roulage
++  assert.deepEqual(e.etatPneus, avant);
++});
++
++verifier('une roue déchargée, sans contact ou perdue ne perd pas de gomme', () => {
++  const e = etat();
++  e.roues[0].charge = 0; e.roues[1].contact = false; e.degats.roues[2] = true;
++  e.roues.forEach(r => { r.glisse = 1; });
++  assert.equal(U.pas(e, 1 / 120, .25), 1);
++  assert.deepEqual(e.etatPneus.slice(0, 3), etat().etatPneus.slice(0, 3));
++  assert.ok(e.etatPneus[3].usure > 0);
++});
++
++verifier('vol, bond, accident, récupération, réparation et service excluent les anciennes charges', () => {
++  for (const champ of ['saut', 'recuperation', 'accident', 'reparation', 'bond', 'bondT']) {
++    const e = etat(); e[champ] = champ.startsWith('bond') ? .2 : {};
++    const avant = structuredClone(e.etatPneus);
++    assert.equal(U.pas(e, 1 / 120, .25), 0, champ);
++    assert.deepEqual(e.etatPneus, avant);
++  }
++  const e = etat(); e.stands = { phase: 'service' };
++  assert.equal(U.pas(e, 1 / 120, .25), 0);
++  e.stands.phase = 'voie'; assert.equal(U.pas(e, 1 / 120, .25), 4);
++  e.stands.phase = 'sortie'; assert.equal(U.pas(e, 1 / 120, .25), 4);
++  e.degats.casse = true; assert.equal(U.pas(e, 1 / 120, .25), 0);
++});
++
++verifier('patinage immobile mesuré : usure arrière sans fausse distance de roulage', () => {
++  const e = etat(); e.v = 0; e.patinage = 1; e.roues.forEach(r => { r.glisse = 1; });
++  rouler(e, 10);
++  assert.equal(e.etatPneus[0].usure, 0); assert.equal(e.etatPneus[1].usure, 0);
++  assert.ok(e.etatPneus[2].usure > 0); assert.ok(e.etatPneus[3].usure > 0);
++  assert.equal(e.etatPneus[2].distance, 0);
++});
++
++verifier('neige réelle et eau diffèrent du sec ; la seule saison ne change pas l’usure', () => {
++  const sec = etat('neige'), blanc = etat('neige'), humide = etat('neige'), hiver = etat('neige');
++  hiver.saison = 'hiver';
++  rouler(sec, 30); rouler(blanc, 30, 120, 0, 1); rouler(humide, 30, 120, 1, 0); rouler(hiver, 30);
++  assert.ok(blanc.etatPneus[0].usure < humide.etatPneus[0].usure);
++  assert.ok(humide.etatPneus[0].usure < sec.etatPneus[0].usure);
++  assert.deepEqual(sec.etatPneus, hiver.etatPneus);
++});
++
++verifier('saleté réversible et grainage continu sans restauration de gomme', () => {
++  const e = etat(); e.surface = 'herbe'; e.roues[0].glisse = .8;
++  rouler(e, 20);
++  const sale = e.etatPneus[0].salete, use = e.etatPneus[0].usure, grain = e.etatPneus[0].grainage;
++  assert.ok(sale > .8); assert.ok(grain > .5);
++  e.surface = 'piste'; e.roues[0].glisse = 0; rouler(e, 20, 120, 1);
++  assert.ok(e.etatPneus[0].salete < .01);
++  assert.ok(e.etatPneus[0].grainage < grain);
++  assert.ok(e.etatPneus[0].usure > use);
++});
++
++verifier('réparations de caisse et d’urgence conservent les pneus ; service explicite idempotent', () => {
++  const e = etat(); rouler(e, 30); const avant = structuredClone(e.etatPneus), roues = e.etatPneus.slice();
++  B.degats.reparer(e.degats); B.degats.reparerUrgence(e.degats);
++  assert.deepEqual(e.etatPneus, avant);
++  for (const service of [{ revision: 1, pneus: 'pluie' }, { revision: 2, pneus: 'pluie', termine: true },
++    { revision: 1, pneus: 'inconnu', termine: true }, { revision: 1.5, pneus: 'pluie', termine: true }])
++    assert.equal(U.terminerService(e, service), false);
++  assert.deepEqual(e.etatPneus, avant);
++  const service = { revision: 1, pneus: 'pluie', termine: true };
++  assert.equal(U.terminerService(e, service, { seance: 7, voiture: 3 }), true);
++  assert.equal(e.pneus, 'pluie'); assert.equal(e.servicePneus, 1);
++  for (let i = 0; i < 4; i++) {
++    assert.equal(e.etatPneus[i], roues[i]);
++    assert.deepEqual([roues[i].usure, roues[i].salete, roues[i].grainage, roues[i].distance], [0, 0, 0, 0]);
++    assert.notEqual(roues[i].graine, avant[i].graine);
++  }
++  rouler(e, 5); const apres = structuredClone(e.etatPneus);
++  assert.equal(U.terminerService(e, service), false);
++  assert.deepEqual(e.etatPneus, apres);
++});
++
++verifier('longue simulation bornée, mêmes objets et aucune modification des données de conduite', () => {
++  const e = etat(), roues = e.etatPneus, refs = roues.slice();
++  e.roues.forEach(r => { r.charge = 6000; r.glisse = 1; });
++  const contact = structuredClone(e.roues), degats = structuredClone(e.degats), types = JSON.stringify(P.PNEUS);
++  rouler(e, 600);
++  assert.equal(e.etatPneus, roues);
++  for (let i = 0; i < 4; i++) {
++    assert.equal(roues[i], refs[i]);
++    for (const champ of ['usure', 'salete', 'grainage']) assert.ok(Number.isFinite(roues[i][champ]) && roues[i][champ] >= 0 && roues[i][champ] <= 1);
++    assert.ok(roues[i].distance <= P.DISTANCE_MAX && roues[i].sollicitation <= P.SOLLICITATION_MAX);
++  }
++  assert.deepEqual(e.roues, contact); assert.deepEqual(e.degats, degats);
++  assert.equal(JSON.stringify(P.PNEUS), types); assert.equal(e.v, 30);
++});
++
++verifier('boucle sans allocation de collection ni hasard : état déjà préparé', () => {
++  const c = vm.createContext({});
++  for (const nom of ['pneus.js', 'usure-pneus.js']) vm.runInContext(readFileSync(new URL('../src/' + nom, import.meta.url), 'utf8'), c);
++  vm.runInContext('var e = Object.assign({roues:[{charge:1500,glisse:.5},{charge:1500,glisse:0},{charge:1500,glisse:0},{charge:1500,glisse:0}],surface:"piste",patinage:0}, BITUME.pneus.creerEtat());', c);
++  vm.runInContext('Math.random = () => { throw Error("hasard"); }; Array.prototype.map = Array.prototype.filter = Array.prototype.slice = () => { throw Error("collection"); };', c);
++  assert.equal(vm.runInContext('BITUME.usurePneus.pas(e, 1/120, .25)', c), 4);
++});
++
++console.log(controles + ' contrôles usure pneus réussis');
