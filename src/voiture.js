@@ -389,6 +389,10 @@
   forme('loin-caisse', C.carene([{ x: 2.08, y0: .20, y1: .25, l: .05, n: 3 }, { x: 1.60, y0: .12, y1: .34, l: .26, n: 4 }, { x: 1.05, y0: .11, y1: .40, l: .52, n: 5 },
     { x: .60, y0: .10, y1: .43, l: .72, n: 5 }, { x: -.88, y0: .10, y1: .45, l: .70, n: 5 }, { x: -1.08, y0: .12, y1: .43, l: .50, n: 5 }, { x: -1.30, y0: .16, y1: .40, l: .30, n: 4 }], { cotes: 8, pas: 1 }));
   forme('loin-dessus', C.carene([S_GOUTTE[0], S_GOUTTE[2], S_GOUTTE[3], S_MOTEUR[0], S_MOTEUR[1], S_MOTEUR[2]], { cotes: 8, pas: 1 }));
+  // Le niveau lointain garde lui aussi une cellule ouverte : son ancien dessus plein coupait les mains et les
+  // avant-bras du pilote animé, même quand le modèle détaillé était dégagé. Même ouverture que la goutte proche.
+  forme('loin-dessus-pilote', C.carene([S_GOUTTE[0], S_GOUTTE[2], S_GOUTTE[3], S_MOTEUR[0], S_MOTEUR[1], S_MOTEUR[2]],
+    { cotes: 8, pas: 1, ouverture: OUVERTURE, interieur: true }));
   forme('loin-quille', C.carene(S_QUILLE, { cotes: 8, pas: 1 }));
   // Roues : formes partagées, préparées avant le moteur. Aucun cylindre générique du décor n'est alourdi.
   // L'axe local y traverse la jante. Le profil est annulaire : aucune face en éventail ne bouche le moyeu.
@@ -844,7 +848,7 @@
   function compiler(liste, overlay, cockpit) {
     const t = { liste, longueur: liste.length, n: 0, objets: [], formesRoues: [], formesUsees: [], usureRoue: [], profondeur: [], detailRoueMax: [],
       pneusCourants: new Float64Array(4 * 15), pneusActifs: new Uint8Array(4), o: null, roue: null, groupe: [], fixe: [], decale: null, d: null, portee: null,
-      lent: null, vite: null, tete: null, buste: null, bulle: -1, cockpit, rotTete: trois(), rotM: trois(), fixes: [], groupes: [], faitG: null, faitF: null };
+      lent: null, vite: null, tete: null, buste: null, bulle: -1, dessusLoin: -1, cockpit, rotTete: trois(), rotM: trois(), fixes: [], groupes: [], faitG: null, faitF: null };
     const o = [], roues = [], decale = [], d = [], portee = [], lent = [], vite = [], tete = [], buste = [];
     for (const pc of liste) {
       if (cockpit && (pc.pilote || pc.arriere || pc.exterieur || pc.glace)) continue;
@@ -872,6 +876,7 @@
       t.formesUsees.push(pc.formesUsees || null); t.usureRoue.push(pc.usureRoue || 0); t.profondeur.push(pc.profondeur || 0);
       t.groupe.push(groupe); t.fixe.push(fixe);
       if (pc.shape === FORMES.bulle.nom) t.bulle = t.n;
+      if (pc.shape === FORMES['loin-dessus'].nom) t.dessusLoin = t.n;
       o.push(oc[0], oc[1], oc[2]); roues.push(roue); decale.push(dc === null ? 0 : 1);
       if (dc === null) d.push(0, 0, 0); else d.push(dc[0], dc[1], dc[2]);
       portee.push(dc === null ? 0 : Math.hypot(dc[0], dc[1], dc[2]));
@@ -975,10 +980,11 @@
       if (roue >= 0 && roues && roues[roue]) continue;
       const k = 3 * i;
       let x = t.o[k], y = t.o[k + 1], z = t.o[k + 2];
-      if (i === t.bulle) {
-        const bulle = tete ? FORMES['bulle-pilote'] : FORMES.bulle;
-        x = bulle.centre[0]; y = bulle.centre[1]; z = bulle.centre[2];
-        t.objets[i].shape = bulle.nom; t.objets[i].s = bulle.taille;
+      if (i === t.bulle || i === t.dessusLoin) {
+        const forme = i === t.bulle ? (tete ? FORMES['bulle-pilote'] : FORMES.bulle)
+          : (tete ? FORMES['loin-dessus-pilote'] : FORMES['loin-dessus']);
+        x = forme.centre[0]; y = forme.centre[1]; z = forme.centre[2];
+        t.objets[i].shape = forme.nom; t.objets[i].s = forme.taille;
       }
       if (t.tete[i]) {
         t.objets[i].r = tete ? t.rotTete : t.fixe[i] ? t.fixe[i].r : t.rotM;

@@ -1,0 +1,65 @@
+{
+  "version": "0.2.57",
+  "pr": 15,
+  "head": "2bde77a016d586791a7f3f1cf19cc627292c57a8",
+  "branch": "codex/bitume-demos-regard-arriere-20261119",
+  "base": "6ed560661c9a69345dbbd6f8f26019845e84273d",
+  "tested_merge_commit": "541e1775c5d0f542ad434d6616c221e496ff4ea0",
+  "run": 44595377660,
+  "job": 135812123125,
+  "conclusion": "failure",
+  "passed": 124,
+  "failed": 2,
+  "total": 126,
+  "failures": [
+    {
+      "suite": "nature-integration.test.mjs",
+      "reason": "ReferenceError: cam is not defined",
+      "diagnosis": "Le contexte VM de la section faune extraite ne fournit pas cam, pourtant bien déclaré et affecté dans rendreVue en production. Harnais à compléter et nouvelle branche nature à vérifier."
+    },
+    {
+      "suite": "traces.test.mjs",
+      "reason": "Empreinte historique",
+      "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee"
+    }
+  ],
+  "decor": "pass",
+  "build": {
+    "bytes": 14182991,
+    "sha256": "cbcd5c26d36a19946d647c250f290150766be585e843a6e8c331716eefa7cbea",
+    "matches_candidate": true
+  },
+  "sources": {
+    "files": 3215,
+    "matches_local_candidate": true,
+    "mismatches": [],
+    "local_candidate": "da99e1300c3a3857b70c139c2849ba1cd8979c3e"
+  },
+  "artifact": {
+    "id": 14565737246,
+    "bytes": 70143613,
+    "sha256": "3383fcfc7a4463ff1c0c62cffff209c32c0856c61cbef0768cdc692a8ab0e0ef"
+  },
+  "limitations": [
+    "Rendu complet dans un navigateur non validé",
+    "Manette physique non validée",
+    "FPS matériels non mesurés",
+    "Site non déployé"
+  ],
+  "merge_ready": false,
+  "harness_correction": {
+    "scope": "Uniquement verifications/nature-integration.test.mjs ; production et build inchangés",
+    "targeted_result": "4/4 contrôles intégration nature réussis",
+    "checks": [
+      "Caméra normale suit la voiture J1",
+      "Sujet nature utilise cinema.poseVue",
+      "J2 suit sa voiture avec contexte indépendant",
+      "Retour J1 à la course sans déplacer J2",
+      "Habitats partagés sans reconstruction"
+    ],
+    "full_ci_after_correction": "non encore exécutée",
+    "commit": "652749694a1a77f25501c6c4fe7100c8b4636f97",
+    "note": "Correctif distant concurrent conservé après inspection ; notre préparation équivalente n’est pas publiée."
+  }
+}

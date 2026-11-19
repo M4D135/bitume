@@ -1,90 +1,69 @@
 {
   "version": "0.2.58",
   "physique": "p14",
-  "base_version": "0.2.57",
-  "base_locale": "da99e1300c3a3857b70c139c2849ba1cd8979c3e",
-  "demandes": [
-    "Corriger le levier qui traverse le cockpit en vue extérieure pour le joueur et les concurrents.",
-    "Éloigner le volant du pilote en vue extérieure.",
-    "Conserver les animations appréciées et tout consigner dans GitHub."
+  "base_candidat_0257": "652749694a1a77f25501c6c4fe7100c8b4636f97",
+  "changements": [
+    "Ancrages extérieurs propres au volant et au levier ; main droite et poignet suivent la cible du passage de rapport.",
+    "Saute-vent dégagé devant les mains ; ouverture de la coque simplifiée conservée avec pilote animé.",
+    "Joueur, rivaux et niveaux de détail partagent les mêmes articulations ; cadrage intérieur conservé."
   ],
-  "corrections": [
-    "Volant avancé de 10 cm, ancrages extérieurs distincts du cadrage intérieur.",
-    "Levier recentré, console procédurale fixée à la cuve et tige conservée aux trois niveaux de détail.",
-    "Trajet de la main droite adapté au nouvel ancrage ; bras de longueur constante.",
-    "Saute-vent extérieur adapté pour dégager le volant et les mains."
-  ],
-  "qualification_cockpit": {
-    "suites_reussies": 5,
-    "suites_total": 5,
-    "controles_reussis": 71,
+  "qualification_ciblee": {
+    "suites_reussies": 6,
+    "suites_total": 6,
     "suites": {
+      "pilote-habitacle": 4,
       "pilote-exterieur": 14,
       "voiture": 33,
-      "voiture-identite": 6,
       "voiture-permanents": 12,
-      "pilote-habitacle": 6
+      "voiture-identite": 6,
+      "formes-libres": "registre complet, 196839 triangles"
     },
-    "poses_geometriques": 840,
-    "phases_levier": 168,
-    "braquages": 5,
-    "transitions_boite": 14,
-    "phases_par_transition": 12,
-    "niveaux_detail": 3,
-    "voitures_distinctes": 2,
-    "traversees_detectees": 0,
-    "ancrage_mecanique": "Pied fixé dans la console, console jointe à la cuve ; fixation volontaire traitée séparément.",
-    "degagement_longitudinal_jante_buste_m": {
-      "avant": 0.069042,
-      "apres": 0.169042
-    },
-    "poses_articulees_existantes": 630,
-    "groupes_identite_historique": 268,
-    "regression_ancienne_version": "Le banc échoue sur la 0.2.57 pour la tige dans la coque, la jante dans le saute-vent et le manque de dégagement devant le buste."
+    "sources_stables": true,
+    "empreintes": {
+      "src/voiture.js": "8dadd9f35c7984b636d81871ac43bafdc2e28d920f0e99efb8415081713e111a",
+      "verifications/pilote-exterieur.test.mjs": "4a2821dacda7c08abdce2df0c37d08cfbb2545e9ce3d6a5772714a5e4048be90",
+      "verifications/pilote-habitacle.test.mjs": "66c166cbacb3e97288e73b9a2d6dd7fc545798967da2862967f74cb20c47e5a6"
+    }
+  },
+  "geometrie": {
+    "poses_detaillees": 840,
+    "poses_joueur_rival_lod_attitude": 150,
+    "traversees_detectees_corrige": 0,
+    "jeu_jante_buste_min_m": 0.1690421781662479,
+    "jeu_jante_buste_0257_min_m": 0.06904217816624786,
+    "temoin_negatif_0257": "3 tests de géométrie sur 4 échouent, plus levier/goutte confirmé séparément.",
+    "penetration_levier_0257_m": 0.00495,
+    "controle": "Triangles transformés des maillages de chaque LOD ; cylindres finis et ellipsoïdes qui circonscrivent les primitives FERRO. Intersections coplanaires contrôlées."
+  },
+  "inspection_visuelle": {
+    "type": "rendu logiciel des triangles, sans shaders du jeu",
+    "poses_detaillees": 3,
+    "poses_lod_simple": 2,
+    "angles_par_pose": 3,
+    "resultat": "Pas de chevauchement apparent coque/commandes/mains dans les poses examinées."
   },
   "build": {
-    "octets": 14186142,
-    "sha256": "773273ccaeba8ea7395d44f8e6a8b940feb595ddea89a56b393c09cb974704e9",
+    "octets": 14185661,
+    "gzip": 3370627,
+    "sha256": "dc12ee680cba5fe30b0abe2fc46e4b8febf4d6b6a6e4b639e8533bc9da2e4939",
     "deux_constructions_identiques": true,
-    "sources_stables": true
-  },
-  "sources_verifiees": {
-    "src/voiture.js": "96fd680b554a93ae34ffcd928475671e935124a5296bbc2816c6cb7ae7abde40",
-    "verifications/pilote-exterieur.test.mjs": "4a2821dacda7c08abdce2df0c37d08cfbb2545e9ce3d6a5772714a5e4048be90",
-    "verifications/pilote-habitacle.test.mjs": "65295885c841532b1bf63b23bf1469048634a49a927cb6eff6eda2bc2ca955c0"
+    "metadonnees_identiques": true
   },
   "invariants": {
-    "seule_source_runtime_modifiee_depuis_0257": "src/voiture.js",
-    "cadrage_cockpit_interieur": "Contrôles historiques et identités conservés.",
-    "conduite_physx_reseau_pneus_ferro_identiques": true,
-    "fixtures_historiques_inchangees": true,
-    "graphismes_entierement_proceduraux": true
+    "seul_module_production_modifie": "src/voiture.js",
+    "conduite_physx_reseau_pneus_identiques_0257": true,
+    "ferro_0314_verrou_inchange": true,
+    "fixtures_identite_inchangees": true,
+    "ressources_graphique_son_procedurales": true
   },
-  "inspection_geometrique": {
-    "vues": [
-      "trois quarts droit",
-      "profil droit",
-      "dessus"
-    ],
-    "methode": "Triangles réels FERRO et poses du jeu, raster logiciel sans les shaders.",
-    "source_correspondante": "96fd680b554a93ae34ffcd928475671e935124a5296bbc2816c6cb7ae7abde40"
-  },
-  "correctif_ci_0257": {
-    "erreur_initiale": "nature-integration.test.mjs : ReferenceError cam is not defined dans le contexte VM du test.",
-    "cause": "Le rendu de production définit cam ; le test extrait la section faune et omettait cette variable nouvellement utilisée.",
-    "correction": "Contexte cam explicite ; cas sujetNature, retour course et isolation des pools J1/J2 conservés et contrôlés.",
-    "suites_ciblees": 3,
-    "controles": 27,
-    "source_jeu_et_build_0257_inchanges": true
-  },
-  "ci": "À constater sur le commit publié ; les résultats ciblés ne remplacent pas la CI complète.",
+  "ci": "À constater après publication de ce candidat exact. Le correctif du harnais nature est intégré depuis la branche 0.2.57 ; les résultats de cette branche restent séparés.",
   "reserves_heritees": [
-    "Signature traces.test.mjs, oracle conservé.",
-    "Durée de génération du décor Val-Brûlé, seuil 150 ms conservé."
+    "traces.test.mjs : signature historique ; oracle inchangé.",
+    "Temps de génération Val-Brûlé : seuil 150 ms conservé, mesure matérielle non consolidée."
   ],
   "limites": [
-    "840 poses échantillonnées, pas une preuve sur toute pose possible.",
-    "Rendu complet du jeu dans un navigateur, manette physique et FPS matériels non validés ici.",
+    "Aucun essai complet en navigateur ni manette matérielle dans cet environnement.",
+    "Aucune mesure de FPS matériels.",
     "Aucun déploiement du site effectué."
   ]
 }

@@ -107,7 +107,7 @@ function query(root, b, out = []) {
 function crossing(tris, tree) {
   for (const t of tris) for (const u of query(tree, box(t)))
     for (let i = 0; i < 3; i++)
-      if (segHit(t[i], t[(i + 1) % 3], u) || segHit(u[i], u[(i + 1) % 3], t)) return [t, u];
+      if (st2(t[i], t[(i + 1) % 3], u) <= 1e-20 || st2(u[i], u[(i + 1) % 3], t) <= 1e-20) return [t, u];
   return null;
 }
 
@@ -161,10 +161,14 @@ function dessiner(modele, ev, detail = 'complet') {
   const index = detail === 'complet' ? 0 : detail === 'moyen' ? 6 : 2;
   return { sortie, pieces: modele.objetsRendu.pilote.variantes[index].pieces };
 }
-const piecesCoque = ['goutte', 'goutte-dedans', 'jonc', 'bulle', 'cuve'];
-function coque(sortie) {
-  const obstacles = piecesCoque.map(nom => {
-    const objet = sortie.find(o => o.shape === 'bitume-' + nom || (nom === 'bulle' && o.shape === 'bitume-bulle-pilote'));
+const piecesCoque = {
+  complet: ['goutte', 'goutte-dedans', 'jonc', 'bulle', 'cuve'],
+  moyen: ['goutte', 'cuve'],
+  simple: ['loin-caisse', 'loin-dessus', 'loin-quille']
+};
+function coque(sortie, detail = 'complet') {
+  const obstacles = piecesCoque[detail].map(nom => {
+    const objet = sortie.find(o => o.shape === 'bitume-' + nom || o.shape === 'bitume-' + nom + '-pilote');
     assert.ok(objet, 'pièce de cockpit toujours présente : ' + nom);
     return { nom, arbre: build(triangles(objet)) };
   });
@@ -183,6 +187,8 @@ test('le contrôleur distingue traversée, séparation et simple proximité', ()
   assert.ok(Math.abs(st2([.2, .2, 1], [.2, .2, 2], t) - 1) < 1e-12);
   assert.ok(crossing([[[.2, .2, -1], [.2, .2, 1], [.3, .2, 1]]], build([t])));
   assert.equal(crossing([[[.2, .2, .1], [.3, .2, .1], [.2, .3, .1]]], build([t])), null);
+  assert.ok(crossing([[[.2, .2, 0], [.3, .2, 0], [.2, .3, 0]]], build([t])), 'recouvrement coplanaire détecté');
+  assert.equal(crossing([[[2, 2, 0], [3, 2, 0], [2, 3, 0]]], build([t])), null);
 });
 
 test('la tige du levier ne traverse plus le carénage à son pied', () => {
@@ -235,20 +241,25 @@ test('la jante laisse au moins huit centimètres devant le buste rendu', () => {
 test('joueur et rival, LOD et attitude de caisse conservent les dégagements des commandes', () => {
   const joueur = creer(27), rival = creer(12), ev = pose();
   Object.assign(ev, { p: [3, 2, -4], cap: .8, tangage: .3, roulis: -.25 });
-  for (const modele of [joueur, rival]) {
-    const obstacle = coque(dessiner(modele, ev).sortie);
-    for (const detail of ['complet', 'moyen', 'simple']) for (const passage of [0, .15, .5, .85, 1]) {
-      Object.assign(ev.pilote, { volant: -.8, rapportAvant: 4, rapport: 3, passage });
+  let poses = 0;
+  for (const modele of [joueur, rival]) for (const detail of ['complet', 'moyen', 'simple']) {
+    // Les obstacles viennent des objets affichés dans CE niveau de détail. Le dessus lointain
+    // est une autre carène : les triangles du modèle complet ne prouvent pas son dégagement.
+    const obstacle = coque(dessiner(modele, ev, detail).sortie, detail);
+    for (const volant of [-1, -.5, 0, .5, 1]) for (const passage of [0, .15, .5, .85, 1]) {
+      Object.assign(ev.pilote, { volant, rapportAvant: 4, rapport: 3, passage });
       const { pieces } = dessiner(modele, ev, detail);
       for (const piece of pieces) {
-        if (!['volant', 'levier', 'pommeau'].includes(piece.role) && !piece.role.startsWith('gant-')) continue;
+        if (!(piece.source || piece.de !== undefined || piece.joint !== undefined)) continue;
         for (const { nom, arbre } of obstacle) {
           if (piece.role === 'levier' && nom === 'console-levier') continue;
-          assert.ok(!traversee(piece.objet, arbre), `${detail}/${piece.role}/${nom}, passage=${passage}`);
+          assert.ok(!traversee(piece.objet, arbre), `${detail}/${piece.role}/${nom}, volant=${volant}, passage=${passage}`);
         }
       }
+      poses++;
     }
   }
+  console.log('cockpit : ' + poses + ' poses joueur/rival, trois coques réellement affichées, braquages extrêmes et attitude composée');
 });
 
 test('le levier est fixé dans une console jointe à la cuve, seul son pied est serti', () => {
@@ -257,14 +268,21 @@ test('le levier est fixé dans une console jointe à la cuve, seul son pied est 
   for (const detail of ['complet', 'moyen', 'simple']) for (const passage of [0, .5, 1]) {
     ev.pilote.passage = passage;
     const { pieces, sortie } = dessiner(modele, ev, detail);
+    const obstaclesAffiches = coque(sortie, detail);
     const support = pieces.find(p => p.role === 'console-levier');
     const tige = pieces.find(p => p.role === 'levier');
     assert.ok(support && tige, detail + ' : ni console ni tige supprimée');
     const supportTriangles = triangles(support.objet), arbre = build(supportTriangles);
-    assert.ok(crossing(supportTriangles, cuveArbre), 'console rattachée au fond dessiné');
+    assert.ok(crossing(supportTriangles, cuveArbre), 'console rattachée à la cuve de référence');
+    const fondAffiche = obstaclesAffiches.find(o => o.nom === (detail === 'simple' ? 'loin-caisse' : 'cuve'));
+    assert.ok(fondAffiche && crossing(supportTriangles, fondAffiche.arbre), detail + ' : console rattachée au fond réellement affiché');
     for (const { nom, arbre: coqueArbre } of obstacle) {
       if (nom === 'cuve' || nom === 'console-levier') continue;
       assert.ok(!traversee(support.objet, coqueArbre), 'console ne traverse pas ' + nom);
+    }
+    for (const { nom, arbre: coqueArbre } of obstaclesAffiches) {
+      if (nom === 'cuve' || nom === 'loin-caisse' || nom === 'console-levier') continue;
+      assert.ok(!traversee(support.objet, coqueArbre), detail + ' : console ne traverse pas ' + nom);
     }
     const { points } = capsule(tige.objet);
     points.sort((a, b) => a[1] - b[1]);

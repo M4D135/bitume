@@ -1,0 +1,117 @@
+{
+  "version": "0.2.59",
+  "physique": "p14",
+  "base_version": "0.2.58",
+  "base_locale": "ff32d562d453dfc8093f9c9bf0c35481a0c8dc58",
+  "demandes": [
+    "Corriger le levier qui traverse le cockpit en vue extérieure pour le joueur et les concurrents.",
+    "Éloigner le volant du pilote en vue extérieure.",
+    "Conserver les animations appréciées et tout consigner dans GitHub."
+  ],
+  "corrections": [
+    "Volant avancé de 10 cm, ancrages extérieurs distincts du cadrage intérieur.",
+    "Levier recentré, console procédurale fixée à la cuve et tige conservée aux trois niveaux de détail.",
+    "Trajet de la main droite adapté au nouvel ancrage ; bras de longueur constante.",
+    "Saute-vent extérieur adapté pour dégager le volant et les mains.",
+    "Coque du niveau simplifié réellement ouverte ; contrôle des obstacles reconstruits pour chaque niveau affiché."
+  ],
+  "qualification_cockpit": {
+    "suites_reussies": 6,
+    "suites_total": 6,
+    "controles_reussis": 71,
+    "suites": {
+      "pilote-exterieur": 14,
+      "voiture": 33,
+      "voiture-identite": 6,
+      "voiture-permanents": 12,
+      "pilote-habitacle": 6
+    },
+    "poses_geometriques": 840,
+    "phases_levier": 168,
+    "braquages": 5,
+    "transitions_boite": 14,
+    "phases_par_transition": 12,
+    "niveaux_detail": 3,
+    "voitures_distinctes": 2,
+    "traversees_detectees": 0,
+    "ancrage_mecanique": "Pied fixé dans la console, console jointe à la cuve ; fixation volontaire traitée séparément.",
+    "degagement_longitudinal_jante_buste_m": {
+      "avant": 0.069042,
+      "apres": 0.169042
+    },
+    "poses_articulees_existantes": 630,
+    "groupes_identite_historique": 268,
+    "regression_ancienne_version": "Le banc échoue sur la 0.2.57 pour la tige dans la coque, la jante dans le saute-vent et le manque de dégagement devant le buste.",
+    "poses_joueur_rival_trois_lod": 150,
+    "registre_formes": {
+      "reussi": true,
+      "triangles_emis": 197159,
+      "note": "Suite supplémentaire, distincte des 71 contrôles dénombrés dans les cinq suites cockpit/voitures."
+    },
+    "source_et_tests_stables": true,
+    "regression_0258_pr17": "Le banc renforcé échoue sur ff32d56 : 5/6, traversée réelle du dessus plein au niveau simple. Le modèle unifié passe 6/6."
+  },
+  "build": {
+    "octets": 14186762,
+    "sha256": "cb02e2250a2e4a7d06bd0fdea659fce641a016975e224bac2823574888439cd4",
+    "deux_constructions_identiques": true,
+    "sources_stables": true
+  },
+  "sources_verifiees": {
+    "src/voiture.js": "d30e374fc63f6913e027ff57fe4b91343767c3769189833980c5be92fe170df9",
+    "verifications/pilote-exterieur.test.mjs": "4a2821dacda7c08abdce2df0c37d08cfbb2545e9ce3d6a5772714a5e4048be90",
+    "verifications/pilote-habitacle.test.mjs": "ad79633398a30d6feda8114e9fa3a6d6b5036d59a212eb4f46c571cc187eb931"
+  },
+  "invariants": {
+    "seule_source_runtime_modifiee_depuis_0257": "src/voiture.js",
+    "cadrage_cockpit_interieur": "Contrôles historiques et identités conservés.",
+    "conduite_physx_reseau_pneus_ferro_identiques": true,
+    "fixtures_historiques_inchangees": true,
+    "graphismes_entierement_proceduraux": true
+  },
+  "inspection_geometrique": {
+    "methode": "Triangles réels FERRO et poses du jeu, raster logiciel sans les shaders.",
+    "vues": [
+      "trois quarts droit",
+      "profil droit",
+      "dessus"
+    ],
+    "detail": "Poste détaillé contrôlé sur le candidat PR17 ; géométrie détaillée inchangée par la réconciliation.",
+    "simple": "Modèle simple unifié inspecté en braquage extrême et pendant la transition de rapport.",
+    "source_simple": "d30e374fc63f6913e027ff57fe4b91343767c3769189833980c5be92fe170df9"
+  },
+  "correctif_ci_0257": {
+    "erreur_initiale": "nature-integration.test.mjs : ReferenceError cam is not defined dans le contexte VM du test.",
+    "cause": "Le rendu de production définit cam ; le test extrait la section faune et omettait cette variable nouvellement utilisée.",
+    "correction": "Contexte cam explicite ; cas sujetNature, retour course et isolation des pools J1/J2 conservés et contrôlés.",
+    "suites_ciblees": 3,
+    "controles": 27,
+    "source_jeu_et_build_0257_inchanges": true
+  },
+  "ci": "À constater sur le commit publié ; les résultats ciblés ne remplacent pas la CI complète.",
+  "reserves_heritees": [
+    "Signature traces.test.mjs, oracle conservé.",
+    "Durée de génération du décor Val-Brûlé, seuil 150 ms conservé."
+  ],
+  "limites": [
+    "840 poses détaillées et 150 poses sur les coques effectivement affichées, pas une preuve sur toute pose possible.",
+    "Rendu complet du jeu dans un navigateur, manette physique et FPS matériels non validés ici.",
+    "Aucun déploiement du site effectué."
+  ],
+  "reconciliation": {
+    "pr16": {
+      "head": "42a916fdea88f38ad5be1275bbeed89f193cd26c",
+      "tree": "aa3b330782e5a3aa0fe45d5ee74d44ca64800078",
+      "apport": "Ouverture réelle de loin-dessus, garde du registre des formes et contrôle des coques à chaque niveau de détail.",
+      "qualification": "QUALIFICATION-0258.json"
+    },
+    "pr17_initiale": {
+      "head": "1d11d08eaf1cc68579c0dfd2ce1ee84fb74aba2f",
+      "tree": "f4a7c96a85eee771e87f3d95d7059a6f59ecfedb",
+      "apport": "Console fixée à la cuve, tige conservée dans le modèle simple, contrôle des contacts du support.",
+      "qualification": "QUALIFICATION-0258-PR17.json",
+      "limite_decouverte": "Le contrôle LOD initial réutilisait la coque détaillée ; il ne prouvait pas le dégagement du dessus simplifié plein."
+    },
+    "resultat": "Union des sources et tests, deux provenances conservées. Aucun travail concurrent écrasé."
+  }
+}

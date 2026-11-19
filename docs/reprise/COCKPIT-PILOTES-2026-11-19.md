@@ -31,19 +31,35 @@ Son pied est fixé au support ; le reste de la tige garde son débattement libre
 le niveau de détail simple. La main droite suit le nouvel ancrage avec le même mouvement de prise et de retour.
 Le saute-vent a été adapté pour laisser passer le volant et les gants. Les bras gardent leurs longueurs.
 
-**5/5 suites cockpit/voitures, 71 contrôles réussis**, avec sources et tests figés pendant les passages.
+**6/6 suites réussies : 71 contrôles cockpit/voitures et le registre des formes**, avec sources et tests figés pendant les passages.
 Le banc indépendant contrôle **840 poses** : cinq braquages, quatorze transitions de boîte dans les deux sens,
-et douze phases. Il vérifie aussi 168 phases de levier, les trois niveaux de détail, deux voitures distinctes,
+et douze phases. Il vérifie aussi 168 phases de levier, 150 poses sur les trois niveaux de détail réellement affichés, deux voitures distinctes,
 les attitudes de caisse et les contacts de fixation console/cuve/pied. Aucune traversée détectée sur ces poses.
 Le même banc échoue sur les sources 0.2.57 pour les défauts signalés : tige/coque, volant/saute-vent et proximité du buste.
 Les 630 poses articulées et 268 groupes d'identité historiques restent conformes, sans réécrire leurs fixtures.
 
-Deux builds 0.2.58 identiques : 14 186 142 octets, SHA-256
-`773273ccaeba8ea7395d44f8e6a8b940feb595ddea89a56b393c09cb974704e9`.
-Rapport : `rapports/COCKPIT-PILOTES-2026-11-19/QUALIFICATION-0258.json`.
+Deux builds 0.2.59 identiques : 14 186 762 octets, SHA-256
+`cb02e2250a2e4a7d06bd0fdea659fce641a016975e224bac2823574888439cd4`.
+Rapport : `rapports/COCKPIT-PILOTES-2026-11-19/QUALIFICATION-0259.json`.
 Les triangles réellement posés ont été inspectés en trois quarts droit, profil droit et vue de dessus par raster logiciel.
 Le lancement de Chromium est bloqué dans cet environnement : cette inspection de géométrie ne vaut pas une
 validation du jeu complet dans un navigateur ni une mesure des FPS matériels.
+
+## Réconciliation des travaux parallèles — 0.2.59
+
+Deux candidats 0.2.58 ont été publiés en parallèle. La PR #16 (`42a916f`) apporte une ouverture dans la coque
+simplifiée et contrôle les vrais obstacles à chaque niveau de détail. La PR #17 initiale (`1d11d08`) apporte
+la console fixée à la cuve et la tige visible dans le niveau simple. L'union conserve ces deux apports.
+
+Le premier banc de la PR #17 reprenait les obstacles du modèle détaillé pour les autres niveaux : il manquait
+les traversées du dessus plein simplifié. Le banc renforcé retrouve ces contacts sur `ff32d56` (5/6 contrôles),
+puis passe 6/6 sur l'union. Les 150 poses testent deux voitures, trois niveaux, cinq braquages et cinq phases.
+Les 840 poses détaillées et 168 phases de levier sont conservées ; les contacts du support sont contrôlés séparément.
+L'inspection logicielle du niveau simple confirme l'ouverture et l'ancrage. Les géométries détaillées restent identiques.
+
+Preuves historiques distinctes : `rapports/COCKPIT-PILOTES-2026-11-19/QUALIFICATION-0258.json` (PR #16) et
+`rapports/COCKPIT-PILOTES-2026-11-19/QUALIFICATION-0258-PR17.json` (premier candidat PR #17, limite LOD ci-dessus).
+Le reçu 0.2.59 qualifie la réunion des corrections ; aucun résultat ancien n'est présenté comme une validation de cette union.
 
 ## Correctif de qualification de la base 0.2.57
 

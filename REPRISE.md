@@ -2,17 +2,23 @@
 
 ## Lot actif — 19 novembre 2026
 
-**0.2.58 / p14 : cockpit extérieur corrigé, qualification ciblée terminée.**
+**0.2.59 / p14 : cockpit extérieur unifié, qualification ciblée terminée.**
 Branche : `codex/bitume-cockpit-pilotes-20261119`.
 Lire `docs/reprise/ETAT.json`, puis `docs/reprise/COCKPIT-PILOTES-2026-11-19.md`.
 
 - Demandes : levier traversant le cockpit et volant trop proche du pilote, joueur comme concurrents.
 - Volant avancé de 10 cm ; levier dans l'ouverture, fixé sur une console procédurale ; mains raccordées.
 - Saute-vent dégagé, trois niveaux de détail et rétroviseurs conservés ; cadrage intérieur identique.
-- **5/5 suites cockpit/voitures, 71 contrôles ; 840 poses sans traversée détectée.**
+- **6/6 suites : 71 contrôles cockpit/voitures et registre des formes ; 840 + 150 poses sans traversée détectée.**
 - Jeu longitudinal jante/buste : environ 169 mm, contre 69 mm sur la 0.2.57.
-- Deux builds identiques : `773273ccaeba8ea7395d44f8e6a8b940feb595ddea89a56b393c09cb974704e9`.
-- Rapport : `docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/QUALIFICATION-0258.json`.
+- Deux builds identiques : `cb02e2250a2e4a7d06bd0fdea659fce641a016975e224bac2823574888439cd4`.
+- Rapport : `docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/QUALIFICATION-0259.json`.
+
+## Réconciliation des candidats 0.2.58
+
+PR #16 : coque simplifiée ouverte et contrôle de chaque LOD réel. PR #17 : console fixée et tige visible dans chaque LOD.
+Les deux apports sont réunis en 0.2.59. Le banc initial de la PR #17 manquait le dessus plein du modèle simplifié ;
+le nouveau banc le détecte sur cet ancien candidat et passe sur l’union. Les deux reçus 0.2.58 restent conservés.
 
 ## Publication de la base 0.2.57
 
@@ -24,7 +30,7 @@ Dernier main vérifié : 0.2.56, clôture `6ed5606`. Les preuves des livraisons 
 
 ## Clôture à terminer
 
-Publier la 0.2.58, contrôler la CI complète et consigner les commits/fusions réels.
+Publier la réconciliation 0.2.59 dans la PR #17, contrôler sa CI complète puis consigner les fusions réelles.
 Réserves héritées : traces et temps de création du décor Val-Brûlé ; aucun seuil ni oracle modifié.
 Géométrie inspectée dans trois vues par raster logiciel. Jeu complet en navigateur, manette physique et FPS
 matériels restent à vérifier ; aucun déploiement du site effectué. Suivi compact, sans nouveaux journaux bruts.
