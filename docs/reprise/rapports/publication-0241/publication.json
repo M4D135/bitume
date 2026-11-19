@@ -1,0 +1,41 @@
+{
+  "version": "0.2.41",
+  "date": "2026-11-19",
+  "heure_paris": "1 h 15",
+  "commit": "c92cc081e4ef5335872f5676c79d3b61546dc98e",
+  "page": {
+    "fichier": "dist/bitume.html",
+    "octets": 13905518,
+    "sha256": "cffdbd5c6033dd65571b11163a8f3ca9ceb1ccb06a7f2d77cbfba46bf5eba1fe"
+  },
+  "production": {
+    "url": "https://bitume.estrasse.fr/",
+    "verifiee_par": "./deposer.sh (empreinte de la page servie comparée à celle du commit)"
+  },
+  "contenu": [
+    "détection graphique corrigée (fluidite/detection 0a188a3)",
+    "animaux des abords (etude/animaux cee9b75)",
+    "bords de route : panneaux et bords dangereux (etude/lieux df14675)",
+    "flammes et pétarades d'échappement (etude/echappement 10f2c82)",
+    "public humain animé (etude/public 247ec4a)"
+  ],
+  "qualification": {
+    "suites": "87 sur 87 (sur 4b994c4, même code)",
+    "smoke": "7 contrôles, code 0, sur la page du commit",
+    "creations_en_course": "0 en Fine, Moyenne et Légère"
+  },
+  "mesures": {
+    "document": "docs/reprise/rapports/publication-0241/LISEZ-MOI.md et mesures.json",
+    "triangles": "Val-Brûlé, départ en cockpit, Fine : 691 771 → 1 094 419 (+58 %, dont 338 324 pour le public) ; tribune +70 % ; Moyenne +20 à +24 % ; Légère −7 à +3 %",
+    "cadence_fenetre_reelle_alternee": "0.2.40 puis 0.2.41, trois tours, charge 5 à 13,6 : Moyenne et Légère p95 18,6 ms des deux côtés ; Fine en poursuite 32,7 → 18,6 ms",
+    "detection": "Moyenne à chaque essai sur le M5 ; voile de 2,9 s (1,8 à 2,0 s en 0.2.40)"
+  },
+  "limites_connues": [
+    "Détection : qualité fixe après le test (constat C3), décision de David en attente.",
+    "PHYSIQUE reste p9 alors que les bords dangereux resserrent la limite sur quelques portions : records et fantômes de 0.2.40 gardés comme comparables ; à trancher avec le lot 17.",
+    "Légère : une bête disparaît d'un coup sous 120 m, sans fondu.",
+    "Flammes ternes de jour quand elles sont faibles (le mode lumineux attend le moteur).",
+    "Coût GPU réel du public en Fine sur une machine modeste : non mesuré ; la cadence n'a été comparée que sur le M5.",
+    "Aucun essai avec une vraie manette, ni sur Firefox, Safari ou téléphone."
+  ]
+}

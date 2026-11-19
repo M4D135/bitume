@@ -1,16 +1,16 @@
 # BITUME — reprise courte
 
-## Base publiée — 18 novembre 2026, 23 h 45
+## Base publiée — 19 novembre 2026, 1 h 15
 
 - Branche unique `main`, sans push forcé ; publications fréquentes du travail réel.
-- **0.2.40**, livraison **`b0523d8`** : lot 5B « fluidité » (cadence d'images, chargement sous voile, arbres lointains allégés, herbier accéléré, détection une fois par version). Sept circuits.
-- Production vérifiée identique par `./deposer.sh` ; reçu `docs/reprise/rapports/fluidite-2026-11-18/publication.json` (mesures et limites connues).
-- Qualification : **81/81 suites**, parcours smoke à 7 contrôles, 34 modules FERRO **0.3.10** conformes (moteur poussé, `39eafee`).
+- **0.2.41**, livraison **`c92cc08`** : détection graphique corrigée, animaux, bords de route, flammes d'échappement, public humain. Reçu `docs/reprise/rapports/publication-0241/publication.json`.
+- Avant elle, le 18/11 à 23 h 45 : **0.2.40**, lot 5B « fluidité » (reçu `docs/reprise/rapports/fluidite-2026-11-18/publication.json`).
+- Production vérifiée identique par `./deposer.sh`. Qualification : **87/87 suites**, parcours smoke à 7 contrôles, FERRO **0.3.10**.
 
 ## En cours — suite du 18 novembre au soir
 
 **Lire `docs/reprise/PILOTAGE-2026-11-18.md`** : il tient l'état de tous les chantiers, des branches locales et des arbres de travail (`~/Projects/bitume-wt`).
-Prochaine mise en ligne : corrections de la détection graphique, puis ce qui est écrit et testé sur les branches (animaux, bords de route, flammes d'échappement, public humain, ombres du moteur 0.3.11, jeu en ligne par invitation).
+Prochaine mise en ligne : ombres du moteur 0.3.11 (relues, à juger sur image), puis jeu en ligne par invitation et Route-des-Cimes quand son terrain sera fait.
 Le Spark d'abord (`tools/spark/LISEZ-MOI.md`) : un pilote autonome mène les lots restants sur des branches `spark/*`, à relire avant toute intégration.
 
 ## Demandes du 18 novembre au soir et ordre de travail
