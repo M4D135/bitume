@@ -1,0 +1,17 @@
+✔ 12F4 IA immobilisée à 8 m derrière un joueur : dégagement réel sans contact (1436.697781ms)
+✔ 12F4 IA immobilisée à 10 m derrière un joueur : dégagement réel sans contact (141.728575ms)
+✔ 12F4 vraie approche vers un joueur garé : attente bornée puis retour en course (239.365036ms)
+✔ 12F4 voiture derrière la file : recul sûr puis sortie quand elle libère réellement la place (86.700498ms)
+✔ 12F4 service achevé : sortie bloquée par un joueur puis reprise sans second service (49.39037ms)
+✔ 12F4 file serrée sous pluie : les slicks usés restent équipés pendant le dégagement (38.528408ms)
+✔ 12F4 file serrée sous neige : les slicks usés restent équipés pendant le dégagement (59.791209ms)
+✔ 12F4 Haut-Col : sortie de file serrée sur le second circuit avec ses vrais obstacles (1246.488376ms)
+✔ 12F4 joueur qui redémarre pendant le dégagement : restitution réelle à la conduite de course (65.929508ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3506.885166

@@ -1,0 +1,21 @@
+✔ démarrage réel : ancienne préférence recopiée aux deux pilotes sans changer sa valeur (5.809721ms)
+✔ nouveau profil : les conseils suivent la chaussée et chaque choix manuel reste indépendant (0.543866ms)
+✔ mode Conseillés : seul le pilote visé suit la prévision, sans dépendre de l’ordre des contrôles (0.842755ms)
+✔ réglages anciens ou partiels : les faux types et modes ne deviennent pas des choix valides (0.557987ms)
+✔ menus : le second choix est masqué seul et visible pour le vrai nombre de pilotes locaux (0.973571ms)
+✔ départ solo et duo : seules les voitures humaines prennent leurs préférences distinctes (2.21841ms)
+✔ départ distant 2+2 : chaque id humain reçoit la configuration annoncée, aucune préférence locale ne fuit (0.616375ms)
+✔ démo et vitrine : les préférences des pilotes ne changent pas la monte conseillée des voitures (0.510987ms)
+✔ pause : le vrai clic de choix de stand ne remplace aucun pneu et ne répare rien (1.297859ms)
+✔ stand : le bon joueur local est trouvé même quand les id des humains sont 2 et 3 (0.715213ms)
+✔ service engagé : choix verrouillé, affichage figé, aucun clic ne change la transaction (0.643326ms)
+✔ commandes de service hors pause ou sans pilote local : rejet sans mutation de voiture (0.447972ms)
+✔ 12F3 : choix de monte en ligne autorisé pour chaque pilote local sans changer les pneus en place (0.617316ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23.414457

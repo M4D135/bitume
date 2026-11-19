@@ -1,0 +1,9 @@
+{"etape": "suites", "terminees": 20, "total": 109, "echecs": []}
+{"etape": "suites", "terminees": 32, "total": 109, "echecs": ["decor.test.mjs"]}
+{"etape": "suites", "terminees": 40, "total": 109, "echecs": ["decor.test.mjs"]}
+{"etape": "suites", "terminees": 60, "total": 109, "echecs": ["decor.test.mjs"]}
+{"etape": "suites", "terminees": 80, "total": 109, "echecs": ["decor.test.mjs"]}
+{"etape": "suites", "terminees": 96, "total": 109, "echecs": ["decor.test.mjs", "traces.test.mjs"]}
+{"etape": "suites", "terminees": 100, "total": 109, "echecs": ["decor.test.mjs", "traces.test.mjs"]}
+{"etape": "suites", "terminees": 109, "total": 109, "echecs": ["decor.test.mjs", "traces.test.mjs"]}
+{"version": "0.2.53", "physique": "p13", "suites": 109, "reussies": 107, "echecs": ["decor.test.mjs", "traces.test.mjs"], "sources_stables": true, "echecs_hors_reserve": ["decor.test.mjs"], "build": {"sha256": "686db2c0863bd8dfa042389f22501fb9bacde19dca2bb1dcabf9f9a527ccd510", "bytes": 14063125, "reproductible": true, "codes": [0, 0], "hashes": {"VERSION.json": "4671f286fa05ee9252cd1bd7b66bd334b7fdca3378a9cebe11f650cf8a63a927", "SIZE.json": "acd61d9e0becab38be8cc7bf39d06465d00e7bcd88ca3b8f27f0ab3f380675a3", "dist/bitume.html": "686db2c0863bd8dfa042389f22501fb9bacde19dca2bb1dcabf9f9a527ccd510"}}, "bundle": {"scripts": 53, "codes": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "ferro": {"version": "0.3.11", "modules": 34, "ecarts": []}, "lot": "13A-Russie-trace-relief"}

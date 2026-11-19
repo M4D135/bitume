@@ -1,0 +1,62 @@
+ok trois essences figées et budgets consultables, segments proches strictement supérieurs aux lointains
+ok dix-huit formes distinctes, nommées et mémoïsées à la référence près
+ok triangles finis, non dégénérés, normés, tenus dans le cube unité
+ok paliers strictement croissants low < medium < high, en proche comme en loin
+ok le lointain ne retire aucun organe : mêmes pieds, mêmes cimes, organes comptés identiques
+ok déterminisme : deux exécutions indépendantes donnent les mêmes empreintes sha256
+ok installer enregistre les dix-huit arbres et le tronc lointain, et refuse un rendu indisponible
+ok formes proches figées (triangles et empreintes arrondies)
+ok silhouette lointaine tenue dans la boîte de la forme proche
+ok silhouette lointaine : amas et plateaux de la forme proche repris à l'identique
+ok silhouette lointaine : seules les faces des plateaux du pin sont émises des deux côtés
+ok silhouette lointaine au moins 2,5 fois plus légère que la forme proche en Moyenne et en Fine
+ok silhouette lointaine figée : quatre faces par branche, huit rayons par plateau, triangles mesurés
+ok tronc lointain : prisme à six faces sans fonds, normales lisses horizontales, dans le cylindre unité
+ok matières du moteur : écorce 26 (fibrousBark), feuillage 27 (botanicalFoliage)
+{
+  "controles": 15,
+  "comptes": {
+    "feuillu": {
+      "low": {
+        "proche": 486,
+        "loin": 144
+      },
+      "medium": {
+        "proche": 1074,
+        "loin": 212
+      },
+      "high": {
+        "proche": 2022,
+        "loin": 296
+      }
+    },
+    "pin": {
+      "low": {
+        "proche": 538,
+        "loin": 286
+      },
+      "medium": {
+        "proche": 1182,
+        "loin": 454
+      },
+      "high": {
+        "proche": 2218,
+        "loin": 670
+      }
+    },
+    "conifere": {
+      "low": {
+        "proche": 750,
+        "loin": 218
+      },
+      "medium": {
+        "proche": 1854,
+        "loin": 378
+      },
+      "high": {
+        "proche": 3702,
+        "loin": 582
+      }
+    }
+  }
+}

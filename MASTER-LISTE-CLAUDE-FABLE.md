@@ -4,17 +4,17 @@ Plan du **18 novembre 2026**, état de reprise actualisé le **19 novembre 2026*
 
 ## 1. Mission et point de départ
 
-Poursuivre **BITUME**, jeu de course procédural de monoplaces, dépôt [M4D135/bitume](https://github.com/M4D135/bitume), branche de livraison `main`. **12F4 et sortie de file livrés sur main en 0.2.52 / p13 (`b5b4c0c6`), PR n°6 fusionnée.** Sources/build/preuves vérifiés ; base p12 et clôture `db3e8da1` préservées. Reçu : `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/PUBLICATION-0252.json`. Prochain lot : **13A Russie, tracé et relief, non commencé**. Avancer par petits lots, publier les sources/builds/preuves et tenir une reprise courte. Les demandes du catalogue ci-dessous restent conservées.
+Poursuivre **BITUME**, jeu de course procédural de monoplaces, dépôt [M4D135/bitume](https://github.com/M4D135/bitume), branche de livraison `main`. **13A Baïkal qualifié CPU en 0.2.53 / p13 ; publication finale à terminer.** La base 0.2.52 et les lots pneus/stands sont clos. Rapport : `docs/reprise/rapports/13A-RUSSIE-2026-11-19/qualification-finale.json`. Après publication : **13B Russie, décor et saisons**, non commencé. Avancer par petits lots, publier sources/builds/preuves et garder une reprise courte. Toutes les autres demandes restent conservées.
 
 | Élément | État de reprise du 19 novembre 2026 |
 |---|---|
-| Base publiée vérifiée | **0.2.52 / p13 sur main `b5b4c0c6`**, sources, build et preuves contrôlés ; clôture 0.2.51 conservée. |
-| Checkpoint de reprise | **Livraison `b5b4c0c6`**, PR n°6 fusionnée ; reçu `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/PUBLICATION-0252.json`. Prochaine action : 13A Russie, non commencé. |
+| Base publiée vérifiée | **0.2.52 / p13**, main `18451e0e` ; **0.2.53 qualifiée, publication finale en préparation**. |
+| Checkpoint de reprise | **`3d173d16`**, sources et parcours 13A vérifiés ; fiche `docs/reprise/13A-RUSSIE-TRACE-RELIEF.md`. |
 | Moteur BITUME | **FERRO 0.3.11**, 34 modules verrouillés. |
-| Physique | **p13**, archives p9 à p12 conservées ; aucune force de conduite/usure modifiée par le dégagement. |
-| Qualification du lot | **107/108 suites**, seul échec traces hérité identique ; **22 scénarios / 1 415 empreintes p13**, deux builds identiques de **14 060 666 octets**, 53 scripts valides et 34 modules FERRO inchangés. Neuf scénarios de dégagement, 17 trajets et 6 décisions réussis. |
-| Site public | Aucun déploiement de 0.2.52 déclaré ; WebGL, FPS matériel et parties réelles entre navigateurs non validés. |
-| Circuits jouables | **7**. |
+| Physique | **p13**, sept circuits historiques et archives p9 à p13 conservés. |
+| Qualification du lot | **107/109 suites** : traces héritées et seuil de temps décor également dépassé sur la base ; **9/9 contrôles russes**, 84 tableaux historiques identiques, 22 scénarios / 1 415 empreintes p13, deux builds identiques de **14 063 125 octets**. |
+| Site public | Aucun déploiement de 0.2.53 déclaré ; WebGL, FPS matériel et parties réelles entre navigateurs non validés. |
+| Circuits jouables | **8 dans le build 0.2.53**, dont Baïkal avec thème de base ; décor détaillé en 13B. |
 | Nouveaux circuits explicitement demandés | **Huitième circuit de montagne distinct**, **Russie, Monaco ultra fidèle, Spéciale Marseille issue d’EMPRISE avec relief**. |
 | Autres demandes prioritaires | Roues rondes et réalistes, slicks lisses, sculptures pluie/neige, usure progressive visible. |
 | Implémentation roues/pneus | **12A–12F4 publiés**, avec dégagement des files serrées, vrai service complet et conservation des pneus. Réseau et autorité préservés. |
@@ -34,7 +34,7 @@ Les sept premières entrées existent. Les trois suivantes répondent à la dema
 | 5 | **Roche-Fauve** | Afrique | Plateaux ocres, ravine et strates minérales. | Livré |
 | 6 | **Brume-de-Jade** | Asie | Pics calcaires, vallées et terrasses. | Livré |
 | 7 | **Cap-Séquoia** | États-Unis, Pacifique | Falaises, anses, océan et grands conifères. | Livré en 0.2.38 |
-| 8 | **Baïkal — Russie** | Russie / Sibérie | Tracé original de rive et forêt, vrai changement de rythme, relief et saisons ; localisation Baïkal proposée. | Pays demandé ; thème proposé |
+| 8 | **Baïkal — Russie** | Russie / Sibérie | Tracé original de 5 424 m, 62,95 m de dénivelé ; Baïkal choisi en 13A, graine 179. | 13A qualifié ; 13B décor à faire |
 | 9 | **Monaco** | Principauté de Monaco | Parcours réel 2026, 3 337 m et 19 virages ; murs, tunnel, stands, port et architecture fidèles. | Demandé |
 | 10 | **Spéciale Marseille** | France / Marseille | Carte **EMPRISE**, parcours de course défini sur ses rues, relief altimétrique, ville et collisions raccordées. | Demandé |
 | 11 | **Fjord-d’Argent** | Norvège / Europe du Nord | Fjord encaissé, parois, ponts, rives dissymétriques et lumières nordiques ; tracé original. | Proposition |

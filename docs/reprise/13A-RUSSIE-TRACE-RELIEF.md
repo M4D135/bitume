@@ -2,9 +2,9 @@
 
 ## Point actif — 19 novembre 2026
 
-**9/9 contrôles ciblés réussis ; qualification globale et build en cours.**
+**Qualification CPU terminée en 0.2.53/p13 ; publication finale à terminer.**
 Base livrée : `18451e0eeb701d720f08c069b841d79c2439755d`, BITUME **0.2.52 / p13**.
-Branche : `codex/bitume-13a-russie-20261119`. Build conservé à 0.2.52 jusqu'à la qualification.
+Branche : `codex/bitume-13a-russie-20261119`. Build 0.2.53 reproductible ; deux réserves documentées, traces et seuil de temps décor.
 
 ## Contrat du lot
 
@@ -55,3 +55,7 @@ restent dans le plan maître.
 ## Parcours ciblés terminés
 
 Douze voitures, trois tours dans chacune des conditions sec/pluie/neige : zéro accident, replacement ou stagnation. Les contacts et frottements aux rails restent mesurés. 1 134 solides actifs ; 84 tableaux historiques inchangés. Le diagnostic neige et la correction des allées proches sont conservés dans `rapports/13A-RUSSIE-2026-11-19/DIAGNOSTIC-NEIGE.md`. Source checkpoint publiée `0cbea2047a2a6150fe8e0643cdd7121a9171fc01`. Carte de conception : `rapports/13A-RUSSIE-2026-11-19/carte-relief.png` ; ce n’est pas une capture WebGL.
+
+## Qualification finale
+
+107/109 suites ; traces héritées identiques et seuil de temps décor également dépassé sur la base publiée (205 ms contre 211 ms, seuil 150 ms inchangé). Deux builds identiques de 14 063 125 octets, 53 scripts valides, 34 modules FERRO inchangés. Voir `rapports/13A-RUSSIE-2026-11-19/VALIDATION.md` et `qualification-finale.json`. Les mesures ciblées des neuf contrôles russes sont reproduites à l’identique dans la qualification globale. Publication finale et reçu restent à terminer, puis 13B uniquement.

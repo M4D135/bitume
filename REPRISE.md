@@ -2,31 +2,35 @@
 
 ## Point actif — 19 novembre 2026
 
-**13A Russie — tracé et relief EN COURS**, branche `codex/bitume-13a-russie-20261119`.
-Base publiée : **0.2.52 / p13**, main `18451e0eeb701d720f08c069b841d79c2439755d`.
-Lire seulement `docs/reprise/ETAT.json`, la dernière entrée du suivi et `docs/reprise/13A-RUSSIE-TRACE-RELIEF.md`.
-Ne pas refaire 12A–12F4, la sortie de file ni Safari : ces travaux et leurs publications sont clos.
+**13A Baïkal qualifié CPU en 0.2.53 / p13 ; publication finale à terminer.**
+Branche `codex/bitume-13a-russie-20261119`, checkpoint sources vérifié `3d173d16`.
+Lire `docs/reprise/ETAT.json`, la dernière entrée du suivi et `docs/reprise/13A-RUSSIE-TRACE-RELIEF.md` uniquement.
+**Prochaine action : publier sources/build/preuves, vérifier le distant, fusionner et consigner le reçu.**
+Les tests sont terminés et les sources gelées : ne pas recommencer la qualification ou les lots 12A–12F4/Safari clos.
 
-## Tracé qualifié par les parcours ciblés
+## Résultat de 13A
 
-Baïkal est le choix de conception issu du plan, pas une localisation imposée par David. Circuit original ajouté
-à l'indice 7, ID `baikal`, graine 179, **5 424 m**, dénivelé **62,9477 m**, pente maximale **6,8 %**.
-Ligne droite de 816 m et stands plats. Les 84 tableaux des sept circuits historiques sont identiques bit à bit ; physique p13 conservée.
-Le thème de base permet le roulage ; lac, berges, lieux, végétation et faune détaillés restent **13B**.
+Huit circuits dans le build, Baïkal ajouté index 7, ID `baikal`, graine 179 : **5 424 m**, **62,9477 m de dénivelé**,
+**6,8 %** de pente maximale, droite de 816 m, grille/stands plats. Baïkal est un choix de conception original issu du plan.
+Les 84 tableaux des sept circuits historiques et les 22 scénarios / 1 415 empreintes p13 sont identiques, sans régénération.
+**9/9 contrôles russes** : douze voitures font trois tours sur sec/pluie/neige sans accident, replacement ni blocage.
+Les contacts et frottements sont comptés. Les allées de troncs proches ont été écartées des courbes descendantes.
 
-**Prochaine action :** terminer la qualification globale en cours puis publier la 0.2.53. Les neuf contrôles ciblés passent : douze voitures font trois tours sur sec/pluie/neige sans accident ni replacement. Les allées d’arbres proches ont été déplacées hors des courbes descendantes. Le build reste 0.2.52 jusqu’à la construction finale.
+## Qualification et build
 
-## Base qualifiée conservée
+**107/109 suites** : traces héritées identiques et seuil de temps décor dépassé aussi sur la base (205 ms / 211 ms,
+seuil 150 ms inchangé). Aucune qualification entièrement verte ni différence de performance annoncée.
+Deux builds identiques de **14 063 125 octets**, SHA-256
+`686db2c0863bd8dfa042389f22501fb9bacde19dca2bb1dcabf9f9a527ccd510`.
+53 scripts valides, 34 modules FERRO 0.3.11 inchangés. Rapport canonique :
+`docs/reprise/rapports/13A-RUSSIE-2026-11-19/qualification-finale.json`.
 
-La 0.2.52 a **107/108 suites**, seul échec `traces.test.mjs` hérité identique ; les deux CI donnent aussi 107/108.
-**22 scénarios / 1 415 empreintes p13**, **9/9 dégagements**, 17 trajets et 6 décisions validés ; deux builds identiques.
-Reçus : `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/`. Ne pas relancer ce lot pour le rouvrir.
+## Suite
 
-## Suite et accès
+Après publication : **13B Russie — décor et saisons, NON COMMENCÉ**. Le thème de base permet le roulage ; lac,
+berges, lieux, végétation/faune détaillés et validation visuelle restent à faire. Le tracé et sa graine sont figés.
+Conserver Monaco fidèle, Marseille depuis EMPRISE avec relief mesuré, nouveau grand circuit montagne distinct
+et six propositions. L’indice 7 russe n’annule pas la demande montagne.
 
-Après 13A : **13B Russie, décor et saisons**, puis le reste du plan maître. Conserver Monaco fidèle, Marseille depuis
-EMPRISE avec relief mesuré, nouveau grand circuit de montagne distinct de Haut-Col et six propositions.
-Le nouvel indice 7 russe n'annule pas la demande du circuit montagne supplémentaire.
-
-Spark (`~/bin/kbza`), Mac et amiga indisponibles ici. WebGL, FPS matériel et déploiement non validés.
-Un sous-lot à la fois ; journaux sur disque, publications fréquentes et aucun push forcé ; FERRO canonique inchangé.
+Spark (`~/bin/kbza`), Mac et amiga indisponibles. WebGL, FPS matériel et déploiement non validés.
+Un sous-lot à la fois, publications fréquentes, aucun push forcé ; FERRO canonique inchangé.
