@@ -38,3 +38,8 @@ Les journaux préexistants annoncent 18 contrôles cinéma, 7 réalisateur et 9 
 relancés à cette reprise et ne qualifient pas une intégration sur 0.2.55. Récupérer ce travail sur la base publiée,
 réconcilier les trois fichiers modifiés, puis qualifier raccords, transitions et cadrages. Ne pas écraser la copie
 avancée avec `/workspace/scratch/2540d1a213f9/bitume-demo`, plus ancienne et différente.
+
+Avant intégration, vérifier la PR #11 / **0.2.56**, ouverte en parallèle à la clôture 0.2.55 (tête observée
+`edf660e5e2cfe2894382460aee0cbec48fa3a748`). Elle modifie notamment PhysX et `src/jeu.js` ; ses preuves sont
+distinctes de celles de 0.2.55. Contrôler son état et sa CI, puis retenir le main publié pour les démos afin de
+préserver ces changements éventuels. Ne pas réutiliser la qualification 0.2.55 comme preuve du nouveau code.
