@@ -1,0 +1,127 @@
+{
+  "journaux": 17,
+  "tous_reussis": true,
+  "identiques_aux_cibles_archivees": 17,
+  "archive_reference": "cibles/preuves-brutes.tar.gz",
+  "comparaisons": [
+    {
+      "fichier": "12f4-brume-de-jade-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "reussi": true,
+      "sha256_qualification": "db9ee10dc8a6784f92fd653d7996e1a3bb7f36c0fe23fad378e5a721ca29bc2f",
+      "sha256_cible": "db9ee10dc8a6784f92fd653d7996e1a3bb7f36c0fe23fad378e5a721ca29bc2f",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-cap-sequoia-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "reussi": true,
+      "sha256_qualification": "c08c4943890ca7248071f2e3f8bae8de4d2a8b961c1e02bd2e8bc3f649e03c7e",
+      "sha256_cible": "c08c4943890ca7248071f2e3f8bae8de4d2a8b961c1e02bd2e8bc3f649e03c7e",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-distant-humain-arrivee-abandon-drapeau-et-fin-proche-ne-programment-pas-de-nouvel-arret.json",
+      "reussi": true,
+      "sha256_qualification": "5a0215a7417f804289262b8d137a395c7b9db19ba8e87506bc54a34502418faf",
+      "sha256_cible": "5a0215a7417f804289262b8d137a395c7b9db19ba8e87506bc54a34502418faf",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-garage-occupe-tardivement-un-humain-devant-bloque-le-debut-du-service-ia.json",
+      "reussi": true,
+      "sha256_qualification": "5c86929e9b5b633a14a9e6a7d37ac956f8832bd20b88ea25c53a297a12a8aaf1",
+      "sha256_cible": "5c86929e9b5b633a14a9e6a7d37ac956f8832bd20b88ea25c53a297a12a8aaf1",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-haut-col-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "reussi": true,
+      "sha256_qualification": "735e9e6ce630913858249bee3e43411bd46ce83ba68df85b10e2a2e36402842a",
+      "sha256_cible": "735e9e6ce630913858249bee3e43411bd46ce83ba68df85b10e2a2e36402842a",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-hote-sert-le-rival-distant-recoit-le-resultat-sans-simuler-un-deuxieme-service.json",
+      "reussi": true,
+      "sha256_qualification": "b422e9fdcb340446a91b29455f00dfb4d5e0dbe8c7be6a8832a52ef62a87932c",
+      "sha256_cible": "b422e9fdcb340446a91b29455f00dfb4d5e0dbe8c7be6a8832a52ef62a87932c",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-humain-repris-par-ia-conserve-ses-pneus-puis-paie-le-trajet-et-le-service-complet.json",
+      "reussi": true,
+      "sha256_qualification": "7e5398bbd4a4351fa3549aeb93f3d2839f4e66a9be2c73b4f65403cba60188c9",
+      "sha256_cible": "7e5398bbd4a4351fa3549aeb93f3d2839f4e66a9be2c73b4f65403cba60188c9",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-interruption-juste-avant-la-fin-aucun-pneu-neuf-ni-service-conserve.json",
+      "reussi": true,
+      "sha256_qualification": "6724ec5694c3a19be37603a1c879f1a16612658cb21daace9d1b456b208dd5e1",
+      "sha256_cible": "6724ec5694c3a19be37603a1c879f1a16612658cb21daace9d1b456b208dd5e1",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-lande-noire-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "reussi": true,
+      "sha256_qualification": "2f016093495d1bc81750ce86892a3fe8bfd517f1fe5edd9db5e37c9a6dc37eea",
+      "sha256_cible": "2f016093495d1bc81750ce86892a3fe8bfd517f1fe5edd9db5e37c9a6dc37eea",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-pneus-sains-aucune-decision-ni-arret-dans-le-meme-parcours.json",
+      "reussi": true,
+      "sha256_qualification": "a85c8e447c5d372e757915889c947fbe7e87e22f4c9934e3acf391822c458f9c",
+      "sha256_cible": "a85c8e447c5d372e757915889c947fbe7e87e22f4c9934e3acf391822c458f9c",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-port-sable-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "reussi": true,
+      "sha256_qualification": "2867baa3abf568d8fa13c00f00ef8f1df7e68f5fc0a1e4156e04c613eb3b16f5",
+      "sha256_cible": "2867baa3abf568d8fa13c00f00ef8f1df7e68f5fc0a1e4156e04c613eb3b16f5",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-roche-fauve-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "reussi": true,
+      "sha256_qualification": "02882a124949bb3bfeed251875a48001441e4375c8fc97ebe8fd654fecb4557d",
+      "sha256_cible": "02882a124949bb3bfeed251875a48001441e4375c8fc97ebe8fd654fecb4557d",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-second-service-apres-usure-renouvelee-et-vrai-tour-sans-boucle-au-meme-passage.json",
+      "reussi": true,
+      "sha256_qualification": "534bf925f3eb9e7836a0b13ed8fac6f8c4b725534c792be52703889e5dbf9690",
+      "sha256_cible": "534bf925f3eb9e7836a0b13ed8fac6f8c4b725534c792be52703889e5dbf9690",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-trajet-reel-sous-neige-slicks-conserves-puis-monte-adaptee-apres-service-complet.json",
+      "reussi": true,
+      "sha256_qualification": "12f62b66a84ed6e8751e26eb9762dbd2cb709ea7079bd35f0ea712b53d777e27",
+      "sha256_cible": "12f62b66a84ed6e8751e26eb9762dbd2cb709ea7079bd35f0ea712b53d777e27",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-trajet-reel-sous-pluie-slicks-conserves-puis-monte-adaptee-apres-service-complet.json",
+      "reussi": true,
+      "sha256_qualification": "a3d14209fff80df3ffebc2bf5b1cfe643e36a887db7b482c77db5ba5fe37f451",
+      "sha256_cible": "a3d14209fff80df3ffebc2bf5b1cfe643e36a887db7b482c77db5ba5fe37f451",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-trois-ia-simultanees-sont-servies-separement-puis-repartent.json",
+      "reussi": true,
+      "sha256_qualification": "017c87cf319e617468c16802194683cc8db7a37b4a4c04eb08e3bdf57636fe17",
+      "sha256_cible": "017c87cf319e617468c16802194683cc8db7a37b4a4c04eb08e3bdf57636fe17",
+      "identique_cible_archivee": true
+    },
+    {
+      "fichier": "12f4-val-brule-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "reussi": true,
+      "sha256_qualification": "af0682bdced7784630dc920e12d15a239a35727779278f2cb0822976cc88ef8d",
+      "sha256_cible": "af0682bdced7784630dc920e12d15a239a35727779278f2cb0822976cc88ef8d",
+      "identique_cible_archivee": true
+    }
+  ]
+}

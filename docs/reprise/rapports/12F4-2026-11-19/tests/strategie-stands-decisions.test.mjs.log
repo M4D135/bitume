@@ -1,0 +1,14 @@
+✔ une pluie brève ne programme rien ; une amélioration durable de monte programme le prochain arrêt (44.332116ms)
+✔ le passage sous tunnel ne choisit pas une monte sèche sur une chaussée enneigée (29.369563ms)
+✔ une entrée trop proche ou trop rapide est reportée sans freinage d’urgence vers le garage (41.429394ms)
+✔ un drapeau apparu après la décision empêche une nouvelle entrée sans renouveler les pneus (17.470712ms)
+✔ absence de stands et voiture étrangère ne donnent aucune autorisation (15.933947ms)
+✔ l’admission relit une occupation humaine apparue depuis le guidage (15.271813ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 171.122385

@@ -1,0 +1,149 @@
+{
+  "date_utc": "2026-11-19T14:52:02.105072+00:00",
+  "version": "0.2.51",
+  "physique": "p12",
+  "suites": 107,
+  "reussies": 106,
+  "echecs": [
+    "traces.test.mjs"
+  ],
+  "sources_stables": true,
+  "reserve_traces": {
+    "suite": "traces.test.mjs",
+    "base_version": "0.2.50",
+    "base_commit": "c8afbd49594eaac51876286e471413856117418d",
+    "echec": true,
+    "signature_heritee_identique": true,
+    "actual": [
+      "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf"
+    ],
+    "expected": [
+      "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee"
+    ],
+    "log": "tests/traces.test.mjs.log",
+    "sha256_log": "4c51c0068a15493366ee4aaf14a2b814e43f24e308ffdf71200097dc1b840dfe"
+  },
+  "echecs_hors_reserve": [],
+  "base_preservee": {
+    "commit": "c8afbd49594eaac51876286e471413856117418d",
+    "hashes": {
+      "src/conduite.js": "ed17946c7d15f58bfd72143635aeeb5fac81fbf8438476bf3ccacfeef73eeabc",
+      "src/usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+      "src/pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+      "src/circuit.js": "e872944198a9a9bcd0efdd8d33d5f201c4dfd98016cf04e0bccf4a5b5c9a674f",
+      "src/degats.js": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247",
+      "src/contacts.js": "d6e583db729c91df8de21621c05b3b24835e6dc996e9dd4df7cb0464b27e1b7a",
+      "src/obstacles.js": "02626c61720ba5aa6bc1f06ee103725efed1a0c52f243b3ba2443f6f6cbf914e",
+      "FERRO.lock.json": "cb6d1150c85b03bfaf5f32432256538a92237315e1cd1796cdaf5aaacddd9f55",
+      "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a",
+      "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+      "verifications/fixtures/determinisme-p11.json": "c2453f9f896014a45020678c071a10aed656243ef542565538c571d7fc9430b7"
+    },
+    "lois_et_archives_inchangees": true,
+    "lois_inchangees_depuis_base": true
+  },
+  "determinisme": {
+    "scenarios": 21,
+    "empreintes": 1375,
+    "fixture": "verifications/fixtures/determinisme-p12.json",
+    "fixture_regeneree": false,
+    "fixture_regeneree_portee": "Cette exécution de qualification uniquement ; la création initiale de p12 est une étape distincte.",
+    "fixture_creation_documentee": {
+      "recu_attendu": "CREATION-P12.json",
+      "recu_present": true,
+      "note": "La création initiale après validation comportementale doit être attestée dans ce reçu distinct ; sa seule présence ne certifie pas cette validation."
+    },
+    "fixture_inchangee": true,
+    "verification": 0,
+    "archives": {
+      "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a",
+      "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+      "verifications/fixtures/determinisme-p11.json": "c2453f9f896014a45020678c071a10aed656243ef542565538c571d7fc9430b7"
+    },
+    "archives_inchangees_depuis_base": true
+  },
+  "build": {
+    "sha256": "e349f073c872d129367b0d13d9c0b1e72e76fa67e1851663a0ac7e3f64aa7225",
+    "bytes": 14056780,
+    "reproductible": true,
+    "codes": [
+      0,
+      0
+    ],
+    "hashes": {
+      "VERSION.json": "85e8e4e8f8f1d3e2c3f2b036fde37288ad3b4f52df8d0492bd5df794b96e4dea",
+      "SIZE.json": "bb7c147a42e034357a53d571fc2081c4e11840a9a12a48c3dc8f665776d4b42a",
+      "dist/bitume.html": "e349f073c872d129367b0d13d9c0b1e72e76fa67e1851663a0ac7e3f64aa7225"
+    }
+  },
+  "bundle": {
+    "scripts": 53,
+    "codes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "ferro": {
+    "version": "0.3.11",
+    "modules": 34,
+    "ecarts": []
+  },
+  "webgl_valide": false,
+  "deploiement_effectue": false,
+  "lot": "12F4",
+  "contrat_pistes": {
+    "sha256": "54d361315cc5772dc25cacd90f6be8c3420ebecc96e69dfe2dcbf061abb92349",
+    "build_verifie": true
+  }
+}

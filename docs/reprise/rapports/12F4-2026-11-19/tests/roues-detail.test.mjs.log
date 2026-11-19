@@ -1,0 +1,9 @@
+ok type de pneu invalide ou hérité : repli slick sans plantage, avec ou sans contrat partagé
+ok tous les maillages de roue ont des faces finies, non dégénérées, orientées vers leurs normales
+ok quatre sculptures distinctes proches, silhouettes partagées au loin, cotes et ouverture de jante conservées
+ok taille projetée et hystérésis : quatre détails utiles et erreur de corde bornée dans les cadrages de référence
+ok distance en 3D : caméra haute, roue proche et suspension influent dans le bon sens
+ok passages entre détails : quatre pneus, mêmes objets permanents, dimensions et pose stables
+ok cockpit et rétroviseur acceptent leur détail sans écraser les objets de la vue principale
+ok roue détachée : sculpture conservée et taille du collider inchangée
+8 vérifications réussies

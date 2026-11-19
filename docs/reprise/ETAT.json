@@ -4,64 +4,60 @@
     "branche": "codex/bitume-12f4-20261119",
     "base_commit": "c8afbd49594eaac51876286e471413856117418d",
     "base_version": "0.2.50",
-    "version_courante": "0.2.50",
+    "version_courante": "0.2.51",
     "version_publiee_verifiee": "0.2.50",
     "commit_main_verifie": "c8afbd49594eaac51876286e471413856117418d",
-    "statut": "12F4_implemente_cibles_acquis_qualification_complete_en_cours",
+    "statut": "12F4_qualifie_CPU_publication_finale_en_cours",
     "lot": "12F4_strategie_stands_IA",
     "fiche": "docs/reprise/12F4-STRATEGIE-STANDS-IA.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "019",
+    "derniere_entree": "020",
     "publication_base": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json",
-    "prochaine_action": "Terminer la qualification complète sur sources gelées et référence p12 créée, construire deux fois puis publier et vérifier le distant.",
-    "physique": "p12 actif dans le code ; p11 reste la physique publiée en 0.2.50 ; archives p9/p10/p11 intactes",
+    "prochaine_action": "Terminer la publication sources/tests/build/preuves 0.2.51, vérifier le distant et enregistrer le reçu ; ensuite 13A Russie tracé/relief, non commencé.",
+    "physique": "p12 qualifiée pour le changement de comportement IA ; archives p9/p10/p11 et lois de conduite/usure inchangées.",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
     "comportement": "Stratégie de stands des IA locales : usure forte ou monte durablement inadaptée, guidage physique et file, admission relue après contacts, service réel et sortie sans remise à neuf cachée.",
     "compatibilite": "Protocole de préparation et identifiant de circuit/empreinte complète des sources ; liaison tardive synchronisée, nouveaux joueurs hors grille reportés à la prochaine course.",
-    "qualification_base": "docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json",
-    "checkpoint_reprise": "446a350f736d583471950b8e089ac7d8ab57e4d9",
-    "sources_tests_geles": true,
     "version_cible": "0.2.51",
-    "build_courant": "0.2.50"
+    "build_courant": "0.2.51",
+    "checkpoint_sources": "cb0235085431acbc044f785e27b26ca382c5556a",
+    "checkpoint_distant_verifie": true,
+    "sources_tests_build_geles": true,
+    "qualification": "docs/reprise/rapports/12F4-2026-11-19/qualification-execution.json"
   },
   "validation": {
-    "date_utc": "2026-11-19T11:50:27.476054+00:00",
-    "version": "0.2.50",
-    "physique": "p11",
-    "suites": 105,
-    "reussies": 104,
+    "date_utc": "2026-11-19T14:52:02.105072+00:00",
+    "lot": "12F4",
+    "version": "0.2.51",
+    "physique": "p12",
+    "statut": "CPU_avec_reserve_traces_heritee",
+    "rapport": "docs/reprise/rapports/12F4-2026-11-19/qualification-execution.json",
+    "suites": 107,
+    "reussies": 106,
     "echecs": [
       "traces.test.mjs"
     ],
+    "echecs_hors_reserve": [],
+    "signature_traces_heritee_identique": true,
     "sources_stables": true,
+    "empreintes_suivies": 211,
     "determinisme": {
-      "scenarios": 20,
-      "empreintes": 1300,
-      "fixture_regeneree": false,
-      "fixture_inchangee": true,
+      "scenarios": 21,
+      "empreintes": 1375,
+      "fixture": "verifications/fixtures/determinisme-p12.json",
+      "creation_initiale": "docs/reprise/rapports/12F4-2026-11-19/CREATION-P12.json",
+      "fixture_inchangee_pendant_qualification": true,
       "verification": 0,
-      "archives": {
-        "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
-        "verifications/fixtures/determinisme-p11.json": "c2453f9f896014a45020678c071a10aed656243ef542565538c571d7fc9430b7",
-        "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a"
-      }
+      "archives_p9_p10_p11_inchangees": true
     },
+    "lois_conduite_usure_inchangees": true,
     "build": {
-      "sha256": "b1154b9b8a03641f2b166c44bd7cd191589e2375a9cc490733edd90934d5dc21",
-      "bytes": 14042272,
-      "reproductible": true,
-      "codes": [
-        0,
-        0
-      ],
-      "hashes": {
-        "VERSION.json": "9f0ab222d7970984b4c85ecfd4029d6c566a63b9cc00cf0dc10cd6ea3fcb9a63",
-        "SIZE.json": "d03fb9b81cc72082d053feaadbe40c3e7b84c479515b30c3d11fd75a4ff106ce",
-        "dist/bitume.html": "b1154b9b8a03641f2b166c44bd7cd191589e2375a9cc490733edd90934d5dc21"
-      }
+      "bytes": 14056780,
+      "sha256": "e349f073c872d129367b0d13d9c0b1e72e76fa67e1851663a0ac7e3f64aa7225",
+      "reproductible": true
     },
     "bundle": {
-      "scripts": 52,
+      "scripts": 53,
       "syntaxe_valide": true
     },
     "ferro": {
@@ -69,119 +65,6 @@
       "modules": 34,
       "ecarts": []
     },
-    "webgl_valide": false,
-    "deploiement_effectue": false,
-    "lot": "12F3",
-    "contrat_pistes": {
-      "sha256": "47d571ee06b635c215ac8bbaf2bc014b7afc630307c0afb2cc21c662fea67f50",
-      "build_verifie": true
-    },
-    "statut": "CPU_avec_reserve_traces_heritee",
-    "rapport": "docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json",
-    "reserve_heritee": "docs/reprise/rapports/12F3-2026-11-19/reserve-traces.json",
-    "echec_herite_identique": true,
-    "performance_materielle_mesuree": false,
-    "variabilite_decor": "Seuil réussi lors de ce passage ; variabilité CPU historique 12E conservée, aucun résultat FPS matériel.",
-    "navigateurs_reels_valides": false,
-    "methode_reseau": "Vrais contrôleurs avec transport simulé ; aucune partie réelle entre navigateurs validée.",
-    "ci_finale": {
-      "commit": "baeea4909f64b350fcc83a5706ff1ade12492783",
-      "runs": [
-        {
-          "id": 44519375789,
-          "termine": true,
-          "suites": 105,
-          "reussies": 104,
-          "conclusion": "failure"
-        },
-        {
-          "id": 44519295768,
-          "termine": true,
-          "suites": 105,
-          "reussies": 104,
-          "conclusion": "failure"
-        }
-      ],
-      "unique_echec": "traces.test.mjs",
-      "echec_herite_identique": true
-    },
-    "portee": "Qualification de la base publiée 12F3 / 0.2.50 uniquement ; aucun résultat global 12F4 acquis à ce checkpoint."
-  },
-  "catalogue": {
-    "jouables": 7,
-    "ajouts_demandes": [
-      "Huitième circuit de montagne distinct de Haut-Col",
-      "Russie",
-      "Monaco ultra fidèle",
-      "Spéciale Marseille depuis EMPRISE avec relief mesuré"
-    ],
-    "propositions_conservees": 6,
-    "note": "L’ancien objectif 16 précède l’ajout montagne ; ne supprimer aucune demande pour tenir ce compte."
-  },
-  "suite": {
-    "lot": "12F4_strategie_stands_IA",
-    "statut": "qualification_complete_en_cours",
-    "objectif": "Qualifier les sources gelées et la nouvelle référence p12, obtenir deux builds identiques puis publier le lot complet avec reçu.",
-    "prerequis": "Sources et tests 12F4 gelés, ciblés acquis ; base de branche 446a350f, build publié 0.2.50.",
-    "apres": [
-      "Russie",
-      "Monaco ultra fidèle",
-      "Marseille depuis EMPRISE avec relief mesuré",
-      "Huitième circuit de montagne distinct de Haut-Col",
-      "Six propositions de circuits conservées"
-    ]
-  },
-  "acces": {
-    "mac_spark_amiga_disponibles": false,
-    "travaux_mac_non_fusionnes": "Branches absentes de GitHub ; ne pas les compter livrées.",
-    "publication": "12F3 / 0.2.50 livré sur main 9857f627 ; PR4 fusionnée et vérifiée. Les fusions PR3/PR4 sont terminées et ne doivent pas être redemandées.",
-    "deploiement_effectue": false,
-    "site_verifie": false
-  },
-  "archives": [
-    "docs/reprise/archives/ETAT-AVANT-CLOTURE-12ABC-2026-11-19.json",
-    "docs/reprise/PILOTAGE-2026-11-18.md"
-  ],
-  "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé.",
-  "publication_precedente": {
-    "branche": "main",
-    "statut": "fusion_main_verifiee",
-    "checkpoint_sources": "7c908b1749ab1490991d8e0ce4ec1a38a42ce743",
-    "checkpoint_distant_verifie": true,
-    "main_modifie_par_ce_lot": true,
-    "main_verifie": "9857f6277ba8ac2abdcbe8204eb87f94cbb8a146",
-    "version_main_verifiee": "0.2.50",
-    "version_qualifiee": "0.2.50",
-    "recu_final_verifie": true,
-    "controles_obligatoires_modifies": false,
-    "rulesets_modifies": false,
-    "branche_revue": "codex/bitume-12f3-20261119",
-    "recu": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json",
-    "pr": 4,
-    "url": "https://github.com/M4D135/bitume/pull/4",
-    "etat_pr": "closed",
-    "fusionnee": true,
-    "brouillon": false,
-    "commit_fusion": "9857f6277ba8ac2abdcbe8204eb87f94cbb8a146",
-    "fusion_le_utc": "2026-11-19T12:01:28Z",
-    "commit_revue_qualifie": "baeea4909f64b350fcc83a5706ff1ade12492783",
-    "tree_fusion": "e2b73435692041abadb3b194cb39c78a0c9535f1",
-    "tree_identique_a_la_revue": true
-  },
-  "publication": {
-    "branche": "codex/bitume-12f4-20261119",
-    "statut": "qualification_complete_en_cours",
-    "base_main": "c8afbd49594eaac51876286e471413856117418d",
-    "version_main_verifiee": "0.2.50",
-    "version_cible": "0.2.51",
-    "main_modifie_par_ce_lot": false,
-    "recu_final_verifie": false,
-    "checkpoint_reprise": "446a350f736d583471950b8e089ac7d8ab57e4d9",
-    "build_courant": "0.2.50"
-  },
-  "validation_12F4": {
-    "statut": "cibles_acquis_qualification_complete_en_cours",
-    "sources_tests_geles": true,
     "cibles": {
       "trajets": {
         "reussis": 17,
@@ -205,21 +88,71 @@
         "total": 8
       }
     },
-    "resultat_global": null,
-    "fixture_p12": {
-      "statut": "cree_apres_validation_ciblee_comparaison_globale_en_cours",
-      "recu": "docs/reprise/rapports/12F4-2026-11-19/CREATION-P12.json",
-      "sha256": "fb8f96e5a770fcdd6ee3da520a9c8e0e2ae81c6c0b6b34d5a20758730f790e5f",
-      "scenarios": 21,
-      "empreintes": 1375
+    "contrat_pistes": {
+      "sha256": "54d361315cc5772dc25cacd90f6be8c3420ebecc96e69dfe2dcbf061abb92349",
+      "build_verifie": true
     },
-    "archives_p9_p10_p11_inchangees": true,
-    "build_courant": "0.2.50",
-    "version_cible": "0.2.51",
-    "livree": false,
     "navigateurs_reels_valides": false,
     "webgl_valide": false,
     "performance_materielle_mesuree": false,
-    "deploiement_effectue": false
-  }
+    "deploiement_effectue": false,
+    "methode_reseau": "Vrais contrôleurs avec transport simulé ; aucune partie réelle entre navigateurs validée.",
+    "variabilite_decor": "Réserve CPU historique conservée ; aucune mesure de FPS matérielle."
+  },
+  "catalogue": {
+    "jouables": 7,
+    "ajouts_demandes": [
+      "Huitième circuit de montagne distinct de Haut-Col",
+      "Russie",
+      "Monaco ultra fidèle",
+      "Spéciale Marseille depuis EMPRISE avec relief mesuré"
+    ],
+    "propositions_conservees": 6,
+    "note": "L’ancien objectif 16 précède l’ajout montagne ; ne supprimer aucune demande pour tenir ce compte."
+  },
+  "suite": {
+    "lot": "13A_Russie_trace_relief",
+    "statut": "non_commence",
+    "objectif": "Borner puis réaliser le tracé original et le relief du circuit russe ; Baïkal demeure une proposition de thème.",
+    "prerequis": "Terminer et vérifier la publication finale de 12F4 / 0.2.51 avant de commencer 13A.",
+    "apres": [
+      "13B Russie décor/saisons/livraison",
+      "Monaco ultra fidèle",
+      "Marseille depuis EMPRISE avec relief mesuré",
+      "Huitième circuit de montagne distinct de Haut-Col",
+      "Six propositions de circuits conservées"
+    ]
+  },
+  "acces": {
+    "mac_spark_amiga_disponibles": false,
+    "travaux_mac_non_fusionnes": "Branches absentes de GitHub ; ne pas les compter livrées.",
+    "publication": "12F4 / 0.2.51 qualifié CPU, publication finale en cours ; aucune PR créée à ce stade. Main vérifié reste c8afbd49 / 0.2.50.",
+    "deploiement_effectue": false,
+    "site_verifie": false
+  },
+  "archives": [
+    "docs/reprise/archives/ETAT-AVANT-CLOTURE-12ABC-2026-11-19.json",
+    "docs/reprise/PILOTAGE-2026-11-18.md"
+  ],
+  "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé.",
+  "publication_precedente": {
+    "version": "0.2.50",
+    "recu": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json"
+  },
+  "publication": {
+    "branche": "codex/bitume-12f4-20261119",
+    "statut": "publication_finale_en_cours",
+    "base_main": "c8afbd49594eaac51876286e471413856117418d",
+    "version_main_verifiee": "0.2.50",
+    "version_cible": "0.2.51",
+    "main_modifie_par_ce_lot": false,
+    "recu_final_verifie": false,
+    "build_courant": "0.2.51",
+    "checkpoint_sources": "cb0235085431acbc044f785e27b26ca382c5556a",
+    "checkpoint_distant_verifie": true,
+    "version_qualifiee": "0.2.51",
+    "pr_creee": false,
+    "pr": null
+  },
+  "qualification_precedente": "docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json"
 }

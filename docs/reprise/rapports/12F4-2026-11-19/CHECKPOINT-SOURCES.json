@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date_verification_utc": "2026-11-19T14:55:14.282595+00:00",
+  "statut": "checkpoint_sources_distant_verifie",
+  "repository": "M4D135/bitume",
+  "branche": "codex/bitume-12f4-20261119",
+  "commit_local": "01d16d815d058338a0fea0703cb892b16d47ab7b",
+  "commit_distant": "cb0235085431acbc044f785e27b26ca382c5556a",
+  "tree": "375c46404c6ff4a3d5d1df895acc4eef351aea06",
+  "tree_identique": true,
+  "parent": "446a350f736d583471950b8e089ac7d8ab57e4d9",
+  "main_verifie": "c8afbd49594eaac51876286e471413856117418d",
+  "main_modifie": false,
+  "fichiers": 31,
+  "build_conserve": {
+    "version": "0.2.50",
+    "blob": "0871d6b90dff0eb0615935c6752cba9ab13e8cd9"
+  },
+  "archive_cibles": {
+    "bytes": 1491491,
+    "blob": "ee9ce604ec0eeef2a69a98522177764b5b799eea",
+    "sha256": "50d382033a5ef9c3bc5d72d700f26bf3a92ca6dca0a17a74c2378c0629a88a84"
+  },
+  "portee": "Sources, tests, nouvelle référence p12 et preuves ciblées ; le build qualifié 0.2.51 et les preuves globales sont publiés dans un commit ultérieur."
+}
