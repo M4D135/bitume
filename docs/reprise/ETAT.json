@@ -1,22 +1,24 @@
 {
   "date": "2026-11-19",
   "etat_courant": {
-    "branche": "codex/bitume-13a-russie-20261119",
+    "branche": "main",
     "base_commit": "18451e0eeb701d720f08c069b841d79c2439755d",
     "version_courante": "0.2.53",
-    "version_publiee_verifiee": "0.2.52",
+    "version_publiee_verifiee": "0.2.53",
     "build_courant": "0.2.53",
     "physique": "p13",
-    "statut": "13A_qualifie_publication_finale_a_terminer",
-    "lot": "13A_Russie_trace_relief",
+    "statut": "13A_publie_verifie_termine",
+    "lot": "13A_termine",
     "fiche": "docs/reprise/13A-RUSSIE-TRACE-RELIEF.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "027",
-    "checkpoint_sources": "3d173d16f8d75e4c77548b8caaf77314af3287f9",
+    "derniere_entree": "029",
+    "checkpoint_sources": "b1eabdff3a83e11110bef285ead46d47b6b3c9c9",
     "sources_tests_geles": true,
     "qualification": "docs/reprise/rapports/13A-RUSSIE-2026-11-19/qualification-finale.json",
-    "prochaine_action": "Publier et vérifier sources/build/preuves 0.2.53, fusionner puis consigner le reçu. Ne pas relancer les qualifications. Ensuite 13B.",
-    "safari": "Corrigé, confirmé par David ; chantier clos."
+    "prochaine_action": "Ouvrir 13B Russie, décor et saisons. 13A et sa qualification sont clos ; ne pas les recommencer.",
+    "safari": "Corrigé, confirmé par David ; chantier clos.",
+    "commit_livraison_verifie": "b791ae60952315431ad085cce742b64d9e15f5bc",
+    "publication": "docs/reprise/rapports/13A-RUSSIE-2026-11-19/PUBLICATION-0253.json"
   },
   "validation": {
     "suites": 109,
@@ -35,7 +37,16 @@
     "scripts": 53,
     "ferro": "0.3.11 : 34 modules inchangés",
     "webgl_valide": false,
-    "fps_mesures": false
+    "fps_mesures": false,
+    "ci_code": {
+      "statut": "termine",
+      "suites_par_execution": 109,
+      "reussies_par_execution": 108,
+      "executions": 2,
+      "echec_unique": "traces.test.mjs, signature héritée identique",
+      "decor_reussi": true,
+      "recu": "docs/reprise/rapports/13A-RUSSIE-2026-11-19/github/RECU-CI.json"
+    }
   },
   "catalogue": {
     "jouables_dans_build": 8,

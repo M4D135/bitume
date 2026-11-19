@@ -1,6 +1,6 @@
 # BITUME 0.2.53 — 13A Baïkal : tracé et relief
 
-**Qualification CPU terminée avec deux réserves documentées. Publication finale en préparation.**
+**0.2.53 publiée et vérifiée sur main, livraison `b791ae60`, PR n°7 fusionnée. Qualification CPU avec deux réserves documentées.**
 Base : `18451e0eeb701d720f08c069b841d79c2439755d`, 0.2.52/p13. Sources et tests qualifiés : checkpoint distant `3d173d16f8d75e4c77548b8caaf77314af3287f9` (même arbre que local `feacd351`).
 Le reçu canonique est `qualification-finale.json`. Le passage global brut reste intégral dans `qualification-execution.json` et `qualification.log`.
 
@@ -57,4 +57,8 @@ Le qualificateur a rendu le code 1 et conservé ses échecs. `qualification-fina
 
 ## Suite
 
-**13A est qualifié pour livraison ; 13B reste à réaliser** : lac, berges, lieux signature, végétation/faune propres au Baïkal et validation visuelle des saisons. Le thème de base actuel sert au roulage. WebGL, FPS matériels, parties réelles entre navigateurs et déploiement ne sont pas validés ici. Monaco fidèle, Marseille depuis EMPRISE avec relief, grand circuit montagne et six propositions sont conservés.
+**13A est livré ; 13B reste à réaliser** : lac, berges, lieux signature, végétation/faune propres au Baïkal et validation visuelle des saisons. Le thème de base actuel sert au roulage. WebGL, FPS matériels, parties réelles entre navigateurs et déploiement ne sont pas validés ici. Monaco fidèle, Marseille depuis EMPRISE avec relief, grand circuit montagne et six propositions sont conservés.
+
+## Publication vérifiée
+
+Sources, build et preuves publiés dans `b1eabdff3a83e11110bef285ead46d47b6b3c9c9`, puis fusionnés sur main dans `b791ae60952315431ad085cce742b64d9e15f5bc`. L’arbre est identique au lot qualifié. Le reçu `PUBLICATION-0253.json` contient les lectures indépendantes de main, du commit et de la PR n°7 fermée/fusionnée. Les deux CI du code sont terminées : **108/109 chacune**, seul échec traces hérité identique. Le test décor réussit dans les deux CI ; la réserve chronométrique locale reste documentée. Journaux et reçu : `github/RECU-CI.json`. Aucune CI entièrement verte annoncée.

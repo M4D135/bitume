@@ -1,0 +1,48 @@
+{
+  "version": "0.2.53",
+  "physique": "p13",
+  "commit": "b1eabdff3a83e11110bef285ead46d47b6b3c9c9",
+  "statut": "termine_avec_unique_echec_herite",
+  "suites_par_execution": 109,
+  "reussies_par_execution": 108,
+  "unique_echec": "traces.test.mjs",
+  "signature_heritee_identique": true,
+  "decor_reussi_dans_les_deux_ci": true,
+  "aucune_ci_entierement_verte": true,
+  "executions": [
+    {
+      "job_id": 135696412212,
+      "run_id": 44562812230,
+      "url": "https://github.com/M4D135/bitume/actions/runs/44562812230/job/135696412212",
+      "status": "completed",
+      "conclusion": "failure",
+      "completed_at": "2026-11-19T16:12:17Z",
+      "suites": 109,
+      "reussies": 108,
+      "echecs": [
+        "traces.test.mjs"
+      ],
+      "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+      "log": "job-135696412212.log",
+      "sha256_log": "7deeb7d58401157865dba2b86ddd778c25a27380275bb52f7a9ede0e7405d2b2"
+    },
+    {
+      "job_id": 135695987205,
+      "run_id": 44562696062,
+      "url": "https://github.com/M4D135/bitume/actions/runs/44562696062/job/135695987205",
+      "status": "completed",
+      "conclusion": "failure",
+      "completed_at": "2026-11-19T16:14:00Z",
+      "suites": 109,
+      "reussies": 108,
+      "echecs": [
+        "traces.test.mjs"
+      ],
+      "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+      "log": "job-135695987205.log",
+      "sha256_log": "b5b340ea3cc76f6bbe3046a34196bb88604d0e5088d3d3d2ce46a6daf8fcf907"
+    }
+  ]
+}

@@ -2,9 +2,9 @@
 
 ## Point actif — 19 novembre 2026
 
-**Qualification CPU terminée en 0.2.53/p13 ; publication finale à terminer.**
+**Publié et vérifié sur main en 0.2.53/p13, livraison `b791ae60`, PR n°7 fusionnée. Lot 13A clos.**
 Base livrée : `18451e0eeb701d720f08c069b841d79c2439755d`, BITUME **0.2.52 / p13**.
-Branche : `codex/bitume-13a-russie-20261119`. Build 0.2.53 reproductible ; deux réserves documentées, traces et seuil de temps décor.
+Branche de livraison : `main` ; sources revues `b1eabdff`. Build 0.2.53 reproductible ; deux réserves documentées, traces et seuil de temps décor.
 
 ## Contrat du lot
 
@@ -58,4 +58,4 @@ Douze voitures, trois tours dans chacune des conditions sec/pluie/neige : zéro 
 
 ## Qualification finale
 
-107/109 suites ; traces héritées identiques et seuil de temps décor également dépassé sur la base publiée (205 ms contre 211 ms, seuil 150 ms inchangé). Deux builds identiques de 14 063 125 octets, 53 scripts valides, 34 modules FERRO inchangés. Voir `rapports/13A-RUSSIE-2026-11-19/VALIDATION.md` et `qualification-finale.json`. Les mesures ciblées des neuf contrôles russes sont reproduites à l’identique dans la qualification globale. Publication finale et reçu restent à terminer, puis 13B uniquement.
+107/109 suites ; traces héritées identiques et seuil de temps décor également dépassé sur la base publiée (205 ms contre 211 ms, seuil 150 ms inchangé). Deux builds identiques de 14 063 125 octets, 53 scripts valides, 34 modules FERRO inchangés. Voir `rapports/13A-RUSSIE-2026-11-19/VALIDATION.md` et `qualification-finale.json`. Les mesures ciblées des neuf contrôles russes sont reproduites à l’identique dans la qualification globale. Publication vérifiée ; reçu `rapports/13A-RUSSIE-2026-11-19/PUBLICATION-0253.json`. Prochain lot : 13B uniquement.

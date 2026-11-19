@@ -1,6 +1,6 @@
 # BITUME — plan maître Russie, Monaco, Marseille, roues et pneus
 
-Date du plan : **18 novembre 2026**. État au **19 novembre 2026** : **13A Baïkal qualifié CPU en 0.2.53 / p13, publication finale à terminer**. 5 424 m, 62,95 m de dénivelé, 9/9 contrôles russes ; sept circuits historiques conservés. Rapport : `rapports/13A-RUSSIE-2026-11-19/qualification-finale.json`. Prochain lot après publication : **13B Russie, décor et saisons**, non commencé.
+Date du plan : **18 novembre 2026**. État au **19 novembre 2026** : **13A Baïkal livré sur main en 0.2.53 / p13 (`b791ae60`), PR n°7 fusionnée**. 5 424 m, 62,95 m de dénivelé, 9/9 contrôles russes ; sept circuits historiques conservés. Rapport : `rapports/13A-RUSSIE-2026-11-19/qualification-finale.json`. Prochain lot : **13B Russie, décor et saisons**, non commencé.
 Demande de David : ajouter un circuit en Russie et un Monaco « ultra fidèle », refaire les roues bien rondes et plus réalistes, différencier les sculptures pluie/neige et les slicks lisses, montrer les traces d’usure au fil de la course, puis publier ce plan avant de commencer.
 
 Complément demandé dans la même reprise : **Spéciale Marseille à partir de la carte EMPRISE, avec ajout de relief**, et master liste complète pour Claude Fable. Entrée de passation : [MASTER-LISTE-CLAUDE-FABLE.md](../../MASTER-LISTE-CLAUDE-FABLE.md).
@@ -50,7 +50,7 @@ Les dimensions de la voiture restent la référence : pneus avant de rayon **0,2
 
 ## 3. Lots d’exécution et points de publication
 
-Les critères ci-dessous restent les conditions de clôture. **12A–12F4 et la sortie de file sont clos sur main en 0.2.52/p13** ; reçus conservés dans `rapports/12F4-SORTIE-FILE-2026-11-19/`. **13A est qualifié en 0.2.53**, publication finale à terminer. Réserves documentées : traces héritées et seuil de temps décor également dépassé sur la base. Le décor détaillé russe reste 13B ; les validations WebGL, matérielles et déploiement restent distinctes.
+Les critères ci-dessous restent les conditions de clôture. **12A–12F4 et la sortie de file sont clos sur main en 0.2.52/p13** ; reçus conservés dans `rapports/12F4-SORTIE-FILE-2026-11-19/`. **13A est livré en 0.2.53**, sources/build/preuves vérifiés sur main. Réserves documentées : traces héritées et seuil de temps décor également dépassé sur la base. Le décor détaillé russe reste 13B ; les validations WebGL, matérielles et déploiement restent distinctes.
 
 | Ordre / lot | Travail | Condition pour clôturer le lot |
 |---|---|---|
@@ -75,7 +75,7 @@ Les critères ci-dessous restent les conditions de clôture. **12A–12F4 et la 
 | 15E | Marseille : rendu et performances. | Captures/tour filmé, détails et ressources mesurés sur le corridor. |
 | 15F | Marseille : livraison. | Sources/tests/build publiés, contrôle production séparé, reçu et reprise. |
 
-**13A Baïkal qualifié CPU**, fiche [13A](13A-RUSSIE-TRACE-RELIEF.md) : douze voitures accomplissent trois tours sur sec/pluie/neige sans accident, replacement ni blocage, avec contacts et vrais solides. La 0.2.53 est construite deux fois à l’identique ; publication finale en préparation. Les lots pneus/stands et Safari sont clos. Après publication : **13B Russie, décor et saisons**.
+**13A Baïkal qualifié CPU**, fiche [13A](13A-RUSSIE-TRACE-RELIEF.md) : douze voitures accomplissent trois tours sur sec/pluie/neige sans accident, replacement ni blocage, avec contacts et vrais solides. La 0.2.53 est construite deux fois à l’identique ; publication vérifiée sur main (`b791ae60`). Les lots pneus/stands et Safari sont clos. Prochain lot : **13B Russie, décor et saisons**.
 
 ## 4. Roues : géométrie, matière et rotation
 
@@ -392,8 +392,8 @@ Sources internes : `src/voiture.js`, `src/carene.js`, `src/conduite.js`, `src/de
 - [x] 12E — neige, adhérence et usure physique p10 : qualifié CPU avec réserves en 0.2.47 après bornage du recul ; 96/98 suites, traces hérité et réserve performance décor. WebGL non validé.
 - [x] Publication 12E — sources, tests, build 0.2.47 et preuves contrôlés sur main (`c55cde2`) ; déploiement séparé.
 - [x] 12F — Sources/build/preuves livrés sur main en 0.2.52/p13 ; stratégie IA et neuf contrôles de dégagement qualifiés CPU. Validations navigateur, WebGL et matériel distinctes.
-- [x] 13A — Russie, tracé et relief : qualifié CPU en 0.2.53/p13 ; publication finale à terminer, deux réserves documentées.
-- [ ] 13B — Russie, décor, saisons et livraison complète : prochain lot après publication de 13A.
+- [x] 13A — Russie, tracé et relief : livré sur main en 0.2.53/p13 (`b791ae60`), deux réserves documentées.
+- [ ] 13B — Russie, décor, saisons et livraison complète : prochain lot ; 13A livré.
 - [ ] 14A — Monaco, dossier de référence métrique.
 - [ ] 14B — Monaco, tracé explicite.
 - [ ] 14C — Monaco, murs, grille et IA.

@@ -1,0 +1,98 @@
+{
+  "date_verification_utc": "2026-11-19T16:12:45.693Z",
+  "version": "0.2.53",
+  "physique": "p13",
+  "lot": "13A_Russie_trace_relief",
+  "statut": "publie_sur_main_et_verifie",
+  "depot": "M4D135/bitume",
+  "base": "18451e0eeb701d720f08c069b841d79c2439755d",
+  "commit_local_qualifie": "951c2ab10d47df271923b4710a7f77cb4fc7b775",
+  "commit_source_distant": "b1eabdff3a83e11110bef285ead46d47b6b3c9c9",
+  "commit_livraison_main": "b791ae60952315431ad085cce742b64d9e15f5bc",
+  "arbre_qualifie_et_publie": "48db4837dbe2352033c981545417c6b88d345662",
+  "parents": [
+    "18451e0eeb701d720f08c069b841d79c2439755d",
+    "b1eabdff3a83e11110bef285ead46d47b6b3c9c9"
+  ],
+  "pr": {
+    "numero": 7,
+    "url": "https://github.com/M4D135/bitume/pull/7",
+    "state": "closed",
+    "merged": true,
+    "merged_at": "2026-11-19T16:10:39Z",
+    "draft": false
+  },
+  "verification_racine": {
+    "ref_main": true,
+    "commit_et_arbre": true,
+    "pr_fermee_fusionnee": true,
+    "sources_tests_build_identiques_aux_preuves": true
+  },
+  "build": {
+    "path": "dist/bitume.html",
+    "bytes": 14063125,
+    "git_blob": "d82cc37f9ffa01e33246570e6c32f5c1452d63a9",
+    "sha256": "686db2c0863bd8dfa042389f22501fb9bacde19dca2bb1dcabf9f9a527ccd510",
+    "reproductible": true
+  },
+  "qualification": {
+    "rapport": "qualification-finale.json",
+    "suites": 109,
+    "reussies": 107,
+    "reserves": [
+      "traces.test.mjs : signature héritée identique",
+      "decor.test.mjs : dépassement du seuil également reproduit sur la base"
+    ],
+    "russie": "9/9 ; 12 voitures, trois tours sec/pluie/neige sans accident/replacement/blocage",
+    "circuits_historiques": "84 tableaux identiques",
+    "determinisme": "22 scénarios / 1 415 empreintes p13 inchangées"
+  },
+  "ci_code": {
+    "sha": "b1eabdff3a83e11110bef285ead46d47b6b3c9c9",
+    "statut": "termine_108_sur_109_chacune_unique_echec_traces_herite",
+    "rapport": "github/RECU-CI.json",
+    "executions": [
+      {
+        "job_id": 135696412212,
+        "run_id": 44562812230,
+        "url": "https://github.com/M4D135/bitume/actions/runs/44562812230/job/135696412212",
+        "status": "completed",
+        "conclusion": "failure",
+        "completed_at": "2026-11-19T16:12:17Z",
+        "suites": 109,
+        "reussies": 108,
+        "echecs": [
+          "traces.test.mjs"
+        ],
+        "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+        "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+        "log": "job-135696412212.log",
+        "sha256_log": "7deeb7d58401157865dba2b86ddd778c25a27380275bb52f7a9ede0e7405d2b2"
+      },
+      {
+        "job_id": 135695987205,
+        "run_id": 44562696062,
+        "url": "https://github.com/M4D135/bitume/actions/runs/44562696062/job/135695987205",
+        "status": "completed",
+        "conclusion": "failure",
+        "completed_at": "2026-11-19T16:14:00Z",
+        "suites": 109,
+        "reussies": 108,
+        "echecs": [
+          "traces.test.mjs"
+        ],
+        "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+        "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+        "log": "job-135695987205.log",
+        "sha256_log": "b5b340ea3cc76f6bbe3046a34196bb88604d0e5088d3d3d2ce46a6daf8fcf907"
+      }
+    ],
+    "decor_reussi_dans_les_deux_ci": true,
+    "aucune_ci_entierement_verte_annoncee": true
+  },
+  "prochaine_action": "13B Russie : lac, berges, lieux signature, végétation/faune et saisons ; ne pas reprendre 13A.",
+  "webgl_valide": false,
+  "fps_mesures": false,
+  "deploiement_effectue": false,
+  "site_verifie": false
+}

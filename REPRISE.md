@@ -2,10 +2,11 @@
 
 ## Point actif — 19 novembre 2026
 
-**13A Baïkal qualifié CPU en 0.2.53 / p13 ; publication finale à terminer.**
-Branche `codex/bitume-13a-russie-20261119`, checkpoint sources vérifié `3d173d16`.
+**0.2.53 / p13 publiée et vérifiée sur main**, livraison `b791ae60`.
+**PR n°7 fusionnée ; lot 13A tracé et relief terminé.**
+Sources, jeu compilé et preuves correspondent à la tête revue `b1eabdff`.
 Lire `docs/reprise/ETAT.json`, la dernière entrée du suivi et `docs/reprise/13A-RUSSIE-TRACE-RELIEF.md` uniquement.
-**Prochaine action : publier sources/build/preuves, vérifier le distant, fusionner et consigner le reçu.**
+**Prochaine action : 13B Russie — décor et saisons, NON COMMENCÉ.**
 Les tests sont terminés et les sources gelées : ne pas recommencer la qualification ou les lots 12A–12F4/Safari clos.
 
 ## Résultat de 13A
@@ -25,9 +26,13 @@ Deux builds identiques de **14 063 125 octets**, SHA-256
 53 scripts valides, 34 modules FERRO 0.3.11 inchangés. Rapport canonique :
 `docs/reprise/rapports/13A-RUSSIE-2026-11-19/qualification-finale.json`.
 
+Reçu de livraison : `docs/reprise/rapports/13A-RUSSIE-2026-11-19/PUBLICATION-0253.json`.
+Les deux CI du code sont terminées : **108/109 chacune**, seules traces héritées identiques ; décor réussi en CI.
+Reçu : `docs/reprise/rapports/13A-RUSSIE-2026-11-19/github/RECU-CI.json`. Cette vérification est close.
+
 ## Suite
 
-Après publication : **13B Russie — décor et saisons, NON COMMENCÉ**. Le thème de base permet le roulage ; lac,
+**13B Russie — décor et saisons, NON COMMENCÉ**. Le thème de base permet le roulage ; lac,
 berges, lieux, végétation/faune détaillés et validation visuelle restent à faire. Le tracé et sa graine sont figés.
 Conserver Monaco fidèle, Marseille depuis EMPRISE avec relief mesuré, nouveau grand circuit montagne distinct
 et six propositions. L’indice 7 russe n’annule pas la demande montagne.

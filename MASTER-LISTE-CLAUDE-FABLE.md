@@ -4,15 +4,16 @@ Plan du **18 novembre 2026**, état de reprise actualisé le **19 novembre 2026*
 
 ## 1. Mission et point de départ
 
-Poursuivre **BITUME**, jeu de course procédural de monoplaces, dépôt [M4D135/bitume](https://github.com/M4D135/bitume), branche de livraison `main`. **13A Baïkal qualifié CPU en 0.2.53 / p13 ; publication finale à terminer.** La base 0.2.52 et les lots pneus/stands sont clos. Rapport : `docs/reprise/rapports/13A-RUSSIE-2026-11-19/qualification-finale.json`. Après publication : **13B Russie, décor et saisons**, non commencé. Avancer par petits lots, publier sources/builds/preuves et garder une reprise courte. Toutes les autres demandes restent conservées.
+Poursuivre **BITUME**, jeu de course procédural de monoplaces, dépôt [M4D135/bitume](https://github.com/M4D135/bitume), branche de livraison `main`. **13A Baïkal livré sur main en 0.2.53 / p13 (`b791ae60`), PR n°7 fusionnée.** La base 0.2.52 et les lots pneus/stands sont clos. Rapport : `docs/reprise/rapports/13A-RUSSIE-2026-11-19/qualification-finale.json`. Prochain lot : **13B Russie, décor et saisons**, non commencé. Avancer par petits lots, publier sources/builds/preuves et garder une reprise courte. Toutes les autres demandes restent conservées.
 
 | Élément | État de reprise du 19 novembre 2026 |
 |---|---|
-| Base publiée vérifiée | **0.2.52 / p13**, main `18451e0e` ; **0.2.53 qualifiée, publication finale en préparation**. |
-| Checkpoint de reprise | **`3d173d16`**, sources et parcours 13A vérifiés ; fiche `docs/reprise/13A-RUSSIE-TRACE-RELIEF.md`. |
+| Base publiée vérifiée | **0.2.53 / p13**, livraison main `b791ae60`, sources/build/preuves vérifiés. |
+| Checkpoint de reprise | **`b791ae60`**, PR n°7 fusionnée, 13A clos ; fiche `docs/reprise/13A-RUSSIE-TRACE-RELIEF.md`. |
 | Moteur BITUME | **FERRO 0.3.11**, 34 modules verrouillés. |
 | Physique | **p13**, sept circuits historiques et archives p9 à p13 conservés. |
 | Qualification du lot | **107/109 suites** : traces héritées et seuil de temps décor également dépassé sur la base ; **9/9 contrôles russes**, 84 tableaux historiques identiques, 22 scénarios / 1 415 empreintes p13, deux builds identiques de **14 063 125 octets**. |
+| CI de la livraison | **108/109 chacune**, deux exécutions terminées ; seules traces héritées identiques, décor réussi en CI. |
 | Site public | Aucun déploiement de 0.2.53 déclaré ; WebGL, FPS matériel et parties réelles entre navigateurs non validés. |
 | Circuits jouables | **8 dans le build 0.2.53**, dont Baïkal avec thème de base ; décor détaillé en 13B. |
 | Nouveaux circuits explicitement demandés | **Huitième circuit de montagne distinct**, **Russie, Monaco ultra fidèle, Spéciale Marseille issue d’EMPRISE avec relief**. |
@@ -34,7 +35,7 @@ Les sept premières entrées existent. Les trois suivantes répondent à la dema
 | 5 | **Roche-Fauve** | Afrique | Plateaux ocres, ravine et strates minérales. | Livré |
 | 6 | **Brume-de-Jade** | Asie | Pics calcaires, vallées et terrasses. | Livré |
 | 7 | **Cap-Séquoia** | États-Unis, Pacifique | Falaises, anses, océan et grands conifères. | Livré en 0.2.38 |
-| 8 | **Baïkal — Russie** | Russie / Sibérie | Tracé original de 5 424 m, 62,95 m de dénivelé ; Baïkal choisi en 13A, graine 179. | 13A qualifié ; 13B décor à faire |
+| 8 | **Baïkal — Russie** | Russie / Sibérie | Tracé original de 5 424 m, 62,95 m de dénivelé ; Baïkal choisi en 13A, graine 179. | 13A livré en 0.2.53 ; 13B décor à faire |
 | 9 | **Monaco** | Principauté de Monaco | Parcours réel 2026, 3 337 m et 19 virages ; murs, tunnel, stands, port et architecture fidèles. | Demandé |
 | 10 | **Spéciale Marseille** | France / Marseille | Carte **EMPRISE**, parcours de course défini sur ses rues, relief altimétrique, ville et collisions raccordées. | Demandé |
 | 11 | **Fjord-d’Argent** | Norvège / Europe du Nord | Fjord encaissé, parois, ponts, rives dissymétriques et lumières nordiques ; tracé original. | Proposition |
