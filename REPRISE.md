@@ -2,6 +2,11 @@
 
 ## Point actif — 19 novembre 2026
 
+**12F4 en cours : stratégie de stands IA**, non qualifiée. Fiche `docs/reprise/12F4-STRATEGIE-STANDS-IA.md`.
+Base vérifiée `c8afbd49` / **0.2.50** ; branche `codex/bitume-12f4-20261119`.
+Prochaine action : décisions, guidage réel, service partagé puis qualification sur les sept circuits.
+**p12 prévue** pour ce changement de simulation ; conserver les références p9/p10/p11 intactes.
+
 Lire `git status`, `docs/reprise/ETAT.json` et la dernière entrée du suivi ; ouvrir ensuite seulement la fiche active.
 
 - **12F3 livré sur main en 0.2.50**, sources, tests, build et preuves publiés.
@@ -26,7 +31,7 @@ Rapport : `docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json`.
 Reçu : `docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json`.
 Les deux CI finales sont terminées : runs `44519375789` et `44519295768`, **104/105 chacune**,
 seul échec traces hérité identique ; aucune CI entièrement verte annoncée.
-**Prochain sous-lot : stratégie de stands IA**, non commencé ; le borner avant toute modification.
+**Sous-lot actif : 12F4 stratégie de stands IA**, périmètre fixé dans sa fiche ; source/build 0.2.51 non qualifiés.
 Ne pas rendre les longues courses dépendantes de ces arrêts avant qualification des rivaux.
 **Parties réelles entre navigateurs, WebGL, matériel et déploiement non validés.**
 Les tests utilisent les vrais contrôleurs avec transport simulé ; le site n’est pas déclaré vérifié.

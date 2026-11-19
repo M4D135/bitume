@@ -1,27 +1,26 @@
 {
   "date": "2026-11-19",
   "etat_courant": {
-    "branche": "codex/bitume-12f3-20261119",
-    "base_commit": "56086eccd5d3085b6f8e8b86fd65c33c81d15b1b",
-    "base_version": "0.2.49",
+    "branche": "codex/bitume-12f4-20261119",
+    "base_commit": "c8afbd49594eaac51876286e471413856117418d",
+    "base_version": "0.2.50",
     "version_courante": "0.2.50",
     "version_publiee_verifiee": "0.2.50",
-    "commit_main_verifie": "9857f6277ba8ac2abdcbe8204eb87f94cbb8a146",
-    "statut": "12F3_livre_sur_main",
-    "lot": "12F3_reseau_usure_services",
-    "fiche": "docs/reprise/12F3-RESEAU-USURE-SERVICES.md",
+    "commit_main_verifie": "c8afbd49594eaac51876286e471413856117418d",
+    "statut": "12F4_cadre_non_qualifie",
+    "lot": "12F4_strategie_stands_IA",
+    "fiche": "docs/reprise/12F4-STRATEGIE-STANDS-IA.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "017",
+    "derniere_entree": "018",
     "checkpoint_sources": "7c908b1749ab1490991d8e0ce4ec1a38a42ce743",
     "checkpoint_distant_verifie": true,
-    "qualification": "docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json",
-    "publication_base": "docs/reprise/rapports/12F2-2026-11-19/FUSION-0249.json",
-    "prochaine_action": "Borner la stratégie de stands IA, non commencée ; 12F3 / 0.2.50 est livré et la fusion PR4 vérifiée.",
-    "physique": "p11 ; références p9/p10/p11 conservées",
+    "publication_base": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json",
+    "prochaine_action": "Implémenter puis qualifier le guidage et le service réel des rivaux aux stands ; p12 prévue, références p9/p10/p11 intactes.",
+    "physique": "p11 publiée ; p12 prévue pour le changement de comportement IA, sans régénérer p9/p10/p11",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
     "comportement": "Choix de prochaine monte actif en ligne ; quatre états de pneus à 2 Hz, service immédiat fiable, validation et relais par hôte, reprise IA sans remise à neuf.",
     "compatibilite": "Protocole de préparation et identifiant de circuit/empreinte complète des sources ; liaison tardive synchronisée, nouveaux joueurs hors grille reportés à la prochaine course.",
-    "publication": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json"
+    "qualification_base": "docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json"
   },
   "validation": {
     "date_utc": "2026-11-19T11:50:27.476054+00:00",
@@ -117,10 +116,10 @@
     "note": "L’ancien objectif 16 précède l’ajout montagne ; ne supprimer aucune demande pour tenir ce compte."
   },
   "suite": {
-    "lot": "strategie_stands_IA",
-    "statut": "non_commence",
-    "objectif": "Borner puis qualifier les décisions de stands des rivaux pour les courses longues, sans renouvellement caché des pneus.",
-    "prerequis": "12F3 / 0.2.50 livré sur main, PR4 fusionnée et reçu vérifié ; ne pas reprendre ce lot.",
+    "lot": "12F4_strategie_stands_IA",
+    "statut": "en_cours",
+    "objectif": "Décision de pneus, trajet réel, service complet et sortie des rivaux, sans remise à neuf cachée ; qualification sur sept circuits.",
+    "prerequis": "0.2.50 publiée et vérifiée sur main c8afbd49.",
     "apres": [
       "Russie",
       "Monaco ultra fidèle",
@@ -141,7 +140,7 @@
     "docs/reprise/PILOTAGE-2026-11-18.md"
   ],
   "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé.",
-  "publication": {
+  "publication_precedente": {
     "branche": "main",
     "statut": "fusion_main_verifiee",
     "checkpoint_sources": "7c908b1749ab1490991d8e0ce4ec1a38a42ce743",
@@ -165,5 +164,14 @@
     "commit_revue_qualifie": "baeea4909f64b350fcc83a5706ff1ade12492783",
     "tree_fusion": "e2b73435692041abadb3b194cb39c78a0c9535f1",
     "tree_identique_a_la_revue": true
+  },
+  "publication": {
+    "branche": "codex/bitume-12f4-20261119",
+    "statut": "checkpoint_perimetre_a_publier",
+    "base_main": "c8afbd49594eaac51876286e471413856117418d",
+    "version_main_verifiee": "0.2.50",
+    "version_cible": "0.2.51",
+    "main_modifie_par_ce_lot": false,
+    "recu_final_verifie": false
   }
 }
