@@ -25,7 +25,11 @@ function fixture() {
 }
 function mondeVide(world) {
   assert.equal(world._disposed, true); assert.equal(world._bodies.size, 0);
-  assert.equal(world._actorIds.size, 0); assert.equal(world._views.size, 0); assert.equal(world._viewPointers.size, 0);
+  assert.equal(world._actorIds.size, 0); assert.equal(world._statics.length, 0);
+  // Le canon 0.3.13 utilise des tampons natifs réservés, pas les anciens caches _views/_viewPointers.
+  // Le contrat observable reste : aucun acteur conservé et aucune lecture/simulation après destruction.
+  assert.throws(() => world.step(1 / 120), /disposed/);
+  assert.throws(() => world.readPose(1), /disposed/);
 }
 
 test('PhysX : une création interrompue détache les voitures déjà installées et permet une reprise propre', () => {

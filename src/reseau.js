@@ -21,17 +21,48 @@
   const STUN = [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }, { urls: 'stun:stun.cloudflare.com:3478' }];
   const CHAMPS = ['s', 'd', 'v', 'psi', 'beta', 'omega', 'y', 'tangage', 'roulis', 'regime', 'volant', 'rapport', 'gaz', 'frein', 'braquage'];
   const TAILLE_VOITURE = 1 + 4 * CHAMPS.length;
+  const PHYSX_N = 11, PHYSX_TAILLE = 1 + 4 * PHYSX_N, PHYSX_TAMPONS = new WeakMap();
+  const OFFSET_MIN = Math.fround(-.18), OFFSET_MAX = Math.fround(.14);
+
+  // Extension facultative : vitesses monde en m/s et rad/s, quatre courses de roues en m, nombre d'appuis.
+  // Les limites de course incluent exactement leur représentation float32 sur le fil.
+  function valeurPhysx(p, i) {
+    return i < 3 ? p.velocity[i] : i < 6 ? p.angular[i - 3] : i < 10 ? p.offsets[i - 6] : p.groundCount;
+  }
+  function physxValide(p, source = false) {
+    if (!p || (source ? p.velocity?.length !== 3 || p.angular?.length !== 3 || p.offsets?.length !== 4
+      : !(Array.isArray(p) || ArrayBuffer.isView(p)) || p.length !== PHYSX_N)) return false;
+    for (let i = 0; i < PHYSX_N; i++) {
+      const x = source ? valeurPhysx(p, i) : p[i];
+      if (!Number.isFinite(x) || (i < 6 ? Math.abs(x) > (i < 3 ? 500 : 100)
+        : i < 10 ? x < OFFSET_MIN || x > OFFSET_MAX : !Number.isInteger(x) || x < 0 || x > 4)) return false;
+    }
+    return true;
+  }
 
   // ---------------------------------------------------------------- paquets d'état (fonctions pures)
   // [u8 type = 1][f64 t (ms, horloge commune)][u8 n] puis n fois [u8 id][15 × f32]
+  // Queue optionnelle : [u8 0x50][u8 version=1][u8 m] puis m fois [u8 index voiture][11 × f32].
+  // L'ancien lecteur ignore cette queue ; sans extension, le paquet reste identique octet pour octet.
   function emballer(t, voitures) {
-    const buf = new ArrayBuffer(10 + voitures.length * TAILLE_VOITURE), dv = new DataView(buf);
+    let physiques = 0;
+    for (const v of voitures) if (physxValide(v.etat._physx, true)) physiques++;
+    const buf = new ArrayBuffer(10 + voitures.length * TAILLE_VOITURE + (physiques ? 3 + physiques * PHYSX_TAILLE : 0)), dv = new DataView(buf);
     dv.setUint8(0, 1); dv.setFloat64(1, t, true); dv.setUint8(9, voitures.length);
     let o = 10;
     for (const v of voitures) {
       dv.setUint8(o++, v.id);
       const e = v.etat;
       for (const k of CHAMPS) { dv.setFloat32(o, Number.isFinite(e[k]) ? e[k] : 0, true); o += 4; }
+    }
+    if (physiques) {
+      dv.setUint8(o++, 0x50); dv.setUint8(o++, 1); dv.setUint8(o++, physiques);
+      for (let i = 0; i < voitures.length; i++) {
+        const ph = voitures[i].etat._physx;
+        if (!physxValide(ph, true)) continue;
+        dv.setUint8(o++, i);
+        for (let j = 0; j < PHYSX_N; j++) { dv.setFloat32(o, valeurPhysx(ph, j), true); o += 4; }
+      }
     }
     return buf;
   }
@@ -45,7 +76,46 @@
       for (const k of CHAMPS) { etat[k] = dv.getFloat32(o, true); o += 4; }
       voitures.push(etat);
     }
+    if (voitures.length === n && o + 3 <= dv.byteLength && dv.getUint8(o) === 0x50 && dv.getUint8(o + 1) === 1) {
+      const m = dv.getUint8(o + 2), debut = o + 3;
+      if (m <= n && debut + m * PHYSX_TAILLE === dv.byteLength) {
+        const vus = new Uint8Array(n);
+        for (let j = 0; j < m; j++) {
+          const index = dv.getUint8(debut + j * PHYSX_TAILLE);
+          if (index >= n || vus[index]) return { t, voitures }; // queue ambiguë : conserver seulement l'état historique
+          vus[index] = 1;
+        }
+        o = debut;
+        for (let j = 0; j < m; j++) {
+          const index = dv.getUint8(o++), ph = new Float32Array(PHYSX_N);
+          for (let k = 0; k < PHYSX_N; k++) { ph[k] = dv.getFloat32(o, true); o += 4; }
+          if (physxValide(ph)) voitures[index].physx = ph;
+        }
+      }
+    }
     return { t, voitures };
+  }
+
+  function prolongerPhysx(e, dt, c, r) {
+    let ph = PHYSX_TAMPONS.get(r);
+    if (!ph) { ph = new Float64Array(PHYSX_N); PHYSX_TAMPONS.set(r, ph); }
+    for (let i = 0; i < PHYSX_N; i++) ph[i] = e.physx[i];
+    r.physx = ph;
+    const gravite = ph[10] === 0 ? 9.81 : 0;
+    r.y = e.y + ph[1] * dt - .5 * gravite * dt * dt;
+    ph[1] -= gravite * dt; // vitesse au temps prédit, notamment pour une reprise d'autorité pendant le saut
+    const vitesse = Math.hypot(ph[3], ph[4], ph[5]);
+    if (!dt || !vitesse) return;
+    const cap = B.circuit.echantillon(c, e.s).cap + e.psi + e.beta;
+    const ca = Math.cos(cap), sa = Math.sin(cap), ct = Math.cos(e.tangage), st = Math.sin(e.tangage), cr = Math.cos(e.roulis), sr = Math.sin(e.roulis);
+    const wx = ph[3] / vitesse, wy = ph[4] / vitesse, wz = ph[5] / vitesse, co = Math.cos(vitesse * dt), si = Math.sin(vitesse * dt), un = 1 - co;
+    // Projection verticale de la rotation monde (Rodrigues), appliquée aux trois axes Ry(-cap) Rz(tangage) Rx(roulis).
+    // Pas de division par cos(tangage) : un véhicule presque vertical reste fini.
+    const x = si * wz + un * wy * wx, y = co + un * wy * wy, z = -si * wx + un * wy * wz;
+    const avantY = x * ca * ct + y * st + z * sa * ct;
+    const droiteY = x * (ca * st * sr - sa * cr) - y * ct * sr + z * (sa * st * sr + ca * cr);
+    const hautY = x * (-ca * st * cr - sa * sr) + y * ct * cr + z * (-sa * st * cr + ca * sr);
+    r.tangage = Math.asin(Math.max(-1, Math.min(1, avantY))); r.roulis = Math.atan2(-droiteY, hautY);
   }
 
   // Prolonge un état (repère du circuit) de dt secondes, à vitesse et lacet constants : la cinématique de la conduite.
@@ -53,14 +123,17 @@
   function prolonger(e, dt, c, sortie) {
     const r = sortie || {};
     for (const k of CHAMPS) r[k] = e[k];
+    r.physx = null;
     const pas = 1 / 120, L = c.longueur, sens = dt < 0 ? -1 : 1;
     let reste = Math.min(sens > 0 ? .35 : .1, Math.abs(dt) || 0);
+    const horizon = sens * reste;
     while (reste > 1e-9) {
       const h = sens * Math.min(pas, reste), k = B.circuit.echantillon(c, r.s).courbure, den = Math.max(1 - k * r.d, .1);
       const ds = r.v * Math.cos(r.psi) / den;
       r.s = ((r.s + ds * h) % L + L) % L; r.d += r.v * Math.sin(r.psi) * h; r.psi += (r.omega - k * ds) * h;
       reste -= Math.abs(h);
     }
+    if (physxValide(e.physx)) prolongerPhysx(e, horizon, c, r);
     return r;
   }
 

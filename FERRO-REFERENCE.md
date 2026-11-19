@@ -1,4 +1,4 @@
-# FERRO — référence commune 0.3.12
+# FERRO — référence commune 0.3.14
 
 Décision de David du 16 novembre 2026 : entièrement procédural, aucun plafond de taille du code ni du build. Moteur prioritaire, atelier secondaire.
 
@@ -22,4 +22,33 @@ La version 0.3.12 corrige les stries du SSR historique des flaques : lecture de 
 
 La qualification utilise les shaders réels sous EGL/Mesa sur des scènes analytiques. Elle ne vaut pas validation visuelle de BITUME dans un navigateur. Le SSR reste limité à la géométrie visible et son coût augmente dans le banc logiciel ; aucun gain FPS matériel n’est annoncé. Preuves canoniques : `M4D135/FERRO:docs/reflets-0312/`. Contrôles du jeu : `docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/`.
 
-Canon publié vérifié : `a22b738fbe2aa2b36b659fca94527acc2ffcd635`, arbre `c858dea55ae3b38c307910124936394671cfbf74`. Le reçu et les preuves exactes sont annexés dans `docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/ferro-canonique/`. EMPRISE : 9/11 contrats ciblés, deux échecs hérités, build complet bloqué par `src/city-data.js` indisponible ; aucune qualification complète du jeu EMPRISE revendiquée.
+Canon 0.3.12 publié vérifié : `a22b738fbe2aa2b36b659fca94527acc2ffcd635`, arbre `c858dea55ae3b38c307910124936394671cfbf74`. Le reçu et les preuves exactes sont annexés dans `docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/ferro-canonique/`. EMPRISE : 9/11 contrats ciblés, deux échecs hérités, build complet bloqué par `src/city-data.js` indisponible ; aucune qualification complète du jeu EMPRISE revendiquée.
+
+## Version 0.3.13 — PhysX et sols procéduraux
+
+Canon publié : main `b09a4e82252dbcb43a363a19b3e43c0a90e9a41b`, PR #1, arbre
+`4efb24f1cf2d8830b8f608cf859b2222ef08beca`. Adaptateur PhysX étendu pour les corps dynamiques de véhicules,
+formes convexes, contacts, forces aux points et cycle de vie ; relief apparent plus riche pour `organicSoil`.
+Les versions WebGL2 et WebGPU sont cohérentes ; le fragment world WGSL a été régénéré et validé avec Naga.
+Le WASM PhysX 5.12.0 embarqué est inchangé. Les 34 modules ont été installés par le script canonique et
+contrôlés à l’identique. Aucun calcul de conduite propre à BITUME n’est ajouté aux copies du moteur.
+
+Qualification canonique : 208 réussis, aucun échec, un TODO hérité ; contrôles WASM et shaders EGL réels.
+EMPRISE isolé : 9/11 contrats ciblés, deux échecs identiques avant/après ; 88 scripts valides, 34 modules exacts.
+Le build complet d’EMPRISE reste bloqué par `city-data.js` indisponible. La sonde llvmpipe du shader de sol
+mesure +14,5 % de coût dans ce cas logiciel ; aucune conclusion sur les FPS matériels du jeu.
+Preuves : `M4D135/FERRO:docs/physx-sols-0313/`, `docs/physx-vehicles/`, `docs/sols-proceduraux/` et
+`docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-FERRO-0313.json`.
+
+## Version 0.3.14 — libération des vues PhysX
+
+Main `85ba941709bb304cbc34f8beb7baab0639321919`, PR #2 fusionnée, arbre
+`27c2f2dd23c57feedefc748213f22fd165a15635`. L’adaptateur retire les wrappers WebIDL empruntés de leurs caches
+quand les mondes cessent de les utiliser ; le comptage des propriétaires protège les vues temporaires partagées.
+Seuls `physx.js` et le numéro de version dans `engine.js` changent. WASM, lois, shaders, 32 autres modules identiques.
+
+Canon : 210 réussis, 0 échec, 1 TODO ; 25 contrôles PhysX dont 72 destructions de mondes et deux mondes simultanés.
+EMPRISE ciblé : 10/12 sur les deux versions (contrat PhysX ajouté aux onze précédents), deux échecs hérités identiques.
+Ni tas natif ni FPS matériels mesurés. BITUME : 34 modules installés officiellement, douze reprises finales
+réussies, 54 empreintes p14 exactes et fixture inchangée. Preuves et reçu sous
+`docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/ferro-0314/` et `PUBLICATION-FERRO-0314.json`.

@@ -1,0 +1,7 @@
+ok  témoin : la mesure voit une allocation connue (compter sans objet fourni)
+    0 octet alloué en 300 passes et 1 800 dessins (780 objets par dessin ; mesure 1/5)
+ok  traces : passe à 30 Hz et dessin sans allocation, tous les effets (glisse, herbe, glissière, contacts, pluie, pièces)
+    0 octet sur 50 premières images préparées et 4 000 suivantes ; 7600 octets pour 50 premières images d'états neufs
+ok  sillage : état préparé au lancement, première image et suivantes sans allocation
+---
+3 tests passes

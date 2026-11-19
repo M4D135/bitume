@@ -1,0 +1,22 @@
+{
+  "repository": "M4D135/FERRO",
+  "version": "0.3.14",
+  "main": "85ba941709bb304cbc34f8beb7baab0639321919",
+  "tree": "27c2f2dd23c57feedefc748213f22fd165a15635",
+  "pullRequest": 2,
+  "url": "https://github.com/M4D135/FERRO/pull/2",
+  "merged": true,
+  "head": "f145e080d1cabab9802dc002debbf54aa8cc0bb6",
+  "rootIndependentVerification": [
+    "git/ref/heads/main",
+    "git/commits/85ba941709bb304cbc34f8beb7baab0639321919",
+    "pulls/2"
+  ],
+  "modulesExact": 34,
+  "exportGitBlobsVerified": 41,
+  "installation": "python3 /tmp/ferro-0314-install/tools/install-ferro.py bitume /workspace/scratch/1b28de5a23b5/bitume-physx",
+  "lockCheck": "FERRO 0.3.14: 34 reference modules verified",
+  "hostNativeRequalification": "reconciliation-0314/reprises.json",
+  "nativeHeapMeasurement": false,
+  "hardwareFpsMeasured": false
+}

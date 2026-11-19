@@ -1,0 +1,40 @@
+{
+  "baseCheckpoint": "62c94613461ab2fb5750b39f97d6049062e341c1",
+  "mergedParents": [
+    "6e9c1ea09eb22a1d8c1f1deea99ed09b41ccdf1d",
+    "b8f050745c68e2c7a9e482611cfdc980efe1ada3"
+  ],
+  "canonicalVersion": "0.3.14",
+  "hostRuntimeUnchanged": true,
+  "changedRuntimeFiles": [
+    "src/ferro/engine.js",
+    "src/ferro/physx.js"
+  ],
+  "activeP14FixtureSha256": "d8dfa60fc2d237c8dbc2b3d23689f2d81fe1562e1b14b30eda608fcd4f46d655",
+  "newTest": "verifications/physx-circuits.test.mjs",
+  "expandedTests": [
+    "verifications/physx-stands.test.mjs",
+    "verifications/autoconfig-integration.test.mjs"
+  ],
+  "historicalTestScopeClarification": "verifications/russie.test.mjs",
+  "preservedArchives": [
+    "concurrent-b8f0507/",
+    "final/",
+    "livraison/",
+    "checkpoints/62c9461/"
+  ],
+  "nativeRequalification": "reconciliation-0314/reprises.json",
+  "build": {
+    "scripts": 56,
+    "valides": 56,
+    "octets": 14162317,
+    "gzip": 3363224,
+    "sha256": "d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65",
+    "version": "0.2.56",
+    "reproductible": true,
+    "construction1": "build-1.log",
+    "construction2": "build-2.log",
+    "comparaison": "cmp dist/bitume.html /tmp/bitume-build-0256-1.html : exit 0",
+    "canon": "0.3.14"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "remoteTestedHead": "edf660e5e2cfe2894382460aee0cbec48fa3a748",
+  "equivalentLocalHead": "15f033747e4d004b471a803f75a4d63073f2e6f6",
+  "testedTree": "24299b302d894db340b7e8cbadd440047cccdc00",
+  "mergedDocumentaryMain": "293f4faef9e4c195c6f617f3f43f61874e183e83",
+  "pathsCompared": [
+    "src",
+    "verifications",
+    "construire.py",
+    "VERSION.json",
+    "SIZE.json",
+    "dist/bitume.html",
+    "FERRO.lock.json",
+    "tools/check-ferro-lock.py",
+    ".github/workflows"
+  ],
+  "changedQualifiedFiles": [],
+  "buildSha256": "d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65",
+  "ciReexecution": "Aucune nouvelle exécution demandée pour ces neuf chemins documentaires. Les deux passages complets de la tête testée sont conservés, avec leurs réserves.",
+  "remoteCommitHydratedAndCompared": true,
+  "ciReceipt": "github-0256/RECU-CI.json"
+}

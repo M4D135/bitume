@@ -1,0 +1,374 @@
+{
+  "scope": "Reprises ciblées après installation officielle FERRO 0.3.14 ; aucun balayage intégral ni régénération de fixture.",
+  "started": "2026-11-19T18:31:21.315436+00:00",
+  "headAtStart": "9f25ec36e4dca86c43d5f0ba4946c948bc6fcac6",
+  "canonicalVersion": "0.3.14",
+  "environment": {
+    "BITUME_PHYSX_ADAPTER": null,
+    "BITUME_RUSSIE_GEOMETRIE_SEULE": null
+  },
+  "tests": [
+    {
+      "name": "physique-voitures",
+      "command": [
+        "node",
+        "verifications/physique-voitures.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 2.574,
+      "log": "physique-voitures.log",
+      "logSha256": "c5d41b1451c541333c5273619930ef60dbbccf3549f48378152e4b477e669f2a",
+      "tap": {},
+      "tail": [
+        "ok  les débris partagent le sol et les contacts sans doubler le pas PhysX",
+        "ok  la reprise d’une voiture distante en vol conserve pose et vitesses natives",
+        "ok  un proxy distant garde ses suspensions transmises et ses points de contact réels",
+        "ok  la reprise emploie les vitesses 3D transmises même entre deux déplacements du proxy",
+        "14 contrôles PhysX voitures réussis"
+      ],
+      "reportedCounts": {
+        "unit": "controls",
+        "pass": 14,
+        "fail": 0
+      }
+    },
+    {
+      "name": "physx-circuits",
+      "command": [
+        "node",
+        "verifications/physx-circuits.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 11.156,
+      "log": "physx-circuits.log",
+      "logSha256": "c2c7aa7178bbbd1147031d832278ff28c3e2010c0c19b15169cafee1a74b4862",
+      "tap": {},
+      "tail": [
+        "ok  Cap-Séquoia : quatre appuis réels, puis roulage dynamique sur le relief du circuit",
+        "ok  Baïkal : quatre appuis réels, puis roulage dynamique sur le relief du circuit",
+        "ok  Baïkal : le saut s=2520 m à 60 m/s rencontre la montée responsable des trois mètres de traversée",
+        "ok  les scénarios libèrent tous leurs mondes PhysX",
+        "{\"controles\":14,\"dt\":0.008333333333333333,\"PhysX\":\"5.12.0\",\"rapports\":[{\"nom\":\"Val-Brûlé : quatre appuis réels, puis roulage dynamique sur le relief du circuit\",\"reussi\":true,\"circuit\":\"val-brule\",\"sDepart\":3988,\"distance\":390.00469894143316,\"pas\":1440,\"sondes\":1440,\"minRepereSolVisible\":-0.024488866329193115,\"maxRepereSolVisible\":0.023524761199951172,\"corrections\":0,\"replacements\":0,\"contacts\":[],\"appuisTunnel\":0,\"dureeExecutionMs\":1159.255087},{\"nom\":\"Port-Sable : quatre appuis réels, puis roulage dynamique sur le relief du circuit\",\"reussi\":true,\"circuit\":\"port-sable\",\"sDepart\":470,\"distance\":299.3448799391672,\"pas\":1440,\"sondes\":1440,\"minRepereSolVisible\":-0.016004562377929688,\"maxRepereSolVisible\":0.024439573287963867,\"corrections\":0,\"replacements\":0,\"contacts\":[],\"appuisTunnel\":0,\"dureeExecutionMs\":808.7955220000001},{\"nom\":\"Haut-Col : quatre appuis réels, puis roulage dynamique sur le relief du circuit\",\"reussi\":true,\"circuit\":\"haut-col\",\"sDepart\":3846,\"distance\":385.0836259688167,\"pas\":1440,\"sondes\":1440,\"minRepereSolVisible\":-0.02620220184326172,\"maxRepereSolVisible\":0.026738405227661133,\"corrections\":0,\"replacements\":0,\"contacts\":[],\"appuisTunnel\":0,\"dureeExecutionMs\":819.0381390000002},{\"nom\":\"Haut-Col : entrée, sol intérieur surélevé et sortie du tunnel avec quatre suspensions\",\"reussi\":true,\"pas\":735,\"sondes\":735,\"minRepereSolVisible\":-0.04278573393821716,\"maxRepereSolVisible\":0.021213561296463013,\"corrections\":0,\"replacements\":0,\"contacts\":[\"sol-tunnel\"],\"appuisTunnel\":628,\"dureeExecutionMs\":734.3947129999997},{\"nom\":\"Haut-Col : le châssis heurte le mur gauche du tunnel sans le traverser\",\"reussi\":true,\"cote\":-1,\"vitesseInitiale\":60,\"maxD\":6.499790823749794,\"mur\":7.6,\"pas\":36,\"sondes\":36,\"minRepereSolVisible\":-0.007418990135192871,\"maxRepereSolVisible\":0.02424001693725586,\"corrections\":0,\"replacements\":0,\"contacts\":[\"mur-tunnel\"],\"appuisTunnel\":36,\"dureeExecutionMs\":599.249221},{\"nom\":\"Haut-Col : le châssis heurte le mur droit du tunnel sans le traverser\",\"reussi\":true,\"cote\":1,\"vitesseInitiale\":60,\"maxD\":6.499894218162503,\"mur\":7.6,\"pas\":36,\"sondes\":36,\"minRepereSolVisible\":-0.0072596073150634766,\"maxRepereSolVisible\":0.02424025535583496,\"corrections\":0,\"replacements\":0,\"contacts\":[\"mur-tunnel\"],\"appuisTunnel\":36,\"dureeExecutionMs\":541.596783},{\"nom\":\"Haut-Col : une voiture projetée vers la voûte reçoit un contact PhysX réel\",\"reussi\":true,\"vitesseVerticaleInitiale\":35,\"maxY\":7.972524166107178,\"plafond\":8.34315299987793,\"pas\":72,\"sondes\":72,\"minRepereSolVisible\":0.3160393238067627,\"maxRepereSolVisible\":5.9899362325668335,\"corrections\":0,\"replacements\":0,\"contacts\":[\"voute-tunnel\"],\"appuisTunnel\":72,\"dureeExecutionMs\":544.9687679999997},{\"nom\":\"Lande-Noire : quatre appuis réels, puis roulage dynamique sur le relief du circuit\",\"reussi\":true,\"circuit\":\"lande-noire\",\"sDepart\":462,\"distance\":402.0029827155349,\"pas\":1440,\"sondes\":1440,\"minRepereSolVisible\":-0.02608168125152588,\"maxRepereSolVisible\":0.02519702911376953,\"corrections\":0,\"replacements\":0,\"contacts\":[],\"appuisTunnel\":0,\"dureeExecutionMs\":602.2153269999999},{\"nom\":\"Roche-Fauve : quatre appuis réels, puis roulage dynamique sur le relief du circuit\",\"reussi\":true,\"circuit\":\"roche-fauve\",\"sDepart\":412,\"distance\":387.67558559091594,\"pas\":1440,\"sondes\":1440,\"minRepereSolVisible\":-0.023617148399353027,\"maxRepereSolVisible\":0.022362947463989258,\"corrections\":0,\"replacements\":0,\"contacts\":[],\"appuisTunnel\":0,\"dureeExecutionMs\":584.7049669999997},{\"nom\":\"Brume-de-Jade : quatre appuis réels, puis roulage dynamique sur le relief du circuit\",\"reussi\":true,\"circuit\":\"brume-de-jade\",\"sDepart\":682,\"distance\":336.81082020440317,\"pas\":1440,\"sondes\":1440,\"minRepereSolVisible\":-0.02071857452392578,\"maxRepereSolVisible\":0.024283409118652344,\"corrections\":0,\"replacements\":0,\"contacts\":[],\"appuisTunnel\":0,\"dureeExecutionMs\":580.4738559999987},{\"nom\":\"Cap-Séquoia : quatre appuis réels, puis roulage dynamique sur le relief du circuit\",\"reussi\":true,\"circuit\":\"cap-sequoia\",\"sDepart\":422,\"distance\":393.6355556781282,\"pas\":1440,\"sondes\":1440,\"minRepereSolVisible\":-0.021645069122314453,\"maxRepereSolVisible\":0.027694225311279297,\"corrections\":0,\"replacements\":0,\"contacts\":[],\"appuisTunnel\":0,\"dureeExecutionMs\":681.2562749999997},{\"nom\":\"Baïkal : quatre appuis réels, puis roulage dynamique sur le relief du circuit\",\"reussi\":true,\"circuit\":\"baikal\",\"sDepart\":4340,\"distance\":393.51517261921435,\"pas\":1440,\"sondes\":1440,\"minRepereSolVisible\":-0.024000167846679688,\"maxRepereSolVisible\":0.023946762084960938,\"corrections\":0,\"replacements\":0,\"contacts\":[],\"appuisTunnel\":0,\"dureeExecutionMs\":686.0141830000011},{\"nom\":\"Baïkal : le saut s=2520 m à 60 m/s rencontre la montée responsable des trois mètres de traversée\",\"reussi\":true,\"circuit\":\"baikal\",\"aUneSeconde\":{\"s\":2577.158458510209,\"y\":38.80414962768555,\"appuis\":4,\"saut\":false},\"pas\":360,\"sondes\":360,\"minRepereSolVisible\":-0.02265167236328125,\"maxRepereSolVisible\":0.40671539306640625,\"corrections\":0,\"replacements\":0,\"contacts\":[],\"appuisTunnel\":0,\"dureeExecutionMs\":583.4724920000008},{\"nom\":\"les scénarios libèrent tous leurs mondes PhysX\",\"reussi\":true,\"mondesRestants\":0,\"dureeExecutionMs\":0.1569259999996575}]}"
+      ],
+      "reportedCounts": {
+        "unit": "controls",
+        "pass": 14,
+        "fail": 0
+      }
+    },
+    {
+      "name": "physx-stands",
+      "command": [
+        "node",
+        "verifications/physx-stands.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 14.238,
+      "log": "physx-stands.log",
+      "logSha256": "23b293bf6e9732dc08f155cc9ac5b08c505df6c4c5b7bb574bf1cb390b985513",
+      "tap": {},
+      "tail": [
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 13837.430663"
+      ],
+      "reportedCounts": {
+        "unit": "node tests",
+        "tests": 11,
+        "suites": 0,
+        "pass": 11,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "physx-cycle-vie",
+      "command": [
+        "node",
+        "verifications/physx-cycle-vie.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.315,
+      "log": "physx-cycle-vie.log",
+      "logSha256": "53fd7b0e9675cef40d87d3f209484665e523388cdf34c5040642a3fa951f3a05",
+      "tap": {},
+      "tail": [
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 52.057914"
+      ],
+      "reportedCounts": {
+        "unit": "node tests",
+        "tests": 2,
+        "suites": 0,
+        "pass": 2,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "physique-cycle-seances",
+      "command": [
+        "node",
+        "verifications/physique-cycle-seances.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 7.713,
+      "log": "physique-cycle-seances.log",
+      "logSha256": "ed4686f192963aaee81242f374ffef72d35c1612a9c2925b07ea701d855f7729",
+      "tap": {},
+      "tail": [
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 6114.908758"
+      ],
+      "reportedCounts": {
+        "unit": "node tests",
+        "tests": 4,
+        "suites": 0,
+        "pass": 4,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "physx-autorite-reseau",
+      "command": [
+        "node",
+        "verifications/physx-autorite-reseau.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.365,
+      "log": "physx-autorite-reseau.log",
+      "logSha256": "5a62b46ae34c8ea41bddc7589c8b1b498b318f800e0a09f12726b4def2634f46",
+      "tap": {},
+      "tail": [
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 51.343685"
+      ],
+      "reportedCounts": {
+        "unit": "node tests",
+        "tests": 2,
+        "suites": 0,
+        "pass": 2,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "determinisme-simulation",
+      "command": [
+        "node",
+        "verifications/determinisme-simulation.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 11.641,
+      "log": "determinisme-simulation.log",
+      "logSha256": "22196003eac21fd824fbeff2ff13a8bd6bb32aecd3da81b3139f8e0e684aae49",
+      "tap": {},
+      "tail": [
+        "ok  val-brule-sec-12 : 18 empreintes exactes, 12 corps dynamiques, 66702 triangles de sol",
+        "ok  port-sable-pluie-12 : 18 empreintes exactes, 12 corps dynamiques, 59522 triangles de sol",
+        "ok  baikal-neige-12 : 18 empreintes exactes, 12 corps dynamiques, 98374 triangles de sol",
+        "ok  sensibilité : un ulp sur pose, vitesse, usure ou événement change le hachage ; −0 distinct de +0",
+        "ok  déterminisme p14 : 3 cas PhysX réels, 54 empreintes, aucune fixture historique modifiée"
+      ],
+      "reportedCounts": {
+        "unit": "native cases and exact state hashes",
+        "cases": 3,
+        "hashes": 54,
+        "fixtureRewritten": false
+      }
+    },
+    {
+      "name": "autoconfig-integration",
+      "command": [
+        "node",
+        "verifications/autoconfig-integration.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.115,
+      "log": "autoconfig-integration.log",
+      "logSha256": "732f1b372640d414c657836bc25bd00c27e1bd90f51b88aa7c2c3c654db10f09",
+      "tap": {},
+      "tail": [
+        "ok premier lancement : attendre la détection avant le titre, la musique et la boucle",
+        "ok PhysX absent ou non initialisé : erreur explicite, aucune séance ni boucle démarrée",
+        "ok C1 : page ouverte dans un onglet en arrière-plan : le test attend qu’elle passe au premier plan",
+        "ok ouverture suivante : une détection par version et par carte graphique, jamais plus",
+        "22 contrôles d’intégration de la détection réussis."
+      ],
+      "reportedCounts": {
+        "unit": "controls",
+        "pass": 22,
+        "fail": 0
+      }
+    },
+    {
+      "name": "russie",
+      "command": [
+        "node",
+        "verifications/russie.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 14.796,
+      "log": "russie.log",
+      "logSha256": "b597095c29df2da70a002e248e5dd3a6e46b006b8741fb786841d4420b43f391",
+      "tap": {},
+      "tail": [
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 14615.130507"
+      ],
+      "reportedCounts": {
+        "unit": "node tests",
+        "tests": 9,
+        "suites": 0,
+        "pass": 9,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "solides-physx-wasm",
+      "command": [
+        "node",
+        "verifications/solides-physx-wasm.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 6.48,
+      "log": "solides-physx-wasm.log",
+      "logSha256": "1722c482662fe63e6f35b6d4141048da65ce7034c2a8587932bc89b934839e40",
+      "tap": {},
+      "tail": [
+        "ok  Baïkal : rayons de suspension sur chaussée, vibreurs et accotements",
+        "ok  Baïkal : vraies lisses solides, filtres de suspension séparés",
+        "ok  Baïkal : aucun mur abstrait sur la limite du fossé",
+        "ok  les huit mondes libérés ne gardent aucun acteur ni monde natif",
+        "{\"controles\":23,\"versionPhysX\":\"5.12.0\",\"rapports\":[{\"circuit\":\"val-brule\",\"acteurs\":4370,\"rayons\":577},{\"circuit\":\"port-sable\",\"acteurs\":3261,\"rayons\":496},{\"circuit\":\"haut-col\",\"acteurs\":4626,\"rayons\":709},{\"circuit\":\"lande-noire\",\"acteurs\":3746,\"rayons\":626},{\"circuit\":\"roche-fauve\",\"acteurs\":3927,\"rayons\":656},{\"circuit\":\"brume-de-jade\",\"acteurs\":3849,\"rayons\":680},{\"circuit\":\"cap-sequoia\",\"acteurs\":4126,\"rayons\":705},{\"circuit\":\"baikal\",\"acteurs\":4471,\"rayons\":732}]}"
+      ],
+      "reportedCounts": {
+        "unit": "controls",
+        "pass": 23,
+        "fail": 0
+      }
+    },
+    {
+      "name": "physx-monde",
+      "command": [
+        "node",
+        "verifications/physx-monde.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 1.072,
+      "log": "physx-monde.log",
+      "logSha256": "b993db667d39ff312db9922782a29954efc5f53160092da0c5934174a653be36",
+      "tap": {},
+      "tail": [
+        "ok  pièces posées : elles quittent la scène et restent où elles sont tombées ; à leur fin de vie, plus rien",
+        "ok  vingt séances de suite : un seul monde, aucun corps ni aucune dalle de reste",
+        "ok  argument refusé par PhysX (position non finie) : la pièce garde sa parabole, le monde reste",
+        "---",
+        "6 tests passes"
+      ],
+      "reportedCounts": {
+        "unit": "controls",
+        "pass": 6,
+        "fail": 0
+      }
+    },
+    {
+      "name": "chargement",
+      "command": [
+        "node",
+        "verifications/chargement.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 1.318,
+      "log": "chargement.log",
+      "logSha256": "7e6b85a80734bcd1791f7110e25d176361955c71f3590d1ebc605967b4ac3e7a",
+      "tap": {},
+      "tail": [
+        "ok chauffe : le voile court seulement quand rien ne manque, la vitrine ne chauffe que ce qu’elle montre",
+        "ok machine lente : la chauffe se resserre sur le palier courant et ses voisins",
+        "ok sous le voile, la boucle ne simule ni ne dessine ; les étapes suivent l’ordre affiché",
+        "ok voile : opaque sans transition, étape et barre, annoncé poliment, mouvement réduit respecté",
+        "9 contrôles de la préparation des séances réussis."
+      ],
+      "reportedCounts": {
+        "unit": "controls",
+        "pass": 9,
+        "fail": 0
+      }
+    }
+  ],
+  "finished": "2026-11-19T18:32:33.136215+00:00",
+  "sourceAndTestFilesChecked": 234,
+  "changedDuringTests": [],
+  "passed": 12,
+  "failed": 0,
+  "sourceSnapshotSha256": "f576d09c440b3fdfb7c53651249af526e58d5b68c77ce09dcf4dca2c59e1260b",
+  "sourceSnapshotUnchanged": true,
+  "nativeFixtureP14Sha256": "d8dfa60fc2d237c8dbc2b3d23689f2d81fe1562e1b14b30eda608fcd4f46d655",
+  "canonicalModules": {
+    "src/ferro/fmath.js": "bb001302bd2d57239c86183615c921563cf21f0490d67eef42586d1fc3457c9f",
+    "src/moteur/renderer.js": "d7a14230d0525a03d2874206f458d2edc39fef3542a067d43f693fdec4d5ad41",
+    "src/ferro/webgpu-shaders.js": "1228ce07f4db2809c9f498cd465e8984c6fbccdf70e5b46b29411cfc588853a9",
+    "src/ferro/webgpu-renderer.js": "d629b0453b99275420c12a067e53f9b224f366b961186d95e7d6aa732803f1dd",
+    "src/ferro/backends.js": "769e607b8349aa47bae32a8ef9f4747267119de49e7b057c874294049da9ccea",
+    "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+    "src/ferro/materials.js": "fd1789bd21ec43d4cd028d3ebffdb490e5bfe53d8b73fa0f7bdbd44ce7d2a954",
+    "src/ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+    "src/ferro/physics-geometry.js": "fc73172463262947ced24017cc03ef73a00c113e2a850fab3460bd3c30fcd242",
+    "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "src/ferro/physx.js": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+    "src/ferro/physics.js": "9a6e3dbd9115b13f6f5daf9d2843f6ffa219f0b2d4c53d2106ac9dec769f175a",
+    "src/ferro/destruction.js": "c18d53831b23e55d798d02e698fd7eb670a28dd998de51a5bcd5195fe733eeea",
+    "src/ferro/navigation.js": "addfdb9bb3a30cc7a8fe747ca919c72a99d8bc8f79a44162757d6ac8113d0cb6",
+    "src/ferro/input.js": "2a7bfcf27c4dede79708882a604fa3264d32615fe3cf513deae807c07e109e68",
+    "src/ferro/motion.js": "3ea6ff872208b6c133a3f732d51d0706fc36a2d042725c7e6c59fba42ab4df4b",
+    "src/ferro/effects.js": "e873e7def347fb205594351fc9f0fd8e08fdb42ced36254ec68f071790bb3b42",
+    "src/ferro/audio.js": "af0a6173d3c1db12e16c9a570d8aad86788f1dfde06508077cbee402d046f2a0",
+    "src/ferro/recipes.js": "a59e5737e9730594881cb71a60340c64f013bd1c5797618c74efe3b6afc823cd",
+    "src/ferro/crowd.js": "ee00aa7b358a71a1e8c93ab2779d0edc3d80828f4c4ad32d41900177221ceac9",
+    "src/ferro/crowd-webgpu.js": "bc2719bdbef13f74789bde0caad5d24fea70f44ac52148085a27d448ada9e9f8",
+    "src/ferro/imuse.js": "8aa71cb0cdc9a5d0d1a42dab965563bd810d26151745ceb1ad603ab1c0851e16",
+    "src/ferro/music.js": "e59d6d2ed84bb70bf108f54d8d1f8510a02533f36e1d0741ac1d144c8830ea20",
+    "src/ferro/surface.js": "46915edee28daa0408ea1c18abd664babef76e2e6bce52c2990a431f90cee77e",
+    "src/ferro/gpu-profile.js": "513e7cb0523a50f62edb427f2ed563ec98d9bc771a70f357fce8409157faa9c4",
+    "src/ferro/skies.js": "bd4b38002c8c800a5f7551a73712c721909ed22ae145d15fbf7f853ff30eddea",
+    "src/ferro/reflections.js": "51467e58cfaabfe6d9f5c7a5ccdf73afd35e33159bddae4778dd5a0bdd43ffbf",
+    "src/ferro/passages.js": "16fbe21b2dbd0bc0abf16a2e2c6346940f8703fc9513a9906ab1a38303dacdaa",
+    "src/ferro/brain.js": "598175891738fbdef6788d2d5e0eee89e279a472837a49e4966ca19e0de7bcf9",
+    "src/ferro/loop.js": "f6777ad3141ed9b9dae6b860aded5aa625433c87f3068077a5204324a7c42e2f",
+    "src/ferro/schedule.js": "48a8b7cf0bba9a54ef6cff896110a654195b05606392c2d74ef3a3691edf9d12",
+    "src/ferro/jobs.js": "c027761f5d29d62ef542e444c95a17c551fececc1cbeb492668c2d35d7b13aa7",
+    "src/ferro/demo.js": "1169679cfa96463222f6343a6f4f3feeadfc7b90cd65d8f1b7ece6e9e0600575",
+    "src/ferro/engine.js": "05f4e29167a252c0860affde79730cffe7f5615f3849e1d28c2d70dca76a9d5c"
+  },
+  "fixturesModified": [],
+  "fullSweepExecuted": false,
+  "inheritedTraceFailure": "Not re-run in these targeted checks; unchanged inherited failure remains in global consolidated qualification.",
+  "hardwareOrBrowserValidation": false
+}

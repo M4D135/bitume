@@ -1,0 +1,168 @@
+{
+  "date": "2026-11-19T17:52:10.235Z",
+  "version": "5.12.0",
+  "empreintes": {
+    "physique": "d7d5860e2cc643ea7674751d1d3c3cdc93b2311a8c9592299d3fe070284f08ef",
+    "course": "518b67af41751ca12e215d8db8f622d32510faa346fb9ea5db90531e9b604682",
+    "conduite": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+    "traces": "a163a43fd2ea165464db220286b80e10768e18d2de0f045ca1591caa017f6f4d",
+    "jeu": "60c98c7d85f9fe0b5e5cc8a68c8a66d0041bb5572bdab3d9ac75fa29f9227dd7"
+  },
+  "cas": [
+    {
+      "sol": "piste",
+      "vitesse": 47.116047768362385,
+      "origineY": -0.018250346183776855,
+      "appuis": 4,
+      "debattements": [
+        0.03762056065174224,
+        0.03762047124477508,
+        -0.0008619865130405358,
+        -0.0008620461176853111
+      ],
+      "roues": [
+        {
+          "roue": 0,
+          "surface": "piste",
+          "charge": 1935.4482284447988,
+          "point": [
+            213.1564178466797,
+            0,
+            -0.84999680519104
+          ],
+          "effortTangent": 3169.9967528954176,
+          "capaciteLocale": 3270.8031852147947,
+          "rapportEffortCapacite": 0.9691799149594025
+        },
+        {
+          "roue": 1,
+          "surface": "piste",
+          "charge": 1935.441508734163,
+          "point": [
+            213.15640258789062,
+            0,
+            0.8500000834465027
+          ],
+          "effortTangent": 3169.9866142470896,
+          "capaciteLocale": 3270.7927241923694,
+          "rapportEffortCapacite": 0.9691799149485478
+        },
+        {
+          "roue": 2,
+          "surface": "piste",
+          "charge": 2306.030958522682,
+          "point": [
+            210.4564208984375,
+            0,
+            -0.807497501373291
+          ],
+          "effortTangent": 3299.5102484357108,
+          "capaciteLocale": 4145.293663886876,
+          "rapportEffortCapacite": 0.7959653804941511
+        },
+        {
+          "roue": 3,
+          "surface": "piste",
+          "charge": 2306.0247335687422,
+          "point": [
+            210.45643615722656,
+            0,
+            0.8075000047683716
+          ],
+          "effortTangent": 3299.5021907938008,
+          "capaciteLocale": 4145.283540823911,
+          "rapportEffortCapacite": 0.7959653804858898
+        }
+      ],
+      "traces": {
+        "nombre": 8,
+        "yMin": 0.018,
+        "yMax": 0.018,
+        "solY": 0
+      },
+      "replacements": 0
+    },
+    {
+      "sol": "piste-gauche-herbe-droite",
+      "vitesse": 38.84697612069754,
+      "origineY": -0.012602567672729492,
+      "appuis": 4,
+      "debattements": [
+        0.02748809979345085,
+        0.027891951064126508,
+        -0.002368330702334387,
+        -0.001984685406237585
+      ],
+      "roues": [
+        {
+          "roue": 0,
+          "surface": "piste",
+          "charge": 1736.8842121937462,
+          "point": [
+            204.13217163085938,
+            0,
+            -1.2541258335113525
+          ],
+          "effortTangent": 2870.2991512233543,
+          "capaciteLocale": 2959.077902804086,
+          "rapportEffortCapacite": 0.9699978322650434
+        },
+        {
+          "roue": 1,
+          "surface": "herbe",
+          "charge": 1764.1778627542417,
+          "point": [
+            204.15081787109375,
+            0,
+            0.4457731246948242
+          ],
+          "effortTangent": 1591.545435369412,
+          "capaciteLocale": 1640.7721340196595,
+          "rapportEffortCapacite": 0.9699978457522623
+        },
+        {
+          "roue": 2,
+          "surface": "piste",
+          "charge": 2061.47032110083,
+          "point": [
+            201.43275451660156,
+            0,
+            -1.1819791793823242
+          ],
+          "effortTangent": 3594.8942112519153,
+          "capaciteLocale": 3743.2996628272563,
+          "rapportEffortCapacite": 0.9603543758334184
+        },
+        {
+          "roue": 3,
+          "surface": "herbe",
+          "charge": 2094.471858938655,
+          "point": [
+            201.4505157470703,
+            0,
+            0.43292713165283203
+          ],
+          "effortTangent": 1993.407063662122,
+          "capaciteLocale": 2075.699429617596,
+          "rapportEffortCapacite": 0.9603543919792692
+        }
+      ],
+      "traces": {
+        "nombre": 4,
+        "yMin": 0.018,
+        "yMax": 0.018,
+        "solY": 0
+      },
+      "replacements": 0
+    }
+  ],
+  "cycle": {
+    "erreur": "sonde : exception de modèle après montage PhysX",
+    "anciensCorpsDetruits": true,
+    "sessionAncienneConservee": false,
+    "mondesAvant": 1,
+    "mondesApresException": 0,
+    "nouvellesCourses": 1,
+    "nouveauxMondesNonLiberes": 0
+  }
+}

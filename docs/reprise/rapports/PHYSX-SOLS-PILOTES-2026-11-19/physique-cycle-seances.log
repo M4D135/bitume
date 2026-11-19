@@ -1,0 +1,12 @@
+{"version":"5.12.0","jeuSHA256":"2c772c4a2ce96fb69feb96278b56f7c77674324bb4d93cdfa0b3b755a4200493","resultats":[{"panne":"modele","reussi":true,"ordre":["effets:anciens","liberer:ancien","monde:nouveau","panne:modele","liberer:nouveau"],"mondesRestants":0},{"panne":"prechauffage","reussi":true,"ordre":["effets:anciens","liberer:ancien","monde:nouveau","panne:prechauffage","effets:nouveaux","liberer:nouveau"],"mondesRestants":0},{"panne":"restauration GPU","reussi":true,"mondeConserve":true,"acteurConserve":true,"poseConservee":true,"effetsRepris":true}]}
+✔ PhysX : une exception de modele libère ancienne et nouvelle séance (1864.400354ms)
+✔ PhysX : une exception de prechauffage libère ancienne et nouvelle séance (1528.704542ms)
+✔ PhysX : restaurer le contexte GPU reprend les effets dans le même monde sans toucher aux voitures (893.662095ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6448.468849

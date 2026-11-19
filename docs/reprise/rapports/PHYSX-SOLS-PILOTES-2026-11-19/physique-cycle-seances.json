@@ -1,0 +1,39 @@
+{
+  "version": "5.12.0",
+  "jeuSHA256": "2c772c4a2ce96fb69feb96278b56f7c77674324bb4d93cdfa0b3b755a4200493",
+  "resultats": [
+    {
+      "panne": "modele",
+      "reussi": true,
+      "ordre": [
+        "effets:anciens",
+        "liberer:ancien",
+        "monde:nouveau",
+        "panne:modele",
+        "liberer:nouveau"
+      ],
+      "mondesRestants": 0
+    },
+    {
+      "panne": "prechauffage",
+      "reussi": true,
+      "ordre": [
+        "effets:anciens",
+        "liberer:ancien",
+        "monde:nouveau",
+        "panne:prechauffage",
+        "effets:nouveaux",
+        "liberer:nouveau"
+      ],
+      "mondesRestants": 0
+    },
+    {
+      "panne": "restauration GPU",
+      "reussi": true,
+      "mondeConserve": true,
+      "acteurConserve": true,
+      "poseConservee": true,
+      "effetsRepris": true
+    }
+  ]
+}

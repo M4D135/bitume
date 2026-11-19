@@ -1,0 +1,57 @@
+✔ 13A catalogue : Baïkal ajouté après les sept circuits conservés (2.078551ms)
+✔ 13A les 84 tableaux numériques des sept anciens tracés restent identiques bit à bit (230.359504ms)
+✔ 13A boucle praticable, relief significatif et raccord continu (40.038354ms)
+✔ 13A départ et stands plats, droits et compatibles avec douze voitures (31.183689ms)
+✔ 13A reconstruction du tracé indépendante du hasard global (81.525724ms)
+✔ 13A les solides réels restent hors de toutes les portions de chaussée (1761.294957ms)
+✔ 13A sec : onze rivaux accomplissent trois tours sans secours (6507.435876ms)
+✔ 13A pluie : onze rivaux accomplissent trois tours sans secours (5937.557908ms)
+✔ 13A neige : onze rivaux accomplissent trois tours sans secours (6498.231557ms)
+✖ /workspace/scratch/1b28de5a23b5/bitume-physx/verifications/russie.test.mjs (17.933282ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 21208.34462
+
+✖ failing tests:
+
+test at verifications/russie.test.mjs:47:1
+✖ /workspace/scratch/1b28de5a23b5/bitume-physx/verifications/russie.test.mjs (17.933282ms)
+  AssertionError [ERR_ASSERTION]: les sources restent identiques pendant les contrôles
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      'src/ambiance.js': '4939c0c765a8cb074d92400df1cafb3737cebd61eeab1628df557f9bca3e08d2',
+      'src/animaux.js': '24709b59c7221556a290b2e0bba62773e68ad14edf7335105fe34b48b0864398',
+      'src/aurores.js': 'c95ec52c29cba28da80f3df36ccb07c5831b55dd3c4e392f87a928b3366423fd',
+      'src/autoconfig.js': '4df3dda4f0cd17947a528a77b2e5c1491299d6833f7f5abeaef528eda0353c1e',
+  ...
+      'src/ombres.js': 'dcd0abb58a2d5f576a2ee96f36bceb6abc5f0c0671321fa22b97de6786bcc350',
+  +   'src/physique.js': '69ba275875b1fa9c648ab47adc551c909ed980fc3c5e314a11a0fd1510859d08',
+  -   'src/physique.js': '93f657b4ac4272b0fafd26357c28aae4f826a5fe6287571037438293c45c0667',
+      'src/pneus-reseau.js': '7a4ec53a40049e3f868d8fbf7d32b6582edd949959c6b5dd6d2aecec2ea2a1c7',
+      'src/pneus.js': '786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9',
+      'src/public.js': '766eb9ef0514bf2586c684c25dcf04208acb3ad234816378e2d5c1396b216224',
+      'src/qualite.js': '68c6852c8f86be8dbdd5f2d0f01b0f9dcd7e4f7df4806044f7a91bedf4dfc9df',
+      'src/realisateur.js': '667dcf36a6c7203b32902d631a19444d566621a344579a707b4a027965de5511',
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/1b28de5a23b5/bitume-physx/verifications/russie.test.mjs:57:10)
+      at TestHook.runInAsyncScope (node:async_hooks:227:14)
+      at TestHook.run (node:internal/test_runner/test:1402:25)
+      at TestHook.run (node:internal/test_runner/test:1757:18)
+      at TestHook.run (node:internal/util:581:20)
+      at Test.runHook (node:internal/test_runner/test:1289:20)
+      at after (node:internal/test_runner/test:1342:20)
+      at Test.run (node:internal/test_runner/test:1428:13) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [Object],
+    expected: [Object],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,8 @@
+{
+  "checkpoint": "62c9461",
+  "merge_parent": "6e9c1ea09eb22a1d8c1f1deea99ed09b41ccdf1d",
+  "runtime_and_build_identical_to_checkpoint": true,
+  "files_compared": 92,
+  "resolution": "Runtime et tests finaux retenus ; doublon automerge limiterVoiePhysX supprimé. Les apports concurrents avaient été intégrés et requalifiés avant le checkpoint. Historique, documents de clôture et demande démos préservés.",
+  "next_parallel_checkpoint": "b8f050745c68e2c7a9e482611cfdc980efe1ada3"
+}

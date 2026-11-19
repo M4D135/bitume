@@ -9,9 +9,8 @@
    Ni le dessin ni la passe à 30 Hz n'allouent une fois le code optimisé (seules les lectures de pose PhysX rendent
    des tableaux neufs, voir vieillir) : chaque effet garde son objet de rendu, les orientations se calculent terme à
    terme et les fonctions de la passe n'échangent que des objets et des indices (voir « nombres de travail »).
-   Les pièces détachées roulent dans un monde PhysX unique pour la page, créé et chauffé dès que le module est prêt,
-   vidé (jamais détruit) quand une séance meurt : le premier choc ne paie plus la naissance du monde.
-   Rien ici ne touche la simulation ; le tirage a sa propre graine. */
+   Les pièces détachées partagent la scène PhysX de la course, son sol et les contacts avec les voitures.
+   Les outils isolés gardent leur monde préchauffé ; les effets ont leur propre graine. */
 (function (B) {
   'use strict';
 
@@ -55,7 +54,7 @@
   // tableau créé avec des entiers se convertit à sa première écriture d'un nombre à virgule : il alloue alors, et le
   // code optimisé qui le lisait est jeté (désoptimisation), au moment où la place sert pour la première fois, en
   // pleine course (pièce de la première casse, bande ou bouffée neuve).
-  const NOMBRES_BANDE = ['age', 'a0', 'larg', 'roulis', 'x0', 'y0', 'z0', 'x1', 'y1', 'z1'];
+  const NOMBRES_BANDE = ['age', 'a0', 'larg', 'roulis', 'x0', 'y0', 'z0', 'x1', 'y1', 'z1', 'nx', 'ny', 'nz'];
   const NOMBRES_PARTICULE = ['age', 'vie', 'x', 'y', 'z', 'vx', 'vy', 'vz', 'sol', 'taille', 'a0'];
   const NOMBRES_PIECE = ['age', 'x', 'y', 'z', 'vx', 'vy', 'vz', 'sol', 'spin', 'rx', 'ry', 'rz', 'repos', 'qx', 'qy', 'qz', 'qw', 'wx', 'wy', 'wz'];
   function former(o, champs) {
@@ -73,6 +72,7 @@
     for (let i = 0; i < BANDES; i++) {
       bandes.push(former({
         actif: false, age: 0, a0: 0, gen: 0, larg: .3, roulis: 0, x0: 0, y0: 0, z0: 0, x1: 0, y1: 0, z1: 0,
+        contact: false, nx: 0, ny: 1, nz: 0,
         objet: { shape: 'box', p: [0, 0, 0], s: [1, EPAISSEUR, .3], r: [0, 0, 0], fx: true, fxPriority: 'hazard', alpha: 0, color: GOMME }
       }, NOMBRES_BANDE));
     }
@@ -173,7 +173,7 @@
       attitude(MV, p);
       const cap = p.cap - (et.beta || 0);
       VC[0] = Math.cos(cap) * et.v; VC[1] = Math.sin(cap) * et.v; VC[2] = eau;
-      const auSol = !(et.bond > .03), herbe = et.surface === 'herbe';
+      const auSol = et._physx ? et._physx.groundCount > 0 : !(et.bond > .03), herbe = et.surface === 'herbe';
       for (let w = 0; w < 4; w++) roue(fx, k, w, et, p, auSol, herbe);
       if (eau > .12 && et.v > 14 && auSol && !(B.circuit.dansTunnel && B.circuit.dansTunnel(co.c, et.s))) embrun(fx, et, p);
       // glissière touchée pendant ce trentième de seconde
@@ -205,8 +205,18 @@
   function roue(fx, k, w, et, p, auSol, herbe) {
     if (et.degats && et.degats.roues[w]) { fx.valide[k * 4 + w] = 0; fx.ouverte[k * 4 + w] = -1; return; }
     const i = k * 4 + w, j = i * 3, R = B.voiture.ROUES[w], g = et.roues ? et.roues[w].glisse : 0;
-    O[0] = R.x; O[1] = LEVEE; O[2] = R.z; tourner(MV);
-    const X = p.x + O[0], Y = p.y + O[1], Z = p.z + O[2];
+    const appui = et._physx?.contacts[w];
+    let X, Y, Z;
+    if (appui) {
+      auSol = appui.load > 0 && appui.hit.hit; herbe = appui.surface === 'herbe';
+      if (!auSol) { fx.valide[i] = 0; fx.ouverte[i] = -1; return; }
+      X = appui.point[0] + appui.normal[0] * LEVEE;
+      Y = appui.point[1] + appui.normal[1] * LEVEE;
+      Z = appui.point[2] + appui.normal[2] * LEVEE;
+    } else {
+      O[0] = R.x; O[1] = LEVEE; O[2] = R.z; tourner(MV);
+      X = p.x + O[0]; Y = p.y + O[1]; Z = p.z + O[2];
+    }
     const dx = X - fx.dernier[j], dz = Z - fx.dernier[j + 2];
     const suite = fx.valide[i] && dx * dx + dz * dz < 64;            // pas de bande à travers un replacement
     DEP[0] = X; DEP[1] = Y; DEP[2] = Z;
@@ -228,12 +238,14 @@
   function poser(fx, i, j, w, et, p) {
     const x0 = fx.dernier[j], y0 = fx.dernier[j + 1], z0 = fx.dernier[j + 2], x1 = DEP[0], y1 = DEP[1], z1 = DEP[2];
     const g = et.roues[w].glisse, a0 = .62 * Math.min(1, .3 + (g - SEUIL_TRACE) / (1 - SEUIL_TRACE));
+    const appui = et._physx?.contacts[w];
     let b = fx.ouverte[i] >= 0 ? fx.bandes[fx.ouverte[i]] : null;
     if (b && b.actif && b.gen === fx.genOuverte[i]) {
       // Math.hypot passe par un appel générique qui rend un nombre en boîte : les racines s'écrivent à la main
       const ux = b.x1 - b.x0, uz = b.z1 - b.z0, lx = x1 - b.x0, lz = z1 - b.z0, lu = Math.sqrt(ux * ux + uz * uz), ll = Math.sqrt(lx * lx + lz * lz);
       if (ll <= LONGUEUR_MAX && lu > 1e-3 && (ux * lx + uz * lz) >= DROIT * lu * ll) {
         b.x1 = x1; b.y1 = y1; b.z1 = z1; b.a0 = Math.max(b.a0, a0); b.age = 0;
+        if (appui) { b.nx = appui.normal[0]; b.ny = appui.normal[1]; b.nz = appui.normal[2]; }
         placer(b);
         return;
       }
@@ -242,6 +254,8 @@
     fx.prochaine = (n + 1) % BANDES;
     b = fx.bandes[n];
     b.actif = true; b.age = 0; b.a0 = a0; b.gen++; b.larg = B.voiture.ROUES[w].l * .8; b.roulis = p.roulis || 0;
+    b.contact = !!appui;
+    if (appui) { b.nx = appui.normal[0]; b.ny = appui.normal[1]; b.nz = appui.normal[2]; }
     b.x0 = x0; b.y0 = y0; b.z0 = z0; b.x1 = x1; b.y1 = y1; b.z1 = z1;
     fx.ouverte[i] = n; fx.genOuverte[i] = b.gen;
     placer(b);
@@ -253,6 +267,7 @@
     o.p[0] = (b.x0 + b.x1) / 2; o.p[1] = (b.y0 + b.y1) / 2; o.p[2] = (b.z0 + b.z1) / 2;
     o.s[0] = Math.sqrt(lh * lh + dy * dy) + b.larg * .5; o.s[2] = b.larg;
     ANG[0] = Math.atan2(dz, dx); ANG[1] = Math.atan2(dy, lh); ANG[2] = b.roulis;
+    if (b.contact && lh > 1e-6) ANG[2] = Math.atan2((-b.nx * dz + b.nz * dx) / lh, b.ny * Math.sqrt(lh * lh + dy * dy) / lh);
     orienter(o.r);
   }
 

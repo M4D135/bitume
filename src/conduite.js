@@ -352,6 +352,12 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
 
   }
 
+  function capaciteRoue(etat, roue, chaussee, facteurArriere = 1) {
+    const mu = roue.surface === 'piste' ? P.muPiste : roue.surface === 'vibreur' ? P.muVibreur : P.muHerbe;
+    return adherence(mu * (etat.degats ? etat.degats.adher : 1) * facteurArriere
+      * adherencePneus(etat.pneus, chaussee, etat.etatPneus?.[roue.i]?.usure), roue.load);
+  }
+
   function rouler(etat, cmd, c, dt, gaz, frein, aide, guidage, ev) {
     const ph = etat._physx, dr = etat.derive, m = ph ? ph.mass : P.masse;
     const L = ph ? ph.wheelbase : P.empattement, A = L * (1 - P.repartition), BR = L * P.repartition, IZ = ph ? ph.inertia[1] : P.masse * P.giration * P.giration;
@@ -448,6 +454,8 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
       + adherence(muRoue(1) * adherencePneus(etat.pneus, chaussee, etat.etatPneus?.[1]?.usure), R[1].charge);
     const capAr = adherence((ph ? muRoue(2) * P.gripArriere * (1 - (1 - P.deriveMuAr) * bd) : muAr) * adherencePneus(etat.pneus, chaussee, etat.etatPneus?.[2]?.usure), R[2].charge)
       + adherence((ph ? muRoue(3) * P.gripArriere * (1 - (1 - P.deriveMuAr) * bd) : muAr) * adherencePneus(etat.pneus, chaussee, etat.etatPneus?.[3]?.usure), R[3].charge);
+    if (ph) for (let i = 0; i < 4; i++) ph.contacts[i].capacity = capaciteRoue(etat, ph.contacts[i], chaussee,
+      i < 2 ? 1 : P.gripArriere * (1 - (1 - P.deriveMuAr) * bd));
     etat.capAv = capAv; etat.capAr = capAr; etat.chargeAv = (fzAv + fzAr) > 0 ? fzAv / (fzAv + fzAr) : P.repartition;
 
     // Longitudinal : moteur et frein moteur à l'arrière, freins répartis
@@ -754,8 +762,9 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
       if (u > -.04 && (gaz > .01 || !autorise)) { etat.rapport = 1; etat.freinRecul = 0; return; }
       const a = ph.wheelbase * (1 - ph.front), b = ph.wheelbase * ph.front, ua = Math.max(Math.abs(u), 1);
       const alphaAv = -etat.braquage - Math.atan2(w + a * r, ua), alphaAr = -Math.atan2(w - b * r, ua);
-      const surface = B.chaussee.lire(c, etat.s, undefined, CHAUSSEE.recul), mu = (ph.surface === 'herbe' ? P.muHerbe : P.muPiste) * adherencePneus(etat.pneus, surface);
-      const av = (ph.contacts[0].load + ph.contacts[1].load) * mu, ar = (ph.contacts[2].load + ph.contacts[3].load) * mu;
+      const surface = B.chaussee.lire(c, etat.s, undefined, CHAUSSEE.recul);
+      for (const roue of ph.contacts) roue.capacity = capaciteRoue(etat, roue, surface);
+      const av = ph.contacts[0].capacity + ph.contacts[1].capacity, ar = ph.contacts[2].capacity + ph.contacts[3].capacity;
       const fxAr = clamp(moteur, -ar, ar), fyAr = Math.sqrt(Math.max(0, ar * ar - fxAr * fxAr)) * pneu(alphaAr / P.alphaAr);
       const fyAv = av * pneu(alphaAv / P.alphaAv), cd = Math.cos(etat.braquage), sd = Math.sin(etat.braquage);
       ph.forces.avant[0] = -fyAv * sd; ph.forces.avant[1] = fyAv * cd; ph.forces.arriere[0] = fxAr; ph.forces.arriere[1] = fyAr;
@@ -814,6 +823,6 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
 
   B.conduite = {
     PARAMS, PNEUS, adherencePneus, adherenceVoiture, pneusConseilles, eauSurPiste, creer, pas, annulerDerive, couperTurbo, cap, kmh, couple, limiteCote, braquageMax, volantPour,
-    capaciteLaterale, pneu, lancerSaut, declencherAccident, subirChoc, replacer
+    capaciteLaterale, capaciteRoue, pneu, lancerSaut, declencherAccident, subirChoc, replacer
   };
 })(globalThis.BITUME = globalThis.BITUME || {});

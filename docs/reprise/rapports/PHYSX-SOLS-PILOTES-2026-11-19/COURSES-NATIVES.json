@@ -1,0 +1,131 @@
+{
+  "runtime": "PhysX 5.12.0 WASM réel, FERRO 0.3.13",
+  "pas": 0.008333333333333333,
+  "voitures": 12,
+  "dureeParScenario": 200,
+  "resultats": [
+    {
+      "circuit": "val-brule",
+      "meteo": "sec",
+      "frames": 24000,
+      "contacts": 14,
+      "chocs": 5,
+      "contactsPerdus": 0,
+      "placements": 0,
+      "simulationMs": 40108.803529,
+      "toursMinimum": 1,
+      "erreur": null
+    },
+    {
+      "circuit": "port-sable",
+      "meteo": "sec",
+      "frames": 24000,
+      "contacts": 8,
+      "chocs": 4,
+      "contactsPerdus": 0,
+      "placements": 0,
+      "simulationMs": 36687.529266000005,
+      "toursMinimum": 2,
+      "erreur": null
+    },
+    {
+      "circuit": "haut-col",
+      "meteo": "sec",
+      "frames": 24000,
+      "contacts": 24,
+      "chocs": 4,
+      "contactsPerdus": 0,
+      "placements": 4,
+      "simulationMs": 38983.360363,
+      "toursMinimum": 1,
+      "erreur": null
+    },
+    {
+      "circuit": "lande-noire",
+      "meteo": "sec",
+      "frames": 24000,
+      "contacts": 28,
+      "chocs": 5,
+      "contactsPerdus": 0,
+      "placements": 0,
+      "simulationMs": 31518.561468999993,
+      "toursMinimum": 1,
+      "erreur": null
+    },
+    {
+      "circuit": "roche-fauve",
+      "meteo": "sec",
+      "frames": 24000,
+      "contacts": 14,
+      "chocs": 0,
+      "contactsPerdus": 0,
+      "placements": 0,
+      "simulationMs": 33459.23608100001,
+      "toursMinimum": 1,
+      "erreur": null
+    },
+    {
+      "circuit": "brume-de-jade",
+      "meteo": "sec",
+      "frames": 24000,
+      "contacts": 25,
+      "chocs": 0,
+      "contactsPerdus": 0,
+      "placements": 0,
+      "simulationMs": 33458.88338800002,
+      "toursMinimum": 1,
+      "erreur": null
+    },
+    {
+      "circuit": "cap-sequoia",
+      "meteo": "sec",
+      "frames": 24000,
+      "contacts": 24,
+      "chocs": 3,
+      "contactsPerdus": 0,
+      "placements": 0,
+      "simulationMs": 37668.06805500001,
+      "toursMinimum": 1,
+      "erreur": null
+    },
+    {
+      "circuit": "baikal",
+      "meteo": "sec",
+      "frames": 24000,
+      "contacts": 6,
+      "chocs": 0,
+      "contactsPerdus": 0,
+      "placements": 0,
+      "simulationMs": 38295.790205999976,
+      "toursMinimum": 1,
+      "erreur": null
+    },
+    {
+      "circuit": "baikal",
+      "meteo": "pluie",
+      "frames": 24000,
+      "contacts": 20,
+      "chocs": 0,
+      "contactsPerdus": 0,
+      "placements": 0,
+      "simulationMs": 39383.21612,
+      "toursMinimum": 1,
+      "erreur": null
+    },
+    {
+      "circuit": "baikal",
+      "meteo": "neige",
+      "frames": 24000,
+      "contacts": 26,
+      "chocs": 2,
+      "contactsPerdus": 0,
+      "placements": 0,
+      "simulationMs": 42326.311755,
+      "toursMinimum": 1,
+      "erreur": null
+    }
+  ],
+  "portee": "Sondes de comportement, pas des garanties de zéro accident. Quatre replacements sur Haut-Col suivent le mécanisme de récupération existant ; aucun sur les sept autres circuits ni les deux scénarios météo Baïkal. Aucun contact natif perdu.",
+  "sources": "Chaque rapport conserve ses empreintes au démarrage : ces observations de 200 s appartiennent à la qualification du checkpoint 62c9461 avec FERRO 0.3.13. Les corrections ultérieures portent sur les proxies distants et le transfert d’autorité, le limiteur et les gardes de service des stands, la libération/rollback des mondes et le préchauffage dans un monde indépendant. FERRO 0.3.14 ajoute le nettoyage des wrappers WebIDL ; le solveur, ses paramètres et les shaders restent inchangés. Ces raccords ne changent pas le modèle mécanique des courses ordinaires, mais les présentes sondes ne constituent pas un nouveau replay intégral des courses sur la livraison 0.2.56. Les douze reprises ciblées de reconciliation-0314/reprises.json couvrent les cas concernés et conservent les 54 empreintes p14 exactes. Les preuves concurrentes livraison/ suivent un autre protocole, de 120 s ; elles ne sont pas fusionnées avec ces mesures.",
+  "mesure": "Temps du processus de simulation sous Node, sans rendu. Ne représente pas des FPS GPU ou une mesure Mac."
+}

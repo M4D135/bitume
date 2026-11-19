@@ -1,0 +1,95 @@
+{
+  "date": "2026-11-19",
+  "scope": "Animation extérieure du pilote ; contrôle CPU des poses et inspection EGL du modèle réel. Pas de scène navigateur ni mesure FPS matérielle.",
+  "sources": {
+    "src/voiture.js": "a0d5b4b89458aaefc9330d96ea80b04ea44bf6835d082b51113a18c93e0ee890",
+    "verifications/pilote-exterieur.test.mjs": "bc3448419328092852cc0fccc0da1b520b15c2153d813c0ab2f83768adc5d2bb"
+  },
+  "tests": {
+    "pilote_exterieur": {
+      "passed": 14,
+      "failed": 0,
+      "sampled_poses": 630,
+      "arm_lengths_metres": [
+        0.22,
+        0.23
+      ]
+    },
+    "voiture_permanents": {
+      "passed": 12,
+      "failed": 0
+    },
+    "voiture_identite": {
+      "passed": 6,
+      "failed": 0,
+      "historic_pose_groups_unchanged": 268
+    },
+    "voiture": {
+      "passed": 33,
+      "failed": 0
+    }
+  },
+  "allocation": {
+    "sampled_calls": 60000,
+    "estimated_bytes_per_pose": 1.0070666666666668,
+    "minor_gc": 0,
+    "sampling_interval_bytes": 4096,
+    "note": "Échantillonnage V8, objets collectés compris ; faible résidu estimé, pas une allocation exacte par appel."
+  },
+  "egl": {
+    "passed": true,
+    "cases": 12,
+    "lods": [
+      "complet",
+      "moyen",
+      "simple"
+    ],
+    "phases": [
+      "volant-centre",
+      "main-au-levier",
+      "retour-du-levier",
+      "virage-droite"
+    ],
+    "report": "report.json",
+    "montage": "pilote-poses-egl.png",
+    "sources": "poses.json",
+    "ferro_version": "0.3.13",
+    "source_sha256": {
+      "moteur/renderer.js": "d7a14230d0525a03d2874206f458d2edc39fef3542a067d43f693fdec4d5ad41",
+      "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+      "main.js": "49e97a7cb481e6c987131148e12e941448c33d280d31bd2af9551d5e1c31f55a",
+      "humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+      "humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+      "pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+      "voiture.js": "a0d5b4b89458aaefc9330d96ea80b04ea44bf6835d082b51113a18c93e0ee890"
+    }
+  },
+  "contract": {
+    "ev.pilote": "Objet permanent {volant, rapport, rapportAvant, passage} ; valeurs en lecture seule. passage 0..1 sur l’horloge interpolée du cockpit, 1 hors passage.",
+    "rebond": "Champ ev.rebond inchangé et conservé.",
+    "legacy": "Sans ev.pilote, les poses historiques restent inchangées.",
+    "preallocation": "10 variantes allouées avec le modèle ; mêmes articulations pour tous les LOD, objets distincts par LOD/overlay/rétroviseur."
+  },
+  "limits": [
+    "Inspection à caméra fixe, GLSL couleur/effets et maillages procéduraux exacts ; pas de chaîne de post-traitement ni de scène de course.",
+    "EGL llvmpipe logiciel ; aucun FPS matériel ni déploiement validé."
+  ],
+  "encombrement": {
+    "passed": true,
+    "scope": "Capsules conservatrices des quatre segments de bras, contre triangles exacts de carrosserie, cuve, jonc, bulle, volant et branches ; trois LOD partagent les articulations. Ne remplace pas un contrôle navigateur complet.",
+    "poses": 634,
+    "close_pairs": 3645,
+    "penetrations": 0,
+    "minimum_metres": 0.010612079188403276,
+    "minimum_case": {
+      "case": "grille-1-1-0",
+      "arm": 1,
+      "bone": 1,
+      "shape": "bitume-bulle",
+      "metres": 0.010612079188403276
+    },
+    "report": "encombrement.json",
+    "script": "pilote-collisions.py"
+  },
+  "correction_visuelle": "avant-correction/diagnostic.json"
+}

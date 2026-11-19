@@ -1,0 +1,160 @@
+TAP version 13
+# Subtest: 600 kg mass, explicit inertia and centre of mass determine real linear/angular motion
+ok 1 - 600 kg mass, explicit inertia and centre of mass determine real linear/angular motion
+  ---
+  duration_ms: 30.019979
+  type: 'test'
+  ...
+# Subtest: a force at a world point produces the expected torque, without setting velocity or pose
+ok 2 - a force at a world point produces the expected torque, without setting velocity or pose
+  ---
+  duration_ms: 2.863469
+  type: 'test'
+  ...
+# Subtest: oriented static boxes expose their real sloped surface to raycasts
+ok 3 - oriented static boxes expose their real sloped surface to raycasts
+  ---
+  duration_ms: 2.439803
+  type: 'test'
+  ...
+# Subtest: a cooked road triangle mesh supports a dynamic sphere and disappears on removal
+ok 4 - a cooked road triangle mesh supports a dynamic sphere and disappears on removal
+  ---
+  duration_ms: 22.358798
+  type: 'test'
+  ...
+# Subtest: mesh instance position/quaternion are preserved without changing its source vertices
+ok 5 - mesh instance position/quaternion are preserved without changing its source vertices
+  ---
+  duration_ms: 1.680462
+  type: 'test'
+  ...
+# Subtest: cooked raycast faceIndex maps back to input triangles after reordering and removal
+ok 6 - cooked raycast faceIndex maps back to input triangles after reordering and removal
+  ---
+  duration_ms: 13.655722
+  type: 'test'
+  ...
+# Subtest: suspension rays filter ground, exclude dynamic self and find the nearest beyond ten touches
+ok 7 - suspension rays filter ground, exclude dynamic self and find the nearest beyond ten touches
+  ---
+  duration_ms: 4.916591
+  type: 'test'
+  ...
+# Subtest: compound wheel shapes collide and local suspension pose changes do not teleport the chassis
+ok 8 - compound wheel shapes collide and local suspension pose changes do not teleport the chassis
+  ---
+  duration_ms: 2.316618
+  type: 'test'
+  ...
+# Subtest: offset wheel-to-wheel contact generates real vertical impulse and movement
+ok 9 - offset wheel-to-wheel contact generates real vertical impulse and movement
+  ---
+  duration_ms: 7.591558
+  type: 'test'
+  ...
+# Subtest: cooked cylindrical convex wheels preserve width and produce native wheel-to-wheel lift
+ok 10 - cooked cylindrical convex wheels preserve width and produce native wheel-to-wheel lift
+  ---
+  duration_ms: 11.597021
+  type: 'test'
+  ...
+# Subtest: native contact normals point b to a and impulses act on a, with bounded reusable output
+ok 11 - native contact normals point b to a and impulses act on a, with bounded reusable output
+  ---
+  duration_ms: 9.688396
+  type: 'test'
+  ...
+# Subtest: a fast CCD impact exposes its real native impulse without tunnelling
+ok 12 - a fast CCD impact exposes its real native impulse without tunnelling
+  ---
+  duration_ms: 2.555577
+  type: 'test'
+  ...
+# Subtest: reusable pose/velocity outputs and hot-path native temporaries stay bounded
+ok 13 - reusable pose/velocity outputs and hot-path native temporaries stay bounded
+  ---
+  duration_ms: 47.230857
+  type: 'test'
+  ...
+# Subtest: borrowed WebIDL caches stay bounded across varied scene teardown, contacts and cooking
+ok 14 - borrowed WebIDL caches stay bounded across varied scene teardown, contacts and cooking
+  ---
+  duration_ms: 422.36655
+  type: 'test'
+  ...
+# Subtest: disposing one scene preserves shared borrowed wrappers still used by another
+ok 15 - disposing one scene preserves shared borrowed wrappers still used by another
+  ---
+  duration_ms: 0.786571
+  type: 'test'
+  ...
+# Subtest: invalid geometry/configuration fails explicitly, while existing APIs remain usable
+ok 16 - invalid geometry/configuration fails explicitly, while existing APIs remain usable
+  ---
+  duration_ms: 1.154834
+  type: 'test'
+  ...
+# Subtest: real embedded WASM initializes once without network access
+ok 17 - real embedded WASM initializes once without network access
+  ---
+  duration_ms: 1.56519
+  type: 'test'
+  ...
+# Subtest: two real scenes simulate gravity, contact, impulse and static removal independently
+ok 18 - two real scenes simulate gravity, contact, impulse and static removal independently
+  ---
+  duration_ms: 38.016385
+  type: 'test'
+  ...
+# Subtest: CCD stops a 600-unit/s body at a 0.02-unit wall, unlike discrete motion
+ok 19 - CCD stops a 600-unit/s body at a 0.02-unit wall, unlike discrete motion
+  ---
+  duration_ms: 5.04956
+  type: 'test'
+  ...
+# Subtest: capsule geometry is vertical and masks can intentionally disable contact
+ok 20 - capsule geometry is vertical and masks can intentionally disable contact
+  ---
+  duration_ms: 4.006996
+  type: 'test'
+  ...
+# Subtest: real box sweep returns distance, normals, initial overlap and zero-motion behavior
+ok 21 - real box sweep returns distance, normals, initial overlap and zero-motion behavior
+  ---
+  duration_ms: 1.69153
+  type: 'test'
+  ...
+# Subtest: fixed timestep, invalid arguments and disposed worlds have explicit behavior
+ok 22 - fixed timestep, invalid arguments and disposed worlds have explicit behavior
+  ---
+  duration_ms: 1.704439
+  type: 'test'
+  ...
+# Subtest: kinematic bodies follow targets and ignore dynamic impulses
+ok 23 - kinematic bodies follow targets and ignore dynamic impulses
+  ---
+  duration_ms: 1.187843
+  type: 'test'
+  ...
+# Subtest: world resources can be repeatedly created and released
+ok 24 - world resources can be repeatedly created and released
+  ---
+  duration_ms: 9.814304
+  type: 'test'
+  ...
+# Subtest: the common kinematic collision path actually executes PhysX sweeps
+ok 25 - the common kinematic collision path actually executes PhysX sweeps
+  ---
+  duration_ms: 1.076647
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1160.531692

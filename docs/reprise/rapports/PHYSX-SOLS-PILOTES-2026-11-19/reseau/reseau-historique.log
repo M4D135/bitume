@@ -1,0 +1,103 @@
+✔ 12F3 : transport indépendant des pneus pour 2+2
+✔ 12F3 : transport indépendant des pneus pour 2+1
+✔ 12F3 : transport indépendant des pneus pour 1+2
+✔ 12F3 : envoi depuis la boucle réseau limité à deux états pneus par seconde
+✔ 12F3 : le vrai callback cinématique conserve l’expéditeur et respecte les autorités de voitures
+✔ 12F3 : service réel du second pilote invité envoyé immédiatement, ancien état et doublon sans effet
+✔ 12F3 : état périodique hors ordre et usurpation d’expéditeur ne changent pas les pneus
+✔ 12F3 : deux invités n’échangent des pneus que par un relais authentique de l’hôte
+✔ 12F3 : chargement terminé après un service récupère le snapshot hôte et ses archives validées
+✔ 12F3 : interpolation visuelle des roues distante sans seconde usure ni modification du pneu physique
+✔ 12F3 : changement de séance refuse un paquet de la course précédente même à graine identique
+✔ 12F3 : reprise par l’hôte conserve le dernier état reçu et se propage sans événement de départ chez le témoin
+✔ 12F3 : perte de l’hôte conserve les pneus reçus puis ferme l’application des anciens messages
+ok contextes 2+2, 2+1, 1+2 et quatre machines : autorités, IA et tableaux indépendants
+ok configuration refusée sans inventer une séance, un pilote ou un propriétaire
+ok seules les voitures conduites par leur autorité partent ; aucune mutation de leur état
+ok quatre types et quatre roues : graines exactes, facteurs sur 16 bits et compteurs au centième
+ok bornes exactes, aucun arrondi ne diminue une usure ou un cumul déjà présents
+ok un état source invalide ne consomme aucune séquence et ne normalise aucun pneu
+ok paquet malformé : aucune roue, séquence ou reprise partiellement appliquée
+ok séance, expéditeur et autorité : ni autre invité, ni IA usurpée, ni humain local écrasé
+ok un même service garde type et graines ; l’usure et les cumuls avancent, la saleté peut partir
+ok service et instantané dans les deux ordres, doublons et saut de plusieurs services
+ok séquences indépendantes : une ligne périmée ne bloque pas une autre voiture valide
+ok reprise 2+2 : état reçu conservé, epoch nouveau, séquence 1 après une séquence ancienne élevée
+ok trois machines : une reprise manquée est réparée par la liste cumulative ; ancien invité ignoré
+ok reprise conservatrice : service ou usure plus récents chez le pair préservés et signalés
+ok service perdu côté pair puis reprise : la chaîne invité → hôte → pair conserve la monte et son usure
+ok voiture reprise devenue locale : une annonce ne peut écraser les pneus conduits ici
+ok module pur sans DOM, horloge, hasard ni appel à remplacerEtat à la réception
+17 contrôles pneus réseau réussis
+✔ verifications/pneus-reseau.test.mjs
+✔ le moment choisi avant départ est annoncé et transmis aux pilotes
+✔ saison imposée par l’hôte, sans modifier les préférences des invités ; neige absente du Sud
+✔ l’annonce ouvre la confirmation sans lancer la course
+✔ Lande-Noire conserve le circuit et les conditions de l’hôte jusqu’au départ invité
+✔ Roche-Fauve conserve le circuit et les conditions de l’hôte jusqu’au départ invité
+✔ Brume-de-Jade conserve le circuit et les conditions de l’hôte jusqu’au départ invité
+✔ Cap-Séquoia conserve le circuit et les conditions de l’hôte jusqu’au départ invité
+✔ départ unique avec 1+1 pilotes
+✔ départ unique avec 2+1 pilotes
+✔ départ unique avec 1+2 pilotes
+✔ départ unique avec 2+2 pilotes
+✔ départ unique avec 1+1+1+1 pilotes
+✔ cinq pilotes ne peuvent pas confirmer le départ
+✔ un pilote peut retirer son accord pendant les 700 ms
+✔ retour de l’hôte au salon annule le départ différé
+✔ quitter puis rejoindre une autre partie ne lance pas l’ancienne course
+✔ une nouvelle proposition remplace le compte à rebours précédent
+✔ un membre en cours de connexion n’est pas oublié
+✔ une arrivée pendant le compte à rebours impose sa confirmation
+✔ perdre une liaison pendant le compte à rebours ne lance pas une course incomplète
+✔ départ d’un membre nettoie ses pneus et permet aux autres de continuer
+✔ les accords répétés ne programment qu’un départ
+✔ ouvrir les réglages retire l’accord local
+✔ un inconnu ne peut se dire prêt ni imposer des pneus
+✔ l’invité choisit ses pneus sans modifier sa boîte ni sa vue
+✔ annulation par l’hôte depuis les réglages retourne au salon
+✔ fermeture du salon efface la confirmation et quitte son écran
+✔ confirmation invalide ignorée sans écran vide
+✔ messages nuls ignorés sans interrompre le jeu
+✔ quitter pendant les 30 ms de chargement annule le lancement
+✔ le conseil suit la chaussée pour le mode automatique, le choix manuel reste personnel
+✔ 12F2 : montes personnelles conservées au départ 2+2
+✔ 12F2 : montes personnelles conservées au départ 2+1
+✔ 12F2 : montes personnelles conservées au départ 1+2
+✔ 12F2 : l’invité transmet les deux montes, sans partager leur tableau mutable
+✔ 12F2 : changer la deuxième monte distante retire son accord et annule le départ différé
+✔ 12F2 : répétition identique des pneus ne retire pas un accord valide
+✔ 12F2 : accord pneus invalide refusé {"pneusPilotes":["slicks"]}
+✔ 12F2 : accord pneus invalide refusé {"pneusPilotes":["slicks","inter","pluie"]}
+✔ 12F2 : accord pneus invalide refusé {"pneusPilotes":["slicks","__proto__"]}
+✔ 12F2 : accord pneus invalide refusé {"pneusPilotes":["constructor","pluie"]}
+✔ 12F2 : accord pneus invalide refusé {"pneusPilotes":["slicks",null]}
+✔ 12F2 : accord pneus invalide refusé {"pneusPilotes":"pluie"}
+✔ 12F2 : accord pneus invalide refusé {"versionChoixPneus":0}
+✔ 12F2 : accord pneus invalide refusé {"versionChoixPneus":1}
+✔ 12F2 : accord pneus invalide refusé {"versionChoixPneus":"2"}
+✔ 12F2 : accord pneus invalide refusé {}
+✔ 12F2 : un message pneus ancien ou malformé retire aussi un accord devenu douteux
+✔ 12F2 : un inconnu et un pair non lié ne modifient ni les choix ni les accords
+✔ 12F2 : une annonce sans contrat reconnu ne prépare pas un invité
+✔ 12F2 : un départ incompatible ou incomplet est refusé avant tout chargement
+✔ 12F2 : le vrai contrôle du second pilote retire l’accord local avant de mémoriser son choix
+✔ 12F2 : le vrai contrôle invité déconfirme avant d’envoyer les deux montes
+✔ 12F2 : un faux choix UI ne modifie ni l’accord ni les préférences
+✔ 12F2 : le refus de version reste visible après le retour réel au salon depuis la confirmation
+✔ 12F2 : humains invalides ou hors capacité refusés sans exception avant chargement
+✔ 12F2 : arrivée tardive valide, cette machine attend la suivante sans invalider la course annoncée
+✔ 12F3 : annonce et départ portent le protocole de pneus et l’identité exacte du circuit
+✔ 12F3 : mauvaise révision de piste, circuit déplacé et ancien protocole refusés avant préparation
+✔ 12F3 : départ répété avant et après le chargement ne recrée pas la séance, ancien départ refusé après la suivante
+✔ 12F3 : une nouvelle séance reçue pendant le chargement invalide le départ précédent
+✔ 12F3 : annulation de l’hôte pendant les 30 ms de chargement empêche le départ accepté
+✔ 12F3 : refus de version pendant les 30 ms de chargement invalide aussi le départ accepté
+ℹ tests 77
+ℹ suites 0
+ℹ pass 77
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 199.923581

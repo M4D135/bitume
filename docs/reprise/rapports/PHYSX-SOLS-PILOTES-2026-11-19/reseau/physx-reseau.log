@@ -1,0 +1,19 @@
+✔ ancien paquet et CHAMPS inchangés octet pour octet, aucune donnée pneu ajoutée
+✔ roundtrip mixte : extension float32 de onze nombres, positions de voitures et préfixe historique conservés
+✔ saut : hauteur et vitesse verticale prédites, gravité uniquement sans appui
+✔ horizon historique +350/-100 ms conservé, y et vy correspondent au même instant
+✔ projection angulaire monde : tangage autour de la droite et roulis autour de l’avant incliné
+✔ lacet pur ne change pas l’assiette ; rotation et tangage presque vertical restent finis
+✔ quatre suspensions et tampon de sortie réutilisés sans partage entre voitures ni avec le paquet
+✔ validation stricte des onze valeurs : types, longueur, finitude, vitesses, courses et nombre entier d’appuis
+✔ source PhysX malformée et payload altéré ne contaminent pas le paquet historique
+✔ queue tronquée, inconnue, indices hors borne ou dupliqués : retour au préfixe intact
+✔ prédictions historiques figées : aucun écart numérique sans extension ou après rejet
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 115.769011

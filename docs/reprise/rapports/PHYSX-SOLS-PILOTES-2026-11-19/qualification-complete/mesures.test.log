@@ -1,0 +1,29 @@
+✔ deux millisecondes de boucle restent deux millisecondes (4.451984ms)
+✔ deux vues cumulent leur coût CPU et les deux glaces leur coût par image (1.482276ms)
+✔ les coûts nuls comptent et la pire image est le maximum (2.452772ms)
+✔ la fenêtre circulaire efface les anciens relevés sans section ni rétroviseur (4.180085ms)
+✔ le total GPU et ses passes utilisent les mêmes rendus complets (1.551118ms)
+✔ le module expose l API attendue (1.049776ms)
+✔ ouvert sans chronomètre GPU : aucune requête, temps GPU N/D, choix retenu (2.661706ms)
+✔ séance : images longues et pire image au-delà de la fenêtre de 240 images (5.35233ms)
+✔ séance : centiles par histogramme, au dixième de milliseconde (2.083258ms)
+✔ séance : une image juste à 1,5 période n’est pas longue, une image au-delà l’est (1.215495ms)
+✔ référence estimée : une cadence dégradée ne la déplace pas (2.928166ms)
+✔ période et diviseur déclarés par le jeu : seuil à (diviseur + 0,5) périodes (2.206532ms)
+✔ créations tardives du moteur : N/D sans compteur, écart de la séance sinon (1.156596ms)
+✔ le volet montre séance, période et créations, sans ramassage inventé (2.561525ms)
+✔ sans chronomètre GPU, le temps GPU reste N/D (1.230847ms)
+✔ les trois vues sont comptées séparément (0.271137ms)
+✔ le GPU vient des requêtes du moteur, les mesures invalides sont écartées (0.558568ms)
+✔ une extension absente ou un profil inexistant ne fabrique pas de mesure (0.25325ms)
+✔ reinitialiser vide la fenêtre (0.283616ms)
+✔ le budget audio ne devient pas une activité avant le geste utilisateur (0.940021ms)
+✔ le retour de l’horloge à zéro rafraîchit immédiatement le volet (0.971258ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 49.352422

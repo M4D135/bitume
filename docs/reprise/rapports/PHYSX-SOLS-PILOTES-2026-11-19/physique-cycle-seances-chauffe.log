@@ -1,0 +1,13 @@
+{"version":"5.12.0","jeuSHA256":"709e03f9cf469b0d7ee1e6fd7d3773bfcea8ab6308b3fc5a9448c091cf0e01ed","resultats":[{"panne":"modele","reussi":true,"ordre":["effets:anciens","liberer:ancien","monde:nouveau","panne:modele","liberer:nouveau"],"mondesRestants":0},{"panne":"prechauffage","reussi":true,"ordre":["effets:anciens","liberer:ancien","monde:nouveau","panne:prechauffage","effets:nouveaux","liberer:nouveau"],"mondesRestants":0},{"panne":"restauration GPU","reussi":true,"mondeConserve":true,"acteurConserve":true,"poseConservee":true,"effetsRepris":true},{"panne":"chauffe PhysX","reussi":true,"situations":["normal","creation-effets","pas"],"mondeIndependant":true,"pas":60,"seanceIntacte":true,"decorIntact":true,"mondeReelRestant":1}]}
+✔ PhysX : une exception de modele libère ancienne et nouvelle séance (1631.231752ms)
+✔ PhysX : une exception de prechauffage libère ancienne et nouvelle séance (1525.707006ms)
+✔ PhysX : restaurer le contexte GPU reprend les effets dans le même monde sans toucher aux voitures (894.875429ms)
+✔ PhysX : la chauffe possède son monde, préserve la séance réelle et libère aussi ses erreurs (3345.291909ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9939.563028

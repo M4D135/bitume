@@ -1,0 +1,1342 @@
+{
+  "dateUTC": "2026-11-19T18:27:42.602194+00:00",
+  "version": "0.2.55",
+  "physique": "p14",
+  "ferro": "0.3.13",
+  "runtime": "PhysX 5.12.0 WASM réel",
+  "qualifiedRuntimeCheckpoint": "62c94613461ab2fb5750b39f97d6049062e341c1",
+  "scope": "Consolidation intermédiaire des preuves locales déjà exécutées pour le checkpoint 62c9461, avant réconciliation du nouveau checkpoint concurrent b8f0507. Les résultats ne sont pas le gel final de publication. Ce rapport ne prétend pas qu’un balayage complet a été rejoué sur le commit final.",
+  "node": "v24.22.3",
+  "initialSweep": {
+    "suites": 118,
+    "passed": 115,
+    "failed": 3,
+    "report": "qualification-complete/resultats.json",
+    "sourceChangesDuringSweep": [
+      "src/physique.js",
+      "src/jeu.js",
+      "src/reseau.js"
+    ],
+    "failedSuites": [
+      "verifications/autoconfig-integration.test.mjs",
+      "verifications/determinisme-simulation.test.mjs",
+      "verifications/traces.test.mjs"
+    ]
+  },
+  "consolidated": {
+    "suites": 122,
+    "passed": 121,
+    "failed": 1,
+    "method": "118 résultats initiaux, deux échecs remplacés par leurs reprises passantes, quatre nouvelles suites passantes. Les tests modifiés après le balayage ont tous une preuve ciblée ultérieure. Les autres résultats sont conservés avec leur portée initiale.",
+    "exactFinalRevisionFullSweep": false,
+    "pendingRemoteCI": true,
+    "addedSuites": [
+      "verifications/physx-autorite-reseau.test.mjs",
+      "verifications/physx-cycle-vie.test.mjs",
+      "verifications/physx-reseau.test.mjs",
+      "verifications/physx-stands.test.mjs"
+    ]
+  },
+  "knownFailure": {
+    "test": "verifications/traces.test.mjs",
+    "status": "inherited-unresolved",
+    "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+    "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+    "fixtureRewritten": false,
+    "currentEvidence": "qualification-complete/traces.test.log",
+    "baselineEvidence": "../VIRAGES-REFLETS-2026-11-19/github/RECU-CI.json",
+    "note": "Même écart avant ce lot. La CI 0.2.54 conservée dans la clôture signalait aussi un dépassement de budget decor.test ; le balayage local du présent lot a passé ce contrôle temporel."
+  },
+  "build": {
+    "scripts": 56,
+    "valides": 56,
+    "octets": 14160335,
+    "sha256": "8f3bba41c8255f72da2c828d153225eb13649c733142f9e216162928b37bbb98",
+    "version": "0.2.55",
+    "ferroModulesVerified": 34,
+    "twoBuildsByteIdentical": true,
+    "logs": [
+      "build-1.log",
+      "build-2.log"
+    ],
+    "inlineSyntaxScripts": 56
+  },
+  "physics": {
+    "vehiclesPassed": 14,
+    "vehiclesEvidence": "physique-voitures-final.log",
+    "sceneGeometryPassed": 42,
+    "nativeScenePassed": 23,
+    "rayChecks": 5181,
+    "nativePitPassed": 5,
+    "nativePitAdditionalPassed": 8,
+    "nativePitAdditionalEvidence": "physx-stands-concurrent.json",
+    "scopeNote": "Contrôles dédiés et résultats par scénario ; aucune garantie générale de zéro collision ou de zéro accident.",
+    "staticSoilPitReport": "QUALIFICATION-SOLIDES-STANDS-SOLS.json",
+    "cycleTestsFinalPassed": 4,
+    "cycleAddendum": "CHAUFFE-PHYSX.json",
+    "rollbackAndDisposalAdditionalPassed": 2,
+    "authorityAdditionalPassed": 2
+  },
+  "determinism": {
+    "scenarios": 3,
+    "carsPerScenario": 12,
+    "secondsPerScenario": 18,
+    "independentProcesses": 2,
+    "exactHashes": 54,
+    "passed": true,
+    "fixture": "verifications/fixtures/determinisme-p14.json",
+    "fixtureSha256": "d8dfa60fc2d237c8dbc2b3d23689f2d81fe1562e1b14b30eda608fcd4f46d655",
+    "historicalFixturesRewritten": false,
+    "creationEvidence": "determinisme-p14-creation.log",
+    "finalEvidence": "determinisme-p14-final.log",
+    "scope": "Identité numérique stricte entre processus dans cet environnement, avec sensibilité à un ulp et à −0/+0 ; aucune promesse de déterminisme entre toutes les architectures."
+  },
+  "network": {
+    "dedicatedPassed": 11,
+    "historicalSuites": 3,
+    "historicalNodeResultsPassed": 77,
+    "evidence": "reseau/qualification.json",
+    "multiMachineSessionTested": false
+  },
+  "soil": {
+    "gameChecksPassed": 68,
+    "matrix": {
+      "circuits": 8,
+      "seasons": 4,
+      "qualityLevels": 2,
+      "comparisons": 64
+    },
+    "additionalChecks": 4,
+    "imagesImported": 0,
+    "shaderOnlyRelief": true,
+    "gameEvidence": "QUALIFICATION-SOLIDES-STANDS-SOLS.json",
+    "canonicalEvidence": "https://github.com/M4D135/FERRO/blob/b09a4e82252dbcb43a363a19b3e43c0a90e9a41b/docs/sols-proceduraux/qualification.json"
+  },
+  "pilot": {
+    "checksPassed": 14,
+    "posesSampled": 630,
+    "clearancePoses": 634,
+    "closePairsMeasured": 3645,
+    "penetrations": 0,
+    "minimumClearanceMetres": 0.010612079188403276,
+    "eglPoses": 12,
+    "evidence": "pilote-exterieur/qualification.json",
+    "scope": "Maillages procéduraux et shaders réels, caméra fixe ; EGL llvmpipe logiciel, sans scène navigateur ni post-traitement complet."
+  },
+  "raceProbes": {
+    "scenarios": 10,
+    "carsPerScenario": 12,
+    "secondsPerScenario": 200,
+    "nativeContactsDropped": 0,
+    "exceptions": 0,
+    "minimumLapsEveryCar": 1,
+    "replacements": {
+      "haut-col-sec": 4,
+      "allOtherScenarios": 0
+    },
+    "evidence": "COURSES-NATIVES.json",
+    "note": "Quatre replacements après accident utilisent la récupération existante ; aucun dans les scénarios dédiés de sortie de file. La métrique simulationMs est un temps de processus sans rendu, pas un FPS."
+  },
+  "canonicalFerro": {
+    "version": "0.3.13",
+    "publishedMerge": "b09a4e82252dbcb43a363a19b3e43c0a90e9a41b",
+    "pr": "https://github.com/M4D135/FERRO/pull/1",
+    "tests": 209,
+    "passed": 208,
+    "failed": 0,
+    "inheritedTodo": 1,
+    "nativeWasmChecksPassed": 23,
+    "soilAndShadowsContractsPassed": 17,
+    "wgslCompiledAndValidated": true,
+    "nativeWebgpuSceneExecuted": false,
+    "evidence": "https://github.com/M4D135/FERRO/blob/b09a4e82252dbcb43a363a19b3e43c0a90e9a41b/docs/physx-sols-0313/qualification.json",
+    "emprise": {
+      "modulesIdentical": 34,
+      "syntaxPassed": 88,
+      "targetedPassed": 9,
+      "targetedTotal": 11,
+      "inheritedFailures": [
+        "webgpu-renderer: 128 au lieu de 0",
+        "renderer-overlay: photoOverlay absent du harnais"
+      ],
+      "fullBuildExecuted": false,
+      "reason": "src/city-data.js de 13 975 402 octets absent ; aucune donnée de substitution.",
+      "evidence": "https://github.com/M4D135/FERRO/blob/b09a4e82252dbcb43a363a19b3e43c0a90e9a41b/docs/physx-sols-0313/emprise/qualification.json"
+    },
+    "softwareSoilProbe": {
+      "renderer": "llvmpipe, un worker",
+      "resolution": [
+        768,
+        512
+      ],
+      "medianBeforeMs": 23.19,
+      "medianAfterMs": 26.55,
+      "increasePercent": 14.5,
+      "hardwareFps": false,
+      "evidence": "https://github.com/M4D135/FERRO/blob/b09a4e82252dbcb43a363a19b3e43c0a90e9a41b/docs/sols-proceduraux/README.md"
+    }
+  },
+  "limits": [
+    "Pas de balayage local complet unique sur la dernière révision ; qualification consolidée et reprises ciblées documentées.",
+    "Échec historique de traces conservé ; la CI distante finale reste à lire lors de la publication.",
+    "Aucune partie complète validée dans le navigateur ; inspections EGL techniques seulement.",
+    "Aucune mesure de FPS sur GPU matériel ou Mac, aucune partie réseau à plusieurs machines.",
+    "Aucun déploiement du site validé par cette qualification."
+  ],
+  "sourceSha256AtCheckpoint": {
+    "src/physique.js": "2dc2dede6b8f8e3a863a09c754bed30baf2cdf38af0dc6b71e9d839eb153a089",
+    "src/solides-physx.js": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+    "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+    "src/course.js": "6b3ec1ab4dc526d8da81f1fcf9410d68927d9a65743ac45c9335f3386f93b53f",
+    "src/jeu.js": "709e03f9cf469b0d7ee1e6fd7d3773bfcea8ab6308b3fc5a9448c091cf0e01ed",
+    "src/decor.js": "001273b9b31d6f9005f98e32f86e94c20e57405ecd4cc88f9bc71197de2c91b2",
+    "src/bords.js": "ef0488472987ff35d36f3a2bbd76e5a086cb7edf8bc038dfb01676dfe933b638",
+    "src/traces.js": "a163a43fd2ea165464db220286b80e10768e18d2de0f045ca1591caa017f6f4d",
+    "src/reseau.js": "4fd5451e05a9a906bde39059e5cb14a67d9e6fce15459ee320b2ed383fa95067",
+    "src/voiture.js": "a0d5b4b89458aaefc9330d96ea80b04ea44bf6835d082b51113a18c93e0ee890",
+    "src/ferro/physx.js": "90779107e09594ce16796d7804a4f2a56f5c03856bdea22fcfed67016b17f3d2",
+    "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "src/moteur/renderer.js": "d7a14230d0525a03d2874206f458d2edc39fef3542a067d43f693fdec4d5ad41",
+    "src/ferro/webgpu-shaders.js": "1228ce07f4db2809c9f498cd465e8984c6fbccdf70e5b46b29411cfc588853a9",
+    "src/ferro/engine.js": "b773d2848eb75cb3f9c0da7a1e85049f4b1bb6eca61948a2b7817221ef9d5d51",
+    "FERRO.lock.json": "849b16a3c2c01bc3b12415ae0394a231153d1a8b953ef7f9a50d7fc728ac0fa1",
+    "VERSION.json": "5ec5c342bc95416c623c8a3106359ea2538a59142d2abbe3138c4728b6473032",
+    "SIZE.json": "71de6b61a0918554a861ff611cf9c90ee3223a2cbae6faa3eda9aea8170183fb",
+    "verifications/fixtures/determinisme-p14.json": "d8dfa60fc2d237c8dbc2b3d23689f2d81fe1562e1b14b30eda608fcd4f46d655",
+    "verifications/helpers/determinisme-physx.mjs": "e5fc998d458368a37c66f1a96de3e6c218fcba35671d80167f0de823679a726e"
+  },
+  "suiteResults": [
+    {
+      "test": "verifications/adherence-chaussee.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/adherence-chaussee.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "7fceaa345c8edb4c998d60adff2155d0cfdafceae644adb3530cb1989843295d",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/ambiance.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/ambiance.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "d5cf1b1fc3e6adf3ddd75bca8b20473da081a2d40722ded6767503754bbcdff9",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/animaux.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/animaux.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "53c5ef062b39cb076ecc13a17036e777dd160b2b01b69fd0f7a65d1655d00273",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/arbres-lots.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/arbres-lots.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "1f7bf223ab21b4befe849df0030472d0f859068dd5d918e9ff5040f4b5a230ad",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/asie.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/asie.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "56510f7c8b976fb0630cb021977670c864b087a91c8eb706800a97765d94a08c",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/aurores.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/aurores.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "29ac9004621383e656af99f491ededbf352443b652fe8130e5988083c1e0f32b",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/autoconfig-integration.test.mjs",
+      "exit": 0,
+      "evidence": "autoconfig-integration-final.log",
+      "origin": "targeted-after-sweep",
+      "note": "Harnais préparant le vrai garde de disponibilité PhysX ; erreur de démarrage testée explicitement.",
+      "checksPassed": 22,
+      "testSha256AtCheckpoint": "a2c0507273ee3558ce380e3a60901f5d7e3f70035a9d6227024c2cd98b8707b9",
+      "testChangedSinceSweep": true
+    },
+    {
+      "test": "verifications/autoconfig.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/autoconfig.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "6cd8e1909f0117c05ba8d767355ba402ae6b01406979b0befa0410ce31c82db5",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/bords-integration.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/bords-integration.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "e3ddc0c8400c78f90f13da1c676af30b16cd342c5272ff5fe8f51fd0091b5b01",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/bords.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/bords.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "f61ba868c50a018a9572332f80a72bd188701ef8f2ab91d42d5a748f14aac98f",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/botanique.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/botanique.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "ac88c804d1de40491af41b4bd3958a3a6cac0a5a47fbb55f673f01ddd64d8750",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/cadence.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/cadence.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "1b32872c5d6c5de538386828216b8154eb95760e1c7619ef8646482d8b553a0b",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/carene.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/carene.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "00437338f761115b8c9bce11fe4d74f73d5a85821aa0843abe8b3abd08796a35",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/chargement.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/chargement.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "246e163d0d3b3577725c4ad453d08b5113952dce865e32e6e4648118730413b8",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/chaussee-preparation.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/chaussee-preparation.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "745354b965b41281d431c6963aa9c1ea0686bf1cbf625363a99e1f34032cbb42",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/chaussee-visuelle.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/chaussee-visuelle.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "81ae72f88c29dfadc8d872b6245c307829292a95397263a8f76f7345b6f9ba6e",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/chaussee.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/chaussee.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "12a1d6094ff6171b226cbf0628619a9ee7be9475228aa56ad964627b5f59dabc",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/choix-pneus-integration.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/choix-pneus-integration.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "d34bdda7675c1ad92d55d93931953c2f88a369e022aa155fbc70a2e0e3ee213f",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/circuit.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/circuit.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "d80ca1b5ffb1fdc6e5a1dfe456971065cf146674ad64b3764b411aea9d51fc16",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/collisions-orientees.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/collisions-orientees.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "5bf253279f60f2e4dc6df419a5db8c148a768b6ae7016a41f8d30bfa7d891044",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/commandes-partage.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/commandes-partage.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "31dcd92c50cb4597805c828fcaead05d16c7700b0d52b6b7abb200052ca4d973",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/conditions-course.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/conditions-course.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "4e0f46c31fc8bc3e13cf54f9b25d4a1db6bb53babee80b92269911a0516453c3",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/conditions-integration.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/conditions-integration.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "e79f2d26993cb9bbd90ede31c060bb796672a63d05d5da977d8fff124045765a",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/conduite-criteres.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/conduite-criteres.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "6e5d1c2b9188c8317c485762e451fc5504572f0861e12fce0fec5620f9a6eb97",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/conduite.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/conduite.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "403d18ba330a6988464b2c14f2d3846a0e324b110544c91ae0e6973c2287262c",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/contacts.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/contacts.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "73f0f33d6de98c6518f592fcd815ec86ebb1a579020f94be78f907a71b7b3635",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/controle-visuel.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/controle-visuel.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "a4cc66ec88a983e35ad12e533e6d272ef6cfce122440676522cd87a979f58ee0",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/course.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/course.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "512171e56f7b2e2f4c8be3ba85ab9a132dd16a130448390d4849ed18fc038546",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/crash.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/crash.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "f45668f7e3611a6e36abe147f6d4fc3d06dc0e1bc74a75627a38e61a870ae3cd",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/decor-identite.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/decor-identite.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "8ace7f3355560dc3c7f87733309a66fc5f9f74d1444b2a93f44e9cbd6ff2d2c6",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/decor-obstacles.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/decor-obstacles.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "ddc65b837acdcbbdd79c7895638fae80e2516d0cd30bb9a39b3ea12b5bb8081a",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/decor.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/decor.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "a676c24abe914cbfdff66452e0cf330da9dc8797ead7a30e00cea9f4cc162a1c",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/desert.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/desert.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "43a2f536732dff7ee537b4377b9a7adbc28ab1e7541d252bed0fd3bb4317ebd4",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/determinisme-simulation.test.mjs",
+      "exit": 0,
+      "evidence": "determinisme-p14-final.log",
+      "origin": "targeted-after-sweep",
+      "note": "Nouvelle fixture p14 issue de deux processus indépendants, 54 empreintes exactes ; fixtures p9 à p13 intactes.",
+      "testSha256AtCheckpoint": "af1644dbf83bf8ab9fa5186dcd400feb7be25ad7c13348e2bd2fba410e48404b",
+      "testChangedSinceSweep": true
+    },
+    {
+      "test": "verifications/echappement.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/echappement.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "30ef3bf36e6c1f389d4a800740349eba447fde76a035871e2cdd3559cdb209d7",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/ecologie.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/ecologie.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "6980aa0f31e4ab59f86703eb6a17643a32f7b7842679eb61897d696e0ae97a0c",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/effets-allocation.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/effets-allocation.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "6caf70c80e01b79d7c7237385fb64f8ec92f4bf4fa0b1d3400dfdd61599324e5",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/effets-saison.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/effets-saison.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "961c4b61d68fdbf31698c167edf37bf9b91e8288160aa9f50415afdf263c6c24",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/faune.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/faune.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "c1521b647841c34c1afe969b478b63d93dbab0931f7e2b6404bcf8da672f7cfb",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/formes-libres.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/formes-libres.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "c7b0dd12c2342fe5c95864bfa4ec5951ec32f8a864da0122b223dddd7f7b572f",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/glissiere-etats.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/glissiere-etats.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "b9c9d22e5a917e70b909d84676c7a4d5ae12833e4a8bb72d096ebb1824a9c539",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/glissiere-rebond.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/glissiere-rebond.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "e7d0ad070b7e817161f37059c860d8eadb25599b1d429db1a6d8ba6c4b402b8e",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/graphismes.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/graphismes.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "2196a9463f2b02ef37c46cd6281d6b2193fca4c6765c2d069dfa8f66a6bc8734",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/herbier-identite.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/herbier-identite.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "a697a9d14ea209da10b88be19b5208117a6122358eabacf26c5514f9b070155e",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/herbier-saisons.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/herbier-saisons.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "baa48777179456aac30dfbd8d764dca16a93adc454b1f3d6d20da807c9b28ef4",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/hud-pneus.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/hud-pneus.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "08523246e12c72aa4021e2daeb727f6b43ff03efb9958428631179a5f1377438",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/ia-attaque.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/ia-attaque.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "a05c796f357f998b47c915316dae487a65252661726dca3f71443912f6a00055",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/ia-epaves.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/ia-epaves.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "c001761c815bb5b54f3fd085eccd83de6d134938ffd30146d3bedca5af4d8519",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/ia-reprise.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/ia-reprise.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "05e83ebd8976789780eadf908060a045d041ddb78becd6530abc782a76d6e0ce",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/ia.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/ia.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "49da0e507eb57ff8f807e1e25c4fe41b676cbb6b6986b8e74a57921b8c6097d9",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/islande.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/islande.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "f27787b064b3e9b16ca0089f66beb06ef7319f8867a595cd89385f4062599a23",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/lieux-traces.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/lieux-traces.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "5c62ad24f5eb9ca6d0a9b7f5da462a677e6b7f016875bf510722f8671ef63a6d",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/main.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/main.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "327362e3603dfd1966494f9cbdfa31e9129cd92f76884f1191913d3cf9211891",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/manette.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/manette.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "a48f424155d138f5c36e31b06f7a5c4f3626acb5ee10ee39c5bf76cc85a533eb",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/mesures.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/mesures.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "8ce193d9fa288d67f9dd16d7dbafaa04cd77ff3fb2a76a7b05dda1887694f202",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/meteo-reelle.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/meteo-reelle.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "08b24aee6c24ddecee1935bdbf0d2a8cde9f75908d16c592c81a3936195829af",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/meteo-toile.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/meteo-toile.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "700945b18ad40b1d382be0b7b56fbc8fb54d8a7722dd1e8c0162950da6909ef9",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/meteo.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/meteo.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "51f0146cc16389ca42a62958472669fe82bfe9459fecaf9ae4f79816f521dda7",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/moteur-emprise.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/moteur-emprise.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "294e9517c18920411ffa5c91e830ede4633f8825db8b729710043d5eb3496e29",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/nature-integration.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/nature-integration.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "15e54e8ace8be1e85a9cf3f1e5b4db7392273307e0fdc85fbb0011f40b6477cb",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/nature-preparation.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/nature-preparation.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "05cfa0f189fe9c084d94260703429ce81280b4f21407e5b8dcc58f69426c63f9",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/navigation-menu.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/navigation-menu.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "152561e48adf96ae1faecd794280afb45f0aea93557a200d6edd989e073d9472",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/obstacles-degagement.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/obstacles-degagement.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "83a0b348ef0d31b2f79de59c6543082a17dcb00998a6846e2d85bfea2540c12b",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/obstacles.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/obstacles.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "bc3f532a862b091c5ffe3915e751a20d97f3e00a4ded253494a1f63c59f8b433",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/ombres.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/ombres.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "676eaca7504066f2af77d892217dbfaa8509e493129a673c8275b32a08b34f55",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/options-image.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/options-image.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "339a42cabe49d322a9f1b3672de74a3e56c8e2f5e6c77ddbc8052242a9dc9a5d",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/pacifique.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/pacifique.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "3c804ffc822c1c5aa2551cfe06705fa9491c34944452cbab4c3b8c0bcb3b78fd",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/physique-cycle-seances.test.mjs",
+      "exit": 0,
+      "evidence": "physique-cycle-seances-chauffe.log",
+      "origin": "targeted-after-sweep",
+      "note": "Ajout du préchauffage dans son monde PhysX indépendant et nettoyage sur erreur ; remplace le passage 3/3.",
+      "checksPassed": 4,
+      "testSha256AtCheckpoint": "9993ed29186d538d3c734eaf329c3948c6285ba5c67662047756066957cd9289",
+      "testChangedSinceSweep": true
+    },
+    {
+      "test": "verifications/physique-stands.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/physique-stands.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "d2d9585edc5d6a21614a4b6f749c3177693dc2c5ee73b2e1945b6e6be46c897e",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/physique-voitures.test.mjs",
+      "exit": 0,
+      "evidence": "physique-voitures-final.log",
+      "origin": "targeted-after-sweep",
+      "note": "Raccords finaux des forces locales, contacts des roues, débris, proxies et transfert d’autorité.",
+      "checksPassed": 14,
+      "testSha256AtCheckpoint": "c85a77ae104fee8325f9bf2710718935ab06848967144da4b9f3a867bb3a1a34",
+      "testChangedSinceSweep": true
+    },
+    {
+      "test": "verifications/physx-autorite-reseau.test.mjs",
+      "exit": 0,
+      "evidence": "physx-autorite-reseau.log",
+      "origin": "targeted-after-sweep",
+      "note": "Suite de la branche concurrente conservée sous un nom distinct du codec réseau.",
+      "checksPassed": 2,
+      "testSha256AtCheckpoint": "24569a4c0d32b400b1f7d2e7880b253eacecd1b10408afcc39b321813854354b"
+    },
+    {
+      "test": "verifications/physx-cycle-vie.test.mjs",
+      "exit": 0,
+      "evidence": "physx-cycle-vie.log",
+      "origin": "targeted-after-sweep",
+      "note": "Libération des références et reprise après construction interrompue.",
+      "checksPassed": 2,
+      "testSha256AtCheckpoint": "cc14f441637d7bc70824feb3fddbebdbbe147140b1b42fcd10a533e669782224"
+    },
+    {
+      "test": "verifications/physx-monde.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/physx-monde.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "8f5b9df26c5636106ee5d2ebce9249a2c31944966bb533ace36ed9c14682d4a1",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/physx-reseau.test.mjs",
+      "exit": 0,
+      "evidence": "reseau/physx-reseau.log",
+      "origin": "targeted-after-sweep",
+      "note": "Paquet 3D facultatif et prédiction bornée ; préfixe historique conservé.",
+      "checksPassed": 11,
+      "testSha256AtCheckpoint": "3606b8137fbdd7c688b1ad8d8fbcb20f73a3e873c0a5d8100f50d8c852055667"
+    },
+    {
+      "test": "verifications/physx-stands.test.mjs",
+      "exit": 0,
+      "evidence": "physx-stands-concurrent.log",
+      "origin": "targeted-after-sweep",
+      "note": "Limiteur natif, service et interruption, cinq files bloquées sec/pluie/neige/Haut-Col.",
+      "checksPassed": 8,
+      "testSha256AtCheckpoint": "739dcb4fb5d2faeabd5947c8cf8560e9d175db418508f603b55b14be7a9d9ad6"
+    },
+    {
+      "test": "verifications/pieces.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/pieces.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "12226e429a9613636b2ccefc0c31276a7391010fccfc997cc19f664381a5ad7c",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/pilote-exterieur.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/pilote-exterieur.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "bc3448419328092852cc0fccc0da1b520b15c2153d813c0ab2f83768adc5d2bb",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/pneus-pilotes.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/pneus-pilotes.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "559626a102cb4ee959d3d67bd822ba240a75d91c5d5e9b1c33439d8562903736",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/pneus-reseau-integration.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/pneus-reseau-integration.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "3cff4246cccf96e78664bd418aff420e78d5a5aba711e81b65765a77683acc82",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/pneus-reseau.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/pneus-reseau.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "3df9ab356e8db7ea2a84bbb2903adef483e1ea4a6187b8c3c02fa80e13002d77",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/pneus-service-visuel.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/pneus-service-visuel.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "0ed306b6e5398a40dbc159c68d2ad345c3a11f664951ae9cde8d96f1bafa51ba",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/pneus.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/pneus.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "178fc27ed5fa25c0d40248864d0b1062e8748478c9d5bca3a117a30c54527066",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/prets-enligne.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/prets-enligne.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "8d957c3f863699923c46fa3d85cd985649c870b27076644ab8a7921998a58e4c",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/public.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/public.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "8506830fa63c5d0182d963877e0fa9f2a089f8d58e65454ed6b30db4d028fb14",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/qualite.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/qualite.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "03b01afd0356d414620bd6a86d663f5c2630f9a2af26073d989aba6815dcfd81",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/realisateur.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/realisateur.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "ed8f162820f4597631c79204c552de17c95a49ff1e5971babc5f9d26851d1fa0",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/relectures-phase2.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/relectures-phase2.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "2b53e492a22275a2959abc7e85a00f1b9d27d3309f2f54a6f5e16696323a97c1",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/rendu-halo.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/rendu-halo.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "ab02434d6543eda645c8127bd99f83770a3741d65731f7da845b87668accd809",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/reperes-virages.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/reperes-virages.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "9d8e20a53252ceb1156d39be9369b58250733b73b6f49ee024a649730f93e3fe",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/reprise-recul.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/reprise-recul.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "771140adc51fccd48c4e82884c4553b98edf36638f1e2c6c61547d129042478e",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/roues-detail.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/roues-detail.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "222e43c19a7262c31519755c83bfbf603e1f15a823b8e6eed9e8df14cf787410",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/russie.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/russie.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "2425e9c437c264ecc7c402d2832e1c805ed7bfa7b2f939f1d1e65ed55bb4d640",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/saisons.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/saisons.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "85371f085263128bd6a8e92e0e2ea8ff649ff0f9c4e3aa1c6e356f603206ce81",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/salon-protocole.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/salon-protocole.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "3898dc0668b861fb584d624c02d51b00c22479e626c491224e6489508d8eace0",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/scene-bench.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/scene-bench.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "a5b781b0fe8c14e1138136a8077fe0dec460ae5d6ff39b2d86407e55e54db9cb",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/sillage.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/sillage.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "f4c5b7fec369e39df0a2402a438e25d6b6a508905c7c5698bfe35fcb5f9e9f6d",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/simulation-sorties.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/simulation-sorties.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "4adb465e3ae65f4198e2f4088fe929db8e7c128c077d8115ac874cc7692d9092",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/solides-physx-geometrie.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/solides-physx-geometrie.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "7688a8579de412289b22d007315a3e6b6c7bd937b4f19c630875d440aeea9114",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/solides-physx-wasm.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/solides-physx-wasm.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "946f6472c446047d734ee666aaff94ff1a9802b722c0ce0b18ea0118d1c7b7cc",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/sols-proceduraux.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/sols-proceduraux.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "97c018b5138227d7d51e2ca90e3f2b5dbf0c739b78668a19348336d444b55889",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/son.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/son.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "a1d44f1d56b54cb71daea233354618bc571c0b1c3d8834a15072355aed132606",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/stands-pneus.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/stands-pneus.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "7bc62cae4ac1e3a95924a145bac706ca2378c8b2d05db8fee362fcfb49cdff77",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/stands.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/stands.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "b9e297dcf7961d1f3cd09d38e2ad113e8851052355f0b1129b92779ae5007651",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/strategie-stands-decisions.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/strategie-stands-decisions.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "4167f18f5973e3f8c7499e9bcd3892dc576f456c265c6214ffd0c3dc2acca52c",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/strategie-stands-sortie-file.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/strategie-stands-sortie-file.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "9fc521aabab012d083cd0d88408d4ee4147a330c65864d6688a5ef03e4b73c3f",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/strategie-stands.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/strategie-stands.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "53500650e086439be3b2655665048cbef5b85b3a63035873df37529347de1081",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/titre-signature.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/titre-signature.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "abc69e478b2c70ec34abb9b3c3e0f470bd36e8dea3791a8b671011fd9946f6c8",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/traces.test.mjs",
+      "exit": 1,
+      "evidence": "qualification-complete/traces.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "b233b84e1a1676ba50734e5b08630c44e8ecee927de9edd31ea7784c5c83b80d",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/troncs.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/troncs.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "b54c5cb59f55929750b111f007a2a16cff5b5d00660bbe0ec7d4348096384fb5",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/tunnel-transitions.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/tunnel-transitions.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "da4fa58c19b33dc491aea4d5c7acf0365f21b78f30b5b0dc53929e7cac82e9a8",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/tunnel.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/tunnel.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "69606340e15c8766c36693935f01c6771d531f75e5e9bd369e3cf0ff75232497",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/usure-integration.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/usure-integration.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "257bb818ed33b0e2dd79033f7e57407b34d444c5ba44f8ff0f65b4278d7e03c6",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/usure-pneus.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/usure-pneus.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "893eb3cfb70d5a403255db4a0c64d3e2ffd4c7341838a99be651b3961be9a558",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/usure-visuelle.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/usure-visuelle.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "d0d5e5acf41cd100616e3ecff9473f5a85000fc2888efa3fa280d0071de00a84",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/vegetation.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/vegetation.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "3b7953a36f2dfed2b464a1c47ccab771aac195fa16b3eb2ce49d255a0a45ac8b",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/vibrations.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/vibrations.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "d826a9215f72ac1eb91a604ce1b48798348d1301e35df1eebfa0a9a2a166e741",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/virages.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/virages.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "73551334bdcae012edd635240378bc906540dbf2bbfdd71ed868fba0a8f24f0a",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/vitre-cadence.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/vitre-cadence.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "05658099e8e522a5868ce192da9bd633465f9448cdc1489ee8a7d8308a5e4fdf",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/vitre.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/vitre.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "ccc21d405a6506d2a746578261a42743cf0aa10b3b7710a834b8c531be71e703",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/voiture-identite.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/voiture-identite.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "24b8358d273a9c471b7db17b7a8d52cfc1798d694d328959a6176c868654d488",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/voiture-permanents.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/voiture-permanents.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "da8af48300ca06b310ee65e8b08783c804014d12f1c3970d5471c1e3ee2028ef",
+      "testChangedSinceSweep": false
+    },
+    {
+      "test": "verifications/voiture.test.mjs",
+      "exit": 0,
+      "evidence": "qualification-complete/voiture.test.log",
+      "origin": "initial-sweep",
+      "testSha256AtCheckpoint": "0bf7dc6ea7b7f152f53fd8c856a767d9547ed1717d1f3d4fce61e4d28dc4e64b",
+      "testChangedSinceSweep": false
+    }
+  ],
+  "evidenceSha256": {
+    "BUILD.json": "8f8b4f50852739634dd3f06ad50b19562371dc3bf40697719007d558a7e909da",
+    "CHAUFFE-PHYSX.json": "c65ab43406e8e7429f3053255749f704cfb08dde596dc9395a562bb78d95c7d0",
+    "COURSES-NATIVES.json": "2aa17e020b99206c04f7ac7823b66a8ffb9463db94419c54c998a662fe13217c",
+    "PUBLICATION-FERRO-0313.json": "55d0d08387251248a67b589800d18c572c530edf853c5df1f71910ca10452255",
+    "QUALIFICATION-SOLIDES-STANDS-SOLS.json": "0dcd405c1e726a77d564fc0ea324537978f9cafb40709cbdd8b1b20d776cd2a8",
+    "autoconfig-integration-final.log": "45c8b8fc4c21e329aa7eba976286d9907e7bf30bde22b21182dd8acc735455ec",
+    "build-1.log": "a149648391fbd6f19f1c35fbbea0d2ccb19fb5ae68260866189e0d92e01ec18e",
+    "build-2.log": "a149648391fbd6f19f1c35fbbea0d2ccb19fb5ae68260866189e0d92e01ec18e",
+    "chargement-chauffe.log": "7e6b85a80734bcd1791f7110e25d176361955c71f3590d1ebc605967b4ac3e7a",
+    "determinisme-p14-creation.log": "971cbe4080761aaa4f86e11d436044afc5c0b60cc78bcfde5aed143b99a5d704",
+    "determinisme-p14-final.log": "22196003eac21fd824fbeff2ff13a8bd6bb32aecd3da81b3139f8e0e684aae49",
+    "physique-cycle-seances-chauffe.log": "8d3a2fc0b8e3dc825f62bbcda5faa7d47517d1a743e035f2d3d0170377a4e80e",
+    "physique-voitures-final.log": "c5d41b1451c541333c5273619930ef60dbbccf3549f48378152e4b477e669f2a",
+    "physx-autorite-reseau.log": "6c2d72dac82315c4f6dedfc769642c7242331c465a6098555ceef88201065fb3",
+    "physx-cycle-vie.log": "b8ef55751085fd0c2f0d373f8ff3500252685084d53a886e3de45af721cc2319",
+    "physx-stands-concurrent.json": "4f9247b3e16ff70c15bc5309945568ed2b8a16f36ee94cd0342d7b03b3e4804e",
+    "physx-stands-concurrent.log": "d2631fc692e9475753746f4efd4813ade1c46caf7ecb3fea8f983fab6dad8097",
+    "pilote-exterieur/encombrement.json": "b98faf2abd0c7c7db9d7f9c3ce731ad2b212e76d6333dddb04be9e0be99697c0",
+    "pilote-exterieur/qualification.json": "d0e4d78d813740355bf202c9f8995ad8d1c42745509193f00c266281a2e87118",
+    "pilote-exterieur/report.json": "7fcfa907bf0070d0ba206332bfbb312cb629b11592fcce9612a83476302304a0",
+    "qualification-complete/adherence-chaussee.test.log": "03eb48798788bc16cf051b534285ac64e15029c0dbbfacb8c765d4da6bf96f6a",
+    "qualification-complete/ambiance.test.log": "3c2764cbff57112ae73f0ae5b2b869f606ad9744fe1877acc8bedcbc57f7d90f",
+    "qualification-complete/animaux.test.log": "63b4859c20b4d1889840a5d960d1d32b1e561b426c08643cd99df70e253986be",
+    "qualification-complete/arbres-lots.test.log": "fa184a94e7df300aa5d364ddc3bbbeb68a518c8b1fa0fdfe8380a4fdf9ab91ba",
+    "qualification-complete/asie.test.log": "65cc64d30fcea4d1caea40ebab7cc7c028872f7da4f8d57ec140c64e03cc765e",
+    "qualification-complete/aurores.test.log": "96e4bc0a1aa2fb91e59afa0136d2d16de2bddd388c9e7f199b5ff564d11928ca",
+    "qualification-complete/autoconfig.test.log": "8201a11e8e80de8aaf73ef64df4d865e76193b1c612a75e4c602d1cdf0134d02",
+    "qualification-complete/bords-integration.test.log": "3285d8eacafe8041bafda9eb62b0181600b557b967822ed65f4f4bd32feb8c24",
+    "qualification-complete/bords.test.log": "3ef5d7a2f92bebe57103a6d7926bd3ae8f6cd53af142a227d753b9938c291e7d",
+    "qualification-complete/botanique.test.log": "9a9fda8eed989fbd4eec283c261eeb1fb714c7e1713b8f8148ffba15b6fa3e30",
+    "qualification-complete/cadence.test.log": "22d90966ae53029ef79f4b332a249c6f25e9e2de081fce2eb29be0ad10cc8e58",
+    "qualification-complete/carene.test.log": "31e13dbaf09da4f7b0e32013cbaa20a402aac75bf6fbb010b8cb763826e37eb4",
+    "qualification-complete/chargement.test.log": "7e6b85a80734bcd1791f7110e25d176361955c71f3590d1ebc605967b4ac3e7a",
+    "qualification-complete/chaussee-preparation.test.log": "d61abce8c87ae38f98a1a49c2eb53dc23fd45cabbfa02159cef7369377515444",
+    "qualification-complete/chaussee-visuelle.test.log": "3c656e6e981e78165fc4ab1ea80e591f48107261c8b2e2d9d3a2aedbb30ab1d9",
+    "qualification-complete/chaussee.test.log": "3680989081d702a7eb69d7d976d01e589a9ed70c6bd45ce991dce7eeb567e32b",
+    "qualification-complete/choix-pneus-integration.test.log": "97f7a230db8612ddfa489a75af77330c024de6cc6203e39ab7a0004d1c2603e5",
+    "qualification-complete/circuit.test.log": "b46f02efb4a3197eff35ae791970cef4f34de64c871e033483554b61495ebfa3",
+    "qualification-complete/collisions-orientees.test.log": "997372eeb8c10fe25416db2c7272caf3a1ea9e15ecd10a11fe11e2a35d594e21",
+    "qualification-complete/commandes-partage.test.log": "171426dcb49a15f97dcf502ad6f30db3ad31b4652ce4f5b65553ae0128c19277",
+    "qualification-complete/conditions-course.test.log": "d2133431c8af5cac380e47a75c7b587887d646b071844139ae96697060922e02",
+    "qualification-complete/conditions-integration.test.log": "41c26523fe6cabfaac8511b889cd2b73b40fd38f77fa5eed4de9dea496e6b55a",
+    "qualification-complete/conduite-criteres.test.log": "8c1c4fe26e7b7e3224c85fc7eaa7a5f56088665a376c822999e9f90673e9b243",
+    "qualification-complete/conduite.test.log": "1529ab394092c5c5498d18bc99857bc8490bd1a89b55cfa36c7e1addb7787c71",
+    "qualification-complete/contacts.test.log": "7faa7de1b5d6384dc76acd8de3a1e5b681b504555473e2de9d99f471dd55b0ca",
+    "qualification-complete/controle-visuel.test.log": "a430c43a02652b621ca8a362570b700e0c1ec4f0b379bec4bf09915e5e4fe4f9",
+    "qualification-complete/course.test.log": "fdab0d8ffa61b4184e46d31447636fd43464128f118990b6f9ae3d408f0eefa1",
+    "qualification-complete/crash.test.log": "54a9c0321017904cf960b93c419520be93576b5ed1ea995551049bdd6d5b75cc",
+    "qualification-complete/decor-identite.test.log": "b6af6569a3dba0e2e58c4bbdc030c3a009be39dadac91565fed92ac8bf41f6c2",
+    "qualification-complete/decor-obstacles.test.log": "100895629fbae6d55cb654d4e400c051fc5772399339069731d806716336dc68",
+    "qualification-complete/decor.test.log": "9816345560e4ddb0b6a3f4109110e3af9299c5d3a4f8e99c00102b303f6b2018",
+    "qualification-complete/desert.test.log": "67f480dc7b4943b0e0549b85d5f4cf0940f3023a8b1eb76b1da7ffc8ca0992fc",
+    "qualification-complete/echappement.test.log": "36ddafcc3155accb0e97a4453074aada18fe01b6998a80ed5ccae76df13c4440",
+    "qualification-complete/ecologie.test.log": "891960f37670fb192ef7904d306f244b17db814a432a52de9301be4ad3904a43",
+    "qualification-complete/effets-allocation.test.log": "8bfe2869ebb24cc1eb206d5317b5cccc6b9eaa51c0d89e04796f5cf6946a0374",
+    "qualification-complete/effets-saison.test.log": "c47f4449ca74f6c9263c2be23ba9b9d9630ff7571d753127a98b96c87c76a83a",
+    "qualification-complete/faune.test.log": "3cc84f55fadb17ca8899c2953904711a2c3419458fd72d500486a55feaf92a95",
+    "qualification-complete/formes-libres.test.log": "108816b74409c50dce7a5978bb537cbed97d2a2ac6a6ea6082ff0352e22e5a65",
+    "qualification-complete/glissiere-etats.test.log": "87823fec46c54e453653d2c714e46e256ad94d1efa3963ca69f504cc46db1ed5",
+    "qualification-complete/glissiere-rebond.test.log": "c08a1acf0dba7ce3a5bdb29acfa41767621ef3e043c680a2ab844367879ad9db",
+    "qualification-complete/graphismes.test.log": "7ad47c7ac4090f1878bca161e4fb12f1298df97538df429013ec87991ef85edd",
+    "qualification-complete/herbier-identite.test.log": "46e047f7561b555370dfe47caa3f27cc29ada723d9320c44f7320a378bdd1ffb",
+    "qualification-complete/herbier-saisons.test.log": "2300ce144e011ea60c5ef6b6227493230e8df96798d1a640125ae688d00c2de7",
+    "qualification-complete/hud-pneus.test.log": "486a33fd368946d72f5d16001314e86dd507609f799839adc4577f68af31fa63",
+    "qualification-complete/ia-attaque.test.log": "de7b035e39186bcf232aada08bd7fb07f9204337953560494721bd3c5a402d27",
+    "qualification-complete/ia-epaves.test.log": "ca5423ef09a9b8a569e56728e16e6554ae1d10062d19ad40c7f165409cccf966",
+    "qualification-complete/ia-reprise.test.log": "7930811d150b7e3a57350e14f3e88f40cdfad3e42941b8c79045e324939b7109",
+    "qualification-complete/ia.test.log": "371b77ff405d94335a6bf0600cd2a7b49d36a654359733fa65dc08ec8f8fd405",
+    "qualification-complete/islande.test.log": "c4270931702d9e5eef8323ac9432ad4bc1b39a95a559b200f08875acc26ad5e3",
+    "qualification-complete/lieux-traces.test.log": "72bf83bdd4c0067b056ddd98845bdb82961f8d6511a0664a365cc219d3a60010",
+    "qualification-complete/main.test.log": "dca764c8503bb4871b664b997a1cfa89ed547f3d62d159d743688cf821fc2ded",
+    "qualification-complete/manette.test.log": "527fe2f9af5cfc2e58856be62dfe704b26638740ff6c9033f33332096787238d",
+    "qualification-complete/mesures.test.log": "b748ce3cb791b7afdac649c77ab085be5a9fdb6142142601b874826d7e2b8dfe",
+    "qualification-complete/meteo-reelle.test.log": "cf506c0f113920532bd4b468299f55541d980c191ae8a7fbda9d14a21570dcda",
+    "qualification-complete/meteo-toile.test.log": "3e9672ae1f7c75d1dd260b69d4a243d76280328d3bfe4774fc71b42b4cca572c",
+    "qualification-complete/meteo.test.log": "ce4d2634938dca99f702adef9f95278e9b4155e002a6a17b6093ebec8cd57411",
+    "qualification-complete/moteur-emprise.test.log": "f6e5a43c07e443f074e8d667162e729271c0d67f9bddb5f523ac09ea7b110ff2",
+    "qualification-complete/nature-integration.test.log": "8301bfd515ef4462f1a08e75eff0b93c3854b55338ff8de450957fd9b0adfbfd",
+    "qualification-complete/nature-preparation.test.log": "79841675f9a7c73e86c2afc671cb79fc055da0ae506109ff68e56c1e673d71c2",
+    "qualification-complete/navigation-menu.test.log": "e5f7d14f12bf6edaf380073a3825046d59ea38fdd085a87238613a51da1577eb",
+    "qualification-complete/obstacles-degagement.test.log": "3ff4db403b22db7f12954b85b42f95a25baef1d905beb3ae9ac188104f4617fd",
+    "qualification-complete/obstacles.test.log": "05cb010d4e76823ec212470db21486eb19ba269ee77e71ab752d85ef00173278",
+    "qualification-complete/ombres.test.log": "8ed362157128b120481a9e4cd523c2609de266a3295a45a204811e378e8c1463",
+    "qualification-complete/options-image.test.log": "6862512aaaa3bf07ac29dbe8dfbbe06bcdf5835ae08c8ca8fe8682720c54b561",
+    "qualification-complete/pacifique.test.log": "bc0e0dedce630ec505a81c7f803039f8b2c2900ee3b7e47523c545193965c45e",
+    "qualification-complete/physique-stands.test.log": "2fedd826f9f5aa1c5fcab39c01fa9090725353bc575e783419cf02e8af99320f",
+    "qualification-complete/physx-monde.test.log": "30cd1d21c350d3cbe06a653668b1b0dc40794e665b366da7a42dfedcee3edb3b",
+    "qualification-complete/pieces.test.log": "1e7409c5cb4388c264801774ba429beed2321d1c154ee723ea67c61e6d7a9068",
+    "qualification-complete/pilote-exterieur.test.log": "b44885241ce72046dfe2e77b1e463d735ce566a8bbfbfbf320c91a7cc14e98b5",
+    "qualification-complete/pneus-pilotes.test.log": "dd0fbd8450c3908b5648235e811f7e080717c2d384b26ff7c624d29b1656335e",
+    "qualification-complete/pneus-reseau-integration.test.log": "4fcd92b3cca77b6629327a955681e4e4742624cd6c4de22a11dbb3438a468f70",
+    "qualification-complete/pneus-reseau.test.log": "26fe6caa484a9f8a553391f47acc4e2148c67030f6557468774c514d7636af2c",
+    "qualification-complete/pneus-service-visuel.test.log": "41fdc421203ba53be734895bb8772a8af3c79e1c47d3d7ceac98ec7364b107bf",
+    "qualification-complete/pneus.test.log": "dd2f77b3ceeb8dba2173c2a66dfb454fcb6cacf605c97c47640945f76a9e29f5",
+    "qualification-complete/prets-enligne.test.log": "1368ba97f6929a902ef13bb883897a1358a75dcc963f73c45aa89fe8b46d53a8",
+    "qualification-complete/public.test.log": "f6b8cfaccef4301eb0a301d36e5addaaa8af545d9c7fa39a79e2d47647f737d6",
+    "qualification-complete/qualite.test.log": "ea5dedd26752a9992b06f65411015a1050a7847f3e10b5b194621571146ca236",
+    "qualification-complete/realisateur.test.log": "8b94edf39359b7f641106fcd903b8f168e2ab1eab15a300e739ee29573057bef",
+    "qualification-complete/relectures-phase2.test.log": "fe81a756f0818b97adbbc5219302fa6e8e71d7cff92a39aaaea8c51dc88bb885",
+    "qualification-complete/rendu-halo.test.log": "5a21c777300aae1f9a4f03cffe48bdd9d1840ba93db45e5f23fa12b4b4930515",
+    "qualification-complete/reperes-virages.test.log": "4422b0d3c8e17bc1fe05d956887f846e60663855b19f8a806dc22b5603bb1a65",
+    "qualification-complete/reprise-recul.test.log": "0f7b3274a6c561310547216e6be49a01db56de95df65860c7f19145ac59afd07",
+    "qualification-complete/roues-detail.test.log": "f5d9f24732fbcc808d74729fffe296d435fff08fb5954b3c363e1c848e4d2982",
+    "qualification-complete/russie.test.log": "e72f74b49eb18597ac5f72fffdf9d7f6f0b0c376ac6a7a3e3bfed573b5c20438",
+    "qualification-complete/saisons.test.log": "2eab7156bb5739fb2644d71234963006eda11adef00090339ef1f51e958e49d8",
+    "qualification-complete/salon-protocole.test.log": "398260e2e6e11d6c9292e92b5a9fe4e37b8a02407133c0f76663235224c0dc82",
+    "qualification-complete/scene-bench.test.log": "0abe318cf18b1450c3c0bd3fd5c54f3546ec3b7288d17de02ad073e532e70914",
+    "qualification-complete/sillage.test.log": "049cb02f94047fa81b1670f0476a2c4a13f146d1390d9b32445d5a221d547f0c",
+    "qualification-complete/simulation-sorties.test.log": "2e1a7d011c7363e112f7360372ccb4409391a48cde8f22d39dfdfb783c2b2285",
+    "qualification-complete/solides-physx-geometrie.test.log": "ab0fd0dd1c29457d651cd72c6e53844a08de61e733e09df53f7483f4d227c8fa",
+    "qualification-complete/solides-physx-wasm.test.log": "1722c482662fe63e6f35b6d4141048da65ce7034c2a8587932bc89b934839e40",
+    "qualification-complete/sols-proceduraux.test.log": "43b1bcbf1c27c10537ed847f64abc6db3e3470d988ea23e6865ac953b8de904d",
+    "qualification-complete/son.test.log": "6e0d6e542ba4f419146b4272a6bb664297048d4b8d275515c20815cd35813a3b",
+    "qualification-complete/stands-pneus.test.log": "7e41a548a5613d7b1b842f0569414825e8644fe73b2c180b0d3e3a5a4ac5b53e",
+    "qualification-complete/stands.test.log": "77799d5e390a2281922e1e0eecaf2b6e786a0735b4356ef80ef0c276c35f13a6",
+    "qualification-complete/strategie-stands-decisions.test.log": "fe4f0d1b98c7122e79cc3ce39eb30e607934ada29106b63f1cd5b0a7e1126b33",
+    "qualification-complete/strategie-stands-sortie-file.test.log": "b76d58dca2b1612166b10eba9aa2fbb16fae374a1ed77744a6f121e4ccd1ce57",
+    "qualification-complete/strategie-stands.test.log": "99e84ba0c4757e94df3b307271d52b6bbbe8c67e2a1a8feb093b551c56883324",
+    "qualification-complete/titre-signature.test.log": "48936b3537e026e4bef1d7c5bd4edd25ea8abf3a8ba7bc9b0ddb73caddd25b36",
+    "qualification-complete/traces.test.log": "05bd01a9a6ba1155b4e4b39d0e8437999d852552aa8ac4b6063fbe8fc7c3295a",
+    "qualification-complete/troncs.test.log": "5aaf97f33eaec88243b9cbadea22c62747910e83255e26c78a1ab59b2b5f7b1d",
+    "qualification-complete/tunnel-transitions.test.log": "5a815294076f98608e89f8f3dc5ea45106dbdc616a91fc1387bcebd8aec3d968",
+    "qualification-complete/tunnel.test.log": "8a576d718b7607027664b72d208c9b17ff336574b785c9cb92a3a91ea5782b05",
+    "qualification-complete/usure-integration.test.log": "ebca48cba20d4bd83f416c08e32b5904f2b56640bc36f6b08ea061bd9a9893df",
+    "qualification-complete/usure-pneus.test.log": "471a80e341db1ce24b7a8436478d316924a2fd3418b92fb6646cda47e0e7ec63",
+    "qualification-complete/usure-visuelle.test.log": "ec3b316f5b951af4317ee53db830373e254cf883af4fa3583cf8c1a6a267f09d",
+    "qualification-complete/vegetation.test.log": "f7574b1f15e441564bbe9d68f2bbbed23f4059fb7bd88f59a78db8e982fd6368",
+    "qualification-complete/vibrations.test.log": "fa4a7f7e5402d5b35752edd7492bd4beee62bada27d7b5c6fe08638e05d34917",
+    "qualification-complete/virages.test.log": "48caca2584a6867852f97f8d10a795179552bee3c3add98e46fc6ad8f26631f0",
+    "qualification-complete/vitre-cadence.test.log": "b48e588fd7f6317a4bc917b8492fba0fec30b01b0b4619900d07ded0feb5a5ea",
+    "qualification-complete/vitre.test.log": "5f9967efbed6a96f06134e2de550b396dcd2e608e00766f95eaa53b416e4e503",
+    "qualification-complete/voiture-identite.test.log": "64bd18302096cab5d30856a2ab59308138b62d6d6de48ec079e0716fa363230e",
+    "qualification-complete/voiture-permanents.test.log": "63090e5e716bb2879b9ddc1f9b2dc2bbc6e5fe4425596c30e29435f5fc18d4ca",
+    "qualification-complete/voiture.test.log": "4f8da76d81336c2e32bb3318844d7f275f9ccbdb994c67aafef3a80714e8c57e",
+    "reseau/physx-reseau.log": "996495c94385b69a607a8bfb0002be29955a024db77843ee2253f6dbb13fbd5a",
+    "reseau/qualification.json": "eabfd4ee8c90a8add40672f2d1edb2f61fddb94a6050cb73c4d9efc385369cf4"
+  },
+  "status": "publication_attente_reconciliation",
+  "pendingConcurrentCheckpoint": {
+    "sha": "b8f050745c68e2c7a9e482611cfdc980efe1ada3",
+    "parent": "6e9c1ea09eb22a1d8c1f1deea99ed09b41ccdf1d",
+    "auditedByThisReport": false,
+    "note": "Signalé après cette consolidation. Les changements du nouveau checkpoint et du canon 0.3.14 ne sont pas inclus dans les résultats 122/121 ci-dessous ; réconciliation et requalification relèvent de l’intégrateur."
+  }
+}

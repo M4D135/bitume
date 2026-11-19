@@ -1,0 +1,54 @@
+{
+  "scope": "Independent read-only code and provenance audit; tests not re-executed by this audit. Local scratch export prepared for official installer.",
+  "commit": "85ba941709bb304cbc34f8beb7baab0639321919",
+  "tree": "27c2f2dd23c57feedefc748213f22fd165a15635",
+  "pr": 2,
+  "prMergedVerified": true,
+  "version": "0.3.14",
+  "recommendation": "Integrate before final BITUME delivery to retain concurrent fix and bound WebIDL wrapper caches across scene changes and native prewarm worlds.",
+  "functionalChanges": [
+    "PhysX adapter tracks borrowed WebIDL wrappers per world and by native pointer; counts owners across worlds for shared scratch views.",
+    "Native release evicts stale wrappers without destroying borrowed native memory. Cooking temporary views are evicted, as are contact/raycast/read getters on world teardown.",
+    "Public APIs, native solver configuration, masses/forces, simulation stepping, renderer and GLSL/WGSL unchanged. engine.js changes only version."
+  ],
+  "unchangedModules": 32,
+  "changedModules": [
+    "physx",
+    "host"
+  ],
+  "bitumeB8fLockMatchesAll34Modules": true,
+  "logs": {
+    "tests-physx.log": {
+      "counts": {
+        "tests": 25,
+        "pass": 25,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "bytes": 5758,
+      "sha256": "db7392cc91396018ce01dda899b4c0ddc6d6c1cb2867e7329eb02b483a4c6651"
+    },
+    "tests-canonical.log": {
+      "counts": {
+        "tests": 211,
+        "pass": 210,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 1
+      },
+      "bytes": 55878,
+      "sha256": "7eafb9b3cf7d23677497ee39a788ef5a7dafe0638afad996af636483c191b58a"
+    }
+  },
+  "export": "/tmp/ferro-0314-install",
+  "exportReceipt": "/tmp/ferro-0314-install/PROVENANCE-EXPORT.json",
+  "risksAndLimits": [
+    "Cache ownership/release paths changed, so run final BITUME native vehicle/determinism/lifecycle guards after installation.",
+    "Published 72 teardown and simultaneous-world tests cover JS wrapper retention, not native heap measurement.",
+    "No new browser or hardware rendering qualification; exact unchanged GLSL/WGSL retain previous EGL evidence.",
+    "No change claimed to cross-platform bitwise determinism guarantees."
+  ]
+}

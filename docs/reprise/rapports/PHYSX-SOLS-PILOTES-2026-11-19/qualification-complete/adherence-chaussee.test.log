@@ -1,0 +1,14 @@
+ok les quatre familles ont chacune leur domaine de chaussée
+ok les anciens appels eau seule conservent exactement leurs coefficients neufs
+ok flocons seuls sans couverture ne deviennent pas une chaussée enneigée
+ok entrées invalides bornées et catalogue protégé contre les clés héritées
+ok usure progressive sans falaise, réponse bornée pour chaque type et chaque état de route
+ok la lecture IA reste finie malgré des charges absentes, invalides ou débordantes
+ok les vraies capacités distinguent chaque roue et chaque essieu
+ok le facteur IA reproduit les contributions de charge et protège l’essieu limitant
+ok la neige change la traction réelle et des pneus usés allongent le freinage
+ok l’usure reçoit la même surface que les forces, en marche avant, au recul et sous abri
+ok l’IA lit aussi la chaussée après le portail avant de sortir du tunnel
+ok l’anticipation réutilise les pneus tant que la chaussée reste identique
+ok le nombre d’images ne change ni les forces ni l’usure pour les mêmes pas de conduite
+13 contrôles chaussée, adhérence et usure physique réussis
