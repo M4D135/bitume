@@ -1,0 +1,10 @@
+ok foret : empreinte d'été inchangée, sans ajuster sa référence
+ok foret : seule la couleur de l'asphalte change, aucun sommet ni objet ajouté
+ok foret : asphalte clair si et seulement si la surface physique porte de la neige
+ok cote : empreinte d'été inchangée, sans ajuster sa référence
+ok cote : seule la couleur de l'asphalte change, aucun sommet ni objet ajouté
+ok cote : asphalte clair si et seulement si la surface physique porte de la neige
+ok montagne : empreinte d'été inchangée, sans ajuster sa référence
+ok montagne : seule la couleur de l'asphalte change, aucun sommet ni objet ajouté
+ok montagne : asphalte clair si et seulement si la surface physique porte de la neige
+9 contrôles chaussée visuelle CPU réussis

@@ -1,0 +1,19 @@
+✔ même choix en cours et prêt : une résolution, aucun nouveau tirage avant le départ (2.546262ms)
+✔ changement de choix annule la recherche et une réponse tardive ne remplace pas le nouveau résultat (0.362474ms)
+✔ vitrine hivernale : actualiser la météo conserve la chaussée préparée sans reconstruire la séance (15.312378ms)
+✔ retour depuis la préparation annule sans départ ou réactivation par une réponse tardive (0.398458ms)
+✔ retour des réglages conserve le tirage ; nouvelle préparation après le titre et forcer le renouvellent (0.493321ms)
+✔ erreur inattendue : repli manuel utilisable, annulation explicite sans résultat (0.344848ms)
+✔ invité en ligne : aucun appel de résolution, préférences saison/moment/météo préservées (2.109116ms)
+✔ conditionsCommunes filtre lieu/IP/coordonnées et détache les observations et horaires (1.204999ms)
+✔ départ réseau : hôte et invité reçoivent mêmes saison, météo, soleil et date UTC malgré une horloge locale différente (1.313953ms)
+✔ neige observée est libellée neige hors côte, pluie à Port-Sable, indépendamment de la saison manuelle (0.297136ms)
+✔ lumière réseau suit dateDepart + horloge de simulation de l’hôte, avec rafraîchissement borné (0.642575ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 35.953615

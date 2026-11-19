@@ -180,7 +180,7 @@ function piloteCasseur(etatScript) {
 
 // Fait tourner une séance : `pilotes` donne, pour chaque voiture conduite ici, la fonction de commande ; sans
 // pilote, la voiture du joueur est confiée à l'IA (comme la vitrine et BITUME_JEU.avancer(s, true)).
-function derouler(co, { secondes, pilotes = null, jusquaFin = false, perturber = null, avantPas = null }) {
+function derouler(co, { secondes, pilotes = null, jusquaFin = false, perturber = null, avantPas = null, apresPas = null }) {
   const empreintes = [], compte = {};
   let evenements = [];
   const total = Math.round(secondes * PAS_SECONDE);
@@ -195,6 +195,7 @@ function derouler(co, { secondes, pilotes = null, jusquaFin = false, perturber =
       else cmd = pilotes[co.joueur.id](co, co.joueur);
     } else cmd = co.joueur.fini ? null : B.course.commandesIA(co, co.joueur);
     const ev = B.course.pas(co, cmd, DT);
+    if (apresPas) apresPas(co, ev, k);
     // les événements d'un geste scripté (replacement à la main), produits avant le pas, entrent avant les siens
     for (const e of etatScript.evenements) { evenements.push(e); compte[e.type] = (compte[e.type] || 0) + 1; }
     etatScript.evenements.length = 0;
@@ -445,6 +446,40 @@ if (PHYSIQUE !== 'p9') CAS.push({
   }
 });
 
+// 12F4 : la référence doit contenir un arrêt IA réellement conduit et terminé, pas seulement le plan préalloué.
+if (+PHYSIQUE.slice(1) >= 12) CAS.push({
+  nom: 'ia-stands-usure-val-brule',
+  jouer() {
+    meteo(null);
+    const { c, obstacles, solides } = circuit('val-brule');
+    const co = B.course.creer(c, {mode: 'course', tours: 8, difficulte: 1, rivaux: 1, graine: 1244});
+    co.phase = 'course'; co.feux.vert = true; co.temps = co.horloge = 30;
+    const placer = (v, avant, vitesse, d = 0) => {
+      const s = ((c.stands.debut - avant) % c.longueur + c.longueur) % c.longueur, q = B.circuit.echantillon(c, s);
+      Object.assign(v.etat, {s, d, v: vitesse, psi: 0, beta: 0, omega: vitesse * q.courbure, y: q.y,
+        rapport: vitesse ? 3 : 1, regime: vitesse ? 11000 : 5000});
+      v.progression = s; v.passages = v.maxPassages = 0; v.tourValide = false;
+    };
+    const v = co.voitures[1]; placer(v, 350, 25); placer(co.joueur, 1500, 0, -2);
+    v.etat.pneus = v.etat.pneusProchainArret = v.livree.pneus = 'slicks';
+    for (const roue of v.etat.etatPneus) roue.usure = .9;
+    const phases = [], observations = {entreeIA: false, serviceIA: false, repareIA: false, sortieIA: false, repartiIA: false};
+    let distanceSortie = null;
+    const r = derouler(co, {secondes: 75, pilotes: {0: () => ({gaz: 0, frein: 1, volant: 0, derive: false, boite: 'auto', aide: 0})},
+      apresPas(co, ev) {
+        for (const e of ev) if (e.id === v.id && e.type === 'stand') {
+          phases.push(e.phase);
+          if (Object.hasOwn(observations, e.phase + 'IA')) observations[e.phase + 'IA'] = true;
+          if (e.phase === 'sortie') distanceSortie = v.etat.distance;
+        }
+        if (distanceSortie !== null && v.etat.distance > distanceSortie + 50 && v.etat.v > 8 && !v.etat.stands)
+          observations.repartiIA = true;
+      }});
+    return {...r, resume: resume(co, r.compte, {obstacles, solides, ...observations, phasesStandsIA: phases,
+      servicePneusIA: v.etat.servicePneus, usuresIA: v.etat.etatPneus.map(r => r.usure)})};
+  }
+});
+
 // ------------------------------------------------------------------ contrôle
 const t0 = performance.now();
 const resultats = {};
@@ -464,6 +499,10 @@ const COUVERTURE = {
 };
 // gestes sans événement propre, relevés par le script lui-même
 const GESTES = { 'accidents-duo-pluie-haut-col': ['sortiStands'], 'manoeuvres-cap-sequoia': ['recul', 'saute'] };
+if (+PHYSIQUE.slice(1) >= 12) {
+  COUVERTURE['ia-stands-usure-val-brule'] = ['stand'];
+  GESTES['ia-stands-usure-val-brule'] = ['entreeIA', 'serviceIA', 'repareIA', 'sortieIA', 'repartiIA'];
+}
 let echecs = 0;
 for (const [nom, types] of Object.entries(COUVERTURE)) for (const type of types)
   if (!resultats[nom].resume.evenements[type]) { echecs++; console.error(`KO  couverture : ${nom} sans événement « ${type} »`); }
@@ -475,7 +514,8 @@ if (ECRIRE) {
   if (echecs) throw new Error('Couverture de scénarios incomplète : la nouvelle fixture ne sera pas écrite');
   nouvelleReference = {
     format: 'bitume-determinisme-1', physique: PHYSIQUE, node: process.version,
-    origine: 'Lot 12E : chaussée, pneus neige et usure physique ; archive p9 conservée séparément.',
+    origine: +PHYSIQUE.slice(1) >= 12 ? 'Lot 12F4 : décisions et services physiques des IA ; archives p9, p10 et p11 conservées.' :
+      'Lot 12E : chaussée, pneus neige et usure physique ; archive p9 conservée séparément.',
     explication: 'Empreintes SHA-256, à chaque seconde de simulation, de l’état complet des voitures, de la course et des événements (verifications/determinisme-simulation.test.mjs).',
     cas: Object.fromEntries(Object.entries(resultats).map(([nom, r]) => [nom, { secondes: r.secondes, resume: r.resume, empreintes: r.empreintes }]))
   };

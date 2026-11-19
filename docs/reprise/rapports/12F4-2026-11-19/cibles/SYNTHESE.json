@@ -1,0 +1,1787 @@
+{
+  "lot": "12F4",
+  "date": "2026-11-19",
+  "physique": "p12",
+  "head_au_conditionnement": "446a350f736d583471950b8e089ac7d8ab57e4d9",
+  "reçus": [
+    {
+      "log": "strategie-stands-final.log",
+      "origine": "passage-04/strategie-stands.log",
+      "contexte": "passage-04",
+      "reussis": 17,
+      "sha256": "243e1861ccb40c44f8f57ce498994f6522dfe63997ae29265ae310505d599976",
+      "octets": 1769
+    },
+    {
+      "log": "stands-final.log",
+      "origine": "stands-passage-02.log",
+      "contexte": "passage-02",
+      "reussis": 18,
+      "sha256": "77799d5e390a2281922e1e0eecaf2b6e786a0735b4356ef80ef0c276c35f13a6",
+      "octets": 1248
+    },
+    {
+      "log": "stands-pneus-final.log",
+      "origine": "stands-pneus-passage-02.log",
+      "contexte": "passage-02",
+      "reussis": 30,
+      "sha256": "7e41a548a5613d7b1b842f0569414825e8644fe73b2c180b0d3e3a5a4ac5b53e",
+      "octets": 2817
+    },
+    {
+      "log": "decisions-final.log",
+      "origine": "decisions-final.log",
+      "contexte": "final-parent",
+      "reussis": 6,
+      "sha256": "46ed2ac2687cf5b4a131064c6644e26409e9aea38dc57d4e98b3769b1a6b7439",
+      "octets": 735
+    },
+    {
+      "log": "chaussee-preparation-final.log",
+      "origine": "chaussee-preparation-final.log",
+      "contexte": "final-parent",
+      "reussis": 8,
+      "sha256": "3d439eacdb76e02772067139010fc505eeca655b049f227205ed6eb961050d13",
+      "octets": 657
+    }
+  ],
+  "total_controles_reussis": 79,
+  "scenarios_finaux": [
+    {
+      "nom": "12F4 brume-de-jade usure forte entrée service sortie sur le vrai parcours",
+      "journal": "journaux-finaux/12f4-brume-de-jade-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "sha256": "db9ee10dc8a6784f92fd653d7996e1a3bb7f36c0fe23fad378e5a721ca29bc2f",
+      "octets": 293503,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 178,
+      "circuit": {
+        "nom": "Brume-de-Jade",
+        "longueur": 5018,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 240,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 830
+      },
+      "surface": null,
+      "phases": [
+        {
+          "t": 45.75833333333244,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 53.616666666665324,
+          "type": "stand",
+          "id": 1,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 56.124999999998515,
+          "type": "stand",
+          "id": 1,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 1
+        },
+        {
+          "t": 70.37500000000314,
+          "type": "stand",
+          "id": 1,
+          "phase": "sortie"
+        }
+      ],
+      "services": [
+        {
+          "id": 1,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 53.616666666665324,
+          "t_fin": 56.124999999998515,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333331908,
+          "t_sortie": 70.37500000000314,
+          "pose_service_echantillonnee": {
+            "s": 92.01350154518423,
+            "d": 4.40034144133088,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 1,
+          "s": 270.1154938668851,
+          "d": -4.3116594010792,
+          "v": 23.04856827112911,
+          "pneus": "slicks",
+          "service": 1,
+          "usures": [
+            0.000610859716440856,
+            0.0005998502763555783,
+            0.0009675729598002401,
+            0.000942822875644692
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 cap-sequoia usure forte entrée service sortie sur le vrai parcours",
+      "journal": "journaux-finaux/12f4-cap-sequoia-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "sha256": "c08c4943890ca7248071f2e3f8bae8de4d2a8b961c1e02bd2e8bc3f649e03c7e",
+      "octets": 277336,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 167,
+      "circuit": {
+        "nom": "Cap-Séquoia",
+        "longueur": 5234,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 240,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 981
+      },
+      "surface": null,
+      "phases": [
+        {
+          "t": 43.43333333333257,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 51.28333333333212,
+          "type": "stand",
+          "id": 1,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 53.791666666665314,
+          "type": "stand",
+          "id": 1,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 1
+        },
+        {
+          "t": 68.03333333333461,
+          "type": "stand",
+          "id": 1,
+          "phase": "sortie"
+        }
+      ],
+      "services": [
+        {
+          "id": 1,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 51.28333333333212,
+          "t_fin": 53.791666666665314,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333331908,
+          "t_sortie": 68.03333333333461,
+          "pose_service_echantillonnee": {
+            "s": 92.01259631200082,
+            "d": 4.399291422882014,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 1,
+          "s": 280.0786482294516,
+          "d": 4.73045328154175,
+          "v": 35.86736434067392,
+          "pneus": "slicks",
+          "service": 1,
+          "usures": [
+            0.0006155109432766866,
+            0.0006176639783525467,
+            0.0011331360354502054,
+            0.001133574943541465
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 distant humain arrivée abandon drapeau et fin proche ne programment pas de nouvel arrêt",
+      "journal": "journaux-finaux/12f4-distant-humain-arrivee-abandon-drapeau-et-fin-proche-ne-programment-pas-de-nouvel-arret.json",
+      "sha256": "5a0215a7417f804289262b8d137a395c7b9db19ba8e87506bc54a34502418faf",
+      "octets": 8982,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 6,
+      "circuit": null,
+      "surface": null,
+      "phases": [],
+      "services": [],
+      "final": [
+        {
+          "id": 1,
+          "s": 3902.2082626617967,
+          "d": 0.00019351266560183256,
+          "v": 24.991530204059384,
+          "pneus": "slicks",
+          "service": 0,
+          "usures": [
+            0.9000007941308638,
+            0.9000007941308638,
+            0.900001006925413,
+            0.900001006925413
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 garage occupé tardivement un humain devant bloque le début du service IA",
+      "journal": "journaux-finaux/12f4-garage-occupe-tardivement-un-humain-devant-bloque-le-debut-du-service-ia.json",
+      "sha256": "5c86929e9b5b633a14a9e6a7d37ac956f8832bd20b88ea25c53a297a12a8aaf1",
+      "octets": 7310128,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 2455,
+      "circuit": {
+        "nom": "Val-Brûlé",
+        "longueur": 4222,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 240,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 1763
+      },
+      "surface": null,
+      "phases": [
+        {
+          "t": 43.45833333333257,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 43.4666666666659,
+          "type": "stand",
+          "id": 0,
+          "phase": "entree"
+        },
+        {
+          "t": 43.4666666666659,
+          "type": "stand",
+          "id": 1,
+          "phase": "annule"
+        },
+        {
+          "t": 43.474999999999234,
+          "type": "stand",
+          "id": 0,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 45.983333333332425,
+          "type": "stand",
+          "id": 0,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 1
+        }
+      ],
+      "services": [
+        {
+          "id": 0,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 43.474999999999234,
+          "t_fin": 45.983333333332425,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333331908,
+          "t_sortie": null,
+          "pose_service_echantillonnee": {
+            "s": 100,
+            "d": 4.4,
+            "echantillons": 301,
+            "amplitude_s": 0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 1,
+          "s": 502.1704906311552,
+          "d": 4.695026994293386,
+          "v": 39.81921583887952,
+          "pneus": "slicks",
+          "service": 0,
+          "usures": [
+            0.9033518402310077,
+            0.902882732174909,
+            0.905730641710914,
+            0.9052089426753028
+          ],
+          "repositionnements": 0
+        },
+        {
+          "id": 0,
+          "s": 100,
+          "d": 4.4,
+          "v": 0,
+          "pneus": "slicks",
+          "service": 1,
+          "usures": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 haut-col usure forte entrée service sortie sur le vrai parcours",
+      "journal": "journaux-finaux/12f4-haut-col-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "sha256": "735e9e6ce630913858249bee3e43411bd46ce83ba68df85b10e2a2e36402842a",
+      "octets": 290285,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 176,
+      "circuit": {
+        "nom": "Haut-Col",
+        "longueur": 5216,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 240,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 1193
+      },
+      "surface": null,
+      "phases": [
+        {
+          "t": 45.199999999999136,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 53.04999999999869,
+          "type": "stand",
+          "id": 1,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 55.55833333333188,
+          "type": "stand",
+          "id": 1,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 1
+        },
+        {
+          "t": 69.80833333333602,
+          "type": "stand",
+          "id": 1,
+          "phase": "sortie"
+        }
+      ],
+      "services": [
+        {
+          "id": 1,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 53.04999999999869,
+          "t_fin": 55.55833333333188,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333331908,
+          "t_sortie": 69.80833333333602,
+          "pose_service_echantillonnee": {
+            "s": 92.01197811448583,
+            "d": 4.400250189748908,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 1,
+          "s": 270.1567040039581,
+          "d": -4.338964196512455,
+          "v": 22.465168248092105,
+          "pneus": "slicks",
+          "service": 1,
+          "usures": [
+            0.0006118585118673866,
+            0.0006014057859710476,
+            0.0009602159276195456,
+            0.0009381857523591266
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 hôte sert le rival distant reçoit le résultat sans simuler un deuxième service",
+      "journal": "journaux-finaux/12f4-hote-sert-le-rival-distant-recoit-le-resultat-sans-simuler-un-deuxieme-service.json",
+      "sha256": "b422e9fdcb340446a91b29455f00dfb4d5e0dbe8c7be6a8832a52ef62a87932c",
+      "octets": 287237,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 169,
+      "circuit": {
+        "nom": "Val-Brûlé",
+        "longueur": 4222,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 240,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 1763
+      },
+      "surface": null,
+      "phases": [
+        {
+          "t": 44.24999999999919,
+          "type": "stand",
+          "id": 2,
+          "phase": "entree"
+        },
+        {
+          "t": 52.099999999998744,
+          "type": "stand",
+          "id": 2,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 54.608333333331935,
+          "type": "stand",
+          "id": 2,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 1
+        },
+        {
+          "t": 68.85000000000193,
+          "type": "stand",
+          "id": 2,
+          "phase": "sortie"
+        }
+      ],
+      "services": [
+        {
+          "id": 2,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 52.099999999998744,
+          "t_fin": 54.608333333331935,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333331908,
+          "t_sortie": 68.85000000000193,
+          "pose_service_echantillonnee": {
+            "s": 92.01304447320308,
+            "d": 4.399268956164233,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 2,
+          "s": 280.07877377938985,
+          "d": 4.730460068712431,
+          "v": 35.867373646008076,
+          "pneus": "slicks",
+          "service": 1,
+          "usures": [
+            0.0006155115996585055,
+            0.0006176647648936064,
+            0.0011331305380457492,
+            0.0011335793887813663
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 humain repris par IA conserve ses pneus puis paie le trajet et le service complet",
+      "journal": "journaux-finaux/12f4-humain-repris-par-ia-conserve-ses-pneus-puis-paie-le-trajet-et-le-service-complet.json",
+      "sha256": "7e5398bbd4a4351fa3549aeb93f3d2839f4e66a9be2c73b4f65403cba60188c9",
+      "octets": 277132,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 167,
+      "circuit": {
+        "nom": "Val-Brûlé",
+        "longueur": 4222,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 240,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 1763
+      },
+      "surface": null,
+      "phases": [
+        {
+          "t": 43.45833333333257,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 51.30833333333212,
+          "type": "stand",
+          "id": 1,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 53.81666666666531,
+          "type": "stand",
+          "id": 1,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 1
+        },
+        {
+          "t": 68.05833333333463,
+          "type": "stand",
+          "id": 1,
+          "phase": "sortie"
+        }
+      ],
+      "services": [
+        {
+          "id": 1,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 51.30833333333212,
+          "t_fin": 53.81666666666531,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333331908,
+          "t_sortie": 68.05833333333463,
+          "pose_service_echantillonnee": {
+            "s": 92.01260134446784,
+            "d": 4.399294210191839,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 1,
+          "s": 280.0785867073382,
+          "d": 4.716586386433265,
+          "v": 35.867266710148364,
+          "pneus": "slicks",
+          "service": 1,
+          "usures": [
+            0.0006155342728055128,
+            0.0006176399624995571,
+            0.0011331529376191764,
+            0.0011335591454176021
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 interruption juste avant la fin aucun pneu neuf ni service conservé",
+      "journal": "journaux-finaux/12f4-interruption-juste-avant-la-fin-aucun-pneu-neuf-ni-service-conserve.json",
+      "sha256": "6724ec5694c3a19be37603a1c879f1a16612658cb21daace9d1b456b208dd5e1",
+      "octets": 157865,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 99,
+      "circuit": {
+        "nom": "Val-Brûlé",
+        "longueur": 4222,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 240,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 1763
+      },
+      "surface": null,
+      "phases": [
+        {
+          "t": 43.45833333333257,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 51.30833333333212,
+          "type": "stand",
+          "id": 1,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 53.80833333333198,
+          "type": "stand",
+          "id": 1,
+          "phase": "annule"
+        }
+      ],
+      "services": [
+        {
+          "id": 1,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 51.30833333333212,
+          "t_fin": 53.80833333333198,
+          "fin": "annule",
+          "intervalle_observe": 2.499999999999858,
+          "t_sortie": null,
+          "pose_service_echantillonnee": {
+            "s": 92.01260134446784,
+            "d": 4.399294210191839,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 1,
+          "s": 92.21260134446766,
+          "d": 4.399294210191839,
+          "v": 0,
+          "pneus": "slicks",
+          "service": 0,
+          "usures": [
+            0.9016919468906124,
+            0.9015956753697415,
+            0.9021213990133179,
+            0.9020391131822192
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": {
+        "t": 53.79999999999865,
+        "avant": 92.01260134446784,
+        "apres": 92.21260134446784
+      }
+    },
+    {
+      "nom": "12F4 lande-noire usure forte entrée service sortie sur le vrai parcours",
+      "journal": "journaux-finaux/12f4-lande-noire-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "sha256": "2f016093495d1bc81750ce86892a3fe8bfd517f1fe5edd9db5e37c9a6dc37eea",
+      "octets": 292451,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 177,
+      "circuit": {
+        "nom": "Lande-Noire",
+        "longueur": 4616,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 240,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 1005
+      },
+      "surface": null,
+      "phases": [
+        {
+          "t": 45.71666666666577,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 53.56666666666533,
+          "type": "stand",
+          "id": 1,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 56.07499999999852,
+          "type": "stand",
+          "id": 1,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 1
+        },
+        {
+          "t": 70.31666666666976,
+          "type": "stand",
+          "id": 1,
+          "phase": "sortie"
+        }
+      ],
+      "services": [
+        {
+          "id": 1,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 53.56666666666533,
+          "t_fin": 56.07499999999852,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333331908,
+          "t_sortie": 70.31666666666976,
+          "pose_service_echantillonnee": {
+            "s": 92.01001639000697,
+            "d": 4.4000469738526915,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 1,
+          "s": 280.1811361988757,
+          "d": 2.989950438621565,
+          "v": 34.37549555063916,
+          "pneus": "slicks",
+          "service": 1,
+          "usures": [
+            0.0006239041829665291,
+            0.000613800792777223,
+            0.0010636024797513032,
+            0.00103420450446956
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 pneus sains aucune décision ni arrêt dans le même parcours",
+      "journal": "journaux-finaux/12f4-pneus-sains-aucune-decision-ni-arret-dans-le-meme-parcours.json",
+      "sha256": "a85c8e447c5d372e757915889c947fbe7e87e22f4c9934e3acf391822c458f9c",
+      "octets": 61121,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 40,
+      "circuit": null,
+      "surface": null,
+      "phases": [],
+      "services": [],
+      "final": [
+        {
+          "id": 1,
+          "s": 1610.1243221126006,
+          "d": 4.688586139668647,
+          "v": 31.07682966606434,
+          "pneus": "slicks",
+          "service": 0,
+          "usures": [
+            0.010381750608974559,
+            0.009108081660268216,
+            0.013710806802361735,
+            0.012546053734420692
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 port-sable usure forte entrée service sortie sur le vrai parcours",
+      "journal": "journaux-finaux/12f4-port-sable-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "sha256": "2867baa3abf568d8fa13c00f00ef8f1df7e68f5fc0a1e4156e04c613eb3b16f5",
+      "octets": 274490,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 166,
+      "circuit": {
+        "nom": "Port-Sable",
+        "longueur": 3638,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 234,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 1019
+      },
+      "surface": null,
+      "phases": [
+        {
+          "t": 43.42499999999924,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 51.27499999999879,
+          "type": "stand",
+          "id": 1,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 53.78333333333198,
+          "type": "stand",
+          "id": 1,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 1
+        },
+        {
+          "t": 67.3833333333341,
+          "type": "stand",
+          "id": 1,
+          "phase": "sortie"
+        }
+      ],
+      "services": [
+        {
+          "id": 1,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 51.27499999999879,
+          "t_fin": 53.78333333333198,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333331908,
+          "t_sortie": 67.3833333333341,
+          "pose_service_echantillonnee": {
+            "s": 92.0119607779452,
+            "d": 4.400598113068531,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 1,
+          "s": 264.1603959946692,
+          "d": -3.3061202210620952,
+          "v": 23.157017804250795,
+          "pneus": "slicks",
+          "service": 1,
+          "usures": [
+            0.000594946682514742,
+            0.0005856859739373582,
+            0.0009391495778481724,
+            0.0009211110516415812
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 roche-fauve usure forte entrée service sortie sur le vrai parcours",
+      "journal": "journaux-finaux/12f4-roche-fauve-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "sha256": "02882a124949bb3bfeed251875a48001441e4375c8fc97ebe8fd654fecb4557d",
+      "octets": 288765,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 175,
+      "circuit": {
+        "nom": "Roche-Fauve",
+        "longueur": 4834,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 240,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 998
+      },
+      "surface": null,
+      "phases": [
+        {
+          "t": 44.966666666665816,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 52.81666666666537,
+          "type": "stand",
+          "id": 1,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 55.32499999999856,
+          "type": "stand",
+          "id": 1,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 1
+        },
+        {
+          "t": 69.5750000000025,
+          "type": "stand",
+          "id": 1,
+          "phase": "sortie"
+        }
+      ],
+      "services": [
+        {
+          "id": 1,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 52.81666666666537,
+          "t_fin": 55.32499999999856,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333331908,
+          "t_sortie": 69.5750000000025,
+          "pose_service_echantillonnee": {
+            "s": 92.01024542749383,
+            "d": 4.400295486169418,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 1,
+          "s": 270.037897135775,
+          "d": -4.339752342486735,
+          "v": 22.171495671302996,
+          "pneus": "slicks",
+          "service": 1,
+          "usures": [
+            0.000611886999436178,
+            0.0006016728612323587,
+            0.000955438588605248,
+            0.0009346869223280063
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 second service après usure renouvelée et vrai tour sans boucle au même passage",
+      "journal": "journaux-finaux/12f4-second-service-apres-usure-renouvelee-et-vrai-tour-sans-boucle-au-meme-passage.json",
+      "sha256": "534bf925f3eb9e7836a0b13ed8fac6f8c4b725534c792be52703889e5dbf9690",
+      "octets": 1635682,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 1024,
+      "circuit": {
+        "nom": "Port-Sable",
+        "longueur": 3638,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 234,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 1019
+      },
+      "surface": null,
+      "phases": [
+        {
+          "t": 43.42499999999924,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 51.27499999999879,
+          "type": "stand",
+          "id": 1,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 53.78333333333198,
+          "type": "stand",
+          "id": 1,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 1
+        },
+        {
+          "t": 67.3833333333341,
+          "type": "stand",
+          "id": 1,
+          "phase": "sortie"
+        },
+        {
+          "t": 256.7083333332653,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 264.5749999999248,
+          "type": "stand",
+          "id": 1,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 267.08333333325584,
+          "type": "stand",
+          "id": 1,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 2
+        },
+        {
+          "t": 280.68333333324347,
+          "type": "stand",
+          "id": 1,
+          "phase": "sortie"
+        }
+      ],
+      "services": [
+        {
+          "id": 1,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 51.27499999999879,
+          "t_fin": 53.78333333333198,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333331908,
+          "t_sortie": 67.3833333333341,
+          "pose_service_echantillonnee": {
+            "s": 92.0119607779452,
+            "d": 4.400598113068531,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        },
+        {
+          "id": 1,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 264.5749999999248,
+          "t_fin": 267.08333333325584,
+          "fin": "repare",
+          "intervalle_observe": 2.508333333331052,
+          "t_sortie": 280.68333333324347,
+          "pose_service_echantillonnee": {
+            "s": 92.0094214216183,
+            "d": 4.400259011654495,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 1,
+          "s": 264.1664318823209,
+          "d": -3.306442606943804,
+          "v": 23.1570459179078,
+          "pneus": "slicks",
+          "service": 2,
+          "usures": [
+            0.0005941816343709257,
+            0.0005848613279231832,
+            0.0009392000371485652,
+            0.0009211532973351968
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 trajet réel sous neige slicks conservés puis monte adaptée après service complet",
+      "journal": "journaux-finaux/12f4-trajet-reel-sous-neige-slicks-conserves-puis-monte-adaptee-apres-service-complet.json",
+      "sha256": "12f62b66a84ed6e8751e26eb9762dbd2cb709ea7079bd35f0ea712b53d777e27",
+      "octets": 307220,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 187,
+      "circuit": {
+        "nom": "Val-Brûlé",
+        "longueur": 4222,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 240,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 1763
+      },
+      "surface": {
+        "eau": 0,
+        "neige": 0.8,
+        "abri": false
+      },
+      "phases": [
+        {
+          "t": 46.67499999999905,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 56.28333333333184,
+          "type": "stand",
+          "id": 1,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "neige"
+        },
+        {
+          "t": 58.79166666666503,
+          "type": "stand",
+          "id": 1,
+          "phase": "repare",
+          "pneus": "neige",
+          "servicePneus": 1
+        },
+        {
+          "t": 72.94166666667185,
+          "type": "stand",
+          "id": 1,
+          "phase": "sortie"
+        }
+      ],
+      "services": [
+        {
+          "id": 1,
+          "monte_demandee": "neige",
+          "duree_nominale": 2.5,
+          "t_service": 56.28333333333184,
+          "t_fin": 58.79166666666503,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333331908,
+          "t_sortie": 72.94166666667185,
+          "pose_service_echantillonnee": {
+            "s": 91.99969174789567,
+            "d": 4.40000948931676,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 1,
+          "s": 280.06784517035703,
+          "d": 4.722833937017517,
+          "v": 34.6368103887789,
+          "pneus": "neige",
+          "service": 1,
+          "usures": [
+            0.0004537890509839393,
+            0.0004543205813540153,
+            0.001713120911698497,
+            0.0017183580895962672
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 trajet réel sous pluie slicks conservés puis monte adaptée après service complet",
+      "journal": "journaux-finaux/12f4-trajet-reel-sous-pluie-slicks-conserves-puis-monte-adaptee-apres-service-complet.json",
+      "sha256": "a3d14209fff80df3ffebc2bf5b1cfe643e36a887db7b482c77db5ba5fe37f451",
+      "octets": 290403,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 175,
+      "circuit": {
+        "nom": "Val-Brûlé",
+        "longueur": 4222,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 240,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 1763
+      },
+      "surface": {
+        "eau": 1,
+        "neige": 0,
+        "abri": false
+      },
+      "phases": [
+        {
+          "t": 44.74166666666583,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 53.22499999999868,
+          "type": "stand",
+          "id": 1,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "pluie"
+        },
+        {
+          "t": 55.73333333333187,
+          "type": "stand",
+          "id": 1,
+          "phase": "repare",
+          "pneus": "pluie",
+          "servicePneus": 1
+        },
+        {
+          "t": 69.95833333333614,
+          "type": "stand",
+          "id": 1,
+          "phase": "sortie"
+        }
+      ],
+      "services": [
+        {
+          "id": 1,
+          "monte_demandee": "pluie",
+          "duree_nominale": 2.5,
+          "t_service": 53.22499999999868,
+          "t_fin": 55.73333333333187,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333331908,
+          "t_sortie": 69.95833333333614,
+          "pose_service_echantillonnee": {
+            "s": 92.00371127350445,
+            "d": 4.3978270645254325,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 1,
+          "s": 280.05151970379575,
+          "d": 4.731158155092412,
+          "v": 35.660267670688,
+          "pneus": "pluie",
+          "service": 1,
+          "usures": [
+            0.0005836449944535844,
+            0.000585603328231601,
+            0.0013038736175258424,
+            0.0013036550359198356
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 trois IA simultanées sont servies séparément puis repartent",
+      "journal": "journaux-finaux/12f4-trois-ia-simultanees-sont-servies-separement-puis-repartent.json",
+      "sha256": "017c87cf319e617468c16802194683cc8db7a37b4a4c04eb08e3bdf57636fe17",
+      "octets": 1317383,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 274,
+      "circuit": {
+        "nom": "Val-Brûlé",
+        "longueur": 4222,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 240,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 1763
+      },
+      "surface": null,
+      "phases": [
+        {
+          "t": 43.45833333333257,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 44.86666666666582,
+          "type": "stand",
+          "id": 2,
+          "phase": "entree"
+        },
+        {
+          "t": 46.16666666666575,
+          "type": "stand",
+          "id": 3,
+          "phase": "entree"
+        },
+        {
+          "t": 51.29999999999879,
+          "type": "stand",
+          "id": 1,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 53.80833333333198,
+          "type": "stand",
+          "id": 1,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 1
+        },
+        {
+          "t": 63.77499999999808,
+          "type": "stand",
+          "id": 2,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 66.28333333333322,
+          "type": "stand",
+          "id": 2,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 1
+        },
+        {
+          "t": 68.05000000000129,
+          "type": "stand",
+          "id": 1,
+          "phase": "sortie"
+        },
+        {
+          "t": 76.24166666667448,
+          "type": "stand",
+          "id": 3,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 78.7500000000098,
+          "type": "stand",
+          "id": 3,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 1
+        },
+        {
+          "t": 80.52500000001122,
+          "type": "stand",
+          "id": 2,
+          "phase": "sortie"
+        },
+        {
+          "t": 92.9916666666878,
+          "type": "stand",
+          "id": 3,
+          "phase": "sortie"
+        }
+      ],
+      "services": [
+        {
+          "id": 1,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 51.29999999999879,
+          "t_fin": 53.80833333333198,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333331908,
+          "t_sortie": 68.05000000000129,
+          "pose_service_echantillonnee": {
+            "s": 92.00990911451936,
+            "d": 4.399251176532909,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        },
+        {
+          "id": 2,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 63.77499999999808,
+          "t_fin": 66.28333333333322,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333351376,
+          "t_sortie": 80.52500000001122,
+          "pose_service_echantillonnee": {
+            "s": 92.01267938298042,
+            "d": 4.399405274932029,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        },
+        {
+          "id": 3,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 76.24166666667448,
+          "t_fin": 78.7500000000098,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333353295,
+          "t_sortie": 92.9916666666878,
+          "pose_service_echantillonnee": {
+            "s": 92.01190875206521,
+            "d": 4.400208918697904,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 1,
+          "s": 1481.3418128207022,
+          "d": 4.73975207666525,
+          "v": 55.25943654628116,
+          "pneus": "slicks",
+          "service": 1,
+          "usures": [
+            0.006962663403994918,
+            0.0058117883251226,
+            0.009663014425900217,
+            0.008615653388380927
+          ],
+          "repositionnements": 0
+        },
+        {
+          "id": 2,
+          "s": 809.4265230009651,
+          "d": 4.683820138100416,
+          "v": 60.87648101025989,
+          "pneus": "slicks",
+          "service": 1,
+          "usures": [
+            0.0030440192806731364,
+            0.0027875727786470994,
+            0.004741198347805405,
+            0.0044183420430953975
+          ],
+          "repositionnements": 0
+        },
+        {
+          "id": 3,
+          "s": 280.088528025768,
+          "d": 4.73046016546877,
+          "v": 35.867464637586096,
+          "pneus": "slicks",
+          "service": 1,
+          "usures": [
+            0.0006155187846216081,
+            0.0006176728036994074,
+            0.0011331799040652933,
+            0.0011336310562666528
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    },
+    {
+      "nom": "12F4 val-brule usure forte entrée service sortie sur le vrai parcours",
+      "journal": "journaux-finaux/12f4-val-brule-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "sha256": "af0682bdced7784630dc920e12d15a239a35727779278f2cb0822976cc88ef8d",
+      "octets": 277368,
+      "reussi": true,
+      "pas": 0.008333333333333333,
+      "points": 167,
+      "circuit": {
+        "nom": "Val-Brûlé",
+        "longueur": 4222,
+        "stands": {
+          "cote": 1,
+          "d": 4.4,
+          "demi": 1.6,
+          "debut": 30,
+          "fin": 240,
+          "garage0": 70,
+          "garage1": 118,
+          "vitesse": 11
+        },
+        "solides": 1763
+      },
+      "surface": null,
+      "phases": [
+        {
+          "t": 43.45833333333257,
+          "type": "stand",
+          "id": 1,
+          "phase": "entree"
+        },
+        {
+          "t": 51.30833333333212,
+          "type": "stand",
+          "id": 1,
+          "phase": "service",
+          "duree": 2.5,
+          "pneus": "slicks"
+        },
+        {
+          "t": 53.81666666666531,
+          "type": "stand",
+          "id": 1,
+          "phase": "repare",
+          "pneus": "slicks",
+          "servicePneus": 1
+        },
+        {
+          "t": 68.05833333333463,
+          "type": "stand",
+          "id": 1,
+          "phase": "sortie"
+        }
+      ],
+      "services": [
+        {
+          "id": 1,
+          "monte_demandee": "slicks",
+          "duree_nominale": 2.5,
+          "t_service": 51.30833333333212,
+          "t_fin": 53.81666666666531,
+          "fin": "repare",
+          "intervalle_observe": 2.5083333333331908,
+          "t_sortie": 68.05833333333463,
+          "pose_service_echantillonnee": {
+            "s": 92.01260134446784,
+            "d": 4.399294210191839,
+            "echantillons": 11,
+            "amplitude_s": 0.0,
+            "amplitude_d": 0.0,
+            "vitesse_max": 0
+          }
+        }
+      ],
+      "final": [
+        {
+          "id": 1,
+          "s": 280.07870930241006,
+          "d": 4.730460444754985,
+          "v": 35.86737531122941,
+          "pneus": "slicks",
+          "service": 1,
+          "usures": [
+            0.0006155111635507762,
+            0.0006176641139627542,
+            0.0011331321950847134,
+            0.0011335813464039524
+          ],
+          "repositionnements": 0
+        }
+      ],
+      "interruption": null
+    }
+  ],
+  "contre_exemples_corriges": [
+    {
+      "cas": "entree-avant-ligne",
+      "archive": "contre-exemples/entree-avant-ligne",
+      "erreur": "un arrêt ne crée pas de tour valable\n\ntrue !== false\n",
+      "contexte_source": "aucun snapshot source de ce premier échec",
+      "dernier_point": {
+        "t": 40.24999999999942,
+        "voitures": [
+          {
+            "id": 1,
+            "s": 4220.560712645938,
+            "d": 4.425334060430185,
+            "v": 11,
+            "pneus": "slicks",
+            "service": 0,
+            "repositionnements": 0
+          }
+        ]
+      }
+    },
+    {
+      "cas": "occupation-durable",
+      "archive": "contre-exemples/occupation-durable",
+      "erreur": "le garage durablement occupé est dépassé avant le retour à la conduite ordinaire",
+      "contexte_source": "snapshots passage-03",
+      "dernier_point": {
+        "t": 63.45833333333143,
+        "voitures": [
+          {
+            "id": 1,
+            "s": 91.86851790550827,
+            "d": 3.224896176412023,
+            "v": 0,
+            "pneus": "slicks",
+            "service": 0,
+            "repositionnements": 0
+          },
+          {
+            "id": 0,
+            "s": 100,
+            "d": 4.4,
+            "v": 0,
+            "pneus": "slicks",
+            "service": 1,
+            "repositionnements": 0
+          }
+        ]
+      }
+    }
+  ],
+  "sources_finales": [
+    {
+      "fichier": "src/course.js",
+      "sha256": "9950001b518363cefe3bd3cd013e96046a460b96db02192cc7a21ee3ddbd0d93",
+      "identique_snapshot_passage04": true
+    },
+    {
+      "fichier": "src/strategie-stands.js",
+      "sha256": "85ccd779bf2513513e857c9858202ec199f88876dc5b5477cb99c28145f13067",
+      "identique_snapshot_passage04": true
+    },
+    {
+      "fichier": "verifications/strategie-stands.test.mjs",
+      "sha256": "3e2dd8bbf22587fe1f6c69a5f19ea07816d17c66769a10a62e069e54fa4db573",
+      "identique_snapshot_passage04": true
+    }
+  ],
+  "archive": {
+    "fichier": "preuves-brutes.tar.gz",
+    "octets": 1491491,
+    "sha256": "50d382033a5ef9c3bc5d72d700f26bf3a92ca6dca0a17a74c2378c0629a88a84",
+    "journaux_finaux": 17,
+    "contre_exemples": 2,
+    "objets_sources_uniques": 58
+  },
+  "notes": [
+    "Conditionnement de preuves existantes uniquement : aucun test exécuté pendant cet assemblage.",
+    "17 parcours/scénarios finaux du passage 04 ; seuls deux contre-exemples corrigés sont conservés des passages antérieurs.",
+    "Les reçus stands 18/18 et stands-pneus 30/30 viennent du passage 02, avant le dernier correctif du module de stratégie ; ils ne sont pas présentés comme un nouveau passage sur le snapshot 04.",
+    "Les logs décisions 6/6 et chaussée/préparation 8/8 sont les reçus finaux fournis par l’orchestrateur. Les sources courantes sont archivées à titre de contexte ; les logs seuls ne les lient pas cryptographiquement à leur exécution.",
+    "Les snapshots course.js, strategie-stands.js et strategie-stands.test.mjs du passage 04 sont identiques au dépôt au conditionnement.",
+    "Les points des journaux sont échantillonnés. Identité des pneus/graines, compteurs, durée, pose et absence de replacement sont contrôlées à chaque pas par le script de test archivé ; les journaux courts ne sérialisent pas tous ces champs.",
+    "Le contre-exemple occupation du passage 03 possède un champ final ancien ; son dernier point temporel, retenu ici, est l’état de référence de l’échec.",
+    "Pas de mesure matérielle ni de validation de navigateur ajoutée par ces reçus. La qualification globale est distincte."
+  ]
+}

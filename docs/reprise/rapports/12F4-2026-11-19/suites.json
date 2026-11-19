@@ -1,0 +1,1286 @@
+[
+  {
+    "suite": "adherence-chaussee.test.mjs",
+    "argv": [
+      "node",
+      "verifications/adherence-chaussee.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:46:37.645633+00:00",
+    "code": 0,
+    "duree_s": 0.177,
+    "log": "tests/adherence-chaussee.test.mjs.log",
+    "sha256_log": "03eb48798788bc16cf051b534285ac64e15029c0dbbfacb8c765d4da6bf96f6a"
+  },
+  {
+    "suite": "ambiance.test.mjs",
+    "argv": [
+      "node",
+      "verifications/ambiance.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:46:37.822905+00:00",
+    "code": 0,
+    "duree_s": 0.065,
+    "log": "tests/ambiance.test.mjs.log",
+    "sha256_log": "3c2764cbff57112ae73f0ae5b2b869f606ad9744fe1877acc8bedcbc57f7d90f"
+  },
+  {
+    "suite": "animaux.test.mjs",
+    "argv": [
+      "node",
+      "verifications/animaux.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:46:37.888789+00:00",
+    "code": 0,
+    "duree_s": 9.31,
+    "log": "tests/animaux.test.mjs.log",
+    "sha256_log": "e22a7447f8d53e73d2cc9ab2cee359fd9f0811ce1c279059335fb5460c2b3640"
+  },
+  {
+    "suite": "arbres-lots.test.mjs",
+    "argv": [
+      "node",
+      "verifications/arbres-lots.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:46:47.199379+00:00",
+    "code": 0,
+    "duree_s": 6.819,
+    "log": "tests/arbres-lots.test.mjs.log",
+    "sha256_log": "fa184a94e7df300aa5d364ddc3bbbeb68a518c8b1fa0fdfe8380a4fdf9ab91ba"
+  },
+  {
+    "suite": "asie.test.mjs",
+    "argv": [
+      "node",
+      "verifications/asie.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:46:54.018553+00:00",
+    "code": 0,
+    "duree_s": 3.58,
+    "log": "tests/asie.test.mjs.log",
+    "sha256_log": "1359838e1aba75a823801fa90a19da7ddf647df0f234113db3606ea65ba82e6a"
+  },
+  {
+    "suite": "aurores.test.mjs",
+    "argv": [
+      "node",
+      "verifications/aurores.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:46:57.598944+00:00",
+    "code": 0,
+    "duree_s": 0.116,
+    "log": "tests/aurores.test.mjs.log",
+    "sha256_log": "96e4bc0a1aa2fb91e59afa0136d2d16de2bddd388c9e7f199b5ff564d11928ca"
+  },
+  {
+    "suite": "autoconfig-integration.test.mjs",
+    "argv": [
+      "node",
+      "verifications/autoconfig-integration.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:46:57.715032+00:00",
+    "code": 0,
+    "duree_s": 0.107,
+    "log": "tests/autoconfig-integration.test.mjs.log",
+    "sha256_log": "5ed635423e4afbc36c2f7c2e8c9829f5cea6b813c12a6ea118060128ed8a2cbf"
+  },
+  {
+    "suite": "autoconfig.test.mjs",
+    "argv": [
+      "node",
+      "verifications/autoconfig.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:46:57.823237+00:00",
+    "code": 0,
+    "duree_s": 0.26,
+    "log": "tests/autoconfig.test.mjs.log",
+    "sha256_log": "8201a11e8e80de8aaf73ef64df4d865e76193b1c612a75e4c602d1cdf0134d02"
+  },
+  {
+    "suite": "bords-integration.test.mjs",
+    "argv": [
+      "node",
+      "verifications/bords-integration.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:46:58.084721+00:00",
+    "code": 0,
+    "duree_s": 3.868,
+    "log": "tests/bords-integration.test.mjs.log",
+    "sha256_log": "3285d8eacafe8041bafda9eb62b0181600b557b967822ed65f4f4bd32feb8c24"
+  },
+  {
+    "suite": "bords.test.mjs",
+    "argv": [
+      "node",
+      "verifications/bords.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:01.953416+00:00",
+    "code": 0,
+    "duree_s": 1.197,
+    "log": "tests/bords.test.mjs.log",
+    "sha256_log": "3ef5d7a2f92bebe57103a6d7926bd3ae8f6cd53af142a227d753b9938c291e7d"
+  },
+  {
+    "suite": "botanique.test.mjs",
+    "argv": [
+      "node",
+      "verifications/botanique.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:03.151032+00:00",
+    "code": 0,
+    "duree_s": 0.405,
+    "log": "tests/botanique.test.mjs.log",
+    "sha256_log": "9a9fda8eed989fbd4eec283c261eeb1fb714c7e1713b8f8148ffba15b6fa3e30"
+  },
+  {
+    "suite": "cadence.test.mjs",
+    "argv": [
+      "node",
+      "verifications/cadence.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:03.556218+00:00",
+    "code": 0,
+    "duree_s": 1.134,
+    "log": "tests/cadence.test.mjs.log",
+    "sha256_log": "22d90966ae53029ef79f4b332a249c6f25e9e2de081fce2eb29be0ad10cc8e58"
+  },
+  {
+    "suite": "carene.test.mjs",
+    "argv": [
+      "node",
+      "verifications/carene.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:04.690627+00:00",
+    "code": 0,
+    "duree_s": 0.117,
+    "log": "tests/carene.test.mjs.log",
+    "sha256_log": "31e13dbaf09da4f7b0e32013cbaa20a402aac75bf6fbb010b8cb763826e37eb4"
+  },
+  {
+    "suite": "chargement.test.mjs",
+    "argv": [
+      "node",
+      "verifications/chargement.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:04.807596+00:00",
+    "code": 0,
+    "duree_s": 1.297,
+    "log": "tests/chargement.test.mjs.log",
+    "sha256_log": "7e6b85a80734bcd1791f7110e25d176361955c71f3590d1ebc605967b4ac3e7a"
+  },
+  {
+    "suite": "chaussee-preparation.test.mjs",
+    "argv": [
+      "node",
+      "verifications/chaussee-preparation.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:06.104924+00:00",
+    "code": 0,
+    "duree_s": 0.081,
+    "log": "tests/chaussee-preparation.test.mjs.log",
+    "sha256_log": "3d439eacdb76e02772067139010fc505eeca655b049f227205ed6eb961050d13"
+  },
+  {
+    "suite": "chaussee-visuelle.test.mjs",
+    "argv": [
+      "node",
+      "verifications/chaussee-visuelle.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:06.186849+00:00",
+    "code": 0,
+    "duree_s": 1.559,
+    "log": "tests/chaussee-visuelle.test.mjs.log",
+    "sha256_log": "e80cd7c7db843d86d66c3518f58aef898c51f4cb466431fc931c0de134223c41"
+  },
+  {
+    "suite": "chaussee.test.mjs",
+    "argv": [
+      "node",
+      "verifications/chaussee.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:07.746573+00:00",
+    "code": 0,
+    "duree_s": 0.066,
+    "log": "tests/chaussee.test.mjs.log",
+    "sha256_log": "3680989081d702a7eb69d7d976d01e589a9ed70c6bd45ce991dce7eeb567e32b"
+  },
+  {
+    "suite": "choix-pneus-integration.test.mjs",
+    "argv": [
+      "node",
+      "verifications/choix-pneus-integration.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:07.813429+00:00",
+    "code": 0,
+    "duree_s": 0.124,
+    "log": "tests/choix-pneus-integration.test.mjs.log",
+    "sha256_log": "7ffe995c6b9c67ac6f13af2e01435fa4a1b044054977beb68fd70aa5dc6f6f7c"
+  },
+  {
+    "suite": "circuit.test.mjs",
+    "argv": [
+      "node",
+      "verifications/circuit.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:07.937639+00:00",
+    "code": 0,
+    "duree_s": 0.825,
+    "log": "tests/circuit.test.mjs.log",
+    "sha256_log": "b46f02efb4a3197eff35ae791970cef4f34de64c871e033483554b61495ebfa3"
+  },
+  {
+    "suite": "collisions-orientees.test.mjs",
+    "argv": [
+      "node",
+      "verifications/collisions-orientees.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:08.762917+00:00",
+    "code": 0,
+    "duree_s": 0.067,
+    "log": "tests/collisions-orientees.test.mjs.log",
+    "sha256_log": "a8e2b19805e1a807232bd8a7ce65ca7c4dc52d512e518fdd7fea0fc0081772e6"
+  },
+  {
+    "suite": "commandes-partage.test.mjs",
+    "argv": [
+      "node",
+      "verifications/commandes-partage.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:08.830693+00:00",
+    "code": 0,
+    "duree_s": 0.076,
+    "log": "tests/commandes-partage.test.mjs.log",
+    "sha256_log": "171426dcb49a15f97dcf502ad6f30db3ad31b4652ce4f5b65553ae0128c19277"
+  },
+  {
+    "suite": "conditions-course.test.mjs",
+    "argv": [
+      "node",
+      "verifications/conditions-course.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:08.907318+00:00",
+    "code": 0,
+    "duree_s": 0.119,
+    "log": "tests/conditions-course.test.mjs.log",
+    "sha256_log": "d2133431c8af5cac380e47a75c7b587887d646b071844139ae96697060922e02"
+  },
+  {
+    "suite": "conditions-integration.test.mjs",
+    "argv": [
+      "node",
+      "verifications/conditions-integration.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:09.027354+00:00",
+    "code": 0,
+    "duree_s": 0.105,
+    "log": "tests/conditions-integration.test.mjs.log",
+    "sha256_log": "b07067058facaf783b8730dbc81965d524c1dff57307bb0b76fdd7a963bbf15a"
+  },
+  {
+    "suite": "conduite-criteres.test.mjs",
+    "argv": [
+      "node",
+      "verifications/conduite-criteres.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:09.133059+00:00",
+    "code": 0,
+    "duree_s": 2.734,
+    "log": "tests/conduite-criteres.test.mjs.log",
+    "sha256_log": "8c1c4fe26e7b7e3224c85fc7eaa7a5f56088665a376c822999e9f90673e9b243"
+  },
+  {
+    "suite": "conduite.test.mjs",
+    "argv": [
+      "node",
+      "verifications/conduite.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:11.868193+00:00",
+    "code": 0,
+    "duree_s": 0.35,
+    "log": "tests/conduite.test.mjs.log",
+    "sha256_log": "1529ab394092c5c5498d18bc99857bc8490bd1a89b55cfa36c7e1addb7787c71"
+  },
+  {
+    "suite": "contacts.test.mjs",
+    "argv": [
+      "node",
+      "verifications/contacts.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:12.219043+00:00",
+    "code": 0,
+    "duree_s": 0.129,
+    "log": "tests/contacts.test.mjs.log",
+    "sha256_log": "b2a57d4e7e366942fecf3ab93ab830a1c849025c5bed377ea762e09403ca0390"
+  },
+  {
+    "suite": "controle-visuel.test.mjs",
+    "argv": [
+      "node",
+      "verifications/controle-visuel.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:12.348878+00:00",
+    "code": 0,
+    "duree_s": 0.083,
+    "log": "tests/controle-visuel.test.mjs.log",
+    "sha256_log": "36c20e7f4e59302d2af9452d1c0bf280aab9be70ca3c7902cc60f1f883e407c0"
+  },
+  {
+    "suite": "course.test.mjs",
+    "argv": [
+      "node",
+      "verifications/course.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:12.432534+00:00",
+    "code": 0,
+    "duree_s": 6.202,
+    "log": "tests/course.test.mjs.log",
+    "sha256_log": "fdab0d8ffa61b4184e46d31447636fd43464128f118990b6f9ae3d408f0eefa1"
+  },
+  {
+    "suite": "crash.test.mjs",
+    "argv": [
+      "node",
+      "verifications/crash.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:18.635241+00:00",
+    "code": 0,
+    "duree_s": 0.831,
+    "log": "tests/crash.test.mjs.log",
+    "sha256_log": "6fc7ad978e81a60180340dd0d3117b20222269760e3303f18149c7c8ab97a9d7"
+  },
+  {
+    "suite": "decor-identite.test.mjs",
+    "argv": [
+      "node",
+      "verifications/decor-identite.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:19.467260+00:00",
+    "code": 0,
+    "duree_s": 2.613,
+    "log": "tests/decor-identite.test.mjs.log",
+    "sha256_log": "b6af6569a3dba0e2e58c4bbdc030c3a009be39dadac91565fed92ac8bf41f6c2"
+  },
+  {
+    "suite": "decor-obstacles.test.mjs",
+    "argv": [
+      "node",
+      "verifications/decor-obstacles.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:22.080972+00:00",
+    "code": 0,
+    "duree_s": 0.659,
+    "log": "tests/decor-obstacles.test.mjs.log",
+    "sha256_log": "100895629fbae6d55cb654d4e400c051fc5772399339069731d806716336dc68"
+  },
+  {
+    "suite": "decor.test.mjs",
+    "argv": [
+      "node",
+      "verifications/decor.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:22.740498+00:00",
+    "code": 0,
+    "duree_s": 0.552,
+    "log": "tests/decor.test.mjs.log",
+    "sha256_log": "9816345560e4ddb0b6a3f4109110e3af9299c5d3a4f8e99c00102b303f6b2018"
+  },
+  {
+    "suite": "desert.test.mjs",
+    "argv": [
+      "node",
+      "verifications/desert.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:23.293400+00:00",
+    "code": 0,
+    "duree_s": 3.374,
+    "log": "tests/desert.test.mjs.log",
+    "sha256_log": "84a8dc2524d8f85b22ad52c95a717e0e370a91998a54924e0c4e05ead5f552be"
+  },
+  {
+    "suite": "determinisme-simulation.test.mjs",
+    "argv": [
+      "node",
+      "verifications/determinisme-simulation.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:26.668229+00:00",
+    "code": 0,
+    "duree_s": 19.088,
+    "log": "tests/determinisme-simulation.test.mjs.log",
+    "sha256_log": "fc9bbf8f721eda6f71479e89f8ad5a155ff55ad882d2fdc9f15f6485b1482148"
+  },
+  {
+    "suite": "echappement.test.mjs",
+    "argv": [
+      "node",
+      "verifications/echappement.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:45.757241+00:00",
+    "code": 0,
+    "duree_s": 3.66,
+    "log": "tests/echappement.test.mjs.log",
+    "sha256_log": "b2742c94604ef9efe812954dd05cce36884e4a2d55e1e9b2724934a1b85e6350"
+  },
+  {
+    "suite": "ecologie.test.mjs",
+    "argv": [
+      "node",
+      "verifications/ecologie.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:49.417868+00:00",
+    "code": 0,
+    "duree_s": 1.362,
+    "log": "tests/ecologie.test.mjs.log",
+    "sha256_log": "891960f37670fb192ef7904d306f244b17db814a432a52de9301be4ad3904a43"
+  },
+  {
+    "suite": "effets-allocation.test.mjs",
+    "argv": [
+      "node",
+      "verifications/effets-allocation.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:50.781877+00:00",
+    "code": 0,
+    "duree_s": 3.219,
+    "log": "tests/effets-allocation.test.mjs.log",
+    "sha256_log": "7591cdf215f644d79a932a4307a1ae84fbe36ffd7745d7f795bfc3fc7bf792a2"
+  },
+  {
+    "suite": "effets-saison.test.mjs",
+    "argv": [
+      "node",
+      "verifications/effets-saison.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:54.001689+00:00",
+    "code": 0,
+    "duree_s": 1.552,
+    "log": "tests/effets-saison.test.mjs.log",
+    "sha256_log": "c47f4449ca74f6c9263c2be23ba9b9d9630ff7571d753127a98b96c87c76a83a"
+  },
+  {
+    "suite": "faune.test.mjs",
+    "argv": [
+      "node",
+      "verifications/faune.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:55.554863+00:00",
+    "code": 0,
+    "duree_s": 3.205,
+    "log": "tests/faune.test.mjs.log",
+    "sha256_log": "3cc84f55fadb17ca8899c2953904711a2c3419458fd72d500486a55feaf92a95"
+  },
+  {
+    "suite": "formes-libres.test.mjs",
+    "argv": [
+      "node",
+      "verifications/formes-libres.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:47:58.760579+00:00",
+    "code": 0,
+    "duree_s": 1.478,
+    "log": "tests/formes-libres.test.mjs.log",
+    "sha256_log": "108816b74409c50dce7a5978bb537cbed97d2a2ac6a6ea6082ff0352e22e5a65"
+  },
+  {
+    "suite": "glissiere-etats.test.mjs",
+    "argv": [
+      "node",
+      "verifications/glissiere-etats.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:48:00.240445+00:00",
+    "code": 0,
+    "duree_s": 0.113,
+    "log": "tests/glissiere-etats.test.mjs.log",
+    "sha256_log": "87823fec46c54e453653d2c714e46e256ad94d1efa3963ca69f504cc46db1ed5"
+  },
+  {
+    "suite": "glissiere-rebond.test.mjs",
+    "argv": [
+      "node",
+      "verifications/glissiere-rebond.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:48:00.354718+00:00",
+    "code": 0,
+    "duree_s": 0.134,
+    "log": "tests/glissiere-rebond.test.mjs.log",
+    "sha256_log": "474a18e2467d8adba089e3de9008a48c0e61b07c5ecc0899cd78bb177bdc4bd0"
+  },
+  {
+    "suite": "graphismes.test.mjs",
+    "argv": [
+      "node",
+      "verifications/graphismes.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:48:00.489399+00:00",
+    "code": 0,
+    "duree_s": 0.092,
+    "log": "tests/graphismes.test.mjs.log",
+    "sha256_log": "7ad47c7ac4090f1878bca161e4fb12f1298df97538df429013ec87991ef85edd"
+  },
+  {
+    "suite": "herbier-identite.test.mjs",
+    "argv": [
+      "node",
+      "verifications/herbier-identite.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:48:00.582389+00:00",
+    "code": 0,
+    "duree_s": 32.389,
+    "log": "tests/herbier-identite.test.mjs.log",
+    "sha256_log": "46e047f7561b555370dfe47caa3f27cc29ada723d9320c44f7320a378bdd1ffb"
+  },
+  {
+    "suite": "herbier-saisons.test.mjs",
+    "argv": [
+      "node",
+      "verifications/herbier-saisons.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:48:32.972543+00:00",
+    "code": 0,
+    "duree_s": 38.644,
+    "log": "tests/herbier-saisons.test.mjs.log",
+    "sha256_log": "2300ce144e011ea60c5ef6b6227493230e8df96798d1a640125ae688d00c2de7"
+  },
+  {
+    "suite": "hud-pneus.test.mjs",
+    "argv": [
+      "node",
+      "verifications/hud-pneus.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:11.618227+00:00",
+    "code": 0,
+    "duree_s": 0.139,
+    "log": "tests/hud-pneus.test.mjs.log",
+    "sha256_log": "f85e877ea4b44cc52564788efed0d9991bd194d243238fa247e80408c94633b6"
+  },
+  {
+    "suite": "ia-attaque.test.mjs",
+    "argv": [
+      "node",
+      "verifications/ia-attaque.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:11.757886+00:00",
+    "code": 0,
+    "duree_s": 18.546,
+    "log": "tests/ia-attaque.test.mjs.log",
+    "sha256_log": "de7b035e39186bcf232aada08bd7fb07f9204337953560494721bd3c5a402d27"
+  },
+  {
+    "suite": "ia-epaves.test.mjs",
+    "argv": [
+      "node",
+      "verifications/ia-epaves.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:30.305692+00:00",
+    "code": 0,
+    "duree_s": 0.173,
+    "log": "tests/ia-epaves.test.mjs.log",
+    "sha256_log": "ca5423ef09a9b8a569e56728e16e6554ae1d10062d19ad40c7f165409cccf966"
+  },
+  {
+    "suite": "ia-reprise.test.mjs",
+    "argv": [
+      "node",
+      "verifications/ia-reprise.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:30.479421+00:00",
+    "code": 0,
+    "duree_s": 0.211,
+    "log": "tests/ia-reprise.test.mjs.log",
+    "sha256_log": "7930811d150b7e3a57350e14f3e88f40cdfad3e42941b8c79045e324939b7109"
+  },
+  {
+    "suite": "ia.test.mjs",
+    "argv": [
+      "node",
+      "verifications/ia.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:30.691069+00:00",
+    "code": 0,
+    "duree_s": 0.154,
+    "log": "tests/ia.test.mjs.log",
+    "sha256_log": "371b77ff405d94335a6bf0600cd2a7b49d36a654359733fa65dc08ec8f8fd405"
+  },
+  {
+    "suite": "islande.test.mjs",
+    "argv": [
+      "node",
+      "verifications/islande.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:30.846185+00:00",
+    "code": 0,
+    "duree_s": 3.616,
+    "log": "tests/islande.test.mjs.log",
+    "sha256_log": "2f31ce8c6a8f00c79a30f254d26b1d3eecb0f4b2ba6934e471af06f5d3d72482"
+  },
+  {
+    "suite": "lieux-traces.test.mjs",
+    "argv": [
+      "node",
+      "verifications/lieux-traces.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:34.462989+00:00",
+    "code": 0,
+    "duree_s": 0.664,
+    "log": "tests/lieux-traces.test.mjs.log",
+    "sha256_log": "72bf83bdd4c0067b056ddd98845bdb82961f8d6511a0664a365cc219d3a60010"
+  },
+  {
+    "suite": "main.test.mjs",
+    "argv": [
+      "node",
+      "verifications/main.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:35.127731+00:00",
+    "code": 0,
+    "duree_s": 0.164,
+    "log": "tests/main.test.mjs.log",
+    "sha256_log": "dca764c8503bb4871b664b997a1cfa89ed547f3d62d159d743688cf821fc2ded"
+  },
+  {
+    "suite": "manette.test.mjs",
+    "argv": [
+      "node",
+      "verifications/manette.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:35.293354+00:00",
+    "code": 0,
+    "duree_s": 0.089,
+    "log": "tests/manette.test.mjs.log",
+    "sha256_log": "527fe2f9af5cfc2e58856be62dfe704b26638740ff6c9033f33332096787238d"
+  },
+  {
+    "suite": "mesures.test.mjs",
+    "argv": [
+      "node",
+      "verifications/mesures.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:35.383188+00:00",
+    "code": 0,
+    "duree_s": 0.124,
+    "log": "tests/mesures.test.mjs.log",
+    "sha256_log": "29a09bbe35f830af06dc27c11c9c6c69a3c2b4645500c41667759ac117c81f0d"
+  },
+  {
+    "suite": "meteo-reelle.test.mjs",
+    "argv": [
+      "node",
+      "verifications/meteo-reelle.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:35.507658+00:00",
+    "code": 0,
+    "duree_s": 0.093,
+    "log": "tests/meteo-reelle.test.mjs.log",
+    "sha256_log": "4e0a7fecee2e1312e5a7e48b6e697f8392b8c5876605ab89073f81f99ebeb711"
+  },
+  {
+    "suite": "meteo-toile.test.mjs",
+    "argv": [
+      "node",
+      "verifications/meteo-toile.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:35.601888+00:00",
+    "code": 0,
+    "duree_s": 0.328,
+    "log": "tests/meteo-toile.test.mjs.log",
+    "sha256_log": "3e9672ae1f7c75d1dd260b69d4a243d76280328d3bfe4774fc71b42b4cca572c"
+  },
+  {
+    "suite": "meteo.test.mjs",
+    "argv": [
+      "node",
+      "verifications/meteo.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:35.931946+00:00",
+    "code": 0,
+    "duree_s": 0.121,
+    "log": "tests/meteo.test.mjs.log",
+    "sha256_log": "ce4d2634938dca99f702adef9f95278e9b4155e002a6a17b6093ebec8cd57411"
+  },
+  {
+    "suite": "moteur-emprise.test.mjs",
+    "argv": [
+      "node",
+      "verifications/moteur-emprise.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:36.054512+00:00",
+    "code": 0,
+    "duree_s": 0.099,
+    "log": "tests/moteur-emprise.test.mjs.log",
+    "sha256_log": "f6e5a43c07e443f074e8d667162e729271c0d67f9bddb5f523ac09ea7b110ff2"
+  },
+  {
+    "suite": "nature-integration.test.mjs",
+    "argv": [
+      "node",
+      "verifications/nature-integration.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:36.154694+00:00",
+    "code": 0,
+    "duree_s": 0.062,
+    "log": "tests/nature-integration.test.mjs.log",
+    "sha256_log": "8301bfd515ef4462f1a08e75eff0b93c3854b55338ff8de450957fd9b0adfbfd"
+  },
+  {
+    "suite": "nature-preparation.test.mjs",
+    "argv": [
+      "node",
+      "verifications/nature-preparation.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:36.217937+00:00",
+    "code": 0,
+    "duree_s": 2.787,
+    "log": "tests/nature-preparation.test.mjs.log",
+    "sha256_log": "79841675f9a7c73e86c2afc671cb79fc055da0ae506109ff68e56c1e673d71c2"
+  },
+  {
+    "suite": "navigation-menu.test.mjs",
+    "argv": [
+      "node",
+      "verifications/navigation-menu.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:39.006936+00:00",
+    "code": 0,
+    "duree_s": 0.073,
+    "log": "tests/navigation-menu.test.mjs.log",
+    "sha256_log": "e5f7d14f12bf6edaf380073a3825046d59ea38fdd085a87238613a51da1577eb"
+  },
+  {
+    "suite": "obstacles-degagement.test.mjs",
+    "argv": [
+      "node",
+      "verifications/obstacles-degagement.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:39.081741+00:00",
+    "code": 0,
+    "duree_s": 3.529,
+    "log": "tests/obstacles-degagement.test.mjs.log",
+    "sha256_log": "3ff4db403b22db7f12954b85b42f95a25baef1d905beb3ae9ac188104f4617fd"
+  },
+  {
+    "suite": "obstacles.test.mjs",
+    "argv": [
+      "node",
+      "verifications/obstacles.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:42.611563+00:00",
+    "code": 0,
+    "duree_s": 0.073,
+    "log": "tests/obstacles.test.mjs.log",
+    "sha256_log": "05cb010d4e76823ec212470db21486eb19ba269ee77e71ab752d85ef00173278"
+  },
+  {
+    "suite": "ombres.test.mjs",
+    "argv": [
+      "node",
+      "verifications/ombres.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:42.685230+00:00",
+    "code": 0,
+    "duree_s": 1.806,
+    "log": "tests/ombres.test.mjs.log",
+    "sha256_log": "1ffa2a188c2a4336e6c5235a4458535d36271ce4f00084bf80a313105720e8d9"
+  },
+  {
+    "suite": "options-image.test.mjs",
+    "argv": [
+      "node",
+      "verifications/options-image.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:44.492374+00:00",
+    "code": 0,
+    "duree_s": 1.101,
+    "log": "tests/options-image.test.mjs.log",
+    "sha256_log": "0801cb2ae60e736acddd9abaeaae41989fe7ff5ae9d84a35edf3d774ea9adc42"
+  },
+  {
+    "suite": "pacifique.test.mjs",
+    "argv": [
+      "node",
+      "verifications/pacifique.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:45.595404+00:00",
+    "code": 0,
+    "duree_s": 8.368,
+    "log": "tests/pacifique.test.mjs.log",
+    "sha256_log": "4a94f4fef0da16403b3e3b674f1601e6c41a0880d9703467ba2a3658aa3090e7"
+  },
+  {
+    "suite": "physx-monde.test.mjs",
+    "argv": [
+      "node",
+      "verifications/physx-monde.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:53.965279+00:00",
+    "code": 0,
+    "duree_s": 1.04,
+    "log": "tests/physx-monde.test.mjs.log",
+    "sha256_log": "4b8e8472b2ff8179071ef5d2f0b2438246d8f1c500632806f13fc1793315a778"
+  },
+  {
+    "suite": "pieces.test.mjs",
+    "argv": [
+      "node",
+      "verifications/pieces.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:55.007043+00:00",
+    "code": 0,
+    "duree_s": 0.985,
+    "log": "tests/pieces.test.mjs.log",
+    "sha256_log": "1e7409c5cb4388c264801774ba429beed2321d1c154ee723ea67c61e6d7a9068"
+  },
+  {
+    "suite": "pneus-pilotes.test.mjs",
+    "argv": [
+      "node",
+      "verifications/pneus-pilotes.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:55.994168+00:00",
+    "code": 0,
+    "duree_s": 0.086,
+    "log": "tests/pneus-pilotes.test.mjs.log",
+    "sha256_log": "dd0fbd8450c3908b5648235e811f7e080717c2d384b26ff7c624d29b1656335e"
+  },
+  {
+    "suite": "pneus-reseau-integration.test.mjs",
+    "argv": [
+      "node",
+      "verifications/pneus-reseau-integration.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:56.083253+00:00",
+    "code": 0,
+    "duree_s": 0.158,
+    "log": "tests/pneus-reseau-integration.test.mjs.log",
+    "sha256_log": "f6800199eb41bfe30904b605a02ee5fe5f6e42299b5ce1db55c30413f5bd5ce0"
+  },
+  {
+    "suite": "pneus-reseau.test.mjs",
+    "argv": [
+      "node",
+      "verifications/pneus-reseau.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:56.242559+00:00",
+    "code": 0,
+    "duree_s": 0.083,
+    "log": "tests/pneus-reseau.test.mjs.log",
+    "sha256_log": "26fe6caa484a9f8a553391f47acc4e2148c67030f6557468774c514d7636af2c"
+  },
+  {
+    "suite": "pneus-service-visuel.test.mjs",
+    "argv": [
+      "node",
+      "verifications/pneus-service-visuel.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:56.327329+00:00",
+    "code": 0,
+    "duree_s": 1.2,
+    "log": "tests/pneus-service-visuel.test.mjs.log",
+    "sha256_log": "41fdc421203ba53be734895bb8772a8af3c79e1c47d3d7ceac98ec7364b107bf"
+  },
+  {
+    "suite": "pneus.test.mjs",
+    "argv": [
+      "node",
+      "verifications/pneus.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:57.528854+00:00",
+    "code": 0,
+    "duree_s": 0.107,
+    "log": "tests/pneus.test.mjs.log",
+    "sha256_log": "dd2f77b3ceeb8dba2173c2a66dfb454fcb6cacf605c97c47640945f76a9e29f5"
+  },
+  {
+    "suite": "prets-enligne.test.mjs",
+    "argv": [
+      "node",
+      "verifications/prets-enligne.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:57.637125+00:00",
+    "code": 0,
+    "duree_s": 0.27,
+    "log": "tests/prets-enligne.test.mjs.log",
+    "sha256_log": "ccc5005da3df88f109e388f09cdeb4ba480c54602193241bb5aa05f90da44fc4"
+  },
+  {
+    "suite": "public.test.mjs",
+    "argv": [
+      "node",
+      "verifications/public.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:49:57.909633+00:00",
+    "code": 0,
+    "duree_s": 4.365,
+    "log": "tests/public.test.mjs.log",
+    "sha256_log": "9d33859637ec5b9fd15923791c152192a2f36342c8db3b852359a5e083e14af9"
+  },
+  {
+    "suite": "qualite.test.mjs",
+    "argv": [
+      "node",
+      "verifications/qualite.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:02.276196+00:00",
+    "code": 0,
+    "duree_s": 0.111,
+    "log": "tests/qualite.test.mjs.log",
+    "sha256_log": "ea5dedd26752a9992b06f65411015a1050a7847f3e10b5b194621571146ca236"
+  },
+  {
+    "suite": "realisateur.test.mjs",
+    "argv": [
+      "node",
+      "verifications/realisateur.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:02.388179+00:00",
+    "code": 0,
+    "duree_s": 4.527,
+    "log": "tests/realisateur.test.mjs.log",
+    "sha256_log": "8b94edf39359b7f641106fcd903b8f168e2ab1eab15a300e739ee29573057bef"
+  },
+  {
+    "suite": "relectures-phase2.test.mjs",
+    "argv": [
+      "node",
+      "verifications/relectures-phase2.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:06.919642+00:00",
+    "code": 0,
+    "duree_s": 0.606,
+    "log": "tests/relectures-phase2.test.mjs.log",
+    "sha256_log": "fe81a756f0818b97adbbc5219302fa6e8e71d7cff92a39aaaea8c51dc88bb885"
+  },
+  {
+    "suite": "rendu-halo.test.mjs",
+    "argv": [
+      "node",
+      "verifications/rendu-halo.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:07.527860+00:00",
+    "code": 0,
+    "duree_s": 0.079,
+    "log": "tests/rendu-halo.test.mjs.log",
+    "sha256_log": "634af1979f89ee2c10629354a69c961a5c25a70fec129841085584544cdd6c6a"
+  },
+  {
+    "suite": "reprise-recul.test.mjs",
+    "argv": [
+      "node",
+      "verifications/reprise-recul.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:07.607740+00:00",
+    "code": 0,
+    "duree_s": 0.103,
+    "log": "tests/reprise-recul.test.mjs.log",
+    "sha256_log": "0f7b3274a6c561310547216e6be49a01db56de95df65860c7f19145ac59afd07"
+  },
+  {
+    "suite": "roues-detail.test.mjs",
+    "argv": [
+      "node",
+      "verifications/roues-detail.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:07.712326+00:00",
+    "code": 0,
+    "duree_s": 0.728,
+    "log": "tests/roues-detail.test.mjs.log",
+    "sha256_log": "f5d9f24732fbcc808d74729fffe296d435fff08fb5954b3c363e1c848e4d2982"
+  },
+  {
+    "suite": "saisons.test.mjs",
+    "argv": [
+      "node",
+      "verifications/saisons.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:08.442168+00:00",
+    "code": 0,
+    "duree_s": 5.539,
+    "log": "tests/saisons.test.mjs.log",
+    "sha256_log": "5f1f02b66c2e230f14372f6c991f482db22a6be72593c235e2f4da5e7beed30d"
+  },
+  {
+    "suite": "salon-protocole.test.mjs",
+    "argv": [
+      "node",
+      "verifications/salon-protocole.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:13.982623+00:00",
+    "code": 0,
+    "duree_s": 3.098,
+    "log": "tests/salon-protocole.test.mjs.log",
+    "sha256_log": "e6853afedb194cc1b0735cedd7db5d7c254625b41d5426d2a7074f1336735dbe"
+  },
+  {
+    "suite": "scene-bench.test.mjs",
+    "argv": [
+      "node",
+      "verifications/scene-bench.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:17.081968+00:00",
+    "code": 0,
+    "duree_s": 10.351,
+    "log": "tests/scene-bench.test.mjs.log",
+    "sha256_log": "0abe318cf18b1450c3c0bd3fd5c54f3546ec3b7288d17de02ad073e532e70914"
+  },
+  {
+    "suite": "sillage.test.mjs",
+    "argv": [
+      "node",
+      "verifications/sillage.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:27.434311+00:00",
+    "code": 0,
+    "duree_s": 0.074,
+    "log": "tests/sillage.test.mjs.log",
+    "sha256_log": "049cb02f94047fa81b1670f0476a2c4a13f146d1390d9b32445d5a221d547f0c"
+  },
+  {
+    "suite": "simulation-sorties.test.mjs",
+    "argv": [
+      "node",
+      "verifications/simulation-sorties.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:27.509456+00:00",
+    "code": 0,
+    "duree_s": 7.659,
+    "log": "tests/simulation-sorties.test.mjs.log",
+    "sha256_log": "2e1a7d011c7363e112f7360372ccb4409391a48cde8f22d39dfdfb783c2b2285"
+  },
+  {
+    "suite": "son.test.mjs",
+    "argv": [
+      "node",
+      "verifications/son.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:35.170472+00:00",
+    "code": 0,
+    "duree_s": 0.299,
+    "log": "tests/son.test.mjs.log",
+    "sha256_log": "6e0d6e542ba4f419146b4272a6bb664297048d4b8d275515c20815cd35813a3b"
+  },
+  {
+    "suite": "stands-pneus.test.mjs",
+    "argv": [
+      "node",
+      "verifications/stands-pneus.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:35.471266+00:00",
+    "code": 0,
+    "duree_s": 0.167,
+    "log": "tests/stands-pneus.test.mjs.log",
+    "sha256_log": "7e41a548a5613d7b1b842f0569414825e8644fe73b2c180b0d3e3a5a4ac5b53e"
+  },
+  {
+    "suite": "stands.test.mjs",
+    "argv": [
+      "node",
+      "verifications/stands.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:35.639976+00:00",
+    "code": 0,
+    "duree_s": 8.43,
+    "log": "tests/stands.test.mjs.log",
+    "sha256_log": "77799d5e390a2281922e1e0eecaf2b6e786a0735b4356ef80ef0c276c35f13a6"
+  },
+  {
+    "suite": "strategie-stands-decisions.test.mjs",
+    "argv": [
+      "node",
+      "verifications/strategie-stands-decisions.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:44.071772+00:00",
+    "code": 0,
+    "duree_s": 0.244,
+    "log": "tests/strategie-stands-decisions.test.mjs.log",
+    "sha256_log": "fdd94ab7ae7af341cc263b24a11914ae0583de66ffe5ef82002e4fcc20be0201"
+  },
+  {
+    "suite": "strategie-stands.test.mjs",
+    "argv": [
+      "node",
+      "verifications/strategie-stands.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:44.317182+00:00",
+    "code": 0,
+    "duree_s": 6.707,
+    "log": "tests/strategie-stands.test.mjs.log",
+    "sha256_log": "c0edf932c1737bd2ed1e77b60eec0bb93a4c67b3243b6eb1cb83f819a8799d6e"
+  },
+  {
+    "suite": "titre-signature.test.mjs",
+    "argv": [
+      "node",
+      "verifications/titre-signature.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:51.026248+00:00",
+    "code": 0,
+    "duree_s": 0.078,
+    "log": "tests/titre-signature.test.mjs.log",
+    "sha256_log": "0ba748c111036b3dc3d2e35c73c22fa08bb3d9e8e563537aff1547288def09e9"
+  },
+  {
+    "suite": "traces.test.mjs",
+    "argv": [
+      "node",
+      "verifications/traces.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:51.105541+00:00",
+    "code": 1,
+    "duree_s": 0.922,
+    "log": "tests/traces.test.mjs.log",
+    "sha256_log": "4c51c0068a15493366ee4aaf14a2b814e43f24e308ffdf71200097dc1b840dfe"
+  },
+  {
+    "suite": "troncs.test.mjs",
+    "argv": [
+      "node",
+      "verifications/troncs.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:52.029800+00:00",
+    "code": 0,
+    "duree_s": 0.687,
+    "log": "tests/troncs.test.mjs.log",
+    "sha256_log": "5aaf97f33eaec88243b9cbadea22c62747910e83255e26c78a1ab59b2b5f7b1d"
+  },
+  {
+    "suite": "tunnel-transitions.test.mjs",
+    "argv": [
+      "node",
+      "verifications/tunnel-transitions.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:52.718852+00:00",
+    "code": 0,
+    "duree_s": 0.294,
+    "log": "tests/tunnel-transitions.test.mjs.log",
+    "sha256_log": "0ca446651372f7926ff0cda4f09cbceb0216717612aff85b698166cf865f0cef"
+  },
+  {
+    "suite": "tunnel.test.mjs",
+    "argv": [
+      "node",
+      "verifications/tunnel.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:53.014113+00:00",
+    "code": 0,
+    "duree_s": 0.47,
+    "log": "tests/tunnel.test.mjs.log",
+    "sha256_log": "8a576d718b7607027664b72d208c9b17ff336574b785c9cb92a3a91ea5782b05"
+  },
+  {
+    "suite": "usure-integration.test.mjs",
+    "argv": [
+      "node",
+      "verifications/usure-integration.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:53.485699+00:00",
+    "code": 0,
+    "duree_s": 0.327,
+    "log": "tests/usure-integration.test.mjs.log",
+    "sha256_log": "ebca48cba20d4bd83f416c08e32b5904f2b56640bc36f6b08ea061bd9a9893df"
+  },
+  {
+    "suite": "usure-pneus.test.mjs",
+    "argv": [
+      "node",
+      "verifications/usure-pneus.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:53.814725+00:00",
+    "code": 0,
+    "duree_s": 0.429,
+    "log": "tests/usure-pneus.test.mjs.log",
+    "sha256_log": "471a80e341db1ce24b7a8436478d316924a2fd3418b92fb6646cda47e0e7ec63"
+  },
+  {
+    "suite": "usure-visuelle.test.mjs",
+    "argv": [
+      "node",
+      "verifications/usure-visuelle.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:54.245812+00:00",
+    "code": 0,
+    "duree_s": 0.658,
+    "log": "tests/usure-visuelle.test.mjs.log",
+    "sha256_log": "ec3b316f5b951af4317ee53db830373e254cf883af4fa3583cf8c1a6a267f09d"
+  },
+  {
+    "suite": "vegetation.test.mjs",
+    "argv": [
+      "node",
+      "verifications/vegetation.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:50:54.906007+00:00",
+    "code": 0,
+    "duree_s": 12.488,
+    "log": "tests/vegetation.test.mjs.log",
+    "sha256_log": "f7574b1f15e441564bbe9d68f2bbbed23f4059fb7bd88f59a78db8e982fd6368"
+  },
+  {
+    "suite": "vibrations.test.mjs",
+    "argv": [
+      "node",
+      "verifications/vibrations.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:51:07.395763+00:00",
+    "code": 0,
+    "duree_s": 0.105,
+    "log": "tests/vibrations.test.mjs.log",
+    "sha256_log": "fa4a7f7e5402d5b35752edd7492bd4beee62bada27d7b5c6fe08638e05d34917"
+  },
+  {
+    "suite": "vitre-cadence.test.mjs",
+    "argv": [
+      "node",
+      "verifications/vitre-cadence.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:51:07.502482+00:00",
+    "code": 0,
+    "duree_s": 0.162,
+    "log": "tests/vitre-cadence.test.mjs.log",
+    "sha256_log": "b48e588fd7f6317a4bc917b8492fba0fec30b01b0b4619900d07ded0feb5a5ea"
+  },
+  {
+    "suite": "vitre.test.mjs",
+    "argv": [
+      "node",
+      "verifications/vitre.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:51:07.666820+00:00",
+    "code": 0,
+    "duree_s": 0.269,
+    "log": "tests/vitre.test.mjs.log",
+    "sha256_log": "5f9967efbed6a96f06134e2de550b396dcd2e608e00766f95eaa53b416e4e503"
+  },
+  {
+    "suite": "voiture-identite.test.mjs",
+    "argv": [
+      "node",
+      "verifications/voiture-identite.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:51:07.937420+00:00",
+    "code": 0,
+    "duree_s": 4.336,
+    "log": "tests/voiture-identite.test.mjs.log",
+    "sha256_log": "42f6506a96123c4e2bee5c590a22c2f11d3ef098c55c3685e2cc05214ac2de1d"
+  },
+  {
+    "suite": "voiture-permanents.test.mjs",
+    "argv": [
+      "node",
+      "verifications/voiture-permanents.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:51:12.275194+00:00",
+    "code": 0,
+    "duree_s": 5.739,
+    "log": "tests/voiture-permanents.test.mjs.log",
+    "sha256_log": "565260fb7cce5e3bf88ad6fcc4f8e39c3127e12d8a707bd89fdb3f40be2adc66"
+  },
+  {
+    "suite": "voiture.test.mjs",
+    "argv": [
+      "node",
+      "verifications/voiture.test.mjs"
+    ],
+    "date_utc": "2026-11-19T14:51:18.015906+00:00",
+    "code": 0,
+    "duree_s": 3.924,
+    "log": "tests/voiture.test.mjs.log",
+    "sha256_log": "4f8da76d81336c2e32bb3318844d7f275f9ccbdb994c67aafef3a80714e8c57e"
+  }
+]

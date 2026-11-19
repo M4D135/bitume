@@ -1,0 +1,2 @@
+moteur EMPRISE : triangles exacts aux 3 LOD, formes libres, restauration, météo et SSR optionnel [{"detail":"fin","shapes":7,"references":2352,"vertices":618,"restored":7},{"detail":true,"shapes":7,"references":1056,"vertices":360,"restored":7},{"detail":2,"shapes":6,"references":672,"vertices":210,"restored":6}]
+moteur EMPRISE : updateShape WebGL2, indices et sommets restaurés après perte du contexte

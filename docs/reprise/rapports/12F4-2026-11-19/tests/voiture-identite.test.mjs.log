@@ -1,0 +1,7 @@
+ok  primitives : glace des images entrelacées, pose réduite identique à la pose entière filtrée
+ok  primitives : la pose réduite des rétroviseurs rend la roue arrière de la pose entière filtrée
+ok  emprise : glace des images entrelacées, pose réduite identique à la pose entière filtrée
+ok  emprise : la pose réduite des rétroviseurs rend la roue arrière de la pose entière filtrée
+ok  primitives : 134 groupes de poses identiques à l'empreinte
+ok  emprise : 134 groupes de poses identiques à l'empreinte
+6 vérifications réussies (4.2 s)

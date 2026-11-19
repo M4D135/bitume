@@ -1,0 +1,83 @@
+{
+  "date_utc": "2026-11-19T14:45:33.046407+00:00",
+  "duree_s": 19.299,
+  "commande": [
+    "node",
+    "verifications/determinisme-simulation.test.mjs",
+    "--ecrire"
+  ],
+  "code": 0,
+  "physique": "p12",
+  "reference_absente_avant": true,
+  "sources_modifiees_pendant": [],
+  "archives_p9_p10_p11_et_lois_inchangees": true,
+  "validation_comportementale_precedente": {
+    "strategie": {
+      "reussies": 17,
+      "total": 17
+    },
+    "decisions": {
+      "reussies": 6,
+      "total": 6
+    },
+    "stands": {
+      "reussies": 18,
+      "total": 18
+    },
+    "stands_pneus": {
+      "reussies": 30,
+      "total": 30
+    },
+    "chaussee_preparation": {
+      "reussies": 8,
+      "total": 8
+    },
+    "preuves": "cibles/"
+  },
+  "log_sha256": "061cb0003c03e607ea8e5c447d71b3ff730a868788d8e143f060e1bb3566af20",
+  "fixture": "verifications/fixtures/determinisme-p12.json",
+  "sha256": "fb8f96e5a770fcdd6ee3da520a9c8e0e2ae81c6c0b6b34d5a20758730f790e5f",
+  "scenarios": 21,
+  "empreintes": 1375,
+  "service_ia": {
+    "horloge": 105,
+    "phase": "course",
+    "termine": false,
+    "classement": [
+      1,
+      0
+    ],
+    "tours": [
+      0,
+      1
+    ],
+    "fini": 0,
+    "vMax": 51.645,
+    "casses": 0,
+    "evenements": {
+      "rapport": 15,
+      "stand": 4,
+      "tour": 1
+    },
+    "obstacles": "0991ffc0319bcef8e40698bd82a0e1f8e3c4b7ecf97d7de5ed58a368e9b59ebd",
+    "solides": 3241,
+    "entreeIA": true,
+    "serviceIA": true,
+    "repareIA": true,
+    "sortieIA": true,
+    "repartiIA": true,
+    "phasesStandsIA": [
+      "entree",
+      "service",
+      "repare",
+      "sortie"
+    ],
+    "servicePneusIA": 1,
+    "usuresIA": [
+      0.008961734155447395,
+      0.007449634775138919,
+      0.012157524015854335,
+      0.010790383198177565
+    ]
+  }
+}

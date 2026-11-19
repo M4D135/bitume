@@ -1,3 +1,4 @@
+if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strategieStands) require('./strategie-stands.js');
 (function (B) {
   'use strict';
   // BITUME : déroulement d'une course ou d'une séance de chrono (grille, feux, IA, contacts,
@@ -83,7 +84,8 @@
       tempsTours: [], meilleur: null, position: 0, fini: false, abandon: false, tempsFinal: null, ecart: 0, ecartTete: 0,
       ia: {
         hab: joueur ? 1 : habBase + (t1 * 2 - 1) * 0.015, decal: joueur ? 0 : (t2 * 2 - 1) * 0.5,
-        reaction: joueur ? 0 : 0.12 + t3 * 0.28, cible: -1, cote: 0, decalVise: 0, decalDep: 0
+        reaction: joueur ? 0 : 0.12 + t3 * 0.28, cible: -1, cote: 0, decalVise: 0, decalDep: 0,
+        stand: B.strategieStands ? B.strategieStands.creer() : null
       }
       };
     };
@@ -195,6 +197,10 @@
     const moiLong = 2.475 * ca0 + 1.01 * sa0, moiLat = 2.475 * sa0 + 1.01 * ca0;
     const vit=e.v, demi=c.largeur/2, utile=Math.max(.5,demi-moiLat-.25);
     ia.t = (ia.t || 0) + dt;   // horloge locale de la voiture : le délai entre deux attaques ne dépend pas du temps affiché
+    // Les rivaux engagés aux stands conduisent réellement leur approche, attente et sortie. Le service et ses
+    // pneus restent la responsabilité de stands(), après la conduite et les collisions du pas.
+    const arretIA = B.strategieStands && B.strategieStands.commandes(course, v, sortie);
+    if (arretIA) return arretIA;
     // Retour en piste seulement quand la voiture est vraiment dehors (centre au-delà du bord), avec hystérésis :
     // frôler la trajectoire idéale, qui longe le bord, n'est pas une sortie.
     const ad=Math.abs(e.d);
@@ -605,8 +611,8 @@
   //  - entrer aux stands invalide le tour courant (même règle que le replacement) : le chrono et le fantôme n'y
   //    gagnent rien, la voie ne raccourcit pas le tour puisqu'elle est sur la piste ;
   //  - une voiture à l'arrêt au stand n'est jamais « coincée » au sens de l'IA (pas d'accident au bout de 15 s) ;
-  //  - les rivaux n'utilisent pas les stands : ils n'ont que la récupération d'urgence du remplacement, la même que
-  //    le joueur, et aucune réparation gratuite (verifications/stands.test.mjs le vérifie) ;
+  //  - les rivaux et reprises IA ne sont admis qu'avec une décision explicite de strategie-stands.js ; ils paient
+  //    le même trajet et le même service que le joueur, sans réparation gratuite ;
   //  - en ligne, rien ici ne se décrète pour une voiture distante : son état vient de sa machine (reseau.js ne
   //    transporte ni dégâts ni arrêt), un pair ne peut pas faire réparer la voiture d'un autre.
   const STANDS = { marge: .8, entree: 4, arret: .35, frein: 18, mouvementService: .05 };
@@ -639,11 +645,18 @@
   }
   function stands(course, v, dt, ev) {
     const S = course.c.stands, e = v.etat;
-    // Les rivaux n'utilisent pas les stands (règle documentée de la fiche) : ils n'ont que la récupération d'urgence
-    // du remplacement, comme le joueur, et aucune réparation gratuite. Sans cette garde, un rival qui traîne à droite
-    // irait se refaire une santé au garage sans en payer le prix.
-    const conduite = (v.joueur || v.humain) && !v.reprise; // une voiture reprise par l'IA n'obtient aucun service gratuit
-    if (!S || !conduite || v.distant || v.abandon || v.fini) { if (e && e.stands) e.stands = null; return; }
+    // Une IA perd son autorisation après sa manœuvre de sortie. Réarmer le verrou seulement une fois réellement
+    // hors de la voie doit donc précéder cette garde, sinon aucun arrêt ultérieur ne serait possible.
+    if (S && !v.distant && e && e.standsSortie && !dansLaVoie(course.c, e, S)) e.standsSortie = false;
+    // Une IA qui traîne près du garage ne reçoit rien : seule sa décision d'arrêt engagée ouvre le service partagé.
+    const humaine = (v.joueur || v.humain) && !v.reprise;
+    const conduite = humaine || (B.strategieStands && B.strategieStands.autorise(course, v));
+    if (!S || !conduite || v.distant || v.abandon || v.fini) {
+      if (e && e.stands) {
+        if (!v.distant && !humaine) annulerStand(v, ev); else e.stands = null;
+      }
+      return;
+    }
     const st = e.stands;
     if (!st) {
       if (course.phase !== 'course' || course.temps < 5 || e.recuperation || e.accident || e.saut) return;
@@ -666,7 +679,10 @@
     if (st.phase === 'voie') {
       if (!dans) { annulerStand(v, ev); return; }
       if (e.v > S.vitesse) e.v = Math.max(S.vitesse, e.v - STANDS.frein * dt);
-      if (dansLeGarage(course.c, e, S) && Math.abs(e.v) < STANDS.arret) {
+      // Une place peut être occupée depuis la décision IA du début de pas (entrée humaine ou contact).
+      // Revérifier l'admission après les collisions ; une attente dans le garage ne vaut pas service autorisé.
+      if (dansLeGarage(course.c, e, S) && Math.abs(e.v) < STANDS.arret &&
+        (humaine || B.strategieStands.servicePossible(course, v))) {
         st.phase = 'service'; st.t = 0; st.duree = B.degats.chiffrerService(v.degats);
         st.pneus = B.pneus.estJouable(e.pneusProchainArret) ? e.pneusProchainArret : e.pneus;
         st.revisionPneus = e.servicePneus; st.sService = e.s; st.dService = e.d;

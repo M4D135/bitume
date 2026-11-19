@@ -1,0 +1,52 @@
+{
+  "algorithme": "sha256",
+  "exclusion": "INDEX.json et SHA256SUMS exclus de cet inventaire pour éviter une référence circulaire ; SHA256SUMS inclut INDEX.json.",
+  "fichiers": [
+    {
+      "chemin": "SYNTHESE.json",
+      "octets": 48584,
+      "sha256": "1ad1f7909c92fa6572646ce523d59e0c5dc7428a393b9fc9e8620ed6c0e99f83"
+    },
+    {
+      "chemin": "SYNTHESE.md",
+      "octets": 5167,
+      "sha256": "54487974f8bdd105da008bbfaf410f9bbe57d0bf649da91baba3fad75a09c418"
+    },
+    {
+      "chemin": "chaussee-preparation-final.log",
+      "octets": 657,
+      "sha256": "3d439eacdb76e02772067139010fc505eeca655b049f227205ed6eb961050d13"
+    },
+    {
+      "chemin": "decisions-final.log",
+      "octets": 735,
+      "sha256": "46ed2ac2687cf5b4a131064c6644e26409e9aea38dc57d4e98b3769b1a6b7439"
+    },
+    {
+      "chemin": "preuves-brutes.tar.gz",
+      "octets": 1491491,
+      "sha256": "50d382033a5ef9c3bc5d72d700f26bf3a92ca6dca0a17a74c2378c0629a88a84"
+    },
+    {
+      "chemin": "stands-final.log",
+      "octets": 1248,
+      "sha256": "77799d5e390a2281922e1e0eecaf2b6e786a0735b4356ef80ef0c276c35f13a6"
+    },
+    {
+      "chemin": "stands-pneus-final.log",
+      "octets": 2817,
+      "sha256": "7e41a548a5613d7b1b842f0569414825e8644fe73b2c180b0d3e3a5a4ac5b53e"
+    },
+    {
+      "chemin": "strategie-stands-final.log",
+      "octets": 1769,
+      "sha256": "243e1861ccb40c44f8f57ce498994f6522dfe63997ae29265ae310505d599976"
+    }
+  ],
+  "archive": {
+    "fichier": "preuves-brutes.tar.gz",
+    "nombre_membres": 87,
+    "octets_non_compresses": 22343573,
+    "objets_sources_uniques": 58
+  }
+}
