@@ -1,0 +1,38 @@
+✔ même choix en cours et prêt : une résolution, aucun nouveau tirage avant le départ (3.607897ms)
+✔ changement de choix annule la recherche et une réponse tardive ne remplace pas le nouveau résultat (0.577858ms)
+✔ vitrine hivernale : actualiser la météo conserve la chaussée préparée sans reconstruire la séance (21.49546ms)
+✔ retour depuis la préparation annule sans départ ou réactivation par une réponse tardive (0.583627ms)
+✔ retour des réglages conserve le tirage ; nouvelle préparation après le titre et forcer le renouvellent (0.881664ms)
+✔ erreur inattendue : repli manuel utilisable, annulation explicite sans résultat (0.591538ms)
+✖ invité en ligne : aucun appel de résolution, préférences saison/moment/météo préservées (7.468031ms)
+✔ conditionsCommunes filtre lieu/IP/coordonnées et détache les observations et horaires (1.735065ms)
+✔ départ réseau : hôte et invité reçoivent mêmes saison, météo, soleil et date UTC malgré une horloge locale différente (1.428855ms)
+✔ neige observée est libellée neige hors côte, pluie à Port-Sable, indépendamment de la saison manuelle (0.345158ms)
+✔ lumière réseau suit dateDepart + horloge de simulation de l’hôte, avec rafraîchissement borné (0.633831ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 10
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 49.040083
+
+✖ failing tests:
+
+test at verifications/conditions-integration.test.mjs:170:1
+✖ invité en ligne : aucun appel de résolution, préférences saison/moment/météo préservées (7.468031ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(f.recevoirCourse({ versionChoixPneus: 1, ...snapshot(), i: 2, tours: 3, difficulte: 1, eau: .7 }))
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:175:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

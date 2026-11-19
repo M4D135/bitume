@@ -29,7 +29,8 @@ Les deux contrôles GitHub finaux de `fb18a835` sont terminés : runs `445126080
 Poursuivre **12F3**, branche `codex/bitume-12f3-20261119` : usure et services transmis à faible fréquence,
 séance/pilote/service/séquence, autorité et reprise IA. La stratégie de stands des rivaux reste à qualifier
 avant de rendre les longues courses dépendantes de ces arrêts.
-Checkpoint initial : protocole et intégration en cours ; la 0.2.49 reste la dernière version qualifiée.
+Sources 12F3 intégrées, tests ciblés réussis ; qualification globale sur sources figées en cours.
+La 0.2.49 reste le dernier build qualifié jusqu’au reçu 12F3.
 
 ## Demandes conservées
 

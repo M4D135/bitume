@@ -26,7 +26,8 @@ les positions à quinze flottants et les modules FERRO inchangés. Le site et We
   dans un même service. Le transfert vers l’hôte change la génération d’autorité et conserve les pneus.
 - Le rendu distant interpole sa copie visuelle ; les états physiques reçus restent distincts.
   Les voitures distantes ne recalculent pas une usure concurrente.
-- La préparation vérifie le protocole et le couple identifiant/empreinte de circuit, calculé au build.
+- La préparation vérifie le protocole et le couple identifiant de circuit/empreinte complète des sources, calculé au build.
+  Cette compatibilité conservatrice inclut le générateur, les limites et les collisions issues des autres modules.
   Un départ dupliqué ne crée pas une nouvelle course. La fin de chargement demande un instantané.
   Une machine absente de la grille attend toujours la prochaine course ; ce lot n’ajoute pas d’entrée en pleine course.
 
