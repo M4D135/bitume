@@ -124,10 +124,34 @@
   },
   "ci_apres_fusion": {
     "run_id": 44602433260,
+    "job_id": 135837112728,
     "head": "02e8bac6b9ed762e0da06ab7c223e9cbd419968e",
     "url": "https://github.com/M4D135/bitume/actions/runs/44602433260",
-    "statut_dernier_constat": "en cours",
-    "resultat": "Non attribué aux CI terminées de la tête qualifiée ; arbre de code après fusion identique."
+    "event": "push",
+    "branch": "main",
+    "status": "completed",
+    "conclusion": "failure",
+    "passed": 126,
+    "failed_count": 1,
+    "total": 127,
+    "failed": [
+      "verifications/traces.test.mjs"
+    ],
+    "reported_counts_match": true,
+    "trace_actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+    "trace_expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+    "trace_signature_matches_0257": true,
+    "unexpected_failures": [],
+    "key_suites": {
+      "verifications/pilote-habitacle.test.mjs": "PASS",
+      "verifications/pilote-exterieur.test.mjs": "PASS",
+      "verifications/nature-integration.test.mjs": "PASS",
+      "verifications/decor.test.mjs": "PASS"
+    },
+    "decor_ms": null,
+    "decor_threshold_ms": 150,
+    "statut_dernier_constat": "terminé : 126/127, seules traces héritées",
+    "resultat": "Résultat du run après fusion constaté séparément des CI de la tête qualifiée. Cockpit, nature et décor passent ; aucun nouvel échec. Conclusion GitHub failure conservée."
   },
   "publication": {
     "fusion_normale": true,
@@ -137,7 +161,7 @@
   },
   "limites": [
     "127 suites par CI ; réserve traces héritée conservée, aucune fixture réécrite.",
-    "Val-Brûlé : 166 ms sur push pour 150 ms ; réserve conservée, absence de régression de durée non démontrée par un essai comparatif contrôlé.",
+    "Val-Brûlé : 166 ms sur push du candidat pour 150 ms ; réussi sur PR et après fusion. Réserve conservée, absence de régression de durée non démontrée par un essai comparatif contrôlé.",
     "Jeu complet en navigateur, manette physique et FPS matériels non validés ici.",
     "Site non déployé."
   ],
