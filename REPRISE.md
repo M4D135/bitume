@@ -2,55 +2,49 @@
 
 ## Point actif — 19 novembre 2026
 
-**12F4 en cours : stratégie de stands IA**, non qualifiée. Fiche `docs/reprise/12F4-STRATEGIE-STANDS-IA.md`.
-Base vérifiée `c8afbd49` / **0.2.50** ; branche `codex/bitume-12f4-20261119`.
-Prochaine action : décisions, guidage réel, service partagé puis qualification sur les sept circuits.
-**p12 prévue** pour ce changement de simulation ; conserver les références p9/p10/p11 intactes.
+**12F4 implémenté, contrôles ciblés acquis ; qualification complète EN COURS.**
+Fiche : `docs/reprise/12F4-STRATEGIE-STANDS-IA.md` ; branche `codex/bitume-12f4-20261119`.
+Base de branche **`446a350f`**, issue de main `c8afbd49` / **0.2.50**. Sources et tests gelés.
+**Build actuel : 0.2.50 ; cible 0.2.51 NON LIVRÉE. p12 actif dans le code**, références p9/p10/p11 intactes.
 
-Lire `git status`, `docs/reprise/ETAT.json` et la dernière entrée du suivi ; ouvrir ensuite seulement la fiche active.
+Lire `git status`, `docs/reprise/ETAT.json` et la dernière entrée du suivi ; ouvrir seulement la fiche active.
 
-- **12F3 livré sur main en 0.2.50**, sources, tests, build et preuves publiés.
-  Fiche : `docs/reprise/12F3-RESEAU-USURE-SERVICES.md`. Ne pas recommencer le lot.
-- **Livraison vérifiée sur main : 0.2.50 / `9857f627`**. PR n°4 fermée et fusionnée le **19 novembre à 13 h 01 (Paris)** ;
-  tree du commit de fusion identique à la tête revue `baeea490`. Publication et fusion terminées.
-- **12A–12F3 publiés** ; PR n°3 et n°4 fusionnées. Ne pas redemander ni recommencer ces fusions.
-- **Choix de prochaine monte actif en ligne**, par pilote. Type et quatre états de pneus à **2 Hz**,
-  service immédiat fiable, validation puis relais par l’hôte ; reprise IA sans remise à neuf.
-- Compatibilité de préparation : protocole et identifiant de circuit/empreinte complète des sources.
-  Une liaison tardive retrouve l’état ; un joueur absent de la grille attend la prochaine course.
-- **p11 conservée**, fixtures p9/p10/p11 intactes. Safari corrigé et clos. FERRO **0.3.11** inchangé.
+- Rivaux locaux et humains repris par l’IA : arrêt pour usure forte ou monte durablement inadaptée,
+  approche et file par commandes physiques, admission vérifiée après contacts, vrai service puis sortie.
+- Aucun renouvellement avant la fin du service, aucune téléportation ni réparation cachée.
+  Un garage occupé est dégagé physiquement ; les voitures distantes restent sous leur autorité.
+- **17/17 trajets**, dont sept circuits avec limites et solides réels, concurrence, second service et interruption ;
+  **6/6 décisions**, **18/18 stands**, **30/30 stands-pneus**, **8/8 chaussée**.
+- Nouvelle référence **p12 créée après les ciblés** : 21 scénarios / 1 375 empreintes. Reçu `CREATION-P12.json`
+  dans `docs/reprise/rapports/12F4-2026-11-19/` ; comparaison déterministe et suite globale en cours.
+  **Aucun résultat global 12F4 ni build 0.2.51 qualifié annoncé à ce stade.**
 
-## Preuves et prochaine action
+## Prochaine action et limites
 
-Rapport : `docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json`.
-**104/105 suites**, seul `traces.test.mjs` hérité et identique : `reserve-traces.json` dans le même dossier.
-**20 scénarios / 1 300 empreintes p11** identiques ; aucune fixture régénérée. **52 scripts valides**,
-**34 modules FERRO inchangés**. Deux builds identiques : **14 042 272 octets**, SHA-256
-`b1154b9b8a03641f2b166c44bd7cd191589e2375a9cc490733edd90934d5dc21`.
+Terminer la qualification sur les sources gelées, construire deux fois, puis publier sources/tests/build/preuves
+et vérifier le distant. Conserver le reçu explicite de création de p12 ; ne modifier aucune référence p9/p10/p11.
+Comparer l’échec traces hérité ; ne pas le déclarer corrigé sans preuve.
 
-Reçu : `docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json`.
-Les deux CI finales sont terminées : runs `44519375789` et `44519295768`, **104/105 chacune**,
-seul échec traces hérité identique ; aucune CI entièrement verte annoncée.
-**Sous-lot actif : 12F4 stratégie de stands IA**, périmètre fixé dans sa fiche ; source/build 0.2.51 non qualifiés.
-Ne pas rendre les longues courses dépendantes de ces arrêts avant qualification des rivaux.
-**Parties réelles entre navigateurs, WebGL, matériel et déploiement non validés.**
-Les tests utilisent les vrais contrôleurs avec transport simulé ; le site n’est pas déclaré vérifié.
+**Parties réelles entre navigateurs, WebGL, performances matérielles et déploiement non validés.**
+Les essais réseau utilisent les vrais contrôleurs avec transport simulé ; le site n’est pas déclaré vérifié.
 La variabilité CPU historique du décor reste une réserve distincte.
 
-## Demandes conservées
+## Base publiée et demandes conservées
 
-**7 circuits jouables**. Conserver Russie, Monaco ultra fidèle, Spéciale Marseille issue d’EMPRISE avec
-relief mesuré, huitième circuit de montagne distinct de Haut-Col et six destinations proposées.
-Ne supprimer aucun ajout pour tenir l’ancien objectif de 16.
+**12A–12F3 livrés jusqu’à 0.2.50**, livraison `9857f627`, suivi main `c8afbd49`.
+PR n°3 et n°4 fusionnées : ne pas les redemander. Reçu :
+`docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json`.
+La qualification **12F3**, distincte du lot courant, reste 104/105 suites et deux CI à 104/105, seul échec traces hérité.
+Safari corrigé et clos ; FERRO **0.3.11**. Conserver les conditions de l’hôte, la manette, les FPS démo,
+Faune, le téléchargement m4d135 et le transport pneus 12F3.
 
-- Ensemble : `MASTER-LISTE-CLAUDE-FABLE.md`.
-- Pneus/circuits : `docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md`.
-- Marseille : `docs/reprise/15-SPECIALE-MARSEILLE-RELIEF.md`.
-- Autres travaux : `docs/reprise/PILOTAGE-2026-11-18.md`, seulement pour le lot concerné.
+**7 circuits jouables**. Conserver Russie, Monaco ultra fidèle, Marseille issue d’EMPRISE avec relief mesuré,
+huitième circuit de montagne distinct de Haut-Col et six destinations proposées ; aucun retrait pour tenir 16.
+Ensemble : `MASTER-LISTE-CLAUDE-FABLE.md` ; détails : `docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md`
+et `docs/reprise/15-SPECIALE-MARSEILLE-RELIEF.md`.
 
 ## Méthode
 
 Un sous-lot à la fois, sorties courtes, journal et preuves dans Git. Mac/Spark/amiga indisponibles ici ; reprendre
-le Spark d’abord quand l’accès revient. Les branches Mac absentes de GitHub ne sont pas livrées. Préserver les
-conditions de l’hôte, la manette, les FPS démo, Faune et le téléchargement m4d135. Les modifications du moteur
-passent par FERRO canonique. Vérifier GitHub et le site séparément.
+le Spark d’abord quand l’accès revient. Les branches Mac absentes de GitHub ne sont pas livrées. Les modifications
+du moteur passent par FERRO canonique. Vérifier GitHub et le site séparément.

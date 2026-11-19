@@ -1,6 +1,6 @@
 // Lot 4 : santé de la voiture et arrêts aux stands.
 // La jauge, les pénalités et la réparation se lisent dans le même état (B.degats) ; le stand est la seule voie de la
-// réparation complète ; les rivaux n'y vont pas ; une voiture distante ne se répare pas sur ordre d'un pair.
+// réparation complète ; les rivaux n'y sont servis qu'après décision ; un distant ne se répare pas sur ordre d'un pair.
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -230,15 +230,20 @@ verifier('une voiture arree au stand nest jamais tenue pour coincee', () => {
   assert.ok(!ev.some(e => e.type === 'accident' && e.id === ia.id), 'aucun evenement accident pour elle');
 });
 
-verifier('les rivaux n utilisent pas les stands', () => {
+verifier('les rivaux finissent la course et ne recoivent aucun service sans decision ni immobilisation', () => {
   for (const g of [42, 7, 2024]) {
     const course = B.course.creer(c, { mode: 'course', graine: g, placeJoueur: 1, tours: 2 });
-    let t = 0, vus = 0;
+    let t = 0; const services = new Set();
     while (t < 260 && !course.termine) {
-      B.course.pas(course, PLEIN, dt); t += dt;
-      for (const v of course.voitures) if (!v.humain && v.etat.stands) vus++;
+      const ev = B.course.pas(course, PLEIN, dt); t += dt;
+      for (const v of course.voitures) if (!v.joueur && !v.humain && v.etat.stands)
+        assert.equal(B.strategieStands.autorise(course, v), true, 'un rival dans les stands possède une décision active');
+      for (const e of ev) if (e.type === 'stand' && !course.voitures[e.id].joueur) {
+        if (e.phase === 'service') services.add(e.id);
+        if (e.phase === 'repare') assert.ok(services.has(e.id), 'une immobilisation a précédé la réparation du rival');
+        if (e.phase === 'sortie' || e.phase === 'annule') services.delete(e.id);
+      }
     }
-    assert.equal(vus, 0, 'aucun rival aux stands (graine ' + g + ')');
     assert.ok(course.finisseurs >= 8, 'la course finit normalement');
   }
 });

@@ -37,6 +37,7 @@ MODULES = [
     'degats.js',
     'contacts.js',
     'obstacles.js',
+    'strategie-stands.js',
     'course.js',
     'son.js',
     'botanique.js',

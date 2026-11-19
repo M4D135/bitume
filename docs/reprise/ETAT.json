@@ -7,20 +7,22 @@
     "version_courante": "0.2.50",
     "version_publiee_verifiee": "0.2.50",
     "commit_main_verifie": "c8afbd49594eaac51876286e471413856117418d",
-    "statut": "12F4_cadre_non_qualifie",
+    "statut": "12F4_implemente_cibles_acquis_qualification_complete_en_cours",
     "lot": "12F4_strategie_stands_IA",
     "fiche": "docs/reprise/12F4-STRATEGIE-STANDS-IA.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "018",
-    "checkpoint_sources": "7c908b1749ab1490991d8e0ce4ec1a38a42ce743",
-    "checkpoint_distant_verifie": true,
+    "derniere_entree": "019",
     "publication_base": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json",
-    "prochaine_action": "Implémenter puis qualifier le guidage et le service réel des rivaux aux stands ; p12 prévue, références p9/p10/p11 intactes.",
-    "physique": "p11 publiée ; p12 prévue pour le changement de comportement IA, sans régénérer p9/p10/p11",
+    "prochaine_action": "Terminer la qualification complète sur sources gelées et référence p12 créée, construire deux fois puis publier et vérifier le distant.",
+    "physique": "p12 actif dans le code ; p11 reste la physique publiée en 0.2.50 ; archives p9/p10/p11 intactes",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
-    "comportement": "Choix de prochaine monte actif en ligne ; quatre états de pneus à 2 Hz, service immédiat fiable, validation et relais par hôte, reprise IA sans remise à neuf.",
+    "comportement": "Stratégie de stands des IA locales : usure forte ou monte durablement inadaptée, guidage physique et file, admission relue après contacts, service réel et sortie sans remise à neuf cachée.",
     "compatibilite": "Protocole de préparation et identifiant de circuit/empreinte complète des sources ; liaison tardive synchronisée, nouveaux joueurs hors grille reportés à la prochaine course.",
-    "qualification_base": "docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json"
+    "qualification_base": "docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json",
+    "checkpoint_reprise": "446a350f736d583471950b8e089ac7d8ab57e4d9",
+    "sources_tests_geles": true,
+    "version_cible": "0.2.51",
+    "build_courant": "0.2.50"
   },
   "validation": {
     "date_utc": "2026-11-19T11:50:27.476054+00:00",
@@ -102,7 +104,8 @@
       ],
       "unique_echec": "traces.test.mjs",
       "echec_herite_identique": true
-    }
+    },
+    "portee": "Qualification de la base publiée 12F3 / 0.2.50 uniquement ; aucun résultat global 12F4 acquis à ce checkpoint."
   },
   "catalogue": {
     "jouables": 7,
@@ -117,9 +120,9 @@
   },
   "suite": {
     "lot": "12F4_strategie_stands_IA",
-    "statut": "en_cours",
-    "objectif": "Décision de pneus, trajet réel, service complet et sortie des rivaux, sans remise à neuf cachée ; qualification sur sept circuits.",
-    "prerequis": "0.2.50 publiée et vérifiée sur main c8afbd49.",
+    "statut": "qualification_complete_en_cours",
+    "objectif": "Qualifier les sources gelées et la nouvelle référence p12, obtenir deux builds identiques puis publier le lot complet avec reçu.",
+    "prerequis": "Sources et tests 12F4 gelés, ciblés acquis ; base de branche 446a350f, build publié 0.2.50.",
     "apres": [
       "Russie",
       "Monaco ultra fidèle",
@@ -167,11 +170,56 @@
   },
   "publication": {
     "branche": "codex/bitume-12f4-20261119",
-    "statut": "checkpoint_perimetre_a_publier",
+    "statut": "qualification_complete_en_cours",
     "base_main": "c8afbd49594eaac51876286e471413856117418d",
     "version_main_verifiee": "0.2.50",
     "version_cible": "0.2.51",
     "main_modifie_par_ce_lot": false,
-    "recu_final_verifie": false
+    "recu_final_verifie": false,
+    "checkpoint_reprise": "446a350f736d583471950b8e089ac7d8ab57e4d9",
+    "build_courant": "0.2.50"
+  },
+  "validation_12F4": {
+    "statut": "cibles_acquis_qualification_complete_en_cours",
+    "sources_tests_geles": true,
+    "cibles": {
+      "trajets": {
+        "reussis": 17,
+        "total": 17,
+        "circuits": 7
+      },
+      "decisions": {
+        "reussis": 6,
+        "total": 6
+      },
+      "stands": {
+        "reussis": 18,
+        "total": 18
+      },
+      "stands_pneus": {
+        "reussis": 30,
+        "total": 30
+      },
+      "chaussee": {
+        "reussis": 8,
+        "total": 8
+      }
+    },
+    "resultat_global": null,
+    "fixture_p12": {
+      "statut": "cree_apres_validation_ciblee_comparaison_globale_en_cours",
+      "recu": "docs/reprise/rapports/12F4-2026-11-19/CREATION-P12.json",
+      "sha256": "fb8f96e5a770fcdd6ee3da520a9c8e0e2ae81c6c0b6b34d5a20758730f790e5f",
+      "scenarios": 21,
+      "empreintes": 1375
+    },
+    "archives_p9_p10_p11_inchangees": true,
+    "build_courant": "0.2.50",
+    "version_cible": "0.2.51",
+    "livree": false,
+    "navigateurs_reels_valides": false,
+    "webgl_valide": false,
+    "performance_materielle_mesuree": false,
+    "deploiement_effectue": false
   }
 }

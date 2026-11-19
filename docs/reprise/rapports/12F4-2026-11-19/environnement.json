@@ -1,0 +1,10 @@
+{
+  "date_utc": "2026-11-19T14:48:58.476141+00:00",
+  "node": "v24.22.3",
+  "python": "3.12.14",
+  "systeme": "Linux",
+  "architecture": "x86_64",
+  "methode": "Simulation CPU au pas fixe avec vrais modules et transport simulé ; aucune mesure de FPS matériel ni session entre navigateurs réels.",
+  "projet_base": "c8afbd49594eaac51876286e471413856117418d",
+  "physique": "p12"
+}

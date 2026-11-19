@@ -200,12 +200,13 @@ verifier('mouvement détecté avant le pas complet : le frein ne masque pas une 
   assert.ok(e.etatPneus.every((r, i) => r.usure >= avant.etatPneus[i].usure));
 });
 
-verifier('rivaux, voitures distantes et humains repris par l’IA : aucun service local gratuit', () => {
+verifier('IA sans décision et voitures distantes : aucune remise à neuf en les plaçant simplement au garage', () => {
   for (const mode of ['rival', 'distant', 'reprise']) {
     const co = seance('pluie', { rivaux: 1 }), v = co.voitures[1], e = v.etat;
     if (mode !== 'rival') v.humain = true;
     if (mode === 'distant') v.distant = true;
     if (mode === 'reprise') v.reprise = true;
+    e.etatPneus.forEach(r => { r.usure = .9; });
     placer(v); const avant = copie(e);
     for (let i = 0; i < 1200; i++) B.course.stands(co, v, dt, []);
     assert.equal(e.stands, null); assert.deepEqual(copie(e), avant);
