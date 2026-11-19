@@ -26,6 +26,7 @@
 //   node tools/banc-conduite.mjs --verifier-page S  compare cette sortie S aux nombres de Node, nombre par nombre
 //   node tools/banc-conduite.mjs --rivaux [--json F] profil des rivaux seul : vitesses d'adhérence de R 20 à R 400,
 //                                                   ajustement μ_eq, A_eq de la référence de circuit.js (lot 17)
+//   node tools/banc-conduite.mjs --controle-rivaux  contrôle dédié : ratio vitesse adhérence IA/joueur sur 2 tours
 //
 // Banc v2 (lot 17, 17-CONDUITE.md § 5, 17A) : le banc complet joue aussi les essais du lot 17 (freinage pédale tenue,
 // départ sans aide, échelons à 150 et 250 km/h, plein gaz en appui, deux roues dans l'herbe, vibreur, sillage en
