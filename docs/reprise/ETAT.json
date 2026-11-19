@@ -1,20 +1,27 @@
 {
-  "date": "2026-11-19",
+  "date": "2026-11-20",
   "etat_courant": {
     "version_courante": "0.2.60",
     "physique": "p14",
-    "version_publiee_verifiee": "0.2.59",
-    "statut": "qualifie_localement_avec_reserve_de_duree_avant_publication",
+    "version_publiee_verifiee": "0.2.60",
+    "statut": "publie_sur_main_avec_reserve_de_duree",
     "branche_livraison": "main",
     "lot": "realisme_bras_roues_matieres_meteo_batiments_stands_et_baikal_13B",
     "fiche": "docs/reprise/REALISME-2026-11-19.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "046",
-    "prochaine_action": "Publier l’arbre qualifié, constater la CI et la fusion ; poursuivre les mesures Monaco déjà amorcées.",
+    "derniere_entree": "047",
+    "prochaine_action": "Compléter les mesures Monaco 14A à partir du paquet FIA/OSM acquis ; ne pas refaire la livraison 0.2.60.",
     "publication_precedente": {
       "commit_fusion": "02e8bac6b9ed762e0da06ab7c223e9cbd419968e",
       "tete_qualifiee": "d052f4c30cef0e18ea5e0bef84ca5ecae8af2108",
       "arbre_qualifie": "0397a5a4d9fe66b7459cda06fc101ee473b59ae2"
+    },
+    "publication": {
+      "pr": 20,
+      "commit_fusion": "50c2a540b3903c1a67f982b1ff1a57fc59a4478a",
+      "tete_qualifiee": "43720ca0d8fd2a78c60fb37aa8ed181dcbbd30a7",
+      "arbre_qualifie": "43c220669d7360d7565f189df372148722b72904",
+      "recu": "docs/reprise/rapports/REALISME-2026-11-19/PUBLICATION-0260.json"
     }
   },
   "livraison_precedente": {
@@ -51,13 +58,15 @@
     "statut": "paquet_sources_qualifie_metrique_complete_restante",
     "objectif": "Sources FIA/OSM, boucle de rues sans segment inventé ; compléter altitudes, largeurs et dévers avant la reconstruction jouable.",
     "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
-    "apres": "publication_realisme_0260",
-    "autres": "Marseille avec relief mesuré, montagne distincte et six destinations ; tous les lots transversaux restent suivis."
+    "apres": "publication_realisme_0260_terminee",
+    "autres": "Marseille avec relief mesuré, montagne distincte et six destinations ; tous les lots transversaux restent suivis.",
+    "prochain_sous_lot": "Compléter le registre métrique de chaussée : références exploitables, licence/date/précision/datum ; altitudes, largeurs gauche/droite et dévers restent null tant que non mesurés.",
+    "acquis_a_preserver": "Boucle OSM fermée : 415 points/arêtes, 41 voies, 3323.610 m ; écart à la référence FIA -13.390 m, sans mise à l’échelle arbitraire. Voir docs/references/monaco-2026/README.md."
   },
   "regle": "Un sous-lot à la fois ; préserver les preuves et la reprise courte. Aucun push forcé.",
   "candidat": {
     "version_cible": "0.2.60",
-    "statut": "qualifie_localement_avec_reserve_de_duree",
+    "statut": "publie_sur_main",
     "physique": "p14",
     "moteur": "FERRO 0.3.15 canonique",
     "lots": [
@@ -71,7 +80,7 @@
       "contrats de traces fiabilisés"
     ],
     "qualification_union_complete": true,
-    "publie_sur_main": false,
+    "publie_sur_main": true,
     "programme_complet": "docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md",
     "sources_preparatoires": [
       "docs/references/monaco-2026/README.md",
@@ -79,7 +88,7 @@
     ]
   },
   "acces": {
-    "ci_distante": "Actions FERRO bloquées avant démarrage du runner par paiement/plafond du compte ; vérifier le constat BITUME à publication.",
+    "ci_distante": "CI de la PR #20 : 137/137 suites réussies, aucun échec. Le blocage de lancement FERRO décrit précédemment ne vaut pas pour cette exécution BITUME.",
     "deploiement": "Aucun accès au Mac/VPS depuis cet environnement ; script existant deposer.sh conservé. Aucun déploiement effectué.",
     "navigateur": "Jeu complet et FPS matériels non qualifiés ; CPU/maillages et sondes EGL distincts."
   },
@@ -124,14 +133,14 @@
     "site_deploye": false
   },
   "validation": {
-    "statut": "qualifie_localement_avec_reserve_de_duree",
+    "statut": "publie_sur_main_avec_reserve_de_duree",
     "execution": "locale, Node 24, même inventaire que le workflow",
     "build_octets": 14242311,
     "build_sha256": "cf71191600060626c5aa6bbf4523a332e867673984c47e7b48d9eaec79322655",
     "reproductible": true,
     "scripts_analyses": 60,
-    "ci_distante_executee": false,
-    "archive_ci_verifiee": false,
+    "ci_distante_executee": true,
+    "archive_ci_verifiee": true,
     "jeu_navigateur_valide": false,
     "manette_physique_validee": false,
     "fps_materiels_mesures": false,
@@ -154,6 +163,41 @@
       "Des dépassements de construction restent observés dans les trois passages ciblés inchangés de l’optimisation : 188 ms sur Val-Brûlé, 154 et 167 ms sur Haut-Col, pour un seuil de 150 ms. Cette réserve ne disparaît pas avec un passage complet réussi."
     ],
     "rapport": "docs/reprise/rapports/REALISME-2026-11-19/QUALIFICATION-0260.json",
-    "sources_tests_build_inchanges_pendant_campagne": true
+    "sources_tests_build_inchanges_pendant_campagne": true,
+    "ci_distante": {
+      "run_id": 44637107077,
+      "job_id": 135958316464,
+      "url": "https://github.com/M4D135/bitume/actions/runs/44637107077",
+      "head_sha": "43720ca0d8fd2a78c60fb37aa8ed181dcbbd30a7",
+      "qualified_tree": "43c220669d7360d7565f189df372148722b72904",
+      "passed": 137,
+      "failed": 0,
+      "total": 137,
+      "conclusion": "success",
+      "completed": true,
+      "first_log": "2026-11-19T23:22:32.6809271Z",
+      "last_log": "2026-11-19T23:30:59.3985269Z",
+      "failed_suites": [],
+      "reserves_preserved": [
+        "188 ms à Val-Brûlé, 154 et 167 ms à Haut-Col dans les passages ciblés locaux (seuil 150 ms).",
+        "Jeu complet navigateur, manettes physiques, FPS matériels et déploiement du site non validés."
+      ],
+      "artifact_id": 14585242424,
+      "artifact_sha256": "658289243d15604db18002b23b611d7c9746b18ae5a3d0f65d82899e4324b3d1",
+      "artifact_bytes": 71085200,
+      "artifact_verified": true,
+      "build_sha256": "cf71191600060626c5aa6bbf4523a332e867673984c47e7b48d9eaec79322655",
+      "build_bytes": 14242311,
+      "build_matches_qualified": true,
+      "ci_archive_summary": "Suites reussies : 137\nSuites en echec : 0",
+      "ci_checkout_commit": "f874b549d977b064b99785c0e58f942923cfa74b",
+      "source_archive_matches_qualified_tree": true,
+      "source_archive_files": 3281,
+      "source_archive_mismatches": [],
+      "verified_at": "2026-11-19T23:32:28.430302+00:00",
+      "duration_seconds": 506.718,
+      "reserves_observed_in_this_ci": []
+    },
+    "recu_publication": "docs/reprise/rapports/REALISME-2026-11-19/PUBLICATION-0260.json"
   }
 }

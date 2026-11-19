@@ -1,0 +1,89 @@
+{
+  "schema": "bitume.publication.v1",
+  "date": "2026-11-20T00:33:16.930541+01:00",
+  "version": "0.2.60",
+  "physique": "p14",
+  "moteur": "FERRO 0.3.15 canonique",
+  "statut": "publie_sur_main_avec_reserve_de_duree",
+  "repository": "M4D135/bitume",
+  "pr": 20,
+  "url": "https://github.com/M4D135/bitume/pull/20",
+  "commit_qualifie_local": "3444eaff064efaff5c647bbf958844c1c3350c84",
+  "commit_publie": "43720ca0d8fd2a78c60fb37aa8ed181dcbbd30a7",
+  "commit_fusion": "50c2a540b3903c1a67f982b1ff1a57fc59a4478a",
+  "arbre_qualifie": "43c220669d7360d7565f189df372148722b72904",
+  "arbre_pr_et_fusion_identiques_au_candidat": true,
+  "integrite": {
+    "fichiers_qualification_verifies": 317,
+    "fichiers_manifest_publication_verifies": 103,
+    "journaux_locaux_existants_verifies": 137,
+    "campagne_locale_relancee": false,
+    "build_local_relance": false
+  },
+  "qualification_locale": {
+    "rapport": "QUALIFICATION-0260.json",
+    "suites_reussies": 137,
+    "suites_en_echec": 0,
+    "premiers_passages_conserves": [
+      "129/136",
+      "136/137"
+    ]
+  },
+  "ci_pull_request": {
+    "run_id": 44637107077,
+    "job_id": 135958316464,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44637107077",
+    "head_sha": "43720ca0d8fd2a78c60fb37aa8ed181dcbbd30a7",
+    "qualified_tree": "43c220669d7360d7565f189df372148722b72904",
+    "passed": 137,
+    "failed": 0,
+    "total": 137,
+    "conclusion": "success",
+    "completed": true,
+    "first_log": "2026-11-19T23:22:32.6809271Z",
+    "last_log": "2026-11-19T23:30:59.3985269Z",
+    "failed_suites": [],
+    "reserves_preserved": [
+      "188 ms à Val-Brûlé, 154 et 167 ms à Haut-Col dans les passages ciblés locaux (seuil 150 ms).",
+      "Jeu complet navigateur, manettes physiques, FPS matériels et déploiement du site non validés."
+    ],
+    "artifact_id": 14585242424,
+    "artifact_sha256": "658289243d15604db18002b23b611d7c9746b18ae5a3d0f65d82899e4324b3d1",
+    "artifact_bytes": 71085200,
+    "artifact_verified": true,
+    "build_sha256": "cf71191600060626c5aa6bbf4523a332e867673984c47e7b48d9eaec79322655",
+    "build_bytes": 14242311,
+    "build_matches_qualified": true,
+    "ci_archive_summary": "Suites reussies : 137\nSuites en echec : 0",
+    "ci_checkout_commit": "f874b549d977b064b99785c0e58f942923cfa74b",
+    "source_archive_matches_qualified_tree": true,
+    "source_archive_files": 3281,
+    "source_archive_mismatches": [],
+    "verified_at": "2026-11-19T23:32:28.430302+00:00",
+    "duration_seconds": 506.718,
+    "reserves_observed_in_this_ci": []
+  },
+  "ci_main_a_la_cloture": {
+    "commit": "50c2a540b3903c1a67f982b1ff1a57fc59a4478a",
+    "etat": "aucune_execution_observee_a_ce_controle",
+    "succes_non_affirme": true,
+    "date": "2026-11-20T00:33:16.930541+01:00"
+  },
+  "build": {
+    "octets": 14242311,
+    "sha256": "cf71191600060626c5aa6bbf4523a332e867673984c47e7b48d9eaec79322655",
+    "scripts_analyses": 60,
+    "modules_ferro": 34
+  },
+  "reserves": [
+    "Les dépassements des essais ciblés restent consignés : 188 ms à Val-Brûlé, 154 et 167 ms à Haut-Col, pour le seuil inchangé de 150 ms."
+  ],
+  "limites": {
+    "jeu_complet_navigateur_valide": false,
+    "manettes_physiques_validees": false,
+    "fps_materiels_mesures": false,
+    "site_deploye": false
+  },
+  "suite": "14A Monaco : compléter altitudes, largeurs, dévers et incertitudes avant course jouable.",
+  "cloture_documentaire": "Sources, tests, version et HTML inchangés ; reçu et reprise uniquement."
+}
