@@ -1,0 +1,23 @@
+ok les listes exposées sont figées et exactes
+ok normalisation : valeurs inconnues, anciennes et casse tolérées
+ok anciens réglages et valeurs corrompues gardent les options du profil
+ok estPalier ne reconnaît que les trois paliers effectifs
+ok profils : figés en profondeur et complets dans les bornes du moteur
+ok les trois paliers réellement distincts sur au moins trois interrupteurs
+ok resoudre : Auto décroît avec le gouverneur, de 0 à 4
+ok resoudre accepte un niveau hors bornes sans décider à la place du gouverneur
+ok resoudre d'une qualité explicite ignore le gouverneur
+ok melange n'ouvre jamais un effet que le moteur n'a pas ouvert
+ok anticrénelage manuel actif sans halo en Légère et sans changer les autres effets
+ok chaque choix d’ombres fixe activation et taille sans modifier anticrénelage ou végétation
+ok végétation indépendante : chaque densité existe même avec le profil Légère
+ok Auto respecte les choix manuels à chaque palier
+ok options explicites soumises aux capacités matérielles, mais pas au profil prudent
+ok aucun palier n'introduit de coupure à distance brutale
+ok résolution : jamais un nombre hors des bornes du moteur, jamais plus que l'écran
+ok l'ancre de décor empêche l'Auto de rebâtir le terrain
+ok budgets : un décompte comparable et figé pour les trois paliers
+ok stabiliser : l'Auto filtre l'oscillation sans décider à la place du gouverneur
+ok stabiliser : un choix explicite du menu s'applique à l'image
+ok le module se charge et décide sans DOM ni moteur
+graphismes : 22 contrôles passés

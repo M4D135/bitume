@@ -1,0 +1,9 @@
+ok sixième entrée, les cinq identifiants et graines précédents restent en place
+ok boucle fermée, départ droit, pente et trajectoire praticables
+ok terrain jade varié et relief asymétrique, bosquets bornés
+ok rochers et troncs hors de toutes les portions de chaussée
+ok quatre saisons sans déplacement de la route, des arbres ou des solides
+ok qualité basse conserve le terrain, les arbres et les collisions
+ok tracé et décor se reconstruisent sans dépendre du hasard global
+ok onze rivaux accomplissent un tour sans rester bloqués
+{"controles":8,"mesures":{"longueur":5018,"denivelePiste":24.760682908152948,"penteMax":0.05445045924781644,"arbres":46,"trianglesNappes":95608,"objets":7716,"lots":63,"ete":{"jade":1,"neige":0,"nuances":31,"relief":[-42.56916809082031,277.72369384765625]},"asymetrie":12.164736043919477,"rochers":104,"margeRochers":47.679679350572016,"margeArbres":36.06665448584189,"hiver":{"jade":0.0021893814997263274,"neige":1,"nuances":11,"relief":[-42.56916809082031,277.72369384765625]},"course":{"rivauxArrives":11,"duree":253.29166666660063}}}

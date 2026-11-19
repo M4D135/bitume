@@ -1,0 +1,11 @@
+ok ordre AVG, AVD, ARG, ARD : gauche/droite et essieux gardent les indices du jeu
+ok quatre types jouables en p10 ; anciennes préférences intactes et neige disponible
+ok p10 conserve les trois bases sec/eau de p9 et ajoute le domaine neige
+ok catalogue partagé immuable et types invalides sans accès au prototype
+ok quatre pneus neufs indépendants ; modifier une roue ne restaure ni ne salit les autres
+ok motifs reproductibles, différents par roue, séance, voiture et révision de service
+ok ancienne préférence migrée et sauvegarde JSON reproduite sans remise à neuf
+ok état malformé borné, quatre roues finies, aucune mutation de la source
+ok création et normalisation sans Math.random, générateur partagé ni accès au navigateur
+ok contrat commun branché dans la conduite, les avaries et chaque voiture de la grille
+10 contrôles pneus réussis

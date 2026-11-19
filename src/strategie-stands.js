@@ -163,10 +163,14 @@
       const rejoint = contourner ? Math.abs(e.d - S.d) > S.demi + 1 : Math.abs(e.d - ligne) < .6;
       const degagementFini = !contourner || !p.vuStand || x > garage1 + 12;
       const bloqueur = V[p.bloqueur], be = bloqueur?.etat, bh = be && be.psi + be.beta;
-      const depasse = !be || ecart(c, be.s, e.s) > moiLong +
-        2.475 * Math.abs(Math.cos(bh)) + 1.01 * Math.abs(Math.sin(bh)) + 2;
+      const margeBloqueur = be ? moiLong + 2.475 * Math.abs(Math.cos(bh)) + 1.01 * Math.abs(Math.sin(bh)) + 2 : 0;
+      const depasse = !be || ecart(c, be.s, e.s) > margeBloqueur;
+      // Un joueur reparti assez loin ne bloque plus cette manœuvre. Ne pas le poursuivre indéfiniment
+      // à l'allure des stands pour satisfaire une obligation de dépassement devenue sans objet.
+      const reparti = be && be.v > 2 && ecart(c, e.s, be.s) >
+        Math.max(20, margeBloqueur + Math.max(0, e.v - be.v) * 3);
       if (!st && !p.recul && e.v >= 0 && peutRentrer && fusionLibre && rejoint && degagementFini &&
-        (!contourner || depasse) && Math.abs(e.psi) < .12) {
+        (!contourner || depasse || reparti) && Math.abs(e.psi) < .12) {
         finir(co, v); return null;
       }
       cible = Math.min(18, lire(c, c.vitesse, e.s) * Math.sqrt(adhesion) * .8);

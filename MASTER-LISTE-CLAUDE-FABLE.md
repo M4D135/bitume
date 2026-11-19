@@ -4,20 +4,20 @@ Plan du **18 novembre 2026**, état de reprise actualisé le **19 novembre 2026*
 
 ## 1. Mission et point de départ
 
-Poursuivre **BITUME**, jeu de course de monoplaces procédural et autonome dans le navigateur, dépôt **[M4D135/bitume](https://github.com/M4D135/bitume)**, branche principale **`main`**. **12F3 est livré en 0.2.50 sur main `9857f627`**, PR n°4 fusionnée et publication vérifiée. Prochain sous-lot : **stratégie de stands IA, non commencée**. Avancer par petits lots, publier fréquemment et conserver un point de reprise court. Ce document rassemble le catalogue complet proposé et les travaux demandés ; les fiches détaillées portent les critères techniques.
+Poursuivre **BITUME**, jeu de course procédural de monoplaces, dépôt [M4D135/bitume](https://github.com/M4D135/bitume), branche de livraison `main`. **12F4 et sortie de file qualifiés CPU en 0.2.52 / p13 ; publication finale en cours.** Checkpoint correctif `74aba2d3` vérifié ; base p12 `6a3fb86a` publiée et intégrée. Main observé à `db3e8da1` / 0.2.51 avant cette livraison. Prochain lot : **13A Russie, tracé et relief, non commencé**. Avancer par petits lots, publier les sources/builds/preuves et tenir une reprise courte. Les demandes du catalogue ci-dessous restent conservées.
 
 | Élément | État de reprise du 19 novembre 2026 |
 |---|---|
-| Base publiée vérifiée | **0.2.50**, `main` **`9857f627`** ; 12F3 livré, Safari corrigé et clos. |
-| Checkpoint de reprise | **PR n°4 fusionnée**, tree de fusion identique à la tête revue `baeea490` ; reçu `docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json`. Deux CI finales **104/105 chacune**, seul échec traces hérité identique. |
+| Base publiée vérifiée | Sources/build/preuves p12 : `6a3fb86a` / 0.2.51 sur sa branche ; main observé `db3e8da1` / 0.2.51 avant livraison finale p13. |
+| Checkpoint de reprise | Correctif p13 publié `74aba2d3` ; branche `codex/bitume-12f4-sortie-file-20261119`, cible finale 0.2.52. |
 | Moteur BITUME | **FERRO 0.3.11**, 34 modules verrouillés. |
-| Physique | **p11**, conservée en 12F3 ; fixtures p9/p10/p11 intactes, aucun écrasement de référence. |
-| Qualification du lot | **12F3 / 0.2.50 : 104/105 suites**, seul échec traces hérité identique. **20 scénarios / 1 300 empreintes p11**, deux builds identiques ; 52 scripts valides, 34 modules FERRO inchangés. Contrôleurs réels avec transport simulé ; parties entre navigateurs, WebGL et matériel non validés. |
-| Site public | Aucun déploiement de 0.2.50 déclaré ; contrôler la page servie séparément de GitHub. |
+| Physique | **p13**, archives p9 à p12 conservées ; aucune force de conduite/usure modifiée par le dégagement. |
+| Qualification du lot | **107/108 suites**, seul échec traces hérité identique ; **22 scénarios / 1 415 empreintes p13**, deux builds identiques de **14 060 666 octets**, 53 scripts valides et 34 modules FERRO inchangés. Neuf scénarios de dégagement, 17 trajets et 6 décisions réussis. |
+| Site public | Aucun déploiement de 0.2.52 déclaré ; WebGL, FPS matériel et parties réelles entre navigateurs non validés. |
 | Circuits jouables | **7**. |
 | Nouveaux circuits explicitement demandés | **Huitième circuit de montagne distinct**, **Russie, Monaco ultra fidèle, Spéciale Marseille issue d’EMPRISE avec relief**. |
 | Autres demandes prioritaires | Roues rondes et réalistes, slicks lisses, sculptures pluie/neige, usure progressive visible. |
-| Implémentation roues/pneus | **12A–12F3 publiés** : choix de prochaine monte actif en ligne, pneus à 2 Hz, service fiable, relais hôte et reprise IA sans remise à neuf. Compatibilité protocole/circuit/sources ; nouveaux joueurs hors grille à la prochaine course. |
+| Implémentation roues/pneus | 12A–12F3 publiés ; stratégie IA 12F4 et dégagement serré qualifiés CPU. Services complets, file et reprise physique ; choix réseau 2Hz et autorité préservés. |
 
 **Ordre de lecture :** `AGENTS.md` → `REPRISE.md` → dernière entrée de `docs/reprise/SUIVI-2026-11-19.md` et `docs/reprise/ETAT.json` → fiche du lot actif. Cette master liste sert à choisir la suite. Éviter de recharger les anciennes discussions, les archives et le HTML compilé en entier.
 
@@ -52,7 +52,7 @@ Pour chacune des six propositions, utiliser le même cycle de petits lots : iden
 
 ### A. Roues et pneus — lots 12A à 12F
 
-**12A–12F3 publiés** sur main **0.2.50 / p11** (`9857f627`), PR n°4 fusionnée et vérifiée : usure/type/services transmis, choix au stand actif en ligne, autorité et reprise sans remise à neuf. Rapport : `docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json`. **104/105 suites**, seul échec traces hérité identique ; p11 inchangée. Parties réelles entre navigateurs, WebGL, matériel et déploiement non validés. Suite : **stratégie de stands IA, non commencée**, à borner séparément.
+**12F4 et sortie de file qualifiés CPU en 0.2.52 / p13 ; publication finale en cours.** Checkpoint correctif `74aba2d3` vérifié ; base p12 `6a3fb86a` publiée et intégrée. Main observé à `db3e8da1` / 0.2.51 avant cette livraison. Prochain lot : **13A Russie, tracé et relief, non commencé**. **107/108 suites**, seul échec traces hérité identique ; **22 scénarios / 1 415 empreintes p13**, deux builds identiques de **14 060 666 octets**, 53 scripts valides et 34 modules FERRO inchangés. Rapport : `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/qualification-execution.json`. Fiche du complément : `docs/reprise/12F4-SORTIE-FILE.md`. WebGL, matériel, multi-navigateur réel et déploiement non validés.
 
 - [x] Catalogue commun `slicks`, `inter`, `pluie`, `neige` ; ordre des quatre roues **AVG, AVD, ARG, ARD** et libellés corrects.
 - [x] Pneus plus ronds, profil et flancs crédibles, épaules arrondies, jantes creuses, rayons/moyeux/disques mieux construits.
@@ -64,9 +64,9 @@ Pour chacune des six propositions, utiliser le même cycle de petits lots : iden
 - [x] État de chaussée humide/enneigée explicite ; conditions saisonnières et flocons ne suffisent pas à définir l’adhérence — contrôles CPU acquis ; qualification CPU 12E avec réserves achevée ; publié en 0.2.47.
 - [x] Physique des pneus et usure bornée, utile et progressive ; mêmes règles pour joueur et IA ; records/fantômes isolés en p11 depuis 12F1 — contrôles CPU acquis ; qualification CPU 12E avec réserves achevée ; publié en 0.2.47, puis service 12F1 en 0.2.48.
 - [x] Choix par pilote, y compris deux humains sur une machine, migration et Conseillés indépendant : 12F2 fusionné sur main en 0.2.49.
-- [x] Service réel et quatre pneus renouvelés : 12F1 publié ; choix solo/duo livré en 12F2 et choix en ligne livré en 12F3 / 0.2.50.
+- [x] Service réel et quatre pneus renouvelés : 12F1 publié ; choix solo/duo livré en 12F2 et choix en ligne livré en 12F3 / 0.2.51.
 - [x] Réseau compact et versionné qualifié CPU en 12F3 : pneus à 2 Hz, service idempotent, paquets anciens rejetés, liaison tardive, 2+2 et autorités conservées ; relais hôte avant reprise. Nouveaux joueurs hors grille reportés à la prochaine course.
-- [ ] Stratégie des rivaux pour les courses longues avant de rendre leurs changements de pneus indispensables ; aucun renouvellement caché.
+- [x] Stratégie des rivaux et reprises IA qualifiée CPU : vrai service, file, sortie, recul bref si nécessaire, reprise ordinaire quand le joueur repart ; aucun renouvellement anticipé. Livraison 0.2.52 en cours.
 - [ ] Captures comparables des quatre types et états d’usure, cockpit/poursuite/démo/rétros ; coût mesuré sur matériel réel.
 
 Fiche détaillée : **[12 — plan maître roues, pneus, Russie et Monaco](docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md)**, sections 2 à 7.
@@ -147,8 +147,8 @@ Les vieux tableaux d’avancement de novembre 12–17 restent historiques. Ne pa
 
 ## 5. Ordre conseillé et méthode de travail
 
-1. **12A–12F : roues et pneus.** **12A–12F3 publiés en 0.2.50**, main `9857f627`, PR n°4 fusionnée. Borner la **stratégie de stands IA**, non commencée. Garder validation entre navigateurs, WebGL et déploiement distincts.
-2. **13A–13B : Russie.** Ajouter un circuit original complet.
+1. **12A–12F : roues et pneus.** Publier et vérifier la 0.2.52 qualifiée, puis conserver les réserves WebGL/matériel distinctes.
+2. **13A–13B : Russie.** Après publication 12F4, commencer **13A tracé et relief, non commencé** ; compléter ensuite décor, saisons et livraison en 13B.
 3. **14A–14F : Monaco.** Construire et qualifier les fonctions communes de tracé réel, largeurs variables, voies et stands.
 4. **15A–15F : Marseille.** Réemployer ces fonctions, porter le corridor EMPRISE et son relief mesuré.
 5. **16A–16F : six propositions restantes.** Affiner et livrer chacune en sous-lots, sans lancer six circuits à moitié faits.
@@ -195,6 +195,6 @@ Le déploiement prévu par le dépôt est `./deposer.sh` depuis le Mac, vers l�
 
 ## 8. Texte de reprise pour Claude Fable
 
-> Reprends BITUME dans `M4D135/bitume`. Lis `AGENTS.md`, `REPRISE.md`, la dernière entrée du suivi et `docs/reprise/ETAT.json`, puis la fiche 12F3. **12F3 / 0.2.50 livré sur main `9857f627`**, PR n°4 fusionnée ; reçu `docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json`. Deux CI finales terminées, **104/105 chacune**, seul échec traces hérité identique. Rapport `docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json` : 104/105 suites, seul échec traces hérité identique ; 20 scénarios / 1 300 empreintes p11 inchangées, deux builds identiques. Choix au stand en ligne actif, usure à 2 Hz, relais hôte et reprise sans neuf ; nouveaux joueurs hors grille à la prochaine course. Tests avec vrais contrôleurs et transport simulé ; parties réelles entre navigateurs, WebGL, matériel et déploiement non validés. Borne la stratégie de stands IA, non commencée. PR n°3 et n°4 déjà fusionnées : ne pas les redemander. Conserve Russie, Monaco, Marseille EMPRISE avec relief, huitième circuit de montagne et six propositions. Mac/Spark indisponibles ; vérifier GitHub et le site séparément.
+> Reprends BITUME dans `M4D135/bitume`. Lis `AGENTS.md`, `REPRISE.md`, `docs/reprise/ETAT.json` et la dernière entrée du suivi. **12F4 et sortie de file qualifiés CPU en 0.2.52 / p13 ; publication finale en cours.** Checkpoint correctif `74aba2d3` vérifié ; base p12 `6a3fb86a` publiée et intégrée. Main observé à `db3e8da1` / 0.2.51 avant cette livraison. Prochain lot : **13A Russie, tracé et relief, non commencé**. **107/108 suites**, seul échec traces hérité identique ; **22 scénarios / 1 415 empreintes p13**, deux builds identiques de **14 060 666 octets**, 53 scripts valides et 34 modules FERRO inchangés. Ne pas refaire les lots pneus ni Safari. Vérifier le reçu final de publication, puis ouvrir uniquement 13A Russie, tracé et relief. Monaco, Marseille avec relief, huitième montagne et six propositions restent demandés.
 
 Ce texte renvoie aux fichiers durables du dépôt ; il n’est pas nécessaire de recopier toute la conversation.

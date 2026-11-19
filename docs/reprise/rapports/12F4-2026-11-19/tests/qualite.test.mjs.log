@@ -1,0 +1,24 @@
+ok 49 FPS : aucune baisse avant trois secondes, puis un seul palier
+ok 50 et 60 FPS stables : ni baisse ni remontée
+ok 75 FPS : huit secondes avant une remontée, puis nouvelle observation complète
+ok 14 ms est la limite stricte de la remontée
+ok très faible FPS et longues images restent pris en compte
+ok masquage ou mode inactif remet à zéro les deux fenêtres
+ok durées invalides ignorées sans contaminer une fenêtre
+ok plancher GPU modeste et plafond de qualité respectés
+ok une zone intermédiaire rompt la remontée, sans oscillation
+ok période : intervalles réguliers, travail à 70 % de la période ou inconnu, la qualité ne bouge pas
+ok période : une image ratée sur quatre fait baisser au bout de 3 s, une sur six non
+ok période : intervalle de plus de 3 périodes ou de 0,25 s écarté (accroc isolé, reprise)
+ok période : remontée après 8 s de travail sous la moitié de la période, sans lenteur
+ok période : un niveau qui a échoué attend 20 s, puis 40 s ; nouvelleSeance efface cette mémoire
+ok période : à k = 2, deux périodes d’écran par image ne sont pas des images ratées
+ok période absente : cinq champs et logique d’avant ; période nulle, négative, infinie ou NaN : rien ne compte
+ok jeu : 2,9 s lentes puis pause exigent trois nouvelles secondes après reprise
+ok jeu : les réglages interrompent aussi une remontée presque acquise
+ok jeu : un choix manuel de qualité efface la charge précédente
+ok jeu : pause/reprise ne force ni qualité fixe ni banc ni référence
+ok jeu : avec la cadence, les seuils suivent la période visée et non 60 Hz
+ok jeu : en pleine conduite, la résolution du palier 4 attend un arrêt ; les autres paliers suivent à l’image
+ok jeu : le palier appris est rangé par machine et repris au démarrage
+qualité : 23 contrôles passés

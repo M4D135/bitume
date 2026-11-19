@@ -1,0 +1,15 @@
+{
+  "suite": "traces.test.mjs",
+  "base_version": "0.2.50",
+  "base_commit": "c8afbd49594eaac51876286e471413856117418d",
+  "echec": true,
+  "signature_heritee_identique": true,
+  "actual": [
+    "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf"
+  ],
+  "expected": [
+    "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee"
+  ],
+  "log": "tests/traces.test.mjs.log",
+  "sha256_log": "4c51c0068a15493366ee4aaf14a2b814e43f24e308ffdf71200097dc1b840dfe"
+}

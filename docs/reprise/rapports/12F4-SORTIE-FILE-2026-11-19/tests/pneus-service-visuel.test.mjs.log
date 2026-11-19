@@ -1,0 +1,7 @@
+ok préparer les quatre montes conserve exactement les images neuves et usées de chaque vue
+ok toutes les transitions retrouvent le rendu natif du nouveau type aux quatre détails, avec et sans usure
+ok modèle, pièces hors pneus, tables et objets permanents restent les mêmes pendant les bascules
+ok géométrie et couleurs globales ainsi que les autres voitures restent inchangées
+ok modèle non préparé et types invalides sont refusés sans reconstruction ni changement
+ok une demande au stand ne change pas l’image avant la fin effective du service
+6 contrôles changement visuel des pneus réussis

@@ -1,0 +1,97 @@
+{
+  "sha": "6a3fb86a51db46f2d3b2483bedb34d406ebff705",
+  "pr": 5,
+  "pr_url": "https://github.com/M4D135/bitume/pull/5",
+  "observed_at": "2026-11-19T15:10:26.172Z",
+  "runs": [
+    {
+      "id": 44550618625,
+      "event": "pull_request",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44550618625",
+      "status": "completed",
+      "conclusion": "failure",
+      "head_sha": "6a3fb86a51db46f2d3b2483bedb34d406ebff705",
+      "attempt": 1,
+      "updated_at": "2026-11-19T15:09:24Z"
+    },
+    {
+      "id": 44550520260,
+      "event": "push",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44550520260",
+      "status": "completed",
+      "conclusion": "failure",
+      "head_sha": "6a3fb86a51db46f2d3b2483bedb34d406ebff705",
+      "attempt": 1,
+      "updated_at": "2026-11-19T15:08:53Z"
+    }
+  ],
+  "signature_reference": {
+    "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+    "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee"
+  },
+  "resultats": [
+    {
+      "contexte": "push",
+      "job_id": 135652679851,
+      "job_conclusion": "failure",
+      "log": "push-job-135652679851.log",
+      "reussies": 106,
+      "echecs": 1,
+      "suites_en_echec": [
+        "verifications/traces.test.mjs"
+      ],
+      "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+      "conservation_artefacts": "success",
+      "signature_heritee_identique": true,
+      "log_sha256": "27efeb1a7b9183da5af3d09a880af73c51e121933690d58ddc2beb365734c0da",
+      "log_octets": 27567,
+      "lignes_PASS": 106,
+      "lignes_FAIL": 1
+    },
+    {
+      "contexte": "pr",
+      "job_id": 135653025414,
+      "job_conclusion": "failure",
+      "log": "pr-job-135653025414.log",
+      "reussies": 106,
+      "echecs": 1,
+      "suites_en_echec": [
+        "verifications/traces.test.mjs"
+      ],
+      "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+      "conservation_artefacts": "success",
+      "signature_heritee_identique": true,
+      "log_sha256": "1c1501342289df9899101205581a3bba5adb0469b22a80cf0e8fea342017ed57",
+      "log_octets": 28476,
+      "lignes_PASS": 106,
+      "lignes_FAIL": 1
+    }
+  ],
+  "actions": "Lectures GitHub et sauvegarde de reçus hors dépôt uniquement ; aucune relance de CI ou de test, aucune écriture dans le dépôt.",
+  "artefacts": {
+    "push": [
+      {
+        "id": 14543157058,
+        "name": "bitume-6a3fb86a51db46f2d3b2483bedb34d406ebff705",
+        "size_in_bytes": 64407680,
+        "digest": "sha256:35de4278f18a9948b5da3597eac5c66760e38c0ac36bc8c9117d62e4f5eb0871",
+        "expired": false,
+        "expires_at": "2026-12-03T15:08:46Z"
+      }
+    ],
+    "pr": [
+      {
+        "id": 14544121530,
+        "name": "bitume-c344f78598ac9c7bb0d9a219d128b7093ab2c8bf",
+        "size_in_bytes": 64406770,
+        "digest": "sha256:b833cc0ee5266e66326738aaf2cd8949c3f3f0b888fddc98f4fbc9cf56edfe56",
+        "expired": false,
+        "expires_at": "2026-12-03T15:09:17Z"
+      }
+    ]
+  },
+  "checkout_pr": "c344f78598ac9c7bb0d9a219d128b7093ab2c8bf",
+  "note_checkout": "Le run pull_request porte head_sha 6a3fb86a mais le checkout et le nom d’artefact utilisent le commit de fusion synthétique c344f785 ; le push utilise directement 6a3fb86a."
+}

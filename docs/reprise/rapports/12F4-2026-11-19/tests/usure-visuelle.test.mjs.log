@@ -1,0 +1,9 @@
+ok état absent, neuf explicite et retour neuf rendent exactement la même image
+ok partition de la peau : mêmes triangles, mêmes normales et mêmes cotes, sans doublon
+ok chaque roue évolue seule et les marques suivent ses rotations sans muter son état
+ok teintes continues, graine reproductible et saleté réversible sans effacer l’usure
+ok sculptures : fond continu sous les sommets ; slick sans canal et diamètre inchangé
+ok tables permanentes et niveaux de détail : supports limités au proche, couleurs locales
+ok rétroviseurs : même usure que la vue entière filtrée ; roue perdue entièrement masquée
+ok valeurs invalides et exagérées : aucun nombre non fini injecté dans le rendu
+8 contrôles usure visuelle réussis

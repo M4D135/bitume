@@ -1,0 +1,6 @@
+{
+  "date_utc": "2026-11-19T15:02:01.507084+00:00",
+  "etat": "interrompu_avant_fin",
+  "raison": "Relecture : libérer le verrou du bloqueur lorsqu’il redémarre ; nouveaux tests requis.",
+  "resultat_final": false
+}

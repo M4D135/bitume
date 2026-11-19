@@ -1,0 +1,114 @@
+{
+  "date_utc": "2026-11-19T15:00:31.284Z",
+  "repository": "M4D135/bitume",
+  "branch": "codex/bitume-12f4-sortie-file-20261119",
+  "local_commit": "f93ccc77ca3659bc662952a1c13b575d898fb52e",
+  "remote_commit": "74aba2d30073bbf187e7aac935c1978d957709c0",
+  "parent": "cb0235085431acbc044f785e27b26ca382c5556a",
+  "tree": "0f11dd79e8fc1dfd6f3d224b83ab8320a46a8043",
+  "tree_identical": true,
+  "changed_files_verified": 17,
+  "source_objects_read_from_immutable_commit": true,
+  "blobs_verified": [
+    {
+      "path": "REPRISE.md",
+      "sha": "784efa03235ed04a9d1eef6b606cd5c841114901",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/reprise/12F4-SORTIE-FILE.md",
+      "sha": "30ea59d241453dd6ede6d4353e2a4a76ddead60c",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/reprise/ETAT.json",
+      "sha": "718e4e6e33d10865b9499554898146a07e3b0b3d",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/BASE-0251.json",
+      "sha": "9886587099940448f8fca553adbf0065bc600986",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/CREATION-P13.json",
+      "sha": "5c078a39fcaf9f464d656eff1a803ac92fa9bd21",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/creation-p13.log",
+      "sha": "c1a41f35732f92a67c4e3671f67ce98cec983621",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/qualifier.py",
+      "sha": "a1dbf5fb13a1e6f92e3a5cff3c9c0b43b026562c",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/reproduction-attempt-1.log",
+      "sha": "6081a98ed6bc5bbf6b3ab95fc7644bf46ccd13a7",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/reproduction-blocker-new.log",
+      "sha": "62f49b69c4c4ed1946225f70d2bc93842228e8aa",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/sortie-file.json",
+      "sha": "433b85c8d3061ec6db4c85ade39ffcbb55f46af3",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/sortie-file.log",
+      "sha": "a9bc67e75ff1d457b82cca91659145b23319b571",
+      "mode": "100644"
+    },
+    {
+      "path": "src/jeu.js",
+      "sha": "976982254f4725a0898ac577b42583467725f49c",
+      "mode": "100644"
+    },
+    {
+      "path": "src/strategie-stands.js",
+      "sha": "2ad435885fc68ee657f9b403bb8216849a253b34",
+      "mode": "100644"
+    },
+    {
+      "path": "verifications/chaussee-preparation.test.mjs",
+      "sha": "5f34671185a520232913e7f40699de81a51de589",
+      "mode": "100644"
+    },
+    {
+      "path": "verifications/determinisme-simulation.test.mjs",
+      "sha": "57d463ff846903cf9a26e160c3dfa96237a8d52a",
+      "mode": "100644"
+    },
+    {
+      "path": "verifications/fixtures/determinisme-p13.json",
+      "sha": "29272e624e8bebc29814355deb338324ab0e0574",
+      "mode": "100644"
+    },
+    {
+      "path": "verifications/strategie-stands-sortie-file.test.mjs",
+      "sha": "317ee09f4f7698a381cd5aca295118f1a8c15119",
+      "mode": "100644"
+    }
+  ],
+  "build": {
+    "version": "0.2.50",
+    "blob": "0871d6b90dff0eb0615935c6752cba9ab13e8cd9",
+    "unchanged": true
+  },
+  "physics": "p13",
+  "qualification_finale": "en cours, checkpoint sources et tests ; aucun build 0.2.52 livré",
+  "main_observed": "c8afbd49594eaac51876286e471413856117418d",
+  "main_modified_by_this_publication": false,
+  "other_branch_modified": false,
+  "pr_created": false,
+  "force": false,
+  "verified": true,
+  "transport_note": "UTF-8 tree entries; arbre et 17 blobs vérifiés. create_branch employé pour la branche absente après update_ref 422 Reference does not exist.",
+  "url": "https://github.com/M4D135/bitume/commit/74aba2d30073bbf187e7aac935c1978d957709c0"
+}

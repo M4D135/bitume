@@ -1,0 +1,90 @@
+{
+  "passed": 21,
+  "total": 21,
+  "results": [
+    {
+      "name": "frottement<2m/s sans usure ;9m/s sans roue, adhérence>97%",
+      "ok": true
+    },
+    {
+      "name": "seuils20/30 : une roue puis grosse casse visuelle",
+      "ok": true
+    },
+    {
+      "name": "retour rapide casse : aucune abscisse gagnée, voiture jouable et dégâts conservés, immunité1s",
+      "ok": true
+    },
+    {
+      "name": "retour rapide roue : aucune abscisse gagnée, voiture jouable et dégâts conservés, immunité1s",
+      "ok": true
+    },
+    {
+      "name": "retour rapide tonneau : aucune abscisse gagnée, voiture jouable et dégâts conservés, immunité1s",
+      "ok": true
+    },
+    {
+      "name": "replacement manuel immédiat conserve s/distance et répare toute casse",
+      "ok": true
+    },
+    {
+      "name": "immunité dégâts mais mur toujours solide",
+      "ok": true
+    },
+    {
+      "name": "frein IA ou retenue de grille ne peut jamais engager le recul",
+      "ok": true
+    },
+    {
+      "name": "frein volontaire attend0,3s à l’arrêt",
+      "ok": true
+    },
+    {
+      "name": "recul plafonné12km/h, progression signée, cap caisse stable",
+      "ok": true
+    },
+    {
+      "name": "pas de bascule en recul avant arrêt puis délai",
+      "ok": true
+    },
+    {
+      "name": "gaz freine le recul avant de repartir",
+      "ok": true
+    },
+    {
+      "name": "direction en recul : deux côtés symétriques, lacet inversé",
+      "ok": true
+    },
+    {
+      "name": "recul contre rail : normale signée, pas de tunnel ni énergie créée",
+      "ok": true
+    },
+    {
+      "name": "recul CCD contre muret fin : arrêt avant traversée, orientation préservée",
+      "ok": true
+    },
+    {
+      "name": "recul contre rival : contact normal signé sans énergie ajoutée",
+      "ok": true
+    },
+    {
+      "name": "replacement latéral>25m n’est pas balayé par CCD ni annulé comme téléportation",
+      "ok": true
+    },
+    {
+      "name": "course : gros choc ne marque plus DNF et reprise<1s",
+      "ok": true
+    },
+    {
+      "name": "chrono : retour manuel invalide le tour, pas de meilleur/ghost ; tour suivant valide",
+      "ok": true
+    },
+    {
+      "name": "recul sur ligne puis réavance : aucun tour artificiel",
+      "ok": true
+    },
+    {
+      "name": "recul sur pente : sol, dévers, vibreur et herbe actualisés",
+      "ok": true
+    }
+  ]
+}

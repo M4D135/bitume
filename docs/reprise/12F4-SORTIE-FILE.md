@@ -27,8 +27,8 @@ achevé pouvait lui aussi laisser une IA immobile en sortie. Les tests rouges so
 
 ## Vérification
 
-Huit contrôles spécifiques acquis : file à 8 m et 10 m, approche réelle depuis 350 m, arrière occupé puis libéré
-par des commandes humaines, sortie après service réel, pluie, neige et Haut-Col. Zéro contact, choc, rail,
+Neuf contrôles spécifiques acquis : file à 8 m et 10 m, approche réelle depuis 350 m, arrière occupé puis libéré
+par des commandes humaines, sortie après service réel, pluie, neige, Haut-Col et joueur qui redémarre pendant la manœuvre. Zéro contact, choc, rail,
 accident ou replacement observé ; continuité du déplacement et conservation des pneus vérifiées à chaque pas.
 Les 17 trajets du lot initial et les 6 contrôles de décision repassent avec cette stratégie.
 
@@ -45,3 +45,7 @@ Le déploiement du site reste distinct ; Mac/Spark/amiga indisponibles dans cett
 
 Demandes conservées : Russie, Monaco fidèle, Spéciale Marseille issue d'EMPRISE avec relief, huitième circuit
 de montagne distinct de Haut-Col et six propositions. Le choix du lot suivant se fera depuis la liste maître.
+
+## Qualification finale acquise
+
+**107/108 suites**, seul échec traces hérité identique ; **22 scénarios / 1 415 empreintes p13**, deux builds identiques de **14 060 666 octets**, 53 scripts valides et 34 modules FERRO inchangés. Neuf scénarios de dégagement réussis ; rapport `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/qualification-execution.json`. Publication finale en cours, reçu à vérifier avant de déclarer la livraison.

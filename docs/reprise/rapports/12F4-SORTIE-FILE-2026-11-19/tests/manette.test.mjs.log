@@ -1,0 +1,40 @@
+ok déconnexion neutralise pédales, volant et dérive
+ok clavier et tactile restent utilisables sans manette
+ok trous, manette déconnectée et indice sélectionné
+ok première manette connectée prioritaire et changement d’indice sans pause fantôme
+ok bouton tenu à reconnexion : aucune pause fantôme, nouvel appui unique
+ok autre contrôleur au même indice initialise ses boutons
+ok oracle : relâcher une dérive chargée déclenche réellement turboIII
+ok perte de manette annule sa dérive sans turbo fantôme
+ok dérive clavier maintenue : Space
+ok dérive clavier maintenue : ShiftLeft
+ok dérive clavier maintenue : ShiftRight
+ok dérive tactile maintenue
+ok perte en pause annule seulement la dérive issue du pad
+ok rejouer : ancien pad ne peut annuler la dérive de la nouvelle séance
+ok charge non commandée par le pad et turbo déjà lancé préservés
+ok API getGamepads refusée neutralise les commandes sans interrompre la boucle
+ok API refusée annule la dérive chargée sans turbo fantôme
+ok vibration : un joueur en course la reçoit
+ok vibration : aucune sur l’écran titre
+ok vibration : aucune sur l’écran preparation
+ok vibration : aucune sur l’écran reglages
+ok vibration : aucune sur l’écran pause
+ok vibration : aucune sur l’écran resultats
+ok vibration : aucune sur l’écran demo
+ok vibration : aucune sur l’écran enligne
+ok vibration : aucune sur l’écran prets
+ok vibration : aucune quand l’ordinateur conduit (vitrine des menus, démo, outils)
+ok vibration : aucune si le réglage est à non
+ok vibration : la vitrine et la démo passent par le garde-fou
+ok vibration : les pas retiennent derrière le garde-fou, chaque image rendue calcule
+ok vibration : 30 images par seconde, au plus une commande toutes les 31 ms
+ok vibration : 60 images par seconde, au plus une commande toutes les 31 ms
+ok vibration : 120 images par seconde, au plus une commande toutes les 31 ms
+ok vibration : 144 images par seconde, au plus une commande toutes les 31 ms
+ok vibration : gâchettes quand la manette annonce trigger-rumble, deux moteurs sinon
+ok vibration : hors garde-fou, un seul arrêt puis plus rien
+ok vibration : événements de sa voiture seulement, réception devenue atterrissage, tableau borné
+ok vibration : à deux, chaque joueur a sa manette, son état et ses chocs
+ok vibration : la voiture replacée repart sans le pic d’un choc antérieur
+39/39 contrôles manette tenus

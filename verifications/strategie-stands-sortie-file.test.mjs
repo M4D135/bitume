@@ -98,11 +98,12 @@ function quitter(co, secondes = 40, options = {}) {
       for (const cle of ['usure', 'distance', 'sollicitation']) assert.ok(r[cle] + 1e-10 >= precedent[i][cle], cle + ' conservée sans remise à neuf');
     });
     precedent = structuredClone(e.etatPneus);
-    assert.ok(Math.abs(B.circuit.ecart(co.c, poseHumain.s, humain.etat.s)) < .05 && Math.abs(humain.etat.d - poseHumain.d) < .05,
+    if (!options.bloqueurMobile) assert.ok(Math.abs(B.circuit.ecart(co.c, poseHumain.s, humain.etat.s)) < .05 && Math.abs(humain.etat.d - poseHumain.d) < .05,
       'le joueur garé reste à sa place');
     if (options.observer) options.observer(n * DT, v, evenements);
     if (e.v < -.05) recul += DT;
-    if (B.circuit.ecart(co.c, S.garage1, e.s) > 30 && e.v > 8 && !e.stands && !B.course.dansLaVoie(co.c, e, S)) {
+    if (B.circuit.ecart(co.c, S.garage1, e.s) > 30 && e.v > 8 && !e.stands && !B.course.dansLaVoie(co.c, e, S) &&
+      v.ia.stand.phase === 'repos') {
       pret = true; break;
     }
   }
@@ -215,5 +216,36 @@ test('12F4 Haut-Col : sortie de file serrée sur le second circuit avec ses vrai
     Object.assign(v.ia.stand, {phase: 'voie', debut: co.temps - 10, vuStand: true, motif: 'usure', pneus: 'slicks', revision: v.etat.servicePneus});
     v.etat.stands = {phase: 'voie', t: 0, repare: false};
     return quitter(co);
+  } finally { B.meteo.actuel = null; }
+});
+
+test('12F4 joueur qui redémarre pendant le dégagement : restitution réelle à la conduite de course', () => {
+  try {
+    const co = seance(), v = co.voitures[1], humain = co.joueur, S = co.c.stands;
+    poser(co, v, S.garage0 + 10); poser(co, humain, v.etat.s + 8);
+    Object.assign(v.ia.stand, {phase: 'voie', debut: co.temps - 10, vuStand: true, motif: 'usure', pneus: 'slicks', revision: v.etat.servicePneus});
+    v.etat.stands = {phase: 'voie', t: 0, repare: false};
+    const departHumain = humain.etat.s, replacements = humain.etat.repositionnements || 0;
+    let redemarrage = null, mobilePendantRecul = false, margeLiberee = false;
+    const resultat = quitter(co, 40, {
+      bloqueurMobile: true,
+      commandes(t) {
+        if (redemarrage === null && v.etat.v < -.5) redemarrage = t;
+        // Les commandes de conduite font partir le joueur et suivre la route ; aucun état reçu ou déplacement forcé.
+        return redemarrage === null ? NEUTRE : B.course.commandesIA(co, humain);
+      },
+      observer(t, voiture, ev) {
+        assert.equal(humain.etat.repositionnements || 0, replacements, 'le joueur redémarre sans secours');
+        assert.ok(!ev.some(e => e.type === 'choc' && e.id === humain.id) && !humain.etat.auRail, 'le joueur quitte réellement la file sans choc');
+        const distance = B.circuit.ecart(co.c, voiture.etat.s, humain.etat.s);
+        mobilePendantRecul ||= voiture.etat.v < -.05 && humain.etat.v > 2;
+        margeLiberee ||= distance > 30 && humain.etat.v > voiture.etat.v + 5;
+        if (redemarrage === null) assert.ok(Math.abs(B.circuit.ecart(co.c, departHumain, humain.etat.s)) < .05);
+      }
+    });
+    assert.ok(redemarrage !== null && mobilePendantRecul, 'le bloqueur est réellement reparti pendant le recul IA');
+    assert.ok(margeLiberee && B.circuit.ecart(co.c, v.etat.s, humain.etat.s) > 20, 'le joueur a dégagé l’intervalle avant');
+    assert.equal(v.ia.stand.phase, 'repos', 'la conduite ordinaire est réellement rétablie');
+    return {...resultat, redemarrage, mobilePendantRecul, margeLiberee, distanceAvantFinale: B.circuit.ecart(co.c, v.etat.s, humain.etat.s)};
   } finally { B.meteo.actuel = null; }
 });
