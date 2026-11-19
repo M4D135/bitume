@@ -8,7 +8,7 @@ Lire `git status`, `docs/reprise/ETAT.json` et la dernière entrée du suivi ; o
 - **12A–12F1 réalisés** : roues/sculptures, usure, chaussée, dégagement des rivaux, service réel et HUD par pilote.
 - **12F2 — choix des pneus par pilote fusionné**, fiche `docs/reprise/12F2-CHOIX-PNEUS-PAR-PILOTE.md`.
   [PR n°3](https://github.com/M4D135/bitume/pull/3) fermée et fusionnée le **19 novembre à 12 h 17 (Paris)**,
-  après l'autorisation explicite de David (« go »). **Prochain lot : 12F3, non commencé.**
+  après l'autorisation explicite de David (« go »). **Lot actif : 12F3, en cours** — `docs/reprise/12F3-RESEAU-USURE-SERVICES.md`.
 - Préférences séparées, Conseillés par pilote, confirmation 2+2/2+1/1+2, prochaine monte au stand en solo/duo.
   En ligne, les stands renouvellent encore la monte de départ ; le changement de monte attend **12F3**.
 - La physique reste **p11** ; conserver toutes les fixtures p9/p10/p11. Ne jamais régénérer p11 pour masquer un écart.
@@ -26,9 +26,10 @@ ciblées, seul échec traces hérité identique ; **20 scénarios / 1 300 emprei
 identiques, **14 024 804 octets**, SHA-256 `72b18fa2bc3aad3f0735296b5f56b98c67dcb75bcfc77cd3059d1404eb495c9c`.
 Les deux contrôles GitHub finaux de `fb18a835` sont terminés : runs `44512608057` (PR) et `44512599093` (push),
 **102/103 chacun**, seul échec traces hérité identique. Aucun contrôle obligatoire ni ruleset modifié.
-Ouvrir maintenant **12F3**, encore non commencé : usure et services transmis à faible fréquence,
+Poursuivre **12F3**, branche `codex/bitume-12f3-20261119` : usure et services transmis à faible fréquence,
 séance/pilote/service/séquence, autorité et reprise IA. La stratégie de stands des rivaux reste à qualifier
 avant de rendre les longues courses dépendantes de ces arrêts.
+Checkpoint initial : protocole et intégration en cours ; la 0.2.49 reste la dernière version qualifiée.
 
 ## Demandes conservées
 
