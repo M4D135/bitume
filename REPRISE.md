@@ -1,33 +1,26 @@
 # BITUME — reprise courte
 
-## Point actif — 19 novembre 2026
+## Livré — 19 novembre 2026
 
-**0.2.55 / p14 qualifiée, publication Git à terminer.**
-Branche `codex/bitume-physx-sols-pilotes-20261119`, checkpoint distant `6e9c1ea0`.
-Lire `docs/reprise/ETAT.json` et `docs/reprise/PHYSX-SOLS-PILOTES-2026-11-19.md`.
-Le build contient les voitures dynamiques PhysX, les sols entièrement procéduraux et les pilotes extérieurs animés.
+**0.2.55 / p14 publiée sur main**, PR #9 fusionnée au commit `1e4579c5`.
+Sources, jeu compilé et preuves identiques au lot qualifié ; FERRO 0.3.14, 34 modules exacts.
+Reçu : `docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0255.json`.
 
-## Validation terminée
+- Qualification locale : **117/119**, 235 fichiers et 119 journaux contrôlés ; aucun test/build relancé à la reprise.
+- Deux CI GitHub terminées : **118/119**, seul échec des traces à signature héritée identique.
+- Réserve Val-Brûlé conservée : 486 ms pour 150 ms localement ; le contrôle du décor passe dans les deux CI, sans prouver une absence de régression.
+- Build : 14 153 917 octets, SHA-256 `c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f`.
+- ZIP CI récupéré et contrôlé : même build, intégrité vérifiée. Scène navigateur complète, FPS matériels et déploiement non validés.
 
-- 119 suites exécutées, 117 réussies ; 235 fichiers inchangés pendant les tests.
-- Réserves : décor Val-Brûlé 486 ms pour 150 ms (dépassement déjà observé en 0.2.54, absence de régression de durée
-  non démontrée) ; traces à signature héritée identique. Aucun seuil modifié.
-- Déterminisme natif p14 : 8 cas, 141 empreintes, deux scènes par cas, 4 464 poses sans changer la simulation.
-- Huit circuits × 120 s × 12 voitures : aucun état invalide, un replacement après accident. Protocole sec/été,
-  sans prétendre couvrir des courses complètes ni tout le hors-route. Neuf géométries de décor inchangées.
-- Deux builds identiques : 14 153 917 octets, SHA-256
-  `c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f`.
-- FERRO 0.3.14 : 34 modules exacts, PR #2 fusionnée au commit `85ba9417`, ZIP déjà publié.
+## Lot suivant — démos cinéma
 
-Preuves faisant autorité : `docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/livraison/`.
-Le dossier voisin `final/` est historique et interrompu. Le rendu complet navigateur, les FPS matériels et le
-déploiement restent non validés. Dernière livraison BITUME sur main : 0.2.54, `c2880297`.
+Lire `docs/reprise/ETAT.json` puis `docs/reprise/DEMOS-CINEMA-2026-11-19.md` seulement.
+Plans F1/arcade, paysages, faune et flore ; préserver la conduite p14 et les courses continues.
+Travail préparé dans `/workspace/scratch/749f331cc09f/bitume-demo`, branche
+`codex/bitume-demos-cinema-20261119`, base ancienne `838756b`, modifications non commitées.
+Le correctif du bond de caméra est **préparé**, à intégrer puis qualifier sur la 0.2.55 publiée.
+Ne pas écraser cette copie avec l'ancienne `/workspace/scratch/2540d1a213f9/bitume-demo`.
 
-## Suite conservée
-
-Après publication et reçu : démos cinématographiques F1/arcade, paysages/faune/flore,
-fiche `docs/reprise/DEMOS-CINEMA-2026-11-19.md`. Préserver le travail isolé déjà préparé et traiter le bond de caméra
-quand un arbre quitte le champ. Ne pas mélanger ce lot au snapshot PhysX.
-Puis 13B Baïkal — lac, berges, lieux, végétation/faune et saisons ; conserver Monaco fidèle, Marseille avec relief,
+Puis 13B Baïkal : lac, berges, lieux, végétation/faune et saisons. Conserver Monaco fidèle, Marseille avec relief,
 grand circuit montagne distinct et six propositions. Safari confirmé corrigé, ne pas rouvrir.
-Publier par petits lots, sans push forcé ; maintenir ce point court après chaque livraison.
+Un sous-lot à la fois, publication avec reçu, pas de push forcé. L'historique est archivé ; ne pas le recharger en bloc.

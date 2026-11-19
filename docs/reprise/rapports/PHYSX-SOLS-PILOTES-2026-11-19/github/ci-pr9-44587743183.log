@@ -1,0 +1,383 @@
+﻿2026-11-19T18:26:08.1327336Z Current runner version: '2.338.2'
+2026-11-19T18:26:08.1345003Z ##[group]Runner Image Provisioner
+2026-11-19T18:26:08.1345724Z Hosted Compute Agent
+2026-11-19T18:26:08.1346145Z Version: 20261103.629
+2026-11-19T18:26:08.1346590Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+2026-11-19T18:26:08.1347155Z Build Date: 2026-11-03T17:26:59Z
+2026-11-19T18:26:08.1347653Z Worker ID: {0035d618-f194-4dd3-8a5d-04be3ce9b284}
+2026-11-19T18:26:08.1348148Z Region: us-west-2
+2026-11-19T18:26:08.1348546Z Cloud: AWS
+2026-11-19T18:26:08.1348916Z ##[endgroup]
+2026-11-19T18:26:08.1349947Z ##[group]Operating System
+2026-11-19T18:26:08.1350391Z Ubuntu
+2026-11-19T18:26:08.1350743Z 26.04.1
+2026-11-19T18:26:08.1351129Z LTS
+2026-11-19T18:26:08.1351493Z ##[endgroup]
+2026-11-19T18:26:08.1351910Z ##[group]Runner Image
+2026-11-19T18:26:08.1352341Z Image: ubuntu-26.04
+2026-11-19T18:26:08.1352960Z Version: 20261111.82.6
+2026-11-19T18:26:08.1353920Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261111.82/images/ubuntu/Ubuntu2604-Readme.md
+2026-11-19T18:26:08.1355042Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261111.82
+2026-11-19T18:26:08.1355726Z ##[endgroup]
+2026-11-19T18:26:08.1356489Z ##[group]GITHUB_TOKEN Permissions
+2026-11-19T18:26:08.1358033Z Contents: read
+2026-11-19T18:26:08.1358424Z Metadata: read
+2026-11-19T18:26:08.1358861Z ##[endgroup]
+2026-11-19T18:26:08.1360275Z Secret source: Actions
+2026-11-19T18:26:08.1360932Z Cache mode: write
+2026-11-19T18:26:08.1361395Z Prepare workflow directory
+2026-11-19T18:26:08.1588041Z Prepare all required actions
+2026-11-19T18:26:08.1624005Z Getting action download info
+2026-11-19T18:26:08.5505734Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-19T18:26:11.4947097Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-11-19T18:26:11.7045967Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-11-19T18:26:12.1156285Z Complete job name: qualification
+2026-11-19T18:26:12.1733821Z ##[group]Run actions/checkout@v4
+2026-11-19T18:26:12.1734353Z with:
+2026-11-19T18:26:12.1734635Z   persist-credentials: false
+2026-11-19T18:26:12.1734939Z   repository: M4D135/bitume
+2026-11-19T18:26:12.1737258Z   token: ***
+2026-11-19T18:26:12.1737531Z   ssh-strict: true
+2026-11-19T18:26:12.1737803Z   ssh-user: git
+2026-11-19T18:26:12.1738069Z   clean: true
+2026-11-19T18:26:12.1738345Z   sparse-checkout-cone-mode: true
+2026-11-19T18:26:12.1738679Z   fetch-depth: 1
+2026-11-19T18:26:12.1738944Z   fetch-tags: false
+2026-11-19T18:26:12.1739217Z   show-progress: true
+2026-11-19T18:26:12.1739545Z   lfs: false
+2026-11-19T18:26:12.1739796Z   submodules: false
+2026-11-19T18:26:12.1740094Z   set-safe-directory: true
+2026-11-19T18:26:12.1740385Z   allow-unsafe-pr-checkout: false
+2026-11-19T18:26:12.1740812Z ##[endgroup]
+2026-11-19T18:26:17.5040400Z Syncing repository: M4D135/bitume
+2026-11-19T18:26:17.5042158Z ##[group]Getting Git version info
+2026-11-19T18:26:17.5043301Z Working directory is '/home/runner/work/bitume/bitume'
+2026-11-19T18:26:17.5044292Z [command]/usr/bin/git version
+2026-11-19T18:26:17.5049234Z git version 2.56.1
+2026-11-19T18:26:17.5062547Z ##[endgroup]
+2026-11-19T18:26:17.5072266Z Temporarily overriding HOME='/home/runner/work/_temp/30d40e2a-a39a-4906-86bd-4e822999ac65' before making global git config changes
+2026-11-19T18:26:17.5073457Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-19T18:26:17.5075826Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/bitume/bitume
+2026-11-19T18:26:17.5559317Z Deleting the contents of '/home/runner/work/bitume/bitume'
+2026-11-19T18:26:17.5570930Z ##[group]Initializing the repository
+2026-11-19T18:26:17.5576491Z [command]/usr/bin/git init /home/runner/work/bitume/bitume
+2026-11-19T18:26:17.6375846Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-19T18:26:17.6376783Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-19T18:26:17.6377424Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-19T18:26:17.6377830Z hint: call:
+2026-11-19T18:26:17.6378076Z hint:
+2026-11-19T18:26:17.6378526Z hint: 	git config --global init.defaultBranch <name>
+2026-11-19T18:26:17.6378891Z hint:
+2026-11-19T18:26:17.6379263Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-19T18:26:17.6379752Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-19T18:26:17.6380112Z hint:
+2026-11-19T18:26:17.6380376Z hint: 	git branch -m <name>
+2026-11-19T18:26:17.6380655Z hint:
+2026-11-19T18:26:17.6381021Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-19T18:26:17.6398227Z Initialized empty Git repository in /home/runner/work/bitume/bitume/.git/
+2026-11-19T18:26:17.6405135Z [command]/usr/bin/git remote add origin https://github.com/M4D135/bitume
+2026-11-19T18:26:17.6459295Z ##[endgroup]
+2026-11-19T18:26:17.6459870Z ##[group]Disabling automatic garbage collection
+2026-11-19T18:26:17.6461372Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-19T18:26:17.6482014Z ##[endgroup]
+2026-11-19T18:26:17.6482465Z ##[group]Setting up auth
+2026-11-19T18:26:17.6487090Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T18:26:17.6509107Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T18:26:18.0214635Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T18:26:18.0238981Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T18:26:18.0415144Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T18:26:18.0436480Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T18:26:18.0609741Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-19T18:26:18.0633809Z ##[endgroup]
+2026-11-19T18:26:18.0634280Z ##[group]Fetching the repository
+2026-11-19T18:26:18.0639486Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +41924273aa141ac244810afaef9232b1a1665c98:refs/remotes/pull/9/merge
+2026-11-19T18:26:21.6060766Z From https://github.com/M4D135/bitume
+2026-11-19T18:26:21.6061551Z  * [new ref]         41924273aa141ac244810afaef9232b1a1665c98 -> pull/9/merge
+2026-11-19T18:26:21.6064965Z ##[endgroup]
+2026-11-19T18:26:21.6065633Z ##[group]Determining the checkout info
+2026-11-19T18:26:21.6067441Z ##[endgroup]
+2026-11-19T18:26:21.6072268Z [command]/usr/bin/git sparse-checkout disable
+2026-11-19T18:26:21.6119738Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-19T18:26:21.6146550Z ##[group]Checking out the ref
+2026-11-19T18:26:21.6149423Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/9/merge
+2026-11-19T18:26:21.9435251Z Note: switching to 'refs/remotes/pull/9/merge'.
+2026-11-19T18:26:21.9435612Z 
+2026-11-19T18:26:21.9435955Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-19T18:26:21.9436467Z changes and commit them, and you can discard any commits you make in this
+2026-11-19T18:26:21.9436930Z state without impacting any branches by switching back to a branch.
+2026-11-19T18:26:21.9437235Z 
+2026-11-19T18:26:21.9437391Z If you want to create a new branch to retain commits you create, you may
+2026-11-19T18:26:21.9437783Z do so (now or later) by using -c with the switch command. Example:
+2026-11-19T18:26:21.9438111Z 
+2026-11-19T18:26:21.9438497Z   git switch -c <new-branch-name>
+2026-11-19T18:26:21.9438655Z 
+2026-11-19T18:26:21.9438781Z Or undo this operation with:
+2026-11-19T18:26:21.9438979Z 
+2026-11-19T18:26:21.9439090Z   git switch -
+2026-11-19T18:26:21.9439254Z 
+2026-11-19T18:26:21.9439484Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-19T18:26:21.9439763Z 
+2026-11-19T18:26:21.9440057Z HEAD is now at 4192427 Merge b8f050745c68e2c7a9e482611cfdc980efe1ada3 into c28802974b2c138b57ea1bfe377389724ca15724
+2026-11-19T18:26:21.9461949Z ##[endgroup]
+2026-11-19T18:26:21.9513292Z [command]/usr/bin/git log -1 --format=%H
+2026-11-19T18:26:21.9533958Z 41924273aa141ac244810afaef9232b1a1665c98
+2026-11-19T18:26:21.9544139Z ##[group]Removing auth
+2026-11-19T18:26:21.9544626Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T18:26:21.9566868Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T18:26:21.9753995Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T18:26:21.9768908Z http.https://github.com/.extraheader
+2026-11-19T18:26:21.9772528Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-19T18:26:21.9792534Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T18:26:21.9965339Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T18:26:21.9984989Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T18:26:22.0152504Z ##[endgroup]
+2026-11-19T18:26:22.0348527Z ##[group]Run actions/setup-node@v4
+2026-11-19T18:26:22.0348806Z with:
+2026-11-19T18:26:22.0349015Z   node-version: 24
+2026-11-19T18:26:22.0349237Z   always-auth: false
+2026-11-19T18:26:22.0349471Z   check-latest: false
+2026-11-19T18:26:22.0351379Z   token: ***
+2026-11-19T18:26:22.0351592Z ##[endgroup]
+2026-11-19T18:26:22.3417840Z Found in cache @ /opt/hostedtoolcache/node/24.22.2/x64
+2026-11-19T18:26:22.3421533Z (node:2461) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-19T18:26:22.3422479Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-19T18:26:22.3427044Z ##[group]Environment details
+2026-11-19T18:26:28.4926960Z node: v24.22.2
+2026-11-19T18:26:28.4927344Z npm: 11.19.1
+2026-11-19T18:26:28.4927603Z yarn: 1.22.22
+2026-11-19T18:26:28.4928328Z ##[endgroup]
+2026-11-19T18:26:28.5034184Z ##[group]Run mkdir -p qualification
+2026-11-19T18:26:28.5034573Z [36;1mmkdir -p qualification[0m
+2026-11-19T18:26:28.5034943Z [36;1mgit archive --format=tar.gz --output=qualification/bitume-sources.tar.gz HEAD[0m
+2026-11-19T18:26:28.5035404Z [36;1mgit rev-parse HEAD > qualification/COMMIT.txt[0m
+2026-11-19T18:26:28.5035783Z [36;1mnode --version > qualification/ENVIRONNEMENT.txt[0m
+2026-11-19T18:26:28.5036140Z [36;1mpython3 --version >> qualification/ENVIRONNEMENT.txt[0m
+2026-11-19T18:26:28.5679576Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-19T18:26:28.5679981Z ##[endgroup]
+2026-11-19T18:26:31.0476098Z ##[group]Run set -o pipefail
+2026-11-19T18:26:31.0476463Z [36;1mset -o pipefail[0m
+2026-11-19T18:26:31.0476785Z [36;1mpython3 construire.py 2>&1 | tee qualification/build.log[0m
+2026-11-19T18:26:31.0477176Z [36;1mgit diff --exit-code -- VERSION.json SIZE.json dist/bitume.html[0m
+2026-11-19T18:26:31.0477512Z [36;1mfailures=0[0m
+2026-11-19T18:26:31.0477732Z [36;1mpassed=0[0m
+2026-11-19T18:26:31.0477978Z [36;1mfor test in verifications/*.test.mjs; do[0m
+2026-11-19T18:26:31.0478285Z [36;1m  name="$(basename "$test" .test.mjs)"[0m
+2026-11-19T18:26:31.0478678Z [36;1m  if node "$test" > "qualification/${name}.log" 2>&1; then[0m
+2026-11-19T18:26:31.0479042Z [36;1m    passed=$((passed + 1))[0m
+2026-11-19T18:26:31.0479313Z [36;1m    printf 'PASS %s\n' "$test"[0m
+2026-11-19T18:26:31.0479583Z [36;1m  else[0m
+2026-11-19T18:26:31.0479823Z [36;1m    failures=$((failures + 1))[0m
+2026-11-19T18:26:31.0480066Z [36;1m    printf 'FAIL %s\n' "$test"[0m
+2026-11-19T18:26:31.0480439Z [36;1m    tail -n 60 "qualification/${name}.log"[0m
+2026-11-19T18:26:31.0480693Z [36;1m  fi[0m
+2026-11-19T18:26:31.0480944Z [36;1mdone[0m
+2026-11-19T18:26:31.0481311Z [36;1mprintf 'Suites reussies : %s\nSuites en echec : %s\n' "$passed" "$failures" | tee qualification/RESUME.txt[0m
+2026-11-19T18:26:31.0481803Z [36;1msha256sum dist/bitume.html > qualification/SHA256SUMS.txt[0m
+2026-11-19T18:26:31.0482162Z [36;1mtest "$failures" -eq 0[0m
+2026-11-19T18:26:31.0501024Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-19T18:26:31.0501346Z ##[endgroup]
+2026-11-19T18:26:31.1089557Z FERRO 0.3.14: 34 reference modules verified
+2026-11-19T18:26:31.8652238Z CONSTRUIT  /home/runner/work/bitume/bitume/dist/bitume.html  version 0.2.55, 14153917 octets, 3360641 compressés, sha256 c9e0c3d93a4456f3
+2026-11-19T18:26:32.2519020Z PASS verifications/adherence-chaussee.test.mjs
+2026-11-19T18:26:32.2841104Z PASS verifications/ambiance.test.mjs
+2026-11-19T18:26:38.3902376Z PASS verifications/animaux.test.mjs
+2026-11-19T18:26:43.3081287Z PASS verifications/arbres-lots.test.mjs
+2026-11-19T18:26:46.0792186Z PASS verifications/asie.test.mjs
+2026-11-19T18:26:46.1427127Z PASS verifications/aurores.test.mjs
+2026-11-19T18:26:46.2088745Z PASS verifications/autoconfig-integration.test.mjs
+2026-11-19T18:26:46.2565333Z PASS verifications/autoconfig.test.mjs
+2026-11-19T18:26:49.3811569Z PASS verifications/bords-integration.test.mjs
+2026-11-19T18:26:50.1345305Z PASS verifications/bords.test.mjs
+2026-11-19T18:26:50.4644635Z PASS verifications/botanique.test.mjs
+2026-11-19T18:26:51.3593806Z PASS verifications/cadence.test.mjs
+2026-11-19T18:26:51.4312361Z PASS verifications/carene.test.mjs
+2026-11-19T18:26:52.4659589Z PASS verifications/chargement.test.mjs
+2026-11-19T18:26:52.5158146Z PASS verifications/chaussee-preparation.test.mjs
+2026-11-19T18:26:53.9806820Z PASS verifications/chaussee-visuelle.test.mjs
+2026-11-19T18:26:54.0169473Z PASS verifications/chaussee.test.mjs
+2026-11-19T18:26:54.1042906Z PASS verifications/choix-pneus-integration.test.mjs
+2026-11-19T18:26:54.6692789Z PASS verifications/circuit.test.mjs
+2026-11-19T18:26:54.7020970Z PASS verifications/collisions-orientees.test.mjs
+2026-11-19T18:26:54.7451803Z PASS verifications/commandes-partage.test.mjs
+2026-11-19T18:26:54.8206088Z PASS verifications/conditions-course.test.mjs
+2026-11-19T18:26:54.8803988Z PASS verifications/conditions-integration.test.mjs
+2026-11-19T18:26:56.7916365Z PASS verifications/conduite-criteres.test.mjs
+2026-11-19T18:26:57.0668831Z PASS verifications/conduite.test.mjs
+2026-11-19T18:26:57.1593647Z PASS verifications/contacts.test.mjs
+2026-11-19T18:26:57.2072853Z PASS verifications/controle-visuel.test.mjs
+2026-11-19T18:27:01.6505176Z PASS verifications/course.test.mjs
+2026-11-19T18:27:02.1121127Z PASS verifications/crash.test.mjs
+2026-11-19T18:27:04.0381548Z PASS verifications/decor-identite.test.mjs
+2026-11-19T18:27:04.6110894Z PASS verifications/decor-obstacles.test.mjs
+2026-11-19T18:27:05.0948837Z PASS verifications/decor.test.mjs
+2026-11-19T18:27:07.5523432Z PASS verifications/desert.test.mjs
+2026-11-19T18:27:53.2315680Z PASS verifications/determinisme-simulation.test.mjs
+2026-11-19T18:27:56.0065407Z PASS verifications/echappement.test.mjs
+2026-11-19T18:27:57.1222012Z PASS verifications/ecologie.test.mjs
+2026-11-19T18:28:00.0973062Z PASS verifications/effets-allocation.test.mjs
+2026-11-19T18:28:01.1324903Z PASS verifications/effets-saison.test.mjs
+2026-11-19T18:28:03.4809556Z PASS verifications/faune.test.mjs
+2026-11-19T18:28:04.0587621Z PASS verifications/formes-libres.test.mjs
+2026-11-19T18:28:04.1218328Z PASS verifications/glissiere-etats.test.mjs
+2026-11-19T18:28:04.1598077Z PASS verifications/glissiere-rebond.test.mjs
+2026-11-19T18:28:04.1934034Z PASS verifications/graphismes.test.mjs
+2026-11-19T18:28:27.4348853Z PASS verifications/herbier-identite.test.mjs
+2026-11-19T18:28:55.4249415Z PASS verifications/herbier-saisons.test.mjs
+2026-11-19T18:28:55.5232426Z PASS verifications/hud-pneus.test.mjs
+2026-11-19T18:29:08.0086026Z PASS verifications/ia-attaque.test.mjs
+2026-11-19T18:29:08.0931343Z PASS verifications/ia-epaves.test.mjs
+2026-11-19T18:29:08.1983023Z PASS verifications/ia-reprise.test.mjs
+2026-11-19T18:29:08.2732610Z PASS verifications/ia.test.mjs
+2026-11-19T18:29:10.6400876Z PASS verifications/islande.test.mjs
+2026-11-19T18:29:11.1797386Z PASS verifications/lieux-traces.test.mjs
+2026-11-19T18:29:11.2523386Z PASS verifications/main.test.mjs
+2026-11-19T18:29:11.2996775Z PASS verifications/manette.test.mjs
+2026-11-19T18:29:11.3665272Z PASS verifications/mesures.test.mjs
+2026-11-19T18:29:11.4300129Z PASS verifications/meteo-reelle.test.mjs
+2026-11-19T18:29:11.5748926Z PASS verifications/meteo-toile.test.mjs
+2026-11-19T18:29:11.6582452Z PASS verifications/meteo.test.mjs
+2026-11-19T18:29:11.7104353Z PASS verifications/moteur-emprise.test.mjs
+2026-11-19T18:29:11.7411688Z PASS verifications/nature-integration.test.mjs
+2026-11-19T18:29:13.5367825Z PASS verifications/nature-preparation.test.mjs
+2026-11-19T18:29:13.5764286Z PASS verifications/navigation-menu.test.mjs
+2026-11-19T18:29:16.4655498Z PASS verifications/obstacles-degagement.test.mjs
+2026-11-19T18:29:16.4993342Z PASS verifications/obstacles.test.mjs
+2026-11-19T18:29:17.7190756Z PASS verifications/ombres.test.mjs
+2026-11-19T18:29:18.7636914Z PASS verifications/options-image.test.mjs
+2026-11-19T18:29:24.6803741Z PASS verifications/pacifique.test.mjs
+2026-11-19T18:29:25.4647590Z PASS verifications/physique-voitures.test.mjs
+2026-11-19T18:29:32.8899952Z PASS verifications/physx-circuits.test.mjs
+2026-11-19T18:29:33.1621353Z PASS verifications/physx-cycle-vie.test.mjs
+2026-11-19T18:29:33.9665673Z PASS verifications/physx-monde.test.mjs
+2026-11-19T18:29:34.2169978Z PASS verifications/physx-reseau.test.mjs
+2026-11-19T18:29:43.7843142Z PASS verifications/physx-stands.test.mjs
+2026-11-19T18:29:44.4977830Z PASS verifications/pieces.test.mjs
+2026-11-19T18:29:45.6668505Z PASS verifications/pilote-exterieur.test.mjs
+2026-11-19T18:29:45.6919246Z PASS verifications/pneus-pilotes.test.mjs
+2026-11-19T18:29:45.7925307Z PASS verifications/pneus-reseau-integration.test.mjs
+2026-11-19T18:29:45.8409245Z PASS verifications/pneus-reseau.test.mjs
+2026-11-19T18:29:46.8068544Z PASS verifications/pneus-service-visuel.test.mjs
+2026-11-19T18:29:46.8746897Z PASS verifications/pneus.test.mjs
+2026-11-19T18:29:46.9424421Z PASS verifications/prets-enligne.test.mjs
+2026-11-19T18:29:50.3137917Z PASS verifications/public.test.mjs
+2026-11-19T18:29:50.3699427Z PASS verifications/qualite.test.mjs
+2026-11-19T18:29:53.6568282Z PASS verifications/realisateur.test.mjs
+2026-11-19T18:29:54.0531146Z PASS verifications/relectures-phase2.test.mjs
+2026-11-19T18:29:54.0943103Z PASS verifications/rendu-halo.test.mjs
+2026-11-19T18:30:10.8247946Z PASS verifications/reperes-virages.test.mjs
+2026-11-19T18:30:10.8767334Z PASS verifications/reprise-recul.test.mjs
+2026-11-19T18:30:11.4040752Z PASS verifications/roues-detail.test.mjs
+2026-11-19T18:30:23.0634812Z PASS verifications/russie.test.mjs
+2026-11-19T18:30:26.9931028Z PASS verifications/saisons.test.mjs
+2026-11-19T18:30:29.0725052Z PASS verifications/salon-protocole.test.mjs
+2026-11-19T18:30:36.9327518Z PASS verifications/scene-bench.test.mjs
+2026-11-19T18:30:36.9724456Z PASS verifications/sillage.test.mjs
+2026-11-19T18:30:42.4509441Z PASS verifications/simulation-sorties.test.mjs
+2026-11-19T18:30:48.7080749Z PASS verifications/solides-physx-geometrie.test.mjs
+2026-11-19T18:30:52.7491490Z PASS verifications/solides-physx-wasm.test.mjs
+2026-11-19T18:30:52.9774618Z PASS verifications/son.test.mjs
+2026-11-19T18:30:53.0883824Z PASS verifications/stands-pneus.test.mjs
+2026-11-19T18:30:59.4390312Z PASS verifications/stands.test.mjs
+2026-11-19T18:30:59.6215913Z PASS verifications/strategie-stands-decisions.test.mjs
+2026-11-19T18:31:02.1717593Z PASS verifications/strategie-stands-sortie-file.test.mjs
+2026-11-19T18:31:07.8948837Z PASS verifications/strategie-stands.test.mjs
+2026-11-19T18:31:07.9338881Z PASS verifications/titre-signature.test.mjs
+2026-11-19T18:31:08.5036659Z FAIL verifications/traces.test.mjs
+2026-11-19T18:31:08.5073327Z ok  plafonds : 512 bandes, 48 fumées, 48 étincelles, sans jamais grandir
+2026-11-19T18:31:08.5074061Z ok  traces effacées en 24 s, fumée et étincelles éteintes avant
+2026-11-19T18:31:08.5074706Z ok  pâleur : une trace pâlit avec l'âge et ne se dessine plus après 24 s
+2026-11-19T18:31:08.5075346Z ok  cadence : une mise à jour tous les 4 pas de 1/120 s (30 Hz)
+2026-11-19T18:31:08.5075829Z ok  bandes sous les roues arrière, prolongées en ligne droite
+2026-11-19T18:31:08.5076195Z ok  pas de bande à travers un replacement
+2026-11-19T18:31:08.5076564Z ok  voitures loin de celle que l'on regarde : rien
+2026-11-19T18:31:08.5076970Z     0.018 ms par image, 589 objets dessinés
+2026-11-19T18:31:08.5077362Z ok  coût : au plus 0,3 ms par image à 60 Hz, tout plein
+2026-11-19T18:31:08.5077723Z ok  déterminisme : même graine, mêmes effets
+2026-11-19T18:31:08.5078275Z KO  déterminisme : mêmes effets et mêmes tirages que le code d’avant la réécriture (empreinte figée)
+2026-11-19T18:31:08.5079083Z AssertionError [ERR_ASSERTION]: empreinte des effets différente de celle de 54e98c9 : ordre des tirages ou calcul des pools changé
+2026-11-19T18:31:08.5079595Z + actual - expected
+2026-11-19T18:31:08.5079710Z 
+2026-11-19T18:31:08.5079974Z + 'e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf'
+2026-11-19T18:31:08.5080438Z - '575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee'
+2026-11-19T18:31:08.5080755Z 
+2026-11-19T18:31:08.5081001Z     at file:///home/runner/work/bitume/bitume/verifications/traces.test.mjs:206:10
+2026-11-19T18:31:08.5081728Z     at verifier (file:///home/runner/work/bitume/bitume/verifications/traces.test.mjs:18:9)
+2026-11-19T18:31:08.5082366Z     at file:///home/runner/work/bitume/bitume/verifications/traces.test.mjs:167:1
+2026-11-19T18:31:08.5083138Z     at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+2026-11-19T18:31:08.5083613Z     at async node:internal/modules/esm/loader:647:26
+2026-11-19T18:31:08.5084176Z     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+2026-11-19T18:31:08.5084729Z   generatedMessage: false,
+2026-11-19T18:31:08.5085035Z   code: 'ERR_ASSERTION',
+2026-11-19T18:31:08.5085499Z   actual: 'e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf',
+2026-11-19T18:31:08.5086123Z   expected: '575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee',
+2026-11-19T18:31:08.5086493Z   operator: 'strictEqual',
+2026-11-19T18:31:08.5086781Z   diff: 'simple'
+2026-11-19T18:31:08.5086999Z }
+2026-11-19T18:31:09.0576171Z PASS verifications/troncs.test.mjs
+2026-11-19T18:31:09.2895647Z PASS verifications/tunnel-transitions.test.mjs
+2026-11-19T18:31:09.6924885Z PASS verifications/tunnel.test.mjs
+2026-11-19T18:31:09.9567088Z PASS verifications/usure-integration.test.mjs
+2026-11-19T18:31:10.1242029Z PASS verifications/usure-pneus.test.mjs
+2026-11-19T18:31:10.6308906Z PASS verifications/usure-visuelle.test.mjs
+2026-11-19T18:31:19.9006534Z PASS verifications/vegetation.test.mjs
+2026-11-19T18:31:19.9486820Z PASS verifications/vibrations.test.mjs
+2026-11-19T18:31:20.1837252Z PASS verifications/virages.test.mjs
+2026-11-19T18:31:20.2923078Z PASS verifications/vitre-cadence.test.mjs
+2026-11-19T18:31:20.4648918Z PASS verifications/vitre.test.mjs
+2026-11-19T18:31:23.2543080Z PASS verifications/voiture-identite.test.mjs
+2026-11-19T18:31:27.2798186Z PASS verifications/voiture-permanents.test.mjs
+2026-11-19T18:31:30.5027572Z PASS verifications/voiture.test.mjs
+2026-11-19T18:31:30.5053244Z Suites reussies : 118
+2026-11-19T18:31:30.5053990Z Suites en echec : 1
+2026-11-19T18:31:30.5197398Z ##[error]Process completed with exit code 1.
+2026-11-19T18:31:30.5280153Z ##[group]Run actions/upload-artifact@v4
+2026-11-19T18:31:30.5280462Z with:
+2026-11-19T18:31:30.5280725Z   name: bitume-41924273aa141ac244810afaef9232b1a1665c98
+2026-11-19T18:31:30.5281049Z   path: qualification/
+dist/bitume.html
+SIZE.json
+
+2026-11-19T18:31:30.5281364Z   if-no-files-found: error
+2026-11-19T18:31:30.5281603Z   retention-days: 14
+2026-11-19T18:31:30.5281828Z   compression-level: 6
+2026-11-19T18:31:30.5282084Z   overwrite: false
+2026-11-19T18:31:30.5282307Z   include-hidden-files: false
+2026-11-19T18:31:30.5282548Z ##[endgroup]
+2026-11-19T18:31:30.6507929Z (node:3805) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-19T18:31:30.6508611Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-19T18:31:30.6621641Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-11-19T18:31:30.6624190Z The least common ancestor is /home/runner/work/bitume/bitume. This will be the root directory of the artifact
+2026-11-19T18:31:30.6625194Z With the provided path, there will be 127 files uploaded
+2026-11-19T18:31:30.6625954Z Artifact name is valid!
+2026-11-19T18:31:30.6626662Z Root directory input is valid!
+2026-11-19T18:31:31.5149208Z Beginning upload of artifact content to blob storage
+2026-11-19T18:31:31.7483423Z (node:3805) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-19T18:31:32.8350955Z Uploaded bytes 8388608
+2026-11-19T18:31:33.0991913Z Uploaded bytes 16777216
+2026-11-19T18:31:33.2185518Z Uploaded bytes 25165824
+2026-11-19T18:31:33.2642620Z Uploaded bytes 33554432
+2026-11-19T18:31:33.4989204Z Uploaded bytes 41943040
+2026-11-19T18:31:33.5345350Z Uploaded bytes 50331648
+2026-11-19T18:31:33.6338599Z Uploaded bytes 58720256
+2026-11-19T18:31:33.9570211Z Uploaded bytes 67108864
+2026-11-19T18:31:34.0801482Z Uploaded bytes 67375499
+2026-11-19T18:31:34.1710923Z Finished uploading artifact content to blob storage!
+2026-11-19T18:31:34.1712057Z SHA256 digest of uploaded artifact zip is cf523cdbdaa70cdc78fc7a744fe6eade2b1916e41399ab1c8a4da0a3d21c3aed
+2026-11-19T18:31:34.1712620Z Finalizing artifact upload
+2026-11-19T18:31:34.5874341Z Artifact bitume-41924273aa141ac244810afaef9232b1a1665c98.zip successfully finalized. Artifact ID 14562066310
+2026-11-19T18:31:34.5875524Z Artifact bitume-41924273aa141ac244810afaef9232b1a1665c98 has been successfully uploaded! Final size is 67375499 bytes. Artifact ID is 14562066310
+2026-11-19T18:31:34.5879656Z Artifact download URL: https://github.com/M4D135/bitume/actions/runs/44587743183/artifacts/14562066310
+2026-11-19T18:31:34.6103740Z Post job cleanup.
+2026-11-19T18:31:34.6810172Z [command]/usr/bin/git version
+2026-11-19T18:31:34.6831845Z git version 2.56.1
+2026-11-19T18:31:34.6857653Z Temporarily overriding HOME='/home/runner/work/_temp/d1ca84f0-ac47-4374-89de-04d8fd284d51' before making global git config changes
+2026-11-19T18:31:34.6859017Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-19T18:31:34.6861749Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/bitume/bitume
+2026-11-19T18:31:34.6893329Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T18:31:34.6918520Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T18:31:34.7128949Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T18:31:34.7153538Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T18:31:34.7352484Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T18:31:34.7377209Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T18:31:34.7679612Z Cleaning up orphan processes
+2026-11-19T18:31:34.7920387Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

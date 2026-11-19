@@ -23,3 +23,18 @@ Chantier suivant le lot PhysX/sols/pilotes, dans un travail isolé jusqu'à sa c
 déterminisme, caméras finies/au-dessus du sol et présence réelle des sujets ; validation visuelle quand le rendu
 est accessible, sans confondre un contrôle numérique et une appréciation visuelle.
 13B Baïkal et les autres circuits demandés restent prévus après ce lot.
+
+
+## Reprise après publication 0.2.55
+
+Base publiée : PR #9, main `1e4579c5`, p14. Copie préparée la plus avancée :
+`/workspace/scratch/749f331cc09f/bitume-demo`, branche `codex/bitume-demos-cinema-20261119`, base ancienne `838756b`.
+Travail non commité : `construire.py`, `src/jeu.js`, `src/realisateur.js`, nouveaux `src/cinema.js` et
+`verifications/cinema.test.mjs`, journaux dans `docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/`.
+
+Le bond quand un arbre quitte le champ a un correctif préparé : trajectoires nature prévalidées et mémorisées,
+poste fixe pour les animaux, repli vers un plan de course et pondération progressive du peloton.
+Les journaux préexistants annoncent 18 contrôles cinéma, 7 réalisateur et 9 chargement ; ils n'ont pas été
+relancés à cette reprise et ne qualifient pas une intégration sur 0.2.55. Récupérer ce travail sur la base publiée,
+réconcilier les trois fichiers modifiés, puis qualifier raccords, transitions et cadrages. Ne pas écraser la copie
+avancée avec `/workspace/scratch/2540d1a213f9/bitume-demo`, plus ancienne et différente.

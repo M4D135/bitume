@@ -41,4 +41,7 @@ Qualification complète terminée : 117/119 suites, réserves décor et traces e
 Les 235 sources/tests/builds contrôlés sont identiques avant/après. Deux builds identiques, 34 modules du canon
 FERRO 0.3.14 fusionné `85ba9417`. Les références p14 utilisent désormais le vrai WASM ; les références historiques
 ne sont pas présentées comme preuve de la nouvelle physique. Voir `rapports/PHYSX-SOLS-PILOTES-2026-11-19/livraison/VALIDATION.md`.
-Publication BITUME à finaliser puis reçu distant ; aucune validation matérielle ni mise en ligne revendiquée.
+Publication terminée : PR #9 fusionnée sur main au commit `1e4579c5`, arbre identique au snapshot qualifié.
+Deux CI 118/119, seul échec traces hérité ; la réserve de durée locale du décor reste conservée.
+ZIP CI récupéré et vérifié, même build. Reçu `rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0255.json`.
+Aucun test ni build local relancé pour la publication ; aucune validation matérielle ni mise en ligne revendiquée.
