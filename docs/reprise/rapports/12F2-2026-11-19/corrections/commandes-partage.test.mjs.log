@@ -1,0 +1,45 @@
+ok clavier J1 Auto et souris J2 auto simultanés
+ok clavier J1 Auto et souris J2 souris simultanés
+ok manette J1 Auto et souris J2 explicite simultanées
+ok en solo, le clavier reprend toujours la priorité sur sa propre souris Auto
+ok pavé numérique J2 indépendant, puis touches reconfigurées
+ok impulsion de rapport clavier J2 applique la boîte manuelle dans la vraie conduite
+ok manette J2 : haut sur un seul front, avec rapport réellement passé
+ok manette J2 : bas sur un seul front, avec rapport réellement passé
+ok RB et LB déjà tenus à la connexion de J2 ne passent pas un rapport
+ok oracle : un relâchement normal de dérive lance bien le turbo III
+ok déconnexion J2 sans turbo ni effet sur J1, voitures locales 0,1
+ok déconnexion J2 sans turbo ni effet sur J1, voitures locales 2,3
+ok déconnexion préserve la dérive clavier J2 encore tenue : Numpad0
+ok déconnexion préserve la dérive clavier J2 encore tenue : KeyU
+ok déconnexion préserve la dérive souris encore tenue par J2
+ok la souris de J1 ne préserve pas une dérive abandonnée par J2
+ok déconnexion en pause annule la dérive propre à J2
+ok une nouvelle séance est préservée à la déconnexion de l’ancien contrôleur
+ok dérive non commandée par la manette et turbo déjà lancé restent intacts
+ok API manette refusée neutralise J2 sans turbo fantôme
+ok en pause, la manette de J2 reste à J2, voitures locales 0,1
+ok en pause, la manette de J2 reste à J2, voitures locales 2,3
+ok une pause conserve la dérive chargée du joueur 2 connecté
+ok Start de la seule manette J2 met en pause puis reprend une seule fois par appui
+ok Start simultané sur deux manettes ne referme pas aussitôt la pause
+ok Start J2 et A J1 simultanés ouvrent la pause sans en valider aussitôt le menu
+ok en pause, les choix Clavier J1 et Manette J2 restent respectés avec deux pads branchés
+ok pause, réglages et retour en course conservent la manette et la dérive de J2
+ok la manette J2 navigue dans reglages en restant celle de sa voiture
+ok la manette J2 navigue dans resultats en restant celle de sa voiture
+ok retour au titre : la manette unique retrouve les menus de la vitrine sans faux appui
+ok en solo clavier, RB/LB/Y du pad ne commandent pas la voiture
+ok en solo souris, RB/LB/Y du pad ne commandent pas la voiture
+ok J1 conserve la dérive sur sa touche reconfigurée à la perte du pad
+ok J1 ne produit pas de turbo à la perte du pad avec une ancienne touche devenue inactive : Space
+ok J1 ne produit pas de turbo à la perte du pad avec une ancienne touche devenue inactive : ShiftLeft
+ok J1 ne produit pas de turbo à la perte du pad avec une ancienne touche devenue inactive : ShiftRight
+ok J1 conserve la dérive encore tenue à la souris Auto à la perte du pad
+ok J1 Clavier : une manette ignorée ne prend pas possession de la dérive clavier
+ok J1 Manette : une touche de dérive du clavier désactivé ne conserve pas la charge à la déconnexion
+ok clic puis molette ignorés sans joueur à la souris, mode course
+ok clic puis molette ignorés sans joueur à la souris, mode duo
+ok molette réservée au propriétaire souris J1
+ok molette réservée au propriétaire souris J2
+44/44 contrôles commandes partagées tenus

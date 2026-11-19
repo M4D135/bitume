@@ -1,0 +1,21 @@
+ok  module charge sans AudioContext
+ok  creer sans demarrer : methodes sans effet
+ok  frequenceAllumage(12000) = 800
+ok  coupure bornee [600,6500]
+ok  gainDistance(0)=1 et decroissant
+ok  doppler(0)=1 et >1 pour rapprochement
+ok  panoramique(pi/2)=1 et borne
+ok  sélection bornée sans modifier ni recopier les rivaux
+ok  deux moteurs humains conservés à toute distance et trois rivaux au maximum
+ok  attribution stable puis fondu complet avant de réutiliser une voix rivale
+ok  graphe complet avec un faux contexte audio
+ok  signaux de course sans musique : une seule hauteur au plus par signal
+ok  échappement : tampons et voix préparés au démarrage ; ensuite une source par claquement joué, rien d’autre
+ok  échappement : six voix et six départs par image au plus ; la plus faible cède la place au plus fort
+ok  échappement : proche plus fort et plus clair que lointain, placé par l’angle ; du cockpit, étouffé et au centre
+ok  échappement : niveaux bornés, écarts de la course gardés, rien en pause, la file qui déborde ne joue que le récent
+ok  échappement : quand la file mène, passage et rupteur ne doublent plus le claquement
+ok  tampons de claquements : identiques à chaque démarrage, sans Math.random, brefs, crêtes bornées, qui s’éteignent
+ok  thème du titre : huit mesures de mélodie en la mineur sur huit accords
+ok  thème du titre : rien avant le premier geste, boucle entière, arrêt net, pas de rafale
+20 vérifications réussies

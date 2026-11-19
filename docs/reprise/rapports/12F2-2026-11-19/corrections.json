@@ -1,0 +1,180 @@
+{
+  "fichiers_modifies": [
+    "src/course.js",
+    "src/jeu.js",
+    "verifications/conditions-integration.test.mjs",
+    "verifications/options-image.test.mjs",
+    "verifications/prets-enligne.test.mjs",
+    "verifications/qualite.test.mjs"
+  ],
+  "resultats": [
+    {
+      "suite": "conditions-integration.test.mjs",
+      "argv": [
+        "node",
+        "verifications/conditions-integration.test.mjs"
+      ],
+      "date_utc": "2026-11-19T10:59:59.017852+00:00",
+      "code": 0,
+      "duree_s": 0.168,
+      "log": "corrections/conditions-integration.test.mjs.log",
+      "sha256_log": "7315d15330cfca46fa0405f8de19877facf66f8f7919e1d86527da54e2a124a1"
+    },
+    {
+      "suite": "options-image.test.mjs",
+      "argv": [
+        "node",
+        "verifications/options-image.test.mjs"
+      ],
+      "date_utc": "2026-11-19T10:59:59.186467+00:00",
+      "code": 0,
+      "duree_s": 1.19,
+      "log": "corrections/options-image.test.mjs.log",
+      "sha256_log": "0801cb2ae60e736acddd9abaeaae41989fe7ff5ae9d84a35edf3d774ea9adc42"
+    },
+    {
+      "suite": "qualite.test.mjs",
+      "argv": [
+        "node",
+        "verifications/qualite.test.mjs"
+      ],
+      "date_utc": "2026-11-19T11:00:00.376491+00:00",
+      "code": 0,
+      "duree_s": 0.11,
+      "log": "corrections/qualite.test.mjs.log",
+      "sha256_log": "ea5dedd26752a9992b06f65411015a1050a7847f3e10b5b194621571146ca236"
+    },
+    {
+      "suite": "prets-enligne.test.mjs",
+      "argv": [
+        "node",
+        "verifications/prets-enligne.test.mjs"
+      ],
+      "date_utc": "2026-11-19T11:00:00.486596+00:00",
+      "code": 0,
+      "duree_s": 0.1,
+      "log": "corrections/prets-enligne.test.mjs.log",
+      "sha256_log": "cf2fa8284e34a93da739674f33c211bcf2d389584b9722a521d1eb177c1fe943"
+    },
+    {
+      "suite": "choix-pneus-integration.test.mjs",
+      "argv": [
+        "node",
+        "verifications/choix-pneus-integration.test.mjs"
+      ],
+      "date_utc": "2026-11-19T11:00:00.586532+00:00",
+      "code": 0,
+      "duree_s": 0.144,
+      "log": "corrections/choix-pneus-integration.test.mjs.log",
+      "sha256_log": "f297f89bd21bbe6487befb408677ab581b589b4b865bb8040cb0a39171c15a55"
+    },
+    {
+      "suite": "chaussee-preparation.test.mjs",
+      "argv": [
+        "node",
+        "verifications/chaussee-preparation.test.mjs"
+      ],
+      "date_utc": "2026-11-19T11:00:00.730638+00:00",
+      "code": 0,
+      "duree_s": 0.093,
+      "log": "corrections/chaussee-preparation.test.mjs.log",
+      "sha256_log": "9819dd54eee8d2c3d3044a55706f284fd3b4feacacee634246ea995d2cad8e7c"
+    },
+    {
+      "suite": "pneus-pilotes.test.mjs",
+      "argv": [
+        "node",
+        "verifications/pneus-pilotes.test.mjs"
+      ],
+      "date_utc": "2026-11-19T11:00:00.824347+00:00",
+      "code": 0,
+      "duree_s": 0.068,
+      "log": "corrections/pneus-pilotes.test.mjs.log",
+      "sha256_log": "dd0fbd8450c3908b5648235e811f7e080717c2d384b26ff7c624d29b1656335e"
+    },
+    {
+      "suite": "stands-pneus.test.mjs",
+      "argv": [
+        "node",
+        "verifications/stands-pneus.test.mjs"
+      ],
+      "date_utc": "2026-11-19T11:00:00.892515+00:00",
+      "code": 0,
+      "duree_s": 0.178,
+      "log": "corrections/stands-pneus.test.mjs.log",
+      "sha256_log": "7e4f64b235484f57196997417c3eb7fc6e9417fb67482764ddef78b2c6b9a0c8"
+    },
+    {
+      "suite": "stands.test.mjs",
+      "argv": [
+        "node",
+        "verifications/stands.test.mjs"
+      ],
+      "date_utc": "2026-11-19T11:00:01.070726+00:00",
+      "code": 0,
+      "duree_s": 8.169,
+      "log": "corrections/stands.test.mjs.log",
+      "sha256_log": "b7bb28ea5e7f1233f278f439f92f2ed45755185047fc37611d7541f573e21f6e"
+    },
+    {
+      "suite": "pneus-service-visuel.test.mjs",
+      "argv": [
+        "node",
+        "verifications/pneus-service-visuel.test.mjs"
+      ],
+      "date_utc": "2026-11-19T11:00:09.240706+00:00",
+      "code": 0,
+      "duree_s": 1.335,
+      "log": "corrections/pneus-service-visuel.test.mjs.log",
+      "sha256_log": "41fdc421203ba53be734895bb8772a8af3c79e1c47d3d7ceac98ec7364b107bf"
+    },
+    {
+      "suite": "determinisme-simulation.test.mjs",
+      "argv": [
+        "node",
+        "verifications/determinisme-simulation.test.mjs"
+      ],
+      "date_utc": "2026-11-19T11:00:10.576570+00:00",
+      "code": 0,
+      "duree_s": 18.721,
+      "log": "corrections/determinisme-simulation.test.mjs.log",
+      "sha256_log": "356a20d85c3528dffd58c47fe04b480789b99fbe49bb6472112f73bf634151b0"
+    },
+    {
+      "suite": "chargement.test.mjs",
+      "argv": [
+        "node",
+        "verifications/chargement.test.mjs"
+      ],
+      "date_utc": "2026-11-19T11:00:29.297651+00:00",
+      "code": 0,
+      "duree_s": 1.561,
+      "log": "corrections/chargement.test.mjs.log",
+      "sha256_log": "7e6b85a80734bcd1791f7110e25d176361955c71f3590d1ebc605967b4ac3e7a"
+    },
+    {
+      "suite": "commandes-partage.test.mjs",
+      "argv": [
+        "node",
+        "verifications/commandes-partage.test.mjs"
+      ],
+      "date_utc": "2026-11-19T11:00:30.859061+00:00",
+      "code": 0,
+      "duree_s": 0.089,
+      "log": "corrections/commandes-partage.test.mjs.log",
+      "sha256_log": "171426dcb49a15f97dcf502ad6f30db3ad31b4652ce4f5b65553ae0128c19277"
+    }
+  ],
+  "sources_stables": true,
+  "premier_passage": {
+    "suites": 103,
+    "reussies": 98
+  },
+  "apres_corrections": {
+    "suites": 103,
+    "reussies": 102,
+    "echecs": [
+      "traces.test.mjs"
+    ]
+  }
+}

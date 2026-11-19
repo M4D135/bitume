@@ -2,8 +2,7 @@
 
 ## Périmètre du 19 novembre 2026
 
-Suite de 12F1 (0.2.48), depuis sa copie qualifiée `fbd8098`. La publication distante de cette base est
-à rapprocher du reçu GitHub avant livraison. Travail isolé dans la reprise `67676bee9b18` : ne pas reprendre
+Suite de 12F1 (0.2.48), depuis sa copie qualifiée `fbd8098`. Publication vérifiée en `1df6f687` ; suivi `9a421989` intégré, reçu 12F1 conservé. Travail isolé dans la reprise `67676bee9b18` : ne pas reprendre
 les lots 12A–12F1 ni écraser une autre session.
 
 ## Comportement
@@ -44,8 +43,8 @@ Comparer les 20 scénarios et 1 300 empreintes à la fixture p11 existante, sans
 Les tests ciblés exécutent la migration, le vrai gestionnaire de changement des menus, la confirmation réseau,
 les services interrompus/complets, et les représentations des quatre types après remplacement.
 
-Le rapport `rapports/12F2-2026-11-19/qualification-execution.json` fera autorité après la qualification globale
-et deux reconstructions. La comparaison CPU des objets de rendu ne vaut pas validation WebGL ou mesure FPS.
+Le rapport `rapports/12F2-2026-11-19/qualification-execution.json` fait autorité : 102/103 suites après
+13 revalidations ciblées, seul échec traces hérité ; 1 300 empreintes p11 identiques et deux builds 0.2.49 identiques. La comparaison CPU des objets de rendu ne vaut pas validation WebGL ou mesure FPS.
 Les modules FERRO restent inchangés. Aucun déploiement du site n'est annoncé par ce lot.
 
 ## Publication

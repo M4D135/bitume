@@ -1,0 +1,15 @@
+ok sans météo, la chaussée est sèche ; lire ne déduit rien de la saison du circuit
+ok pluie liquide et humidité résiduelle gardent leur pondération historique
+ok flocons saisonniers et neige observée ne deviennent pas pluie liquide ni couverture inventée
+ok couverture explicite sans précipitation et coexistence eau/neige restent indépendantes
+ok sous un tunnel, eau et neige sont nulles sans modifier la météo de la séance
+ok les deux portails conservent exactement la frontière binaire historique
+ok valeurs invalides ignorées, nombres hors limites bornés, sans coercition implicite
+ok sortie réutilisée sans conserver une ancienne surface ; absence de mémoire entre appels
+ok sans argument météo, lecture de l’état actif ; une météo explicite garde priorité
+ok préparation hivernale initialise la couverture du paysage ; les autres saisons restent sans neige
+ok Port-Sable reste sans couverture et sans neige saisonnière, même avec un état reçu enneigé
+ok météo réelle : flocons observés sans inventer une couverture ; hiver sans flocons garde son paysage
+ok couverture explicite de l’hôte conservée, y compris zéro, avec une reprise JSON déterministe
+ok une lecture répétée ne fait ni fondre ni accumuler la neige et ne fait pas avancer la météo
+chaussee : 14 vérifications passées

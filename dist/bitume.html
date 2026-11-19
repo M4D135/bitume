@@ -228,6 +228,13 @@ button:disabled { cursor: wait; opacity: .55; }
 }
 
 .pause { display: flex; flex-direction: column; justify-content: center; gap: 24px; background: rgba(8, 9, 11, .66); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+.pause .service-pneus { max-width: 1040px; padding-top: 18px; border-top: 1px solid var(--trait-fort); }
+.service-pneus h3 { margin: 0 0 8px; font: 700 22px/1.1 var(--f-titre); }
+.service-pneus .options { margin-top: 16px; }
+.service-pneus fieldset { flex: 1 1 300px; }
+.service-pneus fieldset:disabled label { cursor: default; }
+.service-pneus fieldset:disabled label span { opacity: .6; }
+@media (max-height: 800px), (max-width: 760px) { .pause { justify-content: flex-start; } }
 
 .tableau-resultats { width: 100%; max-width: 1080px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
 .tableau-resultats th { padding: 0 10px 8px; text-align: right; font: 600 11px/1 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); border-bottom: 1px solid var(--trait-fort); }
@@ -676,7 +683,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.48">V0.2.48</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.49">V0.2.49</b>
     </div>
     <a class="signature" href="https://bitume.estrasse.fr/" download="BITUME.html" title="Télécharger BITUME"><img class="signature-avatar" src="data:image/jpeg;base64,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" alt="" />m4d135</a>
     <nav class="choix" aria-label="Menu principal">
@@ -744,12 +751,21 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
     <div class="salon">
       <div class="options">
         <fieldset>
-          <legend>Vos pneus</legend>
+          <legend>Pneus · Joueur 1</legend>
+          <label><input type="radio" name="pneusPret" value="auto"><span>Conseillés</span></label>
           <label><input type="radio" name="pneusPret" value="slicks"><span>Slicks</span></label>
           <label><input type="radio" name="pneusPret" value="inter"><span>Intermédiaires</span></label>
           <label><input type="radio" name="pneusPret" value="pluie"><span>Pluie</span></label>
           <label><input type="radio" name="pneusPret" value="neige"><span>Neige</span></label>
           <p id="pr-pneus-conseil" class="note-pneus"></p>
+        </fieldset>
+        <fieldset id="pr-pneus-2" hidden>
+          <legend>Pneus · Joueur 2</legend>
+          <label><input type="radio" name="pneusPret2" value="auto"><span>Conseillés</span></label>
+          <label><input type="radio" name="pneusPret2" value="slicks"><span>Slicks</span></label>
+          <label><input type="radio" name="pneusPret2" value="inter"><span>Intermédiaires</span></label>
+          <label><input type="radio" name="pneusPret2" value="pluie"><span>Pluie</span></label>
+          <label><input type="radio" name="pneusPret2" value="neige"><span>Neige</span></label>
         </fieldset>
         <fieldset>
           <legend>Boîte</legend>
@@ -858,12 +874,21 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       <div id="p-pilotes" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-p-pilotes" hidden>
     <div class="options options-pilotes">
       <fieldset id="o-pneus">
-        <legend>Pneus</legend>
+        <legend>Pneus · Joueur 1</legend>
+        <label><input type="radio" name="pneus" value="auto"><span>Conseillés</span></label>
         <label><input type="radio" name="pneus" value="slicks"><span>Slicks</span></label>
         <label><input type="radio" name="pneus" value="inter"><span>Intermédiaires</span></label>
         <label><input type="radio" name="pneus" value="pluie"><span>Pluie</span></label>
         <label><input type="radio" name="pneus" value="neige"><span>Neige</span></label>
         <p id="p-pneus-conseil" class="note-pneus"></p>
+      </fieldset>
+      <fieldset id="o-pneus-2" hidden>
+        <legend>Pneus · Joueur 2</legend>
+        <label><input type="radio" name="pneus2" value="auto"><span>Conseillés</span></label>
+        <label><input type="radio" name="pneus2" value="slicks"><span>Slicks</span></label>
+        <label><input type="radio" name="pneus2" value="inter"><span>Intermédiaires</span></label>
+        <label><input type="radio" name="pneus2" value="pluie"><span>Pluie</span></label>
+        <label><input type="radio" name="pneus2" value="neige"><span>Neige</span></label>
       </fieldset>
       <fieldset id="o-commandes" hidden>
         <legend>Commandes</legend>
@@ -1052,6 +1077,28 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       <button type="button" class="discret" id="b-reglages-pause">Réglages</button>
       <button type="button" class="discret" id="b-abandon">Quitter la séance</button>
     </nav>
+    <div id="pneus-stands" class="service-pneus" hidden>
+      <h3>Au prochain arrêt</h3>
+      <p id="ps-note" class="note-pneus">Choisissez la monte de chaque pilote. Les quatre pneus seront changés à la fin du service au garage.</p>
+      <div class="options">
+        <fieldset id="ps-pilote-0">
+          <legend>Joueur 1</legend>
+          <label><input type="radio" name="pneusStand0" value="slicks"><span>Slicks</span></label>
+          <label><input type="radio" name="pneusStand0" value="inter"><span>Intermédiaires</span></label>
+          <label><input type="radio" name="pneusStand0" value="pluie"><span>Pluie</span></label>
+          <label><input type="radio" name="pneusStand0" value="neige"><span>Neige</span></label>
+          <p id="ps-etat-0" class="note-pneus" role="status" aria-live="polite"></p>
+        </fieldset>
+        <fieldset id="ps-pilote-1" hidden>
+          <legend>Joueur 2</legend>
+          <label><input type="radio" name="pneusStand1" value="slicks"><span>Slicks</span></label>
+          <label><input type="radio" name="pneusStand1" value="inter"><span>Intermédiaires</span></label>
+          <label><input type="radio" name="pneusStand1" value="pluie"><span>Pluie</span></label>
+          <label><input type="radio" name="pneusStand1" value="neige"><span>Neige</span></label>
+          <p id="ps-etat-1" class="note-pneus" role="status" aria-live="polite"></p>
+        </fieldset>
+      </div>
+    </div>
   </section>
 
   <!-- Résultats -->
@@ -59039,6 +59086,15 @@ G.FPhysX=Object.freeze({init,isReady,status,createWorld,sweepBox,overlapBox,disp
   const possede = (o, cle) => Object.prototype.hasOwnProperty.call(o, cle);
   function estType(type) { return typeof type === 'string' && possede(CATALOGUE, type); }
   function normaliserType(type, repli = 'slicks') { return estType(type) ? type : estType(repli) ? repli : 'slicks'; }
+  // Migration locale : les deux pilotes héritent de l'ancienne préférence, puis gardent chacun leur choix.
+  // Une entrée absente ou invalide ne copie jamais le choix de l'autre pilote. Le tableau rendu appartient
+  // à l'appelant, même si la source est gelée ou déjà normalisée.
+  function normaliserChoixPilotes(reglages) {
+    const source = reglages && typeof reglages === 'object' && !Array.isArray(reglages) ? reglages : {};
+    const repli = normaliserType(possede(source, 'pneus') ? source.pneus : undefined);
+    const choix = possede(source, 'pneusPilotes') && Array.isArray(source.pneusPilotes) ? source.pneusPilotes : [];
+    return [0, 1].map(i => normaliserType(possede(choix, i) ? choix[i] : undefined, repli));
+  }
   function lire(type) { return CATALOGUE[normaliserType(type)]; }
   function estJouable(type) { return estType(type) && CATALOGUE[type].disponible; }
 
@@ -59113,7 +59169,7 @@ G.FPhysX=Object.freeze({init,isReady,status,createWorld,sweepBox,overlapBox,disp
 
   B.pneus = Object.freeze({ VERSION_ETAT, DISTANCE_MAX, SOLLICITATION_MAX, SERVICE_MAX,
     EMPATTEMENT, DEMI_VOIE_AV, DEMI_VOIE_AR, JANTE_R, ROUES, ORDRE_ROUES, NOMS_ROUES, INDICES_ROUES,
-    PNEUS, ADHERENCE_NEIGE, PERTE_USURE, CATALOGUE, TYPES, TYPES_JOUABLES, NOMS_PNEUS, estType, normaliserType, lire, estJouable, creerEtat, remplacerEtat, normaliserEtat });
+    PNEUS, ADHERENCE_NEIGE, PERTE_USURE, CATALOGUE, TYPES, TYPES_JOUABLES, NOMS_PNEUS, estType, normaliserType, normaliserChoixPilotes, lire, estJouable, creerEtat, remplacerEtat, normaliserEtat });
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -61143,7 +61199,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)requir
     }
   }
 
-  // Stands (lots 4 et 12F1). La voie est le long du bord droit de la ligne droite principale, sous le bâtiment que dessine
+  // Stands (lots 4 et 12F). La voie est le long du bord droit de la ligne droite principale, sous le bâtiment que dessine
   // decor.js (circuit.js, c.stands). Elle est prise sur la chaussée : on y entre en serrant à droite, sans trou dans
   // la glissière. Règles tenues ici, nulle part ailleurs :
   //  - on n'entre qu'à basse vitesse (S.vitesse + 4 m/s) ; à vitesse de course, la voie n'est pas un stand ;
@@ -61162,6 +61218,16 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)requir
   //    transporte ni dégâts ni arrêt), un pair ne peut pas faire réparer la voiture d'un autre.
   const STANDS = { marge: .8, entree: 4, arret: .35, frein: 18, mouvementService: .05 };
   const COMMANDE_SERVICE = Object.freeze({ ...NEUTRE, frein: 1 });
+  // Choisir pour le prochain arrêt ne touche ni à la monte actuelle ni à son état. La demande n'est valable
+  // que pour une voiture humaine conduite ici ; un service commencé conserve la monte qu'il a figée.
+  function demanderPneus(course, v, type) {
+    if (!course || course.termine || !Array.isArray(course.voitures) || !v || !course.voitures.includes(v) ||
+      !(v.joueur || v.humain) || v.distant || v.reprise || v.fini || v.abandon ||
+      !v.etat || typeof v.etat !== 'object' || Array.isArray(v.etat) || v.etat.stands?.phase === 'service' ||
+      !B.pneus.estJouable(type)) return false;
+    v.etat.pneusProchainArret = type;
+    return true;
+  }
   function dansLaVoie(c, e, S) {
     return Math.abs(ecart(c, e.s, (S.debut + S.fin) / 2)) <= (S.fin - S.debut) / 2 + STANDS.entree * 10 &&
       Math.abs(e.d - S.d) <= S.demi + STANDS.marge;
@@ -61209,7 +61275,8 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)requir
       if (e.v > S.vitesse) e.v = Math.max(S.vitesse, e.v - STANDS.frein * dt);
       if (dansLeGarage(course.c, e, S) && Math.abs(e.v) < STANDS.arret) {
         st.phase = 'service'; st.t = 0; st.duree = B.degats.chiffrerService(v.degats);
-        st.pneus = e.pneus; st.revisionPneus = e.servicePneus; st.sService = e.s; st.dService = e.d;
+        st.pneus = B.pneus.estJouable(e.pneusProchainArret) ? e.pneusProchainArret : e.pneus;
+        st.revisionPneus = e.servicePneus; st.sService = e.s; st.dService = e.d;
         e.v = 0; e.gaz = 0; e.frein = 1; e.omega = 0;
         ev.push({ type: 'stand', id: v.id, phase: 'service', duree: st.duree, pneus: st.pneus });
       }
@@ -61217,9 +61284,11 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)requir
       if (st.interrompu || !serviceImmobile(course.c, e, S, st)) { annulerStand(v, ev); return; }
       e.v = 0; e.gaz = 0; e.frein = 1; e.omega = 0;
       if (st.t >= st.duree) {
+        const monteAvant = e.pneus;
         if (!B.pneus.remplacerEtat(e, st.pneus, { seance: course.graine, voiture: v.id }, st.revisionPneus)) {
           annulerStand(v, ev); return;
         }
+        if (monteAvant !== e.pneus) v.livree.pneus = e.pneus;
         B.degats.reparer(v.degats);
         st.phase = 'sortie'; st.repare = true;
         ev.push({ type: 'stand', id: v.id, phase: 'repare', pneus: e.pneus, servicePneus: e.servicePneus });
@@ -61399,7 +61468,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)requir
     };
   }
 
-  B.course = { creer, pas, replacer, fantome, etatPilotes, commandesIA, aspirer, horsService, empriseIA, stands, dansLaVoie, dansLeGarage, classer, chauffe, STANDS, IA_ATTENTE, IA_PORT, PILOTES, LIVREES, ASPIRATION };
+  B.course = { creer, pas, replacer, fantome, etatPilotes, commandesIA, aspirer, horsService, empriseIA, stands, demanderPneus, dansLaVoie, dansLeGarage, classer, chauffe, STANDS, IA_ATTENTE, IA_PORT, PILOTES, LIVREES, ASPIRATION };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -68257,6 +68326,86 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     e.habitacle = construireHabitacle(mod);
   }
 
+  // 12F2 : préparer les montes pendant le chargement, puis ne changer que leurs références et couleurs.
+  // Les maillages des quatre types existent déjà. Aucun modèle, habitacle ni tableau de rendu n'est reconstruit
+  // au stand ; les pièces de carrosserie et les objets permanents gardent leur identité pendant la course.
+  function preparerPneusService(mod) {
+    if (!mod || !Array.isArray(mod.corps) || !Array.isArray(mod.moyens) || !Array.isArray(mod.simples)) return false;
+    const e = etatRendu(mod);
+    if (e.pneusService) return true;
+    const premier = mod.corps.find(p => p.usureRoue === 1), type = premier && premier.pneu;
+    if (typeof type !== 'string' || !Object.prototype.hasOwnProperty.call(PNEUS_TYPES, type)) return false;
+    // Les slicks n'avaient pas besoin de fond de sculpture. Réserver ces quatre supports une seule fois,
+    // avant la première image de course ; detailRoueMax = -1 les masque tant que la monte reste lisse.
+    for (let i = 0; i < ROUES.length; i++) {
+      if (mod.corps.some(p => p.roue === i && p.usureRoue === 5)) continue;
+      const w = ROUES[i], surfaces = MATIERES_PNEUS[w.avant ? 'av' : 'ar'].slicks[0];
+      const support = piece(surfaces[0].nom, [w.x, w.r, w.z], surfaces[0].taille, MAT, PNEU,
+        { roue: i, m: ROUE_AXE, arriere: !w.avant, tourne: 0, formesRoues: surfaces,
+          pneu: 'slicks', usureRoue: 5, profondeur: 0, detailRoueMax: -1 });
+      for (const liste of [mod.corps, mod.moyens]) {
+        const k = liste.findIndex(p => p.roue === i && p.usureRoue === 4);
+        liste.splice(k + 1, 0, support);
+      }
+    }
+    const pieces = [...mod.corps, ...mod.simples].filter(p => p.usureRoue || p.pneus !== undefined);
+    const indices = new Map(pieces.map((p, i) => [p, i])), variantes = Object.create(null), liens = [];
+    for (const monte of Object.keys(PNEUS_TYPES)) variantes[monte] = pieces.map(p => {
+      const essieu = ROUES[p.roue].avant ? 'av' : 'ar', role = p.usureRoue || 0;
+      const surfaces = MATIERES_PNEUS[essieu][monte], lointain = mod.simples.includes(p);
+      const formes = role === 1 ? ROUES_FORMES[essieu][monte]
+        : role ? surfaces[role - 1].length ? surfaces[role - 1] : surfaces[0] : p.formesRoues;
+      const f = formes[lointain ? 3 : 0];
+      return { shape: f.nom, taille: f.taille, formes, usees: role === 1 && p.formesUsees ? surfaces[0] : null,
+        detailMax: role === 5 && monte === 'slicks' ? -1 : p.detailRoueMax === -1 ? 1 : p.detailRoueMax ?? 3,
+        profondeur: role === 5 ? monte === 'neige' ? .009 : monte === 'pluie' ? .007 : monte === 'inter' ? .004 : 0 : 0,
+        couleur: role ? PNEU : PNEUS_TYPES[monte].cercle };
+    });
+    const lier = (t, cockpit) => {
+      let i = 0;
+      for (const p of t.liste) {
+        if (cockpit ? p.pilote || p.arriere || p.exterieur || p.glace : p.dedans) continue;
+        const index = indices.get(p);
+        if (index !== undefined) liens.push({ table: t, indexObjet: i, indexPiece: index });
+        i++;
+      }
+    };
+    // Préparer aussi les variantes moins fréquentes (overlay, vue du siège sans overlay et leurs LOD) :
+    // un changement de caméra après le service ne doit ni compiler ni retrouver les anciennes sculptures.
+    for (let li = 0; li < NOMS_LISTES.length; li++) {
+      for (let variante = 0; variante < 4; variante++) lier(tableDe(e, mod, li, variante), !!(variante & 2));
+      lier(tableRetro(e, mod, li), false);
+    }
+    e.pneusService = { type, pieces, variantes, liens };
+    return true;
+  }
+
+  // Transaction de rendu seulement : la simulation décide quand le service est terminé. Sans préparation,
+  // refuser la bascule plutôt que provoquer une allocation imprévue au milieu d'une course.
+  function changerPneus(mod, type) {
+    const service = mod && mod.objetsRendu && mod.objetsRendu.pneusService;
+    if (!service || typeof type !== 'string' || !Object.prototype.hasOwnProperty.call(service.variantes, type)) return false;
+    if (service.type === type) return true;
+    const changements = service.variantes[type], pieces = service.pieces, liens = service.liens;
+    for (let i = 0; i < pieces.length; i++) {
+      const p = pieces[i], c = changements[i];
+      p.shape = c.shape; p.s = c.taille; p.formesRoues = c.formes; p.formesUsees = c.usees;
+      p.profondeur = c.profondeur; p.detailRoueMax = c.detailMax; p.color = c.couleur;
+      if (p.usureRoue) p.pneu = type; else p.pneus = type;
+    }
+    for (let i = 0; i < liens.length; i++) {
+      const lien = liens[i], t = lien.table, k = lien.indexObjet, c = changements[lien.indexPiece], objet = t.objets[k];
+      t.formesRoues[k] = c.formes; t.formesUsees[k] = c.usees;
+      t.profondeur[k] = c.profondeur; t.detailRoueMax[k] = c.detailMax; objet.shape = c.shape;
+      if (t.usureRoue[k] === 5) { objet.s[0] = c.taille[0]; objet.s[1] = c.taille[1]; objet.s[2] = c.taille[2]; }
+      else objet.s = c.taille;
+      if (t.usureRoue[k]) { objet.color[0] = c.couleur[0]; objet.color[1] = c.couleur[1]; objet.color[2] = c.couleur[2]; }
+      else objet.color = c.couleur;
+    }
+    service.type = type;
+    return true;
+  }
+
   // ---------------------------------------------------------------- pose dans le monde
   // ev = { p: [x, y, z] (sol sous le milieu de l'empattement), cap, tangage, roulis, braquage (rad, droite positive),
   //        roule (distance parcourue, m : fait tourner les roues), v (vitesse, m/s : repères ou flou des pneus) }
@@ -69043,7 +69192,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     for (let i = 0; i < F.objets.length; i++) { monde(F.objets[i].p, M, F.o[i], P); sortie.push(F.objets[i]); }
   }
 
-  B.voiture = { modele, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, detailRouesPour, distanceRoues2, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES, SEGMENTS_ROUE, ROUES_FORMES, JANTES_FORMES };
+  B.voiture = { modele, preparerPneusService, changerPneus, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, detailRouesPour, distanceRoues2, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES, SEGMENTS_ROUE, ROUES_FORMES, JANTES_FORMES };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -76327,7 +76476,9 @@ FERRO.initPhysics().then(function(){
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
-  const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
+  const reglagesEnregistres = lireStock('bitume.reglages', {});
+  const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
+  Object.assign(reglages, initialiserChoixPneus(reglagesEnregistres));
   reglages.qualite = B.graphismes.normaliser(reglages.qualite);
   // Cadence d'images (Auto, Écran, 120, 60, 30) : une valeur ancienne, inconnue ou mal écrite revient à Auto.
   reglages.cadence = B.cadence.normaliser(reglages.cadence);
@@ -76559,10 +76710,7 @@ FERRO.initPhysics().then(function(){
     // Pneus : le joueur roule sur ceux de la préparation (présélectionnés selon la météo, qu'il peut changer) ; les
     // rivaux sur ceux que conseille la piste au départ. La caisse les montre (voiture.js) et la conduite les sent.
     const conseil = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoInit)), joue = type === 'course' || type === 'chrono' || duo;
-    for (const v of course.voitures) {
-      v.etat.pneus = enl && v.humain ? (B.conduite.PNEUS[enl.pneus && enl.pneus[v.id]] ? enl.pneus[v.id] : conseil) : v.joueur && joue && B.conduite.PNEUS[reglages.pneus] ? reglages.pneus : conseil;
-      v.livree.pneus = v.etat.pneus;
-    }
+    monterPneusDepart(course, joue, enl, conseil);
     const S = {
       type, i, course, c, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
       prec: [], cour: [], sortie: [], acc: 0, tele: { poste: null, alea: graine32(course.voitures.length * 7 + i) },
@@ -76583,6 +76731,8 @@ FERRO.initPhysics().then(function(){
       // créations tardives : objets nés dans le chemin d'une image au lieu de la préparation (doit rester à zéro)
       tardives: { n: 0, sousVoile: 0, noms: {} },
     };
+    // Toutes les montes sont préparées sous le voile : un service ne construit rien en pleine course.
+    for (const modele of S.modeles) B.voiture.preparerPneusService(modele);
     // bâtis avec la scène (une fois par décor), repris ici de leurs places de départ : sous le voile de la préparation
     S.animaux = animauxDe(sc, S.nature);
     // Le public de la séance : moins nombreux sous la pluie, en hiver et la nuit ; son animation repart de zéro.
@@ -77313,6 +77463,7 @@ FERRO.initPhysics().then(function(){
   // 0,12 s. Les temps officiels arrivent par le canal fiable. Une machine qui part laisse ses voitures à l'ordinateur
   // de l'hôte ; sans hôte, chacun finit la course seul.
   const EL = { R: null, role: null, recus: new Map(), corr: new Map(), pasEnvoi: 0, pred: {}, vieux: {}, course: null, pneusDe: new Map() };
+  const VERSION_CHOIX_PNEUS = 1;
   const nomPilote = () => (reglages.nom || '').trim().slice(0, 16) || 'Pilote';
   const joueursIci = () => reglages.joueursLocaux === 2 ? 2 : 1;
   const propre = t => String(t || '').replace(/[<>&"'`\\]/g, '').trim().slice(0, 16) || 'Pilote';
@@ -77331,7 +77482,7 @@ FERRO.initPhysics().then(function(){
     const p = [];
     for (const m of [...R.membres].sort((a, b) => a.id - b.id)) {
       if (prets && m.id !== R.id && !R.pretAvec(m.id)) continue;
-      for (let k = 0; k < (m.joueurs === 2 ? 2 : 1); k++) p.push({ nom: propre(m.nom) + (k ? ' 2' : ''), machine: m.id });
+      for (let k = 0; k < (m.joueurs === 2 ? 2 : 1); k++) p.push({ nom: propre(m.nom) + (k ? ' 2' : ''), machine: m.id, local: k });
     }
     return p;
   }
@@ -77414,7 +77565,7 @@ FERRO.initPhysics().then(function(){
     if (EL.role !== 'hote' || !EL.R) return;
     const conditions = conditionsCommunes(conditionsDuDepart());
     const prevue = meteoPourConditions(conditions, reglages.circuit, graineCourse + 1);
-    EL.course = { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, ...conditions, eau: B.conduite.eauSurPiste(prevue) };
+    EL.course = { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, ...conditions, eau: B.conduite.eauSurPiste(prevue), versionChoixPneus: VERSION_CHOIX_PNEUS };
     EL.R.envoyer(Object.assign({ t: 'course' }, EL.course));
     majCourseSalon();
   }
@@ -77434,7 +77585,7 @@ FERRO.initPhysics().then(function(){
     if (!R || !lienActif() || EL.role !== 'hote') { etatEnLigne('Pas d’autre pilote connecté.'); aller('enligne'); return; }
     annulerConfirmation();
     annoncerCourse();
-    EL.confirmation = { prets: new Set() }; EL.pretIci = false;
+    EL.confirmation = { prets: new Set(), incompatibles: new Set() }; EL.pretIci = false;
     R.envoyer({ t: 'confirmer', course: EL.course });
     aller('prets');
   }
@@ -77444,7 +77595,8 @@ FERRO.initPhysics().then(function(){
     const meteo = nomMeteoCourse(k);
     texte($('pr-course'), CATALOGUE[k.i].nom + ' · ' + k.tours + ' tours · ' + NOMS_SAISON[B.saisons.normaliser(k.saison)] + ' · ' + NOMS_MOMENT[B.ambiance.normaliser(k.moment)] + ' · météo : ' + meteo);
     texte($('pr-pneus-conseil'), 'Conseillés pour cette chaussée : ' + NOMS_PNEUS[B.conduite.pneusConseilles(surfaceAnnoncee(k))].toLowerCase() + '.');
-    for (const [nom, val] of [['pneusPret', reglages.pneus], ['boitePret', reglages.boite], ['vuePret', reglages.vue]]) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = r.value === val;
+    majChoixPneus();
+    for (const [nom, val] of [['boitePret', reglages.boite], ['vuePret', reglages.vue]]) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = r.value === val;
     let html = '', n = 0, m = 0;
     for (const x of [...R.membres].sort((a, b) => a.id - b.id)) {
       const pret = C.prets.has(x.id) && (x.id === R.id || R.pretAvec(x.id));
@@ -77453,7 +77605,8 @@ FERRO.initPhysics().then(function(){
     }
     const liste = $('pr-pilotes');
     if (liste._html !== html) { liste._html = html; liste.innerHTML = html; }
-    texte($('pr-etat'), tousPrets(R, C) ? 'Tout le monde est prêt : départ !' : n + ' machine' + (n > 1 ? 's' : '') + ' prête' + (n > 1 ? 's' : '') + ' sur ' + m + '. La course part quand toutes le sont.');
+    const incompatibles = C.incompatibles && [...C.incompatibles].filter(id => R.membres.some(x => x.id === id));
+    texte($('pr-etat'), incompatibles && incompatibles.length ? 'Choix de pneus incompatibles. Chaque machine doit recharger la même version du jeu et confirmer ses pilotes.' : tousPrets(R, C) ? 'Tout le monde est prêt : départ !' : n + ' machine' + (n > 1 ? 's' : '') + ' prête' + (n > 1 ? 's' : '') + ' sur ' + m + '. La course part quand toutes le sont.');
     texte($('pr-pret'), EL.pretIci ? 'Pas encore prêt' : 'Je suis prêt');
     classe($('pr-pret'), 'principal', !EL.pretIci);
   }
@@ -77462,7 +77615,7 @@ FERRO.initPhysics().then(function(){
     if (!R || !C) return;
     EL.pretIci = !EL.pretIci;
     if (EL.role === 'hote') { if (EL.pretIci) C.prets.add(R.id); else C.prets.delete(R.id); diffuserPrets(); }
-    else R.envoyer({ t: 'pret', oui: EL.pretIci, pneus: reglages.pneus }, 0);
+    else R.envoyer({ t: 'pret', oui: EL.pretIci, ...messageChoixPneus() }, 0);
     majPrets();
   }
   function annulerConfirmation() {
@@ -77482,6 +77635,7 @@ FERRO.initPhysics().then(function(){
     const R = EL.R, C = EL.confirmation;
     if (!R || !C || EL.role !== 'hote') return;
     for (const id of C.prets) if (!R.membres.some(m => m.id === id)) C.prets.delete(id);
+    if (C.incompatibles) for (const id of C.incompatibles) if (!R.membres.some(m => m.id === id)) C.incompatibles.delete(id);
     R.envoyer({ t: 'prets', liste: [...C.prets] });
     majPrets();
     if (!tousPrets(R, C)) { clearTimeout(C.minuteur); C.minuteur = null; return; }
@@ -77501,16 +77655,50 @@ FERRO.initPhysics().then(function(){
   }
   function recevoirCourse(m) {
     if (!m || !Number.isInteger(m.i) || !CATALOGUE[m.i]) return false;
+    if (m.versionChoixPneus !== VERSION_CHOIX_PNEUS) { refuserVersionPneus(); return false; }
     // nouvelle annonce : les pneus conseillés sont présélectionnés quand la météo change, le pilote peut changer
     const eau = clamp(+m.eau || 0, 0, 1), avant = EL.course;
-    EL.course = { i: m.i | 0, tours: clamp(m.tours | 0, 1, 99), difficulte: m.difficulte | 0, ...conditionsCommunes(m), eau };
-    if (!avant || avant.i !== EL.course.i || avant.saison !== EL.course.saison || Math.abs(avant.eau - eau) > .05 || !B.conduite.PNEUS[reglages.pneus]) { reglages.pneus = B.conduite.pneusConseilles(surfaceAnnoncee(EL.course)); envoyerPneus(); }
+    EL.course = { i: m.i | 0, tours: clamp(m.tours | 0, 1, 99), difficulte: m.difficulte | 0, ...conditionsCommunes(m), eau, versionChoixPneus: VERSION_CHOIX_PNEUS };
+    if (!avant || avant.i !== EL.course.i || avant.saison !== EL.course.saison || Math.abs(avant.eau - eau) > .05) {
+      appliquerConseilPneus(B.conduite.pneusConseilles(surfaceAnnoncee(EL.course))); envoyerPneus();
+    }
     majCourseSalon();
     if (ecran === 'prets') majPrets();
     return true;
   }
   function envoyerPneus() {
-    if (EL.R && EL.role === 'invite' && EL.R.pretAvec(0) && B.conduite.PNEUS[reglages.pneus]) EL.R.envoyer({ t: 'pneus', pneus: reglages.pneus }, 0);
+    if (EL.R && EL.role === 'invite' && EL.R.pretAvec(0)) EL.R.envoyer({ t: 'pneus', ...messageChoixPneus() }, 0);
+  }
+  function messageChoixPneus() {
+    const membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
+    const pneusPilotes = choixPneusLocaux().slice(0, membre && membre.joueurs === 2 ? 2 : 1);
+    return { versionChoixPneus: VERSION_CHOIX_PNEUS, pneus: pneusPilotes[0], pneusPilotes };
+  }
+  function lireChoixPneusMessage(m, de) {
+    const membre = EL.R && EL.R.membres.find(x => x.id === de);
+    if (!membre || m.versionChoixPneus !== VERSION_CHOIX_PNEUS || !Array.isArray(m.pneusPilotes) ||
+      m.pneusPilotes.length !== (membre.joueurs === 2 ? 2 : 1)) return null;
+    for (let n = 0; n < m.pneusPilotes.length; n++) if (!B.pneus.estJouable(m.pneusPilotes[n])) return null;
+    return m.pneusPilotes.slice();
+  }
+  function refuserVersionPneus() {
+    annulerConfirmation(); EL.course = null;
+    if (ecran === 'prets') aller('enligne');
+    majCourseSalon();
+    etatEnLigne('Versions incompatibles : rechargez la même version du jeu sur chaque machine.');
+  }
+  function humainsDepartValides(humains) {
+    if (!Array.isArray(humains) || humains.length < 2 || humains.length > 4) return false;
+    const nombres = new Map();
+    for (const h of humains) {
+      if (!h || typeof h !== 'object' || Array.isArray(h) || !Number.isInteger(h.machine)) return false;
+      const membre = EL.R && EL.R.membres.find(x => x.id === h.machine);
+      if (!membre) return false;
+      const n = (nombres.get(h.machine) || 0) + 1;
+      if (n > (membre.joueurs === 2 ? 2 : 1)) return false;
+      nombres.set(h.machine, n);
+    }
+    return nombres.has(0) && nombres.size >= 2;
   }
   function nouvelleLiaison() {
     annulerConfirmation();
@@ -77552,6 +77740,9 @@ FERRO.initPhysics().then(function(){
     if (!m || typeof m !== 'object' || !EL.R) return;
     const S = session;
     if (m.t === 'depart' && de === 0 && EL.role === 'invite' && m.cfg) {
+      if (m.cfg.versionChoixPneus !== VERSION_CHOIX_PNEUS || !humainsDepartValides(m.cfg.humains) ||
+        !Array.isArray(m.cfg.pneus) || m.cfg.pneus.length !== m.cfg.humains.length ||
+        !Array.from(m.cfg.pneus).every(p => B.pneus.estJouable(p))) { refuserVersionPneus(); return; }
       const humains = (Array.isArray(m.cfg.humains) ? m.cfg.humains : []).slice(0, 4).map(h => ({ nom: propre(h.nom), machine: h.machine | 0 }));
       const locaux = humains.map((h, k) => h.machine === EL.R.id ? k : -1).filter(k => k >= 0);
       annulerConfirmation();
@@ -77561,7 +77752,7 @@ FERRO.initPhysics().then(function(){
     else if (m.t === 'confirmer' && de === 0 && EL.role === 'invite') {
       if (!recevoirCourse(m.course)) return;
       annulerConfirmation();
-      EL.confirmation = { prets: new Set() }; EL.pretIci = false;
+      EL.confirmation = { prets: new Set(), incompatibles: new Set() }; EL.pretIci = false;
       if (ecran !== 'course' && ecran !== 'pause') aller('prets');
       majCourseSalon();
     } else if (m.t === 'prets' && de === 0 && EL.confirmation) { EL.confirmation.prets = new Set((Array.isArray(m.liste) ? m.liste : []).map(x => x | 0)); majPrets(); }
@@ -77571,11 +77762,16 @@ FERRO.initPhysics().then(function(){
       if (ecran === 'prets') aller('enligne');
       etatEnLigne('L’hôte a annulé le départ.'); majCourseSalon();
     } else if (m.t === 'pret' && EL.role === 'hote' && EL.confirmation && EL.R.membres.some(x => x.id === de) && EL.R.pretAvec(de)) {
-      if (B.conduite.PNEUS[m.pneus]) EL.pneusDe.set(de, m.pneus);
-      if (m.oui) EL.confirmation.prets.add(de); else EL.confirmation.prets.delete(de);
+      const choix = lireChoixPneusMessage(m, de), C = EL.confirmation;
+      if (m.oui === true && choix) { EL.pneusDe.set(de, choix); C.prets.add(de); C.incompatibles.delete(de); }
+      else { C.prets.delete(de); if (m.oui !== false) C.incompatibles.add(de); }
       diffuserPrets();
-    } else if (m.t === 'pneus' && EL.role === 'hote' && EL.R.membres.some(x => x.id === de)) {
-      if (B.conduite.PNEUS[m.pneus]) EL.pneusDe.set(de, m.pneus);
+    } else if (m.t === 'pneus' && EL.role === 'hote' && EL.R.membres.some(x => x.id === de) && EL.R.pretAvec(de)) {
+      const choix = lireChoixPneusMessage(m, de), avant = EL.pneusDe.get(de), C = EL.confirmation;
+      if (choix) EL.pneusDe.set(de, choix);
+      if (C && (!choix || !avant || choix.some((p, n) => p !== avant[n]))) {
+        C.prets.delete(de); if (choix) C.incompatibles.delete(de); else C.incompatibles.add(de); diffuserPrets();
+      }
     } else if (m.t === 'arrivee' && S && S.enLigne) {
       const v = S.course.voitures[m.id];
       if (v && v.distant && Number.isFinite(m.temps)) { v.tempsOfficiel = m.temps; if (v.fini) v.tempsFinal = m.temps; }   // temps officiel
@@ -77620,8 +77816,8 @@ FERRO.initPhysics().then(function(){
     const k = EL.course || { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, ...conditionsCommunes(conditionsDuDepart()) };
     const graine = ++graineCourse;
     const conseil = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoPourConditions(k, k.i, graine)));
-    const cfg = { graine, i: k.i, tours: k.tours, difficulte: k.difficulte, ...conditionsCommunes(k), T0: R.horloge() + 4000, dateDepart: Date.now() + 4000, humains,
-      pneus: humains.map(h => { const p = h.machine === 0 ? reglages.pneus : EL.pneusDe.get(h.machine); return B.conduite.PNEUS[p] ? p : conseil; }) };
+    const cfg = { graine, i: k.i, tours: k.tours, difficulte: k.difficulte, ...conditionsCommunes(k), T0: R.horloge() + 4000, dateDepart: Date.now() + 4000, humains, versionChoixPneus: VERSION_CHOIX_PNEUS,
+      pneus: humains.map(h => { const choix = h.machine === R.id ? choixPneusLocaux() : EL.pneusDe.get(h.machine); const p = choix && choix[h.local]; return B.pneus.estJouable(p) ? p : conseil; }) };
     R.envoyer({ t: 'depart', cfg });
     lancerEnLigne(Object.assign({}, cfg, { locaux: humains.map((h, k) => h.machine === 0 ? k : -1).filter(k => k >= 0), role: 'hote' }));
   }
@@ -78522,6 +78718,7 @@ FERRO.initPhysics().then(function(){
     let ombreDebut = 0, ombreFin = 0; // objets de la voiture filmée dans sortie : sa tuile d'ombre (src/ombres.js)
     for (let k = 0; k < co.voitures.length; k++) {
       const p = poses[k], dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], d2 = dx * dx + dz * dz;
+      B.voiture.changerPneus(S.modeles[k], co.voitures[k].etat.pneus);
       const ev = poseRendu(k, p, RV[k], co.voitures[k].etat.v, co.voitures[k].etat.etatPneus);
       // Hystérésis propre à cette vue : ni la seconde moitié d'écran ni les deux miroirs ne la réécrivent.
       const rouesDetail = S.detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos), tanDemi, hauteur, S.detailsRoues[k]);
@@ -78934,7 +79131,7 @@ FERRO.initPhysics().then(function(){
       if (!session || session.type !== 'vitrine' || (nom === 'preparation' && session.i !== reglages.circuit)) lancerVitrine(nom === 'preparation' ? reglages.circuit : (session ? session.i : reglages.circuit));
     }
     // en ligne, la pause n'arrête pas la course : pas de « Recommencer »
-    if (nom === 'pause') { $('b-recommencer').hidden = !!(session && session.enLigne); $('b-replacer').hidden = aDeux(); }
+    if (nom === 'pause') { $('b-recommencer').hidden = !!(session && session.enLigne); $('b-replacer').hidden = aDeux(); majPneusStands(); }
     if (nom === 'enligne') majSalon();
     if (nom === 'prets') majPrets();
     tactile(nom === 'course' && !aDeux());
@@ -79100,12 +79297,83 @@ FERRO.initPhysics().then(function(){
   // Présélection des pneus selon la météo prévue (David, 16/11) : au soleil des slicks, sous la pluie des pneus
   // pluie ; la météo aléatoire est tirée d'avance (même graine que la course qui va partir). Le pilote peut changer.
   const NOMS_PNEUS = B.pneus.NOMS_PNEUS;
+  // L'ancienne préférence appartient désormais aux deux pilotes locaux. Un choix manuel reste mémorisé ;
+  // « Conseillés » suit la chaussée prévue sans écraser la préférence manuelle de l'autre pilote.
+  function initialiserChoixPneus(source) {
+    const s = source && typeof source === 'object' ? source : {}, pneusPilotes = B.pneus.normaliserChoixPilotes(s);
+    const ancienChoix = Object.prototype.hasOwnProperty.call(s, 'pneus') || Object.prototype.hasOwnProperty.call(s, 'pneusPilotes');
+    const pneusAutoPilotes = [0, 1].map(n => Array.isArray(s.pneusAutoPilotes) ? s.pneusAutoPilotes[n] === true : !ancienChoix);
+    return { pneus: pneusPilotes[0], pneusPilotes, pneusAutoPilotes };
+  }
+  function choixPneusLocaux() { return B.pneus.normaliserChoixPilotes(reglages); }
+  function pneusAutomatiques(n) { return !!(Array.isArray(reglages.pneusAutoPilotes) && reglages.pneusAutoPilotes[n] === true); }
+  function appliquerConseilPneus(type) {
+    if (!B.pneus.estJouable(type)) return;
+    const choix = choixPneusLocaux();
+    for (let n = 0; n < 2; n++) if (pneusAutomatiques(n)) choix[n] = type;
+    reglages.pneusPilotes = choix; reglages.pneus = choix[0];
+  }
+  function choisirPneusPilote(n, type) {
+    if ((n !== 0 && n !== 1) || (type !== 'auto' && !B.pneus.estJouable(type))) return false;
+    const choix = choixPneusLocaux(), automatiques = [pneusAutomatiques(0), pneusAutomatiques(1)];
+    automatiques[n] = type === 'auto';
+    if (type === 'auto') {
+      const surface = ecran === 'prets' && EL.course ? surfaceAnnoncee(EL.course) :
+        B.chaussee.lire(null, 0, meteoPourConditions(conditionsDuDepart(), reglages.circuit, graineCourse + 1));
+      choix[n] = B.conduite.pneusConseilles(surface);
+    } else choix[n] = type;
+    reglages.pneusPilotes = choix; reglages.pneusAutoPilotes = automatiques; reglages.pneus = choix[0];
+    return true;
+  }
+  function majChoixPneus() {
+    const choix = choixPneusLocaux(), membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
+    const duoPreparation = modePrepa === 'duo' || (modePrepa === 'enligne' && membre && membre.joueurs === 2);
+    $('o-pneus-2').hidden = !duoPreparation;
+    $('pr-pneus-2').hidden = !(membre && membre.joueurs === 2);
+    for (let n = 0; n < 2; n++) {
+      const valeur = pneusAutomatiques(n) ? 'auto' : choix[n];
+      for (const nom of [n ? 'pneus2' : 'pneus', n ? 'pneusPret2' : 'pneusPret'])
+        for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = r.value === valeur;
+    }
+  }
+  function monterPneusDepart(course, joue, enl, conseil) {
+    const choix = choixPneusLocaux(); let local = 0;
+    for (const v of course.voitures) {
+      const type = enl && v.humain ? enl.pneus && enl.pneus[v.id] : v.joueur && joue ? choix[local++] : conseil;
+      v.etat.pneus = B.pneus.estJouable(type) ? type : conseil;
+      v.etat.pneusProchainArret = v.etat.pneus;
+      v.livree.pneus = v.etat.pneus;
+    }
+  }
+  // Choix de service attaché à la voiture de la séance, sans changer les pneus actuellement montés.
+  function choisirPneusStands(n, type) {
+    if (!session || session.enLigne || ecran !== 'pause' || (n !== 0 && n !== 1)) return false;
+    const co = session.course, id = session.locaux && session.locaux[n], v = co && co.voitures[id];
+    const accepte = !!(v && B.course.demanderPneus(co, v, type));
+    majPneusStands(); return accepte;
+  }
+  function majPneusStands() {
+    const S = session, co = S && S.course;
+    $('pneus-stands').hidden = !(co && S.type !== 'demo' && S.type !== 'vitrine');
+    texte($('ps-note'), S && S.enLigne ? 'En ligne, les stands renouvellent la monte de départ.' :
+      'Choisissez la monte de chaque pilote. Les quatre pneus seront changés à la fin du service au garage.');
+    for (let n = 0; n < 2; n++) {
+      const id = S && S.locaux && S.locaux[n], v = co && co.voitures[id], zone = $('ps-pilote-' + n);
+      zone.hidden = !v; if (!v) continue;
+      const et = v.etat, st = et.stands, service = st && st.phase === 'service';
+      const type = B.pneus.estJouable(et.pneusProchainArret) ? et.pneusProchainArret : et.pneus;
+      zone.disabled = !!(S.enLigne || service || v.distant || v.reprise || v.fini || v.abandon || co.termine);
+      for (const r of document.querySelectorAll('input[name="pneusStand' + n + '"]')) r.checked = r.value === (service ? st.pneus : type);
+      texte($('ps-etat-' + n), service ? 'Service en cours : ' + NOMS_PNEUS[st.pneus] + '. Choix verrouillé jusqu’à sa fin.' :
+        'Montés : ' + NOMS_PNEUS[et.pneus] + ' · prochain arrêt : ' + NOMS_PNEUS[type] + '.');
+    }
+  }
   function preselectionnerPneus() {
     const k = conditionsDuDepart();
     const prevue = meteoPourConditions(k, reglages.circuit, graineCourse + 1);
-    reglages.pneus = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, prevue));
-    for (const r of document.querySelectorAll('input[name="pneus"]')) r.checked = r.value === reglages.pneus;
-    $('p-pneus-conseil').textContent = 'Conseillés pour cette chaussée : ' + NOMS_PNEUS[reglages.pneus].toLowerCase() + '.';
+    const conseil = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, prevue));
+    appliquerConseilPneus(conseil); majChoixPneus();
+    $('p-pneus-conseil').textContent = 'Conseillés pour cette chaussée : ' + NOMS_PNEUS[conseil].toLowerCase() + '.';
   }
   function majPreparation() {
     preselectionnerPneus();
@@ -79132,15 +79400,15 @@ FERRO.initPhysics().then(function(){
     }
     if (t.name === 'tours' || t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
     if (t.name === 'meteo') { reglages.meteo = t.value; sauverReglages(); preselectionnerPneus(); }
-    if (t.name === 'pneus' && B.conduite.PNEUS[t.value]) { reglages.pneus = t.value; sauverReglages(); }
-    if (['pneusIci', 'pneusPret', 'boitePret', 'vuePret', 'boite', 'vue'].includes(t.name)) retirerPret();
-    if ((t.name === 'pneusIci' || t.name === 'pneusPret') && B.conduite.PNEUS[t.value]) {
-      reglages.pneus = t.value; sauverReglages(); envoyerPneus();
+    if (['pneus', 'pneus2', 'pneusIci', 'pneusPret', 'pneusPret2'].includes(t.name) && choisirPneusPilote(t.name.endsWith('2') ? 1 : 0, t.value)) {
+      retirerPret(); sauverReglages(); envoyerPneus(); majChoixPneus();
     }
+    if (['boitePret', 'vuePret', 'boite', 'vue'].includes(t.name)) retirerPret();
+    if (/^pneusStand[01]$/.test(t.name)) choisirPneusStands(+t.name.slice(-1), t.value);
     if (t.name === 'boitePret' && ['auto', 'manuelle'].includes(t.value)) { reglages.boite = t.value; sauverReglages(); }
     if (t.name === 'vuePret' && ['cockpit', 'poursuite'].includes(t.value)) { reglages.vue = t.value; sauverReglages(); }
     if (['meteo', 'momentDepart', 'saisonDepart', 'saisonMode', 'momentMode', 'meteoMode'].includes(t.name) && ecran === 'preparation') actualiserConditions();
-    if (EL.role === 'hote' && lienActif() && ['tours', 'difficulte', 'pneus'].includes(t.name)) annoncerCourse();
+    if (EL.role === 'hote' && lienActif() && ['tours', 'difficulte'].includes(t.name)) annoncerCourse();
     if (t.name === 'joueursIci') { reglages.joueursLocaux = t.value === '2' ? 2 : 1; sauverReglages(); }
     if (t.name === 'partage') { reglages.partage = t.value === 'cote' ? 'cote' : 'haut-bas'; sauverReglages(); }
     if (/^r?cmd[01]$/.test(t.name) && NOMS_COMMANDES[t.value]) {
@@ -80509,13 +80777,14 @@ FERRO.initPhysics().then(function(){
     const depart = options.depart === 'tunnel' ? c.tunnel.debut - 40 : (options.depart ?? 800);
     if (!Number.isFinite(depart)) throw new Error('abscisse de départ invalide');
     restaurerReference();
-    const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'moment', 'saison', 'retro', 'meteo', 'saisonMode', 'momentMode', 'meteoMode', 'pneus', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
+    const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'moment', 'saison', 'retro', 'meteo', 'saisonMode', 'momentMode', 'meteoMode', 'pneus', 'pneusPilotes', 'pneusAutoPilotes', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
     const avant = Object.fromEntries(cles.map(k => [k, reglages[k]])), decorAvant = decorEnrichi;
     Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', secousses: 0, vibrations: 'non', champ: 60 });
     Object.assign(reglages, B.graphismes.normaliserOptions(options));
     reglages.moment = B.ambiance.normaliser(options.moment ?? 'jour');
     reglages.saison = B.saisons.normaliser(options.saison ?? 'ete');
     reglages.pneus = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoPourConditions({ meteo, saison: reglages.saison }, i, graine)));
+    reglages.pneusPilotes = [reglages.pneus, reglages.pneus]; reglages.pneusAutoPilotes = [true, true];
     decorEnrichi = options.decor !== 'reference';
     graineCourse = graine - 1;
     // l'ancre du décor se fixe avant la construction de la scène : une séance de référence est filmée au palier demandé

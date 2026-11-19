@@ -4,23 +4,26 @@
     "branche": "codex/bitume-12f2-revue-20261119",
     "base_commit": "1df6f6872e9d6962d6561b9b371d41042567a915",
     "base_version": "0.2.48",
-    "version_courante": "0.2.48",
+    "version_courante": "0.2.49",
     "version_publiee_verifiee": "0.2.48",
-    "statut": "12F2_sources_raccordees_qualification_en_cours",
+    "statut": "12F2_qualifie_CPU_publication_revue_en_cours",
     "lot": "12F2_choix_pneus_par_pilote",
     "fiche": "docs/reprise/12F2-CHOIX-PNEUS-PAR-PILOTE.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "publication_base": "docs/reprise/rapports/12F2-2026-11-19/BASE-0248.json",
-    "prochaine_action": "Terminer requalification ciblée, construire et publier branche de revue. Fusion main soumise à autorisation après refus automatique. Ensuite 12F3.",
+    "publication_base": "docs/reprise/rapports/12F1-2026-11-19/PUBLICATION-0248.json",
+    "prochaine_action": "Vérifier la publication de revue 0.2.49 et enregistrer son reçu. Fusion main uniquement après autorisation correspondante. Puis 12F3 réseau usure.",
     "physique": "p11 ; références p9/p10/p11 conservées",
-    "safari": "Corrigé, confirmé par David ; chantier clos."
+    "safari": "Corrigé, confirmé par David ; chantier clos.",
+    "checkpoint_sources": "bd13f067d94f4666292d4399473ecd55f427b8e6",
+    "qualification": "docs/reprise/rapports/12F2-2026-11-19/qualification-execution.json",
+    "suivi_base_integre": "9a42198985de8aa8016e0679ddedc925ae39264d"
   },
   "validation": {
-    "date_utc": "2026-11-19T10:39:21.391298+00:00",
-    "version": "0.2.48",
+    "date_utc": "2026-11-19T11:01:37.723068+00:00",
+    "version": "0.2.49",
     "physique": "p11",
-    "suites": 100,
-    "reussies": 99,
+    "suites": 103,
+    "reussies": 102,
     "echecs": [
       "traces.test.mjs"
     ],
@@ -28,25 +31,27 @@
     "determinisme": {
       "scenarios": 20,
       "empreintes": 1300,
-      "generation": 0,
+      "fixture_regeneree": false,
+      "fixture_inchangee": true,
       "verification": 0,
       "archives": {
         "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+        "verifications/fixtures/determinisme-p11.json": "c2453f9f896014a45020678c071a10aed656243ef542565538c571d7fc9430b7",
         "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a"
       }
     },
     "build": {
-      "sha256": "716f9f85873b490e92cea5c3684a0c0133ec2541dd0ab8235b223511e5680d5b",
-      "bytes": 14006845,
+      "sha256": "72b18fa2bc3aad3f0735296b5f56b98c67dcb75bcfc77cd3059d1404eb495c9c",
+      "bytes": 14024804,
       "reproductible": true,
       "codes": [
         0,
         0
       ],
       "hashes": {
-        "VERSION.json": "b2456aae684c049f1c90ca37aa2a69937e0857ab2f8ea3516018d677eb7df4ab",
-        "SIZE.json": "e484c3a900e6e07738adcd9d4be71a9a0c9a49d113796a1fb987b65c6d9d129b",
-        "dist/bitume.html": "716f9f85873b490e92cea5c3684a0c0133ec2541dd0ab8235b223511e5680d5b"
+        "VERSION.json": "936d4a0260e284fdc0f27ff95006115bb1786d7ad8623993c38accb2452b4a3a",
+        "SIZE.json": "e5d9c74264b6e7a3507163060bd78f6a1cdf4cf9bd317428be2a8b9ed7f1b382",
+        "dist/bitume.html": "72b18fa2bc3aad3f0735296b5f56b98c67dcb75bcfc77cd3059d1404eb495c9c"
       }
     },
     "bundle": {
@@ -112,7 +117,13 @@
     },
     "webgl_valide": false,
     "deploiement_effectue": false,
-    "lot": "12F1_base_0248"
+    "lot": "12F2",
+    "statut": "CPU_avec_reserve_traces_heritee",
+    "methode": "103 suites exécutées, puis 13 suites pertinentes rejouées après les corrections bornées ; première passe et manifeste conservés.",
+    "requalification": "corrections.json",
+    "reserve_heritee": "reserve-traces.json",
+    "performance_materielle_mesuree": false,
+    "variabilite_decor": "Seuil de construction du décor réussi pendant ce passage ; réserve de variabilité historique 12E conservée, aucune mesure matérielle de FPS."
   },
   "catalogue": {
     "jouables": 7,
@@ -147,5 +158,13 @@
     "docs/reprise/archives/ETAT-AVANT-CLOTURE-12ABC-2026-11-19.json",
     "docs/reprise/PILOTAGE-2026-11-18.md"
   ],
-  "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé."
+  "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé.",
+  "publication": {
+    "branche_revue": "codex/bitume-12f2-revue-20261119",
+    "checkpoint_sources": "bd13f067d94f4666292d4399473ecd55f427b8e6",
+    "main_modifie_par_cette_session": false,
+    "fusion_autorisee": false,
+    "statut": "en_cours",
+    "motif": "Refus automatique du push direct main ; alternative de revue, sans fusion."
+  }
 }

@@ -1,0 +1,5 @@
+ok jour/nuit sur chaque circuit, sans modifier la météo ni la densité de brume
+ok la nuit est accessible immédiatement et le cycle garde une transition continue
+ok tampons partagés entre vues et actualisation de lumière bornée
+ok petit profil sans faune, maximum manuel conservé et prairie adaptée à Auto
+4 contrôles ambiance/nature réussis.

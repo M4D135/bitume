@@ -1,11 +1,11 @@
 # BITUME — plan maître Russie, Monaco, Marseille, roues et pneus
 
-Date du plan : **18 novembre 2026**. État actualisé le **19 novembre 2026** : **12A–12C publiés en 0.2.45 (`71354f0`), 12D en 0.2.46 (`9c49abad`)**. **12E / 0.2.47 qualifié CPU avec réserves, publication en cours**, physique **p10** ; checkpoint `0cca9ea`. Voir [la fiche 12E](12E-CHAUSSEE-ADHERENCE.md) et le rapport final. **12F1 stands/affichage préparé séparément**, réseau restant ; réserves WebGL et déploiement conservées.
+Date du plan : **18 novembre 2026**. État au **19 novembre 2026** : **12A–12F1 publiés**, base **0.2.48 / p11 (`1df6f687`)**, suivi `9a421989`. **12F2 / 0.2.49 qualifié CPU, publication de revue en cours** sur `codex/bitume-12f2-revue-20261119`, checkpoint `bd13f067`. Fiche [12F2](12F2-CHOIX-PNEUS-PAR-PILOTE.md). **12F3 réseau usure/services restant** ; WebGL et déploiement distincts.
 Demande de David : ajouter un circuit en Russie et un Monaco « ultra fidèle », refaire les roues bien rondes et plus réalistes, différencier les sculptures pluie/neige et les slicks lisses, montrer les traces d’usure au fil de la course, puis publier ce plan avant de commencer.
 
 Complément demandé dans la même reprise : **Spéciale Marseille à partir de la carte EMPRISE, avec ajout de relief**, et master liste complète pour Claude Fable. Entrée de passation : [MASTER-LISTE-CLAUDE-FABLE.md](../../MASTER-LISTE-CLAUDE-FABLE.md).
 
-Base historique de l’étude : **BITUME 0.2.38**, livraison `baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902`, reprise `9f9f97ca7dee3154f8ec517adaba675e0ec81ea4`, **FERRO 0.3.9**, sept circuits. Base fonctionnelle publiée vérifiée à cette reprise : **0.2.46 (`9c49abad`)**, **FERRO 0.3.11**, 34 modules inchangés dans 12E, toujours sept circuits. Ce plan fait autorité pour ce chantier ; les décisions plus anciennes restent applicables lorsqu’elles ne sont pas remplacées ici.
+Base historique de l’étude : **BITUME 0.2.38**, livraison `baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902`, reprise `9f9f97ca7dee3154f8ec517adaba675e0ec81ea4`, **FERRO 0.3.9**, sept circuits. Base fonctionnelle publiée vérifiée à cette reprise : **0.2.48 (`1df6f687`)**, **FERRO 0.3.11**, 34 modules inchangés dans 12F2, toujours sept circuits. Ce plan fait autorité pour ce chantier ; les décisions plus anciennes restent applicables lorsqu’elles ne sont pas remplacées ici.
 
 ## 1. Résultat attendu et décisions de départ
 
@@ -29,7 +29,7 @@ Base historique de l’étude : **BITUME 0.2.38**, livraison `baf4ddfc2b4ab670bc
 
 ## 2. État réel du code et points à traiter
 
-Constats historiques de lecture sur la base 0.2.38, conservés pour expliquer les choix du plan. Ils ne décrivent plus l’état courant des roues/pneus : 12A–12D sont publiés et 12E est implémenté en p10, qualification CPU avec réserves achevée, publication en cours. Pour reprendre ces lots, suivre leur fiche et leur reçu actuels, sans réimplémenter ce tableau :
+Constats historiques de lecture sur la base 0.2.38, conservés pour expliquer les choix du plan. Ils ne décrivent plus l’état courant des roues/pneus : 12A–12F1 sont publiés et 12F2 est qualifié en p11 sur la branche de revue. Pour reprendre ces lots, suivre leur fiche et leur reçu actuels, sans réimplémenter ce tableau :
 
 | Élément | État observé en 0.2.38 | Conséquence initiale pour le chantier |
 |---|---|---|
@@ -50,7 +50,7 @@ Les dimensions de la voiture restent la référence : pneus avant de rayon **0,2
 
 ## 3. Lots d’exécution et points de publication
 
-Les critères ci-dessous restent les conditions de clôture. **12A–12C publiés en 0.2.45, 12D en 0.2.46**. **12E / 0.2.47 qualifié CPU avec réserves, publication à vérifier** : chaussée commune, choix neige, usure physique, règles joueur/IA et records/fantômes p10 ; fixture p9 intacte. Passage final après borne de deux essais : **96/98 suites**, traces hérité identique et décor Haut-Col **194 ms > 150 ms**, réserve performance non levée. **20 scénarios / 1 300 empreintes p10**, neuf parcours sans anomalie ni stagnant sans accident ≥15 s et trois replacements au total. Le rapport `rapports/12E-2026-11-19/qualification-finale.json` fait autorité. WebGL, mesures matérielles et déploiement restent non validés. **12F1 est préparé séparément ; réseau et circuits restent à réaliser.**
+Les critères ci-dessous restent les conditions de clôture. **12A–12F1 publiés jusqu’à 0.2.48 / p11**. **12F2 / 0.2.49 qualifié CPU en revue** : 103 suites exécutées puis 13 revalidations ciblées, **102/103 réussies**, seul échec traces hérité identique. **20 scénarios / 1 300 empreintes p11** identiques, sans régénérer la fixture. Deux builds identiques, 34 modules FERRO inchangés. Rapport `rapports/12F2-2026-11-19/qualification-execution.json`. Le seuil décor réussit ce passage ; conserver la réserve de variabilité observée en 12E. WebGL, mesures matérielles et déploiement non validés. **12F3, stratégie de stands IA et circuits restent à réaliser.**
 
 | Ordre / lot | Travail | Condition pour clôturer le lot |
 |---|---|---|
@@ -75,7 +75,7 @@ Les critères ci-dessous restent les conditions de clôture. **12A–12C publié
 | 15E | Marseille : rendu et performances. | Captures/tour filmé, détails et ressources mesurés sur le corridor. |
 | 15F | Marseille : livraison. | Sources/tests/build publiés, contrôle production séparé, reçu et reprise. |
 
-**Lot actif : vérifier la publication de 12E / 0.2.47, qualifié CPU avec réserves** ; fiche [12E-CHAUSSEE-ADHERENCE.md](12E-CHAUSSEE-ADHERENCE.md). Puis poursuivre **12F1 — stands et affichage**, préparé dans une autre copie, avant les sous-lots réseau. Ne pas relancer 12A–12E ni rouvrir Safari ; réserve WebGL explicite.
+**Lot actif : publier et vérifier la revue 12F2 / 0.2.49**, puis fusion autorisée ; fiche [12F2](12F2-CHOIX-PNEUS-PAR-PILOTE.md). Ensuite **12F3**, transmission usure/type/services. Le choix d’une autre monte au stand est actif en solo/duo ; en ligne les stands renouvellent la monte de départ jusqu’à 12F3. Ne pas reprendre 12A–12F1 ni Safari. Le refus automatique main est documenté dans la reprise.
 
 ## 4. Roues : géométrie, matière et rotation
 
@@ -390,8 +390,8 @@ Sources internes : `src/voiture.js`, `src/carene.js`, `src/conduite.js`, `src/de
 - [x] 12C — sculptures et matériaux : publié en 0.2.45 ; réserve WebGL, choix neige raccordé dans le chantier 12E.
 - [x] 12D — usure visible progressive et saleté réversible : publié en 0.2.46 ; réserve WebGL.
 - [x] 12E — neige, adhérence et usure physique p10 : qualifié CPU avec réserves en 0.2.47 après bornage du recul ; 96/98 suites, traces hérité et réserve performance décor. WebGL non validé.
-- [ ] Publication 12E — sources, tests, build 0.2.47 et preuves contrôlés sur le distant ; déploiement traité séparément.
-- [ ] 12F — 12F1 stands/affichage préparé séparément ; réseau versionné 12F2/12F3 et intégration restant à livrer.
+- [x] Publication 12E — sources, tests, build 0.2.47 et preuves contrôlés sur main (`c55cde2`) ; déploiement séparé.
+- [ ] 12F — 12F1 publié en 0.2.48 ; 12F2 qualifié en revue 0.2.49 ; 12F3 usure/services réseau et stratégie IA restent à livrer.
 - [ ] 13A — Russie, tracé et relief.
 - [ ] 13B — Russie, décor et livraison.
 - [ ] 14A — Monaco, dossier de référence métrique.

@@ -1,0 +1,17 @@
+✔ le décor de Haut-Col fournit des lampes et le tunnel est droit (0.841403ms)
+✔ la lumière monte et descend sans saut le long de la piste (30.117375ms)
+✔ hors de portée, plus aucune lampe ; sous la voûte, la piste est éclairée (1.568625ms)
+✔ le plafond de huit n est jamais ce qui éteint une lampe (5.053246ms)
+✔ chaque caméra garde son propre état temporel (0.440832ms)
+✔ l état est repris quand la scène change (0.208092ms)
+✔ un état né dans l image est compté ; pas nul et remise à zéro ne réallouent rien (1.421935ms)
+✔ l abri de la pluie et l œil suivent la caméra, pas la voiture (0.336024ms)
+✔ les reflets d écran ne clignotent plus au seuil d humidité (1.067392ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 48.225851

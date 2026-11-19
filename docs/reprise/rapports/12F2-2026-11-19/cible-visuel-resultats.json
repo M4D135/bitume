@@ -1,0 +1,30 @@
+{
+  "date": "2026-11-19T10:50:03.372134+00:00",
+  "suites": [
+    {
+      "suite": "roues-detail",
+      "code": 0,
+      "fin": "8 vérifications réussies"
+    },
+    {
+      "suite": "usure-visuelle",
+      "code": 0,
+      "fin": "8 contrôles usure visuelle réussis"
+    },
+    {
+      "suite": "voiture",
+      "code": 0,
+      "fin": "33 vérifications réussies"
+    }
+  ],
+  "nouveau_test": {
+    "suite": "pneus-service-visuel",
+    "code": 0,
+    "controles": 6,
+    "log": "pneus-service-visuel.log"
+  },
+  "hashes": {
+    "src/voiture.js": "6a23d4a02be41cdf834ad3148b06b86847f93db3cb8148bc73498220dea1e523",
+    "verifications/pneus-service-visuel.test.mjs": "0ed306b6e5398a40dbc159c68d2ad345c3a11f664951ae9cde8d96f1bafa51ba"
+  }
+}
