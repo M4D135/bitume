@@ -1,0 +1,40 @@
+Vérifications de la correction du 19/11 (lot 21, étape 1), dans l'ordre où elles ont tourné
+
+FERRO, arbre ferro-wt/photo (branche lot/photo, 0.3.11 corrigé)
+- node --test tests/ferro/ (02 h 46, après la dernière retouche de src/ferro/renderer.js et du test) :
+  195 tests, 194 réussis, 0 échec, 1 « todo » (fphysics.test.mjs, « déplacement depuis le premier contact »,
+  déjà présent en 0.3.10).
+- tests/ferro/renderer-ombres-photo.test.mjs : 13 tests sur 13, dont :
+  - sans ombresPhoto, sources des shaders et suite complète des appels GL égales à celles de FERRO 0.3.10 pour huit
+    jeux de réglages de création (dont EMPRISE, Point de rupture et METAL), avec et sans foule de l'hôte ;
+  - une foule de l'hôte (fx.foule) garde ses textures sur les unités 8 à 10 ; ce test échoue sur b2fe5bf (0.3.11 tel
+    que relu) et passe sur le corrigé ;
+  - ombresPhoto.pcss false compile le shader sans le bloc PCSS ;
+  - la répartition de la tuile n'alloue rien par image.
+- python3 tools/build.py (03 h 38, après les dernières retouches des README) : « 34 reference modules verified » ;
+  dist/FERRO-0.3.11.zip, 43 fichiers, 6 273 755 octets, sha256 04f31e52fbe2ccdd… (le même qu'à la construction de
+  02 h 08 : l'archive emporte docs/FERRO-UNIFIED.md, pas README.md).
+- src/ferro/renderer.js, dist/ferro-runtime/modules/renderer.js et la copie de BITUME : même sha256
+  (8f609d9df7fffc91…).
+
+BITUME, arbre bitume-wt/moteur (branche moteur/photo, sur fluidite/integration 4b994c4)
+- Installation : python3 ferro-wt/photo/tools/install-ferro.py bitume <arbre>, jamais de retouche à la main ;
+  python3 tools/check-ferro-lock.py : « FERRO 0.3.11: 34 reference modules verified ». Depuis bca5f77, seul le module
+  render change dans FERRO.lock.json (30a27847… pour 0.3.11 tel que relu, 8f609d9d… pour 0.3.11 corrigé ; 0.3.10 :
+  08691ce4…). Réinstallation à 03 h 38, après la reconstruction : « bitume: 0.3.11 installed, 34 identical
+  modules », aucun fichier de l'arbre ne change (git status et git diff identiques avant et après).
+- python3 construire.py (02 h 08) : BITUME 0.2.41, dist/bitume.html 13 954 116 octets, sha256 e8d661ca295704f4… (la page
+  fin2.html des mesures). Le produit de construction n'est pas validé dans la branche (dist, VERSION.json et
+  SIZE.json remis à la base avant chaque commit).
+- Suites (verifications/*.test.mjs, une à une, 02 h 18 à 02 h 20) : 88 réussies sur 88, 0 en échec
+  (suites-hote.log : code de sortie et dernière ligne de chaque suite), dont ombres.test.mjs (10 tests, deux pour la
+  carte lointaine en Légère) ; options-image.test.mjs redevient celui de la base (la carte lointaine n'est plus
+  calculée dans installer(), le faux B.ombres du test ne sert plus).
+- Parcours smoke (tools/banc-navigateur.mjs --mode smoke, Chrome sans fenêtre, 02 h 18) : 7 contrôles (vue par vraie
+  touche, duo cockpit et quatre rétroviseurs, audio, retour au titre, stand, crash, onglet masqué), 0 erreur,
+  0 avertissement, sur la page e8d661ca… (13 954 116 octets).
+- Contrôle des ombres (tools/serie-fluidite.sh <page> <dossier> ombres, 02 h 14) : tous les contrôles passent
+  (controle-ombres.json ; détail dans diagnostics.txt, points 1 à 3).
+- Créations par le chemin du joueur (outils/creations/lancer.py, 02 h 17) : 0 en course et 0 après le voile, dans les
+  sept configurations (creations-fin2.log) ; même résultat sur 0.3.10 (creations-a2.log).
+- Séances de coût : stats.creations vaut 0 pendant les images mesurées de toutes les séances (couts.txt, § 4).

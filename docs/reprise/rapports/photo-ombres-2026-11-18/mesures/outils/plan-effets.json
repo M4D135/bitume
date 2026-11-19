@@ -1,0 +1,250 @@
+{
+ "outil": "/Users/david/Projects/bitume-wt/moteur/tools/page-essai.mjs",
+ "modele": "/private/tmp/ombres-corr/couts/modele2.js",
+ "pages": {
+  "v0": "/private/tmp/ombres-corr/b02.html",
+  "v1n": "/private/tmp/ombres-corr/v1n.html"
+ },
+ "scenes": [
+  {
+   "nom": "fine-cockpit",
+   "ref": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 80,
+   "variantes": {
+    "v0": [
+     {},
+     {
+      "contacts": null
+     },
+     {
+      "ombreProche": null
+     },
+     {
+      "ombreLoin": false
+     },
+     {
+      "penombre": null
+     },
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     },
+     {}
+    ],
+    "v1n": [
+     {},
+     {
+      "contacts": null
+     },
+     {
+      "ombreProche": null
+     },
+     {
+      "ombreLoin": false
+     },
+     {
+      "penombre": null
+     },
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     },
+     {}
+    ]
+   }
+  },
+  {
+   "nom": "fine-poursuite",
+   "ref": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "poursuite",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 80,
+   "variantes": {
+    "v0": [
+     {},
+     {
+      "contacts": null
+     },
+     {
+      "ombreProche": null
+     },
+     {
+      "ombreLoin": false
+     },
+     {
+      "penombre": null
+     },
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     },
+     {}
+    ],
+    "v1n": [
+     {},
+     {
+      "contacts": null
+     },
+     {
+      "ombreProche": null
+     },
+     {
+      "ombreLoin": false
+     },
+     {
+      "penombre": null
+     },
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     },
+     {}
+    ]
+   }
+  },
+  {
+   "nom": "moyenne-cockpit",
+   "ref": {
+    "circuit": 0,
+    "qualite": "medium",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 80,
+   "variantes": {
+    "v0": [
+     {},
+     {
+      "contacts": null
+     },
+     {
+      "ombreProche": null
+     },
+     {
+      "ombreLoin": false
+     },
+     {
+      "penombre": null
+     },
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     },
+     {}
+    ],
+    "v1n": [
+     {},
+     {
+      "contacts": null
+     },
+     {
+      "ombreProche": null
+     },
+     {
+      "ombreLoin": false
+     },
+     {
+      "penombre": null
+     },
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     },
+     {}
+    ]
+   }
+  },
+  {
+   "nom": "legere-cockpit",
+   "ref": {
+    "circuit": 0,
+    "qualite": "low",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 80,
+   "variantes": {
+    "v0": [
+     {},
+     {
+      "contacts": null
+     },
+     {
+      "ombreProche": null
+     },
+     {
+      "ombreLoin": false
+     },
+     {
+      "penombre": null
+     },
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     },
+     {}
+    ],
+    "v1n": [
+     {},
+     {
+      "contacts": null
+     },
+     {
+      "ombreProche": null
+     },
+     {
+      "ombreLoin": false
+     },
+     {
+      "penombre": null
+     },
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     },
+     {}
+    ]
+   }
+  }
+ ]
+}

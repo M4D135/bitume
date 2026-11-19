@@ -1,0 +1,64 @@
+{
+ "outil": "/Users/david/Projects/bitume-wt/moteur/tools/page-essai.mjs",
+ "modele": "/private/tmp/ombres-corr/couts/modele4.js",
+ "pages": {
+  "a": "/private/tmp/ombres-corr/a2.html",
+  "fin": "/private/tmp/ombres-corr/fin2.html",
+  "contact": "/private/tmp/ombres-corr/diag-contact.html",
+  "soleil": "/private/tmp/ombres-corr/diag-soleil.html"
+ },
+ "scenes": [
+  {
+   "nom": "legere-cockpit",
+   "ref": {
+    "circuit": 0,
+    "qualite": "low",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "a": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     }
+    ],
+    "fin": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     }
+    ],
+    "contact": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     }
+    ],
+    "soleil": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     }
+    ]
+   }
+  }
+ ]
+}

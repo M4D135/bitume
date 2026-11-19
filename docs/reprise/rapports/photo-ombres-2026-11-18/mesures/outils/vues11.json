@@ -1,0 +1,129 @@
+[
+ {
+  "nom": "1-cockpit-fine",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "vue": "cockpit",
+   "depart": 800,
+   "vitesse": 60
+  },
+  "n": 50
+ },
+ {
+  "nom": "2-poursuite-fine",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "vue": "poursuite",
+   "depart": 800,
+   "vitesse": 60
+  },
+  "n": 50
+ },
+ {
+  "nom": "3-cockpit-moyenne",
+  "ref": {
+   "circuit": 0,
+   "qualite": "medium",
+   "vue": "cockpit",
+   "depart": 800,
+   "vitesse": 60
+  },
+  "n": 50
+ },
+ {
+  "nom": "4-exterieur-legere",
+  "ref": {
+   "circuit": 0,
+   "qualite": "low",
+   "vue": "poursuite",
+   "depart": 800,
+   "vitesse": 60
+  },
+  "n": 50
+ },
+ {
+  "nom": "5-depart-grille",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "vue": "poursuite",
+   "depart": 0,
+   "vitesse": 0
+  },
+  "n": 30,
+  "cam": "{ const a = ech(-44), b = ech(18), ca = Math.cos(a.cap), sa = Math.sin(a.cap), cb = Math.cos(b.cap), sb = Math.sin(b.cap); const P = [a.x - sa * 8, a.y + 3.6, a.z + ca * 8], C = [b.x + sb * 1.5, b.y + .4, b.z - cb * 1.5]; const v = viser(P, C, 46); J.camera = () => v; info.cam = v; }"
+ },
+ {
+  "nom": "6-tribune",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "vue": "poursuite",
+   "depart": 22,
+   "vitesse": 40
+  },
+  "n": 40,
+  "cam": "{ const a = ech(6), b = ech(52), ca = Math.cos(a.cap), sa = Math.sin(a.cap), cb = Math.cos(b.cap), sb = Math.sin(b.cap); const P = [a.x - sa * 7.5, a.y + 2.2, a.z + ca * 7.5], C = [b.x + sb * 13, b.y + 2.4, b.z - cb * 13]; const v = viser(P, C, 56); J.camera = () => v; info.cam = v; }"
+ },
+ {
+  "nom": "7-vue-haute",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "vue": "poursuite",
+   "depart": 800,
+   "vitesse": 60
+  },
+  "n": 50,
+  "cam": "{ const a = ech(790), ca = Math.cos(a.cap), sa = Math.sin(a.cap); const P = [a.x - sa * 2, a.y + 24, a.z + ca * 2]; const v = { pos: P, yaw: a.cap + Math.PI / 2 + .55, pitch: -.16, fov: 62 }; J.camera = () => v; info.cam = v; }"
+ },
+ {
+  "nom": "8-poursuite-pluie",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "vue": "poursuite",
+   "depart": 800,
+   "vitesse": 60,
+   "meteo": "pluie"
+  },
+  "n": 50
+ },
+ {
+  "nom": "9-cockpit-fine-volant",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "vue": "cockpit",
+   "depart": 2300,
+   "vitesse": 60
+  },
+  "n": 50
+ },
+ {
+  "nom": "10-voiture-34",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "vitesse": 20
+  },
+  "n": 45,
+  "cam": "J.camera = (p) => { const ca = Math.cos(p.cap), sa = Math.sin(p.cap); const pos = [p.x + ca * 3.4 + sa * 2.6, p.y + 1.15, p.z + sa * 3.4 - ca * 2.6]; return viser(pos, [p.x + ca * .2, p.y + .35, p.z + sa * .2], 38); };"
+ },
+ {
+  "nom": "11-voiture-haut",
+  "ref": {
+   "circuit": 0,
+   "qualite": "high",
+   "depart": 800,
+   "vue": "poursuite",
+   "vitesse": 20
+  },
+  "n": 45,
+  "cam": "J.camera = (p) => { const ca = Math.cos(p.cap), sa = Math.sin(p.cap); const pos = [p.x - ca * 1.5 + sa * 3.2, p.y + 4.2, p.z - sa * 1.5 - ca * 3.2]; return viser(pos, [p.x + ca * .6, p.y + .1, p.z + sa * .6], 45); };"
+ }
+]

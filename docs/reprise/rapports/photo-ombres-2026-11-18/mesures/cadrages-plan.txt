@@ -1,0 +1,237 @@
+Cadrages du plan (§ 7.3) : les mêmes vues avant et après
+=========================================================
+
+Pages comparées (prises du 19/11)
+- avant : BITUME 0.2.41 sur FERRO 0.3.10, la base fluidite/integration 4b994c4 telle quelle (sha256 859b33d12903f563…).
+- après : BITUME 0.2.41 sur FERRO 0.3.11 corrigé, page de ce lot (dist/bitume.html, sha256 e8d661ca295704f4…).
+- Chrome 157 sans fenêtre, 1280 × 720, densité 1, Mac M5.
+
+D'où viennent les cadrages
+- Le plan cite outils/lot1.py à lot3.py. Ces scripts sont dans le rapport photo du 18/11, dans l'arbre
+  bitume-wt/photo (docs/reprise/rapports/photo-2026-11-18/outils/). Ils donnent 80 cadrages :
+  - lot 1 : 21 vues de jour, une vue cockpit, une vue de bord de piste et une vue haute sur chacun des 7 circuits ;
+  - lot 2 : 32 vues de crépuscule, de nuit, de pluie et de saisons ;
+  - lot 3 : 27 vues de sujets : eau, falaises, ombres d'arbres, voitures de près, portiques, piste mouillée, tunnel.
+- outils/cadrages-plan.json reprend ces 80 cadrages tels quels. Seul change le nombre d'images rendues avant la
+  prise des 22 vues de crépuscule et de nuit : 240 au lieu de 45 à 70 (voir plus bas).
+
+Pourquoi un autre outil de prise
+- L'outil du plan (lancer.py et modele.js) fait tourner la course en temps réel. Deux passages sur la même
+  construction 0.3.10 ne donnent pas la même image (tableau « Bruit de l'outil du plan » plus bas) : jusqu'à 51 %
+  des pixels changent en cockpit. Ses écarts avant/après ne prouvent donc rien.
+- outils/prise.js (lancé par outils/prendre.py) avance le jeu de 1/60 s par image, avec un hasard à graine fixe. Depuis
+  le 19/11, il cache aussi le voile de chargement et fige les transitions CSS de la page : la vue de course apparaît en
+  0,3 s de temps réel, et une prise pouvait tomber pendant ce fondu (diagnostics.txt, point 10).
+- Deux passages complets sur la même page 0.3.10 (19/11) : 74 cadrages sur 80 sont identiques au pixel près ; les
+  autres : c1-cockpit 5 pixels, c1-bord 6 pixels, c0-poursuite-pluie 1 436 pixels (0,16 %), c0-poursuite 588 pixels
+  (0,06 %), c0-portique 110 pixels (0,01 %), c6-portique 104 pixels (0,01 %).
+- Au crépuscule et la nuit, il faut environ 240 images pour que l'éclairage du décor se règle sur l'heure. Prises
+  à 45 images, ces vues sortaient encore en plein jour. Elles sont prises à 240 images, avant et après.
+
+Ce que montrent les 80 paires
+- Aucune erreur de page dans les 160 prises.
+- Vues de jour en cockpit et en bord de piste, sur les sept circuits : de 0,7 à 4,9 % des pixels changent, et
+  tous s'assombrissent (100 % à l'arrondi). On y voit le contact sous les voitures, l'ombre nette de la voiture
+  filmée et de son habitacle (la tuile), et les ombres des arbres lointains.
+- Vues hautes : de 0 à 2,2 %, à cause des ombres lointaines.
+- Crépuscule et nuit, sans pluie (17 vues) : les mêmes effets, de 0,03 à 2,8 % des pixels, de 98,9 à 100 % plus
+  sombres. En bord de piste, les voitures sont déjà passées à 240 images : seules les ombres lointaines changent.
+- Pluie et piste mouillée (11 vues) : de 0,6 à 6 % des pixels changent, mais seulement de 18 à 89 % s'assombrissent.
+  La part météo éclaircit les ombres sous un ciel couvert, alors que le contact et la tuile assombrissent.
+- Saisons (printemps, automne, hiver ; 6 vues) : de 2 à 5,9 %, 100 % plus sombres.
+- Eau (5 vues, dont pluie et nuit) et falaises au-dessus de la mer (3 vues) : aucun pixel ne bouge de plus de
+  1,5 niveau (au plus 1,3).
+- Tunnel (5 vues, dont nuit) : de 1 à 11 pixels sur 921 600 bougent, de 6 niveaux au plus.
+- Ombre d'un arbre proche (c0-ombre-arbre) : aucun pixel ne change. Ombre d'un arbre lointain (c0-ombre-arbre-loin) :
+  0,16 % des pixels, tous plus sombres, grâce à la carte lointaine.
+- Portiques : de 0,06 à 0,08 %.
+- Voitures vues de près (5 vues) : de 11 à 19 % des pixels, de 76 à 89 % plus sombres. L'ombre nette de la tuile
+  remplace la tache floue ; une partie de l'ancienne tache s'éclaircit donc (paires 10 et 11 du dossier images/).
+
+Colonnes : n = images rendues avant la prise ; changés = pixels dont la luminance bouge de plus de 1,5 niveau sur
+255 ; sombres = part de ces pixels qui s'assombrissent ; moyen et max = écart de luminance (après moins avant) ;
+err = erreurs de page des deux prises.
+Commande : python3 outils/ecarts_cadrages.py outils/cadrages-plan.json <dossier avant> <dossier après>
+
+cadrage                    conditions                  n  changés  sombres   moyen     max  err  ombres photo (après)
+c0-cockpit                 high                       45    3.82%   100.0%   -8.84   -63.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-bord                    high                       45    3.64%   100.0%   -7.00   -66.7    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-haut                    high                       45    2.16%   100.0%  -11.46   -45.3    0  contacts=0 tuile=True loin=True penombre=meteo
+c1-cockpit                 high                       45    3.77%   100.0%  -11.52   -70.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c1-bord                    high                       45    2.12%   100.0%   -6.61   -29.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c1-haut                    high                       45    0.00%   100.0%   -2.13    -2.3    0  contacts=0 tuile=True loin=True penombre=meteo
+c2-cockpit                 high                       45    1.55%   100.0%  -15.50   -49.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c2-bord                    high                       45    0.69%   100.0%   -5.61   -28.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c2-haut                    high                       45    0.07%    98.7%   -4.63   -24.0    0  contacts=0 tuile=True loin=True penombre=meteo
+c3-cockpit                 high                       45    4.91%   100.0%  -26.33   -66.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c3-bord                    high                       45    1.74%   100.0%   -4.74   -36.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c3-haut                    high                       45    0.06%    98.6%   -9.67   -25.7    0  contacts=0 tuile=True loin=True penombre=meteo
+c4-cockpit                 high                       45    1.20%   100.0%  -10.13   -71.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c4-bord                    high                       45    1.39%   100.0%   -5.94   -36.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c4-haut                    high                       45    0.11%    99.1%   -8.70   -44.3    0  contacts=0 tuile=True loin=True penombre=meteo
+c5-cockpit                 high                       45    1.78%   100.0%  -14.62   -61.7    0  contacts=6 tuile=True loin=True penombre=meteo
+c5-bord                    high                       45    2.02%   100.0%   -4.73   -34.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c5-haut                    high                       45    0.12%    99.5%  -13.19   -36.0    0  contacts=0 tuile=True loin=True penombre=meteo
+c6-cockpit                 high                       45    3.17%   100.0%  -18.85   -74.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c6-bord                    high                       45    2.51%   100.0%   -7.00   -61.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c6-haut                    high                       45    0.88%    99.9%   -9.08   -59.7    0  contacts=0 tuile=True loin=True penombre=meteo
+c0-cockpit-crepuscule      high crepuscule           240    2.02%   100.0%   -6.78   -52.7    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-bord-crepuscule         high crepuscule           240    1.05%    99.9%   -6.38   -48.3    0  contacts=0 tuile=True loin=True penombre=meteo
+c0-cockpit-nuit            high nuit                 240    1.86%   100.0%   -6.26   -55.7    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-bord-nuit               high nuit                 240    0.96%   100.0%   -5.89   -43.3    0  contacts=0 tuile=True loin=True penombre=meteo
+c1-cockpit-crepuscule      high crepuscule           240    2.38%   100.0%   -7.02   -34.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c1-bord-crepuscule         high crepuscule           240    0.12%   100.0%   -4.60   -18.3    0  contacts=0 tuile=True loin=True penombre=meteo
+c1-cockpit-nuit            high nuit                 240    2.04%   100.0%   -5.80   -28.7    0  contacts=6 tuile=True loin=True penombre=meteo
+c1-bord-nuit               high nuit                 240    0.11%   100.0%   -4.23   -14.7    0  contacts=0 tuile=True loin=True penombre=meteo
+c2-cockpit-crepuscule      high crepuscule           240    1.13%   100.0%   -6.95   -30.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c2-bord-crepuscule         high crepuscule           240    0.03%    99.3%   -2.99   -10.3    0  contacts=0 tuile=True loin=True penombre=meteo
+c2-cockpit-nuit            high nuit                 240    1.09%   100.0%   -6.07   -27.7    0  contacts=6 tuile=True loin=True penombre=meteo
+c2-bord-nuit               high nuit                 240    0.03%    98.9%   -3.07   -11.0    0  contacts=0 tuile=True loin=True penombre=meteo
+c6-cockpit-crepuscule      high crepuscule           240    2.79%   100.0%  -12.09   -40.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c6-bord-crepuscule         high crepuscule           240    0.96%   100.0%   -5.62   -44.0    0  contacts=0 tuile=True loin=True penombre=meteo
+c6-cockpit-nuit            high nuit                 240    2.35%   100.0%   -9.52   -30.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c6-bord-nuit               high nuit                 240    0.82%   100.0%   -5.41   -39.3    0  contacts=0 tuile=True loin=True penombre=meteo
+c6-haut-crepuscule         high crepuscule           240    0.72%   100.0%   -7.15   -42.7    0  contacts=0 tuile=True loin=True penombre=meteo
+c0-cockpit-pluie           high pluie                 60    2.62%    78.8%   -2.57   -27.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-bord-pluie              high pluie                 60    1.88%    67.1%   -0.53   -23.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c1-cockpit-pluie           high pluie                 60    3.30%    89.0%   -4.65   -26.7    0  contacts=6 tuile=True loin=True penombre=meteo
+c1-bord-pluie              high pluie                 60    2.22%    61.3%   -1.13   -35.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c2-cockpit-pluie           high pluie                 60    1.90%    58.6%   -1.86   +14.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c2-bord-pluie              high pluie                 60    1.25%    63.6%   -2.36   -43.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-poursuite-pluie         high pluie                 60    2.96%    31.5%   +2.17   +22.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-poursuite               high                       60    2.20%    88.6%   -7.01   -59.7    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-poursuite-nuit-pluie    high nuit pluie           240    2.60%    63.7%   -1.41   -22.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-bord-printemps          high printemps             45    3.76%   100.0%   -6.77   -57.7    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-bord-automne            high automne               45    3.81%   100.0%   -6.63   -56.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-bord-hiver              high hiver                 45    5.85%   100.0%   -6.75   -50.7    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-cockpit-hiver           high hiver                 45    4.87%   100.0%   -7.88   -46.7    0  contacts=6 tuile=True loin=True penombre=meteo
+c3-bord-hiver              high hiver                 45    1.95%   100.0%   -5.12   -33.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c5-bord-automne            high automne               45    2.21%   100.0%   -4.70   -28.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c1-eau-rivage              high                       45    0.00%     0.0%   +0.00    +0.0    0  contacts=0 tuile=True loin=True penombre=meteo
+c1-eau-haut                high                       45    0.00%     0.0%   +0.00    +0.0    0  contacts=0 tuile=True loin=True penombre=meteo
+c1-eau-contre-jour         high                       45    0.00%     0.0%   +0.00    +0.0    0  contacts=0 tuile=True loin=True penombre=meteo
+c1-eau-rivage-pluie        high pluie                 60    0.00%     0.0%   +0.00    +1.3    0  contacts=0 tuile=True loin=True penombre=meteo
+c1-eau-rivage-nuit         high nuit                 240    0.00%     0.0%   +0.00    +0.0    0  contacts=0 tuile=True loin=True penombre=meteo
+c6-falaise-haut            high                       45    0.00%     0.0%   +0.00    +0.0    0  contacts=0 tuile=True loin=True penombre=meteo
+c6-falaise-mer             high                       45    0.00%     0.0%   +0.00    +0.0    0  contacts=0 tuile=True loin=True penombre=meteo
+c6-falaise-contre-jour     high                       45    0.00%     0.0%   +0.00    -0.3    0  contacts=0 tuile=True loin=True penombre=meteo
+c0-ombre-arbre             high                       45    0.00%     0.0%   +0.00    +0.0    0  contacts=5 tuile=True loin=True penombre=meteo
+c0-ombre-arbre-loin        high                       45    0.16%   100.0%   -9.08   -37.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-voiture-34              high                       45   18.39%    81.0%   -6.77   -63.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-voiture-haut            high                       45   15.35%    75.9%   -8.15  -113.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c4-voiture-34              high                       45   18.91%    82.1%   -6.25   -57.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-voiture-arriere-pluie   high pluie                 60   10.85%    87.7%   -3.40   -39.7    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-voiture-34-crepuscule   high crepuscule           240   17.57%    89.4%   -6.11   -47.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-portique                high                       45    0.08%    91.0%   -4.92   -43.3    0  contacts=5 tuile=True loin=True penombre=meteo
+c4-portique                high                       45    0.07%    93.0%   -5.94   -43.3    0  contacts=5 tuile=True loin=True penombre=meteo
+c6-portique                high                       45    0.06%    98.9%   -5.85   -46.3    0  contacts=5 tuile=True loin=True penombre=meteo
+c0-piste-mouillee          high pluie                 70    1.15%    48.9%   -0.05   +13.7    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-piste-mouillee-soleil   high pluie                 70    6.02%    45.8%   +0.49   +24.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c0-piste-seche-soleil      high                       70    5.40%   100.0%   -7.89   -28.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c2-piste-mouillee-nuit     high nuit pluie           240    0.58%    18.4%   +1.66   -15.0    0  contacts=0 tuile=True loin=True penombre=meteo
+c2-tunnel-entree           high                       40    0.00%   100.0%   -2.50    -3.0    0  contacts=6 tuile=True loin=True penombre=meteo
+c2-tunnel-dedans           high                      150    0.00%   100.0%   -2.33    -2.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c2-tunnel-libre            high                      150    0.00%   100.0%   -3.67    -4.3    0  contacts=6 tuile=True loin=True penombre=meteo
+c2-tunnel-sortie           high                      150    0.00%   100.0%   -4.06    -6.0    0  contacts=1 tuile=True loin=True penombre=meteo
+c2-tunnel-nuit             high nuit                 240    0.00%   100.0%   -2.22    -2.7    0  contacts=6 tuile=True loin=True penombre=meteo
+manquants : aucun
+
+Bruit de l'outil du plan : deux passages sur la même construction 0.3.10
+(lancer.py et modele.js, sans changement ; part des pixels qui changent, part plus sombre, écart moyen)
+
+c0-cockpit                50.93 % des pixels, 46 % plus sombres, écart moyen -2.18
+c0-bord                    6.41 % des pixels, 48 % plus sombres, écart moyen +1.53
+c0-poursuite              36.29 % des pixels, 48 % plus sombres, écart moyen +0.88
+c3-cockpit                27.75 % des pixels, 46 % plus sombres, écart moyen +0.72
+c0-voiture-haut           40.55 % des pixels, 51 % plus sombres, écart moyen -0.02
+c2-tunnel-entree           0.21 % des pixels, 49 % plus sombres, écart moyen -0.02
+c6-falaise-contre-jour    41.48 % des pixels, 0 % plus sombres, écart moyen +3.24
+c6-falaise-mer             0.00 % des pixels, 0 % plus sombres, écart moyen +0.00
+c0-piste-seche-soleil     18.64 % des pixels, 60 % plus sombres, écart moyen -8.45
+c0-cockpit-pluie          18.35 % des pixels, 45 % plus sombres, écart moyen +0.43
+c0-haut                    0.06 % des pixels, 52 % plus sombres, écart moyen -0.51
+
+Empreintes des prises du 19/11 (16 premiers caractères du sha256 des PNG ; les PNG ne sont pas gardés, une reprise
+avec outils/prendre.py sur les mêmes pages doit retrouver les mêmes empreintes, aux écarts de déterminisme près)
+
+cadrage                    avant (0.3.10)   après (0.3.11)
+c0-cockpit                 8892e87a758f3d23 b86a0fdc8effc304
+c0-bord                    2bd771f6ae22177d 0d09c007ac879794
+c0-haut                    b5859cbaf72cf843 0574f1c21f6302bf
+c1-cockpit                 72146dfed5675d45 473dc0a08076e618
+c1-bord                    7947d3e1f324b942 15252f32da93b61c
+c1-haut                    1b3260358cb7e4f2 0b3685712fdda8af
+c2-cockpit                 d2885d14aee320f6 ed31a80e7dd6b05c
+c2-bord                    fe9f569606aa460d f4fbab473b5948d2
+c2-haut                    7fd4a3ac720cdd65 9e1f3b47948360d2
+c3-cockpit                 e572f518cd362ed4 b5ea7631701b0b70
+c3-bord                    ac71e60e906efa7a 5316566f104976df
+c3-haut                    0a696755373432de d28ad2505d2f8244
+c4-cockpit                 152f55de9eb4ab8c f37188629d8cd977
+c4-bord                    7b433352a4f994a7 f47e805c3212954c
+c4-haut                    fb08e544cd70a49c d9358a45f23d576f
+c5-cockpit                 63d1ed51669e94bf fe40daa954a3035a
+c5-bord                    e48d1ab113d01f11 467290ae63743f65
+c5-haut                    0a2312d6611f5eba a00b9d2a393668cc
+c6-cockpit                 30f65a3addd41a15 630e5faf8d40759c
+c6-bord                    39ccced5bd41c014 3b291312097f714d
+c6-haut                    ad9f63410429a0a7 5d126f133e388d23
+c0-cockpit-crepuscule      77dbba96295ac6d0 a2e2a7b83c1ec520
+c0-bord-crepuscule         cc9ebb3bcb36dafb bc63cb36f43a0f68
+c0-cockpit-nuit            765717891a762fe4 0c5e905cb122774f
+c0-bord-nuit               ade5d7caa401caaa 1e215d84aac78ead
+c1-cockpit-crepuscule      5fe39837c5e42e80 e2afec9774f06a43
+c1-bord-crepuscule         f52495b4f812a493 187246009bf86400
+c1-cockpit-nuit            cb698beaa29ed222 1a913a53089e7890
+c1-bord-nuit               895e93374c4ec6c5 4a427757f3386c71
+c2-cockpit-crepuscule      0fa834c7854b76e9 dab0cd7bde64e3e2
+c2-bord-crepuscule         34a305788b6a5b14 c1babad556916f11
+c2-cockpit-nuit            1ba3b08e7e374920 4caca7000db44627
+c2-bord-nuit               d7822076a3ec7988 9a39921676e0fce5
+c6-cockpit-crepuscule      45fff0c52aa7769d a258b513a441cb0a
+c6-bord-crepuscule         4ea1d0177c280ef8 c2d93f4b7b7ff515
+c6-cockpit-nuit            def3687aa59d2151 d82864378a9bced2
+c6-bord-nuit               c9ebb8c82d85b60e 21e77b210608b8c8
+c6-haut-crepuscule         ef3ed4f72f28ed4b eadf7faf63ef6bab
+c0-cockpit-pluie           3404531895c1020d 59e1a25d875557c6
+c0-bord-pluie              0f9df007e839966e bfec4f2338f073d4
+c1-cockpit-pluie           3b9d9535a6b5ddb0 10bad01af344b204
+c1-bord-pluie              b9d62e81e91c45ee 875ce8f7407c7e76
+c2-cockpit-pluie           b90a5225aa04aee6 3116e0b2bf623ea4
+c2-bord-pluie              8a335fe5c4b62184 6768153e5bb42d35
+c0-poursuite-pluie         d7dbc7407107686b 42469c132164061a
+c0-poursuite               2d0c765a527928c1 56b416dbfdb09cae
+c0-poursuite-nuit-pluie    554153bb9d669e63 0dfe81de7dffa5cd
+c0-bord-printemps          f9aa9c433e046314 9ffad67afba1ce91
+c0-bord-automne            c57fc9421524e8b1 4baea1f36fa1c37c
+c0-bord-hiver              07e1915861bbf013 f4b4e8563531ad50
+c0-cockpit-hiver           291dd1a8776f173c a0416fd399ccd595
+c3-bord-hiver              88a43f0695351dbf 2b7525cbe509bbfd
+c5-bord-automne            c975b08898005d54 09fc0fdcf1c8073a
+c1-eau-rivage              dbea688e84d6962d dbea688e84d6962d
+c1-eau-haut                7493ecb4dccd4088 7493ecb4dccd4088
+c1-eau-contre-jour         60b97019243264bf 60b97019243264bf
+c1-eau-rivage-pluie        7f3bca912a7c2695 dcface9925673ea5
+c1-eau-rivage-nuit         ca1b60282ae63f1d ca1b60282ae63f1d
+c6-falaise-haut            3adeee4d31666297 3adeee4d31666297
+c6-falaise-mer             c6aa6e2ad7bbd828 c6aa6e2ad7bbd828
+c6-falaise-contre-jour     63dd7cc22283e294 4647cf70de293d4e
+c0-ombre-arbre             ef7c9270a2605fd3 ef7c9270a2605fd3
+c0-ombre-arbre-loin        9faca359d3204172 56b46d696ea965c7
+c0-voiture-34              77004bb6c1d73414 8fe48b25c738e0c5
+c0-voiture-haut            898c44606c013c65 bb5951b518e9dfac
+c4-voiture-34              617f4d95685a5379 47a63577ddb871dd
+c0-voiture-arriere-pluie   892b456eaa39c039 878cda91edbf4a4a
+c0-voiture-34-crepuscule   9018d99a51ac2708 f2bc19f6a6bb3f55
+c0-portique                606da34dbfab55a3 344686ff3f37dad0
+c4-portique                2fa9af6e07085149 58c16a45210b7803
+c6-portique                14ebc1c7f4b6338c 8341cc6a96c68cc7
+c0-piste-mouillee          5d4045deb8d8003c 78cd456e8ef8f336
+c0-piste-mouillee-soleil   304ddad3f89e0048 feb866d6d0bd65eb
+c0-piste-seche-soleil      a3929c6e6efa6f9b 172015945391ccbc
+c2-piste-mouillee-nuit     df2f0c383937b72d fa97cb287a79dcae
+c2-tunnel-entree           d0676aeac8c4b496 c340d731d14d8bfd
+c2-tunnel-dedans           ba3180186a484564 13aa00151fe4a648
+c2-tunnel-libre            b0bec701a240d203 ac495aacd7005129
+c2-tunnel-sortie           7d1f1bc9221b80bb f24a1056406a3b4c
+c2-tunnel-nuit             1e78dd4ea501b91b 87e4ab4290fd4472

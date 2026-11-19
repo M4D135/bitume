@@ -1,0 +1,30 @@
+Appels de dessin de l'image principale par cible de rendu, prise déterministe (outils/prise.js, s 800 puis 50 images),
+Val-Brûlé, 1280 × 720. a2 = 0.3.10, fin2 = 0.3.11 corrigé. « tout » : réglages du jeu ; « coupe » : contact, tuile,
+carte lointaine et pénombre retirés. Le champ creations de ces prises (BITUME_JEU.reference, qui lance la séance sans
+le préchauffage du chemin du joueur) est du même ordre dans les deux pages (de 8 à 18) ; les créations en course se
+vérifient par le chemin du joueur (creations-fin2.log et creations-a2.log).
+
+fine-cockpit-coupe
+   a2   appels 416 creations 11 cibles {"cible0": 96, "cible1": 317, "cible2": 1, "cible3": 1, "cible4 (écran)": 1} photo null
+   fin2 appels 416 creations 16 cibles {"cible0": 96, "cible1": 317, "cible2": 1, "cible3": 1, "cible4 (écran)": 1} photo {"contacts": 0, "tuile": false, "loin": false, "penombre": "off", "loinTaille": 2048}
+fine-cockpit-tout
+   a2   appels 416 creations 11 cibles {"cible0": 96, "cible1": 317, "cible2": 1, "cible3": 1, "cible4 (écran)": 1} photo null
+   fin2 appels 447 creations 11 cibles {"cible0": 96, "cible1": 31, "cible2": 317, "cible3": 1, "cible4": 1, "cible5 (écran)": 1} photo {"contacts": 6, "tuile": true, "loin": true, "penombre": "meteo", "loinTaille": 2048}
+fine-poursuite-coupe
+   a2   appels 413 creations 15 cibles {"cible0": 98, "cible1": 312, "cible2": 1, "cible3": 1, "cible4 (écran)": 1} photo null
+   fin2 appels 413 creations 10 cibles {"cible0": 98, "cible1": 312, "cible2": 1, "cible3": 1, "cible4 (écran)": 1} photo {"contacts": 0, "tuile": false, "loin": false, "penombre": "off", "loinTaille": 2048}
+fine-poursuite-tout
+   a2   appels 413 creations 10 cibles {"cible0": 98, "cible1": 312, "cible2": 1, "cible3": 1, "cible4 (écran)": 1} photo null
+   fin2 appels 448 creations 10 cibles {"cible0": 98, "cible1": 35, "cible2": 312, "cible3": 1, "cible4": 1, "cible5 (écran)": 1} photo {"contacts": 6, "tuile": true, "loin": true, "penombre": "meteo", "loinTaille": 2048}
+legere-cockpit-coupe
+   a2   appels 181 creations 13 cibles {"cible0 (écran)": 181} photo null
+   fin2 appels 181 creations  8 cibles {"cible0 (écran)": 181} photo {"contacts": 0, "tuile": false, "loin": false, "penombre": "off", "loinTaille": 0}
+legere-cockpit-tout
+   a2   appels 181 creations 13 cibles {"cible0 (écran)": 181} photo null
+   fin2 appels 181 creations  8 cibles {"cible0 (écran)": 181} photo {"contacts": 4, "tuile": false, "loin": false, "penombre": "off", "loinTaille": 0}
+moyenne-cockpit-coupe
+   a2   appels 382 creations 18 cibles {"cible0": 92, "cible1": 287, "cible2": 1, "cible3": 1, "cible4 (écran)": 1} photo null
+   fin2 appels 382 creations 13 cibles {"cible0": 92, "cible1": 287, "cible2": 1, "cible3": 1, "cible4 (écran)": 1} photo {"contacts": 0, "tuile": false, "loin": false, "penombre": "off", "loinTaille": 2048}
+moyenne-cockpit-tout
+   a2   appels 382 creations 18 cibles {"cible0": 92, "cible1": 287, "cible2": 1, "cible3": 1, "cible4 (écran)": 1} photo null
+   fin2 appels 413 creations 13 cibles {"cible0": 92, "cible1": 31, "cible2": 287, "cible3": 1, "cible4": 1, "cible5 (écran)": 1} photo {"contacts": 6, "tuile": true, "loin": true, "penombre": "meteo", "loinTaille": 2048}

@@ -1,0 +1,38 @@
+Coût des ombres photo — BITUME 0.2.41 sur FERRO 0.3.11 corrigé, 19 novembre 2026
+
+Machine : Apple M5 (MacBook Air, 10 cœurs, 24 Go), macOS 27.2.1, Google Chrome 157 sans fenêtre (tools/page-essai.mjs),
+ANGLE Metal, machine partagée avec d'autres agents (charge 2 à 3). Fenêtre 1440 × 757 à densité 2 : toile
+2880 × 1514 en Fine, 1440 × 757 en Moyenne, 1152 × 606 en Légère. Val-Brûlé, soleil, rétroviseurs coupés, départ à
+s 800, 90 images de mise en train puis 100 images par variante (la voiture roule de s 885 à s 1270 environ).
+
+Pages (toutes sur la base fluidite/integration 4b994c4) :
+  a2.html     0.3.10, la base telle quelle ;
+  fin2.html   la page de ce lot, 0.3.11 corrigé (sha256 e8d661ca…, dist/bitume.html du commit) ;
+  v1n.html    la même avant trois retouches : carte lointaine non calculée en Légère et garde de B.ombres dans les
+              options de création (jeu), échantillonneur retiré autour de la foule de l'hôte (FERRO). Dans les scènes
+              mesurées, aucun spectateur n'est dessiné (sonde : 400 images par scène, fx.foule passé à chaque image,
+              0 image où la foule dessine) : la seule différence de travail est de 16 appels GL par image autour des
+              appels de la foule ;
+  v1.html     comme v1n, bloc PCSS compilé ;
+  b02.html    0.3.11 tel que relu (avant correction), même base ;
+  fin2-sans.html  témoin : fin2.html sans ombresPhoto dans ses options de création (FERRO 0.3.11 sans l'option :
+              shaders et appels GL de 0.3.10) ; diag-contact.html et diag-soleil.html : fin2.html dont le shader perd
+              le code du soleil ou celui du contact (§ 1 bis).
+
+Méthode (§ 2.5 du plan 21) : chaque image principale est encadrée par la lecture d'un pixel (temps = soumission +
+exécution GPU de cette seule image). Dans une séance, les variantes se mêlent image par image, dans un ordre tiré au
+hasard dans chaque bloc (outils/modele2.js et modele3.js ; l'alternance stricte de deux variantes du 18/11 mettait tout
+le travail du jeu à 30 Hz sur la même variante pendant une séance : diagnostics.txt, point 7) ; p50 de chaque variante.
+  - Construction contre construction : à chaque tour, une séance par page, dans l'ordre inverse un tour sur deux
+    (A B, puis B A ; avec trois pages ou plus, en carré latin, outils/seances_latin.py, § 1 bis) ; écart de même variante entre les deux séances du tour ; médiane des tours. Deux variantes par
+    séance : tout allumé ({}) et tout coupé (contacts, tuile, carte lointaine et pénombre retirés). Pour 0.3.10, les
+    deux variantes sont la même image : leur écart est un témoin du bruit.
+  - Effet par effet : sept variantes dans la même séance (tout, sans contact, sans tuile, sans carte lointaine, sans
+    pénombre, tout coupé, et de nouveau tout pour le témoin A/A) ; coût = p50(tout) − p50(sans l'effet) ; médiane de
+    8 séances.
+Les séances (une ligne chacune) sont dans couts-seances.log. Un fichier de séance (final2, moyenne-cockpit, page fin2,
+tour 4) porte après son résultat la trace d'un échec de page-essai.mjs à effacer son profil temporaire : seul le
+premier objet JSON de chaque fichier est lu. Une séance sur dix environ tombe dans un état plus lent
+ou plus rapide de la machine (Moyenne : 8,7 ms au lieu de 15) : c'est ce qui rend l'écart entre deux constructions
+bien plus bruité que l'écart dans une même séance. L'intervalle donné (90 % des médianes de tours ré-échantillonnés)
+dit ce que le nombre de tours permet de séparer.
