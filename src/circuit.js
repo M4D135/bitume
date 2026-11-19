@@ -159,14 +159,32 @@
   }
 
   // ---------------------------------------------------------------- profils le long du tour
-  function relief(n, L, theme, r, plat) {
-    const y = new Float64Array(n), A = AMPLITUDE[theme] || 14, harm = [];
-    for (let h = 0; h < 3; h++) harm.push({ k: 1 + Math.floor(r() * 5), a: .4 + r() * .6, phi: r() * 2 * Math.PI });
-    const somme = harm.reduce((s, h) => s + h.a, 0);
+  // Baïkal : rive basse, forêt, montée vers le promontoire puis retour ouvert. Ce profil ne concerne que
+  // le nouveau circuit : ni les tirages ni les tableaux des sept tracés historiques ne changent.
+  function reliefBaikal(n, L, plat) {
+    const y = new Float64Array(n), points = [[0, 0], [.12, 0], [.30, 12], [.64, 64], [.96, 0], [1, 0]];
+    let j = 0;
     for (let i = 0; i < n; i++) {
-      let v = 0;
-      for (const h of harm) v += h.a * Math.sin(2 * Math.PI * h.k * i * PAS / L + h.phi);
-      y[i] = v / somme * A * (1 - plat[i]);
+      const s = i * PAS / L;
+      while (j < points.length - 2 && s > points[j + 1][0]) j++;
+      const a = points[j], b = points[j + 1], t = (s - a[0]) / (b[0] - a[0]);
+      // Raccord quintique : pente et courbure verticale nulles aux jonctions, sans cassure à la crête.
+      const u = t * t * t * (10 + t * (-15 + 6 * t));
+      y[i] = (a[1] + (b[1] - a[1]) * u) * (1 - plat[i]);
+    }
+    return y;
+  }
+  function relief(n, L, theme, r, plat) {
+    const y = theme === 'baikal' ? reliefBaikal(n, L, plat) : new Float64Array(n);
+    if (theme !== 'baikal') {
+      const A = AMPLITUDE[theme] || 14, harm = [];
+      for (let h = 0; h < 3; h++) harm.push({ k: 1 + Math.floor(r() * 5), a: .4 + r() * .6, phi: r() * 2 * Math.PI });
+      const somme = harm.reduce((s, h) => s + h.a, 0);
+      for (let i = 0; i < n; i++) {
+        let v = 0;
+        for (const h of harm) v += h.a * Math.sin(2 * Math.PI * h.k * i * PAS / L + h.phi);
+        y[i] = v / somme * A * (1 - plat[i]);
+      }
     }
     let pmax = 0;
     for (let i = 0; i < n; i++) pmax = Math.max(pmax, Math.abs(y[(i + 1) % n] - y[(i - 1 + n) % n]) / (2 * PAS));

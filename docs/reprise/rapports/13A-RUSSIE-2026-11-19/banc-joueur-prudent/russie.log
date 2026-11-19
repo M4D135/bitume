@@ -1,0 +1,42 @@
+✔ 13A catalogue : Baïkal ajouté après les sept circuits conservés (2.319112ms)
+✔ 13A les 84 tableaux numériques des sept anciens tracés restent identiques bit à bit (249.996676ms)
+✔ 13A boucle praticable, relief significatif et raccord continu (26.446625ms)
+✔ 13A départ et stands plats, droits et compatibles avec douze voitures (21.953138ms)
+✔ 13A reconstruction du tracé indépendante du hasard global (50.012365ms)
+✔ 13A les solides réels restent hors de toutes les portions de chaussée (1276.170888ms)
+✔ 13A sec : onze rivaux accomplissent trois tours sans secours (4943.31784ms)
+✔ 13A pluie : onze rivaux accomplissent trois tours sans secours (4253.30948ms)
+✖ 13A neige : onze rivaux accomplissent trois tours sans secours (5379.463046ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 8
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16386.416497
+
+✖ failing tests:
+
+test at verifications/russie.test.mjs:39:3
+✖ 13A neige : onze rivaux accomplissent trois tours sans secours (5379.463046ms)
+  AssertionError [ERR_ASSERTION]: neige : replacement de J. Vanmeer
+  
+  1 !== 0
+  
+      at parcourir (file:///workspace/scratch/1b28de5a23b5/bitume/verifications/russie.test.mjs:235:14)
+      at file:///workspace/scratch/1b28de5a23b5/bitume/verifications/russie.test.mjs:248:91
+      at TestContext.<anonymous> (file:///workspace/scratch/1b28de5a23b5/bitume/verifications/russie.test.mjs:42:30)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

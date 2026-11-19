@@ -1,0 +1,102 @@
+{
+  "passed": 24,
+  "total": 24,
+  "results": [
+    {
+      "name": "index vide/invalide : inoffensif et borné",
+      "ok": true
+    },
+    {
+      "name": "cercle : vraie distance au coin, pas grosse sphère ni axe centre faux",
+      "ok": true
+    },
+    {
+      "name": "cercle contenu : profondeur correcte et normale de sortie",
+      "ok": true
+    },
+    {
+      "name": "rectangle contenu : translation minimum entière et test pur",
+      "ok": true
+    },
+    {
+      "name": "CCD translatoire : mur fin traversé complètement, dernier point valide et distance rewound",
+      "ok": true
+    },
+    {
+      "name": "contact léger : rebond normal0.05, jamais de gain",
+      "ok": true
+    },
+    {
+      "name": "rasant rapide : seule vitesse normale facturée",
+      "ok": true
+    },
+    {
+      "name": "pénétration immobile corrigée sans dégâts ni accélération",
+      "ok": true
+    },
+    {
+      "name": "contact en séparation : correction géométrique sans fausse facture",
+      "ok": true
+    },
+    {
+      "name": "frottement continu : une facture, choc devenu violent autorisé",
+      "ok": true
+    },
+    {
+      "name": "mémoire contact nettoyée après éloignement, nouveau choc possible",
+      "ok": true
+    },
+    {
+      "name": "CCD rotation seule : pilier traversé entre deux orientations libres",
+      "ok": true
+    },
+    {
+      "name": "hauteur : pile de pneus survolée sans choc",
+      "ok": true
+    },
+    {
+      "name": "hauteur sur le trajet : contact au sol avant hauteur finale élevée",
+      "ok": true
+    },
+    {
+      "name": "normale monde inclut cap du circuit, même force après rotation globale",
+      "ok": true
+    },
+    {
+      "name": "dérive chargée : collision annule sans turbo fantôme",
+      "ok": true
+    },
+    {
+      "name": "déplacement exceptionnel refusé sans dégâts ni boucle gigantesque",
+      "ok": true
+    },
+    {
+      "name": "épave en attente de reprise immuable",
+      "ok": true
+    },
+    {
+      "name": "course sans liste : aucun état auxiliaire ni mutation",
+      "ok": true
+    },
+    {
+      "name": "balayage vertical pur : obstacles traversés entre deux hauteurs libres",
+      "ok": true
+    },
+    {
+      "name": "balayage courbe : solide hors AABB des extrémités trouvé dans index",
+      "ok": true
+    },
+    {
+      "name": "rewind ne restitue pas la vitesse perdue au frein/contre un rival",
+      "ok": true
+    },
+    {
+      "name": "dérive réarmée pendant contact : annulée même si facture non réarmée",
+      "ok": true
+    },
+    {
+      "name": "impulsion contre mur : cap caisse conservé malgré déviation de vitesse",
+      "ok": true
+    }
+  ]
+}

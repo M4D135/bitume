@@ -1,0 +1,158 @@
+{
+  "date_utc": "2026-11-19T16:00:13.306543+00:00",
+  "version": "0.2.53",
+  "physique": "p13",
+  "suites": 109,
+  "reussies": 107,
+  "echecs": [
+    "decor.test.mjs",
+    "traces.test.mjs"
+  ],
+  "sources_stables": true,
+  "reserve_traces": {
+    "suite": "traces.test.mjs",
+    "base_version": "0.2.52",
+    "base_commit": "18451e0eeb701d720f08c069b841d79c2439755d",
+    "echec": true,
+    "signature_heritee_identique": true,
+    "actual": [
+      "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf"
+    ],
+    "expected": [
+      "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee"
+    ],
+    "log": "tests/traces.test.mjs.log",
+    "sha256_log": "dcdeab4f5b7a468ab729e48955815431cf02f37c0e39df9aba2a3fda9212de86"
+  },
+  "echecs_hors_reserve": [
+    "decor.test.mjs"
+  ],
+  "base_preservee": {
+    "commit": "18451e0eeb701d720f08c069b841d79c2439755d",
+    "hashes": {
+      "src/conduite.js": "ed17946c7d15f58bfd72143635aeeb5fac81fbf8438476bf3ccacfeef73eeabc",
+      "src/usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+      "src/pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+      "src/degats.js": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247",
+      "src/contacts.js": "d6e583db729c91df8de21621c05b3b24835e6dc996e9dd4df7cb0464b27e1b7a",
+      "src/obstacles.js": "02626c61720ba5aa6bc1f06ee103725efed1a0c52f243b3ba2443f6f6cbf914e",
+      "src/course.js": "9950001b518363cefe3bd3cd013e96046a460b96db02192cc7a21ee3ddbd0d93",
+      "src/strategie-stands.js": "c0b8326627e0225bf8197719472062b181038346eb3d1b3ca4b6ef320d0dee50",
+      "src/pneus-reseau.js": "7a4ec53a40049e3f868d8fbf7d32b6582edd949959c6b5dd6d2aecec2ea2a1c7",
+      "src/reseau.js": "beadab21365d5f4e68d68d5d3f897c915da0849e2f3b0cc87e84a53b744a0d11",
+      "FERRO.lock.json": "cb6d1150c85b03bfaf5f32432256538a92237315e1cd1796cdaf5aaacddd9f55",
+      "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a",
+      "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+      "verifications/fixtures/determinisme-p11.json": "c2453f9f896014a45020678c071a10aed656243ef542565538c571d7fc9430b7",
+      "verifications/fixtures/determinisme-p12.json": "fb8f96e5a770fcdd6ee3da520a9c8e0e2ae81c6c0b6b34d5a20758730f790e5f",
+      "verifications/fixtures/determinisme-p13.json": "a3063bc825609519582bb26fe011ee07dbb0f98aad0b5d4666c0f3cf6111acd5"
+    },
+    "lois_et_archives_inchangees": true,
+    "lois_inchangees_depuis_base": true
+  },
+  "determinisme": {
+    "scenarios": 22,
+    "empreintes": 1415,
+    "fixture": "verifications/fixtures/determinisme-p13.json",
+    "fixture_regeneree": false,
+    "fixture_regeneree_portee": "Cette exécution de qualification uniquement ; la création initiale de p13 est une étape distincte.",
+    "fixture_creation_documentee": {
+      "recu_attendu": "../12F4-SORTIE-FILE-2026-11-19/CREATION-P13.json",
+      "recu_present": true,
+      "note": "La création initiale après validation comportementale doit être attestée dans ce reçu distinct ; sa seule présence ne certifie pas cette validation."
+    },
+    "fixture_inchangee": true,
+    "verification": 0,
+    "archives": {
+      "verifications/fixtures/determinisme-p12.json": "fb8f96e5a770fcdd6ee3da520a9c8e0e2ae81c6c0b6b34d5a20758730f790e5f",
+      "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a",
+      "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+      "verifications/fixtures/determinisme-p11.json": "c2453f9f896014a45020678c071a10aed656243ef542565538c571d7fc9430b7"
+    },
+    "archives_inchangees_depuis_base": true
+  },
+  "build": {
+    "sha256": "686db2c0863bd8dfa042389f22501fb9bacde19dca2bb1dcabf9f9a527ccd510",
+    "bytes": 14063125,
+    "reproductible": true,
+    "codes": [
+      0,
+      0
+    ],
+    "hashes": {
+      "VERSION.json": "4671f286fa05ee9252cd1bd7b66bd334b7fdca3378a9cebe11f650cf8a63a927",
+      "SIZE.json": "acd61d9e0becab38be8cc7bf39d06465d00e7bcd88ca3b8f27f0ab3f380675a3",
+      "dist/bitume.html": "686db2c0863bd8dfa042389f22501fb9bacde19dca2bb1dcabf9f9a527ccd510"
+    }
+  },
+  "bundle": {
+    "scripts": 53,
+    "codes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "ferro": {
+    "version": "0.3.11",
+    "modules": 34,
+    "ecarts": []
+  },
+  "webgl_valide": false,
+  "deploiement_effectue": false,
+  "lot": "13A-Russie-trace-relief",
+  "contrat_pistes": {
+    "sha256": "45c4b3d0a24d529f874b89933bbc2dc3fc16650a07034b3c2d56a5813ba1f96c",
+    "build_verifie": true
+  }
+}

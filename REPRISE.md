@@ -2,43 +2,35 @@
 
 ## Point actif — 19 novembre 2026
 
-**0.2.52 / p13 publiée et vérifiée sur main**, livraison `b5b4c0c693e6f47199c31384c9217831d10acd0f`.
-**PR n°6 fermée et fusionnée. Lot 12F4 et correction des files serrées terminés.**
-Ne pas recommencer ces correctifs, leurs publications, les lots 12A–12F3 ou Safari (corrigé et clos).
-**Prochain sous-lot : 13A Russie — tracé et relief, NON COMMENCÉ.**
-Lire `docs/reprise/ETAT.json`, la dernière entrée du suivi et le volet 13A du plan maître uniquement.
+**13A Baïkal qualifié CPU en 0.2.53 / p13 ; publication finale à terminer.**
+Branche `codex/bitume-13a-russie-20261119`, checkpoint sources vérifié `3d173d16`.
+Lire `docs/reprise/ETAT.json`, la dernière entrée du suivi et `docs/reprise/13A-RUSSIE-TRACE-RELIEF.md` uniquement.
+**Prochaine action : publier sources/build/preuves, vérifier le distant, fusionner et consigner le reçu.**
+Les tests sont terminés et les sources gelées : ne pas recommencer la qualification ou les lots 12A–12F4/Safari clos.
 
-## Livraison vérifiée
+## Résultat de 13A
 
-Les sources, le jeu compilé et les preuves correspondent à la tête revue `b8c67028` ; l'arbre de fusion est
-identique au lot qualifié. Reçu : `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/PUBLICATION-0252.json`.
-La clôture 0.2.51 `db3e8da1` est préservée avec ses reçus et journaux.
-Le présent suivi est documentaire et ne reconstruit pas le jeu.
+Huit circuits dans le build, Baïkal ajouté index 7, ID `baikal`, graine 179 : **5 424 m**, **62,9477 m de dénivelé**,
+**6,8 %** de pente maximale, droite de 816 m, grille/stands plats. Baïkal est un choix de conception original issu du plan.
+Les 84 tableaux des sept circuits historiques et les 22 scénarios / 1 415 empreintes p13 sont identiques, sans régénération.
+**9/9 contrôles russes** : douze voitures font trois tours sur sec/pluie/neige sans accident, replacement ni blocage.
+Les contacts et frottements sont comptés. Les allées de troncs proches ont été écartées des courbes descendantes.
 
-L'IA quitte une file serrée par les commandes de conduite, peut reculer brièvement quand l'arrière est libre,
-contourne aussi après un service achevé et reprend la course quand le joueur garé redémarre. Aucun pneu n'est
-renouvelé avant la fin d'un vrai service. Les neuf scénarios de dégagement exigent la restitution effective à la
-conduite ordinaire, sans contact, choc, rail, accident ni replacement ; pluie, neige et Haut-Col sont couverts.
+## Qualification et build
 
-## Qualification conservée
+**107/109 suites** : traces héritées identiques et seuil de temps décor dépassé aussi sur la base (205 ms / 211 ms,
+seuil 150 ms inchangé). Aucune qualification entièrement verte ni différence de performance annoncée.
+Deux builds identiques de **14 063 125 octets**, SHA-256
+`686db2c0863bd8dfa042389f22501fb9bacde19dca2bb1dcabf9f9a527ccd510`.
+53 scripts valides, 34 modules FERRO 0.3.11 inchangés. Rapport canonique :
+`docs/reprise/rapports/13A-RUSSIE-2026-11-19/qualification-finale.json`.
 
-**107/108 suites**, seul échec `traces.test.mjs` hérité et identique. **22 scénarios / 1 415 empreintes p13**
-reproduits ; archives p9–p12 et lois de conduite/usure intactes. **9/9 dégagements**, 17 trajets initiaux et 6 décisions
-réussis. Deux builds identiques de **14 060 666 octets**, SHA-256
-`4c8f43204fa79323d652202d12c534570b67fa85a2980fdbc4f589559e94f976`.
-**53 scripts valides**, **34 modules FERRO 0.3.11 inchangés**. Rapport :
-`docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/qualification-execution.json`.
-Les deux CI GitHub du commit de code sont **terminées : 107/108 chacune**, seul échec traces hérité identique.
-Reçu et journaux : `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/github/RECU-CI.json`.
-Aucune CI entièrement verte annoncée ; cette vérification est close, ne pas la reprendre au début.
+## Suite
 
-## Suite et demandes conservées
+Après publication : **13B Russie — décor et saisons, NON COMMENCÉ**. Le thème de base permet le roulage ; lac,
+berges, lieux, végétation/faune détaillés et validation visuelle restent à faire. Le tracé et sa graine sont figés.
+Conserver Monaco fidèle, Marseille depuis EMPRISE avec relief mesuré, nouveau grand circuit montagne distinct
+et six propositions. L’indice 7 russe n’annule pas la demande montagne.
 
-13A fixe le tracé, le relief et l'identité précise du circuit russe ; **Baïkal est une proposition de thème**.
-Conserver Monaco fidèle, Marseille depuis EMPRISE avec relief mesuré, huitième montagne distincte de Haut-Col et
-six propositions. Les sept circuits existants restent conservés. Fiche de correction close :
-`docs/reprise/12F4-SORTIE-FILE.md` ; ensemble : `MASTER-LISTE-CLAUDE-FABLE.md`.
-
-WebGL, FPS matériel, parties entre navigateurs réels, déploiement et page servie non validés. Mac/Spark/amiga
-indisponibles ici. Publication GitHub et déploiement restent distincts. Un sous-lot à la fois, sorties courtes,
-publications fréquentes et aucun push forcé ; moteurs modifiés uniquement dans FERRO canonique.
+Spark (`~/bin/kbza`), Mac et amiga indisponibles. WebGL, FPS matériel et déploiement non validés.
+Un sous-lot à la fois, publications fréquentes, aucun push forcé ; FERRO canonique inchangé.

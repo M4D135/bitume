@@ -1,0 +1,17 @@
+✔ 13A catalogue : Baïkal ajouté après les sept circuits conservés (1.680163ms)
+✔ 13A les 84 tableaux numériques des sept anciens tracés restent identiques bit à bit (186.33355ms)
+✔ 13A boucle praticable, relief significatif et raccord continu (26.556564ms)
+✔ 13A départ et stands plats, droits et compatibles avec douze voitures (23.482648ms)
+✔ 13A reconstruction du tracé indépendante du hasard global (53.555669ms)
+✔ 13A les solides réels restent hors de toutes les portions de chaussée (1109.982779ms)
+✔ 13A sec : onze rivaux accomplissent trois tours sans secours (4833.252566ms)
+✔ 13A pluie : onze rivaux accomplissent trois tours sans secours (4763.646735ms)
+✔ 13A neige : onze rivaux accomplissent trois tours sans secours (5790.981347ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16908.016818

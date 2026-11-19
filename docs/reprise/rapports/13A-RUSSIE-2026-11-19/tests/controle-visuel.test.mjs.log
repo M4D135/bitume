@@ -1,0 +1,17 @@
+✔ décodage des PNG RGB et RGBA avec les cinq filtres (3.033694ms)
+✔ captures tronquées ou formats inconnus refusés (0.709094ms)
+✔ les mesures portent sur la zone demandée, sans le reste de la page (0.934884ms)
+✔ alertes d’image noire, identique et de blocs fugitifs (3.155016ms)
+✔ comparaison avant/après : différences conservées, dérive des paramètres refusée (0.738628ms)
+✔ changement de GPU, de trajectoire ou disparition de J2 invalide la comparaison (1.262305ms)
+✔ les réglages effectifs et PhysX doivent correspondre, seul le décor peut varier (0.322915ms)
+✔ les paramètres de capture fixent taille, graine, qualité et budget de pas (0.786861ms)
+✔ l’horloge de capture contrôle chaque rAF sans falsifier performance.now (1.344058ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19.341643

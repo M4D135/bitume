@@ -1,0 +1,7 @@
+{
+  "fichier": "trace.json.gz",
+  "format": "gzip JSON UTF-8",
+  "octets_decompresses": 988821,
+  "sha256_decompresse": "6c1075d46732c3ebb66efc90e632ad0b14e63377bcde94a4169dd85d719edbc2",
+  "sha256_archive": "6d9797f3d14caed70a33207ed86503eebd4b4f214b01faf400900e46646edf82"
+}

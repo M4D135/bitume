@@ -53,9 +53,9 @@
 
   // Densité des publicités par caractère de lieu (un port en est couvert, la lande islandaise presque vide) et types
   // de bords dangereux, dans l'ordre où on les essaie.
-  const DENSITE = { foret: 1, cote: 1.5, montagne: .8, islande: .45, desert: .8, asie: 1, pacifique: .8 };
+  const DENSITE = { foret: 1, cote: 1.5, montagne: .8, islande: .45, desert: .8, asie: 1, pacifique: .8, baikal: .7 };
   const DANGERS = { foret: ['arbres', 'fosse', 'arbres'], cote: ['vide', 'muret', 'fosse'], montagne: ['vide', 'rochers', 'muret'], islande: ['rochers', 'vide', 'fosse'],
-    desert: ['rochers', 'fosse', 'rochers'], asie: ['muret', 'vide', 'arbres'], pacifique: ['vide', 'arbres', 'muret'] };
+    desert: ['rochers', 'fosse', 'rochers'], asie: ['muret', 'vide', 'arbres'], pacifique: ['vide', 'arbres', 'muret'], baikal: ['rochers', 'arbres', 'fosse'] };
   // limite (m depuis l'axe, au-delà de la demi-largeur) imposée par un bord : le parapet ou le muret est la limite
   const LIMITE_BORD = { vide: 1.4, muret: 1.0, fosse: 2.5 };
 
@@ -102,7 +102,17 @@
       const loin = k => !dangers.some(d => Math.abs(ramener(c, d.debut - k.debut + L / 2) - L / 2) < 500);
       for (let essai = 0; essai < 8 && dangers.length < voulus; essai++) {
         const voulu = types[dangers.length % types.length], courbes = candidats.filter(k => k.courbe && loin(k));
-        const type = voulu === 'vide' && !courbes.length ? 'muret' : voulu, possibles = type === 'vide' ? courbes : candidats.filter(loin);
+        const type = voulu === 'vide' && !courbes.length ? 'muret' : voulu;
+        let possibles = type === 'vide' ? courbes : candidats.filter(loin);
+        // Baïkal : l'allée de conifères proches appartient à la partie forestière roulante. À l'extérieur
+        // d'une courbe en descente, un simple contact sur neige projetait une voiture contre un tronc avant
+        // la glissière. Garder ces arbres sur une droite peu pentue ; les solides restent tous actifs.
+        if (theme === 'baikal' && type === 'arbres') possibles = possibles.filter(k => {
+          if (k.courbe) return false;
+          for (let s = k.debut; s <= k.fin; s += pas)
+            if (Math.abs(c.pente[Math.floor(ramener(c, s) / pas)]) > .025) return false;
+          return true;
+        });
         if (!possibles.length) break;
         const cand = possibles[Math.floor(r() * possibles.length)];
         candidats.splice(candidats.indexOf(cand), 1);
@@ -302,7 +312,7 @@
           // un tronc tous les 16 m environ, à 2,6 à 6 m du bord : on le touche dès qu'on élargit. Résineux en montagne,
           // en Islande et sur le Pacifique (sapins, séquoias), grands feuillus ailleurs (l'allée de platanes) ; le
           // même nombre de tirages dans les deux cas
-          const resineux = c.theme === 'montagne' || c.theme === 'pacifique' || c.theme === 'islande';
+          const resineux = c.theme === 'montagne' || c.theme === 'pacifique' || c.theme === 'islande' || c.theme === 'baikal';
           const dd = cote * (w + 2.6 + ra() * 3.4), h = (resineux ? 17 : 14) + ra() * 8, p = pointPlan(f, dd, hauteur(f, dd, w) - .3);
           const tronc = { shape: 'cylinder', collision: 'tronc', p: [p[0], p[1] + h * .42, p[2]], s: [h * .045, h * .84, h * .045], r: [0, 0, 0], mat: 10, color: [.30, .22, .15], detail: 1 };
           objets.push(tronc, { shape: 'cylinder', p: [p[0], p[1] + 1.1, p[2]], s: [h * .047, .45, h * .047], mat: 16, color: [.95, .95, .92] });

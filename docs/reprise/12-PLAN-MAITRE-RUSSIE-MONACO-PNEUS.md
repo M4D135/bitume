@@ -1,6 +1,6 @@
 # BITUME — plan maître Russie, Monaco, Marseille, roues et pneus
 
-Date du plan : **18 novembre 2026**. État au **19 novembre 2026** : **12F4 et sortie de file livrés sur main en 0.2.52 / p13 (`b5b4c0c6`), PR n°6 fusionnée.** Sources/build/preuves vérifiés ; base p12 et clôture `db3e8da1` préservées. Reçu : `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/PUBLICATION-0252.json`. Prochain lot : **13A Russie, tracé et relief, non commencé**. Fiche complémentaire : [Sortie de file](12F4-SORTIE-FILE.md).
+Date du plan : **18 novembre 2026**. État au **19 novembre 2026** : **13A Baïkal qualifié CPU en 0.2.53 / p13, publication finale à terminer**. 5 424 m, 62,95 m de dénivelé, 9/9 contrôles russes ; sept circuits historiques conservés. Rapport : `rapports/13A-RUSSIE-2026-11-19/qualification-finale.json`. Prochain lot après publication : **13B Russie, décor et saisons**, non commencé.
 Demande de David : ajouter un circuit en Russie et un Monaco « ultra fidèle », refaire les roues bien rondes et plus réalistes, différencier les sculptures pluie/neige et les slicks lisses, montrer les traces d’usure au fil de la course, puis publier ce plan avant de commencer.
 
 Complément demandé dans la même reprise : **Spéciale Marseille à partir de la carte EMPRISE, avec ajout de relief**, et master liste complète pour Claude Fable. Entrée de passation : [MASTER-LISTE-CLAUDE-FABLE.md](../../MASTER-LISTE-CLAUDE-FABLE.md).
@@ -50,7 +50,7 @@ Les dimensions de la voiture restent la référence : pneus avant de rayon **0,2
 
 ## 3. Lots d’exécution et points de publication
 
-Les critères ci-dessous restent les conditions de clôture. **12F4 qualifié CPU en 0.2.51 / p12**, publication finale vérifiée sur main : **106/107 suites**, seul échec traces hérité identique. **21 scénarios / 1 375 empreintes p12** ; référence créée explicitement puis inchangée pendant la qualification, archives p9/p10/p11 et lois de conduite/usure intactes. Deux builds identiques de **14 056 780 octets**, **53 scripts valides**, **34 modules FERRO inchangés**, **211 empreintes suivies**. Rapport `rapports/12F4-2026-11-19/qualification-execution.json`. Main reste `db3e8da1` / 0.2.51 ; aucune PR créée à ce stade. Contrôleurs réels avec transport simulé ; parties réelles entre navigateurs, WebGL, matériel et déploiement non validés. Conserver la variabilité CPU historique du décor. **Après publication, 13A Russie tracé/relief reste à commencer.**
+Les critères ci-dessous restent les conditions de clôture. **12A–12F4 et la sortie de file sont clos sur main en 0.2.52/p13** ; reçus conservés dans `rapports/12F4-SORTIE-FILE-2026-11-19/`. **13A est qualifié en 0.2.53**, publication finale à terminer. Réserves documentées : traces héritées et seuil de temps décor également dépassé sur la base. Le décor détaillé russe reste 13B ; les validations WebGL, matérielles et déploiement restent distinctes.
 
 | Ordre / lot | Travail | Condition pour clôturer le lot |
 |---|---|---|
@@ -75,7 +75,7 @@ Les critères ci-dessous restent les conditions de clôture. **12F4 qualifié CP
 | 15E | Marseille : rendu et performances. | Captures/tour filmé, détails et ressources mesurés sur le corridor. |
 | 15F | Marseille : livraison. | Sources/tests/build publiés, contrôle production séparé, reçu et reprise. |
 
-**12F4 / 0.2.51 qualifié CPU**, fiche [12F4](12F4-STRATEGIE-STANDS-IA.md) : rivaux locaux et humains repris choisissent un arrêt utile, entrent, attendent, reçoivent le vrai service puis repartent par commandes physiques, sans renouvellement caché. Publication finale vérifiée sur main ; main reste **0.2.51 / `db3e8da1`**. Les acquis 12F3 sont conservés : choix solo/duo/en ligne, pneus à **2 Hz**, services fiables, relais hôte et reprise sans neuf ; nouveaux joueurs hors grille à la prochaine course. Prochain lot après publication : **13A Russie, tracé et relief, non commencé**. Ne pas reprendre les lots qualifiés ni Safari ; les fusions des PR n°3 et n°4 sont terminées.
+**13A Baïkal qualifié CPU**, fiche [13A](13A-RUSSIE-TRACE-RELIEF.md) : douze voitures accomplissent trois tours sur sec/pluie/neige sans accident, replacement ni blocage, avec contacts et vrais solides. La 0.2.53 est construite deux fois à l’identique ; publication finale en préparation. Les lots pneus/stands et Safari sont clos. Après publication : **13B Russie, décor et saisons**.
 
 ## 4. Roues : géométrie, matière et rotation
 
@@ -185,9 +185,9 @@ Chaque message identifie la séance, le pilote, un numéro monotone de service e
 
 Inclure un identifiant stable et une révision/empreinte de circuit dans la préparation. Refuser clairement le départ lorsque deux versions ne décrivent pas la même piste ou le même protocole. Couvrir solo, deux joueurs locaux, deux contre deux en ligne, départ d’un pair et reprise par l’IA.
 
-## 8. Circuit russe : Baïkal, proposition de travail
+## 8. Circuit russe : Baïkal, tracé fixé en 13A
 
-**Identité proposée :** une route de compétition originale sur des rives rocheuses, un grand plan d’eau, une forêt boréale irrégulière et quelques constructions rurales. Ce choix donne une silhouette distincte du désert, des pics asiatiques et des grands séquoias déjà livrés.
+**Identité de conception retenue en 13A :** une route de compétition originale sur des rives rocheuses, un grand plan d’eau, une forêt boréale irrégulière et quelques constructions rurales. Ce choix donne une silhouette distincte du désert, des pics asiatiques et des grands séquoias déjà livrés.
 
 ### 8.1 Tracé
 
@@ -205,7 +205,7 @@ Inclure un identifiant stable et une révision/empreinte de circuit dans la pré
 
 ### 8.3 Livraison
 
-Ajouter l’entrée au catalogue après les sept existantes : ID proposé `baikal`, indice attendu **7** si aucun autre circuit n’a été ajouté. Vérifier `main` avant d’attribuer l’indice ; l’ID reste la référence stable.
+L’entrée est ajoutée après les sept historiques : ID stable `baikal`, **indice 7**, graine 179, longueur générée 5 424 m. Son tracé et son relief sont qualifiés en 13A ; le thème détaillé reste 13B. Cette entrée ne supprime pas la demande distincte du grand circuit de montagne.
 
 Onze rivaux doivent terminer plusieurs tours avec vrais obstacles, sous les conditions représentatives sec/pluie/neige. Compter contacts, replacements et durées de stagnation ; un secours automatique ne prouve pas la viabilité d’un tracé. Livrer les captures et mesures de coût avant de déclarer le rendu terminé.
 
@@ -358,7 +358,7 @@ Les modifications de FERRO restent dans son dépôt canonique, puis sont propag�
 
 | Point ouvert | Résolution prévue |
 |---|---|
-| Identité russe précise | Baïkal retenu comme proposition de travail ; fixer nom final, graine et longueur en 13A. |
+| Identité russe précise | Baïkal retenu en 13A comme choix de conception : ID `baikal`, indice 7, graine 179, longueur 5 424 m ; aucun relevé de route réelle revendiqué. |
 | Relevé métrique Monaco | Compléter coordonnées, largeurs et altitudes en 14A ; le plan FIA seul ne les fournit pas. |
 | Neige à Monaco | Documenter la règle de saison/surface et son articulation avec les modes Manuel/Aléatoire/Réel en 14A. |
 | Marseille : parcours et relief | Choisir le corridor EMPRISE et le MNT adapté en 15A–15B ; ne pas confondre hauteurs de bâti et terrain. |
@@ -392,8 +392,8 @@ Sources internes : `src/voiture.js`, `src/carene.js`, `src/conduite.js`, `src/de
 - [x] 12E — neige, adhérence et usure physique p10 : qualifié CPU avec réserves en 0.2.47 après bornage du recul ; 96/98 suites, traces hérité et réserve performance décor. WebGL non validé.
 - [x] Publication 12E — sources, tests, build 0.2.47 et preuves contrôlés sur main (`c55cde2`) ; déploiement séparé.
 - [x] 12F — Sources/build/preuves livrés sur main en 0.2.52/p13 ; stratégie IA et neuf contrôles de dégagement qualifiés CPU. Validations navigateur, WebGL et matériel distinctes.
-- [ ] 13A — Russie, tracé et relief : prochain lot, non commencé.
-- [ ] 13B — Russie, décor et livraison.
+- [x] 13A — Russie, tracé et relief : qualifié CPU en 0.2.53/p13 ; publication finale à terminer, deux réserves documentées.
+- [ ] 13B — Russie, décor, saisons et livraison complète : prochain lot après publication de 13A.
 - [ ] 14A — Monaco, dossier de référence métrique.
 - [ ] 14B — Monaco, tracé explicite.
 - [ ] 14C — Monaco, murs, grille et IA.

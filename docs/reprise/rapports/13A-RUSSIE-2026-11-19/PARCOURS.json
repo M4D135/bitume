@@ -1,0 +1,107 @@
+{
+  "archive": "parcours-physiques.tar.gz",
+  "bytes": 835618,
+  "sha256": "3792d3be6ebf35b9d88c57c945a8d7b5545b0a0e312ff500268430b16b6a004c",
+  "fichiers": [
+    {
+      "path": "parcours/russie/russie.json",
+      "bytes": 44056,
+      "sha256": "206cd0f834a779acfde192bf664e250f88602a91ccdb41ae46808e5a30998d4c"
+    },
+    {
+      "path": "parcours/stands/12f4-baikal-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 307909,
+      "sha256": "d60a5f762521e55b34a64e9129fbeeca0902ad51c470c44b77374e80890f1cab"
+    },
+    {
+      "path": "parcours/stands/12f4-brume-de-jade-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 328036,
+      "sha256": "b17af7da427322235d3af27fe59e2b086ee5e12bfd27324abbebb271fcd4454e"
+    },
+    {
+      "path": "parcours/stands/12f4-cap-sequoia-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 309746,
+      "sha256": "c0b9a49bb5de11b7f499a09d83a3dbf5fb89e45d098546ea05146b7f41625170"
+    },
+    {
+      "path": "parcours/stands/12f4-distant-humain-arrivee-abandon-drapeau-et-fin-proche-ne-programment-pas-de-nouvel-arret.json",
+      "bytes": 10154,
+      "sha256": "2648e1ebf742646da3dc2fe751181dd4fe16a8cea6004ca49feb403be70d4032"
+    },
+    {
+      "path": "parcours/stands/12f4-garage-occupe-tardivement-un-humain-devant-bloque-le-debut-du-service-ia.json",
+      "bytes": 8254989,
+      "sha256": "e286fe0c4108596e55532ab2f0e33e28dff3aa3a361e4abf87a6cbe70b0e29f5"
+    },
+    {
+      "path": "parcours/stands/12f4-haut-col-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 324432,
+      "sha256": "4831925ddd26781911be9427dd98188ba922fd15af09b2cf5b27301cd544abc1"
+    },
+    {
+      "path": "parcours/stands/12f4-hote-sert-le-rival-distant-recoit-le-resultat-sans-simuler-un-deuxieme-service.json",
+      "bytes": 320033,
+      "sha256": "70a2e6869f2dac334624891311025a27202f7683fe49e7d025209fecf4287066"
+    },
+    {
+      "path": "parcours/stands/12f4-humain-repris-par-ia-conserve-ses-pneus-puis-paie-le-trajet-et-le-service-complet.json",
+      "bytes": 309542,
+      "sha256": "793f8646254b205c2beb20a27372f9344c84025cbd82b8a738fbf19fa52ed57c"
+    },
+    {
+      "path": "parcours/stands/12f4-interruption-juste-avant-la-fin-aucun-pneu-neuf-ni-service-conserve.json",
+      "bytes": 177151,
+      "sha256": "db7dfcd3fe283d5d2e961cac6933afbab24a19cf506f9f3a7dc2e56ae890824b"
+    },
+    {
+      "path": "parcours/stands/12f4-lande-noire-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 326791,
+      "sha256": "c901817be54ae1ce24057b436866a1dbf03fa23e7084501cb1c345891959d5d4"
+    },
+    {
+      "path": "parcours/stands/12f4-pneus-sains-aucune-decision-ni-arret-dans-le-meme-parcours.json",
+      "bytes": 68855,
+      "sha256": "1aa102f245f2fc085c3fbed06102b3bf92c7ee6026cfd403274b22572eedb6a5"
+    },
+    {
+      "path": "parcours/stands/12f4-port-sable-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 306707,
+      "sha256": "a51b46cc98a11ac7be6bd1926a02c52591d9c156538021981f0758d2d709a84e"
+    },
+    {
+      "path": "parcours/stands/12f4-roche-fauve-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 322719,
+      "sha256": "d55bbbea772c8ab0829a4627cd24726f43dd9b0af2750a139feb621656ff31c2"
+    },
+    {
+      "path": "parcours/stands/12f4-second-service-apres-usure-renouvelee-et-vrai-tour-sans-boucle-au-meme-passage.json",
+      "bytes": 1833493,
+      "sha256": "6fa4518e931d541d200fa04982da4eb50537c5b3edbcc54ea1e944196eace288"
+    },
+    {
+      "path": "parcours/stands/12f4-trajet-reel-sous-neige-slicks-conserves-puis-monte-adaptee-apres-service-complet.json",
+      "bytes": 343490,
+      "sha256": "593b4ac05b04f1330930b0768e85d3f9d8155771fe5e5facec46b394448d2f7e"
+    },
+    {
+      "path": "parcours/stands/12f4-trajet-reel-sous-pluie-slicks-conserves-puis-monte-adaptee-apres-service-complet.json",
+      "bytes": 324357,
+      "sha256": "0a7eb400b221c69b5338d9acb2febbae4632d14e31047b2842a5c55f56c1138c"
+    },
+    {
+      "path": "parcours/stands/12f4-trois-ia-simultanees-sont-servies-separement-puis-repartent.json",
+      "bytes": 1476355,
+      "sha256": "967bc49649600785435d8e21d1e6f77874b3fb2da159ba93500c5f8cd9b69f34"
+    },
+    {
+      "path": "parcours/stands/12f4-val-brule-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 309778,
+      "sha256": "f6ff85fdcf70cf6642bd127a86fbce2d8df42639b33e648a90a15e9fd63dbcc3"
+    },
+    {
+      "path": "parcours/stands/sortie-file.json",
+      "bytes": 16025,
+      "sha256": "ec5a0804d5e3a1082e563d364bd49797f05b00d2ed3d0ce8c7fa70b19d00a8a3"
+    }
+  ]
+}

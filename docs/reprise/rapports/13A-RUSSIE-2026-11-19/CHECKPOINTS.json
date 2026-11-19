@@ -1,0 +1,18 @@
+{
+  "base": "18451e0eeb701d720f08c069b841d79c2439755d",
+  "branche": "codex/bitume-13a-russie-20261119",
+  "checkpoints": [
+    {
+      "local": "dab7874816a414d4d84f128586edb3b757adf072",
+      "distant": "0cbea2047a2a6150fe8e0643cdd7121a9171fc01",
+      "arbre": "b1d2566199401d9e7078a22d7bde010eeb007da1",
+      "objet": "Sources initiales et reprise"
+    },
+    {
+      "local": "feacd351b8d6ee0d102919bdf000b30b823f9e77",
+      "distant": "3d173d16f8d75e4c77548b8caaf77314af3287f9",
+      "arbre": "cc3f8cb9ce3fe79ea6b238777d994df3c43a43ed",
+      "objet": "Correction aménagement, parcours ciblés, diagnostics et carte"
+    }
+  ]
+}
