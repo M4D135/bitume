@@ -1,0 +1,10 @@
+ok course réelle : pneus neufs indépendants, aucune usure sur la grille et aux feux
+ok repos freiné et attente de marche arrière ne font pas avancer les pneus
+ok vrai recul : usure malgré contacts dynamiques périmés, sans les réécrire
+ok vrai vol et réception : anciennes charges sans abrasion, monte et motifs conservés
+ok récupération automatique et replacement direct conservent usure, type et objets
+ok course en ligne : les voitures distantes ne sont pas usées une seconde fois localement
+ok p10 : usure progressive et bornée dans les vraies capacités des deux essieux
+ok l’usure d’une roue réduit son essieu sans appliquer une seconde perte à l’autre
+ok p10 : mêmes pneus et commandes donnent les mêmes pas, événements et usure
+9 contrôles intégration usure réussis

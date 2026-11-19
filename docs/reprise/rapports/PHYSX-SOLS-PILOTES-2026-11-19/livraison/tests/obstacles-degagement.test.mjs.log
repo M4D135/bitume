@@ -1,0 +1,6 @@
+ok contact rasant répété : la rotation bloquée ne vole plus la translation tangentielle
+ok le glissement est rebalayé contre un second mur sans énergie ni traversée ajoutées
+ok aucune marche arrière IA pour la grille, une attente de trafic ou une voiture sans contact fixe
+ok forêt enneigée réelle : le rival collé au tronc recule et repart sans replacement ni pneus restaurés
+ok poche en U : deux essais infructueux rendent la main au secours existant, sans restaurer les pneus
+5 contrôles contact tangent et dégagement IA réussis

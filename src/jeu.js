@@ -75,7 +75,7 @@
     if (!session || !session.reglagesReference) (ecran === 'course' ? differerStock : ecrireStock)('bitume.reglages', reglages);
   };
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p13', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p14', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
   // temps et longueur du fantôme gardé, par circuit : lus une fois, puis tenus à jour à chaque écriture (finTour
   // relisait et analysait le fantôme entier à chaque tour de chrono)
@@ -260,6 +260,7 @@
     // la séance qui meurt rend ses corps PhysX : la démo enchaîne les courses sans fin et laisserait un monde
     // orphelin par course (les pièces détachées y vivent douze secondes chacune)
     if (session && session.fx) B.traces.liberer(session.fx);
+    if (session && session.course) B.physique.liberer(session.course);
     // en ligne, une machine qui porte deux pilotes joue en écran partagé, comme une course à deux
     if (enl && enl.locaux.length === 2) type = 'duo';
     const conditions = enl || conditionsChoisies || conditionsDuDepart();
@@ -286,6 +287,7 @@
     // rivaux sur ceux que conseille la piste au départ. La caisse les montre (voiture.js) et la conduite les sent.
     const conseil = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoInit)), joue = type === 'course' || type === 'chrono' || duo;
     monterPneusDepart(course, joue, enl, conseil);
+    B.physique.installer(course, sc.decor);
     const S = {
       type, i, course, c, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
       prec: [], cour: [], sortie: [], acc: 0, tele: { poste: null, alea: graine32(course.voitures.length * 7 + i) },
@@ -295,7 +297,7 @@
       detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
       real: demo ? B.realisateur.creer(graineCourse) : null, planVu: null, suivie: 0, enchaine: false,
-      fx: B.traces.creer(course.voitures.length, graineCourse),
+      fx: B.traces.creer(course.voitures.length, graineCourse, course.physique.world),
       // flammes et détonations d'échappement (lot 20) : hasard propre, tiré de la graine de la course
       ech: B.echappement ? B.echappement.creer(course.voitures.length, graineCourse) : null,
       meteo: meteoInit, conditions,
@@ -358,7 +360,10 @@
       const p = liste[k] || (liste[k] = {});
       p.x = e.x - sa * et.d; p.y = et.y; p.z = e.z + ca * et.d;
       p.cap = e.cap + et.psi + et.beta; p.tangage = et.tangage; p.roulis = et.roulis;
-      p.braquage = (et.braquage || 0) * 2.2; p.roule = v.roule || 0; // braquage réel des roues, accentué pour se voir
+      if (et._physx && !v.distant) { p.x = et._physx.x; p.y = et._physx.y; p.z = et._physx.z; p.cap = et._physx.cap; }
+      p.braquage = (et.braquage || 0) * (et._physx ? 1 : 2.2); p.roule = v.roule || 0;
+      const rebond = p.rebond || (p.rebond = [0, 0, 0, 0]);
+      for (let i = 0; i < 4; i++) rebond[i] = et._physx && !v.distant ? et._physx.offsets[i] : 0;
     });
   }
   function melange(a, b, t, sortie) {
@@ -366,6 +371,8 @@
     sortie.cap = a.cap + angle(b.cap - a.cap) * t; sortie.tangage = lerp(a.tangage, b.tangage, t);
     sortie.roulis = lerp(a.roulis, b.roulis, t); sortie.braquage = lerp(a.braquage, b.braquage, t);
     sortie.roule = lerp(a.roule || 0, b.roule || 0, t);
+    const rebond = sortie.rebond || (sortie.rebond = [0, 0, 0, 0]);
+    for (let i = 0; i < 4; i++) rebond[i] = lerp(a.rebond?.[i] || 0, b.rebond?.[i] || 0, t);
     return sortie;
   }
 
@@ -2206,7 +2213,8 @@
   // voiture.js lit la pose et les options sans les garder, le moteur relit le soleil et les feux à chaque draw. Une
   // vue (J2, puis J1, puis leurs glaces) finit de s'en servir avant que la suivante les réécrive. Seize voitures au
   // plus (onze rivaux, quatre humains) ; au-delà, les tableaux grandissent.
-  const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0, etatPneus: null });
+  const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0, etatPneus: null,
+    pilote: { volant: 0, rapport: 1, rapportAvant: 1, passage: 1, alat: 0, along: 0, v: 0, t: 0 } });
   const nouvellesOptions = () => ({ detail: 'complet', roues: undefined, casse: false, plafond: 'complet', rouesDetail: 0 });
   const POSES_RENDU = Array.from({ length: 16 }, nouvellePose), OPTIONS_POSE = Array.from({ length: 16 }, nouvellesOptions);
   const POSE_FANTOME = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0 };
@@ -2288,6 +2296,7 @@
     for (let k = 0; k < nV; k++) {
       const p = poses[k], d = Number.isNaN(RP[k]) ? 0 : p.roule - RP[k];
       RP[k] = p.roule; RV[k] += Math.abs(d) > .11 ? Math.sign(d) * .11 : d;
+      if (co.voitures[k].etat._physx && !co.voitures[k].distant) continue; // débattement de suspension PhysX interpolé
       const v = Math.abs(co.voitures[k].etat.v), a = .0035 * clamp(v / 60, 0, 1) * (co.voitures[k].etat.surface === 'herbe' ? 3 : co.voitures[k].etat.surface === 'vibreur' ? 2.2 : 1);
       const reb = p.rebond || (p.rebond = creationTardive('rebond', [0, 0, 0, 0])), t = horlogeReelle, s0 = p.roule * 1.7;
       for (let r = 0; r < 4; r++) reb[r] = a * (Math.sin(s0 + r * 1.9) * .6 + Math.sin(s0 * 2.3 + r * .7 + t * 3) * .4);
@@ -2431,6 +2440,11 @@
       B.voiture.changerPneus(S.modeles[k], co.voitures[k].etat.pneus);
       const etatsPneus = co.voitures[k].distant && S.pneusVisuels ? S.pneusVisuels[k] : co.voitures[k].etat.etatPneus;
       const ev = poseRendu(k, p, RV[k], co.voitures[k].etat.v, etatsPneus);
+      const pilote = ev.pilote, voiture = co.voitures[k], etatPilote = voiture.etat;
+      pilote.volant = etatPilote.volant; pilote.rapport = etatPilote.rapport;
+      pilote.rapportAvant = voiture.rapportAvant === undefined ? etatPilote.rapport : voiture.rapportAvant;
+      pilote.passage = voiture.tPassage === undefined ? 1 : clamp((S.tRendu - voiture.tPassage) / .36, 0, 1);
+      pilote.alat = etatPilote.alat; pilote.along = etatPilote.along; pilote.v = etatPilote.v; pilote.t = S.tRendu;
       // Hystérésis propre à cette vue : ni la seconde moitié d'écran ni les deux miroirs ne la réécrivent.
       const rouesDetail = S.detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos), tanDemi, hauteur, S.detailsRoues[k]);
       if (k === suivie.id) ombreDebut = sortie.length;
@@ -2440,7 +2454,7 @@
         etc.regime = et.regime; etc.volant = et.volant; etc.rapport = et.rapport; etc.kmh = B.conduite.kmh(et);
         etc.rouesDetail = rouesDetail;
         etc.roues = co.voitures[k].degats && co.voitures[k].degats.roues; etc.casse = !!(et.degats && et.degats.casse);
-        etc.passage = suivie.tPassage === undefined ? 1 : (co.horloge - suivie.tPassage) / .36; etc.rapportAvant = suivie.rapportAvant;
+        etc.passage = pilote.passage; etc.rapportAvant = pilote.rapportAvant;
         // les rivaux de la glace peinte ne servent que sans image réelle des glaces
         etc.derriere = glaceVive ? AUCUN_SUIVEUR : suiveurs(co, poses, k, p);
         etc.ciel = atm.skyBottom; etc.brume = atm.fog; etc.glaceVive = glaceVive;
@@ -4467,9 +4481,9 @@
       // Moteur des rétroviseurs dès la page, quand une course pourra montrer des glaces vives : sa création ne tombe
       // jamais sur le chemin d'une séance.
       if (glacesPossibles(null)) creerMoteurRetro();
-      // PhysX (FERRO) ne sert qu'aux pièces détachées et son décodage est lourd : lancé en tâche de fond, jamais
+      // PhysX est initialisé avant la coque par construire.py ; la scène porte voitures et débris.
       // sur le chemin de l'écran titre, et l'absence du module ne doit pas empêcher la page de tourner.
-      if (window.FPhysX && window.FPhysX.init) Promise.resolve(window.FPhysX.init()).catch(() => { /* pièces en parabole */ });
+      if (!window.FPhysX?.isReady()) throw new Error('Le moteur PhysX doit être prêt avant le jeu');
       son = B.son.creer();
       reglages.circuit = clamp(reglages.circuit | 0, 0, CATALOGUE.length - 1);
       // la vitrine du titre est préparée comme une séance, sous le voile de chargement de la page

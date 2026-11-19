@@ -1,0 +1,32 @@
+{
+  "repository": "M4D135/FERRO",
+  "version": "0.3.14",
+  "pull_request": "https://github.com/M4D135/FERRO/pull/2",
+  "head": "f145e080d1cabab9802dc002debbf54aa8cc0bb6",
+  "merge": "85ba941709bb304cbc34f8beb7baab0639321919",
+  "tree": "27c2f2dd23c57feedefc748213f22fd165a15635",
+  "remote_tree_equals_qualified_tree": true,
+  "modules_exacts": 34,
+  "canonical_pass": 210,
+  "canonical_fail": 0,
+  "canonical_todo": 1,
+  "physx_pass": 25,
+  "physx_fail": 0,
+  "archive": {
+    "path": "dist/FERRO-0.3.14.zip",
+    "bytes": 6289975,
+    "sha256": "e8aa4dd9daa766eefc9213ca4edb59522c9525090d694ae209add8534ffcd028",
+    "git_blob": "b39f32d05a0eb3849fd87a8eb371f73fb8433129",
+    "crc_verified": true,
+    "entries": 45
+  },
+  "emprise": {
+    "baseline_pass": 10,
+    "candidate_pass": 10,
+    "suites": 12,
+    "inherited_failure_logs_identical": true,
+    "full_build": false
+  },
+  "browser_scene_validated": false,
+  "hardware_fps_measured": false
+}

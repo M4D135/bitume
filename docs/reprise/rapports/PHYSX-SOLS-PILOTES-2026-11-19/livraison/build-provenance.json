@@ -1,0 +1,44 @@
+{
+  "date_utc": "2026-11-19T18:09:47.000318+00:00",
+  "version": "0.2.55",
+  "physique": "p14",
+  "ferro": "0.3.14",
+  "build": {
+    "octets": 14153917,
+    "gzip": 3360641,
+    "sha256": "c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f",
+    "deux_builds_identiques": true,
+    "artefacts": {
+      "dist/bitume.html": "c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f",
+      "SIZE.json": "af0fadbd7465fa242c9b66644f67331859782bcbb0d6cf047bbd769737588c4d",
+      "VERSION.json": "4501f2b5c73ea5160649a054f08fc24f939fdef2bab490f8c437427f2e62a72d"
+    }
+  },
+  "modules_canoniques_exacts": 34,
+  "determinisme_fixture_sources_exactes": 19,
+  "parcours_precedents": {
+    "preuve": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physx-courses-huit-circuits-qualification.json",
+    "sha256": "e4edc977d714c83c217f76c9d176fb8bad810cb24ebbc10b6c5f32792aef2984",
+    "protocole": {
+      "backend": "PhysX 5.12.0 WASM embarqué",
+      "circuits": 8,
+      "voituresParCircuit": 12,
+      "secondesParCircuit": 120,
+      "dt": 0.008333333333333333,
+      "meteo": "sec",
+      "saison": "ete",
+      "qualiteDecor": "high",
+      "graineCourse": 42,
+      "interventions": "IA sur les douze voitures ; collisions et retours après accident autorisés par la course"
+    },
+    "sources_simulation_identiques": true,
+    "replacements": 1,
+    "limites": [
+      "120 s par circuit : toutes les voitures ne terminent pas un tour complet.",
+      "Les sondes de hauteur concernent le couloir central de la chaussée (largeur/2 moins 1 m) ; le terrain hors route n’est pas exhaustivement contrôlé.",
+      "Le seuil de -15 cm porte sur le repère du châssis, pas sur une intersection triangle par triangle de la carrosserie visible.",
+      "Les stagnations sont observées toutes les 10 s après la grille ; aucun délai maximal de blocage continu ne peut être déduit de ces seules traces.",
+      "Ce bilan ne valide ni la pluie/neige sur tous les circuits, ni le rendu navigateur, ni les FPS matériels."
+    ]
+  }
+}

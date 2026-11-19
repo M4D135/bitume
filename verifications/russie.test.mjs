@@ -1,4 +1,6 @@
-// 13A — Baïkal : tracé et relief originaux, sept circuits historiques intacts et vraie course à douze.
+// 13A — Baïkal : tracé et relief originaux, sept circuits historiques intacts et conduite historique à douze.
+// Ce banc conserve la voie de compatibilité sans backend PhysX. Les corps dynamiques du jeu p14 sont
+// qualifiés séparément par physique-voitures, physx-circuits et physx-stands avec le vrai WASM intégré.
 // Par défaut les trois courses de trois tours sont exécutées. BITUME_RUSSIE_GEOMETRIE_SEULE=1 sert
 // uniquement au diagnostic court : son rapport indique explicitement que la course n'est pas qualifiée.
 import assert from 'node:assert/strict';
@@ -47,7 +49,7 @@ function verifier(nom, f) {
 after(() => {
   const apres = empreintesSources(), sourcesStables = JSON.stringify(apres) === JSON.stringify(avant);
   const rapport = { date: new Date().toISOString(), node: process.version, pas: DT, contrat: CONTRAT,
-    portee: GEOMETRIE_SEULE ? 'geometrie-seulement' : 'geometrie-et-trois-courses',
+    portee: GEOMETRIE_SEULE ? 'geometrie-seulement' : 'geometrie-et-trois-courses-conduite-historique-sans-physx',
     coursesDemandees: GEOMETRIE_SEULE ? 0 : 3, toursParCourse: TOURS, sourcesStables,
     tests: resultats.length, reussis: resultats.filter(r => r.reussi).length, resultats, empreintes: avant };
   if (process.env.BITUME_RAPPORTS_RUSSIE) {
@@ -92,8 +94,8 @@ verifier('13A catalogue : Baïkal ajouté après les sept circuits conservés', 
   assert.equal(CATALOGUE.findIndex(k => k.id === CONTRAT.id), 7);
   for (const [cle, valeur] of Object.entries(CONTRAT)) assert.equal(CATALOGUE[7][cle], valeur, cle);
   assert.equal(CATALOGUE.filter(k => k.id === CONTRAT.id).length, 1);
-  assert.equal(sourceJeu.match(/\bPHYSIQUE\s*=\s*['"](p\d+)['"]/)?.[1], 'p13', 'aucune loi de conduite modifiée');
-  return { indice: 7, circuitsHistoriques: 7, physique: 'p13' };
+  assert.equal(sourceJeu.match(/\bPHYSIQUE\s*=\s*['"](p\d+)['"]/)?.[1], 'p14', 'les records suivent la migration PhysX');
+  return { indice: 7, circuitsHistoriques: 7, physique: 'p14', backendDuBanc: 'conduite-historique-sans-physx' };
 });
 
 verifier('13A les 84 tableaux numériques des sept anciens tracés restent identiques bit à bit', () => {

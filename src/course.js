@@ -617,6 +617,22 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
   //    transporte ni dégâts ni arrêt), un pair ne peut pas faire réparer la voiture d'un autre.
   const STANDS = { marge: .8, entree: 4, arret: .35, frein: 18, mouvementService: .05 };
   const COMMANDE_SERVICE = Object.freeze({ ...NEUTRE, frein: 1 });
+  function limiterVoiePhysX(course, v, cmd) {
+    const e = v.etat, S = course.c.stands;
+    if (!e._physx || !S || e.stands?.phase !== 'voie' || e.rapport === -1 || e.v < 0) return cmd;
+    // Le limiteur travaille par la même motricité et les mêmes freins que le pilote. Écrire e.v après le
+    // solveur ne ralentit pas l'acteur : sa vitesse réelle serait relue intacte au pas suivant.
+    B.conduite.couperTurbo(e);
+    const vitesse = Math.abs(e.v);
+    if (vitesse < S.vitesse - .6) return cmd;
+    const commandes = course._cmdsLimiteVoie || (course._cmdsLimiteVoie = []);
+    const limite = commandes[v.id] || (commandes[v.id] = {});
+    Object.assign(limite, cmd);
+    limite.gaz = (cmd.gaz || 0) * clamp((S.vitesse - vitesse) / .6, 0, 1);
+    limite.frein = Math.max(cmd.frein || 0, clamp((vitesse - S.vitesse) / .5, 0, 1));
+    limite.derive = false;
+    return limite;
+  }
   // Choisir pour le prochain arrêt ne touche ni à la monte actuelle ni à son état. La demande n'est valable
   // que pour une voiture humaine conduite ici ; un service commencé conserve la monte qu'il a figée.
   function demanderPneus(course, v, type) {
@@ -678,7 +694,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     const dans = dansLaVoie(course.c, e, S);
     if (st.phase === 'voie') {
       if (!dans) { annulerStand(v, ev); return; }
-      if (e.v > S.vitesse) e.v = Math.max(S.vitesse, e.v - STANDS.frein * dt);
+      if (!e._physx && e.v > S.vitesse) e.v = Math.max(S.vitesse, e.v - STANDS.frein * dt);
       // Une place peut être occupée depuis la décision IA du début de pas (entrée humaine ou contact).
       // Revérifier l'admission après les collisions ; une attente dans le garage ne vaut pas service autorisé.
       if (dansLeGarage(course.c, e, S) && Math.abs(e.v) < STANDS.arret &&
@@ -686,12 +702,14 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
         st.phase = 'service'; st.t = 0; st.duree = B.degats.chiffrerService(v.degats);
         st.pneus = B.pneus.estJouable(e.pneusProchainArret) ? e.pneusProchainArret : e.pneus;
         st.revisionPneus = e.servicePneus; st.sService = e.s; st.dService = e.d;
-        e.v = 0; e.gaz = 0; e.frein = 1; e.omega = 0;
+        if (!e._physx) { e.v = 0; e.omega = 0; }
+        e.gaz = 0; e.frein = 1;
         ev.push({ type: 'stand', id: v.id, phase: 'service', duree: st.duree, pneus: st.pneus });
       }
     } else if (st.phase === 'service') {
       if (st.interrompu || !serviceImmobile(course.c, e, S, st)) { annulerStand(v, ev); return; }
-      e.v = 0; e.gaz = 0; e.frein = 1; e.omega = 0;
+      if (!e._physx) { e.v = 0; e.omega = 0; }
+      e.gaz = 0; e.frein = 1;
       if (st.t >= st.duree) {
         const monteAvant = e.pneus;
         if (!B.pneus.remplacerEtat(e, st.pneus, { seance: course.graine, voiture: v.id }, st.revisionPneus)) {
@@ -733,8 +751,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     const t0 = course.temps;
     aspirer(c, V);
 
-    if (B.contacts && B.contacts.avant) B.contacts.avant(course);
-    if (B.obstacles) B.obstacles.avant(course);
+    if (course.physique) B.physique.avant(course, dt, retenue);
+    else {
+      if (B.contacts && B.contacts.avant) B.contacts.avant(course);
+      if (B.obstacles) B.obstacles.avant(course);
+    }
     const cmdsIA = course._cmdsIA || (course._cmdsIA = []);   // un objet de commandes par voiture, rempli à chaque pas
     for (let i = 0; i < V.length; i++) {
       const v = V[i];
@@ -750,6 +771,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
         if (!serviceImmobile(c, v.etat, c.stands, service)) service.interrompu = true;
         else cmd = COMMANDE_SERVICE;
       }
+      cmd = limiterVoiePhysX(course, v, cmd);
       // les événements de la voiture vont droit dans ceux du pas ; une conduite de test qui rend son propre tableau
       // est recopiée comme avant
       const debut = ev.length, rendus = B.conduite.pas(v.etat, cmd, c, dt, retenue, ev);
@@ -757,9 +779,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       else for (const e of rendus) { e.id = v.id; ev.push(e); }
     }
     const avant = ev.length;
-    if (B.contacts) B.contacts.pas(course, ev); else contacts(course, ev);
+    if (course.physique) B.physique.pas(course, dt, ev);
+    else if (B.contacts) B.contacts.pas(course, ev); else contacts(course, ev);
     for (let k = avant; k < ev.length; k++) if (ev[k].type === 'contact' && course.statsIa) course.statsIa.contacts++;
-    if (B.obstacles) B.obstacles.pas(course, ev);
+    if (!course.physique && B.obstacles) B.obstacles.pas(course, ev);
     if (!retenue) for (let i = 0; i < V.length; i++) stands(course, V[i], dt, ev);
     if (!retenue) course.temps = t0 + dt;
 

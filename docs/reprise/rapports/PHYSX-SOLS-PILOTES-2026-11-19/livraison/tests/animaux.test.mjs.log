@@ -1,0 +1,34 @@
+   196 formes, 46810 triangles, bâties en 202 ms
+ok formes bâties au chargement : finies, dans le cube unité, faces dans le sens des normales, noms propres
+   foret : 6 groupes, 34 bêtes au sol, 4 volants, 6 refuges, créé en 70 ms (118 ms de processeur)
+   cote : 4 groupes, 32 bêtes au sol, 11 volants, 4 refuges, créé en 25 ms (33 ms de processeur)
+   montagne : 6 groupes, 23 bêtes au sol, 1 volants, 4 refuges, créé en 101 ms (168 ms de processeur)
+   islande : 6 groupes, 30 bêtes au sol, 24 volants, 6 refuges, créé en 46 ms (47 ms de processeur)
+   desert : 7 groupes, 29 bêtes au sol, 5 volants, 7 refuges, créé en 26 ms (55 ms de processeur)
+   asie : 6 groupes, 24 bêtes au sol, 2 volants, 6 refuges, créé en 40 ms (38 ms de processeur)
+   pacifique : 3 groupes, 23 bêtes au sol, 15 volants, 3 refuges, créé en 40 ms (42 ms de processeur)
+ok sept circuits : toutes les espèces trouvent un habitat ; placement reproductible, sans Math.random ni retouche du décor
+   foret : plus près de l’axe 56.1 m ; échantillons en fuite 733, en vol 0 ; cerveau 42 ms pour 240 s (41 ms de processeur)
+   cote : plus près de l’axe 42.4 m ; échantillons en fuite 264, en vol 0 ; cerveau 32 ms pour 240 s (36 ms de processeur)
+   montagne : plus près de l’axe 51.0 m ; échantillons en fuite 2, en vol 0 ; cerveau 25 ms pour 240 s (22 ms de processeur)
+   islande : plus près de l’axe 37.0 m ; échantillons en fuite 604, en vol 0 ; cerveau 22 ms pour 240 s (25 ms de processeur)
+   desert : plus près de l’axe 53.2 m ; échantillons en fuite 1077, en vol 0 ; cerveau 17 ms pour 240 s (24 ms de processeur)
+   asie : plus près de l’axe 44.5 m ; échantillons en fuite 465, en vol 3659 ; cerveau 29 ms pour 240 s (23 ms de processeur)
+   pacifique : plus près de l’axe 45.1 m ; échantillons en fuite 275, en vol 0 ; cerveau 14 ms pour 240 s (21 ms de processeur)
+ok 240 s de course : aucune bête sur la route, son dégagement, l’enceinte ou le tunnel ; volants bas loin de la piste
+   cerfs : 39 m vers le refuge en 8 s, calme retrouvé 116 s après le passage
+ok fuite devant une voiture, refuge, puis retour au domaine ; accoutumance
+ok mêmes images à 30, 60 et 120 images par seconde ; le dessin ne touche pas au cerveau
+   galop à 11.0 m/s ; dans chaque dixième de seconde, pas d’image le plus court 80 % du plus long
+ok mouvement continu en pleine fuite : ni double pas ni arrêt aux pas du cerveau
+ok réserve réutilisée : mêmes objets d’une image à l’autre, dans le même ordre
+   octets par image à 60 i/s (deux vues, 70 objets par vue) : harnais seul 385, dessin 417, cerveau et dessin 726
+ok sans allocation en course : le dessin n’alloue rien, le cerveau presque rien
+   objets à 20/60/180/320 m : {"off":[0,0,0,0],"low":[14,14,14,14],"medium":[45,43,33,40],"high":[53,53,33,40],"ultra":[74,53,33,40]}
+ok budgets par palier : rien en off, Légère réduite à quelques silhouettes lointaines
+ok saisons : marmottes, moutons et oies absents l’hiver ; cerfs sans bois au printemps ; jeunes et robes d’hiver
+   bêtes au repos : 26 % le jour, 74 % la nuit
+ok nuit et averse : diurnes couchés, marmottes au terrier, rapaces posés
+ok sol exact : la hauteur suit les triangles du maillage rendu
+ok course reprise du départ : mêmes bêtes, mêmes trajets
+13 contrôles animaux

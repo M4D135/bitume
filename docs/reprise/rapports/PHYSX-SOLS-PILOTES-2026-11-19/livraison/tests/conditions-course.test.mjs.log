@@ -1,0 +1,15 @@
+ok normalisation et modes manuels : aucune requête, aucun tirage, aucune mutation
+ok aléatoire : un tirage par champ au départ, aucune résolution récurrente ou réseau
+ok saisons calendaires inversées au sud et date selon le fuseau
+ok heure réelle locale : vraie horloge, fuseau/DST et minuit continus
+ok soleil calculé sans météo : équinoxe, pôles et prolongation au-delà de minuit
+ok tous les codes WMO reconnus, neige/orage et vent de provenance
+ok résolution réelle : HTTPS/CORS sans cookies, coordonnées arrondies et état constant
+ok aucune IP/coordonnée dans le résultat, aucun stockage, snapshot réseau détachable
+ok cache volatil12min, forcer limité30s, copies indépendantes et pas de requête manuelle après réel
+ok modes indépendants : la localisation saisonnière ne bloque pas une météo réelle ensuite
+ok réseau absent, HTTP en erreur et JSON invalide : repli lisible sans promesse météo
+ok météo périmée/code inconnu : soleil/localisation conservés, manuel pour la météo
+ok timeout global borne même un fetch qui ignore AbortSignal
+ok annulation utilisateur et nouveau choix : aucune réponse tardive ni seconde requête
+14 contrôles conditions de course réussis.

@@ -1,0 +1,9 @@
+ok  circuit.echantillon : la sortie fournie reçoit les valeurs de l’objet neuf, au bit près
+ok  conduite.pas : les événements versés dans la sortie sont ceux du tableau neuf, état identique
+ok  course.commandesIA et course.pas : sorties réutilisées = objets neufs, commandes, événements et états
+ok  classement : tri par insertion = tri stable de Array.prototype.sort, égalités comprises
+ok  solides : cellules et boîtes de rejet donnent les mêmes contacts que la grille seule
+ok  dégâts : roues perdues comptées par boucle = some(Boolean) et filter(Boolean).length
+ok  formes fixes : IA et état de conduite gardent les mêmes champs, dans le même ordre, pour chaque voiture
+ok  chauffe jetable : la vraie course qui suit est la même, au bit près ; tranches et météo respectées
+sorties de simulation : 8 vérifications passées

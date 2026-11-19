@@ -1,0 +1,19 @@
+ok roulage propre, agressif et charge asymétrique produisent des usures différentes
+ok marche arrière : distance positive d’usure, identique au même roulage en avant
+ok mode recul : contacts visuels statiques sans lire les anciennes charges, glisses et patinage
+ok mode recul : aucune roue absente, perdue ou suspendue ; aucun roulage fictif à l’arrêt
+ok surface explicite du recul : saleté réversible sans modifier la surface physique
+ok pas fixes regroupés en images : mêmes valeurs ; subdivision constante à 30/60/120 Hz
+ok pause, grille, arrêt sans patinage et contacts périmés ne changent rien
+ok une roue déchargée, sans contact ou perdue ne perd pas de gomme
+ok roue absente et état incomplet sont ignorés sans fabrication de contact
+ok vol, bond, accident, récupération, réparation et service excluent les anciennes charges
+ok patinage immobile mesuré : usure arrière sans fausse distance de roulage
+ok neige réelle et eau diffèrent du sec ; la seule saison ne change pas l’usure
+ok saleté réversible et grainage continu sans restauration de gomme
+ok types et surfaces inconnus retombent sur le roulage sec sans accès hérité
+ok réparations de caisse et d’urgence conservent les pneus ; aucun service dans le lot visuel
+ok longue simulation bornée, mêmes objets et aucune modification des données de conduite
+ok saturation et anciennes valeurs invalides restent finies et bornées
+ok boucle sans allocation de collection ni hasard : état déjà préparé
+18 contrôles usure pneus réussis

@@ -1,0 +1,7 @@
+ok les quatre anciennes préférences migrent vers deux choix valides
+ok les pilotes conservent leurs choix distincts et les entrées supplémentaires sont ignorées
+ok un tableau partiel ne reprend pas le choix de son voisin
+ok types inconnus et noms du prototype reviennent à l’ancienne préférence, ou aux slicks
+ok anciennes sauvegardes absentes ou mal formées restent utilisables
+ok la migration ne lit ni préférence ni entrée de tableau héritée
+6 contrôles préférences des pneus par pilote réussis

@@ -1,0 +1,49 @@
+CONTROLE REUSSI : le rapport partiel de six circuits a été refusé comme attendu (code 1).
+Le bilan complet de huit circuits est conservé. Trace de l’échec attendu ci-dessous.
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: les huit circuits doivent être effectivement observés
++ actual - expected
+
+  [
+-   'baikal',
+    'brume-de-jade',
+-   'cap-sequoia',
+    'haut-col',
+    'lande-noire',
+    'port-sable',
+    'roche-fauve',
+    'val-brule'
+
+    at file:///workspace/scratch/749f331cc09f/bitume/tools/qualification/physx-courses-qualifier.mjs:63:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'brume-de-jade',
+    'haut-col',
+    'lande-noire',
+    'port-sable',
+    'roche-fauve',
+    'val-brule'
+  ],
+  expected: [
+    'baikal',
+    'brume-de-jade',
+    'cap-sequoia',
+    'haut-col',
+    'lande-noire',
+    'port-sable',
+    'roche-fauve',
+    'val-brule'
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.22.3

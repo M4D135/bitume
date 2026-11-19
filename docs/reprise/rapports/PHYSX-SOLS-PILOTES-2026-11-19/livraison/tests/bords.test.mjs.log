@@ -1,0 +1,8 @@
+ok  le plan ne dépend que du circuit, tiré sans Math.random et sans toucher au tracé
+ok  deux à quatre bords dangereux par circuit, à 500 m au moins l'un de l'autre, ni aux stands ni sous le tunnel
+ok  publicités : séries de 3 à 6 bandeaux, hors des stands, du tunnel, des bords dangereux et des panneaux historiques
+ok  marques imaginaires : 24 noms distincts, identité visuelle stable et lisible
+ok  limites : parapet à w + 1,4, muret à w + 1, fossé à w + 2,5, en entonnoir de pente 0,35 au plus
+ok  pose : mêmes solides en Légère et en Fine, Légère plus légère, aucun solide sur la chaussée
+ok  un tracé de génération 3 déclare ses bords : ils sont repris tels quels (Haut-Col proposé)
+7 vérifications des bords de route

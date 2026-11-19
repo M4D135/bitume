@@ -1,0 +1,24 @@
+ok  Val-Brûlé : rayons de suspension sur chaussée, vibreurs et accotements
+ok  Val-Brûlé : vraies lisses solides, filtres de suspension séparés
+ok  Val-Brûlé : aucun mur abstrait sur la limite du fossé
+ok  Val-Brûlé : une lisse réelle arrête aussi un débris dynamique avec CCD
+ok  Port-Sable : rayons de suspension sur chaussée, vibreurs et accotements
+ok  Port-Sable : vraies lisses solides, filtres de suspension séparés
+ok  Haut-Col : rayons de suspension sur chaussée, vibreurs et accotements
+ok  Haut-Col : vraies lisses solides, filtres de suspension séparés
+ok  Haut-Col : vrai revêtement intérieur, murs et voûte présents
+ok  Lande-Noire : rayons de suspension sur chaussée, vibreurs et accotements
+ok  Lande-Noire : vraies lisses solides, filtres de suspension séparés
+ok  Lande-Noire : aucun mur abstrait sur la limite du fossé
+ok  Roche-Fauve : rayons de suspension sur chaussée, vibreurs et accotements
+ok  Roche-Fauve : vraies lisses solides, filtres de suspension séparés
+ok  Roche-Fauve : aucun mur abstrait sur la limite du fossé
+ok  Brume-de-Jade : rayons de suspension sur chaussée, vibreurs et accotements
+ok  Brume-de-Jade : vraies lisses solides, filtres de suspension séparés
+ok  Cap-Séquoia : rayons de suspension sur chaussée, vibreurs et accotements
+ok  Cap-Séquoia : vraies lisses solides, filtres de suspension séparés
+ok  Baïkal : rayons de suspension sur chaussée, vibreurs et accotements
+ok  Baïkal : vraies lisses solides, filtres de suspension séparés
+ok  Baïkal : aucun mur abstrait sur la limite du fossé
+ok  les huit mondes libérés ne gardent aucun acteur ni monde natif
+{"controles":23,"versionPhysX":"5.12.0","rapports":[{"circuit":"val-brule","acteurs":4370,"rayons":577},{"circuit":"port-sable","acteurs":3261,"rayons":496},{"circuit":"haut-col","acteurs":4626,"rayons":709},{"circuit":"lande-noire","acteurs":3746,"rayons":626},{"circuit":"roche-fauve","acteurs":3927,"rayons":656},{"circuit":"brume-de-jade","acteurs":3849,"rayons":680},{"circuit":"cap-sequoia","acteurs":4126,"rayons":705},{"circuit":"baikal","acteurs":4471,"rayons":732}]}

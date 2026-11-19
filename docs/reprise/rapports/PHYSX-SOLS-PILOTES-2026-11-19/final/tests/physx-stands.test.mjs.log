@@ -1,0 +1,19 @@
+✔ PhysX : le limiteur ralentit réellement la voiture, même accélérateur tenu (266.059429ms)
+✔ PhysX : service immobile complet, quatre pneus changés ensemble seulement à son terme (58.256485ms)
+✔ PhysX : une impulsion pendant le service l’annule et garde les pneus usés (8.059669ms)
+✔ PhysX : trajet IA complet vers le vrai garage puis sortie sous sec (3402.215906ms)
+✔ PhysX : trajet IA complet vers le vrai garage puis sortie sous pluie (2510.574313ms)
+✔ PhysX : trajet IA complet vers le vrai garage puis sortie sous neige (2785.752979ms)
+✔ PhysX : file à 8 m, val-brule, sec, retour en course sans contact ni replacement (1629.625544ms)
+✔ PhysX : file à 10 m, val-brule, sec, retour en course sans contact ni replacement (1184.879303ms)
+✔ PhysX : file à 8 m, val-brule, pluie, retour en course sans contact ni replacement (1341.629845ms)
+✔ PhysX : file à 8 m, val-brule, neige, retour en course sans contact ni replacement (1477.589001ms)
+✔ PhysX : file à 8 m, haut-col, sec, retour en course sans contact ni replacement (2716.945666ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17393.982376

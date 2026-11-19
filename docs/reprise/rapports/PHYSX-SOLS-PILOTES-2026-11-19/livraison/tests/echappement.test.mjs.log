@@ -1,0 +1,22 @@
+ok  embouchures : le bout des quatre tubes de voiture.js
+ok  repères : euler, attitude et angles comme voiture.js, sans allocation
+ok  formes : trois fuseaux fermés, normales vers dehors, enregistrés auprès du moteur
+ok  placement : la base de la langue sort de l’embouchure, voiture tournée, cabrée et penchée
+ok  passage montant à haut régime : détonation 12 à 55 ms après, quatre langues lisibles
+ok  passages sans flamme : bas régime, au pas, marche arrière, saut de rapport
+ok  rétrogradage pied levé : claque moins souvent et relance les crépitements
+    11.3 crépitements par lever de pied en moyenne
+ok  lever de pied à haut régime : crépitements irréguliers, bleus ou orangés, des deux bancs ; rien à bas régime
+ok  rupteur entretenu : flammes répétées au rythme des coupures ; moins fortes à l’arrêt ; un épisode par séjour
+ok  voiture hors course : accident, remise en piste, abandon, épave ; rien, et la détonation en attente s’annule
+ok  horloge reprise en arrière : nouvelle séance, rien ne reste en attente
+ok  30, 60, 120 images/s et cadence variable : même suite d’événements, mêmes flammes aux mêmes instants
+ok  hasard propre : ni Math.random ni le hasard de la course ; chaque voiture ne dépend que d’elle et de la graine
+ok  mémoire : mêmes objets d’une image à l’autre, rien d’ajouté ni de recréé
+    pas : 3.2 µs pour 12 voitures ; dessin : 14.4 µs, 57.9 objets en moyenne, 94 au plus
+ok  coût borné : douze voitures en feu, au plus trois objets par sortie
+ok  de près comme au loin, la même flamme, cœur et bouffée compris ; cockpit : la voiture du pilote n’est pas dessinée
+    107 passages montants, 161 détonations, 1481 crépitements, 341 ratés en 60 s ; 12.7 objets par image en moyenne, 112 au plus
+ok  vraie course de 60 s : chaque passage montant à haut régime claque, valeurs finies
+---
+17 tests passes

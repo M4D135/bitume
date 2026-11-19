@@ -1,0 +1,58 @@
+{
+  "date": "2026-11-19",
+  "reference": "BITUME 0.2.54 / p13, sources identiques à la base 10f71ff1",
+  "methode": "Audit en lecture seule et exécution Node des fonctions existantes, avant intégration de PhysX au véhicule.",
+  "constats": [
+    {
+      "cause": "Le vol conserve une parabole relative au sol du décollage, sans rencontrer le relief parcouru.",
+      "source": "src/conduite.js : lancerSaut, voler",
+      "reproduction": {
+        "circuit": "baikal", "graine": 179, "longueurDemandee": 5400,
+        "sDepart": 2520, "vDepartMetresSeconde": 60,
+        "commande": {"gaz": 0, "frein": 0, "volant": 0},
+        "saut": {"grand": true}, "pas": "1/120 s",
+        "depart": {"y": 35.85362707201389, "pente": 0.051895295350490755},
+        "premierePenetration": {"t": 0.5833333333333334, "s": 2554.3334389604533, "ecartVertical": -0.03431934973706774},
+        "aUneSeconde": {"s": 2578.0865604945575, "yCaisse": 35.8536270720139, "yChaussee": 38.87214588357443, "ecartVertical": -3.018518811560533, "sautEncoreActif": true}
+      }
+    },
+    {
+      "cause": "Le tangage et le dévers du tracé restent ceux de la caisse même quand elle fait un tête-à-queue.",
+      "sources": ["src/conduite.js : poserAttitude", "src/voiture.js : attitude, ROUES"],
+      "reproduction": {"pentePlane": 0.068, "lacetRelatif": 3.141592653589793, "ecartsPointsBasDesRoues": [0.18317698325807175, 0.18317698325807175, -0.18317698325807175, -0.18317698325807175]}
+    },
+    {
+      "cause": "La caisse est ancrée au sol en un seul point ; le tangage et le roulis visuels enfoncent les roues, sans débattement physique.",
+      "sources": ["src/conduite.js : poserAttitude", "src/jeu.js : image, rebond des roues"],
+      "reproduction": {"sol": "plat", "tangage": 0.05, "roulis": 0.04, "ecartsPointsBasDesRoues": [0.10142033275754961, 0.033523424273281886, -0.035220846985388576, -0.09972291004544293], "amplitudeRebondVisuelSurPiste": 0.0035}
+    },
+    {
+      "cause": "Le revêtement intérieur du tunnel est rendu 4 cm au-dessus de la nappe de route, mais la pose physique ignore cette boîte.",
+      "source": "src/decor.js : construire, sol du tunnel ; src/conduite.js : poserAttitude",
+      "mesure": {"centreRelatifSol": -0.01, "epaisseur": 0.1, "dessusRelatifNappe": 0.04}
+    },
+    {
+      "cause": "Lisses, murs et voûte du tunnel, parapets des bords et certaines structures n'ont pas de collision géométrique ; le modèle les remplace partiellement par des limites latérales de Frenet.",
+      "sources": ["src/decor.js : construire", "src/bords.js : poser", "src/conduite.js : heurterGlissiere", "src/obstacles.js : monde, pas"],
+      "consequence": "Une vraie pose 3D libre nécessite des statiques correspondant à ces primitives, sans transformer eau ou limites abstraites en murs."
+    },
+    {
+      "cause": "La hauteur bilinéaire decor.sol ne décrit pas exactement les triangles rendus et n'est pas un sol de collision.",
+      "source": "src/decor.js : nappesTerrain, sol",
+      "consequence": "Cuire les XYZ et indices des nappes visibles, stride 13 ; exclure les triangles d'eau de matériau 12."
+    },
+    {
+      "cause": "Les contacts utilisent des rectangles horizontaux et un intervalle vertical fixe, sans tangage/roulis ni tenseur d'inertie de contact.",
+      "sources": ["src/contacts.js : tester, pas", "src/obstacles.js : monde, testerPrisme"],
+      "parametres": {"masseConduite": 600, "inertieLacetConduite": 1014, "inverseMasseContactMobile": 1, "hauteurCollision": 1.1, "empattementConduite": 2.85, "empattementModele": 2.7, "caisseCollision": [4.95, 2.02], "largeurRouesModele": 2.075}
+    }
+  ],
+  "integrationRetenue": {
+    "moteur": "PhysX 5 réel, corps dynamique et quatre suspensions gérés par le bridge hôte",
+    "mondeStatique": "src/solides-physx.js : nappes exactes, primitives réelles, cylindres/prismes et rotations 3D fidèles",
+    "groupes": {"sol": 1, "obstacles": 2, "voitures": 4, "debris": 8},
+    "rayonsSuspension": "Sol 1 uniquement, type piste/vibreur/herbe par triangle original ; normales issues du raycast.",
+    "interdits": ["Ne pas imposer y et les angles après le pas physique.", "Ne pas remettre des murs infinis aux limites Frenet.", "Ne pas transformer l'eau en dalle de support."]
+  },
+  "portee": "Les nombres sont des reproductions du défaut ancien ; ils ne constituent pas encore une validation du futur bridge ni une capture WebGL."
+}

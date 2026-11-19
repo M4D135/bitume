@@ -373,6 +373,34 @@
     float detail=1.-smoothstep(.35,.90,pixelSpan*frequency);
     return .5+(noise(uv*frequency)-.5)*detail;
   }
+  vec3 soilSeed(vec2 cell){
+    vec3 p=fract(vec3(cell.xyx)*vec3(.1031,.1030,.0973));
+    p+=dot(p,p.yxz+33.33);return fract((p.xxy+p.yzz)*p.zyx);
+  }
+  vec2 soilBladeCell(vec2 p,float aa){
+    vec2 cell=floor(p);vec3 seed=soilSeed(cell);
+    // A .34-cell margin contains the entire blade AND its widest AA support
+    // (.17 + .034 + .104 < .34). No neighbour loop or cell-edge seam is needed.
+    vec2 centre=cell+.34+seed.xy*.32;
+    float angle=seed.z*6.2831853;vec2 axis=vec2(cos(angle),sin(angle));
+    float extent=.22+.12*seed.x,along=clamp(dot(p-centre,axis)/extent+.5,0.,1.);
+    float width=(.018+.016*seed.y)*(1.-along*.72);
+    float distanceToBlade=length(p-centre-axis*((along-.5)*extent));
+    float blade=1.-smoothstep(max(0.,width-aa),width+aa,distanceToBlade);
+    float ridge=blade*(1.-along)*max(0.,1.-distanceToBlade/max(width,.001));
+    return vec2(blade,ridge);
+  }
+  vec2 soilBlades(vec2 uv,float pixelSpan){
+    float detail=1.-smoothstep(.006,.026,pixelSpan);
+    if(detail<=0.)return vec2(.018,0.);
+    // Two independently shifted/rotated fields break rows without extra
+    // geometry, textures or nine neighbouring roots per shaded fragment.
+    float aa=max(pixelSpan*4.7*.85,.001);
+    vec2 a=soilBladeCell(uv*4.7,aa);
+    vec2 b=soilBladeCell(mat2(.8,.6,-.6,.8)*uv*4.7+vec2(17.3,9.7),aa);
+    float cover=1.-(1.-a.x)*(1.-b.x);
+    return vec2(mix(.018,cover,detail),max(a.y,b.y)*detail);
+  }
   float grid(vec2 uv,float width) {
     vec2 distanceToEdge=min(fract(uv),1.-fract(uv));
     vec2 aa=max(fwidth(uv),vec2(.0001));
@@ -458,7 +486,7 @@
     vec3 base=vec3(.105,.135,.15),windowGlow=vec3(0.);
     float night=clamp(uNightHour.x,0.,1.)*vOutdoor;float lateHour=uNightHour.y<12.?uNightHour.y+24.:uNightHour.y;float evening=1.-smoothstep(23.,26.,lateHour);
     float roughness=.47,metalness=.65,organicHeight=0.,urbanHeight=0.,pbrWeight=0.,pbrLayer=1.,recipeHeight=0.;
-    float cavity=1.,leafTransmission=0.;
+    float cavity=1.,leafTransmission=0.,soilSnow=0.;
     float pixelSpan=max(fwidth(uv).x,fwidth(uv).y);
     float fineDetail=1.-smoothstep(.015,.10,pixelSpan);
     float grain=noise(uv*23.)*.5+mix(.5,noise(uv*71.),fineDetail)*.2;
@@ -507,18 +535,30 @@
         roughness=mix(.34+.08*patches,.62,chip);metalness=mix(.08,.72,chip);
         recipeHeight=(aggregate-.5)*.0007-chip*.0015;
       }else if(recipe<5.5){
-        // Continuous metre-scale humus, grass and mineral flecks. Filter every
-        // smaller layer before it reaches a subpixel: no screen-space grain.
+        // Preserve the host's biome/season pigment. Bright neutral snow keeps
+        // its supplied white; sand and volcanic ground do not acquire green.
         if(vColor.w<.5)tint=vec3(.24,.30,.13);
-        float growth=smoothstep(.38,.70,patches+.20*(structure-.5))*smoothstep(.12,.78,geometricNormal.y);
-        float clods=surfaceNoise(uv+vec2(31.2,6.4),10.,pixelSpan);
-        float mineral=smoothstep(.68,.81,clods)*(1.-smoothstep(.025,.08,pixelSpan));
-        vec3 humus=tint*vec3(.94,.83,.68),cover=tint*vec3(.90,1.06,.78);
-        base=mix(humus,cover,growth)*(.78+.30*structure+.12*(aggregate-.5));
-        base=mix(base,base*1.18+vec3(.035,.030,.020),mineral*.40);
-        roughness=.90+.06*structure;metalness=0.;
-        recipeHeight=(structure-.5)*.008+(clods-.5)*.003+(aggregate-.5)*.001;
-        cavity=.86+.14*smoothstep(.24,.67,structure);
+        float darkest=min(tint.r,min(tint.g,tint.b)),chroma=max(tint.r,max(tint.g,tint.b))-darkest;
+        soilSnow=smoothstep(.58,.84,darkest)*(1.-smoothstep(.045,.18,chroma));
+        float vegetation=clamp((tint.g-max(tint.r*.90,tint.b*1.10))/max(tint.g,.04)*2.7,0.,1.)*(1.-soilSnow);
+        float growth=vegetation*(.35+.65*smoothstep(.30,.70,patches+.20*(structure-.5)))*smoothstep(.12,.78,geometricNormal.y);
+        vec2 soilUV=mat2(.8,.6,-.6,.8)*uv;
+        vec2 warp=vec2(surfaceNoise(uv+37.2,2.1,pixelSpan),surfaceNoise(uv+69.7,1.7,pixelSpan))-.5;
+        soilUV+=warp*.14;
+        float clods=surfaceNoise(soilUV+vec2(31.2,6.4),8.5,pixelSpan*1.7);
+        float crumbs=surfaceNoise(soilUV+vec2(8.3,23.7),34.,pixelSpan*1.7);
+        float pits=pow(max(0.,.5-crumbs)*2.,2.)*(1.-smoothstep(.015,.045,pixelSpan));
+        float mineral=smoothstep(.65,.82,crumbs)*(1.-smoothstep(.010,.035,pixelSpan));
+        vec2 blades=vec2(.018,0.);if(vegetation>0.)blades=soilBlades(uv,pixelSpan);
+        float relief=1.-soilSnow*.78;
+        // Broad pigment varies smoothly; relief belongs to the smaller grains.
+        // Low-frequency value-noise normals would expose their lattice as paving.
+        float tone=.92+(patches-.5)*.13+(clods-.5)*.04+(crumbs-.5)*.24+(aggregate-.5)*.16;
+        base=tint*mix(tone,1.+(crumbs-.5)*.10,soilSnow);
+        base*=1.+relief*(mineral*.11-pits*.06+growth*(blades.x-.018)*.32);
+        roughness=mix(.93+.04*(clods-.5),.90,soilSnow);metalness=0.;
+        recipeHeight=relief*((crumbs-.5)*.0045+(aggregate-.5)*.002-pits*.0015+growth*blades.y*.018);
+        cavity=1.-relief*(pits*.11+growth*(1.-blades.x)*.035);
       }else if(recipe<6.5){
         // Object-space fibres follow the trunk's axis, including a tilted trunk.
         // A 3-D transverse field avoids a cylindrical UV seam.
@@ -816,8 +856,8 @@
       // rough finish. Bark and leaves do not acquire asphalt puddles.
       float exposed=clamp(vOutdoor,0.,1.)*uEnvironment.x;
       float wet=clamp(uWeather.x,0.,1.)*exposed*(.24+.76*max(geometricNormal.y,0.));
-      base*=1.-wet*(recipe<5.5?.26:recipe<6.5?.21:.12);
-      roughness=mix(roughness,recipe<5.5?.49:recipe<6.5?.54:.32,wet*.78);
+      base*=1.-wet*(recipe<5.5?.26*(1.-soilSnow*.85):recipe<6.5?.21:.12);
+      roughness=mix(roughness,recipe<5.5?mix(.49,.84,soilSnow):recipe<6.5?.54:.32,wet*.78);
       n=normalize(mix(n,geometricNormal,wet*.30));
     }else{
       float wet=uWeather.x*clamp(n.y,0.,1.)*step(13.5,m)*step(m,15.5);

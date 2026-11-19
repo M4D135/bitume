@@ -1,0 +1,102 @@
+{
+  "version": "0.2.55",
+  "physique": "p14",
+  "ferro": "0.3.14",
+  "statut": "qualification_locale_terminee_publication_bitume_a_finaliser",
+  "base_publiee": "c28802974b2c138b57ea1bfe377389724ca15724",
+  "checkpoint_distant": "6e9c1ea09eb22a1d8c1f1deea99ed09b41ccdf1d",
+  "suites": 119,
+  "reussies": 117,
+  "echecs": [
+    "decor.test.mjs",
+    "traces.test.mjs"
+  ],
+  "duree_s": 442.37,
+  "empreintes_avant_apres": 235,
+  "fichiers_changes_pendant_tests": [],
+  "journaux_verifies": 119,
+  "build": {
+    "octets": 14153917,
+    "gzip": 3360641,
+    "sha256": "c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f",
+    "deux_builds_identiques": true,
+    "artefacts": {
+      "dist/bitume.html": "c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f",
+      "SIZE.json": "af0fadbd7465fa242c9b66644f67331859782bcbb0d6cf047bbd769737588c4d",
+      "VERSION.json": "4501f2b5c73ea5160649a054f08fc24f939fdef2bab490f8c437427f2e62a72d"
+    }
+  },
+  "sources_qualifiees": {
+    "path": "empreintes-apres.json",
+    "sha256": "14be70c5e56570189c76a4ad6ff8412b052ebab2682d1dbdeccba421c525a80a"
+  },
+  "resultats": {
+    "path": "suites.json",
+    "sha256": "3ef4f4799ca67e6e5137faeb93f284dbb489846d72e6288a0ca18ac852a4bf43"
+  },
+  "determinisme": {
+    "runtime": "PhysX 5.12.0 WASM embarqué",
+    "scenarios": 8,
+    "empreintes": 141,
+    "poses_visuelles": 4464,
+    "sources_exactes": 19,
+    "sensibilite_ulp_et_commandes_verifiee": true,
+    "comparaison": "Deux scènes natives neuves par scénario ; p14 distinct des références historiques."
+  },
+  "parcours": {
+    "preuve": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physx-courses-huit-circuits-qualification.json",
+    "sha256": "e4edc977d714c83c217f76c9d176fb8bad810cb24ebbc10b6c5f32792aef2984",
+    "protocole": {
+      "backend": "PhysX 5.12.0 WASM embarqué",
+      "circuits": 8,
+      "voituresParCircuit": 12,
+      "secondesParCircuit": 120,
+      "dt": 0.008333333333333333,
+      "meteo": "sec",
+      "saison": "ete",
+      "qualiteDecor": "high",
+      "graineCourse": 42,
+      "interventions": "IA sur les douze voitures ; collisions et retours après accident autorisés par la course"
+    },
+    "sources_simulation_identiques": true,
+    "replacements": 1,
+    "limites": [
+      "120 s par circuit : toutes les voitures ne terminent pas un tour complet.",
+      "Les sondes de hauteur concernent le couloir central de la chaussée (largeur/2 moins 1 m) ; le terrain hors route n’est pas exhaustivement contrôlé.",
+      "Le seuil de -15 cm porte sur le repère du châssis, pas sur une intersection triangle par triangle de la carrosserie visible.",
+      "Les stagnations sont observées toutes les 10 s après la grille ; aucun délai maximal de blocage continu ne peut être déduit de ces seules traces.",
+      "Ce bilan ne valide ni la pluie/neige sur tous les circuits, ni le rendu navigateur, ni les FPS matériels."
+    ]
+  },
+  "geometries_decor_identiques": 9,
+  "reserves": {
+    "decor": {
+      "budget_ms": 150,
+      "candidat_ms": 486,
+      "seuil_modifie": false,
+      "precedent_0254_ms": [
+        152,
+        161,
+        166
+      ],
+      "preuve": "tests/decor.test.mjs.log",
+      "comparaison_controlee_meme_environnement": false,
+      "conclusion": "Dépassement préexistant ; absence de régression de durée non démontrée."
+    },
+    "traces": {
+      "signature_identique": true,
+      "logs_complets_identiques": false,
+      "code": "ERR_ASSERTION",
+      "operator": "strictEqual",
+      "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+      "preuve": "tests/traces.test.mjs.log",
+      "base": "../../VIRAGES-REFLETS-2026-11-19/traces.log"
+    }
+  },
+  "ferro_publication": "FERRO-PUBLICATION-0314.json",
+  "webgl_jeu_valide": false,
+  "fps_materiels_mesures": false,
+  "deploiement_site_effectue": false,
+  "historique": "../final/ conserve un passage interrompu ; livraison/ fait autorité."
+}

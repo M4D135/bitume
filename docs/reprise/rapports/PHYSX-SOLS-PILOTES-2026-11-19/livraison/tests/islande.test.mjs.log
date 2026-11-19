@@ -1,0 +1,8 @@
+ok boucle fermée, départ droit et piste praticable
+ok reconstruction déterministe du tracé et du décor
+ok plateau sombre, mousse en poches et relief volcanique sans arbres
+ok blocs de basalte et leurs solides restent hors de toute portion de piste
+ok saisons sans déplacement des solides, neige sur les surfaces hivernales
+ok qualité basse conserve le même terrain et les mêmes obstacles
+ok les onze rivaux accomplissent un tour du nouveau circuit
+{"controles":7,"mesures":{"longueur":4616,"denivelePiste":12.953321051959556,"penteMax":0.06799999999999995,"arbres":0,"trianglesNappes":85278,"objets":8152,"lots":43,"ete":{"sombre":0.8070806962025316,"mousse":0.1925237341772152,"neige":0,"relief":[-30.783876419067383,205.46337890625]},"rochers":384,"margeRochers":32.889549115578035,"hiver":{"sombre":0,"mousse":0,"neige":1,"relief":[-30.783876419067383,205.46337890625]},"course":{"rivauxArrives":11,"duree":222.74166666662842}}}

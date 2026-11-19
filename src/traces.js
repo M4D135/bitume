@@ -68,7 +68,7 @@
     return o;
   }
 
-  function creer(n, graine) {
+  function creer(n, graine, mondePartage) {
     const bandes = [];
     for (let i = 0; i < BANDES; i++) {
       bandes.push(former({
@@ -93,7 +93,7 @@
       etincelles: particules(ETINCELLES, 'box', ETINCELLE, 2.4), prochaineEtincelle: 0,
       embruns: particules(EMBRUNS, 'sphere', EMBRUN, 0), prochainEmbrun: 0,
       // PhysX (FERRO) : les pièces détachées deviennent des corps rigides qui roulent et rebondissent sur le sol
-      monde: null, sols: [], libere: false, pieces: new Int16Array(n),
+      monde: mondePartage || null, partage: !!mondePartage, sols: [], libere: false, pieces: new Int16Array(n),
       // par roue (voiture × 4 + roue) : bande ouverte, son numéro de pose, dernier point de contact et sa validité
       ouverte: new Int32Array(n * 4).fill(-1), genOuverte: new Int32Array(n * 4), valide: new Uint8Array(n * 4), dernier: new Float64Array(n * 12),
       // état du tirage (même suite qu'avant pour une graine donnée) ; alea() en rend le nombre suivant
@@ -102,7 +102,7 @@
     fx.alea = () => { tirer(fx, 1); return TIR[0]; };
     former(fx, ['acc']);
     ECHEC = null;            // une séance neuve retente une fois la création du monde (voir pageDe)
-    attendrePhysX(fx);
+    if (!fx.partage) attendrePhysX(fx);
     return fx;
   }
 
@@ -429,7 +429,7 @@
       if (monde) { try { monde.remove(d.corps); } catch (e) { /* monde déjà perdu */ } }
       figer(d);
     }
-    if (monde) { try { monde.setStatics([]); } catch (e) { /* idem */ } }
+    if (monde && !fx.partage) { try { monde.setStatics([]); } catch (e) { /* idem */ } }
     fx.sols.length = 0;
   }
   // Un appel PhysX a échoué en plein pas : le monde n'est plus sûr. La séance le quitte et la page en refera un neuf
@@ -472,6 +472,7 @@
   // Préchauffage demandé (sous le voile d'un chargement, par exemple), sans effet sur la séance : rendu faux si PhysX
   // n'est pas prêt, ou si une pièce de la séance vit dans le monde (les pas de chauffe la feraient avancer).
   function prechauffer(fx) {
+    if (fx && fx.partage) return !!fx.monde; // la course possède déjà sol et corps ; ne pas avancer sa scène ici
     let monde = null, seance = null;
     if (fx) { monde = attacher(fx, false); seance = fx; }
     else {
@@ -520,8 +521,9 @@
     if (!monde) return 0;
     let id = 0;
     try {
-      dalles(fx, monde, co, s);
-      id = monde.addBox([d.x, d.y, d.z], demi, { mass: masse, friction: .75, restitution: .28, ccd: true });
+      if (!fx.partage) dalles(fx, monde, co, s);
+      id = monde.addBox([d.x, d.y, d.z], demi, { mass: masse, friction: .75, restitution: .28, ccd: true,
+        group: fx.partage ? 8 : 0xFFFFFFFF, mask: 0xFFFFFFFF, queryGroup: fx.partage ? 8 : 0xFFFFFFFF });
       monde.setVelocity(id, [d.vx, d.vy, d.vz]);
       return id;
     } catch (e) {
@@ -569,7 +571,7 @@
     const BD = fx.bandes;
     for (let i = 0; i < BD.length; i++) { const b = BD[i]; if (b.actif && (b.age += h) >= VIE_TRACE) b.actif = false; }
     // sans pièce dans le monde, un pas ne ferait rien : la scène vide n'est pas simulée
-    if (fx.monde && corpsEnVol(fx)) { try { fx.monde.step(h); } catch (e) { perdreMonde(fx); } }
+    if (fx.monde && !fx.partage && corpsEnVol(fx)) { try { fx.monde.step(h); } catch (e) { perdreMonde(fx); } }
     const monde = fx.monde, D = fx.debris;
     for (let i = 0; i < D.length; i++) {
       const d = D[i];
@@ -592,7 +594,7 @@
         // sort de la simulation, elle reste dessinée là où elle s'est arrêtée sans coûter de corps actif
         if (q && v && Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]) < REPOS_V) {
           d.repos += h;
-          if (d.repos > REPOS_ATTENTE) {
+          if (d.repos > REPOS_ATTENTE && !fx.partage) {
             try { monde.remove(d.corps); } catch (e) { /* monde déjà perdu */ }
             figer(d);   // posée à la hauteur lue (d.y), dans sa dernière orientation
           }
