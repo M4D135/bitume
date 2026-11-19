@@ -297,3 +297,12 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
   le cockpit ; la silhouette ne doit plus rester figée. Conserver la géométrie procédurale et les niveaux de détail.
 - Ces demandes s'ajoutent au lot 0.2.54 déjà construit et passent avant 13B. Ne pas refaire ni effacer la livraison
   des virages/reflets ; préserver les preuves et modifications de la conversation concurrente.
+
+## Décision de David — 19 novembre 2026, démos des circuits
+
+- Refaire la réalisation des démos pour montrer les environnements, la faune et la flore ajoutés, avec de beaux
+  plans de course inspirés de la F1 et l'énergie de l'introduction arcade de Daytona USA. Composition originale,
+  plans de découverte et de nature réellement présents dans le circuit, alternés avec la course.
+- Lot suivant immédiatement après la qualification PhysX : `docs/reprise/DEMOS-CINEMA-2026-11-19.md`.
+  Préserver les courses continues, la sortie sur geste, les réglages Faune/qualité, les collisions et la conduite p14.
+  La demande porte sur la réalisation visuelle ; la règle de musique limitée au titre demeure.

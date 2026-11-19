@@ -11,11 +11,11 @@
     "lot": "physx_sols_pilotes",
     "fiche": "docs/reprise/PHYSX-SOLS-PILOTES-2026-11-19.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "033",
-    "checkpoint_sources": "14b8ace",
+    "derniere_entree": "035",
+    "checkpoint_sources": "5779d8ee54ecdbe5e1c0c025ab392172d63a61a0",
     "sources_tests_geles": false,
-    "qualification": "docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/qualification-finale.json",
-    "prochaine_action": "Terminer contrôles PhysX natifs 8 circuits et tunnels, limites stands par forces, canon FERRO mémoire/shader. Installer canon verrouillé, reconstruire 0.2.55, qualifier puis publier.",
+    "qualification": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/",
+    "prochaine_action": "Finir qualification FERRO 0.3.13, propager canon verrouillé, valider sources intégrées et deux builds 0.2.55 ; publier puis lot démos cinéma.",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
     "commit_livraison_verifie": "b791ae60952315431ad085cce742b64d9e15f5bc",
     "publication": "docs/reprise/rapports/13A-RUSSIE-2026-11-19/PUBLICATION-0253.json",
@@ -42,10 +42,10 @@
     "note": "Conserver les sept circuits historiques et toutes les demandes ; ne pas supprimer la montagne pour tenir l’ancien compte de 16."
   },
   "suite": {
-    "lot": "13B_Russie_decor_saisons",
-    "statut": "non_commence",
-    "objectif": "Lac, berges, lieux signature, végétation/faune propres au Baïkal, saisons et validation visuelle.",
-    "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
+    "lot": "demos_cinema",
+    "statut": "demande_enregistree",
+    "objectif": "Plans F1/arcade et découverte des environnements, faune et flore des circuits.",
+    "fiche_plan": "docs/reprise/DEMOS-CINEMA-2026-11-19.md",
     "apres": "physx_sols_pilotes"
   },
   "acces": {
@@ -189,15 +189,20 @@
     }
   },
   "validation": {
-    "statut": "en_cours",
-    "build_courant_contient_physx": false,
-    "physique_cible": "p14",
-    "etapes_validees": [
-      "Baïkal s=2520 v=60 : contrôle dynamique préliminaire, reprise sur quatre appuis sans replacement",
-      "Pilote extérieur : 8 contrôles, 375 poses et 3 LOD",
-      "Stands PhysX : limiteur par forces et 8 scénarios"
-    ],
-    "webgl_valide": false,
-    "fps_mesures": false
+    "statut": "qualification_ciblee_verte_integration_finale_attendue",
+    "circuits_tunnels_baikal": 14,
+    "stands": 11,
+    "pilotes": "375 poses/3 LOD, déjà qualifiés au checkpoint",
+    "reseau": "transfert en vol corrigé et 2 tests natifs réussis",
+    "build": "0.2.54 conservé à ce checkpoint ; nouveau runtime pas encore installé",
+    "fps_materiels": false,
+    "deploiement_site": false
+  },
+  "suite_apres_demos": {
+    "lot": "13B_Russie_decor_saisons",
+    "statut": "non_commence",
+    "objectif": "Lac, berges, lieux signature, végétation/faune propres au Baïkal, saisons et validation visuelle.",
+    "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
+    "apres": "physx_sols_pilotes"
   }
 }

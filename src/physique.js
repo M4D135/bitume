@@ -76,7 +76,7 @@
     }
     p[1] = y; return p;
   }
-  function corps(ph) {
+  function corps(ph, transfert) {
     const shapes = [{ type: 'box', half: [1.98, .23, .69], pose: [-.12, .31, 0, 0, 0, 0, 1], friction: .55, restitution: .08 }];
     // Les contacts latéraux des roues peuvent soulever la caisse ; le contact normal roulant vient des ressorts.
     for (const roue of roues()) {
@@ -87,12 +87,17 @@
       shapes.push({ type: 'convex', vertices, pose: [roue.x, roue.r, roue.z, 0, 0, 0, 1], friction: .35, restitution: .06,
         group: VOITURE, mask: OBSTACLE | VOITURE | DEBRIS, queryGroup: VOITURE });
     }
-    const p = poseDepart(ph), dynamique = !ph.v.distant;
+    // Un changement d'autorité conserve le mouvement du corps existant, même en plein vol.
+    // Les sondes de départ servent uniquement au premier placement, jamais à une reprise réseau.
+    const p = transfert ? transfert.pose : poseDepart(ph), dynamique = !ph.v.distant;
     ph.id = ph.world.addCompound(p.slice(0, 3), shapes, { type: dynamique ? 'dynamic' : 'kinematic', quaternion: p.slice(3),
       mass: ph.mass, inertia: ph.inertia, centerOfMass: ph.cgLocal, ccd: dynamique, linearDamping: .005, angularDamping: .035,
       solverIterations: [8, 3], group: VOITURE, mask: SOL | OBSTACLE | VOITURE | DEBRIS, queryGroup: VOITURE });
     ph.distant = !!ph.v.distant;
-    if (dynamique && Math.abs(ph.e.v) > .01) ph.world.setVelocity(ph.id, [Math.cos(ph.cap || 0) * ph.e.v, 0, Math.sin(ph.cap || 0) * ph.e.v]);
+    if (dynamique && transfert) {
+      ph.world.setVelocity(ph.id, transfert.velocity);
+      ph.world.setAngularVelocity(ph.id, transfert.angular);
+    } else if (dynamique && Math.abs(ph.e.v) > .01) ph.world.setVelocity(ph.id, [Math.cos(ph.cap || 0) * ph.e.v, 0, Math.sin(ph.cap || 0) * ph.e.v]);
     lecture(ph, false);
   }
   function installer(co, decor, options = {}) {
@@ -118,7 +123,12 @@
         Object.defineProperty(v.etat, '_physx', { value: ph, configurable: true, writable: true });
       }
       co.physique = p; return p;
-    } catch (err) { world.dispose(); throw err; }
+    } catch (err) {
+      // Une création interrompue ne doit laisser aucun état branché sur la scène libérée.
+      for (const ph of p.voitures) if (ph.e._physx === ph) delete ph.e._physx;
+      p.voitures.length = 0; p.byId.clear();
+      world.dispose(); throw err;
+    }
   }
   function vitessePoint(ph, point, out) {
     const r0 = point[0] - ph.cg[0], r1 = point[1] - ph.cg[1], r2 = point[2] - ph.cg[2], w = ph.angular, v = ph.velocity;
@@ -166,7 +176,11 @@
     const p = co.physique; if (!p || p.disposed) return;
     p.temps = co.horloge;
     for (const ph of p.voitures) {
-      if (ph.distant !== !!ph.v.distant) { p.byId.delete(ph.id); ph.world.remove(ph.id); corps(ph); p.byId.set(ph.id, ph); }
+      if (ph.distant !== !!ph.v.distant) {
+        const transfert = { pose: ph.world.readPose(ph.id, []), velocity: ph.world.readVelocity(ph.id, []),
+          angular: ph.world.readAngularVelocity(ph.id, []) };
+        p.byId.delete(ph.id); ph.world.remove(ph.id); corps(ph, transfert); p.byId.set(ph.id, ph);
+      }
       if (ph.distant) continue;
       if ((ph.e.repositionnements || 0) !== ph.repositionnements) replacer(ph);
       lecture(ph, false); ph.beforeVelocity.splice(0, 3, ...ph.velocity); ph.retenue = retenue; ph.controle = false;
@@ -269,7 +283,9 @@
   function liberer(co) {
     const p = co?.physique; if (!p || p.disposed) return;
     p.disposed = true; for (const ph of p.voitures) if (ph.e._physx === ph) delete ph.e._physx;
-    p.world.dispose(); p.byId.clear(); co.physique = null;
+    p.world.dispose(); p.byId.clear(); p.collisions.clear(); p.impacts.clear();
+    if (p.solids) { p.solids.ids.length = 0; p.solids.acteurs.clear(); p.solids.libere = true; }
+    p.voitures.length = 0; co.physique = null;
   }
   B.physique = { PROFIL, GROUPES: Object.freeze({ SOL, OBSTACLE, VOITURE, DEBRIS }), installer, avant, pas, liberer, quaternion, projeter };
 })(globalThis.BITUME = globalThis.BITUME || {});
