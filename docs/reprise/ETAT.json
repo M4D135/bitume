@@ -1,19 +1,19 @@
 {
   "date": "2026-11-19",
   "etat_courant": {
-    "branche": "codex/bitume-12f4-20261119",
+    "branche": "main",
     "base_commit": "c8afbd49594eaac51876286e471413856117418d",
     "base_version": "0.2.50",
     "version_courante": "0.2.51",
-    "version_publiee_verifiee": "0.2.50",
-    "commit_main_verifie": "c8afbd49594eaac51876286e471413856117418d",
-    "statut": "12F4_qualifie_CPU_publication_finale_en_cours",
+    "version_publiee_verifiee": "0.2.51",
+    "commit_main_verifie": "4710a4001bd4f37111901934dea6421866d0d3c0",
+    "statut": "12F4_livre_0.2.51_sur_main",
     "lot": "12F4_strategie_stands_IA",
     "fiche": "docs/reprise/12F4-STRATEGIE-STANDS-IA.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "020",
+    "derniere_entree": "021",
     "publication_base": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json",
-    "prochaine_action": "Terminer la publication sources/tests/build/preuves 0.2.51, vérifier le distant et enregistrer le reçu ; ensuite 13A Russie tracé/relief, non commencé.",
+    "prochaine_action": "Borner puis commencer 13A Russie, tracé et relief, non commencé ; Baïkal reste une proposition de thème.",
     "physique": "p12 qualifiée pour le changement de comportement IA ; archives p9/p10/p11 et lois de conduite/usure inchangées.",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
     "comportement": "Stratégie de stands des IA locales : usure forte ou monte durablement inadaptée, guidage physique et file, admission relue après contacts, service réel et sortie sans remise à neuf cachée.",
@@ -23,7 +23,9 @@
     "checkpoint_sources": "cb0235085431acbc044f785e27b26ca382c5556a",
     "checkpoint_distant_verifie": true,
     "sources_tests_build_geles": true,
-    "qualification": "docs/reprise/rapports/12F4-2026-11-19/qualification-execution.json"
+    "qualification": "docs/reprise/rapports/12F4-2026-11-19/qualification-execution.json",
+    "publication": "docs/reprise/rapports/12F4-2026-11-19/PUBLICATION-0251.json",
+    "checkpoint_final": "6a3fb86a51db46f2d3b2483bedb34d406ebff705"
   },
   "validation": {
     "date_utc": "2026-11-19T14:52:02.105072+00:00",
@@ -114,7 +116,7 @@
     "lot": "13A_Russie_trace_relief",
     "statut": "non_commence",
     "objectif": "Borner puis réaliser le tracé original et le relief du circuit russe ; Baïkal demeure une proposition de thème.",
-    "prerequis": "Terminer et vérifier la publication finale de 12F4 / 0.2.51 avant de commencer 13A.",
+    "prerequis": "Publication 12F4 / 0.2.51 vérifiée sur main ; borner le tracé et le relief avant toute implémentation 13A.",
     "apres": [
       "13B Russie décor/saisons/livraison",
       "Monaco ultra fidèle",
@@ -126,7 +128,7 @@
   "acces": {
     "mac_spark_amiga_disponibles": false,
     "travaux_mac_non_fusionnes": "Branches absentes de GitHub ; ne pas les compter livrées.",
-    "publication": "12F4 / 0.2.51 qualifié CPU, publication finale en cours ; aucune PR créée à ce stade. Main vérifié reste c8afbd49 / 0.2.50.",
+    "publication": "12F4 / 0.2.51 livré sur main 4710a400 ; PR n°5 fusionnée et arbre identique à la tête qualifiée. Deux CI finales à 106/107, seul échec traces hérité identique.",
     "deploiement_effectue": false,
     "site_verifie": false
   },
@@ -141,18 +143,53 @@
   },
   "publication": {
     "branche": "codex/bitume-12f4-20261119",
-    "statut": "publication_finale_en_cours",
+    "statut": "fusion_verifiee_livre_sur_main",
     "base_main": "c8afbd49594eaac51876286e471413856117418d",
-    "version_main_verifiee": "0.2.50",
+    "version_main_verifiee": "0.2.51",
     "version_cible": "0.2.51",
-    "main_modifie_par_ce_lot": false,
-    "recu_final_verifie": false,
+    "main_modifie_par_ce_lot": true,
     "build_courant": "0.2.51",
     "checkpoint_sources": "cb0235085431acbc044f785e27b26ca382c5556a",
     "checkpoint_distant_verifie": true,
     "version_qualifiee": "0.2.51",
-    "pr_creee": false,
-    "pr": null
+    "pr_creee": true,
+    "pr": {
+      "numero": 5,
+      "url": "https://github.com/M4D135/bitume/pull/5",
+      "etat": "closed",
+      "merged": true,
+      "merged_at": "2026-11-19T15:10:18Z"
+    },
+    "commit_main": "4710a4001bd4f37111901934dea6421866d0d3c0",
+    "head_qualifie": "6a3fb86a51db46f2d3b2483bedb34d406ebff705",
+    "tree": "1054a9a3e49e70d0f79431fe67b3da868a65edc8",
+    "tree_identique_tete_qualifiee": true,
+    "fusion_verifiee": true,
+    "recu": "docs/reprise/rapports/12F4-2026-11-19/PUBLICATION-0251.json",
+    "controles_ou_regles_modifies": false,
+    "ci": {
+      "statut": "terminees_failure",
+      "suites_par_run": 107,
+      "reussies_par_run": 106,
+      "seul_echec": "traces.test.mjs",
+      "signature_heritee_identique": true,
+      "build_reconstruit_identique": true,
+      "runs": [
+        {
+          "evenement": "push",
+          "id": 44550520260,
+          "job": 135652679851,
+          "conclusion": "failure"
+        },
+        {
+          "evenement": "pull_request",
+          "id": 44550618625,
+          "job": 135653025414,
+          "conclusion": "failure"
+        }
+      ]
+    },
+    "recu_final_verifie": true
   },
   "qualification_precedente": "docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json"
 }

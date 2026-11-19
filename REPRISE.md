@@ -2,10 +2,10 @@
 
 ## Point actif — 19 novembre 2026
 
-**12F4 qualifié CPU en 0.2.51 ; publication finale EN COURS. Aucune PR créée à ce stade.**
-Fiche : `docs/reprise/12F4-STRATEGIE-STANDS-IA.md` ; branche `codex/bitume-12f4-20261119`.
-Checkpoint sources distant **`cb023508` vérifié** ; sources, tests et build gelés.
-**Main reste vérifié en 0.2.50 / `c8afbd49`**. La 0.2.51 n’est pas encore déclarée livrée sur main.
+**12F4 livré en 0.2.51 sur main `4710a400` ; PR n°5 fusionnée et publication vérifiée.**
+Fiche : `docs/reprise/12F4-STRATEGIE-STANDS-IA.md` ; sources, tests et build qualifiés conservés.
+Arbre de fusion `1054a9a3` identique à la tête qualifiée `6a3fb86a` ; aucune règle de contrôle modifiée.
+Reçu : `docs/reprise/rapports/12F4-2026-11-19/PUBLICATION-0251.json`.
 
 Lire `git status`, `docs/reprise/ETAT.json` et la dernière entrée du suivi ; ouvrir seulement la fiche active.
 
@@ -19,6 +19,7 @@ Lire `git status`, `docs/reprise/ETAT.json` et la dernière entrée du suivi ; o
 
 Rapport : `docs/reprise/rapports/12F4-2026-11-19/qualification-execution.json`.
 **106/107 suites**, seul `traces.test.mjs` hérité, signature identique ; aucun autre échec.
+Les deux CI finales sont terminées en échec, **106/107 chacune**, avec cette seule réserve ; build identique.
 **21 scénarios / 1 375 empreintes p12**, référence inchangée pendant la qualification ; **211 empreintes suivies**.
 Création initiale de p12 attestée séparément par `CREATION-P12.json` dans le même dossier.
 Deux builds identiques : **14 056 780 octets**, SHA-256
@@ -26,8 +27,8 @@ Deux builds identiques : **14 056 780 octets**, SHA-256
 **53 scripts valides**, **34 modules FERRO inchangés**. Ciblés : 17 trajets, 6 décisions, 18 stands,
 30 stands-pneus et 8 chaussée réussis ; sept circuits avec limites et solides réels.
 
-Terminer la publication sources/tests/build/preuves, vérifier le distant et enregistrer le reçu.
-**Prochain lot après publication : 13A — Russie, tracé et relief, NON COMMENCÉ.**
+Fusion vérifiée le **19 novembre 2026 à 15:10:18 UTC** ; PR n°5 fermée et fusionnée.
+**Prochain lot : 13A — Russie, tracé et relief, NON COMMENCÉ.**
 Le Baïkal reste la proposition de thème ; la demande ferme porte sur un circuit en Russie.
 
 **Parties réelles entre navigateurs, WebGL, performances matérielles et déploiement non validés.**
@@ -36,8 +37,8 @@ La variabilité CPU historique du décor reste une réserve distincte.
 
 ## Base publiée et demandes conservées
 
-**12A–12F3 livrés jusqu’à 0.2.50** ; PR n°3 et n°4 fusionnées, ne pas les redemander.
-Reçu précédent : `docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json`.
+**12A–12F4 livrés jusqu’à 0.2.51** ; PR n°3, n°4 et n°5 fusionnées, ne pas les redemander.
+La prochaine étape commence par le bornage de 13A dans le plan maître ; aucune nouvelle piste créée ici.
 **7 circuits jouables**. Conserver Russie, Monaco ultra fidèle, Marseille depuis EMPRISE avec relief mesuré,
 huitième circuit de montagne distinct de Haut-Col et six propositions ; aucun retrait pour tenir 16.
 Ensemble : `MASTER-LISTE-CLAUDE-FABLE.md` ; détails : `docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md`

@@ -4,12 +4,12 @@ Plan du **18 novembre 2026**, état de reprise actualisé le **19 novembre 2026*
 
 ## 1. Mission et point de départ
 
-Poursuivre **BITUME**, jeu de course de monoplaces procédural et autonome dans le navigateur, dépôt **[M4D135/bitume](https://github.com/M4D135/bitume)**, branche principale **`main`**. **12F4 est qualifié CPU en 0.2.51 ; publication finale EN COURS, aucune PR créée à ce stade.** Main reste vérifié en **0.2.50 / `c8afbd49`**. Prochain lot après publication : **13A Russie, tracé et relief, non commencé**. Avancer par petits lots, publier fréquemment et conserver un point de reprise court. Ce document rassemble le catalogue complet proposé et les travaux demandés ; les fiches détaillées portent les critères techniques.
+Poursuivre **BITUME**, jeu de course de monoplaces procédural et autonome dans le navigateur, dépôt **[M4D135/bitume](https://github.com/M4D135/bitume)**, branche principale **`main`**. **12F4 est livré en 0.2.51 sur main `4710a400`**, PR n°5 fusionnée et publication vérifiée. Prochain lot : **13A Russie, tracé et relief, non commencé**. Avancer par petits lots, publier fréquemment et conserver un point de reprise court. Ce document rassemble le catalogue complet proposé et les travaux demandés ; les fiches détaillées portent les critères techniques.
 
 | Élément | État de reprise du 19 novembre 2026 |
 |---|---|
-| Base publiée vérifiée | **0.2.50**, `main` **`c8afbd49`** ; 12F3 livré, Safari corrigé et clos. |
-| Checkpoint de reprise | Sources 12F4 distantes **`cb023508` vérifiées** ; branche `codex/bitume-12f4-20261119`. Publication finale de 0.2.51 en cours, aucune PR créée à ce stade. |
+| Base publiée vérifiée | **0.2.51**, `main` **`4710a400`** ; 12F4 livré, Safari corrigé et clos. |
+| Checkpoint de reprise | **PR n°5 fusionnée**, arbre `1054a9a3` identique à la tête qualifiée `6a3fb86a` ; reçu `docs/reprise/rapports/12F4-2026-11-19/PUBLICATION-0251.json`. Deux CI finales **106/107 chacune**, seul échec traces hérité identique. |
 | Moteur BITUME | **FERRO 0.3.11**, 34 modules verrouillés. |
 | Physique | **p12 qualifiée** pour la stratégie IA ; lois de conduite/usure et archives p9/p10/p11 inchangées. Référence p12 créée explicitement, conservée pendant la qualification. |
 | Qualification du lot | **12F4 / 0.2.51 : 106/107 suites**, seul échec traces hérité identique. **21 scénarios / 1 375 empreintes p12**, deux builds identiques de **14 056 780 octets** ; 53 scripts valides, 34 modules FERRO inchangés. Parties entre navigateurs, WebGL et matériel non validés. |
@@ -17,7 +17,7 @@ Poursuivre **BITUME**, jeu de course de monoplaces procédural et autonome dans 
 | Circuits jouables | **7**. |
 | Nouveaux circuits explicitement demandés | **Huitième circuit de montagne distinct**, **Russie, Monaco ultra fidèle, Spéciale Marseille issue d’EMPRISE avec relief**. |
 | Autres demandes prioritaires | Roues rondes et réalistes, slicks lisses, sculptures pluie/neige, usure progressive visible. |
-| Implémentation roues/pneus | **12A–12F3 publiés** ; **12F4 qualifié CPU**, publication en cours : stratégie IA avec entrée, file, service et sortie physiques. Choix en ligne, pneus à 2 Hz, relais hôte et reprise sans neuf conservés ; nouveaux joueurs hors grille à la prochaine course. |
+| Implémentation roues/pneus | **12A–12F4 publiés** : stratégie IA avec entrée, file, service et sortie physiques. Choix en ligne, pneus à 2 Hz, relais hôte et reprise sans neuf conservés ; nouveaux joueurs hors grille à la prochaine course. |
 
 **Ordre de lecture :** `AGENTS.md` → `REPRISE.md` → dernière entrée de `docs/reprise/SUIVI-2026-11-19.md` et `docs/reprise/ETAT.json` → fiche du lot actif. Cette master liste sert à choisir la suite. Éviter de recharger les anciennes discussions, les archives et le HTML compilé en entier.
 
@@ -52,7 +52,7 @@ Pour chacune des six propositions, utiliser le même cycle de petits lots : iden
 
 ### A. Roues et pneus — lots 12A à 12F
 
-**12A–12F3 publiés** sur main **0.2.50 / `c8afbd49`**. **12F4 qualifié CPU en 0.2.51 / p12**, publication finale en cours, aucune PR créée à ce stade : stratégie de stands IA par commandes physiques, sans remise à neuf cachée. Rapport : `docs/reprise/rapports/12F4-2026-11-19/qualification-execution.json`. **106/107 suites**, seul échec traces hérité identique ; lois de conduite/usure et archives p9/p10/p11 inchangées. Parties réelles entre navigateurs, WebGL, matériel et déploiement non validés. Suite après publication : **13A Russie, tracé et relief, non commencé**.
+**12A–12F4 publiés** sur main **0.2.51 / p12 (`4710a400`)**, PR n°5 fusionnée et vérifiée : stratégie de stands IA par commandes physiques, sans remise à neuf cachée. Reçu : `docs/reprise/rapports/12F4-2026-11-19/PUBLICATION-0251.json`. Qualification et deux CI finales : **106/107 chacune**, seul échec traces hérité identique ; lois de conduite/usure et archives p9/p10/p11 inchangées. Parties réelles entre navigateurs, WebGL, matériel et déploiement non validés. Suite : **13A Russie, tracé et relief, non commencé**.
 
 - [x] Catalogue commun `slicks`, `inter`, `pluie`, `neige` ; ordre des quatre roues **AVG, AVD, ARG, ARD** et libellés corrects.
 - [x] Pneus plus ronds, profil et flancs crédibles, épaules arrondies, jantes creuses, rayons/moyeux/disques mieux construits.
@@ -66,7 +66,7 @@ Pour chacune des six propositions, utiliser le même cycle de petits lots : iden
 - [x] Choix par pilote, y compris deux humains sur une machine, migration et Conseillés indépendant : 12F2 fusionné sur main en 0.2.49.
 - [x] Service réel et quatre pneus renouvelés : 12F1 publié ; choix solo/duo livré en 12F2 et choix en ligne livré en 12F3 / 0.2.50.
 - [x] Réseau compact et versionné qualifié CPU en 12F3 : pneus à 2 Hz, service idempotent, paquets anciens rejetés, liaison tardive, 2+2 et autorités conservées ; relais hôte avant reprise. Nouveaux joueurs hors grille reportés à la prochaine course.
-- [x] Stratégie des rivaux et humains repris qualifiée CPU en 12F4 : usure forte ou monte durablement inadaptée, file/admission, vrai service et sortie ; aucun renouvellement caché. Publication finale en cours.
+- [x] Stratégie des rivaux et humains repris livrée en 12F4 / 0.2.51 : usure forte ou monte durablement inadaptée, file/admission, vrai service et sortie ; aucun renouvellement caché. Qualification CPU avec réserve traces héritée.
 - [ ] Captures comparables des quatre types et états d’usure, cockpit/poursuite/démo/rétros ; coût mesuré sur matériel réel.
 
 Fiche détaillée : **[12 — plan maître roues, pneus, Russie et Monaco](docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md)**, sections 2 à 7.
@@ -147,8 +147,8 @@ Les vieux tableaux d’avancement de novembre 12–17 restent historiques. Ne pa
 
 ## 5. Ordre conseillé et méthode de travail
 
-1. **12A–12F : roues et pneus.** Terminer la publication de **12F4 qualifié CPU en 0.2.51** ; main reste `c8afbd49` / 0.2.50, aucune PR créée à ce stade. Garder validation entre navigateurs, WebGL, matériel et déploiement distincts.
-2. **13A–13B : Russie.** Après publication 12F4, commencer **13A tracé et relief, non commencé** ; compléter ensuite décor, saisons et livraison en 13B.
+1. **12A–12F : roues et pneus.** **12A–12F4 publiés jusqu’à 0.2.51**, main `4710a400`, PR n°5 fusionnée et vérifiée. Garder validation entre navigateurs, WebGL, matériel et déploiement distincts.
+2. **13A–13B : Russie.** Prochain lot : **13A tracé et relief, non commencé**, Baïkal proposé ; compléter ensuite décor, saisons et livraison en 13B.
 3. **14A–14F : Monaco.** Construire et qualifier les fonctions communes de tracé réel, largeurs variables, voies et stands.
 4. **15A–15F : Marseille.** Réemployer ces fonctions, porter le corridor EMPRISE et son relief mesuré.
 5. **16A–16F : six propositions restantes.** Affiner et livrer chacune en sous-lots, sans lancer six circuits à moitié faits.
@@ -195,6 +195,6 @@ Le déploiement prévu par le dépôt est `./deposer.sh` depuis le Mac, vers l�
 
 ## 8. Texte de reprise pour Claude Fable
 
-> Reprends BITUME dans `M4D135/bitume`. Lis `AGENTS.md`, `REPRISE.md`, la dernière entrée du suivi et `docs/reprise/ETAT.json`, puis la fiche 12F4. **12F4 qualifié CPU en 0.2.51 / p12 ; publication finale en cours, aucune PR créée à ce stade.** Checkpoint sources distant `cb023508` vérifié ; main reste `c8afbd49` / 0.2.50. Rapport `docs/reprise/rapports/12F4-2026-11-19/qualification-execution.json` : **106/107 suites**, seul échec traces hérité identique ; **21 scénarios / 1 375 empreintes p12**, deux builds identiques. Lois de conduite/usure et archives p9/p10/p11 intactes. Les rivaux effectuent les vrais arrêts par commandes physiques ; transport pneus 12F3 conservé. Terminer et vérifier la publication, puis **13A Russie, tracé et relief, non commencé**. Parties réelles entre navigateurs, WebGL, matériel et déploiement non validés. PR n°3 et n°4 déjà fusionnées : ne pas les redemander. Conserve Russie, Monaco, Marseille EMPRISE avec relief, huitième circuit de montagne et six propositions. Mac/Spark indisponibles ; vérifier GitHub et le site séparément.
+> Reprends BITUME dans `M4D135/bitume`. Lis `AGENTS.md`, `REPRISE.md`, la dernière entrée du suivi et `docs/reprise/ETAT.json`, puis le plan de 13A. **12F4 livré en 0.2.51 / p12 sur main `4710a400`**, PR n°5 fusionnée ; arbre `1054a9a3` identique à la tête qualifiée `6a3fb86a`. Reçu `docs/reprise/rapports/12F4-2026-11-19/PUBLICATION-0251.json`. Qualification et deux CI finales : **106/107 chacune**, seul échec traces hérité identique ; **21 scénarios / 1 375 empreintes p12**, build reproduit identique. Lois de conduite/usure et archives p9/p10/p11 intactes. Les rivaux effectuent les vrais arrêts par commandes physiques ; transport pneus 12F3 conservé. Prochaine action : **13A Russie, tracé et relief, non commencé** ; Baïkal reste proposé. Parties réelles entre navigateurs, WebGL, matériel et déploiement non validés. PR n°3, n°4 et n°5 déjà fusionnées : ne pas les redemander. Conserve les sept circuits, Russie, Monaco, Marseille EMPRISE avec relief, huitième circuit de montagne et six propositions. Mac/Spark indisponibles ; vérifier GitHub et le site séparément.
 
 Ce texte renvoie aux fichiers durables du dépôt ; il n’est pas nécessaire de recopier toute la conversation.

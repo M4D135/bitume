@@ -3,9 +3,9 @@
 ## Base et périmètre
 
 19 novembre 2026. Demande « go la suite » après 12F3 livré. Base **0.2.50 / main `c8afbd49594eaac51876286e471413856117418d`**.
-Branche `codex/bitume-12f4-20261119`, checkpoint sources distant **`cb023508` vérifié**.
-**QUALIFIÉ CPU EN 0.2.51 ; PUBLICATION FINALE EN COURS.** Sources, tests et build gelés.
-Main reste **c8afbd49 / 0.2.50** ; aucune PR créée à ce stade, aucune livraison finale 0.2.51 annoncée.
+Branche livrée `codex/bitume-12f4-20261119` ; tête qualifiée **`6a3fb86a`**.
+**LIVRÉ EN 0.2.51 SUR MAIN `4710a400`** ; PR n°5 fusionnée le 19 novembre 2026 à **16:10:18, heure de Paris**.
+Arbre **`1054a9a3`** identique à la tête qualifiée ; sources, tests et build conservés.
 
 Faire utiliser aux rivaux locaux et aux voitures reprises par l’IA les stands existants. Les voitures distantes
 restent sous l’autorité de leur machine ; l’hôte pilote les rivaux en ligne. La conduite manuelle garde ses règles.
@@ -37,7 +37,7 @@ sans changer les poses, affaiblir les assertions, renouveler les pneus ni décle
 
 La nouvelle fixture **p12** a été créée après les ciblés : **21 scénarios / 1 375 empreintes**, dont un service IA
 complet effectivement observé. Reçu `rapports/12F4-2026-11-19/CREATION-P12.json` ; archives p9/p10/p11 intactes. **Comparaison globale réussie : 21 scénarios / 1 375 empreintes**, fixture p12 inchangée pendant la qualification.
-Prochaine action : publication finale puis contrôle du distant ; ensuite **13A Russie, tracé/relief, non commencé**.
+Prochaine action : **13A Russie, tracé/relief, non commencé** ; Baïkal reste une proposition de thème.
 
 ## Qualification finale et publication
 
@@ -48,10 +48,12 @@ Prochaine action : publication finale puis contrôle du distant ; ensuite **13A 
 - **211 empreintes suivies**. Deux builds **0.2.51** identiques : **14 056 780 octets**, SHA-256
   `e349f073c872d129367b0d13d9c0b1e72e76fa67e1851663a0ac7e3f64aa7225`.
   **53 scripts valides**, **34 modules FERRO 0.3.11 inchangés**.
-- **Publication finale en cours**, aucune PR créée à ce stade. Checkpoint sources distant `cb023508` vérifié ;
-  main reste `c8afbd49` / 0.2.50. Publier sources/tests/build/preuves puis vérifier le distant et enregistrer le reçu.
+- **Publication vérifiée** : PR n°5 fermée et fusionnée, main `4710a400`, arbre identique à la tête qualifiée.
+  Reçu : `rapports/12F4-2026-11-19/PUBLICATION-0251.json`. Deux CI finales terminées en échec :
+  push **44550520260** et PR **44550618625**, **106/107 chacune**, seul traces hérité à signature identique.
+  Build reconstruit identique ; aucun contrôle ni règle modifié.
 
-**Prochain lot après publication : 13A — Russie, tracé et relief, NON COMMENCÉ.**
+**Prochain lot : 13A — Russie, tracé et relief, NON COMMENCÉ.**
 
 Parties entre navigateurs réels, rendu WebGL, performances matérielles et déploiement restent distincts des essais
 CPU. Pas d’accès Mac/Spark/amiga établi dans cet environnement. Circuits Russie, Monaco, Marseille EMPRISE avec relief,

@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "date_verification_utc": "2026-11-19 15:10:27 UTC",
+  "version": "0.2.51",
+  "lot": "12F4",
+  "repository": "M4D135/bitume",
+  "statut": "fusion_main_verifiee",
+  "base_main": "c8afbd49594eaac51876286e471413856117418d",
+  "checkpoint_documentaire": "446a350f736d583471950b8e089ac7d8ab57e4d9",
+  "checkpoint_sources": "cb0235085431acbc044f785e27b26ca382c5556a",
+  "commit_qualifie": "6a3fb86a51db46f2d3b2483bedb34d406ebff705",
+  "copie_locale_qualifiee": "e5c12f1dc1d8b1b44fa53278b625ddf0a607b19b",
+  "tree_qualifie": "1054a9a3e49e70d0f79431fe67b3da868a65edc8",
+  "commit_fusion": "4710a4001bd4f37111901934dea6421866d0d3c0",
+  "main_verifie": "4710a4001bd4f37111901934dea6421866d0d3c0",
+  "tree_fusion_identique": true,
+  "parents": [
+    "c8afbd49594eaac51876286e471413856117418d",
+    "6a3fb86a51db46f2d3b2483bedb34d406ebff705"
+  ],
+  "pr": {
+    "numero": 5,
+    "url": "https://github.com/M4D135/bitume/pull/5",
+    "state": "closed",
+    "draft": false,
+    "merged": true,
+    "merged_at": "2026-11-19T15:10:18Z",
+    "head": "6a3fb86a51db46f2d3b2483bedb34d406ebff705",
+    "base": "c8afbd49594eaac51876286e471413856117418d"
+  },
+  "build": {
+    "bytes": 14056780,
+    "sha256": "e349f073c872d129367b0d13d9c0b1e72e76fa67e1851663a0ac7e3f64aa7225",
+    "git_blob": "4004133cd616470c773b207e83edb94acf40e25d",
+    "deux_constructions_identiques": true
+  },
+  "qualification": {
+    "rapport": "qualification-execution.json",
+    "sources_tests_fixtures_controles": 211,
+    "suites": 107,
+    "reussies": 106,
+    "echecs": [
+      "traces.test.mjs"
+    ],
+    "physique": "p12",
+    "scenarios": 21,
+    "empreintes": 1375,
+    "creation_initiale_fixture": "CREATION-P12.json",
+    "fixture_regeneree_pendant_qualification": false,
+    "scripts_valides": 53,
+    "modules_ferro_inchanges": 34
+  },
+  "controles_github": [
+    {
+      "id": 44550618625,
+      "head_sha": "6a3fb86a51db46f2d3b2483bedb34d406ebff705",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44550618625",
+      "job_id": 135653025414,
+      "suites": 107,
+      "reussies": 106,
+      "echecs": [
+        "traces.test.mjs"
+      ],
+      "signature_heritee_identique": true,
+      "reconstruction_identique": true,
+      "conservation_artefacts": "success",
+      "log": "github/pr-job-135653025414.log"
+    },
+    {
+      "id": 44550520260,
+      "head_sha": "6a3fb86a51db46f2d3b2483bedb34d406ebff705",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44550520260",
+      "job_id": 135652679851,
+      "suites": 107,
+      "reussies": 106,
+      "echecs": [
+        "traces.test.mjs"
+      ],
+      "signature_heritee_identique": true,
+      "reconstruction_identique": true,
+      "conservation_artefacts": "success",
+      "log": "github/push-job-135652679851.log"
+    }
+  ],
+  "ci_pr": {
+    "checkout": "c344f78598ac9c7bb0d9a219d128b7093ab2c8bf",
+    "tree": "1054a9a3e49e70d0f79431fe67b3da868a65edc8",
+    "tree_identique_au_head_qualifie": true,
+    "recu": "github/RECU-CI.json"
+  },
+  "reserve": {
+    "preuve": "reserve-traces.json",
+    "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+    "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+    "heritee_identique": true,
+    "ci_entierement_verte": false
+  },
+  "verification_independante": {
+    "commit_arbre_ref_build_pr": true,
+    "logs_ci_relus": true,
+    "comptage_par_ci": {
+      "PASS": 106,
+      "FAIL": 1
+    },
+    "branche_main_avant_fusion": "c8afbd49594eaac51876286e471413856117418d",
+    "metadata_branche_protected": false,
+    "required_status_checks": {
+      "enforcement_level": "off",
+      "contexts": [],
+      "checks": []
+    },
+    "rulesets": [],
+    "acces_protection_detaillee": "403 Resource not accessible by integration ; aucune modification tentée."
+  },
+  "controles_obligatoires_modifies": false,
+  "rulesets_modifies": false,
+  "limites": {
+    "parties_reelles_entre_navigateurs_validees": false,
+    "webgl_valide": false,
+    "performance_materielle_mesuree": false,
+    "deploiement_effectue": false,
+    "site_verifie": false
+  },
+  "prochaine_action": "13A — Russie, tracé et relief, non commencé. Le Baïkal reste une proposition de thème."
+}
