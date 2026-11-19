@@ -1,0 +1,20 @@
+
+Appels de dessin de l'image principale, à image identique (prise déterministe, s 800, 50 images, décompte par cible
+de rendu ; appels.txt) : 0.3.11 corrigé effets coupés fait exactement les appels de 0.3.10 :
+416 en Fine cockpit, 413 en Fine poursuite, 382 en Moyenne, 181 en Légère. Effets allumés, seule la tuile en ajoute
+(sa passe : 31 en cockpit, 35 en poursuite) ; le contact, la carte lointaine et la pénombre n'en ajoutent aucun. La
+page finale fait les mêmes décomptes, cible par cible, que v1n.
+Pendant les séances de temps, le compte de la première image de chaque variante varie d'une séance à l'autre
+(0.3.10 en Légère : 138 à 143 dans les campagnes, 153 à 155 dans deux essais isolés) : il ne se compare pas.
+
+Créations par le chemin du joueur (menu, préparation sous le voile et préchauffage, départ, puis 15 s de course
+l'ordinateur au volant ; même preparerSeance que BITUME_JEU.preparer), page finale et base 0.3.10 :
+  configuration                    0.3.11 corrigé (fin2.html)                         0.3.10 (a2.html)
+  Fine cockpit, rétroviseurs       course 0, tardives 0, 6 contacts, tuile, carte     course 0, tardives 0
+  Fine, duo (écran partagé)        course 0, tardives 0, 6 contacts, tuile, carte     course 0, tardives 0
+  Fine, pluie (Haut-Col)           course 0, tardives 0, 6 contacts, tuile, carte     course 0, tardives 0
+  Fine, nuit                       course 0, tardives 0, 6 contacts, tuile, carte     course 0, tardives 0
+  Moyenne poursuite (Lande-Noire)  course 0, tardives 0, 6 contacts, tuile, carte     course 0, tardives 0
+  Légère cockpit                   course 0, tardives 0, 4 contacts, ni tuile ni carte lointaine   course 0, tardives 0
+  Auto cockpit (Cap-Séquoia)       course 0, tardives 0, 6 contacts, tuile, carte     course 0, tardives 0
+  (« tardives » : variantes que la séance a dû créer après le voile ; journaux complets dans creations-fin2.log et creations-a2.log.)

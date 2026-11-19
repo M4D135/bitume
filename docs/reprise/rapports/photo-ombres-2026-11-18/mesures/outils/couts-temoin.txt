@@ -1,0 +1,25 @@
+Pourquoi : d'une construction à l'autre (§ 1), les intervalles sont larges, et on ne savait pas si un coût fixe de
+l'option se cachait dans le bruit. Témoin : fin2-sans.html, la page finale sans ombresPhoto dans ses options de
+création (FERRO 0.3.11 sans l'option : mêmes shaders et mêmes appels GL que 0.3.10, d'après les empreintes ; le jeu
+prépare quand même ses ombres, FERRO les ignore). Trois pages par tour : a = a2.html (0.3.10), sans = fin2-sans.html,
+fin = fin2.html. Moyenne et Légère cockpit ; variantes 0 (tout allumé) et 1 (tout coupé), ordre au hasard dans chaque
+bloc (outils/modele3.js).
+
+Premier passage (temoin, 20 tours) : ordre des pages ABC puis CBA, comme outils/seances.py. La page « sans » y restait
+au milieu du bloc ; or en Légère, la troisième séance d'un bloc était plus lente que la première (de 0,6 à 1 ms selon
+les tours) : les écarts avec « sans » mêlaient la place et la page. Deuxième passage (temoin2, 18 tours) : ordre en
+carré latin (outils/seances_latin.py), chaque page autant de fois à chaque place.
+
+Ce qu'on en tire :
+- le témoin vaut 0 : sans l'option, 0.3.11 coûte ce que coûte 0.3.10 (Légère −0,05 ms, Moyenne +0,40, intervalles
+  qui contiennent 0 ; réunion des passages plus bas) ;
+- en Fine cockpit, l'option effets coupés ne coûte rien de mesurable (§ 1 : −0,35 [−0,75 ; +0,30], 16 tours) ;
+- en Légère, l'option coûte probablement un fixe de 0,3 à 0,65 ms selon le contraste (avec − sans +0,65 [+0,20 ; +1,00]
+  sur 44 tours ; avec − 0.3.10 +0,35 [0,00 ; +0,80] sur 84 tours), en plus du contact (+0,2 dans une même séance) :
+  en tout +0,45 ms [+0,20 ; +0,90] contre 0.3.10, contact allumé ;
+- en Moyenne, il ne se sépare pas du bruit (avec − sans +0,25 [−0,10 ; +0,85]) ;
+- le temps processeur de rendu.draw est le même sur les trois pages (diagnostic plus bas) : ce qui reste se paie côté
+  GPU (processus GPU de Chrome ou exécution du shader). Retirer du shader le code du soleil ou celui du contact ne l'a
+  pas isolé (diagnostic plus bas) : la cause n'est pas trouvée, rien n'est corrigé de plus ;
+- en Moyenne, le coût des quatre effets dans une même séance change d'une campagne à l'autre : +0,50 (final2),
+  +0,85 (temoin), +1,10 ms (temoin2), selon l'état de la machine.

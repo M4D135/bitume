@@ -22,9 +22,18 @@
     return { pos, yaw: Math.atan2(dx, -dz), pitch: Math.atan2(dy, Math.hypot(dx, dz)), fov }; };
   let info = {};
   __CAM__
-  for (const id of ['hud', 'h-fps', 'classement', 'zone-carte', 'message', 'sous-message', 'feux', 'jauge-derive', 'tactile', 'b-pause', 'aide-console', 'vignette']) {
+  // 19/11 : le voile de chargement aussi. Il s'efface en 0,3 s de temps réel (style.css, .chargement.fini) ; selon la
+  // charge de la machine, la prise tombait pendant ce fondu et toute l'image était plus ou moins sombre d'un tirage à
+  // l'autre (jusqu'à 9,5 niveaux sur le ciel de la tribune).
+  for (const id of ['hud', 'h-fps', 'classement', 'zone-carte', 'message', 'sous-message', 'feux', 'jauge-derive', 'tactile', 'b-pause', 'aide-console', 'vignette', 'chargement']) {
     const el = document.getElementById(id); if (el) el.style.visibility = 'hidden';
   }
+  // Et toute transition de la page : la vue de course (#vue-course) apparaît elle aussi en 0,3 s de temps réel
+  // (style.css). Une prise faite moins de 50 images après le lancement tombait pendant ce fondu, plus ou moins avancé
+  // selon la charge : toute l'image changeait d'une prise à l'autre (jusqu'à 12 niveaux en moyenne, vues 5, 6, 10, 11).
+  const fige = document.createElement('style');
+  fige.textContent = '*, *::before, *::after { transition: none !important; animation: none !important; }';
+  document.head.appendChild(fige);
   const retouche = __FX__, orig = R.draw;
   if (retouche) R.draw = function (cam, sortie, fx) { return orig.call(this, cam, sortie, Object.assign({}, fx, retouche)); };
   let t = 1000; const PAS = 1000 / 60;

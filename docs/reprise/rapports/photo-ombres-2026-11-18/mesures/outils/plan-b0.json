@@ -1,0 +1,146 @@
+{
+ "outil": "/Users/david/Projects/bitume-wt/moteur/tools/page-essai.mjs",
+ "modele": "/private/tmp/ombres-corr/couts/modele.js",
+ "pages": {
+  "avant": "/private/tmp/ombres-corr/a.html",
+  "apres": "/private/tmp/ombres-corr/b0.html"
+ },
+ "scenes": [
+  {
+   "nom": "fine-cockpit",
+   "ref": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "avant": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     }
+    ],
+    "apres": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     }
+    ]
+   }
+  },
+  {
+   "nom": "fine-poursuite",
+   "ref": {
+    "circuit": 0,
+    "qualite": "high",
+    "vue": "poursuite",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "avant": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     }
+    ],
+    "apres": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     }
+    ]
+   }
+  },
+  {
+   "nom": "moyenne-cockpit",
+   "ref": {
+    "circuit": 0,
+    "qualite": "medium",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "avant": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     }
+    ],
+    "apres": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     }
+    ]
+   }
+  },
+  {
+   "nom": "legere-cockpit",
+   "ref": {
+    "circuit": 0,
+    "qualite": "low",
+    "vue": "cockpit",
+    "retro": "non",
+    "depart": 800,
+    "vitesse": 60
+   },
+   "taille": "1440,757",
+   "dpr": 2,
+   "n": 100,
+   "variantes": {
+    "avant": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     }
+    ],
+    "apres": [
+     {},
+     {
+      "contacts": null,
+      "ombreProche": null,
+      "ombreLoin": false,
+      "penombre": null
+     }
+    ]
+   }
+  }
+ ]
+}

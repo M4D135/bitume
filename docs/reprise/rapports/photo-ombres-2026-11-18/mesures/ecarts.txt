@@ -1,12 +1,28 @@
-# Écart de luminance par pixel, après (0.3.11) − avant (0.3.10), mêmes poses, 1280 × 720.
+# Écart de luminance par pixel, après (0.3.11 corrigé, fin2.html) − avant (0.3.10, a2.html), mêmes poses, 1280 × 720,
+# base fluidite/integration 4b994c4 ; prises du 19/11 (outils/prise.js : boucle menée à 1/60 s, hasard réamorcé, voile
+# de chargement caché et transitions CSS figées).
 # changes : pixels dont la luminance bouge de plus de 1,5 niveau (sur 255) ; part : leur proportion ;
 # partSombre : part de ceux qui s'assombrissent ; moyenne : écart moyen de ceux-là ; max : plus grand écart ; boite : rectangle qui les contient.
-1-cockpit-fine         {"image":"1280x720","zone":[0,0,1280,720],"changes":21734,"part":0.0236,"partSombre":1,"moyenne":-8.47,"max":-55.7,"boite":[0,269,1247,719]}
-2-poursuite-fine       {"image":"1280x720","zone":[0,0,1280,720],"changes":39338,"part":0.0427,"partSombre":0.693,"moyenne":-3.65,"max":-61,"boite":[0,232,1279,719]}
-3-cockpit-moyenne      {"image":"1280x720","zone":[0,0,1280,720],"changes":19853,"part":0.0215,"partSombre":1,"moyenne":-8.28,"max":-58.7,"boite":[0,270,1224,719]}
-4-exterieur-legere     {"image":"1280x720","zone":[0,0,1280,720],"changes":39681,"part":0.0431,"partSombre":0.996,"moyenne":-5.35,"max":-93.3,"boite":[7,257,1235,719]}
-5-depart-grille        {"image":"1280x720","zone":[0,0,1280,720],"changes":10665,"part":0.0116,"partSombre":0.989,"moyenne":-5.56,"max":-69.3,"boite":[119,304,823,595]}
-6-tribune              {"image":"1280x720","zone":[0,0,1280,720],"changes":6485,"part":0.007,"partSombre":0.993,"moyenne":-5.31,"max":-28.3,"boite":[588,355,1005,526]}
-7-vue-haute            {"image":"1280x720","zone":[0,0,1280,720],"changes":8914,"part":0.0097,"partSombre":0.99,"moyenne":-8.39,"max":-38.7,"boite":[0,272,1247,719]}
-8-poursuite-pluie      {"image":"1280x720","zone":[0,0,1280,720],"changes":40051,"part":0.0435,"partSombre":0.406,"moyenne":1.12,"max":44,"boite":[0,36,1279,719]}
-9-cockpit-fine-volant  {"image":"1280x720","zone":[0,0,1280,720],"changes":33709,"part":0.0366,"partSombre":1,"moyenne":-18.24,"max":-72,"boite":[0,305,1023,719]}
+# témoin : deux prises de la même page (avant contre avant, après contre après), mêmes réglages.
+1-cockpit-fine         {"image": "1280x720", "zone": [0, 0, 1280, 720], "changes": 24070, "part": 0.0261, "partSombre": 1, "moyenne": -8.61, "max": -72, "boite": [0, 258, 1279, 719]}
+   témoin avant        changes 0 part 0 ; témoin après changes 0 part 0
+2-poursuite-fine       {"image": "1280x720", "zone": [0, 0, 1280, 720], "changes": 39949, "part": 0.0433, "partSombre": 0.717, "moyenne": -3.7, "max": -60.3, "boite": [0, 232, 1279, 719]}
+   témoin avant        changes 0 part 0 ; témoin après changes 18949 part 0.0206
+3-cockpit-moyenne      {"image": "1280x720", "zone": [0, 0, 1280, 720], "changes": 22047, "part": 0.0239, "partSombre": 1, "moyenne": -8.44, "max": -68, "boite": [0, 258, 1279, 719]}
+   témoin avant        changes 0 part 0 ; témoin après changes 0 part 0
+4-exterieur-legere     {"image": "1280x720", "zone": [0, 0, 1280, 720], "changes": 39383, "part": 0.0427, "partSombre": 1, "moyenne": -5.4, "max": -56, "boite": [266, 363, 801, 719]}
+   témoin avant        changes 0 part 0 ; témoin après changes 0 part 0
+5-depart-grille        {"image": "1280x720", "zone": [0, 0, 1280, 720], "changes": 10548, "part": 0.0114, "partSombre": 0.987, "moyenne": -5.35, "max": -69.3, "boite": [4, 249, 823, 595]}
+   témoin avant        changes 157 part 0.0002 ; témoin après changes 0 part 0
+6-tribune              {"image": "1280x720", "zone": [0, 0, 1280, 720], "changes": 6619, "part": 0.0072, "partSombre": 0.982, "moyenne": -5.23, "max": -29, "boite": [0, 263, 1005, 526]}
+   témoin avant        changes 140 part 0.0002 ; témoin après changes 0 part 0
+7-vue-haute            {"image": "1280x720", "zone": [0, 0, 1280, 720], "changes": 9986, "part": 0.0108, "partSombre": 0.991, "moyenne": -8.64, "max": -47.3, "boite": [0, 270, 1246, 719]}
+   témoin avant        changes 0 part 0 ; témoin après changes 0 part 0
+8-poursuite-pluie      {"image": "1280x720", "zone": [0, 0, 1280, 720], "changes": 29169, "part": 0.0317, "partSombre": 0.365, "moyenne": 1.44, "max": 22.7, "boite": [0, 234, 1279, 719]}
+   témoin avant        changes 13731 part 0.0149 ; témoin après changes 916 part 0.001
+9-cockpit-fine-volant  {"image": "1280x720", "zone": [0, 0, 1280, 720], "changes": 34104, "part": 0.037, "partSombre": 1, "moyenne": -18.11, "max": -72, "boite": [0, 288, 1023, 719]}
+   témoin avant        changes 0 part 0 ; témoin après changes 0 part 0
+10-voiture-34          {"image": "1280x720", "zone": [0, 0, 1280, 720], "changes": 169465, "part": 0.1839, "partSombre": 0.81, "moyenne": -6.77, "max": -63.3, "boite": [0, 99, 1279, 719]}
+   témoin avant        changes 0 part 0 ; témoin après changes 0 part 0
+11-voiture-haut        {"image": "1280x720", "zone": [0, 0, 1280, 720], "changes": 141500, "part": 0.1535, "partSombre": 0.759, "moyenne": -8.15, "max": -113.3, "boite": [330, 182, 1262, 719]}
+   témoin avant        changes 0 part 0 ; témoin après changes 0 part 0

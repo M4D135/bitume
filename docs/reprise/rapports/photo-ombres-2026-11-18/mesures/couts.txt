@@ -1,3 +1,449 @@
+Coût des ombres photo — BITUME 0.2.41 sur FERRO 0.3.11 corrigé, 19 novembre 2026
+
+Machine : Apple M5 (MacBook Air, 10 cœurs, 24 Go), macOS 27.2.1, Google Chrome 157 sans fenêtre (tools/page-essai.mjs),
+ANGLE Metal, machine partagée avec d'autres agents (charge 2 à 3). Fenêtre 1440 × 757 à densité 2 : toile
+2880 × 1514 en Fine, 1440 × 757 en Moyenne, 1152 × 606 en Légère. Val-Brûlé, soleil, rétroviseurs coupés, départ à
+s 800, 90 images de mise en train puis 100 images par variante (la voiture roule de s 885 à s 1270 environ).
+
+Pages (toutes sur la base fluidite/integration 4b994c4) :
+  a2.html     0.3.10, la base telle quelle ;
+  fin2.html   la page de ce lot, 0.3.11 corrigé (sha256 e8d661ca…, dist/bitume.html du commit) ;
+  v1n.html    la même avant trois retouches : carte lointaine non calculée en Légère et garde de B.ombres dans les
+              options de création (jeu), échantillonneur retiré autour de la foule de l'hôte (FERRO). Dans les scènes
+              mesurées, aucun spectateur n'est dessiné (sonde : 400 images par scène, fx.foule passé à chaque image,
+              0 image où la foule dessine) : la seule différence de travail est de 16 appels GL par image autour des
+              appels de la foule ;
+  v1.html     comme v1n, bloc PCSS compilé ;
+  b02.html    0.3.11 tel que relu (avant correction), même base ;
+  fin2-sans.html  témoin : fin2.html sans ombresPhoto dans ses options de création (FERRO 0.3.11 sans l'option :
+              shaders et appels GL de 0.3.10) ; diag-contact.html et diag-soleil.html : fin2.html dont le shader perd
+              le code du soleil ou celui du contact (§ 1 bis).
+
+Méthode (§ 2.5 du plan 21) : chaque image principale est encadrée par la lecture d'un pixel (temps = soumission +
+exécution GPU de cette seule image). Dans une séance, les variantes se mêlent image par image, dans un ordre tiré au
+hasard dans chaque bloc (outils/modele2.js et modele3.js ; l'alternance stricte de deux variantes du 18/11 mettait tout
+le travail du jeu à 30 Hz sur la même variante pendant une séance : diagnostics.txt, point 7) ; p50 de chaque variante.
+  - Construction contre construction : à chaque tour, une séance par page, dans l'ordre inverse un tour sur deux
+    (A B, puis B A ; avec trois pages ou plus, en carré latin, outils/seances_latin.py, § 1 bis) ; écart de même variante entre les deux séances du tour ; médiane des tours. Deux variantes par
+    séance : tout allumé ({}) et tout coupé (contacts, tuile, carte lointaine et pénombre retirés). Pour 0.3.10, les
+    deux variantes sont la même image : leur écart est un témoin du bruit.
+  - Effet par effet : sept variantes dans la même séance (tout, sans contact, sans tuile, sans carte lointaine, sans
+    pénombre, tout coupé, et de nouveau tout pour le témoin A/A) ; coût = p50(tout) − p50(sans l'effet) ; médiane de
+    8 séances.
+Les séances (une ligne chacune) sont dans couts-seances.log. Un fichier de séance (final2, moyenne-cockpit, page fin2,
+tour 4) porte après son résultat la trace d'un échec de page-essai.mjs à effacer son profil temporaire : seul le
+premier objet JSON de chaque fichier est lu. Une séance sur dix environ tombe dans un état plus lent
+ou plus rapide de la machine (Moyenne : 8,7 ms au lieu de 15) : c'est ce qui rend l'écart entre deux constructions
+bien plus bruité que l'écart dans une même séance. L'intervalle donné (90 % des médianes de tours ré-échantillonnés)
+dit ce que le nombre de tours permet de séparer.
+
+== 1. Construction contre construction, 0.3.10 contre 0.3.11 corrigé
+
+Page finale (fin2.html), 16 tours :
+Fine cockpit : 16 tours ; image 0.3.10 14.3 ms, 0.3.11 corrigé 14.4 ms
+   tout allumé, construction contre construction              +0.45 ms  (90 % des médianes ré-échantillonnées entre +0.20 et +1.60 ; tours de -0.6 à +6.5)
+   tout coupé, construction contre construction (coût fixe)   -0.35 ms  (90 % des médianes ré-échantillonnées entre -0.75 et +0.30 ; tours de -1.6 à +5.0)
+   effets, même séance (tout allumé − tout coupé)             +0.90 ms  (90 % des médianes ré-échantillonnées entre +0.80 et +1.00 ; tours de +0.2 à +1.4)
+   témoin 0.3.10 (deux variantes sans effet)                  -0.05 ms  (90 % des médianes ré-échantillonnées entre -0.15 et +0.10 ; tours de -1.3 à +0.3)
+Fine poursuite : 16 tours ; image 0.3.10 14.9 ms, 0.3.11 corrigé 14.9 ms
+   tout allumé, construction contre construction              +0.40 ms  (90 % des médianes ré-échantillonnées entre -0.90 et +1.15 ; tours de -2.2 à +2.7)
+   tout coupé, construction contre construction (coût fixe)   -1.50 ms  (90 % des médianes ré-échantillonnées entre -1.85 et +0.45 ; tours de -3.1 à +2.2)
+   effets, même séance (tout allumé − tout coupé)             +0.85 ms  (90 % des médianes ré-échantillonnées entre +0.65 et +1.00 ; tours de +0.3 à +1.7)
+   témoin 0.3.10 (deux variantes sans effet)                  +0.05 ms  (90 % des médianes ré-échantillonnées entre -0.15 et +0.15 ; tours de -1.0 à +0.4)
+Moyenne cockpit : 16 tours ; image 0.3.10 13.9 ms, 0.3.11 corrigé 15.0 ms
+   tout allumé, construction contre construction              +0.65 ms  (90 % des médianes ré-échantillonnées entre -0.45 et +1.95 ; tours de -4.8 à +3.1)
+   tout coupé, construction contre construction (coût fixe)   +0.00 ms  (90 % des médianes ré-échantillonnées entre -0.60 et +1.30 ; tours de -5.3 à +2.8)
+   effets, même séance (tout allumé − tout coupé)             +0.50 ms  (90 % des médianes ré-échantillonnées entre +0.45 et +0.75 ; tours de -0.3 à +1.4)
+   témoin 0.3.10 (deux variantes sans effet)                  +0.10 ms  (90 % des médianes ré-échantillonnées entre +0.00 et +0.25 ; tours de -0.7 à +1.0)
+Légère cockpit : 16 tours ; image 0.3.10 7.3 ms, 0.3.11 corrigé 7.9 ms
+   tout allumé, construction contre construction              +0.30 ms  (90 % des médianes ré-échantillonnées entre -0.75 et +1.65 ; tours de -1.6 à +2.7)
+   tout coupé, construction contre construction (coût fixe)   +0.45 ms  (90 % des médianes ré-échantillonnées entre -0.30 et +1.15 ; tours de -2.0 à +2.5)
+   effets, même séance (tout allumé − tout coupé)             +0.20 ms  (90 % des médianes ré-échantillonnées entre +0.20 et +0.30 ; tours de -0.1 à +0.7)
+   témoin 0.3.10 (deux variantes sans effet)                  +0.00 ms  (90 % des médianes ré-échantillonnées entre -0.05 et +0.20 ; tours de -0.3 à +0.9)
+
+Réunis avec les 8 tours de v1n (mêmes images dans ces scènes, voir l'en-tête), 24 tours :
+Fine cockpit : 24 tours ; image 0.3.10 14.2 ms, 0.3.11 corrigé 14.4 ms
+   tout allumé, construction contre construction              +0.40 ms  (90 % des médianes ré-échantillonnées entre +0.05 et +1.35 ; tours de -4.7 à +6.5)
+   tout coupé, construction contre construction (coût fixe)   -0.50 ms  (90 % des médianes ré-échantillonnées entre -0.75 et +0.10 ; tours de -4.8 à +5.0)
+   effets, même séance (tout allumé − tout coupé)             +0.90 ms  (90 % des médianes ré-échantillonnées entre +0.75 et +1.00 ; tours de +0.2 à +1.4)
+   témoin 0.3.10 (deux variantes sans effet)                  +0.00 ms  (90 % des médianes ré-échantillonnées entre -0.10 et +0.10 ; tours de -1.3 à +0.5)
+Fine poursuite : 24 tours ; image 0.3.10 14.9 ms, 0.3.11 corrigé 15.1 ms
+   tout allumé, construction contre construction              +0.25 ms  (90 % des médianes ré-échantillonnées entre -0.85 et +0.80 ; tours de -2.5 à +2.7)
+   tout coupé, construction contre construction (coût fixe)   -0.60 ms  (90 % des médianes ré-échantillonnées entre -1.60 et +0.00 ; tours de -3.1 à +2.2)
+   effets, même séance (tout allumé − tout coupé)             +0.80 ms  (90 % des médianes ré-échantillonnées entre +0.65 et +1.00 ; tours de +0.0 à +1.7)
+   témoin 0.3.10 (deux variantes sans effet)                  +0.10 ms  (90 % des médianes ré-échantillonnées entre -0.05 et +0.25 ; tours de -1.0 à +0.7)
+Moyenne cockpit : 24 tours ; image 0.3.10 13.6 ms, 0.3.11 corrigé 15.1 ms
+   tout allumé, construction contre construction              +1.05 ms  (90 % des médianes ré-échantillonnées entre -0.20 et +2.00 ; tours de -5.2 à +3.1)
+   tout coupé, construction contre construction (coût fixe)   +0.55 ms  (90 % des médianes ré-échantillonnées entre -0.45 et +1.15 ; tours de -6.4 à +3.1)
+   effets, même séance (tout allumé − tout coupé)             +0.60 ms  (90 % des médianes ré-échantillonnées entre +0.50 et +0.70 ; tours de -0.4 à +1.4)
+   témoin 0.3.10 (deux variantes sans effet)                  +0.05 ms  (90 % des médianes ré-échantillonnées entre -0.25 et +0.20 ; tours de -0.7 à +1.0)
+Légère cockpit : 24 tours ; image 0.3.10 7.3 ms, 0.3.11 corrigé 8.1 ms
+   tout allumé, construction contre construction              +0.80 ms  (90 % des médianes ré-échantillonnées entre -0.15 et +1.60 ; tours de -1.6 à +2.7)
+   tout coupé, construction contre construction (coût fixe)   +0.40 ms  (90 % des médianes ré-échantillonnées entre -0.15 et +0.90 ; tours de -2.0 à +2.5)
+   effets, même séance (tout allumé − tout coupé)             +0.20 ms  (90 % des médianes ré-échantillonnées entre +0.15 et +0.30 ; tours de -0.1 à +1.0)
+   témoin 0.3.10 (deux variantes sans effet)                  -0.10 ms  (90 % des médianes ré-échantillonnées entre -0.10 et +0.00 ; tours de -0.8 à +0.9)
+
+Détail : 8 tours à 01 h (a2 contre v1n, avec b02 et v1 dans les mêmes tours ; alternance par bloc au hasard) :
+
+--- a2 contre v0 (b02.html, 0.3.11 tel que relu)
+fine-cockpit : 8 tours ; image avant 13.9 ms (de 13.5 à 18.8), après 14.4 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +0.65 ms  (+0.7, +0.3, +0.0, +0.6, +0.7, +0.8, -3.3, +1.0)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        -0.40 ms  (-0.3, -0.7, -1.3, +0.2, +0.4, -0.5, -4.2, +0.7)
+      contrôle de rang (ancienne)       A0−A1      +0.05 ms  (-0.2, +0.0, +0.1, +0.3, +0.5, -0.5, -0.1, +0.5)
+      même séance, brut                 B0−B1      +0.80 ms  (+0.8, +1.0, +1.4, +0.7, +0.8, +0.8, +0.8, +0.8)
+      même séance, corrigé du rang                 +0.95 ms  (+1.0, +1.0, +1.3, +0.4, +0.3, +1.3, +0.9, +0.3)
+fine-poursuite : 8 tours ; image avant 15.4 ms (de 13.7 à 19.6), après 14.7 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        -0.35 ms  (+0.1, -0.5, -1.2, +0.4, +0.2, -4.3, -0.2, -3.0)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        -1.15 ms  (-0.4, -1.3, -2.2, -1.0, -0.9, -5.4, -1.0, -3.5)
+      contrôle de rang (ancienne)       A0−A1      +0.30 ms  (+0.3, +0.7, +0.5, -0.1, -0.6, +0.5, +0.2, +0.3)
+      même séance, brut                 B0−B1      +1.15 ms  (+0.8, +1.5, +1.5, +1.3, +0.5, +1.6, +1.0, +0.8)
+      même séance, corrigé du rang                 +0.90 ms  (+0.5, +0.8, +1.0, +1.4, +1.1, +1.1, +0.8, +0.5)
+legere-cockpit : 8 tours ; image avant 7.2 ms (de 6.1 à 9.1), après 8.5 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +0.80 ms  (+0.6, -0.2, +0.9, +1.8, +0.7, +0.7, +3.4, +2.2)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        +0.75 ms  (+0.5, -0.7, +0.9, +0.7, +0.0, +0.8, +2.8, +1.9)
+      contrôle de rang (ancienne)       A0−A1      -0.30 ms  (-0.1, -0.3, -0.6, -0.8, -0.2, -0.3, -0.4, -0.1)
+      même séance, brut                 B0−B1      +0.20 ms  (+0.0, +0.2, -0.6, +0.3, +0.5, -0.4, +0.2, +0.2)
+      même séance, corrigé du rang                 +0.40 ms  (+0.1, +0.5, +0.0, +1.1, +0.7, -0.1, +0.6, +0.3)
+moyenne-cockpit : 8 tours ; image avant 13.3 ms (de 11.6 à 16.0), après 14.9 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +0.55 ms  (+2.7, +0.3, -1.2, +0.6, +0.5, +1.6, -3.0, +1.9)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        -0.35 ms  (+2.0, -0.3, -2.9, -0.4, -0.9, +0.0, -3.5, -0.3)
+      contrôle de rang (ancienne)       A0−A1      -0.30 ms  (-0.3, +0.5, -0.3, +0.0, -0.5, -0.5, +0.2, -0.6)
+      même séance, brut                 B0−B1      +1.05 ms  (+0.4, +1.1, +1.4, +1.0, +0.9, +1.1, +0.7, +1.6)
+      même séance, corrigé du rang                 +1.20 ms  (+0.7, +0.6, +1.7, +1.0, +1.4, +1.6, +0.5, +2.2)
+
+--- a2 contre v1 (shader allégé, bloc PCSS compilé)
+fine-cockpit : 8 tours ; image avant 13.9 ms (de 13.5 à 18.8), après 14.4 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +0.35 ms  (+1.0, +0.1, -0.5, +0.6, +0.6, +0.7, -3.2, -3.1)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        -0.50 ms  (+0.0, -0.7, -1.3, +0.6, +0.5, -0.3, -3.9, -3.3)
+      contrôle de rang (ancienne)       A0−A1      +0.05 ms  (-0.2, +0.0, +0.1, +0.3, +0.5, -0.5, -0.1, +0.5)
+      même séance, brut                 B0−B1      +0.65 ms  (+0.8, +0.8, +0.9, +0.3, +0.6, +0.5, +0.6, +0.7)
+      même séance, corrigé du rang                 +0.75 ms  (+1.0, +0.8, +0.8, +0.0, +0.1, +1.0, +0.7, +0.2)
+fine-poursuite : 8 tours ; image avant 15.4 ms (de 13.7 à 19.6), après 15.3 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +0.10 ms  (+0.8, +0.8, -0.7, -0.6, +2.4, -4.3, +3.8, -3.5)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        -0.15 ms  (+0.6, +0.3, -1.0, -0.6, +0.7, -4.5, +2.6, -3.8)
+      contrôle de rang (ancienne)       A0−A1      +0.30 ms  (+0.3, +0.7, +0.5, -0.1, -0.6, +0.5, +0.2, +0.3)
+      même séance, brut                 B0−B1      +0.75 ms  (+0.5, +1.2, +0.8, -0.1, +1.1, +0.7, +1.4, +0.6)
+      même séance, corrigé du rang                 +0.30 ms  (+0.2, +0.5, +0.3, +0.0, +1.7, +0.2, +1.2, +0.3)
+legere-cockpit : 8 tours ; image avant 7.2 ms (de 6.1 à 9.1), après 8.8 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +1.35 ms  (+2.4, +1.2, +2.3, +1.8, -1.4, +0.0, +1.5, +1.2)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        +0.95 ms  (+1.8, +1.0, +1.4, +0.5, -1.9, -0.3, +0.9, +1.3)
+      contrôle de rang (ancienne)       A0−A1      -0.30 ms  (-0.1, -0.3, -0.6, -0.8, -0.2, -0.3, -0.4, -0.1)
+      même séance, brut                 B0−B1      +0.25 ms  (+0.5, -0.1, +0.3, +0.5, +0.3, +0.0, +0.2, -0.2)
+      même séance, corrigé du rang                 +0.55 ms  (+0.6, +0.2, +0.9, +1.3, +0.5, +0.3, +0.6, -0.1)
+moyenne-cockpit : 8 tours ; image avant 13.3 ms (de 11.6 à 16.0), après 15.1 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +1.65 ms  (+2.9, -0.3, -1.8, +1.5, +1.8, +1.5, +4.1, +2.5)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        +0.55 ms  (+1.3, -0.3, -1.6, +0.4, +0.7, +0.0, +3.0, +1.1)
+      contrôle de rang (ancienne)       A0−A1      -0.30 ms  (-0.3, +0.5, -0.3, +0.0, -0.5, -0.5, +0.2, -0.6)
+      même séance, brut                 B0−B1      +0.90 ms  (+1.3, +0.5, -0.5, +1.1, +0.6, +1.0, +1.3, +0.8)
+      même séance, corrigé du rang                 +1.10 ms  (+1.6, +0.0, -0.2, +1.1, +1.1, +1.5, +1.1, +1.4)
+
+--- a2 contre v1n (shader allégé, sans bloc PCSS)
+fine-cockpit : 8 tours ; image avant 13.9 ms (de 13.5 à 18.8), après 14.5 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        -0.05 ms  (+2.1, +0.1, -0.2, -0.2, +1.1, +1.3, -3.5, -4.7)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        -0.55 ms  (+0.9, -0.6, -1.2, -0.5, +0.5, +0.1, -4.7, -4.8)
+      contrôle de rang (ancienne)       A0−A1      +0.05 ms  (-0.2, +0.0, +0.1, +0.3, +0.5, -0.5, -0.1, +0.5)
+      même séance, brut                 B0−B1      +0.85 ms  (+1.0, +0.7, +1.1, +0.6, +1.1, +0.7, +1.1, +0.6)
+      même séance, corrigé du rang                 +0.85 ms  (+1.2, +0.7, +1.0, +0.3, +0.6, +1.2, +1.2, +0.1)
+fine-poursuite : 8 tours ; image avant 15.4 ms (de 13.7 à 19.6), après 15.6 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +0.10 ms  (+0.8, -0.3, -1.2, +0.0, +0.8, -2.5, +1.9, +0.2)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        -0.35 ms  (+0.1, -0.4, -2.1, -0.8, -0.3, -3.0, +2.1, -0.1)
+      contrôle de rang (ancienne)       A0−A1      +0.30 ms  (+0.3, +0.7, +0.5, -0.1, -0.6, +0.5, +0.2, +0.3)
+      même séance, brut                 B0−B1      +0.75 ms  (+1.0, +0.8, +1.4, +0.7, +0.5, +1.0, +0.0, +0.6)
+      même séance, corrigé du rang                 +0.60 ms  (+0.7, +0.1, +0.9, +0.8, +1.1, +0.5, -0.2, +0.3)
+legere-cockpit : 8 tours ; image avant 7.2 ms (de 6.1 à 9.1), après 8.6 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +1.50 ms  (+2.6, +1.7, -0.2, +1.5, -0.7, +0.6, +2.3, +1.5)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        +0.30 ms  (+2.3, +0.4, -0.7, -0.2, -0.8, +0.2, +1.8, +0.9)
+      contrôle de rang (ancienne)       A0−A1      -0.30 ms  (-0.1, -0.3, -0.6, -0.8, -0.2, -0.3, -0.4, -0.1)
+      même séance, brut                 B0−B1      +0.15 ms  (+0.2, +1.0, -0.1, +0.9, -0.1, +0.1, +0.1, +0.5)
+      même séance, corrigé du rang                 +0.50 ms  (+0.3, +1.3, +0.5, +1.7, +0.1, +0.4, +0.5, +0.6)
+moyenne-cockpit : 8 tours ; image avant 13.3 ms (de 11.6 à 16.0), après 15.2 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +1.80 ms  (+3.0, +0.8, -1.1, +1.6, +2.0, -5.2, +2.9, +2.0)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        +0.85 ms  (+3.1, +0.3, -2.1, +0.9, +0.8, -6.4, +2.6, +1.2)
+      contrôle de rang (ancienne)       A0−A1      -0.30 ms  (-0.3, +0.5, -0.3, +0.0, -0.5, -0.5, +0.2, -0.6)
+      même séance, brut                 B0−B1      +0.70 ms  (-0.4, +1.0, +0.7, +0.7, +0.7, +0.7, +0.5, +0.2)
+      même séance, corrigé du rang                 +0.75 ms  (-0.1, +0.5, +1.0, +0.7, +1.2, +1.2, +0.3, +0.8)
+
+--- 16 tours, a2 contre fin2 (page finale) :
+
+fine-cockpit : 16 tours ; image avant 14.3 ms (de 12.7 à 18.5), après 14.4 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +0.45 ms  (+1.6, +1.4, -0.6, +0.4, +0.4, +0.0, +2.0, +5.2, +0.2, -0.2, -0.5, +6.5, +2.1, +0.2, +0.5, +1.6)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        -0.35 ms  (+0.1, +0.5, -1.6, -0.1, -0.8, -0.7, +0.6, +4.2, -0.5, -0.8, -0.9, +5.0, +1.0, -0.9, -0.2, -0.6)
+      contrôle de rang (ancienne)       A0−A1      -0.05 ms  (-0.5, -0.2, +0.0, +0.3, -1.0, +0.2, -0.1, +0.0, +0.2, +0.1, +0.3, -0.1, -0.1, -0.3, +0.1, -1.3)
+      même séance, brut                 B0−B1      +0.90 ms  (+1.0, +0.7, +1.0, +0.8, +0.2, +0.9, +1.3, +1.0, +0.9, +0.7, +0.7, +1.4, +1.0, +0.8, +0.8, +0.9)
+      même séance, corrigé du rang                 +1.00 ms  (+1.5, +0.9, +1.0, +0.5, +1.2, +0.7, +1.4, +1.0, +0.7, +0.6, +0.4, +1.5, +1.1, +1.1, +0.7, +2.2)
+fine-poursuite : 16 tours ; image avant 14.9 ms (de 13.3 à 16.7), après 14.9 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +0.40 ms  (+0.3, +2.7, +1.6, -0.9, +0.5, -0.8, +0.9, +1.4, +1.4, -1.4, -2.2, +0.8, +2.1, -0.9, -1.1, -1.7)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        -1.50 ms  (-1.5, +2.2, +1.1, -2.3, -1.5, -2.0, +0.4, +0.9, -0.3, -2.9, -3.1, +0.5, +1.5, -1.7, -1.5, -2.1)
+      contrôle de rang (ancienne)       A0−A1      +0.05 ms  (-0.8, +0.1, -0.1, +0.3, -1.0, -0.5, -0.2, +0.4, +0.0, -0.2, +0.1, +0.2, +0.1, +0.2, +0.0, +0.4)
+      même séance, brut                 B0−B1      +0.85 ms  (+1.0, +0.6, +0.4, +1.7, +1.0, +0.7, +0.3, +0.9, +1.7, +1.3, +1.0, +0.5, +0.7, +1.0, +0.4, +0.8)
+      même séance, corrigé du rang                 +0.70 ms  (+1.8, +0.5, +0.5, +1.4, +2.0, +1.2, +0.5, +0.5, +1.7, +1.5, +0.9, +0.3, +0.6, +0.8, +0.4, +0.4)
+legere-cockpit : 16 tours ; image avant 7.3 ms (de 5.0 à 9.4), après 7.9 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +0.30 ms  (-0.7, +1.3, -1.5, +0.4, -0.8, +2.4, -1.2, +2.0, +2.7, -1.1, +2.0, +1.0, -0.1, -1.6, +2.4, +0.2)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        +0.45 ms  (+0.0, +1.1, -1.8, +0.4, -0.9, +2.1, -1.7, +1.8, +2.5, -0.5, +1.2, +0.5, -0.1, -2.0, +2.2, +0.6)
+      contrôle de rang (ancienne)       A0−A1      +0.00 ms  (+0.9, -0.1, +0.0, +0.3, -0.1, +0.1, -0.1, +0.0, +0.0, +0.5, -0.1, -0.3, +0.3, +0.1, +0.0, +0.3)
+      même séance, brut                 B0−B1      +0.20 ms  (+0.2, +0.1, +0.3, +0.3, +0.0, +0.4, +0.4, +0.2, +0.2, -0.1, +0.7, +0.2, +0.3, +0.5, +0.2, -0.1)
+      même séance, corrigé du rang                 +0.20 ms  (-0.7, +0.2, +0.3, +0.0, +0.1, +0.3, +0.5, +0.2, +0.2, -0.6, +0.8, +0.5, +0.0, +0.4, +0.2, -0.4)
+moyenne-cockpit : 16 tours ; image avant 13.9 ms (de 12.1 à 16.1), après 15.0 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +0.65 ms  (+2.5, -4.8, -0.4, -0.9, -0.2, -1.1, +2.4, +1.3, +0.6, +3.1, +1.5, -2.7, +2.9, +3.0, -0.5, +0.7)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        +0.00 ms  (+1.9, -5.3, -1.0, -0.4, -0.7, -0.8, +1.5, +0.1, +1.1, +1.8, +1.1, -2.9, +1.6, +2.8, -0.5, -0.1)
+      contrôle de rang (ancienne)       A0−A1      +0.10 ms  (+0.1, +0.0, -0.2, +1.0, +0.4, +0.2, +0.2, -0.7, +0.4, -0.3, -0.7, +0.3, +0.1, +0.5, +0.1, +0.0)
+      même séance, brut                 B0−B1      +0.50 ms  (+0.7, +0.5, +0.4, +0.5, +0.9, -0.1, +1.1, +0.5, -0.1, +1.0, -0.3, +0.5, +1.4, +0.7, +0.1, +0.8)
+      même séance, corrigé du rang                 +0.50 ms  (+0.6, +0.5, +0.6, -0.5, +0.5, -0.3, +0.9, +1.2, -0.5, +1.3, +0.4, +0.2, +1.3, +0.2, +0.0, +0.8)
+
+== 1 bis. Témoin de construction : 0.3.10, 0.3.11 sans l'option et 0.3.11 corrigé
+
+Pourquoi : d'une construction à l'autre (§ 1), les intervalles sont larges, et on ne savait pas si un coût fixe de
+l'option se cachait dans le bruit. Témoin : fin2-sans.html, la page finale sans ombresPhoto dans ses options de
+création (FERRO 0.3.11 sans l'option : mêmes shaders et mêmes appels GL que 0.3.10, d'après les empreintes ; le jeu
+prépare quand même ses ombres, FERRO les ignore). Trois pages par tour : a = a2.html (0.3.10), sans = fin2-sans.html,
+fin = fin2.html. Moyenne et Légère cockpit ; variantes 0 (tout allumé) et 1 (tout coupé), ordre au hasard dans chaque
+bloc (outils/modele3.js).
+
+Premier passage (temoin, 20 tours) : ordre des pages ABC puis CBA, comme outils/seances.py. La page « sans » y restait
+au milieu du bloc ; or en Légère, la troisième séance d'un bloc était plus lente que la première (de 0,6 à 1 ms selon
+les tours) : les écarts avec « sans » mêlaient la place et la page. Deuxième passage (temoin2, 18 tours) : ordre en
+carré latin (outils/seances_latin.py), chaque page autant de fois à chaque place.
+
+Ce qu'on en tire :
+- le témoin vaut 0 : sans l'option, 0.3.11 coûte ce que coûte 0.3.10 (Légère −0,05 ms, Moyenne +0,40, intervalles
+  qui contiennent 0 ; réunion des passages plus bas) ;
+- en Fine cockpit, l'option effets coupés ne coûte rien de mesurable (§ 1 : −0,35 [−0,75 ; +0,30], 16 tours) ;
+- en Légère, l'option coûte probablement un fixe de 0,3 à 0,65 ms selon le contraste (avec − sans +0,65 [+0,20 ; +1,00]
+  sur 44 tours ; avec − 0.3.10 +0,35 [0,00 ; +0,80] sur 84 tours), en plus du contact (+0,2 dans une même séance) :
+  en tout +0,45 ms [+0,20 ; +0,90] contre 0.3.10, contact allumé ;
+- en Moyenne, il ne se sépare pas du bruit (avec − sans +0,25 [−0,10 ; +0,85]) ;
+- le temps processeur de rendu.draw est le même sur les trois pages (diagnostic plus bas) : ce qui reste se paie côté
+  GPU (processus GPU de Chrome ou exécution du shader). Retirer du shader le code du soleil ou celui du contact ne l'a
+  pas isolé (diagnostic plus bas) : la cause n'est pas trouvée, rien n'est corrigé de plus ;
+- en Moyenne, le coût des quatre effets dans une même séance change d'une campagne à l'autre : +0,50 (final2),
+  +0,85 (temoin), +1,10 ms (temoin2), selon l'état de la machine.
+
+Carré latin (outils/seances_latin.py), 18 tours :
+Moyenne cockpit : 18 tours ; image tout allumé : 0.3.10 13.9 ms, sans l'option 13.6 ms, avec l'option 16.0 ms
+   sans l'option − 0.3.10 (témoin : même travail du GPU)      -0.05 ms  [-0.50 ; +1.10] ; tours de -3.6 à +1.7
+   avec − sans l'option, tout coupé (coût fixe)               +0.50 ms  [+0.10 ; +0.90] ; tours de -0.9 à +3.8
+   avec l'option − 0.3.10, tout coupé                         +0.75 ms  [+0.25 ; +1.60] ; tours de -2.7 à +3.4
+   avec l'option − 0.3.10, tout allumé                        +2.05 ms  [+1.30 ; +3.00] ; tours de -1.1 à +5.1
+   les quatre effets, même séance (avec l'option)             +1.10 ms  [+0.95 ; +1.30]
+   témoin, même séance (sans l'option : rien ne change)       +0.00 ms  [-0.25 ; +0.20]
+   place de la séance dans le bloc (écart à la moyenne du tour, tout coupé) : 1re +0.23, 2e -0.03, 3e -0.28 ms
+Légère cockpit : 18 tours ; image tout allumé : 0.3.10 8.2 ms, sans l'option 7.7 ms, avec l'option 9.2 ms
+   sans l'option − 0.3.10 (témoin : même travail du GPU)      +0.00 ms  [-0.70 ; +0.70] ; tours de -2.5 à +2.0
+   avec − sans l'option, tout coupé (coût fixe)               +0.70 ms  [-0.25 ; +2.00] ; tours de -2.1 à +2.8
+   avec l'option − 0.3.10, tout coupé                         +0.75 ms  [+0.30 ; +1.15] ; tours de -1.6 à +2.5
+   avec l'option − 0.3.10, tout allumé                        +0.80 ms  [+0.30 ; +1.00] ; tours de -1.5 à +2.9
+   les quatre effets, même séance (avec l'option)             +0.20 ms  [+0.10 ; +0.25]
+   témoin, même séance (sans l'option : rien ne change)       +0.00 ms  [-0.20 ; +0.00]
+   place de la séance dans le bloc (écart à la moyenne du tour, tout coupé) : 1re -0.17, 2e -0.40, 3e +0.10 ms
+
+Premier passage, ordre ABC puis CBA (outils/seances.py), 20 tours ; « sans » toujours au milieu du bloc :
+Moyenne cockpit : 20 tours ; image tout allumé : 0.3.10 14.1 ms, sans l'option 15.1 ms, avec l'option 15.4 ms
+   sans l'option − 0.3.10 (témoin : même travail du GPU)      +0.65 ms  [-0.40 ; +1.40] ; tours de -8.6 à +9.0
+   avec − sans l'option, tout coupé (coût fixe)               -0.05 ms  [-1.00 ; +0.80] ; tours de -3.6 à +3.8
+   avec l'option − 0.3.10, tout coupé                         +0.70 ms  [-0.50 ; +1.70] ; tours de -5.0 à +7.1
+   avec l'option − 0.3.10, tout allumé                        +1.35 ms  [+0.45 ; +2.20] ; tours de -3.8 à +8.1
+   les quatre effets, même séance (avec l'option)             +0.85 ms  [+0.70 ; +1.20]
+   témoin, même séance (sans l'option : rien ne change)       +0.05 ms  [-0.20 ; +0.20]
+   place de la séance dans le bloc (écart à la moyenne du tour, tout coupé) : 1re -0.20, 2e +0.45, 3e -0.10 ms
+Légère cockpit : 20 tours ; image tout allumé : 0.3.10 8.3 ms, sans l'option 7.3 ms, avec l'option 8.2 ms
+   sans l'option − 0.3.10 (témoin : même travail du GPU)      -0.40 ms  [-0.90 ; +0.30] ; tours de -3.4 à +3.3
+   avec − sans l'option, tout coupé (coût fixe)               +0.70 ms  [+0.20 ; +1.00] ; tours de -2.7 à +3.2
+   avec l'option − 0.3.10, tout coupé                         -0.15 ms  [-0.50 ; +0.90] ; tours de -4.2 à +3.5
+   avec l'option − 0.3.10, tout allumé                        -0.05 ms  [-0.50 ; +1.50] ; tours de -3.9 à +4.4
+   les quatre effets, même séance (avec l'option)             +0.20 ms  [+0.10 ; +0.30]
+   témoin, même séance (sans l'option : rien ne change)       +0.05 ms  [-0.10 ; +0.10]
+   place de la séance dans le bloc (écart à la moyenne du tour, tout coupé) : 1re -0.30, 2e -0.32, 3e +0.58 ms
+
+Réunion des passages (final2 : § 1 ; temoin, temoin2 : plus haut ; diag, diag2 : plus bas), contraste par contraste :
+Moyenne cockpit :
+   témoin, sans l'option − 0.3.10, tout coupé     +0.40 ms [-0.35 ; +1.10], 44 tours, 23 positifs (temoin +0.65, temoin2 -0.05, diag -0.50)
+   coût fixe, avec − sans l'option, tout coupé    +0.25 ms [-0.10 ; +0.85], 44 tours, 24 positifs (temoin -0.05, temoin2 +0.50, diag +0.75)
+   avec l'option − 0.3.10, tout coupé             +0.65 ms [+0.00 ; +1.00], 60 tours, 35 positifs (final2 +0.00, temoin +0.70, temoin2 +0.75, diag +0.10)
+   avec l'option − 0.3.10, tout allumé            +1.40 ms [+0.65 ; +1.80], 60 tours, 45 positifs (final2 +0.65, temoin +1.35, temoin2 +2.05, diag +0.20)
+Légère cockpit :
+   témoin, sans l'option − 0.3.10, tout coupé     -0.05 ms [-0.50 ; +0.30], 44 tours, 20 positifs (temoin -0.40, temoin2 +0.00, diag +0.70)
+   coût fixe, avec − sans l'option, tout coupé    +0.65 ms [+0.20 ; +1.00], 44 tours, 29 positifs (temoin +0.70, temoin2 +0.70, diag -0.25)
+   avec l'option − 0.3.10, tout coupé             +0.35 ms [+0.00 ; +0.80], 84 tours, 48 positifs (final2 +0.45, temoin -0.15, temoin2 +0.75, diag +0.65, diag2 +0.20)
+   avec l'option − 0.3.10, tout allumé            +0.45 ms [+0.20 ; +0.90], 84 tours, 51 positifs (final2 +0.30, temoin -0.05, temoin2 +0.80, diag +0.65, diag2 +0.60)
+
+Temps processeur de rendu.draw, sans attendre le GPU (outils/modele4.js, carré latin, 6 tours ; médianes) :
+   Moyenne cockpit, tout allumé : 0.3.10 1.20 ms (synchronisé 14.25) ; sans l'option 1.20 ms (synchronisé 14.40) ; avec l'option 1.15 ms (synchronisé 15.25)
+      avec l'option − 0.3.10, processeur : -0.05 ms ; témoin sans − 0.3.10 en temps synchronisé sur ces 6 tours : -0.50 ms
+   Légère cockpit, tout allumé : 0.3.10 0.80 ms (synchronisé 8.00) ; sans l'option 0.80 ms (synchronisé 9.25) ; avec l'option 0.80 ms (synchronisé 8.80)
+      avec l'option − 0.3.10, processeur : +0.00 ms ; témoin sans − 0.3.10 en temps synchronisé sur ces 6 tours : +0.70 ms
+
+Part du shader (Légère cockpit, carré latin à quatre pages, 24 tours) : fin2.html modifiée dans le dossier de travail, une
+   ligne de son JavaScript ; « contact » : le shader appelle shadow() au lieu de photoSoleil(), le code du soleil
+   (tuile, carte lointaine, pénombre) et ses échantillonneurs disparaissent à la compilation ; « soleil » : contactOcc
+   vaut 0, le code du contact disparaît. En Légère, sans ombres du soleil, photoSoleil rendait déjà shadow() d'entrée.
+   l'option entière − 0.3.10, tout coupé        +0.20 ms [-0.30 ; +1.30], 13 positifs sur 24
+   l'option entière − 0.3.10, tout allumé       +0.60 ms [-0.10 ; +1.35], 15 positifs sur 24
+   contact seul − 0.3.10, tout coupé            +0.60 ms [+0.30 ; +0.90], 17 positifs sur 24
+   contact seul − 0.3.10, tout allumé           +1.05 ms [+0.35 ; +1.30], 20 positifs sur 24
+   code du soleil seul − 0.3.10, tout coupé     +0.15 ms [-0.35 ; +0.95], 12 positifs sur 24
+   code du soleil seul − 0.3.10, tout allumé    +0.30 ms [-0.05 ; +0.90], 13 positifs sur 24
+
+== 2. Effet par effet, même séance, 8 tours (v0 = 0.3.11 tel que relu, v1n = corrigé ; fin2 fait le même travail
+que v1n dans ces scènes, voir l'en-tête). En Légère, la tuile, la carte lointaine et la pénombre ne servent pas :
+leurs lignes y mesurent le bruit.
+
+fine-cockpit v0 : 8 tours, image 14.2 ms (13.8 à 14.7), créations [0, 0, 0, 0, 0, 0, 0, 0]
+   contact          +0.65 ms  [+0.50 ; +0.80]  (+1.1, +0.6, +0.5, +0.3, +0.8, +0.7, +0.5, +0.8)
+   tuile            +0.40 ms  [+0.10 ; +0.45]  (+0.5, +0.4, +0.1, +0.1, +0.4, +0.5, +0.1, +0.4)
+   carte lointaine  -0.05 ms  [-0.25 ; +0.00]  (-0.3, +0.0, +0.0, -0.3, -0.2, +0.0, -0.1, +0.1)
+   pénombre         -0.05 ms  [-0.10 ; +0.25]  (+0.6, +0.1, +0.0, -0.4, -0.1, +0.4, -0.1, -0.1)
+   les quatre       +0.90 ms  [+0.75 ; +1.15]  (+1.5, +0.8, +0.7, +0.7, +1.0, +1.1, +0.8, +1.2)
+   témoin A/A       +0.10 ms  [-0.05 ; +0.20]  (+0.3, +0.0, +0.2, -0.3, +0.1, +0.1, -0.1, +0.2)
+fine-cockpit v1n : 8 tours, image 14.4 ms (13.8 à 14.9), créations [0, 0, 0, 0, 0, 0, 0, 0]
+   contact          +0.45 ms  [+0.20 ; +0.75]  (+0.2, +0.5, +0.4, +1.0, +0.6, +0.1, +0.2, +0.9)
+   tuile            +0.30 ms  [+0.05 ; +0.65]  (+0.2, +0.5, +0.4, +0.8, +0.2, -0.1, -0.5, +1.0)
+   carte lointaine  +0.00 ms  [-0.30 ; +0.25]  (-0.2, -0.5, -0.1, +1.1, +0.1, -0.4, +0.3, +0.2)
+   pénombre         +0.10 ms  [-0.10 ; +0.15]  (+0.1, +0.1, +0.0, +0.2, +0.1, -1.4, -0.2, +0.3)
+   les quatre       +0.85 ms  [+0.60 ; +0.95]  (+1.0, +0.8, +0.9, +0.6, +0.9, +0.6, +0.5, +1.1)
+   témoin A/A       -0.10 ms  [-0.40 ; +0.15]  (-0.2, -0.3, +0.0, +0.4, +0.1, -0.5, -0.6, +0.2)
+fine-poursuite v0 : 8 tours, image 15.2 ms (14.3 à 15.5), créations [0, 0, 0, 0, 0, 0, 0, 0]
+   contact          +0.40 ms  [+0.30 ; +1.10]  (+0.4, +1.2, +1.0, +0.4, +0.2, +1.3, +0.3, +0.3)
+   tuile            +0.30 ms  [+0.05 ; +0.40]  (+0.2, +0.7, +0.3, +0.4, -0.1, +0.4, -0.1, +0.3)
+   carte lointaine  +0.10 ms  [-0.05 ; +0.25]  (+0.0, +0.2, +0.0, +0.4, +0.3, -0.1, -0.5, +0.2)
+   pénombre         -0.05 ms  [-0.30 ; +0.35]  (-0.1, +0.4, +0.3, +0.0, -0.5, -0.1, +0.4, -0.5)
+   les quatre       +1.15 ms  [+0.90 ; +1.35]  (+1.3, +2.0, +1.4, +1.2, +0.8, +1.1, +1.0, +0.7)
+   témoin A/A       +0.05 ms  [-0.45 ; +0.65]  (-0.6, +1.1, +0.1, +0.0, -0.3, +0.3, +1.0, -1.2)
+fine-poursuite v1n : 8 tours, image 15.3 ms (13.7 à 16.6), créations [0, 0, 0, 0, 0, 0, 0, 0]
+   contact          +1.05 ms  [+0.20 ; +1.20]  (+0.5, +1.2, +0.9, -0.1, +1.6, -0.6, +1.2, +1.2)
+   tuile            +0.55 ms  [-0.05 ; +1.00]  (+0.4, +0.0, +0.7, -0.6, +3.1, -0.1, +1.0, +1.0)
+   carte lointaine  +0.30 ms  [-0.20 ; +0.45]  (+0.3, +0.6, +0.3, -0.4, +1.1, -0.9, +0.3, +0.0)
+   pénombre         +0.45 ms  [-0.20 ; +0.85]  (+0.5, -0.3, +0.5, -0.4, +1.2, +0.4, +1.3, -0.1)
+   les quatre       +0.95 ms  [+0.70 ; +1.15]  (+0.9, +1.0, +1.3, +0.6, +2.0, +0.5, +0.8, +1.0)
+   témoin A/A       +0.00 ms  [-0.25 ; +0.35]  (-0.3, +0.2, +0.5, -0.5, +0.6, -0.2, -0.1, +0.1)
+legere-cockpit v0 : 8 tours, image 7.4 ms (4.9 à 9.4), créations [0, 0, 0, 0, 0, 0, 0, 0]
+   contact          +0.05 ms  [-0.10 ; +0.35]  (-0.4, +0.0, +0.1, -0.1, +0.4, +0.6, +0.3, -0.1)
+   tuile            -0.10 ms  [-0.50 ; +0.20]  (-0.6, -0.2, +0.3, -0.4, +0.4, -0.6, +0.0, +0.1)
+   carte lointaine  +0.10 ms  [-0.25 ; +0.45]  (+0.7, +0.0, -0.2, -0.4, +0.2, +0.6, +0.3, -0.3)
+   pénombre         +0.15 ms  [-0.20 ; +0.45]  (+1.0, +0.2, -0.2, +0.1, +0.3, +0.6, -0.2, -0.2)
+   les quatre       +0.25 ms  [+0.15 ; +0.40]  (+0.6, +0.1, +0.3, +0.2, +0.5, +0.2, +0.3, -0.1)
+   témoin A/A       -0.10 ms  [-0.30 ; +0.15]  (+0.6, +0.0, -0.1, -0.4, +0.3, -0.6, -0.2, -0.1)
+legere-cockpit v1n : 8 tours, image 8.0 ms (5.4 à 9.6), créations [0, 0, 0, 0, 0, 0, 0, 0]
+   contact          +0.30 ms  [+0.20 ; +0.45]  (+0.3, +0.3, -0.2, +0.6, +0.4, +0.5, +0.2, +0.2)
+   tuile            -0.35 ms  [-0.45 ; +0.00]  (-0.5, -0.1, -0.7, +0.1, -0.4, +0.2, -0.4, -0.3)
+   carte lointaine  -0.15 ms  [-0.35 ; +0.10]  (+0.1, -0.5, -0.6, +0.4, -0.2, -0.2, -0.1, +0.1)
+   pénombre         +0.00 ms  [-0.10 ; +0.20]  (-0.7, +0.3, +0.2, -0.2, +0.0, +0.2, +0.0, +0.0)
+   les quatre       +0.35 ms  [+0.10 ; +0.60]  (+0.0, +0.6, -0.2, +0.6, +0.7, +0.2, +0.2, +0.5)
+   témoin A/A       -0.15 ms  [-0.65 ; +0.10]  (-0.7, -0.3, -0.6, +0.3, +0.1, +0.0, +0.1, -0.8)
+moyenne-cockpit v0 : 8 tours, image 14.5 ms (8.7 à 16.4), créations [0, 0, 0, 0, 0, 0, 0, 0]
+   contact          +0.65 ms  [+0.35 ; +1.20]  (+0.3, +0.6, +0.7, +0.4, +1.3, +1.1, +1.3, -0.3)
+   tuile            +0.25 ms  [+0.10 ; +0.85]  (-0.2, +0.3, +0.3, +0.2, +1.4, +0.2, +1.5, +0.0)
+   carte lointaine  +0.15 ms  [-0.20 ; +0.25]  (+0.3, +0.0, +0.1, -1.1, +0.2, +0.2, +0.4, -0.4)
+   pénombre         -0.10 ms  [-0.15 ; +0.50]  (-0.1, -0.1, +0.1, -0.1, +1.3, -0.5, +0.9, -0.2)
+   les quatre       +0.80 ms  [+0.55 ; +1.05]  (+0.5, +0.8, +1.0, +0.6, +1.1, +0.8, +1.7, -0.6)
+   témoin A/A       +0.10 ms  [+0.00 ; +0.45]  (+0.2, +0.0, +0.0, -1.1, +0.8, +0.3, +0.6, +0.0)
+moyenne-cockpit v1n : 8 tours, image 15.2 ms (14.5 à 15.9), créations [0, 0, 0, 0, 0, 0, 0, 0]
+   contact          +0.25 ms  [-0.45 ; +0.75]  (+0.1, +0.5, +0.4, +1.3, -1.0, +0.0, +1.0, -0.9)
+   tuile            +0.50 ms  [+0.20 ; +1.05]  (+1.0, +0.5, +1.1, +1.4, +0.3, +0.5, +0.1, -1.2)
+   carte lointaine  +0.05 ms  [-0.20 ; +0.30]  (-0.2, +0.1, +0.0, +1.2, -0.2, +0.5, +0.1, -0.2)
+   pénombre         +0.05 ms  [-0.30 ; +0.65]  (-0.3, +0.1, +0.6, +1.5, -0.3, +0.7, +0.0, -0.7)
+   les quatre       +1.05 ms  [+0.70 ; +1.20]  (+1.2, +0.4, +1.2, +2.5, +1.0, +1.0, +1.1, -0.9)
+   témoin A/A       +0.15 ms  [-0.10 ; +0.35]  (+0.0, +0.1, +0.2, +0.5, -0.2, +1.2, +0.2, -0.5)
+
+== 3. Reproduction de la relecture sur l'ancienne base (avant le rebasage ; alternance stricte, outils/modele.js)
+
+fine-cockpit : 8 tours ; image avant 18.0 ms (de 13.5 à 19.9), après 19.2 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +1.95 ms  (-0.4, +0.3, +2.1, +2.4, +2.7, +1.8, +4.5, +0.1)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        +0.80 ms  (-0.7, -1.0, +1.3, +1.1, +1.4, +0.5, +2.7, -1.5)
+      contrôle de rang (ancienne)       A0−A1      +0.10 ms  (+1.3, +0.6, -0.1, +0.3, +0.1, +0.1, -0.2, -0.2)
+      même séance, brut                 B0−B1      +1.50 ms  (+1.6, +1.9, +0.7, +1.6, +1.4, +1.4, +1.6, +1.4)
+      même séance, corrigé du rang                 +1.30 ms  (+0.3, +1.3, +0.8, +1.3, +1.3, +1.3, +1.8, +1.6)
+fine-poursuite : 8 tours ; image avant 14.5 ms (de 13.1 à 23.0), après 15.7 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +1.70 ms  (+2.1, +0.7, +0.5, +1.6, +2.3, +1.8, +7.8, -3.1)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        +0.05 ms  (+1.0, -0.4, -0.7, -0.2, +1.1, +0.3, +2.6, -5.6)
+      contrôle de rang (ancienne)       A0−A1      -0.20 ms  (-0.1, +0.0, -0.3, -1.2, -0.1, -0.6, -3.2, -0.1)
+      même séance, brut                 B0−B1      +1.05 ms  (+1.0, +1.1, +0.9, +0.6, +1.1, +0.9, +2.0, +2.4)
+      même séance, corrigé du rang                 +1.35 ms  (+1.1, +1.1, +1.2, +1.8, +1.2, +1.5, +5.2, +2.5)
+legere-cockpit : 8 tours ; image avant 5.1 ms (de 3.9 à 7.9), après 5.2 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +0.10 ms  (+0.0, +0.0, -1.4, +0.3, +0.2, +1.0, +2.2, -0.8)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        +0.05 ms  (+0.1, +0.6, -1.4, +0.0, -1.6, +0.5, +2.0, -0.2)
+      contrôle de rang (ancienne)       A0−A1      -0.10 ms  (+0.4, +0.0, -0.1, +0.0, -1.7, -0.1, -0.1, -0.3)
+      même séance, brut                 B0−B1      +0.10 ms  (+0.3, -0.6, -0.1, +0.3, +0.1, +0.4, +0.1, -0.9)
+      même séance, corrigé du rang                 +0.10 ms  (-0.1, -0.6, +0.0, +0.3, +1.8, +0.5, +0.2, -0.6)
+moyenne-cockpit : 8 tours ; image avant 10.9 ms (de 7.2 à 16.5), après 11.3 ms ; créations avant [0, 0, 0, 0, 0, 0, 0, 0] après [0, 0, 0, 0, 0, 0, 0, 0]
+   variante 0 {}
+      construction contre construction  B−A        +0.90 ms  (-0.4, +2.3, +1.8, +2.2, -2.0, +0.4, -1.4, +1.4)
+   variante 1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}
+      construction contre construction  B−A        -0.60 ms  (-0.9, -0.4, +0.7, -1.1, -0.8, -0.1, -1.2, +0.8)
+      contrôle de rang (ancienne)       A0−A1      +0.20 ms  (+0.2, -1.5, +0.3, -1.5, +1.4, +0.2, +0.7, +0.0)
+      même séance, brut                 B0−B1      +0.70 ms  (+0.7, +1.2, +1.4, +1.8, +0.2, +0.7, +0.5, +0.6)
+      même séance, corrigé du rang                 +0.55 ms  (+0.5, +2.7, +1.1, +3.3, -1.2, +0.5, -0.2, +0.6)
+
+== 4. Chargement, préparation côté jeu, créations
+
+carte lointaine (precalculerOmbre, 2048², lots qui projettent : 386 appels, 3 759 instances ; temps synchronisé,
+  médiane de 5 essais par séance) : médiane 0.9 ms, de 0.4 à 1.9 ms (236 séances Fine et
+  Moyenne des pages 0.3.11). En Légère, le script de mesure la force : 0.3 ms (de 0.1 à 0.6 ;
+  180 séances), 97 appels et 8 Mo. Avant la correction, le jeu la calculait aussi en Légère ; la page corrigée ne
+  la calcule plus quand aucune ombre du soleil n'est possible (créations, legere-cockpit : loinTaille 0).
+B.ombres.preparer (processeur) : médiane 1.0 µs par appel, de 0.4 à 3.1 µs (504 séances).
+stats.creations pendant les images mesurées : 0 dans 744 séances sur 744 (b0 64, final 128, effets 64, final2 128, temoin 120, temoin2 108, diag 36, diag2 96).
+
+Appels de dessin de l'image principale, à image identique (prise déterministe, s 800, 50 images, décompte par cible
+de rendu ; appels.txt) : 0.3.11 corrigé effets coupés fait exactement les appels de 0.3.10 :
+416 en Fine cockpit, 413 en Fine poursuite, 382 en Moyenne, 181 en Légère. Effets allumés, seule la tuile en ajoute
+(sa passe : 31 en cockpit, 35 en poursuite) ; le contact, la carte lointaine et la pénombre n'en ajoutent aucun. La
+page finale fait les mêmes décomptes, cible par cible, que v1n.
+Pendant les séances de temps, le compte de la première image de chaque variante varie d'une séance à l'autre
+(0.3.10 en Légère : 138 à 143 dans les campagnes, 153 à 155 dans deux essais isolés) : il ne se compare pas.
+
+Créations par le chemin du joueur (menu, préparation sous le voile et préchauffage, départ, puis 15 s de course
+l'ordinateur au volant ; même preparerSeance que BITUME_JEU.preparer), page finale et base 0.3.10 :
+  configuration                    0.3.11 corrigé (fin2.html)                         0.3.10 (a2.html)
+  Fine cockpit, rétroviseurs       course 0, tardives 0, 6 contacts, tuile, carte     course 0, tardives 0
+  Fine, duo (écran partagé)        course 0, tardives 0, 6 contacts, tuile, carte     course 0, tardives 0
+  Fine, pluie (Haut-Col)           course 0, tardives 0, 6 contacts, tuile, carte     course 0, tardives 0
+  Fine, nuit                       course 0, tardives 0, 6 contacts, tuile, carte     course 0, tardives 0
+  Moyenne poursuite (Lande-Noire)  course 0, tardives 0, 6 contacts, tuile, carte     course 0, tardives 0
+  Légère cockpit                   course 0, tardives 0, 4 contacts, ni tuile ni carte lointaine   course 0, tardives 0
+  Auto cockpit (Cap-Séquoia)       course 0, tardives 0, 6 contacts, tuile, carte     course 0, tardives 0
+  (« tardives » : variantes que la séance a dû créer après le voile ; journaux complets dans creations-fin2.log et creations-a2.log.)
+
+
+== 5. Mesures du 18/11 (ancienne base, avant correction), gardées pour mémoire
+
 Coût des ombres photo — BITUME 0.2.40 sur FERRO 0.3.11, 18 novembre 2026
 
 Machine : Apple M5 (MacBook Air, 10 cœurs, 24 Go), macOS 27.2.1, Google Chrome 157.0.8103.79 sans fenêtre

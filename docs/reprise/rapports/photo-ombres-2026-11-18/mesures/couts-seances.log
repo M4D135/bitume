@@ -1,68 +1,762 @@
-# Séances de coût, une ligne par séance : variante = p50 de l'image (ms), lecture d'un pixel après chaque image.
-# Lot final (BITUME 0.2.40, FERRO 0.3.11, tuile 512², pénombre météo), 18/11/2026 vers 23 h 10–23 h 18.
-## Tous les effets, Fine (6 séances, charge 3 à 5)
-fine-cockpit-tout apres t1 8s charge 3 toile 2880x1514 créations 0 | {}=18.4 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=17.5
-fine-poursuite-tout apres t1 7s charge 3 toile 2880x1514 créations 1 | {}=16.1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.2
-fine-cockpit-tout apres t2 7s charge 3 toile 2880x1514 créations 0 | {}=18.7 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=17.8
-fine-poursuite-tout apres t2 7s charge 3 toile 2880x1514 créations 0 | {}=15.5 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.5
-fine-cockpit-tout apres t3 9s charge 4 toile 2880x1514 créations 0 | {}=19.4 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18.2
-fine-poursuite-tout apres t3 7s charge 3 toile 2880x1514 créations 0 | {}=16.6 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.6
-fine-cockpit-tout apres t4 8s charge 4 toile 2880x1514 créations 0 | {}=19.6 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18.8
-fine-poursuite-tout apres t4 7s charge 4 toile 2880x1514 créations 1 | {}=17.3 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.7
-fine-cockpit-tout apres t5 10s charge 4 toile 2880x1514 créations 0 | {}=20.7 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19.7
-fine-poursuite-tout apres t5 8s charge 5 toile 2880x1514 créations 1 | {}=16.6 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.6
-fine-cockpit-tout apres t6 8s charge 5 toile 2880x1514 créations 0 | {}=21 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=20.2
-fine-poursuite-tout apres t6 8s charge 5 toile 2880x1514 créations 0 | {}=19.2 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18.2
+Une ligne par séance : heure, scène, page, tour, durée, charge de la machine, toile, moteur, créations, puis
+p50 de chaque variante (ms). Campagnes du 19/11, dans l'ordre où elles ont tourné.
 
-## Chaque effet, par palier (3 séances, charge 4 à 6)
-fine-cockpit-contact apres t1 9s charge 4 toile 2880x1514 créations 0 | {}=21.9 {"contacts":null}=21.6
-fine-cockpit-tuile apres t1 10s charge 5 toile 2880x1514 créations 0 | {}=21.7 {"ombreProche":null}=21.2
-fine-cockpit-loin apres t1 9s charge 5 toile 2880x1514 créations 0 | {}=21.5 {"ombreLoin":false}=21.5
-fine-cockpit-meteo apres t1 9s charge 5 toile 2880x1514 créations 0 | {}=20.7 {"penombre":null}=21
-fine-cockpit-tout apres t1 10s charge 5 toile 2880x1514 créations 0 | {}=19.9 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19 {"shadows":false}=16.2
-fine-poursuite-contact apres t1 8s charge 5 toile 2880x1514 créations 0 | {}=18.5 {"contacts":null}=17.9
-fine-poursuite-tuile apres t1 8s charge 5 toile 2880x1514 créations 1 | {}=18.2 {"ombreProche":null}=18
-fine-poursuite-loin apres t1 8s charge 4 toile 2880x1514 créations 0 | {}=17.3 {"ombreLoin":false}=17.3
-fine-poursuite-meteo apres t1 8s charge 5 toile 2880x1514 créations 1 | {}=18.5 {"penombre":null}=18.6
-fine-poursuite-tout apres t1 10s charge 5 toile 2880x1514 créations 1 | {}=17.3 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.5 {"shadows":false}=14.3
-moyenne-cockpit-contact apres t1 8s charge 5 toile 1440x757 créations 0 | {}=15.9 {"contacts":null}=15.2
-moyenne-cockpit-tuile apres t1 8s charge 5 toile 1440x757 créations 0 | {}=15.2 {"ombreProche":null}=14.7
-moyenne-cockpit-loin apres t1 8s charge 5 toile 1440x757 créations 0 | {}=14.1 {"ombreLoin":false}=15.8
-moyenne-cockpit-meteo apres t1 7s charge 5 toile 1440x757 créations 0 | {}=15.9 {"penombre":null}=14.3
-moyenne-cockpit-tout apres t1 9s charge 5 toile 1440x757 créations 0 | {}=14.3 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.3 {"shadows":false}=11.3
-legere-cockpit-contact apres t1 7s charge 5 toile 1152x606 créations 0 | {}=4.8 {"contacts":null}=4.7
-legere-poursuite-contact apres t1 7s charge 5 toile 1152x606 créations 0 | {}=5.5 {"contacts":null}=6.4
-fine-cockpit-contact apres t2 9s charge 4 toile 2880x1514 créations 0 | {}=21.3 {"contacts":null}=20.8
-fine-cockpit-tuile apres t2 9s charge 5 toile 2880x1514 créations 0 | {}=22 {"ombreProche":null}=21.3
-fine-cockpit-loin apres t2 9s charge 5 toile 2880x1514 créations 0 | {}=20.9 {"ombreLoin":false}=20.9
-fine-cockpit-meteo apres t2 9s charge 5 toile 2880x1514 créations 0 | {}=20.7 {"penombre":null}=20.7
-fine-cockpit-tout apres t2 11s charge 5 toile 2880x1514 créations 0 | {}=21 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19.7 {"shadows":false}=17.1
-fine-poursuite-contact apres t2 8s charge 6 toile 2880x1514 créations 1 | {}=16.6 {"contacts":null}=16
-fine-poursuite-tuile apres t2 8s charge 6 toile 2880x1514 créations 1 | {}=18.6 {"ombreProche":null}=18.2
-fine-poursuite-loin apres t2 12s charge 6 toile 2880x1514 créations 0 | {}=24.4 {"ombreLoin":false}=24.4
-fine-poursuite-meteo apres t2 8s charge 5 toile 2880x1514 créations 1 | {}=17 {"penombre":null}=17
-fine-poursuite-tout apres t2 10s charge 5 toile 2880x1514 créations 1 | {}=18.6 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=17.5 {"shadows":false}=15.4
-moyenne-cockpit-contact apres t2 7s charge 5 toile 1440x757 créations 0 | {}=15.2 {"contacts":null}=14
-moyenne-cockpit-tuile apres t2 7s charge 5 toile 1440x757 créations 0 | {}=13.6 {"ombreProche":null}=13.6
-moyenne-cockpit-loin apres t2 7s charge 5 toile 1440x757 créations 0 | {}=14.1 {"ombreLoin":false}=14.2
-moyenne-cockpit-meteo apres t2 7s charge 5 toile 1440x757 créations 0 | {}=14.5 {"penombre":null}=15.4
-moyenne-cockpit-tout apres t2 9s charge 5 toile 1440x757 créations 0 | {}=14.7 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7 {"shadows":false}=11.5
-legere-cockpit-contact apres t2 7s charge 5 toile 1152x606 créations 0 | {}=8.3 {"contacts":null}=8
-legere-poursuite-contact apres t2 7s charge 4 toile 1152x606 créations 0 | {}=6.4 {"contacts":null}=6.3
-fine-cockpit-contact apres t3 9s charge 4 toile 2880x1514 créations 0 | {}=20.5 {"contacts":null}=20.2
-fine-cockpit-tuile apres t3 9s charge 4 toile 2880x1514 créations 0 | {}=20.3 {"ombreProche":null}=20.1
-fine-cockpit-loin apres t3 9s charge 4 toile 2880x1514 créations 0 | {}=20.7 {"ombreLoin":false}=20.6
-fine-cockpit-meteo apres t3 9s charge 4 toile 2880x1514 créations 0 | {}=20.8 {"penombre":null}=20.7
-fine-cockpit-tout apres t3 10s charge 4 toile 2880x1514 créations 0 | {}=20.1 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18.8 {"shadows":false}=16.1
-fine-poursuite-contact apres t3 7s charge 4 toile 2880x1514 créations 1 | {}=17.5 {"contacts":null}=17
-fine-poursuite-tuile apres t3 8s charge 4 toile 2880x1514 créations 0 | {}=17.6 {"ombreProche":null}=17.5
-fine-poursuite-loin apres t3 7s charge 5 toile 2880x1514 créations 1 | {}=16.7 {"ombreLoin":false}=16.9
-fine-poursuite-meteo apres t3 8s charge 4 toile 2880x1514 créations 0 | {}=17.4 {"penombre":null}=17.4
-fine-poursuite-tout apres t3 9s charge 4 toile 2880x1514 créations 1 | {}=16.6 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.6 {"shadows":false}=13.6
-moyenne-cockpit-contact apres t3 7s charge 4 toile 1440x757 créations 0 | {}=13.8 {"contacts":null}=15.3
-moyenne-cockpit-tuile apres t3 7s charge 5 toile 1440x757 créations 0 | {}=13.7 {"ombreProche":null}=13.6
-moyenne-cockpit-loin apres t3 7s charge 5 toile 1440x757 créations 0 | {}=14.8 {"ombreLoin":false}=14.9
-moyenne-cockpit-meteo apres t3 7s charge 5 toile 1440x757 créations 0 | {}=14.2 {"penombre":null}=15.4
-moyenne-cockpit-tout apres t3 9s charge 5 toile 1440x757 créations 0 | {}=11.3 {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=10.8 {"shadows":false}=9.3
-legere-cockpit-contact apres t3 9s charge 5 toile 1152x606 créations 0 | {}=6.7 {"contacts":null}=5.5
-legere-poursuite-contact apres t3 10s charge 6 toile 1152x606 créations 0 | {}=4.8 {"contacts":null}=4.5
+=== b0 (ancienne base, a.html contre b0.html)
+00:42:02 fine-cockpit avant t1 6s charge 2.2 toile 2880x1514 moteur 0.3.10 créations 0 | {}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7
+00:42:08 fine-cockpit apres t1 6s charge 2.0 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13
+00:42:15 fine-poursuite avant t1 7s charge 2.4 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.5
+00:42:22 fine-poursuite apres t1 7s charge 2.5 toile 2880x1514 moteur 0.3.11 créations 0 | {}=16.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.5
+00:42:29 moyenne-cockpit avant t1 7s charge 2.2 toile 1440x757 moteur 0.3.10 créations 0 | {}=16.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.3
+00:42:36 moyenne-cockpit apres t1 7s charge 2.4 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.4
+00:42:42 legere-cockpit avant t1 6s charge 2.2 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.5
+00:42:49 legere-cockpit apres t1 6s charge 2.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.6
+00:42:55 fine-cockpit apres t2 6s charge 2.5 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.4
+00:43:01 fine-cockpit avant t2 6s charge 2.5 toile 2880x1514 moteur 0.3.10 créations 0 | {}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4
+00:43:08 fine-poursuite apres t2 6s charge 3.4 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+00:43:14 fine-poursuite avant t2 7s charge 2.9 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.6
+00:43:21 moyenne-cockpit apres t2 7s charge 2.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.4
+00:43:28 moyenne-cockpit avant t2 7s charge 2.6 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.8
+00:43:35 legere-cockpit apres t2 6s charge 2.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=4.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=5.4
+00:43:41 legere-cockpit avant t2 7s charge 2.5 toile 1152x606 moteur 0.3.10 créations 0 | {}=4.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=4.8
+00:43:48 fine-cockpit avant t3 6s charge 2.9 toile 2880x1514 moteur 0.3.10 créations 0 | {}=13.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+00:43:54 fine-cockpit apres t3 6s charge 2.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.9
+00:44:01 fine-poursuite avant t3 7s charge 2.8 toile 2880x1514 moteur 0.3.10 créations 0 | {}=15.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.7
+00:44:08 fine-poursuite apres t3 7s charge 3.1 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+00:44:16 moyenne-cockpit avant t3 8s charge 5.7 toile 1440x757 moteur 0.3.10 créations 0 | {}=9.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.5
+00:44:24 moyenne-cockpit apres t3 8s charge 6.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=11.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=10.2
+00:44:32 legere-cockpit avant t3 8s charge 8.0 toile 1152x606 moteur 0.3.10 créations 0 | {}=5.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=5.7
+00:44:39 legere-cockpit apres t3 7s charge 8.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=4.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=4.3
+00:44:48 fine-cockpit apres t4 8s charge 8.1 toile 2880x1514 moteur 0.3.11 créations 0 | {}=20.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19.1
+00:44:55 fine-cockpit avant t4 8s charge 7.5 toile 2880x1514 moteur 0.3.10 créations 0 | {}=18.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18
+00:45:02 fine-poursuite apres t4 7s charge 7.0 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.1
+00:45:09 fine-poursuite avant t4 7s charge 6.7 toile 2880x1514 moteur 0.3.10 créations 0 | {}=13.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+00:45:16 moyenne-cockpit apres t4 7s charge 6.5 toile 1440x757 moteur 0.3.11 créations 0 | {}=10.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.7
+00:45:24 moyenne-cockpit avant t4 7s charge 6.3 toile 1440x757 moteur 0.3.10 créations 0 | {}=8.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.8
+00:45:31 legere-cockpit apres t4 7s charge 6.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=5.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=5.3
+00:45:38 legere-cockpit avant t4 7s charge 5.5 toile 1152x606 moteur 0.3.10 créations 0 | {}=5.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=5.3
+00:45:46 fine-cockpit avant t5 8s charge 5.3 toile 2880x1514 moteur 0.3.10 créations 0 | {}=18.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18.6
+00:45:54 fine-cockpit apres t5 9s charge 5.3 toile 2880x1514 moteur 0.3.11 créations 0 | {}=21.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=20
+00:46:02 fine-poursuite avant t5 7s charge 5.1 toile 2880x1514 moteur 0.3.10 créations 0 | {}=13.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.3
+00:46:09 fine-poursuite apres t5 8s charge 4.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4
+00:46:17 moyenne-cockpit avant t5 8s charge 4.9 toile 1440x757 moteur 0.3.10 créations 0 | {}=11.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.7
+00:46:25 moyenne-cockpit apres t5 8s charge 4.4 toile 1440x757 moteur 0.3.11 créations 0 | {}=9.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.9
+00:46:33 legere-cockpit avant t5 8s charge 4.3 toile 1152x606 moteur 0.3.10 créations 0 | {}=5.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.9
+00:46:41 legere-cockpit apres t5 8s charge 4.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=5.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=5.3
+00:46:51 fine-cockpit apres t6 10s charge 5.0 toile 2880x1514 moteur 0.3.11 créations 0 | {}=21.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=20.3
+00:47:00 fine-cockpit avant t6 9s charge 5.0 toile 2880x1514 moteur 0.3.10 créations 0 | {}=19.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19.8
+00:47:08 fine-poursuite apres t6 8s charge 5.5 toile 2880x1514 moteur 0.3.11 créations 0 | {}=16.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.2
+00:47:15 fine-poursuite avant t6 7s charge 5.0 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.9
+00:47:23 moyenne-cockpit apres t6 8s charge 5.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=11.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=10.4
+00:47:33 moyenne-cockpit avant t6 10s charge 5.4 toile 1440x757 moteur 0.3.10 créations 0 | {}=10.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=10.5
+00:47:42 legere-cockpit apres t6 9s charge 5.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=4.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=4.5
+00:47:51 legere-cockpit avant t6 9s charge 6.6 toile 1152x606 moteur 0.3.10 créations 0 | {}=3.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=4
+00:48:01 fine-cockpit avant t7 10s charge 6.4 toile 2880x1514 moteur 0.3.10 créations 0 | {}=19.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19.7
+00:48:13 fine-cockpit apres t7 12s charge 7.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=24 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=22.4
+00:48:25 fine-poursuite avant t7 12s charge 14.4 toile 2880x1514 moteur 0.3.10 créations 0 | {}=23 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=26.2
+00:48:36 fine-poursuite apres t7 12s charge 12.7 toile 2880x1514 moteur 0.3.11 créations 0 | {}=30.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=28.8
+00:48:45 moyenne-cockpit avant t7 9s charge 13.6 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.4
+00:48:55 moyenne-cockpit apres t7 9s charge 12.7 toile 1440x757 moteur 0.3.11 créations 0 | {}=11.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=11.2
+00:49:04 legere-cockpit avant t7 10s charge 11.6 toile 1152x606 moteur 0.3.10 créations 0 | {}=4.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=4.7
+00:49:12 legere-cockpit apres t7 8s charge 10.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=6.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.7
+00:49:20 fine-cockpit apres t8 8s charge 9.4 toile 2880x1514 moteur 0.3.11 créations 0 | {}=17.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.4
+00:49:27 fine-cockpit avant t8 7s charge 8.8 toile 2880x1514 moteur 0.3.10 créations 0 | {}=17.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=17.9
+00:49:36 fine-poursuite apres t8 9s charge 7.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.8
+00:49:45 fine-poursuite avant t8 8s charge 7.4 toile 2880x1514 moteur 0.3.10 créations 0 | {}=18.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18.4
+00:49:52 moyenne-cockpit apres t8 7s charge 7.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=8.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8
+00:49:59 moyenne-cockpit avant t8 7s charge 6.8 toile 1440x757 moteur 0.3.10 créations 0 | {}=7.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+00:50:07 legere-cockpit apres t8 9s charge 6.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=4.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=5.1
+00:50:15 legere-cockpit avant t8 8s charge 6.8 toile 1152x606 moteur 0.3.10 créations 0 | {}=5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=5.3
+
+=== final (a2 contre b02, v1 et v1n)
+01:09:38 fine-cockpit a t1 6s charge 2.4 toile 2880x1514 moteur 0.3.10 créations 0 | {}=13.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14
+01:09:44 fine-cockpit v0 t1 6s charge 2.3 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7
+01:09:51 fine-cockpit v1 t1 6s charge 2.2 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14
+01:09:57 fine-cockpit v1n t1 6s charge 2.0 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.9
+01:10:04 fine-poursuite a t1 6s charge 2.0 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+01:10:10 fine-poursuite v0 t1 6s charge 2.1 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.8
+01:10:17 fine-poursuite v1 t1 6s charge 2.7 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.8
+01:10:23 fine-poursuite v1n t1 7s charge 2.4 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+01:10:30 moyenne-cockpit a t1 7s charge 2.3 toile 1440x757 moteur 0.3.10 créations 0 | {}=12.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.6
+01:10:37 moyenne-cockpit v0 t1 7s charge 2.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.6
+01:10:44 moyenne-cockpit v1 t1 7s charge 2.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.9
+01:10:51 moyenne-cockpit v1n t1 7s charge 2.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.7
+01:10:57 legere-cockpit a t1 6s charge 2.0 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+01:11:03 legere-cockpit v0 t1 6s charge 2.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.7
+01:11:10 legere-cockpit v1 t1 7s charge 2.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9
+01:11:17 legere-cockpit v1n t1 7s charge 2.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.5
+01:11:23 fine-cockpit v1n t2 6s charge 1.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.5
+01:11:29 fine-cockpit v1 t2 6s charge 1.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.4
+01:11:36 fine-cockpit v0 t2 6s charge 1.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.4
+01:11:42 fine-cockpit a t2 6s charge 1.9 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.1
+01:11:48 fine-poursuite v1n t2 7s charge 1.7 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+01:11:55 fine-poursuite v1 t2 7s charge 1.7 toile 2880x1514 moteur 0.3.11 créations 0 | {}=16.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.7
+01:12:02 fine-poursuite v0 t2 6s charge 1.6 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.1
+01:12:09 fine-poursuite a t2 7s charge 1.4 toile 2880x1514 moteur 0.3.10 créations 0 | {}=16.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.4
+01:12:16 moyenne-cockpit v1n t2 7s charge 1.7 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.2
+01:12:22 moyenne-cockpit v1 t2 7s charge 1.7 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.6
+01:12:29 moyenne-cockpit v0 t2 7s charge 1.7 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.6
+01:12:36 moyenne-cockpit a t2 7s charge 1.9 toile 1440x757 moteur 0.3.10 créations 0 | {}=15.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.9
+01:12:43 legere-cockpit v1n t2 6s charge 1.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.3
+01:12:49 legere-cockpit v1 t2 6s charge 1.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.9
+01:12:56 legere-cockpit v0 t2 6s charge 1.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+01:13:02 legere-cockpit a t2 6s charge 1.9 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.9
+01:13:09 fine-cockpit a t3 6s charge 2.0 toile 2880x1514 moteur 0.3.10 créations 0 | {}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.9
+01:13:15 fine-cockpit v0 t3 6s charge 1.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+01:13:21 fine-cockpit v1 t3 6s charge 1.7 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+01:13:27 fine-cockpit v1n t3 6s charge 1.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7
+01:13:34 fine-poursuite a t3 7s charge 1.8 toile 2880x1514 moteur 0.3.10 créations 0 | {}=15.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.4
+01:13:41 fine-poursuite v0 t3 6s charge 1.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.2
+01:13:47 fine-poursuite v1 t3 6s charge 2.0 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4
+01:13:53 fine-poursuite v1n t3 7s charge 1.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.3
+01:14:00 moyenne-cockpit a t3 7s charge 1.8 toile 1440x757 moteur 0.3.10 créations 0 | {}=16 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.3
+01:14:07 moyenne-cockpit v0 t3 7s charge 2.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.4
+01:14:14 moyenne-cockpit v1 t3 7s charge 3.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.7
+01:14:21 moyenne-cockpit v1n t3 7s charge 3.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+01:14:27 legere-cockpit a t3 6s charge 2.8 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8
+01:14:34 legere-cockpit v0 t3 6s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.9
+01:14:40 legere-cockpit v1 t3 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.4
+01:14:46 legere-cockpit v1n t3 6s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.3
+01:14:53 fine-cockpit v1n t4 6s charge 2.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=13.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.9
+01:14:59 fine-cockpit v1 t4 6s charge 2.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14
+01:15:05 fine-cockpit v0 t4 6s charge 2.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+01:15:12 fine-cockpit a t4 6s charge 3.1 toile 2880x1514 moteur 0.3.10 créations 0 | {}=13.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.4
+01:15:18 fine-poursuite v1n t4 7s charge 3.0 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+01:15:25 fine-poursuite v1 t4 6s charge 3.4 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4
+01:15:31 fine-poursuite v0 t4 6s charge 3.5 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14
+01:15:38 fine-poursuite a t4 7s charge 3.4 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+01:15:45 moyenne-cockpit v1n t4 7s charge 3.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.6
+01:15:52 moyenne-cockpit v1 t4 7s charge 3.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.1
+01:15:59 moyenne-cockpit v0 t4 7s charge 2.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+01:16:05 moyenne-cockpit a t4 7s charge 2.7 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.7
+01:16:12 legere-cockpit v1n t4 6s charge 2.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.5
+01:16:18 legere-cockpit v1 t4 6s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.2
+01:16:25 legere-cockpit v0 t4 6s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+01:16:31 legere-cockpit a t4 6s charge 2.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=6.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.7
+01:16:38 fine-cockpit a t5 7s charge 4.0 toile 2880x1514 moteur 0.3.10 créations 0 | {}=13.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.1
+01:16:44 fine-cockpit v0 t5 6s charge 3.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.5
+01:16:50 fine-cockpit v1 t5 6s charge 3.7 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+01:16:56 fine-cockpit v1n t5 6s charge 3.6 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+01:17:03 fine-poursuite a t5 7s charge 4.4 toile 2880x1514 moteur 0.3.10 créations 0 | {}=13.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+01:17:10 fine-poursuite v0 t5 6s charge 4.3 toile 2880x1514 moteur 0.3.11 créations 0 | {}=13.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.4
+01:17:16 fine-poursuite v1 t5 7s charge 4.3 toile 2880x1514 moteur 0.3.11 créations 0 | {}=16.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+01:17:23 fine-poursuite v1n t5 6s charge 3.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14
+01:17:30 moyenne-cockpit a t5 7s charge 3.6 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+01:17:36 moyenne-cockpit v0 t5 6s charge 3.6 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.7
+01:17:43 moyenne-cockpit v1 t5 7s charge 3.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+01:17:50 moyenne-cockpit v1n t5 7s charge 3.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4
+01:17:56 legere-cockpit a t5 6s charge 3.5 toile 1152x606 moteur 0.3.10 créations 0 | {}=9.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+01:18:03 legere-cockpit v0 t5 6s charge 3.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+01:18:09 legere-cockpit v1 t5 6s charge 3.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.4
+01:18:16 legere-cockpit v1n t5 6s charge 3.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.5
+01:18:22 fine-cockpit v1n t6 6s charge 3.3 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.1
+01:18:28 fine-cockpit v1 t6 6s charge 3.1 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7
+01:18:35 fine-cockpit v0 t6 6s charge 3.0 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.5
+01:18:41 fine-cockpit a t6 6s charge 2.8 toile 2880x1514 moteur 0.3.10 créations 0 | {}=13.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14
+01:18:48 fine-poursuite v1n t6 7s charge 3.1 toile 2880x1514 moteur 0.3.11 créations 0 | {}=17.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.1
+01:18:54 fine-poursuite v1 t6 7s charge 3.2 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.6
+01:19:01 fine-poursuite v0 t6 6s charge 2.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7
+01:19:08 fine-poursuite a t6 7s charge 2.9 toile 2880x1514 moteur 0.3.10 créations 0 | {}=19.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19.1
+01:19:16 moyenne-cockpit v1n t6 7s charge 3.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=7.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+01:19:23 moyenne-cockpit v1 t6 7s charge 3.5 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+01:19:31 moyenne-cockpit v0 t6 8s charge 3.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+01:19:38 moyenne-cockpit a t6 8s charge 3.8 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+01:19:46 legere-cockpit v1n t6 8s charge 4.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=6.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.6
+01:19:53 legere-cockpit v1 t6 7s charge 4.4 toile 1152x606 moteur 0.3.11 créations 0 | {}=6.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.1
+01:20:01 legere-cockpit v0 t6 8s charge 5.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=6.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+01:20:08 legere-cockpit a t6 8s charge 5.2 toile 1152x606 moteur 0.3.10 créations 0 | {}=6.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.4
+01:20:17 fine-cockpit a t7 9s charge 5.8 toile 2880x1514 moteur 0.3.10 créations 0 | {}=17.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=17.9
+01:20:23 fine-cockpit v0 t7 7s charge 5.5 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7
+01:20:30 fine-cockpit v1 t7 7s charge 5.1 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14
+01:20:36 fine-cockpit v1n t7 6s charge 5.1 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.2
+01:20:43 fine-poursuite a t7 7s charge 4.5 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.7
+01:20:50 fine-poursuite v0 t7 7s charge 4.1 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7
+01:20:58 fine-poursuite v1 t7 8s charge 3.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=18.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=17.3
+01:21:06 fine-poursuite v1n t7 8s charge 6.5 toile 2880x1514 moteur 0.3.11 créations 0 | {}=16.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.8
+01:21:15 moyenne-cockpit a t7 9s charge 6.0 toile 1440x757 moteur 0.3.10 créations 0 | {}=11.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=11.4
+01:21:23 moyenne-cockpit v0 t7 8s charge 6.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=8.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.9
+01:21:30 moyenne-cockpit v1 t7 7s charge 6.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4
+01:21:36 moyenne-cockpit v1n t7 7s charge 5.5 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14
+01:21:43 legere-cockpit a t7 7s charge 5.3 toile 1152x606 moteur 0.3.10 créations 0 | {}=6.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.9
+01:21:49 legere-cockpit v0 t7 7s charge 5.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.7
+01:21:56 legere-cockpit v1 t7 6s charge 4.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.8
+01:22:02 legere-cockpit v1n t7 6s charge 4.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.7
+01:22:09 fine-cockpit v1n t8 6s charge 4.3 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.5
+01:22:15 fine-cockpit v1 t8 6s charge 4.0 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+01:22:25 fine-cockpit v0 t8 9s charge 3.7 toile 2880x1514 moteur 0.3.11 créations 0 | {}=19.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19
+01:22:33 fine-cockpit a t8 9s charge 3.8 toile 2880x1514 moteur 0.3.10 créations 0 | {}=18.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18.3
+01:22:43 fine-poursuite v1n t8 9s charge 3.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=17.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=17
+01:22:50 fine-poursuite v1 t8 7s charge 3.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=13.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.3
+01:22:56 fine-poursuite v0 t8 6s charge 3.6 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+01:23:04 fine-poursuite a t8 7s charge 3.4 toile 2880x1514 moteur 0.3.10 créations 0 | {}=17.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=17.1
+01:23:10 moyenne-cockpit v1n t8 7s charge 3.4 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.4
+01:23:18 moyenne-cockpit v1 t8 7s charge 3.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.3
+01:23:25 moyenne-cockpit v0 t8 7s charge 3.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.9
+01:23:31 moyenne-cockpit a t8 7s charge 3.1 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+01:23:38 legere-cockpit v1n t8 7s charge 3.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.7
+01:23:44 legere-cockpit v1 t8 6s charge 3.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.1
+01:23:51 legere-cockpit v0 t8 6s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.7
+01:23:57 legere-cockpit a t8 6s charge 3.0 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.8
+
+=== effets (effet par effet, b02 et v1n)
+01:24:10 fine-cockpit v0 t1 12s charge 2.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null}=13.2 | {"ombreProche":null}=13.8 | {"ombreLoin":false}=14.6 | {"penombre":null}=13.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.8 | {}=14
+01:24:22 fine-cockpit v1n t1 12s charge 2.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14 | {"contacts":null}=13.8 | {"ombreProche":null}=13.8 | {"ombreLoin":false}=14.2 | {"penombre":null}=13.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13 | {}=14.2
+01:24:36 fine-poursuite v0 t1 14s charge 2.6 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15 | {"contacts":null}=14.6 | {"ombreProche":null}=14.8 | {"ombreLoin":false}=15 | {"penombre":null}=15.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7 | {}=15.6
+01:24:51 fine-poursuite v1n t1 15s charge 2.7 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.8 | {"contacts":null}=15.3 | {"ombreProche":null}=15.4 | {"ombreLoin":false}=15.5 | {"penombre":null}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.9 | {}=16.1
+01:25:05 moyenne-cockpit v0 t1 14s charge 3.5 toile 1440x757 moteur 0.3.11 créations 0 | {}=8.7 | {"contacts":null}=8.4 | {"ombreProche":null}=8.9 | {"ombreLoin":false}=8.4 | {"penombre":null}=8.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.2 | {}=8.5
+01:25:19 moyenne-cockpit v1n t1 14s charge 3.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.4 | {"contacts":null}=15.3 | {"ombreProche":null}=14.4 | {"ombreLoin":false}=15.6 | {"penombre":null}=15.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2 | {}=15.4
+01:25:31 legere-cockpit v0 t1 12s charge 3.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.9 | {"contacts":null}=9.3 | {"ombreProche":null}=9.5 | {"ombreLoin":false}=8.2 | {"penombre":null}=7.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.3 | {}=8.3
+01:25:43 legere-cockpit v1n t1 12s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.5 | {"contacts":null}=8.2 | {"ombreProche":null}=9 | {"ombreLoin":false}=8.4 | {"penombre":null}=9.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.5 | {}=9.2
+01:25:56 fine-cockpit v1n t2 13s charge 2.4 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null}=13.7 | {"ombreProche":null}=13.7 | {"ombreLoin":false}=14.7 | {"penombre":null}=14.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.4 | {}=14.5
+01:26:09 fine-cockpit v0 t2 13s charge 2.2 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.7 | {"contacts":null}=14.1 | {"ombreProche":null}=14.3 | {"ombreLoin":false}=14.7 | {"penombre":null}=14.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.9 | {}=14.7
+01:26:22 fine-poursuite v1n t2 13s charge 2.3 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.2 | {"contacts":null}=14 | {"ombreProche":null}=15.2 | {"ombreLoin":false}=14.6 | {"penombre":null}=15.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2 | {}=15
+01:26:35 fine-poursuite v0 t2 13s charge 2.5 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.5 | {"contacts":null}=14.3 | {"ombreProche":null}=14.8 | {"ombreLoin":false}=15.3 | {"penombre":null}=15.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.5 | {}=14.4
+01:26:48 moyenne-cockpit v1n t2 13s charge 2.4 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.5 | {"contacts":null}=14 | {"ombreProche":null}=14 | {"ombreLoin":false}=14.4 | {"penombre":null}=14.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.1 | {}=14.4
+01:27:00 moyenne-cockpit v0 t2 13s charge 2.7 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.2 | {"contacts":null}=12.6 | {"ombreProche":null}=12.9 | {"ombreLoin":false}=13.2 | {"penombre":null}=13.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.4 | {}=13.2
+01:27:13 legere-cockpit v1n t2 13s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=5.4 | {"contacts":null}=5.1 | {"ombreProche":null}=5.5 | {"ombreLoin":false}=5.9 | {"penombre":null}=5.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=4.8 | {}=5.7
+01:27:26 legere-cockpit v0 t2 13s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=4.9 | {"contacts":null}=4.9 | {"ombreProche":null}=5.1 | {"ombreLoin":false}=4.9 | {"penombre":null}=4.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=4.8 | {}=4.9
+01:27:39 fine-cockpit v0 t3 13s charge 3.3 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null}=13.7 | {"ombreProche":null}=14.1 | {"ombreLoin":false}=14.2 | {"penombre":null}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.5 | {}=14
+01:27:52 fine-cockpit v1n t3 13s charge 3.3 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.9 | {"contacts":null}=14.5 | {"ombreProche":null}=14.5 | {"ombreLoin":false}=15 | {"penombre":null}=14.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14 | {}=14.9
+01:28:05 fine-poursuite v0 t3 13s charge 3.2 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.4 | {"contacts":null}=14.4 | {"ombreProche":null}=15.1 | {"ombreLoin":false}=15.4 | {"penombre":null}=15.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14 | {}=15.3
+01:28:18 fine-poursuite v1n t3 13s charge 3.7 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.5 | {"contacts":null}=14.6 | {"ombreProche":null}=14.8 | {"ombreLoin":false}=15.2 | {"penombre":null}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2 | {}=15
+01:28:31 moyenne-cockpit v0 t3 13s charge 4.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=13 | {"contacts":null}=12.3 | {"ombreProche":null}=12.7 | {"ombreLoin":false}=12.9 | {"penombre":null}=12.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12 | {}=13
+01:28:45 moyenne-cockpit v1n t3 14s charge 3.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.9 | {"contacts":null}=15.5 | {"ombreProche":null}=14.8 | {"ombreLoin":false}=15.9 | {"penombre":null}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.7 | {}=15.7
+01:28:58 legere-cockpit v0 t3 13s charge 3.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=8 | {"contacts":null}=7.9 | {"ombreProche":null}=7.7 | {"ombreLoin":false}=8.2 | {"penombre":null}=8.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.7 | {}=8.1
+01:29:10 legere-cockpit v1n t3 12s charge 3.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.6 | {"contacts":null}=7.8 | {"ombreProche":null}=8.3 | {"ombreLoin":false}=8.2 | {"penombre":null}=7.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.8 | {}=8.2
+01:29:23 fine-cockpit v1n t4 13s charge 3.1 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.4 | {"contacts":null}=13.4 | {"ombreProche":null}=13.6 | {"ombreLoin":false}=13.3 | {"penombre":null}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.8 | {}=14
+01:29:35 fine-cockpit v0 t4 12s charge 2.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.1 | {"contacts":null}=13.8 | {"ombreProche":null}=14 | {"ombreLoin":false}=14.4 | {"penombre":null}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.4 | {}=14.4
+01:29:48 fine-poursuite v1n t4 13s charge 2.5 toile 2880x1514 moteur 0.3.11 créations 0 | {}=13.7 | {"contacts":null}=13.8 | {"ombreProche":null}=14.3 | {"ombreLoin":false}=14.1 | {"penombre":null}=14.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.1 | {}=14.2
+01:30:01 fine-poursuite v0 t4 13s charge 2.1 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.2 | {"contacts":null}=14.8 | {"ombreProche":null}=14.8 | {"ombreLoin":false}=14.8 | {"penombre":null}=15.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14 | {}=15.2
+01:30:15 moyenne-cockpit v1n t4 14s charge 2.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.6 | {"contacts":null}=14.3 | {"ombreProche":null}=14.2 | {"ombreLoin":false}=14.4 | {"penombre":null}=14.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.1 | {}=15.1
+01:30:29 moyenne-cockpit v0 t4 14s charge 2.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.9 | {"contacts":null}=14.5 | {"ombreProche":null}=14.7 | {"ombreLoin":false}=16 | {"penombre":null}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3 | {}=16
+01:30:41 legere-cockpit v1n t4 12s charge 2.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.3 | {"contacts":null}=7.7 | {"ombreProche":null}=8.2 | {"ombreLoin":false}=7.9 | {"penombre":null}=8.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.7 | {}=8
+01:30:54 legere-cockpit v0 t4 12s charge 2.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.4 | {"contacts":null}=7.5 | {"ombreProche":null}=7.8 | {"ombreLoin":false}=7.8 | {"penombre":null}=7.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2 | {}=7.8
+01:31:06 fine-cockpit v0 t5 12s charge 2.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null}=13.4 | {"ombreProche":null}=13.8 | {"ombreLoin":false}=14.4 | {"penombre":null}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.2 | {}=14.1
+01:31:19 fine-cockpit v1n t5 13s charge 2.5 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.7 | {"contacts":null}=14.1 | {"ombreProche":null}=14.5 | {"ombreLoin":false}=14.6 | {"penombre":null}=14.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.8 | {}=14.6
+01:31:32 fine-poursuite v0 t5 13s charge 2.1 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.2 | {"contacts":null}=15 | {"ombreProche":null}=15.3 | {"ombreLoin":false}=14.9 | {"penombre":null}=15.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4 | {}=15.5
+01:31:45 fine-poursuite v1n t5 13s charge 2.1 toile 2880x1514 moteur 0.3.11 créations 0 | {}=16.6 | {"contacts":null}=15 | {"ombreProche":null}=13.5 | {"ombreLoin":false}=15.5 | {"penombre":null}=15.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.6 | {}=16
+01:31:59 moyenne-cockpit v0 t5 14s charge 2.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.4 | {"contacts":null}=13.1 | {"ombreProche":null}=13 | {"ombreLoin":false}=14.2 | {"penombre":null}=13.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.3 | {}=13.6
+01:32:12 moyenne-cockpit v1n t5 14s charge 2.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.8 | {"contacts":null}=15.8 | {"ombreProche":null}=14.5 | {"ombreLoin":false}=15 | {"penombre":null}=15.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.8 | {}=15
+01:32:25 legere-cockpit v0 t5 12s charge 1.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.4 | {"contacts":null}=7 | {"ombreProche":null}=7 | {"ombreLoin":false}=7.2 | {"penombre":null}=7.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.9 | {}=7.1
+01:32:37 legere-cockpit v1n t5 12s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.4 | {"contacts":null}=7 | {"ombreProche":null}=7.8 | {"ombreLoin":false}=7.6 | {"penombre":null}=7.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.7 | {}=7.3
+01:32:50 fine-cockpit v1n t6 12s charge 2.6 toile 2880x1514 moteur 0.3.11 créations 0 | {}=13.8 | {"contacts":null}=13.7 | {"ombreProche":null}=13.9 | {"ombreLoin":false}=14.2 | {"penombre":null}=15.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.2 | {}=14.3
+01:33:02 fine-cockpit v0 t6 12s charge 2.4 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null}=13.6 | {"ombreProche":null}=13.8 | {"ombreLoin":false}=14.3 | {"penombre":null}=13.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.2 | {}=14.2
+01:33:15 fine-poursuite v1n t6 13s charge 2.4 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14 | {"contacts":null}=14.6 | {"ombreProche":null}=14.1 | {"ombreLoin":false}=14.9 | {"penombre":null}=13.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.5 | {}=14.2
+01:33:28 fine-poursuite v0 t6 13s charge 2.3 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15 | {"contacts":null}=13.7 | {"ombreProche":null}=14.6 | {"ombreLoin":false}=15.1 | {"penombre":null}=15.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.9 | {}=14.7
+01:33:41 moyenne-cockpit v1n t6 13s charge 1.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.4 | {"contacts":null}=15.4 | {"ombreProche":null}=14.9 | {"ombreLoin":false}=14.9 | {"penombre":null}=14.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4 | {}=14.2
+01:33:55 moyenne-cockpit v0 t6 14s charge 1.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.5 | {"contacts":null}=14.4 | {"ombreProche":null}=15.3 | {"ombreLoin":false}=15.3 | {"penombre":null}=16 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.7 | {}=15.2
+01:34:07 legere-cockpit v1n t6 12s charge 1.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.6 | {"contacts":null}=9.1 | {"ombreProche":null}=9.4 | {"ombreLoin":false}=9.8 | {"penombre":null}=9.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.4 | {}=9.6
+01:34:20 legere-cockpit v0 t6 13s charge 2.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=6.3 | {"contacts":null}=5.7 | {"ombreProche":null}=6.9 | {"ombreLoin":false}=5.7 | {"penombre":null}=5.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.1 | {}=6.9
+01:34:32 fine-cockpit v0 t7 12s charge 2.2 toile 2880x1514 moteur 0.3.11 créations 0 | {}=13.8 | {"contacts":null}=13.3 | {"ombreProche":null}=13.7 | {"ombreLoin":false}=13.9 | {"penombre":null}=13.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13 | {}=13.9
+01:34:45 fine-cockpit v1n t7 13s charge 2.1 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.5 | {"contacts":null}=14.3 | {"ombreProche":null}=15 | {"ombreLoin":false}=14.2 | {"penombre":null}=14.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14 | {}=15.1
+01:34:58 fine-poursuite v0 t7 13s charge 2.2 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.4 | {"contacts":null}=15.1 | {"ombreProche":null}=15.5 | {"ombreLoin":false}=15.9 | {"penombre":null}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4 | {}=14.4
+01:35:11 fine-poursuite v1n t7 13s charge 2.3 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15 | {"contacts":null}=13.8 | {"ombreProche":null}=14 | {"ombreLoin":false}=14.7 | {"penombre":null}=13.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2 | {}=15.1
+01:35:25 moyenne-cockpit v0 t7 14s charge 2.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.4 | {"contacts":null}=15.1 | {"ombreProche":null}=14.9 | {"ombreLoin":false}=16 | {"penombre":null}=15.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.7 | {}=15.8
+01:35:38 moyenne-cockpit v1n t7 14s charge 2.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=15 | {"contacts":null}=14 | {"ombreProche":null}=14.9 | {"ombreLoin":false}=14.9 | {"penombre":null}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.9 | {}=14.8
+01:35:51 legere-cockpit v0 t7 12s charge 2.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.4 | {"contacts":null}=9.1 | {"ombreProche":null}=9.4 | {"ombreLoin":false}=9.1 | {"penombre":null}=9.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.1 | {}=9.6
+01:36:03 legere-cockpit v1n t7 12s charge 2.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.4 | {"contacts":null}=8.2 | {"ombreProche":null}=8.8 | {"ombreLoin":false}=8.5 | {"penombre":null}=8.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.2 | {}=8.3
+01:36:16 fine-cockpit v1n t8 12s charge 2.0 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.7 | {"contacts":null}=13.8 | {"ombreProche":null}=13.7 | {"ombreLoin":false}=14.5 | {"penombre":null}=14.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6 | {}=14.5
+01:36:28 fine-cockpit v0 t8 12s charge 1.7 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null}=13.5 | {"ombreProche":null}=13.9 | {"ombreLoin":false}=14.2 | {"penombre":null}=14.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.1 | {}=14.1
+01:36:41 fine-poursuite v1n t8 13s charge 1.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.4 | {"contacts":null}=14.2 | {"ombreProche":null}=14.4 | {"ombreLoin":false}=15.4 | {"penombre":null}=15.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4 | {}=15.3
+01:36:54 fine-poursuite v0 t8 13s charge 1.6 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null}=14 | {"ombreProche":null}=14 | {"ombreLoin":false}=14.1 | {"penombre":null}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6 | {}=15.5
+01:37:08 moyenne-cockpit v1n t8 14s charge 1.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.9 | {"contacts":null}=15.8 | {"ombreProche":null}=16.1 | {"ombreLoin":false}=15.1 | {"penombre":null}=15.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.8 | {}=15.4
+01:37:21 moyenne-cockpit v0 t8 14s charge 1.5 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.6 | {"contacts":null}=14.9 | {"ombreProche":null}=14.6 | {"ombreLoin":false}=15 | {"penombre":null}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.2 | {}=14.6
+01:37:34 legere-cockpit v1n t8 12s charge 3.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.6 | {"contacts":null}=7.4 | {"ombreProche":null}=7.9 | {"ombreLoin":false}=7.5 | {"penombre":null}=7.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.1 | {}=8.4
+01:37:46 legere-cockpit v0 t8 12s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.3 | {"contacts":null}=7.4 | {"ombreProche":null}=7.2 | {"ombreLoin":false}=7.6 | {"penombre":null}=7.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.4 | {}=7.4
+
+=== final2 (a2 contre fin2)
+02:20:12 fine-cockpit a t1 7s charge 3.7 toile 2880x1514 moteur 0.3.10 créations 0 | {}=18.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19
+02:20:20 fine-cockpit fin t1 8s charge 3.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=20.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19.1
+02:20:27 fine-poursuite a t1 7s charge 3.9 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.7
+02:20:33 fine-poursuite fin t1 7s charge 3.7 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+02:20:40 moyenne-cockpit a t1 7s charge 3.4 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.4
+02:20:47 moyenne-cockpit fin t1 7s charge 3.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=16 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.3
+02:20:54 legere-cockpit a t1 7s charge 2.9 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.9
+02:21:01 legere-cockpit fin t1 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.9
+02:21:07 fine-cockpit fin t2 6s charge 3.0 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.6
+02:21:13 fine-cockpit a t2 6s charge 2.9 toile 2880x1514 moteur 0.3.10 créations 0 | {}=13.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.1
+02:21:20 fine-poursuite fin t2 7s charge 3.0 toile 2880x1514 moteur 0.3.11 créations 0 | {}=16 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.4
+02:21:27 fine-poursuite a t2 7s charge 2.9 toile 2880x1514 moteur 0.3.10 créations 0 | {}=13.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.2
+02:21:34 moyenne-cockpit fin t2 7s charge 3.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=8.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.8
+02:21:41 moyenne-cockpit a t2 7s charge 2.9 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.1
+02:21:47 legere-cockpit fin t2 7s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.2
+02:21:54 legere-cockpit a t2 6s charge 2.5 toile 1152x606 moteur 0.3.10 créations 0 | {}=7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.1
+02:22:00 fine-cockpit a t3 6s charge 2.5 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.8
+02:22:06 fine-cockpit fin t3 6s charge 2.4 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.2
+02:22:13 fine-poursuite a t3 7s charge 2.3 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.8
+02:22:20 fine-poursuite fin t3 7s charge 2.4 toile 2880x1514 moteur 0.3.11 créations 0 | {}=16.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.9
+02:22:27 moyenne-cockpit a t3 7s charge 2.4 toile 1440x757 moteur 0.3.10 créations 0 | {}=15.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16
+02:22:34 moyenne-cockpit fin t3 7s charge 2.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+02:22:40 legere-cockpit a t3 6s charge 2.3 toile 1152x606 moteur 0.3.10 créations 0 | {}=9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9
+02:22:47 legere-cockpit fin t3 6s charge 2.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+02:22:53 fine-cockpit fin t4 6s charge 2.4 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.2
+02:22:59 fine-cockpit a t4 6s charge 2.3 toile 2880x1514 moteur 0.3.10 créations 0 | {}=13.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.3
+02:23:06 fine-poursuite fin t4 6s charge 2.4 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.8
+02:23:12 fine-poursuite a t4 7s charge 3.1 toile 2880x1514 moteur 0.3.10 créations 0 | {}=15.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.1
+02:23:19 moyenne-cockpit fin t4 7s charge 3.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.1
+02:23:26 moyenne-cockpit a t4 7s charge 3.1 toile 1440x757 moteur 0.3.10 créations 0 | {}=15.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.5
+02:23:32 legere-cockpit fin t4 6s charge 3.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+02:23:39 legere-cockpit a t4 6s charge 3.1 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.8
+02:23:45 fine-cockpit a t5 6s charge 3.1 toile 2880x1514 moteur 0.3.10 créations 0 | {}=13.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.5
+02:23:52 fine-cockpit fin t5 6s charge 3.3 toile 2880x1514 moteur 0.3.11 créations 0 | {}=13.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7
+02:23:58 fine-poursuite a t5 7s charge 3.2 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.3
+02:24:05 fine-poursuite fin t5 6s charge 3.2 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.8
+02:24:12 moyenne-cockpit a t5 7s charge 3.0 toile 1440x757 moteur 0.3.10 créations 0 | {}=16.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.7
+02:24:19 moyenne-cockpit fin t5 7s charge 3.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+02:24:25 legere-cockpit a t5 6s charge 3.0 toile 1152x606 moteur 0.3.10 créations 0 | {}=9.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.4
+02:24:32 legere-cockpit fin t5 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.5
+02:24:38 fine-cockpit fin t6 6s charge 2.6 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.4
+02:24:44 fine-cockpit a t6 6s charge 2.7 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.1
+02:24:51 fine-poursuite fin t6 6s charge 2.6 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+02:24:57 fine-poursuite a t6 7s charge 2.8 toile 2880x1514 moteur 0.3.10 créations 0 | {}=15.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.2
+02:25:04 moyenne-cockpit fin t6 7s charge 2.6 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+02:25:11 moyenne-cockpit a t6 7s charge 2.6 toile 1440x757 moteur 0.3.10 créations 0 | {}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.1
+02:25:18 legere-cockpit fin t6 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+02:25:24 legere-cockpit a t6 7s charge 3.1 toile 1152x606 moteur 0.3.10 créations 0 | {}=5.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=5.1
+02:25:32 fine-cockpit a t7 7s charge 3.0 toile 2880x1514 moteur 0.3.10 créations 0 | {}=18.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18.4
+02:25:40 fine-cockpit fin t7 8s charge 3.2 toile 2880x1514 moteur 0.3.11 créations 0 | {}=20.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19
+02:25:47 fine-poursuite a t7 7s charge 2.9 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+02:25:54 fine-poursuite fin t7 7s charge 2.7 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.4
+02:26:00 moyenne-cockpit a t7 7s charge 2.7 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+02:26:08 moyenne-cockpit fin t7 7s charge 2.5 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.8
+02:26:14 legere-cockpit a t7 6s charge 2.3 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+02:26:21 legere-cockpit fin t7 7s charge 2.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=5.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=5.5
+02:26:28 fine-cockpit fin t8 7s charge 2.6 toile 2880x1514 moteur 0.3.11 créations 0 | {}=19.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18.6
+02:26:35 fine-cockpit a t8 6s charge 2.7 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4
+02:26:41 fine-poursuite fin t8 7s charge 2.6 toile 2880x1514 moteur 0.3.11 créations 0 | {}=16.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.4
+02:26:48 fine-poursuite a t8 7s charge 2.6 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.5
+02:26:55 moyenne-cockpit fin t8 7s charge 2.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+02:27:02 moyenne-cockpit a t8 7s charge 2.6 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+02:27:08 legere-cockpit fin t8 6s charge 2.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.8
+02:27:15 legere-cockpit a t8 7s charge 2.8 toile 1152x606 moteur 0.3.10 créations 0 | {}=6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6
+02:27:21 fine-cockpit a t9 6s charge 4.0 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.9
+02:27:27 fine-cockpit fin t9 6s charge 3.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.4
+02:27:34 fine-poursuite a t9 7s charge 3.6 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+02:27:40 fine-poursuite fin t9 7s charge 3.5 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.9
+02:27:47 moyenne-cockpit a t9 7s charge 3.1 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.9
+02:27:54 moyenne-cockpit fin t9 7s charge 3.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+02:28:01 legere-cockpit a t9 7s charge 2.9 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.3
+02:28:07 legere-cockpit fin t9 7s charge 3.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=10 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.8
+02:28:13 fine-cockpit fin t10 6s charge 3.4 toile 2880x1514 moteur 0.3.11 créations 0 | {}=13.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.2
+02:28:20 fine-cockpit a t10 6s charge 3.2 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14
+02:28:26 fine-poursuite fin t10 6s charge 2.9 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.8
+02:28:33 fine-poursuite a t10 7s charge 2.9 toile 2880x1514 moteur 0.3.10 créations 0 | {}=15.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.7
+02:28:40 moyenne-cockpit fin t10 7s charge 2.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=16 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+02:28:47 moyenne-cockpit a t10 7s charge 2.8 toile 1440x757 moteur 0.3.10 créations 0 | {}=12.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.2
+02:28:53 legere-cockpit fin t10 6s charge 3.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.4
+02:29:00 legere-cockpit a t10 6s charge 3.6 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.9
+02:29:06 fine-cockpit a t11 6s charge 3.3 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.5
+02:29:13 fine-cockpit fin t11 7s charge 3.4 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+02:29:20 fine-poursuite a t11 7s charge 3.1 toile 2880x1514 moteur 0.3.10 créations 0 | {}=16.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.6
+02:29:26 fine-poursuite fin t11 6s charge 3.2 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.5
+02:29:33 moyenne-cockpit a t11 7s charge 3.4 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4
+02:29:40 moyenne-cockpit fin t11 7s charge 3.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.5
+02:29:46 legere-cockpit a t11 7s charge 3.1 toile 1152x606 moteur 0.3.10 créations 0 | {}=5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=5.1
+02:29:53 legere-cockpit fin t11 7s charge 4.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.3
+02:30:01 fine-cockpit fin t12 8s charge 4.0 toile 2880x1514 moteur 0.3.11 créations 0 | {}=20.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=19
+02:30:08 fine-cockpit a t12 7s charge 4.3 toile 2880x1514 moteur 0.3.10 créations 0 | {}=13.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14
+02:30:15 fine-poursuite fin t12 7s charge 4.0 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.1
+02:30:21 fine-poursuite a t12 7s charge 3.7 toile 2880x1514 moteur 0.3.10 créations 0 | {}=13.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+02:30:29 moyenne-cockpit fin t12 7s charge 3.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=10.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.6
+02:30:36 moyenne-cockpit a t12 7s charge 3.7 toile 1440x757 moteur 0.3.10 créations 0 | {}=12.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.5
+02:30:42 legere-cockpit fin t12 7s charge 3.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.7
+02:30:50 legere-cockpit a t12 7s charge 3.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=6.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+02:30:57 fine-cockpit a t13 8s charge 3.6 toile 2880x1514 moteur 0.3.10 créations 0 | {}=17.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=17.8
+02:31:05 fine-cockpit fin t13 8s charge 4.1 toile 2880x1514 moteur 0.3.11 créations 0 | {}=19.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=18.8
+02:31:13 fine-poursuite a t13 7s charge 3.8 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14
+02:31:20 fine-poursuite fin t13 7s charge 3.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=16.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.5
+02:31:26 moyenne-cockpit a t13 7s charge 3.5 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13
+02:31:33 moyenne-cockpit fin t13 7s charge 3.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=16 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.6
+02:31:40 legere-cockpit a t13 7s charge 3.0 toile 1152x606 moteur 0.3.10 créations 0 | {}=8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.7
+02:31:46 legere-cockpit fin t13 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.6
+02:31:53 fine-cockpit fin t14 6s charge 3.0 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7
+02:31:59 fine-cockpit a t14 6s charge 3.4 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.6
+02:32:06 fine-poursuite fin t14 7s charge 3.4 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.8
+02:32:12 fine-poursuite a t14 7s charge 3.2 toile 2880x1514 moteur 0.3.10 créations 0 | {}=15.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.5
+02:32:19 moyenne-cockpit fin t14 7s charge 3.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4
+02:32:26 moyenne-cockpit a t14 7s charge 3.0 toile 1440x757 moteur 0.3.10 créations 0 | {}=12.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=11.6
+02:32:33 legere-cockpit fin t14 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.3
+02:32:39 legere-cockpit a t14 6s charge 2.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=9.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+02:32:46 fine-cockpit a t15 6s charge 2.6 toile 2880x1514 moteur 0.3.10 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4
+02:32:52 fine-cockpit fin t15 6s charge 2.8 toile 2880x1514 moteur 0.3.11 créations 0 | {}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+02:32:59 fine-poursuite a t15 7s charge 2.7 toile 2880x1514 moteur 0.3.10 créations 0 | {}=15.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.1
+02:33:05 fine-poursuite fin t15 7s charge 2.6 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+02:33:12 moyenne-cockpit a t15 7s charge 2.5 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.8
+02:33:19 moyenne-cockpit fin t15 7s charge 2.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+02:33:25 legere-cockpit a t15 6s charge 2.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.4
+02:33:32 legere-cockpit fin t15 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.6
+02:33:38 fine-cockpit fin t16 6s charge 2.5 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.4
+02:33:44 fine-cockpit a t16 6s charge 2.5 toile 2880x1514 moteur 0.3.10 créations 0 | {}=12.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14
+02:33:51 fine-poursuite fin t16 7s charge 2.3 toile 2880x1514 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.4
+02:33:58 fine-poursuite a t16 7s charge 2.4 toile 2880x1514 moteur 0.3.10 créations 0 | {}=15.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.5
+02:34:05 moyenne-cockpit fin t16 7s charge 2.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.1
+02:34:12 moyenne-cockpit a t16 7s charge 2.2 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+02:34:18 legere-cockpit fin t16 6s charge 2.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.8
+02:34:24 legere-cockpit a t16 6s charge 2.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.2
+
+=== temoin (témoin : a2, fin2-sans et fin2, ordre ABC puis CBA)
+02:50:28 moyenne-cockpit a t1 7s charge 5.7 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.5
+02:50:35 moyenne-cockpit sans t1 7s charge 5.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.5
+02:50:42 moyenne-cockpit fin t1 7s charge 4.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.2
+02:50:49 legere-cockpit a t1 7s charge 4.4 toile 1152x606 moteur 0.3.10 créations 0 | {}=5.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6
+02:50:56 legere-cockpit sans t1 7s charge 4.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+02:51:03 legere-cockpit fin t1 6s charge 4.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.5
+02:51:10 moyenne-cockpit fin t2 7s charge 4.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+02:51:17 moyenne-cockpit sans t2 7s charge 4.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=17.1
+02:51:24 moyenne-cockpit a t2 7s charge 3.7 toile 1440x757 moteur 0.3.10 créations 0 | {}=15.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+02:51:31 legere-cockpit fin t2 6s charge 3.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.6
+02:51:38 legere-cockpit sans t2 7s charge 3.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=5.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=5.8
+02:51:44 legere-cockpit a t2 7s charge 4.3 toile 1152x606 moteur 0.3.10 créations 0 | {}=9.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.2
+02:51:51 moyenne-cockpit a t3 7s charge 4.2 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.2
+02:51:58 moyenne-cockpit sans t3 7s charge 3.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.6
+02:52:05 moyenne-cockpit fin t3 7s charge 3.6 toile 1440x757 moteur 0.3.11 créations 0 | {}=17.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.7
+02:52:12 legere-cockpit a t3 6s charge 3.4 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+02:52:18 legere-cockpit sans t3 6s charge 3.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.5
+02:52:25 legere-cockpit fin t3 6s charge 3.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.1
+02:52:31 moyenne-cockpit fin t4 7s charge 3.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.7
+02:52:38 moyenne-cockpit sans t4 7s charge 2.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.5
+02:52:45 moyenne-cockpit a t4 7s charge 2.8 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.5
+02:52:51 legere-cockpit fin t4 7s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.3
+02:52:58 legere-cockpit sans t4 6s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.6
+02:53:04 legere-cockpit a t4 6s charge 2.8 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.1
+02:53:11 moyenne-cockpit a t5 7s charge 2.7 toile 1440x757 moteur 0.3.10 créations 0 | {}=16 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.9
+02:53:18 moyenne-cockpit sans t5 7s charge 2.5 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.5
+02:53:25 moyenne-cockpit fin t5 7s charge 2.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=17.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.7
+02:53:32 legere-cockpit a t5 7s charge 2.2 toile 1152x606 moteur 0.3.10 créations 0 | {}=3.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=3.9
+02:53:39 legere-cockpit sans t5 7s charge 2.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=5.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=5
+02:53:45 legere-cockpit fin t5 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.3
+02:53:52 moyenne-cockpit fin t6 7s charge 3.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+02:53:59 moyenne-cockpit sans t6 7s charge 3.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.5
+02:54:06 moyenne-cockpit a t6 7s charge 2.8 toile 1440x757 moteur 0.3.10 créations 0 | {}=16 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.6
+02:54:13 legere-cockpit fin t6 6s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.4
+02:54:19 legere-cockpit sans t6 6s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.9
+02:54:26 legere-cockpit a t6 6s charge 2.8 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.3
+02:54:33 moyenne-cockpit a t7 7s charge 2.6 toile 1440x757 moteur 0.3.10 créations 0 | {}=15.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16
+02:54:39 moyenne-cockpit sans t7 6s charge 2.6 toile 1440x757 moteur 0.3.11 créations 0 | {}=7.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.4
+02:54:46 moyenne-cockpit fin t7 7s charge 2.5 toile 1440x757 moteur 0.3.11 créations 0 | {}=11.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=11
+02:54:53 legere-cockpit a t7 7s charge 2.5 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.5
+02:54:59 legere-cockpit sans t7 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.3
+02:55:06 legere-cockpit fin t7 6s charge 2.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+02:55:13 moyenne-cockpit fin t8 7s charge 2.4 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7
+02:55:20 moyenne-cockpit sans t8 7s charge 2.6 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.6
+02:55:26 moyenne-cockpit a t8 6s charge 2.9 toile 1440x757 moteur 0.3.10 créations 0 | {}=6.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.6
+02:55:33 legere-cockpit fin t8 7s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=4.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=4.5
+02:55:39 legere-cockpit sans t8 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+02:55:46 legere-cockpit a t8 6s charge 2.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.7
+02:55:53 moyenne-cockpit a t9 7s charge 2.7 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+02:56:00 moyenne-cockpit sans t9 7s charge 2.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.5
+02:56:07 moyenne-cockpit fin t9 7s charge 2.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.9
+02:56:13 legere-cockpit a t9 6s charge 2.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.7
+02:56:19 legere-cockpit sans t9 6s charge 2.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7
+02:56:26 legere-cockpit fin t9 6s charge 2.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.5
+02:56:33 moyenne-cockpit fin t10 7s charge 2.6 toile 1440x757 moteur 0.3.11 créations 0 | {}=16 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.3
+02:56:40 moyenne-cockpit sans t10 7s charge 2.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.1
+02:56:46 moyenne-cockpit a t10 7s charge 3.7 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7
+02:56:53 legere-cockpit fin t10 6s charge 3.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+02:57:00 legere-cockpit sans t10 7s charge 4.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=4.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=4
+02:57:06 legere-cockpit a t10 7s charge 4.1 toile 1152x606 moteur 0.3.10 créations 0 | {}=8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.4
+02:57:13 moyenne-cockpit a t11 7s charge 3.9 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.7
+02:57:20 moyenne-cockpit sans t11 7s charge 3.6 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+02:57:26 moyenne-cockpit fin t11 7s charge 3.4 toile 1440x757 moteur 0.3.11 créations 0 | {}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+02:57:33 legere-cockpit a t11 7s charge 3.5 toile 1152x606 moteur 0.3.10 créations 0 | {}=9.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.1
+02:57:40 legere-cockpit sans t11 7s charge 4.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=6.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.1
+02:57:46 legere-cockpit fin t11 7s charge 4.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.6
+02:57:53 moyenne-cockpit fin t12 7s charge 4.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+02:58:00 moyenne-cockpit sans t12 7s charge 3.7 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+02:58:07 moyenne-cockpit a t12 7s charge 4.0 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.3
+02:58:13 legere-cockpit fin t12 6s charge 3.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.3
+02:58:20 legere-cockpit sans t12 6s charge 3.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+02:58:26 legere-cockpit a t12 6s charge 3.3 toile 1152x606 moteur 0.3.10 créations 0 | {}=9.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.2
+02:58:33 moyenne-cockpit a t13 7s charge 3.2 toile 1440x757 moteur 0.3.10 créations 0 | {}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.4
+02:58:40 moyenne-cockpit sans t13 7s charge 2.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=16 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.8
+02:58:47 moyenne-cockpit fin t13 7s charge 2.6 toile 1440x757 moteur 0.3.11 créations 0 | {}=13 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.2
+02:58:54 legere-cockpit a t13 6s charge 2.5 toile 1152x606 moteur 0.3.10 créations 0 | {}=6.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.7
+02:59:00 legere-cockpit sans t13 6s charge 2.4 toile 1152x606 moteur 0.3.11 créations 0 | {}=7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.9
+02:59:06 legere-cockpit fin t13 6s charge 2.4 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.6
+02:59:14 moyenne-cockpit fin t14 7s charge 2.6 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+02:59:21 moyenne-cockpit sans t14 7s charge 2.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.1
+02:59:28 moyenne-cockpit a t14 7s charge 2.9 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.5
+02:59:34 legere-cockpit fin t14 6s charge 3.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.7
+02:59:40 legere-cockpit sans t14 6s charge 3.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.1
+02:59:47 legere-cockpit a t14 6s charge 3.0 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.3
+02:59:54 moyenne-cockpit a t15 7s charge 2.9 toile 1440x757 moteur 0.3.10 créations 0 | {}=13 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.8
+03:00:01 moyenne-cockpit sans t15 7s charge 3.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.7
+03:00:08 moyenne-cockpit fin t15 7s charge 2.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.5
+03:00:14 legere-cockpit a t15 6s charge 2.8 toile 1152x606 moteur 0.3.10 créations 0 | {}=6.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7
+03:00:21 legere-cockpit sans t15 6s charge 3.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.8
+03:00:27 legere-cockpit fin t15 6s charge 3.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.1
+03:00:34 moyenne-cockpit fin t16 7s charge 3.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=17.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.1
+03:00:41 moyenne-cockpit sans t16 7s charge 3.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.5
+03:00:48 moyenne-cockpit a t16 7s charge 2.8 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+03:00:54 legere-cockpit fin t16 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.6
+03:01:01 legere-cockpit sans t16 6s charge 4.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.7
+03:01:07 legere-cockpit a t16 6s charge 3.8 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.4
+03:01:14 moyenne-cockpit a t17 7s charge 3.5 toile 1440x757 moteur 0.3.10 créations 0 | {}=13 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=11.7
+03:01:21 moyenne-cockpit sans t17 7s charge 3.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.3
+03:01:28 moyenne-cockpit fin t17 7s charge 3.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.3
+03:01:35 legere-cockpit a t17 6s charge 3.4 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7
+03:01:41 legere-cockpit sans t17 6s charge 3.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.7
+03:01:47 legere-cockpit fin t17 6s charge 3.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.8
+03:01:54 moyenne-cockpit fin t18 7s charge 2.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.6
+03:02:01 moyenne-cockpit sans t18 7s charge 3.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.6
+03:02:08 moyenne-cockpit a t18 7s charge 3.1 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.9
+03:02:14 legere-cockpit fin t18 6s charge 3.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.9
+03:02:21 legere-cockpit sans t18 6s charge 3.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.1
+03:02:27 legere-cockpit a t18 6s charge 3.4 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.5
+03:02:34 moyenne-cockpit a t19 7s charge 3.4 toile 1440x757 moteur 0.3.10 créations 0 | {}=12.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.5
+03:02:41 moyenne-cockpit sans t19 7s charge 3.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=11.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=11.4
+03:02:48 moyenne-cockpit fin t19 7s charge 3.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=16 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.2
+03:02:54 legere-cockpit a t19 6s charge 2.9 toile 1152x606 moteur 0.3.10 créations 0 | {}=9.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.9
+03:03:01 legere-cockpit sans t19 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+03:03:07 legere-cockpit fin t19 6s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.8
+03:03:14 moyenne-cockpit fin t20 7s charge 2.5 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.2
+03:03:21 moyenne-cockpit sans t20 7s charge 2.4 toile 1440x757 moteur 0.3.11 créations 0 | {}=16 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.3
+03:03:28 moyenne-cockpit a t20 7s charge 2.8 toile 1440x757 moteur 0.3.10 créations 0 | {}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4
+03:03:35 legere-cockpit fin t20 6s charge 9.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8
+03:03:41 legere-cockpit sans t20 6s charge 9.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=6.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7
+03:03:48 legere-cockpit a t20 6s charge 8.5 toile 1152x606 moteur 0.3.10 créations 0 | {}=9.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+
+=== temoin2 (témoin : a2, fin2-sans et fin2, carré latin)
+03:05:52 moyenne-cockpit a t1 7s charge 2.5 toile 1440x757 moteur 0.3.10 créations 0 | {}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.3
+03:05:59 moyenne-cockpit sans t1 7s charge 2.6 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.7
+03:06:06 moyenne-cockpit fin t1 7s charge 2.5 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.6
+03:06:12 legere-cockpit a t1 6s charge 2.4 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.7
+03:06:19 legere-cockpit sans t1 6s charge 2.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.3
+03:06:25 legere-cockpit fin t1 6s charge 2.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.6
+03:06:32 moyenne-cockpit sans t2 7s charge 2.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.3
+03:06:39 moyenne-cockpit fin t2 7s charge 2.4 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.2
+03:06:46 moyenne-cockpit a t2 7s charge 2.3 toile 1440x757 moteur 0.3.10 créations 0 | {}=16.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.9
+03:06:52 legere-cockpit sans t2 6s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+03:06:59 legere-cockpit fin t2 6s charge 2.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.4
+03:07:05 legere-cockpit a t2 6s charge 2.5 toile 1152x606 moteur 0.3.10 créations 0 | {}=9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.9
+03:07:12 moyenne-cockpit fin t3 7s charge 3.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.7
+03:07:19 moyenne-cockpit a t3 7s charge 3.1 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.8
+03:07:26 moyenne-cockpit sans t3 7s charge 3.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.8
+03:07:32 legere-cockpit fin t3 6s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.5
+03:07:39 legere-cockpit a t3 6s charge 2.9 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.7
+03:07:45 legere-cockpit sans t3 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7
+03:07:52 moyenne-cockpit fin t4 7s charge 2.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.3
+03:07:59 moyenne-cockpit sans t4 7s charge 2.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.1
+03:08:05 moyenne-cockpit a t4 7s charge 2.6 toile 1440x757 moteur 0.3.10 créations 0 | {}=12 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.1
+03:08:12 legere-cockpit fin t4 6s charge 3.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.7
+03:08:18 legere-cockpit sans t4 6s charge 3.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.2
+03:08:25 legere-cockpit a t4 6s charge 3.2 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.3
+03:08:31 moyenne-cockpit a t5 7s charge 3.1 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13
+03:08:38 moyenne-cockpit fin t5 7s charge 2.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.7
+03:08:45 moyenne-cockpit sans t5 7s charge 2.7 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.1
+03:08:52 legere-cockpit a t5 6s charge 2.8 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.4
+03:08:58 legere-cockpit fin t5 6s charge 3.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+03:09:05 legere-cockpit sans t5 6s charge 3.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.3
+03:09:11 moyenne-cockpit sans t6 7s charge 3.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.3
+03:09:18 moyenne-cockpit a t6 7s charge 2.9 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14
+03:09:25 moyenne-cockpit fin t6 7s charge 2.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.6
+03:09:32 legere-cockpit sans t6 6s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+03:09:38 legere-cockpit a t6 6s charge 2.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7
+03:09:45 legere-cockpit fin t6 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.3
+03:09:51 moyenne-cockpit a t7 7s charge 2.6 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14
+03:09:58 moyenne-cockpit sans t7 7s charge 2.4 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.9
+03:10:05 moyenne-cockpit fin t7 7s charge 2.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.8
+03:10:12 legere-cockpit a t7 6s charge 2.1 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+03:10:18 legere-cockpit sans t7 6s charge 2.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.7
+03:10:25 legere-cockpit fin t7 6s charge 2.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+03:10:31 moyenne-cockpit sans t8 7s charge 1.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+03:10:38 moyenne-cockpit fin t8 7s charge 1.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.6
+03:10:45 moyenne-cockpit a t8 7s charge 1.9 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.9
+03:10:52 legere-cockpit sans t8 6s charge 1.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.9
+03:10:58 legere-cockpit fin t8 6s charge 1.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.4
+03:11:05 legere-cockpit a t8 6s charge 1.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=6.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.9
+03:11:12 moyenne-cockpit fin t9 7s charge 2.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.6
+03:11:18 moyenne-cockpit a t9 7s charge 1.9 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.1
+03:11:25 moyenne-cockpit sans t9 7s charge 1.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.8
+03:11:32 legere-cockpit fin t9 6s charge 2.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.6
+03:11:38 legere-cockpit a t9 6s charge 2.1 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.8
+03:11:44 legere-cockpit sans t9 6s charge 1.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+03:11:52 moyenne-cockpit fin t10 7s charge 2.5 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.5
+03:11:59 moyenne-cockpit sans t10 7s charge 2.5 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.4
+03:12:05 moyenne-cockpit a t10 7s charge 2.5 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.9
+03:12:12 legere-cockpit fin t10 6s charge 2.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+03:12:18 legere-cockpit sans t10 6s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.5
+03:12:25 legere-cockpit a t10 6s charge 3.0 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.3
+03:12:32 moyenne-cockpit a t11 7s charge 3.4 toile 1440x757 moteur 0.3.10 créations 0 | {}=12.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.9
+03:12:39 moyenne-cockpit fin t11 7s charge 3.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.9
+03:12:45 moyenne-cockpit sans t11 7s charge 3.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=12.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12
+03:12:52 legere-cockpit a t11 6s charge 4.0 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.5
+03:12:58 legere-cockpit fin t11 6s charge 3.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.4
+03:13:05 legere-cockpit sans t11 6s charge 3.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.5
+03:13:11 moyenne-cockpit sans t12 7s charge 4.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=12.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.3
+03:13:18 moyenne-cockpit a t12 7s charge 4.1 toile 1440x757 moteur 0.3.10 créations 0 | {}=12.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.7
+03:13:25 moyenne-cockpit fin t12 7s charge 3.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=17.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.1
+03:13:32 legere-cockpit sans t12 6s charge 3.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+03:13:38 legere-cockpit a t12 6s charge 3.4 toile 1152x606 moteur 0.3.10 créations 0 | {}=9.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.7
+03:13:44 legere-cockpit fin t12 6s charge 3.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=10.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=10
+03:13:51 moyenne-cockpit a t13 7s charge 3.5 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.5
+03:13:58 moyenne-cockpit sans t13 7s charge 4.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13
+03:14:05 moyenne-cockpit fin t13 7s charge 4.7 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.2
+03:14:11 legere-cockpit a t13 6s charge 4.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.3
+03:14:18 legere-cockpit sans t13 6s charge 4.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.1
+03:14:24 legere-cockpit fin t13 6s charge 4.4 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.5
+03:14:31 moyenne-cockpit sans t14 7s charge 4.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.7
+03:14:39 moyenne-cockpit fin t14 7s charge 3.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=16.1
+03:14:45 moyenne-cockpit a t14 7s charge 3.9 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+03:14:52 legere-cockpit sans t14 6s charge 3.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.6
+03:14:58 legere-cockpit fin t14 6s charge 3.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=10.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.8
+03:15:05 legere-cockpit a t14 6s charge 3.6 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.3
+03:15:11 moyenne-cockpit fin t15 7s charge 3.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.1
+03:15:18 moyenne-cockpit a t15 7s charge 3.7 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.8
+03:15:25 moyenne-cockpit sans t15 7s charge 3.4 toile 1440x757 moteur 0.3.11 créations 0 | {}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+03:15:32 legere-cockpit fin t15 6s charge 3.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9
+03:15:38 legere-cockpit a t15 6s charge 3.0 toile 1152x606 moteur 0.3.10 créations 0 | {}=8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.3
+03:15:45 legere-cockpit sans t15 6s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.2
+03:15:52 moyenne-cockpit fin t16 7s charge 3.4 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.2
+03:15:58 moyenne-cockpit sans t16 7s charge 3.7 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.8
+03:16:05 moyenne-cockpit a t16 7s charge 3.6 toile 1440x757 moteur 0.3.10 créations 0 | {}=12.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.1
+03:16:12 legere-cockpit fin t16 6s charge 3.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.4
+03:16:18 legere-cockpit sans t16 6s charge 3.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.8
+03:16:24 legere-cockpit a t16 6s charge 3.3 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.8
+03:16:31 moyenne-cockpit a t17 7s charge 3.2 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.8
+03:16:38 moyenne-cockpit fin t17 7s charge 3.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.8
+03:16:45 moyenne-cockpit sans t17 7s charge 3.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=12.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.2
+03:16:51 legere-cockpit a t17 6s charge 3.1 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.7
+03:16:58 legere-cockpit fin t17 6s charge 3.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.1
+03:17:04 legere-cockpit sans t17 6s charge 3.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8
+03:17:11 moyenne-cockpit sans t18 7s charge 3.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=12.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.5
+03:17:18 moyenne-cockpit a t18 7s charge 3.2 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+03:17:25 moyenne-cockpit fin t18 7s charge 2.9 toile 1440x757 moteur 0.3.11 créations 0 | {}=17 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.9
+03:17:31 legere-cockpit sans t18 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=6.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.9
+03:17:38 legere-cockpit a t18 6s charge 3.2 toile 1152x606 moteur 0.3.10 créations 0 | {}=9.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+03:17:44 legere-cockpit fin t18 6s charge 3.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=10.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.6
+
+=== diag (diagnostic : temps processeur de draw (modele4.js), a2, fin2-sans et fin2, carré latin)
+03:18:51 moyenne-cockpit a t1 7s charge 1.7 toile 1440x757 moteur 0.3.10 créations 0 | {}=13.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.7
+03:18:58 moyenne-cockpit sans t1 7s charge 1.6 toile 1440x757 moteur 0.3.11 créations 0 | {}=14 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.4
+03:19:05 moyenne-cockpit fin t1 7s charge 1.7 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.4
+03:19:12 legere-cockpit a t1 6s charge 1.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=9.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+03:19:18 legere-cockpit sans t1 6s charge 1.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.5
+03:19:24 legere-cockpit fin t1 6s charge 1.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+03:19:31 moyenne-cockpit sans t2 7s charge 1.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.9
+03:19:38 moyenne-cockpit fin t2 7s charge 2.1 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+03:19:45 moyenne-cockpit a t2 7s charge 2.2 toile 1440x757 moteur 0.3.10 créations 0 | {}=14 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=13.8
+03:19:51 legere-cockpit sans t2 7s charge 2.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.6
+03:19:58 legere-cockpit fin t2 6s charge 2.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+03:20:04 legere-cockpit a t2 6s charge 2.1 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.8
+03:20:11 moyenne-cockpit fin t3 7s charge 2.0 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.3
+03:20:18 moyenne-cockpit a t3 7s charge 2.0 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.7
+03:20:25 moyenne-cockpit sans t3 7s charge 2.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.5
+03:20:31 legere-cockpit fin t3 6s charge 2.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.3
+03:20:38 legere-cockpit a t3 6s charge 2.2 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.2
+03:20:44 legere-cockpit sans t3 6s charge 2.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.1
+03:20:51 moyenne-cockpit fin t4 7s charge 2.3 toile 1440x757 moteur 0.3.11 créations 0 | {}=15.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.5
+03:20:58 moyenne-cockpit sans t4 7s charge 2.2 toile 1440x757 moteur 0.3.11 créations 0 | {}=14.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15
+03:21:05 moyenne-cockpit a t4 7s charge 2.0 toile 1440x757 moteur 0.3.10 créations 0 | {}=16.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.8
+03:21:12 legere-cockpit fin t4 6s charge 2.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=10.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.7
+03:21:18 legere-cockpit sans t4 6s charge 2.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.4
+03:21:24 legere-cockpit a t4 6s charge 2.1 toile 1152x606 moteur 0.3.10 créations 0 | {}=7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+03:21:31 moyenne-cockpit a t5 7s charge 2.2 toile 1440x757 moteur 0.3.10 créations 0 | {}=14.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.8
+03:21:38 moyenne-cockpit fin t5 7s charge 2.8 toile 1440x757 moteur 0.3.11 créations 0 | {}=16.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=15.7
+03:21:45 moyenne-cockpit sans t5 7s charge 2.6 toile 1440x757 moteur 0.3.11 créations 0 | {}=13.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.2
+03:21:52 legere-cockpit a t5 6s charge 2.4 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.8
+03:21:58 legere-cockpit fin t5 6s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.5
+03:22:05 legere-cockpit sans t5 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.1
+03:22:11 moyenne-cockpit sans t6 7s charge 2.7 toile 1440x757 moteur 0.3.11 créations 0 | {}=15 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=14.6
+03:22:18 moyenne-cockpit a t6 7s charge 2.6 toile 1440x757 moteur 0.3.10 créations 0 | {}=12.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=12.3
+03:22:25 moyenne-cockpit fin t6 7s charge 2.5 toile 1440x757 moteur 0.3.11 créations 0 | {}=12 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=11.5
+03:22:31 legere-cockpit sans t6 6s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.3
+03:22:38 legere-cockpit a t6 6s charge 2.8 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.1
+03:22:44 legere-cockpit fin t6 6s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=10.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.7
+
+=== diag2 (diagnostic : part du shader, Légère, a2, fin2 et deux pages modifiées, carré latin)
+03:25:16 legere-cockpit a t1 6s charge 1.4 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+03:25:23 legere-cockpit fin t1 6s charge 1.4 toile 1152x606 moteur 0.3.11 créations 0 | {}=10 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.8
+03:25:30 legere-cockpit contact t1 7s charge 1.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9
+03:25:37 legere-cockpit soleil t1 7s charge 1.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+03:25:43 legere-cockpit fin t2 6s charge 2.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7
+03:25:50 legere-cockpit contact t2 7s charge 2.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.5
+03:25:56 legere-cockpit soleil t2 6s charge 2.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.7
+03:26:02 legere-cockpit a t2 6s charge 2.3 toile 1152x606 moteur 0.3.10 créations 0 | {}=7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7
+03:26:09 legere-cockpit contact t3 6s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+03:26:15 legere-cockpit soleil t3 6s charge 2.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.7
+03:26:22 legere-cockpit a t3 6s charge 2.3 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.7
+03:26:28 legere-cockpit fin t3 6s charge 2.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+03:26:35 legere-cockpit soleil t4 6s charge 2.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.9
+03:26:41 legere-cockpit a t4 6s charge 2.2 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.5
+03:26:47 legere-cockpit fin t4 6s charge 2.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.4
+03:26:54 legere-cockpit contact t4 6s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+03:27:00 legere-cockpit soleil t5 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.1
+03:27:07 legere-cockpit contact t5 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.5
+03:27:13 legere-cockpit fin t5 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.4
+03:27:20 legere-cockpit a t5 6s charge 2.5 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.1
+03:27:26 legere-cockpit a t6 6s charge 2.5 toile 1152x606 moteur 0.3.10 créations 0 | {}=9.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.5
+03:27:32 legere-cockpit soleil t6 6s charge 2.4 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.4
+03:27:39 legere-cockpit contact t6 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.5
+03:27:45 legere-cockpit fin t6 6s charge 2.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.7
+03:27:52 legere-cockpit fin t7 7s charge 2.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=4.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=5.1
+03:27:58 legere-cockpit a t7 6s charge 2.6 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.3
+03:28:05 legere-cockpit soleil t7 7s charge 2.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.7
+03:28:11 legere-cockpit contact t7 6s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.8
+03:28:18 legere-cockpit contact t8 6s charge 2.4 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.9
+03:28:24 legere-cockpit fin t8 6s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.5
+03:28:31 legere-cockpit a t8 6s charge 2.6 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.7
+03:28:37 legere-cockpit soleil t8 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7
+03:28:43 legere-cockpit a t9 6s charge 2.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.5
+03:28:50 legere-cockpit fin t9 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.7
+03:28:56 legere-cockpit contact t9 6s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.6
+03:29:03 legere-cockpit soleil t9 6s charge 2.4 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.5
+03:29:09 legere-cockpit fin t10 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.8
+03:29:16 legere-cockpit contact t10 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.6
+03:29:22 legere-cockpit soleil t10 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.6
+03:29:28 legere-cockpit a t10 6s charge 2.6 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.3
+03:29:35 legere-cockpit contact t11 6s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.8
+03:29:41 legere-cockpit soleil t11 6s charge 2.4 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.2
+03:29:48 legere-cockpit a t11 6s charge 2.3 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+03:29:54 legere-cockpit fin t11 6s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8
+03:30:01 legere-cockpit soleil t12 6s charge 2.4 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.4
+03:30:07 legere-cockpit a t12 6s charge 2.6 toile 1152x606 moteur 0.3.10 créations 0 | {}=4.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=4.4
+03:30:14 legere-cockpit fin t12 7s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.6
+03:30:20 legere-cockpit contact t12 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.6
+03:30:26 legere-cockpit soleil t13 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.9
+03:30:33 legere-cockpit contact t13 6s charge 2.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.9
+03:30:39 legere-cockpit fin t13 6s charge 3.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=4.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=4.5
+03:30:46 legere-cockpit a t13 7s charge 3.0 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+03:30:52 legere-cockpit a t14 7s charge 3.2 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.5
+03:30:59 legere-cockpit soleil t14 7s charge 3.4 toile 1152x606 moteur 0.3.11 créations 0 | {}=6.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.5
+03:31:05 legere-cockpit contact t14 7s charge 3.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=6.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.7
+03:31:12 legere-cockpit fin t14 7s charge 3.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.5
+03:31:18 legere-cockpit fin t15 6s charge 3.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.6
+03:31:25 legere-cockpit a t15 6s charge 3.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=6.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.3
+03:31:31 legere-cockpit soleil t15 6s charge 3.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.8
+03:31:38 legere-cockpit contact t15 6s charge 3.7 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+03:31:44 legere-cockpit contact t16 6s charge 3.4 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.4
+03:31:51 legere-cockpit fin t16 6s charge 3.4 toile 1152x606 moteur 0.3.11 créations 0 | {}=6.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.1
+03:31:57 legere-cockpit a t16 6s charge 3.4 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+03:32:03 legere-cockpit soleil t16 6s charge 3.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.7
+03:32:10 legere-cockpit a t17 6s charge 3.0 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.9
+03:32:16 legere-cockpit fin t17 6s charge 2.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.2
+03:32:23 legere-cockpit contact t17 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+03:32:29 legere-cockpit soleil t17 6s charge 2.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+03:32:36 legere-cockpit fin t18 6s charge 2.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.9
+03:32:42 legere-cockpit contact t18 6s charge 2.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.1
+03:32:48 legere-cockpit soleil t18 6s charge 2.4 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+03:32:55 legere-cockpit a t18 6s charge 2.4 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+03:33:01 legere-cockpit contact t19 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.3 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+03:33:08 legere-cockpit soleil t19 6s charge 3.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.8
+03:33:14 legere-cockpit a t19 6s charge 3.1 toile 1152x606 moteur 0.3.10 créations 0 | {}=6.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.8
+03:33:20 legere-cockpit fin t19 6s charge 3.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.2
+03:33:27 legere-cockpit soleil t20 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.1
+03:33:33 legere-cockpit a t20 6s charge 2.8 toile 1152x606 moteur 0.3.10 créations 0 | {}=8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.2
+03:33:40 legere-cockpit fin t20 6s charge 3.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=10.1 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.8
+03:33:46 legere-cockpit contact t20 6s charge 3.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.6
+03:33:53 legere-cockpit soleil t21 6s charge 3.0 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+03:33:59 legere-cockpit contact t21 6s charge 2.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.6
+03:34:05 legere-cockpit fin t21 6s charge 2.6 toile 1152x606 moteur 0.3.11 créations 0 | {}=8.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.7
+03:34:12 legere-cockpit a t21 6s charge 2.8 toile 1152x606 moteur 0.3.10 créations 0 | {}=7.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.8
+03:34:18 legere-cockpit a t22 6s charge 2.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=8.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+03:34:25 legere-cockpit soleil t22 6s charge 3.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.4
+03:34:31 legere-cockpit contact t22 6s charge 3.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.4 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.2
+03:34:38 legere-cockpit fin t22 7s charge 3.3 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.8
+03:34:44 legere-cockpit fin t23 6s charge 3.8 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.3
+03:34:51 legere-cockpit a t23 7s charge 3.7 toile 1152x606 moteur 0.3.10 créations 0 | {}=9.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.2
+03:34:57 legere-cockpit soleil t23 6s charge 3.5 toile 1152x606 moteur 0.3.11 créations 0 | {}=7.5 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.8
+03:35:04 legere-cockpit contact t23 7s charge 3.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=6.9 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.3
+03:35:10 legere-cockpit contact t24 7s charge 3.9 toile 1152x606 moteur 0.3.11 créations 0 | {}=8 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=7.6
+03:35:17 legere-cockpit fin t24 7s charge 4.1 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.2 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=8.4
+03:35:23 legere-cockpit a t24 6s charge 3.9 toile 1152x606 moteur 0.3.10 créations 0 | {}=6.7 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=6.9
+03:35:30 legere-cockpit soleil t24 6s charge 5.2 toile 1152x606 moteur 0.3.11 créations 0 | {}=9.6 | {"contacts":null,"ombreProche":null,"ombreLoin":false,"penombre":null}=9.7

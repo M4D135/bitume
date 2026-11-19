@@ -1,10 +1,12 @@
-Diagnostics des réglages écartés — tools/controle-ombres.mjs (Chrome sans fenêtre, 1280 × 720, boucle menée image
-par image à 1/60 s, hasard réamorcé). d1 : variation moyenne de luminance d'une image à l'autre (sur 255) ; d2 : écart
-à la droite des deux voisines ; a/r : part (‰) des pixels qui montent puis redescendent d'au moins 4 niveaux.
+Diagnostics — tools/controle-ombres.mjs (Chrome sans fenêtre, 1280 × 720, boucle menée image par image à 1/60 s,
+hasard réamorcé) et mesures de la correction du 19/11. d1 : variation moyenne de luminance d'une image à l'autre
+(sur 255) ; d2 : écart à la droite des deux voisines ; a/r : part (‰) des pixels qui montent puis redescendent d'au
+moins 4 niveaux.
 
 1. Arbre de Val-Brûlé (arbre 457, à 33,2 m de la piste), caméra fixe à 13 m, vent figé, voiture qui passe : le carré
    d'ombre et la tuile avancent de 0,9 m par image. Fine. Seuil O5 : d1 < 0,01.
 
+   Essais du 18/11 (ancienne base) :
    FERRO 0.3.10 (avant le lot)                         d1 0,0085   a/r 0,10 ‰
    0.3.11, aucun effet photo                            d1 0,0085   a/r 0,10 ‰
    0.3.11, ombres du soleil coupées                     d1 0,0080   a/r 0,14 ‰
@@ -15,28 +17,154 @@ par image à 1/60 s, hasard réamorcé). d1 : variation moyenne de luminance d'u
    0.3.11, pénombre météo (réglage retenu)              d1 0,0080   a/r 0,09 ‰   ok
    Moyenne, réglage retenu                              d1 0,0052   a/r 0,06 ‰   ok
 
-2. Habitacle immobile à l'écran : caméra liée à la caisse (champ figé), voiture sans pilote en ligne droite (s 2300),
-   Fine. Écart « avec tuile − même passe sans tuile ». Seuils : d2 +0,05, a/r +1 ‰. Région 1 : planche sous la
-   casquette ; région 2 : bas du volant et bras ; région 3 (relevée, sans verdict) : flanc droit, que traversent les
-   ombres des autres voitures.
+   Page corrigée du 19/11 (base 4b994c4, fin2.html = dist/bitume.html du commit, sha256 e8d661ca…), par
+   tools/serie-fluidite.sh <page> <dossier> ombres :
+   Fine, réglage retenu                                 d1 0,0079   a/r 0,09 ‰   ok
+   Moyenne, réglage retenu                              d1 0,0053   a/r 0,06 ‰   ok
+   Fine, ombres coupées (témoin)                        d1 0,0080   a/r 0,14 ‰
 
+2. Tuile contre même passe sans tuile (mêmes poses, même hasard), Fine. Seuils : d2 +0,05, a/r +1 ‰.
+   Habitacle immobile à l'écran : caméra liée à la caisse (champ figé), voiture sans pilote en ligne droite (s 2300).
+   Région 1 : planche sous la casquette ; région 2 : bas du volant et bras ; région 3 : flanc droit et ombre du bras
+   sur la portière.
+
+   Essais du 18/11, avec les rivaux (cockpit-droit) :
                        région 1                 région 2                 région 3
    tuile 1024²         d2 +0,109  a/r +1,06 ‰   d2 +0,011  a/r +0,18 ‰   d2 +0,188  a/r −0,17 ‰   KO (dents qui rampent)
    tuile 512² (retenue) d2 +0,023 a/r +0,38 ‰   d2 +0,024  a/r +0,09 ‰   d2 +0,133  a/r −0,64 ‰   ok
 
-   Virage (s 800, avec pilote : le volant et les bras bougent, leurs ombres aussi), relevé seulement :
+   Avec les rivaux, la région 3 n'avait pas de verdict : les ombres des voitures qui passent y tombent, avec ou sans
+   tuile (relevé seulement). Correction du 19/11 (point 7 de la relecture), page corrigée :
+   cockpit-droit (rivaux)   région 1 d2 +0,023 a/r +0,39 ‰ ok ; région 2 d2 +0,024 a/r +0,11 ‰ ok ;
+                            région 3 d2 +0,132 a/r −0,63 ‰ relevé
+   cockpit-seul (rivaux à une demi-longueur du circuit)
+                            région 1 d2 +0,016 a/r +0,31 ‰ ok ; région 2 d2 +0,003 a/r +0,15 ‰ ok ;
+                            région 3 d2 +0,019 a/r +0,03 ‰ ok
+   Sans rivaux, la région 3 ne bouge presque plus (d1 0,083 avec la tuile, 0,063 sans) : l'écart relevé avec les
+   rivaux venait bien de leurs ombres.
+
+   Poursuite, rivaux écartés (poursuite-ombre), même ligne droite. Région : l'ombre de la roue arrière droite et de
+   l'aileron sur la piste, à droite de la voiture (pixels 736 à 806 sur 482 à 533), nette avec la tuile, floue sans
+   (images/zoom-i-poursuite-avec-tuile.jpg et zoom-i-poursuite-sans-tuile.jpg, prises à 60 images du départ) :
+   avec la tuile    d1 1,755  d2 1,462  a/r  14,0 ‰
+   sans la tuile    d1 3,841  d2 3,198  a/r 129,7 ‰
+   écart            d2 −1,736  a/r −115,7 ‰   ok
+   Sans la tuile, le bord flou de l'ombre de l'atlas, qui avance avec le carré du soleil, bat d'une image à l'autre
+   sous la voiture ; la tuile, attachée à la voiture, le tient. Le fond (d1 1,75 avec la tuile) vient du grain de la
+   piste qui défile sous la caméra.
+
+   Virage (s 800, avec pilote : le volant et les bras bougent, leurs ombres aussi), relevé seulement (18/11) :
    tuile 1024²         région 1 d2 −0,081 ; région 2 d2 +0,066
    tuile 512²          région 1 d2 −0,068 ; région 2 d2 +0,083
    L'habitacle n'y est pas immobile ; l'écart de la région 2 vient d'ombres nettes qui suivent le volant. Ce cas n'est
    pas un contrôle de scintillement et n'a pas été retenu comme tel.
 
 3. Journal du gouverneur (10 s de course en qualité Auto, cadence réelle) : 1 changement, t 0,0 s, niveau 0, ombres
-   allumées.
+   allumées (18/11 et 19/11).
 
-4. Chronométrage GPU par effet (essai écarté) : requêtes TIME_ELAPSED d'EXT_disjoint_timer_query_webgl2, présentes
-   dans Chrome sans fenêtre, sans lecture de pixel, variantes alternées image par image. Une séance par scène, Fine,
-   essai PCSS. Les résultats se contredisent : en cockpit, tout allumé 35,2 ms et tous les effets coupés 38,1 ms ;
-   en poursuite 0.3.10, ombres du soleil coupées 33,3 ms contre 32,7 ms allumées. Sur ce Mac, ces requêtes ne
-   séparent pas le coût d'un effet. Les coûts du rapport sont donc des temps synchronisés (couts.txt).
+4. Chronométrage GPU par effet (essai écarté, 18/11) : requêtes TIME_ELAPSED d'EXT_disjoint_timer_query_webgl2,
+   présentes dans Chrome sans fenêtre, sans lecture de pixel, variantes alternées image par image. Une séance par
+   scène, Fine, essai PCSS. Les résultats se contredisent : en cockpit, tout allumé 35,2 ms et tous les effets coupés
+   38,1 ms ; en poursuite 0.3.10, ombres du soleil coupées 33,3 ms contre 32,7 ms allumées. Sur ce Mac, ces requêtes
+   ne séparent pas le coût d'un effet. Les coûts du rapport sont donc des temps synchronisés (couts.txt).
 
-Fichier complet du réglage retenu : controle-ombres.json (page finale, sha256 b18cbf3473b7d94b…).
+5. Coût fixe de l'option (point 1 de la relecture). Construction contre construction, effets coupés (contacts,
+   tuile, carte lointaine et pénombre retirés de fx), séances alternées par tour (couts.txt, § 1 et § 3).
+   Ancienne base (a.html contre b0.html, 0.3.11 tel que relu ; alternance stricte comme la relecture ; 8 tours) :
+     Fine cockpit +0,80 ms (tout allumé +1,95 ; la relecture mesurait +1,8), Fine poursuite +0,05 (+1,70),
+     Moyenne −0,60 (+0,90), Légère +0,05 (+0,10).
+   Ce que le shader relu faisait effets coupés : à chaque pixel éclairé par le soleil, photoSoleil projetait le point
+   dans la tuile et accumulait la moyenne des bloqueurs de PCSS, même sans tuile et en 'meteo'. Corrigé : la projection
+   seulement si la tuile sert, la moyenne seulement dans le bloc PCSS, et ce bloc compilé seulement si l'hôte le
+   demande (ombresPhoto.pcss ; BITUME ne le demande plus). Le contact est en plus borné par une sphère.
+   Nouvelle base, 0.3.10 (a2.html) contre 0.3.11 corrigé (fin2.html), 16 tours, ordre des variantes au hasard ; entre
+   crochets, 90 % des médianes de tours ré-échantillonnés :
+     Fine cockpit −0,35 [−0,75 ; +0,30] ; Fine poursuite −1,50 [−1,85 ; +0,45] ;
+     Moyenne 0,00 [−0,60 ; +1,30] ; Légère +0,45 [−0,30 ; +1,15].
+   Dans les mêmes tours de 01 h (8 tours), contre 0.3.11 tel que relu (b02.html) : −0,40, −1,15, −0,35, +0,75 (même
+   ordre des scènes) ; contre le shader allégé sans PCSS (v1n.html) : −0,55, −0,35, +0,85, +0,30. b02 contre v1n
+   directement : de −0,85 à +1,20 selon la scène. À cette résolution, ni le coût fixe ni l'allègement ne se séparent du
+   bruit d'une construction à l'autre : une séance sur dix tombe dans un état plus lent ou plus rapide de la machine
+   (Moyenne : de 8,6 à 16 ms pour la même image).
+   Témoin (couts.txt, § 1 bis) : une troisième page, la page finale sans ombresPhoto dans ses options de création
+   (fin2-sans.html : shaders et appels GL de 0.3.10), en Moyenne et en Légère cockpit, ordre des pages en carré latin.
+   Réunion des passages : témoin − 0.3.10, tout coupé, Légère −0,05 [−0,50 ; +0,30] et Moyenne +0,40 [−0,35 ; +1,10]
+   (44 tours) ; avec − sans l'option, tout coupé, Légère +0,65 [+0,20 ; +1,00] et Moyenne +0,25 [−0,10 ; +0,85] ;
+   avec l'option − 0.3.10 en Légère, +0,35 [0,00 ; +0,80] tout coupé et +0,45 [+0,20 ; +0,90] tout allumé (84 tours).
+   Le temps processeur de rendu.draw, sans attendre le GPU, est le même sur les trois pages (outils/modele4.js).
+   Deux pages de diagnostic (une ligne du JavaScript de fin2.html changée : le shader sans le code du soleil, ou sans
+   celui du contact) ne l'isolent pas : contre 0.3.10, tout coupé, 24 tours, contact seul +0,60 [+0,30 ; +0,90], code
+   du soleil seul +0,15 [−0,35 ; +0,95], option entière +0,20 [−0,30 ; +1,30]. Que le contact seul paraisse plus cher
+   que l'option entière montre la limite : à 24 tours, l'écart entre deux pages reste de l'ordre de ±0,5 ms.
+   Conclusion : en Légère, un fixe probable de 0,3 à 0,65 ms côté GPU, cause non trouvée, non corrigé ; en Moyenne,
+   non séparé du bruit ; en Fine cockpit, aucun.
+
+6. Allocations (point 5 de la relecture). Échantillonneur du tas de V8 (HeapProfiler.startSampling, objets ramassés
+   compris), deux mesures :
+   - dans Chrome, la page entière (outils/allocations-page.mjs, protocole de débogage de Chrome) : Fine cockpit,
+     2880 × 1514, Val-Brûlé, 300 images après 3 s de chauffe, un relevé tous les 512 octets en moyenne :
+       0.3.10 (a2.html)                    248 421 octets par image en tout
+       0.3.11 tel que relu (b02.html)      259 417 octets par image, dont photoTuile 9 214, photoBind 180,
+                                           photoSunMatrix 78, photoTilePass 71
+       0.3.11 corrigé (fin2.html)          247 320 octets par image, dont photoBind 181, photoTilePass 66,
+                                           photoSunMatrix 5, photoTuile 4
+     Le total de la page corrigée est celui de 0.3.10 : la fonction préparée du jeu (prepare, environ 153 000 octets
+     par image) et le rendu de base (render, de 22 000 à 34 000 selon le tirage) allouaient déjà avant ce lot. Les
+     9 214 octets de photoTuile venaient de la répartition de la tuile (length = 0 puis push) ; ils ont disparu.
+   - sous Node, le moteur seul avec le contexte WebGL simulé du test (alloc/fermeture2.test.mjs du dossier de
+     travail : 1000 images de chauffe puis 1000 mesurées, un relevé tous les 16 octets, trois tirages) : photoBind
+     alloue de 605 à 614 octets par image sans la fermeture, de 661 à 669 avec elle (56 octets de moins), mais le total
+     du moteur ne baisse pas (43 812 contre 43 795 octets par image) : ce que photoBind n'alloue plus est alloué
+     ailleurs (nombres mis en boîte pour les appels au contexte simulé).
+   La fermeture est sortie au niveau du module comme demandé, mais dans Chrome son retrait ne se voit pas (180 puis
+   181 octets par image dans photoBind) : V8 ne l'allouait déjà pas à chaque image dans le code optimisé. Le premier
+   jet du rapport annonçait « 56 octets en moins » : c'était vrai pour photoBind sous Node seulement. Restent dans
+   Chrome environ 250 octets par image dans les fonctions photo* (nombres mis en boîte aux appels GL).
+
+7. Ordre des variantes dans une séance (méthode). L'alternance stricte de deux variantes (couts/modele.js, 18/11)
+   met tout travail du jeu à 30 Hz (traces, fumée : src/traces.js) sur la même variante pendant toute la séance.
+   Témoin : deux variantes identiques de 0.3.10 dans la même séance. En alternance stricte (campagne b0, 32
+   séances), l'écart vaut 0,2 ms en médiane, mais une séance sur dix dépasse 1,5 ms (15,0 contre 13,7 ms en Fine
+   cockpit, 00 h 42). Avec l'ordre tiré au hasard dans chaque bloc (couts/modele2.js et modele3.js ; campagnes final
+   et final2, 32 et 64 séances), la médiane est de 0,2 à 0,3 ms et une séance sur dix dépasse de 0,6 à 0,9 ms
+   seulement. Toutes les mesures du 19/11 sur la nouvelle base suivent l'ordre au hasard ; la reproduction sur
+   l'ancienne base (point 5) garde l'alternance stricte de la relecture, pour être comparable.
+
+8. Carte lointaine en Légère (point 4 de la relecture). Le jeu du 18/11 la calculait au chargement de chaque circuit,
+   sauf sur un GPU modeste, donc aussi en Légère, qui n'a pas d'ombres du soleil : 8 Mo de profondeur et une passe de
+   97 appels pour rien (mesurée en forçant le calcul, voir couts.txt, § 4). Désormais B.ombres.ombresPossibles dit si
+   un des paliers que la séance peut prendre a des ombres du soleil (Auto les parcourt tous, un choix fixe n'en a
+   qu'un, les ombres forcées du menu comptent), et jeu.js ne calcule la carte que dans ce cas, une fois par décor ;
+   sinon elle est libérée. Preuves : verifications/ombres.test.mjs (deux tests), et les créations par le chemin du
+   joueur : Légère cockpit, état de l'image { contacts 4, tuile non, carte non, loinTaille 0 } ; Auto cockpit
+   loinTaille 2048.
+
+9. La foule de l'hôte et les unités de texture (trouvé en rebasant, point 2 de la relecture). Le public des tribunes
+   du lot 18 (src/public.js) dessine ses spectateurs par fx.foule.ombre et fx.foule.couleur, au milieu du rendu de
+   FERRO ; il lie une texture flottante (RGBA32F, NEAREST) sur l'unité 8 et une texture entière (RGBA32UI) sur
+   l'unité 9. 0.3.11 tel que relu laissait sur les unités 8 et 10 un échantillonneur de comparaison à filtrage
+   linéaire, qui rend la texture flottante incomplète : les gradins étaient vides dans toutes les pages 0.3.11. Pire,
+   l'habitacle, dessiné après la foule, trouvait sur l'unité 9 la texture entière du public au lieu de la tuile : ses
+   dessins étaient refusés (INVALID_OPERATION) et l'habitacle disparaissait dès qu'un spectateur était à l'écran
+   (repro-foule/ du dossier de travail : Val-Brûlé, tribune, cockpit). Correction dans FERRO : l'échantillonneur quitte
+   les unités 8 et 10 pendant les appels de la foule et y revient après ; après la passe couleur de la foule, les
+   textures de l'option sont reliées aux unités 8 à 10. Le test de FERRO qui le prouve échoue sur b2fe5bf et passe
+   sur le corrigé ; sans l'option, les appels GL restent ceux de 0.3.10, foule comprise (empreintes). Dans les quatre
+   scènes chronométrées, aucun spectateur n'est dessiné (sonde/ : 400 images par scène, fx.foule passé à chaque image,
+   0 image où la foule dessine) : seuls 16 appels GL par image s'ajoutent autour des appels de la foule ; v1n.html
+   (avant cette correction) et fin2.html y font le même travail.
+
+10. Prises d'images (méthode). Deux prises de la même page différaient parfois de toute l'image. Deux causes, toutes
+   deux du temps réel de la page et non du rendu : le voile de chargement (.chargement) s'efface et la vue de course
+   (#vue-course) apparaît, chacun en 0,3 s (style.css) ; selon la charge de la machine, la prise tombait pendant ce
+   fondu (jusqu'à 9,5 niveaux sur le ciel de la tribune, et de 3 à 12 niveaux en moyenne sur toute l'image des vues
+   5, 6, 10 et 11, prises moins de 50 images après le lancement). outils/prise.js cache le voile et fige toutes les
+   transitions CSS de la page. Toutes les prises du rapport sont refaites avec ce script. Deux prises de la même page,
+   onze vues : identiques au pixel près dans 8 vues sur 11 pour 0.3.10 et 9 sur 11 pour 0.3.11. Restent 157 et 140
+   pixels sur les vues 5 et 6 de 0.3.10 ; sous la pluie (vue 8), 1,5 % des pixels pour 0.3.10 et 0,1 % pour 0.3.11 ;
+   en poursuite Fine, 2,1 % pour 0.3.11 : deux états d'une prise à l'autre, sur les bords des arbres de l'horizon et
+   des voitures (cause non trouvée ; ce n'est pas l'ombre, le motif suit les contours de tout le décor). Cadrages du
+   plan, deux passages complets sur la même page 0.3.10 : 74 sur 80 identiques au pixel près ; les six autres de 5 à
+   1 436 pixels, au plus 0,16 % de l'image (poursuite sous la pluie ; cadrages-plan.txt).
+
+Fichier complet du réglage retenu : controle-ombres.json (page corrigée du 19/11, fin2.html, sha256 e8d661ca…).
