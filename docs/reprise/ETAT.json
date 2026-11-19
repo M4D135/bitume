@@ -5,16 +5,17 @@
     "version_courante": "0.2.46",
     "base_commit": "9c49abad670b16c67127c921b6522fecd29daf79",
     "base_version": "0.2.46",
-    "statut": "12D_publie_12E_en_cours",
+    "statut": "12E_implémente_qualification_degagement_en_cours",
     "lot": "12E_chaussee_adherence",
     "fiche": "docs/reprise/12E-CHAUSSEE-ADHERENCE.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
     "qualification": "docs/reprise/rapports/12D-2026-11-19/qualification-finale.json",
     "publication": "docs/reprise/rapports/12D-2026-11-19/PUBLICATION-0246.json",
-    "prochaine_action": "12E : implémenter chaussée commune, neige et usure physique ; passer p10 puis qualifier et publier.",
+    "prochaine_action": "Terminer le dégagement physique après collision arbre, puis qualifier p10 et construire/publier 0.2.47 ; patch de reprise disponible.",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
     "physique": "p9 conservée",
-    "neige": "Catalogue et visuel prêts ; choix en course fermé avant 12E"
+    "neige": "Catalogue et visuel prêts ; choix en course fermé avant 12E",
+    "checkpoint_sources": "docs/reprise/rapports/12E-2026-11-19/checkpoint-sources-12E.patch"
   },
   "validation": {
     "date": "2026-11-19",

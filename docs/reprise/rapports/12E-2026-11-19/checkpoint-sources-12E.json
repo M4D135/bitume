@@ -1,0 +1,8 @@
+{
+  "base_commit": "77998f2507dc68e9bb5fa0bea7176140d0051630",
+  "patch_sha256": "368e2301a37aa5fa4de8d717b06474fed8c3e8199d02fb8b5695a803d279b121",
+  "bytes": 200494,
+  "statut": "intermediaire_adhérence_p10_degagement_obstacle_a_corriger",
+  "build_publie": "0.2.46",
+  "instructions": "Depuis base propre, git apply --check puis git apply du patch ; reconstruire seulement après correction et qualification."
+}

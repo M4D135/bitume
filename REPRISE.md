@@ -13,7 +13,10 @@ puis seulement la fiche `docs/reprise/12E-CHAUSSEE-ADHERENCE.md` lorsqu'elle exi
 
 ## Prochaine action précise
 
-**12E — chaussée et adhérence** est ouvert ; lire sa fiche, terminer le code, qualifier puis publier.
+**12E — chaussée et adhérence** est implémenté ; corriger le dégagement d’un rival contre un arbre avant clôture.
+Sources intermédiaires récupérables : `docs/reprise/rapports/12E-2026-11-19/checkpoint-sources-12E.patch`
+(base et empreinte dans le JSON voisin). Appliquer seulement à une copie propre de cette base, après `git apply --check`.
+La version publiée reste 0.2.46 ; le build 0.2.47 local est encore en qualification.
 Reçu 0.2.46 : `docs/reprise/rapports/12D-2026-11-19/PUBLICATION-0246.json`.
 Preuves : `docs/reprise/rapports/12D-2026-11-19/qualification-finale.json`.
 **91/93 suites**, deux échecs hérités identiques, **19 scénarios / 1 259 empreintes p9 identiques**.
