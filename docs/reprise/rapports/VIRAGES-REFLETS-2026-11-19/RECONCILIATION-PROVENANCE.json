@@ -1,0 +1,63 @@
+{
+  "date_utc": "2026-11-19T17:18:08.839615+00:00",
+  "source_code_commit": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
+  "source_tree": "637fd699af638141d18c369c291a1260d95eeefa",
+  "ferro_main": "a22b738fbe2aa2b36b659fca94527acc2ffcd635",
+  "ferro_tree": "c858dea55ae3b38c307910124936394671cfbf74",
+  "invalid_canonical_path": "docs/ferro-reference/ssr-0312-2026-11-19/QUALIFICATION.json",
+  "actual_canonical_path": "docs/reflets-0312/qualification.json",
+  "unsupported_in_published_canon": [
+    "EMPRISE 11/17 avec six échecs",
+    "Deux builds complets EMPRISE identiques"
+  ],
+  "supported_emprise": {
+    "portee": "contrats hôtes ciblés ; scène complète non exécutée",
+    "suites": 11,
+    "reussies": 9,
+    "echecs_herites": 2,
+    "nouveaux_echecs_relatifs_a_0311": 0,
+    "scripts_valides": 88,
+    "modules_identiques": 34,
+    "build_tente": true,
+    "build_termine": false,
+    "blocage_build": "src/city-data.js indisponible via connecteur ; aucune donnée de substitution",
+    "preuve": "ferro-canonique/emprise-summary.json"
+  },
+  "annexes_exactes": [
+    {
+      "source_repository": "M4D135/FERRO",
+      "source_commit": "a22b738fbe2aa2b36b659fca94527acc2ffcd635",
+      "source_path": "docs/reflets-0312/qualification.json",
+      "local_path": "ferro-canonique/qualification-canonique.json",
+      "git_blob": "7e614c560bf3686762305b762bd9bf8cef75cebc",
+      "sha256": "dd925c6b30ca5b3db443d578b2539de31c44ff492aafe5422d3f527c8b599191"
+    },
+    {
+      "source_repository": "M4D135/FERRO",
+      "source_commit": "a22b738fbe2aa2b36b659fca94527acc2ffcd635",
+      "source_path": "docs/reflets-0312/emprise/summary.json",
+      "local_path": "ferro-canonique/emprise-summary.json",
+      "git_blob": "6a42a4eaa83b1b77ade7f4e0d8f8d055bab3a2a8",
+      "sha256": "021e41079a6a71368ae960d641db958acb5e9c8edfce1114107b1aa2a6fe4f0c"
+    },
+    {
+      "source_repository": "M4D135/FERRO",
+      "source_commit": "a22b738fbe2aa2b36b659fca94527acc2ffcd635",
+      "source_path": "docs/reflets-0312/emprise/RAPPORT.md",
+      "local_path": "ferro-canonique/emprise-RAPPORT.md",
+      "git_blob": "bf01017a4105c5e72b3add95c5b42415d5f87424",
+      "sha256": "76b396bc84f17e383e068202188991b7d014f92237bfc71baadd617405d7a4d2"
+    },
+    {
+      "source": "reçu de publication vérifiée",
+      "local_path": "ferro-canonique/RECU-PUBLICATION.json",
+      "sha256": "4895d1dd18f3c6f3ed1eec9f2c41eedfbd0c4247fc0e5538d6e53a3126e39a56"
+    }
+  ],
+  "raw_concurrent_evidence_preserved": true,
+  "runtime_and_tests_changed": false,
+  "build_changed": false,
+  "pr": 8,
+  "merged": false,
+  "next_lot": "PhysX avec nouvelle version physique ; sols hors-route par shader procédural sans textures importées ; tête/bras et passage de rapport du pilote extérieur."
+}

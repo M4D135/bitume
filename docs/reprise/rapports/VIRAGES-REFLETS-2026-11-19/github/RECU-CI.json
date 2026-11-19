@@ -1,0 +1,60 @@
+{
+  "date_utc": "2026-11-19T17:18:08.839615+00:00",
+  "code_head": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
+  "scope": "Deux CI complètes rattachées à la tête de code ; distinctes des 39 suites locales ciblées.",
+  "runs": [
+    {
+      "run_id": 44572852026,
+      "job_id": 135732349014,
+      "event": "pull_request",
+      "head_sha": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
+      "status": "completed",
+      "conclusion": "failure",
+      "passed": 109,
+      "total": 111,
+      "failed_suites": [
+        "decor.test.mjs",
+        "traces.test.mjs"
+      ],
+      "decor": {
+        "circuit": "Val-Brûlé",
+        "budget_ms": 150,
+        "observed_ms": 161
+      },
+      "log": "github/job-135732349014.log",
+      "sha256_log": "2eb705a6e1227c08ee4eb76b4e09c1e04ffbbd0b8cde8f1e9fa890d0d5860be8",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44572852026"
+    },
+    {
+      "run_id": 44572720938,
+      "job_id": 135731872927,
+      "event": "push",
+      "head_sha": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
+      "status": "completed",
+      "conclusion": "failure",
+      "passed": 109,
+      "total": 111,
+      "failed_suites": [
+        "decor.test.mjs",
+        "traces.test.mjs"
+      ],
+      "decor": {
+        "circuit": "Val-Brûlé",
+        "budget_ms": 150,
+        "observed_ms": 166
+      },
+      "log": "github/job-135731872927.log",
+      "sha256_log": "8b1c540c0e5aa79696c1b13d1f3f743c7acf104f9647b97b0a2b115cb1295b4b",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44572720938"
+    }
+  ],
+  "traces": {
+    "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+    "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+    "inherited_signatures_identical": true
+  },
+  "decor_interpretation": "Dépassements observés du budget absolu ; aucune comparaison base/candidat dans ces deux runs, donc aucune conclusion de régression ou de gain.",
+  "all_green": false,
+  "local_tests_rerun": false,
+  "local_build_rerun": false
+}

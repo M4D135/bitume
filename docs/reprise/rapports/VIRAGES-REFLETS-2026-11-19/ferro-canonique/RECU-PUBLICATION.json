@@ -1,0 +1,131 @@
+{
+  "date_utc": "2026-11-19T17:02:14.833Z",
+  "repository": "M4D135/ferro",
+  "branch": "main",
+  "version": "0.3.12",
+  "local_commit": "7bbcb0c6378e113f92599cd1011c24a2e1a8e88f",
+  "qualified_source_commit": "97939de3c8fe71848ae95893ebed2eff1331bb16",
+  "remote_commit": "a22b738fbe2aa2b36b659fca94527acc2ffcd635",
+  "parent": "e69445c03689d3094280dba6b4bf8b8a6ac987bd",
+  "expected_sha": "e69445c03689d3094280dba6b4bf8b8a6ac987bd",
+  "force": false,
+  "tree": "c858dea55ae3b38c307910124936394671cfbf74",
+  "local_tree_identical": true,
+  "main_verified": "a22b738fbe2aa2b36b659fca94527acc2ffcd635",
+  "prepared_tree_reused": "3c0a6a768a8a8c3c20c4d1fa793cd879ee5e5169",
+  "final_documentary_paths": 42,
+  "all_changed_paths_verified": 76,
+  "canonical_source_files_verified": 35,
+  "modules_verified": 34,
+  "unchanged_modules": 32,
+  "large_blobs_reused": true,
+  "package": {
+    "path": "dist/FERRO-0.3.12.zip",
+    "blob": "7bd46cc54bbb25638c400a91065f1c901ef52511",
+    "bytes": 6275319,
+    "sha256": "2572119bc7880fa1cdf3f50f1d338cbf0c21beb810dcd832984c0900ccdcf26c"
+  },
+  "runtime": {
+    "blob": "96b5343e8d3cf1793136b830b4bd5776d9a86dc7",
+    "bytes": 13348875,
+    "sha256": "5a885e0898db96f4d491ad4898e22f6115c42b20184eaa270dc67c9b6447aed8"
+  },
+  "historical_releases_preserved": true,
+  "qualification": {
+    "version": "0.3.12",
+    "base_commit": "e69445c03689d3094280dba6b4bf8b8a6ac987bd",
+    "source_branch": "codex/reflets-flaques-20261119",
+    "module_changes": [
+      "render",
+      "host"
+    ],
+    "unchanged_modules": 32,
+    "renderer_sha256": "c93f4727e4922d176c7bd70f3ebb556c8c4f96538484b48bdb8cdd95ee386982",
+    "host_sha256": "3cb56d0ba2bf98a9b4e62a0b440949751aa71f8ea8bc58ab4953e8baa0053c2f",
+    "canonical_tests": {
+      "total": 195,
+      "passed": 194,
+      "failed": 0,
+      "todo": 1,
+      "log": "all-tests-final.log"
+    },
+    "egl": {
+      "renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+      "resolutions": [
+        [
+          768,
+          512
+        ],
+        [
+          1440,
+          960
+        ],
+        [
+          779,
+          515
+        ]
+      ],
+      "image_kind": "synthetic scene rendered by production SSR_FRAG and POST_FRAG",
+      "hardware_fps": false,
+      "browser_or_mac_validation": false,
+      "max_march_steps": 96,
+      "max_source_pixel_stride": 4,
+      "max_refinements": 3,
+      "bisections_per_refinement": 6,
+      "max_depth_reads": 122
+    },
+    "builds": {
+      "dist/FERRO-0.3.12.zip": {
+        "bytes": 6275319,
+        "sha256": "2572119bc7880fa1cdf3f50f1d338cbf0c21beb810dcd832984c0900ccdcf26c"
+      },
+      "dist/ferro-editor.html": {
+        "bytes": 901534,
+        "sha256": "c98f3358c7a114030c4976345d1a46ba7ea037ffce1964a0413e781e0099fa8b"
+      }
+    },
+    "reproducible": true,
+    "physx_rebuilt": false,
+    "emprise_host_qualification": {
+      "scope": "targeted host contracts only",
+      "report": "emprise/summary.json",
+      "passed": 9,
+      "total": 11,
+      "inherited_failures": 2,
+      "new_failures_relative_to_0311": 0,
+      "syntax": 88,
+      "modules_verified": 34,
+      "build_attempted": true,
+      "build_completed": false,
+      "build_blocker": "src/city-data.js blob unavailable through connector, no data substituted",
+      "browser_scene": false
+    },
+    "bitume_host_qualification": {
+      "scope": "39 targeted suites; complete CI tracked separately in BITUME",
+      "report": "bitume/qualification-finale.json",
+      "passed": 38,
+      "total": 39,
+      "inherited_failures": 1,
+      "new_failures": 0,
+      "scripts_valid": 54,
+      "modules_verified": 34,
+      "unchanged_physics_files": 20,
+      "reproducible_build": true,
+      "version": "0.2.54",
+      "sha256_build": "db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3",
+      "browser_scene": false
+    },
+    "publication": "Validation completed locally; remote publication receipt is issued separately."
+  },
+  "tag_created": false,
+  "github_release_created": false,
+  "deployed": false,
+  "emprise_external_modified": false,
+  "local_refs_modified": false,
+  "ferro_worktree_modified": false,
+  "bitume_worktree_modified": false,
+  "new_tests_run": false,
+  "new_build_run": false,
+  "status": "published_main_verified",
+  "verified": true
+}

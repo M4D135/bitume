@@ -1,0 +1,87 @@
+{
+  "date_utc": "2026-11-19T16:59:05.400914+00:00",
+  "version": "0.2.54",
+  "physique": {
+    "version": "p13",
+    "fichiers_et_oracles_identiques": 20,
+    "preuve": "physique-p13.json"
+  },
+  "lot": "virages_annonces_reflets",
+  "statut": "qualifie_avec_reserve_traces_heritee",
+  "passage_initial": "qualification-execution.json",
+  "resultats_finaux": "suites-finales.json",
+  "suites": 39,
+  "reussies": 38,
+  "echecs": [
+    "traces"
+  ],
+  "echecs_hors_reserves": [],
+  "reprise_ciblee": {
+    "suite": "chaussee-visuelle",
+    "code": 0,
+    "controles": 12,
+    "delta_test": {
+      "verifications/chaussee-visuelle.test.mjs": {
+        "avant": "70c9499e5bd81e5daf349aae28c5c0c6db00656156cf2123884607bc6131733b",
+        "apres": "81ae72f88c29dfadc8d872b6245c307829292a95397263a8f76f7345b6f9ba6e"
+      }
+    },
+    "runtime_change": false,
+    "empreintes_historiques_modifiees": false,
+    "tests_hivernaux_avec_reperes": true,
+    "journal": "chaussee-visuelle-corrigee.log"
+  },
+  "reserve_traces": {
+    "signature_heritee_identique": true,
+    "actual": [
+      "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf"
+    ],
+    "expected": [
+      "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee"
+    ],
+    "journal": "traces.log"
+  },
+  "reperes": {
+    "circuits": 8,
+    "controles": 50,
+    "obstacles_limites_rng_identiques": true
+  },
+  "builds": [
+    {
+      "octets": 14089230,
+      "sha256": "db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3",
+      "version": "0.2.54"
+    },
+    {
+      "octets": 14089230,
+      "sha256": "db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3",
+      "version": "0.2.54"
+    }
+  ],
+  "reproductible": true,
+  "syntaxe_scripts": 54,
+  "source_manifest": "sources-finales.json",
+  "ferro": {
+    "version": "0.3.12",
+    "modules_identiques": 34,
+    "renderer_sha256": "c93f4727e4922d176c7bd70f3ebb556c8c4f96538484b48bdb8cdd95ee386982",
+    "qualification_canonique": "M4D135/FERRO:docs/ferro-reference/ssr-0312-2026-11-19/QUALIFICATION.json",
+    "tests": {
+      "tests": 195,
+      "passed": 194,
+      "failed": 0,
+      "todo": 1,
+      "exit_code": 0
+    },
+    "emprise": {
+      "suites": 17,
+      "reussies": 11,
+      "echecs": 6,
+      "six_signatures_identiques_a_0311": true
+    }
+  },
+  "webgl_scene_bitume": false,
+  "fps_materiels_mesures": false,
+  "deploiement": false,
+  "ci_code": "a_verifier_apres_publication"
+}

@@ -27,9 +27,10 @@ contrôle du mode réel est enrichi et repasse en 12/12, sans changement runtime
 identiques, 14 089 230 octets, 54 scripts valides. 20 lois/oracles p13 conservés, 50 contrôles de repères sur huit circuits.
 
 FERRO 0.3.12 : 34 modules installés identiques, 194 tests canoniques réussis plus un TODO historique, sondes EGL
-aux trois résolutions. EMPRISE 11/17, six échecs reproduits exactement avec la 0.3.11 ; builds hôte identiques.
+aux trois résolutions. Canon publié `a22b738f`, preuves sous `docs/reflets-0312/`. EMPRISE : 9/11 contrats ciblés, deux échecs hérités ; build complet tenté mais bloqué par `src/city-data.js` indisponible. Les déclarations antérieures restent archivées, sans valeur de qualification complète.
 Les sondes corrigent bandes, faux impacts et franges qualifiés. Le SSR reste incomplet sur certaines silhouettes et
 plus coûteux dans le banc logiciel. Aucun gain FPS ni validation visuelle du jeu complet n’est annoncé.
 
-Prochain geste : publier les deux dépôts, vérifier les arbres et les CI, puis clore le reçu. Ne pas relancer
-la qualification locale gelée. Après publication vérifiée, reprendre **13B Russie — décor et saisons**.
+FERRO est publié ; BITUME est en PR n°8, tête de code `10f71ff1`, sans fusion constatée. Les deux CI complètes terminent à **109/111** : traces héritées et seuil décor 150 ms dépassé à 161/166 ms. Elles restent distinctes des 38/39 suites ciblées. Preuves et correction de provenance : `rapports/VIRAGES-REFLETS-2026-11-19/CLOTURE-PROVENANCE-CI.md`.
+
+Ne pas relancer la qualification gelée. Prochain lot demandé : **PhysX avec nouvelle version physique**, sols hors-route par shader 100 % procédural et animation tête/bras/rapport du pilote extérieur. **13B Russie — décor et saisons** reste demandé, différé.
