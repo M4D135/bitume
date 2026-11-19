@@ -1,0 +1,24 @@
+ok transaction des quatre roues : révision attendue, état indépendant et dégâts strictement inchangés
+ok commandes invalides et compteur saturé : rejet sans changement, sans conversion vers des pneus neufs
+ok slicks : arrêt réel, aucun pneu neuf avant terme, quatre à la fin et une seule révision
+ok inter : arrêt réel, aucun pneu neuf avant terme, quatre à la fin et une seule révision
+ok pluie : arrêt réel, aucun pneu neuf avant terme, quatre à la fin et une seule révision
+ok neige : arrêt réel, aucun pneu neuf avant terme, quatre à la fin et une seule révision
+ok deux vrais services : motifs déterministes par séance/voiture/révision, sans RNG partagé
+ok la monte du début est figée ; une préférence ultérieure ne change pas le service engagé
+ok entrée seule, sortie avant garage et arrêt loin après le garage : aucun renouvellement
+ok avant le garage juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok après le garage juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok hors de la voie juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok poussé dans le garage juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok mouvement avant juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok mouvement arrière juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok accident juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok récupération juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok saut juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok mouvement détecté avant le pas complet : le frein ne masque pas une interruption
+ok rivaux, voitures distantes et humains repris par l’IA : aucun service local gratuit
+ok deux voitures locales : renouveler l’une laisse exactement les roues et la révision de l’autre
+ok replacement direct et récupération après un service conservent compteur, graines, usure et objets
+ok révision devenue obsolète pendant le service : aucun second renouvellement ni réparation partielle
+23 contrôles remplacement des pneus aux stands réussis

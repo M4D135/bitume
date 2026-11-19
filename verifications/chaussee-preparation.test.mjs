@@ -94,9 +94,9 @@ verifier('quatre choix avant course et nouveaux espaces de records/fantômes', (
   }
   const declaration = source.match(/  const PHYSIQUE = .*?;/)[0];
   const cles = new Function(declaration + 'return { PHYSIQUE, CLE_RECORDS, CLE_FANTOME };')();
-  assert.equal(cles.PHYSIQUE, 'p10');
-  assert.equal(cles.CLE_RECORDS, 'bitume.records.p10');
-  assert.equal(cles.CLE_FANTOME, 'bitume.fantome.p10.');
+  assert.equal(cles.PHYSIQUE, 'p11');
+  assert.equal(cles.CLE_RECORDS, 'bitume.records.p11');
+  assert.equal(cles.CLE_FANTOME, 'bitume.fantome.p11.');
 });
 
 verifier('les flocons seuls ne déclenchent ni ambiance de pluie ni reflets d’eau', () => {

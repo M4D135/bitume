@@ -1,6 +1,7 @@
 /* BITUME — contrat commun des roues et des pneus, quatre montes jouables depuis le lot 12E.
    Les coefficients sec/eau historiques restent disponibles ; la neige et l'usure sont traitées en p10.
-   Ce module ne fait avancer ni l'usure ni un service et ne tire rien au hasard de la course. */
+   Le remplacement 12F1 s'applique une seule fois sur révision attendue, sans avancer le service ni tirer
+   dans le générateur de la course. Les dégâts et leur réparation restent dans leur propre module. */
 (function (B) {
   'use strict';
 
@@ -74,12 +75,33 @@
       graine: melanger((base + Math.imul(i + 1, 0x9e3779b9)) >>> 0) };
   }
 
+  function etatNeuf(type, identite, service) {
+    const base = graineIdentite(identite, service);
+    return { versionPneus: VERSION_ETAT, pneus: type, servicePneus: service,
+      etatPneus: ROUES.map((_, i) => roueNeuve(base, i)) };
+  }
+
   // Le retour peut être copié dans l'état de conduite. Les quatre objets restent indépendants et mutables.
   // servicePneus est la révision du dernier remplacement terminé, initialement zéro ; aucun service n'est lancé ici.
   function creerEtat(type = 'slicks', identite = {}) {
-    const base = graineIdentite(identite, 0);
-    return { versionPneus: VERSION_ETAT, pneus: normaliserType(type), servicePneus: 0,
-      etatPneus: ROUES.map((_, i) => roueNeuve(base, i)) };
+    return etatNeuf(normaliserType(type), identite, 0);
+  }
+
+  // Transaction locale : les quatre roues changent ensemble après validation complète. Une seconde livraison
+  // du même ordre (révision attendue ancienne) est sans effet. Ne pas normaliser une commande invalide en
+  // pneus neufs ; le futur transport doit aussi vérifier séance, expéditeur et version avant cet appel.
+  function remplacerEtat(etat, type, identite, revisionAttendue) {
+    const identiteValide = x => typeof x === 'string' && x.length > 0 ||
+      typeof x === 'number' && Number.isSafeInteger(x) && x >= 0;
+    if (!etat || typeof etat !== 'object' || Array.isArray(etat) || etat.versionPneus !== VERSION_ETAT ||
+      !estJouable(type) || !Number.isInteger(revisionAttendue) || revisionAttendue < 0 || revisionAttendue >= SERVICE_MAX ||
+      etat.servicePneus !== revisionAttendue || !identite || typeof identite !== 'object' ||
+      !identiteValide(identite.seance) || !identiteValide(identite.voiture) ||
+      !Array.isArray(etat.etatPneus) || etat.etatPneus.length !== 4 ||
+      !etat.etatPneus.every(r => r && typeof r === 'object' && !Array.isArray(r))) return false;
+    const suivant = etatNeuf(type, identite, revisionAttendue + 1);
+    Object.assign(etat, suivant);
+    return true;
   }
 
   // Copie locale bornée, pour sauvegarde et reprise. La compatibilité d'un protocole réseau sera vérifiée avant
@@ -100,5 +122,5 @@
 
   B.pneus = Object.freeze({ VERSION_ETAT, DISTANCE_MAX, SOLLICITATION_MAX, SERVICE_MAX,
     EMPATTEMENT, DEMI_VOIE_AV, DEMI_VOIE_AR, JANTE_R, ROUES, ORDRE_ROUES, NOMS_ROUES, INDICES_ROUES,
-    PNEUS, ADHERENCE_NEIGE, PERTE_USURE, CATALOGUE, TYPES, TYPES_JOUABLES, NOMS_PNEUS, estType, normaliserType, lire, estJouable, creerEtat, normaliserEtat });
+    PNEUS, ADHERENCE_NEIGE, PERTE_USURE, CATALOGUE, TYPES, TYPES_JOUABLES, NOMS_PNEUS, estType, normaliserType, lire, estJouable, creerEtat, remplacerEtat, normaliserEtat });
 })(globalThis.BITUME = globalThis.BITUME || {});

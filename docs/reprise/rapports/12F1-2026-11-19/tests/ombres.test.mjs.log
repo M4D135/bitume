@@ -1,0 +1,13 @@
+    0 octet alloué en 2 048 images (mesure 1/5) ; témoin journal() : 107360 octets
+ok  preparer : une image sans allocation (douze voitures en mouvement, trois paliers, journal)
+ok  axes : avant et haut de la caisse comme B.voiture.attitude (cap, tangage, roulis)
+ok  boîte : centre, axes et cotes de la caisse et des roues dans l'ordre lu par FERRO
+ok  choix : six places (quatre en Légère), portée 60 m, voitures de derrière après celles de devant
+ok  continuité : aucune force ne saute quand une voiture double, sort de portée ou passe derrière la caméra
+ok  paliers : réglages du contact, tuile et pénombre (Fine, Moyenne, Légère)
+ok  tuile : milieu de la caisse à 45 cm, axe avant de la voiture filmée, intervalle de ses objets
+ok  journal : une ligne par changement du niveau Auto ou des ombres, les 64 dernières
+ok  carte lointaine : une passe par décor, libérée sans ombres possibles ou sur un GPU modeste
+ok  ombres possibles : la carte ne sert qu'aux paliers qui ont des ombres du soleil (pas en Légère)
+---
+10 tests passes

@@ -1,0 +1,9 @@
+ok vrai HTML et vraies tables H/H2 : deux ensembles distincts, aucun ID inventé
+ok majHud réel : quatre montes, quatre usures et roue la plus usée réellement visibles
+ok initialisation de lancement : joueurs locaux 1 et 3 sélectionnés avant la première image
+ok majHud partagé : chaque pilote garde ses pneus, sans fuite ni mutation de la simulation
+ok remplacement réel : monte et quatre jauges actualisées, révision de service jamais changée par le HUD
+ok données absentes ou incomplètes : usure inconnue explicite, pas de pneus neufs inventés
+ok affichage borné et catégorie lisible, sans normaliser l’état de conduite
+ok images identiques : aucune écriture pneus répétée ; la mise à jour suit la cadence du HUD
+8 contrôles HUD pneus réels réussis (DOM simulé, mise en page/WebGL non qualifiés)

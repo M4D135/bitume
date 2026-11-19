@@ -1,8 +1,8 @@
 {
-  "version": "0.2.47",
-  "raw": 14001233,
-  "gzip": 3316005,
-  "sha256": "90afbee41f4d080a7b464572ce5464a9c91c53a560be8458f748229f955135b7",
+  "version": "0.2.48",
+  "raw": 14006845,
+  "gzip": 3317850,
+  "sha256": "716f9f85873b490e92cea5c3684a0c0133ec2541dd0ab8235b223511e5680d5b",
   "sources": {
     "moteur/renderer.js": 305497,
     "ferro/engine.js": 2025,
@@ -11,14 +11,14 @@
     "ferro/gpu-profile.js": 2548,
     "circuit.js": 21826,
     "ferro/vehicle-dynamics.js": 3980,
-    "pneus.js": 7186,
+    "pneus.js": 8652,
     "usure-pneus.js": 5633,
     "chaussee.js": 2041,
     "conduite.js": 49880,
     "degats.js": 6201,
     "contacts.js": 8314,
     "obstacles.js": 18724,
-    "course.js": 54374,
+    "course.js": 55991,
     "son.js": 36962,
     "botanique.js": 21169,
     "ecologie.js": 3051,
@@ -54,8 +54,8 @@
     "scene-bench.js": 23081,
     "vibrations.js": 13482,
     "ombres.js": 12015,
-    "jeu.js": 309061,
-    "index.html": 50804,
-    "style.css": 52469
+    "jeu.js": 310387,
+    "index.html": 51049,
+    "style.css": 53427
   }
 }

@@ -268,6 +268,15 @@ button:disabled { cursor: wait; opacity: .55; }
 #c-pneus[data-pneus="neige"] { --pneu: #dbe6f5; }
 .case .nom-pneus { display: flex; align-items: center; gap: 7px; margin-top: 8px; font: italic 800 19px/1 var(--f-titre); font-stretch: condensed; text-transform: uppercase; }
 .case .nom-pneus i { width: 13px; height: 13px; border-radius: 50%; border: 3px solid var(--pneu); background: #111; flex: none; }
+/* Quatre réserves de gomme, dans l'ordre avant gauche/droite puis arrière gauche/droite.
+   Le pourcentage annonce le pneu le plus usé ; il ne représente pas un pourcentage d'adhérence. */
+.case .usure-pneus { display: block; margin-top: 5px; font: 600 10px/1.1 var(--f-texte); color: var(--papier-2); }
+.case .barres-pneus { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; height: 3px; margin-top: 4px; }
+.case .barres-pneus i { display: block; border-radius: 2px; background: linear-gradient(90deg, var(--pneu) calc(var(--f, 1) * 100%), #ffffff26 0); }
+.case.pneus[data-usure="forte"] .usure-pneus { color: #ffd166; }
+.case.pneus[data-usure="limite"] .usure-pneus { color: #ff8b7a; }
+body.tactile .case .usure-pneus { font-size: 8px; margin-top: 3px; }
+body.tactile .case .barres-pneus { height: 2px; margin-top: 2px; }
 /* Santé de la voiture (lot 4) : la barre se lit dans l'état des dégâts, le mot change au stand. */
 .case .barre-sante { display: block; height: 5px; margin-top: 7px; border-radius: 3px; background: #ffffff26; overflow: hidden; }
 .case .barre-sante i { display: block; height: 100%; width: calc(var(--f, 1) * 100%); background: #46c07a; border-radius: 3px; }
@@ -485,13 +494,15 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   .case .grand small { font-size: 14px; }
   .case .nom-pneus { margin-top: 5px; font-size: 11px; gap: 4px; }
   .case .nom-pneus i { width: 8px; height: 8px; border-width: 2px; }
+  .case .usure-pneus { font-size: 8px; margin-top: 3px; }
+  .case .barres-pneus { height: 2px; margin-top: 2px; }
   .chronos, body.tactile .chronos { width: 100%; min-width: 0; padding: 4px 2px; }
   .chronos { display: flex; gap: 8px; }
   .ligne-chrono { flex: 1; min-width: 0; flex-direction: column; align-items: flex-start; gap: 3px; }
   body.tactile .chronos { min-height: 44px; padding-right: 52px; align-items: flex-start; }
   body.tactile .ligne-chrono { flex-direction: row; align-items: baseline; justify-content: flex-start; gap: 8px; }
-  body.tactile #b-pause { top: calc(var(--hud-top) + 48px); }
-  body.tactile #zone-carte, body.tactile .hud-bas { top: calc(var(--hud-top) + 100px); }
+  body.tactile #b-pause { top: calc(var(--hud-top) + 58px); }
+  body.tactile #zone-carte, body.tactile .hud-bas { top: calc(var(--hud-top) + 110px); }
 }
 
 /* deux manettes branchées : l'écran titre le signale sur « À deux » */

@@ -1,0 +1,98 @@
+{
+  "date_utc": "2026-11-19T10:39:21.391298+00:00",
+  "version": "0.2.48",
+  "physique": "p11",
+  "suites": 100,
+  "reussies": 99,
+  "echecs": [
+    "traces.test.mjs"
+  ],
+  "sources_stables": true,
+  "determinisme": {
+    "scenarios": 20,
+    "empreintes": 1300,
+    "generation": 0,
+    "verification": 0,
+    "archives": {
+      "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+      "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a"
+    }
+  },
+  "build": {
+    "sha256": "716f9f85873b490e92cea5c3684a0c0133ec2541dd0ab8235b223511e5680d5b",
+    "bytes": 14006845,
+    "reproductible": true,
+    "codes": [
+      0,
+      0
+    ],
+    "hashes": {
+      "VERSION.json": "b2456aae684c049f1c90ca37aa2a69937e0857ab2f8ea3516018d677eb7df4ab",
+      "SIZE.json": "e484c3a900e6e07738adcd9d4be71a9a0c9a49d113796a1fb987b65c6d9d129b",
+      "dist/bitume.html": "716f9f85873b490e92cea5c3684a0c0133ec2541dd0ab8235b223511e5680d5b"
+    }
+  },
+  "bundle": {
+    "scripts": 51,
+    "codes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "ferro": {
+    "version": "0.3.11",
+    "modules": 34,
+    "ecarts": []
+  },
+  "webgl_valide": false,
+  "deploiement_effectue": false
+}

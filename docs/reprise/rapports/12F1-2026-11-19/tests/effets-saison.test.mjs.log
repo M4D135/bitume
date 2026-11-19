@@ -1,0 +1,11 @@
+ok précipitations réservées aux profils neigeux ; feuilles aux arbres automnaux
+ok paliers croissants et arrêt effectif, sans nouvelle lecture du sol
+ok neige météo explicite hors hiver, intensité finale et interdiction persistante au Sud
+ok neige sans eau, sans abri, sans sous-sol ; objets 3D petits et proches
+ok portails du tunnel et toitures sont masqués aussi vus de l’extérieur
+ok déterminisme sans hasard partagé, même temps dans deux pools indépendants
+ok trajectoires absolues et fondus identiques à 30 et 120 Hz
+ok vent continu et varié, chute réelle et fonte douce en fin de précipitation
+ok pools et tableaux réutilisés sur 2000 images ; sélection et terrain au repos mis en cache
+ok vrais décors : sources automnales, profils hivernaux et suppression dans le tunnel
+effets-saison : 10 contrôles passés

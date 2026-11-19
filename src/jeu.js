@@ -72,7 +72,7 @@
     if (!session || !session.reglagesReference) (ecran === 'course' ? differerStock : ecrireStock)('bitume.reglages', reglages);
   };
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p10', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p11', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
   // temps et longueur du fantôme gardé, par circuit : lus une fois, puis tenus à jour à chaque écriture (finTour
   // relisait et analysait le fantôme entier à chaque tour de chrono)
@@ -286,7 +286,6 @@
       v.etat.pneus = enl && v.humain ? (B.conduite.PNEUS[enl.pneus && enl.pneus[v.id]] ? enl.pneus[v.id] : conseil) : v.joueur && joue && B.conduite.PNEUS[reglages.pneus] ? reglages.pneus : conseil;
       v.livree.pneus = v.etat.pneus;
     }
-    if (joue) for (const h of duo ? [H, H2] : [H]) { h['h-pneus'].textContent = NOMS_PNEUS[course.joueur.etat.pneus]; h['c-pneus'].dataset.pneus = course.joueur.etat.pneus; }
     const S = {
       type, i, course, c, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
       prec: [], cour: [], sortie: [], acc: 0, tele: { poste: null, alea: graine32(course.voitures.length * 7 + i) },
@@ -327,6 +326,10 @@
       detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
       suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null, animauxVue: null });
     S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une, ou deux à l'écran partagé)
+    if (joue) {
+      majPneusHUD(HUD1, course.voitures[S.locaux[0] ?? course.joueur.id].etat);
+      if (duo) majPneusHUD(HUD2, course.voitures[S.locaux[1] ?? course.joueur.id].etat);
+    }
     jeu.dataset.partage = duo ? (reglages.partage === 'cote' ? 'cote' : 'haut-bas') : '';
     delete $('hud').dataset.reduit; delete hud2.dataset.reduit;
     remplirPoses(S.cour, course); remplirPoses(S.prec, course);
@@ -1322,7 +1325,7 @@
     etatEnLigne(raison === 'parti' ? 'L’hôte a quitté la partie.' : raison === 'local' ? '' : 'La liaison est coupée.');
     if (S && S.enLigne && !S.course.termine) {
       // la course continue : ce qui venait du réseau passe à l'IA de cette machine
-      for (const v of S.course.voitures) if (v.distant) { v.distant = false; v.joueur = false; }
+      for (const v of S.course.voitures) if (v.distant) { v.distant = false; v.joueur = false; v.reprise = true; }
       S.enLigne = null; S.enLigneOrigine = false;   // la course finit comme une course seule
       if (raison !== 'local') { message('Liaison perdue', 'ambre'); sousMessage('Les autres pilotes sont remplacés par l’ordinateur'); }
       if (ecran === 'resultats' && S.course.drapeau !== null) finirClassement(S);
@@ -2420,7 +2423,7 @@
   $('hud').after(hud2);
   const H2 = {};
   for (const id of Object.keys(H)) H2[id] = hud2.querySelector('#' + id);
-  for (const id of ['h-pneus', 'c-pneus', 'h-sante', 'h-sante-barre', 'c-sante']) { H[id] = $(id); H2[id] = hud2.querySelector('#' + id); }
+  for (const id of ['h-pneus', 'c-pneus', 'h-pneus-usure', 'h-pneu-0', 'h-pneu-1', 'h-pneu-2', 'h-pneu-3', 'h-sante', 'h-sante-barre', 'c-sante']) { H[id] = $(id); H2[id] = hud2.querySelector('#' + id); }
   const HUD1 = { h: H, segments, lampes, etiquette: etiquetteDerive, barre };
   const HUD2 = { h: H2, segments: Array.from(H2['jauge-derive'].querySelectorAll('i')), lampes: Array.from(H2.feux.querySelectorAll('i')),
     etiquette: H2['jauge-derive'].querySelector('.etiquette'), barre: H2['h-regime'].querySelector('.barre') };
@@ -2428,6 +2431,24 @@
   function attr(el, nom, v) { if (el['_' + nom] !== v) { el['_' + nom] = v; el.setAttribute(nom, v); } }
   function style(el, nom, v) { if (el['_s' + nom] !== v) { el['_s' + nom] = v; el.style.setProperty(nom, v); } }
   function classe(el, nom, oui) { if (el.classList.contains(nom) !== !!oui) el.classList.toggle(nom, !!oui); }
+
+  // L'état affiché appartient au pilote de cet ATH, y compris à deux. Aucun calcul d'usure ni remise à neuf ici.
+  // Les écritures DOM restent bornées aux changements de pourcentage entier, sans lecture de mise en page.
+  function majPneusHUD(x, et) {
+    const H = x.h, type = B.pneus.normaliserType(et.pneus), nom = B.pneus.NOMS_PNEUS[type];
+    texte(H['h-pneus'], nom); attr(H['c-pneus'], 'data-pneus', type);
+    let pire = 0, complet = true, detail = 'Pneus ' + nom + '. Usure : ';
+    for (let i = 0; i < 4; i++) {
+      const u = et.etatPneus?.[i]?.usure, valide = Number.isFinite(u);
+      const pourcent = valide ? Math.round(clamp(u, 0, 1) * 100) : 0;
+      complet = complet && valide; pire = Math.max(pire, pourcent);
+      style(H['h-pneu-' + i], '--f', valide ? ((100 - pourcent) / 100).toFixed(2) : '0');
+      detail += (i ? ', ' : '') + B.pneus.ROUES[i].nom + ' ' + (valide ? pourcent + ' %' : 'inconnue');
+    }
+    texte(H['h-pneus-usure'], complet ? 'Usure max. ' + pire + ' %' : 'Usure —');
+    attr(H['c-pneus'], 'data-usure', complet ? (pire >= 85 ? 'limite' : pire >= 60 ? 'forte' : 'normale') : 'inconnue');
+    attr(H['c-pneus'], 'aria-label', detail + '.');
+  }
 
   // Classement en tour de piste : sept lignes faites une fois par affichage, dans l'ordre où elles peuvent servir (les
   // trois de tête, la coupure, le joueur et ses deux voisins ; la seule coupure possible suit la troisième ligne).
@@ -2525,6 +2546,7 @@
       texte(H['h-rapport'], et.rapport < 0 ? 'R' : String(et.rapport));
       style(barre, '--r', clamp((et.regime - 4000) / 9000, 0, 1).toFixed(3));
       classe(H['h-regime'], 'passer', et.regime > (reglages.boite === 'manuelle' ? 12100 : 12600) && et.rapport > 0 && et.rapport < 6);
+      majPneusHUD(x, et);
     }
 
     // Santé (lot 4) : la jauge vient du même état que les pénalités et la réparation (B.degats.sante), jamais d'un

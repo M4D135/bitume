@@ -1,0 +1,11 @@
+✔ depuisReel filtre et borne les observations sans modifier la source ou garder sa localisation (0.890917ms)
+✔ météo réelle reste constante pendant plusieurs cycles de fronts, avec horloge et eau actives (17.098875ms)
+✔ pas invalides ignorés et sortie ambiance transmet vent/pluie réels (0.333981ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23.524523

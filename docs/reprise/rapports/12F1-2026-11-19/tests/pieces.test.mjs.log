@@ -1,0 +1,90 @@
+{
+  "passed": 21,
+  "total": 21,
+  "results": [
+    {
+      "name": "budget : douze voitures en casse simultanée tiennent sous le plafond du pool",
+      "ok": true
+    },
+    {
+      "name": "budget : une voiture ne peut pas déborder sur le quota d une autre",
+      "ok": true
+    },
+    {
+      "name": "budget : le remplacement d une voiture rouvre son quota",
+      "ok": true
+    },
+    {
+      "name": "plafond : mille pièces réclamées ne dépassent jamais la taille du pool",
+      "ok": true
+    },
+    {
+      "name": "plafond : quand il faut sacrifier, c est la pièce la plus vieille qui cède",
+      "ok": true
+    },
+    {
+      "name": "panneau arraché sur choc violent, du côté de la normale, sans dépasser le budget",
+      "ok": true
+    },
+    {
+      "name": "cohérence : une pièce détachée ne reste pas dessinée sur la voiture",
+      "ok": true
+    },
+    {
+      "name": "repos : la pièce posée quitte la simulation et reste dessinée",
+      "ok": true
+    },
+    {
+      "name": "repos : une pièce encore en mouvement garde son corps",
+      "ok": true
+    },
+    {
+      "name": "libération : corps et dalles rendus, le monde de la page reste vide pour la suivante, effets éteints, plus rien ne bouge",
+      "ok": true
+    },
+    {
+      "name": "monde unique : les séances se suivent dans un seul monde, chauffé une fois, sans corps ni dalle de l une chez l autre",
+      "ok": true
+    },
+    {
+      "name": "préchauffage : une boîte lancée sur une dalle 5 km sous le circuit, puis plus rien ; la séance n en voit rien",
+      "ok": true
+    },
+    {
+      "name": "monde perdu : un pas PhysX qui échoue rend le monde, les pièces restent dessinées, le débris suivant en a un neuf",
+      "ok": true
+    },
+    {
+      "name": "création refusée une fois : la séance garde ses paraboles sans insister, la suivante retente et roule en PhysX",
+      "ok": true
+    },
+    {
+      "name": "rotation : l orientation d une pièce PhysX se prolonge au dessin ; trop rapide, elle tient sa dernière pose ; posée, elle se fige",
+      "ok": true
+    },
+    {
+      "name": "sans PhysX, la pièce suit sa parabole et rien ne lève une exception",
+      "ok": true
+    },
+    {
+      "name": "sol : les dalles suivent l altitude réelle du tracé autour de l accident",
+      "ok": true
+    },
+    {
+      "name": "récupération d urgence : jouable mais pas neuve ; la réparation complète reste aux stands",
+      "ok": true
+    },
+    {
+      "name": "vraie course : après un gros choc, la voiture repart et garde la trace du choc",
+      "ok": true
+    },
+    {
+      "name": "collisions multiples en chaîne : pas de NaN, pas de blocage, corps bornés",
+      "ok": true
+    },
+    {
+      "name": "attente : une séance née avant PhysX s y attache dès que le module est prêt ; refusé ou remplacé, rien ne casse",
+      "ok": true
+    }
+  ]
+}
