@@ -1,0 +1,22 @@
+{
+  "version": "0.2.43",
+  "date": "2026-11-19",
+  "commit": "8b6c91fe9950525c4146c472a195ba063b55f5a1",
+  "page": {
+    "octets": 13955808,
+    "sha256": "0a6598db5ac182568ab89249a1429b332f543540dc4847a76f56ebc2f881aba5"
+  },
+  "production": {
+    "url": "https://bitume.estrasse.fr/",
+    "verifiee_par": "./deposer.sh"
+  },
+  "bug": "David, 19/11 : « bug image noire juste après demarrage course » (Safari, capture : image principale noire, rétroviseurs et affichage vivants).",
+  "cause": "Safari 27.2 sur puce Apple : un contexte WebGL2 demandé avec powerPreference 'high-performance' peut être perdu, dès sa création quand la page n'est pas au premier plan (essai : contexte par défaut intact, deux contextes haute performance nés perdus, erreur CONTEXT_LOST_WEBGL). Le moteur (FRender.create) demande toujours la haute performance : « Compilation 3D : null », plus de moteur principal. La 0.2.39 échoue de la même façon : ce n'est pas une régression de la nuit.",
+  "correctif": "src/jeu.js, preferenceGraphique() : dans Safari, ou quand un contexte d'essai haute performance naît perdu, getContext('webgl2') reçoit powerPreference 'default' pour toutes les toiles du jeu. Appelée dans demarrer() avant FRender.create ; verifications/autoconfig-integration.test.mjs le vérifie.",
+  "preuve": "Même Safari, mêmes conditions, pages servies en local avec une sonde : 0.2.39, 0.2.41 et 0.2.42 ne créent pas leur moteur principal (contexte perdu) ; 0.2.43 le crée en 202 ms, sans erreur. Chrome : parcours smoke à 7 contrôles, code 0. Suites : 88 sur 88.",
+  "reste": [
+    "Porter l'option dans FERRO (powerPreference réglable à la création) au lieu de l'adaptation côté jeu.",
+    "Si la création du moteur échoue malgré tout, le jeu continue avec une image noire : afficher un message et réessayer au retour au premier plan.",
+    "Non vérifié : une course entière dans Safari au premier plan (l'essai s'arrête à la création du moteur et au début de la détection), iPhone et iPad."
+  ]
+}

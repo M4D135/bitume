@@ -3,6 +3,7 @@
 ## Base publiée — 19 novembre 2026, 4 h 05
 
 - Branche unique `main`, sans push forcé ; publications fréquentes du travail réel.
+- **0.2.43** (`8b6c91f`, 19/11 au matin) : correctif Safari, plus d'image principale noire (reçu `docs/reprise/rapports/safari-2026-11-19/publication.json`).
 - **0.2.42**, livraison **`52d8bd0`** : ombres (contact sous les voitures, ombres lointaines, habitacle), moteur FERRO **0.3.11**. Reçu `docs/reprise/rapports/photo-ombres-2026-11-18/publication.json`.
 - Avant elle, la même nuit : **0.2.41** (détection corrigée, animaux, bords de route, flammes d'échappement, public humain ; reçu `docs/reprise/rapports/publication-0241/publication.json`) et **0.2.40** (lot 5B « fluidité » ; reçu `docs/reprise/rapports/fluidite-2026-11-18/publication.json`).
 - Production vérifiée identique par `./deposer.sh`. Qualification : **88/88 suites**, parcours smoke à 7 contrôles.
