@@ -12,7 +12,11 @@
 //     en Fine et en Moyenne ;
 //   - habitacle immobile à l'écran (caméra liée à la caisse, voiture sans pilote en ligne droite) : la tuile n'ajoute
 //     ni scintillement ni dents qui rampent (écart à la même passe sans tuile sous les seuils SEUIL_COCKPIT) ; une
-//     tuile de 1024² le rate sous la casquette de la planche (+0,11 en d2), celle de 512² le tient (+0,02).
+//     tuile de 1024² le rate sous la casquette de la planche (+0,11 en d2), celle de 512² le tient (+0,02). Avec les
+//     rivaux (cockpit-droit), l'ombre du bras sur la portière est seulement relevée : les ombres des voitures qui
+//     passent y tombent ; sans rivaux (cockpit-seul : rivaux à une demi-longueur du circuit), elle est contrôlée ;
+//   - vue poursuite, rivaux écartés (poursuite-ombre) : l'ombre nette que la tuile donne à la voiture filmée tombe
+//     dans la région mesurée ; même contrôle contre la même passe sans tuile.
 // Le journal du gouverneur (BITUME.ombres.journal()) est relevé après 10 s de course en qualité Auto, cadence réelle.
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
@@ -47,17 +51,24 @@ const CAM_CAISSE = `{ let champ = null; J.camera = (p, cam) => { const M = B.voi
 // immobiles, soleil presque fixe par rapport à la caisse (seuls le tangage et le roulis bougent). Régions : haut de la
 // planche sous la casquette et branches du volant, à l'abri des ombres du dehors (contrôlées) ; ombre du bras sur la
 // portière (relevée seulement : les ombres des voitures qui passent y tombent, avec ou sans tuile).
-const COCKPITS = [
-  { nom: 'cockpit-droit', depart: 2300, pilote: false, regions: [[.34, .665, .66, .75], [.37, .82, .60, 1], [.67, .82, .79, 1]], controlees: [0, 1] },
+const HABITACLE = [[.34, .665, .66, .75], [.37, .82, .60, 1], [.67, .82, .79, 1]];
+// Poursuite, même ligne droite : ombre portée de la roue arrière droite et de l'aileron sur la piste, à droite de la
+// voiture (pixels 736 à 806 sur 482 à 533 en 1280 × 720), hors de la carrosserie. Nette avec la tuile, floue sans.
+const POURSUITE = [[.575, .67, .63, .74]];
+// Paires de passes, avec et sans tuile (mêmes poses, même hasard) ; seul : rivaux écartés (voir MODELE).
+const PAIRES = [
+  { nom: 'cockpit-droit', vue: 'cockpit', cam: CAM_CAISSE, depart: 2300, pilote: false, regions: HABITACLE, controlees: [0, 1] },
+  { nom: 'cockpit-seul', vue: 'cockpit', cam: CAM_CAISSE, depart: 2300, pilote: false, seul: true, regions: HABITACLE, controlees: [0, 1, 2] },
+  { nom: 'poursuite-ombre', vue: 'poursuite', cam: '', depart: 2300, pilote: false, seul: true, regions: POURSUITE, controlees: [0] },
 ];
 
 const SCENES = [
   { nom: 'arbre-fine', ref: { circuit: 0, qualite: 'high', vue: 'tele', retro: 'non' }, cam: CAM_ARBRE, regions: ARBRE, figer: true, chauffe: 30, n: 80 },
   { nom: 'arbre-moyenne', ref: { circuit: 0, qualite: 'medium', vue: 'tele', retro: 'non' }, cam: CAM_ARBRE, regions: ARBRE, figer: true, chauffe: 30, n: 80 },
   { nom: 'arbre-sans-ombres', ref: { circuit: 0, qualite: 'high', vue: 'tele', retro: 'non', ombres: 'off' }, cam: CAM_ARBRE, regions: ARBRE, figer: true, chauffe: 30, n: 80, temoin: true },
-  ...COCKPITS.flatMap(k => [
-    { nom: k.nom, ref: { circuit: 0, qualite: 'high', vue: 'cockpit', retro: 'non', depart: k.depart, vitesse: 60, pilote: k.pilote }, cam: CAM_CAISSE, regions: k.regions, figer: true, chauffe: 30, n: 90 },
-    { nom: k.nom + '-sans-tuile', ref: { circuit: 0, qualite: 'high', vue: 'cockpit', retro: 'non', depart: k.depart, vitesse: 60, pilote: k.pilote }, cam: CAM_CAISSE, regions: k.regions, figer: true, chauffe: 30, n: 90,
+  ...PAIRES.flatMap(k => [
+    { nom: k.nom, ref: { circuit: 0, qualite: 'high', vue: k.vue, retro: 'non', depart: k.depart, vitesse: 60, pilote: k.pilote }, cam: k.cam, seul: k.seul, regions: k.regions, figer: true, chauffe: 30, n: 90 },
+    { nom: k.nom + '-sans-tuile', ref: { circuit: 0, qualite: 'high', vue: k.vue, retro: 'non', depart: k.depart, vitesse: 60, pilote: k.pilote }, cam: k.cam, seul: k.seul, regions: k.regions, figer: true, chauffe: 30, n: 90,
       retouche: { ombreProche: null }, temoin: true },
   ]),
 ];
@@ -73,6 +84,13 @@ const MODELE = `(async () => {
   const REF = __REF__;
   J.reference(REF);
   const c = J.scene.c, d = J.scene.decor;
+  // Rivaux écartés : posés à une demi-longueur du circuit, à l'arrêt, comme reference() pose les voitures ; aucune de
+  // leurs ombres n'atteint la voiture filmée pendant la mesure.
+  if (__SEUL__) for (const v of J.session.course.voitures) if (!v.joueur) {
+    const et = v.etat; et.s = (et.s + c.longueur / 2) % c.longueur; et.v = 0;
+    const e = B.circuit.echantillon(c, et.s); et.y = e.y - et.d * Math.sin(e.devers); et.tangage = Math.atan(e.pente || 0); et.roulis = e.devers || 0;
+    v.roule = et.s; v.progression = ((et.s - (c.depart || 0)) % c.longueur + c.longueur) % c.longueur; J.session.course.sAvant[v.id] = et.s;
+  }
   const viser = (pos, cible, fov) => { const dx = cible[0] - pos[0], dy = cible[1] - pos[1], dz = cible[2] - pos[2];
     return { pos, yaw: Math.atan2(dx, -dz), pitch: Math.atan2(dy, Math.hypot(dx, dz)), fov }; };
   let info = {};
@@ -147,7 +165,7 @@ try {
   for (const sc of SCENES) {
     if (seul && !seul.has(sc.nom)) continue;
     const js = MODELE.replace('__REF__', JSON.stringify(sc.ref)).replace('__CAM__', sc.cam || '').replace('__RETOUCHE__', JSON.stringify(sc.retouche || null))
-      .replace('__FIGER__', String(!!sc.figer)).replace('__CHAUFFE__', String(sc.chauffe)).replace('__REGIONS__', JSON.stringify(sc.regions)).replace('__N__', String(sc.n));
+      .replace('__SEUL__', String(!!sc.seul)).replace('__FIGER__', String(!!sc.figer)).replace('__CHAUFFE__', String(sc.chauffe)).replace('__REGIONS__', JSON.stringify(sc.regions)).replace('__N__', String(sc.n));
     const v = lancer(sc.nom, js);
     rapport.scenes[sc.nom] = v;
     if (v.echec) { ko++; rapport.verdicts.push(`KO ${sc.nom} : ${v.echec}`); continue; }
@@ -158,7 +176,7 @@ try {
       rapport.verdicts.push(`${ok ? 'ok' : 'KO'} ${sc.nom} : d1 ${d1} (seuil ${SEUIL_D1}), voiture avancée de ${v.metres} m`);
     }
   }
-  for (const k of COCKPITS) {
+  for (const k of PAIRES) {
     const a = rapport.scenes[k.nom], b = rapport.scenes[k.nom + '-sans-tuile'];
     if (!a || !b || a.echec || b.echec) continue;
     a.regions.forEach((g, i) => {

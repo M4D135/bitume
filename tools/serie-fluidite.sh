@@ -1,15 +1,17 @@
 #!/bin/zsh
 # Série de mesures de fluidité : les mêmes scénarios, sur la page donnée, rangés dans le dossier donné.
 #
-#   tools/serie-fluidite.sh dist/bitume.html docs/reprise/rapports/<lot>/mesures [toutes|accrocs|logiciel|fenetre]
+#   tools/serie-fluidite.sh dist/bitume.html docs/reprise/rapports/<lot>/mesures [toutes|accrocs|logiciel|fenetre|ombres]
 #
 # accrocs  : chemin réel du joueur (titre, préparation, départ), processeur graphique réel, sans interface ;
 # logiciel : rendu logiciel, qui amplifie les compilations paresseuses du pilote (accrocs de première utilisation) ;
-# fenetre  : fenêtre visible, volet de mesures fermé : la cadence réellement affichée (une fenêtre Chrome s'ouvre).
+# fenetre  : fenêtre visible, volet de mesures fermé : la cadence réellement affichée (une fenêtre Chrome s'ouvre) ;
+# ombres   : contrôle des ombres (tools/controle-ombres.mjs : scintillement sur décor immobile, tuile contre sans tuile
+#            en habitacle et en poursuite, journal du gouverneur), rapport ombres.json et verdicts dans ombres.txt.
 # À lancer machine au calme et sur secteur. Résumé : python3 tools/resume-fluidite.py <dossier>/*.json
 ICI=${0:A:h:h}
 PAGE=${1:A}; SORTIE=${2:A}; QUOI=${3:-toutes}
-[[ -f $PAGE && -n $2 ]] || { echo "usage : $0 <page.html> <dossier> [toutes|accrocs|logiciel|fenetre]"; exit 2; }
+[[ -f $PAGE && -n $2 ]] || { echo "usage : $0 <page.html> <dossier> [toutes|accrocs|logiciel|fenetre|ombres]"; exit 2; }
 mkdir -p $SORTIE
 lancer() { local nom=$1; shift; node $ICI/tools/profil-accrocs.mjs --url "file://$PAGE" --sortie "$SORTIE/$nom.json" "$@" > /dev/null 2> "$SORTIE/$nom.err"; echo "$nom rc=$?"; [[ -s $SORTIE/$nom.err ]] || rm -f "$SORTIE/$nom.err"; }
 if [[ $QUOI == toutes || $QUOI == accrocs ]]; then
@@ -35,5 +37,8 @@ if [[ $QUOI == toutes || $QUOI == fenetre ]]; then
   f f5-fenetre-fine-duo --qualite high --partie duo
   f f6-fenetre-fine-poursuite --qualite high --vue poursuite
   f f7-fenetre-legere --qualite low
+fi
+if [[ $QUOI == toutes || $QUOI == ombres ]]; then
+  node $ICI/tools/controle-ombres.mjs $PAGE --sortie "$SORTIE/ombres.json" > "$SORTIE/ombres.txt" 2>&1; echo "ombres rc=$?"
 fi
 echo FIN
