@@ -147,6 +147,41 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
     tirage: memoTau(), lancement: memoTau(), regime: memoTau(), charge: memoTau(), attitude: memoTau(), retour: memoTau(),
     pic: memoTau()
   };
+  // § 3.5 — Moteur, boîte, roues motrices
+  const MOTEUR = {
+    T_max: 216,          // N·m (niveau actuel ; fidèle = 320)
+    eta: 0.90,           // rendement transmission
+    c0: 15,              // N·m frein moteur constant
+    c1: 0.0030,          // N·m/(tr/min) frein moteur proportionnel
+    J_mot: 0.15,         // kg·m² inertie moteur
+    J_roue: 1.0,         // kg·m² inertie d'une roue
+    coupure: 0.08,       // s coupure au passage de rapport
+    rupteur: 13000,      // tr/min
+    lancement: 11000,    // tr/min
+    // τ(n) : (tr/min ; coefficient)
+    tauPts: [[4000,0.62],[7000,0.80],[8500,0.95],[10500,1.0],[12300,0.93],[12800,0.80]],
+    // NMAX par rapport (1→6)
+    NMAX: [3.70, 2.60, 1.95, 1.50, 1.20, 1.00],
+    // vPointe_k par rapport (km/h) — dérivé de NMAX et R_ar
+    vPointe: [85, 125, 165, 210, 260, 310],
+  };
+  function tauMoteur(n) {
+    const pts = MOTEUR.tauPts;
+    if (n <= pts[0][0]) return pts[0][1];
+    if (n >= pts[pts.length-1][0]) return pts[pts.length-1][1];
+    for (let i = 0; i < pts.length - 1; i++) {
+      if (n <= pts[i+1][0]) {
+        const t = (n - pts[i][0]) / (pts[i+1][0] - pts[i][0]);
+        return pts[i][1] + t * (pts[i+1][1] - pts[i][1]);
+      }
+    }
+    return pts[pts.length-1][1];
+  }
+  function coupleMoteur(gaz, n) {
+    const nClamp = clamp(n, 0, MOTEUR.rupteur);
+    const tau = tauMoteur(nClamp);
+    return gaz * MOTEUR.T_max * tau - (1 - gaz) * (MOTEUR.c0 + MOTEUR.c1 * nClamp);
+  }
   // Lectures du tracé : un objet par appelant, rempli à chaque lecture (B.circuit.echantillon, troisième argument).
   // Chaque appelant lit sa valeur rendue, jamais l'objet directement : un tracé de test peut rendre un objet neuf.
   const LU = { cap: {}, rail: {}, rouler: {}, attitude: {}, replacer: {}, vol: {}, reculA: {}, reculB: {}, reliefA: {}, reliefB: {}, envolA: {} };
