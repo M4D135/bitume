@@ -1,0 +1,70 @@
+{
+  "scope": "qualification fonctionnelle cibl\u00e9e EMPRISE ; build et sc\u00e8ne complets indisponibles",
+  "base_sha": "cc004826a506e6979eaaec217748fe85d5cd6ac5",
+  "canonical_sha": "97939de3c8fe71848ae95893ebed2eff1331bb16",
+  "versions": {
+    "base": "0.3.3",
+    "comparison": "0.3.11",
+    "candidate": "0.3.12"
+  },
+  "controls": {
+    "total": 11,
+    "passed": 9,
+    "inherited_failures": 2,
+    "new_failures_relative_to_0311": 0
+  },
+  "syntax": {
+    "checked": 88,
+    "passed": 88
+  },
+  "modules_verified": 34,
+  "host_files_unchanged": 88,
+  "installer_sha256": "47d166c4376396930f67987cbc522505753a8b9d0a4263dd7034d83b30c4afce",
+  "lock_sha256": "ad918246626e3d16c2f3a06ef7adfd5c074e38fc947c1ba97eff3399711d2190",
+  "renderer_sha256": "c93f4727e4922d176c7bd70f3ebb556c8c4f96538484b48bdb8cdd95ee386982",
+  "engine_sha256": "3cb56d0ba2bf98a9b4e62a0b440949751aa71f8ea8bc58ab4953e8baa0053c2f",
+  "missing_required_blob": {
+    "path": "src/city-data.js",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "e4da08a8a5984db10b704ec181ecfc82338774b1",
+    "size": 13975402,
+    "url": "https://api.github.com/repos/M4D135/emprise/git/blobs/e4da08a8a5984db10b704ec181ecfc82338774b1"
+  },
+  "build_attempted": true,
+  "build_exit": 1,
+  "scene_webgl_webgpu_executed": false,
+  "hardware_fps_measured": false,
+  "published": false,
+  "remote_refs_changed": false,
+  "comparisons": [
+    {
+      "test": "webgpu-renderer",
+      "ferro": "0.3.3",
+      "exit_code": 1,
+      "log": "/workspace/scratch/1b28de5a23b5/emprise-qualif-reflets-evidence/logs/webgpu-renderer-0.3.3.log",
+      "tail": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n128 !== 0\n\n    at file:///workspace/scratch/1b28de5a23b5/emprise-qualif-reflets-evidence/compare-0.3.3/tests/webgpu-renderer.mjs:57:95 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 128,\n  expected: 0,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v24.22.3\n"
+    },
+    {
+      "test": "renderer-overlay",
+      "ferro": "0.3.3",
+      "exit_code": 1,
+      "log": "/workspace/scratch/1b28de5a23b5/emprise-qualif-reflets-evidence/logs/renderer-overlay-0.3.3.log",
+      "tail": "evalmachine.<anonymous>:9\n        gl.clear(gl.DEPTH_BUFFER_BIT);if(overlay.length)renderBatch(packOverlay(overlay,environment,true),overlayBuffer,true);\n                                                        ^\n\nReferenceError: packOverlay is not defined\n    at evalmachine.<anonymous>:9:57\n    at file:///workspace/scratch/1b28de5a23b5/emprise-qualif-reflets-evidence/compare-0.3.3/tests/renderer-overlay.mjs:7:71\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.22.3\n"
+    },
+    {
+      "test": "webgpu-renderer",
+      "ferro": "0.3.11",
+      "exit_code": 1,
+      "log": "/workspace/scratch/1b28de5a23b5/emprise-qualif-reflets-evidence/logs/webgpu-renderer-0.3.11.log",
+      "tail": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n128 !== 0\n\n    at file:///workspace/scratch/1b28de5a23b5/emprise-qualif-reflets-evidence/compare-0.3.11/tests/webgpu-renderer.mjs:57:95 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 128,\n  expected: 0,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v24.22.3\n"
+    },
+    {
+      "test": "renderer-overlay",
+      "ferro": "0.3.11",
+      "exit_code": 1,
+      "log": "/workspace/scratch/1b28de5a23b5/emprise-qualif-reflets-evidence/logs/renderer-overlay-0.3.11.log",
+      "tail": "evalmachine.<anonymous>:9\n        gl.clear(gl.DEPTH_BUFFER_BIT);if(overlay.length){const cockpit=photoOverlay||packOverlay(overlay,environment,true);if(cockpit!==photoOverlay)streamUpload(overlayStream,cockpit);renderBatch(cockpit,overlayBuffer,false);}\n                                                                       ^\n\nReferenceError: photoOverlay is not defined\n    at evalmachine.<anonymous>:9:72\n    at file:///workspace/scratch/1b28de5a23b5/emprise-qualif-reflets-evidence/compare-0.3.11/tests/renderer-overlay.mjs:7:71\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.22.3\n"
+    }
+  ]
+}

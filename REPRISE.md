@@ -2,40 +2,20 @@
 
 ## Point actif — 19 novembre 2026
 
-**0.2.53 / p13 publiée et vérifiée sur main**, livraison `b791ae60`.
-**PR n°7 fusionnée ; lot 13A tracé et relief terminé.**
-Sources, jeu compilé et preuves correspondent à la tête revue `b1eabdff`.
-Lire `docs/reprise/ETAT.json`, la dernière entrée du suivi et `docs/reprise/13A-RUSSIE-TRACE-RELIEF.md` uniquement.
-**Prochaine action : 13B Russie — décor et saisons, NON COMMENCÉ.**
-Les tests sont terminés et les sources gelées : ne pas recommencer la qualification ou les lots 12A–12F4/Safari clos.
+**0.2.54 / p13 publiée sur sa branche, PR n°8 encore ouverte.** Code vérifié `10f71ff1`, build inchangé ; main reste `f03a99cc…` tant que la fusion n’est pas constatée. FERRO canonique 0.3.12 publié sur `a22b738f`.
 
-## Résultat de 13A
+Lire `docs/reprise/ETAT.json`, la dernière entrée du suivi et `docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/CLOTURE-PROVENANCE-CI.md`. Les preuves concurrentes sont préservées, dont le contrôle chaussée enrichi **12/12**.
 
-Huit circuits dans le build, Baïkal ajouté index 7, ID `baikal`, graine 179 : **5 424 m**, **62,9477 m de dénivelé**,
-**6,8 %** de pente maximale, droite de 816 m, grille/stands plats. Baïkal est un choix de conception original issu du plan.
-Les 84 tableaux des sept circuits historiques et les 22 scénarios / 1 415 empreintes p13 sont identiques, sans régénération.
-**9/9 contrôles russes** : douze voitures font trois tours sur sec/pluie/neige sans accident, replacement ni blocage.
-Les contacts et frottements sont comptés. Les allées de troncs proches ont été écartées des courbes descendantes.
+## Résultats à distinguer
 
-## Qualification et build
+- **Qualification locale ciblée : 38/39**, seules traces héritées ; 50 contrôles des repères, 20 lois/oracles p13 inchangés, 54 scripts valides, 34 modules FERRO exacts.
+- **Deux CI complètes : 109/111 chacune**, traces héritées identiques et budget décor Val-Brûlé de 150 ms dépassé à **161/166 ms**. Aucun gain ou écart de performance établi sans comparaison de base. Journaux : `rapports/VIRAGES-REFLETS-2026-11-19/github/`.
+- FERRO : 194 réussis, aucun échec, un TODO hérité ; EGL logiciel aux trois résolutions. EMPRISE : **9/11 contrats ciblés**, deux échecs hérités, build complet tenté mais bloqué par le blob `city-data.js` indisponible. Provenance réelle : `M4D135/FERRO:docs/reflets-0312/`.
 
-**107/109 suites** : traces héritées identiques et seuil de temps décor dépassé aussi sur la base (205 ms / 211 ms,
-seuil 150 ms inchangé). Aucune qualification entièrement verte ni différence de performance annoncée.
-Deux builds identiques de **14 063 125 octets**, SHA-256
-`686db2c0863bd8dfa042389f22501fb9bacde19dca2bb1dcabf9f9a527ccd510`.
-53 scripts valides, 34 modules FERRO 0.3.11 inchangés. Rapport canonique :
-`docs/reprise/rapports/13A-RUSSIE-2026-11-19/qualification-finale.json`.
+Deux builds identiques de **14 089 230 octets**, SHA-256 `db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3`. Aucun source/test/build changé pour la clôture documentaire. Ne pas rejouer les lots pneus, Safari ou 13A clos.
 
-Reçu de livraison : `docs/reprise/rapports/13A-RUSSIE-2026-11-19/PUBLICATION-0253.json`.
-Les deux CI du code sont terminées : **108/109 chacune**, seules traces héritées identiques ; décor réussi en CI.
-Reçu : `docs/reprise/rapports/13A-RUSSIE-2026-11-19/github/RECU-CI.json`. Cette vérification est close.
+## Suite demandée
 
-## Suite
+Contrôler la clôture documentaire de la PR n°8 avant fusion. Le prochain lot porte sur **PhysX avec nouvelle version physique**, les sols hors-route enrichis par shader entièrement procédural sans fichiers textures, et le pilote extérieur animé (tête, bras, passage de rapport cohérents avec le cockpit et les LOD). Ne pas réécrire les preuves p13.
 
-**13B Russie — décor et saisons, NON COMMENCÉ**. Le thème de base permet le roulage ; lac,
-berges, lieux, végétation/faune détaillés et validation visuelle restent à faire. Le tracé et sa graine sont figés.
-Conserver Monaco fidèle, Marseille depuis EMPRISE avec relief mesuré, nouveau grand circuit montagne distinct
-et six propositions. L’indice 7 russe n’annule pas la demande montagne.
-
-Spark (`~/bin/kbza`), Mac et amiga indisponibles. WebGL, FPS matériel et déploiement non validés.
-Un sous-lot à la fois, publications fréquentes, aucun push forcé ; FERRO canonique inchangé.
+**13B Baïkal — décor et saisons reste demandé, différé.** Conserver les autres demandes de circuits. Aucun déploiement du site, scène navigateur complète ou FPS matériel validé. Spark, Mac et amiga indisponibles ; publications conditionnelles fréquentes, aucun push forcé.

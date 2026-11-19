@@ -1,6 +1,7 @@
 /* BITUME — décor calculé depuis le circuit : chaussée, accotements, terrain, eau, arbres, tribunes, glissières.
    Aucune image ni modèle : des nappes de triangles (matière et couleur par sommet) et des primitives du moteur FERRO. */
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaussee) require('./chaussee.js');
+if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virages) require('./virages.js');
 (function (B) {
   'use strict';
 
@@ -198,7 +199,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
     return resultat;
   }
 
-  function nappesRoute(c, th, lim, naturel = false, ecologie = null, saison = null) {
+  function nappesRoute(c, th, lim, naturel = false, ecologie = null, saison = null, reperes = null) {
     const w = c.largeur / 2, n = c.n, LIGNES = 60, liste = [];
     const habitat = {};
     const meteoRoute = B.chaussee ? B.chaussee.preparer({}, saison) : null, surfaceRoute = {};
@@ -214,6 +215,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
       return col;
     };
     const blanc = [.86, .86, .83], rouge = [.74, .09, .07], blancBordure = [.90, .90, .87];
+    const rougeVirage = [.82, .025, .02], blancVirage = [.98, .99, .96];
     for (let debut = 0; debut < n; debut += LIGNES) {
       const fin = Math.min(n, debut + LIGNES), nap = nappe(), herbeTriangles = [];
       // bandes : d0, d1 (fonctions de la ligne), type
@@ -242,7 +244,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
               d0 = bord * w; d1 = bord * (w + 1.2); y0 = yBord;
               const avec = cote < 0 ? (vib & 1) : (vib & 2);
               y1 = yBord + (avec ? .05 : -.015);
-              if (avec) { mat = 14; col = tranche ? rouge : blancBordure; } else { mat = 8; col = tonte; }
+              if (avec) {
+                mat = 14; col = reperes && reperes.vibreurs[f.i] ? (tranche ? rougeVirage : blancVirage) : (tranche ? rouge : blancBordure);
+              } else { mat = 8; col = tonte; }
             } else if (type === 'herbe') { d0 = bord * (w + 1.2); d1 = bord * ext; y0 = yBord - .015; y1 = yBord - .02 * (ext - w - 1.2); col = tonte; n0 = n1 = [0, 1, 0]; }
             else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; col = (th.volcanique ? th.terre : th.herbe).map(v => v * .86); n0 = n1 = [0, 1, 0]; }
             if (cote < 0) { const t = d0; d0 = d1; d1 = t; const u = y0; y0 = y1; y1 = u; }
@@ -906,6 +910,96 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
       options.arbresLointains && l.arbres === true ? { objets: l.loin } : null));
   }
 
+  // Repères de conduite : plan visuel indépendant des anciens maxima qui placent les murs de pneus.
+  // Ni tirage aléatoire ni écriture dans le circuit ; seules les couleurs des vibreurs/lisses changent.
+  const distanceRepere = (c, a, b) => ((b - a) % c.longueur + c.longueur) % c.longueur;
+  function zoneSansRepere(c, s, marge = 12) {
+    const ld = c.ligneDroite || { debut: -200, fin: 200 }, x = B.circuit.ecart(c, 0, s);
+    const avant = Math.max(-300, B.circuit.ecart(c, 0, ld.debut) + 40) - 10;
+    const apres = Math.min(260, B.circuit.ecart(c, 0, ld.fin) - 60) + 50;
+    if (x >= avant - marge && x <= apres + marge) return true;
+    for (const t of (c.couverts || (c.tunnel ? [c.tunnel] : []))) {
+      if (distanceRepere(c, t.debut - marge, s) <= distanceRepere(c, t.debut, t.fin) + 2 * marge) return true;
+    }
+    for (const p of (c.ponts || [])) {
+      if (distanceRepere(c, p.debut - 20, s) <= distanceRepere(c, p.debut, p.fin) + 40) return true;
+    }
+    return false;
+  }
+  function preparerReperes(c) {
+    const virages = B.virages.planifier(c).filter(v => v.difficulte >= 2);
+    const vibreurs = new Uint8Array(c.n), glissieres = new Int8Array(c.n);
+    for (let i = 0; i < c.n; i++) {
+      const s = i * c.pas;
+      if (zoneSansRepere(c, s)) continue;
+      const courbe = virages.find(v => distanceRepere(c, v.debut, s) <= v.longueur);
+      if (courbe) { vibreurs[i] = courbe.difficulte; glissieres[i] = -courbe.sens; continue; }
+      let voisine = null, proche = Infinity;
+      for (const v of virages) {
+        const avant = distanceRepere(c, s, v.debut), apres = distanceRepere(c, v.fin, s);
+        // Une courbe en cours prime sur l'approche du S suivant ; hors courbe, l'approche prime sur la sortie.
+        const d = avant <= 120 ? avant : apres <= 24 ? apres + 120 : Infinity;
+        if (d < proche) { proche = d; voisine = v; }
+      }
+      if (voisine) glissieres[i] = -voisine.sens;
+    }
+    return { virages, vibreurs, glissieres };
+  }
+
+  const CHIFFRES_REPERES = ['abcdef', 'bc', 'abdeg', 'abcdg', 'bcfg', 'acdfg', 'acdefg', 'abc', 'abcdefg', 'abcdfg'];
+  const SEGMENTS_REPERES = {
+    a: [0, .58, .52, .12], b: [.26, .29, .12, .48], c: [.26, -.29, .12, .48], d: [0, -.58, .52, .12],
+    e: [-.26, -.29, .12, .48], f: [-.26, .29, .12, .48], g: [0, 0, .52, .12]
+  };
+  function poserReperes(c, plan, lim, interroger, ajouter) {
+    const w = c.largeur / 2;
+    function panneau(v, s, metres) {
+      const f = cadre(c, Math.round(s / c.pas)), ext = -v.sens, largeur = 3.2, L = (ext < 0 ? lim.G : lim.D)[f.i];
+      if (zoneSansRepere(c, f.s)) return;
+      // Dans un enchaînement, les chevrons du virage en cours restent le seul ordre de direction.
+      if (metres && plan.virages.some(q => q !== v && distanceRepere(c, q.debut, f.s) <= q.longueur)) return;
+      const d = ext * (L + largeur / 2 + 1.4), y = hauteurRoute(f, ext * w, w) - .02 * (Math.abs(d) - w - 1.2);
+      const p = pointPlan(f, d, y), rot = capRot(f.a);
+      // Toute l'emprise reste derrière les limites, y compris quand un autre bras de piste revient à proximité.
+      for (const lateral of [-largeur / 2, 0, largeur / 2]) {
+        const x = p[0] + f.r[0] * lateral, z = p[2] + f.r[2] * lateral, q = interroger(x, z, 80);
+        if (q.i < 0) return;
+        const fq = cadre(c, q.i), dq = (x - fq.x) * fq.r[0] + (z - fq.z) * fq.r[2];
+        if (Math.abs(dq) < (dq < 0 ? lim.G : lim.D)[q.i] + .6) return;
+      }
+      const repere = { type: metres ? 'freinage' : 'chevrons', virage: v.id, s: f.s, sens: v.sens, metres: metres || 0 };
+      const objets = [], blanc = [.98, .99, .96], face = (lateral, hauteur, avant = .1) =>
+        [p[0] + f.r[0] * lateral - f.t[0] * avant, y + hauteur, p[2] + f.r[2] * lateral - f.t[2] * avant];
+      const boite = (partie, position, taille, couleur, rotation = rot) => objets.push({
+        shape: 'box', p: position, s: taille, r: rotation, mat: 16, color: couleur, repereVirage: repere, symboleVirage: partie
+      });
+      for (const cote of [-1, 1]) boite('poteau', face(cote * 1.05, 1.3, 0), [.1, 2.6, .1], [.38, .42, .45]);
+      boite('panneau', face(0, 2.7, 0), [.14, 1.9, largeur], blanc);
+      if (metres) {
+        boite('bande', face(0, 3.48), [.03, .12, 2.96], [.82, .025, .02]);
+        const chiffres = String(metres);
+        for (let i = 0; i < chiffres.length; i++) for (const segment of CHIFFRES_REPERES[Number(chiffres[i])]) {
+          const [dx, dy, sx, sy] = SEGMENTS_REPERES[segment];
+          boite('chiffre', face((i - (chiffres.length - 1) / 2) * .84 + dx, 2.68 + dy), [.03, sy, sx], [.025, .035, .045]);
+        }
+      } else {
+        boite('fond', face(0, 2.7), [.03, 1.55, 2.96], [.025, .10, .25]);
+        for (const centre of [-.7, .7]) for (const cote of [-1, 1]) {
+          const a = face(centre - v.sens * .45, 2.7 + cote * .5, .14), b = face(centre + v.sens * .45, 2.7, .14);
+          const axe = b.map((x, i) => x - a[i]), rotation = angles(...base(axe, f.t.map(x => -x)));
+          boite('chevron', a.map((x, i) => (x + b[i]) / 2), [Math.hypot(...axe), .035, .19], blanc, rotation);
+        }
+      }
+      // La distance et la qualité ne retirent jamais les chiffres ou les flèches.
+      ajouter(objets, objets.slice(), p[0], p[2]);
+    }
+    for (const v of plan.virages) {
+      for (const metres of (v.difficulte === 3 ? [200, 150, 100, 50] : [150, 100, 50])) panneau(v, v.debut - metres, metres);
+      const nombre = Math.max(2, Math.min(5, Math.ceil(v.longueur / 38))), marge = Math.min(14, v.longueur * .15);
+      for (let j = 0; j < nombre; j++) panneau(v, v.debut + marge + (v.longueur - 2 * marge) * j / (nombre - 1), 0);
+    }
+  }
+
   const HERBIERS = new WeakMap();
   function construire(c, options = {}) {
     const th = Object.assign({}, THEMES[c.theme] || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
@@ -923,8 +1017,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
     const w = c.largeur / 2, lim = limites(c), interroger = indexAxe(c);
     // bords de route (lot 22F) : plan tiré avec la graine propre de bords.js, jamais avec le hasard du décor
     const planBords = B.bords ? B.bords.planifier(c) : null;
+    // Le repli false sert à relire l'oracle visuel historique, sans changer les empreintes de référence.
+    const reperes = options.reperesVirages !== false && B.virages ? preparerReperes(c) : null;
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
-    const nappes = nappesRoute(c, th, lim, qualite !== 'low', qualite === 'low' ? null : ecologie, saison);
+    const nappes = nappesRoute(c, th, lim, qualite !== 'low', qualite === 'low' ? null : ecologie, saison, reperes);
     const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie);
     if (saison) {
       const habitat = {}, couleur = [0, 0, 0], teinte = [0, 0, 0];
@@ -972,6 +1068,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
           { shape: 'box', p: [milieu[0], milieu[1] + .62, milieu[2]], s: [long + .25, .34, .07], r: rot, mat: 0, color: [.74, .76, .78], detail: 1 },
           { shape: 'box', p: [p0[0], p0[1] + .4, p0[2]], s: [.09, .8, .09], r: rot, mat: 0, color: [.5, .52, .54], detail: 2 }
         ];
+        if (reperes && reperes.glissieres[f0.i] === cote) {
+          objets[0].color = Math.floor(f0.s / 16) % 2 ? [.82, .025, .02] : [.98, .99, .96];
+          objets[0].repereVirage = { type: 'glissiere', s: f0.s, cote };
+        }
         const loin = [objets[0]];
         // panneaux publicitaires sur les lignes droites
         if (Math.abs(f0.k) < 1 / 500 && (i / PAS_G) % 9 === 4 && r() < .7) {
@@ -1083,7 +1183,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
     for (const v of virages) {
       const ext = -v.sens; // l'extérieur du virage
       let entree = v.i; while (Math.abs(c.courbure[((entree - 1) % c.n + c.n) % c.n]) > 1 / 400 && v.i - entree < 60) entree--;
-      for (const [metres, barres] of [[150, 3], [100, 2], [50, 1]]) {
+      const nouveauRepere = reperes && reperes.virages.some(q => distanceRepere(c, q.debut, v.i * c.pas) <= q.longueur);
+      for (const [metres, barres] of (nouveauRepere ? [] : [[150, 3], [100, 2], [50, 1]])) {
         const f = cadre(c, entree - metres / c.pas), yb = hauteurRoute(f, ext * w, w);
         const p = pointPlan(f, ext * (w + 3.2), yb), rot = capRot(f.a);
         const objets = [{ shape: 'box', p: [p[0], p[1] + 1.3, p[2]], s: [.08, 1.5, 1.2], r: rot, mat: 16, color: [.93, .93, .9] },
@@ -1428,6 +1529,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
       for (const o of objets) l.objets.push(o);
       for (const o of loin) l.loin.push(o);
     } });
+
+    // Les repères ne créent aucun solide. Leurs lots propres sont ajoutés après tous les lots physiques.
+    if (reperes) poserReperes(c, reperes, lim, interroger, (objets, loin, x, z) => {
+      const q = interroger(x, z, 80), cle = 'v' + Math.floor(q.i * c.pas / TRONCON);
+      let l = groupes.get(cle); if (!l) groupes.set(cle, l = { objets: [], loin: [], lointain: false });
+      l.objets.push(...objets); l.loin.push(...loin);
+    });
 
     // Finition des lots : sphère englobante et portée.
     const lots = [];

@@ -1060,28 +1060,58 @@
   // Screen-space ray tracing of the current opaque scene; analytic sky remains the fallback.
   const SSR_FRAG=`#version 300 es
   precision highp float;
-  in vec2 vUV;uniform sampler2D uColor;uniform sampler2D uDepth;
+  in vec2 vUV;uniform sampler2D uColor;uniform highp sampler2D uDepth;
   uniform vec4 uProjection;uniform vec2 uPixel;out vec4 fragColor;
   float distanceZ(float depth){return uProjection.w/(depth*2.-1.+uProjection.z);}
-  vec3 position(vec2 uv){float z=distanceZ(texture(uDepth,uv).r);return vec3((uv*2.-1.)*uProjection.xy*z,-z);}
+  // Depth needs highp even when float already is highp: a low precision sampler
+  // quantizes the road into rows before the normal and reflected ray are built.
+  vec2 pixelCenter(vec2 uv){return (floor(uv/uPixel)+.5)*uPixel;}
+  vec3 position(vec2 uv){uv=pixelCenter(uv);float z=distanceZ(texture(uDepth,uv).r);return vec3((uv*2.-1.)*uProjection.xy*z,-z);}
   vec2 project(vec3 p){return .5+.5*p.xy/(-p.z*uProjection.xy);}
+  vec3 rayPoint(vec3 a,vec3 b,float ka,float kb,float t){return mix(a,b,t)/mix(ka,kb,t);}
   void main(){
-    fragColor=vec4(0.);vec4 original=texture(uColor,vUV);float depth=texture(uDepth,vUV).r;
-    vec3 p=position(vUV),dx=dFdx(p),dy=dFdy(p),n=normalize(cross(dx,dy));
-    if(original.a<.06||depth>=.999999||-p.z>200.||-p.z<.12)return;
+    fragColor=vec4(0.);vec2 receiver=pixelCenter(vUV);vec4 original=texture(uColor,receiver);
+    float depth=texture(uDepth,receiver).r,zp=distanceZ(depth);
+    if(original.a<.06||depth>=.999999||zp>200.||zp<.12)return;
+    vec3 p=vec3((receiver*2.-1.)*uProjection.xy*zp,-zp);
+    // One-sided differences stay on the receiver at object silhouettes. Always
+    // reconstruct at the depth texel centre, including this half-size pass.
+    vec3 l=p-position(vUV-vec2(uPixel.x*2.,0.)),rr=position(vUV+vec2(uPixel.x*2.,0.))-p;
+    vec3 b=p-position(vUV-vec2(0.,uPixel.y*2.)),t=position(vUV+vec2(0.,uPixel.y*2.))-p;
+    vec3 dx=abs(l.z)<abs(rr.z)?l:rr,dy=abs(b.z)<abs(t.z)?b:t,n=cross(dx,dy);
+    if(dot(n,n)<1e-12)return;n=normalize(n);
     vec3 eye=normalize(-p);if(dot(n,eye)<0.)n=-n;vec3 r=reflect(-eye,n),origin=p+n*.055;
-    float prev=0.,travel=.16,weight=0.;vec2 hit=vec2(0.);
-    for(int i=0;i<48;i++){
-      float oldTravel=travel;travel+=.24+float(i)*.085;vec3 q=origin+r*travel;if(q.z>-.08)break;vec2 uv=project(q);
-      if(min(uv.x,uv.y)<.012||max(uv.x,uv.y)>.988)break;
-      float sceneZ=distanceZ(texture(uDepth,uv).r),delta=-q.z-sceneZ;
-      if(delta>0.&&prev<=0.&&delta<1.2+travel*.025){
-        float lo=oldTravel,hi=travel;for(int j=0;j<5;j++){float mid=(lo+hi)*.5;vec3 v=origin+r*mid;vec2 at=project(v);float d=-v.z-distanceZ(texture(uDepth,at).r);if(d>0.)hi=mid;else lo=mid;}
-        hit=project(origin+r*(lo+hi)*.5);float edge=min(min(hit.x,hit.y),min(1.-hit.x,1.-hit.y));
-        weight=smoothstep(.01,.12,edge)*(1.-smoothstep(70.,115.,travel));break;
-      }prev=delta;
+    float reach=r.z>0.?min(115.,(-.08-origin.z)/r.z):115.;if(reach<=.1)return;
+    vec3 end=origin+r*reach;float ka=1./(-origin.z),kb=1./(-end.z);vec3 a=origin*ka,z=end*kb;
+    vec2 start=project(origin),span=project(end)-start;
+    vec2 limit=(mix(vec2(.012),vec2(.988),step(vec2(0.),span))-start)/(span+vec2(1e-8));
+    float clipped=clamp(min(1.,min(limit.x,limit.y)),0.,1.);
+    z=mix(a,z,clipped);kb=mix(ka,kb,clipped);span*=clipped;
+    float pixels=max(abs(span.x)/uPixel.x,abs(span.y)/uPixel.y);if(pixels<1.)return;
+    float previous=0.,oldT=0.,weight=0.,stride=clamp(2./(512.*uPixel.y),1.,4.);vec2 hit=vec2(0.);int candidates=0;
+    // Perspective-correct traversal: 1--4 source pixels per step, scaled with
+    // image height, and at most 96 steps / three refinements (122 depth reads).
+    // Farther or unseen geometry keeps the existing analytic environment.
+    for(int i=1;i<=96;i++){
+      float atT=min(1.,float(i)*stride/pixels);vec2 uv=start+span*atT;
+      float sampled=texture(uDepth,uv).r,sceneZ=distanceZ(sampled),delta=1./mix(ka,kb,atT)-sceneZ;
+      if(sampled<.999999&&delta>0.&&previous<=0.){
+        candidates++;float lo=oldT,hi=atT;
+        for(int j=0;j<6;j++){float mid=(lo+hi)*.5;float d=1./mix(ka,kb,mid)-distanceZ(texture(uDepth,start+span*mid).r);if(d>0.)hi=mid;else lo=mid;}
+        hit=start+span*hi;vec3 point=rayPoint(a,z,ka,kb,hi);float hitDepth=texture(uDepth,hit).r;
+        float difference=-point.z-distanceZ(hitDepth),thickness=clamp(sceneZ*.004,.025,.20);
+        // Crossing a silhouette is not itself an intersection. Revalidate the
+        // refined hit against a small depth thickness, rather than metres.
+        if(hitDepth<.999999&&difference>=0.&&difference<thickness){
+          float edge=min(min(hit.x,hit.y),min(1.-hit.x,1.-hit.y)),travel=length(point-origin);
+          weight=smoothstep(.01,.12,edge)*(1.-smoothstep(70.,115.,travel))*(1.-smoothstep(80.,96.,float(i)));
+          break;
+        }
+        if(candidates>=3)break;
+      }
+      previous=sampled>=.999999?-1.:delta;oldT=atT;if(atT>=1.)break;
     }
-    if(weight>0.){float fresnel=.35+.65*pow(1.-max(dot(n,eye),0.),3.);fragColor=vec4(texture(uColor,hit).rgb,weight*original.a*fresnel);}
+    if(weight>0.){float fresnel=.35+.65*pow(1.-max(dot(n,eye),0.),3.),alpha=weight*original.a*fresnel;fragColor=vec4(texture(uColor,hit).rgb*alpha,alpha);}
   }`;
   const POST_FRAG=`#version 300 es
   precision highp float;
@@ -1107,7 +1137,7 @@
     c+=texture(uBloom,vUV-axis*1.384615).rgb*.316216;
     c+=texture(uBloom,vUV+axis*3.230769).rgb*.070270;
     c+=texture(uBloom,vUV-axis*3.230769).rgb*.070270;
-    if(uPass==2){vec4 scene=texture(uScene,vUV),reflection=texture(uReflection,vUV);c=scene.rgb+c*.28;if(uReflections==1)c=mix(c,reflection.rgb,min(.70,reflection.a)*step(.025,scene.a));}
+    if(uPass==2){vec4 scene=texture(uScene,vUV),reflection=texture(uReflection,vUV);c=scene.rgb+c*.28;if(uReflections==1)c=mix(c,reflection.rgb/max(reflection.a,1e-5),min(.70,reflection.a)*step(.025,scene.a));}
     fragColor=vec4(c,1.);
   }`;
 
@@ -3578,7 +3608,7 @@
       prof?.end();prof?.begin('effects');
       if(particles.length)renderEffects(particles,eye,t);prof?.end();
       if(sceneMode==='screen'&&post){gl.drawBuffers([gl.COLOR_ATTACHMENT0]);reflections.resolve(post.scene,reflectionMode,{pos:eye},axes,projection,view,t,worldRevision,reflections.key);gl.useProgram(program);gl.bindVertexArray(vao);reflections.bind(uniforms);gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,stats.shadows?shadowTarget.texture:whiteTexture);gl.activeTexture(gl.TEXTURE0);}
-      stats.reflections=reflectionMode==='off'&&!!(stats.bloom&&post.reflectSource&&post.reflection&&fx.reflections!==false&&fx.reflections!=='off');stats.reflectionSteps=stats.reflections?48:0;
+      stats.reflections=reflectionMode==='off'&&!!(stats.bloom&&post.reflectSource&&post.reflection&&fx.reflections!==false&&fx.reflections!=='off');stats.reflectionSteps=stats.reflections?96:0;
       if(stats.reflections){const target=msaa?msaa.framebuffer:post.scene.framebuffer;gl.bindFramebuffer(gl.READ_FRAMEBUFFER,target);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,post.reflectSource.framebuffer);gl.blitFramebuffer(0,0,canvas.width,canvas.height,0,0,canvas.width,canvas.height,gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT,gl.NEAREST);gl.bindFramebuffer(gl.FRAMEBUFFER,target);}
       if(overlay.length||overlayParticles.length) {
         // EMPRISE: weapon/muzzle meshes already render after a depth clear.

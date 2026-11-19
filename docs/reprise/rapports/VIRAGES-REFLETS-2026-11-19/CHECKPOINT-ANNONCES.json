@@ -1,0 +1,35 @@
+[
+  {
+    "test": "virages",
+    "exit": 0,
+    "derniere_ligne": "ℹ duration_ms 243.76005"
+  },
+  {
+    "test": "hud-pneus",
+    "exit": 0,
+    "derniere_ligne": "13 contrôles HUD pneus et virages réels réussis (DOM simulé, mise en page/WebGL non qualifiés)"
+  },
+  {
+    "test": "options-image",
+    "exit": 0,
+    "derniere_ligne": "options image : 11 contrôles passés"
+  },
+  {
+    "test": "conditions-integration",
+    "exit": 0,
+    "derniere_ligne": "ℹ duration_ms 49.758091"
+  },
+  {
+    "test": "qualite",
+    "exit": 0,
+    "derniere_ligne": "qualité : 23 contrôles passés"
+  },
+  {
+    "syntaxe": "src/jeu.js",
+    "exit": 0
+  },
+  {
+    "syntaxe": "src/virages.js",
+    "exit": 0
+  }
+]

@@ -29,6 +29,7 @@ MODULES = [
     # le volet de mesures ne peut pas distinguer le CPU du GPU. Copie verrouillée, chargée telle quelle.
     'ferro/gpu-profile.js',
     'circuit.js',
+    'virages.js',
     'ferro/vehicle-dynamics.js',
     'pneus.js',
     'usure-pneus.js',

@@ -1,0 +1,114 @@
+{
+  "date_utc": "2026-11-19T16:59:05.400914+00:00",
+  "version": "0.2.54",
+  "physique": {
+    "version": "p13",
+    "fichiers_et_oracles_identiques": 20,
+    "preuve": "physique-p13.json"
+  },
+  "lot": "virages_annonces_reflets",
+  "statut": "qualifie_avec_reserve_traces_heritee",
+  "passage_initial": "qualification-execution.json",
+  "resultats_finaux": "suites-finales.json",
+  "suites": 39,
+  "reussies": 38,
+  "echecs": [
+    "traces"
+  ],
+  "echecs_hors_reserves": [],
+  "reprise_ciblee": {
+    "suite": "chaussee-visuelle",
+    "code": 0,
+    "controles": 12,
+    "delta_test": {
+      "verifications/chaussee-visuelle.test.mjs": {
+        "avant": "70c9499e5bd81e5daf349aae28c5c0c6db00656156cf2123884607bc6131733b",
+        "apres": "81ae72f88c29dfadc8d872b6245c307829292a95397263a8f76f7345b6f9ba6e"
+      }
+    },
+    "runtime_change": false,
+    "empreintes_historiques_modifiees": false,
+    "tests_hivernaux_avec_reperes": true,
+    "journal": "chaussee-visuelle-corrigee.log"
+  },
+  "reserve_traces": {
+    "signature_heritee_identique": true,
+    "actual": [
+      "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf"
+    ],
+    "expected": [
+      "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee"
+    ],
+    "journal": "traces.log"
+  },
+  "reperes": {
+    "circuits": 8,
+    "controles": 50,
+    "obstacles_limites_rng_identiques": true
+  },
+  "builds": [
+    {
+      "octets": 14089230,
+      "sha256": "db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3",
+      "version": "0.2.54"
+    },
+    {
+      "octets": 14089230,
+      "sha256": "db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3",
+      "version": "0.2.54"
+    }
+  ],
+  "reproductible": true,
+  "syntaxe_scripts": 54,
+  "source_manifest": "sources-finales.json",
+  "ferro": {
+    "version": "0.3.12",
+    "modules_identiques": 34,
+    "renderer_sha256": "c93f4727e4922d176c7bd70f3ebb556c8c4f96538484b48bdb8cdd95ee386982",
+    "qualification_canonique": "M4D135/FERRO:docs/reflets-0312/qualification.json",
+    "tests": {
+      "tests": 195,
+      "passed": 194,
+      "failed": 0,
+      "todo": 1,
+      "exit_code": 0
+    },
+    "emprise": {
+      "portee": "contrats hôtes ciblés ; scène complète non exécutée",
+      "suites": 11,
+      "reussies": 9,
+      "echecs_herites": 2,
+      "nouveaux_echecs_relatifs_a_0311": 0,
+      "scripts_valides": 88,
+      "modules_identiques": 34,
+      "build_tente": true,
+      "build_termine": false,
+      "blocage_build": "src/city-data.js indisponible via connecteur ; aucune donnée de substitution",
+      "preuve": "ferro-canonique/emprise-summary.json"
+    },
+    "commit_canonique": "a22b738fbe2aa2b36b659fca94527acc2ffcd635"
+  },
+  "webgl_scene_bitume": false,
+  "fps_materiels_mesures": false,
+  "deploiement": false,
+  "ci_code": {
+    "statut": "terminees_avec_deux_reserves",
+    "reussies": 109,
+    "suites": 111,
+    "runs": [
+      44572852026,
+      44572720938
+    ],
+    "echecs": [
+      "decor.test.mjs",
+      "traces.test.mjs"
+    ],
+    "preuve": "github/RECU-CI.json"
+  },
+  "correction_documentaire": {
+    "date_utc": "2026-11-19T17:18:08.839615+00:00",
+    "source_originale": "archives-10f71ff1/qualification-finale.json",
+    "source_git_blob": "49473925999dcf17962ef667c54b57bc2bb4e7ba",
+    "note": "Les résultats ciblés BITUME et la reprise chaussée 12/12 sont conservés. La provenance FERRO et la portée EMPRISE sont alignées sur le canon effectivement publié ; les déclarations initiales 11/17 et builds identiques restent archivées mais ne sont pas étayées par ce canon."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "date_utc": "2026-11-19T16:55:50.026466+00:00",
+  "base": "f03a99cc0a5bcbd663a7ff25c887c4ea9ecacd0c",
+  "portee": "39 suites ciblées du lot visuel ; CI complète distincte ; parcours 13A non rejoués",
+  "suites": 39,
+  "reussies": 37,
+  "echecs": [
+    "chaussee-visuelle",
+    "traces"
+  ],
+  "lois_p13_identiques": 20,
+  "ferro": "0.3.12",
+  "builds": [
+    {
+      "octets": 14089230,
+      "sha256": "db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3",
+      "version": "0.2.54"
+    },
+    {
+      "octets": 14089230,
+      "sha256": "db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3",
+      "version": "0.2.54"
+    }
+  ],
+  "reproductible": true,
+  "scripts": 54,
+  "sources_stables": true,
+  "webgl_scene_bitume": false,
+  "fps_materiels_mesures": false
+}

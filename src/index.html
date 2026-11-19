@@ -39,6 +39,13 @@
     <div id="message" class="message" role="status" aria-live="polite"></div>
     <div id="sous-message" class="sous-message"></div>
 
+    <div id="h-virage" class="annonce-virage" data-sens="droite" data-difficulte="1" hidden>
+      <svg class="virage-fleche" viewBox="0 0 40 40" aria-hidden="true"><path class="virage-courbe" d="M7 33V20c0-6 4-10 10-10h16m-7-7 7 7-7 7"></path><path class="virage-epingle" d="M8 34V14a10 10 0 0 1 20 0v18m-6-6 6 6 6-6"></path></svg>
+      <b id="h-virage-nom" class="virage-nom"></b>
+      <span id="h-virage-distance" class="virage-distance"></span>
+    </div>
+    <span id="h-virage-annonce" class="texte-accessible" role="status" aria-live="polite" aria-atomic="true"></span>
+
     <div class="hud-bas">
       <div id="zone-carte"><canvas id="carte" class="carte" width="220" height="220" aria-label="Plan du circuit"></canvas></div>
       <div class="tableau">
@@ -420,6 +427,13 @@
         <legend>Tableau en cockpit</legend>
         <label><input type="radio" name="tableau" value="reduit"><span>Planche seule</span></label>
         <label><input type="radio" name="tableau" value="complet"><span>Compteurs supplémentaires</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Annonces des virages</legend>
+        <label><input type="radio" name="annoncesVirages" value="non"><span>Non</span></label>
+        <label><input type="radio" name="annoncesVirages" value="ecran" checked><span>Écran</span></label>
+        <label><input type="radio" name="annoncesVirages" value="voix"><span>Écran et voix</span></label>
+        <p class="aide-reglage">Direction, difficulté et distance avant le virage. La voix utilise une voix française installée sur l’appareil ; à deux, elle guide le joueur 1. Sans voix disponible, l’annonce reste à l’écran.</p>
       </fieldset>
       <fieldset>
         <legend>Carte du circuit</legend>

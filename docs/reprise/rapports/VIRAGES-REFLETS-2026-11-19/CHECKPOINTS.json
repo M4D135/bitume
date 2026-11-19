@@ -1,0 +1,86 @@
+[
+  {
+    "date_utc": "2026-11-19T16:40:13.215Z",
+    "repository": "M4D135/bitume",
+    "branch": "codex/bitume-reperes-annonces-reflets-20261119",
+    "local_commit": "d72c98f5af059acc26b6af127c2a180d1e94c8ed",
+    "remote_commit": "b21ced1bea9e69dc09ef2b69d80127df3b5020a0",
+    "parent": "f03a99cc0a5bcbd663a7ff25c887c4ea9ecacd0c",
+    "tree": "ba72fa3f8b4504485a7a69a74f81bc98ef04d9d6",
+    "tree_identical": true,
+    "changed_paths": 21,
+    "blobs_and_modes_verified": 21,
+    "main_observed": "f03a99cc0a5bcbd663a7ff25c887c4ea9ecacd0c",
+    "main_tree": "abdb7cdf4be65babacc406b503ac314da13983f5",
+    "created_branch": true,
+    "existing_ref_overwritten": false,
+    "force": false,
+    "source": "immutable_git_objects",
+    "worktree_read": false,
+    "local_refs_modified": false,
+    "worktree_modified": false,
+    "build": {
+      "version": "0.2.53",
+      "unchanged": true,
+      "updated_for_checkpoint": false,
+      "blob": "d82cc37f9ffa01e33246570e6c32f5c1452d63a9",
+      "bytes": 14063125,
+      "sha256": "686db2c0863bd8dfa042389f22501fb9bacde19dca2bb1dcabf9f9a527ccd510"
+    },
+    "targeted_proof": [
+      {
+        "test": "virages",
+        "exit": 0,
+        "derniere_ligne": "ℹ duration_ms 243.76005"
+      },
+      {
+        "test": "hud-pneus",
+        "exit": 0,
+        "derniere_ligne": "13 contrôles HUD pneus et virages réels réussis (DOM simulé, mise en page/WebGL non qualifiés)"
+      },
+      {
+        "test": "options-image",
+        "exit": 0,
+        "derniere_ligne": "options image : 11 contrôles passés"
+      },
+      {
+        "test": "conditions-integration",
+        "exit": 0,
+        "derniere_ligne": "ℹ duration_ms 49.758091"
+      },
+      {
+        "test": "qualite",
+        "exit": 0,
+        "derniere_ligne": "qualité : 23 contrôles passés"
+      },
+      {
+        "syntaxe": "src/jeu.js",
+        "exit": 0
+      },
+      {
+        "syntaxe": "src/virages.js",
+        "exit": 0
+      }
+    ],
+    "new_tests_run_by_publisher": false,
+    "new_build_run_by_publisher": false,
+    "pull_request_created": false,
+    "merged": false,
+    "verified": true,
+    "status": "checkpoint_published_final_qualification_and_build_pending"
+  },
+  {
+    "date_utc": "2026-11-19T16:48:56.999Z",
+    "repository": "M4D135/bitume",
+    "branch": "refs/heads/codex/bitume-reperes-annonces-reflets-20261119",
+    "local_commit": "5dba4d1f04f5f63c9d74f502a011052b79dad014",
+    "remote_commit": "b228f0f64f6dc9fb7bc6e144978b59637f4d7c03",
+    "parent": "b21ced1bea9e69dc09ef2b69d80127df3b5020a0",
+    "tree": "375e7687126748ba8c026129040109bd4a1cd923",
+    "tree_identical": true,
+    "changed_paths": 13,
+    "force": false,
+    "build_updated": false,
+    "status": "checkpoint_decor_verified_final_build_pending"
+  }
+]
