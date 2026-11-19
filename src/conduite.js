@@ -408,6 +408,8 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
         annuler(etat,ev);
       } else if(Math.abs(etat.v)<2)etat.d=cdg*Math.max(0,Math.abs(etat.d)-.6*dt);
       etat.auRail = true;
+      const axF = (etat.axF || 0);
+      const aero = forceAero(Math.abs(etat.v), axF, 9.81, etat.wake);
     } else etat.auRail = false;
     if (etat.choc > 0) etat.choc -= dt;
 
@@ -735,6 +737,24 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
     };
     if (o.omega) etat.omega = o.omega;
     annuler(etat, []); // plus de dérive ni de turbo pendant le vol
+  }
+
+  function forceAero(u, axF, g, wake) {
+    const A = LU.aero;
+    const q = 0.5 * A.rhoAir * A.SCz * u * u;
+    const partAvant = A.aeroAvant - A.kT * (axF / g);
+    const fav = q * partAvant;
+    const far = q * (1 - partAvant);
+    const trainee = q * (1 - A.aspirationTrainee);
+    if (wake) {
+      const pa = wake.partA;
+      return {
+        fav: fav * (1 - A.perteAppuiAv * pa),
+        far: far * (1 - A.perteAppuiAr * pa),
+        trainee: trainee * (1 - A.aspirationTrainee * wake.part)
+      };
+    }
+    return { fav, far, trainee };
   }
 
   // Décollage d'une crête (lot 17B, garde de la fiche 22F § 3.4) : la voiture quitte le sol avec la vitesse verticale
