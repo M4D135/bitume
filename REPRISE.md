@@ -1,5 +1,12 @@
 # BITUME — reprise courte
 
+## Reprise active — 19 novembre 2026
+
+**Lire `docs/reprise/SUIVI-2026-11-19.md` en premier.** David confirme Safari corrigé.
+Lot actif : **12A**, puis roues et sculptures **12B/12C**. Petits lots, publication à chaque étape utile,
+journal et prochaine action obligatoires. Les branches Spark non fusionnées citées plus bas ne sont pas
+publiées sur GitHub ; conserver leur historique sans les compter livrées.
+
 ## Base publiée — 19 novembre 2026, 4 h 05
 
 - Branche unique `main`, sans push forcé ; publications fréquentes du travail réel.

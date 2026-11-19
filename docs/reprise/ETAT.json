@@ -2,15 +2,15 @@
   "date": "2026-11-19",
   "etat_courant": {
     "branche": "main",
-    "base_commit": "5e8c60b2fd867d10bf35e4acf8ecfb33aee5c7f6",
+    "base_commit": "08da525c9590f1b456941a6fc3a90ee79f4e9b5b",
     "base_version": "0.2.44",
-    "statut": "0_2_42_publiee_suite_en_cours",
-    "lot": "5B_fluidite_cadence_prechargement",
-    "fiche": "docs/reprise/05B-FLUIDITE.md",
+    "statut": "reprise_12A_en_cours_safari_confirme_corrige",
+    "lot": "12A_contrat_roues_pneus",
+    "fiche": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
     "commit_publie": "8bd3d86a4b1635ad2dd90c5ae8a585711aa196f8",
     "catalogue_jouable_publie": 7,
     "catalogue_cible": 10,
-    "prochaine_action": "Intégrer la vague 1 (arbres de travail ~/Projects/bitume-wt/*, branches fluidite/*, moteur dans ~/Projects/ferro), installer FERRO 0.3.10, puis vague 2 (boucle et vues dans jeu.js), mesures avant/après, publication. 12A reprend ensuite.",
+    "prochaine_action": "Intégrer le contrat commun des roues et quatre pneus (12A), vérifier les usages existants, publier sources/build avec suivi ; poursuivre ensuite 12B/12C.",
     "checkpoint": "docs/reprise/rapports/cap-sequoia-2026-11-18/checkpoint.json",
     "catalogue_jouable": 7,
     "qualification": {
@@ -26,10 +26,14 @@
       "preuve": "docs/reprise/rapports/cap-sequoia-2026-11-18/qualification.json",
       "version_qualifiee": "0.2.38"
     },
-    "version_courante": "0.2.39",
+    "version_courante": "0.2.44",
     "recu": "docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json",
     "entree_passation": "MASTER-LISTE-CLAUDE-FABLE.md",
-    "pilotage": "docs/reprise/PILOTAGE-2026-11-18.md"
+    "pilotage": "docs/reprise/PILOTAGE-2026-11-18.md",
+    "date_reprise": "2026-11-19",
+    "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
+    "safari": "David confirme corrigé dans la session du 19 novembre ; ne pas rouvrir ce chantier.",
+    "travaux_spark_non_fusionnes": "Branches locales Mac absentes de GitHub ; aucun travail non fusionné récupéré."
   },
   "integration": {
     "nouvelle_branche": false,
