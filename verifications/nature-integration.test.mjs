@@ -23,7 +23,7 @@ const B={ambiance:A,faune:{
 const tardives=[];
 const ctx={B,S:session,session,co:{horloge:180},reglages:{moment:'nuit'},
   rendu:{setEnvironment:v=>env.push(v)},retro:{rendu:{setEnvironment:v=>miroirs.push(v)}},
-  c:{},scene:{decor:{}},P:Grap.melange('high',0),ps:{x:1,y:2,z:3},meteo:{pluie:.3},horlogeReelle:5,sortie:[],
+  c:{},scene:{decor:{}},P:Grap.melange('high',0),ps:{x:1,y:2,z:3},cam:{sujetNature:false},meteo:{pluie:.3},horlogeReelle:5,sortie:[],
   creationTardive:(nom,valeur)=>{tardives.push(nom);return valeur;}};
 const lumiere=section('    if (S.nature) {','    if (B.meteo) B.meteo.actuel');
 const reflet=section('    if (S.nature && (retro.ambianceSource','    retro.rendu.draw(camR');
@@ -59,8 +59,30 @@ verifier('faune inactive sans construction ; habitats partagés et pools propres
   assert.equal(dessins[0].t,dessins[1].t);assert.equal(dessins[0].vue,0);assert.equal(dessins[1].vue,1);
   assert.notStrictEqual(session.fauneVue,second.fauneVue);
   assert.equal(dessins[1].qualite,'ultra');assert.equal(dessins[1].pluie,.3);
+  assert.strictEqual(dessins[0].pose,ctx.ps);assert.strictEqual(dessins[1].pose,ctx.ps);
   // sans préparation, les habitats et les deux contextes de vue naissent dans l'image : chacun est compté une fois
   assert.deepEqual(tardives,['faune','contexteFaune','contexteFaune'],'créations tardives comptées une fois chacune');
+});
+
+verifier('plan nature puis retour course : bonne pose et pools J1/J2 conservés',()=>{
+  const second=ctx.S,poolJ1=session.fauneVue,poolJ2=second.fauneVue;
+  const poseCourse=ctx.ps,poseJ2={x:-4,y:3,z:17},poseNature={x:40,y:8,z:-12};
+  const creationsAvant=crees,tardivesAvant=tardives.length;
+  session.cinema={poseVue:poseNature};
+  ctx.S=session;ctx.cam.sujetNature=true;
+  vm.runInNewContext(faune,ctx);
+  assert.strictEqual(dessins.at(-1).pose,poseNature,'le plan nature utilise sa pose préparée');
+  assert.equal(dessins.at(-1).vue,0);assert.strictEqual(session.fauneVue,poolJ1);
+  ctx.S=second;ctx.cam.sujetNature=false;ctx.ps=poseJ2;
+  vm.runInNewContext(faune,ctx);
+  assert.strictEqual(dessins.at(-1).pose,poseJ2,'J2 conserve sa pose de course');
+  assert.equal(dessins.at(-1).vue,1);assert.strictEqual(second.fauneVue,poolJ2);
+  assert.strictEqual(poolJ1.pose,poseNature,'le rendu J2 ne réécrit pas le contexte J1');
+  ctx.S=session;ctx.ps=poseCourse;
+  vm.runInNewContext(faune,ctx);
+  assert.strictEqual(dessins.at(-1).pose,poseCourse,'le retour course abandonne la pose nature');
+  assert.strictEqual(session.fauneVue,poolJ1);assert.strictEqual(poolJ2.pose,poseJ2);
+  assert.equal(crees,creationsAvant);assert.equal(tardives.length,tardivesAvant,'aucun nouveau pool ni habitat au raccord');
 });
 
 verifier('faune et lumière chargées avant la coque et réglages restaurables',()=>{
