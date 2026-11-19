@@ -1,8 +1,8 @@
 {
-  "version": "0.2.43",
-  "raw": 13955808,
-  "gzip": 3302180,
-  "sha256": "0a6598db5ac182568ab89249a1429b332f543540dc4847a76f56ebc2f881aba5",
+  "version": "0.2.44",
+  "raw": 13957138,
+  "gzip": 3302614,
+  "sha256": "6ab08897d40218a0441f89288b414da6d22b6625ab740154aa981005ae530f71",
   "sources": {
     "moteur/renderer.js": 305497,
     "ferro/engine.js": 2025,
@@ -51,7 +51,7 @@
     "scene-bench.js": 19919,
     "vibrations.js": 13482,
     "ombres.js": 12015,
-    "jeu.js": 305561,
+    "jeu.js": 306891,
     "index.html": 50620,
     "style.css": 52406
   }

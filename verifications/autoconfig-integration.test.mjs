@@ -345,6 +345,7 @@ const demarrage = new Function('base', 'mesure', 'attente', 'version', 'materiel
   const webgl2 = () => true, appliquerPalier = () => {}, lireStock = () => mesure;
   // Safari : la préférence graphique (contexte par défaut au lieu de haute performance) se pose avant de créer le moteur
   let avantMoteur = null; const preferenceGraphique = () => { avantMoteur = appels.length; };
+  const pageCachee = () => false, pageVisible = async () => {};   // page visible : le moteur se crée sans attendre
   const empreinteDetection = () => base.autoconfig.empreinte(materiel || 'GPU-A', version || '0.2.40');
   const restaurerPalier = () => { appels.push('palier'); return false; };
   const detecterGraphismes = async () => { appels.push('bench'); await attente; appels.push('bench-termine'); };

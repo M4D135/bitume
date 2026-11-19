@@ -153,7 +153,7 @@
 
   // ---------------------------------------------------------------- moteur de rendu et son
   let rendu = null, son = null, scene = null, session = null;
-  let detectionGraphiqueActive = false, annulerDetection = false, contexteRenduPerdu = false;
+  let detectionGraphiqueActive = false, annulerDetection = false, contexteRenduPerdu = false, contexteFragile = false;
   let restaurerDecorApresContexte = false;
   let materielRendu = 'webgl2', derniereDetection = null;
   let decorEnrichi = true; // l'outil de référence peut retrouver le décor historique pour une comparaison A/B
@@ -3307,6 +3307,11 @@
   }
   async function chaufferRendu(S, suite, synchrone, alpha = 0) {
     const t0 = performance.now(), E = etatChauffe(), voisins = machineLente(), r = { variantes: 0, retro: 0, prewarm: false, voisins, ms: 0 };
+    // Safari : préparer d'un bloc toutes les variantes de rendu y prend plusieurs secondes, et le navigateur coupe alors
+    // les contextes graphiques (mesuré le 19/11/2026 sur Safari 27.2 : étape de 5,9 s, puis les deux toiles perdues,
+    // image noire ou course qui ne part pas). Les variantes s'y compilent donc à leur premier usage, comme avant le
+    // chargement sous voile.
+    if (contexteFragile) { r.saute = 'navigateur'; r.ms = +(performance.now() - t0).toFixed(1); return r; }
     const { manque, manqueR } = aChauffer(S, voisins);
     if (!manque.length && !manqueR.length) { r.ms = +(performance.now() - t0).toFixed(1); return r; }
     // synchrone : aucun await, tout se fait dans la tâche de l'appelant (pause, Recommencer)
@@ -4050,6 +4055,7 @@
       } catch (e) { /* pas de contexte d'essai : rien à adapter */ }
     }
     if (!fragile) return;
+    contexteFragile = true;
     const origine = proto.getContext;
     proto.getContextOrigine = origine;
     proto.getContext = function (type, attributs) {
@@ -4058,12 +4064,24 @@
     };
   }
 
+  // Safari coupe un contexte graphique créé pendant que la page est cachée (onglet ou fenêtre en arrière-plan ; mesuré le
+  // 19/11/2026 : toile principale perdue 0,8 s après sa création, pendant la liaison des shaders). Le moteur ne se crée
+  // donc qu'une fois la page visible ; d'ici là, le voile de chargement reste affiché.
+  const pageCachee = () => typeof document !== 'undefined' && document.visibilityState === 'hidden';
+  function pageVisible() {
+    return new Promise(resoudre => {
+      const voir = () => { if (document.visibilityState !== 'hidden') { document.removeEventListener('visibilitychange', voir); resoudre(); } };
+      document.addEventListener('visibilitychange', voir); voir();
+    });
+  }
+
   async function demarrer() {
     if (!webgl2()) { erreur('WebGL2 indisponible', 'BITUME dessine la piste avec WebGL2. Ouvrez la page dans un navigateur récent (Chrome, Edge, Firefox, Safari 15 ou plus) avec l’accélération graphique active.'); return; }
     try {
       // ombres photo (src/ombres.js) : tuile de 512² ; à 1024², des dents rampent sous la casquette de la planche.
       // Bloc PCSS compilé seulement si la pénombre variable sert (B.ombres.reglages.pcssFine) : shader plus court sinon.
       const optionsRendu = { msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: !!(B.ombres && B.ombres.reglages.pcssFine) } };
+      if (pageCachee()) await pageVisible();
       preferenceGraphique();
       rendu = window.FRender.create(canvas, optionsRendu);
       // raccord FERRO : cibles gardées malgré 120 rendus sans usage (sinon une variante chauffée peut être libérée)
