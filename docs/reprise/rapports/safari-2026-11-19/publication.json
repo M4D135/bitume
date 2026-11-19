@@ -18,5 +18,17 @@
     "Porter l'option dans FERRO (powerPreference réglable à la création) au lieu de l'adaptation côté jeu.",
     "Si la création du moteur échoue malgré tout, le jeu continue avec une image noire : afficher un message et réessayer au retour au premier plan.",
     "Non vérifié : une course entière dans Safari au premier plan (l'essai s'arrête à la création du moteur et au début de la détection), iPhone et iPad."
-  ]
+  ],
+  "suite_0_2_44": {
+    "commit": "5e8c60b2fd867d10bf35e4acf8ecfb33aee5c7f6",
+    "bug": "David, 19/11, après la 0.2.43 : « demo c noir dans safari, les courses ne demarrent plus qd je fais demarrer dans le menu » ; « ok dans chrome ».",
+    "mesures": "Page sonde servie à son Safari (0.2.43, page visible) : étapes du lancement voile 19 ms, rétroviseurs 103, créations 45, rendu 5 929 ms, puis toiles retro-rendu et scene perdues à 0,4 s d'écart, tampon de dessin 0×0, pixels noirs. Autre essai (page cachée) : toile scene perdue 0,8 s après sa création, pendant la liaison des shaders, même en contexte par défaut.",
+    "correctif": "src/jeu.js : chaufferRendu rend la main tout de suite quand contexteFragile est vrai (Safari) ; demarrer attend pageVisible() avant FRender.create.",
+    "preuve": "88 suites sur 88 ; parcours smoke Chrome à 7 contrôles. Dans Safari : page cachée, le moteur attend sans erreur ni perte ; la course entière au premier plan n'a pas pu être rejouée par l'orchestrateur (page restée cachée) : à confirmer par David.",
+    "reste": [
+      "Comprendre pourquoi le préchauffage dure 5,9 s dans Safari (compilation Metal ?) et le découper par variante avec des pauses, au lieu de le sauter.",
+      "Perte de contexte en cours de jeu : message et reprise, au lieu d'une image noire.",
+      "Contrôle Safari avant chaque mise en ligne."
+    ]
+  }
 }

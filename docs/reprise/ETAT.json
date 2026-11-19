@@ -2,8 +2,8 @@
   "date": "2026-11-19",
   "etat_courant": {
     "branche": "main",
-    "base_commit": "8b6c91fe9950525c4146c472a195ba063b55f5a1",
-    "base_version": "0.2.43",
+    "base_commit": "5e8c60b2fd867d10bf35e4acf8ecfb33aee5c7f6",
+    "base_version": "0.2.44",
     "statut": "0_2_42_publiee_suite_en_cours",
     "lot": "5B_fluidite_cadence_prechargement",
     "fiche": "docs/reprise/05B-FLUIDITE.md",
@@ -83,8 +83,8 @@
     "autres_chantiers": "Priorité master liste Claude Fable : roues/pneus, Russie, Monaco, Marseille EMPRISE avec relief, puis six propositions ; un sous-lot actif."
   },
   "lot_precedent": {
-    "version": "0.2.43",
-    "commit": "8b6c91fe9950525c4146c472a195ba063b55f5a1",
+    "version": "0.2.44",
+    "commit": "5e8c60b2fd867d10bf35e4acf8ecfb33aee5c7f6",
     "lot": "correctif_safari_image_noire",
     "recu": "docs/reprise/rapports/safari-2026-11-19/publication.json"
   },
