@@ -40,11 +40,22 @@
       ],
       "conclusion": "failure",
       "failing_suite": "traces.test.mjs",
-      "proof": "github/RECU-CI.json"
+      "proof": "github/RECU-CI.json",
+      "postmerge": {
+        "run": 44589031280,
+        "passed": 117,
+        "suites": 119,
+        "failing_suites": [
+          "decor.test.mjs",
+          "traces.test.mjs"
+        ],
+        "decor_ms": 163,
+        "proof": "github/RECU-CI-MAIN.json"
+      }
     }
   },
   "reserves": {
-    "decor": "Local : 486 ms pour 150 ms à Val-Brûlé ; dépassement préexistant. Les deux CI passent le contrôle, mais cela ne démontre pas une absence de régression de durée. Aucun seuil modifié.",
+    "decor": "Val-Brûlé : 486 ms localement et 163 ms dans la CI de main pour un seuil de 150 ms. Contrôle passant dans les deux CI avant fusion. Dépassement préexistant ; absence de régression de durée non démontrée. Aucun seuil modifié.",
     "traces": "Signature actual/expected identique à la réserve héritée, en local et dans les deux CI. Les journaux complets ne sont pas présentés comme identiques."
   },
   "artifact": {

@@ -42,6 +42,7 @@ Les 235 sources/tests/builds contrôlés sont identiques avant/après. Deux buil
 FERRO 0.3.14 fusionné `85ba9417`. Les références p14 utilisent désormais le vrai WASM ; les références historiques
 ne sont pas présentées comme preuve de la nouvelle physique. Voir `rapports/PHYSX-SOLS-PILOTES-2026-11-19/livraison/VALIDATION.md`.
 Publication terminée : PR #9 fusionnée sur main au commit `1e4579c5`, arbre identique au snapshot qualifié.
-Deux CI 118/119, seul échec traces hérité ; la réserve de durée locale du décor reste conservée.
+CI branche/PR : 118/119, traces héritées. Après fusion : 117/119, mêmes traces et Val-Brûlé 163 ms / 150 ms.
+La réserve de durée du décor reste conservée ; aucun nouvel échec distinct.
 ZIP CI récupéré et vérifié, même build. Reçu `rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0255.json`.
 Aucun test ni build local relancé pour la publication ; aucune validation matérielle ni mise en ligne revendiquée.

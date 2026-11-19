@@ -7,8 +7,8 @@ Sources, jeu compilé et preuves identiques au lot qualifié ; FERRO 0.3.14, 34 
 Reçu : `docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0255.json`.
 
 - Qualification locale : **117/119**, 235 fichiers et 119 journaux contrôlés ; aucun test/build relancé à la reprise.
-- Deux CI GitHub terminées : **118/119**, seul échec des traces à signature héritée identique.
-- Réserve Val-Brûlé conservée : 486 ms pour 150 ms localement ; le contrôle du décor passe dans les deux CI, sans prouver une absence de régression.
+- CI branche/PR : **118/119** ; CI après fusion : **117/119**, traces héritées et décor Val-Brûlé 163 ms / 150 ms.
+- Réserve Val-Brûlé conservée : 486 ms localement, 163 ms sur main pour 150 ms ; absence de régression non démontrée.
 - Build : 14 153 917 octets, SHA-256 `c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f`.
 - ZIP CI récupéré et contrôlé : même build, intégrité vérifiée. Scène navigateur complète, FPS matériels et déploiement non validés.
 

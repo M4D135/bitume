@@ -17,8 +17,8 @@
   },
   "validation": {
     "locale": "117/119 ; 235 fichiers et 119 journaux vérifiés sans relancer les tests.",
-    "ci": "Deux CI 118/119 ; seul échec traces à signature héritée identique.",
-    "decor": "Réserve locale 486 ms / 150 ms conservée ; contrôle passant dans les deux CI. Absence de régression non démontrée.",
+    "ci": "Branche et PR : 118/119. Après fusion sur main : 117/119, traces héritées et décor Val-Brûlé 163 ms / 150 ms.",
+    "decor": "Réserve conservée : 486 ms localement, 163 ms sur main, pour 150 ms. Absence de régression non démontrée.",
     "qualification": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/livraison/qualification-finale.json",
     "ci_recu": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github/RECU-CI.json",
     "build_sha256": "c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f",
