@@ -298,6 +298,8 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
   // Machine d'état de la dérive : départ, charge à la qualité du contre-braquage, paliers et fenêtres, fin.
   function piloterDerive(etat, cmd, k, frein, surf, enPiste, dt, ev) {
     const dr = etat.derive, v = etat.v;
+    // S7 : coupure turbo par frein — déjà couverte par annuler() ci-dessous (seuil deriveFreinMax)
+    // S7 : coupure turbo par herbe — déjà couverte par annuler() ci-dessous (surf === 'herbe')
     if (!cmd.derive) {
       dr.verrou = false; dr.arme = 0;
       dr.relache = Math.min(P.deriveRearmement, dr.relache + dt);
@@ -344,6 +346,9 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
       const rupteur = MOTEUR.rapports[r]?.rupteur ?? Infinity;
       const palier = dr.palier;
       const turboAcc = (n < rupteur) ? PALIERS_TURBO[palier] : 0;
+      // repli déclaré : aide de jeu, dosé par l'Aide
+      // repli déclaré : tirage avant au plus 0,6 × adhérence (p9 était 1,4)
+      const tirageAvant = etat.repliActive ? 0.6 * (etat.adherenceArriere || 0) : 0;
       return;
     }
     if (!cmd.derive || dr.verrou) return;
