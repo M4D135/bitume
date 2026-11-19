@@ -184,7 +184,17 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
   }
   // Lectures du tracé : un objet par appelant, rempli à chaque lecture (B.circuit.echantillon, troisième argument).
   // Chaque appelant lit sa valeur rendue, jamais l'objet directement : un tracé de test peut rendre un objet neuf.
-  const LU = { cap: {}, rail: {}, rouler: {}, attitude: {}, replacer: {}, vol: {}, reculA: {}, reculB: {}, reliefA: {}, reliefB: {}, envolA: {} };
+  const LU = { cap: {}, rail: {}, rouler: {}, attitude: {}, replacer: {}, vol: {}, reculA: {}, reculB: {}, reliefA: {}, reliefB: {}, envolA: {}, aero: {
+    SCz: 1.9,
+    rhoAir: 1.225,
+    aeroAvant: 0.42,
+    kT: 0.015,
+    aspirationTrainee: 0.25,
+    perteAppuiAv: 0.20,
+    perteAppuiAr: 0.08,
+    porteeAspiration: 30,
+    porteeSale: 40
+  } };
 
   // Courbure verticale du profil (rad/m), > 0 dans un creux, < 0 sur une crête : variation de l'angle de la pente sur
   // courbureVLissage mètres centrés sur s (deux lectures du tracé), ce qui lisse les raccords et les petites bosses.
