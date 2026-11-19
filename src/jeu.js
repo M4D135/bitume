@@ -295,12 +295,12 @@
     S = {
       type, i, course, c, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
       prec: [], cour: [], sortie: [], acc: 0, tele: { poste: null, alea: graine32(course.voitures.length * 7 + i) },
-      camCap: null, profil: new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1), profilMeilleur: null,
+      camCap: null, regardArriere: false, profil: new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1), profilMeilleur: null,
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
       detailsRoues: new Int8Array(course.voitures.length).fill(-1),
       detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
-      real: demo ? B.realisateur.creer(graineCourse) : null, planVu: null, suivie: 0, enchaine: false,
+      real: demo ? B.realisateur.creer(graineCourse) : null, cinema: null, planVu: null, suivie: 0, enchaine: false,
       fx: B.traces.creer(course.voitures.length, graineCourse, course.physique.world),
       // flammes et détonations d'échappement (lot 20) : hasard propre, tiré de la graine de la course
       ech: B.echappement ? B.echappement.creer(course.voitures.length, graineCourse) : null,
@@ -316,6 +316,7 @@
     for (const modele of S.modeles) B.voiture.preparerPneusService(modele);
     // bâtis avec la scène (une fois par décor), repris ici de leurs places de départ : sous le voile de la préparation
     S.animaux = animauxDe(sc, S.nature);
+    if (demo) S.cinema = B.cinema.preparer(c, sc.decor, S.animaux, course.physique.world);
     // Le public de la séance : moins nombreux sous la pluie, en hiver et la nuit ; son animation repart de zéro.
     if (sc.public) {
       B.public.reinitialiser(sc.public);
@@ -329,7 +330,7 @@
     }
     // Écran partagé (David, 16/11 : « multi en écran splitté local, deux manettes, l'un sur l'autre ou côte à côte ») :
     // la vue du joueur 2 a son propre état de caméra, d'éclair et d'affichage, le reste vient de la séance.
-    if (duo) S.vueJ2 = Object.assign(Object.create(S), { camCap: null, tete: null, secousse: 0, eclair: 0, lumiere: 1, sol: null, tele: { poste: null, alea: graine32(31 + i) },
+    if (duo) S.vueJ2 = Object.assign(Object.create(S), { camCap: null, regardArriere: false, tete: null, secousse: 0, eclair: 0, lumiere: 1, sol: null, tele: { poste: null, alea: graine32(31 + i) },
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
       detailsRoues: new Int8Array(course.voitures.length).fill(-1),
       detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
@@ -515,6 +516,7 @@
           !doigt.derive && !(clavier && appuieSur(0, 'derive')) && !(souris.active && sourisPour(0) && souris.derive))
         B.conduite.annulerDerive(etatDerive, true);
       pad.precedent.length = 0; pad.deriveEtat = null;
+      if (session) session.regardArriere = false;
     }
     pad.actif = false; pad.manette = p;
     pad.volant = pad.gaz = pad.frein = 0; pad.derive = false;
@@ -685,6 +687,7 @@
           !(clavier && appuieSur(1, 'derive')) && !(souris.active && sourisPour(1) && souris.derive))
         B.conduite.annulerDerive(etatDerive, true);
       pad2.precedent.length = 0; pad2.deriveEtat = null;
+      if (session?.vueJ2) session.vueJ2.regardArriere = false;
     }
     pad2.manette = p; pad2.volant = pad2.gaz = pad2.frein = 0; pad2.derive = false;
     if (!p) { pad2.precedent.length = 0; return; }
@@ -1654,6 +1657,45 @@
     const y = Math.max(p.y + 2.45, (isFinite(sol) ? sol : p.y) + 1.4);
     return { pos: [cx, y, cz], yaw: S.camCap + Math.PI / 2, pitch: -.12 - (y - p.y - 2.45) * .06, roll: 0, fov: champAdapte(64 + 8 * clamp(et.v / 85, 0, 1)), near: .1, far: PORTEE_VUE };
   }
+  // Stick droit maintenu vers le bas (axe 3 du Gamepad standard). L'hystérésis évite les bascules près du seuil ;
+  // aucun réglage de vue ni état de conduite n'est modifié. Chaque moitié d'écran garde son propre maintien.
+  function regardArriereVoulu(S, suivie, vue) {
+    const n = S === session ? 0 : session?.vueJ2 === S ? 1 : -1, choix = n >= 0 ? commande(n) : '';
+    const manette = n === 0 ? pad.manette : n === 1 ? pad2.manette : null, axe = manette?.axes?.[3];
+    const id = n === 1 ? session?.locaux?.[1] : session?.course?.joueur?.id;
+    const autorise = n >= 0 && ecran === 'course' && (S.type === 'course' || S.type === 'chrono' || S.type === 'duo') &&
+      !S.banc && !S.reference && vue === 'poursuite' && suivie.id === id &&
+      (choix === 'auto' || choix === 'manette') && manette?.connected && Number.isFinite(axe);
+    S.regardArriere = !!autorise && axe >= (S.regardArriere ? .35 : .55);
+    return S.regardArriere;
+  }
+  const RAYON_REGARD = { origine: [0, 0, 0], direction: [0, 0, 0], hit: {} };
+  function cameraRegardArriere(S, p, cam) {
+    // La poursuite normale a déjà entretenu son cap : relâcher le stick la retrouve dès l'image suivante,
+    // sans lui faire rattraper un demi-tour. Le point rendu (incluant suspension et saut PhysX) reste la référence.
+    const cap = S.camCap ?? p.cap, ca = Math.cos(cap), sa = Math.sin(cap), pos = cam.pos;
+    pos[0] = p.x + ca * 7.4; pos[2] = p.z + sa * 7.4;
+    const sol = scene.decor.sol ? scene.decor.sol(pos[0], pos[2]) : p.y;
+    pos[1] = Math.max(p.y + 2.45, (Number.isFinite(sol) ? sol : p.y) + 1.4);
+    const monde = S.course.physique?.world;
+    if (monde?.raycast) {
+      const origine = RAYON_REGARD.origine, direction = RAYON_REGARD.direction;
+      origine[0] = p.x; origine[1] = p.y + 1.1; origine[2] = p.z;
+      for (let k = 0; k < 3; k++) direction[k] = pos[k] - origine[k];
+      const distance = Math.hypot(...direction);
+      for (let k = 0; k < 3; k++) direction[k] /= distance;
+      // Sol, parois et plafond réels ; les voitures et les débris ne font pas rebondir la caméra.
+      const hit = monde.raycast(origine, direction, distance + .35, { mask: 3, staticOnly: true }, RAYON_REGARD.hit);
+      if (hit.hit) {
+        const libre = Math.max(0, Math.min(distance, hit.distance - .35));
+        for (let k = 0; k < 3; k++) pos[k] = origine[k] + direction[k] * libre;
+      }
+    }
+    cam.yaw = cap - Math.PI / 2;
+    cam.pitch = -Math.atan2(pos[1] - p.y - .6, Math.hypot(pos[0] - p.x, pos[2] - p.z) + 5);
+    cam.roll = 0; cam.regardArriere = true;
+    return cam;
+  }
   // hélicoptère (démo) : en arrière et au-dessus de la voiture suivie, cap lissé ; vise un peu devant elle
   function cameraHelico(S, p, dt) {
     if (S.camCap === null) S.camCap = p.cap;
@@ -1683,8 +1725,8 @@
 
   // Caméras de la démo (David, 16/11 : « des démos plus impressionnantes, avec de l'action, des vues différentes »).
   // Portées par la voiture filmée (son attitude) ou posées autour d'elle ; le plan dit de quel côté (milieu de piste).
-  const VUES_DEHORS = new Set(['tele', 'helico', 'orbite', 'travelling', 'sol']);
-  const DANS_LA_ROCHE = new Set(['helico', 'orbite', 'travelling']);   // sous le tunnel, ces caméras seraient dans la montagne
+  const VUES_DEHORS = new Set(['tele', 'helico', 'orbite', 'travelling', 'sol', 'panorama', 'flore', 'faune', 'pilote', 'peloton']);
+  const DANS_LA_ROCHE = new Set(['helico', 'orbite', 'travelling', 'pilote', 'peloton']);   // sous le tunnel, ces caméras seraient dans la montagne
   const CAMERAS_DEMO = new Set(['roue', 'aileron', 'arriere', 'travelling', 'orbite']);
   function cameraDemo(S, p, plan) {
     const M = B.voiture.attitude(p.cap, p.tangage, p.roulis), pt = o => { const q = B.voiture.mul(M, o); return [p.x + q[0], p.y + q[1], p.z + q[2]]; };
@@ -2360,7 +2402,8 @@
     let vue = reglages.vue, suivie = j;
     if (S.type === 'vitrine') { suivie = co.voitures[co.classement[S.suiviRang || 0]] || j; vue = 'tele'; }
     else if (S.type === 'demo') {
-      const pl = B.realisateur.tenir(S.real, co);
+      B.cinema.regler(S.cinema, { faune: B.animaux.qualite(reglages.faune, P.palier), nuit: S.nature?.ambiance.nuit || 0, pluie: meteo.pluie || 0 });
+      const pl = B.realisateur.tenir(S.real, co, S.cinema);
       // coupe : les caméras lissées repartent de la nouvelle voiture, les écarts du son aussi
       if (S.planVu !== pl) { S.planVu = pl; S.camCap = null; S.tete = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; }
       vue = pl.vue; suivie = co.voitures[pl.sujet];
@@ -2376,15 +2419,33 @@
     const P = profilDe(S); // menu + gouverneur + capacités du moteur, décidé une fois par image
     sortie.length = 0;
     let cam;
-    if (DANS_LA_ROCHE.has(vue) && B.circuit.dansTunnel(co.c, suivie.etat.s, 8)) vue = 'poursuite';
-    const ps = poses[suivie.id], exterieur = VUES_DEHORS.has(vue);
-    if (vue === 'tele') cam = cameraTele(S, suivie, ps);
+    if (DANS_LA_ROCHE.has(vue) && B.circuit.dansTunnel(co.c, suivie.etat.s, 8)) {
+      if (S.type === 'demo' && B.cinema.VUES.includes(vue)) {
+        S.planVu = B.realisateur.replier(S.real, co, 'poursuite', suivie.id);
+        suivie = co.voitures[S.planVu.sujet];
+        S.camCap = null; S.tete = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0;
+      }
+      vue = 'poursuite';
+    }
+    let ps = poses[suivie.id];
+    const exterieur = VUES_DEHORS.has(vue);
+    if (B.cinema.VUES.includes(vue)) {
+      cam = B.cinema.camera(S.cinema, S.planVu, poses, co, S.tRendu);
+      if (!cam) {
+        // Coupe explicite, sans conserver l'ancien plan ni ses filtres quand son sujet devient masqué.
+        S.planVu = B.realisateur.replier(S.real, co, 'tele', suivie.id); S.camCap = null; S.tete = null; S.tele.poste = null;
+        suivie = co.voitures[S.planVu.sujet]; ps = poses[suivie.id];
+        S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0;
+        vue = 'tele'; cam = cameraTele(S, suivie, ps);
+      }
+    } else if (vue === 'tele') cam = cameraTele(S, suivie, ps);
     else if (vue === 'helico') cam = cameraHelico(S, ps, dtImage);
     else if (vue === 'sol') cam = cameraSol(S, suivie, ps);
     else if (CAMERAS_DEMO.has(vue)) cam = cameraDemo(S, ps, S.planVu);
     else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, S.tRendu, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage);
+    if (regardArriereVoulu(S, suivie, vue)) cam = cameraRegardArriere(S, ps, cam);
     if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: PORTEE_VUE, fov: 40 }, cameraEssai(pj, cam));
-    if (S.secousse > 0) {
+    if (S.secousse > 0 && !cam.sujetNature) {
       const a = S.secousse * .05 * reglages.secousses, t = horlogeReelle;
       cam.pitch += Math.sin(t * 61) * a * .5; cam.yaw += Math.sin(t * 47) * a * .35;
       S.secousse = Math.max(0, S.secousse - dtImage * 2.6);
@@ -2393,7 +2454,8 @@
     const avX = Math.sin(cam.yaw), avZ = -Math.cos(cam.yaw);
     // ombres du soleil autour de ce que l'on regarde : devant le pilote (jusqu'à 176 m), ou autour de la voiture filmée.
     // Un soleil par vue, réécrit à chaque image : le moteur le relit à chaque draw sans le garder.
-    cam.sun = soleilDe(S === session ? 0 : 1, exterieur ? ps.x : cam.pos[0] + avX * OMBRE_DEVANT, ps.y, exterieur ? ps.z : cam.pos[2] + avZ * OMBRE_DEVANT);
+    cam.sun = cam.sujetNature ? soleilDe(S === session ? 0 : 1, cam.cible[0], cam.cible[1], cam.cible[2])
+      : soleilDe(S === session ? 0 : 1, exterieur ? ps.x : cam.pos[0] + avX * OMBRE_DEVANT, ps.y, exterieur ? ps.z : cam.pos[2] + avZ * OMBRE_DEVANT);
     // Le jeu ne confie aucun objet statique au moteur (setWorld([], …) partout) : allStatic lui évite d'interroger à
     // chaque draw un index spatial vide (clés de grille et tableaux temporaires). Image identique.
     cam.allStatic = true;
@@ -2403,7 +2465,7 @@
       const nature = S.nature;
       if (!nature.faune) nature.faune = creationTardive('faune', B.faune.creer(c, scene.decor));
       const contexte = S.fauneVue || (S.fauneVue = creationTardive('contexteFaune', { qualite: P.faune, nuit: 0, pluie: 0, pose: ps, vue: S === session ? 0 : 1 }));
-      contexte.qualite = P.faune; contexte.nuit = nature.ambiance.nuit; contexte.pluie = meteo.pluie || 0; contexte.pose = ps;
+      contexte.qualite = P.faune; contexte.nuit = nature.ambiance.nuit; contexte.pluie = meteo.pluie || 0; contexte.pose = cam.sujetNature ? S.cinema.poseVue : ps;
       contexte.activite = nature.saison ? nature.saison.faune : 1;
       B.faune.dessiner(nature.faune, horlogeReelle, contexte, sortie);
     }
@@ -2763,7 +2825,8 @@
   }
 
   const LIBELLES_PLAN = { tele: 'bord de piste', cockpit: 'caméra embarquée', poursuite: 'poursuite', helico: 'hélicoptère',
-    roue: 'caméra de roue', aileron: 'au-dessus de l’arceau', arriere: 'caméra arrière', travelling: 'travelling', orbite: 'autour de la voiture', sol: 'au ras de la piste' };
+    roue: 'caméra de roue', aileron: 'au-dessus de l’arceau', arriere: 'caméra arrière', travelling: 'travelling', orbite: 'autour de la voiture', sol: 'au ras de la piste',
+    panorama: 'grand panorama', flore: 'végétation', faune: 'faune', pilote: 'auprès du pilote', peloton: 'dans le peloton' };
   // Cadences de l'affichage : chrono, écart, vitesse et régime changent à chaque image mais ne se lisent pas au-delà
   // de 30 Hz ; le plan se redessine à 15 Hz, décalé des chiffres, et jamais quand il est masqué. Position, tour,
   // santé, dérive et feux restent à chaque image : ils ne s'écrivent que lorsqu'ils changent. La marge d'une
@@ -2778,7 +2841,7 @@
     // nouvelle séance : tout s'écrit dès sa première image
     if (x.seance !== S) { x.seance = S; x.tChiffres = x.tPlan = -Infinity; }
     majAnnonceVirage(S, x, j);
-    if (demo && S.planVu) texte($('demo-plan'), CATALOGUE[S.i].nom + ' · ' + LIBELLES_PLAN[S.planVu.vue] + ' · ' + j.nom);
+    if (demo && S.planVu) texte($('demo-plan'), CATALOGUE[S.i].nom + ' · ' + LIBELLES_PLAN[S.planVu.vue] + ' · ' + (S.planVu.nature ? S.planVu.label : j.nom));
     texte(H['h-pos'], chronoMode ? '–' : String(j.position)); texte(H['h-sur'], chronoMode ? '' : '/' + nb);
     if (!chronoMode && !demo && S.positionPrec && j.position < S.positionPrec && co.phase === 'course') eclat(H['c-position']);
     S.positionPrec = j.position;
@@ -3267,7 +3330,7 @@
       }
       html += '</tbody></table></div>';
     }
-    zone.innerHTML = html + '<p class="note-commandes">Cliquez une touche puis appuyez sur la nouvelle (Échap annule). Souris : pointeur à gauche ou à droite pour tourner, bouton gauche pour accélérer, droit pour freiner, molette pour les rapports. Manette : gâchettes, stick gauche, A pour la dérive, RB et LB pour les rapports, Y pour la vue, Start pour la pause. Pause : Échap ou P · son : M.</p>'
+    zone.innerHTML = html + '<p class="note-commandes">Cliquez une touche puis appuyez sur la nouvelle (Échap annule). Souris : pointeur à gauche ou à droite pour tourner, bouton gauche pour accélérer, droit pour freiner, molette pour les rapports. Manette : gâchettes, stick gauche, A pour la dérive, RB et LB pour les rapports, Y pour la vue, stick droit maintenu vers le bas pour regarder derrière en vue Poursuite, Start pour la pause. Pause : Échap ou P · son : M.</p>'
       + '<button type="button" class="discret" id="r-touches-defaut">Touches par défaut</button>';
   }
   $('r-commandes').addEventListener('click', e => {
@@ -3793,8 +3856,9 @@
       }
     } else if (S.type === 'demo') {
       // chaque plan du réalisateur, sans le consulter : son générateur reste celui de la séance
-      for (const nom of B.realisateur.VUES) {
+      for (const nom of B.realisateur.VUES.concat(B.realisateur.VUES_CINEMA)) {
         S.planVu = { vue: nom, sujet: j.id, debut: co.horloge, fin: 1e9, motif: 'course', n: 0, cote: 1, angle: .6 };
+        if (B.cinema.NATURE.has(nom)) S.planVu.ancre = B.cinema.choisir(S.cinema, nom, 0, co.horloge);
         await vue(S, j, nom, nom === 'cockpit' ? cockpit : 1);
       }
     } else {

@@ -1,0 +1,53 @@
+{
+  "version": "0.2.57",
+  "physique": "p14",
+  "base_publiee": "6ed560661c9a69345dbbd6f8f26019845e84273d",
+  "base_version": "0.2.56",
+  "base_pr": 11,
+  "changements": [
+    "Démos : découverte des circuits, paysages, flore et animaux réellement présents, détails pilote et peloton.",
+    "Trajectoires nature préparées au chargement ; repli explicite si masquage, départ et sprint final protégés.",
+    "Regard arrière maintenu au stick droit vers le bas en vue Poursuite, relâchement immédiat et isolation des joueurs."
+  ],
+  "qualification_ciblee": {
+    "suites_reussies": 7,
+    "suites_total": 7,
+    "controles_reussis": 135,
+    "suites": {
+      "cinema": 18,
+      "cinema-raccords": 5,
+      "realisateur": 7,
+      "chargement": 9,
+      "regard-arriere": 13,
+      "manette": 39,
+      "commandes-partage": 44
+    },
+    "sources_stables": true
+  },
+  "build": {
+    "octets": 14182991,
+    "gzip": 3369849,
+    "sha256": "cbcd5c26d36a19946d647c250f290150766be585e843a6e8c331716eefa7cbea",
+    "deux_constructions_identiques": true
+  },
+  "invariants": {
+    "conduite_physx_reseau_pneus_identiques_0256": true,
+    "ferro_verrou_inchange": true,
+    "fixtures_physiques_inchangees": true,
+    "ressources_graphique_son_procedurales": true
+  },
+  "ci": "À lire après publication de ce nouveau lot ; les résultats de 0.2.56 ne qualifient pas le nouveau code.",
+  "reserves_precedentes": [
+    "Signature historique traces.test.mjs, oracle conservé.",
+    "Durée génération décor Val-Brûlé, seuil 150 ms conservé."
+  ],
+  "limites": [
+    "Rendu complet dans un navigateur et manette matérielle non validés dans cet environnement.",
+    "Les contrôles géométriques ne constituent pas une appréciation visuelle ni une mesure FPS.",
+    "Aucun déploiement du site effectué."
+  ],
+  "references_commandes": [
+    "https://www.ea.com/games/f1/f1-25/game-objects/26-season-update-controls-hub",
+    "https://www.ea.com/fr/games/f1/f1-25/game-objects/f1-25-controls-hub/game-object/driving-controls-controller-xbox"
+  ]
+}

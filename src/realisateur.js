@@ -21,8 +21,10 @@
   const VUES = ['tele', 'cockpit', 'poursuite', 'helico', 'roue', 'aileron', 'arriere', 'travelling', 'orbite', 'sol'];
   const DUREES = { tele: 7, cockpit: 6, poursuite: 5, helico: 6, roue: 4, aileron: 6, arriere: 5, travelling: 4, orbite: 6, sol: 4 };   // secondes, à une seconde près
   const POIDS = { tele: 13, cockpit: 10, poursuite: 9, helico: 7, roue: 11, aileron: 11, arriere: 9, travelling: 10, orbite: 8, sol: 10 };
+  const VUES_CINEMA = Object.freeze(['panorama', 'flore', 'faune', 'pilote', 'peloton']);
+  DUREES.pilote = 3.6; DUREES.peloton = 5; POIDS.pilote = 12; POIDS.peloton = 14;
   // caméras portées par la voiture filmée ou tout près d'elle : jamais sur une voiture lente
-  const PORTEES = new Set(['cockpit', 'poursuite', 'roue', 'aileron', 'arriere', 'travelling']);
+  const PORTEES = new Set(['cockpit', 'poursuite', 'roue', 'aileron', 'arriere', 'travelling', 'pilote']);
   const APRES_VERT = 2.5;      // la grille reste à l'image le temps que le peloton s'élance
   const DUEL = 30;             // mètres : en dessous, deux voitures se battent
   const ALLURE = 15;           // m/s : en dessous, pas de caméra portée
@@ -42,7 +44,7 @@
 
   function creer(graine) {
     return { alea: mulberry32((graine >>> 0) + 0x51ED270B), plan: null, n: 0, vert: -1, vainqueur: -1, sprint: false,
-      vus: {}, ordre: null, action: null };
+      vus: {}, ordre: null, action: null, cinema: null, plansCourse: 0, natureTour: 0, natureDerniere: -1e9 };
   }
 
   // côté du milieu de la piste, vu de la voiture : les caméras latérales s'y placent, loin des arbres et des rails
@@ -50,7 +52,25 @@
   function couper(R, co, vue, sujet, duree, motif, extra) {
     R.vus[vue] = R.n + 1;
     R.plan = Object.assign({ vue, sujet, debut: co.horloge, fin: co.horloge + duree, motif, n: ++R.n, cote: coteMilieu(co, sujet), angle: R.alea() * Math.PI * 2 }, extra);
+    if (R.plan.nature) { R.plansCourse = 0; R.natureDerniere = co.horloge; }
+    else if (motif !== 'grille') R.plansCourse++;
     return R.plan;
+  }
+
+  function respiration(R, co) {
+    if (!R.cinema || R.sprint || co.drapeau !== null || R.plansCourse < 3 || co.horloge - R.natureDerniere < 15 || co.horloge - R.vert < 11) return null;
+    const types = ['panorama', 'flore', 'faune'];
+    for (let k = 0; k < types.length; k++) {
+      const type = types[(R.natureTour + k) % types.length], ancre = B.cinema.choisir(R.cinema, type, Math.floor(R.natureTour / 3), co.horloge);
+      if (!ancre) continue;
+      R.natureTour += k + 1;
+      let sujet = co.classement[0], distance = Infinity;
+      for (const v of co.voitures) if (!v.fini) {
+        const d = Math.abs(B.circuit.ecart(co.c, v.etat.s, ancre.s)); if (d < distance) { distance = d; sujet = v.id; }
+      }
+      return couper(R, co, type, sujet, type === 'panorama' ? 6.4 : type === 'flore' ? 4.8 : 5.6, 'nature', { ancre, nature: true, label: ancre.label });
+    }
+    return null;
   }
 
   // Tirage pondéré dans une liste de [valeur, poids].
@@ -74,6 +94,7 @@
     const avant = R.plan, V = co.voitures;
     const enPiste = co.classement.map(id => V[id]).filter(v => !v.fini);
     if (!enPiste.length) return couper(R, co, 'tele', co.classement[0], DUREES.tele, 'tete');
+    const paysage = respiration(R, co); if (paysage) return paysage;
 
     // Les duels : la voiture qui chasse, pour que celle de devant soit à l'image. La tête de course pèse plus lourd,
     // l'écart court aussi ; on évite de reprendre la voiture du plan précédent.
@@ -94,7 +115,8 @@
 
     // la caméra : jamais la même deux fois ; l'arrière seulement si quelqu'un suit ; rien de porté sur une voiture lente
     const lente = V[sujet].etat.v <= ALLURE;
-    const vues = VUES.filter(v => (!avant || v !== avant.vue) && !(v === 'arriere' && !chasse(co, sujet)) && !(lente && dePres(v)));
+    const catalogue = R.cinema ? VUES.concat(['pilote', 'peloton']) : VUES;
+    const vues = catalogue.filter(v => (!avant || v !== avant.vue) && !(v === 'arriere' && !chasse(co, sujet)) && !(lente && dePres(v)));
     const vue = tirer(R, vues.map(v => [v, poids(R, v)]));
     return couper(R, co, vue, sujet, DUREES[vue] - 1 + 2 * R.alea(), motif);
   }
@@ -111,10 +133,15 @@
     }
   }
 
-  function tenir(R, co) {
+  function tenir(R, co, cinema = null) {
+    R.cinema = cinema;
     const t = co.horloge, p = R.plan, V = co.voitures;
-    // Avant le vert : toute la grille vue d'en haut, depuis la dernière ligne.
+    // La première découverte tient dans le délai existant : les feux et le départ restent en temps réel.
     if (co.phase === 'grille' || co.phase === 'feux') {
+      if (cinema && t < 2.4) {
+        const ancre = B.cinema.choisir(cinema, 'panorama', 0, t);
+        if (ancre) return p?.motif === 'decouverte' ? p : couper(R, co, 'panorama', co.classement[0], 2.4 - t, 'decouverte', { ancre, nature: true, label: ancre.label });
+      }
       return p && p.motif === 'grille' ? p : couper(R, co, 'helico', co.classement[co.classement.length - 1], 1e9, 'grille');
     }
     if (p && p.motif === 'grille') {
@@ -136,13 +163,16 @@
     const tete = V[co.classement[0]];
     if (!R.sprint && co.toursTotal * co.c.longueur - tete.progression < SPRINT) {
       R.sprint = true;
-      if (p.sujet !== tete.id) return couper(R, co, p.vue === 'poursuite' ? 'cockpit' : 'poursuite', tete.id, 1e9, 'sprint');
+      if (p.sujet !== tete.id || p.nature) return couper(R, co, p.vue === 'poursuite' ? 'cockpit' : 'poursuite', tete.id, 1e9, 'sprint');
       p.fin = 1e9;
     }
+    // Une respiration a une vraie durée de plan. Elle cesse aussitôt si le sujet n'est plus dessiné (réglage,
+    // terrier, pluie/nuit) ; un sprint ou le drapeau garde toujours la priorité ci-dessus.
+    if (p.nature && !R.sprint) return B.cinema.disponible(cinema, p.ancre, t) && t < p.fin ? p : suivant(R, co);
     if (!R.sprint) {
       // L'action : un choc fort, filmé de dehors, au ralenti
       const a = R.action; R.action = null;
-      if (a && p.motif !== 'action' && t - p.debut > .8 && !V[a.id].fini) {
+      if (a && t - a.t < 1.2 && p.motif !== 'action' && t - p.debut > .8 && !V[a.id].fini) {
         const vue = tirer(R, ['orbite', 'tele', 'sol'].filter(v => v !== p.vue).map(v => [v, 1]));
         return couper(R, co, vue, a.id, 4.2, 'action', { ralenti: t + RALENTI_DUREE, facteur: RALENTI });
       }
@@ -165,11 +195,20 @@
     return t < p.fin && !s.fini && !arrete ? p : suivant(R, co);
   }
 
+  // Une caméra mobile devenue masquée change réellement de plan : le numéro et les filtres repartent ensemble.
+  function replier(R, co, vue = 'tele', sujet = R.plan?.sujet) {
+    const sprint = R.sprint && co.drapeau === null;
+    // Le terrain peut imposer une autre caméra, jamais une nouvelle respiration pendant l'arrivée.
+    if (sprint) sujet = co.classement[0];
+    if (!co.voitures[sujet]) sujet = co.classement[0];
+    return couper(R, co, vue, sujet, sprint ? 1e9 : DUREES[vue], sprint ? 'sprint' : 'cadre');
+  }
+
   // facteur de vitesse de la démo : ralenti d'une action, sinon 1
   function vitesse(R, co) {
     const p = R && R.plan;
     return p && p.ralenti && co.horloge < p.ralenti ? p.facteur : 1;
   }
 
-  B.realisateur = { creer, tenir, signaler, vitesse, VUES, DUREES, PORTEES };
+  B.realisateur = { creer, tenir, replier, signaler, vitesse, VUES, VUES_CINEMA, DUREES, PORTEES };
 })(globalThis.BITUME = globalThis.BITUME || {});
