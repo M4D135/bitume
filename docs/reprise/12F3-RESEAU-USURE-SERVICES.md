@@ -2,9 +2,9 @@
 
 ## Point de départ et périmètre
 
-19 novembre 2026. Base publiée **0.2.49**, suivi main `56086ecc` ; 12F2 est fusionné.
-Branche de travail : `codex/bitume-12f3-20261119`. **12F3 qualifié CPU en 0.2.50 ; publication finale EN COURS.**
-Checkpoint sources distant `7c908b17` vérifié ; sources et build gelés. Main reste vérifié en **0.2.49 / `56086ecc`**.
+19 novembre 2026. Base du lot : **0.2.49 / `56086ecc`**. **12F3 livré en 0.2.50 sur main `9857f627`**.
+PR n°4 fermée, fusionnée et non brouillon à **13 h 01 (Paris)** ; tree de fusion identique à la tête revue `baeea490`.
+Checkpoint sources `7c908b17` conservé ; publication sources/tests/build/preuves vérifiée.
 
 Le type et les quatre états de pneus, les remplacements terminés et le transfert vers l’IA sont transmis.
 Le choix de la prochaine monte est actif en ligne. Commandes locales, physique **p11**, positions à quinze
@@ -46,6 +46,8 @@ flottants et modules FERRO inchangés. Le site et WebGL restent non validés.
 - Rapport : `rapports/12F3-2026-11-19/qualification-execution.json` ; synthèse `VALIDATION.md` dans le même dossier.
   Charges utiles mesurées et débits théoriques dans `transport-mesure.json` ; aucune mesure réseau matérielle.
 
-Terminer la publication sources/tests/build/preuves, vérifier le distant et enregistrer le reçu.
+Reçu de publication vérifié : `rapports/12F3-2026-11-19/PUBLICATION-0250.json`.
+Deux CI finales terminées : **104/105 chacune**, seul échec traces hérité identique, runs `44519375789` et `44519295768`.
+La fusion est terminée ; ne pas la redemander. Build identique à celui qualifié.
 **Prochain sous-lot : stratégie de stands IA**, non commencé, à borner séparément avant les courses longues.
 Russie, Monaco, Marseille, huitième circuit de montagne et six propositions restent conservés.

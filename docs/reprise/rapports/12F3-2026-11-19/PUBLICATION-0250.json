@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "date_verification_utc": "2026-11-19 12:02:31 UTC",
+  "version": "0.2.50",
+  "lot": "12F3",
+  "repository": "M4D135/bitume",
+  "statut": "fusion_main_verifiee",
+  "base_main": "56086eccd5d3085b6f8e8b86fd65c33c81d15b1b",
+  "checkpoint_documentaire": "ffd30f651bb36d82930fec82f3696a55a74ab70a",
+  "checkpoint_sources": "7c908b1749ab1490991d8e0ce4ec1a38a42ce743",
+  "commit_qualifie": "baeea4909f64b350fcc83a5706ff1ade12492783",
+  "copie_locale_qualifiee": "d4f4a6fdda1e8f78b484b703a66176361b83f030",
+  "tree_qualifie": "e2b73435692041abadb3b194cb39c78a0c9535f1",
+  "commit_fusion": "9857f6277ba8ac2abdcbe8204eb87f94cbb8a146",
+  "main_verifie": "9857f6277ba8ac2abdcbe8204eb87f94cbb8a146",
+  "tree_fusion_identique": true,
+  "parents": [
+    "56086eccd5d3085b6f8e8b86fd65c33c81d15b1b",
+    "baeea4909f64b350fcc83a5706ff1ade12492783"
+  ],
+  "pr": {
+    "numero": 4,
+    "url": "https://github.com/M4D135/bitume/pull/4",
+    "state": "closed",
+    "draft": false,
+    "merged": true,
+    "merged_at": "2026-11-19T12:01:28Z",
+    "head": "baeea4909f64b350fcc83a5706ff1ade12492783",
+    "base": "56086eccd5d3085b6f8e8b86fd65c33c81d15b1b"
+  },
+  "build": {
+    "bytes": 14042272,
+    "sha256": "b1154b9b8a03641f2b166c44bd7cd191589e2375a9cc490733edd90934d5dc21",
+    "git_blob": "0871d6b90dff0eb0615935c6752cba9ab13e8cd9",
+    "deux_constructions_identiques": true
+  },
+  "qualification": {
+    "rapport": "qualification-execution.json",
+    "sources_tests_fixtures_controles": 205,
+    "suites": 105,
+    "reussies": 104,
+    "echecs": [
+      "traces.test.mjs"
+    ],
+    "physique": "p11",
+    "scenarios": 20,
+    "empreintes": 1300,
+    "fixture_regeneree": false,
+    "scripts_valides": 52,
+    "modules_ferro_inchanges": 34
+  },
+  "controles_github": [
+    {
+      "id": 44519375789,
+      "head_sha": "baeea4909f64b350fcc83a5706ff1ade12492783",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44519375789",
+      "suites": 105,
+      "reussies": 104,
+      "echecs": [
+        "traces.test.mjs"
+      ],
+      "reconstruction_identique": true
+    },
+    {
+      "id": 44519295768,
+      "head_sha": "baeea4909f64b350fcc83a5706ff1ade12492783",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44519295768",
+      "suites": 105,
+      "reussies": 104,
+      "echecs": [
+        "traces.test.mjs"
+      ],
+      "reconstruction_identique": true
+    }
+  ],
+  "reserve": {
+    "preuve": "reserve-traces.json",
+    "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+    "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+    "heritee_identique": true,
+    "ci_entierement_verte": false
+  },
+  "controles_obligatoires_modifies": false,
+  "rulesets_modifies": false,
+  "limites": {
+    "parties_reelles_entre_navigateurs_validees": false,
+    "webgl_valide": false,
+    "performance_materielle_mesuree": false,
+    "deploiement_effectue": false,
+    "site_verifie": false
+  },
+  "prochaine_action": "Stratégie de stands IA, non commencée et à borner ; ne pas recommencer 12F3."
+}

@@ -5,22 +5,23 @@
     "base_commit": "56086eccd5d3085b6f8e8b86fd65c33c81d15b1b",
     "base_version": "0.2.49",
     "version_courante": "0.2.50",
-    "version_publiee_verifiee": "0.2.49",
-    "commit_main_verifie": "56086eccd5d3085b6f8e8b86fd65c33c81d15b1b",
-    "statut": "12F3_qualifie_publication_finale_en_cours",
+    "version_publiee_verifiee": "0.2.50",
+    "commit_main_verifie": "9857f6277ba8ac2abdcbe8204eb87f94cbb8a146",
+    "statut": "12F3_livre_sur_main",
     "lot": "12F3_reseau_usure_services",
     "fiche": "docs/reprise/12F3-RESEAU-USURE-SERVICES.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "016",
+    "derniere_entree": "017",
     "checkpoint_sources": "7c908b1749ab1490991d8e0ce4ec1a38a42ce743",
     "checkpoint_distant_verifie": true,
     "qualification": "docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json",
     "publication_base": "docs/reprise/rapports/12F2-2026-11-19/FUSION-0249.json",
-    "prochaine_action": "Terminer la publication sources/tests/build/preuves 0.2.50, vérifier le distant et enregistrer le reçu ; puis borner la stratégie de stands IA.",
+    "prochaine_action": "Borner la stratégie de stands IA, non commencée ; 12F3 / 0.2.50 est livré et la fusion PR4 vérifiée.",
     "physique": "p11 ; références p9/p10/p11 conservées",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
     "comportement": "Choix de prochaine monte actif en ligne ; quatre états de pneus à 2 Hz, service immédiat fiable, validation et relais par hôte, reprise IA sans remise à neuf.",
-    "compatibilite": "Protocole de préparation et identifiant de circuit/empreinte complète des sources ; liaison tardive synchronisée, nouveaux joueurs hors grille reportés à la prochaine course."
+    "compatibilite": "Protocole de préparation et identifiant de circuit/empreinte complète des sources ; liaison tardive synchronisée, nouveaux joueurs hors grille reportés à la prochaine course.",
+    "publication": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json"
   },
   "validation": {
     "date_utc": "2026-11-19T11:50:27.476054+00:00",
@@ -81,7 +82,28 @@
     "performance_materielle_mesuree": false,
     "variabilite_decor": "Seuil réussi lors de ce passage ; variabilité CPU historique 12E conservée, aucun résultat FPS matériel.",
     "navigateurs_reels_valides": false,
-    "methode_reseau": "Vrais contrôleurs avec transport simulé ; aucune partie réelle entre navigateurs validée."
+    "methode_reseau": "Vrais contrôleurs avec transport simulé ; aucune partie réelle entre navigateurs validée.",
+    "ci_finale": {
+      "commit": "baeea4909f64b350fcc83a5706ff1ade12492783",
+      "runs": [
+        {
+          "id": 44519375789,
+          "termine": true,
+          "suites": 105,
+          "reussies": 104,
+          "conclusion": "failure"
+        },
+        {
+          "id": 44519295768,
+          "termine": true,
+          "suites": 105,
+          "reussies": 104,
+          "conclusion": "failure"
+        }
+      ],
+      "unique_echec": "traces.test.mjs",
+      "echec_herite_identique": true
+    }
   },
   "catalogue": {
     "jouables": 7,
@@ -98,7 +120,7 @@
     "lot": "strategie_stands_IA",
     "statut": "non_commence",
     "objectif": "Borner puis qualifier les décisions de stands des rivaux pour les courses longues, sans renouvellement caché des pneus.",
-    "prerequis": "Achever et vérifier la publication finale de 12F3 / 0.2.50 ; ne pas reprendre son implémentation.",
+    "prerequis": "12F3 / 0.2.50 livré sur main, PR4 fusionnée et reçu vérifié ; ne pas reprendre ce lot.",
     "apres": [
       "Russie",
       "Monaco ultra fidèle",
@@ -110,7 +132,7 @@
   "acces": {
     "mac_spark_amiga_disponibles": false,
     "travaux_mac_non_fusionnes": "Branches absentes de GitHub ; ne pas les compter livrées.",
-    "publication": "12F3 qualifié, publication finale en cours. Main vérifié reste 0.2.49 / 56086ecc ; la fusion 12F2 de la PR n°3 est terminée et ne doit pas être redemandée.",
+    "publication": "12F3 / 0.2.50 livré sur main 9857f627 ; PR4 fusionnée et vérifiée. Les fusions PR3/PR4 sont terminées et ne doivent pas être redemandées.",
     "deploiement_effectue": false,
     "site_verifie": false
   },
@@ -120,17 +142,28 @@
   ],
   "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé.",
   "publication": {
-    "branche": "codex/bitume-12f3-20261119",
-    "statut": "publication_finale_en_cours",
+    "branche": "main",
+    "statut": "fusion_main_verifiee",
     "checkpoint_sources": "7c908b1749ab1490991d8e0ce4ec1a38a42ce743",
     "checkpoint_distant_verifie": true,
-    "main_modifie_par_ce_lot": false,
-    "main_verifie": "56086eccd5d3085b6f8e8b86fd65c33c81d15b1b",
-    "version_main_verifiee": "0.2.49",
+    "main_modifie_par_ce_lot": true,
+    "main_verifie": "9857f6277ba8ac2abdcbe8204eb87f94cbb8a146",
+    "version_main_verifiee": "0.2.50",
     "version_qualifiee": "0.2.50",
-    "recu_final_verifie": false,
-    "recu_attendu": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json",
+    "recu_final_verifie": true,
     "controles_obligatoires_modifies": false,
-    "rulesets_modifies": false
+    "rulesets_modifies": false,
+    "branche_revue": "codex/bitume-12f3-20261119",
+    "recu": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json",
+    "pr": 4,
+    "url": "https://github.com/M4D135/bitume/pull/4",
+    "etat_pr": "closed",
+    "fusionnee": true,
+    "brouillon": false,
+    "commit_fusion": "9857f6277ba8ac2abdcbe8204eb87f94cbb8a146",
+    "fusion_le_utc": "2026-11-19T12:01:28Z",
+    "commit_revue_qualifie": "baeea4909f64b350fcc83a5706ff1ade12492783",
+    "tree_fusion": "e2b73435692041abadb3b194cb39c78a0c9535f1",
+    "tree_identique_a_la_revue": true
   }
 }

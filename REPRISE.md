@@ -4,11 +4,11 @@
 
 Lire `git status`, `docs/reprise/ETAT.json` et la dernière entrée du suivi ; ouvrir ensuite seulement la fiche active.
 
-- **12F3 qualifié CPU en 0.2.50 ; publication finale EN COURS**, sources et build gelés.
+- **12F3 livré sur main en 0.2.50**, sources, tests, build et preuves publiés.
   Fiche : `docs/reprise/12F3-RESEAU-USURE-SERVICES.md`. Ne pas recommencer le lot.
-- Dernier **main vérifié : 0.2.49 / `56086ecc`**. Checkpoint sources 12F3 distant vérifié : `7c908b17`,
-  branche `codex/bitume-12f3-20261119`. La 0.2.50 n’est pas encore déclarée publiée sur main.
-- **12A–12F2 publiés** ; PR n°3 fusionnée après le « go » de David. Fusion close : ne pas la redemander.
+- **Livraison vérifiée sur main : 0.2.50 / `9857f627`**. PR n°4 fermée et fusionnée le **19 novembre à 13 h 01 (Paris)** ;
+  tree du commit de fusion identique à la tête revue `baeea490`. Publication et fusion terminées.
+- **12A–12F3 publiés** ; PR n°3 et n°4 fusionnées. Ne pas redemander ni recommencer ces fusions.
 - **Choix de prochaine monte actif en ligne**, par pilote. Type et quatre états de pneus à **2 Hz**,
   service immédiat fiable, validation puis relais par l’hôte ; reprise IA sans remise à neuf.
 - Compatibilité de préparation : protocole et identifiant de circuit/empreinte complète des sources.
@@ -23,7 +23,9 @@ Rapport : `docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json`.
 **34 modules FERRO inchangés**. Deux builds identiques : **14 042 272 octets**, SHA-256
 `b1154b9b8a03641f2b166c44bd7cd191589e2375a9cc490733edd90934d5dc21`.
 
-Terminer la publication sources/tests/build/preuves, vérifier le distant puis enregistrer le reçu.
+Reçu : `docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json`.
+Les deux CI finales sont terminées : runs `44519375789` et `44519295768`, **104/105 chacune**,
+seul échec traces hérité identique ; aucune CI entièrement verte annoncée.
 **Prochain sous-lot : stratégie de stands IA**, non commencé ; le borner avant toute modification.
 Ne pas rendre les longues courses dépendantes de ces arrêts avant qualification des rivaux.
 **Parties réelles entre navigateurs, WebGL, matériel et déploiement non validés.**
