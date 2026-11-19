@@ -116,3 +116,9 @@ La PR #9 a publié le checkpoint b8f en 0.2.55 (main `1e4579c5`). Sa clôture do
 118/119 et artefact c9e0c3d9 sont conservés dans `rapports/PHYSX-SOLS-PILOTES-2026-11-19/github/`.
 Ils concernent l’intermédiaire 0.2.55 ; les CI du regroupement 0.2.56 sont à consigner séparément.
 La fiche démos garde également la préparation isolée et le correctif du bond de caméra, à reprendre ensuite.
+
+Le complément de clôture 0.2.55 jusqu’à main `293f4fae` est aussi conservé : sa CI après fusion
+117/119 (décor 163 ms/150 ms et traces héritées) reste distincte de nos passages 0.2.56.
+Les deux CI 0.2.56 de la tête `edf660e5` terminent à 122/123 (push) et 121/123 (PR) : traces historiques
+et, dans le second passage, décor 152 ms/150 ms ; aucun autre échec. Les deux builds restent identiques.
+La fusion finale doit conserver les fichiers de cette tête testée ; reçus sous `github-0256/`.

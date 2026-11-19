@@ -16,9 +16,11 @@
     "derniere_entree": "038",
     "sources_tests_geles": true,
     "qualification": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/QUALIFICATION-FINALE.json",
-    "prochaine_action": "Publier le snapshot qualifié sur la branche dédiée, lire les CI et fusionner avec tête attendue ; clore la reprise puis lot démos.",
+    "prochaine_action": "Publier la réconciliation documentaire de main, comparer les fichiers qualifiés à la tête CI, fusionner PR11 puis consigner le reçu ; reprendre les démos sur ce main.",
     "safari": "Correction antérieure confirmée par David ; aucune validation Safari du nouveau lot revendiquée.",
-    "main_verifie_avant_publication": "4497832403aed738bcffbb19c00cf64877c6935b"
+    "main_verifie_avant_publication": "293f4faef9e4c195c6f617f3f43f61874e183e83",
+    "pr": 11,
+    "tete_code_testee": "edf660e5e2cfe2894382460aee0cbec48fa3a748"
   },
   "validation": {
     "suites_consolidees": 123,
@@ -52,7 +54,28 @@
       "todo_herite": 1,
       "preuve": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-FERRO-0314.json"
     },
-    "ci_code": "a_verifier_apres_publication",
+    "ci_code": {
+      "statut": "deux_ci_terminees_avec_reserves",
+      "tete": "edf660e5e2cfe2894382460aee0cbec48fa3a748",
+      "push": {
+        "run": 44590341323,
+        "reussies": 122,
+        "suites": 123,
+        "reserves": [
+          "traces.test.mjs, signatures héritées identiques"
+        ]
+      },
+      "pull_request": {
+        "run": 44590352977,
+        "reussies": 121,
+        "suites": 123,
+        "reserves": [
+          "traces.test.mjs, signatures héritées identiques",
+          "decor.test.mjs : Val-Brûlé 152 ms / seuil150 ms"
+        ]
+      },
+      "preuve": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/RECU-CI.json"
+    },
     "jeu_navigateur_valide": false,
     "fps_materiels_mesures": false,
     "partie_multimachines_validee": false,
@@ -103,7 +126,8 @@
     "branche_preparee": "codex/bitume-demos-cinema-20261119",
     "base_preparee": "838756b",
     "correctif_camera": "Trajectoires nature mémorisées et plans de repli préparés ; pas encore intégrés ni qualifiés sur la version regroupée 0.2.56.",
-    "regles": "Préserver p14, départ/arrivée, courses continues, sortie sur geste, Faune/qualité, musique limitée au titre."
+    "regles": "Préserver p14, départ/arrivée, courses continues, sortie sur geste, Faune/qualité, musique limitée au titre.",
+    "base_a_confirmer": "PR11 / 0.2.56 : deux CI terminées, fusion du regroupement à consigner avant les démos."
   },
   "suite_apres_demos": {
     "lot": "13B_Russie_decor_saisons",

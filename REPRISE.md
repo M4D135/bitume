@@ -6,7 +6,7 @@
 Lire `docs/reprise/ETAT.json` et `docs/reprise/PHYSX-SOLS-PILOTES-2026-11-19.md`.
 Checkpoint qualifié `62c9461`, fusions réelles des branches concurrentes `6e9c1ea0` puis `b8f05074` ; main de départ `c2880297`.
 La PR #9 a entre-temps publié le checkpoint parallèle 0.2.55 sur main `1e4579c5`, arbre identique à `b8f05074`.
-Sa clôture documentaire `44978324` (PR #10) est également intégrée, avec reçus et CI.
+Ses clôtures documentaires jusqu’à `293f4fae` sont intégrées, avec les reçus et CI 0.2.55.
 Publier 0.2.56 sur `codex/bitume-physx-sols-pilotes-20261119-qualifie`, en préservant ce main.
 
 ## Livré dans le build
@@ -30,7 +30,9 @@ Rapport : `docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/QUALIFICATION-FIN
 
 Les captures sont des rendus réels EGL/llvmpipe, pas des essais navigateur complets. Aucun FPS matériel,
 essai multi-machines ni déploiement sur bitume.estrasse.fr validé. Les courses natives incluent 4 replacements
-après accident à Haut-Col (règle antérieure), aucun dans les scénarios de file bloquée. CI finales à lire.
+après accident à Haut-Col (règle antérieure), aucun dans les scénarios de file bloquée.
+CI de la tête `edf660e5` terminées : push 122/123 (traces héritées), PR 121/123 (mêmes traces et décor 152 ms/150 ms).
+Leur code/build est inchangé par la réconciliation documentaire ; fusion PR11 et reçu final à consigner.
 
 ## Suite conservée
 
