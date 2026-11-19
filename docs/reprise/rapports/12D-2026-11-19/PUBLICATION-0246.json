@@ -1,0 +1,16 @@
+{
+  "date_utc": "2026-11-19T09:45:01.059984+00:00",
+  "commit": "9c49abad670b16c67127c921b6522fecd29daf79",
+  "source_count": 77,
+  "source_mismatches": [],
+  "build_sha256": "9ab9097c7493d8260677022cef528f4a70fb9293372ecd61628c9e81abb52641",
+  "build_bytes": 13990207,
+  "build_match": true,
+  "method": "git show pinned commit, independent of working tree modifications",
+  "repository": "M4D135/bitume",
+  "branch": "main",
+  "publication_verified": true,
+  "url": "https://github.com/M4D135/bitume/commit/9c49abad670b16c67127c921b6522fecd29daf79",
+  "webgl_validated": false,
+  "deployed": false
+}

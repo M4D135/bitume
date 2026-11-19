@@ -6,14 +6,15 @@ Lire `git status`, `docs/reprise/ETAT.json` et la dernière entrée de `docs/rep
 puis seulement la fiche `docs/reprise/12E-CHAUSSEE-ADHERENCE.md` lorsqu'elle existe.
 
 - Branche unique **main**, publications fréquentes, aucun push forcé.
-- **12A–12C publiés** en 0.2.45 (`71354f0`) ; **12D intégré et qualifié** en **0.2.46**.
+- **12A–12C publiés** en 0.2.45 (`71354f0`) ; **12D publié et vérifié** en **0.2.46** (`9c49abad`).
 - Sources/build 0.2.46 récupérés au checkpoint `834d270`, preuves vérifiées et jointes à cette publication.
 - **Safari corrigé**, chantier clos. **FERRO 0.3.11**, 34 modules inchangés. **Physique p9 conservée**.
 - Usure et saleté visibles par roue ; la neige est préparée mais son choix attend le lot physique **12E**.
 
 ## Prochaine action précise
 
-Vérifier la publication 0.2.46, consigner son reçu GitHub puis ouvrir **12E — chaussée et adhérence**.
+**12E — chaussée et adhérence** est ouvert ; lire sa fiche, terminer le code, qualifier puis publier.
+Reçu 0.2.46 : `docs/reprise/rapports/12D-2026-11-19/PUBLICATION-0246.json`.
 Preuves : `docs/reprise/rapports/12D-2026-11-19/qualification-finale.json`.
 **91/93 suites**, deux échecs hérités identiques, **19 scénarios / 1 259 empreintes p9 identiques**.
 Build reproductible SHA-256 `9ab9097c7493d8260677022cef528f4a70fb9293372ecd61628c9e81abb52641`.
