@@ -12,19 +12,37 @@
     "lot": "cockpit_exterieur_pilotes_clos",
     "fiche": "docs/reprise/COCKPIT-PILOTES-2026-11-19.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "043",
+    "derniere_entree": "044",
     "prochaine_action": "13B Baïkal : lac, berges, lieux signature, végétation/faune propres et saisons."
   },
   "validation": {
     "ciblee": "6/6 suites : 71 contrôles cockpit/voitures et registre ; 840 poses détaillées + 150 poses LOD réels.",
-    "ci": "PR : 126/127 ; push : 125/127. Aucun échec hors réserves documentées.",
+    "ci": "PR : 126/127 ; push du candidat : 125/127 ; après fusion sur main : 126/127. Aucun échec hors réserves documentées.",
     "reserves": [
       "traces.test.mjs : signature héritée exacte.",
-      "decor.test.mjs : Val-Brûlé : 166 ms / 150 ms sur push ; réussi sur PR."
+      "decor.test.mjs : Val-Brûlé : 166 ms / 150 ms sur push du candidat ; réussi sur PR et après fusion. Réserve de durée conservée."
     ],
     "ci_apres_fusion": {
       "run_id": 44602433260,
-      "statut_a_cloture": "en cours, résultat distinct"
+      "job_id": 135837112728,
+      "head": "02e8bac6b9ed762e0da06ab7c223e9cbd419968e",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44602433260",
+      "status": "completed",
+      "conclusion": "failure",
+      "passed": 126,
+      "failed_count": 1,
+      "total": 127,
+      "failed": [
+        "verifications/traces.test.mjs"
+      ],
+      "trace_signature_matches_0257": true,
+      "unexpected_failures": [],
+      "key_suites": {
+        "verifications/pilote-habitacle.test.mjs": "PASS",
+        "verifications/pilote-exterieur.test.mjs": "PASS",
+        "verifications/nature-integration.test.mjs": "PASS",
+        "verifications/decor.test.mjs": "PASS"
+      }
     },
     "build_octets": 14186762,
     "build_sha256": "cb02e2250a2e4a7d06bd0fdea659fce641a016975e224bac2823574888439cd4",

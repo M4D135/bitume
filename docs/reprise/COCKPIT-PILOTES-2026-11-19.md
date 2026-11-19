@@ -83,7 +83,10 @@ la PR #16 est également marquée fusionnée. Source, jeu compilé et sept fichi
 CI de cette tête : **PR : 126/127**, échec traces uniquement ; **push : 125/127**, mêmes traces et Val-Brûlé : 166 ms / 150 ms.
 La signature des traces est identique à la base 0.2.57, sans nouvelle fixture ni seuil. Le décor passe dans la CI de PR.
 Le dépassement de durée reste une réserve : aucune comparaison contrôlée ne démontre une absence de régression de performance.
-La CI automatique après fusion 0.2.59 `44602433260` était encore en cours au dernier constat et reste distincte.
+La CI automatique après fusion 0.2.59 [`44602433260`](https://github.com/M4D135/bitume/actions/runs/44602433260),
+sur `02e8bac6`, est terminée : **126/127**, seule la même signature de traces en échec. Les suites cockpit,
+nature et décor passent ; aucun nouvel échec. La conclusion GitHub reste `failure`. Ce résultat est distinct
+des passages précédents et ne lève pas la réserve de durée observée sur le push du candidat.
 Reçu : `rapports/COCKPIT-PILOTES-2026-11-19/PUBLICATION-0259.json`.
 La 0.2.57 est close : ses deux CI correctives et sa CI main terminent à 125/126, seules traces héritées.
 
