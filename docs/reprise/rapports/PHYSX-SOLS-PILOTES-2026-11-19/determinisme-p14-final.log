@@ -1,0 +1,5 @@
+ok  val-brule-sec-12 : 18 empreintes exactes, 12 corps dynamiques, 66702 triangles de sol
+ok  port-sable-pluie-12 : 18 empreintes exactes, 12 corps dynamiques, 59522 triangles de sol
+ok  baikal-neige-12 : 18 empreintes exactes, 12 corps dynamiques, 98374 triangles de sol
+ok  sensibilité : un ulp sur pose, vitesse, usure ou événement change le hachage ; −0 distinct de +0
+ok  déterminisme p14 : 3 cas PhysX réels, 54 empreintes, aucune fixture historique modifiée

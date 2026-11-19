@@ -1,0 +1,772 @@
+{
+  "commits": [
+    {
+      "sha": "6e9c1ea09eb22a1d8c1f1deea99ed09b41ccdf1d",
+      "node_id": "C_kwDOVsBfn9oAKDZlOWMxZWEwOWViMjJhMWQ4YzFmMWRlZWE5OWVkMDliNDFjY2RmMWQ",
+      "url": "https://api.github.com/repos/M4D135/bitume/git/commits/6e9c1ea09eb22a1d8c1f1deea99ed09b41ccdf1d",
+      "html_url": "https://github.com/M4D135/bitume/commit/6e9c1ea09eb22a1d8c1f1deea99ed09b41ccdf1d",
+      "author": {
+        "name": "M4D135",
+        "email": "ciantemar@me.com",
+        "date": "2026-11-19T17:49:27Z"
+      },
+      "committer": {
+        "name": "M4D135",
+        "email": "ciantemar@me.com",
+        "date": "2026-11-19T17:49:27Z"
+      },
+      "tree": {
+        "sha": "10cfed04f114d11b6a3188b9a6cf564843d93ec3",
+        "url": "https://api.github.com/repos/M4D135/bitume/git/trees/10cfed04f114d11b6a3188b9a6cf564843d93ec3"
+      },
+      "message": "fix: conserver le mouvement PhysX lors des reprises réseau et libérer les scènes\n\nQuatre régressions sur le vrai WASM : reprise en vol dans les deux sens, installation interrompue et nettoyage des scènes partagées. Conserver le build 0.2.54 jusqu’à l’intégration FERRO 0.3.13 et la qualification complète. Demande démos paysages/faune/flore enregistrée dans la reprise.",
+      "parents": [
+        {
+          "sha": "5779d8ee54ecdbe5e1c0c025ab392172d63a61a0",
+          "url": "https://api.github.com/repos/M4D135/bitume/git/commits/5779d8ee54ecdbe5e1c0c025ab392172d63a61a0",
+          "html_url": "https://github.com/M4D135/bitume/commit/5779d8ee54ecdbe5e1c0c025ab392172d63a61a0"
+        }
+      ],
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    {
+      "sha": "5779d8ee54ecdbe5e1c0c025ab392172d63a61a0",
+      "node_id": "C_kwDOVsBfn9oAKDU3NzlkOGVlNTRlY2RiZTVlMWMwYzAyNWFiMzkyMTcyZDYzYTYxYTA",
+      "url": "https://api.github.com/repos/M4D135/bitume/git/commits/5779d8ee54ecdbe5e1c0c025ab392172d63a61a0",
+      "html_url": "https://github.com/M4D135/bitume/commit/5779d8ee54ecdbe5e1c0c025ab392172d63a61a0",
+      "author": {
+        "name": "M4D135",
+        "email": "ciantemar@me.com",
+        "date": "2026-11-19T17:43:03Z"
+      },
+      "committer": {
+        "name": "M4D135",
+        "email": "ciantemar@me.com",
+        "date": "2026-11-19T17:43:03Z"
+      },
+      "tree": {
+        "sha": "62524dc454d9d1022d8315dc85c6039979acd611",
+        "url": "https://api.github.com/repos/M4D135/bitume/git/trees/62524dc454d9d1022d8315dc85c6039979acd611"
+      },
+      "message": "checkpoint: voitures PhysX, sols exacts et pilotes animés en qualification\n\nReprise du châssis dynamique avec quatre suspensions, collisions de la scène réelle, limiteur des stands par forces et animations extérieures. Huit scénarios de stands et 375 poses de pilote contrôlés. Le runtime FERRO étendu doit encore être publié/propagé ; build 0.2.54 conservé, nouvelle version jouable non revendiquée. Préserver la clôture 0.2.54 de main.",
+      "parents": [
+        {
+          "sha": "c28802974b2c138b57ea1bfe377389724ca15724",
+          "url": "https://api.github.com/repos/M4D135/bitume/git/commits/c28802974b2c138b57ea1bfe377389724ca15724",
+          "html_url": "https://github.com/M4D135/bitume/commit/c28802974b2c138b57ea1bfe377389724ca15724"
+        }
+      ],
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    }
+  ],
+  "missing": [
+    {
+      "sha": "10cfed04f114d11b6a3188b9a6cf564843d93ec3",
+      "type": "tree",
+      "path": "",
+      "tree": "10cfed04f114d11b6a3188b9a6cf564843d93ec3"
+    },
+    {
+      "sha": "734e2a4e8b691c867d769f7fec124bf1538ee3a7",
+      "type": "blob",
+      "path": "AGENTS.md",
+      "size": 38963
+    },
+    {
+      "sha": "645f820d554498af9342c7e9452687f4a80407e1",
+      "type": "blob",
+      "path": "REPRISE.md",
+      "size": 2243
+    },
+    {
+      "sha": "8e54bbdace8e1cae05787dfeff615d2d8cabd789",
+      "type": "blob",
+      "path": "construire.py",
+      "size": 8610
+    },
+    {
+      "sha": "160590f98a0485b62d6847f87e22eb862ebde066",
+      "type": "tree",
+      "path": "docs"
+    },
+    {
+      "sha": "b9f2b8f3eb9b4ceb4a7275f42fc4734a10250412",
+      "type": "tree",
+      "path": "docs/reprise"
+    },
+    {
+      "sha": "c3f3bd5ebcfeb5e7e21f723d9d952df7f02b0d2f",
+      "type": "blob",
+      "path": "docs/reprise/DEMOS-CINEMA-2026-11-19.md",
+      "size": 1676
+    },
+    {
+      "sha": "36cb7a528f7a42abf36e91f4dfd62e983328e875",
+      "type": "blob",
+      "path": "docs/reprise/ETAT.json",
+      "size": 9272
+    },
+    {
+      "sha": "fc27a0cb7607f7ec2f655a07eb0f9923ebbc3498",
+      "type": "blob",
+      "path": "docs/reprise/PHYSX-SOLS-PILOTES-2026-11-19.md",
+      "size": 2268
+    },
+    {
+      "sha": "49f8580f43d89fcb0898d1871ba7fc58b68dd5ed",
+      "type": "blob",
+      "path": "docs/reprise/SUIVI-2026-11-19.md",
+      "size": 49806
+    },
+    {
+      "sha": "385df9792279748ccba9ecccbfc0afb8893d3808",
+      "type": "tree",
+      "path": "docs/reprise/rapports"
+    },
+    {
+      "sha": "90546de6378ef6fec92464a30c33dd18bf01315b",
+      "type": "tree",
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19"
+    },
+    {
+      "sha": "a1689385378decb7c8e0451734bc313f514f9a4a",
+      "type": "blob",
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/DIAGNOSTIC-SOL.json",
+      "size": 4443
+    },
+    {
+      "sha": "236ad34d9f0ed7c1ea694071fef3dff2183b60a5",
+      "type": "blob",
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur.log",
+      "size": 817
+    },
+    {
+      "sha": "243079ebe6d5d7af1a29fea6a08398215d08bc8a",
+      "type": "blob",
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-identite-regression.log",
+      "size": 562
+    },
+    {
+      "sha": "eab316371af256fcff5959afe86aa45b1d6be59c",
+      "type": "blob",
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/stands-legacy.log",
+      "size": 7600
+    },
+    {
+      "sha": "a76359436eb43b67298390de82010ea7130c78ac",
+      "type": "blob",
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/stands-physx.json",
+      "size": 5428
+    },
+    {
+      "sha": "8fbf0cab35c81551b7baa019db97faeb4a5bcccf",
+      "type": "blob",
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/stands-physx.log",
+      "size": 928
+    },
+    {
+      "sha": "1693bb1617c48d992729469f78acfa3c193e5e3a",
+      "type": "tree",
+      "path": "docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19"
+    },
+    {
+      "sha": "c68ebb06a19fde80f562f7dc8a003478d32a140b",
+      "type": "blob",
+      "path": "docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/PUBLICATION-0254.json",
+      "size": 1009
+    },
+    {
+      "sha": "423e96cb7acadd201b51b760c901c71463828fce",
+      "type": "tree",
+      "path": "src"
+    },
+    {
+      "sha": "c09e288064c4613cc1bf4f55f5315fb15b71ff1c",
+      "type": "blob",
+      "path": "src/bords.js",
+      "size": 29964
+    },
+    {
+      "sha": "c01a8e142342af6dc488cdbd254ce84aa31b34d4",
+      "type": "blob",
+      "path": "src/conduite.js",
+      "size": 53593
+    },
+    {
+      "sha": "98bbbb4645bba3ac97f781d3bcb8227e9281c9ea",
+      "type": "blob",
+      "path": "src/course.js",
+      "size": 59080
+    },
+    {
+      "sha": "3a12962b793d5f4ddf2df47ef4115af518007ce7",
+      "type": "blob",
+      "path": "src/decor.js",
+      "size": 118935
+    },
+    {
+      "sha": "4c12db88d4733e3e560e46f50e0c81a478dc9332",
+      "type": "blob",
+      "path": "src/jeu.js",
+      "size": 330005
+    },
+    {
+      "sha": "f61b6516c0776220a5fefe6143dcd49d892b26ad",
+      "type": "blob",
+      "path": "src/physique.js",
+      "size": 19317
+    },
+    {
+      "sha": "70b81297a8fd888a6f8ed8979a739e0574826d6d",
+      "type": "blob",
+      "path": "src/solides-physx.js",
+      "size": 8703
+    },
+    {
+      "sha": "0ee23b2a821681ee16a20e488a7b58405b72c4c7",
+      "type": "blob",
+      "path": "src/traces.js",
+      "size": 44847
+    },
+    {
+      "sha": "838c1b3169e18534fd7ba4b7e7c1a363d3e2bc56",
+      "type": "blob",
+      "path": "src/voiture.js",
+      "size": 129943
+    },
+    {
+      "sha": "ce7f9032038969a577fa7c6245d27b0652a7722e",
+      "type": "tree",
+      "path": "verifications"
+    },
+    {
+      "sha": "012577605b7f9141cb4b9f1a7329bee74489dfff",
+      "type": "tree",
+      "path": "verifications/helpers"
+    },
+    {
+      "sha": "7b3dd88c432125b85d28bbad6d13a3407f853283",
+      "type": "blob",
+      "path": "verifications/helpers/physx-runtime.mjs",
+      "size": 930
+    },
+    {
+      "sha": "7ee189ef990ab5fa7fad51d90dce406a34733152",
+      "type": "blob",
+      "path": "verifications/physique-voitures.test.mjs",
+      "size": 8185
+    },
+    {
+      "sha": "f9f899bb676675d523f4e7951989e60957ed75f8",
+      "type": "blob",
+      "path": "verifications/physx-cycle-vie.test.mjs",
+      "size": 4410
+    },
+    {
+      "sha": "7173afc2e5dc7103b725bf25d490daeea93da0f1",
+      "type": "blob",
+      "path": "verifications/physx-reseau.test.mjs",
+      "size": 5099
+    },
+    {
+      "sha": "b2cb51b65352fba1531f576c71fdb646f1015126",
+      "type": "blob",
+      "path": "verifications/physx-stands.test.mjs",
+      "size": 13761
+    },
+    {
+      "sha": "e043944e7342895011909199e312a86148803c8b",
+      "type": "blob",
+      "path": "verifications/pilote-exterieur.test.mjs",
+      "size": 8954
+    },
+    {
+      "sha": "be09d51fabf73eb7bf4f5673b5e47c0c3c38366b",
+      "type": "blob",
+      "path": "verifications/solides-physx-geometrie.test.mjs",
+      "size": 11287
+    },
+    {
+      "sha": "e76272eaf42e28e885a383e23af2f0b42e136604",
+      "type": "blob",
+      "path": "verifications/solides-physx-wasm.test.mjs",
+      "size": 8012
+    },
+    {
+      "sha": "62524dc454d9d1022d8315dc85c6039979acd611",
+      "type": "tree",
+      "path": "",
+      "tree": "62524dc454d9d1022d8315dc85c6039979acd611"
+    },
+    {
+      "sha": "ca6868dea19d1694cd2cbbcd40b0bc5a8347eedf",
+      "type": "blob",
+      "path": "AGENTS.md",
+      "size": 38242
+    },
+    {
+      "sha": "8a76fdbd7f99b563922a2d772217b4676cbd02b9",
+      "type": "blob",
+      "path": "REPRISE.md",
+      "size": 1942
+    },
+    {
+      "sha": "eb637f571ef5d654f9d548f6f781930c7fca9ab0",
+      "type": "tree",
+      "path": "docs"
+    },
+    {
+      "sha": "c695da446d99721d3b34169205632027bdf0cab3",
+      "type": "tree",
+      "path": "docs/reprise"
+    },
+    {
+      "sha": "2f17bdeb0203e73d34ffacffb8fed25a52e1908e",
+      "type": "blob",
+      "path": "docs/reprise/ETAT.json",
+      "size": 9015
+    },
+    {
+      "sha": "981ad8912d18dc26b316ecb5cef6d0bbfc08b0b5",
+      "type": "tree",
+      "path": "src"
+    },
+    {
+      "sha": "f1d71f65eee2af35f23dabbe73c6d16e5c5c569a",
+      "type": "blob",
+      "path": "src/physique.js",
+      "size": 18334
+    },
+    {
+      "sha": "b5fcc09b518d36d22a17b2ad05d7930ab32a47e7",
+      "type": "tree",
+      "path": "verifications"
+    },
+    {
+      "sha": "6e9c1ea09eb22a1d8c1f1deea99ed09b41ccdf1d",
+      "type": "commit",
+      "path": ""
+    },
+    {
+      "sha": "5779d8ee54ecdbe5e1c0c025ab392172d63a61a0",
+      "type": "commit",
+      "path": ""
+    }
+  ],
+  "source": "GitHub connector M4D135/bitume",
+  "repo": "/workspace/scratch/1b28de5a23b5/bitume-physx",
+  "objects": [
+    {
+      "sha": "98bbbb4645bba3ac97f781d3bcb8227e9281c9ea",
+      "type": "blob",
+      "bytes": 59080,
+      "path": "src/course.js",
+      "verified": true
+    },
+    {
+      "sha": "f61b6516c0776220a5fefe6143dcd49d892b26ad",
+      "type": "blob",
+      "bytes": 19317,
+      "path": "src/physique.js",
+      "verified": true
+    },
+    {
+      "sha": "b2cb51b65352fba1531f576c71fdb646f1015126",
+      "type": "blob",
+      "bytes": 13761,
+      "path": "verifications/physx-stands.test.mjs",
+      "verified": true
+    },
+    {
+      "sha": "f9f899bb676675d523f4e7951989e60957ed75f8",
+      "type": "blob",
+      "bytes": 4410,
+      "path": "verifications/physx-cycle-vie.test.mjs",
+      "verified": true
+    },
+    {
+      "sha": "7173afc2e5dc7103b725bf25d490daeea93da0f1",
+      "type": "blob",
+      "bytes": 5099,
+      "path": "verifications/physx-reseau.test.mjs",
+      "verified": true
+    },
+    {
+      "sha": "734e2a4e8b691c867d769f7fec124bf1538ee3a7",
+      "type": "blob",
+      "bytes": 38963,
+      "path": "AGENTS.md",
+      "verified": true
+    },
+    {
+      "sha": "645f820d554498af9342c7e9452687f4a80407e1",
+      "type": "blob",
+      "bytes": 2243,
+      "path": "REPRISE.md",
+      "verified": true
+    },
+    {
+      "sha": "8e54bbdace8e1cae05787dfeff615d2d8cabd789",
+      "type": "blob",
+      "bytes": 8610,
+      "path": "construire.py",
+      "verified": true
+    },
+    {
+      "sha": "c3f3bd5ebcfeb5e7e21f723d9d952df7f02b0d2f",
+      "type": "blob",
+      "bytes": 1676,
+      "path": "docs/reprise/DEMOS-CINEMA-2026-11-19.md",
+      "verified": true
+    },
+    {
+      "sha": "36cb7a528f7a42abf36e91f4dfd62e983328e875",
+      "type": "blob",
+      "bytes": 9272,
+      "path": "docs/reprise/ETAT.json",
+      "verified": true
+    },
+    {
+      "sha": "fc27a0cb7607f7ec2f655a07eb0f9923ebbc3498",
+      "type": "blob",
+      "bytes": 2268,
+      "path": "docs/reprise/PHYSX-SOLS-PILOTES-2026-11-19.md",
+      "verified": true
+    },
+    {
+      "sha": "49f8580f43d89fcb0898d1871ba7fc58b68dd5ed",
+      "type": "blob",
+      "bytes": 49806,
+      "path": "docs/reprise/SUIVI-2026-11-19.md",
+      "verified": true
+    },
+    {
+      "sha": "a1689385378decb7c8e0451734bc313f514f9a4a",
+      "type": "blob",
+      "bytes": 4443,
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/DIAGNOSTIC-SOL.json",
+      "verified": true
+    },
+    {
+      "sha": "236ad34d9f0ed7c1ea694071fef3dff2183b60a5",
+      "type": "blob",
+      "bytes": 817,
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur.log",
+      "verified": true
+    },
+    {
+      "sha": "243079ebe6d5d7af1a29fea6a08398215d08bc8a",
+      "type": "blob",
+      "bytes": 562,
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-identite-regression.log",
+      "verified": true
+    },
+    {
+      "sha": "eab316371af256fcff5959afe86aa45b1d6be59c",
+      "type": "blob",
+      "bytes": 7600,
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/stands-legacy.log",
+      "verified": true
+    },
+    {
+      "sha": "a76359436eb43b67298390de82010ea7130c78ac",
+      "type": "blob",
+      "bytes": 5428,
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/stands-physx.json",
+      "verified": true
+    },
+    {
+      "sha": "8fbf0cab35c81551b7baa019db97faeb4a5bcccf",
+      "type": "blob",
+      "bytes": 928,
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/stands-physx.log",
+      "verified": true
+    },
+    {
+      "sha": "c68ebb06a19fde80f562f7dc8a003478d32a140b",
+      "type": "blob",
+      "bytes": 1009,
+      "path": "docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/PUBLICATION-0254.json",
+      "verified": true
+    },
+    {
+      "sha": "c09e288064c4613cc1bf4f55f5315fb15b71ff1c",
+      "type": "blob",
+      "bytes": 29964,
+      "path": "src/bords.js",
+      "verified": true
+    },
+    {
+      "sha": "c01a8e142342af6dc488cdbd254ce84aa31b34d4",
+      "type": "blob",
+      "bytes": 53593,
+      "path": "src/conduite.js",
+      "verified": true
+    },
+    {
+      "sha": "3a12962b793d5f4ddf2df47ef4115af518007ce7",
+      "type": "blob",
+      "bytes": 118935,
+      "path": "src/decor.js",
+      "verified": true
+    },
+    {
+      "sha": "4c12db88d4733e3e560e46f50e0c81a478dc9332",
+      "type": "blob",
+      "bytes": 330005,
+      "path": "src/jeu.js",
+      "verified": true
+    },
+    {
+      "sha": "70b81297a8fd888a6f8ed8979a739e0574826d6d",
+      "type": "blob",
+      "bytes": 8703,
+      "path": "src/solides-physx.js",
+      "verified": true
+    },
+    {
+      "sha": "0ee23b2a821681ee16a20e488a7b58405b72c4c7",
+      "type": "blob",
+      "bytes": 44847,
+      "path": "src/traces.js",
+      "verified": true
+    },
+    {
+      "sha": "838c1b3169e18534fd7ba4b7e7c1a363d3e2bc56",
+      "type": "blob",
+      "bytes": 129943,
+      "path": "src/voiture.js",
+      "verified": true
+    },
+    {
+      "sha": "7b3dd88c432125b85d28bbad6d13a3407f853283",
+      "type": "blob",
+      "bytes": 930,
+      "path": "verifications/helpers/physx-runtime.mjs",
+      "verified": true
+    },
+    {
+      "sha": "7ee189ef990ab5fa7fad51d90dce406a34733152",
+      "type": "blob",
+      "bytes": 8185,
+      "path": "verifications/physique-voitures.test.mjs",
+      "verified": true
+    },
+    {
+      "sha": "e043944e7342895011909199e312a86148803c8b",
+      "type": "blob",
+      "bytes": 8954,
+      "path": "verifications/pilote-exterieur.test.mjs",
+      "verified": true
+    },
+    {
+      "sha": "be09d51fabf73eb7bf4f5673b5e47c0c3c38366b",
+      "type": "blob",
+      "bytes": 11287,
+      "path": "verifications/solides-physx-geometrie.test.mjs",
+      "verified": true
+    },
+    {
+      "sha": "e76272eaf42e28e885a383e23af2f0b42e136604",
+      "type": "blob",
+      "bytes": 8012,
+      "path": "verifications/solides-physx-wasm.test.mjs",
+      "verified": true
+    },
+    {
+      "sha": "ca6868dea19d1694cd2cbbcd40b0bc5a8347eedf",
+      "type": "blob",
+      "bytes": 38242,
+      "path": "AGENTS.md",
+      "verified": true
+    },
+    {
+      "sha": "8a76fdbd7f99b563922a2d772217b4676cbd02b9",
+      "type": "blob",
+      "bytes": 1942,
+      "path": "REPRISE.md",
+      "verified": true
+    },
+    {
+      "sha": "2f17bdeb0203e73d34ffacffb8fed25a52e1908e",
+      "type": "blob",
+      "bytes": 9015,
+      "path": "docs/reprise/ETAT.json",
+      "verified": true
+    },
+    {
+      "sha": "f1d71f65eee2af35f23dabbe73c6d16e5c5c569a",
+      "type": "blob",
+      "bytes": 18334,
+      "path": "src/physique.js",
+      "verified": true
+    },
+    {
+      "sha": "90546de6378ef6fec92464a30c33dd18bf01315b",
+      "type": "tree",
+      "bytes": 344,
+      "path": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19",
+      "verified": true
+    },
+    {
+      "sha": "1693bb1617c48d992729469f78acfa3c193e5e3a",
+      "type": "tree",
+      "bytes": 3313,
+      "path": "docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19",
+      "verified": true
+    },
+    {
+      "sha": "385df9792279748ccba9ecccbfc0afb8893d3808",
+      "type": "tree",
+      "bytes": 2287,
+      "path": "docs/reprise/rapports",
+      "verified": true
+    },
+    {
+      "sha": "b9f2b8f3eb9b4ceb4a7275f42fc4734a10250412",
+      "type": "tree",
+      "bytes": 1961,
+      "path": "docs/reprise",
+      "verified": true
+    },
+    {
+      "sha": "012577605b7f9141cb4b9f1a7329bee74489dfff",
+      "type": "tree",
+      "bytes": 45,
+      "path": "verifications/helpers",
+      "verified": true
+    },
+    {
+      "sha": "c695da446d99721d3b34169205632027bdf0cab3",
+      "type": "tree",
+      "bytes": 1907,
+      "path": "docs/reprise",
+      "verified": true
+    },
+    {
+      "sha": "10cfed04f114d11b6a3188b9a6cf564843d93ec3",
+      "type": "tree",
+      "bytes": 1004,
+      "path": "",
+      "verified": true
+    },
+    {
+      "sha": "160590f98a0485b62d6847f87e22eb862ebde066",
+      "type": "tree",
+      "bytes": 395,
+      "path": "docs",
+      "verified": true
+    },
+    {
+      "sha": "423e96cb7acadd201b51b760c901c71463828fce",
+      "type": "tree",
+      "bytes": 2104,
+      "path": "src",
+      "verified": true
+    },
+    {
+      "sha": "ce7f9032038969a577fa7c6245d27b0652a7722e",
+      "type": "tree",
+      "bytes": 5890,
+      "path": "verifications",
+      "verified": true
+    },
+    {
+      "sha": "62524dc454d9d1022d8315dc85c6039979acd611",
+      "type": "tree",
+      "bytes": 1004,
+      "path": "",
+      "verified": true
+    },
+    {
+      "sha": "eb637f571ef5d654f9d548f6f781930c7fca9ab0",
+      "type": "tree",
+      "bytes": 395,
+      "path": "docs",
+      "verified": true
+    },
+    {
+      "sha": "981ad8912d18dc26b316ecb5cef6d0bbfc08b0b5",
+      "type": "tree",
+      "bytes": 2104,
+      "path": "src",
+      "verified": true
+    },
+    {
+      "sha": "b5fcc09b518d36d22a17b2ad05d7930ab32a47e7",
+      "type": "tree",
+      "bytes": 5789,
+      "path": "verifications",
+      "verified": true
+    },
+    {
+      "sha": "5779d8ee54ecdbe5e1c0c025ab392172d63a61a0",
+      "type": "commit",
+      "bytes": 651,
+      "path": "",
+      "verified": true
+    },
+    {
+      "sha": "6e9c1ea09eb22a1d8c1f1deea99ed09b41ccdf1d",
+      "type": "commit",
+      "bytes": 582,
+      "path": "",
+      "verified": true
+    }
+  ],
+  "started_at": "2026-11-19T18:14:03.558720+00:00",
+  "refs_before": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30 refs/heads/codex/bitume-physx-sols-pilotes-20261119\ndc8a1c902c2dfebfc00f5a9960968f94f8a1250e refs/heads/codex/bitume-reperes-annonces-reflets-20261119\ndc8a1c902c2dfebfc00f5a9960968f94f8a1250e refs/remotes/origin/HEAD\n446a350f736d583471950b8e089ac7d8ab57e4d9 refs/remotes/origin/codex/bitume-12f4-20261119\n675a636b83a45714c9ca94235048c4875534ad34 refs/remotes/origin/codex/bitume-12f4-sortie-file-20261119\n510e6d43ae83f21334237310b2972b13ba68f228 refs/remotes/origin/codex/bitume-13a-russie-20261119\ndc8a1c902c2dfebfc00f5a9960968f94f8a1250e refs/remotes/origin/codex/bitume-reperes-annonces-reflets-20261119\nf03a99cc0a5bcbd663a7ff25c887c4ea9ecacd0c refs/remotes/origin/main",
+  "head_before": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
+  "index_before_sha256": "4488fa42607780cbabd8a81540a8074a2b64af9450154ff3bdc94179d36e7fd7",
+  "index_path": "/workspace/scratch/1b28de5a23b5/bitume-0254-cloture/.git/worktrees/bitume-physx/index",
+  "connectivity_missing": [],
+  "refs_after": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30 refs/heads/codex/bitume-physx-sols-pilotes-20261119\ndc8a1c902c2dfebfc00f5a9960968f94f8a1250e refs/heads/codex/bitume-reperes-annonces-reflets-20261119\ndc8a1c902c2dfebfc00f5a9960968f94f8a1250e refs/remotes/origin/HEAD\n446a350f736d583471950b8e089ac7d8ab57e4d9 refs/remotes/origin/codex/bitume-12f4-20261119\n675a636b83a45714c9ca94235048c4875534ad34 refs/remotes/origin/codex/bitume-12f4-sortie-file-20261119\n510e6d43ae83f21334237310b2972b13ba68f228 refs/remotes/origin/codex/bitume-13a-russie-20261119\ndc8a1c902c2dfebfc00f5a9960968f94f8a1250e refs/remotes/origin/codex/bitume-reperes-annonces-reflets-20261119\nf03a99cc0a5bcbd663a7ff25c887c4ea9ecacd0c refs/remotes/origin/main",
+  "head_after": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
+  "index_after_sha256": "4488fa42607780cbabd8a81540a8074a2b64af9450154ff3bdc94179d36e7fd7",
+  "refs_unchanged": true,
+  "index_unchanged": true,
+  "finished_at": "2026-11-19T18:16:01.105794+00:00",
+  "merge_base_with_current_head": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
+  "scope": "Only verified Git object writes and this /tmp audit directory. No worktree, index, reference, remote mutation.",
+  "remote_ref_at_end": {
+    "ref": "refs/heads/codex/bitume-physx-sols-pilotes-20261119",
+    "node_id": "REF_kwDOVsBfn9oAM3JlZnMvaGVhZHMvY29kZXgvYml0dW1lLXBoeXN4LXNvbHMtcGlsb3Rlcy0yMDI2MTExOQ",
+    "url": "https://api.github.com/repos/M4D135/bitume/git/refs/heads/codex/bitume-physx-sols-pilotes-20261119",
+    "object": {
+      "sha": "6e9c1ea09eb22a1d8c1f1deea99ed09b41ccdf1d",
+      "type": "commit",
+      "url": "https://api.github.com/repos/M4D135/bitume/git/commits/6e9c1ea09eb22a1d8c1f1deea99ed09b41ccdf1d"
+    }
+  },
+  "remote_ref_checked_at": "2026-11-19T18:18:03.085655+00:00",
+  "comparison": {
+    "remote_runtime_unique": [
+      "pit speed limiter through control forces; native service guards",
+      "clear released host maps/lists and geometry metadata"
+    ],
+    "local_advances_to_preserve": [
+      "canonical FERRO 0.3.13 and shader material25",
+      "individual tire capacities",
+      "actual contact traces and suspension wheel envelope",
+      "independent native warmup and launch/GPU lifecycle cleanup",
+      "3D network state and suspension offsets",
+      "revised exterior pilot articulation and stronger tests"
+    ],
+    "remote_unique_documents": [
+      "docs/reprise/DEMOS-CINEMA-2026-11-19.md"
+    ],
+    "remote_test_note": "physx-stands source has 8 tests, while remote summary claims 11; physx-cycle-vie expects _views/_viewPointers not present in installed canonical adapter; physx-reseau filename collides with local packet tests"
+  }
+}

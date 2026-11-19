@@ -1,0 +1,18 @@
+{
+  "version": "0.2.55",
+  "kind": "publication_concurrente",
+  "repository": "M4D135/bitume",
+  "main": "1e4579c5c09d561ef7a6412ec4415a8ffbe360a8",
+  "tree": "c8c3af4c5369498dd454e2c5a81c7a9f10fd098f",
+  "head": "b8f050745c68e2c7a9e482611cfdc980efe1ada3",
+  "pullRequest": 9,
+  "url": "https://github.com/M4D135/bitume/pull/9",
+  "merged": true,
+  "rootRead": [
+    "git/ref/heads/main",
+    "git/commits/1e4579c5c09d561ef7a6412ec4415a8ffbe360a8",
+    "pulls/9"
+  ],
+  "treeMatchesAlreadyIntegratedBranch": true,
+  "ci": "Les journaux du checkpoint concurrent restent dans livraison/ ; cette lecture ne réexécute ni ne requalifie ses tests. Les CI de0.2.56 seront contrôlées séparément."
+}

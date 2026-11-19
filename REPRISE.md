@@ -1,26 +1,41 @@
 # BITUME — reprise courte
 
-## Livré — 19 novembre 2026
+## Point actif — 19 novembre 2026
 
-**0.2.55 / p14 publiée sur main**, PR #9 fusionnée au commit `1e4579c5`.
-Sources, jeu compilé et preuves identiques au lot qualifié ; FERRO 0.3.14, 34 modules exacts.
-Reçu : `docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0255.json`.
+**0.2.56 / p14 : PhysX, sols procéduraux et pilotes animés qualifiés ; publication finale à terminer.**
+Lire `docs/reprise/ETAT.json` et `docs/reprise/PHYSX-SOLS-PILOTES-2026-11-19.md`.
+Checkpoint qualifié `62c9461`, fusions réelles des branches concurrentes `6e9c1ea0` puis `b8f05074` ; main de départ `c2880297`.
+La PR #9 a entre-temps publié le checkpoint parallèle 0.2.55 sur main `1e4579c5`, arbre identique à `b8f05074`.
+Sa clôture documentaire `44978324` (PR #10) est également intégrée, avec reçus et CI.
+Publier 0.2.56 sur `codex/bitume-physx-sols-pilotes-20261119-qualifie`, en préservant ce main.
 
-- Qualification locale : **117/119**, 235 fichiers et 119 journaux contrôlés ; aucun test/build relancé à la reprise.
-- Deux CI GitHub terminées : **118/119**, seul échec des traces à signature héritée identique.
-- Réserve Val-Brûlé conservée : 486 ms pour 150 ms localement ; le contrôle du décor passe dans les deux CI, sans prouver une absence de régression.
-- Build : 14 153 917 octets, SHA-256 `c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f`.
-- ZIP CI récupéré et contrôlé : même build, intégrité vérifiée. Scène navigateur complète, FPS matériels et déploiement non validés.
+## Livré dans le build
 
-## Lot suivant — démos cinéma
+- Voitures dynamiques PhysX : masse, inertie, quatre suspensions, forces de pneus par roue, CCD, sol et obstacles
+  issus de la scène. Débris dans le même monde. Réseau 3D, transfert d’autorité et libération des séances couverts.
+- File des stands : dégagement sans contact ni replacement ; limiteur par accélérateur/frein. Monte neuve seulement
+  après service complet. Repères/annonces des virages et correction des reflets 0.2.54 conservés.
+- Sols hors route : grain rugueux et microrelief d’herbe calculés par shader, sans image importée.
+- Pilotes extérieurs : tête, bras, volant et main au levier ; phase de rapport commune au cockpit et aux rétroviseurs.
 
-Lire `docs/reprise/ETAT.json` puis `docs/reprise/DEMOS-CINEMA-2026-11-19.md` seulement.
-Plans F1/arcade, paysages, faune et flore ; préserver la conduite p14 et les courses continues.
-Travail préparé dans `/workspace/scratch/749f331cc09f/bitume-demo`, branche
-`codex/bitume-demos-cinema-20261119`, base ancienne `838756b`, modifications non commitées.
-Le correctif du bond de caméra est **préparé**, à intégrer puis qualifier sur la 0.2.55 publiée.
-Ne pas écraser cette copie avec l'ancienne `/workspace/scratch/2540d1a213f9/bitume-demo`.
+## Preuves et réserves
 
-Puis 13B Baïkal : lac, berges, lieux, végétation/faune et saisons. Conserver Monaco fidèle, Marseille avec relief,
-grand circuit montagne distinct et six propositions. Safari confirmé corrigé, ne pas rouvrir.
-Un sous-lot à la fois, publication avec reçu, pas de push forcé. L'historique est archivé ; ne pas le recharger en bloc.
+122/123 suites consolidées : balayage initial 118, cinq ajouts et reprises ciblées, pas un passage intégral
+sur la révision finale. Seul échec restant : signature historique de `traces.test.mjs`, oracle inchangé.
+Deux processus natifs donnent 54/54 empreintes p14 identiques. Deux builds identiques, 56 scripts valides,
+14 162 317 octets, SHA-256 `d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65`.
+FERRO 0.3.14 publié (PR #2, main `85ba9417`), 34 modules exacts ; 210 réussis / 0 échec / 1 TODO hérité.
+Les douze reprises après le correctif WebIDL passent, 234 fichiers de sources/tests stables ; fixture p14 inchangée.
+Rapport : `docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/QUALIFICATION-FINALE.json`.
+
+Les captures sont des rendus réels EGL/llvmpipe, pas des essais navigateur complets. Aucun FPS matériel,
+essai multi-machines ni déploiement sur bitume.estrasse.fr validé. Les courses natives incluent 4 replacements
+après accident à Haut-Col (règle antérieure), aucun dans les scénarios de file bloquée. CI finales à lire.
+
+## Suite conservée
+
+Démos cinématographiques avec paysages, faune et flore : `docs/reprise/DEMOS-CINEMA-2026-11-19.md`,
+lot suivant, non intégré ici. La fiche conserve la copie préparée ailleurs et son correctif de caméra : les
+réconcilier sur 0.2.56 avant de poursuivre. Ensuite 13B Baïkal (lac, berges, lieux, saisons).
+Monaco fidèle, Marseille avec relief mesuré, grand circuit montagne distinct et six propositions restent prévus.
+Spark/Mac/amiga non disponibles. Publier par petits lots, sans push forcé, conserver une reprise courte.

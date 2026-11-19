@@ -1,0 +1,37 @@
+✔ creation, capacite de quatre pilotes et depart de l’hote (589.570864ms)
+✔ premiere trame recue dans le meme paquet TCP que la requete HTTP (127.757416ms)
+✔ JSON fragmente, ping intercale et caractere UTF-8 coupe entre fragments (106.691366ms)
+✔ relais binaire fragmente conserve tous les octets et l’expediteur (136.670051ms)
+✔ trame distribuee entre plusieurs lectures TCP (144.713171ms)
+✔ deux messages distincts dans une meme lecture TCP (92.935219ms)
+✔ message de 64 Kio accepte, fragmentation=false (104.750837ms)
+✔ message de 64 Kio accepte, fragmentation=true (103.015933ms)
+✔ continuation sans debut (99.316941ms)
+✔ nouveau message avant la fin du precedent (102.024894ms)
+✔ opcode reserve (112.130441ms)
+✔ bits RSV sans extension negociee (112.027987ms)
+✔ message non masque (97.791534ms)
+✔ ping fragmente (112.237833ms)
+✔ ping superieur a 125 octets (112.249539ms)
+✔ message UTF-8 invalide (86.971512ms)
+✔ fermeture avec un seul octet (89.87829ms)
+✔ code de fermeture interdit (101.526962ms)
+✔ raison de fermeture UTF-8 invalide (107.718602ms)
+✔ limite cumulee de fragments (154.22156ms)
+✔ limite d’une trame (154.449668ms)
+✔ aucune creation fantome apres une fermeture dans le meme paquet TCP (216.904229ms)
+✔ negociation invalide refusee : {"version":"12"} (104.274391ms)
+✔ negociation invalide refusee : {"cle":"incorrecte"} (111.070985ms)
+✔ negociation invalide refusee : {"chemin":"/salon-inexistant"} (128.27149ms)
+✔ fragmentation terminee ne laisse pas de continuation ouverte (103.34778ms)
+✔ nombre de fragments vides borne sans allocation infinie (96.77753ms)
+✔ FIN TCP sans message WebSocket libere immediatement la connexion (93.48056ms)
+✔ une erreur de protocole bloque aussi les messages TCP suivants (83.552159ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3807.164552

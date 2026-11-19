@@ -1,0 +1,96 @@
+{
+  "scope": "PhysX network packet and bounded extrapolation; host native bridge qualified separately",
+  "sourceSha256": {
+    "src/reseau.js": "4fd5451e05a9a906bde39059e5cb14a67d9e6fce15459ee320b2ed383fa95067",
+    "verifications/physx-reseau.test.mjs": "3606b8137fbdd7c688b1ad8d8fbcb20f73a3e873c0a5d8100f50d8c852055667"
+  },
+  "tests": [
+    {
+      "command": "node --test verifications/physx-reseau.test.mjs",
+      "exitCode": 0,
+      "tests": 11,
+      "passed": 11,
+      "failed": 0,
+      "durationMs": 115.769011,
+      "log": "physx-reseau.log",
+      "toolOutputChunk": "7b77b0"
+    },
+    {
+      "command": "node --test verifications/pneus-reseau.test.mjs verifications/pneus-reseau-integration.test.mjs verifications/prets-enligne.test.mjs",
+      "exitCode": 0,
+      "tests": 77,
+      "passed": 77,
+      "failed": 0,
+      "durationMs": 199.923581,
+      "log": "reseau-historique.log",
+      "toolOutputChunk": "d33c05",
+      "countNote": "77 Node results include one whole-file result containing 17 tyre-network checks."
+    }
+  ],
+  "logProvenance": "Transcribed from the already executed terminal outputs; individual test durations omitted, aggregate durations retained. No test rerun for archival.",
+  "archivalReranTests": false,
+  "archivalModifiedSource": false,
+  "packet": {
+    "optional": "physx",
+    "layout": [
+      "vx",
+      "vy",
+      "vz",
+      "wx",
+      "wy",
+      "wz",
+      "offset0",
+      "offset1",
+      "offset2",
+      "offset3",
+      "groundCount"
+    ],
+    "units": [
+      "m/s",
+      "m/s",
+      "m/s",
+      "rad/s",
+      "rad/s",
+      "rad/s",
+      "m",
+      "m",
+      "m",
+      "m",
+      "integer"
+    ],
+    "linearComponentMax": 500,
+    "angularComponentMax": 100,
+    "offsetBoundsNominal": [
+      -0.18,
+      0.14
+    ],
+    "offsetBoundsUseFloat32": true,
+    "groundCountRange": [
+      0,
+      4
+    ],
+    "extensionHeaderBytes": 3,
+    "extensionPerCarBytes": 45,
+    "legacyPrefixUnchanged": true,
+    "tyreContractUnchanged": true
+  },
+  "prediction": {
+    "futureSecondsMax": 0.35,
+    "pastSecondsMax": 0.1,
+    "outputBuffer": "Per-output-object Float64Array(11), reused and separate from input; null if absent or invalid",
+    "verticalVelocityPredicted": true,
+    "gravityOnlyWithoutSupport": true
+  },
+  "files": [
+    {
+      "path": "physx-reseau.log",
+      "bytes": 1169,
+      "sha256": "996495c94385b69a607a8bfb0002be29955a024db77843ee2253f6dbb13fbd5a"
+    },
+    {
+      "path": "reseau-historique.log",
+      "bytes": 7598,
+      "sha256": "0f257b8be52c1baf721e73ce9e06d7ef6780d39e0cef3cd26dea8c4796734e51"
+    }
+  ]
+}

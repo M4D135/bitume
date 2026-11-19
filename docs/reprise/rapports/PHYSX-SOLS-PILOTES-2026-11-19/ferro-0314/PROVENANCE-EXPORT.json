@@ -1,0 +1,300 @@
+{
+  "repository": "M4D135/FERRO",
+  "commit": "85ba941709bb304cbc34f8beb7baab0639321919",
+  "tree": "27c2f2dd23c57feedefc748213f22fd165a15635",
+  "pr": 2,
+  "prMerged": true,
+  "version": "0.3.14",
+  "filesVerified": 41,
+  "lockedModulesVerified": 34,
+  "method": "Every exported byte sequence compared with canonical Git blob SHA and size; 34 modules additionally checked against canonical SHA-256 lock. Unchanged files copied from local 0.3.13, changed files fetched at immutable commit. No repository, index or ref changed.",
+  "files": [
+    {
+      "path": "FERRO.json",
+      "gitBlob": "dc555c8ffc4b45b84ad0020921ffd51805f64753",
+      "sha256": "c7aeb4ad76bbdd7c1b8c695078c31005bda38fc8a487f7be2c59032d320fd9ec",
+      "bytes": 4246,
+      "source": "/tmp/ferro-0314-audit/FERRO.json"
+    },
+    {
+      "path": "FERRO.lock.json",
+      "gitBlob": "cddfaadc4ed750b0946ddfa4cac695d806dfba5f",
+      "sha256": "a51283709f59fb3d028c7790ff327162de1918a8c92f042183637c7df175d05c",
+      "bytes": 5530,
+      "source": "/tmp/ferro-0314-audit/FERRO.lock.json"
+    },
+    {
+      "path": "src/ferro/audio.js",
+      "gitBlob": "af3bce469bc67ba2c8e50075c1e4c9aed37ef9e1",
+      "sha256": "af0a6173d3c1db12e16c9a570d8aad86788f1dfde06508077cbee402d046f2a0",
+      "bytes": 77233,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/audio.js"
+    },
+    {
+      "path": "src/ferro/backends.js",
+      "gitBlob": "d01331e685bb52f26888a4cc8c2116fb7f55b3b2",
+      "sha256": "769e607b8349aa47bae32a8ef9f4747267119de49e7b057c874294049da9ccea",
+      "bytes": 4652,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/backends.js"
+    },
+    {
+      "path": "src/ferro/brain.js",
+      "gitBlob": "b9521d890aadc49478e9c23d3d7417219e9957d2",
+      "sha256": "598175891738fbdef6788d2d5e0eee89e279a472837a49e4966ca19e0de7bcf9",
+      "bytes": 8923,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/brain.js"
+    },
+    {
+      "path": "src/ferro/crowd-webgpu.js",
+      "gitBlob": "fa513856ddd58860871d5f6f1dabc760e8b18527",
+      "sha256": "bc2719bdbef13f74789bde0caad5d24fea70f44ac52148085a27d448ada9e9f8",
+      "bytes": 17138,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/crowd-webgpu.js"
+    },
+    {
+      "path": "src/ferro/crowd.js",
+      "gitBlob": "eb367bf9ca45bc49d82b64f22512253d4121e37f",
+      "sha256": "ee00aa7b358a71a1e8c93ab2779d0edc3d80828f4c4ad32d41900177221ceac9",
+      "bytes": 59966,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/crowd.js"
+    },
+    {
+      "path": "src/ferro/demo.js",
+      "gitBlob": "af2ea179dc1a0cf16f88687b16d7c0cad6259640",
+      "sha256": "1169679cfa96463222f6343a6f4f3feeadfc7b90cd65d8f1b7ece6e9e0600575",
+      "bytes": 28562,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/demo.js"
+    },
+    {
+      "path": "src/ferro/destruction.js",
+      "gitBlob": "d09f2fe0e378df0ed6b604dafab818a484b8afc1",
+      "sha256": "c18d53831b23e55d798d02e698fd7eb670a28dd998de51a5bcd5195fe733eeea",
+      "bytes": 42672,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/destruction.js"
+    },
+    {
+      "path": "src/ferro/effects.js",
+      "gitBlob": "8cd58ef870cd6a5041731410cb827484c5235bdb",
+      "sha256": "e873e7def347fb205594351fc9f0fd8e08fdb42ced36254ec68f071790bb3b42",
+      "bytes": 20784,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/effects.js"
+    },
+    {
+      "path": "src/ferro/engine.js",
+      "gitBlob": "7dcd74e89eef6812588677b9a0c51c5e280a95e9",
+      "sha256": "05f4e29167a252c0860affde79730cffe7f5615f3849e1d28c2d70dca76a9d5c",
+      "bytes": 2025,
+      "source": "/tmp/ferro-0314-audit/src/ferro/engine.js"
+    },
+    {
+      "path": "src/ferro/fmath.js",
+      "gitBlob": "a8020d15c3755e0bcdb475c624a76294a539f91f",
+      "sha256": "bb001302bd2d57239c86183615c921563cf21f0490d67eef42586d1fc3457c9f",
+      "bytes": 19961,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/fmath.js"
+    },
+    {
+      "path": "src/ferro/geometry.js",
+      "gitBlob": "add629f6c14343b2bf8704fa2e3fe5454f263e01",
+      "sha256": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+      "bytes": 16443,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/geometry.js"
+    },
+    {
+      "path": "src/ferro/gpu-profile.js",
+      "gitBlob": "0877284f2fd322dbc6b437dc2c8c8f93c1e78574",
+      "sha256": "513e7cb0523a50f62edb427f2ed563ec98d9bc771a70f357fce8409157faa9c4",
+      "bytes": 2548,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/gpu-profile.js"
+    },
+    {
+      "path": "src/ferro/imuse.js",
+      "gitBlob": "0a57f3e6189094721dd7d4f4c5aaed61838f4d07",
+      "sha256": "8aa71cb0cdc9a5d0d1a42dab965563bd810d26151745ceb1ad603ab1c0851e16",
+      "bytes": 10260,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/imuse.js"
+    },
+    {
+      "path": "src/ferro/input.js",
+      "gitBlob": "3f67bb1d56d0f5392c471e88fe26e70060abd1e4",
+      "sha256": "2a7bfcf27c4dede79708882a604fa3264d32615fe3cf513deae807c07e109e68",
+      "bytes": 17991,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/input.js"
+    },
+    {
+      "path": "src/ferro/jobs.js",
+      "gitBlob": "8979c182d19ce19c8212e7d94b1681c8b0e4d52c",
+      "sha256": "c027761f5d29d62ef542e444c95a17c551fececc1cbeb492668c2d35d7b13aa7",
+      "bytes": 5829,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/jobs.js"
+    },
+    {
+      "path": "src/ferro/loop.js",
+      "gitBlob": "2cd067a98af8fbeeb6fa89fa54b3db94ce17f2d8",
+      "sha256": "f6777ad3141ed9b9dae6b860aded5aa625433c87f3068077a5204324a7c42e2f",
+      "bytes": 7685,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/loop.js"
+    },
+    {
+      "path": "src/ferro/materials.js",
+      "gitBlob": "c6780913a1319001822d8ce247147b26cff715e0",
+      "sha256": "fd1789bd21ec43d4cd028d3ebffdb490e5bfe53d8b73fa0f7bdbd44ce7d2a954",
+      "bytes": 1866,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/materials.js"
+    },
+    {
+      "path": "src/ferro/motion.js",
+      "gitBlob": "6b12360fca118453e021b1f92e9b6bae5c7395d0",
+      "sha256": "3ea6ff872208b6c133a3f732d51d0706fc36a2d042725c7e6c59fba42ab4df4b",
+      "bytes": 8452,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/motion.js"
+    },
+    {
+      "path": "src/ferro/music.js",
+      "gitBlob": "9a5ec62b807489a71c78ec4157a4fdfb635bba58",
+      "sha256": "e59d6d2ed84bb70bf108f54d8d1f8510a02533f36e1d0741ac1d144c8830ea20",
+      "bytes": 61763,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/music.js"
+    },
+    {
+      "path": "src/ferro/navigation.js",
+      "gitBlob": "2ae15c57370395c6f286a21dea3bd40ee890ad21",
+      "sha256": "addfdb9bb3a30cc7a8fe747ca919c72a99d8bc8f79a44162757d6ac8113d0cb6",
+      "bytes": 18607,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/navigation.js"
+    },
+    {
+      "path": "src/ferro/passages.js",
+      "gitBlob": "8d01f50dc397c571cc28041db55652d796ed799d",
+      "sha256": "16fbe21b2dbd0bc0abf16a2e2c6346940f8703fc9513a9906ab1a38303dacdaa",
+      "bytes": 10190,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/passages.js"
+    },
+    {
+      "path": "src/ferro/physics-geometry.js",
+      "gitBlob": "8d40b005d1269d7644de616b5cb9a0a025b462d2",
+      "sha256": "fc73172463262947ced24017cc03ef73a00c113e2a850fab3460bd3c30fcd242",
+      "bytes": 19455,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/physics-geometry.js"
+    },
+    {
+      "path": "src/ferro/physics.js",
+      "gitBlob": "32f729393d6da2fac74699ed5262c05992b4046d",
+      "sha256": "9a6e3dbd9115b13f6f5daf9d2843f6ffa219f0b2d4c53d2106ac9dec769f175a",
+      "bytes": 81287,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/physics.js"
+    },
+    {
+      "path": "src/ferro/physx-runtime.js",
+      "gitBlob": "98a6e986852a3d4d779a84ed15ca3673319cb4ba",
+      "sha256": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+      "bytes": 12063280,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/physx-runtime.js"
+    },
+    {
+      "path": "src/ferro/physx.js",
+      "gitBlob": "5769655d95f77dc3e95cabcb7d88da6edbc47f4d",
+      "sha256": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+      "bytes": 29091,
+      "source": "/tmp/ferro-0314-audit/src/ferro/physx.js"
+    },
+    {
+      "path": "src/ferro/recipes.js",
+      "gitBlob": "3b8265ee751e27456c1a151a8e4c95cb5a29bdf7",
+      "sha256": "a59e5737e9730594881cb71a60340c64f013bd1c5797618c74efe3b6afc823cd",
+      "bytes": 10933,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/recipes.js"
+    },
+    {
+      "path": "src/ferro/reflections.js",
+      "gitBlob": "f6c6677dd57ed0c1916b9e0a2589db12e3ee771d",
+      "sha256": "51467e58cfaabfe6d9f5c7a5ccdf73afd35e33159bddae4778dd5a0bdd43ffbf",
+      "bytes": 11548,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/reflections.js"
+    },
+    {
+      "path": "src/ferro/renderer.js",
+      "gitBlob": "770818096522f10010215fac784674e7a11db24e",
+      "sha256": "d7a14230d0525a03d2874206f458d2edc39fef3542a067d43f693fdec4d5ad41",
+      "bytes": 310152,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/renderer.js"
+    },
+    {
+      "path": "src/ferro/schedule.js",
+      "gitBlob": "966d538c06bcc5cef3f7b3b63649341318cbb9f9",
+      "sha256": "48a8b7cf0bba9a54ef6cff896110a654195b05606392c2d74ef3a3691edf9d12",
+      "bytes": 4221,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/schedule.js"
+    },
+    {
+      "path": "src/ferro/skies.js",
+      "gitBlob": "c0355ce177892c53344201604b8a0ccf8878bcbe",
+      "sha256": "bd4b38002c8c800a5f7551a73712c721909ed22ae145d15fbf7f853ff30eddea",
+      "bytes": 23094,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/skies.js"
+    },
+    {
+      "path": "src/ferro/surface.js",
+      "gitBlob": "017271a036bec6191a98ee92d8e5ed2004643490",
+      "sha256": "46915edee28daa0408ea1c18abd664babef76e2e6bce52c2990a431f90cee77e",
+      "bytes": 3419,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/surface.js"
+    },
+    {
+      "path": "src/ferro/vehicle-dynamics.js",
+      "gitBlob": "fe0f013f0c89bddea87182d55b19aaf6b5f227cc",
+      "sha256": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+      "bytes": 3980,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/vehicle-dynamics.js"
+    },
+    {
+      "path": "src/ferro/webgpu-renderer.js",
+      "gitBlob": "6f61aa5a9d446167499cd39d3baf2b525c8c53a4",
+      "sha256": "d629b0453b99275420c12a067e53f9b224f366b961186d95e7d6aa732803f1dd",
+      "bytes": 60445,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/webgpu-renderer.js"
+    },
+    {
+      "path": "src/ferro/webgpu-shaders.js",
+      "gitBlob": "92693c36aa9e66855446e8e1eb058da94a921a33",
+      "sha256": "1228ce07f4db2809c9f498cd465e8984c6fbccdf70e5b46b29411cfc588853a9",
+      "bytes": 489851,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/webgpu-shaders.js"
+    },
+    {
+      "path": "third_party/physx/LICENSE",
+      "gitBlob": "c122c78a51ba0fa92488726ce470796776923be1",
+      "sha256": "0879a16adc700c9956ca0b60fbcac1fcb52310219feee827c03d7a0ab9886fbd",
+      "bytes": 1067,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/third_party/physx/LICENSE"
+    },
+    {
+      "path": "third_party/physx/NOTICE.md",
+      "gitBlob": "9a08f8fe1973abaea6c5388fd5273f38534cc3e7",
+      "sha256": "2a7d60ff994150a8fc287fcc574322dff19f0a506493f9a36d6d179053f7ce7e",
+      "bytes": 1999,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/third_party/physx/NOTICE.md"
+    },
+    {
+      "path": "third_party/physx/vendor-lock.json",
+      "gitBlob": "88b7f01692e4be6f17986ff130fc9a2a2e70ced6",
+      "sha256": "91dcdbaed594569878ef034a5c8f6626fac0356e49b325b15849122b5e8d171a",
+      "bytes": 1173,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/third_party/physx/vendor-lock.json"
+    },
+    {
+      "path": "tools/check-ferro-lock.py",
+      "gitBlob": "bd17eb4947b257aba735080c15beb7163422289e",
+      "sha256": "86ffbc1e5e35d869447586584863ea28acfa6685f1f1ec7d3fa657d04c8e0a9d",
+      "bytes": 609,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/tools/check-ferro-lock.py"
+    },
+    {
+      "path": "tools/install-ferro.py",
+      "gitBlob": "e263d8d2a2c4836bfa46a71e53d581ea27228877",
+      "sha256": "47d166c4376396930f67987cbc522505753a8b9d0a4263dd7034d83b30c4afce",
+      "bytes": 2491,
+      "source": "/workspace/scratch/1b28de5a23b5/ferro-reflets/tools/install-ferro.py"
+    }
+  ]
+}

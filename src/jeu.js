@@ -209,6 +209,7 @@
       vegetation: decorEnrichi && veut.vegetation,
       vegetationQualite,
       saison,
+      solsProceduraux: true,
       public: decorEnrichi && !!B.public,
     });
     decor.atmosphere = B.graphismes.atmosphere(decor.atmosphere);
@@ -261,6 +262,7 @@
     // orphelin par course (les pièces détachées y vivent douze secondes chacune)
     if (session && session.fx) B.traces.liberer(session.fx);
     if (session && session.course) B.physique.liberer(session.course);
+    session = null;
     // en ligne, une machine qui porte deux pilotes joue en écran partagé, comme une course à deux
     if (enl && enl.locaux.length === 2) type = 'duo';
     const conditions = enl || conditionsChoisies || conditionsDuDepart();
@@ -287,8 +289,10 @@
     // rivaux sur ceux que conseille la piste au départ. La caisse les montre (voiture.js) et la conduite les sent.
     const conseil = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoInit)), joue = type === 'course' || type === 'chrono' || duo;
     monterPneusDepart(course, joue, enl, conseil);
+    let S = null;
+    try {
     B.physique.installer(course, sc.decor);
-    const S = {
+    S = {
       type, i, course, c, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
       prec: [], cour: [], sortie: [], acc: 0, tele: { poste: null, alea: graine32(course.voitures.length * 7 + i) },
       camCap: null, profil: new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1), profilMeilleur: null,
@@ -347,6 +351,12 @@
     // hors préparation (référence, banc, démarrage), tout ce que la séance créerait à sa première image naît ici
     if (!prepa.interne) prechargerSeance(S);
     return S;
+    } catch (e) {
+      if (S && S.fx) B.traces.liberer(S.fx);
+      B.physique.liberer(course);
+      if (session === S) session = null;
+      throw e;
+    }
   }
   function graine32(a) {
     return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
@@ -363,7 +373,7 @@
       if (et._physx && !v.distant) { p.x = et._physx.x; p.y = et._physx.y; p.z = et._physx.z; p.cap = et._physx.cap; }
       p.braquage = (et.braquage || 0) * (et._physx ? 1 : 2.2); p.roule = v.roule || 0;
       const rebond = p.rebond || (p.rebond = [0, 0, 0, 0]);
-      for (let i = 0; i < 4; i++) rebond[i] = et._physx && !v.distant ? et._physx.offsets[i] : 0;
+      for (let i = 0; i < 4; i++) rebond[i] = et._physx ? et._physx.offsets[i] : 0;
     });
   }
   function melange(a, b, t, sortie) {
@@ -1565,6 +1575,10 @@
     } else { corr.s *= f; corr.d *= f; corr.psi *= f; }
     e.s = ramener(pred.s + corr.s, L); e.d = pred.d + corr.d; e.psi = pred.psi + corr.psi;
     for (const k of ['v', 'beta', 'omega', 'y', 'tangage', 'roulis', 'regime', 'volant', 'rapport', 'gaz', 'frein', 'braquage']) e[k] = pred[k];
+    if (e._physx) {
+      const ph = e._physx; ph.hasRemote = !!pred.physx;
+      if (pred.physx) for (let i = 0; i < 11; i++) ph.remote[i] = pred.physx[i];
+    }
   }
   for (const r of document.querySelectorAll('input[name="joueursIci"]')) r.checked = String(joueursIci()) === r.value;
   $('l-nom').value = reglages.nom || '';
@@ -3590,7 +3604,18 @@
     const co = B.course.creer(base.c, { mode, tours: 2, difficulte: base.difficulte, rivaux: 11, graine: GRAINE_JETABLE, placeJoueur: 2 });
     co.phase = 'course'; co.feux.vert = true; co.feux.allumes = 5; co.horloge = co.temps = 6;
     for (const v of co.voitures) { co.sAvant[v.id] = v.etat.s; v.debutTour = co.temps; }
-    const n = co.voitures.length, fx = B.traces.creer(n, GRAINE_JETABLE), poses = [];
+    const n = co.voitures.length, poses = [];
+    let fx = null, libere = false;
+    const liberer = () => {
+      if (libere) return;
+      libere = true;
+      try { if (fx) B.traces.liberer(fx); }
+      finally { if (co.physique) B.physique.liberer(co); }
+    };
+    try {
+    // La chauffe exerce les mêmes corps et solides, dans une scène indépendante qui ne fait jamais avancer la séance.
+    if (base.physique) B.physique.installer(co, scene.decor);
+    fx = B.traces.creer(n, GRAINE_JETABLE, co.physique ? co.physique.world : undefined);
     remplirPoses(poses, co);
     // une piste qui peut se mouiller est chauffée mouillée : les embruns ont leur chemin de code
     const meteo = Object.assign({}, S.meteo);
@@ -3602,7 +3627,7 @@
     return {
       course: co, effets: fx, get rapport() { return rapport; },
       avancer(budget) {
-        if (rapport) return true;
+        if (rapport || libere) return true;
         const avant = B.meteo.actuel, t0 = performance.now();
         B.meteo.actuel = meteo;
         try {
@@ -3619,13 +3644,18 @@
             B.traces.pas(fx, co, poses, j.id, DT, ev);
             k++;
           }
-        } finally { B.meteo.actuel = avant; ms += performance.now() - t0; }
-        if (k >= total) rapport = { pas: k, ms: +ms.toFixed(1), effets: B.traces.compter(fx) };
-        return !!rapport;
+          if (k >= total) rapport = { pas: k, ms: +(ms + performance.now() - t0).toFixed(1), effets: B.traces.compter(fx) };
+          return !!rapport;
+        } catch (e) { liberer(); throw e; }
+        finally { B.meteo.actuel = avant; ms += performance.now() - t0; }
       },
-      dessiner(sortie, oeil) { B.traces.dessiner(fx, sortie, oeil, 0); },
-      liberer() { B.traces.liberer(fx); }
+      dessiner(sortie, oeil) {
+        if (libere) return;
+        try { B.traces.dessiner(fx, sortie, oeil, 0); } catch (e) { liberer(); throw e; }
+      },
+      liberer
     };
+    } catch (e) { liberer(); throw e; }
   }
 
   // ---------------------------------------------------------------- chauffe du rendu
@@ -4235,6 +4265,10 @@
   function contexteGraphiqueRetabli() {
     contexteRenduPerdu = false;
     if (scene) scene.chauffe = null;   // nouveau contexte : programmes et cibles du moteur principal sont à refaire
+    if (session?.course?.physique && (!session.fx || session.fx.libere)) {
+      // Le contexte GPU ne possède pas les voitures : seul le pool d'effets libéré est recréé.
+      session.fx = B.traces.creer(session.course.voitures.length, session.fx?.graine?.[0] ?? graineCourse, session.course.physique.world);
+    }
     if (restaurerDecorApresContexte && !detectionGraphiqueActive) {
       try { restaurerDecorApresDetection(); appliquerPalier(); }
       catch (e) { console.warn('BITUME : restauration différée du décor', e); }
@@ -4482,7 +4516,6 @@
       // jamais sur le chemin d'une séance.
       if (glacesPossibles(null)) creerMoteurRetro();
       // PhysX est initialisé avant la coque par construire.py ; la scène porte voitures et débris.
-      // sur le chemin de l'écran titre, et l'absence du module ne doit pas empêcher la page de tourner.
       if (!window.FPhysX?.isReady()) throw new Error('Le moteur PhysX doit être prêt avant le jeu');
       son = B.son.creer();
       reglages.circuit = clamp(reglages.circuit | 0, 0, CATALOGUE.length - 1);

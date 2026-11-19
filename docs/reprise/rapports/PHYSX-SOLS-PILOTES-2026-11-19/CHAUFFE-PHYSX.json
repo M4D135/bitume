@@ -1,0 +1,57 @@
+{
+  "dateUTC": "2026-11-19T18:07:35.541456+00:00",
+  "portee": "Dernier raccord de préchauffage PhysX ; seule courseJetable() modifiée dans jeu.js.",
+  "comportement": {
+    "mondeJetableIndependant": true,
+    "solides": "scene.decor complet",
+    "effetsDansLeMemeMonde": true,
+    "nettoyage": "effets puis monde, idempotent et sur erreur",
+    "fallbackLegacySansCoursePhysique": true,
+    "seanceEtDecorReelsInchanges": true
+  },
+  "validation": {
+    "physique-cycle-seances": {
+      "reussis": 4,
+      "total": 4,
+      "exitCode": 0,
+      "commande": "node --test verifications/physique-cycle-seances.test.mjs",
+      "sansOverride": true,
+      "journal": "physique-cycle-seances-chauffe.log",
+      "resultats": "physique-cycle-seances-chauffe.json",
+      "note": "Remplace le résultat antérieur 3/3 de cette suite ; un contrôle natif ajouté."
+    },
+    "chargement": {
+      "reussis": 9,
+      "total": 9,
+      "exitCode": 0,
+      "commande": "node verifications/chargement.test.mjs",
+      "journal": "chargement-chauffe.log"
+    }
+  },
+  "jeuPendantExecutionSHA256": "709e03f9cf469b0d7ee1e6fd7d3773bfcea8ab6308b3fc5a9448c091cf0e01ed",
+  "courseJetableSHA256": "005c27b46ce0b55142f3ffc9ea08773c53dcefddd9d4119394c18b74949662fd",
+  "testsSHA256": {
+    "verifications/physique-cycle-seances.test.mjs": "9993ed29186d538d3c734eaf329c3948c6285ba5c67662047756066957cd9289",
+    "verifications/chargement.test.mjs": "246e163d0d3b3577725c4ad453d08b5113952dce865e32e6e4648118730413b8"
+  },
+  "preuvesSHA256": {
+    "physique-cycle-seances-chauffe.log": "8d3a2fc0b8e3dc825f62bbcda5faa7d47517d1a743e035f2d3d0170377a4e80e",
+    "physique-cycle-seances-chauffe.json": "f8d6423fa3218cc63c48c128e50895b73ccad2e6b6dd0ab481451e152cf26f08",
+    "chargement-chauffe.log": "7e6b85a80734bcd1791f7110e25d176361955c71f3590d1ebc605967b4ac3e7a"
+  },
+  "canonPhysXSHA256": "90779107e09594ce16796d7804a4f2a56f5c03856bdea22fcfed67016b17f3d2",
+  "sondeNative": {
+    "panne": "chauffe PhysX",
+    "reussi": true,
+    "situations": [
+      "normal",
+      "creation-effets",
+      "pas"
+    ],
+    "mondeIndependant": true,
+    "pas": 60,
+    "seanceIntacte": true,
+    "decorIntact": true,
+    "mondeReelRestant": 1
+  }
+}

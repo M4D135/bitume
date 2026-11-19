@@ -1,0 +1,14 @@
+{"standsPhysX":[{"nom":"PhysX : IA à 8 m derrière un joueur garé, dégagement sans contact ni replacement","reussi":true,"dureeSimulee":20.116666666666667,"dureeExecutionMs":1878.090809},{"nom":"PhysX : IA à 10 m derrière un joueur garé, dégagement sans contact ni replacement","reussi":true,"dureeSimulee":15.174999999999999,"dureeExecutionMs":1690.9329940000002},{"nom":"PhysX : vraie approche puis dégagement devant un joueur garé","reussi":true,"dureeSimulee":96.01666666666667,"dureeExecutionMs":5797.441556},{"nom":"PhysX : trajet sous pluie, nouvelle monte seulement après le service complet","reussi":true,"dureeSimulee":42.61666666666667,"dureeExecutionMs":2956.2800130000014},{"nom":"PhysX : trajet sous neige, nouvelle monte seulement après le service complet","reussi":true,"dureeSimulee":45.59166666666667,"dureeExecutionMs":2655.7705060000008}]}
+✔ PhysX : IA à 8 m derrière un joueur garé, dégagement sans contact ni replacement (1879.576054ms)
+✔ PhysX : IA à 10 m derrière un joueur garé, dégagement sans contact ni replacement (1691.368198ms)
+✔ PhysX : vraie approche puis dégagement devant un joueur garé (5797.815187ms)
+✔ PhysX : trajet sous pluie, nouvelle monte seulement après le service complet (2956.668637ms)
+✔ PhysX : trajet sous neige, nouvelle monte seulement après le service complet (2656.116455ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14989.764192

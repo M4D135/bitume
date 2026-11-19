@@ -1,0 +1,376 @@
+[
+  {
+    "case": "volant-centre-complet",
+    "clearances": [
+      {
+        "arm": 0,
+        "bone": 0,
+        "shape": "bitume-goutte",
+        "metres": 0.020559201155024583
+      },
+      {
+        "arm": 0,
+        "bone": 0,
+        "shape": "bitume-goutte-dedans",
+        "metres": 0.0205592207335794
+      },
+      {
+        "arm": 0,
+        "bone": 0,
+        "shape": "bitume-jonc",
+        "metres": 0.008561689337944774
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-goutte",
+        "metres": -0.008027386418368906
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-goutte-dedans",
+        "metres": -0.008027368306716454
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-jonc",
+        "metres": -0.019835005246328842
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-bulle",
+        "metres": 0.010092352096527257
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-jante",
+        "metres": 0.05166693470946135
+      },
+      {
+        "arm": 1,
+        "bone": 0,
+        "shape": "bitume-goutte",
+        "metres": 0.020559201155024583
+      },
+      {
+        "arm": 1,
+        "bone": 0,
+        "shape": "bitume-goutte-dedans",
+        "metres": 0.0205592207335794
+      },
+      {
+        "arm": 1,
+        "bone": 0,
+        "shape": "bitume-jonc",
+        "metres": 0.008599741726039459
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-goutte",
+        "metres": -0.008027386418368906
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-goutte-dedans",
+        "metres": -0.008027368306716454
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-jonc",
+        "metres": -0.01972264373765873
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-bulle",
+        "metres": 0.010092352096527257
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-jante",
+        "metres": 0.05166693470946135
+      }
+    ]
+  },
+  {
+    "case": "main-au-levier-complet",
+    "clearances": [
+      {
+        "arm": 0,
+        "bone": 0,
+        "shape": "bitume-goutte",
+        "metres": 0.020559201155024583
+      },
+      {
+        "arm": 0,
+        "bone": 0,
+        "shape": "bitume-goutte-dedans",
+        "metres": 0.0205592207335794
+      },
+      {
+        "arm": 0,
+        "bone": 0,
+        "shape": "bitume-jonc",
+        "metres": 0.008561689337944774
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-goutte",
+        "metres": -0.008027386418368906
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-goutte-dedans",
+        "metres": -0.008027368306716454
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-jonc",
+        "metres": -0.019835005246328842
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-bulle",
+        "metres": 0.010092352096527257
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-jante",
+        "metres": 0.05166693470946135
+      },
+      {
+        "arm": 1,
+        "bone": 0,
+        "shape": "bitume-jonc",
+        "metres": 0.024534332927717825
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-goutte",
+        "metres": 0.006337886338210898
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-goutte-dedans",
+        "metres": 0.006337902609087766
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-jonc",
+        "metres": 0.011579360690685325
+      }
+    ]
+  },
+  {
+    "case": "retour-du-levier-complet",
+    "clearances": [
+      {
+        "arm": 0,
+        "bone": 0,
+        "shape": "bitume-goutte",
+        "metres": 0.020559201155024583
+      },
+      {
+        "arm": 0,
+        "bone": 0,
+        "shape": "bitume-goutte-dedans",
+        "metres": 0.0205592207335794
+      },
+      {
+        "arm": 0,
+        "bone": 0,
+        "shape": "bitume-jonc",
+        "metres": 0.008561689337944774
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-goutte",
+        "metres": -0.008027386418368906
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-goutte-dedans",
+        "metres": -0.008027368306716454
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-jonc",
+        "metres": -0.019835005246328842
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-bulle",
+        "metres": 0.010092352096527257
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-jante",
+        "metres": 0.05166693470946135
+      },
+      {
+        "arm": 1,
+        "bone": 0,
+        "shape": "bitume-goutte",
+        "metres": 0.015478837767908454
+      },
+      {
+        "arm": 1,
+        "bone": 0,
+        "shape": "bitume-goutte-dedans",
+        "metres": 0.015478853212830997
+      },
+      {
+        "arm": 1,
+        "bone": 0,
+        "shape": "bitume-jonc",
+        "metres": 0.0036823984737973173
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-goutte",
+        "metres": 0.04601833184051721
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-goutte-dedans",
+        "metres": 0.04601834717936887
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-jonc",
+        "metres": 0.043964660114893125
+      }
+    ]
+  },
+  {
+    "case": "virage-droite-complet",
+    "clearances": [
+      {
+        "arm": 0,
+        "bone": 0,
+        "shape": "bitume-jonc",
+        "metres": 0.030942079591625586
+      },
+      {
+        "arm": 0,
+        "bone": 0,
+        "shape": "bitume-bulle",
+        "metres": -0.0016763056318832847
+      },
+      {
+        "arm": 0,
+        "bone": 0,
+        "shape": "bitume-jante",
+        "metres": 0.11455451210228096
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-bulle",
+        "metres": -0.011940403000510327
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-jante",
+        "metres": 0.03907386643062824
+      },
+      {
+        "arm": 0,
+        "bone": 1,
+        "shape": "bitume-branches",
+        "metres": 0.05615114794077737
+      },
+      {
+        "arm": 1,
+        "bone": 0,
+        "shape": "bitume-goutte",
+        "metres": -0.03212940722938365
+      },
+      {
+        "arm": 1,
+        "bone": 0,
+        "shape": "bitume-goutte-dedans",
+        "metres": -0.032129416382108755
+      },
+      {
+        "arm": 1,
+        "bone": 0,
+        "shape": "bitume-jonc",
+        "metres": -0.0375
+      },
+      {
+        "arm": 1,
+        "bone": 0,
+        "shape": "bitume-bulle",
+        "metres": -0.0051639116217610664
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-goutte",
+        "metres": 0.007034690694673398
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-goutte-dedans",
+        "metres": 0.007034676475230137
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-jonc",
+        "metres": 0.010915823410144646
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-bulle",
+        "metres": -0.00576430727671522
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-cuve",
+        "metres": 0.01851141024639586
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-jante",
+        "metres": 0.05475182849500505
+      },
+      {
+        "arm": 1,
+        "bone": 1,
+        "shape": "bitume-branches",
+        "metres": 0.05866237085312198
+      }
+    ]
+  }
+]

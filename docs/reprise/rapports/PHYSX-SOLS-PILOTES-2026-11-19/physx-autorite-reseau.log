@@ -1,0 +1,10 @@
+✔ PhysX réseau : reprise locale en plein saut conserve pose, vitesse latérale et rotation natives (40.723647ms)
+✔ PhysX réseau : passage local vers distant garde la pose avant la prochaine cible réseau (12.017886ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 64.748854

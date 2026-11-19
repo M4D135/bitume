@@ -1,0 +1,239 @@
+{
+  "date": "2026-11-19T18:31:49.188Z",
+  "node": "v24.22.3",
+  "runtime": {
+    "ready": true,
+    "version": "5.12.0",
+    "worlds": 0,
+    "queryCount": 222236
+  },
+  "adaptateur": "/workspace/scratch/1b28de5a23b5/bitume-physx/src/ferro/physx.js",
+  "dt": 0.008333333333333333,
+  "tests": 11,
+  "reussis": 11,
+  "empreintes": {
+    "src/course.js": "6b3ec1ab4dc526d8da81f1fcf9410d68927d9a65743ac45c9335f3386f93b53f",
+    "src/strategie-stands.js": "c0b8326627e0225bf8197719472062b181038346eb3d1b3ca4b6ef320d0dee50",
+    "src/physique.js": "2dc2dede6b8f8e3a863a09c754bed30baf2cdf38af0dc6b71e9d839eb153a089",
+    "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+    "src/solides-physx.js": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+    "src/circuit.js": "e6aa6ef807345c35f2016e192dcdb543dc682f50e604a483097052250965da98",
+    "src/decor.js": "001273b9b31d6f9005f98e32f86e94c20e57405ecd4cc88f9bc71197de2c91b2",
+    "src/bords.js": "ef0488472987ff35d36f3a2bbd76e5a086cb7edf8bc038dfb01676dfe933b638",
+    "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "verifications/physx-stands.test.mjs": "c7f0359cc389003f6bca2d0f7a4a06d02708c383d29819d43ed08b94f58c8b9c",
+    "verifications/helpers/physx-runtime.mjs": "7503d286787cd0bcf04d0d14abeece417419c85f2ce32b619506f08087cc5741",
+    "adaptateurPhysX": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638"
+  },
+  "resultats": [
+    {
+      "nom": "PhysX : le limiteur ralentit réellement la voiture, même accélérateur tenu",
+      "reussi": true,
+      "mesures": {
+        "limite": 10,
+        "vitesseMin": 9.903338177952554,
+        "vitesseMaxStabilisee": 9.90895335036531,
+        "fin": 9.905609937429295,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        }
+      },
+      "dureeExecutionMs": 231.848434
+    },
+    {
+      "nom": "PhysX : service immobile complet, quatre pneus changés ensemble seulement à son terme",
+      "reussi": true,
+      "mesures": {
+        "dureeDemandee": 2.5,
+        "dureeObservee": 2.5083333333331908,
+        "distanceMax": 4.82392521761188e-10,
+        "servicePneus": 1,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        }
+      },
+      "dureeExecutionMs": 56.67667099999994
+    },
+    {
+      "nom": "PhysX : une impulsion pendant le service l’annule et garde les pneus usés",
+      "reussi": true,
+      "mesures": {
+        "annule": true,
+        "servicePneus": 0,
+        "vitesseApresImpulsion": 2.9998750679008364,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        }
+      },
+      "dureeExecutionMs": 11.130323999999973
+    },
+    {
+      "nom": "PhysX : trajet IA complet vers le vrai garage puis sortie sous sec",
+      "reussi": true,
+      "mesures": {
+        "meteo": "sec",
+        "dureeTrajet": 40.29166666666974,
+        "dureeService": 2.5083333333331908,
+        "dureeDemandee": 2.5,
+        "maxMouvementService": 0.0013399962402404876,
+        "monteApres": "slicks",
+        "vitesseFinale": 33.409895609313125,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        }
+      },
+      "dureeExecutionMs": 3180.531144
+    },
+    {
+      "nom": "PhysX : trajet IA complet vers le vrai garage puis sortie sous pluie",
+      "reussi": true,
+      "mesures": {
+        "meteo": "pluie",
+        "dureeTrajet": 42.32500000000469,
+        "dureeService": 2.5083333333331908,
+        "dureeDemandee": 2.5,
+        "maxMouvementService": 0.0028910070244195117,
+        "monteApres": "pluie",
+        "vitesseFinale": 33.21317725280841,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        }
+      },
+      "dureeExecutionMs": 1748.840115
+    },
+    {
+      "nom": "PhysX : trajet IA complet vers le vrai garage puis sortie sous neige",
+      "reussi": true,
+      "mesures": {
+        "meteo": "neige",
+        "dureeTrajet": 45.29166666667372,
+        "dureeService": 2.5083333333331908,
+        "dureeDemandee": 2.5,
+        "maxMouvementService": 0.0059361396347959085,
+        "monteApres": "neige",
+        "vitesseFinale": 32.08120457101426,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        }
+      },
+      "dureeExecutionMs": 1753.9015049999998
+    },
+    {
+      "nom": "PhysX : file à 8 m, val-brule, sec, retour en course sans contact ni replacement",
+      "reussi": true,
+      "mesures": {
+        "circuit": "val-brule",
+        "meteo": "sec",
+        "distanceInitiale": 8,
+        "duree": 20.116666666665523,
+        "recul": 10.541666666666709,
+        "minEcart": 4.967919781350441,
+        "maxMouvementHumain": 0,
+        "vitesseFinale": 25.45719629627977,
+        "servicePneus": 0,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        }
+      },
+      "dureeExecutionMs": 1103.3188839999993
+    },
+    {
+      "nom": "PhysX : file à 10 m, val-brule, sec, retour en course sans contact ni replacement",
+      "reussi": true,
+      "mesures": {
+        "circuit": "val-brule",
+        "meteo": "sec",
+        "distanceInitiale": 10,
+        "duree": 15.174999999999137,
+        "recul": 5.266666666666718,
+        "minEcart": 4.935350706295208,
+        "maxMouvementHumain": 0,
+        "vitesseFinale": 25.43558784524971,
+        "servicePneus": 0,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        }
+      },
+      "dureeExecutionMs": 1201.6610970000002
+    },
+    {
+      "nom": "PhysX : file à 8 m, val-brule, pluie, retour en course sans contact ni replacement",
+      "reussi": true,
+      "mesures": {
+        "circuit": "val-brule",
+        "meteo": "pluie",
+        "distanceInitiale": 8,
+        "duree": 20.24999999999885,
+        "recul": 10.541666666666709,
+        "minEcart": 5.299590517566401,
+        "maxMouvementHumain": 0,
+        "vitesseFinale": 22.871147276111948,
+        "servicePneus": 0,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        }
+      },
+      "dureeExecutionMs": 1212.272073
+    },
+    {
+      "nom": "PhysX : file à 8 m, val-brule, neige, retour en course sans contact ni replacement",
+      "reussi": true,
+      "mesures": {
+        "circuit": "val-brule",
+        "meteo": "neige",
+        "distanceInitiale": 8,
+        "duree": 22.658333333332045,
+        "recul": 10.57500000000004,
+        "minEcart": 5.325603298283367,
+        "maxMouvementHumain": 0,
+        "vitesseFinale": 21.156075376748188,
+        "servicePneus": 0,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        }
+      },
+      "dureeExecutionMs": 1198.4869909999998
+    },
+    {
+      "nom": "PhysX : file à 8 m, haut-col, sec, retour en course sans contact ni replacement",
+      "reussi": true,
+      "mesures": {
+        "circuit": "haut-col",
+        "meteo": "sec",
+        "distanceInitiale": 8,
+        "duree": 19.533333333332223,
+        "recul": 10.366666666666719,
+        "minEcart": 7.723756218228484,
+        "maxMouvementHumain": 0,
+        "vitesseFinale": 25.459053342409995,
+        "servicePneus": 0,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        }
+      },
+      "dureeExecutionMs": 2123.1742079999985
+    }
+  ]
+}

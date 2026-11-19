@@ -1,0 +1,15 @@
+ok  les voitures sont des acteurs dynamiques natifs de 600 kg, avec centre de masse et inertie
+ok  quatre ressorts portent le poids au repos, sans réécrire la pose ni les vitesses
+ok  le frein maintient une pente et un dévers par forces, nez dans les deux sens
+ok  accélération, freinage puis marche arrière viennent des forces de pneus
+ok  un saut rencontre physiquement la pente et revient sur ses roues
+ok  une barrière de 8 cm arrête le châssis à haute vitesse sans traversée
+ok  deux voitures échangent leur quantité de mouvement avec leur masse réelle
+ok  les mondes se libèrent entre les courses et aucun corps ne reste orphelin
+ok  chaque pneu respecte son adhérence locale avec deux roues dans l’herbe
+ok  roues et traces restent sur le vrai plan malgré la compression et le dévers
+ok  les débris partagent le sol et les contacts sans doubler le pas PhysX
+ok  la reprise d’une voiture distante en vol conserve pose et vitesses natives
+ok  un proxy distant garde ses suspensions transmises et ses points de contact réels
+ok  la reprise emploie les vitesses 3D transmises même entre deux déplacements du proxy
+14 contrôles PhysX voitures réussis

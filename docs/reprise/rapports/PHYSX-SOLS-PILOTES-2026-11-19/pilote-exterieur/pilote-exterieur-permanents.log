@@ -1,0 +1,14 @@
+ok  modèle : objets de rendu créés avec lui, hors de ses propriétés énumérées
+ok  poser, cockpit, fantôme, rétroviseur : mêmes objets d'une image à l'autre, réécrits en place
+ok  attitude rendue : celle de la caisse au bit près, un tableau par voiture
+ok  aucun drapeau ne passe d'une variante à l'autre
+ok  voyants : émission allumée puis éteinte sur le même objet
+ok  niveaux de détail : complet par défaut, simple comme options.simple, moyen entre les deux
+ok  detailPour : décision de jeu.js au bit près avec facteur 1, bande moyenne au-delà
+ok  rétroviseur : pose réduite identique à la pose entière filtrée, voiture retournée comprise
+ok  glacesCockpit : dest réécrit en place, mêmes valeurs qu'un résultat neuf
+ok  objetsFantome : deux fantômes dans une même liste restent distincts
+ok  hypotDans : Math.hypot de ce moteur au bit près
+    poser 0.10 o/appel, 0 GC en 600000 ; cockpit 0.63 o/appel, 0 GC en 150000 ; fantome 0.77 o/appel, 0 GC en 150000 ; poserRetro 0.80 o/appel, 0 GC en 150000 ; glacesCockpit 0.03 o/appel, 0 GC en 150000
+ok  aucune allocation en régime permanent (octets alloués, ramasse-miettes mineurs)
+12 vérifications réussies (6.6 s)

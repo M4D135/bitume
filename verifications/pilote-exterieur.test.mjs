@@ -1,135 +1,232 @@
-// Le vrai modèle procédural, les sorties envoyées au moteur et les vues successives.
-// Aucun temps de simulation ne doit être avancé par ces appels de rendu.
+// Animation du pilote extérieur : géométrie réellement posée, mêmes gants/levier que le cockpit,
+// articulations cohérentes dans les LOD, aucun état de simulation modifié ni objet créé par image.
 import assert from 'node:assert/strict';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-for (const f of ['carene', 'humain-donnees', 'humain-corps', 'main', 'circuit', 'conduite', 'voiture']) require('../src/' + f + '.js');
-const V = globalThis.BITUME.voiture;
-const LIVREE = { couleur: [.86, .1, .08], seconde: [.95, .93, .88], casque: [.95, .93, .88], combinaison: [.95, .93, .88], numero: 27 };
-const DETAILS = ['complet', 'moyen', 'simple'];
-const VARIANTE = { complet: 0, moyen: 6, simple: 2 };
-const distance = (a, b) => Math.hypot(...a.map((v, i) => v - b[i]));
-const copie = o => ({ shape: o.shape, p: [...o.p], s: [...o.s], r: [...o.r], color: [...o.color], overlay: !!o.overlay });
-const valeurs = objets => objets.map(copie);
-const pose = (extra = {}) => ({ p: [12, 3, -7], cap: .41, tangage: .08, roulis: -.06, roule: 0, v: 0,
-  pilote: { volant: 0, rapport: 3, rapportAvant: 2, passage: 1 }, ...extra });
-const pilote = (extra = {}) => ({ volant: 0, rapport: 3, rapportAvant: 2, passage: 1, ...extra });
-const mod = V.modele(LIVREE);
-function dessiner(etat = pilote(), detail = 'complet', modele = mod, extra = {}) {
-  const ev = pose({ pilote: etat, ...extra }), objets = [];
-  V.poser(modele, ev, objets, { detail });
-  const pieces = modele.objetsRendu.pilote.variantes[VARIANTE[detail]].pieces;
-  const roles = Object.fromEntries(pieces.map(p => [p.role, copie(p.objet)]));
-  return { ev, objets, roles, valeurs: valeurs(objets), joints: [...modele.objetsRendu.pilote.articulations],
-    tete: copie(objets.find(o => o.shape === 'bitume-pilote-casque') || objets.find(o => o.shape === 'sphere' && o.s[0] === .27)) };
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+import { test } from 'node:test';
+import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
+
+const fichier = fileURLToPath(import.meta.url), racine = path.resolve(path.dirname(fichier), '..');
+function charger(humain = true) {
+  const contexte = vm.createContext({ console });
+  const fichiers = ['carene.js', 'main.js', ...(humain ? ['humain-donnees.js', 'humain-corps.js'] : []),
+    'ferro/vehicle-dynamics.js', 'pneus.js', 'usure-pneus.js', 'chaussee.js', 'conduite.js', 'voiture.js'];
+  for (const nom of fichiers) vm.runInContext(fs.readFileSync(path.join(racine, 'src', nom), 'utf8'), contexte, { filename: nom });
+  return contexte.BITUME.voiture;
 }
-let controles = 0;
-function verifier(nom, f) { f(); controles++; console.log('ok  ' + nom); }
+const livree = { couleur: [.82, .12, .08], combinaison: [.88, .84, .72], numero: 27 };
+const pose = () => ({ p: [8, 2, -3], cap: .4, tangage: .09, roulis: -.06, braquage: .12, roule: 6, v: 35,
+  rebond: [.01, -.02, .03, 0], pilote: { volant: 0, rapport: 3, rapportAvant: 2, passage: 1 } });
+const options = [{ detail: 'complet' }, { detail: 'moyen' }, { detail: 'simple' }];
+const snapshot = liste => JSON.stringify(liste.map(o => [o.shape, ...['p', 's', 'r', 'color'].map(k => Array.from(o[k] || [])), o.mat, o.fx, o.alpha, o.overlay]));
+const proche = (a, b, marge = 1e-11) => { assert.ok(Math.abs(a - b) <= marge, `${a} != ${b}`); };
+const distance = (a, b) => Math.sqrt(a.reduce((s, x, i) => s + (x - b[i]) ** 2, 0));
+const point = (A, i) => Array.from(A.slice(i, i + 3));
+const role = (rig, variante, nom) => rig.variantes[variante].pieces.find(p => p.role === nom).objet;
 
-verifier('les deux mains, les bras, le volant et le casque suivent le braquage', () => {
-  for (const detail of DETAILS) {
-    const gauche = dessiner(pilote({ volant: -.7 }), detail), droite = dessiner(pilote({ volant: .7 }), detail);
-    for (const role of ['gant-0-0', 'gant-1-0', 'bras-0', 'bras-1', 'avant-bras-0', 'avant-bras-1'])
-      assert(distance(gauche.roles[role].p, droite.roles[role].p) > .015, detail + ' : ' + role + ' reste figé');
-    assert(distance(gauche.roles.volant.r, droite.roles.volant.r) > .3, detail + ' : volant figé');
-    assert(distance(gauche.tete.r, droite.tete.r) > .15, detail + ' : tête figée');
-    const neutral = dessiner(pilote(), detail);
-    assert(distance(gauche.tete.p, neutral.tete.p) < .1 && distance(droite.tete.p, neutral.tete.p) < .1,
-      detail + ' : casque détaché de son cou');
-  }
-});
-
-verifier('le passage quitte la jante, atteint le levier et revient, sans déplacer la main gauche', () => {
-  for (const detail of DETAILS) {
-    const debut = dessiner(pilote({ passage: 0 }), detail), prise = dessiner(pilote({ passage: .45 }), detail);
-    const fin = dessiner(pilote({ passage: 1 }), detail);
-    assert(distance(debut.roles['gant-1-0'].p, prise.roles['gant-1-0'].p) > .1, detail + ' : main droite figée');
-    assert.deepEqual(debut.roles['gant-0-0'], prise.roles['gant-0-0'], detail + ' : main gauche quitte le volant');
-    assert.deepEqual(debut.roles['gant-1-0'], fin.roles['gant-1-0'], detail + ' : main droite ne revient pas à sa prise');
-    assert(distance(debut.roles.pommeau.p, fin.roles.pommeau.p) > .02, detail + ' : le levier ne change pas de rapport');
-    assert(distance(debut.tete.r, prise.tete.r) > .05, detail + ' : regard figé pendant le passage');
-    assert.deepEqual(debut.tete, fin.tete, detail + ' : le casque ne revient pas au repos');
-  }
-});
-
-verifier('les bras gardent leurs longueurs dans 375 poses, avec des transformations finies', () => {
-  for (const detail of DETAILS) for (const volant of [-1, -.7, 0, .7, 1])
-    for (const rapport of [-1, 0, 1, 3, 6]) for (const passage of [0, .2, .45, .8, 1]) {
-      const dessin = dessiner(pilote({ volant, rapport, rapportAvant: rapport === 6 ? 5 : 2, passage }), detail);
-      assert(dessin.objets.every(o => [...o.p, ...o.r, ...o.s].every(Number.isFinite) && o.s.every(v => v > 0)),
-        `${detail}, volant=${volant}, rapport=${rapport}, passage=${passage}`);
-      for (const main of [0, 1]) {
-        const j = main * 9, a = dessin.joints;
-        assert(Math.abs(distance(a.slice(j, j + 3), a.slice(j + 3, j + 6)) - .22) < 1e-12, 'bras étiré');
-        assert(Math.abs(distance(a.slice(j + 3, j + 6), a.slice(j + 6, j + 9)) - .23) < 1e-12, 'avant-bras étiré');
-      }
-    }
-});
-
-verifier('les niveaux de détail gardent les mêmes poignets, coudes, bras, levier et direction du casque', () => {
-  for (const volant of [-1, 0, 1]) for (const passage of [0, .45, 1]) {
-    const etat = pilote({ volant, passage }), reference = dessiner(etat);
-    for (const detail of ['moyen', 'simple']) {
-      const dessin = dessiner(etat, detail);
-      assert.deepEqual(dessin.joints, reference.joints, detail + ' : articulation changée');
-      for (const role of ['gant-0-0', 'gant-1-0', 'coude-0', 'coude-1', 'bras-0', 'bras-1', 'avant-bras-0', 'avant-bras-1', 'pommeau']) {
-        assert.deepEqual(dessin.roles[role].p, reference.roles[role].p, detail + ' : position ' + role);
-        assert.deepEqual(dessin.roles[role].r, reference.roles[role].r, detail + ' : rotation ' + role);
-      }
-      assert.deepEqual(dessin.tete.r, reference.tete.r, detail + ' : direction de la tête');
+if (process.argv.includes('--allocation')) {
+  const { Session } = await import('node:inspector');
+  const { PerformanceObserver, constants } = await import('node:perf_hooks');
+  const V = charger(), mod = V.modele(livree), ev = pose();
+  const puits = { n: 0, cases: new Array(4096).fill(null), push(o) { this.cases[this.n++] = o; } };
+  const session = new Session(); session.connect();
+  const post = (m, p) => new Promise((ok, ko) => session.post(m, p || {}, (e, r) => e ? ko(e) : ok(r)));
+  await post('HeapProfiler.enable');
+  let mineurs = 0;
+  const observateur = new PerformanceObserver(l => { for (const e of l.getEntries()) if (e.detail.kind === constants.NODE_PERFORMANCE_GC_MINOR) mineurs++; });
+  observateur.observe({ entryTypes: ['gc'] });
+  function tourner(n) {
+    for (let i = 0; i < n; i++) {
+      puits.n = 0; ev.pilote.volant = Math.sin(i * .009); ev.pilote.passage = (i % 101) / 100;
+      ev.pilote.rapport = 1 + ((i >> 7) % 6); ev.pilote.rapportAvant = Math.max(1, ev.pilote.rapport - 1);
+      ev.cap = .4 + i * 1e-5; ev.roule = i * .1;
+      V.poser(mod, ev, puits, options[i % 3]);
     }
   }
+  for (let i = 0; i < 4; i++) tourner(10000);
+  globalThis.gc(); await new Promise(r => setTimeout(r, 20));
+  const avant = mineurs, appels = 60000;
+  await post('HeapProfiler.startSampling', { samplingInterval: 4096, includeObjectsCollectedByMinorGC: true, includeObjectsCollectedByMajorGC: true });
+  tourner(appels);
+  const profil = (await post('HeapProfiler.stopSampling')).profile;
+  const taille = n => n.selfSize + n.children.reduce((s, c) => s + taille(c), 0);
+  await new Promise(r => setTimeout(r, 20));
+  console.log(JSON.stringify({ appels, octets_par_pose: taille(profil.head) / appels, gc_mineurs: mineurs - avant }));
+  observateur.disconnect(); session.disconnect(); process.exit(0);
+}
+
+const V = charger(), modele = () => V.modele(livree);
+function dessiner(mod, ev, o) { const sortie = []; V.poser(mod, ev, sortie, o); return sortie; }
+
+test('le contrat de pose reste en lecture seule et le rendu historique revient sans résidu', () => {
+  const mod = modele(), ev = pose();
+  delete ev.pilote;
+  const ancien = snapshot(dessiner(mod, ev));
+  const donnees = Object.freeze({ volant: .7, rapport: 4, rapportAvant: 3, passage: .45 });
+  const actif = Object.freeze({ ...ev, p: Object.freeze(ev.p), rebond: Object.freeze(ev.rebond), pilote: donnees });
+  assert.notEqual(snapshot(dessiner(mod, actif)), ancien);
+  assert.equal(snapshot(dessiner(mod, ev)), ancien);
+  assert.deepEqual(donnees, { volant: .7, rapport: 4, rapportAvant: 3, passage: .45 });
 });
 
-verifier('un retour au cockpit puis à la vue extérieure retrouve exactement la même pose', () => {
-  const etat = pilote({ volant: -.55, passage: .45 }), reference = dessiner(etat);
-  const figes = reference.valeurs, sortieCockpit = [];
-  V.cockpit(mod, pose(), sortieCockpit, { regime: 7000, kmh: 130, volant: .8, rapport: 6, rapportAvant: 5, passage: .8 });
-  assert.deepEqual(valeurs(reference.objets), figes, 'le cockpit réécrit les objets de la vue extérieure');
-  assert.deepEqual(dessiner(etat).valeurs, figes, 'pose extérieure différente après le cockpit');
-  const ev = pose({ pilote: etat }), neutral = [];
-  V.cockpit(mod, ev, neutral, { regime: 7000, kmh: 130, ...etat });
-  assert(!neutral.some(o => /bitume-pilote-/.test(o.shape)), 'tête du pilote dessinée devant ses propres yeux');
+test('main droite au levier puis retour ; main gauche reste au volant', () => {
+  const mod = modele(), ev = pose(); ev.cap = ev.tangage = ev.roulis = 0; ev.p.fill(0);
+  ev.pilote.passage = 0; dessiner(mod, ev);
+  const rig = mod.objetsRendu.pilote, debut = Array.from(rig.articulations);
+  const gant = Array.from(role(rig, 0, 'gant-1-0').p);
+  ev.pilote.passage = .5; dessiner(mod, ev);
+  const milieu = Array.from(rig.articulations);
+  assert.deepEqual(milieu.slice(0, 9), debut.slice(0, 9), 'bras gauche indépendant du passage');
+  assert.ok(distance(point(milieu, 15), point(debut, 15)) > .1, 'main droite quitte sa prise');
+  assert.ok(distance(Array.from(role(rig, 0, 'gant-1-0').p), Array.from(role(rig, 0, 'pommeau').p)) < .09, 'gant rejoint le pommeau');
+  assert.ok(rig.tete[1] < 0, 'regard accompagne le levier vers le bas');
+  ev.pilote.passage = 1; dessiner(mod, ev);
+  assert.deepEqual(Array.from(rig.articulations), debut);
+  assert.deepEqual(Array.from(role(rig, 0, 'gant-1-0').p), gant);
 });
 
-verifier('les vues, rétroviseurs et autres voitures ne partagent pas les objets animés', () => {
-  const etat = pilote({ volant: .3, passage: .2 }), premiere = dessiner(etat), autre = V.modele({ ...LIVREE, numero: 2 });
-  dessiner(pilote({ volant: -1, passage: .7 }), 'complet', autre, { p: [500, -10, 90] });
-  dessiner(pilote({ volant: -.5, passage: .5 }), 'moyen');
-  V.poserRetro(mod, pose({ pilote: pilote({ volant: -.9, passage: .8 }), roulis: Math.PI }), []);
-  assert.deepEqual(valeurs(premiere.objets), premiere.valeurs, 'un autre rendu a changé la première vue');
-  assert.deepEqual(dessiner(etat).valeurs, premiere.valeurs, 'le retour à la pose de référence diverge');
+test('le volant entraîne les deux mains et le regard suit la direction', () => {
+  const mod = modele(), ev = pose();
+  dessiner(mod, ev); const rig = mod.objetsRendu.pilote, droit = Array.from(rig.articulations);
+  ev.pilote.volant = .8; dessiner(mod, ev);
+  assert.ok(distance(point(rig.articulations, 6), point(droit, 6)) > .07);
+  assert.ok(distance(point(rig.articulations, 15), point(droit, 15)) > .07);
+  assert.ok(rig.tete[2] > 0, 'avant du casque vers la droite');
+  ev.pilote.volant = -.8; dessiner(mod, ev);
+  assert.ok(rig.tete[2] < 0, 'avant du casque vers la gauche');
 });
 
-verifier('le rendu lit un état gelé, sans horloge cachée ni écriture dans le modèle de simulation', () => {
-  const etat = Object.freeze(pilote({ volant: .4, passage: .45 }));
-  const ev = Object.freeze(pose({ p: Object.freeze([12, 3, -7]), pilote: etat })), depart = JSON.stringify(mod);
-  let reference;
-  for (let i = 0; i < 60; i++) {
-    const objets = []; V.poser(mod, ev, objets);
-    if (!i) reference = valeurs(objets); else assert.deepEqual(valeurs(objets), reference);
+test('630 poses : segments de 22/23 cm, coudes contenus et matrices finies', () => {
+  const mod = modele(), ev = pose();
+  for (const volant of [-1, -.5, 0, .5, 1]) for (let rapport = 1; rapport <= 6; rapport++) for (let f = 0; f <= 20; f++) {
+    Object.assign(ev.pilote, { volant, rapport, rapportAvant: rapport - 1, passage: f / 20 });
+    const sortie = dessiner(mod, ev), A = mod.objetsRendu.pilote.articulations;
+    for (let h = 0; h < 2; h++) {
+      const j = h * 9;
+      proche(distance(point(A, j), point(A, j + 3)), .22);
+      proche(distance(point(A, j + 3), point(A, j + 6)), .23);
+      assert.ok(A[j + 4] > .69 && Math.abs(A[j + 5]) < .39, 'coude au-dessus du bord, dans une enveloppe bornée');
+    }
+    for (const o of sortie) for (const k of ['p', 'r', 's', 'color']) assert.ok(Array.from(o[k]).every(Number.isFinite), k);
   }
-  assert.equal(JSON.stringify(mod), depart, 'le dessin modifie la géométrie ou la livrée');
 });
 
-verifier('les objets, positions, tailles et rotations des animations sont réutilisés à chaque image', () => {
-  for (const detail of DETAILS) {
-    const etat = pilote(), ev = pose({ pilote: etat }), premier = [];
-    V.poser(mod, ev, premier, { detail });
-    const refs = premier.map(o => ({ o, p: o.p, s: o.s, r: o.r }));
-    for (let i = 0; i < 120; i++) {
-      etat.volant = Math.sin(i * .1); etat.passage = (i % 37) / 36; ev.p[0] += .3;
-      const courant = []; V.poser(mod, ev, courant, { detail });
-      assert.equal(courant.length, refs.length, detail + ' : nombre d’objets instable');
-      for (let k = 0; k < refs.length; k++) {
-        const a = refs[k], b = courant[k];
-        assert.equal(b, a.o); assert.equal(b.p, a.p); assert.equal(b.r, a.r);
-        // Les pneus peuvent sélectionner un tableau de forme déjà préchargé ; les pièces ajoutées du pilote
-        // possèdent en revanche chacune une taille permanente, indépendante de celle du cockpit.
-        if (mod.objetsRendu.pilote.variantes[VARIANTE[detail]].pieces.some(p => p.objet === b)) assert.equal(b.s, a.s);
-      }
+test('les trois LOD conservent les mêmes articulations et transformations des bras', () => {
+  const mod = modele(), ev = pose(); ev.pilote.volant = -.6; ev.pilote.passage = .42;
+  const valeurs = [], tetes = [];
+  for (let n = 0; n < options.length; n++) {
+    dessiner(mod, ev, options[n]);
+    const rig = mod.objetsRendu.pilote, variante = [0, 6, 2][n], table = mod.objetsRendu.tables[[0, 12, 4][n]];
+    valeurs.push(['bras-0', 'avant-bras-0', 'coude-0', 'bras-1', 'avant-bras-1', 'coude-1'].map(nom => {
+      const o = role(rig, variante, nom); return [Array.from(o.p), Array.from(o.r), Array.from(o.s)];
+    }));
+    const index = Array.from(table.tete).findIndex(Boolean);
+    assert.ok(index >= 0); tetes.push(Array.from(table.objets[index].r));
+  }
+  assert.deepEqual(valeurs[1], valeurs[0]); assert.deepEqual(valeurs[2], valeurs[0]);
+  assert.deepEqual(tetes[1], tetes[0]); assert.deepEqual(tetes[2], tetes[0]);
+});
+
+test('les cylindres rendus rejoignent les articulations sous toute attitude de caisse', () => {
+  const mod = modele(), ev = pose(); ev.pilote.volant = .7; ev.pilote.passage = .55;
+  dessiner(mod, ev);
+  const R = mod.objetsRendu.pilote, caisse = V.attitude(ev.cap, ev.tangage, ev.roulis);
+  for (const piece of R.variantes[0].pieces.filter(p => p.de !== undefined)) {
+    const o = piece.objet, m = V.euler(...o.r);
+    for (const [index, signe] of [[piece.de, -1], [piece.a, 1]]) {
+      const attendu = V.mul(caisse, point(R.articulations, index));
+      for (let k = 0; k < 3; k++) proche(o.p[k] + signe * m[1][k] * o.s[1] / 2, ev.p[k] + attendu[k]);
     }
   }
 });
 
-console.log(`${controles} contrôles pilote extérieur réussis (375 poses, trois niveaux de détail, cockpit et rétroviseurs)`);
+test('les gants extérieurs utilisent la prise et le trajet exacts du cockpit', () => {
+  const mod = modele(), ev = pose(); ev.cap = ev.tangage = ev.roulis = 0; ev.p.fill(0);
+  const etat = { regime: 9000, volant: .4, rapport: 4, rapportAvant: 3, passage: .45, kmh: 160 };
+  Object.assign(ev.pilote, etat); dessiner(mod, ev);
+  const R = mod.objetsRendu.pilote, main = role(R, 0, 'gant-1-0'), exterior = [Array.from(main.p), Array.from(main.r), Array.from(main.s), main.shape];
+  const out = []; V.cockpit(mod, ev, out, etat);
+  const H = mod.objetsRendu.habitacle, source = H.mains[1].pieces[0];
+  assert.equal(exterior[3], source.objet.shape);
+  for (let k = 0; k < 3; k++) {
+    const centre = V.OEIL[k] + V.K * V.VOLANT.centre[k];
+    proche(exterior[0][k], [.18, .77, 0][k] + .9 * (source.o[k] - centre) / V.K);
+    proche(exterior[1][k], source.objet.r[k]); proche(exterior[2][k], .9 * source.objet.s[k] / V.K);
+  }
+});
+
+test('bras continus au centre et au levier : coudes et poignets au-dessus du bord du cockpit', () => {
+  const mod = modele(), ev = pose();
+  for (const passage of [0, .15, .3, .45, .65, .82, 1]) {
+    ev.pilote.passage = passage; dessiner(mod, ev); const A = mod.objetsRendu.pilote.articulations;
+    for (const j of [0, 9]) {
+      assert.ok(A[j + 4] - .0375 > .65, 'manche au coude hors du jonc');
+      assert.ok(A[j + 7] - .0325 > .65, 'avant-bras raccordé au gant sans passer sous le bord');
+    }
+  }
+});
+
+test('cockpit, J2 et voitures distinctes ne contaminent pas la pose extérieure', () => {
+  const a = modele(), b = V.modele({ couleur: [.1, .2, .8] }), ev = pose();
+  ev.pilote.volant = .3; ev.pilote.passage = .2;
+  const initial = snapshot(dessiner(a, ev));
+  const autre = pose(); autre.pilote.volant = -1; autre.pilote.passage = .8;
+  dessiner(b, autre); const cockpit = []; V.cockpit(a, autre, cockpit, { regime: 8000, volant: -.9, passage: .7, rapport: 2, rapportAvant: 3, kmh: 90 });
+  assert.ok(!cockpit.some(o => a.objetsRendu.pilote.variantes.some(v => v.pieces.some(p => p.objet === o))), 'pas de doublon du pilote extérieur dans le cockpit');
+  assert.equal(snapshot(dessiner(a, ev)), initial);
+  for (let i = 0; i < 20; i++) assert.equal(snapshot(dessiner(a, ev)), initial, 'aucune avance cachée par appel');
+});
+
+test('rétroviseur : même géométrie animée que la pose complète filtrée, voiture retournée comprise', () => {
+  const mod = modele(), ev = pose();
+  for (const cap of [0, .8, Math.PI]) for (const tangage of [0, .5, Math.PI / 2, Math.PI]) for (const roulis of [0, .9, Math.PI]) {
+    Object.assign(ev, { cap, tangage, roulis }); ev.pilote.volant = .6; ev.pilote.passage = .4;
+    const ca = Math.cos(cap), sa = Math.sin(cap);
+    const ensemble = dessiner(mod, ev).filter(o => {
+      const dx = o.p[0] - ev.p[0], dz = o.p[2] - ev.p[2];
+      return Math.abs(dx * ca + dz * sa - V.ROUES[2].x) < .5 && Math.abs(dz * ca - dx * sa) > .55;
+    });
+    const attendu = snapshot(ensemble), miroir = [];
+    V.poserRetro(mod, ev, miroir); assert.equal(snapshot(miroir), attendu);
+  }
+});
+
+test('entrées absentes ou non finies restent bornées, sans transmettre NaN aux bras', () => {
+  const mod = modele(), ev = pose();
+  for (const pilote of [{}, { volant: NaN, rapport: NaN, passage: NaN }, { volant: Infinity, rapport: -Infinity, rapportAvant: Infinity, passage: Infinity },
+    { volant: 100, rapport: 1000, rapportAvant: -1000, passage: -4 }]) {
+    ev.pilote = pilote;
+    for (const o of dessiner(mod, ev)) for (const k of ['p', 'r', 's']) assert.ok(Array.from(o[k]).every(Number.isFinite));
+  }
+});
+
+test('les objets et buffers restent permanents, y compris après service pneus', () => {
+  const mod = modele(), ev = pose(), rig = mod.objetsRendu.pilote;
+  assert.equal(rig.variantes.length, 10);
+  const identites = rig.variantes.map(v => v.pieces.map(p => [p.objet, p.objet.p, p.objet.r, p.objet.s]));
+  V.preparerPneusService(mod); assert.equal(V.changerPneus(mod, 'pluie'), true);
+  for (let i = 0; i < 80; i++) { ev.pilote.volant = Math.sin(i); ev.pilote.passage = (i % 11) / 10; dessiner(mod, ev, options[i % 3]); }
+  assert.equal(mod.objetsRendu.pilote, rig);
+  rig.variantes.forEach((v, i) => v.pieces.forEach((p, j) => {
+    const objets = [p.objet, p.objet.p, p.objet.r, p.objet.s];
+    objets.forEach((o, k) => assert.equal(o, identites[i][j][k]));
+  }));
+});
+
+test('le repli sans modèles humains garde aussi tête et bras animés', () => {
+  const P = charger(false), mod = P.modele(livree), ev = pose(), debut = [];
+  P.poser(mod, ev, debut); const avant = snapshot(debut);
+  ev.pilote.passage = .5; const suite = []; P.poser(mod, ev, suite);
+  assert.notEqual(snapshot(suite), avant); assert.equal(suite.length, debut.length);
+  assert.ok(Array.from(mod.objetsRendu.pilote.articulations).every(Number.isFinite));
+});
+
+test('préallocation active : aucun flot d’objets ou de GC pendant 60 000 poses', () => {
+  const sortie = execFileSync(process.execPath, ['--expose-gc', '--max-semi-space-size=1', fichier, '--allocation'], { encoding: 'utf8', maxBuffer: 1024 * 1024 });
+  const mesures = JSON.parse(sortie.trim().split('\n').at(-1));
+  assert.ok(mesures.octets_par_pose < 4, JSON.stringify(mesures));
+  assert.ok(mesures.gc_mineurs <= 2, JSON.stringify(mesures));
+  console.log('mesure pilote extérieur : ' + JSON.stringify(mesures));
+});

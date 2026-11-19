@@ -1,0 +1,465 @@
+{
+  "controles": 68,
+  "cas": [
+    {
+      "nom": "val-brule / low / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 40965,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 74727
+    },
+    {
+      "nom": "val-brule / low / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 40965,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 74727
+    },
+    {
+      "nom": "val-brule / low / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 40965,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 74727
+    },
+    {
+      "nom": "val-brule / low / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 40965,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 24340,
+      "trianglesHerbier": 74727
+    },
+    {
+      "nom": "val-brule / high / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 40965,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 74727
+    },
+    {
+      "nom": "val-brule / high / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 40965,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 74727
+    },
+    {
+      "nom": "val-brule / high / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 40965,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 74727
+    },
+    {
+      "nom": "val-brule / high / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 40965,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 24340,
+      "trianglesHerbier": 74727
+    },
+    {
+      "nom": "port-sable / low / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 36044,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 51568
+    },
+    {
+      "nom": "port-sable / low / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 36044,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 51568
+    },
+    {
+      "nom": "port-sable / low / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 36044,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 51568
+    },
+    {
+      "nom": "port-sable / low / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 36044,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 51568
+    },
+    {
+      "nom": "port-sable / high / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 36044,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 51568
+    },
+    {
+      "nom": "port-sable / high / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 36044,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 51568
+    },
+    {
+      "nom": "port-sable / high / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 36044,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 51568
+    },
+    {
+      "nom": "port-sable / high / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 36044,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 51568
+    },
+    {
+      "nom": "haut-col / low / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 37204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 57809
+    },
+    {
+      "nom": "haut-col / low / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 37204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 57809
+    },
+    {
+      "nom": "haut-col / low / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 37204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 57809
+    },
+    {
+      "nom": "haut-col / low / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 37204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 30920,
+      "trianglesHerbier": 57809
+    },
+    {
+      "nom": "haut-col / high / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 37204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 57809
+    },
+    {
+      "nom": "haut-col / high / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 37204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 57809
+    },
+    {
+      "nom": "haut-col / high / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 37204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 57809
+    },
+    {
+      "nom": "haut-col / high / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 37204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 30920,
+      "trianglesHerbier": 57809
+    },
+    {
+      "nom": "lande-noire / low / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52114,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 84073
+    },
+    {
+      "nom": "lande-noire / low / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52114,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 84073
+    },
+    {
+      "nom": "lande-noire / low / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52114,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 84073
+    },
+    {
+      "nom": "lande-noire / low / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52114,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 26840,
+      "trianglesHerbier": 84073
+    },
+    {
+      "nom": "lande-noire / high / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52114,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 84073
+    },
+    {
+      "nom": "lande-noire / high / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52114,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 84073
+    },
+    {
+      "nom": "lande-noire / high / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52114,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 84073
+    },
+    {
+      "nom": "lande-noire / high / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52114,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 26840,
+      "trianglesHerbier": 84073
+    },
+    {
+      "nom": "roche-fauve / low / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52282,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 82968
+    },
+    {
+      "nom": "roche-fauve / low / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52282,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 82968
+    },
+    {
+      "nom": "roche-fauve / low / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52282,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 82968
+    },
+    {
+      "nom": "roche-fauve / low / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52282,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 27756,
+      "trianglesHerbier": 82968
+    },
+    {
+      "nom": "roche-fauve / high / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52282,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 82968
+    },
+    {
+      "nom": "roche-fauve / high / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52282,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 82968
+    },
+    {
+      "nom": "roche-fauve / high / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52282,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 82968
+    },
+    {
+      "nom": "roche-fauve / high / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52282,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 27756,
+      "trianglesHerbier": 82968
+    },
+    {
+      "nom": "brume-de-jade / low / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 57162,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 89606
+    },
+    {
+      "nom": "brume-de-jade / low / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 57162,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 89606
+    },
+    {
+      "nom": "brume-de-jade / low / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 57162,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 89606
+    },
+    {
+      "nom": "brume-de-jade / low / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 57162,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 29096,
+      "trianglesHerbier": 89606
+    },
+    {
+      "nom": "brume-de-jade / high / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 57162,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 89606
+    },
+    {
+      "nom": "brume-de-jade / high / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 57162,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 89606
+    },
+    {
+      "nom": "brume-de-jade / high / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 57162,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 89606
+    },
+    {
+      "nom": "brume-de-jade / high / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 57162,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 29096,
+      "trianglesHerbier": 89606
+    },
+    {
+      "nom": "cap-sequoia / low / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52405,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 84515
+    },
+    {
+      "nom": "cap-sequoia / low / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52405,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 84515
+    },
+    {
+      "nom": "cap-sequoia / low / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52405,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 84515
+    },
+    {
+      "nom": "cap-sequoia / low / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52405,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 30124,
+      "trianglesHerbier": 84515
+    },
+    {
+      "nom": "cap-sequoia / high / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52405,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 84515
+    },
+    {
+      "nom": "cap-sequoia / high / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52405,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 84515
+    },
+    {
+      "nom": "cap-sequoia / high / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52405,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 84515
+    },
+    {
+      "nom": "cap-sequoia / high / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 52405,
+      "sommetsEauPreserves": 4,
+      "sommetsNeigeClairs": 30124,
+      "trianglesHerbier": 84515
+    },
+    {
+      "nom": "baikal / low / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 60204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 97165
+    },
+    {
+      "nom": "baikal / low / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 60204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 97165
+    },
+    {
+      "nom": "baikal / low / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 60204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 97165
+    },
+    {
+      "nom": "baikal / low / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 60204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 31448,
+      "trianglesHerbier": 97165
+    },
+    {
+      "nom": "baikal / high / printemps : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 60204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 97165
+    },
+    {
+      "nom": "baikal / high / ete : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 60204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 97165
+    },
+    {
+      "nom": "baikal / high / automne : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 60204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 0,
+      "trianglesHerbier": 97165
+    },
+    {
+      "nom": "baikal / high / hiver : surfaces identiques, recette 8 → 25 seule",
+      "convertis": 60204,
+      "sommetsEauPreserves": 0,
+      "sommetsNeigeClairs": 31448,
+      "trianglesHerbier": 97165
+    },
+    {
+      "nom": "Val-Brûlé / low : végétation et herbier préparés avant le remappage",
+      "empreinte": "c17e78e0177f2cae2988081f54f2428f0c955b4bf97520f173417f48fb766278",
+      "convertis": 40965,
+      "trianglesHerbier": 74727
+    },
+    {
+      "nom": "Val-Brûlé / high : végétation et herbier préparés avant le remappage",
+      "empreinte": "26b61c8dd29369bdb42fb729a7ed699312af6c7a79df7fbc816a5018a4aff7a3",
+      "convertis": 40965,
+      "trianglesHerbier": 74727
+    }
+  ]
+}

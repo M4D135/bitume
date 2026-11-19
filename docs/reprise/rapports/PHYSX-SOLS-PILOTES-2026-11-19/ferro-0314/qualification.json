@@ -1,0 +1,141 @@
+{
+  "version": "0.3.14",
+  "apiVersion": 1,
+  "scope": "Local canonical build and qualification; remote publication remains separate",
+  "base": {
+    "publishedCommit": "b09a4e82252dbcb43a363a19b3e43c0a90e9a41b",
+    "tree": "4efb24f1cf2d8830b8f608cf859b2222ef08beca",
+    "pullRequest": "https://github.com/M4D135/FERRO/pull/1",
+    "signedCommitHashVerified": true,
+    "localSnapshotTreeMatched": true
+  },
+  "physxSource": {
+    "localCommit": "dca2753c38bcffe72469790b951840dac4964988",
+    "moduleSha256": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+    "testSha256": "730f7c4e5548d1ecd0d67322ebfe29d97f3aebcb61a7e30884c96a5c086976ee",
+    "onlyCopiedPaths": [
+      "src/ferro/physx.js",
+      "tests/ferro/physx-vehicles.test.mjs"
+    ]
+  },
+  "composition": {
+    "canonicalModules": 34,
+    "changedFromPublished0313": [
+      "physx",
+      "host"
+    ],
+    "functionalModuleChanges": [
+      "physx"
+    ],
+    "hostChange": "version label only",
+    "unchangedModules": 32,
+    "lockSha256": "a51283709f59fb3d028c7790ff327162de1918a8c92f042183637c7df175d05c",
+    "originalCandidateShadersNotCopied": true
+  },
+  "renderer": {
+    "rendererSha256": "d7a14230d0525a03d2874206f458d2edc39fef3542a067d43f693fdec4d5ad41",
+    "webgpuShadersSha256": "1228ce07f4db2809c9f498cd465e8984c6fbccdf70e5b46b29411cfc588853a9",
+    "exactlyMatchesPublished0313": true,
+    "eglExecutedThisQualification": false,
+    "reusedUnchangedSourceEvidence": "../sols-proceduraux/qualification.json",
+    "wgslEvidence": "../sols-proceduraux/wgsl.json",
+    "browserSceneExecuted": false
+  },
+  "canonicalNodeTests": {
+    "command": "node --test --test-reporter=tap tests/ferro/*.test.mjs tests/recipes.test.cjs",
+    "tests": 211,
+    "pass": 210,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 1,
+    "log": "tests-canonical.log"
+  },
+  "physxTests": {
+    "command": "node --test --test-reporter=tap tests/ferro/physx-vehicles.test.mjs tests/ferro/physx.test.mjs",
+    "tests": 25,
+    "pass": 25,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "log": "tests-physx.log",
+    "runtime": "Real embedded PhysX 5.12.0 WASM",
+    "sceneTeardownCycles": 72,
+    "simultaneousWorldsTest": true,
+    "nativeHeapMeasurement": false
+  },
+  "build": {
+    "command": "python3 tools/build.py",
+    "exitCode": 0,
+    "log": "build.log",
+    "manifestFilesVerified": 43,
+    "modulesAndArchiveMatchLock": true,
+    "artifacts": [
+      {
+        "path": "dist/FERRO-0.3.14.zip",
+        "bytes": 6289975,
+        "sha256": "e8aa4dd9daa766eefc9213ca4edb59522c9525090d694ae209add8534ffcd028"
+      },
+      {
+        "path": "dist/ferro-editor.html",
+        "bytes": 912729,
+        "sha256": "2c8b721d0e9594bf5590e4b31ca50ecefa869dd00e7c274238519edf0a97df80"
+      },
+      {
+        "path": "dist/ferro-runtime/manifest.json",
+        "bytes": 13772,
+        "sha256": "5599a895da35c3a118d56f0e8f9f61d1cd9f0c090f5d836766cb5df025ad6d64"
+      },
+      {
+        "path": "dist/ferro-runtime/ferro-runtime.js",
+        "bytes": 13376327,
+        "sha256": "10d9cabed5a2a6c251eae31a19033d9377e620df5c7557c8beaf60ef560cd0ce"
+      },
+      {
+        "path": "dist/ferro-runtime/ferro-music.js",
+        "bytes": 72066,
+        "sha256": "1d3410770b0ffe11a286e6d4125c8951ded1a2c1dcf883afcf44031b14e9a630"
+      },
+      {
+        "path": "dist/ferro-runtime/ferro-render-extras.js",
+        "bytes": 40654,
+        "sha256": "0e65fd72bc248b1fa2bbda467eb2d8329e85afb9ca245fae651730d0e8334716"
+      },
+      {
+        "path": "dist/ferro-runtime/ferro-simulation.js",
+        "bytes": 65457,
+        "sha256": "2f1381b077b062d819359436de6fefe777733e43fa0541e0a26e46dd8feb396a"
+      }
+    ]
+  },
+  "emprise": {
+    "baselineVersion": "0.3.13",
+    "candidateVersion": "0.3.14",
+    "tests": 12,
+    "baselinePassed": 10,
+    "candidatePassed": 10,
+    "inheritedFailures": [
+      {
+        "name": "webgpu-renderer",
+        "identicalLogs": true
+      },
+      {
+        "name": "renderer-overlay",
+        "identicalLogs": true
+      }
+    ],
+    "changedHostFiles": [],
+    "hostFilesChecked": 89,
+    "moduleCount": 34,
+    "comparison": "emprise/comparison.json",
+    "fullBuildExecuted": false,
+    "reason": "Known unavailable src/city-data.js; no substitute generated",
+    "gameBrowserSceneExecuted": false,
+    "remotePropagation": false
+  },
+  "bitume": "Canonical installer available; final chassis qualification, copied module identity and compiled game are recorded separately by BITUME",
+  "historicalArchives": "Preserved; the published FERRO-0.3.13.zip remains unchanged",
+  "hardwareFpsMeasured": false,
+  "remoteWrites": false
+}

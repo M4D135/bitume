@@ -1,0 +1,75 @@
+{
+  "root": "/workspace/scratch/1b28de5a23b5/bitume-physx",
+  "passed": 17,
+  "total": 17,
+  "results": [
+    {
+      "name": "T-bone réellement chevauché mais dd>largeur : collision et casse, aucun saut",
+      "ok": true
+    },
+    {
+      "name": "voitures transversales séparées : pas de contact fantôme des rectangles Frenet",
+      "ok": true
+    },
+    {
+      "name": "épave en attente de reprise : reste solide, voiture incidente détruite, pas de nouveaux débris épave",
+      "ok": true
+    },
+    {
+      "name": "balayage : traversée complète en un pas détectée au premier contact",
+      "ok": true
+    },
+    {
+      "name": "pénétration persistante : séparée même pendant réarmement, pas de dégâts répétés",
+      "ok": true
+    },
+    {
+      "name": "contact déjà en séparation : aucune casse malgré grande vitesse totale",
+      "ok": true
+    },
+    {
+      "name": "hauteur différente : pas de contact au même point plan",
+      "ok": true
+    },
+    {
+      "name": "virage réel : normale et force indépendantes de la rotation du repère monde",
+      "ok": true
+    },
+    {
+      "name": "balayage rotation seule : chevauchement intermédiaire résolu sans faux dégâts",
+      "ok": true
+    },
+    {
+      "name": "balayage : distance, hauteur et beta reviennent au contact avec s,d",
+      "ok": true
+    },
+    {
+      "name": "balayage en hauteur : obstacle survolé pendant tout le trajet ignoré",
+      "ok": true
+    },
+    {
+      "name": "hauteur finale différente : contact plus tôt au sol reste détecté",
+      "ok": true
+    },
+    {
+      "name": "petit bond àhauteur de caisse : épave reste solide, grand saut reste libre",
+      "ok": true
+    },
+    {
+      "name": "balayage vertical entre rivaux : collision géométrique entre endpoints libres",
+      "ok": true
+    },
+    {
+      "name": "impulsion nonfatale : direction de vitesse change, cap carrosserie conservé",
+      "ok": true
+    },
+    {
+      "name": "casse : cap épave conservé au reset beta et aux pas suivants",
+      "ok": true
+    },
+    {
+      "name": "immunité : voiture solide pour le rival, sans nouveaux dégâts",
+      "ok": true
+    }
+  ]
+}

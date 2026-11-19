@@ -1,0 +1,23 @@
+mesure pilote extérieur : {"appels":60000,"octets_par_pose":1.0070666666666668,"gc_mineurs":0}
+✔ le contrat de pose reste en lecture seule et le rendu historique revient sans résidu (14.896578ms)
+✔ main droite au levier puis retour ; main gauche reste au volant (6.249444ms)
+✔ le volant entraîne les deux mains et le regard suit la direction (5.063152ms)
+✔ 630 poses : segments de 22/23 cm, coudes contenus et matrices finies (368.015616ms)
+✔ les trois LOD conservent les mêmes articulations et transformations des bras (4.675451ms)
+✔ les cylindres rendus rejoignent les articulations sous toute attitude de caisse (4.105734ms)
+✔ les gants extérieurs utilisent la prise et le trajet exacts du cockpit (4.480198ms)
+✔ bras continus au centre et au levier : coudes et poignets au-dessus du bord du cockpit (5.323083ms)
+✔ cockpit, J2 et voitures distinctes ne contaminent pas la pose extérieure (20.779077ms)
+✔ rétroviseur : même géométrie animée que la pose complète filtrée, voiture retournée comprise (14.908485ms)
+✔ entrées absentes ou non finies restent bornées, sans transmettre NaN aux bras (4.793978ms)
+✔ les objets et buffers restent permanents, y compris après service pneus (16.883481ms)
+✔ le repli sans modèles humains garde aussi tête et bras animés (1570.94758ms)
+✔ préallocation active : aucun flot d’objets ou de GC pendant 60 000 poses (16052.459913ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18102.500121

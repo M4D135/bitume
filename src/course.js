@@ -771,9 +771,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
         if (!serviceImmobile(c, v.etat, c.stands, service)) service.interrompu = true;
         else cmd = COMMANDE_SERVICE;
       }
-      cmd = limiterVoiePhysX(course, v, cmd);
       // les événements de la voiture vont droit dans ceux du pas ; une conduite de test qui rend son propre tableau
       // est recopiée comme avant
+      cmd = limiterVoiePhysX(course, v, cmd);
       const debut = ev.length, rendus = B.conduite.pas(v.etat, cmd, c, dt, retenue, ev);
       if (rendus === ev) for (let k = debut; k < ev.length; k++) ev[k].id = v.id;
       else for (const e of rendus) { e.id = v.id; ev.push(e); }

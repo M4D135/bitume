@@ -1,0 +1,49 @@
+ok S10 charge avant à −3 g depuis 86 m/s : 0.614 (cible ≥ 0,60)
+ok S10 charge avant à −3 g depuis 92 m/s : 0.601 (cible ≥ 0,60)
+ok S10 charge vers l’arrière en accélération 2e : 0.344 (cible < répartition)
+ok S10 transfert latéral : adhérence totale : 0.976 (cible 0,90 à 0,995)
+ok S3 lever de pied R120 : lacet après/avant : 1.126 (cible ≥ 1,05)
+ok S11 frein 0,3 entrée R120 : courbure après/avant : 1.532 (cible ≥ 1,05)
+ok S3 plein gaz 2e/3e : dérive arrière maximale : 7.763 (cible ≥ 6° pour un cas) — 2e/R63 7.8° · 3e/R98 4.5° · 3e/R120 4.2°
+ok S4 coup de glisse : témoin tête-à-queue : oui (cible oui)
+ok S4 contre-braquage après 0,3 s : rattrapée (cible rattrapée)
+ok S4 forte glisse sans aide : tête-à-queue : oui (cible oui)
+ok S4 forte glisse avec aide 0.35 : 3.102 (cible < 5° et sans tête-à-queue)
+ok S4 forte glisse avec aide 0.7 : 3.101 (cible < 5° et sans tête-à-queue)
+ok S9 clavier 0→90 % à 0 km/h : 75.000 (cible ≤ 120 ms)
+ok S9 clavier relâché à 0 km/h : 66.667 (cible ≤ 80 ms)
+ok S9 clavier contre à 0 km/h : 16.667 (cible ≤ 30 ms)
+ok S9 clavier 0→90 % à 310 km/h : 117 (cible ≤ 120 ms)
+ok S9 clavier relâché à 310 km/h : 66.667 (cible ≤ 80 ms)
+ok S9 clavier contre à 310 km/h : 16.667 (cible ≤ 30 ms)
+ok S9 clavier 0→90 % à 331 km/h : 117 (cible ≤ 120 ms)
+ok S9 clavier relâché à 331 km/h : 66.667 (cible ≤ 80 ms)
+ok S9 clavier contre à 331 km/h : 16.667 (cible ≤ 30 ms)
+ok S9 plein braquage : lacet / limite : 1.161 (cible ≤ 1,2) — droit/120:1.099 · droit/200:1.157 · droit/300:1.153 · 150/120:1.098 · 150/200:1.161 · 150/300:1.156 · 300/120:1.098 · 300/200:1.159 · 300/300:1.155
+ok S9 braquageMax exporté et borné : 0.120 (cible > 0, monotone)
+ok S3 départ : régime dans les 0,5 s : 10309 (cible ≥ 9 000 tr/min)
+ok S3 départ : 0–100 km/h : 2.533 (cible 2,2 à 3,4 s)
+ok S3 pente 6 % : pointe / plat : 0.945 (cible ≤ 0,98)
+ok S3 pente 6 % : écart g·sin(pente) : 0.588 (cible 0.588 ± 5 %)
+ok S3 aspiration à 10 m : gain en 4 s : 4.061 (cible ≥ 3 m)
+ok S3 aspiration hors couloir : 0.000 (cible nul)
+ok S5 clavier impulsions 0.2s à 30 Hz : 2.000 (cible 162 dont au moins 1) — meilleur palier 3.27 s, |d| 1.30 m
+ok S5 clavier impulsions 0.2s à 60 Hz : 2.000 (cible 162 dont au moins 1) — meilleur palier 3.39 s, |d| 1.30 m
+ok S5 clavier impulsions 0.2s à 120 Hz : 1.000 (cible 162 dont au moins 1) — meilleur palier 3.39 s, |d| 1.28 m
+ok S5 clavier impulsions 0.1s à 30 Hz : 6.000 (cible 162 dont au moins 1) — meilleur palier 3.21 s, |d| 0.40 m
+ok S5 clavier impulsions 0.1s à 60 Hz : 5.000 (cible 162 dont au moins 1) — meilleur palier 2.94 s, |d| 0.34 m
+ok S5 clavier impulsions 0.1s à 120 Hz : 5.000 (cible 162 dont au moins 1) — meilleur palier 2.43 s, |d| 0.34 m
+ok S5 30 appuis martelés : un seul départ : 1.000 (cible exactement 1)
+ok S6 paliers au mieux sur piste réelle : 0.008 (cible ≤ 0,05 s) — niveaux 0.70 / 1.31 / 2.11 s, |d| 2.89 m
+ok S6 tenue manette R40 : 2.395 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R120 : 1.124 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R250 : 0.328 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R400 : 1.083 (cible < 5,5 m pendant 3 s)
+mesure S8 lissage β à 60 et 120 Hz, pire scénario : 1031 (cible ≤ 300°/s²) — paliers 287.9 · clavier 496.6 / 873.4 / 840.4 / 1030.7
+ok S7 R80 : dérive puis turbo III et gain : 0.283 (cible 0,1 à 0,3 s) — adhérence 14.41 s, dérive 14.12 s, turbo III true
+ok S7 turbo coupé par frein / herbe / vrai choc de glissière : oui / oui / oui (cible oui / oui / oui)
+ok S7 contact réel entre voitures coupe le turbo du joueur : 1.000 (cible 1) — contact=true
+ok S7 IA : même loi, état fini après 60 s : 1.000 (cible 1)
+ok S7 turbo III : poussée positive : 5.604 (cible > 0 m/s)
+---
+46/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)

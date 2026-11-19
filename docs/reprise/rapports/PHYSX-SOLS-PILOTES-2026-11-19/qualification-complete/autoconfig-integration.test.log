@@ -1,0 +1,73 @@
+ok détection à la main : remplace les six options, garde conduite, météo, moment et la course
+ok nouvelle version, détection automatique : les choix du joueur depuis la précédente restent
+ok premier lancement : les valeurs d’usine sont remplacées ; une option déjà changée reste
+ok détection à la main : tout est appliqué, même après des choix manuels
+ok « Passer » au démarrage : rien d’appliqué, et la question ne revient pas pour cette version
+ok C1 : onglet passé en arrière-plan pendant le test : il attend le retour du joueur, puis reprend
+ok autre interruption au démarrage (délai, contexte perdu) : refaite à l’ouverture suivante, deux fois au plus
+ok C7 : trace illisible, réglages gardés : seules les options retouchées passent pour des choix du joueur
+ok C2 : palier au-dessus refusé de peu : appliqué, refait à l’ouverture suivante, deux fois au plus
+ok annulation et exception à la main : aucune préférence écrite, interface et monde restitués
+ok mesure à la taille de l’écran entier, toile rendue ensuite
+ok empreinte : version du badge et carte graphique ; ni la fenêtre ni l’écran
+ok aucune double détection et aucun lancement pendant une partie en ligne
+ok perte puis retour WebGL : restaurer le vrai décor après la fin du banc
+ok parcours transmis : sonde, fin forcée, simulation, glaces différées ; moteur des glaces prêté puis rendu
+ok la vitrine suit immédiatement la densité sélectionnée ; l’onglet Image dit ce qui est gardé
+ok écran bridé à 30 Hz pendant la mesure : appliquée, refaite à l’ouverture suivante, sans condamner la machine
+ok palier appris : gardé pour la même version et la même carte, oublié sinon
+Error: Le moteur PhysX doit être prêt avant le jeu
+    at Object.demarrer (eval at <anonymous> (file:///workspace/scratch/1b28de5a23b5/bitume-physx/verifications/autoconfig-integration.test.mjs:337:19), <anonymous>:66:44)
+    at async file:///workspace/scratch/1b28de5a23b5/bitume-physx/verifications/autoconfig-integration.test.mjs:369:12
+    at async verifier (file:///workspace/scratch/1b28de5a23b5/bitume-physx/verifications/autoconfig-integration.test.mjs:95:35)
+    at async file:///workspace/scratch/1b28de5a23b5/bitume-physx/verifications/autoconfig-integration.test.mjs:363:1
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+... Skipped lines
+
+  [
+    'renderer',
+    'premier-plan',
+    'visible',
+    'bench',
+...
+    'retro',
++   'erreur'
+-   'son',
+-   'vitrine',
+-   'titre',
+-   'boucle'
+  ]
+
+    at file:///workspace/scratch/1b28de5a23b5/bitume-physx/verifications/autoconfig-integration.test.mjs:372:10
+    at async verifier (file:///workspace/scratch/1b28de5a23b5/bitume-physx/verifications/autoconfig-integration.test.mjs:95:35)
+    at async file:///workspace/scratch/1b28de5a23b5/bitume-physx/verifications/autoconfig-integration.test.mjs:363:1 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'renderer',
+    'premier-plan',
+    'visible',
+    'bench',
+    'bench-termine',
+    'palier',
+    'retro',
+    'erreur'
+  ],
+  expected: [
+    'renderer',      'premier-plan',
+    'visible',       'bench',
+    'bench-termine', 'palier',
+    'retro',         'son',
+    'vitrine',       'titre',
+    'boucle'
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.22.3

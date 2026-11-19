@@ -27,11 +27,6 @@ import path from 'node:path';
 const ici = path.dirname(fileURLToPath(import.meta.url));
 const PHYSIQUE = readFileSync(path.join(ici, '..', 'src', 'jeu.js'), 'utf8').match(/\bPHYSIQUE\s*=\s*['"](p\d+)['"]/)?.[1];
 if (!PHYSIQUE) throw new Error('PHYSIQUE introuvable dans src/jeu.js : aucune fixture choisie implicitement');
-// p14 : le châssis est intégré par le solveur natif. Ne jamais fabriquer une référence
-// de cette version avec l'ancien intégrateur JavaScript. Les archives p9–p13 restent intactes.
-if (+PHYSIQUE.slice(1) >= 14) {
-  await import('./helpers/determinisme-physx.mjs');
-} else {
 const req = createRequire(import.meta.url);
 for (const f of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'course', 'carene', 'decor']) req(path.join(ici, '..', 'src', f + '.js'));
 const B = globalThis.BITUME;
@@ -221,6 +216,15 @@ function resume(co, compte, extra = {}) {
     casses: co.voitures.filter(v => v.degats && v.degats.chocs > 0).length,
     evenements: Object.fromEntries(Object.entries(compte).sort()), ...extra
   };
+}
+
+// p14 porte les corps dans le vrai WASM et les triangles du décor. Les scénarios historiques
+// ci-dessous restent réservés à leurs physiques : aucun oracle Frenet n'est présenté comme PhysX.
+if (PHYSIQUE === 'p14') {
+  const { controlerDeterminismePhysX } = await import('./helpers/determinisme-physx.mjs');
+  await controlerDeterminismePhysX({ Ecrivain, etatCourse, fixture: FIXTURE, ecrire: ECRIRE,
+    fichier: fileURLToPath(import.meta.url) });
+  process.exit(0);
 }
 
 // ------------------------------------------------------------------ cas
@@ -623,5 +627,3 @@ if (nouvelleReference && !echecs) {
 }
 console.log(`${echecs ? 'KO' : 'ok'}  déterminisme ${PHYSIQUE} : ${Object.keys(resultats).length} cas, ${total} empreintes, ${((performance.now() - t0) / 1000).toFixed(1)} s`);
 if (echecs) process.exit(1);
-
-} // intégrateur historique p9–p13

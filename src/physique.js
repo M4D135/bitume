@@ -41,22 +41,23 @@
     if (best > 100 * 100) { centre = Math.floor(c.n / 2); cherche(Math.ceil(c.n / 2) - 1); }
     out.s = wrap(bestS, c.longueur); out.d = bestD; return out;
   }
-  function lecture(ph, progression = true) {
+  function lecture(ph, progression = true, synchroniser = true) {
     const { world, id, e, c } = ph;
     world.readPose(id, ph.pose); world.readVelocity(id, ph.velocity); world.readAngularVelocity(id, ph.angular);
     tourner(ph.pose, [1, 0, 0], ph.forward); tourner(ph.pose, [0, 1, 0], ph.up); tourner(ph.pose, [0, 0, 1], ph.right);
     monde(ph.pose, ph.cgLocal, ph.cg);
     const vv = ph.velocity, av = ph.angular, f = ph.forward, r = ph.right, u = ph.up;
     ph.u = vv[0] * f[0] + vv[1] * f[1] + vv[2] * f[2]; ph.w = vv[0] * r[0] + vv[1] * r[1] + vv[2] * r[2];
+    ph.cap = Math.atan2(f[2], f[0]); ph.x = ph.pose[0]; ph.y = ph.pose[1]; ph.z = ph.pose[2];
+    if (!synchroniser) return;
     const ancien = e.s;
     projeter(c, ph.pose[0], ph.pose[2], e.s, ph.projection); e.s = ph.projection.s; e.d = ph.projection.d;
     if (progression) e.distance += Math.abs(delta(ancien, e.s, c.longueur));
-    const q = B.circuit.echantillon(c, e.s, ph.echantillon), cap = Math.atan2(f[2], f[0]);
+    const q = B.circuit.echantillon(c, e.s, ph.echantillon), cap = ph.cap;
     const speed = Math.hypot(ph.u, ph.w), sign = ph.u < -.04 ? -1 : 1;
     e.v = sign * speed; e.beta = speed > .04 ? -Math.atan2(ph.w * sign, ph.u * sign) : 0;
     e.psi = angle(cap - q.cap - e.beta); e.omega = -(av[0] * u[0] + av[1] * u[1] + av[2] * u[2]);
     e.y = ph.pose[1]; e.tangage = Math.asin(clamp(f[1], -1, 1)); e.roulis = Math.atan2(-r[1], u[1]);
-    ph.cap = cap; ph.x = ph.pose[0]; ph.y = ph.pose[1]; ph.z = ph.pose[2];
     ph.repositionnements = e.repositionnements || 0;
   }
   function poseDepart(ph) {
@@ -76,7 +77,7 @@
     }
     p[1] = y; return p;
   }
-  function corps(ph, transfert) {
+  function corps(ph, continuite) {
     const shapes = [{ type: 'box', half: [1.98, .23, .69], pose: [-.12, .31, 0, 0, 0, 0, 1], friction: .55, restitution: .08 }];
     // Les contacts latéraux des roues peuvent soulever la caisse ; le contact normal roulant vient des ressorts.
     for (const roue of roues()) {
@@ -87,16 +88,13 @@
       shapes.push({ type: 'convex', vertices, pose: [roue.x, roue.r, roue.z, 0, 0, 0, 1], friction: .35, restitution: .06,
         group: VOITURE, mask: OBSTACLE | VOITURE | DEBRIS, queryGroup: VOITURE });
     }
-    // Un changement d'autorité conserve le mouvement du corps existant, même en plein vol.
-    // Les sondes de départ servent uniquement au premier placement, jamais à une reprise réseau.
-    const p = transfert ? transfert.pose : poseDepart(ph), dynamique = !ph.v.distant;
+    const p = continuite ? continuite.pose : poseDepart(ph), dynamique = !ph.v.distant;
     ph.id = ph.world.addCompound(p.slice(0, 3), shapes, { type: dynamique ? 'dynamic' : 'kinematic', quaternion: p.slice(3),
       mass: ph.mass, inertia: ph.inertia, centerOfMass: ph.cgLocal, ccd: dynamique, linearDamping: .005, angularDamping: .035,
       solverIterations: [8, 3], group: VOITURE, mask: SOL | OBSTACLE | VOITURE | DEBRIS, queryGroup: VOITURE });
     ph.distant = !!ph.v.distant;
-    if (dynamique && transfert) {
-      ph.world.setVelocity(ph.id, transfert.velocity);
-      ph.world.setAngularVelocity(ph.id, transfert.angular);
+    if (dynamique && continuite) {
+      ph.world.setVelocity(ph.id, continuite.velocity); ph.world.setAngularVelocity(ph.id, continuite.angular);
     } else if (dynamique && Math.abs(ph.e.v) > .01) ph.world.setVelocity(ph.id, [Math.cos(ph.cap || 0) * ph.e.v, 0, Math.sin(ph.cap || 0) * ph.e.v]);
     lecture(ph, false);
   }
@@ -116,15 +114,15 @@
           pose: [0, 0, 0, 0, 0, 0, 1], velocity: vec(), angular: vec(), beforeVelocity: vec(), forward: vec(), up: vec(), right: vec(),
           projection: {}, echantillon: {}, from: vec(), tmp: vec(), force: vec(), hit: {}, contacts: [], offsets: [0, 0, 0, 0],
           forces: { avant: [0, 0], arriere: [0, 0], resistance: [0, 0], appui: 0 }, retenue: false, controle: false,
-          airborne: 0, groundCount: 0, surface: 'piste', repositionnements: v.etat.repositionnements || 0, cap: 0 };
+          airborne: 0, groundCount: 0, surface: 'piste', repositionnements: v.etat.repositionnements || 0, cap: 0,
+          remote: new Float64Array(11), hasRemote: false };
         roues().forEach((roue, i) => ph.contacts.push({ i, roue, hit: {}, anchor: vec(), point: vec(), normal: [0, 1, 0], tangent: vec(), right: vec(), velocity: vec(),
-          shapePose: [roue.x, roue.r, roue.z, 0, 0, 0, 1], load: 0, surface: 'herbe', distance: PROFIL.courseMax + roue.r, k: mass * G * (i < 2 ? front : 1 - front) / 2 / (PROFIL.courseLibre - PROFIL.courseRepos) }));
+          shapePose: [roue.x, roue.r, roue.z, 0, 0, 0, 1], load: 0, capacity: 0, fx: 0, fy: 0, surface: 'herbe', distance: PROFIL.courseMax + roue.r, k: mass * G * (i < 2 ? front : 1 - front) / 2 / (PROFIL.courseLibre - PROFIL.courseRepos) }));
         corps(ph); p.voitures.push(ph); p.byId.set(ph.id, ph);
         Object.defineProperty(v.etat, '_physx', { value: ph, configurable: true, writable: true });
       }
       co.physique = p; return p;
     } catch (err) {
-      // Une création interrompue ne doit laisser aucun état branché sur la scène libérée.
       for (const ph of p.voitures) if (ph.e._physx === ph) delete ph.e._physx;
       p.voitures.length = 0; p.byId.clear();
       world.dispose(); throw err;
@@ -141,14 +139,15 @@
       const roue = w.roue;
       monde(ph.pose, [roue.x, roue.r + PROFIL.courseRepos, roue.z], w.anchor);
       const hit = ph.world.raycast(w.anchor, dir, roue.r + PROFIL.courseMax, { mask: SOL, staticOnly: true }, w.hit);
-      w.load = 0; w.distance = hit.hit ? hit.distance : roue.r + PROFIL.courseMax;
+      w.load = 0; w.capacity = 0; w.fx = 0; w.fy = 0; w.distance = hit.hit ? hit.distance : roue.r + PROFIL.courseMax;
       const incidence = hit.hit ? hit.nx * ph.up[0] + hit.ny * ph.up[1] + hit.nz * ph.up[2] : 1;
-      const axial = hit.hit ? hit.nx * ph.right[0] + hit.ny * ph.right[1] + hit.nz * ph.right[2] : 0;
+      const braquage = w.i < 2 ? ph.e.braquage || 0 : 0, cd = Math.cos(braquage), sd = Math.sin(braquage);
+      const axial = hit.hit ? hit.nx * (ph.right[0] * cd - ph.forward[0] * sd)
+        + hit.ny * (ph.right[1] * cd - ph.forward[1] * sd) + hit.nz * (ph.right[2] * cd - ph.forward[2] * sd) : 0;
       const support = roue.r * Math.sqrt(Math.max(0, 1 - axial * axial)) + roue.l * .5 * Math.abs(axial);
       const rayon = hit.hit && incidence > .35 ? support / incidence : roue.r;
-      ph.offsets[w.i] = clamp(PROFIL.courseRepos - (w.distance - rayon), -.18, .14);
+      ph.offsets[w.i] = ph.distant && ph.hasRemote ? ph.remote[6 + w.i] : clamp(PROFIL.courseRepos - (w.distance - rayon), -.18, .14);
       if (ph.world.setShapePose) {
-        const braquage = w.i < 2 ? ph.e.braquage || 0 : 0;
         w.shapePose[1] = roue.r + ph.offsets[w.i]; w.shapePose[4] = -Math.sin(braquage / 2); w.shapePose[6] = Math.cos(braquage / 2);
         ph.world.setShapePose(ph.id, w.i + 1, w.shapePose);
       }
@@ -177,9 +176,13 @@
     p.temps = co.horloge;
     for (const ph of p.voitures) {
       if (ph.distant !== !!ph.v.distant) {
-        const transfert = { pose: ph.world.readPose(ph.id, []), velocity: ph.world.readVelocity(ph.id, []),
-          angular: ph.world.readAngularVelocity(ph.id, []) };
-        p.byId.delete(ph.id); ph.world.remove(ph.id); corps(ph, transfert); p.byId.set(ph.id, ph);
+        // Un changement d'autorité conserve l'état réel, même pendant un saut ou une glissade.
+        const continuite = { pose: ph.world.readPose(ph.id), velocity: ph.world.readVelocity(ph.id), angular: ph.world.readAngularVelocity(ph.id) };
+        if (ph.distant && ph.hasRemote) {
+          for (let i = 0; i < 3; i++) { continuite.velocity[i] = ph.remote[i]; continuite.angular[i] = ph.remote[3 + i]; }
+        }
+        p.byId.delete(ph.id); ph.world.remove(ph.id); corps(ph, continuite); p.byId.set(ph.id, ph);
+        if (!ph.distant) ph.hasRemote = false;
       }
       if (ph.distant) continue;
       if ((ph.e.repositionnements || 0) !== ph.repositionnements) replacer(ph);
@@ -194,20 +197,24 @@
   }
   function appliquer(ph, dt) {
     const e = ph.e, F = ph.forces, world = ph.world, hold = ph.retenue || !!e.recuperation || (e.frein > .08 && Math.abs(e.v) < .45 && !e.gaz && e.rapport !== -1);
+    const poids = ph.contacts.reduce((s, q) => s + q.load, 0);
+    const chaussee = hold ? B.chaussee.lire(ph.c, e.s) : null;
     for (const w of ph.contacts) {
       const charge = w.load; e.roues[w.i].charge = charge;
       if (!(charge > 0)) continue;
-      const essieu = w.i < 2 ? F.avant : F.arriere, total = ph.contacts[w.i & 2].load + ph.contacts[(w.i & 2) + 1].load;
-      let fx = essieu[0] * charge / Math.max(total, 1), fy = essieu[1] * charge / Math.max(total, 1);
+      const essieu = w.i < 2 ? F.avant : F.arriere, total = ph.contacts[w.i & 2].capacity + ph.contacts[(w.i & 2) + 1].capacity;
+      // Répartir suivant les capacités locales garde chaque pneu dans son ellipse sur un sol dissymétrique.
+      let fx = essieu[0] * w.capacity / Math.max(total, 1), fy = essieu[1] * w.capacity / Math.max(total, 1);
       if (hold) {
         // Frein statique borné par l'adhérence : il compense la gravité tangentielle, sans verrou de position.
-        const vp = w.velocity, t = w.tangent, r = w.right, masse = ph.mass * charge / Math.max(ph.contacts.reduce((s, q) => s + q.load, 0), 1);
+        const vp = w.velocity, t = w.tangent, r = w.right, masse = ph.mass * charge / Math.max(poids, 1);
         fx = -masse * (vp[0] * t[0] + vp[1] * t[1] + vp[2] * t[2]) / dt + masse * G * t[1];
         fy = -masse * (vp[0] * r[0] + vp[1] * r[1] + vp[2] * r[2]) / dt + masse * G * r[1];
-        const mu = w.surface === 'herbe' ? .8 : B.conduite.PARAMS.muPiste * B.conduite.adherencePneus(e.pneus, B.chaussee.lire(ph.c, e.s));
-        const effort = Math.hypot(fx, fy), max = charge * mu;
+        w.capacity = B.conduite.capaciteRoue(e, w, chaussee);
+        const effort = Math.hypot(fx, fy), max = w.capacity;
         if (effort > max) { fx *= max / effort; fy *= max / effort; }
       }
+      w.fx = fx; w.fy = fy;
       for (let j = 0; j < 3; j++) ph.force[j] = w.normal[j] * charge + w.tangent[j] * fx + w.right[j] * fy;
       world.force(ph.id, ph.force, w.point);
     }
@@ -271,7 +278,12 @@
     }
     p.world.step(dt); p.pas++;
     for (const ph of p.voitures) {
-      if (ph.distant) continue;
+      if (ph.distant) {
+        // Les sondes fournissent les vrais points aux effets, sans réintégrer le véhicule distant.
+        lecture(ph, false, false);
+        if (ph.hasRemote) for (let i = 0; i < 3; i++) { ph.velocity[i] = ph.remote[i]; ph.angular[i] = ph.remote[3 + i]; }
+        suspensions(ph, dt); continue;
+      }
       lecture(ph); ph.e.auRail = false;
       const mem = co._obstacleMemo?.[ph.v.id]; if (mem) for (const [id, t] of mem) if (p.temps - t > .12) mem.delete(id);
       if (ph.e.choc > 0) ph.e.choc = Math.max(0, ph.e.choc - dt);

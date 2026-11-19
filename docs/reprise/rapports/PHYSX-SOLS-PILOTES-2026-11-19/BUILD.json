@@ -1,0 +1,13 @@
+{
+  "scripts": 56,
+  "valides": 56,
+  "octets": 14162317,
+  "gzip": 3363224,
+  "sha256": "d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65",
+  "version": "0.2.56",
+  "reproductible": true,
+  "construction1": "build-1.log",
+  "construction2": "build-2.log",
+  "comparaison": "cmp dist/bitume.html /tmp/bitume-build-0256-1.html : exit 0",
+  "canon": "0.3.14"
+}

@@ -1,0 +1,8 @@
+ok  conduite : une limite gauche nulle reste une limite
+ok  conduite : perte de dérive et seuil de turbo sont distincts
+ok  conduite : une nouvelle dérive repart sans fondu résiduel
+ok  conduite : pente et dévers invalides ne contaminent pas la voiture
+ok  traces : la graine zéro est distincte de la graine un
+ok  traces : une force de contact négative garde une gerbe minimale
+---
+6/6 tests passes

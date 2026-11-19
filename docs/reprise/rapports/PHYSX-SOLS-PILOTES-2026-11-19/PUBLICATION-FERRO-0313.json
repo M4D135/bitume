@@ -1,0 +1,319 @@
+{
+  "format": "ferro-github-publication-1",
+  "date": "2026-11-19",
+  "repository": "M4D135/FERRO",
+  "version": "0.3.13",
+  "local": {
+    "repo": "/workspace/scratch/1b28de5a23b5/ferro-reflets",
+    "commit": "b1b51b4d55a9b617ab5d0d1df76c9ec189cf7873",
+    "tree": "4efb24f1cf2d8830b8f608cf859b2222ef08beca",
+    "base_commit": "a22b738fbe2aa2b36b659fca94527acc2ffcd635",
+    "base_tree": "c858dea55ae3b38c307910124936394671cfbf74"
+  },
+  "publication": {
+    "branch": "codex/ferro-physx-sols-0313-20261119",
+    "commit": "5a7d9e3952c2793036a625513e0b2b6193be806b",
+    "tree": "4efb24f1cf2d8830b8f608cf859b2222ef08beca",
+    "parent": "a22b738fbe2aa2b36b659fca94527acc2ffcd635",
+    "expected_sha": "a22b738fbe2aa2b36b659fca94527acc2ffcd635",
+    "force": false,
+    "changed_paths": 80,
+    "removed_paths": 0,
+    "uploaded_unique_blobs": 22
+  },
+  "pull_request": {
+    "number": 1,
+    "url": "https://github.com/M4D135/FERRO/pull/1",
+    "title": "feat: étendre PhysX et les sols procéduraux en FERRO 0.3.13",
+    "state": "closed",
+    "merged": true,
+    "merged_at": "2026-11-19T18:05:43Z",
+    "head": "5a7d9e3952c2793036a625513e0b2b6193be806b",
+    "base_before_merge": "a22b738fbe2aa2b36b659fca94527acc2ffcd635",
+    "method": "merge",
+    "expected_head_sha": "5a7d9e3952c2793036a625513e0b2b6193be806b"
+  },
+  "main": {
+    "sha": "b09a4e82252dbcb43a363a19b3e43c0a90e9a41b",
+    "tree": "4efb24f1cf2d8830b8f608cf859b2222ef08beca",
+    "parents": [
+      "a22b738fbe2aa2b36b659fca94527acc2ffcd635",
+      "5a7d9e3952c2793036a625513e0b2b6193be806b"
+    ],
+    "ref_read_matches_merge_result": true,
+    "tree_matches_qualified_local": true,
+    "verified_file_paths": 455
+  },
+  "verification": {
+    "artifact_report": "ferro0313-artifact-verification.json",
+    "version": "0.3.13",
+    "lock_sha256": "ad7cce0f6ef3107c962fed0cec8c2301858f132a06d374c58bca47a1d0f58e09",
+    "source_dist_archive_modules_identical": 34,
+    "changed_modules": 4,
+    "unchanged_modules": 30,
+    "package": {
+      "path": "dist/FERRO-0.3.13.zip",
+      "bytes": 6288645,
+      "sha256": "4928b64c4634ba53a41fcb3d6e1e3d640920ff78d63588a56cef514574fb05d4",
+      "git_blob": "f4d06f147ce25f0d80dfebb95d93223b811322a1"
+    },
+    "modules": [
+      {
+        "path": "src/ferro/fmath.js",
+        "sha256": "bb001302bd2d57239c86183615c921563cf21f0490d67eef42586d1fc3457c9f",
+        "git_blob": "a8020d15c3755e0bcdb475c624a76294a539f91f",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/renderer.js",
+        "sha256": "d7a14230d0525a03d2874206f458d2edc39fef3542a067d43f693fdec4d5ad41",
+        "git_blob": "770818096522f10010215fac784674e7a11db24e",
+        "unchanged_from_base": false
+      },
+      {
+        "path": "src/ferro/webgpu-shaders.js",
+        "sha256": "1228ce07f4db2809c9f498cd465e8984c6fbccdf70e5b46b29411cfc588853a9",
+        "git_blob": "92693c36aa9e66855446e8e1eb058da94a921a33",
+        "unchanged_from_base": false
+      },
+      {
+        "path": "src/ferro/webgpu-renderer.js",
+        "sha256": "d629b0453b99275420c12a067e53f9b224f366b961186d95e7d6aa732803f1dd",
+        "git_blob": "6f61aa5a9d446167499cd39d3baf2b525c8c53a4",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/backends.js",
+        "sha256": "769e607b8349aa47bae32a8ef9f4747267119de49e7b057c874294049da9ccea",
+        "git_blob": "d01331e685bb52f26888a4cc8c2116fb7f55b3b2",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/geometry.js",
+        "sha256": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+        "git_blob": "add629f6c14343b2bf8704fa2e3fe5454f263e01",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/materials.js",
+        "sha256": "fd1789bd21ec43d4cd028d3ebffdb490e5bfe53d8b73fa0f7bdbd44ce7d2a954",
+        "git_blob": "c6780913a1319001822d8ce247147b26cff715e0",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/vehicle-dynamics.js",
+        "sha256": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+        "git_blob": "fe0f013f0c89bddea87182d55b19aaf6b5f227cc",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/physics-geometry.js",
+        "sha256": "fc73172463262947ced24017cc03ef73a00c113e2a850fab3460bd3c30fcd242",
+        "git_blob": "8d40b005d1269d7644de616b5cb9a0a025b462d2",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/physx-runtime.js",
+        "sha256": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+        "git_blob": "98a6e986852a3d4d779a84ed15ca3673319cb4ba",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/physx.js",
+        "sha256": "90779107e09594ce16796d7804a4f2a56f5c03856bdea22fcfed67016b17f3d2",
+        "git_blob": "ed617f04e4c038847248dda3ecbcb9bf5764fdff",
+        "unchanged_from_base": false
+      },
+      {
+        "path": "src/ferro/physics.js",
+        "sha256": "9a6e3dbd9115b13f6f5daf9d2843f6ffa219f0b2d4c53d2106ac9dec769f175a",
+        "git_blob": "32f729393d6da2fac74699ed5262c05992b4046d",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/destruction.js",
+        "sha256": "c18d53831b23e55d798d02e698fd7eb670a28dd998de51a5bcd5195fe733eeea",
+        "git_blob": "d09f2fe0e378df0ed6b604dafab818a484b8afc1",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/navigation.js",
+        "sha256": "addfdb9bb3a30cc7a8fe747ca919c72a99d8bc8f79a44162757d6ac8113d0cb6",
+        "git_blob": "2ae15c57370395c6f286a21dea3bd40ee890ad21",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/input.js",
+        "sha256": "2a7bfcf27c4dede79708882a604fa3264d32615fe3cf513deae807c07e109e68",
+        "git_blob": "3f67bb1d56d0f5392c471e88fe26e70060abd1e4",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/motion.js",
+        "sha256": "3ea6ff872208b6c133a3f732d51d0706fc36a2d042725c7e6c59fba42ab4df4b",
+        "git_blob": "6b12360fca118453e021b1f92e9b6bae5c7395d0",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/effects.js",
+        "sha256": "e873e7def347fb205594351fc9f0fd8e08fdb42ced36254ec68f071790bb3b42",
+        "git_blob": "8cd58ef870cd6a5041731410cb827484c5235bdb",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/audio.js",
+        "sha256": "af0a6173d3c1db12e16c9a570d8aad86788f1dfde06508077cbee402d046f2a0",
+        "git_blob": "af3bce469bc67ba2c8e50075c1e4c9aed37ef9e1",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/recipes.js",
+        "sha256": "a59e5737e9730594881cb71a60340c64f013bd1c5797618c74efe3b6afc823cd",
+        "git_blob": "3b8265ee751e27456c1a151a8e4c95cb5a29bdf7",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/crowd.js",
+        "sha256": "ee00aa7b358a71a1e8c93ab2779d0edc3d80828f4c4ad32d41900177221ceac9",
+        "git_blob": "eb367bf9ca45bc49d82b64f22512253d4121e37f",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/crowd-webgpu.js",
+        "sha256": "bc2719bdbef13f74789bde0caad5d24fea70f44ac52148085a27d448ada9e9f8",
+        "git_blob": "fa513856ddd58860871d5f6f1dabc760e8b18527",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/imuse.js",
+        "sha256": "8aa71cb0cdc9a5d0d1a42dab965563bd810d26151745ceb1ad603ab1c0851e16",
+        "git_blob": "0a57f3e6189094721dd7d4f4c5aaed61838f4d07",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/music.js",
+        "sha256": "e59d6d2ed84bb70bf108f54d8d1f8510a02533f36e1d0741ac1d144c8830ea20",
+        "git_blob": "9a5ec62b807489a71c78ec4157a4fdfb635bba58",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/surface.js",
+        "sha256": "46915edee28daa0408ea1c18abd664babef76e2e6bce52c2990a431f90cee77e",
+        "git_blob": "017271a036bec6191a98ee92d8e5ed2004643490",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/gpu-profile.js",
+        "sha256": "513e7cb0523a50f62edb427f2ed563ec98d9bc771a70f357fce8409157faa9c4",
+        "git_blob": "0877284f2fd322dbc6b437dc2c8c8f93c1e78574",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/skies.js",
+        "sha256": "bd4b38002c8c800a5f7551a73712c721909ed22ae145d15fbf7f853ff30eddea",
+        "git_blob": "c0355ce177892c53344201604b8a0ccf8878bcbe",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/reflections.js",
+        "sha256": "51467e58cfaabfe6d9f5c7a5ccdf73afd35e33159bddae4778dd5a0bdd43ffbf",
+        "git_blob": "f6c6677dd57ed0c1916b9e0a2589db12e3ee771d",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/passages.js",
+        "sha256": "16fbe21b2dbd0bc0abf16a2e2c6346940f8703fc9513a9906ab1a38303dacdaa",
+        "git_blob": "8d01f50dc397c571cc28041db55652d796ed799d",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/brain.js",
+        "sha256": "598175891738fbdef6788d2d5e0eee89e279a472837a49e4966ca19e0de7bcf9",
+        "git_blob": "b9521d890aadc49478e9c23d3d7417219e9957d2",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/loop.js",
+        "sha256": "f6777ad3141ed9b9dae6b860aded5aa625433c87f3068077a5204324a7c42e2f",
+        "git_blob": "2cd067a98af8fbeeb6fa89fa54b3db94ce17f2d8",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/schedule.js",
+        "sha256": "48a8b7cf0bba9a54ef6cff896110a654195b05606392c2d74ef3a3691edf9d12",
+        "git_blob": "966d538c06bcc5cef3f7b3b63649341318cbb9f9",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/jobs.js",
+        "sha256": "c027761f5d29d62ef542e444c95a17c551fececc1cbeb492668c2d35d7b13aa7",
+        "git_blob": "8979c182d19ce19c8212e7d94b1681c8b0e4d52c",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/demo.js",
+        "sha256": "1169679cfa96463222f6343a6f4f3feeadfc7b90cd65d8f1b7ece6e9e0600575",
+        "git_blob": "af2ea179dc1a0cf16f88687b16d7c0cad6259640",
+        "unchanged_from_base": true
+      },
+      {
+        "path": "src/ferro/engine.js",
+        "sha256": "b773d2848eb75cb3f9c0da7a1e85049f4b1bb6eca61948a2b7817221ef9d5d51",
+        "git_blob": "57dec14d40f45ac58c14614d07157ea772698d2b",
+        "unchanged_from_base": false
+      }
+    ],
+    "local_commit": "b1b51b4d55a9b617ab5d0d1df76c9ec189cf7873"
+  },
+  "qualification": {
+    "path": "docs/physx-sols-0313/qualification.json",
+    "canonical": {
+      "tests": 209,
+      "passed": 208,
+      "failed": 0,
+      "todo": 1,
+      "todo_scope": "FPhysics historique"
+    },
+    "physx_real_wasm": {
+      "passed": 23,
+      "failed": 0
+    },
+    "egl": "GLSL de production ; sondes synthétiques llvmpipe, pas de scène de jeu",
+    "wgsl": "world compilé/revalidé avec Naga 30.0.1 verrouillé",
+    "emprise": {
+      "targeted": 11,
+      "passed": 9,
+      "inherited_failures": 2,
+      "syntax_passed": 88,
+      "modules_identical": 34,
+      "full_build_executed": false,
+      "full_build_limit": "src/city-data.js indisponible"
+    },
+    "bitume": {
+      "installed_modules_identical": 34,
+      "host_qualification": "En cours dans le dépôt hôte, bilan final séparé"
+    }
+  },
+  "ci": {
+    "head": {
+      "total_count": 0,
+      "runs": []
+    },
+    "main": {
+      "total_count": 0,
+      "runs": []
+    },
+    "statement": "Aucun résultat de CI ne remplace ici la qualification locale ; les exécutions indiquées sont celles observées au contrôle."
+  },
+  "historical_archives_preserved": true,
+  "source_tree_modified_by_publisher": false,
+  "local_refs_modified_by_publisher": false,
+  "github_release_or_tag_created": false,
+  "site_deployed": false,
+  "hardware_fps_validated": false,
+  "evidence": {
+    "manifest": "ferro0313-manifest.json",
+    "uploaded": "ferro0313-uploaded.json",
+    "git_commit_metadata": "ferro0313-remote-commits.json"
+  }
+}

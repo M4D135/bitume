@@ -1,0 +1,84 @@
+{
+  "scope": "Exact BITUME pose and procedural meshes; real FERRO colour/effect GLSL; fixed inspection camera, no browser/postprocessing or hardware FPS.",
+  "environment": {
+    "renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+    "version": "4.5 (Core Profile) Mesa 25.0.7-2+deb13u1",
+    "egl": "1.5"
+  },
+  "sources": {
+    "moteur/renderer.js": "d7a14230d0525a03d2874206f458d2edc39fef3542a067d43f693fdec4d5ad41",
+    "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+    "main.js": "49e97a7cb481e6c987131148e12e941448c33d280d31bd2af9551d5e1c31f55a",
+    "humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+    "humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+    "pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+    "voiture.js": "a0d5b4b89458aaefc9330d96ea80b04ea44bf6835d082b51113a18c93e0ee890"
+  },
+  "resolution": [
+    720,
+    480
+  ],
+  "cases": {
+    "volant-centre-complet": {
+      "instances": 124,
+      "sha256": "2a0188625d98a6b8367df0418a681a2aa5be58e355de098f44d89cd8f5004b6d"
+    },
+    "volant-centre-moyen": {
+      "instances": 45,
+      "sha256": "19338ae4edf9dda2b387d73a35df89dbe6daa8a8fb21ef8df2a55e7c5c2670b0"
+    },
+    "volant-centre-simple": {
+      "instances": 22,
+      "sha256": "84ffa6877b57cc02f39fae5d5c713ccfe93085988a05b2bc6a96a8b4083ae5f2"
+    },
+    "main-au-levier-complet": {
+      "instances": 124,
+      "sha256": "3fced689b7b5597fd40ddb5bf74c96cfed9ceb3ef649a38212f111aabb8f314d"
+    },
+    "main-au-levier-moyen": {
+      "instances": 45,
+      "sha256": "667126f9369be4a0be61da31455180e40522a5c03be83f7c0616d15ed19a19eb"
+    },
+    "main-au-levier-simple": {
+      "instances": 22,
+      "sha256": "b92bc4435a3bfcd93eec77a63909a5060eea26d241d9d1eecce8d71857eb164e"
+    },
+    "retour-du-levier-complet": {
+      "instances": 124,
+      "sha256": "97f9fd4754f79d0026b430a85bff9697861bb1cdeda936d4368ab7fad05460ac"
+    },
+    "retour-du-levier-moyen": {
+      "instances": 45,
+      "sha256": "eabbed8a3ab849cf9231028c94b8bb83ea826f8a111b84d59d8dcec12e7e3af8"
+    },
+    "retour-du-levier-simple": {
+      "instances": 22,
+      "sha256": "0730550a0b9a4f2a22d753684744fe53ad344113d14c0a0586a0cd89f94f4975"
+    },
+    "virage-droite-complet": {
+      "instances": 124,
+      "sha256": "245143bd32cd0da4d948d2a61ebca192d8b3101aedf6c8572d2cb2bc5f548436"
+    },
+    "virage-droite-moyen": {
+      "instances": 45,
+      "sha256": "d2000e61ae183bda4f74e5b9ac09417fe0602d6b16546c7a387f1c5887e5535f"
+    },
+    "virage-droite-simple": {
+      "instances": 22,
+      "sha256": "e0eb5e5cff6924ee27090384e9c4741c500079df0264a92ce710932c73271e89"
+    }
+  },
+  "changedPixelsVsRest": {
+    "main-au-levier-complet": 22397,
+    "retour-du-levier-complet": 21775,
+    "virage-droite-complet": 25177,
+    "main-au-levier-moyen": 21008,
+    "retour-du-levier-moyen": 19964,
+    "virage-droite-moyen": 23342,
+    "main-au-levier-simple": 18928,
+    "retour-du-levier-simple": 18018,
+    "virage-droite-simple": 23810
+  },
+  "texturesImported": 0,
+  "eglBaseSha256": "d51a8160fa3532b4a31b8b421f1a7f9efec12f747ae6f7d6d9300efb134766a1"
+}

@@ -1,0 +1,235 @@
+{
+  "dateUTC": "2026-11-19T17:59:49.652181+00:00",
+  "portee": "Géométrie de scène, appuis et contacts PhysX natifs, stands, recette de sol et cycle des mondes. Les courses complètes et preuves GPU du canon sont qualifiées séparément par leurs responsables.",
+  "totaux": {
+    "suites": 5,
+    "controles": 141,
+    "reussis": 141,
+    "echecsFinaux": 0
+  },
+  "canon": {
+    "versionPhysX": "5.12.0",
+    "physxSHA256": "90779107e09594ce16796d7804a4f2a56f5c03856bdea22fcfed67016b17f3d2",
+    "rendererSHA256": "d7a14230d0525a03d2874206f458d2edc39fef3542a067d43f693fdec4d5ad41",
+    "runtimeSHA256": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "installesIdentiques": true,
+    "passagesFinauxNatifsSansOverride": true
+  },
+  "suites": [
+    {
+      "nom": "solides-physx-geometrie",
+      "reussis": 42,
+      "total": 42,
+      "exitCode": 0,
+      "commande": "node verifications/solides-physx-geometrie.test.mjs",
+      "journal": "solides-physx-geometrie.log",
+      "finExecutionUTC": "2026-11-19T17:29:00.833974+00:00",
+      "testSHA256": "7688a8579de412289b22d007315a3e6b6c7bd937b4f19c630875d440aeea9114",
+      "porteeRevision": "Passage conservé avant ajout du remappage opt-in. La suite sols-proceduraux démontre ensuite séparément les positions, indices, couleurs, surfaces PhysX et solides identiques avec/sans remappage."
+    },
+    {
+      "nom": "solides-physx-wasm",
+      "reussis": 23,
+      "total": 23,
+      "exitCode": 0,
+      "commande": "node verifications/solides-physx-wasm.test.mjs",
+      "journal": "solides-physx-wasm.log",
+      "finExecutionUTC": "2026-11-19T17:57:43.168307+00:00",
+      "testSHA256": "946f6472c446047d734ee666aaff94ff1a9802b722c0ce0b18ea0118d1c7b7cc",
+      "adaptateurInstalleSansOverride": true
+    },
+    {
+      "nom": "physique-stands",
+      "reussis": 5,
+      "total": 5,
+      "exitCode": 0,
+      "commande": "node --test verifications/physique-stands.test.mjs",
+      "journal": "physique-stands.log",
+      "finExecutionUTC": "2026-11-19T17:58:16.692978+00:00",
+      "testSHA256": "d2d9585edc5d6a21614a4b6f749c3177693dc2c5ee73b2e1945b6e6be46c897e",
+      "adaptateurInstalleSansOverride": true
+    },
+    {
+      "nom": "sols-proceduraux",
+      "reussis": 68,
+      "total": 68,
+      "exitCode": 0,
+      "commande": "node --max-old-space-size=768 verifications/sols-proceduraux.test.mjs",
+      "journal": "sols-proceduraux.log",
+      "finExecutionUTC": "2026-11-19T17:50:46.640102+00:00",
+      "testSHA256": "97c018b5138227d7d51e2ca90e3f2b5dbf0c739b78668a19348336d444b55889"
+    },
+    {
+      "nom": "physique-cycle-seances",
+      "reussis": 3,
+      "total": 3,
+      "exitCode": 0,
+      "commande": "node --test verifications/physique-cycle-seances.test.mjs",
+      "journal": "physique-cycle-seances.log",
+      "finExecutionUTC": "2026-11-19T17:58:53.145702+00:00",
+      "testSHA256": "188143f72773262182fe43cf6b54e87e03cdb15876d2055c1d5d723fd3c0e797",
+      "adaptateurInstalleSansOverride": true
+    }
+  ],
+  "sourcesSnapshotSHA256": {
+    "src/circuit.js": "e6aa6ef807345c35f2016e192dcdb543dc682f50e604a483097052250965da98",
+    "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+    "src/degats.js": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247",
+    "src/contacts.js": "d6e583db729c91df8de21621c05b3b24835e6dc996e9dd4df7cb0464b27e1b7a",
+    "src/obstacles.js": "02626c61720ba5aa6bc1f06ee103725efed1a0c52f243b3ba2443f6f6cbf914e",
+    "src/botanique.js": "8ca32fb0aa467ea1ac4ce65b9f175254f3eb11ee14305f247f6015160b39bf8a",
+    "src/ecologie.js": "90c0720de150cea4e479eff553fdd85abaf6761046cd4d52b5851c149edf8b86",
+    "src/saisons.js": "30cf186f486b0eb93cccf70eb3f48ece5c1ee46ac4bfd8dd7fb5343fa842a891",
+    "src/vegetation.js": "0e8bcadfefbb984ded928b0f00b9e32119b8a597ead51f1e068c938f45858624",
+    "src/bords.js": "ef0488472987ff35d36f3a2bbd76e5a086cb7edf8bc038dfb01676dfe933b638",
+    "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+    "src/decor.js": "001273b9b31d6f9005f98e32f86e94c20e57405ecd4cc88f9bc71197de2c91b2",
+    "src/meteo.js": "04b68ea246a72aae23a301634616e5710ec65520fb0fb4527461d1a8eaeada6e",
+    "src/strategie-stands.js": "c0b8326627e0225bf8197719472062b181038346eb3d1b3ca4b6ef320d0dee50",
+    "src/course.js": "518b67af41751ca12e215d8db8f622d32510faa346fb9ea5db90531e9b604682",
+    "src/solides-physx.js": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+    "src/physique.js": "93f657b4ac4272b0fafd26357c28aae4f826a5fe6287571037438293c45c0667",
+    "src/main.js": "49e97a7cb481e6c987131148e12e941448c33d280d31bd2af9551d5e1c31f55a",
+    "src/voiture.js": "a0d5b4b89458aaefc9330d96ea80b04ea44bf6835d082b51113a18c93e0ee890",
+    "src/traces.js": "a163a43fd2ea165464db220286b80e10768e18d2de0f045ca1591caa017f6f4d",
+    "src/ambiance.js": "4939c0c765a8cb074d92400df1cafb3737cebd61eeab1628df557f9bca3e08d2",
+    "src/chaussee.js": "26845218ad17b60301f97f3374ac31fc4a61fab75b137d9497bb7742a983753d",
+    "src/jeu.js": "2c772c4a2ce96fb69feb96278b56f7c77674324bb4d93cdfa0b3b755a4200493",
+    "src/ferro/physx.js": "90779107e09594ce16796d7804a4f2a56f5c03856bdea22fcfed67016b17f3d2",
+    "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "src/ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+    "src/moteur/renderer.js": "d7a14230d0525a03d2874206f458d2edc39fef3542a067d43f693fdec4d5ad41"
+  },
+  "testsSnapshotSHA256": {
+    "verifications/solides-physx-geometrie.test.mjs": "7688a8579de412289b22d007315a3e6b6c7bd937b4f19c630875d440aeea9114",
+    "verifications/solides-physx-wasm.test.mjs": "946f6472c446047d734ee666aaff94ff1a9802b722c0ce0b18ea0118d1c7b7cc",
+    "verifications/physique-stands.test.mjs": "d2d9585edc5d6a21614a4b6f749c3177693dc2c5ee73b2e1945b6e6be46c897e",
+    "verifications/sols-proceduraux.test.mjs": "97c018b5138227d7d51e2ca90e3f2b5dbf0c739b78668a19348336d444b55889",
+    "verifications/physique-cycle-seances.test.mjs": "188143f72773262182fe43cf6b54e87e03cdb15876d2055c1d5d723fd3c0e797",
+    "verifications/helpers/physx-runtime.mjs": "7503d286787cd0bcf04d0d14abeece417419c85f2ce32b619506f08087cc5741"
+  },
+  "preuvesSHA256": {
+    "solides-physx-geometrie.log": "ab0fd0dd1c29457d651cd72c6e53844a08de61e733e09df53f7483f4d227c8fa",
+    "solides-physx-wasm.log": "1722c482662fe63e6f35b6d4141048da65ce7034c2a8587932bc89b934839e40",
+    "physique-stands.log": "bc7d3089bde695c5816b008f45d8a0e85544ab19892af6531d25438ac09ddbfc",
+    "physique-stands.json": "ae5dbd720f1e8240f04f349e5623ecec12484fc5b826f58f2f2f76a38c6ceb18",
+    "sols-proceduraux.log": "43b1bcbf1c27c10537ed847f64abc6db3e3470d988ea23e6865ac953b8de904d",
+    "sols-proceduraux.json": "f1275c4f21b12c69b2ef484934fb26ef139f4c95c390321c8d4ace629d6c2540",
+    "physique-cycle-seances.log": "d53119c2c0aaf4803b98ebe2d983767ba21b1b70e368e50fccda62c805341817",
+    "physique-cycle-seances.json": "9dda8c203136066f643ce7272d1d644358531a389b5f07b0d81f7f0d8145e357",
+    "AUDIT-CONTACTS-NATIFS.json": "dcd4f464c2c6016ed8da67ff93a2e2bdd5f8d3342a78c9e746902be656e0582a"
+  },
+  "sondeComplementaire": {
+    "source": "audit-contacts-natifs.mjs",
+    "sourceSHA256": "fb43647d89f6b0182b13c406f15b842a3bb297dac450652550e2e8d6252968b0",
+    "resultat": "AUDIT-CONTACTS-NATIFS.json",
+    "empreintesPendantExecution": {
+      "physique": "d7d5860e2cc643ea7674751d1d3c3cdc93b2311a8c9592299d3fe070284f08ef",
+      "course": "518b67af41751ca12e215d8db8f622d32510faa346fb9ea5db90531e9b604682",
+      "conduite": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+      "traces": "a163a43fd2ea165464db220286b80e10768e18d2de0f045ca1591caa017f6f4d",
+      "jeu": "60c98c7d85f9fe0b5e5cc8a68c8a66d0041bb5572bdab3d9ac75fa29f9227dd7"
+    },
+    "portee": "Sonde native complémentaire après corrections : freinage piste/herbe, traces à la surface et erreur de modèle dans lancer()."
+  },
+  "stands": {
+    "dureesSimulees": [
+      {
+        "nom": "PhysX : IA à 8 m derrière un joueur garé, dégagement sans contact ni replacement",
+        "secondes": 20.116666666666667
+      },
+      {
+        "nom": "PhysX : IA à 10 m derrière un joueur garé, dégagement sans contact ni replacement",
+        "secondes": 15.174999999999999
+      },
+      {
+        "nom": "PhysX : vraie approche puis dégagement devant un joueur garé",
+        "secondes": 96.01666666666667
+      },
+      {
+        "nom": "PhysX : trajet sous pluie, nouvelle monte seulement après le service complet",
+        "secondes": 42.61666666666667
+      },
+      {
+        "nom": "PhysX : trajet sous neige, nouvelle monte seulement après le service complet",
+        "secondes": 45.59166666666667
+      }
+    ],
+    "contactsVoituresOuObstacles": 0,
+    "placementsAutomatiques": 0,
+    "posesOuVitessesForceesApresFixture": 0,
+    "sourcesPendantExecution": {
+      "physique": "93f657b4ac4272b0fafd26357c28aae4f826a5fe6287571037438293c45c0667",
+      "solides-physx": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+      "conduite": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+      "course": "518b67af41751ca12e215d8db8f622d32510faa346fb9ea5db90531e9b604682",
+      "strategie-stands": "c0b8326627e0225bf8197719472062b181038346eb3d1b3ca4b6ef320d0dee50"
+    },
+    "sourcesCorrespondentAuSnapshot": true,
+    "attenteApprocheBloquee": "La stratégie existante renonce après tempsMaximum=90 s, puis reprend vers 96 s ; les deux files déjà immobilisées se dégagent immédiatement."
+  },
+  "sols": {
+    "option": "solsProceduraux:true",
+    "mapping": "matière 8 vers 25, seulement nappes accotement et terrain, après herbier/saison/écologie",
+    "matrice": {
+      "circuits": 8,
+      "saisons": 4,
+      "qualites": [
+        "low",
+        "high"
+      ],
+      "comparaisons": 64
+    },
+    "checksAdditionnels": [
+      "défaut identique à false",
+      "végétation low",
+      "végétation high",
+      "appel réel installer du jeu enrichi/non enrichi low/high"
+    ],
+    "positionsIndicesNormalesCouleursInchanges": true,
+    "primitivesEtFeuillagesInchanges": true,
+    "surfacesPhysXInchangees": true,
+    "neigeAccotementsClaire": true,
+    "noteTest": "Premier passage interrompu par code 137 après 66 contrôles. Comparaison de végétation high convertie en empreintes en flux et témoins séquentiels ; passage complet 68/68 avec plafond mémoire 768 Mo."
+  },
+  "cycles": {
+    "jeuPendantExecutionSHA256": "2c772c4a2ce96fb69feb96278b56f7c77674324bb4d93cdfa0b3b755a4200493",
+    "jeuCorrespondAuSnapshot": true,
+    "resultats": [
+      {
+        "panne": "modele",
+        "reussi": true,
+        "ordre": [
+          "effets:anciens",
+          "liberer:ancien",
+          "monde:nouveau",
+          "panne:modele",
+          "liberer:nouveau"
+        ],
+        "mondesRestants": 0
+      },
+      {
+        "panne": "prechauffage",
+        "reussi": true,
+        "ordre": [
+          "effets:anciens",
+          "liberer:ancien",
+          "monde:nouveau",
+          "panne:prechauffage",
+          "effets:nouveaux",
+          "liberer:nouveau"
+        ],
+        "mondesRestants": 0
+      },
+      {
+        "panne": "restauration GPU",
+        "reussi": true,
+        "mondeConserve": true,
+        "acteurConserve": true,
+        "poseConservee": true,
+        "effetsRepris": true
+      }
+    ]
+  },
+  "limites": "Aucun benchmark FPS matériel ni validation visuelle du jeu revendiqués par ces tests Node. Le shader est qualifié séparément par les sondes EGL canoniques."
+}

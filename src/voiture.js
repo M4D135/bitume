@@ -839,8 +839,8 @@
   function compiler(liste, overlay, cockpit) {
     const t = { liste, longueur: liste.length, n: 0, objets: [], formesRoues: [], formesUsees: [], usureRoue: [], profondeur: [], detailRoueMax: [],
       pneusCourants: new Float64Array(4 * 15), pneusActifs: new Uint8Array(4), o: null, roue: null, groupe: [], fixe: [], decale: null, d: null, portee: null,
-      lent: null, vite: null, tete: null, cockpit, rotTete: trois(), rotM: trois(), fixes: [], groupes: [], faitG: null, faitF: null };
-    const o = [], roues = [], decale = [], d = [], portee = [], lent = [], vite = [], tete = [];
+      lent: null, vite: null, tete: null, buste: null, cockpit, rotTete: trois(), rotM: trois(), fixes: [], groupes: [], faitG: null, faitF: null };
+    const o = [], roues = [], decale = [], d = [], portee = [], lent = [], vite = [], tete = [], buste = [];
     for (const pc of liste) {
       if (cockpit && (pc.pilote || pc.arriere || pc.exterieur || pc.glace)) continue;
       if (!cockpit && pc.dedans) continue;
@@ -869,11 +869,12 @@
       o.push(oc[0], oc[1], oc[2]); roues.push(roue); decale.push(dc === null ? 0 : 1);
       if (dc === null) d.push(0, 0, 0); else d.push(dc[0], dc[1], dc[2]);
       portee.push(dc === null ? 0 : Math.hypot(dc[0], dc[1], dc[2]));
-      lent.push(pc.lent ? 1 : 0); vite.push(pc.vite ? 1 : 0); tete.push(pc.tetePilote ? 1 : 0); t.n++;
+      lent.push(pc.lent ? 1 : 0); vite.push(pc.vite ? 1 : 0); tete.push(pc.tetePilote ? 1 : 0); buste.push(pc.pilote && !pc.tetePilote ? 1 : 0); t.n++;
     }
     t.o = Float64Array.from(o); t.roue = Int8Array.from(roues); t.decale = Uint8Array.from(decale); t.d = Float64Array.from(d);
     t.portee = Float64Array.from(portee); t.lent = Uint8Array.from(lent); t.vite = Uint8Array.from(vite);
     t.tete = Uint8Array.from(tete);
+    t.buste = Uint8Array.from(buste);
     t.faitG = new Uint8Array(t.groupes.length); t.faitF = new Uint8Array(t.fixes.length);
     return t;
   }
@@ -895,7 +896,7 @@
   // locales, décalages, drapeaux, matrices des pièces), dans le même ordre : t prend celles de source. Ses objets et
   // les rotations qu'elle calcule restent à elle.
   function partager(t, source) {
-    t.o = source.o; t.roue = source.roue; t.decale = source.decale; t.d = source.d; t.portee = source.portee; t.lent = source.lent; t.vite = source.vite; t.tete = source.tete;
+    t.o = source.o; t.roue = source.roue; t.decale = source.decale; t.d = source.d; t.portee = source.portee; t.lent = source.lent; t.vite = source.vite; t.tete = source.tete; t.buste = source.buste;
     for (let k = 0; k < t.groupes.length; k++) t.groupes[k].m = source.groupes[k].m;
     for (let k = 0; k < t.fixes.length; k++) t.fixes[k].m = source.fixes[k].m;
     return t;
@@ -977,6 +978,7 @@
           z = PILOTE_COU[2] + tete[2] * dx + tete[5] * dy + tete[8] * dz;
         }
       }
+      if (tete && (t.tete[i] || t.buste[i])) x += PILOTE_RECUL;
       let a = M[0] * x + M[3] * y + M[6] * z, b = M[1] * x + M[4] * y + M[7] * z, c = M[2] * x + M[5] * y + M[8] * z;
       if (roue >= 0) {
         // `decale` place la pièce hors de l'axe, dans le repère de la roue ; `rebond` (m, par roue) : course de
@@ -1320,7 +1322,7 @@
   // ev.pilote = { volant, rapport, rapportAvant, passage } est un objet permanent fourni par jeu.js. L'animation
   // est une fonction de cette pose : ni horloge cachée, ni avancement par caméra, ni écriture dans la simulation.
   // Sans ce champ, les anciennes poses et leurs empreintes restent strictement inchangées.
-  const PILOTE_COU = [0, .772, 0], PILOTE_VOLANT = [.255, .65, 0], PILOTE_ECHELLE = 1 / K;
+  const PILOTE_COU = [0, .772, 0], PILOTE_RECUL = -.10, PILOTE_VOLANT = [.18, .77, 0], PILOTE_ECHELLE = .9 / K;
   const PILOTE_DECALAGE = PILOTE_VOLANT.map((v, i) => v - (OEIL[i] + K * CV[i]) * PILOTE_ECHELLE);
 
   function construirePiloteExterieur(mod, H) {
@@ -1346,18 +1348,18 @@
       ajouter('pommeau', H.pommeau, null);
       if (niveau > 0) {
         const o = objet('sphere', TISSU, combi); o.s[0] = .30; o.s[1] = .20; o.s[2] = .38; o.r = V.rotM;
-        V.pieces.push({ role: 'buste', fixe: [-.04, .66, 0], objet: o });
+        V.pieces.push({ role: 'buste', fixe: [-.04 + PILOTE_RECUL, .66, 0], objet: o });
       }
       for (let h = 0; h < 2; h++) {
         const main = H.mains[h], j = h * 9;
         for (let q = 0; q < (niveau === 0 ? main.pieces.length : 1); q++)
           ajouter('gant-' + h + '-' + q, main.pieces[q], niveau === 2 ? 'sphere' : null);
         for (let os = 0; os < 2; os++) {
-          const o = objet('cylinder', TISSU, combi); o.s[0] = o.s[2] = os === 0 ? .061 : .052;
+          const o = objet('cylinder', TISSU, combi); o.s[0] = o.s[2] = os === 0 ? .075 : .065;
           V.pieces.push({ role: (os === 0 ? 'bras-' : 'avant-bras-') + h, de: j + os * 3, a: j + (os + 1) * 3,
             m: new Float64Array(9), objet: o });
         }
-        const o = objet('sphere', TISSU, combi); o.s[0] = o.s[1] = o.s[2] = .061; o.r = V.rotM;
+        const o = objet('sphere', TISSU, combi); o.s[0] = o.s[1] = o.s[2] = .075; o.r = V.rotM;
         V.pieces.push({ role: 'coude-' + h, joint: j + 3, objet: o });
       }
       R.variantes.push(V);
@@ -1388,19 +1390,19 @@
     ANG[0] = -(.22 * volant + .10 * prise); ANG[1] = -.10 * prise; ANG[2] = -.035 * volant;
     produitDans(R.tete, eulerDe(T_A, ANG, 0, 1), produitDans(T_B, eulerDe(T_C, ANG, 1, 2), eulerDe(T_D, ANG, 2, 0)));
 
-    // Deux segments de longueur constante, coude sous le poignet et légèrement vers l'extérieur. Les trois LOD
+    // Deux segments de longueur constante, coudes écartés au-dessus du bord du cockpit. Les trois LOD
     // lisent ces mêmes articulations ; seul le détail des gants et du volant change avec la caméra.
     const A = R.articulations, haut = .22, avant = .23;
     for (let h = 0; h < 2; h++) {
       const j = h * 9, cote = h === 0 ? -1 : 1, poignet = H.mains[h].pieces[3].o;
-      A[j] = -.025; A[j + 1] = .705; A[j + 2] = cote * .165;
+      A[j] = -.025 + PILOTE_RECUL; A[j + 1] = .705; A[j + 2] = cote * .165;
       A[j + 6] = PILOTE_DECALAGE[0] + PILOTE_ECHELLE * poignet[0];
       A[j + 7] = PILOTE_DECALAGE[1] + PILOTE_ECHELLE * poignet[1];
       A[j + 8] = PILOTE_DECALAGE[2] + PILOTE_ECHELLE * poignet[2];
       const dx = A[j + 6] - A[j], dy = A[j + 7] - A[j + 1], dz = A[j + 8] - A[j + 2];
       const distance = Math.max(1e-9, Math.sqrt(dx * dx + dy * dy + dz * dz)), ux = dx / distance, uy = dy / distance, uz = dz / distance;
-      const projection = -uy + cote * .25 * uz;
-      let bx = -ux * projection, by = -1 - uy * projection, bz = cote * .25 - uz * projection;
+      const projection = .35 * uy + cote * uz;
+      let bx = -ux * projection, by = .35 - uy * projection, bz = cote - uz * projection;
       let normeB = Math.sqrt(bx * bx + by * by + bz * bz);
       if (normeB < 1e-9) { bx = -uz; by = 0; bz = ux; normeB = Math.sqrt(bx * bx + bz * bz); }
       if (normeB < 1e-9) { bx = 1; by = 0; bz = 0; normeB = 1; }

@@ -1,0 +1,51 @@
+ok  les huit références indépendantes couvrent le catalogue complet
+ok  Val-Brûlé : tous les solides restent strictement identiques à 0.2.53, même ordre
+ok  Val-Brûlé : distances et chevrons lisibles derrière les limites, hors stands/tunnels
+ok  Val-Brûlé : lisses extérieures peintes sans rétablir une glissière retirée
+ok  Val-Brûlé : les versions lointaines conservent les chiffres et les flèches
+ok  Val-Brûlé : les vibreurs ne changent que de couleur, les décors aléatoires restent identiques
+ok  Val-Brûlé : Légère conserve les positions, couleurs et symboles, ainsi que les solides
+ok  Port-Sable : tous les solides restent strictement identiques à 0.2.53, même ordre
+ok  Port-Sable : distances et chevrons lisibles derrière les limites, hors stands/tunnels
+ok  Port-Sable : lisses extérieures peintes sans rétablir une glissière retirée
+ok  Port-Sable : les versions lointaines conservent les chiffres et les flèches
+ok  Port-Sable : les vibreurs ne changent que de couleur, les décors aléatoires restent identiques
+ok  Port-Sable : Légère conserve les positions, couleurs et symboles, ainsi que les solides
+ok  Haut-Col : tous les solides restent strictement identiques à 0.2.53, même ordre
+ok  Haut-Col : distances et chevrons lisibles derrière les limites, hors stands/tunnels
+ok  Haut-Col : lisses extérieures peintes sans rétablir une glissière retirée
+ok  Haut-Col : les versions lointaines conservent les chiffres et les flèches
+ok  Haut-Col : les vibreurs ne changent que de couleur, les décors aléatoires restent identiques
+ok  Haut-Col : Légère conserve les positions, couleurs et symboles, ainsi que les solides
+ok  Lande-Noire : tous les solides restent strictement identiques à 0.2.53, même ordre
+ok  Lande-Noire : distances et chevrons lisibles derrière les limites, hors stands/tunnels
+ok  Lande-Noire : lisses extérieures peintes sans rétablir une glissière retirée
+ok  Lande-Noire : les versions lointaines conservent les chiffres et les flèches
+ok  Lande-Noire : les vibreurs ne changent que de couleur, les décors aléatoires restent identiques
+ok  Lande-Noire : Légère conserve les positions, couleurs et symboles, ainsi que les solides
+ok  Roche-Fauve : tous les solides restent strictement identiques à 0.2.53, même ordre
+ok  Roche-Fauve : distances et chevrons lisibles derrière les limites, hors stands/tunnels
+ok  Roche-Fauve : lisses extérieures peintes sans rétablir une glissière retirée
+ok  Roche-Fauve : les versions lointaines conservent les chiffres et les flèches
+ok  Roche-Fauve : les vibreurs ne changent que de couleur, les décors aléatoires restent identiques
+ok  Roche-Fauve : Légère conserve les positions, couleurs et symboles, ainsi que les solides
+ok  Brume-de-Jade : tous les solides restent strictement identiques à 0.2.53, même ordre
+ok  Brume-de-Jade : distances et chevrons lisibles derrière les limites, hors stands/tunnels
+ok  Brume-de-Jade : lisses extérieures peintes sans rétablir une glissière retirée
+ok  Brume-de-Jade : les versions lointaines conservent les chiffres et les flèches
+ok  Brume-de-Jade : les vibreurs ne changent que de couleur, les décors aléatoires restent identiques
+ok  Brume-de-Jade : Légère conserve les positions, couleurs et symboles, ainsi que les solides
+ok  Cap-Séquoia : tous les solides restent strictement identiques à 0.2.53, même ordre
+ok  Cap-Séquoia : distances et chevrons lisibles derrière les limites, hors stands/tunnels
+ok  Cap-Séquoia : lisses extérieures peintes sans rétablir une glissière retirée
+ok  Cap-Séquoia : les versions lointaines conservent les chiffres et les flèches
+ok  Cap-Séquoia : les vibreurs ne changent que de couleur, les décors aléatoires restent identiques
+ok  Cap-Séquoia : Légère conserve les positions, couleurs et symboles, ainsi que les solides
+ok  Baïkal : tous les solides restent strictement identiques à 0.2.53, même ordre
+ok  Baïkal : distances et chevrons lisibles derrière les limites, hors stands/tunnels
+ok  Baïkal : lisses extérieures peintes sans rétablir une glissière retirée
+ok  Baïkal : les versions lointaines conservent les chiffres et les flèches
+ok  Baïkal : les vibreurs ne changent que de couleur, les décors aléatoires restent identiques
+ok  Baïkal : Légère conserve les positions, couleurs et symboles, ainsi que les solides
+ok  Baïkal enneigé : mêmes repères complets et aucune incidence physique
+{"controles":50,"oracle":"f53449f4326d03a2e6385e8067ad2abc54cbe33d9bc39da86a098129b7651e41","environnement":"linux/x64","rapport":[{"circuit":"val-brule","virages":7,"panneaux":37,"solides":1763},{"circuit":"port-sable","virages":6,"panneaux":32,"solides":1019},{"circuit":"haut-col","virages":3,"panneaux":18,"solides":1193},{"circuit":"lande-noire","virages":5,"panneaux":28,"solides":1005},{"circuit":"roche-fauve","virages":7,"panneaux":39,"solides":998},{"circuit":"brume-de-jade","virages":7,"panneaux":39,"solides":830},{"circuit":"cap-sequoia","virages":7,"panneaux":40,"solides":981},{"circuit":"baikal","virages":4,"panneaux":24,"solides":1134}]}
