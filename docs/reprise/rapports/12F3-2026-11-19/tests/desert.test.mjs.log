@@ -1,0 +1,7 @@
+ok boucle fermée, départ droit, relief de piste maîtrisé
+ok terrain ocre varié, haut relief asymétrique, sans eau ni forêt
+ok rochers dégagés de toutes les portions de chaussée
+ok saisons et qualité conservent géométrie et collisions
+ok reconstruction déterministe du tracé et du décor
+ok onze rivaux accomplissent un tour sans rester bloqués
+{"controles":6,"mesures":{"longueur":4834,"denivelePiste":27.21766063841511,"penteMax":0.06799999999999995,"arbres":0,"trianglesNappes":88650,"objets":7049,"lots":33,"ete":{"ocre":1,"neige":0,"nuances":46,"relief":[-57.68999481201172,235.8329620361328]},"asymetrie":19.410073246607787,"rochers":321,"margeRochers":33.19293171680859,"hiver":{"ocre":0,"neige":1,"nuances":5,"relief":[-57.68999481201172,235.8329620361328]},"course":{"rivauxArrives":11,"duree":248.99999999993787}}}

@@ -1,0 +1,118 @@
+{
+  "methode": "Longueurs des vrais encodeurs sur un état usé représentatif ; débits théoriques des seules charges utiles, hors en-têtes WebRTC/WebSocket, bootstrap et services immédiats. Aucune mesure FPS ou réseau matériel.",
+  "position_inchangee": "10 octets par paquet + 61 par voiture, cadence existante image/une image sur deux pour les rivaux",
+  "cas": [
+    {
+      "repartition": [
+        2,
+        2
+      ],
+      "paquets": [
+        {
+          "machine": 0,
+          "voitures": 10,
+          "octets": 2007,
+          "relai": 0,
+          "position60": 22560
+        },
+        {
+          "machine": 1,
+          "voitures": 2,
+          "octets": 462,
+          "relai": 502,
+          "position60": 7920
+        }
+      ],
+      "positions_60fps_octets_par_s_total": 30480,
+      "pneus_2hz_octets_par_s_total": 5942
+    },
+    {
+      "repartition": [
+        2,
+        1
+      ],
+      "paquets": [
+        {
+          "machine": 0,
+          "voitures": 11,
+          "octets": 2196,
+          "relai": 0,
+          "position60": 24390
+        },
+        {
+          "machine": 1,
+          "voitures": 1,
+          "octets": 273,
+          "relai": 313,
+          "position60": 4260
+        }
+      ],
+      "positions_60fps_octets_par_s_total": 28650,
+      "pneus_2hz_octets_par_s_total": 5564
+    },
+    {
+      "repartition": [
+        1,
+        2
+      ],
+      "paquets": [
+        {
+          "machine": 0,
+          "voitures": 10,
+          "octets": 2005,
+          "relai": 0,
+          "position60": 20730
+        },
+        {
+          "machine": 1,
+          "voitures": 2,
+          "octets": 464,
+          "relai": 504,
+          "position60": 7920
+        }
+      ],
+      "positions_60fps_octets_par_s_total": 28650,
+      "pneus_2hz_octets_par_s_total": 5946
+    },
+    {
+      "repartition": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "paquets": [
+        {
+          "machine": 0,
+          "voitures": 9,
+          "octets": 1816,
+          "relai": 0,
+          "position60": 18900
+        },
+        {
+          "machine": 1,
+          "voitures": 1,
+          "octets": 273,
+          "relai": 313,
+          "position60": 4260
+        },
+        {
+          "machine": 2,
+          "voitures": 1,
+          "octets": 273,
+          "relai": 313,
+          "position60": 4260
+        },
+        {
+          "machine": 3,
+          "voitures": 1,
+          "octets": 271,
+          "relai": 311,
+          "position60": 4260
+        }
+      ],
+      "positions_60fps_octets_par_s_total": 95040,
+      "pneus_2hz_octets_par_s_total": 18152
+    }
+  ]
+}

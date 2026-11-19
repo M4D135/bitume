@@ -4,37 +4,37 @@
 
 Lire `git status`, `docs/reprise/ETAT.json` et la dernière entrée du suivi ; ouvrir ensuite seulement la fiche active.
 
-- Version publiée sur **main : 0.2.49**, commit `3dce3f8c40c4103fbf953c4b6ab9de8ce63eadba`.
-- **12A–12F1 réalisés** : roues/sculptures, usure, chaussée, dégagement des rivaux, service réel et HUD par pilote.
-- **12F2 — choix des pneus par pilote fusionné**, fiche `docs/reprise/12F2-CHOIX-PNEUS-PAR-PILOTE.md`.
-  [PR n°3](https://github.com/M4D135/bitume/pull/3) fermée et fusionnée le **19 novembre à 12 h 17 (Paris)**,
-  après l'autorisation explicite de David (« go »). **Prochain lot : 12F3, non commencé.**
-- Préférences séparées, Conseillés par pilote, confirmation 2+2/2+1/1+2, prochaine monte au stand en solo/duo.
-  En ligne, les stands renouvellent encore la monte de départ ; le changement de monte attend **12F3**.
-- La physique reste **p11** ; conserver toutes les fixtures p9/p10/p11. Ne jamais régénérer p11 pour masquer un écart.
-- **Safari corrigé et clos**. FERRO **0.3.11**, modules inchangés. **WebGL et déploiement non validés** ici.
+- **12F3 qualifié CPU en 0.2.50 ; publication finale EN COURS**, sources et build gelés.
+  Fiche : `docs/reprise/12F3-RESEAU-USURE-SERVICES.md`. Ne pas recommencer le lot.
+- Dernier **main vérifié : 0.2.49 / `56086ecc`**. Checkpoint sources 12F3 distant vérifié : `7c908b17`,
+  branche `codex/bitume-12f3-20261119`. La 0.2.50 n’est pas encore déclarée publiée sur main.
+- **12A–12F2 publiés** ; PR n°3 fusionnée après le « go » de David. Fusion close : ne pas la redemander.
+- **Choix de prochaine monte actif en ligne**, par pilote. Type et quatre états de pneus à **2 Hz**,
+  service immédiat fiable, validation puis relais par l’hôte ; reprise IA sans remise à neuf.
+- Compatibilité de préparation : protocole et identifiant de circuit/empreinte complète des sources.
+  Une liaison tardive retrouve l’état ; un joueur absent de la grille attend la prochaine course.
+- **p11 conservée**, fixtures p9/p10/p11 intactes. Safari corrigé et clos. FERRO **0.3.11** inchangé.
 
-## Publication et prochaine action
+## Preuves et prochaine action
 
-La fusion est vérifiée : le tree `1149fcded082ccce45241938f2e3bb68fcebba75` du commit de fusion est identique à celui
-de la tête revue `fb18a8358943576ab7b14b47383c5468bf8b2b62`. Reçu :
-`docs/reprise/rapports/12F2-2026-11-19/FUSION-0249.json`. Le refus automatique initial reste dans l'historique ;
-l'autorisation explicite a permis cette fusion. **Ne plus demander ni recommencer la fusion de la PR n°3.**
+Rapport : `docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json`.
+**104/105 suites**, seul `traces.test.mjs` hérité et identique : `reserve-traces.json` dans le même dossier.
+**20 scénarios / 1 300 empreintes p11** identiques ; aucune fixture régénérée. **52 scripts valides**,
+**34 modules FERRO inchangés**. Deux builds identiques : **14 042 272 octets**, SHA-256
+`b1154b9b8a03641f2b166c44bd7cd191589e2375a9cc490733edd90934d5dc21`.
 
-Preuve : `docs/reprise/rapports/12F2-2026-11-19/qualification-execution.json`. **102/103 suites** après 13 revalidations
-ciblées, seul échec traces hérité identique ; **20 scénarios / 1 300 empreintes p11**, fixture inchangée. Deux builds
-identiques, **14 024 804 octets**, SHA-256 `72b18fa2bc3aad3f0735296b5f56b98c67dcb75bcfc77cd3059d1404eb495c9c`.
-Les deux contrôles GitHub finaux de `fb18a835` sont terminés : runs `44512608057` (PR) et `44512599093` (push),
-**102/103 chacun**, seul échec traces hérité identique. Aucun contrôle obligatoire ni ruleset modifié.
-Ouvrir maintenant **12F3**, encore non commencé : usure et services transmis à faible fréquence,
-séance/pilote/service/séquence, autorité et reprise IA. La stratégie de stands des rivaux reste à qualifier
-avant de rendre les longues courses dépendantes de ces arrêts.
+Terminer la publication sources/tests/build/preuves, vérifier le distant puis enregistrer le reçu.
+**Prochain sous-lot : stratégie de stands IA**, non commencé ; le borner avant toute modification.
+Ne pas rendre les longues courses dépendantes de ces arrêts avant qualification des rivaux.
+**Parties réelles entre navigateurs, WebGL, matériel et déploiement non validés.**
+Les tests utilisent les vrais contrôleurs avec transport simulé ; le site n’est pas déclaré vérifié.
+La variabilité CPU historique du décor reste une réserve distincte.
 
 ## Demandes conservées
 
-**7 circuits jouables**. Ajouts demandés : huitième circuit de montagne distinct de Haut-Col, Russie,
-Monaco ultra fidèle et Spéciale Marseille issue d'EMPRISE avec relief mesuré. Six destinations restent proposées.
-Ne supprimer aucun ajout pour tenir l'ancien objectif de 16.
+**7 circuits jouables**. Conserver Russie, Monaco ultra fidèle, Spéciale Marseille issue d’EMPRISE avec
+relief mesuré, huitième circuit de montagne distinct de Haut-Col et six destinations proposées.
+Ne supprimer aucun ajout pour tenir l’ancien objectif de 16.
 
 - Ensemble : `MASTER-LISTE-CLAUDE-FABLE.md`.
 - Pneus/circuits : `docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md`.
@@ -44,6 +44,6 @@ Ne supprimer aucun ajout pour tenir l'ancien objectif de 16.
 ## Méthode
 
 Un sous-lot à la fois, sorties courtes, journal et preuves dans Git. Mac/Spark/amiga indisponibles ici ; reprendre
-le Spark d'abord quand l'accès revient. Les branches Mac absentes de GitHub ne sont pas livrées. Préserver les
-conditions de l'hôte, la manette, les FPS démo, Faune et le téléchargement m4d135. Les modifications du moteur
+le Spark d’abord quand l’accès revient. Les branches Mac absentes de GitHub ne sont pas livrées. Préserver les
+conditions de l’hôte, la manette, les FPS démo, Faune et le téléchargement m4d135. Les modifications du moteur
 passent par FERRO canonique. Vérifier GitHub et le site séparément.

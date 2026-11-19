@@ -33,7 +33,7 @@ const fabriquer = new Function('B', 'options', `
   const document = { querySelector: $, querySelectorAll: () => [], activeElement: null };
   const texte = (e, t) => { e.textContent = t; }, classe = () => {}, clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const ECRANS = ['titre','enligne','prets','preparation','reglages','pause','resultats'];
-  const CATALOGUE = [{ nom: 'Forêt', theme: 'foret' }, { nom: 'Port-Sable', theme: 'cote' }, { nom: 'Haut-Col', theme: 'montagne' }];
+  const CATALOGUE = [{ id: 'val-brule', nom: 'Forêt', theme: 'foret' }, { id: 'port-sable', nom: 'Port-Sable', theme: 'cote' }, { id: 'haut-col', nom: 'Haut-Col', theme: 'montagne' }];
   const NOMS_PNEUS = B.pneus.NOMS_PNEUS;
   const reglages = { circuit: 0, tours: 3, difficulte: 1, saison: 'ete', moment: 'jour', meteo: 'soleil',
     saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', pneus: 'slicks', pneusPilotes: ['slicks', 'slicks'], pneusAutoPilotes: [true, true], boite: 'auto', vue: 'cockpit', joueursLocaux: 1 };
@@ -65,7 +65,7 @@ const fabriquer = new Function('B', 'options', `
   ${demarrer}
   ${departBouton}
   return { $, EL, reglages, resolutions, messages, departs, actualiserConditions, annulerConditions, conditionsDuDepart,
-    conditionsCommunes, horlogePartagee, nomMeteoCourse, aller, departEnLigne, recevoirCourse, surMessageEnLigne,
+    conditionsCommunes, horlogePartagee, nomMeteoCourse, aller, departEnLigne, recevoirCourse, surMessageEnLigne, contratPiste,
     etat: () => ({ ecran, conditionsPreparation, conditionsPreparationCle, conditionsEnCours, session }),
     mode: mode => { modePrepa = mode; }, session: s => { session = s; },
     mettreConditions: value => { conditionsPreparation = value; conditionsPreparationCle = cleConditions(); },
@@ -172,7 +172,7 @@ test('invité en ligne : aucun appel de résolution, préférences saison/moment
   Object.assign(f.reglages, { saison: 'ete', moment: 'jour', meteo: 'soleil', saisonMode: 'reel', momentMode: 'reel', meteoMode: 'reel' });
   assert.equal(await f.actualiserConditions(), null); assert.equal(await f.actualiserConditions(true), null); assert.equal(f.resolutions.length, 0);
   const prefs = { saison: f.reglages.saison, moment: f.reglages.moment, meteo: f.reglages.meteo };
-  assert(f.recevoirCourse({ versionChoixPneus: 1, ...snapshot(), i: 2, tours: 3, difficulte: 1, eau: .7 }));
+  assert(f.recevoirCourse({ versionChoixPneus: 2, protocolePneus: 1, piste: f.contratPiste(2), ...snapshot(), i: 2, tours: 3, difficulte: 1, eau: .7 }));
   for (const [k, v] of Object.entries(prefs)) assert.equal(f.reglages[k], v);
   assert.equal(f.EL.course.saison, 'hiver'); assert(f.EL.course.mReelle.neige); assert.equal(f.resolutions.length, 0);
 });

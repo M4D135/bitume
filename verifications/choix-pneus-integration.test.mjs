@@ -206,14 +206,16 @@ test('commandes de service hors pause ou sans pilote local : rejet sans mutation
   assert.deepEqual(roues(co.joueur), avant); assert.equal(co.joueur.etat.pneusProchainArret, 'slicks');
 });
 
-test('partie en ligne : choisir une autre monte au stand attend la synchronisation dédiée', () => {
+test('12F3 : choix de monte en ligne autorisé pour chaque pilote local sans changer les pneus en place', () => {
   const a = creer(), co = course({humains: {noms: ['H1', 'H2', 'I1', 'I2'], locaux: [2, 3], hote: false, enLigne: true}});
   a.monterPneusDepart(co, true, {pneus: ['slicks', 'inter', 'pluie', 'neige']}, 'slicks'); user(co);
   a.seance({type: 'duo', course: co, locaux: [2, 3], enLigne: {role: 'invite'}}); a.ecran('pause'); a.majPneusStands();
-  const avant = co.voitures.map(roues), prevus = co.voitures.map(v => v.etat.pneusProchainArret);
-  assert.equal(a.choisirPneusStands(0, 'slicks'), false);
+  const avant = co.voitures.map(roues);
+  assert.equal(a.choisirPneusStands(0, 'slicks'), true);
   a.changer('pneusStand1', 'pluie');
   assert.deepEqual(co.voitures.map(roues), avant);
-  assert.deepEqual(co.voitures.map(v => v.etat.pneusProchainArret), prevus);
-  assert.equal(a.$('ps-pilote-0').disabled, true); assert.equal(a.$('ps-pilote-1').disabled, true);
+  assert.deepEqual(co.voitures.slice(0, 4).map(v => v.etat.pneusProchainArret), ['slicks', 'inter', 'slicks', 'pluie']);
+  assert.equal(a.$('ps-pilote-0').disabled, false); assert.equal(a.$('ps-pilote-1').disabled, false);
+  assert.deepEqual(selection(a, 'pneusStand0'), ['slicks']); assert.deepEqual(selection(a, 'pneusStand1'), ['pluie']);
+  assert.equal(a.sauvegardes.length, 0, 'choix propre à la séance, sans réécriture des préférences de départ');
 });

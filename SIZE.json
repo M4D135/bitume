@@ -1,8 +1,8 @@
 {
-  "version": "0.2.49",
-  "raw": 14024804,
-  "gzip": 3322227,
-  "sha256": "72b18fa2bc3aad3f0735296b5f56b98c67dcb75bcfc77cd3059d1404eb495c9c",
+  "version": "0.2.50",
+  "raw": 14042272,
+  "gzip": 3327131,
+  "sha256": "b1154b9b8a03641f2b166c44bd7cd191589e2375a9cc490733edd90934d5dc21",
   "sources": {
     "moteur/renderer.js": 305497,
     "ferro/engine.js": 2025,
@@ -43,6 +43,7 @@
     "vitre.js": 13546,
     "sillage.js": 3705,
     "reseau.js": 15157,
+    "pneus-reseau.js": 9636,
     "mesures.js": 19248,
     "qualite.js": 5329,
     "cadence.js": 41306,
@@ -54,7 +55,7 @@
     "scene-bench.js": 23081,
     "vibrations.js": 13482,
     "ombres.js": 12015,
-    "jeu.js": 318232,
+    "jeu.js": 326016,
     "index.html": 53886,
     "style.css": 53909
   }

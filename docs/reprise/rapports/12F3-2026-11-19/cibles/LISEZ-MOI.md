@@ -1,0 +1,1 @@
+Contrôles ciblés avant gel. Le log conditions-integration.log conserve le premier échec du harnais resté au protocole1 ; correction du message de test validée11/11 ensuite. La qualification globale finale fait autorité dans ../qualification-execution.json. Aucun test de production ni seuil n’a été assoupli.

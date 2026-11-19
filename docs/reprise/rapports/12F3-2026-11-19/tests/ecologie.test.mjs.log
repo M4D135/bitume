@@ -1,0 +1,68 @@
+ok champ borné, déterministe et sans allocation de sortie imposée
+ok les trois tracés comportent des clairières, des poches riches et des côtés différents
+ok le boisement laisse des vides sans déplacer les objets fixes ou les troncs survivants
+{
+  "controles": 3,
+  "mesures": [
+    {
+      "biome": "foret",
+      "points": 1142,
+      "nus": 0.647985989492119,
+      "riches": 0.11996497373029773,
+      "asymetrie": 0.10944841389374574,
+      "plusLongueClairiere": 522,
+      "arbresAvant": 2600,
+      "arbresApres": 1082,
+      "solLointain": {
+        "nappes": 117,
+        "sommets": 55271,
+        "indices": 200106,
+        "couleursModifiees": 33801,
+        "sableInchange": 0,
+        "sommetsAjoutes": 0,
+        "indicesAjoutes": 0,
+        "nappesAjoutees": 0
+      }
+    },
+    {
+      "biome": "cote",
+      "points": 946,
+      "nus": 0.5983086680761099,
+      "riches": 0.21035940803382663,
+      "asymetrie": 0.09729017896319372,
+      "plusLongueClairiere": 480,
+      "arbresAvant": 2600,
+      "arbresApres": 453,
+      "solLointain": {
+        "nappes": 104,
+        "sommets": 48772,
+        "indices": 178572,
+        "couleursModifiees": 25611,
+        "sableInchange": 4657,
+        "sommetsAjoutes": 0,
+        "indicesAjoutes": 0,
+        "nappesAjoutees": 0
+      }
+    },
+    {
+      "biome": "montagne",
+      "points": 1472,
+      "nus": 0.5427989130434783,
+      "riches": 0.23233695652173914,
+      "asymetrie": 0.12492872951733996,
+      "plusLongueClairiere": 432,
+      "arbresAvant": 2600,
+      "arbresApres": 799,
+      "solLointain": {
+        "nappes": 176,
+        "sommets": 76424,
+        "indices": 290184,
+        "couleursModifiees": 27500,
+        "sableInchange": 0,
+        "sommetsAjoutes": 0,
+        "indicesAjoutes": 0,
+        "nappesAjoutees": 0
+      }
+    }
+  ]
+}

@@ -5,10 +5,12 @@ import { test } from 'node:test';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
+require('../src/circuit.js');
 require('../src/conduite.js'); require('../src/meteo.js');
 require('../src/ambiance.js');
 require('../src/saisons.js');
 require('../src/graphismes.js');
+require('../src/pneus-reseau.js');
 const B = globalThis.BITUME;
 const source = readFileSync(process.argv[2] || new URL('../src/jeu.js', import.meta.url), 'utf8');
 const debut = source.indexOf('  const EL = '), fin = source.indexOf('  function envoyerEtats(', debut);
@@ -52,7 +54,7 @@ const creer = new Function('B', `
   ${source.slice(changementDebut, changementFin)}
   return {
     EL, reglages, messages, departs, $, proposerCourse, basculerPret, diffuserPrets, quitterPrets, quitterEnLigne,
-    recevoirCourse, surMessageEnLigne, surDepart, surFermeture, nouvelleLiaison,
+    recevoirCourse, surMessageEnLigne, surDepart, surFermeture, nouvelleLiaison, contratPiste,
     choisirPneusPilote, choixPneusLocaux, pneusAutomatiques, appliquerConseilPneus, sauvegardes,
     changer: (name, value) => ecouteurs.get('change')({ target: {name, value} }),
     screen: s => { ecran = s; }, retour: s => { retourReglages = s; },
@@ -74,7 +76,7 @@ const creer = new Function('B', `
         lies: new Set(joueurs.map((_, k) => k).filter(k => k !== id)),
         pretAvec(k) { return this.lies.has(k); }, horloge: () => maintenant,
         envoyer(m, a) { messages.push({ m: structuredClone(m), a }); },
-        on(n, f) { callbacks.set(n, f); return this; }, emit(n, m) { callbacks.get(n)?.(m); },
+        on(n, f) { callbacks.set(n, f); return this; }, emit(n, ...args) { callbacks.get(n)?.(...args); },
         fermer() { this.etat = 'ferme'; this.emit('ferme', 'local'); }
       };
       reglages.joueursLocaux = joueurs[id];
@@ -86,14 +88,17 @@ function hote(joueurs) { const a = creer(B); const R = a.connecter('hote', joueu
 function choixMessage(a, id, pneus) {
   const nombre = a.EL.R.membres.find(m => m.id === id)?.joueurs === 2 ? 2 : 1;
   const pneusPilotes = Array.isArray(pneus) ? pneus : Array(nombre).fill(pneus);
-  return { versionChoixPneus: 1, pneus: pneusPilotes[0], pneusPilotes };
+  return { versionChoixPneus: 2, pneus: pneusPilotes[0], pneusPilotes };
+}
+function contrat(a, options = {}) {
+  return { versionChoixPneus: 2, protocolePneus: 1, piste: a.contratPiste(options.i ?? 0), ...options };
 }
 function pret(a, id = 1, pneus = 'slicks') { a.surMessageEnLigne({ t: 'pret', oui: true, ...choixMessage(a, id, pneus) }, id); }
 function tous(a, R) { a.basculerPret(); for (const m of R.membres) if (m.id !== R.id) pret(a, m.id); }
 function compte(a) { return a.messages.filter(x => x.m.t === 'depart').length; }
 function invite(joueurs = [1, 1]) {
   const a = creer(B); const R = a.connecter('invite', joueurs);
-  a.surMessageEnLigne({ t: 'confirmer', course: { versionChoixPneus: 1, i: 1, tours: 5, difficulte: 2, meteo: 'pluie', eau: .8 } }, 0);
+  a.surMessageEnLigne({ t: 'confirmer', course: contrat(a, { i: 1, tours: 5, difficulte: 2, meteo: 'pluie', eau: .8 }) }, 0);
   return { a, R };
 }
 
@@ -109,7 +114,7 @@ test('le moment choisi avant départ est annoncé et transmis aux pilotes', () =
   b.surMessageEnLigne({t:'depart',cfg},0);b.avancer(5000);
   assert.equal(b.departs[0].cfg.moment,'nuit');
   assert.equal(b.reglages.moment,'jour','préférence personnelle préservée après la course imposée');
-  assert.equal(b.recevoirCourse({versionChoixPneus:1,i:0,tours:3,meteo:'soleil',eau:0,moment:'invalide'}),true);
+  assert.equal(b.recevoirCourse(contrat(b, {i:0,tours:3,meteo:'soleil',eau:0,moment:'invalide'})),true);
   assert.equal(b.EL.course.moment,'jour','messages anciens ou invalides reprennent le jour');
 });
 test('saison imposée par l’hôte, sans modifier les préférences des invités ; neige absente du Sud', () => {
@@ -120,7 +125,7 @@ test('saison imposée par l’hôte, sans modifier les préférences des invité
   assert.equal(cfg.saison, 'hiver');
   const b = creer(B); b.connecter('invite'); b.reglages.saison = 'printemps'; b.surMessageEnLigne({t:'depart',cfg},0); b.avancer(5000);
   assert.equal(b.departs[0].cfg.saison, 'hiver'); assert.equal(b.reglages.saison, 'printemps');
-  assert.equal(b.recevoirCourse({ versionChoixPneus: 1, i: 0, tours: 3, meteo: 'soleil', eau: 0, saison: 'inconnue' }), true);
+  assert.equal(b.recevoirCourse(contrat(b, { i: 0, tours: 3, meteo: 'soleil', eau: 0, saison: 'inconnue' })), true);
   assert.equal(b.EL.course.saison, 'ete');
   a.reglages.circuit = 1; a.proposerCourse(); tous(a, R);
   assert.match(a.$('pr-course').textContent, /pluie/); assert.doesNotMatch(a.$('pr-course').textContent, /neige/);
@@ -204,7 +209,7 @@ test('un inconnu ne peut se dire prêt ni imposer des pneus', () => {
 });
 test('l’invité choisit ses pneus sans modifier sa boîte ni sa vue', () => {
   const { a } = invite(); a.choisirPneusPilote(0, 'inter'); a.reglages.boite = 'manuelle'; a.reglages.vue = 'poursuite'; a.basculerPret();
-  assert.deepEqual(a.messages.at(-1), { m: { t: 'pret', oui: true, versionChoixPneus: 1, pneus: 'inter', pneusPilotes: ['inter'] }, a: 0 });
+  assert.deepEqual(a.messages.at(-1), { m: { t: 'pret', oui: true, versionChoixPneus: 2, pneus: 'inter', pneusPilotes: ['inter'] }, a: 0 });
   assert.equal(a.reglages.boite, 'manuelle'); assert.equal(a.reglages.vue, 'poursuite');
 });
 test('annulation par l’hôte depuis les réglages retourne au salon', () => {
@@ -233,7 +238,7 @@ test('le conseil suit la chaussée pour le mode automatique, le choix manuel res
   const catalogue = new Function(catalogueDeclaration + 'return CATALOGUE;')();
   const i = catalogue.findIndex(c => c.theme === 'foret');
   a.reglages.pneusAutoPilotes = [true, false];
-  const annonce = { versionChoixPneus: 1, i, tours: 3, meteo: 'soleil', eau: 0, saison: 'ete' };
+  const annonce = contrat(a, { i, tours: 3, meteo: 'soleil', eau: 0, saison: 'ete' });
   a.recevoirCourse(annonce);
   assert.equal(a.reglages.pneus, 'slicks');
   a.recevoirCourse({ ...annonce, saison: 'hiver' });
@@ -242,7 +247,7 @@ test('le conseil suit la chaussée pour le mode automatique, le choix manuel res
   a.recevoirCourse({ ...annonce, saison: 'hiver' });
   assert.equal(a.reglages.pneus, 'inter', 'annonce identique : choix du pilote conservé');
   const sud = catalogue.findIndex(c => c.theme === 'cote');
-  a.recevoirCourse({ ...annonce, i: sud, saison: 'hiver' });
+  a.recevoirCourse(contrat(a, { ...annonce, i: sud, piste: a.contratPiste(sud), saison: 'hiver' }));
   assert.equal(a.reglages.pneus, 'inter', 'le choix manuel résiste au changement de circuit');
   assert.equal(a.reglages.pneusPilotes[1], 'pluie', 'le choix du second pilote reste indépendant');
 });
@@ -254,7 +259,7 @@ for (const joueurs of [[2, 2], [2, 1], [1, 2]]) test('12F2 : montes personnelles
   a.basculerPret(); pret(a, 1, distant); a.avancer(730);
   assert.equal(a.departs.length, 1);
   const cfg = a.departs[0].cfg;
-  assert.equal(cfg.versionChoixPneus, 1);
+  assert.equal(cfg.versionChoixPneus, 2);
   assert.deepEqual(cfg.pneus, [...['slicks', 'neige'].slice(0, joueurs[0]), ...distant]);
   assert.deepEqual(cfg.humains.map(h => [h.machine, h.local]), joueurs.flatMap((n, m) => Array.from({length: n}, (_, k) => [m, k])));
   const b = creer(B); b.connecter('invite', joueurs);
@@ -268,7 +273,7 @@ test('12F2 : l’invité transmet les deux montes, sans partager leur tableau mu
   const { a } = invite([2, 2]);
   a.choisirPneusPilote(0, 'neige'); a.choisirPneusPilote(1, 'inter'); a.basculerPret();
   const m = a.messages.at(-1).m;
-  assert.equal(m.versionChoixPneus, 1); assert.deepEqual(m.pneusPilotes, ['neige', 'inter']);
+  assert.equal(m.versionChoixPneus, 2); assert.deepEqual(m.pneusPilotes, ['neige', 'inter']);
   assert.equal(m.pneus, 'neige', 'alias historique réservé au premier pilote');
   a.reglages.pneusPilotes[1] = 'pluie';
   assert.deepEqual(m.pneusPilotes, ['neige', 'inter']);
@@ -296,7 +301,7 @@ for (const mauvais of [
   { pneusPilotes: ['slicks'] }, { pneusPilotes: ['slicks', 'inter', 'pluie'] },
   { pneusPilotes: ['slicks', '__proto__'] }, { pneusPilotes: ['constructor', 'pluie'] },
   { pneusPilotes: ['slicks', null] }, { pneusPilotes: 'pluie' },
-  { versionChoixPneus: 0 }, { versionChoixPneus: 2 }, { versionChoixPneus: '1' },
+  { versionChoixPneus: 0 }, { versionChoixPneus: 1 }, { versionChoixPneus: '2' },
   { versionChoixPneus: undefined, pneusPilotes: undefined }
 ]) test('12F2 : accord pneus invalide refusé ' + JSON.stringify(mauvais), () => {
   const { a } = hote([2, 2]); a.basculerPret(); pret(a, 1, ['inter', 'pluie']);
@@ -308,7 +313,7 @@ for (const mauvais of [
 });
 
 test('12F2 : un message pneus ancien ou malformé retire aussi un accord devenu douteux', () => {
-  for (const m of [{ t: 'pneus', pneus: 'neige' }, { t: 'pneus', versionChoixPneus: 1, pneusPilotes: ['pluie'] }]) {
+  for (const m of [{ t: 'pneus', pneus: 'neige' }, { t: 'pneus', versionChoixPneus: 2, pneusPilotes: ['pluie'] }]) {
     const { a } = hote([2, 2]); a.basculerPret(); pret(a, 1, ['inter', 'pluie']);
     a.surMessageEnLigne(m, 1); a.avancer(1000);
     assert.equal(compte(a), 0); assert.equal(a.EL.confirmation.prets.has(1), false);
@@ -317,16 +322,16 @@ test('12F2 : un message pneus ancien ou malformé retire aussi un accord devenu 
 
 test('12F2 : un inconnu et un pair non lié ne modifient ni les choix ni les accords', () => {
   const { a, R } = hote([2, 2]);
-  a.surMessageEnLigne({ t: 'pret', oui: true, versionChoixPneus: 1, pneusPilotes: ['neige', 'pluie'] }, 77);
+  a.surMessageEnLigne({ t: 'pret', oui: true, versionChoixPneus: 2, pneusPilotes: ['neige', 'pluie'] }, 77);
   R.lies.delete(1);
   a.surMessageEnLigne({ t: 'pneus', ...choixMessage(a, 1, ['inter', 'neige']) }, 1);
   assert.equal(a.EL.pneusDe.size, 0); assert.equal(a.EL.confirmation.prets.size, 0);
 });
 
 test('12F2 : une annonce sans contrat reconnu ne prépare pas un invité', () => {
-  for (const versionChoixPneus of [undefined, 0, 2, '1']) {
+  for (const versionChoixPneus of [undefined, 0, 1, '2']) {
     const a = creer(B); a.connecter('invite');
-    a.surMessageEnLigne({ t: 'confirmer', course: { versionChoixPneus, i: 0, tours: 3, meteo: 'soleil', eau: 0 } }, 0);
+    a.surMessageEnLigne({ t: 'confirmer', course: contrat(a, { versionChoixPneus, i: 0, tours: 3, meteo: 'soleil', eau: 0 }) }, 0);
     assert.ok(!a.EL.confirmation); assert.equal(a.departs.length, 0);
     assert.match(a.$('l-etat').textContent, /version/i, 'le refus est lisible dans le salon');
   }
@@ -372,7 +377,7 @@ test('12F2 : un faux choix UI ne modifie ni l’accord ni les préférences', ()
 
 test('12F2 : le refus de version reste visible après le retour réel au salon depuis la confirmation', () => {
   const { a } = invite(); assert.equal(a.etat().ecran, 'prets');
-  a.surMessageEnLigne({ t: 'confirmer', course: { versionChoixPneus: 0, i: 0, tours: 3, meteo: 'soleil', eau: 0 } }, 0);
+  a.surMessageEnLigne({ t: 'confirmer', course: contrat(a, { versionChoixPneus: 0, i: 0, tours: 3, meteo: 'soleil', eau: 0 }) }, 0);
   assert.equal(a.etat().ecran, 'enligne'); assert.equal(a.EL.confirmation, null);
   assert.match(a.$('l-etat').textContent, /versions? incompatibles/i);
   assert.match(a.$('l-etat').textContent, /rechargez/i);
@@ -409,4 +414,80 @@ test('12F2 : arrivée tardive valide, cette machine attend la suivante sans inva
   assert.equal(b.departs.length, 0);
   assert.match(b.$('l-etat').textContent, /attendez la suivante/i);
   assert.doesNotMatch(b.$('l-etat').textContent, /incompatible/i);
+});
+
+test('12F3 : annonce et départ portent le protocole de pneus et l’identité exacte du circuit', () => {
+  const { a, R } = hote([2, 2]); tous(a, R); a.avancer(730);
+  const annonce = a.messages.find(x => x.m.t === 'course').m, cfg = a.departs[0].cfg;
+  for (const m of [annonce, cfg]) {
+    assert.equal(m.versionChoixPneus, 2); assert.equal(m.protocolePneus, 1);
+    assert.deepEqual(m.piste, a.contratPiste(m.i));
+    assert.equal(typeof m.piste.id, 'string'); assert.equal(typeof m.piste.revision, 'string');
+    assert.ok(m.piste.revision.length > 0);
+  }
+  assert.equal(typeof cfg.seance, 'string'); assert.ok(cfg.seance.length > 0);
+});
+
+test('12F3 : mauvaise révision de piste, circuit déplacé et ancien protocole refusés avant préparation', () => {
+  const { a, R } = hote(); tous(a, R); a.avancer(730); const cfg = a.departs[0].cfg;
+  for (const patch of [
+    {protocolePneus: undefined}, {protocolePneus: 0}, {protocolePneus: 2},
+    {piste: undefined}, {piste: null}, {piste: {...cfg.piste, id: 'circuit-absent'}},
+    {piste: {...cfg.piste, revision: 'ancienne-revision'}}, {i: cfg.i + 1},
+    {seance: undefined}, {seance: ''}
+  ]) {
+    const b = creer(B); b.connecter('invite');
+    assert.doesNotThrow(() => b.surMessageEnLigne({t: 'depart', cfg: {...cfg, ...patch}}, 0));
+    b.avancer(5000); assert.equal(b.departs.length, 0, JSON.stringify(patch));
+    assert.match(b.$('l-etat').textContent, /version|pneu|circuit|séance|seance|incompatib/i);
+  }
+  for (const patch of [{protocolePneus: 0}, {piste: {...cfg.piste, revision: 'ancienne-revision'}}]) {
+    const b = creer(B); b.connecter('invite');
+    b.surMessageEnLigne({t: 'confirmer', course: {...cfg, ...patch}}, 0);
+    assert.equal(b.EL.confirmation, null); assert.equal(b.departs.length, 0);
+  }
+});
+
+test('12F3 : départ répété avant et après le chargement ne recrée pas la séance, ancien départ refusé après la suivante', () => {
+  const { a, R } = hote(); tous(a, R); a.avancer(730); const premier = a.departs[0].cfg;
+  a.proposerCourse(); tous(a, R); a.avancer(730); const second = a.departs[1].cfg;
+  assert.notEqual(second.seance, premier.seance, 'chaque course dispose d’une identité propre');
+  const b = creer(B); b.connecter('invite');
+  b.surMessageEnLigne({t: 'depart', cfg: premier}, 0);
+  b.surMessageEnLigne({t: 'depart', cfg: premier}, 0); b.avancer(40);
+  assert.equal(b.departs.length, 1);
+  b.surMessageEnLigne({t: 'depart', cfg: premier}, 0); b.avancer(40);
+  assert.equal(b.departs.length, 1);
+  b.surMessageEnLigne({t: 'depart', cfg: second}, 0); b.avancer(40);
+  b.surMessageEnLigne({t: 'depart', cfg: premier}, 0); b.avancer(40);
+  assert.equal(b.departs.length, 2); assert.equal(b.departs[1].cfg.seance, second.seance);
+});
+
+test('12F3 : une nouvelle séance reçue pendant le chargement invalide le départ précédent', () => {
+  const { a, R } = hote(); tous(a, R); a.avancer(730); const premier = a.departs[0].cfg;
+  a.proposerCourse(); tous(a, R); a.avancer(730); const second = a.departs[1].cfg;
+  const b = creer(B); b.connecter('invite');
+  b.surMessageEnLigne({t: 'depart', cfg: premier}, 0); b.avancer(10);
+  b.surMessageEnLigne({t: 'depart', cfg: second}, 0); b.avancer(50);
+  assert.equal(b.departs.length, 1); assert.equal(b.departs[0].cfg.seance, second.seance);
+});
+
+test('12F3 : annulation de l’hôte pendant les 30 ms de chargement empêche le départ accepté', () => {
+  const { a, R } = hote(); tous(a, R); a.avancer(730); const cfg = a.departs[0].cfg;
+  const { a: b } = invite();
+  b.surMessageEnLigne({t: 'depart', cfg}, 0); b.avancer(10);
+  assert.equal(b.EL.seanceAcceptee, cfg.seance); assert.equal(b.departs.length, 0);
+  b.surMessageEnLigne({t: 'annuler'}, 0); b.avancer(1000);
+  assert.equal(b.departs.length, 0); assert.equal(b.EL.seanceAcceptee, null);
+  assert.equal(b.etat().ecran, 'enligne'); assert.match(b.$('l-etat').textContent, /annulé/i);
+});
+
+test('12F3 : refus de version pendant les 30 ms de chargement invalide aussi le départ accepté', () => {
+  const { a, R } = hote(); tous(a, R); a.avancer(730); const cfg = a.departs[0].cfg;
+  const { a: b } = invite();
+  b.surMessageEnLigne({t: 'depart', cfg}, 0); b.avancer(10);
+  assert.equal(b.EL.seanceAcceptee, cfg.seance); assert.equal(b.departs.length, 0);
+  b.surMessageEnLigne({t: 'confirmer', course: {...cfg, versionChoixPneus: 1}}, 0); b.avancer(1000);
+  assert.equal(b.departs.length, 0); assert.equal(b.EL.seanceAcceptee, null);
+  assert.equal(b.etat().ecran, 'enligne'); assert.match(b.$('l-etat').textContent, /versions? incompatibles/i);
 });

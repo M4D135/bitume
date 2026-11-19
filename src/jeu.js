@@ -315,9 +315,10 @@
       B.public.regler(sc.public, { presence: B.public.presencePour(conditions.meteo, sc.saison, conditions.moment === 'nuit') });
     }
     if (enl) {
-      S.enLigne = { T0: enl.T0, role: enl.role, humains: enl.humains }; S.enLigneOrigine = true;
+      S.enLigne = { T0: enl.T0, role: enl.role, humains: enl.humains, seance: enl.seance }; S.enLigneOrigine = true;
       course.distant = (v, dt) => appliquerDistant(S, v, dt);
       EL.recus.clear(); EL.corr.clear(); EL.pasEnvoi = 0;
+      initialiserPneusReseau(S, enl);
     }
     // Écran partagé (David, 16/11 : « multi en écran splitté local, deux manettes, l'un sur l'autre ou côte à côte ») :
     // la vue du joueur 2 a son propre état de caméra, d'éclair et d'affichage, le reste vient de la séance.
@@ -335,6 +336,10 @@
     delete $('hud').dataset.reduit; delete hud2.dataset.reduit;
     remplirPoses(S.cour, course); remplirPoses(S.prec, course);
     session = S;
+    if (enl) {
+      envoyerPneusReseau(S, true);
+      if (EL.role === 'invite') EL.R.envoyer({ t: 'demande-pneus', version: VERSION_PNEUS_RESEAU, seance: enl.seance }, 0);
+    }
     tactile(!auto && !duo);
     // hors préparation (référence, banc, démarrage), tout ce que la séance créerait à sa première image naît ici
     if (!prepa.interne) prechargerSeance(S);
@@ -849,6 +854,7 @@
     if (S.type === 'duo') { const [a, b] = S.locaux; cmd = []; cmd[a] = auto ? B.course.commandesIA(co, co.voitures[a]) : commandesJoueur(); cmd[b] = auto ? B.course.commandesIA(co, co.voitures[b]) : commandesJoueur2(); }
     else cmd = auto ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
     const ev = B.course.pas(co, cmd, DT);
+    if (S.enLigne) actualiserPneusDistants(S, DT);
     // vibration manette : le pilote la sent passer dans ses mains — le moteur selon les tours, la route, les
     // vibreurs, l'herbe, le patinage, la glisse et les chocs ; la main reste calme si le réglage est à « non ».
     // Les événements du pas sont retenus pour l'image (majVibrations), à deux pour chaque joueur et sa voiture.
@@ -921,6 +927,7 @@
     // en ligne : chacun annonce le temps officiel de sa voiture, l'hôte aussi ceux des rivaux ; un temps officiel reçu
     // remplace celui mesuré ici sur les états reçus (même classement au millième sur les deux machines)
     if (S.enLigne && EL.R) for (const e of ev) {
+      if (e.type === 'stand' && e.phase === 'repare' && !co.voitures[e.id].distant) envoyerPneusReseau(S, true, 'pneus-service');
       if (e.type === 'tour' && co.voitures[e.id].joueur) EL.R.envoyer({ t: 'tour', id: e.id, tour: e.tour, temps: e.temps });
       else if (e.type === 'arrivee') {
         const v = co.voitures[e.id];
@@ -1036,8 +1043,20 @@
   // rivaux une image sur deux. Une voiture distante est prolongée jusqu'au pas courant et son écart se résorbe en
   // 0,12 s. Les temps officiels arrivent par le canal fiable. Une machine qui part laisse ses voitures à l'ordinateur
   // de l'hôte ; sans hôte, chacun finit la course seul.
-  const EL = { R: null, role: null, recus: new Map(), corr: new Map(), pasEnvoi: 0, pred: {}, vieux: {}, course: null, pneusDe: new Map() };
-  const VERSION_CHOIX_PNEUS = 1;
+  const EL = { R: null, role: null, recus: new Map(), corr: new Map(), pasEnvoi: 0, pred: {}, vieux: {}, course: null, pneusDe: new Map(),
+    numeroSeance: 0, seanceAcceptee: null, dernierDepart: -Infinity };
+  const VERSION_CHOIX_PNEUS = 2, VERSION_PNEUS_RESEAU = 1;
+  // Empreinte des sources du build, incluant catalogue, générateur, limites et collisions : même piste, même jeu.
+  const REVISION_PISTES = '__REVISION_PISTES__';
+  function contratPiste(i) {
+    return Number.isInteger(i) && CATALOGUE[i] ? { id: CATALOGUE[i].id, revision: REVISION_PISTES } : null;
+  }
+  function compatiblePneusReseau(k) {
+    const piste = k && contratPiste(k.i);
+    return !!(piste && k.versionChoixPneus === VERSION_CHOIX_PNEUS && k.protocolePneus === VERSION_PNEUS_RESEAU &&
+      k.piste && k.piste.id === piste.id && k.piste.revision === piste.revision);
+  }
+  function identiteSeanceValide(s) { return typeof s === 'string' && s.length > 0 && s.length <= 128; }
   const nomPilote = () => (reglages.nom || '').trim().slice(0, 16) || 'Pilote';
   const joueursIci = () => reglages.joueursLocaux === 2 ? 2 : 1;
   const propre = t => String(t || '').replace(/[<>&"'`\\]/g, '').trim().slice(0, 16) || 'Pilote';
@@ -1139,7 +1158,8 @@
     if (EL.role !== 'hote' || !EL.R) return;
     const conditions = conditionsCommunes(conditionsDuDepart());
     const prevue = meteoPourConditions(conditions, reglages.circuit, graineCourse + 1);
-    EL.course = { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, ...conditions, eau: B.conduite.eauSurPiste(prevue), versionChoixPneus: VERSION_CHOIX_PNEUS };
+    EL.course = { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, ...conditions, eau: B.conduite.eauSurPiste(prevue),
+      versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, piste: contratPiste(reglages.circuit) };
     EL.R.envoyer(Object.assign({ t: 'course' }, EL.course));
     majCourseSalon();
   }
@@ -1229,10 +1249,11 @@
   }
   function recevoirCourse(m) {
     if (!m || !Number.isInteger(m.i) || !CATALOGUE[m.i]) return false;
-    if (m.versionChoixPneus !== VERSION_CHOIX_PNEUS) { refuserVersionPneus(); return false; }
+    if (!compatiblePneusReseau(m)) { refuserVersionPneus(); return false; }
     // nouvelle annonce : les pneus conseillés sont présélectionnés quand la météo change, le pilote peut changer
     const eau = clamp(+m.eau || 0, 0, 1), avant = EL.course;
-    EL.course = { i: m.i | 0, tours: clamp(m.tours | 0, 1, 99), difficulte: m.difficulte | 0, ...conditionsCommunes(m), eau, versionChoixPneus: VERSION_CHOIX_PNEUS };
+    EL.course = { i: m.i | 0, tours: clamp(m.tours | 0, 1, 99), difficulte: m.difficulte | 0, ...conditionsCommunes(m), eau,
+      versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, piste: contratPiste(m.i) };
     if (!avant || avant.i !== EL.course.i || avant.saison !== EL.course.saison || Math.abs(avant.eau - eau) > .05) {
       appliquerConseilPneus(B.conduite.pneusConseilles(surfaceAnnoncee(EL.course))); envoyerPneus();
     }
@@ -1256,7 +1277,7 @@
     return m.pneusPilotes.slice();
   }
   function refuserVersionPneus() {
-    annulerConfirmation(); EL.course = null;
+    annulerConfirmation(); EL.course = null; EL.seanceAcceptee = null;
     if (ecran === 'prets') aller('enligne');
     majCourseSalon();
     etatEnLigne('Versions incompatibles : rechargez la même version du jeu sur chaque machine.');
@@ -1277,7 +1298,7 @@
   function nouvelleLiaison() {
     annulerConfirmation();
     if (EL.R) EL.R.fermer();
-    EL.course = null; EL.pneusDe.clear();
+    EL.course = null; EL.pneusDe.clear(); EL.seanceAcceptee = null; EL.dernierDepart = -Infinity;
     const R = EL.R = B.reseau.creer({ url: B.reseau.adresseSalon(), nom: nomPilote(), joueurs: joueursIci() });
     EL.role = null;
     $('l-choisir').hidden = true; $('l-code-affiche').hidden = true;
@@ -1290,6 +1311,13 @@
       .on('pair', id => {
         if (R !== EL.R) return;
         majSalon();
+        if (session && session.enLigne && session.enLigne.humains.some(h => h.machine === id)) {
+          if (EL.role === 'hote') envoyerPneusReseau(session, true, 'pneus-etat', id);
+          else if (id === 0) {
+            envoyerPneusReseau(session, true);
+            R.envoyer({ t: 'demande-pneus', version: VERSION_PNEUS_RESEAU, seance: session.enLigne.seance }, 0);
+          }
+        }
         if (EL.role !== 'hote') { if (id === 0) envoyerPneus(); return; }
         annoncerCourse();
         // une machine arrive pendant la confirmation : elle la reçoit aussi
@@ -1298,7 +1326,7 @@
       .on('relais', () => { if (R !== EL.R) return; majSalon(); if (session && session.enLigne && ecran === 'course') sousMessage('Liaison directe perdue : la course passe par le salon'); })
       .on('parti', id => { if (R === EL.R) surDepart(id); })
       .on('message', (m, de) => { if (R === EL.R) surMessageEnLigne(m, de); })
-      .on('etat', p => { if (R === EL.R) for (const e of p.voitures) { const r = EL.recus.get(e.id); if (!r || p.t >= r.t) EL.recus.set(e.id, { t: p.t, etat: e }); } })
+      .on('etat', (p, de) => { if (R === EL.R) recevoirEtatEnLigne(p, de); })
       .on('erreur', t => { if (R === EL.R) etatEnLigne(t); })
       .on('ferme', raison => { if (R === EL.R) surFermeture(raison); });
     return R;
@@ -1307,21 +1335,29 @@
   function lancerEnLigne(cfg) {
     reglages.circuit = cfg.i;
     const R = EL.R;
-    return preparerSeance('course', cfg.i, cfg, null, { verifier: () => EL.R === R && !!R && R.etat === 'connecte',
+    return preparerSeance('course', cfg.i, cfg, null, { verifier: () => EL.R === R && !!R && R.etat === 'connecte' && EL.seanceAcceptee === cfg.seance,
       reste: () => R && R.horloge ? cfg.T0 - R.horloge() : Infinity });
   }
   function surMessageEnLigne(m, de) {
     if (!m || typeof m !== 'object' || !EL.R) return;
     const S = session;
     if (m.t === 'depart' && de === 0 && EL.role === 'invite' && m.cfg) {
-      if (m.cfg.versionChoixPneus !== VERSION_CHOIX_PNEUS || !humainsDepartValides(m.cfg.humains) ||
+      if (!compatiblePneusReseau(m.cfg) || !identiteSeanceValide(m.cfg.seance) || !Number.isFinite(m.cfg.T0) ||
+        !Number.isSafeInteger(m.cfg.graine) || m.cfg.graine < 0 || !humainsDepartValides(m.cfg.humains) ||
         !Array.isArray(m.cfg.pneus) || m.cfg.pneus.length !== m.cfg.humains.length ||
         !Array.from(m.cfg.pneus).every(p => B.pneus.estJouable(p))) { refuserVersionPneus(); return; }
+      if (m.cfg.T0 <= EL.dernierDepart || m.cfg.seance === EL.seanceAcceptee) return;
       const humains = (Array.isArray(m.cfg.humains) ? m.cfg.humains : []).slice(0, 4).map(h => ({ nom: propre(h.nom), machine: h.machine | 0 }));
       const locaux = humains.map((h, k) => h.machine === EL.R.id ? k : -1).filter(k => k >= 0);
       annulerConfirmation();
       if (!locaux.length) { etatEnLigne('La course est partie sans cette machine : attendez la suivante.'); majCourseSalon(); return; }
+      EL.seanceAcceptee = m.cfg.seance; EL.dernierDepart = m.cfg.T0;
       lancerEnLigne(Object.assign({}, m.cfg, conditionsCommunes(m.cfg), { humains, locaux, role: 'invite' }));
+    } else if (m.t === 'pneus-etat' || m.t === 'pneus-service' || m.t === 'pneus-relais') recevoirPneusReseau(S, m, de);
+    else if (m.t === 'demande-pneus' && S && S.enLigne && EL.role === 'hote' &&
+      m.version === VERSION_PNEUS_RESEAU && m.seance === S.enLigne.seance &&
+      S.enLigne.humains.some(h => h.machine === de) && EL.R.pretAvec(de)) {
+      envoyerPneusReseau(S, true, 'pneus-etat', de);
     } else if (m.t === 'course' && de === 0 && EL.role === 'invite') recevoirCourse(m);
     else if (m.t === 'confirmer' && de === 0 && EL.role === 'invite') {
       if (!recevoirCourse(m.course)) return;
@@ -1331,7 +1367,7 @@
       majCourseSalon();
     } else if (m.t === 'prets' && de === 0 && EL.confirmation) { EL.confirmation.prets = new Set((Array.isArray(m.liste) ? m.liste : []).map(x => x | 0)); majPrets(); }
     else if (m.t === 'annuler' && de === 0 && EL.role === 'invite') {
-      annulerConfirmation();
+      annulerConfirmation(); EL.seanceAcceptee = null;
       if (retourReglages === 'prets') retourReglages = 'enligne';
       if (ecran === 'prets') aller('enligne');
       etatEnLigne('L’hôte a annulé le départ.'); majCourseSalon();
@@ -1361,7 +1397,7 @@
     if (!S || !S.enLigne || S.course.termine) return;
     const leurs = S.enLigne.humains.map((h, k) => h.machine === id ? k : -1).filter(k => k >= 0);
     if (!leurs.length) return;
-    if (EL.role === 'hote') for (const k of leurs) { const v = S.course.voitures[k]; v.distant = false; v.joueur = false; v.reprise = true; }
+    if (EL.role === 'hote') reprendrePneusReseau(S, id);
     message('Un pilote est parti', 'ambre'); sousMessage('Sa voiture passe à l’ordinateur');
   }
   function surFermeture(raison) {
@@ -1390,10 +1426,106 @@
     const k = EL.course || { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, ...conditionsCommunes(conditionsDuDepart()) };
     const graine = ++graineCourse;
     const conseil = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoPourConditions(k, k.i, graine)));
-    const cfg = { graine, i: k.i, tours: k.tours, difficulte: k.difficulte, ...conditionsCommunes(k), T0: R.horloge() + 4000, dateDepart: Date.now() + 4000, humains, versionChoixPneus: VERSION_CHOIX_PNEUS,
+    const T0 = Math.max(R.horloge() + 4000, EL.dernierDepart + 1);
+    const seance = Date.now().toString(36) + '-' + (++EL.numeroSeance) + '-' + graine;
+    const cfg = { graine, i: k.i, tours: k.tours, difficulte: k.difficulte, ...conditionsCommunes(k), T0, dateDepart: Date.now() + 4000, humains,
+      seance, versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, piste: contratPiste(k.i),
       pneus: humains.map(h => { const choix = h.machine === R.id ? choixPneusLocaux() : EL.pneusDe.get(h.machine); const p = choix && choix[h.local]; return B.pneus.estJouable(p) ? p : conseil; }) };
+    EL.seanceAcceptee = seance; EL.dernierDepart = T0;
     R.envoyer({ t: 'depart', cfg });
     lancerEnLigne(Object.assign({}, cfg, { locaux: humains.map((h, k) => h.machine === 0 ? k : -1).filter(k => k >= 0), role: 'hote' }));
+  }
+  // Les pneus voyagent à faible fréquence sur le canal fiable. L'hôte valide les humains invités AVANT de
+  // relayer leur état : à une déconnexion il possède ainsi tout remplacement déjà visible chez un autre pair.
+  function initialiserPneusReseau(S, cfg) {
+    const R = EL.R, co = S && S.course;
+    if (!R || !co || !cfg) return false;
+    const contexte = B.pneusReseau.creer({ seance: cfg.seance, machine: R.id, humains: cfg.humains, nombre: co.voitures.length });
+    if (!contexte) return false;
+    S.pneusReseau = contexte; S.pneusArchives = new Map();
+    S.pneusEnvoi = { dernier: -Infinity, messages: 0, octets: 0, services: 0 };
+    S.pneusVisuels = co.voitures.map(v => v.etat.etatPneus.map(r => ({ ...r })));
+    S.pneusServicesVus = co.voitures.map(v => v.etat.servicePneus);
+    return true;
+  }
+  function envoyerPneusReseau(S, force = false, type = 'pneus-etat', vers) {
+    const R = EL.R, co = S && S.course, contexte = S && S.pneusReseau;
+    if (!R || R.etat !== 'connecte' || !S || !S.enLigne || !co || !contexte || contexte.machine !== R.id) return false;
+    if (vers !== undefined && (!S.enLigne.humains.some(h => h.machine === vers) || !R.pretAvec(vers))) return false;
+    if (!force && co.horloge - S.pneusEnvoi.dernier < .5 - 1e-9) return false;
+    const paquet = B.pneusReseau.encoder(contexte, co.voitures, type);
+    if (!paquet) return false;
+    R.envoyer(paquet, contexte.machine === 0 ? vers : 0);
+    S.pneusEnvoi.dernier = co.horloge; S.pneusEnvoi.messages++;
+    S.pneusEnvoi.octets += JSON.stringify(paquet).length;
+    if (type === 'pneus-service') S.pneusEnvoi.services++;
+    // Fin de chargement ou retour de liaison : reprendre aussi les derniers humains validés par l'hôte.
+    if (contexte.machine === 0 && vers !== undefined) for (const [origine, etat] of S.pneusArchives) {
+      if (contexte.reprises.has(origine)) continue;
+      R.envoyer({ t: 'pneus-relais', origine, etat }, vers);
+    }
+    return true;
+  }
+  function recevoirPneusReseau(S, m, de) {
+    const R = EL.R, contexte = S && S.pneusReseau;
+    if (!R || !S || !S.enLigne || !contexte || contexte.machine !== R.id || !m || typeof m !== 'object') return [];
+    let origine = de, paquet = m;
+    if (m.t === 'pneus-relais') {
+      if (contexte.machine === 0 || de !== 0 || !Number.isInteger(m.origine) || m.origine === 0 ||
+        !S.enLigne.humains.some(h => h.machine === m.origine)) return [];
+      origine = m.origine; paquet = m.etat;
+    } else if (contexte.machine !== 0 && de !== 0) return [];
+    const recus = B.pneusReseau.recevoir(contexte, paquet, origine, S.course.voitures);
+    if (contexte.machine === 0 && origine !== 0 && recus.length) {
+      const copie = JSON.parse(JSON.stringify(paquet));
+      S.pneusArchives.set(origine, copie);
+      R.envoyer({ t: 'pneus-relais', origine, etat: copie });
+    }
+    for (const v of S.course.voitures) if (v.distant && v.humain &&
+      S.enLigne.humains[v.id]?.machine !== 0 && contexte.autorites[v.id] === 0) v.reprise = true;
+    for (const id of recus) {
+      const v = S.course.voitures[id], e = v.etat;
+      v.livree.pneus = e.pneus;
+      // Une monte nouvelle apparaît avec ses quatre pneus à la fois ; seule l'usure d'un même service est lissée.
+      if (S.pneusServicesVus[id] !== e.servicePneus) {
+        for (let i = 0; i < 4; i++) Object.assign(S.pneusVisuels[id][i], e.etatPneus[i]);
+        S.pneusServicesVus[id] = e.servicePneus;
+      }
+    }
+    return recus;
+  }
+  function actualiserPneusDistants(S, dt) {
+    if (!S.pneusVisuels || !Number.isFinite(dt) || dt <= 0) return;
+    const f = 1 - Math.exp(-dt / .12);
+    for (const v of S.course.voitures) if (v.distant) {
+      const visibles = S.pneusVisuels[v.id], etats = v.etat.etatPneus;
+      for (let i = 0; i < 4; i++) {
+        const a = visibles[i], b = etats[i];
+        a.usure += (b.usure - a.usure) * f; a.salete += (b.salete - a.salete) * f; a.grainage += (b.grainage - a.grainage) * f;
+        a.distance = b.distance; a.sollicitation = b.sollicitation; a.graine = b.graine;
+      }
+    }
+  }
+  function reprendrePneusReseau(S, machine) {
+    if (!S || !S.pneusReseau || S.enLigne?.role !== 'hote') return [];
+    const ids = B.pneusReseau.reprendre(S.pneusReseau, machine);
+    for (const id of ids) {
+      const v = S.course.voitures[id];
+      v.distant = false; v.joueur = false; v.reprise = true;
+      EL.recus.delete(id); EL.corr.delete(id);
+    }
+    if (ids.length) { S.pneusArchives.delete(machine); envoyerPneusReseau(S, true); }
+    return ids;
+  }
+  function recevoirEtatEnLigne(p, de) {
+    const S = session, contexte = S && S.pneusReseau;
+    if (!S || !S.enLigne || !contexte || !p || !Number.isFinite(p.t) || p.t < S.enLigne.T0 || !Array.isArray(p.voitures)) return;
+    for (const e of p.voitures) {
+      const v = e && S.course.voitures[e.id];
+      if (!v || !Number.isInteger(e.id) || !v.distant || contexte.autorites[e.id] !== de) continue;
+      const r = EL.recus.get(e.id);
+      if (!r || p.t >= r.t) EL.recus.set(e.id, { t: p.t, etat: e });
+    }
   }
   // état de nos voitures, une fois par image : les nôtres toujours, et chez l'hôte les rivaux une image sur deux
   function envoyerEtats(S) {
@@ -1402,6 +1534,7 @@
     const k = ++EL.pasEnvoi, liste = S.locaux.map(id => co.voitures[id]);
     if (S.enLigne.role === 'hote' && k % 2 === 0) for (const v of co.voitures) if (!v.humain || v.reprise) liste.push(v);
     R.envoyerEtat(B.reseau.emballer(S.enLigne.T0 + co.horloge * 1000, liste));
+    envoyerPneusReseau(S);
   }
   // Voiture distante : dernier état reçu, prolongé jusqu'à l'instant de ce pas. À l'arrivée d'un état, ce qu'on aurait
   // affiché à ce même pas avec l'ancien moins la nouvelle prédiction devient une correction qui se résorbe en 0,12 s :
@@ -2293,7 +2426,8 @@
     for (let k = 0; k < co.voitures.length; k++) {
       const p = poses[k], dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], d2 = dx * dx + dz * dz;
       B.voiture.changerPneus(S.modeles[k], co.voitures[k].etat.pneus);
-      const ev = poseRendu(k, p, RV[k], co.voitures[k].etat.v, co.voitures[k].etat.etatPneus);
+      const etatsPneus = co.voitures[k].distant && S.pneusVisuels ? S.pneusVisuels[k] : co.voitures[k].etat.etatPneus;
+      const ev = poseRendu(k, p, RV[k], co.voitures[k].etat.v, etatsPneus);
       // Hystérésis propre à cette vue : ni la seconde moitié d'écran ni les deux miroirs ne la réécrivent.
       const rouesDetail = S.detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos), tanDemi, hauteur, S.detailsRoues[k]);
       if (k === suivie.id) ombreDebut = sortie.length;
@@ -2921,7 +3055,7 @@
   }
   // Choix de service attaché à la voiture de la séance, sans changer les pneus actuellement montés.
   function choisirPneusStands(n, type) {
-    if (!session || session.enLigne || ecran !== 'pause' || (n !== 0 && n !== 1)) return false;
+    if (!session || ecran !== 'pause' || (n !== 0 && n !== 1)) return false;
     const co = session.course, id = session.locaux && session.locaux[n], v = co && co.voitures[id];
     const accepte = !!(v && B.course.demanderPneus(co, v, type));
     majPneusStands(); return accepte;
@@ -2929,14 +3063,13 @@
   function majPneusStands() {
     const S = session, co = S && S.course;
     $('pneus-stands').hidden = !(co && S.type !== 'demo' && S.type !== 'vitrine');
-    texte($('ps-note'), S && S.enLigne ? 'En ligne, les stands renouvellent la monte de départ.' :
-      'Choisissez la monte de chaque pilote. Les quatre pneus seront changés à la fin du service au garage.');
+    texte($('ps-note'), 'Choisissez la monte de chaque pilote. Les quatre pneus seront changés à la fin du service au garage.');
     for (let n = 0; n < 2; n++) {
       const id = S && S.locaux && S.locaux[n], v = co && co.voitures[id], zone = $('ps-pilote-' + n);
       zone.hidden = !v; if (!v) continue;
       const et = v.etat, st = et.stands, service = st && st.phase === 'service';
       const type = B.pneus.estJouable(et.pneusProchainArret) ? et.pneusProchainArret : et.pneus;
-      zone.disabled = !!(S.enLigne || service || v.distant || v.reprise || v.fini || v.abandon || co.termine);
+      zone.disabled = !!(service || v.distant || v.reprise || v.fini || v.abandon || co.termine);
       for (const r of document.querySelectorAll('input[name="pneusStand' + n + '"]')) r.checked = r.value === (service ? st.pneus : type);
       texte($('ps-etat-' + n), service ? 'Service en cours : ' + NOMS_PNEUS[st.pneus] + '. Choix verrouillé jusqu’à sa fin.' :
         'Montés : ' + NOMS_PNEUS[et.pneus] + ' · prochain arrêt : ' + NOMS_PNEUS[type] + '.');

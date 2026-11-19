@@ -1,11 +1,11 @@
 # BITUME — plan maître Russie, Monaco, Marseille, roues et pneus
 
-Date du plan : **18 novembre 2026**. État au **19 novembre 2026** : **12A–12F2 publiés**, base **0.2.49 / p11 (`3dce3f8c`)**. **12F2 fusionné sur main après autorisation explicite de David**, PR n°3 fermée ; reçu `rapports/12F2-2026-11-19/FUSION-0249.json`. Fiche [12F2](12F2-CHOIX-PNEUS-PAR-PILOTE.md). **12F3 réseau usure/services non commencé** ; WebGL et déploiement distincts.
+Date du plan : **18 novembre 2026**. État au **19 novembre 2026** : **12A–12F2 publiés**, dernier main vérifié **0.2.49 / p11 (`56086ecc`)**. **12F3 qualifié CPU en 0.2.50 ; publication finale EN COURS**, checkpoint sources distant `7c908b17` vérifié. Fiche [12F3](12F3-RESEAU-USURE-SERVICES.md). Prochain sous-lot après publication vérifiée : **stratégie de stands IA**. Parties réelles entre navigateurs, WebGL, matériel et déploiement non validés.
 Demande de David : ajouter un circuit en Russie et un Monaco « ultra fidèle », refaire les roues bien rondes et plus réalistes, différencier les sculptures pluie/neige et les slicks lisses, montrer les traces d’usure au fil de la course, puis publier ce plan avant de commencer.
 
 Complément demandé dans la même reprise : **Spéciale Marseille à partir de la carte EMPRISE, avec ajout de relief**, et master liste complète pour Claude Fable. Entrée de passation : [MASTER-LISTE-CLAUDE-FABLE.md](../../MASTER-LISTE-CLAUDE-FABLE.md).
 
-Base historique de l’étude : **BITUME 0.2.38**, livraison `baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902`, reprise `9f9f97ca7dee3154f8ec517adaba675e0ec81ea4`, **FERRO 0.3.9**, sept circuits. Base fonctionnelle publiée vérifiée à cette reprise : **0.2.49 (`3dce3f8c`)**, **FERRO 0.3.11**, 34 modules inchangés dans 12F2, toujours sept circuits. Ce plan fait autorité pour ce chantier ; les décisions plus anciennes restent applicables lorsqu’elles ne sont pas remplacées ici.
+Base historique de l’étude : **BITUME 0.2.38**, livraison `baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902`, reprise `9f9f97ca7dee3154f8ec517adaba675e0ec81ea4`, **FERRO 0.3.9**, sept circuits. Base fonctionnelle publiée vérifiée à cette reprise : **0.2.49 (`56086ecc`)** ; **0.2.50 qualifiée en cours de publication**, **FERRO 0.3.11**, 34 modules inchangés dans 12F3, toujours sept circuits. Ce plan fait autorité pour ce chantier ; les décisions plus anciennes restent applicables lorsqu’elles ne sont pas remplacées ici.
 
 ## 1. Résultat attendu et décisions de départ
 
@@ -29,7 +29,7 @@ Base historique de l’étude : **BITUME 0.2.38**, livraison `baf4ddfc2b4ab670bc
 
 ## 2. État réel du code et points à traiter
 
-Constats historiques de lecture sur la base 0.2.38, conservés pour expliquer les choix du plan. Ils ne décrivent plus l’état courant des roues/pneus : 12A–12F2 sont publiés, 12F2 étant fusionné en 0.2.49 / p11. Pour reprendre ces lots, suivre leur fiche et leur reçu actuels, sans réimplémenter ce tableau :
+Constats historiques de lecture sur la base 0.2.38, conservés pour expliquer les choix du plan. Ils ne décrivent plus l’état courant des roues/pneus : 12A–12F2 sont publiés en 0.2.49 / p11 ; 12F3 est qualifié en 0.2.50, publication finale en cours. Pour reprendre ces lots, suivre leur fiche et leur reçu actuels, sans réimplémenter ce tableau :
 
 | Élément | État observé en 0.2.38 | Conséquence initiale pour le chantier |
 |---|---|---|
@@ -50,7 +50,7 @@ Les dimensions de la voiture restent la référence : pneus avant de rayon **0,2
 
 ## 3. Lots d’exécution et points de publication
 
-Les critères ci-dessous restent les conditions de clôture. **12A–12F2 publiés jusqu’à 0.2.49 / p11**. **12F2 fusionné sur main** : 103 suites exécutées puis 13 revalidations ciblées, **102/103 réussies**, seul échec traces hérité identique. **20 scénarios / 1 300 empreintes p11** identiques, sans régénérer la fixture. Deux builds identiques, 34 modules FERRO inchangés. Rapport `rapports/12F2-2026-11-19/qualification-execution.json`. Le seuil décor réussit ce passage ; conserver la réserve de variabilité observée en 12E. WebGL, mesures matérielles et déploiement non validés. **12F3, stratégie de stands IA et circuits restent à réaliser.**
+Les critères ci-dessous restent les conditions de clôture. **12A–12F2 publiés jusqu’à 0.2.49 / p11 ; 12F3 / 0.2.50 qualifié CPU, publication finale en cours** : **104/105 suites**, seul échec traces hérité identique confirmé dans `reserve-traces.json`. **20 scénarios / 1 300 empreintes p11** identiques, aucune fixture régénérée. Deux builds identiques de **14 042 272 octets**, **52 scripts valides**, **34 modules FERRO inchangés**. Rapport `rapports/12F3-2026-11-19/qualification-execution.json`. Contrôleurs réels avec transport simulé ; parties réelles entre navigateurs, WebGL, matériel et déploiement non validés. Conserver la variabilité CPU historique du décor. **Stratégie de stands IA et circuits restent à réaliser.**
 
 | Ordre / lot | Travail | Condition pour clôturer le lot |
 |---|---|---|
@@ -75,7 +75,7 @@ Les critères ci-dessous restent les conditions de clôture. **12A–12F2 publi�
 | 15E | Marseille : rendu et performances. | Captures/tour filmé, détails et ressources mesurés sur le corridor. |
 | 15F | Marseille : livraison. | Sources/tests/build publiés, contrôle production séparé, reçu et reprise. |
 
-**12F2 / 0.2.49 fusionné sur main (`3dce3f8c`)**, fiche [12F2](12F2-CHOIX-PNEUS-PAR-PILOTE.md). **Prochain lot : 12F3, non commencé**, transmission usure/type/services. Le choix d’une autre monte au stand est actif en solo/duo ; en ligne les stands renouvellent la monte de départ jusqu’à 12F3. Ne pas reprendre 12A–12F2 ni Safari. La fusion de la PR n°3 est déjà autorisée et vérifiée ; ne pas la redemander.
+**12F3 / 0.2.50 qualifié, publication finale en cours**, fiche [12F3](12F3-RESEAU-USURE-SERVICES.md). Le choix d’une autre monte au stand est actif en solo/duo/en ligne ; pneus à **2 Hz**, services immédiats fiables et relais par l’hôte garantissent une reprise IA sans remise à neuf. Compatibilité protocole/circuit/empreinte complète des sources ; nouveaux joueurs hors grille à la prochaine course. Vérifier la publication, puis borner la **stratégie de stands IA**, non commencée. Ne pas reprendre les lots qualifiés ni Safari ; la fusion de la PR n°3 est déjà terminée.
 
 ## 4. Roues : géométrie, matière et rotation
 
@@ -170,7 +170,7 @@ Le joueur et `course.js::commandesIA` utilisent les mêmes calculs. Dès qu’un
 ### 7.2 Stands et interface
 
 - Intégrer les quatre types dans la préparation, les réglages par joueur et les confirmations réseau ; fonctionnement complet à la manette, au clavier et au tactile.
-- Migrer le choix actuellement unique par machine (`reglages.pneus`, `EL.pneusDe`) vers un choix par identifiant de pilote humain, y compris pour les deux joueurs d’une même machine. Au premier chargement, recopier l’ancienne préférence sur chacun, puis mémoriser leurs choix séparément.
+- Migration livrée en 12F2 : ancienne préférence unique recopiée vers les deux pilotes, choix mémorisés séparément. Choix au prochain service actif en solo/duo et qualifié en ligne dans 12F3.
 - Montrer sobrement le type monté et l’état des pneus dans l’interface existante ; privilégier un petit indicateur ou une vue détaillée à la demande, en gardant le cockpit lisible.
 - Le changement aux stands intervient à la fin du service, pas au simple passage de la ligne. Gérer interruption, sortie anticipée et double déclenchement.
 - Les rivaux ne vont actuellement pas aux stands. Livrer une usure assez progressive pour les courses prévues ; avant de rendre des courses longues dépendantes de changements de pneus, ajouter et qualifier leur stratégie de service. Aucune restauration cachée d’usure pour compenser.
@@ -179,7 +179,7 @@ Le joueur et `course.js::commandesIA` utilisent les mêmes calculs. Dès qu’un
 
 Préserver les autorités existantes : chaque machine conduit ses humains, l’hôte gère les rivaux et les conditions. Ajouter un message compact et versionné de type/usure et un événement fiable de remplacement. Mesurer d’abord l’usage réel des messages existants ; ne pas élargir aveuglément chaque paquet de position à 60 Hz.
 
-Point de départ à qualifier : état quantifié des quatre pneus, diffusé à faible fréquence et lors des changements significatifs ; les voitures distantes reçoivent cet état et l’interpolent visuellement. Elles ne recalculent pas une seconde usure concurrente. L’arrivée tardive d’un pair reçoit type, état et numéro de service courant.
+Réalisé et qualifié CPU en 12F3 : état quantifié des quatre pneus à 2 Hz et après service, validé puis relayé par l’hôte ; interpolation de la copie visuelle distante, sans seconde usure concurrente. Une liaison tardive pour un pilote déjà inscrit retrouve type, état et service courant. Un nouveau joueur absent de la grille attend la prochaine course.
 
 Chaque message identifie la séance, le pilote, un numéro monotone de service et l’ordre des instantanés. Rejeter les états d’une séance ancienne, les paquets d’usure antérieurs à un changement de pneus et les instantanés dépassés. Le traitement d’un service reçu deux fois doit être idempotent.
 
@@ -391,7 +391,7 @@ Sources internes : `src/voiture.js`, `src/carene.js`, `src/conduite.js`, `src/de
 - [x] 12D — usure visible progressive et saleté réversible : publié en 0.2.46 ; réserve WebGL.
 - [x] 12E — neige, adhérence et usure physique p10 : qualifié CPU avec réserves en 0.2.47 après bornage du recul ; 96/98 suites, traces hérité et réserve performance décor. WebGL non validé.
 - [x] Publication 12E — sources, tests, build 0.2.47 et preuves contrôlés sur main (`c55cde2`) ; déploiement séparé.
-- [ ] 12F — 12F1 publié en 0.2.48 ; 12F2 fusionné sur main en 0.2.49 ; 12F3 non commencé, usure/services réseau et stratégie IA restent à livrer.
+- [ ] 12F — 12F1/12F2 publiés jusqu’à 0.2.49 ; 12F3 réseau qualifié en 0.2.50, publication finale en cours. Stratégie de stands IA non commencée ; validation entre navigateurs, WebGL et matériel restant à réaliser.
 - [ ] 13A — Russie, tracé et relief.
 - [ ] 13B — Russie, décor et livraison.
 - [ ] 14A — Monaco, dossier de référence métrique.

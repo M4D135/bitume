@@ -1,0 +1,32 @@
+ok empreinte : version du jeu et machine, rien d’autre
+ok cache : même version gardée ; nouvelle version, autre carte ou révision précédente refaites
+ok référence des choix : celle notée par la détection, ou les réglages d’une détection de la révision 2
+ok C7, trace perdue : la référence la plus proche des réglages actuels, pas les valeurs d’usine
+ok fusion automatique : les options touchées par le joueur restent, les autres suivent la recommandation
+ok fusion à la main : tout est remplacé, même les options touchées
+ok trace d’une détection passée ou interrompue : tentatives comptées par version, référence gardée
+ok les réglages ne touchent ni au moment de la course ni aux commandes
+ok Apple M5 : Moyenne tient, Fine (deux fois plus de pixels, une glace par image) refusée
+ok rafales : le recouvrement du processeur et de la carte est compté (14,4 ms en série, 12,8 en rafale)
+ok processeur lent : la mesure le paie et refuse Moyenne
+ok fil principal : estimé en course à 3 fois celui du parcours, il tient dans la moitié du budget
+ok C5 : fil principal mesuré une image par rappel, comme en course, et non en rafale
+ok C2, C4 : zone grise mesurée deux fois ; deux séries doivent passer, la troisième tranche ; refus de peu provisoire
+ok mesure de contrôle seulement si elle tient dans les six secondes
+ok carte très lente : Légère conclue en trois images de Moyenne, sans créer le moteur des glaces
+ok sonde : un rendu logiciel conclut Légère sans bâtir le décor de Moyenne ; une carte graphique continue
+ok rendu logiciel reconnu par la sonde, processeur trop lent pour la simulation : Légère sans aucun décor
+ok compilation à la première image : pas jugée, le palier reste mesuré
+ok chauffe : deux images de suite au-delà de trois budgets au second tour jugent le palier sans espoir
+ok limite : juste sous la limite accepté, juste au-dessus refusé
+ok le point de vue le plus cher juge : le cockpit et ses glaces
+ok glaces absentes du parcours : la limite perd leur part
+ok écran bridé à 30 Hz ou écran à 120 Hz : mêmes coûts, même verdict, bridage reconnu
+ok Extrême essayé seulement si Fine tient dans la moitié de la limite
+ok cadence relevée sur des images à vide ; la simulation y chauffe ; préparation sans chronomètre GPU
+ok bilan : chaque point de vue mesuré deux fois au moins, la limite est incluse
+ok six secondes au pire : un palier de plus n’est essayé que s’il y tient
+ok décor trop long : le palier n’est pas mesuré (Légère si c’est Moyenne), en peu de temps
+ok délai pendant un palier de plus : le palier mesuré tient ; avant toute mesure : interrompu
+ok annulation, onglet masqué, contexte perdu et rappel d’image bloqué ne donnent aucun réglage
+31 contrôles de détection graphique réussis.
