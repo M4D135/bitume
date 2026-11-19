@@ -2,63 +2,55 @@
   "date": "2026-11-19",
   "etat_courant": {
     "branche": "main",
-    "version_courante": "0.2.47",
-    "base_commit": "9c49abad670b16c67127c921b6522fecd29daf79",
-    "base_version": "0.2.46",
-    "statut": "12E_qualifie_CPU_avec_reserves_publication_en_cours",
-    "lot": "12E_chaussee_adherence",
-    "fiche": "docs/reprise/12E-CHAUSSEE-ADHERENCE.md",
+    "version_courante": "0.2.48",
+    "physique": "p11 ; fixtures p9 et p10 conservées",
+    "base_commit": "c55cde23e8d14d3f579e2f1f5d2bea03abc14c71",
+    "base_version": "0.2.47",
+    "version_publiee_verifiee": "0.2.48",
+    "commit_publie_verifie": "1df6f6872e9d6962d6561b9b371d41042567a915",
+    "statut": "12F1_publie_CPU_avec_reserves",
+    "lot": "12F1_service_pneus_affichage",
+    "fiche": "docs/reprise/12F1-SERVICE-PNEUS-ET-AFFICHAGE.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "qualification": "docs/reprise/rapports/12E-2026-11-19/qualification-finale.json",
-    "publication": "docs/reprise/rapports/12D-2026-11-19/PUBLICATION-0246.json",
-    "prochaine_action": "Publier et vérifier les sources, tests, build et preuves 12E ; enregistrer le reçu distant. Puis poursuivre 12F1 (stands et affichage) préparé dans une autre copie, distinct du réseau 12F2/12F3.",
+    "commit_local_qualifie": "fbd8098dc3e985415488f8738db1d32c172018b0",
+    "qualification": "docs/reprise/rapports/12F1-2026-11-19/qualification-execution.json",
+    "publication": "docs/reprise/rapports/12F1-2026-11-19/PUBLICATION-0248.json",
+    "commit_publication_0248": "1df6f6872e9d6962d6561b9b371d41042567a915",
+    "prochaine_action": "12F1 publié et vérifié. Reprendre le seul lot 12F2 à son checkpoint : choix des pneus par pilote et au prochain arrêt, migration et confirmation 2+2. Brouillon actif dans une autre session : ne pas l’écraser ni dupliquer son travail. Réseau de l’usure réservé à 12F3.",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
-    "physique": "p10 ; p9 archivée intacte",
-    "neige": "Choix jouable, couverture explicite statique ; tunnels secs et déneigés",
-    "checkpoint_sources": "docs/reprise/rapports/12E-2026-11-19/checkpoint-sources-12E.patch",
-    "version_publiee_verifiee": "0.2.46",
-    "publication_0247_attendue": "docs/reprise/rapports/12E-2026-11-19/PUBLICATION-0247.json"
+    "neige": "Choix jouable, couverture explicite statique ; tunnels secs et déneigés"
   },
   "validation": {
     "date": "2026-11-19",
-    "version": "0.2.47",
-    "lot": "12E",
+    "version": "0.2.48",
+    "lot": "12F1",
     "statut": "CPU_avec_reserves",
-    "suites": 98,
-    "reussies": 96,
+    "suites": 100,
+    "reussies": 99,
     "echecs": [
-      "decor.test.mjs",
       "traces.test.mjs"
     ],
     "echec_herite_prouve": "traces.test.mjs",
-    "reserve_performance": "decor.test.mjs : Haut-Col 194 ms > 150 ms ; régression de performance non exclue",
+    "empreintes_verifiees": 199,
+    "reserve_performance": "Décor réussi au passage 12F1 ; variabilité conservée après Haut-Col 194 ms > 150 ms en 12E. Aucun gain matériel établi.",
     "determinisme": {
+      "physique": "p11",
       "scenarios": 20,
       "empreintes": 1300,
       "generation_code": 0,
       "verification_suite_code": 0,
-      "verification_independante_code": 0,
-      "p9_sha256": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a",
-      "p9_inchangee": true,
-      "p10_sha256": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
-      "note": "Fixture p10 distincte après changement intentionnel de physique ; la fixture p9 et son historique ne sont pas réécrits."
-    },
-    "viabilite": {
-      "scenarios": 9,
-      "anomalies": 0,
-      "stagnants_15s": 0,
-      "replacements": 3,
-      "fin_naturelle": true
+      "archives_inchangees": {
+        "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+        "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a"
+      }
     },
     "build": {
-      "version": "0.2.47",
-      "bytes": 14001233,
-      "sha256": "90afbee41f4d080a7b464572ce5464a9c91c53a560be8458f748229f955135b7",
+      "version": "0.2.48",
+      "bytes": 14006845,
+      "sha256": "716f9f85873b490e92cea5c3684a0c0133ec2541dd0ab8235b223511e5680d5b",
       "reproductible": true,
-      "preuve": "cloture/build.json",
       "syntaxe_scripts": 51,
-      "syntaxe_valide": true,
-      "preuve_syntaxe": "cloture/bundle-syntax.json"
+      "syntaxe_valide": true
     },
     "ferro": {
       "version": "0.3.11",
@@ -69,7 +61,7 @@
     "performance_materielle_mesuree": false,
     "deploiement_effectue": false,
     "site_verifie": false,
-    "preuve": "docs/reprise/rapports/12E-2026-11-19/qualification-finale.json"
+    "preuve": "docs/reprise/rapports/12F1-2026-11-19/qualification-execution.json"
   },
   "catalogue": {
     "jouables": 7,
@@ -83,12 +75,14 @@
     "note": "L’ancien objectif 16 précède l’ajout montagne ; ne supprimer aucune demande pour tenir ce compte."
   },
   "suite": {
-    "lot": "12F1",
-    "statut": "préparation dans une autre copie, non livré par 12E",
-    "objectif": "Remplacement réel des quatre pneus à la fin du service et affichage détaillé, puis réseau versionné dans des sous-lots distincts.",
-    "prerequis": "Publication 12E vérifiée et reçu 0.2.47 enregistré",
+    "lot": "12F2",
+    "statut": "brouillon actif dans une autre session ; non livré",
+    "objectif": "Choix des pneus par pilote et au prochain arrêt ; migration de la préférence existante et confirmation 2+2.",
+    "prerequis": "Satisfait : 12F1 / 0.2.48 publié et reçu enregistré. Examiner le checkpoint immuable de 12F2 avant intégration.",
+    "brouillon_local": "/workspace/scratch/67676bee9b18/bitume ; ne pas confondre avec le code qualifié 12F1, ni écraser une session active",
     "apres": [
-      "12F2/12F3 réseau versionné et raccord",
+      "12F3 réseau versionné de l’usure et reprise IA sans remise à neuf",
+      "Stratégie des stands IA avant les courses longues dépendantes des changements",
       "Russie",
       "Monaco",
       "Marseille"

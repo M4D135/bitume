@@ -1,0 +1,46 @@
+{
+  "date_utc": "2026-11-19T10:52:59.588082+00:00",
+  "depot": "M4D135/bitume",
+  "branche": "main",
+  "version": "0.2.48",
+  "physique": "p11",
+  "commit_publication": "1df6f6872e9d6962d6561b9b371d41042567a915",
+  "parent": "c55cde23e8d14d3f579e2f1f5d2bea03abc14c71",
+  "commit_local_qualifie": "fbd8098dc3e985415488f8738db1d32c172018b0",
+  "tree_qualifie_et_distant": "2a46dcb1ebce06137dd3c10e7702c86f26d4b2b6",
+  "main_verifie": true,
+  "tree_identique": true,
+  "controle": {
+    "sources_tests_fixtures": 199,
+    "ecarts": [],
+    "journaux_concordants": 154,
+    "tests_relances_pour_publication": false,
+    "methode": "GitHub Git Data : main pointe sur le commit publié ; son tree est identique au tree local qualifié. Sous-tree dist vérifié : blob et taille identiques au build local SHA-256."
+  },
+  "build": {
+    "chemin": "dist/bitume.html",
+    "bytes": 14006845,
+    "sha256": "716f9f85873b490e92cea5c3684a0c0133ec2541dd0ab8235b223511e5680d5b",
+    "git_blob_sha": "8d70c11691387e91e65d211e5ee34d9f8c400401",
+    "dist_tree_sha": "982c166cc731cdda1c50a51c5000a5d198dad839",
+    "blob_distant_verifie": true
+  },
+  "qualification": {
+    "preuve": "docs/reprise/rapports/12F1-2026-11-19/qualification-execution.json",
+    "suites_reussies": 99,
+    "suites_total": 100,
+    "echec_herite": "traces.test.mjs",
+    "scenarios_deterministes": 20,
+    "empreintes_deterministes": 1300,
+    "ferro": "0.3.11",
+    "modules_ferro_identiques": 34
+  },
+  "reserves": {
+    "webgl_valide": false,
+    "performance_materielle_mesuree": false,
+    "variabilite_decor": "Le passage 12F1 réussit ; réserve conservée après le dépassement Haut-Col en 12E.",
+    "deploiement_effectue": false,
+    "site_verifie": false
+  },
+  "suite": "12F2 : choix de pneus par pilote et au prochain arrêt ; brouillon actif séparé, ne pas écraser une session en cours."
+}
