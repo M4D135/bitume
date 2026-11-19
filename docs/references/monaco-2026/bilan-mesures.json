@@ -1,0 +1,348 @@
+{
+  "format": "bitume-monaco-terrain-review",
+  "version": 1,
+  "readyForRuntime": false,
+  "pointCount": 415,
+  "tunnelTaggedPoints": 33,
+  "observations": {
+    "total": 830,
+    "eligibleForRoadProfile": 0,
+    "ineligibleForRoadProfile": 830,
+    "byKind": {
+      "terrain": 830,
+      "chaussee": 0,
+      "estime": 0
+    },
+    "contradictionGroups": []
+  },
+  "datasets": {
+    "lidar": {
+      "observed": 415,
+      "rejected": 0,
+      "rejectedByReason": {},
+      "unknownDatum": 0,
+      "unknownExactDate": 275
+    },
+    "rge": {
+      "observed": 415,
+      "rejected": 0,
+      "rejectedByReason": {},
+      "unknownDatum": 415,
+      "unknownExactDate": 415
+    }
+  },
+  "unknownRoadMeasurements": {
+    "y": 415,
+    "leftWidthM": 415,
+    "rightWidthM": 415,
+    "bankRadians": 415
+  },
+  "comparisonIsDiagnosticOnly": true,
+  "comparisonCount": 415,
+  "maxAbsDifferenceM": 25.23,
+  "top20AbsoluteDifferences": [
+    {
+      "index": 223,
+      "osmNodeId": 6485591900,
+      "deltaM": -25.23,
+      "tunnelTagged": true
+    },
+    {
+      "index": 222,
+      "osmNodeId": 1720684293,
+      "deltaM": -23.5,
+      "tunnelTagged": true
+    },
+    {
+      "index": 220,
+      "osmNodeId": 12136114443,
+      "deltaM": -23.26,
+      "tunnelTagged": true
+    },
+    {
+      "index": 221,
+      "osmNodeId": 6566017213,
+      "deltaM": -23.18,
+      "tunnelTagged": true
+    },
+    {
+      "index": 224,
+      "osmNodeId": 6485591901,
+      "deltaM": -22.23,
+      "tunnelTagged": true
+    },
+    {
+      "index": 236,
+      "osmNodeId": 1736929676,
+      "deltaM": -20.45,
+      "tunnelTagged": true
+    },
+    {
+      "index": 225,
+      "osmNodeId": 1280338640,
+      "deltaM": -20.41,
+      "tunnelTagged": true
+    },
+    {
+      "index": 235,
+      "osmNodeId": 6485591907,
+      "deltaM": -18.92,
+      "tunnelTagged": true
+    },
+    {
+      "index": 242,
+      "osmNodeId": 279442967,
+      "deltaM": -16.97,
+      "tunnelTagged": true
+    },
+    {
+      "index": 241,
+      "osmNodeId": 11409061519,
+      "deltaM": -16.05,
+      "tunnelTagged": true
+    },
+    {
+      "index": 228,
+      "osmNodeId": 1720684274,
+      "deltaM": -14.56,
+      "tunnelTagged": true
+    },
+    {
+      "index": 237,
+      "osmNodeId": 11409061521,
+      "deltaM": -14.5,
+      "tunnelTagged": true
+    },
+    {
+      "index": 226,
+      "osmNodeId": 21914381,
+      "deltaM": -14.06,
+      "tunnelTagged": true
+    },
+    {
+      "index": 240,
+      "osmNodeId": 9416148963,
+      "deltaM": -12.95,
+      "tunnelTagged": true
+    },
+    {
+      "index": 232,
+      "osmNodeId": 2264703507,
+      "deltaM": -12.39,
+      "tunnelTagged": true
+    },
+    {
+      "index": 227,
+      "osmNodeId": 6485591903,
+      "deltaM": -11.82,
+      "tunnelTagged": true
+    },
+    {
+      "index": 243,
+      "osmNodeId": 11409061518,
+      "deltaM": -7.24,
+      "tunnelTagged": true
+    },
+    {
+      "index": 245,
+      "osmNodeId": 21914343,
+      "deltaM": 6.13,
+      "tunnelTagged": true
+    },
+    {
+      "index": 195,
+      "osmNodeId": 1720684395,
+      "deltaM": -5.23,
+      "tunnelTagged": false
+    },
+    {
+      "index": 234,
+      "osmNodeId": 21914359,
+      "deltaM": -4.76,
+      "tunnelTagged": true
+    }
+  ],
+  "gradeReviewThreshold": 0.35,
+  "gradeThresholdIsPhysicsLimit": false,
+  "segmentsToReview": [
+    {
+      "dataset": "lidar",
+      "edgeIndex": 193,
+      "fromNodeId": 1720684346,
+      "toNodeId": 21914573,
+      "runM": 2.811922,
+      "deltaM": -1.49,
+      "grade": -0.529887,
+      "tunnelTouching": false
+    },
+    {
+      "dataset": "lidar",
+      "edgeIndex": 194,
+      "fromNodeId": 21914573,
+      "toNodeId": 1720684395,
+      "runM": 2.918424,
+      "deltaM": -4.12,
+      "grade": -1.411721,
+      "tunnelTouching": false
+    },
+    {
+      "dataset": "lidar",
+      "edgeIndex": 195,
+      "fromNodeId": 1720684395,
+      "toNodeId": 1720684398,
+      "runM": 2.575124,
+      "deltaM": 5.05,
+      "grade": 1.961071,
+      "tunnelTouching": false
+    },
+    {
+      "dataset": "lidar",
+      "edgeIndex": 225,
+      "fromNodeId": 1280338640,
+      "toNodeId": 21914381,
+      "runM": 15.95225,
+      "deltaM": 6.27,
+      "grade": 0.393048,
+      "tunnelTouching": true
+    },
+    {
+      "dataset": "lidar",
+      "edgeIndex": 236,
+      "fromNodeId": 1736929676,
+      "toNodeId": 11409061521,
+      "runM": 12.571002,
+      "deltaM": 5.72,
+      "grade": 0.455015,
+      "tunnelTouching": true
+    },
+    {
+      "dataset": "rge",
+      "edgeIndex": 219,
+      "fromNodeId": 519323656,
+      "toNodeId": 12136114443,
+      "runM": 7.323308,
+      "deltaM": 25.0,
+      "grade": 3.413758,
+      "tunnelTouching": true
+    },
+    {
+      "dataset": "rge",
+      "edgeIndex": 228,
+      "fromNodeId": 1720684274,
+      "toNodeId": 9416148986,
+      "runM": 15.96544,
+      "deltaM": -11.06,
+      "grade": -0.692746,
+      "tunnelTouching": true
+    },
+    {
+      "dataset": "rge",
+      "edgeIndex": 231,
+      "fromNodeId": 25239162,
+      "toNodeId": 2264703507,
+      "runM": 15.971182,
+      "deltaM": 10.46,
+      "grade": 0.65493,
+      "tunnelTouching": true
+    },
+    {
+      "dataset": "rge",
+      "edgeIndex": 232,
+      "fromNodeId": 2264703507,
+      "toNodeId": 6485591906,
+      "runM": 15.972138,
+      "deltaM": -13.44,
+      "grade": -0.841465,
+      "tunnelTouching": true
+    },
+    {
+      "dataset": "rge",
+      "edgeIndex": 234,
+      "fromNodeId": 21914359,
+      "toNodeId": 6485591907,
+      "runM": 15.976229,
+      "deltaM": 12.5,
+      "grade": 0.782412,
+      "tunnelTouching": true
+    },
+    {
+      "dataset": "rge",
+      "edgeIndex": 237,
+      "fromNodeId": 11409061521,
+      "toNodeId": 9416148980,
+      "runM": 12.571616,
+      "deltaM": -11.31,
+      "grade": -0.899646,
+      "tunnelTouching": true
+    },
+    {
+      "dataset": "rge",
+      "edgeIndex": 239,
+      "fromNodeId": 11409061520,
+      "toNodeId": 9416148963,
+      "runM": 12.580789,
+      "deltaM": 11.03,
+      "grade": 0.876734,
+      "tunnelTouching": true
+    },
+    {
+      "dataset": "rge",
+      "edgeIndex": 242,
+      "fromNodeId": 279442967,
+      "toNodeId": 11409061518,
+      "runM": 12.584579,
+      "deltaM": -11.05,
+      "grade": -0.878059,
+      "tunnelTouching": true
+    },
+    {
+      "dataset": "rge",
+      "edgeIndex": 243,
+      "fromNodeId": 11409061518,
+      "toNodeId": 11407697331,
+      "runM": 12.582954,
+      "deltaM": -8.04,
+      "grade": -0.63896,
+      "tunnelTouching": true
+    },
+    {
+      "dataset": "rge",
+      "edgeIndex": 244,
+      "fromNodeId": 11407697331,
+      "toNodeId": 21914343,
+      "runM": 5.79645,
+      "deltaM": -6.1,
+      "grade": -1.052368,
+      "tunnelTouching": true
+    },
+    {
+      "dataset": "rge",
+      "edgeIndex": 283,
+      "fromNodeId": 9416148865,
+      "toNodeId": 9416148864,
+      "runM": 2.118487,
+      "deltaM": 1.79,
+      "grade": 0.844943,
+      "tunnelTouching": false
+    },
+    {
+      "dataset": "rge",
+      "edgeIndex": 285,
+      "fromNodeId": 9416148866,
+      "toNodeId": 917957146,
+      "runM": 3.129566,
+      "deltaM": 3.65,
+      "grade": 1.166296,
+      "tunnelTouching": false
+    }
+  ],
+  "sourcesManifest": "sources-mesures.json",
+  "attribution": {
+    "geometry": "© les contributeurs d'OpenStreetMap",
+    "terrain": "IGN — MNT LiDAR HD et RGE ALTI"
+  },
+  "sourceLicenses": {
+    "geometry": "https://opendatacommons.org/licenses/odbl/1-0/",
+    "terrain": "https://www.etalab.gouv.fr/licence-ouverte-open-licence/"
+  }
+}

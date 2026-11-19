@@ -118,7 +118,7 @@ le parcours OSM pour fabriquer des lignes de secteur.
 
 ## Altitudes, largeurs, tunnel et stands
 
-- Les 415 altitudes, les 415 largeurs gauches, les 415 largeurs droites et tous les dévers restent absents.
+- Les 415 altitudes de chaussée, les 415 largeurs gauches, les 415 largeurs droites et tous les dévers restent absents.
   Aucun tag `ele` n'existe sur ces nœuds, ni tag `width`/`width:lanes` sur les voies sélectionnées.
   Un nombre de voies de circulation n'est pas converti en largeur de piste.
 - Deux ensembles distincts portent le tag OSM `tunnel=yes`. Ils sont conservés avec leurs identifiants
@@ -159,3 +159,35 @@ examiné. Son plan et les photographies F1 ne sont pas copiés dans les données
 [f1-names]: https://www.formula1.com/en/latest/article/explained-how-every-monaco-corner-got-its-name.5ClYqWmfpeUpsRJA6mDNaX
 [odbl]: https://opendatacommons.org/licenses/odbl/1-0/
 [osm-rights]: https://www.openstreetmap.org/copyright
+
+
+## Relevé de terrain et registre de mesures — 20 novembre 2026
+
+Un complément prépare maintenant les mesures sans modifier cette reconnaissance OSM :
+
+| Fichier | Rôle |
+|---|---|
+| `sources-mesures.json` | Cinq acquisitions IGN figées, requêtes, licences, dates, empreintes et références FIA supplémentaires. |
+| `sources/mesures-20261120/` | Réponses LiDAR et RGE ALTI sur les 415 points, descriptifs et métadonnées des dalles. |
+| `mesures-terrain.json` | Observations des deux produits, rattachements aux dalles, passages couverts et écarts à examiner. |
+| `mesures-controlees.json` | Registre annoté : provenance, date, datum, incertitude et éligibilité d'une observation. |
+| `bilan-mesures.json` | Couverture, points manquants et divergences ; aucune qualification automatique du profil routier. |
+
+```sh
+python3 tools/preparer-monaco-mesures.py
+python3 tools/preparer-monaco-mesures.py --check
+node --test verifications/monaco-mesures.test.mjs verifications/monaco-altimetrie.test.mjs
+```
+
+Ces commandes utilisent uniquement les sources enregistrées. Le registre distingue les altitudes
+de terrain des altitudes de chaussée ; les premières restent non éligibles au profil routier.
+L'import refuse les valeurs invalides, identifiants inconnus et unités incohérentes ; il préserve
+les incertitudes et dates inconnues ainsi que les contradictions. Une cote sous tunnel ne se
+déduit pas de la surface du MNT. La résolution de 50 cm n'est pas une précision individuelle.
+
+Le rattachement aux métadonnées LiDAR documente IGN69 et les dates de relevé disponibles en 2021,
+distinctes de l'acquisition HTTP en 2026. La largeur de référence FIA isolée ne devient pas une
+largeur constante de circuit. Les fichiers historiques `donnees.json`, `comparaison.json` et
+`plan.svg`, leurs champs `null` et la longueur de reconnaissance restent inchangés.
+
+Fiche complète : [Monaco — mesures traçables](../../reprise/MONACO-MESURES-2026-11-20.md).
