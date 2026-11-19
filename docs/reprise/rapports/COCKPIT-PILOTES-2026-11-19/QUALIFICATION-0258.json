@@ -1,0 +1,69 @@
+{
+  "version": "0.2.58",
+  "physique": "p14",
+  "base_candidat_0257": "652749694a1a77f25501c6c4fe7100c8b4636f97",
+  "changements": [
+    "Ancrages extérieurs propres au volant et au levier ; main droite et poignet suivent la cible du passage de rapport.",
+    "Saute-vent dégagé devant les mains ; ouverture de la coque simplifiée conservée avec pilote animé.",
+    "Joueur, rivaux et niveaux de détail partagent les mêmes articulations ; cadrage intérieur conservé."
+  ],
+  "qualification_ciblee": {
+    "suites_reussies": 6,
+    "suites_total": 6,
+    "suites": {
+      "pilote-habitacle": 4,
+      "pilote-exterieur": 14,
+      "voiture": 33,
+      "voiture-permanents": 12,
+      "voiture-identite": 6,
+      "formes-libres": "registre complet, 196839 triangles"
+    },
+    "sources_stables": true,
+    "empreintes": {
+      "src/voiture.js": "8dadd9f35c7984b636d81871ac43bafdc2e28d920f0e99efb8415081713e111a",
+      "verifications/pilote-exterieur.test.mjs": "4a2821dacda7c08abdce2df0c37d08cfbb2545e9ce3d6a5772714a5e4048be90",
+      "verifications/pilote-habitacle.test.mjs": "66c166cbacb3e97288e73b9a2d6dd7fc545798967da2862967f74cb20c47e5a6"
+    }
+  },
+  "geometrie": {
+    "poses_detaillees": 840,
+    "poses_joueur_rival_lod_attitude": 150,
+    "traversees_detectees_corrige": 0,
+    "jeu_jante_buste_min_m": 0.1690421781662479,
+    "jeu_jante_buste_0257_min_m": 0.06904217816624786,
+    "temoin_negatif_0257": "3 tests de géométrie sur 4 échouent, plus levier/goutte confirmé séparément.",
+    "penetration_levier_0257_m": 0.00495,
+    "controle": "Triangles transformés des maillages de chaque LOD ; cylindres finis et ellipsoïdes qui circonscrivent les primitives FERRO. Intersections coplanaires contrôlées."
+  },
+  "inspection_visuelle": {
+    "type": "rendu logiciel des triangles, sans shaders du jeu",
+    "poses_detaillees": 3,
+    "poses_lod_simple": 2,
+    "angles_par_pose": 3,
+    "resultat": "Pas de chevauchement apparent coque/commandes/mains dans les poses examinées."
+  },
+  "build": {
+    "octets": 14185661,
+    "gzip": 3370627,
+    "sha256": "dc12ee680cba5fe30b0abe2fc46e4b8febf4d6b6a6e4b639e8533bc9da2e4939",
+    "deux_constructions_identiques": true,
+    "metadonnees_identiques": true
+  },
+  "invariants": {
+    "seul_module_production_modifie": "src/voiture.js",
+    "conduite_physx_reseau_pneus_identiques_0257": true,
+    "ferro_0314_verrou_inchange": true,
+    "fixtures_identite_inchangees": true,
+    "ressources_graphique_son_procedurales": true
+  },
+  "ci": "À constater après publication de ce candidat exact. Le correctif du harnais nature est intégré depuis la branche 0.2.57 ; les résultats de cette branche restent séparés.",
+  "reserves_heritees": [
+    "traces.test.mjs : signature historique ; oracle inchangé.",
+    "Temps de génération Val-Brûlé : seuil 150 ms conservé, mesure matérielle non consolidée."
+  ],
+  "limites": [
+    "Aucun essai complet en navigateur ni manette matérielle dans cet environnement.",
+    "Aucune mesure de FPS matériels.",
+    "Aucun déploiement du site effectué."
+  ]
+}

@@ -1,29 +1,30 @@
 {
   "date": "2026-11-19",
   "etat_courant": {
-    "version_courante": "0.2.57",
+    "version_courante": "0.2.59",
     "physique": "p14",
     "version_publiee_verifiee": "0.2.56",
-    "statut": "demos_regard_arriere_qualifies_publication_attendue",
-    "branche": "codex/bitume-demos-regard-arriere-20261119",
+    "statut": "cockpit_exterieur_unifie_qualifie_publication_a_terminer",
+    "branche": "codex/bitume-cockpit-pilotes-20261119",
     "base_publiee": "6ed560661c9a69345dbbd6f8f26019845e84273d",
-    "lot": "demos_cinema_regard_arriere",
-    "fiche": "docs/reprise/DEMOS-CINEMA-2026-11-19.md",
+    "lot": "cockpit_exterieur_pilotes",
+    "fiche": "docs/reprise/COCKPIT-PILOTES-2026-11-19.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "040",
-    "prochaine_action": "Publier le lot, vérifier sa CI et conclure la reprise avant 13B Baïkal."
+    "derniere_entree": "042",
+    "prochaine_action": "Fusionner la base PR15 puis la réconciliation PR17 après contrôle des CI ; conserver la provenance PR16 et clore la reprise."
   },
   "validation": {
-    "ciblee": "7/7 suites ; 135 contrôles ; code stable.",
-    "build_sha256": "cbcd5c26d36a19946d647c250f290150766be585e843a6e8c331716eefa7cbea",
-    "build_octets": 14182991,
+    "ciblee": "6/6 suites : 71 contrôles cockpit/voitures et registre des formes ; 840 poses détaillées et 150 poses joueur/rival sur coques réellement affichées.",
+    "build_sha256": "cb02e2250a2e4a7d06bd0fdea659fce641a016975e224bac2823574888439cd4",
+    "build_octets": 14186762,
     "reproductible": true,
-    "rapport": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/QUALIFICATION-0257.json",
-    "ci": "a_verifier_apres_publication",
+    "rapport": "docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/QUALIFICATION-0259.json",
+    "ci": "a_constater_apres_publication",
     "jeu_navigateur_valide": false,
     "manette_physique_validee": false,
     "fps_materiels_mesures": false,
-    "site_deploye": false
+    "site_deploye": false,
+    "inspection_geometrique": "Trois vues, triangles réels, raster logiciel sans les shaders."
   },
   "livraison_precedente": {
     "version": "0.2.56",
@@ -50,19 +51,46 @@
     "regle": "Conserver les sept circuits historiques et toutes les demandes ; ne pas supprimer la montagne pour tenir l’ancien compte de 16."
   },
   "suite": {
-    "lot": "demos_cinema_regard_arriere",
-    "statut": "integre_qualifie_cible",
-    "copie_preparee_recuperee": true,
-    "correctif_camera": "Trajectoires mémorisées, poste animalier fixe, coupe explicite au masquage et protection du sprint.",
-    "regard_arriere": "Poursuite, stick droit bas maintenu ; relâchement immédiat et isolation J1/J2.",
-    "regles": "Conduite p14, départ/arrivée, démos continues, sortie sur geste, Faune/qualité, musique limitée au titre conservés."
+    "lot": "cockpit_exterieur_pilotes",
+    "statut": "unifie_qualifie_cible",
+    "correctif": "Union PR16/PR17 : levier fixé, volant dégagé, saute-vent adapté et véritable ouverture de la coque simplifiée.",
+    "regles": "Animations, cadrage intérieur, conduite p14, FERRO, réseau et fixtures historiques conservés."
   },
   "suite_apres_demos": {
     "lot": "13B_Russie_decor_saisons",
     "statut": "non_commence",
     "objectif": "Lac, berges, lieux signature, végétation/faune du Baïkal, saisons et validation visuelle.",
     "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
-    "apres": "demos_cinema"
+    "apres": "cloture_cockpit_exterieur_0259"
   },
-  "regle": "Un sous-lot à la fois ; contrôler le distant, journaliser et conserver une reprise courte. Aucun push forcé."
+  "regle": "Un sous-lot à la fois ; contrôler le distant, journaliser et conserver une reprise courte. Aucun push forcé.",
+  "publication_0257": {
+    "pr": 15,
+    "branche": "codex/bitume-demos-regard-arriere-20261119",
+    "tete": "652749694a1a77f25501c6c4fe7100c8b4636f97",
+    "arbre": "0df500f7ebff0aeaed280750ed3fb1134efa04a8",
+    "statut": "ci_corrective_en_cours",
+    "ci_initiale": {
+      "push": "123/126 : nature-integration, traces et Val-Brûlé 156 ms / 150 ms.",
+      "pr": "124/126 : nature-integration et traces."
+    },
+    "correctif": "Contexte VM cam et cas nature/retour course ; code et build inchangés.",
+    "validation_correctif": "3/3 suites, 27 contrôles ; nouvelles CI push 44597071517 et PR 44597083364."
+  },
+  "reconciliation_0259": {
+    "pr16": {
+      "head": "42a916fdea88f38ad5be1275bbeed89f193cd26c",
+      "tree": "aa3b330782e5a3aa0fe45d5ee74d44ca64800078",
+      "apport": "Ouverture réelle de loin-dessus, garde du registre des formes et contrôle des coques à chaque niveau de détail.",
+      "qualification": "QUALIFICATION-0258.json"
+    },
+    "pr17_initiale": {
+      "head": "1d11d08eaf1cc68579c0dfd2ce1ee84fb74aba2f",
+      "tree": "f4a7c96a85eee771e87f3d95d7059a6f59ecfedb",
+      "apport": "Console fixée à la cuve, tige conservée dans le modèle simple, contrôle des contacts du support.",
+      "qualification": "QUALIFICATION-0258-PR17.json",
+      "limite_decouverte": "Le contrôle LOD initial réutilisait la coque détaillée ; il ne prouvait pas le dégagement du dessus simplifié plein."
+    },
+    "resultat": "Union des sources et tests, deux provenances conservées. Aucun travail concurrent écrasé."
+  }
 }

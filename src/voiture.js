@@ -227,6 +227,11 @@
   }
   forme('moteur', C.carene(S_MOTEUR, { cotes: 24 }));
   forme('bulle', C.carene(S_BULLE, { cotes: 24, bouts: false, interieur: 'tout' }));
+  // Le poste animé dispose d'un vrai dégagement devant le volant : le saute-vent se termine devant la jante,
+  // pas au milieu des mains. La silhouette historique reste disponible pour les poses sans pilote animé.
+  const S_BULLE_PILOTE = [{ x: .64, y0: .60, y1: .62, l: .05, n: 2 }, { x: .54, y0: .58, y1: .76, l: .22, n: 2.2 },
+    { x: .43, y0: .58, y1: .80, l: .27, n: 2.4 }, { x: .37, y0: .58, y1: .78, l: .29, n: 2.4 }];
+  forme('bulle-pilote', C.carene(S_BULLE_PILOTE, { cotes: 24, bouts: false, interieur: 'tout' }));
   {
     // filet de la seconde couleur au bord de la flèche, puis le long du flanc des pontons
     const f = C.profil(S_FLECHE), p = C.profil(S_PONTONS), ligne = [];
@@ -384,6 +389,10 @@
   forme('loin-caisse', C.carene([{ x: 2.08, y0: .20, y1: .25, l: .05, n: 3 }, { x: 1.60, y0: .12, y1: .34, l: .26, n: 4 }, { x: 1.05, y0: .11, y1: .40, l: .52, n: 5 },
     { x: .60, y0: .10, y1: .43, l: .72, n: 5 }, { x: -.88, y0: .10, y1: .45, l: .70, n: 5 }, { x: -1.08, y0: .12, y1: .43, l: .50, n: 5 }, { x: -1.30, y0: .16, y1: .40, l: .30, n: 4 }], { cotes: 8, pas: 1 }));
   forme('loin-dessus', C.carene([S_GOUTTE[0], S_GOUTTE[2], S_GOUTTE[3], S_MOTEUR[0], S_MOTEUR[1], S_MOTEUR[2]], { cotes: 8, pas: 1 }));
+  // Le niveau lointain garde lui aussi une cellule ouverte : son ancien dessus plein coupait les mains et les
+  // avant-bras du pilote animé, même quand le modèle détaillé était dégagé. Même ouverture que la goutte proche.
+  forme('loin-dessus-pilote', C.carene([S_GOUTTE[0], S_GOUTTE[2], S_GOUTTE[3], S_MOTEUR[0], S_MOTEUR[1], S_MOTEUR[2]],
+    { cotes: 8, pas: 1, ouverture: OUVERTURE, interieur: true }));
   forme('loin-quille', C.carene(S_QUILLE, { cotes: 8, pas: 1 }));
   // Roues : formes partagées, préparées avant le moteur. Aucun cylindre générique du décor n'est alourdi.
   // L'axe local y traverse la jante. Le profil est annulaire : aucune face en éventail ne bouche le moyeu.
@@ -839,7 +848,7 @@
   function compiler(liste, overlay, cockpit) {
     const t = { liste, longueur: liste.length, n: 0, objets: [], formesRoues: [], formesUsees: [], usureRoue: [], profondeur: [], detailRoueMax: [],
       pneusCourants: new Float64Array(4 * 15), pneusActifs: new Uint8Array(4), o: null, roue: null, groupe: [], fixe: [], decale: null, d: null, portee: null,
-      lent: null, vite: null, tete: null, buste: null, cockpit, rotTete: trois(), rotM: trois(), fixes: [], groupes: [], faitG: null, faitF: null };
+      lent: null, vite: null, tete: null, buste: null, bulle: -1, dessusLoin: -1, cockpit, rotTete: trois(), rotM: trois(), fixes: [], groupes: [], faitG: null, faitF: null };
     const o = [], roues = [], decale = [], d = [], portee = [], lent = [], vite = [], tete = [], buste = [];
     for (const pc of liste) {
       if (cockpit && (pc.pilote || pc.arriere || pc.exterieur || pc.glace)) continue;
@@ -866,6 +875,8 @@
       t.objets.push(objet); t.formesRoues.push(pc.formesRoues || null); t.detailRoueMax.push(pc.detailRoueMax === undefined ? 3 : pc.detailRoueMax);
       t.formesUsees.push(pc.formesUsees || null); t.usureRoue.push(pc.usureRoue || 0); t.profondeur.push(pc.profondeur || 0);
       t.groupe.push(groupe); t.fixe.push(fixe);
+      if (pc.shape === FORMES.bulle.nom) t.bulle = t.n;
+      if (pc.shape === FORMES['loin-dessus'].nom) t.dessusLoin = t.n;
       o.push(oc[0], oc[1], oc[2]); roues.push(roue); decale.push(dc === null ? 0 : 1);
       if (dc === null) d.push(0, 0, 0); else d.push(dc[0], dc[1], dc[2]);
       portee.push(dc === null ? 0 : Math.hypot(dc[0], dc[1], dc[2]));
@@ -969,6 +980,12 @@
       if (roue >= 0 && roues && roues[roue]) continue;
       const k = 3 * i;
       let x = t.o[k], y = t.o[k + 1], z = t.o[k + 2];
+      if (i === t.bulle || i === t.dessusLoin) {
+        const forme = i === t.bulle ? (tete ? FORMES['bulle-pilote'] : FORMES.bulle)
+          : (tete ? FORMES['loin-dessus-pilote'] : FORMES['loin-dessus']);
+        x = forme.centre[0]; y = forme.centre[1]; z = forme.centre[2];
+        t.objets[i].shape = forme.nom; t.objets[i].s = forme.taille;
+      }
       if (t.tete[i]) {
         t.objets[i].r = tete ? t.rotTete : t.fixe[i] ? t.fixe[i].r : t.rotM;
         if (tete) {
@@ -1322,12 +1339,26 @@
   // ev.pilote = { volant, rapport, rapportAvant, passage } est un objet permanent fourni par jeu.js. L'animation
   // est une fonction de cette pose : ni horloge cachée, ni avancement par caméra, ni écriture dans la simulation.
   // Sans ce champ, les anciennes poses et leurs empreintes restent strictement inchangées.
-  const PILOTE_COU = [0, .772, 0], PILOTE_RECUL = -.10, PILOTE_VOLANT = [.18, .77, 0], PILOTE_ECHELLE = .9 / K;
+  const PILOTE_COU = [0, .772, 0], PILOTE_RECUL = -.10, PILOTE_VOLANT = [.28, .77, 0], PILOTE_ECHELLE = .9 / K;
   const PILOTE_DECALAGE = PILOTE_VOLANT.map((v, i) => v - (OEIL[i] + K * CV[i]) * PILOTE_ECHELLE);
+  // Les places du cockpit sont choisies pour son cadrage. Leur homothétie seule plaçait le pied du levier dans
+  // le flanc droit. Les ancrages extérieurs sont mesurés dans la cellule : volant avancé, levier à l'intérieur
+  // du jonc. La main droite applique le même déplacement à la cible de sa courbe, sans déformer le gant.
+  const PILOTE_LEVIER = [.20, .745, .17];
+  const PILOTE_LEVIER_DECALAGE = PILOTE_LEVIER.map((v, i) => v - PILOTE_DECALAGE[i] - PILOTE_ECHELLE * (OEIL[i] + K * LEVIER[i]));
+  const PILOTE_PIED_LEVIER = PILOTE_LEVIER.map((v, i) => v + .9 * (PIED[i] - LEVIER[i]));
+  // Le pied est fixé à une petite console arrondie, elle-même ancrée dans le fond de la cuve. Son sommet
+  // reçoit les deux derniers millimètres de la tige ; le reste du débattement est libre dans l'habitacle.
+  forme('console-levier-pilote', C.carene([
+    { x: PILOTE_PIED_LEVIER[0] - .06, y0: .43, y1: .57, l: .012, n: 3, z: PILOTE_PIED_LEVIER[2] },
+    { x: PILOTE_PIED_LEVIER[0] - .025, y0: .43, y1: PILOTE_PIED_LEVIER[1] + .002, l: .030, n: 4, z: PILOTE_PIED_LEVIER[2] },
+    { x: PILOTE_PIED_LEVIER[0] + .025, y0: .43, y1: PILOTE_PIED_LEVIER[1] + .002, l: .030, n: 4, z: PILOTE_PIED_LEVIER[2] },
+    { x: PILOTE_PIED_LEVIER[0] + .06, y0: .43, y1: .57, l: .012, n: 3, z: PILOTE_PIED_LEVIER[2] }
+  ], { cotes: 16, pas: 3 }));
 
   function construirePiloteExterieur(mod, H) {
     const liv = mod.livree, combi = liv.combinaison || liv.couleur.map(v => v * .7);
-    const R = { habitacle: H, tete: new Float64Array(9), articulations: new Float64Array(18), variantes: [] };
+    const R = { habitacle: H, tete: new Float64Array(9), articulations: new Float64Array(18), decalageMain: new Float64Array(3), variantes: [] };
     // Une réserve par LOD/overlay et par rétroviseur : aucune place, rotation ou taille ne passe d'une vue à l'autre.
     for (let variante = 0; variante < 10; variante++) {
       const li = variante < 8 ? variante >> 1 : variante === 8 ? CORPS : EPAVE;
@@ -1341,11 +1372,16 @@
       const ajouter = (role, source, simple) => {
         const o = objet(simple || source.objet.shape, source.objet.mat, source.objet.color);
         if (!source.rep) o.r = V.rotM;
-        V.pieces.push({ role, source, simple, objet: o });
+        V.pieces.push({ role, source, simple, levier: role === 'levier' || role === 'pommeau', mainLevier: role.startsWith('gant-1-'), objet: o });
       };
       ajouter('volant', H.jante, niveau === 2 ? 'cylinder' : null);
-      if (niveau < 2) { ajouter('branches', H.branches, null); ajouter('levier', H.tige, null); }
-      ajouter('pommeau', H.pommeau, null);
+      if (niveau < 2) ajouter('branches', H.branches, null);
+      ajouter('levier', H.tige, null); ajouter('pommeau', H.pommeau, null);
+      {
+        const f = FORMES['console-levier-pilote'], o = objet(f.nom, MAT, [.035, .035, .04]);
+        o.s[0] = f.taille[0]; o.s[1] = f.taille[1]; o.s[2] = f.taille[2]; o.r = V.rotM;
+        V.pieces.push({ role: 'console-levier', fixe: f.centre, objet: o });
+      }
       if (niveau > 0) {
         const o = objet('sphere', TISSU, combi); o.s[0] = .30; o.s[1] = .20; o.s[2] = .38; o.r = V.rotM;
         V.pieces.push({ role: 'buste', fixe: [-.04 + PILOTE_RECUL, .66, 0], objet: o });
@@ -1387,6 +1423,9 @@
     let u = t / .3, retour = (t - .65) / .35;
     u = u < 0 ? 0 : u > 1 ? 1 : u; retour = retour < 0 ? 0 : retour > 1 ? 1 : retour;
     const prise = u * u * (3 - 2 * u) * (1 - retour * retour * (3 - 2 * retour));
+    // La cible figure dans le point de contrôle et l'arrivée du Bézier : poids 2p(1-p)+p².
+    const poidsLevier = prise * (2 - prise);
+    for (let k = 0; k < 3; k++) R.decalageMain[k] = PILOTE_LEVIER_DECALAGE[k] * poidsLevier;
     ANG[0] = -(.22 * volant + .10 * prise); ANG[1] = -.10 * prise; ANG[2] = -.035 * volant;
     produitDans(R.tete, eulerDe(T_A, ANG, 0, 1), produitDans(T_B, eulerDe(T_C, ANG, 1, 2), eulerDe(T_D, ANG, 2, 0)));
 
@@ -1396,13 +1435,13 @@
     for (let h = 0; h < 2; h++) {
       const j = h * 9, cote = h === 0 ? -1 : 1, poignet = H.mains[h].pieces[3].o;
       A[j] = -.025 + PILOTE_RECUL; A[j + 1] = .705; A[j + 2] = cote * .165;
-      A[j + 6] = PILOTE_DECALAGE[0] + PILOTE_ECHELLE * poignet[0];
-      A[j + 7] = PILOTE_DECALAGE[1] + PILOTE_ECHELLE * poignet[1];
-      A[j + 8] = PILOTE_DECALAGE[2] + PILOTE_ECHELLE * poignet[2];
+      A[j + 6] = PILOTE_DECALAGE[0] + PILOTE_ECHELLE * poignet[0] + (h === 1 ? R.decalageMain[0] : 0);
+      A[j + 7] = PILOTE_DECALAGE[1] + PILOTE_ECHELLE * poignet[1] + (h === 1 ? R.decalageMain[1] : 0);
+      A[j + 8] = PILOTE_DECALAGE[2] + PILOTE_ECHELLE * poignet[2] + (h === 1 ? R.decalageMain[2] : 0);
       const dx = A[j + 6] - A[j], dy = A[j + 7] - A[j + 1], dz = A[j + 8] - A[j + 2];
       const distance = Math.max(1e-9, Math.sqrt(dx * dx + dy * dy + dz * dz)), ux = dx / distance, uy = dy / distance, uz = dz / distance;
-      const projection = .35 * uy + cote * uz;
-      let bx = -ux * projection, by = .35 - uy * projection, bz = cote - uz * projection;
+      const projection = .65 * uy + cote * uz;
+      let bx = -ux * projection, by = .65 - uy * projection, bz = cote - uz * projection;
       let normeB = Math.sqrt(bx * bx + by * by + bz * bz);
       if (normeB < 1e-9) { bx = -uz; by = 0; bz = ux; normeB = Math.sqrt(bx * bx + bz * bz); }
       if (normeB < 1e-9) { bx = 1; by = 0; bz = 0; normeB = 1; }
@@ -1426,6 +1465,8 @@
         x = PILOTE_DECALAGE[0] + PILOTE_ECHELLE * local[0];
         y = PILOTE_DECALAGE[1] + PILOTE_ECHELLE * local[1];
         z = PILOTE_DECALAGE[2] + PILOTE_ECHELLE * local[2];
+        if (e.levier) { x += PILOTE_LEVIER_DECALAGE[0]; y += PILOTE_LEVIER_DECALAGE[1]; z += PILOTE_LEVIER_DECALAGE[2]; }
+        else if (e.mainLevier) { x += R.decalageMain[0]; y += R.decalageMain[1]; z += R.decalageMain[2]; }
         objet.shape = e.simple || source.objet.shape;
         objet.s[0] = PILOTE_ECHELLE * taille[0]; objet.s[1] = PILOTE_ECHELLE * taille[1]; objet.s[2] = PILOTE_ECHELLE * taille[2];
         if (source.rep) anglesProduit(objet.r, M, source.rep.m);

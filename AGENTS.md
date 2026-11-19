@@ -313,3 +313,11 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
   avec retour à la vue normale au relâchement. Préserver les affectations des manettes et l'indépendance J1/J2.
 - Le geste reprend la commande de regard arrière décrite dans la documentation officielle EA consultée
   à la demande de David. La demande ne remplace pas les autres commandes de BITUME.
+
+## Décisions de David — 19 novembre 2026, cockpit extérieur
+
+- Conserver les animations du pilote, mais empêcher le levier de traverser le cockpit en vue extérieure,
+  sur le joueur et sur les concurrents. Éloigner également le volant du pilote dans cette vue.
+- Adapter les ancrages et le trajet des mains à l'habitacle extérieur, avec des dégagements vérifiés sur
+  les vrais maillages ; ne pas transposer simplement le cadrage intérieur à la silhouette extérieure.
+- Tout consigner dans le résumé GitHub et la reprise courte. Fiche : `docs/reprise/COCKPIT-PILOTES-2026-11-19.md`.
