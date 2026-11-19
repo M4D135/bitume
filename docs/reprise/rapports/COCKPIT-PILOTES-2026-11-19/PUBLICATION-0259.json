@@ -1,0 +1,145 @@
+{
+  "version": "0.2.59",
+  "physique": "p14",
+  "pr": 17,
+  "url": "https://github.com/M4D135/bitume/pull/17",
+  "branche": "codex/bitume-cockpit-pilotes-20261119",
+  "tete_qualifiee": "d052f4c30cef0e18ea5e0bef84ca5ecae8af2108",
+  "fusion": "02e8bac6b9ed762e0da06ab7c223e9cbd419968e",
+  "arbre_qualifie": "0397a5a4d9fe66b7459cda06fc101ee473b59ae2",
+  "arbre_main_verifie": "0397a5a4d9fe66b7459cda06fc101ee473b59ae2",
+  "arbre_main_identique_candidat": true,
+  "parents_reconciliation": [
+    "1d11d08eaf1cc68579c0dfd2ce1ee84fb74aba2f",
+    "42a916fdea88f38ad5be1275bbeed89f193cd26c"
+  ],
+  "pr16_integree": {
+    "state": "closed",
+    "merged": true,
+    "head": "42a916fdea88f38ad5be1275bbeed89f193cd26c",
+    "merge_commit": "d052f4c30cef0e18ea5e0bef84ca5ecae8af2108"
+  },
+  "build": {
+    "bytes": 14186762,
+    "git_blob": "181db0947ce27f2efaa2589b582f5a74d7fd2d0a",
+    "sha256": "cb02e2250a2e4a7d06bd0fdea659fce641a016975e224bac2823574888439cd4",
+    "two_identical_builds": true
+  },
+  "qualification_ciblee": {
+    "suites": "6/6",
+    "cockpit_car_controls": 71,
+    "procedural_shape_registry": true,
+    "detailed_poses": 840,
+    "actual_lod_shell_poses": 150,
+    "gear_phases": 168
+  },
+  "ci_tete_qualifiee": {
+    "state": "completed_with_inherited_reservations",
+    "runs": [
+      {
+        "run_id": 44600333635,
+        "job_id": 135829672477,
+        "event": "pull_request",
+        "head": "d052f4c30cef0e18ea5e0bef84ca5ecae8af2108",
+        "passed": 126,
+        "failed_count": 1,
+        "total": 127,
+        "failed": [
+          "verifications/traces.test.mjs"
+        ],
+        "reported_counts_match": true,
+        "trace_actual": [
+          "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf"
+        ],
+        "trace_expected": [
+          "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee"
+        ],
+        "trace_signature_matches_0257": true,
+        "decor_ms": null,
+        "decor_only_known_budget_failure": false,
+        "unexpected_failures": [],
+        "only_allowed_reservations": true,
+        "source_log_sha256": "659f3483e258dc3725b4f7451751a50e0f3a2fad5b2a0250f40fca0ed963b7b4",
+        "key_suites": {
+          "verifications/pilote-habitacle.test.mjs": "PASS",
+          "verifications/pilote-exterieur.test.mjs": "PASS",
+          "verifications/nature-integration.test.mjs": "PASS",
+          "verifications/decor.test.mjs": "PASS"
+        }
+      },
+      {
+        "run_id": 44600315684,
+        "job_id": 135829610448,
+        "event": "push",
+        "head": "d052f4c30cef0e18ea5e0bef84ca5ecae8af2108",
+        "passed": 125,
+        "failed_count": 2,
+        "total": 127,
+        "failed": [
+          "verifications/decor.test.mjs",
+          "verifications/traces.test.mjs"
+        ],
+        "reported_counts_match": true,
+        "trace_actual": [
+          "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf"
+        ],
+        "trace_expected": [
+          "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee"
+        ],
+        "trace_signature_matches_0257": true,
+        "decor_ms": 166,
+        "decor_only_known_budget_failure": true,
+        "unexpected_failures": [],
+        "only_allowed_reservations": true,
+        "source_log_sha256": "9767b8b5df5c65f3f38c2b27ea42cf67214d516cdc60744acb511feba5176e23",
+        "key_suites": {
+          "verifications/pilote-habitacle.test.mjs": "PASS",
+          "verifications/pilote-exterieur.test.mjs": "PASS",
+          "verifications/nature-integration.test.mjs": "PASS",
+          "verifications/decor.test.mjs": "FAIL"
+        }
+      }
+    ]
+  },
+  "archive_ci_verifiee": {
+    "artifact_id": 14569225414,
+    "run_id": 44600315684,
+    "event": "push",
+    "zip_sha256": "af022cdf427323a8f5ec35d4a2d31d89b5b56998bbb91e5d842f990c065cfac0",
+    "zip_bytes": 70154811,
+    "zip_integrity": true,
+    "build_bytes": 14186762,
+    "build_sha256": "cb02e2250a2e4a7d06bd0fdea659fce641a016975e224bac2823574888439cd4",
+    "commit": "d052f4c30cef0e18ea5e0bef84ca5ecae8af2108",
+    "checked_source_files": [
+      "src/voiture.js",
+      "verifications/pilote-exterieur.test.mjs",
+      "verifications/pilote-habitacle.test.mjs",
+      "verifications/nature-integration.test.mjs",
+      "VERSION.json",
+      "SIZE.json",
+      "dist/bitume.html"
+    ],
+    "source_matches_frozen_tree": true
+  },
+  "ci_apres_fusion": {
+    "run_id": 44602433260,
+    "head": "02e8bac6b9ed762e0da06ab7c223e9cbd419968e",
+    "url": "https://github.com/M4D135/bitume/actions/runs/44602433260",
+    "statut_dernier_constat": "en cours",
+    "resultat": "Non attribué aux CI terminées de la tête qualifiée ; arbre de code après fusion identique."
+  },
+  "publication": {
+    "fusion_normale": true,
+    "mise_a_jour_forcee": false,
+    "nouveaux_journaux_bruts": 0,
+    "nouveaux_chemins_internes": 0
+  },
+  "limites": [
+    "127 suites par CI ; réserve traces héritée conservée, aucune fixture réécrite.",
+    "Val-Brûlé : 166 ms sur push pour 150 ms ; réserve conservée, absence de régression de durée non démontrée par un essai comparatif contrôlé.",
+    "Jeu complet en navigateur, manette physique et FPS matériels non validés ici.",
+    "Site non déployé."
+  ],
+  "suite": "13B Baïkal, selon la fiche de plan existante."
+}

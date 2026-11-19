@@ -1,0 +1,123 @@
+{
+  "version": "0.2.57",
+  "pr": 15,
+  "url": "https://github.com/M4D135/bitume/pull/15",
+  "branche": "codex/bitume-demos-regard-arriere-20261119",
+  "tete_qualifiee": "652749694a1a77f25501c6c4fe7100c8b4636f97",
+  "arbre": "0df500f7ebff0aeaed280750ed3fb1134efa04a8",
+  "fusion": "940eabb9ff828c4577996319921f6cb1bd2ced0e",
+  "arbre_main_identique": true,
+  "build": {
+    "octets": 14182991,
+    "sha256": "cbcd5c26d36a19946d647c250f290150766be585e843a6e8c331716eefa7cbea",
+    "source_production_inchangee_par_correctif_test": true
+  },
+  "ci_initiales": [
+    {
+      "job_id": 135812123125,
+      "run_id": 44595377660,
+      "event": "pull_request",
+      "passed": 124,
+      "total": 126,
+      "failed": [
+        "verifications/nature-integration.test.mjs",
+        "verifications/traces.test.mjs"
+      ],
+      "trace_actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "trace_expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+      "decor_ms": null,
+      "log_sha256": "cb6cbab03982d82a1fcb3f6dcd4af41ec5c125a3186b4832a38743e7b66ecb76"
+    },
+    {
+      "job_id": 135811951678,
+      "run_id": 44595328742,
+      "event": "push",
+      "passed": 123,
+      "total": 126,
+      "failed": [
+        "verifications/decor.test.mjs",
+        "verifications/nature-integration.test.mjs",
+        "verifications/traces.test.mjs"
+      ],
+      "trace_actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "trace_expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+      "decor_ms": 156,
+      "log_sha256": "ab1dc256f20539e2c0e0b4d3ec07309759f70bca5f32947563b6df4c728668fc"
+    }
+  ],
+  "ci_correctives": [
+    {
+      "job_id": 135818178046,
+      "run_id": 44597083364,
+      "event": "pull_request",
+      "passed": 125,
+      "total": 126,
+      "failed": [
+        "verifications/traces.test.mjs"
+      ],
+      "trace_actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "trace_expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+      "decor_ms": null,
+      "log_sha256": "469ac635c7713c000b2c7cdebcf36cc503caf48d3b850e24a5e5c7667d1d3a23",
+      "nature_integration_passes": true,
+      "decor_passes": true
+    },
+    {
+      "job_id": 135818130309,
+      "run_id": 44597071517,
+      "event": "push",
+      "passed": 125,
+      "total": 126,
+      "failed": [
+        "verifications/traces.test.mjs"
+      ],
+      "trace_actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "trace_expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+      "decor_ms": null,
+      "log_sha256": "c2ae866b9762bf8a7582d97ad6ea7ab984595a69338bc5c5b9a77f03cede3785",
+      "nature_integration_passes": true,
+      "decor_passes": true
+    }
+  ],
+  "correctif": "Contexte VM nature complété avec cam, cas nature puis retour course, pools des deux joueurs isolés.",
+  "qualification_correctif": {
+    "suites": 3,
+    "passed": 3,
+    "controls": 27,
+    "source_and_build_unchanged": true
+  },
+  "ci_postfusion": {
+    "head_sha": "940eabb9ff828c4577996319921f6cb1bd2ced0e",
+    "job_id": 135829014137,
+    "run_id": 44600149785,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44600149785",
+    "event": "push",
+    "branch": "main",
+    "status": "completed",
+    "conclusion": "failure",
+    "passed": 125,
+    "total": 126,
+    "failed": [
+      "verifications/traces.test.mjs"
+    ],
+    "trace_actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+    "trace_expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+    "decor_ms": null,
+    "decor_threshold_ms": 150,
+    "log_sha256": "0f947b9aa29158a9045667de030d6b771e91100ef3c87d229b2b6c4aa0cdc1cf",
+    "log_bytes": 28857,
+    "nature_integration_passes": true,
+    "decor_passes": true,
+    "rebuild_version_size_html_unchanged": true,
+    "trace_signature_matches_0256": true,
+    "only_documented_reserves": true
+  },
+  "limites": [
+    "Jeu complet en navigateur, manette physique et FPS matériels non validés ici.",
+    "Site non déployé."
+  ],
+  "publication_nettoyee": {
+    "nouveaux_journaux_bruts": 0,
+    "nouveaux_chemins_internes": 0
+  }
+}

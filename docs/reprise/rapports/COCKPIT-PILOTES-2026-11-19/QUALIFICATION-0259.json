@@ -88,7 +88,7 @@
     "controles": 27,
     "source_jeu_et_build_0257_inchanges": true
   },
-  "ci": "À constater sur le commit publié ; les résultats ciblés ne remplacent pas la CI complète.",
+  "ci": "Tête d052f4c qualifiée : PR 126/127, push : 125/127 ; traces héritées et Val-Brûlé : 166 ms / 150 ms sur push. Fusion 02e8bac6, arbre identique. Voir PUBLICATION-0259.json.",
   "reserves_heritees": [
     "Signature traces.test.mjs, oracle conservé.",
     "Durée de génération du décor Val-Brûlé, seuil 150 ms conservé."
