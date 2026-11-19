@@ -3,24 +3,25 @@
   "etat_courant": {
     "branche": "codex/bitume-physx-sols-pilotes-20261119",
     "base_commit": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
-    "version_courante": "0.2.54",
+    "version_courante": "0.2.55",
     "version_publiee_verifiee": "0.2.54",
-    "build_courant": "0.2.54",
+    "build_courant": "0.2.55",
     "physique": "p14",
-    "statut": "physx_sols_pilotes_qualification_en_cours",
+    "statut": "physx_sols_pilotes_qualification_terminee_publication_prete",
     "lot": "physx_sols_pilotes",
     "fiche": "docs/reprise/PHYSX-SOLS-PILOTES-2026-11-19.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "035",
+    "derniere_entree": "036",
     "checkpoint_sources": "5779d8ee54ecdbe5e1c0c025ab392172d63a61a0",
-    "sources_tests_geles": false,
-    "qualification": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/",
-    "prochaine_action": "Finir qualification FERRO 0.3.13, propager canon verrouillé, valider sources intégrées et deux builds 0.2.55 ; publier puis lot démos cinéma.",
+    "sources_tests_geles": true,
+    "qualification": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/livraison/qualification-finale.json",
+    "prochaine_action": "Publier le snapshot 0.2.55/p14 qualifié, vérifier les empreintes distantes et la CI ; ensuite lot démos cinéma.",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
     "commit_livraison_verifie": "b791ae60952315431ad085cce742b64d9e15f5bc",
     "publication": "docs/reprise/rapports/13A-RUSSIE-2026-11-19/PUBLICATION-0253.json",
     "physique_cible": "p14",
-    "main_verifie": "c28802974b2c138b57ea1bfe377389724ca15724"
+    "main_verifie": "c28802974b2c138b57ea1bfe377389724ca15724",
+    "ferro_canon": "85ba941709bb304cbc34f8beb7baab0639321919"
   },
   "catalogue": {
     "jouables_dans_build": 8,
@@ -43,10 +44,11 @@
   },
   "suite": {
     "lot": "demos_cinema",
-    "statut": "demande_enregistree",
+    "statut": "demande_enregistree_travail_prepare_separement",
     "objectif": "Plans F1/arcade et découverte des environnements, faune et flore des circuits.",
     "fiche_plan": "docs/reprise/DEMOS-CINEMA-2026-11-19.md",
-    "apres": "physx_sols_pilotes"
+    "apres": "physx_sols_pilotes",
+    "note": "Préserver le travail de démo isolé ; ne pas l’inclure dans le lot PhysX."
   },
   "acces": {
     "mac_spark_amiga_disponibles": false,
@@ -189,12 +191,67 @@
     }
   },
   "validation": {
-    "statut": "qualification_ciblee_verte_integration_finale_attendue",
-    "circuits_tunnels_baikal": 14,
-    "stands": 11,
-    "pilotes": "375 poses/3 LOD, déjà qualifiés au checkpoint",
-    "reseau": "transfert en vol corrigé et 2 tests natifs réussis",
-    "build": "0.2.54 conservé à ce checkpoint ; nouveau runtime pas encore installé",
+    "statut": "terminee_avec_deux_reserves",
+    "suites": 119,
+    "reussies": 117,
+    "reserves": [
+      "decor.test.mjs : 486 ms pour 150 ms ; seuil conservé, comparaison de durée non contrôlée",
+      "traces.test.mjs : signature héritée identique"
+    ],
+    "empreintes_avant_apres_identiques": 235,
+    "build": {
+      "octets": 14153917,
+      "gzip": 3360641,
+      "sha256": "c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f",
+      "deux_builds_identiques": true,
+      "artefacts": {
+        "dist/bitume.html": "c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f",
+        "SIZE.json": "af0fadbd7465fa242c9b66644f67331859782bcbb0d6cf047bbd769737588c4d",
+        "VERSION.json": "4501f2b5c73ea5160649a054f08fc24f939fdef2bab490f8c437427f2e62a72d"
+      }
+    },
+    "determinisme": {
+      "runtime": "PhysX 5.12.0 WASM embarqué",
+      "scenarios": 8,
+      "empreintes": 141,
+      "poses_visuelles": 4464,
+      "sources_exactes": 19,
+      "sensibilite_ulp_et_commandes_verifiee": true,
+      "comparaison": "Deux scènes natives neuves par scénario ; p14 distinct des références historiques."
+    },
+    "ferro": {
+      "repository": "M4D135/FERRO",
+      "version": "0.3.14",
+      "pull_request": "https://github.com/M4D135/FERRO/pull/2",
+      "head": "f145e080d1cabab9802dc002debbf54aa8cc0bb6",
+      "merge": "85ba941709bb304cbc34f8beb7baab0639321919",
+      "tree": "27c2f2dd23c57feedefc748213f22fd165a15635",
+      "remote_tree_equals_qualified_tree": true,
+      "modules_exacts": 34,
+      "canonical_pass": 210,
+      "canonical_fail": 0,
+      "canonical_todo": 1,
+      "physx_pass": 25,
+      "physx_fail": 0,
+      "archive": {
+        "path": "dist/FERRO-0.3.14.zip",
+        "bytes": 6289975,
+        "sha256": "e8aa4dd9daa766eefc9213ca4edb59522c9525090d694ae209add8534ffcd028",
+        "git_blob": "b39f32d05a0eb3849fd87a8eb371f73fb8433129",
+        "crc_verified": true,
+        "entries": 45
+      },
+      "emprise": {
+        "baseline_pass": 10,
+        "candidate_pass": 10,
+        "suites": 12,
+        "inherited_failure_logs_identical": true,
+        "full_build": false
+      },
+      "browser_scene_validated": false,
+      "hardware_fps_measured": false
+    },
+    "webgl_valide": false,
     "fps_materiels": false,
     "deploiement_site": false
   },

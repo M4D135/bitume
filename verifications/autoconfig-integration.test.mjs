@@ -334,14 +334,18 @@ await verifier('palier appris : gardé pour la même version et la même carte, 
 
 // gl : contexte du moteur. mesure : détection enregistrée. version, materiel : ceux de la page. visible : promesse du
 // retour de la page au premier plan (onglet ouvert en arrière-plan).
-const demarrage = new Function('base', 'mesure', 'attente', 'version', 'materiel', 'visible', `
-  const appels = [], elements = new Map(); const $ = id => { if (!elements.has(id)) elements.set(id, { classList: { add() {} } }); return elements.get(id); };
+const demarrage = new Function('base', 'mesure', 'attente', 'version', 'materiel', 'visible', 'physx', `
+  const appels = [], erreurs = [], elements = new Map(); const $ = id => { if (!elements.has(id)) elements.set(id, { classList: { add() {} } }); return elements.get(id); };
+  const console = { error(e) { erreurs.push(e.message); } };
   const canvas = { addEventListener() {} }, optionsRendu = {};
   let rendu = null, son = null, contexteRenduPerdu = false, gpuModeste = false, derniereDetection = null, capacitesRendu = null, session = null;
   const palier = { n: 0 }, etatProfils = base.graphismes.etatStable(), reglages = { qualite: 'high', vegetation: 'ultra', circuit: 0 };
   const CATALOGUE = [{}], clamp = (x, a, b) => Math.max(a, Math.min(b, x)), horlogeProfils = () => 0;
   const B = { ...base, son: { creer() { appels.push('son'); return {}; } } };
   const window = { devicePixelRatio: 1, FRender: { create() { appels.push('renderer'); return { stats: { backend: 'webgl2' }, gl: {} }; } } };
+  // construire.py initialise PhysX avant jeu.js. Cette frontière simule uniquement sa disponibilité ;
+  // les suites physx-* exécutent séparément le vrai runtime WASM intégré.
+  if (physx !== null) window.FPhysX = { isReady() { appels.push('physx'); return physx !== false; } };
   const webgl2 = () => true, appliquerPalier = () => {}, lireStock = () => mesure;
   // Safari : la préférence graphique (contexte par défaut au lieu de haute performance) se pose avant de créer le moteur
   let avantMoteur = null; const preferenceGraphique = () => { avantMoteur = appels.length; };
@@ -358,7 +362,7 @@ const demarrage = new Function('base', 'mesure', 'attente', 'version', 'materiel
   const glacesPossibles = () => true, creerMoteurRetro = () => appels.push('retro');
   const preparerSeance = async (type, i) => { appels.push('vitrine'); session = { type, i }; };
   ${bloc('  async function demarrer()', "  // Outil d'essai")}
-  return { demarrer, appels, reglages, get derniere() { return derniereDetection; }, get gpuModeste() { return gpuModeste; }, get preference() { return avantMoteur; } };
+  return { demarrer, appels, erreurs, reglages, get derniere() { return derniereDetection; }, get gpuModeste() { return gpuModeste; }, get preference() { return avantMoteur; } };
 `);
 await verifier('premier lancement : attendre la détection avant le titre, la musique et la boucle', async () => {
   let finir; const attente = new Promise(r => { finir = r; }), h = demarrage(B, null, attente, undefined, undefined, Promise.resolve());
@@ -369,7 +373,17 @@ await verifier('premier lancement : attendre la détection avant le titre, la mu
   finir(); await execution;
   // le palier appris de la qualité Auto est repris après la détection ; le moteur des glaces naît ensuite (il
   // dépend des paliers atteignables), avant la vitrine
-  assert.deepEqual(h.appels, ['renderer', 'premier-plan', 'visible', 'bench', 'bench-termine', 'palier', 'retro', 'son', 'vitrine', 'titre', 'boucle']);
+  assert.deepEqual(h.appels, ['renderer', 'premier-plan', 'visible', 'bench', 'bench-termine', 'palier', 'retro', 'physx', 'son', 'vitrine', 'titre', 'boucle']);
+});
+await verifier('PhysX absent ou non initialisé : erreur explicite, aucune séance ni boucle démarrée', async () => {
+  const faite = { revision: A.REVISION, statut: 'ok', empreinte: A.empreinte('GPU-A', '0.2.40'), selection: 'medium', mesures: [{}] };
+  for (const physx of [null, false]) {
+    const h = demarrage(B, faite, Promise.resolve(), undefined, undefined, Promise.resolve(), physx);
+    await h.demarrer();
+    assert.deepEqual(h.appels, ['renderer', 'palier', 'retro', ...(physx === null ? [] : ['physx']), 'erreur']);
+    assert.deepEqual(h.erreurs, ['Le moteur PhysX doit être prêt avant le jeu']);
+    for (const appel of ['son', 'vitrine', 'titre', 'boucle']) assert.equal(h.appels.includes(appel), false, appel + ' bloqué');
+  }
 });
 await verifier('C1 : page ouverte dans un onglet en arrière-plan : le test attend qu’elle passe au premier plan', async () => {
   let montrer; const visible = new Promise(r => { montrer = r; });

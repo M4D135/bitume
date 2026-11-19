@@ -1,0 +1,6 @@
+ok formes finies, doubles faces, dans le cube unité et sans triangles dégénérés
+ok Islande uniquement, nuit et ciel dégagé ; pluie/neige/nuages atténuent, tunnels masquent
+ok rubans déterministes dans le monde, sans hasard de simulation ni dépendance à la caméra
+ok géométrie au-dessus du terrain, sans collision ni overlay, dans le plan lointain de 6000 m
+ok budgets qualité bornés et pools réutilisés sans mutation croisée des deux vues
+5 contrôles des aurores réussis

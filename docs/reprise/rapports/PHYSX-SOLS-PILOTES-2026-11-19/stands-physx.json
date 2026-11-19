@@ -1,24 +1,29 @@
 {
-  "date": "2026-11-19T17:41:33.966Z",
+  "date": "2026-11-19T17:55:55.829Z",
   "node": "v24.22.3",
   "runtime": {
     "ready": true,
     "version": "5.12.0",
     "worlds": 0,
-    "queryCount": 99300
+    "queryCount": 222124
   },
-  "adaptateur": "/workspace/scratch/1b28de5a23b5/ferro-reflets/src/ferro/physx.js",
+  "adaptateur": "/workspace/scratch/2540d1a213f9/bitume/src/ferro/physx.js",
   "dt": 0.008333333333333333,
-  "tests": 8,
-  "reussis": 8,
+  "tests": 11,
+  "reussis": 11,
   "empreintes": {
     "src/course.js": "0ecf914dc7d78edcf05a26f1b7a1ededb24fb8fc1a21b6f810dddaccb60fb597",
     "src/strategie-stands.js": "c0b8326627e0225bf8197719472062b181038346eb3d1b3ca4b6ef320d0dee50",
-    "src/physique.js": "258751974906bfe19720c40ade4f4227f747601230db0f6d54c2b13f98e6ab6d",
+    "src/physique.js": "5993ed42de0b779d9923a6372df922ce6518c2233a391f0d30dd01be0c22e15d",
     "src/conduite.js": "89e600517ca4d6ec37c81c9c5d74ffd33c26b5c151494b0988484179b2850acb",
     "src/solides-physx.js": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
-    "verifications/physx-stands.test.mjs": "739dcb4fb5d2faeabd5947c8cf8560e9d175db418508f603b55b14be7a9d9ad6",
-    "verifications/helpers/physx-runtime.mjs": "7503d286787cd0bcf04d0d14abeece417419c85f2ce32b619506f08087cc5741"
+    "src/circuit.js": "e6aa6ef807345c35f2016e192dcdb543dc682f50e604a483097052250965da98",
+    "src/decor.js": "de19269565f038bb98fa8c442aef9369f32173690d849d30e48e12778068c0dc",
+    "src/bords.js": "ef0488472987ff35d36f3a2bbd76e5a086cb7edf8bc038dfb01676dfe933b638",
+    "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "verifications/physx-stands.test.mjs": "c7f0359cc389003f6bca2d0f7a4a06d02708c383d29819d43ed08b94f58c8b9c",
+    "verifications/helpers/physx-runtime.mjs": "7503d286787cd0bcf04d0d14abeece417419c85f2ce32b619506f08087cc5741",
+    "adaptateurPhysX": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638"
   },
   "resultats": [
     {
@@ -35,7 +40,7 @@
           "rotation": 0
         }
       },
-      "dureeExecutionMs": 497.04382899999996
+      "dureeExecutionMs": 264.888271
     },
     {
       "nom": "PhysX : service immobile complet, quatre pneus changés ensemble seulement à son terme",
@@ -51,7 +56,7 @@
           "rotation": 0
         }
       },
-      "dureeExecutionMs": 85.49638800000002
+      "dureeExecutionMs": 57.97454200000004
     },
     {
       "nom": "PhysX : une impulsion pendant le service l’annule et garde les pneus usés",
@@ -66,7 +71,64 @@
           "rotation": 0
         }
       },
-      "dureeExecutionMs": 9.294855000000098
+      "dureeExecutionMs": 7.826207999999951
+    },
+    {
+      "nom": "PhysX : trajet IA complet vers le vrai garage puis sortie sous sec",
+      "reussi": true,
+      "mesures": {
+        "meteo": "sec",
+        "dureeTrajet": 40.29166666666974,
+        "dureeService": 2.5083333333331908,
+        "dureeDemandee": 2.5,
+        "maxMouvementService": 0.0009902942345939912,
+        "monteApres": "slicks",
+        "vitesseFinale": 33.40775344574064,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        }
+      },
+      "dureeExecutionMs": 3401.8986000000004
+    },
+    {
+      "nom": "PhysX : trajet IA complet vers le vrai garage puis sortie sous pluie",
+      "reussi": true,
+      "mesures": {
+        "meteo": "pluie",
+        "dureeTrajet": 42.33333333333803,
+        "dureeService": 2.5083333333331908,
+        "dureeDemandee": 2.5,
+        "maxMouvementService": 0.0034806431706283537,
+        "monteApres": "pluie",
+        "vitesseFinale": 33.21226997584307,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        }
+      },
+      "dureeExecutionMs": 2510.130387
+    },
+    {
+      "nom": "PhysX : trajet IA complet vers le vrai garage puis sortie sous neige",
+      "reussi": true,
+      "mesures": {
+        "meteo": "neige",
+        "dureeTrajet": 45.29166666667372,
+        "dureeService": 2.5083333333331908,
+        "dureeDemandee": 2.5,
+        "maxMouvementService": 0.004071552753944804,
+        "monteApres": "neige",
+        "vitesseFinale": 32.082608856021814,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        }
+      },
+      "dureeExecutionMs": 2783.433237
     },
     {
       "nom": "PhysX : file à 8 m, val-brule, sec, retour en course sans contact ni replacement",
@@ -87,7 +149,7 @@
           "rotation": 0
         }
       },
-      "dureeExecutionMs": 3352.3652699999993
+      "dureeExecutionMs": 1629.2355779999998
     },
     {
       "nom": "PhysX : file à 10 m, val-brule, sec, retour en course sans contact ni replacement",
@@ -108,7 +170,7 @@
           "rotation": 0
         }
       },
-      "dureeExecutionMs": 1130.4640639999998
+      "dureeExecutionMs": 1184.547525
     },
     {
       "nom": "PhysX : file à 8 m, val-brule, pluie, retour en course sans contact ni replacement",
@@ -129,7 +191,7 @@
           "rotation": 0
         }
       },
-      "dureeExecutionMs": 1448.151914
+      "dureeExecutionMs": 1341.0683219999992
     },
     {
       "nom": "PhysX : file à 8 m, val-brule, neige, retour en course sans contact ni replacement",
@@ -150,7 +212,7 @@
           "rotation": 0
         }
       },
-      "dureeExecutionMs": 1404.3442799999993
+      "dureeExecutionMs": 1477.1039219999984
     },
     {
       "nom": "PhysX : file à 8 m, haut-col, sec, retour en course sans contact ni replacement",
@@ -171,7 +233,7 @@
           "rotation": 0
         }
       },
-      "dureeExecutionMs": 2695.9123450000006
+      "dureeExecutionMs": 2716.5158599999995
     }
   ]
 }

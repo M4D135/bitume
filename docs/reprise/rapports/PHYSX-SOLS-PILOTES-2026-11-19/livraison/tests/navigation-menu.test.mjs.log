@@ -1,0 +1,12 @@
+ok onglets : initialisation idempotente, clic délégué, panneaux et ARIA cohérents
+ok onglets : clavier Home/End/flèches, Entrée native et retour à la souris
+ok haut/bas : un arrêt par groupe, sélection mémorisée et contrôles invisibles exclus
+ok radios natifs et cartes : gauche/droite sélectionne une seule fois
+ok curseurs : pas décimal exact, bornes et événements natifs de réglage
+ok sélections et cases : options interdites sautées, changement effectif seulement
+ok A/B restent sur fronts, B prioritaire et utilisable dans un panneau vide
+ok croix maintenue : premier appui, délai 360 ms, répétition 95 ms, pas de rattrapage
+ok stick : zone morte, hystérésis, retour au neutre après connexion/course
+ok LB/RB changent seulement les onglets, actions simultanées des deux manettes réunies
+ok repos : aucun parcours des contrôles ni interrogation de géométrie par image
+11 contrôles navigation menu validés

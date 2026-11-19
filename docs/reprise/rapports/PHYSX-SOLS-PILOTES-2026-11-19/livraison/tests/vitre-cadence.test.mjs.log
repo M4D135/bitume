@@ -1,0 +1,11 @@
+ok chaque image montre une position nouvelle, pas seulement les images de pas
+ok même image aux mêmes instants à 30, 60, 120 et 144 Hz
+ok vue rendue une image sur deux : avec le temps cumulé, même visière qu’à pleine cadence
+ok au sec et visière vide : ni mesure de la toile, ni parcours des pools, ni dessin ; l’horloge avance
+ok une goutte naît transparente puis apparaît en fondu
+ok définition : suit les baisses de palier, ignore les remontées jusqu’à la séance suivante
+ok définition : Auto passé d’ultra à Légère en pleine pluie, 2,0 Mpx ramenés à 0,92 Mpx
+ok définition : fixée au premier appel actif de la séance, même au sec
+ok visière propre masquée sans réécrire le style à chaque image
+ok préchauffage sous le voile : tracés presque transparents, effacés au premier appel actif
+visière, cadence : 10 contrôles passés

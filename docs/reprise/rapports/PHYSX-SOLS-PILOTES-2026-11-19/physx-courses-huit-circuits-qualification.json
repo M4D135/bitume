@@ -1,0 +1,245 @@
+{
+  "date": "2026-11-19T18:04:12.428Z",
+  "statut": "reussi",
+  "outilQualification": {
+    "fichier": "tools/qualification/physx-courses-qualifier.mjs",
+    "sha256": "57ac52b497ae7c05b5ef8ad5f5c0d82e0c417eb67e14c06ace8a58b8fe589128"
+  },
+  "protocole": {
+    "backend": "PhysX 5.12.0 WASM embarqué",
+    "circuits": 8,
+    "voituresParCircuit": 12,
+    "secondesParCircuit": 120,
+    "dt": 0.008333333333333333,
+    "meteo": "sec",
+    "saison": "ete",
+    "qualiteDecor": "high",
+    "graineCourse": 42,
+    "interventions": "IA sur les douze voitures ; collisions et retours après accident autorisés par la course"
+  },
+  "controles": [
+    "couverture des huit circuits",
+    "douze états PhysX par course",
+    "14400 pas par circuit",
+    "états finis à chaque pas (outil source)",
+    "repère de caisse au-dessus du seuil de -15 cm sous les triangles visibles dans le couloir central",
+    "corrections de pose/vitesse expliquées uniquement par les replacements après accident",
+    "aucune scène native restante"
+  ],
+  "resultats": [
+    {
+      "circuit": "val-brule",
+      "reussi": true,
+      "voitures": 12,
+      "pas": 14400,
+      "contacts": 7,
+      "chocs": 2,
+      "replacements": 1,
+      "corrections": {
+        "pose": 1,
+        "vitesse": 1,
+        "rotation": 1
+      },
+      "minRepereCaisseSolVisibleM": -0.05030500888824463,
+      "maxDecalageLateralM": 18.805970228058467,
+      "vitesseFinaleMinMS": 23.796074611399455,
+      "progressionMinM": 4617.098824231439,
+      "toursFinisMin": 1,
+      "stagnationsEchantillonnees": [],
+      "mondesRestants": 0
+    },
+    {
+      "circuit": "port-sable",
+      "reussi": true,
+      "voitures": 12,
+      "pas": 14400,
+      "contacts": 14,
+      "chocs": 0,
+      "replacements": 0,
+      "corrections": {
+        "pose": 0,
+        "vitesse": 0,
+        "rotation": 0
+      },
+      "minRepereCaisseSolVisibleM": -0.032661765813827515,
+      "maxDecalageLateralM": 5.528472653490079,
+      "vitesseFinaleMinMS": 46.386171483954726,
+      "progressionMinM": 4572.307801139811,
+      "toursFinisMin": 1,
+      "stagnationsEchantillonnees": [],
+      "mondesRestants": 0
+    },
+    {
+      "circuit": "haut-col",
+      "reussi": true,
+      "voitures": 12,
+      "pas": 14400,
+      "contacts": 23,
+      "chocs": 2,
+      "replacements": 0,
+      "corrections": {
+        "pose": 0,
+        "vitesse": 0,
+        "rotation": 0
+      },
+      "minRepereCaisseSolVisibleM": -0.05436164140701294,
+      "maxDecalageLateralM": 15.576451170357222,
+      "vitesseFinaleMinMS": 29.0237060434565,
+      "progressionMinM": 4892.657806466714,
+      "toursFinisMin": 0,
+      "stagnationsEchantillonnees": [],
+      "mondesRestants": 0
+    },
+    {
+      "circuit": "lande-noire",
+      "reussi": true,
+      "voitures": 12,
+      "pas": 14400,
+      "contacts": 23,
+      "chocs": 0,
+      "replacements": 0,
+      "corrections": {
+        "pose": 0,
+        "vitesse": 0,
+        "rotation": 0
+      },
+      "minRepereCaisseSolVisibleM": -0.0391240268945694,
+      "maxDecalageLateralM": 5.434949925549987,
+      "vitesseFinaleMinMS": 24.12733318728992,
+      "progressionMinM": 5195.664127051012,
+      "toursFinisMin": 1,
+      "stagnationsEchantillonnees": [],
+      "mondesRestants": 0
+    },
+    {
+      "circuit": "roche-fauve",
+      "reussi": true,
+      "voitures": 12,
+      "pas": 14400,
+      "contacts": 12,
+      "chocs": 0,
+      "replacements": 0,
+      "corrections": {
+        "pose": 0,
+        "vitesse": 0,
+        "rotation": 0
+      },
+      "minRepereCaisseSolVisibleM": -0.035223960876464844,
+      "maxDecalageLateralM": 7.4892994010842004,
+      "vitesseFinaleMinMS": 31.88701213448298,
+      "progressionMinM": 4750.112678088584,
+      "toursFinisMin": 0,
+      "stagnationsEchantillonnees": [],
+      "mondesRestants": 0
+    },
+    {
+      "circuit": "brume-de-jade",
+      "reussi": true,
+      "voitures": 12,
+      "pas": 14400,
+      "contacts": 13,
+      "chocs": 0,
+      "replacements": 0,
+      "corrections": {
+        "pose": 0,
+        "vitesse": 0,
+        "rotation": 0
+      },
+      "minRepereCaisseSolVisibleM": -0.033827781677246094,
+      "maxDecalageLateralM": 5.3037600057791945,
+      "vitesseFinaleMinMS": 39.303071016715656,
+      "progressionMinM": 4844.345951239367,
+      "toursFinisMin": 0,
+      "stagnationsEchantillonnees": [],
+      "mondesRestants": 0
+    },
+    {
+      "circuit": "cap-sequoia",
+      "reussi": true,
+      "voitures": 12,
+      "pas": 14400,
+      "contacts": 30,
+      "chocs": 0,
+      "replacements": 0,
+      "corrections": {
+        "pose": 0,
+        "vitesse": 0,
+        "rotation": 0
+      },
+      "minRepereCaisseSolVisibleM": -0.052537571056745946,
+      "maxDecalageLateralM": 9.505882823599231,
+      "vitesseFinaleMinMS": 56.74828678291847,
+      "progressionMinM": 4728.718090089689,
+      "toursFinisMin": 0,
+      "stagnationsEchantillonnees": [],
+      "mondesRestants": 0
+    },
+    {
+      "circuit": "baikal",
+      "reussi": true,
+      "voitures": 12,
+      "pas": 14400,
+      "contacts": 6,
+      "chocs": 0,
+      "replacements": 0,
+      "corrections": {
+        "pose": 0,
+        "vitesse": 0,
+        "rotation": 0
+      },
+      "minRepereCaisseSolVisibleM": -0.03545951843261719,
+      "maxDecalageLateralM": 13.807824642902458,
+      "vitesseFinaleMinMS": 52.67368433469795,
+      "progressionMinM": 5041.567227625241,
+      "toursFinisMin": 0,
+      "stagnationsEchantillonnees": [],
+      "mondesRestants": 0
+    }
+  ],
+  "preuves": [
+    {
+      "fichier": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physx-courses-huit-circuits.json",
+      "sha256": "b8ca71a41e74a47169b8fb6a93d9fe474bd77801279bdf31d5bed6727a99af0e",
+      "date": "2026-11-19T17:57:17.171Z",
+      "circuits": [
+        "val-brule",
+        "port-sable",
+        "haut-col",
+        "lande-noire",
+        "roche-fauve",
+        "brume-de-jade"
+      ],
+      "adaptateurObserve": "/workspace/scratch/9234a82b1835/bitume/src/ferro/physx.js"
+    },
+    {
+      "fichier": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physx-courses-complement-deux-circuits.json",
+      "sha256": "cf9501a923f26e85f10e70d0ddf30b96b709cee77466c5b34e1fbea853384337",
+      "date": "2026-11-19T18:02:40.985Z",
+      "circuits": [
+        "cap-sequoia",
+        "baikal"
+      ],
+      "adaptateurObserve": "/workspace/scratch/749f331cc09f/bitume/src/ferro/physx.js"
+    }
+  ],
+  "empreintes": {
+    "src/circuit.js": "e6aa6ef807345c35f2016e192dcdb543dc682f50e604a483097052250965da98",
+    "src/conduite.js": "89e600517ca4d6ec37c81c9c5d74ffd33c26b5c151494b0988484179b2850acb",
+    "src/course.js": "0ecf914dc7d78edcf05a26f1b7a1ededb24fb8fc1a21b6f810dddaccb60fb597",
+    "src/strategie-stands.js": "c0b8326627e0225bf8197719472062b181038346eb3d1b3ca4b6ef320d0dee50",
+    "src/physique.js": "5993ed42de0b779d9923a6372df922ce6518c2233a391f0d30dd01be0c22e15d",
+    "src/solides-physx.js": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+    "src/bords.js": "ef0488472987ff35d36f3a2bbd76e5a086cb7edf8bc038dfb01676dfe933b638",
+    "src/decor.js": "de19269565f038bb98fa8c442aef9369f32173690d849d30e48e12778068c0dc",
+    "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "tools/qualification/physx-courses.mjs": "94056d30bfb868c1f3c4df08a658657f30e7adf0bd3e24f6ebbef58e900f12a7",
+    "adaptateurPhysX": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638"
+  },
+  "limites": [
+    "120 s par circuit : toutes les voitures ne terminent pas un tour complet.",
+    "Les sondes de hauteur concernent le couloir central de la chaussée (largeur/2 moins 1 m) ; le terrain hors route n’est pas exhaustivement contrôlé.",
+    "Le seuil de -15 cm porte sur le repère du châssis, pas sur une intersection triangle par triangle de la carrosserie visible.",
+    "Les stagnations sont observées toutes les 10 s après la grille ; aucun délai maximal de blocage continu ne peut être déduit de ces seules traces.",
+    "Ce bilan ne valide ni la pluie/neige sur tous les circuits, ni le rendu navigateur, ni les FPS matériels."
+  ]
+}

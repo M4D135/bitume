@@ -33,3 +33,12 @@ Rendu : preuves shader réel des sols, bras/tête/rapport à plusieurs phases et
 Deux builds reproductibles, modules verrouillés exacts ; distinguer logiciels de contrôle et GPU matériel absent.
 
 Spark/Mac/amiga non disponibles ; aucun déploiement du site n'est revendiqué. 13B et les nouveaux circuits restent prévus.
+
+
+## Clôture de qualification — 0.2.55 / p14
+
+Qualification complète terminée : 117/119 suites, réserves décor et traces explicitement conservées.
+Les 235 sources/tests/builds contrôlés sont identiques avant/après. Deux builds identiques, 34 modules du canon
+FERRO 0.3.14 fusionné `85ba9417`. Les références p14 utilisent désormais le vrai WASM ; les références historiques
+ne sont pas présentées comme preuve de la nouvelle physique. Voir `rapports/PHYSX-SOLS-PILOTES-2026-11-19/livraison/VALIDATION.md`.
+Publication BITUME à finaliser puis reçu distant ; aucune validation matérielle ni mise en ligne revendiquée.

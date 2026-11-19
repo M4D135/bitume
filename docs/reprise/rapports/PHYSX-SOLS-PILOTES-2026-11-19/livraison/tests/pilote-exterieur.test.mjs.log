@@ -1,0 +1,9 @@
+ok  les deux mains, les bras, le volant et le casque suivent le braquage
+ok  le passage quitte la jante, atteint le levier et revient, sans déplacer la main gauche
+ok  les bras gardent leurs longueurs dans 375 poses, avec des transformations finies
+ok  les niveaux de détail gardent les mêmes poignets, coudes, bras, levier et direction du casque
+ok  un retour au cockpit puis à la vue extérieure retrouve exactement la même pose
+ok  les vues, rétroviseurs et autres voitures ne partagent pas les objets animés
+ok  le rendu lit un état gelé, sans horloge cachée ni écriture dans le modèle de simulation
+ok  les objets, positions, tailles et rotations des animations sont réutilisés à chaque image
+8 contrôles pilote extérieur réussis (375 poses, trois niveaux de détail, cockpit et rétroviseurs)

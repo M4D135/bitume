@@ -27,6 +27,11 @@ import path from 'node:path';
 const ici = path.dirname(fileURLToPath(import.meta.url));
 const PHYSIQUE = readFileSync(path.join(ici, '..', 'src', 'jeu.js'), 'utf8').match(/\bPHYSIQUE\s*=\s*['"](p\d+)['"]/)?.[1];
 if (!PHYSIQUE) throw new Error('PHYSIQUE introuvable dans src/jeu.js : aucune fixture choisie implicitement');
+// p14 : le châssis est intégré par le solveur natif. Ne jamais fabriquer une référence
+// de cette version avec l'ancien intégrateur JavaScript. Les archives p9–p13 restent intactes.
+if (+PHYSIQUE.slice(1) >= 14) {
+  await import('./helpers/determinisme-physx.mjs');
+} else {
 const req = createRequire(import.meta.url);
 for (const f of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'course', 'carene', 'decor']) req(path.join(ici, '..', 'src', f + '.js'));
 const B = globalThis.BITUME;
@@ -618,3 +623,5 @@ if (nouvelleReference && !echecs) {
 }
 console.log(`${echecs ? 'KO' : 'ok'}  déterminisme ${PHYSIQUE} : ${Object.keys(resultats).length} cas, ${total} empreintes, ${((performance.now() - t0) / 1000).toFixed(1)} s`);
 if (echecs) process.exit(1);
+
+} // intégrateur historique p9–p13

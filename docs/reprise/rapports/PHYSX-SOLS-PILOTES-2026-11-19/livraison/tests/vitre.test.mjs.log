@@ -1,0 +1,9 @@
+ok pluie ruisselante : petits dépôts, trajets lents et Canvas transparent
+ok neige collée, fonte vers une goutte et séchage sans nouvelles précipitations
+ok budgets adaptés à la qualité, maximum 148 dépôts poolés
+ok 30 Hz indépendants de l’affichage, même animation à 30 et 120 Hz
+ok DPR et surface plafonnés ; dimensions propres à chaque viewport
+ok deux joueurs : pools, horloges et Canvas indépendants, sans mutation croisée
+ok abri coupe les nouveaux dépôts et garde le séchage ; hors course et off effacent immédiatement
+ok pools stables, pas de lecture de pixels ni de hasard partagé ; libération idempotente
+vitre : 8 contrôles passés

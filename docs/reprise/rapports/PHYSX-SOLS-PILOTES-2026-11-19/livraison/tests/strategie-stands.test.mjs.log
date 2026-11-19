@@ -1,0 +1,26 @@
+✔ 12F4 val-brule usure forte entrée service sortie sur le vrai parcours (1330.731994ms)
+✔ 12F4 port-sable usure forte entrée service sortie sur le vrai parcours (1109.741519ms)
+✔ 12F4 haut-col usure forte entrée service sortie sur le vrai parcours (1168.989088ms)
+✔ 12F4 lande-noire usure forte entrée service sortie sur le vrai parcours (383.991043ms)
+✔ 12F4 roche-fauve usure forte entrée service sortie sur le vrai parcours (280.690019ms)
+✔ 12F4 brume-de-jade usure forte entrée service sortie sur le vrai parcours (332.409737ms)
+✔ 12F4 cap-sequoia usure forte entrée service sortie sur le vrai parcours (320.703832ms)
+✔ 12F4 baikal usure forte entrée service sortie sur le vrai parcours (811.660307ms)
+✔ 12F4 trajet réel sous pluie slicks conservés puis monte adaptée après service complet (84.809002ms)
+✔ 12F4 trajet réel sous neige slicks conservés puis monte adaptée après service complet (277.730216ms)
+✔ 12F4 pneus sains aucune décision ni arrêt dans le même parcours (116.490779ms)
+✔ 12F4 trois IA simultanées sont servies séparément puis repartent (389.489203ms)
+✔ 12F4 second service après usure renouvelée et vrai tour sans boucle au même passage (494.555857ms)
+✔ 12F4 garage occupé tardivement un humain devant bloque le début du service IA (120.211899ms)
+✔ 12F4 interruption juste avant la fin aucun pneu neuf ni service conservé (39.978087ms)
+✔ 12F4 distant humain arrivée abandon drapeau et fin proche ne programment pas de nouvel arrêt (2.063483ms)
+✔ 12F4 hôte sert le rival distant reçoit le résultat sans simuler un deuxième service (141.163505ms)
+✔ 12F4 humain repris par IA conserve ses pneus puis paie le trajet et le service complet (116.011606ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7530.142709

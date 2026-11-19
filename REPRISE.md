@@ -2,33 +2,32 @@
 
 ## Point actif — 19 novembre 2026
 
-**PhysX réel pour les voitures, sols procéduraux et pilotes animés : implémentation en cours.**
+**0.2.55 / p14 qualifiée, publication Git à terminer.**
+Branche `codex/bitume-physx-sols-pilotes-20261119`, checkpoint distant `6e9c1ea0`.
 Lire `docs/reprise/ETAT.json` et `docs/reprise/PHYSX-SOLS-PILOTES-2026-11-19.md`.
-Base `10f71ff1` (0.2.54/p13), branche `codex/bitume-physx-sols-pilotes-20261119`.
-La nouvelle conduite sera p14. Le build 0.2.54 existant ne contient pas encore ces changements.
+Le build contient les voitures dynamiques PhysX, les sols entièrement procéduraux et les pilotes extérieurs animés.
 
-## Demandes et constat
+## Validation terminée
 
-- Voitures sous le sol, collisions manquantes : PhysX ne porte encore que les débris. Passer aux corps dynamiques,
-  forces et inerties réelles, quatre suspensions, sol exact et solides de la scène ; aucun pilotage de pose par pas.
-- Sols hors route : grain/herbe/relief apparent entièrement procédural, sans image ni texture importée.
-- Pilotes extérieurs : tête, bras, direction et changements de rapport doivent bouger comme au cockpit.
+- 119 suites exécutées, 117 réussies ; 235 fichiers inchangés pendant les tests.
+- Réserves : décor Val-Brûlé 486 ms pour 150 ms (dépassement déjà observé en 0.2.54, absence de régression de durée
+  non démontrée) ; traces à signature héritée identique. Aucun seuil modifié.
+- Déterminisme natif p14 : 8 cas, 141 empreintes, deux scènes par cas, 4 464 poses sans changer la simulation.
+- Huit circuits × 120 s × 12 voitures : aucun état invalide, un replacement après accident. Protocole sec/été,
+  sans prétendre couvrir des courses complètes ni tout le hors-route. Neuf géométries de décor inchangées.
+- Deux builds identiques : 14 153 917 octets, SHA-256
+  `c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f`.
+- FERRO 0.3.14 : 34 modules exacts, PR #2 fusionnée au commit `85ba9417`, ZIP déjà publié.
 
-## Livraison précédente
-
-Virages/reflets 0.2.54 publiée sur main `c2880297`, PR #8 fusionnée.
-Build 14 089 230 octets, SHA-256 `db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3`.
-Canon FERRO `a22b738f`, clôture et CI conservées depuis main. La nouvelle physique n'est pas encore dans le build.
-Checkpoint distant `5779d8ee` récupéré dans une copie isolée. Limiteur des stands converti en forces ;
-14 contrôles natifs des circuits/tunnels/Baïkal et 11 scénarios stands passent. Pilote : 375 poses/3 LOD.
-Revue : transfert réseau en plein saut corrigé (pose et vitesses conservées), création interrompue nettoyée.
-Reste : canon FERRO 0.3.13, propagation verrouillée, qualification complète et deux builds reproductibles.
+Preuves faisant autorité : `docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/livraison/`.
+Le dossier voisin `final/` est historique et interrompu. Le rendu complet navigateur, les FPS matériels et le
+déploiement restent non validés. Dernière livraison BITUME sur main : 0.2.54, `c2880297`.
 
 ## Suite conservée
 
-Nouvelle demande : démos cinématographiques F1/arcade avec paysages, faune et flore, fiche
-`docs/reprise/DEMOS-CINEMA-2026-11-19.md`, juste après ce chantier.
-13B Baïkal — lac, berges, lieux, végétation/faune et saisons — reste prévu ensuite.
-Conserver Monaco fidèle, Marseille avec relief mesuré, grand circuit montagne distinct et six propositions.
-Spark/Mac/amiga non disponibles. Pas de FPS matériels ni de déploiement validés. Publier par petits lots,
-sans push forcé, corriger le canon FERRO avant de propager et conserver une reprise courte.
+Après publication et reçu : démos cinématographiques F1/arcade, paysages/faune/flore,
+fiche `docs/reprise/DEMOS-CINEMA-2026-11-19.md`. Préserver le travail isolé déjà préparé et traiter le bond de caméra
+quand un arbre quitte le champ. Ne pas mélanger ce lot au snapshot PhysX.
+Puis 13B Baïkal — lac, berges, lieux, végétation/faune et saisons ; conserver Monaco fidèle, Marseille avec relief,
+grand circuit montagne distinct et six propositions. Safari confirmé corrigé, ne pas rouvrir.
+Publier par petits lots, sans push forcé ; maintenir ce point court après chaque livraison.

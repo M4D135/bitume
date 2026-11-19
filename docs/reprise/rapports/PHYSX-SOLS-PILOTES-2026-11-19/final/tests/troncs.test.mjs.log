@@ -1,0 +1,78 @@
+{
+  "passed": 18,
+  "total": 18,
+  "results": [
+    {
+      "name": "index : prisme16 accepté, dimensions/rotations invalides rejetées",
+      "ok": true
+    },
+    {
+      "name": "32 sommets et bornes exacts, Rz·Ry·Rx ; géométrie source inchangée",
+      "ok": true
+    },
+    {
+      "name": "inclinaison axe0 sens-1 : tranche réelle, vide près de la base",
+      "ok": true
+    },
+    {
+      "name": "inclinaison axe0 sens1 : tranche réelle, vide près de la base",
+      "ok": true
+    },
+    {
+      "name": "inclinaison axe2 sens-1 : tranche réelle, vide près de la base",
+      "ok": true
+    },
+    {
+      "name": "inclinaison axe2 sens1 : tranche réelle, vide près de la base",
+      "ok": true
+    },
+    {
+      "name": "caps et facettes : au-dessus/dessous libres, facette polygonale sans cercle gonflé",
+      "ok": true
+    },
+    {
+      "name": "caps inclinés : hauteur AABB seule ne crée pas de faux solide",
+      "ok": true
+    },
+    {
+      "name": "containment : profondeur horizontale entière, sortie finie et test pur",
+      "ok": true
+    },
+    {
+      "name": "CCD : arbre fin traversé entre deux poses libres, casse/quatre roues/arrêt",
+      "ok": true
+    },
+    {
+      "name": "CCD vertical : caps traversés entre hauteurs libres",
+      "ok": true
+    },
+    {
+      "name": "passage haut et sous les racines : pas de mur invisible",
+      "ok": true
+    },
+    {
+      "name": "impact léger : énergie et cap caisse préservés, aucune casse",
+      "ok": true
+    },
+    {
+      "name": "frôlement tangent : passage libre sans collision élargie",
+      "ok": true
+    },
+    {
+      "name": "chevauchement immobile : correction sans dégâts ni vitesse",
+      "ok": true
+    },
+    {
+      "name": "décor réel foret : tous troncs, aucun feuillage, grand saut200km/h destructif puis reprise",
+      "ok": true
+    },
+    {
+      "name": "décor réel cote : tous troncs, aucun feuillage, grand saut200km/h destructif puis reprise",
+      "ok": true
+    },
+    {
+      "name": "décor réel montagne : tous troncs, aucun feuillage, grand saut200km/h destructif puis reprise",
+      "ok": true
+    }
+  ]
+}

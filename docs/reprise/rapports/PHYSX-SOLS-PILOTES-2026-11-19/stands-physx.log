@@ -1,16 +1,19 @@
-✔ PhysX : le limiteur ralentit réellement la voiture, même accélérateur tenu (498.491534ms)
-✔ PhysX : service immobile complet, quatre pneus changés ensemble seulement à son terme (85.882598ms)
-✔ PhysX : une impulsion pendant le service l’annule et garde les pneus usés (9.59787ms)
-✔ PhysX : file à 8 m, val-brule, sec, retour en course sans contact ni replacement (3352.661766ms)
-✔ PhysX : file à 10 m, val-brule, sec, retour en course sans contact ni replacement (1130.837214ms)
-✔ PhysX : file à 8 m, val-brule, pluie, retour en course sans contact ni replacement (1448.490463ms)
-✔ PhysX : file à 8 m, val-brule, neige, retour en course sans contact ni replacement (1404.766505ms)
-✔ PhysX : file à 8 m, haut-col, sec, retour en course sans contact ni replacement (2696.328771ms)
-ℹ tests 8
+✔ PhysX : le limiteur ralentit réellement la voiture, même accélérateur tenu (272.543181ms)
+✔ PhysX : service immobile complet, quatre pneus changés ensemble seulement à son terme (56.312034ms)
+✔ PhysX : une impulsion pendant le service l’annule et garde les pneus usés (6.537026ms)
+✔ PhysX : trajet IA complet vers le vrai garage puis sortie sous sec (3570.587352ms)
+✔ PhysX : trajet IA complet vers le vrai garage puis sortie sous pluie (2206.283021ms)
+✔ PhysX : trajet IA complet vers le vrai garage puis sortie sous neige (2168.453254ms)
+✔ PhysX : file à 8 m, val-brule, sec, retour en course sans contact ni replacement (1341.549981ms)
+✔ PhysX : file à 10 m, val-brule, sec, retour en course sans contact ni replacement (1226.140003ms)
+✔ PhysX : file à 8 m, val-brule, pluie, retour en course sans contact ni replacement (1862.573892ms)
+✔ PhysX : file à 8 m, val-brule, neige, retour en course sans contact ni replacement (1173.500897ms)
+✔ PhysX : file à 8 m, haut-col, sec, retour en course sans contact ni replacement (2349.243789ms)
+ℹ tests 11
 ℹ suites 0
-ℹ pass 8
+ℹ pass 11
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 11403.954708
+ℹ duration_ms 16245.272977

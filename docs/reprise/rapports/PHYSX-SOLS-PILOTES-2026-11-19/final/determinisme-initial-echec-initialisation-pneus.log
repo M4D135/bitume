@@ -1,0 +1,19 @@
+ok  peloton-val-brule : 24 empreintes, 2 scènes natives identiques (10.78 s)
+ok  duo-pluie-haut-col : 18 empreintes, 2 scènes natives identiques (13.23 s)
+ok  neige-usure-cap-sequoia : 18 empreintes, 2 scènes natives identiques (10.17 s)
+ok  saut-baikal : 3 empreintes, 2 scènes natives identiques (0.29 s)
+ok  contact-mur-tunnel : 1 empreintes, 2 scènes natives identiques (0.06 s)
+ok  stands-service-pluie : 50 empreintes, 2 scènes natives identiques (4.17 s)
+ok  stands-file-bloquee : 24 empreintes, 2 scènes natives identiques (2.58 s)
+ok  reprise-reseau-en-vol : 3 empreintes, 2 scènes natives identiques (0.25 s)
+ok  sensibilité ulp-natif : la première divergence est à la seconde 10
+ok  sensibilité commande : la première divergence est à la seconde 10
+ok  rendu logiciel : 4464 poses multi-vues sans modifier les empreintes PhysX
+file:///workspace/scratch/749f331cc09f/bitume/verifications/helpers/determinisme-physx.mjs:259
+  const e = B.conduite.creer(), avant = hash(encoder(e)), f = new Float64Array([e.etatPneus[0].usure]);
+                                                                                           ^
+
+TypeError: Cannot read properties of undefined (reading '0')
+    at file:///workspace/scratch/749f331cc09f/bitume/verifications/helpers/determinisme-physx.mjs:259:92
+
+Node.js v24.22.3

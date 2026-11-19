@@ -1,0 +1,18 @@
+ok contextes 2+2, 2+1, 1+2 et quatre machines : autorités, IA et tableaux indépendants
+ok configuration refusée sans inventer une séance, un pilote ou un propriétaire
+ok seules les voitures conduites par leur autorité partent ; aucune mutation de leur état
+ok quatre types et quatre roues : graines exactes, facteurs sur 16 bits et compteurs au centième
+ok bornes exactes, aucun arrondi ne diminue une usure ou un cumul déjà présents
+ok un état source invalide ne consomme aucune séquence et ne normalise aucun pneu
+ok paquet malformé : aucune roue, séquence ou reprise partiellement appliquée
+ok séance, expéditeur et autorité : ni autre invité, ni IA usurpée, ni humain local écrasé
+ok un même service garde type et graines ; l’usure et les cumuls avancent, la saleté peut partir
+ok service et instantané dans les deux ordres, doublons et saut de plusieurs services
+ok séquences indépendantes : une ligne périmée ne bloque pas une autre voiture valide
+ok reprise 2+2 : état reçu conservé, epoch nouveau, séquence 1 après une séquence ancienne élevée
+ok trois machines : une reprise manquée est réparée par la liste cumulative ; ancien invité ignoré
+ok reprise conservatrice : service ou usure plus récents chez le pair préservés et signalés
+ok service perdu côté pair puis reprise : la chaîne invité → hôte → pair conserve la monte et son usure
+ok voiture reprise devenue locale : une annonce ne peut écraser les pneus conduits ici
+ok module pur sans DOM, horloge, hasard ni appel à remplacerEtat à la réception
+17 contrôles pneus réseau réussis

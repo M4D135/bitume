@@ -1,0 +1,803 @@
+{
+ "format": "bitume-determinisme-physx-2",
+ "physique": "p14",
+ "runtime": "5.12.0",
+ "node": "v24.22.3",
+ "v8": "13.6.233.17-node.63",
+ "dt": 0.008333333333333333,
+ "origine": "Qualification 0.2.55 : intégrateur PhysX natif p14 ; références historiques p9 à p13 conservées.",
+ "portee": "À chaque pas : poses/vitesses/rotations natives, suspensions, forces, contacts, événements et commandes. État public complet chaque seconde, Float64 LE sans arrondi. Ne couvre pas les caches internes du solveur ni le rendu GPU.",
+ "sources": {
+  "src/circuit.js": "e6aa6ef807345c35f2016e192dcdb543dc682f50e604a483097052250965da98",
+  "src/conduite.js": "89e600517ca4d6ec37c81c9c5d74ffd33c26b5c151494b0988484179b2850acb",
+  "src/pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+  "src/usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+  "src/chaussee.js": "26845218ad17b60301f97f3374ac31fc4a61fab75b137d9497bb7742a983753d",
+  "src/degats.js": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247",
+  "src/contacts.js": "d6e583db729c91df8de21621c05b3b24835e6dc996e9dd4df7cb0464b27e1b7a",
+  "src/obstacles.js": "02626c61720ba5aa6bc1f06ee103725efed1a0c52f243b3ba2443f6f6cbf914e",
+  "src/course.js": "0ecf914dc7d78edcf05a26f1b7a1ededb24fb8fc1a21b6f810dddaccb60fb597",
+  "src/strategie-stands.js": "c0b8326627e0225bf8197719472062b181038346eb3d1b3ca4b6ef320d0dee50",
+  "src/bords.js": "ef0488472987ff35d36f3a2bbd76e5a086cb7edf8bc038dfb01676dfe933b638",
+  "src/decor.js": "de19269565f038bb98fa8c442aef9369f32173690d849d30e48e12778068c0dc",
+  "src/solides-physx.js": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+  "src/physique.js": "5993ed42de0b779d9923a6372df922ce6518c2233a391f0d30dd01be0c22e15d",
+  "src/ferro/physx.js": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+  "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+  "verifications/determinisme-simulation.test.mjs": "ab06cf43fe696e95f3e9f75c2ca9fc7cd9ada62a0235d92d7eb2ac2bda8b77db",
+  "verifications/helpers/determinisme-physx.mjs": "f8da0b5e20c2b2a1d5ab45de0b9c98f180c617521783bff5d70666651fbde1d0",
+  "verifications/helpers/physx-runtime.mjs": "7503d286787cd0bcf04d0d14abeece417419c85f2ce32b619506f08087cc5741"
+ },
+ "controles": {
+  "repetitionsParCas": 2,
+  "sensibiliteUlpNative": true,
+  "sensibiliteCommande": true,
+  "rendusLogiciels": 4464,
+  "renduGpuValide": false,
+  "mondesRestants": 0
+ },
+ "cas": {
+  "peloton-val-brule": {
+   "empreintes": [
+    "3a538d025f00bd9c1665da9950bc16994db15d131e4972b835f586fa467451c9",
+    "583c9785436b48ebb70eedbf7eb6dc34e22f273a9068fd57b785432001659a03",
+    "b004c0ec1081a53013dae096a1a6130fb9e2a32f06f82763000b96d98631cf7b",
+    "939a10dbfec875b8001f841c51cce51d0b9357c6420aa09594a92f9497fc359c",
+    "794da0e86a5f6b894760bc0df6eaf56754722451cfa21e872e35cc4f9af95241",
+    "65fc55e114d1db2293d81460d83dded39175b9ba61dae0991cded3ca7580cb66",
+    "b8cc83c58cdce57f2122fab9f0abdca1f2e725d235c8ae2699d5c14fab074c52",
+    "00bd8c5f64429ce2ad2f5ab1f8783b8ed550451f7a80948068fe855207d1c352",
+    "81a8d6a8b637ed5feb5aebd802ea000f97ee739553a03bad952c6420bdfca65b",
+    "d7554e2cc7a99ade82f617fd9830b1cafbf0a745f53511695e115f17fdee5be4",
+    "61142039e78c8c4a4c94135fad1cb85b85318348a6147c09a5cc1077934d9660",
+    "d2c245c45e2e2d5051504620e5ad021d8b567b58ef2608ddbebc7786ef412bdf",
+    "0f20b6d5ed88e77ef4701bcffd8eb2a727969ab26ff4ab3df265a8d872efb7fc",
+    "584c907c3bc9b9f66743d2e5553e6d31f21e5ef78dad0986996764e472810fa0",
+    "261988a8a71065e9c9e7733082c1864f143550ee187b5c2ffc4d508dc11ea3e3",
+    "a16ad2a2ca8f364646882ad3cd61beaba000ad74c289c8a2c288af04f63a7d0d",
+    "4215419cf35a9c8041de00bfaa1c57a5d979f67a5f6b0925d99fe7a357a7e9c9",
+    "58807058096744177d478451a20c86db25e2e994496d7496d7f6fc57d41d9922",
+    "f9ea6f219dece66380b87c9c8c02ebc9dd1ca91ed34a1b56ce1878ac77ee7f92",
+    "7cdad8b0d05f3772ef93efa072e4c6036eebe7a7888d4ccbedaccf155f7d5a98",
+    "fed2b36e557ede755d991ffc3337d69cb27637bff9e5080cd4299c148b940cf0",
+    "2abbf48adbe288b7ceea1307b4e503f4f77ee77dde16bae1f620212c5fd2c180",
+    "b6a9f898d5964b091e7c088277fa46c3c3c5bb32bc138621121d77e3ca89dc98",
+    "985063977502b7073e3924e56380b04964c8faba3bfee4268072474fdd0b76c0"
+   ],
+   "resume": {
+    "pas": 2880,
+    "pasSolveur": {
+     "simulate": 2880,
+     "fetchResults": 2880
+    },
+    "voitures": 12,
+    "suivi": {
+     "appuis": 138152,
+     "vol": 0,
+     "recul": 0,
+     "contactsMur": 0,
+     "contactsVoiture": 2561,
+     "replacements": 0,
+     "stands": []
+    },
+    "evenements": {
+     "rupteur": 696,
+     "feu": 5,
+     "vert": 1,
+     "rapport": 89,
+     "contact": 6
+    },
+    "ecritures": {
+     "pose": 0,
+     "vitesse": 0,
+     "rotation": 0
+    },
+    "fin": [
+     {
+      "id": 0,
+      "s": 583.0895782254629,
+      "d": 4.725045736140215,
+      "v": 50.71888855461875,
+      "y": 5.505100727081299,
+      "servicePneus": 0
+     },
+     {
+      "id": 1,
+      "s": 531.1450929252906,
+      "d": -0.5408406399133767,
+      "v": 43.56366007956635,
+      "y": 4.102810859680176,
+      "servicePneus": 0
+     },
+     {
+      "id": 2,
+      "s": 540.1513800253233,
+      "d": 4.606952823544513,
+      "v": 44.50094406351272,
+      "y": 4.396899223327637,
+      "servicePneus": 0
+     },
+     {
+      "id": 3,
+      "s": 644.9598141765209,
+      "d": 4.704342070567705,
+      "v": 55.20743866367865,
+      "y": 6.105104446411133,
+      "servicePneus": 0
+     },
+     {
+      "id": 4,
+      "s": 446.13558295920666,
+      "d": -13.019926502505971,
+      "v": 16.985218356016524,
+      "y": 0.47905659675598145,
+      "servicePneus": 0
+     },
+     {
+      "id": 5,
+      "s": 612.1192695370082,
+      "d": 4.72797691853865,
+      "v": 53.524583001423814,
+      "y": 5.943257808685303,
+      "servicePneus": 0
+     },
+     {
+      "id": 6,
+      "s": 453.8957296363433,
+      "d": -8.597418478558536,
+      "v": 17.73617136426125,
+      "y": 0.9309653043746948,
+      "servicePneus": 0
+     },
+     {
+      "id": 7,
+      "s": 573.1854470538365,
+      "d": 4.190751261425321,
+      "v": 50.193894887502594,
+      "y": 5.295194149017334,
+      "servicePneus": 0
+     },
+     {
+      "id": 8,
+      "s": 530.8903100589669,
+      "d": 4.208015258888622,
+      "v": 44.34547762254166,
+      "y": 4.093728542327881,
+      "servicePneus": 0
+     },
+     {
+      "id": 9,
+      "s": 526.2693500973983,
+      "d": 1.8373490310215466,
+      "v": 43.001729898683216,
+      "y": 3.9358484745025635,
+      "servicePneus": 0
+     },
+     {
+      "id": 10,
+      "s": 535.1362726762682,
+      "d": -2.9358135804939614,
+      "v": 43.95165566210217,
+      "y": 4.235446929931641,
+      "servicePneus": 0
+     },
+     {
+      "id": 11,
+      "s": 631.1447403892653,
+      "d": 4.7335739921232225,
+      "v": 55.076116045328526,
+      "y": 6.080904960632324,
+      "servicePneus": 0
+     }
+    ]
+   }
+  },
+  "duo-pluie-haut-col": {
+   "empreintes": [
+    "467f75b8eba9cd5bf8791b85fc3f4a3a11904a60424311c516c6cf85c3672b8b",
+    "8a8d335dfd0490bd948a7fa530d1d02a1be4b3b675bf6989fbfbd7a890624ca4",
+    "7f05c5c63c2b4137070250cfbe3ca05014268bf58051ba0e619298aed511418b",
+    "9dc3c076e79c3e86149c211d65251b7a9d2b1c193674defbbe1c4d828eec4f8d",
+    "423f421ca88ac50e61fc918caf257b4e0576bcb53570e30fcda57a05f441c7ea",
+    "e4576c0601f636bb1c0e1ee0458b22364df4074ede8e5a1abad7f50c21528ae0",
+    "3e34acad32bddca81c3bf1262ab4a57074b1f441ef07e882e8607331ef0a55a4",
+    "216939ec750a8cf6e250f6e534ba3b818e9537b5dea7d3e809a686795f209dbd",
+    "e8c40815a7eb2e3c2b7b2957c4ef7b4beeeeda730eb19d636f19a7267d683456",
+    "2409f5e130c0cacc0e1b26d812808edd63578102d92a3d060409bb0783bc81ec",
+    "3c8fee75645e1f7b5718462cf774bd76f3b3c3be1ae584b422ee3395bbf4d791",
+    "ba805cd18c3a8fcd3109ce00b8f57311c0ccb89141e7bbbcef7467eb32e8a234",
+    "e4522125a5f7612627bb1dcc75bb64be3875e05d90497f71c5aca127c5bbd0b9",
+    "7c14b52c2916d09c6810737d64a976bf2738584cf05da0cd2481277536f784b9",
+    "540df8c38efc689dadd5510d6090c56014f8a54a71b8ebe0ec35b078dcd92d0d",
+    "275d13e757c309284a064ea98cc5bf2ad1f828b1fd129084f3f64ff2ed5d3ab1",
+    "180c878180d07c07f5cf82311fd4fc58cd87d668e5af2e7765bd87d04251b085",
+    "ab82c79f85c5377461ade1e6c4cba148828c380676487c1bdd3cca6bff25bc12"
+   ],
+   "resume": {
+    "pas": 2160,
+    "pasSolveur": {
+     "simulate": 2160,
+     "fetchResults": 2160
+    },
+    "voitures": 12,
+    "suivi": {
+     "appuis": 103680,
+     "vol": 0,
+     "recul": 0,
+     "contactsMur": 0,
+     "contactsVoiture": 0,
+     "replacements": 0,
+     "stands": []
+    },
+    "evenements": {
+     "rupteur": 756,
+     "feu": 5,
+     "vert": 1,
+     "rapport": 52
+    },
+    "ecritures": {
+     "pose": 0,
+     "vitesse": 0,
+     "rotation": 0
+    },
+    "fin": [
+     {
+      "id": 0,
+      "s": 364.8839949144931,
+      "d": -1.3714362016633013,
+      "v": 47.25885589234946,
+      "y": -0.015977144241333008,
+      "servicePneus": 0
+     },
+     {
+      "id": 1,
+      "s": 385.57349181201516,
+      "d": -4.7398196885489305,
+      "v": 47.99848425186245,
+      "y": -0.016948312520980835,
+      "servicePneus": 0
+     },
+     {
+      "id": 2,
+      "s": 392.8271292874051,
+      "d": -4.131692541489312,
+      "v": 46.93469774928745,
+      "y": -0.016370415687561035,
+      "servicePneus": 0
+     },
+     {
+      "id": 3,
+      "s": 408.9776744346491,
+      "d": -4.42973021452419,
+      "v": 42.879189430231825,
+      "y": -0.08967410027980804,
+      "servicePneus": 0
+     },
+     {
+      "id": 4,
+      "s": 400.22680583209967,
+      "d": -4.730627589597452,
+      "v": 44.70221842836368,
+      "y": -0.01807364821434021,
+      "servicePneus": 0
+     },
+     {
+      "id": 5,
+      "s": 402.47085352294744,
+      "d": -2.203669163328175,
+      "v": 44.58841274352189,
+      "y": -0.025582224130630493,
+      "servicePneus": 0
+     },
+     {
+      "id": 6,
+      "s": 425.8973130312743,
+      "d": -4.149567016625732,
+      "v": 42.37246685031168,
+      "y": -0.4883421063423157,
+      "servicePneus": 0
+     },
+     {
+      "id": 7,
+      "s": 378.9595602372983,
+      "d": -4.358487386363674,
+      "v": 50.217185216321376,
+      "y": -0.018106967210769653,
+      "servicePneus": 0
+     },
+     {
+      "id": 8,
+      "s": 402.9816077680871,
+      "d": 0.3122252917766496,
+      "v": 44.0855166177831,
+      "y": -0.028053492307662964,
+      "servicePneus": 0
+     },
+     {
+      "id": 9,
+      "s": 355.2151249379567,
+      "d": -3.4340553469771105,
+      "v": 52.59262300781237,
+      "y": -0.020215749740600586,
+      "servicePneus": 0
+     },
+     {
+      "id": 10,
+      "s": 442.50628789156235,
+      "d": -3.7355043118260425,
+      "v": 42.09482308025975,
+      "y": -1.0776665210723877,
+      "servicePneus": 0
+     },
+     {
+      "id": 11,
+      "s": 365.48794685266057,
+      "d": 2.5034514219963127,
+      "v": 54.135503965017826,
+      "y": -0.017992645502090454,
+      "servicePneus": 0
+     }
+    ]
+   }
+  },
+  "neige-usure-cap-sequoia": {
+   "empreintes": [
+    "c511d0be868b7620ed7b122676ef5af642b64b313cb1b896323c3dcc8f5f42d6",
+    "19bd2a5b66b7ef7bf57ef0bf5dd19bdb89c48523458280fe5d1a73c78de1a4c8",
+    "ce9096adb81fa5f8bcfd7226e69747d73e7fef7db6d65f0cb0b17dd17f9456d3",
+    "3b59e63615cf4d3f505199e588847c217ba18c211158b567b819d83ee46b1099",
+    "aa0aaba38c9211bde5365eb1335d40c24ecef1f81b288206183e4d11d0b4e753",
+    "57638ad09e4977fb30912de5660f2578bd30a0d96f6d674b37fb171956df19b6",
+    "d4e1b44008db5d07ad5a6f6796e7324a48debe584cc7bff57b829f4986e7a6c4",
+    "854f2d9a6df31882494b6d9e9a07bc38043601e94e5188d621417ee445193af5",
+    "870254e694e4d1c30c145327f6f0171ac6d28f5e7264fae088eed19785e6181f",
+    "78e1bfde18d9da7855d37ecf7b0beda2ffcbc14fa5c28b5e19a084945db6bc14",
+    "c27c5eafa69447c9b939396862e44f449966fb1b813acde7faa47be24f773231",
+    "a89fe3f23adb070c120bd8efcc98a059ffaddf1595568764781567759bcb8858",
+    "dff2272ee5976f5b4a43ed731cd1179d0f976895bc890246af6726f1ed8feceb",
+    "7392b339c02c58068cbb6f964ff1c477d18fda8155fed4e38bbce1d25aa13dff",
+    "1bbcca35a69e86a2953261b6b62c400a551e632f813d63ac2881869e50a343f8",
+    "f7116e6c7447015347dfc3279d50c8f53958fb7a8266b77743dc4018b0e08965",
+    "6580f8352f209f774754c0c677d233b8054370ce93e947800a423391085ec5e7",
+    "a54053064a3f8db51df827bb4417ec78258f506e07b63598099c1071e8f56a69"
+   ],
+   "resume": {
+    "pas": 2160,
+    "pasSolveur": {
+     "simulate": 2160,
+     "fetchResults": 2160
+    },
+    "voitures": 12,
+    "suivi": {
+     "appuis": 103645,
+     "vol": 0,
+     "recul": 114,
+     "contactsMur": 0,
+     "contactsVoiture": 766,
+     "replacements": 0,
+     "stands": []
+    },
+    "evenements": {
+     "rupteur": 696,
+     "feu": 5,
+     "vert": 1,
+     "rapport": 33,
+     "contact": 5,
+     "choc": 2
+    },
+    "ecritures": {
+     "pose": 0,
+     "vitesse": 0,
+     "rotation": 0
+    },
+    "fin": [
+     {
+      "id": 0,
+      "s": 219.2389853323184,
+      "d": 4.297194376991892,
+      "v": 38.02723574963516,
+      "y": -0.008621394634246826,
+      "servicePneus": 0
+     },
+     {
+      "id": 1,
+      "s": 208.001477252511,
+      "d": 2.1652702531175865,
+      "v": 40.28284756470376,
+      "y": -0.008314132690429688,
+      "servicePneus": 0
+     },
+     {
+      "id": 2,
+      "s": 194.17109774550408,
+      "d": 3.249236787455586,
+      "v": 44.60953250044969,
+      "y": -0.010760754346847534,
+      "servicePneus": 0
+     },
+     {
+      "id": 3,
+      "s": 333.40596352972807,
+      "d": 4.139216111844547,
+      "v": 26.170171781291703,
+      "y": -0.00561290979385376,
+      "servicePneus": 0
+     },
+     {
+      "id": 4,
+      "s": 213.59184309577176,
+      "d": 1.096497683026551,
+      "v": 38.61898107894009,
+      "y": -0.009439438581466675,
+      "servicePneus": 0
+     },
+     {
+      "id": 5,
+      "s": 206.35053015628273,
+      "d": -0.6404555789727853,
+      "v": 40.230366584322184,
+      "y": -0.008360564708709717,
+      "servicePneus": 0
+     },
+     {
+      "id": 6,
+      "s": 164.2968600811173,
+      "d": 2.621554243134432,
+      "v": 32.17202407733518,
+      "y": -0.00529751181602478,
+      "servicePneus": 0
+     },
+     {
+      "id": 7,
+      "s": 328.63815464200434,
+      "d": 2.6687291941405786,
+      "v": 27.58387698991456,
+      "y": -0.0039942264556884766,
+      "servicePneus": 0
+     },
+     {
+      "id": 8,
+      "s": 247.3405827623301,
+      "d": 4.223798356890396,
+      "v": 33.95868457230575,
+      "y": -0.007280230522155762,
+      "servicePneus": 0
+     },
+     {
+      "id": 9,
+      "s": 257.70572971016827,
+      "d": 1.9055067036731361,
+      "v": 36.77345212787398,
+      "y": -0.008946001529693604,
+      "servicePneus": 0
+     },
+     {
+      "id": 10,
+      "s": 155.7424176434224,
+      "d": 10.244929180737229,
+      "v": 12.955705677209748,
+      "y": -0.0735272467136383,
+      "servicePneus": 0
+     },
+     {
+      "id": 11,
+      "s": 355.9040274834124,
+      "d": 3.956085504546942,
+      "v": 19.149615902764538,
+      "y": -0.22097860276699066,
+      "servicePneus": 0
+     }
+    ]
+   }
+  },
+  "saut-baikal": {
+   "empreintes": [
+    "7db87a5910b9363bf317099b8f03ab9b0fc61ef64391f597a3e08a8719535b64",
+    "2255e3d80a0e9fb82a3e802827fd354842c4437735466aa6e5b7794d30ea78b6",
+    "a9474871ae2f1369f22f8cb4278733c48a1cbbb2d3ebf850772c5b0264dd0d2a"
+   ],
+   "resume": {
+    "pas": 360,
+    "pasSolveur": {
+     "simulate": 360,
+     "fetchResults": 360
+    },
+    "voitures": 1,
+    "suivi": {
+     "appuis": 1254,
+     "vol": 46,
+     "recul": 0,
+     "contactsMur": 0,
+     "contactsVoiture": 0,
+     "replacements": 0,
+     "stands": []
+    },
+    "evenements": {
+     "rapport": 3
+    },
+    "ecritures": {
+     "pose": 0,
+     "vitesse": 0,
+     "rotation": 0
+    },
+    "fin": [
+     {
+      "id": 0,
+      "s": 2677.986099674137,
+      "d": 0.0002827006971277062,
+      "v": 46.25322342778631,
+      "y": 43.96731948852539,
+      "servicePneus": 0
+     }
+    ]
+   }
+  },
+  "contact-mur-tunnel": {
+   "empreintes": [
+    "8ee115c907ad1104d74ce603aa6f5ea47b86b31b579127bd39e3c0737b02d9db"
+   ],
+   "resume": {
+    "pas": 120,
+    "pasSolveur": {
+     "simulate": 120,
+     "fetchResults": 120
+    },
+    "voitures": 1,
+    "suivi": {
+     "appuis": 480,
+     "vol": 0,
+     "recul": 0,
+     "contactsMur": 7,
+     "contactsVoiture": 0,
+     "replacements": 0,
+     "stands": []
+    },
+    "evenements": {
+     "rapport": 4,
+     "choc": 1
+    },
+    "ecritures": {
+     "pose": 0,
+     "vitesse": 0,
+     "rotation": 0
+    },
+    "fin": [
+     {
+      "id": 0,
+      "s": 1928.1745085752746,
+      "d": 6.44644590605985,
+      "v": 0.06012656676474112,
+      "y": 1.9858942031860352,
+      "servicePneus": 0
+     }
+    ]
+   }
+  },
+  "stands-service-pluie": {
+   "empreintes": [
+    "d21c80b22cd3756aeb47a3c28b2fd1c84f64be4ed5bd4ff43039c72097136c20",
+    "46b677e16819840b58dec30118b3a1d2500ecab0ba61fb4ffd3c3cfe3fffcfcf",
+    "52f2470a60ed0c2b003d6e3edf332df863972f8035820f0725e7af78c942bdf4",
+    "a412913d13514dfae47b6c3a1cbe852bda3c265c476585f3c2a05180de7d3cfa",
+    "455f89b7b4678c0168d4f37377641ff00c4977654bf640011ffc71b717ce58bb",
+    "4a41c82ce959cb3985839e17eee2619fe7f9d52aa7e534a03cf625568e6872b5",
+    "0c20ecb924887d5a2bc0b89fe22a311785c550d9b748d8a896b3f3c11718ba60",
+    "d6fcedf5bb8bf5ef35f0cac7b57e8581b9d32dc27d0c57b42dfaaab0ee722c27",
+    "6a681a1bb2df6321d918efaa7f3d6eb129cf9865d58fa2c76dc2f7ac46568e7a",
+    "fa2f2da63285f0bbb7cc2a4e2a14bbdec89769008f97f19f6e268301de70f3d8",
+    "7ea5aae0eb5dbd6cc448b1efb086ab9878051e1ea79c8810083a5ea7e6f538fd",
+    "7b40a87ebb686616ef32660c38c434eaa00f90f9e04f4c43cd7e06f29f36cd73",
+    "acc208c96dc0235a57e094754dffcc8459a92ab387672f8aaca918630b115287",
+    "dc317e20c006b86cf5d44875140618486f18a52097888f19c02773af268f21d0",
+    "21a4c74d01767d177289ae09cfa1d4ca3afe5a0c8b8936bbdfb507422ac6f08a",
+    "af1cdf2780f9564d8973bd365967936efcc28362b9a3f4b5d7b02c410c8013b5",
+    "651d96c96c550f7a1b58e3ce5a4c5a835fe16eaf9be379407464b17b54f4ed60",
+    "abe69be32ddfa38ca624c04c388d513b456d43a06e139832f91d7af6ef1ae047",
+    "f6f143d4a18ed39f1ecbfce99b46b8475cf19608c2df6f8880241f3577fdb1f0",
+    "3231be86e05602563fe6e57ec02bbac8f97168d8677ff437bbd658b1a149eb9d",
+    "4950846828cc79e78c7c821b8ade5118cd53bb56e1643e24d4a68b53ab45b6d5",
+    "cb5ed625816ddf9d6470e72835d08ea9ed061f8a282235a6dbab78b114affbef",
+    "42fd130d973023100944b5f0906202345c5e094db4479d7229dc1e5f11fecf99",
+    "a81a563ee7983518d07e6b68f7bd49dc923d8d8a7e4a6a90d92599968b9356c0",
+    "f39283b527dc747451e089a3a607267b60d75c9a977610745315b2874a282916",
+    "172d2148d96d97ef0368711f801fb58e7c53603273855e7dfce9e2df0bfab27a",
+    "fbff1a6bcdab2eef790eb7c93e2b052fb80d8f452ae0b5c6fc0cfed92196e745",
+    "b7d88b7dd4ffdef642210e5436ba9fa2de352904fcf8df474b927177615d9746",
+    "67935c6957284484b208e0dc837b87d90a46c3c517ff6698253b04614e89ec64",
+    "6a4e6ee1a2a006ea13e6dd759d10edf575359e376dbfa174c9313e7992ec0baf",
+    "f9639c8f505e2bd53342c213d0acfb023e26d91300c35a711a8afe5e1667d2fd",
+    "99b8e52ced516e5f533d7acb4d5cc99209a6704d6c7201eb9e609054ca248048",
+    "0dd578f62b7899a1d975a295976021ec981d4faebb5edde9d651366661b84a7a",
+    "769daf17e3cd67abd13b617d6d6b88f8c1021e6ae84114d34a16ef394a2d707b",
+    "df1dc432d35e84787a0fb1467d43d0b4947c567ee179a744fd79bcc4d31d43e1",
+    "1f22d5522e90cecd20e8d0f052c276e42aefb44e4e734416fc1c534203187303",
+    "976f6b910341fc4c91ae1be05903669a62eadd947d15b14eaea7cbe8c1b2ba3a",
+    "c06176703ac8a4e0f6bcacfed86a0d62061632ab2c888aca36a3f27473b21e7e",
+    "2aae36dbd7a2bfdf69ed3c277cd316d201de86a2499d1432486f084d30e9280b",
+    "aa6aeb8e329e22dfc6b7001f68c640e538fca903a927d0be002ba623f52dd46d",
+    "1240b232fca678b81fc939868006a209013a7d99159ce9d6b3229f9b82bb2451",
+    "9a689e3cde705578bfc109d63295869a394be53595075fa2025cdec1a8b8bef8",
+    "ee5cf27e1038aeba6ac6d626962a4963c8b8b20f6b1ffe6757aabe34b32f899a",
+    "6cc9bd05e94efbdac68e87fac71408d13639b8e1457eab1026ca126f61fb0dda",
+    "ae74f2ddbb4602ddf400855a37495c151ffe1af66c2bf0095f5b47a0a2bcb433",
+    "64ece020f4437bfbec1e9d94542df63aee60da9d25d4cbf04d979d5b5a8f9ca5",
+    "ce5df600e7730ce08bfb426f5cd04c22129adf7bf13b41b1b0634badba4ab065",
+    "b9aef009a6e7bee86013344ba6d90540c66ed82fcdb2f71c504d33950e107cf2",
+    "d6202b17bfe8fd8e53049f28381a5af1a179a56b2d66ad1b1277d878348bc066",
+    "c351c8669d1b1b7d55c113f001be488b2ade883d9d5489ddde06ae9c0e70b174"
+   ],
+   "resume": {
+    "pas": 6000,
+    "pasSolveur": {
+     "simulate": 6000,
+     "fetchResults": 6000
+    },
+    "voitures": 2,
+    "suivi": {
+     "appuis": 48000,
+     "vol": 0,
+     "recul": 0,
+     "contactsMur": 0,
+     "contactsVoiture": 0,
+     "replacements": 0,
+     "stands": [
+      "entree",
+      "service",
+      "repare",
+      "sortie"
+     ]
+    },
+    "evenements": {
+     "rapport": 8,
+     "tour": 1,
+     "stand": 4
+    },
+    "ecritures": {
+     "pose": 0,
+     "vitesse": 0,
+     "rotation": 0
+    },
+    "fin": [
+     {
+      "id": 0,
+      "s": 1240.0011062817466,
+      "d": 0.00005838128993098156,
+      "v": 3.112285227628219e-8,
+      "y": -1.6433525085449219,
+      "servicePneus": 0
+     },
+     {
+      "id": 1,
+      "s": 519.919233689121,
+      "d": 4.735530424891617,
+      "v": 43.22048921829654,
+      "y": 3.709969997406006,
+      "servicePneus": 1
+     }
+    ]
+   }
+  },
+  "stands-file-bloquee": {
+   "empreintes": [
+    "2c13eef333edf93d7719380926343b215ebf4b099dc9ed15eae446c414207067",
+    "56a3c01ab55f309b74e111b76e84b9012470151c01b90fda6920bbab73b07ca9",
+    "22438cb81094da86b024c279326dd268c7fb44d1e5e75cb6215d5209956a9706",
+    "4812cb80f1fa3c80bf9d0db8c6c8834c16e0cf74beab9fd1df9f92c4309a3395",
+    "38b0af5bdae1e82084e9dbf05473e52d4ca76d5cd578db887903c41e9b250815",
+    "191139660610c89ef0a937778d5e979db822b5eec1e01f7f7fdfb61d25c41ad0",
+    "12a9fa93c90c83a62ffd9cf575a626aaa5e57d1e8b5eecc0d46d32858a2ae891",
+    "9a83e92167059b37b638b8641d29413eb552c0207f2491d06d55b63ea7f78dd5",
+    "1226846fc6b0432255a8b03b52a55ad678ccd1707caab1c9512cf1600be0f4e7",
+    "52e60f2a19db23f359b3cbc19c50290b7664199ea82b4b284ec2f7a0f8a958c6",
+    "6a16b1d2ba7580f098ba9f36d6b6e5c0f2603f33ae994d9f3145bfd42ad4e1f2",
+    "c6aaef89b479858f15869b437d53cd7b70c7dca91a879f77925b99c81baed327",
+    "499f2e093dfe5a1cfd46487861e2d20e3d0636aefb9ec685a12c13f495d27947",
+    "8fb96aa898cbb2a4572da7d7811bf02031f6a4a3653ed2baa22ecc01d0136a7e",
+    "970423fb46a47650c6d3d165ef35ee2f4d2d57f56899488fb7aaf4c8d0f5da29",
+    "f3705e1a0c99b0d049ac3b337bdcbabc4dbb40ba0ef50f6de3a9254c67c5c9fb",
+    "945bf0bbda32faaf3d30d5d3722be33966aa2a7d6a30d7cc15afc3d2b1bc69da",
+    "8ec9bedd186ed4cf0f7d2b71f0352ba9252119d39e9aa49c6658859cb0389e83",
+    "208e7b77189dc6ac34cf19c1dce65c16a66840ad210eae864ec16de828f363a4",
+    "fdc4260712dd06c9fcad7be86a926209f3be50e63be66fba9a5db985196bdfae",
+    "9278cf4817e96f42004ad8c664b0c74a4bff22d8fe29e1f1426a9df896dd7493",
+    "f2dd7eb55ccf87d91a89a686de4f148bd07d43abef44adccac36bb23bdeddb0e",
+    "4bc4e4a16a06f1b9ea14e2d1ea4b6a0190d5be238834949debe4fd547b640791",
+    "eb0c5bf1e751e363f43d20424cdc1f27aea8abecf09dce9f0d750bc05374a6d4"
+   ],
+   "resume": {
+    "pas": 2880,
+    "pasSolveur": {
+     "simulate": 2880,
+     "fetchResults": 2880
+    },
+    "voitures": 2,
+    "suivi": {
+     "appuis": 23040,
+     "vol": 0,
+     "recul": 1265,
+     "contactsMur": 0,
+     "contactsVoiture": 0,
+     "replacements": 0,
+     "stands": [
+      "annule"
+     ]
+    },
+    "evenements": {
+     "stand": 4,
+     "rapport": 2
+    },
+    "ecritures": {
+     "pose": 0,
+     "vitesse": 0,
+     "rotation": 0
+    },
+    "fin": [
+     {
+      "id": 0,
+      "s": 87.99999584372836,
+      "d": 4.399999752791784,
+      "v": 1.7585454378284687e-8,
+      "y": 1.4901161193847656e-7,
+      "servicePneus": 1
+     },
+     {
+      "id": 1,
+      "s": 294.9912440683138,
+      "d": 4.694916954437019,
+      "v": 40.83773100049485,
+      "y": -0.012152224779129028,
+      "servicePneus": 0
+     }
+    ]
+   }
+  },
+  "reprise-reseau-en-vol": {
+   "empreintes": [
+    "aa257a5151a1f3f73a8caa01256364ebcd9e6e1dc964a51e1337aaefd3a93842",
+    "3436dccd2812e5e07eba6d1a1140e153ad6251e66f0bbde055acc3d28c632433",
+    "250073dd72aa04297645f43ec3b95709633993efd74b7a767130c8481c077b11"
+   ],
+   "resume": {
+    "pas": 360,
+    "pasSolveur": {
+     "simulate": 360,
+     "fetchResults": 360
+    },
+    "voitures": 1,
+    "suivi": {
+     "appuis": 1112,
+     "vol": 80,
+     "recul": 0,
+     "contactsMur": 0,
+     "contactsVoiture": 0,
+     "replacements": 0,
+     "stands": [],
+     "vitesseTransfert": [
+      13.806151390075684,
+      1.1997984647750854,
+      19.533689498901367
+     ],
+     "transfert": true
+    },
+    "evenements": {
+     "rapport": 2
+    },
+    "ecritures": {
+     "pose": 0,
+     "vitesse": 1,
+     "rotation": 1
+    },
+    "fin": [
+     {
+      "id": 0,
+      "s": 2577.480386622193,
+      "d": 0.8209089298380795,
+      "v": 14.96508823660051,
+      "y": 38.83902359008789,
+      "servicePneus": 0
+     }
+    ]
+   }
+  }
+ }
+}

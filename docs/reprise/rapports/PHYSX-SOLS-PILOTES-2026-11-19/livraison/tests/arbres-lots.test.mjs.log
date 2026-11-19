@@ -1,0 +1,13 @@
+ok constantes exportées : cases de 60 m, éparses de 120 m sous trois arbres, bascule à 80 m, 150 pixels
+ok Légère garde ses lots historiques : aucune case d'arbres, aucune référence de champ
+ok solides et positions des arbres identiques à Légère, dans le même ordre
+ok chaque objet proche une seule fois ; aucun tronc hors des cases ; un tronc par position d'arbre
+ok cases denses de 60 m, cases éparses de 120 m, aucun carré partagé, sphère qui contient tout
+ok bascule par taille projetée : au moins BASCULE_ARBRES, reculée pour les grands arbres, sans portée
+ok version lointaine : silhouette de la même essence et tronc allégé, mêmes position, taille et rotation
+ok mobilier : lots historiques conservés, ou copiés sans leurs arbres avec la même sphère et la même bascule
+ok basculeArbres règle les seules cases d'arbres et garde le recul des grands arbres
+ok lotsSecondMoteur : copies sans tampons ; version lointaine seule pour les arbres sur demande
+ok massifs de végétation basse ajoutés à la fin, après les cases ; solides inchangés
+ok sans module botanique, les cases se font quand même et aucun tronc allégé n'est posé
+{"controles":12,"cases":{"foret":145,"montagne":143,"cote":88,"asie":29,"pacifique":75}}

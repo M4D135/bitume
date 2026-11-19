@@ -1,0 +1,43 @@
+ok  Val-Brûlé : chaque nappe transmet ses XYZ et triangles exacts, sans eau
+ok  Val-Brûlé : tous les solides historiques et le mobilier marqué sont enregistrés une fois
+ok  Val-Brûlé : le sol reste présent sous la chaussée et les deux accotements
+ok  Val-Brûlé : changer la qualité ne modifie aucun corps physique
+ok  Val-Brûlé : libération complète et idempotente
+ok  Port-Sable : chaque nappe transmet ses XYZ et triangles exacts, sans eau
+ok  Port-Sable : tous les solides historiques et le mobilier marqué sont enregistrés une fois
+ok  Port-Sable : le sol reste présent sous la chaussée et les deux accotements
+ok  Port-Sable : changer la qualité ne modifie aucun corps physique
+ok  Port-Sable : libération complète et idempotente
+ok  Haut-Col : chaque nappe transmet ses XYZ et triangles exacts, sans eau
+ok  Haut-Col : tous les solides historiques et le mobilier marqué sont enregistrés une fois
+ok  Haut-Col : le sol reste présent sous la chaussée et les deux accotements
+ok  Haut-Col : revêtement du tunnel à sa vraie hauteur et murs complets
+ok  Haut-Col : changer la qualité ne modifie aucun corps physique
+ok  Haut-Col : libération complète et idempotente
+ok  Lande-Noire : chaque nappe transmet ses XYZ et triangles exacts, sans eau
+ok  Lande-Noire : tous les solides historiques et le mobilier marqué sont enregistrés une fois
+ok  Lande-Noire : le sol reste présent sous la chaussée et les deux accotements
+ok  Lande-Noire : changer la qualité ne modifie aucun corps physique
+ok  Lande-Noire : libération complète et idempotente
+ok  Roche-Fauve : chaque nappe transmet ses XYZ et triangles exacts, sans eau
+ok  Roche-Fauve : tous les solides historiques et le mobilier marqué sont enregistrés une fois
+ok  Roche-Fauve : le sol reste présent sous la chaussée et les deux accotements
+ok  Roche-Fauve : changer la qualité ne modifie aucun corps physique
+ok  Roche-Fauve : libération complète et idempotente
+ok  Brume-de-Jade : chaque nappe transmet ses XYZ et triangles exacts, sans eau
+ok  Brume-de-Jade : tous les solides historiques et le mobilier marqué sont enregistrés une fois
+ok  Brume-de-Jade : le sol reste présent sous la chaussée et les deux accotements
+ok  Brume-de-Jade : changer la qualité ne modifie aucun corps physique
+ok  Brume-de-Jade : libération complète et idempotente
+ok  Cap-Séquoia : chaque nappe transmet ses XYZ et triangles exacts, sans eau
+ok  Cap-Séquoia : tous les solides historiques et le mobilier marqué sont enregistrés une fois
+ok  Cap-Séquoia : le sol reste présent sous la chaussée et les deux accotements
+ok  Cap-Séquoia : changer la qualité ne modifie aucun corps physique
+ok  Cap-Séquoia : libération complète et idempotente
+ok  Baïkal : chaque nappe transmet ses XYZ et triangles exacts, sans eau
+ok  Baïkal : tous les solides historiques et le mobilier marqué sont enregistrés une fois
+ok  Baïkal : le sol reste présent sous la chaussée et les deux accotements
+ok  Baïkal : changer la qualité ne modifie aucun corps physique
+ok  Baïkal : libération complète et idempotente
+ok  une installation interrompue retire ses acteurs et préserve les corps préexistants
+{"controles":42,"rapports":[{"circuit":"val-brule","acteurs":4370,"nappes":117,"obstaclesHistoriques":1763,"complements":2490,"trianglesSol":66702,"trianglesObstacles":106880,"trianglesEauIgnores":0},{"circuit":"port-sable","acteurs":3261,"nappes":103,"obstaclesHistoriques":1019,"complements":2139,"trianglesSol":59522,"trianglesObstacles":59552,"trianglesEauIgnores":2},{"circuit":"haut-col","acteurs":4626,"nappes":176,"obstaclesHistoriques":1193,"complements":3257,"trianglesSol":96728,"trianglesObstacles":78148,"trianglesEauIgnores":0},{"circuit":"lande-noire","acteurs":3746,"nappes":160,"obstaclesHistoriques":1005,"complements":2581,"trianglesSol":85278,"trianglesObstacles":32448,"trianglesEauIgnores":0},{"circuit":"roche-fauve","acteurs":3927,"nappes":173,"obstaclesHistoriques":998,"complements":2756,"trianglesSol":88650,"trianglesObstacles":36508,"trianglesEauIgnores":0},{"circuit":"brume-de-jade","acteurs":3849,"nappes":186,"obstaclesHistoriques":830,"complements":2833,"trianglesSol":95608,"trianglesObstacles":43856,"trianglesEauIgnores":0},{"circuit":"cap-sequoia","acteurs":4126,"nappes":188,"obstaclesHistoriques":981,"complements":2957,"trianglesSol":99766,"trianglesObstacles":56476,"trianglesEauIgnores":2},{"circuit":"baikal","acteurs":4471,"nappes":189,"obstaclesHistoriques":1134,"complements":3148,"trianglesSol":98374,"trianglesObstacles":64000,"trianglesEauIgnores":0}]}

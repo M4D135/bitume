@@ -5,6 +5,7 @@ import { createRequire } from 'node:module';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
 
 const require = createRequire(import.meta.url);
@@ -17,8 +18,11 @@ const src = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const CATALOGUE = new Function(src.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/)[0] + '; return CATALOGUE;')();
 const resultats = [], circuits = new Map();
 const fichiers = ['src/course.js', 'src/strategie-stands.js', 'src/physique.js', 'src/conduite.js', 'src/solides-physx.js',
+  'src/circuit.js', 'src/decor.js', 'src/bords.js', 'src/ferro/physx-runtime.js',
   'verifications/physx-stands.test.mjs', 'verifications/helpers/physx-runtime.mjs'];
 const empreintes = Object.fromEntries(fichiers.map(f => [f, createHash('sha256').update(readFileSync(new URL('../' + f, import.meta.url))).digest('hex')]));
+const adaptateur = process.env.BITUME_PHYSX_ADAPTER || fileURLToPath(new URL('../src/ferro/physx.js', import.meta.url));
+empreintes.adaptateurPhysX = createHash('sha256').update(readFileSync(adaptateur)).digest('hex');
 function verifier(nom, fn) {
   test(nom, () => {
     const r = { nom, reussi: false }, debut = performance.now();
@@ -32,7 +36,7 @@ after(() => {
   if (process.env.BITUME_RAPPORTS_PHYSX_STANDS) {
     const dossier = resolve(process.env.BITUME_RAPPORTS_PHYSX_STANDS); mkdirSync(dossier, { recursive: true });
     writeFileSync(resolve(dossier, 'stands-physx.json'), JSON.stringify({ date: new Date().toISOString(), node: process.version,
-      runtime: X.status(), adaptateur: process.env.BITUME_PHYSX_ADAPTER || 'src/ferro/physx.js', dt: DT,
+      runtime: X.status(), adaptateur, dt: DT,
       tests: resultats.length, reussis: resultats.filter(r => r.reussi).length, empreintes, resultats }, null, 2) + '\n');
   }
   X.dispose();
@@ -53,7 +57,7 @@ function poser(co, v, s, vitesse = 0, d = co.c.stands.d) {
 function surveillerEcritures(co) {
   const p = co.physique, calls = { pose: 0, vitesse: 0, rotation: 0 };
   for (const [nom, cle] of [['setPose', 'pose'], ['setVelocity', 'vitesse'], ['setAngularVelocity', 'rotation']]) {
-    const original = p.world[nom]; p.world[nom] = (...args) => { calls[cle]++; return original(...args); };
+    const original = p.world[nom]; p.world[nom] = function (...args) { calls[cle]++; return original.apply(this, args); };
   }
   return calls;
 }
@@ -74,7 +78,7 @@ function fixture() {
   poser(co, co.joueur, 100); B.physique.installer(co, decor);
   return { c, co, e: co.joueur.etat, ph: co.joueur.etat._physx, p: co.physique };
 }
-function reelle(id = 'val-brule', meteo = 'sec', distance = 8) {
+function reelle(id = 'val-brule', meteo = 'sec', distance = 8, approche = false) {
   if (!circuits.has(id)) {
     const k = CATALOGUE.find(x => x.id === id), c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom });
     B.bords.limites(c, B.bords.planifier(c));
@@ -89,9 +93,14 @@ function reelle(id = 'val-brule', meteo = 'sec', distance = 8) {
   const v = co.voitures[1], e = v.etat;
   for (const car of co.voitures) car.etat.pneus = car.etat.pneusProchainArret = car.livree.pneus = 'slicks';
   e.etatPneus.forEach((r, n) => Object.assign(r, { usure: .9, salete: .2, grainage: .1, distance: 20000 + n * 100, sollicitation: 40000 + n * 100 }));
-  poser(co, v, c.stands.garage0 + 10); poser(co, co.joueur, e.s + distance);
-  Object.assign(v.ia.stand, { phase: 'voie', debut: co.temps - 10, vuStand: true, motif: 'usure', pneus: meteo === 'sec' ? 'slicks' : meteo, revision: e.servicePneus });
-  e.pneusProchainArret = v.ia.stand.pneus; e.stands = { phase: 'voie', t: 0, repare: false };
+  if (approche) {
+    poser(co, v, (c.stands.debut - 350 + c.longueur) % c.longueur, 25, 0);
+    poser(co, co.joueur, (c.stands.fin + 1000) % c.longueur, 0, 0);
+  } else {
+    poser(co, v, c.stands.garage0 + 10); poser(co, co.joueur, e.s + distance);
+    Object.assign(v.ia.stand, { phase: 'voie', debut: co.temps - 10, vuStand: true, motif: 'usure', pneus: meteo === 'sec' ? 'slicks' : meteo, revision: e.servicePneus });
+    e.pneusProchainArret = v.ia.stand.pneus; e.stands = { phase: 'voie', t: 0, repare: false };
+  }
   B.physique.installer(co, decor);
   return { c, co, v, e, ph: e._physx, p: co.physique };
 }
@@ -152,6 +161,36 @@ verifier('PhysX : une impulsion pendant le service l’annule et garde les pneus
     assert(s.e.etatPneus.every(r => r.usure >= .9)); assert.deepEqual(calls, { pose: 0, vitesse: 0, rotation: 0 });
     return { annule, servicePneus: s.e.servicePneus, vitesseApresImpulsion: s.ph.u, ecritures: calls };
   } finally { B.physique.liberer(s.co); }
+});
+
+for (const meteo of ['sec', 'pluie', 'neige']) verifier(`PhysX : trajet IA complet vers le vrai garage puis sortie sous ${meteo}`, () => {
+  const s = reelle('val-brule', meteo, 8, true), { co, v, e, c, ph } = s;
+  try {
+    const calls = surveillerEcritures(co), roues = e.etatPneus, debut = co.horloge;
+    let service = null, fin = null, pret = false, maxMouvementService = 0;
+    avancer(co, 120, FREIN, ev => {
+      assert.equal(e.repositionnements, 0, 'replacement pendant le trajet de stands');
+      assert(!e.recuperation && !e.accident, 'accident pendant le trajet de stands');
+      assert(!ev.some(x => x.type === 'choc' && x.id === v.id), 'collision avec le mobilier pendant le trajet de stands');
+      for (const x of ev) if (x.type === 'stand' && x.id === v.id) {
+        if (x.phase === 'service') service = { t: co.horloge, duree: x.duree, x: ph.x, z: ph.z };
+        if (x.phase === 'repare') { fin = co.horloge; assert(service, 'réparation sans service'); }
+        assert.notEqual(x.phase, 'annule', 'le vrai trajet jusqu’au garage doit aller au terme du service');
+      }
+      if (service && !fin) maxMouvementService = Math.max(maxMouvementService, Math.hypot(ph.x - service.x, ph.z - service.z));
+      if (!fin) { assert.equal(e.etatPneus, roues); assert.equal(e.pneus, 'slicks'); assert.equal(e.servicePneus, 0); }
+      else {
+        assert.equal(e.servicePneus, 1, 'pas de deuxième service sur la sortie');
+        if (!e.stands && v.ia.stand.phase === 'repos' && B.circuit.ecart(c, c.stands.fin, e.s) > 30 && e.v > 10) { pret = true; return false; }
+      }
+    });
+    assert(service && fin && pret, 'trajet incomplet : ' + JSON.stringify({ service, fin, s: e.s, d: e.d, v: e.v, phase: v.ia.stand.phase }));
+    assert(fin - service.t >= service.duree - 2 * DT); assert(maxMouvementService < B.course.STANDS.mouvementService);
+    assert.equal(e.pneus, meteo === 'sec' ? 'slicks' : meteo); assert.notEqual(e.etatPneus, roues);
+    assert.deepEqual(calls, { pose: 0, vitesse: 0, rotation: 0 });
+    return { meteo, dureeTrajet: co.horloge - debut, dureeService: fin - service.t, dureeDemandee: service.duree,
+      maxMouvementService, monteApres: e.pneus, vitesseFinale: e.v, ecritures: calls };
+  } finally { B.physique.liberer(co); B.meteo.actuel = null; }
 });
 
 for (const [id, meteo, distance] of [['val-brule', 'sec', 8], ['val-brule', 'sec', 10],

@@ -1,0 +1,21 @@
+{
+  "date_debut_utc": "2026-11-19T18:09:42.687516+00:00",
+  "date_fin_utc": "2026-11-19T18:09:43.242113+00:00",
+  "commande": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/scratch/0a33353c4e59/bitume/tools/qualification/physx-browser.mjs",
+    "--html",
+    "/workspace/scratch/a069c0d9cc6e/bitume/dist/bitume.html",
+    "--out",
+    "/workspace/scratch/a069c0d9cc6e/bitume/docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/livraison/navigateur"
+  ],
+  "outil_sha256": "abf1635f1b141bf01d822e19a2f9d4e031be80c853ed0b07fa44a18d256aed9d",
+  "code_sortie": 1,
+  "build_sha256": "c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f",
+  "version": "0.2.55",
+  "ferro": "0.3.14",
+  "rendu_demande": "Chromium headless SwiftShader logiciel",
+  "fps_materiels_mesures": false,
+  "mesures_performance_non_qualifiees": "Qualification Node concurrente ; aucune mesure de performance matérielle annoncée.",
+  "journal": "lancement-chromium.log"
+}
