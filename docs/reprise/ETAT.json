@@ -12,7 +12,7 @@
     "publication": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0255.json",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
     "derniere_entree": "037",
-    "prochaine_action": "Reprendre le travail démos cinéma isolé sur la 0.2.55 publiée, intégrer et qualifier par petit lot.",
+    "prochaine_action": "Vérifier la PR11 / 0.2.56 et sa CI, puis choisir le main publié comme base des démos préparées.",
     "safari": "Corrigé, confirmé par David ; chantier clos."
   },
   "validation": {
@@ -54,8 +54,9 @@
     "copie_preparee": "/workspace/scratch/749f331cc09f/bitume-demo",
     "branche_preparee": "codex/bitume-demos-cinema-20261119",
     "base_preparee": "838756b",
-    "correctif_camera": "Trajectoires nature mémorisées et plans de repli préparés ; pas encore intégrés ni qualifiés sur 0.2.55.",
-    "regles": "Préserver p14, départ/arrivée, courses continues, sortie sur geste, Faune/qualité, musique limitée au titre."
+    "correctif_camera": "Trajectoires nature mémorisées et plans de repli préparés ; à intégrer et qualifier sur la base publiée retenue.",
+    "regles": "Préserver p14, départ/arrivée, courses continues, sortie sur geste, Faune/qualité, musique limitée au titre.",
+    "base_a_confirmer": "PR11 / 0.2.56 ouverte, tête edf660e5e2cfe2894382460aee0cbec48fa3a748 ; vérifier sa CI/fusion avant intégration."
   },
   "suite_apres_demos": {
     "lot": "13B_Russie_decor_saisons",

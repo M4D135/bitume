@@ -12,13 +12,14 @@ Reçu : `docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0255.js
 - Build : 14 153 917 octets, SHA-256 `c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f`.
 - ZIP CI récupéré et contrôlé : même build, intégrité vérifiée. Scène navigateur complète, FPS matériels et déploiement non validés.
 
-## Lot suivant — démos cinéma
+## Reprise — PR #11, puis démos cinéma
 
-Lire `docs/reprise/ETAT.json` puis `docs/reprise/DEMOS-CINEMA-2026-11-19.md` seulement.
+Vérifier d’abord la PR **#11 / 0.2.56**, ouverte en parallèle : sa CI et sa fusion détermineront la base des démos.
+Lire ensuite `docs/reprise/ETAT.json` puis `docs/reprise/DEMOS-CINEMA-2026-11-19.md` seulement.
 Plans F1/arcade, paysages, faune et flore ; préserver la conduite p14 et les courses continues.
 Travail préparé dans `/workspace/scratch/749f331cc09f/bitume-demo`, branche
 `codex/bitume-demos-cinema-20261119`, base ancienne `838756b`, modifications non commitées.
-Le correctif du bond de caméra est **préparé**, à intégrer puis qualifier sur la 0.2.55 publiée.
+Le correctif du bond de caméra est **préparé**, à intégrer puis qualifier sur la base publiée retenue.
 Ne pas écraser cette copie avec l'ancienne `/workspace/scratch/2540d1a213f9/bitume-demo`.
 
 Puis 13B Baïkal : lac, berges, lieux, végétation/faune et saisons. Conserver Monaco fidèle, Marseille avec relief,
