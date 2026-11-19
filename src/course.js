@@ -133,6 +133,16 @@
     };
   }
 
+  // Constantes d’équilibre pour la vitesse de référence de l’IA
+  // v_ref = sqrt(MU_EQ * 9.81 / (k - MU_EQ * AERO_EQ))
+  const MU_EQ = 1.50;
+  const AERO_EQ = 0.00148;
+
+  // Enveloppe de poussée IA : bride le couple moteur demandé en fonction de la vitesse
+  function pousseeIA(v) {
+    return Math.max(0.88, Math.min(1.0, 1.0 - 0.0002 * v));
+  }
+
   // Lot 3 — attaque. Délai entre deux engagements d'une même voiture (s de simulation locale, jamais le temps
   // d'affichage), portée au-delà de laquelle une cible n'est plus tenue pour atteignable, et seuil de vitesse
   // relative minimale pour s'engager. Aucun hasard ici : les décisions restent déterministes, donc identiques sur

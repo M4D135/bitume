@@ -174,6 +174,8 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
       { rupteur: 13000 }
     ],
   };
+  // L’IA applique pousseeIA(v) (défini dans course.js) comme seul facteur multiplicateur sur le couple
+  // renvoyé par tauMoteur ; aucune autre bride n’est introduite ici.
   function tauMoteur(n) {
     const pts = MOTEUR.tauPts;
     if (n <= pts[0][0]) return pts[0][1];
