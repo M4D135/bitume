@@ -20,7 +20,7 @@ La conduite p14 et les modules FERRO ne font pas partie de ce correctif visuel.
 
 Base de travail : candidat 0.2.57, commit local `da99e13`, construit deux fois à l'identique.
 Sa qualification ciblée reste distincte : 7/7 suites, 135 contrôles.
-Sa publication est reprise sur `codex/bitume-demos-regard-arriere-20261119` ; CI complète à constater.
+Sa publication est terminée par la PR #15 ; les résultats complets sont consignés ci-dessous.
 Le correctif cockpit forme le lot suivant, sur `codex/bitume-cockpit-pilotes-20261119`.
 
 ## Correction et qualification
@@ -67,10 +67,25 @@ La CI initiale de la PR #15 a trouvé `ReferenceError: cam is not defined` dans 
 Le rendu de production définit bien sa caméra ; le test isole la section faune et omettait cette variable.
 Le contexte VM et les cas plan nature/retour course sont corrigés ; les habitats partagés et pools J1/J2 restent contrôlés.
 Trois suites ciblées réussissent, 27 contrôles. Aucun code de production ni build 0.2.57 modifié.
-Les CI initiales restent consignées : push 123/126, PR 124/126. Les nouvelles CI sont à constater avant fusion.
+Les CI initiales restent consignées : push 123/126, PR 124/126. Les deux CI correctives terminent à 125/126,
+avec nature et décor réussis, et seule la signature historique des traces en échec. PR #15 fusionnée au commit `940eabb9`,
+arbre distant relu identique au candidat. Reçu : `rapports/DEMOS-CINEMA-2026-11-19/PUBLICATION-0257.json`.
 
 Le suivi publié contient les résultats utiles et les empreintes du build ; aucun journal local brut
 ni chemin de travail interne n'est ajouté. Les réserves antérieures restent séparées des nouveaux résultats.
+
+## Publication vérifiée
+
+La PR #17 est fusionnée sur main au commit `02e8bac6b9ed762e0da06ab7c223e9cbd419968e`.
+Son arbre est exactement celui du candidat qualifié `d052f4c`. Les deux parents préservent les travaux parallèles ;
+la PR #16 est également marquée fusionnée. Source, jeu compilé et sept fichiers de l'archive CI ont été contrôlés.
+
+CI de cette tête : **PR : 126/127**, échec traces uniquement ; **push : 125/127**, mêmes traces et Val-Brûlé : 166 ms / 150 ms.
+La signature des traces est identique à la base 0.2.57, sans nouvelle fixture ni seuil. Le décor passe dans la CI de PR.
+Le dépassement de durée reste une réserve : aucune comparaison contrôlée ne démontre une absence de régression de performance.
+La CI automatique après fusion 0.2.59 `44602433260` était encore en cours au dernier constat et reste distincte.
+Reçu : `rapports/COCKPIT-PILOTES-2026-11-19/PUBLICATION-0259.json`.
+La 0.2.57 est close : ses deux CI correctives et sa CI main terminent à 125/126, seules traces héritées.
 
 ## Ensuite
 
