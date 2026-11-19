@@ -81,6 +81,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
       herbe: [.13, .35, .24], herbeClaire: [.30, .48, .30], terre: [.24, .31, .22], roche: [.52, .57, .53],
       relief: 24, echelle: 370, essence: 'feuillu', densite: .28, marge: 1120, karstique: true
     },
+    // Base de roulage du lot 13A. Berges, lac et lieux détaillés sont le lot 13B ; ce thème ne se replie pas
+    // silencieusement sur Val-Brûlé et conserve des conifères/solides dès la qualification du tracé.
+    baikal: {
+      atmosphere: { skyTop: [.12, .31, .54], skyBottom: [.70, .80, .85], fog: [.60, .70, .76], sunDirection: [.48, .62, -.39], sunColor: [1.22, 1.18, 1.08], ambient: [.31, .37, .41], fogDensity: .0007, wind: .65, biome: 'baikal' },
+      herbe: [.20, .32, .17], herbeClaire: [.34, .42, .23], terre: [.30, .32, .25], roche: [.45, .46, .44],
+      relief: 30, echelle: 470, essence: 'conifere', densite: .48, marge: 1050
+    },
     pacifique: {
       atmosphere: { skyTop: [.12, .32, .54], skyBottom: [.73, .82, .85], fog: [.59, .70, .73], sunDirection: [-.64, .48, .31], sunColor: [1.36, 1.19, .93], ambient: [.31, .37, .40], fogDensity: .00048, wind: .95, biome: 'pacifique' },
       herbe: [.40, .39, .21], herbeClaire: [.62, .55, .32], terre: [.37, .29, .20], roche: [.40, .36, .31], sable: [.23, .27, .27],

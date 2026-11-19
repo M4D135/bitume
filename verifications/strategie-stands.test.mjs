@@ -11,7 +11,8 @@ for (const nom of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'bo
 const B = globalThis.BITUME, DT = 1 / 120;
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const CATALOGUE = new Function(source.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/)[0] + '; return CATALOGUE;')();
-assert.equal(CATALOGUE.length, 7, 'les sept circuits du jeu sont exercés');
+assert.deepEqual(CATALOGUE.slice(0, 7).map(c => c.id), ['val-brule', 'port-sable', 'haut-col', 'lande-noire', 'roche-fauve', 'brume-de-jade', 'cap-sequoia'], 'les sept circuits historiques gardent leur place');
+assert.equal(CATALOGUE[7].id, 'baikal', 'le nouveau circuit participe aussi aux trajets de stands');
 const RAPPORTS = process.env.BITUME_RAPPORTS_STANDS || path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../12f4-tests');
 mkdirSync(RAPPORTS, {recursive: true});
 const NEUTRE = {gaz: 0, frein: 1, volant: 0, derive: false, haut: false, bas: false, boite: 'auto', aide: 0};
