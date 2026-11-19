@@ -1,0 +1,36 @@
+ok 30, 60 et 120 Hz avec ±2 ms de gigue : verrou, pas et alpha constants, temps de jeu exact
+ok 144, 165, 75 et 100 Hz : temps de jeu avançant d’une période par image à mieux que 0,5 ms
+ok horloge d’écran qui dérive de ±1 % : la dette garde le temps de jeu à moins de 1 ms de l’écran
+ok horodatages arrondis à la milliseconde (Firefox, Safari), de 30 à 240 Hz
+ok accroc isolé de 195 ms : un rattrapage borné à maxPas, puis la cadence d’avant, k inchangé
+ok onglet masqué 5 s puis revenu : un seul pas, rien de raté ni de rattrapé, avec ou sans oublier
+ok onglet masqué à k = 2 : les pas en attente d’un rappel sauté ne sont pas rattrapés au retour
+ok pause de 170 ms : oublier évite l’image ratée et le rattrapage
+ok machine trop lente (1,4 période par image), qualité non réductible : k = 2, cadence régulière
+ok machine trop lente, qualité réductible : k attend, le gouverneur de qualité baisse puis ne réessaie qu’après 20 s
+ok rappels en trop entre deux synchronisations : ni rendus ni comptés, le verrou tient
+ok essai de retour réussi : pas avant 20 s de régularité, une seconde, puis k − 1 tenu
+ok essai raté : délai doublé, trois essais au plus ; oublier ne rend pas les essais, nouvelleSeance oui
+ok fil principal trop chargé (plus de 40 % de la période visée) : aucun essai
+ok écran 60 Hz bridé à 30 puis rendu : ni le diviseur ni la qualité ne bougent
+ok modes forcés : cible ramenée au diviseur de l’écran le plus proche, aucune décision automatique
+ok normaliser, MODES et options de creer
+ok jamais sous 24 images par seconde environ
+ok machine régulière à deux, trois ou quatre périodes d’un écran rapide : pas un écran bridé, k juste
+ok machine lente dès le départ : la grille est celle de l’écran, pas celle des intervalles moyens
+ok amorce sur douze intervalles d’un écran 30 Hz avec ±2 ms : la grille de l’écran, pour 3 000 graines
+ok mode Écran, machine à un peu plus de deux périodes : la grille reste celle de l’écran
+ok écran bridé pendant que k > 1 : la cadence tenue ne change ni pendant ni après le bridage
+ok machine liée au processeur graphique, images de 1,5 à 1,7 période : aucun saut du temps de jeu en 2 min
+ok horodatage qui recule de 10 s : reprise aussitôt, l’écran ne fige pas
+ok machine à moins de 4 images par seconde : rattrapage borné par maxPas ; une coupure isolée vaut un pas
+ok fil principal de 18 à 30 ms en Fine sur 60 Hz : la grille est l’écran, pas un écran à 30 Hz, la qualité baisse
+ok changement d’écran sous charge, sur 20 graines : la grille suit l’écran, aucune image ratée sans fin
+ok contexte.actif faux (menus, pause) : la période se mesure, rien ne se décide
+ok retour de menu : la fenêtre de décision repart, des images ratées d’avant le menu ne décident rien
+ok echelle : la démo ralentie avance le temps de jeu de echelle × période par image, sans à-coup
+ok aucune allocation en régime permanent : 60 Hz verrouillé (0 octets en 100 000 rappels)
+ok aucune allocation en régime permanent : 144 Hz recalé (0 octets en 100 000 rappels)
+ok aucune allocation en régime permanent : 60 Hz à k = 2 (0 octets en 100 000 rappels)
+ok boucle du jeu : pas de la cadence, gel des outils d’essai respecté
+cadence : 35 contrôles passés

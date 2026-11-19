@@ -36,6 +36,8 @@ html, body { margin: 0; height: 100%; background: var(--encre); color: var(--pap
 body { font: 15px/1.4 var(--f-texte); -webkit-font-smoothing: antialiased; touch-action: none; user-select: none; -webkit-user-select: none; }
 button, input { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
+.texte-accessible { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.aide-reglage { margin: 8px 0 0; max-width: 55ch; font-size: 12px; line-height: 1.5; color: var(--papier-2); }
 
 #jeu { position: fixed; inset: 0; overflow: hidden; }
 #vue-course { position: absolute; inset: 0; overflow: hidden; transition: opacity .3s; }
@@ -348,6 +350,15 @@ body.tactile .case .barre-sante { height: 4px; margin-top: 3px; }
 @keyframes message { 0% { opacity: 0; transform: scale(1.18); } 10% { opacity: 1; transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
 .sous-message { position: absolute; left: 0; right: 0; top: calc(30% + clamp(44px, 8vw, 96px)); text-align: center; font: 700 clamp(16px, 2.2vw, 24px)/1.2 var(--f-titre); letter-spacing: .06em; text-transform: uppercase; color: var(--papier-2); text-shadow: 0 2px 12px rgba(0, 0, 0, .6); opacity: 0; }
 .sous-message.visible { animation: message 2.2s ease-out forwards; }
+.annonce-virage { position: absolute; top: calc(var(--hud-top) + 100px); left: 50%; transform: translateX(-50%); display: grid; grid-template-columns: 34px minmax(0,1fr) auto; align-items: center; gap: 9px; max-width: calc(100% - 32px); padding: 7px 11px 7px 7px; color: var(--papier); background: rgba(10,12,15,.87); border: 1px solid rgba(242,236,223,.25); border-left: 3px solid var(--ambre); border-radius: var(--rayon); box-shadow: 0 2px 10px rgba(0,0,0,.2); }
+.virage-fleche { width: 34px; height: 34px; fill: none; stroke: var(--ambre); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+.annonce-virage[data-sens="gauche"] .virage-fleche { transform: scaleX(-1); }
+.virage-epingle, .annonce-virage[data-difficulte="3"] .virage-courbe { display: none; }
+.annonce-virage[data-difficulte="3"] .virage-epingle { display: block; }
+.annonce-virage[data-difficulte="3"] { border-left-color: #ff745f; }
+.annonce-virage[data-difficulte="3"] .virage-fleche { stroke: #ff745f; }
+.virage-nom { font: 800 17px/1.15 var(--f-titre); letter-spacing: .025em; }
+.virage-distance { min-width: 4ch; text-align: right; color: var(--ambre); font: 800 20px/1 var(--f-titre); white-space: nowrap; }
 .message.visible.bis, .sous-message.visible.bis { animation-name: message-bis; }
 @keyframes message-bis { 0% { opacity: 0; transform: scale(1.18); } 10% { opacity: 1; transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
 
@@ -499,6 +510,10 @@ body.tactile .feux { top: calc(var(--hud-top) + var(--carte-presence) + 58px); p
 body.tactile .feux i { width: 18px; }
 body.tactile .message { top: max(28%,calc(var(--hud-top) + var(--carte-presence) + 76px)); font-size: clamp(26px,6vw,48px); }
 body.tactile .sous-message { top: max(calc(28% + 42px),calc(var(--hud-top) + var(--carte-presence) + 118px)); font-size: 13px; }
+body.tactile .annonce-virage { top: calc(var(--hud-top) + 55px); padding: 5px 8px 5px 5px; gap: 6px; grid-template-columns: 27px minmax(0,1fr) auto; }
+body.tactile .virage-fleche { width: 27px; height: 27px; }
+body.tactile .virage-nom { font-size: 15px; }
+body.tactile .virage-distance { font-size: 17px; }
 body.tactile .demo-bandeau { top: calc(var(--hud-top) + var(--carte-presence) + 58px); background: rgba(10,12,15,.3); border: 0; }
 body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98px); background: rgba(10,12,15,.2); }
 
@@ -522,6 +537,11 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   body.tactile .ligne-chrono { flex-direction: row; align-items: baseline; justify-content: flex-start; gap: 8px; }
   body.tactile #b-pause { top: calc(var(--hud-top) + 58px); }
   body.tactile #zone-carte, body.tactile .hud-bas { top: calc(var(--hud-top) + 110px); }
+  .annonce-virage, body.tactile .annonce-virage { top: calc(var(--hud-top) + 190px); left: var(--marge); right: auto; transform: none; width: min(240px,calc(100% - var(--carte-presence) - 3 * var(--marge))); max-width: none; grid-template-columns: 27px minmax(0,1fr); gap: 3px 6px; }
+  .annonce-virage .virage-fleche { grid-row: 1 / 3; width: 27px; height: 27px; }
+  .annonce-virage .virage-distance { grid-column: 2; text-align: left; font-size: 17px; }
+  .annonce-virage .virage-nom { font-size: 15px; }
+  #jeu[data-carte-position="gauche"] .annonce-virage { right: var(--marge); left: auto; }
 }
 
 /* deux manettes branchées : l'écran titre le signale sur « À deux » */
@@ -644,6 +664,13 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
     <div id="message" class="message" role="status" aria-live="polite"></div>
     <div id="sous-message" class="sous-message"></div>
 
+    <div id="h-virage" class="annonce-virage" data-sens="droite" data-difficulte="1" hidden>
+      <svg class="virage-fleche" viewBox="0 0 40 40" aria-hidden="true"><path class="virage-courbe" d="M7 33V20c0-6 4-10 10-10h16m-7-7 7 7-7 7"></path><path class="virage-epingle" d="M8 34V14a10 10 0 0 1 20 0v18m-6-6 6 6 6-6"></path></svg>
+      <b id="h-virage-nom" class="virage-nom"></b>
+      <span id="h-virage-distance" class="virage-distance"></span>
+    </div>
+    <span id="h-virage-annonce" class="texte-accessible" role="status" aria-live="polite" aria-atomic="true"></span>
+
     <div class="hud-bas">
       <div id="zone-carte"><canvas id="carte" class="carte" width="220" height="220" aria-label="Plan du circuit"></canvas></div>
       <div class="tableau">
@@ -683,7 +710,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.53">V0.2.53</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.54">V0.2.54</b>
     </div>
     <a class="signature" href="https://bitume.estrasse.fr/" download="BITUME.html" title="Télécharger BITUME"><img class="signature-avatar" src="data:image/jpeg;base64,/9j/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBCQkJDAsMGA0NGDIhHCEyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMv/AABEIAW4BbgMBIgACEQEDEQH/xAGiAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgsQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+gEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoLEQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2gAMAwEAAhEDEQA/APd4AHQlxuOep5qXy0/uL+VR2v8Aqz9amoAjdFCMQoBAPIFVPMf++351dk/1bfQ1QoAd5j/32/OrEADoS43HPU81Vq3a/wCrP1oAk8tP7i/lTXRQjEKAQDyBUlNk/wBW30NAFLzH/vt+dHmP/fb86bRQBagAdCXG456nmpfLT+4v5VHa/wCrP1qagCJkUIxCgEA8gVV8x/77fnVx/wDVt9DWdLLHAhklkWNFGSzMAB+JpNpbjSbdupL5j/32/Op4QGQl8Mc9+a4nVPiDpVjuW233cg7xjCf99H+lcff/ABA1u8JWCRbWM9oRkn8T/OsJ4mnE7KWAqz6WPY7i7srSMyXEsMSD+KRgBXOX/j7w9ZBgk/nyDoIY8/qcD9a8anuri7fzLieSVz1Z3LH86irmljW/hO6nlUV8bPR7r4o4GLWxkPoZZf6Af1rIuPiTrkvEQghH+ypJ/UmuPorCWJqPqdsMDQj9k35fGviGYndqD8/3YwMfpVN/EetOPm1S6HPaVh/KszAorN1ZvqbLD0ltE0P7f1jOf7Uvfb9+3+NOHiHWv+grff8Af9/8azaKXPLuP2MOyNiPxZr0f3dVuP8AgUmf55q7B498QRH57xZfaSJT/TP61zVFUqs1syXhqT3ijurb4najHgXNhaygf3FKk/qa27T4oaZIMXNlPA57xgNj+R/SvKqK0jiaiMJ5dRl0se42XizSb/Cw6im7+65KN+tbCys4yshIPPBr52q/Y61qWmuGtL2WID+HcSp/A8VvDGtbo5KmUreDPoKAB0JYBjnqeal8tP7i/lXk+k/E+7t1WLUbVZk/vxna3+B/Su50fxfo+sAJb3aiY/8ALOQhW/DsfwrqhXhPY8yrhatPdG66KEYhQCAeQKqeY/8Afb86uN/qm+hqjWxz+Q7zH/vt+dWIAHQlxuOep5qrVu1/1Z+tAEnlp/cX8qa6KEYhQCAeQKkpsn+rb6GgCl5j/wB9vzo8x/77fnTaKALUADoS43HPU81L5af3F/Ko7X/Vn61NQBG6KEYhQCAeQKqeY/8Afb86uyf6tvoaoUAO8x/77fnViAB0Jcbjnqeaq1btf9WfrQA1WEA2tyTzxTvtKejflUVz/rB9KhoAtGdXBUBsnjmmfZn9VqKP/WL9RV+gCr9mf1WnKwgG1uSeeKsVUuf9YPpQBL9pT0b8qQzq4KgNk8c1Vp0f+sX6igCX7M/qtH2Z/VatUhOKAIFYQDa3JPPFRz6hbWsRlnkEUajJZ8AVy/ibxvYaQzQQEXN2Bjap+VT7n+gry3Vtd1DW5TJeTFlzkRjhF+grmq4lQ0R34bATqu8tEd/rvxNgiDwaTD5z9POf7o+g6mvPNS1nUNWk33t1JL6IThR9F6CqJ5z70V59SvOe57dHB06K91B3z39aKKKxOoKKKKAsFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFKCQQQSMdxSUULQTV1Y6XRvHOsaQBG032qADHlzZPHs3Ufyr0LQ/GGl61iISrb3JH+qmOM/Ru9eMUAkHjqORiuiniJw3OGvgKVRaaM+jBbtz8y1IrCAbW5J54rx7w94/1DSdkN2xu7VRjDH51Hsf8f0r02w1ux1uBZ7OcOMcoeGX2Ir0KVeNT1PDr4SpReuqNb7Sno35UhnVwVAbJ45qrTo/9Yv1FbnN6Ev2Z/VaPsz+q1aooArqwgG1uSeeKd9pT0b8qiuf9YPpUNAFozq4KgNk8c0z7M/qtRR/6xfqKv0AVfsz+q05WEA2tyTzxViql1/rB9KAC6/1g+lQ1agAdCXG456nmpfLT+4v5UAUo/8AWL/vCr9RuihGIUAgHkCqnmP/AH2/OgC/VS6/1g+lR+Y/99vzqxAA6EuNxz1PNAFWnR/6xf8AeFXfLT+6v5Vla1rFjodg9zdMqBQdqqBuY+gFKTUVdjjFydkXry8gsbZ57mVI4kGWZzgCvKfFHxAuNSZrTSy8NqeGk6O4/oKwfEPia/8AEFwTM5W3U/JApyo+vqaxO2OtebXxTl7sdj3cLl8Ye9U3DOcnOc9T60UUVxnrJaWQUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAWDpVmxvrrTbkXFnM0Uq9NvQ/X1FVqKak0xSipKzPWPDXje21Upa3pWC8IwDnCyH29DXYx/6xfTcK+d8nqCeORjrXoHhLx4bfZYau2Y+kVyeqnsG9veu+hiekjw8Zl9vfpnq9FZ6zM6BlkLAjIIbINL5j/32/Ou9aq6PJtbRkl1/rB9Khq1AA6EuNxz1PNS+Wn9xfyoEUo/9Yv+8Kv1G6KEYhQCAeQKqeY/99vzoAv1Uuv9YPpUfmP/AH2/OrEADoS43HPU80ALa/6s/WpqrqwgG1uSeeKd9pT0b8qAJJP9W30NUKtGdXBUBsnjmmfZn9VoAgq1b/6s/WmfZ39VrO1nWrfw9p73FywJ/gVert2FKTUVdlQhKb5Y7i+IfENp4fsGuJ23SMCIoh1dvQV4lrOtXeuXzXV25JP3EH3UHoKNa1m61vUXu7pySeFTsg9BWdXlV67m7LY+hweDjRjeW7CiiiuY9EKKKQkBSScAck5xijyC6S1ForGvPE+nWrmNXM0gONsfP69K0bO4kubZZZIGgLdEY5OKuVOUVdozjWhN2i7liiiioNAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiq13f29givcy+WrHAO0kZ9zToLy1uhm3njlH+ywNVyStdIn2keblvqT0UUVJV+4UenoKKKA6HYeEfGUmlOljfNvsjwrk8xf/Wr1WKRJY1kjcOjDIYdCK+evX0Ndn4L8WtpkyabfPmzc4Ryf9Uf8K7cNiGnys8jHYFSTnA9ftf9WfrU1VYpFjjAJ3A/MCvIIqT7Sno35V6V77HhdbEkn+rb6GqFWjOrgqA2TxzTPsz+q0AQVbtf9WfrUf2Z/VacrCAbW5J54oAZc/6wfSoamuv9YPpUNADo/wDWL9RV+qEf+sX/AHhV4nA54FHmBUvr2DTrOS6uXEcMalmY/wCeteG+JfENx4i1Rrh8rApxDGf4V/xNbXj3xR/a16bC2c/ZLdvmI/5aOO/0FcXXmYqs5PlR7+X4NRXtJbh3ooorjPUsFFFHY0DGSzRwRNLKwVFGWJPQV59rviObUpGhhJS1zwo6t9aveL9Y8yY2ED/u4/8AWEH7x9K5HODXp4agkuaR4OPxrk+SJo6Hb/atZtYiMgyAkeuOf6V6n9OleZ+F3CeILUk4ySB9SpFemHrWONb5kjoyte42FFFFcR6wUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAGZ4gthdaJcr3RfMX6jmvNIZ5baYSRSMjDowODXq97g2FxnGPLb+VeRt94ivSwesWmeFmd41ItHdaD4oF24tL0gSnhJOm4+/pXU142CQcjtXo3hjWP7QszBM2Z4hg8/eX1qMVQUVzRNsvxrk+SZvUUUVwHrhR/9bj2oooDyPRPAviwsU0i/lyRxbyt/6Ca9D/T2r55VmRw6MVZSCGB6e9ev+DfEa61p3kzMPtluuJMn7y/3hXpYWtf3GeDmOE5X7SB1Mf8ArF+oq/VCL76/7wq/XaeSFVLr/WD6Vbqpdf6wfSgCSAB0Jcbjnqeal8tP7i/lUdr/AKs/WpqAI3RQjEKAcdQK4Xx34kfTNP8AsVvIftdwpBw33F7/AI12Wo3kVhp89zMwEcSFmyfQV4Bq+pzavqc15MeXbheyjsK5sTV5I2R6OX4f2k+Z7Ipk85zmkooryT6NBRRRQAVU1O9Fhp09wTyi/KPftVuuU8b3ZS1gtVP+sYuw9hwP1P6VrRjzTSObFVPZ0nI4mWRppWdiSzEkk1H1NKetJXtWS0R8re7uyzY3Btb6GcdY3DV62jrJGroQVYZBHpXjY616H4R1MXdh9lkb99AMAHqV/wDrVx4ynePMj1crrKM3B9ToqKKK8w97UKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigPMzdeuRa6LdOTgsmxfqeP6/pXlp65rrvGWqLLKljE2RGcuR0J9K5E16+Fg4w1Pm8xrc9Wy6CVpaLftp2pRXAztBww9R3rNpVODW8kpRaOKEuWakexqQyhlOVIyD7UtZXhy6+16HbsTlkHlt+HA/TFateHOPLJo+toz54KQUUUVJoFX9I1SfR9ShvoOWjPzKejL3H5VQopptO6JlFTTiz6JsL221LTYry3wY5E3qQOen86PMf++3515n8OPEH2W7fSLiTEM+WhyeFfuPx/nXpX1r2aNT2kLnyuJoujUceg7zH/AL7fnViAB0Jcbjnqeaq1btf9WfrWpzjVYQDa3JPPFL9pT0b1qO5/1g+lUry6jsrOa5mOI4kLMfYDpSbsioq7SOH+JniAOI9It2OP9ZPg/kv9a83HQVZ1C9k1LUJ7yYkvM+8+3pVavGrVHOR9ThKPsqaiFFFFZHSFFFFABXnnjKfzdbKZ4iRU/r/WvQ/WvMPEbl9fuyTnD4/Lj+lduCV5Hl5pJqml3Mg0UUV6R8+LVzTb+XTbxLmI4ZTyPUdxVOjFJpPRlRk4tNbnrOnajb6larNAwAP3lzypq5XlOnanc6ZOJrd9p7jqGHoRXd6V4nstQCrKwt5z/Cx4J9ia8yvhpR1ifQ4THwmuWT1NuigEY6iiuSzR6CknsFFFIzBRkkAepppN7A5pbi0VnXOv6Za5El5GSOoT5j+lZ7+M9MXos7fRB/jWio1H0MZYqjF2cjoaK5weNNMY8xXI/wCAL/jViLxZpLjmd4z/ALUZ/pkU3h6i6ErF0X9o26Kow6vp1xgR3sJJ7bwD+RFXVZX+6wI9jms3CS3RtGrCWzFoooqS7oKKKZLPFBGZJpEjQdWZgAKaTewpSUVeTH/nWLr+vR6VbmOJg104woB+6PU1nav4wjjRotOG9zwZmGAPp61xU08k8rSyuzOxyWJ5Nd1DDa80jycZmEUuSmJNK0shd2LMxySe9R0lFegeG3d3YUUUUCO68DTFrW5hzwjq4H14/pXWVw/gV8XlynrGG/I//XruOgrycWrVD6fL5XoIKKKK5jtCiiigLD4pXhmSSNirqQykeo6V7p4c1Ea5otveIy7iu2Re4YcH/H8a8IruvhprRtNVk02Vv3VyMpnoHA/qOPwFdeEqcs7dzzcxoc9NyW6PVPsz+q05WEA2tyTzxViql1/rB9K9Q+dC5/1g+lcF8R9U+z6bDp8bfPcNuf8A3R0/XH5V6BCd0ZLDdzjnmvD/ABnqP9peJrp1OY4W8qP0wvBI+pyfxrlxU+Wmd2XUvaVbvoc/RRRXlH0wUUUUAFFFFAAeleWa8u3W7wf9NW/nXqecV5r4qi8rX7njAYhh+IrtwT948vNV+7TMOiiivSPnwooooAM0uaMe1FF+gGha6xf2ePIupFA/h3ZH5Grp8W6ucf6Vj6Rr/hWFRUuEH0NY16i2ZtN4o1Zjn7Ww+iKP6VQudRu7s/v7iWT2ZyR+VVKKFCK2QSrVJaNiZoooqjIKKKKAFyR3qeK6uITuimkQ+qsRUFFJpMpSa2ZrQeI9Vg+7eyH/AHsN/OrS+MNWUDMiH3KCuf5oz71Lpw6o1WIqr7TN2XxZqsoIE4QH+6oFZNxeXFy+6aV5D6s2ar04DNNQhHZEyrVJ7sTNGadsb0P5UmKq5nqNooooEFFFFAHW+BlJ1C4b/plt/Nh/hXc1x/gWLEd3Pj+6oPvXYdK8nFP94fTZcrUEFFFFcx3BRRRQAVLa3MlndQ3MJxJE4dT7jmoqM4yfpn6U02tUKSurM+idKvY9T0y2vIiCk0Yce2RyPzqS6/1g+lcH8NdUM2lT6ezsWtm3Lz/A3/18/nXoEADoS+Cc969mlPngmfJYin7Oq4mbqt+NM0C8u84MSMy/72OB+eK8BZi7FmJJJySa9a+JF4bXw7HZg/PcTAnH90cn9cV5JjAxXDjJXmkexlVPlg5MKKKK4z1gooooAKKKKAAVxXja2ZLi3ulHDLsJ9wcj+f6V2tZuvaf/AGjpUsSjMq/On+8P84/Gt8PPlmmcmMp+0otHllKBntSsCGIPGKvaJp7arrljpyZzdXEcPH+0wH9a9htJNny1tbHX+C/hZq/ixVvCVstMz/x8SDJf/cHf6nAr1/Sfgp4R05R9qgn1GUdTPIVGfZUI/I16DaW0VjaQ2tunlwwoERR2AqWvCrY2pJ2i9DoUFY56DwJ4UgTanh3TG4/5aWyMf1B5ouPAvhS5haJvDmlhW4+S1RD+DKMj8K6Giuf21TuVyo8g8Q/AXSrrfNod7LYydoZ8vH+f3h+Oa8m8R/D/AMQ+FSz6jp7tbg4+0w/PH/312/EV9cdKRlV0KMoZTwwxniuqjjqkdJaolwTPh0jBpK+nPFnwb0LXxJPpqppl+eQYVJic+6dvqMfjXg3ibwbrPhK88jVLQojEiOdOY5Po39OtepRxMKu25jKDRzdFKetJW5IUUUUALSUVNFE80ixRIXdzhVUZJPpRtqwIqvadpl9q14lpp1pNdTv0jiQsf0/nXqvgz4I3l+EvfEjNZ233hapxIw/2j/CPzP0r27RvD+k+HrMWulWMNtFjnYvL+5PU/iTXFWx0KekdWaRg3ueI+G/gNqN4En1+7Syj6/Z4MPIfYt90fhmvVdC+G3hXQEH2TSopph/y3uV81ifx4H4YrrOtFeZVxdSp1NVBIrHT7I5U2kGOmPLB/pWfeeEvDuoIVutD0+XPdrZd35gZrZorFVZLZjsjzDxB8DvDepRySaY0umz9RtJePPup5x9CK8J8UeFNU8I6o1jqkIRiMxyLykq56qa+xa8y+OOkJfeBhqAQebp86uGxztc7SPzKn8K7sHip83JJ3IlFWufNJ4NAoNXtKsnv9Qit0z87cn0Hc/lmvXbsmzKEeeSiju/ClsbbQoiRhpmMh/kP0FbdNijWGFI0XaiKFUegHAp1eJUlzSbPraFPkpqIUUUVBqFFFFABRRRQB03gW/8AsXieFGbEc4MTZ9+R+o/Wva4OYj/vGvnO1na1u4bhPvxOrj6g19CW06SWUUgc4kUOCO4Ir0sFK8WjwM1p2mpI8z+Kd15utWtqDkRQ7vxY/wD2NcF3P1ro/Hdx9o8YXuDlYyqD8FH9c1zlcVd3qNnq4OPLRivIKKKKyOoKKKKACiiigAo/z9aKKAaucR4o8PtDI99bLmJjl1A5UnvUfw6ZF+Ieh+ZjH2pcZ6Z7frXdEBgQVBB4Oa43U9Ofw9qtrrNgDshnWQL/AHGByPw4NehRr88XBnh47Bcr9pA+sqKp6VqNvq+l2uoWr7re5iWRD7Efzq5XjSVnZnF6BRRRUgFFFFMAqpqWmWWr2Etjf20dxbygho3Gc/T3+lW6P60Rk07oNz5p+I3wquPC7SanpYe40gnLZ5a3z0Deo968yNfcEsUc8TxSosiOpVkYZBB4r5f+KXgUeENcEtopOmXZLQd9jDqh/mPavaweK9p7k9zGcbao89opT1pygtwBnmu/1MkX9I0m81vUIbCwtnnuZmwiJ/X0HvX0t4B+GOm+ELeO6uBHd6uy/NOfux+yA/z71H8K/A0PhXQI726iH9q3qCSVmHzRL1EY9PevQen1714+LxUm+WOxvCFtQHQe1FFFeaaBRRRQAUUUUAFcX8WXWP4Z6yWYDKRqPr5i12leO/HnxAkOkWegQtma5kE0yg8hF+6CPc8/8Browsb1VYmWx4FFE80ioilnY4CgcmvRfDuhLpdt5suDcyL8x/uD0qDw1oKWMCXk6brh13Ln+AHp+OP510XXrzXo4nEN+7E9bAYLk/eT3CiiiuE9VBRRRQAUUUUAFFFFAw/CvbfCV4Lrwpp8jH7kfl/98kj+QFeJe/vXqnw1uC+gTQ78GKc4HsQP6g11YZ2djyszpc9K3ZnneuSmbXr+Q/xXEhH03Gs+pbl/NupX67nJ/M1FXPN3kz0acbQSCiiipLCiiigAooooAKKKKPUAqlrCxPpN35/+r8tsk+uOP1xUl5f2thCZLmVUHpnk/SuD13xHLqjeTGDHbA/dzy31rpoUZSlc4cXiqcIOLPQfhH8RY9FlGgatIEsZXzbzMeInJ5U/7JP5H6k19BAggEHI9Qc5/Kvh4dPxr07wJ8Xb/wANJHp+qLJe6ao2rg/vYR7Z4I9jWuLwbn78D56E+59KUVj+H/FWi+JrXz9Jv4pwBl0zh0+qnkf5+tbH8/T0ryZRcXZo1TCiiioGFFFFABXPeNPC9t4t8N3OmzgLJt3wS/8APNx0P07fQmuho+nWrpycZJoW6PiO7tprK7mtZkKTQuY5FPZgcEfmK9F+DPhNPEPiVtQvI99lp2HKno8h+6Pwxn8BWL8VIIIPiVrSW+NhlVjj+8UUt+pNeufANYB4KvWTHnG+YSev3Ex+Fe5iKrVDmXUxitT1THGKWj0+lFeDub2CiiiiwBRRRSAKPf07UyWaOCJpZpEjjQZZ3OAB6mvLvGHxq0jSIpLbQguo3gyol5EKH1z/ABfQce9bU6E6jtFCbSOz8X+L9N8H6PJeXsgaUqRBbhvmlf0HoPU9vrXy/c65c+IfGCatqrhpJ51ZuPlUA8KB6DGKpa5r2peIdRe/1S5eed/73AUeijoB7Vlg4bOT7V7WHwypR8zLn95M9jHAori9F8XCJFtr8MVHAlHJH1rr7e5guollglWRG6FT/SuCrRnBu59LQxVOqtHqS0UUVhc6roKKKKYBRRRQAUUUUAFejfCuUb9ShbGMRuP1rzmu3+Gc3laveIWwWgz+TD/GtqL95HNjFemcS3DsPc0lK33j9T/OkrOXxM3h8KCiiipKCiiigAooqC7u4LG3aadwiL+vtTSu7IUpKKuyZmVVYswAAySTjFcvrHi+K3LQ2AEjjjzT91fp61g6z4juNTYxrmK3B4jX+prCzk16NHCpe9I8TF5i37tMsXV3PeTGSeV5HPdj/nFVqKK7UkjyJScndiUZoooEW7O+utPuUubO4lt54zlJI3Ksv0Ir0zw98cdf0wJDqsUOpwDjcx2Sgf7w4P4j8a8poqJ0oTVpIak1sfUejfGbwlqoCz3UmnzH+G6TCg/7y5H54rtbHVNP1JBJY31tcoeQYZlcH8q+J8n1qWKeWBw8UjIw6FTg1xTy6m/hNFUfU+3/AOdFfHVr4z8S2agQa9qSKOi/aXK/lnFXP+Fk+Mf+hgvMf7w/wrD+zX3K9oj65yO/HpXEeMPibofha1kRLmO81LBEdtCwbDf7ZHSvmu/8V+INTUx3utX86HqklwxX8s4rd+HngifxtrRiZnisICGupx156Kv+0ef89aWBhTXPUewnO+iOV1G/udW1K41C7cyTzuZJGx1JrrPh74+ufBOqO7RtcafOQLiEHn/eU9j/ADr6O0zwX4b0myW1tNGshGF2szxB2b6kjLV5v8TPhPYHTJta8O2ot54QXmtYwdjqOSVHYgdhWqxVKp+7a0J5WtT0bQfG3h7xHEjadqlvJIw/1LMEkH/ASc1v5HYg/jXw9kg8cH+VaEGv6zapst9VvYkH8KXDgfoaieXRb91j9qfaQI65yKhuby1sovMurmGBB/FI4X+dfGz+JddkUq+s6gynsblyP51ny3E0775ZXkb1ZiTSWWq+rD2p9X6p8UPB+kgiXWYZ5B/Bagyn/wAdyPzIrz7Xfj/lWj0HSsHtNet0/wCAKf614YaK6KeBpQ1Jc2zovEHjDX/Ez51XUpZo85WIHbGv0Ucf1rnjmkorrjFRVkib3EooopoQverdlf3FhKJLeV42HoeD9RVSik0mrMqMnF3R6DoviqC92wXmIZjwHH3WP9DXSfjmvGxkHiut8PeJ2g2Wt8xaLosh6r9fUVxV8N9qJ7GDzBt8lQ7eigHIBByD0I70V59n1PaTuFFFFIAooooGFdn8NTjxDcdf+PVv/Q0rjK6/4d/8hy5/69j/AOhLWlH4jmxKvTOWvI/KvZ48AbJGXj2NQ1o6/EYfEF+h7XDkfQkms6pn8TNab9xBRRRUlhRRRQHWwyWZIInllYLGg3MTXmuuazLqt0WJ2wqfkT0rpfGl+YbOOzRsGU7nwf4R0/WuD716eEopLmZ4OY4lufs0Jmiiiuw8kSiiigAooooAKKKKACiiigAooooAcozx37CvrT4Z+HU8O+B7GFo8XF0gubgkclnAOPwG0Y9q+YfDNgNU8T6XYEZW4uo42/3SwyfyzX2YoCqFHQDFebmVR8qia0kL1pCM9e9LRXkX7Gx8mfEzw6vhrxzfWsSbbaY/aIOONrc4H0OR+FcbXuv7QenLjRtSVPm/eQO35Mv/ALNXhZ619Hhp89JSOaasxKKKK2JCiiigAooooAKKKKACiiigBaUdaSkoA7fwlrhb/iX3LZ4/dsfTuK6/nuMV4/DM8MqyI2GU5B9K9U0u9GoadBcjGXX5gOx7152LpW95Hv5biHUj7OT1RcooorhPVCiiigArt/hpFv1a8bA+WAD82H+FcRXo/wALYSE1OfbnmNAf++if6VtQV5HJjHanc5rxxbfZ/FN0QMLIFkH4gf1zXO133xRsjDqFlc4GXiKEj/ZOR/M1wNKvHlqNDwc+eimFFFFZHUFHcfWiihbh0Z514wlMmush/wCWSKn6Z/rXPnrW54s/5GC4/wCAf+gisMV7dLSCPksT/FkxKKKK0MAooooAKKKKACiiigAooooAKKKKAOx+Fsay/EnRFf7omLfkpNfWnYZ64r5I+GU62/xG0R26G42f99KV/rX1uepryMx+JG9LYKKKK8w0PKfj8i/8ITYyY+ZdQQA+n7uSvnE19GfH2VR4NsISfma/VgPYI4P/AKEK+c69/A/wUjnqbiUUUV1kBRRRQAUUUUAFFFFABRRRQAUUUUALmu78DXJa0ubcn/VuHGffg/yrhOprr/A2ftN16bB/M1hiUnTZ2YB2rpI7aiiivHPqQooooEFeufDKBYPDUs8gAE1wxBx1AAH9DXkfHWvdfB9qLHwvYQlSGaISHA/vc/1rrwkbs83M52ppGV8TLL7ToAnUZa3kV/wOQf5ivH/5dvpX0FrlouoWFxasOJYSv4np+uK+f5I3ileOQYdSVYe4qsbG0kyMqneDiNoooriPVCjH+FFFAHnvjKHy9bLgcSorZ/T+lc5mu98aWPm2UV2oyYm2tj+6f/r/AM64I17GHnzU0fL46m4VnfqJRRRW5xhRRRQAUUUUAFFFFABRRRQAUUUUAaOiX7aVrlhfp962uElH/AWB/pX2jFKk8McsbBkdQ6sOhB5H86+H6+pPhF4nTXvBkNrLIPtmnAQSgnnb/A3uMcH3FedmNNuCkjWm7Ox39B6enfNFMmmit4HmmkEccalnduigda8dam3Q8K/aC1MPqGkaUrfNFE88gB/vEBf/AEE/nXiZ610vjjxE3ifxff6oCfJeTbAD/DGvC/4/jXM19Jh4clNROabuwooorUkKKKKACiiigAooooAKKKKACiiigBa7nwNAVt7m4I4Z1QZ9uT/OuIQFmwBknsK9T0Wx/s/SYYG+/t3P9TzXNi5qNM9LLKfNV5uxoUUUV5J9EFFFFAdSzp9o1/qNvaJndNIqDHbJwa+gTGIljRFyFQAD0FeR/DrTje+J1nYfu7VC5PueB/M/lXr9z98fSvTwMbRbPn81qc1RRHwjehLfMc9TXivjzTP7N8TzMq7Yrn98nHHPUfnmva7b/V/jXG/ErSDfaIl7EuZLVssB1KNwfy6/nWmJhzQMMBV9nWSfU8goooryD6e4UUUUCIrm3juraSCYZjkXafp/nFeW6pp8um30lvIMbTwf7w7GvV6yde0VNWtflwtygzG3r7V1YatySs9jgx+F9rDmW6PMKSpri3ktpmilQo6nBBqKvVW2h84007MSiiigQUUUUAFFFFAC0UlFAC0lL0pyru7UDSbdho4NdN4R8Sar4W1cappqM6oMTxkEo6ejf40/RvCc13tnvd0UPUL/ABMP6Cu2tbWCzgENvGqRj+Ff61yVsRBLlZ6GHy+dX3paHoWnfGjwfeWay3d3NZTkfNDLA7kHvgqCDXAfEH4pTeKoW0Tw7DMtlKcTSkYaUf3R6L/OqcujabK257KAnOchMZ/KrUFrb2q7beCOJT2RdtcalRi+ZI6Vlk3pJ6HlF5ZXFjOYbiIo47H+lVq9Y1DTLXU4PKuEH+y46qa4LWPDl1pbF9pkgzxIo6fWu6jiY1NHucmJwM6Oq1Rh0tByKK6TgEooooAKKKKACiiigAooooAcfSk70v0q/pOly6pdrDHwvVm9BSbSV2XCEpyUY6s1vCmkG7u/tUqHyIjxkfebtXf1DaWsVlax28K4RBgf1qavHr1faTv0PqMJQ9jTt1CiiisTpCjuKKs2FnJqF/BaQgl5XC/maaV2iZPlTkem/DnTms9De7bKyXTZH+4On9fzru4AHQlwGOepFZ9pbR2dnDbRD93EgQfhxWjbfcP1r26ceWFj5OvU9pNyGqwgG1uSeeKiuRBdW0kEqFo5FKsp7gjB/ninXP8ArB9Khq2k9zJO2q3PB9Z019J1e5snz+7chSf4l7H8sVQr034jaIbi0j1WBMyQ/JLjuvY/gf515l1rxa8OSdmfUYWsq1NPqFFFFZHWFFFFAGLr2gRarGZI9qXKj5WPRvY151c20trM0UqFXU4IIr1+sjXNDh1aAsAFuVHySevsa7cPiHF8sjy8bgozXPDc8xoqa5t5bWdoZkKOhwVPaoa9JO+qPAaadmJRRRQIWilUE1raf4e1DUAGih2of43OB/jUykoq7LhTnPSKuZFKFJ6Cu4tPBFumDdXLSHusY2j8zW9aaNYWWDDaxhv7xXJ/M1hPFwWx308tqy1locDp/h2/1AgrEY4z1kkGB+HrXZ6V4cstMxIVE0//AD0ccA+w7Vs0VxVcVOenQ9ShgKVPV6sOe/P9aKKK5jusFFFFAahSEBgQQCG4Oeh+tLRQDSejOb1Xwha3YaS0IglPO3+A/wCFcdf6Reac5W4hKjsw5U/jXqtI6q6FXUMp6hhkGuunipw31POxOXU6msdGeOGkGO9ekXvhTTbrLRo1vIe6EY/L/Cueu/Bd9Dlrd45l9PuH9eP1rthiYS8jyquArU9bXOZOOxpKvXWl31mCZ7WSNR/EUOPzqketbKSexxyjKL95WG0UUUyRaKUCtXRtDm1abC5WJfvyEdKmUlFXZdOnKpLljuV9P0y51O4EMCZJ6k9FHqTXo+k6VBpNp5UXLn/WORgsf8KmsbC3063EMEYRf4j3b6nvVqvMr4hz0Wx9Dg8FGj7z3CiiiuU9AKKKKADGTx16V3/w10Nri5k1V1+SMGOInux6kfhXDWlrLfXUVrApaSVwiqPU8Zr6A0XTItI0i2sogMRqAxA6t3P5114SnzSuzy8yr+zhyLqWPsz+q05WEA2tyTzxViql1/rB9K9Q+fC6/wBYPpUNWoAHQlxuOep5qXy0/uL+VAGdLBFcwvBMoaKVSjKR1B614f4j0aXQtZntGU7cl4mP8S9Rz9OPwr350UISFAIBwQK5DxnoP9t6UWjGbuAF4v8AaHcfj/OubE0ueN+p34DEeynZ7M8bopWBVirDaV4IPUUleU/M+lTQUUUUgCiiigDnvFGjLfWjXUKDz4hkkD7y+leeEFTivZOx96848T6X/Z+pM0Y/cy5ZD6eor0sJWv7rPEzLDW/eRMHvQBk0d6B1rtPH6nY+EtEiuIzfXChwrYjQ9Mjua7TjGBjHbFc/4OuEl0QRgjdHIQR39c/rXQdznrXkYmTdRo+mwUIqinEKKKK5ztCiiigAooooAKKKKACiiigAooooAKBx0oooAbIiSxtHIoZGGCCOtea+INKXStS8qNiY3G9QeoGTx+lemdse3NcH43YHVIFyMiEZHpya7MHKXPY8zNIRdPme5ytFFL3r1D54t6fZyX95HbRjLO2PoO5r1KxsodPtEt4Fwqjk+p9a5zwbpnlQvfOoDOdseR0966uvMxdW8uVH0GW4dQjzvcKKKK4j07BRRRQMKKK1vDmhza/q8VrGCIvvTP8A3VH9e341UYuUkiKlRU4uTOv+G+gHzf7XuUxzsgUj8z+tepiqltaQWVkkMEapHGm1AB0FR+Y/99vzr2aVNQjY+VxFZ1qjky/VS6/1g+lR+Y/99vzqxAA6EuNxz1PNaGAtr/qz9amqurCAbW5J54p32lPRvyoAkk/1bfQ1Q9MHB9ferRnVwVAbJ45pn2Z/VaAPLPHvhn7PM2r2kZ8lyPPRR91v72PT1rhK+iZ7JZ4nilCOjqQynuK8Z8W+GJfD2oZQF7KU5icc4/2T6V52Ko295Hu4DFqS9nPc5yiiiuHc9cKKKKACs3XdMGqac8QA81MvGff0/GtKjv79aqEnF3RFSKnFxZ49NE8UhR1KsDgg9jUfSvRNe8Mx6kTcW+2K4PUHo/8A9euNudE1C0crLaS8dwpI/MV69KvCa3Pma+EqUpaLQn8PaqdM1FWY/uZCFkHt6/hXpmcgEd68misLt3+W2mY/7MZNem6UJBpVsJkKSCMKwbrxx/SuTGRi2pI9LLJzs4yLlFFFcJ7AUUUUCCiiigAooooAKKKKACiiigAooooC5V1C+i06ykuJj8qjhe7GvL7+8kv7yS5lOXc59h7V3HizT7y/hgFqhkVNxZQR7dq4ptKv0ODZ3GfTyjXpYSMVG73PBzGdScuVLQo9qvaXp76lfRwRg/MRub+6O5q1Y+HdRvJABayIueWkG0D8+td1o+iwaRblY/nmcYkkxj8B7VtWrxitDHC4KdSSbWhft4EtreOCMYSNdoFSUfSivIbbd2fRqPKrIKKKKQwooo/z/hR5Bckt4Jbm4SCBDJK7BVQDqTXuHhHw7H4e0lYiA1zIN0z+p9PoP8awPAvhVdMRNTv4/wDSpFzHGR/qlPc+5rvftKejflXp4WjyrmZ89mGL9o+SOxJJ9xvoaoVaM6uNoDZPHIpn2Z/Va7DzCCrdr/qz9aj+zP6rTlYQDa3JPPFADLn/AFg+lQ1Ndf6wfSoaAHR/6xfqKv1Qj/1i/wC8Kv0AJjisvWLC31O0e0uow8TryMcg+o+lalVbr/WD6UmrqzGm4vmW54V4h8P3OgX7QyAvAx/dTY4Ye/vWPXvep6Xa6vZPa3cYZG6Hup9R71474h8OXegXnlyAvA5/dzAcN7H0NeZiMO4O8dj6LBY1VFyy3MaiiiuQ9HbcKKKKAsFGBRRQJq+4UUUU7glbZBRRRSKCiiigQUUUUAFFFFABRRRQAUUUUAFFFFAWCiiigOW+4UUUUAkFFFFABRRRzngEn2GaFroDelw/zivR/AngsuY9W1KIgLzDEw/8eP8AntTfBngXzTFqWqx4UfNFbt39C3+FeoKoCgDgDt6V34bD/akeJj8c2uSmV7n/AFgHbHFQ1Ndf60fSoa9A8bQdH/rF+oq/VCP/AFi/7wq/QAVUuv8AWD6Vbqpdf6wfSgCSAB0Jcbjnqeal8tP7i/lUdr/qz9amoAjdFCMQoBAPIFVPMf8Avt+dXZP9W30NUKAHeY/99vzqxAA6EuNxz1PNVat2v+rP1oAf5af3V/Kqeo6da6jZS2t1CkkTrgqR+vtV+mv/AKtvoaTV1ZjUmndHiHibwfc6JIbiDM9iTxJjmP8A3hXMfXrX0M6JImyRQykYZT0Irz3xL8Pw2670deerWx4B/wB30+lefXwttYnt4PMOb3ap53RT5YpIJGjlRkdTghhgg0yuF6bnsJpq4UUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAXCij9fatLR9Bv9cuRFZwkr/FK3CIPUmqjFydkTOcYR5nsUIopJ5ViiRpJGOFVRkk+1eo+E/ASWKrf6sivcgZSE8rGff1Nb3hvwdY6BGJABNdkYaZh0/3fSuibAjbtwa9GhhlH3pbnhYvMHO8aexU3v/eYe2aN7jo7fnTfSiuw8paFqAB0Jcbjnqeal8tP7i/lUdr/AKs/WpqAI3RQjEKAQDyBVTzH/vt+dXZP9W30NUKAHeY/99vzqxAA6EuNxz1PNVat2v8Aqz9aAGqwgG1uSeeKd9pT0b8qiuf9YPpUNAFozq4KgNk8c0z7M/qtRR/6xfqKv0AVfsz+q05WEA2tyTzxViqlz/rB9KAJftKejflSGdXBUBsnjmqtOj/1i/UUAS/Zn9Vo+zP6rVqigDmtd8LabrMe25iC3GMrNEPmH19RXlmt+EdS0Rmcxme1/hnQZGPp2r2265kH0qEgFSCAc+vQ1hVw8J+p24bG1KLt0PnjsP8AOaK9e1nwHpmqM0lsPsdwxzmP7p+o/wD1VwGr+DdY0Ys81uZbcf8ALWH5h+PcfjXn1MPOB7dDG0qul7MwKKUjHYikrnOzfYKKKKAuFFFFABRRRQAUUUUAFFFFABRRRQAUUUUBdBRRUkFvLcyiKGN5HboqKWP6UJX0QnJRV2R1JDDLcSiKGNpJG6IoJJrsdF+Hd/esj6k/2SJiMoOZD/h+tel6N4c0zQ48Wduofo0jcufqa6qWFlLVnnYjMadPSGrPP/D/AMNrm423OrP5UfUQD7x+p7V6RY2lrpVstvbwJFGOQIxxWhVS5/1o+lehTpRgeJXxNSs/eZL9oT0b8qQzq4KgNk8ciqtOj/1i/UVqYEv2Z/VaPsz+q1aooArqwgG1uSeeKd9pT0b8qiuf9YPpUNAFozq4KgNk8c0z7M/qtRR/6xfqKv0AVfsz+q05WEA2tyTzxViql1/rB9KAC6/1g+lQ1ZgAdTvG456nmpvKT+4v5UAUo/8AWL/vCr9RsihWIUAgHkCqnmP/AH2/OgC/VS6/1g+lR+Y/99vzqeAB1O8bjnqeaAK1Oj/1i/7wq75Sf3F/KmsihWIUAgHkCgCSiqHmP/fb86PMf++350ASXX+sH0qGrMADqd43HPU81N5Sf3F/KgClH/rF+oq8RketMZFCsQoBAPIFVPMf++350eoLe5k6r4L0XVizTWoimbrLCdjH+h/EVxGq/DK8t3J0+6jnXqEl+Rvpnof0r03zH/vt+dWIAHjJYBjnvzWM6MJ7o6aWLrU9mfP19oWqabn7XYzRgfxbPl/PpWfz6V9KmGMjBRfyrGvvDGjXwYXGnW5cj76rtb8xg1zSwS+yz0aebNaSR4HRXrN38NNKlG+GSeA+gfcP1Gf1rFk+GcsmTa6khHpLGR/ImuaVCSO6GOpvc4CiuquPAOp24JNzaHHozf8AxNYM2nSw/edDg9s1nySN1XiynRT/AC2PORxR5bFQcjNHs2V7aAyitSy0C5vmAikhGf7xI/oa6G0+GupXGPNvLVF/2SzH/wBBFNU5MiWIhE4qivTbX4WW+4C51KRge0Ue0/mSf5VuW/w70G0Tc0DzsB1lkP8ATFaRw8mctTMKa2PGEieVgqIzseigHn8q6DT/AARr2o4K2RhQ/wAdx8g/Lk165a2VnYLttbaKAf8ATNAKteY/99vzrphg0viOGrm0vsI4Sw+GNtbsraldPO2MmOP5V/Pqa66w0qx0uLy7O1jhB6lV5P49T+Na0ADxkt8xz35qXyk/uL+VdUKUIbI4KuKq1PiZSj++g7bhV+o2RQrEKAQDyBVTzH/vt+daGBfqpdf6wfSo/Mf++351PAA6neNxz1PNAFanR/6xf94Vd8pP7i/lTWRQrEKAQDyBQBJRVDzH/vt+dHmP/fb86AJLr/WD6VDVmAB1O8bjnqeam8pP7i/lQBSj/wBYv+8Kv1GyKFYhQCAeQKqeY/8Afb86AL9VLr/WD6VH5j/32/Op4AHQlxuOep5oA//Z" alt="" />m4d135</a>
     <nav class="choix" aria-label="Menu principal">
@@ -1025,6 +1052,13 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
         <legend>Tableau en cockpit</legend>
         <label><input type="radio" name="tableau" value="reduit"><span>Planche seule</span></label>
         <label><input type="radio" name="tableau" value="complet"><span>Compteurs supplémentaires</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Annonces des virages</legend>
+        <label><input type="radio" name="annoncesVirages" value="non"><span>Non</span></label>
+        <label><input type="radio" name="annoncesVirages" value="ecran" checked><span>Écran</span></label>
+        <label><input type="radio" name="annoncesVirages" value="voix"><span>Écran et voix</span></label>
+        <p class="aide-reglage">Direction, difficulté et distance avant le virage. La voix utilise une voix française installée sur l’appareil ; à deux, elle guide le joueur 1. Sans voix disponible, l’annonce reste à l’écran.</p>
       </fieldset>
       <fieldset>
         <legend>Carte du circuit</legend>
@@ -2191,28 +2225,58 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   // Screen-space ray tracing of the current opaque scene; analytic sky remains the fallback.
   const SSR_FRAG=`#version 300 es
   precision highp float;
-  in vec2 vUV;uniform sampler2D uColor;uniform sampler2D uDepth;
+  in vec2 vUV;uniform sampler2D uColor;uniform highp sampler2D uDepth;
   uniform vec4 uProjection;uniform vec2 uPixel;out vec4 fragColor;
   float distanceZ(float depth){return uProjection.w/(depth*2.-1.+uProjection.z);}
-  vec3 position(vec2 uv){float z=distanceZ(texture(uDepth,uv).r);return vec3((uv*2.-1.)*uProjection.xy*z,-z);}
+  // Depth needs highp even when float already is highp: a low precision sampler
+  // quantizes the road into rows before the normal and reflected ray are built.
+  vec2 pixelCenter(vec2 uv){return (floor(uv/uPixel)+.5)*uPixel;}
+  vec3 position(vec2 uv){uv=pixelCenter(uv);float z=distanceZ(texture(uDepth,uv).r);return vec3((uv*2.-1.)*uProjection.xy*z,-z);}
   vec2 project(vec3 p){return .5+.5*p.xy/(-p.z*uProjection.xy);}
+  vec3 rayPoint(vec3 a,vec3 b,float ka,float kb,float t){return mix(a,b,t)/mix(ka,kb,t);}
   void main(){
-    fragColor=vec4(0.);vec4 original=texture(uColor,vUV);float depth=texture(uDepth,vUV).r;
-    vec3 p=position(vUV),dx=dFdx(p),dy=dFdy(p),n=normalize(cross(dx,dy));
-    if(original.a<.06||depth>=.999999||-p.z>200.||-p.z<.12)return;
+    fragColor=vec4(0.);vec2 receiver=pixelCenter(vUV);vec4 original=texture(uColor,receiver);
+    float depth=texture(uDepth,receiver).r,zp=distanceZ(depth);
+    if(original.a<.06||depth>=.999999||zp>200.||zp<.12)return;
+    vec3 p=vec3((receiver*2.-1.)*uProjection.xy*zp,-zp);
+    // One-sided differences stay on the receiver at object silhouettes. Always
+    // reconstruct at the depth texel centre, including this half-size pass.
+    vec3 l=p-position(vUV-vec2(uPixel.x*2.,0.)),rr=position(vUV+vec2(uPixel.x*2.,0.))-p;
+    vec3 b=p-position(vUV-vec2(0.,uPixel.y*2.)),t=position(vUV+vec2(0.,uPixel.y*2.))-p;
+    vec3 dx=abs(l.z)<abs(rr.z)?l:rr,dy=abs(b.z)<abs(t.z)?b:t,n=cross(dx,dy);
+    if(dot(n,n)<1e-12)return;n=normalize(n);
     vec3 eye=normalize(-p);if(dot(n,eye)<0.)n=-n;vec3 r=reflect(-eye,n),origin=p+n*.055;
-    float prev=0.,travel=.16,weight=0.;vec2 hit=vec2(0.);
-    for(int i=0;i<48;i++){
-      float oldTravel=travel;travel+=.24+float(i)*.085;vec3 q=origin+r*travel;if(q.z>-.08)break;vec2 uv=project(q);
-      if(min(uv.x,uv.y)<.012||max(uv.x,uv.y)>.988)break;
-      float sceneZ=distanceZ(texture(uDepth,uv).r),delta=-q.z-sceneZ;
-      if(delta>0.&&prev<=0.&&delta<1.2+travel*.025){
-        float lo=oldTravel,hi=travel;for(int j=0;j<5;j++){float mid=(lo+hi)*.5;vec3 v=origin+r*mid;vec2 at=project(v);float d=-v.z-distanceZ(texture(uDepth,at).r);if(d>0.)hi=mid;else lo=mid;}
-        hit=project(origin+r*(lo+hi)*.5);float edge=min(min(hit.x,hit.y),min(1.-hit.x,1.-hit.y));
-        weight=smoothstep(.01,.12,edge)*(1.-smoothstep(70.,115.,travel));break;
-      }prev=delta;
+    float reach=r.z>0.?min(115.,(-.08-origin.z)/r.z):115.;if(reach<=.1)return;
+    vec3 end=origin+r*reach;float ka=1./(-origin.z),kb=1./(-end.z);vec3 a=origin*ka,z=end*kb;
+    vec2 start=project(origin),span=project(end)-start;
+    vec2 limit=(mix(vec2(.012),vec2(.988),step(vec2(0.),span))-start)/(span+vec2(1e-8));
+    float clipped=clamp(min(1.,min(limit.x,limit.y)),0.,1.);
+    z=mix(a,z,clipped);kb=mix(ka,kb,clipped);span*=clipped;
+    float pixels=max(abs(span.x)/uPixel.x,abs(span.y)/uPixel.y);if(pixels<1.)return;
+    float previous=0.,oldT=0.,weight=0.,stride=clamp(2./(512.*uPixel.y),1.,4.);vec2 hit=vec2(0.);int candidates=0;
+    // Perspective-correct traversal: 1--4 source pixels per step, scaled with
+    // image height, and at most 96 steps / three refinements (122 depth reads).
+    // Farther or unseen geometry keeps the existing analytic environment.
+    for(int i=1;i<=96;i++){
+      float atT=min(1.,float(i)*stride/pixels);vec2 uv=start+span*atT;
+      float sampled=texture(uDepth,uv).r,sceneZ=distanceZ(sampled),delta=1./mix(ka,kb,atT)-sceneZ;
+      if(sampled<.999999&&delta>0.&&previous<=0.){
+        candidates++;float lo=oldT,hi=atT;
+        for(int j=0;j<6;j++){float mid=(lo+hi)*.5;float d=1./mix(ka,kb,mid)-distanceZ(texture(uDepth,start+span*mid).r);if(d>0.)hi=mid;else lo=mid;}
+        hit=start+span*hi;vec3 point=rayPoint(a,z,ka,kb,hi);float hitDepth=texture(uDepth,hit).r;
+        float difference=-point.z-distanceZ(hitDepth),thickness=clamp(sceneZ*.004,.025,.20);
+        // Crossing a silhouette is not itself an intersection. Revalidate the
+        // refined hit against a small depth thickness, rather than metres.
+        if(hitDepth<.999999&&difference>=0.&&difference<thickness){
+          float edge=min(min(hit.x,hit.y),min(1.-hit.x,1.-hit.y)),travel=length(point-origin);
+          weight=smoothstep(.01,.12,edge)*(1.-smoothstep(70.,115.,travel))*(1.-smoothstep(80.,96.,float(i)));
+          break;
+        }
+        if(candidates>=3)break;
+      }
+      previous=sampled>=.999999?-1.:delta;oldT=atT;if(atT>=1.)break;
     }
-    if(weight>0.){float fresnel=.35+.65*pow(1.-max(dot(n,eye),0.),3.);fragColor=vec4(texture(uColor,hit).rgb,weight*original.a*fresnel);}
+    if(weight>0.){float fresnel=.35+.65*pow(1.-max(dot(n,eye),0.),3.),alpha=weight*original.a*fresnel;fragColor=vec4(texture(uColor,hit).rgb*alpha,alpha);}
   }`;
   const POST_FRAG=`#version 300 es
   precision highp float;
@@ -2238,7 +2302,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
     c+=texture(uBloom,vUV-axis*1.384615).rgb*.316216;
     c+=texture(uBloom,vUV+axis*3.230769).rgb*.070270;
     c+=texture(uBloom,vUV-axis*3.230769).rgb*.070270;
-    if(uPass==2){vec4 scene=texture(uScene,vUV),reflection=texture(uReflection,vUV);c=scene.rgb+c*.28;if(uReflections==1)c=mix(c,reflection.rgb,min(.70,reflection.a)*step(.025,scene.a));}
+    if(uPass==2){vec4 scene=texture(uScene,vUV),reflection=texture(uReflection,vUV);c=scene.rgb+c*.28;if(uReflections==1)c=mix(c,reflection.rgb/max(reflection.a,1e-5),min(.70,reflection.a)*step(.025,scene.a));}
     fragColor=vec4(c,1.);
   }`;
 
@@ -4709,7 +4773,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       prof?.end();prof?.begin('effects');
       if(particles.length)renderEffects(particles,eye,t);prof?.end();
       if(sceneMode==='screen'&&post){gl.drawBuffers([gl.COLOR_ATTACHMENT0]);reflections.resolve(post.scene,reflectionMode,{pos:eye},axes,projection,view,t,worldRevision,reflections.key);gl.useProgram(program);gl.bindVertexArray(vao);reflections.bind(uniforms);gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,stats.shadows?shadowTarget.texture:whiteTexture);gl.activeTexture(gl.TEXTURE0);}
-      stats.reflections=reflectionMode==='off'&&!!(stats.bloom&&post.reflectSource&&post.reflection&&fx.reflections!==false&&fx.reflections!=='off');stats.reflectionSteps=stats.reflections?48:0;
+      stats.reflections=reflectionMode==='off'&&!!(stats.bloom&&post.reflectSource&&post.reflection&&fx.reflections!==false&&fx.reflections!=='off');stats.reflectionSteps=stats.reflections?96:0;
       if(stats.reflections){const target=msaa?msaa.framebuffer:post.scene.framebuffer;gl.bindFramebuffer(gl.READ_FRAMEBUFFER,target);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,post.reflectSource.framebuffer);gl.blitFramebuffer(0,0,canvas.width,canvas.height,0,0,canvas.width,canvas.height,gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT,gl.NEAREST);gl.bindFramebuffer(gl.FRAMEBUFFER,target);}
       if(overlay.length||overlayParticles.length) {
         // EMPRISE: weapon/muzzle meshes already render after a depth clear.
@@ -5155,7 +5219,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 (function(G){'use strict';
  const names={passages:'FPassages',tacticalNetwork:'FBrain',loop:'FLoop',scheduler:'FSchedule',jobs:'FJobs',demo:'FDemo',surface:'FSurface',gpuProfile:'FGPUProfile',skies:'FSky',reflections:'FSceneReflections',render:'FRender',backends:'FRenderBackends',physics:'FPhysics',physx:'FPhysX',physicsGeometry:'FPhysicsGeometry',geometry:'FGeometry',vehicleDynamics:'FVehicleDynamics',navigation:'FNavigation',crowd:'FCrowd',crowdWebGPU:'FCrowdWebGPU',materials:'FMaterials',destruction:'FDestruction',input:'FInput',audio:'FAudio',motion:'FMotion',effects:'FEffects',recipes:'FRecipes',math:'FMath',music:'FMusic',musicTransitions:'FImuse'};
  function requireModule(name){const module=G[names[name]];if(!module)throw new Error('FERRO : module '+name+' non chargé.');return module;}
- const api={version:'0.3.11',apiVersion:1,
+ const api={version:'0.3.12',apiVersion:1,
   capabilities(){return Object.fromEntries(Object.entries(names).map(([name,key])=>[name,!!G[key]]));},
   require:requireModule,
   async createRenderer(canvas,options={}){const materials=options.materials||requireModule('materials').create();if(!materials.layers.length)await materials.load();return requireModule('backends').create(canvas,{...options,materials});},
@@ -58977,6 +59041,195 @@ G.FPhysX=Object.freeze({init,isReady,status,createWorld,sweepBox,overlapBox,disp
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
+// ---- virages.js ----
+/* BITUME — lecture du tracé et annonces de virages ; aucune action sur la conduite.
+ * Distances/rayons en mètres, vitesses en m/s, angle cumulé en radians.
+ * Un suivi propre à chaque HUD distingue les passages ; il se remplace à chaque séance.
+ */
+(function (B) {
+  'use strict';
+  const plans = new WeakMap(), suivis = new WeakMap(), VIDE = Object.freeze([]);
+  const borner = (x, a, b) => Math.max(a, Math.min(b, x));
+  const ramener = (s, L) => ((s % L) + L) % L;
+
+  function planifier(c) {
+    if (!c || typeof c !== 'object') return VIDE;
+    if (plans.has(c)) return plans.get(c);
+    const n = c.n, L = c.longueur, pas = c.pas, K = c.courbure;
+    if (!Number.isInteger(n) || n < 3 || !K || K.length !== n || !Number.isFinite(L) || L <= 0
+      || !Number.isFinite(pas) || pas <= 0 || Math.abs(n * pas - L) > .001) return VIDE;
+
+    // Le bord large (R = 350 m) conserve les raccords d'entrée. La sélection finale
+    // exige R <= 180 m, au moins 17° et 14 m : ni frémissements des droites ni pics isolés.
+    const plus = new Float64Array(n + 1), moins = new Float64Array(n + 1), lobes = [];
+    let ouvert = null;
+    for (let i = 0; i <= n; i++) {
+      const k = i < n && Number.isFinite(K[i]) ? K[i] : 0;
+      if (i < n) { plus[i + 1] = plus[i] + Math.max(0, k) * pas; moins[i + 1] = moins[i] + Math.max(0, -k) * pas; }
+      const sens = Math.abs(k) >= 1 / 350 ? Math.sign(k) : 0;
+      if (ouvert && sens !== ouvert.sens) { ouvert.fin = i; lobes.push(ouvert); ouvert = null; }
+      if (sens && !ouvert) ouvert = { debut: i, fin: i + 1, sens };
+    }
+    const cumul = (table, i) => Math.floor(i / n) * table[n] + table[i % n];
+    const integrale = (sens, a, b) => {
+      const table = sens > 0 ? plus : moins;
+      return cumul(table, b) - cumul(table, a);
+    };
+    function fusionner(liste) {
+      let change = true;
+      while (change && liste.length > 1) {
+        change = false;
+        for (let i = 0; i < liste.length; i++) {
+          const j = (i + 1) % liste.length, a = liste[i], b = liste[j];
+          const decalage = j === 0 ? n : 0, debut = b.debut + decalage;
+          // Deux sommets du même virage restent une seule consigne. Une vraie
+          // inversion (plus de 4,6°) interdit la fusion, même à faible rayon.
+          if (a.sens !== b.sens || (debut - a.fin) * pas > 36
+            || integrale(-a.sens, a.fin, debut) > .08) continue;
+          a.fin = b.fin + decalage;
+          liste.splice(j, 1); change = true; break;
+        }
+      }
+      return liste;
+    }
+    fusionner(lobes); // raccord de fin de tour compris, avant d'écarter les petits lobes
+    const groupes = fusionner(lobes.filter(v => integrale(v.sens, v.debut, v.fin) >= .08));
+    const resultat = [];
+    for (const v of groupes) {
+      const longueur = (v.fin - v.debut) * pas, angle = integrale(v.sens, v.debut, v.fin);
+      let maximum = 0, vitesseMin = Infinity;
+      for (let i = v.debut; i < v.fin; i++) {
+        const k = K[i % n];
+        if (Number.isFinite(k)) maximum = Math.max(maximum, k * v.sens);
+        const vitesse = c.vitesse && c.vitesse[i % n];
+        if (Number.isFinite(vitesse) && vitesse > 0) vitesseMin = Math.min(vitesseMin, vitesse);
+      }
+      if (maximum < 1 / 180 || angle < .30 || longueur < 14) continue;
+      // Centre du plus long plateau de courbure maximale, pas un maximum flottant
+      // arbitraire ; deux sommets séparés ne placent pas le repère dans leur creux.
+      let debutPic = -1, taillePic = 0, sommet = v.debut;
+      for (let i = v.debut; i <= v.fin; i++) {
+        const pic = i < v.fin && K[i % n] * v.sens >= .98 * maximum;
+        if (pic && debutPic < 0) debutPic = i;
+        if (!pic && debutPic >= 0) {
+          if (i - debutPic > taillePic) { taillePic = i - debutPic; sommet = (debutPic + i - 1) / 2; }
+          debutPic = -1;
+        }
+      }
+      const rayonMin = 1 / maximum;
+      // Une épingle exige aussi un changement de direction : un coude à 90°, même
+      // très court, reste « serré ». Les valeurs classent le tracé, jamais la météo.
+      const difficulte = rayonMin <= 45 && angle >= 2 ? 3 : rayonMin <= 85 ? 2 : 1;
+      const direction = v.sens > 0 ? 'droite' : 'gauche';
+      const libelle = difficulte === 3 ? 'Épingle à ' + direction
+        : (v.sens > 0 ? 'Droite' : 'Gauche') + (difficulte === 2 ? ' serrée' : ' marquée');
+      if (!Number.isFinite(vitesseMin)) {
+        // Repli pour les tracés sans enveloppe de vitesse : mêmes constantes que
+        // circuit.vitesses(), appliquées ici au rayon de l'axe uniquement.
+        const den = maximum - 1.55 * .00155;
+        vitesseMin = den <= 0 ? 86 : Math.min(86, Math.sqrt(1.55 * 9.81 / den));
+      }
+      resultat.push({ debut: ramener(v.debut * pas, L), sommet: ramener(sommet * pas, L),
+        fin: ramener(v.fin * pas, L), longueur, sens: v.sens, rayonMin, angle, vitesseMin, difficulte, libelle });
+    }
+    resultat.sort((a, b) => a.debut - b.debut);
+    for (let i = 0; i < resultat.length; i++) resultat[i] = Object.freeze({ id: i, ...resultat[i] });
+    const plan = Object.freeze(resultat);
+    plans.set(c, plan);
+    return plan;
+  }
+
+  function lire(c, position, suivi) {
+    if (!suivi || typeof suivi !== 'object') return null;
+    const plan = planifier(c);
+    let etat = suivis.get(suivi);
+    if (!etat || etat.c !== c) {
+      etat = { c, maximum: -Infinity, precedente: null, annonces: new Map(), actuelle: null };
+      suivis.set(suivi, etat);
+    }
+    const p = position && position.progression, vitesse = position && position.vitesse;
+    if (!position || !Number.isFinite(position.s) || !Number.isFinite(p) || !Number.isFinite(vitesse) || !plan.length) {
+      etat.actuelle = null; return null;
+    }
+    const recul = etat.precedente !== null && p < etat.precedente - .25 || p < etat.maximum - .75;
+    etat.precedente = p; etat.maximum = Math.max(etat.maximum, p);
+    // Garder la mémoire des annonces pendant un arrêt, une pause ou un recul évite
+    // de répéter la même phrase quand la voiture recommence à avancer.
+    if (position.actif !== true || vitesse < 1.5 || recul) { etat.actuelle = null; return null; }
+    const L = c.longueur, s = ramener(position.s, L);
+    let actuelle = etat.actuelle;
+    if (actuelle && (p > actuelle.fin || p < actuelle.entree - 440)) actuelle = null;
+    if (!actuelle) {
+      let prochain = null, distance = Infinity;
+      for (const v of plan) {
+        const d = ramener(v.debut - s, L);
+        if (d < distance) { prochain = v; distance = d; }
+      }
+      const adh = Number.isFinite(position.adherence) ? borner(position.adherence, .2, 1.2) : 1;
+      const v = borner(vitesse, 0, 120), cible = prochain.vitesseMin * Math.sqrt(adh);
+      // 1,8 s pour lire/réagir, puis freinage à 14 m/s² sur sec. L'adhérence réduit
+      // la vitesse cible et la décélération ; 70..420 m gardent l'annonce proche.
+      const portee = borner(30 + 1.8 * v + Math.max(0, v * v - cible * cible) / (28 * adh), 70, 420);
+      if (distance > portee) { etat.actuelle = null; return null; }
+      const entree = p + distance;
+      const tour = Math.round((entree + (Number.isFinite(c.depart) ? c.depart : 0) - prochain.debut) / L);
+      actuelle = { virage: prochain, entree, fin: entree + ramener(prochain.sommet - prochain.debut, L),
+        tour, cle: prochain.id + ':' + tour };
+    }
+    etat.actuelle = actuelle;
+    const v = actuelle.virage, distance = Math.max(0, actuelle.entree - p);
+    const dernier = etat.annonces.get(v.id), nouveau = dernier === undefined || actuelle.tour > dernier;
+    if (nouveau) etat.annonces.set(v.id, actuelle.tour);
+    return { cle: actuelle.cle, id: v.id, sens: v.sens, difficulte: v.difficulte, libelle: v.libelle,
+      distance, distanceAffichee: Math.max(0, Math.round(distance / 10) * 10), nouveau };
+  }
+
+  // Web Speech : https://webaudio.github.io/web-speech-api/#speechsynthesisvoice
+  // Une voix distante ou de provenance inconnue n'est jamais utilisée. Interroger
+  // la liste à chaque demande accepte aussi son arrivée tardive, sans écouteur global.
+  function creerVoix(hote = globalThis) {
+    let synthese = null, Parole = null, courante = null, generation = 0;
+    try { synthese = hote && hote.speechSynthesis; Parole = hote && hote.SpeechSynthesisUtterance; } catch (_) {}
+    function choisir() {
+      if (!synthese || typeof Parole !== 'function' || typeof synthese.getVoices !== 'function'
+        || typeof synthese.speak !== 'function' || typeof synthese.cancel !== 'function') return null;
+      try {
+        const voix = Array.from(synthese.getVoices()).filter(v => v && v.localService === true && /^fr(?:-|$)/i.test(v.lang));
+        return voix.find(v => v.default) || voix.find(v => /^fr-FR$/i.test(v.lang)) || voix[0] || null;
+      } catch (_) { return null; }
+    }
+    function annuler() {
+      generation++;
+      if (!courante) return true;
+      courante.onend = courante.onerror = null;
+      try { synthese.cancel(); courante = null; return true; }
+      catch (_) { return false; } // ne pas ajouter une autre phrase si l'ancienne résiste
+    }
+    function dire(texte, volume = 1) {
+      if (!annuler()) return false;
+      const voix = choisir(), niveau = Number.isFinite(volume) ? borner(volume, 0, 1) : 0;
+      if (!voix || typeof texte !== 'string' || !texte.trim() || niveau === 0) return false;
+      try {
+        if (synthese.paused) {
+          if (typeof synthese.resume !== 'function') return false;
+          synthese.resume();
+          if (synthese.paused) return false;
+        }
+        const parole = new Parole(texte.trim().slice(0, 180)), jeton = ++generation;
+        parole.voice = voix; parole.lang = voix.lang; parole.volume = niveau; parole.rate = 1.05; parole.pitch = 1;
+        parole.onend = parole.onerror = () => { if (generation === jeton && courante === parole) courante = null; };
+        courante = parole;
+        synthese.speak(parole);
+        return true;
+      } catch (_) { annuler(); return false; }
+    }
+    return { dire, annuler, disponible: () => !!choisir() };
+  }
+
+  B.virages = { planifier, lire, creerVoix };
+})(globalThis.BITUME = globalThis.BITUME || {});
+</script>
+<script>
 // ---- ferro/vehicle-dynamics.js ----
 /* FERRO — shared BITUME tyre, load, torque and steering equations. Game profiles supply parameters. */
 (function(G){'use strict';
@@ -63849,6 +64102,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
 /* BITUME — décor calculé depuis le circuit : chaussée, accotements, terrain, eau, arbres, tribunes, glissières.
    Aucune image ni modèle : des nappes de triangles (matière et couleur par sommet) et des primitives du moteur FERRO. */
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaussee) require('./chaussee.js');
+if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virages) require('./virages.js');
 (function (B) {
   'use strict';
 
@@ -64046,7 +64300,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
     return resultat;
   }
 
-  function nappesRoute(c, th, lim, naturel = false, ecologie = null, saison = null) {
+  function nappesRoute(c, th, lim, naturel = false, ecologie = null, saison = null, reperes = null) {
     const w = c.largeur / 2, n = c.n, LIGNES = 60, liste = [];
     const habitat = {};
     const meteoRoute = B.chaussee ? B.chaussee.preparer({}, saison) : null, surfaceRoute = {};
@@ -64062,6 +64316,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
       return col;
     };
     const blanc = [.86, .86, .83], rouge = [.74, .09, .07], blancBordure = [.90, .90, .87];
+    const rougeVirage = [.82, .025, .02], blancVirage = [.98, .99, .96];
     for (let debut = 0; debut < n; debut += LIGNES) {
       const fin = Math.min(n, debut + LIGNES), nap = nappe(), herbeTriangles = [];
       // bandes : d0, d1 (fonctions de la ligne), type
@@ -64090,7 +64345,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
               d0 = bord * w; d1 = bord * (w + 1.2); y0 = yBord;
               const avec = cote < 0 ? (vib & 1) : (vib & 2);
               y1 = yBord + (avec ? .05 : -.015);
-              if (avec) { mat = 14; col = tranche ? rouge : blancBordure; } else { mat = 8; col = tonte; }
+              if (avec) {
+                mat = 14; col = reperes && reperes.vibreurs[f.i] ? (tranche ? rougeVirage : blancVirage) : (tranche ? rouge : blancBordure);
+              } else { mat = 8; col = tonte; }
             } else if (type === 'herbe') { d0 = bord * (w + 1.2); d1 = bord * ext; y0 = yBord - .015; y1 = yBord - .02 * (ext - w - 1.2); col = tonte; n0 = n1 = [0, 1, 0]; }
             else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; col = (th.volcanique ? th.terre : th.herbe).map(v => v * .86); n0 = n1 = [0, 1, 0]; }
             if (cote < 0) { const t = d0; d0 = d1; d1 = t; const u = y0; y0 = y1; y1 = u; }
@@ -64754,6 +65011,96 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
       options.arbresLointains && l.arbres === true ? { objets: l.loin } : null));
   }
 
+  // Repères de conduite : plan visuel indépendant des anciens maxima qui placent les murs de pneus.
+  // Ni tirage aléatoire ni écriture dans le circuit ; seules les couleurs des vibreurs/lisses changent.
+  const distanceRepere = (c, a, b) => ((b - a) % c.longueur + c.longueur) % c.longueur;
+  function zoneSansRepere(c, s, marge = 12) {
+    const ld = c.ligneDroite || { debut: -200, fin: 200 }, x = B.circuit.ecart(c, 0, s);
+    const avant = Math.max(-300, B.circuit.ecart(c, 0, ld.debut) + 40) - 10;
+    const apres = Math.min(260, B.circuit.ecart(c, 0, ld.fin) - 60) + 50;
+    if (x >= avant - marge && x <= apres + marge) return true;
+    for (const t of (c.couverts || (c.tunnel ? [c.tunnel] : []))) {
+      if (distanceRepere(c, t.debut - marge, s) <= distanceRepere(c, t.debut, t.fin) + 2 * marge) return true;
+    }
+    for (const p of (c.ponts || [])) {
+      if (distanceRepere(c, p.debut - 20, s) <= distanceRepere(c, p.debut, p.fin) + 40) return true;
+    }
+    return false;
+  }
+  function preparerReperes(c) {
+    const virages = B.virages.planifier(c).filter(v => v.difficulte >= 2);
+    const vibreurs = new Uint8Array(c.n), glissieres = new Int8Array(c.n);
+    for (let i = 0; i < c.n; i++) {
+      const s = i * c.pas;
+      if (zoneSansRepere(c, s)) continue;
+      const courbe = virages.find(v => distanceRepere(c, v.debut, s) <= v.longueur);
+      if (courbe) { vibreurs[i] = courbe.difficulte; glissieres[i] = -courbe.sens; continue; }
+      let voisine = null, proche = Infinity;
+      for (const v of virages) {
+        const avant = distanceRepere(c, s, v.debut), apres = distanceRepere(c, v.fin, s);
+        // Une courbe en cours prime sur l'approche du S suivant ; hors courbe, l'approche prime sur la sortie.
+        const d = avant <= 120 ? avant : apres <= 24 ? apres + 120 : Infinity;
+        if (d < proche) { proche = d; voisine = v; }
+      }
+      if (voisine) glissieres[i] = -voisine.sens;
+    }
+    return { virages, vibreurs, glissieres };
+  }
+
+  const CHIFFRES_REPERES = ['abcdef', 'bc', 'abdeg', 'abcdg', 'bcfg', 'acdfg', 'acdefg', 'abc', 'abcdefg', 'abcdfg'];
+  const SEGMENTS_REPERES = {
+    a: [0, .58, .52, .12], b: [.26, .29, .12, .48], c: [.26, -.29, .12, .48], d: [0, -.58, .52, .12],
+    e: [-.26, -.29, .12, .48], f: [-.26, .29, .12, .48], g: [0, 0, .52, .12]
+  };
+  function poserReperes(c, plan, lim, interroger, ajouter) {
+    const w = c.largeur / 2;
+    function panneau(v, s, metres) {
+      const f = cadre(c, Math.round(s / c.pas)), ext = -v.sens, largeur = 3.2, L = (ext < 0 ? lim.G : lim.D)[f.i];
+      if (zoneSansRepere(c, f.s)) return;
+      // Dans un enchaînement, les chevrons du virage en cours restent le seul ordre de direction.
+      if (metres && plan.virages.some(q => q !== v && distanceRepere(c, q.debut, f.s) <= q.longueur)) return;
+      const d = ext * (L + largeur / 2 + 1.4), y = hauteurRoute(f, ext * w, w) - .02 * (Math.abs(d) - w - 1.2);
+      const p = pointPlan(f, d, y), rot = capRot(f.a);
+      // Toute l'emprise reste derrière les limites, y compris quand un autre bras de piste revient à proximité.
+      for (const lateral of [-largeur / 2, 0, largeur / 2]) {
+        const x = p[0] + f.r[0] * lateral, z = p[2] + f.r[2] * lateral, q = interroger(x, z, 80);
+        if (q.i < 0) return;
+        const fq = cadre(c, q.i), dq = (x - fq.x) * fq.r[0] + (z - fq.z) * fq.r[2];
+        if (Math.abs(dq) < (dq < 0 ? lim.G : lim.D)[q.i] + .6) return;
+      }
+      const repere = { type: metres ? 'freinage' : 'chevrons', virage: v.id, s: f.s, sens: v.sens, metres: metres || 0 };
+      const objets = [], blanc = [.98, .99, .96], face = (lateral, hauteur, avant = .1) =>
+        [p[0] + f.r[0] * lateral - f.t[0] * avant, y + hauteur, p[2] + f.r[2] * lateral - f.t[2] * avant];
+      const boite = (partie, position, taille, couleur, rotation = rot) => objets.push({
+        shape: 'box', p: position, s: taille, r: rotation, mat: 16, color: couleur, repereVirage: repere, symboleVirage: partie
+      });
+      for (const cote of [-1, 1]) boite('poteau', face(cote * 1.05, 1.3, 0), [.1, 2.6, .1], [.38, .42, .45]);
+      boite('panneau', face(0, 2.7, 0), [.14, 1.9, largeur], blanc);
+      if (metres) {
+        boite('bande', face(0, 3.48), [.03, .12, 2.96], [.82, .025, .02]);
+        const chiffres = String(metres);
+        for (let i = 0; i < chiffres.length; i++) for (const segment of CHIFFRES_REPERES[Number(chiffres[i])]) {
+          const [dx, dy, sx, sy] = SEGMENTS_REPERES[segment];
+          boite('chiffre', face((i - (chiffres.length - 1) / 2) * .84 + dx, 2.68 + dy), [.03, sy, sx], [.025, .035, .045]);
+        }
+      } else {
+        boite('fond', face(0, 2.7), [.03, 1.55, 2.96], [.025, .10, .25]);
+        for (const centre of [-.7, .7]) for (const cote of [-1, 1]) {
+          const a = face(centre - v.sens * .45, 2.7 + cote * .5, .14), b = face(centre + v.sens * .45, 2.7, .14);
+          const axe = b.map((x, i) => x - a[i]), rotation = angles(...base(axe, f.t.map(x => -x)));
+          boite('chevron', a.map((x, i) => (x + b[i]) / 2), [Math.hypot(...axe), .035, .19], blanc, rotation);
+        }
+      }
+      // La distance et la qualité ne retirent jamais les chiffres ou les flèches.
+      ajouter(objets, objets.slice(), p[0], p[2]);
+    }
+    for (const v of plan.virages) {
+      for (const metres of (v.difficulte === 3 ? [200, 150, 100, 50] : [150, 100, 50])) panneau(v, v.debut - metres, metres);
+      const nombre = Math.max(2, Math.min(5, Math.ceil(v.longueur / 38))), marge = Math.min(14, v.longueur * .15);
+      for (let j = 0; j < nombre; j++) panneau(v, v.debut + marge + (v.longueur - 2 * marge) * j / (nombre - 1), 0);
+    }
+  }
+
   const HERBIERS = new WeakMap();
   function construire(c, options = {}) {
     const th = Object.assign({}, THEMES[c.theme] || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
@@ -64771,8 +65118,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
     const w = c.largeur / 2, lim = limites(c), interroger = indexAxe(c);
     // bords de route (lot 22F) : plan tiré avec la graine propre de bords.js, jamais avec le hasard du décor
     const planBords = B.bords ? B.bords.planifier(c) : null;
+    // Le repli false sert à relire l'oracle visuel historique, sans changer les empreintes de référence.
+    const reperes = options.reperesVirages !== false && B.virages ? preparerReperes(c) : null;
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
-    const nappes = nappesRoute(c, th, lim, qualite !== 'low', qualite === 'low' ? null : ecologie, saison);
+    const nappes = nappesRoute(c, th, lim, qualite !== 'low', qualite === 'low' ? null : ecologie, saison, reperes);
     const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie);
     if (saison) {
       const habitat = {}, couleur = [0, 0, 0], teinte = [0, 0, 0];
@@ -64820,6 +65169,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
           { shape: 'box', p: [milieu[0], milieu[1] + .62, milieu[2]], s: [long + .25, .34, .07], r: rot, mat: 0, color: [.74, .76, .78], detail: 1 },
           { shape: 'box', p: [p0[0], p0[1] + .4, p0[2]], s: [.09, .8, .09], r: rot, mat: 0, color: [.5, .52, .54], detail: 2 }
         ];
+        if (reperes && reperes.glissieres[f0.i] === cote) {
+          objets[0].color = Math.floor(f0.s / 16) % 2 ? [.82, .025, .02] : [.98, .99, .96];
+          objets[0].repereVirage = { type: 'glissiere', s: f0.s, cote };
+        }
         const loin = [objets[0]];
         // panneaux publicitaires sur les lignes droites
         if (Math.abs(f0.k) < 1 / 500 && (i / PAS_G) % 9 === 4 && r() < .7) {
@@ -64931,7 +65284,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
     for (const v of virages) {
       const ext = -v.sens; // l'extérieur du virage
       let entree = v.i; while (Math.abs(c.courbure[((entree - 1) % c.n + c.n) % c.n]) > 1 / 400 && v.i - entree < 60) entree--;
-      for (const [metres, barres] of [[150, 3], [100, 2], [50, 1]]) {
+      const nouveauRepere = reperes && reperes.virages.some(q => distanceRepere(c, q.debut, v.i * c.pas) <= q.longueur);
+      for (const [metres, barres] of (nouveauRepere ? [] : [[150, 3], [100, 2], [50, 1]])) {
         const f = cadre(c, entree - metres / c.pas), yb = hauteurRoute(f, ext * w, w);
         const p = pointPlan(f, ext * (w + 3.2), yb), rot = capRot(f.a);
         const objets = [{ shape: 'box', p: [p[0], p[1] + 1.3, p[2]], s: [.08, 1.5, 1.2], r: rot, mat: 16, color: [.93, .93, .9] },
@@ -65276,6 +65630,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
       for (const o of objets) l.objets.push(o);
       for (const o of loin) l.loin.push(o);
     } });
+
+    // Les repères ne créent aucun solide. Leurs lots propres sont ajoutés après tous les lots physiques.
+    if (reperes) poserReperes(c, reperes, lim, interroger, (objets, loin, x, z) => {
+      const q = interroger(x, z, 80), cle = 'v' + Math.floor(q.i * c.pas / TRONCON);
+      let l = groupes.get(cle); if (!l) groupes.set(cle, l = { objets: [], loin: [], lointain: false });
+      l.objets.push(...objets); l.loin.push(...loin);
+    });
 
     // Finition des lots : sphère englobante et portée.
     const lots = [];
@@ -76957,7 +77318,7 @@ FERRO.initPhysics().then(function(){
     for (const [cle, valeur] of [...stockEnAttente]) ecrireStock(cle, typeof valeur === 'function' ? valeur() : valeur);
   }
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
-    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel',
+    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'ecran',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglagesEnregistres = lireStock('bitume.reglages', {});
   const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
@@ -76976,7 +77337,7 @@ FERRO.initPhysics().then(function(){
   if (!reglages.champRevu) { if (+reglages.champ === 69) reglages.champ = DEFAUT.champ; reglages.champRevu = true; }
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
   // Les anciens placements auto/haut/bas reviennent en haut à droite ; taille et visibilité sont conservées.
-  for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['gauche', 'droite'], carteTaille: ['petite', 'normale', 'grande'] }))
+  for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['gauche', 'droite'], carteTaille: ['petite', 'normale', 'grande'], annoncesVirages: ['non', 'ecran', 'voix'] }))
     if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
   const sauverReglages = () => {
     // en course (changement de vue au clavier ou à la manette), l'écriture attend la file
@@ -77366,12 +77727,12 @@ FERRO.initPhysics().then(function(){
   addEventListener('blur', () => { touches.clear(); souris.gaz = souris.frein = souris.derive = false; relacherTactile(); if (pauseAuto && enCourse()) basculerPause(true); });
   document.addEventListener('visibilitychange', () => {
     oublierIntervalle();
-    if (document.hidden) { relacherTactile(); viderStock(); }   // un onglet masqué peut être tué sans autre avis
+    if (document.hidden) { relacherTactile(); viderStock(); suspendreAnnoncesVirages(); }   // un onglet masqué peut être tué sans autre avis
     if (pauseAuto && document.hidden && enCourse()) basculerPause(true);
     if (son) son.musique(!document.hidden && ecran === 'titre'); // onglet caché : le minuteur du thème serait bridé
   });
   addEventListener('focus', oublierIntervalle);
-  addEventListener('pagehide', viderStock);   // page fermée ou rechargée : la file part avant
+  addEventListener('pagehide', () => { viderStock(); suspendreAnnoncesVirages(); });   // page fermée ou rechargée : la file part avant
   addEventListener('pointerdown', activerSon, { passive: true });
   // Gestes : ils remettent à zéro l'attente de la démo sur l'écran titre ; pendant la démo, le premier ramène au
   // titre et ne compte pas comme un clic sur le menu qui revient.
@@ -77724,12 +78085,14 @@ FERRO.initPhysics().then(function(){
 
   // ---------------------------------------------------------------- son
   let sonActif = false, muet = false;
+  const voixVirages = B.virages.creerVoix();
   function activerSon() {
     if (!son) return;
     son.demarrer();
     if (!sonActif) { sonActif = true; appliquerVolumes(); son.musique(ecran === 'titre'); }
   }
   function appliquerVolumes() {
+    if (muet || !(reglages.general * reglages.effets > 0)) voixVirages.annuler();
     if (!son) return;
     const menu = !(enCourse() || ecran === 'demo');
     son.regler({ general: muet ? 0 : reglages.general * (menu ? .55 : 1), moteur: reglages.moteur, effets: reglages.effets });
@@ -77956,7 +78319,7 @@ FERRO.initPhysics().then(function(){
     numeroSeance: 0, seanceAcceptee: null, dernierDepart: -Infinity };
   const VERSION_CHOIX_PNEUS = 2, VERSION_PNEUS_RESEAU = 1;
   // Empreinte des sources du build, incluant catalogue, générateur, limites et collisions : même piste, même jeu.
-  const REVISION_PISTES = '45c4b3d0a24d529f874b89933bbc2dc3fc16650a07034b3c2d56a5813ba1f96c';
+  const REVISION_PISTES = 'e8565cf086668bb7600e6f1e92d400814efa33a16f5088e6c6d9d487a910bd81';
   function contratPiste(i) {
     return Number.isInteger(i) && CATALOGUE[i] ? { id: CATALOGUE[i].id, revision: REVISION_PISTES } : null;
   }
@@ -79502,7 +79865,7 @@ FERRO.initPhysics().then(function(){
 
   // ---------------------------------------------------------------- affichage de course
   const H = {};
-  for (const id of ['h-pos', 'h-sur', 'h-tour', 'h-tours', 'h-actuel', 'h-meilleur', 'h-delta', 'h-delta-ligne', 'h-vitesse', 'h-rapport', 'h-regime', 'h-fps', 'h-sante', 'h-sante-barre', 'c-sante', 'jauge-derive', 'classement', 'feux', 'carte', 'c-position', 'c-tour', 'message', 'sous-message']) H[id] = $(id);
+  for (const id of ['h-pos', 'h-sur', 'h-tour', 'h-tours', 'h-actuel', 'h-meilleur', 'h-delta', 'h-delta-ligne', 'h-vitesse', 'h-rapport', 'h-regime', 'h-fps', 'h-sante', 'h-sante-barre', 'c-sante', 'jauge-derive', 'classement', 'feux', 'carte', 'c-position', 'c-tour', 'message', 'sous-message', 'h-virage', 'h-virage-nom', 'h-virage-distance', 'h-virage-annonce']) H[id] = $(id);
   const segments = Array.from(H['jauge-derive'].querySelectorAll('i')), lampes = Array.from(H.feux.querySelectorAll('i'));
   const etiquetteDerive = H['jauge-derive'].querySelector('.etiquette');
   const barre = H['h-regime'].querySelector('.barre');
@@ -79522,6 +79885,51 @@ FERRO.initPhysics().then(function(){
   function attr(el, nom, v) { if (el['_' + nom] !== v) { el['_' + nom] = v; el.setAttribute(nom, v); } }
   function style(el, nom, v) { if (el['_s' + nom] !== v) { el['_s' + nom] = v; el.style.setProperty(nom, v); } }
   function classe(el, nom, oui) { if (el.classList.contains(nom) !== !!oui) el.classList.toggle(nom, !!oui); }
+
+  // Les annonces suivent le pilote de cet ATH, jamais l'état partagé de S.vueJ2. Le plan et la surface
+  // sont lus sans modifier la course. Seule la distance visible évolue ; le lecteur d'écran parle une fois.
+  function masquerAnnonceVirage(x) {
+    x.h['h-virage'].hidden = true;
+    texte(x.h['h-virage-annonce'], '');
+  }
+  function suspendreAnnoncesVirages() {
+    voixVirages.annuler();
+    for (const x of [HUD1, HUD2]) { masquerAnnonceVirage(x); x.tVirage = -Infinity; }
+  }
+  function majAnnonceVirage(S, x, j) {
+    const co = S.course, et = j.etat;
+    if (x.courseVirages !== co || x.piloteVirages !== j.id) {
+      x.courseVirages = co; x.piloteVirages = j.id; x.suiviVirages = {}; x.surfaceVirage = {};
+      x.positionVirage = {}; x.tVirage = -Infinity;
+      masquerAnnonceVirage(x);
+      if (x === HUD1) voixVirages.annuler();
+    }
+    const actif = (reglages.annoncesVirages === 'ecran' || reglages.annoncesVirages === 'voix')
+      && ecran === 'course' && !document.hidden && S.type !== 'demo' && co.phase === 'course'
+      && !j.fini && !j.abandon && !et.stands && !et.accident && !et.recuperation && !et.reparation && et.rapport >= 0 && et.v >= 0;
+    if (actif && horlogeReelle < x.tVirage) return;
+    x.tVirage = horlogeReelle + .1;
+    const position = x.positionVirage;
+    position.s = et.s; position.progression = j.progression; position.vitesse = et.v; position.actif = actif;
+    position.adherence = actif ? B.conduite.adherenceVoiture(et, B.chaussee.lire(co.c, et.s, S.meteo, x.surfaceVirage)) : 1;
+    const annonce = B.virages.lire(co.c, position, x.suiviVirages);
+    if (!annonce) {
+      if (x === HUD1 && !x.h['h-virage'].hidden) voixVirages.annuler();
+      masquerAnnonceVirage(x); return;
+    }
+    const H = x.h;
+    attr(H['h-virage'], 'data-sens', annonce.sens > 0 ? 'droite' : 'gauche');
+    attr(H['h-virage'], 'data-difficulte', String(annonce.difficulte));
+    texte(H['h-virage-nom'], annonce.libelle);
+    texte(H['h-virage-distance'], annonce.distanceAffichee + ' m');
+    H['h-virage'].hidden = false;
+    if (annonce.nouveau) {
+      const phrase = annonce.libelle + (annonce.distanceAffichee > 0 ? ', dans ' + annonce.distanceAffichee + ' mètres.' : ', maintenant.');
+      texte(H['h-virage-annonce'], phrase);
+      if (x === HUD1 && reglages.annoncesVirages === 'voix' && sonActif && !muet)
+        voixVirages.dire(phrase, reglages.general * reglages.effets);
+    }
+  }
 
   // L'état affiché appartient au pilote de cet ATH, y compris à deux. Aucun calcul d'usure ni remise à neuf ici.
   // Les écritures DOM restent bornées aux changements de pourcentage entier, sans lecture de mise en page.
@@ -79610,6 +80018,7 @@ FERRO.initPhysics().then(function(){
     const nb = co.voitures.length;
     // nouvelle séance : tout s'écrit dès sa première image
     if (x.seance !== S) { x.seance = S; x.tChiffres = x.tPlan = -Infinity; }
+    majAnnonceVirage(S, x, j);
     if (demo && S.planVu) texte($('demo-plan'), CATALOGUE[S.i].nom + ' · ' + LIBELLES_PLAN[S.planVu.vue] + ' · ' + j.nom);
     texte(H['h-pos'], chronoMode ? '–' : String(j.position)); texte(H['h-sur'], chronoMode ? '' : '/' + nb);
     if (!chronoMode && !demo && S.positionPrec && j.position < S.positionPrec && co.phase === 'course') eclat(H['c-position']);
@@ -79725,6 +80134,7 @@ FERRO.initPhysics().then(function(){
 
   function aller(nom) {
     const precedent = ecran;
+    if (nom !== 'course') suspendreAnnoncesVirages();
     if (precedent === 'preparation' && nom !== 'preparation') annulerConditions();
     if (nom === 'preparation' && precedent !== 'preparation' && precedent !== 'reglages') {
       conditionsPreparation = null; conditionsPreparationCle = '';
@@ -80043,6 +80453,9 @@ FERRO.initPhysics().then(function(){
         if (rendu) appliquerPalier();
       }
     }
+    if (t.name === 'annoncesVirages' && ['non', 'ecran', 'voix'].includes(t.value)) {
+      reglages.annoncesVirages = t.value; sauverReglages(); suspendreAnnoncesVirages();
+    }
     // Cadence d'images : la valeur normalisée par la cadence est celle qui est retenue (une cible fixe vise le
     // diviseur de l'écran le plus proche) ; les essais en cours repartent de zéro.
     if (t.name === 'cadence') { reglages.cadence = B.cadence.regler(cadence, t.value); sauverReglages(); }
@@ -80122,7 +80535,7 @@ FERRO.initPhysics().then(function(){
   function remplirReglages() {
     captureTouche = null; majCommandes();
     majDetectionGraphique();
-    for (const nom of ['vue', 'boite', 'qualite', 'cadence', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    for (const nom of ['vue', 'boite', 'qualite', 'cadence', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille', 'annoncesVirages']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     $('v-carte').checked = reglages.carte !== 'non';
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
     $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';

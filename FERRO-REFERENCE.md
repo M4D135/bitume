@@ -1,4 +1,4 @@
-# FERRO — référence commune 0.3.7
+# FERRO — référence commune 0.3.12
 
 Décision de David du 16 novembre 2026 : entièrement procédural, aucun plafond de taille du code ni du build. Moteur prioritaire, atelier secondaire.
 
@@ -17,3 +17,7 @@ La version 0.3.5 (commit `7afe6d692f45892fc9fdf30ff46397a5ebe00498`) ajoute troi
 La version 0.3.6 (commit `7d7f1018db33632ae448e6fd6e0b4f6b6f8fe5d1`) permet de régler à chaud `draw(..., {msaa, shadows, shadowMapScale})`. Le MSAA demandé explicitement fonctionne aussi sans halo. Les ombres changent de résolution sans recréer le contexte ; les limites GPU sont conservées et relues après restauration. BITUME applique ses options indépendantes dans `jeu.js`. Qualification et limites : `docs/reprise/07-OPTIONS-VEGETATION.md` et `docs/runtime-options-036/` du dépôt FERRO.
 
 La version 0.3.7 (commit `0250a5750d10789976186a1491ffdf011fb19611`) ajoute le souffle local opt-in via `draw(..., {windSources})` et `windResponsive: true`, avec quatre sources GPU et des tableaux persistants. Les passes couleur et profondeur partagent la déformation ; WebGL2 et WebGPU utilisent les mêmes shaders de référence. Distances/LOD et bornes des lots sont réutilisés entre les passes d’une vue. Les 34 modules installés sont identiques à la référence ; le jeu fournit seulement ses sources de voitures et sa géométrie. Preuves moteur : `docs/local-wind-037/`. Qualification hôte : `docs/reprise/08-HERBE-SILLAGE-BRUME.md`.
+
+La version 0.3.12 corrige les stries du SSR historique des flaques : lecture de profondeur explicitement `highp`, normales reconstruites au centre des texels, parcours du rayon en pixels avec raffinement et contrôle d’épaisseur, alpha prémultiplié pour les contours. Les 34 modules sont installés par le script canonique ; seuls le renderer et le numéro de version de l’API moteur diffèrent de 0.3.11. Les règles de conduite p13 restent dans le jeu et ne changent pas.
+
+La qualification utilise les shaders réels sous EGL/Mesa sur des scènes analytiques. Elle ne vaut pas validation visuelle de BITUME dans un navigateur. Le SSR reste limité à la géométrie visible et son coût augmente dans le banc logiciel ; aucun gain FPS matériel n’est annoncé. Preuves canoniques : `M4D135/FERRO:docs/ferro-reference/ssr-0312-2026-11-19/`. Contrôles du jeu : `docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/`.

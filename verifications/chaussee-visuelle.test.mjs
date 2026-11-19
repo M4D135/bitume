@@ -10,7 +10,7 @@ import { createHash } from 'node:crypto';
 const B = globalThis.BITUME, C = B.chaussee;
 let controles = 0;
 const verifier = (nom, f) => { f(); controles++; console.log('ok ' + nom); };
-const construire = (c, saison) => B.decor.construire(c, { qualite: 'low', vegetation: false, saison });
+const construire = (c, saison, options = {}) => B.decor.construire(c, { qualite: 'low', vegetation: false, saison, ...options });
 const empreinteRoute = d => {
   const h = createHash('sha256');
   for (const n of d.nappes.filter(n => n.surfaceType === 'accotement')) {
@@ -19,7 +19,8 @@ const empreinteRoute = d => {
   }
   return h.digest('hex');
 };
-// Capturées avant le raccord visuel 12E : les nappes d'été, couleurs comprises, restent celles de 0.2.46.
+// Capturées avant le raccord visuel 12E : les nappes d'été sans les nouveaux repères,
+// couleurs comprises, restent celles de 0.2.46. Ces empreintes historiques ne sont pas régénérées.
 const CAS = [
   { theme: 'foret', graine: 11, longueur: 4200, ete: '4d683fa0825f0c4ec9213994c5e2c4617a4d08485ac7f308ba9e46174da3b30e' },
   { theme: 'cote', graine: 29, longueur: 3600, ete: '223f5ee2de2c5cc722aef4840956b3cff62ad43623e1f92829cd585741840781' },
@@ -28,10 +29,35 @@ const CAS = [
 
 for (const cas of CAS) {
   const c = B.circuit.creer(cas.graine, cas), ete = construire(c, 'ete');
-  verifier(`${cas.theme} : empreinte d'été inchangée, sans ajuster sa référence`, () => {
-    assert.equal(empreinteRoute(ete), cas.ete);
+  const eteHistorique = construire(c, 'ete', { reperesVirages: false });
+  verifier(`${cas.theme} : empreinte d'été historique inchangée sans les nouveaux repères`, () => {
+    assert.equal(empreinteRoute(eteHistorique), cas.ete);
   });
-  // Référence hivernale avec ses couleurs de terrain antérieures, mais sans la nouvelle lecture d'asphalte.
+  verifier(`${cas.theme} : les repères actifs par défaut ne recolorent que les vibreurs historiques`, () => {
+    assert.ok(ete.lots.some(l => l.objets.some(o => o.repereVirage?.type === 'freinage')), 'les nouveaux repères sont réellement actifs');
+    assert.deepEqual(ete.obstacles, eteHistorique.obstacles);
+    assert.equal(ete.nappes.length, eteHistorique.nappes.length);
+    let recolores = 0;
+    for (let i = 0; i < ete.nappes.length; i++) {
+      const n = ete.nappes[i], base = eteHistorique.nappes[i];
+      assert.equal(n.sommets.length, base.sommets.length);
+      assert.deepEqual(n.indices, base.indices);
+      for (let k = 0; k < n.sommets.length; k += 13) {
+        for (let a = 0; a < 10; a++) assert.equal(n.sommets[k + a], base.sommets[k + a], 'position, normale et matière intactes avec les repères');
+        if (![10, 11, 12].some(a => n.sommets[k + a] !== base.sommets[k + a])) continue;
+        assert.equal(base.surfaceType, 'accotement');
+        assert.equal(base.sommets[k + 9], 14);
+        const vibreurHistorique = [[.74, .09, .07], [.90, .90, .87]]
+          .some(couleur => couleur.every((v, a) => Math.abs(base.sommets[k + 10 + a] - v) < 1e-6));
+        assert.ok(vibreurHistorique, 'aucune recoloration de l’asphalte, des marquages ou des abords');
+        recolores++;
+      }
+    }
+    assert.ok(recolores > 0, 'le contraste des vibreurs est réellement renforcé');
+  });
+  // Le reste du contrôle conserve les repères actifs par défaut, dans les deux
+  // constructions hivernales. Seule la lecture de neige sur l'asphalte est isolée.
+  // La référence garde ses couleurs de terrain antérieures, sans cette lecture d'asphalte.
   let reference;
   try { B.chaussee = null; reference = construire(c, 'hiver'); }
   finally { B.chaussee = C; }

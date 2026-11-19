@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-19",
+  "relecture": "agent distinct de la qualification et de la publication",
+  "blocages_confirmes": [],
+  "bitume": {
+    "base": "f03a99cc0a5bcbd663a7ff25c887c4ea9ecacd0c",
+    "perimetre": [
+      "plan et suivi virages, sens, épingles, S, raccord tour, arrêt/recul",
+      "ATH J1/J2, voix locale J1, interruptions pause/menu/son/focus",
+      "orientation et placement des repères, stands/tunnels/ponts/bras voisins",
+      "invariance physique, RNG et oracle décor 0.2.53"
+    ],
+    "tests_cibles": [
+      {
+        "commande": "node verifications/virages.test.mjs",
+        "reussis": 42
+      },
+      {
+        "commande": "node verifications/hud-pneus.test.mjs",
+        "reussis": 13
+      }
+    ],
+    "fixture_decor_sha256": "f53449f4326d03a2e6385e8067ad2abc54cbe33d9bc39da86a098129b7651e41"
+  },
+  "ferro": {
+    "renderer_sha256": "c93f4727e4922d176c7bd70f3ebb556c8c4f96538484b48bdb8cdd95ee386982",
+    "perimetre": [
+      "sampler profondeur highp et normales unilatérales",
+      "parcours perspective, clipping et épaisseur raffinée",
+      "alpha prémultiplié et composition réelle",
+      "preuves EGL et empreintes de contrats GL"
+    ],
+    "bornes": {
+      "pas_max": 96,
+      "candidats_max": 3,
+      "lectures_profondeur_max": 122
+    },
+    "limites": [
+      "SSR dépend de la profondeur visible et reste incomplet sur une voiture entière et hors écran.",
+      "Le coût logiciel augmente dans la sonde llvmpipe ; aucun gain FPS ni mesure GPU matériel déduits.",
+      "À haute résolution, la portée plafonnée en pixels garde son fondu final et demeure approximative."
+    ]
+  },
+  "non_realise": [
+    "rendu complet WebGL BITUME",
+    "validation mise en page dans plusieurs navigateurs",
+    "mesure FPS sur matériel",
+    "déploiement du site"
+  ]
+}

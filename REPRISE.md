@@ -2,41 +2,35 @@
 
 ## Point actif — 19 novembre 2026
 
-**0.2.53 / p13 publiée et vérifiée sur main**, livraison `b791ae60`.
-**PR n°7 fusionnée ; lot 13A tracé et relief terminé.**
-Sources, jeu compilé et preuves correspondent à la tête revue `b1eabdff`.
-Lire `docs/reprise/ETAT.json`, la dernière entrée du suivi et `docs/reprise/13A-RUSSIE-TRACE-RELIEF.md` uniquement.
-**Lot actif : repères de virage, annonces réglables et reflets des flaques**, demandé ensuite par David.
-Lire `docs/reprise/VIRAGES-REFLETS-2026-11-19.md`. Branche `codex/bitume-reperes-annonces-reflets-20261119`, base `f03a99cc`.
-Les tests de 13A sont terminés : ne pas recommencer sa qualification ou les lots 12A–12F4/Safari clos.
+**0.2.54 / p13 qualifiée localement, publication finale en cours.**
+Lot **repères de virage, annonces réglables et reflets des flaques** terminé côté code.
+Branche `codex/bitume-reperes-annonces-reflets-20261119` ; checkpoint décor distant `b228f0f6`.
+Main reste à la 0.2.53 tant que le reçu de livraison de ce lot n'est pas enregistré.
+Lire `docs/reprise/ETAT.json`, la dernière entrée de `docs/reprise/SUIVI-2026-11-19.md`
+et `docs/reprise/VIRAGES-REFLETS-2026-11-19.md` seulement.
 
-## Résultat de 13A
+## Résultat et preuve faisant autorité
 
-Huit circuits dans le build, Baïkal ajouté index 7, ID `baikal`, graine 179 : **5 424 m**, **62,9477 m de dénivelé**,
-**6,8 %** de pente maximale, droite de 816 m, grille/stands plats. Baïkal est un choix de conception original issu du plan.
-Les 84 tableaux des sept circuits historiques et les 22 scénarios / 1 415 empreintes p13 sont identiques, sans régénération.
-**9/9 contrôles russes** : douze voitures font trois tours sur sec/pluie/neige sans accident, replacement ni blocage.
-Les contacts et frottements sont comptés. Les allées de troncs proches ont été écartées des courbes descendantes.
+Panneaux de distance, chevrons et contrastes des vibreurs/glissières sur les huit circuits.
+Annonces Non / Écran / Écran et voix ; suivi distinct J1/J2, voix locale J1, interruptions pause/menu/muet/focus.
+**50 contrôles des repères** : mêmes solides, limites, tracés et décor aléatoire. Physique p13 conservée.
+FERRO canonique **0.3.12**, 34 modules identiques : correction des stries et franges SSR sur les sondes EGL qualifiées.
 
-## Qualification et build
+**38/39 suites ciblées** ; seul échec final : traces historiques, même signature.
+Le premier passage brut avait aussi l'oracle de couleur de chaussée : contrôle adapté sans changer ses trois
+empreintes ; reprise ciblée **12/12**, neige/tunnel/Sud et repères actifs couverts. Aucun runtime modifié ensuite.
+**20 fichiers de lois/oracles identiques**, **54 scripts valides**, deux builds identiques de **14 089 230 octets**.
+SHA-256 `db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3`.
+Rapport canonique : `docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/qualification-finale.json`.
+Les sources/tests sont gelés ; ne pas relancer les anciens parcours 13A ni les lots pneus/Safari clos.
 
-**107/109 suites** : traces héritées identiques et seuil de temps décor dépassé aussi sur la base (205 ms / 211 ms,
-seuil 150 ms inchangé). Aucune qualification entièrement verte ni différence de performance annoncée.
-Deux builds identiques de **14 063 125 octets**, SHA-256
-`686db2c0863bd8dfa042389f22501fb9bacde19dca2bb1dcabf9f9a527ccd510`.
-53 scripts valides, 34 modules FERRO 0.3.11 inchangés. Rapport canonique :
-`docs/reprise/rapports/13A-RUSSIE-2026-11-19/qualification-finale.json`.
+## Prochaine action
 
-Reçu de livraison : `docs/reprise/rapports/13A-RUSSIE-2026-11-19/PUBLICATION-0253.json`.
-Les deux CI du code sont terminées : **108/109 chacune**, seules traces héritées identiques ; décor réussi en CI.
-Reçu : `docs/reprise/rapports/13A-RUSSIE-2026-11-19/github/RECU-CI.json`. Cette vérification est close.
+Publier le moteur FERRO qualifié, puis sources, jeu compilé et preuves BITUME ; vérifier références, arbres et CI.
+Après publication vérifiée : **13B Russie — décor et saisons, NON COMMENCÉ**.
+Le tracé Baïkal index 7/graine 179 est figé. Conserver Monaco fidèle, Marseille avec relief depuis EMPRISE,
+le grand circuit de montagne distinct et les six propositions du plan.
 
-## Suite
-
-Après le lot virages/reflets : **13B Russie — décor et saisons, NON COMMENCÉ**. Le thème de base permet le roulage ; lac,
-berges, lieux, végétation/faune détaillés et validation visuelle restent à faire. Le tracé et sa graine sont figés.
-Conserver Monaco fidèle, Marseille depuis EMPRISE avec relief mesuré, nouveau grand circuit montagne distinct
-et six propositions. L’indice 7 russe n’annule pas la demande montagne.
-
-Spark (`~/bin/kbza`), Mac et amiga indisponibles. WebGL, FPS matériel et déploiement non validés.
-Un sous-lot à la fois, publications fréquentes, aucun push forcé ; correction des reflets dans FERRO canonique avant propagation.
+Spark, Mac et amiga indisponibles. Pas de déploiement du site. WebGL du jeu et FPS matériels non validés.
+Le SSR est plus coûteux dans le banc logiciel et reste limité aux surfaces visibles ; aucun gain FPS annoncé.
+Un sous-lot à la fois, publications fréquentes, aucun push forcé.

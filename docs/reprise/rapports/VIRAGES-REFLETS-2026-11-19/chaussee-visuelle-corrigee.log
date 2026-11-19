@@ -1,0 +1,13 @@
+ok foret : empreinte d'été historique inchangée sans les nouveaux repères
+ok foret : les repères actifs par défaut ne recolorent que les vibreurs historiques
+ok foret : seule la couleur de l'asphalte change, aucun sommet ni objet ajouté
+ok foret : asphalte clair si et seulement si la surface physique porte de la neige
+ok cote : empreinte d'été historique inchangée sans les nouveaux repères
+ok cote : les repères actifs par défaut ne recolorent que les vibreurs historiques
+ok cote : seule la couleur de l'asphalte change, aucun sommet ni objet ajouté
+ok cote : asphalte clair si et seulement si la surface physique porte de la neige
+ok montagne : empreinte d'été historique inchangée sans les nouveaux repères
+ok montagne : les repères actifs par défaut ne recolorent que les vibreurs historiques
+ok montagne : seule la couleur de l'asphalte change, aucun sommet ni objet ajouté
+ok montagne : asphalte clair si et seulement si la surface physique porte de la neige
+12 contrôles chaussée visuelle CPU réussis

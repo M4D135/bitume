@@ -3,49 +3,46 @@
   "etat_courant": {
     "branche": "codex/bitume-reperes-annonces-reflets-20261119",
     "base_commit": "f03a99cc0a5bcbd663a7ff25c887c4ea9ecacd0c",
-    "version_courante": "0.2.53",
+    "version_courante": "0.2.54",
     "version_publiee_verifiee": "0.2.53",
-    "build_courant": "0.2.53",
+    "build_courant": "0.2.54",
     "physique": "p13",
-    "statut": "virages_reflets_en_cours",
+    "statut": "virages_reflets_qualifies_publication_en_cours",
     "lot": "virages_reflets",
     "fiche": "docs/reprise/VIRAGES-REFLETS-2026-11-19.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "032",
-    "checkpoint_sources": "b21ced1bea9e69dc09ef2b69d80127df3b5020a0",
-    "sources_tests_geles": false,
-    "qualification": "docs/reprise/rapports/13A-RUSSIE-2026-11-19/qualification-finale.json",
-    "prochaine_action": "Terminer repères/annonces, corriger le SSR canonique FERRO et propager ; qualifier puis publier. 13B attend, 13A clos.",
+    "derniere_entree": "033",
+    "checkpoint_sources": "b228f0f64f6dc9fb7bc6e144978b59637f4d7c03",
+    "sources_tests_geles": true,
+    "qualification": "docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/qualification-finale.json",
+    "prochaine_action": "Publier FERRO 0.3.12 canonique puis BITUME 0.2.54 sources/build/preuves ; vérifier distant et CI. Ensuite 13B Russie décor/saisons. Ne pas rejouer la qualification locale.",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
     "commit_livraison_verifie": "b791ae60952315431ad085cce742b64d9e15f5bc",
     "publication": "docs/reprise/rapports/13A-RUSSIE-2026-11-19/PUBLICATION-0253.json"
   },
   "validation": {
-    "suites": 109,
-    "reussies": 107,
+    "portee": "39 suites ciblées du lot ; CI complète distincte",
+    "suites": 39,
+    "reussies": 38,
     "reserves": [
-      "traces.test.mjs : signature héritée identique",
-      "decor.test.mjs : seuil 150 ms dépassé aussi sur la base (205 ms) et le candidat (211 ms) ; aucune conclusion de différence de performance."
+      "traces.test.mjs : signature héritée strictement identique"
     ],
-    "russie": "9/9 contrôles ; douze voitures, trois tours sec/pluie/neige, aucun accident/replacement/blocage ; contacts comptés",
-    "historique": "7 circuits / 84 tableaux identiques ; 22 scénarios / 1 415 empreintes p13 inchangées.",
+    "decor_temps": "contrôle de temps réussi dans ce passage",
+    "reprise_ciblee": "chaussee-visuelle : oracle historique inchangé, mode réel avec repères et hiver couvert, 12 contrôles réussis ; aucun runtime modifié",
+    "physique": "p13 : 20 fichiers de lois et oracles inchangés",
+    "reperes": "50 contrôles sur huit circuits ; solides, limites, tracés et décor aléatoire identiques",
     "build": {
-      "bytes": 14063125,
-      "sha256": "686db2c0863bd8dfa042389f22501fb9bacde19dca2bb1dcabf9f9a527ccd510",
+      "octets": 14089230,
+      "sha256": "db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3",
+      "version": "0.2.54",
       "reproductible": true
     },
-    "scripts": 53,
-    "ferro": "0.3.11 : 34 modules inchangés",
+    "scripts": 54,
+    "ferro": "0.3.12 : 34 modules identiques, canonique 194 réussis/0 échec/1 TODO ; EMPRISE 11/17, six échecs identiques à 0.3.11",
     "webgl_valide": false,
     "fps_mesures": false,
     "ci_code": {
-      "statut": "termine",
-      "suites_par_execution": 109,
-      "reussies_par_execution": 108,
-      "executions": 2,
-      "echec_unique": "traces.test.mjs, signature héritée identique",
-      "decor_reussi": true,
-      "recu": "docs/reprise/rapports/13A-RUSSIE-2026-11-19/github/RECU-CI.json"
+      "statut": "a_verifier_apres_publication"
     }
   },
   "catalogue": {
