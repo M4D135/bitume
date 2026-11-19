@@ -1,0 +1,10 @@
+{
+  "version": "0.2.45",
+  "octets": 13976773,
+  "gzip": 3308497,
+  "sha256": "30ca361bd696ea697f67f6ae223dd20c02f0b8c4b79afaa92fdecb9445109ece",
+  "blob_sha1": "5c52293e77fb15fb0d757ef3cf1d5d24a8a26faf",
+  "reproductible": true,
+  "ferro_modules": 34,
+  "ferro_version": "0.3.11"
+}

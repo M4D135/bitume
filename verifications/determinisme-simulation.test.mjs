@@ -8,6 +8,9 @@
 // Les nombres entrent tels qu'ils sont en mémoire (Float64 petit-boutiste, sans arrondi : −0 et +0 diffèrent).
 // Les champs dont le nom commence par « _ » sont des caches internes des modules ; ils n'entrent pas dans
 // l'empreinte, leur effet sur la suite de la course y entre.
+// Lot 12A : les trois métadonnées de pneus ajoutées à l'état n'agissent pas sur la physique p9. Seules ces
+// propriétés sont projetées hors de l'état de conduite ; le type monté « pneus » et tous les champs anciens
+// restent comparés. Conserver la fixture historique et comparer aussi à la base publiée du lot visuel.
 //
 // Les empreintes de référence (verifications/fixtures/determinisme-p9.json) ont été prises sur le code d'avant
 // le lot « Fluidité » de la simulation (commit 54e98c9). Elles ne se réécrivent qu'avec un changement de physique
@@ -72,7 +75,9 @@ class Ecrivain {
       const cles = [...x.keys()].sort((a, b) => String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0);
       this.octet(0x4d); for (const k of cles) { this.valeur(k); this.valeur(x.get(k)); } this.octet(0x6d);
     } else {
-      const cles = Object.keys(x).filter(k => k[0] !== '_' && x[k] !== undefined && typeof x[k] !== 'function').sort();
+      const nouvellesDonneesPneus = x.versionPneus === 1 && Array.isArray(x.etatPneus) && x.etatPneus.length === 4;
+      const cles = Object.keys(x).filter(k => k[0] !== '_' && x[k] !== undefined && typeof x[k] !== 'function' &&
+        !(nouvellesDonneesPneus && (k === 'versionPneus' || k === 'servicePneus' || k === 'etatPneus'))).sort();
       this.octet(0x7b);
       for (const k of cles) { this.texte(k); this.valeur(x[k]); }
       this.octet(0x7d);

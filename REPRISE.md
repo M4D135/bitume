@@ -1,52 +1,45 @@
 # BITUME — reprise courte
 
-## Reprise active — 19 novembre 2026
+## Point actif — 19 novembre 2026
 
-**Lire `docs/reprise/SUIVI-2026-11-19.md` en premier.** David confirme Safari corrigé.
-Lot actif : **12A**, puis roues et sculptures **12B/12C**. Petits lots, publication à chaque étape utile,
-journal et prochaine action obligatoires. Les branches Spark non fusionnées citées plus bas ne sont pas
-publiées sur GitHub ; conserver leur historique sans les compter livrées.
+Lire `git status`, `docs/reprise/SUIVI-2026-11-19.md` et sa dernière entrée, puis seulement
+`docs/reprise/12ABC-CONTRAT-ET-VISUEL-ROUES.md`. Les résultats courants sont dans `docs/reprise/ETAT.json`.
 
-## Base publiée — 19 novembre 2026, 4 h 05
+- Branche unique **main**, publications fréquentes, aucun push forcé.
+- Base récupérée : **e47fb22**, jeu **0.2.44**, moteur **FERRO 0.3.11**.
+- Checkpoint de récupération publié : **8665af0** ; sources 12A/12B/12C sauvegardées, build encore 0.2.44 à ce jalon.
+- Lot actif : **12A–12C, contrat commun et visuel des roues**, build **0.2.45** qualifié côté code, réserve WebGL.
+- **Safari corrigé, confirmé par David.** Ce chantier reste clos.
+- **Physique p9 conservée** : aucun nouveau comportement d'adhérence dans ce lot visuel.
+- Catalogue et visuel neige préparés ; choix en course fermé jusqu'au lot physique **12E**.
 
-- Branche unique `main`, sans push forcé ; publications fréquentes du travail réel.
-- **0.2.44** (`5e8c60b`, 19/11 à 8 h 40) : Safari, le moteur attend une page visible et ne préchauffe plus d'un bloc ; à confirmer par David.
-- **0.2.43** (`8b6c91f`, 19/11 au matin) : correctif Safari, plus d'image principale noire (reçu `docs/reprise/rapports/safari-2026-11-19/publication.json`).
-- **0.2.42**, livraison **`52d8bd0`** : ombres (contact sous les voitures, ombres lointaines, habitacle), moteur FERRO **0.3.11**. Reçu `docs/reprise/rapports/photo-ombres-2026-11-18/publication.json`.
-- Avant elle, la même nuit : **0.2.41** (détection corrigée, animaux, bords de route, flammes d'échappement, public humain ; reçu `docs/reprise/rapports/publication-0241/publication.json`) et **0.2.40** (lot 5B « fluidité » ; reçu `docs/reprise/rapports/fluidite-2026-11-18/publication.json`).
-- Production vérifiée identique par `./deposer.sh`. Qualification : **88/88 suites**, parcours smoke à 7 contrôles.
+## Prochaine action précise
 
-## En cours — suite du 18 novembre au soir
+Vérifier le reçu de publication 12A–12C, puis ouvrir **12D : usure visible par roue**.
+Qualification : **88/90 suites**, deux échecs hérités identiques, **19 scénarios / 1 259 empreintes p9 identiques**,
+six suites ciblées réussies après correctif des types invalides ; build reproductible, 34 modules FERRO inchangés.
+Le rendu WebGL reste à contrôler sur une machine utilisable (Chromium bloqué par les sockets ici).
+Son brouillon récupéré est conservé dans le patch du checkpoint ; il n'est pas intégré au jeu.
+Ensuite : **12E** chaussée/adhérence, **12F** stands/interface/réseau, puis Russie, Monaco et Marseille.
+Ne pas marquer 0.2.45 livrée avant les contrôles et la vérification de sa publication distante.
 
-**Lire `docs/reprise/PILOTAGE-2026-11-18.md`** : il tient l'état de tous les chantiers, des branches locales et des arbres de travail (`~/Projects/bitume-wt`).
-Suite : relire les branches `spark/*` du pilote autonome, puis jeu en ligne par invitation, Route-des-Cimes quand son terrain sera fait, reflets et grain (étape 2 du lot 21), conduite p10.
-Le Spark d'abord (`tools/spark/LISEZ-MOI.md`) : un pilote autonome mène les lots restants sur des branches `spark/*`, à relire avant toute intégration.
+## Catalogue et demandes conservés
 
-## Demandes du 18 novembre au soir et ordre de travail
+**7 circuits jouables**, identifiants et graines conservés. David a confirmé un **huitième circuit de montagne**
+distinct de Haut-Col (Route-des-Cimes, nom de travail), avec long parcours, fortes pentes, forêt et tunnels.
+S'ajoutent **Russie**, **Monaco ultra fidèle** et **Spéciale Marseille depuis EMPRISE avec relief mesuré**.
+Les six autres destinations restent des propositions. Le catalogue initial de 16 doit être réconcilié avec
+l'ajout montagne ; ne supprimer aucune demande pour tenir l'ancien compte.
 
-Mots exacts de David dans `AGENTS.md` (dernière section). Ordre retenu, dicté par les fichiers partagés :
-1. **5B fluidité** : publié en **0.2.40** ; restes dans le pilotage (détection, gel au choix du circuit, Fine sous la pluie).
-2. **Moteur** : pluie et neige sur l'écran (lot 19), puis lumière, ombres et eau (lot 21), dans FERRO après la 0.3.10.
-3. **17 conduite** (physique `p10`), **18 public** en humains d'EMPRISE, **20 échappements** (flammes et pétarades).
-   Puis **23 cockpit** (matières, reflets, relief, netteté ; s'appuie sur le lot 21) et **22 circuits et génération procédurale** (relief, irrégularités de chaussée, aménagements de course, matières, diversité). **24 vibrations de manette** avec la conduite.
-4. Reprise de la master liste : **12A** roues et pneus, puis Russie, Monaco, Marseille.
-Fait : **0.2.39** en ligne (`8bd3d86`), plus de vibration de manette dans les menus.
-Études lancées le 18/11 au soir dans `~/Projects/bitume-wt/{conduite,public,vitre,son,echappement,photo}` (branches locales `conduite/etude`, `etude/*`) : elles rendent un plan, un prototype et des captures par lot, rien n'est fusionné.
+- Ensemble des demandes : `MASTER-LISTE-CLAUDE-FABLE.md` ; plan roues/Russie/Monaco : `docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md`.
+- Marseille : `docs/reprise/15-SPECIALE-MARSEILLE-RELIEF.md` ; source EMPRISE 0.6.8, `cc004826a506e6979eaaec217748fe85d5cd6ac5`.
+- Autres lots et études : `docs/reprise/PILOTAGE-2026-11-18.md`, à ouvrir seulement pour le chantier concerné.
 
-## Passation Claude Fable
+## Méthode et accès
 
-**Entrée : `MASTER-LISTE-CLAUDE-FABLE.md`.** Catalogue complet : **7 livrés + Russie + Monaco + Spéciale Marseille + 6 propositions = 16**.
-Demandes : roues rondes/réalistes ; slicks lisses, sculptures intermédiaire/pluie/neige ; usure progressive ; Russie ; Monaco ultra fidèle ; **Marseille depuis EMPRISE avec ajout de relief**.
-
-**Implémentation non commencée. Premier lot de code : 12A**, contrat commun des roues et catalogue des quatre pneus. Lire `ETAT.json`, la master liste, puis la section utile du plan détaillé et créer la fiche courte du sous-lot.
-
-- Plan roues/Russie/Monaco : `docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md`.
-- Plan Marseille : `docs/reprise/15-SPECIALE-MARSEILLE-RELIEF.md`.
-- Source Marseille : **M4D135/emprise 0.6.8**, commit **`cc004826a506e6979eaaec217748fe85d5cd6ac5`**. Centre plat, relief périphérique synthétique ; préparer un MNT mesuré et des raccords cohérents.
-- Ordre : roues/pneus/usure → Russie → Monaco → Marseille → six propositions restantes.
-
-## Méthode
-
-Un seul sous-lot actif ; sorties bornées, preuves sur disque, checkpoint réel puis sources/build qualifiés et reçu.
-Physique actuelle **p9** ; visuel seul sans rupture de records. FERRO canonique pour les changements moteur.
-Conserver sept IDs/graines, monoplace, conditions de l’hôte, menus manette, FPS démo, Faune et téléchargement **m4d135 → BITUME.html**. Vérifier séparément GitHub et le site servi.
+Un sous-lot à la fois ; sorties courtes, preuves dans les rapports, journal et prochaine action à chaque publication.
+Mac/Spark indisponibles ici. Les branches locales non fusionnées du pilotage ne sont pas publiées sur GitHub ;
+conserver leurs références sans les compter livrées. Reprendre le Spark d'abord lorsque l'accès est rétabli.
+Les modifications moteur passent par FERRO canonique. Préserver monoplace, conditions de l'hôte, menus manette,
+FPS démo, Faune et téléchargement **m4d135 → BITUME.html**. Vérifier GitHub et le site séparément :
+aucun déploiement de la version visée n'est déclaré par cette reprise.

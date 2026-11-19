@@ -115,6 +115,7 @@
     ordre.forEach((v, k) => {
       const s = chrono ? -40 : -10 - 8 * k, d = chrono ? 0 : (k % 2 === 0 ? -2.4 : 2.4);
       v.etat = B.conduite.creer(ramener((c.depart || 0) + s, L), d);
+      Object.assign(v.etat, B.pneus.creerEtat('slicks', { seance: graine, voiture: v.id }));
       v.degats = B.degats ? B.degats.creer() : null; v.etat.degats = v.degats;
       v.progression = s; v.position = k + 1;
     });

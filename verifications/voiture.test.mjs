@@ -164,7 +164,7 @@ const bord = extra => { const sortie = []; V.cockpit(mod, Object.assign({ v: 40 
 const reel = v => v.map((x, i) => V.OEIL[i] + V.K * x);      // position dans la voiture d'un point composé vu de l'œil
 const ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 
-verifier('numéro en géométrie sur le nez et les pontons ; repères et traces des pneus à toute vitesse', () => {
+verifier('numéro en géométrie sur le nez et les pontons ; repères de flanc à toute vitesse', () => {
   const sans = V.modele(Object.assign({}, livree, { numero: undefined })), un = V.modele(Object.assign({}, livree, { numero: 1 }));
   assert.equal(un.corps.length - sans.corps.length, 3 * 2, 'trois « 1 » de deux segments, sans panneau');
   assert.equal(mod.corps.length - sans.corps.length, 3 * (5 + 3), '« 27 » : cinq et trois segments, trois fois');
@@ -174,8 +174,9 @@ verifier('numéro en géométrie sur le nez et les pontons ; repères et traces 
   // David (16/11) : les roues doivent se voir tourner à toute vitesse ; plus de bande floue qui les figeait
   const lent = [], vite = [];
   V.poser(mod, Object.assign({ v: 10 }, repos), lent); V.poser(mod, Object.assign({ v: 50 }, repos), vite);
-  const tournent = mod.corps.filter(p => p.roue !== undefined && p.tourne !== undefined && p.decale).length;
-  assert.ok(tournent === 16 + 16, `${tournent} repères et traces de gomme`);
+  const reperes = mod.corps.filter(p => p.roue !== undefined && p.tourne !== undefined && p.decale && p.decale[0] !== 0);
+  assert.equal(reperes.length, 16, 'deux repères sur chaque flanc ; aucune fausse rainure sur un slick neuf');
+  assert.ok(reperes.every(p => Math.abs(p.decale[0]) < V.ROUES[p.roue].r - .035), 'marques sur le flanc, pas sur la bande');
   assert.ok(!mod.corps.some(p => p.lent || p.vite), 'aucune pièce réservée à une vitesse');
   const vus = mod.corps.filter(p => !p.dedans).length;
   assert.equal(lent.length, vus);

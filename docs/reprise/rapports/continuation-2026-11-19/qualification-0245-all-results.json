@@ -1,0 +1,902 @@
+[
+  {
+    "suite": "ambiance.test.mjs",
+    "exit": 0,
+    "seconds": 0.12,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/ambiance.test.mjs.log",
+    "last": [
+      "4 contrôles ambiance/nature réussis."
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "animaux.test.mjs",
+    "exit": 0,
+    "seconds": 9.15,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/animaux.test.mjs.log",
+    "last": [
+      "13 contrôles animaux"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "arbres-lots.test.mjs",
+    "exit": 0,
+    "seconds": 7.75,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/arbres-lots.test.mjs.log",
+    "last": [
+      "{\"controles\":12,\"cases\":{\"foret\":145,\"montagne\":143,\"cote\":88,\"asie\":29,\"pacifique\":75}}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "asie.test.mjs",
+    "exit": 0,
+    "seconds": 3.78,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/asie.test.mjs.log",
+    "last": [
+      "{\"controles\":8,\"mesures\":{\"longueur\":5018,\"denivelePiste\":24.760682908152948,\"penteMax\":0.05445045924781644,\"arbres\":46,\"trianglesNappes\":95608,\"objets\":7716,\"lots\":63,\"ete\":{\"jade\":1,\"neige\":0,\"nuances\":31,\"relief\":[-42.56916809082031,277.72369384765625]},\"asymetrie\":12.164736043919477,\"rochers\":104,\"margeRochers\":47.679679350572016,\"margeArbres\":36.06665448584189,\"hiver\":{\"jade\":0.0021893814997263274,\"neige\":1,\"nuances\":11,\"relief\":[-42.56916809082031,277.72369384765625]},\"course\":{\"rivauxArrives\":11,\"duree\":253.1166666666008}}}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "aurores.test.mjs",
+    "exit": 0,
+    "seconds": 0.17,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/aurores.test.mjs.log",
+    "last": [
+      "5 contrôles des aurores réussis"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "autoconfig-integration.test.mjs",
+    "exit": 0,
+    "seconds": 0.12,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/autoconfig-integration.test.mjs.log",
+    "last": [
+      "21 contrôles d’intégration de la détection réussis."
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "autoconfig.test.mjs",
+    "exit": 0,
+    "seconds": 0.16,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/autoconfig.test.mjs.log",
+    "last": [
+      "31 contrôles de détection graphique réussis."
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "bords-integration.test.mjs",
+    "exit": 0,
+    "seconds": 4.33,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/bords-integration.test.mjs.log",
+    "last": [
+      "15 vérifications de l'intégration des bords de route"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "bords.test.mjs",
+    "exit": 0,
+    "seconds": 1.24,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/bords.test.mjs.log",
+    "last": [
+      "7 vérifications des bords de route"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "botanique.test.mjs",
+    "exit": 0,
+    "seconds": 0.47,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/botanique.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "cadence.test.mjs",
+    "exit": 0,
+    "seconds": 1.18,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/cadence.test.mjs.log",
+    "last": [
+      "cadence : 35 contrôles passés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "carene.test.mjs",
+    "exit": 0,
+    "seconds": 0.17,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/carene.test.mjs.log",
+    "last": [
+      "carène : 14 vérifications passées"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "chargement.test.mjs",
+    "exit": 0,
+    "seconds": 1.33,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/chargement.test.mjs.log",
+    "last": [
+      "9 contrôles de la préparation des séances réussis."
+    ],
+    "passage": "final_cible"
+  },
+  {
+    "suite": "circuit.test.mjs",
+    "exit": 0,
+    "seconds": 0.82,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/circuit.test.mjs.log",
+    "last": [
+      "ok  Ecart circuit 47"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "collisions-orientees.test.mjs",
+    "exit": 0,
+    "seconds": 0.12,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/collisions-orientees.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "commandes-partage.test.mjs",
+    "exit": 0,
+    "seconds": 0.38,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/commandes-partage.test.mjs.log",
+    "last": [
+      "44/44 contrôles commandes partagées tenus"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "conditions-course.test.mjs",
+    "exit": 0,
+    "seconds": 0.36,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/conditions-course.test.mjs.log",
+    "last": [
+      "14 contrôles conditions de course réussis."
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "conditions-integration.test.mjs",
+    "exit": 0,
+    "seconds": 0.17,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/conditions-integration.test.mjs.log",
+    "last": [
+      "ℹ duration_ms 35.382289"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "conduite-criteres.test.mjs",
+    "exit": 0,
+    "seconds": 2.64,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/conduite-criteres.test.mjs.log",
+    "last": [
+      "46/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "conduite.test.mjs",
+    "exit": 0,
+    "seconds": 0.42,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/conduite.test.mjs.log",
+    "last": [
+      "18 vérifications réussies"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "contacts.test.mjs",
+    "exit": 0,
+    "seconds": 0.22,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/contacts.test.mjs.log",
+    "last": [
+      "44/44 critères du Chantier 3 tenus"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "controle-visuel.test.mjs",
+    "exit": 0,
+    "seconds": 0.11,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/controle-visuel.test.mjs.log",
+    "last": [
+      "ℹ duration_ms 20.307533"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "course.test.mjs",
+    "exit": 0,
+    "seconds": 4.72,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/course.test.mjs.log",
+    "last": [
+      "8 tests passes"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "crash.test.mjs",
+    "exit": 0,
+    "seconds": 0.62,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/crash.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "decor-identite.test.mjs",
+    "exit": 0,
+    "seconds": 3.23,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/decor-identite.test.mjs.log",
+    "last": [
+      "décor : 9 géométries de référence inchangées (linux/x64/node-24.22.3)"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "decor-obstacles.test.mjs",
+    "exit": 0,
+    "seconds": 0.77,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/decor-obstacles.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "decor.test.mjs",
+    "exit": 0,
+    "seconds": 0.57,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/decor.test.mjs.log",
+    "last": [
+      "forêt : 18 vérifications passées"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "desert.test.mjs",
+    "exit": 0,
+    "seconds": 3.25,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/desert.test.mjs.log",
+    "last": [
+      "{\"controles\":6,\"mesures\":{\"longueur\":4834,\"denivelePiste\":27.21766063841511,\"penteMax\":0.06799999999999995,\"arbres\":0,\"trianglesNappes\":88650,\"objets\":7049,\"lots\":33,\"ete\":{\"ocre\":1,\"neige\":0,\"nuances\":46,\"relief\":[-57.68999481201172,235.8329620361328]},\"asymetrie\":19.410073246607787,\"rochers\":321,\"margeRochers\":33.19293171680859,\"hiver\":{\"ocre\":0,\"neige\":1,\"nuances\":5,\"relief\":[-57.68999481201172,235.8329620361328]},\"course\":{\"rivauxArrives\":11,\"duree\":248.83333333327136}}}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "determinisme-simulation.test.mjs",
+    "exit": 1,
+    "seconds": 12.7,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/determinisme-simulation.test.mjs.log",
+    "last": [
+      "KO  déterminisme p9 : 19 cas, 1259 empreintes, 12.6 s"
+    ],
+    "passage": "final_cible"
+  },
+  {
+    "suite": "echappement.test.mjs",
+    "exit": 0,
+    "seconds": 3.49,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/echappement.test.mjs.log",
+    "last": [
+      "17 tests passes"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "ecologie.test.mjs",
+    "exit": 0,
+    "seconds": 1.59,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/ecologie.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "effets-allocation.test.mjs",
+    "exit": 0,
+    "seconds": 3.7,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/effets-allocation.test.mjs.log",
+    "last": [
+      "3 tests passes"
+    ],
+    "passage": "final_cible"
+  },
+  {
+    "suite": "effets-saison.test.mjs",
+    "exit": 0,
+    "seconds": 1.27,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/effets-saison.test.mjs.log",
+    "last": [
+      "effets-saison : 10 contrôles passés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "faune.test.mjs",
+    "exit": 0,
+    "seconds": 3.24,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/faune.test.mjs.log",
+    "last": [
+      "faune : 15 contrôles passés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "formes-libres.test.mjs",
+    "exit": 0,
+    "seconds": 0.87,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/formes-libres.test.mjs.log",
+    "last": [
+      "formes libres : 124039 triangles émis dans l'ordre du registre"
+    ],
+    "passage": "final_cible"
+  },
+  {
+    "suite": "glissiere-etats.test.mjs",
+    "exit": 0,
+    "seconds": 0.12,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/glissiere-etats.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "glissiere-rebond.test.mjs",
+    "exit": 0,
+    "seconds": 0.11,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/glissiere-rebond.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "graphismes.test.mjs",
+    "exit": 0,
+    "seconds": 0.12,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/graphismes.test.mjs.log",
+    "last": [
+      "graphismes : 22 contrôles passés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "herbier-identite.test.mjs",
+    "exit": 0,
+    "seconds": 35.09,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/herbier-identite.test.mjs.log",
+    "last": [
+      "herbier : 14 cas identiques au bit (triangles et requêtes de surface)"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "herbier-saisons.test.mjs",
+    "exit": 0,
+    "seconds": 39.83,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/herbier-saisons.test.mjs.log",
+    "last": [
+      "herbier-saisons : 6 circuits contrôlés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "ia-attaque.test.mjs",
+    "exit": 0,
+    "seconds": 12.54,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/ia-attaque.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "ia-epaves.test.mjs",
+    "exit": 0,
+    "seconds": 0.17,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/ia-epaves.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "ia-reprise.test.mjs",
+    "exit": 0,
+    "seconds": 0.16,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/ia-reprise.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "ia.test.mjs",
+    "exit": 0,
+    "seconds": 0.16,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/ia.test.mjs.log",
+    "last": [
+      "5/5 critères IA tenus"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "islande.test.mjs",
+    "exit": 0,
+    "seconds": 2.6,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/islande.test.mjs.log",
+    "last": [
+      "{\"controles\":7,\"mesures\":{\"longueur\":4616,\"denivelePiste\":12.953321051959556,\"penteMax\":0.06799999999999995,\"arbres\":0,\"trianglesNappes\":85278,\"objets\":7858,\"lots\":31,\"ete\":{\"sombre\":0.8070806962025316,\"mousse\":0.1925237341772152,\"neige\":0,\"relief\":[-30.783876419067383,205.46337890625]},\"rochers\":384,\"margeRochers\":32.889549115578035,\"hiver\":{\"sombre\":0,\"mousse\":0,\"neige\":1,\"relief\":[-30.783876419067383,205.46337890625]},\"course\":{\"rivauxArrives\":11,\"duree\":222.64999999996184}}}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "lieux-traces.test.mjs",
+    "exit": 0,
+    "seconds": 0.82,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/lieux-traces.test.mjs.log",
+    "last": [
+      "6 vérifications des tracés proposés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "main.test.mjs",
+    "exit": 0,
+    "seconds": 0.17,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/main.test.mjs.log",
+    "last": [
+      "main : 7 vérifications passées"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "manette.test.mjs",
+    "exit": 0,
+    "seconds": 0.12,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/manette.test.mjs.log",
+    "last": [
+      "39/39 contrôles manette tenus"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "mesures.test.mjs",
+    "exit": 0,
+    "seconds": 0.17,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/mesures.test.mjs.log",
+    "last": [
+      "ℹ duration_ms 50.614402"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "meteo-reelle.test.mjs",
+    "exit": 0,
+    "seconds": 0.11,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/meteo-reelle.test.mjs.log",
+    "last": [
+      "ℹ duration_ms 18.424237"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "meteo-toile.test.mjs",
+    "exit": 0,
+    "seconds": 0.28,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/meteo-toile.test.mjs.log",
+    "last": [
+      "toile de pluie : 25 contrôles passés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "meteo.test.mjs",
+    "exit": 0,
+    "seconds": 0.18,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/meteo.test.mjs.log",
+    "last": [
+      "météo : 105 contrôles horloge, pause, projection, profondeur, paramètres et cadence tenus"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "moteur-emprise.test.mjs",
+    "exit": 0,
+    "seconds": 0.12,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/moteur-emprise.test.mjs.log",
+    "last": [
+      "moteur EMPRISE : updateShape WebGL2, indices et sommets restaurés après perte du contexte"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "nature-integration.test.mjs",
+    "exit": 0,
+    "seconds": 0.06,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/nature-integration.test.mjs.log",
+    "last": [
+      "3 contrôles intégration nature réussis."
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "nature-preparation.test.mjs",
+    "exit": 0,
+    "seconds": 2.7,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/nature-preparation.test.mjs.log",
+    "last": [
+      "préparations de la nature : 4 contrôles passés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "navigation-menu.test.mjs",
+    "exit": 0,
+    "seconds": 0.11,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/navigation-menu.test.mjs.log",
+    "last": [
+      "11 contrôles navigation menu validés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "obstacles.test.mjs",
+    "exit": 0,
+    "seconds": 0.11,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/obstacles.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "ombres.test.mjs",
+    "exit": 0,
+    "seconds": 1.52,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/ombres.test.mjs.log",
+    "last": [
+      "10 tests passes"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "options-image.test.mjs",
+    "exit": 0,
+    "seconds": 1.12,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/options-image.test.mjs.log",
+    "last": [
+      "options image : 10 contrôles passés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "pacifique.test.mjs",
+    "exit": 0,
+    "seconds": 8.3,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/pacifique.test.mjs.log",
+    "last": [
+      "{\"controles\":11,\"mesures\":{\"longueur\":5234,\"denivelePiste\":13.43877871246655,\"penteMax\":0.06799999999999995,\"arbres\":320,\"trianglesNappes\":99768,\"objets\":8142,\"lots\":110,\"ete\":{\"partImmergee\":0.2552079910626273,\"neige\":0,\"nuances\":33,\"relief\":[-76,34.34517288208008]},\"asymetrie\":38.235578813833314,\"hauteurTroncMax\":39.34392518018955,\"troncsLod\":{\"proches\":320,\"lointains\":320,\"collisions\":320},\"troncsLodBotanique\":{\"proches\":320,\"lointains\":320,\"collisions\":320},\"rochers\":1,\"margeArbres\":38.30635680564061,\"margeRochers\":253.13019306651017,\"hiver\":{\"partImmergee\":0.2552079910626273,\"neige\":1,\"nuances\":11,\"relief\":[-76,34.34517288208008]},\"course\":{\"rivauxArrives\":11,\"duree\":262.049999999926,\"solidesActifs\":968}}}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "physx-monde.test.mjs",
+    "exit": 0,
+    "seconds": 1.75,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/physx-monde.test.mjs.log",
+    "last": [
+      "6 tests passes"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "pieces.test.mjs",
+    "exit": 0,
+    "seconds": 1.46,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/pieces.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "pneus.test.mjs",
+    "exit": 0,
+    "seconds": 0.17,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/pneus.test.mjs.log",
+    "last": [
+      "10 contrôles pneus réussis"
+    ],
+    "passage": "final_cible"
+  },
+  {
+    "suite": "prets-enligne.test.mjs",
+    "exit": 0,
+    "seconds": 0.12,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/prets-enligne.test.mjs.log",
+    "last": [
+      "ℹ duration_ms 28.532467"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "public.test.mjs",
+    "exit": 0,
+    "seconds": 5.21,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/public.test.mjs.log",
+    "last": [
+      "public des tribunes : {\"niveaux\":[{\"niveau\":0,\"triangles\":6144,\"sommets\":4104,\"corps\":3068,\"directs\":1},{\"niveau\":1,\"triangles\":1144,\"sommets\":910,\"corps\":520,\"directs\":1},{\"niveau\":2,\"triangles\":138,\"sommets\":264,\"corps\":118,\"directs\":1}],\"circuits\":[{\"circuit\":\"foret\",\"high\":983,\"medium\":449,\"low\":314,\"assis\":794,\"debout\":32,\"glissieres\":157,\"auSec\":727},{\"circuit\":\"cote\",\"high\":1044,\"medium\":479,\"low\":326,\"assis\":861,\"debout\":32,\"glissieres\":151,\"auSec\":783},{\"circuit\":\"montagne\",\"high\":1007,\"medium\":446,\"low\":286,\"assis\":824,\"debout\":29,\"glissieres\":154,\"auSec\":751},{\"circuit\":\"islande\",\"high\":1019,\"medium\":485,\"low\":320,\"assis\":827,\"debout\":29,\"glissieres\":163,\"auSec\":771},{\"circuit\":\"desert\",\"high\":1026,\"medium\":466,\"low\":316,\"assis\":838,\"debout\":35,\"glissieres\":153,\"auSec\":779},{\"circuit\":\"asie\",\"high\":1033,\"medium\":483,\"low\":324,\"assis\":839,\"debout\":31,\"glissieres\":163,\"auSec\":759},{\"circuit\":\"pacifique\",\"high\":989,\"medium\":456,\"low\":295,\"assis\":792,\"debout\":31,\"glissieres\":166,\"auSec\":721}],\"branchement\":\"appliqué\",\"variete\":{\"tenues\":983,\"n\":983,\"casquettes\":331,\"paille\":66,\"bonnetsHiver\":468,\"aDecouvert\":256,\"parapluies\":119,\"capuches\":88,\"drapeaux\":81},\"cadence\":{\"excitation\":0.0125,\"regard\":2.7611,\"poids\":0.0103,\"fete\":0,\"couverture\":0.0035},\"listes\":{\"high\":{\"n\":983,\"maxCorpsFins\":47,\"maxAlleges\":349,\"maxTrianglesCouleur\":638448,\"ombre\":538},\"medium\":{\"n\":449,\"maxCorpsFins\":0,\"maxAlleges\":144,\"maxTrianglesCouleur\":184608,\"ombre\":236},\"low\":{\"n\":314,\"maxCorpsFins\":0,\"maxAlleges\":0,\"maxTrianglesCouleur\":35052,\"ombre\":167}},\"processeurUsParImage\":28.2,\"vue\":{\"appelsParImage\":4,\"programmes\":4},\"allocations\":{\"ramassages\":0,\"octets\":3816,\"tours\":20000,\"usParImage\":11.34}}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "qualite.test.mjs",
+    "exit": 0,
+    "seconds": 0.12,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/qualite.test.mjs.log",
+    "last": [
+      "qualité : 23 contrôles passés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "realisateur.test.mjs",
+    "exit": 0,
+    "seconds": 3.85,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/realisateur.test.mjs.log",
+    "last": [
+      "7 vérifications réussies"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "relectures-phase2.test.mjs",
+    "exit": 0,
+    "seconds": 1.05,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/relectures-phase2.test.mjs.log",
+    "last": [
+      "6/6 tests passes"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "rendu-halo.test.mjs",
+    "exit": 0,
+    "seconds": 0.12,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/rendu-halo.test.mjs.log",
+    "last": [
+      "ℹ duration_ms 12.518685"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "reprise-recul.test.mjs",
+    "exit": 0,
+    "seconds": 0.12,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/reprise-recul.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "roues-detail.test.mjs",
+    "exit": 0,
+    "seconds": 1.33,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/roues-detail.test.mjs.log",
+    "last": [
+      "7 vérifications réussies"
+    ],
+    "passage": "final_cible"
+  },
+  {
+    "suite": "saisons.test.mjs",
+    "exit": 0,
+    "seconds": 5.64,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/saisons.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "salon-protocole.test.mjs",
+    "exit": 0,
+    "seconds": 3.41,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/salon-protocole.test.mjs.log",
+    "last": [
+      "ℹ duration_ms 3278.894304"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "scene-bench.test.mjs",
+    "exit": 0,
+    "seconds": 11.71,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/scene-bench.test.mjs.log",
+    "last": [
+      "Scène de détection : vrais décors, douze voitures et leur simulation comme en course, sillage, options de chaque palier, fin forcée, chronomètre fermé, départ de Val-Brûlé au cockpit, glaces différées au rythme de la course, copie 2D, moteur temporaire et sonde de débit vérifiés."
+    ],
+    "passage": "final_cible"
+  },
+  {
+    "suite": "sillage.test.mjs",
+    "exit": 0,
+    "seconds": 0.12,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/sillage.test.mjs.log",
+    "last": [
+      "sillage et brume : 8 contrôles passés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "simulation-sorties.test.mjs",
+    "exit": 0,
+    "seconds": 5.93,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/simulation-sorties.test.mjs.log",
+    "last": [
+      "sorties de simulation : 8 vérifications passées"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "son.test.mjs",
+    "exit": 0,
+    "seconds": 0.42,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/son.test.mjs.log",
+    "last": [
+      "20 vérifications réussies"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "stands.test.mjs",
+    "exit": 0,
+    "seconds": 6.97,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/stands.test.mjs.log",
+    "last": [
+      "stands : 18 verifications passees"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "titre-signature.test.mjs",
+    "exit": 0,
+    "seconds": 0.11,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/titre-signature.test.mjs.log",
+    "last": [
+      "ℹ duration_ms 10.884148"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "traces.test.mjs",
+    "exit": 1,
+    "seconds": 0.78,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/traces.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "final_cible"
+  },
+  {
+    "suite": "troncs.test.mjs",
+    "exit": 0,
+    "seconds": 0.87,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/troncs.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "tunnel-transitions.test.mjs",
+    "exit": 0,
+    "seconds": 0.37,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/tunnel-transitions.test.mjs.log",
+    "last": [
+      "ℹ duration_ms 42.315871"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "tunnel.test.mjs",
+    "exit": 0,
+    "seconds": 0.78,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/tunnel.test.mjs.log",
+    "last": [
+      "tunnel : 6 vérifications passées"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "vegetation.test.mjs",
+    "exit": 0,
+    "seconds": 13.38,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/vegetation.test.mjs.log",
+    "last": [
+      "}"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "vibrations.test.mjs",
+    "exit": 0,
+    "seconds": 0.11,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/vibrations.test.mjs.log",
+    "last": [
+      "vibrations : 25 contrôles passés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "vitre-cadence.test.mjs",
+    "exit": 0,
+    "seconds": 0.21,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/vitre-cadence.test.mjs.log",
+    "last": [
+      "visière, cadence : 10 contrôles passés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "vitre.test.mjs",
+    "exit": 0,
+    "seconds": 0.27,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/candidate/vitre.test.mjs.log",
+    "last": [
+      "vitre : 8 contrôles passés"
+    ],
+    "passage": "initial_inchange"
+  },
+  {
+    "suite": "voiture-identite.test.mjs",
+    "exit": 0,
+    "seconds": 4.64,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/voiture-identite.test.mjs.log",
+    "last": [
+      "6 vérifications réussies (4.5 s)"
+    ],
+    "passage": "final_cible"
+  },
+  {
+    "suite": "voiture-permanents.test.mjs",
+    "exit": 0,
+    "seconds": 5.81,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/voiture-permanents.test.mjs.log",
+    "last": [
+      "12 vérifications réussies (4.8 s)"
+    ],
+    "passage": "final_cible"
+  },
+  {
+    "suite": "voiture.test.mjs",
+    "exit": 0,
+    "seconds": 4.74,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/voiture.test.mjs.log",
+    "last": [
+      "33 vérifications réussies"
+    ],
+    "passage": "final_cible"
+  }
+]

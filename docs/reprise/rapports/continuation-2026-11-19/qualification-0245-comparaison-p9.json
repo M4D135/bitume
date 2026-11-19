@@ -1,0 +1,9 @@
+{
+  "cas": 19,
+  "empreintes": 1259,
+  "strictement_identiques_apres_projection": true,
+  "differences": [],
+  "projection": "Seulement versionPneus/servicePneus/etatPneus sur les états identifiés par versionPneus===1 et tableau etatPneus de longueur 4. Le champ pneus reste comparé.",
+  "baseline": "e47fb220373e5824540beaccd02d8270492111c5",
+  "node": "v24.22.3"
+}

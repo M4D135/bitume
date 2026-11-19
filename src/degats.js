@@ -1,3 +1,4 @@
+if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)require('./pneus.js');
 /* BITUME — dégâts de la caisse (Chantier 3). Un choc coûte de l'adhérence et de la traînée, dans la limite
    des critères (adhérence −8 % au plus, traînée +8 % au plus) ; au-delà d'un seuil de violence, une roue
    se détache et la caisse attend une remise en piste rapide. L'état des dégâts vit sur
@@ -77,7 +78,7 @@
   // Santé (lot 4) : un seul chiffre, 1 = neuve, 0 = au plus bas des critères. Il se lit dans le MÊME état que les
   // pénalités et la réparation — adhérence, traînée, roues manquantes — et n'est jamais une simulation parallèle
   // montée pour le seul affichage. Le flash rouge d'un impact est autre chose (jeu.js) : la santé, elle, persiste.
-  const NOMS_ROUES = ['roue avant droite', 'roue avant gauche', 'roue arrière droite', 'roue arrière gauche'];
+  const NOMS_ROUES = B.pneus.NOMS_ROUES;
   function sante(d) {
     if (!d) return 1;
     const gA = (1 - d.adher) / (1 - P.adherMin);           // 0 à 1 sur la plage utile des critères

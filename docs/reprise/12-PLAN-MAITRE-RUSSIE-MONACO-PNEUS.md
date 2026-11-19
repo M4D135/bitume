@@ -1,6 +1,6 @@
 # BITUME — plan maître Russie, Monaco, Marseille, roues et pneus
 
-Date : **18 novembre 2026**. Statut : **plan d’exécution ; fonctionnalités à réaliser**.
+Date du plan : **18 novembre 2026**. État 12A–12C actualisé le **19 novembre 2026** : **implémentation en qualification pour 0.2.45**, checkpoint `8665af0`, base `e47fb22`. Voir [la fiche courte](12ABC-CONTRAT-ET-VISUEL-ROUES.md).
 Demande de David : ajouter un circuit en Russie et un Monaco « ultra fidèle », refaire les roues bien rondes et plus réalistes, différencier les sculptures pluie/neige et les slicks lisses, montrer les traces d’usure au fil de la course, puis publier ce plan avant de commencer.
 
 Complément demandé dans la même reprise : **Spéciale Marseille à partir de la carte EMPRISE, avec ajout de relief**, et master liste complète pour Claude Fable. Entrée de passation : [MASTER-LISTE-CLAUDE-FABLE.md](../../MASTER-LISTE-CLAUDE-FABLE.md).
@@ -50,7 +50,7 @@ Les dimensions de la voiture restent la référence : pneus avant de rayon **0,2
 
 ## 3. Lots d’exécution et points de publication
 
-Les cases ci-dessous décrivent des réalisations futures. **Aucune fonctionnalité nouvelle n’est déclarée terminée par ce plan.** Chaque lot peut comporter plusieurs petits commits, avec un état de reprise compréhensible même si la session s’arrête.
+Les critères ci-dessous restent les conditions de clôture. **12A–12C sont implémentés et en qualification pour 0.2.45**, avec le checkpoint `8665af0` publié ; leur présence dans ce checkpoint ne vaut pas livraison. Le catalogue et le visuel neige sont préparés, son choix jouable reste fermé jusqu’à 12E. Les autres lots restent à réaliser. Chaque lot conserve un état de reprise compréhensible même si la session s’arrête.
 
 | Ordre / lot | Travail | Condition pour clôturer le lot |
 |---|---|---|
@@ -75,7 +75,7 @@ Les cases ci-dessous décrivent des réalisations futures. **Aucune fonctionnali
 | 15E | Marseille : rendu et performances. | Captures/tour filmé, détails et ressources mesurés sur le corridor. |
 | 15F | Marseille : livraison. | Sources/tests/build publiés, contrôle production séparé, reçu et reprise. |
 
-**Premier lot de code à ouvrir après le plan : 12A.** Créer sa fiche courte à ce moment, avec les seuls fichiers utiles. Ne pas lancer toutes les branches du programme dans la même discussion.
+**Lot actif : publication 12A–12C, code qualifié ; réserve WebGL**, fiche [12ABC-CONTRAT-ET-VISUEL-ROUES.md](12ABC-CONTRAT-ET-VISUEL-ROUES.md). Après publication qualifiée, ouvrir **12D — usure visible**. Ne pas relancer 12A depuis le début ni ouvrir toutes les branches du programme dans la même discussion.
 
 ## 4. Roues : géométrie, matière et rotation
 
@@ -385,9 +385,9 @@ Sources internes : `src/voiture.js`, `src/carene.js`, `src/conduite.js`, `src/de
 
 - [x] Exigences, état du code et premières références examinés.
 - [x] Plan et critères d’acceptation rédigés avant implémentation.
-- [ ] 12A — contrat roues et catalogue de pneus.
-- [ ] 12B — rondeur, profils et jantes.
-- [ ] 12C — sculptures et matériaux.
+- [x] 12A — contrat roues et catalogue de pneus : code qualifié en 0.2.45.
+- [x] 12B — rondeur, profils et jantes : code qualifié, aperçu CPU inspecté ; réserve WebGL.
+- [x] 12C — sculptures et matériaux : code qualifié ; réserve WebGL, choix neige réservé à 12E.
 - [ ] 12D — usure visible progressive.
 - [ ] 12E — neige, adhérence et usure physique.
 - [ ] 12F — stands, interface et réseau.

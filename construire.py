@@ -30,6 +30,7 @@ MODULES = [
     'ferro/gpu-profile.js',
     'circuit.js',
     'ferro/vehicle-dynamics.js',
+    'pneus.js',
     'conduite.js',
     'degats.js',
     'contacts.js',

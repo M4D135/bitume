@@ -1,0 +1,101 @@
+[
+  {
+    "suite": "pneus.test.mjs",
+    "exit": 0,
+    "seconds": 0.17,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/pneus.test.mjs.log",
+    "last": [
+      "10 contr\u00f4les pneus r\u00e9ussis"
+    ]
+  },
+  {
+    "suite": "roues-detail.test.mjs",
+    "exit": 0,
+    "seconds": 1.33,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/roues-detail.test.mjs.log",
+    "last": [
+      "7 v\u00e9rifications r\u00e9ussies"
+    ]
+  },
+  {
+    "suite": "voiture.test.mjs",
+    "exit": 0,
+    "seconds": 4.74,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/voiture.test.mjs.log",
+    "last": [
+      "33 v\u00e9rifications r\u00e9ussies"
+    ]
+  },
+  {
+    "suite": "voiture-permanents.test.mjs",
+    "exit": 0,
+    "seconds": 5.81,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/voiture-permanents.test.mjs.log",
+    "last": [
+      "12 v\u00e9rifications r\u00e9ussies (4.8 s)"
+    ]
+  },
+  {
+    "suite": "voiture-identite.test.mjs",
+    "exit": 0,
+    "seconds": 4.64,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/voiture-identite.test.mjs.log",
+    "last": [
+      "6 v\u00e9rifications r\u00e9ussies (4.5 s)"
+    ]
+  },
+  {
+    "suite": "formes-libres.test.mjs",
+    "exit": 0,
+    "seconds": 0.87,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/formes-libres.test.mjs.log",
+    "last": [
+      "formes libres : 124039 triangles \u00e9mis dans l'ordre du registre"
+    ]
+  },
+  {
+    "suite": "scene-bench.test.mjs",
+    "exit": 0,
+    "seconds": 11.71,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/scene-bench.test.mjs.log",
+    "last": [
+      "Sc\u00e8ne de d\u00e9tection : vrais d\u00e9cors, douze voitures et leur simulation comme en course, sillage, options de chaque palier, fin forc\u00e9e, chronom\u00e8tre ferm\u00e9, d\u00e9part de Val-Br\u00fbl\u00e9 au cockpit, glaces diff\u00e9r\u00e9es au rythme de la course, copie 2D, moteur temporaire et sonde de d\u00e9bit v\u00e9rifi\u00e9s."
+    ]
+  },
+  {
+    "suite": "effets-allocation.test.mjs",
+    "exit": 0,
+    "seconds": 3.7,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/effets-allocation.test.mjs.log",
+    "last": [
+      "3 tests passes"
+    ]
+  },
+  {
+    "suite": "chargement.test.mjs",
+    "exit": 0,
+    "seconds": 1.33,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/chargement.test.mjs.log",
+    "last": [
+      "9 contr\u00f4les de la pr\u00e9paration des s\u00e9ances r\u00e9ussis."
+    ]
+  },
+  {
+    "suite": "traces.test.mjs",
+    "exit": 1,
+    "seconds": 0.78,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/traces.test.mjs.log",
+    "last": [
+      "}"
+    ]
+  },
+  {
+    "suite": "determinisme-simulation.test.mjs",
+    "exit": 1,
+    "seconds": 12.7,
+    "log": "/workspace/scratch/92dd294f392d/qualification-temp/final/determinisme-simulation.test.mjs.log",
+    "last": [
+      "KO  d\u00e9terminisme p9 : 19 cas, 1259 empreintes, 12.6 s"
+    ]
+  }
+]

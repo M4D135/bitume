@@ -1,0 +1,66 @@
+{
+  "baseline": "e47fb220373e5824540beaccd02d8270492111c5",
+  "node": "v24.22.3",
+  "total_suites": 90,
+  "suites_reussies": 88,
+  "suites_reexecutees": 11,
+  "suites_inchangees_conservees": 79,
+  "echecs": [
+    "determinisme-simulation.test.mjs",
+    "traces.test.mjs"
+  ],
+  "regressions_nouvelles": [],
+  "determinisme_officiel": {
+    "tableau_echecs_et_resumes_identique_baseline": true,
+    "lignes_comparees": 58,
+    "fixture_p9_recrite": false
+  },
+  "traces": {
+    "empreinte_obtenue_baseline": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+    "empreinte_obtenue_candidate": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+    "identiques": true
+  },
+  "comparaison_directe_p9": {
+    "cas": 19,
+    "empreintes": 1259,
+    "strictement_identiques_apres_projection": true,
+    "differences": [],
+    "projection": "Seulement versionPneus/servicePneus/etatPneus sur les états identifiés par versionPneus===1 et tableau etatPneus de longueur 4. Le champ pneus reste comparé.",
+    "baseline": "e47fb220373e5824540beaccd02d8270492111c5",
+    "node": "v24.22.3"
+  },
+  "fichiers_modifies_pendant_requalification": [],
+  "exclu": "Brouillon usure-pneus 12D, hors du jalon et absent des 90 suites courantes.",
+  "interpretation": "Les deux échecs de fixtures historiques existaient sur la base publiée. Aucun nouvel échec. Les seules nouvelles métadonnées pneu sont projetées hors du test p9, sans changer la fixture. La fixture visuelle voiture a été réactualisée intentionnellement par intégrateur pour le nouveau modèle.",
+  "version": "0.2.45",
+  "qualification_reprise": "166 empreintes identiques à la reprise, puis correctif de normalisation des types pneus.",
+  "correctif_types": {
+    "fichiers": [
+      "src/voiture.js",
+      "verifications/roues-detail.test.mjs"
+    ],
+    "suites_reexecutees": 6,
+    "reussies": 6,
+    "raison": "Rejeter constructor/__proto__/toString et les types invalides avant accès aux formes ; aucun changement des montes valides."
+  },
+  "ferro": {
+    "version": "0.3.11",
+    "modules": 34,
+    "identiques": true
+  },
+  "build": {
+    "version": "0.2.45",
+    "octets": 13976912,
+    "gzip": 3308559,
+    "sha256": "38b9897316d510bc0e8ccf67562358c6b1020bb9993bba737075384fcf2e1ffc",
+    "blob_sha1": "31c26b8d4932d67f0a0007b407dfc52ae5c200ea",
+    "reproductible": true
+  },
+  "webgl": {
+    "valide": false,
+    "cause": "Chromium ne démarre pas dans cet environnement : création de socket AF_UNIX interdite (EPERM), échec également présent sur le build de référence.",
+    "apercu_cpu_inspecte": true,
+    "performances_mesurees": false
+  },
+  "deploiement_effectue": false
+}

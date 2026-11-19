@@ -331,14 +331,14 @@
     const p = poses[e.id], v = co.voitures[e.id];
     if (!p || !v || !fx.pieces || fx.pieces[e.id] >= PIECES_PAR_VOITURE) return;
     const ca = Math.cos(p.cap), sa = Math.sin(p.cap), a = fx.alea;
-    const lancer = (x, y, z, sx, sy, sz, roue, couleur) => {
+    const lancer = (x, y, z, sx, sy, sz, roue, couleur, formeRoue) => {
       const d = place(fx), o = d.objet;
       if (d.corps && fx.monde) { try { fx.monde.remove(d.corps); } catch (err) { /* monde déjà perdu */ } }
       d.corps = 0;
       d.actif = true; d.age = 0; d.x = p.x + ca*x-sa*z; d.y = p.y+y; d.z = p.z+sa*x+ca*z; d.sol = p.y + Math.min(sx,sy,sz)*.5;
       d.vx = ca*(3+a()*5) - sa*(z*4+(a()-.5)*6); d.vz = sa*(3+a()*5) + ca*(z*4+(a()-.5)*6);
       d.vy = 3+a()*5; d.spin = (a()-.5)*12; d.repos = 0;
-      o.shape = roue ? 'cylinder' : 'box'; o.s[0]=sx; o.s[1]=sy; o.s[2]=sz;
+      o.shape = roue ? formeRoue ? formeRoue.nom : 'cylinder' : 'box'; o.s[0]=sx; o.s[1]=sy; o.s[2]=sz;
       d.rx = 0; d.ry = -p.cap; d.rz = roue ? Math.PI/2 : 0;
       o.r[0]=d.rx; o.r[1]=d.ry; o.r[2]=d.rz; o.alpha=1;
       for (let k=0;k<3;k++) o.color[k]=couleur[k];
@@ -348,7 +348,13 @@
     };
     if (e.type === 'roue') {
       const w = B.voiture.ROUES[e.roue];
-      if (w) lancer(w.x,w.r,w.z,w.r*2,w.l,w.r*2,true,CAOUTCHOUC);
+      if (w) {
+        // Même pneu que sur la voiture, en 64 segments partagés : une casse ne fait pas réapparaître un cylindre
+        // grossier. La forme de collision, les dimensions, la masse et les tirages aléatoires restent identiques.
+        const formes = B.voiture.ROUES_FORMES && B.voiture.ROUES_FORMES[w.avant ? 'av' : 'ar'];
+        const type = v.etat && v.etat.pneus, variantes = formes && (formes[type] || formes.slicks);
+        lancer(w.x,w.r,w.z,w.r*2,w.l,w.r*2,true,CAOUTCHOUC,variantes && variantes[1]);
+      }
       return;
     }
     // panneaux : du côté du choc d'abord, dans la limite du budget restant de la voiture

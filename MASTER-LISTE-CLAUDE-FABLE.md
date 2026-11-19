@@ -1,27 +1,27 @@
 # BITUME — master liste complète et passation Claude Fable
 
-Date : **18 novembre 2026**. Document de reprise demandé par David pour poursuivre avec **Claude Fable**.
+Plan du **18 novembre 2026**, état de reprise actualisé le **19 novembre 2026**. Document demandé par David pour poursuivre avec **Claude Fable**.
 
 ## 1. Mission et point de départ
 
 Poursuivre **BITUME**, jeu de course de monoplaces procédural et autonome dans le navigateur, dépôt **[M4D135/bitume](https://github.com/M4D135/bitume)**, branche unique **`main`**. Avancer par petits lots, publier fréquemment et conserver un point de reprise court. Ce document rassemble le catalogue complet proposé et les travaux demandés ; les fiches détaillées portent les critères techniques.
 
-| Élément | État vérifié à la préparation de cette passation |
+| Élément | État de reprise du 19 novembre 2026 |
 |---|---|
-| Jeu livré | **0.2.38**, commit **`baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902`**. |
-| Premier plan publié | **`0b43a35104f8516c6ac1445a426f6ea219fbc88d`**, puis ajout Marseille dans la présente mise à jour ; lire le HEAD actuel. |
-| Moteur BITUME | **FERRO 0.3.9**, 34 modules verrouillés. |
+| Base récupérée | **0.2.44**, `main` à **`e47fb22`** ; Safari confirmé corrigé par David. |
+| Checkpoint courant | **`8665af0`**, code 12A–12C récupéré et brouillon usure conservé ; ce jalon garde le build 0.2.44. |
+| Moteur BITUME | **FERRO 0.3.11**, 34 modules verrouillés. |
 | Physique | **p9** dans `src/jeu.js` ; incrémenter depuis la valeur effective lors des changements de conduite. |
-| Qualification de la base | 66/66 suites consignées, reconstruction déterministe ; rendu WebGL et performances matérielles encore à qualifier dans la reprise. |
-| Site public | Build 0.2.38 vérifié identique le 18 novembre à 14 h 47 (Paris) ; recontrôler à la prochaine livraison. |
+| Qualification du lot | **0.2.45, qualification code terminée, WebGL à valider** ; résultats courants dans le suivi et les rapports, sans compter le checkpoint comme livraison. |
+| Site public | Aucun déploiement de 0.2.45 déclaré ici ; vérifier la page servie séparément de GitHub. |
 | Circuits jouables | **7**. |
-| Nouveaux circuits explicitement demandés | **Russie, Monaco ultra fidèle, Spéciale Marseille issue d’EMPRISE avec relief**. |
+| Nouveaux circuits explicitement demandés | **Huitième circuit de montagne distinct**, **Russie, Monaco ultra fidèle, Spéciale Marseille issue d’EMPRISE avec relief**. |
 | Autres demandes prioritaires | Roues rondes et réalistes, slicks lisses, sculptures pluie/neige, usure progressive visible. |
-| Implémentation de ce nouveau programme | **Non commencée** ; la présente passation contient les plans. **Premier lot de code : 12A.** |
+| Implémentation roues/pneus | **12A–12C terminés côté code, réserve WebGL**, fiche `docs/reprise/12ABC-CONTRAT-ET-VISUEL-ROUES.md` ; prochain lot **12D**, usure visible. |
 
-**Ordre de lecture :** `AGENTS.md` → `REPRISE.md` → `docs/reprise/ETAT.json` → cette master liste → uniquement les sections utiles du plan actif. Éviter de recharger les anciennes discussions, les archives et le HTML compilé en entier.
+**Ordre de lecture :** `AGENTS.md` → `REPRISE.md` → dernière entrée de `docs/reprise/SUIVI-2026-11-19.md` et `docs/reprise/ETAT.json` → fiche du lot actif. Cette master liste sert à choisir la suite. Éviter de recharger les anciennes discussions, les archives et le HTML compilé en entier.
 
-## 2. Catalogue complet : objectif 16 circuits
+## 2. Catalogue initial de 16 et ajout montagne confirmé
 
 Les sept premières entrées existent. Les trois suivantes répondent à la demande de David. **Les six dernières sont des propositions de conception pour remplir les places restantes** ; leurs noms, tracés et destinations ne sont pas présentés comme des décisions antérieures de David. Baïkal est également le thème proposé du circuit russe demandé.
 
@@ -44,7 +44,7 @@ Les sept premières entrées existent. Les trois suivantes répondent à la dema
 | 15 | **Baie-du-Corail** | Australie | Baie, littoral rocheux et végétation côtière, grandes courbes et section technique. | Proposition |
 | 16 | **Col-des-Andes** | Chili | Haut relief, vallées, belvédères et cols ; caractère original, altitude visuelle et conduite cohérentes. | Proposition |
 
-**Comptage : 7 livrés + 3 ajouts demandés + 6 propositions = 16.** Les numéros sont ceux de cette liste humaine ; les indices techniques existants ne doivent jamais être réordonnés. Ajouter des IDs stables, figer les graines des tracés originaux et vérifier le catalogue courant avant chaque ajout.
+**Comptage du plan initial : 7 livrés + 3 ajouts demandés + 6 propositions = 16.** David a depuis confirmé un **huitième circuit de montagne distinct de Haut-Col**, Route-des-Cimes (nom de travail), avec long parcours, fortes pentes, forêt et tunnels. Il s’ajoute aux trois demandes Russie/Monaco/Marseille. Les six propositions ci-dessus restent conservées : réconcilier le catalogue à leur intégration, sans effacer le circuit de montagne pour tenir l’ancien compte. Les numéros sont ceux de cette liste humaine ; les indices techniques existants ne doivent jamais être réordonnés. Ajouter des IDs stables, figer les graines des tracés originaux et vérifier le catalogue courant avant chaque ajout.
 
 Pour chacune des six propositions, utiliser le même cycle de petits lots : identité/tracé → relief et décor → IA/saisons → captures/performance → publication. Aucune longueur ni graine n’est encore fixée pour elles. Affiner ces propositions au moment de leur lot, après les demandes explicites.
 
@@ -52,11 +52,13 @@ Pour chacune des six propositions, utiliser le même cycle de petits lots : iden
 
 ### A. Roues et pneus — lots 12A à 12F
 
-- [ ] Catalogue commun `slicks`, `inter`, `pluie`, `neige` ; ordre des quatre roues **AVG, AVD, ARG, ARD** et libellés corrects.
-- [ ] Pneus plus ronds, profil et flancs crédibles, épaules arrondies, jantes creuses, rayons/moyeux/disques mieux construits.
-- [ ] Formes dédiées et niveaux de détail réels ; ne pas augmenter tous les cylindres génériques du moteur.
-- [ ] Slick neuf lisse ; intermédiaire modérément sculpté ; pluie avec canaux ; neige avec pavés et lamelles. Motifs attachés aux roues.
-- [ ] Rotation, marche arrière, braquage et suspension cohérents ; préserver les proportions de la monoplace.
+**12A–12C implémentés et qualifiés côté code pour 0.2.45**, depuis le checkpoint `8665af0`. Les contrôles WebGL et matériel restent ouverts. Catalogue et visuel neige préparés ; choix physique fermé jusqu’à 12E. Après publication qualifiée : **12D, usure visible**. Fiche courte : `docs/reprise/12ABC-CONTRAT-ET-VISUEL-ROUES.md`.
+
+- [x] Catalogue commun `slicks`, `inter`, `pluie`, `neige` ; ordre des quatre roues **AVG, AVD, ARG, ARD** et libellés corrects.
+- [x] Pneus plus ronds, profil et flancs crédibles, épaules arrondies, jantes creuses, rayons/moyeux/disques mieux construits.
+- [x] Formes dédiées et niveaux de détail réels ; ne pas augmenter tous les cylindres génériques du moteur.
+- [x] Slick neuf lisse ; intermédiaire modérément sculpté ; pluie avec canaux ; neige avec pavés et lamelles. Motifs attachés aux roues.
+- [x] Rotation, marche arrière, braquage et suspension cohérents ; préserver les proportions de la monoplace.
 - [ ] Usure distincte par roue, liée à distance, charge et glisse ; aspect neuf, rodé, usé et très usé avec transitions continues.
 - [ ] Saleté réversible séparée de la gomme perdue ; pas d’usure en pause ou sans contact au sol ; hasard de traces indépendant de celui de la course.
 - [ ] État de chaussée humide/enneigée explicite ; conditions saisonnières et flocons ne suffisent pas à définir l’adhérence.
@@ -145,7 +147,7 @@ Les vieux tableaux d’avancement de novembre 12–17 restent historiques. Ne pa
 
 ## 5. Ordre conseillé et méthode de travail
 
-1. **12A–12F : roues et pneus.** Livrer les corrections visuelles, puis l’usure, la surface, les stands et la synchronisation en étapes distinctes.
+1. **12A–12F : roues et pneus.** Vérifier le reçu 12A–12C puis **12D** usure, **12E** surface/adhérence et **12F** stands/synchronisation en étapes distinctes.
 2. **13A–13B : Russie.** Ajouter un circuit original complet.
 3. **14A–14F : Monaco.** Construire et qualifier les fonctions communes de tracé réel, largeurs variables, voies et stands.
 4. **15A–15F : Marseille.** Réemployer ces fonctions, porter le corridor EMPRISE et son relief mesuré.
@@ -193,6 +195,6 @@ Le déploiement prévu par le dépôt est `./deposer.sh` depuis le Mac, vers l�
 
 ## 8. Texte de reprise pour Claude Fable
 
-> Reprends BITUME dans `M4D135/bitume`, branche `main`. Lis `AGENTS.md`, `REPRISE.md`, `docs/reprise/ETAT.json`, puis `MASTER-LISTE-CLAUDE-FABLE.md`. Le jeu livré est en 0.2.38 ; les nouvelles demandes sont planifiées, pas implémentées. Commence au premier sous-lot non terminé indiqué dans l’état courant, initialement 12A. Réalise les roues rondes et réalistes, les slicks/intermédiaires/pluie/neige et l’usure progressive, puis la Russie, Monaco fidèle et la Spéciale Marseille issue d’EMPRISE avec relief mesuré. Complète ensuite les six autres places proposées pour atteindre 16 circuits. Consulte les fiches techniques pour les sources et critères. Avance de façon autonome par petits lots, publie souvent le travail réel, conserve les preuves et une reprise courte, vérifie `main` après chaque publication. Ne surcharge pas le contexte et ne déclare jamais un rendu ou un déploiement validé sans l’avoir contrôlé.
+> Reprends BITUME dans `M4D135/bitume`, branche `main`. Lis `AGENTS.md`, `REPRISE.md`, la dernière entrée de `docs/reprise/SUIVI-2026-11-19.md`, `docs/reprise/ETAT.json`, puis seulement la fiche du lot actif. Base récupérée : 0.2.44 à `e47fb22`, checkpoint publié `8665af0`. 12A–12C sont implémentés et qualifiés côté code pour 0.2.45 ; vérifie le reçu GitHub. WebGL reste à contrôler sur une machine utilisable. Le prochain lot est 12D, usure visible. Safari est corrigé, p9 reste inchangée par le lot visuel, le choix neige attend 12E. Poursuis ensuite la physique des pneus, les stands et le réseau, puis Russie, Monaco fidèle et Spéciale Marseille issue d’EMPRISE avec relief mesuré. Conserve la décision du huitième circuit de montagne distinct et les six propositions ; réconcilie le catalogue sans supprimer cette demande. Mac/Spark ne sont pas accessibles dans cette reprise : aucune branche locale non fusionnée n’est déclarée récupérée. Avance par petits lots, publie souvent le travail réel avec ses preuves et une reprise courte. Vérifie main et le site séparément, sans déclarer un rendu ou un déploiement validé avant contrôle.
 
 Ce texte renvoie aux fichiers durables du dépôt ; il n’est pas nécessaire de recopier toute la conversation.

@@ -84,6 +84,14 @@
     const couleurs = [[.72,.08,.04],[.04,.22,.65],[.75,.58,.04],[.12,.38,.16]];
     const modeles = Array.from({ length: 12 }, (_, i) => B.voiture.modele({ couleur: couleurs[i % 4], seconde: [.8,.78,.7], pneus: 'slicks' }));
     const sortie = [], fauneVue = { qualite: 'off', nuit: 0, pluie: .18, pose: { x: 0, y: 0, z: 0 }, vue: 0 };
+    // Trois points de mesure et deux miroirs : chacun conserve sa propre hystérésis. Les poses et les options
+    // sont réemployées pour que le choix du détail n'ajoute pas d'allocations à la mesure.
+    const detailsRoues = Array.from({ length: 3 }, () => new Int8Array(modeles.length + 1).fill(-1));
+    const detailsGlaces = Array.from({ length: 2 }, () => new Int8Array(modeles.length + 1).fill(-1));
+    const posesVoitures = modeles.map(() => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, roule: 0, v: 45 }));
+    const optionsVoitures = modeles.map(() => ({ simple: false, rouesDetail: 0 }));
+    const optionsGlaces = modeles.map(() => ({ simple: false, rouesDetail: 0 })), optionsPiloteGlace = { rouesDetail: 0 };
+    let finVoitures = 0;
     const meteo = B.meteo.pour('pluie'); meteo.pluie = .18; meteo.nuage = .4; meteo.mouille = .65;
     const weather = B.meteo.ambiance(meteo);
     // Sillage des douze voitures : en course, l'herbe et les feuillages proches plient au passage du peloton (sources
@@ -117,7 +125,7 @@
     let decor = null, P = null, faune = null, positions = null, compte = 0;
     let sautGlaces = 0, pasGlaces = 0, imagesGlaces = 0;
     const pilote = B.voiture.modele({ couleur: [.9, .9, .88], seconde: [.1, .1, .1], pneus: 'slicks' }), objetsGlace = [];
-    const habitacle = { regime: 9500, volant: 0, rapport: 5, kmh: 250, passage: 1, derriere: [], ciel: null, brume: null, glaceVive: false };
+    const habitacle = { regime: 9500, volant: 0, rapport: 5, kmh: 250, passage: 1, derriere: [], ciel: null, brume: null, glaceVive: false, rouesDetail: 0 };
     function endroitsCharges(d, premier) {
       if (!d.ecologie) return [premier, 1800, 3000];
       const candidats = [], a = {}, b = {}, sol = {};
@@ -153,6 +161,8 @@
       sautGlaces = hz > 0 ? Math.max(1, Math.round(30 / hz)) : 0; pasGlaces = 0; glacesActives = false;
       habitacle.ciel = decor.atmosphere.skyBottom; habitacle.brume = decor.atmosphere.fog;
       compte = 0; imagesGlaces = 0;
+      for (const etat of detailsRoues) etat.fill(-1);
+      for (const etat of detailsGlaces) etat.fill(-1);
       const differees = !!reglage && reglage.glaces === 'differees';
       const info = differees && sautGlaces ? { glaces: 'differees', glacesParImage: 1 / sautGlaces } : activerGlaces();
       // toile : taille de l'image mesurée (pixels du moteur), celle de l'écran entier quand le jeu l'a posée
@@ -187,7 +197,7 @@
     // Rendu d'une glace depuis le cockpit, même géométrie et mêmes options que la course : regard réfléchi par la
     // glace, ouvert de 9° vers l'extérieur, champ de 16° rapporté au format de la glace, ni ombres ni halo.
     function dessinerGlace(cam, ev, temps, vent) {
-      const glaces = B.voiture.glacesCockpit(ev), g = glaces[imagesGlaces % 2];
+      const cote = imagesGlaces % 2, glaces = B.voiture.glacesCockpit(ev), g = glaces[cote];
       const d0 = [g.centre[0] - cam.pos[0], g.centre[1] - cam.pos[1], g.centre[2] - cam.pos[2]];
       const dn = Math.hypot(d0[0], d0[1], d0[2]) || 1, dv = d0.map(v => v / dn);
       const pn = dv[0] * g.normale[0] + dv[1] * g.normale[1] + dv[2] * g.normale[2], rf = dv.map((v, k) => v - 2 * pn * g.normale[k]);
@@ -196,7 +206,19 @@
         pitch: Math.asin(Math.max(-1, Math.min(1, rf[1]))) + .06, roll: (ev.roulis || 0) * .85,
         fov: 2 * Math.atan(Math.tan(16 * Math.PI / 180) * R.h / R.l) * 180 / Math.PI, near: .3, far: 6000, sun: cam.sun };
       objetsGlace.length = 0;
-      for (const o of sortie) if (!o.overlay) objetsGlace.push(o);
+      // Le rendu principal est terminé : les modèles peuvent être reposés pour la petite toile du miroir,
+      // comme en course. Garder le maillage de la grande vue surestimait le coût du banc après le lot 12B.
+      const toile = glacesRendu.gl && glacesRendu.gl.canvas, hauteur = toile && toile.height || 180;
+      const tanDemi = Math.tan(camR.fov * Math.PI / 360), histoire = detailsGlaces[cote], complet = distanceComplete(camR.fov);
+      for (let i = 0; i < modeles.length; i++) {
+        const e = posesVoitures[i], o = optionsGlaces[i], dx = e.p[0] - camR.pos[0], dz = e.p[2] - camR.pos[2];
+        o.simple = optionsVoitures[i].simple || dx * dx + dz * dz > complet * complet;
+        o.rouesDetail = histoire[i] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(e, camR.pos), tanDemi, hauteur, histoire[i]);
+        B.voiture.poser(modeles[i], e, objetsGlace, o);
+      }
+      for (let i = finVoitures; i < sortie.length; i++) if (!sortie[i].overlay) objetsGlace.push(sortie[i]);
+      optionsPiloteGlace.rouesDetail = histoire[modeles.length] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, camR.pos), tanDemi, hauteur, histoire[modeles.length]);
+      B.voiture.poserRetro(pilote, ev, objetsGlace, optionsPiloteGlace);
       glacesRendu.draw(camR, objetsGlace, { time: temps, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false,
         damage: 0, flash: 0, photo: 0, weather, windSources: vent, windStrength: P.windStrength, groundCover: P.groundCover });
       if (copie) copie.ctx.drawImage(glacesRendu.gl.canvas, 0, 0);
@@ -210,6 +232,7 @@
       const s = positions[vue] + Math.sin(temps * .6) * 10, e = B.circuit.echantillon(c, s);
       const ca = Math.cos(e.cap), sa = Math.sin(e.cap);
       const sun = { center: [e.x + ca * 65, e.y, e.z + sa * 65], extent: 100, depth: 340 };
+      const histoire = detailsRoues[vue], hauteur = gl && gl.canvas && gl.canvas.height || 1080;
       let cam, ev = null;
       sortie.length = 0;
       if (cockpit) {
@@ -218,17 +241,23 @@
         const o = B.voiture.mul(B.voiture.attitude(ev.cap, ev.tangage, ev.roulis), B.voiture.OEIL);
         cam = { pos: [e.x + o[0], e.y + o[1], e.z + o[2]], yaw: e.cap + Math.PI / 2, pitch: ev.tangage * .85, roll: -ev.roulis * .85,
           fov: 60, near: .1, far: 6000, sun };
+        habitacle.rouesDetail = histoire[modeles.length] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos), Math.tan(cam.fov * Math.PI / 360), hauteur, histoire[modeles.length]);
         B.voiture.cockpit(pilote, ev, sortie, habitacle);
       } else cam = { pos: [e.x - ca * 10, e.y + 3, e.z - sa * 10], yaw: e.cap + Math.PI / 2,
         pitch: -.11, roll: 0, fov: 60, near: .08, far: 6000, sun };
-      const complet = distanceComplete(cam.fov);
+      const complet = distanceComplete(cam.fov), tanDemi = Math.tan(cam.fov * Math.PI / 360);
       for (let i = 0; i < modeles.length; i++) {
         const sv = s + 8 + i * 10, v = B.circuit.echantillon(c, sv), d = i % 2 ? 2 : -2;
         const x = v.x - Math.sin(v.cap) * d, z = v.z + Math.cos(v.cap) * d, dx = x - cam.pos[0], dz = z - cam.pos[2];
-        B.voiture.poser(modeles[i], { p: [x, v.y, z], cap: v.cap, tangage: Math.atan(v.pente || 0), roulis: v.devers || 0, roule: temps * 4, v: 45 },
-          sortie, { simple: dx * dx + dz * dz > complet * complet });
+        const pose = posesVoitures[i], options = optionsVoitures[i];
+        pose.p[0] = x; pose.p[1] = v.y; pose.p[2] = z; pose.cap = v.cap;
+        pose.tangage = Math.atan(v.pente || 0); pose.roulis = v.devers || 0; pose.roule = temps * 4;
+        options.simple = dx * dx + dz * dz > complet * complet;
+        options.rouesDetail = histoire[i] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(pose, cam.pos), tanDemi, hauteur, histoire[i]);
+        B.voiture.poser(modeles[i], pose, sortie, options);
         const q = posesSillage[i]; q.x = x; q.y = v.y; q.z = z; q.cap = v.cap; voituresSillage[i].etat.s = sv;
       }
+      finVoitures = sortie.length;
       const vent = sillage ? B.sillage.mettreAJour(sillage, voituresSillage, posesSillage, c) : undefined;
       fauneVue.pose.x = e.x; fauneVue.pose.y = e.y; fauneVue.pose.z = e.z;
       if (faune && P.faune !== 'off') B.faune.dessiner(faune, temps, fauneVue, sortie);

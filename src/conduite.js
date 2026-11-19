@@ -1,5 +1,6 @@
 // Node consumers retain the direct-load contract; browsers load the explicit build dependency.
 if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)require('./ferro/vehicle-dynamics.js');
+if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)require('./pneus.js');
 (function (B) {
   'use strict';
   // BITUME : conduite d'une monoplace, dans le repère du circuit (abscisse s, décalage d).
@@ -139,7 +140,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)req
   // Adhérence relative selon l'eau sur la piste w (0 sec, 1 détrempée) : [sur le sec, pente avec w]. Les slicks sont
   // les meilleurs au sec et glissent sous la pluie ; les pneus pluie chauffent et se déforment au sec ; les
   // intermédiaires tiennent l'entre-deux. Meilleur choix : slicks sous w 0,2, intermédiaires jusqu'à 0,47, pluie au-delà.
-  const PNEUS = Object.freeze({ slicks: Object.freeze([1, -.30]), inter: Object.freeze([.96, -.10]), pluie: Object.freeze([.88, .07]) });
+  const PNEUS = B.pneus.PNEUS;
   function adherencePneus(type, eau) { const p = PNEUS[type] || PNEUS.slicks; return p[0] + p[1] * clamp(eau || 0, 0, 1); }
   function pneusConseilles(eau) { return eau < .2 ? 'slicks' : eau < .47 ? 'inter' : 'pluie'; }
   // eau sur la piste : la pluie qui tombe, ou la piste qui reste mouillée après l'averse (séchage de meteo.js)

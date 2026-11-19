@@ -10,7 +10,7 @@ const construire = B.decor.construire;
 B.decor.construire = (c,o) => { circuitMesure = c; optionsDecor = o; decorMesure = construire(c,o); return decorMesure; };
 // Chaque voiture posée : son modèle (complet ou allégé) et sa place, pour comparer à la règle de la course.
 const poser = B.voiture.poser, poses = [];
-B.voiture.poser = (mod, ev, sortie, options) => { poses.push({ simple: !!(options && options.simple), p: ev.p }); return poser(mod, ev, sortie, options); };
+B.voiture.poser = (mod, ev, sortie, options) => { poses.push({ simple: !!(options && options.simple), rouesDetail: options && options.rouesDetail, p: ev.p }); return poser(mod, ev, sortie, options); };
 let renduCourant = null, monde = null, nappes = null, lots = null, images = 0;
 const chrono = [];
 const faux = { resize(x) { assert.ok(x === 'auto' || x > 0); }, setWorld(objets, lampes, atmosphere) { monde = atmosphere; },
@@ -65,6 +65,7 @@ const complet = B.sceneBench.distanceComplete(60), oeil = renduCourant.camera.po
 assert.ok(complet > 100 && complet < 120, 'distance de la course au champ de 60° : ' + complet);
 for (const v of poses) assert.equal(v.simple, Math.hypot(v.p[0] - oeil[0], v.p[2] - oeil[2]) > complet);
 assert.ok(poses.filter(v => !v.simple).length >= 10, 'le peloton proche est dessiné en modèles complets');
+assert.ok(poses.every(v => v.rouesDetail >= 2 && v.rouesDetail <= 3), 'la taille projetée allège les roues du peloton : pas de 96 segments forcés sur le banc');
 // Sillage du peloton : les sources de vent de la course plient aussi la prairie du parcours.
 const vent = renduCourant.effets.windSources;
 assert.ok(Array.isArray(vent) && vent.length === 12 && vent.every(s => s.strength === 1 && Number.isFinite(s.velocity[0])));

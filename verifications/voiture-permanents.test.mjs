@@ -156,11 +156,11 @@ verifier('niveaux de détail : complet par défaut, simple comme options.simple,
   assert.ok(simple.length < moyen.length && moyen.length < complet.length, `${simple.length} < ${moyen.length} < ${complet.length}`);
   assert.ok(mod.moyens.every(p => mod.corps.includes(p)) && mod.moyens.every((p, i, l) => i === 0 || mod.corps.indexOf(l[i - 1]) < mod.corps.indexOf(p)), 'pièces du modèle complet, dans son ordre');
   const formes = new Set(moyen.map(o => o.shape));
-  for (const nom of ['quille', 'fleche', 'pontons', 'goutte', 'moteur', 'pneu-av', 'pneu-ar', 'mat-aileron']) assert.ok(formes.has(V.FORMES[nom].nom), nom);
-  assert.equal(moyen.filter(o => o.shape === V.FORMES['pneu-av'].nom || o.shape === V.FORMES['pneu-ar'].nom).length, 4, 'quatre pneus');
-  assert.equal(moyen.filter(o => o.shape === V.FORMES['pneu-ar'].nom).length, 2);
+  for (const nom of ['quille', 'fleche', 'pontons', 'goutte', 'moteur', 'mat-aileron']) assert.ok(formes.has(V.FORMES[nom].nom), nom);
+  assert.equal(moyen.filter(o => o.shape === V.ROUES_FORMES.av.slicks[2].nom || o.shape === V.ROUES_FORMES.ar.slicks[2].nom).length, 4, 'quatre pneus avec leur vrai maillage moyen');
+  assert.equal(moyen.filter(o => o.shape === V.ROUES_FORMES.ar.slicks[2].nom).length, 2);
   const sansRoues = []; V.poser(mod, ev, sansRoues, { detail: 'moyen', roues: [true, false, false, true] });
-  assert.equal(sansRoues.length, moyen.length - 6, 'roues détachées : pneu, fond de jante et moyeu en moins');
+  assert.equal(sansRoues.length, moyen.length - 8, 'roues détachées : pneu, fût creux, rayons et moyeu en moins');
 });
 
 verifier('detailPour : décision de jeu.js au bit près avec facteur 1, bande moyenne au-delà', () => {

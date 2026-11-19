@@ -1,0 +1,210 @@
+{
+  "date": "2026-11-19",
+  "etat_courant": {
+    "branche": "main",
+    "base_commit": "e47fb220373e5824540beaccd02d8270492111c5",
+    "base_version": "0.2.44",
+    "statut": "qualification_12ABC_travail_recupere",
+    "lot": "12ABC_contrat_et_visuel_roues",
+    "fiche": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
+    "commit_publie": "8bd3d86a4b1635ad2dd90c5ae8a585711aa196f8",
+    "catalogue_jouable_publie": 7,
+    "catalogue_cible": 10,
+    "prochaine_action": "Terminer les raccords caméra et la qualification, publier sources et build 12A/12B/12C. Brouillon usure 12D sauvegardé en patch, non intégré.",
+    "checkpoint": "docs/reprise/rapports/continuation-2026-11-19/recuperation-12ABC-et-brouillon-12D.patch",
+    "catalogue_jouable": 7,
+    "qualification": {
+      "suites": 66,
+      "reussies": 66,
+      "pacifique_recontrole_final": 11,
+      "ferro_modules": 34,
+      "build_reproductible": true,
+      "anciens_decors_identiques": 24,
+      "baseline_historique": "2a0c9d94c985f8b9b679355139cffc8d11b07122",
+      "apercus_cpu_realises": true,
+      "visuel_webgl_realise": false,
+      "preuve": "docs/reprise/rapports/cap-sequoia-2026-11-18/qualification.json",
+      "version_qualifiee": "0.2.38"
+    },
+    "version_courante": "0.2.44",
+    "recu": "docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json",
+    "entree_passation": "MASTER-LISTE-CLAUDE-FABLE.md",
+    "pilotage": "docs/reprise/PILOTAGE-2026-11-18.md",
+    "date_reprise": "2026-11-19",
+    "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
+    "safari": "David confirme corrigé dans la session du 19 novembre ; ne pas rouvrir ce chantier.",
+    "travaux_spark_non_fusionnes": "Branches locales Mac absentes de GitHub ; aucun travail non fusionné récupéré."
+  },
+  "integration": {
+    "nouvelle_branche": false,
+    "force_push": false,
+    "publication_ferro": {
+      "version": "0.3.11",
+      "commit": "d65a0f1d3ae8152f6fa0b13067baddd71bed0454",
+      "arbre": "8d5337c5457b523046b6652854e3949e74f1febd",
+      "branche": "main",
+      "verifiee": true,
+      "installee": true,
+      "modules_identiques": 34
+    },
+    "publication_bitume": {
+      "version": "0.2.38",
+      "commit": "baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902",
+      "arbre": "b8f3467ec58d2fc443c75df1977633b217ce6c15",
+      "branche": "main",
+      "verifiee": true,
+      "force": false,
+      "recu": "docs/reprise/rapports/cap-sequoia-2026-11-18/publication.json"
+    },
+    "production_controle_final": {
+      "url": "https://bitume.estrasse.fr/",
+      "controle_utc": "2026-11-18T13:47:36.622774+00:00",
+      "deploiement_effectue": false,
+      "http": 200,
+      "octets": 13237654,
+      "sha256": "46a0b0af1311c310bff6de0304da3744df78a2f7ed0d1a5c2e809bae92d78d9b",
+      "version": "0.2.38",
+      "version_verifiee_par": "SHA-256 identique au build qualifié 0.2.38",
+      "conforme_au_build": true,
+      "deploiement_effectue_par_cette_session": false
+    },
+    "deploiement_blocage": null,
+    "publication_checkpoint": {
+      "commit": "896b1c801655414c43cd876ccd302f332e2ddbf0",
+      "branche": "main",
+      "verifiee": true,
+      "patch": "docs/reprise/rapports/cap-sequoia-2026-11-18/travail-en-cours.patch"
+    },
+    "acces_mac_amiga_disponible": false,
+    "deploiement_action_necessaire": false
+  },
+  "reprise_courte": {
+    "regle": "Un seul lot, sorties bornées, publications fréquentes de checkpoints réels puis code/build qualifiés ; pas de push forcé.",
+    "archives": [
+      "docs/reprise/archives/REPRISE-2026-11-18.md",
+      "docs/reprise/archives/ETAT-2026-11-18.json"
+    ],
+    "autres_chantiers": "Priorité master liste Claude Fable : roues/pneus, Russie, Monaco, Marseille EMPRISE avec relief, puis six propositions ; un sous-lot actif."
+  },
+  "lot_precedent": {
+    "version": "0.2.44",
+    "commit": "5e8c60b2fd867d10bf35e4acf8ecfb33aee5c7f6",
+    "lot": "correctif_safari_image_noire",
+    "recu": "docs/reprise/rapports/safari-2026-11-19/publication.json"
+  },
+  "lot_suivant": {
+    "numero": 12,
+    "fiche": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
+    "sous_lot": "12A",
+    "cible": "Roues/pneus/usure, Russie, Monaco fidèle et Spéciale Marseille EMPRISE avec relief ; 16 circuits au total.",
+    "ordre": [
+      "12A-12F : roues, pneus, usure, physique, stands et réseau",
+      "13A-13B : Russie, proposition Baïkal",
+      "14A-14F : Monaco réel 2026",
+      "15A-15F : Spéciale Marseille, carte EMPRISE et relief mesuré",
+      "16A-16F : six propositions de circuits à affiner par petits lots"
+    ],
+    "regions_a_conserver": [
+      "Europe",
+      "Asie",
+      "Afrique",
+      "USA",
+      "Europe du Nord",
+      "Europe de l’Est",
+      "Islande avec aurores nocturnes"
+    ],
+    "ajouts_demandes": [
+      "Russie",
+      "Monaco",
+      "Spéciale Marseille depuis EMPRISE avec relief"
+    ],
+    "catalogue_publie": 7,
+    "catalogue_apres_tranche": 10,
+    "catalogue_objectif": 16,
+    "statut": "Master liste complète et passation Claude Fable ; implémentation non commencée.",
+    "catalogue_propositions_restantes": 6
+  },
+  "plan_courant": {
+    "date": "2026-11-18",
+    "fichier": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
+    "base_reprise_commit": "9f9f97ca7dee3154f8ec517adaba675e0ec81ea4",
+    "statut": "passation_documentee_implementation_non_commencee",
+    "premier_sous_lot": "12A",
+    "reference_monaco": "Parcours réel 2026 ; sources Formula 1 et FIA, relevé métrique complémentaire à constituer.",
+    "russie": "Baïkal proposé, circuit original ; nom/graine/longueur à fixer en 13A.",
+    "physique_actuelle": "p9",
+    "publication_plan": "Documentation uniquement ; jeu et build conservés en 0.2.38.",
+    "entree": "MASTER-LISTE-CLAUDE-FABLE.md",
+    "executant_souhaite": "Claude Fable",
+    "marseille_fiche": "docs/reprise/15-SPECIALE-MARSEILLE-RELIEF.md",
+    "marseille_source": {
+      "depot": "M4D135/emprise",
+      "branche": "main",
+      "commit": "cc004826a506e6979eaaec217748fe85d5cd6ac5",
+      "version": "0.6.8",
+      "terrain": "Centre plat ; relief périphérique synthétique ; MNT mesuré à préparer."
+    },
+    "catalogue_complet": "MASTER-LISTE-CLAUDE-FABLE.md#2-catalogue-complet--objectif-16-circuits"
+  },
+  "lot_5B": {
+    "demande": "David, 18/11/2026 : moteur le plus fluide possible, aucun accroc en jeu, précache en début de niveau, tout en RAM, 100 % fluide à 30, 60 ou 120 images par seconde.",
+    "mesures_base": "docs/reprise/rapports/fluidite-2026-11-18/MESURES-BASE.md",
+    "cartes": "docs/reprise/rapports/fluidite-2026-11-18/cartes/",
+    "outils": [
+      "tools/profil-accrocs.mjs",
+      "tools/page-essai.mjs",
+      "tools/serie-fluidite.sh",
+      "tools/resume-fluidite.py"
+    ],
+    "vague_1": {
+      "modele_executants": "Opus 5.5",
+      "lots": [
+        "moteur",
+        "arbres",
+        "cadence",
+        "voitures",
+        "effets",
+        "nature",
+        "simulation",
+        "profils",
+        "chargement"
+      ],
+      "arbres_de_travail": "~/Projects/bitume-wt/<lot>, branches locales fluidite/<lot>, base 54e98c9 ; moteur : ~/Projects/ferro sur 89c7841",
+      "reportes": [
+        "prairie (regroupement des lots d herbe)",
+        "son (préparation audio avant le départ)"
+      ]
+    },
+    "statut": "vague 1 en cours ; rien de fusionné ni de publié côté sources du jeu",
+    "publication": "0.2.40 en ligne le 18/11/2026 à 23 h 45 ; limites connues dans le reçu"
+  },
+  "demandes_2026_11_18_soir": {
+    "mots_exacts": "AGENTS.md, dernière section",
+    "lots": {
+      "5B": "fluidité (en cours)",
+      "17": "conduite, physique p10",
+      "18": "public en humains d EMPRISE",
+      "19": "pluie et neige sur l écran",
+      "20": "échappements : flammes et pétarades",
+      "21": "photoréalisme : lumière, ombres, eau",
+      "22": "circuits et génération procédurale : relief, irrégularités de chaussée, aménagements de course, matières, diversité",
+      "23": "cockpit : matières, reflets, grain, relief, netteté",
+      "24": "vibrations de manette enrichies, en course seulement",
+      "25": "voiture photoréaliste : matières, reflets, effets",
+      "22F": "circuits mémorables : lieux exceptionnels par biome, tracés repensés",
+      "26": "animaux propres à chaque biome, animés",
+      "27": "jeu en ligne sans serveur à gérer : relais publics pour se trouver, invitation manuelle, retrait du salon du VPS",
+      "28": "calcul : effets sur la carte graphique (WebGPU), noyaux C en WebAssembly pour le procédural quand la mesure le justifie"
+    },
+    "fait": "0.2.39 en ligne (8bd3d86, sha256 acbea8562b828aeb…) : plus de vibration de manette dans les menus",
+    "etudes": "~/Projects/bitume-wt/{conduite,public,vitre,son,echappement,photo}, branches locales conduite/etude et etude/* ; rien de fusionné",
+    "tunnels": "Plus de passages en tunnel (lot 22), éclairage de tunnel amélioré (lot 21), aucun clipping ; les études 21 et 22 lancées avant cette demande ne la couvrent qu en partie : à ajouter à leurs plans.",
+    "opencode": "tools/opencode/lancer.sh (réglage isolé) ; premier emploi : module src/vibrations.js confié à opencode/iceman-free dans ~/Projects/bitume-wt/vibrations (branche etude/vibrations), à relire",
+    "lot_22_valide": "Plan rendu (etude/procedural, 2807e0b) ; David a validé les choix par défaut le 18/11 (voir AGENTS.md). 22A (relief) à livrer avec la physique p10 ; 22C à 22E après la fluidité.",
+    "haut_col": "Pentes au-delà de 10 % et portion en bord de falaise le long d un grand virage (lot 22A) ; tracé en plan et graine conservés.",
+    "montagne": "Circuit long et roulant en montagne : portion à 20-30 %, tunnels, paysage, forêt dense. À trancher : refaire Haut-Col (tracé changé) ou nouveau circuit.",
+    "etudes_2": "~/Projects/bitume-wt/{lieux,animaux}, branches etude/lieux et etude/animaux",
+    "banc": "Détection graphique : une fois par version du jeu et par machine, pas à chaque ouverture ; relançable dans Image.",
+    "grand_circuit_montagne": "Huitième circuit (David, 18/11 vers 21 h) ; Haut-Col garde son tracé, avec rampes de plus de 10 % et corniche."
+  }
+}

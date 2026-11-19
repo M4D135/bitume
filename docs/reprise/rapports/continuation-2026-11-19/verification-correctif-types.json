@@ -1,0 +1,56 @@
+[
+  {
+    "suite": "pneus.test.mjs",
+    "exit": 0,
+    "seconds": 0.19,
+    "log": "final-pneus.test.mjs.log",
+    "last": [
+      "10 contrôles pneus réussis"
+    ]
+  },
+  {
+    "suite": "roues-detail.test.mjs",
+    "exit": 0,
+    "seconds": 1.38,
+    "log": "final-roues-detail.test.mjs.log",
+    "last": [
+      "8 vérifications réussies"
+    ]
+  },
+  {
+    "suite": "voiture.test.mjs",
+    "exit": 0,
+    "seconds": 4.82,
+    "log": "final-voiture.test.mjs.log",
+    "last": [
+      "33 vérifications réussies"
+    ]
+  },
+  {
+    "suite": "voiture-permanents.test.mjs",
+    "exit": 0,
+    "seconds": 5.34,
+    "log": "final-voiture-permanents.test.mjs.log",
+    "last": [
+      "12 vérifications réussies (4.8 s)"
+    ]
+  },
+  {
+    "suite": "voiture-identite.test.mjs",
+    "exit": 0,
+    "seconds": 3.75,
+    "log": "final-voiture-identite.test.mjs.log",
+    "last": [
+      "6 vérifications réussies (3.7 s)"
+    ]
+  },
+  {
+    "suite": "formes-libres.test.mjs",
+    "exit": 0,
+    "seconds": 0.78,
+    "log": "final-formes-libres.test.mjs.log",
+    "last": [
+      "formes libres : 124039 triangles émis dans l'ordre du registre"
+    ]
+  }
+]

@@ -292,6 +292,8 @@
       prec: [], cour: [], sortie: [], acc: 0, tele: { poste: null, alea: graine32(course.voitures.length * 7 + i) },
       camCap: null, profil: new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1), profilMeilleur: null,
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
+      detailsRoues: new Int8Array(course.voitures.length).fill(-1),
+      detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
       real: demo ? B.realisateur.creer(graineCourse) : null, planVu: null, suivie: 0, enchaine: false,
       fx: B.traces.creer(course.voitures.length, graineCourse),
@@ -321,6 +323,8 @@
     // la vue du joueur 2 a son propre état de caméra, d'éclair et d'affichage, le reste vient de la séance.
     if (duo) S.vueJ2 = Object.assign(Object.create(S), { camCap: null, tete: null, secousse: 0, eclair: 0, lumiere: 1, sol: null, tele: { poste: null, alea: graine32(31 + i) },
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
+      detailsRoues: new Int8Array(course.voitures.length).fill(-1),
+      detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
       suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null, animauxVue: null });
     S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une, ou deux à l'écran partagé)
     jeu.dataset.partage = duo ? (reglages.partage === 'cote' ? 'cote' : 'haut-bas') : '';
@@ -1717,7 +1721,7 @@
     poses: [nouvellePoseCss(), nouvellePoseCss()], toiles: null, aPoser: false }));
   // Caméra des glaces et objets de sa liste, réutilisés d'une glace à l'autre (le moteur relit tout à chaque draw)
   const CAM_GLACE = { pos: [0, 0, 0], yaw: 0, pitch: 0, roll: 0, fov: 34, near: .3, far: 6000, allStatic: true, sun: { center: [0, 0, 0], extent: 0, depth: 0 } };
-  const POSE_GLACES = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0 }, OPTIONS_RETRO = { roues: undefined, casse: false };
+  const POSE_GLACES = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0 }, OPTIONS_RETRO = { roues: undefined, casse: false, rouesDetail: 0 };
   const OPTIONS_GLACE = [], AXE_GLACE = [0, 0, 0], AXE_VUE = [0, 0, 0], COINS_ECRAN = new Float64Array(8);
   // caméra principale pour projeter les coins des glaces (axes comme le moteur, cameraAxes), réécrite à chaque image
   const PROJ = { x: 0, y: 0, z: 0, dr0: 0, dr1: 0, dr2: 0, up0: 0, up1: 0, up2: 0, av0: 0, av1: 0, av2: 0, L: 1, H: 1, t: 1, asp: 1 };
@@ -1941,7 +1945,7 @@
     camR.fov = 2 * Math.atan(Math.tan(16 * Math.PI / 180) * h / l) * 180 / Math.PI; camR.near = .3; camR.far = PORTEE_VUE;
     const sun = camR.sun;
     sun.center[0] = ps.x; sun.center[1] = ps.y; sun.center[2] = ps.z; sun.extent = scene.ombre.extent; sun.depth = scene.ombre.depth;
-    const objets = listeGlace(S, camR, sortie, suivie, source.height);
+    const objets = listeGlace(S, camR, sortie, suivie, source.height, i);
     retro.foulePublic = publicVisible && retro.vuePublic ? retro.vuePublic.fx : null;
     if (S.nature && (retro.ambianceSource !== S.nature.ambiance || retro.ambianceRevision !== S.nature.ambiance.revision)) {
       if (retro.rendu.setEnvironment) retro.rendu.setEnvironment(S.nature.ambiance.atmosphere);
@@ -1960,17 +1964,19 @@
   // roue arrière (voiture.js, poserRetro). Effets : leur propre appel, au même instant que la vue, sans coupure à
   // distance. Même ordre qu'avant : décor, voitures, fantôme et feux, effets, roue arrière. Les objets de la vue sont
   // réécrits : elle est déjà dessinée.
-  function listeGlace(S, camR, sortie, suivie, hauteur) {
+  function listeGlace(S, camR, sortie, suivie, hauteur, cote = 0) {
     const objets = retro.objets; objets.length = 0;
     const axe = axeCamera(camR, AXE_GLACE), ox = camR.pos[0], oy = camR.pos[1], oz = camR.pos[2];
     for (let k = 0, n = S.iVoitures0; k < n; k++) if (devantGlace(sortie[k], axe, ox, oy, oz)) objets.push(sortie[k]);
     const co = S.course, poses = tampons.poses, tanDemi = Math.tan(clamp(camR.fov, 10, 110) * Math.PI / 360);
+    const detailsRoues = S.detailsRouesGlaces[cote];
     for (let k = 0; k < co.voitures.length; k++) {
       if (k === suivie.id) continue;
       const p = poses[k], ex = p.x - ox, ez = p.z - oz;
       if (ex * axe[0] + (p.y - oy) * axe[1] + ez * axe[2] < -DERRIERE_CAMERA) continue;
       const o = optionsGlace(k), v = co.voitures[k];
       o.detail = plusLeger(OPTIONS_POSE[k].plafond, detailVoiture(ex * ex + ez * ez, tanDemi, hauteur));
+      o.rouesDetail = detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(POSES_RENDU[k], camR.pos), tanDemi, hauteur, detailsRoues[k]);
       o.roues = v.degats && v.degats.roues; o.casse = !!(v.degats && v.degats.casse);
       B.voiture.poser(S.modeles[k], POSES_RENDU[k], objets, o);
     }
@@ -1980,6 +1986,7 @@
     if (S.ech) B.echappement.dessiner(S.ech, objets, poses, S.tRendu, suivie.id);
     const R = OPTIONS_RETRO;
     R.roues = suivie.degats && suivie.degats.roues; R.casse = !!(suivie.etat.degats && suivie.etat.degats.casse);
+    R.rouesDetail = detailsRoues[suivie.id] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(POSES_RENDU[suivie.id], camR.pos), tanDemi, hauteur, detailsRoues[suivie.id]);
     B.voiture.poserRetro(S.modeles[suivie.id], POSES_RENDU[suivie.id], objets, R);
     return objets;
   }
@@ -2000,11 +2007,11 @@
   // vue (J2, puis J1, puis leurs glaces) finit de s'en servir avant que la suivante les réécrive. Seize voitures au
   // plus (onze rivaux, quatre humains) ; au-delà, les tableaux grandissent.
   const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0 });
-  const nouvellesOptions = () => ({ detail: 'complet', roues: undefined, casse: false, plafond: 'complet' });
+  const nouvellesOptions = () => ({ detail: 'complet', roues: undefined, casse: false, plafond: 'complet', rouesDetail: 0 });
   const POSES_RENDU = Array.from({ length: 16 }, nouvellePose), OPTIONS_POSE = Array.from({ length: 16 }, nouvellesOptions);
   const POSE_FANTOME = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0 };
   const ETAT_COCKPIT = { regime: 0, volant: 0, rapport: 0, kmh: 0, roues: undefined, casse: false, passage: 1, rapportAvant: undefined,
-    derriere: null, ciel: null, brume: null, glaceVive: false };
+    derriere: null, ciel: null, brume: null, glaceVive: false, rouesDetail: 0 };
   const SUIVEURS = [], RESERVE_SUIVEURS = Array.from({ length: 16 }, () => ({ x: 0, z: 0, couleur: null })), AUCUN_SUIVEUR = Object.freeze([]);
   const SOLEILS = [{ center: [0, 0, 0], extent: 0, depth: 0 }, { center: [0, 0, 0], extent: 0, depth: 0 }];
   const LAMPES_PORTIQUE = [], FEU_ALLUME = [1, .14, .06], FEU_ETEINT = [.1, .03, .03], TAILLE_FEU = [.56, .05, .56];
@@ -2221,11 +2228,14 @@
     for (let k = 0; k < co.voitures.length; k++) {
       const p = poses[k], dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], d2 = dx * dx + dz * dz;
       const ev = poseRendu(k, p, RV[k], co.voitures[k].etat.v);
+      // Hystérésis propre à cette vue : ni la seconde moitié d'écran ni les deux miroirs ne la réécrivent.
+      const rouesDetail = S.detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos), tanDemi, hauteur, S.detailsRoues[k]);
       if (k === suivie.id) ombreDebut = sortie.length;
       if (k === suivie.id && vue === 'cockpit') {
         const et = suivie.etat, atm = S.nature ? S.nature.ambiance.atmosphere : scene.decor.atmosphere, glaceVive = glacesVives(S, vue);
         const etc = ETAT_COCKPIT;
         etc.regime = et.regime; etc.volant = et.volant; etc.rapport = et.rapport; etc.kmh = B.conduite.kmh(et);
+        etc.rouesDetail = rouesDetail;
         etc.roues = co.voitures[k].degats && co.voitures[k].degats.roues; etc.casse = !!(et.degats && et.degats.casse);
         etc.passage = suivie.tPassage === undefined ? 1 : (co.horloge - suivie.tPassage) / .36; etc.rapportAvant = suivie.rapportAvant;
         // les rivaux de la glace peinte ne servent que sans image réelle des glaces
@@ -2239,6 +2249,7 @@
       // silhouette. Les glaces la reposent à leur propre niveau, plafonné par la règle de la vue.
       const o = optionsPose(k);
       o.plafond = detailVoiture(d2, tanDemi, hauteur);
+      o.rouesDetail = rouesDetail;
       o.detail = o.plafond === 'complet' && dx * avX + dz * avZ < -DERRIERE_CAMERA ? 'moyen' : o.plafond;
       o.roues = co.voitures[k].degats && co.voitures[k].degats.roues; o.casse = !!(co.voitures[k].degats && co.voitures[k].degats.casse);
       B.voiture.poser(S.modeles[k], ev, sortie, o);
@@ -2774,7 +2785,7 @@
   }
   // Présélection des pneus selon la météo prévue (David, 16/11) : au soleil des slicks, sous la pluie des pneus
   // pluie ; la météo aléatoire est tirée d'avance (même graine que la course qui va partir). Le pilote peut changer.
-  const NOMS_PNEUS = { slicks: 'Slicks', inter: 'Intermédiaires', pluie: 'Pluie' };
+  const NOMS_PNEUS = B.pneus.NOMS_PNEUS;
   function preselectionnerPneus() {
     const k = conditionsDuDepart();
     const prevue = B.meteo.depuisReel(k.mReelle) || B.meteo.pour(k.meteo) || B.meteo.initial(graineCourse + 1);

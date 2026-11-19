@@ -25,8 +25,8 @@ function charger(fichiers) {
   return ctx.BITUME;
 }
 const CONFIGURATIONS = {
-  primitives: ['carene.js', 'main.js', 'ferro/vehicle-dynamics.js', 'conduite.js', 'voiture.js'],
-  emprise: ['carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js', 'ferro/vehicle-dynamics.js', 'conduite.js', 'voiture.js']
+  primitives: ['carene.js', 'main.js', 'ferro/vehicle-dynamics.js', 'pneus.js', 'conduite.js', 'voiture.js'],
+  emprise: ['carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js', 'ferro/vehicle-dynamics.js', 'pneus.js', 'conduite.js', 'voiture.js']
 };
 
 // ---------------------------------------------------------------- empreinte
@@ -102,7 +102,7 @@ const LIVREES = [
   { couleur: [.86, .1, .08], seconde: [.95, .93, .88], casque: [.95, .93, .88], combinaison: [.95, .93, .88], numero: 27, pneus: 'slicks' },
   { couleur: [.92, .9, .84], seconde: [.1, .1, .12], numero: 1, pneus: 'pluie' },          // claire : gants sombres
   { couleur: [.1, .3, .8], numero: 108, pneus: 'inter' },                                   // sans seconde couleur
-  { couleur: [.2, .6, .2], casque: [.9, .8, .1], pneus: 'neige' }                           // type inconnu, sans numéro
+  { couleur: [.2, .6, .2], casque: [.9, .8, .1], pneus: 'neige' }                           // visuel préparé, hors choix p9, sans numéro
 ];
 // Filtre des rétroviseurs de jeu.js (majGlaces) : ne garder de la voiture suivie que ce qui est près de l'essieu arrière.
 function filtreRetro(V, objets, n0, ev) {
