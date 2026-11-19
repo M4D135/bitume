@@ -27,8 +27,12 @@ verifier('chaque image montre une position nouvelle, pas seulement les images de
     const t = toile(), e = V.creer(t.canvas), c = pluie();
     for (let i = 0; i < 4 * hz; i++) V.mettreAJour(e, 1 / hz, c);
     // Suivre une goutte qui ruisselle : son ellipse doit descendre à chaque image, pas une image sur hz / 30.
-    const goutte = e.gouttes.find(p => p.vivant && p.glisse === 1 && p.age > 1 && p.age < p.duree - 2);
+    const goutte = e.gouttes.find(p => p.vivant && p.glisse === 1 && p.age > 1 && p.age < p.duree - 2 && p.y < .6);
     assert(goutte, 'goutte ruisselante');
+    // Isoler le mouvement de cette goutte : une fusion supprime légitimement une des deux identités.
+    // Les rencontres sont vérifiées séparément ; ici chaque image doit déplacer le même dépôt.
+    for (const p of e.gouttes) if (p !== goutte) p.vivant = false;
+    e.stats.gouttes = 1; c.abri = true;
     let precedent = null, montees = 0, immobiles = 0;
     for (let i = 0; i < hz / 2; i++) {
       V.mettreAJour(e, 1 / hz, c);

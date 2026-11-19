@@ -49,7 +49,7 @@
     for (const [cle, valeur] of [...stockEnAttente]) ecrireStock(cle, typeof valeur === 'function' ? valeur() : valeur);
   }
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
-    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'ecran',
+    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'ecran', gouttes: 1,
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglagesEnregistres = lireStock('bitume.reglages', {});
   const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
@@ -67,6 +67,7 @@
   // prononcé »). Une valeur restée à 69 revient une seule fois au défaut ; tout autre choix du pilote est gardé.
   if (!reglages.champRevu) { if (+reglages.champ === 69) reglages.champ = DEFAUT.champ; reglages.champRevu = true; }
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
+  reglages.gouttes = reglages.gouttes != null && Number.isFinite(+reglages.gouttes) ? clamp(+reglages.gouttes, 0, 2) : DEFAUT.gouttes;
   // Les anciens placements auto/haut/bas reviennent en haut à droite ; taille et visibilité sont conservées.
   for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['gauche', 'droite'], carteTaille: ['petite', 'normale', 'grande'], annoncesVirages: ['non', 'ecran', 'voix'] }))
     if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
@@ -654,14 +655,16 @@
     const abri = !VUES_DEHORS.has(vue) && sousLaVoute(S.course.c, cam.pos), neige = precipitationsNeige(S);
     (deux ? pluieVue2 : pluieVue).dessiner(abri || neige > 0 ? Object.assign(METEO_ABRI, { t: S.meteo.t }) : S.meteo, cam, dt, { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1 });
     if (B.vitre) {
-      if (deux && !vitreVue2) vitreVue2 = creationTardive('vitre', B.vitre.creer($('vitre2')));
+      if (deux && !vitreVue2) vitreVue2 = creationTardive('vitre', B.vitre.creer($('vitre2'), { graine: 2 }));
       if (!deux && !vitreVue) vitreVue = creationTardive('vitre', B.vitre.creer($('vitre')));
       const contexte = S.vitreContexte || (S.vitreContexte = creationTardive('contexteVitre', {}));
       contexte.pluie = neige > 0 ? 0 : S.meteo.pluie || 0; contexte.neige = neige;
       contexte.ventX = S.meteo.ventX || 0; contexte.ventZ = S.meteo.ventZ || 0;
       const voiture = S.course.voitures[S.suivie || 0] || S.course.joueur;
       contexte.vitesse = Math.abs(voiture.etat.v || 0); contexte.qualite = profil.palier;
-      contexte.actif = ecran === 'course' || ecran === 'demo'; contexte.abri = abri;
+      contexte.pause = ecran === 'pause' || (ecran === 'reglages' && retourReglages === 'pause');
+      contexte.actif = ecran === 'course' || ecran === 'demo' || contexte.pause;
+      contexte.intensite = reglages.gouttes; contexte.cockpit = vue === 'cockpit'; contexte.abri = abri;
       contexte.dpr = window.devicePixelRatio || 1;
       B.vitre.mettreAJour(deux ? vitreVue2 : vitreVue, dt, contexte);
     }
@@ -3292,6 +3295,7 @@
   for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).addEventListener('input', e => { reglages[nom] = +e.target.value; sauverReglages(); appliquerVolumes(); });
   $('v-champ').addEventListener('input', e => { reglages.champ = clamp(+e.target.value, 60, 105); $('v-champ-valeur').textContent = reglages.champ + '°'; sauverReglages(); });
   $('v-secousses').addEventListener('input', e => { reglages.secousses = clamp(+e.target.value, 0, 1); $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %'; sauverReglages(); });
+  $('v-gouttes').addEventListener('input', e => { reglages.gouttes = clamp(+e.target.value, 0, 2); $('v-gouttes-valeur').textContent = reglages.gouttes.toFixed(1).replace('.', ',') + ' ×'; sauverReglages(); });
   $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) { secouerManette(0, 0); secouerManette(0, 0, pad2); } sauverReglages(); });
   $('v-carte').addEventListener('change', e => { reglages.carte = e.target.checked ? 'oui' : 'non'; sauverReglages(); appliquerCarte(); });
   $('v-vibration-force').addEventListener('input', e => { reglages.vibrationForce = clamp(+e.target.value, 0, 1); $('v-vibration-force-valeur').textContent = Math.round(reglages.vibrationForce * 100) + ' %'; sauverReglages(); });
@@ -3361,6 +3365,7 @@
     $('v-carte').checked = reglages.carte !== 'non';
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
     $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';
+    $('v-gouttes').value = reglages.gouttes; $('v-gouttes-valeur').textContent = reglages.gouttes.toFixed(1).replace('.', ',') + ' ×';
     for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).value = reglages[nom];
     $('v-vibrations').checked = reglages.vibrations !== 'non';
     reglages.vibrationForce = clamp(reglages.vibrationForce != null ? +reglages.vibrationForce : 0.5, 0, 1);
@@ -3607,7 +3612,7 @@
       if (duo && !pluieVue2) pluieVue2 = B.meteo.creerPluie($('meteo2'));
       if (B.vitre) {
         if (!vitreVue) vitreVue = B.vitre.creer($('vitre'));
-        if (duo && !vitreVue2) vitreVue2 = B.vitre.creer($('vitre2'));
+        if (duo && !vitreVue2) vitreVue2 = B.vitre.creer($('vitre2'), { graine: 2 });
         for (const V of vues) if (!V.vitreContexte) V.vitreContexte = {};
       }
       // tunnel : axe de la scène, puis un état de lampes par vue (le joueur 2 a son propre lissage)

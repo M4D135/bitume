@@ -1,0 +1,75 @@
+{
+  "version": "0.2.60",
+  "statut": "premier_passage_complet_echoue_non_publie",
+  "execution": "locale Node, chaque fichier séparément comme le workflow",
+  "debut": "2026-11-19T21:39:48+00:00",
+  "fin": "2026-11-19T21:49:32+00:00",
+  "node": "v24.22.3",
+  "physique": "p14",
+  "ferro": "0.3.15",
+  "suites": {
+    "reussies": 129,
+    "echecs": 7,
+    "total": 136,
+    "non_executees": []
+  },
+  "echecs": [
+    "verifications/arbres-lots.test.mjs",
+    "verifications/determinisme-simulation.test.mjs",
+    "verifications/obstacles-degagement.test.mjs",
+    "verifications/pacifique.test.mjs",
+    "verifications/reperes-virages.test.mjs",
+    "verifications/russie.test.mjs",
+    "verifications/troncs.test.mjs"
+  ],
+  "integrite": {
+    "source_unchanged": true,
+    "tests_unchanged": true,
+    "verification_support_unchanged": true,
+    "provenance_unchanged": true,
+    "auxiliary_inputs_unchanged": true,
+    "changed_files": {
+      "source": [],
+      "tests": [],
+      "verification_support": [],
+      "auxiliary_inputs": [],
+      "provenance": []
+    }
+  },
+  "empreintes_entrees": {
+    "source": {
+      "sha256": "0143efc1d219000bbc259d7bcb69afdfe714a1d32570b25d58919a6ae4024c97",
+      "fichiers": 91
+    },
+    "tests": {
+      "sha256": "8c604682244187244542bac9a63adace7813025554f28f7fe03126cea8f3d630",
+      "fichiers": 136
+    },
+    "verification_support": {
+      "sha256": "59967f17a81727df945e539054354a0df42858deda27b7ede5ef03624569191b",
+      "fichiers": 23
+    },
+    "auxiliary_inputs": {
+      "sha256": "242667d469047a09ad4129fd723fdbb0f9a72c84298216a87a1c68328e42ea3d",
+      "fichiers": 59
+    },
+    "provenance": {
+      "sha256": "19b33e9dc2cfa04f9118319fc95286bcf5f68f55529f01d4acb511c4c2a6a5b4",
+      "fichiers": 5
+    }
+  },
+  "builds_reproductibles": true,
+  "build": {
+    "sha256": "2b781c527aaec90bed5517a04d130f5f638efd9c9af2a9ce25ccf900be9bc1b4",
+    "bytes": 14240534
+  },
+  "analyse_initiale": {
+    "arbres-lots": "Hypothèse ancienne 520/900 m pour tout mobilier ; nouveaux détails d’architecture à180/260 m et chargement VM incomplet.",
+    "pacifique": "Les deux contextes ne chargent pas les mêmes modules de décor.",
+    "reperes-virages": "Comparaison historique0.2.53 appliquée aux nouveaux bâtiments et au décor13B.",
+    "troncs": "Heuristique cylinder+bois confond les poteaux d’architecture avec les vrais arbres.",
+    "determinisme-simulation": "Scène physique nouvellement détaillée différente ; états du premier scénario identiques, diagnostic exhaustif en cours.",
+    "obstacles-degagement_et_russie": "Replacements inattendus dans deux courses neige ; défaut de comportement à diagnostiquer, aucun assouplissement autorisé."
+  },
+  "suite": "Conserver les échecs, corriger les causes établies puis qualifier le candidat retenu. Aucun succès CI distante ni publication de cette version annoncé."
+}

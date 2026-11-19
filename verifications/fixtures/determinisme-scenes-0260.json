@@ -1,0 +1,79 @@
+{
+  "format": "bitume-scenes-physx-1",
+  "physique": "p14",
+  "revision": "architecture-baikal-0.2.60",
+  "referenceHistorique": {
+    "fichier": "determinisme-p14.json",
+    "sha256": "d8dfa60fc2d237c8dbc2b3d23689f2d81fe1562e1b14b30eda608fcd4f46d655"
+  },
+  "origine": {
+    "commit": "c28e0d9134361ca8d9592080fbc61d63d3ae0c01",
+    "correctionPanneau": "a345007f9846946e0cf063f885f186d0120c007c",
+    "node": "v24.22.3",
+    "moteur": {
+      "backend": "PhysX",
+      "version": "5.12.0"
+    }
+  },
+  "explication": "Scènes après architecture procédurale et Baïkal 13B, panneau de voie dégagé. Seules géométrie et statistiques changent : les 54 empreintes, 216 couches, configurations et bilans des trois courses restent exactement ceux de p14. La fixture historique intégrale est conservée. Les changements physiques possibles hors des parcours échantillonnés ne sont pas déclarés équivalents.",
+  "sources": {
+    "circuit.js": "39389f4855fd9010c083baba6d3ed43aa8838817f484624eec5adff0aa4a5a72",
+    "conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+    "degats.js": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247",
+    "contacts.js": "d6e583db729c91df8de21621c05b3b24835e6dc996e9dd4df7cb0464b27e1b7a",
+    "obstacles.js": "02626c61720ba5aa6bc1f06ee103725efed1a0c52f243b3ba2443f6f6cbf914e",
+    "botanique.js": "8ca32fb0aa467ea1ac4ce65b9f175254f3eb11ee14305f247f6015160b39bf8a",
+    "ecologie.js": "02e6ac06d118767e7020953dfe41542853892774ee649626f6110feb06d6d010",
+    "saisons.js": "b29843a28fe855076a6a514debe23038cc767343e7e6b0f7c87c102c62d46f0d",
+    "vegetation.js": "91f75f81859077969cea94ea362ce67e0bf156194a66174678a51dcc3021fce4",
+    "bords.js": "ef0488472987ff35d36f3a2bbd76e5a086cb7edf8bc038dfb01676dfe933b638",
+    "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+    "decor.js": "05925e018e46f25cc7635aac0ec0b763eaedc568d994da69e203566ed28fad53",
+    "meteo.js": "04b68ea246a72aae23a301634616e5710ec65520fb0fb4527461d1a8eaeada6e",
+    "strategie-stands.js": "c0b8326627e0225bf8197719472062b181038346eb3d1b3ca4b6ef320d0dee50",
+    "course.js": "6b3ec1ab4dc526d8da81f1fcf9410d68927d9a65743ac45c9335f3386f93b53f",
+    "solides-physx.js": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+    "physique.js": "2dc2dede6b8f8e3a863a09c754bed30baf2cdf38af0dc6b71e9d839eb153a089",
+    "jeu.js": "b7e5cab73f0816c0ad7bb71da6714f1f88701edf7a5e0fcda2001b7246b6edc3",
+    "moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+    "ferro/physx.js": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+    "ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "baikal.js": "0c691f2dbf5056897dd0341a7cb5593de8ea04e22803a232f153a06a3d05fdb6",
+    "batiments.js": "67fd03ce58096e60aee06f31160ec849bf950fb6d500c8731a62a1bb08938025"
+  },
+  "cas": {
+    "val-brule-sec-12": {
+      "statistiques": {
+        "nappes": 117,
+        "obstaclesHistoriques": 2492,
+        "complements": 2648,
+        "trianglesSol": 66702,
+        "trianglesObstacles": 118208,
+        "trianglesEauIgnores": 0
+      },
+      "empreinte": "a50fae6720b88a77e7f2190cdbce9874a642307c6448d07a10752a47cac91d95"
+    },
+    "port-sable-pluie-12": {
+      "statistiques": {
+        "nappes": 103,
+        "obstaclesHistoriques": 1718,
+        "complements": 2285,
+        "trianglesSol": 59522,
+        "trianglesObstacles": 70184,
+        "trianglesEauIgnores": 2
+      },
+      "empreinte": "ca000c47e4b5c7c1576d7bfb0f46b3f25e1e94a7f8d7b351fde8587727f5d26f"
+    },
+    "baikal-neige-12": {
+      "statistiques": {
+        "nappes": 189,
+        "obstaclesHistoriques": 2176,
+        "complements": 3331,
+        "trianglesSol": 98374,
+        "trianglesObstacles": 82072,
+        "trianglesEauIgnores": 2
+      },
+      "empreinte": "099269cd9ac1868967eaa5032e586ae9f0adef52bb6b86cdec05cb682c257330"
+    }
+  }
+}

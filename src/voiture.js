@@ -91,9 +91,9 @@
   const LAQUE = 16, PEINTURE = 17, MAT = 7, METAL_MAT = 0, TISSU = 18;
   // Le catalogue commun peut être absent des outils qui chargent seulement le modèle.
   const PNEUS_TYPES = B.pneus ? B.pneus.CATALOGUE : { slicks: { cercle: [.95, .76, .08] }, inter: { cercle: [.16, .72, .30] }, pluie: { cercle: [.16, .46, .90] }, neige: { cercle: [.82, .85, .89] } };
-  const PNEU = [.035, .035, .04], FOND_JANTE = [.11, .11, .12], JANTE = [.72, .73, .74], NOIR = [.03, .03, .035],
+  const PNEU = [.035, .035, .04], FOND_JANTE = [.11, .11, .12], JANTE = [.32, .33, .34], NOIR = [.03, .03, .035],
     CARBONE = [.06, .065, .07], ARGENT = [.76, .77, .79], BLANC = [.95, .94, .9], GANT = [.9, .9, .87],
-    ACIER = [.56, .57, .59], SOMBRE = [.17, .175, .19], CRAIE = [.82, .82, .78], IVOIRE = [.93, .92, .87];
+    ACIER = [.56, .57, .59], SOMBRE = [.17, .175, .19], IVOIRE = [.93, .92, .87];
   const VITESSE_FLOU = 30;   // m/s : au-delà, la rotation des roues ne se lit plus image par image
 
   // Braquage d'Ackermann : la roue intérieure au virage braque plus que l'extérieure. d > 0 : virage à droite.
@@ -448,8 +448,11 @@
   function pneu(r, w, segments, type) {
     const h = w / 2, b = h - .049, detail = segments >= 64, sculpte = detail && type !== 'slicks';
     const profondeur = sculpte ? type === 'neige' ? .009 : type === 'pluie' ? .007 : .004 : 0;
+    // La peau lisse est découpée finement dans sa largeur pour porter des traces courbes. Les subdivisions
+    // restent sur le même cylindre : aucune bosse, aucune surépaisseur, aucun pavé ajouté au slick neuf.
+    const bande = [-1, -.78, -.43, -.16, .11, .39, .67, 1].map(f => [f * b, r - profondeur]);
     const profil = segments >= 64 ? [[-h, JANTE_R + .009], [-h, r - .060], [-h + .007, r - .036], [-h + .021, r - .014],
-      [-h + .035, r - .003], [-b - .006, r], [-b, r - profondeur], [b, r - profondeur], [b + .006, r],
+      [-h + .035, r - .003], [-b - .006, r], ...bande, [b + .006, r],
       [h - .035, r - .003], [h - .021, r - .014], [h - .007, r - .036], [h, r - .060], [h, JANTE_R + .009],
       [h - .009, JANTE_R + .005], [-h + .009, JANTE_R + .005]]
       : [[-h, JANTE_R + .009], [-h, r - .060], [-h + .013, r - .026], [-b, r], [b, r], [h - .013, r - .026],
@@ -479,16 +482,25 @@
       forme('pneu-' + essieu + (type === 'slicks' && niveau === 0 ? '' : '-' + type + '-' + niveau), pneu(r, w, segments, type)));
     f.fut = SEGMENTS_ROUE.map((segments, n) => forme('jante-' + essieu + '-' + n, revolutionRoue([
       [-h - .005, .155], [-h - .004, .174], [-h + .006, .174], [-h + .013, .158],
-      [h - .013, .158], [h - .006, .174], [h + .004, .174], [h + .005, .155]], segments, false)));
+      [h - .013, .158], [h - .006, .174], [h + .004, .174], [h + .005, .155]], segments)));
     f.rayons = SEGMENTS_ROUE.map((segments, n) => {
       const tris = [];
       for (const cote of [-1, 1]) for (let j = 0; j < 6; j++) {
         const a = 2 * Math.PI * j / 6, ca = Math.cos(a), sa = Math.sin(a);
-        const sections = [[.035, .026, .038], [.085, .018, .028], [.155, .012, .018]].map(([x, l, creux]) => ({ x, y0: cote * (h - creux) - .008, y1: cote * (h - creux) + .008, l, n: 3 }));
-        tris.push(...C.transformer(C.carene(sections, { cotes: n < 2 ? 8 : 4, pas: 1 }), [[ca, 0, sa], [0, 1, 0], [-sa, 0, ca]]));
+        // Six branches moulées équilibrées : profil ovale et raccords galbés, sans lattes plates claires.
+        const sections = [[.031, .012, .038, 0], [.052, .018, .034, .002], [.088, .014, .026, .004],
+          [.125, .010, .020, .002], [.160, .014, .016, 0]].map(([x, l, creux, z]) =>
+          ({ x, y0: cote * (h - creux) - .008, y1: cote * (h - creux) + .008, l, n: 2, z }));
+        tris.push(...C.transformer(C.carene(sections, { cotes: n < 2 ? 8 : 6, pas: n < 2 ? 2 : 1 }), [[ca, 0, sa], [0, 1, 0], [-sa, 0, ca]]));
       }
       return forme('rayons-' + essieu + '-' + n, tris);
     });
+    // Axe aminci dans l'ombre, écrous arrondis aux extrémités. Le cylindre argenté qui traversait toute
+    // la largeur donnait une barre blanche dans le creux de la roue, particulièrement depuis le cockpit.
+    f.moyeu = SEGMENTS_ROUE.map((segments, n) => forme('moyeu-roue-' + essieu + '-' + n, revolutionRoue([
+      [-h - .010, .012], [-h - .010, .025], [-h - .006, .034], [-h + .007, .038], [-h + .025, .035],
+      [-h + .037, .023], [h - .037, .023], [h - .025, .035], [h - .007, .038], [h + .006, .034],
+      [h + .010, .025], [h + .010, .012]], [32, 24, 16, 12][n])));
     f.bague = SEGMENTS_ROUE.map((segments, n) => {
       const tris = [];
       for (const cote of [-1, 1]) {
@@ -498,6 +510,12 @@
       return forme('bague-pneu-' + essieu + '-' + n, tris);
     });
   }
+  forme('valve-roue', C.carene([
+    { x: -.007, y0: -.0025, y1: .0025, l: .0025, n: 2 },
+    { x: -.004, y0: -.0045, y1: .0045, l: .0045, n: 2 },
+    { x: .004, y0: -.0045, y1: .0045, l: .0045, n: 2 },
+    { x: .007, y0: -.0025, y1: .0025, l: .0025, n: 2 }
+  ], { cotes: 8, pas: 2 }));
   // 12D : les surfaces usées sont une partition des triangles d'origine. Ni décalque flottant, ni
   // seconde peau coplanaire : coordonnées, normales et diamètre restent strictement les mêmes.
   // Les quatre pièces gardent le même repère normalisé que le pneu entier, même si leur boîte est plus petite.
@@ -524,9 +542,13 @@
           let groupe = 0;
           if (fond) groupe = 4;
           else if (dessus) {
-            const angle = (Math.atan2(z, x) + 2 * Math.PI) % (2 * Math.PI), secteur = Math.floor(angle * 48 / (2 * Math.PI));
-            const voie = y < -b / 3 ? 0 : y > b / 3 ? 2 : 1, h = Math.imul(secteur + voie * 79 + 1, 0x45d9f3b);
-            groupe = 1 + ((h ^ h >>> 16) >>> 0) % 3;
+            // Champ continu autour du pneu, gauchi dans la largeur : pas de damier secteur × voie ni de
+            // répétition en miroir. Calculé une fois au chargement, il reste fixe dans le caoutchouc qui tourne.
+            const angle = Math.atan2(z, x), travers = y / b, phase = essieu === 'av' ? .73 : 2.17;
+            const grain = Math.sin(3 * angle + phase + 2.1 * travers)
+              + .48 * Math.sin(7 * angle - 5.3 * travers + 2 * phase)
+              + .22 * Math.cos(13 * angle + 3 * travers + 3 * phase);
+            groupe = grain < -.38 ? 1 : grain > .42 ? 3 : 2;
           }
           groupes[groupe].push(tri);
         }
@@ -668,14 +690,16 @@
     Moy(P('box', [-2.05, .90, 0], [.32, .035, 1.10], PEINTURE, c2, AR({ m: euler(0, 0, -.12) })));
     Moy(P('box', [-2.18, .95, 0], [.12, .025, 1.08], PEINTURE, c2, AR({ m: euler(0, 0, -.5) })));
     Moy(L('derives-arriere', PEINTURE, c1, AR()));
-    // Chaque pneu porte sa vraie sculpture. La bande neuve d'un slick reste lisse ; les marques de craie sont sur
-    // ses flancs. Les variantes gardent les cotes et tournent dans le même repère (braquage, distance, suspension).
+    // Chaque pneu porte sa vraie sculpture. La bande neuve d'un slick reste lisse ; pas de barrettes de craie
+    // blanches sur ses flancs. Une petite valve arrondie reste un repère de rotation sur le côté extérieur.
+    // L'orientation de montage varie d'une roue à l'autre, déterministe pour la livrée et sans hasard par image.
+    const phasesRoues = ROUES.map((w, i) => (Math.imul((livree.numero || 0) ^ Math.imul(i + 1, 0x9e3779b9), 0x85ebca6b) >>> 0) / 4294967296 * 2 * Math.PI);
     const typePneus = B.pneus ? B.pneus.normaliserType(livree.pneus)
       : typeof livree.pneus === 'string' && Object.prototype.hasOwnProperty.call(PNEUS_TYPES, livree.pneus) ? livree.pneus : 'slicks';
     const pneus = PNEUS_TYPES[typePneus];
     ROUES.forEach((w, i) => {
-      const base = { roue: i, m: ROUE_AXE, arriere: !w.avant, tourne: 0 }, essieu = w.avant ? 'av' : 'ar';
-      const jante = JANTES_FORMES[essieu], k = Math.sign(w.z), flanc = (JANTE_R + w.r) / 2;
+      const base = { roue: i, m: ROUE_AXE, arriere: !w.avant, tourne: phasesRoues[i] }, essieu = w.avant ? 'av' : 'ar';
+      const jante = JANTES_FORMES[essieu], k = Math.sign(w.z);
       const pieceRoue = (formes, mat, couleur, extra) => P(formes[0].nom, [w.x, w.r, w.z], formes[0].taille, mat, couleur,
         Object.assign({ formesRoues: formes }, base, extra));
       const surfaces = MATIERES_PNEUS[essieu][typePneus];
@@ -687,11 +711,12 @@
         { pneu: typePneus, usureRoue: 5, profondeur: typePneus === 'neige' ? .009 : typePneus === 'pluie' ? .007 : .004, detailRoueMax: 1 }));
       Moy(pieceRoue(jante.fut, METAL_MAT, SOMBRE));
       Moy(pieceRoue(jante.rayons, METAL_MAT, JANTE));
-      Moy(P('cylinder', [w.x, w.r, w.z], [.07, w.l + .032, .07], METAL_MAT, JANTE, base));
+      Moy(pieceRoue(jante.moyeu, METAL_MAT, FOND_JANTE));
       pieceRoue(DISQUES_ROUE, METAL_MAT, [.40, .40, .42], { decale: [0, -k * (w.l / 2 - .055), 0], detailRoueMax: 1 });
       pieceRoue(jante.bague, MAT, pneus.cercle, { pneus: typePneus, detailRoueMax: 1 });
-      for (const cote of [-1, 1]) for (const a of [0, Math.PI]) P('box', [w.x, w.r, w.z], [.045, .002, .010], MAT, CRAIE,
-        Object.assign({}, base, { tourne: a, decale: [flanc, cote * (w.l / 2 + .0025), 0], detailRoueMax: 1 }));
+      const valve = FORMES['valve-roue'];
+      P(valve.nom, [w.x, w.r, w.z], valve.taille, MAT, [.20, .18, .13],
+        Object.assign({}, base, { decale: [.145, k * (w.l / 2 - .016), 0], detailRoueMax: 1 }));
     });
 
     // Version lointaine : trois carènes à huit côtés, les ailerons, le casque et les quatre roues
@@ -703,11 +728,12 @@
       piece('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque, { tetePilote: true }));
     ROUES.forEach((w, i) => {
       const formes = ROUES_FORMES[w.avant ? 'av' : 'ar'][typePneus], f = formes[3];
-      simples.push(piece(f.nom, [w.x, w.r, w.z], f.taille, MAT, PNEU, { m: ROUE_AXE, roue: i, tourne: 0, formesRoues: formes, usureRoue: 1 }));
+      simples.push(piece(f.nom, [w.x, w.r, w.z], f.taille, MAT, PNEU, { m: ROUE_AXE, roue: i, tourne: phasesRoues[i], formesRoues: formes, usureRoue: 1 }));
     });
     // Après casse, ne reste que la cellule du pilote et l'arceau ; roues et carrosserie sont des débris.
     const epave = corps.filter(p => p.pilote || ['cuve', 'goutte', 'goutte-dedans', 'arceau'].some(n => p.shape === FORMES[n].nom));
     const mod = { corps, simples, epave, moyens: corps.filter(p => moyennes.has(p)), livree };
+    B.cockpitMatieres?.pilote(corps);
     preparer(mod);
     return mod;
   }
@@ -735,8 +761,9 @@
     for (let i = 0; i < ROUES.length; i++) {
       if (mod.corps.some(p => p.roue === i && p.usureRoue === 5)) continue;
       const w = ROUES[i], surfaces = MATIERES_PNEUS[w.avant ? 'av' : 'ar'].slicks[0];
+      const pneu = mod.corps.find(p => p.roue === i && p.usureRoue === 1);
       const support = piece(surfaces[0].nom, [w.x, w.r, w.z], surfaces[0].taille, MAT, PNEU,
-        { roue: i, m: ROUE_AXE, arriere: !w.avant, tourne: 0, formesRoues: surfaces,
+        { roue: i, m: ROUE_AXE, arriere: !w.avant, tourne: pneu.tourne, formesRoues: surfaces,
           pneu: 'slicks', usureRoue: 5, profondeur: 0, detailRoueMax: -1 });
       for (const liste of [mod.corps, mod.moyens]) {
         const k = liste.findIndex(p => p.roue === i && p.usureRoue === 4);
@@ -949,9 +976,9 @@
       for (let k = 0; k < 3; k++) {
         const base = PNEU[k] + .012 * u + (k === 0 ? .052 : k === 1 ? .042 : .025) * s;
         valeurs[j + 1 + k] = base;
-        valeurs[j + 4 + k] = base + .026 * u * (1 - .5 * g) * a;
-        valeurs[j + 7 + k] = base + (.036 * u + .032 * g) * b;
-        valeurs[j + 10 + k] = base + (k === 0 ? .11 : k === 1 ? .077 : .037) * s * c - .004 * u * c;
+        valeurs[j + 4 + k] = base + .012 * u * (1 - .5 * g) * a;
+        valeurs[j + 7 + k] = base + (.018 * u + .012 * g) * b;
+        valeurs[j + 10 + k] = base + (k === 0 ? .040 : k === 1 ? .030 : .017) * s * c - .003 * u * c;
       }
     }
   }
@@ -1160,6 +1187,10 @@
   const MAIN = B.main.construire(), MAIN_OUVERT = B.main.construire(true);
   for (const [cote, t] of [['d', x => x], ['g', C.miroir]]) for (const piece of ['gant', 'paume', 'garde', 'poignet', 'sangle']) forme('main-' + piece + '-' + cote, t(MAIN[piece]));
   forme('main-gant-d-ouvert', MAIN_OUVERT.gant);                  // cockpit-3 : doigts ouverts pendant le trajet au pommeau
+  // Quatre prises intermédiaires, préparées une fois : les doigts se délient avant que le poignet recule.
+  const PRISES_MAIN = ['main-gant-d'];
+  for (let n = 1; n < 5; n++) { const nom = 'main-gant-d-prise-' + n; forme(nom, B.main.construire(n / 5).gant); PRISES_MAIN.push(nom); }
+  PRISES_MAIN.push('main-gant-d-ouvert');
   const clarte = c => .3 * c[0] + .59 * c[1] + .11 * c[2], ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
   // Courbes de l'habitacle, écrites en place dans habitacle et majVolant (aucun appel par pose) : borner(x, a, b) vaut
   // x < a ? a : x > b ? b : x ; lisse(a, b, x) vaut u·u·(3 − 2u), u = borner((x − a) / (b − a), 0, 1). Position du
@@ -1174,7 +1205,10 @@
     const e = etatRendu(mod), M = attitudeDans(MS, ev);
     poserTable(tableDe(e, mod, etat.casse ? EPAVE : CORPS, 3), M, ev, sortie, etat.roues, false,
       etat.rouesDetail === undefined ? 0 : Math.max(0, Math.min(3, etat.rouesDetail | 0)));
-    habitacle(e.habitacle || (e.habitacle = construireHabitacle(mod)), M, ev, sortie, etat);
+    const H = e.habitacle || (e.habitacle = construireHabitacle(mod));
+    const articule = !!ev.pilote;
+    if (H.piloteReel !== articule) { H.piloteReel = articule; H.pret = false; }
+    habitacle(H, M, ev, sortie, etat);
     return imbriquee(e.M3, M);
   }
 
@@ -1217,7 +1251,8 @@
     const liv = mod.livree, c1 = liv.couleur, c2 = liv.seconde || BLANC;
     const H = { rotM: trois(), epoque: 0, c2, pret: false, cle: new Float64Array(6), planche: [], lampe: null, alerte: null, aiguilles: [],
       rapport: null, diagonale: null, vitesse: [], volant: [], rJante: null, jante: null, branches: null, rCaches: null, caches: [], vis: [],
-      ruban: null, tige: null, pommeau: null, mains: null, glaces: [] };
+      ruban: null, tige: null, pommeau: null, mains: null, glaces: [],
+      piloteReel: false, articulations: new Float64Array(18) };
     const reperes = [];
     const repere = m => {   // repère fixe, partagé par les pièces de même rotation
       const f = aplatir(m);
@@ -1304,6 +1339,7 @@
       PIECES_MAIN.forEach((nom, q) => {
         const ferme = variante('main-' + nom + '-' + cote), e = emplacement(ferme.nom, ferme.s, TISSU, couleurs[q], rep, undefined);
         e.ferme = ferme; e.ouvert = k > 0 && nom === 'gant' ? variante('main-gant-d-ouvert') : ferme;
+        e.prises = k > 0 && nom === 'gant' ? PRISES_MAIN.map(variante) : null;
         main.pieces.push(e); V.push(e);
       });
       for (let n = 1; n <= 6; n++) {
@@ -1332,33 +1368,35 @@
       }
       H.glaces.push(G);
     }
-    return H;
+    return B.cockpitMatieres ? B.cockpitMatieres.habitacle(H) : H;
   }
 
   // Pilote extérieur : la même cinématique de prise/levier que le cockpit, ramenée à la taille du corps réel.
   // ev.pilote = { volant, rapport, rapportAvant, passage } est un objet permanent fourni par jeu.js. L'animation
   // est une fonction de cette pose : ni horloge cachée, ni avancement par caméra, ni écriture dans la simulation.
   // Sans ce champ, les anciennes poses et leurs empreintes restent strictement inchangées.
-  const PILOTE_COU = [0, .772, 0], PILOTE_RECUL = -.10, PILOTE_VOLANT = [.28, .77, 0], PILOTE_ECHELLE = .9 / K;
+  const PILOTE_COU = [0, .772, 0], PILOTE_RECUL = -.10, PILOTE_VOLANT = [.25, .70, 0], PILOTE_ECHELLE = .9 / K;
   const PILOTE_DECALAGE = PILOTE_VOLANT.map((v, i) => v - (OEIL[i] + K * CV[i]) * PILOTE_ECHELLE);
   // Les places du cockpit sont choisies pour son cadrage. Leur homothétie seule plaçait le pied du levier dans
   // le flanc droit. Les ancrages extérieurs sont mesurés dans la cellule : volant avancé, levier à l'intérieur
   // du jonc. La main droite applique le même déplacement à la cible de sa courbe, sans déformer le gant.
-  const PILOTE_LEVIER = [.20, .745, .17];
+  const PILOTE_LEVIER = [.18, .57, .16];
   const PILOTE_LEVIER_DECALAGE = PILOTE_LEVIER.map((v, i) => v - PILOTE_DECALAGE[i] - PILOTE_ECHELLE * (OEIL[i] + K * LEVIER[i]));
-  const PILOTE_PIED_LEVIER = PILOTE_LEVIER.map((v, i) => v + .9 * (PIED[i] - LEVIER[i]));
+  // Pied au-dessus du fond réel de la cuve (y ≈ .48), serti dans la console à y .50.
+  const PILOTE_PIED_LEVIER = [PILOTE_LEVIER[0], .50, PILOTE_LEVIER[2] + .0108];
   // Le pied est fixé à une petite console arrondie, elle-même ancrée dans le fond de la cuve. Son sommet
   // reçoit les deux derniers millimètres de la tige ; le reste du débattement est libre dans l'habitacle.
   forme('console-levier-pilote', C.carene([
-    { x: PILOTE_PIED_LEVIER[0] - .06, y0: .43, y1: .57, l: .012, n: 3, z: PILOTE_PIED_LEVIER[2] },
-    { x: PILOTE_PIED_LEVIER[0] - .025, y0: .43, y1: PILOTE_PIED_LEVIER[1] + .002, l: .030, n: 4, z: PILOTE_PIED_LEVIER[2] },
-    { x: PILOTE_PIED_LEVIER[0] + .025, y0: .43, y1: PILOTE_PIED_LEVIER[1] + .002, l: .030, n: 4, z: PILOTE_PIED_LEVIER[2] },
-    { x: PILOTE_PIED_LEVIER[0] + .06, y0: .43, y1: .57, l: .012, n: 3, z: PILOTE_PIED_LEVIER[2] }
+    { x: PILOTE_PIED_LEVIER[0] - .06, y0: .415, y1: PILOTE_PIED_LEVIER[1] - .012, l: .012, n: 3, z: PILOTE_PIED_LEVIER[2] },
+    { x: PILOTE_PIED_LEVIER[0] - .025, y0: .415, y1: PILOTE_PIED_LEVIER[1] + .002, l: .030, n: 4, z: PILOTE_PIED_LEVIER[2] },
+    { x: PILOTE_PIED_LEVIER[0] + .025, y0: .415, y1: PILOTE_PIED_LEVIER[1] + .002, l: .030, n: 4, z: PILOTE_PIED_LEVIER[2] },
+    { x: PILOTE_PIED_LEVIER[0] + .06, y0: .415, y1: PILOTE_PIED_LEVIER[1] - .012, l: .012, n: 3, z: PILOTE_PIED_LEVIER[2] }
   ], { cotes: 16, pas: 3 }));
 
   function construirePiloteExterieur(mod, H) {
     const liv = mod.livree, combi = liv.combinaison || liv.couleur.map(v => v * .7);
-    const R = { habitacle: H, tete: new Float64Array(9), articulations: new Float64Array(18), decalageMain: new Float64Array(3), variantes: [] };
+    const tissuPilote = B.cockpitMatieres ? B.cockpitMatieres.tissu : TISSU;
+    const R = { habitacle: H, tete: new Float64Array(9), articulations: H.articulations, variantes: [] };
     // Une réserve par LOD/overlay et par rétroviseur : aucune place, rotation ou taille ne passe d'une vue à l'autre.
     for (let variante = 0; variante < 10; variante++) {
       const li = variante < 8 ? variante >> 1 : variante === 8 ? CORPS : EPAVE;
@@ -1372,7 +1410,7 @@
       const ajouter = (role, source, simple) => {
         const o = objet(simple || source.objet.shape, source.objet.mat, source.objet.color);
         if (!source.rep) o.r = V.rotM;
-        V.pieces.push({ role, source, simple, levier: role === 'levier' || role === 'pommeau', mainLevier: role.startsWith('gant-1-'), objet: o });
+        V.pieces.push({ role, source, simple, objet: o });
       };
       ajouter('volant', H.jante, niveau === 2 ? 'cylinder' : null);
       if (niveau < 2) ajouter('branches', H.branches, null);
@@ -1383,19 +1421,24 @@
         V.pieces.push({ role: 'console-levier', fixe: f.centre, objet: o });
       }
       if (niveau > 0) {
-        const o = objet('sphere', TISSU, combi); o.s[0] = .30; o.s[1] = .20; o.s[2] = .38; o.r = V.rotM;
+        const o = objet('sphere', tissuPilote, combi); o.s[0] = .30; o.s[1] = .20; o.s[2] = .38; o.r = V.rotM;
         V.pieces.push({ role: 'buste', fixe: [-.04 + PILOTE_RECUL, .66, 0], objet: o });
       }
       for (let h = 0; h < 2; h++) {
         const main = H.mains[h], j = h * 9;
         for (let q = 0; q < (niveau === 0 ? main.pieces.length : 1); q++)
           ajouter('gant-' + h + '-' + q, main.pieces[q], niveau === 2 ? 'sphere' : null);
-        for (let os = 0; os < 2; os++) {
-          const o = objet('cylinder', TISSU, combi); o.s[0] = o.s[2] = os === 0 ? .075 : .065;
-          V.pieces.push({ role: (os === 0 ? 'bras-' : 'avant-bras-') + h, de: j + os * 3, a: j + (os + 1) * 3,
+        {
+          const o = objet('sphere', tissuPilote, combi); o.s[0] = o.s[2] = .075;
+          V.pieces.push({ role: 'bras-' + h, de: j, a: j + 3,
             m: new Float64Array(9), objet: o });
         }
-        const o = objet('sphere', TISSU, combi); o.s[0] = o.s[1] = o.s[2] = .075; o.r = V.rotM;
+        // Les avant-bras sont les mêmes manches articulées que dans l'habitacle : aucune seconde pose IK.
+        for (let n = 0; n < main.tubes.length; n++) {
+          ajouter(n === 0 ? 'avant-bras-' + h : 'avant-bras-' + h + '-' + n, main.tubes[n], null);
+          ajouter('manche-joint-' + h + '-' + n, main.boules[n], null);
+        }
+        const o = objet('sphere', tissuPilote, combi); o.s[0] = o.s[1] = o.s[2] = .075; o.r = V.rotM;
         V.pieces.push({ role: 'coude-' + h, joint: j + 3, objet: o });
       }
       R.variantes.push(V);
@@ -1405,6 +1448,7 @@
 
   function preparerPiloteExterieur(R, etat) {
     const H = R.habitacle, cle = H.cle;
+    if (!H.piloteReel) { H.piloteReel = true; H.pret = false; }
     let volant = Number.isFinite(etat.volant) ? etat.volant : 0;
     volant = volant < -1 ? -1 : volant > 1 ? 1 : volant;
     let t = Number.isFinite(etat.passage) ? etat.passage : 1;
@@ -1423,34 +1467,35 @@
     let u = t / .3, retour = (t - .65) / .35;
     u = u < 0 ? 0 : u > 1 ? 1 : u; retour = retour < 0 ? 0 : retour > 1 ? 1 : retour;
     const prise = u * u * (3 - 2 * u) * (1 - retour * retour * (3 - 2 * retour));
-    // La cible figure dans le point de contrôle et l'arrivée du Bézier : poids 2p(1-p)+p².
-    const poidsLevier = prise * (2 - prise);
-    for (let k = 0; k < 3; k++) R.decalageMain[k] = PILOTE_LEVIER_DECALAGE[k] * poidsLevier;
     ANG[0] = -(.22 * volant + .10 * prise); ANG[1] = -.10 * prise; ANG[2] = -.035 * volant;
     produitDans(R.tete, eulerDe(T_A, ANG, 0, 1), produitDans(T_B, eulerDe(T_C, ANG, 1, 2), eulerDe(T_D, ANG, 2, 0)));
 
-    // Deux segments de longueur constante, coudes écartés au-dessus du bord du cockpit. Les trois LOD
-    // lisent ces mêmes articulations ; seul le détail des gants et du volant change avec la caméra.
-    const A = R.articulations, haut = .22, avant = .23;
-    for (let h = 0; h < 2; h++) {
-      const j = h * 9, cote = h === 0 ? -1 : 1, poignet = H.mains[h].pieces[3].o;
-      A[j] = -.025 + PILOTE_RECUL; A[j + 1] = .705; A[j + 2] = cote * .165;
-      A[j + 6] = PILOTE_DECALAGE[0] + PILOTE_ECHELLE * poignet[0] + (h === 1 ? R.decalageMain[0] : 0);
-      A[j + 7] = PILOTE_DECALAGE[1] + PILOTE_ECHELLE * poignet[1] + (h === 1 ? R.decalageMain[1] : 0);
-      A[j + 8] = PILOTE_DECALAGE[2] + PILOTE_ECHELLE * poignet[2] + (h === 1 ? R.decalageMain[2] : 0);
-      const dx = A[j + 6] - A[j], dy = A[j + 7] - A[j + 1], dz = A[j + 8] - A[j + 2];
-      const distance = Math.max(1e-9, Math.sqrt(dx * dx + dy * dy + dz * dz)), ux = dx / distance, uy = dy / distance, uz = dz / distance;
-      const projection = .65 * uy + cote * uz;
-      let bx = -ux * projection, by = .65 - uy * projection, bz = cote - uz * projection;
-      let normeB = Math.sqrt(bx * bx + by * by + bz * bz);
-      if (normeB < 1e-9) { bx = -uz; by = 0; bz = ux; normeB = Math.sqrt(bx * bx + bz * bz); }
-      if (normeB < 1e-9) { bx = 1; by = 0; bz = 0; normeB = 1; }
-      const avance = (haut * haut - avant * avant + distance * distance) / (2 * distance);
-      const ecartCoude = Math.sqrt(Math.max(0, haut * haut - avance * avance)) / normeB;
-      A[j + 3] = A[j] + ux * avance + bx * ecartCoude;
-      A[j + 4] = A[j + 1] + uy * avance + by * ecartCoude;
-      A[j + 5] = A[j + 2] + uz * avance + bz * ecartCoude;
-    }
+    // Les articulations sont calculées dans majVolant, en même temps que les mains et les manches.
+    // R partage directement les tableaux de l'habitacle : changer de vue ne peut pas inverser les coudes.
+  }
+
+  function articulationPilote(H, h) {
+    const A = H.articulations, j = h * 9, cote = h === 0 ? -1 : 1;
+    // La prise dégagée demande jusqu'à 43,6 cm de portée. Ces 21/23 cm gardent les os constants,
+    // avec le coude au-dessus du fond réel de la cuve ; aucun allongement pendant le geste.
+    const poignet = H.mains[h].pieces[3].o, haut = .21, avant = .23;
+    A[j] = -.025 + PILOTE_RECUL; A[j + 1] = .73; A[j + 2] = cote * .14;
+    for (let k = 0; k < 3; k++) A[j + 6 + k] = PILOTE_DECALAGE[k] + PILOTE_ECHELLE * poignet[k];
+    const dx = A[j + 6] - A[j], dy = A[j + 7] - A[j + 1], dz = A[j + 8] - A[j + 2];
+    const distance = Math.max(1e-9, Math.sqrt(dx * dx + dy * dy + dz * dz)), ux = dx / distance, uy = dy / distance, uz = dz / distance;
+    // Pli vers le bas de la cuve. L'ancien pôle positif (.65, ±1) levait et écartait les coudes.
+    // Aucun terme latéral : la flexion reste près du buste, à l'intérieur des flancs.
+    let bx = ux * uy, by = -1 + uy * uy, bz = uz * uy;
+    let norme = Math.sqrt(bx * bx + by * by + bz * bz);
+    if (norme < 1e-9) { bx = -uz; by = 0; bz = ux; norme = Math.sqrt(bx * bx + bz * bz); }
+    if (norme < 1e-9) { bx = 1; by = 0; bz = 0; norme = 1; }
+    const avance = (haut * haut - avant * avant + distance * distance) / (2 * distance);
+    const rayon = Math.sqrt(Math.max(0, haut * haut - avance * avance)) / norme;
+    A[j + 3] = A[j] + ux * avance + bx * rayon;
+    A[j + 4] = A[j + 1] + uy * avance + by * rayon;
+    A[j + 5] = A[j + 2] + uz * avance + bz * rayon;
+    const co = H.mains[h].coude;
+    for (let k = 0; k < 3; k++) co[k] = ((A[j + 3 + k] - PILOTE_DECALAGE[k]) / PILOTE_ECHELLE - OEIL[k]) / K;
   }
 
   function poserPiloteExterieur(R, variante, M, ev, sortie, retro) {
@@ -1465,8 +1510,8 @@
         x = PILOTE_DECALAGE[0] + PILOTE_ECHELLE * local[0];
         y = PILOTE_DECALAGE[1] + PILOTE_ECHELLE * local[1];
         z = PILOTE_DECALAGE[2] + PILOTE_ECHELLE * local[2];
-        if (e.levier) { x += PILOTE_LEVIER_DECALAGE[0]; y += PILOTE_LEVIER_DECALAGE[1]; z += PILOTE_LEVIER_DECALAGE[2]; }
-        else if (e.mainLevier) { x += R.decalageMain[0]; y += R.decalageMain[1]; z += R.decalageMain[2]; }
+        // Les décalages de commandes appartiennent désormais au modèle commun préparé dans majVolant.
+        // Ici il ne reste que le changement d'échelle/cadrage global de la vue extérieure.
         objet.shape = e.simple || source.objet.shape;
         objet.s[0] = PILOTE_ECHELLE * taille[0]; objet.s[1] = PILOTE_ECHELLE * taille[1]; objet.s[2] = PILOTE_ECHELLE * taille[2];
         if (source.rep) anglesProduit(objet.r, M, source.rep.m);
@@ -1573,9 +1618,9 @@
   // Volant : jante gainée, trois branches d'aluminium ajourées, flasque, cache et vis, ruban blanc en haut de la jante.
   // Mains : un seul maillage par main (src/main.js), fixe dans le repère de la jante, à 9 h et 3 h sur les branches,
   // comme dans vroom-unreal : doigts serrés autour du tube, pouce couché le long de la jante. La manche de la
-  // combinaison sort de la manchette dans l'axe de la main, droite sur 8 cm, puis descend vers le coude fixé à la
-  // caisse sous l'image (courbe de Bézier de vroom-unreal). Pendant un changement de rapport, la main droite va au
-  // pommeau, s'y pose paume vers le bas, puis revient.
+  // combinaison sort de la manchette dans l'axe de la main, puis descend vers le coude articulé dans la cuve.
+  // L'ancien cadrage isolé conserve son coude sous l'image. Pendant un changement de rapport, la main droite
+  // va au pommeau, s'y pose paume vers le bas, puis revient.
   function majVolant(H) {
     const cle = H.cle, phi = cle[0], t = cle[1], gAx = cle[2], gAy = cle[3], gBx = cle[4], gBy = cle[5];
     const cp = Math.cos(phi), sp = Math.sin(phi), J = H.rJante.m;
@@ -1600,47 +1645,87 @@
     { const o = H.ruban.o; o[0] = CV[0] + U[0] * RV; o[1] = CV[1] + U[1] * RV; o[2] = CV[2] + U[2] * RV; versVoiture(o); }
     AXE[0] = RD[0]; AXE[1] = RD[1]; AXE[2] = RD[2]; selonAxeDans(H.ruban.rep.m, AXE);
     // Levier de vitesses à droite : tige et pommeau d'aluminium, qui passe d'une position de la grille à l'autre
-    let u = (t - .25) / (.6 - .25); u = u < 0 ? 0 : u > 1 ? 1 : u;
-    const w = u * u * (3 - 2 * u), pX = LEVIER[0] + gAx + (gBx - gAx) * w, pY = LEVIER[1], pZ = LEVIER[2] + gAy + (gBy - gAy) * w;
-    const tx = pX - PIED[0], ty = pY - PIED[1], tz = pZ - PIED[2];
-    { const o = H.tige.o; o[0] = PIED[0] + tx * .5; o[1] = PIED[1] + ty * .5; o[2] = PIED[2] + tz * .5; versVoiture(o); }
+    let u = H.piloteReel ? (t - .46) / (.62 - .46) : (t - .25) / (.6 - .25); u = u < 0 ? 0 : u > 1 ? 1 : u;
+    const ax = H.piloteReel ? PILOTE_LEVIER_DECALAGE[0] / .9 : 0;
+    const ay = H.piloteReel ? PILOTE_LEVIER_DECALAGE[1] / .9 : 0;
+    const az = H.piloteReel ? PILOTE_LEVIER_DECALAGE[2] / .9 : 0;
+    const w = u * u * (3 - 2 * u), pX = LEVIER[0] + gAx + (gBx - gAx) * w + ax, pY = LEVIER[1] + ay, pZ = LEVIER[2] + gAy + (gBy - gAy) * w + az;
+    const piedY = H.piloteReel ? LEVIER[1] + ay + (PILOTE_PIED_LEVIER[1] - PILOTE_LEVIER[1]) / .9 : PIED[1];
+    const tx = pX - (PIED[0] + ax), ty = pY - piedY, tz = pZ - (PIED[2] + az);
+    { const o = H.tige.o; o[0] = PIED[0] + ax + tx * .5; o[1] = piedY + ty * .5; o[2] = PIED[2] + az + tz * .5; versVoiture(o); }
     AXE[0] = tx; AXE[1] = ty; AXE[2] = tz; hypotDans(AXE, 3);
     H.tige.objet.s[1] = AXE[3] * K;
     selonAxeDans(H.tige.rep.m, AXE);
     { const o = H.pommeau.o; o[0] = pX; o[1] = pY; o[2] = pZ; versVoiture(o); }
-    u = (t - 0) / (.3 - 0); u = u < 0 ? 0 : u > 1 ? 1 : u;
-    let u2 = (t - .65) / (1 - .65); u2 = u2 < 0 ? 0 : u2 > 1 ? 1 : u2;
+    u = H.piloteReel ? (t - .24) / (.44 - .24) : t / .3; u = u < 0 ? 0 : u > 1 ? 1 : u;
+    let u2 = H.piloteReel ? (t - .64) / (.80 - .64) : (t - .65) / (1 - .65); u2 = u2 < 0 ? 0 : u2 > 1 ? 1 : u2;
     const vl = u * u * (3 - 2 * u) * (1 - u2 * u2 * (3 - 2 * u2)), cP = Math.cos(PRISE), sP = Math.sin(PRISE);
+    // Un passage dure .36 s : 36 ms pour déplier les doigts, puis recul doux du poignet avant son trajet.
+    // Au retour, la main rejoint la jante avant de refermer la prise. Les deux vues lisent ces mêmes phases.
+    let ouvrir = t / .10, fermer = (t - .94) / .06, sortir = (t - .10) / .04, rentrer = (t - .90) / .04;
+    ouvrir = ouvrir < 0 ? 0 : ouvrir > 1 ? 1 : ouvrir; fermer = fermer < 0 ? 0 : fermer > 1 ? 1 : fermer;
+    sortir = sortir < 0 ? 0 : sortir > 1 ? 1 : sortir; rentrer = rentrer < 0 ? 0 : rentrer > 1 ? 1 : rentrer;
+    const ouverture = ouvrir * ouvrir * (3 - 2 * ouvrir) * (1 - fermer * fermer * (3 - 2 * fermer));
+    const radial = sortir * sortir * (3 - 2 * sortir) * (1 - rentrer * rentrer * (3 - 2 * rentrer));
+    let reculer = (t - .14) / .10, avancer = (t - .80) / .10;
+    reculer = reculer < 0 ? 0 : reculer > 1 ? 1 : reculer; avancer = avancer < 0 ? 0 : avancer > 1 ? 1 : avancer;
+    const retrait = reculer * reculer * (3 - 2 * reculer) * (1 - avancer * avancer * (3 - 2 * avancer));
     for (let h = 0; h < 2; h++) {
       const main = H.mains[h], k = main.k, F = main.rep.m, co = main.coude;
       // repère de la prise : x vers le pilote, y le long de la jante vers le haut, z vers le moyeu (miroir à gauche)
       for (let i = 0; i < 3; i++) { const rk = RD[i] * k; EX[i] = U[i] * cP + rk * sP; HT[i] = U[i] * sP - rk * cP; }
       let gx = CV[0] + EX[0] * RV, gy = CV[1] + EX[1] * RV, gz = CV[2] + EX[2] * RV, ecart = 0;
       F[0] = WN[0]; F[1] = WN[1]; F[2] = WN[2]; F[3] = HT[0]; F[4] = HT[1]; F[5] = HT[2]; F[6] = -k * EX[0]; F[7] = -k * EX[1]; F[8] = -k * EX[2];
-      if (k > 0 && vl > 0) {
-        const ciX = (pX + WN[0] * .020) + WU[0] * .030, ciY = (pY + WN[1] * .020) + WU[1] * .030, ciZ = (pZ + WN[2] * .020) + WU[2] * .030;
+      if (k > 0 && (vl > 0 || H.piloteReel && ouverture > 0)) {
+        // La paume rejoint réellement le pommeau (jeu de 0,9 mm), au lieu de flotter 18 mm au-dessus.
+        const reculPaume = H.piloteReel ? 0 : .020, leveePaume = H.piloteReel ? .008 : .030;
+        const ciX = (pX + WN[0] * reculPaume) + WU[0] * leveePaume, ciY = (pY + WN[1] * reculPaume) + WU[1] * leveePaume, ciZ = (pZ + WN[2] * reculPaume) + WU[2] * leveePaume;
         // cockpit-3 : doigts fermés, ils traversaient le tore de la jante (jusqu'à 12,5 mm) et la branche de 3 h
         // pendant le trajet ; la main s'écarte d'abord vers le dehors et vers le pilote avant de tourner, et le
         // gant passe en variante doigts ouverts dès qu'il ne touche plus le tube (ecart à fond)
-        ecart = Math.min(t, 1 - t) / .02; ecart = ecart < 0 ? 0 : ecart > 1 ? 1 : ecart;
-        gx = gx + EX[0] * .016 * ecart + WN[0] * .016 * ecart; gy = gy + EX[1] * .016 * ecart + WN[1] * .016 * ecart; gz = gz + EX[2] * .016 * ecart + WN[2] * .016 * ecart;
-        // cockpit-3 (suite) : en ligne droite les doigts piquaient dans la boule du pommeau en vol (35 mm à
-        // t 0,15) ; le trajet devient un arc de Bézier qui passe 15 cm au-dessus, la main retombe dessus
-        const soX = ciX + WU[0] * .15, soY = ciY + WU[1] * .15, soZ = ciZ + WU[2] * .15;
-        gx = gx * (1 - vl) ** 2 + soX * 2 * vl * (1 - vl) + ciX * vl ** 2; gy = gy * (1 - vl) ** 2 + soY * 2 * vl * (1 - vl) + ciY * vl ** 2; gz = gz * (1 - vl) ** 2 + soZ * 2 * vl * (1 - vl) + ciZ * vl ** 2;
+        ecart = H.piloteReel ? ouverture : Math.min(t, 1 - t) / .02; ecart = ecart < 0 ? 0 : ecart > 1 ? 1 : ecart;
+        const mouvement = H.piloteReel ? retrait : ecart, dehors = H.piloteReel ? radial : ecart, degagement = H.piloteReel ? .020 : .016, reculPrise = H.piloteReel ? .060 : .016;
+        gx = gx + EX[0] * degagement * dehors + WN[0] * reculPrise * mouvement; gy = gy + EX[1] * degagement * dehors + WN[1] * reculPrise * mouvement; gz = gz + EX[2] * degagement * dehors + WN[2] * reculPrise * mouvement;
+        // Point de contrôle surélevé du Bézier : la main contourne le pommeau avant de s'y poser.
+        // Le cadrage isolé garde sa courbe historique ; le pilote commun porte cette courbe au poignet.
+        const reculTrajet = 0, hauteurTrajet = H.piloteReel ? .28 : .15;
+        // Courbe du poignet, puis pose du gant autour de ce poignet. La courbe de l'ancien cadrage portait
+        // le point de prise : le pivot du gant emportait alors la manchette au travers du pommeau.
+        const poignet = main.pieces[3].ferme.c;
+        let cibleX = ciX, cibleY = ciY, cibleZ = ciZ;
+        if (H.piloteReel) {
+          const wx = F[0] * poignet[0] + F[3] * poignet[1] + F[6] * poignet[2], wy = F[1] * poignet[0] + F[4] * poignet[1] + F[7] * poignet[2], wz = F[2] * poignet[0] + F[5] * poignet[1] + F[8] * poignet[2];
+          const c = Math.cos(Math.PI / 2 + phi), s = Math.sin(Math.PI / 2 + phi), d = WN[0] * wx + WN[1] * wy;
+          gx += wx; gy += wy; gz += wz;
+          cibleX += wx * c + WN[1] * wz * s + WN[0] * d * (1 - c);
+          cibleY += wy * c - WN[0] * wz * s + WN[1] * d * (1 - c);
+          cibleZ += wz * c + (WN[0] * wy - WN[1] * wx) * s;
+        }
+        // La main passe au-dessus et à l'intérieur du pommeau, puis repose sa paume dessus.
+        const soX = cibleX + WU[0] * hauteurTrajet + WN[0] * reculTrajet, soY = cibleY + WU[1] * hauteurTrajet + WN[1] * reculTrajet, soZ = cibleZ + WU[2] * hauteurTrajet + WN[2] * reculTrajet - (H.piloteReel ? .10 : 0);
+        gx = gx * (1 - vl) ** 2 + soX * 2 * vl * (1 - vl) + cibleX * vl ** 2; gy = gy * (1 - vl) ** 2 + soY * 2 * vl * (1 - vl) + cibleY * vl ** 2; gz = gz * (1 - vl) ** 2 + soZ * 2 * vl * (1 - vl) + cibleZ * vl ** 2;
         // cockpit-4 : le repère de départ porte déjà −phi ; sans le +phi, la paume restait tournée du braquage au
         // pommeau (91,5° du bas volant à fond)
-        let a = (t - 0) / (.10 - 0); a = a < 0 ? 0 : a > 1 ? 1 : a;
-        let b = (t - .86) / (1 - .86); b = b < 0 ? 0 : b > 1 ? 1 : b;
+        // La main se dégage avant de pivoter et retrouve l'angle de la jante avant de s'en rapprocher.
+        let a = H.piloteReel ? (t - .24) / (.42 - .24) : t / .10; a = a < 0 ? 0 : a > 1 ? 1 : a;
+        let b = H.piloteReel ? (t - .66) / (.79 - .66) : (t - .86) / (1 - .86); b = b < 0 ? 0 : b > 1 ? 1 : b;
         ANGLE[0] = a * a * (3 - 2 * a) * (1 - b * b * (3 - 2 * b)) * (Math.PI / 2 + phi);
         tournerColonnes(F, WN, ANGLE);
+        if (H.piloteReel) {
+          gx -= F[0] * poignet[0] + F[3] * poignet[1] + F[6] * poignet[2];
+          gy -= F[1] * poignet[0] + F[4] * poignet[1] + F[7] * poignet[2];
+          gz -= F[2] * poignet[0] + F[5] * poignet[1] + F[8] * poignet[2];
+        }
+
       }
       for (let q = 0; q < 5; q++) {
-        const e = main.pieces[q], fo = ecart >= .25 ? e.ouvert : e.ferme, c = fo.c, o = e.objet, p = e.o;
+        const e = main.pieces[q], fo = H.piloteReel && e.prises ? e.prises[Math.min(5, Math.floor(ecart * 5 + 1e-8))] : ecart >= .25 ? e.ouvert : e.ferme, c = fo.c, o = e.objet, p = e.o;
         p[0] = ((gx + F[0] * c[0]) + F[3] * c[1]) + F[6] * c[2]; p[1] = ((gy + F[1] * c[0]) + F[4] * c[1]) + F[7] * c[2]; p[2] = ((gz + F[2] * c[0]) + F[5] * c[1]) + F[8] * c[2]; versVoiture(p);
         if (o.shape !== fo.nom) { o.shape = fo.nom; o.s = fo.s; }
       }
-      // manche : elle part de l'intérieur de la manchette, puis tronçons le long de la courbe, du poignet au coude
+      if (H.piloteReel) articulationPilote(H, h);
+      else { co[0] = COUDE[0]; co[1] = COUDE[1]; co[2] = k * COUDE[2]; }
+      // Manche commune aux deux vues : du même poignet au même coude, plié dans la cuve.
       GC[0] = gx; GC[1] = gy; GC[2] = gz;
       localDans(BOUT, F, GC, VERS_A, k); localDans(ICI, F, GC, VERS_B, k);
       AXE[0] = ICI[0] - BOUT[0]; AXE[1] = ICI[1] - BOUT[1]; AXE[2] = ICI[2] - BOUT[2]; hypotDans(AXE, 3);

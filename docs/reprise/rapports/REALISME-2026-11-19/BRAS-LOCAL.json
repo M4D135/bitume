@@ -1,0 +1,169 @@
+{
+  "lot": "bras, mains et commandes : modèle commun intérieur/extérieur",
+  "date_utc": "2026-11-19T21:36:21.529336+00:00",
+  "source_sha256": {
+    "src/main.js": "175431d81daf168672620961300f250d6a1c6e089f4139cbb434cfc4bb38d898",
+    "src/voiture.js": "b1da5353b2b20f237d2999edb320c3ab5fc1678d3c9a6ad42d97e9ac16bdc660",
+    "verifications/pilote-exterieur.test.mjs": "972c3cc0729d531ebd51321cb4c747d8d7311d2e6c8e4ca1cfc62c217348419c",
+    "verifications/pilote-habitacle.test.mjs": "49c46bdbad06c0f0d10a3de8f2c55bd9e438e14b31aef646cb63e87816a6d017",
+    "verifications/pilote-commun.test.mjs": "09af6f1f8c628d5cb95f065be60aacf4656df8964af90e4d8d51cb3d92ef0743"
+  },
+  "geometrie": {
+    "volant_m": [
+      0.25,
+      0.7,
+      0
+    ],
+    "levier_m": [
+      0.18,
+      0.57,
+      0.16
+    ],
+    "pied_levier_m": [
+      0.18,
+      0.5,
+      0.1708
+    ],
+    "epaules_m": [
+      [
+        -0.125,
+        0.73,
+        -0.14
+      ],
+      [
+        -0.125,
+        0.73,
+        0.14
+      ]
+    ],
+    "os_m": [
+      0.21,
+      0.23
+    ],
+    "modele": "majVolant calcule H.articulations, mains et manches ; extérieur réemploie ces sources, avec homothétie/cadrage uniforme et LOD déclarés."
+  },
+  "mouvement": {
+    "poignet": "courbe continue définie au poignet, retrait avant rotation et retour avant fermeture",
+    "doigts": "six maillages préparés : fermé, quatre intermédiaires et ouvert ; changements discrets, pas de morphing continu",
+    "prise_pommeau": "paume placée au-dessus avec jeu mesuré de 0,901 mm ; pas de pince/serrage des doigts autour du pommeau",
+    "preparation": "formes enregistrées avant création du rendu, couvertes par prewarm allShapes:true déjà appelé pour vue principale et rétroviseurs",
+    "formes_nouvelles": 4,
+    "triangles_nouveaux": 13008,
+    "buffers_geometrie_ajoutes_octets": 1092672
+  },
+  "qualification": {
+    "bras": {
+      "tests": 25,
+      "succes": 25
+    },
+    "parite_deux_vues": {
+      "poses": 490,
+      "couverture": "positions, tailles, rotations, formes et source commune des manches ; trois LOD et changements de vue"
+    },
+    "pommeau": {
+      "poses": 1380,
+      "couverture": "vrais triangles Float32 des cinq pièces de chaque main contre sphère circonscrite ; test synthétique face/arête avec sommets extérieurs"
+    },
+    "jante": {
+      "poses": 380,
+      "couverture": "intersections triangle-triangle des cinq pièces de chaque main, vrais Float32, arbre de boîtes"
+    },
+    "coque": {
+      "poses": 840,
+      "lod_attitudes_joueur_rival": 150,
+      "couverture": "commandes, mains, bras contre triangles réels coque et console ; liaison mécanique du pied vérifiée séparément"
+    },
+    "articulations": {
+      "poses": 630,
+      "couverture": "longueurs exactes et enveloppe des coudes non relâchée"
+    },
+    "trajectoire": {
+      "poses": 10010,
+      "pas_max_m_pour_phase_0001": 0.003488
+    },
+    "allocation": {
+      "poses": 60000,
+      "octets_par_pose_mesures": 1.2318666666666667,
+      "gc_mineurs": 0
+    },
+    "legacy": {
+      "verifications": 52
+    },
+    "identite": {
+      "groupes": 268,
+      "tous_identiques": true,
+      "fixture_modifiee": false
+    },
+    "main_bool": {
+      "endpoints_bit_identiques": [
+        null,
+        false,
+        true
+      ]
+    }
+  },
+  "limites": [
+    "Balayages finis de poses ; pas de preuve mathématique de collision continue entre deux échantillons.",
+    "La jante et les mailles du corps sont testées par surfaces ; les sommets seuls ne sont pas revendiqués comme preuve de surface.",
+    "Le pommeau utilise une sphère circonscrite conservatrice ; le gant repose la paume dessus sans animation de préhension spécifique.",
+    "La vue CPU sert au diagnostic ; éclairage simplifié et caméras de contrôle, aucune qualification matérielle WebGL ni gain FPS annoncé.",
+    "Les doigts changent entre six formes préparées ; seul le trajet rigide du poignet est continu.",
+    "Les trois suites ont été lancées sur src/voiture SHA df4382f9099fd0e882c3d63bb939cb64a61d041758257785318fb3d9ee6c9f5c ; seules des précisions de commentaires ont suivi, code exécutable inchangé.",
+    "La qualification de toutes les suites et du registre final après roues/matières appartient à l’intégration parent."
+  ],
+  "commit_preparation_local": "5ce3056d4599f5afdafd339d2630d037e499657e",
+  "portee": "Qualification ciblée avant intégration des roues et matières ; les sources réunies sont qualifiées séparément dans QUALIFICATION-0260.json.",
+  "diagnostic_dense": {
+    "sha": "df4382f9099fd0e882c3d63bb939cb64a61d041758257785318fb3d9ee6c9f5c",
+    "poses": 30030,
+    "maxPortee": {
+      "v": 0.43559013711071015,
+      "steer": 1,
+      "a": 2,
+      "b": 3,
+      "t": 0.14,
+      "h": 1
+    },
+    "maxErreurHaut": {
+      "v": 1.6653345369377348e-16,
+      "steer": -1,
+      "a": 2,
+      "b": 3,
+      "t": 0.648,
+      "h": 1
+    },
+    "maxErreurAvant": {
+      "v": 1.3877787807814457e-16,
+      "steer": -1,
+      "a": 2,
+      "b": 3,
+      "t": 0.157,
+      "h": 1
+    },
+    "minCoude": {
+      "v": 0.5200000022154433,
+      "steer": -1,
+      "a": 0,
+      "b": 1,
+      "t": 0.493,
+      "h": 1
+    },
+    "maxCoude": {
+      "v": 0.6101226604620726,
+      "steer": 1,
+      "a": 2,
+      "b": 3,
+      "t": 0.14,
+      "h": 1
+    },
+    "maxDeltaPoignet": {
+      "v": 0.003569884692298679,
+      "steer": 1,
+      "a": -1,
+      "b": 0,
+      "t": 0.759
+    },
+    "saut_aux_extremites_max_m": 3.469446951953614e-18
+  },
+  "inspection": "Trois poses extérieures et trois cadrages intérieurs de contrôle inspectés par raster CPU des maillages Float32 ; ce ne sont pas des captures du rendu WebGL."
+}

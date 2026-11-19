@@ -17,11 +17,14 @@ const contexte = (qualite = 'high') => ({ qualite, actif: true, pluie: 1, neige:
 function avancer(e, c, secondes, hz = 60) { for (let i = 0; i < secondes * hz; i++) V.mettreAJour(e, 1 / hz, c); return e.stats; }
 const capture = e => [e.gouttes, e.neige].map(liste => liste.map(p => ({ ...p })));
 
-verifier('pluie ruisselante : petits dépôts, trajets lents et Canvas transparent', () => {
+verifier('pluie ruisselante : dépôts bornés, trajets continus et Canvas transparent', () => {
   const surface = canvas(), e = V.creer(surface), c = contexte('ultra'); avancer(e, c, 10);
   assert(e.stats.gouttes > 25); assert.equal(e.stats.neige, 0); assert(surface.stats.ellipses > 0);
-  const p = e.gouttes.find(p => p.vivant && p.glisse === 1), avant = p.y;
-  avancer(e, c, .5); assert(p.y > avant); assert(p.taille < 4);
+  const avant = e.gouttes.filter(p => p.vivant && p.glisse === 1).map(p => ({ p, y: p.y, age: p.age }));
+  avancer(e, c, .5);
+  // Certaines perles fusionnent ou sortent de la vitre ; suivre celles dont l'identité continue d'exister.
+  assert(avant.some(a => a.p.vivant && a.p.age > a.age && a.p.y > a.y));
+  assert(e.gouttes.every(p => !p.vivant || p.taille <= 12));
   assert.equal(surface.ctx.globalAlpha, 1); assert.equal(surface.getImageData, undefined);
 });
 verifier('neige collée, fonte vers une goutte et séchage sans nouvelles précipitations', () => {

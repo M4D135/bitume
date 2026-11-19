@@ -1,6 +1,16 @@
 # BITUME — plan maître
 
-## Priorité actuelle — 18 novembre 2026
+## Reprise actuelle — 19 novembre 2026
+
+Le statut courant est dans `REPRISE.md` et `docs/reprise/ETAT.json`. La continuation autonome du
+programme complet est autorisée ; priorités visuelles réunies dans le candidat 0.2.60, sur base
+publiée 0.2.59/p14. Le grand circuit de montagne est **distinct de Haut-Col**, décision déjà prise.
+Le catalogue prévu compte **17 destinations**, en conservant les six propositions.
+Lire `docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md` pour les lots livrés, en cours et restants.
+Les états « non commencé », les budgets et les choix encore ouverts ci-dessous décrivent leur date,
+pas l’état actuel ; ne pas rouvrir les décisions déjà consignées dans `AGENTS.md`.
+
+## Passation historique — 18 novembre 2026
 
 Entrée de reprise : **[MASTER-LISTE-CLAUDE-FABLE.md](MASTER-LISTE-CLAUDE-FABLE.md)**. David reprend avec Claude Fable ; la liste rassemble les 16 destinations prévues, les travaux roues/pneus/usure, les dépendances, critères de fin et consignes de publication.
 

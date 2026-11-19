@@ -3,7 +3,6 @@
 // Fluidité : formules d'attitude identiques à celles de B.voiture, temps de dessin continu, tri derrière la caméra.
 // L'absence d'allocation par image se vérifie à part (effets-allocation.test.mjs), dans un processus neuf.
 import { createRequire } from 'node:module';
-import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -158,13 +157,11 @@ verifier('déterminisme : même graine, mêmes effets', () => {
   assert.equal(tirer(), tirer());
 });
 
-// Les tirages des effets sont groupés (tirer(fx, n)) pour que la passe n'alloue rien : leur ordre doit rester celui
-// du code d'avant, sans quoi la même course ne laisse plus les mêmes traces. L'empreinte ci-dessous a été prise une
-// fois avec le traces.js de 54e98c9 (avant la réécriture) sur ce scénario : glisse, herbe, glissière, sauts, pluie
-// forcée, contacts, roues, casses, panneaux et replacements. Elle couvre l'état de tous les pools, les indices de
-// remplissage, les tableaux par roue et les cinq tirages suivants. Le champ repos des pièces jamais lancées n'existait
-// pas avant (lu comme 0) : une valeur absente compte pour 0.
-verifier('déterminisme : mêmes effets et mêmes tirages que le code d’avant la réécriture (empreinte figée)', () => {
+// Le hash brut ajouté en 99b32cc9 n'est pas reproductible avec sa propre source de référence 54e98c9 : sous
+// Node 24.22.3, l'ancien et l'actuel rendent les mêmes 10 071 valeurs au bit près (reçu TRACES-FIABILITE-2026-11-19).
+// On garde le scénario et ses contrats observables : naissances indépendantes ci-dessous, géométrie, vie, dessin,
+// ordre des tirages et relecture exacte de tous les champs, sans remplacer le hash par celui de la machine courante.
+function sceneComplete(graine = 20261118) {
   const R = 300, n = 12, voitures = [], poses = [];
   for (let k = 0; k < n; k++) {
     voitures.push({ id: k, couleur: [.1 + .05 * k, .2, .3], etat: { s: k * 9, d: 2, v: 32 + 2 * k, beta: .25 + .01 * k, bond: 0,
@@ -172,7 +169,7 @@ verifier('déterminisme : mêmes effets et mêmes tirages que le code d’avant 
     poses.push({ x: 0, y: 0, z: 0, cap: 0, tangage: 0, roulis: 0 });
   }
   const co = { c: { longueur: 2 * Math.PI * R }, voitures };
-  const fx = T.creer(n, 20261118), eauAvant = B.conduite.eauSurPiste;
+  const fx = T.creer(n, graine), eauAvant = B.conduite.eauSurPiste;
   B.conduite.eauSurPiste = () => .6;
   try {
     for (let i = 0; i < 12 * 120; i++) {
@@ -192,19 +189,96 @@ verifier('déterminisme : mêmes effets et mêmes tirages que le code d’avant 
       T.pas(fx, co, poses, 0, DT, ev);
     }
   } finally { B.conduite.eauSurPiste = eauAvant; }
-  const h = createHash('sha256'), f = new Float64Array(1), u = new Uint8Array(f.buffer);
-  const nombre = x => { f[0] = x === undefined ? 0 : +x; h.update(u); };
-  const champs = (liste, noms) => { for (const o of liste) for (const k of noms) nombre(o[k]); };
-  champs(fx.bandes, ['actif', 'age', 'a0', 'larg', 'roulis', 'x0', 'y0', 'z0', 'x1', 'y1', 'z1']);
-  for (const l of [fx.fumees, fx.etincelles, fx.embruns]) champs(l, ['actif', 'age', 'vie', 'x', 'y', 'z', 'vx', 'vy', 'vz', 'sol', 'taille', 'a0']);
-  champs(fx.debris, ['actif', 'age', 'x', 'y', 'z', 'vx', 'vy', 'vz', 'sol', 'spin', 'repos']);
-  for (const k of ['prochaine', 'prochaineFumee', 'prochaineEtincelle', 'prochainEmbrun', 'prochainDebris', 'acc']) nombre(fx[k]);
-  for (const t of [fx.pieces, fx.ouverte, fx.genOuverte, fx.valide, fx.dernier]) for (const x of t) nombre(x);
-  for (let k = 0; k < 5; k++) nombre(fx.alea());
+  return { fx, co, poses };
+}
+
+function etatEffets(fx) {
+  const valeurs = {};
+  const champs = (nom, noms) => { for (const [i, o] of fx[nom].entries()) for (const k of noms) valeurs[`${nom}[${i}].${k}`] = o[k] === undefined ? 0 : +o[k]; };
+  champs('bandes', ['actif', 'age', 'a0', 'larg', 'roulis', 'x0', 'y0', 'z0', 'x1', 'y1', 'z1']);
+  for (const l of ['fumees', 'etincelles', 'embruns']) champs(l, ['actif', 'age', 'vie', 'x', 'y', 'z', 'vx', 'vy', 'vz', 'sol', 'taille', 'a0']);
+  champs('debris', ['actif', 'age', 'x', 'y', 'z', 'vx', 'vy', 'vz', 'sol', 'spin', 'repos']);
+  for (const k of ['prochaine', 'prochaineFumee', 'prochaineEtincelle', 'prochainEmbrun', 'prochainDebris', 'acc']) valeurs[k] = fx[k];
+  for (const nom of ['pieces', 'ouverte', 'genOuverte', 'valide', 'dernier']) for (const [i, x] of fx[nom].entries()) valeurs[`${nom}[${i}]`] = x;
+  return valeurs;
+}
+
+function proche(obtenu, attendu, nom) {
+  assert.ok(Number.isFinite(obtenu) && Math.abs(obtenu - attendu) <= 1e-12, `${nom} : ${obtenu}, attendu ${attendu}`);
+}
+
+verifier('déterminisme complet : pools rejoués, géométrie, durées et suite des tirages conservés', () => {
+  const { fx, poses } = sceneComplete(), relu = sceneComplete().fx;
+  const a = etatEffets(fx), b = etatEffets(relu);
+  assert.equal(Object.keys(a).length, 10066, 'tous les champs de l’ancien oracle restent couverts');
+  for (const [nom, x] of Object.entries(a)) { assert.ok(Number.isFinite(x), nom); assert.equal(x, b[nom], nom); }
+  // Les cinq entiers suivants ont été relus dans 54e98c9, indépendamment du runtime actuel. La position dans la
+  // suite entière est exacte ; les arrondis des fonctions trigonométriques n'y entrent pas.
+  const suite = Array.from({ length: 5 }, () => fx.alea() * 4294967296);
+  assert.deepEqual(suite, [2777511388, 2130241367, 2295214947, 1862808525, 2124726866]);
+  assert.deepEqual(suite, Array.from({ length: 5 }, () => relu.alea() * 4294967296));
+  assert.notDeepEqual(etatEffets(sceneComplete(20261119).fx), a, 'la graine doit effectivement agir');
   const c = T.compter(fx);
   assert.deepEqual([c.bandes, c.fumees, c.etincelles, c.debris, c.embruns], [512, 48, 48, 54, 160], 'tous les effets servent');
-  assert.equal(h.digest('hex'), '575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee',
-    'empreinte des effets différente de celle de 54e98c9 : ordre des tirages ou calcul des pools changé');
+  for (const nom of ['fumees', 'etincelles', 'embruns', 'debris']) for (const f of fx[nom]) if (f.actif) {
+    assert.ok(f.age >= 0 && f.age < (nom === 'debris' ? 12 : f.vie), nom + ' vivant dans sa durée');
+  }
+  for (const b of fx.bandes) if (b.actif) {
+    assert.ok(b.age >= 0 && b.age < 24 && b.a0 > 0 && b.a0 <= .62, 'vie et opacité de la gomme');
+    assert.ok(Math.hypot(b.x1 - b.x0, b.z1 - b.z0) <= 6 + 1e-12, 'aucune bande ne franchit un replacement');
+    assert.ok(Math.abs(b.larg - .224) < 1e-12 || Math.abs(b.larg - .368) < 1e-12, 'largeur sous le pneu');
+    for (const [k, axe] of ['x', 'y', 'z'].entries()) proche(b.objet.p[k], (b[axe + '0'] + b[axe + '1']) / 2, 'centre de bande ' + axe);
+    proche(b.objet.s[0], Math.hypot(b.x1 - b.x0, b.y1 - b.y0, b.z1 - b.z0) + b.larg / 2, 'longueur de gomme');
+    proche(b.objet.s[1], .004, 'épaisseur de gomme'); proche(b.objet.s[2], b.larg, 'largeur dessinée');
+  }
+  const sortie = []; T.dessiner(fx, sortie, [poses[0].x, 1, poses[0].z], 0);
+  for (const nom of ['bandes', 'fumees', 'etincelles', 'embruns', 'debris']) assert.ok(fx[nom].some(f => sortie.includes(f.objet)), nom + ' réellement dessiné');
+  for (const o of sortie) {
+    assert.ok([...o.p, ...o.r, ...o.s, o.alpha].every(Number.isFinite), 'dessin fini');
+    assert.ok(o.s.every(x => x > 0) && o.alpha > 0 && o.alpha <= 1, 'volume et opacité du dessin');
+  }
+});
+
+// Contrats de naissance, hors trigonométrie (cap, tangage et roulis nuls) : une seule source à (10, 2, −3),
+// graine 7. Les valeurs viennent du code historique et des cotes de roue, pas d'un appel au code sous test pour
+// fabriquer l'attendu. Elles distinguent notamment les tirages de durée, vx, vy et vz : les permuter doit échouer.
+const NAISSANCES = {
+  fumees: { nombre: 1, suivant: 1741702388, etat: { x: 11.35, y: 2.218, z: -3.85, vie: 1.1309791287872941,
+    vx: 3.763052212446928, vy: .7495143528562039, vz: .03431242965161801, taille: 1.2, a0: .38 } },
+  etincelles: { nombre: 10, suivant: 1826717127, etat: { x: 10, y: 2.3, z: -3, vie: .2535114259459078,
+    vx: 4.4956660605967045, vy: 6.189156637340784, vz: 1.5922296456992626, sol: 2 } },
+  embruns: { nombre: 1, suivant: 3134562008, etat: { x: 8.059236946888268, y: 2.25, z: -3.794757176428102, vie: .8107226342661307,
+    vx: 11.816565064154567, vy: 1.3583506227051838, vz: -.10130210244096816, sol: 2, taille: .7713302415795624, a0: .244 } },
+  debris: { nombre: 1, suivant: 2002453909, etat: { x: 11.35, y: 2.29, z: -3.85, vx: 3.0585237657651305,
+    vy: 5.607226342661306, vz: -2.205827765725553, sol: 2.14, spin: -1.1337397433817387 } }
+};
+for (const [nom, attendu] of Object.entries(NAISSANCES)) verifier(`naissance ${nom} : position, tirages, dessin et expiration`, () => {
+  const sc = scene(1, { glisse: 0 }), fx = T.creer(1, 7), et = sc.voitures[0].etat;
+  Object.assign(et, { s: 0, v: nom === 'embruns' ? 22 : 10, beta: 0 }); sc.voitures[0].id = 0;
+  Object.assign(sc.poses[0], { x: 10, y: 2, z: -3, cap: 0, tangage: 0, roulis: 0 });
+  if (nom === 'fumees') et.roues[0].glisse = 1;
+  const ev = nom === 'etincelles' ? [{ type: 'contact', a: 0, b: 0, force: 0 }] : nom === 'debris' ? [{ type: 'roue', id: 0, roue: 0 }] : null;
+  const eauAvant = B.conduite.eauSurPiste; B.conduite.eauSurPiste = () => nom === 'embruns' ? .6 : 0;
+  try { T.pas(fx, sc.co, sc.poses, 0, ev ? 0 : T.PAS, ev); } finally { B.conduite.eauSurPiste = eauAvant; }
+  for (const pool of Object.keys(NAISSANCES)) assert.equal(T.compter(fx)[pool], pool === nom ? attendu.nombre : 0, pool + ' à la naissance');
+  const f = fx[nom][0]; assert.equal(f.actif, true); assert.equal(f.age, 0);
+  for (const [champ, valeur] of Object.entries(attendu.etat)) proche(f[champ], valeur, nom + '.' + champ);
+  assert.equal(fx.alea() * 4294967296, attendu.suivant, 'nombre exact de tirages consommés');
+  const h = nom === 'debris' ? .1 : f.vie / 8, sortie = [];
+  T.dessiner(fx, sortie, [10, 3, -3], h);
+  assert.ok(sortie.includes(f.objet), 'la particule née est visible');
+  for (const [i, axe] of ['x', 'y', 'z'].entries()) proche(f.objet.p[i], attendu.etat[axe] + attendu.etat['v' + axe] * h, 'position dessinée ' + axe);
+  const alpha = nom === 'fumees' ? .38 * Math.pow(7 / 8, 1.6) : nom === 'embruns' ? .244 * 7 / 8 * .75 : nom === 'etincelles' ? 7 / 8 : 1;
+  proche(f.objet.alpha, alpha, 'opacité à un huitième de vie');
+  if (nom === 'fumees') { proche(f.objet.s[0], 1.359375, 'bouffée qui s’élargit'); proche(f.objet.s[1], 1.0875, 'bouffée aplatie'); }
+  if (nom === 'embruns') for (const s of f.objet.s) proche(s, attendu.etat.taille * 1.325, 'gerbe qui s’élargit');
+  if (nom === 'etincelles') { proche(f.objet.s[1], .028, 'épaisseur d’étincelle'); proche(f.objet.s[2], .028, 'épaisseur d’étincelle'); }
+  if (nom === 'debris') assert.deepEqual(f.objet.s, [.58, .28, .58], 'cotes de la roue détachée');
+  et.v = 0; et.roues.forEach(r => { r.glisse = 0; });
+  const duree = Math.max(...fx[nom].filter(f => f.actif).map(f => nom === 'debris' ? 12 : f.vie));
+  for (let i = 0; i <= Math.ceil(duree / T.PAS); i++) T.pas(fx, sc.co, sc.poses, 0, T.PAS, null);
+  assert.equal(T.compter(fx)[nom], 0, 'les effets expirent sans nouvelle émission');
+  const apres = []; T.dessiner(fx, apres, [10, 3, -3], 0); assert.equal(apres.length, 0, 'rien de périmé ne reste dessiné');
 });
 
 verifier('vraie course de 60 s : traces des voitures proches, rien ne casse', () => {

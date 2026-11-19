@@ -1,35 +1,44 @@
 # BITUME — reprise courte
 
-## Livraison close — 19 novembre 2026
+## Lot prêt à publier — réalisme 0.2.60, 19 novembre 2026
 
-**0.2.59 / p14 publiée sur main par la PR #17**, fusion `02e8bac6` ; arbre identique au candidat qualifié `d052f4c`.
-PR #16 intégrée dans l'historique commun. La 0.2.57 (démos et regard arrière) est également publiée, PR #15, fusion `940eabb9`.
-Lire `docs/reprise/ETAT.json`, puis seulement la fiche utile au lot suivant.
+**0.2.60 / p14 / FERRO 0.3.15**, sources et build réunis. Base distante vérifiée : 0.2.59,
+main `f350dd7` après clôture PR #19. Les livraisons 0.2.57 et 0.2.59 restent closes.
+Lire `docs/reprise/ETAT.json`, puis `docs/reprise/REALISME-2026-11-19.md`.
 
-- Volant avancé de 10 cm ; levier recentré et fixé sur une console procédurale dans la cuve.
-- Main et bras raccordés, saute-vent dégagé ; coque simplifiée ouverte et tige présente à tous les niveaux de détail.
-- Joueur et concurrents couverts. Cadrage intérieur, animations, conduite p14, réseau et FERRO conservés.
-- **6/6 suites ciblées : 71 contrôles cockpit/voitures et registre des formes ; 840 poses détaillées + 150 poses LOD réels.**
-- **CI 0.2.59 : PR : 126/127 ; push du candidat : 125/127 ; après fusion : 126/127.** Traces à signature héritée.
-- Après fusion, cockpit, nature et décor passent. Val-Brûlé : 166 ms / 150 ms sur le push du candidat seulement.
-- Aucune fixture ni seuil modifié. La réserve de durée reste ouverte, sans affirmer une absence de régression mesurée.
-- Deux builds identiques, archive CI contrôlée : 14 186 762 octets, SHA-256
-  `cb02e2250a2e4a7d06bd0fdea659fce641a016975e224bac2823574888439cd4`.
+Bras communs aux vues et coudes bas, pneus sans barres blanches, matières du cockpit,
+gouttes/neige, bâtiments détaillés et garages sont intégrés. Les doigts utilisent six formes préparées,
+sans morphing continu ; le poignet suit une trajectoire continue. Le service reste dans la voie existante.
+Baïkal 13B, la fondation métrique de tracé et les paquets de sources Monaco/Marseille sont conservés.
 
-## Preuves et limites
+## Qualification locale
 
-Reçu : `docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/PUBLICATION-0259.json`.
-Fiche : `docs/reprise/COCKPIT-PILOTES-2026-11-19.md`. Les deux candidats 0.2.58 et la limite du premier banc LOD restent consignés.
-0.2.57 : CI correctives et après fusion : 125/126, seules traces héritées ; reçu `docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/PUBLICATION-0257.json`.
-La CI après fusion 0.2.59 [`44602433260`](https://github.com/M4D135/bitume/actions/runs/44602433260) est terminée :
-**126/127**, seules traces héritées ; conclusion GitHub `failure` conservée. Aucun nouvel échec.
-Géométrie inspectée dans trois vues par raster logiciel. Jeu complet en navigateur, manette physique et FPS matériels
-restent à vérifier ; aucun déploiement du site effectué. Aucun nouveau journal local brut ni chemin interne publié.
+**137/137 suites réussies** dans la campagne complète, aucun échec dans ce passage. Des dépassements de construction restent observés dans les trois passages ciblés inchangés de l’optimisation : 188 ms sur Val-Brûlé, 154 et 167 ms sur Haut-Col, pour un seuil de 150 ms. Cette réserve ne disparaît pas avec un passage complet réussi.
+Les deux passages précédents restent conservés : 129/136 avant corrections, puis 136/137 avec
+un dépassement de durée. L’optimisation suivante est qualifiée sur la source finale, sans changer le seuil.
+Le panneau des stands est désormais derrière le muret, dégagé de la chaussée et de la voie de service.
+Les 54 empreintes historiques p14 restent exactes ; la nouvelle géométrie de scène a sa référence distincte.
+Les traces passent : l’ancienne signature reste inexpliquée, les contrats actuels sont vérifiés par mutations.
 
-## Prochaine action — 13B Baïkal
+Deux builds identiques : **14 242 311 octets**, SHA-256
+`cf71191600060626c5aa6bbf4523a332e867673984c47e7b48d9eaec79322655`. **60 scripts** analysés, **34 modules FERRO** verrouillés conformes.
+Rapport : `docs/reprise/rapports/REALISME-2026-11-19/QUALIFICATION-0260.json`.
 
-Reprendre `docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md` pour le lac, les berges, les lieux signature,
-la végétation/faune propres et les saisons. Conserver les huit circuits actuels et la conduite p14.
-Monaco fidèle, Marseille avec relief, grand circuit montagne distinct et les six propositions restent prévus.
-Ne pas refaire les suites/builds clos ci-dessus sans changement de code ni risque nouveau.
-Un sous-lot à la fois ; actualiser la reprise après publication ; aucun push forcé.
+## Publication et limites
+
+Publier l’arbre exact qualifié, observer la CI puis consigner les références distantes.
+FERRO 0.3.15 est déjà publié par PR #4 : 213 réussis, zéro échec, un TODO hérité localement.
+Ses Actions sont bloquées avant démarrage par paiement/plafond du compte. Vérifier séparément BITUME ;
+ne pas annoncer une CI verte sur la seule preuve locale. Aucune facturation ni protection modifiée.
+Jeu complet en navigateur, manettes physiques et FPS matériels restent non validés.
+Aucun accès Mac/VPS pour `deposer.sh` : **site non déployé depuis cette session**.
+
+## Suite autonome
+
+Après publication, compléter les mesures Monaco **14A** à partir du paquet FIA/OSM déjà acquis :
+altitudes, largeurs, dévers et incertitudes, puis raccordement à la course. Marseille suit avec le corridor
+EMPRISE et le relief mesuré, dont la couverture/datum restent à qualifier.
+Le circuit montagne distinct de Haut-Col et les six propositions restent : **17 destinations prévues**,
+**8 jouables actuellement**. Tous les autres lots sont dans
+`docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md` et la master liste.
+Une tête livrée à la fois, aucun push forcé ; conserver preuves et réserves sans refaire les lots clos.

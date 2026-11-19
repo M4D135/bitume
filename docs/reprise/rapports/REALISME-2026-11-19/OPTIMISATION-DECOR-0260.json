@@ -1,0 +1,429 @@
+{
+  "schema": "bitume-optimisation-decor-1",
+  "date": "2026-11-19",
+  "version_cible": "0.2.60",
+  "physique": "p14",
+  "statut": "gain_mesure_identite_exacte_reserve_duree_conservee",
+  "base": {
+    "commit": "67556b8a75e7950ec885a1000ebced46f895c930",
+    "decor_sha256": "05925e018e46f25cc7635aac0ec0b763eaedc568d994da69e203566ed28fad53"
+  },
+  "source_modifiee": {
+    "fichier": "src/decor.js",
+    "sha256": "21ace951a6b0508eb27a5b6a32b7839f99a2404c463f8274e2c49398d33fdaf5"
+  },
+  "changements": [
+    "Index de l’axe : préfixes des cellules et indices aplatis, remplis de façon stable. Chaque plage de ligne saute les cases vides en conservant exactement l’ordre a/b/i, le départage strict et les opérations de la hauteur pondérée.",
+    "Nappes : sommets écrits directement dans un Float32Array dimensionné par les bornes connues. Les bornes min/max continuent de lire les Number d’origine ; une tuile partiellement occupée rend un tampon tronqué à sa taille exacte. Le tableau JavaScript intermédiaire et sa conversion finale disparaissent."
+  ],
+  "invariants": {
+    "geometrie_et_details_conserves": true,
+    "obstacles_et_ordre_conserves": true,
+    "calculs_et_tirages_aleatoires_inchanges": true,
+    "aucun_cache_global_ajoute": true,
+    "api_publique_inchangee": true,
+    "aucun_test_seuil_ou_fixture_modifie": true
+  },
+  "diagnostic": {
+    "points_chauds_profil_inspector": [
+      "indexAxe.interroger",
+      "sommet",
+      "finir"
+    ],
+    "profilage": "Échantillonnage 100 microsecondes autour de la construction. Utilisé pour localiser le travail ; les durées profilées ne sont pas des mesures de qualification.",
+    "premiere_optimisation": {
+      "decor_sha256": "ffdf43a22f52684de2a4879f4093a4055745f50e4d93741a08720eca59ce31ed",
+      "protocole": "Quatre paires séquentielles, ordre avant/après alterné, processus neuf par variante et passage. Même chargement de modules, catalogue, ordre et options que decor.test.mjs ; création du circuit hors mesure. Les assertions intermédiaires du test ne sont pas rejouées par ce diagnostic. Aucun GC forcé, aucune recherche de passage favorable.",
+      "mesures": [
+        {
+          "circuit": "val-brule",
+          "avant": {
+            "mural_mediane_ms": 153.399,
+            "cpu_mediane_ms": 293.487,
+            "mural_max_ms": 179.851,
+            "depassements_150_ms": 2
+          },
+          "apres": {
+            "mural_mediane_ms": 113.985,
+            "cpu_mediane_ms": 268.466,
+            "mural_max_ms": 119.751,
+            "depassements_150_ms": 0
+          }
+        },
+        {
+          "circuit": "port-sable",
+          "avant": {
+            "mural_mediane_ms": 109.232,
+            "cpu_mediane_ms": 223.792,
+            "mural_max_ms": 162.869,
+            "depassements_150_ms": 1
+          },
+          "apres": {
+            "mural_mediane_ms": 79.317,
+            "cpu_mediane_ms": 198.389,
+            "mural_max_ms": 115.988,
+            "depassements_150_ms": 0
+          }
+        },
+        {
+          "circuit": "haut-col",
+          "avant": {
+            "mural_mediane_ms": 187.557,
+            "cpu_mediane_ms": 312.649,
+            "mural_max_ms": 244.023,
+            "depassements_150_ms": 3
+          },
+          "apres": {
+            "mural_mediane_ms": 157.059,
+            "cpu_mediane_ms": 252.567,
+            "mural_max_ms": 209.416,
+            "depassements_150_ms": 2
+          }
+        }
+      ],
+      "oracle_historique": "9/9 empreintes exactes",
+      "test_decor_inchange": {
+        "statut": "echec",
+        "circuit": "val-brule",
+        "mesure_ms": 170,
+        "seuil_ms": 150
+      }
+    }
+  },
+  "identite": {
+    "index": {
+      "requetes": 24888,
+      "cas": 12,
+      "comparaison": "i/d/y Float64, bit à bit, entre les vraies fonctions avant/après. Huit circuits et quatre nuages synthétiques ; cellules vides, frontières, coordonnées négatives, rayons 0 à 10 000, hors limites, départages et entrées non finies.",
+      "resultat": "identiques"
+    },
+    "scenes": {
+      "nombre": 16,
+      "catalogue": "Les huit circuits actuels",
+      "variantes": [
+        {
+          "qualite": "low",
+          "saison": "ete",
+          "vegetation": false
+        },
+        {
+          "qualite": "high",
+          "saison": "hiver",
+          "vegetation": true
+        }
+      ],
+      "comparaison": "Toutes propriétés propres et leurs descripteurs, métadonnées non énumérables, ordre des tableaux/objets, alias entre objets, Number en Float64 et contenu binaire complet des tableaux typés. Accesseurs non ouverts ; fonctions décrites par leur contrat nominal ; sol sondé sur toute la grille du terrain.",
+      "sondes_sol_float64": 352274,
+      "resultat": "identiques",
+      "empreintes_completes": [
+        {
+          "theme": "foret",
+          "qualite": "low",
+          "saison": "ete",
+          "sha256": "e07f46dfb2f8f439b2d9146f2de1d832714f91cc40162a6898d9c9b2112bc86a"
+        },
+        {
+          "theme": "foret",
+          "qualite": "high",
+          "saison": "hiver",
+          "sha256": "c75bd999c0954c217bb9c1c602e088af38b7fcc652712fd335b8e7777fa9e279"
+        },
+        {
+          "theme": "cote",
+          "qualite": "low",
+          "saison": "ete",
+          "sha256": "4accd03e9049e0b0135cf9756093b947bef2e80d8ad7f9773da6968e4c7ccd12"
+        },
+        {
+          "theme": "cote",
+          "qualite": "high",
+          "saison": "hiver",
+          "sha256": "16a20f4ecd97ebb4de58911c11fdf21c7e5abe78ca140766a4ed04547a142c47"
+        },
+        {
+          "theme": "montagne",
+          "qualite": "low",
+          "saison": "ete",
+          "sha256": "2b713fe82811080763298b23a0f5eff714d7592767849aa45adc55655052c0bd"
+        },
+        {
+          "theme": "montagne",
+          "qualite": "high",
+          "saison": "hiver",
+          "sha256": "de2543f6853bf93a25432d2a2b6d34c0949a106e512b3f1699caac4961d7b4c2"
+        },
+        {
+          "theme": "islande",
+          "qualite": "low",
+          "saison": "ete",
+          "sha256": "edff9691c62c3e9c5da52c5864348e38e962636e7ed0d354ca7f2ae50526ba83"
+        },
+        {
+          "theme": "islande",
+          "qualite": "high",
+          "saison": "hiver",
+          "sha256": "67d02804b65db4b17fb2084d79f2292b2504ef370dfe8230903cc7b33ae8a0fb"
+        },
+        {
+          "theme": "desert",
+          "qualite": "low",
+          "saison": "ete",
+          "sha256": "b41654561c8c9d91950c7fcc3372cea1ac6d01757aa6f0125429ee56fc498f2a"
+        },
+        {
+          "theme": "desert",
+          "qualite": "high",
+          "saison": "hiver",
+          "sha256": "d561c5fe690d44ff7c00d3c9a8d1a840743981342658ff22eacd18ffc46bf598"
+        },
+        {
+          "theme": "asie",
+          "qualite": "low",
+          "saison": "ete",
+          "sha256": "1d1762750dc4ea1daff2161f992c2338dc930d84b1c83c8a104bb8774a97cc88"
+        },
+        {
+          "theme": "asie",
+          "qualite": "high",
+          "saison": "hiver",
+          "sha256": "07b5b0557ee94c4e28256730e30ebec797e2bf497d7a2728729a2c37f4491a2d"
+        },
+        {
+          "theme": "pacifique",
+          "qualite": "low",
+          "saison": "ete",
+          "sha256": "c46117ab2764979e992271cea6e07b8fff1d539b4ff27cdb851637daca8e02dc"
+        },
+        {
+          "theme": "pacifique",
+          "qualite": "high",
+          "saison": "hiver",
+          "sha256": "58b964a6190044aacc096ba26c4bf03199f3b5218466162f7913871cc53ad31b"
+        },
+        {
+          "theme": "baikal",
+          "qualite": "low",
+          "saison": "ete",
+          "sha256": "b3ae198902b0794bf3aab37760b150519a382b94d09be0cb22b960d748f6a933"
+        },
+        {
+          "theme": "baikal",
+          "qualite": "high",
+          "saison": "hiver",
+          "sha256": "3771cb88891804866c4b189746c09cb17d73b917b57b20a9a95cc11ad1544a04"
+        }
+      ],
+      "couches_verifiees": [
+        "circuit",
+        "nappes",
+        "lots",
+        "lotsHerbier",
+        "obstacles",
+        "sol"
+      ],
+      "empreinte_resultats": "ef1ccef6291b9ab81e660d71c3aaf0fcfab74aae2a10efefc80005d1a2cad59e"
+    },
+    "physx": {
+      "cas": 3,
+      "empreintes_etats_p14": 54,
+      "couches_exactes": 216,
+      "scenes_0260_exactes": 3,
+      "configurations_et_bilans_exacts": true,
+      "references": [
+        {
+          "fichier": "verifications/fixtures/determinisme-p14.json",
+          "sha256": "d8dfa60fc2d237c8dbc2b3d23689f2d81fe1562e1b14b30eda608fcd4f46d655"
+        },
+        {
+          "fichier": "verifications/fixtures/determinisme-scenes-0260.json",
+          "sha256": "0d1b02464feac1c4bfe8c4ef2357bc72ee1f2e1f27142f6dcb57c78d06ca2069"
+        }
+      ]
+    }
+  },
+  "suites_ciblees": [
+    {
+      "fichier": "verifications/decor-identite.test.mjs",
+      "statut": "reussi",
+      "empreintes": 9
+    },
+    {
+      "fichier": "verifications/decor-obstacles.test.mjs",
+      "statut": "reussi",
+      "cas": 3
+    },
+    {
+      "fichier": "verifications/batiments-stands.test.mjs",
+      "statut": "reussi",
+      "controles": 31
+    },
+    {
+      "fichier": "verifications/baikal-decor.test.mjs",
+      "statut": "reussi",
+      "controles": 8
+    },
+    {
+      "fichier": "verifications/determinisme-simulation.test.mjs",
+      "statut": "reussi",
+      "cas": 3,
+      "empreintes": 54
+    }
+  ],
+  "mesures_finales": {
+    "environnement": {
+      "node": "v24.22.3",
+      "plateforme": "linux",
+      "architecture": "x64"
+    },
+    "protocole": "Quatre paires séquentielles, ordre avant/après alterné, processus neuf par variante et passage. Même chargement de modules, catalogue, ordre et options que decor.test.mjs ; création du circuit hors mesure. Les assertions intermédiaires du test ne sont pas rejouées par ce diagnostic. Aucun GC forcé, aucune recherche de passage favorable.",
+    "resultats": [
+      {
+        "circuit": "val-brule",
+        "avant": {
+          "mural_mediane_ms": 164.534,
+          "cpu_mediane_ms": 344.044,
+          "mural_max_ms": 201.731,
+          "depassements_150_ms": 3,
+          "muraux_ms": [
+            171.86,
+            157.209,
+            201.731,
+            118.695
+          ],
+          "cpu_ms": [
+            351.572,
+            336.516,
+            389.813,
+            249.823
+          ]
+        },
+        "apres": {
+          "mural_mediane_ms": 110.467,
+          "cpu_mediane_ms": 246.099,
+          "mural_max_ms": 112.261,
+          "depassements_150_ms": 0,
+          "muraux_ms": [
+            111.231,
+            112.261,
+            109.702,
+            102.442
+          ],
+          "cpu_ms": [
+            256.042,
+            281.167,
+            228.262,
+            236.157
+          ]
+        }
+      },
+      {
+        "circuit": "port-sable",
+        "avant": {
+          "mural_mediane_ms": 132.155,
+          "cpu_mediane_ms": 294.095,
+          "mural_max_ms": 162.19,
+          "depassements_150_ms": 1,
+          "muraux_ms": [
+            162.19,
+            125.081,
+            139.229,
+            107.702
+          ],
+          "cpu_ms": [
+            359.012,
+            297.29,
+            290.9,
+            233.159
+          ]
+        },
+        "apres": {
+          "mural_mediane_ms": 88.592,
+          "cpu_mediane_ms": 203.686,
+          "mural_max_ms": 97.828,
+          "depassements_150_ms": 0,
+          "muraux_ms": [
+            82.744,
+            94.44,
+            97.828,
+            81.694
+          ],
+          "cpu_ms": [
+            205.28,
+            171.13,
+            202.184,
+            205.188
+          ]
+        }
+      },
+      {
+        "circuit": "haut-col",
+        "avant": {
+          "mural_mediane_ms": 238.131,
+          "cpu_mediane_ms": 351.582,
+          "mural_max_ms": 254.949,
+          "depassements_150_ms": 3,
+          "muraux_ms": [
+            254.949,
+            243.357,
+            232.906,
+            120.527
+          ],
+          "cpu_ms": [
+            388.047,
+            369.976,
+            333.188,
+            259.987
+          ]
+        },
+        "apres": {
+          "mural_mediane_ms": 130.931,
+          "cpu_mediane_ms": 226.54,
+          "mural_max_ms": 236.485,
+          "depassements_150_ms": 1,
+          "muraux_ms": [
+            127.533,
+            134.328,
+            236.485,
+            94.686
+          ],
+          "cpu_ms": [
+            215.347,
+            237.733,
+            330.697,
+            186.886
+          ]
+        }
+      }
+    ]
+  },
+  "test_decor_inchange": {
+    "fichier": "verifications/decor.test.mjs",
+    "passages_predefinis": 3,
+    "succes": 0,
+    "echecs": [
+      {
+        "passage": 1,
+        "circuit": "val-brule",
+        "mesure_ms": 188
+      },
+      {
+        "passage": 2,
+        "circuit": "haut-col",
+        "mesure_ms": 154
+      },
+      {
+        "passage": 3,
+        "circuit": "haut-col",
+        "mesure_ms": 167
+      }
+    ],
+    "seuil_ms": 150,
+    "reserve": "Les gains du diagnostic ne remplacent pas le verdict de la suite. Aucun passage supplémentaire recherché pour obtenir un succès."
+  },
+  "limites": [
+    "Un échantillon final Haut-Col reste à 236,485 ms dans le diagnostic. Les dépassements de la suite inchangée restent consignés ; aucune promesse d’éliminer la variance du temps mural.",
+    "Les valeurs CPU couvrent le processus, dont plusieurs threads possibles. Les mesures ne suffisent pas à attribuer un dépassement à la charge système et ne sont pas des mesures de FPS matériels.",
+    "Les quatre paires comparent chaque version à sa référence dans le même protocole ; les médianes de deux campagnes distinctes ne servent pas à isoler le gain de chaque optimisation.",
+    "Comparaison fonctionnelle et relecture effectuées localement ; nouvelle qualification complète de l’union, build et publication à réaliser par l’intégration."
+  ]
+}

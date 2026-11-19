@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "date": "2026-11-19",
+  "statut": "conservation_et_coherence_interne_sans_validation_de_course",
+  "sources_verifiees": [
+    {"fichier":"sources/emprise-marseille.js","sha256":"b2cb276ff41ef5a94a15d90f79f30d68b307f0154e9d728c0490055ee9455f5b","git_blob":"3ae57a817b1426cc969ea2de6e363dd083231355"},
+    {"fichier":"sources/emprise-WORLD.md","sha256":"0e6a96d7c67eb79f902e99626dfb7c37ab2b3c4f17dd2329eb49402dc38233c9","git_blob":"0900a47396f170d6ef70285439d97943d1e09d4c"},
+    {"fichier":"sources/emprise-ASSETS.md","sha256":"478fedc7236626b15f149c8df82b5971f5e23630347145170eab708cb1863685","git_blob":"c2dd18e8227dc2eaf03dbfffcc8016cb0de9152e"},
+    {"fichier":"sources/emprise-LANDMARKS.md","sha256":"2a1457aaf1206148a25800e6e238cc0b3ed6ea8c7d01dd824c392f06968b6646","git_blob":"be1ca63b7a526a808da6180c95aa3c109dbdb3e6"},
+    {"fichier":"sources/ign-grille.json","sha256":"eba0bca0ff828a052254bf77047e3a0fdc54fdb31499a2020360bdda808f89c0","git_blob":null},
+    {"fichier":"sources/ign-grille-acquisition.json","sha256":"77bf25ee80c3a4fe9ee5fe483d527f89fcbeb9d586eb690951fc1319d500a2e1","git_blob":null},
+    {"fichier":"sources/ign-grille-requete.json","sha256":"54edecea0f1188345a76a92dfdf845ba040d3b9eeea53af0cf65d38535802a42","git_blob":null},
+    {"fichier":"sources/ign-ressource.json","sha256":"f8f21c0bc78d11a4ff14f67aed19c884dfb1b5f7460b4b122a2bbfa1e09206bf","git_blob":null},
+    {"fichier":"sources/ign-trois-points.json","sha256":"236153b9337253daff98412415b951e0e60cb3ca86b23d2c553bf42ccd711330","git_blob":null}
+  ],
+  "urbain": {
+    "source_commit": "cc004826a506e6979eaaec217748fe85d5cd6ac5",
+    "source_blob": "3ae57a817b1426cc969ea2de6e363dd083231355",
+    "empreinte_fnv1a": 1651787597,
+    "comptes_source": {
+      "rues": 1177,
+      "batiments": 5274,
+      "eau": 5,
+      "espaces": 166,
+      "reperes": 119,
+      "mobilier": 1008,
+      "points": {
+        "rues": 3294,
+        "batiments": 25922,
+        "eau": 45,
+        "espaces": 1603
+      },
+      "ruesParClasse": {
+        "chemin": 666,
+        "desserte": 105,
+        "jetee": 56,
+        "rail": 13,
+        "rue": 253,
+        "secondaire": 38,
+        "tertiaire": 34,
+        "voie-bus": 8,
+        "voie-express": 4
+      },
+      "eauParSorte": {
+        "bassin": 4,
+        "port": 1
+      },
+      "espacesParSorte": {
+        "arret": 16,
+        "bois": 1,
+        "jardin": 7,
+        "jetee": 8,
+        "jeux": 3,
+        "parc": 7,
+        "pelouse": 32,
+        "pietonne": 75,
+        "place": 9,
+        "pont": 1,
+        "quai": 2,
+        "terrain": 5
+      },
+      "reperesParSorte": {
+        "bibliotheque": 4,
+        "culte": 13,
+        "curiosite": 4,
+        "eau": 1,
+        "embarcadere": 4,
+        "jardin": 2,
+        "justice": 4,
+        "mairie": 2,
+        "marche": 2,
+        "metro": 7,
+        "monument": 8,
+        "musee": 5,
+        "parc": 7,
+        "place": 27,
+        "police": 4,
+        "port": 1,
+        "quartier": 7,
+        "site": 2,
+        "theatre": 8,
+        "tram": 6,
+        "ville": 1
+      },
+      "mobilierParSorte": {
+        "abri": 28,
+        "arret-bus": 45,
+        "boite-lettres": 16,
+        "conteneur": 46,
+        "corbeille": 65,
+        "fontaine-a-boire": 11,
+        "kiosque": 6,
+        "motos": 4,
+        "oeuvre": 36,
+        "panneau": 36,
+        "potelet": 163,
+        "terrasse": 451,
+        "toilettes": 7,
+        "velos": 69,
+        "velos-partage": 25
+      },
+      "batimentsHauteurConnue": 1080,
+      "batimentsContour": 5,
+      "ruesNommees": 662,
+      "lointain": {
+        "batiments": 201,
+        "boites": 3898,
+        "eau": 12,
+        "espaces": 31,
+        "voies": 314,
+        "reperes": 10,
+        "sommets": 1
+      }
+    },
+    "rues_nommees_distinctes": 278,
+    "rues_marquees_pont": ["coeur:rues:0608","coeur:rues:0805","coeur:rues:0807","coeur:rues:0991"],
+    "couches": {
+      "0": 1169,
+      "1": 8
+    },
+    "espaces_niveaux": [
+      {"id":"coeur:espaces:0062","source":"coeur.json#/donnees/espaces/62","sorte":"quai","nom":"Quai du Port","bornes":{"x0":-312.29998779296875,"z0":-13.300000190734863,"x1":16.399999618530273,"z1":45.70000076293945},"altitude_surface_m":null,"connexion_a_une_voie_validee":false},
+      {"id":"coeur:espaces:0085","source":"coeur.json#/donnees/espaces/85","sorte":"jetee","nom":"","bornes":{"x0":-209.10000610351562,"z0":30.5,"x1":-191.6999969482422,"z1":49.599998474121094},"altitude_surface_m":null,"connexion_a_une_voie_validee":false},
+      {"id":"coeur:espaces:0088","source":"coeur.json#/donnees/espaces/88","sorte":"jetee","nom":"","bornes":{"x0":-165.10000610351562,"z0":24,"x1":-147.6999969482422,"z1":37.900001525878906},"altitude_surface_m":null,"connexion_a_une_voie_validee":false},
+      {"id":"coeur:espaces:0089","source":"coeur.json#/donnees/espaces/89","sorte":"jetee","nom":"","bornes":{"x0":-122.5,"z0":18.299999237060547,"x1":-105.9000015258789,"z1":31.799999237060547},"altitude_surface_m":null,"connexion_a_une_voie_validee":false},
+      {"id":"coeur:espaces:0090","source":"coeur.json#/donnees/espaces/90","sorte":"jetee","nom":"","bornes":{"x0":-77.19999694824219,"z0":12.300000190734863,"x1":-60.20000076293945,"z1":29.200000762939453},"altitude_surface_m":null,"connexion_a_une_voie_validee":false},
+      {"id":"coeur:espaces:0091","source":"coeur.json#/donnees/espaces/91","sorte":"jetee","nom":"","bornes":{"x0":-25,"z0":226.60000610351562,"x1":-6.699999809265137,"z1":242.60000610351562},"altitude_surface_m":null,"connexion_a_une_voie_validee":false},
+      {"id":"coeur:espaces:0119","source":"coeur.json#/donnees/espaces/119","sorte":"pont","nom":"","bornes":{"x0":227.5,"z0":-88.80000305175781,"x1":251.5,"z1":-63.599998474121094},"altitude_surface_m":null,"connexion_a_une_voie_validee":false},
+      {"id":"coeur:espaces:0138","source":"coeur.json#/donnees/espaces/138","sorte":"jetee","nom":"","bornes":{"x0":-155.10000610351562,"z0":272.1000061035156,"x1":-136.39999389648438,"z1":288.6000061035156},"altitude_surface_m":null,"connexion_a_une_voie_validee":false},
+      {"id":"coeur:espaces:0139","source":"coeur.json#/donnees/espaces/139","sorte":"quai","nom":"Quai des Ligures","bornes":{"x0":-589.0999755859375,"z0":204.39999389648438,"x1":69.0999984741211,"z1":415.20001220703125},"altitude_surface_m":null,"connexion_a_une_voie_validee":false},
+      {"id":"coeur:espaces:0144","source":"coeur.json#/donnees/espaces/144","sorte":"jetee","nom":"","bornes":{"x0":-105.5,"z0":254.6999969482422,"x1":-87.19999694824219,"z1":270.79998779296875},"altitude_surface_m":null,"connexion_a_une_voie_validee":false},
+      {"id":"coeur:espaces:0145","source":"coeur.json#/donnees/espaces/145","sorte":"jetee","nom":"","bornes":{"x0":-68.5,"z0":242.60000610351562,"x1":-50.20000076293945,"z1":258.20001220703125},"altitude_surface_m":null,"connexion_a_une_voie_validee":false}
+    ],
+    "emprise_m": {
+      "x0": -610,
+      "z0": -610,
+      "x1": 610,
+      "z1": 610
+    },
+    "largeurs_mesurees": 0,
+    "profils_altimetriques_mesures": 0,
+    "pieds_batiments_altitudes_connues": 0,
+    "note_hauteurs": "1080 indicateurs connue dans le cœur brut ; compléments core-heights.js exclus. Hauteur/base restent relatives, aucune altitude sol inventée."
+  },
+  "altimetrie": {
+    "ressource": "ign_lidar_hd_mnt_mono_wld",
+    "acquis_utc": "2026-11-19T20:27:06Z",
+    "dimensions": [65,65],
+    "points": 4225,
+    "nodata": 0,
+    "plage_altitudes_api_m": [-3.77,41.74],
+    "valeurs_negatives_conservees": 14,
+    "acc_api": {
+      "Average value": 4225
+    },
+    "pas_echantillonnage_local": {
+      "est_m": 19.272696,
+      "nord_m": 19.442239
+    },
+    "pas_ressource_annonce_m": 0.5,
+    "emprise_m": {
+      "x0": -616.726271,
+      "z0": -622.151652,
+      "x1": 616.726271,
+      "z1": 622.151652
+    },
+    "bbox_annoncee_ressource": {
+      "east": 7.6279958746375085,
+      "north": 50.39357929423857,
+      "west": -2.6040058043246,
+      "south": 45.87666894037257
+    },
+    "points_hors_bbox_annoncee": 4225,
+    "datum_individuel_confirme": null,
+    "erreur_verticale_bornee_m": null,
+    "date_vol_connue": null,
+    "interpolation_ajoutee": false,
+    "altitude_route_deduite": false
+  },
+  "etat_lots": {
+    "15A": "sources inventoriées ; corridor, largeurs et continuité roulable à établir",
+    "15B": "reconnaissance MNT archivée ; références locales, densification et niveaux à qualifier"
+  },
+  "reserves": ["La bbox du descriptif de ressource archivé ne couvre pas Marseille, alors que 4 225 valeurs non manquantes ont été reçues. Cause non établie.","Les dates de vol, identifiants de dalles et erreurs verticales des points reçus restent inconnus.","Les références OSM brutes par objet et largeurs réelles ne sont pas présentes dans le cœur EMPRISE.","Aucune altitude de route, de tablier, de quai ou de pied de bâtiment n’est déduite de la grille.","La préparation effectue uniquement un changement de repère horizontal explicite ; aucun lissage, rééchantillonnage ou décalage vertical."]
+}

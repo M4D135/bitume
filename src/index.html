@@ -7,14 +7,15 @@
   <div id="vue-course">
     <canvas id="scene" aria-label="Vue de la course"></canvas>
     <canvas id="scene2" aria-label="Vue du joueur 2"></canvas>
-    <canvas id="glace-g" class="glace" aria-hidden="true" hidden></canvas>
-    <canvas id="glace-d" class="glace" aria-hidden="true" hidden></canvas>
     <canvas id="retro-rendu" class="retro-rendu" aria-hidden="true"></canvas>
     <canvas id="meteo" aria-hidden="true"></canvas>
-    <div id="glaces2" class="glaces2" aria-hidden="true"><canvas id="glace-g2" class="glace" hidden></canvas><canvas id="glace-d2" class="glace" hidden></canvas></div>
     <canvas id="meteo2" aria-hidden="true"></canvas>
     <canvas id="vitre" class="vitre" aria-hidden="true"></canvas>
     <canvas id="vitre2" class="vitre" aria-hidden="true"></canvas>
+    <!-- Les glaces restent nettes : leurs images se composent après les précipitations et les dépôts. -->
+    <canvas id="glace-g" class="glace" aria-hidden="true" hidden></canvas>
+    <canvas id="glace-d" class="glace" aria-hidden="true" hidden></canvas>
+    <div id="glaces2" class="glaces2" aria-hidden="true"><canvas id="glace-g2" class="glace" hidden></canvas><canvas id="glace-d2" class="glace" hidden></canvas></div>
     <div id="vignette" aria-hidden="true"></div>
   </div>
 
@@ -453,6 +454,8 @@
       <div class="curseurs">
         <label>Champ du cockpit <output id="v-champ-valeur">60°</output> <input type="range" id="v-champ" min="60" max="105" step="1"></label>
         <label>Secousses <output id="v-secousses-valeur">100 %</output> <input type="range" id="v-secousses" min="0" max="1" step="0.05"></label>
+        <label>Gouttes sur l’écran <output id="v-gouttes-valeur">1,0 ×</output> <input type="range" id="v-gouttes" min="0" max="2" step="0.1" value="1" aria-describedby="v-gouttes-aide"></label>
+        <p class="aide-reglage" id="v-gouttes-aide">Pluie et neige sur la vitre. La vitesse les évacue ; à zéro, la vitre reste dégagée.</p>
       </div>
     </div>
       </div>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="OpenStreetMap server" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+<way id="1551240829" visible="true" version="1" changeset="187780077" timestamp="2026-08-21T07:53:53Z" user="Dominik Dachs" uid="1436733">
+  <nd ref="14109303022"/>
+  <nd ref="14109303023"/>
+  <nd ref="21912962"/>
+  <tag k="bicycle" v="no"/>
+  <tag k="highway" v="residential"/>
+  <tag k="lit" v="yes"/>
+  <tag k="maxspeed" v="30"/>
+  <tag k="motor_vehicle" v="designated"/>
+  <tag k="name" v="Avenue de Monte-Carlo"/>
+  <tag k="oneway" v="yes"/>
+  <tag k="surface" v="asphalt"/>
+  <tag k="wikidata" v="Q96216519"/>
+</way>
+</osm>

@@ -8,7 +8,7 @@
 (function(root){'use strict';
 const FORMAT='ferro-recipe',VERSION=1,MAX_BYTES=1048576,MAX_NODES=256,MAX_INSTANCES=10000;
 const SHAPES=new Set(['box','sphere','cylinder','octa','ring','bevel','wedge']);
-const KINDS=new Set([0,1,2,3,4,5,6,7,8,9,10,13,14,15,19,20,21,22,23,24,25,26,27]);
+const KINDS=new Set([0,1,2,3,4,5,6,7,8,9,10,13,14,15,19,20,21,22,23,24,25,26,27,28,29]);
 const fail=message=>{throw new TypeError('Recette FERRO : '+message);};
 function object(v,label){if(!v||typeof v!=='object'||Array.isArray(v))fail(label+' doit être un objet.');return v;}
 function number(v,min,max,label,integer=false){if(!Number.isFinite(v)||v<min||v>max||(integer&&!Number.isInteger(v)))fail(label+' doit être '+(integer?'un entier':'un nombre fini')+' entre '+min+' et '+max+'.');return Object.is(v,-0)?0:v;}

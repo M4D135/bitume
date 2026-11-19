@@ -1,0 +1,210 @@
+{
+  "lot": "Séparer le contrat géométrique de scène du référentiel exact de simulation p14",
+  "date_utc": "2026-11-19T22:00:39.336472+00:00",
+  "base_geometrie": "c28e0d9134361ca8d9592080fbc61d63d3ae0c01",
+  "correction_panneau": "a345007f9846946e0cf063f885f186d0120c007c",
+  "runtime_inchange_depuis_base": true,
+  "historique": {
+    "fichier": "verifications/fixtures/determinisme-p14.json",
+    "sha256": "d8dfa60fc2d237c8dbc2b3d23689f2d81fe1562e1b14b30eda608fcd4f46d655",
+    "modifie": false,
+    "physique": "p14"
+  },
+  "scene": {
+    "fichier": "verifications/fixtures/determinisme-scenes-0260.json",
+    "sha256": "0d1b02464feac1c4bfe8c4ef2357bc72ee1f2e1f27142f6dcb57c78d06ca2069",
+    "raison": "Architecture détaillée et Baïkal 13B changent les vrais solides/triangles de scène. Le panneau de voie est qualifié derrière le muret après la correction a345007.",
+    "provenance_ajoutee": [
+      "baikal.js",
+      "batiments.js"
+    ]
+  },
+  "premier_replay": {
+    "commande": "node verifications/determinisme-simulation.test.mjs --physx-worker",
+    "node": "v24.22.3",
+    "moteur": {
+      "backend": "PhysX",
+      "version": "5.12.0"
+    },
+    "duree_ms": 12292.483782000001,
+    "scenarios": 3,
+    "secondes_par_scenario": 18,
+    "voitures_par_scenario": 12,
+    "empreintes_identiques": 54,
+    "couches_identiques": 216,
+    "configurations_et_bilans_identiques": true,
+    "divergences_hors_scene": 0,
+    "sources_runtime_stables": true,
+    "sortie_sha256": "6ca7236a432862cf008e6fbbce085e9104ddaad7fc218dbec3aed7b2e903dbb4",
+    "replay_json_sha256": "58dfec208bd5bac35c1ea0da18862960e7af2cc73575c1dc0e9341df90793b4d"
+  },
+  "second_replay_independant": {
+    "commande": "node verifications/determinisme-simulation.test.mjs",
+    "resultat": "PASS : 54 empreintes exactes p14, scènes exactes selon référence distincte",
+    "sources_runtime_identiques_au_premier": true,
+    "journal": "ok  val-brule-sec-12 : 18 empreintes exactes, 12 corps dynamiques, 66702 triangles de sol\nok  port-sable-pluie-12 : 18 empreintes exactes, 12 corps dynamiques, 59522 triangles de sol\nok  baikal-neige-12 : 18 empreintes exactes, 12 corps dynamiques, 98374 triangles de sol\nok  scènes 0.2.60 : géométrie et statistiques exactes pour les trois cas ; provenance Baïkal/bâtiments incluse\nok  sensibilité : un ulp sur pose, vitesse, usure ou événement change le hachage ; −0 distinct de +0\nok  déterminisme p14 : 3 cas PhysX réels, 54 empreintes, aucune fixture historique modifiée\n",
+    "journal_sha256": "7cc8940b8fcc78bdb11ba5e13b339bfcb4991dc3fd173f10109632947bdd5895"
+  },
+  "comparateur": {
+    "commande": "node --test verifications/determinisme-scenes.test.mjs",
+    "tests": 7,
+    "reussis": 7,
+    "mutations_refusees": 72,
+    "repartition": {
+      "empreinte_derniere_seconde": 3,
+      "quatre_couches_sans_modifier_hash_agrege": 12,
+      "bilans_configuration_duree_champ_supplementaire": 18,
+      "scene_hash_compteurs_champs": 27,
+      "cas_absent_duree_raccourcie_scene_absente": 9,
+      "provenance_absente": 2,
+      "fixture_historique_modifiee": 1
+    },
+    "mode_historique_integral": "reste strict et refuse les scènes actuelles sans référence explicite",
+    "journal_sha256": "a72b3a0d5651d94a09f546df9b4ef099c1a862edc5866126c7d6cd58cee7639e"
+  },
+  "comparaison_scenes": {
+    "val-brule-sec-12": {
+      "simulation_integralement_identique": true,
+      "empreintes_exactes": 18,
+      "couches": {
+        "etat": {
+          "secondes_identiques": 18,
+          "divergences": []
+        },
+        "natif": {
+          "secondes_identiques": 18,
+          "divergences": []
+        },
+        "evenements": {
+          "secondes_identiques": 18,
+          "divergences": []
+        },
+        "contacts": {
+          "secondes_identiques": 18,
+          "divergences": []
+        }
+      },
+      "differences_scene": [
+        {
+          "chemin": "statistiques.obstaclesHistoriques",
+          "historique": 1763,
+          "actuel": 2492
+        },
+        {
+          "chemin": "statistiques.complements",
+          "historique": 2490,
+          "actuel": 2648
+        },
+        {
+          "chemin": "statistiques.trianglesObstacles",
+          "historique": 106880,
+          "actuel": 118208
+        },
+        {
+          "chemin": "empreinte",
+          "historique": "11e334eb353c727d7ffd60714db07620fff2d453e85da1de9802c5cd4905c3c6",
+          "actuel": "a50fae6720b88a77e7f2190cdbce9874a642307c6448d07a10752a47cac91d95"
+        }
+      ]
+    },
+    "port-sable-pluie-12": {
+      "simulation_integralement_identique": true,
+      "empreintes_exactes": 18,
+      "couches": {
+        "etat": {
+          "secondes_identiques": 18,
+          "divergences": []
+        },
+        "natif": {
+          "secondes_identiques": 18,
+          "divergences": []
+        },
+        "evenements": {
+          "secondes_identiques": 18,
+          "divergences": []
+        },
+        "contacts": {
+          "secondes_identiques": 18,
+          "divergences": []
+        }
+      },
+      "differences_scene": [
+        {
+          "chemin": "statistiques.obstaclesHistoriques",
+          "historique": 1019,
+          "actuel": 1718
+        },
+        {
+          "chemin": "statistiques.complements",
+          "historique": 2139,
+          "actuel": 2285
+        },
+        {
+          "chemin": "statistiques.trianglesObstacles",
+          "historique": 59552,
+          "actuel": 70184
+        },
+        {
+          "chemin": "empreinte",
+          "historique": "73dd2f3a5d03c6eace8d6972ecfec1ea9e975a6b819387cb08cab9f2a665f7a7",
+          "actuel": "ca000c47e4b5c7c1576d7bfb0f46b3f25e1e94a7f8d7b351fde8587727f5d26f"
+        }
+      ]
+    },
+    "baikal-neige-12": {
+      "simulation_integralement_identique": true,
+      "empreintes_exactes": 18,
+      "couches": {
+        "etat": {
+          "secondes_identiques": 18,
+          "divergences": []
+        },
+        "natif": {
+          "secondes_identiques": 18,
+          "divergences": []
+        },
+        "evenements": {
+          "secondes_identiques": 18,
+          "divergences": []
+        },
+        "contacts": {
+          "secondes_identiques": 18,
+          "divergences": []
+        }
+      },
+      "differences_scene": [
+        {
+          "chemin": "statistiques.obstaclesHistoriques",
+          "historique": 1134,
+          "actuel": 2176
+        },
+        {
+          "chemin": "statistiques.complements",
+          "historique": 3148,
+          "actuel": 3331
+        },
+        {
+          "chemin": "statistiques.trianglesObstacles",
+          "historique": 64000,
+          "actuel": 82072
+        },
+        {
+          "chemin": "statistiques.trianglesEauIgnores",
+          "historique": 0,
+          "actuel": 2
+        },
+        {
+          "chemin": "empreinte",
+          "historique": "5ef4a2762c66a44869a1f22c85fb71a71bbcb9b2e698555443eff3cb2d09633f",
+          "actuel": "099269cd9ac1868967eaa5032e586ae9f0adef52bb6b86cdec05cb682c257330"
+        }
+      ]
+    }
+  },
+  "limites": [
+    "Trois parcours historiques de 18 secondes ; identité démontrée uniquement pour ces scénarios et cet environnement Node/WASM.",
+    "Le décor a réellement changé : les collisions possibles hors des parcours échantillonnés ne sont pas déclarées identiques.",
+    "Les tests géométriques des bâtiments et de dégagement complètent ce référentiel ; aucune nouvelle empreinte de simulation n’est acceptée.",
+    "Aucun runtime, moteur, build, version ou numéro physique modifié par ce lot."
+  ]
+}

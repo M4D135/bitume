@@ -6,6 +6,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { chargerPhysX } from './physx-runtime.mjs';
+import { comparerDeterminismePhysX as comparer, validerScenesPhysX } from './reference-physx.mjs';
 
 const require = createRequire(import.meta.url), DT = 1 / 120, PAS_SECONDE = 120;
 const MARQUEUR = '@@BITUME_DETERMINISME_P14@@';
@@ -21,7 +22,8 @@ const CAS = [
     meteo: { pluie: .8, mouille: 0, neigeSol: .8, precipitationsNeige: true, fixe: true } }
 ];
 function sources() {
-  return Object.fromEntries([...MODULES.map(n => n + '.js'), 'jeu.js', 'moteur/renderer.js', 'ferro/physx.js', 'ferro/physx-runtime.js']
+  // decor charge ces deux modules en CommonJS ; ils font partie des entrées physiques même sans import direct ici.
+  return Object.fromEntries([...MODULES.map(n => n + '.js'), 'baikal.js', 'batiments.js', 'jeu.js', 'moteur/renderer.js', 'ferro/physx.js', 'ferro/physx-runtime.js']
     .map(n => [n, createHash('sha256').update(readFileSync(new URL('../../src/' + n, import.meta.url))).digest('hex')]));
 }
 function identite(p, id) {
@@ -167,18 +169,6 @@ async function rejouer(Ecrivain, etatCourse) {
   return { node: process.version, moteur: { backend: 'PhysX', version: X.status().version },
     sources: empreintesSources, cas };
 }
-function comparer(attendu, obtenu, contexte) {
-  assert.deepEqual(Object.keys(obtenu.cas), Object.keys(attendu.cas), contexte + ' : cas différents');
-  for (const [nom, r] of Object.entries(obtenu.cas)) {
-    const a = attendu.cas[nom];
-    assert.equal(r.empreintes.length, a.empreintes.length, nom + ' : durée différente');
-    for (let i = 0; i < r.empreintes.length; i++) if (r.empreintes[i] !== a.empreintes[i]) {
-      const champs = Object.keys(r.couches[i]).filter(k => r.couches[i][k] !== a.couches[i]?.[k]);
-      throw new Error(`${contexte} : divergence PhysX ${nom}, seconde ${i + 1}, couches ${champs.join(', ')} ; attendu ${a.empreintes[i]}, obtenu ${r.empreintes[i]}`);
-    }
-    assert.deepEqual(r, a, contexte + ' : scène ou bilan différent pour ' + nom);
-  }
-}
 export async function controlerDeterminismePhysX({ Ecrivain, etatCourse, fixture, ecrire, fichier }) {
   if (process.argv.includes('--physx-worker')) {
     console.log(MARQUEUR + JSON.stringify(await rejouer(Ecrivain, etatCourse))); return;
@@ -204,10 +194,15 @@ export async function controlerDeterminismePhysX({ Ecrivain, etatCourse, fixture
     assert.deepEqual(relue, reference); comparer(relue, b, 'Relecture de la fixture écrite');
     console.log('ok  deux replays PhysX indépendants identiques ; nouvelle fixture p14 écrite puis relue');
   }
-  const reference = JSON.parse(readFileSync(fixture, 'utf8'));
+  const contenuHistorique = readFileSync(fixture), reference = JSON.parse(contenuHistorique);
   assert.equal(reference.format, 'bitume-determinisme-physx-1'); assert.equal(reference.physique, 'p14');
-  comparer(reference, a, 'Référentiel p14');
+  // L'architecture et le lac changent les solides de scène. Leurs nouvelles empreintes sont séparées :
+  // les 54 états/contacts natifs, événements, configurations et bilans restent ceux de la fixture p14 intacte.
+  const scenes = validerScenesPhysX(reference,
+    JSON.parse(readFileSync(new URL('../fixtures/determinisme-scenes-0260.json', import.meta.url), 'utf8')), contenuHistorique);
+  comparer(reference, a, 'Référentiel p14', scenes);
   for (const [nom, r] of Object.entries(a.cas)) console.log(`ok  ${nom} : ${r.empreintes.length} empreintes exactes, 12 corps dynamiques, ${r.scene.statistiques.trianglesSol} triangles de sol`);
+  console.log('ok  scènes 0.2.60 : géométrie et statistiques exactes pour les trois cas ; provenance Baïkal/bâtiments incluse');
   console.log('ok  sensibilité : un ulp sur pose, vitesse, usure ou événement change le hachage ; −0 distinct de +0');
   console.log('ok  déterminisme p14 : 3 cas PhysX réels, 54 empreintes, aucune fixture historique modifiée');
 }

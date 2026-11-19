@@ -9,11 +9,20 @@ import { fileURLToPath } from 'node:url';
 
 const racine = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const contexte = vm.createContext({ console });
+vm.runInContext('globalThis.window = globalThis;', contexte);
 for (const nom of ['moteur/renderer.js', 'carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js', 'ferro/vehicle-dynamics.js',
   'pneus.js', 'usure-pneus.js', 'chaussee.js', 'conduite.js', 'voiture.js'])
   vm.runInContext(fs.readFileSync(path.join(racine, 'src', nom), 'utf8'), contexte, { filename: nom });
 const V = contexte.BITUME.voiture;
-const formes = new Map(Object.values(V.FORMES).map(f => [f.nom, f.tri]));
+const formes = new Map(), geometrie = contexte.FRender.shared.geometry(false);
+// Mailles réellement préparées pour le moteur, y compris leur conversion en Float32.
+for (const f of Object.values(V.FORMES)) {
+  const r = geometrie.ranges[f.nom], triangles = [];
+  assert.ok(r, 'forme libre enregistrée : ' + f.nom);
+  for (let i = r.offset / 4; i < r.offset / 4 + r.count; i += 3)
+    triangles.push([0, 1, 2].map(k => Array.from(geometrie.vertices.slice(geometrie.indices[i + k] * 6, geometrie.indices[i + k] * 6 + 3))));
+  formes.set(f.nom, triangles);
+}
 const primitives = new Map([['cylinder', []], ['sphere', []]]);
 for (const niveau of [false, true, 2]) {
   const g = contexte.FRender.shared.geometry(niveau);
@@ -128,8 +137,8 @@ function capsule(objet) {
   return { points, r };
 }
 function traversee(objet, arbre, marge = .001) {
-  if (objet.shape === 'cylinder') {
-    // Capsule circonscrite au cylindre : un succès garantit la séparation du cylindre réel.
+  if (objet.shape === 'cylinder' || (objet.shape === 'sphere' && objet.s[1] > 2 * Math.max(objet.s[0], objet.s[2]))) {
+    // Capsule circonscrite au cylindre ou à une manche ellipsoïde allongée : rejet large conservateur.
     const { points, r } = capsule(objet), candidats = query(arbre, agrandir(box(points), r + marge));
     if (!candidats.length || Math.sqrt(Math.min(...candidats.map(t => st2(...points, t)))) - r >= 0) return false;
     // Le disque du volant est court : la capsule est trop large à ses extrémités.
@@ -189,6 +198,29 @@ test('le contrôleur distingue traversée, séparation et simple proximité', ()
   assert.equal(crossing([[[.2, .2, .1], [.3, .2, .1], [.2, .3, .1]]], build([t])), null);
   assert.ok(crossing([[[.2, .2, 0], [.3, .2, 0], [.2, .3, 0]]], build([t])), 'recouvrement coplanaire détecté');
   assert.equal(crossing([[[2, 2, 0], [3, 2, 0], [2, 3, 0]]], build([t])), null);
+});
+
+test('les surfaces de tous les éléments des mains se dégagent de la jante pendant le passage', () => {
+  const modele = creer(), ev = pose();
+  // Dépliage, retrait, trajet, prise et retour : les transitions de doigts sont contrôlées avant le recul.
+  const phases = [0, .04, .08, .10, .12, .14, .20, .24, .3, .4, .5, .7, .8, .86, .90, .92, .94, .97, 1];
+  let poses = 0;
+  for (const volant of [-1, -.5, 0, .5, 1]) {
+    ev.pilote.volant = volant;
+    V.cockpit(modele, ev, [], { ...ev.pilote, regime: 9000, kmh: 140 });
+    cacheTriangles = new WeakMap();
+    const H = modele.objetsRendu.habitacle, arbre = build(triangles(H.jante.objet));
+    for (const [rapportAvant, rapport] of [[2, 3], [4, 5], [6, 5], [-1, 0]]) for (const passage of phases) {
+      Object.assign(ev.pilote, { rapportAvant, rapport, passage });
+      V.cockpit(modele, ev, [], { ...ev.pilote, regime: 9000, kmh: 140 });
+      cacheTriangles = new WeakMap(); cacheBoites = new WeakMap();
+      for (const main of H.mains) for (const piece of main.pieces)
+        assert.ok(!traversee(piece.objet, arbre), `${piece.objet.shape}/jante : volant=${volant}, ${rapportAvant}→${rapport}, passage=${passage}, main=${main.k}`);
+      poses++;
+    }
+  }
+  assert.equal(poses, 380);
+  console.log('mains/jante : ' + poses + ' poses, surfaces Float32 de chaque gant/paume/garde/manchette/sangle');
 });
 
 test('la tige du levier ne traverse plus le carénage à son pied', () => {

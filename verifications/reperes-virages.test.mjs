@@ -2,6 +2,8 @@
 // Oracle indépendant : sources de 0.2.53 au commit 510e6d43ae83f21334237310b2972b13ba68f228,
 // capturées par git show avant modification de decor.js. La fixture conserve cette seule source, comprimée.
 // La comparaison stricte se fait sur la même machine (Mac/ARM compris), sans historique Git nécessaire en CI.
+// Le contrat 0.2.53 exclut l'architecture et le paysage 13B ajoutés ensuite. Leur version actuelle
+// est contrôlée séparément avec/sans repères, sans remplacer aucune référence historique.
 // Les empreintes supplémentaires ci-dessous proviennent de Linux x64, Node 24.22.3 ; elles ne sont pas régénérées.
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
@@ -10,12 +12,26 @@ import { readFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import vm from 'node:vm';
 const require = createRequire(import.meta.url);
-for (const f of ['circuit', 'chaussee', 'carene', 'botanique', 'ecologie', 'saisons', 'vegetation', 'bords', 'decor']) require('../src/' + f + '.js');
+for (const f of ['circuit', 'chaussee', 'carene', 'botanique', 'ecologie', 'saisons', 'vegetation', 'bords',
+  'virages', 'baikal', 'batiments', 'decor']) require('../src/' + f + '.js');
 const B = globalThis.BITUME;
 const sourceReference = gunzipSync(readFileSync(new URL('./fixtures/decor-0253.js.gz', import.meta.url)));
 const sourceSha256 = 'f53449f4326d03a2e6385e8067ad2abc54cbe33d9bc39da86a098129b7651e41';
 assert.equal(createHash('sha256').update(sourceReference).digest('hex'), sourceSha256, 'fixture 0.2.53 altérée');
-const decorReference = vm.runInNewContext(sourceReference.toString('utf8') + '\nBITUME.decor;', { BITUME: { ...B }, console, performance }, { filename: 'decor-0253.js' });
+// En 0.2.53, Baïkal n'avait pas de biome enregistré dans ecologie.js : il prenait la graine forêt
+// et l'ouverture générique des biomes inconnus. Le nom réservé ci-dessous retrouve ce comportement
+// sans retirer le biome 13B de production ; les huit empreintes anciennes restent l'oracle indépendant.
+const ecologieHistorique = { creer(graine, biome) {
+  const champ = B.ecologie.creer(graine, biome === 'baikal' ? 'baikal-avant-13b' : biome);
+  return Object.freeze({ ...champ, biome });
+} };
+const contexteHistorique = () => ({ BITUME: { ...B, ecologie: ecologieHistorique }, console, performance });
+const decorReference = vm.runInNewContext(sourceReference.toString('utf8') + '\nBITUME.decor;', contexteHistorique(), { filename: 'decor-0253.js' });
+const sourceActuelle = readFileSync(new URL('../src/decor.js', import.meta.url), 'utf8');
+const decorContratHistorique = vm.runInNewContext(sourceActuelle + '\nBITUME.decor;',
+  contexteHistorique(), { filename: 'decor-contrat-0253.js' });
+// Configuration de cette copie isolée seulement : le thème de production garde son lac et ses hameaux.
+decorContratHistorique.THEMES.baikal = structuredClone(decorReference.THEMES.baikal);
 const linuxX64 = process.platform === 'linux' && process.arch === 'x64';
 const CATALOGUE = vm.runInNewContext(readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8').match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
 const HISTORIQUE = {
@@ -29,6 +45,7 @@ const HISTORIQUE = {
   'baikal': [1134, '956d8a320316b5e8159712fd136056945c6de70d3263558792a11da83f0e8bff']
 };
 const OPTIONS = { qualite: 'high', saison: 'ete', matieres: true, vegetation: true, vegetationQualite: 'high' };
+const OPTIONS_HISTORIQUES = { ...OPTIONS, batiments: false };
 const empreinte = valeur => createHash('sha256').update(JSON.stringify(valeur)).digest('hex');
 const tableaux = c => Object.fromEntries(Object.entries(c).filter(([, v]) => ArrayBuffer.isView(v))
   .map(([k, v]) => [k, createHash('sha256').update(Buffer.from(v.buffer, v.byteOffset, v.byteLength)).digest('hex')]));
@@ -68,15 +85,25 @@ verifier('les huit références indépendantes couvrent le catalogue complet', (
 for (const k of CATALOGUE) {
   const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom });
   B.bords.limites(c, B.bords.planifier(c));
-  const avant = tableaux(c), d = B.decor.construire(c, OPTIONS), historique = decorReference.construire(c, OPTIONS);
+  const avant = tableaux(c), d = B.decor.construire(c, OPTIONS);
+  const sansReperes = B.decor.construire(c, { ...OPTIONS, reperesVirages: false });
+  const compatible = decorContratHistorique.construire(c, OPTIONS_HISTORIQUES);
+  const historique = decorReference.construire(c, OPTIONS);
   const obstaclesReference = structuredClone(historique.obstacles), plan = B.virages.planifier(c), signs = panneaux(d);
-  verifier(k.nom + ' : tous les solides restent strictement identiques à 0.2.53, même ordre', () => {
-    assert.deepEqual(d.obstacles, obstaclesReference, 'solides différents de la source 0.2.53 sur cette machine');
+  verifier(k.nom + ' : configuration historique, solides strictement identiques à 0.2.53, même ordre', () => {
+    assert.deepEqual(structuredClone(compatible.obstacles), obstaclesReference, 'solides différents de la source 0.2.53 sur cette machine');
     if (linuxX64) {
-      assert.equal(d.obstacles.length, HISTORIQUE[k.id][0]);
-      assert.equal(empreinte(d.obstacles), HISTORIQUE[k.id][1]);
+      assert.equal(compatible.obstacles.length, HISTORIQUE[k.id][0]);
+      assert.equal(empreinte(compatible.obstacles), HISTORIQUE[k.id][1]);
     }
     assert.deepEqual(tableaux(c), avant, 'tracé, vibreurs, dévers, vitesse et limites modifiés');
+    for (const o of objets(compatible)) assert.ok(!Object.hasOwn(o, 'collision'), 'un repère historique crée un solide');
+  });
+  verifier(k.nom + ' : décor actuel, mêmes solides avec/sans repères, même ordre', () => {
+    assert.ok(d.architecture && sansReperes.architecture, 'architecture active dans les deux décors');
+    if (k.id === 'baikal') assert.ok(d.baikal && sansReperes.baikal, 'paysage 13B actif dans les deux décors');
+    assert.deepEqual(d.obstacles, sansReperes.obstacles, 'un repère modifie les solides actuels');
+    assert.deepEqual(tableaux(c), avant, 'tracé actuel modifié');
     for (const o of objets(d)) assert.ok(!Object.hasOwn(o, 'collision'), 'un repère crée un solide');
   });
   verifier(k.nom + ' : distances et chevrons lisibles derrière les limites, hors stands/tunnels', () => {
@@ -133,40 +160,48 @@ for (const k of CATALOGUE) {
     }
   });
   verifier(k.nom + ' : les vibreurs ne changent que de couleur, les décors aléatoires restent identiques', () => {
-    assert.deepEqual(d.arbres, structuredClone(historique.arbres), 'consommation aléatoire déplacée');
-    assert.deepEqual(d.obstacles, obstaclesReference);
-    assert.equal(d.nappes.length, historique.nappes.length);
-    let couleurs = 0;
-    for (let j = 0; j < d.nappes.length; j++) {
-      const a = d.nappes[j], b = historique.nappes[j];
-      assert.deepEqual(a.indices, new Uint32Array(b.indices));
-      assert.equal(a.sommets.length, b.sommets.length);
-      for (let i = 0; i < a.sommets.length; i += 13) {
-        for (let q = 0; q < 10; q++) assert.equal(a.sommets[i + q], b.sommets[i + q], 'géométrie ou matière de nappe modifiée');
-        if ([10, 11, 12].some(q => a.sommets[i + q] !== b.sommets[i + q])) {
-          assert.equal(a.surfaceType, 'accotement'); assert.equal(a.sommets[i + 9], 14);
-          assert.ok(Math.abs(b.sommets[i + 10] - .74) < 1e-6 || Math.abs(b.sommets[i + 10] - .90) < 1e-6, 'couleur hors vibreur');
-          couleurs++;
+    for (const [avec, sans] of [[compatible, historique], [d, sansReperes]]) {
+      assert.deepEqual(structuredClone(avec.arbres), structuredClone(sans.arbres), 'consommation aléatoire déplacée');
+      assert.deepEqual(structuredClone(avec.obstacles), structuredClone(sans.obstacles));
+      assert.equal(avec.nappes.length, sans.nappes.length);
+      let couleurs = 0;
+      for (let j = 0; j < avec.nappes.length; j++) {
+        const a = avec.nappes[j], b = sans.nappes[j];
+        assert.deepEqual(new Uint32Array(a.indices), new Uint32Array(b.indices));
+        assert.equal(a.sommets.length, b.sommets.length);
+        for (let i = 0; i < a.sommets.length; i += 13) {
+          for (let q = 0; q < 10; q++) assert.equal(a.sommets[i + q], b.sommets[i + q], 'géométrie ou matière de nappe modifiée');
+          if ([10, 11, 12].some(q => a.sommets[i + q] !== b.sommets[i + q])) {
+            assert.equal(a.surfaceType, 'accotement'); assert.equal(a.sommets[i + 9], 14);
+            assert.ok(Math.abs(b.sommets[i + 10] - .74) < 1e-6 || Math.abs(b.sommets[i + 10] - .90) < 1e-6, 'couleur hors vibreur');
+            couleurs++;
+          }
         }
       }
+      assert.ok(couleurs > 0, 'aucun vibreur renforcé');
+      // Les petits panneaux historiques de ces mêmes virages ont cédé leur place aux grandes distances.
+      const anciens = x => x.lots.flatMap(l => l.objets).filter(o => o.shape === 'box' && o.s[0] === .08 && o.s[1] === 1.5 && o.s[2] === 1.2).length;
+      assert.ok(anciens(avec) < anciens(sans), 'double signalisation de freinage');
     }
-    assert.ok(couleurs > 0, 'aucun vibreur renforcé');
-    // Les petits panneaux historiques de ces mêmes virages ont cédé leur place aux grandes distances.
-    const anciens = x => x.lots.flatMap(l => l.objets).filter(o => o.shape === 'box' && o.s[0] === .08 && o.s[1] === 1.5 && o.s[2] === 1.2).length;
-    assert.ok(anciens(d) < anciens(historique), 'double signalisation de freinage');
   });
   const leger = B.decor.construire(c, { ...OPTIONS, qualite: 'low', vegetationQualite: 'low' });
+  const legerHistorique = decorContratHistorique.construire(c, { ...OPTIONS_HISTORIQUES, qualite: 'low', vegetationQualite: 'low' });
   verifier(k.nom + ' : Légère conserve les positions, couleurs et symboles, ainsi que les solides', () => {
     assert.deepEqual(signature(leger), signature(d));
-    assert.deepEqual(leger.obstacles, obstaclesReference);
-    if (linuxX64) assert.equal(empreinte(leger.obstacles), HISTORIQUE[k.id][1]);
+    assert.deepEqual(leger.obstacles, d.obstacles);
+    assert.deepEqual(Array.from(signature(legerHistorique)), Array.from(signature(compatible)));
+    assert.deepEqual(structuredClone(legerHistorique.obstacles), obstaclesReference);
+    if (linuxX64) assert.equal(empreinte(legerHistorique.obstacles), HISTORIQUE[k.id][1]);
     assert.deepEqual(tableaux(c), avant);
   });
   if (k.id === 'baikal') verifier('Baïkal enneigé : mêmes repères complets et aucune incidence physique', () => {
     const hiver = B.decor.construire(c, { ...OPTIONS, qualite: 'low', vegetationQualite: 'low', saison: 'hiver' });
+    const hiverHistorique = decorContratHistorique.construire(c, { ...OPTIONS_HISTORIQUES, qualite: 'low', vegetationQualite: 'low', saison: 'hiver' });
     assert.deepEqual(signature(hiver), signature(d));
-    assert.deepEqual(hiver.obstacles, obstaclesReference);
-    if (linuxX64) assert.equal(empreinte(hiver.obstacles), HISTORIQUE[k.id][1]);
+    assert.deepEqual(hiver.obstacles, d.obstacles);
+    assert.deepEqual(Array.from(signature(hiverHistorique)), Array.from(signature(compatible)));
+    assert.deepEqual(structuredClone(hiverHistorique.obstacles), obstaclesReference);
+    if (linuxX64) assert.equal(empreinte(hiverHistorique.obstacles), HISTORIQUE[k.id][1]);
   });
   rapport.push({ circuit: k.id, virages: plan.filter(v => v.difficulte >= 2).length, panneaux: signs.length, solides: d.obstacles.length });
 }

@@ -4,21 +4,22 @@ Plan du **18 novembre 2026**, état de reprise actualisé le **19 novembre 2026*
 
 ## 1. Mission et point de départ
 
-Poursuivre **BITUME**, jeu de course procédural de monoplaces, dépôt [M4D135/bitume](https://github.com/M4D135/bitume), branche de livraison `main`. **13A Baïkal livré sur main en 0.2.53 / p13 (`b791ae60`), PR n°7 fusionnée.** La base 0.2.52 et les lots pneus/stands sont clos. Rapport : `docs/reprise/rapports/13A-RUSSIE-2026-11-19/qualification-finale.json`. Prochain lot : **13B Russie, décor et saisons**, non commencé. Avancer par petits lots, publier sources/builds/preuves et garder une reprise courte. Toutes les autres demandes restent conservées.
+Poursuivre **BITUME**, jeu de course procédural de monoplaces, dépôt [M4D135/bitume](https://github.com/M4D135/bitume), branche de livraison `main`.
+**Demande du 19 novembre : continuer en autonomie toute cette liste.** Le programme réconcilié, incluant les
+lots transversaux 17 à 28 et les restes historiques, est dans
+[CONTINUATION-AUTONOME-2026-11-19.md](docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md).
 
-| Élément | État de reprise du 19 novembre 2026 |
+| Élément | État après qualification locale de 0.2.60 |
 |---|---|
-| Base publiée vérifiée | **0.2.53 / p13**, livraison main `b791ae60`, sources/build/preuves vérifiés. |
-| Checkpoint de reprise | **`b791ae60`**, PR n°7 fusionnée, 13A clos ; fiche `docs/reprise/13A-RUSSIE-TRACE-RELIEF.md`. |
-| Moteur BITUME | **FERRO 0.3.11**, 34 modules verrouillés. |
-| Physique | **p13**, sept circuits historiques et archives p9 à p13 conservés. |
-| Qualification du lot | **107/109 suites** : traces héritées et seuil de temps décor également dépassé sur la base ; **9/9 contrôles russes**, 84 tableaux historiques identiques, 22 scénarios / 1 415 empreintes p13, deux builds identiques de **14 063 125 octets**. |
-| CI de la livraison | **108/109 chacune**, deux exécutions terminées ; seules traces héritées identiques, décor réussi en CI. |
-| Site public | Aucun déploiement de 0.2.53 déclaré ; WebGL, FPS matériel et parties réelles entre navigateurs non validés. |
-| Circuits jouables | **8 dans le build 0.2.53**, dont Baïkal avec thème de base ; décor détaillé en 13B. |
-| Nouveaux circuits explicitement demandés | **Huitième circuit de montagne distinct**, **Russie, Monaco ultra fidèle, Spéciale Marseille issue d’EMPRISE avec relief**. |
-| Autres demandes prioritaires | Roues rondes et réalistes, slicks lisses, sculptures pluie/neige, usure progressive visible. |
-| Implémentation roues/pneus | **12A–12F4 publiés**, avec dégagement des files serrées, vrai service complet et conservation des pneus. Réseau et autorité préservés. |
+| Base publiée | **0.2.59 / p14**, cockpit réuni et démos livrés ; main `f350dd7` après clôture documentaire PR #19. |
+| Moteur | **FERRO 0.3.15**, publié par PR #4 ; 34 copies canoniques verrouillées conformes. |
+| Qualification 0.2.60 | **137/137 suites** dans la campagne locale complète ; rapport et réserve de durée ciblée conservée dans `QUALIFICATION-0260.json`. Résultats 0.2.59 conservés séparément. |
+| Circuits | **8 jouables** : sept historiques et Baïkal, dont le tracé/relief 13A est livré. |
+| Lot actif | **Réalisme visuel demandé le 19 novembre** : bras communs, pneus, matières, météo, bâtiments et stands ; 13B réuni et qualifié localement. Publication distante à constater. |
+| Pneus/stands | **12A–12F4 livrés**, compléments de dégagement livrés et raccordement à p14 conservé. |
+| Déjà intégrés | Public, échappements, animaux, vibrations, socle chargement, virages/annonces, démos/regard arrière et cockpit extérieur. |
+| Programme conservé | Monaco fidèle, Marseille avec relief mesuré, montagne distincte et six propositions : **17 destinations** au total. |
+| Limites ouvertes | Rendu et FPS matériels, manettes, essais entre réseaux et déploiement ; aucune validation matérielle inventée. |
 
 **Ordre de lecture :** `AGENTS.md` → `REPRISE.md` → dernière entrée de `docs/reprise/SUIVI-2026-11-19.md` et `docs/reprise/ETAT.json` → fiche du lot actif. Cette master liste sert à choisir la suite. Éviter de recharger les anciennes discussions, les archives et le HTML compilé en entier.
 
@@ -35,7 +36,7 @@ Les sept premières entrées existent. Les trois suivantes répondent à la dema
 | 5 | **Roche-Fauve** | Afrique | Plateaux ocres, ravine et strates minérales. | Livré |
 | 6 | **Brume-de-Jade** | Asie | Pics calcaires, vallées et terrasses. | Livré |
 | 7 | **Cap-Séquoia** | États-Unis, Pacifique | Falaises, anses, océan et grands conifères. | Livré en 0.2.38 |
-| 8 | **Baïkal — Russie** | Russie / Sibérie | Tracé original de 5 424 m, 62,95 m de dénivelé ; Baïkal choisi en 13A, graine 179. | 13A livré en 0.2.53 ; 13B décor à faire |
+| 8 | **Baïkal — Russie** | Russie / Sibérie | Tracé original de 5 424 m, 62,95 m de dénivelé ; Baïkal choisi en 13A, graine 179. | 13A livré en 0.2.53 ; 13B réuni et qualifié localement en 0.2.60 |
 | 9 | **Monaco** | Principauté de Monaco | Parcours réel 2026, 3 337 m et 19 virages ; murs, tunnel, stands, port et architecture fidèles. | Demandé |
 | 10 | **Spéciale Marseille** | France / Marseille | Carte **EMPRISE**, parcours de course défini sur ses rues, relief altimétrique, ville et collisions raccordées. | Demandé |
 | 11 | **Fjord-d’Argent** | Norvège / Europe du Nord | Fjord encaissé, parois, ponts, rives dissymétriques et lumières nordiques ; tracé original. | Proposition |
@@ -53,7 +54,7 @@ Pour chacune des six propositions, utiliser le même cycle de petits lots : iden
 
 ### A. Roues et pneus — lots 12A à 12F
 
-**12F4 et sortie de file livrés sur main en 0.2.52 / p13 (`b5b4c0c6`), PR n°6 fusionnée.** Sources/build/preuves vérifiés ; base p12 et clôture `db3e8da1` préservées. Reçu : `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/PUBLICATION-0252.json`. Prochain lot : **13A Russie, tracé et relief, non commencé**. **107/108 suites**, seul échec traces hérité identique ; **22 scénarios / 1 415 empreintes p13**, deux builds identiques de **14 060 666 octets**, 53 scripts valides et 34 modules FERRO inchangés. Rapport : `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/qualification-execution.json`. Fiche du complément : `docs/reprise/12F4-SORTIE-FILE.md`. WebGL, matériel, multi-navigateur réel et déploiement non validés.
+**12F4 et sortie de file livrés sur main en 0.2.52 / p13 (`b5b4c0c6`), PR n°6 fusionnée.** Sources/build/preuves vérifiés ; base p12 et clôture `db3e8da1` préservées. Reçu : `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/PUBLICATION-0252.json`. Le tracé/relief 13A est également livré ; le décor 13B est désormais réuni au lot réalisme 0.2.60. **107/108 suites**, seul échec traces hérité identique ; **22 scénarios / 1 415 empreintes p13**, deux builds identiques de **14 060 666 octets**, 53 scripts valides et 34 modules FERRO inchangés. Rapport : `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/qualification-execution.json`. Fiche du complément : `docs/reprise/12F4-SORTIE-FILE.md`. WebGL, matériel, multi-navigateur réel et déploiement non validés.
 
 - [x] Catalogue commun `slicks`, `inter`, `pluie`, `neige` ; ordre des quatre roues **AVG, AVD, ARG, ARD** et libellés corrects.
 - [x] Pneus plus ronds, profil et flancs crédibles, épaules arrondies, jantes creuses, rayons/moyeux/disques mieux construits.
@@ -74,12 +75,12 @@ Fiche détaillée : **[12 — plan maître roues, pneus, Russie et Monaco](docs/
 
 ### B. Russie — lots 13A et 13B
 
-- [ ] Fixer l’identité du circuit russe, proposition Baïkal, sa graine et son tracé original.
-- [ ] Lac, rives rocheuses, forêt irrégulière, clairières et relief ; une identité lisible qui enrichit le catalogue.
-- [ ] Routes et obstacles praticables, douze voitures, grille et possibilités de dépassement.
-- [ ] Quatre saisons, météo et neige cohérentes avec l’état de chaussée ; conditions de l’hôte conservées.
-- [ ] Onze rivaux sur plusieurs tours, collisions réelles, stagnations/replacements contrôlés.
-- [ ] Livraison complète : captures, coûts, régression et build qualifié.
+- [x] Identité et tracé Baïkal fixés en 13A : ID `baikal`, indice 7, graine 179, 5 424 m.
+- [x] Lac, rives rocheuses, forêt irrégulière, clairières et relief intégrés en 13B ; qualification locale de l’union 0.2.60.
+- [x] Tracé, départ, stands et douze voitures qualifiés en 13A, puis châssis dynamique p14 livré ; conserver ces propriétés en 13B.
+- [x] Quatre saisons, météo et neige raccordées en 13B ; conditions de l’hôte conservées, vérifications locales réussies.
+- [x] Onze rivaux sur plusieurs tours, collisions et replacements contrôlés localement en sec/pluie/neige ; panneau gênant corrigé.
+- [ ] Inspection navigateur et coûts matériels de 13B ; régression locale et build reproductible 0.2.60 acquis.
 
 Fiche détaillée : plan 12, section 8.
 
@@ -87,7 +88,7 @@ Fiche détaillée : plan 12, section 8.
 
 - [ ] Figer les références officielles 2026, puis compléter coordonnées, largeurs, altitudes et incertitudes.
 - [ ] Reconstituer le véritable parcours : 3 337 m, 19 virages, ordre, sens et secteurs corrects.
-- [ ] Ajouter une voie de construction à tracé explicite ; préserver le générateur et les sept circuits existants.
+- [ ] Finaliser la voie de construction à tracé explicite : fondation métrique qualifiée localement dans le lot réalisme, anciens générateurs identiques ; IA, grille, stands et données du site restent à fournir avant la course.
 - [ ] Échantillonnage uniforme propre au circuit, maillage visuel raffiné séparément, courbes et raccords sans déformation globale.
 - [ ] Limites et largeurs variables communes au rendu, à l’IA et aux collisions ; murs et rues voisines correctement séparés.
 - [ ] Sainte-Dévote, Beau-Rivage, Casino, Mirabeau/Fairmont, Portier, tunnel, Nouvelle Chicane, Tabac, Piscine, Rascasse et Anthony Noghès reconnaissables.
@@ -102,7 +103,7 @@ Fiche détaillée : plan 12, section 9 ; sources Formula 1/FIA déjà liées dan
 
 ### D. Spéciale Marseille et relief — lots 15A à 15F
 
-- [ ] Reprendre les sources de **`M4D135/emprise`**, version examinée **0.6.8**, commit **`cc004826a506e6979eaaec217748fe85d5cd6ac5`**.
+- [x] Sources de **`M4D135/emprise` 0.6.8**, commit **`cc004826a506e6979eaaec217748fe85d5cd6ac5`**, acquises et reproduites hors réseau dans `docs/references/marseille-2026` ; choix du corridor restant.
 - [ ] Définir un vrai parcours de course dans les rues de la carte ; extraire corridor et horizon utiles.
 - [ ] Préserver le Vieux-Port et les repères retenus, sans prétendre que toutes les façades sont des relevés exacts.
 - [ ] Ajouter un **MNT mesuré** et sourcé au centre actuellement plat ; examiner RGE ALTI ou MNT LiDAR HD selon disponibilité et qualité.
@@ -110,7 +111,7 @@ Fiche détaillée : plan 12, section 9 ; sources Formula 1/FIA déjà liées dan
 - [ ] Reposer chaussées, trottoirs, quais, bâtiments, objets et collisions sur un même relief cohérent.
 - [ ] Préserver la géographie en plan ; traiter ponts, tunnels, rampes, superpositions et replacements avec une voie/couche identifiée.
 - [ ] Raccorder les reliefs existants de la Bonne-Mère, de la côte et des îles à la nouvelle base, sans doubler les collines.
-- [ ] Adapter les recettes de décor au FERRO BITUME **0.3.9** ; ne pas importer le verrou plus ancien d’EMPRISE.
+- [ ] Adapter les recettes de décor au FERRO BITUME verrouillé courant (**0.3.15** dans le candidat réalisme) ; ne pas importer le verrou plus ancien d’EMPRISE.
 - [ ] Qualifier pentes, crêtes, compressions, fondations, murs, onze rivaux, écran partagé, météo, rétros et réseau.
 - [ ] Conserver les attributions OSM/OpenFreeMap/OpenMapTiles, IGN et Earcut applicables aux éléments repris.
 - [ ] Comparaisons au niveau de la chaussée et mesures de performance ; publication avec un reçu.
@@ -149,14 +150,15 @@ Les vieux tableaux d’avancement de novembre 12–17 restent historiques. Ne pa
 ## 5. Ordre conseillé et méthode de travail
 
 1. **12A–12F : roues et pneus.** Livraison 0.2.52 vérifiée ; chantier code clos, réserves WebGL/matériel distinctes.
-2. **13A–13B : Russie.** Commencer maintenant 13A, tracé et relief, non commencé ; compléter ensuite décor, saisons et livraison en 13B.
+2. **Réalisme et 13B : Russie.** Code, saisons et build 0.2.60 réunis et qualifiés localement ; publier, conserver les réserves matérielles.
 3. **14A–14F : Monaco.** Construire et qualifier les fonctions communes de tracé réel, largeurs variables, voies et stands.
 4. **15A–15F : Marseille.** Réemployer ces fonctions, porter le corridor EMPRISE et son relief mesuré.
-5. **16A–16F : six propositions restantes.** Affiner et livrer chacune en sous-lots, sans lancer six circuits à moitié faits.
+5. **Montagne distincte, puis 16A–16F : six propositions restantes.** Réconcilier Route-des-Cimes, puis affiner et livrer chaque destination en sous-lots.
+6. **Lots transversaux et restes historiques.** Suivre la file réconciliée de la continuation autonome ; ne pas confondre une vieille étude avec l’état du code livré.
 
 Les lectures de références Monaco et EMPRISE peuvent se préparer indépendamment. Un responsable garde l’intégration ; des tâches de lecture ou des fichiers disjoints peuvent être délégués si l’outil le permet. Ne pas faire éditer simultanément les mêmes sources ni le même point de reprise.
 
-**À chaque lot :** fiche courte → travail réel → contrôles utiles → checkpoint/push → qualification → sources/build → reçu → prochaine action. Les journaux détaillés restent dans les rapports du dépôt ; la conversation contient seulement les conclusions utiles. Changer de session à un checkpoint durable si nécessaire, sans dépendre d’une mémoire de chat.
+**À chaque lot :** fiche courte → travail réel → contrôles utiles → checkpoint/push → qualification → sources/build → reçu → prochaine action. Les journaux détaillés restent locaux ; le dépôt reçoit les rapports synthétiques, empreintes et réserves utiles, sans chemins internes. Changer de session à un checkpoint durable si nécessaire, sans dépendre d’une mémoire de chat.
 
 ## 6. Commandes et règles de publication
 
@@ -196,6 +198,6 @@ Le déploiement prévu par le dépôt est `./deposer.sh` depuis le Mac, vers l�
 
 ## 8. Texte de reprise pour Claude Fable
 
-> Reprends BITUME dans `M4D135/bitume`. Lis `AGENTS.md`, `REPRISE.md`, `docs/reprise/ETAT.json` et la dernière entrée du suivi. **12F4 et sortie de file livrés sur main en 0.2.52 / p13 (`b5b4c0c6`), PR n°6 fusionnée.** Sources/build/preuves vérifiés ; base p12 et clôture `db3e8da1` préservées. Reçu : `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/PUBLICATION-0252.json`. Prochain lot : **13A Russie, tracé et relief, non commencé**. **107/108 suites**, seul échec traces hérité identique ; **22 scénarios / 1 415 empreintes p13**, deux builds identiques de **14 060 666 octets**, 53 scripts valides et 34 modules FERRO inchangés. Ne pas refaire les lots pneus ni Safari. Vérifier le reçu final de publication, puis ouvrir uniquement 13A Russie, tracé et relief. Monaco, Marseille avec relief, huitième montagne et six propositions restent demandés.
+> Reprends BITUME dans `M4D135/bitume`. Lis `AGENTS.md`, `REPRISE.md`, `docs/reprise/ETAT.json` et la dernière entrée du suivi. La base 0.2.59/p14 et les lots pneus, démos et cockpit sont clos. Poursuis en autonomie la file complète de `docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md`, à partir du prochain sous-lot indiqué par ETAT. Conserve les huit circuits et toutes les demandes Monaco, Marseille, montagne et six destinations. Ne refais pas les lots livrés ni Safari sans défaut nouveau. Publie et actualise la reprise à chaque lot qualifié ; distingue toujours CPU, raster logiciel et validation matérielle.
 
 Ce texte renvoie aux fichiers durables du dépôt ; il n’est pas nécessaire de recopier toute la conversation.

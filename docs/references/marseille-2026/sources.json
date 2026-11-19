@@ -1,0 +1,213 @@
+{
+  "schema": 1,
+  "dossier": "Marseille — sources préparatoires 15A/15B",
+  "statut": "donnees_sources_conservees_et_inventoriees_sans_circuit_jouable",
+  "date_qualification": "2026-11-19",
+  "base_bitume": "891efb10d19f89b0b367f4d46ad82ea81d788690",
+  "fichiers": [
+    {
+      "id": "emprise-marseille",
+      "fichier": "sources/emprise-marseille.js",
+      "octets": 245035,
+      "sha256": "b2cb276ff41ef5a94a15d90f79f30d68b307f0154e9d728c0490055ee9455f5b",
+      "url": "https://github.com/M4D135/emprise/blob/cc004826a506e6979eaaec217748fe85d5cd6ac5/src/pdr/villes/marseille.js",
+      "commit": "cc004826a506e6979eaaec217748fe85d5cd6ac5",
+      "git_blob": "3ae57a817b1426cc969ea2de6e363dd083231355",
+      "date_acquisition_originale_utc": null,
+      "copie_verifiee_utc": "2026-11-19",
+      "licence_donnees": "ODbL-1.0",
+      "role": "donnees_urbaines_et_decodeur"
+    },
+    {
+      "id": "emprise-WORLD",
+      "fichier": "sources/emprise-WORLD.md",
+      "octets": 4384,
+      "sha256": "0e6a96d7c67eb79f902e99626dfb7c37ab2b3c4f17dd2329eb49402dc38233c9",
+      "url": "https://github.com/M4D135/emprise/blob/cc004826a506e6979eaaec217748fe85d5cd6ac5/docs/WORLD.md",
+      "commit": "cc004826a506e6979eaaec217748fe85d5cd6ac5",
+      "git_blob": "0900a47396f170d6ef70285439d97943d1e09d4c",
+      "date_acquisition_originale_utc": null,
+      "copie_verifiee_utc": "2026-11-19",
+      "licence_donnees": null,
+      "role": "notice_de_contexte_EMPRISE"
+    },
+    {
+      "id": "emprise-ASSETS",
+      "fichier": "sources/emprise-ASSETS.md",
+      "octets": 2753,
+      "sha256": "478fedc7236626b15f149c8df82b5971f5e23630347145170eab708cb1863685",
+      "url": "https://github.com/M4D135/emprise/blob/cc004826a506e6979eaaec217748fe85d5cd6ac5/docs/ASSETS.md",
+      "commit": "cc004826a506e6979eaaec217748fe85d5cd6ac5",
+      "git_blob": "c2dd18e8227dc2eaf03dbfffcc8016cb0de9152e",
+      "date_acquisition_originale_utc": null,
+      "copie_verifiee_utc": "2026-11-19",
+      "licence_donnees": null,
+      "role": "notice_de_contexte_EMPRISE"
+    },
+    {
+      "id": "emprise-LANDMARKS",
+      "fichier": "sources/emprise-LANDMARKS.md",
+      "octets": 6219,
+      "sha256": "2a1457aaf1206148a25800e6e238cc0b3ed6ea8c7d01dd824c392f06968b6646",
+      "url": "https://github.com/M4D135/emprise/blob/cc004826a506e6979eaaec217748fe85d5cd6ac5/docs/LANDMARKS.md",
+      "commit": "cc004826a506e6979eaaec217748fe85d5cd6ac5",
+      "git_blob": "be1ca63b7a526a808da6180c95aa3c109dbdb3e6",
+      "date_acquisition_originale_utc": null,
+      "copie_verifiee_utc": "2026-11-19",
+      "licence_donnees": null,
+      "role": "notice_de_contexte_EMPRISE"
+    },
+    {
+      "id": "ign-grille",
+      "fichier": "sources/ign-grille.json",
+      "octets": 302653,
+      "sha256": "eba0bca0ff828a052254bf77047e3a0fdc54fdb31499a2020360bdda808f89c0",
+      "url": "https://data.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevation.json",
+      "date_acquisition_originale_utc": "2026-11-19T20:27:06Z",
+      "licence_donnees": "Licence Ouverte 2.0",
+      "role": "grille"
+    },
+    {
+      "id": "ign-grille-acquisition",
+      "fichier": "sources/ign-grille-acquisition.json",
+      "octets": 658,
+      "sha256": "77bf25ee80c3a4fe9ee5fe483d527f89fcbeb9d586eb690951fc1319d500a2e1",
+      "url": null,
+      "date_acquisition_originale_utc": "2026-11-19T20:27:06Z",
+      "licence_donnees": null,
+      "role": "recu_acquisition"
+    },
+    {
+      "id": "ign-grille-requete",
+      "fichier": "sources/ign-grille-requete.json",
+      "octets": 105738,
+      "sha256": "54edecea0f1188345a76a92dfdf845ba040d3b9eeea53af0cf65d38535802a42",
+      "url": "https://data.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevation.json",
+      "date_acquisition_originale_utc": null,
+      "licence_donnees": null,
+      "role": "parametres_repetition"
+    },
+    {
+      "id": "ign-ressource",
+      "fichier": "sources/ign-ressource.json",
+      "octets": 1415,
+      "sha256": "f8f21c0bc78d11a4ff14f67aed19c884dfb1b5f7460b4b122a2bbfa1e09206bf",
+      "url": "https://data.geopf.fr/altimetrie/resources/ign_lidar_hd_mnt_mono_wld",
+      "date_acquisition_originale_utc": null,
+      "licence_donnees": "Licence Ouverte 2.0",
+      "role": "descriptif_ressource"
+    },
+    {
+      "id": "ign-trois-points",
+      "fichier": "sources/ign-trois-points.json",
+      "octets": 848,
+      "sha256": "236153b9337253daff98412415b951e0e60cb3ca86b23d2c553bf42ccd711330",
+      "url": "https://data.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevation.json?lon=5.3734%7C5.3705%7C5.3712&lat=43.2962%7C43.2841%7C43.2922&resource=ign_lidar_hd_mnt_mono_wld&measures=true",
+      "date_acquisition_originale_utc": null,
+      "licence_donnees": "Licence Ouverte 2.0",
+      "role": "diagnostic_distinct"
+    }
+  ],
+  "emprise": {
+    "commit": "cc004826a506e6979eaaec217748fe85d5cd6ac5",
+    "version": "0.6.8",
+    "source": "src/pdr/villes/marseille.js",
+    "git_blob": "3ae57a817b1426cc969ea2de6e363dd083231355",
+    "empreinte_fnv1a_decodeur": 1651787597,
+    "origine": {
+      "lat": 43.2962,
+      "lon": 5.3734
+    },
+    "axes": "x est, z sud ; y serait vertical mais absent de la géométrie urbaine",
+    "unite_coordonnees": "metre",
+    "quantification_stockage_m": 0.1,
+    "precision_releve_m": null,
+    "snapshot_tuiles": "20261101_080013_pt",
+    "zoom_tuiles": 14,
+    "acquisition_decodee_preexistante": {
+      "sha256": "dda6e9d2d41cee360f03ffd1627fb1ed6fea554e870b65ca4c123842af6e6c6d",
+      "verification": "JSON.stringify(source décodée) identique à JSON.stringify(acquisition existante) ; tableaux typés numérotés remplacés par des tableaux JSON dans coeur.json"
+    },
+    "non_inclus": [
+      "src/core-heights.js et compléments IGN du bâti",
+      "src/city-data.js et ville entière",
+      "src/coast-data.js et géométrie de côte étendue",
+      "générateurs de relief synthétique et runtime EMPRISE"
+    ],
+    "licence_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+    "attribution": "© les contributeurs d'OpenStreetMap — données sous licence ODbL (https://www.openstreetmap.org/copyright) · tuiles OpenFreeMap, schéma OpenMapTiles"
+  },
+  "ign": {
+    "ressource": "ign_lidar_hd_mnt_mono_wld",
+    "endpoint": "https://data.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevation.json",
+    "requete": "sources/ign-grille-requete.json",
+    "methode_http_acquisition_documentee": null,
+    "repetition_proposee": "POST JSON des paramètres archivés ; accès réseau volontaire hors script de préparation",
+    "date_releve_lidar": null,
+    "references_tuiles_mnt": null,
+    "precision_verticale_m": null,
+    "datum_reponse_api": null,
+    "datum_attendu_produit_continental": "IGN 1969, altitude normale, EPSG:5720",
+    "datum_attendu_est_une_confirmation_individuelle": false,
+    "pas_ressource_annonce_m": 0.5,
+    "pas_source_est_precision_verticale": false,
+    "valeur_absente_api": -99999,
+    "arrondi_sortie_api_m": 0.01,
+    "interpolation_preparation": null,
+    "licence_url": "https://www.etalab.gouv.fr/licence-ouverte-open-licence/",
+    "attribution": "© IGN — MNT LiDAR HD, échantillons du service de calcul altimétrique de la Géoplateforme acquis le 19 novembre 2026 ; Licence Ouverte 2.0."
+  },
+  "references_verifiees": [
+    {
+      "id": "ign-fiche-produit",
+      "url": "https://www.data.gouv.fr/datasets/mnt-lidar-hd",
+      "consulte_le": "2026-11-19",
+      "faits": [
+        "Producteur IGN ; Licence Ouverte 2.0.",
+        "MNT dérivé du nuage LiDAR HD ; maillage source de 50 cm."
+      ]
+    },
+    {
+      "id": "ign-description-2026",
+      "url": "https://data.geopf.fr/annexes/ressources/documentation/DC_LiDAR_HD_1-0.pdf",
+      "revision": "juillet 2026",
+      "consulte_le": "2026-11-19",
+      "octets": 6108976,
+      "sha256": "bd9cfabe7d3dd6267286c77ae06842a353c56788fb4b79be65f901ff3676c35c",
+      "archive_dans_depot": false,
+      "pages": [
+        7,
+        36,
+        37
+      ],
+      "faits": [
+        "France continentale : Lambert 93 / IGN69 ; système vertical EPSG:5720.",
+        "Le MNT résulte de points sélectionnés puis interpolés par triangles ; ses nœuds ne sont pas des retours LiDAR directs.",
+        "La sélection MNT repose sur les classes sol, eau et points virtuels ; ne pas lui attribuer automatiquement un tablier de pont."
+      ]
+    },
+    {
+      "id": "ign-service",
+      "url": "https://cartes.gouv.fr/aide/fr/guides-utilisateur/utiliser-les-services-de-la-geoplateforme/calcul-altimetrique/",
+      "consulte_le": "2026-11-19",
+      "faits": [
+        "GET et POST possibles ; liste longitude/latitude de 5 000 points au plus.",
+        "Valeur absente -99999 ; altitudes arrondies au centimètre dans la réponse.",
+        "measures=false renvoie une altitude ; measures=true fournit le détail des sources."
+      ]
+    }
+  ],
+  "incertitudes": [
+    "La bbox du descriptif de ressource archivé ne couvre pas Marseille, alors que 4 225 valeurs non manquantes ont été reçues. Cause non établie.",
+    "Les dates de vol, identifiants de dalles et erreurs verticales des points reçus restent inconnus.",
+    "Les références OSM brutes par objet et largeurs réelles ne sont pas présentes dans le cœur EMPRISE.",
+    "Aucune altitude de route, de tablier, de quai ou de pied de bâtiment n’est déduite de la grille.",
+    "La préparation effectue uniquement un changement de repère horizontal explicite ; aucun lissage, rééchantillonnage ou décalage vertical."
+  ],
+  "livraison": {
+    "runtime": false,
+    "parcours_course": null,
+    "lot_15a_clos": false,
+    "lot_15b_clos": false
+  }
+}

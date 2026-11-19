@@ -1,0 +1,99 @@
+{
+  "date": "2026-11-19",
+  "lot": "roues_arrondies_et_usure_irreguliere",
+  "base": "891efb10d19f89b0b367f4d46ad82ea81d788690",
+  "demande": "Retirer la barre blanche à l’intérieur des pneus ; éviter cubes et zones de texture carrées ou symétriques.",
+  "changements": [
+    "Suppression des 16 barrettes de craie en boîtes, remplacées par quatre petites valves arrondies sur le seul flanc extérieur.",
+    "Moyeu annulaire sombre avec axe aminci et extrémités galbées ; six rayons équilibrés à section ovale, aluminium plus sobre.",
+    "Orientation de montage déterministe propre à chaque roue ; rotation, braquage, suspension, LOD et changement de pneus restent cohérents.",
+    "Usure : champ continu périodique gauchi, peau subdivisée dans la largeur et contrastes gris/brun réduits ; aucun damier secteur par voie."
+  ],
+  "geometrie": {
+    "rayons_pneus_m": [
+      0.29,
+      0.29,
+      0.335,
+      0.335
+    ],
+    "largeurs_pneus_m": [
+      0.28,
+      0.28,
+      0.46,
+      0.46
+    ],
+    "cotes_et_colliders_conserves": true,
+    "roue_avant_slick_detail_max": {
+      "objets_avant": 10,
+      "objets_apres": 7,
+      "triangles_avant": 7600,
+      "triangles_apres": 10672
+    },
+    "roue_avant_pluie_usee_detail_max": {
+      "objets_avant": 14,
+      "objets_apres": 11,
+      "triangles_avant": 10288,
+      "triangles_apres": 13360
+    }
+  },
+  "preuve_hors_roues": {
+    "groupes_identiques": 268,
+    "comparaison_numerique_exacte_sans_arrondi": true,
+    "selection": "objetsRendu.tables/retro : roue >= 0, identités objets ; aucune exclusion par couleur ou nom de forme",
+    "configurations": {
+      "primitives": {
+        "groups": 134,
+        "changedFormsOutsideWheels": [],
+        "objectsOutsideWheels": 103569
+      },
+      "emprise": {
+        "groups": 134,
+        "changedFormsOutsideWheels": [],
+        "objectsOutsideWheels": 104489
+      }
+    }
+  },
+  "fixture": {
+    "raison": "Modification visuelle voulue des roues et de leur orientation de montage.",
+    "groupes_modifies": {
+      "primitives": 116,
+      "emprise": 116
+    },
+    "groupes_inchanges": {
+      "primitives": 18,
+      "emprise": 18
+    },
+    "inchanges": "Épaves sans roues, cockpit sans roues, fantôme et glaces.",
+    "generations_identiques": 2,
+    "sha256": "49b2cabb56a27ce0dca6ec1c6877abb7a2731b69cc4efe9437d9000a1e5a05e1"
+  },
+  "tests": {
+    "voiture.test.mjs": 33,
+    "roues-detail.test.mjs": 8,
+    "usure-visuelle.test.mjs": 8,
+    "pneus-service-visuel.test.mjs": 6,
+    "voiture-permanents.test.mjs": 12,
+    "formes-libres.test.mjs": 1,
+    "pneus.test.mjs": 10,
+    "voiture-identite.test.mjs": 6,
+    "suites_reussies": 8,
+    "controles_reussis": 84,
+    "regime_permanent": "0 GC mineur sur tous les appels mesurés par le banc existant ; objets de rendu permanents conservés."
+  },
+  "verification_visuelle": {
+    "apercu_CPU_triangles_reels_inspecte": true,
+    "webgl_valide": false,
+    "FPS_materiels_mesures": false
+  },
+  "sources_sha256": {
+    "src/voiture.js": "a84f44d535406f27a71e11ab7015ce82d5df6fd5214369f29615b2e338dfcb90",
+    "verifications/voiture.test.mjs": "8889155583226cf751341f0d32e52da936039207e1eeb658a7e166cbe3617642",
+    "verifications/roues-detail.test.mjs": "2001171a060b91a58d6ec0d2c6b148150c40f447f9db2879edc22ea15b4b6d91"
+  },
+  "livraison": {
+    "build": false,
+    "version_modifiee": false,
+    "dist_modifie": false,
+    "publication": false
+  }
+}

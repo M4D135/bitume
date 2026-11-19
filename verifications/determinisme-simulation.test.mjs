@@ -12,6 +12,10 @@
 // Dès p10, l'usure influence l'adhérence : versionPneus, servicePneus et les quatre etatPneus entrent en entier
 // dans l'empreinte, comme les charges et les glisses des roues déjà présentes.
 //
+// En p14, la géométrie qualifiée du décor porte une référence distincte (determinisme-scenes-0260.json).
+// Tous les états, contacts, événements, configurations et bilans restent comparés à la fixture p14 intégrale,
+// dont l'empreinte de fichier est aussi contrôlée ; aucune régénération du comportement avec le nouveau décor.
+//
 // Les empreintes de référence (verifications/fixtures/determinisme-p9.json) ont été prises sur le code d'avant
 // le lot « Fluidité » de la simulation (commit 54e98c9). Cette archive p9 reste intacte. Un changement de physique
 // voulu, versionné dans PHYSIQUE (src/jeu.js), crée sa propre fixture après qualification du comportement :
