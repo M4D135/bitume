@@ -67,6 +67,7 @@ MODULES = [
     'scene-bench.js',
     # vibrations de manette : quatre sorties calculées une fois par image rendue, branchées par jeu.js
     'vibrations.js',
+    'src/cache-niveau.js',
     'jeu.js',
 ]
 # Version affichée au titre (David, 16/11/2026 : « incrémente les versions à chaque maj, je veux la vraie version »).
