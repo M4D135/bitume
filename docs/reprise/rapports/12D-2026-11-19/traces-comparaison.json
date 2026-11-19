@@ -1,0 +1,6 @@
+{
+  "baseline": "71354f05e59dcfcbc98cabc0a690f86d5a8419b4",
+  "identiques_hors_chemin_et_temps_cpu": true,
+  "baseline_sha256_normalise": "dd4c0b22e878676ed1e52fc60566de00be06b3ef4e037132691f4c05e5ca3cf8",
+  "candidate_sha256_normalise": "dd4c0b22e878676ed1e52fc60566de00be06b3ef4e037132691f4c05e5ca3cf8"
+}

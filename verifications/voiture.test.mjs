@@ -154,7 +154,8 @@ verifier('cockpit : coque creuse, aucune pièce de carrosserie entre l’œil et
 
 verifier('cockpit : pilote, arrière, capot et glaces de la vue extérieure absents, roues avant présentes', () => {
   const sortie = []; V.poser(mod, { p: [0, 0, 0], cap: 0 }, sortie, { cockpit: true, overlay: true });
-  assert.equal(sortie.length, mod.corps.filter(p => !(p.pilote || p.arriere || p.exterieur || p.glace || p.vite)).length);
+  // Les sous-surfaces d'usure sont préallouées, mais un pneu neuf n'en dessine aucune.
+  assert.equal(sortie.length, mod.corps.filter(p => !(p.pilote || p.arriere || p.exterieur || p.glace || p.vite || p.usureRoue > 1)).length);
   assert.ok(sortie.every(m => m.overlay) && sortie.some(m => m.shape === 'cylinder' && m.p[0] > 1.3));
 });
 
@@ -178,7 +179,7 @@ verifier('numéro en géométrie sur le nez et les pontons ; repères de flanc �
   assert.equal(reperes.length, 16, 'deux repères sur chaque flanc ; aucune fausse rainure sur un slick neuf');
   assert.ok(reperes.every(p => Math.abs(p.decale[0]) < V.ROUES[p.roue].r - .035), 'marques sur le flanc, pas sur la bande');
   assert.ok(!mod.corps.some(p => p.lent || p.vite), 'aucune pièce réservée à une vitesse');
-  const vus = mod.corps.filter(p => !p.dedans).length;
+  const vus = mod.corps.filter(p => !p.dedans && !(p.usureRoue > 1)).length;
   assert.equal(lent.length, vus);
   assert.equal(vite.length, vus);
 });

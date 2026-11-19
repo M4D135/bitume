@@ -1,0 +1,14 @@
+[
+  {
+    "suite": "crash.test.mjs",
+    "code": 0,
+    "duree_s": 1.171,
+    "sha256_log": "76a4508b12e0a4d212a618b5801c462fa1afd826b7df826030ecca55d699b532"
+  },
+  {
+    "suite": "pieces.test.mjs",
+    "code": 0,
+    "duree_s": 0.871,
+    "sha256_log": "1e7409c5cb4388c264801774ba429beed2321d1c154ee723ea67c61e6d7a9068"
+  }
+]

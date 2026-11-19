@@ -390,6 +390,7 @@
   const SEGMENTS_ROUE = Object.freeze([96, 64, 32, 16]);
   const LIMITES_ROUE_PIXELS = Object.freeze([Infinity, 360, 84, 20]);
   const ROUES_FORMES = { av: {}, ar: {} }, JANTES_FORMES = { av: {}, ar: {} };
+  const MATIERES_PNEUS = { av: {}, ar: {} };
   function revolutionRoue(profil, segments, lisse = true) {
     const faces = [], n = profil.length;
     const tangente = (a, b) => { const y = b[0] - a[0], r = b[1] - a[1], h = Math.hypot(y, r); return [y / h, r / h]; };
@@ -487,6 +488,44 @@
       }
       return forme('bague-pneu-' + essieu + '-' + n, tris);
     });
+  }
+  // 12D : les surfaces usées sont une partition des triangles d'origine. Ni décalque flottant, ni
+  // seconde peau coplanaire : coordonnées, normales et diamètre restent strictement les mêmes.
+  // Les quatre pièces gardent le même repère normalisé que le pneu entier, même si leur boîte est plus petite.
+  function surfacePneu(nom, tri, reference) {
+    const f = { nom: 'bitume-' + nom, centre: reference.centre, taille: reference.taille, triangles: tri.length, tri };
+    const R = globalThis.window && globalThis.window.FRender;
+    if (R && R.forme) R.forme(f.nom, tri);
+    FORMES[nom] = f; return f;
+  }
+  for (const [essieu, w] of [['av', ROUES[0]], ['ar', ROUES[2]]]) {
+    const b = w.l / 2 - .049;
+    for (const type of ['slicks', 'inter', 'pluie', 'neige']) {
+      const parties = [[], [], [], [], []], profondeur = type === 'neige' ? .009 : type === 'pluie' ? .007 : type === 'inter' ? .004 : 0;
+      for (let niveau = 0; niveau < 2; niveau++) {
+        const reference = ROUES_FORMES[essieu][type][niveau], groupes = [[], [], [], [], []];
+        for (const tri of reference.tri) {
+          const a = tri[0], c = tri[1], d = tri[2], x = (a[0] + c[0] + d[0]) / 3,
+            y = (a[1] + c[1] + d[1]) * reference.taille[1] / 3, z = (a[2] + c[2] + d[2]) / 3;
+          // Seulement la bande qui touche le sol ; les flancs et les parois des sculptures restent d'un bloc.
+          const dessus = Math.abs(y) <= b + 1e-9 && tri.slice(0, 3).every(p =>
+            Math.abs(Math.hypot(p[0] * reference.taille[0], p[2] * reference.taille[2]) - w.r) < 1e-8);
+          const fond = profondeur > 0 && Math.abs(y) <= b + 1e-9 && tri.slice(0, 3).every(p =>
+            Math.abs(Math.hypot(p[0] * reference.taille[0], p[2] * reference.taille[2]) - (w.r - profondeur)) < 1e-8);
+          let groupe = 0;
+          if (fond) groupe = 4;
+          else if (dessus) {
+            const angle = (Math.atan2(z, x) + 2 * Math.PI) % (2 * Math.PI), secteur = Math.floor(angle * 48 / (2 * Math.PI));
+            const voie = y < -b / 3 ? 0 : y > b / 3 ? 2 : 1, h = Math.imul(secteur + voie * 79 + 1, 0x45d9f3b);
+            groupe = 1 + ((h ^ h >>> 16) >>> 0) % 3;
+          }
+          groupes[groupe].push(tri);
+        }
+        for (let j = 0; j < (profondeur > 0 ? 5 : 4); j++) parties[j].push(surfacePneu(
+          (j === 4 ? 'fond-sculpture-' : 'matiere-pneu-') + essieu + '-' + type + '-' + j + '-' + niveau, groupes[j], reference));
+      }
+      MATIERES_PNEUS[essieu][type] = parties;
+    }
   }
   const DISQUES_ROUE = SEGMENTS_ROUE.map((segments, n) => forme('disque-roue-' + n,
     revolutionRoue([[-.008, .045], [-.008, .135], [.008, .135], [.008, .045]], segments, false)));
@@ -630,7 +669,13 @@
       const jante = JANTES_FORMES[essieu], k = Math.sign(w.z), flanc = (JANTE_R + w.r) / 2;
       const pieceRoue = (formes, mat, couleur, extra) => P(formes[0].nom, [w.x, w.r, w.z], formes[0].taille, mat, couleur,
         Object.assign({ formesRoues: formes }, base, extra));
-      Moy(pieceRoue(ROUES_FORMES[essieu][typePneus], MAT, PNEU, { pneu: typePneus }));
+      const surfaces = MATIERES_PNEUS[essieu][typePneus];
+      Moy(pieceRoue(ROUES_FORMES[essieu][typePneus], MAT, PNEU,
+        { pneu: typePneus, usureRoue: 1, formesUsees: surfaces[0] }));
+      for (let j = 1; j < 4; j++) Moy(pieceRoue(surfaces[j], MAT, PNEU,
+        { pneu: typePneus, usureRoue: j + 1, detailRoueMax: 1 }));
+      if (typePneus !== 'slicks') Moy(pieceRoue(surfaces[4], MAT, PNEU,
+        { pneu: typePneus, usureRoue: 5, profondeur: typePneus === 'neige' ? .009 : typePneus === 'pluie' ? .007 : .004, detailRoueMax: 1 }));
       Moy(pieceRoue(jante.fut, METAL_MAT, SOMBRE));
       Moy(pieceRoue(jante.rayons, METAL_MAT, JANTE));
       Moy(P('cylinder', [w.x, w.r, w.z], [.07, w.l + .032, .07], METAL_MAT, JANTE, base));
@@ -649,7 +694,7 @@
       piece('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque));
     ROUES.forEach((w, i) => {
       const formes = ROUES_FORMES[w.avant ? 'av' : 'ar'][typePneus], f = formes[3];
-      simples.push(piece(f.nom, [w.x, w.r, w.z], f.taille, MAT, PNEU, { m: ROUE_AXE, roue: i, tourne: 0, formesRoues: formes }));
+      simples.push(piece(f.nom, [w.x, w.r, w.z], f.taille, MAT, PNEU, { m: ROUE_AXE, roue: i, tourne: 0, formesRoues: formes, usureRoue: 1 }));
     });
     // Après casse, ne reste que la cellule du pilote et l'arceau ; roues et carrosserie sont des débris.
     const epave = corps.filter(p => p.pilote || ['cuve', 'goutte', 'goutte-dedans', 'arceau'].some(n => p.shape === FORMES[n].nom));
@@ -673,6 +718,7 @@
   // extérieure ; l'habitacle (dedans) seulement dans cette vue ; les repères des pneus à basse vitesse seulement, leur
   // bande floue au-delà.
   function visible(pc, cockpit, v) {
+    if (pc.usureRoue > 1) return false; // supports réservés à la pose dynamique ; le modèle sans état est neuf
     if (cockpit && (pc.pilote || pc.arriere || pc.exterieur || pc.glace)) return false;
     if (!cockpit && pc.dedans) return false;
     return !(pc.lent && v > VITESSE_FLOU) && !(pc.vite && !(v > VITESSE_FLOU));
@@ -710,13 +756,16 @@
   // pour une pièce seule. Les données de lecture seule sont rangées à plat (o, d : trois nombres par pièce) : un
   // tableau typé par table plutôt qu'un par pièce, quelques dizaines de Kio de moins par voiture.
   function compiler(liste, overlay, cockpit) {
-    const t = { liste, longueur: liste.length, n: 0, objets: [], formesRoues: [], detailRoueMax: [], o: null, roue: null, groupe: [], fixe: [], decale: null, d: null, portee: null,
+    const t = { liste, longueur: liste.length, n: 0, objets: [], formesRoues: [], formesUsees: [], usureRoue: [], profondeur: [], detailRoueMax: [],
+      pneusCourants: new Float64Array(4 * 15), pneusActifs: new Uint8Array(4), o: null, roue: null, groupe: [], fixe: [], decale: null, d: null, portee: null,
       lent: null, vite: null, rotM: trois(), fixes: [], groupes: [], faitG: null, faitF: null };
     const o = [], roues = [], decale = [], d = [], portee = [], lent = [], vite = [];
     for (const pc of liste) {
       if (cockpit && (pc.pilote || pc.arriere || pc.exterieur || pc.glace)) continue;
       if (!cockpit && pc.dedans) continue;
       const objet = { shape: pc.shape, p: trois(), s: pc.s, r: t.rotM, mat: pc.mat, color: pc.color, surface: 'object' };
+      if (pc.usureRoue) objet.color = pc.color.slice();
+      if (pc.usureRoue === 5) objet.s = pc.s.slice();
       if (pc.fx) { objet.fx = true; objet.alpha = pc.alpha; }
       if (overlay) objet.overlay = true;
       const roue = pc.roue === undefined ? -1 : pc.roue;
@@ -734,6 +783,7 @@
       }
       const dc = roue >= 0 && pc.decale ? Float64Array.from(pc.decale) : null, oc = Float64Array.from(pc.o);
       t.objets.push(objet); t.formesRoues.push(pc.formesRoues || null); t.detailRoueMax.push(pc.detailRoueMax === undefined ? 3 : pc.detailRoueMax);
+      t.formesUsees.push(pc.formesUsees || null); t.usureRoue.push(pc.usureRoue || 0); t.profondeur.push(pc.profondeur || 0);
       t.groupe.push(groupe); t.fixe.push(fixe);
       o.push(oc[0], oc[1], oc[2]); roues.push(roue); decale.push(dc === null ? 0 : 1);
       if (dc === null) d.push(0, 0, 0); else d.push(dc[0], dc[1], dc[2]);
@@ -788,10 +838,34 @@
   // le rebond l'en écarte d'au plus |h| : loin du filtre de plus que cela (et d'une marge pour les arrondis), elle n'y
   // entre pas, sans qu'il faille calculer la rotation de sa roue.
   const X_ARRIERE = ROUES[2].x, MARGE_RETRO = 1e-6, LOIN_RETRO = 1e8;
+  // Couleurs persistantes par table/caméra. La graine ne sert qu'à la matière : aucun hasard de simulation,
+  // aucune réinitialisation d'usure en changeant de vue. Les données reçues restent en lecture seule.
+  function preparerPneus(t, etats) {
+    const valeurs = t.pneusCourants;
+    for (let i = 0; i < 4; i++) {
+      const e = etats && etats[i], j = i * 15;
+      const u = e && Number.isFinite(e.usure) ? Math.max(0, Math.min(1, e.usure)) : 0;
+      const s = e && Number.isFinite(e.salete) ? Math.max(0, Math.min(1, e.salete)) : 0;
+      const g = e && Number.isFinite(e.grainage) ? Math.max(0, Math.min(1, e.grainage)) : 0;
+      const graine = e && Number.isFinite(e.graine) ? e.graine >>> 0 : i + 1;
+      let h = Math.imul(graine ^ graine >>> 16, 0x45d9f3b); h = (h ^ h >>> 16) >>> 0;
+      const a = .7 + (h & 255) / 425, b = .7 + (h >>> 8 & 255) / 425, c = .7 + (h >>> 16 & 255) / 425;
+      t.pneusActifs[i] = u > 0 || s > 0 || g > 0 ? 1 : 0; valeurs[j] = u;
+      // Le pneu neuf retrouve exactement la couleur historique ; les pigments restent gris/brun doux.
+      for (let k = 0; k < 3; k++) {
+        const base = PNEU[k] + .012 * u + (k === 0 ? .052 : k === 1 ? .042 : .025) * s;
+        valeurs[j + 1 + k] = base;
+        valeurs[j + 4 + k] = base + .026 * u * (1 - .5 * g) * a;
+        valeurs[j + 7 + k] = base + (.036 * u + .032 * g) * b;
+        valeurs[j + 10 + k] = base + (k === 0 ? .11 : k === 1 ? .077 : .037) * s * c - .004 * u * c;
+      }
+    }
+  }
   // Pose d'une table : rotations partagées, puis place de chaque pièce. retro : seules les pièces qui passent le
   // filtre des rétroviseurs sont rendues, et seules leurs rotations sont calculées.
   function poserTable(t, M, ev, sortie, roues, retro, detailRoues = 0) {
     const px = ev.p[0], py = ev.p[1], pz = ev.p[2], v = ev.v || 0, rebond = ev.rebond, fixes = t.fixes, groupes = t.groupes;
+    preparerPneus(t, ev.etatPneus);
     anglesDans(t.rotM, M);
     if (groupes.length > 0) braquagesDans(ev);
     if (!retro) {
@@ -804,6 +878,8 @@
       if (detailRoues > t.detailRoueMax[i]) continue;
       if ((t.lent[i] === 1 && v > VITESSE_FLOU) || (t.vite[i] === 1 && !(v > VITESSE_FLOU))) continue;
       const roue = t.roue[i];
+      const usureRoue = t.usureRoue[i];
+      if (usureRoue > 1 && !t.pneusActifs[roue]) continue;
       // Chantier 3 : une roue détachée (degats.roues[i]) n'est plus dessinée
       if (roue >= 0 && roues && roues[roue]) continue;
       const k = 3 * i, x = t.o[k], y = t.o[k + 1], z = t.o[k + 2];
@@ -834,7 +910,19 @@
       }
       const objet = t.objets[i], p = objet.p;
       const variantes = t.formesRoues[i];
-      if (variantes) { const f = variantes[detailRoues]; objet.shape = f.nom; objet.s = f.taille; }
+      if (variantes) {
+        const surfaces = t.formesUsees[i], f = surfaces && detailRoues < 2 && t.pneusActifs[roue] ? surfaces[detailRoues] : variantes[detailRoues];
+        objet.shape = f.nom;
+        if (usureRoue === 5) {
+          // Le fond remonte vers le sommet des pavés, sans atteindre celui-ci : au moins 16 % de creux.
+          const rayon = ROUES[roue].r, radial = (rayon - t.profondeur[i] * (1 - .84 * t.pneusCourants[roue * 15])) / (rayon - t.profondeur[i]);
+          objet.s[0] = f.taille[0] * radial; objet.s[1] = f.taille[1]; objet.s[2] = f.taille[2] * radial;
+        } else objet.s = f.taille;
+      }
+      if (usureRoue) {
+        const j = roue * 15 + (usureRoue === 5 ? 1 : (usureRoue - 1) * 3 + 1), color = objet.color, valeurs = t.pneusCourants;
+        color[0] = valeurs[j]; color[1] = valeurs[j + 1]; color[2] = valeurs[j + 2];
+      }
       p[0] = X; p[1] = Y; p[2] = Z;
       sortie.push(objet);
     }

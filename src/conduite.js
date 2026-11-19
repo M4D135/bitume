@@ -1,6 +1,7 @@
 // Node consumers retain the direct-load contract; browsers load the explicit build dependency.
 if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)require('./ferro/vehicle-dynamics.js');
 if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)require('./pneus.js');
+if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.usurePneus)require('./usure-pneus.js');
 (function (B) {
   'use strict';
   // BITUME : conduite d'une monoplace, dans le repère du circuit (abscisse s, décalage d).
@@ -531,6 +532,8 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)requir
     etat.d += etat.v * Math.sin(etat.psi) * dt;
     etat.distance += Math.abs(dsdt2) * dt;
 
+    // Longueur réellement roulée, indépendante de s/d et des corrections de collision ou de replacement.
+    const distancePneus = etat.v * dt;
     heurterGlissiere(etat, c, dt, ev);
 
     // Glisse par essieu et par roue, pour le son et les effets
@@ -542,6 +545,9 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)requir
     R[2].glisse = etat.glisseAr * clamp(2 * R[2].charge / pAr, 0, 1); R[3].glisse = etat.glisseAr * clamp(2 * R[3].charge / pAr, 0, 1);
     etat.sousVirage = Math.max(0, Math.abs(alphaAv) / P.alphaAv - 1);
     etat.glisse = etat.v > 3 ? clamp(Math.max(etat.glisseAv, etat.glisseAr), 0, 1) : 0;
+    // 12D : les contacts de ce pas sont frais. L'usure reste visuelle ; aucune lecture dans l'adhérence p9.
+    if (B.usurePneus) B.usurePneus.pas(etat, dt, distancePneus,
+      B.circuit.dansTunnel && B.circuit.dansTunnel(c, etat.s) ? 0 : eauSurPiste());
   }
 
   // Volant (part de l'adhérence avant) qui tient une trajectoire de courbure kp en régime établi, à la vitesse
@@ -696,7 +702,16 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)requir
     etat.along=(etat.v-avant)/dt;etat.alat=etat.v*etat.omega;etat.glisse=0;
     const kc=expTauFixe(TAU.charge,P.chargeTau,dt);
     etat.chargeX+=(etat.along-etat.chargeX)*kc;etat.chargeY+=(etat.alat-etat.chargeY)*kc;
+    const distancePneus = etat.v * dt;
     heurterGlissiere(etat,c,dt,ev);
+    if (B.usurePneus) {
+      // Le recul ne calcule pas les contacts dynamiques de rouler. Ne pas réemployer leurs anciennes charges
+      // ou glisses : contacts statiques visuels explicites, surface relue sans muter la physique.
+      const ad = Math.abs(etat.d), demi = c.largeur / 2;
+      const surface = ad <= demi ? 'piste' : ad <= demi + P.largeurVibreur && B.circuit.vibreurA(c, etat.s, etat.d < 0 ? -1 : 1) ? 'vibreur' : 'herbe';
+      B.usurePneus.pas(etat, dt, distancePneus,
+        B.circuit.dansTunnel && B.circuit.dansTunnel(c, etat.s) ? 0 : eauSurPiste(), 0, 'recul', surface);
+    }
   }
 
   // cmd = { gaz, frein, volant, derive, haut, bas, boite, aide, guidage, marcheArriere: true uniquement pour le joueur }

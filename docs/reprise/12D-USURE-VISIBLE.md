@@ -32,3 +32,9 @@ Un intégrateur pour le branchement et le rendu ; relecture/module dans des fich
 Spark indisponible dans cet environnement (pas de kbza, de Mac ni de configuration SSH).
 Checkpoint documentaire, puis sources/build qualifiés, reçu GitHub et prochaine action à chaque jalon.
 Journal : `SUIVI-2026-11-19.md`. Résultats : `rapports/12D-2026-11-19/`.
+
+## Clôture technique — 19 novembre 2026
+
+Implémenté dans la 0.2.46. Qualification et récupération : `rapports/12D-2026-11-19/`.
+91/93 suites, deux échecs hérités, p9 identique ; réserve WebGL. Publication et reçu dans le suivi actif.
+Prochain lot : 12E chaussée/adhérence ; 12F garde service, interface détaillée et synchronisation.

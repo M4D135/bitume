@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-19",
+  "base": "71354f05e59dcfcbc98cabc0a690f86d5a8419b4",
+  "node": "v24.22.3",
+  "scenarios": 19,
+  "empreintes": 1259,
+  "identiques": true,
+  "differences": [],
+  "module_usure_charge": true,
+  "definitions_et_fixture_inchangees": true,
+  "sources_stables_durant_execution": true,
+  "echecs_historiques_identiques": true,
+  "projection": "Exclusion déjà existante de versionPneus/servicePneus/etatPneus sur les états identifiés. Tous les champs p9, y compris pneus, sont comparés.",
+  "sources_candidat": {
+    "src/conduite.js": "4c7005ccfe03ca9dfb9d455e24e076be0af8023383b7171dcd0786a21a88a76a",
+    "src/usure-pneus.js": "1fa69ba53367a76ba3952ecbd94fce6680b794c2a81eceef752da595d114b8d4",
+    "src/pneus.js": "9e7e35aea8d87bc8b7ecf78ac3f26e89790f37b6f59e969bae37faf77bfa9507",
+    "src/course.js": "3cfddbe751c35f897135273a3abf92a29d43cd092f871d6d91ff6f5ef969ab0d",
+    "verifications/determinisme-simulation.test.mjs": "225222af0bce305b39c502bcc90669bd7ba8cecbef3c12b940d9cf9dfe3d54d0",
+    "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a"
+  }
+}

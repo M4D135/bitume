@@ -1,0 +1,7 @@
+{
+  "description": "Aperçu CPU des pneus, géométrie temporaire conservée hors dépôt",
+  "source_sha256": "9b4218fc874aaede6d75c456cb169e0ea8ad770fb67aa9912029f41020ddaf07",
+  "source_octets": 35402849,
+  "validation_webgl": false,
+  "note": "Le contrôle visuel CPU de la reprise précédente est consigné ; la géométrie exhaustive se régénère depuis les sources."
+}

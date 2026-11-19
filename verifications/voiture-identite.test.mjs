@@ -25,8 +25,8 @@ function charger(fichiers) {
   return ctx.BITUME;
 }
 const CONFIGURATIONS = {
-  primitives: ['carene.js', 'main.js', 'ferro/vehicle-dynamics.js', 'pneus.js', 'conduite.js', 'voiture.js'],
-  emprise: ['carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js', 'ferro/vehicle-dynamics.js', 'pneus.js', 'conduite.js', 'voiture.js']
+  primitives: ['carene.js', 'main.js', 'ferro/vehicle-dynamics.js', 'pneus.js', 'usure-pneus.js', 'conduite.js', 'voiture.js'],
+  emprise: ['carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js', 'ferro/vehicle-dynamics.js', 'pneus.js', 'usure-pneus.js', 'conduite.js', 'voiture.js']
 };
 
 // ---------------------------------------------------------------- empreinte

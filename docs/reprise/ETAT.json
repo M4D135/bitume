@@ -2,23 +2,28 @@
   "date": "2026-11-19",
   "etat_courant": {
     "branche": "main",
-    "version_courante": "0.2.45",
-    "base_commit": "71354f05e59dcfcbc98cabc0a690f86d5a8419b4",
+    "version_courante": "0.2.46",
+    "base_commit": "834d2701eddab1ad13ec0708da1b49cfb88bbdad",
     "base_version": "0.2.45",
-    "statut": "12D_en_cours_base_12ABC_publiee",
-    "lot": "12D_usure_visible_par_roue",
-    "fiche": "docs/reprise/12D-USURE-VISIBLE.md",
+    "statut": "12D_qualifie_publication_en_cours",
+    "lot": "12E_chaussee_adherence",
+    "fiche": "docs/reprise/12E-CHAUSSEE-ADHERENCE.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "qualification": "docs/reprise/rapports/continuation-2026-11-19/qualification-finale.json",
-    "publication": "docs/reprise/rapports/continuation-2026-11-19/PUBLICATION-0245.json",
-    "prochaine_action": "Relire le brouillon 12D, intégrer usure/saleté au pas fixe et leur rendu par roue, qualifier puis publier sources/build.",
+    "qualification": "docs/reprise/rapports/12D-2026-11-19/qualification-finale.json",
+    "publication": null,
+    "prochaine_action": "Publier 0.2.46 puis ouvrir 12E : chaussée commune, neige, adhérence/usure physique et version des records.",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
     "physique": "p9 conservée",
     "neige": "Catalogue et visuel prêts ; choix en course fermé avant 12E"
   },
   "validation": {
-    "suites": 90,
-    "reussies": 88,
+    "date": "2026-11-19",
+    "base_commit": "71354f05e59dcfcbc98cabc0a690f86d5a8419b4",
+    "checkpoint": "834d2701eddab1ad13ec0708da1b49cfb88bbdad",
+    "version": "0.2.46",
+    "lot": "12D",
+    "suites": 93,
+    "reussies": 91,
     "echecs_herites": [
       "determinisme-simulation.test.mjs",
       "traces.test.mjs"
@@ -29,16 +34,31 @@
       "empreintes": 1259,
       "identiques": true
     },
-    "requalification_correctif": {
-      "suites": 6,
-      "reussies": 6
+    "tests_12D": {
+      "module": 18,
+      "integration": 7,
+      "visuel": 8
     },
-    "ferro_version": "0.3.11",
-    "ferro_modules_identiques": 34,
-    "build_reproductible": true,
-    "build_sha256": "38b9897316d510bc0e8ccf67562358c6b1020bb9993bba737075384fcf2e1ffc",
+    "assertions_heritees_corrigees": [
+      "crash.test.mjs : roues procédurales avec formes et dimensions exactes",
+      "pieces.test.mjs : 24 roues avant et 24 arrière aux dimensions exactes"
+    ],
+    "traces_identiques_base": true,
+    "build": {
+      "version": "0.2.46",
+      "taille": 13990207,
+      "sha256": "9ab9097c7493d8260677022cef528f4a70fb9293372ecd61628c9e81abb52641",
+      "reproductible": true
+    },
+    "ferro": {
+      "version": "0.3.11",
+      "modules_identiques": 34
+    },
     "webgl_valide": false,
-    "apercu_cpu_inspecte": true
+    "apercu_cpu_inspecte": true,
+    "profil_allocations_usure": "aucun GC mineur mesuré sur le parcours borné",
+    "deploiement_effectue": false,
+    "site_verifie": false
   },
   "catalogue": {
     "jouables": 7,
@@ -52,11 +72,9 @@
     "note": "L’ancien objectif 16 précède l’ajout montagne ; ne supprimer aucune demande pour tenir ce compte."
   },
   "suite": {
-    "lot": "12D",
-    "objectif": "Usure visible déterministe par roue, saleté distincte ; aucune nouvelle adhérence avant 12E.",
-    "brouillon": "docs/reprise/rapports/continuation-2026-11-19/recuperation-12ABC-et-brouillon-12D.patch",
+    "lot": "12E",
+    "objectif": "Chaussée commune, quatre domaines utiles de pneus, usure progressive, joueur/IA, physique versionnée.",
     "apres": [
-      "12E chaussée/adhérence",
       "12F stands/interface/réseau",
       "Russie",
       "Monaco",

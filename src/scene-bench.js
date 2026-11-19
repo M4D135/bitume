@@ -88,7 +88,10 @@
     // sont réemployées pour que le choix du détail n'ajoute pas d'allocations à la mesure.
     const detailsRoues = Array.from({ length: 3 }, () => new Int8Array(modeles.length + 1).fill(-1));
     const detailsGlaces = Array.from({ length: 2 }, () => new Int8Array(modeles.length + 1).fill(-1));
-    const posesVoitures = modeles.map(() => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, roule: 0, v: 45 }));
+    // Mesurer aussi les surfaces d'usure actives, préparées une fois : une course ne reste pas sur des pneus neufs.
+    const pneusMesure = Array.from({ length: modeles.length + 1 }, (_, voiture) => Array.from({ length: 4 }, (_, roue) =>
+      ({ usure: .65, salete: .15, grainage: .25, graine: ((voiture + 1) * 37 + roue * 97) >>> 0 })));
+    const posesVoitures = modeles.map((_, i) => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, roule: 0, v: 45, etatPneus: pneusMesure[i] }));
     const optionsVoitures = modeles.map(() => ({ simple: false, rouesDetail: 0 }));
     const optionsGlaces = modeles.map(() => ({ simple: false, rouesDetail: 0 })), optionsPiloteGlace = { rouesDetail: 0 };
     let finVoitures = 0;
@@ -237,7 +240,7 @@
       sortie.length = 0;
       if (cockpit) {
         // Œil du pilote dans sa monoplace, regard dans l'axe (src/jeu.js, cameraCockpit, sans les mouvements de tête).
-        ev = { p: [e.x, e.y, e.z], cap: e.cap, tangage: Math.atan(e.pente || 0), roulis: e.devers || 0, braquage: 0, roule: temps * 4, rebond: 0, v: 45 };
+        ev = { p: [e.x, e.y, e.z], cap: e.cap, tangage: Math.atan(e.pente || 0), roulis: e.devers || 0, braquage: 0, roule: temps * 4, rebond: 0, v: 45, etatPneus: pneusMesure[modeles.length] };
         const o = B.voiture.mul(B.voiture.attitude(ev.cap, ev.tangage, ev.roulis), B.voiture.OEIL);
         cam = { pos: [e.x + o[0], e.y + o[1], e.z + o[2]], yaw: e.cap + Math.PI / 2, pitch: ev.tangage * .85, roll: -ev.roulis * .85,
           fov: 60, near: .1, far: 6000, sun };

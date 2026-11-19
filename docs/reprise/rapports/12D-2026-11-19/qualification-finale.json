@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-19",
+  "base_commit": "71354f05e59dcfcbc98cabc0a690f86d5a8419b4",
+  "checkpoint": "834d2701eddab1ad13ec0708da1b49cfb88bbdad",
+  "version": "0.2.46",
+  "lot": "12D",
+  "suites": 93,
+  "reussies": 91,
+  "echecs_herites": [
+    "determinisme-simulation.test.mjs",
+    "traces.test.mjs"
+  ],
+  "regressions_nouvelles": [],
+  "comparaison_p9": {
+    "scenarios": 19,
+    "empreintes": 1259,
+    "identiques": true
+  },
+  "tests_12D": {
+    "module": 18,
+    "integration": 7,
+    "visuel": 8
+  },
+  "assertions_heritees_corrigees": [
+    "crash.test.mjs : roues procédurales avec formes et dimensions exactes",
+    "pieces.test.mjs : 24 roues avant et 24 arrière aux dimensions exactes"
+  ],
+  "traces_identiques_base": true,
+  "build": {
+    "version": "0.2.46",
+    "taille": 13990207,
+    "sha256": "9ab9097c7493d8260677022cef528f4a70fb9293372ecd61628c9e81abb52641",
+    "reproductible": true
+  },
+  "ferro": {
+    "version": "0.3.11",
+    "modules_identiques": 34
+  },
+  "webgl_valide": false,
+  "apercu_cpu_inspecte": true,
+  "profil_allocations_usure": "aucun GC mineur mesuré sur le parcours borné",
+  "deploiement_effectue": false,
+  "site_verifie": false
+}

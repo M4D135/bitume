@@ -1,0 +1,10 @@
+{
+  "date": "2026-11-19",
+  "origine": "reprise interrompue 0.2.46",
+  "sources_verifiees": 77,
+  "divergences": [],
+  "build_sha256": "9ab9097c7493d8260677022cef528f4a70fb9293372ecd61628c9e81abb52641",
+  "validations": "résultats récupérés, sources et build recontrôlés par empreintes",
+  "webgl_valide": false,
+  "deploiement_effectue": false
+}

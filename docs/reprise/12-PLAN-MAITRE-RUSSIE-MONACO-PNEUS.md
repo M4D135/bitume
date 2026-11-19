@@ -388,7 +388,7 @@ Sources internes : `src/voiture.js`, `src/carene.js`, `src/conduite.js`, `src/de
 - [x] 12A — contrat roues et catalogue de pneus : code qualifié en 0.2.45.
 - [x] 12B — rondeur, profils et jantes : code qualifié, aperçu CPU inspecté ; réserve WebGL.
 - [x] 12C — sculptures et matériaux : code qualifié ; réserve WebGL, choix neige réservé à 12E.
-- [ ] 12D — usure visible progressive.
+- [x] 12D — usure visible progressive.
 - [ ] 12E — neige, adhérence et usure physique.
 - [ ] 12F — stands, interface et réseau.
 - [ ] 13A — Russie, tracé et relief.

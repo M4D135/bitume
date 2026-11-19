@@ -2006,7 +2006,7 @@
   // voiture.js lit la pose et les options sans les garder, le moteur relit le soleil et les feux à chaque draw. Une
   // vue (J2, puis J1, puis leurs glaces) finit de s'en servir avant que la suivante les réécrive. Seize voitures au
   // plus (onze rivaux, quatre humains) ; au-delà, les tableaux grandissent.
-  const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0 });
+  const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0, etatPneus: null });
   const nouvellesOptions = () => ({ detail: 'complet', roues: undefined, casse: false, plafond: 'complet', rouesDetail: 0 });
   const POSES_RENDU = Array.from({ length: 16 }, nouvellePose), OPTIONS_POSE = Array.from({ length: 16 }, nouvellesOptions);
   const POSE_FANTOME = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0 };
@@ -2017,10 +2017,11 @@
   const LAMPES_PORTIQUE = [], FEU_ALLUME = [1, .14, .06], FEU_ETEINT = [.1, .03, .03], TAILLE_FEU = [.56, .05, .56];
   // une voiture plus loin que ces 8 m derrière le plan d'une caméra ne s'y voit que par son ombre portée vers l'avant
   const DERRIERE_CAMERA = 8;
-  function poseRendu(k, p, roule, v) {
+  function poseRendu(k, p, roule, v, etatPneus) {
     const ev = POSES_RENDU[k] || (POSES_RENDU[k] = nouvellePose());
     ev.p[0] = p.x; ev.p[1] = p.y; ev.p[2] = p.z;
     ev.cap = p.cap; ev.tangage = p.tangage; ev.roulis = p.roulis; ev.braquage = p.braquage; ev.roule = roule; ev.rebond = p.rebond; ev.v = v;
+    ev.etatPneus = etatPneus || null;
     return ev;
   }
   function optionsPose(k) { return OPTIONS_POSE[k] || (OPTIONS_POSE[k] = nouvellesOptions()); }
@@ -2227,7 +2228,7 @@
     let ombreDebut = 0, ombreFin = 0; // objets de la voiture filmée dans sortie : sa tuile d'ombre (src/ombres.js)
     for (let k = 0; k < co.voitures.length; k++) {
       const p = poses[k], dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], d2 = dx * dx + dz * dz;
-      const ev = poseRendu(k, p, RV[k], co.voitures[k].etat.v);
+      const ev = poseRendu(k, p, RV[k], co.voitures[k].etat.v, co.voitures[k].etat.etatPneus);
       // Hystérésis propre à cette vue : ni la seconde moitié d'écran ni les deux miroirs ne la réécrivent.
       const rouesDetail = S.detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos), tanDemi, hauteur, S.detailsRoues[k]);
       if (k === suivie.id) ombreDebut = sortie.length;

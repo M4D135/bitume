@@ -62,7 +62,12 @@ check('budget : douze voitures en casse simultanée tiennent sous le plafond du 
   const n = B.traces.compter(fx).debris;
   assert.equal(n, 12 * B.traces.PIECES_PAR_VOITURE);
   assert.ok(n <= B.traces.DEBRIS, n + ' > ' + B.traces.DEBRIS);
-  assert.equal(fx.debris.filter(d => d.actif && d.objet.shape === 'cylinder').length, 48);
+  // Les débris de 12ABC portent les vraies formes du pneu : 24 avant + 24 arrière, aux mêmes cotes.
+  const roues = fx.debris.filter(d => d.actif && d.objet.shape.startsWith('bitume-pneu-'));
+  const attendues = Array.from({ length: 12 }, () => B.voiture.ROUES.map(w =>
+    B.voiture.ROUES_FORMES[w.avant ? 'av' : 'ar'].slicks[1])).flat();
+  assert.equal(roues.length, 48);
+  assert.deepEqual(roues.map(d => [d.objet.shape, ...d.objet.s]).sort(), attendues.map(f => [f.nom, ...f.taille]).sort());
 });
 check('budget : une voiture ne peut pas déborder sur le quota d une autre', () => {
   const fx = B.traces.creer(2, 6), co = courseDe(2), poses = posesDe(2);
