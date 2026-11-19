@@ -2,9 +2,9 @@
   "date": "2026-11-19",
   "etat_courant": {
     "branche": "main",
-    "base_commit": "c92cc081e4ef5335872f5676c79d3b61546dc98e",
-    "base_version": "0.2.41",
-    "statut": "0_2_41_publiee_suite_en_cours",
+    "base_commit": "52d8bd042aff3f15110e1025febe08b5c560567c",
+    "base_version": "0.2.42",
+    "statut": "0_2_42_publiee_suite_en_cours",
     "lot": "5B_fluidite_cadence_prechargement",
     "fiche": "docs/reprise/05B-FLUIDITE.md",
     "commit_publie": "8bd3d86a4b1635ad2dd90c5ae8a585711aa196f8",
@@ -35,8 +35,8 @@
     "nouvelle_branche": false,
     "force_push": false,
     "publication_ferro": {
-      "version": "0.3.10",
-      "commit": "39eafeec91dc39dda09abe7a1cb8a568d6b55bbc",
+      "version": "0.3.11",
+      "commit": "d65a0f1d3ae8152f6fa0b13067baddd71bed0454",
       "arbre": "8d5337c5457b523046b6652854e3949e74f1febd",
       "branche": "main",
       "verifiee": true,
@@ -83,10 +83,10 @@
     "autres_chantiers": "Priorité master liste Claude Fable : roues/pneus, Russie, Monaco, Marseille EMPRISE avec relief, puis six propositions ; un sous-lot actif."
   },
   "lot_precedent": {
-    "version": "0.2.41",
-    "commit": "c92cc081e4ef5335872f5676c79d3b61546dc98e",
-    "lot": "detection_animaux_bords_echappement_public",
-    "recu": "docs/reprise/rapports/publication-0241/publication.json"
+    "version": "0.2.42",
+    "commit": "52d8bd042aff3f15110e1025febe08b5c560567c",
+    "lot": "21_ombres_etape_1",
+    "recu": "docs/reprise/rapports/photo-ombres-2026-11-18/publication.json"
   },
   "lot_suivant": {
     "numero": 12,

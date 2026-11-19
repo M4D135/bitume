@@ -1,0 +1,41 @@
+{
+  "version": "0.2.42",
+  "date": "2026-11-19",
+  "heure_paris": "4 h 05",
+  "commit": "52d8bd042aff3f15110e1025febe08b5c560567c",
+  "page": {
+    "fichier": "dist/bitume.html",
+    "octets": 13954116,
+    "sha256": "c04ff2623db4685e61bec9ede8c52ccedad4d702a7fb658ab682343f7f215b5a"
+  },
+  "production": {
+    "url": "https://bitume.estrasse.fr/",
+    "verifiee_par": "./deposer.sh (empreinte de la page servie comparée à celle du commit)"
+  },
+  "contenu": [
+    "ombres du lot 21, étape 1 : contact sous les voitures (trois qualités), ombres lointaines précalculées, tuile d'ombre de la voiture filmée et de l'habitacle, ombres éclaircies sous ciel couvert (moteur/photo aad888b)"
+  ],
+  "moteur": {
+    "version": "FERRO 0.3.11",
+    "commit": "d65a0f1d3ae8152f6fa0b13067baddd71bed0454",
+    "pousse": true,
+    "tests": "195 tests, 194 réussis, 0 échec, 1 todo",
+    "option": "ombresPhoto, absente par défaut ; sans elle, shaders et image identiques à 0.3.10 (test d'empreintes)",
+    "autres_jeux": "EMPRISE et les autres hôtes non requalifiés : ils restent sur leur version verrouillée"
+  },
+  "qualification": {
+    "suites": "88 sur 88 (sur moteur/photo, même code)",
+    "smoke": "7 contrôles, code 0, sur la page du commit"
+  },
+  "mesures": {
+    "cadence_fenetre_reelle_alternee": "0.2.41 puis candidat avec ombres, trois tours, charge 3,6 à 6,7 : Moyenne, Légère, Fine en poursuite et Fine en cockpit, 300 images en 5 s des deux côtés, p95 18,5 à 18,6 ms, aucune image au-delà de 1,5 période",
+    "cout_annonce_par_l_agent": "environ +1 ms par image en Fine et en Moyenne, +0,1 à +0,65 ms en Légère (temps synchronisés, à remesurer sur machine calme et sur machine modeste)",
+    "images": "docs/reprise/rapports/photo-ombres-2026-11-18/images/ : 22 paires avant/après ; la paire poursuite Fine et le cockpit Fine regardés par l'orchestrateur"
+  },
+  "limites_connues": [
+    "Pénombre variable (PCSS) coupée : elle fait trembler l'ombre d'un arbre.",
+    "Coût en Légère incertain (0,3 à 0,65 ms côté carte graphique), non mesuré sur une machine modeste.",
+    "Région du flanc en cockpit : écart d'image au-dessus du seuil du contrôle de scintillement, attribué aux ombres des autres voitures.",
+    "Aucun essai sur Firefox, Safari ou téléphone."
+  ]
+}
