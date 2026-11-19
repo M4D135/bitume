@@ -21,4 +21,4 @@ identiques. Le premier passage complet a été interrompu avant la correction fi
 `passage-interrompu-1/` ; seuls `qualification-execution.json` et `suites.json` font autorité pour la livraison.
 
 Ces résultats couvrent les simulations CPU. WebGL, FPS matériel, parties entre navigateurs réels, déploiement
-et page servie ne sont pas validés par ce lot. GitHub sera vérifié séparément dans le reçu de publication.
+et page servie ne sont pas validés par ce lot. Publication GitHub vérifiée dans le reçu ; deux CI terminées à 107/108 chacune, avec le même unique échec hérité. Voir `github/RECU-CI.json`.

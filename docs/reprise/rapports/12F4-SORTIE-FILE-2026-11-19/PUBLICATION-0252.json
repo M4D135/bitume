@@ -51,22 +51,50 @@
   },
   "ci_code": {
     "commit": "b8c670283112a35c7ae447537c8cab58bbd88b6f",
-    "statut": "en_cours_au_controle",
-    "checks": [
+    "version": "0.2.52",
+    "physique": "p13",
+    "statut": "termine_avec_unique_echec_herite",
+    "suites_par_execution": 108,
+    "reussies_par_execution": 107,
+    "unique_echec": "traces.test.mjs",
+    "signature_heritee_identique": true,
+    "aucune_ci_entierement_verte": true,
+    "executions": [
       {
-        "id": 135662707394,
-        "status": "in_progress",
-        "conclusion": null,
-        "url": "https://github.com/M4D135/bitume/actions/runs/44553356629/job/135662707394"
+        "job_id": 135662707394,
+        "run_id": 44553356629,
+        "url": "https://github.com/M4D135/bitume/actions/runs/44553356629/job/135662707394",
+        "status": "completed",
+        "conclusion": "failure",
+        "completed_at": "2026-11-19T15:23:03Z",
+        "suites": 108,
+        "reussies": 107,
+        "echecs": [
+          "traces.test.mjs"
+        ],
+        "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+        "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+        "log": "job-135662707394.log",
+        "sha256_log": "55c9250fb4d322b1cf772e9402a8ba99415fd7bb9658571aaf90e3498cbdd8b6"
       },
       {
-        "id": 135662277393,
-        "status": "in_progress",
-        "conclusion": null,
-        "url": "https://github.com/M4D135/bitume/actions/runs/44553239269/job/135662277393"
+        "job_id": 135662277393,
+        "run_id": 44553239269,
+        "url": "https://github.com/M4D135/bitume/actions/runs/44553239269/job/135662277393",
+        "status": "completed",
+        "conclusion": "failure",
+        "completed_at": "2026-11-19T15:22:16Z",
+        "suites": 108,
+        "reussies": 107,
+        "echecs": [
+          "traces.test.mjs"
+        ],
+        "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+        "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+        "log": "job-135662277393.log",
+        "sha256_log": "b9c3826391c753a2a44c68b88bf0aab275ae4d34138462964eb23bb97fefb3cf"
       }
-    ],
-    "aucune_ci_verte_revendiquee": true
+    ]
   },
   "regles": {
     "push_force": false,
@@ -80,6 +108,6 @@
     "deploiement_effectue": false,
     "site_verifie": false
   },
-  "prochaine_action": "13A Russie — tracé et relief, non commencé. Relire aussi le résultat final des deux CI du commit de code.",
+  "prochaine_action": "13A Russie — tracé et relief, non commencé. Les deux CI du code sont terminées et documentées.",
   "note": "Ce reçu et le suivi sont ajoutés dans un commit documentaire suivant la fusion ; le commit_fusion désigne la livraison des sources et du build qualifiés."
 }

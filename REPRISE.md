@@ -28,9 +28,9 @@ réussis. Deux builds identiques de **14 060 666 octets**, SHA-256
 `4c8f43204fa79323d652202d12c534570b67fa85a2980fdbc4f589559e94f976`.
 **53 scripts valides**, **34 modules FERRO 0.3.11 inchangés**. Rapport :
 `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/qualification-execution.json`.
-Les CI GitHub du commit de code étaient encore en cours au contrôle ; leurs identifiants sont dans le reçu.
-Aucune CI entièrement verte annoncée. Relire leur résultat à la reprise, sans confondre les passages partiels archivés
-avec la qualification finale.
+Les deux CI GitHub du commit de code sont **terminées : 107/108 chacune**, seul échec traces hérité identique.
+Reçu et journaux : `docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/github/RECU-CI.json`.
+Aucune CI entièrement verte annoncée ; cette vérification est close, ne pas la reprendre au début.
 
 ## Suite et demandes conservées
 
