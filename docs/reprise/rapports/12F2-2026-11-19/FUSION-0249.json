@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "date_utc": "2026-11-19T11:18:44Z",
+  "version": "0.2.49",
+  "lot": "12F2",
+  "autorisation": {
+    "origine": "Réponse explicite « go » de l’utilisateur à la demande de fusion de la PR n°3 dans main.",
+    "refus_precedent": "Publication directe refusée avant cette autorisation ; aucune protection ni règle désactivée.",
+    "fusion_autorisee": true
+  },
+  "repository": "M4D135/bitume",
+  "pr": {
+    "numero": 3,
+    "url": "https://github.com/M4D135/bitume/pull/3",
+    "state": "closed",
+    "draft": false,
+    "merged": true,
+    "merged_at": "2026-11-19T11:17:56Z"
+  },
+  "base_avant": "9a42198985de8aa8016e0679ddedc925ae39264d",
+  "tete_revue": "fb18a8358943576ab7b14b47383c5468bf8b2b62",
+  "commit_fusion": "3dce3f8c40c4103fbf953c4b6ab9de8ce63eadba",
+  "main_verifie": "3dce3f8c40c4103fbf953c4b6ab9de8ce63eadba",
+  "tree": "1149fcded082ccce45241938f2e3bb68fcebba75",
+  "tree_identique_tete_revue": true,
+  "build": {
+    "bytes": 14024804,
+    "sha256": "72b18fa2bc3aad3f0735296b5f56b98c67dcb75bcfc77cd3059d1404eb495c9c",
+    "identique_qualification": true
+  },
+  "controles_github": [
+    {
+      "id": 44512608057,
+      "head_sha": "fb18a8358943576ab7b14b47383c5468bf8b2b62",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/M4D135/bitume/actions/runs/44512608057",
+      "suites": 103,
+      "reussies": 102,
+      "echecs": [
+        "traces.test.mjs"
+      ],
+      "build_identique": true,
+      "modules_ferro_verifies": 34
+    },
+    {
+      "id": 44512599093,
+      "head_sha": "fb18a8358943576ab7b14b47383c5468bf8b2b62",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/M4D135/bitume/actions/runs/44512599093",
+      "suites": 103,
+      "reussies": 102,
+      "echecs": [
+        "traces.test.mjs"
+      ],
+      "build_identique": true,
+      "modules_ferro_verifies": 34
+    }
+  ],
+  "reserve": {
+    "echec": "traces.test.mjs",
+    "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+    "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+    "heritee_verifiee": true,
+    "preuve": "reserve-traces.json",
+    "ci_reste_en_echec": true,
+    "aucun_test_ou_seuil_modifie": true
+  },
+  "protection": {
+    "main_protected": false,
+    "rulesets": [],
+    "checks_obligatoires": [],
+    "modification": false
+  },
+  "reprise": "12F2 fusionné ; prochain lot 12F3 non commencé.",
+  "deploiement_effectue": false,
+  "webgl_valide": false
+}

@@ -1,24 +1,26 @@
 {
   "date": "2026-11-19",
   "etat_courant": {
-    "branche": "codex/bitume-12f2-revue-20261119",
+    "branche": "main",
     "base_commit": "1df6f6872e9d6962d6561b9b371d41042567a915",
     "base_version": "0.2.48",
     "version_courante": "0.2.49",
-    "version_publiee_verifiee": "0.2.48",
-    "statut": "12F2_publie_en_revue_fusion_en_attente",
+    "version_publiee_verifiee": "0.2.49",
+    "statut": "12F2_fusionne_main_12F3_non_commence",
     "lot": "12F2_choix_pneus_par_pilote",
     "fiche": "docs/reprise/12F2-CHOIX-PNEUS-PAR-PILOTE.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
     "publication_base": "docs/reprise/rapports/12F1-2026-11-19/PUBLICATION-0248.json",
-    "prochaine_action": "Attendre autorisation pour fusionner la PR n°3 dans main ; vérifier ses contrôles à ce moment. Puis ouvrir 12F3 réseau usure, sans reprendre les lots achevés.",
+    "prochaine_action": "Ouvrir 12F3 réseau usure/services, non commencé. La PR n°3 est déjà fusionnée après autorisation explicite ; ne pas redemander sa fusion ni reprendre 12F2.",
     "physique": "p11 ; références p9/p10/p11 conservées",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
     "checkpoint_sources": "bd13f067d94f4666292d4399473ecd55f427b8e6",
     "qualification": "docs/reprise/rapports/12F2-2026-11-19/qualification-execution.json",
     "suivi_base_integre": "9a42198985de8aa8016e0679ddedc925ae39264d",
-    "publication": "docs/reprise/rapports/12F2-2026-11-19/PUBLICATION-0249.json",
-    "commit_revue_qualifie": "ba9f54bd7a5e5c8d17ec37889c2d414c76831989"
+    "publication": "docs/reprise/rapports/12F2-2026-11-19/FUSION-0249.json",
+    "commit_revue_qualifie": "fb18a8358943576ab7b14b47383c5468bf8b2b62",
+    "commit_publie": "3dce3f8c40c4103fbf953c4b6ab9de8ce63eadba",
+    "publication_revue": "docs/reprise/rapports/12F2-2026-11-19/PUBLICATION-0249.json"
   },
   "validation": {
     "date_utc": "2026-11-19T11:01:37.723068+00:00",
@@ -125,7 +127,30 @@
     "requalification": "corrections.json",
     "reserve_heritee": "reserve-traces.json",
     "performance_materielle_mesuree": false,
-    "variabilite_decor": "Seuil de construction du décor réussi pendant ce passage ; réserve de variabilité historique 12E conservée, aucune mesure matérielle de FPS."
+    "variabilite_decor": "Seuil de construction du décor réussi pendant ce passage ; réserve de variabilité historique 12E conservée, aucune mesure matérielle de FPS.",
+    "ci_finale": {
+      "commit": "fb18a8358943576ab7b14b47383c5468bf8b2b62",
+      "runs": [
+        {
+          "id": 44512608057,
+          "evenement": "pull_request",
+          "termine": true,
+          "suites": 103,
+          "reussies": 102,
+          "conclusion": "failure"
+        },
+        {
+          "id": 44512599093,
+          "evenement": "push",
+          "termine": true,
+          "suites": 103,
+          "reussies": 102,
+          "conclusion": "failure"
+        }
+      ],
+      "unique_echec": "traces.test.mjs",
+      "echec_herite_identique": true
+    }
   },
   "catalogue": {
     "jouables": 7,
@@ -141,18 +166,19 @@
   "suite": {
     "lot": "12F3",
     "objectif": "Transport versionné du type, de l’usure et des services ; contrôles d’autorité et reprise IA sans remise à neuf.",
-    "prerequis": "Revue 12F2 publiée et fusion autorisée.",
+    "prerequis": "12F2 fusionné sur main en 0.2.49 ; prérequis satisfait, reçu FUSION-0249.json vérifié.",
     "apres": [
       "Stratégie de stands IA",
       "Russie",
       "Monaco",
       "Marseille"
-    ]
+    ],
+    "statut": "non_commence"
   },
   "acces": {
     "mac_spark_amiga_disponibles": false,
     "travaux_mac_non_fusionnes": "Branches absentes de GitHub ; ne pas les compter livrées.",
-    "publication": "Branche de revue : envoi main refusé par approbation automatique dans cette session ; ne pas contourner.",
+    "publication": "12F2 fusionné sur main après autorisation explicite de David (« go ») ; reçu de fusion vérifié.",
     "deploiement_effectue": false,
     "site_verifie": false
   },
@@ -164,16 +190,21 @@
   "publication": {
     "branche_revue": "codex/bitume-12f2-revue-20261119",
     "checkpoint_sources": "bd13f067d94f4666292d4399473ecd55f427b8e6",
-    "main_modifie_par_cette_session": false,
-    "fusion_autorisee": false,
-    "statut": "verifiee_sur_branche_revue",
-    "motif": "Refus automatique du push direct main ; alternative de revue, sans fusion.",
-    "commit_qualifie": "ba9f54bd7a5e5c8d17ec37889c2d414c76831989",
-    "tree_qualifie": "4c43d2e7feddb7552844605d7752c4049e0bac4e",
+    "main_modifie_par_cette_session": true,
+    "fusion_autorisee": true,
+    "statut": "fusion_main_verifiee",
+    "motif": "Autorisation explicite de David (« go »), puis fusion vérifiée ; le refus initial reste historique.",
+    "commit_qualifie": "fb18a8358943576ab7b14b47383c5468bf8b2b62",
+    "tree_qualifie": "1149fcded082ccce45241938f2e3bb68fcebba75",
     "pr": 3,
     "url": "https://github.com/M4D135/bitume/pull/3",
-    "brouillon": true,
-    "fusionnee": false,
-    "recu": "docs/reprise/rapports/12F2-2026-11-19/PUBLICATION-0249.json"
+    "brouillon": false,
+    "fusionnee": true,
+    "recu": "docs/reprise/rapports/12F2-2026-11-19/FUSION-0249.json",
+    "etat_pr": "closed",
+    "commit_fusion": "3dce3f8c40c4103fbf953c4b6ab9de8ce63eadba",
+    "fusion_le_utc": "2026-11-19T11:17:56Z",
+    "controles_obligatoires_modifies": false,
+    "rulesets_modifies": false
   }
 }

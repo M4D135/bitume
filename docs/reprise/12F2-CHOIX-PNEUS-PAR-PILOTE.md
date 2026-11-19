@@ -2,6 +2,9 @@
 
 ## Périmètre du 19 novembre 2026
 
+**Lot fusionné sur main en 0.2.49**, commit `3dce3f8c40c4103fbf953c4b6ab9de8ce63eadba`.
+La PR n°3 est fermée et fusionnée ; **12F3 est le prochain lot, non commencé**.
+
 Suite de 12F1 (0.2.48), depuis sa copie qualifiée `fbd8098`. Publication vérifiée en `1df6f687` ; suivi `9a421989` intégré, reçu 12F1 conservé. Travail isolé dans la reprise `67676bee9b18` : ne pas reprendre
 les lots 12A–12F1 ni écraser une autre session.
 
@@ -47,10 +50,17 @@ Le rapport `rapports/12F2-2026-11-19/qualification-execution.json` fait autorit�
 13 revalidations ciblées, seul échec traces hérité ; 1 300 empreintes p11 identiques et deux builds 0.2.49 identiques. La comparaison CPU des objets de rendu ne vaut pas validation WebGL ou mesure FPS.
 Les modules FERRO restent inchangés. Aucun déploiement du site n'est annoncé par ce lot.
 
+Les deux CI finales de la tête revue `fb18a8358943576ab7b14b47383c5468bf8b2b62` sont terminées :
+`44512608057` (pull_request) et `44512599093` (push), **102/103 suites chacune**. Leur unique échec traces
+correspond à la réserve héritée ; aucun résultat entièrement vert n'est annoncé.
+
 ## Publication
 
-L'envoi direct du commit de base 12F1 vers `main` a été refusé par le contrôle automatique d'approbation dans
-cette session, pour autorisation jugée insuffisamment explicite. Ne pas contourner ce refus par une autre API.
-Préparer une branche de revue et une proposition de fusion avec les fichiers réellement qualifiés. Toute
-fusion dans `main` reste en attente de l'autorisation correspondante ; vérifier indépendamment l'avancement
-des autres sessions avant de créer les commits de revue.
+David a explicitement autorisé la fusion (« go »). La PR n°3 a été fusionnée le **19 novembre 2026 à
+12 h 17 min 56 s (Paris)**, soit `2026-11-19T11:17:56Z`, en `3dce3f8c40c4103fbf953c4b6ab9de8ce63eadba`.
+Le tree `1149fcded082ccce45241938f2e3bb68fcebba75` est identique à la tête revue `fb18a835` : sources,
+build et preuves qualifiés sont sur main. Reçu : `rapports/12F2-2026-11-19/FUSION-0249.json`.
+
+Le refus automatique initial est conservé dans le journal, puis levé pour cette fusion par l'autorisation
+explicite. Aucune nouvelle autorisation de fusion n'est à demander pour cette PR terminée. Aucun contrôle
+obligatoire ni ruleset n'a été modifié ; aucune mise en ligne ni validation WebGL n'a été effectuée.
