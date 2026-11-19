@@ -1,7 +1,8 @@
 /* BITUME — ombres photo (lot 21, étape 1), sur l'option ombresPhoto de FERRO 0.3.11.
    Une fois par vue, juste avant rendu.draw : le contact des voitures proches (O1), la tuile d'ombre de la voiture
-   filmée (O3) et la pénombre (O4) selon le palier ; au chargement, la carte d'ombre lointaine du circuit (O2) ; et le
-   journal du niveau de la qualité Auto (O5). Tableaux réservés à la création : rien n'est alloué à l'image. */
+   filmée (O3) et la pénombre (O4) selon le palier ; au lancement d'une séance, la carte d'ombre lointaine du circuit
+   (O2, une fois par décor, seulement si des ombres du soleil sont possibles) ; et le journal du niveau de la qualité
+   Auto (O5). Tableaux réservés à la création : rien n'est alloué à l'image. */
 (function (B) {
   'use strict';
 
@@ -31,8 +32,10 @@
   const DEMANDE_CARTE = Object.freeze({ taille: 2048, marge: 20, dessous: 300 });
   // Pénombre : la part météo, gratuite, en Moyenne et en Fine. La pénombre variable (PCSS allégé de FERRO) reste
   // coupée : décor immobile, carré qui suit la voiture, elle fait encore bouger l'image (d1 0,012 contre 0,008 sans
-  // elle ; règle O5 : moins de 0,01). pcssFine: true la rallume en Fine. Contact en Légère : mesuré de 0 à 0,3 ms sur
-  // le M5 (lot 21, étape 1) ; coupé ici si une machine modeste le paie trop cher.
+  // elle ; règle O5 : moins de 0,01). pcssFine: true la rallume en Fine, à régler avant la création du rendu : le
+  // jeu ne fait compiler le bloc PCSS par FERRO que dans ce cas (ombresPhoto.pcss, src/jeu.js) ; sinon FERRO rend la
+  // part météo. Contact en Légère : voir docs/reprise/rapports/photo-ombres-2026-11-18 ; coupé ici si une machine
+  // modeste le paie trop cher.
   const reglages = { pcssFine: false, contactLegere: true };
   // Journal du gouverneur : les 64 derniers changements de niveau ou d'ombres.
   const JOURNAL = 64;
@@ -142,14 +145,33 @@
     return { changements: J.compte, lignes };
   }
 
-  // Carte lointaine, au chargement du circuit (après rendu.setLots) : une passe de profondeur de tout le décor qui
-  // projette. Coupée sur un GPU modeste.
-  function carte(rendu, modeste) {
-    if (!rendu || typeof rendu.precalculerOmbre !== 'function') return null;
-    const r = rendu.precalculerOmbre(modeste ? null : DEMANDE_CARTE);
-    if (dernier) dernier.carte = r;
-    return r;
+  // Ombres du soleil possibles pendant la séance : un des paliers que la qualité choisie peut prendre en a. Auto les
+  // parcourt tous ; un choix fixe n'en a qu'un. Les ombres forcées du menu comptent ; coupées, aucun palier n'en a.
+  // garde : celui que jeu.js donne à B.graphismes.melange (ancre du décor, capacités du moteur, réglages du menu).
+  function ombresPossibles(qualite, garde) {
+    const G = B.graphismes;
+    if (!G || typeof G.melange !== 'function') return true;
+    for (let n = 0; n <= (G.NIVEAU_MAX || 4); n++) if (G.melange(qualite, n, garde).effets.ombres) return true;
+    return false;
   }
 
-  B.ombres = { creer, preparer, carte, journal, axes, reglages, PLACES, PLACES_LEGERE, PORTEE, TUILE, DEMANDE_CARTE };
+  // Carte lointaine (O2), au lancement d'une séance, après rendu.setLots : une passe de profondeur de tout le décor qui
+  // projette, faite une fois par décor (lots : decor.lots ; la même liste garde la carte déjà faite). coupee : GPU
+  // modeste, ou aucune ombre du soleil possible avec les réglages (Légère, ombres coupées) ; la carte est alors libérée
+  // et ses 8 Mo rendus. Rend le compte rendu du moteur, ou null.
+  const etatCarte = { lots: null, rapport: null };
+  function carte(rendu, coupee, lots) {
+    if (!rendu || typeof rendu.precalculerOmbre !== 'function') return null;
+    if (coupee) {
+      if (etatCarte.rapport) rendu.precalculerOmbre(null);
+      etatCarte.lots = etatCarte.rapport = null;
+    } else if (!(lots && etatCarte.lots === lots && etatCarte.rapport)) {
+      etatCarte.rapport = rendu.precalculerOmbre(DEMANDE_CARTE);
+      etatCarte.lots = etatCarte.rapport ? lots || null : null;
+    }
+    if (dernier) dernier.carte = etatCarte.rapport;
+    return etatCarte.rapport;
+  }
+
+  B.ombres = { creer, preparer, carte, ombresPossibles, journal, axes, reglages, PLACES, PLACES_LEGERE, PORTEE, TUILE, DEMANDE_CARTE };
 })(globalThis.BITUME = globalThis.BITUME || {});

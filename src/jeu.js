@@ -219,7 +219,6 @@
     const pub = decor.gradins && B.public ? B.public.creer(c, decor, { qualite: ancre, saison }) : null;
     let vuePublic = null;
     if (pub) try { vuePublic = B.public.vue(rendu, pub); } catch (e) { console.warn('BITUME : public indisponible', e); }
-    B.ombres.carte(rendu, gpuModeste); // ombre lointaine du circuit, une passe au chargement (src/ombres.js)
     // plan du circuit pour l'affichage de course, dessiné une fois
     const fond = document.createElement('canvas'); fond.width = fond.height = 220;
     const p = plan(c, 220, 220, 16), ctx = fond.getContext('2d');
@@ -262,6 +261,8 @@
     if (enl && enl.locaux.length === 2) type = 'duo';
     const conditions = enl || conditionsChoisies || conditionsDuDepart();
     const sc = installer(i, B.saisons.normaliser(conditions.saison)), c = sc.c, demo = type === 'demo', auto = demo || type === 'vitrine', duo = type === 'duo';
+    // ombre lointaine du circuit (src/ombres.js) : une passe par décor, aucune sans ombres du soleil possibles
+    B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
     // enl : course en ligne (même graine, mêmes réglages des deux côtés ; voir « jeu en ligne »)
     const course = B.course.creer(c, {
       mode: type === 'chrono' ? 'chrono' : 'course', tours: enl ? enl.tours : type === 'vitrine' ? 99 : demo ? TOURS_DEMO : reglages.tours,
@@ -4034,8 +4035,9 @@
   async function demarrer() {
     if (!webgl2()) { erreur('WebGL2 indisponible', 'BITUME dessine la piste avec WebGL2. Ouvrez la page dans un navigateur récent (Chrome, Edge, Firefox, Safari 15 ou plus) avec l’accélération graphique active.'); return; }
     try {
-      // ombres photo (src/ombres.js) : tuile de 512² ; à 1024², des dents rampent sous la casquette de la planche
-      const optionsRendu = { msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512 } };
+      // ombres photo (src/ombres.js) : tuile de 512² ; à 1024², des dents rampent sous la casquette de la planche.
+      // Bloc PCSS compilé seulement si la pénombre variable sert (B.ombres.reglages.pcssFine) : shader plus court sinon.
+      const optionsRendu = { msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: !!(B.ombres && B.ombres.reglages.pcssFine) } };
       rendu = window.FRender.create(canvas, optionsRendu);
       // raccord FERRO : cibles gardées malgré 120 rendus sans usage (sinon une variante chauffée peut être libérée)
       if (rendu.retain) rendu.retain(true);

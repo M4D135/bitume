@@ -13,7 +13,7 @@ import assert from 'node:assert/strict';
 
 const ici = path.dirname(fileURLToPath(import.meta.url));
 const charger = f => createRequire(import.meta.url)(path.join(ici, '..', 'src', f));
-for (const f of ['carene.js', 'main.js', 'voiture.js', 'ombres.js']) charger(f);
+for (const f of ['carene.js', 'main.js', 'voiture.js', 'graphismes.js', 'ombres.js']) charger(f);
 const B = globalThis.BITUME, O = B.ombres, V = B.voiture;
 
 let compte = 0;
@@ -257,15 +257,31 @@ await verifier('journal : une ligne par changement du niveau Auto ou des ombres,
   assert.equal(O.journal().changements, k.changements, 'sans état : celui du dernier créé (le jeu n\'en crée qu\'un)');
 });
 
-await verifier('carte lointaine : demandée au moteur au chargement, libérée sur un GPU modeste', async () => {
-  const etat = O.creer(), demandes = [];
+await verifier('carte lointaine : une passe par décor, libérée sans ombres possibles ou sur un GPU modeste', async () => {
+  const etat = O.creer(), demandes = [], lotsA = [{ id: 'a' }], lotsB = [{ id: 'b' }];
   const rendu = { precalculerOmbre(d) { demandes.push(d); return d ? { taille: d.taille, ms: 1 } : null; } };
-  const r = O.carte(rendu, false);
+  const r = O.carte(rendu, false, lotsA);
   assert.deepEqual(demandes[0], { taille: 2048, marge: 20, dessous: 300 });
   assert.ok(r && r.taille === 2048 && etat.carte === r);
-  assert.equal(O.carte(rendu, true), null); assert.equal(demandes[1], null);
-  assert.equal(O.carte({}, false), null, 'moteur sans l\'option (WebGPU, ancien FERRO)');
-  assert.equal(O.carte(null, false), null);
+  assert.equal(O.carte(rendu, false, lotsA), r); assert.equal(demandes.length, 1, 'même décor : carte gardée, aucune passe');
+  const r2 = O.carte(rendu, false, lotsB); assert.equal(demandes.length, 2, 'autre décor : nouvelle passe'); assert.ok(r2 && r2 !== r);
+  assert.equal(O.carte(rendu, true, lotsB), null); assert.equal(demandes[2], null, 'coupée : carte libérée');
+  assert.equal(O.carte(rendu, true, lotsB), null); assert.equal(demandes.length, 3, 'rien à libérer de plus');
+  assert.ok(O.carte(rendu, false, lotsB)); assert.equal(demandes.length, 4, 'rallumée : refaite');
+  assert.equal(O.carte({}, false, lotsA), null, 'moteur sans l\'option (WebGPU, ancien FERRO)');
+  assert.equal(O.carte(null, false, lotsA), null);
+});
+
+await verifier('ombres possibles : la carte ne sert qu\'aux paliers qui ont des ombres du soleil (pas en Légère)', async () => {
+  const G = B.graphismes, ouvertes = G.capacites({ msaa: 4, shadowMapScale: 2 }, false, 1);
+  const garde = (options, capacites = ouvertes, decor = 'high') => ({ decor, capacites, options: G.normaliserOptions(options) });
+  assert.equal(O.ombresPossibles('low', garde({ ombres: 'profil' }, ouvertes, 'low')), false, 'Légère : aucune ombre du soleil');
+  assert.equal(O.ombresPossibles('low', garde({ ombres: 'high' }, ouvertes, 'low')), true, 'Légère, ombres forcées dans le menu');
+  assert.equal(O.ombresPossibles('medium', garde({ ombres: 'profil' })), true);
+  assert.equal(O.ombresPossibles('high', garde({ ombres: 'profil' })), true);
+  assert.equal(O.ombresPossibles('auto', garde({ ombres: 'profil' }, ouvertes, 'low')), true, 'Auto : les paliers hauts restent atteignables');
+  assert.equal(O.ombresPossibles('auto', garde({ ombres: 'off' })), false, 'ombres coupées dans le menu');
+  assert.equal(O.ombresPossibles('high', garde({ ombres: 'profil' }, G.capacites({ logiciel: true }, false, 1))), false, 'rendu logiciel');
 });
 
 console.log('---');

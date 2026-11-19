@@ -12,7 +12,7 @@
     {
       "id": "render",
       "path": "src/moteur/renderer.js",
-      "sha256": "30a27847af37508400bfa6b125a208e7707b9cc8df013419f79acabbabd7fd98"
+      "sha256": "8f609d9df7fffc9178425f3d5b6470464bc0142bf0b26ba4fe1c1766558936ca"
     },
     {
       "id": "webgpu-shaders",

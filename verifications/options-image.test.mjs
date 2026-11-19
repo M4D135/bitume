@@ -43,8 +43,7 @@ const executer = new Function('B', 'stockage', `
     obstacles: { creer: objets => ({ objets }) },
     conduite: { PARAMS: { vitessePointe: [20,40,60,80,100], maxUtile: 8000, ralenti: 900 }, pneusConseilles: () => 'slicks', eauSurPiste: () => 0 },
     circuit: { ecart: (c,a,b) => b-a, echantillon: () => ({ y: 0, devers: 0, pente: 0 }) },
-    meteo: { pour: nom => ['soleil','pluie'].includes(nom) ? { mouille: 0 } : null }, mesures: { reinitialiser() {} },
-    ombres: { carte() {} }
+    meteo: { pour: nom => ['soleil','pluie'].includes(nom) ? { mouille: 0 } : null }, mesures: { reinitialiser() {} }
   };
   ${bloc('  function lireStock(', '  // records et fantômes')}
   ${bloc('  const palier = ', '  // effets permis par le profil résolu')}

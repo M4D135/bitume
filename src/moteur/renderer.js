@@ -1584,8 +1584,10 @@
       for(const mesh of meshes){const i=shapeIndices.get(mesh.shape||'box');if(i!==undefined){counts[i]++;total++;}}
       for(const mesh of near){const i=shapeIndices.get(mesh.shape||'box');if(i!==undefined){counts[i]++;nears[i]++;total++;nearTotal++;}}
       required=total*16;if(storage.length<required)storage=new Float32Array(Math.max(required,storage.length*2,256));
-      batch.storage=storage;batch.length=required;batch.nearTotal=nearTotal;groups.length=0;
-      let offset=0;for(let i=0;i<names.length;i++){next[i]=offset;if(counts[i]){const group=records[i]||(records[i]={name:names[i],offset:0,count:0,near:0});group.offset=offset*4;group.count=counts[i];group.near=nears[i];groups.push(group);offset+=counts[i]*16;}}
+      batch.storage=storage;batch.length=required;batch.nearTotal=nearTotal;
+      // Groupes écrits par indice (length=0 puis push rendrait leur stockage et en allouerait un neuf à chaque image).
+      let offset=0,g=0;for(let i=0;i<names.length;i++){next[i]=offset;if(counts[i]){const group=records[i]||(records[i]={name:names[i],offset:0,count:0,near:0});group.offset=offset*4;group.count=counts[i];group.near=nears[i];groups[g++]=group;offset+=counts[i]*16;}}
+      groups.length=g;
       for(const mesh of meshes)write(mesh,environment);
       for(const mesh of near)write(mesh,environment);
       return batch;
@@ -2416,20 +2418,25 @@
 
   // FERRO 0.3.11 : shader du monde avec l'option ombresPhoto. Chaque ancre existe une seule fois dans FRAG ; sans
   // l'option, create garde FRAG tel quel (mêmes sources, même image : tests/ferro/renderer-ombres-photo.test.mjs).
-  const PHOTO_GLSL=`
+  // Le bloc de la pénombre variable (PCSS) n'est compilé que si l'hôte le garde (ombresPhoto.pcss !== false) : sans
+  // lui, le shader est plus court et fx.penombre 'pcss' vaut 'meteo'. Le reste ne calcule que ce qu'un effet allumé
+  // demande : la tuile n'est projetée que si elle sert, le contact passe par une sphère qui englobe les voitures.
+  function photoGlsl(pcss){
+    return `
   // FERRO 0.3.11, option de création ombresPhoto (absente du shader par défaut) : contact analytique des voitures
   // (fx.contacts), carte lointaine précalculée (precalculerOmbre), tuile de la voiture filmée (fx.ombreProche) et
   // pénombre selon la distance et la météo (fx.penombre).
   uniform vec4 uContact[36];
   uniform int uContactCount;
   uniform vec4 uContactReglages;
+  uniform vec4 uContactSphere;
   uniform highp sampler2D uOmbreTuile;
   uniform mat4 uOmbreTuileMatrice;
   uniform vec4 uOmbreTuileReglages;
   uniform highp sampler2DShadow uOmbreLoin;
   uniform mat4 uOmbreLoinMatrice;
-  uniform vec4 uOmbreLoinReglages;
-  uniform highp sampler2DShadow uOmbreComparee;
+  uniform vec4 uOmbreLoinReglages;${pcss?`
+  uniform highp sampler2DShadow uOmbreComparee;`:''}
   uniform vec4 uPenombre;
   // Occlusion d'un ellipsoïde (centre à -d du point, axes ax/ay/az, demi-axes r) vue d'un point de normale n : dans
   // l'espace où l'ellipsoïde devient la sphère unité, cos(θ)·(1/l)² (Quilez), bornée à 1 au contact.
@@ -2441,8 +2448,11 @@
   }
   // Voitures proches : six vec4 chacune (centre et force ; axe avant et demi-longueur ; axe haut et demi-hauteur ;
   // demi-largeur, hauteur du centre au-dessus du sol, essieux avant et arrière ; rayon, demi-voie et demi-largeur des
-  // roues avant ; idem arrière). Caisse et quatre appuis, combinés en produit des parts de ciel libres.
+  // roues avant ; idem arrière). Caisse et quatre appuis, combinés en produit des parts de ciel libres. Hors de la
+  // sphère qui englobe les portées de toutes les voitures (uContactSphere), le terme est nul : un seul test.
   float photoContact(vec3 p,vec3 n){
+    vec3 e=p-uContactSphere.xyz;
+    if(dot(e,e)>=uContactSphere.w*uContactSphere.w)return 0.;
     float libre=1.;
     for(int i=0;i<6;i++){
       if(i>=uContactCount)break;
@@ -2478,64 +2488,71 @@
       v+=wx[x]*wy[y]*step(z+dot(slope,tap-uv),texture(carte,tap).r);
     }
     return v;
-  }
+  }${pcss?`
+  // PCSS allégé : les neuf lectures fines de la B-spline donnent aussi la moyenne des bloqueurs (pesée comme elle,
+  // continue d'un texel à l'autre) ; quatre lectures de recherche au rayon maximal, motif fixe (aucun bruit, rien ne
+  // varie d'une image à l'autre) ; puis la même B-spline sur une grille de pas égal au rayon de pénombre, en
+  // comparaisons filtrées par le matériel. Fondu avec le filtre fin entre 1,25 et 2 texels de rayon. La grille large
+  // est accrochée au monde (repère du soleil, en texels), pas à l'origine de l'atlas qui suit la caméra : quand le
+  // carré avance d'un texel, chaque lecture garde sa place autour du point reçu. Les quatre lectures de recherche
+  // partent de uvS, le point reçu sans le bruit de calcul de la matrice du carré (décalage entier de texels arrondi),
+  // qui ne change plus de texel d'une image à l'autre.
+  float photoPcss(vec2 uv,vec2 centre,vec3 wx,vec3 wy,float z,vec2 slope,float texel,float pz,vec3 n){
+    float v=0.,zb=0.,nb=0.;
+    for(int y=0;y<3;y++)for(int x=0;x<3;x++){
+      vec2 tap=centre+vec2(float(x-1),float(y-1))*texel;
+      float ref=z+dot(slope,tap-uv),d=texture(uShadowMap,tap).r,w=wx[x]*wy[y];
+      v+=w*step(ref,d);
+      if(d<ref){zb+=w*d;nb+=w;}
+    }
+    float r=uPenombre.z*texel*.7071;
+    vec2 g=(mat3(uShadowMatrix[1])*(vWorld+n*.014)).xy*(.5/texel),uvS=(g+floor(uv/texel-g+.5))*texel;
+    for(int k=0;k<4;k++){
+      vec2 o=vec2(k==0||k==3?r:-r,k<2?r:-r);
+      float ref=z+dot(slope,o),d=texture(uShadowMap,uvS+o).r;
+      if(d<ref){zb+=.25*d;nb+=.25;}
+    }
+    if(nb>0.){
+      float rayon=clamp((pz-zb/nb)*uPenombre.y*(1.+2.*clamp(uWeather.y,0.,1.)),1.,uPenombre.z);
+      if(rayon>1.25){
+        float large=0.,marge=.00006*rayon;
+        vec2 vc=g/rayon,vf=fract(vc)-.5,vcentre=(floor(vc)+.5)*rayon;
+        vec3 ux=vec3(.5*(.5-vf.x)*(.5-vf.x),.75-vf.x*vf.x,.5*(.5+vf.x)*(.5+vf.x));
+        vec3 uy=vec3(.5*(.5-vf.y)*(.5-vf.y),.75-vf.y*vf.y,.5*(.5+vf.y)*(.5+vf.y));
+        for(int y=0;y<3;y++)for(int x=0;x<3;x++){
+          vec2 tap=uvS+(vcentre+vec2(float(x-1),float(y-1))*rayon-g)*texel;
+          large+=ux[x]*uy[y]*texture(uOmbreComparee,vec3(tap,z-marge+dot(slope,tap-uv)));
+        }
+        v=mix(v,large,smoothstep(1.25,2.,rayon));
+      }
+    }
+    return v;
+  }`:''}
   // Soleil avec l'option : carré proche (B-spline de shadow, élargi par PCSS en Fine), carte lointaine hors du carré
   // et dans sa bande de bord, tuile de la voiture filmée, plancher selon la couverture nuageuse.
   float photoSoleil(vec3 n,vec3 l){
     if(vOverlay>.5&&uOverlayMode<.5)return 1.;
     // Sans soleil dans l'atlas (w = 0 : ombres coupées ou sans environnement), shadow() d'origine, à l'identique.
     if(uShadowSettings.w<.5)return shadow(n,l,1);
-    float nl=max(dot(n,l),0.),nuage=clamp(uWeather.y,0.,1.);
-    // Projections et pentes avant tout branchement non uniforme : les dérivées y restent définies.
+    float nl=max(dot(n,l),0.);
+    // Projection et pente avant tout branchement non uniforme : les dérivées y restent définies.
     vec4 projected=uShadowMatrix[1]*vec4(vWorld+n*.014,1.);
     vec3 p=projected.xyz/projected.w*.5+.5;
     vec2 slope=photoPente(p)*(uShadowSettings.w>1.5?1.:2.);
-    vec3 t=(uOmbreTuileMatrice*vec4(vWorld+n*uOmbreTuileReglages.w,1.)).xyz*.5+.5;
     float proche=1.,poids=0.;
-    if(uShadowSettings.w>.5&&!(projected.w<=0.||p.z<=0.||p.z>=1.||min(p.x,p.y)<=.001||max(p.x,p.y)>=.999)){
+    if(!(projected.w<=0.||p.z<=0.||p.z>=1.||min(p.x,p.y)<=.001||max(p.x,p.y)>=.999)){
       bool full=uShadowSettings.w>1.5;
       float texel=uShadowSettings.y,z=p.z-(.00014+.00024*(1.-nl));
       vec2 uv=full?p.xy:p.xy*.5+vec2(.5,0.);
       vec2 cell=uv/texel,f=fract(cell)-.5,centre=(floor(cell)+.5)*texel;
       vec3 wx=vec3(.5*(.5-f.x)*(.5-f.x),.75-f.x*f.x,.5*(.5+f.x)*(.5+f.x));
       vec3 wy=vec3(.5*(.5-f.y)*(.5-f.y),.75-f.y*f.y,.5*(.5+f.y)*(.5+f.y));
-      float v=0.,zb=0.,nb=0.;
+      float v=0.;${pcss?`
+      if(uPenombre.x>1.5&&full)v=photoPcss(uv,centre,wx,wy,z,slope,texel,p.z,n);
+      else`:''}
       for(int y=0;y<3;y++)for(int x=0;x<3;x++){
         vec2 tap=centre+vec2(float(x-1),float(y-1))*texel;
-        float ref=z+dot(slope,tap-uv),d=texture(uShadowMap,tap).r,w=wx[x]*wy[y];
-        v+=w*step(ref,d);
-        if(d<ref){zb+=w*d;nb+=w;}
-      }
-      if(uPenombre.x>1.5&&full){
-        // PCSS allégé : quatre lectures de recherche au rayon maximal, motif fixe (aucun bruit, rien ne varie
-        // d'une image à l'autre), puis la même B-spline sur une grille de pas égal au rayon de pénombre, en
-        // comparaisons filtrées par le matériel. Fondu avec le filtre fin entre 1,25 et 2 texels de rayon. La
-        // grille large est accrochée au monde (repère du soleil, en texels), pas à l'origine de l'atlas qui suit
-        // la caméra : quand le carré avance d'un texel, chaque lecture garde sa place autour du point reçu. La
-        // moyenne des bloqueurs pèse les neuf lectures fines comme la B-spline (continue d'un texel à l'autre) ;
-        // les quatre lectures de recherche partent de uvS, le point reçu sans le bruit de calcul de la matrice
-        // du carré (décalage entier de texels arrondi), qui ne change plus de texel d'une image à l'autre.
-        float r=uPenombre.z*texel*.7071;
-        vec2 g=(mat3(uShadowMatrix[1])*(vWorld+n*.014)).xy*(.5/texel),uvS=(g+floor(uv/texel-g+.5))*texel;
-        for(int k=0;k<4;k++){
-          vec2 o=vec2(k==0||k==3?r:-r,k<2?r:-r);
-          float ref=z+dot(slope,o),d=texture(uShadowMap,uvS+o).r;
-          if(d<ref){zb+=.25*d;nb+=.25;}
-        }
-        if(nb>0.){
-          float rayon=clamp((p.z-zb/nb)*uPenombre.y*(1.+2.*nuage),1.,uPenombre.z);
-          if(rayon>1.25){
-            float large=0.,marge=.00006*rayon;
-            vec2 vc=g/rayon,vf=fract(vc)-.5,vcentre=(floor(vc)+.5)*rayon;
-            vec3 ux=vec3(.5*(.5-vf.x)*(.5-vf.x),.75-vf.x*vf.x,.5*(.5+vf.x)*(.5+vf.x));
-            vec3 uy=vec3(.5*(.5-vf.y)*(.5-vf.y),.75-vf.y*vf.y,.5*(.5+vf.y)*(.5+vf.y));
-            for(int y=0;y<3;y++)for(int x=0;x<3;x++){
-              vec2 tap=uvS+(vcentre+vec2(float(x-1),float(y-1))*rayon-g)*texel;
-              large+=ux[x]*uy[y]*texture(uOmbreComparee,vec3(tap,z-marge+dot(slope,tap-uv)));
-            }
-            v=mix(v,large,smoothstep(1.25,2.,rayon));
-          }
-        }
+        v+=wx[x]*wy[y]*step(z+dot(slope,tap-uv),texture(uShadowMap,tap).r);
       }
       float edge=min(min(p.x,p.y),min(1.-p.x,1.-p.y));
       proche=v;poids=smoothstep(.012,.085,edge);
@@ -2552,25 +2569,31 @@
       }
     }
     float v=mix(loin,proche,poids);
-    if(uOmbreTuileReglages.x>.5&&t.z>0.&&t.z<1.&&min(t.x,t.y)>0.&&max(t.x,t.y)<1.){
-      // Tuile tracée par les faces arrière : une face éclairée est loin de la profondeur gardée, un biais constant
-      // suffit ; sans plan du récepteur, dont les dérivées s'affolent sur les petites pièces courbes de l'habitacle.
-      float vt=photoBspline(uOmbreTuile,t.xy,t.z-(.0005+.0012*(1.-nl)),vec2(0.),uOmbreTuileReglages.y);
-      float bord=min(min(t.x,t.y),min(1.-t.x,1.-t.y));
-      v*=mix(1.,vt,smoothstep(0.,uOmbreTuileReglages.z,bord));
+    if(uOmbreTuileReglages.x>.5){
+      vec3 t=(uOmbreTuileMatrice*vec4(vWorld+n*uOmbreTuileReglages.w,1.)).xyz*.5+.5;
+      if(t.z>0.&&t.z<1.&&min(t.x,t.y)>0.&&max(t.x,t.y)<1.){
+        // Tuile tracée par les faces arrière : une face éclairée est loin de la profondeur gardée, un biais constant
+        // suffit ; sans plan du récepteur, dont les dérivées s'affolent sur les petites pièces courbes de l'habitacle.
+        float vt=photoBspline(uOmbreTuile,t.xy,t.z-(.0005+.0012*(1.-nl)),vec2(0.),uOmbreTuileReglages.y);
+        float bord=min(min(t.x,t.y),min(1.-t.x,1.-t.y));
+        v*=mix(1.,vt,smoothstep(0.,uOmbreTuileReglages.z,bord));
+      }
     }
-    float plancher=uPenombre.x>.5?mix(.055,.45,smoothstep(.25,.9,nuage)):.055;
+    float plancher=uPenombre.x>.5?mix(.055,.45,smoothstep(.25,.9,clamp(uWeather.y,0.,1.))):.055;
     return mix(plancher,1.,v);
   }
 `;
-  function photoFragment(source){
+  }
+  // Nombre fini ou valeur par défaut : défini une fois pour le module, aucune fermeture créée à l'image (photoBind).
+  const photoNum=(v,d)=>Number.isFinite(v)?v:d;
+  function photoFragment(source,pcss){
     const once=(text,anchor,replacement)=>{
       const at=text.indexOf(anchor);if(at<0||text.indexOf(anchor,at+anchor.length)>=0)throw new Error('ombresPhoto : ancre introuvable ou double : '+anchor);
       return text.slice(0,at)+replacement+text.slice(at+anchor.length);
     };
-    source=once(source,'  void main() {\n    groundCoverDiscard();',PHOTO_GLSL+'  void main() {\n    groundCoverDiscard();');
+    source=once(source,'  void main() {\n    groundCoverDiscard();',photoGlsl(pcss)+'  void main() {\n    groundCoverDiscard();');
     source=once(source,'    if(recipe>4.5)light*=cavity;\n','    if(recipe>4.5)light*=cavity;\n    float contactOcc=uContactCount>0&&vObject<.5&&vOverlay<.5?photoContact(vWorld,geometricNormal):0.;\n    light*=1.-uContactReglages.x*contactOcc;\n');
-    source=once(source,'    float sunlight=outdoors>.5?shadow(geometricNormal,uSunDirection,1):0.;\n','    float sunlight=outdoors>.5?photoSoleil(geometricNormal,uSunDirection):0.;\n    sunlight*=1.-uContactReglages.y*pow(contactOcc,uContactReglages.z);\n');
+    source=once(source,'    float sunlight=outdoors>.5?shadow(geometricNormal,uSunDirection,1):0.;\n','    float sunlight=outdoors>.5?photoSoleil(geometricNormal,uSunDirection):0.;\n    if(contactOcc>0.)sunlight*=1.-uContactReglages.y*pow(contactOcc,uContactReglages.z);\n');
     source=once(source,'    environmentReflection=mix(environmentReflection,uAmbient*.85,roughness*roughness*.8);\n','    environmentReflection=mix(environmentReflection,uAmbient*.85,roughness*roughness*.8);\n    environmentReflection*=1.-uContactReglages.x*contactOcc;\n');
     return source;
   }
@@ -2610,7 +2633,7 @@
       const distance=Math.max(1,Math.min(16,motion.speed*.15)),tilt=Math.min(demiDiag*.5,Math.max(4*Math.PI/180,Math.min(12*Math.PI/180,motion.turn*.1)));
       out.distance=distance;out.tilt=tilt;return out;
     }
-    const config=settings(options.sceneReflections?{...options,msaa:0}:options),worldFrag=options.ombresPhoto?photoFragment(worldFragment(config)):worldFragment(config),postFrag=postFragment(config);
+    const config=settings(options.sceneReflections?{...options,msaa:0}:options),worldFrag=options.ombresPhoto?photoFragment(worldFragment(config),options.ombresPhoto.pcss!==false):worldFragment(config),postFrag=postFragment(config);
     const source=geometry(),primitiveIndex=indexPrimitiveVertices(source),groundIndex=groundCoverGeometry(source,primitiveIndex.indices),view=new Float32Array(16),projection=new Float32Array(16),vp=new Float32Array(16),overlayProjection=new Float32Array(16),overlayVP=new Float32Array(16);
     const shadowView=new Float32Array(16),shadowProjection=new Float32Array(16),shadowMatrix=new Float32Array(16),shadowMatrices=new Float32Array(48);
     const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12),lightDirections=new Float32Array(36),lightCones=new Float32Array(24);
@@ -2630,12 +2653,14 @@
     // FERRO 0.3.11 (ombresPhoto) : rien de ceci ne fait d'appel GL sans l'option. photoTile : tuile de la voiture filmée
     // (créée à l'initialisation, jamais en course) ; photoFar : carte lointaine (precalculerOmbre, au chargement) ;
     // photoDepth : profondeur 1 × 1 liée aux échantillonneurs de comparaison inactifs ; photoSampler : comparaison filtrée.
-    const photo=!!options.ombresPhoto,photoTileSize=photo&&options.ombresPhoto.tuile===512?512:photo?1024:0;
+    const photo=!!options.ombresPhoto,photoTileSize=photo&&options.ombresPhoto.tuile===512?512:photo?1024:0,photoPcssOn=photo&&options.ombresPhoto.pcss!==false;
     let photoUniforms=null,photoSampler=null,photoDepth=null,photoTile=null,photoFar=null,photoFarRequest=null,photoSplit=false,photoOverlay=null;
     let photoSunRange=1,photoSunTexel=1,photoTileExtent=3.5;
     const photoTileMatrix=new Float32Array(16),photoFarMatrix=new Float32Array(16),photoMatrix=new Float32Array(16),photoProjection=new Float32Array(16);
     const packSplit=photo?splitPacker():null,nearOrdinary=[],photoWarmTile={centre:[0,0,0],etendue:3.5,debut:0,fin:0};
     const photoState={contacts:0,tuile:false,loin:false,penombre:'off',loinTaille:0};
+    // Textures que photoBind a liées aux unités 8, 9 et 10 pour l'image en cours (reprises après fx.foule.couleur).
+    const photoLies=[null,null,null];
     if(photo)stats.ombresPhoto=photoState;
     const ordinary=[],overlay=[],particles=[],overlayParticles=[];
     const native=options.resolution==='native',maxSize=native?Math.min(Number(gl.getParameter(gl.MAX_RENDERBUFFER_SIZE))||16384,Number(gl.getParameter(gl.MAX_TEXTURE_SIZE))||16384):16384;
@@ -3281,7 +3306,9 @@
           pdrMatriceSoleil.set(shadowMatrix);pdrLumiere.direction=sun;pdrLumiere.texel=texel;pdrLumiere.plein=full;
           pdrLumiere.viewport[0]=full?0:shadowTarget.size;pdrLumiere.viewport[1]=0;pdrLumiere.viewport[2]=pdrLumiere.viewport[3]=tile;
           pdrLumiere.centre=center;pdrLumiere.etendue=extent;pdrLumiere.profondeur=far;
+          if(photo)photoQuitte();
           pdrCompter(fx.foule.ombre(gl,pdrLumiere),true);
+          if(photo)photoReprend(false);
           gl.useProgram(depthProgram);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.depthMask(true);gl.disable(gl.BLEND);
         }
         gl.disable(gl.POLYGON_OFFSET_FILL);
@@ -3542,7 +3569,9 @@
         ombre.texture=stats.shadows?shadowTarget.texture:whiteTexture;ombre.active=!!(stats.shadows&&environment);ombre.plein=sunOnly;
         ombre.texel=shadowTarget?1/(shadowTarget.size*2):1;if(ombre.active)for(let k=0;k<16;k++)pdrMatriceSoleil[k]=shadowMatrices[16+k];
         v.lumieres.nombre=selected.length;
+        if(photo)photoQuitte();
         pdrCompter(fx.foule.couleur(gl,v),false);
+        if(photo)photoReprend(true);
         gl.useProgram(program);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);
         gl.depthMask(true);gl.disable(gl.BLEND);gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,ombre.texture);
       }
@@ -3590,7 +3619,7 @@
     }
     // Créé avec le contexte (et après sa restauration) : la course ne crée jamais ces objets.
     function photoInitialize(){
-      photoUniforms={};for(const name of ['uContact','uContactCount','uContactReglages','uOmbreTuile','uOmbreTuileMatrice','uOmbreTuileReglages','uOmbreLoin','uOmbreLoinMatrice','uOmbreLoinReglages','uOmbreComparee','uPenombre'])photoUniforms[name]=gl.getUniformLocation(program,name);
+      photoUniforms={};for(const name of ['uContact','uContactCount','uContactReglages','uContactSphere','uOmbreTuile','uOmbreTuileMatrice','uOmbreTuileReglages','uOmbreLoin','uOmbreLoinMatrice','uOmbreLoinReglages','uOmbreComparee','uPenombre'])photoUniforms[name]=gl.getUniformLocation(program,name);
       photoSampler=gl.createSampler();
       gl.samplerParameteri(photoSampler,gl.TEXTURE_COMPARE_MODE,gl.COMPARE_REF_TO_TEXTURE);gl.samplerParameteri(photoSampler,gl.TEXTURE_COMPARE_FUNC,gl.LEQUAL);
       gl.samplerParameteri(photoSampler,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.samplerParameteri(photoSampler,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
@@ -3606,17 +3635,31 @@
     }
     function photoDispose(){
       if(photoTile)deleteTarget(photoTile);if(photoFar)deleteTarget(photoFar);if(photoDepth)gl.deleteTexture(photoDepth);if(photoSampler)gl.deleteSampler(photoSampler);
-      photoTile=photoFar=photoDepth=photoSampler=null;
+      photoTile=photoFar=photoDepth=photoSampler=null;photoLies.fill(null);
+    }
+    // Foule de l'hôte (fx.foule) : ses programmes lisent leurs propres textures, aussi sur les unités 8 à 10 (BITUME :
+    // public.js ; FERRO : crowd.js). Pendant l'appel, l'échantillonneur de comparaison quitte les unités 8 et 10 (il
+    // rendrait leurs textures de couleur incomplètes) ; au retour, il y revient, et après la passe couleur, les textures
+    // de l'option aussi (un sampler2D de la tuile devant une texture entière de l'hôte ferait échouer les dessins).
+    function photoQuitte(){gl.bindSampler(8,null);gl.bindSampler(10,null);}
+    function photoReprend(textures){
+      if(textures){
+        gl.activeTexture(gl.TEXTURE8);gl.bindTexture(gl.TEXTURE_2D,photoLies[0]);
+        gl.activeTexture(gl.TEXTURE9);gl.bindTexture(gl.TEXTURE_2D,photoLies[1]);
+        gl.activeTexture(gl.TEXTURE10);gl.bindTexture(gl.TEXTURE_2D,photoLies[2]);
+      }
+      gl.bindSampler(8,photoSampler);gl.bindSampler(10,photoSampler);
     }
     // Vue orthographique selon le soleil : centre c, demi-côté e, axe x suivant `axe` projeté (sinon l'horizontale du
     // soleil), oeil relevé de lift, profondeur de near à far. Écrit dans out ; rend le pas de grille (m par texel).
     function photoSunMatrix(out,c,e,size,lift,near,far,axe,snap){
-      const sun=environment.sunDirection,sl=Math.hypot(sun[0],sun[1],sun[2])||1;
+      // Math.sqrt plutôt que Math.hypot : appelée à chaque image (tuile), hypot recevrait ses arguments en nombres alloués.
+      const sun=environment.sunDirection,sl=Math.sqrt(sun[0]*sun[0]+sun[1]*sun[1]+sun[2]*sun[2])||1;
       const fx=-sun[0]/sl,fy=-sun[1]/sl,fz=-sun[2]/sl;
       let rx,ry,rz;
-      if(axe){rx=axe[0];ry=axe[1];rz=axe[2];}else{const h=Math.hypot(fx,fz);if(h>.0001){rx=-fz/h;ry=0;rz=fx/h;}else{rx=1;ry=0;rz=0;}}
-      const k=rx*fx+ry*fy+rz*fz;rx-=k*fx;ry-=k*fy;rz-=k*fz;let rl=Math.hypot(rx,ry,rz);
-      if(rl<.0001){rx=1-fx*fx;ry=-fx*fy;rz=-fx*fz;rl=Math.hypot(rx,ry,rz)||1;}
+      if(axe){rx=axe[0];ry=axe[1];rz=axe[2];}else{const h=Math.sqrt(fx*fx+fz*fz);if(h>.0001){rx=-fz/h;ry=0;rz=fx/h;}else{rx=1;ry=0;rz=0;}}
+      const k=rx*fx+ry*fy+rz*fz;rx-=k*fx;ry-=k*fy;rz-=k*fz;let rl=Math.sqrt(rx*rx+ry*ry+rz*rz);
+      if(rl<.0001){rx=1-fx*fx;ry=-fx*fy;rz=-fx*fz;rl=Math.sqrt(rx*rx+ry*ry+rz*rz)||1;}
       rx/=rl;ry/=rl;rz/=rl;
       const ux=ry*fz-rz*fy,uy=rz*fx-rx*fz,uz=rx*fy-ry*fx,texel=e*2/size;
       let cx=c[0],cy=c[1],cz=c[2];
@@ -3637,9 +3680,12 @@
       if(!o||!photoTile||!environment||!shadowTarget||!shadowsEnabled(fx))return null;
       const c=o.centre;if(!c||!Number.isFinite(c[0])||!Number.isFinite(c[1])||!Number.isFinite(c[2]))return null;
       const list=dynamic||EMPTY_ENTRIES,debut=Math.max(0,Math.floor(o.debut)||0),fin=Math.min(list.length,Math.floor(o.fin)||0);
-      ordinary.length=0;nearOrdinary.length=0;
-      for(let i=0;i<list.length;i++){const mesh=list[i];if(mesh.overlay||mesh.fx)continue;(i>=debut&&i<fin?nearOrdinary:ordinary).push(mesh);}
-      if(warm){let first=true;for(const mesh of warm.extra){if(mesh.overlay||mesh.fx)continue;(first?nearOrdinary:ordinary).push(mesh);first=false;}}
+      // Écriture par indice puis longueur : length=0 suivi de push rendrait le stockage des deux tableaux et en
+      // allouerait un neuf à chaque image (V8) ; ici, rien n'est alloué tant que leur taille ne croît pas.
+      let a=0,b=0;
+      for(let i=0;i<list.length;i++){const mesh=list[i];if(mesh.overlay||mesh.fx)continue;if(i>=debut&&i<fin)nearOrdinary[b++]=mesh;else ordinary[a++]=mesh;}
+      if(warm){let first=true;for(const mesh of warm.extra){if(mesh.overlay||mesh.fx)continue;if(first)nearOrdinary[b++]=mesh;else ordinary[a++]=mesh;first=false;}}
+      ordinary.length=a;nearOrdinary.length=b;
       return o;
     }
     // Profondeur de la voiture filmée : ses pièces ordinaires (part 2 du lot dynamique) et l'habitacle (overlay, empaqueté
@@ -3665,21 +3711,30 @@
       const u=photoUniforms,c=fx.contacts;
       const n=c&&c.boites&&c.boites.length>=24&&Number.isFinite(c.nombre)?Math.max(0,Math.min(6,Math.floor(c.nombre),Math.floor(c.boites.length/24))):0;
       gl.uniform1i(u.uContactCount,n);if(n)gl.uniform4fv(u.uContact,c.boites,0,n*24);
-      const num=(v,d)=>Number.isFinite(v)?v:d;
-      gl.uniform4f(u.uContactReglages,n?num(c.ambiance,.85):0,n?num(c.soleil,.6):0,Math.max(.5,num(c&&c.exposant,4)),Math.max(0,num(c&&c.marge,1.6)));
+      const marge=Math.max(0,photoNum(c&&c.marge,1.6));
+      gl.uniform4f(u.uContactReglages,n?photoNum(c.ambiance,.85):0,n?photoNum(c.soleil,.6):0,Math.max(.5,photoNum(c&&c.exposant,4)),marge);
+      // Sphère qui contient les portées de toutes les voitures (centre de leur boîte englobante, rayon jusqu'à la plus
+      // lointaine, plus 1 cm) : hors d'elle, photoContact rend 0 sans parcourir les voitures. Scalaires seulement.
+      if(n){
+        const b=c.boites;let x0=Infinity,y0=Infinity,z0=Infinity,x1=-Infinity,y1=-Infinity,z1=-Infinity;
+        for(let i=0;i<n;i++){const o=i*24,r=b[o+7]+marge;x0=Math.min(x0,b[o]-r);x1=Math.max(x1,b[o]+r);y0=Math.min(y0,b[o+1]-r);y1=Math.max(y1,b[o+1]+r);z0=Math.min(z0,b[o+2]-r);z1=Math.max(z1,b[o+2]+r);}
+        const sx=(x0+x1)/2,sy=(y0+y1)/2,sz=(z0+z1)/2;let rs=0;
+        for(let i=0;i<n;i++){const o=i*24,dx=b[o]-sx,dy=b[o+1]-sy,dz=b[o+2]-sz;rs=Math.max(rs,Math.sqrt(dx*dx+dy*dy+dz*dz)+b[o+7]+marge);}
+        gl.uniform4f(u.uContactSphere,sx,sy,sz,Number.isFinite(rs)?rs+.01:1e9);
+      }else gl.uniform4f(u.uContactSphere,0,0,0,0);
       const tileOn=!!(tuile&&stats.shadows&&photoTile);
-      gl.activeTexture(gl.TEXTURE9);gl.bindTexture(gl.TEXTURE_2D,tileOn?photoTile.texture:whiteTexture);
+      gl.activeTexture(gl.TEXTURE9);gl.bindTexture(gl.TEXTURE_2D,photoLies[1]=tileOn?photoTile.texture:whiteTexture);
       gl.uniformMatrix4fv(u.uOmbreTuileMatrice,false,photoTileMatrix);
       const tileTexel=photoTile?1/photoTile.size:1;
       gl.uniform4f(u.uOmbreTuileReglages,tileOn?1:0,tileTexel,.3/(2*photoTileExtent),photoTileExtent*2*tileTexel);
       const sun=environment&&environment.sunDirection,far=photoFar;
       const farOn=!!(far&&stats.shadows&&fx.ombreLoin!==false&&sun&&sun[0]===far.sun[0]&&sun[1]===far.sun[1]&&sun[2]===far.sun[2]&&photoMemesLots(far));
-      gl.activeTexture(gl.TEXTURE10);gl.bindTexture(gl.TEXTURE_2D,farOn?far.texture:photoDepth);
+      gl.activeTexture(gl.TEXTURE10);gl.bindTexture(gl.TEXTURE_2D,photoLies[2]=farOn?far.texture:photoDepth);
       if(farOn){gl.uniformMatrix4fv(u.uOmbreLoinMatrice,false,photoFarMatrix);gl.uniform4f(u.uOmbreLoinReglages,1,1/far.size,far.bias,far.normal);}
       else gl.uniform4f(u.uOmbreLoinReglages,0,1,0,0);
-      const p=fx.penombre,mode=stats.shadows?PHOTO_PENOMBRE[typeof p==='string'?p:p&&p.mode]||0:0,pcss=mode===2&&full;
+      const p=fx.penombre,mode=stats.shadows?PHOTO_PENOMBRE[typeof p==='string'?p:p&&p.mode]||0:0,pcss=mode===2&&full&&photoPcssOn;
       const k=p&&typeof p==='object'&&Number.isFinite(p.k)?p.k:.02,rayon=p&&typeof p==='object'&&Number.isFinite(p.rayonMax)?Math.max(1,Math.min(6,p.rayonMax)):4;
-      gl.activeTexture(gl.TEXTURE8);gl.bindTexture(gl.TEXTURE_2D,pcss?shadowTarget.texture:photoDepth);
+      gl.activeTexture(gl.TEXTURE8);gl.bindTexture(gl.TEXTURE_2D,photoLies[0]=pcss?shadowTarget.texture:photoDepth);
       gl.uniform4f(u.uPenombre,pcss?2:mode?1:0,photoSunRange*k/Math.max(.0001,photoSunTexel),rayon,0);
       gl.activeTexture(gl.TEXTURE2);
       photoState.contacts=n;photoState.tuile=tileOn;photoState.loin=farOn;photoState.penombre=pcss?'pcss':mode?'meteo':'off';
