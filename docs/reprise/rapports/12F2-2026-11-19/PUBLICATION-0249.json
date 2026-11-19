@@ -1,0 +1,44 @@
+{
+  "date_utc": "2026-11-19T11:09:15.753964+00:00",
+  "repository": "M4D135/bitume",
+  "branch": "codex/bitume-12f2-revue-20261119",
+  "local_commit": "d1e11057db53548dc23ae0223dcd7188c6bad486",
+  "remote_commit": "ba9f54bd7a5e5c8d17ec37889c2d414c76831989",
+  "tree": "4c43d2e7feddb7552844605d7752c4049e0bac4e",
+  "parents": [
+    "bd13f067d94f4666292d4399473ecd55f427b8e6",
+    "9a42198985de8aa8016e0679ddedc925ae39264d"
+  ],
+  "tree_identical": true,
+  "version": "0.2.49",
+  "build": {
+    "bytes": 14024804,
+    "sha256": "72b18fa2bc3aad3f0735296b5f56b98c67dcb75bcfc77cd3059d1404eb495c9c",
+    "blob": "b67baff8ee51256d0adcac9f5075036ed188651a"
+  },
+  "pull_request": {
+    "number": 3,
+    "url": "https://github.com/M4D135/bitume/pull/3",
+    "draft": true,
+    "merged": false,
+    "head_sha": "ba9f54bd7a5e5c8d17ec37889c2d414c76831989",
+    "base_sha": "9a42198985de8aa8016e0679ddedc925ae39264d"
+  },
+  "default_branch_modified": false,
+  "merge_executed": false,
+  "deployment_executed": false,
+  "status": "sources_build_preuves_publies_branche_revue",
+  "limits": [
+    "traces.test.mjs échec hérité",
+    "WebGL et FPS matériels non validés",
+    "site public non déployé",
+    "12F3 usure réseau et stratégie IA restent séparés"
+  ],
+  "verification_orchestrateur": {
+    "date_utc": "2026-11-19T11:11:12.592789+00:00",
+    "git_commit_distant": "ba9f54bd7a5e5c8d17ec37889c2d414c76831989",
+    "tree_identique_verifie": true,
+    "pr_ouverte_brouillon_non_fusionnee": true,
+    "CI_GitHub": "En cours lors de la vérification ; résultat à consulter sur la PR."
+  }
+}

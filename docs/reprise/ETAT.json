@@ -6,17 +6,19 @@
     "base_version": "0.2.48",
     "version_courante": "0.2.49",
     "version_publiee_verifiee": "0.2.48",
-    "statut": "12F2_qualifie_CPU_publication_revue_en_cours",
+    "statut": "12F2_publie_en_revue_fusion_en_attente",
     "lot": "12F2_choix_pneus_par_pilote",
     "fiche": "docs/reprise/12F2-CHOIX-PNEUS-PAR-PILOTE.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
     "publication_base": "docs/reprise/rapports/12F1-2026-11-19/PUBLICATION-0248.json",
-    "prochaine_action": "Vérifier la publication de revue 0.2.49 et enregistrer son reçu. Fusion main uniquement après autorisation correspondante. Puis 12F3 réseau usure.",
+    "prochaine_action": "Attendre autorisation pour fusionner la PR n°3 dans main ; vérifier ses contrôles à ce moment. Puis ouvrir 12F3 réseau usure, sans reprendre les lots achevés.",
     "physique": "p11 ; références p9/p10/p11 conservées",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
     "checkpoint_sources": "bd13f067d94f4666292d4399473ecd55f427b8e6",
     "qualification": "docs/reprise/rapports/12F2-2026-11-19/qualification-execution.json",
-    "suivi_base_integre": "9a42198985de8aa8016e0679ddedc925ae39264d"
+    "suivi_base_integre": "9a42198985de8aa8016e0679ddedc925ae39264d",
+    "publication": "docs/reprise/rapports/12F2-2026-11-19/PUBLICATION-0249.json",
+    "commit_revue_qualifie": "ba9f54bd7a5e5c8d17ec37889c2d414c76831989"
   },
   "validation": {
     "date_utc": "2026-11-19T11:01:37.723068+00:00",
@@ -164,7 +166,14 @@
     "checkpoint_sources": "bd13f067d94f4666292d4399473ecd55f427b8e6",
     "main_modifie_par_cette_session": false,
     "fusion_autorisee": false,
-    "statut": "en_cours",
-    "motif": "Refus automatique du push direct main ; alternative de revue, sans fusion."
+    "statut": "verifiee_sur_branche_revue",
+    "motif": "Refus automatique du push direct main ; alternative de revue, sans fusion.",
+    "commit_qualifie": "ba9f54bd7a5e5c8d17ec37889c2d414c76831989",
+    "tree_qualifie": "4c43d2e7feddb7552844605d7752c4049e0bac4e",
+    "pr": 3,
+    "url": "https://github.com/M4D135/bitume/pull/3",
+    "brouillon": true,
+    "fusionnee": false,
+    "recu": "docs/reprise/rapports/12F2-2026-11-19/PUBLICATION-0249.json"
   }
 }

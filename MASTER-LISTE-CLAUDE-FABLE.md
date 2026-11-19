@@ -9,7 +9,7 @@ Poursuivre **BITUME**, jeu de course de monoplaces procédural et autonome dans 
 | Élément | État de reprise du 19 novembre 2026 |
 |---|---|
 | Base publiée vérifiée | **0.2.48**, livraison `main` **`1df6f687`**, suivi **`9a421989`** ; Safari corrigé et clos. |
-| Checkpoint de reprise | **`bd13f067`**, branche `codex/bitume-12f2-revue-20261119` ; **0.2.49 qualifiée**, publication de revue en cours, fusion main en attente après refus automatique. |
+| Checkpoint de reprise | **`bd13f067`**, branche `codex/bitume-12f2-revue-20261119` ; **0.2.49 qualifiée**, publié dans la revue PR n°3, fusion en attente, fusion main en attente après refus automatique. |
 | Moteur BITUME | **FERRO 0.3.11**, 34 modules verrouillés. |
 | Physique | **p11**, conservée en 12F2 ; fixtures p9/p10/p11 intactes, aucun écrasement de référence. |
 | Qualification du lot | **12F2 / 0.2.49 : 102/103 suites**, échec traces hérité ; passage complet puis 13 revalidations ciblées. **20 scénarios / 1 300 empreintes p11** identiques, deux builds identiques. WebGL et performance matérielle non validés. |
@@ -52,7 +52,7 @@ Pour chacune des six propositions, utiliser le même cycle de petits lots : iden
 
 ### A. Roues et pneus — lots 12A à 12F
 
-**12A–12F1 publiés**, jusqu’à **0.2.48 / p11** (`1df6f687`). **12F2 / 0.2.49 qualifié CPU, publication de revue en cours** : choix mémorisé par pilote, Conseillés indépendant, configuration 2+2/2+1/1+2, prochaine monte au service solo/duo et sculptures basculées sans reconstruire les modèles. Rapport : `docs/reprise/rapports/12F2-2026-11-19/qualification-execution.json`. 102/103 suites, seul échec traces hérité ; p11 inchangée. WebGL, matériel et déploiement restent ouverts. Suite : **12F3**, transport de l’usure et des services ; stands IA à qualifier ensuite.
+**12A–12F1 publiés**, jusqu’à **0.2.48 / p11** (`1df6f687`). **12F2 / 0.2.49 qualifié CPU, publié dans la revue PR n°3, fusion en attente** : choix mémorisé par pilote, Conseillés indépendant, configuration 2+2/2+1/1+2, prochaine monte au service solo/duo et sculptures basculées sans reconstruire les modèles. Rapport : `docs/reprise/rapports/12F2-2026-11-19/qualification-execution.json`. 102/103 suites, seul échec traces hérité ; p11 inchangée. WebGL, matériel et déploiement restent ouverts. Suite : **12F3**, transport de l’usure et des services ; stands IA à qualifier ensuite.
 
 - [x] Catalogue commun `slicks`, `inter`, `pluie`, `neige` ; ordre des quatre roues **AVG, AVD, ARG, ARD** et libellés corrects.
 - [x] Pneus plus ronds, profil et flancs crédibles, épaules arrondies, jantes creuses, rayons/moyeux/disques mieux construits.
@@ -63,7 +63,7 @@ Pour chacune des six propositions, utiliser le même cycle de petits lots : iden
 - [x] Saleté réversible séparée de la gomme perdue ; pas d’usure en pause ou sans contact au sol ; hasard de traces indépendant de celui de la course — contrôles 12D/12E acquis.
 - [x] État de chaussée humide/enneigée explicite ; conditions saisonnières et flocons ne suffisent pas à définir l’adhérence — contrôles CPU acquis ; qualification CPU 12E avec réserves achevée ; publié en 0.2.47.
 - [x] Physique des pneus et usure bornée, utile et progressive ; mêmes règles pour joueur et IA ; records/fantômes isolés en p11 depuis 12F1 — contrôles CPU acquis ; qualification CPU 12E avec réserves achevée ; publié en 0.2.47, puis service 12F1 en 0.2.48.
-- [x] Choix par pilote, y compris deux humains sur une machine, migration et Conseillés indépendant : qualifié 12F2, publication de revue en cours.
+- [x] Choix par pilote, y compris deux humains sur une machine, migration et Conseillés indépendant : qualifié 12F2, publié dans la revue PR n°3, fusion en attente.
 - [x] Service réel et quatre pneus renouvelés : 12F1 publié ; changement de monte solo/duo qualifié 12F2. Le changement de monte pendant une course en ligne attend 12F3.
 - [ ] Réseau compact et versionné : état des pneus, service idempotent, rejet des paquets anciens, arrivée tardive, 2+2 et autorités conservées.
 - [ ] Stratégie des rivaux pour les courses longues avant de rendre leurs changements de pneus indispensables ; aucun renouvellement caché.

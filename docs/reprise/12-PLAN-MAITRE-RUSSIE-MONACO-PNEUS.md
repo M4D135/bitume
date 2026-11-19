@@ -1,6 +1,6 @@
 # BITUME — plan maître Russie, Monaco, Marseille, roues et pneus
 
-Date du plan : **18 novembre 2026**. État au **19 novembre 2026** : **12A–12F1 publiés**, base **0.2.48 / p11 (`1df6f687`)**, suivi `9a421989`. **12F2 / 0.2.49 qualifié CPU, publication de revue en cours** sur `codex/bitume-12f2-revue-20261119`, checkpoint `bd13f067`. Fiche [12F2](12F2-CHOIX-PNEUS-PAR-PILOTE.md). **12F3 réseau usure/services restant** ; WebGL et déploiement distincts.
+Date du plan : **18 novembre 2026**. État au **19 novembre 2026** : **12A–12F1 publiés**, base **0.2.48 / p11 (`1df6f687`)**, suivi `9a421989`. **12F2 / 0.2.49 qualifié CPU, publié dans la revue PR n°3, fusion en attente** sur `codex/bitume-12f2-revue-20261119`, checkpoint `bd13f067`. Fiche [12F2](12F2-CHOIX-PNEUS-PAR-PILOTE.md). **12F3 réseau usure/services restant** ; WebGL et déploiement distincts.
 Demande de David : ajouter un circuit en Russie et un Monaco « ultra fidèle », refaire les roues bien rondes et plus réalistes, différencier les sculptures pluie/neige et les slicks lisses, montrer les traces d’usure au fil de la course, puis publier ce plan avant de commencer.
 
 Complément demandé dans la même reprise : **Spéciale Marseille à partir de la carte EMPRISE, avec ajout de relief**, et master liste complète pour Claude Fable. Entrée de passation : [MASTER-LISTE-CLAUDE-FABLE.md](../../MASTER-LISTE-CLAUDE-FABLE.md).
@@ -75,7 +75,7 @@ Les critères ci-dessous restent les conditions de clôture. **12A–12F1 publi�
 | 15E | Marseille : rendu et performances. | Captures/tour filmé, détails et ressources mesurés sur le corridor. |
 | 15F | Marseille : livraison. | Sources/tests/build publiés, contrôle production séparé, reçu et reprise. |
 
-**Lot actif : publier et vérifier la revue 12F2 / 0.2.49**, puis fusion autorisée ; fiche [12F2](12F2-CHOIX-PNEUS-PAR-PILOTE.md). Ensuite **12F3**, transmission usure/type/services. Le choix d’une autre monte au stand est actif en solo/duo ; en ligne les stands renouvellent la monte de départ jusqu’à 12F3. Ne pas reprendre 12A–12F1 ni Safari. Le refus automatique main est documenté dans la reprise.
+**Lot actif : traiter la revue publiée 12F2 / 0.2.49 (PR n°3)**, puis fusion autorisée ; fiche [12F2](12F2-CHOIX-PNEUS-PAR-PILOTE.md). Ensuite **12F3**, transmission usure/type/services. Le choix d’une autre monte au stand est actif en solo/duo ; en ligne les stands renouvellent la monte de départ jusqu’à 12F3. Ne pas reprendre 12A–12F1 ni Safari. Le refus automatique main est documenté dans la reprise.
 
 ## 4. Roues : géométrie, matière et rotation
 

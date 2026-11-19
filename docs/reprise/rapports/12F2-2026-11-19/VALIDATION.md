@@ -50,3 +50,9 @@ Depuis la racine du dépôt : `python3 docs/reprise/rapports/12F2-2026-11-19/qua
 `--build` après vérification du manifeste. Le script ne régénère jamais la fixture p11. `requalifier.py`
 conserve et explique les corrections du passage initial ; `corrections.json` énumère les fichiers concernés.
 Le rapport principal est `qualification-execution.json`.
+
+## Publication vérifiée
+
+Sources, build et preuves publiés au commit `ba9f54bd7a5e5c8d17ec37889c2d414c76831989`, tree identique au snapshot
+qualifié. [PR n°3](https://github.com/M4D135/bitume/pull/3) ouverte en brouillon ; aucun changement main ni déploiement
+par cette session. Reçu : `PUBLICATION-0249.json`. La fusion reste en attente d'autorisation après refus automatique.
