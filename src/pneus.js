@@ -1,5 +1,5 @@
-/* BITUME — lot 12A : contrat commun des roues et des pneus.
-   Le catalogue prépare la neige ; la conduite p9 garde ses trois montes et ses coefficients.
+/* BITUME — contrat commun des roues et des pneus, quatre montes jouables depuis le lot 12E.
+   Les coefficients sec/eau historiques restent disponibles ; la neige et l'usure sont traitées en p10.
    Ce module ne fait avancer ni l'usure ni un service et ne tire rien au hasard de la course. */
 (function (B) {
   'use strict';
@@ -18,18 +18,28 @@
   const NOMS_ROUES = Object.freeze(ROUES.map(r => r.nom));
   const INDICES_ROUES = Object.freeze({ AVG: 0, AVD: 1, ARG: 2, ARD: 3 });
 
-  // Ces trois paires sont les valeurs publiées de p9 : base au sec, variation avec l'eau.
+  // Base au sec et variation avec l'eau. Les trois premières paires restent celles de p9.
+  // Réglages de jeu, sans prétention de mesure physique d'un pneu de compétition réel.
   const PNEUS = Object.freeze({
     slicks: Object.freeze([1, -.30]),
     inter: Object.freeze([.96, -.10]),
-    pluie: Object.freeze([.88, .07])
+    pluie: Object.freeze([.88, .07]),
+    neige: Object.freeze([.78, -.10])
+  });
+  const ADHERENCE_NEIGE = Object.freeze({ slicks: .32, inter: .46, pluie: .54, neige: .82 });
+  // Perte maximale de gomme au sec, complétée selon l'eau liquide ou la couverture neigeuse.
+  // Chaque combinaison garde au moins 68 % de la réponse du pneu neuf, sans rupture en fin d'usure.
+  const PERTE_USURE = Object.freeze({
+    slicks: Object.freeze({ sec: .18, eau: .04, neige: .06 }),
+    inter: Object.freeze({ sec: .18, eau: .12, neige: .10 }),
+    pluie: Object.freeze({ sec: .18, eau: .14, neige: .10 }),
+    neige: Object.freeze({ sec: .18, eau: .10, neige: .14 })
   });
   const CATALOGUE = Object.freeze({
     slicks: Object.freeze({ id: 'slicks', nom: 'Slicks', sculpture: 'lisse', cercle: Object.freeze([.95, .76, .08]), rainures: 0, disponible: true, adherence: PNEUS.slicks }),
     inter: Object.freeze({ id: 'inter', nom: 'Intermédiaires', sculpture: 'intermediaire', cercle: Object.freeze([.16, .72, .30]), rainures: 8, disponible: true, adherence: PNEUS.inter }),
     pluie: Object.freeze({ id: 'pluie', nom: 'Pluie', sculpture: 'pluie', cercle: Object.freeze([.16, .46, .90]), rainures: 14, disponible: true, adherence: PNEUS.pluie }),
-    // Le type existe dans les données ; sa physique et son ouverture au choix appartiennent au lot 12E.
-    neige: Object.freeze({ id: 'neige', nom: 'Neige', sculpture: 'paves-lamelles', cercle: Object.freeze([.86, .90, .96]), rainures: 18, disponible: false, adherence: null })
+    neige: Object.freeze({ id: 'neige', nom: 'Neige', sculpture: 'paves-lamelles', cercle: Object.freeze([.86, .90, .96]), rainures: 18, disponible: true, adherence: PNEUS.neige })
   });
   const TYPES = Object.freeze(Object.keys(CATALOGUE));
   const TYPES_JOUABLES = Object.freeze(TYPES.filter(t => CATALOGUE[t].disponible));
@@ -90,5 +100,5 @@
 
   B.pneus = Object.freeze({ VERSION_ETAT, DISTANCE_MAX, SOLLICITATION_MAX, SERVICE_MAX,
     EMPATTEMENT, DEMI_VOIE_AV, DEMI_VOIE_AR, JANTE_R, ROUES, ORDRE_ROUES, NOMS_ROUES, INDICES_ROUES,
-    PNEUS, CATALOGUE, TYPES, TYPES_JOUABLES, NOMS_PNEUS, estType, normaliserType, lire, estJouable, creerEtat, normaliserEtat });
+    PNEUS, ADHERENCE_NEIGE, PERTE_USURE, CATALOGUE, TYPES, TYPES_JOUABLES, NOMS_PNEUS, estType, normaliserType, lire, estJouable, creerEtat, normaliserEtat });
 })(globalThis.BITUME = globalThis.BITUME || {});

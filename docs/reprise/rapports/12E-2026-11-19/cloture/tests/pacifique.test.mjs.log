@@ -1,0 +1,12 @@
+ok septième circuit, sans déplacer les identifiants et graines des six précédents
+ok boucle fermée et trajectoire praticable, départ en ligne droite
+ok océan visible, route émergée et falaises asymétriques
+ok grands conifères bornés, géométrie finie et absence de brins supplémentaires
+ok chaque grand tronc reste visible au loin avec une seule collision
+ok la vraie botanique garde aussi les troncs proches et lointains identiques
+ok solides réels acceptés et grands troncs dégagés de toutes les portions de chaussée
+ok quatre saisons gardent route, mer, arbres et collisions ; hiver enneigé
+ok Low conserve relief, arbres et collisions de High
+ok reconstruction déterministe du tracé et du décor
+ok onze rivaux font un tour avec les contacts et solides réels du décor
+{"controles":11,"mesures":{"longueur":5234,"denivelePiste":13.43877871246655,"penteMax":0.06799999999999995,"arbres":320,"trianglesNappes":99768,"objets":8142,"lots":110,"ete":{"partImmergee":0.2552079910626273,"neige":0,"nuances":33,"relief":[-76,34.34517288208008]},"asymetrie":38.235578813833314,"hauteurTroncMax":39.34392518018955,"troncsLod":{"proches":320,"lointains":320,"collisions":320},"troncsLodBotanique":{"proches":320,"lointains":320,"collisions":320},"rochers":1,"margeArbres":38.30635680564061,"margeRochers":253.13019306651017,"hiver":{"partImmergee":0.2552079910626273,"neige":1,"nuances":11,"relief":[-76,34.34517288208008]},"course":{"rivauxArrives":11,"duree":262.19999999992586,"solidesActifs":968}}}

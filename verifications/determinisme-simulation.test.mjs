@@ -1,5 +1,5 @@
-// Garde-fou du déterminisme de la simulation (version de physique p9). Les records et les fantômes des joueurs
-// portent la version de la physique : tant qu'elle reste « p9 », un remaniement du pas de simulation (course,
+// Garde-fou du déterminisme de la simulation, sélectionné par PHYSIQUE dans src/jeu.js. Records et fantômes
+// portent la même version : tant qu'elle reste identique, un remaniement du pas de simulation (course,
 // conduite, contacts, obstacles, dégâts, circuit) ne doit pas changer un seul bit de ce que la course produit.
 //
 // Chaque cas simule une séance réelle (vrais tracés du catalogue, solides du décor, douze voitures) et prend, à
@@ -8,13 +8,13 @@
 // Les nombres entrent tels qu'ils sont en mémoire (Float64 petit-boutiste, sans arrondi : −0 et +0 diffèrent).
 // Les champs dont le nom commence par « _ » sont des caches internes des modules ; ils n'entrent pas dans
 // l'empreinte, leur effet sur la suite de la course y entre.
-// Lot 12A : les trois métadonnées de pneus ajoutées à l'état n'agissent pas sur la physique p9. Seules ces
-// propriétés sont projetées hors de l'état de conduite ; le type monté « pneus » et tous les champs anciens
-// restent comparés. Conserver la fixture historique et comparer aussi à la base publiée du lot visuel.
+// En p9 seulement, les trois métadonnées de pneus des lots visuels sont projetées hors de l'état de conduite.
+// Dès p10, l'usure influence l'adhérence : versionPneus, servicePneus et les quatre etatPneus entrent en entier
+// dans l'empreinte, comme les charges et les glisses des roues déjà présentes.
 //
 // Les empreintes de référence (verifications/fixtures/determinisme-p9.json) ont été prises sur le code d'avant
-// le lot « Fluidité » de la simulation (commit 54e98c9). Elles ne se réécrivent qu'avec un changement de physique
-// voulu, qui fait aussi passer PHYSIQUE (src/jeu.js) à « p10 » :
+// le lot « Fluidité » de la simulation (commit 54e98c9). Cette archive p9 reste intacte. Un changement de physique
+// voulu, versionné dans PHYSIQUE (src/jeu.js), crée sa propre fixture après qualification du comportement :
 //   node verifications/determinisme-simulation.test.mjs --ecrire
 // Les fonctions mathématiques de Node (V8) donnent les mêmes bits d'une machine à l'autre à version égale ; une
 // autre version majeure de Node peut, en principe, en changer quelques-uns (version notée dans la fixture).
@@ -25,11 +25,14 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const ici = path.dirname(fileURLToPath(import.meta.url));
+const PHYSIQUE = readFileSync(path.join(ici, '..', 'src', 'jeu.js'), 'utf8').match(/\bPHYSIQUE\s*=\s*['"](p\d+)['"]/)?.[1];
+if (!PHYSIQUE) throw new Error('PHYSIQUE introuvable dans src/jeu.js : aucune fixture choisie implicitement');
 const req = createRequire(import.meta.url);
 for (const f of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'course', 'carene', 'decor']) req(path.join(ici, '..', 'src', f + '.js'));
 const B = globalThis.BITUME;
-const FIXTURE = path.join(ici, 'fixtures', 'determinisme-p9.json');
+const FIXTURE = path.join(ici, 'fixtures', 'determinisme-' + PHYSIQUE + '.json');
 const ECRIRE = process.argv.includes('--ecrire');
+if (ECRIRE && PHYSIQUE === 'p9') throw new Error('La fixture historique p9 est conservée ; changer la version physique pour créer une nouvelle référence');
 const DT = 1 / 120, PAS_SECONDE = 120;
 
 // Tracés du catalogue de src/jeu.js (graine, thème, longueur visée), lus et recopiés tels quels.
@@ -75,7 +78,7 @@ class Ecrivain {
       const cles = [...x.keys()].sort((a, b) => String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0);
       this.octet(0x4d); for (const k of cles) { this.valeur(k); this.valeur(x.get(k)); } this.octet(0x6d);
     } else {
-      const nouvellesDonneesPneus = x.versionPneus === 1 && Array.isArray(x.etatPneus) && x.etatPneus.length === 4;
+      const nouvellesDonneesPneus = PHYSIQUE === 'p9' && x.versionPneus === 1 && Array.isArray(x.etatPneus) && x.etatPneus.length === 4;
       const cles = Object.keys(x).filter(k => k[0] !== '_' && x[k] !== undefined && typeof x[k] !== 'function' &&
         !(nouvellesDonneesPneus && (k === 'versionPneus' || k === 'servicePneus' || k === 'etatPneus'))).sort();
       this.octet(0x7b);
@@ -421,6 +424,27 @@ CAS.push({
   }
 });
 
+// p10 : les quatre montes, des usures différentes par roue et la neige réelle de chaussée participent
+// au résultat. Les flocons et l'eau liquide restent des données distinctes ; aucun hasard supplémentaire.
+if (PHYSIQUE !== 'p9') CAS.push({
+  nom: 'neige-usure-haut-col',
+  jouer() {
+    meteo({ pluie: .65, mouille: .2, precipitationsNeige: true, neigeSol: .75 });
+    try {
+      const { c, obstacles, solides } = circuit('haut-col');
+      const co = B.course.creer(c, { mode: 'course', tours: 3, difficulte: 1, rivaux: 11, graine: 1205, placeJoueur: 8 });
+      const types = ['slicks', 'inter', 'pluie', 'neige'];
+      for (const v of co.voitures) {
+        v.etat.pneus = types[v.id % types.length];
+        for (let i = 0; i < 4; i++) v.etat.etatPneus[i].usure = .08 + .16 * ((v.id + i) % 4);
+      }
+      const r = derouler(co, { secondes: 40 });
+      return { ...r, resume: resume(co, r.compte, { obstacles, solides,
+        pneus: co.voitures.map(v => v.etat.pneus), usures: co.voitures.map(v => v.etat.etatPneus.map(p => p.usure)) }) };
+    } finally { meteo(null); }
+  }
+});
+
 // ------------------------------------------------------------------ contrôle
 const t0 = performance.now();
 const resultats = {};
@@ -446,18 +470,19 @@ for (const [nom, types] of Object.entries(COUVERTURE)) for (const type of types)
 for (const [nom, gestes] of Object.entries(GESTES)) for (const geste of gestes)
   if (resultats[nom].resume[geste] !== true) { echecs++; console.error(`KO  couverture : ${nom} sans le geste « ${geste} »`); }
 
+let nouvelleReference = null;
 if (ECRIRE) {
-  const fixture = {
-    format: 'bitume-determinisme-1', physique: 'p9', base: '54e98c9', node: process.version,
+  if (echecs) throw new Error('Couverture de scénarios incomplète : la nouvelle fixture ne sera pas écrite');
+  nouvelleReference = {
+    format: 'bitume-determinisme-1', physique: PHYSIQUE, node: process.version,
+    origine: 'Lot 12E : chaussée, pneus neige et usure physique ; archive p9 conservée séparément.',
     explication: 'Empreintes SHA-256, à chaque seconde de simulation, de l’état complet des voitures, de la course et des événements (verifications/determinisme-simulation.test.mjs).',
     cas: Object.fromEntries(Object.entries(resultats).map(([nom, r]) => [nom, { secondes: r.secondes, resume: r.resume, empreintes: r.empreintes }]))
   };
-  writeFileSync(FIXTURE, JSON.stringify(fixture, null, 1) + '\n');
-  console.log(`fixture écrite : ${Object.keys(resultats).length} cas, ${Object.values(resultats).reduce((a, r) => a + r.secondes, 0)} empreintes`);
 }
 
-const ref = JSON.parse(readFileSync(FIXTURE, 'utf8'));
-if (ref.physique !== 'p9') { console.error('KO  la fixture ne porte pas la physique p9'); process.exit(1); }
+const ref = nouvelleReference || JSON.parse(readFileSync(FIXTURE, 'utf8'));
+if (ref.physique !== PHYSIQUE) { console.error('KO  la fixture ne porte pas la physique ' + PHYSIQUE); process.exit(1); }
 for (const [nom, r] of Object.entries(resultats)) {
   const attendu = ref.cas[nom];
   if (!attendu) { echecs++; console.error(`KO  ${nom} : absent de la fixture`); continue; }
@@ -488,6 +513,23 @@ for (const nom of Object.keys(ref.cas)) if (!resultats[nom]) { echecs++; console
   else { echecs++; console.error('KO  sensibilité : l’empreinte ne voit pas un écart d’un ulp', { avant, apres }); }
 }
 
+// La perte de gomme ne peut plus disparaître de l'empreinte : vérifier directement une variation d'un ulp
+// sur une seule roue, sans la convertir en chaîne ni l'arrondir. Les glisses physiques restent incluses aussi.
+if (PHYSIQUE !== 'p9') {
+  const e = { ...B.pneus.creerEtat('neige'), roues: [{ glisse: .3 }, { glisse: .3 }, { glisse: .3 }, { glisse: .3 }] };
+  e.etatPneus[2].usure = .4;
+  const empreinte = () => { const w = new Ecrivain(); w.valeur(e); return w.empreinte(); };
+  const avant = empreinte(), f64 = new Float64Array(1), u64 = new BigUint64Array(f64.buffer);
+  f64[0] = e.etatPneus[2].usure; u64[0] += 1n; e.etatPneus[2].usure = f64[0];
+  const usure = empreinte(); e.roues[2].glisse = .31;
+  if (avant !== usure && usure !== empreinte()) console.log('ok  empreinte : usure par roue (un ulp) et glisse physique sont incluses');
+  else { echecs++; console.error('KO  empreinte : usure ou glisse de roue ignorée'); }
+}
+
 const total = Object.values(resultats).reduce((a, r) => a + r.secondes, 0);
-console.log(`${echecs ? 'KO' : 'ok'}  déterminisme p9 : ${Object.keys(resultats).length} cas, ${total} empreintes, ${((performance.now() - t0) / 1000).toFixed(1)} s`);
+if (nouvelleReference && !echecs) {
+  writeFileSync(FIXTURE, JSON.stringify(nouvelleReference, null, 1) + '\n');
+  console.log(`fixture écrite : ${Object.keys(resultats).length} cas, ${total} empreintes`);
+}
+console.log(`${echecs ? 'KO' : 'ok'}  déterminisme ${PHYSIQUE} : ${Object.keys(resultats).length} cas, ${total} empreintes, ${((performance.now() - t0) / 1000).toFixed(1)} s`);
 if (echecs) process.exit(1);

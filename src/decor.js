@@ -1,5 +1,6 @@
 /* BITUME — décor calculé depuis le circuit : chaussée, accotements, terrain, eau, arbres, tribunes, glissières.
    Aucune image ni modèle : des nappes de triangles (matière et couleur par sommet) et des primitives du moteur FERRO. */
+if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaussee) require('./chaussee.js');
 (function (B) {
   'use strict';
 
@@ -190,10 +191,21 @@
     return resultat;
   }
 
-  function nappesRoute(c, th, lim, naturel = false, ecologie = null) {
+  function nappesRoute(c, th, lim, naturel = false, ecologie = null, saison = null) {
     const w = c.largeur / 2, n = c.n, LIGNES = 60, liste = [];
     const habitat = {};
-    const asphalte = i => { const v = .165 + .035 * fbm(i * c.pas / 90, 3.7, c.graine + 5, 2); return [v, v, v * 1.04]; };
+    const meteoRoute = B.chaussee ? B.chaussee.preparer({}, saison) : null, surfaceRoute = {};
+    const neigeRoute = [.84, .87, .90];
+    const asphalte = i => {
+      const v = .165 + .035 * fbm(i * c.pas / 90, 3.7, c.graine + 5, 2), col = [v, v, v * 1.04];
+      // Même couverture initiale que la conduite, lue par portion pour garder le tunnel sec.
+      // Couleurs des sommets seulement : géométrie, matériaux, marquages et tirages restent identiques.
+      if (meteoRoute && meteoRoute.neigeSol > 0) {
+        const neige = B.chaussee.lire(c, i * c.pas, meteoRoute, surfaceRoute).neige;
+        if (neige > 0) for (let k = 0; k < 3; k++) col[k] += (neigeRoute[k] - col[k]) * neige;
+      }
+      return col;
+    };
     const blanc = [.86, .86, .83], rouge = [.74, .09, .07], blancBordure = [.90, .90, .87];
     for (let debut = 0; debut < n; debut += LIGNES) {
       const fin = Math.min(n, debut + LIGNES), nap = nappe(), herbeTriangles = [];
@@ -905,7 +917,7 @@
     // bords de route (lot 22F) : plan tiré avec la graine propre de bords.js, jamais avec le hasard du décor
     const planBords = B.bords ? B.bords.planifier(c) : null;
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
-    const nappes = nappesRoute(c, th, lim, qualite !== 'low', qualite === 'low' ? null : ecologie);
+    const nappes = nappesRoute(c, th, lim, qualite !== 'low', qualite === 'low' ? null : ecologie, saison);
     const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie);
     if (saison) {
       const habitat = {}, couleur = [0, 0, 0], teinte = [0, 0, 0];

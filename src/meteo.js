@@ -29,7 +29,9 @@
       // Le temps et l’eau évoluent ; les observations ne deviennent pas une météo variable de jeu.
       const pas = Math.min(.1, dt);
       m.t += pas; m.tp += pas; m.eclair = Math.max(0, m.eclair - pas * 6);
-      m.mouille = clamp((m.mouille || 0) + pas * (m.pluie * .039 - (m.pluie > 0 ? .004 : .012)), 0, 1);
+      const flocons = typeof m.precipitationsNeige === 'boolean' ? m.precipitationsNeige : m.neige === true;
+      const pluieLiquide = flocons ? 0 : m.pluie;
+      m.mouille = clamp((m.mouille || 0) + pas * (pluieLiquide * .039 - (pluieLiquide > 0 ? .004 : .012)), 0, 1);
       if (m.phase === 'orage' && m.t >= m.prochainEclair) {
         m.eclair = 1; m.prochainEclair = m.t + 2.8 + hasard(Math.round(m.t * 1000)) * 4.2;
       }
@@ -46,8 +48,8 @@
       m.pluie += (PLUIE[p] - m.pluie) * k;
       m.nuage += (NUAGES[p] - m.nuage) * k;
       // Intégrale de la pluie pendant le pas (pas une somme dépendant du nombre d'images).
-      const eau = PLUIE[p] * pas + (anciennePluie - PLUIE[p]) * 2.5 * k;
-      const sechage = PLUIE[p] > 0 ? .004 : .012;
+      const eau = m.precipitationsNeige === true ? 0 : PLUIE[p] * pas + (anciennePluie - PLUIE[p]) * 2.5 * k;
+      const sechage = m.precipitationsNeige !== true && PLUIE[p] > 0 ? .004 : .012;
       m.mouille = clamp(m.mouille + eau * .039 - pas * sechage, 0, 1);
       m.t += pas; m.tp += pas; reste -= pas;
       m.eclair = Math.max(0, m.eclair - pas * 6);
@@ -67,7 +69,8 @@
   }
   function ambiance(m, sortie = {}) {
     // Humidité résiduelle = brume légère ; aucun reflet de sol n'est simulé par cet overlay.
-    sortie.pluie = Math.max(m.pluie * .72, (m.mouille || 0) * .14); sortie.nuage = m.nuage * .86;
+    const flocons = typeof m.precipitationsNeige === 'boolean' ? m.precipitationsNeige : m.reel && m.neige;
+    sortie.pluie = Math.max(flocons ? 0 : m.pluie * .72, (m.mouille || 0) * .14); sortie.nuage = m.nuage * .86;
     sortie.eclair = m.eclair * .30; sortie.mouille = m.mouille || 0;
     sortie.ventX = m.ventX || 0; sortie.ventZ = m.ventZ || 0;
     return sortie;

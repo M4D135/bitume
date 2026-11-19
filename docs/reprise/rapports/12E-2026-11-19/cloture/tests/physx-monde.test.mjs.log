@@ -1,0 +1,12 @@
+    monde né au premier débris : naissance 2.54 ms, choc 3.67 ms, premier pas 9.35 ms
+ok  repère : premier choc dans un monde neuf, code froid (module à part)
+    module prêt et monde chauffé 41.60 ms (initialisation du module comprise) ; nouvelle chauffe 1.37 ms
+    monde de la page chauffé : choc 0.36 ms, premier pas 0.46 ms
+ok  naissance : une séance née avant le module s y attache dès qu il est prêt ; le monde chauffé reste vide
+    premier choc d'une séance (effets compris, code JavaScript encore froid) : 2.29 ms, première passe avec corps 3.31 ms
+ok  séance : le choc pose corps et dalles dans le monde de la page ; libérée en plein vol, elle n y laisse rien
+ok  pièces posées : elles quittent la scène et restent où elles sont tombées ; à leur fin de vie, plus rien
+ok  vingt séances de suite : un seul monde, aucun corps ni aucune dalle de reste
+ok  argument refusé par PhysX (position non finie) : la pièce garde sa parabole, le monde reste
+---
+6 tests passes

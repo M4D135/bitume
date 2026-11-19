@@ -1,0 +1,57 @@
+{
+  "physique": "p10",
+  "generation": {
+    "code": 0,
+    "duration_s": 19.006
+  },
+  "sources_sha256": {
+    "src/pneus.js": "4e8bc41a1415cda11960931310dcd9f8a0adfd80e301bd2395aec24054c2a931",
+    "src/conduite.js": "ed17946c7d15f58bfd72143635aeeb5fac81fbf8438476bf3ccacfeef73eeabc",
+    "src/course.js": "445bb3482ae2ecfad974506e84ba1f1890cb40ab75c22e3d6ac3719df34c7287",
+    "src/chaussee.js": "26845218ad17b60301f97f3374ac31fc4a61fab75b137d9497bb7742a983753d",
+    "src/usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+    "src/meteo.js": "2008a54e7c047c0f113230f84c1e980b0960fec968aa341b472a0fb5d29abfed",
+    "src/circuit.js": "e872944198a9a9bcd0efdd8d33d5f201c4dfd98016cf04e0bccf4a5b5c9a674f",
+    "src/contacts.js": "d6e583db729c91df8de21621c05b3b24835e6dc996e9dd4df7cb0464b27e1b7a",
+    "src/degats.js": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247",
+    "src/obstacles.js": "2e0d08743d3fc01d0385513bbd2cd271a366ec68c1f342498203e6354f47684c",
+    "verifications/determinisme-simulation.test.mjs": "c36bb0981f189d7df4fb4e1af8835d3e5fd1953cbbb52952c1f47153480fea31"
+  },
+  "sources_changed_during_generation": [],
+  "p9_sha256": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a",
+  "p9_unchanged": true,
+  "independent_runs": [
+    {
+      "execution": 1,
+      "code": 0,
+      "duration_s": 18.483,
+      "sha256_log": "ce550081b27e7ce2957649a40c303fc09c4721596771ac24bb50c666507257c5",
+      "resume": "ok  déterminisme p10 : 20 cas, 1300 empreintes, 18.3 s",
+      "controles_sensibilite": [
+        "ok  sensibilité : un ulp sur une vitesse au pas 1200 change l’empreinte dès la seconde 10",
+        "ok  empreinte : usure par roue (un ulp) et glisse physique sont incluses"
+      ]
+    },
+    {
+      "execution": 2,
+      "code": 0,
+      "duration_s": 18.861,
+      "sha256_log": "3d24e3420023cd899fdf129e8ac249fedeeffd48f41a4e366b76c6dac15678cd",
+      "resume": "ok  déterminisme p10 : 20 cas, 1300 empreintes, 18.6 s",
+      "controles_sensibilite": [
+        "ok  sensibilité : un ulp sur une vitesse au pas 1200 change l’empreinte dès la seconde 10",
+        "ok  empreinte : usure par roue (un ulp) et glisse physique sont incluses"
+      ]
+    }
+  ],
+  "source_changes_since_generation": [],
+  "fixture_sha256": "d2ced73b7374495027fbf5d25482b07ea879952c89ea4a5a336c85feb24a77be",
+  "fixture_unchanged_during_verification": true,
+  "scenarios": 20,
+  "empreintes": 1300,
+  "note": "La fixture p9 de 54e98c9 demeure inchangée avec ses divergences historiques documentées dans le reçu 12D. La nouvelle fixture p10 qualifie le changement intentionnel de physique ; elle ne corrige pas rétrospectivement p9 ni le hash des effets traces.",
+  "validated": true,
+  "statut": "intermediaire_avant_correctif_degagement_IA",
+  "qualification_finale": false,
+  "reserve": "Déterminisme validé pour les empreintes sources consignées, mais parcours complets suivants bloqués contre un tronc : correction physique nécessaire, puis nouvelle fixture et requalification avant livraison."
+}

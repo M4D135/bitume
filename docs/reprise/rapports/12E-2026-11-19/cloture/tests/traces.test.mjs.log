@@ -1,0 +1,30 @@
+ok  plafonds : 512 bandes, 48 fumées, 48 étincelles, sans jamais grandir
+ok  traces effacées en 24 s, fumée et étincelles éteintes avant
+ok  pâleur : une trace pâlit avec l'âge et ne se dessine plus après 24 s
+ok  cadence : une mise à jour tous les 4 pas de 1/120 s (30 Hz)
+ok  bandes sous les roues arrière, prolongées en ligne droite
+ok  pas de bande à travers un replacement
+ok  voitures loin de celle que l'on regarde : rien
+    0.023 ms par image, 589 objets dessinés
+ok  coût : au plus 0,3 ms par image à 60 Hz, tout plein
+ok  déterminisme : même graine, mêmes effets
+KO  déterminisme : mêmes effets et mêmes tirages que le code d’avant la réécriture (empreinte figée)
+AssertionError [ERR_ASSERTION]: empreinte des effets différente de celle de 54e98c9 : ordre des tirages ou calcul des pools changé
++ actual - expected
+
++ 'e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf'
+- '575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee'
+
+    at file:///workspace/scratch/fb61bd99753c/bitume/verifications/traces.test.mjs:206:10
+    at verifier (file:///workspace/scratch/fb61bd99753c/bitume/verifications/traces.test.mjs:18:9)
+    at file:///workspace/scratch/fb61bd99753c/bitume/verifications/traces.test.mjs:167:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf',
+  expected: '575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee',
+  operator: 'strictEqual',
+  diff: 'simple'
+}

@@ -72,7 +72,7 @@
     if (!session || !session.reglagesReference) (ecran === 'course' ? differerStock : ecrireStock)('bitume.reglages', reglages);
   };
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p9', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p10', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
   // temps et longueur du fantôme gardé, par circuit : lus une fois, puis tenus à jour à chaque écriture (finTour
   // relisait et analysait le fantôme entier à chaque tour de chrono)
@@ -278,10 +278,10 @@
         try { const d = deBase64(f.b64); if (d.length >= 4 * f.n) course.fantome = { meilleur: { donnees: d, n: f.n }, temps: f.temps }; } catch (e) { /* fantôme illisible : ignoré */ }
       }
     }
-    const meteoInit = B.meteo.depuisReel(conditions.mReelle) || B.meteo.pour(conditions.meteo) || B.meteo.initial(enl ? enl.graine : graineCourse);
+    const meteoInit = meteoPourConditions(conditions, i, enl ? enl.graine : graineCourse);
     // Pneus : le joueur roule sur ceux de la préparation (présélectionnés selon la météo, qu'il peut changer) ; les
     // rivaux sur ceux que conseille la piste au départ. La caisse les montre (voiture.js) et la conduite les sent.
-    const conseil = B.conduite.pneusConseilles(B.conduite.eauSurPiste(meteoInit)), joue = type === 'course' || type === 'chrono' || duo;
+    const conseil = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoInit)), joue = type === 'course' || type === 'chrono' || duo;
     for (const v of course.voitures) {
       v.etat.pneus = enl && v.humain ? (B.conduite.PNEUS[enl.pneus && enl.pneus[v.id]] ? enl.pneus[v.id] : conseil) : v.joueur && joue && B.conduite.PNEUS[reglages.pneus] ? reglages.pneus : conseil;
       v.livree.pneus = v.etat.pneus;
@@ -612,6 +612,7 @@
   const ambiancePublic = () => ({ pluie: 0, neige: 0, mouille: 0, feux: 0, vert: false, termine: false });
   function precipitationsNeige(S) {
     if (!S.nature || CATALOGUE[S.i].theme === 'cote') return 0;
+    if (typeof S.meteo.precipitationsNeige === 'boolean') return S.meteo.precipitationsNeige ? S.meteo.pluie || 0 : 0;
     return (S.meteo.reel ? S.meteo.neige : S.nature.saison && S.nature.saison.neige) ? S.meteo.pluie || 0 : 0;
   }
   function dessinerMeteo(S, dt, cam, vue, profil) {
@@ -1092,6 +1093,18 @@
     return { saison: B.saisons.normaliser(reglages.saison), moment: B.ambiance.normaliser(reglages.moment),
       meteo: reglages.meteo || 'aleatoire', mReelle: null, horlogeReelle: null };
   }
+  // Même initialisation au conseil, au départ et chez les invités : les flocons ne sont pas
+  // de l'eau liquide, et le paysage hivernal fournit une couverture de chaussée explicite.
+  function meteoPourConditions(k, i, graine) {
+    const m = B.meteo.depuisReel(k.mReelle) || B.meteo.pour(k.meteo) || B.meteo.initial(graine);
+    return B.chaussee.preparer(m, B.saisons.profil(k.saison, CATALOGUE[i].theme));
+  }
+  function surfaceAnnoncee(k) {
+    const surface = B.chaussee.lire(null, 0, meteoPourConditions(k, k.i, 0));
+    // L'eau de la météo aléatoire vient de la prévision annoncée par l'hôte.
+    if (Number.isFinite(k.eau)) surface.eau = clamp(k.eau, 0, 1);
+    return surface;
+  }
   // Les messages transportent les conditions utiles, jamais la localisation IP ni le lieu de l’hôte.
   function horlogePartagee(h) {
     if (!h || !['locale', 'soleil'].includes(h.type)) return null;
@@ -1120,7 +1133,7 @@
   function annoncerCourse() {
     if (EL.role !== 'hote' || !EL.R) return;
     const conditions = conditionsCommunes(conditionsDuDepart());
-    const prevue = B.meteo.depuisReel(conditions.mReelle) || B.meteo.pour(conditions.meteo) || B.meteo.initial(graineCourse + 1);
+    const prevue = meteoPourConditions(conditions, reglages.circuit, graineCourse + 1);
     EL.course = { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, ...conditions, eau: B.conduite.eauSurPiste(prevue) };
     EL.R.envoyer(Object.assign({ t: 'course' }, EL.course));
     majCourseSalon();
@@ -1129,7 +1142,7 @@
     const k = EL.course, ouvert = !!EL.R && EL.R.etat !== 'ferme';
     $('l-course').hidden = !(ouvert && k);
     if (!k) return;
-    const conseil = B.conduite.pneusConseilles(k.eau), meteo = nomMeteoCourse(k);
+    const conseil = B.conduite.pneusConseilles(surfaceAnnoncee(k)), meteo = nomMeteoCourse(k);
     texte($('l-course-texte'), 'Prochaine course : ' + CATALOGUE[k.i].nom + ' · ' + k.tours + ' tours · ' + NOMS_SAISON[B.saisons.normaliser(k.saison)] + ' · ' + NOMS_MOMENT[B.ambiance.normaliser(k.moment)] + ' · météo : ' + meteo + ' (pneus conseillés : ' + NOMS_PNEUS[conseil].toLowerCase() + ').');
     $('l-vers-prets').hidden = !EL.confirmation;
   }
@@ -1150,7 +1163,7 @@
     if (!k || !R || !C) return;
     const meteo = nomMeteoCourse(k);
     texte($('pr-course'), CATALOGUE[k.i].nom + ' · ' + k.tours + ' tours · ' + NOMS_SAISON[B.saisons.normaliser(k.saison)] + ' · ' + NOMS_MOMENT[B.ambiance.normaliser(k.moment)] + ' · météo : ' + meteo);
-    texte($('pr-pneus-conseil'), 'Conseillés pour cette météo : ' + NOMS_PNEUS[B.conduite.pneusConseilles(k.eau)].toLowerCase() + '.');
+    texte($('pr-pneus-conseil'), 'Conseillés pour cette chaussée : ' + NOMS_PNEUS[B.conduite.pneusConseilles(surfaceAnnoncee(k))].toLowerCase() + '.');
     for (const [nom, val] of [['pneusPret', reglages.pneus], ['boitePret', reglages.boite], ['vuePret', reglages.vue]]) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = r.value === val;
     let html = '', n = 0, m = 0;
     for (const x of [...R.membres].sort((a, b) => a.id - b.id)) {
@@ -1211,7 +1224,7 @@
     // nouvelle annonce : les pneus conseillés sont présélectionnés quand la météo change, le pilote peut changer
     const eau = clamp(+m.eau || 0, 0, 1), avant = EL.course;
     EL.course = { i: m.i | 0, tours: clamp(m.tours | 0, 1, 99), difficulte: m.difficulte | 0, ...conditionsCommunes(m), eau };
-    if (!avant || Math.abs(avant.eau - eau) > .05 || !B.conduite.PNEUS[reglages.pneus]) { reglages.pneus = B.conduite.pneusConseilles(eau); envoyerPneus(); }
+    if (!avant || avant.i !== EL.course.i || avant.saison !== EL.course.saison || Math.abs(avant.eau - eau) > .05 || !B.conduite.PNEUS[reglages.pneus]) { reglages.pneus = B.conduite.pneusConseilles(surfaceAnnoncee(EL.course)); envoyerPneus(); }
     majCourseSalon();
     if (ecran === 'prets') majPrets();
     return true;
@@ -1326,7 +1339,7 @@
     if (humains.length > 4) { etatEnLigne('Quatre pilotes au plus.'); aller('enligne'); return; }
     const k = EL.course || { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, ...conditionsCommunes(conditionsDuDepart()) };
     const graine = ++graineCourse;
-    const conseil = B.conduite.pneusConseilles(B.conduite.eauSurPiste(B.meteo.depuisReel(k.mReelle) || B.meteo.pour(k.meteo) || B.meteo.initial(graine)));
+    const conseil = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoPourConditions(k, k.i, graine)));
     const cfg = { graine, i: k.i, tours: k.tours, difficulte: k.difficulte, ...conditionsCommunes(k), T0: R.horloge() + 4000, dateDepart: Date.now() + 4000, humains,
       pneus: humains.map(h => { const p = h.machine === 0 ? reglages.pneus : EL.pneusDe.get(h.machine); return B.conduite.PNEUS[p] ? p : conseil; }) };
     R.envoyer({ t: 'depart', cfg });
@@ -1614,7 +1627,8 @@
   const REFLET_PRISE = .2, REFLET_LACHE = .12;
   function avecReflets(S, P, m) {
     const peutEtre = P.effets.reflets && !!m;
-    const eau = peutEtre ? Math.max(m.mouille || 0, m.pluie || 0) : 0;
+    const flocons = m && (typeof m.precipitationsNeige === 'boolean' ? m.precipitationsNeige : m.reel && m.neige);
+    const eau = peutEtre ? Math.max(m.mouille || 0, flocons ? 0 : m.pluie || 0) : 0;
     const etat = S.refletsEcran === true;
     const pris = etat ? eau >= REFLET_LACHE : eau >= REFLET_PRISE;
     S.refletsEcran = pris;
@@ -2733,7 +2747,7 @@
       if (session && session.type === 'vitrine') {
         if (session.i !== reglages.circuit || session.nature.saison.id !== k.saison) lancerVitrine(reglages.circuit, k);
         else {
-          session.conditions = k; session.meteo = B.meteo.depuisReel(k.mReelle) || B.meteo.pour(k.meteo) || B.meteo.initial(graineCourse);
+          session.conditions = k; session.meteo = meteoPourConditions(k, session.i, graineCourse);
           session.nature.moment = k.moment; session.nature.horlogeReelle = horlogePartagee(k.horlogeReelle);
           session.nature.prochaineLumiereReelle = 0;
         }
@@ -2789,10 +2803,10 @@
   const NOMS_PNEUS = B.pneus.NOMS_PNEUS;
   function preselectionnerPneus() {
     const k = conditionsDuDepart();
-    const prevue = B.meteo.depuisReel(k.mReelle) || B.meteo.pour(k.meteo) || B.meteo.initial(graineCourse + 1);
-    reglages.pneus = B.conduite.pneusConseilles(B.conduite.eauSurPiste(prevue));
+    const prevue = meteoPourConditions(k, reglages.circuit, graineCourse + 1);
+    reglages.pneus = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, prevue));
     for (const r of document.querySelectorAll('input[name="pneus"]')) r.checked = r.value === reglages.pneus;
-    $('p-pneus-conseil').textContent = 'Conseillés pour cette météo : ' + NOMS_PNEUS[reglages.pneus].toLowerCase() + '.';
+    $('p-pneus-conseil').textContent = 'Conseillés pour cette chaussée : ' + NOMS_PNEUS[reglages.pneus].toLowerCase() + '.';
   }
   function majPreparation() {
     preselectionnerPneus();
@@ -3070,7 +3084,7 @@
     return l;
   }
   // La piste peut-elle se mouiller pendant la séance ? Alors les reflets d'écran viendront : leur variante se chauffe.
-  const meteoPeutMouiller = m => !!m && ((m.pluie || 0) > 0 || (m.mouille || 0) > 0 || m.fixe !== true);
+  const meteoPeutMouiller = m => !!m && ((m.mouille || 0) > 0 || m.precipitationsNeige !== true && ((m.pluie || 0) > 0 || m.fixe !== true));
   const varianteDe = (P, reflections, lampes) => ({ msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: avecHalo(P), reflections, lampes, groundCover: P.groundCover, windStrength: P.windStrength });
   // Combinaisons d'effets que la séance peut demander au moteur : chacune a ses programmes, compilés au premier usage.
   function variantesRendu(S, voisins = false) {
@@ -4198,11 +4212,11 @@
     restaurerReference();
     const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'moment', 'saison', 'retro', 'meteo', 'saisonMode', 'momentMode', 'meteoMode', 'pneus', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
     const avant = Object.fromEntries(cles.map(k => [k, reglages[k]])), decorAvant = decorEnrichi;
-    Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', secousses: 0, vibrations: 'non', champ: 60,
-      pneus: B.conduite.pneusConseilles(B.conduite.eauSurPiste(B.meteo.pour(meteo))) });
+    Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', secousses: 0, vibrations: 'non', champ: 60 });
     Object.assign(reglages, B.graphismes.normaliserOptions(options));
     reglages.moment = B.ambiance.normaliser(options.moment ?? 'jour');
     reglages.saison = B.saisons.normaliser(options.saison ?? 'ete');
+    reglages.pneus = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoPourConditions({ meteo, saison: reglages.saison }, i, graine)));
     decorEnrichi = options.decor !== 'reference';
     graineCourse = graine - 1;
     // l'ancre du décor se fixe avant la construction de la scène : une séance de référence est filmée au palier demandé

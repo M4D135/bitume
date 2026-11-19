@@ -1,0 +1,9 @@
+{"id":"val-brule-sec","fin":"regle_du_jeu","arrives":12,"toursDeux":12,"remplacements":1,"stagnants":[],"maxUsure":0.063,"sSimulation":190.45,"sReelles":6.242,"anomalies":0}
+{"id":"port-sable-sec","fin":"regle_du_jeu","arrives":12,"toursDeux":12,"remplacements":0,"stagnants":[],"maxUsure":0.053,"sSimulation":176.092,"sReelles":4.682,"anomalies":0}
+{"id":"haut-col-sec","fin":"regle_du_jeu","arrives":11,"toursDeux":11,"remplacements":0,"stagnants":[],"maxUsure":0.083,"sSimulation":201.258,"sReelles":7.29,"anomalies":0}
+{"id":"val-brule-tres-mouille","fin":"regle_du_jeu","arrives":12,"toursDeux":12,"remplacements":1,"stagnants":[],"maxUsure":0.06,"sSimulation":194.475,"sReelles":5.057,"anomalies":0}
+{"id":"port-sable-tres-mouille","fin":"regle_du_jeu","arrives":12,"toursDeux":12,"remplacements":0,"stagnants":[],"maxUsure":0.052,"sSimulation":182.2,"sReelles":3.614,"anomalies":0}
+{"id":"haut-col-tres-mouille","fin":"regle_du_jeu","arrives":12,"toursDeux":12,"remplacements":0,"stagnants":[],"maxUsure":0.082,"sSimulation":206.717,"sReelles":6.871,"anomalies":0}
+{"id":"val-brule-neige","fin":"regle_du_jeu","arrives":9,"toursDeux":9,"remplacements":1,"stagnants":[],"maxUsure":0.06,"sSimulation":214.758,"sReelles":4.149,"anomalies":0}
+{"id":"port-sable-neige","fin":"regle_du_jeu","arrives":11,"toursDeux":11,"remplacements":0,"stagnants":[],"maxUsure":0.064,"sSimulation":184.583,"sReelles":2.853,"anomalies":0}
+{"id":"haut-col-neige","fin":"regle_du_jeu","arrives":7,"toursDeux":7,"remplacements":0,"stagnants":[],"maxUsure":0.076,"sSimulation":219.825,"sReelles":3.856,"anomalies":0}

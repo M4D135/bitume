@@ -1,0 +1,26 @@
+ok arrêt au ralenti : quatre sorties à 0 après une seconde
+ok plein régime en charge : moteur lourd > 0, gâchettes à 0 hors rupteur
+ok rupteur : gâchette droite et moteur léger varient dans le temps
+ok vibreur : la fréquence de battement double à peu près entre 10 m/s et 20 m/s, et ne dépasse jamais 14 Hz à 80 m/s
+ok herbe : plus fort à 20 m/s qu’à 5 m/s ; nul à l’arrêt
+ok blocage : gâchette gauche active, gâchette droite à 0
+ok patinage : gâchette droite active, gâchette gauche à 0
+ok événement rapport : pic immédiat puis retour sous le seuil
+ok événement choc : pic immédiat puis retour sous le seuil
+ok événement contact : pic immédiat puis retour sous le seuil
+ok événement roue : pic immédiat puis retour sous le seuil
+ok événement casse : pic immédiat puis retour sous le seuil
+ok événement atterrissage : pic immédiat puis retour sous le seuil
+ok dérive : battements stables selon la cadence (4 s, niveaux 0 et 3)
+ok dérive : tic au changement de niveau
+ok dérive : frémissement quand fenetre > 0
+ok indépendance à la cadence : 1/30, 1/60 et 1/120 diffèrent de moins de 15 %
+ok bornes : scénario aléatoire extrême reste dans [0, 1] sans NaN
+ok force = 0 : tout à 0
+ok entrée vide {} : tout à 0, sans exception
+ok entrée absente (null, undefined) : sorties à 0, sans exception, et V sans propriété nouvelle
+ok même objet de sortie à chaque appel
+ok choc : le pic ressenti ne dépend pas de la cadence
+ok dt non fini ou énorme : sorties finies, puis retour au silence
+ok force 1 vs 0.5 : somme strictement supérieure et sorties bornées à 1
+vibrations : 25 contrôles passés

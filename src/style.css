@@ -261,10 +261,11 @@ button:disabled { cursor: wait; opacity: .55; }
 .case, .chronos, .tableau { border: 0; background: transparent; text-shadow: 0 1px 3px #000, 0 0 12px rgba(0,0,0,.6); }
 .case { padding: 8px 14px 9px; border-top: 2px solid var(--rouge); min-width: 88px; }
 #c-tour { border-top-color: var(--papier-2); }
-/* Pneus montés : pastille de couleur, comme le cercle peint sur le flanc (slicks jaune, intermédiaires vert, pluie bleu) */
+/* Pneus montés : pastille de couleur, comme le cercle peint sur le flanc (slicks jaune, intermédiaires vert, pluie bleu, neige blanc) */
 #c-pneus { --pneu: #f2c418; border-top-color: var(--pneu); }
 #c-pneus[data-pneus="inter"] { --pneu: #2fbf5a; }
 #c-pneus[data-pneus="pluie"] { --pneu: #2f7fe0; }
+#c-pneus[data-pneus="neige"] { --pneu: #dbe6f5; }
 .case .nom-pneus { display: flex; align-items: center; gap: 7px; margin-top: 8px; font: italic 800 19px/1 var(--f-titre); font-stretch: condensed; text-transform: uppercase; }
 .case .nom-pneus i { width: 13px; height: 13px; border-radius: 50%; border: 3px solid var(--pneu); background: #111; flex: none; }
 /* Santé de la voiture (lot 4) : la barre se lit dans l'état des dégâts, le mot change au stand. */

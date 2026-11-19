@@ -1,0 +1,200 @@
+{
+  "version": "0.2.47",
+  "lot": "12E",
+  "physique": "p10",
+  "statut": "qualification_CPU_avec_reserves_publication_en_cours",
+  "base_commit": "9c49abad670b16c67127c921b6522fecd29daf79",
+  "execution": {
+    "debut_utc": "2026-11-19T10:22:53.792767+00:00",
+    "fin_utc": "2026-11-19T10:29:23.543514+00:00",
+    "node": "v24.22.3",
+    "recu": "cloture/qualification-execution.json",
+    "sha256_recu": "e8d58c9190a91dbee2563c74919a8b2eea906c0087ab0d70c7ea5e79a0d69416",
+    "reexecution_pendant_cette_reprise": false
+  },
+  "integrite": {
+    "manifeste": "cloture/hashes-apres-qualification.json",
+    "sha256_manifeste": "706b68e9ee18e2c3756fef591a40db17be98f16630414ec0007d32f69322b526",
+    "fichiers": 196,
+    "fichiers_src": 81,
+    "ecarts_apres_recuperation": [],
+    "changements_pendant_qualification": [],
+    "logs_commandes_verifies": 101,
+    "ecarts_logs": [],
+    "note": "Contrôle des empreintes récupérées, sans relance des tests ni reconstruction."
+  },
+  "suites": {
+    "total": 98,
+    "reussies": 96,
+    "echecs": [
+      "decor.test.mjs",
+      "traces.test.mjs"
+    ],
+    "passage": "premier passage final après borne de deux essais de dégagement",
+    "preuves": "cloture/suites.json",
+    "traces": {
+      "statut": "echec_herite_identique",
+      "attendu": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+      "observe": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "preuve_base": "diagnostic-baseline.json",
+      "log": "cloture/tests/traces.test.mjs.log",
+      "cause_exacte_et_impact_visuel": "non établis"
+    },
+    "decor": {
+      "statut": "reserve_performance_non_levee",
+      "circuit": "Haut-Col",
+      "seuil_ms": 150,
+      "observe_ms": 194,
+      "log": "cloture/tests/decor.test.mjs.log",
+      "contexte": "Le suivi 006 rapporte un dépassement sur la base 0.2.46 ; diagnostic-baseline.json ne contient pas de mesure décor. Cela ne suffit pas à exclure une régression de performance. Aucun seuil ni test modifié pour obtenir une réussite."
+    }
+  },
+  "determinisme": {
+    "scenarios": 20,
+    "empreintes": 1300,
+    "generation_code": 0,
+    "verification_suite_code": 0,
+    "verification_independante_code": 0,
+    "p9_sha256": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a",
+    "p9_inchangee": true,
+    "p10_sha256": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+    "note": "Fixture p10 distincte après changement intentionnel de physique ; la fixture p9 et son historique ne sont pas réécrits."
+  },
+  "degagement": {
+    "controles": 5,
+    "log": "cloture/tests/obstacles-degagement.test.mjs.log",
+    "arbre": "recul physique puis reprise, zéro replacement du rival testé, pneus conservés",
+    "poche_U": "deux essais puis un secours historique, pneus conservés",
+    "rearmement_distance_m": 8,
+    "nouveau_mecanisme_de_replacement": false
+  },
+  "viabilite": {
+    "scenarios": 9,
+    "protocole": "cloture/viabilite/rapport.json",
+    "anomalies": 0,
+    "stagnants_15s": 0,
+    "replacements_total": 3,
+    "scenarios_resume": [
+      {
+        "id": "val-brule-sec",
+        "fin": "regle_du_jeu",
+        "arrives": 12,
+        "voituresTotal": 12,
+        "replacements": 1,
+        "maxUsure": 0.0630557423216596,
+        "stagnants15s": [],
+        "anomalies": []
+      },
+      {
+        "id": "port-sable-sec",
+        "fin": "regle_du_jeu",
+        "arrives": 12,
+        "voituresTotal": 12,
+        "replacements": 0,
+        "maxUsure": 0.052711582167065466,
+        "stagnants15s": [],
+        "anomalies": []
+      },
+      {
+        "id": "haut-col-sec",
+        "fin": "regle_du_jeu",
+        "arrives": 11,
+        "voituresTotal": 12,
+        "replacements": 0,
+        "maxUsure": 0.08306114182319344,
+        "stagnants15s": [],
+        "anomalies": []
+      },
+      {
+        "id": "val-brule-tres-mouille",
+        "fin": "regle_du_jeu",
+        "arrives": 12,
+        "voituresTotal": 12,
+        "replacements": 1,
+        "maxUsure": 0.05978605494386132,
+        "stagnants15s": [],
+        "anomalies": []
+      },
+      {
+        "id": "port-sable-tres-mouille",
+        "fin": "regle_du_jeu",
+        "arrives": 12,
+        "voituresTotal": 12,
+        "replacements": 0,
+        "maxUsure": 0.05172835655911959,
+        "stagnants15s": [],
+        "anomalies": []
+      },
+      {
+        "id": "haut-col-tres-mouille",
+        "fin": "regle_du_jeu",
+        "arrives": 12,
+        "voituresTotal": 12,
+        "replacements": 0,
+        "maxUsure": 0.08171250638532382,
+        "stagnants15s": [],
+        "anomalies": []
+      },
+      {
+        "id": "val-brule-neige",
+        "fin": "regle_du_jeu",
+        "arrives": 9,
+        "voituresTotal": 12,
+        "replacements": 1,
+        "maxUsure": 0.05952203609440914,
+        "stagnants15s": [],
+        "anomalies": []
+      },
+      {
+        "id": "port-sable-neige",
+        "fin": "regle_du_jeu",
+        "arrives": 11,
+        "voituresTotal": 12,
+        "replacements": 0,
+        "maxUsure": 0.06449337195076103,
+        "stagnants15s": [],
+        "anomalies": []
+      },
+      {
+        "id": "haut-col-neige",
+        "fin": "regle_du_jeu",
+        "arrives": 7,
+        "voituresTotal": 12,
+        "replacements": 0,
+        "maxUsure": 0.07557053566290788,
+        "stagnants15s": [],
+        "anomalies": []
+      }
+    ],
+    "limite": "Neuf combinaisons de trois circuits et trois climats, fin naturelle de course ; toutes les voitures ne terminent pas forcément avant cette fin. Ce contrôle ne couvre pas toutes les graines, difficultés et durées."
+  },
+  "build": {
+    "version": "0.2.47",
+    "bytes": 14001233,
+    "sha256": "90afbee41f4d080a7b464572ce5464a9c91c53a560be8458f748229f955135b7",
+    "reproductible": true,
+    "preuve": "cloture/build.json",
+    "syntaxe_scripts": 51,
+    "syntaxe_valide": true,
+    "preuve_syntaxe": "cloture/bundle-syntax.json"
+  },
+  "ferro": {
+    "version": "0.3.11",
+    "modules_identiques": 34,
+    "ecarts": []
+  },
+  "reserves": {
+    "webgl_valide": false,
+    "performance_materielle_mesuree": false,
+    "gain_FPS_annonce": false,
+    "deploiement_effectue": false,
+    "site_verifie": false,
+    "webgl": "La tentative de référence a échoué au démarrage de Chromium avant exécution de page ; aucune observation WebGL de ce build ne remplace ce manque."
+  },
+  "publication": {
+    "statut": "en_cours",
+    "commit_distant_verifie": null,
+    "recu_prevu": "PUBLICATION-0247.json"
+  },
+  "prochaine_action": "Publier et vérifier les sources, tests, build et preuves 12E ; enregistrer le reçu distant. Puis poursuivre 12F1 (stands et affichage) préparé dans une autre copie, distinct du réseau 12F2/12F3."
+}

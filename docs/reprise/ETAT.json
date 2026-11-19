@@ -2,64 +2,74 @@
   "date": "2026-11-19",
   "etat_courant": {
     "branche": "main",
-    "version_courante": "0.2.46",
+    "version_courante": "0.2.47",
     "base_commit": "9c49abad670b16c67127c921b6522fecd29daf79",
     "base_version": "0.2.46",
-    "statut": "12E_implémente_qualification_degagement_en_cours",
+    "statut": "12E_qualifie_CPU_avec_reserves_publication_en_cours",
     "lot": "12E_chaussee_adherence",
     "fiche": "docs/reprise/12E-CHAUSSEE-ADHERENCE.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "qualification": "docs/reprise/rapports/12D-2026-11-19/qualification-finale.json",
+    "qualification": "docs/reprise/rapports/12E-2026-11-19/qualification-finale.json",
     "publication": "docs/reprise/rapports/12D-2026-11-19/PUBLICATION-0246.json",
-    "prochaine_action": "Terminer le dégagement physique après collision arbre, puis qualifier p10 et construire/publier 0.2.47 ; patch de reprise disponible.",
+    "prochaine_action": "Publier et vérifier les sources, tests, build et preuves 12E ; enregistrer le reçu distant. Puis poursuivre 12F1 (stands et affichage) préparé dans une autre copie, distinct du réseau 12F2/12F3.",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
-    "physique": "p9 conservée",
-    "neige": "Catalogue et visuel prêts ; choix en course fermé avant 12E",
-    "checkpoint_sources": "docs/reprise/rapports/12E-2026-11-19/checkpoint-sources-12E.patch"
+    "physique": "p10 ; p9 archivée intacte",
+    "neige": "Choix jouable, couverture explicite statique ; tunnels secs et déneigés",
+    "checkpoint_sources": "docs/reprise/rapports/12E-2026-11-19/checkpoint-sources-12E.patch",
+    "version_publiee_verifiee": "0.2.46",
+    "publication_0247_attendue": "docs/reprise/rapports/12E-2026-11-19/PUBLICATION-0247.json"
   },
   "validation": {
     "date": "2026-11-19",
-    "base_commit": "71354f05e59dcfcbc98cabc0a690f86d5a8419b4",
-    "checkpoint": "834d2701eddab1ad13ec0708da1b49cfb88bbdad",
-    "version": "0.2.46",
-    "lot": "12D",
-    "suites": 93,
-    "reussies": 91,
-    "echecs_herites": [
-      "determinisme-simulation.test.mjs",
+    "version": "0.2.47",
+    "lot": "12E",
+    "statut": "CPU_avec_reserves",
+    "suites": 98,
+    "reussies": 96,
+    "echecs": [
+      "decor.test.mjs",
       "traces.test.mjs"
     ],
-    "regressions_nouvelles": [],
-    "comparaison_p9": {
-      "scenarios": 19,
-      "empreintes": 1259,
-      "identiques": true
+    "echec_herite_prouve": "traces.test.mjs",
+    "reserve_performance": "decor.test.mjs : Haut-Col 194 ms > 150 ms ; régression de performance non exclue",
+    "determinisme": {
+      "scenarios": 20,
+      "empreintes": 1300,
+      "generation_code": 0,
+      "verification_suite_code": 0,
+      "verification_independante_code": 0,
+      "p9_sha256": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a",
+      "p9_inchangee": true,
+      "p10_sha256": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+      "note": "Fixture p10 distincte après changement intentionnel de physique ; la fixture p9 et son historique ne sont pas réécrits."
     },
-    "tests_12D": {
-      "module": 18,
-      "integration": 7,
-      "visuel": 8
+    "viabilite": {
+      "scenarios": 9,
+      "anomalies": 0,
+      "stagnants_15s": 0,
+      "replacements": 3,
+      "fin_naturelle": true
     },
-    "assertions_heritees_corrigees": [
-      "crash.test.mjs : roues procédurales avec formes et dimensions exactes",
-      "pieces.test.mjs : 24 roues avant et 24 arrière aux dimensions exactes"
-    ],
-    "traces_identiques_base": true,
     "build": {
-      "version": "0.2.46",
-      "taille": 13990207,
-      "sha256": "9ab9097c7493d8260677022cef528f4a70fb9293372ecd61628c9e81abb52641",
-      "reproductible": true
+      "version": "0.2.47",
+      "bytes": 14001233,
+      "sha256": "90afbee41f4d080a7b464572ce5464a9c91c53a560be8458f748229f955135b7",
+      "reproductible": true,
+      "preuve": "cloture/build.json",
+      "syntaxe_scripts": 51,
+      "syntaxe_valide": true,
+      "preuve_syntaxe": "cloture/bundle-syntax.json"
     },
     "ferro": {
       "version": "0.3.11",
-      "modules_identiques": 34
+      "modules_identiques": 34,
+      "ecarts": []
     },
     "webgl_valide": false,
-    "apercu_cpu_inspecte": true,
-    "profil_allocations_usure": "aucun GC mineur mesuré sur le parcours borné",
+    "performance_materielle_mesuree": false,
     "deploiement_effectue": false,
-    "site_verifie": false
+    "site_verifie": false,
+    "preuve": "docs/reprise/rapports/12E-2026-11-19/qualification-finale.json"
   },
   "catalogue": {
     "jouables": 7,
@@ -73,10 +83,12 @@
     "note": "L’ancien objectif 16 précède l’ajout montagne ; ne supprimer aucune demande pour tenir ce compte."
   },
   "suite": {
-    "lot": "12E",
-    "objectif": "Chaussée commune, quatre domaines utiles de pneus, usure progressive, joueur/IA, physique versionnée.",
+    "lot": "12F1",
+    "statut": "préparation dans une autre copie, non livré par 12E",
+    "objectif": "Remplacement réel des quatre pneus à la fin du service et affichage détaillé, puis réseau versionné dans des sous-lots distincts.",
+    "prerequis": "Publication 12E vérifiée et reçu 0.2.47 enregistré",
     "apres": [
-      "12F stands/interface/réseau",
+      "12F2/12F3 réseau versionné et raccord",
       "Russie",
       "Monaco",
       "Marseille"

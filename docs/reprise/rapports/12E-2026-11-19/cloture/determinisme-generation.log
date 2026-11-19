@@ -1,0 +1,24 @@
+ok  val-brule-g7-d1 : 60 empreintes identiques (4.35 s)
+ok  val-brule-g7-d2 : 60 empreintes identiques (0.90 s)
+ok  val-brule-g51234-d1 : 60 empreintes identiques (0.87 s)
+ok  val-brule-g51234-d2 : 60 empreintes identiques (0.75 s)
+ok  haut-col-g7-d1 : 60 empreintes identiques (0.85 s)
+ok  haut-col-g7-d2 : 60 empreintes identiques (1.08 s)
+ok  haut-col-g51234-d1 : 60 empreintes identiques (0.82 s)
+ok  haut-col-g51234-d2 : 60 empreintes identiques (0.92 s)
+ok  cap-sequoia-g7-d1 : 60 empreintes identiques (0.61 s)
+ok  cap-sequoia-g7-d2 : 60 empreintes identiques (0.59 s)
+ok  cap-sequoia-g51234-d1 : 60 empreintes identiques (0.65 s)
+ok  cap-sequoia-g51234-d2 : 60 empreintes identiques (0.58 s)
+ok  chrono-fantome-port-sable : 200 empreintes identiques (0.55 s)
+ok  accidents-duo-pluie-haut-col : 75 empreintes identiques (1.68 s)
+ok  accident-solide-val-brule : 12 empreintes identiques (0.14 s)
+ok  solides-sur-piste-val-brule : 60 empreintes identiques (1.67 s)
+ok  manoeuvres-cap-sequoia : 45 empreintes identiques (0.18 s)
+ok  arrivee-un-tour-port-sable : 103 empreintes identiques (2.02 s)
+ok  en-ligne-hote-val-brule : 45 empreintes identiques (0.85 s)
+ok  neige-usure-haut-col : 40 empreintes identiques (1.19 s)
+ok  sensibilité : un ulp sur une vitesse au pas 1200 change l’empreinte dès la seconde 10
+ok  empreinte : usure par roue (un ulp) et glisse physique sont incluses
+fixture écrite : 20 cas, 1300 empreintes
+ok  déterminisme p10 : 20 cas, 1300 empreintes, 21.6 s

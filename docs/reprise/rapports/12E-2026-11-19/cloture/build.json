@@ -1,0 +1,15 @@
+{
+  "version": "0.2.47",
+  "sha256": "90afbee41f4d080a7b464572ce5464a9c91c53a560be8458f748229f955135b7",
+  "bytes": 14001233,
+  "reproductible": true,
+  "ferro_version": "0.3.11",
+  "ferro_modules": 34,
+  "ferro_ecarts": [],
+  "hashes": {
+    "VERSION.json": "9234a189c64f745fc9678e1aedd3e59dbf69af1166b2125a4d08acebbad4dbf9",
+    "SIZE.json": "1873e88372053d95a3a1baa424cc6cdfcf5113165c5f1341049a4c76108d285a",
+    "dist/bitume.html": "90afbee41f4d080a7b464572ce5464a9c91c53a560be8458f748229f955135b7"
+  },
+  "date_utc": "2026-11-19T10:22:10.263742+00:00"
+}

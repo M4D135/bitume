@@ -49,6 +49,7 @@
   function sLigne(c, s) { return ramener(s - (c.depart || 0), c.longueur); }
   const AIDE_IA = 0.35;
   const NEUTRE = Object.freeze({ gaz: 0, frein: 0, volant: 0, derive: false, haut: false, bas: false, boite: 'auto', aide: 0 });
+  const CHAUSSEE_IA = {}, CHAUSSEE_ANTICIPEE = {}, CHAUSSEE_CHAUFFE = {};
 
   function creer(c, o = {}) {
     const chrono = o.mode === 'chrono';
@@ -105,7 +106,9 @@
         // forme d'objet et le pas de l'IA reste compilé pour une seule (sinon chaque voiture les ajoute dans son
         // propre ordre, et le moteur JavaScript recompile commandesIA sans fin). undefined se lit exactement comme
         // un champ absent pour chaque lecteur (!!, ??, == null, ||) : aucune décision ne change.
-        dehors: undefined, entamee: undefined, retourBloque: undefined, bloque: undefined, attaque: undefined });
+        dehors: undefined, entamee: undefined, retourBloque: undefined, bloque: undefined, attaque: undefined,
+        degagement: 0, degagementT: 0, degagementDistance: 0, degagementS: 0, degagementD: 0, degagementAttente: 0,
+        degagementEssais: 0, degagementOrigineS: 0, degagementOrigineD: 0 });
     }
 
     // grille : ordre des rivaux tiré de la graine, le joueur à sa place
@@ -205,9 +208,10 @@
       const ej = v.progression - course.joueur.progression, f = clamp((Math.abs(ej) - 250) / 500, 0, 1) * 0.02;
       hab += ej < 0 ? f : -f; // léger élastique
     }
-    // Pluie et pneus : l'adhérence perdue (conduite.js, adherencePneus) ; l'allure de virage suit sa racine, le
-    // freinage la suit.
-    const adh = B.conduite.adherencePneus ? B.conduite.adherencePneus(e.pneus, B.circuit.dansTunnel && B.circuit.dansTunnel(c, e.s) ? 0 : B.conduite.eauSurPiste()) : 1;
+    // Même surface et même usure que les forces du joueur ; l'essieu le plus limité fixe la marge de l'IA.
+    const chaussee = B.chaussee.lire(c, e.s, undefined, CHAUSSEE_IA);
+    const adh = B.conduite.adherenceVoiture(e, chaussee);
+    const habSansSurface = hab;
     hab *= Math.sqrt(adh);
 
     // Vitesse visée et freinage anticipé (jusqu'à 200 m devant). Le freinage finit une fraction de seconde avant
@@ -219,9 +223,20 @@
     // vitesse de référence, courbure et trajectoire idéale au droit de la voiture : lues une fois, chacune servait
     // jusqu'à trois fois (e.s ne bouge pas pendant la décision, et lire est une fonction pure : mêmes valeurs)
     const vIci = lire(c, c.vitesse, e.s), kIci = lire(c, c.courbure, e.s), lIci = lire(c, c.ligne, e.s);
-    let cible = vIci * hab, besoin = 0;
+    let cible = vIci * hab, besoin = 0, eauPrevue = -1, neigePrevue = -1, adhPrevue = adh;
     for (let q = 1, N = Math.ceil(200 / P); q <= N; q++) {
-      const vc = c.vitesse[(i0 + q) % n] * hab, dist = (q - fr) * P;
+      const index = (i0 + q) % n, dist = (q - fr) * P;
+      // Une sortie de tunnel enneigée doit être préparée avant le portail, même si la voiture roule au sec.
+      const surface = B.chaussee.lire(c, index * P, undefined, CHAUSSEE_ANTICIPEE);
+      let adhDevant = adh;
+      if (surface.eau !== chaussee.eau || surface.neige !== chaussee.neige) {
+        // La plupart des points partagent la même chaussée : pas de relecture des quatre pneus à chaque mètre.
+        if (surface.eau !== eauPrevue || surface.neige !== neigePrevue) {
+          adhPrevue = B.conduite.adherenceVoiture(e, surface); eauPrevue = surface.eau; neigePrevue = surface.neige;
+        }
+        adhDevant = adhPrevue;
+      }
+      const vc = c.vitesse[index] * habSansSurface * Math.sqrt(adhDevant);
       if (dist <= anticipe) { if (vc < cible) cible = vc; continue; }
       const b = (v2 - vc * vc) / (2 * (dist - anticipe));
       if (b > besoin) besoin = b;
@@ -384,7 +399,7 @@
     // même loi que le joueur : le volant demande la part d'adhérence avant qui tient la courbure visée. La courbure
     // de base est celle de la voiture à son décalage (plus serrée à la corde), pas celle de l'axe de la piste.
     const kVise = kIci / Math.max(1 - kIci * e.d, .3) + 2.2 * (psiC - e.psi) * Math.max(vit, 5) / (10 * Math.max(vit, 3));
-    const volant = B.conduite.volantPour(e, kVise);
+    let volant = B.conduite.volantPour(e, kVise);
 
     // Sous-virage : en virage, la voiture s'écarte de sa ligne vers l'extérieur. Comme un pilote, on lève le pied
     // et on freine un peu : la charge revient sur l'avant et la trajectoire se referme.
@@ -409,11 +424,39 @@
     const coince=roule && !v.fini && !v.abandon && e.v<1.5 && intention &&
       !(e.degats&&e.degats.casse) && !e.recuperation && !e.saut && !e.accident && !e.reparation && !e.stands && !(e.immunite>0);
     ia.bloque=coince?(ia.bloque||0)+dt:0;
+    // Dégagement d'un contact fixe confirmé, jamais d'un freinage de trafic ou de grille. La manœuvre n'agit
+    // que sur les commandes : même marche arrière bornée à 12 km/h et mêmes collisions que pour le joueur.
+    let marcheArriere = false;
+    ia.degagementAttente=Math.max(0,(ia.degagementAttente||0)-dt);
+    // Deux essais au même endroit suffisent : dans une poche sans issue immédiate, les manœuvres ne doivent
+    // pas remettre indéfiniment à zéro le délai du secours historique. Seul un vrai déplacement les réarme.
+    if(ia.degagementEssais>0 && Math.hypot(ecart(c,ia.degagementOrigineS,e.s),e.d-ia.degagementOrigineD)>=8)ia.degagementEssais=0;
+    const contactFixe=e.auRail || !!course._obstacleMemo?.[v.id]?.size;
+    if(!ia.degagement && ia.bloque>.8 && contactFixe && !ia.degagementAttente && ia.degagementEssais<2) {
+      if(!ia.degagementEssais){ia.degagementOrigineS=e.s;ia.degagementOrigineD=e.d;}
+      ia.degagementEssais++;
+      ia.degagement=1;ia.degagementT=0;ia.degagementDistance=0;ia.degagementS=e.s;ia.degagementD=e.d;
+      ia.cible=-1;ia.cote=0;ia.decalVise=0;ia.decalDep=0;
+    }
+    if(ia.degagement && (!roule||v.fini||v.abandon||e.recuperation||e.saut||e.accident||e.reparation||e.stands||e.degats?.casse))ia.degagement=0;
+    if(ia.degagement) {
+      ia.bloque=0;ia.degagementT+=dt;
+      ia.degagementDistance+=Math.hypot(ecart(c,ia.degagementS,e.s),e.d-ia.degagementD);
+      ia.degagementS=e.s;ia.degagementD=e.d;
+      const capVise=clamp(-e.d/18,-.45,.45), ecartCap=capVise-e.psi-e.beta;
+      const corr=clamp(2*Math.atan2(Math.sin(ecartCap),Math.cos(ecartCap)),-.9,.9);
+      if(ia.degagement===1 && (ia.degagementDistance>=1.8||ia.degagementT>=3)) {ia.degagement=2;ia.degagementT=0;}
+      if(ia.degagement===1) {marcheArriere=true;gaz=0;frein=1;volant=-corr;}
+      else {
+        gaz=.65;frein=0;volant=corr;
+        if(e.v>6||ia.degagementT>=4) {ia.degagement=0;ia.degagementAttente=2;}
+      }
+    }
     if(ia.bloque>15) { B.conduite.declencherAccident(e,{});ia.bloque=0;ia.cible=-1;ia.cote=0;ia.decalVise=0;ia.decalDep=0; }
     // l'IA conduit avec l'aide au volant légère, le réglage par défaut du joueur
-    if (!sortie) return { gaz, frein, volant, derive: false, haut: false, bas: false, boite: 'auto', aide: AIDE_IA };
+    if (!sortie) return { gaz, frein, volant, derive: false, haut: false, bas: false, boite: 'auto', aide: AIDE_IA, marcheArriere };
     sortie.gaz = gaz; sortie.frein = frein; sortie.volant = volant; sortie.derive = false; sortie.haut = false;
-    sortie.bas = false; sortie.boite = 'auto'; sortie.aide = AIDE_IA;
+    sortie.bas = false; sortie.boite = 'auto'; sortie.aide = AIDE_IA; sortie.marcheArriere = marcheArriere;
     return sortie;
   }
 
@@ -754,7 +797,7 @@
   // avancer(n) fait au plus n pas et dit s'il en reste : la chauffe s'étale en tranches sous le voile de chargement.
   function chauffe(c, o = {}) {
     const co = creer(c, { mode: 'course', tours: 2, difficulte: 2, rivaux: 11, graine: o.graine ?? 4242, placeJoueur: 12 });
-    const pneus = B.conduite.pneusConseilles(B.conduite.eauSurPiste());
+    const pneus = B.conduite.pneusConseilles(B.chaussee.lire(c, c.depart || 0, undefined, CHAUSSEE_CHAUFFE));
     for (let i = 0; i < co.voitures.length; i++) co.voitures[i].etat.pneus = pneus;
     co.phase = 'course'; co.feux.vert = true; co.temps = 0;
     const dt = co.dt, total = Math.max(1, Math.round((o.secondes ?? 20) / dt)), arret = total - Math.round(6 / dt);

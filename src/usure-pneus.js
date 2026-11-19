@@ -1,4 +1,4 @@
-/* BITUME — lot 12D : usure visuelle au pas de simulation, sans effet sur l'adhérence p9.
+/* BITUME — usure au pas de simulation : visuel depuis 12D, lecture physique depuis 12E/p10.
    Les coefficients sont des réglages de jeu, pas des mesures thermomécaniques de pneus réels.
    Les charges viennent de conduite.js (newtons), les glisses par roue sont sans unité, de 0 à 1. */
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus) require('./pneus.js');
@@ -40,7 +40,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
   // contactsFrais : true après rouler ; false en grille/pause ou quand les contacts sont périmés.
   // Le mode explicite 'recul' emploie la charge moyenne ci-dessus, sans lire charge/glisse/patinage périmés.
   // Il conserve les vetos de présence (roue absente, perdue, contact:false) et les exclusions de vol/récupération.
-  // surface peut décrire le contact courant calculé par l'appelant sans modifier l'état physique p9.
+  // surface peut décrire le contact courant calculé par l'appelant.
   // Aucun objet, tableau, événement ou tirage aléatoire n'est créé dans cette boucle.
   function pas(e, dt, distanceSignee, eau = 0, neige = 0, contactsFrais = true, surface = e?.surface) {
     const recul = contactsFrais === 'recul';

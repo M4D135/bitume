@@ -7,6 +7,8 @@ const require = createRequire(import.meta.url);
 require('../src/graphismes.js');
 require('../src/ambiance.js');
 require('../src/saisons.js');
+require('../src/chaussee.js');
+require('../src/meteo.js');
 require('../src/conditions-course.js');
 require('../src/qualite.js');
 // la lecture des réglages normalise aussi la cadence d'images (src/cadence.js, chargé avant jeu.js)
@@ -31,7 +33,7 @@ const executer = new Function('B', 'stockage', `
     },
     createElement: () => ({ width: 0, height: 0, getContext: () => ({}) }) };
   const clamp = (x,a,b) => Math.max(a,Math.min(b,x)), ramener = (s,l) => ((s%l)+l)%l;
-  const CATALOGUE = [{ id: 'essai', graine: 11 }], c = { longueur: 1000 };
+  const CATALOGUE = [{ id: 'essai', graine: 11, theme: 'foret' }], c = { longueur: 1000 };
   const circuit = () => c, plan = () => ({}), dessinerTrace = () => {}, appliquerCarte = () => {};
   const rendu = { resize: v => appels.rendu.push(['resize',v]),
     setWorld: (...args) => appels.rendu.push(['world',...args]), setNappes: v => appels.rendu.push(['nappes',v]), setLots: v => appels.rendu.push(['lots',v]) };
@@ -43,7 +45,7 @@ const executer = new Function('B', 'stockage', `
     obstacles: { creer: objets => ({ objets }) },
     conduite: { PARAMS: { vitessePointe: [20,40,60,80,100], maxUtile: 8000, ralenti: 900 }, pneusConseilles: () => 'slicks', eauSurPiste: () => 0 },
     circuit: { ecart: (c,a,b) => b-a, echantillon: () => ({ y: 0, devers: 0, pente: 0 }) },
-    meteo: { pour: nom => ['soleil','pluie'].includes(nom) ? { mouille: 0 } : null }, mesures: { reinitialiser() {} }
+    mesures: { reinitialiser() {} }
   };
   ${bloc('  function lireStock(', '  // records et fantômes')}
   ${bloc('  const palier = ', '  // effets permis par le profil résolu')}
@@ -62,6 +64,7 @@ const executer = new Function('B', 'stockage', `
   const cadence = B.cadence.creer({ hz: 120, maxPas: 14, mode: reglages.cadence });
   ${bloc("  document.addEventListener('change', e => {", "  for (const nom of ['general', 'moteur', 'effets'])")}
   ${bloc('  function restaurerReference()', '  // Banc (console)')}
+  ${bloc('  function meteoPourConditions(', '  function surfaceAnnoncee(')}
   lancer('course',0);
   return { reglages, stockage, appels, radios, installer, reference, restaurerReference, lancer,
     preparer: () => { ecran = 'preparation'; }, enCourse: () => { ecran = 'course'; },

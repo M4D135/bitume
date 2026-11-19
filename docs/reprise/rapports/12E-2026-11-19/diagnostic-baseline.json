@@ -1,0 +1,33 @@
+{
+  "baseline": {
+    "date_utc": "2026-11-19T09:45:01.059984+00:00",
+    "commit": "9c49abad670b16c67127c921b6522fecd29daf79",
+    "source_count": 77,
+    "source_mismatches": [],
+    "build_sha256": "9ab9097c7493d8260677022cef528f4a70fb9293372ecd61628c9e81abb52641",
+    "build_bytes": 13990207,
+    "build_match": true,
+    "method": "git show pinned commit, independent of working tree modifications"
+  },
+  "webgl": {
+    "validated": false,
+    "launch_attempts": 1,
+    "failure_stage": "Chromium startup, before DevTools and page execution",
+    "reason": "port DevTools introuvable\n/usr/bin/chromium: 9: [: 5225713664: unexpected operator\n[14:14:1119/104516.729305:FATAL:chrome/browser/process_singleton_posix.cc:297] Check failed: . socket() failed: Operation not permitted (1)\n[1119/104516.729523:ERROR:third_party/crashpad/crashpad/util/linux/scoped_ptrace_attach.cc:27] ptrace: Operation not permitted (1)\n[36:36:0100/000000.806969:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)\n[35:35:0100/000000.807309:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)\n",
+    "report": "baseline-webgl.json",
+    "hardware_performance_measured": false
+  },
+  "inherited_failures": {
+    "determinisme-simulation.test.mjs": {
+      "reference": "p9, commit 54e98c9",
+      "observed": "19 scenarios diverge; summary obstacle hashes differ in all 19, additional simulation/event summaries in several. ulp check fails before perturbation because it compares same stale fixture.",
+      "action_p10": "Keep historical p9 fixture; create separate p10 fixture after intentional physics changes and behaviour checks; compare independent repeat runs and include tire state (no longer merely visual)."
+    },
+    "traces.test.mjs": {
+      "expected_sha256": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+      "actual_sha256": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+      "test_scope": "Synthetic effects pools, detached wheels and five subsequent PRNG draws; no car physics integration.",
+      "action_p10": "Keep failure as inherited; p10 does not justify replacing this hash. Logs prove historical divergence, not exact cause nor a visible bug."
+    }
+  }
+}

@@ -254,6 +254,12 @@
         if(hi>0) { interpoler(c,start,end,lo,e); e.v=vitesseFin; }
         else deplacer(c,e,monde(c,e,probe),hit.nx,hit.nz,hit.depth+EPS);
         const p=monde(c,e,probe), speed=e.v, vx=Math.cos(p.cap+e.psi)*speed,vz=Math.sin(p.cap+e.psi)*speed;
+        // Le balayage ne doit pas jeter le déplacement tangent restant. À défaut, une rotation contre un tronc
+        // rejetait chaque pas complet : pose immobile mais vitesse non nulle, donc voiture collée sans fin.
+        const restantX=pb.x-p.x,restantZ=pb.z-p.z;
+        const rentrant=Math.min(0,restantX*hit.nx+restantZ*hit.nz);
+        const glisseX=restantX-hit.nx*rentrant,glisseZ=restantZ-hit.nz*rentrant;
+        const glisse=Math.hypot(glisseX,glisseZ);
         const force=Math.max(0,-(vx*hit.nx+vz*hit.nz));
         if(force>0) {
           const rx=vx+hit.nx*force*1.05,rz=vz+hit.nz*force*1.05;
@@ -270,8 +276,19 @@
           const cancelled=B.conduite.annulerDerive(e,true);if(cancelled){cancelled.id=voiture.id;ev.push(cancelled);}
         }
         if(e.recuperation||(e.degats&&e.degats.casse))break;
-        // Les prochains obstacles sont testés sur le trajet déjà raccourci/résolu.
+        // Départ sûr à 2 mm du contact, puis déplacement restant projeté sur sa tangente. Aucune accélération
+        // ni rotation forcée : la vitesse a déjà perdu sa composante entrante. Le nouveau segment est balayé
+        // à l'itération suivante ; la dernière itération reste au contact pour ne jamais livrer un trajet non testé.
+        if(hi>0)deplacer(c,e,p,hit.nx,hit.nz,EPS);
         sauver(e,start);monde(c,start,pa);
+        if(hi>0&&iteration<3&&glisse>1e-8) {
+          deplacer(c,e,pa,glisseX/glisse,glisseZ/glisse,glisse);
+          e.distance=start.distance+ecart(start.s,e.s,c.longueur);
+          monde(c,e,pb);
+          bounds.minx=Math.min(bounds.minx,pa.x,pb.x);bounds.maxx=Math.max(bounds.maxx,pa.x,pb.x);
+          bounds.minz=Math.min(bounds.minz,pa.z,pb.z);bounds.maxz=Math.max(bounds.maxz,pa.z,pb.z);
+          voisins(index,bounds);
+        }
       }
       // mémoire des solides encore au contact : rien à revoir quand elle est vide
       if(memory.size) {

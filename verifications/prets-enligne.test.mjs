@@ -24,7 +24,7 @@ const creer = new Function('B', `
   const texte = (e, t) => { e.textContent = t; }, classe = () => {};
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   ${catalogueDeclaration}
-  const NOMS_PNEUS = { slicks: 'Slicks', inter: 'Intermédiaires', pluie: 'Pluie' };
+  const NOMS_PNEUS = B.pneus.NOMS_PNEUS;
   const reglages = { circuit: 0, tours: 3, difficulte: 1, meteo: 'pluie', pneus: 'pluie', boite: 'auto', vue: 'cockpit', joueursLocaux: 1 };
   const aller = s => { ecran = s; }, lancer = (type, i, cfg) => departs.push({ type, i, cfg });
   // préparation sous voile (jeu.js) : la séance part au bout de ses étapes (30 ms ici), si la liaison tient encore
@@ -201,4 +201,22 @@ test('messages nuls ignorés sans interrompre le jeu', () => {
 test('quitter pendant les 30 ms de chargement annule le lancement', () => {
   const { a, R } = hote(); tous(a, R); a.avancer(700); assert.equal(compte(a), 1);
   a.quitterEnLigne(); a.avancer(1000); assert.equal(a.departs.length, 0); assert.equal(a.etat().ecran, 'titre');
+});
+
+
+test('12E : conseil neige reçu si seule la saison change, choix manuel conservé sinon', () => {
+  const { a } = invite();
+  const catalogue = new Function(catalogueDeclaration + 'return CATALOGUE;')();
+  const i = catalogue.findIndex(c => c.theme === 'foret');
+  const annonce = { i, tours: 3, meteo: 'soleil', eau: 0, saison: 'ete' };
+  a.recevoirCourse(annonce);
+  assert.equal(a.reglages.pneus, 'slicks');
+  a.recevoirCourse({ ...annonce, saison: 'hiver' });
+  assert.equal(a.reglages.pneus, 'neige');
+  a.reglages.pneus = 'inter';
+  a.recevoirCourse({ ...annonce, saison: 'hiver' });
+  assert.equal(a.reglages.pneus, 'inter', 'annonce identique : choix du pilote conservé');
+  const sud = catalogue.findIndex(c => c.theme === 'cote');
+  a.recevoirCourse({ ...annonce, i: sud, saison: 'hiver' });
+  assert.equal(a.reglages.pneus, 'slicks');
 });

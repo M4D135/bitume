@@ -1,0 +1,279 @@
+{
+  "id": "val-brule-neige",
+  "climat": "neige",
+  "circuit": {
+    "id": "val-brule",
+    "nom": "Val-Brûlé",
+    "theme": "foret",
+    "graine": 11,
+    "longueur": 4200
+  },
+  "monte": "neige",
+  "surface": {
+    "eau": 0,
+    "neige": 0.75,
+    "abri": false
+  },
+  "obstacles": 1763,
+  "secondesSimulees": 214.758,
+  "secondesReelles": 4.149,
+  "fin": "regle_du_jeu",
+  "arrives": 9,
+  "toursDeux": 9,
+  "voituresTotal": 12,
+  "replacements": 1,
+  "maxUsure": 0.05952203609440914,
+  "stagnants15s": [],
+  "evenements": {
+    "rupteur": 744,
+    "feu": 5,
+    "vert": 1,
+    "rapport": 835,
+    "contact": 70,
+    "reception": 6,
+    "choc": 9,
+    "roue": 4,
+    "casse": 1,
+    "retour": 1,
+    "stand": 54,
+    "tour": 21,
+    "arrivee": 9
+  },
+  "anomalies": [],
+  "voitures": [
+    {
+      "id": 0,
+      "joueur": true,
+      "fini": true,
+      "tours": 2,
+      "tempsFinal": 206.751,
+      "progressionMetres": 8797.63,
+      "vitesse": 21.05,
+      "replacements": 1,
+      "maxStagnation_s": 1,
+      "maxStagnationSansAccident_s": 1,
+      "recuperationSecondes": 1,
+      "usureMax": 0.057912398641483,
+      "abandon": false
+    },
+    {
+      "id": 1,
+      "joueur": false,
+      "fini": false,
+      "tours": 1,
+      "tempsFinal": null,
+      "progressionMetres": 7402.17,
+      "vitesse": 31.46,
+      "replacements": 0,
+      "maxStagnation_s": 5,
+      "maxStagnationSansAccident_s": 5,
+      "recuperationSecondes": 1,
+      "usureMax": 0.05390124620774215,
+      "abandon": false
+    },
+    {
+      "id": 2,
+      "joueur": false,
+      "fini": false,
+      "tours": 1,
+      "tempsFinal": null,
+      "progressionMetres": 7741.62,
+      "vitesse": 50.695,
+      "replacements": 0,
+      "maxStagnation_s": 4,
+      "maxStagnationSansAccident_s": 4,
+      "recuperationSecondes": 0,
+      "usureMax": 0.05535972850800973,
+      "abandon": false
+    },
+    {
+      "id": 3,
+      "joueur": false,
+      "fini": true,
+      "tours": 2,
+      "tempsFinal": 204.524,
+      "progressionMetres": 8836.98,
+      "vitesse": 18.681,
+      "replacements": 0,
+      "maxStagnation_s": 0,
+      "maxStagnationSansAccident_s": 0,
+      "recuperationSecondes": 0,
+      "usureMax": 0.055536971907708524,
+      "abandon": false
+    },
+    {
+      "id": 4,
+      "joueur": false,
+      "fini": true,
+      "tours": 2,
+      "tempsFinal": 202.397,
+      "progressionMetres": 8873.94,
+      "vitesse": 25.099,
+      "replacements": 0,
+      "maxStagnation_s": 0,
+      "maxStagnationSansAccident_s": 0,
+      "recuperationSecondes": 0,
+      "usureMax": 0.051991576267850524,
+      "abandon": false
+    },
+    {
+      "id": 5,
+      "joueur": false,
+      "fini": true,
+      "tours": 2,
+      "tempsFinal": 211.884,
+      "progressionMetres": 8593.2,
+      "vitesse": 52.087,
+      "replacements": 0,
+      "maxStagnation_s": 0,
+      "maxStagnationSansAccident_s": 0,
+      "recuperationSecondes": 1,
+      "usureMax": 0.05959818437152083,
+      "abandon": false
+    },
+    {
+      "id": 6,
+      "joueur": false,
+      "fini": true,
+      "tours": 2,
+      "tempsFinal": 201.721,
+      "progressionMetres": 8902.34,
+      "vitesse": 28.504,
+      "replacements": 0,
+      "maxStagnation_s": 0,
+      "maxStagnationSansAccident_s": 0,
+      "recuperationSecondes": 0,
+      "usureMax": 0.053045880762065845,
+      "abandon": false
+    },
+    {
+      "id": 7,
+      "joueur": false,
+      "fini": true,
+      "tours": 2,
+      "tempsFinal": 198.237,
+      "progressionMetres": 9032.77,
+      "vitesse": 39.017,
+      "replacements": 0,
+      "maxStagnation_s": 0,
+      "maxStagnationSansAccident_s": 0,
+      "recuperationSecondes": 0,
+      "usureMax": 0.05417145662332154,
+      "abandon": false
+    },
+    {
+      "id": 8,
+      "joueur": false,
+      "fini": true,
+      "tours": 2,
+      "tempsFinal": 203.907,
+      "progressionMetres": 8839.29,
+      "vitesse": 18.978,
+      "replacements": 0,
+      "maxStagnation_s": 0,
+      "maxStagnationSansAccident_s": 0,
+      "recuperationSecondes": 0,
+      "usureMax": 0.05349079544461758,
+      "abandon": false
+    },
+    {
+      "id": 9,
+      "joueur": false,
+      "fini": false,
+      "tours": 1,
+      "tempsFinal": null,
+      "progressionMetres": 7422.72,
+      "vitesse": 25.29,
+      "replacements": 0,
+      "maxStagnation_s": 6,
+      "maxStagnationSansAccident_s": 6,
+      "recuperationSecondes": 0,
+      "usureMax": 0.05199066454398374,
+      "abandon": false
+    },
+    {
+      "id": 10,
+      "joueur": false,
+      "fini": true,
+      "tours": 2,
+      "tempsFinal": 200.619,
+      "progressionMetres": 8936.46,
+      "vitesse": 32.323,
+      "replacements": 0,
+      "maxStagnation_s": 0,
+      "maxStagnationSansAccident_s": 0,
+      "recuperationSecondes": 0,
+      "usureMax": 0.053174048237274944,
+      "abandon": false
+    },
+    {
+      "id": 11,
+      "joueur": false,
+      "fini": true,
+      "tours": 2,
+      "tempsFinal": 206.608,
+      "progressionMetres": 8794.09,
+      "vitesse": 21.192,
+      "replacements": 0,
+      "maxStagnation_s": 0,
+      "maxStagnationSansAccident_s": 0,
+      "recuperationSecondes": 0,
+      "usureMax": 0.057280824627338064,
+      "abandon": false
+    }
+  ],
+  "derniersIncidents": [
+    {
+      "t": 75.425,
+      "type": "choc",
+      "id": 0,
+      "obstacle": "tronc"
+    },
+    {
+      "t": 78.358,
+      "type": "choc",
+      "id": 9,
+      "obstacle": "tronc"
+    },
+    {
+      "t": 79.683,
+      "type": "choc",
+      "id": 2,
+      "obstacle": "tronc"
+    },
+    {
+      "t": 80.667,
+      "type": "choc",
+      "id": 2,
+      "obstacle": "tronc"
+    },
+    {
+      "t": 84.467,
+      "type": "choc",
+      "id": 9
+    },
+    {
+      "t": 86.708,
+      "type": "choc",
+      "id": 1,
+      "obstacle": "tronc"
+    },
+    {
+      "t": 87.392,
+      "type": "choc",
+      "id": 2,
+      "obstacle": "tronc"
+    },
+    {
+      "t": 87.433,
+      "type": "choc",
+      "id": 1
+    },
+    {
+      "t": 93.183,
+      "type": "choc",
+      "id": 2,
+      "obstacle": "tronc"
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "date_debut_utc": "2026-11-19T10:22:53.792767+00:00",
+  "date_fin_utc": "2026-11-19T10:29:23.543514+00:00",
+  "node": "v24.22.3",
+  "generation": {
+    "argv": [
+      "node",
+      "verifications/determinisme-simulation.test.mjs",
+      "--ecrire"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:22:53.918824+00:00",
+    "code": 0,
+    "duree_s": 21.896,
+    "log": "determinisme-generation.log",
+    "sha256_log": "bf68c47ee61a3510c3abbe7a5cd97b4faa78c2fa3079273f40d409d0e572938d"
+  },
+  "suites": 98,
+  "reussies": 96,
+  "echecs": [
+    "decor.test.mjs",
+    "traces.test.mjs"
+  ],
+  "determinisme_suite": {
+    "suite": "determinisme-simulation.test.mjs",
+    "argv": [
+      "node",
+      "verifications/determinisme-simulation.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:24:03.280746+00:00",
+    "code": 0,
+    "duree_s": 20.468,
+    "log": "tests/determinisme-simulation.test.mjs.log",
+    "sha256_log": "5be192fae487c0ce90a123c36a65d52d9c201df46fad29cce3691d49049a505f"
+  },
+  "determinisme_independant": {
+    "argv": [
+      "node",
+      "verifications/determinisme-simulation.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:28:20.038197+00:00",
+    "code": 0,
+    "duree_s": 18.623,
+    "log": "determinisme-verification-independante.log",
+    "sha256_log": "0977274386f69b23e82e927d92421001f8c0fad5a5d27c0f2113c17804384fe8"
+  },
+  "scenarios_determinisme": 20,
+  "empreintes_determinisme": 1300,
+  "p9_sha256": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a",
+  "p9_inchangee": true,
+  "p10_sha256": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+  "hashes_sources_tests_fixtures": 196,
+  "changements_generation": [
+    "verifications/fixtures/determinisme-p10.json"
+  ],
+  "changements_pendant_qualification": [],
+  "viabilite_execution": {
+    "argv": [
+      "node",
+      "docs/reprise/rapports/12E-2026-11-19/viabilite.mjs",
+      "/workspace/scratch/fb61bd99753c/bitume",
+      "/workspace/scratch/fb61bd99753c/bitume/docs/reprise/rapports/12E-2026-11-19/cloture/viabilite"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:28:38.662646+00:00",
+    "code": 0,
+    "duree_s": 44.847,
+    "log": "viabilite.log",
+    "sha256_log": "4163acd5bd7e9f671ac9c8d72a612206ee9e13e176faa717c45dcef476eebe7a"
+  },
+  "viabilite_scenarios": [
+    {
+      "id": "val-brule-sec",
+      "fin": "regle_du_jeu",
+      "arrives": 12,
+      "voituresTotal": 12,
+      "replacements": 1,
+      "maxUsure": 0.0630557423216596,
+      "stagnants15s": [],
+      "anomalies": []
+    },
+    {
+      "id": "port-sable-sec",
+      "fin": "regle_du_jeu",
+      "arrives": 12,
+      "voituresTotal": 12,
+      "replacements": 0,
+      "maxUsure": 0.052711582167065466,
+      "stagnants15s": [],
+      "anomalies": []
+    },
+    {
+      "id": "haut-col-sec",
+      "fin": "regle_du_jeu",
+      "arrives": 11,
+      "voituresTotal": 12,
+      "replacements": 0,
+      "maxUsure": 0.08306114182319344,
+      "stagnants15s": [],
+      "anomalies": []
+    },
+    {
+      "id": "val-brule-tres-mouille",
+      "fin": "regle_du_jeu",
+      "arrives": 12,
+      "voituresTotal": 12,
+      "replacements": 1,
+      "maxUsure": 0.05978605494386132,
+      "stagnants15s": [],
+      "anomalies": []
+    },
+    {
+      "id": "port-sable-tres-mouille",
+      "fin": "regle_du_jeu",
+      "arrives": 12,
+      "voituresTotal": 12,
+      "replacements": 0,
+      "maxUsure": 0.05172835655911959,
+      "stagnants15s": [],
+      "anomalies": []
+    },
+    {
+      "id": "haut-col-tres-mouille",
+      "fin": "regle_du_jeu",
+      "arrives": 12,
+      "voituresTotal": 12,
+      "replacements": 0,
+      "maxUsure": 0.08171250638532382,
+      "stagnants15s": [],
+      "anomalies": []
+    },
+    {
+      "id": "val-brule-neige",
+      "fin": "regle_du_jeu",
+      "arrives": 9,
+      "voituresTotal": 12,
+      "replacements": 1,
+      "maxUsure": 0.05952203609440914,
+      "stagnants15s": [],
+      "anomalies": []
+    },
+    {
+      "id": "port-sable-neige",
+      "fin": "regle_du_jeu",
+      "arrives": 11,
+      "voituresTotal": 12,
+      "replacements": 0,
+      "maxUsure": 0.06449337195076103,
+      "stagnants15s": [],
+      "anomalies": []
+    },
+    {
+      "id": "haut-col-neige",
+      "fin": "regle_du_jeu",
+      "arrives": 7,
+      "voituresTotal": 12,
+      "replacements": 0,
+      "maxUsure": 0.07557053566290788,
+      "stagnants15s": [],
+      "anomalies": []
+    }
+  ],
+  "webgl_valide": false,
+  "note": "Traces hérité reste un échec. Les parcours s’arrêtent selon les règles du jeu, sans forcer toutes les arrivées. Aucun déploiement ni mesure matérielle déduit de ces contrôles CPU."
+}

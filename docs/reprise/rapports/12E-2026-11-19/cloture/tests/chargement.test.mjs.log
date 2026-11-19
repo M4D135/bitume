@@ -1,0 +1,10 @@
+ok course : la course jetable ne déplace ni la séance, ni son générateur, ni ses pneus
+ok chrono : la course jetable ne déplace ni la séance, ni son générateur, ni ses pneus
+ok piste sèche figée : chauffée sèche ; météo variable ou mouillée : chauffée mouillée
+ok créations tardives : permises et comptées à part sous le voile, comptées par nom en course
+ok tous les lancements passent par la préparation : plus de lancement différé de 30 ms
+ok chauffe : le voile court seulement quand rien ne manque, la vitrine ne chauffe que ce qu’elle montre
+ok machine lente : la chauffe se resserre sur le palier courant et ses voisins
+ok sous le voile, la boucle ne simule ni ne dessine ; les étapes suivent l’ordre affiché
+ok voile : opaque sans transition, étape et barre, annoncé poliment, mouvement réduit respecté
+9 contrôles de la préparation des séances réussis.

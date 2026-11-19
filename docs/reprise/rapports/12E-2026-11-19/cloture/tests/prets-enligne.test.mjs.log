@@ -1,0 +1,38 @@
+✔ le moment choisi avant départ est annoncé et transmis aux pilotes (5.826437ms)
+✔ saison imposée par l’hôte, sans modifier les préférences des invités ; neige absente du Sud (1.027252ms)
+✔ l’annonce ouvre la confirmation sans lancer la course (0.36682ms)
+✔ Lande-Noire conserve le circuit et les conditions de l’hôte jusqu’au départ invité (1.220282ms)
+✔ Roche-Fauve conserve le circuit et les conditions de l’hôte jusqu’au départ invité (0.502074ms)
+✔ Brume-de-Jade conserve le circuit et les conditions de l’hôte jusqu’au départ invité (0.430816ms)
+✔ Cap-Séquoia conserve le circuit et les conditions de l’hôte jusqu’au départ invité (0.362945ms)
+✔ départ unique avec 1+1 pilotes (0.458469ms)
+✔ départ unique avec 2+1 pilotes (1.342496ms)
+✔ départ unique avec 2+2 pilotes (0.456745ms)
+✔ départ unique avec 1+1+1+1 pilotes (0.228944ms)
+✔ cinq pilotes ne peuvent pas confirmer le départ (0.287321ms)
+✔ un pilote peut retirer son accord pendant les 700 ms (0.352288ms)
+✔ retour de l’hôte au salon annule le départ différé (0.207842ms)
+✔ quitter puis rejoindre une autre partie ne lance pas l’ancienne course (0.318097ms)
+✔ une nouvelle proposition remplace le compte à rebours précédent (0.256515ms)
+✔ un membre en cours de connexion n’est pas oublié (0.515894ms)
+✔ une arrivée pendant le compte à rebours impose sa confirmation (0.285478ms)
+✔ perdre une liaison pendant le compte à rebours ne lance pas une course incomplète (0.20673ms)
+✔ départ d’un membre nettoie ses pneus et permet aux autres de continuer (0.505168ms)
+✔ les accords répétés ne programment qu’un départ (0.435624ms)
+✔ ouvrir les réglages retire l’accord local (0.183946ms)
+✔ un inconnu ne peut se dire prêt ni imposer des pneus (0.113761ms)
+✔ l’invité choisit ses pneus sans modifier sa boîte ni sa vue (0.314542ms)
+✔ annulation par l’hôte depuis les réglages retourne au salon (0.141592ms)
+✔ fermeture du salon efface la confirmation et quitte son écran (0.237928ms)
+✔ confirmation invalide ignorée sans écran vide (0.090155ms)
+✔ messages nuls ignorés sans interrompre le jeu (0.175223ms)
+✔ quitter pendant les 30 ms de chargement annule le lancement (0.242975ms)
+✔ 12E : conseil neige reçu si seule la saison change, choix manuel conservé sinon (0.302695ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 28.12387

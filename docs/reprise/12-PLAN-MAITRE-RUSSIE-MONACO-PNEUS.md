@@ -1,17 +1,17 @@
 # BITUME — plan maître Russie, Monaco, Marseille, roues et pneus
 
-Date du plan : **18 novembre 2026**. État 12A–12C actualisé le **19 novembre 2026** : **implémentation en qualification pour 0.2.45**, checkpoint `8665af0`, base `e47fb22`. Voir [la fiche courte](12ABC-CONTRAT-ET-VISUEL-ROUES.md).
+Date du plan : **18 novembre 2026**. État actualisé le **19 novembre 2026** : **12A–12C publiés en 0.2.45 (`71354f0`), 12D en 0.2.46 (`9c49abad`)**. **12E / 0.2.47 qualifié CPU avec réserves, publication en cours**, physique **p10** ; checkpoint `0cca9ea`. Voir [la fiche 12E](12E-CHAUSSEE-ADHERENCE.md) et le rapport final. **12F1 stands/affichage préparé séparément**, réseau restant ; réserves WebGL et déploiement conservées.
 Demande de David : ajouter un circuit en Russie et un Monaco « ultra fidèle », refaire les roues bien rondes et plus réalistes, différencier les sculptures pluie/neige et les slicks lisses, montrer les traces d’usure au fil de la course, puis publier ce plan avant de commencer.
 
 Complément demandé dans la même reprise : **Spéciale Marseille à partir de la carte EMPRISE, avec ajout de relief**, et master liste complète pour Claude Fable. Entrée de passation : [MASTER-LISTE-CLAUDE-FABLE.md](../../MASTER-LISTE-CLAUDE-FABLE.md).
 
-Base vérifiée : **BITUME 0.2.38**, livraison `baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902`, reprise `9f9f97ca7dee3154f8ec517adaba675e0ec81ea4`, **FERRO 0.3.9**, sept circuits. Ce plan fait autorité pour ce nouveau chantier ; les décisions plus anciennes restent applicables lorsqu’elles ne sont pas remplacées ici.
+Base historique de l’étude : **BITUME 0.2.38**, livraison `baf4ddfc2b4ab670bc4809d5e0ae3fb8758b1902`, reprise `9f9f97ca7dee3154f8ec517adaba675e0ec81ea4`, **FERRO 0.3.9**, sept circuits. Base fonctionnelle publiée vérifiée à cette reprise : **0.2.46 (`9c49abad`)**, **FERRO 0.3.11**, 34 modules inchangés dans 12E, toujours sept circuits. Ce plan fait autorité pour ce chantier ; les décisions plus anciennes restent applicables lorsqu’elles ne sont pas remplacées ici.
 
 ## 1. Résultat attendu et décisions de départ
 
 | Demande ferme | Résultat attendu |
 |---|---|
-| Circuit en Russie | Un huitième circuit complet, reconnaissable, roulant dans toutes les conditions prévues, avec sa propre identité. |
+| Circuit en Russie | Un circuit supplémentaire complet, reconnaissable, roulant dans toutes les conditions prévues, avec sa propre identité. |
 | Monaco ultra fidèle | Le véritable parcours de Monaco : géométrie, proportions, relief, murs, tunnel, stands et repères urbains reconnaissables depuis la piste. |
 | Spéciale Marseille avec relief | Carte EMPRISE réutilisée pour un parcours de course, terrain altimétrique et raccord cohérent des routes, bâtiments et collisions. |
 | Roues bien rondes | Silhouettes circulaires, flancs et épaules crédibles, jantes réellement creuses et détaillées, rotation et braquage cohérents. |
@@ -23,15 +23,15 @@ Base vérifiée : **BITUME 0.2.38**, livraison `baf4ddfc2b4ab670bc4809d5e0ae3fb8
 
 - **Russie : « Baïkal »**, nom et identité de travail, avec un tracé original au bord d’un grand lac sibérien, forêts et relief rocheux. Le pays est demandé ; le Baïkal est une proposition de ce plan, pas une localisation imposée par David. Aucune prétention à reproduire un circuit réel autour du lac. Le cadre géographique est documenté par l’UNESCO [S5].
 - **Monaco : tracé de référence 2026**, figé dans un dossier de sources. Conserver la monoplace de style 1980 du jeu ; la demande de fidélité concerne le circuit et son environnement, sans transformer la voiture en modèle contemporain.
-- Russie, Monaco et Spéciale Marseille occupent **trois des neuf places restantes** de la cible de 16. Après leur livraison : dix circuits. La master liste propose six identités supplémentaires pour les places 11 à 16 et les distingue des demandes explicites.
+- Le plan initial comptait Russie, Monaco et Spéciale Marseille dans **trois des neuf places restantes** de la cible de 16, puis six propositions distinctes des demandes explicites. David a depuis confirmé un **huitième circuit de montagne distinct de Haut-Col** : conserver cet ajout, les trois destinations demandées et les six propositions ; réconcilier le catalogue sans supprimer de demande pour tenir l’ancien compte.
 - Réaliser d’abord les roues et pneus, puis la Russie, Monaco et Marseille. Les dossiers de références Monaco et EMPRISE peuvent être préparés indépendamment ; Marseille réemploie les fonctions de tracé explicite, largeurs et voies qualifiées pour Monaco.
 - La livraison de ce document ne modifie ni le jeu ni son numéro de version. Les numéros suivants seront attribués par `construire.py` lors des changements effectifs de sources.
 
 ## 2. État réel du code et points à traiter
 
-Constats de lecture sur la base 0.2.38, à recontrôler avant de commencer si `main` a avancé :
+Constats historiques de lecture sur la base 0.2.38, conservés pour expliquer les choix du plan. Ils ne décrivent plus l’état courant des roues/pneus : 12A–12D sont publiés et 12E est implémenté en p10, qualification CPU avec réserves achevée, publication en cours. Pour reprendre ces lots, suivre leur fiche et leur reçu actuels, sans réimplémenter ce tableau :
 
-| Élément | État actuel | Conséquence pour le chantier |
+| Élément | État observé en 0.2.38 | Conséquence initiale pour le chantier |
 |---|---|---|
 | `src/voiture.js::pneu()` | Profil à huit sections, **24 côtés** autour de la roue. | Créer des variantes de révolution plus fines et réellement simplifiées au loin. |
 | Jantes / cylindres FERRO | Les cylindres génériques utilisent **16/8/6 côtés** selon le détail ; rayons de jante en boîtes. | Employer des formes dédiées aux roues ; augmenter tous les cylindres dégraderait aussi les décors. |
@@ -50,7 +50,7 @@ Les dimensions de la voiture restent la référence : pneus avant de rayon **0,2
 
 ## 3. Lots d’exécution et points de publication
 
-Les critères ci-dessous restent les conditions de clôture. **12A–12C sont implémentés et en qualification pour 0.2.45**, avec le checkpoint `8665af0` publié ; leur présence dans ce checkpoint ne vaut pas livraison. Le catalogue et le visuel neige sont préparés, son choix jouable reste fermé jusqu’à 12E. Les autres lots restent à réaliser. Chaque lot conserve un état de reprise compréhensible même si la session s’arrête.
+Les critères ci-dessous restent les conditions de clôture. **12A–12C publiés en 0.2.45, 12D en 0.2.46**. **12E / 0.2.47 qualifié CPU avec réserves, publication à vérifier** : chaussée commune, choix neige, usure physique, règles joueur/IA et records/fantômes p10 ; fixture p9 intacte. Passage final après borne de deux essais : **96/98 suites**, traces hérité identique et décor Haut-Col **194 ms > 150 ms**, réserve performance non levée. **20 scénarios / 1 300 empreintes p10**, neuf parcours sans anomalie ni stagnant sans accident ≥15 s et trois replacements au total. Le rapport `rapports/12E-2026-11-19/qualification-finale.json` fait autorité. WebGL, mesures matérielles et déploiement restent non validés. **12F1 est préparé séparément ; réseau et circuits restent à réaliser.**
 
 | Ordre / lot | Travail | Condition pour clôturer le lot |
 |---|---|---|
@@ -75,7 +75,7 @@ Les critères ci-dessous restent les conditions de clôture. **12A–12C sont im
 | 15E | Marseille : rendu et performances. | Captures/tour filmé, détails et ressources mesurés sur le corridor. |
 | 15F | Marseille : livraison. | Sources/tests/build publiés, contrôle production séparé, reçu et reprise. |
 
-**Lot actif : publication 12A–12C, code qualifié ; réserve WebGL**, fiche [12ABC-CONTRAT-ET-VISUEL-ROUES.md](12ABC-CONTRAT-ET-VISUEL-ROUES.md). Après publication qualifiée, ouvrir **12D — usure visible**. Ne pas relancer 12A depuis le début ni ouvrir toutes les branches du programme dans la même discussion.
+**Lot actif : vérifier la publication de 12E / 0.2.47, qualifié CPU avec réserves** ; fiche [12E-CHAUSSEE-ADHERENCE.md](12E-CHAUSSEE-ADHERENCE.md). Puis poursuivre **12F1 — stands et affichage**, préparé dans une autre copie, avant les sous-lots réseau. Ne pas relancer 12A–12E ni rouvrir Safari ; réserve WebGL explicite.
 
 ## 4. Roues : géométrie, matière et rotation
 
@@ -385,12 +385,13 @@ Sources internes : `src/voiture.js`, `src/carene.js`, `src/conduite.js`, `src/de
 
 - [x] Exigences, état du code et premières références examinés.
 - [x] Plan et critères d’acceptation rédigés avant implémentation.
-- [x] 12A — contrat roues et catalogue de pneus : code qualifié en 0.2.45.
-- [x] 12B — rondeur, profils et jantes : code qualifié, aperçu CPU inspecté ; réserve WebGL.
-- [x] 12C — sculptures et matériaux : code qualifié ; réserve WebGL, choix neige réservé à 12E.
-- [x] 12D — usure visible progressive.
-- [ ] 12E — neige, adhérence et usure physique.
-- [ ] 12F — stands, interface et réseau.
+- [x] 12A — contrat roues et catalogue de pneus : publié en 0.2.45.
+- [x] 12B — rondeur, profils et jantes : publié en 0.2.45, aperçu CPU inspecté ; réserve WebGL.
+- [x] 12C — sculptures et matériaux : publié en 0.2.45 ; réserve WebGL, choix neige raccordé dans le chantier 12E.
+- [x] 12D — usure visible progressive et saleté réversible : publié en 0.2.46 ; réserve WebGL.
+- [x] 12E — neige, adhérence et usure physique p10 : qualifié CPU avec réserves en 0.2.47 après bornage du recul ; 96/98 suites, traces hérité et réserve performance décor. WebGL non validé.
+- [ ] Publication 12E — sources, tests, build 0.2.47 et preuves contrôlés sur le distant ; déploiement traité séparément.
+- [ ] 12F — 12F1 stands/affichage préparé séparément ; réseau versionné 12F2/12F3 et intégration restant à livrer.
 - [ ] 13A — Russie, tracé et relief.
 - [ ] 13B — Russie, décor et livraison.
 - [ ] 14A — Monaco, dossier de référence métrique.

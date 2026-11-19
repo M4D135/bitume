@@ -17,15 +17,15 @@ test('depuisReel filtre et borne les observations sans modifier la source ou gar
 });
 
 test('météo réelle reste constante pendant plusieurs cycles de fronts, avec horloge et eau actives', () => {
-  for (const phase of ['clair', 'couvre', 'pluie', 'orage']) {
+  for (const phase of ['clair', 'couvre', 'pluie', 'orage']) for (const neige of [false, true]) {
     const m = M.depuisReel({ reel: true, phase, pluie: phase === 'pluie' || phase === 'orage' ? .43 : 0,
-      nuage: .71, mouille: .25, ventX: -2.75, ventZ: 4.25, neige: true });
+      nuage: .71, mouille: .25, ventX: -2.75, ventZ: 4.25, neige });
     const S = { meteo: m }, champs = ['phase', 'pluie', 'nuage', 'ventX', 'ventZ', 'neige'], initial = champs.map(k => m[k]);
     let eclairs = 0;
     for (let i = 0; i < 24000; i++) { M.avancer(S, 1 / 120); if (m.eclair === 1) eclairs++; }
     assert.deepEqual(champs.map(k => m[k]), initial); assert(Math.abs(m.t - 200) < 1e-6); assert(Math.abs(m.tp - 200) < 1e-6);
     assert(m.mouille >= 0 && m.mouille <= 1); assert(phase === 'orage' ? eclairs > 0 : eclairs === 0);
-    assert.equal(S.meteo, m); assert(phase === 'pluie' || phase === 'orage' ? m.mouille > .25 : m.mouille < .25);
+    assert.equal(S.meteo, m); assert(!neige && (phase === 'pluie' || phase === 'orage') ? m.mouille > .25 : m.mouille < .25);
   }
 });
 

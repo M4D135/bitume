@@ -1,0 +1,1217 @@
+[
+  {
+    "argv": [
+      "node",
+      "verifications/determinisme-simulation.test.mjs",
+      "--ecrire"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:22:53.918824+00:00",
+    "code": 0,
+    "duree_s": 21.896,
+    "log": "determinisme-generation.log",
+    "sha256_log": "bf68c47ee61a3510c3abbe7a5cd97b4faa78c2fa3079273f40d409d0e572938d"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/adherence-chaussee.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:15.843133+00:00",
+    "code": 0,
+    "duree_s": 0.176,
+    "log": "tests/adherence-chaussee.test.mjs.log",
+    "sha256_log": "03eb48798788bc16cf051b534285ac64e15029c0dbbfacb8c765d4da6bf96f6a"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/ambiance.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:16.019379+00:00",
+    "code": 0,
+    "duree_s": 0.062,
+    "log": "tests/ambiance.test.mjs.log",
+    "sha256_log": "3c2764cbff57112ae73f0ae5b2b869f606ad9744fe1877acc8bedcbc57f7d90f"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/animaux.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:16.082226+00:00",
+    "code": 0,
+    "duree_s": 7.852,
+    "log": "tests/animaux.test.mjs.log",
+    "sha256_log": "a8bff1418f35aedb6abf30726a9cd8421569da349cfcced643298b5086503fe9"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/arbres-lots.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:23.934390+00:00",
+    "code": 0,
+    "duree_s": 6.418,
+    "log": "tests/arbres-lots.test.mjs.log",
+    "sha256_log": "fa184a94e7df300aa5d364ddc3bbbeb68a518c8b1fa0fdfe8380a4fdf9ab91ba"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/asie.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:30.353546+00:00",
+    "code": 0,
+    "duree_s": 3.575,
+    "log": "tests/asie.test.mjs.log",
+    "sha256_log": "1359838e1aba75a823801fa90a19da7ddf647df0f234113db3606ea65ba82e6a"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/aurores.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:33.929661+00:00",
+    "code": 0,
+    "duree_s": 0.132,
+    "log": "tests/aurores.test.mjs.log",
+    "sha256_log": "96e4bc0a1aa2fb91e59afa0136d2d16de2bddd388c9e7f199b5ff564d11928ca"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/autoconfig-integration.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:34.062667+00:00",
+    "code": 0,
+    "duree_s": 0.127,
+    "log": "tests/autoconfig-integration.test.mjs.log",
+    "sha256_log": "5ed635423e4afbc36c2f7c2e8c9829f5cea6b813c12a6ea118060128ed8a2cbf"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/autoconfig.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:34.190005+00:00",
+    "code": 0,
+    "duree_s": 0.099,
+    "log": "tests/autoconfig.test.mjs.log",
+    "sha256_log": "8201a11e8e80de8aaf73ef64df4d865e76193b1c612a75e4c602d1cdf0134d02"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/bords-integration.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:34.289531+00:00",
+    "code": 0,
+    "duree_s": 3.766,
+    "log": "tests/bords-integration.test.mjs.log",
+    "sha256_log": "3285d8eacafe8041bafda9eb62b0181600b557b967822ed65f4f4bd32feb8c24"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/bords.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:38.055937+00:00",
+    "code": 0,
+    "duree_s": 0.996,
+    "log": "tests/bords.test.mjs.log",
+    "sha256_log": "3ef5d7a2f92bebe57103a6d7926bd3ae8f6cd53af142a227d753b9938c291e7d"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/botanique.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:39.052607+00:00",
+    "code": 0,
+    "duree_s": 0.383,
+    "log": "tests/botanique.test.mjs.log",
+    "sha256_log": "9a9fda8eed989fbd4eec283c261eeb1fb714c7e1713b8f8148ffba15b6fa3e30"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/cadence.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:39.436427+00:00",
+    "code": 0,
+    "duree_s": 1.161,
+    "log": "tests/cadence.test.mjs.log",
+    "sha256_log": "22d90966ae53029ef79f4b332a249c6f25e9e2de081fce2eb29be0ad10cc8e58"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/carene.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:40.598275+00:00",
+    "code": 0,
+    "duree_s": 0.12,
+    "log": "tests/carene.test.mjs.log",
+    "sha256_log": "31e13dbaf09da4f7b0e32013cbaa20a402aac75bf6fbb010b8cb763826e37eb4"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/chargement.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:40.719217+00:00",
+    "code": 0,
+    "duree_s": 1.296,
+    "log": "tests/chargement.test.mjs.log",
+    "sha256_log": "7e6b85a80734bcd1791f7110e25d176361955c71f3590d1ebc605967b4ac3e7a"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/chaussee-preparation.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:42.016251+00:00",
+    "code": 0,
+    "duree_s": 0.09,
+    "log": "tests/chaussee-preparation.test.mjs.log",
+    "sha256_log": "3199c87201a5bb6c0636c6873989b0e83c14d1b53cb5629056d3b8e950876ec9"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/chaussee-visuelle.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:42.106353+00:00",
+    "code": 0,
+    "duree_s": 1.572,
+    "log": "tests/chaussee-visuelle.test.mjs.log",
+    "sha256_log": "e80cd7c7db843d86d66c3518f58aef898c51f4cb466431fc931c0de134223c41"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/chaussee.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:43.679049+00:00",
+    "code": 0,
+    "duree_s": 0.091,
+    "log": "tests/chaussee.test.mjs.log",
+    "sha256_log": "3680989081d702a7eb69d7d976d01e589a9ed70c6bd45ce991dce7eeb567e32b"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/circuit.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:43.770602+00:00",
+    "code": 0,
+    "duree_s": 0.862,
+    "log": "tests/circuit.test.mjs.log",
+    "sha256_log": "b46f02efb4a3197eff35ae791970cef4f34de64c871e033483554b61495ebfa3"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/collisions-orientees.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:44.633701+00:00",
+    "code": 0,
+    "duree_s": 0.064,
+    "log": "tests/collisions-orientees.test.mjs.log",
+    "sha256_log": "7482efe2059051a7babd6e34b53e0e170c10317bcbaaf554f679e530ffd345bd"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/commandes-partage.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:44.698446+00:00",
+    "code": 0,
+    "duree_s": 0.11,
+    "log": "tests/commandes-partage.test.mjs.log",
+    "sha256_log": "171426dcb49a15f97dcf502ad6f30db3ad31b4652ce4f5b65553ae0128c19277"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/conditions-course.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:44.809664+00:00",
+    "code": 0,
+    "duree_s": 0.13,
+    "log": "tests/conditions-course.test.mjs.log",
+    "sha256_log": "d2133431c8af5cac380e47a75c7b587887d646b071844139ae96697060922e02"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/conditions-integration.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:44.940848+00:00",
+    "code": 0,
+    "duree_s": 0.152,
+    "log": "tests/conditions-integration.test.mjs.log",
+    "sha256_log": "c20509c9c0c726548dbad41d7bcb7a94db2c80d0a1277bf2ba78d70295d14c07"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/conduite-criteres.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:45.093779+00:00",
+    "code": 0,
+    "duree_s": 2.648,
+    "log": "tests/conduite-criteres.test.mjs.log",
+    "sha256_log": "8c1c4fe26e7b7e3224c85fc7eaa7a5f56088665a376c822999e9f90673e9b243"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/conduite.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:47.742515+00:00",
+    "code": 0,
+    "duree_s": 0.338,
+    "log": "tests/conduite.test.mjs.log",
+    "sha256_log": "1529ab394092c5c5498d18bc99857bc8490bd1a89b55cfa36c7e1addb7787c71"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/contacts.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:48.081939+00:00",
+    "code": 0,
+    "duree_s": 0.174,
+    "log": "tests/contacts.test.mjs.log",
+    "sha256_log": "e7becb6b5b4f76c03cc79b899fb3455e8169c463bf04ea5996a31ff4b02ba7aa"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/controle-visuel.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:48.256924+00:00",
+    "code": 0,
+    "duree_s": 0.085,
+    "log": "tests/controle-visuel.test.mjs.log",
+    "sha256_log": "580acc5a2942a31b9834b267039b47b4e46fe8ab9524390b9a6a0125e189a480"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/course.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:48.342311+00:00",
+    "code": 0,
+    "duree_s": 5.48,
+    "log": "tests/course.test.mjs.log",
+    "sha256_log": "fdab0d8ffa61b4184e46d31447636fd43464128f118990b6f9ae3d408f0eefa1"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/crash.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:53.822787+00:00",
+    "code": 0,
+    "duree_s": 0.697,
+    "log": "tests/crash.test.mjs.log",
+    "sha256_log": "d8713ead6e2b48e3ad358cf584bc0138ecd64d855ab56361d182e3a9ad7fe263"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/decor-identite.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:54.520759+00:00",
+    "code": 0,
+    "duree_s": 3.316,
+    "log": "tests/decor-identite.test.mjs.log",
+    "sha256_log": "b6af6569a3dba0e2e58c4bbdc030c3a009be39dadac91565fed92ac8bf41f6c2"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/decor-obstacles.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:57.837883+00:00",
+    "code": 0,
+    "duree_s": 0.652,
+    "log": "tests/decor-obstacles.test.mjs.log",
+    "sha256_log": "100895629fbae6d55cb654d4e400c051fc5772399339069731d806716336dc68"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/decor.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:58.491386+00:00",
+    "code": 1,
+    "duree_s": 0.603,
+    "log": "tests/decor.test.mjs.log",
+    "sha256_log": "e8ff93b2d6294dbacb9f2a7abc841cf1ed03ea52c34682ba8de5ff1acb9201cf"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/desert.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:23:59.095233+00:00",
+    "code": 0,
+    "duree_s": 4.184,
+    "log": "tests/desert.test.mjs.log",
+    "sha256_log": "84a8dc2524d8f85b22ad52c95a717e0e370a91998a54924e0c4e05ead5f552be"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/determinisme-simulation.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:24:03.280746+00:00",
+    "code": 0,
+    "duree_s": 20.468,
+    "log": "tests/determinisme-simulation.test.mjs.log",
+    "sha256_log": "5be192fae487c0ce90a123c36a65d52d9c201df46fad29cce3691d49049a505f"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/echappement.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:24:23.750081+00:00",
+    "code": 0,
+    "duree_s": 5.16,
+    "log": "tests/echappement.test.mjs.log",
+    "sha256_log": "45f2e5368a6163af52b140062ae6b72404905641b97fb6348d772fa80988d390"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/ecologie.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:24:28.910549+00:00",
+    "code": 0,
+    "duree_s": 1.655,
+    "log": "tests/ecologie.test.mjs.log",
+    "sha256_log": "891960f37670fb192ef7904d306f244b17db814a432a52de9301be4ad3904a43"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/effets-allocation.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:24:30.566125+00:00",
+    "code": 0,
+    "duree_s": 3.312,
+    "log": "tests/effets-allocation.test.mjs.log",
+    "sha256_log": "8bfe2869ebb24cc1eb206d5317b5cccc6b9eaa51c0d89e04796f5cf6946a0374"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/effets-saison.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:24:33.879003+00:00",
+    "code": 0,
+    "duree_s": 1.626,
+    "log": "tests/effets-saison.test.mjs.log",
+    "sha256_log": "c47f4449ca74f6c9263c2be23ba9b9d9630ff7571d753127a98b96c87c76a83a"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/faune.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:24:35.505857+00:00",
+    "code": 0,
+    "duree_s": 3.213,
+    "log": "tests/faune.test.mjs.log",
+    "sha256_log": "3cc84f55fadb17ca8899c2953904711a2c3419458fd72d500486a55feaf92a95"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/formes-libres.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:24:38.719974+00:00",
+    "code": 0,
+    "duree_s": 1.016,
+    "log": "tests/formes-libres.test.mjs.log",
+    "sha256_log": "108816b74409c50dce7a5978bb537cbed97d2a2ac6a6ea6082ff0352e22e5a65"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/glissiere-etats.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:24:39.737450+00:00",
+    "code": 0,
+    "duree_s": 0.107,
+    "log": "tests/glissiere-etats.test.mjs.log",
+    "sha256_log": "87823fec46c54e453653d2c714e46e256ad94d1efa3963ca69f504cc46db1ed5"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/glissiere-rebond.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:24:39.845584+00:00",
+    "code": 0,
+    "duree_s": 0.07,
+    "log": "tests/glissiere-rebond.test.mjs.log",
+    "sha256_log": "9519fdc37605e816222a849a5ca6bfc38a240c596146d4a745cc11306ef359e3"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/graphismes.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:24:39.916767+00:00",
+    "code": 0,
+    "duree_s": 0.07,
+    "log": "tests/graphismes.test.mjs.log",
+    "sha256_log": "7ad47c7ac4090f1878bca161e4fb12f1298df97538df429013ec87991ef85edd"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/herbier-identite.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:24:39.988064+00:00",
+    "code": 0,
+    "duree_s": 32.742,
+    "log": "tests/herbier-identite.test.mjs.log",
+    "sha256_log": "46e047f7561b555370dfe47caa3f27cc29ada723d9320c44f7320a378bdd1ffb"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/herbier-saisons.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:25:12.731813+00:00",
+    "code": 0,
+    "duree_s": 56.951,
+    "log": "tests/herbier-saisons.test.mjs.log",
+    "sha256_log": "2300ce144e011ea60c5ef6b6227493230e8df96798d1a640125ae688d00c2de7"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/ia-attaque.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:09.684186+00:00",
+    "code": 0,
+    "duree_s": 23.814,
+    "log": "tests/ia-attaque.test.mjs.log",
+    "sha256_log": "de7b035e39186bcf232aada08bd7fb07f9204337953560494721bd3c5a402d27"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/ia-epaves.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:33.500938+00:00",
+    "code": 0,
+    "duree_s": 0.14,
+    "log": "tests/ia-epaves.test.mjs.log",
+    "sha256_log": "ca5423ef09a9b8a569e56728e16e6554ae1d10062d19ad40c7f165409cccf966"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/ia-reprise.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:33.641982+00:00",
+    "code": 0,
+    "duree_s": 0.211,
+    "log": "tests/ia-reprise.test.mjs.log",
+    "sha256_log": "7930811d150b7e3a57350e14f3e88f40cdfad3e42941b8c79045e324939b7109"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/ia.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:33.854322+00:00",
+    "code": 0,
+    "duree_s": 0.139,
+    "log": "tests/ia.test.mjs.log",
+    "sha256_log": "371b77ff405d94335a6bf0600cd2a7b49d36a654359733fa65dc08ec8f8fd405"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/islande.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:33.994245+00:00",
+    "code": 0,
+    "duree_s": 3.372,
+    "log": "tests/islande.test.mjs.log",
+    "sha256_log": "2f31ce8c6a8f00c79a30f254d26b1d3eecb0f4b2ba6934e471af06f5d3d72482"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/lieux-traces.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:37.367143+00:00",
+    "code": 0,
+    "duree_s": 0.988,
+    "log": "tests/lieux-traces.test.mjs.log",
+    "sha256_log": "72bf83bdd4c0067b056ddd98845bdb82961f8d6511a0664a365cc219d3a60010"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/main.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:38.356747+00:00",
+    "code": 0,
+    "duree_s": 0.131,
+    "log": "tests/main.test.mjs.log",
+    "sha256_log": "dca764c8503bb4871b664b997a1cfa89ed547f3d62d159d743688cf821fc2ded"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/manette.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:38.488957+00:00",
+    "code": 0,
+    "duree_s": 0.091,
+    "log": "tests/manette.test.mjs.log",
+    "sha256_log": "527fe2f9af5cfc2e58856be62dfe704b26638740ff6c9033f33332096787238d"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/mesures.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:38.581291+00:00",
+    "code": 0,
+    "duree_s": 0.112,
+    "log": "tests/mesures.test.mjs.log",
+    "sha256_log": "87bc2be650259216e8805cec35e72026cfb86cc9ccb4b613a04868c3c4ab09da"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/meteo-reelle.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:38.694064+00:00",
+    "code": 0,
+    "duree_s": 0.128,
+    "log": "tests/meteo-reelle.test.mjs.log",
+    "sha256_log": "4417bac87c3b795495dc5aea71e6ddff4d9a774c4702313f3bf7ce6f2c9166d7"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/meteo-toile.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:38.823418+00:00",
+    "code": 0,
+    "duree_s": 0.174,
+    "log": "tests/meteo-toile.test.mjs.log",
+    "sha256_log": "3e9672ae1f7c75d1dd260b69d4a243d76280328d3bfe4774fc71b42b4cca572c"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/meteo.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:38.999132+00:00",
+    "code": 0,
+    "duree_s": 0.113,
+    "log": "tests/meteo.test.mjs.log",
+    "sha256_log": "ce4d2634938dca99f702adef9f95278e9b4155e002a6a17b6093ebec8cd57411"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/moteur-emprise.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:39.113082+00:00",
+    "code": 0,
+    "duree_s": 0.095,
+    "log": "tests/moteur-emprise.test.mjs.log",
+    "sha256_log": "f6e5a43c07e443f074e8d667162e729271c0d67f9bddb5f523ac09ea7b110ff2"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/nature-integration.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:39.209294+00:00",
+    "code": 0,
+    "duree_s": 0.063,
+    "log": "tests/nature-integration.test.mjs.log",
+    "sha256_log": "8301bfd515ef4462f1a08e75eff0b93c3854b55338ff8de450957fd9b0adfbfd"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/nature-preparation.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:39.273957+00:00",
+    "code": 0,
+    "duree_s": 2.729,
+    "log": "tests/nature-preparation.test.mjs.log",
+    "sha256_log": "79841675f9a7c73e86c2afc671cb79fc055da0ae506109ff68e56c1e673d71c2"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/navigation-menu.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:42.004253+00:00",
+    "code": 0,
+    "duree_s": 0.085,
+    "log": "tests/navigation-menu.test.mjs.log",
+    "sha256_log": "e5f7d14f12bf6edaf380073a3825046d59ea38fdd085a87238613a51da1577eb"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/obstacles-degagement.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:42.090809+00:00",
+    "code": 0,
+    "duree_s": 4.224,
+    "log": "tests/obstacles-degagement.test.mjs.log",
+    "sha256_log": "3ff4db403b22db7f12954b85b42f95a25baef1d905beb3ae9ac188104f4617fd"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/obstacles.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:46.318240+00:00",
+    "code": 0,
+    "duree_s": 0.077,
+    "log": "tests/obstacles.test.mjs.log",
+    "sha256_log": "05cb010d4e76823ec212470db21486eb19ba269ee77e71ab752d85ef00173278"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/ombres.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:46.396944+00:00",
+    "code": 0,
+    "duree_s": 1.649,
+    "log": "tests/ombres.test.mjs.log",
+    "sha256_log": "fb616a18463d4490aeac77bd5770652a4658c554a02fb18e1828564a93082a06"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/options-image.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:48.046924+00:00",
+    "code": 0,
+    "duree_s": 1.081,
+    "log": "tests/options-image.test.mjs.log",
+    "sha256_log": "0801cb2ae60e736acddd9abaeaae41989fe7ff5ae9d84a35edf3d774ea9adc42"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/pacifique.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:49.129394+00:00",
+    "code": 0,
+    "duree_s": 9.413,
+    "log": "tests/pacifique.test.mjs.log",
+    "sha256_log": "4a94f4fef0da16403b3e3b674f1601e6c41a0880d9703467ba2a3658aa3090e7"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/physx-monde.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:58.543906+00:00",
+    "code": 0,
+    "duree_s": 0.91,
+    "log": "tests/physx-monde.test.mjs.log",
+    "sha256_log": "52bc0b13a0ed248b6939d95ab6c49e57e582bcf34226a0e0611df9446cf1d44c"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/pieces.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:26:59.454590+00:00",
+    "code": 0,
+    "duree_s": 0.978,
+    "log": "tests/pieces.test.mjs.log",
+    "sha256_log": "1e7409c5cb4388c264801774ba429beed2321d1c154ee723ea67c61e6d7a9068"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/pneus.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:00.434762+00:00",
+    "code": 0,
+    "duree_s": 0.104,
+    "log": "tests/pneus.test.mjs.log",
+    "sha256_log": "dd2f77b3ceeb8dba2173c2a66dfb454fcb6cacf605c97c47640945f76a9e29f5"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/prets-enligne.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:00.540174+00:00",
+    "code": 0,
+    "duree_s": 0.12,
+    "log": "tests/prets-enligne.test.mjs.log",
+    "sha256_log": "f431f61b7f5daa99f984c78739b0c4e7e5edcaa8a33e49ea31b53194bea6c6aa"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/public.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:00.661783+00:00",
+    "code": 0,
+    "duree_s": 4.405,
+    "log": "tests/public.test.mjs.log",
+    "sha256_log": "e8c273baea370996b78f9605b778573f5d892894151036b93daaec3eb04b694d"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/qualite.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:05.068111+00:00",
+    "code": 0,
+    "duree_s": 0.082,
+    "log": "tests/qualite.test.mjs.log",
+    "sha256_log": "ea5dedd26752a9992b06f65411015a1050a7847f3e10b5b194621571146ca236"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/realisateur.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:05.151374+00:00",
+    "code": 0,
+    "duree_s": 4.355,
+    "log": "tests/realisateur.test.mjs.log",
+    "sha256_log": "8b94edf39359b7f641106fcd903b8f168e2ab1eab15a300e739ee29573057bef"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/relectures-phase2.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:09.507856+00:00",
+    "code": 0,
+    "duree_s": 0.635,
+    "log": "tests/relectures-phase2.test.mjs.log",
+    "sha256_log": "fe81a756f0818b97adbbc5219302fa6e8e71d7cff92a39aaaea8c51dc88bb885"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/rendu-halo.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:10.144378+00:00",
+    "code": 0,
+    "duree_s": 0.069,
+    "log": "tests/rendu-halo.test.mjs.log",
+    "sha256_log": "633cdfd7de9c1e5089d1fd42c3eaf3a16abdaecd5b80383822913fdd52df81c3"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/reprise-recul.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:10.214675+00:00",
+    "code": 0,
+    "duree_s": 0.077,
+    "log": "tests/reprise-recul.test.mjs.log",
+    "sha256_log": "0f7b3274a6c561310547216e6be49a01db56de95df65860c7f19145ac59afd07"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/roues-detail.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:10.293011+00:00",
+    "code": 0,
+    "duree_s": 0.831,
+    "log": "tests/roues-detail.test.mjs.log",
+    "sha256_log": "f5d9f24732fbcc808d74729fffe296d435fff08fb5954b3c363e1c848e4d2982"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/saisons.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:11.126276+00:00",
+    "code": 0,
+    "duree_s": 5.323,
+    "log": "tests/saisons.test.mjs.log",
+    "sha256_log": "5f1f02b66c2e230f14372f6c991f482db22a6be72593c235e2f4da5e7beed30d"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/salon-protocole.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:16.451119+00:00",
+    "code": 0,
+    "duree_s": 3.201,
+    "log": "tests/salon-protocole.test.mjs.log",
+    "sha256_log": "36bc4e66c5291a0ecd76e09a13e38eecc81618985ba6327a52d5ab6745bdc7d6"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/scene-bench.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:19.654145+00:00",
+    "code": 0,
+    "duree_s": 12.073,
+    "log": "tests/scene-bench.test.mjs.log",
+    "sha256_log": "0abe318cf18b1450c3c0bd3fd5c54f3546ec3b7288d17de02ad073e532e70914"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/sillage.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:31.728011+00:00",
+    "code": 0,
+    "duree_s": 0.079,
+    "log": "tests/sillage.test.mjs.log",
+    "sha256_log": "049cb02f94047fa81b1670f0476a2c4a13f146d1390d9b32445d5a221d547f0c"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/simulation-sorties.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:31.808616+00:00",
+    "code": 0,
+    "duree_s": 6.871,
+    "log": "tests/simulation-sorties.test.mjs.log",
+    "sha256_log": "2e1a7d011c7363e112f7360372ccb4409391a48cde8f22d39dfdfb783c2b2285"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/son.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:38.681591+00:00",
+    "code": 0,
+    "duree_s": 0.612,
+    "log": "tests/son.test.mjs.log",
+    "sha256_log": "6e0d6e542ba4f419146b4272a6bb664297048d4b8d275515c20815cd35813a3b"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/stands.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:39.295808+00:00",
+    "code": 0,
+    "duree_s": 8.578,
+    "log": "tests/stands.test.mjs.log",
+    "sha256_log": "b7bb28ea5e7f1233f278f439f92f2ed45755185047fc37611d7541f573e21f6e"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/titre-signature.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:47.874735+00:00",
+    "code": 0,
+    "duree_s": 0.076,
+    "log": "tests/titre-signature.test.mjs.log",
+    "sha256_log": "2ad846eef3bcde7be2f8ada3e72fe2b2a7f5ce45013bdaf0fa8113def203ab9d"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/traces.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:47.951928+00:00",
+    "code": 1,
+    "duree_s": 0.752,
+    "log": "tests/traces.test.mjs.log",
+    "sha256_log": "f9ac1d1aea5afb9a599f66eb435cdcfdf56445f869bcf7c6e58fe15adf9db5e2"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/troncs.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:48.705276+00:00",
+    "code": 0,
+    "duree_s": 0.649,
+    "log": "tests/troncs.test.mjs.log",
+    "sha256_log": "5aaf97f33eaec88243b9cbadea22c62747910e83255e26c78a1ab59b2b5f7b1d"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/tunnel-transitions.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:49.355848+00:00",
+    "code": 0,
+    "duree_s": 0.288,
+    "log": "tests/tunnel-transitions.test.mjs.log",
+    "sha256_log": "d525c9381e4b1e56be7877e8385d4f67008ad243cc6f77187275f672c300a82d"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/tunnel.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:49.645322+00:00",
+    "code": 0,
+    "duree_s": 0.69,
+    "log": "tests/tunnel.test.mjs.log",
+    "sha256_log": "8a576d718b7607027664b72d208c9b17ff336574b785c9cb92a3a91ea5782b05"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/usure-integration.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:50.337433+00:00",
+    "code": 0,
+    "duree_s": 0.334,
+    "log": "tests/usure-integration.test.mjs.log",
+    "sha256_log": "ebca48cba20d4bd83f416c08e32b5904f2b56640bc36f6b08ea061bd9a9893df"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/usure-pneus.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:50.672776+00:00",
+    "code": 0,
+    "duree_s": 0.197,
+    "log": "tests/usure-pneus.test.mjs.log",
+    "sha256_log": "471a80e341db1ce24b7a8436478d316924a2fd3418b92fb6646cda47e0e7ec63"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/usure-visuelle.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:50.871344+00:00",
+    "code": 0,
+    "duree_s": 0.69,
+    "log": "tests/usure-visuelle.test.mjs.log",
+    "sha256_log": "ec3b316f5b951af4317ee53db830373e254cf883af4fa3583cf8c1a6a267f09d"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/vegetation.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:27:51.562483+00:00",
+    "code": 0,
+    "duree_s": 12.276,
+    "log": "tests/vegetation.test.mjs.log",
+    "sha256_log": "f7574b1f15e441564bbe9d68f2bbbed23f4059fb7bd88f59a78db8e982fd6368"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/vibrations.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:28:03.840470+00:00",
+    "code": 0,
+    "duree_s": 0.111,
+    "log": "tests/vibrations.test.mjs.log",
+    "sha256_log": "fa4a7f7e5402d5b35752edd7492bd4beee62bada27d7b5c6fe08638e05d34917"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/vitre-cadence.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:28:03.953778+00:00",
+    "code": 0,
+    "duree_s": 0.186,
+    "log": "tests/vitre-cadence.test.mjs.log",
+    "sha256_log": "b48e588fd7f6317a4bc917b8492fba0fec30b01b0b4619900d07ded0feb5a5ea"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/vitre.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:28:04.141164+00:00",
+    "code": 0,
+    "duree_s": 0.209,
+    "log": "tests/vitre.test.mjs.log",
+    "sha256_log": "5f9967efbed6a96f06134e2de550b396dcd2e608e00766f95eaa53b416e4e503"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/voiture-identite.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:28:04.351365+00:00",
+    "code": 0,
+    "duree_s": 4.238,
+    "log": "tests/voiture-identite.test.mjs.log",
+    "sha256_log": "b5463fe0e93d34c84318341b182d1a0fe4ce2eae28fe7ad01cb556c9c4ee5241"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/voiture-permanents.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:28:08.590737+00:00",
+    "code": 0,
+    "duree_s": 5.542,
+    "log": "tests/voiture-permanents.test.mjs.log",
+    "sha256_log": "247cf8ac6afd715afb6eaa2f0cc7bab7b8fab5b38525b954eb6211f91bd08161"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/voiture.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:28:14.135085+00:00",
+    "code": 0,
+    "duree_s": 5.902,
+    "log": "tests/voiture.test.mjs.log",
+    "sha256_log": "4f8da76d81336c2e32bb3318844d7f275f9ccbdb994c67aafef3a80714e8c57e"
+  },
+  {
+    "argv": [
+      "node",
+      "verifications/determinisme-simulation.test.mjs"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:28:20.038197+00:00",
+    "code": 0,
+    "duree_s": 18.623,
+    "log": "determinisme-verification-independante.log",
+    "sha256_log": "0977274386f69b23e82e927d92421001f8c0fad5a5d27c0f2113c17804384fe8"
+  },
+  {
+    "argv": [
+      "node",
+      "docs/reprise/rapports/12E-2026-11-19/viabilite.mjs",
+      "/workspace/scratch/fb61bd99753c/bitume",
+      "/workspace/scratch/fb61bd99753c/bitume/docs/reprise/rapports/12E-2026-11-19/cloture/viabilite"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:28:38.662646+00:00",
+    "code": 0,
+    "duree_s": 44.847,
+    "log": "viabilite.log",
+    "sha256_log": "4163acd5bd7e9f671ac9c8d72a612206ee9e13e176faa717c45dcef476eebe7a"
+  }
+]

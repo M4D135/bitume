@@ -34,7 +34,7 @@ const fabriquer = new Function('B', 'options', `
   const texte = (e, t) => { e.textContent = t; }, classe = () => {}, clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const ECRANS = ['titre','enligne','prets','preparation','reglages','pause','resultats'];
   const CATALOGUE = [{ nom: 'Forêt', theme: 'foret' }, { nom: 'Port-Sable', theme: 'cote' }, { nom: 'Haut-Col', theme: 'montagne' }];
-  const NOMS_PNEUS = { slicks: 'Slicks', inter: 'Intermédiaires', pluie: 'Pluie' };
+  const NOMS_PNEUS = B.pneus.NOMS_PNEUS;
   const reglages = { circuit: 0, tours: 3, difficulte: 1, saison: 'ete', moment: 'jour', meteo: 'soleil',
     saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', pneus: 'slicks', boite: 'auto', vue: 'cockpit', joueursLocaux: 1 };
   const son = null, palier = {}, pad2 = null, hud2 = $('hud2'), jeu = $('jeu'), estTactile = true;
@@ -110,6 +110,37 @@ test('changement de choix annule la recherche et une réponse tardive ne remplac
   f.resolutions[0].resolve(snapshot()); assert.equal(await a, null); assert.equal(f.$('b-depart').disabled, true);
   const k = snapshot({ saison: 'automne' }); f.resolutions[1].resolve(k); assert.strictEqual(await b, k);
   assert.strictEqual(f.conditionsDuDepart(), k); assert.equal(f.$('b-depart').disabled, false);
+});
+
+test('vitrine hivernale : actualiser la météo conserve la chaussée préparée sans reconstruire la séance', async () => {
+  for (const [i, theme] of [[0, 'foret'], [1, 'cote'], [2, 'montagne']]) {
+    const f = fixture(), profil = production.saisons.profil('hiver', theme);
+    Object.assign(f.reglages, { circuit: i, saison: 'hiver', meteo: 'pluie' });
+    const vitrine = { type: 'vitrine', i, nature: { saison: profil },
+      meteo: production.chaussee.preparer(production.meteo.pour('soleil'), profil) };
+    f.session(vitrine);
+    // Changer les seules précipitations garde le circuit et le paysage déjà construits.
+    for (const mReelle of [null, { reel: true, neige: true, phase: 'pluie', pluie: .4, mouille: 0 }]) {
+      const avant = vitrine.meteo, attente = f.actualiserConditions(true), k = snapshot({ mReelle });
+      f.resolutions.at(-1).resolve(k);
+      assert.strictEqual(await attente, k);
+      assert.strictEqual(f.etat().session, vitrine);
+      assert.equal(f.departs.length, 0, 'la branche conserve bien la vitrine existante');
+      assert.notEqual(vitrine.meteo, avant, 'les nouvelles observations sont appliquées');
+      assert.equal(vitrine.meteo.neigeSol, theme === 'cote' ? 0 : .75);
+      assert.equal(vitrine.meteo.precipitationsNeige, theme !== 'cote');
+      for (let pas = 0; pas < 60; pas++) production.meteo.avancer(vitrine, .1);
+      const surface = production.chaussee.lire(null, 0, vitrine.meteo);
+      if (theme === 'cote') {
+        assert.equal(surface.neige, 0);
+        assert.ok(surface.eau > 0, 'les précipitations restent liquides au Sud');
+      } else {
+        assert.equal(surface.neige, .75);
+        assert.equal(surface.eau, 0, 'les flocons ne créent pas d’eau après actualisation');
+        assert.equal(f.reglages.pneus, 'neige');
+      }
+    }
+  }
 });
 
 test('retour depuis la préparation annule sans départ ou réactivation par une réponse tardive', async () => {

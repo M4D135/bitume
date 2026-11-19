@@ -1,0 +1,21 @@
+{
+  "execution": {
+    "argv": [
+      "node",
+      "verifications/determinisme-simulation.test.mjs",
+      "--ecrire"
+    ],
+    "cwd": "/workspace/scratch/fb61bd99753c/bitume",
+    "date_utc": "2026-11-19T10:22:53.918824+00:00",
+    "code": 0,
+    "duree_s": 21.896,
+    "log": "determinisme-generation.log",
+    "sha256_log": "bf68c47ee61a3510c3abbe7a5cd97b4faa78c2fa3079273f40d409d0e572938d"
+  },
+  "fichiers_changes": [
+    "verifications/fixtures/determinisme-p10.json"
+  ],
+  "p9_inchangee": true,
+  "fixture_p10_changee": true,
+  "fixture_p10_sha256": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f"
+}

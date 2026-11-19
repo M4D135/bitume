@@ -1,0 +1,7 @@
+ok IA : un rival à 80 m/s évite une voiture arrêtée (pas de contact) : 1.000 (cible pas de contact)
+ok IA : soit il la dépasse à côté, soit il s’arrête avant : 1.000 (cible évité) — passée=true vFin=53.1
+ok IA : il freine en approchant : 1.000 (cible oui)
+ok IA : évite aussi à 40 m/s : 1.000 (cible pas de contact)
+ok IA : évite aussi à 65 m/s : 1.000 (cible pas de contact)
+---
+5/5 critères IA tenus

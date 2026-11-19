@@ -55,7 +55,7 @@ verifier('profils figés, été par défaut et aucune neige sur Port-Sable', () 
   }
 });
 
-verifier('douze scènes : recoloration seulement, routes propres, collisions et tracés identiques', () => {
+verifier('douze scènes : recoloration seulement, chaussée hivernale lisible, collisions et tracés identiques', () => {
   for (const [graine, theme, longueur] of [[11, 'foret', 4200], [29, 'cote', 3600], [47, 'montagne', 5200]]) {
     const c = B.circuit.creer(graine, { theme, longueur }), trace = digest([c.x, c.y, c.z, c.cap, c.devers]);
     const ete = B.decor.construire(c, { qualite: 'high', vegetation: false, saison: 'ete' });
@@ -71,8 +71,13 @@ verifier('douze scènes : recoloration seulement, routes propres, collisions et 
         const n = d.nappes[i], reference = ete.nappes[i], masque = masqueHerbe(n);
         for (let v = 0; v < masque.length; v++) for (let k = 0; k < 3; k++) {
           const couleur = n.sommets[v * 13 + 10 + k];
+          const mat = reference.sommets[v * 13 + 9];
+          const asphalte = n.surfaceType === 'accotement' && (mat === 14 || mat === 21)
+            && reference.sommets[v * 13 + 10] < .3
+            && reference.sommets[v * 13 + 10] === reference.sommets[v * 13 + 11];
           assert.ok(couleur >= 0 && couleur <= 1);
-          if (!masque[v]) assert.equal(couleur, reference.sommets[v * 13 + 10 + k], 'route, sable, eau et roches inchangés');
+          if (!masque[v] && !(d.saison.neige && asphalte)) assert.equal(couleur, reference.sommets[v * 13 + 10 + k], 'marquages, sable, eau, roches et asphalte hors hiver inchangés');
+          else if (d.saison.neige && asphalte) assert.ok(couleur >= reference.sommets[v * 13 + 10 + k], 'asphalte enneigé plus clair, ou sec sous abri');
           else if (d.saison.neige) assert.ok(couleur > .80, 'les vrais accotements et terrains herbeux sont enneigés');
         }
       }

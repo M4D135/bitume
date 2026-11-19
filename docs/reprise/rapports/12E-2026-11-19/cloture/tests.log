@@ -1,0 +1,3316 @@
+
+=== adherence-chaussee.test.mjs ===
+ok les quatre familles ont chacune leur domaine de chaussée
+ok les anciens appels eau seule conservent exactement leurs coefficients neufs
+ok flocons seuls sans couverture ne deviennent pas une chaussée enneigée
+ok entrées invalides bornées et catalogue protégé contre les clés héritées
+ok usure progressive sans falaise, réponse bornée pour chaque type et chaque état de route
+ok la lecture IA reste finie malgré des charges absentes, invalides ou débordantes
+ok les vraies capacités distinguent chaque roue et chaque essieu
+ok le facteur IA reproduit les contributions de charge et protège l’essieu limitant
+ok la neige change la traction réelle et des pneus usés allongent le freinage
+ok l’usure reçoit la même surface que les forces, en marche avant, au recul et sous abri
+ok l’IA lit aussi la chaussée après le portail avant de sortir du tunnel
+ok l’anticipation réutilise les pneus tant que la chaussée reste identique
+ok le nombre d’images ne change ni les forces ni l’usure pour les mêmes pas de conduite
+13 contrôles chaussée, adhérence et usure physique réussis
+
+=== ambiance.test.mjs ===
+ok jour/nuit sur chaque circuit, sans modifier la météo ni la densité de brume
+ok la nuit est accessible immédiatement et le cycle garde une transition continue
+ok tampons partagés entre vues et actualisation de lumière bornée
+ok petit profil sans faune, maximum manuel conservé et prairie adaptée à Auto
+4 contrôles ambiance/nature réussis.
+
+=== animaux.test.mjs ===
+   196 formes, 46810 triangles, bâties en 128 ms
+ok formes bâties au chargement : finies, dans le cube unité, faces dans le sens des normales, noms propres
+   foret : 6 groupes, 34 bêtes au sol, 4 volants, 6 refuges, créé en 78 ms (207 ms de processeur)
+   cote : 4 groupes, 32 bêtes au sol, 11 volants, 4 refuges, créé en 22 ms (32 ms de processeur)
+   montagne : 6 groupes, 23 bêtes au sol, 1 volants, 4 refuges, créé en 57 ms (162 ms de processeur)
+   islande : 6 groupes, 30 bêtes au sol, 24 volants, 6 refuges, créé en 34 ms (46 ms de processeur)
+   desert : 7 groupes, 29 bêtes au sol, 5 volants, 7 refuges, créé en 37 ms (37 ms de processeur)
+   asie : 6 groupes, 24 bêtes au sol, 2 volants, 6 refuges, créé en 31 ms (32 ms de processeur)
+   pacifique : 3 groupes, 23 bêtes au sol, 15 volants, 3 refuges, créé en 41 ms (47 ms de processeur)
+ok sept circuits : toutes les espèces trouvent un habitat ; placement reproductible, sans Math.random ni retouche du décor
+   foret : plus près de l’axe 56.1 m ; échantillons en fuite 733, en vol 0 ; cerveau 43 ms pour 240 s (31 ms de processeur)
+   cote : plus près de l’axe 42.4 m ; échantillons en fuite 264, en vol 0 ; cerveau 25 ms pour 240 s (34 ms de processeur)
+   montagne : plus près de l’axe 51.0 m ; échantillons en fuite 2, en vol 0 ; cerveau 22 ms pour 240 s (22 ms de processeur)
+   islande : plus près de l’axe 37.0 m ; échantillons en fuite 604, en vol 0 ; cerveau 24 ms pour 240 s (29 ms de processeur)
+   desert : plus près de l’axe 53.2 m ; échantillons en fuite 1077, en vol 0 ; cerveau 16 ms pour 240 s (53 ms de processeur)
+   asie : plus près de l’axe 44.5 m ; échantillons en fuite 465, en vol 3659 ; cerveau 29 ms pour 240 s (25 ms de processeur)
+   pacifique : plus près de l’axe 45.1 m ; échantillons en fuite 275, en vol 0 ; cerveau 15 ms pour 240 s (36 ms de processeur)
+ok 240 s de course : aucune bête sur la route, son dégagement, l’enceinte ou le tunnel ; volants bas loin de la piste
+   cerfs : 39 m vers le refuge en 8 s, calme retrouvé 116 s après le passage
+ok fuite devant une voiture, refuge, puis retour au domaine ; accoutumance
+ok mêmes images à 30, 60 et 120 images par seconde ; le dessin ne touche pas au cerveau
+   galop à 11.0 m/s ; dans chaque dixième de seconde, pas d’image le plus court 80 % du plus long
+ok mouvement continu en pleine fuite : ni double pas ni arrêt aux pas du cerveau
+ok réserve réutilisée : mêmes objets d’une image à l’autre, dans le même ordre
+   octets par image à 60 i/s (deux vues, 70 objets par vue) : harnais seul 385, dessin 417, cerveau et dessin 726
+ok sans allocation en course : le dessin n’alloue rien, le cerveau presque rien
+   objets à 20/60/180/320 m : {"off":[0,0,0,0],"low":[14,14,14,14],"medium":[45,43,33,40],"high":[53,53,33,40],"ultra":[74,53,33,40]}
+ok budgets par palier : rien en off, Légère réduite à quelques silhouettes lointaines
+ok saisons : marmottes, moutons et oies absents l’hiver ; cerfs sans bois au printemps ; jeunes et robes d’hiver
+   bêtes au repos : 26 % le jour, 74 % la nuit
+ok nuit et averse : diurnes couchés, marmottes au terrier, rapaces posés
+ok sol exact : la hauteur suit les triangles du maillage rendu
+ok course reprise du départ : mêmes bêtes, mêmes trajets
+13 contrôles animaux
+
+=== arbres-lots.test.mjs ===
+ok constantes exportées : cases de 60 m, éparses de 120 m sous trois arbres, bascule à 80 m, 150 pixels
+ok Légère garde ses lots historiques : aucune case d'arbres, aucune référence de champ
+ok solides et positions des arbres identiques à Légère, dans le même ordre
+ok chaque objet proche une seule fois ; aucun tronc hors des cases ; un tronc par position d'arbre
+ok cases denses de 60 m, cases éparses de 120 m, aucun carré partagé, sphère qui contient tout
+ok bascule par taille projetée : au moins BASCULE_ARBRES, reculée pour les grands arbres, sans portée
+ok version lointaine : silhouette de la même essence et tronc allégé, mêmes position, taille et rotation
+ok mobilier : lots historiques conservés, ou copiés sans leurs arbres avec la même sphère et la même bascule
+ok basculeArbres règle les seules cases d'arbres et garde le recul des grands arbres
+ok lotsSecondMoteur : copies sans tampons ; version lointaine seule pour les arbres sur demande
+ok massifs de végétation basse ajoutés à la fin, après les cases ; solides inchangés
+ok sans module botanique, les cases se font quand même et aucun tronc allégé n'est posé
+{"controles":12,"cases":{"foret":145,"montagne":143,"cote":88,"asie":29,"pacifique":75}}
+
+=== asie.test.mjs ===
+ok sixième entrée, les cinq identifiants et graines précédents restent en place
+ok boucle fermée, départ droit, pente et trajectoire praticables
+ok terrain jade varié et relief asymétrique, bosquets bornés
+ok rochers et troncs hors de toutes les portions de chaussée
+ok quatre saisons sans déplacement de la route, des arbres ou des solides
+ok qualité basse conserve le terrain, les arbres et les collisions
+ok tracé et décor se reconstruisent sans dépendre du hasard global
+ok onze rivaux accomplissent un tour sans rester bloqués
+{"controles":8,"mesures":{"longueur":5018,"denivelePiste":24.760682908152948,"penteMax":0.05445045924781644,"arbres":46,"trianglesNappes":95608,"objets":7716,"lots":63,"ete":{"jade":1,"neige":0,"nuances":31,"relief":[-42.56916809082031,277.72369384765625]},"asymetrie":12.164736043919477,"rochers":104,"margeRochers":47.679679350572016,"margeArbres":36.06665448584189,"hiver":{"jade":0.0021893814997263274,"neige":1,"nuances":11,"relief":[-42.56916809082031,277.72369384765625]},"course":{"rivauxArrives":11,"duree":253.29166666660063}}}
+
+=== aurores.test.mjs ===
+ok formes finies, doubles faces, dans le cube unité et sans triangles dégénérés
+ok Islande uniquement, nuit et ciel dégagé ; pluie/neige/nuages atténuent, tunnels masquent
+ok rubans déterministes dans le monde, sans hasard de simulation ni dépendance à la caméra
+ok géométrie au-dessus du terrain, sans collision ni overlay, dans le plan lointain de 6000 m
+ok budgets qualité bornés et pools réutilisés sans mutation croisée des deux vues
+5 contrôles des aurores réussis
+
+=== autoconfig-integration.test.mjs ===
+ok détection à la main : remplace les six options, garde conduite, météo, moment et la course
+ok nouvelle version, détection automatique : les choix du joueur depuis la précédente restent
+ok premier lancement : les valeurs d’usine sont remplacées ; une option déjà changée reste
+ok détection à la main : tout est appliqué, même après des choix manuels
+ok « Passer » au démarrage : rien d’appliqué, et la question ne revient pas pour cette version
+ok C1 : onglet passé en arrière-plan pendant le test : il attend le retour du joueur, puis reprend
+ok autre interruption au démarrage (délai, contexte perdu) : refaite à l’ouverture suivante, deux fois au plus
+ok C7 : trace illisible, réglages gardés : seules les options retouchées passent pour des choix du joueur
+ok C2 : palier au-dessus refusé de peu : appliqué, refait à l’ouverture suivante, deux fois au plus
+ok annulation et exception à la main : aucune préférence écrite, interface et monde restitués
+ok mesure à la taille de l’écran entier, toile rendue ensuite
+ok empreinte : version du badge et carte graphique ; ni la fenêtre ni l’écran
+ok aucune double détection et aucun lancement pendant une partie en ligne
+ok perte puis retour WebGL : restaurer le vrai décor après la fin du banc
+ok parcours transmis : sonde, fin forcée, simulation, glaces différées ; moteur des glaces prêté puis rendu
+ok la vitrine suit immédiatement la densité sélectionnée ; l’onglet Image dit ce qui est gardé
+ok écran bridé à 30 Hz pendant la mesure : appliquée, refaite à l’ouverture suivante, sans condamner la machine
+ok palier appris : gardé pour la même version et la même carte, oublié sinon
+ok premier lancement : attendre la détection avant le titre, la musique et la boucle
+ok C1 : page ouverte dans un onglet en arrière-plan : le test attend qu’elle passe au premier plan
+ok ouverture suivante : une détection par version et par carte graphique, jamais plus
+21 contrôles d’intégration de la détection réussis.
+
+=== autoconfig.test.mjs ===
+ok empreinte : version du jeu et machine, rien d’autre
+ok cache : même version gardée ; nouvelle version, autre carte ou révision précédente refaites
+ok référence des choix : celle notée par la détection, ou les réglages d’une détection de la révision 2
+ok C7, trace perdue : la référence la plus proche des réglages actuels, pas les valeurs d’usine
+ok fusion automatique : les options touchées par le joueur restent, les autres suivent la recommandation
+ok fusion à la main : tout est remplacé, même les options touchées
+ok trace d’une détection passée ou interrompue : tentatives comptées par version, référence gardée
+ok les réglages ne touchent ni au moment de la course ni aux commandes
+ok Apple M5 : Moyenne tient, Fine (deux fois plus de pixels, une glace par image) refusée
+ok rafales : le recouvrement du processeur et de la carte est compté (14,4 ms en série, 12,8 en rafale)
+ok processeur lent : la mesure le paie et refuse Moyenne
+ok fil principal : estimé en course à 3 fois celui du parcours, il tient dans la moitié du budget
+ok C5 : fil principal mesuré une image par rappel, comme en course, et non en rafale
+ok C2, C4 : zone grise mesurée deux fois ; deux séries doivent passer, la troisième tranche ; refus de peu provisoire
+ok mesure de contrôle seulement si elle tient dans les six secondes
+ok carte très lente : Légère conclue en trois images de Moyenne, sans créer le moteur des glaces
+ok sonde : un rendu logiciel conclut Légère sans bâtir le décor de Moyenne ; une carte graphique continue
+ok rendu logiciel reconnu par la sonde, processeur trop lent pour la simulation : Légère sans aucun décor
+ok compilation à la première image : pas jugée, le palier reste mesuré
+ok chauffe : deux images de suite au-delà de trois budgets au second tour jugent le palier sans espoir
+ok limite : juste sous la limite accepté, juste au-dessus refusé
+ok le point de vue le plus cher juge : le cockpit et ses glaces
+ok glaces absentes du parcours : la limite perd leur part
+ok écran bridé à 30 Hz ou écran à 120 Hz : mêmes coûts, même verdict, bridage reconnu
+ok Extrême essayé seulement si Fine tient dans la moitié de la limite
+ok cadence relevée sur des images à vide ; la simulation y chauffe ; préparation sans chronomètre GPU
+ok bilan : chaque point de vue mesuré deux fois au moins, la limite est incluse
+ok six secondes au pire : un palier de plus n’est essayé que s’il y tient
+ok décor trop long : le palier n’est pas mesuré (Légère si c’est Moyenne), en peu de temps
+ok délai pendant un palier de plus : le palier mesuré tient ; avant toute mesure : interrompu
+ok annulation, onglet masqué, contexte perdu et rappel d’image bloqué ne donnent aucun réglage
+31 contrôles de détection graphique réussis.
+
+=== bords-integration.test.mjs ===
+ok  Val-Brûlé (low) : décor historique intact, bords ajoutés à la fin
+ok  Val-Brûlé (high) : décor historique intact, bords ajoutés à la fin
+ok  Port-Sable (low) : décor historique intact, bords ajoutés à la fin
+ok  Port-Sable (high) : décor historique intact, bords ajoutés à la fin
+ok  Haut-Col (low) : décor historique intact, bords ajoutés à la fin
+ok  Haut-Col (high) : décor historique intact, bords ajoutés à la fin
+ok  Lande-Noire (low) : décor historique intact, bords ajoutés à la fin
+ok  Lande-Noire (high) : décor historique intact, bords ajoutés à la fin
+ok  Roche-Fauve (low) : décor historique intact, bords ajoutés à la fin
+ok  Roche-Fauve (high) : décor historique intact, bords ajoutés à la fin
+ok  Brume-de-Jade (low) : décor historique intact, bords ajoutés à la fin
+ok  Brume-de-Jade (high) : décor historique intact, bords ajoutés à la fin
+ok  Cap-Séquoia (low) : décor historique intact, bords ajoutés à la fin
+ok  Cap-Séquoia (high) : décor historique intact, bords ajoutés à la fin
+ok  la caméra au sol ne se pose jamais dans un muret ou un parapet des bords
+15 vérifications de l'intégration des bords de route
+
+=== bords.test.mjs ===
+ok  le plan ne dépend que du circuit, tiré sans Math.random et sans toucher au tracé
+ok  deux à quatre bords dangereux par circuit, à 500 m au moins l'un de l'autre, ni aux stands ni sous le tunnel
+ok  publicités : séries de 3 à 6 bandeaux, hors des stands, du tunnel, des bords dangereux et des panneaux historiques
+ok  marques imaginaires : 24 noms distincts, identité visuelle stable et lisible
+ok  limites : parapet à w + 1,4, muret à w + 1, fossé à w + 2,5, en entonnoir de pente 0,35 au plus
+ok  pose : mêmes solides en Légère et en Fine, Légère plus légère, aucun solide sur la chaussée
+ok  un tracé de génération 3 déclare ses bords : ils sont repris tels quels (Haut-Col proposé)
+7 vérifications des bords de route
+
+=== botanique.test.mjs ===
+ok trois essences figées et budgets consultables, segments proches strictement supérieurs aux lointains
+ok dix-huit formes distinctes, nommées et mémoïsées à la référence près
+ok triangles finis, non dégénérés, normés, tenus dans le cube unité
+ok paliers strictement croissants low < medium < high, en proche comme en loin
+ok le lointain ne retire aucun organe : mêmes pieds, mêmes cimes, organes comptés identiques
+ok déterminisme : deux exécutions indépendantes donnent les mêmes empreintes sha256
+ok installer enregistre les dix-huit arbres et le tronc lointain, et refuse un rendu indisponible
+ok formes proches figées (triangles et empreintes arrondies)
+ok silhouette lointaine tenue dans la boîte de la forme proche
+ok silhouette lointaine : amas et plateaux de la forme proche repris à l'identique
+ok silhouette lointaine : seules les faces des plateaux du pin sont émises des deux côtés
+ok silhouette lointaine au moins 2,5 fois plus légère que la forme proche en Moyenne et en Fine
+ok silhouette lointaine figée : quatre faces par branche, huit rayons par plateau, triangles mesurés
+ok tronc lointain : prisme à six faces sans fonds, normales lisses horizontales, dans le cylindre unité
+ok matières du moteur : écorce 26 (fibrousBark), feuillage 27 (botanicalFoliage)
+{
+  "controles": 15,
+  "comptes": {
+    "feuillu": {
+      "low": {
+        "proche": 486,
+        "loin": 144
+      },
+      "medium": {
+        "proche": 1074,
+        "loin": 212
+      },
+      "high": {
+        "proche": 2022,
+        "loin": 296
+      }
+    },
+    "pin": {
+      "low": {
+        "proche": 538,
+        "loin": 286
+      },
+      "medium": {
+        "proche": 1182,
+        "loin": 454
+      },
+      "high": {
+        "proche": 2218,
+        "loin": 670
+      }
+    },
+    "conifere": {
+      "low": {
+        "proche": 750,
+        "loin": 218
+      },
+      "medium": {
+        "proche": 1854,
+        "loin": 378
+      },
+      "high": {
+        "proche": 3702,
+        "loin": 582
+      }
+    }
+  }
+}
+
+=== cadence.test.mjs ===
+ok 30, 60 et 120 Hz avec ±2 ms de gigue : verrou, pas et alpha constants, temps de jeu exact
+ok 144, 165, 75 et 100 Hz : temps de jeu avançant d’une période par image à mieux que 0,5 ms
+ok horloge d’écran qui dérive de ±1 % : la dette garde le temps de jeu à moins de 1 ms de l’écran
+ok horodatages arrondis à la milliseconde (Firefox, Safari), de 30 à 240 Hz
+ok accroc isolé de 195 ms : un rattrapage borné à maxPas, puis la cadence d’avant, k inchangé
+ok onglet masqué 5 s puis revenu : un seul pas, rien de raté ni de rattrapé, avec ou sans oublier
+ok onglet masqué à k = 2 : les pas en attente d’un rappel sauté ne sont pas rattrapés au retour
+ok pause de 170 ms : oublier évite l’image ratée et le rattrapage
+ok machine trop lente (1,4 période par image), qualité non réductible : k = 2, cadence régulière
+ok machine trop lente, qualité réductible : k attend, le gouverneur de qualité baisse puis ne réessaie qu’après 20 s
+ok rappels en trop entre deux synchronisations : ni rendus ni comptés, le verrou tient
+ok essai de retour réussi : pas avant 20 s de régularité, une seconde, puis k − 1 tenu
+ok essai raté : délai doublé, trois essais au plus ; oublier ne rend pas les essais, nouvelleSeance oui
+ok fil principal trop chargé (plus de 40 % de la période visée) : aucun essai
+ok écran 60 Hz bridé à 30 puis rendu : ni le diviseur ni la qualité ne bougent
+ok modes forcés : cible ramenée au diviseur de l’écran le plus proche, aucune décision automatique
+ok normaliser, MODES et options de creer
+ok jamais sous 24 images par seconde environ
+ok machine régulière à deux, trois ou quatre périodes d’un écran rapide : pas un écran bridé, k juste
+ok machine lente dès le départ : la grille est celle de l’écran, pas celle des intervalles moyens
+ok amorce sur douze intervalles d’un écran 30 Hz avec ±2 ms : la grille de l’écran, pour 3 000 graines
+ok mode Écran, machine à un peu plus de deux périodes : la grille reste celle de l’écran
+ok écran bridé pendant que k > 1 : la cadence tenue ne change ni pendant ni après le bridage
+ok machine liée au processeur graphique, images de 1,5 à 1,7 période : aucun saut du temps de jeu en 2 min
+ok horodatage qui recule de 10 s : reprise aussitôt, l’écran ne fige pas
+ok machine à moins de 4 images par seconde : rattrapage borné par maxPas ; une coupure isolée vaut un pas
+ok fil principal de 18 à 30 ms en Fine sur 60 Hz : la grille est l’écran, pas un écran à 30 Hz, la qualité baisse
+ok changement d’écran sous charge, sur 20 graines : la grille suit l’écran, aucune image ratée sans fin
+ok contexte.actif faux (menus, pause) : la période se mesure, rien ne se décide
+ok retour de menu : la fenêtre de décision repart, des images ratées d’avant le menu ne décident rien
+ok echelle : la démo ralentie avance le temps de jeu de echelle × période par image, sans à-coup
+ok aucune allocation en régime permanent : 60 Hz verrouillé (0 octets en 100 000 rappels)
+ok aucune allocation en régime permanent : 144 Hz recalé (0 octets en 100 000 rappels)
+ok aucune allocation en régime permanent : 60 Hz à k = 2 (0 octets en 100 000 rappels)
+ok boucle du jeu : pas de la cadence, gel des outils d’essai respecté
+cadence : 35 contrôles passés
+
+=== carene.test.mjs ===
+ok  carène fermée : chaque arête partagée par deux triangles, volume positif
+ok  carène : nombre de triangles attendu (20 côtés, 2 intervalles de 4 pas, deux bouts)
+ok  normales unitaires, tournées vers dehors, cohérentes avec les faces
+ok  boîte englobante égale aux cotes des sections
+ok  symétrie gauche-droite : chaque sommet a son reflet
+ok  peau lisse : entre deux sections, aucune arête de plus de 50° (normales moyennées)
+ok  ouverture : le haut reste ouvert entre ses abscisses, le bord est net
+ok  tube : fermé, rayon tenu, bouts en demi-sphère
+ok  normaliser : cube unité, centre et taille, normales ramenées par l’inverse transposée
+ok  miroir : orientation gardée, volume identique
+ok  tube à six côtés : génératrices lisses, le vif suit le nombre de côtés (carene-3)
+ok  miroir : les normales suivent la permutation des sommets (garde carene-5)
+ok  arêtes vives gardées : un dièdre de 90° ne se lisse pas (garde carene-5)
+ok  tube hors plan : chaque sommet à r ± 1 % de l'axe lissé (garde carene-5)
+carène : 14 vérifications passées
+
+=== chargement.test.mjs ===
+ok course : la course jetable ne déplace ni la séance, ni son générateur, ni ses pneus
+ok chrono : la course jetable ne déplace ni la séance, ni son générateur, ni ses pneus
+ok piste sèche figée : chauffée sèche ; météo variable ou mouillée : chauffée mouillée
+ok créations tardives : permises et comptées à part sous le voile, comptées par nom en course
+ok tous les lancements passent par la préparation : plus de lancement différé de 30 ms
+ok chauffe : le voile court seulement quand rien ne manque, la vitrine ne chauffe que ce qu’elle montre
+ok machine lente : la chauffe se resserre sur le palier courant et ses voisins
+ok sous le voile, la boucle ne simule ni ne dessine ; les étapes suivent l’ordre affiché
+ok voile : opaque sans transition, étape et barre, annoncé poliment, mouvement réduit respecté
+9 contrôles de la préparation des séances réussis.
+
+=== chaussee-preparation.test.mjs ===
+ok préparation et course choisissent neige même en hiver ensoleillé
+ok Port-Sable garde une chaussée sans neige et conseille les trois montes liquides
+ok un invité emploie eau, saison et circuit de l’hôte
+ok une observation de flocons ne prétend pas mesurer une couverture au sol
+ok les flocons ne créent pas d’eau liquide après 90 secondes, aux deux cadences
+ok la pluie reste liquide et le séchage conserve son fonctionnement
+ok quatre choix avant course et nouveaux espaces de records/fantômes
+ok les flocons seuls ne déclenchent ni ambiance de pluie ni reflets d’eau
+Chaussée/préparation : 8 contrôles réussis.
+
+=== chaussee-visuelle.test.mjs ===
+ok foret : empreinte d'été inchangée, sans ajuster sa référence
+ok foret : seule la couleur de l'asphalte change, aucun sommet ni objet ajouté
+ok foret : asphalte clair si et seulement si la surface physique porte de la neige
+ok cote : empreinte d'été inchangée, sans ajuster sa référence
+ok cote : seule la couleur de l'asphalte change, aucun sommet ni objet ajouté
+ok cote : asphalte clair si et seulement si la surface physique porte de la neige
+ok montagne : empreinte d'été inchangée, sans ajuster sa référence
+ok montagne : seule la couleur de l'asphalte change, aucun sommet ni objet ajouté
+ok montagne : asphalte clair si et seulement si la surface physique porte de la neige
+9 contrôles chaussée visuelle CPU réussis
+
+=== chaussee.test.mjs ===
+ok sans météo, la chaussée est sèche ; lire ne déduit rien de la saison du circuit
+ok pluie liquide et humidité résiduelle gardent leur pondération historique
+ok flocons saisonniers et neige observée ne deviennent pas pluie liquide ni couverture inventée
+ok couverture explicite sans précipitation et coexistence eau/neige restent indépendantes
+ok sous un tunnel, eau et neige sont nulles sans modifier la météo de la séance
+ok les deux portails conservent exactement la frontière binaire historique
+ok valeurs invalides ignorées, nombres hors limites bornés, sans coercition implicite
+ok sortie réutilisée sans conserver une ancienne surface ; absence de mémoire entre appels
+ok sans argument météo, lecture de l’état actif ; une météo explicite garde priorité
+ok préparation hivernale initialise la couverture du paysage ; les autres saisons restent sans neige
+ok Port-Sable reste sans couverture et sans neige saisonnière, même avec un état reçu enneigé
+ok météo réelle : flocons observés sans inventer une couverture ; hiver sans flocons garde son paysage
+ok couverture explicite de l’hôte conservée, y compris zéro, avec une reprise JSON déterministe
+ok une lecture répétée ne fait ni fondre ni accumuler la neige et ne fait pas avancer la météo
+chaussee : 14 vérifications passées
+
+=== circuit.test.mjs ===
+ok  Création circuit 11 (foret)
+ok  Validation circuit 11
+ok  Longueur circuit 11
+ok  Déterminisme circuit 11
+ok  Fermeture circuit 11
+ok  Echantillonnage circuit 11
+ok  Point circuit 11
+ok  Repère orthonormé circuit 11
+ok  Ligne droite départ circuit 11
+ok  Vitesse circuit 11
+ok  Ligne idéale circuit 11
+ok  Ecart circuit 11
+ok  Création circuit 29 (cote)
+ok  Validation circuit 29
+ok  Longueur circuit 29
+ok  Déterminisme circuit 29
+ok  Fermeture circuit 29
+ok  Echantillonnage circuit 29
+ok  Point circuit 29
+ok  Repère orthonormé circuit 29
+ok  Ligne droite départ circuit 29
+ok  Vitesse circuit 29
+ok  Ligne idéale circuit 29
+ok  Ecart circuit 29
+ok  Création circuit 47 (montagne)
+ok  Validation circuit 47
+ok  Longueur circuit 47
+ok  Déterminisme circuit 47
+ok  Fermeture circuit 47
+ok  Echantillonnage circuit 47
+ok  Point circuit 47
+ok  Repère orthonormé circuit 47
+ok  Ligne droite départ circuit 47
+ok  Vitesse circuit 47
+ok  Ligne idéale circuit 47
+ok  Ecart circuit 47
+
+=== collisions-orientees.test.mjs ===
+{
+  "root": "/workspace/scratch/fb61bd99753c/bitume",
+  "passed": 17,
+  "total": 17,
+  "results": [
+    {
+      "name": "T-bone réellement chevauché mais dd>largeur : collision et casse, aucun saut",
+      "ok": true
+    },
+    {
+      "name": "voitures transversales séparées : pas de contact fantôme des rectangles Frenet",
+      "ok": true
+    },
+    {
+      "name": "épave en attente de reprise : reste solide, voiture incidente détruite, pas de nouveaux débris épave",
+      "ok": true
+    },
+    {
+      "name": "balayage : traversée complète en un pas détectée au premier contact",
+      "ok": true
+    },
+    {
+      "name": "pénétration persistante : séparée même pendant réarmement, pas de dégâts répétés",
+      "ok": true
+    },
+    {
+      "name": "contact déjà en séparation : aucune casse malgré grande vitesse totale",
+      "ok": true
+    },
+    {
+      "name": "hauteur différente : pas de contact au même point plan",
+      "ok": true
+    },
+    {
+      "name": "virage réel : normale et force indépendantes de la rotation du repère monde",
+      "ok": true
+    },
+    {
+      "name": "balayage rotation seule : chevauchement intermédiaire résolu sans faux dégâts",
+      "ok": true
+    },
+    {
+      "name": "balayage : distance, hauteur et beta reviennent au contact avec s,d",
+      "ok": true
+    },
+    {
+      "name": "balayage en hauteur : obstacle survolé pendant tout le trajet ignoré",
+      "ok": true
+    },
+    {
+      "name": "hauteur finale différente : contact plus tôt au sol reste détecté",
+      "ok": true
+    },
+    {
+      "name": "petit bond àhauteur de caisse : épave reste solide, grand saut reste libre",
+      "ok": true
+    },
+    {
+      "name": "balayage vertical entre rivaux : collision géométrique entre endpoints libres",
+      "ok": true
+    },
+    {
+      "name": "impulsion nonfatale : direction de vitesse change, cap carrosserie conservé",
+      "ok": true
+    },
+    {
+      "name": "casse : cap épave conservé au reset beta et aux pas suivants",
+      "ok": true
+    },
+    {
+      "name": "immunité : voiture solide pour le rival, sans nouveaux dégâts",
+      "ok": true
+    }
+  ]
+}
+
+=== commandes-partage.test.mjs ===
+ok clavier J1 Auto et souris J2 auto simultanés
+ok clavier J1 Auto et souris J2 souris simultanés
+ok manette J1 Auto et souris J2 explicite simultanées
+ok en solo, le clavier reprend toujours la priorité sur sa propre souris Auto
+ok pavé numérique J2 indépendant, puis touches reconfigurées
+ok impulsion de rapport clavier J2 applique la boîte manuelle dans la vraie conduite
+ok manette J2 : haut sur un seul front, avec rapport réellement passé
+ok manette J2 : bas sur un seul front, avec rapport réellement passé
+ok RB et LB déjà tenus à la connexion de J2 ne passent pas un rapport
+ok oracle : un relâchement normal de dérive lance bien le turbo III
+ok déconnexion J2 sans turbo ni effet sur J1, voitures locales 0,1
+ok déconnexion J2 sans turbo ni effet sur J1, voitures locales 2,3
+ok déconnexion préserve la dérive clavier J2 encore tenue : Numpad0
+ok déconnexion préserve la dérive clavier J2 encore tenue : KeyU
+ok déconnexion préserve la dérive souris encore tenue par J2
+ok la souris de J1 ne préserve pas une dérive abandonnée par J2
+ok déconnexion en pause annule la dérive propre à J2
+ok une nouvelle séance est préservée à la déconnexion de l’ancien contrôleur
+ok dérive non commandée par la manette et turbo déjà lancé restent intacts
+ok API manette refusée neutralise J2 sans turbo fantôme
+ok en pause, la manette de J2 reste à J2, voitures locales 0,1
+ok en pause, la manette de J2 reste à J2, voitures locales 2,3
+ok une pause conserve la dérive chargée du joueur 2 connecté
+ok Start de la seule manette J2 met en pause puis reprend une seule fois par appui
+ok Start simultané sur deux manettes ne referme pas aussitôt la pause
+ok Start J2 et A J1 simultanés ouvrent la pause sans en valider aussitôt le menu
+ok en pause, les choix Clavier J1 et Manette J2 restent respectés avec deux pads branchés
+ok pause, réglages et retour en course conservent la manette et la dérive de J2
+ok la manette J2 navigue dans reglages en restant celle de sa voiture
+ok la manette J2 navigue dans resultats en restant celle de sa voiture
+ok retour au titre : la manette unique retrouve les menus de la vitrine sans faux appui
+ok en solo clavier, RB/LB/Y du pad ne commandent pas la voiture
+ok en solo souris, RB/LB/Y du pad ne commandent pas la voiture
+ok J1 conserve la dérive sur sa touche reconfigurée à la perte du pad
+ok J1 ne produit pas de turbo à la perte du pad avec une ancienne touche devenue inactive : Space
+ok J1 ne produit pas de turbo à la perte du pad avec une ancienne touche devenue inactive : ShiftLeft
+ok J1 ne produit pas de turbo à la perte du pad avec une ancienne touche devenue inactive : ShiftRight
+ok J1 conserve la dérive encore tenue à la souris Auto à la perte du pad
+ok J1 Clavier : une manette ignorée ne prend pas possession de la dérive clavier
+ok J1 Manette : une touche de dérive du clavier désactivé ne conserve pas la charge à la déconnexion
+ok clic puis molette ignorés sans joueur à la souris, mode course
+ok clic puis molette ignorés sans joueur à la souris, mode duo
+ok molette réservée au propriétaire souris J1
+ok molette réservée au propriétaire souris J2
+44/44 contrôles commandes partagées tenus
+
+=== conditions-course.test.mjs ===
+ok normalisation et modes manuels : aucune requête, aucun tirage, aucune mutation
+ok aléatoire : un tirage par champ au départ, aucune résolution récurrente ou réseau
+ok saisons calendaires inversées au sud et date selon le fuseau
+ok heure réelle locale : vraie horloge, fuseau/DST et minuit continus
+ok soleil calculé sans météo : équinoxe, pôles et prolongation au-delà de minuit
+ok tous les codes WMO reconnus, neige/orage et vent de provenance
+ok résolution réelle : HTTPS/CORS sans cookies, coordonnées arrondies et état constant
+ok aucune IP/coordonnée dans le résultat, aucun stockage, snapshot réseau détachable
+ok cache volatil12min, forcer limité30s, copies indépendantes et pas de requête manuelle après réel
+ok modes indépendants : la localisation saisonnière ne bloque pas une météo réelle ensuite
+ok réseau absent, HTTP en erreur et JSON invalide : repli lisible sans promesse météo
+ok météo périmée/code inconnu : soleil/localisation conservés, manuel pour la météo
+ok timeout global borne même un fetch qui ignore AbortSignal
+ok annulation utilisateur et nouveau choix : aucune réponse tardive ni seconde requête
+14 contrôles conditions de course réussis.
+
+=== conditions-integration.test.mjs ===
+✔ même choix en cours et prêt : une résolution, aucun nouveau tirage avant le départ (3.747085ms)
+✔ changement de choix annule la recherche et une réponse tardive ne remplace pas le nouveau résultat (0.595324ms)
+✔ vitrine hivernale : actualiser la météo conserve la chaussée préparée sans reconstruire la séance (22.004769ms)
+✔ retour depuis la préparation annule sans départ ou réactivation par une réponse tardive (1.175575ms)
+✔ retour des réglages conserve le tirage ; nouvelle préparation après le titre et forcer le renouvellent (0.754482ms)
+✔ erreur inattendue : repli manuel utilisable, annulation explicite sans résultat (0.527822ms)
+✔ invité en ligne : aucun appel de résolution, préférences saison/moment/météo préservées (1.508084ms)
+✔ conditionsCommunes filtre lieu/IP/coordonnées et détache les observations et horaires (16.180361ms)
+✔ départ réseau : hôte et invité reçoivent mêmes saison, météo, soleil et date UTC malgré une horloge locale différente (7.754911ms)
+✔ neige observée est libellée neige hors côte, pluie à Port-Sable, indépendamment de la saison manuelle (0.388693ms)
+✔ lumière réseau suit dateDepart + horloge de simulation de l’hôte, avec rafraîchissement borné (1.304819ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 67.216423
+
+=== conduite-criteres.test.mjs ===
+ok S10 charge avant à −3 g depuis 86 m/s : 0.614 (cible ≥ 0,60)
+ok S10 charge avant à −3 g depuis 92 m/s : 0.601 (cible ≥ 0,60)
+ok S10 charge vers l’arrière en accélération 2e : 0.344 (cible < répartition)
+ok S10 transfert latéral : adhérence totale : 0.976 (cible 0,90 à 0,995)
+ok S3 lever de pied R120 : lacet après/avant : 1.126 (cible ≥ 1,05)
+ok S11 frein 0,3 entrée R120 : courbure après/avant : 1.532 (cible ≥ 1,05)
+ok S3 plein gaz 2e/3e : dérive arrière maximale : 7.763 (cible ≥ 6° pour un cas) — 2e/R63 7.8° · 3e/R98 4.5° · 3e/R120 4.2°
+ok S4 coup de glisse : témoin tête-à-queue : oui (cible oui)
+ok S4 contre-braquage après 0,3 s : rattrapée (cible rattrapée)
+ok S4 forte glisse sans aide : tête-à-queue : oui (cible oui)
+ok S4 forte glisse avec aide 0.35 : 3.102 (cible < 5° et sans tête-à-queue)
+ok S4 forte glisse avec aide 0.7 : 3.101 (cible < 5° et sans tête-à-queue)
+ok S9 clavier 0→90 % à 0 km/h : 75.000 (cible ≤ 120 ms)
+ok S9 clavier relâché à 0 km/h : 66.667 (cible ≤ 80 ms)
+ok S9 clavier contre à 0 km/h : 16.667 (cible ≤ 30 ms)
+ok S9 clavier 0→90 % à 310 km/h : 117 (cible ≤ 120 ms)
+ok S9 clavier relâché à 310 km/h : 66.667 (cible ≤ 80 ms)
+ok S9 clavier contre à 310 km/h : 16.667 (cible ≤ 30 ms)
+ok S9 clavier 0→90 % à 331 km/h : 117 (cible ≤ 120 ms)
+ok S9 clavier relâché à 331 km/h : 66.667 (cible ≤ 80 ms)
+ok S9 clavier contre à 331 km/h : 16.667 (cible ≤ 30 ms)
+ok S9 plein braquage : lacet / limite : 1.161 (cible ≤ 1,2) — droit/120:1.099 · droit/200:1.157 · droit/300:1.153 · 150/120:1.098 · 150/200:1.161 · 150/300:1.156 · 300/120:1.098 · 300/200:1.159 · 300/300:1.155
+ok S9 braquageMax exporté et borné : 0.120 (cible > 0, monotone)
+ok S3 départ : régime dans les 0,5 s : 10309 (cible ≥ 9 000 tr/min)
+ok S3 départ : 0–100 km/h : 2.533 (cible 2,2 à 3,4 s)
+ok S3 pente 6 % : pointe / plat : 0.945 (cible ≤ 0,98)
+ok S3 pente 6 % : écart g·sin(pente) : 0.588 (cible 0.588 ± 5 %)
+ok S3 aspiration à 10 m : gain en 4 s : 4.061 (cible ≥ 3 m)
+ok S3 aspiration hors couloir : 0.000 (cible nul)
+ok S5 clavier impulsions 0.2s à 30 Hz : 2.000 (cible 162 dont au moins 1) — meilleur palier 3.27 s, |d| 1.30 m
+ok S5 clavier impulsions 0.2s à 60 Hz : 2.000 (cible 162 dont au moins 1) — meilleur palier 3.39 s, |d| 1.30 m
+ok S5 clavier impulsions 0.2s à 120 Hz : 1.000 (cible 162 dont au moins 1) — meilleur palier 3.39 s, |d| 1.28 m
+ok S5 clavier impulsions 0.1s à 30 Hz : 6.000 (cible 162 dont au moins 1) — meilleur palier 3.21 s, |d| 0.40 m
+ok S5 clavier impulsions 0.1s à 60 Hz : 5.000 (cible 162 dont au moins 1) — meilleur palier 2.94 s, |d| 0.34 m
+ok S5 clavier impulsions 0.1s à 120 Hz : 5.000 (cible 162 dont au moins 1) — meilleur palier 2.43 s, |d| 0.34 m
+ok S5 30 appuis martelés : un seul départ : 1.000 (cible exactement 1)
+ok S6 paliers au mieux sur piste réelle : 0.008 (cible ≤ 0,05 s) — niveaux 0.70 / 1.31 / 2.11 s, |d| 2.89 m
+ok S6 tenue manette R40 : 2.395 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R120 : 1.124 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R250 : 0.328 (cible < 5,5 m pendant 3 s)
+ok S6 tenue manette R400 : 1.083 (cible < 5,5 m pendant 3 s)
+mesure S8 lissage β à 60 et 120 Hz, pire scénario : 1031 (cible ≤ 300°/s²) — paliers 287.9 · clavier 496.6 / 873.4 / 840.4 / 1030.7
+ok S7 R80 : dérive puis turbo III et gain : 0.283 (cible 0,1 à 0,3 s) — adhérence 14.41 s, dérive 14.12 s, turbo III true
+ok S7 turbo coupé par frein / herbe / vrai choc de glissière : oui / oui / oui (cible oui / oui / oui)
+ok S7 contact réel entre voitures coupe le turbo du joueur : 1.000 (cible 1) — contact=true
+ok S7 IA : même loi, état fini après 60 s : 1.000 (cible 1)
+ok S7 turbo III : poussée positive : 5.604 (cible > 0 m/s)
+---
+46/46 critères obligatoires tenus; 1 mesure(s) ouverte(s)
+
+=== conduite.test.mjs ===
+ok  départ arrêté
+ok  freinage
+ok  cercle sans braquer
+ok  cercle avec volant
+ok  retenue
+ok  dérive niveaux
+ok  dérive annulée fond
+ok  dérive annulée frein
+ok  dérive ligne droite
+ok  herbe
+ok  glissière
+ok  100000 pas aléatoires
+ok  glissière propre à chaque côté
+ok  glissière : la caisse collée au rail se dégage et repart
+ok  boîte manuelle et rupteur
+ok  turbo
+ok  grille : rupteur
+ok  déterminisme
+18 vérifications réussies
+
+=== contacts.test.mjs ===
+ok petit bond : rapprochement de roues supérieur à2,5m/s : true (cible oui)
+ok petit bond : hauteur 0,10 à 0,35 m : 0.220 (cible 0,10–0,35 m)
+ok petit bond : durée 0,25 à 0,45 s : 0.340 (cible 0,25–0,45 s)
+ok petit bond : arc réellement parcouru (hauteur rendue) : 0.220 (cible > 0,08 m)
+ok petit bond : jamais de gain de vitesse : -0.731 (cible ≤ 0)
+ok petit bond : réception signalée : true (cible oui)
+ok réception bonne correction ≈ 100 % : 1.000 (cible 0,99–1,00)
+ok réception neutre ≈ 97 % : 0.970 (cible 0,96–0,98)
+ok réception mauvaise ≈ 94 % : 0.940 (cible 0,93–0,95)
+ok réception : jamais de gain (corr ≤ 1) : 1.000 (cible ≤ 1)
+ok réception : bon > neutre > mauvais : 1.000 (cible croissant décroissant)
+ok grand saut : arc de 1 à 3 m : 1.800 (cible 1–3 m)
+ok grand saut : durée 0,7 à 1,3 s : 1.008 (cible 0,7–1,3 s)
+ok grand saut : tangage et roulis en l’air : 1.000 (cible présents)
+ok grand saut : on dirige moins en l’air : 0.000 (cible < 0,4 du sol) — air=0.000 sol=0.001
+ok grand saut : attitude hors limite → accident : true (cible oui)
+ok paire : une seule réponse tant qu’elles se touchent : 0.000 (cible 0)
+ok paire : réarmement après séparation + 0,35 s : 1.000 (cible ≥ 1)
+ok paire : au moins 1,25 s entre deux bonds : 1.000 (cible second bloqué)
+ok roue décalée : le cap tourne d’au moins 2° : 3.950 (cible ≥ 2°)
+ok roue décalée : la vitesse baisse : -0.288 (cible < 0)
+ok dégâts : adhérence −8 % au plus : 0.925 (cible ≥ 0,92)
+ok dégâts : traînée +8 % au plus : 1.060 (cible ≤ 1,08)
+ok dégâts : teinte uEffects.z alimentée : 0.937 (cible 0–1)
+ok dégâts : une roue part sur un choc violent : 1.000 (cible oui)
+ok dégâts : casse franche au-delà du seuil : 1.000 (cible oui)
+ok dégâts : un frôlement ne casse rien : 1.000 (cible rien)
+ok accident : retour sur le revêtement en moins de1s : 0.650 (cible 0,6–1s)
+ok accident : revenu sur la piste (|d| petit) : 0.000 (cible < 0,5 m)
+ok accident : vitesse continue (pas d’à-coup) : 0.000 (cible < 1 m/s par pas)
+ok accident : cap réaligné au retour sans gain longitudinal : 0.000 (cible 0 et s100)
+ok accident : 1s d’immunité après le retour : 1.000 (cible ≈ 1s)
+ok cadence : réception stable à 30/60/120 Hz : 0.020 (cible < 0,5 m/s)
+ok cadence : 60 s de contacts en moins de 1,5 s : 0.050 (cible < 1,5 s)
+ok glissière : frôlement < 8° garde ≥ 90 % après 0,5 s : 1.000 (cible ≥ 0,90)
+ok glissière : vitesse normale≥21m/s → arrêt et reprise : 1.000 (cible oui)
+ok glissière : jamais renvoyée au-delà de l’axe : 1.000 (cible oui)
+ok emprise de la caisse : aucun coin au-delà du rail, quel que soit le cap : 1.000 (cible oui)
+ok roue perdue : plus de motricité, la caisse s’immobilise : 0.000 (cible ≈ 0)
+ok roue perdue : plus de direction (plein gauche = plein droit) : 0.000 (cible < 0,1 m)
+ok roue perdue : remise en piste signalée : 1.000 (cible oui)
+ok roue perdue : roue remise et caisse réparée : 1.000 (cible oui)
+ok roue perdue : repositionnée sur la trajectoire (d ≈ 0) : 0.000 (cible ≈ 0)
+ok roue perdue : état fini, course non déclarée terminée : 1.000 (cible oui)
+---
+44/44 critères du Chantier 3 tenus
+
+=== controle-visuel.test.mjs ===
+✔ décodage des PNG RGB et RGBA avec les cinq filtres (2.822708ms)
+✔ captures tronquées ou formats inconnus refusés (0.678568ms)
+✔ les mesures portent sur la zone demandée, sans le reste de la page (0.7857ms)
+✔ alertes d’image noire, identique et de blocs fugitifs (5.659737ms)
+✔ comparaison avant/après : différences conservées, dérive des paramètres refusée (0.816576ms)
+✔ changement de GPU, de trajectoire ou disparition de J2 invalide la comparaison (0.480712ms)
+✔ les réglages effectifs et PhysX doivent correspondre, seul le décor peut varier (0.348673ms)
+✔ les paramètres de capture fixent taille, graine, qualité et budget de pas (0.774533ms)
+✔ l’horloge de capture contrôle chaque rAF sans falsifier performance.now (1.460903ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 20.592896
+
+=== course.test.mjs ===
+ok  feux
+ok  course 2 tours
+ok  depassements
+ok  contacts
+ok  chrono fantome
+ok  determinisme
+ok  performance
+ok  aspiration
+---
+8 tests passes
+
+=== crash.test.mjs ===
+{
+  "root": "/workspace/scratch/fb61bd99753c/bitume",
+  "normalImpactMps": 35.34517439934782,
+  "passed": 22,
+  "total": 22,
+  "results": [
+    {
+      "name": "mur 180 km/h à45° : dégâts normaux et casse",
+      "ok": true
+    },
+    {
+      "name": "casse : quatre roues et événement unique",
+      "ok": true
+    },
+    {
+      "name": "casse visible puis retour en moins1s et accélération possible",
+      "ok": true
+    },
+    {
+      "name": "replacement manuel répare immédiatement sans gain longitudinal",
+      "ok": true
+    },
+    {
+      "name": "rasant 198 km/h à5° reste roulant",
+      "ok": true
+    },
+    {
+      "name": "faible vitesse normale : coup léger à45° reste récupérable",
+      "ok": true
+    },
+    {
+      "name": "impact 180 km/h à20° : normale17m/s, aucune roue perdue",
+      "ok": true
+    },
+    {
+      "name": "frottement devenu violent : auRail ne masque pas une casse",
+      "ok": true
+    },
+    {
+      "name": "caisse qui s’éloigne du rail ne subit pas un nouveau choc",
+      "ok": true
+    },
+    {
+      "name": "seuil20/30 : roue perdue distincte de grosse casse",
+      "ok": true
+    },
+    {
+      "name": "casse prioritaire sur vol/accident/stand, sans nouveau détachement",
+      "ok": true
+    },
+    {
+      "name": "rival : choc longitudinal violent détruit les deux caisses",
+      "ok": true
+    },
+    {
+      "name": "rival : vitesse commune élevée, faible rapprochement conservé",
+      "ok": true
+    },
+    {
+      "name": "rival face àface : vitesse relative projetée, pas différence des normes",
+      "ok": true
+    },
+    {
+      "name": "réparation directe remet toutes les roues et capacités",
+      "ok": true
+    },
+    {
+      "name": "nouvelle séance : voiture neuve et accélération possible",
+      "ok": true
+    },
+    {
+      "name": "chrono : casse puis reprise sans DNF ni tour/fantôme",
+      "ok": true
+    },
+    {
+      "name": "course : récupération garde le pilote en lice, sans progression gratuite",
+      "ok": true
+    },
+    {
+      "name": "casse près de ligne : replacement sans tour ; franchissement réel invalidé course/chrono",
+      "ok": true
+    },
+    {
+      "name": "débris : budget de six pièces par voiture (4 roues + 2 panneaux), fumée/étincelles et objets réutilisés",
+      "ok": true
+    },
+    {
+      "name": "débris : pool borné, déterministe, disparaît après12s",
+      "ok": true
+    },
+    {
+      "name": "épave dépouillée et roues cachées aussi au loin",
+      "ok": true
+    }
+  ]
+}
+
+=== decor-identite.test.mjs ===
+décor : 9 géométries de référence inchangées (linux/x64/node-24.22.3)
+
+=== decor-obstacles.test.mjs ===
+{
+  "passed": 3,
+  "total": 3,
+  "reports": [
+    {
+      "graine": 11,
+      "theme": "foret",
+      "solides": 3241,
+      "kinds": {
+        "pilier": 43,
+        "poutre": 2,
+        "gradin": 45,
+        "toit": 20,
+        "batiment": 6,
+        "muret": 12,
+        "tronc": 2600,
+        "cabane": 9,
+        "pneus": 504
+      },
+      "impact": {
+        "t": 1.2666666666666646,
+        "s": 2250.466147778435,
+        "d": -17.445825610215117,
+        "force": 52.007563558727405,
+        "obstacle": "pneus"
+      },
+      "repriseRapide": true
+    },
+    {
+      "graine": 29,
+      "theme": "cote",
+      "solides": 3166,
+      "kinds": {
+        "pilier": 42,
+        "poutre": 2,
+        "gradin": 45,
+        "toit": 19,
+        "batiment": 6,
+        "muret": 12,
+        "tronc": 2600,
+        "cabane": 8,
+        "pneus": 432
+      },
+      "impact": {
+        "t": 1.3416666666666643,
+        "s": 1829.860758306596,
+        "d": 17.50918386881632,
+        "force": 38.14668909628975,
+        "obstacle": "glissiere"
+      },
+      "repriseRapide": true
+    },
+    {
+      "graine": 47,
+      "theme": "montagne",
+      "solides": 2979,
+      "kinds": {
+        "pilier": 51,
+        "poutre": 2,
+        "gradin": 54,
+        "toit": 24,
+        "batiment": 7,
+        "muret": 14,
+        "tronc": 2600,
+        "cabane": 11,
+        "pneus": 216
+      },
+      "impact": {
+        "t": 1.1583333333333317,
+        "s": 1599.8332076973493,
+        "d": 16.267930026226338,
+        "force": 51.71939423479911,
+        "obstacle": "pneus"
+      },
+      "repriseRapide": true
+    }
+  ]
+}
+
+=== decor.test.mjs ===
+FAIL Haut-Col : décor construit en moins de 150 ms: 194 ms
+
+=== desert.test.mjs ===
+ok boucle fermée, départ droit, relief de piste maîtrisé
+ok terrain ocre varié, haut relief asymétrique, sans eau ni forêt
+ok rochers dégagés de toutes les portions de chaussée
+ok saisons et qualité conservent géométrie et collisions
+ok reconstruction déterministe du tracé et du décor
+ok onze rivaux accomplissent un tour sans rester bloqués
+{"controles":6,"mesures":{"longueur":4834,"denivelePiste":27.21766063841511,"penteMax":0.06799999999999995,"arbres":0,"trianglesNappes":88650,"objets":7049,"lots":33,"ete":{"ocre":1,"neige":0,"nuances":46,"relief":[-57.68999481201172,235.8329620361328]},"asymetrie":19.410073246607787,"rochers":321,"margeRochers":33.19293171680859,"hiver":{"ocre":0,"neige":1,"nuances":5,"relief":[-57.68999481201172,235.8329620361328]},"course":{"rivauxArrives":11,"duree":248.99999999993787}}}
+
+=== determinisme-simulation.test.mjs ===
+ok  val-brule-g7-d1 : 60 empreintes identiques (2.15 s)
+ok  val-brule-g7-d2 : 60 empreintes identiques (0.82 s)
+ok  val-brule-g51234-d1 : 60 empreintes identiques (1.06 s)
+ok  val-brule-g51234-d2 : 60 empreintes identiques (0.61 s)
+ok  haut-col-g7-d1 : 60 empreintes identiques (0.99 s)
+ok  haut-col-g7-d2 : 60 empreintes identiques (0.88 s)
+ok  haut-col-g51234-d1 : 60 empreintes identiques (0.95 s)
+ok  haut-col-g51234-d2 : 60 empreintes identiques (0.89 s)
+ok  cap-sequoia-g7-d1 : 60 empreintes identiques (0.64 s)
+ok  cap-sequoia-g7-d2 : 60 empreintes identiques (0.72 s)
+ok  cap-sequoia-g51234-d1 : 60 empreintes identiques (0.60 s)
+ok  cap-sequoia-g51234-d2 : 60 empreintes identiques (0.61 s)
+ok  chrono-fantome-port-sable : 200 empreintes identiques (0.77 s)
+ok  accidents-duo-pluie-haut-col : 75 empreintes identiques (1.47 s)
+ok  accident-solide-val-brule : 12 empreintes identiques (0.12 s)
+ok  solides-sur-piste-val-brule : 60 empreintes identiques (1.50 s)
+ok  manoeuvres-cap-sequoia : 45 empreintes identiques (0.18 s)
+ok  arrivee-un-tour-port-sable : 103 empreintes identiques (1.86 s)
+ok  en-ligne-hote-val-brule : 45 empreintes identiques (0.82 s)
+ok  neige-usure-haut-col : 40 empreintes identiques (1.35 s)
+ok  sensibilité : un ulp sur une vitesse au pas 1200 change l’empreinte dès la seconde 10
+ok  empreinte : usure par roue (un ulp) et glisse physique sont incluses
+ok  déterminisme p10 : 20 cas, 1300 empreintes, 19.9 s
+
+=== echappement.test.mjs ===
+ok  embouchures : le bout des quatre tubes de voiture.js
+ok  repères : euler, attitude et angles comme voiture.js, sans allocation
+ok  formes : trois fuseaux fermés, normales vers dehors, enregistrés auprès du moteur
+ok  placement : la base de la langue sort de l’embouchure, voiture tournée, cabrée et penchée
+ok  passage montant à haut régime : détonation 12 à 55 ms après, quatre langues lisibles
+ok  passages sans flamme : bas régime, au pas, marche arrière, saut de rapport
+ok  rétrogradage pied levé : claque moins souvent et relance les crépitements
+    11.3 crépitements par lever de pied en moyenne
+ok  lever de pied à haut régime : crépitements irréguliers, bleus ou orangés, des deux bancs ; rien à bas régime
+ok  rupteur entretenu : flammes répétées au rythme des coupures ; moins fortes à l’arrêt ; un épisode par séjour
+ok  voiture hors course : accident, remise en piste, abandon, épave ; rien, et la détonation en attente s’annule
+ok  horloge reprise en arrière : nouvelle séance, rien ne reste en attente
+ok  30, 60, 120 images/s et cadence variable : même suite d’événements, mêmes flammes aux mêmes instants
+ok  hasard propre : ni Math.random ni le hasard de la course ; chaque voiture ne dépend que d’elle et de la graine
+ok  mémoire : mêmes objets d’une image à l’autre, rien d’ajouté ni de recréé
+    pas : 3.1 µs pour 12 voitures ; dessin : 15.9 µs, 57.9 objets en moyenne, 94 au plus
+ok  coût borné : douze voitures en feu, au plus trois objets par sortie
+ok  de près comme au loin, la même flamme, cœur et bouffée compris ; cockpit : la voiture du pilote n’est pas dessinée
+    107 passages montants, 161 détonations, 1481 crépitements, 341 ratés en 60 s ; 12.7 objets par image en moyenne, 112 au plus
+ok  vraie course de 60 s : chaque passage montant à haut régime claque, valeurs finies
+---
+17 tests passes
+
+=== ecologie.test.mjs ===
+ok champ borné, déterministe et sans allocation de sortie imposée
+ok les trois tracés comportent des clairières, des poches riches et des côtés différents
+ok le boisement laisse des vides sans déplacer les objets fixes ou les troncs survivants
+{
+  "controles": 3,
+  "mesures": [
+    {
+      "biome": "foret",
+      "points": 1142,
+      "nus": 0.647985989492119,
+      "riches": 0.11996497373029773,
+      "asymetrie": 0.10944841389374574,
+      "plusLongueClairiere": 522,
+      "arbresAvant": 2600,
+      "arbresApres": 1082,
+      "solLointain": {
+        "nappes": 117,
+        "sommets": 55271,
+        "indices": 200106,
+        "couleursModifiees": 33801,
+        "sableInchange": 0,
+        "sommetsAjoutes": 0,
+        "indicesAjoutes": 0,
+        "nappesAjoutees": 0
+      }
+    },
+    {
+      "biome": "cote",
+      "points": 946,
+      "nus": 0.5983086680761099,
+      "riches": 0.21035940803382663,
+      "asymetrie": 0.09729017896319372,
+      "plusLongueClairiere": 480,
+      "arbresAvant": 2600,
+      "arbresApres": 453,
+      "solLointain": {
+        "nappes": 104,
+        "sommets": 48772,
+        "indices": 178572,
+        "couleursModifiees": 25611,
+        "sableInchange": 4657,
+        "sommetsAjoutes": 0,
+        "indicesAjoutes": 0,
+        "nappesAjoutees": 0
+      }
+    },
+    {
+      "biome": "montagne",
+      "points": 1472,
+      "nus": 0.5427989130434783,
+      "riches": 0.23233695652173914,
+      "asymetrie": 0.12492872951733996,
+      "plusLongueClairiere": 432,
+      "arbresAvant": 2600,
+      "arbresApres": 799,
+      "solLointain": {
+        "nappes": 176,
+        "sommets": 76424,
+        "indices": 290184,
+        "couleursModifiees": 27500,
+        "sableInchange": 0,
+        "sommetsAjoutes": 0,
+        "indicesAjoutes": 0,
+        "nappesAjoutees": 0
+      }
+    }
+  ]
+}
+
+=== effets-allocation.test.mjs ===
+ok  témoin : la mesure voit une allocation connue (compter sans objet fourni)
+    0 octet alloué en 300 passes et 1 800 dessins (780 objets par dessin ; mesure 1/5)
+ok  traces : passe à 30 Hz et dessin sans allocation, tous les effets (glisse, herbe, glissière, contacts, pluie, pièces)
+    0 octet sur 50 premières images préparées et 4 000 suivantes ; 7600 octets pour 50 premières images d'états neufs
+ok  sillage : état préparé au lancement, première image et suivantes sans allocation
+---
+3 tests passes
+
+=== effets-saison.test.mjs ===
+ok précipitations réservées aux profils neigeux ; feuilles aux arbres automnaux
+ok paliers croissants et arrêt effectif, sans nouvelle lecture du sol
+ok neige météo explicite hors hiver, intensité finale et interdiction persistante au Sud
+ok neige sans eau, sans abri, sans sous-sol ; objets 3D petits et proches
+ok portails du tunnel et toitures sont masqués aussi vus de l’extérieur
+ok déterminisme sans hasard partagé, même temps dans deux pools indépendants
+ok trajectoires absolues et fondus identiques à 30 et 120 Hz
+ok vent continu et varié, chute réelle et fonte douce en fin de précipitation
+ok pools et tableaux réutilisés sur 2000 images ; sélection et terrain au repos mis en cache
+ok vrais décors : sources automnales, profils hivernaux et suppression dans le tunnel
+effets-saison : 10 contrôles passés
+
+=== faune.test.mjs ===
+ok habitats et trajectoires déterministes, sans hasard de simulation ni mutation du circuit
+ok aucun habitat inventé sans herbe réellement admissible
+ok groundCover reconnaît une prairie sans dépendre du nom de forme ou du lot
+ok abeilles avec corps et ailes animées le jour ; lucioles exclusivement dans Haut-Col la nuit
+ok budgets off/low/medium/high/ultra croissants, 256 lucioles et au plus 512 objets
+ok vols en 3D au-dessus de la prairie, hors chaussée/eau/roche/tunnel/paddock
+ok halos mondiaux bornés, cœur émissif, aucune lumière et aucune taille imposée en pixels
+ok deux vues utilisent des objets distincts, même temps absolu, sans accélérer le cycle
+ok animation et fondus indépendants de la fréquence de dessin
+ok pools et tableaux réutilisés ; aucune lecture de terrain pendant 2000 images
+ok crépuscule et pluie réduisent progressivement l’activité, qualité légère et retour à off effectifs
+ok poches écologiques vides et riches, abeilles liées aux fleurs et populations locales différentes
+ok trajectoires, hauteurs, ailes et éclats déphasés, continus à temps absolu
+ok activité saisonnière : hiver sans faune, facteur de saison et modulation explicite avec fondu
+ok vrais circuits sans végétation : secteurs vides et foyers vivants sur le sol réel
+faune : 15 contrôles passés
+
+=== formes-libres.test.mjs ===
+formes libres : 195527 triangles émis dans l'ordre du registre
+
+=== glissiere-etats.test.mjs ===
+{
+  "passed": 8,
+  "total": 8,
+  "results": [
+    {
+      "name": "petit bond contre rail -1 : casse unique, quatre roues, puis reprise rapide",
+      "ok": true
+    },
+    {
+      "name": "roue perdue près du rail -1 : arrêt puis reprise sans traversée",
+      "ok": true
+    },
+    {
+      "name": "survol haut -1 : pas de mur invisible au-dessus de la glissière",
+      "ok": true
+    },
+    {
+      "name": "frôlement rapide en bond -1 : vitesse normale faible, pas de casse",
+      "ok": true
+    },
+    {
+      "name": "petit bond contre rail 1 : casse unique, quatre roues, puis reprise rapide",
+      "ok": true
+    },
+    {
+      "name": "roue perdue près du rail 1 : arrêt puis reprise sans traversée",
+      "ok": true
+    },
+    {
+      "name": "survol haut 1 : pas de mur invisible au-dessus de la glissière",
+      "ok": true
+    },
+    {
+      "name": "frôlement rapide en bond 1 : vitesse normale faible, pas de casse",
+      "ok": true
+    }
+  ]
+}
+
+=== glissiere-rebond.test.mjs ===
+{
+  "root": "/workspace/scratch/fb61bd99753c/bitume/",
+  "hashes": {
+    "conduite.js": "ed17946c7d15f58bfd72143635aeeb5fac81fbf8438476bf3ccacfeef73eeabc",
+    "jeu.js": "fa66aa5ee4b54ba9d52c994a7743c5ed5369c6d9c9c2cd3d78119007f49dc16b",
+    "degats.js": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247"
+  },
+  "cases": [
+    {
+      "side": -1,
+      "first": {
+        "time": 0.39166666666666666,
+        "psi": 0.01546557932205094,
+        "beta": -0.31546557932205094,
+        "speed": 51.64091349889848,
+        "d": -6.303697634496323,
+        "force": 15.97249613387086
+      },
+      "events": 1,
+      "rebound_toward_track": true,
+      "after1s": {
+        "speed": 45.57759211585563,
+        "d": -6.491050497477599,
+        "psi": -0.00632208980767382,
+        "clearance": 0.0028269428219191983
+      }
+    },
+    {
+      "side": 1,
+      "first": {
+        "time": 0.39166666666666666,
+        "psi": -0.01546557932205094,
+        "beta": 0.31546557932205094,
+        "speed": 51.64091349889848,
+        "d": 6.303697634496323,
+        "force": 15.97249613387086
+      },
+      "events": 1,
+      "rebound_toward_track": true,
+      "after1s": {
+        "speed": 45.57759211585563,
+        "d": 6.491050497477599,
+        "psi": 0.00632208980767382,
+        "clearance": 0.0028269428219191983
+      }
+    }
+  ],
+  "nonBreakingImpact": {
+    "force": 8,
+    "broken": false,
+    "missingWheel": false,
+    "persistentTint": 0.25000000000000033
+  }
+}
+
+=== graphismes.test.mjs ===
+ok les listes exposées sont figées et exactes
+ok normalisation : valeurs inconnues, anciennes et casse tolérées
+ok anciens réglages et valeurs corrompues gardent les options du profil
+ok estPalier ne reconnaît que les trois paliers effectifs
+ok profils : figés en profondeur et complets dans les bornes du moteur
+ok les trois paliers réellement distincts sur au moins trois interrupteurs
+ok resoudre : Auto décroît avec le gouverneur, de 0 à 4
+ok resoudre accepte un niveau hors bornes sans décider à la place du gouverneur
+ok resoudre d'une qualité explicite ignore le gouverneur
+ok melange n'ouvre jamais un effet que le moteur n'a pas ouvert
+ok anticrénelage manuel actif sans halo en Légère et sans changer les autres effets
+ok chaque choix d’ombres fixe activation et taille sans modifier anticrénelage ou végétation
+ok végétation indépendante : chaque densité existe même avec le profil Légère
+ok Auto respecte les choix manuels à chaque palier
+ok options explicites soumises aux capacités matérielles, mais pas au profil prudent
+ok aucun palier n'introduit de coupure à distance brutale
+ok résolution : jamais un nombre hors des bornes du moteur, jamais plus que l'écran
+ok l'ancre de décor empêche l'Auto de rebâtir le terrain
+ok budgets : un décompte comparable et figé pour les trois paliers
+ok stabiliser : l'Auto filtre l'oscillation sans décider à la place du gouverneur
+ok stabiliser : un choix explicite du menu s'applique à l'image
+ok le module se charge et décide sans DOM ni moteur
+graphismes : 22 contrôles passés
+
+=== herbier-identite.test.mjs ===
+ok herbier high Val-Brûlé : 73315 triangles, 93315 requêtes, empreinte avant 671031b3f28fc2cf après 671031b3f28fc2cf
+ok herbier high Val-Brûlé
+ok herbier high Port-Sable : 51410 triangles, 71410 requêtes, empreinte avant d0ff8d1643060dfa après d0ff8d1643060dfa
+ok herbier high Port-Sable
+ok herbier high Haut-Col : 57427 triangles, 77427 requêtes, empreinte avant a012a985bcc72bba après a012a985bcc72bba
+ok herbier high Haut-Col
+ok herbier high Lande-Noire : 83243 triangles, 103243 requêtes, empreinte avant d1411cc247766416 après d1411cc247766416
+ok herbier high Lande-Noire
+ok herbier high Roche-Fauve : 81695 triangles, 101695 requêtes, empreinte avant ad3af3585a8bd43e après ad3af3585a8bd43e
+ok herbier high Roche-Fauve
+ok herbier high Brume-de-Jade : 89156 triangles, 109156 requêtes, empreinte avant e2ec615a89543c75 après e2ec615a89543c75
+ok herbier high Brume-de-Jade
+ok herbier high Cap-Séquoia : 84002 triangles, 104002 requêtes, empreinte avant 1aedff85db1a47a0 après 1aedff85db1a47a0
+ok herbier high Cap-Séquoia
+ok herbier medium Val-Brûlé : 73315 triangles, 93315 requêtes, empreinte avant 671031b3f28fc2cf après 671031b3f28fc2cf
+ok herbier medium Val-Brûlé
+ok herbier medium Port-Sable : 51410 triangles, 71410 requêtes, empreinte avant d0ff8d1643060dfa après d0ff8d1643060dfa
+ok herbier medium Port-Sable
+ok herbier medium Haut-Col : 57427 triangles, 77427 requêtes, empreinte avant a012a985bcc72bba après a012a985bcc72bba
+ok herbier medium Haut-Col
+ok herbier medium Lande-Noire : 83243 triangles, 103243 requêtes, empreinte avant d1411cc247766416 après d1411cc247766416
+ok herbier medium Lande-Noire
+ok herbier medium Roche-Fauve : 81695 triangles, 101695 requêtes, empreinte avant ad3af3585a8bd43e après ad3af3585a8bd43e
+ok herbier medium Roche-Fauve
+ok herbier medium Brume-de-Jade : 89156 triangles, 109156 requêtes, empreinte avant e2ec615a89543c75 après e2ec615a89543c75
+ok herbier medium Brume-de-Jade
+ok herbier medium Cap-Séquoia : 84002 triangles, 104002 requêtes, empreinte avant 1aedff85db1a47a0 après 1aedff85db1a47a0
+ok herbier medium Cap-Séquoia
+herbier : 14 cas identiques au bit (triangles et requêtes de surface)
+
+=== herbier-saisons.test.mjs ===
+ok saisons Val-Brûlé : 5 saisons, 1 découpe, 4 reprises, identiques au bit
+ok saisons Port-Sable : 5 saisons, 1 découpe, 4 reprises, identiques au bit
+ok saisons Haut-Col : 5 saisons, 1 découpe, 4 reprises, identiques au bit
+ok saisons Brume-de-Jade : 5 saisons, 1 découpe, 4 reprises, identiques au bit
+ok saisons Cap-Séquoia : 5 saisons, 1 découpe, 4 reprises, identiques au bit
+ok saisons Roche-Fauve : l'hiver refait la découpe (masques 3508 → 3380)
+herbier-saisons : 6 circuits contrôlés
+
+=== ia-attaque.test.mjs ===
+{
+  "passed": 10,
+  "total": 10,
+  "results": [
+    {
+      "name": "une IA serre une voiture plus lente et s engage contre elle",
+      "ok": true
+    },
+    {
+      "name": "la même capacité d attaque contre une autre IA (pas de convoi centré sur le joueur)",
+      "ok": true
+    },
+    {
+      "name": "un adversaire en récupération ou en service n est pas attaqué, mais reste contourné",
+      "ok": true
+    },
+    {
+      "name": "délai entre deux engagements : pas d enchaînement immédiat sur la même cible",
+      "ok": true
+    },
+    {
+      "name": "pas d oscillation de cible : le nombre de changements reste borné dans un peloton serré",
+      "ok": true
+    },
+    {
+      "name": "pas de blocage durable : tout le monde avance et la course finit, sur trois graines et trois difficultés",
+      "ok": true
+    },
+    {
+      "name": "le chrono et le mode d essai ne choisissent pas de cible",
+      "ok": true
+    },
+    {
+      "name": "les décisions sont déterministes : même graine, mêmes statistiques",
+      "ok": true
+    },
+    {
+      "name": "un blocage ne dure pas au-delà du virage et ne ralentit pas la voiture tenue",
+      "ok": true
+    },
+    {
+      "name": "temps de décision mesuré et plausible (jamais négatif, jamais instantané)",
+      "ok": true
+    }
+  ]
+}
+
+=== ia-epaves.test.mjs ===
+{
+  "passed": 4,
+  "total": 4,
+  "results": [
+    {
+      "d": 0,
+      "heading": 1.5707963267948966,
+      "contact": false,
+      "passed": true,
+      "v": 29.232666845547936,
+      "s": 1008.1289387739826,
+      "lat": -2.9809612590908445,
+      "safe": true
+    },
+    {
+      "d": 2,
+      "heading": 1.5707963267948966,
+      "contact": false,
+      "passed": true,
+      "v": 29.232666845547936,
+      "s": 1008.1289387739826,
+      "lat": -2.9809612590908445,
+      "safe": true
+    },
+    {
+      "d": -2,
+      "heading": 1.5707963267948966,
+      "contact": false,
+      "passed": true,
+      "v": 29.232666845547936,
+      "s": 1008.1289387739826,
+      "lat": -2.9809612590908445,
+      "safe": true
+    },
+    {
+      "d": 0,
+      "heading": 0.7853981633974483,
+      "contact": false,
+      "passed": true,
+      "v": 29.232666845547936,
+      "s": 1008.1289387739826,
+      "lat": -2.9809612590908445,
+      "safe": true
+    }
+  ]
+}
+
+=== ia-reprise.test.mjs ===
+{
+  "passed": 10,
+  "total": 10,
+  "results": [
+    {
+      "name": "IA retournée, gaz et15s bloquée : retour progressif seulement après délai",
+      "ok": true
+    },
+    {
+      "name": "mouvement et grille réinitialisent la durée de blocage",
+      "ok": true
+    },
+    {
+      "name": "attente volontaire sans vitesse visée : aucun replacement",
+      "ok": true
+    },
+    {
+      "name": "casse exclut la récupération IA",
+      "ok": true
+    },
+    {
+      "name": "roue exclut la récupération IA",
+      "ok": true
+    },
+    {
+      "name": "reparation exclut la récupération IA",
+      "ok": true
+    },
+    {
+      "name": "vol exclut la récupération IA",
+      "ok": true
+    },
+    {
+      "name": "immunite exclut la récupération IA",
+      "ok": true
+    },
+    {
+      "name": "cas réel gaz.48 et vitesse arrière quasi nulle : récupération après15s",
+      "ok": true
+    },
+    {
+      "name": "direction quasi nulle oscillante :15s continues comptées, reset au mouvement",
+      "ok": true
+    }
+  ]
+}
+
+=== ia.test.mjs ===
+ok IA : un rival à 80 m/s évite une voiture arrêtée (pas de contact) : 1.000 (cible pas de contact)
+ok IA : soit il la dépasse à côté, soit il s’arrête avant : 1.000 (cible évité) — passée=true vFin=53.1
+ok IA : il freine en approchant : 1.000 (cible oui)
+ok IA : évite aussi à 40 m/s : 1.000 (cible pas de contact)
+ok IA : évite aussi à 65 m/s : 1.000 (cible pas de contact)
+---
+5/5 critères IA tenus
+
+=== islande.test.mjs ===
+ok boucle fermée, départ droit et piste praticable
+ok reconstruction déterministe du tracé et du décor
+ok plateau sombre, mousse en poches et relief volcanique sans arbres
+ok blocs de basalte et leurs solides restent hors de toute portion de piste
+ok saisons sans déplacement des solides, neige sur les surfaces hivernales
+ok qualité basse conserve le même terrain et les mêmes obstacles
+ok les onze rivaux accomplissent un tour du nouveau circuit
+{"controles":7,"mesures":{"longueur":4616,"denivelePiste":12.953321051959556,"penteMax":0.06799999999999995,"arbres":0,"trianglesNappes":85278,"objets":7858,"lots":31,"ete":{"sombre":0.8070806962025316,"mousse":0.1925237341772152,"neige":0,"relief":[-30.783876419067383,205.46337890625]},"rochers":384,"margeRochers":32.889549115578035,"hiver":{"sombre":0,"mousse":0,"neige":1,"relief":[-30.783876419067383,205.46337890625]},"course":{"rivauxArrives":11,"duree":222.74166666662842}}}
+
+=== lieux-traces.test.mjs ===
+ok  sept partitions, une par circuit du catalogue, mêmes graines et mêmes caractères de lieu
+ok  chaque tracé se referme et passe les contrôles du jeu et de l'étude
+ok  le même tracé à chaque construction (aucun hasard)
+ok  Haut-Col : 9 à 10 km, Le Mur entre 20 et 30 %, trois passages couverts dont deux tunnels, corniche sur un grand virage
+ok  Brume-de-Jade : la Spirale repasse sous son approche, 8 m au moins plus bas
+ok  un tracé proposé se lit avec les fonctions du jeu (échantillon, tunnel, limites)
+6 vérifications des tracés proposés
+
+=== main.test.mjs ===
+ok  cinq pièces non vides, normales unitaires du côté de leur face
+ok  taille réelle : 8 à 13 cm le long de la jante, 12 à 24 cm des doigts au bout de la manchette
+ok  aucune pièce ne traverse la jante de plus de 2 mm
+ok  aucune pièce dans la branche de 3 h
+ok  quatre doigts serrés, enroulés autour du tube par la planche, chaque point au contact (jeu de 1 mm au plus)
+ok  pouce couché sur la face de la jante tournée vers le pilote, devant la branche, qui remonte la jante
+ok  dos de la main tourné vers le dehors, poignet du côté du pilote, dans l’axe de la main
+main : 7 vérifications passées
+
+=== manette.test.mjs ===
+ok déconnexion neutralise pédales, volant et dérive
+ok clavier et tactile restent utilisables sans manette
+ok trous, manette déconnectée et indice sélectionné
+ok première manette connectée prioritaire et changement d’indice sans pause fantôme
+ok bouton tenu à reconnexion : aucune pause fantôme, nouvel appui unique
+ok autre contrôleur au même indice initialise ses boutons
+ok oracle : relâcher une dérive chargée déclenche réellement turboIII
+ok perte de manette annule sa dérive sans turbo fantôme
+ok dérive clavier maintenue : Space
+ok dérive clavier maintenue : ShiftLeft
+ok dérive clavier maintenue : ShiftRight
+ok dérive tactile maintenue
+ok perte en pause annule seulement la dérive issue du pad
+ok rejouer : ancien pad ne peut annuler la dérive de la nouvelle séance
+ok charge non commandée par le pad et turbo déjà lancé préservés
+ok API getGamepads refusée neutralise les commandes sans interrompre la boucle
+ok API refusée annule la dérive chargée sans turbo fantôme
+ok vibration : un joueur en course la reçoit
+ok vibration : aucune sur l’écran titre
+ok vibration : aucune sur l’écran preparation
+ok vibration : aucune sur l’écran reglages
+ok vibration : aucune sur l’écran pause
+ok vibration : aucune sur l’écran resultats
+ok vibration : aucune sur l’écran demo
+ok vibration : aucune sur l’écran enligne
+ok vibration : aucune sur l’écran prets
+ok vibration : aucune quand l’ordinateur conduit (vitrine des menus, démo, outils)
+ok vibration : aucune si le réglage est à non
+ok vibration : la vitrine et la démo passent par le garde-fou
+ok vibration : les pas retiennent derrière le garde-fou, chaque image rendue calcule
+ok vibration : 30 images par seconde, au plus une commande toutes les 31 ms
+ok vibration : 60 images par seconde, au plus une commande toutes les 31 ms
+ok vibration : 120 images par seconde, au plus une commande toutes les 31 ms
+ok vibration : 144 images par seconde, au plus une commande toutes les 31 ms
+ok vibration : gâchettes quand la manette annonce trigger-rumble, deux moteurs sinon
+ok vibration : hors garde-fou, un seul arrêt puis plus rien
+ok vibration : événements de sa voiture seulement, réception devenue atterrissage, tableau borné
+ok vibration : à deux, chaque joueur a sa manette, son état et ses chocs
+ok vibration : la voiture replacée repart sans le pic d’un choc antérieur
+39/39 contrôles manette tenus
+
+=== mesures.test.mjs ===
+✔ deux millisecondes de boucle restent deux millisecondes (3.609288ms)
+✔ deux vues cumulent leur coût CPU et les deux glaces leur coût par image (1.081223ms)
+✔ les coûts nuls comptent et la pire image est le maximum (1.717569ms)
+✔ la fenêtre circulaire efface les anciens relevés sans section ni rétroviseur (2.679402ms)
+✔ le total GPU et ses passes utilisent les mêmes rendus complets (1.008624ms)
+✔ le module expose l API attendue (0.773091ms)
+✔ ouvert sans chronomètre GPU : aucune requête, temps GPU N/D, choix retenu (2.063778ms)
+✔ séance : images longues et pire image au-delà de la fenêtre de 240 images (4.247898ms)
+✔ séance : centiles par histogramme, au dixième de milliseconde (2.178581ms)
+✔ séance : une image juste à 1,5 période n’est pas longue, une image au-delà l’est (1.222675ms)
+✔ référence estimée : une cadence dégradée ne la déplace pas (4.376591ms)
+✔ période et diviseur déclarés par le jeu : seuil à (diviseur + 0,5) périodes (2.188646ms)
+✔ créations tardives du moteur : N/D sans compteur, écart de la séance sinon (1.147673ms)
+✔ le volet montre séance, période et créations, sans ramassage inventé (2.998451ms)
+✔ sans chronomètre GPU, le temps GPU reste N/D (1.821684ms)
+✔ les trois vues sont comptées séparément (0.251127ms)
+✔ le GPU vient des requêtes du moteur, les mesures invalides sont écartées (0.4062ms)
+✔ une extension absente ou un profil inexistant ne fabrique pas de mesure (0.218999ms)
+✔ reinitialiser vide la fenêtre (0.171357ms)
+✔ le budget audio ne devient pas une activité avant le geste utilisateur (0.995825ms)
+✔ le retour de l’horloge à zéro rafraîchit immédiatement le volet (0.909666ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 43.671312
+
+=== meteo-reelle.test.mjs ===
+✔ depuisReel filtre et borne les observations sans modifier la source ou garder sa localisation (1.013481ms)
+✔ météo réelle reste constante pendant plusieurs cycles de fronts, avec horloge et eau actives (26.988863ms)
+✔ pas invalides ignorés et sortie ambiance transmet vent/pluie réels (0.463926ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 34.157024
+
+=== meteo-toile.test.mjs ===
+toile de pluie : 25 contrôles passés
+
+=== meteo.test.mjs ===
+météo : 105 contrôles horloge, pause, projection, profondeur, paramètres et cadence tenus
+
+=== moteur-emprise.test.mjs ===
+moteur EMPRISE : triangles exacts aux 3 LOD, formes libres, restauration, météo et SSR optionnel [{"detail":"fin","shapes":7,"references":2352,"vertices":618,"restored":7},{"detail":true,"shapes":7,"references":1056,"vertices":360,"restored":7},{"detail":2,"shapes":6,"references":672,"vertices":210,"restored":6}]
+moteur EMPRISE : updateShape WebGL2, indices et sommets restaurés après perte du contexte
+
+=== nature-integration.test.mjs ===
+ok lumière commune aux deux joueurs et rétroviseurs sans rebâtir le monde
+ok faune inactive sans construction ; habitats partagés et pools propres aux vues
+ok faune et lumière chargées avant la coque et réglages restaurables
+3 contrôles intégration nature réussis.
+
+=== nature-preparation.test.mjs ===
+ok faune : préparation reprise telle quelle, mêmes images qu’une création complète
+ok faune : préparation d’une autre scène refusée, préparation par tranches identique
+ok effets de saison : préparation partagée entre séances et vues, mêmes feuilles et flocons
+ok aurores : rubans préparés une fois, refusés pour un autre circuit
+préparations de la nature : 4 contrôles passés
+
+=== navigation-menu.test.mjs ===
+ok onglets : initialisation idempotente, clic délégué, panneaux et ARIA cohérents
+ok onglets : clavier Home/End/flèches, Entrée native et retour à la souris
+ok haut/bas : un arrêt par groupe, sélection mémorisée et contrôles invisibles exclus
+ok radios natifs et cartes : gauche/droite sélectionne une seule fois
+ok curseurs : pas décimal exact, bornes et événements natifs de réglage
+ok sélections et cases : options interdites sautées, changement effectif seulement
+ok A/B restent sur fronts, B prioritaire et utilisable dans un panneau vide
+ok croix maintenue : premier appui, délai 360 ms, répétition 95 ms, pas de rattrapage
+ok stick : zone morte, hystérésis, retour au neutre après connexion/course
+ok LB/RB changent seulement les onglets, actions simultanées des deux manettes réunies
+ok repos : aucun parcours des contrôles ni interrogation de géométrie par image
+11 contrôles navigation menu validés
+
+=== obstacles-degagement.test.mjs ===
+ok contact rasant répété : la rotation bloquée ne vole plus la translation tangentielle
+ok le glissement est rebalayé contre un second mur sans énergie ni traversée ajoutées
+ok aucune marche arrière IA pour la grille, une attente de trafic ou une voiture sans contact fixe
+ok forêt enneigée réelle : le rival collé au tronc recule et repart sans replacement ni pneus restaurés
+ok poche en U : deux essais infructueux rendent la main au secours existant, sans restaurer les pneus
+5 contrôles contact tangent et dégagement IA réussis
+
+=== obstacles.test.mjs ===
+{
+  "passed": 24,
+  "total": 24,
+  "results": [
+    {
+      "name": "index vide/invalide : inoffensif et borné",
+      "ok": true
+    },
+    {
+      "name": "cercle : vraie distance au coin, pas grosse sphère ni axe centre faux",
+      "ok": true
+    },
+    {
+      "name": "cercle contenu : profondeur correcte et normale de sortie",
+      "ok": true
+    },
+    {
+      "name": "rectangle contenu : translation minimum entière et test pur",
+      "ok": true
+    },
+    {
+      "name": "CCD translatoire : mur fin traversé complètement, dernier point valide et distance rewound",
+      "ok": true
+    },
+    {
+      "name": "contact léger : rebond normal0.05, jamais de gain",
+      "ok": true
+    },
+    {
+      "name": "rasant rapide : seule vitesse normale facturée",
+      "ok": true
+    },
+    {
+      "name": "pénétration immobile corrigée sans dégâts ni accélération",
+      "ok": true
+    },
+    {
+      "name": "contact en séparation : correction géométrique sans fausse facture",
+      "ok": true
+    },
+    {
+      "name": "frottement continu : une facture, choc devenu violent autorisé",
+      "ok": true
+    },
+    {
+      "name": "mémoire contact nettoyée après éloignement, nouveau choc possible",
+      "ok": true
+    },
+    {
+      "name": "CCD rotation seule : pilier traversé entre deux orientations libres",
+      "ok": true
+    },
+    {
+      "name": "hauteur : pile de pneus survolée sans choc",
+      "ok": true
+    },
+    {
+      "name": "hauteur sur le trajet : contact au sol avant hauteur finale élevée",
+      "ok": true
+    },
+    {
+      "name": "normale monde inclut cap du circuit, même force après rotation globale",
+      "ok": true
+    },
+    {
+      "name": "dérive chargée : collision annule sans turbo fantôme",
+      "ok": true
+    },
+    {
+      "name": "déplacement exceptionnel refusé sans dégâts ni boucle gigantesque",
+      "ok": true
+    },
+    {
+      "name": "épave en attente de reprise immuable",
+      "ok": true
+    },
+    {
+      "name": "course sans liste : aucun état auxiliaire ni mutation",
+      "ok": true
+    },
+    {
+      "name": "balayage vertical pur : obstacles traversés entre deux hauteurs libres",
+      "ok": true
+    },
+    {
+      "name": "balayage courbe : solide hors AABB des extrémités trouvé dans index",
+      "ok": true
+    },
+    {
+      "name": "rewind ne restitue pas la vitesse perdue au frein/contre un rival",
+      "ok": true
+    },
+    {
+      "name": "dérive réarmée pendant contact : annulée même si facture non réarmée",
+      "ok": true
+    },
+    {
+      "name": "impulsion contre mur : cap caisse conservé malgré déviation de vitesse",
+      "ok": true
+    }
+  ]
+}
+
+=== ombres.test.mjs ===
+    0 octet alloué en 2 048 images (mesure 1/5) ; témoin journal() : 106624 octets
+ok  preparer : une image sans allocation (douze voitures en mouvement, trois paliers, journal)
+ok  axes : avant et haut de la caisse comme B.voiture.attitude (cap, tangage, roulis)
+ok  boîte : centre, axes et cotes de la caisse et des roues dans l'ordre lu par FERRO
+ok  choix : six places (quatre en Légère), portée 60 m, voitures de derrière après celles de devant
+ok  continuité : aucune force ne saute quand une voiture double, sort de portée ou passe derrière la caméra
+ok  paliers : réglages du contact, tuile et pénombre (Fine, Moyenne, Légère)
+ok  tuile : milieu de la caisse à 45 cm, axe avant de la voiture filmée, intervalle de ses objets
+ok  journal : une ligne par changement du niveau Auto ou des ombres, les 64 dernières
+ok  carte lointaine : une passe par décor, libérée sans ombres possibles ou sur un GPU modeste
+ok  ombres possibles : la carte ne sert qu'aux paliers qui ont des ombres du soleil (pas en Légère)
+---
+10 tests passes
+
+=== options-image.test.mjs ===
+ok chargement : anciennes préférences et choix invalides reprennent le profil
+ok gestionnaire change : les trois choix sont sauvegardés et rechargés
+ok cadence : valeur normalisée au chargement, choix du menu sauvegardé et donné à la cadence
+ok faune et moment avant départ : préférences indépendantes persistées
+ok saison choisie avant départ : sauvegarde et cache du décor distincts
+ok AA et ombres changent le profil sans reconstruire le circuit ni la séance
+ok végétation : application à la séance suivante et cache distinguant la densité
+ok reference(options) applique les surcharges et restitue les préférences précédentes
+ok stockage : écritures de course différées, relues fraîches, calculées à la vidange
+ok références successives sans options reviennent au profil, puis aux choix antérieurs
+options image : 10 contrôles passés
+
+=== pacifique.test.mjs ===
+ok septième circuit, sans déplacer les identifiants et graines des six précédents
+ok boucle fermée et trajectoire praticable, départ en ligne droite
+ok océan visible, route émergée et falaises asymétriques
+ok grands conifères bornés, géométrie finie et absence de brins supplémentaires
+ok chaque grand tronc reste visible au loin avec une seule collision
+ok la vraie botanique garde aussi les troncs proches et lointains identiques
+ok solides réels acceptés et grands troncs dégagés de toutes les portions de chaussée
+ok quatre saisons gardent route, mer, arbres et collisions ; hiver enneigé
+ok Low conserve relief, arbres et collisions de High
+ok reconstruction déterministe du tracé et du décor
+ok onze rivaux font un tour avec les contacts et solides réels du décor
+{"controles":11,"mesures":{"longueur":5234,"denivelePiste":13.43877871246655,"penteMax":0.06799999999999995,"arbres":320,"trianglesNappes":99768,"objets":8142,"lots":110,"ete":{"partImmergee":0.2552079910626273,"neige":0,"nuances":33,"relief":[-76,34.34517288208008]},"asymetrie":38.235578813833314,"hauteurTroncMax":39.34392518018955,"troncsLod":{"proches":320,"lointains":320,"collisions":320},"troncsLodBotanique":{"proches":320,"lointains":320,"collisions":320},"rochers":1,"margeArbres":38.30635680564061,"margeRochers":253.13019306651017,"hiver":{"partImmergee":0.2552079910626273,"neige":1,"nuances":11,"relief":[-76,34.34517288208008]},"course":{"rivauxArrives":11,"duree":262.19999999992586,"solidesActifs":968}}}
+
+=== physx-monde.test.mjs ===
+    monde né au premier débris : naissance 2.54 ms, choc 3.67 ms, premier pas 9.35 ms
+ok  repère : premier choc dans un monde neuf, code froid (module à part)
+    module prêt et monde chauffé 41.60 ms (initialisation du module comprise) ; nouvelle chauffe 1.37 ms
+    monde de la page chauffé : choc 0.36 ms, premier pas 0.46 ms
+ok  naissance : une séance née avant le module s y attache dès qu il est prêt ; le monde chauffé reste vide
+    premier choc d'une séance (effets compris, code JavaScript encore froid) : 2.29 ms, première passe avec corps 3.31 ms
+ok  séance : le choc pose corps et dalles dans le monde de la page ; libérée en plein vol, elle n y laisse rien
+ok  pièces posées : elles quittent la scène et restent où elles sont tombées ; à leur fin de vie, plus rien
+ok  vingt séances de suite : un seul monde, aucun corps ni aucune dalle de reste
+ok  argument refusé par PhysX (position non finie) : la pièce garde sa parabole, le monde reste
+---
+6 tests passes
+
+=== pieces.test.mjs ===
+{
+  "passed": 21,
+  "total": 21,
+  "results": [
+    {
+      "name": "budget : douze voitures en casse simultanée tiennent sous le plafond du pool",
+      "ok": true
+    },
+    {
+      "name": "budget : une voiture ne peut pas déborder sur le quota d une autre",
+      "ok": true
+    },
+    {
+      "name": "budget : le remplacement d une voiture rouvre son quota",
+      "ok": true
+    },
+    {
+      "name": "plafond : mille pièces réclamées ne dépassent jamais la taille du pool",
+      "ok": true
+    },
+    {
+      "name": "plafond : quand il faut sacrifier, c est la pièce la plus vieille qui cède",
+      "ok": true
+    },
+    {
+      "name": "panneau arraché sur choc violent, du côté de la normale, sans dépasser le budget",
+      "ok": true
+    },
+    {
+      "name": "cohérence : une pièce détachée ne reste pas dessinée sur la voiture",
+      "ok": true
+    },
+    {
+      "name": "repos : la pièce posée quitte la simulation et reste dessinée",
+      "ok": true
+    },
+    {
+      "name": "repos : une pièce encore en mouvement garde son corps",
+      "ok": true
+    },
+    {
+      "name": "libération : corps et dalles rendus, le monde de la page reste vide pour la suivante, effets éteints, plus rien ne bouge",
+      "ok": true
+    },
+    {
+      "name": "monde unique : les séances se suivent dans un seul monde, chauffé une fois, sans corps ni dalle de l une chez l autre",
+      "ok": true
+    },
+    {
+      "name": "préchauffage : une boîte lancée sur une dalle 5 km sous le circuit, puis plus rien ; la séance n en voit rien",
+      "ok": true
+    },
+    {
+      "name": "monde perdu : un pas PhysX qui échoue rend le monde, les pièces restent dessinées, le débris suivant en a un neuf",
+      "ok": true
+    },
+    {
+      "name": "création refusée une fois : la séance garde ses paraboles sans insister, la suivante retente et roule en PhysX",
+      "ok": true
+    },
+    {
+      "name": "rotation : l orientation d une pièce PhysX se prolonge au dessin ; trop rapide, elle tient sa dernière pose ; posée, elle se fige",
+      "ok": true
+    },
+    {
+      "name": "sans PhysX, la pièce suit sa parabole et rien ne lève une exception",
+      "ok": true
+    },
+    {
+      "name": "sol : les dalles suivent l altitude réelle du tracé autour de l accident",
+      "ok": true
+    },
+    {
+      "name": "récupération d urgence : jouable mais pas neuve ; la réparation complète reste aux stands",
+      "ok": true
+    },
+    {
+      "name": "vraie course : après un gros choc, la voiture repart et garde la trace du choc",
+      "ok": true
+    },
+    {
+      "name": "collisions multiples en chaîne : pas de NaN, pas de blocage, corps bornés",
+      "ok": true
+    },
+    {
+      "name": "attente : une séance née avant PhysX s y attache dès que le module est prêt ; refusé ou remplacé, rien ne casse",
+      "ok": true
+    }
+  ]
+}
+
+=== pneus.test.mjs ===
+ok ordre AVG, AVD, ARG, ARD : gauche/droite et essieux gardent les indices du jeu
+ok quatre types jouables en p10 ; anciennes préférences intactes et neige disponible
+ok p10 conserve les trois bases sec/eau de p9 et ajoute le domaine neige
+ok catalogue partagé immuable et types invalides sans accès au prototype
+ok quatre pneus neufs indépendants ; modifier une roue ne restaure ni ne salit les autres
+ok motifs reproductibles, différents par roue, séance, voiture et révision de service
+ok ancienne préférence migrée et sauvegarde JSON reproduite sans remise à neuf
+ok état malformé borné, quatre roues finies, aucune mutation de la source
+ok création et normalisation sans Math.random, générateur partagé ni accès au navigateur
+ok contrat commun branché dans la conduite, les avaries et chaque voiture de la grille
+10 contrôles pneus réussis
+
+=== prets-enligne.test.mjs ===
+✔ le moment choisi avant départ est annoncé et transmis aux pilotes (5.826437ms)
+✔ saison imposée par l’hôte, sans modifier les préférences des invités ; neige absente du Sud (1.027252ms)
+✔ l’annonce ouvre la confirmation sans lancer la course (0.36682ms)
+✔ Lande-Noire conserve le circuit et les conditions de l’hôte jusqu’au départ invité (1.220282ms)
+✔ Roche-Fauve conserve le circuit et les conditions de l’hôte jusqu’au départ invité (0.502074ms)
+✔ Brume-de-Jade conserve le circuit et les conditions de l’hôte jusqu’au départ invité (0.430816ms)
+✔ Cap-Séquoia conserve le circuit et les conditions de l’hôte jusqu’au départ invité (0.362945ms)
+✔ départ unique avec 1+1 pilotes (0.458469ms)
+✔ départ unique avec 2+1 pilotes (1.342496ms)
+✔ départ unique avec 2+2 pilotes (0.456745ms)
+✔ départ unique avec 1+1+1+1 pilotes (0.228944ms)
+✔ cinq pilotes ne peuvent pas confirmer le départ (0.287321ms)
+✔ un pilote peut retirer son accord pendant les 700 ms (0.352288ms)
+✔ retour de l’hôte au salon annule le départ différé (0.207842ms)
+✔ quitter puis rejoindre une autre partie ne lance pas l’ancienne course (0.318097ms)
+✔ une nouvelle proposition remplace le compte à rebours précédent (0.256515ms)
+✔ un membre en cours de connexion n’est pas oublié (0.515894ms)
+✔ une arrivée pendant le compte à rebours impose sa confirmation (0.285478ms)
+✔ perdre une liaison pendant le compte à rebours ne lance pas une course incomplète (0.20673ms)
+✔ départ d’un membre nettoie ses pneus et permet aux autres de continuer (0.505168ms)
+✔ les accords répétés ne programment qu’un départ (0.435624ms)
+✔ ouvrir les réglages retire l’accord local (0.183946ms)
+✔ un inconnu ne peut se dire prêt ni imposer des pneus (0.113761ms)
+✔ l’invité choisit ses pneus sans modifier sa boîte ni sa vue (0.314542ms)
+✔ annulation par l’hôte depuis les réglages retourne au salon (0.141592ms)
+✔ fermeture du salon efface la confirmation et quitte son écran (0.237928ms)
+✔ confirmation invalide ignorée sans écran vide (0.090155ms)
+✔ messages nuls ignorés sans interrompre le jeu (0.175223ms)
+✔ quitter pendant les 30 ms de chargement annule le lancement (0.242975ms)
+✔ 12E : conseil neige reçu si seule la saison change, choix manuel conservé sinon (0.302695ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 28.12387
+
+=== public.test.mjs ===
+public des tribunes : {"niveaux":[{"niveau":0,"triangles":6144,"sommets":4104,"corps":3068,"directs":1},{"niveau":1,"triangles":1144,"sommets":910,"corps":520,"directs":1},{"niveau":2,"triangles":138,"sommets":264,"corps":118,"directs":1}],"circuits":[{"circuit":"foret","high":983,"medium":449,"low":314,"assis":794,"debout":32,"glissieres":157,"auSec":727},{"circuit":"cote","high":1044,"medium":479,"low":326,"assis":861,"debout":32,"glissieres":151,"auSec":783},{"circuit":"montagne","high":1007,"medium":446,"low":286,"assis":824,"debout":29,"glissieres":154,"auSec":751},{"circuit":"islande","high":1019,"medium":485,"low":320,"assis":827,"debout":29,"glissieres":163,"auSec":771},{"circuit":"desert","high":1026,"medium":466,"low":316,"assis":838,"debout":35,"glissieres":153,"auSec":779},{"circuit":"asie","high":1033,"medium":483,"low":324,"assis":839,"debout":31,"glissieres":163,"auSec":759},{"circuit":"pacifique","high":989,"medium":456,"low":295,"assis":792,"debout":31,"glissieres":166,"auSec":721}],"branchement":"appliqué","variete":{"tenues":983,"n":983,"casquettes":331,"paille":66,"bonnetsHiver":468,"aDecouvert":256,"parapluies":119,"capuches":88,"drapeaux":81},"cadence":{"excitation":0.0125,"regard":2.7611,"poids":0.0103,"fete":0,"couverture":0.0035},"listes":{"high":{"n":983,"maxCorpsFins":47,"maxAlleges":349,"maxTrianglesCouleur":638448,"ombre":538},"medium":{"n":449,"maxCorpsFins":0,"maxAlleges":144,"maxTrianglesCouleur":184608,"ombre":236},"low":{"n":314,"maxCorpsFins":0,"maxAlleges":0,"maxTrianglesCouleur":35052,"ombre":167}},"processeurUsParImage":38.7,"vue":{"appelsParImage":4,"programmes":4},"allocations":{"ramassages":0,"octets":3816,"tours":20000,"usParImage":11.15}}
+
+=== qualite.test.mjs ===
+ok 49 FPS : aucune baisse avant trois secondes, puis un seul palier
+ok 50 et 60 FPS stables : ni baisse ni remontée
+ok 75 FPS : huit secondes avant une remontée, puis nouvelle observation complète
+ok 14 ms est la limite stricte de la remontée
+ok très faible FPS et longues images restent pris en compte
+ok masquage ou mode inactif remet à zéro les deux fenêtres
+ok durées invalides ignorées sans contaminer une fenêtre
+ok plancher GPU modeste et plafond de qualité respectés
+ok une zone intermédiaire rompt la remontée, sans oscillation
+ok période : intervalles réguliers, travail à 70 % de la période ou inconnu, la qualité ne bouge pas
+ok période : une image ratée sur quatre fait baisser au bout de 3 s, une sur six non
+ok période : intervalle de plus de 3 périodes ou de 0,25 s écarté (accroc isolé, reprise)
+ok période : remontée après 8 s de travail sous la moitié de la période, sans lenteur
+ok période : un niveau qui a échoué attend 20 s, puis 40 s ; nouvelleSeance efface cette mémoire
+ok période : à k = 2, deux périodes d’écran par image ne sont pas des images ratées
+ok période absente : cinq champs et logique d’avant ; période nulle, négative, infinie ou NaN : rien ne compte
+ok jeu : 2,9 s lentes puis pause exigent trois nouvelles secondes après reprise
+ok jeu : les réglages interrompent aussi une remontée presque acquise
+ok jeu : un choix manuel de qualité efface la charge précédente
+ok jeu : pause/reprise ne force ni qualité fixe ni banc ni référence
+ok jeu : avec la cadence, les seuils suivent la période visée et non 60 Hz
+ok jeu : en pleine conduite, la résolution du palier 4 attend un arrêt ; les autres paliers suivent à l’image
+ok jeu : le palier appris est rangé par machine et repris au démarrage
+qualité : 23 contrôles passés
+
+=== realisateur.test.mjs ===
+ok  la course va au bout et le film a des plans
+ok  avant le vert : toute la grille vue d’hélicoptère depuis la dernière ligne, puis la tête au bord de la piste
+ok  jamais deux fois la même caméra de suite, et les quatre servent
+ok  un plan de course dure de 2 à 10 s, sauf coupe forcée
+ok  voiture filmée : en course, jamais arrêtée pour une caméra embarquée ou de poursuite
+ok  au drapeau : on arrive avec la tête, de près ; puis le vainqueur au bord de la piste et vu d’en haut
+ok  même course et même graine : mêmes plans ; autre graine : autre film
+7 vérifications réussies
+
+=== relectures-phase2.test.mjs ===
+ok  conduite : une limite gauche nulle reste une limite
+ok  conduite : perte de dérive et seuil de turbo sont distincts
+ok  conduite : une nouvelle dérive repart sans fondu résiduel
+ok  conduite : pente et dévers invalides ne contaminent pas la voiture
+ok  traces : la graine zéro est distincte de la graine un
+ok  traces : une force de contact négative garde une gerbe minimale
+---
+6/6 tests passes
+
+=== rendu-halo.test.mjs ===
+✔ halo et ombres au palier 0 (1.297508ms)
+✔ halo et ombres au palier 1 (0.284167ms)
+✔ halo et ombres au palier 2 (0.178989ms)
+✔ halo et ombres au palier 3 (0.169435ms)
+✔ halo et ombres au palier 4 (0.218478ms)
+✔ reflets préservés selon la météo et le GPU (0.228303ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8.541543
+
+=== reprise-recul.test.mjs ===
+{
+  "passed": 21,
+  "total": 21,
+  "results": [
+    {
+      "name": "frottement<2m/s sans usure ;9m/s sans roue, adhérence>97%",
+      "ok": true
+    },
+    {
+      "name": "seuils20/30 : une roue puis grosse casse visuelle",
+      "ok": true
+    },
+    {
+      "name": "retour rapide casse : aucune abscisse gagnée, voiture jouable et dégâts conservés, immunité1s",
+      "ok": true
+    },
+    {
+      "name": "retour rapide roue : aucune abscisse gagnée, voiture jouable et dégâts conservés, immunité1s",
+      "ok": true
+    },
+    {
+      "name": "retour rapide tonneau : aucune abscisse gagnée, voiture jouable et dégâts conservés, immunité1s",
+      "ok": true
+    },
+    {
+      "name": "replacement manuel immédiat conserve s/distance et répare toute casse",
+      "ok": true
+    },
+    {
+      "name": "immunité dégâts mais mur toujours solide",
+      "ok": true
+    },
+    {
+      "name": "frein IA ou retenue de grille ne peut jamais engager le recul",
+      "ok": true
+    },
+    {
+      "name": "frein volontaire attend0,3s à l’arrêt",
+      "ok": true
+    },
+    {
+      "name": "recul plafonné12km/h, progression signée, cap caisse stable",
+      "ok": true
+    },
+    {
+      "name": "pas de bascule en recul avant arrêt puis délai",
+      "ok": true
+    },
+    {
+      "name": "gaz freine le recul avant de repartir",
+      "ok": true
+    },
+    {
+      "name": "direction en recul : deux côtés symétriques, lacet inversé",
+      "ok": true
+    },
+    {
+      "name": "recul contre rail : normale signée, pas de tunnel ni énergie créée",
+      "ok": true
+    },
+    {
+      "name": "recul CCD contre muret fin : arrêt avant traversée, orientation préservée",
+      "ok": true
+    },
+    {
+      "name": "recul contre rival : contact normal signé sans énergie ajoutée",
+      "ok": true
+    },
+    {
+      "name": "replacement latéral>25m n’est pas balayé par CCD ni annulé comme téléportation",
+      "ok": true
+    },
+    {
+      "name": "course : gros choc ne marque plus DNF et reprise<1s",
+      "ok": true
+    },
+    {
+      "name": "chrono : retour manuel invalide le tour, pas de meilleur/ghost ; tour suivant valide",
+      "ok": true
+    },
+    {
+      "name": "recul sur ligne puis réavance : aucun tour artificiel",
+      "ok": true
+    },
+    {
+      "name": "recul sur pente : sol, dévers, vibreur et herbe actualisés",
+      "ok": true
+    }
+  ]
+}
+
+=== roues-detail.test.mjs ===
+ok type de pneu invalide ou hérité : repli slick sans plantage, avec ou sans contrat partagé
+ok tous les maillages de roue ont des faces finies, non dégénérées, orientées vers leurs normales
+ok quatre sculptures distinctes proches, silhouettes partagées au loin, cotes et ouverture de jante conservées
+ok taille projetée et hystérésis : quatre détails utiles et erreur de corde bornée dans les cadrages de référence
+ok distance en 3D : caméra haute, roue proche et suspension influent dans le bon sens
+ok passages entre détails : quatre pneus, mêmes objets permanents, dimensions et pose stables
+ok cockpit et rétroviseur acceptent leur détail sans écraser les objets de la vue principale
+ok roue détachée : sculpture conservée et taille du collider inchangée
+8 vérifications réussies
+
+=== saisons.test.mjs ===
+ok profils figés, été par défaut et aucune neige sur Port-Sable
+ok douze scènes : recoloration seulement, chaussée hivernale lisible, collisions et tracés identiques
+ok prairie 3D : mêmes brins, matrices et LOD, cache de sol propre à la saison active
+{
+  "controles": 3,
+  "mesures": [
+    {
+      "biome": "foret",
+      "saison": "printemps",
+      "sommetsHerbe": 40965,
+      "solHerbeMoyen": [
+        0.23553139603932408,
+        0.32567288037637326,
+        0.10979968231613785
+      ],
+      "canopeesClaires": 909,
+      "canopeesRoses": 620,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.3728,
+        1.186952,
+        0.9547200000000001
+      ],
+      "nappes": 117,
+      "objets": 9578,
+      "solides": 1723
+    },
+    {
+      "biome": "foret",
+      "saison": "ete",
+      "sommetsHerbe": 40965,
+      "solHerbeMoyen": [
+        0.3182008658116894,
+        0.32828799431306255,
+        0.1319200445568112
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.6199040000000002,
+        1.3467339999999997,
+        0.99828
+      ],
+      "nappes": 117,
+      "objets": 9578,
+      "solides": 1723
+    },
+    {
+      "biome": "foret",
+      "saison": "automne",
+      "sommetsHerbe": 40965,
+      "solHerbeMoyen": [
+        0.32947005964629195,
+        0.33046282651324593,
+        0.13463467598510692
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 2164,
+      "sourcesFeuilles": 1082,
+      "soleil": [
+        1.28898,
+        1.0193729999999999,
+        0.7281900000000001
+      ],
+      "nappes": 117,
+      "objets": 9578,
+      "solides": 1723
+    },
+    {
+      "biome": "foret",
+      "saison": "hiver",
+      "sommetsHerbe": 40965,
+      "solHerbeMoyen": [
+        0.8773362805056772,
+        0.9087496738432091,
+        0.9277974988316262
+      ],
+      "canopeesClaires": 1801,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.079496,
+        0.9830999999999999,
+        0.83781
+      ],
+      "nappes": 117,
+      "objets": 9578,
+      "solides": 1723
+    },
+    {
+      "biome": "cote",
+      "saison": "printemps",
+      "sommetsHerbe": 31375,
+      "solHerbeMoyen": [
+        0.38399691531572683,
+        0.41066090517879955,
+        0.19042585194823278
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.456,
+        1.26048,
+        0.997152
+      ],
+      "nappes": 104,
+      "objets": 7362,
+      "solides": 1019
+    },
+    {
+      "biome": "cote",
+      "saison": "ete",
+      "sommetsHerbe": 31375,
+      "solHerbeMoyen": [
+        0.4128947597784825,
+        0.3769611948799802,
+        0.1826232065152362
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.71808,
+        1.4301599999999999,
+        1.0426479999999998
+      ],
+      "nappes": 104,
+      "objets": 7362,
+      "solides": 1019
+    },
+    {
+      "biome": "cote",
+      "saison": "automne",
+      "sommetsHerbe": 31375,
+      "solHerbeMoyen": [
+        0.41545110207154934,
+        0.3741153297253339,
+        0.180561337336601
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.3671000000000002,
+        1.0825200000000001,
+        0.760554
+      ],
+      "nappes": 104,
+      "objets": 7362,
+      "solides": 1019
+    },
+    {
+      "biome": "cote",
+      "saison": "hiver",
+      "sommetsHerbe": 31375,
+      "solHerbeMoyen": [
+        0.37268648607227434,
+        0.372767599735602,
+        0.21402975373154143
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.14492,
+        1.044,
+        0.875046
+      ],
+      "nappes": 104,
+      "objets": 7362,
+      "solides": 1019
+    },
+    {
+      "biome": "montagne",
+      "saison": "printemps",
+      "sommetsHerbe": 37176,
+      "solHerbeMoyen": [
+        0.2600495636760579,
+        0.33374268262343865,
+        0.15420490208101742
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.352,
+        1.249976,
+        1.082016
+      ],
+      "nappes": 176,
+      "objets": 11100,
+      "solides": 1178
+    },
+    {
+      "biome": "montagne",
+      "saison": "ete",
+      "sommetsHerbe": 37176,
+      "solHerbeMoyen": [
+        0.33442344127552776,
+        0.33286307986536307,
+        0.16002076232137669
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.5953600000000001,
+        1.418242,
+        1.131384
+      ],
+      "nappes": 176,
+      "objets": 11100,
+      "solides": 1178
+    },
+    {
+      "biome": "montagne",
+      "saison": "automne",
+      "sommetsHerbe": 37176,
+      "solHerbeMoyen": [
+        0.34307648834343724,
+        0.3344083570115459,
+        0.16001150930712807
+      ],
+      "canopeesClaires": 0,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.2694500000000002,
+        1.073499,
+        0.8252820000000001
+      ],
+      "nappes": 176,
+      "objets": 11100,
+      "solides": 1178
+    },
+    {
+      "biome": "montagne",
+      "saison": "hiver",
+      "sommetsHerbe": 37176,
+      "solHerbeMoyen": [
+        0.8788388883869366,
+        0.90936336139498,
+        0.9303655574125886
+      ],
+      "canopeesClaires": 1849,
+      "canopeesRoses": 0,
+      "canopeesChaudes": 0,
+      "sourcesFeuilles": 0,
+      "soleil": [
+        1.06314,
+        1.0352999999999999,
+        0.949518
+      ],
+      "nappes": 176,
+      "objets": 11100,
+      "solides": 1178
+    }
+  ]
+}
+
+=== salon-protocole.test.mjs ===
+✔ creation, capacite de quatre pilotes et depart de l’hote (116.853502ms)
+✔ premiere trame recue dans le meme paquet TCP que la requete HTTP (81.590167ms)
+✔ JSON fragmente, ping intercale et caractere UTF-8 coupe entre fragments (79.49072ms)
+✔ relais binaire fragmente conserve tous les octets et l’expediteur (105.88253ms)
+✔ trame distribuee entre plusieurs lectures TCP (129.915048ms)
+✔ deux messages distincts dans une meme lecture TCP (76.52565ms)
+✔ message de 64 Kio accepte, fragmentation=false (230.723835ms)
+✔ message de 64 Kio accepte, fragmentation=true (77.986419ms)
+✔ continuation sans debut (77.048757ms)
+✔ nouveau message avant la fin du precedent (77.697936ms)
+✔ opcode reserve (86.747627ms)
+✔ bits RSV sans extension negociee (77.319202ms)
+✔ message non masque (86.302919ms)
+✔ ping fragmente (76.845401ms)
+✔ ping superieur a 125 octets (78.931247ms)
+✔ message UTF-8 invalide (77.960581ms)
+✔ fermeture avec un seul octet (98.480256ms)
+✔ code de fermeture interdit (88.207799ms)
+✔ raison de fermeture UTF-8 invalide (103.696606ms)
+✔ limite cumulee de fragments (92.87109ms)
+✔ limite d’une trame (114.599ms)
+✔ aucune creation fantome apres une fermeture dans le meme paquet TCP (149.667227ms)
+✔ negociation invalide refusee : {"version":"12"} (93.857135ms)
+✔ negociation invalide refusee : {"cle":"incorrecte"} (89.853645ms)
+✔ negociation invalide refusee : {"chemin":"/salon-inexistant"} (123.770008ms)
+✔ fragmentation terminee ne laisse pas de continuation ouverte (163.792568ms)
+✔ nombre de fragments vides borne sans allocation infinie (100.951646ms)
+✔ FIN TCP sans message WebSocket libere immediatement la connexion (143.898361ms)
+✔ une erreur de protocole bloque aussi les messages TCP suivants (202.458676ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3127.086664
+
+=== scene-bench.test.mjs ===
+Scène de détection : vrais décors, douze voitures et leur simulation comme en course, sillage, options de chaque palier, fin forcée, chronomètre fermé, départ de Val-Brûlé au cockpit, glaces différées au rythme de la course, copie 2D, moteur temporaire et sonde de débit vérifiés.
+
+=== sillage.test.mjs ===
+ok flux dans la direction de vitesse, distincte du cap de la caisse en dérive
+ok marche arrière et vitesse signée orientent le sillage correctement
+ok arrêt, épave, tunnel ou données invalides ne produisent aucun souffle artificiel
+ok pool borné et références identiques pendant 2 000 images, partagées par les vues
+ok téléportation et vitesses extrêmes ne créent ni impulsion de position ni rayon sans limite
+ok état préparé au lancement : liste à sa taille, mêmes sources qu’un état neuf, réutilisable d’une séance à l’autre
+ok brume réduite sur les trois biomes, atmosphère source et météo conservées
+ok ambiance réutilisée entre vues et images sans perdre pluie, humidité ou vent
+sillage et brume : 8 contrôles passés
+
+=== simulation-sorties.test.mjs ===
+ok  circuit.echantillon : la sortie fournie reçoit les valeurs de l’objet neuf, au bit près
+ok  conduite.pas : les événements versés dans la sortie sont ceux du tableau neuf, état identique
+ok  course.commandesIA et course.pas : sorties réutilisées = objets neufs, commandes, événements et états
+ok  classement : tri par insertion = tri stable de Array.prototype.sort, égalités comprises
+ok  solides : cellules et boîtes de rejet donnent les mêmes contacts que la grille seule
+ok  dégâts : roues perdues comptées par boucle = some(Boolean) et filter(Boolean).length
+ok  formes fixes : IA et état de conduite gardent les mêmes champs, dans le même ordre, pour chaque voiture
+ok  chauffe jetable : la vraie course qui suit est la même, au bit près ; tranches et météo respectées
+sorties de simulation : 8 vérifications passées
+
+=== son.test.mjs ===
+ok  module charge sans AudioContext
+ok  creer sans demarrer : methodes sans effet
+ok  frequenceAllumage(12000) = 800
+ok  coupure bornee [600,6500]
+ok  gainDistance(0)=1 et decroissant
+ok  doppler(0)=1 et >1 pour rapprochement
+ok  panoramique(pi/2)=1 et borne
+ok  sélection bornée sans modifier ni recopier les rivaux
+ok  deux moteurs humains conservés à toute distance et trois rivaux au maximum
+ok  attribution stable puis fondu complet avant de réutiliser une voix rivale
+ok  graphe complet avec un faux contexte audio
+ok  signaux de course sans musique : une seule hauteur au plus par signal
+ok  échappement : tampons et voix préparés au démarrage ; ensuite une source par claquement joué, rien d’autre
+ok  échappement : six voix et six départs par image au plus ; la plus faible cède la place au plus fort
+ok  échappement : proche plus fort et plus clair que lointain, placé par l’angle ; du cockpit, étouffé et au centre
+ok  échappement : niveaux bornés, écarts de la course gardés, rien en pause, la file qui déborde ne joue que le récent
+ok  échappement : quand la file mène, passage et rupteur ne doublent plus le claquement
+ok  tampons de claquements : identiques à chaque démarrage, sans Math.random, brefs, crêtes bornées, qui s’éteignent
+ok  thème du titre : huit mesures de mélodie en la mineur sur huit accords
+ok  thème du titre : rien avant le premier geste, boucle entière, arrêt net, pas de rafale
+20 vérifications réussies
+
+=== stands.test.mjs ===
+ok  la voie des stands existe, est a droite et tient dans la ligne droite
+ok  sante : neuve a 1, baisse a chaque avarie, remonte a 1 apres reparation
+ok  la jauge vient du meme etat que les penalites, pas d un compteur d affichage
+ok  le service se chiffre d apres l etat constate
+ok  entrer dans la voie a basse vitesse ouvre un arret et invalide le tour
+ok  on n entre pas en roulant vite, ni en frolant le bord, ni au depart
+ok  ressortir de la voie sans s arreter annule l arret, sans rien reparer
+ok  l arret au garage rend la reparation complete, a la duree chiffree
+ok  rouler dans la voie ne repare rien : il faut l arret
+ok  la voie bride a la vitesse des stands
+ok  le replacement apres crash ne repare pas tout : les stands restent utiles
+ok  une voiture arree au stand nest jamais tenue pour coincee
+ok  les rivaux n utilisent pas les stands
+ok  un pair distant ne peut pas faire reparer sa voiture
+ok  un arret ne donne ni tour gratuit ni meilleur temps en chrono
+ok  deux joueurs ont chacun leur sante et leur arret
+ok  le meme arret, deux fois, donne le meme resultat
+ok  une roue perdue immobilise avant d atteindre le garage : pas de service
+stands : 18 verifications passees
+
+=== titre-signature.test.mjs ===
+✔ m4d135 permet d'enregistrer le jeu en HTML depuis l'écran titre (0.947262ms)
+✔ la marque garde son badge de version, sans fermeture excédentaire (0.224587ms)
+✔ le lien ZIP retiré par la branche ne revient pas (0.234382ms)
+✔ la feuille de style tient la signature (0.254762ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7.571158
+
+=== traces.test.mjs ===
+ok  plafonds : 512 bandes, 48 fumées, 48 étincelles, sans jamais grandir
+ok  traces effacées en 24 s, fumée et étincelles éteintes avant
+ok  pâleur : une trace pâlit avec l'âge et ne se dessine plus après 24 s
+ok  cadence : une mise à jour tous les 4 pas de 1/120 s (30 Hz)
+ok  bandes sous les roues arrière, prolongées en ligne droite
+ok  pas de bande à travers un replacement
+ok  voitures loin de celle que l'on regarde : rien
+    0.023 ms par image, 589 objets dessinés
+ok  coût : au plus 0,3 ms par image à 60 Hz, tout plein
+ok  déterminisme : même graine, mêmes effets
+KO  déterminisme : mêmes effets et mêmes tirages que le code d’avant la réécriture (empreinte figée)
+AssertionError [ERR_ASSERTION]: empreinte des effets différente de celle de 54e98c9 : ordre des tirages ou calcul des pools changé
++ actual - expected
+
++ 'e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf'
+- '575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee'
+
+    at file:///workspace/scratch/fb61bd99753c/bitume/verifications/traces.test.mjs:206:10
+    at verifier (file:///workspace/scratch/fb61bd99753c/bitume/verifications/traces.test.mjs:18:9)
+    at file:///workspace/scratch/fb61bd99753c/bitume/verifications/traces.test.mjs:167:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf',
+  expected: '575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+=== troncs.test.mjs ===
+{
+  "passed": 18,
+  "total": 18,
+  "results": [
+    {
+      "name": "index : prisme16 accepté, dimensions/rotations invalides rejetées",
+      "ok": true
+    },
+    {
+      "name": "32 sommets et bornes exacts, Rz·Ry·Rx ; géométrie source inchangée",
+      "ok": true
+    },
+    {
+      "name": "inclinaison axe0 sens-1 : tranche réelle, vide près de la base",
+      "ok": true
+    },
+    {
+      "name": "inclinaison axe0 sens1 : tranche réelle, vide près de la base",
+      "ok": true
+    },
+    {
+      "name": "inclinaison axe2 sens-1 : tranche réelle, vide près de la base",
+      "ok": true
+    },
+    {
+      "name": "inclinaison axe2 sens1 : tranche réelle, vide près de la base",
+      "ok": true
+    },
+    {
+      "name": "caps et facettes : au-dessus/dessous libres, facette polygonale sans cercle gonflé",
+      "ok": true
+    },
+    {
+      "name": "caps inclinés : hauteur AABB seule ne crée pas de faux solide",
+      "ok": true
+    },
+    {
+      "name": "containment : profondeur horizontale entière, sortie finie et test pur",
+      "ok": true
+    },
+    {
+      "name": "CCD : arbre fin traversé entre deux poses libres, casse/quatre roues/arrêt",
+      "ok": true
+    },
+    {
+      "name": "CCD vertical : caps traversés entre hauteurs libres",
+      "ok": true
+    },
+    {
+      "name": "passage haut et sous les racines : pas de mur invisible",
+      "ok": true
+    },
+    {
+      "name": "impact léger : énergie et cap caisse préservés, aucune casse",
+      "ok": true
+    },
+    {
+      "name": "frôlement tangent : passage libre sans collision élargie",
+      "ok": true
+    },
+    {
+      "name": "chevauchement immobile : correction sans dégâts ni vitesse",
+      "ok": true
+    },
+    {
+      "name": "décor réel foret : tous troncs, aucun feuillage, grand saut200km/h destructif puis reprise",
+      "ok": true
+    },
+    {
+      "name": "décor réel cote : tous troncs, aucun feuillage, grand saut200km/h destructif puis reprise",
+      "ok": true
+    },
+    {
+      "name": "décor réel montagne : tous troncs, aucun feuillage, grand saut200km/h destructif puis reprise",
+      "ok": true
+    }
+  ]
+}
+
+=== tunnel-transitions.test.mjs ===
+✔ le décor de Haut-Col fournit des lampes et le tunnel est droit (0.863887ms)
+✔ la lumière monte et descend sans saut le long de la piste (18.932664ms)
+✔ hors de portée, plus aucune lampe ; sous la voûte, la piste est éclairée (0.687753ms)
+✔ le plafond de huit n est jamais ce qui éteint une lampe (3.001056ms)
+✔ chaque caméra garde son propre état temporel (0.336986ms)
+✔ l état est repris quand la scène change (0.252559ms)
+✔ un état né dans l image est compté ; pas nul et remise à zéro ne réallouent rien (1.16582ms)
+✔ l abri de la pluie et l œil suivent la caméra, pas la voiture (0.2862ms)
+✔ les reflets d écran ne clignotent plus au seuil d humidité (1.107873ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 33.444361
+
+=== tunnel.test.mjs ===
+ok  Haut-Col a un tunnel de 260 m, loin de la ligne des stands
+ok  les murs du tunnel sont les limites de la piste
+ok  voûte, murs, lampes et roche ; ni glissière ni arbre sous la roche
+ok  le tunnel est au milieu de la plus longue ligne droite, quel que soit le bruit des courbures
+ok  rien de la montagne ne dépasse dans le tunnel
+ok  sous la voûte la piste reste sèche : les slicks y gardent toute leur adhérence
+tunnel : 6 vérifications passées
+
+=== usure-integration.test.mjs ===
+ok course réelle : pneus neufs indépendants, aucune usure sur la grille et aux feux
+ok repos freiné et attente de marche arrière ne font pas avancer les pneus
+ok vrai recul : usure malgré contacts dynamiques périmés, sans les réécrire
+ok vrai vol et réception : anciennes charges sans abrasion, monte et motifs conservés
+ok récupération automatique et replacement direct conservent usure, type et objets
+ok course en ligne : les voitures distantes ne sont pas usées une seconde fois localement
+ok p10 : usure progressive et bornée dans les vraies capacités des deux essieux
+ok l’usure d’une roue réduit son essieu sans appliquer une seconde perte à l’autre
+ok p10 : mêmes pneus et commandes donnent les mêmes pas, événements et usure
+9 contrôles intégration usure réussis
+
+=== usure-pneus.test.mjs ===
+ok roulage propre, agressif et charge asymétrique produisent des usures différentes
+ok marche arrière : distance positive d’usure, identique au même roulage en avant
+ok mode recul : contacts visuels statiques sans lire les anciennes charges, glisses et patinage
+ok mode recul : aucune roue absente, perdue ou suspendue ; aucun roulage fictif à l’arrêt
+ok surface explicite du recul : saleté réversible sans modifier la surface physique
+ok pas fixes regroupés en images : mêmes valeurs ; subdivision constante à 30/60/120 Hz
+ok pause, grille, arrêt sans patinage et contacts périmés ne changent rien
+ok une roue déchargée, sans contact ou perdue ne perd pas de gomme
+ok roue absente et état incomplet sont ignorés sans fabrication de contact
+ok vol, bond, accident, récupération, réparation et service excluent les anciennes charges
+ok patinage immobile mesuré : usure arrière sans fausse distance de roulage
+ok neige réelle et eau diffèrent du sec ; la seule saison ne change pas l’usure
+ok saleté réversible et grainage continu sans restauration de gomme
+ok types et surfaces inconnus retombent sur le roulage sec sans accès hérité
+ok réparations de caisse et d’urgence conservent les pneus ; aucun service dans le lot visuel
+ok longue simulation bornée, mêmes objets et aucune modification des données de conduite
+ok saturation et anciennes valeurs invalides restent finies et bornées
+ok boucle sans allocation de collection ni hasard : état déjà préparé
+18 contrôles usure pneus réussis
+
+=== usure-visuelle.test.mjs ===
+ok état absent, neuf explicite et retour neuf rendent exactement la même image
+ok partition de la peau : mêmes triangles, mêmes normales et mêmes cotes, sans doublon
+ok chaque roue évolue seule et les marques suivent ses rotations sans muter son état
+ok teintes continues, graine reproductible et saleté réversible sans effacer l’usure
+ok sculptures : fond continu sous les sommets ; slick sans canal et diamètre inchangé
+ok tables permanentes et niveaux de détail : supports limités au proche, couleurs locales
+ok rétroviseurs : même usure que la vue entière filtrée ; roue perdue entièrement masquée
+ok valeurs invalides et exagérées : aucun nombre non fini injecté dans le rendu
+8 contrôles usure visuelle réussis
+
+=== vegetation.test.mjs ===
+ok quatre formes réutilisées, au plus 800 triangles au registre
+ok triangles finis, orientés, non dégénérés et tenus dans le cube des instances
+ok LOD vraiment simplifié ; détail retiré sous 0,4 pixel à la distance de référence
+ok 96 brins fins couvrent la tuile ; la simplification conserve exactement sa surface et chaque racine
+ok Val-Brûlé reçoit un nombre borné de plantes et deux groupes au plus par lot
+ok aucun obstacle, arbre ou objet historique déplacé ou retiré
+ok nouvel asphalte seul, géométrie de chaussée et marquages inchangés
+ok plantes à l’écart de la chaussée, des stands et des glissières
+ok répartition déterministe et indépendante des autres générateurs
+ok Port-Sable et Haut-Col : la végétation est purement additive, le décor historique est intact
+ok le palier bas reproduit exactement l'existant : formes, comptes, placement et matière
+ok qualite optionnelle : une valeur inconnue retrouve le palier historique
+ok contrat GPU : rang constant par brin, racines fixes et exactement un huitième de brins lointains
+ok clairières sans brins, poches MAX très denses et coût inférieur à la 0.2.32
+ok un champ entièrement nu ne construit ni brin ni lot végétal
+ok surfaceHerbe existe en Off, refuse les routes et le tunnel et accepte une sortie réutilisable
+ok implantation déterministe et aucune nouvelle consommation du hasard du circuit
+{
+  "controles": 17,
+  "plantesHistoriques": {
+    "herbes": 124,
+    "fougeres": 0,
+    "fleurs": 0,
+    "taillis": 34,
+    "lots": 10,
+    "qualite": "low",
+    "brins": 1116,
+    "tuiles": 0,
+    "brinsTapis": 0,
+    "objetsHerbe": 124,
+    "brinsAccotements": 0,
+    "brinsTerrain": 0,
+    "aireAccotements": 0,
+    "aireTerrain": 0,
+    "aireNue": 0,
+    "aireRiche": 0,
+    "brinsRiches": 0
+  },
+  "erreursLod": {
+    "herbes": {
+      "metres": 0.021013878261790717,
+      "pixels": 0.03779699346016133
+    },
+    "taillis": {
+      "metres": 0.030015847563754975,
+      "pixels": 0.05398854889776867
+    },
+    "fougeres": {
+      "metres": 0.08195574962053627,
+      "pixels": 0.14741119625036112
+    },
+    "fleurs": {
+      "metres": 0.12420602100961978,
+      "pixels": 0.22340541357134538
+    },
+    "humus": {
+      "metres": 0.16198358989879955,
+      "pixels": 0.2913547233777801
+    },
+    "prairie": {
+      "metresAuRepos": 1.670444188832582e-16,
+      "trianglesParBrin": {
+        "proche": 6,
+        "loin": 2
+      }
+    }
+  },
+  "mesures": {
+    "foret": {
+      "medium": {
+        "brins": 647821,
+        "tuiles": 38951,
+        "lots": 2362,
+        "aireCouverte": 3938110.078344097,
+        "couverture": 0.47867440615290896,
+        "brinsAccotements": 143728,
+        "brinsTerrain": 503688,
+        "erreurSol": 0,
+        "controlesSol": 0,
+        "instanceBufferBytes": 4985728,
+        "aireNue": 4289006.365993417,
+        "aireRiche": 2332203.1459190887,
+        "brinsRiches": 398720,
+        "ratioBrins032": 0.3850475855362794,
+        "ratioInstances032": 0.4454954079123443,
+        "tuilesRichesProches": 0
+      },
+      "high": {
+        "brins": 2719234,
+        "tuiles": 38951,
+        "lots": 2362,
+        "aireCouverte": 3938110.078344097,
+        "couverture": 0.47867440615290896,
+        "brinsAccotements": 614272,
+        "brinsTerrain": 2104296,
+        "erreurSol": 0,
+        "controlesSol": 0,
+        "instanceBufferBytes": 4985728,
+        "aireNue": 4289006.365993417,
+        "aireRiche": 2332203.1459190887,
+        "brinsRiches": 1581824,
+        "ratioBrins032": 0.4162741055392911,
+        "ratioInstances032": 0.4454954079123443,
+        "tuilesRichesProches": 0
+      },
+      "ultra": {
+        "brins": 49134826,
+        "tuiles": 41410,
+        "lots": 3057,
+        "aireCouverte": 3938056.0776541024,
+        "couverture": 0.4786678424084476,
+        "brinsAccotements": 13860128,
+        "brinsTerrain": 35274032,
+        "erreurSol": 0.0050000034057284815,
+        "controlesSol": 41410,
+        "instanceBufferBytes": 5300480,
+        "aireNue": 4289060.366683427,
+        "aireRiche": 2332289.053700357,
+        "brinsRiches": 30156920,
+        "ratioBrins032": 0.301421307565171,
+        "ratioInstances032": 0.4074664462549691,
+        "tuilesRichesProches": 4320,
+        "disques": [
+          {
+            "id": "0.2:-1",
+            "type": "reference",
+            "avant": 197,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.2:1",
+            "type": "reference",
+            "avant": 213,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.37:-1",
+            "type": "reference",
+            "avant": 221,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.37:1",
+            "type": "reference",
+            "avant": 197,
+            "brins": 747,
+            "facteur": 3.7918781725888326,
+            "parMetreCarre": 59.44437124482291
+          },
+          {
+            "id": "0.53:-1",
+            "type": "reference",
+            "avant": 160,
+            "brins": 5298,
+            "facteur": 33.1125,
+            "parMetreCarre": 421.60144425043075
+          },
+          {
+            "id": "0.53:1",
+            "type": "reference",
+            "avant": 286,
+            "brins": 7923,
+            "facteur": 27.702797202797203,
+            "parMetreCarre": 630.4923070585434
+          },
+          {
+            "id": "0.69:-1",
+            "type": "reference",
+            "avant": 180,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.69:1",
+            "type": "reference",
+            "avant": 220,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.84:-1",
+            "type": "reference",
+            "avant": 216,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.84:1",
+            "type": "reference",
+            "avant": 205,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          }
+        ],
+        "habitats": [
+          {
+            "id": "nu:454:-1",
+            "type": "nu",
+            "avant": 0,
+            "brins": 0,
+            "facteur": null,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "nu:580:1",
+            "type": "nu",
+            "avant": 0,
+            "brins": 0,
+            "facteur": null,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "nu:622:-1",
+            "type": "nu",
+            "avant": 0,
+            "brins": 0,
+            "facteur": null,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "riche:958:-1",
+            "type": "riche",
+            "avant": 0,
+            "brins": 3110,
+            "facteur": null,
+            "parMetreCarre": 247.48593650789726
+          },
+          {
+            "id": "riche:1000:-1",
+            "type": "riche",
+            "avant": 0,
+            "brins": 6420,
+            "facteur": null,
+            "parMetreCarre": 510.88736732498404
+          },
+          {
+            "id": "riche:1042:-1",
+            "type": "riche",
+            "avant": 0,
+            "brins": 3112,
+            "facteur": null,
+            "parMetreCarre": 247.64509145098916
+          }
+        ]
+      }
+    },
+    "cote": {
+      "medium": {
+        "brins": 450862,
+        "tuiles": 27860,
+        "lots": 1567,
+        "aireCouverte": 2055633.505441386,
+        "couverture": 0.38905513689256205,
+        "brinsAccotements": 146584,
+        "brinsTerrain": 303792,
+        "erreurSol": 0,
+        "controlesSol": 0,
+        "instanceBufferBytes": 3566080,
+        "aireNue": 3228022.4870228665,
+        "aireRiche": 1137379.9533920933,
+        "brinsRiches": 282280,
+        "ratioBrins032": 0.3559736609398686,
+        "ratioInstances032": 0.38731023744647725,
+        "tuilesRichesProches": 0
+      },
+      "high": {
+        "brins": 1961887,
+        "tuiles": 27860,
+        "lots": 1567,
+        "aireCouverte": 2055633.505441386,
+        "couverture": 0.38905513689256205,
+        "brinsAccotements": 617464,
+        "brinsTerrain": 1343496,
+        "erreurSol": 0,
+        "controlesSol": 0,
+        "instanceBufferBytes": 3566080,
+        "aireNue": 3228022.4870228665,
+        "aireRiche": 1137379.9533920933,
+        "brinsRiches": 1141888,
+        "ratioBrins032": 0.410396086411551,
+        "ratioInstances032": 0.38731023744647725,
+        "tuilesRichesProches": 0
+      },
+      "ultra": {
+        "brins": 44840175,
+        "tuiles": 30697,
+        "lots": 2172,
+        "aireCouverte": 2055615.5038192961,
+        "couverture": 0.3890517298535505,
+        "brinsAccotements": 15815112,
+        "brinsTerrain": 29024136,
+        "erreurSol": 0.005000000112081793,
+        "controlesSol": 30697,
+        "instanceBufferBytes": 3929216,
+        "aireNue": 3228040.4886449603,
+        "aireRiche": 1136815.288694938,
+        "brinsRiches": 30564184,
+        "ratioBrins032": 0.3474430968842999,
+        "ratioInstances032": 0.36831685544250337,
+        "tuilesRichesProches": 5940,
+        "disques": [
+          {
+            "id": "0.2:-1",
+            "type": "reference",
+            "avant": 251,
+            "brins": 3728,
+            "facteur": 14.852589641434262,
+            "parMetreCarre": 296.6648139232929
+          },
+          {
+            "id": "0.2:1",
+            "type": "reference",
+            "avant": 175,
+            "brins": 4942,
+            "facteur": 28.24,
+            "parMetreCarre": 393.2718643800734
+          },
+          {
+            "id": "0.37:-1",
+            "type": "reference",
+            "avant": 198,
+            "brins": 3478,
+            "facteur": 17.565656565656564,
+            "parMetreCarre": 276.770446036806
+          },
+          {
+            "id": "0.37:1",
+            "type": "reference",
+            "avant": 208,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.53:-1",
+            "type": "reference",
+            "avant": 209,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.53:1",
+            "type": "reference",
+            "avant": 207,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.69:-1",
+            "type": "reference",
+            "avant": 171,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.69:1",
+            "type": "reference",
+            "avant": 239,
+            "brins": 1883,
+            "facteur": 7.878661087866109,
+            "parMetreCarre": 149.84437892101946
+          },
+          {
+            "id": "0.84:-1",
+            "type": "reference",
+            "avant": 241,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.84:1",
+            "type": "reference",
+            "avant": 185,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          }
+        ],
+        "habitats": [
+          {
+            "id": "nu:440:-1",
+            "type": "nu",
+            "avant": 0,
+            "brins": 0,
+            "facteur": null,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "nu:482:-1",
+            "type": "nu",
+            "avant": 0,
+            "brins": 0,
+            "facteur": null,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "nu:524:-1",
+            "type": "nu",
+            "avant": 0,
+            "brins": 0,
+            "facteur": null,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "riche:706:-1",
+            "type": "riche",
+            "avant": 0,
+            "brins": 3798,
+            "facteur": null,
+            "parMetreCarre": 302.23523693150923
+          },
+          {
+            "id": "riche:748:1",
+            "type": "riche",
+            "avant": 0,
+            "brins": 4895,
+            "facteur": null,
+            "parMetreCarre": 389.53172321741386
+          },
+          {
+            "id": "riche:1210:-1",
+            "type": "riche",
+            "avant": 0,
+            "brins": 5809,
+            "facteur": null,
+            "parMetreCarre": 462.26553221041
+          }
+        ]
+      }
+    },
+    "montagne": {
+      "medium": {
+        "brins": 467055,
+        "tuiles": 33519,
+        "lots": 1452,
+        "aireCouverte": 1108038.0858990448,
+        "couverture": 0.3826821785204272,
+        "brinsAccotements": 180088,
+        "brinsTerrain": 286544,
+        "erreurSol": 0,
+        "controlesSol": 0,
+        "instanceBufferBytes": 4290432,
+        "aireNue": 1787414.4543344174,
+        "aireRiche": 605013.7194667134,
+        "brinsRiches": 268424,
+        "ratioBrins032": 0.40010159841897097,
+        "ratioInstances032": 0.4427697713432757,
+        "tuilesRichesProches": 0
+      },
+      "high": {
+        "brins": 1892184,
+        "tuiles": 33519,
+        "lots": 1453,
+        "aireCouverte": 1108038.0858990448,
+        "couverture": 0.3826821785204272,
+        "brinsAccotements": 729016,
+        "brinsTerrain": 1162376,
+        "erreurSol": 0,
+        "controlesSol": 0,
+        "instanceBufferBytes": 4290432,
+        "aireNue": 1787414.4543344174,
+        "aireRiche": 605013.7194667134,
+        "brinsRiches": 1030904,
+        "ratioBrins032": 0.4379642936417796,
+        "ratioInstances032": 0.4427697713432757,
+        "tuilesRichesProches": 0
+      },
+      "ultra": {
+        "brins": 53396992,
+        "tuiles": 37370,
+        "lots": 2325,
+        "aireCouverte": 1107802.2933293844,
+        "couverture": 0.3826007430396573,
+        "brinsAccotements": 20683256,
+        "brinsTerrain": 32712944,
+        "erreurSol": 0.005000000005085011,
+        "controlesSol": 37370,
+        "instanceBufferBytes": 4783360,
+        "aireNue": 1787650.2469040751,
+        "aireRiche": 605206.1415347661,
+        "brinsRiches": 36407096,
+        "ratioBrins032": 0.31913025866121847,
+        "ratioInstances032": 0.3975531914893617,
+        "tuilesRichesProches": 6788,
+        "disques": [
+          {
+            "id": "0.2:-1",
+            "type": "reference",
+            "avant": 222,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.2:1",
+            "type": "reference",
+            "avant": 208,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.53:-1",
+            "type": "reference",
+            "avant": 205,
+            "brins": 3015,
+            "facteur": 14.707317073170731,
+            "parMetreCarre": 239.92607671103224
+          },
+          {
+            "id": "0.53:1",
+            "type": "reference",
+            "avant": 199,
+            "brins": 5963,
+            "facteur": 29.964824120603016,
+            "parMetreCarre": 474.52046282848596
+          },
+          {
+            "id": "0.69:-1",
+            "type": "reference",
+            "avant": 210,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.69:1",
+            "type": "reference",
+            "avant": 208,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.84:-1",
+            "type": "reference",
+            "avant": 204,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "0.84:1",
+            "type": "reference",
+            "avant": 207,
+            "brins": 0,
+            "facteur": 0,
+            "parMetreCarre": 0
+          }
+        ],
+        "habitats": [
+          {
+            "id": "nu:496:-1",
+            "type": "nu",
+            "avant": 0,
+            "brins": 0,
+            "facteur": null,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "nu:734:-1",
+            "type": "nu",
+            "avant": 0,
+            "brins": 0,
+            "facteur": null,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "nu:776:-1",
+            "type": "nu",
+            "avant": 0,
+            "brins": 0,
+            "facteur": null,
+            "parMetreCarre": 0
+          },
+          {
+            "id": "riche:440:-1",
+            "type": "riche",
+            "avant": 0,
+            "brins": 3449,
+            "facteur": null,
+            "parMetreCarre": 274.46269936197353
+          },
+          {
+            "id": "riche:524:1",
+            "type": "riche",
+            "avant": 0,
+            "brins": 3120,
+            "facteur": null,
+            "parMetreCarre": 248.28171122335672
+          },
+          {
+            "id": "riche:566:-1",
+            "type": "riche",
+            "avant": 0,
+            "brins": 3121,
+            "facteur": null,
+            "parMetreCarre": 248.36128869490267
+          }
+        ]
+      }
+    }
+  }
+}
+
+=== vibrations.test.mjs ===
+ok arrêt au ralenti : quatre sorties à 0 après une seconde
+ok plein régime en charge : moteur lourd > 0, gâchettes à 0 hors rupteur
+ok rupteur : gâchette droite et moteur léger varient dans le temps
+ok vibreur : la fréquence de battement double à peu près entre 10 m/s et 20 m/s, et ne dépasse jamais 14 Hz à 80 m/s
+ok herbe : plus fort à 20 m/s qu’à 5 m/s ; nul à l’arrêt
+ok blocage : gâchette gauche active, gâchette droite à 0
+ok patinage : gâchette droite active, gâchette gauche à 0
+ok événement rapport : pic immédiat puis retour sous le seuil
+ok événement choc : pic immédiat puis retour sous le seuil
+ok événement contact : pic immédiat puis retour sous le seuil
+ok événement roue : pic immédiat puis retour sous le seuil
+ok événement casse : pic immédiat puis retour sous le seuil
+ok événement atterrissage : pic immédiat puis retour sous le seuil
+ok dérive : battements stables selon la cadence (4 s, niveaux 0 et 3)
+ok dérive : tic au changement de niveau
+ok dérive : frémissement quand fenetre > 0
+ok indépendance à la cadence : 1/30, 1/60 et 1/120 diffèrent de moins de 15 %
+ok bornes : scénario aléatoire extrême reste dans [0, 1] sans NaN
+ok force = 0 : tout à 0
+ok entrée vide {} : tout à 0, sans exception
+ok entrée absente (null, undefined) : sorties à 0, sans exception, et V sans propriété nouvelle
+ok même objet de sortie à chaque appel
+ok choc : le pic ressenti ne dépend pas de la cadence
+ok dt non fini ou énorme : sorties finies, puis retour au silence
+ok force 1 vs 0.5 : somme strictement supérieure et sorties bornées à 1
+vibrations : 25 contrôles passés
+
+=== vitre-cadence.test.mjs ===
+ok chaque image montre une position nouvelle, pas seulement les images de pas
+ok même image aux mêmes instants à 30, 60, 120 et 144 Hz
+ok vue rendue une image sur deux : avec le temps cumulé, même visière qu’à pleine cadence
+ok au sec et visière vide : ni mesure de la toile, ni parcours des pools, ni dessin ; l’horloge avance
+ok une goutte naît transparente puis apparaît en fondu
+ok définition : suit les baisses de palier, ignore les remontées jusqu’à la séance suivante
+ok définition : Auto passé d’ultra à Légère en pleine pluie, 2,0 Mpx ramenés à 0,92 Mpx
+ok définition : fixée au premier appel actif de la séance, même au sec
+ok visière propre masquée sans réécrire le style à chaque image
+ok préchauffage sous le voile : tracés presque transparents, effacés au premier appel actif
+visière, cadence : 10 contrôles passés
+
+=== vitre.test.mjs ===
+ok pluie ruisselante : petits dépôts, trajets lents et Canvas transparent
+ok neige collée, fonte vers une goutte et séchage sans nouvelles précipitations
+ok budgets adaptés à la qualité, maximum 148 dépôts poolés
+ok 30 Hz indépendants de l’affichage, même animation à 30 et 120 Hz
+ok DPR et surface plafonnés ; dimensions propres à chaque viewport
+ok deux joueurs : pools, horloges et Canvas indépendants, sans mutation croisée
+ok abri coupe les nouveaux dépôts et garde le séchage ; hors course et off effacent immédiatement
+ok pools stables, pas de lecture de pixels ni de hasard partagé ; libération idempotente
+vitre : 8 contrôles passés
+
+=== voiture-identite.test.mjs ===
+ok  primitives : glace des images entrelacées, pose réduite identique à la pose entière filtrée
+ok  primitives : la pose réduite des rétroviseurs rend la roue arrière de la pose entière filtrée
+ok  emprise : glace des images entrelacées, pose réduite identique à la pose entière filtrée
+ok  emprise : la pose réduite des rétroviseurs rend la roue arrière de la pose entière filtrée
+ok  primitives : 134 groupes de poses identiques à l'empreinte
+ok  emprise : 134 groupes de poses identiques à l'empreinte
+6 vérifications réussies (4.1 s)
+
+=== voiture-permanents.test.mjs ===
+ok  modèle : objets de rendu créés avec lui, hors de ses propriétés énumérées
+ok  poser, cockpit, fantôme, rétroviseur : mêmes objets d'une image à l'autre, réécrits en place
+ok  attitude rendue : celle de la caisse au bit près, un tableau par voiture
+ok  aucun drapeau ne passe d'une variante à l'autre
+ok  voyants : émission allumée puis éteinte sur le même objet
+ok  niveaux de détail : complet par défaut, simple comme options.simple, moyen entre les deux
+ok  detailPour : décision de jeu.js au bit près avec facteur 1, bande moyenne au-delà
+ok  rétroviseur : pose réduite identique à la pose entière filtrée, voiture retournée comprise
+ok  glacesCockpit : dest réécrit en place, mêmes valeurs qu'un résultat neuf
+ok  objetsFantome : deux fantômes dans une même liste restent distincts
+ok  hypotDans : Math.hypot de ce moteur au bit près
+    poser 0.14 o/appel, 0 GC en 600000 ; cockpit 0.49 o/appel, 0 GC en 150000 ; fantome 0.03 o/appel, 0 GC en 150000 ; poserRetro 0.00 o/appel, 0 GC en 150000 ; glacesCockpit 0.00 o/appel, 0 GC en 150000
+ok  aucune allocation en régime permanent (octets alloués, ramasse-miettes mineurs)
+12 vérifications réussies (5.1 s)
+
+=== voiture.test.mjs ===
+ok  cotes de la 312 T5 : longueur 4,53 m, largeur 2,12 m, hauteur 1,02 m
+ok  empattement 2,70 m, voies 1,70 et 1,615 m, roues posées au sol
+ok  pièces et version lointaine bien formées
+ok  roues : rotation propre = distance / rayon à 1 % près
+ok  braquage d’Ackermann : roue intérieure plus braquée, centre commun
+ok  cockpit : centre du volant entre 14 et 18° sous l’axe de visée
+ok  cockpit : haut de la jante, prises des mains, planche, pneus avant et rétroviseurs dans le cadre en 16:9
+ok  cockpit : rotation du volant de 95° au plus
+ok  cockpit : coque creuse, aucune pièce de carrosserie entre l’œil et le volant
+ok  cockpit : pilote, arrière, capot et glaces de la vue extérieure absents, roues avant présentes
+ok  numéro en géométrie sur le nez et les pontons ; repères de flanc à toute vitesse
+ok  repère de pneu : il tourne autour de l’axe de la roue, à mi-flanc
+ok  cockpit en carènes : habitacle sans boîte, jante d’un seul tube, pneus à épaules rondes
+ok  cockpit : rien que des nombres finis, volant à fond et pendant un changement de rapport
+ok  changement de rapport : la main droite va au pommeau, puis revient sur la jante
+ok  mains : aucun sommet des gants dans les branches de 3 h et 9 h, volant droit ou tourné
+ok  mains dans le cadre, manches hors du cadre dès le poignet (16:9, volant droit)
+ok  lampe de régime : allumée au-dessus de 12 000 tr/min, sauf au dernier rapport
+ok  rétroviseurs : une voiture derrière à gauche se voit dans la glace de gauche, à sa place
+ok  silhouette : le flanc est fermé derrière la roue avant (voi-1)
+ok  formes libres : chaque triangle est orienté vers l'extérieur en vraie grandeur (garde rendu-1)
+ok  numéros : encre lisible sur les douze livrées de course (voi-2)
+ok  numéro de flanc : calé entre la bande basse et le filet (voi-3)
+ok  jonc de l'ouverture : suit le bord, ne bombe pas hors de l'ouverture (voi-4)
+ok  suspension avant : les attaches intérieures touchent la peau de la quille (voi-7)
+ok  rétroviseurs : le proche s'enfonce plus que le lointain, reflet contenu dans la glace (cockpit-1/5)
+ok  témoin rouge : s'allume au ralenti comme au surrégime (cockpit-8)
+ok  goutte : par l'ouverture, on ne voit pas l'envers de la peau au-delà des bords (carene-2)
+ok  pouce du gant : aucune face enfouie dans son propre volume (carene-4)
+ok  habitacle vu du haut : par l'ouverture on voit la cuve sombre, pas le dessus rouge des pontons (voi-5)
+ok  bande des pontons : une peau décalée de 4 mm, pas un caisson à flancs droits (voi-6)
+ok  paume au pommeau : paume vers le bas quel que soit le braquage (cockpit-4)
+ok  trajet au pommeau : les doigts ne traversent ni la jante ni la branche de 3 h (cockpit-3)
+33 vérifications réussies

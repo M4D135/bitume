@@ -1,4 +1,4 @@
-// Lot 12D : comportement du vrai pas de conduite et d'une course, sans rendu ni protocole réseau nouveau.
+// Lots 12D–12E : vraie conduite et course, usure persistante puis réponse physique p10.
 import '../src/circuit.js';
 import '../src/conduite.js';
 import '../src/degats.js';
@@ -6,7 +6,7 @@ import '../src/contacts.js';
 import '../src/course.js';
 import assert from 'node:assert/strict';
 
-const B = globalThis.BITUME, U = B.usurePneus, dt = 1 / 120;
+const B = globalThis.BITUME, dt = 1 / 120;
 const c = B.circuit.creer(11, { theme: 'foret', longueur: 4200 });
 const NEUTRE = { gaz: 0, frein: 0, volant: 0, derive: false, haut: false, bas: false,
   boite: 'auto', aide: 0, guidage: 0 };
@@ -27,11 +27,6 @@ function pas(e, commande, nombre) {
 function pneus(e) {
   return structuredClone({ pneus: e.pneus, versionPneus: e.versionPneus,
     servicePneus: e.servicePneus, etatPneus: e.etatPneus });
-}
-function physique(e) {
-  const copie = structuredClone(e);
-  delete copie.etatPneus;
-  return copie;
 }
 
 verifier('course réelle : pneus neufs indépendants, aucune usure sur la grille et aux feux', () => {
@@ -118,21 +113,59 @@ verifier('course en ligne : les voitures distantes ne sont pas usées une second
   assert.ok(co.joueur.etat.etatPneus.some(r => r.usure > 0));
 });
 
-verifier('pas de conduite identiques avec et sans usure visuelle, événements inclus', () => {
-  const reference = etat('pluie'), candidate = structuredClone(reference);
+verifier('p10 : usure progressive et bornée dans les vraies capacités des deux essieux', () => {
+  const ancienneMeteo = B.meteo;
   try {
-    for (let i = 0; i < 1200; i++) {
-      const commande = i < 600 ? GAZ : i < 1080 ? { ...NEUTRE, frein: 1 } : { ...NEUTRE, frein: 1, marcheArriere: true };
-      B.usurePneus = null;
-      const evenements = B.conduite.pas(reference, commande, c, dt);
-      B.usurePneus = U;
-      assert.deepEqual(B.conduite.pas(candidate, commande, c, dt), evenements);
-      if (i % 60 === 0) assert.deepEqual(physique(candidate), physique(reference));
+    for (const meteo of [{}, { pluie: .4 }, { pluie: 1 }, { neigeSol: 1 }]) {
+      B.meteo = { actuel: meteo };
+      for (const type of B.pneus.TYPES_JOUABLES) {
+        let neuves, precedentes;
+        for (const usure of [0, .25, .49, .5, .51, .75, 1]) {
+          const e = etat(type); e.v = 30; e.rapport = 3;
+          for (const r of e.etatPneus) r.usure = usure;
+          B.conduite.pas(e, NEUTRE, c, dt);
+          const capacites = [e.capAv, e.capAr];
+          if (!neuves) neuves = capacites;
+          for (let i = 0; i < 2; i++) {
+            assert.ok(Number.isFinite(capacites[i]) && capacites[i] > 0, `${type} : effort fini et positif`);
+            assert.ok(capacites[i] >= neuves[i] * .68 - 1e-9, `${type} : au moins 68 % de la réponse neuve`);
+            if (precedentes) assert.ok(capacites[i] < precedentes[i], `${type} : dégradation progressive, sans remise à neuf`);
+            if (usure === .5 || usure === .51) {
+              assert.ok(precedentes[i] - capacites[i] < .01 * neuves[i], `${type} : pas de rupture pour 1 % d'usure`);
+            }
+          }
+          precedentes = capacites;
+        }
+        assert.ok(precedentes.every((effort, i) => effort < .99 * neuves[i]), `${type} : l'usure change effectivement les forces`);
+      }
     }
-  } finally { B.usurePneus = U; }
-  assert.deepEqual(physique(candidate), physique(reference));
-  assert.ok(candidate.etatPneus.some(r => r.usure > 0));
-  assert.ok(reference.etatPneus.every(r => r.usure === 0));
+  } finally { B.meteo = ancienneMeteo; }
+});
+
+verifier('l’usure d’une roue réduit son essieu sans appliquer une seconde perte à l’autre', () => {
+  const reference = etat('slicks'); reference.v = 30; reference.rapport = 3;
+  const avantGauche = structuredClone(reference), arriereDroit = structuredClone(reference);
+  avantGauche.etatPneus[0].usure = 1;
+  arriereDroit.etatPneus[3].usure = 1;
+  for (const e of [reference, avantGauche, arriereDroit]) B.conduite.pas(e, NEUTRE, c, dt);
+  assert.ok(avantGauche.capAv < reference.capAv);
+  assert.equal(avantGauche.capAr, reference.capAr);
+  assert.equal(arriereDroit.capAv, reference.capAv);
+  assert.ok(arriereDroit.capAr < reference.capAr);
+});
+
+verifier('p10 : mêmes pneus et commandes donnent les mêmes pas, événements et usure', () => {
+  const reference = etat('pluie');
+  reference.etatPneus.forEach((r, i) => { r.usure = .1 * (i + 1); });
+  const candidate = structuredClone(reference), initiales = reference.etatPneus.map(r => r.usure);
+  for (let i = 0; i < 1200; i++) {
+    const commande = i < 600 ? GAZ : i < 1080 ? { ...NEUTRE, frein: 1 } : { ...NEUTRE, frein: 1, marcheArriere: true };
+    const evenements = B.conduite.pas(reference, commande, c, dt);
+    assert.deepEqual(B.conduite.pas(candidate, commande, c, dt), evenements);
+    if (i % 60 === 0) assert.deepEqual(candidate, reference);
+  }
+  assert.deepEqual(candidate, reference);
+  assert.ok(candidate.etatPneus.some((r, i) => r.usure > initiales[i]));
 });
 
 console.log(controles + ' contrôles intégration usure réussis');

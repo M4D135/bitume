@@ -2,6 +2,7 @@
 if(typeof module!=='undefined'&&module.exports&&!globalThis.FVehicleDynamics)require('./ferro/vehicle-dynamics.js');
 if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)require('./pneus.js');
 if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.usurePneus)require('./usure-pneus.js');
+if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)require('./chaussee.js');
 (function (B) {
   'use strict';
   // BITUME : conduite d'une monoplace, dans le repère du circuit (abscisse s, décalage d).
@@ -114,6 +115,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.usurePneus)r
   // Lectures du tracé : un objet par appelant, rempli à chaque lecture (B.circuit.echantillon, troisième argument).
   // Chaque appelant lit sa valeur rendue, jamais l'objet directement : un tracé de test peut rendre un objet neuf.
   const LU = { cap: {}, rail: {}, rouler: {}, attitude: {}, replacer: {}, vol: {}, reculA: {}, reculB: {} };
+  const CHAUSSEE = { rouler: {}, recul: {}, eau: {} };
 
   function creer(s, d) {
     return {
@@ -137,18 +139,48 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.usurePneus)r
     };
   }
 
-  // Pneus (David, 16/11 : « choisir les pneus, présélectionnés selon le climat, ça évite de glisser sous la pluie »).
-  // Adhérence relative selon l'eau sur la piste w (0 sec, 1 détrempée) : [sur le sec, pente avec w]. Les slicks sont
-  // les meilleurs au sec et glissent sous la pluie ; les pneus pluie chauffent et se déforment au sec ; les
-  // intermédiaires tiennent l'entre-deux. Meilleur choix : slicks sous w 0,2, intermédiaires jusqu'à 0,47, pluie au-delà.
+  // Lot 12E : même réponse pour conduite, conseil et IA. La surface est {eau, neige, abri} ; un nombre garde
+  // l'ancien contrat d'eau seule. Le profil saisonnier et les flocons ne sont jamais lus par le pneu.
   const PNEUS = B.pneus.PNEUS;
-  function adherencePneus(type, eau) { const p = PNEUS[type] || PNEUS.slicks; return p[0] + p[1] * clamp(eau || 0, 0, 1); }
-  function pneusConseilles(eau) { return eau < .2 ? 'slicks' : eau < .47 ? 'inter' : 'pluie'; }
-  // eau sur la piste : la pluie qui tombe, ou la piste qui reste mouillée après l'averse (séchage de meteo.js)
-  function eauSurPiste(m) {
-    m = m || (B.meteo && B.meteo.actuel);
-    if (!m) return 0;
-    return clamp(Math.max(Number.isFinite(m.pluie) ? m.pluie : 0, .6 * (Number.isFinite(m.mouille) ? m.mouille : 0)), 0, 1);
+  const valeurUnite = n => Number.isFinite(n) ? clamp(n, 0, 1) : 0;
+  function adherencePneus(type, surface, usure = 0) {
+    type = B.pneus.normaliserType(type);
+    const p = PNEUS[type], perte = B.pneus.PERTE_USURE[type];
+    const abri = surface && typeof surface === 'object' && (surface.abri === true || surface.abri === 1);
+    const eau = abri ? 0 : valeurUnite(typeof surface === 'number' ? surface : surface?.eau);
+    const neige = abri ? 0 : valeurUnite(surface?.neige), u = valeurUnite(usure);
+    const neuf = (p[0] + p[1] * eau) * (1 - neige) + B.pneus.ADHERENCE_NEIGE[type] * neige;
+    const degradation = perte.sec + perte.eau * eau * (1 - neige) + perte.neige * neige;
+    return neuf * (1 - degradation * u * (.5 + .5 * u));
+  }
+  function pneusConseilles(surface) {
+    let choix = 'slicks', meilleur = -1;
+    for (const type of B.pneus.TYPES_JOUABLES) {
+      const adhesion = adherencePneus(type, surface);
+      if (adhesion > meilleur) { meilleur = adhesion; choix = type; }
+    }
+    return choix;
+  }
+  function eauSurPiste(m) { return B.chaussee.lire(undefined, NaN, m, CHAUSSEE.eau).eau; }
+
+  // L'IA retient l'essieu le plus limité ; les contributions de ses deux pneus suivent les mêmes charges et
+  // la même loi de sensibilité que rouler(). Avant le premier contact, la charge statique sert de repli.
+  function adherenceVoiture(etat, surface) {
+    let resultat = Infinity;
+    for (let i = 0; i < 4; i += 2) {
+      const r0 = etat.roues?.[i], r1 = etat.roues?.[i + 1];
+      const c0 = r0 && Number.isFinite(r0.charge) ? Math.max(0, r0.charge) : 0;
+      const c1 = r1 && Number.isFinite(r1.charge) ? Math.max(0, r1.charge) : 0;
+      const q0 = c0 + c1 > 0 ? c0 : P.chargeNominale, q1 = c0 + c1 > 0 ? c1 : P.chargeNominale;
+      let base0 = adherence(1, q0), base1 = adherence(1, q1), somme = base0 + base1;
+      if (!Number.isFinite(somme) || !(somme > 0)) {
+        base0 = base1 = adherence(1, P.chargeNominale); somme = base0 + base1;
+      }
+      const a0 = adherencePneus(etat.pneus, surface, etat.etatPneus?.[i]?.usure);
+      const a1 = adherencePneus(etat.pneus, surface, etat.etatPneus?.[i + 1]?.usure);
+      resultat = Math.min(resultat, a0 * (base0 / somme) + a1 * (base1 / somme));
+    }
+    return resultat;
   }
 
   function cap(etat, c) { return B.circuit.echantillon(c, etat.s, LU.cap).cap + etat.psi + etat.beta; }
@@ -336,8 +368,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.usurePneus)r
     // de côté la freinent (traînée jusqu'à +8 %, appliquée plus bas). Absents, rien ne change.
     const dg = etat.degats;
     if (dg) mu *= dg.adher;
-    // Pluie et pneus : l'adhérence suit l'eau sur la piste (pluie qui tombe, piste encore mouillée) et les pneus.
-    mu *= adherencePneus(etat.pneus, B.circuit.dansTunnel && B.circuit.dansTunnel(c, etat.s) ? 0 : eauSurPiste()); // sous la voûte, la piste est sèche
+    const chaussee = B.chaussee.lire(c, etat.s, undefined, CHAUSSEE.rouler);
     const enPiste = ad <= demi + P.largeurVibreur;
 
     // Dérive au bouton
@@ -405,8 +436,10 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.usurePneus)r
     R[0].charge = Math.max(0, fzAv / 2 + tAv); R[1].charge = Math.max(0, fzAv / 2 - tAv);
     R[2].charge = Math.max(0, fzAr / 2 + tAr); R[3].charge = Math.max(0, fzAr / 2 - tAr);
     const muAr = mu * P.gripArriere * (1 - (1 - P.deriveMuAr) * bd);
-    const capAv = adherence(mu, R[0].charge) + adherence(mu, R[1].charge);
-    const capAr = adherence(muAr, R[2].charge) + adherence(muAr, R[3].charge);
+    const capAv = adherence(mu * adherencePneus(etat.pneus, chaussee, etat.etatPneus?.[0]?.usure), R[0].charge)
+      + adherence(mu * adherencePneus(etat.pneus, chaussee, etat.etatPneus?.[1]?.usure), R[1].charge);
+    const capAr = adherence(muAr * adherencePneus(etat.pneus, chaussee, etat.etatPneus?.[2]?.usure), R[2].charge)
+      + adherence(muAr * adherencePneus(etat.pneus, chaussee, etat.etatPneus?.[3]?.usure), R[3].charge);
     etat.capAv = capAv; etat.capAr = capAr; etat.chargeAv = (fzAv + fzAr) > 0 ? fzAv / (fzAv + fzAr) : P.repartition;
 
     // Longitudinal : moteur et frein moteur à l'arrière, freins répartis
@@ -545,9 +578,9 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.usurePneus)r
     R[2].glisse = etat.glisseAr * clamp(2 * R[2].charge / pAr, 0, 1); R[3].glisse = etat.glisseAr * clamp(2 * R[3].charge / pAr, 0, 1);
     etat.sousVirage = Math.max(0, Math.abs(alphaAv) / P.alphaAv - 1);
     etat.glisse = etat.v > 3 ? clamp(Math.max(etat.glisseAv, etat.glisseAr), 0, 1) : 0;
-    // 12D : les contacts de ce pas sont frais. L'usure reste visuelle ; aucune lecture dans l'adhérence p9.
+    // Contacts frais : l'abrasion lit exactement l'eau et la neige employées pour les forces de CE pas.
     if (B.usurePneus) B.usurePneus.pas(etat, dt, distancePneus,
-      B.circuit.dansTunnel && B.circuit.dansTunnel(c, etat.s) ? 0 : eauSurPiste());
+      chaussee.eau, chaussee.neige);
   }
 
   // Volant (part de l'adhérence avant) qui tient une trajectoire de courbure kp en régime établi, à la vitesse
@@ -709,8 +742,9 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.usurePneus)r
       // ou glisses : contacts statiques visuels explicites, surface relue sans muter la physique.
       const ad = Math.abs(etat.d), demi = c.largeur / 2;
       const surface = ad <= demi ? 'piste' : ad <= demi + P.largeurVibreur && B.circuit.vibreurA(c, etat.s, etat.d < 0 ? -1 : 1) ? 'vibreur' : 'herbe';
+      const chaussee = B.chaussee.lire(c, etat.s, undefined, CHAUSSEE.recul);
       B.usurePneus.pas(etat, dt, distancePneus,
-        B.circuit.dansTunnel && B.circuit.dansTunnel(c, etat.s) ? 0 : eauSurPiste(), 0, 'recul', surface);
+        chaussee.eau, chaussee.neige, 'recul', surface);
     }
   }
 
@@ -736,7 +770,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.usurePneus)r
   }
 
   B.conduite = {
-    PARAMS, PNEUS, adherencePneus, pneusConseilles, eauSurPiste, creer, pas, annulerDerive, couperTurbo, cap, kmh, couple, limiteCote, braquageMax, volantPour,
+    PARAMS, PNEUS, adherencePneus, adherenceVoiture, pneusConseilles, eauSurPiste, creer, pas, annulerDerive, couperTurbo, cap, kmh, couple, limiteCote, braquageMax, volantPour,
     capaciteLaterale, pneu, lancerSaut, declencherAccident, subirChoc, replacer
   };
 })(globalThis.BITUME = globalThis.BITUME || {});

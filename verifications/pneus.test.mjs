@@ -24,25 +24,30 @@ verifier('ordre AVG, AVD, ARG, ARD : gauche/droite et essieux gardent les indice
   assert.equal(P.ROUES[2].l, .46);
 });
 
-verifier('quatre types définis ; anciennes préférences intactes et neige réservée au lot physique', () => {
+verifier('quatre types jouables en p10 ; anciennes préférences intactes et neige disponible', () => {
   assert.deepEqual(P.TYPES, ['slicks', 'inter', 'pluie', 'neige']);
-  assert.deepEqual(P.TYPES_JOUABLES, ['slicks', 'inter', 'pluie']);
+  assert.deepEqual(P.TYPES_JOUABLES, ['slicks', 'inter', 'pluie', 'neige']);
   for (const type of P.TYPES) {
     assert.equal(P.normaliserType(type), type);
     assert.equal(P.lire(type).id, type);
     assert.equal(P.NOMS_PNEUS[type], P.lire(type).nom);
     assert.equal(P.creerEtat(type).pneus, type);
+    assert.equal(P.estJouable(type), true);
+    assert.ok(P.lire(type).adherence.every(Number.isFinite));
   }
   assert.equal(P.lire('slicks').rainures, 0);
-  assert.equal(P.lire('neige').adherence, null);
-  assert.equal(P.estJouable('neige'), false);
-  assert.equal(P.estJouable('inter'), true);
+  assert.equal(P.lire('neige').sculpture, 'paves-lamelles');
 });
 
-verifier('les trois coefficients de p9 restent identiques au catalogue publié', () => {
-  assert.deepEqual(P.PNEUS, { slicks: [1, -.30], inter: [.96, -.10], pluie: [.88, .07] });
-  assert.deepEqual(Object.keys(P.PNEUS), ['slicks', 'inter', 'pluie']);
+verifier('p10 conserve les trois bases sec/eau de p9 et ajoute le domaine neige', () => {
+  assert.deepEqual({ slicks: P.PNEUS.slicks, inter: P.PNEUS.inter, pluie: P.PNEUS.pluie },
+    { slicks: [1, -.30], inter: [.96, -.10], pluie: [.88, .07] });
+  assert.deepEqual(Object.keys(P.PNEUS), ['slicks', 'inter', 'pluie', 'neige']);
   for (const type of P.TYPES_JOUABLES) assert.equal(P.lire(type).adherence, P.PNEUS[type]);
+  assert.ok(P.PNEUS.neige[0] > 0 && P.PNEUS.neige[0] < P.PNEUS.slicks[0], 'le pneu neige ne remplace pas le slick sur le sec');
+  for (const type of ['slicks', 'inter', 'pluie']) {
+    assert.ok(P.ADHERENCE_NEIGE.neige > P.ADHERENCE_NEIGE[type], 'la couverture neigeuse donne son domaine à la monte neige');
+  }
 });
 
 verifier('catalogue partagé immuable et types invalides sans accès au prototype', () => {

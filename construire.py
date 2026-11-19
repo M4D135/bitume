@@ -32,6 +32,7 @@ MODULES = [
     'ferro/vehicle-dynamics.js',
     'pneus.js',
     'usure-pneus.js',
+    'chaussee.js',
     'conduite.js',
     'degats.js',
     'contacts.js',

@@ -1,0 +1,38 @@
+{
+  "url": "file:///workspace/scratch/43fd04931298/bitume/dist/bitume.html",
+  "parametres": {
+    "mode": "course",
+    "duree": 1,
+    "chauffe": 1,
+    "taille": [
+      800,
+      600
+    ],
+    "angle": "swiftshader",
+    "referenceJeu": {
+      "graine": 17017,
+      "circuit": 0,
+      "qualite": "low",
+      "mode": "solo",
+      "meteo": "sec",
+      "vue": "cockpit",
+      "vue2": "cockpit",
+      "partage": "haut-bas",
+      "retro": "oui",
+      "decor": "enrichi",
+      "depart": 280,
+      "vitesse": 75
+    }
+  },
+  "environnement": {},
+  "build": {
+    "sha256": "9ab9097c7493d8260677022cef528f4a70fb9293372ecd61628c9e81abb52641",
+    "octets": 13990207
+  },
+  "banc": null,
+  "mesures": null,
+  "erreurs": [],
+  "avertissements": [],
+  "limites": [],
+  "fatal": "port DevTools introuvable\n/usr/bin/chromium: 9: [: 5225713664: unexpected operator\n[14:14:1119/104516.729305:FATAL:chrome/browser/process_singleton_posix.cc:297] Check failed: . socket() failed: Operation not permitted (1)\n[1119/104516.729523:ERROR:third_party/crashpad/crashpad/util/linux/scoped_ptrace_attach.cc:27] ptrace: Operation not permitted (1)\n[36:36:0100/000000.806969:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)\n[35:35:0100/000000.807309:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)\n"
+}
