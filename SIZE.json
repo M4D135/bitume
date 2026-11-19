@@ -1,8 +1,8 @@
 {
-  "version": "0.2.51",
-  "raw": 14056780,
-  "gzip": 3330995,
-  "sha256": "e349f073c872d129367b0d13d9c0b1e72e76fa67e1851663a0ac7e3f64aa7225",
+  "version": "0.2.52",
+  "raw": 14060666,
+  "gzip": 3332174,
+  "sha256": "4c8f43204fa79323d652202d12c534570b67fa85a2980fdbc4f589559e94f976",
   "sources": {
     "moteur/renderer.js": 305497,
     "ferro/engine.js": 2025,
@@ -18,7 +18,7 @@
     "degats.js": 6201,
     "contacts.js": 8314,
     "obstacles.js": 18724,
-    "strategie-stands.js": 13392,
+    "strategie-stands.js": 17278,
     "course.js": 57910,
     "son.js": 36962,
     "botanique.js": 21169,

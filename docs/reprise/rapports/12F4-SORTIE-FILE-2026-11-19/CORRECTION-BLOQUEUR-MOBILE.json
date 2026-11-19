@@ -1,0 +1,7 @@
+{
+  "date_utc": "2026-11-19T15:03:39.722555+00:00",
+  "regression_reproduite": "Le joueur redémarre ; après40s l’IA restait en degager à17.752m/s.",
+  "correction": "Autoriser le retour ordinaire après dépassement OU lorsque le bloqueur roule et a repris un intervalle avant sûr.",
+  "controle": "9/9 cas réussis ; retour effectif à phase repos requis dans chaque cas.",
+  "determinisme": "22 cas /1415 empreintes p13 identiques après correction, aucune régénération."
+}

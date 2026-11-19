@@ -1,0 +1,16 @@
+ok habitats et trajectoires déterministes, sans hasard de simulation ni mutation du circuit
+ok aucun habitat inventé sans herbe réellement admissible
+ok groundCover reconnaît une prairie sans dépendre du nom de forme ou du lot
+ok abeilles avec corps et ailes animées le jour ; lucioles exclusivement dans Haut-Col la nuit
+ok budgets off/low/medium/high/ultra croissants, 256 lucioles et au plus 512 objets
+ok vols en 3D au-dessus de la prairie, hors chaussée/eau/roche/tunnel/paddock
+ok halos mondiaux bornés, cœur émissif, aucune lumière et aucune taille imposée en pixels
+ok deux vues utilisent des objets distincts, même temps absolu, sans accélérer le cycle
+ok animation et fondus indépendants de la fréquence de dessin
+ok pools et tableaux réutilisés ; aucune lecture de terrain pendant 2000 images
+ok crépuscule et pluie réduisent progressivement l’activité, qualité légère et retour à off effectifs
+ok poches écologiques vides et riches, abeilles liées aux fleurs et populations locales différentes
+ok trajectoires, hauteurs, ailes et éclats déphasés, continus à temps absolu
+ok activité saisonnière : hiver sans faune, facteur de saison et modulation explicite avec fondu
+ok vrais circuits sans végétation : secteurs vides et foyers vivants sur le sol réel
+faune : 15 contrôles passés

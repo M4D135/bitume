@@ -1,33 +1,253 @@
 {
   "date": "2026-11-19",
   "etat_courant": {
-    "branche": "main",
-    "base_commit": "c8afbd49594eaac51876286e471413856117418d",
+    "branche": "codex/bitume-12f4-sortie-file-20261119",
+    "base_commit": "cb0235085431acbc044f785e27b26ca382c5556a",
     "base_version": "0.2.50",
-    "version_courante": "0.2.51",
+    "version_courante": "0.2.52",
     "version_publiee_verifiee": "0.2.51",
-    "commit_main_verifie": "4710a4001bd4f37111901934dea6421866d0d3c0",
-    "statut": "12F4_livre_0.2.51_sur_main",
-    "lot": "12F4_strategie_stands_IA",
-    "fiche": "docs/reprise/12F4-STRATEGIE-STANDS-IA.md",
+    "commit_main_verifie": "db3e8da1f7facc2606e380d6a47c95e6626e2614",
+    "statut": "CPU_qualifie_publication_finale_en_cours",
+    "lot": "12F4_sortie_file_serree",
+    "fiche": "docs/reprise/12F4-SORTIE-FILE.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "021",
+    "derniere_entree": "022-SORTIE-FILE",
     "publication_base": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json",
-    "prochaine_action": "Borner puis commencer 13A Russie, tracé et relief, non commencé ; Baïkal reste une proposition de thème.",
-    "physique": "p12 qualifiée pour le changement de comportement IA ; archives p9/p10/p11 et lois de conduite/usure inchangées.",
+    "prochaine_action": "Publier et vérifier 0.2.52 ; enregistrer le reçu puis ouvrir 13A Russie, tracé et relief.",
+    "physique": "p13",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
     "comportement": "Stratégie de stands des IA locales : usure forte ou monte durablement inadaptée, guidage physique et file, admission relue après contacts, service réel et sortie sans remise à neuf cachée.",
     "compatibilite": "Protocole de préparation et identifiant de circuit/empreinte complète des sources ; liaison tardive synchronisée, nouveaux joueurs hors grille reportés à la prochaine course.",
-    "version_cible": "0.2.51",
-    "build_courant": "0.2.51",
-    "checkpoint_sources": "cb0235085431acbc044f785e27b26ca382c5556a",
+    "qualification_base": "docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json",
+    "checkpoint_reprise": "446a350f736d583471950b8e089ac7d8ab57e4d9",
+    "sources_tests_geles": true,
+    "version_cible": "0.2.52",
+    "build_courant": "0.2.50",
+    "base_qualifiee_locale": {
+      "commit": "e5c12f1dc1d8b1b44fa53278b625ddf0a607b19b",
+      "version": "0.2.51",
+      "publication_distante_finale": "à vérifier"
+    },
+    "checkpoint_sources": "74aba2d30073bbf187e7aac935c1978d957709c0",
     "checkpoint_distant_verifie": true,
-    "sources_tests_build_geles": true,
-    "qualification": "docs/reprise/rapports/12F4-2026-11-19/qualification-execution.json",
-    "publication": "docs/reprise/rapports/12F4-2026-11-19/PUBLICATION-0251.json",
-    "checkpoint_final": "6a3fb86a51db46f2d3b2483bedb34d406ebff705"
+    "base_p12_publiee": "6a3fb86a51db46f2d3b2483bedb34d406ebff705",
+    "qualification": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/qualification-execution.json"
   },
   "validation": {
+    "date_utc": "2026-11-19T15:09:07.852480+00:00",
+    "version": "0.2.52",
+    "physique": "p13",
+    "suites": 108,
+    "reussies": 107,
+    "echecs": [
+      "traces.test.mjs"
+    ],
+    "sources_stables": true,
+    "reserve_traces": {
+      "suite": "traces.test.mjs",
+      "base_version": "0.2.51",
+      "base_commit": "cb0235085431acbc044f785e27b26ca382c5556a",
+      "echec": true,
+      "signature_heritee_identique": true,
+      "actual": [
+        "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf"
+      ],
+      "expected": [
+        "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee"
+      ],
+      "log": "tests/traces.test.mjs.log",
+      "sha256_log": "dcdeab4f5b7a468ab729e48955815431cf02f37c0e39df9aba2a3fda9212de86"
+    },
+    "echecs_hors_reserve": [],
+    "base_preservee": {
+      "commit": "cb0235085431acbc044f785e27b26ca382c5556a",
+      "hashes": {
+        "src/conduite.js": "ed17946c7d15f58bfd72143635aeeb5fac81fbf8438476bf3ccacfeef73eeabc",
+        "src/usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+        "src/pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+        "src/circuit.js": "e872944198a9a9bcd0efdd8d33d5f201c4dfd98016cf04e0bccf4a5b5c9a674f",
+        "src/degats.js": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247",
+        "src/contacts.js": "d6e583db729c91df8de21621c05b3b24835e6dc996e9dd4df7cb0464b27e1b7a",
+        "src/obstacles.js": "02626c61720ba5aa6bc1f06ee103725efed1a0c52f243b3ba2443f6f6cbf914e",
+        "FERRO.lock.json": "cb6d1150c85b03bfaf5f32432256538a92237315e1cd1796cdaf5aaacddd9f55",
+        "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a",
+        "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+        "verifications/fixtures/determinisme-p11.json": "c2453f9f896014a45020678c071a10aed656243ef542565538c571d7fc9430b7",
+        "verifications/fixtures/determinisme-p12.json": "fb8f96e5a770fcdd6ee3da520a9c8e0e2ae81c6c0b6b34d5a20758730f790e5f"
+      },
+      "lois_et_archives_inchangees": true,
+      "lois_inchangees_depuis_base": true
+    },
+    "determinisme": {
+      "scenarios": 22,
+      "empreintes": 1415,
+      "fixture": "verifications/fixtures/determinisme-p13.json",
+      "fixture_regeneree": false,
+      "fixture_regeneree_portee": "Cette exécution de qualification uniquement ; la création initiale de p13 est une étape distincte.",
+      "fixture_creation_documentee": {
+        "recu_attendu": "CREATION-P13.json",
+        "recu_present": true,
+        "note": "La création initiale après validation comportementale doit être attestée dans ce reçu distinct ; sa seule présence ne certifie pas cette validation."
+      },
+      "fixture_inchangee": true,
+      "verification": 0,
+      "archives": {
+        "verifications/fixtures/determinisme-p12.json": "fb8f96e5a770fcdd6ee3da520a9c8e0e2ae81c6c0b6b34d5a20758730f790e5f",
+        "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a",
+        "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+        "verifications/fixtures/determinisme-p11.json": "c2453f9f896014a45020678c071a10aed656243ef542565538c571d7fc9430b7"
+      },
+      "archives_inchangees_depuis_base": true
+    },
+    "build": {
+      "sha256": "4c8f43204fa79323d652202d12c534570b67fa85a2980fdbc4f589559e94f976",
+      "bytes": 14060666,
+      "reproductible": true,
+      "codes": [
+        0,
+        0
+      ],
+      "hashes": {
+        "VERSION.json": "02ada0dd1245d5ab50a80d48387348269ab24607c508817cead6bc469c8fb2c2",
+        "SIZE.json": "7f6b32bfb15249421a99d1ccb04dbcc7dea38d3644d9629d6262998198a79473",
+        "dist/bitume.html": "4c8f43204fa79323d652202d12c534570b67fa85a2980fdbc4f589559e94f976"
+      }
+    },
+    "bundle": {
+      "scripts": 53,
+      "codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "ferro": {
+      "version": "0.3.11",
+      "modules": 34,
+      "ecarts": []
+    },
+    "webgl_valide": false,
+    "deploiement_effectue": false,
+    "lot": "12F4-sortie-file",
+    "contrat_pistes": {
+      "sha256": "9c0421dd1d0c471035b73b0101a3d5841d5e8a291fd6c6ba790c654c5d9d4cae",
+      "build_verifie": true
+    },
+    "statut": "CPU_avec_reserve_traces_heritee",
+    "rapport": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/qualification-execution.json",
+    "controle_sortie_file": {
+      "tests": 9,
+      "reussis": 9,
+      "rapport": "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/sortie-file-final.json"
+    }
+  },
+  "catalogue": {
+    "jouables": 7,
+    "ajouts_demandes": [
+      "Huitième circuit de montagne distinct de Haut-Col",
+      "Russie",
+      "Monaco ultra fidèle",
+      "Spéciale Marseille depuis EMPRISE avec relief mesuré"
+    ],
+    "propositions_conservees": 6,
+    "note": "L’ancien objectif 16 précède l’ajout montagne ; ne supprimer aucune demande pour tenir ce compte."
+  },
+  "suite": {
+    "lot": "13A_Russie_trace_relief",
+    "statut": "non_commence",
+    "prerequis": "Publication vérifiée de 0.2.52 / p13",
+    "objectif": "Tracé et relief d’un circuit russe ; Baïkal proposé, identité exacte à fixer depuis le plan.",
+    "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
+    "demandes_conservees": [
+      "Monaco ultra fidèle",
+      "Marseille EMPRISE avec relief",
+      "Huitième montagne distincte de Haut-Col",
+      "Six autres propositions"
+    ]
+  },
+  "acces": {
+    "mac_spark_amiga_disponibles": false,
+    "travaux_mac_non_fusionnes": "Branches absentes de GitHub ; ne pas les compter livrées.",
+    "publication": "12F4 / 0.2.51 qualifié CPU, publication finale en cours ; aucune PR créée à ce stade. Main vérifié reste c8afbd49 / 0.2.50.",
+    "deploiement_effectue": false,
+    "site_verifie": false
+  },
+  "archives": [
+    "docs/reprise/archives/ETAT-AVANT-CLOTURE-12ABC-2026-11-19.json",
+    "docs/reprise/PILOTAGE-2026-11-18.md"
+  ],
+  "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé.",
+  "publication_precedente": {
+    "version": "0.2.50",
+    "recu": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json"
+  },
+  "publication": {
+    "branche": "codex/bitume-12f4-sortie-file-20261119",
+    "statut": "qualification_acquise_publication_finale_en_cours",
+    "base_main": "db3e8da1f7facc2606e380d6a47c95e6626e2614",
+    "version_main_verifiee": "0.2.50",
+    "version_cible": "0.2.52",
+    "main_modifie_par_ce_lot": false,
+    "recu_final_verifie": false,
+    "checkpoint_reprise": "446a350f736d583471950b8e089ac7d8ab57e4d9",
+    "build_courant": "0.2.50",
+    "parents_distants_attendus": [
+      "74aba2d30073bbf187e7aac935c1978d957709c0",
+      "6a3fb86a51db46f2d3b2483bedb34d406ebff705"
+    ]
+  },
+  "qualification_precedente": "docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json",
+  "validation_precedente_p12": {
     "date_utc": "2026-11-19T14:52:02.105072+00:00",
     "lot": "12F4",
     "version": "0.2.51",
@@ -101,47 +321,7 @@
     "methode_reseau": "Vrais contrôleurs avec transport simulé ; aucune partie réelle entre navigateurs validée.",
     "variabilite_decor": "Réserve CPU historique conservée ; aucune mesure de FPS matérielle."
   },
-  "catalogue": {
-    "jouables": 7,
-    "ajouts_demandes": [
-      "Huitième circuit de montagne distinct de Haut-Col",
-      "Russie",
-      "Monaco ultra fidèle",
-      "Spéciale Marseille depuis EMPRISE avec relief mesuré"
-    ],
-    "propositions_conservees": 6,
-    "note": "L’ancien objectif 16 précède l’ajout montagne ; ne supprimer aucune demande pour tenir ce compte."
-  },
-  "suite": {
-    "lot": "13A_Russie_trace_relief",
-    "statut": "non_commence",
-    "objectif": "Borner puis réaliser le tracé original et le relief du circuit russe ; Baïkal demeure une proposition de thème.",
-    "prerequis": "Publication 12F4 / 0.2.51 vérifiée sur main ; borner le tracé et le relief avant toute implémentation 13A.",
-    "apres": [
-      "13B Russie décor/saisons/livraison",
-      "Monaco ultra fidèle",
-      "Marseille depuis EMPRISE avec relief mesuré",
-      "Huitième circuit de montagne distinct de Haut-Col",
-      "Six propositions de circuits conservées"
-    ]
-  },
-  "acces": {
-    "mac_spark_amiga_disponibles": false,
-    "travaux_mac_non_fusionnes": "Branches absentes de GitHub ; ne pas les compter livrées.",
-    "publication": "12F4 / 0.2.51 livré sur main 4710a400 ; PR n°5 fusionnée et arbre identique à la tête qualifiée. Deux CI finales à 106/107, seul échec traces hérité identique.",
-    "deploiement_effectue": false,
-    "site_verifie": false
-  },
-  "archives": [
-    "docs/reprise/archives/ETAT-AVANT-CLOTURE-12ABC-2026-11-19.json",
-    "docs/reprise/PILOTAGE-2026-11-18.md"
-  ],
-  "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé.",
-  "publication_precedente": {
-    "version": "0.2.50",
-    "recu": "docs/reprise/rapports/12F3-2026-11-19/PUBLICATION-0250.json"
-  },
-  "publication": {
+  "publication_base_p12": {
     "branche": "codex/bitume-12f4-20261119",
     "statut": "fusion_verifiee_livre_sur_main",
     "base_main": "c8afbd49594eaac51876286e471413856117418d",
@@ -190,6 +370,5 @@
       ]
     },
     "recu_final_verifie": true
-  },
-  "qualification_precedente": "docs/reprise/rapports/12F3-2026-11-19/qualification-execution.json"
+  }
 }

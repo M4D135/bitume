@@ -7,7 +7,8 @@
 (function (B) {
   'use strict';
   const PARAMS = Object.freeze({ usure: .72, gainMonte: .12, dureeMonte: 8, decision: .5,
-    attente: 25, tempsMaximum: 90, vitesseVoie: 9.5, intervalle: 9, margeArret: 2 });
+    attente: 25, tempsMaximum: 90, vitesseVoie: 9.5, intervalle: 9, margeArret: 2,
+    reculDistance: 5, reculDuree: 6, reculEssais: 2 });
   const SURFACE = {};
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const ramener = (x, l) => ((x % l) + l) % l;
@@ -20,6 +21,7 @@
     return { phase: 'repos', motif: '', pneus: '', candidat: '', dureeCandidat: 0,
       prochaineDecision: 0, derniereDecision: 0, attendre: 0, passageAttente: -2,
       debut: 0, revision: 0, vuStand: false, reussi: false, admission: false,
+      recul: 0, reculS: 0, reculD: 0, reculDebut: 0, reculEssais: 0, contourne: false, bloqueur: -1,
       commande: { gaz: 0, frein: 0, volant: 0, derive: false, haut: false, bas: false,
         boite: 'auto', aide: .35, guidage: 0, marcheArriere: false } };
   }
@@ -59,6 +61,7 @@
     const p = v.ia.stand;
     p.phase = 'repos'; p.attendre = co.temps + PARAMS.attente; p.passageAttente = passage(v);
     p.vuStand = false; p.admission = false; p.candidat = ''; p.dureeCandidat = 0;
+    p.recul = 0; p.contourne = false; p.bloqueur = -1;
     p.prochaineDecision = p.attendre;
     v.ia.cible = -1; v.ia.cote = 0; v.ia.decalVise = 0; v.ia.decalDep = 0;
   }
@@ -96,6 +99,7 @@
     if (distance < 35 || distance > portee || distance < freinage * .8) return false;
     p.phase = 'approche'; p.motif = use ? 'usure' : 'monte'; p.pneus = inadapte ? p.candidat : conseil;
     p.debut = maintenant; p.revision = e.servicePneus; p.vuStand = false; p.reussi = false;
+    p.recul = 0; p.reculEssais = 0; p.contourne = false; p.bloqueur = -1;
     e.pneusProchainArret = p.pneus;
     v.ia.cible = -1; v.ia.cote = 0; v.ia.decalVise = 0; v.ia.decalDep = 0;
     v.ia.sillage = -1; v.ia.defend = 0; v.ia.presse = -1; v.ia.bloque = 0; v.ia.degagement = 0;
@@ -128,7 +132,7 @@
     const adhesion = Math.max(.20, B.conduite.adherenceVoiture(e, SURFACE));
     const vitesse = Math.max(0, e.v), deceleration = 4 * adhesion, freinage = 6 * adhesion;
     let sortieStand = p.phase === 'sortie' || p.phase === 'degager';
-    const regard = p.phase === 'degager' ? 4 + .25 * vitesse : 8 + .45 * vitesse;
+    const regard = p.phase === 'degager' || p.contourne ? 4 + .25 * vitesse : 8 + .45 * vitesse;
     const ligne = lire(c, c.ligne, e.s + regard), courbure = lire(c, c.courbure, e.s);
     const h = e.psi + e.beta, moiLat = 2.475 * Math.abs(Math.sin(h)) + 1.01 * Math.abs(Math.cos(h));
     const moiLong = 2.475 * Math.abs(Math.cos(h)) + 1.01 * Math.abs(Math.sin(h));
@@ -144,16 +148,29 @@
         (ox > x + .25 || Math.abs(ox - x) <= .25 && o.id < v.id)) rang++;
       if ((o.joueur || o.humain) && !o.reprise && Math.abs(oe.d - S.d) < 2.8 &&
         ox >= garage0 - 12 && ox <= garage1 + 6 && (oe.stands || Math.abs(oe.v) < 13)) humainAuGarage = true;
-      if (sortieStand && oe.d < S.d - 1.8 && ds > -Math.max(14, (oe.v - vitesse) * 3 + 10) && ds < 12) fusionLibre = false;
+      if (ds > 0 && ds < 30 && Math.abs(oe.d - e.d) < 2.8 && Math.abs(oe.v) < .5) p.bloqueur = o.id;
+      // Même après un service payé, une sortie obstruée doit pouvoir rejoindre la piste avant le bout de la voie.
+      if (p.phase === 'sortie' && ds > 0 && ds < 25 && Math.abs(oe.d - e.d) < 2.8 && Math.abs(oe.v) < .5) p.contourne = true;
+      // La disponibilité vaut aussi pour une décision de dégagement prise plus bas dans ce même pas.
+      if (oe.d < S.d - 1.8 && ds > -Math.max(14, (oe.v - vitesse) * 3 + 10) && ds < 12) fusionLibre = false;
     }
     p.admission = rang === 0 && !humainAuGarage;
     if (!sortieStand && !p.admission && x >= garage0 - 1) { p.phase = 'degager'; sortieStand = true; }
+    const contourner = p.phase === 'degager' || p.contourne;
     if (sortieStand) {
-      const peutRentrer = p.phase === 'degager' || x > S.fin - S.debut - 25;
-      if (peutRentrer && fusionLibre) dVise = p.phase === 'degager' ? Math.min(ligne, 0) : ligne;
-      const rejoint = p.phase === 'degager' ? Math.abs(e.d - S.d) > S.demi + 1 : Math.abs(e.d - ligne) < .6;
-      const degagementFini = p.phase !== 'degager' || !p.vuStand || x > garage1 + 12;
-      if (!st && peutRentrer && fusionLibre && rejoint && degagementFini && Math.abs(e.psi) < .12) {
+      const peutRentrer = contourner || x > S.fin - S.debut - 25;
+      if (peutRentrer && fusionLibre) dVise = contourner ? Math.min(ligne, 0) : ligne;
+      const rejoint = contourner ? Math.abs(e.d - S.d) > S.demi + 1 : Math.abs(e.d - ligne) < .6;
+      const degagementFini = !contourner || !p.vuStand || x > garage1 + 12;
+      const bloqueur = V[p.bloqueur], be = bloqueur?.etat, bh = be && be.psi + be.beta;
+      const margeBloqueur = be ? moiLong + 2.475 * Math.abs(Math.cos(bh)) + 1.01 * Math.abs(Math.sin(bh)) + 2 : 0;
+      const depasse = !be || ecart(c, be.s, e.s) > margeBloqueur;
+      // Un joueur reparti assez loin ne bloque plus cette manœuvre. Ne pas le poursuivre indéfiniment
+      // à l'allure des stands pour satisfaire une obligation de dépassement devenue sans objet.
+      const reparti = be && be.v > 2 && ecart(c, e.s, be.s) >
+        Math.max(20, margeBloqueur + Math.max(0, e.v - be.v) * 3);
+      if (!st && !p.recul && e.v >= 0 && peutRentrer && fusionLibre && rejoint && degagementFini &&
+        (!contourner || depasse || reparti) && Math.abs(e.psi) < .12) {
         finir(co, v); return null;
       }
       cible = Math.min(18, lire(c, c.vitesse, e.s) * Math.sqrt(adhesion) * .8);
@@ -173,7 +190,7 @@
       }
       if (restant < -3 && x > garage1) p.phase = 'degager';
     }
-    let dMin = -utile, dMax = utile;
+    let dMin = -utile, dMax = utile, espaceAvant = Infinity, espaceArriere = Infinity;
     // Les mêmes emprises que l'IA ordinaire : garder un intervalle réel avant de se rabattre ou d'avancer.
     for (let i = 0; i < V.length; i++) {
       const o = V[i]; if (o === v) continue;
@@ -181,6 +198,11 @@
       const lat = 2.475 * Math.abs(Math.sin(oh)) + 1.01 * Math.abs(Math.cos(oh));
       const long = 2.475 * Math.abs(Math.cos(oh)) + 1.01 * Math.abs(Math.sin(oh));
       const largeur = moiLat + lat + .4;
+      if (Math.abs(oe.d - e.d) < largeur + .5) {
+        if (ds > 0 && Math.abs(oe.v) < .5) espaceAvant = Math.min(espaceAvant, ds - moiLong - long);
+        // Marge de fermeture : une voiture qui arrive derrière interdit le recul avant d'être au contact.
+        if (ds <= 0) espaceArriere = Math.min(espaceArriere, -ds - moiLong - long - Math.max(0, oe.v) * 2);
+      }
       if (Math.abs(ds) < moiLong + long + 2) {
         if (oe.d >= e.d) dMax = Math.min(dMax, oe.d - largeur);
         else dMin = Math.max(dMin, oe.d + largeur);
@@ -190,7 +212,7 @@
         let limite = Math.min(ov + gap * .65, Math.sqrt(ov * ov + 2 * deceleration * gap));
         // Le couloir visé est libre : garder une très faible avance pour pouvoir braquer, sans consommer
         // la vraie distance entre les caisses. À l'arrêt complet, aucun déplacement latéral n'est possible.
-        if (p.phase === 'degager' && fusionLibre && Math.abs(oe.d - dVise) >= largeur) {
+        if (contourner && fusionLibre && Math.abs(oe.d - dVise) >= largeur) {
           const espaceReel = Math.max(0, ds - moiLong - long - .7);
           limite = Math.max(limite, Math.min(1.5, espaceReel * .8));
         }
@@ -198,11 +220,42 @@
       }
     }
     dVise = dMin > dMax ? e.d : clamp(dVise, dMin, dMax);
-    const ouverture = Math.min(p.phase === 'degager' ? .65 : .30, Math.asin(Math.min(1, 4 / Math.max(vitesse, 1))));
+    // Une file serrée ne laisse pas assez de distance pour braquer en avançant. Reculer brièvement dans la
+    // voie libère cette distance, sans modifier pose, vitesse ni pneus. Les commandes normales font tout.
+    // Le frein arrière propulse : arrêter le recul exige de retirer explicitement son autorisation.
+    if (!p.recul && contourner && Math.abs(e.v) < .35 && espaceAvant < 9 &&
+      fusionLibre && dVise < e.d - 1.5 && espaceArriere > PARAMS.reculDistance + 2 &&
+      p.reculEssais < PARAMS.reculEssais) {
+      p.recul = 1; p.reculS = e.s; p.reculD = e.d; p.reculDebut = maintenant; p.reculEssais++;
+    }
+    if (p.recul) {
+      const parcouru = Math.max(0, -ecart(c, p.reculS, e.s));
+      const vitesseRecul = Math.max(0, -e.v), distanceFreinage = vitesseRecul * vitesseRecul / 8;
+      const bordLibre = Math.abs(e.d) + moiLat + .3 < c.largeur / 2;
+      if (p.recul === 1 && (parcouru + distanceFreinage >= PARAMS.reculDistance ||
+        maintenant - p.reculDebut >= PARAMS.reculDuree || espaceArriere < distanceFreinage + 2 || !bordLibre)) p.recul = 2;
+      if (p.recul === 2 && e.v >= 0 && e.rapport !== -1) p.recul = 0;
+      else {
+        cmd.volant = clamp(2 * (e.psi + e.beta) - .3 * (e.d - p.reculD), -.6, .6);
+        // Faible vitesse de recul ; retirer l'autorisation au-dessus de 1 m/s utilise le vrai frein moteur.
+        cmd.marcheArriere = p.recul === 1 && vitesseRecul < 1;
+        cmd.frein = cmd.marcheArriere ? 1 : 0; cmd.gaz = p.recul === 2 ? .5 : 0;
+        v.ia.bloque = 0; v.ia.retourBloque = false;
+        return cmd;
+      }
+    }
+    const ouverture = Math.min(contourner ? .65 : .30, Math.asin(Math.min(1, 4 / Math.max(vitesse, 1))));
     const psi = clamp(Math.atan2(dVise - e.d, regard), -ouverture, ouverture);
     const k = courbure / Math.max(1 - courbure * e.d, .3) +
       2.2 * (psi - e.psi) * Math.max(vitesse, 5) / (10 * Math.max(vitesse, 3));
     cmd.volant = B.conduite.volantPour(e, k);
+    // Au pas, le moteur interprète le volant en angle mécanique ; la conversion dynamique en v² devient
+    // presque nulle. Employer ici le braquage géométrique, puis rejoindre progressivement la loi de course.
+    if (contourner && vitesse < 5) {
+      const f = clamp((5 - vitesse) / 3, 0, 1), P = B.conduite.PARAMS;
+      const mecanique = clamp(Math.atan(P.empattement * k) / P.braquageMeca, -1, 1);
+      cmd.volant += (mecanique - cmd.volant) * f;
+    }
     if (cible < .05) cmd.frein = 1;
     else if (vitesse > cible + .15) cmd.frein = clamp((vitesse - cible) * .45, 0, 1);
     else cmd.gaz = clamp((cible - vitesse + .15) * .35, 0, .75);

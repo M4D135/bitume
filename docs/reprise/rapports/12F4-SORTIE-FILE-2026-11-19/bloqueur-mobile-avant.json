@@ -1,0 +1,12 @@
+{
+  "cas": "joueur qui red\u00e9marre pendant le d\u00e9gagement",
+  "attendu": "restitution phase repos apr\u00e8s sortie r\u00e9elle",
+  "obtenu": {
+    "phase": "degager",
+    "vitesse": 17.75238671655563,
+    "dureeSimulee": 40,
+    "s": 663.639590788548
+  },
+  "source_sha256": "93a340bb96a1ee418b27b0ef78c7867ffa3f670c59a88c6c0efca77420ea9b37",
+  "journal": "bloqueur-mobile-avant.log"
+}

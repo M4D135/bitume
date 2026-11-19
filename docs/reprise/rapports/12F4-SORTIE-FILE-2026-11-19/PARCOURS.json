@@ -1,0 +1,99 @@
+{
+  "date_utc": "2026-11-19T15:09:03.678520+00:00",
+  "archive": "parcours-physiques.tar.gz",
+  "bytes": 805638,
+  "sha256": "352b6a3472b63c04947696a18d6de073469e20153f063240f9cf1dd3d54d7f59",
+  "fichiers": [
+    {
+      "nom": "12f4-brume-de-jade-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 328022,
+      "sha256": "9d71581132cff2e869d5699ed83304a1b019d6bf247aba7b5dcd1d2b88461a30"
+    },
+    {
+      "nom": "12f4-cap-sequoia-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 309732,
+      "sha256": "8f9731826c2d12d3372ac866f7fc854d6401ae7efc81482a865ee149f454231c"
+    },
+    {
+      "nom": "12f4-distant-humain-arrivee-abandon-drapeau-et-fin-proche-ne-programment-pas-de-nouvel-arret.json",
+      "bytes": 10140,
+      "sha256": "f0c925b96c92c1dd8ee32d9112d479b05eec29d67a4260ec5ca211ce8689a8b1"
+    },
+    {
+      "nom": "12f4-garage-occupe-tardivement-un-humain-devant-bloque-le-debut-du-service-ia.json",
+      "bytes": 8254975,
+      "sha256": "5eff8dc661e92a6c0a7a78a15f9c6e7bbe3d5aa091160bee62e4b67469ea8a85"
+    },
+    {
+      "nom": "12f4-haut-col-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 324418,
+      "sha256": "c12554441963a978db9bcd3b364cef287f9a777db0f00e95ffa987518bc02b8d"
+    },
+    {
+      "nom": "12f4-hote-sert-le-rival-distant-recoit-le-resultat-sans-simuler-un-deuxieme-service.json",
+      "bytes": 320019,
+      "sha256": "e90cc344e5581b66adcc2dc11b03103a58131444e3bf981edcbea10c1ba0b2fb"
+    },
+    {
+      "nom": "12f4-humain-repris-par-ia-conserve-ses-pneus-puis-paie-le-trajet-et-le-service-complet.json",
+      "bytes": 309528,
+      "sha256": "ab3fa8e49313f51e09ec5f2cd79b452c146af7b7edd8fe20589c6d90f15e1dd1"
+    },
+    {
+      "nom": "12f4-interruption-juste-avant-la-fin-aucun-pneu-neuf-ni-service-conserve.json",
+      "bytes": 177137,
+      "sha256": "453207b2be07e42fd54e629fdb5c08fe68949fc7220e83705218998210b6cbca"
+    },
+    {
+      "nom": "12f4-lande-noire-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 326777,
+      "sha256": "bd6608b83d623e50dbd0dfd705b5eabd408f9f64d3485932f60fd89b58065e0a"
+    },
+    {
+      "nom": "12f4-pneus-sains-aucune-decision-ni-arret-dans-le-meme-parcours.json",
+      "bytes": 68841,
+      "sha256": "8faebc5aca4a0cc20717e88bb807fe6e427aa5c4c802374df70b92c2de319005"
+    },
+    {
+      "nom": "12f4-port-sable-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 306693,
+      "sha256": "65f0a95e94dd8cbd4a45bb0b7335c592e15cce273ad342af9c3297dce2c86573"
+    },
+    {
+      "nom": "12f4-roche-fauve-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 322705,
+      "sha256": "3a9a23c742d94620325a3a14fb6d42949a3342526d26e55a0989a624e2c26590"
+    },
+    {
+      "nom": "12f4-second-service-apres-usure-renouvelee-et-vrai-tour-sans-boucle-au-meme-passage.json",
+      "bytes": 1833479,
+      "sha256": "3eda0d8bd8cace5bf14a8c59c55d1a2b09aac73ae45942b34f06d9304a7e1a45"
+    },
+    {
+      "nom": "12f4-trajet-reel-sous-neige-slicks-conserves-puis-monte-adaptee-apres-service-complet.json",
+      "bytes": 343476,
+      "sha256": "76f2d2eb50a7d03e1845cbe7f46af063594adef1867c0902c55f1194591801ae"
+    },
+    {
+      "nom": "12f4-trajet-reel-sous-pluie-slicks-conserves-puis-monte-adaptee-apres-service-complet.json",
+      "bytes": 324343,
+      "sha256": "3b7a66842bff60c88f1570aa145460f185fcf9a92d332c23aebd3d3630aa82be"
+    },
+    {
+      "nom": "12f4-trois-ia-simultanees-sont-servies-separement-puis-repartent.json",
+      "bytes": 1476341,
+      "sha256": "f76031511a46a963baf71a0547f845ff4c250de12a3314ab4b35992ad319ad87"
+    },
+    {
+      "nom": "12f4-val-brule-usure-forte-entree-service-sortie-sur-le-vrai-parcours.json",
+      "bytes": 309764,
+      "sha256": "d9abc9abd55c8cc9fe9573f2cbb322779ec047ee7bdac775322f0f417954fdb1"
+    },
+    {
+      "nom": "sortie-file.json",
+      "bytes": 16028,
+      "sha256": "d52be4ef0e4437ccf065b943292c0ad116a9ee0e1abdf152a40b31808aff433b"
+    }
+  ],
+  "source": "Passage complet final p13 ; 17 parcours historiques et9 scénarios de sortie de file."
+}

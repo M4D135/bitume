@@ -1,0 +1,29 @@
+✖ 12F4 joueur qui redémarre pendant le dégagement : restitution réelle à la conduite de course (2013.846829ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2447.984675
+
+✖ failing tests:
+
+test at verifications/strategie-stands-sortie-file.test.mjs:25:3
+✖ 12F4 joueur qui redémarre pendant le dégagement : restitution réelle à la conduite de course (2013.846829ms)
+  AssertionError [ERR_ASSERTION]: reprise réelle de course dans le délai : {"s":663.639590788548,"d":-0.000005318881337748346,"v":17.75238671655563,"psi":-1.060735786049428e-7,"phase":"degager","recul":5.275000000000052,"temps":40.00000000000284,"garage1":118}
+      at quitter (file:///workspace/scratch/1b28de5a23b5/bitume/verifications/strategie-stands-sortie-file.test.mjs:110:10)
+      at file:///workspace/scratch/1b28de5a23b5/bitume/verifications/strategie-stands-sortie-file.test.mjs:230:22
+      at TestContext.<anonymous> (file:///workspace/scratch/1b28de5a23b5/bitume/verifications/strategie-stands-sortie-file.test.mjs:27:31)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

@@ -1,5 +1,7 @@
 # 12F4 — stratégie de stands IA
 
+**Complément qualifié 0.2.52/p13 :** dégagement des files serrées et joueur qui repart, voir [la fiche de correction](12F4-SORTIE-FILE.md). Le texte ci-dessous conserve la livraison initiale 0.2.51/p12.
+
 ## Base et périmètre
 
 19 novembre 2026. Demande « go la suite » après 12F3 livré. Base **0.2.50 / main `c8afbd49594eaac51876286e471413856117418d`**.

@@ -480,6 +480,45 @@ if (+PHYSIQUE.slice(1) >= 12) CAS.push({
   }
 });
 
+// 12F4, sortie de file serrée : la référence conserve le vrai recul, le dépassement et les pneus usés.
+if (+PHYSIQUE.slice(1) >= 13) CAS.push({
+  nom: 'ia-file-bloquee-val-brule',
+  jouer() {
+    meteo(null);
+    const { c, obstacles, solides } = circuit('val-brule');
+    const co = B.course.creer(c, {mode: 'course', tours: 8, difficulte: 1, rivaux: 1, graine: 1244});
+    co.phase = 'course'; co.feux.vert = true; co.temps = co.horloge = 30;
+    const v = co.voitures[1], S = c.stands;
+    for (const voiture of co.voitures) {
+      const s = S.garage0 + (voiture.id === 0 ? 18 : 10), q = B.circuit.echantillon(c, s);
+      Object.assign(voiture.etat, {s, d: S.d, v: 0, psi: 0, beta: 0, omega: 0, y: q.y, rapport: 1, regime: 5000});
+      voiture.progression = s; voiture.passages = voiture.maxPassages = 0; voiture.tourValide = false;
+      voiture.etat.pneus = voiture.etat.pneusProchainArret = voiture.livree.pneus = 'slicks';
+    }
+    for (const roue of v.etat.etatPneus) roue.usure = .9;
+    const graines = v.etat.etatPneus.map(r => r.graine);
+    Object.assign(v.ia.stand, {phase: 'voie', debut: 20, vuStand: true, motif: 'usure', pneus: 'slicks'});
+    v.etat.stands = {phase: 'voie', t: 0, repare: false};
+    const observations = {annuleIA: false, reculIA: false, depasseIA: false, repartiIA: false,
+      sansContactIA: true, sansReplacementIA: true, pneusConservesIA: true};
+    const r = derouler(co, {secondes: 40,
+      pilotes: {0: () => ({gaz: 0, frein: 1, volant: 0, derive: false, boite: 'auto', aide: 0})},
+      apresPas(co, ev) {
+        const e = v.etat;
+        observations.annuleIA ||= ev.some(x => x.id === v.id && x.type === 'stand' && x.phase === 'annule');
+        observations.reculIA ||= e.v < -.1;
+        observations.depasseIA ||= B.circuit.ecart(c, co.joueur.etat.s, e.s) > 8;
+        observations.repartiIA ||= B.circuit.ecart(c, S.garage1, e.s) > 30 && e.v > 8 && !e.stands;
+        observations.sansContactIA &&= !ev.some(x => x.type === 'contact' && (x.a === v.id || x.b === v.id) ||
+          x.type === 'choc' && x.id === v.id) && !e.auRail;
+        observations.sansReplacementIA &&= !e.repositionnements && !e.accident && !e.recuperation;
+        observations.pneusConservesIA &&= e.servicePneus === 0 && e.pneus === 'slicks' &&
+          e.etatPneus.every((p, i) => p.graine === graines[i] && p.usure >= .9);
+      }});
+    return {...r, resume: resume(co, r.compte, {obstacles, solides, ...observations})};
+  }
+});
+
 // ------------------------------------------------------------------ contrôle
 const t0 = performance.now();
 const resultats = {};
@@ -503,6 +542,11 @@ if (+PHYSIQUE.slice(1) >= 12) {
   COUVERTURE['ia-stands-usure-val-brule'] = ['stand'];
   GESTES['ia-stands-usure-val-brule'] = ['entreeIA', 'serviceIA', 'repareIA', 'sortieIA', 'repartiIA'];
 }
+if (+PHYSIQUE.slice(1) >= 13) {
+  COUVERTURE['ia-file-bloquee-val-brule'] = ['stand'];
+  GESTES['ia-file-bloquee-val-brule'] = ['annuleIA', 'reculIA', 'depasseIA', 'repartiIA',
+    'sansContactIA', 'sansReplacementIA', 'pneusConservesIA'];
+}
 let echecs = 0;
 for (const [nom, types] of Object.entries(COUVERTURE)) for (const type of types)
   if (!resultats[nom].resume.evenements[type]) { echecs++; console.error(`KO  couverture : ${nom} sans événement « ${type} »`); }
@@ -514,7 +558,8 @@ if (ECRIRE) {
   if (echecs) throw new Error('Couverture de scénarios incomplète : la nouvelle fixture ne sera pas écrite');
   nouvelleReference = {
     format: 'bitume-determinisme-1', physique: PHYSIQUE, node: process.version,
-    origine: +PHYSIQUE.slice(1) >= 12 ? 'Lot 12F4 : décisions et services physiques des IA ; archives p9, p10 et p11 conservées.' :
+    origine: +PHYSIQUE.slice(1) >= 13 ? 'Lot 12F4, sortie de file serrée et après service ; archives p9 à p12 conservées.' :
+      +PHYSIQUE.slice(1) >= 12 ? 'Lot 12F4 : décisions et services physiques des IA ; archives p9, p10 et p11 conservées.' :
       'Lot 12E : chaussée, pneus neige et usure physique ; archive p9 conservée séparément.',
     explication: 'Empreintes SHA-256, à chaque seconde de simulation, de l’état complet des voitures, de la course et des événements (verifications/determinisme-simulation.test.mjs).',
     cas: Object.fromEntries(Object.entries(resultats).map(([nom, r]) => [nom, { secondes: r.secondes, resume: r.resume, empreintes: r.empreintes }]))

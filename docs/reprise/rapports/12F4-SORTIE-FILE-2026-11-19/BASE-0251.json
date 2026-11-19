@@ -1,0 +1,44 @@
+{
+  "version": "0.2.51",
+  "physique": "p12",
+  "base_commit": "cb0235085431acbc044f785e27b26ca382c5556a",
+  "tree": "375c46404c6ff4a3d5d1df895acc4eef351aea06",
+  "hashes_base": {
+    "src/conduite.js": "ed17946c7d15f58bfd72143635aeeb5fac81fbf8438476bf3ccacfeef73eeabc",
+    "src/usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+    "src/pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+    "src/circuit.js": "e872944198a9a9bcd0efdd8d33d5f201c4dfd98016cf04e0bccf4a5b5c9a674f",
+    "src/degats.js": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247",
+    "src/contacts.js": "d6e583db729c91df8de21621c05b3b24835e6dc996e9dd4df7cb0464b27e1b7a",
+    "src/obstacles.js": "02626c61720ba5aa6bc1f06ee103725efed1a0c52f243b3ba2443f6f6cbf914e",
+    "FERRO.lock.json": "cb6d1150c85b03bfaf5f32432256538a92237315e1cd1796cdaf5aaacddd9f55",
+    "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a",
+    "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+    "verifications/fixtures/determinisme-p11.json": "c2453f9f896014a45020678c071a10aed656243ef542565538c571d7fc9430b7",
+    "verifications/fixtures/determinisme-p12.json": "fb8f96e5a770fcdd6ee3da520a9c8e0e2ae81c6c0b6b34d5a20758730f790e5f"
+  },
+  "lois_et_archives_a_conserver": [
+    "src/conduite.js",
+    "src/usure-pneus.js",
+    "src/pneus.js",
+    "src/circuit.js",
+    "src/degats.js",
+    "src/contacts.js",
+    "src/obstacles.js",
+    "FERRO.lock.json",
+    "verifications/fixtures/determinisme-p9.json",
+    "verifications/fixtures/determinisme-p10.json",
+    "verifications/fixtures/determinisme-p11.json",
+    "verifications/fixtures/determinisme-p12.json"
+  ],
+  "qualification_base": "docs/reprise/rapports/12F4-2026-11-19/qualification-execution.json",
+  "publication_base": "../12F3-2026-11-19/PUBLICATION-0250.json",
+  "reserve_traces_base": "../12F3-2026-11-19/reserve-traces.json",
+  "checkpoint_perimetre": {
+    "local": "6336c8a2cd66a232a6e84a9b738be574764e0a39",
+    "distant": "446a350f736d583471950b8e089ac7d8ab57e4d9",
+    "tree": "101f6c8969b64070ad9a3696fc314012586529ae",
+    "verifie": true
+  },
+  "note": "Checkpoint sources p12 publié ; build0.2.51 qualifié dans la session source, publication finale en cours."
+}
