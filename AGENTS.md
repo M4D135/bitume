@@ -306,3 +306,10 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
 - Lot suivant immédiatement après la qualification PhysX : `docs/reprise/DEMOS-CINEMA-2026-11-19.md`.
   Préserver les courses continues, la sortie sur geste, les réglages Faune/qualité, les collisions et la conduite p14.
   La demande porte sur la réalisation visuelle ; la règle de musique limitée au titre demeure.
+
+## Décision de David — 19 novembre 2026, regard arrière
+
+- En vue extérieure Poursuite, maintenir le stick droit vers le bas doit permettre de regarder derrière,
+  avec retour à la vue normale au relâchement. Préserver les affectations des manettes et l'indépendance J1/J2.
+- Le geste reprend la commande de regard arrière décrite dans la documentation officielle EA consultée
+  à la demande de David. La demande ne remplace pas les autres commandes de BITUME.

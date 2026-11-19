@@ -1,8 +1,8 @@
 {
-  "version": "0.2.56",
-  "raw": 14162317,
-  "gzip": 3363224,
-  "sha256": "d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65",
+  "version": "0.2.57",
+  "raw": 14182991,
+  "gzip": 3369849,
+  "sha256": "cbcd5c26d36a19946d647c250f290150766be585e843a6e8c331716eefa7cbea",
   "sources": {
     "moteur/renderer.js": 310152,
     "ferro/engine.js": 2025,
@@ -42,7 +42,8 @@
     "animaux.js": 150283,
     "traces.js": 45631,
     "echappement.js": 30407,
-    "realisateur.js": 10265,
+    "cinema.js": 13359,
+    "realisateur.js": 12939,
     "meteo.js": 14928,
     "vitre.js": 13546,
     "sillage.js": 3705,
@@ -59,7 +60,7 @@
     "scene-bench.js": 23081,
     "vibrations.js": 13482,
     "ombres.js": 12015,
-    "jeu.js": 331594,
+    "jeu.js": 336193,
     "index.html": 55099,
     "style.css": 56289
   }

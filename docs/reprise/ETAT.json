@@ -1,94 +1,37 @@
 {
   "date": "2026-11-19",
   "etat_courant": {
-    "version_courante": "0.2.56",
+    "version_courante": "0.2.57",
     "physique": "p14",
     "version_publiee_verifiee": "0.2.56",
-    "statut": "physx_publie_reprise_demos",
-    "lot": "demos_cinema",
+    "statut": "demos_regard_arriere_qualifies_publication_attendue",
+    "branche": "codex/bitume-demos-regard-arriere-20261119",
+    "base_publiee": "6ed560661c9a69345dbbd6f8f26019845e84273d",
+    "lot": "demos_cinema_regard_arriere",
     "fiche": "docs/reprise/DEMOS-CINEMA-2026-11-19.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "039",
-    "prochaine_action": "Récupérer la copie démos avancée conservée par la clôture 293f4fae, la réconcilier sur la 0.2.56 publiée, puis qualifier raccords, transitions et cadrages.",
-    "branche": "main"
-  },
-  "publication": {
-    "version": "0.2.56",
-    "pr": 11,
-    "pr_url": "https://github.com/M4D135/bitume/pull/11",
-    "main_verifie": "a2b89f5cff2779ec0b7158609c53e18dd607a49e",
-    "arbre_main_verifie": "9963201f4c7f25167535b094efea1f2064fb1d8e",
-    "source_qualifiee": "15f033747e4d004b471a803f75a4d63073f2e6f6",
-    "arbre_qualifie": "24299b302d894db340b7e8cbadd440047cccdc00",
-    "tete_distante_fusionnee": "253322d311a8b0cda01f5846dcc03ebd3af3f7cd",
-    "cloture_0255_preservee": "293f4faef9e4c195c6f617f3f43f61874e183e83",
-    "preuve": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0256.json",
-    "build": {
-      "octets": 14162317,
-      "gzip": 3363224,
-      "sha256": "d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65",
-      "scripts_valides": 56,
-      "reproductible": true
-    },
-    "ferro": {
-      "version": "0.3.14",
-      "main_verifie": "85ba941709bb304cbc34f8beb7baab0639321919",
-      "pr": 2,
-      "modules_exacts": 34,
-      "preuve": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-FERRO-0314.json"
-    },
-    "snapshot_documentaire_final_local": "93556bf27639911903dae403c55705bacc7f669d",
-    "code_teste": "edf660e5e2cfe2894382460aee0cbec48fa3a748"
+    "derniere_entree": "040",
+    "prochaine_action": "Publier le lot, vérifier sa CI et conclure la reprise avant 13B Baïkal."
   },
   "validation": {
-    "ci_code": {
-      "statut": "terminees_avec_reserves",
-      "suites_par_passage": 123,
-      "bilan": "push 122/123 ; PR 121/123",
-      "runs_verifies": [
-        44590341323,
-        44590352977
-      ],
-      "echecs_et_signatures": "traces dans les deux passages (actual e6790758… / expected 575fc91d…, identiques à l’héritage) ; décor Val-Brûlé 152 ms pour seuil 150 ms dans le passage PR",
-      "decor": "réussi sur push ; 152 ms pour seuil 150 ms sur PR, réserve conservée",
-      "preuve": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/RECU-CI.json",
-      "reserve_decor_pr_ms": 152,
-      "seuil_decor_ms": 150
-    },
-    "local": {
-      "suites_consolidees": 123,
-      "reussies_consolidees": 122,
-      "portee": "Balayage initial puis ajouts et reprises ciblées ; distinct des passages CI complets.",
-      "reprises_ferro0314": "12/12 sur 234 fichiers stables",
-      "determinisme": "54/54 empreintes natives, fixture p14 inchangée",
-      "preuve": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/QUALIFICATION-FINALE.json"
-    },
-    "reserve_traces": "Échec historique de signature, oracle conservé ; résultat distant et signatures explicités dans le reçu CI.",
-    "reserve_duree_decor": "Réserve conservée : 486 ms sur le snapshot parallèle0.2.55, 163 ms dans sa CI main, 152 ms dans la CI PR0.2.56, seuil150 ms ; décor passant dans la CI push0.2.56. Aucune comparaison contrôlée ni absence de régression démontrée.",
+    "ciblee": "7/7 suites ; 135 contrôles ; code stable.",
+    "build_sha256": "cbcd5c26d36a19946d647c250f290150766be585e843a6e8c331716eefa7cbea",
+    "build_octets": 14182991,
+    "reproductible": true,
+    "rapport": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/QUALIFICATION-0257.json",
+    "ci": "a_verifier_apres_publication",
     "jeu_navigateur_valide": false,
+    "manette_physique_validee": false,
     "fps_materiels_mesures": false,
-    "partie_multimachines_validee": false,
-    "courses": "Sondes natives de 200 s conservées : quatre replacements après accident à Haut-Col, récupération antérieure ; aucun dans les scénarios de file bloquée."
+    "site_deploye": false
   },
-  "suite": {
-    "lot": "demos_cinema",
-    "statut": "preparation_isolee_a_integrer_et_qualifier_sur_0256",
-    "fiche_plan": "docs/reprise/DEMOS-CINEMA-2026-11-19.md",
-    "copie_preparee": "/workspace/scratch/749f331cc09f/bitume-demo",
-    "branche_preparee": "codex/bitume-demos-cinema-20261119",
-    "base_preparee": "838756b",
-    "travail_prepare": "construire.py, src/jeu.js, src/realisateur.js, nouveaux src/cinema.js et verifications/cinema.test.mjs ; modifications non commitées à préserver.",
-    "correctif_camera": "Trajectoires nature prévalidées et mémorisées, poste fixe des animaux, repli course et pondération progressive du peloton ; à intégrer et qualifier.",
-    "ancienne_copie_a_ne_pas_substituer": "/workspace/scratch/2540d1a213f9/bitume-demo",
-    "preuves_anciennes": "18 contrôles cinéma, 7 réalisateur et 9 chargement annoncés dans les journaux de la copie ; aucune validation de leur intégration sur 0.2.56.",
-    "regles": "Préserver p14, grille/départ/arrivée, courses continues, sortie sur geste, Faune/qualité, musique limitée au titre."
-  },
-  "suite_apres_demos": {
-    "lot": "13B_Russie_decor_saisons",
-    "statut": "non_commence",
-    "objectif": "Lac, berges, lieux signature, végétation/faune du Baïkal, saisons et validation visuelle.",
-    "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
-    "apres": "demos_cinema"
+  "livraison_precedente": {
+    "version": "0.2.56",
+    "pr": 11,
+    "commit_merge": "a2b89f5cff2779ec0b7158609c53e18dd607a49e",
+    "cloture": "6ed560661c9a69345dbbd6f8f26019845e84273d",
+    "publication": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0256.json",
+    "0255": "Close, preuves préservées."
   },
   "catalogue": {
     "jouables_dans_build": 8,
@@ -106,15 +49,20 @@
     "propositions_conservees": 6,
     "regle": "Conserver les sept circuits historiques et toutes les demandes ; ne pas supprimer la montagne pour tenir l’ancien compte de 16."
   },
-  "acces": {
-    "mac_spark_amiga_disponibles": false,
-    "spark_wrapper": "~/bin/kbza absent",
-    "deploiement_effectue": false,
-    "site_verifie": false
+  "suite": {
+    "lot": "demos_cinema_regard_arriere",
+    "statut": "integre_qualifie_cible",
+    "copie_preparee_recuperee": true,
+    "correctif_camera": "Trajectoires mémorisées, poste animalier fixe, coupe explicite au masquage et protection du sprint.",
+    "regard_arriere": "Poursuite, stick droit bas maintenu ; relâchement immédiat et isolation J1/J2.",
+    "regles": "Conduite p14, départ/arrivée, démos continues, sortie sur geste, Faune/qualité, musique limitée au titre conservés."
   },
-  "archives": [
-    "docs/reprise/archives/ETAT-AVANT-CLOTURE-0256-2026-11-19.json",
-    "docs/reprise/archives/ETAT-AVANT-CLOTURE-0255-2026-11-19.json"
-  ],
+  "suite_apres_demos": {
+    "lot": "13B_Russie_decor_saisons",
+    "statut": "non_commence",
+    "objectif": "Lac, berges, lieux signature, végétation/faune du Baïkal, saisons et validation visuelle.",
+    "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
+    "apres": "demos_cinema"
+  },
   "regle": "Un sous-lot à la fois ; contrôler le distant, journaliser et conserver une reprise courte. Aucun push forcé."
 }
