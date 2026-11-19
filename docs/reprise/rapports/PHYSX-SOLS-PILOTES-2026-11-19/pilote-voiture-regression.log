@@ -1,0 +1,34 @@
+ok  cotes de la 312 T5 : longueur 4,53 m, largeur 2,12 m, hauteur 1,02 m
+ok  empattement 2,70 m, voies 1,70 et 1,615 m, roues posées au sol
+ok  pièces et version lointaine bien formées
+ok  roues : rotation propre = distance / rayon à 1 % près
+ok  braquage d’Ackermann : roue intérieure plus braquée, centre commun
+ok  cockpit : centre du volant entre 14 et 18° sous l’axe de visée
+ok  cockpit : haut de la jante, prises des mains, planche, pneus avant et rétroviseurs dans le cadre en 16:9
+ok  cockpit : rotation du volant de 95° au plus
+ok  cockpit : coque creuse, aucune pièce de carrosserie entre l’œil et le volant
+ok  cockpit : pilote, arrière, capot et glaces de la vue extérieure absents, roues avant présentes
+ok  numéro en géométrie sur le nez et les pontons ; repères de flanc à toute vitesse
+ok  repère de pneu : il tourne autour de l’axe de la roue, à mi-flanc
+ok  cockpit en carènes : habitacle sans boîte, jante d’un seul tube, pneus à épaules rondes
+ok  cockpit : rien que des nombres finis, volant à fond et pendant un changement de rapport
+ok  changement de rapport : la main droite va au pommeau, puis revient sur la jante
+ok  mains : aucun sommet des gants dans les branches de 3 h et 9 h, volant droit ou tourné
+ok  mains dans le cadre, manches hors du cadre dès le poignet (16:9, volant droit)
+ok  lampe de régime : allumée au-dessus de 12 000 tr/min, sauf au dernier rapport
+ok  rétroviseurs : une voiture derrière à gauche se voit dans la glace de gauche, à sa place
+ok  silhouette : le flanc est fermé derrière la roue avant (voi-1)
+ok  formes libres : chaque triangle est orienté vers l'extérieur en vraie grandeur (garde rendu-1)
+ok  numéros : encre lisible sur les douze livrées de course (voi-2)
+ok  numéro de flanc : calé entre la bande basse et le filet (voi-3)
+ok  jonc de l'ouverture : suit le bord, ne bombe pas hors de l'ouverture (voi-4)
+ok  suspension avant : les attaches intérieures touchent la peau de la quille (voi-7)
+ok  rétroviseurs : le proche s'enfonce plus que le lointain, reflet contenu dans la glace (cockpit-1/5)
+ok  témoin rouge : s'allume au ralenti comme au surrégime (cockpit-8)
+ok  goutte : par l'ouverture, on ne voit pas l'envers de la peau au-delà des bords (carene-2)
+ok  pouce du gant : aucune face enfouie dans son propre volume (carene-4)
+ok  habitacle vu du haut : par l'ouverture on voit la cuve sombre, pas le dessus rouge des pontons (voi-5)
+ok  bande des pontons : une peau décalée de 4 mm, pas un caisson à flancs droits (voi-6)
+ok  paume au pommeau : paume vers le bas quel que soit le braquage (cockpit-4)
+ok  trajet au pommeau : les doigts ne traversent ni la jante ni la branche de 3 h (cockpit-3)
+33 vérifications réussies

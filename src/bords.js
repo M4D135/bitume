@@ -209,6 +209,7 @@
     // Légère : panneaux sans emblème ni lettrage, arbres en volumes simples ; Moyenne et Fine : arbres de la botanique
     const legere = outils.qualite !== 'medium' && outils.qualite !== 'high', fine = !legere, stats = { bandeaux: 0, affiches: 0, passerelles: 0, dangers: plan.dangers.length, objets: 0, solides: 0 };
     const angles = D.angles, base = D.base, cadre = D.cadre, hauteur = D.hauteurRoute;
+    const marquer = D.marquerSolide || (o => o); // les outils d'oracle anciens ne construisent pas de monde PhysX
     const pointPlan = (f, d, y) => [f.x + f.r[0] * d, y, f.z + f.r[2] * d];
     const limiteA = (f, cote) => (cote < 0 ? lim.G : lim.D)[f.i];
     const ajouter = (objets, loin, p) => { outils.ajouter(objets, loin, p[0], p[2]); stats.objets += objets.length; stats.solides += objets.filter(o => o.collision).length; };
@@ -219,7 +220,7 @@
     function face(objets, loin, m, centre, ax, ay, az, long, haut, cote) {
       const I = id(m), vers = (u, v, e) => [centre[0] + ax[0] * u + ay[0] * v - az[0] * cote * e, centre[1] + ax[1] * u + ay[1] * v - az[1] * cote * e, centre[2] + ax[2] * u + ay[2] * v - az[2] * cote * e];
       const rot = angles(ax, ay, az);
-      const fond = { shape: 'box', p: centre, s: [long, haut, .06], r: rot, mat: 16, color: I.fond };
+      const fond = marquer({ shape: 'box', p: centre, s: [long, haut, .06], r: rot, mat: 16, color: I.fond }, 'publicite');
       objets.push(fond); loin.push(fond);
       objets.push({ shape: 'box', p: vers(0, -haut * .38, .035), s: [long, haut * .16, .02], r: rot, mat: 16, color: I.accent });
       if (legere) return;
@@ -265,6 +266,7 @@
       const centre = [p[0], y + 2.2 + 1.4, p[2]], objets = [], loin = [];
       for (const sg of [-1, 1]) objets.push({ shape: 'box', p: [p[0] + ax[0] * sg * 2.6, y + 1.8, p[2] + ax[2] * sg * 2.6], s: [.22, 3.6, .22], r: rot, mat: 0, color: [.45, .46, .47] });
       objets.push({ shape: 'box', p: [centre[0] + az[0] * a.cote * .08, centre[1], centre[2] + az[2] * a.cote * .08], s: [7.3, 3.1, .08], r: rot, mat: 0, color: [.32, .33, .34] });
+      for (const o of objets) marquer(o, 'support-publicite');
       face(objets, loin, a.marque, centre, ax, ay, az, 7, 2.8, a.cote);
       loin.push(objets[2]);
       ajouter(objets, loin, centre); stats.affiches++;
@@ -276,6 +278,7 @@
       for (const d of [-LG, LD]) { const p = pointPlan(f, d, y); objets.push({ shape: 'box', p: [p[0], y + 4.4, p[2]], s: [.6, 8.8, .6], r: rot, mat: 0, color: [.40, .41, .43] }); }
       const milieu = pointPlan(f, (LD - LG) / 2, y + 8.2), long = LG + LD;
       objets.push({ shape: 'box', p: milieu, s: [long, 1.8, .5], r: rot, mat: 0, color: [.30, .31, .33] });
+      for (const o of objets) marquer(o, 'passerelle-publicite');
       for (const sens of [-1, 1]) face(objets, loin, pa.marque, [milieu[0] - az[0] * sens * .3, milieu[1], milieu[2] - az[2] * sens * .3], ax, ay, az, Math.min(long - 2, 30), 1.6, sens);
       loin.push(objets[2]);
       ajouter(objets, loin, milieu); stats.passerelles++;
@@ -290,9 +293,11 @@
       {
         const f = cadre(c, i0 - Math.round(120 / c.pas)), Lc = limiteA(f, cote) + 1.4, y = hauteur(f, cote * w, w) - .02 * (Lc - w - 1.2);
         const p = pointPlan(f, cote * Lc, y), objets = [{ shape: 'cylinder', p: [p[0], y + 1.1, p[2]], s: [.08, 2.2, .08], mat: 0, color: [.55, .56, .57] }];
+        marquer(objets[0], 'panneau-danger');
         for (const [haut, demi, couleur, avance] of [[1.0, .58, [.86, .12, .08], 0], [.62, .36, [.95, .95, .92], .03]]) for (const sg of [-1, 1]) {
           const x = f.r.map(v => v * sg), z = croix(x, [0, 1, 0]), cy = y + 2.35 + (1 - haut) * .25;
           objets.push({ shape: 'wedge', p: [p[0] + x[0] * demi / 2 - f.t[0] * avance, cy + haut / 2 - .5 + .5 * (1 - haut), p[2] + x[2] * demi / 2 - f.t[2] * avance], s: [demi, haut, .05], r: angles(x, [0, 1, 0], z), mat: 16, color: couleur });
+          if (haut === 1) marquer(objets[objets.length - 1], 'panneau-danger');
         }
         ajouter(objets, [objets[1], objets[2]], p);
       }
@@ -304,7 +309,7 @@
           const f1 = cadre(c, i + 4), L1 = limiteA(f1, cote), p0 = pointPlan(f, cote * (Lc + .25), y), p1 = pointPlan(f1, cote * (L1 + .25), hauteur(f1, cote * w, w));
           const dir = [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]], [ax, ay, az] = base(dir, [0, 1, 0]), long = Math.hypot(...dir) + .05;
           const h = d.type === 'vide' ? .75 : .9, m = [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2 + h / 2, (p0[2] + p1[2]) / 2];
-          const mur = { shape: 'box', p: m, s: [long, h, .5], r: angles(ax, ay, az), mat: 3, color: d.type === 'vide' ? [.56, .54, .5] : [.9, .9, .88] };
+          const mur = marquer({ shape: 'box', p: m, s: [long, h, .5], r: angles(ax, ay, az), mat: 3, color: d.type === 'vide' ? [.56, .54, .5] : [.9, .9, .88] }, d.type === 'vide' ? 'parapet' : 'muret');
           objets.push(mur); loin.push(mur);
           // balise rouge et blanche tous les 8 m sur le parapet, bande peinte sur le muret
           if (!legere) objets.push({ shape: 'box', p: [m[0], m[1] + h / 2 + .25, m[2]], s: [.12, .5, .12], r: angles(ax, ay, az), mat: 16, color: k % 2 ? [.86, .12, .08] : [.95, .95, .92] });
@@ -350,9 +355,11 @@
           };
           // un mètre de profondeur : au-delà de la limite le terrain descend (jupe du décor), le fossé ne flotte jamais
           const eau = bande(3.6, 1.6, 1, -.48, 9, [.07, .11, .10]);
-          objets.push(eau, bande(2.7, .2, 1, -.46, 9, [.26, .2, .13]), bande(4.5, .2, 1, -.46, 9, [.26, .2, .13])); loin.push(eau);
+          objets.push(eau, marquer(bande(2.7, .2, 1, -.46, 9, [.26, .2, .13]), 'berge-fosse', 1, 'herbe'),
+            marquer(bande(4.5, .2, 1, -.46, 9, [.26, .2, .13]), 'berge-fosse', 1, 'herbe')); loin.push(eau);
           const pb = pointPlan(f, cote * (w + 2.6), y);
           objets.push({ shape: 'box', p: [pb[0], y + .5, pb[2]], s: [.12, 1.0, .12], mat: 16, color: [.95, .95, .92] }, { shape: 'box', p: [pb[0], y + .85, pb[2]], s: [.13, .12, .13], mat: 16, color: [.86, .12, .08] });
+          marquer(objets[objets.length - 2], 'balise-fosse');
         }
         if (objets.length) ajouter(objets, loin, objets[0].p);
       }
@@ -360,6 +367,7 @@
       if (d.type === 'vide' || d.type === 'muret') for (let k = 0; k < 3; k++) {
         const f = cadre(c, i0 + k * 6), Lc = limiteA(f, cote) + .9, y = hauteur(f, cote * w, w), p = pointPlan(f, cote * Lc, y);
         const ax = f.t, rot = angles(ax, [0, 1, 0], f.r), objets = [{ shape: 'box', p: [p[0], y + 1.4, p[2]], s: [1.2, .8, .05], r: rot, mat: 16, color: [.08, .08, .09] }];
+        marquer(objets[0], 'chevron-bord');
         // un chevron blanc (deux bandes inclinées) pointé dans le sens du virage
         for (const sg of [-1, 1]) { const ca = Math.cos(.8), sa = Math.sin(.8) * sg; objets.push({ shape: 'box', p: [p[0] - f.r[0] * cote * .04, y + 1.4 + sg * .14, p[2] - f.r[2] * cote * .04], s: [.46, .1, .03], r: angles([ca * ax[0], sa, ca * ax[2]], [-sa * ax[0], ca, -sa * ax[2]], f.r), mat: 16, color: [.95, .95, .92] }); }
         ajouter(objets, [objets[0]], p);

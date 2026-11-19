@@ -1,0 +1,93 @@
+ok transaction des quatre roues : révision attendue, état indépendant et dégâts strictement inchangés
+ok commandes invalides et compteur saturé : rejet sans changement, sans conversion vers des pneus neufs
+ok slicks : arrêt réel, aucun pneu neuf avant terme, quatre à la fin et une seule révision
+ok inter : arrêt réel, aucun pneu neuf avant terme, quatre à la fin et une seule révision
+ok pluie : arrêt réel, aucun pneu neuf avant terme, quatre à la fin et une seule révision
+ok neige : arrêt réel, aucun pneu neuf avant terme, quatre à la fin et une seule révision
+ok deux vrais services : motifs déterministes par séance/voiture/révision, sans RNG partagé
+ok la monte du début est figée ; une préférence ultérieure ne change pas le service engagé
+ok entrée seule, sortie avant garage et arrêt loin après le garage : aucun renouvellement
+ok avant le garage juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok après le garage juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok hors de la voie juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok poussé dans le garage juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok mouvement avant juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok mouvement arrière juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok accident juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok récupération juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok saut juste avant la fin : arrêt annulé, pneus et carrosserie conservés
+ok mouvement détecté avant le pas complet : le frein ne masque pas une interruption
+ok IA sans décision et voitures distantes : aucune remise à neuf en les plaçant simplement au garage
+ok deux voitures locales : renouveler l’une laisse exactement les roues et la révision de l’autre
+ok replacement direct et récupération après un service conservent compteur, graines, usure et objets
+ok révision devenue obsolète pendant le service : aucun second renouvellement ni réparation partielle
+ok choisir pour le prochain arrêt conserve monte, usure, graines, carrosserie et livrée
+ok aucune commande pour un rival, un distant, une reprise IA ou une autre voiture
+ok monte invalide ou service engagé : rejet sans effacer la commande déjà choisie
+ok chaque monte peut remplacer une autre, seulement à la fin du service réel
+ok choix possible dans la voie, figé au début et conservé après une interruption
+ok choix absent ou invalide au début : service de la monte réellement équipée
+ok deux pilotes peuvent demander et recevoir des montes différentes sans toucher à l’autre
+30 contrôles remplacement des pneus aux stands réussis
+✔ verifications/stands-pneus.test.mjs (372.233126ms)
+ok  la voie des stands existe, est a droite et tient dans la ligne droite
+ok  sante : neuve a 1, baisse a chaque avarie, remonte a 1 apres reparation
+ok  la jauge vient du meme etat que les penalites, pas d un compteur d affichage
+ok  le service se chiffre d apres l etat constate
+ok  entrer dans la voie a basse vitesse ouvre un arret et invalide le tour
+ok  on n entre pas en roulant vite, ni en frolant le bord, ni au depart
+ok  ressortir de la voie sans s arreter annule l arret, sans rien reparer
+ok  l arret au garage rend la reparation complete, a la duree chiffree
+ok  rouler dans la voie ne repare rien : il faut l arret
+ok  la voie bride a la vitesse des stands
+ok  le replacement apres crash ne repare pas tout : les stands restent utiles
+ok  une voiture arree au stand nest jamais tenue pour coincee
+ok  les rivaux finissent la course et ne recoivent aucun service sans decision ni immobilisation
+ok  un pair distant ne peut pas faire reparer sa voiture
+ok  un arret ne donne ni tour gratuit ni meilleur temps en chrono
+ok  deux joueurs ont chacun leur sante et leur arret
+ok  le meme arret, deux fois, donne le meme resultat
+ok  une roue perdue immobilise avant d atteindre le garage : pas de service
+stands : 18 verifications passees
+✔ verifications/stands.test.mjs (9584.805616ms)
+✔ une pluie brève ne programme rien ; une amélioration durable de monte programme le prochain arrêt (90.556896ms)
+✔ le passage sous tunnel ne choisit pas une monte sèche sur une chaussée enneigée (52.214967ms)
+✔ une entrée trop proche ou trop rapide est reportée sans freinage d’urgence vers le garage (63.53902ms)
+✔ un drapeau apparu après la décision empêche une nouvelle entrée sans renouveler les pneus (26.568886ms)
+✔ absence de stands et voiture étrangère ne donnent aucune autorisation (23.390642ms)
+✔ l’admission relit une occupation humaine apparue depuis le guidage (23.913277ms)
+✔ 12F4 IA immobilisée à 8 m derrière un joueur : dégagement réel sans contact (2056.797787ms)
+✔ 12F4 IA immobilisée à 10 m derrière un joueur : dégagement réel sans contact (57.078934ms)
+✔ 12F4 vraie approche vers un joueur garé : attente bornée puis retour en course (301.516451ms)
+✔ 12F4 voiture derrière la file : recul sûr puis sortie quand elle libère réellement la place (111.994176ms)
+✔ 12F4 service achevé : sortie bloquée par un joueur puis reprise sans second service (64.443889ms)
+✔ 12F4 file serrée sous pluie : les slicks usés restent équipés pendant le dégagement (47.80188ms)
+✔ 12F4 file serrée sous neige : les slicks usés restent équipés pendant le dégagement (57.596451ms)
+✔ 12F4 Haut-Col : sortie de file serrée sur le second circuit avec ses vrais obstacles (1448.4081ms)
+✔ 12F4 joueur qui redémarre pendant le dégagement : restitution réelle à la conduite de course (47.779821ms)
+✔ 12F4 val-brule usure forte entrée service sortie sur le vrai parcours (2227.163788ms)
+✔ 12F4 port-sable usure forte entrée service sortie sur le vrai parcours (1157.392344ms)
+✔ 12F4 haut-col usure forte entrée service sortie sur le vrai parcours (1361.750146ms)
+✔ 12F4 lande-noire usure forte entrée service sortie sur le vrai parcours (288.426016ms)
+✔ 12F4 roche-fauve usure forte entrée service sortie sur le vrai parcours (240.694863ms)
+✔ 12F4 brume-de-jade usure forte entrée service sortie sur le vrai parcours (486.524087ms)
+✔ 12F4 cap-sequoia usure forte entrée service sortie sur le vrai parcours (254.683491ms)
+✔ 12F4 baikal usure forte entrée service sortie sur le vrai parcours (865.663953ms)
+✔ 12F4 trajet réel sous pluie slicks conservés puis monte adaptée après service complet (96.586173ms)
+✔ 12F4 trajet réel sous neige slicks conservés puis monte adaptée après service complet (164.804084ms)
+✔ 12F4 pneus sains aucune décision ni arrêt dans le même parcours (105.14985ms)
+✔ 12F4 trois IA simultanées sont servies séparément puis repartent (388.906621ms)
+✔ 12F4 second service après usure renouvelée et vrai tour sans boucle au même passage (597.153066ms)
+✔ 12F4 garage occupé tardivement un humain devant bloque le début du service IA (108.779873ms)
+✔ 12F4 interruption juste avant la fin aucun pneu neuf ni service conservé (47.392758ms)
+✔ 12F4 distant humain arrivée abandon drapeau et fin proche ne programment pas de nouvel arrêt (3.564961ms)
+✔ 12F4 hôte sert le rival distant reçoit le résultat sans simuler un deuxième service (177.21027ms)
+✔ 12F4 humain repris par IA conserve ses pneus puis paie le trajet et le service complet (124.818717ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9605.373506

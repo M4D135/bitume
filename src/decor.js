@@ -53,6 +53,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
   // Primitive alignée sur un cap horizontal a (le x local suit la tangente (cos a, sin a)).
   const capRot = a => [0, -a, 0];
 
+  // La géométrie physique lit les mêmes primitives que l'image. Ces informations de construction ne changent
+  // ni les lots, ni les oracles visuels historiques ; aucune limite abstraite n'est transformée en mur.
+  function marquerSolide(objet, genre, groupe = 2, surface = null) {
+    Object.defineProperty(objet, 'solidePhysX', { value: Object.freeze({ genre, groupe, surface }) });
+    return objet;
+  }
+
   // ---------------------------------------------------------------- thèmes
   const THEMES = {
     foret: {
@@ -217,7 +224,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
     const blanc = [.86, .86, .83], rouge = [.74, .09, .07], blancBordure = [.90, .90, .87];
     const rougeVirage = [.82, .025, .02], blancVirage = [.98, .99, .96];
     for (let debut = 0; debut < n; debut += LIGNES) {
-      const fin = Math.min(n, debut + LIGNES), nap = nappe(), herbeTriangles = [];
+      const fin = Math.min(n, debut + LIGNES), nap = nappe(), herbeTriangles = [], surfacesPhysX = [];
       // bandes : d0, d1 (fonctions de la ligne), type
       const bandes = [
         ['jupe', -1], ['herbe', -1], ['bord', -1], ['ligne', -1], ['asphalte', 0], ['ligne', 1], ['bord', 1], ['herbe', 1], ['jupe', 1]
@@ -263,12 +270,14 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
             const [pa, pb] = prec;
             if (type === 'herbe' || type === 'jupe') herbeTriangles.push(nap.i.length, nap.i.length + 3);
             nap.i.push(pa, pb, ib, pa, ib, ia);
+            const surface = type === 'asphalte' || type === 'ligne' ? 1 : type === 'bord' && mat === 14 ? 2 : 3;
+            surfacesPhysX.push(surface, surface);
           }
           premiers[b] = [ia, ib];
         }
       }
       const fini = finir(nap);
-      Object.defineProperties(fini, { herbeTriangles: { value: herbeTriangles }, surfaceType: { value: 'accotement' } });
+      Object.defineProperties(fini, { herbeTriangles: { value: herbeTriangles }, surfaceType: { value: 'accotement' }, surfacesPhysX: { value: new Uint8Array(surfacesPhysX) } });
       liste.push(fini);
     }
     return liste;
@@ -990,6 +999,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
           boite('chevron', a.map((x, i) => (x + b[i]) / 2), [Math.hypot(...axe), .035, .19], blanc, rotation);
         }
       }
+      for (const o of objets) if (o.symboleVirage === 'poteau' || o.symboleVirage === 'panneau') marquerSolide(o, 'repere-virage');
       // La distance et la qualité ne retirent jamais les chiffres ou les flèches.
       ajouter(objets, objets.slice(), p[0], p[2]);
     }
@@ -1068,6 +1078,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
           { shape: 'box', p: [milieu[0], milieu[1] + .62, milieu[2]], s: [long + .25, .34, .07], r: rot, mat: 0, color: [.74, .76, .78], detail: 1 },
           { shape: 'box', p: [p0[0], p0[1] + .4, p0[2]], s: [.09, .8, .09], r: rot, mat: 0, color: [.5, .52, .54], detail: 2 }
         ];
+        marquerSolide(objets[0], 'glissiere'); marquerSolide(objets[1], 'poteau-glissiere');
         if (reperes && reperes.glissieres[f0.i] === cote) {
           objets[0].color = Math.floor(f0.s / 16) % 2 ? [.82, .025, .02] : [.98, .99, .96];
           objets[0].repereVirage = { type: 'glissiere', s: f0.s, cote };
@@ -1078,6 +1089,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
           const coul = PUBLICITES[Math.floor(r() * PUBLICITES.length)], coul2 = PUBLICITES[Math.floor(r() * PUBLICITES.length)];
           const pp = [milieu[0] - az[0] * cote * .18, milieu[1] + 1.25, milieu[2] - az[2] * cote * .18];
           objets.push({ shape: 'box', p: pp, s: [long * .9, .9, .06], r: rot, mat: 16, color: coul });
+          marquerSolide(objets[objets.length - 1], 'publicite');
           objets.push({ shape: 'box', p: [pp[0] - az[0] * cote * .04, pp[1] + .12, pp[2] - az[2] * cote * .04], s: [long * .55, .26, .03], r: rot, mat: 16, color: coul2 });
           loin.push(objets[objets.length - 2]);
         }
@@ -1104,14 +1116,14 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
         const no = [Math.sin(f0.devers) * f0.r[0], Math.cos(f0.devers), Math.sin(f0.devers) * f0.r[2]], rotSol = angles(...base(axe, no));
         const milieu = (d, h) => { const p = pointPlan(f0, d, (y0 + y1) / 2 + h), q = pointPlan(f1, d, 0); return [(p[0] + q[0]) / 2, p[1], (p[2] + q[2]) / 2]; };
         // revêtement intérieur (4 cm au-dessus de la nappe) et lignes de rive
-        const sol = { shape: 'box', p: milieu(0, -.01), s: [long, .1, 2 * M], r: rotSol, mat: 7, color: SOL, outdoor: false, surface: 'object' };
+        const sol = marquerSolide({ shape: 'box', p: milieu(0, -.01), s: [long, .1, 2 * M], r: rotSol, mat: 7, color: SOL, outdoor: false, surface: 'object' }, 'sol-tunnel', 1, 'piste');
         objets.push(sol); loin.push(sol);
         for (const cote of [-1, 1]) objets.push({ shape: 'box', p: milieu(cote * (w - .15), .045), s: [long, .02, .26], r: rotSol, mat: 7, color: LIGNE, outdoor: false, surface: 'object' });
         for (const cote of [-1, 1]) {
           const p0 = pointPlan(f0, cote * (M + .3), y0), p1 = pointPlan(f1, cote * (M + .3), y1);
           const dir = [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]], rot = angles(...base(dir, [0, 1, 0]));
           const m = [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, (p0[2] + p1[2]) / 2];
-          const mur = { shape: 'box', p: [m[0], m[1] + H / 2 - .2, m[2]], s: [long, H + .4, .6], r: rot, mat: 3, color: BETON, outdoor: false };
+          const mur = marquerSolide({ shape: 'box', p: [m[0], m[1] + H / 2 - .2, m[2]], s: [long, H + .4, .6], r: rot, mat: 3, color: BETON, outdoor: false }, 'mur-tunnel');
           objets.push(mur); loin.push(mur);
           // bande réfléchissante, et une lampe tous les 12 m de chaque côté, en quinconce
           objets.push({ shape: 'box', p: [m[0] - f0.r[0] * cote * .32, m[1] + .9, m[2] - f0.r[2] * cote * .32], s: [long, .14, .02], r: rot, mat: 16, color: [.85, .72, .2], outdoor: false });
@@ -1122,7 +1134,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
           }
         }
         const c0 = pointPlan(f0, 0, y0 + H + .35), c1 = pointPlan(f1, 0, y1 + H + .35), dir = [c1[0] - c0[0], c1[1] - c0[1], c1[2] - c0[2]];
-        const voute = { shape: 'box', p: [(c0[0] + c1[0]) / 2, (c0[1] + c1[1]) / 2, (c0[2] + c1[2]) / 2], s: [long, .7, 2 * M + 1.4], r: angles(...base(dir, [0, 1, 0])), mat: 3, color: VOUTE, outdoor: false };
+        const voute = marquerSolide({ shape: 'box', p: [(c0[0] + c1[0]) / 2, (c0[1] + c1[1]) / 2, (c0[2] + c1[2]) / 2], s: [long, .7, 2 * M + 1.4], r: angles(...base(dir, [0, 1, 0])), mat: 3, color: VOUTE, outdoor: false }, 'voute-tunnel');
         objets.push(voute); loin.push(voute);
         ajouter(objets, loin, f0.x, f0.z);
       }
@@ -1156,7 +1168,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
             objets.push({ shape: pointu ? 'octa' : 'bevel', p: pointPlan(f, cote * centre, y - 2 + (haut + 2) / 2 + (pointu ? haut * .2 : 0)), s: [11 + 5 * h(50 + k), (haut + 2) * (pointu ? 1.5 : 1), large * (pointu ? 1.3 : 1)], r: angles(...base(av, dessus)), mat: 9, color: ROCHES[(i + k + (cote > 0)) % 3] });
           }
         }
-        if (objets.length) ajouter(objets, objets.slice(), f.x, f.z);
+        if (objets.length) {
+          for (const o of objets) marquerSolide(o, 'roche-tunnel');
+          ajouter(objets, objets.slice(), f.x, f.z);
+        }
       }
       // portails : façade de roche percée à la taille de la voûte, à chaque bout, encadrée de béton (piédroits et linteau)
       for (const [i, sens] of [[iD, -1], [iF, 1]]) {
@@ -1168,6 +1183,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
         }
         objets.push({ shape: 'bevel', p: pointPlan(f, 0, y + H + 4.5), s: [3, 7, 2 * M + 28], r: rot, mat: 9, color: ROCHE2 });
         objets.push({ shape: 'box', p: devant(0, H + .8), s: [.5, 1.6, 2 * M + 2.4], r: rot, mat: 3, color: BETON });
+        for (const o of objets) marquerSolide(o, 'portail-tunnel');
         ajouter(objets, objets.slice(), f.x, f.z);
       }
     }
@@ -1189,6 +1205,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
         const p = pointPlan(f, ext * (w + 3.2), yb), rot = capRot(f.a);
         const objets = [{ shape: 'box', p: [p[0], p[1] + 1.3, p[2]], s: [.08, 1.5, 1.2], r: rot, mat: 16, color: [.93, .93, .9] },
           { shape: 'cylinder', p: [p[0], p[1] + .3, p[2]], s: [.08, .6, .08], mat: 0, color: [.5, .5, .5] }];
+        marquerSolide(objets[0], 'repere-freinage'); marquerSolide(objets[1], 'repere-freinage');
         for (let b = 0; b < barres; b++) objets.push({ shape: 'box', p: [p[0] - f.t[0] * .05, p[1] + .85 + b * .38, p[2] - f.t[2] * .05], s: [.03, .18, 1.0], r: rot, mat: 16, color: [.07, .07, .08] });
         ajouter(objets, [objets[0]], p[0], p[2]);
       }
@@ -1435,6 +1452,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
           for (let b = 0; b < 3; b++) objets.push({ shape: 'cylinder', p: [x, y + 4 + b * 7, z], s: [3.08, 2.2, 3.08], mat: 16, color: [.8, .1, .08] });
           objets.push({ shape: 'cylinder', p: [x, y + 23, z], s: [2.2, 2, 2.2], mat: 5, color: [1, .8, .4], emissive: .5 });
         }
+        for (const o of objets) marquerSolide(o, 'batiment-lointain');
         const l = lotDe(x, z, -1); l.objets.push(...objets); l.loin.push(...objets);
         break;
       }
@@ -1639,6 +1657,6 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
     return decor;
   }
 
-  B.decor = { construire, THEMES, angles, base, limites, hauteurRoute, cadre, CASE_ARBRES, BASCULE_ARBRES, PIXELS_BASCULE,
+  B.decor = { construire, THEMES, angles, base, limites, hauteurRoute, cadre, marquerSolide, CASE_ARBRES, BASCULE_ARBRES, PIXELS_BASCULE,
     ARBRES_EPARS, CASE_EPARSE, basculeArbres, lotsSecondMoteur, comptesHerbier: COMPTES_HERBIER };
 })(globalThis.BITUME = globalThis.BITUME || {});

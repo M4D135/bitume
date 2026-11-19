@@ -568,7 +568,7 @@
     // moyeux ; ni numéros, filets, suspensions, mécanique arrière, rayons ni repères des pneus.
     const Moy = p => { moyennes.add(p); return p; };
     const AR = extra => Object.assign({ arriere: true }, extra); // derrière l'œil du cockpit : pas dessiné dans cette vue
-    const pilote = { pilote: true };
+    const pilote = { pilote: true }, tetePilote = { pilote: true, tetePilote: true };
 
     // Carrosserie : quille de nez, grand capot en flèche qui devient les pontons, carénage du cockpit en goutte sur
     // l'axe, capot moteur, saute-vent en bulle teintée. Filet et bande basse de la seconde couleur.
@@ -606,13 +606,13 @@
     if (FORMES['pilote-buste'] && FORMES['pilote-casque']) {
       const PEAUX = [[.86, .66, .54], [.74, .54, .41], [.55, .38, .27], [.92, .76, .64]], peau = PEAUX[(livree.numero || 0) % PEAUX.length];
       L('pilote-buste', TISSU, combi, pilote);
-      Moy(L('pilote-casque', LAQUE, casque, pilote));
-      if (FORMES['pilote-bande']) L('pilote-bande', LAQUE, c1, pilote);
-      if (FORMES['pilote-visage']) L('pilote-visage', MAT, peau, pilote);
-      if (FORMES['pilote-visiere']) Moy(L('pilote-visiere', METAL_MAT, [.05, .07, .11], { fx: true, alpha: .62, pilote: true }));
+      Moy(L('pilote-casque', LAQUE, casque, tetePilote));
+      if (FORMES['pilote-bande']) L('pilote-bande', LAQUE, c1, tetePilote);
+      if (FORMES['pilote-visage']) L('pilote-visage', MAT, peau, tetePilote);
+      if (FORMES['pilote-visiere']) Moy(L('pilote-visiere', METAL_MAT, [.05, .07, .11], { fx: true, alpha: .62, pilote: true, tetePilote: true }));
     } else {
-      Moy(P('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque, pilote));
-      Moy(P('box', [.11, .875, 0], [.07, .07, .2], METAL_MAT, [.05, .06, .09], pilote));
+      Moy(P('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque, tetePilote));
+      Moy(P('box', [.11, .875, 0], [.07, .07, .2], METAL_MAT, [.05, .06, .09], tetePilote));
       P('sphere', [-.04, .66, 0], [.30, .20, .38], TISSU, combi, pilote);
     }
     // Glaces des rétroviseurs, tournées vers le pilote (en vue cockpit : glace vivante)
@@ -691,7 +691,7 @@
       piece('box', [2.11, .13, 0], [.38, .04, 1.62], LAQUE, ARGENT),
       piece('box', [-2.05, .90, 0], [.34, .06, 1.10], PEINTURE, c2),
       piece(FORMES['mat-aileron'].nom, FORMES['mat-aileron'].centre, FORMES['mat-aileron'].taille, METAL_MAT, ARGENT),
-      piece('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque));
+      piece('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque, { tetePilote: true }));
     ROUES.forEach((w, i) => {
       const formes = ROUES_FORMES[w.avant ? 'av' : 'ar'][typePneus], f = formes[3];
       simples.push(piece(f.nom, [w.x, w.r, w.z], f.taille, MAT, PNEU, { m: ROUE_AXE, roue: i, tourne: 0, formesRoues: formes, usureRoue: 1 }));
@@ -709,6 +709,7 @@
     for (const li of [CORPS, SIMPLES, EPAVE, MOYENS]) tableDe(e, mod, li, 0);
     for (const li of [CORPS, EPAVE]) { tableDe(e, mod, li, 3); tableRetro(e, mod, li); }
     e.habitacle = construireHabitacle(mod);
+    e.pilote = construirePiloteExterieur(mod, e.habitacle);
   }
 
   // 12F2 : préparer les montes pendant le chargement, puis ne changer que leurs références et couleurs.
@@ -818,7 +819,7 @@
   function etatRendu(mod) {
     let e = mod.objetsRendu;
     if (e === undefined) {
-      e = { M3: [trois(), trois(), trois()], tables: new Array(16).fill(null), retro: [null, null, null, null], habitacle: null };
+      e = { M3: [trois(), trois(), trois()], tables: new Array(16).fill(null), retro: [null, null, null, null], habitacle: null, pilote: null };
       Object.defineProperty(mod, 'objetsRendu', { value: e });   // ni énuméré, ni copié, ni sérialisé avec le modèle
     }
     return e;
@@ -838,8 +839,8 @@
   function compiler(liste, overlay, cockpit) {
     const t = { liste, longueur: liste.length, n: 0, objets: [], formesRoues: [], formesUsees: [], usureRoue: [], profondeur: [], detailRoueMax: [],
       pneusCourants: new Float64Array(4 * 15), pneusActifs: new Uint8Array(4), o: null, roue: null, groupe: [], fixe: [], decale: null, d: null, portee: null,
-      lent: null, vite: null, rotM: trois(), fixes: [], groupes: [], faitG: null, faitF: null };
-    const o = [], roues = [], decale = [], d = [], portee = [], lent = [], vite = [];
+      lent: null, vite: null, tete: null, cockpit, rotTete: trois(), rotM: trois(), fixes: [], groupes: [], faitG: null, faitF: null };
+    const o = [], roues = [], decale = [], d = [], portee = [], lent = [], vite = [], tete = [];
     for (const pc of liste) {
       if (cockpit && (pc.pilote || pc.arriere || pc.exterieur || pc.glace)) continue;
       if (!cockpit && pc.dedans) continue;
@@ -868,10 +869,11 @@
       o.push(oc[0], oc[1], oc[2]); roues.push(roue); decale.push(dc === null ? 0 : 1);
       if (dc === null) d.push(0, 0, 0); else d.push(dc[0], dc[1], dc[2]);
       portee.push(dc === null ? 0 : Math.hypot(dc[0], dc[1], dc[2]));
-      lent.push(pc.lent ? 1 : 0); vite.push(pc.vite ? 1 : 0); t.n++;
+      lent.push(pc.lent ? 1 : 0); vite.push(pc.vite ? 1 : 0); tete.push(pc.tetePilote ? 1 : 0); t.n++;
     }
     t.o = Float64Array.from(o); t.roue = Int8Array.from(roues); t.decale = Uint8Array.from(decale); t.d = Float64Array.from(d);
     t.portee = Float64Array.from(portee); t.lent = Uint8Array.from(lent); t.vite = Uint8Array.from(vite);
+    t.tete = Uint8Array.from(tete);
     t.faitG = new Uint8Array(t.groupes.length); t.faitF = new Uint8Array(t.fixes.length);
     return t;
   }
@@ -893,7 +895,7 @@
   // locales, décalages, drapeaux, matrices des pièces), dans le même ordre : t prend celles de source. Ses objets et
   // les rotations qu'elle calcule restent à elle.
   function partager(t, source) {
-    t.o = source.o; t.roue = source.roue; t.decale = source.decale; t.d = source.d; t.portee = source.portee; t.lent = source.lent; t.vite = source.vite;
+    t.o = source.o; t.roue = source.roue; t.decale = source.decale; t.d = source.d; t.portee = source.portee; t.lent = source.lent; t.vite = source.vite; t.tete = source.tete;
     for (let k = 0; k < t.groupes.length; k++) t.groupes[k].m = source.groupes[k].m;
     for (let k = 0; k < t.fixes.length; k++) t.fixes[k].m = source.fixes[k].m;
     return t;
@@ -943,10 +945,11 @@
   }
   // Pose d'une table : rotations partagées, puis place de chaque pièce. retro : seules les pièces qui passent le
   // filtre des rétroviseurs sont rendues, et seules leurs rotations sont calculées.
-  function poserTable(t, M, ev, sortie, roues, retro, detailRoues = 0) {
+  function poserTable(t, M, ev, sortie, roues, retro, detailRoues = 0, tete = null) {
     const px = ev.p[0], py = ev.p[1], pz = ev.p[2], v = ev.v || 0, rebond = ev.rebond, fixes = t.fixes, groupes = t.groupes;
     preparerPneus(t, ev.etatPneus);
     anglesDans(t.rotM, M);
+    if (tete) anglesProduit(t.rotTete, M, tete);
     if (groupes.length > 0) braquagesDans(ev);
     if (!retro) {
       for (let i = 0; i < fixes.length; i++) anglesProduit(fixes[i].r, M, fixes[i].m);
@@ -955,6 +958,7 @@
     const ca = retro ? Math.cos(ev.cap) : 0, sa = retro ? Math.sin(ev.cap) : 0;
     const borne = retro && Math.abs(px) < LOIN_RETRO && Math.abs(pz) < LOIN_RETRO;   // arrondis de px + a − px négligeables
     for (let i = 0; i < t.n; i++) {
+      if (t.tete[i] && t.cockpit && ev.pilote) continue;
       if (detailRoues > t.detailRoueMax[i]) continue;
       if ((t.lent[i] === 1 && v > VITESSE_FLOU) || (t.vite[i] === 1 && !(v > VITESSE_FLOU))) continue;
       const roue = t.roue[i];
@@ -962,7 +966,17 @@
       if (usureRoue > 1 && !t.pneusActifs[roue]) continue;
       // Chantier 3 : une roue détachée (degats.roues[i]) n'est plus dessinée
       if (roue >= 0 && roues && roues[roue]) continue;
-      const k = 3 * i, x = t.o[k], y = t.o[k + 1], z = t.o[k + 2];
+      const k = 3 * i;
+      let x = t.o[k], y = t.o[k + 1], z = t.o[k + 2];
+      if (t.tete[i]) {
+        t.objets[i].r = tete ? t.rotTete : t.fixe[i] ? t.fixe[i].r : t.rotM;
+        if (tete) {
+          const dx = x - PILOTE_COU[0], dy = y - PILOTE_COU[1], dz = z - PILOTE_COU[2];
+          x = PILOTE_COU[0] + tete[0] * dx + tete[3] * dy + tete[6] * dz;
+          y = PILOTE_COU[1] + tete[1] * dx + tete[4] * dy + tete[7] * dz;
+          z = PILOTE_COU[2] + tete[2] * dx + tete[5] * dy + tete[8] * dz;
+        }
+      }
       let a = M[0] * x + M[3] * y + M[6] * z, b = M[1] * x + M[4] * y + M[7] * z, c = M[2] * x + M[5] * y + M[8] * z;
       if (roue >= 0) {
         // `decale` place la pièce hors de l'axe, dans le repère de la roue ; `rebond` (m, par roue) : course de
@@ -1019,7 +1033,10 @@
     const t = tableDe(e, mod, li, (o.overlay ? 1 : 0) + (o.cockpit ? 2 : 0));
     const M = attitudeDans(MS, ev);
     const detailRoues = o.rouesDetail === undefined ? li === SIMPLES ? 3 : li === MOYENS ? 2 : 0 : Math.max(0, Math.min(3, o.rouesDetail | 0));
-    poserTable(t, M, ev, sortie, o.roues, false, detailRoues);
+    const pilote = ev.pilote && !o.cockpit ? e.pilote : null;
+    if (pilote) preparerPiloteExterieur(pilote, ev.pilote);
+    poserTable(t, M, ev, sortie, o.roues, false, detailRoues, pilote ? pilote.tete : null);
+    if (pilote) poserPiloteExterieur(pilote, li * 2 + (o.overlay ? 1 : 0), M, ev, sortie, false);
     return imbriquee(e.M3, M);
   }
   // Rétroviseurs (jeu.js, majGlaces) : de la voiture suivie, vue de dehors, la glace ne garde que ce qui passe le
@@ -1030,7 +1047,10 @@
   function poserRetro(mod, ev, sortie, options) {
     const o = options || SANS_OPTIONS, e = etatRendu(mod), t = tableRetro(e, mod, o.casse ? EPAVE : CORPS);
     const M = attitudeDans(MS, ev);
-    poserTable(t, M, ev, sortie, o.roues, true, o.rouesDetail === undefined ? 0 : Math.max(0, Math.min(3, o.rouesDetail | 0)));
+    const pilote = ev.pilote ? e.pilote : null;
+    if (pilote) preparerPiloteExterieur(pilote, ev.pilote);
+    poserTable(t, M, ev, sortie, o.roues, true, o.rouesDetail === undefined ? 0 : Math.max(0, Math.min(3, o.rouesDetail | 0)), pilote ? pilote.tete : null);
+    if (pilote) poserPiloteExterieur(pilote, o.casse ? 9 : 8, M, ev, sortie, true);
     return imbriquee(e.M3, M);
   }
   // Niveau de détail d'une voiture à l'écran. d2 : carré de sa distance horizontale à la caméra (m²) ; t : tangente du
@@ -1294,6 +1314,135 @@
       H.glaces.push(G);
     }
     return H;
+  }
+
+  // Pilote extérieur : la même cinématique de prise/levier que le cockpit, ramenée à la taille du corps réel.
+  // ev.pilote = { volant, rapport, rapportAvant, passage } est un objet permanent fourni par jeu.js. L'animation
+  // est une fonction de cette pose : ni horloge cachée, ni avancement par caméra, ni écriture dans la simulation.
+  // Sans ce champ, les anciennes poses et leurs empreintes restent strictement inchangées.
+  const PILOTE_COU = [0, .772, 0], PILOTE_VOLANT = [.255, .65, 0], PILOTE_ECHELLE = 1 / K;
+  const PILOTE_DECALAGE = PILOTE_VOLANT.map((v, i) => v - (OEIL[i] + K * CV[i]) * PILOTE_ECHELLE);
+
+  function construirePiloteExterieur(mod, H) {
+    const liv = mod.livree, combi = liv.combinaison || liv.couleur.map(v => v * .7);
+    const R = { habitacle: H, tete: new Float64Array(9), articulations: new Float64Array(18), variantes: [] };
+    // Une réserve par LOD/overlay et par rétroviseur : aucune place, rotation ou taille ne passe d'une vue à l'autre.
+    for (let variante = 0; variante < 10; variante++) {
+      const li = variante < 8 ? variante >> 1 : variante === 8 ? CORPS : EPAVE;
+      const niveau = li === SIMPLES ? 2 : li === MOYENS ? 1 : 0, overlay = variante < 8 && !!(variante & 1);
+      const V = { niveau, rotM: trois(), pieces: [] };
+      const objet = (shape, mat, color) => {
+        const o = { shape, p: trois(), s: trois(), r: trois(), mat, color, surface: 'object' };
+        if (overlay) o.overlay = true;
+        return o;
+      };
+      const ajouter = (role, source, simple) => {
+        const o = objet(simple || source.objet.shape, source.objet.mat, source.objet.color);
+        if (!source.rep) o.r = V.rotM;
+        V.pieces.push({ role, source, simple, objet: o });
+      };
+      ajouter('volant', H.jante, niveau === 2 ? 'cylinder' : null);
+      if (niveau < 2) { ajouter('branches', H.branches, null); ajouter('levier', H.tige, null); }
+      ajouter('pommeau', H.pommeau, null);
+      if (niveau > 0) {
+        const o = objet('sphere', TISSU, combi); o.s[0] = .30; o.s[1] = .20; o.s[2] = .38; o.r = V.rotM;
+        V.pieces.push({ role: 'buste', fixe: [-.04, .66, 0], objet: o });
+      }
+      for (let h = 0; h < 2; h++) {
+        const main = H.mains[h], j = h * 9;
+        for (let q = 0; q < (niveau === 0 ? main.pieces.length : 1); q++)
+          ajouter('gant-' + h + '-' + q, main.pieces[q], niveau === 2 ? 'sphere' : null);
+        for (let os = 0; os < 2; os++) {
+          const o = objet('cylinder', TISSU, combi); o.s[0] = o.s[2] = os === 0 ? .061 : .052;
+          V.pieces.push({ role: (os === 0 ? 'bras-' : 'avant-bras-') + h, de: j + os * 3, a: j + (os + 1) * 3,
+            m: new Float64Array(9), objet: o });
+        }
+        const o = objet('sphere', TISSU, combi); o.s[0] = o.s[1] = o.s[2] = .061; o.r = V.rotM;
+        V.pieces.push({ role: 'coude-' + h, joint: j + 3, objet: o });
+      }
+      R.variantes.push(V);
+    }
+    return R;
+  }
+
+  function preparerPiloteExterieur(R, etat) {
+    const H = R.habitacle, cle = H.cle;
+    let volant = Number.isFinite(etat.volant) ? etat.volant : 0;
+    volant = volant < -1 ? -1 : volant > 1 ? 1 : volant;
+    let t = Number.isFinite(etat.passage) ? etat.passage : 1;
+    t = t < 0 ? 0 : t > 1 ? 1 : t;
+    const nB = Number.isFinite(etat.rapport) ? Math.max(-1, Math.min(6, Math.trunc(etat.rapport))) : 0;
+    const nA = Number.isFinite(etat.rapportAvant) ? Math.max(-1, Math.min(6, Math.trunc(etat.rapportAvant))) : nB;
+    CLE[0] = volant * VOLANT.course; CLE[1] = t;
+    CLE[2] = nA > 0 ? (nA % 2 ? 1 : -1) * .024 : 0; CLE[3] = nA > 0 ? (Math.floor((nA - 1) / 2) - 1) * .017 : 0;
+    CLE[4] = nB > 0 ? (nB % 2 ? 1 : -1) * .024 : 0; CLE[5] = nB > 0 ? (Math.floor((nB - 1) / 2) - 1) * .017 : 0;
+    let change = !H.pret;
+    for (let i = 0; i < 6; i++) if (!Object.is(cle[i], CLE[i])) { cle[i] = CLE[i]; change = true; }
+    if (change) { majVolant(H); H.pret = true; }
+
+    // Même aller/retour au levier que les mains. Le regard anticipe doucement le braquage et accompagne le passage,
+    // sans secouer le casque ni ajouter de mouvement aléatoire à l'arrêt. Toute la tête partage le même pivot.
+    let u = t / .3, retour = (t - .65) / .35;
+    u = u < 0 ? 0 : u > 1 ? 1 : u; retour = retour < 0 ? 0 : retour > 1 ? 1 : retour;
+    const prise = u * u * (3 - 2 * u) * (1 - retour * retour * (3 - 2 * retour));
+    ANG[0] = -(.22 * volant + .10 * prise); ANG[1] = -.10 * prise; ANG[2] = -.035 * volant;
+    produitDans(R.tete, eulerDe(T_A, ANG, 0, 1), produitDans(T_B, eulerDe(T_C, ANG, 1, 2), eulerDe(T_D, ANG, 2, 0)));
+
+    // Deux segments de longueur constante, coude sous le poignet et légèrement vers l'extérieur. Les trois LOD
+    // lisent ces mêmes articulations ; seul le détail des gants et du volant change avec la caméra.
+    const A = R.articulations, haut = .22, avant = .23;
+    for (let h = 0; h < 2; h++) {
+      const j = h * 9, cote = h === 0 ? -1 : 1, poignet = H.mains[h].pieces[3].o;
+      A[j] = -.025; A[j + 1] = .705; A[j + 2] = cote * .165;
+      A[j + 6] = PILOTE_DECALAGE[0] + PILOTE_ECHELLE * poignet[0];
+      A[j + 7] = PILOTE_DECALAGE[1] + PILOTE_ECHELLE * poignet[1];
+      A[j + 8] = PILOTE_DECALAGE[2] + PILOTE_ECHELLE * poignet[2];
+      const dx = A[j + 6] - A[j], dy = A[j + 7] - A[j + 1], dz = A[j + 8] - A[j + 2];
+      const distance = Math.max(1e-9, Math.sqrt(dx * dx + dy * dy + dz * dz)), ux = dx / distance, uy = dy / distance, uz = dz / distance;
+      const projection = -uy + cote * .25 * uz;
+      let bx = -ux * projection, by = -1 - uy * projection, bz = cote * .25 - uz * projection;
+      let normeB = Math.sqrt(bx * bx + by * by + bz * bz);
+      if (normeB < 1e-9) { bx = -uz; by = 0; bz = ux; normeB = Math.sqrt(bx * bx + bz * bz); }
+      if (normeB < 1e-9) { bx = 1; by = 0; bz = 0; normeB = 1; }
+      const avance = (haut * haut - avant * avant + distance * distance) / (2 * distance);
+      const ecartCoude = Math.sqrt(Math.max(0, haut * haut - avance * avance)) / normeB;
+      A[j + 3] = A[j] + ux * avance + bx * ecartCoude;
+      A[j + 4] = A[j + 1] + uy * avance + by * ecartCoude;
+      A[j + 5] = A[j + 2] + uz * avance + bz * ecartCoude;
+    }
+  }
+
+  function poserPiloteExterieur(R, variante, M, ev, sortie, retro) {
+    const V = R.variantes[variante], A = R.articulations;
+    const px = ev.p[0], py = ev.p[1], pz = ev.p[2], ca = retro ? Math.cos(ev.cap) : 0, sa = retro ? Math.sin(ev.cap) : 0;
+    anglesDans(V.rotM, M);
+    for (let i = 0; i < V.pieces.length; i++) {
+      const e = V.pieces[i], objet = e.objet, p = objet.p;
+      let x, y, z;
+      if (e.source) {
+        const source = e.source, local = source.o, taille = source.objet.s;
+        x = PILOTE_DECALAGE[0] + PILOTE_ECHELLE * local[0];
+        y = PILOTE_DECALAGE[1] + PILOTE_ECHELLE * local[1];
+        z = PILOTE_DECALAGE[2] + PILOTE_ECHELLE * local[2];
+        objet.shape = e.simple || source.objet.shape;
+        objet.s[0] = PILOTE_ECHELLE * taille[0]; objet.s[1] = PILOTE_ECHELLE * taille[1]; objet.s[2] = PILOTE_ECHELLE * taille[2];
+        if (source.rep) anglesProduit(objet.r, M, source.rep.m);
+      } else if (e.de !== undefined) {
+        const a = e.de, b = e.a;
+        x = (A[a] + A[b]) * .5; y = (A[a + 1] + A[b + 1]) * .5; z = (A[a + 2] + A[b + 2]) * .5;
+        AXE[0] = A[b] - A[a]; AXE[1] = A[b + 1] - A[a + 1]; AXE[2] = A[b + 2] - A[a + 2];
+        hypotDans(AXE, 3); objet.s[1] = AXE[3]; selonAxeDans(e.m, AXE); anglesProduit(objet.r, M, e.m);
+      } else if (e.joint !== undefined) {
+        const j = e.joint; x = A[j]; y = A[j + 1]; z = A[j + 2];
+      } else { x = e.fixe[0]; y = e.fixe[1]; z = e.fixe[2]; }
+      const X = px + (M[0] * x + M[3] * y + M[6] * z), Y = py + (M[1] * x + M[4] * y + M[7] * z), Z = pz + (M[2] * x + M[5] * y + M[8] * z);
+      if (retro) {
+        const dx = X - px, dz = Z - pz, xc = dx * ca + dz * sa, zc = dz * ca - dx * sa;
+        if (!(Math.abs(xc - X_ARRIERE) < .5 && Math.abs(zc) > .55)) continue;
+      }
+      p[0] = X; p[1] = Y; p[2] = Z;
+      sortie.push(objet);
+    }
   }
 
   // ---- calculs de chaque pose, sans objet neuf : mêmes opérations, dans le même ordre, que euler, mul, mulM, angles et

@@ -1,0 +1,37 @@
+{
+  "version": "0.2.54",
+  "physique": "p13",
+  "pr": 8,
+  "head": "cc79b2e0ec3d46ab467bd928e28ad8ed8abcbead",
+  "merge": "c28802974b2c138b57ea1bfe377389724ca15724",
+  "tree": "cab9a82c22f016d049975cdeba20c4e886422861",
+  "verification": "main et arbre du merge relus indépendamment via API GitHub",
+  "build": {
+    "bytes": 14089230,
+    "sha256": "db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3",
+    "git_blob": "c9a00b4b8b9ee57b9a07eebfc3b07c66e85721bc"
+  },
+  "ci_cloture": [
+    {
+      "id": 44576100958,
+      "event": "push",
+      "reussies": 110,
+      "total": 111,
+      "echecs": [
+        "traces : signature héritée exacte"
+      ]
+    },
+    {
+      "id": 44576123142,
+      "event": "pull_request",
+      "reussies": 109,
+      "total": 111,
+      "echecs": [
+        "traces : signature héritée exacte",
+        "décor Val-Brûlé : 152 ms > seuil 150 ms"
+      ]
+    }
+  ],
+  "ferro_main": "a22b738fbe2aa2b36b659fca94527acc2ffcd635",
+  "deploiement_site": false
+}

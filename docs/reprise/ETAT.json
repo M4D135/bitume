@@ -1,64 +1,26 @@
 {
   "date": "2026-11-19",
   "etat_courant": {
-    "branche": "codex/bitume-reperes-annonces-reflets-20261119",
-    "base_commit": "f03a99cc0a5bcbd663a7ff25c887c4ea9ecacd0c",
+    "branche": "codex/bitume-physx-sols-pilotes-20261119",
+    "base_commit": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
     "version_courante": "0.2.54",
-    "version_publiee_verifiee": "0.2.53",
+    "version_publiee_verifiee": "0.2.54",
     "build_courant": "0.2.54",
-    "physique": "p13",
-    "statut": "virages_reflets_publies_pr8_cloture_documentaire",
-    "lot": "virages_reflets",
-    "fiche": "docs/reprise/VIRAGES-REFLETS-2026-11-19.md",
+    "physique": "p14",
+    "statut": "physx_sols_pilotes_qualification_en_cours",
+    "lot": "physx_sols_pilotes",
+    "fiche": "docs/reprise/PHYSX-SOLS-PILOTES-2026-11-19.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "034",
-    "checkpoint_sources": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
-    "sources_tests_geles": true,
+    "derniere_entree": "033",
+    "checkpoint_sources": "14b8ace",
+    "sources_tests_geles": false,
     "qualification": "docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/qualification-finale.json",
-    "prochaine_action": "Contrôler la clôture documentaire et fusionner PR8 après vérification. Suite demandée : PhysX/nouvelle version physique, sols procéduraux, pilote extérieur animé ; 13B différé.",
+    "prochaine_action": "Terminer contrôles PhysX natifs 8 circuits et tunnels, limites stands par forces, canon FERRO mémoire/shader. Installer canon verrouillé, reconstruire 0.2.55, qualifier puis publier.",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
     "commit_livraison_verifie": "b791ae60952315431ad085cce742b64d9e15f5bc",
     "publication": "docs/reprise/rapports/13A-RUSSIE-2026-11-19/PUBLICATION-0253.json",
-    "commit_code_publie_verifie": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
-    "pr": 8,
-    "pr_fusionnee": false,
-    "cloture": "docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/CLOTURE-PROVENANCE-CI.md"
-  },
-  "validation": {
-    "portee": "39 suites ciblées du lot ; CI complète distincte",
-    "suites": 39,
-    "reussies": 38,
-    "reserves": [
-      "traces.test.mjs : signature héritée strictement identique"
-    ],
-    "decor_temps": "Réussi dans le passage ciblé local ; CI complètes : 161 et 166 ms pour budget 150 ms, sans comparaison base/candidat.",
-    "reprise_ciblee": "chaussee-visuelle : oracle historique inchangé, mode réel avec repères et hiver couvert, 12 contrôles réussis ; aucun runtime modifié",
-    "physique": "p13 : 20 fichiers de lois et oracles inchangés",
-    "reperes": "50 contrôles sur huit circuits ; solides, limites, tracés et décor aléatoire identiques",
-    "build": {
-      "octets": 14089230,
-      "sha256": "db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3",
-      "version": "0.2.54",
-      "reproductible": true
-    },
-    "scripts": 54,
-    "ferro": "0.3.12 canon a22b738f : 34 modules exacts, 194 réussis/0 échec/1 TODO ; EMPRISE 9/11 contrats ciblés, deux réserves héritées, build complet bloqué par city-data indisponible",
-    "webgl_valide": false,
-    "fps_mesures": false,
-    "ci_code": {
-      "statut": "terminees_avec_deux_reserves",
-      "reussies": 109,
-      "suites": 111,
-      "runs": [
-        44572852026,
-        44572720938
-      ],
-      "echecs": [
-        "decor.test.mjs",
-        "traces.test.mjs"
-      ],
-      "preuve": "github/RECU-CI.json"
-    }
+    "physique_cible": "p14",
+    "main_verifie": "c28802974b2c138b57ea1bfe377389724ca15724"
   },
   "catalogue": {
     "jouables_dans_build": 8,
@@ -80,11 +42,11 @@
     "note": "Conserver les sept circuits historiques et toutes les demandes ; ne pas supprimer la montagne pour tenir l’ancien compte de 16."
   },
   "suite": {
-    "lot": "PhysX_sols_proceduraux_pilote",
-    "statut": "demande_implémentation_distincte",
-    "objectif": "Vraie intégration PhysX avec nouvelle version physique ; sols hors-route via shader 100 % procédural sans texture importée ; tête/bras/rapport du pilote extérieur cohérents avec cockpit et LOD.",
-    "physique_a_qualifier": true,
-    "13B_Russie": "toujours demandé, différé"
+    "lot": "13B_Russie_decor_saisons",
+    "statut": "non_commence",
+    "objectif": "Lac, berges, lieux signature, végétation/faune propres au Baïkal, saisons et validation visuelle.",
+    "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
+    "apres": "physx_sols_pilotes"
   },
   "acces": {
     "mac_spark_amiga_disponibles": false,
@@ -98,5 +60,144 @@
     "docs/reprise/archives/ETAT-AVANT-13A-2026-11-19.json",
     "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/PUBLICATION-0252.json"
   ],
-  "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé."
+  "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé.",
+  "livraison_0254": {
+    "date": "2026-11-19",
+    "etat_courant": {
+      "branche": "codex/bitume-reperes-annonces-reflets-20261119",
+      "base_commit": "f03a99cc0a5bcbd663a7ff25c887c4ea9ecacd0c",
+      "version_courante": "0.2.54",
+      "version_publiee_verifiee": "0.2.53",
+      "build_courant": "0.2.54",
+      "physique": "p13",
+      "statut": "virages_reflets_publies_pr8_cloture_documentaire",
+      "lot": "virages_reflets",
+      "fiche": "docs/reprise/VIRAGES-REFLETS-2026-11-19.md",
+      "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
+      "derniere_entree": "034",
+      "checkpoint_sources": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
+      "sources_tests_geles": true,
+      "qualification": "docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/qualification-finale.json",
+      "prochaine_action": "Contrôler la clôture documentaire et fusionner PR8 après vérification. Suite demandée : PhysX/nouvelle version physique, sols procéduraux, pilote extérieur animé ; 13B différé.",
+      "safari": "Corrigé, confirmé par David ; chantier clos.",
+      "commit_livraison_verifie": "b791ae60952315431ad085cce742b64d9e15f5bc",
+      "publication": "docs/reprise/rapports/13A-RUSSIE-2026-11-19/PUBLICATION-0253.json",
+      "commit_code_publie_verifie": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
+      "pr": 8,
+      "pr_fusionnee": false,
+      "cloture": "docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/CLOTURE-PROVENANCE-CI.md"
+    },
+    "validation": {
+      "portee": "39 suites ciblées du lot ; CI complète distincte",
+      "suites": 39,
+      "reussies": 38,
+      "reserves": [
+        "traces.test.mjs : signature héritée strictement identique"
+      ],
+      "decor_temps": "Réussi dans le passage ciblé local ; CI complètes : 161 et 166 ms pour budget 150 ms, sans comparaison base/candidat.",
+      "reprise_ciblee": "chaussee-visuelle : oracle historique inchangé, mode réel avec repères et hiver couvert, 12 contrôles réussis ; aucun runtime modifié",
+      "physique": "p13 : 20 fichiers de lois et oracles inchangés",
+      "reperes": "50 contrôles sur huit circuits ; solides, limites, tracés et décor aléatoire identiques",
+      "build": {
+        "octets": 14089230,
+        "sha256": "db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3",
+        "version": "0.2.54",
+        "reproductible": true
+      },
+      "scripts": 54,
+      "ferro": "0.3.12 canon a22b738f : 34 modules exacts, 194 réussis/0 échec/1 TODO ; EMPRISE 9/11 contrats ciblés, deux réserves héritées, build complet bloqué par city-data indisponible",
+      "webgl_valide": false,
+      "fps_mesures": false,
+      "ci_code": {
+        "statut": "terminees_avec_deux_reserves",
+        "reussies": 109,
+        "suites": 111,
+        "runs": [
+          44572852026,
+          44572720938
+        ],
+        "echecs": [
+          "decor.test.mjs",
+          "traces.test.mjs"
+        ],
+        "preuve": "github/RECU-CI.json"
+      }
+    },
+    "catalogue": {
+      "jouables_dans_build": 8,
+      "nouveau": {
+        "id": "baikal",
+        "index": 7,
+        "graine": 179,
+        "longueur": 5424,
+        "denivele": 62.947657828280754,
+        "pente_max": 0.068,
+        "decors_details": "13B non commencé"
+      },
+      "ajouts_demandes": [
+        "Grand circuit de montagne distinct de Haut-Col",
+        "Monaco ultra fidèle",
+        "Spéciale Marseille depuis EMPRISE avec relief mesuré"
+      ],
+      "propositions_conservees": 6,
+      "note": "Conserver les sept circuits historiques et toutes les demandes ; ne pas supprimer la montagne pour tenir l’ancien compte de 16."
+    },
+    "suite": {
+      "lot": "PhysX_sols_proceduraux_pilote",
+      "statut": "demande_implémentation_distincte",
+      "objectif": "Vraie intégration PhysX avec nouvelle version physique ; sols hors-route via shader 100 % procédural sans texture importée ; tête/bras/rapport du pilote extérieur cohérents avec cockpit et LOD.",
+      "physique_a_qualifier": true,
+      "13B_Russie": "toujours demandé, différé"
+    },
+    "acces": {
+      "mac_spark_amiga_disponibles": false,
+      "spark_wrapper": "~/bin/kbza absent",
+      "deploiement_effectue": false,
+      "site_verifie": false
+    },
+    "archives": [
+      "docs/reprise/archives/ETAT-AVANT-CLOTURE-12ABC-2026-11-19.json",
+      "docs/reprise/PILOTAGE-2026-11-18.md",
+      "docs/reprise/archives/ETAT-AVANT-13A-2026-11-19.json",
+      "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/PUBLICATION-0252.json"
+    ],
+    "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé."
+  },
+  "validation_precedente_0254": {
+    "portee": "39 suites ciblées du lot ; CI complète distincte",
+    "suites": 39,
+    "reussies": 38,
+    "reserves": [
+      "traces.test.mjs : signature héritée strictement identique"
+    ],
+    "decor_temps": "contrôle de temps réussi dans ce passage",
+    "reprise_ciblee": "chaussee-visuelle : oracle historique inchangé, mode réel avec repères et hiver couvert, 12 contrôles réussis ; aucun runtime modifié",
+    "physique": "p13 : 20 fichiers de lois et oracles inchangés",
+    "reperes": "50 contrôles sur huit circuits ; solides, limites, tracés et décor aléatoire identiques",
+    "build": {
+      "octets": 14089230,
+      "sha256": "db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3",
+      "version": "0.2.54",
+      "reproductible": true
+    },
+    "scripts": 54,
+    "ferro": "0.3.12 : 34 modules identiques, canonique 194 réussis/0 échec/1 TODO ; EMPRISE 11/17, six échecs identiques à 0.3.11",
+    "webgl_valide": false,
+    "fps_mesures": false,
+    "ci_code": {
+      "statut": "a_verifier_apres_publication"
+    }
+  },
+  "validation": {
+    "statut": "en_cours",
+    "build_courant_contient_physx": false,
+    "physique_cible": "p14",
+    "etapes_validees": [
+      "Baïkal s=2520 v=60 : contrôle dynamique préliminaire, reprise sur quatre appuis sans replacement",
+      "Pilote extérieur : 8 contrôles, 375 poses et 3 LOD",
+      "Stands PhysX : limiteur par forces et 8 scénarios"
+    ],
+    "webgl_valide": false,
+    "fps_mesures": false
+  }
 }

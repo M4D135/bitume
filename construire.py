@@ -48,6 +48,8 @@ MODULES = [
     # bords de route du lot 22F (publicités en séries, bords dangereux) : lu par decor.js et jeu.js s'il est présent
     'bords.js',
     'decor.js',
+    'solides-physx.js',
+    'physique.js',
     'faune.js',
     'effets-saison.js',
     'aurores.js',

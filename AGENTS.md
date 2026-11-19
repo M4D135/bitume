@@ -284,3 +284,16 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
 - Mieux préparer les virages difficiles par les bordures/vibreurs, glissières et décors routiers ; ajouter une option d'annonce des virages dans les réglages. Repères placés avant le freinage, direction et difficulté lisibles. Ce lot visuel conserve les tracés, obstacles et règles de conduite p13.
 - Corriger les reflets des flaques qui ressemblent à des morceaux de lignes parallèles (photo de Port-Sable en démo). La correction du calcul appartient au FERRO canonique, puis se propage par le verrou ; ne pas masquer le problème en supprimant les flaques.
 - Ces demandes passent avant le décor détaillé du Baïkal (13B), toujours prévu. Le lot 13A et sa livraison 0.2.53 sont clos.
+
+## Décisions de David — 19 novembre 2026, physique, sols et pilotes
+
+- Les véhicules traversent parfois le sol et certains obstacles ne répondent pas aux contacts. Passer réellement
+  les voitures, masses, inerties, mouvements et collisions dans PhysX ; une pose cinématique recopiée chaque pas
+  ne satisfait pas cette demande. Sols issus des triangles dessinés, contacts de suspension et collisions continues.
+  Cette modification de conduite ouvre p14 ; les anciens records et fantômes restent séparés.
+- Sols hors route : grain riche et rugueux, impression d'herbe et de relief calculée par le shader. David précise
+  « sans textures toujours procedural » : aucun fichier de texture, aucune image importée. Filtrer le détail lointain.
+- En vue extérieure, animer la tête, les bras et les changements de rapport du pilote, de manière cohérente avec
+  le cockpit ; la silhouette ne doit plus rester figée. Conserver la géométrie procédurale et les niveaux de détail.
+- Ces demandes s'ajoutent au lot 0.2.54 déjà construit et passent avant 13B. Ne pas refaire ni effacer la livraison
+  des virages/reflets ; préserver les preuves et modifications de la conversation concurrente.
