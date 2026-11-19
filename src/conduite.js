@@ -164,6 +164,15 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
     NMAX: [3.70, 2.60, 1.95, 1.50, 1.20, 1.00],
     // vPointe_k par rapport (km/h) — dérivé de NMAX et R_ar
     vPointe: [85, 125, 165, 210, 260, 310],
+    // MOTEUR.rapports[i].rupteur = limite de régime du rapport i
+    rapports: [
+      { rupteur: 13000 },
+      { rupteur: 13000 },
+      { rupteur: 13000 },
+      { rupteur: 13000 },
+      { rupteur: 13000 },
+      { rupteur: 13000 }
+    ],
   };
   function tauMoteur(n) {
     const pts = MOTEUR.tauPts;
@@ -328,6 +337,13 @@ if(typeof module!=='undefined'&&module.exports&&!(globalThis.BITUME&&globalThis.
         // perte de contrôle ou virage fini bouton tenu : la glisse retombe sans turbo
         eteindre(dr, true); dr.verrou = true; ev.push({ type: 'deriveAnnulee' });
       }
+      // p10 : le turbo est borné par le rupteur du rapport courant
+      const PALIERS_TURBO = [9, 13, 16];
+      const n = etat.n ?? 0;
+      const r = etat.rapport ?? etat.r ?? 0;
+      const rupteur = MOTEUR.rapports[r]?.rupteur ?? Infinity;
+      const palier = dr.palier;
+      const turboAcc = (n < rupteur) ? PALIERS_TURBO[palier] : 0;
       return;
     }
     if (!cmd.derive || dr.verrou) return;
