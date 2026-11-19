@@ -1,0 +1,26 @@
+{
+  "scenario": "accidents-duo-pluie-haut-col",
+  "reference": "fbd8098",
+  "code_physique": "p11",
+  "empreintes_ancien_conformes": true,
+  "empreintes_corrige_conformes": true,
+  "seconde_premier_ecart": 22,
+  "nombre_instants_differents": 54,
+  "chemins_uniques": [
+    "/etat/voitures/0/livree/pneus"
+  ],
+  "premier_ecart": {
+    "seconde": 22,
+    "ecarts": [
+      {
+        "chemin": "/etat/voitures/0/livree/pneus",
+        "avant": {
+          "__absent__": true
+        },
+        "apres": "slicks"
+      }
+    ]
+  },
+  "comparaison_corrige_ancien": [],
+  "snapshots_comparaison": "etat complet et événements à chaque seconde, tous nombres encodés en Float64 hex"
+}

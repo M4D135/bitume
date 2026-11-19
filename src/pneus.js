@@ -48,6 +48,15 @@
   const possede = (o, cle) => Object.prototype.hasOwnProperty.call(o, cle);
   function estType(type) { return typeof type === 'string' && possede(CATALOGUE, type); }
   function normaliserType(type, repli = 'slicks') { return estType(type) ? type : estType(repli) ? repli : 'slicks'; }
+  // Migration locale : les deux pilotes héritent de l'ancienne préférence, puis gardent chacun leur choix.
+  // Une entrée absente ou invalide ne copie jamais le choix de l'autre pilote. Le tableau rendu appartient
+  // à l'appelant, même si la source est gelée ou déjà normalisée.
+  function normaliserChoixPilotes(reglages) {
+    const source = reglages && typeof reglages === 'object' && !Array.isArray(reglages) ? reglages : {};
+    const repli = normaliserType(possede(source, 'pneus') ? source.pneus : undefined);
+    const choix = possede(source, 'pneusPilotes') && Array.isArray(source.pneusPilotes) ? source.pneusPilotes : [];
+    return [0, 1].map(i => normaliserType(possede(choix, i) ? choix[i] : undefined, repli));
+  }
   function lire(type) { return CATALOGUE[normaliserType(type)]; }
   function estJouable(type) { return estType(type) && CATALOGUE[type].disponible; }
 
@@ -122,5 +131,5 @@
 
   B.pneus = Object.freeze({ VERSION_ETAT, DISTANCE_MAX, SOLLICITATION_MAX, SERVICE_MAX,
     EMPATTEMENT, DEMI_VOIE_AV, DEMI_VOIE_AR, JANTE_R, ROUES, ORDRE_ROUES, NOMS_ROUES, INDICES_ROUES,
-    PNEUS, ADHERENCE_NEIGE, PERTE_USURE, CATALOGUE, TYPES, TYPES_JOUABLES, NOMS_PNEUS, estType, normaliserType, lire, estJouable, creerEtat, remplacerEtat, normaliserEtat });
+    PNEUS, ADHERENCE_NEIGE, PERTE_USURE, CATALOGUE, TYPES, TYPES_JOUABLES, NOMS_PNEUS, estType, normaliserType, normaliserChoixPilotes, lire, estJouable, creerEtat, remplacerEtat, normaliserEtat });
 })(globalThis.BITUME = globalThis.BITUME || {});

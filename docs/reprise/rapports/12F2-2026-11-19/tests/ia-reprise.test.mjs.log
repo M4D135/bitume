@@ -1,0 +1,46 @@
+{
+  "passed": 10,
+  "total": 10,
+  "results": [
+    {
+      "name": "IA retournée, gaz et15s bloquée : retour progressif seulement après délai",
+      "ok": true
+    },
+    {
+      "name": "mouvement et grille réinitialisent la durée de blocage",
+      "ok": true
+    },
+    {
+      "name": "attente volontaire sans vitesse visée : aucun replacement",
+      "ok": true
+    },
+    {
+      "name": "casse exclut la récupération IA",
+      "ok": true
+    },
+    {
+      "name": "roue exclut la récupération IA",
+      "ok": true
+    },
+    {
+      "name": "reparation exclut la récupération IA",
+      "ok": true
+    },
+    {
+      "name": "vol exclut la récupération IA",
+      "ok": true
+    },
+    {
+      "name": "immunite exclut la récupération IA",
+      "ok": true
+    },
+    {
+      "name": "cas réel gaz.48 et vitesse arrière quasi nulle : récupération après15s",
+      "ok": true
+    },
+    {
+      "name": "direction quasi nulle oscillante :15s continues comptées, reset au mouvement",
+      "ok": true
+    }
+  ]
+}

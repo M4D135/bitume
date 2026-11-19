@@ -1,0 +1,97 @@
+✖ même choix en cours et prêt : une résolution, aucun nouveau tirage avant le départ (2.366122ms)
+✖ changement de choix annule la recherche et une réponse tardive ne remplace pas le nouveau résultat (0.58575ms)
+✖ vitrine hivernale : actualiser la météo conserve la chaussée préparée sans reconstruire la séance (0.607813ms)
+✔ retour depuis la préparation annule sans départ ou réactivation par une réponse tardive (0.682665ms)
+✖ retour des réglages conserve le tirage ; nouvelle préparation après le titre et forcer le renouvellent (0.374593ms)
+✖ erreur inattendue : repli manuel utilisable, annulation explicite sans résultat (0.444027ms)
+✖ invité en ligne : aucun appel de résolution, préférences saison/moment/météo préservées (5.965937ms)
+✔ conditionsCommunes filtre lieu/IP/coordonnées et détache les observations et horaires (15.762055ms)
+✖ départ réseau : hôte et invité reçoivent mêmes saison, météo, soleil et date UTC malgré une horloge locale différente (2.909128ms)
+✔ neige observée est libellée neige hors côte, pluie à Port-Sable, indépendamment de la saison manuelle (0.464738ms)
+✔ lumière réseau suit dateDepart + horloge de simulation de l’hôte, avec rafraîchissement borné (0.664658ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 4
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 40.541078
+
+✖ failing tests:
+
+test at verifications/conditions-integration.test.mjs:96:1
+✖ même choix en cours et prêt : une résolution, aucun nouveau tirage avant le départ (2.366122ms)
+  ReferenceError: appliquerConseilPneus is not defined
+      at preselectionnerPneus (eval at <anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:21:19), <anonymous>:469:5)
+      at eval (eval at <anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:21:19), <anonymous>:454:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:100:73)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at verifications/conditions-integration.test.mjs:107:1
+✖ changement de choix annule la recherche et une réponse tardive ne remplace pas le nouveau résultat (0.58575ms)
+  ReferenceError: appliquerConseilPneus is not defined
+      at preselectionnerPneus (eval at <anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:21:19), <anonymous>:469:5)
+      at eval (eval at <anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:21:19), <anonymous>:454:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:111:94)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at verifications/conditions-integration.test.mjs:115:1
+✖ vitrine hivernale : actualiser la météo conserve la chaussée préparée sans reconstruire la séance (0.607813ms)
+  ReferenceError: appliquerConseilPneus is not defined
+      at preselectionnerPneus (eval at <anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:21:19), <anonymous>:469:5)
+      at eval (eval at <anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:21:19), <anonymous>:454:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:126:26)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at verifications/conditions-integration.test.mjs:153:1
+✖ retour des réglages conserve le tirage ; nouvelle préparation après le titre et forcer le renouvellent (0.374593ms)
+  ReferenceError: appliquerConseilPneus is not defined
+      at preselectionnerPneus (eval at <anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:21:19), <anonymous>:469:5)
+      at eval (eval at <anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:21:19), <anonymous>:454:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:154:99)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at verifications/conditions-integration.test.mjs:163:1
+✖ erreur inattendue : repli manuel utilisable, annulation explicite sans résultat (0.444027ms)
+  ReferenceError: appliquerConseilPneus is not defined
+      at preselectionnerPneus (eval at <anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:21:19), <anonymous>:469:5)
+      at eval (eval at <anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:21:19), <anonymous>:454:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:165:13)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at verifications/conditions-integration.test.mjs:170:1
+✖ invité en ligne : aucun appel de résolution, préférences saison/moment/météo préservées (5.965937ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(f.recevoirCourse({ ...snapshot(), i: 2, tours: 3, difficulte: 1, eau: .7 }))
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:175:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at verifications/conditions-integration.test.mjs:191:1
+✖ départ réseau : hôte et invité reçoivent mêmes saison, météo, soleil et date UTC malgré une horloge locale différente (2.909128ms)
+  ReferenceError: choixPneusLocaux is not defined
+      at eval (eval at <anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:21:19), <anonymous>:388:57)
+      at Array.map (<anonymous>)
+      at Object.departEnLigne (eval at <anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:21:19), <anonymous>:388:22)
+      at TestContext.<anonymous> (file:///workspace/scratch/67676bee9b18/bitume/verifications/conditions-integration.test.mjs:194:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

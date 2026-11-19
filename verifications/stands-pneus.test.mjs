@@ -1,4 +1,4 @@
-// 12F1 : quatre pneus neufs seulement au terme d'un vrai arrêt, transaction atomique et reprise déterministe.
+// 12F1/12F2 : quatre pneus neufs seulement au terme d'un vrai arrêt, choix par pilote et transaction atomique.
 import { createRequire } from 'node:module';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
@@ -237,6 +237,99 @@ verifier('révision devenue obsolète pendant le service : aucun second renouvel
   user(e); const avant = copie(e), dg = structuredClone(v.degats);
   for (let i = 0; i < 2400 && e.stands; i++) B.course.stands(co, v, dt, []);
   assert.equal(e.stands, null); assert.deepEqual(copie(e), avant); assert.deepEqual(v.degats, dg);
+});
+
+verifier('choisir pour le prochain arrêt conserve monte, usure, graines, carrosserie et livrée', () => {
+  const co = seance('slicks'), v = co.joueur, e = v.etat;
+  const avant = structuredClone(e), livree = structuredClone(v.livree), roues = e.etatPneus;
+  assert.equal(B.course.demanderPneus(co, v, 'pluie'), true);
+  assert.equal(e.pneusProchainArret, 'pluie');
+  const { pneusProchainArret, ...physique } = e;
+  assert.deepEqual(physique, avant); assert.equal(e.etatPneus, roues); assert.deepEqual(v.livree, livree);
+  assert.equal(B.course.demanderPneus(co, v, 'neige'), true);
+  assert.equal(e.pneusProchainArret, 'neige'); assert.deepEqual(copie(e), copie(avant));
+});
+
+verifier('aucune commande pour un rival, un distant, une reprise IA ou une autre voiture', () => {
+  for (const cause of ['rival', 'distant', 'reprise', 'fini', 'abandon', 'termine', 'etranger']) {
+    const co = seance('inter', { rivaux: 1 });
+    let v = co.joueur;
+    if (cause === 'rival') v = co.voitures[1];
+    else if (cause === 'termine') co.termine = true;
+    else if (cause === 'etranger') v = { ...v }; // même identifiant, objet extérieur à cette course
+    else v[cause] = true;
+    const avant = structuredClone(v.etat), livree = structuredClone(v.livree);
+    assert.equal(B.course.demanderPneus(co, v, 'neige'), false, cause);
+    assert.deepEqual(v.etat, avant); assert.deepEqual(v.livree, livree);
+  }
+  assert.equal(B.course.demanderPneus(null, null, 'slicks'), false);
+  assert.equal(B.course.demanderPneus({ voitures: [] }, null, 'slicks'), false);
+});
+
+verifier('monte invalide ou service engagé : rejet sans effacer la commande déjà choisie', () => {
+  const co = seance('slicks'), v = co.joueur;
+  assert.equal(B.course.demanderPneus(co, v, 'pluie'), true);
+  for (const type of ['constructor', '__proto__', '', 'inconnu', undefined, null, 3, {}]) {
+    const avant = structuredClone(v.etat);
+    assert.equal(B.course.demanderPneus(co, v, type), false); assert.deepEqual(v.etat, avant);
+  }
+  commencer(co);
+  const avant = structuredClone(v.etat);
+  assert.equal(B.course.demanderPneus(co, v, 'neige'), false); assert.deepEqual(v.etat, avant);
+  assert.equal(v.etat.stands.pneus, 'pluie');
+});
+
+verifier('chaque monte peut remplacer une autre, seulement à la fin du service réel', () => {
+  const types = P.TYPES_JOUABLES;
+  for (let i = 0; i < types.length; i++) {
+    const type = types[(i + 1) % types.length], co = seance(types[i]), v = co.joueur, e = v.etat;
+    const avant = copie(e), roues = e.etatPneus;
+    assert.equal(B.course.demanderPneus(co, v, type), true);
+    commencer(co); assert.equal(e.stands.pneus, type); assert.deepEqual(copie(e), avant);
+    assert.equal(v.livree.pneus, types[i]); assert.equal(e.etatPneus, roues);
+    finir(co);
+    assert.equal(e.pneus, type); assert.equal(v.livree.pneus, type); assert.equal(e.servicePneus, 1);
+    assert.equal(e.pneusProchainArret, type); assert.notEqual(e.etatPneus, roues);
+    assert.ok(e.etatPneus.every(r => r.usure === 0 && r.salete === 0 && r.grainage === 0));
+  }
+});
+
+verifier('choix possible dans la voie, figé au début et conservé après une interruption', () => {
+  const co = seance('slicks'), v = co.joueur, e = v.etat, avant = copie(e);
+  placer(v, S.debut + 5, S.d, 8); B.course.stands(co, v, dt, []);
+  assert.equal(e.stands.phase, 'voie');
+  assert.equal(B.course.demanderPneus(co, v, 'pluie'), true);
+  placer(v); B.course.stands(co, v, dt, []); assert.equal(e.stands.pneus, 'pluie');
+  e.d = 0; B.course.stands(co, v, dt, []);
+  assert.equal(e.stands, null); assert.equal(e.pneusProchainArret, 'pluie');
+  assert.deepEqual(copie(e), avant); assert.equal(v.livree.pneus, 'slicks');
+  commencer(co); assert.equal(e.stands.pneus, 'pluie');
+  e.pneusProchainArret = 'neige'; // même une modification extérieure ne change pas la transaction engagée
+  finir(co); assert.equal(e.pneus, 'pluie'); assert.equal(v.livree.pneus, 'pluie');
+  assert.equal(e.pneusProchainArret, 'neige'); assert.equal(e.servicePneus, 1);
+});
+
+verifier('choix absent ou invalide au début : service de la monte réellement équipée', () => {
+  for (const type of [undefined, 'constructor', '__proto__', 'inconnu']) {
+    const co = seance('inter'), e = co.joueur.etat;
+    e.pneusProchainArret = type; commencer(co); assert.equal(e.stands.pneus, 'inter');
+    finir(co); assert.equal(e.pneus, 'inter'); assert.equal(e.servicePneus, 1);
+  }
+});
+
+verifier('deux pilotes peuvent demander et recevoir des montes différentes sans toucher à l’autre', () => {
+  const co = seance('slicks', { rivaux: 1, humains: { noms: ['Un', 'Deux'], locaux: [0, 1], hote: true, enLigne: false } });
+  const [a, b] = co.voitures;
+  assert.equal(B.course.demanderPneus(co, a, 'pluie'), true);
+  assert.equal(B.course.demanderPneus(co, b, 'neige'), true);
+  const avantB = structuredClone(b.etat), livreeB = structuredClone(b.livree);
+  commencer(co, a); finir(co, a);
+  assert.equal(a.etat.pneus, 'pluie'); assert.equal(a.livree.pneus, 'pluie');
+  assert.deepEqual(b.etat, avantB); assert.deepEqual(b.livree, livreeB);
+  const avantA = structuredClone(a.etat), livreeA = structuredClone(a.livree);
+  commencer(co, b); finir(co, b);
+  assert.equal(b.etat.pneus, 'neige'); assert.equal(b.livree.pneus, 'neige');
+  assert.deepEqual(a.etat, avantA); assert.deepEqual(a.livree, livreeA);
 });
 
 console.log(controles + ' contrôles remplacement des pneus aux stands réussis');

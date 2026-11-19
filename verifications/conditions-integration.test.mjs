@@ -14,7 +14,7 @@ function extrait(debut, fin, apres = 0) {
 const reseau = extrait('  const EL = ', '  function envoyerEtats(');
 const preparation = extrait('  function annulerConditions()', "  $('p-actualiser-conditions').addEventListener");
 const ecrans = extrait('  function aller(nom)', "  document.addEventListener('click'");
-const pneus = extrait('  function preselectionnerPneus()', '  function majPreparation()');
+const pneus = extrait('  function initialiserChoixPneus(', '  function majPreparation()');
 const demarrer = extrait('  function demarrerSeance(', '  function basculerPause(');
 const departBouton = extrait("  $('b-depart').addEventListener", '  function demarrerSeance(');
 const etatConditions = extrait('  let conditionsPreparation = ', '  function lancer(');
@@ -36,7 +36,7 @@ const fabriquer = new Function('B', 'options', `
   const CATALOGUE = [{ nom: 'Forêt', theme: 'foret' }, { nom: 'Port-Sable', theme: 'cote' }, { nom: 'Haut-Col', theme: 'montagne' }];
   const NOMS_PNEUS = B.pneus.NOMS_PNEUS;
   const reglages = { circuit: 0, tours: 3, difficulte: 1, saison: 'ete', moment: 'jour', meteo: 'soleil',
-    saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', pneus: 'slicks', boite: 'auto', vue: 'cockpit', joueursLocaux: 1 };
+    saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', pneus: 'slicks', pneusPilotes: ['slicks', 'slicks'], pneusAutoPilotes: [true, true], boite: 'auto', vue: 'cockpit', joueursLocaux: 1 };
   const son = null, palier = {}, pad2 = null, hud2 = $('hud2'), jeu = $('jeu'), estTactile = true;
   const aDeux = () => false, secouerManette = () => {}, tactile = () => {}, appliquerVolumes = () => {}, viderStock = () => {};
   const remplirReglages = () => {}, message = () => {}, sousMessage = () => {}, finirClassement = () => {}, montrerResultats = () => {};
@@ -172,7 +172,7 @@ test('invité en ligne : aucun appel de résolution, préférences saison/moment
   Object.assign(f.reglages, { saison: 'ete', moment: 'jour', meteo: 'soleil', saisonMode: 'reel', momentMode: 'reel', meteoMode: 'reel' });
   assert.equal(await f.actualiserConditions(), null); assert.equal(await f.actualiserConditions(true), null); assert.equal(f.resolutions.length, 0);
   const prefs = { saison: f.reglages.saison, moment: f.reglages.moment, meteo: f.reglages.meteo };
-  assert(f.recevoirCourse({ ...snapshot(), i: 2, tours: 3, difficulte: 1, eau: .7 }));
+  assert(f.recevoirCourse({ versionChoixPneus: 1, ...snapshot(), i: 2, tours: 3, difficulte: 1, eau: .7 }));
   for (const [k, v] of Object.entries(prefs)) assert.equal(f.reglages[k], v);
   assert.equal(f.EL.course.saison, 'hiver'); assert(f.EL.course.mReelle.neige); assert.equal(f.resolutions.length, 0);
 });

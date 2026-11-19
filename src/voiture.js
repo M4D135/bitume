@@ -711,6 +711,86 @@
     e.habitacle = construireHabitacle(mod);
   }
 
+  // 12F2 : préparer les montes pendant le chargement, puis ne changer que leurs références et couleurs.
+  // Les maillages des quatre types existent déjà. Aucun modèle, habitacle ni tableau de rendu n'est reconstruit
+  // au stand ; les pièces de carrosserie et les objets permanents gardent leur identité pendant la course.
+  function preparerPneusService(mod) {
+    if (!mod || !Array.isArray(mod.corps) || !Array.isArray(mod.moyens) || !Array.isArray(mod.simples)) return false;
+    const e = etatRendu(mod);
+    if (e.pneusService) return true;
+    const premier = mod.corps.find(p => p.usureRoue === 1), type = premier && premier.pneu;
+    if (typeof type !== 'string' || !Object.prototype.hasOwnProperty.call(PNEUS_TYPES, type)) return false;
+    // Les slicks n'avaient pas besoin de fond de sculpture. Réserver ces quatre supports une seule fois,
+    // avant la première image de course ; detailRoueMax = -1 les masque tant que la monte reste lisse.
+    for (let i = 0; i < ROUES.length; i++) {
+      if (mod.corps.some(p => p.roue === i && p.usureRoue === 5)) continue;
+      const w = ROUES[i], surfaces = MATIERES_PNEUS[w.avant ? 'av' : 'ar'].slicks[0];
+      const support = piece(surfaces[0].nom, [w.x, w.r, w.z], surfaces[0].taille, MAT, PNEU,
+        { roue: i, m: ROUE_AXE, arriere: !w.avant, tourne: 0, formesRoues: surfaces,
+          pneu: 'slicks', usureRoue: 5, profondeur: 0, detailRoueMax: -1 });
+      for (const liste of [mod.corps, mod.moyens]) {
+        const k = liste.findIndex(p => p.roue === i && p.usureRoue === 4);
+        liste.splice(k + 1, 0, support);
+      }
+    }
+    const pieces = [...mod.corps, ...mod.simples].filter(p => p.usureRoue || p.pneus !== undefined);
+    const indices = new Map(pieces.map((p, i) => [p, i])), variantes = Object.create(null), liens = [];
+    for (const monte of Object.keys(PNEUS_TYPES)) variantes[monte] = pieces.map(p => {
+      const essieu = ROUES[p.roue].avant ? 'av' : 'ar', role = p.usureRoue || 0;
+      const surfaces = MATIERES_PNEUS[essieu][monte], lointain = mod.simples.includes(p);
+      const formes = role === 1 ? ROUES_FORMES[essieu][monte]
+        : role ? surfaces[role - 1].length ? surfaces[role - 1] : surfaces[0] : p.formesRoues;
+      const f = formes[lointain ? 3 : 0];
+      return { shape: f.nom, taille: f.taille, formes, usees: role === 1 && p.formesUsees ? surfaces[0] : null,
+        detailMax: role === 5 && monte === 'slicks' ? -1 : p.detailRoueMax === -1 ? 1 : p.detailRoueMax ?? 3,
+        profondeur: role === 5 ? monte === 'neige' ? .009 : monte === 'pluie' ? .007 : monte === 'inter' ? .004 : 0 : 0,
+        couleur: role ? PNEU : PNEUS_TYPES[monte].cercle };
+    });
+    const lier = (t, cockpit) => {
+      let i = 0;
+      for (const p of t.liste) {
+        if (cockpit ? p.pilote || p.arriere || p.exterieur || p.glace : p.dedans) continue;
+        const index = indices.get(p);
+        if (index !== undefined) liens.push({ table: t, indexObjet: i, indexPiece: index });
+        i++;
+      }
+    };
+    // Préparer aussi les variantes moins fréquentes (overlay, vue du siège sans overlay et leurs LOD) :
+    // un changement de caméra après le service ne doit ni compiler ni retrouver les anciennes sculptures.
+    for (let li = 0; li < NOMS_LISTES.length; li++) {
+      for (let variante = 0; variante < 4; variante++) lier(tableDe(e, mod, li, variante), !!(variante & 2));
+      lier(tableRetro(e, mod, li), false);
+    }
+    e.pneusService = { type, pieces, variantes, liens };
+    return true;
+  }
+
+  // Transaction de rendu seulement : la simulation décide quand le service est terminé. Sans préparation,
+  // refuser la bascule plutôt que provoquer une allocation imprévue au milieu d'une course.
+  function changerPneus(mod, type) {
+    const service = mod && mod.objetsRendu && mod.objetsRendu.pneusService;
+    if (!service || typeof type !== 'string' || !Object.prototype.hasOwnProperty.call(service.variantes, type)) return false;
+    if (service.type === type) return true;
+    const changements = service.variantes[type], pieces = service.pieces, liens = service.liens;
+    for (let i = 0; i < pieces.length; i++) {
+      const p = pieces[i], c = changements[i];
+      p.shape = c.shape; p.s = c.taille; p.formesRoues = c.formes; p.formesUsees = c.usees;
+      p.profondeur = c.profondeur; p.detailRoueMax = c.detailMax; p.color = c.couleur;
+      if (p.usureRoue) p.pneu = type; else p.pneus = type;
+    }
+    for (let i = 0; i < liens.length; i++) {
+      const lien = liens[i], t = lien.table, k = lien.indexObjet, c = changements[lien.indexPiece], objet = t.objets[k];
+      t.formesRoues[k] = c.formes; t.formesUsees[k] = c.usees;
+      t.profondeur[k] = c.profondeur; t.detailRoueMax[k] = c.detailMax; objet.shape = c.shape;
+      if (t.usureRoue[k] === 5) { objet.s[0] = c.taille[0]; objet.s[1] = c.taille[1]; objet.s[2] = c.taille[2]; }
+      else objet.s = c.taille;
+      if (t.usureRoue[k]) { objet.color[0] = c.couleur[0]; objet.color[1] = c.couleur[1]; objet.color[2] = c.couleur[2]; }
+      else objet.color = c.couleur;
+    }
+    service.type = type;
+    return true;
+  }
+
   // ---------------------------------------------------------------- pose dans le monde
   // ev = { p: [x, y, z] (sol sous le milieu de l'empattement), cap, tangage, roulis, braquage (rad, droite positive),
   //        roule (distance parcourue, m : fait tourner les roues), v (vitesse, m/s : repères ou flou des pneus) }
@@ -1497,5 +1577,5 @@
     for (let i = 0; i < F.objets.length; i++) { monde(F.objets[i].p, M, F.o[i], P); sortie.push(F.objets[i]); }
   }
 
-  B.voiture = { modele, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, detailRouesPour, distanceRoues2, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES, SEGMENTS_ROUE, ROUES_FORMES, JANTES_FORMES };
+  B.voiture = { modele, preparerPneusService, changerPneus, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, detailRouesPour, distanceRoues2, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES, SEGMENTS_ROUE, ROUES_FORMES, JANTES_FORMES };
 })(globalThis.BITUME = globalThis.BITUME || {});

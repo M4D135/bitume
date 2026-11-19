@@ -1,0 +1,35 @@
+{
+  "date": "2026-11-19T10:44:08.096586+00:00",
+  "suites": [
+    {
+      "suite": "pneus-pilotes",
+      "code": 0,
+      "fin": "6 contrôles préférences des pneus par pilote réussis",
+      "log": "/workspace/scratch/67676bee9b18/qa-agent/pneus-pilotes.log"
+    },
+    {
+      "suite": "stands-pneus",
+      "code": 0,
+      "fin": "30 contrôles remplacement des pneus aux stands réussis",
+      "log": "/workspace/scratch/67676bee9b18/qa-agent/stands-pneus.log"
+    },
+    {
+      "suite": "stands",
+      "code": 0,
+      "fin": "stands : 18 verifications passees",
+      "log": "/workspace/scratch/67676bee9b18/qa-agent/stands.log"
+    },
+    {
+      "suite": "pneus",
+      "code": 0,
+      "fin": "10 contrôles pneus réussis",
+      "log": "/workspace/scratch/67676bee9b18/qa-agent/pneus.log"
+    }
+  ],
+  "hashes": {
+    "src/pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+    "src/course.js": "4c0f5e226aac3484b1bb0f90732e956c425722a70ea7f1d89965b6f14811c226",
+    "verifications/pneus-pilotes.test.mjs": "559626a102cb4ee959d3d67bd822ba240a75d91c5d5e9b1c33439d8562903736",
+    "verifications/stands-pneus.test.mjs": "4cc246743e02cc92d73976df562a901d59914ca083e7c6cd9d6c31e3e08a9b7c"
+  }
+}

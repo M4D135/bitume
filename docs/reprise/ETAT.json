@@ -1,67 +1,131 @@
 {
   "date": "2026-11-19",
   "etat_courant": {
-    "branche": "main",
-    "version_courante": "0.2.48",
-    "physique": "p11 ; fixtures p9 et p10 conservées",
-    "base_commit": "c55cde23e8d14d3f579e2f1f5d2bea03abc14c71",
-    "base_version": "0.2.47",
+    "branche": "codex/bitume-12f2-revue-20261119",
+    "base_commit": "1df6f6872e9d6962d6561b9b371d41042567a915",
+    "base_version": "0.2.48",
+    "version_courante": "0.2.49",
     "version_publiee_verifiee": "0.2.48",
-    "commit_publie_verifie": "1df6f6872e9d6962d6561b9b371d41042567a915",
-    "statut": "12F1_publie_CPU_avec_reserves",
-    "lot": "12F1_service_pneus_affichage",
-    "fiche": "docs/reprise/12F1-SERVICE-PNEUS-ET-AFFICHAGE.md",
+    "statut": "12F2_publie_en_revue_fusion_en_attente",
+    "lot": "12F2_choix_pneus_par_pilote",
+    "fiche": "docs/reprise/12F2-CHOIX-PNEUS-PAR-PILOTE.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "commit_local_qualifie": "fbd8098dc3e985415488f8738db1d32c172018b0",
-    "qualification": "docs/reprise/rapports/12F1-2026-11-19/qualification-execution.json",
-    "publication": "docs/reprise/rapports/12F1-2026-11-19/PUBLICATION-0248.json",
-    "commit_publication_0248": "1df6f6872e9d6962d6561b9b371d41042567a915",
-    "prochaine_action": "12F1 publié et vérifié. Reprendre le seul lot 12F2 à son checkpoint : choix des pneus par pilote et au prochain arrêt, migration et confirmation 2+2. Brouillon actif dans une autre session : ne pas l’écraser ni dupliquer son travail. Réseau de l’usure réservé à 12F3.",
+    "publication_base": "docs/reprise/rapports/12F1-2026-11-19/PUBLICATION-0248.json",
+    "prochaine_action": "Attendre autorisation pour fusionner la PR n°3 dans main ; vérifier ses contrôles à ce moment. Puis ouvrir 12F3 réseau usure, sans reprendre les lots achevés.",
+    "physique": "p11 ; références p9/p10/p11 conservées",
     "safari": "Corrigé, confirmé par David ; chantier clos.",
-    "neige": "Choix jouable, couverture explicite statique ; tunnels secs et déneigés"
+    "checkpoint_sources": "bd13f067d94f4666292d4399473ecd55f427b8e6",
+    "qualification": "docs/reprise/rapports/12F2-2026-11-19/qualification-execution.json",
+    "suivi_base_integre": "9a42198985de8aa8016e0679ddedc925ae39264d",
+    "publication": "docs/reprise/rapports/12F2-2026-11-19/PUBLICATION-0249.json",
+    "commit_revue_qualifie": "ba9f54bd7a5e5c8d17ec37889c2d414c76831989"
   },
   "validation": {
-    "date": "2026-11-19",
-    "version": "0.2.48",
-    "lot": "12F1",
-    "statut": "CPU_avec_reserves",
-    "suites": 100,
-    "reussies": 99,
+    "date_utc": "2026-11-19T11:01:37.723068+00:00",
+    "version": "0.2.49",
+    "physique": "p11",
+    "suites": 103,
+    "reussies": 102,
     "echecs": [
       "traces.test.mjs"
     ],
-    "echec_herite_prouve": "traces.test.mjs",
-    "empreintes_verifiees": 199,
-    "reserve_performance": "Décor réussi au passage 12F1 ; variabilité conservée après Haut-Col 194 ms > 150 ms en 12E. Aucun gain matériel établi.",
+    "sources_stables": true,
     "determinisme": {
-      "physique": "p11",
       "scenarios": 20,
       "empreintes": 1300,
-      "generation_code": 0,
-      "verification_suite_code": 0,
-      "archives_inchangees": {
+      "fixture_regeneree": false,
+      "fixture_inchangee": true,
+      "verification": 0,
+      "archives": {
         "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+        "verifications/fixtures/determinisme-p11.json": "c2453f9f896014a45020678c071a10aed656243ef542565538c571d7fc9430b7",
         "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a"
       }
     },
     "build": {
-      "version": "0.2.48",
-      "bytes": 14006845,
-      "sha256": "716f9f85873b490e92cea5c3684a0c0133ec2541dd0ab8235b223511e5680d5b",
+      "sha256": "72b18fa2bc3aad3f0735296b5f56b98c67dcb75bcfc77cd3059d1404eb495c9c",
+      "bytes": 14024804,
       "reproductible": true,
-      "syntaxe_scripts": 51,
-      "syntaxe_valide": true
+      "codes": [
+        0,
+        0
+      ],
+      "hashes": {
+        "VERSION.json": "936d4a0260e284fdc0f27ff95006115bb1786d7ad8623993c38accb2452b4a3a",
+        "SIZE.json": "e5d9c74264b6e7a3507163060bd78f6a1cdf4cf9bd317428be2a8b9ed7f1b382",
+        "dist/bitume.html": "72b18fa2bc3aad3f0735296b5f56b98c67dcb75bcfc77cd3059d1404eb495c9c"
+      }
+    },
+    "bundle": {
+      "scripts": 51,
+      "codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
     },
     "ferro": {
       "version": "0.3.11",
-      "modules_identiques": 34,
+      "modules": 34,
       "ecarts": []
     },
     "webgl_valide": false,
-    "performance_materielle_mesuree": false,
     "deploiement_effectue": false,
-    "site_verifie": false,
-    "preuve": "docs/reprise/rapports/12F1-2026-11-19/qualification-execution.json"
+    "lot": "12F2",
+    "statut": "CPU_avec_reserve_traces_heritee",
+    "methode": "103 suites exécutées, puis 13 suites pertinentes rejouées après les corrections bornées ; première passe et manifeste conservés.",
+    "requalification": "corrections.json",
+    "reserve_heritee": "reserve-traces.json",
+    "performance_materielle_mesuree": false,
+    "variabilite_decor": "Seuil de construction du décor réussi pendant ce passage ; réserve de variabilité historique 12E conservée, aucune mesure matérielle de FPS."
   },
   "catalogue": {
     "jouables": 7,
@@ -75,14 +139,11 @@
     "note": "L’ancien objectif 16 précède l’ajout montagne ; ne supprimer aucune demande pour tenir ce compte."
   },
   "suite": {
-    "lot": "12F2",
-    "statut": "brouillon actif dans une autre session ; non livré",
-    "objectif": "Choix des pneus par pilote et au prochain arrêt ; migration de la préférence existante et confirmation 2+2.",
-    "prerequis": "Satisfait : 12F1 / 0.2.48 publié et reçu enregistré. Examiner le checkpoint immuable de 12F2 avant intégration.",
-    "brouillon_local": "/workspace/scratch/67676bee9b18/bitume ; ne pas confondre avec le code qualifié 12F1, ni écraser une session active",
+    "lot": "12F3",
+    "objectif": "Transport versionné du type, de l’usure et des services ; contrôles d’autorité et reprise IA sans remise à neuf.",
+    "prerequis": "Revue 12F2 publiée et fusion autorisée.",
     "apres": [
-      "12F3 réseau versionné de l’usure et reprise IA sans remise à neuf",
-      "Stratégie des stands IA avant les courses longues dépendantes des changements",
+      "Stratégie de stands IA",
       "Russie",
       "Monaco",
       "Marseille"
@@ -91,7 +152,7 @@
   "acces": {
     "mac_spark_amiga_disponibles": false,
     "travaux_mac_non_fusionnes": "Branches absentes de GitHub ; ne pas les compter livrées.",
-    "publication": "Connexion GitHub ; Git direct sans identifiants en écriture.",
+    "publication": "Branche de revue : envoi main refusé par approbation automatique dans cette session ; ne pas contourner.",
     "deploiement_effectue": false,
     "site_verifie": false
   },
@@ -99,5 +160,20 @@
     "docs/reprise/archives/ETAT-AVANT-CLOTURE-12ABC-2026-11-19.json",
     "docs/reprise/PILOTAGE-2026-11-18.md"
   ],
-  "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé."
+  "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé.",
+  "publication": {
+    "branche_revue": "codex/bitume-12f2-revue-20261119",
+    "checkpoint_sources": "bd13f067d94f4666292d4399473ecd55f427b8e6",
+    "main_modifie_par_cette_session": false,
+    "fusion_autorisee": false,
+    "statut": "verifiee_sur_branche_revue",
+    "motif": "Refus automatique du push direct main ; alternative de revue, sans fusion.",
+    "commit_qualifie": "ba9f54bd7a5e5c8d17ec37889c2d414c76831989",
+    "tree_qualifie": "4c43d2e7feddb7552844605d7752c4049e0bac4e",
+    "pr": 3,
+    "url": "https://github.com/M4D135/bitume/pull/3",
+    "brouillon": true,
+    "fusionnee": false,
+    "recu": "docs/reprise/rapports/12F2-2026-11-19/PUBLICATION-0249.json"
+  }
 }

@@ -50,7 +50,9 @@
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
-  const reglages = Object.assign({}, DEFAUT, lireStock('bitume.reglages', {}));
+  const reglagesEnregistres = lireStock('bitume.reglages', {});
+  const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
+  Object.assign(reglages, initialiserChoixPneus(reglagesEnregistres));
   reglages.qualite = B.graphismes.normaliser(reglages.qualite);
   // Cadence d'images (Auto, Écran, 120, 60, 30) : une valeur ancienne, inconnue ou mal écrite revient à Auto.
   reglages.cadence = B.cadence.normaliser(reglages.cadence);
@@ -282,10 +284,7 @@
     // Pneus : le joueur roule sur ceux de la préparation (présélectionnés selon la météo, qu'il peut changer) ; les
     // rivaux sur ceux que conseille la piste au départ. La caisse les montre (voiture.js) et la conduite les sent.
     const conseil = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoInit)), joue = type === 'course' || type === 'chrono' || duo;
-    for (const v of course.voitures) {
-      v.etat.pneus = enl && v.humain ? (B.conduite.PNEUS[enl.pneus && enl.pneus[v.id]] ? enl.pneus[v.id] : conseil) : v.joueur && joue && B.conduite.PNEUS[reglages.pneus] ? reglages.pneus : conseil;
-      v.livree.pneus = v.etat.pneus;
-    }
+    monterPneusDepart(course, joue, enl, conseil);
     const S = {
       type, i, course, c, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
       prec: [], cour: [], sortie: [], acc: 0, tele: { poste: null, alea: graine32(course.voitures.length * 7 + i) },
@@ -306,6 +305,8 @@
       // créations tardives : objets nés dans le chemin d'une image au lieu de la préparation (doit rester à zéro)
       tardives: { n: 0, sousVoile: 0, noms: {} },
     };
+    // Toutes les montes sont préparées sous le voile : un service ne construit rien en pleine course.
+    for (const modele of S.modeles) B.voiture.preparerPneusService(modele);
     // bâtis avec la scène (une fois par décor), repris ici de leurs places de départ : sous le voile de la préparation
     S.animaux = animauxDe(sc, S.nature);
     // Le public de la séance : moins nombreux sous la pluie, en hiver et la nuit ; son animation repart de zéro.
@@ -1036,6 +1037,7 @@
   // 0,12 s. Les temps officiels arrivent par le canal fiable. Une machine qui part laisse ses voitures à l'ordinateur
   // de l'hôte ; sans hôte, chacun finit la course seul.
   const EL = { R: null, role: null, recus: new Map(), corr: new Map(), pasEnvoi: 0, pred: {}, vieux: {}, course: null, pneusDe: new Map() };
+  const VERSION_CHOIX_PNEUS = 1;
   const nomPilote = () => (reglages.nom || '').trim().slice(0, 16) || 'Pilote';
   const joueursIci = () => reglages.joueursLocaux === 2 ? 2 : 1;
   const propre = t => String(t || '').replace(/[<>&"'`\\]/g, '').trim().slice(0, 16) || 'Pilote';
@@ -1054,7 +1056,7 @@
     const p = [];
     for (const m of [...R.membres].sort((a, b) => a.id - b.id)) {
       if (prets && m.id !== R.id && !R.pretAvec(m.id)) continue;
-      for (let k = 0; k < (m.joueurs === 2 ? 2 : 1); k++) p.push({ nom: propre(m.nom) + (k ? ' 2' : ''), machine: m.id });
+      for (let k = 0; k < (m.joueurs === 2 ? 2 : 1); k++) p.push({ nom: propre(m.nom) + (k ? ' 2' : ''), machine: m.id, local: k });
     }
     return p;
   }
@@ -1137,7 +1139,7 @@
     if (EL.role !== 'hote' || !EL.R) return;
     const conditions = conditionsCommunes(conditionsDuDepart());
     const prevue = meteoPourConditions(conditions, reglages.circuit, graineCourse + 1);
-    EL.course = { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, ...conditions, eau: B.conduite.eauSurPiste(prevue) };
+    EL.course = { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, ...conditions, eau: B.conduite.eauSurPiste(prevue), versionChoixPneus: VERSION_CHOIX_PNEUS };
     EL.R.envoyer(Object.assign({ t: 'course' }, EL.course));
     majCourseSalon();
   }
@@ -1157,7 +1159,7 @@
     if (!R || !lienActif() || EL.role !== 'hote') { etatEnLigne('Pas d’autre pilote connecté.'); aller('enligne'); return; }
     annulerConfirmation();
     annoncerCourse();
-    EL.confirmation = { prets: new Set() }; EL.pretIci = false;
+    EL.confirmation = { prets: new Set(), incompatibles: new Set() }; EL.pretIci = false;
     R.envoyer({ t: 'confirmer', course: EL.course });
     aller('prets');
   }
@@ -1167,7 +1169,8 @@
     const meteo = nomMeteoCourse(k);
     texte($('pr-course'), CATALOGUE[k.i].nom + ' · ' + k.tours + ' tours · ' + NOMS_SAISON[B.saisons.normaliser(k.saison)] + ' · ' + NOMS_MOMENT[B.ambiance.normaliser(k.moment)] + ' · météo : ' + meteo);
     texte($('pr-pneus-conseil'), 'Conseillés pour cette chaussée : ' + NOMS_PNEUS[B.conduite.pneusConseilles(surfaceAnnoncee(k))].toLowerCase() + '.');
-    for (const [nom, val] of [['pneusPret', reglages.pneus], ['boitePret', reglages.boite], ['vuePret', reglages.vue]]) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = r.value === val;
+    majChoixPneus();
+    for (const [nom, val] of [['boitePret', reglages.boite], ['vuePret', reglages.vue]]) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = r.value === val;
     let html = '', n = 0, m = 0;
     for (const x of [...R.membres].sort((a, b) => a.id - b.id)) {
       const pret = C.prets.has(x.id) && (x.id === R.id || R.pretAvec(x.id));
@@ -1176,7 +1179,8 @@
     }
     const liste = $('pr-pilotes');
     if (liste._html !== html) { liste._html = html; liste.innerHTML = html; }
-    texte($('pr-etat'), tousPrets(R, C) ? 'Tout le monde est prêt : départ !' : n + ' machine' + (n > 1 ? 's' : '') + ' prête' + (n > 1 ? 's' : '') + ' sur ' + m + '. La course part quand toutes le sont.');
+    const incompatibles = C.incompatibles && [...C.incompatibles].filter(id => R.membres.some(x => x.id === id));
+    texte($('pr-etat'), incompatibles && incompatibles.length ? 'Choix de pneus incompatibles. Chaque machine doit recharger la même version du jeu et confirmer ses pilotes.' : tousPrets(R, C) ? 'Tout le monde est prêt : départ !' : n + ' machine' + (n > 1 ? 's' : '') + ' prête' + (n > 1 ? 's' : '') + ' sur ' + m + '. La course part quand toutes le sont.');
     texte($('pr-pret'), EL.pretIci ? 'Pas encore prêt' : 'Je suis prêt');
     classe($('pr-pret'), 'principal', !EL.pretIci);
   }
@@ -1185,7 +1189,7 @@
     if (!R || !C) return;
     EL.pretIci = !EL.pretIci;
     if (EL.role === 'hote') { if (EL.pretIci) C.prets.add(R.id); else C.prets.delete(R.id); diffuserPrets(); }
-    else R.envoyer({ t: 'pret', oui: EL.pretIci, pneus: reglages.pneus }, 0);
+    else R.envoyer({ t: 'pret', oui: EL.pretIci, ...messageChoixPneus() }, 0);
     majPrets();
   }
   function annulerConfirmation() {
@@ -1205,6 +1209,7 @@
     const R = EL.R, C = EL.confirmation;
     if (!R || !C || EL.role !== 'hote') return;
     for (const id of C.prets) if (!R.membres.some(m => m.id === id)) C.prets.delete(id);
+    if (C.incompatibles) for (const id of C.incompatibles) if (!R.membres.some(m => m.id === id)) C.incompatibles.delete(id);
     R.envoyer({ t: 'prets', liste: [...C.prets] });
     majPrets();
     if (!tousPrets(R, C)) { clearTimeout(C.minuteur); C.minuteur = null; return; }
@@ -1224,16 +1229,50 @@
   }
   function recevoirCourse(m) {
     if (!m || !Number.isInteger(m.i) || !CATALOGUE[m.i]) return false;
+    if (m.versionChoixPneus !== VERSION_CHOIX_PNEUS) { refuserVersionPneus(); return false; }
     // nouvelle annonce : les pneus conseillés sont présélectionnés quand la météo change, le pilote peut changer
     const eau = clamp(+m.eau || 0, 0, 1), avant = EL.course;
-    EL.course = { i: m.i | 0, tours: clamp(m.tours | 0, 1, 99), difficulte: m.difficulte | 0, ...conditionsCommunes(m), eau };
-    if (!avant || avant.i !== EL.course.i || avant.saison !== EL.course.saison || Math.abs(avant.eau - eau) > .05 || !B.conduite.PNEUS[reglages.pneus]) { reglages.pneus = B.conduite.pneusConseilles(surfaceAnnoncee(EL.course)); envoyerPneus(); }
+    EL.course = { i: m.i | 0, tours: clamp(m.tours | 0, 1, 99), difficulte: m.difficulte | 0, ...conditionsCommunes(m), eau, versionChoixPneus: VERSION_CHOIX_PNEUS };
+    if (!avant || avant.i !== EL.course.i || avant.saison !== EL.course.saison || Math.abs(avant.eau - eau) > .05) {
+      appliquerConseilPneus(B.conduite.pneusConseilles(surfaceAnnoncee(EL.course))); envoyerPneus();
+    }
     majCourseSalon();
     if (ecran === 'prets') majPrets();
     return true;
   }
   function envoyerPneus() {
-    if (EL.R && EL.role === 'invite' && EL.R.pretAvec(0) && B.conduite.PNEUS[reglages.pneus]) EL.R.envoyer({ t: 'pneus', pneus: reglages.pneus }, 0);
+    if (EL.R && EL.role === 'invite' && EL.R.pretAvec(0)) EL.R.envoyer({ t: 'pneus', ...messageChoixPneus() }, 0);
+  }
+  function messageChoixPneus() {
+    const membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
+    const pneusPilotes = choixPneusLocaux().slice(0, membre && membre.joueurs === 2 ? 2 : 1);
+    return { versionChoixPneus: VERSION_CHOIX_PNEUS, pneus: pneusPilotes[0], pneusPilotes };
+  }
+  function lireChoixPneusMessage(m, de) {
+    const membre = EL.R && EL.R.membres.find(x => x.id === de);
+    if (!membre || m.versionChoixPneus !== VERSION_CHOIX_PNEUS || !Array.isArray(m.pneusPilotes) ||
+      m.pneusPilotes.length !== (membre.joueurs === 2 ? 2 : 1)) return null;
+    for (let n = 0; n < m.pneusPilotes.length; n++) if (!B.pneus.estJouable(m.pneusPilotes[n])) return null;
+    return m.pneusPilotes.slice();
+  }
+  function refuserVersionPneus() {
+    annulerConfirmation(); EL.course = null;
+    if (ecran === 'prets') aller('enligne');
+    majCourseSalon();
+    etatEnLigne('Versions incompatibles : rechargez la même version du jeu sur chaque machine.');
+  }
+  function humainsDepartValides(humains) {
+    if (!Array.isArray(humains) || humains.length < 2 || humains.length > 4) return false;
+    const nombres = new Map();
+    for (const h of humains) {
+      if (!h || typeof h !== 'object' || Array.isArray(h) || !Number.isInteger(h.machine)) return false;
+      const membre = EL.R && EL.R.membres.find(x => x.id === h.machine);
+      if (!membre) return false;
+      const n = (nombres.get(h.machine) || 0) + 1;
+      if (n > (membre.joueurs === 2 ? 2 : 1)) return false;
+      nombres.set(h.machine, n);
+    }
+    return nombres.has(0) && nombres.size >= 2;
   }
   function nouvelleLiaison() {
     annulerConfirmation();
@@ -1275,6 +1314,9 @@
     if (!m || typeof m !== 'object' || !EL.R) return;
     const S = session;
     if (m.t === 'depart' && de === 0 && EL.role === 'invite' && m.cfg) {
+      if (m.cfg.versionChoixPneus !== VERSION_CHOIX_PNEUS || !humainsDepartValides(m.cfg.humains) ||
+        !Array.isArray(m.cfg.pneus) || m.cfg.pneus.length !== m.cfg.humains.length ||
+        !Array.from(m.cfg.pneus).every(p => B.pneus.estJouable(p))) { refuserVersionPneus(); return; }
       const humains = (Array.isArray(m.cfg.humains) ? m.cfg.humains : []).slice(0, 4).map(h => ({ nom: propre(h.nom), machine: h.machine | 0 }));
       const locaux = humains.map((h, k) => h.machine === EL.R.id ? k : -1).filter(k => k >= 0);
       annulerConfirmation();
@@ -1284,7 +1326,7 @@
     else if (m.t === 'confirmer' && de === 0 && EL.role === 'invite') {
       if (!recevoirCourse(m.course)) return;
       annulerConfirmation();
-      EL.confirmation = { prets: new Set() }; EL.pretIci = false;
+      EL.confirmation = { prets: new Set(), incompatibles: new Set() }; EL.pretIci = false;
       if (ecran !== 'course' && ecran !== 'pause') aller('prets');
       majCourseSalon();
     } else if (m.t === 'prets' && de === 0 && EL.confirmation) { EL.confirmation.prets = new Set((Array.isArray(m.liste) ? m.liste : []).map(x => x | 0)); majPrets(); }
@@ -1294,11 +1336,16 @@
       if (ecran === 'prets') aller('enligne');
       etatEnLigne('L’hôte a annulé le départ.'); majCourseSalon();
     } else if (m.t === 'pret' && EL.role === 'hote' && EL.confirmation && EL.R.membres.some(x => x.id === de) && EL.R.pretAvec(de)) {
-      if (B.conduite.PNEUS[m.pneus]) EL.pneusDe.set(de, m.pneus);
-      if (m.oui) EL.confirmation.prets.add(de); else EL.confirmation.prets.delete(de);
+      const choix = lireChoixPneusMessage(m, de), C = EL.confirmation;
+      if (m.oui === true && choix) { EL.pneusDe.set(de, choix); C.prets.add(de); C.incompatibles.delete(de); }
+      else { C.prets.delete(de); if (m.oui !== false) C.incompatibles.add(de); }
       diffuserPrets();
-    } else if (m.t === 'pneus' && EL.role === 'hote' && EL.R.membres.some(x => x.id === de)) {
-      if (B.conduite.PNEUS[m.pneus]) EL.pneusDe.set(de, m.pneus);
+    } else if (m.t === 'pneus' && EL.role === 'hote' && EL.R.membres.some(x => x.id === de) && EL.R.pretAvec(de)) {
+      const choix = lireChoixPneusMessage(m, de), avant = EL.pneusDe.get(de), C = EL.confirmation;
+      if (choix) EL.pneusDe.set(de, choix);
+      if (C && (!choix || !avant || choix.some((p, n) => p !== avant[n]))) {
+        C.prets.delete(de); if (choix) C.incompatibles.delete(de); else C.incompatibles.add(de); diffuserPrets();
+      }
     } else if (m.t === 'arrivee' && S && S.enLigne) {
       const v = S.course.voitures[m.id];
       if (v && v.distant && Number.isFinite(m.temps)) { v.tempsOfficiel = m.temps; if (v.fini) v.tempsFinal = m.temps; }   // temps officiel
@@ -1343,8 +1390,8 @@
     const k = EL.course || { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, ...conditionsCommunes(conditionsDuDepart()) };
     const graine = ++graineCourse;
     const conseil = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoPourConditions(k, k.i, graine)));
-    const cfg = { graine, i: k.i, tours: k.tours, difficulte: k.difficulte, ...conditionsCommunes(k), T0: R.horloge() + 4000, dateDepart: Date.now() + 4000, humains,
-      pneus: humains.map(h => { const p = h.machine === 0 ? reglages.pneus : EL.pneusDe.get(h.machine); return B.conduite.PNEUS[p] ? p : conseil; }) };
+    const cfg = { graine, i: k.i, tours: k.tours, difficulte: k.difficulte, ...conditionsCommunes(k), T0: R.horloge() + 4000, dateDepart: Date.now() + 4000, humains, versionChoixPneus: VERSION_CHOIX_PNEUS,
+      pneus: humains.map(h => { const choix = h.machine === R.id ? choixPneusLocaux() : EL.pneusDe.get(h.machine); const p = choix && choix[h.local]; return B.pneus.estJouable(p) ? p : conseil; }) };
     R.envoyer({ t: 'depart', cfg });
     lancerEnLigne(Object.assign({}, cfg, { locaux: humains.map((h, k) => h.machine === 0 ? k : -1).filter(k => k >= 0), role: 'hote' }));
   }
@@ -2245,6 +2292,7 @@
     let ombreDebut = 0, ombreFin = 0; // objets de la voiture filmée dans sortie : sa tuile d'ombre (src/ombres.js)
     for (let k = 0; k < co.voitures.length; k++) {
       const p = poses[k], dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], d2 = dx * dx + dz * dz;
+      B.voiture.changerPneus(S.modeles[k], co.voitures[k].etat.pneus);
       const ev = poseRendu(k, p, RV[k], co.voitures[k].etat.v, co.voitures[k].etat.etatPneus);
       // Hystérésis propre à cette vue : ni la seconde moitié d'écran ni les deux miroirs ne la réécrivent.
       const rouesDetail = S.detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos), tanDemi, hauteur, S.detailsRoues[k]);
@@ -2657,7 +2705,7 @@
       if (!session || session.type !== 'vitrine' || (nom === 'preparation' && session.i !== reglages.circuit)) lancerVitrine(nom === 'preparation' ? reglages.circuit : (session ? session.i : reglages.circuit));
     }
     // en ligne, la pause n'arrête pas la course : pas de « Recommencer »
-    if (nom === 'pause') { $('b-recommencer').hidden = !!(session && session.enLigne); $('b-replacer').hidden = aDeux(); }
+    if (nom === 'pause') { $('b-recommencer').hidden = !!(session && session.enLigne); $('b-replacer').hidden = aDeux(); majPneusStands(); }
     if (nom === 'enligne') majSalon();
     if (nom === 'prets') majPrets();
     tactile(nom === 'course' && !aDeux());
@@ -2823,12 +2871,83 @@
   // Présélection des pneus selon la météo prévue (David, 16/11) : au soleil des slicks, sous la pluie des pneus
   // pluie ; la météo aléatoire est tirée d'avance (même graine que la course qui va partir). Le pilote peut changer.
   const NOMS_PNEUS = B.pneus.NOMS_PNEUS;
+  // L'ancienne préférence appartient désormais aux deux pilotes locaux. Un choix manuel reste mémorisé ;
+  // « Conseillés » suit la chaussée prévue sans écraser la préférence manuelle de l'autre pilote.
+  function initialiserChoixPneus(source) {
+    const s = source && typeof source === 'object' ? source : {}, pneusPilotes = B.pneus.normaliserChoixPilotes(s);
+    const ancienChoix = Object.prototype.hasOwnProperty.call(s, 'pneus') || Object.prototype.hasOwnProperty.call(s, 'pneusPilotes');
+    const pneusAutoPilotes = [0, 1].map(n => Array.isArray(s.pneusAutoPilotes) ? s.pneusAutoPilotes[n] === true : !ancienChoix);
+    return { pneus: pneusPilotes[0], pneusPilotes, pneusAutoPilotes };
+  }
+  function choixPneusLocaux() { return B.pneus.normaliserChoixPilotes(reglages); }
+  function pneusAutomatiques(n) { return !!(Array.isArray(reglages.pneusAutoPilotes) && reglages.pneusAutoPilotes[n] === true); }
+  function appliquerConseilPneus(type) {
+    if (!B.pneus.estJouable(type)) return;
+    const choix = choixPneusLocaux();
+    for (let n = 0; n < 2; n++) if (pneusAutomatiques(n)) choix[n] = type;
+    reglages.pneusPilotes = choix; reglages.pneus = choix[0];
+  }
+  function choisirPneusPilote(n, type) {
+    if ((n !== 0 && n !== 1) || (type !== 'auto' && !B.pneus.estJouable(type))) return false;
+    const choix = choixPneusLocaux(), automatiques = [pneusAutomatiques(0), pneusAutomatiques(1)];
+    automatiques[n] = type === 'auto';
+    if (type === 'auto') {
+      const surface = ecran === 'prets' && EL.course ? surfaceAnnoncee(EL.course) :
+        B.chaussee.lire(null, 0, meteoPourConditions(conditionsDuDepart(), reglages.circuit, graineCourse + 1));
+      choix[n] = B.conduite.pneusConseilles(surface);
+    } else choix[n] = type;
+    reglages.pneusPilotes = choix; reglages.pneusAutoPilotes = automatiques; reglages.pneus = choix[0];
+    return true;
+  }
+  function majChoixPneus() {
+    const choix = choixPneusLocaux(), membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
+    const duoPreparation = modePrepa === 'duo' || (modePrepa === 'enligne' && membre && membre.joueurs === 2);
+    $('o-pneus-2').hidden = !duoPreparation;
+    $('pr-pneus-2').hidden = !(membre && membre.joueurs === 2);
+    for (let n = 0; n < 2; n++) {
+      const valeur = pneusAutomatiques(n) ? 'auto' : choix[n];
+      for (const nom of [n ? 'pneus2' : 'pneus', n ? 'pneusPret2' : 'pneusPret'])
+        for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = r.value === valeur;
+    }
+  }
+  function monterPneusDepart(course, joue, enl, conseil) {
+    const choix = choixPneusLocaux(); let local = 0;
+    for (const v of course.voitures) {
+      const type = enl && v.humain ? enl.pneus && enl.pneus[v.id] : v.joueur && joue ? choix[local++] : conseil;
+      v.etat.pneus = B.pneus.estJouable(type) ? type : conseil;
+      v.etat.pneusProchainArret = v.etat.pneus;
+      v.livree.pneus = v.etat.pneus;
+    }
+  }
+  // Choix de service attaché à la voiture de la séance, sans changer les pneus actuellement montés.
+  function choisirPneusStands(n, type) {
+    if (!session || session.enLigne || ecran !== 'pause' || (n !== 0 && n !== 1)) return false;
+    const co = session.course, id = session.locaux && session.locaux[n], v = co && co.voitures[id];
+    const accepte = !!(v && B.course.demanderPneus(co, v, type));
+    majPneusStands(); return accepte;
+  }
+  function majPneusStands() {
+    const S = session, co = S && S.course;
+    $('pneus-stands').hidden = !(co && S.type !== 'demo' && S.type !== 'vitrine');
+    texte($('ps-note'), S && S.enLigne ? 'En ligne, les stands renouvellent la monte de départ.' :
+      'Choisissez la monte de chaque pilote. Les quatre pneus seront changés à la fin du service au garage.');
+    for (let n = 0; n < 2; n++) {
+      const id = S && S.locaux && S.locaux[n], v = co && co.voitures[id], zone = $('ps-pilote-' + n);
+      zone.hidden = !v; if (!v) continue;
+      const et = v.etat, st = et.stands, service = st && st.phase === 'service';
+      const type = B.pneus.estJouable(et.pneusProchainArret) ? et.pneusProchainArret : et.pneus;
+      zone.disabled = !!(S.enLigne || service || v.distant || v.reprise || v.fini || v.abandon || co.termine);
+      for (const r of document.querySelectorAll('input[name="pneusStand' + n + '"]')) r.checked = r.value === (service ? st.pneus : type);
+      texte($('ps-etat-' + n), service ? 'Service en cours : ' + NOMS_PNEUS[st.pneus] + '. Choix verrouillé jusqu’à sa fin.' :
+        'Montés : ' + NOMS_PNEUS[et.pneus] + ' · prochain arrêt : ' + NOMS_PNEUS[type] + '.');
+    }
+  }
   function preselectionnerPneus() {
     const k = conditionsDuDepart();
     const prevue = meteoPourConditions(k, reglages.circuit, graineCourse + 1);
-    reglages.pneus = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, prevue));
-    for (const r of document.querySelectorAll('input[name="pneus"]')) r.checked = r.value === reglages.pneus;
-    $('p-pneus-conseil').textContent = 'Conseillés pour cette chaussée : ' + NOMS_PNEUS[reglages.pneus].toLowerCase() + '.';
+    const conseil = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, prevue));
+    appliquerConseilPneus(conseil); majChoixPneus();
+    $('p-pneus-conseil').textContent = 'Conseillés pour cette chaussée : ' + NOMS_PNEUS[conseil].toLowerCase() + '.';
   }
   function majPreparation() {
     preselectionnerPneus();
@@ -2855,15 +2974,15 @@
     }
     if (t.name === 'tours' || t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
     if (t.name === 'meteo') { reglages.meteo = t.value; sauverReglages(); preselectionnerPneus(); }
-    if (t.name === 'pneus' && B.conduite.PNEUS[t.value]) { reglages.pneus = t.value; sauverReglages(); }
-    if (['pneusIci', 'pneusPret', 'boitePret', 'vuePret', 'boite', 'vue'].includes(t.name)) retirerPret();
-    if ((t.name === 'pneusIci' || t.name === 'pneusPret') && B.conduite.PNEUS[t.value]) {
-      reglages.pneus = t.value; sauverReglages(); envoyerPneus();
+    if (['pneus', 'pneus2', 'pneusIci', 'pneusPret', 'pneusPret2'].includes(t.name) && choisirPneusPilote(t.name.endsWith('2') ? 1 : 0, t.value)) {
+      retirerPret(); sauverReglages(); envoyerPneus(); majChoixPneus();
     }
+    if (['boitePret', 'vuePret', 'boite', 'vue'].includes(t.name)) retirerPret();
+    if (/^pneusStand[01]$/.test(t.name)) choisirPneusStands(+t.name.slice(-1), t.value);
     if (t.name === 'boitePret' && ['auto', 'manuelle'].includes(t.value)) { reglages.boite = t.value; sauverReglages(); }
     if (t.name === 'vuePret' && ['cockpit', 'poursuite'].includes(t.value)) { reglages.vue = t.value; sauverReglages(); }
     if (['meteo', 'momentDepart', 'saisonDepart', 'saisonMode', 'momentMode', 'meteoMode'].includes(t.name) && ecran === 'preparation') actualiserConditions();
-    if (EL.role === 'hote' && lienActif() && ['tours', 'difficulte', 'pneus'].includes(t.name)) annoncerCourse();
+    if (EL.role === 'hote' && lienActif() && ['tours', 'difficulte'].includes(t.name)) annoncerCourse();
     if (t.name === 'joueursIci') { reglages.joueursLocaux = t.value === '2' ? 2 : 1; sauverReglages(); }
     if (t.name === 'partage') { reglages.partage = t.value === 'cote' ? 'cote' : 'haut-bas'; sauverReglages(); }
     if (/^r?cmd[01]$/.test(t.name) && NOMS_COMMANDES[t.value]) {
@@ -4232,13 +4351,14 @@
     const depart = options.depart === 'tunnel' ? c.tunnel.debut - 40 : (options.depart ?? 800);
     if (!Number.isFinite(depart)) throw new Error('abscisse de départ invalide');
     restaurerReference();
-    const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'moment', 'saison', 'retro', 'meteo', 'saisonMode', 'momentMode', 'meteoMode', 'pneus', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
+    const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'moment', 'saison', 'retro', 'meteo', 'saisonMode', 'momentMode', 'meteoMode', 'pneus', 'pneusPilotes', 'pneusAutoPilotes', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
     const avant = Object.fromEntries(cles.map(k => [k, reglages[k]])), decorAvant = decorEnrichi;
     Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', secousses: 0, vibrations: 'non', champ: 60 });
     Object.assign(reglages, B.graphismes.normaliserOptions(options));
     reglages.moment = B.ambiance.normaliser(options.moment ?? 'jour');
     reglages.saison = B.saisons.normaliser(options.saison ?? 'ete');
     reglages.pneus = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoPourConditions({ meteo, saison: reglages.saison }, i, graine)));
+    reglages.pneusPilotes = [reglages.pneus, reglages.pneus]; reglages.pneusAutoPilotes = [true, true];
     decorEnrichi = options.decor !== 'reference';
     graineCourse = graine - 1;
     // l'ancre du décor se fixe avant la construction de la scène : une séance de référence est filmée au palier demandé

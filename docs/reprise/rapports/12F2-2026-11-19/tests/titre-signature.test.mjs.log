@@ -1,0 +1,12 @@
+✔ m4d135 permet d'enregistrer le jeu en HTML depuis l'écran titre (0.95887ms)
+✔ la marque garde son badge de version, sans fermeture excédentaire (0.228643ms)
+✔ le lien ZIP retiré par la branche ne revient pas (0.23997ms)
+✔ la feuille de style tient la signature (0.224918ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8.094042

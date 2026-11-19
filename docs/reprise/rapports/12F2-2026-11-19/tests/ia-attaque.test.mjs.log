@@ -1,0 +1,46 @@
+{
+  "passed": 10,
+  "total": 10,
+  "results": [
+    {
+      "name": "une IA serre une voiture plus lente et s engage contre elle",
+      "ok": true
+    },
+    {
+      "name": "la même capacité d attaque contre une autre IA (pas de convoi centré sur le joueur)",
+      "ok": true
+    },
+    {
+      "name": "un adversaire en récupération ou en service n est pas attaqué, mais reste contourné",
+      "ok": true
+    },
+    {
+      "name": "délai entre deux engagements : pas d enchaînement immédiat sur la même cible",
+      "ok": true
+    },
+    {
+      "name": "pas d oscillation de cible : le nombre de changements reste borné dans un peloton serré",
+      "ok": true
+    },
+    {
+      "name": "pas de blocage durable : tout le monde avance et la course finit, sur trois graines et trois difficultés",
+      "ok": true
+    },
+    {
+      "name": "le chrono et le mode d essai ne choisissent pas de cible",
+      "ok": true
+    },
+    {
+      "name": "les décisions sont déterministes : même graine, mêmes statistiques",
+      "ok": true
+    },
+    {
+      "name": "un blocage ne dure pas au-delà du virage et ne ralentit pas la voiture tenue",
+      "ok": true
+    },
+    {
+      "name": "temps de décision mesuré et plausible (jamais négatif, jamais instantané)",
+      "ok": true
+    }
+  ]
+}

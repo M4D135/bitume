@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-19",
+  "depot": "M4D135/bitume",
+  "branche": "main",
+  "commit": "1df6f6872e9d6962d6561b9b371d41042567a915",
+  "tree": "2a46dcb1ebce06137dd3c10e7702c86f26d4b2b6",
+  "base_locale": "fbd8098dc3e985415488f8738db1d32c172018b0",
+  "tree_identique": true,
+  "version": "0.2.48",
+  "publication_par_cette_session": false,
+  "controle": "GitHub API + git fetch origin main + comparaison des arbres",
+  "note": "La publication 12F1 a été réalisée indépendamment. Le refus de push direct main de cette session ne donne lieu à aucun nouvel essai."
+}

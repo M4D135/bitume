@@ -1,0 +1,19 @@
+ok  la voie des stands existe, est a droite et tient dans la ligne droite
+ok  sante : neuve a 1, baisse a chaque avarie, remonte a 1 apres reparation
+ok  la jauge vient du meme etat que les penalites, pas d un compteur d affichage
+ok  le service se chiffre d apres l etat constate
+ok  entrer dans la voie a basse vitesse ouvre un arret et invalide le tour
+ok  on n entre pas en roulant vite, ni en frolant le bord, ni au depart
+ok  ressortir de la voie sans s arreter annule l arret, sans rien reparer
+ok  l arret au garage rend la reparation complete, a la duree chiffree
+ok  rouler dans la voie ne repare rien : il faut l arret
+ok  la voie bride a la vitesse des stands
+ok  le replacement apres crash ne repare pas tout : les stands restent utiles
+ok  une voiture arree au stand nest jamais tenue pour coincee
+ok  les rivaux n utilisent pas les stands
+ok  un pair distant ne peut pas faire reparer sa voiture
+ok  un arret ne donne ni tour gratuit ni meilleur temps en chrono
+ok  deux joueurs ont chacun leur sante et leur arret
+ok  le meme arret, deux fois, donne le meme resultat
+ok  une roue perdue immobilise avant d atteindre le garage : pas de service
+stands : 18 verifications passees

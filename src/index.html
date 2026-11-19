@@ -146,12 +146,21 @@
     <div class="salon">
       <div class="options">
         <fieldset>
-          <legend>Vos pneus</legend>
+          <legend>Pneus · Joueur 1</legend>
+          <label><input type="radio" name="pneusPret" value="auto"><span>Conseillés</span></label>
           <label><input type="radio" name="pneusPret" value="slicks"><span>Slicks</span></label>
           <label><input type="radio" name="pneusPret" value="inter"><span>Intermédiaires</span></label>
           <label><input type="radio" name="pneusPret" value="pluie"><span>Pluie</span></label>
           <label><input type="radio" name="pneusPret" value="neige"><span>Neige</span></label>
           <p id="pr-pneus-conseil" class="note-pneus"></p>
+        </fieldset>
+        <fieldset id="pr-pneus-2" hidden>
+          <legend>Pneus · Joueur 2</legend>
+          <label><input type="radio" name="pneusPret2" value="auto"><span>Conseillés</span></label>
+          <label><input type="radio" name="pneusPret2" value="slicks"><span>Slicks</span></label>
+          <label><input type="radio" name="pneusPret2" value="inter"><span>Intermédiaires</span></label>
+          <label><input type="radio" name="pneusPret2" value="pluie"><span>Pluie</span></label>
+          <label><input type="radio" name="pneusPret2" value="neige"><span>Neige</span></label>
         </fieldset>
         <fieldset>
           <legend>Boîte</legend>
@@ -260,12 +269,21 @@
       <div id="p-pilotes" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-p-pilotes" hidden>
     <div class="options options-pilotes">
       <fieldset id="o-pneus">
-        <legend>Pneus</legend>
+        <legend>Pneus · Joueur 1</legend>
+        <label><input type="radio" name="pneus" value="auto"><span>Conseillés</span></label>
         <label><input type="radio" name="pneus" value="slicks"><span>Slicks</span></label>
         <label><input type="radio" name="pneus" value="inter"><span>Intermédiaires</span></label>
         <label><input type="radio" name="pneus" value="pluie"><span>Pluie</span></label>
         <label><input type="radio" name="pneus" value="neige"><span>Neige</span></label>
         <p id="p-pneus-conseil" class="note-pneus"></p>
+      </fieldset>
+      <fieldset id="o-pneus-2" hidden>
+        <legend>Pneus · Joueur 2</legend>
+        <label><input type="radio" name="pneus2" value="auto"><span>Conseillés</span></label>
+        <label><input type="radio" name="pneus2" value="slicks"><span>Slicks</span></label>
+        <label><input type="radio" name="pneus2" value="inter"><span>Intermédiaires</span></label>
+        <label><input type="radio" name="pneus2" value="pluie"><span>Pluie</span></label>
+        <label><input type="radio" name="pneus2" value="neige"><span>Neige</span></label>
       </fieldset>
       <fieldset id="o-commandes" hidden>
         <legend>Commandes</legend>
@@ -454,6 +472,28 @@
       <button type="button" class="discret" id="b-reglages-pause">Réglages</button>
       <button type="button" class="discret" id="b-abandon">Quitter la séance</button>
     </nav>
+    <div id="pneus-stands" class="service-pneus" hidden>
+      <h3>Au prochain arrêt</h3>
+      <p id="ps-note" class="note-pneus">Choisissez la monte de chaque pilote. Les quatre pneus seront changés à la fin du service au garage.</p>
+      <div class="options">
+        <fieldset id="ps-pilote-0">
+          <legend>Joueur 1</legend>
+          <label><input type="radio" name="pneusStand0" value="slicks"><span>Slicks</span></label>
+          <label><input type="radio" name="pneusStand0" value="inter"><span>Intermédiaires</span></label>
+          <label><input type="radio" name="pneusStand0" value="pluie"><span>Pluie</span></label>
+          <label><input type="radio" name="pneusStand0" value="neige"><span>Neige</span></label>
+          <p id="ps-etat-0" class="note-pneus" role="status" aria-live="polite"></p>
+        </fieldset>
+        <fieldset id="ps-pilote-1" hidden>
+          <legend>Joueur 2</legend>
+          <label><input type="radio" name="pneusStand1" value="slicks"><span>Slicks</span></label>
+          <label><input type="radio" name="pneusStand1" value="inter"><span>Intermédiaires</span></label>
+          <label><input type="radio" name="pneusStand1" value="pluie"><span>Pluie</span></label>
+          <label><input type="radio" name="pneusStand1" value="neige"><span>Neige</span></label>
+          <p id="ps-etat-1" class="note-pneus" role="status" aria-live="polite"></p>
+        </fieldset>
+      </div>
+    </div>
   </section>
 
   <!-- Résultats -->

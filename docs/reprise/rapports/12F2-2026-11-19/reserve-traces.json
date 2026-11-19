@@ -1,0 +1,8 @@
+{
+  "echec": "traces.test.mjs",
+  "base": "1df6f6872e9d6962d6561b9b371d41042567a915",
+  "logs_identiques_hors_chemin_et_duree_cpu": true,
+  "unique_ecart_observe": "0.026 ms / image avant, 0.024 après ; 589 objets et erreur identiques. Ce timing CPU ne mesure pas les FPS.",
+  "base_log": "../12F1-2026-11-19/tests/traces.test.mjs.log",
+  "actuel_log": "tests/traces.test.mjs.log"
+}
