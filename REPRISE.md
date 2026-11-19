@@ -2,26 +2,31 @@
 
 ## Lot actif — 19 novembre 2026
 
-**0.2.57 / p14 : démos cinéma et regard arrière intégrés**, qualification ciblée terminée.
-Base publiée : 0.2.56, PR #11 fusionnée `a2b89f5`, clôture `6ed5606`. La 0.2.55 et ses preuves restent closes.
-Branche : `codex/bitume-demos-regard-arriere-20261119`. Lire `docs/reprise/ETAT.json`, puis la fiche active.
+**0.2.58 / p14 : cockpit extérieur corrigé et qualification ciblée terminée.**
+Branche : `codex/bitume-cockpit-exterieur-20261119` ; lire `docs/reprise/ETAT.json`, puis la fiche active.
 
-- Démos : découverte du tracé, panoramas, flore/faune présents, plans pilote et peloton, alternance avec la course.
-- Trajectoires préparées ; un masquage provoque une coupe explicite. Les replis conservent le leader pendant le sprint.
-- Poursuite : **stick droit maintenu vers le bas pour regarder derrière**, retour au relâchement ; J1/J2 indépendants.
-- Conduite p14, réseau, moteur FERRO 0.3.14 et fixtures physiques identiques à la 0.2.56.
-- **7/7 suites ciblées, 135 contrôles**, code stable pendant les passages. Deux builds identiques.
-- Rapport : `docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/QUALIFICATION-0257.json`.
+- Levier recentré dans la cellule ; main droite et poignet suivent son ancrage pendant les rapports.
+- Volant avancé de 10 cm ; dégagement minimal mesuré devant le buste : **16,904 cm**, auparavant 6,904 cm.
+- Saute-vent dégagé et ouverture conservée jusque dans la carrosserie simplifiée, qui coupait une main.
+- Joueur/rivaux : mêmes articulations ; cadrage intérieur, conduite p14 et FERRO 0.3.14 conservés.
+- **6/6 suites ciblées ; 840 poses détaillées + 150 poses joueur/rival sur trois niveaux de détail.**
+- Deux builds identiques : 14 185 661 octets, SHA-256
+  `dc12ee680cba5fe30b0abe2fc46e4b8febf4d6b6a6e4b639e8533bc9da2e4939`.
+- Fiche : `docs/reprise/COCKPIT-PILOTES-2026-11-19.md` ; rapport compact `QUALIFICATION-0258.json` dans son dossier.
 
-## Publication et limites
+## Publication à terminer
 
-Publier ce lot puis vérifier sa CI complète avant de clore la livraison. Les résultats 0.2.56 restent distincts.
-Le suivi public contient les changements et résultats utiles ; les journaux locaux bruts n'y sont pas ajoutés.
-Réserves antérieures : signature des traces et temps de génération Val-Brûlé, seuil inchangé.
-Navigateur complet, manette physique et FPS matériels restent à vérifier ; aucun déploiement du site effectué.
+La 0.2.57 démos/regard arrière est en PR **#15**, tête corrigée `6527496` : première CI **124/126**,
+traces héritées et contexte `cam` manquant dans le harnais nature. Le harnais est corrigé,
+avec contrôles des plans nature/retour course/J2, sans changement du code de production ni du build 0.2.57.
+Nouvelle CI à lire. Base main publiée vérifiée : 0.2.56, clôture `6ed5606`. Les preuves antérieures restent closes.
+Publier le cockpit sur cette base corrigée, constater sa CI complète puis clore les deux lots.
 
-## Ensuite
+Réserves héritées : signature des traces et temps de génération Val-Brûlé, seuil inchangé.
+Les images examinées sont des rendus logiciels des triangles ; navigateur complet, manette physique et FPS
+matériels restent à vérifier. Aucun déploiement du site effectué. Aucun nouveau journal brut ni chemin interne publié.
 
-13B Baïkal : lac, berges, lieux signature, végétation/faune propres et saisons.
-Conserver Monaco fidèle, Marseille avec relief, grand circuit montagne distinct et six propositions.
-Un sous-lot à la fois, suivi court, aucun push forcé. Ne pas recharger les archives en bloc.
+## Suite conservée
+
+Après clôture : **13B Baïkal**, puis Monaco fidèle, Marseille avec relief mesuré et grand circuit de montagne distinct.
+Les autres propositions et demandes restent dans le plan maître ; un seul lot actif à la fois.

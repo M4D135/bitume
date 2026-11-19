@@ -1,24 +1,25 @@
 {
   "date": "2026-11-19",
   "etat_courant": {
-    "version_courante": "0.2.57",
+    "version_courante": "0.2.58",
     "physique": "p14",
     "version_publiee_verifiee": "0.2.56",
-    "statut": "demos_regard_arriere_qualifies_publication_attendue",
-    "branche": "codex/bitume-demos-regard-arriere-20261119",
+    "statut": "cockpit_exterieur_qualifie_publication_attendue",
+    "branche": "codex/bitume-cockpit-exterieur-20261119",
     "base_publiee": "6ed560661c9a69345dbbd6f8f26019845e84273d",
-    "lot": "demos_cinema_regard_arriere",
-    "fiche": "docs/reprise/DEMOS-CINEMA-2026-11-19.md",
+    "lot": "cockpit_pilotes_exterieurs",
+    "fiche": "docs/reprise/COCKPIT-PILOTES-2026-11-19.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "040",
-    "prochaine_action": "Publier le lot, vérifier sa CI et conclure la reprise avant 13B Baïkal."
+    "derniere_entree": "041",
+    "prochaine_action": "Vérifier CI 0.2.57 corrigée, publier 0.2.58, lire sa CI et clore les deux lots avant 13B.",
+    "base_candidat": "652749694a1a77f25501c6c4fe7100c8b4636f97"
   },
   "validation": {
-    "ciblee": "7/7 suites ; 135 contrôles ; code stable.",
-    "build_sha256": "cbcd5c26d36a19946d647c250f290150766be585e843a6e8c331716eefa7cbea",
-    "build_octets": 14182991,
+    "ciblee": "6/6 suites ; 840 + 150 poses géométriques ; sources stables.",
+    "build_sha256": "dc12ee680cba5fe30b0abe2fc46e4b8febf4d6b6a6e4b639e8533bc9da2e4939",
+    "build_octets": 14185661,
     "reproductible": true,
-    "rapport": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/QUALIFICATION-0257.json",
+    "rapport": "docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/QUALIFICATION-0258.json",
     "ci": "a_verifier_apres_publication",
     "jeu_navigateur_valide": false,
     "manette_physique_validee": false,
@@ -50,19 +51,24 @@
     "regle": "Conserver les sept circuits historiques et toutes les demandes ; ne pas supprimer la montagne pour tenir l’ancien compte de 16."
   },
   "suite": {
-    "lot": "demos_cinema_regard_arriere",
-    "statut": "integre_qualifie_cible",
-    "copie_preparee_recuperee": true,
-    "correctif_camera": "Trajectoires mémorisées, poste animalier fixe, coupe explicite au masquage et protection du sprint.",
-    "regard_arriere": "Poursuite, stick droit bas maintenu ; relâchement immédiat et isolation J1/J2.",
-    "regles": "Conduite p14, départ/arrivée, démos continues, sortie sur geste, Faune/qualité, musique limitée au titre conservés."
+    "lot": "cockpit_pilotes_exterieurs",
+    "statut": "qualifie_cible",
+    "regles": "Conserver cadrage intérieur, animations, conduite p14, FERRO et rendu sans allocations par pose."
   },
   "suite_apres_demos": {
     "lot": "13B_Russie_decor_saisons",
     "statut": "non_commence",
     "objectif": "Lac, berges, lieux signature, végétation/faune du Baïkal, saisons et validation visuelle.",
     "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
-    "apres": "demos_cinema"
+    "apres": "cockpit_pilotes_exterieurs"
   },
-  "regle": "Un sous-lot à la fois ; contrôler le distant, journaliser et conserver une reprise courte. Aucun push forcé."
+  "regle": "Un sous-lot à la fois ; contrôler le distant, journaliser et conserver une reprise courte. Aucun push forcé.",
+  "livraison_0257": {
+    "pr": 15,
+    "head": "652749694a1a77f25501c6c4fe7100c8b4636f97",
+    "statut": "ci_complete_apres_correction_harnais_attendue",
+    "ci_initiale": "124/126 ; traces historiques + contexte cam absent du test nature ; décor réussi.",
+    "correctif_harnais": "4/4 contrôles ; sources/build inchangés.",
+    "rapport": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/CI-0257-INITIAL.json"
+  }
 }
