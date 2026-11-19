@@ -2,6 +2,14 @@
 
 ## Point actif — 19 novembre 2026
 
+**Reprise active : correction de sortie de file 12F4, cible 0.2.52 / p13**, dans
+`codex/bitume-12f4-sortie-file-20261119`. Fiche : `docs/reprise/12F4-SORTIE-FILE.md`.
+Huit contrôles nouveaux, 17 trajets et 6 décisions réussis ; qualification complète et publication à terminer.
+Base sources p12 `cb023508` ; la session source termine sa 0.2.51 séparément. Réconcilier sa publication avant
+livraison finale. Les références p9 à p12 restent intactes. Ne pas reprendre les lots précédents.
+
+### État hérité du checkpoint p12
+
 **12F4 implémenté, contrôles ciblés acquis ; qualification complète EN COURS.**
 Fiche : `docs/reprise/12F4-STRATEGIE-STANDS-IA.md` ; branche `codex/bitume-12f4-20261119`.
 Base de branche **`446a350f`**, issue de main `c8afbd49` / **0.2.50**. Sources et tests gelés.

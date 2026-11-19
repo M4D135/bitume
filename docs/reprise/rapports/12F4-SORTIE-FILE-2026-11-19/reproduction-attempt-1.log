@@ -1,0 +1,89 @@
+✖ 12F4 IA immobilisée à 8 m derrière un joueur : dégagement réel sans contact (1514.607278ms)
+✖ 12F4 IA immobilisée à 10 m derrière un joueur : dégagement réel sans contact (81.546262ms)
+✔ 12F4 vraie approche vers un joueur garé : attente bornée puis retour en course (232.276172ms)
+✖ 12F4 voiture derrière la file : recul sûr puis sortie quand elle libère réellement la place (105.485944ms)
+✖ 12F4 service achevé : sortie bloquée par un joueur puis reprise sans second service (96.828768ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 1
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2038.64355
+
+✖ failing tests:
+
+test at verifications/strategie-stands-sortie-file.test.mjs:78:33
+✖ 12F4 IA immobilisée à 8 m derrière un joueur : dégagement réel sans contact (1514.607278ms)
+  AssertionError [ERR_ASSERTION]: reprise réelle de course dans le délai : {"s":82.13879235139484,"d":2.394363140586,"v":0,"psi":-0.19659022150849975,"phase":"degager","recul":10.550000000000042,"temps":40.00000000000284,"garage1":118}
+      at quitter (file:///workspace/scratch/1b28de5a23b5/bitume/verifications/strategie-stands-sortie-file.test.mjs:72:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/1b28de5a23b5/bitume/verifications/strategie-stands-sortie-file.test.mjs:85:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at verifications/strategie-stands-sortie-file.test.mjs:78:33
+✖ 12F4 IA immobilisée à 10 m derrière un joueur : dégagement réel sans contact (81.546262ms)
+  AssertionError [ERR_ASSERTION]: reprise réelle de course dans le délai : {"s":84.26954071170712,"d":3.825911088714245,"v":0,"psi":-0.020230928525453207,"phase":"degager","recul":10.550000000000042,"temps":40.00000000000284,"garage1":118}
+      at quitter (file:///workspace/scratch/1b28de5a23b5/bitume/verifications/strategie-stands-sortie-file.test.mjs:72:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/1b28de5a23b5/bitume/verifications/strategie-stands-sortie-file.test.mjs:85:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at verifications/strategie-stands-sortie-file.test.mjs:100:1
+✖ 12F4 voiture derrière la file : recul sûr puis sortie quand elle libère réellement la place (105.485944ms)
+  AssertionError [ERR_ASSERTION]: reprise réelle de course dans le délai : {"s":77.19097254676672,"d":3.4449433728441994,"v":0,"psi":-0.1130637328744785,"phase":"degager","recul":10.550000000000042,"temps":40.00000000000284,"garage1":118}
+      at quitter (file:///workspace/scratch/1b28de5a23b5/bitume/verifications/strategie-stands-sortie-file.test.mjs:72:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/1b28de5a23b5/bitume/verifications/strategie-stands-sortie-file.test.mjs:110:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at verifications/strategie-stands-sortie-file.test.mjs:125:1
+✖ 12F4 service achevé : sortie bloquée par un joueur puis reprise sans second service (96.828768ms)
+  AssertionError [ERR_ASSERTION]: reprise réelle de course dans le délai : {"s":119.3727836672524,"d":4.4008387358344505,"v":0.044509398152660806,"psi":0.00012258389534071677,"phase":"sortie","recul":0,"temps":63.81666666668846,"garage1":118}
+      at quitter (file:///workspace/scratch/1b28de5a23b5/bitume/verifications/strategie-stands-sortie-file.test.mjs:72:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/1b28de5a23b5/bitume/verifications/strategie-stands-sortie-file.test.mjs:144:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
