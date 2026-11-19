@@ -142,18 +142,26 @@ test('les cylindres rendus rejoignent les articulations sous toute attitude de c
   }
 });
 
-test('les gants extérieurs utilisent la prise et le trajet exacts du cockpit', () => {
+test('les gants gardent formes, repères et prises autour des ancrages extérieurs', () => {
   const mod = modele(), ev = pose(); ev.cap = ev.tangage = ev.roulis = 0; ev.p.fill(0);
-  const etat = { regime: 9000, volant: .4, rapport: 4, rapportAvant: 3, passage: .45, kmh: 160 };
-  Object.assign(ev.pilote, etat); dessiner(mod, ev);
-  const R = mod.objetsRendu.pilote, main = role(R, 0, 'gant-1-0'), exterior = [Array.from(main.p), Array.from(main.r), Array.from(main.s), main.shape];
-  const out = []; V.cockpit(mod, ev, out, etat);
-  const H = mod.objetsRendu.habitacle, source = H.mains[1].pieces[0];
-  assert.equal(exterior[3], source.objet.shape);
-  for (let k = 0; k < 3; k++) {
-    const centre = V.OEIL[k] + V.K * V.VOLANT.centre[k];
-    proche(exterior[0][k], [.18, .77, 0][k] + .9 * (source.o[k] - centre) / V.K);
-    proche(exterior[1][k], source.objet.r[k]); proche(exterior[2][k], .9 * source.objet.s[k] / V.K);
+  for (const passage of [0, .45, 1]) {
+    const etat = { regime: 9000, volant: .4, rapport: 4, rapportAvant: 3, passage, kmh: 160 };
+    Object.assign(ev.pilote, etat); dessiner(mod, ev);
+    const R = mod.objetsRendu.pilote;
+    for (let h = 0; h < 2; h++) {
+      const auLevier = h === 1 && passage === .45, nomAncrage = auLevier ? 'pommeau' : 'volant';
+      const main = role(R, 0, 'gant-' + h + '-0'), ancrage = Array.from(role(R, 0, nomAncrage).p);
+      const dehors = [Array.from(main.p), Array.from(main.r), Array.from(main.s), main.shape];
+      const out = []; V.cockpit(mod, ev, out, etat);
+      const H = mod.objetsRendu.habitacle, source = H.mains[h].pieces[0], sourceAncrage = auLevier ? H.pommeau : H.jante;
+      assert.equal(dehors[3], source.objet.shape);
+      for (let k = 0; k < 3; k++) {
+        // L'écartement de la prise reste exact ; les centres extérieurs sont définis par la cellule réelle,
+        // indépendamment du cadrage rapproché de la vue depuis le siège.
+        proche(dehors[0][k] - ancrage[k], .9 * (source.o[k] - sourceAncrage.o[k]) / V.K);
+        proche(dehors[1][k], source.objet.r[k]); proche(dehors[2][k], .9 * source.objet.s[k] / V.K);
+      }
+    }
   }
 });
 

@@ -1,29 +1,30 @@
 {
   "date": "2026-11-19",
   "etat_courant": {
-    "version_courante": "0.2.57",
+    "version_courante": "0.2.58",
     "physique": "p14",
     "version_publiee_verifiee": "0.2.56",
-    "statut": "demos_regard_arriere_qualifies_publication_attendue",
-    "branche": "codex/bitume-demos-regard-arriere-20261119",
+    "statut": "cockpit_exterieur_qualifie_publication_a_terminer",
+    "branche": "codex/bitume-cockpit-pilotes-20261119",
     "base_publiee": "6ed560661c9a69345dbbd6f8f26019845e84273d",
-    "lot": "demos_cinema_regard_arriere",
-    "fiche": "docs/reprise/DEMOS-CINEMA-2026-11-19.md",
+    "lot": "cockpit_exterieur_pilotes",
+    "fiche": "docs/reprise/COCKPIT-PILOTES-2026-11-19.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "040",
-    "prochaine_action": "Publier le lot, vérifier sa CI et conclure la reprise avant 13B Baïkal."
+    "derniere_entree": "041",
+    "prochaine_action": "Terminer les CI/publications 0.2.57 et 0.2.58, consigner leurs reçus puis reprendre 13B Baïkal."
   },
   "validation": {
-    "ciblee": "7/7 suites ; 135 contrôles ; code stable.",
-    "build_sha256": "cbcd5c26d36a19946d647c250f290150766be585e843a6e8c331716eefa7cbea",
-    "build_octets": 14182991,
+    "ciblee": "5/5 suites cockpit/voitures ; 71 contrôles ; 840 poses géométriques. Intégration nature corrigée : 4 contrôles supplémentaires réussis.",
+    "build_sha256": "773273ccaeba8ea7395d44f8e6a8b940feb595ddea89a56b393c09cb974704e9",
+    "build_octets": 14186142,
     "reproductible": true,
-    "rapport": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/QUALIFICATION-0257.json",
-    "ci": "a_verifier_apres_publication",
+    "rapport": "docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/QUALIFICATION-0258.json",
+    "ci": "a_constater_apres_publication",
     "jeu_navigateur_valide": false,
     "manette_physique_validee": false,
     "fps_materiels_mesures": false,
-    "site_deploye": false
+    "site_deploye": false,
+    "inspection_geometrique": "Trois vues, triangles réels, raster logiciel sans les shaders."
   },
   "livraison_precedente": {
     "version": "0.2.56",
@@ -50,19 +51,30 @@
     "regle": "Conserver les sept circuits historiques et toutes les demandes ; ne pas supprimer la montagne pour tenir l’ancien compte de 16."
   },
   "suite": {
-    "lot": "demos_cinema_regard_arriere",
-    "statut": "integre_qualifie_cible",
-    "copie_preparee_recuperee": true,
-    "correctif_camera": "Trajectoires mémorisées, poste animalier fixe, coupe explicite au masquage et protection du sprint.",
-    "regard_arriere": "Poursuite, stick droit bas maintenu ; relâchement immédiat et isolation J1/J2.",
-    "regles": "Conduite p14, départ/arrivée, démos continues, sortie sur geste, Faune/qualité, musique limitée au titre conservés."
+    "lot": "cockpit_exterieur_pilotes",
+    "statut": "corrige_qualifie_cible",
+    "correctif": "Levier recentré et fixé à la cuve, volant avancé de 10 cm, saute-vent dégagé, mains raccordées.",
+    "regles": "Animations, cadrage intérieur, conduite p14, FERRO, réseau et fixtures historiques conservés."
   },
   "suite_apres_demos": {
     "lot": "13B_Russie_decor_saisons",
     "statut": "non_commence",
     "objectif": "Lac, berges, lieux signature, végétation/faune du Baïkal, saisons et validation visuelle.",
     "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
-    "apres": "demos_cinema"
+    "apres": "cloture_cockpit_exterieur_0258"
   },
-  "regle": "Un sous-lot à la fois ; contrôler le distant, journaliser et conserver une reprise courte. Aucun push forcé."
+  "regle": "Un sous-lot à la fois ; contrôler le distant, journaliser et conserver une reprise courte. Aucun push forcé.",
+  "publication_0257": {
+    "pr": 15,
+    "branche": "codex/bitume-demos-regard-arriere-20261119",
+    "tete": "652749694a1a77f25501c6c4fe7100c8b4636f97",
+    "arbre": "0df500f7ebff0aeaed280750ed3fb1134efa04a8",
+    "statut": "ci_corrective_en_cours",
+    "ci_initiale": {
+      "push": "123/126 : nature-integration, traces et Val-Brûlé 156 ms / 150 ms.",
+      "pr": "124/126 : nature-integration et traces."
+    },
+    "correctif": "Contexte VM cam et cas nature/retour course ; code et build inchangés.",
+    "validation_correctif": "3/3 suites, 27 contrôles ; nouvelles CI push 44597071517 et PR 44597083364."
+  }
 }
