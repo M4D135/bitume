@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 const require = createRequire(import.meta.url);
 require('../src/graphismes.js');
+require('../src/pneus.js');
 require('../src/ambiance.js');
 require('../src/saisons.js');
 require('../src/chaussee.js');
@@ -47,6 +48,7 @@ const executer = new Function('B', 'stockage', `
     circuit: { ecart: (c,a,b) => b-a, echantillon: () => ({ y: 0, devers: 0, pente: 0 }) },
     mesures: { reinitialiser() {} }
   };
+  ${bloc('  function initialiserChoixPneus(', '  function choixPneusLocaux(')}
   ${bloc('  function lireStock(', '  // records et fantômes')}
   ${bloc('  const palier = ', '  // effets permis par le profil résolu')}
   capacitesRendu = B.graphismes.capacites({ msaa: 4, shadowMapScale: 2 }, false, 1);

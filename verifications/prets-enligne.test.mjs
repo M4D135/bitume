@@ -8,35 +8,53 @@ const require = createRequire(import.meta.url);
 require('../src/conduite.js'); require('../src/meteo.js');
 require('../src/ambiance.js');
 require('../src/saisons.js');
+require('../src/graphismes.js');
 const B = globalThis.BITUME;
 const source = readFileSync(process.argv[2] || new URL('../src/jeu.js', import.meta.url), 'utf8');
 const debut = source.indexOf('  const EL = '), fin = source.indexOf('  function envoyerEtats(', debut);
 assert.ok(debut >= 0 && fin > debut);
+function fonction(nom) {
+  const a = source.indexOf('  function ' + nom + '('), ligne = source.indexOf('\n', a);
+  assert.ok(a >= 0, nom + ' présente dans jeu.js');
+  if (source.slice(a, ligne).trimEnd().endsWith('}')) return source.slice(a, ligne);
+  const z = source.indexOf('\n  }', a);
+  assert.ok(z > a, nom + ' complète dans jeu.js');
+  return source.slice(a, z + 4);
+}
+const changementDebut = source.indexOf("  document.addEventListener('change', e => {");
+const changementFin = source.indexOf('\n  });', changementDebut) + 6;
+assert.ok(changementDebut >= 0 && changementFin > changementDebut);
 const catalogueDeclaration = source.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/)[0];
 const creer = new Function('B', `
-  let session = null, ecran = 'enligne', retourReglages = 'titre', graineCourse = 100, maintenant = 0, numero = 0;
+  let session = null, ecran = 'enligne', modePrepa = 'course', retourReglages = 'titre', graineCourse = 100, maintenant = 0, numero = 0;
   let conditionsPreparation = null, conditionsPreparationCle = '';
-  const temps = new Map(), messages = [], departs = [], elements = new Map();
+  const temps = new Map(), messages = [], departs = [], elements = new Map(), sauvegardes = [], ecouteurs = new Map();
+  const sauverReglages = () => sauvegardes.push(structuredClone(reglages));
   const setTimeout = (f, d) => { const id = ++numero; temps.set(id, { f, t: maintenant + d }); return id; };
   const clearTimeout = id => temps.delete(id);
   const $ = id => { if (!elements.has(id)) elements.set(id, { hidden: false, textContent: '', innerHTML: '', classList: { add() {}, remove() {} } }); return elements.get(id); };
-  const document = { querySelector: $, querySelectorAll: () => [] };
+  const document = { querySelector: $, querySelectorAll: () => [], addEventListener: (nom, f) => ecouteurs.set(nom, f) };
   const texte = (e, t) => { e.textContent = t; }, classe = () => {};
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   ${catalogueDeclaration}
   const NOMS_PNEUS = B.pneus.NOMS_PNEUS;
-  const reglages = { circuit: 0, tours: 3, difficulte: 1, meteo: 'pluie', pneus: 'pluie', boite: 'auto', vue: 'cockpit', joueursLocaux: 1 };
-  const aller = s => { ecran = s; }, lancer = (type, i, cfg) => departs.push({ type, i, cfg });
+  const reglages = { circuit: 0, tours: 3, difficulte: 1, meteo: 'pluie', pneus: 'pluie', pneusPilotes: ['pluie', 'pluie'], pneusAutoPilotes: [false, false], boite: 'auto', vue: 'cockpit', joueursLocaux: 1 };
+  // Comme aller() dans le jeu, revenir au salon réaffiche ses informations ; cela ne doit pas masquer un refus.
+  const aller = s => { ecran = s; if (s === 'enligne') majSalon(); }, lancer = (type, i, cfg) => departs.push({ type, i, cfg });
   // préparation sous voile (jeu.js) : la séance part au bout de ses étapes (30 ms ici), si la liaison tient encore
   const preparerSeance = (type, i, enl, conditions, o = {}) => setTimeout(() => {
     if (o.verifier && !o.verifier()) return;
     lancer(type, i, enl, conditions); aller('course');
   }, 30);
   const message = () => {}, sousMessage = () => {}, finirClassement = () => {}, montrerResultats = () => {};
+  ${['choixPneusLocaux', 'pneusAutomatiques', 'appliquerConseilPneus', 'choisirPneusPilote', 'majChoixPneus'].map(fonction).join('\n')}
   ${source.slice(debut, fin)}
+  ${source.slice(changementDebut, changementFin)}
   return {
     EL, reglages, messages, departs, $, proposerCourse, basculerPret, diffuserPrets, quitterPrets, quitterEnLigne,
     recevoirCourse, surMessageEnLigne, surDepart, surFermeture, nouvelleLiaison,
+    choisirPneusPilote, choixPneusLocaux, pneusAutomatiques, appliquerConseilPneus, sauvegardes,
+    changer: (name, value) => ecouteurs.get('change')({ target: {name, value} }),
     screen: s => { ecran = s; }, retour: s => { retourReglages = s; },
     etat: () => ({ ecran, retourReglages }),
     retirerPret: () => typeof retirerPret === 'function' ? retirerPret() : undefined,
@@ -59,17 +77,23 @@ const creer = new Function('B', `
         on(n, f) { callbacks.set(n, f); return this; }, emit(n, m) { callbacks.get(n)?.(m); },
         fermer() { this.etat = 'ferme'; this.emit('ferme', 'local'); }
       };
+      reglages.joueursLocaux = joueurs[id];
       EL.R = R; EL.role = role; return R;
     }
   };
 `);
 function hote(joueurs) { const a = creer(B); const R = a.connecter('hote', joueurs); a.proposerCourse(); return { a, R }; }
-function pret(a, id = 1, pneus = 'slicks') { a.surMessageEnLigne({ t: 'pret', oui: true, pneus }, id); }
+function choixMessage(a, id, pneus) {
+  const nombre = a.EL.R.membres.find(m => m.id === id)?.joueurs === 2 ? 2 : 1;
+  const pneusPilotes = Array.isArray(pneus) ? pneus : Array(nombre).fill(pneus);
+  return { versionChoixPneus: 1, pneus: pneusPilotes[0], pneusPilotes };
+}
+function pret(a, id = 1, pneus = 'slicks') { a.surMessageEnLigne({ t: 'pret', oui: true, ...choixMessage(a, id, pneus) }, id); }
 function tous(a, R) { a.basculerPret(); for (const m of R.membres) if (m.id !== R.id) pret(a, m.id); }
 function compte(a) { return a.messages.filter(x => x.m.t === 'depart').length; }
-function invite() {
-  const a = creer(B); const R = a.connecter('invite');
-  a.surMessageEnLigne({ t: 'confirmer', course: { i: 1, tours: 5, difficulte: 2, meteo: 'pluie', eau: .8 } }, 0);
+function invite(joueurs = [1, 1]) {
+  const a = creer(B); const R = a.connecter('invite', joueurs);
+  a.surMessageEnLigne({ t: 'confirmer', course: { versionChoixPneus: 1, i: 1, tours: 5, difficulte: 2, meteo: 'pluie', eau: .8 } }, 0);
   return { a, R };
 }
 
@@ -85,7 +109,7 @@ test('le moment choisi avant départ est annoncé et transmis aux pilotes', () =
   b.surMessageEnLigne({t:'depart',cfg},0);b.avancer(5000);
   assert.equal(b.departs[0].cfg.moment,'nuit');
   assert.equal(b.reglages.moment,'jour','préférence personnelle préservée après la course imposée');
-  assert.equal(b.recevoirCourse({i:0,tours:3,meteo:'soleil',eau:0,moment:'invalide'}),true);
+  assert.equal(b.recevoirCourse({versionChoixPneus:1,i:0,tours:3,meteo:'soleil',eau:0,moment:'invalide'}),true);
   assert.equal(b.EL.course.moment,'jour','messages anciens ou invalides reprennent le jour');
 });
 test('saison imposée par l’hôte, sans modifier les préférences des invités ; neige absente du Sud', () => {
@@ -96,7 +120,7 @@ test('saison imposée par l’hôte, sans modifier les préférences des invité
   assert.equal(cfg.saison, 'hiver');
   const b = creer(B); b.connecter('invite'); b.reglages.saison = 'printemps'; b.surMessageEnLigne({t:'depart',cfg},0); b.avancer(5000);
   assert.equal(b.departs[0].cfg.saison, 'hiver'); assert.equal(b.reglages.saison, 'printemps');
-  assert.equal(b.recevoirCourse({ i: 0, tours: 3, meteo: 'soleil', eau: 0, saison: 'inconnue' }), true);
+  assert.equal(b.recevoirCourse({ versionChoixPneus: 1, i: 0, tours: 3, meteo: 'soleil', eau: 0, saison: 'inconnue' }), true);
   assert.equal(b.EL.course.saison, 'ete');
   a.reglages.circuit = 1; a.proposerCourse(); tous(a, R);
   assert.match(a.$('pr-course').textContent, /pluie/); assert.doesNotMatch(a.$('pr-course').textContent, /neige/);
@@ -125,7 +149,7 @@ for (const [id, nom, index] of [['lande-noire', 'Lande-Noire', 3], ['roche-fauve
   assert.equal(b.departs[0].cfg.saison, 'hiver'); assert.equal(b.departs[0].cfg.moment, 'nuit');
   assert.equal(b.reglages.circuit, i); assert.equal(b.reglages.saison, 'printemps');
 });
-for (const joueurs of [[1, 1], [2, 1], [2, 2], [1, 1, 1, 1]]) test('départ unique avec ' + joueurs.join('+') + ' pilotes', () => {
+for (const joueurs of [[1, 1], [2, 1], [1, 2], [2, 2], [1, 1, 1, 1]]) test('départ unique avec ' + joueurs.join('+') + ' pilotes', () => {
   const { a, R } = hote(joueurs); tous(a, R); a.avancer(699); assert.equal(compte(a), 0);
   a.avancer(1); assert.equal(compte(a), 1); a.avancer(1000); assert.equal(a.departs.length, 1);
   const cfg = a.departs[0].cfg; assert.equal(cfg.humains.length, joueurs.reduce((s, n) => s + n, 0));
@@ -163,7 +187,7 @@ test('perdre une liaison pendant le compte à rebours ne lance pas une course in
   const { a, R } = hote(); tous(a, R); R.lies.delete(1); a.avancer(1000); assert.equal(compte(a), 0);
 });
 test('départ d’un membre nettoie ses pneus et permet aux autres de continuer', () => {
-  const { a, R } = hote([1, 1, 1]); a.basculerPret(); pret(a, 1); a.EL.pneusDe.set(2, 'inter');
+  const { a, R } = hote([1, 1, 1]); a.basculerPret(); pret(a, 1); a.EL.pneusDe.set(2, ['inter']);
   R.membres = R.membres.filter(m => m.id !== 2); R.lies.delete(2); a.surDepart(2); a.avancer(730);
   assert.equal(a.departs.length, 1); assert.equal(a.EL.pneusDe.has(2), false);
 });
@@ -179,8 +203,8 @@ test('un inconnu ne peut se dire prêt ni imposer des pneus', () => {
   assert.equal(a.EL.confirmation.prets.has(99), false); assert.equal(a.EL.pneusDe.has(99), false); assert.equal(a.EL.pneusDe.has(98), false);
 });
 test('l’invité choisit ses pneus sans modifier sa boîte ni sa vue', () => {
-  const { a } = invite(); a.reglages.pneus = 'inter'; a.reglages.boite = 'manuelle'; a.reglages.vue = 'poursuite'; a.basculerPret();
-  assert.deepEqual(a.messages.at(-1), { m: { t: 'pret', oui: true, pneus: 'inter' }, a: 0 });
+  const { a } = invite(); a.choisirPneusPilote(0, 'inter'); a.reglages.boite = 'manuelle'; a.reglages.vue = 'poursuite'; a.basculerPret();
+  assert.deepEqual(a.messages.at(-1), { m: { t: 'pret', oui: true, versionChoixPneus: 1, pneus: 'inter', pneusPilotes: ['inter'] }, a: 0 });
   assert.equal(a.reglages.boite, 'manuelle'); assert.equal(a.reglages.vue, 'poursuite');
 });
 test('annulation par l’hôte depuis les réglages retourne au salon', () => {
@@ -204,19 +228,185 @@ test('quitter pendant les 30 ms de chargement annule le lancement', () => {
 });
 
 
-test('12E : conseil neige reçu si seule la saison change, choix manuel conservé sinon', () => {
+test('le conseil suit la chaussée pour le mode automatique, le choix manuel reste personnel', () => {
   const { a } = invite();
   const catalogue = new Function(catalogueDeclaration + 'return CATALOGUE;')();
   const i = catalogue.findIndex(c => c.theme === 'foret');
-  const annonce = { i, tours: 3, meteo: 'soleil', eau: 0, saison: 'ete' };
+  a.reglages.pneusAutoPilotes = [true, false];
+  const annonce = { versionChoixPneus: 1, i, tours: 3, meteo: 'soleil', eau: 0, saison: 'ete' };
   a.recevoirCourse(annonce);
   assert.equal(a.reglages.pneus, 'slicks');
   a.recevoirCourse({ ...annonce, saison: 'hiver' });
   assert.equal(a.reglages.pneus, 'neige');
-  a.reglages.pneus = 'inter';
+  a.choisirPneusPilote(0, 'inter');
   a.recevoirCourse({ ...annonce, saison: 'hiver' });
   assert.equal(a.reglages.pneus, 'inter', 'annonce identique : choix du pilote conservé');
   const sud = catalogue.findIndex(c => c.theme === 'cote');
   a.recevoirCourse({ ...annonce, i: sud, saison: 'hiver' });
-  assert.equal(a.reglages.pneus, 'slicks');
+  assert.equal(a.reglages.pneus, 'inter', 'le choix manuel résiste au changement de circuit');
+  assert.equal(a.reglages.pneusPilotes[1], 'pluie', 'le choix du second pilote reste indépendant');
+});
+
+for (const joueurs of [[2, 2], [2, 1], [1, 2]]) test('12F2 : montes personnelles conservées au départ ' + joueurs.join('+'), () => {
+  const { a, R } = hote(joueurs);
+  a.choisirPneusPilote(0, 'slicks'); a.choisirPneusPilote(1, 'neige');
+  const distant = joueurs[1] === 2 ? ['inter', 'pluie'] : ['inter'];
+  a.basculerPret(); pret(a, 1, distant); a.avancer(730);
+  assert.equal(a.departs.length, 1);
+  const cfg = a.departs[0].cfg;
+  assert.equal(cfg.versionChoixPneus, 1);
+  assert.deepEqual(cfg.pneus, [...['slicks', 'neige'].slice(0, joueurs[0]), ...distant]);
+  assert.deepEqual(cfg.humains.map(h => [h.machine, h.local]), joueurs.flatMap((n, m) => Array.from({length: n}, (_, k) => [m, k])));
+  const b = creer(B); b.connecter('invite', joueurs);
+  b.surMessageEnLigne({ t: 'depart', cfg }, 0); b.avancer(5000);
+  assert.equal(b.departs.length, 1);
+  assert.deepEqual(b.departs[0].cfg.pneus, cfg.pneus);
+  assert.deepEqual(b.departs[0].cfg.locaux, Array.from({length: joueurs[1]}, (_, k) => joueurs[0] + k));
+});
+
+test('12F2 : l’invité transmet les deux montes, sans partager leur tableau mutable', () => {
+  const { a } = invite([2, 2]);
+  a.choisirPneusPilote(0, 'neige'); a.choisirPneusPilote(1, 'inter'); a.basculerPret();
+  const m = a.messages.at(-1).m;
+  assert.equal(m.versionChoixPneus, 1); assert.deepEqual(m.pneusPilotes, ['neige', 'inter']);
+  assert.equal(m.pneus, 'neige', 'alias historique réservé au premier pilote');
+  a.reglages.pneusPilotes[1] = 'pluie';
+  assert.deepEqual(m.pneusPilotes, ['neige', 'inter']);
+});
+
+test('12F2 : changer la deuxième monte distante retire son accord et annule le départ différé', () => {
+  const { a, R } = hote([2, 2]); a.basculerPret(); pret(a, 1, ['inter', 'pluie']);
+  a.avancer(300);
+  const m = { t: 'pneus', ...choixMessage(a, 1, ['inter', 'neige']) };
+  a.surMessageEnLigne(m, 1); a.avancer(1000);
+  assert.equal(a.EL.confirmation.prets.has(1), false); assert.equal(compte(a), 0);
+  m.pneusPilotes[1] = 'slicks';
+  assert.deepEqual(a.EL.pneusDe.get(1), ['inter', 'neige'], 'le message reçu ne garde pas un tableau modifiable de l’extérieur');
+  pret(a, 1, ['inter', 'neige']); a.avancer(730);
+  assert.equal(a.departs.length, 1); assert.deepEqual(a.departs[0].cfg.pneus.slice(2), ['inter', 'neige']);
+});
+
+test('12F2 : répétition identique des pneus ne retire pas un accord valide', () => {
+  const { a } = hote([2, 2]); a.basculerPret(); pret(a, 1, ['pluie', 'neige']);
+  a.surMessageEnLigne({ t: 'pneus', ...choixMessage(a, 1, ['pluie', 'neige']) }, 1);
+  a.avancer(730); assert.equal(a.departs.length, 1);
+});
+
+for (const mauvais of [
+  { pneusPilotes: ['slicks'] }, { pneusPilotes: ['slicks', 'inter', 'pluie'] },
+  { pneusPilotes: ['slicks', '__proto__'] }, { pneusPilotes: ['constructor', 'pluie'] },
+  { pneusPilotes: ['slicks', null] }, { pneusPilotes: 'pluie' },
+  { versionChoixPneus: 0 }, { versionChoixPneus: 2 }, { versionChoixPneus: '1' },
+  { versionChoixPneus: undefined, pneusPilotes: undefined }
+]) test('12F2 : accord pneus invalide refusé ' + JSON.stringify(mauvais), () => {
+  const { a } = hote([2, 2]); a.basculerPret(); pret(a, 1, ['inter', 'pluie']);
+  a.avancer(300);
+  a.surMessageEnLigne({ t: 'pret', oui: true, ...choixMessage(a, 1, ['inter', 'pluie']), ...mauvais }, 1);
+  a.avancer(1000);
+  assert.equal(compte(a), 0, 'un ancien accord ne peut autoriser ce choix incompatible');
+  assert.equal(a.EL.confirmation.prets.has(1), false);
+});
+
+test('12F2 : un message pneus ancien ou malformé retire aussi un accord devenu douteux', () => {
+  for (const m of [{ t: 'pneus', pneus: 'neige' }, { t: 'pneus', versionChoixPneus: 1, pneusPilotes: ['pluie'] }]) {
+    const { a } = hote([2, 2]); a.basculerPret(); pret(a, 1, ['inter', 'pluie']);
+    a.surMessageEnLigne(m, 1); a.avancer(1000);
+    assert.equal(compte(a), 0); assert.equal(a.EL.confirmation.prets.has(1), false);
+  }
+});
+
+test('12F2 : un inconnu et un pair non lié ne modifient ni les choix ni les accords', () => {
+  const { a, R } = hote([2, 2]);
+  a.surMessageEnLigne({ t: 'pret', oui: true, versionChoixPneus: 1, pneusPilotes: ['neige', 'pluie'] }, 77);
+  R.lies.delete(1);
+  a.surMessageEnLigne({ t: 'pneus', ...choixMessage(a, 1, ['inter', 'neige']) }, 1);
+  assert.equal(a.EL.pneusDe.size, 0); assert.equal(a.EL.confirmation.prets.size, 0);
+});
+
+test('12F2 : une annonce sans contrat reconnu ne prépare pas un invité', () => {
+  for (const versionChoixPneus of [undefined, 0, 2, '1']) {
+    const a = creer(B); a.connecter('invite');
+    a.surMessageEnLigne({ t: 'confirmer', course: { versionChoixPneus, i: 0, tours: 3, meteo: 'soleil', eau: 0 } }, 0);
+    assert.ok(!a.EL.confirmation); assert.equal(a.departs.length, 0);
+    assert.match(a.$('l-etat').textContent, /version/i, 'le refus est lisible dans le salon');
+  }
+});
+
+test('12F2 : un départ incompatible ou incomplet est refusé avant tout chargement', () => {
+  const { a, R } = hote([2, 2]); tous(a, R); a.avancer(730);
+  const cfg = a.departs[0].cfg;
+  for (const patch of [{ versionChoixPneus: undefined }, { versionChoixPneus: 8 }, { pneus: ['slicks'] }, { pneus: ['slicks', 'inter', 'pluie', 'constructor'] }]) {
+    const b = creer(B); b.connecter('invite', [2, 2]);
+    b.surMessageEnLigne({ t: 'depart', cfg: { ...cfg, ...patch } }, 0); b.avancer(5000);
+    assert.equal(b.departs.length, 0);
+    assert.match(b.$('l-etat').textContent, /version|pneus/i);
+  }
+});
+
+
+test('12F2 : le vrai contrôle du second pilote retire l’accord local avant de mémoriser son choix', () => {
+  const { a, R } = hote([2, 2]); tous(a, R); a.avancer(300);
+  a.changer('pneusPret2', 'neige'); a.avancer(1000);
+  assert.equal(compte(a), 0); assert.equal(a.EL.pretIci, false);
+  assert.equal(a.EL.confirmation.prets.has(0), false);
+  assert.deepEqual(a.reglages.pneusPilotes, ['pluie', 'neige']);
+  assert.deepEqual(a.sauvegardes.at(-1).pneusPilotes, ['pluie', 'neige']);
+});
+
+test('12F2 : le vrai contrôle invité déconfirme avant d’envoyer les deux montes', () => {
+  const { a } = invite([2, 2]); a.basculerPret();
+  a.changer('pneusPret2', 'neige');
+  assert.equal(a.EL.pretIci, false);
+  const derniers = a.messages.slice(-2).map(x => x.m);
+  assert.deepEqual(derniers.map(m => [m.t, m.oui]), [['pret', false], ['pneus', undefined]]);
+  assert.deepEqual(derniers[1].pneusPilotes, ['pluie', 'neige']);
+});
+
+test('12F2 : un faux choix UI ne modifie ni l’accord ni les préférences', () => {
+  const { a, R } = hote([2, 2]); tous(a, R);
+  const avant = structuredClone(a.reglages);
+  a.changer('pneusPret2', 'constructor');
+  assert.deepEqual(a.reglages, avant); assert.equal(a.EL.pretIci, true);
+  a.avancer(730); assert.equal(a.departs.length, 1);
+});
+
+test('12F2 : le refus de version reste visible après le retour réel au salon depuis la confirmation', () => {
+  const { a } = invite(); assert.equal(a.etat().ecran, 'prets');
+  a.surMessageEnLigne({ t: 'confirmer', course: { versionChoixPneus: 0, i: 0, tours: 3, meteo: 'soleil', eau: 0 } }, 0);
+  assert.equal(a.etat().ecran, 'enligne'); assert.equal(a.EL.confirmation, null);
+  assert.match(a.$('l-etat').textContent, /versions? incompatibles/i);
+  assert.match(a.$('l-etat').textContent, /rechargez/i);
+});
+
+test('12F2 : humains invalides ou hors capacité refusés sans exception avant chargement', () => {
+  const { a, R } = hote([2, 2]); tous(a, R); a.avancer(730);
+  const cfg = a.departs[0].cfg, h = cfg.humains;
+  const cas = [
+    ['élément nul', [null, ...h.slice(1)]],
+    ['tableau clairsemé', Array(4)],
+    ['quatre pilotes sur la même machine', h.map(x => ({...x, machine: 1}))],
+    ['trois pilotes sur une machine', [h[0], h[2], h[3], {...h[3], local: 2}]],
+    ['machine inconnue', [h[0], h[1], h[2], {...h[3], machine: 99}]],
+    ['identifiant de machine converti implicitement', [h[0], h[1], h[2], {...h[3], machine: '1'}]]
+  ];
+  for (const [nom, humains] of cas) {
+    const b = creer(B); b.connecter('invite', [2, 2]);
+    assert.doesNotThrow(() => b.surMessageEnLigne({ t: 'depart', cfg: {...cfg, humains} }, 0), nom);
+    b.avancer(5000); assert.equal(b.departs.length, 0, nom);
+    assert.match(b.$('l-etat').textContent, /versions? incompatibles/i, nom);
+  }
+  const seul = creer(B); seul.connecter('invite', [2, 1]);
+  assert.doesNotThrow(() => seul.surMessageEnLigne({t: 'depart', cfg}, 0));
+  seul.avancer(5000); assert.equal(seul.departs.length, 0, 'deux pilotes ne sont pas acceptés sur une machine déclarée à un seul');
+});
+
+test('12F2 : arrivée tardive valide, cette machine attend la suivante sans invalider la course annoncée', () => {
+  const { a, R } = hote([1, 1]); tous(a, R); a.avancer(730);
+  const cfg = a.departs[0].cfg;
+  const b = creer(B), RB = b.connecter('invite', [1, 1, 1]);
+  RB.id = 2; RB.lies = new Set([0, 1]);
+  b.surMessageEnLigne({t: 'depart', cfg}, 0); b.avancer(5000);
+  assert.equal(b.departs.length, 0);
+  assert.match(b.$('l-etat').textContent, /attendez la suivante/i);
+  assert.doesNotMatch(b.$('l-etat').textContent, /incompatible/i);
 });

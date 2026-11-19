@@ -87,10 +87,10 @@ verifier('la pluie reste liquide et le séchage conserve son fonctionnement', ()
   assert.ok(neige.meteo.mouille > 0 && neige.meteo.mouille < .6, 'eau résiduelle distincte de neige');
 });
 
-verifier('quatre choix avant course et nouveaux espaces de records/fantômes', () => {
-  for (const name of ['pneus', 'pneusPret']) {
+verifier('quatre montes et conseil indépendants par pilote, espaces records/fantômes préservés', () => {
+  for (const name of ['pneus', 'pneus2', 'pneusPret', 'pneusPret2']) {
     const valeurs = [...html.matchAll(new RegExp('name="' + name + '" value="([^"]+)"', 'g'))].map(m => m[1]);
-    assert.deepEqual(valeurs, B.pneus.TYPES_JOUABLES);
+    assert.deepEqual(valeurs, ['auto', ...B.pneus.TYPES_JOUABLES]);
   }
   const declaration = source.match(/  const PHYSIQUE = .*?;/)[0];
   const cles = new Function(declaration + 'return { PHYSIQUE, CLE_RECORDS, CLE_FANTOME };')();

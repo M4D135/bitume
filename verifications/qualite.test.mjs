@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 createRequire(import.meta.url)('../src/qualite.js');
 createRequire(import.meta.url)('../src/graphismes.js');
+createRequire(import.meta.url)('../src/pneus.js');
 const Q = globalThis.BITUME.qualite;
 const creer = n => ({ n, somme: 0, compte: 0, t: 0, aise: 0 });
 function images(p, fps, n, options) { let changements = 0; for (let i = 0; i < n; i++) if (Q.avancer(p, 1 / fps, options)) changements++; return changements; }
@@ -219,8 +220,9 @@ const integration = new Function('B', `
     if (!elements.has(id)) elements.set(id, { hidden: false, dataset: {}, querySelector: () => null });
     return elements.get(id);
   };
-  const document = { hidden: false, activeElement: null, addEventListener: (nom, f) => ecouteurs.set(nom, f) };
+  const document = { hidden: false, activeElement: null, querySelectorAll: () => [], addEventListener: (nom, f) => ecouteurs.set(nom, f) };
   const rendu = { resize: valeur => redimensions.push(valeur) }, gpuModeste = false, estTactile = true;
+  const texte = (element, valeur) => { element.textContent = valeur; }, NOMS_PNEUS = B.pneus.NOMS_PNEUS;
   const session = { type: 'course' }, son = null, hud2 = $('hud2'), pad2 = {}, EL = { role: null };
   const aDeux = () => session.type === 'duo', secouerManette = () => {}, tactile = () => {};
   const appliquerVolumes = () => {}, remplirReglages = () => {}, sauverReglages = () => {}, appliquerCarte = () => {}, viderStock = () => {};
@@ -228,6 +230,7 @@ const integration = new Function('B', `
   const stockage = {}, lireStock = (k, d) => stockage[k] ?? d, ecrireStock = (k, v) => { stockage[k] = JSON.parse(JSON.stringify(v)); };
   let empreinte = 'machine';
   const empreinteDetection = () => empreinte;
+  ${bloc('  function majPneusStands(', '  function preselectionnerPneus(')}
   ${bloc('  const palier = ', '  // effets permis par le profil résolu')}
   ${bloc("  let ecran = 'chargement';", "  document.addEventListener('click', e => {")}
   ${bloc("  document.addEventListener('change', e => {", "  for (const nom of ['general', 'moteur', 'effets'])")}
@@ -297,7 +300,7 @@ verifier('jeu : avec la cadence, les seuils suivent la période visée et non 60
 verifier('jeu : en pleine conduite, la résolution du palier 4 attend un arrêt ; les autres paliers suivent à l’image', () => {
   const jeu = integration(globalThis.BITUME);
   jeu.appliquerPalier(); assert.deepEqual(jeu.redimensions, ['auto']);
-  jeu.session.course = { phase: 'course', termine: false };
+  jeu.session.course = { phase: 'course', termine: false, voitures: [] };
   jeu.palier.n = 2; jeu.images(40, 120);
   assert.equal(jeu.palier.n, 3); assert.deepEqual(jeu.redimensions, ['auto', 'auto'], 'palier 3 : même résolution, appliqué');
   jeu.images(40, 120);
@@ -310,7 +313,7 @@ verifier('jeu : en pleine conduite, la résolution du palier 4 attend un arrêt 
   jeu.appliquerResolutionDifferee(jeu.session);
   assert.equal(jeu.redimensions.length, 3, 'appliquée une seule fois');
   const grille = integration(globalThis.BITUME); grille.appliquerPalier();
-  grille.session.course = { phase: 'grille', termine: false }; grille.palier.n = 3; grille.images(40, 120);
+  grille.session.course = { phase: 'grille', termine: false, voitures: [] }; grille.palier.n = 3; grille.images(40, 120);
   assert.equal(grille.palier.n, 4); assert.deepEqual(grille.redimensions, ['auto', .75], 'sur la grille, personne ne conduit');
 });
 verifier('jeu : le palier appris est rangé par machine et repris au démarrage', () => {

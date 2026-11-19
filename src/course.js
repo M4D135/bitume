@@ -592,7 +592,7 @@
     }
   }
 
-  // Stands (lots 4 et 12F1). La voie est le long du bord droit de la ligne droite principale, sous le bâtiment que dessine
+  // Stands (lots 4 et 12F). La voie est le long du bord droit de la ligne droite principale, sous le bâtiment que dessine
   // decor.js (circuit.js, c.stands). Elle est prise sur la chaussée : on y entre en serrant à droite, sans trou dans
   // la glissière. Règles tenues ici, nulle part ailleurs :
   //  - on n'entre qu'à basse vitesse (S.vitesse + 4 m/s) ; à vitesse de course, la voie n'est pas un stand ;
@@ -611,6 +611,16 @@
   //    transporte ni dégâts ni arrêt), un pair ne peut pas faire réparer la voiture d'un autre.
   const STANDS = { marge: .8, entree: 4, arret: .35, frein: 18, mouvementService: .05 };
   const COMMANDE_SERVICE = Object.freeze({ ...NEUTRE, frein: 1 });
+  // Choisir pour le prochain arrêt ne touche ni à la monte actuelle ni à son état. La demande n'est valable
+  // que pour une voiture humaine conduite ici ; un service commencé conserve la monte qu'il a figée.
+  function demanderPneus(course, v, type) {
+    if (!course || course.termine || !Array.isArray(course.voitures) || !v || !course.voitures.includes(v) ||
+      !(v.joueur || v.humain) || v.distant || v.reprise || v.fini || v.abandon ||
+      !v.etat || typeof v.etat !== 'object' || Array.isArray(v.etat) || v.etat.stands?.phase === 'service' ||
+      !B.pneus.estJouable(type)) return false;
+    v.etat.pneusProchainArret = type;
+    return true;
+  }
   function dansLaVoie(c, e, S) {
     return Math.abs(ecart(c, e.s, (S.debut + S.fin) / 2)) <= (S.fin - S.debut) / 2 + STANDS.entree * 10 &&
       Math.abs(e.d - S.d) <= S.demi + STANDS.marge;
@@ -658,7 +668,8 @@
       if (e.v > S.vitesse) e.v = Math.max(S.vitesse, e.v - STANDS.frein * dt);
       if (dansLeGarage(course.c, e, S) && Math.abs(e.v) < STANDS.arret) {
         st.phase = 'service'; st.t = 0; st.duree = B.degats.chiffrerService(v.degats);
-        st.pneus = e.pneus; st.revisionPneus = e.servicePneus; st.sService = e.s; st.dService = e.d;
+        st.pneus = B.pneus.estJouable(e.pneusProchainArret) ? e.pneusProchainArret : e.pneus;
+        st.revisionPneus = e.servicePneus; st.sService = e.s; st.dService = e.d;
         e.v = 0; e.gaz = 0; e.frein = 1; e.omega = 0;
         ev.push({ type: 'stand', id: v.id, phase: 'service', duree: st.duree, pneus: st.pneus });
       }
@@ -666,9 +677,11 @@
       if (st.interrompu || !serviceImmobile(course.c, e, S, st)) { annulerStand(v, ev); return; }
       e.v = 0; e.gaz = 0; e.frein = 1; e.omega = 0;
       if (st.t >= st.duree) {
+        const monteAvant = e.pneus;
         if (!B.pneus.remplacerEtat(e, st.pneus, { seance: course.graine, voiture: v.id }, st.revisionPneus)) {
           annulerStand(v, ev); return;
         }
+        if (monteAvant !== e.pneus) v.livree.pneus = e.pneus;
         B.degats.reparer(v.degats);
         st.phase = 'sortie'; st.repare = true;
         ev.push({ type: 'stand', id: v.id, phase: 'repare', pneus: e.pneus, servicePneus: e.servicePneus });
@@ -848,5 +861,5 @@
     };
   }
 
-  B.course = { creer, pas, replacer, fantome, etatPilotes, commandesIA, aspirer, horsService, empriseIA, stands, dansLaVoie, dansLeGarage, classer, chauffe, STANDS, IA_ATTENTE, IA_PORT, PILOTES, LIVREES, ASPIRATION };
+  B.course = { creer, pas, replacer, fantome, etatPilotes, commandesIA, aspirer, horsService, empriseIA, stands, demanderPneus, dansLaVoie, dansLeGarage, classer, chauffe, STANDS, IA_ATTENTE, IA_PORT, PILOTES, LIVREES, ASPIRATION };
 })(globalThis.BITUME = globalThis.BITUME || {});

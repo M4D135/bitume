@@ -216,6 +216,13 @@ button:disabled { cursor: wait; opacity: .55; }
 }
 
 .pause { display: flex; flex-direction: column; justify-content: center; gap: 24px; background: rgba(8, 9, 11, .66); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+.pause .service-pneus { max-width: 1040px; padding-top: 18px; border-top: 1px solid var(--trait-fort); }
+.service-pneus h3 { margin: 0 0 8px; font: 700 22px/1.1 var(--f-titre); }
+.service-pneus .options { margin-top: 16px; }
+.service-pneus fieldset { flex: 1 1 300px; }
+.service-pneus fieldset:disabled label { cursor: default; }
+.service-pneus fieldset:disabled label span { opacity: .6; }
+@media (max-height: 800px), (max-width: 760px) { .pause { justify-content: flex-start; } }
 
 .tableau-resultats { width: 100%; max-width: 1080px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
 .tableau-resultats th { padding: 0 10px 8px; text-align: right; font: 600 11px/1 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); border-bottom: 1px solid var(--trait-fort); }

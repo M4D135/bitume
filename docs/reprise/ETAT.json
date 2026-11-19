@@ -1,75 +1,118 @@
 {
   "date": "2026-11-19",
   "etat_courant": {
-    "branche": "main",
-    "version_courante": "0.2.47",
-    "base_commit": "9c49abad670b16c67127c921b6522fecd29daf79",
-    "base_version": "0.2.46",
-    "statut": "12E_qualifie_CPU_avec_reserves_publication_en_cours",
-    "lot": "12E_chaussee_adherence",
-    "fiche": "docs/reprise/12E-CHAUSSEE-ADHERENCE.md",
+    "branche": "codex/bitume-12f2-revue-20261119",
+    "base_commit": "1df6f6872e9d6962d6561b9b371d41042567a915",
+    "base_version": "0.2.48",
+    "version_courante": "0.2.48",
+    "version_publiee_verifiee": "0.2.48",
+    "statut": "12F2_sources_raccordees_qualification_en_cours",
+    "lot": "12F2_choix_pneus_par_pilote",
+    "fiche": "docs/reprise/12F2-CHOIX-PNEUS-PAR-PILOTE.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "qualification": "docs/reprise/rapports/12E-2026-11-19/qualification-finale.json",
-    "publication": "docs/reprise/rapports/12D-2026-11-19/PUBLICATION-0246.json",
-    "prochaine_action": "Publier et vérifier les sources, tests, build et preuves 12E ; enregistrer le reçu distant. Puis poursuivre 12F1 (stands et affichage) préparé dans une autre copie, distinct du réseau 12F2/12F3.",
-    "safari": "Corrigé, confirmé par David ; chantier clos.",
-    "physique": "p10 ; p9 archivée intacte",
-    "neige": "Choix jouable, couverture explicite statique ; tunnels secs et déneigés",
-    "checkpoint_sources": "docs/reprise/rapports/12E-2026-11-19/checkpoint-sources-12E.patch",
-    "version_publiee_verifiee": "0.2.46",
-    "publication_0247_attendue": "docs/reprise/rapports/12E-2026-11-19/PUBLICATION-0247.json"
+    "publication_base": "docs/reprise/rapports/12F2-2026-11-19/BASE-0248.json",
+    "prochaine_action": "Terminer requalification ciblée, construire et publier branche de revue. Fusion main soumise à autorisation après refus automatique. Ensuite 12F3.",
+    "physique": "p11 ; références p9/p10/p11 conservées",
+    "safari": "Corrigé, confirmé par David ; chantier clos."
   },
   "validation": {
-    "date": "2026-11-19",
-    "version": "0.2.47",
-    "lot": "12E",
-    "statut": "CPU_avec_reserves",
-    "suites": 98,
-    "reussies": 96,
+    "date_utc": "2026-11-19T10:39:21.391298+00:00",
+    "version": "0.2.48",
+    "physique": "p11",
+    "suites": 100,
+    "reussies": 99,
     "echecs": [
-      "decor.test.mjs",
       "traces.test.mjs"
     ],
-    "echec_herite_prouve": "traces.test.mjs",
-    "reserve_performance": "decor.test.mjs : Haut-Col 194 ms > 150 ms ; régression de performance non exclue",
+    "sources_stables": true,
     "determinisme": {
       "scenarios": 20,
       "empreintes": 1300,
-      "generation_code": 0,
-      "verification_suite_code": 0,
-      "verification_independante_code": 0,
-      "p9_sha256": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a",
-      "p9_inchangee": true,
-      "p10_sha256": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
-      "note": "Fixture p10 distincte après changement intentionnel de physique ; la fixture p9 et son historique ne sont pas réécrits."
-    },
-    "viabilite": {
-      "scenarios": 9,
-      "anomalies": 0,
-      "stagnants_15s": 0,
-      "replacements": 3,
-      "fin_naturelle": true
+      "generation": 0,
+      "verification": 0,
+      "archives": {
+        "verifications/fixtures/determinisme-p10.json": "d0c0beca4d1db5cbadb6f3c6f2daa301f9a2c7695e19fcceab1cfabd7c8aba0f",
+        "verifications/fixtures/determinisme-p9.json": "9193959db4637e478c2ac1eb0666381d48e7109d068d3323ff189155c52e1b0a"
+      }
     },
     "build": {
-      "version": "0.2.47",
-      "bytes": 14001233,
-      "sha256": "90afbee41f4d080a7b464572ce5464a9c91c53a560be8458f748229f955135b7",
+      "sha256": "716f9f85873b490e92cea5c3684a0c0133ec2541dd0ab8235b223511e5680d5b",
+      "bytes": 14006845,
       "reproductible": true,
-      "preuve": "cloture/build.json",
-      "syntaxe_scripts": 51,
-      "syntaxe_valide": true,
-      "preuve_syntaxe": "cloture/bundle-syntax.json"
+      "codes": [
+        0,
+        0
+      ],
+      "hashes": {
+        "VERSION.json": "b2456aae684c049f1c90ca37aa2a69937e0857ab2f8ea3516018d677eb7df4ab",
+        "SIZE.json": "e484c3a900e6e07738adcd9d4be71a9a0c9a49d113796a1fb987b65c6d9d129b",
+        "dist/bitume.html": "716f9f85873b490e92cea5c3684a0c0133ec2541dd0ab8235b223511e5680d5b"
+      }
+    },
+    "bundle": {
+      "scripts": 51,
+      "codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
     },
     "ferro": {
       "version": "0.3.11",
-      "modules_identiques": 34,
+      "modules": 34,
       "ecarts": []
     },
     "webgl_valide": false,
-    "performance_materielle_mesuree": false,
     "deploiement_effectue": false,
-    "site_verifie": false,
-    "preuve": "docs/reprise/rapports/12E-2026-11-19/qualification-finale.json"
+    "lot": "12F1_base_0248"
   },
   "catalogue": {
     "jouables": 7,
@@ -83,12 +126,11 @@
     "note": "L’ancien objectif 16 précède l’ajout montagne ; ne supprimer aucune demande pour tenir ce compte."
   },
   "suite": {
-    "lot": "12F1",
-    "statut": "préparation dans une autre copie, non livré par 12E",
-    "objectif": "Remplacement réel des quatre pneus à la fin du service et affichage détaillé, puis réseau versionné dans des sous-lots distincts.",
-    "prerequis": "Publication 12E vérifiée et reçu 0.2.47 enregistré",
+    "lot": "12F3",
+    "objectif": "Transport versionné du type, de l’usure et des services ; contrôles d’autorité et reprise IA sans remise à neuf.",
+    "prerequis": "Revue 12F2 publiée et fusion autorisée.",
     "apres": [
-      "12F2/12F3 réseau versionné et raccord",
+      "Stratégie de stands IA",
       "Russie",
       "Monaco",
       "Marseille"
@@ -97,7 +139,7 @@
   "acces": {
     "mac_spark_amiga_disponibles": false,
     "travaux_mac_non_fusionnes": "Branches absentes de GitHub ; ne pas les compter livrées.",
-    "publication": "Connexion GitHub ; Git direct sans identifiants en écriture.",
+    "publication": "Branche de revue : envoi main refusé par approbation automatique dans cette session ; ne pas contourner.",
     "deploiement_effectue": false,
     "site_verifie": false
   },
