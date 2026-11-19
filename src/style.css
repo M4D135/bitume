@@ -24,6 +24,8 @@ html, body { margin: 0; height: 100%; background: var(--encre); color: var(--pap
 body { font: 15px/1.4 var(--f-texte); -webkit-font-smoothing: antialiased; touch-action: none; user-select: none; -webkit-user-select: none; }
 button, input { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
+.texte-accessible { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.aide-reglage { margin: 8px 0 0; max-width: 55ch; font-size: 12px; line-height: 1.5; color: var(--papier-2); }
 
 #jeu { position: fixed; inset: 0; overflow: hidden; }
 #vue-course { position: absolute; inset: 0; overflow: hidden; transition: opacity .3s; }
@@ -336,6 +338,15 @@ body.tactile .case .barre-sante { height: 4px; margin-top: 3px; }
 @keyframes message { 0% { opacity: 0; transform: scale(1.18); } 10% { opacity: 1; transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
 .sous-message { position: absolute; left: 0; right: 0; top: calc(30% + clamp(44px, 8vw, 96px)); text-align: center; font: 700 clamp(16px, 2.2vw, 24px)/1.2 var(--f-titre); letter-spacing: .06em; text-transform: uppercase; color: var(--papier-2); text-shadow: 0 2px 12px rgba(0, 0, 0, .6); opacity: 0; }
 .sous-message.visible { animation: message 2.2s ease-out forwards; }
+.annonce-virage { position: absolute; top: calc(var(--hud-top) + 100px); left: 50%; transform: translateX(-50%); display: grid; grid-template-columns: 34px minmax(0,1fr) auto; align-items: center; gap: 9px; max-width: calc(100% - 32px); padding: 7px 11px 7px 7px; color: var(--papier); background: rgba(10,12,15,.87); border: 1px solid rgba(242,236,223,.25); border-left: 3px solid var(--ambre); border-radius: var(--rayon); box-shadow: 0 2px 10px rgba(0,0,0,.2); }
+.virage-fleche { width: 34px; height: 34px; fill: none; stroke: var(--ambre); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+.annonce-virage[data-sens="gauche"] .virage-fleche { transform: scaleX(-1); }
+.virage-epingle, .annonce-virage[data-difficulte="3"] .virage-courbe { display: none; }
+.annonce-virage[data-difficulte="3"] .virage-epingle { display: block; }
+.annonce-virage[data-difficulte="3"] { border-left-color: #ff745f; }
+.annonce-virage[data-difficulte="3"] .virage-fleche { stroke: #ff745f; }
+.virage-nom { font: 800 17px/1.15 var(--f-titre); letter-spacing: .025em; }
+.virage-distance { min-width: 4ch; text-align: right; color: var(--ambre); font: 800 20px/1 var(--f-titre); white-space: nowrap; }
 .message.visible.bis, .sous-message.visible.bis { animation-name: message-bis; }
 @keyframes message-bis { 0% { opacity: 0; transform: scale(1.18); } 10% { opacity: 1; transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
 
@@ -487,6 +498,10 @@ body.tactile .feux { top: calc(var(--hud-top) + var(--carte-presence) + 58px); p
 body.tactile .feux i { width: 18px; }
 body.tactile .message { top: max(28%,calc(var(--hud-top) + var(--carte-presence) + 76px)); font-size: clamp(26px,6vw,48px); }
 body.tactile .sous-message { top: max(calc(28% + 42px),calc(var(--hud-top) + var(--carte-presence) + 118px)); font-size: 13px; }
+body.tactile .annonce-virage { top: calc(var(--hud-top) + 55px); padding: 5px 8px 5px 5px; gap: 6px; grid-template-columns: 27px minmax(0,1fr) auto; }
+body.tactile .virage-fleche { width: 27px; height: 27px; }
+body.tactile .virage-nom { font-size: 15px; }
+body.tactile .virage-distance { font-size: 17px; }
 body.tactile .demo-bandeau { top: calc(var(--hud-top) + var(--carte-presence) + 58px); background: rgba(10,12,15,.3); border: 0; }
 body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98px); background: rgba(10,12,15,.2); }
 
@@ -510,6 +525,11 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   body.tactile .ligne-chrono { flex-direction: row; align-items: baseline; justify-content: flex-start; gap: 8px; }
   body.tactile #b-pause { top: calc(var(--hud-top) + 58px); }
   body.tactile #zone-carte, body.tactile .hud-bas { top: calc(var(--hud-top) + 110px); }
+  .annonce-virage, body.tactile .annonce-virage { top: calc(var(--hud-top) + 190px); left: var(--marge); right: auto; transform: none; width: min(240px,calc(100% - var(--carte-presence) - 3 * var(--marge))); max-width: none; grid-template-columns: 27px minmax(0,1fr); gap: 3px 6px; }
+  .annonce-virage .virage-fleche { grid-row: 1 / 3; width: 27px; height: 27px; }
+  .annonce-virage .virage-distance { grid-column: 2; text-align: left; font-size: 17px; }
+  .annonce-virage .virage-nom { font-size: 15px; }
+  #jeu[data-carte-position="gauche"] .annonce-virage { right: var(--marge); left: auto; }
 }
 
 /* deux manettes branchées : l'écran titre le signale sur « À deux » */

@@ -3,6 +3,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import '../src/circuit.js';
+import '../src/virages.js';
 import '../src/conduite.js';
 import '../src/degats.js';
 import '../src/contacts.js';
@@ -95,7 +96,9 @@ const charger = new Function('B', 'dom', `
   'use strict';
   const { $, document } = dom;
   const clamp = (v,a,b) => Math.max(a,Math.min(b,v)), lerp = (a,b,t) => a+(b-a)*t;
-  const reglages = { carte:'non', boite:'auto' }, imageCadence = null, dureeImage = 16;
+  const reglages = { carte:'non', boite:'auto', annoncesVirages:'non', general:.8, effets:.9 }, imageCadence = null, dureeImage = 16;
+  let ecran = 'course', sonActif = true, muet = false;
+  const paroles = [], annulations = [], voixVirages = { dire: (...args) => paroles.push(args), annuler: () => annulations.push(true) };
   const chrono = t => t == null ? '–' : String(t), ecartTexte = t => String(t), nomCourt = v => v.nom;
   let horlogeReelle = 0, session = null;
   ${extrait('  const H = {};', '  // ---------------------------------------------------------------- écrans')}
@@ -104,7 +107,9 @@ const charger = new Function('B', 'dom', `
     ${extrait('    S.locaux = course.voitures.filter', '    jeu.dataset.partage =')}
     return S;
   }
-  return { HUD1, HUD2, hud2, majPneusHUD, majHud, initialiser, horloge:t => { horlogeReelle=t; } };
+  return { HUD1, HUD2, hud2, majPneusHUD, majHud, majAnnonceVirage, suspendreAnnoncesVirages,
+    initialiser, reglages, paroles, annulations, document,
+    ecran:n => { ecran=n; }, muet:b => { muet=b; }, horloge:t => { horlogeReelle=t; } };
 `);
 function harnais() { const arbre = dom(); return { ...charger(B, arbre), arbre }; }
 const c = B.circuit.creer(11, { theme: 'foret', longueur: 4200 });
@@ -218,4 +223,76 @@ verifier('images identiques : aucune écriture pneus répétée ; la mise à jou
   const nouveau = compte(h.HUD1); h.horloge(1.08); h.majHud(S); assert.equal(compte(h.HUD1), nouveau);
 });
 
-console.log(controles + ' contrôles HUD pneus réels réussis (DOM simulé, mise en page/WebGL non qualifiés)');
+function avantVirage(co, j = co.joueur, sens = 1) {
+  const virage = B.virages.planifier(co.c).find(v => v.sens === sens && v.debut > 160);
+  assert.ok(virage, 'virage réel disponible');
+  co.phase = 'course';
+  j.etat.s = virage.debut - 70; j.progression = j.etat.s - co.c.depart; j.etat.v = 30;
+  return virage;
+}
+
+verifier('virages : vrai HTML cloné et raccord majHud, distance visible sans répéter l’annonce accessible', () => {
+  const h = harnais(), co = course(), S = seance(co), v = avantVirage(co);
+  h.reglages.annoncesVirages = 'ecran';
+  const avant = JSON.stringify(co.joueur.etat);
+  h.majHud(S);
+  assert.equal(h.HUD1.h['h-virage'].hidden, false);
+  assert.equal(h.HUD1.h['h-virage-nom'].textContent, v.libelle);
+  assert.equal(h.HUD1.h['h-virage-distance'].textContent, '70 m');
+  assert.equal(h.HUD1.h['h-virage'].getAttribute('data-sens'), 'droite');
+  assert.equal(JSON.stringify(co.joueur.etat), avant, 'lecture pure des pneus et de la surface');
+  const live = h.HUD1.h['h-virage-annonce'], paroles = live.ecritures;
+  co.joueur.etat.s += 20; co.joueur.progression += 20; h.horloge(.2); h.majHud(S);
+  assert.equal(h.HUD1.h['h-virage-distance'].textContent, '50 m');
+  assert.equal(live.ecritures, paroles, 'les mètres ne deviennent pas des annonces vocales répétées');
+  assert.equal(h.paroles.length, 0, 'mode écran silencieux');
+  for (const id of ['h-virage','h-virage-nom','h-virage-distance','h-virage-annonce'])
+    assert.notStrictEqual(h.HUD1.h[id], h.HUD2.h[id]);
+});
+
+verifier('virages partagés/en ligne : états indépendants pour les deux pilotes locaux, seule la voix du J1', () => {
+  const h = harnais(), co = course({ noms:['Distant A','Local A','Distant B','Local B'], locaux:[1,3], enLigne:true });
+  const S = seance(co), S2 = Object.create(S), j1 = co.voitures[1], j2 = co.voitures[3];
+  avantVirage(co, j1, 1); avantVirage(co, j2, -1); h.reglages.annoncesVirages = 'voix';
+  h.majAnnonceVirage(S, h.HUD1, j1); h.majAnnonceVirage(S2, h.HUD2, j2);
+  assert.equal(h.HUD1.h['h-virage'].getAttribute('data-sens'), 'droite');
+  assert.equal(h.HUD2.h['h-virage'].getAttribute('data-sens'), 'gauche');
+  assert.notStrictEqual(h.HUD1.suiviVirages, h.HUD2.suiviVirages);
+  assert.equal(h.paroles.length, 1); assert.match(h.paroles[0][0], /Droite/);
+  assert.equal(h.paroles[0][1], .8 * .9);
+});
+
+verifier('virages : pause/reprise, arrêt et recul coupent l’affichage sans redire le même virage', () => {
+  const h = harnais(), co = course(), S = seance(co); avantVirage(co); h.reglages.annoncesVirages = 'voix';
+  const maj = t => { h.horloge(t); h.majAnnonceVirage(S, h.HUD1, co.joueur); };
+  maj(0); assert.equal(h.paroles.length, 1);
+  const suivi = h.HUD1.suiviVirages, annulations = h.annulations.length;
+  h.suspendreAnnoncesVirages(); h.ecran('pause'); maj(1);
+  assert.equal(h.HUD1.h['h-virage'].hidden, true); assert.ok(h.annulations.length > annulations);
+  h.ecran('course'); maj(2); assert.equal(h.HUD1.h['h-virage'].hidden, false);
+  assert.strictEqual(h.HUD1.suiviVirages, suivi); assert.equal(h.paroles.length, 1);
+  co.joueur.etat.v = 0; maj(3); assert.equal(h.HUD1.h['h-virage'].hidden, true);
+  co.joueur.etat.v = -2; co.joueur.etat.rapport = -1; maj(4);
+  assert.equal(h.HUD1.h['h-virage'].hidden, true); assert.equal(h.paroles.length, 1);
+});
+
+verifier('virages : pas d’annonce en démo, grille, arrivée, stand, accident ou onglet masqué', () => {
+  for (const modifier of [h => h.reglages.annoncesVirages='non', (h,S) => S.type='demo',
+    (h,S) => S.course.phase='grille', (h,S) => S.course.joueur.fini=true, (h,S) => S.course.joueur.abandon=true,
+    (h,S) => S.course.joueur.etat.stands={phase:'service'}, (h,S) => S.course.joueur.etat.accident={},
+    (h,S) => S.course.joueur.etat.recuperation={}, h => h.document.hidden=true]) {
+    const h = harnais(), co = course(), S = seance(co); avantVirage(co); h.reglages.annoncesVirages='voix';
+    modifier(h,S); h.majAnnonceVirage(S,h.HUD1,co.joueur);
+    assert.equal(h.HUD1.h['h-virage'].hidden,true); assert.equal(h.paroles.length,0);
+  }
+});
+
+verifier('virages : nouvelle course réarme l’annonce ; son coupé garde l’écran silencieux', () => {
+  const h = harnais(); h.reglages.annoncesVirages='voix';
+  for (let i=0;i<2;i++) { const co=course(); avantVirage(co); h.majAnnonceVirage(seance(co),h.HUD1,co.joueur); }
+  assert.equal(h.paroles.length,2);
+  const co=course(); avantVirage(co); h.muet(true); h.majAnnonceVirage(seance(co),h.HUD1,co.joueur);
+  assert.equal(h.HUD1.h['h-virage'].hidden,false); assert.equal(h.paroles.length,2);
+});
+
+console.log(controles + ' contrôles HUD pneus et virages réels réussis (DOM simulé, mise en page/WebGL non qualifiés)');

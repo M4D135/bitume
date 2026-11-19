@@ -36,6 +36,7 @@ const executer = new Function('B', 'stockage', `
   const clamp = (x,a,b) => Math.max(a,Math.min(b,x)), ramener = (s,l) => ((s%l)+l)%l;
   const CATALOGUE = [{ id: 'essai', graine: 11, theme: 'foret' }], c = { longueur: 1000 };
   const circuit = () => c, plan = () => ({}), dessinerTrace = () => {}, appliquerCarte = () => {};
+  const suspendreAnnoncesVirages = () => { appels.annoncesSuspendues = (appels.annoncesSuspendues || 0) + 1; };
   const rendu = { resize: v => appels.rendu.push(['resize',v]),
     setWorld: (...args) => appels.rendu.push(['world',...args]), setNappes: v => appels.rendu.push(['nappes',v]), setLots: v => appels.rendu.push(['lots',v]) };
   const gpuModeste = false, EL = { role: null }, retro = { j1: null, j2: null };
@@ -82,6 +83,19 @@ function jeu(prefs = {}) {
 const options = x => Object.fromEntries(['anticrenelage','ombres','vegetation'].map(k => [k,x[k]]));
 let controles = 0;
 function verifier(nom, f) { f(); controles++; console.log('ok ' + nom); }
+
+verifier('annonces de virage : défaut écran, trois choix persistés, valeurs invalides refusées', () => {
+  assert.equal(jeu().reglages.annoncesVirages,'ecran');
+  assert.equal(jeu({annoncesVirages:'inconnue'}).reglages.annoncesVirages,'ecran');
+  for (const mode of ['non','ecran','voix']) {
+    const j=jeu(); j.choisir('annoncesVirages',mode);
+    assert.equal(j.reglages.annoncesVirages,mode);
+    assert.equal(jeu(JSON.parse(j.stockage['bitume.reglages'])).reglages.annoncesVirages,mode);
+    assert.equal(j.appels.annoncesSuspendues,1,'changement de mode coupe la phrase précédente');
+    j.choisir('annoncesVirages','inconnue'); assert.equal(j.reglages.annoncesVirages,mode);
+    assert.equal(j.appels.annoncesSuspendues,1);
+  }
+});
 
 verifier('chargement : anciennes préférences et choix invalides reprennent le profil', () => {
   for (const prefs of [{ qualite: 'low' }, { anticrenelage: 'impossible', ombres: 5, vegetation: null }]) {

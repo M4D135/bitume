@@ -38,7 +38,7 @@ const fabriquer = new Function('B', 'options', `
   const reglages = { circuit: 0, tours: 3, difficulte: 1, saison: 'ete', moment: 'jour', meteo: 'soleil',
     saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', pneus: 'slicks', pneusPilotes: ['slicks', 'slicks'], pneusAutoPilotes: [true, true], boite: 'auto', vue: 'cockpit', joueursLocaux: 1 };
   const son = null, palier = {}, pad2 = null, hud2 = $('hud2'), jeu = $('jeu'), estTactile = true;
-  const aDeux = () => false, secouerManette = () => {}, tactile = () => {}, appliquerVolumes = () => {}, viderStock = () => {};
+  const aDeux = () => false, secouerManette = () => {}, tactile = () => {}, appliquerVolumes = () => {}, viderStock = () => {}, suspendreAnnoncesVirages = () => {};
   const remplirReglages = () => {}, message = () => {}, sousMessage = () => {}, finirClassement = () => {}, montrerResultats = () => {};
   const remplirPreparation = () => { actualiserConditions(); };
   const lancer = (type, i, cfg, conditions) => {

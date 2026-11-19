@@ -49,7 +49,7 @@
     for (const [cle, valeur] of [...stockEnAttente]) ecrireStock(cle, typeof valeur === 'function' ? valeur() : valeur);
   }
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
-    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel',
+    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'ecran',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglagesEnregistres = lireStock('bitume.reglages', {});
   const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
@@ -68,7 +68,7 @@
   if (!reglages.champRevu) { if (+reglages.champ === 69) reglages.champ = DEFAUT.champ; reglages.champRevu = true; }
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
   // Les anciens placements auto/haut/bas reviennent en haut à droite ; taille et visibilité sont conservées.
-  for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['gauche', 'droite'], carteTaille: ['petite', 'normale', 'grande'] }))
+  for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['gauche', 'droite'], carteTaille: ['petite', 'normale', 'grande'], annoncesVirages: ['non', 'ecran', 'voix'] }))
     if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
   const sauverReglages = () => {
     // en course (changement de vue au clavier ou à la manette), l'écriture attend la file
@@ -458,12 +458,12 @@
   addEventListener('blur', () => { touches.clear(); souris.gaz = souris.frein = souris.derive = false; relacherTactile(); if (pauseAuto && enCourse()) basculerPause(true); });
   document.addEventListener('visibilitychange', () => {
     oublierIntervalle();
-    if (document.hidden) { relacherTactile(); viderStock(); }   // un onglet masqué peut être tué sans autre avis
+    if (document.hidden) { relacherTactile(); viderStock(); suspendreAnnoncesVirages(); }   // un onglet masqué peut être tué sans autre avis
     if (pauseAuto && document.hidden && enCourse()) basculerPause(true);
     if (son) son.musique(!document.hidden && ecran === 'titre'); // onglet caché : le minuteur du thème serait bridé
   });
   addEventListener('focus', oublierIntervalle);
-  addEventListener('pagehide', viderStock);   // page fermée ou rechargée : la file part avant
+  addEventListener('pagehide', () => { viderStock(); suspendreAnnoncesVirages(); });   // page fermée ou rechargée : la file part avant
   addEventListener('pointerdown', activerSon, { passive: true });
   // Gestes : ils remettent à zéro l'attente de la démo sur l'écran titre ; pendant la démo, le premier ramène au
   // titre et ne compte pas comme un clic sur le menu qui revient.
@@ -816,12 +816,14 @@
 
   // ---------------------------------------------------------------- son
   let sonActif = false, muet = false;
+  const voixVirages = B.virages.creerVoix();
   function activerSon() {
     if (!son) return;
     son.demarrer();
     if (!sonActif) { sonActif = true; appliquerVolumes(); son.musique(ecran === 'titre'); }
   }
   function appliquerVolumes() {
+    if (muet || !(reglages.general * reglages.effets > 0)) voixVirages.annuler();
     if (!son) return;
     const menu = !(enCourse() || ecran === 'demo');
     son.regler({ general: muet ? 0 : reglages.general * (menu ? .55 : 1), moteur: reglages.moteur, effets: reglages.effets });
@@ -2594,7 +2596,7 @@
 
   // ---------------------------------------------------------------- affichage de course
   const H = {};
-  for (const id of ['h-pos', 'h-sur', 'h-tour', 'h-tours', 'h-actuel', 'h-meilleur', 'h-delta', 'h-delta-ligne', 'h-vitesse', 'h-rapport', 'h-regime', 'h-fps', 'h-sante', 'h-sante-barre', 'c-sante', 'jauge-derive', 'classement', 'feux', 'carte', 'c-position', 'c-tour', 'message', 'sous-message']) H[id] = $(id);
+  for (const id of ['h-pos', 'h-sur', 'h-tour', 'h-tours', 'h-actuel', 'h-meilleur', 'h-delta', 'h-delta-ligne', 'h-vitesse', 'h-rapport', 'h-regime', 'h-fps', 'h-sante', 'h-sante-barre', 'c-sante', 'jauge-derive', 'classement', 'feux', 'carte', 'c-position', 'c-tour', 'message', 'sous-message', 'h-virage', 'h-virage-nom', 'h-virage-distance', 'h-virage-annonce']) H[id] = $(id);
   const segments = Array.from(H['jauge-derive'].querySelectorAll('i')), lampes = Array.from(H.feux.querySelectorAll('i'));
   const etiquetteDerive = H['jauge-derive'].querySelector('.etiquette');
   const barre = H['h-regime'].querySelector('.barre');
@@ -2614,6 +2616,51 @@
   function attr(el, nom, v) { if (el['_' + nom] !== v) { el['_' + nom] = v; el.setAttribute(nom, v); } }
   function style(el, nom, v) { if (el['_s' + nom] !== v) { el['_s' + nom] = v; el.style.setProperty(nom, v); } }
   function classe(el, nom, oui) { if (el.classList.contains(nom) !== !!oui) el.classList.toggle(nom, !!oui); }
+
+  // Les annonces suivent le pilote de cet ATH, jamais l'état partagé de S.vueJ2. Le plan et la surface
+  // sont lus sans modifier la course. Seule la distance visible évolue ; le lecteur d'écran parle une fois.
+  function masquerAnnonceVirage(x) {
+    x.h['h-virage'].hidden = true;
+    texte(x.h['h-virage-annonce'], '');
+  }
+  function suspendreAnnoncesVirages() {
+    voixVirages.annuler();
+    for (const x of [HUD1, HUD2]) { masquerAnnonceVirage(x); x.tVirage = -Infinity; }
+  }
+  function majAnnonceVirage(S, x, j) {
+    const co = S.course, et = j.etat;
+    if (x.courseVirages !== co || x.piloteVirages !== j.id) {
+      x.courseVirages = co; x.piloteVirages = j.id; x.suiviVirages = {}; x.surfaceVirage = {};
+      x.positionVirage = {}; x.tVirage = -Infinity;
+      masquerAnnonceVirage(x);
+      if (x === HUD1) voixVirages.annuler();
+    }
+    const actif = (reglages.annoncesVirages === 'ecran' || reglages.annoncesVirages === 'voix')
+      && ecran === 'course' && !document.hidden && S.type !== 'demo' && co.phase === 'course'
+      && !j.fini && !j.abandon && !et.stands && !et.accident && !et.recuperation && !et.reparation && et.rapport >= 0 && et.v >= 0;
+    if (actif && horlogeReelle < x.tVirage) return;
+    x.tVirage = horlogeReelle + .1;
+    const position = x.positionVirage;
+    position.s = et.s; position.progression = j.progression; position.vitesse = et.v; position.actif = actif;
+    position.adherence = actif ? B.conduite.adherenceVoiture(et, B.chaussee.lire(co.c, et.s, S.meteo, x.surfaceVirage)) : 1;
+    const annonce = B.virages.lire(co.c, position, x.suiviVirages);
+    if (!annonce) {
+      if (x === HUD1 && !x.h['h-virage'].hidden) voixVirages.annuler();
+      masquerAnnonceVirage(x); return;
+    }
+    const H = x.h;
+    attr(H['h-virage'], 'data-sens', annonce.sens > 0 ? 'droite' : 'gauche');
+    attr(H['h-virage'], 'data-difficulte', String(annonce.difficulte));
+    texte(H['h-virage-nom'], annonce.libelle);
+    texte(H['h-virage-distance'], annonce.distanceAffichee + ' m');
+    H['h-virage'].hidden = false;
+    if (annonce.nouveau) {
+      const phrase = annonce.libelle + (annonce.distanceAffichee > 0 ? ', dans ' + annonce.distanceAffichee + ' mètres.' : ', maintenant.');
+      texte(H['h-virage-annonce'], phrase);
+      if (x === HUD1 && reglages.annoncesVirages === 'voix' && sonActif && !muet)
+        voixVirages.dire(phrase, reglages.general * reglages.effets);
+    }
+  }
 
   // L'état affiché appartient au pilote de cet ATH, y compris à deux. Aucun calcul d'usure ni remise à neuf ici.
   // Les écritures DOM restent bornées aux changements de pourcentage entier, sans lecture de mise en page.
@@ -2702,6 +2749,7 @@
     const nb = co.voitures.length;
     // nouvelle séance : tout s'écrit dès sa première image
     if (x.seance !== S) { x.seance = S; x.tChiffres = x.tPlan = -Infinity; }
+    majAnnonceVirage(S, x, j);
     if (demo && S.planVu) texte($('demo-plan'), CATALOGUE[S.i].nom + ' · ' + LIBELLES_PLAN[S.planVu.vue] + ' · ' + j.nom);
     texte(H['h-pos'], chronoMode ? '–' : String(j.position)); texte(H['h-sur'], chronoMode ? '' : '/' + nb);
     if (!chronoMode && !demo && S.positionPrec && j.position < S.positionPrec && co.phase === 'course') eclat(H['c-position']);
@@ -2817,6 +2865,7 @@
 
   function aller(nom) {
     const precedent = ecran;
+    if (nom !== 'course') suspendreAnnoncesVirages();
     if (precedent === 'preparation' && nom !== 'preparation') annulerConditions();
     if (nom === 'preparation' && precedent !== 'preparation' && precedent !== 'reglages') {
       conditionsPreparation = null; conditionsPreparationCle = '';
@@ -3135,6 +3184,9 @@
         if (rendu) appliquerPalier();
       }
     }
+    if (t.name === 'annoncesVirages' && ['non', 'ecran', 'voix'].includes(t.value)) {
+      reglages.annoncesVirages = t.value; sauverReglages(); suspendreAnnoncesVirages();
+    }
     // Cadence d'images : la valeur normalisée par la cadence est celle qui est retenue (une cible fixe vise le
     // diviseur de l'écran le plus proche) ; les essais en cours repartent de zéro.
     if (t.name === 'cadence') { reglages.cadence = B.cadence.regler(cadence, t.value); sauverReglages(); }
@@ -3214,7 +3266,7 @@
   function remplirReglages() {
     captureTouche = null; majCommandes();
     majDetectionGraphique();
-    for (const nom of ['vue', 'boite', 'qualite', 'cadence', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    for (const nom of ['vue', 'boite', 'qualite', 'cadence', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille', 'annoncesVirages']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     $('v-carte').checked = reglages.carte !== 'non';
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
     $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';

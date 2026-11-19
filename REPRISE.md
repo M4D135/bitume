@@ -6,8 +6,9 @@
 **PR n°7 fusionnée ; lot 13A tracé et relief terminé.**
 Sources, jeu compilé et preuves correspondent à la tête revue `b1eabdff`.
 Lire `docs/reprise/ETAT.json`, la dernière entrée du suivi et `docs/reprise/13A-RUSSIE-TRACE-RELIEF.md` uniquement.
-**Prochaine action : 13B Russie — décor et saisons, NON COMMENCÉ.**
-Les tests sont terminés et les sources gelées : ne pas recommencer la qualification ou les lots 12A–12F4/Safari clos.
+**Lot actif : repères de virage, annonces réglables et reflets des flaques**, demandé ensuite par David.
+Lire `docs/reprise/VIRAGES-REFLETS-2026-11-19.md`. Branche `codex/bitume-reperes-annonces-reflets-20261119`, base `f03a99cc`.
+Les tests de 13A sont terminés : ne pas recommencer sa qualification ou les lots 12A–12F4/Safari clos.
 
 ## Résultat de 13A
 
@@ -32,10 +33,10 @@ Reçu : `docs/reprise/rapports/13A-RUSSIE-2026-11-19/github/RECU-CI.json`. Cette
 
 ## Suite
 
-**13B Russie — décor et saisons, NON COMMENCÉ**. Le thème de base permet le roulage ; lac,
+Après le lot virages/reflets : **13B Russie — décor et saisons, NON COMMENCÉ**. Le thème de base permet le roulage ; lac,
 berges, lieux, végétation/faune détaillés et validation visuelle restent à faire. Le tracé et sa graine sont figés.
 Conserver Monaco fidèle, Marseille depuis EMPRISE avec relief mesuré, nouveau grand circuit montagne distinct
 et six propositions. L’indice 7 russe n’annule pas la demande montagne.
 
 Spark (`~/bin/kbza`), Mac et amiga indisponibles. WebGL, FPS matériel et déploiement non validés.
-Un sous-lot à la fois, publications fréquentes, aucun push forcé ; FERRO canonique inchangé.
+Un sous-lot à la fois, publications fréquentes, aucun push forcé ; correction des reflets dans FERRO canonique avant propagation.
