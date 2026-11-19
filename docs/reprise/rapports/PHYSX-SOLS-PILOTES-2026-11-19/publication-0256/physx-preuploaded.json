@@ -1,0 +1,149 @@
+{
+  "date": "2026-11-19",
+  "repository": "M4D135/bitume",
+  "source_commit": "9f25ec36e4dca86c43d5f0ba4946c948bc6fcac6",
+  "objects": [
+    {
+      "sha": "8f254d2d20bb5cfa70981a4d4a982d8a7f4b312b",
+      "bytes": 546281,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/courses-8circuits.json"
+      ]
+    },
+    {
+      "sha": "b18bca96637933f42f8a748084b7ae72fd351b6e",
+      "bytes": 399935,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/physique-stands.json"
+      ]
+    },
+    {
+      "sha": "fa7e05e9ca2719f06f2b863bded227b74f757fc5",
+      "bytes": 33038,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/avant-correction/bras-isoles.png"
+      ]
+    },
+    {
+      "sha": "5b4dae0ecc8798a5877a60fae71fabe3f776c023",
+      "bytes": 115844,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/avant-correction/bras-masques.png"
+      ]
+    },
+    {
+      "sha": "8c7824e860fd6441f7e196f7f2050286c5f74270",
+      "bytes": 499724,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/encombrement.json"
+      ]
+    },
+    {
+      "sha": "14a436eda49724ea2898e7d1e1e27df535494407",
+      "bytes": 113611,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/main-au-levier-complet.png"
+      ]
+    },
+    {
+      "sha": "c99f9aadbf7dbd5e984c2734dc08dcc04641ff69",
+      "bytes": 85787,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/main-au-levier-moyen.png"
+      ]
+    },
+    {
+      "sha": "d615da770c116e6d486057a4f67563d16b4f6f44",
+      "bytes": 54780,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/main-au-levier-simple.png"
+      ]
+    },
+    {
+      "sha": "6afde038677337322234bd6da8336c88392c991e",
+      "bytes": 815470,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/pilote-poses-egl.png"
+      ]
+    },
+    {
+      "sha": "8fd1c4a3b8f01a5c8bc24dffb21ac8ff4dec072c",
+      "bytes": 613959,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/poses.json"
+      ]
+    },
+    {
+      "sha": "c98f0a1cce582fc955a7ebbe42de086bc3f5e2e4",
+      "bytes": 113799,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/retour-du-levier-complet.png"
+      ]
+    },
+    {
+      "sha": "6651beb64df66d0a6db5d5726628111a5ad2392a",
+      "bytes": 85669,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/retour-du-levier-moyen.png"
+      ]
+    },
+    {
+      "sha": "b62d1e258e9cb3f267c78f1207f0c47fe6a66dba",
+      "bytes": 54061,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/retour-du-levier-simple.png"
+      ]
+    },
+    {
+      "sha": "65b01b06b75c0bbba2b287ea978eb241c45155eb",
+      "bytes": 113879,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/virage-droite-complet.png"
+      ]
+    },
+    {
+      "sha": "97c09892deed4b83c2550eba8d407996ecf9d704",
+      "bytes": 86066,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/virage-droite-moyen.png"
+      ]
+    },
+    {
+      "sha": "61a42e1bdc1fa46e1e49888813bd6d4455c11da6",
+      "bytes": 55536,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/virage-droite-simple.png"
+      ]
+    },
+    {
+      "sha": "20ce642da31f66c46ea0fc0fd66581541f38d354",
+      "bytes": 112960,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/volant-centre-complet.png"
+      ]
+    },
+    {
+      "sha": "8be95fe6fc93c6fe3370cf257e33b2f3faa6017a",
+      "bytes": 84879,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/volant-centre-moyen.png"
+      ]
+    },
+    {
+      "sha": "91b05b273d65a4faf0da841ba1b8c034d6b23c71",
+      "bytes": 53427,
+      "paths": [
+        "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/pilote-exterieur/volant-centre-simple.png"
+      ]
+    },
+    {
+      "sha": "002b0f8c5896a0e6fd7cc03e1af7124810b712f3",
+      "bytes": 331241,
+      "paths": [
+        "src/jeu.js"
+      ]
+    }
+  ],
+  "refs_modified": false,
+  "pull_requests_created": false
+}

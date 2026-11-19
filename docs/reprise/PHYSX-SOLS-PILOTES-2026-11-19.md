@@ -1,6 +1,6 @@
 # PhysX, sols procéduraux et pilote extérieur
 
-**Version regroupée 0.2.56 / p14, FERRO 0.3.14 : qualification locale achevée, publication finale à terminer.**
+**Version regroupée 0.2.56 / p14, FERRO 0.3.14 : publiée, lot clos ; reprise démos.**
 
 ## Objectif demandé
 
@@ -122,3 +122,27 @@ Le complément de clôture 0.2.55 jusqu’à main `293f4fae` est aussi conservé
 Les deux CI 0.2.56 de la tête `edf660e5` terminent à 122/123 (push) et 121/123 (PR) : traces historiques
 et, dans le second passage, décor 152 ms/150 ms ; aucun autre échec. Les deux builds restent identiques.
 La fusion finale doit conserver les fichiers de cette tête testée ; reçus sous `github-0256/`.
+
+## Clôture de la publication 0.2.56
+
+**Version regroupée 0.2.56 / p14 publiée par la PR #11**, main vérifié `a2b89f5cff2779ec0b7158609c53e18dd607a49e`, arbre
+`9963201f4c7f25167535b094efea1f2064fb1d8e`, identique au snapshot final revu `93556bf27639911903dae403c55705bacc7f669d`. Build inchangé : 14 162 317 octets, SHA-256
+`d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65`, FERRO 0.3.14, 34 modules exacts.
+Les CI complètes de 123 suites donnent **push 122/123 ; PR 121/123** ; échecs/signatures :
+**traces dans les deux passages (actual e6790758… / expected 575fc91d…, identiques à l’héritage) ; décor Val-Brûlé 152 ms pour seuil 150 ms dans le passage PR**. Elles sont distinctes du bilan local consolidé 122/123.
+Reçus : `rapports/PHYSX-SOLS-PILOTES-2026-11-19/PUBLICATION-0256.json` et
+`rapports/PHYSX-SOLS-PILOTES-2026-11-19/github-0256/RECU-CI.json`.
+La mesure concurrente du décor (486 ms pour 150 ms) reste une réserve séparée ; résultat dans les CI finales :
+**réussi sur push ; 152 ms pour seuil 150 ms sur PR, réserve conservée**. Aucun test ni build local relancé pour cette clôture documentaire, aucun runtime modifié.
+Le site, le rendu navigateur complet, les FPS matériels et une partie multi-machines restent non validés.
+
+La suite active est désormais l’intégration des **démos cinéma** depuis la copie avancée
+`/workspace/scratch/749f331cc09f/bitume-demo` et son correctif de caméra, conservés par les clôtures jusqu’à `293f4fae`.
+Réconcilier sur la base 0.2.56 publiée avant de qualifier les raccords ; ne pas substituer l’ancienne copie
+`2540d1a213f9`. Les journaux préexistants 18/7/9 ne constituent pas cette qualification. Aucun code de démo
+n’appartient au présent lot PhysX. **13B Baïkal**, Monaco fidèle, Marseille avec relief mesuré, grand circuit
+montagne distinct et six propositions restent prévus.
+
+Les 239 fichiers contrôlés (sources, tests, constructeur, verrou, build et workflow) sont identiques à la
+tête CI `edf660e5` ; seuls les documents ont changé depuis son arbre `24299b30`. La réconciliation
+documentaire a été publiée avec `[skip ci]`, sans relance des tests ni changement de contrôle.

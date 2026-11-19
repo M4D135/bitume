@@ -1,0 +1,117 @@
+[
+  {
+    "sha": "edf660e5e2cfe2894382460aee0cbec48fa3a748",
+    "node_id": "C_kwDOVsBfn9oAKGVkZjY2MGU1ZTJjZmUyODk0MzgyNDYwYWVlMGNiZWM0OGZhM2E3NDg",
+    "url": "https://api.github.com/repos/M4D135/bitume/git/commits/edf660e5e2cfe2894382460aee0cbec48fa3a748",
+    "html_url": "https://github.com/M4D135/bitume/commit/edf660e5e2cfe2894382460aee0cbec48fa3a748",
+    "author": {
+      "name": "M4D135",
+      "email": "ciantemar@me.com",
+      "date": "2026-11-19T18:40:12Z"
+    },
+    "committer": {
+      "name": "M4D135",
+      "email": "ciantemar@me.com",
+      "date": "2026-11-19T18:40:12Z"
+    },
+    "tree": {
+      "sha": "24299b302d894db340b7e8cbadd440047cccdc00",
+      "url": "https://api.github.com/repos/M4D135/bitume/git/trees/24299b302d894db340b7e8cbadd440047cccdc00"
+    },
+    "message": "BITUME 0.2.56 : qualifier les contacts PhysX, les sols et les pilotes articulés\n\nRéunit les corrections finales p14 avec les publications et clôtures concurrentes 0.2.55. 122/123 suites locales consolidées, douze reprises finales sur 234 fichiers stables ; seule signature historique des traces en échec. FERRO 0.3.14 canonique, 34 modules exacts. Deux builds identiques, 56 scripts, SHA-256 d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65. Les réserves de durée du décor, de rendu navigateur, de FPS matériels et de déploiement restent explicites.",
+    "parents": [
+      {
+        "sha": "4497832403aed738bcffbb19c00cf64877c6935b",
+        "url": "https://api.github.com/repos/M4D135/bitume/git/commits/4497832403aed738bcffbb19c00cf64877c6935b",
+        "html_url": "https://github.com/M4D135/bitume/commit/4497832403aed738bcffbb19c00cf64877c6935b"
+      }
+    ],
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  {
+    "sha": "253322d311a8b0cda01f5846dcc03ebd3af3f7cd",
+    "node_id": "C_kwDOVsBfn9oAKDI1MzMyMmQzMTFhOGIwY2RhMDFmNTg0NmRjYzAzZWJkM2FmM2Y3Y2Q",
+    "url": "https://api.github.com/repos/M4D135/bitume/git/commits/253322d311a8b0cda01f5846dcc03ebd3af3f7cd",
+    "html_url": "https://github.com/M4D135/bitume/commit/253322d311a8b0cda01f5846dcc03ebd3af3f7cd",
+    "author": {
+      "name": "M4D135",
+      "email": "ciantemar@me.com",
+      "date": "2026-11-19T18:52:39Z"
+    },
+    "committer": {
+      "name": "M4D135",
+      "email": "ciantemar@me.com",
+      "date": "2026-11-19T18:52:39Z"
+    },
+    "tree": {
+      "sha": "9963201f4c7f25167535b094efea1f2064fb1d8e",
+      "url": "https://api.github.com/repos/M4D135/bitume/git/trees/9963201f4c7f25167535b094efea1f2064fb1d8e"
+    },
+    "message": "docs: réunir la clôture concurrente et les CI BITUME 0.2.56 [skip ci]\n\nFusion documentaire du main 293f4f : aucune source, aucun test, verrou, build ou workflow modifié par rapport à edf660e5. Comparaison indépendante des 234 fichiers qualifiés et 239 fichiers au total incluant artefacts/contrôles. CI du code conservées : push 122/123, PR 121/123 ; traces à signature héritée identique et décor Val-Brûlé 152 ms pour seuil 150 ms. Aucun seuil ni oracle changé, aucune relance pour ce seul delta documentaire. Build d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65.",
+    "parents": [
+      {
+        "sha": "edf660e5e2cfe2894382460aee0cbec48fa3a748",
+        "url": "https://api.github.com/repos/M4D135/bitume/git/commits/edf660e5e2cfe2894382460aee0cbec48fa3a748",
+        "html_url": "https://github.com/M4D135/bitume/commit/edf660e5e2cfe2894382460aee0cbec48fa3a748"
+      },
+      {
+        "sha": "293f4faef9e4c195c6f617f3f43f61874e183e83",
+        "url": "https://api.github.com/repos/M4D135/bitume/git/commits/293f4faef9e4c195c6f617f3f43f61874e183e83",
+        "html_url": "https://github.com/M4D135/bitume/commit/293f4faef9e4c195c6f617f3f43f61874e183e83"
+      }
+    ],
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  {
+    "sha": "a2b89f5cff2779ec0b7158609c53e18dd607a49e",
+    "node_id": "C_kwDOVsBfn9oAKGEyYjg5ZjVjZmYyNzc5ZWMwYjcxNTg2MDljNTNlMThkZDYwN2E0OWU",
+    "url": "https://api.github.com/repos/M4D135/bitume/git/commits/a2b89f5cff2779ec0b7158609c53e18dd607a49e",
+    "html_url": "https://github.com/M4D135/bitume/commit/a2b89f5cff2779ec0b7158609c53e18dd607a49e",
+    "author": {
+      "name": "M4D135",
+      "email": "ciantemar@me.com",
+      "date": "2026-11-19T18:53:19Z"
+    },
+    "committer": {
+      "name": "GitHub",
+      "email": "noreply@github.com",
+      "date": "2026-11-19T18:53:19Z"
+    },
+    "tree": {
+      "sha": "9963201f4c7f25167535b094efea1f2064fb1d8e",
+      "url": "https://api.github.com/repos/M4D135/bitume/git/trees/9963201f4c7f25167535b094efea1f2064fb1d8e"
+    },
+    "message": "BITUME 0.2.56 : contacts PhysX, sols procéduraux et pilotes articulés\n\nPublier le lot p14 qualifié avec FERRO 0.3.14. CI du code edf660e5 : push 122/123, PR 121/123 ; traces à signature héritée identique, décor Val-Brûlé 152 ms pour seuil 150 ms. Aucun autre échec ni seuil modifié. Les clôtures concurrentes sont conservées dans un descendant documentaire ; 234 fichiers qualifiés et 239 fichiers au total identiques au code testé. Arbre final 9963201f4c7f25167535b094efea1f2064fb1d8e ; HTML d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65. Rendu navigateur complet, FPS matériels et déploiement restent non validés.\n\n[skip ci]",
+    "parents": [
+      {
+        "sha": "293f4faef9e4c195c6f617f3f43f61874e183e83",
+        "url": "https://api.github.com/repos/M4D135/bitume/git/commits/293f4faef9e4c195c6f617f3f43f61874e183e83",
+        "html_url": "https://github.com/M4D135/bitume/commit/293f4faef9e4c195c6f617f3f43f61874e183e83"
+      },
+      {
+        "sha": "253322d311a8b0cda01f5846dcc03ebd3af3f7cd",
+        "url": "https://api.github.com/repos/M4D135/bitume/git/commits/253322d311a8b0cda01f5846dcc03ebd3af3f7cd",
+        "html_url": "https://github.com/M4D135/bitume/commit/253322d311a8b0cda01f5846dcc03ebd3af3f7cd"
+      }
+    ],
+    "verification": {
+      "verified": true,
+      "reason": "valid",
+      "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJq/0WfCRC1aQ7uu5UhlAAAYKIQAGJ7GbRU94Bs89mkq49LFIYr\nQl8aB5Lxa58UrUgq4oK0oUfmHPIpNwowE5mJEsz3KBmOjlPtMptljAvZLGMeLhXa\nG3qqoOcx/AFhWEwL9EmehSvoVIYZPK1hZJufHsGzbsMt0CciQzsL/bOl+esgUxaL\nKB1CXSxB2xwVzlgU9mMGNeT6bCDYhawnX7V+FegqPIGRWTe7QaKlq0yj8c2MZnyS\nkSIEiHKbOk5CLCDqgWg5A7v1CAqY6ZAdofRFrucsscpqURkIDnCw6FkEQeo9aLTK\nxT65orZ2Gl5Zey5q7wIoGB6l1mfmHTJjedCNO70HqZ7kw80Vglm6a+LfY9F22Lkb\nLIhCq7nq3gKWzTIVdW37EroU99dyu7iULB077F67jqFjf/IoJHQYbglnmFeJYheG\nYeWAB5YgPKmbuUnlBAbSTxT+wvZtKWKrlVQsYOYfiszCj1/mLGLDvlUn2ufwO4K1\n6cqRdkOMSwEjBljCjCJwc/6TVzFq+CJZ2YRUyT1SYxR5ju2dLZcO83bZiCJgWIri\nWNpHzVn5E4hM69vcGs6W/rRgmfO8EYlJ9dpOn+95Eoa7fOUj+EHWcXojUVL94rBR\noClnZWTe8XZz9SW8DDJnbeKbyFP8fzyN5hJFM8WGmi49Owo7YUejJywTB6LMueI2\nllNDKsIGMAYXF62bfpu1\n=Bja7\n-----END PGP SIGNATURE-----\n",
+      "payload": "tree 9963201f4c7f25167535b094efea1f2064fb1d8e\nparent 293f4faef9e4c195c6f617f3f43f61874e183e83\nparent 253322d311a8b0cda01f5846dcc03ebd3af3f7cd\nauthor M4D135 <ciantemar@me.com> 1795114399 +0100\ncommitter GitHub <noreply@github.com> 1795114399 +0100\n\nBITUME 0.2.56 : contacts PhysX, sols procéduraux et pilotes articulés\n\nPublier le lot p14 qualifié avec FERRO 0.3.14. CI du code edf660e5 : push 122/123, PR 121/123 ; traces à signature héritée identique, décor Val-Brûlé 152 ms pour seuil 150 ms. Aucun autre échec ni seuil modifié. Les clôtures concurrentes sont conservées dans un descendant documentaire ; 234 fichiers qualifiés et 239 fichiers au total identiques au code testé. Arbre final 9963201f4c7f25167535b094efea1f2064fb1d8e ; HTML d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65. Rendu navigateur complet, FPS matériels et déploiement restent non validés.\n\n[skip ci]",
+      "verified_at": "2026-11-19T18:53:19Z"
+    }
+  }
+]

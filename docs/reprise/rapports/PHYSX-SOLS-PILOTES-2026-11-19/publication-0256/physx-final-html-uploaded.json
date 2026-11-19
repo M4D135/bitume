@@ -1,0 +1,14 @@
+{
+  "sha": "c82a2207ff36c3d4dda4a4639e20d05a798e1a12",
+  "sha256": "d93139352b308a1b5c2b3e60b8a15a52803b254577030d470037fa0838ac2e65",
+  "bytes": 14162317,
+  "content_chars": 14150496,
+  "encoding": "utf-8",
+  "paths": [
+    "dist/bitume.html"
+  ],
+  "uploaded": true,
+  "remote": {
+    "sha": "c82a2207ff36c3d4dda4a4639e20d05a798e1a12"
+  }
+}
