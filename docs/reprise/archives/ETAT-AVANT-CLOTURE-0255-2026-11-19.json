@@ -1,0 +1,265 @@
+{
+  "date": "2026-11-19",
+  "etat_courant": {
+    "branche": "codex/bitume-physx-sols-pilotes-20261119",
+    "base_commit": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
+    "version_courante": "0.2.55",
+    "version_publiee_verifiee": "0.2.54",
+    "build_courant": "0.2.55",
+    "physique": "p14",
+    "statut": "physx_sols_pilotes_qualification_terminee_publication_prete",
+    "lot": "physx_sols_pilotes",
+    "fiche": "docs/reprise/PHYSX-SOLS-PILOTES-2026-11-19.md",
+    "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
+    "derniere_entree": "036",
+    "checkpoint_sources": "5779d8ee54ecdbe5e1c0c025ab392172d63a61a0",
+    "sources_tests_geles": true,
+    "qualification": "docs/reprise/rapports/PHYSX-SOLS-PILOTES-2026-11-19/livraison/qualification-finale.json",
+    "prochaine_action": "Publier le snapshot 0.2.55/p14 qualifié, vérifier les empreintes distantes et la CI ; ensuite lot démos cinéma.",
+    "safari": "Corrigé, confirmé par David ; chantier clos.",
+    "commit_livraison_verifie": "b791ae60952315431ad085cce742b64d9e15f5bc",
+    "publication": "docs/reprise/rapports/13A-RUSSIE-2026-11-19/PUBLICATION-0253.json",
+    "physique_cible": "p14",
+    "main_verifie": "c28802974b2c138b57ea1bfe377389724ca15724",
+    "ferro_canon": "85ba941709bb304cbc34f8beb7baab0639321919"
+  },
+  "catalogue": {
+    "jouables_dans_build": 8,
+    "nouveau": {
+      "id": "baikal",
+      "index": 7,
+      "graine": 179,
+      "longueur": 5424,
+      "denivele": 62.947657828280754,
+      "pente_max": 0.068,
+      "decors_details": "13B non commencé"
+    },
+    "ajouts_demandes": [
+      "Grand circuit de montagne distinct de Haut-Col",
+      "Monaco ultra fidèle",
+      "Spéciale Marseille depuis EMPRISE avec relief mesuré"
+    ],
+    "propositions_conservees": 6,
+    "note": "Conserver les sept circuits historiques et toutes les demandes ; ne pas supprimer la montagne pour tenir l’ancien compte de 16."
+  },
+  "suite": {
+    "lot": "demos_cinema",
+    "statut": "demande_enregistree_travail_prepare_separement",
+    "objectif": "Plans F1/arcade et découverte des environnements, faune et flore des circuits.",
+    "fiche_plan": "docs/reprise/DEMOS-CINEMA-2026-11-19.md",
+    "apres": "physx_sols_pilotes",
+    "note": "Préserver le travail de démo isolé ; ne pas l’inclure dans le lot PhysX."
+  },
+  "acces": {
+    "mac_spark_amiga_disponibles": false,
+    "spark_wrapper": "~/bin/kbza absent",
+    "deploiement_effectue": false,
+    "site_verifie": false
+  },
+  "archives": [
+    "docs/reprise/archives/ETAT-AVANT-CLOTURE-12ABC-2026-11-19.json",
+    "docs/reprise/PILOTAGE-2026-11-18.md",
+    "docs/reprise/archives/ETAT-AVANT-13A-2026-11-19.json",
+    "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/PUBLICATION-0252.json"
+  ],
+  "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé.",
+  "livraison_0254": {
+    "date": "2026-11-19",
+    "etat_courant": {
+      "branche": "codex/bitume-reperes-annonces-reflets-20261119",
+      "base_commit": "f03a99cc0a5bcbd663a7ff25c887c4ea9ecacd0c",
+      "version_courante": "0.2.54",
+      "version_publiee_verifiee": "0.2.53",
+      "build_courant": "0.2.54",
+      "physique": "p13",
+      "statut": "virages_reflets_publies_pr8_cloture_documentaire",
+      "lot": "virages_reflets",
+      "fiche": "docs/reprise/VIRAGES-REFLETS-2026-11-19.md",
+      "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
+      "derniere_entree": "034",
+      "checkpoint_sources": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
+      "sources_tests_geles": true,
+      "qualification": "docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/qualification-finale.json",
+      "prochaine_action": "Contrôler la clôture documentaire et fusionner PR8 après vérification. Suite demandée : PhysX/nouvelle version physique, sols procéduraux, pilote extérieur animé ; 13B différé.",
+      "safari": "Corrigé, confirmé par David ; chantier clos.",
+      "commit_livraison_verifie": "b791ae60952315431ad085cce742b64d9e15f5bc",
+      "publication": "docs/reprise/rapports/13A-RUSSIE-2026-11-19/PUBLICATION-0253.json",
+      "commit_code_publie_verifie": "10f71ff1ad6c9ae5ae26fbe761c8bfa7332c3c30",
+      "pr": 8,
+      "pr_fusionnee": false,
+      "cloture": "docs/reprise/rapports/VIRAGES-REFLETS-2026-11-19/CLOTURE-PROVENANCE-CI.md"
+    },
+    "validation": {
+      "portee": "39 suites ciblées du lot ; CI complète distincte",
+      "suites": 39,
+      "reussies": 38,
+      "reserves": [
+        "traces.test.mjs : signature héritée strictement identique"
+      ],
+      "decor_temps": "Réussi dans le passage ciblé local ; CI complètes : 161 et 166 ms pour budget 150 ms, sans comparaison base/candidat.",
+      "reprise_ciblee": "chaussee-visuelle : oracle historique inchangé, mode réel avec repères et hiver couvert, 12 contrôles réussis ; aucun runtime modifié",
+      "physique": "p13 : 20 fichiers de lois et oracles inchangés",
+      "reperes": "50 contrôles sur huit circuits ; solides, limites, tracés et décor aléatoire identiques",
+      "build": {
+        "octets": 14089230,
+        "sha256": "db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3",
+        "version": "0.2.54",
+        "reproductible": true
+      },
+      "scripts": 54,
+      "ferro": "0.3.12 canon a22b738f : 34 modules exacts, 194 réussis/0 échec/1 TODO ; EMPRISE 9/11 contrats ciblés, deux réserves héritées, build complet bloqué par city-data indisponible",
+      "webgl_valide": false,
+      "fps_mesures": false,
+      "ci_code": {
+        "statut": "terminees_avec_deux_reserves",
+        "reussies": 109,
+        "suites": 111,
+        "runs": [
+          44572852026,
+          44572720938
+        ],
+        "echecs": [
+          "decor.test.mjs",
+          "traces.test.mjs"
+        ],
+        "preuve": "github/RECU-CI.json"
+      }
+    },
+    "catalogue": {
+      "jouables_dans_build": 8,
+      "nouveau": {
+        "id": "baikal",
+        "index": 7,
+        "graine": 179,
+        "longueur": 5424,
+        "denivele": 62.947657828280754,
+        "pente_max": 0.068,
+        "decors_details": "13B non commencé"
+      },
+      "ajouts_demandes": [
+        "Grand circuit de montagne distinct de Haut-Col",
+        "Monaco ultra fidèle",
+        "Spéciale Marseille depuis EMPRISE avec relief mesuré"
+      ],
+      "propositions_conservees": 6,
+      "note": "Conserver les sept circuits historiques et toutes les demandes ; ne pas supprimer la montagne pour tenir l’ancien compte de 16."
+    },
+    "suite": {
+      "lot": "PhysX_sols_proceduraux_pilote",
+      "statut": "demande_implémentation_distincte",
+      "objectif": "Vraie intégration PhysX avec nouvelle version physique ; sols hors-route via shader 100 % procédural sans texture importée ; tête/bras/rapport du pilote extérieur cohérents avec cockpit et LOD.",
+      "physique_a_qualifier": true,
+      "13B_Russie": "toujours demandé, différé"
+    },
+    "acces": {
+      "mac_spark_amiga_disponibles": false,
+      "spark_wrapper": "~/bin/kbza absent",
+      "deploiement_effectue": false,
+      "site_verifie": false
+    },
+    "archives": [
+      "docs/reprise/archives/ETAT-AVANT-CLOTURE-12ABC-2026-11-19.json",
+      "docs/reprise/PILOTAGE-2026-11-18.md",
+      "docs/reprise/archives/ETAT-AVANT-13A-2026-11-19.json",
+      "docs/reprise/rapports/12F4-SORTIE-FILE-2026-11-19/PUBLICATION-0252.json"
+    ],
+    "regle": "Un sous-lot à la fois ; publie fréquemment, contrôle le distant, journalise et garde une reprise courte. Aucun push forcé."
+  },
+  "validation_precedente_0254": {
+    "portee": "39 suites ciblées du lot ; CI complète distincte",
+    "suites": 39,
+    "reussies": 38,
+    "reserves": [
+      "traces.test.mjs : signature héritée strictement identique"
+    ],
+    "decor_temps": "contrôle de temps réussi dans ce passage",
+    "reprise_ciblee": "chaussee-visuelle : oracle historique inchangé, mode réel avec repères et hiver couvert, 12 contrôles réussis ; aucun runtime modifié",
+    "physique": "p13 : 20 fichiers de lois et oracles inchangés",
+    "reperes": "50 contrôles sur huit circuits ; solides, limites, tracés et décor aléatoire identiques",
+    "build": {
+      "octets": 14089230,
+      "sha256": "db24f69a55bd6ac6778009e9511dbb901f82e62628adfbaab8e11980a467d3a3",
+      "version": "0.2.54",
+      "reproductible": true
+    },
+    "scripts": 54,
+    "ferro": "0.3.12 : 34 modules identiques, canonique 194 réussis/0 échec/1 TODO ; EMPRISE 11/17, six échecs identiques à 0.3.11",
+    "webgl_valide": false,
+    "fps_mesures": false,
+    "ci_code": {
+      "statut": "a_verifier_apres_publication"
+    }
+  },
+  "validation": {
+    "statut": "terminee_avec_deux_reserves",
+    "suites": 119,
+    "reussies": 117,
+    "reserves": [
+      "decor.test.mjs : 486 ms pour 150 ms ; seuil conservé, comparaison de durée non contrôlée",
+      "traces.test.mjs : signature héritée identique"
+    ],
+    "empreintes_avant_apres_identiques": 235,
+    "build": {
+      "octets": 14153917,
+      "gzip": 3360641,
+      "sha256": "c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f",
+      "deux_builds_identiques": true,
+      "artefacts": {
+        "dist/bitume.html": "c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f",
+        "SIZE.json": "af0fadbd7465fa242c9b66644f67331859782bcbb0d6cf047bbd769737588c4d",
+        "VERSION.json": "4501f2b5c73ea5160649a054f08fc24f939fdef2bab490f8c437427f2e62a72d"
+      }
+    },
+    "determinisme": {
+      "runtime": "PhysX 5.12.0 WASM embarqué",
+      "scenarios": 8,
+      "empreintes": 141,
+      "poses_visuelles": 4464,
+      "sources_exactes": 19,
+      "sensibilite_ulp_et_commandes_verifiee": true,
+      "comparaison": "Deux scènes natives neuves par scénario ; p14 distinct des références historiques."
+    },
+    "ferro": {
+      "repository": "M4D135/FERRO",
+      "version": "0.3.14",
+      "pull_request": "https://github.com/M4D135/FERRO/pull/2",
+      "head": "f145e080d1cabab9802dc002debbf54aa8cc0bb6",
+      "merge": "85ba941709bb304cbc34f8beb7baab0639321919",
+      "tree": "27c2f2dd23c57feedefc748213f22fd165a15635",
+      "remote_tree_equals_qualified_tree": true,
+      "modules_exacts": 34,
+      "canonical_pass": 210,
+      "canonical_fail": 0,
+      "canonical_todo": 1,
+      "physx_pass": 25,
+      "physx_fail": 0,
+      "archive": {
+        "path": "dist/FERRO-0.3.14.zip",
+        "bytes": 6289975,
+        "sha256": "e8aa4dd9daa766eefc9213ca4edb59522c9525090d694ae209add8534ffcd028",
+        "git_blob": "b39f32d05a0eb3849fd87a8eb371f73fb8433129",
+        "crc_verified": true,
+        "entries": 45
+      },
+      "emprise": {
+        "baseline_pass": 10,
+        "candidate_pass": 10,
+        "suites": 12,
+        "inherited_failure_logs_identical": true,
+        "full_build": false
+      },
+      "browser_scene_validated": false,
+      "hardware_fps_measured": false
+    },
+    "webgl_valide": false,
+    "fps_materiels": false,
+    "deploiement_site": false
+  },
+  "suite_apres_demos": {
+    "lot": "13B_Russie_decor_saisons",
+    "statut": "non_commence",
+    "objectif": "Lac, berges, lieux signature, végétation/faune propres au Baïkal, saisons et validation visuelle.",
+    "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
+    "apres": "physx_sols_pilotes"
+  }
+}

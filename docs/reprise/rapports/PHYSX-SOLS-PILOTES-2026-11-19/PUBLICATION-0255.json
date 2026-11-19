@@ -1,0 +1,79 @@
+{
+  "date_utc": "2026-11-19T18:34:43+00:00",
+  "version": "0.2.55",
+  "physique": "p14",
+  "repository": "M4D135/bitume",
+  "publication": {
+    "pr": 9,
+    "url": "https://github.com/M4D135/bitume/pull/9",
+    "merged": true,
+    "head_sha": "b8f050745c68e2c7a9e482611cfdc980efe1ada3",
+    "main_verified": "1e4579c5c09d561ef7a6412ec4415a8ffbe360a8",
+    "tree_sha": "c8c3af4c5369498dd454e2c5a81c7a9f10fd098f",
+    "qualified_tree_identical": true
+  },
+  "build": {
+    "path": "dist/bitume.html",
+    "bytes": 14153917,
+    "sha256": "c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f",
+    "git_blob": "a35786fc6c3da534797e9b037d8e53e52e052779"
+  },
+  "integrity": {
+    "qualified_files": 235,
+    "logs": 119,
+    "local_snapshot": "326eb09ca6938995b9993a775a893e74574088e0",
+    "remote_tree_entries": 3085,
+    "proof": "github/INTEGRITE-0255.json"
+  },
+  "validation": {
+    "local": {
+      "passed": 117,
+      "suites": 119,
+      "proof": "livraison/qualification-finale.json"
+    },
+    "github": {
+      "passed_per_run": 118,
+      "suites_per_run": 119,
+      "runs": [
+        44587743183,
+        44587696973
+      ],
+      "conclusion": "failure",
+      "failing_suite": "traces.test.mjs",
+      "proof": "github/RECU-CI.json"
+    }
+  },
+  "reserves": {
+    "decor": "Local : 486 ms pour 150 ms à Val-Brûlé ; dépassement préexistant. Les deux CI passent le contrôle, mais cela ne démontre pas une absence de régression de durée. Aucun seuil modifié.",
+    "traces": "Signature actual/expected identique à la réserve héritée, en local et dans les deux CI. Les journaux complets ne sont pas présentés comme identiques."
+  },
+  "artifact": {
+    "id": 14562066310,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44587743183/artifacts/14562066310",
+    "archive_sha256": "cf523cdbdaa70cdc78fc7a744fe6eade2b1916e41399ab1c8a4da0a3d21c3aed",
+    "bytes": 67375499,
+    "expires_at": "2026-12-03T18:31:30Z",
+    "download_verified": true,
+    "crc_verified": true,
+    "build_matches_qualified": true,
+    "proof": "github/ARTEFACT-PR9-VERIFIE.json"
+  },
+  "ferro": {
+    "version": "0.3.14",
+    "main_commit": "85ba941709bb304cbc34f8beb7baab0639321919",
+    "exact_modules": 34
+  },
+  "local_tests_reexecuted": false,
+  "local_build_reexecuted": false,
+  "limits": {
+    "browser_full_scene_validated": false,
+    "hardware_fps_measured": false,
+    "site_deployed": false
+  },
+  "next": {
+    "lot": "demos_cinema",
+    "fiche": "docs/reprise/DEMOS-CINEMA-2026-11-19.md",
+    "prepared_copy": "/workspace/scratch/749f331cc09f/bitume-demo",
+    "status": "Travail préparé séparément, non intégré, à reprendre sur la 0.2.55 publiée ; correctif du bond de caméra préparé, à qualifier."
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "version": "0.2.55",
+  "head_sha": "b8f050745c68e2c7a9e482611cfdc980efe1ada3",
+  "tree_sha": "c8c3af4c5369498dd454e2c5a81c7a9f10fd098f",
+  "runs": [
+    {
+      "id": 44587743183,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44587743183",
+      "head_sha": "b8f050745c68e2c7a9e482611cfdc980efe1ada3",
+      "started_at": "2026-11-19T18:26:03Z",
+      "updated_at": "2026-11-19T18:31:37Z",
+      "passed": 118,
+      "failed": 1,
+      "suites": 119,
+      "failing_suites": [
+        "traces.test.mjs"
+      ],
+      "decor_passed": true
+    },
+    {
+      "id": 44587696973,
+      "event": "push",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44587696973",
+      "head_sha": "b8f050745c68e2c7a9e482611cfdc980efe1ada3",
+      "started_at": "2026-11-19T18:25:48Z",
+      "updated_at": "2026-11-19T18:31:49Z",
+      "passed": 118,
+      "failed": 1,
+      "suites": 119,
+      "failing_suites": [
+        "traces.test.mjs"
+      ],
+      "decor_passed": true
+    }
+  ],
+  "trace_signature": {
+    "actual": "e6790758bb9758f314e22491651b78ec119837a8dcfbc229c26ab85bb9c897cf",
+    "expected": "575fc91df4958254d0404ab5e4d481b3d28394dd6b99c82713733fab06fb6bee",
+    "identical_to_local": true
+  },
+  "local_qualification_preserved": {
+    "passed": 117,
+    "suites": 119,
+    "decor_ms": 486,
+    "decor_budget_ms": 150,
+    "performance_nonregression_demonstrated": false
+  },
+  "artifact": {
+    "id": 14562066310,
+    "name": "bitume-41924273aa141ac244810afaef9232b1a1665c98",
+    "size_in_bytes": 67375499,
+    "url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14562066310",
+    "archive_download_url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14562066310/zip",
+    "expired": false,
+    "created_at": "2026-11-19T18:31:34Z",
+    "expires_at": "2026-12-03T18:31:30Z",
+    "updated_at": "2026-11-19T18:31:34Z",
+    "digest": "sha256:cf523cdbdaa70cdc78fc7a744fe6eade2b1916e41399ab1c8a4da0a3d21c3aed",
+    "workflow_run": {
+      "id": 44587743183,
+      "repository_id": 1455447967,
+      "head_repository_id": 1455447967,
+      "head_branch": "codex/bitume-physx-sols-pilotes-20261119",
+      "head_sha": "b8f050745c68e2c7a9e482611cfdc980efe1ada3"
+    }
+  },
+  "push_artifact": {
+    "id": 14563300229,
+    "name": "bitume-b8f050745c68e2c7a9e482611cfdc980efe1ada3",
+    "size_in_bytes": 67376190,
+    "url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14563300229",
+    "archive_download_url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14563300229/zip",
+    "expired": false,
+    "created_at": "2026-11-19T18:31:46Z",
+    "expires_at": "2026-12-03T18:31:43Z",
+    "updated_at": "2026-11-19T18:31:46Z",
+    "digest": "sha256:da5dab4e8d4c5ab1e90d629e8a2287d511616eaa94e0979a76f543233d61e7f1",
+    "workflow_run": {
+      "id": 44587696973,
+      "repository_id": 1455447967,
+      "head_repository_id": 1455447967,
+      "head_branch": "codex/bitume-physx-sols-pilotes-20261119",
+      "head_sha": "b8f050745c68e2c7a9e482611cfdc980efe1ada3"
+    }
+  },
+  "local_tests_reexecuted": false,
+  "local_build_reexecuted": false
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": 14562066310,
+  "archive_bytes": 67375499,
+  "archive_sha256": "cf523cdbdaa70cdc78fc7a744fe6eade2b1916e41399ab1c8a4da0a3d21c3aed",
+  "entries": 127,
+  "crc_verified": true,
+  "build_bytes": 14153917,
+  "build_sha256": "c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f",
+  "commit": "41924273aa141ac244810afaef9232b1a1665c98",
+  "resume": "Suites reussies : 118\nSuites en echec : 1",
+  "sha256sums": "c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f  dist/bitume.html"
+}

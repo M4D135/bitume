@@ -1,0 +1,23 @@
+{
+  "version": "0.2.55",
+  "observed_utc": "2026-11-19T18:28:58Z",
+  "repository": "M4D135/bitume",
+  "local_commit": "326eb09ca6938995b9993a775a893e74574088e0",
+  "remote_commit": "b8f050745c68e2c7a9e482611cfdc980efe1ada3",
+  "local_tree": "c8c3af4c5369498dd454e2c5a81c7a9f10fd098f",
+  "remote_tree": "c8c3af4c5369498dd454e2c5a81c7a9f10fd098f",
+  "exact_tree_match": true,
+  "remote_tree_entries": 3085,
+  "remote_tree_truncated": false,
+  "qualified_files_verified": 235,
+  "logs_verified": 119,
+  "build_sha256": "c9e0c3d93a4456f3d84a56317ab4282bab5deebfea942bfe5a50231459006d2f",
+  "build_git_blob": "a35786fc6c3da534797e9b037d8e53e52e052779",
+  "pr": 9,
+  "checks_reused": true,
+  "local_tests_reexecuted": false,
+  "local_build_reexecuted": false,
+  "pr_merge_preview_commit": "41924273aa141ac244810afaef9232b1a1665c98",
+  "pr_merge_preview_tree": "c8c3af4c5369498dd454e2c5a81c7a9f10fd098f",
+  "pr_merge_preview_tree_identical": true
+}
