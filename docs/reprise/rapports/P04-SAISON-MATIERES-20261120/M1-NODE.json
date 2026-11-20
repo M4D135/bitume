@@ -1,0 +1,182 @@
+{
+  "schema": 1,
+  "lot": "04-M1",
+  "source": "26e7c5602b428791c9ee47cc066575a5a634b93e",
+  "parent": "6cbfa7e48d8b77ab1f7f7fe252bf4e2e693cacba",
+  "fichiers_sha256": {
+    "src/decor.js": "29e1cd07f9512c6c41512dc94569342d0ef4e14c968777b2d54ccc1bcdbcdc86",
+    "tools/captures-pierres.mjs": "ba864f9782d02ba631f7a391b7da88823356072533927768f4c4c02ccf518f25",
+    "verifications/pierres-procedurales.test.mjs": "8fdd93096073ffdc80d1ccf1eba2ea6fabf8f1b163f87441f115ae5d0d27b6a7",
+    "verifications/captures-pierres.test.mjs": "00a1174b2398186fba28d661d833cf4c63c61664234c95055d3f755a1b033091"
+  },
+  "commande": "node --test --test-concurrency=2 verifications/pierres-procedurales.test.mjs verifications/sols-proceduraux.test.mjs verifications/decor-identite.test.mjs verifications/decor-obstacles.test.mjs verifications/bords.test.mjs verifications/bords-integration.test.mjs verifications/route-des-cimes-decor.test.mjs",
+  "resultat": {
+    "exit_code": 0,
+    "tests": 20,
+    "reussis": 20,
+    "echecs": 0,
+    "duree_ms": 125982.703745,
+    "log_sha256": "b1f5e70e6de342e781ce2d81c8ad6e9882e9ebb18975f7f34f915f76c9c71604"
+  },
+  "tests_dedies": 14,
+  "tests_outillage": {
+    "commande": "node --test verifications/captures-pierres.test.mjs",
+    "reussis": 3,
+    "echecs": 0,
+    "log_sha256": "e741576a4ebe0e0a7f4bb8ef432c72ed127df4475b2bec342bafdc66ab4715c1"
+  },
+  "sols_proceduraux": {
+    "controles": 77,
+    "comparaisons": 75,
+    "convertis": 4255802,
+    "neigeAlpine": 397048,
+    "roches": 200008
+  },
+  "comparaisons_pierres": [
+    {
+      "circuit": "haut-col",
+      "saison": "ete",
+      "convertis": {
+        "objets": {
+          "roche-tunnel": 272,
+          "portail-tunnel": 6
+        },
+        "loin": {
+          "roche-tunnel": 272,
+          "portail-tunnel": 6
+        }
+      },
+      "budgets": {
+        "objets": {
+          "instances": 11931,
+          "triangles": 435204
+        },
+        "loin": {
+          "instances": 3590,
+          "triangles": 90930
+        }
+      },
+      "herbier": {
+        "triangles": 51188,
+        "masques": 4368
+      }
+    },
+    {
+      "circuit": "haut-col",
+      "saison": "hiver",
+      "convertis": {
+        "objets": {
+          "roche-tunnel": 272,
+          "portail-tunnel": 6
+        },
+        "loin": {
+          "roche-tunnel": 272,
+          "portail-tunnel": 6
+        }
+      },
+      "budgets": {
+        "objets": {
+          "instances": 11931,
+          "triangles": 426852
+        },
+        "loin": {
+          "instances": 3590,
+          "triangles": 90698
+        }
+      },
+      "herbier": {
+        "triangles": 51188,
+        "masques": 4368
+      }
+    },
+    {
+      "circuit": "route-des-cimes",
+      "saison": "ete",
+      "convertis": {
+        "objets": {
+          "roche-tunnel": 493,
+          "portail-tunnel": 12,
+          "socle-refuge": 1,
+          "arche-cimes": 44,
+          "tympan-cimes": 44,
+          "rive-pont-cimes": 88
+        },
+        "loin": {
+          "roche-tunnel": 493,
+          "portail-tunnel": 12,
+          "socle-refuge": 1,
+          "arche-cimes": 44,
+          "tympan-cimes": 44,
+          "rive-pont-cimes": 88
+        }
+      },
+      "budgets": {
+        "objets": {
+          "instances": 14928,
+          "triangles": 577854
+        },
+        "loin": {
+          "instances": 5744,
+          "triangles": 141530
+        }
+      },
+      "herbier": {
+        "triangles": 64933,
+        "masques": 7221
+      }
+    },
+    {
+      "circuit": "route-des-cimes",
+      "saison": "hiver",
+      "convertis": {
+        "objets": {
+          "roche-tunnel": 493,
+          "portail-tunnel": 12,
+          "socle-refuge": 1,
+          "arche-cimes": 44,
+          "tympan-cimes": 44,
+          "rive-pont-cimes": 88
+        },
+        "loin": {
+          "roche-tunnel": 493,
+          "portail-tunnel": 12,
+          "socle-refuge": 1,
+          "arche-cimes": 44,
+          "tympan-cimes": 44,
+          "rive-pont-cimes": 88
+        }
+      },
+      "budgets": {
+        "objets": {
+          "instances": 14928,
+          "triangles": 564606
+        },
+        "loin": {
+          "instances": 5744,
+          "triangles": 141162
+        }
+      },
+      "herbier": {
+        "triangles": 64933,
+        "masques": 7221
+      }
+    }
+  ],
+  "invariants": [
+    "Deux circuits frais par A/B ; pas de cache partagé pouvant cacher une divergence.",
+    "Seuls les mat9 des solides de pierre nommés deviennent23 en high ; mêmes descripteurs complets, palettes et solidesPhysX non énumérables.",
+    "Lots proches/lointains et lotsHerbier : centres, distances, bascules, géométrie et objets identiques hors recette.",
+    "Nappes, arbres, obstacles, sources de feuilles, sol et masques de plantation identiques.",
+    "Low/medium identiques même si pierresProcedurales:true ; opt-outs pierresProcedurales:false et matieres:false.",
+    "Raccord pierre indépendant de solsProceduraux ; comparaisons sols réussies sur les neuf circuits et quatre saisons.",
+    "Eau littorale de Port-Sable, 26 eaux et52 berges de fossés de Lande-Noire inchangées."
+  ],
+  "revue": "Lecture indépendante sans défaut concret relevé.",
+  "limites": [
+    "Budgets géométriques et préparation vérifiés ; images et coût logiciel publiés séparément après inspection.",
+    "Le gate par thème montagne couvre les deux circuits actuels et tout futur circuit de ce thème.",
+    "La recette23 reste présente dans les passes et rétros relisant ces objets high ; filtrer son détail au loin ne supprime pas ses calculs de bruit.",
+    "La réponse humide visuelle existante de FERRO23 demande un contrôle distinct ; climat et physique restent inchangés."
+  ],
+  "historique_test": "Le premier témoin attendait à tort un fossé à Port-Sable. Correction du test vers eau littorale Port-Sable et fossés Lande-Noire ; le passage final complet réussit20/20."
+}

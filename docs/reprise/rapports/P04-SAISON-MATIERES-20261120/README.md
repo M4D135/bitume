@@ -86,6 +86,8 @@ Ni physique p15, ni climat, ni graine, ni cockpit, ni shader FERRO ne sont modif
 
 ## M1 — premier lot de pierres proches
 
-En préparation après clôture de S1 : raccord ciblé de la recette pierre 23
-existante sur les rochers et ouvrages de montagne, en qualité high seulement.
-Les captures A/B et leur coût doivent être examinés avant de conclure ce lot.
+Sources publiées en `26e7c56` après clôture de S1 : raccord ciblé de la recette
+pierre 23 existante sur les rochers et ouvrages de montagne, en qualité high
+seulement. [Le reçu Node](M1-NODE.json) conserve les invariants et les comptes
+exacts. Les captures A/B et leur coût doivent encore être examinés avant de
+conclure ce lot.

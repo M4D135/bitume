@@ -2,30 +2,32 @@
   "schema": 1,
   "discussion": "04",
   "mission": "Saisons et matieres",
-  "statut": "saisons_qualifiees_matieres_en_cours",
+  "statut": "saisons_qualifiees_matieres_images_en_cours",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/04-SAISON-MATIERES.md",
   "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p04-saisons-matieres-20261120",
   "branche_reelle": "codex/bitume-p04-saisons-matieres-20261120",
-  "head": "d93d23971fdf462f6851e09c88d6eb0fa059f169",
+  "head": "26e7c5602b428791c9ee47cc066575a5a634b93e",
   "pr": null,
-  "sous_lot": "04-S1 clos : saisons qualifiées ; 04-M1 pierres proches en préparation",
+  "sous_lot": "04-S1 clos ; 04-M1 pierres high : sources et contrôles Node publiés, images/coût en cours",
   "preuves": [
     "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S0-REPRISE.json",
     "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-NODE.json",
     "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-COMPARAISON.json",
     "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-CAPTURES-INITIALES.json",
     "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-VISUEL.json",
-    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-FORMES-NUES.json"
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-FORMES-NUES.json",
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/M1-NODE.json"
   ],
   "reserves": [
     "Aucun gain matériel Xbox/Intel ni FPS annoncé.",
     "Six formes nues : +269472 octets de géométrie brute par renderer ; mémoire totale du pilote non mesurée.",
     "Aucune fusion main ni publication du build commun.",
     "CI commune attend le build publié par 00 ; garde de reconstruction rouge sur la branche de sources.",
-    "Transitions du pigment de terrain demandées à 02 ; shader canonique inchangé."
+    "Transitions du pigment de terrain demandées à 02 ; shader canonique inchangé.",
+    "M1 : validation visuelle et coût logiciel en cours ; aucune extension à low/medium ou aux rochers libres."
   ],
-  "prochaine_action": "Comparer image/coût du raccord ciblé de la recette pierre 23 aux objets montagne en qualité high, puis publier le petit lot vérifié.",
+  "prochaine_action": "Inspecter les 16 PNG A/B et les temps de dessin logiciel du lot M1 ; conclure image/coût avant extension.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "preparations_portables": [
     "docs/reprise/PARALLELE-2026-11-20/preparations/saisons.patch"
@@ -42,5 +44,13 @@
     "png_inspectes": 104,
     "png_rejetes_cadrage": 16,
     "html_sha256": "8aeb52151348c92dfef357d11f6d06684ec98a7ab3d7eaed9f8f6a69ee28a784"
+  },
+  "matieres_ci": {
+    "run_id": 44786811877,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44786811877",
+    "scenes_ab": 4,
+    "png_attendus": 16,
+    "inspectees": 0,
+    "methode": "Fixture recette9/23 dans le même candidat ; dessin identique répété6 chauffes+16 mesures par variante."
   }
 }
