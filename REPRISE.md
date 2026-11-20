@@ -24,6 +24,11 @@ sont renforcés en cockpit mais restent discrets en poursuite sur les captures a
 Préserver les branches de travail et les preuves closes ; ne pas relancer la qualification 0.2.62.
 La suite Monaco 14A et tout le programme restent conservés ci-dessous.
 
+Rappel des branches et lots restants réconcilié le 20 novembre :
+`docs/reprise/BRANCHES-ET-LOTS-2026-11-20.md`. Baïkal est le huitième circuit ; Route-des-Cimes
+reste à intégrer. Reprendre les essais historiques depuis p15 ; aucune IP à fournir pour préparer
+le lot réseau. Les améliorations graphiques partielles ne clôturent pas les grands lots.
+
 ## Sous-lot livré — Monaco 14A, carte et provenance temporelle
 
 PR **#29** fusionnée : `d0dbd8544be30ab44aaff399ae55761150074636` ; CI **145/145 suites**.

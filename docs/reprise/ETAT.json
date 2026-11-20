@@ -235,5 +235,16 @@
     "pluie_relance_job": 136150737900,
     "recu_publication": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/PUBLICATION-0261.json",
     "historique_timeout_pluie": "Première tentative arrêtée à 35 min ; quatre passages et huit PNG complets. Relance réussie, historique conservé dans le reçu."
+  },
+  "reconciliation_programme": {
+    "date": "2026-11-20",
+    "fiche": "docs/reprise/BRANCHES-ET-LOTS-2026-11-20.md",
+    "programme": "docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md",
+    "statut": "branches_historiques_et_livraisons_partielles_distinguees",
+    "base_conduite": "p15 ; ne pas réappliquer directement les jets p9 du lot 17",
+    "huitieme_circuit": "Baïkal ; Route-des-Cimes distincte et non intégrée",
+    "references_historiques": "Notices conservées ; objets et prototypes anciens non retrouvés dans les dépôts inspectés, sans conclusion de perte sur le poste d’origine.",
+    "reseau": "Aucune IP à fournir ; ancienne note sur la visibilité des IP auprès des relais expliquée. Préparation et essais à poursuivre, salon conservé avant qualification du remplacement.",
+    "priorite": "Réconcilier les travaux démo, sols, volant, pilotes et gouttes déjà préparés avec la base publiée ; préserver les autres lots."
   }
 }
