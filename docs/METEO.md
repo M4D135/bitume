@@ -35,3 +35,34 @@ Sur le candidat isolé : 27 fichiers de tests Node ont passé sur Spark. Après 
 Le coût du module sur 400 échantillons Canvas2D à 1280×720, caméra avançant à 60 m/s, était de 0,053 ms en moyenne, 0,10 ms au 95e percentile et 0,20 ms au maximum. Il mesure le JavaScript et la soumission des commandes Canvas, avec une horloge quantifiée. Il ne mesure pas l'achèvement GPU, les images effectivement affichées, un téléphone ou une Xbox. La cadence visuelle après assemblage avec le nouveau moteur doit être vérifiée séparément.
 
 La pluie reste un overlay : elle ne lit pas le tampon de profondeur et n'est pas masquée individuellement par les arbres ou les rivaux. Le masque du cockpit est une approximation visuelle, pas une surface vitrée. Le volume périodique est fondu près de la caméra et à sa limite lointaine ; les rares gouttes au bord du volume peuvent être renouvelées. Les captures avant/après montrent deux séances indépendantes, pas une comparaison pixel à pixel des voitures.
+
+## Visière optique — 20 novembre 2026
+
+Les précipitations dans l'air ci-dessus restent distinctes des dépôts sur la visière. Le module
+`src/visiere-optique.js`, chargé avant `vitre.js`, reconstruit le contrat du prototype Claude décrit
+dans `docs/reprise/rapports/etudes-2026-11-18/etudier-vitre.json` : petites perles, grosses gouttes,
+ruissellement, nappes, embruns, neige humide périphérique et buée. Les formes et les variations sont
+calculées par un shader du jeu ; aucun module FERRO verrouillé ni fichier de texture n'est modifié.
+
+En Moyenne, Fine et Photo, une copie bornée de la scène courante fournit la couleur réellement
+déformée dans l'eau. Fine et Photo ajoutent un filtrage local plus riche. En Légère, le shader ne copie
+pas la scène. Si WebGL2 est indisponible pour la visière, `vitre.js` conserve son repli Canvas2D.
+L'effet reste composé sous l'ATH et les rétroviseurs, atténué en extérieur, distinct pour J1/J2.
+La pause fige les dépôts ; la vitesse les évacue. Le réglage « Gouttes sur l'écran » reste de 0 à 2,
+sans geste d'essuyage. La neige fond progressivement en eau.
+
+`contexte.sourceScene` reçoit l'image juste rendue pour chaque vue, avant la copie de J2 et avant
+le rendu de J1. `contexte.embruns` vient de `B.sillage.exposition` : position de caméra dans le
+panache arrière d'une voiture, vitesse réelle, hauteur et chaussée mouillée. La voiture filmée
+est exclue. Une caméra hors du panache, une source à l'arrêt ou abritée, une chaussée sèche et
+une autre chaussée superposée n'ajoutent pas d'eau. Les dépôts existants continuent à sécher sous abri.
+
+Les ressources optiques sont préparées sous le voile de chargement, même pour une course sèche.
+La surface est bornée à 2 000 000 pixels et la copie de scène à 1 048 576 pixels au maximum
+(plafond réduit en Moyenne). La copie entre contextes peut coûter selon le navigateur : les mesures
+du module Canvas historique ci-dessus ne décrivent pas cette nouvelle optique. Aucune performance
+matérielle n'est déduite des contrôles Node, EGL ou des captures SwiftShader.
+
+Qualification et captures : `docs/reprise/HAUT-COL-METEO-2026-11-20.md` ; outil reproductible
+`tools/captures-meteo.mjs`. Les poses des scènes de comparaison sont volontairement figées, leurs
+vitesses alimentant les effets. Ces captures vérifient le rendu et ses raccords, pas la conduite.

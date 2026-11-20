@@ -55,7 +55,7 @@ export function optionsCapture(argv) {
     url: url.href, sortie: path.resolve(a.sortie), reference: a.reference ? path.resolve(a.reference) : null,
     chrome: a.chrome || process.env.CHROME || ['/usr/bin/chromium', '/usr/bin/google-chrome', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].find(existsSync) || 'google-chrome',
     angle: choix('angle', 'swiftshader', ['swiftshader', 'native']), attendre: nombre('attendre', 60000, 1000, 300000),
-    scenario, taille, images: nombre('images', 48, 3, 1000, true), pas: nombre('pas', .1, 1 / 240, .1), chauffe: nombre('chauffe', 4, 0, 240, true),
+    scenario, taille, images: nombre('images', 48, 2, 1000, true), pas: nombre('pas', .1, 1 / 240, .1), chauffe: nombre('chauffe', 4, 0, 240, true),
     // Le catalogue du jeu valide ensuite l'indice exact ; l'outil accompagne son extension par petits lots.
     referenceJeu: { graine: nombre('graine', 17017, 0, 0xffffffff, true), circuit: nombre('circuit', scenario === 'tunnel' ? 2 : 0, 0, 255, true),
       qualite: choix('qualite', 'high', ['low', 'medium', 'high']), mode: scenario === 'duo' ? 'duo' : 'solo',
@@ -111,6 +111,10 @@ function planche(rapport) {
 }
 
 export async function capturer(o) {
+  // Crochets réservés aux scénarios versionnés des outils, jamais lus dans la page ou en ligne de commande.
+  // Ils servent à disposer un état visuel et à observer le rendu réel sans ajouter de commandes au jeu livré.
+  for (const cle of ['initialiser', 'avantImage', 'observer'])
+    if (o[cle] !== undefined && typeof o[cle] !== 'function') throw new Error('Crochet de capture invalide : ' + cle);
   mkdirSync(o.sortie, { recursive: true });
   if (existsSync(path.join(o.sortie, 'rapport.json')) || existsSync(path.join(o.sortie, '0000.png')))
     throw new Error('Dossier déjà utilisé : choisir un dossier neuf pour éviter les captures périmées');
@@ -124,6 +128,7 @@ export async function capturer(o) {
       'Le son, les manettes physiques et une partie WebRTC entre machines ne sont pas qualifiés.',
       'Les zones rectangulaires suivent les toiles visibles ; les éléments de HUD superposés peuvent masquer un défaut local.'
     ] };
+  if (o.images < 3) rapport.limites.push('Deux images : aucun contrôle de variation fugitive sur trois images.');
   if (o.url.startsWith('file:')) {
     const html = readFileSync(fileURLToPath(o.url));
     rapport.build = { sha256: createHash('sha256').update(html).digest('hex'), octets: html.length };
@@ -208,8 +213,10 @@ export async function capturer(o) {
       gpuModeste: BITUME_JEU.gpuModeste, webgl2: BITUME_JEU.rendu.stats.webglVersion === 2 }; })()`);
     rapport.environnement.physx = physx;
     if (/swiftshader|llvmpipe|software/i.test(rapport.environnement.gpu)) rapport.limites.push('Rendu logiciel : aucune performance de GPU réel n’est qualifiée.');
+    if (o.initialiser) rapport.initialisation = await o.initialiser({ evaluer, envoyer, rapport });
     for (let i = 0; i < o.chauffe; i++) await evaluer(`__BITUME_CAPTURE.avancer(${o.pas * 1000})`);
     for (let i = 0; i < o.images; i++) {
+      if (o.avantImage) await o.avantImage({ evaluer, envoyer, rapport, i });
       const horloge = await evaluer(`__BITUME_CAPTURE.avancer(${o.pas * 1000})`);
       const etat = await evaluer(`(() => { const S = BITUME_JEU.session, zones = {}; const ids = ['scene','scene2','glace-g','glace-d','glace-g2','glace-d2'];
         for (const id of ids) { const e = document.getElementById(id); if (!e) continue; const r = e.getBoundingClientRect(), s = getComputedStyle(e);
@@ -219,7 +226,7 @@ export async function capturer(o) {
         return { ecran: BITUME_JEU.ecran, phase: S.course.phase, horloge: S.course.horloge, meteo: S.meteo.phase,
           joueurs: (S.locaux || [0]).map(id => { const e = S.course.voitures[id].etat; return { id, s:e.s, d:e.d, v:e.v }; }),
           lumiere: S.lumiere, lumiereJ2: S.vueJ2?.lumiere, reflets: S.refletsEcran, zones }; })()`);
-      if (etat.ecran !== 'course' || !['course', 'arrivee'].includes(etat.phase)) throw new Error('La séquence a quitté la course : ' + etat.ecran + '/' + etat.phase);
+      if (!(o.ecrans || ['course']).includes(etat.ecran) || !['course', 'arrivee'].includes(etat.phase)) throw new Error('La séquence a quitté la course : ' + etat.ecran + '/' + etat.phase);
       if (!etat.zones.scene) throw new Error('Toile principale absente de la capture');
       if (o.referenceJeu.mode === 'duo' && !etat.zones.scene2) throw new Error('Toile J2 absente de la capture duo');
       const capture = await envoyer('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
@@ -227,7 +234,8 @@ export async function capturer(o) {
       for (const [vue, zone] of Object.entries(etat.zones)) vues[vue] = mesurerImage(image, zone);
       const fichier = String(i).padStart(4, '0') + '.png';
       writeFileSync(path.join(o.sortie, fichier), png);
-      rapport.images.push({ fichier, temps: (horloge.temps - 1000) / 1000, etat, vues });
+      const observation = o.observer ? await o.observer({ evaluer, envoyer, rapport, i }) : undefined;
+      rapport.images.push({ fichier, temps: (horloge.temps - 1000) / 1000, etat, vues, observation });
       if (i % 8 === 0 || i === o.images - 1) process.stderr.write(`capture ${i + 1}/${o.images}\n`);
     }
     rapport.alertes = analyserSequence(rapport.images);

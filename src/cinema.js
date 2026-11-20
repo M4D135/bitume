@@ -69,7 +69,7 @@
     }
     const C = { c, decor, animaux, monde, ancres: { panorama: base.panorama, flore: base.flore, faune }, maxY: base.maxY, minY: base.minY,
       options: { faune: 'off', nuit: 0, pluie: 0 }, animal: {}, poseVue: { x: 0, y: 0, z: 0 },
-      rayon: [0, 0, 0], origine: [0, 0, 0], cible: [0, 0, 0], position: [0, 0, 0], hit: {}, solHit: {}, requetes: 0,
+      rayon: [0, 0, 0], origine: [0, 0, 0], cible: [0, 0, 0], position: [0, 0, 0], appui: [0, 0, 0], hit: {}, solHit: {}, requetes: 0,
       trajets: new WeakMap(), plans: new WeakMap() };
     // Les panoramas et les travellings de végétation sont contrôlés pour tout le plan pendant le chargement.
     // Aucun tronc qui entre ou sort d'un rayon ne change ensuite la distance de prise de vue.
@@ -115,6 +115,9 @@
   // dans le même plan. Le rayon dépasse légèrement la caméra pour réserver son plan proche.
   function libre(C, pos, cible, margeSujet = .15) {
     if (!fini(pos) || !fini(cible) || pos[1] < sol(C, pos[0], pos[2], pos[1]) + .38) return false;
+    return segmentLibre(C, pos, cible, margeSujet);
+  }
+  function segmentLibre(C, pos, cible, margeSujet) {
     if (!C.monde?.raycast) return true;
     const dir = C.rayon, origin = C.origine;
     for (let j = 0; j < 3; j++) dir[j] = pos[j] - cible[j];
@@ -123,6 +126,21 @@
     C.requetes++;
     const h = C.monde.raycast(origin, dir, d - margeSujet + .25, { mask: 3, staticOnly: true }, C.hit);
     return !h.hit;
+  }
+  function appuiVisible(C, a, pos) {
+    // Voir le corps au-dessus d'une crête ne suffit pas : le pli de terrain peut cacher les pattes et
+    // faire paraître la bête suspendue. Garder visible un petit morceau du vrai sol sous ses appuis.
+    // Les oiseaux momentanément en vol n'ont naturellement pas d'appui à montrer.
+    if (a.famille !== 'sol' || C.animal.vol || !C.animaux) return true;
+    const p = C.animal, cible = C.appui, T = C.animaux.G.T;
+    const r = Math.max(.25, Math.min(.7, a.taille * p.echelle * .4));
+    for (let k = 0; k < 5; k++) {
+      const dx = k === 1 ? r : k === 2 ? -r : 0, dz = k === 3 ? r : k === 4 ? -r : 0;
+      cible[0] = p.x + dx; cible[2] = p.z + dz;
+      cible[1] = B.animaux.solExact(T, cible[0], cible[2]) + .08;
+      if (!segmentLibre(C, pos, cible, .02)) return false;
+    }
+    return true;
   }
   function placer(a, trajet, u, out) {
     const angle = trajet.angle + trajet.cote * (u - .5) * .22, r = a.rayon * (1.08 - .16 * u);
@@ -156,7 +174,7 @@
       const angle = a.cap + cote * 1.05 + offset;
       p[0] = cible[0] - Math.cos(angle) * a.rayon; p[2] = cible[2] - Math.sin(angle) * a.rayon;
       p[1] = Math.max(cible[1] + a.hauteur, sol(C, p[0], p[2], cible[1] + a.hauteur) + 1);
-      if (libre(C, p, cible)) return p.slice();
+      if (libre(C, p, cible) && appuiVisible(C, a, p)) return p.slice();
     }
     return null;
   }
@@ -205,7 +223,7 @@
       pos[0] = cible[0] - Math.cos(a) * recul; pos[2] = cible[2] - Math.sin(a) * recul; pos[1] = cible[1] + Math.max(22, rayon * .8);
       fov = 52;
     }
-    if (!libre(C, pos, cible, marge)) return null;
+    if (!libre(C, pos, cible, marge) || ancre?.type === 'faune' && !appuiVisible(C, ancre, pos)) return null;
     const cam = viser(pos, cible, fov, NATURE.has(plan.vue));
     C.poseVue.x = cam.pos[0]; C.poseVue.y = cam.pos[1]; C.poseVue.z = cam.pos[2];
     return cam;

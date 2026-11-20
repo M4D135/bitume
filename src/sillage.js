@@ -58,5 +58,29 @@
     etat.actifs = actifs;
     return sources;
   }
-  B.sillage = { MAX_SOURCES, creer, preparer, mettreAJour };
+  // Eau soulevée derrière les pneus : exposition locale de la caméra, d'après les poses du rendu.
+  // Ne dépend ni du classement ni de l'abscisse de piste (deux portions voisines peuvent se croiser).
+  // Le cône suit la vitesse réelle, s'élargit puis se dissipe ; aucune allocation par vue.
+  function exposition(etat, position, mouille, idExclu) {
+    const eau = Number.isFinite(mouille) ? clamp(mouille, 0, 1) : 0;
+    if (!etat || !etat.sources || !position || !eau ||
+        !Number.isFinite(position[0]) || !Number.isFinite(position[1]) || !Number.isFinite(position[2])) return 0;
+    let charge = 0;
+    for (const source of etat.sources) {
+      if (!source || source.id === idExclu || !(source.strength > 0)) continue;
+      const vx = source.velocity[0], vz = source.velocity[2], vitesse = Math.hypot(vx, vz);
+      if (!Number.isFinite(vitesse) || vitesse < 8) continue;
+      const dx = position[0] - source.p[0], dy = position[1] - source.p[1], dz = position[2] - source.p[2];
+      if (!Number.isFinite(dx) || !Number.isFinite(dy) || !Number.isFinite(dz)) continue;
+      const derriere = -(dx * vx + dz * vz) / vitesse, lateral = Math.abs(dx * vz - dz * vx) / vitesse;
+      const portee = 12 + Math.min(vitesse, 100) * .85, rayon = 1.6 + Math.max(0, derriere) * .085;
+      const hauteur = 1.35 + Math.max(0, derriere) * .032;
+      if (derriere <= 0 || derriere >= portee || lateral >= rayon || dy < -1 || dy > hauteur) continue;
+      const bord = 1 - lateral / rayon, distance = 1 - derriere / portee;
+      const vertical = 1 - Math.max(0, dy) / hauteur;
+      charge += eau * clamp((vitesse - 8) / 42, 0, 1) * bord * bord * distance * vertical * 2.8;
+    }
+    return 1 - Math.exp(-charge);
+  }
+  B.sillage = { MAX_SOURCES, creer, preparer, mettreAJour, exposition };
 })(globalThis.BITUME = globalThis.BITUME || {});

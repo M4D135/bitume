@@ -68,6 +68,7 @@ MODULES = [
     'cinema.js',
     'realisateur.js',
     'meteo.js',
+    'visiere-optique.js',  # optique procédurale sur la scène courante, hors modules FERRO verrouillés
     'vitre.js',
     'sillage.js',
     'reseau.js',

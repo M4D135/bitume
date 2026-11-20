@@ -645,7 +645,7 @@
     if (typeof S.meteo.precipitationsNeige === 'boolean') return S.meteo.precipitationsNeige ? S.meteo.pluie || 0 : 0;
     return (S.meteo.reel ? S.meteo.neige : S.nature.saison && S.nature.saison.neige) ? S.meteo.pluie || 0 : 0;
   }
-  function dessinerMeteo(S, dt, cam, vue, profil) {
+  function dessinerMeteo(S, dt, cam, vue, profil, suivie) {
     // à deux, les gouttes du joueur 2 tombent sur sa moitié (toile #meteo2)
     const deux = S !== session;
     if (deux && !pluieVue2) pluieVue2 = creationTardive('pluie', B.meteo.creerPluie($('meteo2')));
@@ -660,12 +660,17 @@
       const contexte = S.vitreContexte || (S.vitreContexte = creationTardive('contexteVitre', {}));
       contexte.pluie = neige > 0 ? 0 : S.meteo.pluie || 0; contexte.neige = neige;
       contexte.ventX = S.meteo.ventX || 0; contexte.ventZ = S.meteo.ventZ || 0;
-      const voiture = S.course.voitures[S.suivie || 0] || S.course.joueur;
+      const voiture = suivie || S.course.voitures[S.suivie || 0] || S.course.joueur;
       contexte.vitesse = Math.abs(voiture.etat.v || 0); contexte.qualite = profil.palier;
       contexte.pause = ecran === 'pause' || (ecran === 'reglages' && retourReglages === 'pause');
       contexte.actif = ecran === 'course' || ecran === 'demo' || contexte.pause;
       contexte.intensite = reglages.gouttes; contexte.cockpit = vue === 'cockpit'; contexte.abri = abri;
       contexte.dpr = window.devicePixelRatio || 1;
+      // rendreVue vient de dessiner cette caméra : en duo, la source contient encore J2 avant la copie scene2,
+      // puis J1 à son tour. La visière capture sa propre image, sans getImageData ni readPixels.
+      contexte.sourceScene = $('scene');
+      contexte.embruns = !abri && neige === 0 && B.sillage && B.sillage.exposition
+        ? B.sillage.exposition(session.sillage, cam.pos, Math.max(S.meteo.mouille || 0, S.meteo.pluie || 0), voiture.id) : 0;
       B.vitre.mettreAJour(deux ? vitreVue2 : vitreVue, dt, contexte);
     }
   }
@@ -2618,7 +2623,7 @@
       B.mesures.section('rendu', performance.now() - tDraw);
       B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
     }
-    dessinerMeteo(S, dtImage, cam, vue, P);
+    dessinerMeteo(S, dtImage, cam, vue, P, suivie);
     majGlaces(S, vue, cam, ps, sortie, S.ambianceImage, suivie, dtImage);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
@@ -3614,6 +3619,14 @@
         if (!vitreVue) vitreVue = B.vitre.creer($('vitre'));
         if (duo && !vitreVue2) vitreVue2 = B.vitre.creer($('vitre2'), { graine: 2 });
         for (const V of vues) if (!V.vitreContexte) V.vitreContexte = {};
+        // Compiler, allouer et exercer l'optique sous le voile, y compris au départ d'une course sèche.
+        // La première averse n'a ainsi pas à créer son pipeline. L'état des dépôts reste vierge.
+        if (B.vitre.prechauffer) {
+          const optique = { qualite: profilDe(S).palier, sourceScene: canvas, dpr: window.devicePixelRatio || 1,
+            actif: true, intensite: reglages.gouttes };
+          B.vitre.prechauffer(vitreVue, optique);
+          if (duo) B.vitre.prechauffer(vitreVue2, optique);
+        }
       }
       // tunnel : axe de la scène, puis un état de lampes par vue (le joueur 2 a son propre lissage)
       if (scene) {
@@ -4745,6 +4758,7 @@
   window.BITUME_JEU = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer, banc, reference, detecterGraphismes,
     // ce que le banc et le contrôle visuel vérifient sans toucher au jeu : la scène installée et le profil résolu
     get scene() { return scene; }, get profil() { return profilDe(session); }, get ancre() { return etatProfils.decor; },
+    get vitres() { return { j1: vitreVue ? vitreVue.stats : null, j2: vitreVue2 ? vitreVue2.stats : null }; },
     get son() { return son ? son.stats() : null; }, get palier() { return palier.n; }, get gpuModeste() { return gpuModeste; },
     demo: i => demoDirecte(i === undefined ? reglages.circuit : i), // lance la démo sans attendre les cinq secondes, dans la tâche de l'appelant
     // Prépare et lance une séance comme le menu : { type: course|chrono|duo|demo|vitrine, circuit, conditions }.
