@@ -74,6 +74,14 @@ et l'incertitude propre à chaque observation restent inconnus. La vérification
 réalisée par le préparateur (`importProvenance`), le validateur du registre étant une fonction pure.
 Reçu détaillé : `../references/monaco-2026/qualification-mesures.json`.
 
+## Publication constatée
+
+[PR #22](https://github.com/M4D135/bitume/pull/22), fusion `f09c7008979103a7d2885f43407614ce58958e85`.
+CI PR #22 : **139/139 suites réussies**, aucun échec, archive vérifiée.
+Sources archivées identiques à l'arbre qualifié ; HTML 0.2.60 identique.
+Reçu : `../references/monaco-2026/PUBLICATION-MESURES-20261120.json`.
+Les résultats ciblés locaux et la CI complète sont distingués ; aucun succès n'est déduit d'un autre passage.
+
 ## Prochaine étape
 
 Examiner les points où les deux produits diffèrent, les passages couverts et les niveaux superposés.
