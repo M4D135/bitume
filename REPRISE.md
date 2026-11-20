@@ -10,17 +10,27 @@ l’historique de main : 34 secondaires déjà contenues, 15 têtes ajoutées co
 **0.2.66 / p15 / FERRO 0.3.15 / neuf circuits**, runtime inchangé.
 HTML : 14 370 823 octets, SHA-256 `18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b`.
 
-## Prochain lot : E0 — trajectoires des gouttes
+## Lot actif : eau, candidat à terminer et qualifier
 
-Plan complet : [PLAN-CORRECTIFS-VISUELS-2026-11-20.md](docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md).
-Fiche active : [eau et vitesse](docs/reprise/EAU-VITESSE-2026-11-20.md), E0–E3.
-Mesurer les trajectoires par couche et caméra, puis corriger le flux relatif : gravité
-à l’arrêt, écartement et sorties visibles par les bords avec la vitesse, dans les deux vues.
+Candidat **0.2.68** construit deux fois à l’identique : 14 383 155 octets,
+SHA-256 `60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2`.
+Repli de vitesse hors PhysX corrigé : déplacement entre poses physiques au pas fixe,
+sans confondre tangage visuel et montée ; 18 contrôles d’intégration conformes.
+Les 112 contrôles CPU gardent leurs sources exactes et leur attribution antérieure.
+**Main jouable reste 0.2.66** ; campagne générale et images du jeu final à qualifier.
 
-Le [plan habitacle et pilote](docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md)
-reste préparé à H0/B0 : identité des deux habitacles, assise plus basse et bras/buste.
-Premières fiches poussées : `72f92e2c761dc0ead696033e6be06cb9df891695` ; cette reprise les réconcilie.
-**Plans publiés ; corrections visuelles encore à réaliser.**
+[PR #39](https://github.com/M4D135/bitume/pull/39), checkpoint 0.2.68 publié `da4ac263`
+après le candidat initial 0.2.67 `a8a2369`.
+Fiche : [eau et vitesse](docs/reprise/EAU-VITESSE-2026-11-20.md).
+Reçu : `docs/reprise/rapports/EAU-VITESSE-2026-11-20/CANDIDAT-0268.json`.
+Suivi des motifs dans les PNG : **24/24 intervalles conformes, 2 076 mesures**,
+sans utiliser le transport prédit pour identifier les perles/nappes. Huit tests
+de régression passent ; les images répétées, opacité seule et trajectoires
+inversées sont refusées. L’ancien faux positif et les insuffisances sont conservés.
+Prochaine étape : campagne générale et captures exactes par CI (Chromium local bloqué).
+
+Le [plan habitacle/pilote](docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md)
+reste préparé à H0/B0 : habitacle unique, assise plus basse et dégagement bras/buste.
 
 ## Preuves et autres travaux
 
@@ -32,5 +42,5 @@ Premières fiches poussées : `72f92e2c761dc0ead696033e6be06cb9df891695` ; cette
 
 [Publication de consolidation](docs/reprise/rapports/CONSOLIDATION-2026-11-20/PUBLICATION.json) ·
 [Préparations](docs/reprise/preparations/README.md) ·
-[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **016**.
+[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **019**.
 Lecture minimale : ce fichier, `ETAT.json` → `etat_courant`, puis la seule fiche active.

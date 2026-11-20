@@ -7,6 +7,10 @@
   const QUALITES = Object.freeze({ low: 0, medium: 1, high: 2, ultra: 3 });
   const MAX_GOUTTES_MOBILES = 32;
   const DEPOTS = Object.freeze([6, 12, 24, 32].map((gouttes, i) => Object.freeze({ gouttes, neige: 0, echelleEau: 1.4 + i * .1 })));
+  // Micro-impacts, perles fines/moyennes/larges, film et neige humide. Chaque couche garde
+  // son transport réel : modifier le vent ou le regard change sa vitesse, jamais sa position.
+  const COUCHES = Object.freeze([[.015,.76],[.04,1.85],[.22,4.1],[.65,9.7],[.85,11],[.08,4.5]].map(Object.freeze));
+  const FONDU_TRANSPORT = .55;
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const nombre = (v, defaut = 0) => Number.isFinite(Number(v)) && v != null ? Number(v) : defaut;
   const VERTEX = `#version 300 es
@@ -22,8 +26,13 @@
   out vec4 couleur;
   uniform sampler2D uScene;
   uniform vec4 uMeteo;       // eau, neige accumulée, nuage de roues, film humide
-  uniform vec4 uMouvement;   // temps, vitesse d'évacuation, vent X, vent Y
+  uniform vec4 uMouvement;   // temps, charge d'air ; deux composantes réservées
   uniform vec4 uVue;         // largeur CSS, hauteur CSS, graine, atténuation extérieure
+  uniform vec4 uFlux;        // expansion /s, dérive X/Y en hauteurs écran/s, charge d'air
+  uniform vec4 uGravite;     // gravité écran, centre de divergence (repère CPU, y vers le bas)
+  uniform vec4 uTransport[12]; // échelle et translation affine normalisée, poids de la génération
+  uniform vec4 uHistoire[12];   // même transformation il y a environ 0,3 s
+  uniform vec4 uPhase[3];      // graines stables des générations, changées seulement lorsqu'invisibles
   uniform vec2 uTexel;
   uniform int uQualite;
   uniform bool uAvecScene;
@@ -40,21 +49,39 @@
     return mix(mix(h21(i),h21(i+vec2(1,0)),f.x),mix(h21(i+vec2(0,1)),h21(i+1.0),f.x),f.y);
   }
   float bords(float r, float largeur) { return 1.0 - smoothstep(1.0-largeur,1.0+largeur,r); }
-  // Une couche de perles ancrées : le bruit déplace leur centre et varie rayon, durée et ménisque.
-  // Les petites perles couvrent la vitre sans boucles par goutte, objets DOM ni allocation par image.
-  vec4 perles(vec2 p, float cellule, float taille, float densite, float couche, float mobilite) {
-    float t = uMouvement.x, air = uMouvement.y;
-    vec2 q = p / cellule;
+  vec2 positionTransportee(vec2 p, vec4 tr) {
+    vec2 n=vec2(p.x/uVue.x,1.0-p.y/uVue.y)*tr.x+tr.yz;
+    return vec2(n.x,1.0-n.y)*uVue.xy;
+  }
+  vec2 positionSource(vec2 p, vec4 tr) {
+    vec2 n=(vec2(p.x/uVue.x,1.0-p.y/uVue.y)-tr.yz)/tr.x;
+    return vec2(n.x,1.0-n.y)*uVue.xy;
+  }
+  vec2 directionFlux(vec2 p, float mobilite, float rayon) {
+    vec2 n=vec2(p.x/uVue.x,1.0-p.y/uVue.y),aspect=vec2(uVue.y/uVue.x,1.0);
+    vec2 v=(uFlux.x*(n-uGravite.zw)+uFlux.yz*aspect)*(.3+.7*mobilite);
+    v+=uGravite.xy*aspect*(mobilite*8.0*(rayon*.35+1.5)/720.0);
+    v*=uVue.xy;v.y=-v.y;
+    return length(v)>.0001 ? normalize(v) : vec2(0,-1);
+  }
+  // Les cellules vivent dans leur repère matériel transporté, et non dans une grille écran.
+  // Les centres traversent donc les frontières et les bords sans remise à zéro par cellule.
+  vec4 perlesGeneration(vec2 p, float cellule, float taille, float densite, float couche, float mobilite, int indice) {
+    vec4 tr=uTransport[indice];
+    if(tr.w<.0001)return vec4(0);
+    float graine=uVue.z+uPhase[indice/4][indice%4],t=uMouvement.x,air=uMouvement.y;
+    vec2 q=positionSource(p,tr)/cellule;
     vec2 id = floor(q), local = fract(q) - .5;
-    vec2 alea = h22(id + couche*17.3 + uVue.z);
+    vec2 alea = h22(id + couche*17.3 + graine);
     float vie = fract(t * (.033 + alea.x*.022) + alea.y);
     float apparition = smoothstep(0.0,.09,vie) * (1.0-smoothstep(.84,1.0,vie));
-    float presence = (1.0-smoothstep(densite-.08,densite+.025,h21(id+73.1+couche+uVue.z))) * clamp(densite*8.0,0.0,1.0);
+    float presence = (1.0-smoothstep(densite-.08,densite+.025,h21(id+73.1+couche+graine))) * clamp(densite*8.0,0.0,1.0)*tr.w;
     vec2 centre = (alea-.5)*.48;
-    float coulee = pow(vie,3.0) * mobilite * (.10+air*.28);
-    centre.y -= coulee;
-    centre.x += sin(vie*7.0+alea.x*6.283)*coulee*.23 + uMouvement.z*coulee*.02;
-    vec2 d = local-centre;
+    vec2 sourceCentre=(id+.5+centre)*cellule,centreEcran=positionTransportee(sourceCentre,tr);
+    vec2 ancienCentre=positionTransportee(sourceCentre,uHistoire[indice]),trajet=centreEcran-ancienCentre;
+    vec2 direction=length(trajet)>.03 ? normalize(trajet) : directionFlux(centreEcran,mobilite,taille);
+    vec2 travers=vec2(-direction.y,direction.x),delta=(local-centre)*tr.x;
+    vec2 d=vec2(dot(delta,travers),dot(delta,direction));
     float rayon = taille * (.48 + alea.x*alea.x*.94) / cellule;
     vec2 axes = vec2(rayon,rayon*(1.12+mobilite*(.5+air*1.5)));
     vec2 n = d/max(axes,vec2(.001));
@@ -66,26 +93,36 @@
     // gardent une empreinte continue lors d'une baisse de définition ou en écran partagé.
     float aa = clamp(fwidth(r)*.72,.018,.58);
     float masque = bords(r,aa) * presence * apparition;
-    float longueur = rayon*1.5+mobilite*pow(vie,2.0)*.32;
-    float tx = d.x-sin(d.y*25.0+alea.x*12.0)*rayon*.16;
-    float trace = (1.0-smoothstep(rayon*.09,rayon*.31,abs(tx))) * smoothstep(rayon*.6,rayon*1.6,d.y);
-    trace *= (1.0-smoothstep(longueur*.72,longueur,d.y))*mobilite*presence*apparition;
+    float longueur=rayon*1.5+min(.22,length(trajet)/cellule),arriere=-d.y;
+    float tx=d.x-sin(arriere*25.0+alea.x*12.0)*rayon*.16;
+    float trace=(1.0-smoothstep(rayon*.09,rayon*.31,abs(tx)))*smoothstep(rayon*.6,rayon*1.6,arriere);
+    trace*=(1.0-smoothstep(longueur*.72,longueur,arriere))*mobilite*presence*apparition*smoothstep(.1,1.5,length(trajet));
     float creux = sqrt(max(0.0,1.0-min(r*r,1.0)));
-    vec2 normale = clamp(n,vec2(-1),vec2(1))*masque*(.20+.80*creux);
-    return vec4(normale+vec2(sign(tx)*trace*.12,0.0),max(masque,trace*.34),max(masque*(.34+.66*creux),trace*.2));
+    vec2 nn=clamp(n,vec2(-1),vec2(1));
+    vec2 normale=(travers*nn.x+direction*nn.y)*masque*(.20+.80*creux);
+    return vec4(normale+travers*sign(tx)*trace*.12,max(masque,trace*.34),max(masque*(.34+.66*creux),trace*.2));
   }
-  vec4 nappe(vec2 p, float densite) {
-    vec2 q = mat2(.932,.362,-.362,.932)*p/vec2(157.0,191.0), id = floor(q), a = h22(id+103.0+uVue.z);
-    vec2 d = (fract(q)-.5-(a-.5)*.36)*vec2(1.0,.84);
+  vec4 perles(vec2 p,float cellule,float taille,float densite,float couche,float mobilite,int groupe) {
+    int i=groupe*2;
+    return perlesGeneration(p,cellule,taille,densite,couche,mobilite,i)+perlesGeneration(p,cellule,taille,densite,couche,mobilite,i+1);
+  }
+  vec4 nappeGeneration(vec2 p,float densite,int indice) {
+    vec4 tr=uTransport[indice];if(tr.w<.0001)return vec4(0);
+    float graine=uVue.z+uPhase[indice/4][indice%4];
+    mat2 rotation=mat2(.932,.362,-.362,.932);
+    vec2 q=rotation*positionSource(p,tr)/vec2(157.0,191.0),id=floor(q),a=h22(id+103.0+graine);
+    vec2 d=(fract(q)-.5-(a-.5)*.36)*vec2(1.0,.84)*tr.x;
     float vie = fract(uMouvement.x*(.021+a.y*.017)+a.x);
-    d.y += pow(vie,2.0)*(.08+uMouvement.y*.21);
     float rayon = .08+a.y*.095;
     float angle = atan(d.y,d.x);
     float r = length(d)/(rayon*(1.0+.18*sin(angle*3.0+a.x*15.0)+.09*sin(angle*5.0-a.y*9.0)));
-    float present = 1.0-smoothstep(densite-.05,densite+.08,h21(id+vec2(31,81)+uVue.z));
+    float present = (1.0-smoothstep(densite-.05,densite+.08,h21(id+vec2(31,81)+graine)))*tr.w;
     float fondu = smoothstep(0.0,.13,vie)*(1.0-smoothstep(.72,1.0,vie));
     float m = bords(r,.035)*present*fondu;
-    return vec4(clamp(d/rayon,vec2(-1),vec2(1))*m*.65,m,m*(.5+.5*sqrt(max(0.0,1.0-min(r*r,1.0)))));
+    return vec4(transpose(rotation)*clamp(d/rayon,vec2(-1),vec2(1))*m*.65,m,m*(.5+.5*sqrt(max(0.0,1.0-min(r*r,1.0)))));
+  }
+  vec4 nappe(vec2 p,float densite) {
+    return nappeGeneration(p,densite,8)+nappeGeneration(p,densite,9);
   }
   vec4 gouttesMobiles(vec2 p) {
     vec4 total=vec4(0);
@@ -95,10 +132,13 @@
       vec2 bas=min(g.xy,min(tr.xy,tr.zw))-rayon*2.3,haut=max(g.xy,max(tr.xy,tr.zw))+rayon*2.3;
       // Les calculs de lentille et de courbe sont locaux ; le reste de l'écran ne parcourt que les emprises.
       if(any(lessThan(p,bas))||any(greaterThan(p,haut))) continue;
-      vec2 n=(p-g.xy)/vec2(rayon,rayon*(1.30+uMouvement.y*.55));
+      vec2 trajet=g.xy-tr.xy,direction=length(trajet)>.03?normalize(trajet):directionFlux(g.xy,1.0,rayon);
+      vec2 travers=vec2(-direction.y,direction.x),delta=p-g.xy;
+      vec2 n=vec2(dot(delta,travers),dot(delta,direction))/vec2(rayon,rayon*(1.30+uMouvement.y*.55));
       float r=length(n),m=bords(r,max(.025,.85/rayon))*g.w;
       float creux=sqrt(max(0.0,1.0-min(r*r,1.0)));
-      vec2 normale=clamp(n,vec2(-1),vec2(1))*m*(.18+.82*creux);
+      vec2 nn=clamp(n,vec2(-1),vec2(1));
+      vec2 normale=(travers*nn.x+direction*nn.y)*m*(.18+.82*creux);
       float trace=0.0;
       if(distance(g.xy,tr.zw)>rayon*1.2) {
         float meilleur=1e9,progres=0.0; vec2 precedent=tr.zw,ecart=vec2(0);
@@ -137,12 +177,12 @@
     // Deux granulométries fines indépendantes : des milliers de micro-impacts ponctuels, puis
     // des perles à ménisque net. Le panache renouvelle ces impacts même à grande vitesse.
     vec4 micro=vec4(0);
-    if (uQualite > 0) micro=perles(p+vec2(3.7,8.1),9.5,.76,clamp(eau*.72,0.0,.93),7.0,.015);
-    vec4 a=perles(p,15.0,1.85,clamp(eau*.94,0.0,.97),1.0,.04);
-    vec4 b=perles(p,35.0,4.1,clamp(eau*.83,0.0,.93),2.0,.22);
+    if (uQualite > 0) micro=perles(p+vec2(3.7,8.1),9.5,.76,clamp(eau*.72,0.0,.93),7.0,.015,0);
+    vec4 a=perles(p,15.0,1.85,clamp(eau*.94,0.0,.97),1.0,.04,1);
+    vec4 b=perles(p,35.0,4.1,clamp(eau*.83,0.0,.93),2.0,.22,2);
     vec4 c=vec4(0),n=vec4(0);
     if (uQualite > 0) {
-      c=perles(p,77.0,9.7,clamp(eau*.70,0.0,.85),3.0,.65);
+      c=perles(p,77.0,9.7,clamp(eau*.70,0.0,.85),3.0,.65,3);
       n=nappe(p,clamp((eau-.30)*.48+film*.32,0.0,.65));
     } else { a*=.6; }
     vec4 mobiles=gouttesMobiles(p);
@@ -170,7 +210,7 @@
       float epaisseur=neige*((.021+.078*(1.0-uv.y))*(.35+1.15*lobes)+coin*.046+dentelle);
       float bourrelet=(1.0-smoothstep(epaisseur*.52,epaisseur+.022+lobes*.015,distanceBord))*neige;
       grain=bruit(p*.39+uVue.z)*.5+bruit(p*.13)*.5;
-      vec4 amas=perles(p,48.0,4.5,clamp(neige*.65,0.0,.82),6.0,.08);
+      vec4 amas=perles(p,48.0,4.5,clamp(neige*.65,0.0,.82),6.0,.08,5);
       float cristaux=smoothstep(.44,.75,bruit(p*.71+uVue.z))*.34;
       // Des cœurs granuleux blancs dans des ménisques translucides, pas des disques opaques.
       normale+=amas.xy*neige*.35;
@@ -199,13 +239,77 @@
     image=mix(image,vec3(.86,.91,.94)+grain*.055,blanc);
     couleur=vec4(clamp(image,0.0,1.0),alpha);
   }`;
+  function nouvelleGeneration() {
+    return { echelle:1,x:0,y:0,poids:0,age:0,graine:0,tempsTrace:0,histoire:new Float64Array(12) };
+  }
+  function initialiserGeneration(g,graine,poids) {
+    g.echelle=1;g.x=g.y=g.age=g.tempsTrace=0;g.graine=graine;g.poids=poids;
+    for(let i=0;i<12;i+=3){g.histoire[i]=1;g.histoire[i+1]=g.histoire[i+2]=0;}
+  }
+  function preparerTransport(e,k=1) {
+    for(let couche=0;couche<COUCHES.length;couche++)for(let n=0;n<2;n++) {
+      const g=e.couches[couche].generations[n],i=(couche*2+n)*4,p=e.transportPrecedent,h=e.histoirePrecedente;
+      e.transportUniformes[i]=p[i]*(1-k)+g.echelle*k;
+      e.transportUniformes[i+1]=p[i+1]*(1-k)+g.x*k;e.transportUniformes[i+2]=p[i+2]*(1-k)+g.y*k;
+      e.transportUniformes[i+3]=p[i+3]*(1-k)+g.poids*k;
+      for(let j=0;j<3;j++)e.histoireUniformes[i+j]=h[i+j]*(1-k)+g.histoire[9+j]*k;
+      e.histoireUniformes[i+3]=0;e.phaseUniformes[couche*2+n]=g.graine;
+    }
+  }
+  function reinitialiserTransport(e) {
+    for(const couche of e.couches) {
+      couche.active=0;couche.fondu=0;couche.transition=false;couche.sequence=0;
+      initialiserGeneration(couche.generations[0],0,1);initialiserGeneration(couche.generations[1],0,0);
+    }
+    preparerTransport(e);e.transportPrecedent.set(e.transportUniformes);e.histoirePrecedente.set(e.histoireUniformes);
+    e.fluxUniformes.fill(0);
+  }
+  // Solution affine exacte du champ commun pendant un pas fixe. L'échelle et la translation sont
+  // intégrées, pas recalculées avec temps*vitesse : une rafale ou un regard arrière ne téléporte rien.
+  function avancerGeneration(g,flux,mobilite,rayon,aspect) {
+    const adherence=.3+.7*mobilite,a=flux.expansion*adherence,ex=Math.exp(a*PAS),integrale=a>1e-10?(ex-1)/a:PAS;
+    const gravite=mobilite*8*(rayon*.35+1.5)/720;
+    const bx=flux.deriveX*adherence*aspect+flux.graviteX*gravite*aspect-a*flux.centreX;
+    const by=flux.deriveY*adherence+flux.graviteY*gravite-a*flux.centreY;
+    g.tempsTrace+=PAS;
+    if(g.tempsTrace>=.1-1e-10) {
+      g.tempsTrace-=.1;
+      for(let i=11;i>=3;i--)g.histoire[i]=g.histoire[i-3];
+      g.histoire[0]=g.echelle;g.histoire[1]=g.x;g.histoire[2]=g.y;
+    }
+    g.echelle*=ex;g.x=g.x*ex+bx*integrale;g.y=g.y*ex+by*integrale;g.age+=PAS;
+  }
+  function avancerTransport(e,flux,aspect) {
+    for(let couche=0;couche<COUCHES.length;couche++) {
+      const l=e.couches[couche],a=l.generations[l.active],b=l.generations[1-l.active],param=COUCHES[couche];
+      for(let n=0;n<2;n++) {
+        const g=l.generations[n],i=(couche*2+n)*4;
+        e.transportPrecedent[i]=g.echelle;e.transportPrecedent[i+1]=g.x;e.transportPrecedent[i+2]=g.y;e.transportPrecedent[i+3]=g.poids;
+        for(let j=0;j<3;j++)e.histoirePrecedente[i+j]=g.histoire[9+j];
+      }
+      avancerGeneration(a,flux,param[0],param[1],aspect);
+      if(l.transition) {
+        avancerGeneration(b,flux,param[0],param[1],aspect);l.fondu=Math.min(1,l.fondu+PAS/FONDU_TRANSPORT);
+        a.poids=1-l.fondu;b.poids=l.fondu;
+        if(l.fondu===1){l.active=1-l.active;l.transition=false;}
+      } else if(a.echelle>1.8 || Math.abs(a.x)>.65 || Math.abs(a.y)>.65 || a.age>18+couche*.71) {
+        // Une deuxième population naît sans déplacer la première, puis la remplace en fondu.
+        // Hors de ce bref chevauchement, le shader ne calcule qu'une génération par couche.
+        initialiserGeneration(b,++l.sequence*173.17+couche*31.9,0);l.fondu=0;l.transition=true;
+      }
+    }
+  }
   function creerEtat(options) {
     if (!B.vitre && typeof module !== 'undefined' && module.exports) require('./vitre.js');
-    return { temps: 0, accumulateur: 0, eau: 0, neige: 0, embruns: 0, film: 0,
+    const e={ temps: 0, accumulateur: 0, eau: 0, neige: 0, embruns: 0, film: 0,
       precedent: new Float64Array(4), uniformes: new Float32Array(12), etapes: 0,
       depots: B.vitre.creerSimulation(options), gouttesUniformes: new Float32Array(MAX_GOUTTES_MOBILES * 4),
       trajetsUniformes: new Float32Array(MAX_GOUTTES_MOBILES * 4), nbGouttes: 0,
+      couches:COUCHES.map(()=>({active:0,fondu:0,transition:false,sequence:0,generations:[nouvelleGeneration(),nouvelleGeneration()]})),
+      transportUniformes:new Float32Array(48),histoireUniformes:new Float32Array(48),phaseUniformes:new Float32Array(12),
+      transportPrecedent:new Float64Array(48),histoirePrecedente:new Float64Array(48),fluxUniformes:new Float32Array(8),
       graine: options && Number.isInteger(options.graine) ? options.graine : 0 };
+    reinitialiserTransport(e);return e;
   }
   function preparerDepots(e) {
     const d=e.depots,k=clamp(d.accumulateur*30,0,1),w=d.largeur,h=d.hauteur,g=e.gouttesUniformes,tr=e.trajetsUniformes;
@@ -219,12 +323,14 @@
       g[j+2]=Math.sqrt(p.pr*p.pr*(1-k)+(p.vivant?p.taille*p.taille:0)*k);g[j+3]=alpha;
       tr[j]=p.traceX[2]*w;tr[j+1]=(1-p.traceY[2])*h;tr[j+2]=p.traceX[5]*w;tr[j+3]=(1-p.traceY[5])*h;
     }
-    e.nbGouttes=n;
+    // Une sortie par un bord réduit réellement le nombre actif. Ne pas garder d'anciens
+    // uniformes dans la fin du tampon : leur contenu ne doit pas dépendre de la cadence.
+    g.fill(0,n*4);tr.fill(0,n*4);e.nbGouttes=n;
   }
   function avancerEtat(e, dt, c) {
     if (c.pause || !Number.isFinite(dt) || dt <= 0) return;
-    const intensite=clamp(nombre(c.intensite,1),0,2), vitesse=clamp(Math.abs(nombre(c.vitesse)),0,120);
-    const air=Math.pow(clamp((vitesse-8)/100,0,1),1.65);
+    const intensite=clamp(nombre(c.intensite,1),0,2),flux=B.vitre.calculerFlux(c,e.depots.flux),air=flux.air;
+    const largeur=Math.max(1,nombre(c.largeur,e.depots.largeur)),hauteur=Math.max(1,nombre(c.hauteur,e.depots.hauteur)),aspect=hauteur/largeur;
     const neige=c.abri ? 0 : clamp(nombre(c.neige),0,1);
     const pluie=c.abri || neige>.001 ? 0 : clamp(nombre(c.pluie),0,1);
     const spray=c.abri || neige>.001 ? 0 : clamp(nombre(c.embruns),0,1);
@@ -233,6 +339,7 @@
     const neigeCible=clamp(neige*intensite/(1+air*7),0,1.25);
     e.accumulateur+=Math.min(.25,dt);
     while (e.accumulateur+1e-10>=PAS) {
+      avancerTransport(e,flux,aspect);
       e.precedent[0]=e.eau; e.precedent[1]=e.neige; e.precedent[2]=e.embruns; e.precedent[3]=e.film;
       const fonte=e.neige*.18+Math.max(0,e.neige-neigeCible)*(.03+air*.10);
       e.eau+=(eauCible+fonte-e.eau)*(1-Math.exp(-PAS*(eauCible>e.eau ? .72 : .22+air*1.8)));
@@ -250,9 +357,12 @@
     u[0]=e.precedent[0]*(1-k)+e.eau*k; u[1]=e.precedent[1]*(1-k)+e.neige*k;
     u[2]=e.precedent[2]*(1-k)+e.embruns*k; u[3]=e.precedent[3]*(1-k)+e.film*k;
     u[4]=Math.max(0,e.temps-PAS+e.accumulateur); u[5]=air;
-    u[6]=clamp(nombre(c.ventX)*.2,-8,8); u[7]=clamp(nombre(c.ventZ)*.08,-8,8);
-    u[8]=nombre(c.largeur,e.depots.largeur); u[9]=nombre(c.hauteur,e.depots.hauteur); u[10]=e.graine*37.31;
+    u[6]=u[7]=0;
+    u[8]=largeur;u[9]=hauteur; u[10]=e.graine*37.31;
     u[11]=(c.cockpit===false ? .64 : 1)*Math.min(1,intensite);
+    const f=e.fluxUniformes;f[0]=flux.expansion;f[1]=flux.deriveX;f[2]=flux.deriveY;f[3]=flux.air;
+    f[4]=flux.graviteX;f[5]=flux.graviteY;f[6]=flux.centreX;f[7]=flux.centreY;
+    preparerTransport(e,k);
     B.vitre.avancerSimulation(e.depots,dt,c,DEPOTS[QUALITES[c.qualite]??2]);preparerDepots(e);
   }
   function montrer(e, oui) {
@@ -278,7 +388,7 @@
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([0,0,0,255]));
-    e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene','uNbGouttes','uGouttes','uTrajets']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
+    e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene','uNbGouttes','uGouttes','uTrajets','uFlux','uGravite','uTransport','uHistoire','uPhase']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
     gl.disable(gl.DEPTH_TEST); gl.disable(gl.BLEND); gl.clearColor(0,0,0,0);
     e.pret=true; e.perdu=false; e.stats.pret=true; e.stats.perdu=false;e.stats.erreur=null;
   }
@@ -294,6 +404,7 @@
         largeur:0,hauteur:0,dpr:1,eau:0,accumulationNeige:0,embruns:0,gouttes:0,neige:0,
         fusionsEau:0,expulses:0,depotsEau:0,depotsEmbruns:0,surfaceExpulsee:0}};
     e.uMeteo=e.simulation.uniformes.subarray(0,4);e.uMouvement=e.simulation.uniformes.subarray(4,8);e.uVue=e.simulation.uniformes.subarray(8,12);
+    e.uFlux=e.simulation.fluxUniformes.subarray(0,4);e.uGravite=e.simulation.fluxUniformes.subarray(4,8);
     e.perte=event=>{event.preventDefault(); e.perdu=true; e.pret=false; e.stats.perdu=true; e.stats.pret=false; montrer(e,false);};
     e.restauration=()=>{if(e.libere)return; try{initialiser(e);}catch(err){e.stats.erreur=String(err.message||err);montrer(e,false);}};
     canvas.addEventListener('webglcontextlost',e.perte,false); canvas.addEventListener('webglcontextrestored',e.restauration,false);
@@ -334,6 +445,9 @@
     gl.uniform2f(e.lieux.uTexel,1/e.source.width,1/e.source.height);gl.uniform1i(e.lieux.uQualite,niveau);gl.uniform1i(e.lieux.uAvecScene,avecScene);
     gl.uniform1i(e.lieux.uNbGouttes,e.simulation.nbGouttes);
     gl.uniform4fv(e.lieux.uGouttes,e.simulation.gouttesUniformes);gl.uniform4fv(e.lieux.uTrajets,e.simulation.trajetsUniformes);
+    gl.uniform4fv(e.lieux.uFlux,e.uFlux);gl.uniform4fv(e.lieux.uGravite,e.uGravite);
+    gl.uniform4fv(e.lieux.uTransport,e.simulation.transportUniformes);gl.uniform4fv(e.lieux.uHistoire,e.simulation.histoireUniformes);
+    gl.uniform4fv(e.lieux.uPhase,e.simulation.phaseUniformes);
     gl.drawArrays(gl.TRIANGLES,0,3);e.stats.dessins++;e.propre=!!chauffe;montrer(e,!chauffe);
   }
   function effacer(e) {
@@ -341,6 +455,7 @@
     if(!e.propre && e.pret && !e.perdu){e.gl.clear(e.gl.COLOR_BUFFER_BIT);e.propre=true;}
     const s=e.simulation;s.eau=s.neige=s.embruns=s.film=s.accumulateur=0;s.precedent.fill(0);s.uniformes.fill(0);
     B.vitre.effacer(s.depots);s.nbGouttes=0;s.gouttesUniformes.fill(0);s.trajetsUniformes.fill(0);
+    reinitialiserTransport(s);
     e.stats.eau=e.stats.accumulationNeige=e.stats.embruns=e.stats.gouttes=0;e.dprPalier=null;montrer(e,false);
   }
   function mettreAJour(e,dt,c) {
@@ -372,5 +487,5 @@
     if(!e.perdu){e.gl.deleteTexture(e.texture);e.gl.deleteVertexArray(e.vao);e.gl.deleteProgram(e.programme);}
     e.libere=true;e.canvas=null;e.contexte=null;e.source=null;e.sourceContexte=null;e.gl=null;
   }
-  B.visiereOptique={creer,creerEtat,avancerEtat,mettreAJour,prechauffer,effacer,liberer,MAX_PIXELS,MAX_SOURCE_PIXELS,MAX_GOUTTES_MOBILES,QUALITES};
+  B.visiereOptique={creer,creerEtat,avancerEtat,mettreAJour,prechauffer,effacer,liberer,MAX_PIXELS,MAX_SOURCE_PIXELS,MAX_GOUTTES_MOBILES,QUALITES,COUCHES};
 })(globalThis.BITUME=globalThis.BITUME||{});

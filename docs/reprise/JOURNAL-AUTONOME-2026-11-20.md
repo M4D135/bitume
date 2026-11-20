@@ -233,3 +233,67 @@ locale et main sans changer les fichiers. Ne pas confondre ce défaut de récup�
 locale avec un échec du push ou des validations du jeu.
 
 Le checkout local est borné en shallow au commit de consolidation 9f2246df pour représenter les objets historiques absents ; les 16 parents du vrai commit distant restent intacts. Les arbres et blobs reçus du commit documentaire concurrent sont vérifiés par leurs SHA avant réconciliation.
+
+## 017 — candidat eau 0.2.67 retrouvé et sauvegardé
+
+Reprise du calcul annoncé par David : candidat non commité basé sur 72f92e2,
+17 fichiers récupérés à empreintes stables sur le main documentaire 092a00b.
+Deux builds 0.2.67 identiques : 14 382 450 octets, SHA-256
+4a10ce1b93c15214ab72de9416801d47d545074291fd5788bee2b9f04c8341d7.
+Les sources de trajectoire sont exactes : 56 scénarios/112 contrôles conformes ;
+à 300 km/h, haut-gauche après 1 s = -206,106 px/-84,073 px ; arrêt = +24,8 px
+vers le bas. Quatre quadrants sortis, zéro séchage dans ces cas isolés.
+Le reçu initial porte encore VERSION 0.2.66 : preuve de sources, pas du build 0.2.67.
+
+Dix suites ciblées passent, dernier test optique 23 contrôles (résumé ancien à22).
+Raster initial : 35 cas/70 PNG, huit intervalles conformes, huit insuffisants de
+nappes ; le verdict initial EGL n'incluait pas cette analyse. GLSL inchangé déclaré
+après un bornage JS des dimensions. Coût llvmpipe 19,66 ms contre16,10 : réserve
+logicielle conservée. Capture du vrai jeu local bloquée par Chromium, zéro image.
+
+La revue corrige le repli cinématique hors PhysX et raccorde un verdict directionnel
+fiable avant reconstruction/qualification. Ce checkpoint préserve l'original ; les
+éditions de reprise restent séparées. Prochaines preuves : campagne complète et
+captures du candidat final exact. Le pilote/habitacle n'est pas modifié ici.
+
+## 018 — repli de vitesse physique et build final 0.2.68
+
+Le checkpoint 0.2.67 est publié dans la PR39 (`a8a2369`, arbre938b6d10), avec
+validation partielle explicite. Main reste092a00b/0.2.66. La revue du repli hors
+PhysX a révélé une vitesse verticale artificielle issue du tangage visuel. Le
+correctif dérive le mouvement des deux poses physiques au pas fixe ; les retours
+en piste les égalisent déjà. Les contextes sans historique gardent seulement une
+vitesse horizontale signée. Dix-huit contrôles passent : route plate, pente20%,
+recul, dérive, changements de regard/cadence et véritable replacement. Le premier
+échec et une erreur de fixture sont conservés dans le reçu de correction.
+
+Deux builds identiques0.2.68 :14383155octets, SHA256
+`60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2`.
+Aucune modification FERRO ni physique p15. Le calcul CPU des trajectoires reste
+exactement celui des112contrôles précédents. Le suivi des nappes est désormais
+mesuré dans les pixels ; l’extension aux fines/moyennes a détecté un faux positif
+de l’appariement prédit sur PNG identique. L’identité des perles doit donc venir
+des voisinages observés et les négatifs doivent rester bloquants. Cette entrée
+précède le verdict natif final et la campagne CI : ne pas les supposer réussis.
+
+## 019 — verdict des pixels indépendant ; campagne finale prête
+
+La 0.2.68 est poussée en checkpoint `da4ac263`, arbre `440eec59`, sans déclencher
+une campagne intermédiaire. Le suivi des fines/moyennes compare les voisinages
+géométriques observés ; celui des grandes perles/nappes compare les motifs alpha
+avec unicité, corrélation et retour mutuel. Aucun transport annoncé ne choisit
+l’identité. L’ancienne méthode produisait un faux positif sur PNG identique ;
+ce cas est désormais bloquant. Les seuils de suffisance restent 12 mesures par
+intervalle, deux par quadrant et 90 % conformes dans chacun.
+
+La réanalyse des mêmes PNG natifs exacts donne 24/24 intervalles conformes et
+2 076 mesures hors centre. Les huit tests dédiés passent. Sur de vrais PNG,
+huit intervalles répétés, huit avec opacité seule et huit inversés sont refusés ;
+la suppression des métadonnées de transport laisse huit résultats inchangés.
+Les rasters initiaux et leurs verdicts insuffisants ne sont pas réécrits.
+
+Le workflow ajoute séparément ces tests Python aux 160 suites Node. La prochaine
+publication sans skip-ci lance la campagne générale et les 20 groupes d’images
+de la PR39. Le HTML garde exactement le SHA60184ddf de l’entrée018. Cette preuve
+native sur mire ne remplace pas les images du jeu ni les essais de performance
+matérielle ; le surcoût logiciel initial reste une réserve explicite.

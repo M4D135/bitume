@@ -58,7 +58,14 @@ export function preparerEtat(s) {
       y: p.y - d * Math.sin(p.devers || 0), tangage: Math.atan(p.pente || 0), roulis: p.devers || 0 });
     const pose = { x: p.x - Math.sin(p.cap) * d, y: e.y, z: p.z + Math.cos(p.cap) * d, cap: p.cap,
       tangage: e.tangage, roulis: e.roulis, braquage: 0, roule: v.roule || 0, rebond: [0, 0, 0, 0] };
-    if (e._physx) Object.assign(e._physx, { x: pose.x, y: pose.y, z: pose.z, cap: pose.cap, groundCount: 4 });
+    if (e._physx) {
+      Object.assign(e._physx, { x: pose.x, y: pose.y, z: pose.z, cap: pose.cap, groundCount: 4 });
+      // Pose figée, vitesse des effets explicite : le flux utilise le vecteur physique, pas seulement e.v.
+      const horizontal = vitesse * Math.cos(pose.tangage);
+      e._physx.velocity[0] = Math.cos(p.cap) * horizontal;
+      e._physx.velocity[1] = Math.sin(pose.tangage) * vitesse;
+      e._physx.velocity[2] = Math.sin(p.cap) * horizontal;
+    }
     for (const liste of [S.prec, S.cour]) Object.assign(liste[v.id], pose);
   }
   for (const v of co.voitures) {
@@ -101,7 +108,7 @@ export function preparerEtat(s) {
 
 export function observerEtat() {
   const J = BITUME_JEU, S = J.session, gl = J.rendu.gl;
-  const contexte = v => v ? Object.fromEntries(['pluie', 'neige', 'vitesse', 'abri', 'cockpit', 'qualite', 'intensite', 'embruns', 'pause', 'actif'].map(k => [k, v[k]])) : null;
+  const contexte = v => v ? Object.fromEntries(['pluie', 'neige', 'vitesse', 'vitesseX', 'vitesseY', 'vitesseZ', 'cameraYaw', 'cameraPitch', 'cameraRoll', 'abri', 'cockpit', 'qualite', 'intensite', 'embruns', 'pause', 'actif'].map(k => [k, v[k]])) : null;
   const vitres = J.vitres || null, vitresGL = {}, visieresVisibles = {};
   for (const [joueur, id] of [['j1', 'vitre'], ['j2', 'vitre2']]) {
     const toile = document.getElementById(id), css = toile && getComputedStyle(toile);

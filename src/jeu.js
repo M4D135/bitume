@@ -673,9 +673,32 @@
       if (!deux && !vitreVue) vitreVue = creationTardive('vitre', B.vitre.creer($('vitre')));
       const contexte = S.vitreContexte || (S.vitreContexte = creationTardive('contexteVitre', {}));
       contexte.pluie = neige > 0 ? 0 : S.meteo.pluie || 0; contexte.neige = neige;
-      contexte.ventX = S.meteo.ventX || 0; contexte.ventZ = S.meteo.ventZ || 0;
+      contexte.ventX = S.meteo.ventX || 0; contexte.ventY = S.meteo.ventY || 0; contexte.ventZ = S.meteo.ventZ || 0;
       const voiture = suivie || S.course.voitures[S.suivie || 0] || S.course.joueur;
-      contexte.vitesse = Math.abs(voiture.etat.v || 0); contexte.qualite = profil.palier;
+      contexte.vitesse = voiture.etat.v || 0; contexte.qualite = profil.palier;
+      contexte.cameraYaw = cam.yaw || 0; contexte.cameraPitch = cam.pitch || 0; contexte.cameraRoll = cam.roll || 0;
+      // La visière et la lentille de poursuite suivent le déplacement réel du support, y compris
+      // dérive et marche arrière. Une coupe, un regard arrière ou un replacement de caméra ne
+      // deviennent pas une vitesse artificielle : aucune dérivée des positions de caméra ici.
+      const mouvement = voiture.etat._physx?.velocity;
+      if (mouvement && Number.isFinite(mouvement[0]) && Number.isFinite(mouvement[1]) && Number.isFinite(mouvement[2])) {
+        contexte.vitesseX = mouvement[0]; contexte.vitesseY = mouvement[1]; contexte.vitesseZ = mouvement[2];
+      } else {
+        // Modèle classique : v est en plan et le tangage contient le transfert de charge visuel.
+        // Ses deux poses physiques au pas fixe donnent le vrai déplacement, pente et saut compris.
+        // synchroniserReplacement les égalise déjà lors d'un retour en piste ; les coupes caméra
+        // et la cadence d'affichage ne participent jamais à cette différence.
+        const pose = S.cour?.[voiture.id], precedente = S.prec?.[voiture.id];
+        const dx = pose?.x - precedente?.x, dy = pose?.y - precedente?.y, dz = pose?.z - precedente?.z;
+        if (Number.isFinite(dx) && Number.isFinite(dy) && Number.isFinite(dz)) {
+          contexte.vitesseX = dx / DT; contexte.vitesseY = dy / DT; contexte.vitesseZ = dz / DT;
+        } else {
+          // Contexte ancien sans historique physique : seule la vitesse horizontale est connue.
+          const direction = (Number.isFinite(pose?.cap) ? pose.cap : contexte.cameraYaw - Math.PI / 2) - (voiture.etat.beta || 0);
+          contexte.vitesseX = contexte.vitesse * Math.cos(direction); contexte.vitesseY = 0;
+          contexte.vitesseZ = contexte.vitesse * Math.sin(direction);
+        }
+      }
       contexte.pause = ecran === 'pause' || (ecran === 'reglages' && retourReglages === 'pause');
       contexte.actif = (ecran === 'course' || ecran === 'demo' || contexte.pause) && (vue === 'cockpit' || vue === 'poursuite');
       contexte.intensite = reglages.gouttes; contexte.cockpit = vue === 'cockpit'; contexte.abri = abri;

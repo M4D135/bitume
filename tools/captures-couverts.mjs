@@ -56,7 +56,13 @@ export function installerEtatCouverts(s) {
     const e = v.etat, q = B.circuit.echantillon(c,abscisse), d = 0;
     Object.assign(e,{s:((abscisse%c.longueur)+c.longueur)%c.longueur,d,v:35,psi:0,beta:0,y:q.y,tangage:Math.atan(q.pente||0),roulis:q.devers||0});
     const p = {x:q.x,y:q.y,z:q.z,cap:q.cap,tangage:e.tangage,roulis:e.roulis,braquage:0,roule:v.roule||0,rebond:[0,0,0,0]};
-    if(e._physx) Object.assign(e._physx,{x:p.x,y:p.y,z:p.z,cap:p.cap,groundCount:4});
+    if(e._physx) {
+      Object.assign(e._physx,{x:p.x,y:p.y,z:p.z,cap:p.cap,groundCount:4});
+      const horizontal=e.v*Math.cos(e.tangage);
+      e._physx.velocity[0]=Math.cos(q.cap)*horizontal;
+      e._physx.velocity[1]=Math.sin(e.tangage)*e.v;
+      e._physx.velocity[2]=Math.sin(q.cap)*horizontal;
+    }
     for(const liste of [S.prec,S.cour]) Object.assign(liste[v.id],p);
   };
   let survol = null;

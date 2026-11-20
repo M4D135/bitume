@@ -1,16 +1,16 @@
 {
   "date": "2026-11-20",
   "etat_courant": {
-    "version_courante": "0.2.66",
+    "version_courante": "0.2.68",
     "version_publiee_verifiee": "0.2.66",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "plans_publies_et_reconcilies",
-    "lot": "eau_vitesse_E0",
+    "statut": "candidat_eau_pret_campagne_complete",
+    "lot": "eau_vitesse_integration",
     "fiche": "docs/reprise/EAU-VITESSE-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "016",
-    "prochaine_action": "E0 : reproduire les trajectoires des gouttes par couche et caméra, puis E1 flux relatif orienté. Habitacle/pilote H0/B0 reste prioritaire et préparé ; mêmes géométrie et assise plus basse à mesurer.",
+    "derniere_entree": "019",
+    "prochaine_action": "Suivre la campagne générale et les captures exactes PR39 ; inspecter leurs artefacts puis fusionner le candidat qualifié. H0/B0 habitacle reste préparé.",
     "dernier_lot_clos": "docs/reprise/rapports/CONSOLIDATION-2026-11-20/PUBLICATION.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md"
@@ -388,5 +388,17 @@
     ],
     "consolidation_publiee_avant_plan": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
     "premiere_publication": "72f92e2c761dc0ead696033e6be06cb9df891695"
+  },
+  "candidat_eau": {
+    "base_integration": "092a00b685219ad1e74d24f24a69182e5a0a5562",
+    "fiche": "docs/reprise/EAU-VITESSE-2026-11-20.md",
+    "recu": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/CANDIDAT-0268.json",
+    "version": "0.2.68",
+    "statut": "pret_campagne_complete",
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "campagne_generale_terminee": false,
+    "captures_jeu_inspectees": false,
+    "pr": 39,
+    "checkpoint_0267": "a8a2369d4be573195bff0f96ca53e6a7def77d6c"
   }
 }

@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-for (const nom of ['graphismes', 'pneus', 'ambiance', 'saisons', 'chaussee', 'meteo', 'conditions-course', 'cadence', 'vitre', 'sillage']) require('../src/' + nom + '.js');
+for (const nom of ['graphismes', 'pneus', 'ambiance', 'saisons', 'chaussee', 'meteo', 'conditions-course', 'cadence', 'circuit', 'conduite', 'vitre', 'sillage']) require('../src/' + nom + '.js');
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const html = readFileSync(new URL('../src/index.html', import.meta.url), 'utf8');
 function bloc(debut, fin) {
@@ -12,6 +12,7 @@ function bloc(debut, fin) {
   assert(a >= 0 && b > a, 'bloc de production : ' + debut); return source.slice(a, b);
 }
 const executer = new Function('B', 'prefs', `
+  ${source.match(/  const DT = [^;]+;/)[0]}
   const stockage = { 'bitume.reglages': JSON.stringify(prefs) }, elements = new Map();
   let session = null, ecran = 'titre', retourReglages = 'titre', captureTouche = null;
   const localStorage = { getItem: k => stockage[k] || null, setItem: (k,v) => { stockage[k] = v; } };
@@ -28,10 +29,12 @@ const executer = new Function('B', 'prefs', `
   const majCommandes = () => {}, majDetectionGraphique = () => {}, appliquerVolumes = () => {}, appliquerCarte = () => {}, secouerManette = () => {}, pad2 = {};
   const CATALOGUE = [{ theme: 'foret' }, { theme: 'cote' }];
   const VUES_DEHORS = new Set(['tele', 'helico', 'orbite', 'travelling', 'sol', 'panorama', 'flore', 'faune', 'pilote', 'peloton']);
-  const creationTardive = (nom, valeur) => valeur, sousLaVoute = (c, pos) => !!pos.abri;
+  const creationTardive = (nom, valeur) => valeur, sousLaVoute = (c, pos) => !!pos.abri, calmerVibrations = () => {};
   B = { ...B, meteo: { ...B.meteo, creerPluie: () => ({ dessiner() {} }) } };
   ${bloc('  function initialiserChoixPneus(', '  function choixPneusLocaux(')}
   ${bloc('  function lireStock(', '  // records et fantômes')}
+  ${bloc('  function remplirPoses(', '  function melange(')}
+  ${bloc('  function synchroniserReplacement(', '  // La manette ne vibre')}
   ${bloc('  let pluieVue = null', '  // menus à la manette')}
   ${bloc("  for (const nom of ['general', 'moteur', 'effets'])", '  const NOMS_ACTIONS =')}
   ${bloc('  function remplirReglages()', '  function retour()')}
@@ -39,7 +42,8 @@ const executer = new Function('B', 'prefs', `
     initialiser: S => { session = S; ecran = 'course'; },
     ecran: (nom, retour = 'titre') => { ecran = nom; retourReglages = retour; },
     choisir: valeur => { $('v-gouttes').value = String(valeur); $('v-gouttes').listeners.get('input')({ target: $('v-gouttes') }); },
-    dessiner: (S, vue = 'cockpit', dt = 1/30, abri = false, position = [0,1,0], suivie) => dessinerMeteo(S, dt, { pos: Object.assign([...position], { abri }) }, vue, { palier: 'ultra' }, suivie),
+    dessiner: (S, vue = 'cockpit', dt = 1/30, abri = false, position = [0,1,0], suivie, orientation = {}) => dessinerMeteo(S, dt, { ...orientation, pos: Object.assign([...position], { abri }) }, vue, { palier: 'ultra' }, suivie),
+    poser: S => remplirPoses(S.cour, S.course), replacement: synchroniserReplacement,
     vues: () => [vitreVue, vitreVue2] };
 `);
 function seance() {
@@ -51,6 +55,101 @@ const jeu = (prefs = {}) => executer(globalThis.BITUME, prefs);
 const avancer = (j, S, s = 3, vue = 'cockpit') => { for (let i = 0; i < s * 30; i++) j.dessiner(S, vue); };
 let controles = 0;
 const verifier = (nom, f) => { f(); controles++; console.log('ok ' + nom); };
+
+// Un vrai pas de conduite sur une portion droite connue : le relief vient des coordonnées
+// métriques, puis remplirPoses fournit les poses que le jeu rend. Aucun transport de vitre recopié.
+function supportClassique(pente = 0, v = 20, etatInitial = {}) {
+  const B = globalThis.BITUME, S = seance(), j = jeu();
+  const points = [[0,0,0], [200,200*pente,0], [200,200*pente,100], [0,0,100], [0,0,0]];
+  const c = B.circuit.creerDepuisTrace({ unite: 'm', points: points.map(([x,y,z]) =>
+    ({ x, y, z, largeurG: 10, largeurD: 10, limiteG: 30, limiteD: 30 })) });
+  c.largeur = 20; // le modèle classique demande encore une largeur scalaire
+  const et = B.conduite.creer(50, 0), voiture = { id: 0, etat: et };
+  Object.assign(et, { v, y: B.circuit.echantillon(c, et.s).y, tangage: .3, chargeX: 10, rapport: v < 0 ? -1 : 2 }, etatInitial);
+  S.course = { c, voitures: [voiture], joueur: voiture }; S.cour = []; S.prec = [];
+  S.distances = new Float64Array(1); S.vRel = new Float64Array(1); S.tele = { poste: null };
+  j.initialiser(S); j.poser(S); S.prec = S.cour.map(p => ({ ...p }));
+  B.conduite.pas(et, { gaz: v < 0 ? 0 : 1, frein: v < 0 ? 1 : 0, volant: 0,
+    marcheArriere: true, boite: 'manuelle', aide: 0, guidage: 0 }, c, 1/120);
+  j.poser(S); j.dessiner(S, 'cockpit');
+  return { j, S, et, contexte: S.vitreContexte };
+}
+
+verifier('le flux reçoit le vecteur PhysX et le regard réel, sans rafale lors d’une coupe de caméra', () => {
+  const j = jeu(), S = seance(); j.initialiser(S);
+  S.course.joueur.etat.v = -8;
+  S.course.joueur.etat._physx = { velocity: [12, -3, -7] };
+  const orientation = { yaw: .6, pitch: -.2, roll: .3 };
+  j.dessiner(S, 'cockpit', 1/30, false, [0,1,0], undefined, orientation);
+  const c = S.vitreContexte;
+  assert.equal(c.vitesse, -8, 'la marche arrière garde son signe');
+  assert.deepEqual([c.vitesseX,c.vitesseY,c.vitesseZ], [12,-3,-7], 'dérive et vitesse verticale réellement transmises');
+  assert.deepEqual([c.cameraYaw,c.cameraPitch,c.cameraRoll], [.6,-.2,.3]);
+  const flux = { ...j.vues()[0].flux };
+  j.dessiner(S, 'poursuite', 1/30, false, [500,120,-700], undefined, orientation);
+  assert.deepEqual(j.vues()[0].flux, flux, 'la coupe change la position, pas le flux du support');
+  j.dessiner(S, 'poursuite', 1/30, false, [500,120,-700], undefined, { yaw: .6+Math.PI, pitch: -.2, roll: .3 });
+  assert.notEqual(j.vues()[0].flux.deriveX, flux.deriveX, 'le regard arrière reprojette le même mouvement');
+});
+verifier('sans PhysX, une accélération sur route plate ne transforme pas le tangage en montée', () => {
+  const { S, et, contexte: c } = supportClassique();
+  assert(et.along > 0 && et.tangage > .05, 'véritable accélération et attitude non horizontale');
+  assert(S.cour[0].x > S.prec[0].x && S.cour[0].y === S.prec[0].y, 'le véhicule avance sans monter');
+  assert(Math.abs(c.vitesseX - et.v) < 1e-9, 'v reste une vitesse en plan, sans raccourcissement par le tangage');
+  assert.equal(c.vitesseY, 0); assert.equal(c.vitesseZ, 0);
+});
+verifier('sans PhysX, montée et recul suivent les poses physiques et restent indépendants du regard', () => {
+  for (const v of [20, -3]) {
+    const { j, S, et, contexte: c } = supportClassique(.2, v);
+    assert(c.vitesseX * v > 0 && c.vitesseY * v > 0, 'avant monte, recul descend sur le même plan');
+    assert(Math.abs(c.vitesseX - et.v) < 1e-9, 'la pente ne réduit pas la vitesse en plan');
+    assert(Math.abs(c.vitesseY / c.vitesseX - .2) < 1e-9, '20 m de montée pour 100 m horizontaux');
+    assert(Math.abs(c.vitesseX / 120 - (S.cour[0].x - S.prec[0].x)) < 1e-12, 'déplacement rendu du vrai pas');
+    const vecteur = [c.vitesseX,c.vitesseY,c.vitesseZ];
+    et.tangage = -.4; j.poser(S);
+    j.dessiner(S, 'poursuite', 1/144, false, [500,120,-700], undefined, { yaw: -1.5, pitch: .8, roll: -.4 });
+    assert.deepEqual([c.vitesseX,c.vitesseY,c.vitesseZ], vecteur, 'coupe, cadence et attitude ne déplacent pas le support');
+  }
+});
+verifier('sans PhysX, la dérive utilise le déplacement du véhicule et pas l’axe de sa caisse', () => {
+  const { j, S, et, contexte: c } = supportClassique(0, 20, { psi: .2, beta: .3 });
+  const deplacement = [S.cour[0].x - S.prec[0].x, S.cour[0].z - S.prec[0].z];
+  assert(deplacement[0] > 0 && deplacement[1] > 0 && Math.abs(et.beta) > .05, 'déplacement latéral réel du modèle');
+  assert(Math.abs(c.vitesseZ / c.vitesseX - deplacement[1] / deplacement[0]) < 1e-12);
+  const vecteur = [c.vitesseX,c.vitesseY,c.vitesseZ];
+  S.cour[0].cap += .8; et.beta = -.4;
+  j.dessiner(S, 'poursuite');
+  assert.deepEqual([c.vitesseX,c.vitesseY,c.vitesseZ], vecteur, 'l’attitude ne réoriente pas les poses physiques déjà observées');
+});
+verifier('sans PhysX, un replacement égalise les poses et ne crée aucune rafale', () => {
+  const { j, S, et } = supportClassique(.2);
+  et.d = 4; et.y += 2; j.poser(S); S.prec[0] = { ...S.cour[0] };
+  const ev = globalThis.BITUME.conduite.replacer(et, S.course.c).map(e => ({ ...e, id: 0 }));
+  j.poser(S); assert.notEqual(S.cour[0].y, S.prec[0].y, 'le replacement déplace réellement la voiture');
+  j.replacement(S, ev); j.dessiner(S, 'poursuite');
+  const c = S.vitreContexte;
+  assert.deepEqual([c.vitesseX,c.vitesseY,c.vitesseZ], [0,0,0]);
+});
+verifier('sans poses précédentes, le repli minimal garde le recul dans le plan sans inventer une vitesse verticale', () => {
+  const j = jeu(), S = seance(); j.initialiser(S);
+  Object.assign(S.course.joueur.etat, { v: -3, beta: .2, tangage: .6 }); S.cour = [{ cap: .2 }];
+  j.dessiner(S, 'cockpit', 1/30, false, [0,1,0], undefined, { yaw: 1.5 });
+  const c = S.vitreContexte;
+  assert.deepEqual([c.vitesseX,c.vitesseY,c.vitesseZ], [-3,0,-0]);
+  j.dessiner(S, 'poursuite', 1/30, false, [9,4,0], undefined, { yaw: -1.5 });
+  assert.deepEqual([c.vitesseX,c.vitesseY,c.vitesseZ], [-3,0,-0]);
+});
+verifier('les deux joueurs gardent leur propre mouvement et leur propre orientation de flux', () => {
+  const j = jeu(), S = seance(), J2 = { ...S, suivie: 1, vitreContexte: null }; j.initialiser(S);
+  S.course.voitures[0].etat._physx = { velocity: [0,0,-70] };
+  S.course.voitures[1].etat._physx = { velocity: [40,0,0] };
+  j.dessiner(S, 'cockpit', 1/30, false, [0,1,0], undefined, { yaw: 0 });
+  const a = { ...j.vues()[0].flux };
+  j.dessiner(J2, 'poursuite', 1/30, false, [0,3,0], undefined, { yaw: Math.PI });
+  assert.deepEqual(j.vues()[0].flux, a);
+  assert.notDeepEqual(j.vues()[1].flux, a);
+  assert.deepEqual([J2.vitreContexte.vitesseX,J2.vitreContexte.vitesseZ], [40,0]);
+});
 
 verifier('réglage 0..2 conservé au chargement, valeurs invalides ramenées au défaut 1', () => {
   for (const [entree, attendu] of [[undefined, 1], [null, 1], ['invalide', 1], [-8, 0], [9, 2], [0, 0], [.7, .7], ['1.8', 1.8]]) {

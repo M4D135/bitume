@@ -1,0 +1,65 @@
+{
+  "format": "bitume-repli-vitesse-1",
+  "date": "2026-11-20",
+  "head_au_recu": "94efe889daa51b25c472efd17013c92b1cda1f24",
+  "sources": [
+    {
+      "fichier": "src/jeu.js",
+      "avant_sha256": "3bf192ee1da84b54432fe54aeee077baeebd69f22d73bf285398ff2228e8813c",
+      "apres_sha256": "a0b95f4976ae132b06c16a6abf7df1b165dedb2a2b7089bfd9af4d0aff642c81"
+    },
+    {
+      "fichier": "verifications/vitre-integration.test.mjs",
+      "avant_sha256": "5a132b34003c5bd7c743e127551f89c61189814f4dbcb514fd96c96d52c5c828",
+      "apres_sha256": "33f2f9f9ae86a84a495edcd704a4acaf58efe936df9fe787d70a2e75d4cb94f9"
+    }
+  ],
+  "patch": {
+    "fichier": "CORRECTION-REPLI.patch",
+    "sha256": "8793feb76fadc387d2e11afabf179d9ad88caf0093a2b5a097acbd04d7129e88"
+  },
+  "verification": {
+    "commande": "node verifications/vitre-integration.test.mjs",
+    "controles": 18,
+    "resultat": "conforme",
+    "node": "v24.22.3",
+    "syntaxe_jeu": "node --check src/jeu.js : exit 0 (contrôle exécuté après modification runtime)",
+    "logs": [
+      {
+        "fichier": "integration-avant-correction.log",
+        "sha256": "ca06704bbd4133b6150b94fdc762330584931137df392fa7489f7c952c675370",
+        "exit_code": 1,
+        "nature": "Echec attendu du contrat sur le repli antérieur"
+      },
+      {
+        "fichier": "integration-erreur-fixture-tele.log",
+        "sha256": "3d4d74d8a64edfcf60515e26799c1c8ce49d987c5c69aa7374ddc5a63d774de5",
+        "exit_code": 1,
+        "nature": "Fixture incomplète : S.tele absent, corrigée sans changement runtime supplémentaire"
+      },
+      {
+        "fichier": "integration-apres-correction.log",
+        "sha256": "1b97f3a769e8e4f27509c71abeb5f1cb3604a65ef418e4682cf56e194c4f261c",
+        "exit_code": 0,
+        "nature": "18 contrôles conformes sur le candidat corrigé"
+      },
+      {
+        "fichier": "diff-check.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "exit_code": 0,
+        "nature": "Aucune erreur de whitespace"
+      }
+    ]
+  },
+  "publication": {
+    "commit_effectue_par_agent": false,
+    "build_relance": false,
+    "push_effectue": false
+  },
+  "limites": [
+    "La vitesse locale de la caméra liée à sa rotation reste une approximation distincte (R2 de la revue).",
+    "Sans historique physique, le repli minimal ne prétend connaître que le mouvement horizontal signé.",
+    "Aucun test global, rendu visuel ou benchmark matériel relancé."
+  ],
+  "depot": "M4D135/bitume"
+}
