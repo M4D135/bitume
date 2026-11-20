@@ -2,13 +2,13 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createRequire } from 'node:module';
 import { optionsPierres, scenariosPierres, optionsScenarioPierres, pierreCible, preparerVariantePierres,
-  viserPierres, empreintesPierres, verifierPierres, comparerPierres } from '../tools/captures-pierres.mjs';
+  viserPierres, empreintesPierres, verifierPixelPierres, verifierPierres, comparerPierres } from '../tools/captures-pierres.mjs';
 
 test('la campagne A/B garde mêmes conditions et refuse les paliers ou variantes non prévus', () => {
   const args = ['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/pierres'];
   const o = optionsPierres(args), scenes = scenariosPierres(o);
-  assert.equal(scenes.length, 8);
-  assert.equal(scenes.length * 2, 16);
+  assert.equal(scenes.length, 12);
+  assert.equal(scenes.length * 2, 24);
   for (let i = 0; i < scenes.length; i += 2) {
     const a = optionsScenarioPierres(scenes[i], o, '/tmp/a'), b = optionsScenarioPierres(scenes[i + 1], o, '/tmp/b');
     assert.deepEqual(a.referenceJeu, b.referenceJeu);
@@ -16,6 +16,7 @@ test('la campagne A/B garde mêmes conditions et refuse les paliers ou variantes
     assert.deepEqual(scenes.slice(i, i + 2).map(s => s.variante), ['reference', 'procedurale']);
   }
   assert.equal(scenariosPierres(optionsPierres([...args, '--vues', 'route-des-cimes-pont', '--saisons', 'hiver'])).length, 2);
+  assert.equal(scenariosPierres(optionsPierres([...args, '--vues', 'route-des-cimes-roche-eclairee'])).length * 2, 8);
   for (const extra of [['--vues', 'inconnu'], ['--vues', 'haut-col-portail,haut-col-portail'], ['--saisons', 'ete,ete'],
     ['--saisons', 'printemps'], ['--qualite', 'low'], ['--variante', 'procedurale'], ['--taille', '0,0']]) assert.throws(() => optionsPierres([...args, ...extra]));
 });
@@ -57,6 +58,16 @@ test('les vues et la fixture M1 passent sur les vrais décors et le monde PhysX,
   } finally { X.dispose(); }
 });
 
+test('le témoin laissé intact, un pixel vide ou une répétition instable ne prouvent pas le dessin', () => {
+  const pixel = [76, 81, 68, 255];
+  assert.equal(verifierPixelPierres(pixel), true);
+  assert.equal(verifierPixelPierres(pixel, pixel), true);
+  for (const vide of [[0, 0, 0, 0], [0, 0, 0, 255], [12, 14, 15, 0], [300, 2, 3, 255], [3, 4, 5]])
+    assert.throws(() => verifierPixelPierres(vide), /vide ou invalide/);
+  assert.throws(() => verifierPixelPierres([255, 0, 255, 255]), /témoin/);
+  assert.throws(() => verifierPixelPierres([77, 81, 68, 255], pixel), /instable/);
+});
+
 // Faux reçus seulement pour exercer les refus du vérificateur, jamais pour simuler un renderer.
 function recu() {
   const s = { circuitId: 'haut-col', saison: 'ete', variante: 'reference' }, camera = { pos: [1, 2, 3], yaw: .1, pitch: .2, fov: 44 };
@@ -64,7 +75,11 @@ function recu() {
     matieres: { uniques: 278, genres: { 'roche-tunnel': 272, 'portail-tunnel': 6 }, matiere: 9 },
     empreintes: Object.fromEntries(['lotsSansRecette', 'nappes', 'solides', 'obstacles', 'racines'].map(k => [k, 'a'.repeat(64)])),
     rendu: { drawCalls: 100, triangles: 1000, instances: 500 },
-    cout: { mesures: 16, echantillonsMs: Array(16).fill(20), p50Ms: 20, simulationInchangee: true } };
+    cout: { methode: 'draw-identique-readPixels-CPU-performance.now', mesures: 16, echantillonsMs: Array(16).fill(20), p50Ms: 20, simulationInchangee: true,
+      lecture: { pixel: [76, 81, 68, 255], pixelsMesures: Array.from({ length: 16 }, () => [76, 81, 68, 255]),
+        stable: true, controlesRemplacement: 22, preparationMarqueurHorsChronometrage: true,
+        largeur: 960, hauteur: 540, viewport: [0, 0, 960, 540], scissorActif: false, scissor: [0, 0, 960, 540],
+        dessinFramebuffer: 'defaut', lectureFramebuffer: 'defaut', lectureBuffer: 'BACK', format: 'RGBA/UNSIGNED_BYTE', x: 480, y: 270 } } };
   return { s, r: { build: { sha256: 'b'.repeat(64) }, source: { commit: 'c'.repeat(40) },
     parametres: { qualite: 'high', saison: 'ete' }, environnement: { webgl2: true, physx: { ready: true } },
     initialisation: { modeleReel: true, methode: 'fixture-matiere-meme-build' }, images: [{ observation }, { observation }] } };
@@ -75,6 +90,15 @@ test('une caméra remplacée, une mesure absente ou une comparaison géométriqu
   assert(verifierPierres(camera, s).some(e => /Caméra/.test(e)));
   const temps = structuredClone(r); temps.images[1].observation.cout = null;
   assert(verifierPierres(temps, s).some(e => /Mesure/.test(e)));
+  const ancien = structuredClone(r); ancien.images[1].observation.cout.methode = 'draw-identique-gl.finish-performance.now';
+  assert(verifierPierres(ancien, s).some(e => /Achèvement/.test(e)));
+  assert.equal(comparerPierres(ancien, r).rapportP50, null, 'aucun ratio de gain avec l’ancienne mesure');
+  const temoin = structuredClone(r); temoin.images[1].observation.cout.lecture.pixelsMesures[3] = [255, 0, 255, 255];
+  assert(verifierPierres(temoin, s).some(e => /témoin/.test(e)));
+  const instable = structuredClone(r); instable.images[1].observation.cout.lecture.pixelsMesures[6][0]++;
+  assert(verifierPierres(instable, s).some(e => /instable/.test(e)));
+  const partiel = structuredClone(r); partiel.images[1].observation.cout.lecture.viewport[2] = 1;
+  assert(verifierPierres(partiel, s).some(e => /partielle/.test(e)));
   const recette = structuredClone(r); recette.images[0].observation.matieres.matiere = 23;
   assert(verifierPierres(recette, s).some(e => /Recette/.test(e)));
   assert(verifierPierres({ images: [] }, s).length >= 3);

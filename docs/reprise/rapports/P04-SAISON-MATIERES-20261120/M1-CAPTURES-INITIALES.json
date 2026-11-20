@@ -1,0 +1,691 @@
+{
+  "schema": 1,
+  "source": "26e7c5602b428791c9ee47cc066575a5a634b93e",
+  "run": 44786811877,
+  "url": "https://github.com/M4D135/bitume/actions/runs/44786811877",
+  "html_sha256": "d66623243cfadbca3b0c896c76cb46b442e01c820282064dab84e23e243ad935",
+  "html_octets": 14388776,
+  "jobs_reussis": 2,
+  "images_inspectees": 16,
+  "methode": "Fixture recette9/23 dans le même build réel ; géométrie identique.",
+  "conclusion": "Gain de grain/relief non établi : pont à109m neutre, portail sombre plus lisse. Reprise demandée sur une face éclairée.",
+  "cout": "Les mesures draw+gl.finish sont conservées comme brutes et non concluantes. Aucune absence de surcoût déduite ; reprise avec lecture du pixel de sortie et dimensions/état GL explicites.",
+  "images": [
+    {
+      "groupe": "cimes",
+      "scene": "route-des-cimes-pont-ete-procedurale",
+      "fichier": "0000.png",
+      "sha256": "dd7bbe5e8935ba952de6aa48d6d65b1ee9bace3ed45adeb10c220a22ac0d2951",
+      "avis": "neutre_sans_regression_a_distance"
+    },
+    {
+      "groupe": "cimes",
+      "scene": "route-des-cimes-pont-ete-procedurale",
+      "fichier": "0001.png",
+      "sha256": "083e483b17c7705563daaa93f796f6fedb7e7dc4425a65fc46279646f575c330",
+      "avis": "neutre_sans_regression_a_distance"
+    },
+    {
+      "groupe": "cimes",
+      "scene": "route-des-cimes-pont-ete-reference",
+      "fichier": "0000.png",
+      "sha256": "69a6dafcaa0a91ef15efb1d3ff837aef0ac7176cab7e62b34137cd81beef3568",
+      "avis": "neutre_sans_regression_a_distance"
+    },
+    {
+      "groupe": "cimes",
+      "scene": "route-des-cimes-pont-ete-reference",
+      "fichier": "0001.png",
+      "sha256": "42e435e645add099c0f09e3a388ff207828b55b945f8efc70b74097b7e15435c",
+      "avis": "neutre_sans_regression_a_distance"
+    },
+    {
+      "groupe": "cimes",
+      "scene": "route-des-cimes-pont-hiver-procedurale",
+      "fichier": "0000.png",
+      "sha256": "f8a0d2a4be559cfe22cf63acf09b59bb5f632780080d543732e0002b09c3b5c9",
+      "avis": "neutre_sans_regression_a_distance"
+    },
+    {
+      "groupe": "cimes",
+      "scene": "route-des-cimes-pont-hiver-procedurale",
+      "fichier": "0001.png",
+      "sha256": "82a6d460f2b22cb5325b6831008545c0bff55bd7dcfaa6feea4290fa5d1cdf87",
+      "avis": "neutre_sans_regression_a_distance"
+    },
+    {
+      "groupe": "cimes",
+      "scene": "route-des-cimes-pont-hiver-reference",
+      "fichier": "0000.png",
+      "sha256": "113edc8c36a16574eba9bbef4499bfcbd18270ffeafed1dedb376f18426fb425",
+      "avis": "neutre_sans_regression_a_distance"
+    },
+    {
+      "groupe": "cimes",
+      "scene": "route-des-cimes-pont-hiver-reference",
+      "fichier": "0001.png",
+      "sha256": "e0f79aa7ac1c27873ecb504d6403dbc21a340f947210295542643bf3606a29b2",
+      "avis": "neutre_sans_regression_a_distance"
+    },
+    {
+      "groupe": "haut-col",
+      "scene": "haut-col-portail-ete-procedurale",
+      "fichier": "0000.png",
+      "sha256": "8cb4875cd5cb66626b081ec209ebdc604bf5b311a48abf857596d6b701ccdd52",
+      "avis": "gain_non_demontre_face_sombre_plus_lisse"
+    },
+    {
+      "groupe": "haut-col",
+      "scene": "haut-col-portail-ete-procedurale",
+      "fichier": "0001.png",
+      "sha256": "a5677da1e5a33544ca0b2a26446894c90d89973cbe1fc1ed418fb03aff59cb6a",
+      "avis": "gain_non_demontre_face_sombre_plus_lisse"
+    },
+    {
+      "groupe": "haut-col",
+      "scene": "haut-col-portail-ete-reference",
+      "fichier": "0000.png",
+      "sha256": "a2d4b49753adcbd5b96c1eeafa39272e56f7a65866044303e4509bf8156c5da7",
+      "avis": "gain_non_demontre_face_sombre_plus_lisse"
+    },
+    {
+      "groupe": "haut-col",
+      "scene": "haut-col-portail-ete-reference",
+      "fichier": "0001.png",
+      "sha256": "8c62f45483cc2af3b5c0df81a958989d400df1f38c427a526fdded2a2a6b75bc",
+      "avis": "gain_non_demontre_face_sombre_plus_lisse"
+    },
+    {
+      "groupe": "haut-col",
+      "scene": "haut-col-portail-hiver-procedurale",
+      "fichier": "0000.png",
+      "sha256": "20221a047b31b5b75cd213b7c4a0f6d8ea4892e2ca121ef4c9f316ea2529006c",
+      "avis": "gain_non_demontre_face_sombre_plus_lisse"
+    },
+    {
+      "groupe": "haut-col",
+      "scene": "haut-col-portail-hiver-procedurale",
+      "fichier": "0001.png",
+      "sha256": "196e6f70ac1698130eefd1c6f6edcea37461fb8b2ca520aa94b3432d1e40edaa",
+      "avis": "gain_non_demontre_face_sombre_plus_lisse"
+    },
+    {
+      "groupe": "haut-col",
+      "scene": "haut-col-portail-hiver-reference",
+      "fichier": "0000.png",
+      "sha256": "9d42b6130f6089e40545ced187c5ea48aeaf11e09911cbb863612aba620c0b07",
+      "avis": "gain_non_demontre_face_sombre_plus_lisse"
+    },
+    {
+      "groupe": "haut-col",
+      "scene": "haut-col-portail-hiver-reference",
+      "fichier": "0001.png",
+      "sha256": "59327a1c438c23a9a0284e03395fb87487e09efe62182f082d64474f8e7845c6",
+      "avis": "gain_non_demontre_face_sombre_plus_lisse"
+    }
+  ],
+  "observations": [
+    {
+      "scene": "route-des-cimes-pont-ete-procedurale",
+      "rendu": {
+        "drawCalls": 180,
+        "triangles": 320560,
+        "instances": 1672
+      },
+      "matieres": {
+        "uniques": 682,
+        "proches": 682,
+        "lointaines": 682,
+        "genres": {
+          "roche-tunnel": 493,
+          "portail-tunnel": 12,
+          "refuge-cimes": 1,
+          "arche-cimes": 44,
+          "tympan-cimes": 44,
+          "rive-pont-cimes": 88
+        },
+        "matiere": 23
+      },
+      "empreintes": {
+        "lotsSansRecette": "32b09f4c284fc846ddb0260bb28d5848ae81484f3b8c566b9625383b2a42036b",
+        "nappes": "05cb8dcbcd46284e42e6e120eefb459f4fc97f9983f2dc316638375952fd5f49",
+        "solides": "6457849cb760d567a5ea3f66f921023ecc85d51ea445a2e055c34ba653da9b7a",
+        "obstacles": "d4a595314138b02c654926755fea711edce1fb72cbf2faca1a7ae28e4eaf7de0",
+        "racines": "d93a173faa97d1398b852b9347517134e1c7a414de0b27021d8990d6d0fda6fb"
+      },
+      "camera": {
+        "pos": [
+          -797.1303130724671,
+          104.71100578744549,
+          -761.3333330617273
+        ],
+        "yaw": -1.9296097512687878,
+        "pitch": -0.03663108840370965,
+        "fov": 50
+      },
+      "cout_brut": {
+        "methode": "draw-identique-gl.finish-performance.now",
+        "chauffe": 6,
+        "mesures": 16,
+        "echantillonsMs": [
+          1,
+          1.1999999999970896,
+          1.3000000000029104,
+          1.1999999999970896,
+          1.1999999999970896,
+          1.3999999999941792,
+          1.2000000000116415,
+          1.3999999999941792,
+          1.1000000000058208,
+          1.1999999999970896,
+          1.0999999999912689,
+          1.1000000000058208,
+          1,
+          0.8000000000029104,
+          1.0999999999912689,
+          1.3000000000029104
+        ],
+        "p50Ms": 1.1999999999970896,
+        "p95Ms": 1.3999999999941792,
+        "simulationInchangee": true,
+        "limite": "Dessin synchrone répété sur raster logiciel ; bruit du runner et caches chauds, aucune conclusion FPS ou GPU matériel."
+      },
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "scene": "route-des-cimes-pont-ete-reference",
+      "rendu": {
+        "drawCalls": 180,
+        "triangles": 320560,
+        "instances": 1672
+      },
+      "matieres": {
+        "uniques": 682,
+        "proches": 682,
+        "lointaines": 682,
+        "genres": {
+          "roche-tunnel": 493,
+          "portail-tunnel": 12,
+          "refuge-cimes": 1,
+          "arche-cimes": 44,
+          "tympan-cimes": 44,
+          "rive-pont-cimes": 88
+        },
+        "matiere": 9
+      },
+      "empreintes": {
+        "lotsSansRecette": "32b09f4c284fc846ddb0260bb28d5848ae81484f3b8c566b9625383b2a42036b",
+        "nappes": "05cb8dcbcd46284e42e6e120eefb459f4fc97f9983f2dc316638375952fd5f49",
+        "solides": "6457849cb760d567a5ea3f66f921023ecc85d51ea445a2e055c34ba653da9b7a",
+        "obstacles": "d4a595314138b02c654926755fea711edce1fb72cbf2faca1a7ae28e4eaf7de0",
+        "racines": "d93a173faa97d1398b852b9347517134e1c7a414de0b27021d8990d6d0fda6fb"
+      },
+      "camera": {
+        "pos": [
+          -797.1303130724671,
+          104.71100578744549,
+          -761.3333330617273
+        ],
+        "yaw": -1.9296097512687878,
+        "pitch": -0.03663108840370965,
+        "fov": 50
+      },
+      "cout_brut": {
+        "methode": "draw-identique-gl.finish-performance.now",
+        "chauffe": 6,
+        "mesures": 16,
+        "echantillonsMs": [
+          2.2999999999956344,
+          1.0999999999985448,
+          1.1000000000058208,
+          4.69999999999709,
+          2.1999999999970896,
+          1.1000000000058208,
+          2.400000000001455,
+          2,
+          1.8999999999941792,
+          2.1000000000058208,
+          1.7999999999956344,
+          1.0999999999985448,
+          1,
+          0.9000000000014552,
+          0.9000000000014552,
+          1.8000000000029104
+        ],
+        "p50Ms": 1.8000000000029104,
+        "p95Ms": 4.69999999999709,
+        "simulationInchangee": true,
+        "limite": "Dessin synchrone répété sur raster logiciel ; bruit du runner et caches chauds, aucune conclusion FPS ou GPU matériel."
+      },
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "scene": "route-des-cimes-pont-hiver-procedurale",
+      "rendu": {
+        "drawCalls": 177,
+        "triangles": 304504,
+        "instances": 1637
+      },
+      "matieres": {
+        "uniques": 682,
+        "proches": 682,
+        "lointaines": 682,
+        "genres": {
+          "roche-tunnel": 493,
+          "portail-tunnel": 12,
+          "refuge-cimes": 1,
+          "arche-cimes": 44,
+          "tympan-cimes": 44,
+          "rive-pont-cimes": 88
+        },
+        "matiere": 23
+      },
+      "empreintes": {
+        "lotsSansRecette": "a799d6d50c678ae2b31324af03136b963797276b50682f1b6040a1cbc30f05ba",
+        "nappes": "60d7a04287d568ba5aa332ddd819831e904904a0358953c621e8eb866f3406c1",
+        "solides": "6457849cb760d567a5ea3f66f921023ecc85d51ea445a2e055c34ba653da9b7a",
+        "obstacles": "d4a595314138b02c654926755fea711edce1fb72cbf2faca1a7ae28e4eaf7de0",
+        "racines": "d93a173faa97d1398b852b9347517134e1c7a414de0b27021d8990d6d0fda6fb"
+      },
+      "camera": {
+        "pos": [
+          -797.1303130724671,
+          104.71100578744549,
+          -761.3333330617273
+        ],
+        "yaw": -1.9296097512687878,
+        "pitch": -0.03663108840370965,
+        "fov": 50
+      },
+      "cout_brut": {
+        "methode": "draw-identique-gl.finish-performance.now",
+        "chauffe": 6,
+        "mesures": 16,
+        "echantillonsMs": [
+          1.3999999999941792,
+          1.2999999999883585,
+          1.1000000000058208,
+          1,
+          3.1000000000058208,
+          1.2000000000116415,
+          1.8999999999941792,
+          1.2999999999883585,
+          1.2000000000116415,
+          1.1999999999825377,
+          1.2000000000116415,
+          1.2000000000116415,
+          1.3999999999941792,
+          1.2999999999883585,
+          1.2000000000116415,
+          1.1999999999825377
+        ],
+        "p50Ms": 1.2000000000116415,
+        "p95Ms": 3.1000000000058208,
+        "simulationInchangee": true,
+        "limite": "Dessin synchrone répété sur raster logiciel ; bruit du runner et caches chauds, aucune conclusion FPS ou GPU matériel."
+      },
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "scene": "route-des-cimes-pont-hiver-reference",
+      "rendu": {
+        "drawCalls": 177,
+        "triangles": 304504,
+        "instances": 1637
+      },
+      "matieres": {
+        "uniques": 682,
+        "proches": 682,
+        "lointaines": 682,
+        "genres": {
+          "roche-tunnel": 493,
+          "portail-tunnel": 12,
+          "refuge-cimes": 1,
+          "arche-cimes": 44,
+          "tympan-cimes": 44,
+          "rive-pont-cimes": 88
+        },
+        "matiere": 9
+      },
+      "empreintes": {
+        "lotsSansRecette": "a799d6d50c678ae2b31324af03136b963797276b50682f1b6040a1cbc30f05ba",
+        "nappes": "60d7a04287d568ba5aa332ddd819831e904904a0358953c621e8eb866f3406c1",
+        "solides": "6457849cb760d567a5ea3f66f921023ecc85d51ea445a2e055c34ba653da9b7a",
+        "obstacles": "d4a595314138b02c654926755fea711edce1fb72cbf2faca1a7ae28e4eaf7de0",
+        "racines": "d93a173faa97d1398b852b9347517134e1c7a414de0b27021d8990d6d0fda6fb"
+      },
+      "camera": {
+        "pos": [
+          -797.1303130724671,
+          104.71100578744549,
+          -761.3333330617273
+        ],
+        "yaw": -1.9296097512687878,
+        "pitch": -0.03663108840370965,
+        "fov": 50
+      },
+      "cout_brut": {
+        "methode": "draw-identique-gl.finish-performance.now",
+        "chauffe": 6,
+        "mesures": 16,
+        "echantillonsMs": [
+          1,
+          2.1000000000058208,
+          1,
+          1.3000000000029104,
+          1.1999999999970896,
+          1.1999999999970896,
+          1.3000000000029104,
+          1.1000000000058208,
+          1.1999999999970896,
+          1.1000000000058208,
+          1.1000000000058208,
+          1,
+          1.1000000000058208,
+          1.1999999999970896,
+          0.8999999999941792,
+          3.3999999999941792
+        ],
+        "p50Ms": 1.1999999999970896,
+        "p95Ms": 3.3999999999941792,
+        "simulationInchangee": true,
+        "limite": "Dessin synchrone répété sur raster logiciel ; bruit du runner et caches chauds, aucune conclusion FPS ou GPU matériel."
+      },
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "scene": "haut-col-portail-ete-procedurale",
+      "rendu": {
+        "drawCalls": 153,
+        "triangles": 322188,
+        "instances": 2016
+      },
+      "matieres": {
+        "uniques": 278,
+        "proches": 278,
+        "lointaines": 278,
+        "genres": {
+          "roche-tunnel": 272,
+          "portail-tunnel": 6
+        },
+        "matiere": 23
+      },
+      "empreintes": {
+        "lotsSansRecette": "d2db2220d35ca1c35fdac5fa8b4078feb018d6bab500eebb28eb319aaf1c06e9",
+        "nappes": "24f9af2b0b332d4b526763303c9b3d78820023e666a38b9227f24df0c8947407",
+        "solides": "b1e00f1498299b42f253f7cef0194e2227e7a48a4b24b19a2de88c847f013b6a",
+        "obstacles": "da39b5c51495fad66f2c3aa45f3ed83b60cdd6ce91f33768b1e481dce74eb239",
+        "racines": "28c7f71bbb703f1d4a1391810be1daa780ca0bb8ff348e9906d01cd4ae8dc6dc"
+      },
+      "camera": {
+        "pos": [
+          -546.7015631316593,
+          3.8749886892682275,
+          557.6125814468287
+        ],
+        "yaw": 2.870804272638125,
+        "pitch": 0.0828553568028279,
+        "fov": 44
+      },
+      "cout_brut": {
+        "methode": "draw-identique-gl.finish-performance.now",
+        "chauffe": 6,
+        "mesures": 16,
+        "echantillonsMs": [
+          0.7999999999883585,
+          7.899999999965075,
+          0.7000000000116415,
+          0.7999999999883585,
+          0.7000000000116415,
+          0.7999999999883585,
+          0.7000000000116415,
+          0.7999999999883585,
+          0.7000000000116415,
+          0.6999999999534339,
+          0.7000000000116415,
+          0.7000000000116415,
+          3.7000000000116415,
+          0.7999999999883585,
+          0.5999999999767169,
+          0.7000000000116415
+        ],
+        "p50Ms": 0.7000000000116415,
+        "p95Ms": 7.899999999965075,
+        "simulationInchangee": true,
+        "limite": "Dessin synchrone répété sur raster logiciel ; bruit du runner et caches chauds, aucune conclusion FPS ou GPU matériel."
+      },
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "scene": "haut-col-portail-ete-reference",
+      "rendu": {
+        "drawCalls": 153,
+        "triangles": 322188,
+        "instances": 2016
+      },
+      "matieres": {
+        "uniques": 278,
+        "proches": 278,
+        "lointaines": 278,
+        "genres": {
+          "roche-tunnel": 272,
+          "portail-tunnel": 6
+        },
+        "matiere": 9
+      },
+      "empreintes": {
+        "lotsSansRecette": "d2db2220d35ca1c35fdac5fa8b4078feb018d6bab500eebb28eb319aaf1c06e9",
+        "nappes": "24f9af2b0b332d4b526763303c9b3d78820023e666a38b9227f24df0c8947407",
+        "solides": "b1e00f1498299b42f253f7cef0194e2227e7a48a4b24b19a2de88c847f013b6a",
+        "obstacles": "da39b5c51495fad66f2c3aa45f3ed83b60cdd6ce91f33768b1e481dce74eb239",
+        "racines": "28c7f71bbb703f1d4a1391810be1daa780ca0bb8ff348e9906d01cd4ae8dc6dc"
+      },
+      "camera": {
+        "pos": [
+          -546.7015631316593,
+          3.8749886892682275,
+          557.6125814468287
+        ],
+        "yaw": 2.870804272638125,
+        "pitch": 0.0828553568028279,
+        "fov": 44
+      },
+      "cout_brut": {
+        "methode": "draw-identique-gl.finish-performance.now",
+        "chauffe": 6,
+        "mesures": 16,
+        "echantillonsMs": [
+          0.7000000000116415,
+          2.5,
+          0.7999999999883585,
+          0.8000000000465661,
+          0.6999999999534339,
+          0.7000000000116415,
+          0.5,
+          0.6000000000349246,
+          0.6999999999534339,
+          0.5,
+          0.5,
+          0.3999999999650754,
+          0.40000000002328306,
+          0.40000000002328306,
+          0.3999999999650754,
+          0.29999999998835847
+        ],
+        "p50Ms": 0.6000000000349246,
+        "p95Ms": 2.5,
+        "simulationInchangee": true,
+        "limite": "Dessin synchrone répété sur raster logiciel ; bruit du runner et caches chauds, aucune conclusion FPS ou GPU matériel."
+      },
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "scene": "haut-col-portail-hiver-procedurale",
+      "rendu": {
+        "drawCalls": 153,
+        "triangles": 322100,
+        "instances": 2016
+      },
+      "matieres": {
+        "uniques": 278,
+        "proches": 278,
+        "lointaines": 278,
+        "genres": {
+          "roche-tunnel": 272,
+          "portail-tunnel": 6
+        },
+        "matiere": 23
+      },
+      "empreintes": {
+        "lotsSansRecette": "2ee5f948a3e07ac91998f185fca137f4efa46e894fceb036876bd08fbddcc870",
+        "nappes": "bd11d110264475aa21be421b5fd624395c2f96950e782e9ade0472eeff816526",
+        "solides": "b1e00f1498299b42f253f7cef0194e2227e7a48a4b24b19a2de88c847f013b6a",
+        "obstacles": "da39b5c51495fad66f2c3aa45f3ed83b60cdd6ce91f33768b1e481dce74eb239",
+        "racines": "28c7f71bbb703f1d4a1391810be1daa780ca0bb8ff348e9906d01cd4ae8dc6dc"
+      },
+      "camera": {
+        "pos": [
+          -546.7015631316593,
+          3.8749886892682275,
+          557.6125814468287
+        ],
+        "yaw": 2.870804272638125,
+        "pitch": 0.0828553568028279,
+        "fov": 44
+      },
+      "cout_brut": {
+        "methode": "draw-identique-gl.finish-performance.now",
+        "chauffe": 6,
+        "mesures": 16,
+        "echantillonsMs": [
+          0.8999999999650754,
+          0.6000000000349246,
+          0.7999999999883585,
+          0.40000000002328306,
+          0.40000000002328306,
+          0.3999999999650754,
+          0.9000000000232831,
+          0.7000000000116415,
+          0.5999999999767169,
+          1.2000000000116415,
+          0.5999999999767169,
+          0.7000000000116415,
+          0.7000000000116415,
+          0.5999999999767169,
+          0.6000000000349246,
+          0.5999999999767169
+        ],
+        "p50Ms": 0.6000000000349246,
+        "p95Ms": 1.2000000000116415,
+        "simulationInchangee": true,
+        "limite": "Dessin synchrone répété sur raster logiciel ; bruit du runner et caches chauds, aucune conclusion FPS ou GPU matériel."
+      },
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "scene": "haut-col-portail-hiver-reference",
+      "rendu": {
+        "drawCalls": 153,
+        "triangles": 322100,
+        "instances": 2016
+      },
+      "matieres": {
+        "uniques": 278,
+        "proches": 278,
+        "lointaines": 278,
+        "genres": {
+          "roche-tunnel": 272,
+          "portail-tunnel": 6
+        },
+        "matiere": 9
+      },
+      "empreintes": {
+        "lotsSansRecette": "2ee5f948a3e07ac91998f185fca137f4efa46e894fceb036876bd08fbddcc870",
+        "nappes": "bd11d110264475aa21be421b5fd624395c2f96950e782e9ade0472eeff816526",
+        "solides": "b1e00f1498299b42f253f7cef0194e2227e7a48a4b24b19a2de88c847f013b6a",
+        "obstacles": "da39b5c51495fad66f2c3aa45f3ed83b60cdd6ce91f33768b1e481dce74eb239",
+        "racines": "28c7f71bbb703f1d4a1391810be1daa780ca0bb8ff348e9906d01cd4ae8dc6dc"
+      },
+      "camera": {
+        "pos": [
+          -546.7015631316593,
+          3.8749886892682275,
+          557.6125814468287
+        ],
+        "yaw": 2.870804272638125,
+        "pitch": 0.0828553568028279,
+        "fov": 44
+      },
+      "cout_brut": {
+        "methode": "draw-identique-gl.finish-performance.now",
+        "chauffe": 6,
+        "mesures": 16,
+        "echantillonsMs": [
+          0.6999999999534339,
+          0.8000000000465661,
+          0.7999999999883585,
+          0.8999999999650754,
+          0.8000000000465661,
+          0.8999999999650754,
+          0.9000000000232831,
+          0.7000000000116415,
+          0.40000000002328306,
+          0.5,
+          0.5,
+          0.5999999999767169,
+          0.7999999999883585,
+          0.7999999999883585,
+          3.300000000046566,
+          0.6999999999534339
+        ],
+        "p50Ms": 0.7999999999883585,
+        "p95Ms": 3.300000000046566,
+        "simulationInchangee": true,
+        "limite": "Dessin synchrone répété sur raster logiciel ; bruit du runner et caches chauds, aucune conclusion FPS ou GPU matériel."
+      },
+      "glErreur": 0,
+      "glPerdu": false
+    }
+  ],
+  "comparaisons": [
+    {
+      "scene": "route-des-cimes-pont:ete",
+      "erreurs": [],
+      "dessinReferenceP50Ms": 1.8000000000029104,
+      "dessinProceduralP50Ms": 1.1999999999970896,
+      "rapportP50": 0.6666666666639719,
+      "limite": "Ratio de répétitions logicielles, navigateurs séparés ; à relire avec dispersion, images et budgets matériels avant extension."
+    },
+    {
+      "scene": "route-des-cimes-pont:hiver",
+      "erreurs": [],
+      "dessinReferenceP50Ms": 1.1999999999970896,
+      "dessinProceduralP50Ms": 1.2000000000116415,
+      "rapportP50": 1.0000000000121265,
+      "limite": "Ratio de répétitions logicielles, navigateurs séparés ; à relire avec dispersion, images et budgets matériels avant extension."
+    },
+    {
+      "scene": "haut-col-portail:ete",
+      "erreurs": [],
+      "dessinReferenceP50Ms": 0.6000000000349246,
+      "dessinProceduralP50Ms": 0.7000000000116415,
+      "rapportP50": 1.1666666666181602,
+      "limite": "Ratio de répétitions logicielles, navigateurs séparés ; à relire avec dispersion, images et budgets matériels avant extension."
+    },
+    {
+      "scene": "haut-col-portail:hiver",
+      "erreurs": [],
+      "dessinReferenceP50Ms": 0.7999999999883585,
+      "dessinProceduralP50Ms": 0.6000000000349246,
+      "rapportP50": 0.7500000000545697,
+      "limite": "Ratio de répétitions logicielles, navigateurs séparés ; à relire avec dispersion, images et budgets matériels avant extension."
+    }
+  ]
+}

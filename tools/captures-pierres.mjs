@@ -12,7 +12,10 @@ export const VUES_PIERRES = Object.freeze([
     cible: [-545.4131550313992, 4.274988689268228, 562.2537024932122], genres: ['roche-tunnel', 'portail-tunnel'] },
   { id: 'route-des-cimes-pont', circuit: 8, circuitId: 'route-des-cimes', depart: 7952.1527022713235, fov: 50,
     position: [-797.1303130724671, 104.71100578744549, -761.3333330617273],
-    cible: [-899.3271490908057, 100.71100578744549, -723.0045356915932], genres: ['arche-cimes', 'tympan-cimes', 'rive-pont-cimes'] }
+    cible: [-899.3271490908057, 100.71100578744549, -723.0045356915932], genres: ['arche-cimes', 'tympan-cimes', 'rive-pont-cimes'] },
+  { id: 'route-des-cimes-roche-eclairee', circuit: 8, circuitId: 'route-des-cimes', depart: 4585.777074589104, fov: 52,
+    position: [1068.0023733948929, 262.48922001119945, -2505.1959693668027],
+    cible: [1068.9912199364128, 258.5463573890858, -2487.3348514774307], genres: ['roche-tunnel'] }
 ].map(s => Object.freeze(s)));
 export function optionsPierres(argv) {
   const o = {};
@@ -110,6 +113,44 @@ export async function preparerPierres(s) {
   return { entree: 'BITUME_JEU.reference', modeleReel: true, methode: 'fixture-matiere-meme-build',
     camera, visee, matieres, empreintes, description: 'Témoin recette 9 / candidat recette 23 sur les mêmes pierres ; géométrie, climat et simulation conservés.' };
 }
+export function verifierPixelPierres(pixel, reference = null) {
+  if (!Array.isArray(pixel) || pixel.length !== 4 || pixel.some(v => !Number.isInteger(v) || v < 0 || v > 255)
+    || pixel[3] === 0 || pixel.slice(0, 3).every(v => v === 0)) throw new Error('Pixel lu vide ou invalide');
+  if (pixel[0] === 255 && pixel[1] === 0 && pixel[2] === 255) throw new Error('Le dessin n’a pas remplacé le pixel témoin');
+  if (reference && pixel.some((v, k) => v !== reference[k])) throw new Error('Pixel de dessin instable à simulation figée');
+  return true;
+}
+export function etatLecturePierres(gl) {
+  const largeur = gl.drawingBufferWidth, hauteur = gl.drawingBufferHeight;
+  const viewport = Array.from(gl.getParameter(gl.VIEWPORT)), scissor = Array.from(gl.getParameter(gl.SCISSOR_BOX));
+  const scissorActif = gl.isEnabled(gl.SCISSOR_TEST);
+  const dessinDefaut = gl.getParameter(gl.DRAW_FRAMEBUFFER_BINDING) === null, lectureDefaut = gl.getParameter(gl.READ_FRAMEBUFFER_BINDING) === null;
+  // FERRO postPass termine sa composition/bloom sur la sortie par défaut. Une cible intermédiaire
+  // ou une lecture PBO n'est pas un résultat synchrone de cette image : refuser au lieu de deviner.
+  if (!dessinDefaut || !lectureDefaut || gl.getParameter(gl.READ_BUFFER) !== gl.BACK || gl.getParameter(gl.DRAW_BUFFER0) !== gl.BACK
+    || gl.getParameter(gl.PIXEL_PACK_BUFFER_BINDING) !== null || gl.getParameter(gl.PACK_ROW_LENGTH) !== 0
+    || gl.getParameter(gl.PACK_SKIP_ROWS) !== 0 || gl.getParameter(gl.PACK_SKIP_PIXELS) !== 0) throw new Error('Sortie couleur ou lecture de pixel inattendue');
+  const plein = [0, 0, largeur, hauteur];
+  if (!(largeur > 0 && hauteur > 0) || viewport.some((v, k) => v !== plein[k]) || scissorActif && scissor.some((v, k) => v !== plein[k]))
+    throw new Error('Dessin limité par un viewport ou un ciseau inattendu');
+  return { largeur, hauteur, viewport, scissorActif, scissor, dessinFramebuffer: 'defaut', lectureFramebuffer: 'defaut',
+    lectureBuffer: 'BACK', format: 'RGBA/UNSIGNED_BYTE', x: Math.floor(largeur / 2), y: Math.floor(hauteur / 2) };
+}
+export function marquerPixelPierres(gl, lecture) {
+  const actif = gl.isEnabled(gl.SCISSOR_TEST), ciseau = gl.getParameter(gl.SCISSOR_BOX);
+  const couleur = gl.getParameter(gl.COLOR_CLEAR_VALUE), masque = gl.getParameter(gl.COLOR_WRITEMASK);
+  try {
+    gl.enable(gl.SCISSOR_TEST); gl.scissor(lecture.x, lecture.y, 1, 1); gl.colorMask(true, true, true, true);
+    gl.clearColor(1, 0, 1, 1); gl.clear(gl.COLOR_BUFFER_BIT);
+  } finally {
+    gl.clearColor(...couleur); gl.colorMask(...masque); gl.scissor(...ciseau);
+    if (!actif) gl.disable(gl.SCISSOR_TEST);
+  }
+  const pixel = new Uint8Array(4);
+  gl.readPixels(lecture.x, lecture.y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+  if (gl.getError() !== gl.NO_ERROR || pixel[0] !== 255 || pixel[1] !== 0 || pixel[2] !== 255 || pixel[3] !== 255)
+    throw new Error('Écriture/lecture du pixel témoin non exercée');
+}
 export function observerPierres(i) {
   const J = BITUME_JEU, S = J.session, F = __PIERRES_CAPTURE, gl = J.rendu.gl, cam = S.camera;
   const stats = () => Object.fromEntries(['drawCalls', 'triangles', 'instances'].map(k => [k, J.rendu.stats[k]]));
@@ -117,19 +158,33 @@ export function observerPierres(i) {
   let cout = null;
   if (i === 1) {
     if (!F.arguments || F.arguments[0] !== cam) throw new Error('Arguments de la vraie image non observés');
-    const avant = JSON.stringify([S.course.horloge, S.tRendu, S.course.voitures.map(v => v.etat)]), temps = [];
+    const avant = JSON.stringify([S.course.horloge, S.tRendu, S.course.voitures.map(v => v.etat)]), temps = [], pixels = [];
     try {
-      gl.finish();
+      const lecture = etatLecturePierres(gl), pixel = new Uint8Array(4);
       for (let k = 0; k < 22; k++) {
-        const t = performance.now(); F.dessin.apply(J.rendu, F.arguments); gl.finish();
-        if (k >= 6) temps.push(performance.now() - t);
+        // Témoin magenta lu et état GL restauré AVANT le chronométrage : un vieux framebuffer
+        // stable ou un draw sans effet ne peut passer le contrôle de remplacement.
+        marquerPixelPierres(gl, lecture);
+        const t = performance.now(); F.dessin.apply(J.rendu, F.arguments);
+        // Lecture bloquante vers un tableau CPU, pas vers un PBO. Attend les écritures de couleur.
+        // https://registry.khronos.org/webgl/specs/latest/2.0/#READING_BACK_PIXELS
+        gl.readPixels(lecture.x, lecture.y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+        const ms = performance.now() - t, couleur = Array.from(pixel);
+        if (gl.getError() !== gl.NO_ERROR) throw new Error('Erreur GL pendant la lecture synchrone');
+        if (JSON.stringify(etatLecturePierres(gl)) !== JSON.stringify(lecture)) throw new Error('Sortie couleur différente après dessin');
+        verifierPixelPierres(couleur, k >= 6 ? pixels[0] : null);
+        if (k >= 6) { temps.push(ms); pixels.push(couleur); }
         if (JSON.stringify(stats()) !== JSON.stringify(rendu)) throw new Error('Comptage du dessin répété différent');
       }
       if (JSON.stringify([S.course.horloge, S.tRendu, S.course.voitures.map(v => v.etat)]) !== avant) throw new Error('Simulation modifiée pendant la mesure de dessin');
       const tries = [...temps].sort((a, b) => a - b);
-      cout = { methode: 'draw-identique-gl.finish-performance.now', chauffe: 6, mesures: temps.length,
+      cout = { methode: 'draw-identique-readPixels-CPU-performance.now', chauffe: 6, mesures: temps.length,
         echantillonsMs: temps, p50Ms: tries[Math.floor(tries.length * .5)], p95Ms: tries[Math.floor(tries.length * .95)],
-        simulationInchangee: true, limite: 'Dessin synchrone répété sur raster logiciel ; bruit du runner et caches chauds, aucune conclusion FPS ou GPU matériel.' };
+        lecture: { ...lecture, pixel: pixels[0], pixelsMesures: pixels, stable: true, controlesRemplacement: 22,
+          marqueur: [255, 0, 255, 255], preparationMarqueurHorsChronometrage: true },
+        sortie: { composition: !!J.rendu.stats.composition, bloom: !!J.rendu.stats.bloom, msaa: J.rendu.stats.msaa },
+        simulationInchangee: true,
+        limite: 'Dessin et lecture CPU synchrone d’un pixel, coût de transfert/interprocessus inclus ; caches chauds et bruit du runner. Les anciennes mesures finish seul ne concluent pas sur ce coût. Aucun FPS ni coût de GPU matériel qualifié.' };
     } finally { J.rendu.draw = F.dessin; }
   }
   return { saison: J.scene.decor.saison.id, circuit: J.CATALOGUE[F.scenario.circuit].id, variante: F.scenario.variante,
@@ -156,6 +211,16 @@ export function verifierPierres(r, s) {
   }
   const cout = r.images?.[1]?.observation?.cout;
   if (!cout || cout.mesures !== 16 || cout.echantillonsMs?.length !== 16 || cout.echantillonsMs.some(v => !Number.isFinite(v) || v <= 0) || cout.simulationInchangee !== true) erreurs.push('Mesure du dessin absente ou invalide');
+  if (cout?.methode !== 'draw-identique-readPixels-CPU-performance.now' || cout.lecture?.controlesRemplacement !== 22
+    || cout.lecture?.pixelsMesures?.length !== 16 || cout.lecture?.stable !== true || cout.lecture?.preparationMarqueurHorsChronometrage !== true) erreurs.push('Achèvement du dessin non vérifié par lecture CPU');
+  else try { for (const pixel of cout.lecture.pixelsMesures) verifierPixelPierres(pixel, cout.lecture.pixel); }
+  catch (e) { erreurs.push(e.message); }
+  const lecture = cout?.lecture, plein = [0, 0, lecture?.largeur, lecture?.hauteur];
+  if (!lecture || ![lecture.largeur, lecture.hauteur].every(v => Number.isInteger(v) && v > 0)
+    || JSON.stringify(lecture.viewport) !== JSON.stringify(plein) || typeof lecture.scissorActif !== 'boolean'
+    || lecture.scissorActif && JSON.stringify(lecture.scissor) !== JSON.stringify(plein)
+    || lecture.dessinFramebuffer !== 'defaut' || lecture.lectureFramebuffer !== 'defaut' || lecture.lectureBuffer !== 'BACK'
+    || lecture.format !== 'RGBA/UNSIGNED_BYTE' || lecture.x !== Math.floor(lecture.largeur / 2) || lecture.y !== Math.floor(lecture.hauteur / 2)) erreurs.push('Sortie couleur lue non documentée ou partielle');
   return [...new Set(erreurs)];
 }
 export function comparerPierres(a, b) {
@@ -169,9 +234,11 @@ export function comparerPierres(a, b) {
     if (x.matieres?.uniques !== y.matieres?.uniques || JSON.stringify(x.matieres?.genres) !== JSON.stringify(y.matieres?.genres)) erreurs.push('Sélection de pierre différente');
   }
   const ca = a.images?.[1]?.observation?.cout, cb = b.images?.[1]?.observation?.cout;
+  const lectureVerifiee = [ca, cb].every(c => c?.methode === 'draw-identique-readPixels-CPU-performance.now' && c.lecture?.stable && c.lecture?.controlesRemplacement === 22);
+  if (!lectureVerifiee) erreurs.push('Comparaison de coût sans lecture CPU vérifiée');
   return { erreurs: [...new Set(erreurs)], dessinReferenceP50Ms: ca?.p50Ms ?? null, dessinProceduralP50Ms: cb?.p50Ms ?? null,
-    rapportP50: ca?.p50Ms > 0 && Number.isFinite(cb?.p50Ms) ? cb.p50Ms / ca.p50Ms : null,
-    limite: 'Ratio de répétitions logicielles, navigateurs séparés ; à relire avec dispersion, images et budgets matériels avant extension.' };
+    lectureVerifiee, rapportP50: lectureVerifiee && ca?.p50Ms > 0 && Number.isFinite(cb?.p50Ms) ? cb.p50Ms / ca.p50Ms : null,
+    limite: 'Ratio de dessins et lectures CPU synchrones en raster logiciel, navigateurs séparés ; transfert inclus, à relire avec dispersion et images avant extension. Les anciens chiffres finish seul sont non concluants.' };
 }
 export async function campagnePierres(o) {
   mkdirSync(o.sortie, { recursive: true });
@@ -183,7 +250,7 @@ export async function campagnePierres(o) {
     const sortie = path.join(o.sortie, s.nom), p = optionsScenarioPierres(s, o, sortie);
     const fonctions = [pierreCible, preparerVariantePierres, viserPierres, empreintesPierres, preparerPierres];
     p.initialiser = ({ evaluer }) => evaluer(`(async () => { ${fonctions.map(f => 'const ' + f.name + ' = ' + f.toString() + ';').join('\n')} return preparerPierres(${JSON.stringify(s)}); })()`);
-    p.observer = ({ evaluer, i }) => evaluer(`(() => { const viserPierres = ${viserPierres.toString()}; return (${observerPierres.toString()})(${i}); })()`);
+    p.observer = ({ evaluer, i }) => evaluer(`(() => { ${[viserPierres, verifierPixelPierres, etatLecturePierres, marquerPixelPierres].map(f => 'const ' + f.name + ' = ' + f.toString() + ';').join('\n')} return (${observerPierres.toString()})(${i}); })()`);
     const resultat = await capturer(p), erreurs = verifierPierres(resultat, s), cle = s.id + ':' + s.saison;
     if (s.variante === 'reference') references.set(cle, resultat);
     else {
