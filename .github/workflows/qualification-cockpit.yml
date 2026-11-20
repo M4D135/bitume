@@ -19,14 +19,23 @@ jobs:
     timeout-minutes: 25
     strategy:
       fail-fast: false
+      max-parallel: 3
       matrix:
         include:
           - groupe: mac-reference
             cas: cockpit-mac
-          - groupe: formats
-            cas: cockpit-paysage,cockpit-vertical
-          - groupe: duo-exterieur
-            cas: cockpit-duo-haut-bas,cockpit-duo-cote,cockpit-profil,cockpit-trois-quarts
+          - groupe: paysage
+            cas: cockpit-paysage
+          - groupe: vertical
+            cas: cockpit-vertical
+          - groupe: duo-haut-bas
+            cas: cockpit-duo-haut-bas
+          - groupe: duo-cote
+            cas: cockpit-duo-cote
+          - groupe: profil
+            cas: cockpit-profil
+          - groupe: trois-quarts
+            cas: cockpit-trois-quarts
     steps:
       - uses: actions/checkout@v4
         with:

@@ -9,6 +9,7 @@ require('../src/circuit.js');
 require('../src/conduite.js'); require('../src/meteo.js');
 require('../src/ambiance.js');
 require('../src/saisons.js');
+require('../src/conditions-course.js');
 require('../src/graphismes.js');
 require('../src/pneus-reseau.js');
 const B = globalThis.BITUME;

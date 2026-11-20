@@ -1,0 +1,677 @@
+{
+  "schema": 1,
+  "date_utc": "2026-11-20T20:57:23.451903+00:00",
+  "relecteur": "review_candidate",
+  "nature": "inspection visuelle humaine-assistant de neuf PNG, lecture des rapports et comparaison des empreintes",
+  "run": 44814645844,
+  "version": "0.2.70",
+  "html_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+  "html_octets": 14502704,
+  "statut": "accepte_dans_le_perimetre_des_vues_observees",
+  "blocages": [],
+  "sources_modifiees": false,
+  "tests_supplementaires_lances": false,
+  "artefacts": [
+    {
+      "artefact": 14668194681,
+      "scenario": "sillage300-portrait-cockpit",
+      "commit_recu": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "tree_recu": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+      "environnement": {
+        "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "resolution": [
+          540,
+          960,
+          1
+        ],
+        "version": "V0.2.70",
+        "backend": "webgl2",
+        "gpuModeste": true,
+        "webgl2": true,
+        "physx": {
+          "disponible": true,
+          "ready": true,
+          "version": "5.12.0",
+          "erreur": null
+        }
+      },
+      "html_sha256_recu": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+      "html_sha256_conforme": true,
+      "rapport_sha256": "70e4f0215761a4f7b729ae4ad089240a425cf77675a04f7a15e5545161dbf472",
+      "echecs_rapport": 0,
+      "erreurs": [],
+      "avertissements": [],
+      "observations_visuelles": [
+        "Les trois PNG sont rendus en portrait 540×960, sans cadre noir ni zone de rendu manquante.",
+        "Perles, coulures et voile optique visibles ; plusieurs grosses gouttes changent de position ou quittent les bords entre les images.",
+        "Deux glaces entières avec une scène arrière reconnaissable, séparées des mains et du volant.",
+        "Jante et planche sous la chaussée lointaine visible ; le tableau et le volant occupent une part importante du bas du portrait.",
+        "Les rapports indiquent pluie ambiante 0 et embruns supérieurs à 0,93 : cette série qualifie le sillage, pas une averse ambiante."
+      ],
+      "images": [
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668194681/visuel-eau-cameras/apres/sillage300-portrait-cockpit/0000.png",
+          "sha256": "137b58f2e196b3e9ffc30d5d1af607dae14807bc30551aaa074c1586abb6fa7d",
+          "sha256_attendu": "137b58f2e196b3e9ffc30d5d1af607dae14807bc30551aaa074c1586abb6fa7d",
+          "empreinte_conforme": true,
+          "inspectee_avec_view_image": true,
+          "visuel": "aucun blocage nouveau visible",
+          "vue": "cockpit",
+          "vue2": null,
+          "temps_meteo": 5.941666666666662,
+          "gl_erreur": 0,
+          "gl_perdu": false,
+          "visieres_visibles": {
+            "j1": true,
+            "j2": false
+          },
+          "zones": {
+            "scene": {
+              "x": 0,
+              "y": 0,
+              "width": 540,
+              "height": 960
+            },
+            "glace-g": {
+              "x": 19.6693058013916,
+              "y": 385.8495178222656,
+              "width": 88.50270080566406,
+              "height": 29.23858642578125
+            },
+            "glace-d": {
+              "x": 431.8426513671875,
+              "y": 385.8289489746094,
+              "width": 88.489013671875,
+              "height": 29.240875244140625
+            }
+          },
+          "fraction_noire": {
+            "scene": 0,
+            "glace-g": 0,
+            "glace-d": 0
+          },
+          "optique": {
+            "j1": {
+              "vue_cockpit": true,
+              "pluie": 0,
+              "embruns": 0.9378565903586691,
+              "vitesse_m_s": 83.33333333333333,
+              "gouttes": 23,
+              "depots": 74,
+              "expulses": 40,
+              "dessins": 63,
+              "backend": "webgl2",
+              "perdu": false,
+              "erreur": null
+            }
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668194681/visuel-eau-cameras/apres/sillage300-portrait-cockpit/0001.png",
+          "sha256": "468b5e7a66d60fa296d438180ea14728593193d6a51648bfde581f395d89b405",
+          "sha256_attendu": "468b5e7a66d60fa296d438180ea14728593193d6a51648bfde581f395d89b405",
+          "empreinte_conforme": true,
+          "inspectee_avec_view_image": true,
+          "visuel": "aucun blocage nouveau visible",
+          "vue": "cockpit",
+          "vue2": null,
+          "temps_meteo": 6.041666666666662,
+          "gl_erreur": 0,
+          "gl_perdu": false,
+          "visieres_visibles": {
+            "j1": true,
+            "j2": false
+          },
+          "zones": {
+            "scene": {
+              "x": 0,
+              "y": 0,
+              "width": 540,
+              "height": 960
+            },
+            "glace-g": {
+              "x": 19.6693058013916,
+              "y": 385.8495178222656,
+              "width": 88.50270080566406,
+              "height": 29.23858642578125
+            },
+            "glace-d": {
+              "x": 431.8426513671875,
+              "y": 385.8289489746094,
+              "width": 88.489013671875,
+              "height": 29.240875244140625
+            }
+          },
+          "fraction_noire": {
+            "scene": 0,
+            "glace-g": 0,
+            "glace-d": 0
+          },
+          "optique": {
+            "j1": {
+              "vue_cockpit": true,
+              "pluie": 0,
+              "embruns": 0.9376301962827831,
+              "vitesse_m_s": 83.33333333333333,
+              "gouttes": 24,
+              "depots": 75,
+              "expulses": 40,
+              "dessins": 64,
+              "backend": "webgl2",
+              "perdu": false,
+              "erreur": null
+            }
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668194681/visuel-eau-cameras/apres/sillage300-portrait-cockpit/0002.png",
+          "sha256": "dd071ba53951f1be26dbf6b94e85ce43b15c74417ea941e64a6dabe8b0bf9619",
+          "sha256_attendu": "dd071ba53951f1be26dbf6b94e85ce43b15c74417ea941e64a6dabe8b0bf9619",
+          "empreinte_conforme": true,
+          "inspectee_avec_view_image": true,
+          "visuel": "aucun blocage nouveau visible",
+          "vue": "cockpit",
+          "vue2": null,
+          "temps_meteo": 6.141666666666661,
+          "gl_erreur": 0,
+          "gl_perdu": false,
+          "visieres_visibles": {
+            "j1": true,
+            "j2": false
+          },
+          "zones": {
+            "scene": {
+              "x": 0,
+              "y": 0,
+              "width": 540,
+              "height": 960
+            },
+            "glace-g": {
+              "x": 19.6693058013916,
+              "y": 385.8495178222656,
+              "width": 88.50270080566406,
+              "height": 29.23858642578125
+            },
+            "glace-d": {
+              "x": 431.8426513671875,
+              "y": 385.8289489746094,
+              "width": 88.489013671875,
+              "height": 29.240875244140625
+            }
+          },
+          "fraction_noire": {
+            "scene": 0,
+            "glace-g": 0,
+            "glace-d": 0
+          },
+          "optique": {
+            "j1": {
+              "vue_cockpit": true,
+              "pluie": 0,
+              "embruns": 0.9374029808905505,
+              "vitesse_m_s": 83.33333333333333,
+              "gouttes": 24,
+              "depots": 75,
+              "expulses": 40,
+              "dessins": 65,
+              "backend": "webgl2",
+              "perdu": false,
+              "erreur": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "artefact": 14668148989,
+      "scenario": "sillage300-portrait-poursuite",
+      "commit_recu": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "tree_recu": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+      "environnement": {
+        "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "resolution": [
+          540,
+          960,
+          1
+        ],
+        "version": "V0.2.70",
+        "backend": "webgl2",
+        "gpuModeste": true,
+        "webgl2": true,
+        "physx": {
+          "disponible": true,
+          "ready": true,
+          "version": "5.12.0",
+          "erreur": null
+        }
+      },
+      "html_sha256_recu": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+      "html_sha256_conforme": true,
+      "rapport_sha256": "d5ba60b2ea6d94699c3b9840d8df44eced8315bd2246e0f0cc44d00b1f02c03a",
+      "echecs_rapport": 0,
+      "erreurs": [],
+      "avertissements": [],
+      "observations_visuelles": [
+        "Les trois PNG sont rendus en portrait 540×960, sans cadre noir ni découpe de scène.",
+        "Voiture suivie, concurrent et corridor de route identifiables malgré le voile d’eau ; les dépôts changent entre les trois instants.",
+        "Aucun rétro DOM parasite en poursuite.",
+        "Les rapports indiquent pluie ambiante 0 et embruns supérieurs à 0,80 : cette série qualifie le sillage."
+      ],
+      "images": [
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668148989/visuel-eau-cameras/apres/sillage300-portrait-poursuite/0000.png",
+          "sha256": "6d605ca3c57f2587ed105d3aab962cd43cce06823aaec0d57bece49eede639b3",
+          "sha256_attendu": "6d605ca3c57f2587ed105d3aab962cd43cce06823aaec0d57bece49eede639b3",
+          "empreinte_conforme": true,
+          "inspectee_avec_view_image": true,
+          "visuel": "aucun blocage nouveau visible",
+          "vue": "poursuite",
+          "vue2": null,
+          "temps_meteo": 5.941666666666662,
+          "gl_erreur": 0,
+          "gl_perdu": false,
+          "visieres_visibles": {
+            "j1": true,
+            "j2": false
+          },
+          "zones": {
+            "scene": {
+              "x": 0,
+              "y": 0,
+              "width": 540,
+              "height": 960
+            }
+          },
+          "fraction_noire": {
+            "scene": 0
+          },
+          "optique": {
+            "j1": {
+              "vue_cockpit": false,
+              "pluie": 0,
+              "embruns": 0.8109796362435087,
+              "vitesse_m_s": 83.33333333333333,
+              "gouttes": 21,
+              "depots": 79,
+              "expulses": 40,
+              "dessins": 63,
+              "backend": "webgl2",
+              "perdu": false,
+              "erreur": null
+            }
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668148989/visuel-eau-cameras/apres/sillage300-portrait-poursuite/0001.png",
+          "sha256": "82cb7a7ab89e0148b066302fc56ea73465d63ad1aa26e1b00fcdc3b9b4d1bfb9",
+          "sha256_attendu": "82cb7a7ab89e0148b066302fc56ea73465d63ad1aa26e1b00fcdc3b9b4d1bfb9",
+          "empreinte_conforme": true,
+          "inspectee_avec_view_image": true,
+          "visuel": "aucun blocage nouveau visible",
+          "vue": "poursuite",
+          "vue2": null,
+          "temps_meteo": 6.041666666666662,
+          "gl_erreur": 0,
+          "gl_perdu": false,
+          "visieres_visibles": {
+            "j1": true,
+            "j2": false
+          },
+          "zones": {
+            "scene": {
+              "x": 0,
+              "y": 0,
+              "width": 540,
+              "height": 960
+            }
+          },
+          "fraction_noire": {
+            "scene": 0
+          },
+          "optique": {
+            "j1": {
+              "vue_cockpit": false,
+              "pluie": 0,
+              "embruns": 0.8104328126701141,
+              "vitesse_m_s": 83.33333333333333,
+              "gouttes": 23,
+              "depots": 81,
+              "expulses": 40,
+              "dessins": 64,
+              "backend": "webgl2",
+              "perdu": false,
+              "erreur": null
+            }
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668148989/visuel-eau-cameras/apres/sillage300-portrait-poursuite/0002.png",
+          "sha256": "57198864403b250105ada2d064729298d181e85ac676859f6910b2708a975cd1",
+          "sha256_attendu": "57198864403b250105ada2d064729298d181e85ac676859f6910b2708a975cd1",
+          "empreinte_conforme": true,
+          "inspectee_avec_view_image": true,
+          "visuel": "aucun blocage nouveau visible",
+          "vue": "poursuite",
+          "vue2": null,
+          "temps_meteo": 6.141666666666661,
+          "gl_erreur": 0,
+          "gl_perdu": false,
+          "visieres_visibles": {
+            "j1": true,
+            "j2": false
+          },
+          "zones": {
+            "scene": {
+              "x": 0,
+              "y": 0,
+              "width": 540,
+              "height": 960
+            }
+          },
+          "fraction_noire": {
+            "scene": 0
+          },
+          "optique": {
+            "j1": {
+              "vue_cockpit": false,
+              "pluie": 0,
+              "embruns": 0.8098845632909049,
+              "vitesse_m_s": 83.33333333333333,
+              "gouttes": 21,
+              "depots": 83,
+              "expulses": 43,
+              "dessins": 65,
+              "backend": "webgl2",
+              "perdu": false,
+              "erreur": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "artefact": 14669900217,
+      "scenario": "duo-vues",
+      "commit_recu": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "tree_recu": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+      "environnement": {
+        "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "resolution": [
+          960,
+          540,
+          1
+        ],
+        "version": "V0.2.70",
+        "backend": "webgl2",
+        "gpuModeste": true,
+        "webgl2": true,
+        "physx": {
+          "disponible": true,
+          "ready": true,
+          "version": "5.12.0",
+          "erreur": null
+        }
+      },
+      "html_sha256_recu": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+      "html_sha256_conforme": true,
+      "rapport_sha256": "10b2d0e54b2bb5be82f8b89e526948beccb512d9de809cc78e3712c4ef565f09",
+      "echecs_rapport": 0,
+      "erreurs": [],
+      "avertissements": [],
+      "observations_visuelles": [
+        "Les trois PNG contiennent deux vues complètes 960×270, cockpit au-dessus et poursuite au-dessous, avec leurs ATH propres.",
+        "La voiture suivie rouge de J1 et la voiture blanche de J2 restent différentes ; aucune recopie évidente du cockpit ou de sa lentille dans J2.",
+        "Les deux lentilles montrent de l’eau avec une distribution, un volume et des évolutions distincts ; pluie ambiante 1 dans les deux contextes.",
+        "Les deux rétros de J1 restent visibles, cadrés et au-dessus des commandes ; aucun rétro parasite dans J2.",
+        "La chaussée disponible au-dessus du tableau de J1 forme une bande peu haute dans le partage haut/bas ; la jante reste en dessous de l’horizon, sans occultation centrale nouvelle évidente sur ces poses fixes."
+      ],
+      "images": [
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14669900217/visuel-eau-cameras/apres/duo-vues/0000.png",
+          "sha256": "9986231b070f847bfdc7e3f3f6c7fab0d5fd2b1f9a2cadfc806a99792a093174",
+          "sha256_attendu": "9986231b070f847bfdc7e3f3f6c7fab0d5fd2b1f9a2cadfc806a99792a093174",
+          "empreinte_conforme": true,
+          "inspectee_avec_view_image": true,
+          "visuel": "aucun blocage nouveau visible",
+          "vue": "cockpit",
+          "vue2": "poursuite",
+          "temps_meteo": 5.941666666666662,
+          "gl_erreur": 0,
+          "gl_perdu": false,
+          "visieres_visibles": {
+            "j1": true,
+            "j2": true
+          },
+          "zones": {
+            "scene": {
+              "x": 0,
+              "y": 0,
+              "width": 960,
+              "height": 270
+            },
+            "scene2": {
+              "x": 0,
+              "y": 270,
+              "width": 960,
+              "height": 270
+            },
+            "glace-g": {
+              "x": 270.9286193847656,
+              "y": 56.3480339050293,
+              "width": 73.90631103515625,
+              "height": 24.421863555908203
+            },
+            "glace-d": {
+              "x": 615.1854858398438,
+              "y": 56.34499740600586,
+              "width": 73.900390625,
+              "height": 24.421329498291016
+            }
+          },
+          "fraction_noire": {
+            "scene": 0,
+            "scene2": 0,
+            "glace-g": 0,
+            "glace-d": 0
+          },
+          "optique": {
+            "j1": {
+              "vue_cockpit": true,
+              "pluie": 1,
+              "embruns": 0.032625033806254256,
+              "vitesse_m_s": 45,
+              "gouttes": 23,
+              "depots": 34,
+              "expulses": 10,
+              "dessins": 63,
+              "backend": "webgl2",
+              "perdu": false,
+              "erreur": null
+            },
+            "j2": {
+              "vue_cockpit": false,
+              "pluie": 1,
+              "embruns": 0.41283592916879497,
+              "vitesse_m_s": 12.5,
+              "gouttes": 24,
+              "depots": 27,
+              "expulses": 3,
+              "dessins": 62,
+              "backend": "webgl2",
+              "perdu": false,
+              "erreur": null
+            }
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14669900217/visuel-eau-cameras/apres/duo-vues/0001.png",
+          "sha256": "b6000a7b4e8e5e62a89595287eb392191714a44c441d9fbf7860c7dee58726e8",
+          "sha256_attendu": "b6000a7b4e8e5e62a89595287eb392191714a44c441d9fbf7860c7dee58726e8",
+          "empreinte_conforme": true,
+          "inspectee_avec_view_image": true,
+          "visuel": "aucun blocage nouveau visible",
+          "vue": "cockpit",
+          "vue2": "poursuite",
+          "temps_meteo": 6.041666666666662,
+          "gl_erreur": 0,
+          "gl_perdu": false,
+          "visieres_visibles": {
+            "j1": true,
+            "j2": true
+          },
+          "zones": {
+            "scene": {
+              "x": 0,
+              "y": 0,
+              "width": 960,
+              "height": 270
+            },
+            "scene2": {
+              "x": 0,
+              "y": 270,
+              "width": 960,
+              "height": 270
+            },
+            "glace-g": {
+              "x": 270.9286193847656,
+              "y": 56.3480339050293,
+              "width": 73.90631103515625,
+              "height": 24.421863555908203
+            },
+            "glace-d": {
+              "x": 615.1854858398438,
+              "y": 56.34499740600586,
+              "width": 73.900390625,
+              "height": 24.421329498291016
+            }
+          },
+          "fraction_noire": {
+            "scene": 0,
+            "scene2": 0,
+            "glace-g": 0,
+            "glace-d": 0
+          },
+          "optique": {
+            "j1": {
+              "vue_cockpit": true,
+              "pluie": 1,
+              "embruns": 0.032625033806254256,
+              "vitesse_m_s": 45,
+              "gouttes": 24,
+              "depots": 35,
+              "expulses": 10,
+              "dessins": 64,
+              "backend": "webgl2",
+              "perdu": false,
+              "erreur": null
+            },
+            "j2": {
+              "vue_cockpit": false,
+              "pluie": 1,
+              "embruns": 0.41283592916879497,
+              "vitesse_m_s": 12.5,
+              "gouttes": 24,
+              "depots": 27,
+              "expulses": 3,
+              "dessins": 63,
+              "backend": "webgl2",
+              "perdu": false,
+              "erreur": null
+            }
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14669900217/visuel-eau-cameras/apres/duo-vues/0002.png",
+          "sha256": "3227020743c9702b3ed8d1a9c011d14be150469ebc55563cbacd4cf273141c47",
+          "sha256_attendu": "3227020743c9702b3ed8d1a9c011d14be150469ebc55563cbacd4cf273141c47",
+          "empreinte_conforme": true,
+          "inspectee_avec_view_image": true,
+          "visuel": "aucun blocage nouveau visible",
+          "vue": "cockpit",
+          "vue2": "poursuite",
+          "temps_meteo": 6.141666666666661,
+          "gl_erreur": 0,
+          "gl_perdu": false,
+          "visieres_visibles": {
+            "j1": true,
+            "j2": true
+          },
+          "zones": {
+            "scene": {
+              "x": 0,
+              "y": 0,
+              "width": 960,
+              "height": 270
+            },
+            "scene2": {
+              "x": 0,
+              "y": 270,
+              "width": 960,
+              "height": 270
+            },
+            "glace-g": {
+              "x": 270.9286193847656,
+              "y": 56.3480339050293,
+              "width": 73.90631103515625,
+              "height": 24.421863555908203
+            },
+            "glace-d": {
+              "x": 615.1854858398438,
+              "y": 56.34499740600586,
+              "width": 73.900390625,
+              "height": 24.421329498291016
+            }
+          },
+          "fraction_noire": {
+            "scene": 0,
+            "scene2": 0,
+            "glace-g": 0,
+            "glace-d": 0
+          },
+          "optique": {
+            "j1": {
+              "vue_cockpit": true,
+              "pluie": 1,
+              "embruns": 0.032625033806254256,
+              "vitesse_m_s": 45,
+              "gouttes": 24,
+              "depots": 35,
+              "expulses": 10,
+              "dessins": 65,
+              "backend": "webgl2",
+              "perdu": false,
+              "erreur": null
+            },
+            "j2": {
+              "vue_cockpit": false,
+              "pluie": 1,
+              "embruns": 0.41283592916879497,
+              "vitesse_m_s": 12.5,
+              "gouttes": 23,
+              "depots": 27,
+              "expulses": 4,
+              "dessins": 64,
+              "backend": "webgl2",
+              "perdu": false,
+              "erreur": null
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "reserves": [
+    "Le cadrage cockpit portrait et surtout demi-écran haut/bas laisse une bande de chaussée relativement peu haute. Elle reste visible au-dessus des commandes sur ces poses ; ces images ne remplacent pas la campagne dédiée de lisibilité avec braquage et autres formats.",
+    "Les deux séries portrait montrent des embruns sans pluie ambiante ; seule la série duo de ce reçu montre une pluie ambiante.",
+    "Trois instants de scènes figées par série : pas de qualification de conduite, de toutes les trajectoires de gouttes, ni de toute la cinématique des bras.",
+    "Raster SwiftShader, aucune performance GPU matériel qualifiée. Le compteur affiché 10 FPS vient de la capture imposée à pas de 0,1 seconde, pas d’une mesure de performance."
+  ],
+  "images_inspectees": 9,
+  "toutes_empreintes_conformes": true
+}

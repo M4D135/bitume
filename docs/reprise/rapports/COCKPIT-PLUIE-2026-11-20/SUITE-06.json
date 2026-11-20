@@ -1,0 +1,31 @@
+{
+  "statut": "preparation_lecture_seule_apres_publication_0270",
+  "pr": 43,
+  "tete_distante": "d33763b1a2a2a0cd940a2a941a398d1a924c3fdd",
+  "arbre_sources": "7eb5b4330d3e431560c4c529abeadc7f1f075f10",
+  "ci_dediee": {
+    "run": 44806916593,
+    "groupes": 3,
+    "conclusion": "success"
+  },
+  "reception_locale": {
+    "png": 48,
+    "empreintes_conformes": 48,
+    "scenes_statiques": 8,
+    "publication_des_recus": "encore_stages_dans_le_worktree_06"
+  },
+  "compatibilite": [
+    "06-jeu.patch applicable sans conflit textuel au candidat 0.2.70.",
+    "Importer le differentiel meteo du lot 06 en preservant ciblePluie/pluieFixe de 0.2.70.",
+    "Raccorder majEauCarrosserie aux debords/linteaux comme la visiere ; borner les rayons et conserver le chemin sec.",
+    "Adapter le workflow 06 pour reconnaitre le raccord deja assemble au lieu de reappliquer son patch."
+  ],
+  "preuves_assemblage_a_obtenir": [
+    "carrosserie aux debords",
+    "vue arceau sous abri",
+    "duo"
+  ],
+  "runtime_modifie": false,
+  "main_fusionne": false,
+  "regle": "Conserver les preparations 06 et leur provenance. Ne pas annoncer les scenes statiques du lot comme preuve du futur HTML commun."
+}

@@ -1,0 +1,2587 @@
+{
+  "schema": "bitume-revue-visuelle-v1",
+  "date_utc": "2026-11-20T21:05:07.047376+00:00",
+  "relecteur": "review_candidate",
+  "run_id": "44814645794",
+  "statut": "candidat_accepte_avec_reserve_de_composition_non_bloquante",
+  "blocages_candidat": [],
+  "portee": "24 PNG inspectés individuellement : 12 du candidat 0.2.70 et 12 de la référence 0.2.62 ; deux scénarios sécurité montagne et deux scénarios nature été/hiver, trois instants par variante.",
+  "identite": {
+    "html_candidat_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+    "html_candidat_octets": 14502704,
+    "version_candidat": "V0.2.70",
+    "tree_candidat": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+    "commit_qualification_merge_technique_pr": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+    "html_reference_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "html_reference_octets": 14268457,
+    "version_reference": "V0.2.62",
+    "note": "Le champ source.commit est celui du checkout de qualification dans les deux variantes ; il ne donne pas le commit du code de référence. Les variantes sont identifiées par build.sha256 et la version runtime. Les HTML ne sont pas inclus dans ces dossiers. Les 24 PNG ont été rehachés localement ; aucun SHA PNG attendu ne figure dans les manifestes de ce lot."
+  },
+  "synthese_controles": {
+    "png_inspectes": 24,
+    "png_candidat": 12,
+    "png_reference": 12,
+    "tous_controles_conformes": true,
+    "zero_echec_agrege": true,
+    "zero_erreur_alerte_avertissement": true
+  },
+  "constats": [
+    "Les six images sécurité de référence sont occultées par le relief : vue télé avec obstruction à 28,47 m et hélicoptère avec obstruction à 2,78 m. Une scène grise occultée peut donc avoir noir=0 ; l’examen humain est indispensable.",
+    "Les six images sécurité du candidat utilisent la poursuite choisie par le réalisateur (plan n=2, motif=cadre, cameraImposee=false). Piste et voiture visibles, obstruction=false, aucun cadre noir.",
+    "La faune du candidat est lisible sur une pente continue en été comme en hiver. La fraction de hauteur projetée rapportée passe de 7,19 %/7,30 % dans la référence à 15,94 % dans le candidat, avec distance de prise de vue proche de 13 m au lieu de 29 m.",
+    "Le sol et la position verticale du sujet faune coïncident dans les rapports ; les images ne montrent pas de flottement ni d’enfoncement évident. Les lignes de maillage très visibles dans la référence ne dominent plus le terrain du candidat.",
+    "L’absence d’erreur GL et de perte de contexte est confirmée sur les 24 images. Aucun vitrage humide parasite n’est visible dans les scènes sèches."
+  ],
+  "reserves_non_bloquantes": [
+    {
+      "id": "bandeau-demo-faune",
+      "description": "Les deux bandeaux de démo recouvrent partiellement des animaux situés en haut du groupe, davantage dans le cadrage rapproché été. Le sujet central et ses appuis restent lisibles. Le lot qualifie le sujet cadré, pas la visibilité intégrale du troupeau.",
+      "fichiers": [
+        "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/apres/faune-ete/0000.png",
+        "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/apres/faune-hiver/0000.png"
+      ]
+    }
+  ],
+  "restrictions": [
+    "Les trois images de chaque passage couvrent environ 0,2 seconde sur poses prescrites. Cette preuve ne remplace pas une conduite ni une longue démo à positions variables.",
+    "Le candidat rejette les vues télé/hélicoptère obstruées et affiche une poursuite sûre. Le lot ne prouve pas qu’une caméra télé ou hélicoptère est conservée avec un autre emplacement correct, ni que la transition est fluide dans toutes les situations.",
+    "Faune : un seul sujet indicé 0, même circuit Haut-Col, été et hiver. Pas de qualification de toutes les espèces, de tous les terrains, des saisons printemps/automne ni des animations complètes.",
+    "Caméras extérieures sèches ; aucune conclusion sur cockpit, rétroviseurs, bras, commandes, eau ou carrosserie à partir de ce lot.",
+    "Profil high, WebGL2, Chrome et SwiftShader seulement. Aucun FPS matériel ni comparaison des profils graphiques ; l’affichage 10 FPS provient de la cadence commandée.",
+    "Le terrain clair peut perdre du détail dans les zones très lumineuses ; les images n’autorisent pas une conclusion générale sur l’éclairage de tous les reliefs.",
+    "Les images de référence sont 0.2.62, pas 0.2.69. Cette comparaison ne représente pas un différentiel isolé entre les deux derniers candidats."
+  ],
+  "artefacts": [
+    {
+      "artifact_id": "14669146645",
+      "groupe": "securite",
+      "dossier": "/workspace/scratch/d61843ca5396/qa/14669146645",
+      "commit_qualification": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "tree_candidat": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+      "html_candidat_manifeste": [
+        "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344"
+      ],
+      "environnement_outils": "Google Chrome 157.0.8103.50 \nv24.22.2",
+      "rapport_agrege": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/rapport.json",
+      "rapport_agrege_sha256": "089aee11921859f827efe7648ffd2f5913396fa2a095a26a9fd62c949c11b140",
+      "echecs": 0,
+      "erreurs_passages": 0
+    },
+    {
+      "artifact_id": "14667759527",
+      "groupe": "nature",
+      "dossier": "/workspace/scratch/d61843ca5396/qa/14667759527",
+      "commit_qualification": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "tree_candidat": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+      "html_candidat_manifeste": [
+        "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344"
+      ],
+      "environnement_outils": "Google Chrome 157.0.8103.78 \nv24.22.3",
+      "rapport_agrege": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/rapport.json",
+      "rapport_agrege_sha256": "dec2645d0a8039b1db33e5f49f695b74aab6f3a4b1673af0f4dd5b90d219d0d3",
+      "echecs": 0,
+      "erreurs_passages": 0
+    }
+  ],
+  "passages": [
+    {
+      "artifact_id": "14669146645",
+      "scenario": "tele-montagne",
+      "variante": "avant",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/avant/tele-montagne/rapport.json",
+      "rapport_sha256": "34dd43618a9846f24bcf159ed23382025ad176b9562d63ef35f049a348a2040b",
+      "build": {
+        "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+        "octets": 14268457
+      },
+      "version_runtime": "V0.2.62",
+      "source_qualification": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "parametres": {
+        "graine": 17017,
+        "circuit": 2,
+        "qualite": "high",
+        "mode": "solo",
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "meteo": "sec",
+        "moment": "jour",
+        "saison": "ete",
+        "partage": "haut-bas",
+        "retro": "non",
+        "depart": 1685,
+        "vitesse": 40,
+        "images": 3,
+        "pas": 0.1,
+        "chauffe": 4,
+        "taille": [
+          960,
+          540
+        ],
+        "angle": "swiftshader"
+      },
+      "referenceJeu": {
+        "graine": 17017,
+        "circuit": 2,
+        "circuitId": "haut-col",
+        "graineCircuit": 47,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "non",
+        "meteo": "soleil",
+        "mouille": 0,
+        "depart": 1685,
+        "vitesse": 40,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 1798,
+          "fin": 2058
+        }
+      },
+      "environnement": {
+        "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "resolution": [
+          960,
+          540,
+          1
+        ],
+        "version": "V0.2.62",
+        "backend": "webgl2",
+        "gpuModeste": true,
+        "webgl2": true,
+        "physx": {
+          "disponible": true,
+          "ready": true,
+          "version": "5.12.0",
+          "erreur": null
+        }
+      },
+      "alertes": [],
+      "erreurs": [],
+      "avertissements": []
+    },
+    {
+      "artifact_id": "14669146645",
+      "scenario": "helico-montagne",
+      "variante": "avant",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/avant/helico-montagne/rapport.json",
+      "rapport_sha256": "7888720c9159e8b1ecf07ab3480ed55e76e4bd56b38e3279ee1acc988bd6fe82",
+      "build": {
+        "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+        "octets": 14268457
+      },
+      "version_runtime": "V0.2.62",
+      "source_qualification": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "parametres": {
+        "graine": 17017,
+        "circuit": 2,
+        "qualite": "high",
+        "mode": "solo",
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "meteo": "sec",
+        "moment": "jour",
+        "saison": "ete",
+        "partage": "haut-bas",
+        "retro": "non",
+        "depart": 2070,
+        "vitesse": 40,
+        "images": 3,
+        "pas": 0.1,
+        "chauffe": 4,
+        "taille": [
+          960,
+          540
+        ],
+        "angle": "swiftshader"
+      },
+      "referenceJeu": {
+        "graine": 17017,
+        "circuit": 2,
+        "circuitId": "haut-col",
+        "graineCircuit": 47,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "non",
+        "meteo": "soleil",
+        "mouille": 0,
+        "depart": 2070,
+        "vitesse": 40,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 1798,
+          "fin": 2058
+        }
+      },
+      "environnement": {
+        "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "resolution": [
+          960,
+          540,
+          1
+        ],
+        "version": "V0.2.62",
+        "backend": "webgl2",
+        "gpuModeste": true,
+        "webgl2": true,
+        "physx": {
+          "disponible": true,
+          "ready": true,
+          "version": "5.12.0",
+          "erreur": null
+        }
+      },
+      "alertes": [],
+      "erreurs": [],
+      "avertissements": []
+    },
+    {
+      "artifact_id": "14669146645",
+      "scenario": "tele-montagne",
+      "variante": "apres",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/apres/tele-montagne/rapport.json",
+      "rapport_sha256": "c403da771cf685b358e2717a94f0039a362c2d6a607c994c0b9312085647e38d",
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "version_runtime": "V0.2.70",
+      "source_qualification": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "parametres": {
+        "graine": 17017,
+        "circuit": 2,
+        "qualite": "high",
+        "mode": "solo",
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "meteo": "sec",
+        "moment": "jour",
+        "saison": "ete",
+        "partage": "haut-bas",
+        "retro": "non",
+        "depart": 1685,
+        "vitesse": 40,
+        "images": 3,
+        "pas": 0.1,
+        "chauffe": 4,
+        "taille": [
+          960,
+          540
+        ],
+        "angle": "swiftshader"
+      },
+      "referenceJeu": {
+        "graine": 17017,
+        "circuit": 2,
+        "circuitId": "haut-col",
+        "graineCircuit": 47,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "non",
+        "meteo": "soleil",
+        "forcePluie": "forte",
+        "mouille": 0,
+        "depart": 1685,
+        "vitesse": 40,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 1798,
+          "fin": 2058
+        }
+      },
+      "environnement": {
+        "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "resolution": [
+          960,
+          540,
+          1
+        ],
+        "version": "V0.2.70",
+        "backend": "webgl2",
+        "gpuModeste": true,
+        "webgl2": true,
+        "physx": {
+          "disponible": true,
+          "ready": true,
+          "version": "5.12.0",
+          "erreur": null
+        }
+      },
+      "alertes": [],
+      "erreurs": [],
+      "avertissements": []
+    },
+    {
+      "artifact_id": "14669146645",
+      "scenario": "helico-montagne",
+      "variante": "apres",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/apres/helico-montagne/rapport.json",
+      "rapport_sha256": "41c2ddbe65e309435f2c7ff29afb9460fe97634619bd0da061cf5b499c6b7257",
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "version_runtime": "V0.2.70",
+      "source_qualification": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "parametres": {
+        "graine": 17017,
+        "circuit": 2,
+        "qualite": "high",
+        "mode": "solo",
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "meteo": "sec",
+        "moment": "jour",
+        "saison": "ete",
+        "partage": "haut-bas",
+        "retro": "non",
+        "depart": 2070,
+        "vitesse": 40,
+        "images": 3,
+        "pas": 0.1,
+        "chauffe": 4,
+        "taille": [
+          960,
+          540
+        ],
+        "angle": "swiftshader"
+      },
+      "referenceJeu": {
+        "graine": 17017,
+        "circuit": 2,
+        "circuitId": "haut-col",
+        "graineCircuit": 47,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "non",
+        "meteo": "soleil",
+        "forcePluie": "forte",
+        "mouille": 0,
+        "depart": 2070,
+        "vitesse": 40,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 1798,
+          "fin": 2058
+        }
+      },
+      "environnement": {
+        "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "resolution": [
+          960,
+          540,
+          1
+        ],
+        "version": "V0.2.70",
+        "backend": "webgl2",
+        "gpuModeste": true,
+        "webgl2": true,
+        "physx": {
+          "disponible": true,
+          "ready": true,
+          "version": "5.12.0",
+          "erreur": null
+        }
+      },
+      "alertes": [],
+      "erreurs": [],
+      "avertissements": []
+    },
+    {
+      "artifact_id": "14667759527",
+      "scenario": "faune-ete",
+      "variante": "avant",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/avant/faune-ete/rapport.json",
+      "rapport_sha256": "965db2dccfe12ec3efab8d24615297b7bf8ab66952f7357571c19f190ab2704c",
+      "build": {
+        "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+        "octets": 14268457
+      },
+      "version_runtime": "V0.2.62",
+      "source_qualification": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "parametres": {
+        "graine": 17017,
+        "circuit": 2,
+        "qualite": "high",
+        "mode": "solo",
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "meteo": "sec",
+        "moment": "jour",
+        "saison": "ete",
+        "partage": "haut-bas",
+        "retro": "non",
+        "depart": 280,
+        "vitesse": 30,
+        "images": 3,
+        "pas": 0.1,
+        "chauffe": 4,
+        "taille": [
+          960,
+          540
+        ],
+        "angle": "swiftshader"
+      },
+      "referenceJeu": {
+        "graine": 17017,
+        "circuit": 2,
+        "circuitId": "haut-col",
+        "graineCircuit": 47,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "non",
+        "meteo": "soleil",
+        "mouille": 0,
+        "depart": 280,
+        "vitesse": 30,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 1798,
+          "fin": 2058
+        }
+      },
+      "environnement": {
+        "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "resolution": [
+          960,
+          540,
+          1
+        ],
+        "version": "V0.2.62",
+        "backend": "webgl2",
+        "gpuModeste": true,
+        "webgl2": true,
+        "physx": {
+          "disponible": true,
+          "ready": true,
+          "version": "5.12.0",
+          "erreur": null
+        }
+      },
+      "alertes": [],
+      "erreurs": [],
+      "avertissements": []
+    },
+    {
+      "artifact_id": "14667759527",
+      "scenario": "faune-hiver",
+      "variante": "avant",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/avant/faune-hiver/rapport.json",
+      "rapport_sha256": "61dd012bc3e798d8db08223b22460a7bd821d901eaf0a776db9599fec48b667c",
+      "build": {
+        "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+        "octets": 14268457
+      },
+      "version_runtime": "V0.2.62",
+      "source_qualification": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "parametres": {
+        "graine": 17017,
+        "circuit": 2,
+        "qualite": "high",
+        "mode": "solo",
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "meteo": "sec",
+        "moment": "jour",
+        "saison": "hiver",
+        "partage": "haut-bas",
+        "retro": "non",
+        "depart": 280,
+        "vitesse": 30,
+        "images": 3,
+        "pas": 0.1,
+        "chauffe": 4,
+        "taille": [
+          960,
+          540
+        ],
+        "angle": "swiftshader"
+      },
+      "referenceJeu": {
+        "graine": 17017,
+        "circuit": 2,
+        "circuitId": "haut-col",
+        "graineCircuit": 47,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "hiver",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "non",
+        "meteo": "soleil",
+        "mouille": 0,
+        "depart": 280,
+        "vitesse": 30,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 1798,
+          "fin": 2058
+        }
+      },
+      "environnement": {
+        "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "resolution": [
+          960,
+          540,
+          1
+        ],
+        "version": "V0.2.62",
+        "backend": "webgl2",
+        "gpuModeste": true,
+        "webgl2": true,
+        "physx": {
+          "disponible": true,
+          "ready": true,
+          "version": "5.12.0",
+          "erreur": null
+        }
+      },
+      "alertes": [],
+      "erreurs": [],
+      "avertissements": []
+    },
+    {
+      "artifact_id": "14667759527",
+      "scenario": "faune-ete",
+      "variante": "apres",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/apres/faune-ete/rapport.json",
+      "rapport_sha256": "a986ac5eb6fb2b0ece0d98bee45f6c10cb02848b8ac5b1357227b0ed20887282",
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "version_runtime": "V0.2.70",
+      "source_qualification": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "parametres": {
+        "graine": 17017,
+        "circuit": 2,
+        "qualite": "high",
+        "mode": "solo",
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "meteo": "sec",
+        "moment": "jour",
+        "saison": "ete",
+        "partage": "haut-bas",
+        "retro": "non",
+        "depart": 280,
+        "vitesse": 30,
+        "images": 3,
+        "pas": 0.1,
+        "chauffe": 4,
+        "taille": [
+          960,
+          540
+        ],
+        "angle": "swiftshader"
+      },
+      "referenceJeu": {
+        "graine": 17017,
+        "circuit": 2,
+        "circuitId": "haut-col",
+        "graineCircuit": 47,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "non",
+        "meteo": "soleil",
+        "forcePluie": "forte",
+        "mouille": 0,
+        "depart": 280,
+        "vitesse": 30,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 1798,
+          "fin": 2058
+        }
+      },
+      "environnement": {
+        "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "resolution": [
+          960,
+          540,
+          1
+        ],
+        "version": "V0.2.70",
+        "backend": "webgl2",
+        "gpuModeste": true,
+        "webgl2": true,
+        "physx": {
+          "disponible": true,
+          "ready": true,
+          "version": "5.12.0",
+          "erreur": null
+        }
+      },
+      "alertes": [],
+      "erreurs": [],
+      "avertissements": []
+    },
+    {
+      "artifact_id": "14667759527",
+      "scenario": "faune-hiver",
+      "variante": "apres",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/apres/faune-hiver/rapport.json",
+      "rapport_sha256": "fe10b241d8ebffb405599b3012f2a5d84a56cd6baf0331cc0aa2e6adf74441ae",
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "version_runtime": "V0.2.70",
+      "source_qualification": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "parametres": {
+        "graine": 17017,
+        "circuit": 2,
+        "qualite": "high",
+        "mode": "solo",
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "meteo": "sec",
+        "moment": "jour",
+        "saison": "hiver",
+        "partage": "haut-bas",
+        "retro": "non",
+        "depart": 280,
+        "vitesse": 30,
+        "images": 3,
+        "pas": 0.1,
+        "chauffe": 4,
+        "taille": [
+          960,
+          540
+        ],
+        "angle": "swiftshader"
+      },
+      "referenceJeu": {
+        "graine": 17017,
+        "circuit": 2,
+        "circuitId": "haut-col",
+        "graineCircuit": 47,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "hiver",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "non",
+        "meteo": "soleil",
+        "forcePluie": "forte",
+        "mouille": 0,
+        "depart": 280,
+        "vitesse": 30,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 1798,
+          "fin": 2058
+        }
+      },
+      "environnement": {
+        "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "resolution": [
+          960,
+          540,
+          1
+        ],
+        "version": "V0.2.70",
+        "backend": "webgl2",
+        "gpuModeste": true,
+        "webgl2": true,
+        "physx": {
+          "disponible": true,
+          "ready": true,
+          "version": "5.12.0",
+          "erreur": null
+        }
+      },
+      "alertes": [],
+      "erreurs": [],
+      "avertissements": []
+    }
+  ],
+  "images": [
+    {
+      "artifact_id": "14669146645",
+      "groupe": "securite",
+      "scenario": "tele-montagne",
+      "variante": "avant",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/avant/tele-montagne/0000.png",
+      "inspectee_avec_view_image": true,
+      "statut": "reference_defaut_occlusion_reproduit",
+      "sha256_calcule": "cba323e0fceefb957b96abd8ac18890d831c5e008eecc6a4e6b22192b320deb2",
+      "octets": 395511,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.5,
+      "temps_observe_s": 12.491666666666665,
+      "observation_visuelle": "Référence : la paroi rocheuse occupe presque tout le cadre. Voiture et piste invisibles ; HUD visible. Défaut d’occlusion reproduit, sans écran noir. Image 1/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.3783118956516987,
+          "noir": 0
+        }
+      },
+      "vue": "tele",
+      "plan": {
+        "vue": "tele",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -273.5207963437923,
+          8.313522064957837,
+          709.3715437292046
+        ],
+        "cible": [
+          -640.8478623104372,
+          -0.9592839472405609,
+          502.5432462780442
+        ],
+        "yaw": -1.0579792532464316,
+        "pitch": -0.022230317607734557,
+        "roll": 0,
+        "fov": 10,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": true,
+        "distance": 28.46665382385254
+      },
+      "faune": null,
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14669146645",
+      "groupe": "securite",
+      "scenario": "tele-montagne",
+      "variante": "avant",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/avant/tele-montagne/0001.png",
+      "inspectee_avec_view_image": true,
+      "statut": "reference_defaut_occlusion_reproduit",
+      "sha256_calcule": "1ee63e0673ea327580e0b961fb21e1d030b08a9c0bd0e2c396ffd8def9ddabec",
+      "octets": 395588,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.6,
+      "temps_observe_s": 12.591666666666665,
+      "observation_visuelle": "Référence : la paroi rocheuse occupe presque tout le cadre. Voiture et piste invisibles ; HUD visible. Défaut d’occlusion reproduit, sans écran noir. Image 2/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.3783228949209438,
+          "noir": 0
+        }
+      },
+      "vue": "tele",
+      "plan": {
+        "vue": "tele",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -273.5207963437923,
+          8.313522064957837,
+          709.3715437292046
+        ],
+        "cible": [
+          -640.8478623104372,
+          -0.9592839472405609,
+          502.5432462780442
+        ],
+        "yaw": -1.0579792532464316,
+        "pitch": -0.022230317607734557,
+        "roll": 0,
+        "fov": 10,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": true,
+        "distance": 28.46665382385254
+      },
+      "faune": null,
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14669146645",
+      "groupe": "securite",
+      "scenario": "tele-montagne",
+      "variante": "avant",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/avant/tele-montagne/0002.png",
+      "inspectee_avec_view_image": true,
+      "statut": "reference_defaut_occlusion_reproduit",
+      "sha256_calcule": "7c5218e9426ddc143843114441bc20c91cf188fd76866341ec70a3d8564b092e",
+      "octets": 395474,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.7,
+      "temps_observe_s": 12.691666666666665,
+      "observation_visuelle": "Référence : la paroi rocheuse occupe presque tout le cadre. Voiture et piste invisibles ; HUD visible. Défaut d’occlusion reproduit, sans écran noir. Image 3/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.3782875318187884,
+          "noir": 0
+        }
+      },
+      "vue": "tele",
+      "plan": {
+        "vue": "tele",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -273.5207963437923,
+          8.313522064957837,
+          709.3715437292046
+        ],
+        "cible": [
+          -640.8478623104372,
+          -0.9592839472405609,
+          502.5432462780442
+        ],
+        "yaw": -1.0579792532464316,
+        "pitch": -0.022230317607734557,
+        "roll": 0,
+        "fov": 10,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": true,
+        "distance": 28.46665382385254
+      },
+      "faune": null,
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14669146645",
+      "groupe": "securite",
+      "scenario": "helico-montagne",
+      "variante": "avant",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/avant/helico-montagne/0000.png",
+      "inspectee_avec_view_image": true,
+      "statut": "reference_defaut_occlusion_reproduit",
+      "sha256_calcule": "006cc0df72b8fc89378ebeecb12d456a8f300b77b09b84a9362a90f843b548d5",
+      "octets": 311630,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.5,
+      "temps_observe_s": 12.491666666666665,
+      "observation_visuelle": "Référence : le relief gris bouche la vue hélicoptère. Voiture et piste invisibles ; HUD visible. Défaut d’occlusion reproduit, sans écran noir. Image 1/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.37743930311571283,
+          "noir": 0
+        }
+      },
+      "vue": "helico",
+      "plan": {
+        "vue": "helico",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -319.72548105102214,
+          24.655745742983488,
+          659.9881235226449
+        ],
+        "cible": [
+          -292.7889185236775,
+          4.305745742983487,
+          673.1950004892276
+        ],
+        "yaw": 2.0266502865249376,
+        "pitch": -0.47359752939361127,
+        "roll": 0,
+        "fov": 38,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": true,
+        "distance": 2.7818362712860107
+      },
+      "faune": null,
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14669146645",
+      "groupe": "securite",
+      "scenario": "helico-montagne",
+      "variante": "avant",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/avant/helico-montagne/0001.png",
+      "inspectee_avec_view_image": true,
+      "statut": "reference_defaut_occlusion_reproduit",
+      "sha256_calcule": "2535dbcd6872d79759e9b646d56073a5560b508e7fd5486fd2753fd3ba599e35",
+      "octets": 311636,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.6,
+      "temps_observe_s": 12.591666666666665,
+      "observation_visuelle": "Référence : le relief gris bouche la vue hélicoptère. Voiture et piste invisibles ; HUD visible. Défaut d’occlusion reproduit, sans écran noir. Image 2/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.3774505488401139,
+          "noir": 0
+        }
+      },
+      "vue": "helico",
+      "plan": {
+        "vue": "helico",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -319.72548105102214,
+          24.655745742983488,
+          659.9881235226449
+        ],
+        "cible": [
+          -292.7889185236775,
+          4.305745742983487,
+          673.1950004892276
+        ],
+        "yaw": 2.0266502865249376,
+        "pitch": -0.47359752939361127,
+        "roll": 0,
+        "fov": 38,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": true,
+        "distance": 2.7818362712860107
+      },
+      "faune": null,
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14669146645",
+      "groupe": "securite",
+      "scenario": "helico-montagne",
+      "variante": "avant",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/avant/helico-montagne/0002.png",
+      "inspectee_avec_view_image": true,
+      "statut": "reference_defaut_occlusion_reproduit",
+      "sha256_calcule": "227b8f8f4280069d9bd0eb4814b59c647a2f7c8b96356ad13d1416765d209ddb",
+      "octets": 311577,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.7,
+      "temps_observe_s": 12.691666666666665,
+      "observation_visuelle": "Référence : le relief gris bouche la vue hélicoptère. Voiture et piste invisibles ; HUD visible. Défaut d’occlusion reproduit, sans écran noir. Image 3/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.37741461244759367,
+          "noir": 0
+        }
+      },
+      "vue": "helico",
+      "plan": {
+        "vue": "helico",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -319.72548105102214,
+          24.655745742983488,
+          659.9881235226449
+        ],
+        "cible": [
+          -292.7889185236775,
+          4.305745742983487,
+          673.1950004892276
+        ],
+        "yaw": 2.0266502865249376,
+        "pitch": -0.47359752939361127,
+        "roll": 0,
+        "fov": 38,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": true,
+        "distance": 2.7818362712860107
+      },
+      "faune": null,
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14669146645",
+      "groupe": "securite",
+      "scenario": "tele-montagne",
+      "variante": "apres",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/apres/tele-montagne/0000.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256_calcule": "380e69364f37ac05dfda23c51b27b7f268a0b40fb6452b62822159252747cdde",
+      "octets": 529008,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.5,
+      "temps_observe_s": 12.491666666666665,
+      "observation_visuelle": "Candidat : poursuite native après rejet de la caméra télé obstruée ; voiture entière, piste et entrée du tunnel visibles. Aucune intrusion du relief dans la caméra, aucun noir. Image 1/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true,
+        "garde_disponible": true,
+        "cible_sans_obstruction": true,
+        "plan_de_repli_natif": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.4929961808317447,
+          "noir": 0
+        }
+      },
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "camera": {
+        "pos": [
+          -647.4922144005155,
+          0.8407160527594394,
+          499.28554995962037
+        ],
+        "cible": [
+          -640.8478623104372,
+          -0.9592839472405609,
+          502.5432462780442
+        ],
+        "yaw": 2.0266502865249483,
+        "pitch": -0.23860932250820055,
+        "roll": 0,
+        "fov": 67.76470588235294,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14669146645",
+      "groupe": "securite",
+      "scenario": "tele-montagne",
+      "variante": "apres",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/apres/tele-montagne/0001.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256_calcule": "578259f43f6be913a7bd6801754469fc5870de64ed2eb3bc95d310b43d7e1e61",
+      "octets": 529164,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.6,
+      "temps_observe_s": 12.591666666666665,
+      "observation_visuelle": "Candidat : poursuite native après rejet de la caméra télé obstruée ; voiture entière, piste et entrée du tunnel visibles. Aucune intrusion du relief dans la caméra, aucun noir. Image 2/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true,
+        "garde_disponible": true,
+        "cible_sans_obstruction": true,
+        "plan_de_repli_natif": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.49300585576063616,
+          "noir": 0
+        }
+      },
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "camera": {
+        "pos": [
+          -647.4922144005155,
+          0.8407160527594394,
+          499.28554995962037
+        ],
+        "cible": [
+          -640.8478623104372,
+          -0.9592839472405609,
+          502.5432462780442
+        ],
+        "yaw": 2.0266502865249483,
+        "pitch": -0.23860932250820055,
+        "roll": 0,
+        "fov": 67.76470588235294,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14669146645",
+      "groupe": "securite",
+      "scenario": "tele-montagne",
+      "variante": "apres",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/apres/tele-montagne/0002.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256_calcule": "409584fba6c71f1ca241d11696ffef32ba9cb4a8e7dd34aab8a0ac003949597f",
+      "octets": 529117,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.7,
+      "temps_observe_s": 12.691666666666665,
+      "observation_visuelle": "Candidat : poursuite native après rejet de la caméra télé obstruée ; voiture entière, piste et entrée du tunnel visibles. Aucune intrusion du relief dans la caméra, aucun noir. Image 3/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true,
+        "garde_disponible": true,
+        "cible_sans_obstruction": true,
+        "plan_de_repli_natif": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.49298571044321954,
+          "noir": 0
+        }
+      },
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "camera": {
+        "pos": [
+          -647.4922144005155,
+          0.8407160527594394,
+          499.28554995962037
+        ],
+        "cible": [
+          -640.8478623104372,
+          -0.9592839472405609,
+          502.5432462780442
+        ],
+        "yaw": 2.0266502865249483,
+        "pitch": -0.23860932250820055,
+        "roll": 0,
+        "fov": 67.76470588235294,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14669146645",
+      "groupe": "securite",
+      "scenario": "helico-montagne",
+      "variante": "apres",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/apres/helico-montagne/0000.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256_calcule": "8d823db0847ae3d7aa0b4af6ad646f9494c8bba13675803828777abbcbe23cce",
+      "octets": 528352,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.5,
+      "temps_observe_s": 12.491666666666665,
+      "observation_visuelle": "Candidat : poursuite native après rejet de la caméra hélicoptère obstruée ; voiture entière, piste et barrières visibles. Relief environnant rendu, aucun noir ni trou apparent du terrain. Image 1/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true,
+        "garde_disponible": true,
+        "cible_sans_obstruction": true,
+        "plan_de_repli_natif": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.5032832027847643,
+          "noir": 0
+        }
+      },
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "camera": {
+        "pos": [
+          -299.4332706137559,
+          6.105745742983487,
+          669.9373041708038
+        ],
+        "cible": [
+          -292.7889185236775,
+          4.305745742983487,
+          673.1950004892276
+        ],
+        "yaw": 2.026650286524938,
+        "pitch": -0.23860932250819972,
+        "roll": 0,
+        "fov": 67.76470588235294,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14669146645",
+      "groupe": "securite",
+      "scenario": "helico-montagne",
+      "variante": "apres",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/apres/helico-montagne/0001.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256_calcule": "e212b9e30dac46b80d7e4af196e8f7f1aff704877de430a03081d5ba6bb8fbd6",
+      "octets": 528374,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.6,
+      "temps_observe_s": 12.591666666666665,
+      "observation_visuelle": "Candidat : poursuite native après rejet de la caméra hélicoptère obstruée ; voiture entière, piste et barrières visibles. Relief environnant rendu, aucun noir ni trou apparent du terrain. Image 2/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true,
+        "garde_disponible": true,
+        "cible_sans_obstruction": true,
+        "plan_de_repli_natif": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.503291161720252,
+          "noir": 0
+        }
+      },
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "camera": {
+        "pos": [
+          -299.4332706137559,
+          6.105745742983487,
+          669.9373041708038
+        ],
+        "cible": [
+          -292.7889185236775,
+          4.305745742983487,
+          673.1950004892276
+        ],
+        "yaw": 2.026650286524938,
+        "pitch": -0.23860932250819972,
+        "roll": 0,
+        "fov": 67.76470588235294,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14669146645",
+      "groupe": "securite",
+      "scenario": "helico-montagne",
+      "variante": "apres",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14669146645/visuel-demo/apres/helico-montagne/0002.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256_calcule": "df6f21a47f975973075933e643b1c8e666dca876d80b5c4c1a1489a8293299ee",
+      "octets": 528320,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.7,
+      "temps_observe_s": 12.691666666666665,
+      "observation_visuelle": "Candidat : poursuite native après rejet de la caméra hélicoptère obstruée ; voiture entière, piste et barrières visibles. Relief environnant rendu, aucun noir ni trou apparent du terrain. Image 3/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true,
+        "garde_disponible": true,
+        "cible_sans_obstruction": true,
+        "plan_de_repli_natif": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.5032744107943257,
+          "noir": 0
+        }
+      },
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "camera": {
+        "pos": [
+          -299.4332706137559,
+          6.105745742983487,
+          669.9373041708038
+        ],
+        "cible": [
+          -292.7889185236775,
+          4.305745742983487,
+          673.1950004892276
+        ],
+        "yaw": 2.026650286524938,
+        "pitch": -0.23860932250819972,
+        "roll": 0,
+        "fov": 67.76470588235294,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14667759527",
+      "groupe": "nature",
+      "scenario": "faune-ete",
+      "variante": "avant",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/avant/faune-ete/0000.png",
+      "inspectee_avec_view_image": true,
+      "statut": "reference_examinee",
+      "sha256_calcule": "53b508a8fc65ffb0ede59914be7d28699c6cfb60170cb0bfd5949c76d61b8b43",
+      "octets": 546906,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.5,
+      "temps_observe_s": 12.491666666666665,
+      "observation_visuelle": "Référence été : petit groupe de bouquetins visible sur une pente claire, cadrage lointain. Terrain présente de nombreuses lignes de maillage visibles ; aucun noir. Image 1/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.6598727661835988,
+          "noir": 0
+        }
+      },
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -897.6497101602218,
+          357.5035141612349,
+          -379.3040500067016
+        ],
+        "cible": [
+          -917.3627372745292,
+          353.5035141612349,
+          -358.30794174848904
+        ],
+        "yaw": -2.387702320411953,
+        "pitch": -0.13800602365751968,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8384759313796,
+        "sol": 352.8384759313796,
+        "distance": 29.076450952617947,
+        "taille": 1.2789196727985837,
+        "fractionHauteur": 0.07193377498892262
+      },
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14667759527",
+      "groupe": "nature",
+      "scenario": "faune-ete",
+      "variante": "avant",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/avant/faune-ete/0001.png",
+      "inspectee_avec_view_image": true,
+      "statut": "reference_examinee",
+      "sha256_calcule": "a3bb22b9a8c78c921d05be25daafe5bfd4a44c49303fdca7d3df3ec1ea56e6e4",
+      "octets": 546971,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.6,
+      "temps_observe_s": 12.591666666666665,
+      "observation_visuelle": "Référence été : petit groupe de bouquetins visible sur une pente claire, cadrage lointain. Terrain présente de nombreuses lignes de maillage visibles ; aucun noir. Image 2/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.6598782211687714,
+          "noir": 0
+        }
+      },
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -897.6497101602218,
+          357.5035141612349,
+          -379.3040500067016
+        ],
+        "cible": [
+          -917.3627372745292,
+          353.5035141612349,
+          -358.30794174848904
+        ],
+        "yaw": -2.387702320411953,
+        "pitch": -0.13800602365751968,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8384759313796,
+        "sol": 352.8384759313796,
+        "distance": 29.076450952617947,
+        "taille": 1.2789196727985837,
+        "fractionHauteur": 0.07193377498892262
+      },
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14667759527",
+      "groupe": "nature",
+      "scenario": "faune-ete",
+      "variante": "avant",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/avant/faune-ete/0002.png",
+      "inspectee_avec_view_image": true,
+      "statut": "reference_examinee",
+      "sha256_calcule": "e834a4ee4a354d227188a9bbb0996af081cca35b60f7b43b7a96fb99782ca1f6",
+      "octets": 546925,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.7,
+      "temps_observe_s": 12.691666666666665,
+      "observation_visuelle": "Référence été : petit groupe de bouquetins visible sur une pente claire, cadrage lointain. Terrain présente de nombreuses lignes de maillage visibles ; aucun noir. Image 3/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.6598631754292413,
+          "noir": 0
+        }
+      },
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -897.6497101602218,
+          357.5035141612349,
+          -379.3040500067016
+        ],
+        "cible": [
+          -917.3627372745292,
+          353.5035141612349,
+          -358.30794174848904
+        ],
+        "yaw": -2.387702320411953,
+        "pitch": -0.13800602365751968,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8384759313796,
+        "sol": 352.8384759313796,
+        "distance": 29.076450952617947,
+        "taille": 1.2789196727985837,
+        "fractionHauteur": 0.07193377498892262
+      },
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14667759527",
+      "groupe": "nature",
+      "scenario": "faune-hiver",
+      "variante": "avant",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/avant/faune-hiver/0000.png",
+      "inspectee_avec_view_image": true,
+      "statut": "reference_examinee",
+      "sha256_calcule": "7697691e5ef60dc11500de480da68af6cdfdb5420eb261c4d4b57d152d5e13d2",
+      "octets": 548874,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.5,
+      "temps_observe_s": 12.491666666666665,
+      "observation_visuelle": "Référence hiver : groupe de bouquetins et postures de repos visibles à petite échelle sur la pente ; lignes de maillage très présentes, aucun noir. Image 1/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.6271140163803308,
+          "noir": 0
+        }
+      },
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -897.594816496741,
+          357.569388141843,
+          -379.4924357386925
+        ],
+        "cible": [
+          -917.3078436110484,
+          353.569388141843,
+          -358.49632748048
+        ],
+        "yaw": -2.387702320411953,
+        "pitch": -0.13800602365751968,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8943367384928,
+        "sol": 352.8943367384928,
+        "distance": 29.076450952617947,
+        "taille": 1.2981757756733454,
+        "fractionHauteur": 0.07301684861803145
+      },
+      "saison": "hiver"
+    },
+    {
+      "artifact_id": "14667759527",
+      "groupe": "nature",
+      "scenario": "faune-hiver",
+      "variante": "avant",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/avant/faune-hiver/0001.png",
+      "inspectee_avec_view_image": true,
+      "statut": "reference_examinee",
+      "sha256_calcule": "bee2683893a63269b7b4cc52c42173ed6fa176b982be8f880c19a5890c108e0b",
+      "octets": 548840,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.6,
+      "temps_observe_s": 12.591666666666665,
+      "observation_visuelle": "Référence hiver : groupe de bouquetins et postures de repos visibles à petite échelle sur la pente ; lignes de maillage très présentes, aucun noir. Image 2/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.6271226058184209,
+          "noir": 0
+        }
+      },
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -897.594816496741,
+          357.569388141843,
+          -379.4924357386925
+        ],
+        "cible": [
+          -917.3078436110484,
+          353.569388141843,
+          -358.49632748048
+        ],
+        "yaw": -2.387702320411953,
+        "pitch": -0.13800602365751968,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8943367384928,
+        "sol": 352.8943367384928,
+        "distance": 29.076450952617947,
+        "taille": 1.2981757756733454,
+        "fractionHauteur": 0.07301684861803145
+      },
+      "saison": "hiver"
+    },
+    {
+      "artifact_id": "14667759527",
+      "groupe": "nature",
+      "scenario": "faune-hiver",
+      "variante": "avant",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/avant/faune-hiver/0002.png",
+      "inspectee_avec_view_image": true,
+      "statut": "reference_examinee",
+      "sha256_calcule": "b360d3612aace87f1b0c030f17d2d79bf83d2532b2b1f28af3d46139a2e08774",
+      "octets": 548747,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.7,
+      "temps_observe_s": 12.691666666666665,
+      "observation_visuelle": "Référence hiver : groupe de bouquetins et postures de repos visibles à petite échelle sur la pente ; lignes de maillage très présentes, aucun noir. Image 3/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.6271042390292052,
+          "noir": 0
+        }
+      },
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -897.594816496741,
+          357.569388141843,
+          -379.4924357386925
+        ],
+        "cible": [
+          -917.3078436110484,
+          353.569388141843,
+          -358.49632748048
+        ],
+        "yaw": -2.387702320411953,
+        "pitch": -0.13800602365751968,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8943367384928,
+        "sol": 352.8943367384928,
+        "distance": 29.076450952617947,
+        "taille": 1.2981757756733454,
+        "fractionHauteur": 0.07301684861803145
+      },
+      "saison": "hiver"
+    },
+    {
+      "artifact_id": "14667759527",
+      "groupe": "nature",
+      "scenario": "faune-ete",
+      "variante": "apres",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/apres/faune-ete/0000.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256_calcule": "17153011e3b8c6dd3eb06844adcaa10651693ddf7ae05fc0e37eb2baf0aa6817",
+      "octets": 279474,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.5,
+      "temps_observe_s": 12.491666666666665,
+      "observation_visuelle": "Candidat été : bouquetins nettement agrandis, silhouettes et membres lisibles, implantation et ombres cohérentes avec la pente. Terrain continu, sans trame marquée comme la référence. Bandeaux de démo devant une partie des animaux situés en haut du groupe ; sujet central visible. Image 1/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true,
+        "garde_disponible": true,
+        "cible_sans_obstruction": true,
+        "cadrage_faune": true,
+        "implantation_au_sol": true,
+        "saison_effective": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.7609324979928311,
+          "noir": 0
+        }
+      },
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -908.4149614110077,
+          354.6545418667536,
+          -367.83811028178184
+        ],
+        "cible": [
+          -917.3627372745292,
+          353.5035141612349,
+          -358.30794174848904
+        ],
+        "yaw": -2.3877023204119534,
+        "pitch": -0.08782394078984455,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8384759313796,
+        "sol": 352.8384759313796,
+        "distance": 13.122944408769495,
+        "taille": 1.2789196727985837,
+        "fractionHauteur": 0.15938335293902123
+      },
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14667759527",
+      "groupe": "nature",
+      "scenario": "faune-ete",
+      "variante": "apres",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/apres/faune-ete/0001.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256_calcule": "7cab607859637461a78fee123a979becf013882a7f2447401310ccb8d143ccc0",
+      "octets": 279497,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.6,
+      "temps_observe_s": 12.591666666666665,
+      "observation_visuelle": "Candidat été : bouquetins nettement agrandis, silhouettes et membres lisibles, implantation et ombres cohérentes avec la pente. Terrain continu, sans trame marquée comme la référence. Bandeaux de démo devant une partie des animaux situés en haut du groupe ; sujet central visible. Image 2/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true,
+        "garde_disponible": true,
+        "cible_sans_obstruction": true,
+        "cadrage_faune": true,
+        "implantation_au_sol": true,
+        "saison_effective": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.7609418259415731,
+          "noir": 0
+        }
+      },
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -908.4149614110077,
+          354.6545418667536,
+          -367.83811028178184
+        ],
+        "cible": [
+          -917.3627372745292,
+          353.5035141612349,
+          -358.30794174848904
+        ],
+        "yaw": -2.3877023204119534,
+        "pitch": -0.08782394078984455,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8384759313796,
+        "sol": 352.8384759313796,
+        "distance": 13.122944408769495,
+        "taille": 1.2789196727985837,
+        "fractionHauteur": 0.15938335293902123
+      },
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14667759527",
+      "groupe": "nature",
+      "scenario": "faune-ete",
+      "variante": "apres",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/apres/faune-ete/0002.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256_calcule": "ef545d7e937ce8f1773d143bd78ddcc9f2017088c9f59a609fde731b46b26dd0",
+      "octets": 279548,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.7,
+      "temps_observe_s": 12.691666666666665,
+      "observation_visuelle": "Candidat été : bouquetins nettement agrandis, silhouettes et membres lisibles, implantation et ombres cohérentes avec la pente. Terrain continu, sans trame marquée comme la référence. Bandeaux de démo devant une partie des animaux situés en haut du groupe ; sujet central visible. Image 3/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true,
+        "garde_disponible": true,
+        "cible_sans_obstruction": true,
+        "cadrage_faune": true,
+        "implantation_au_sol": true,
+        "saison_effective": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.7609339805757412,
+          "noir": 0
+        }
+      },
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -908.4149614110077,
+          354.6545418667536,
+          -367.83811028178184
+        ],
+        "cible": [
+          -917.3627372745292,
+          353.5035141612349,
+          -358.30794174848904
+        ],
+        "yaw": -2.3877023204119534,
+        "pitch": -0.08782394078984455,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8384759313796,
+        "sol": 352.8384759313796,
+        "distance": 13.122944408769495,
+        "taille": 1.2789196727985837,
+        "fractionHauteur": 0.15938335293902123
+      },
+      "saison": "ete"
+    },
+    {
+      "artifact_id": "14667759527",
+      "groupe": "nature",
+      "scenario": "faune-hiver",
+      "variante": "apres",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/apres/faune-hiver/0000.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256_calcule": "25c39a11048fbf51366acca1ba8d8ecc5567d076fbb82a0214eaeefe27fa93e7",
+      "octets": 278178,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.5,
+      "temps_observe_s": 12.491666666666665,
+      "observation_visuelle": "Candidat hiver : bouquetins agrandis, postures debout et de repos discernables sur la pente claire. Aucun trou ni noir apparent ; animaux au contact du sol. Bandeau inférieur devant une partie d’un animal en haut du groupe ; sujet central visible. Image 1/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true,
+        "garde_disponible": true,
+        "cible_sans_obstruction": true,
+        "cadrage_faune": true,
+        "implantation_au_sol": true,
+        "saison_effective": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.7253212473446875,
+          "noir": 0
+        }
+      },
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -908.2253452186668,
+          354.737746339949,
+          -368.16998736009737
+        ],
+        "cible": [
+          -917.3078436110484,
+          353.569388141843,
+          -358.49632748048
+        ],
+        "yaw": -2.3877023204119525,
+        "pitch": -0.08782394078984505,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8943367384928,
+        "sol": 352.8943367384928,
+        "distance": 13.320530522213247,
+        "taille": 1.2981757756733454,
+        "fractionHauteur": 0.15938335293902142
+      },
+      "saison": "hiver"
+    },
+    {
+      "artifact_id": "14667759527",
+      "groupe": "nature",
+      "scenario": "faune-hiver",
+      "variante": "apres",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/apres/faune-hiver/0001.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256_calcule": "65b110ee9cd3adcd7ed42d9060d5e8d17abbdee0a2505f3959bd2b96cdd2ddca",
+      "octets": 278337,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.6,
+      "temps_observe_s": 12.591666666666665,
+      "observation_visuelle": "Candidat hiver : bouquetins agrandis, postures debout et de repos discernables sur la pente claire. Aucun trou ni noir apparent ; animaux au contact du sol. Bandeau inférieur devant une partie d’un animal en haut du groupe ; sujet central visible. Image 2/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true,
+        "garde_disponible": true,
+        "cible_sans_obstruction": true,
+        "cadrage_faune": true,
+        "implantation_au_sol": true,
+        "saison_effective": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.7253248922853796,
+          "noir": 0
+        }
+      },
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -908.2253452186668,
+          354.737746339949,
+          -368.16998736009737
+        ],
+        "cible": [
+          -917.3078436110484,
+          353.569388141843,
+          -358.49632748048
+        ],
+        "yaw": -2.3877023204119525,
+        "pitch": -0.08782394078984505,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8943367384928,
+        "sol": 352.8943367384928,
+        "distance": 13.320530522213247,
+        "taille": 1.2981757756733454,
+        "fractionHauteur": 0.15938335293902142
+      },
+      "saison": "hiver"
+    },
+    {
+      "artifact_id": "14667759527",
+      "groupe": "nature",
+      "scenario": "faune-hiver",
+      "variante": "apres",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14667759527/visuel-demo/apres/faune-hiver/0002.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256_calcule": "7ee1b766674c3b7c63619a538d460cd7081026ca8b84b498f98ad096bf4c2836",
+      "octets": 278105,
+      "sha256_attendu_dans_manifeste": null,
+      "temps_capture_s": 0.7,
+      "temps_observe_s": 12.691666666666665,
+      "observation_visuelle": "Candidat hiver : bouquetins agrandis, postures debout et de repos discernables sur la pente claire. Aucun trou ni noir apparent ; animaux au contact du sol. Bandeau inférieur devant une partie d’un animal en haut du groupe ; sujet central visible. Image 3/3 inspectée individuellement ; composition stable dans la séquence.",
+      "controles": {
+        "gl_sans_erreur_ni_perte": true,
+        "reference_prescrite_conservee": true,
+        "camera_native_non_imposee": true,
+        "aucune_region_noire_rapportee": true,
+        "pas_de_vitrage_humide_parasite": true,
+        "identite_runtime_coherente": true,
+        "garde_disponible": true,
+        "cible_sans_obstruction": true,
+        "cadrage_faune": true,
+        "implantation_au_sol": true,
+        "saison_effective": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.725317141442666,
+          "noir": 0
+        }
+      },
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -908.2253452186668,
+          354.737746339949,
+          -368.16998736009737
+        ],
+        "cible": [
+          -917.3078436110484,
+          353.569388141843,
+          -358.49632748048
+        ],
+        "yaw": -2.3877023204119525,
+        "pitch": -0.08782394078984505,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8943367384928,
+        "sol": 352.8943367384928,
+        "distance": 13.320530522213247,
+        "taille": 1.2981757756733454,
+        "fractionHauteur": 0.15938335293902142
+      },
+      "saison": "hiver"
+    }
+  ],
+  "operations": "Lecture des artefacts et ouverture individuelle des 24 PNG avec view_image. Unique écriture de ce reçu ; aucune modification de source, aucun test, aucune nouvelle capture ni push."
+}

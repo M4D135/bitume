@@ -1,0 +1,56 @@
+{
+  "objet": "Raccord des vrais modules aux quatre bancs 0.2.70",
+  "module_ajoute": "src/conditions-course.js",
+  "resultats": [
+    {
+      "suite": "chaussee-preparation",
+      "avant": "echec_conditionsCourse_absent",
+      "apres": "succes",
+      "controles": 8,
+      "assertions_inchangees": true,
+      "sha256": "d32e9d773158e982b810d9877cd84eba4ed9c60a714c5f2b5f9415f18a7d2a4b",
+      "diagnostic_initial": [
+        "TypeError: Cannot read properties of undefined (reading 'FORCES_PLUIE')"
+      ]
+    },
+    {
+      "suite": "choix-pneus-integration",
+      "avant": "echec_conditionsCourse_absent",
+      "apres": "succes",
+      "controles": 13,
+      "assertions_inchangees": true,
+      "sha256": "1ef35bfd68647d57e5388b3475b71ebfae99ededd52f337c8a53e1823bc54c6a",
+      "diagnostic_initial": [
+        "TypeError: Cannot read properties of undefined (reading 'normaliserForcePluie')"
+      ]
+    },
+    {
+      "suite": "pneus-reseau-integration",
+      "avant": "echec_conditionsCourse_absent",
+      "apres": "succes",
+      "controles": 13,
+      "assertions_inchangees": true,
+      "sha256": "b6c91baabedc90ee990b468147d66610bd20447846dfecc3169edde92e7e467f",
+      "diagnostic_initial": [
+        "TypeError: Cannot read properties of undefined (reading 'normaliserForcePluie')"
+      ]
+    },
+    {
+      "suite": "prets-enligne",
+      "avant": "echec_conditionsCourse_absent",
+      "apres": "succes",
+      "controles": 63,
+      "assertions_inchangees": true,
+      "sha256": "b2588369a285a9775d6d53921cdace20147fc614d62296e022a7228dfd3966f0",
+      "diagnostic_initial": [
+        "TypeError: Cannot read properties of undefined (reading 'normaliserForcePluie')",
+        "TypeError: Cannot read properties of undefined (reading 'normaliserForcePluie')"
+      ]
+    }
+  ],
+  "controles_reussis": 97,
+  "runtime_modifie": false,
+  "build_modifie": false,
+  "seuil_decor_modifie": false,
+  "campagne_complete_relancee": false
+}

@@ -59,3 +59,37 @@ pas un gain de FPS sur Xbox/Intel.
 Les impacts, quatre forces et surfaces sont assemblés avant les captures ; la
 qualification doit couvrir le même HTML que le cockpit. Les origines des deux
 préparations sont conservées dans [PROVENANCE.json](rapports/COCKPIT-PLUIE-2026-11-20/PROVENANCE.json).
+
+
+## Réception du candidat et réparation des bancs
+
+Le candidat `c3d49089e68a46dc2163067afbdea7db81364fed` (PR 44) conserve
+le HTML `b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344`,
+14 502 704 octets. L’archive CI a été rapprochée de ses 3 815 fichiers Git, sans
+écart de contenu ni de mode. Aucun runtime ni artefact de construction n’est
+modifié par les réparations de qualification.
+
+La première CI révèle quatre bancs qui omettent le vrai module
+`conditions-course` : leurs 97 contrôles passent après ajout de cette dépendance,
+sans modifier les assertions. Le run PR conserve aussi un dépassement décor à
+152 ms pour un seuil strict inférieur à 150 ms ; cette réserve reste ouverte.
+
+La référence 0.2.69 est désormais extraite par checkout du commit publié et son
+SHA est contrôlé. Les expirations suivantes de `Page.captureScreenshot` et de
+`Runtime.evaluate` sont archivées. Les pilotes cockpit et impact rendent la main
+à DevTools après chaque pas natif : 24 pas de chauffe cockpit, recherche d’impact
+bornée à 960 pas et alignement à 60. Les 31 contrôles ciblés passent avec la vraie
+horloge rAF, la vraie cadence et la vraie optique. La disparition des expirations
+reste à vérifier par les PNG de CI. Aucun seuil, résolution ou délai n’est assoupli.
+
+Les scènes cockpit sont réparties entre sept jobs. Les groupes impact et Troll
+poursuite peuvent être demandés seuls pour compléter les preuves déjà acquises.
+Les reçus de revue relient chaque image à son HTML : 9 eau/portrait/duo,
+8 forces/arceau, 36 démonstrations du candidat (plus 12 références historiques),
+4 carrosserie et 13 Troll cockpit ont été inspectées. Les mains gestuelles sortent
+latéralement du champ cockpit au plateau ; cette vue établit départ/retour mais
+pas la forme complète du geste levé. La poursuite reste à compléter.
+
+Les campagnes cockpit dédiées et les cinq instants d’impact restent des portes
+ouvertes avant fusion. La PR 43 et ses preuves d’abris restent séparées ; les
+précautions de son intégration ultérieure figurent dans `SUITE-06.json`.

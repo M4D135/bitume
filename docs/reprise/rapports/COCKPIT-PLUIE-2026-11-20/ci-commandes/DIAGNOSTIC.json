@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-20T21:15:12.001138+00:00",
+  "runtime_modifie": false,
+  "html_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+  "echecs_conserves": [
+    {
+      "run": 44816364036,
+      "artifact": 14668449156,
+      "cause": "Runtime.evaluate expire pendant la recherche synchrone de l’impact ; zéro PNG."
+    },
+    {
+      "run": 44816364170,
+      "artifact": 14670391121,
+      "cause": "Référence .69 extraite et SHA vérifié ; Page.captureScreenshot expire sans PNG."
+    },
+    {
+      "run": 44814580859,
+      "artifact": 14670416340,
+      "cause": "Campagne Troll atteint 18 minutes après 24/26 PNG ; cockpit complet, poursuite incomplète."
+    },
+    {
+      "run": 44814645857,
+      "cause": "174/179 suites ; quatre dépendances de banc absentes, et décor Val-Brûlé 152 ms pour seuil strict inférieur à 150 ms."
+    }
+  ],
+  "changements": [
+    "Import du vrai module conditions-course dans quatre bancs ; assertions conservées.",
+    "Impact : recherche bornée à 960 pas et alignement à 60, un pas par commande CDP, mêmes cinq instants et identités.",
+    "Cockpit : 24 pas de chauffe séparés, même 25e frame capturée ; observer armé après chauffe.",
+    "Cockpit réparti en sept scènes ; Troll poursuite et impact peuvent être rejoués seuls. Critères, résolutions et délais inchangés."
+  ],
+  "verifications": {
+    "bancs_conditions": "97 contrôles réussis",
+    "cockpit": "13 contrôles réussis dont vrai pilote Node avec horloge rAF",
+    "impact": "18 contrôles réussis dont vrai pilote Node avec cadence et optique"
+  },
+  "limites": [
+    "L’effet des commandes séparées sur les expirations SwiftShader reste à vérifier en CI.",
+    "Le budget décor demeure ouvert ; aucun seuil modifié et aucun échec effacé.",
+    "Les captures déjà reçues restent rattachées à leur source et au SHA du même HTML."
+  ],
+  "revue_croisee": {
+    "cockpit": "Aucun défaut concret ; 24 pas, observation après écriture du PNG, erreurs propagées.",
+    "impact": "Aucun défaut concret ; bornes, instants et séparation des commandes conservés."
+  }
+}

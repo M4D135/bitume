@@ -133,9 +133,30 @@ export function preparerInstantCockpit(i) {
     for (const poses of [S.prec, S.cour]) poses[id].braquage = e.braquage;
   });
   S.tete = null; if (S.vueJ2) S.vueJ2.tete = null;
-  for (let n = 0; n < 24; n++) __BITUME_CAPTURE.avancer(1000 / 60);
-  F.relever = true;
   return F.instant;
+}
+
+async function etapeHabitacle(evaluer, rapport, phase, expression, image = null) {
+  const etape = { image, phase, etat: 'en-cours' };
+  (rapport.phasesHabitacle ||= []).push(etape);
+  process.stderr.write(`[habitacle ${rapport.scenarioHabitacle || rapport.scenario}] ${image === null ? '' : `image ${image} `}${phase}\n`);
+  try {
+    const resultat = await evaluer(expression);
+    etape.etat = 'terminee';
+    if (phase.startsWith('chauffe-')) etape.horloge = resultat;
+    return resultat;
+  } catch (e) { etape.etat = 'echec'; etape.erreur = String(e.message || e); throw e; }
+}
+
+// La même chauffe en 24 commandes CDP laisse le navigateur reprendre la main entre les rendus.
+// Son effet sur les délais SwiftShader reste à qualifier ; aucune pose ni frame n'est retirée.
+export async function chaufferInstantCockpit({ evaluer, rapport, i }) {
+  await etapeHabitacle(evaluer, rapport, 'preparer-instant', `(${preparerInstantCockpit.toString()})(${i})`, i);
+  for (let n = 0; n < 24; n++)
+    await etapeHabitacle(evaluer, rapport, `chauffe-${n + 1}/24`, '__BITUME_CAPTURE.avancer(1000 / 60)', i);
+  await etapeHabitacle(evaluer, rapport, 'armer-observation', '__HABITACLE_CAPTURE.relever = true; __HABITACLE_CAPTURE.instant', i);
+  rapport.phasesHabitacle.push({ image: i, phase: 'frame-et-PNG', etat: 'attendus' });
+  process.stderr.write(`[habitacle ${rapport.scenarioHabitacle || rapport.scenario}] image ${i} frame-et-PNG\n`);
 }
 
 export function observerHabitacle() {
@@ -230,11 +251,18 @@ export async function campagneHabitacle(o) {
   for (const [variante, url] of [...(o.avant ? [['avant', o.avant]] : []), ['apres', o.url]]) for (const id of o.cas) {
     const s = TOUS_SCENARIOS.find(s => s.id === id), dossier = path.join(variante, id), sortie = path.join(o.sortie, dossier);
     const p = optionsScenarioHabitacle(s, url, sortie, o);
-    p.initialiser = ({ evaluer }) => evaluer(`(() => { const r = (${preparerHabitacle.toString()})(${JSON.stringify(s)});
-      ${s.qualification && s.cockpit ? `r.observation = (${installerObservationCockpit.toString()})();` : ''} return r; })()`);
-    p.observer = ({ evaluer }) => evaluer(`(() => { const r = (${observerHabitacle.toString()})();
-      ${s.qualification && s.cockpit ? `r.lisibilite = (${observerLisibiliteCockpit.toString()})(${mesurerLisibiliteCockpit.toString()},${JSON.stringify(SEUILS_COCKPIT)});` : ''} return r; })()`);
-    if (s.qualification && s.cockpit) p.avantImage = ({ evaluer, i }) => evaluer(`(${preparerInstantCockpit.toString()})(${i})`);
+    p.initialiser = ({ evaluer, rapport }) => {
+      rapport.scenarioHabitacle = s.id;
+      return etapeHabitacle(evaluer, rapport, 'initialisation', `(() => { const r = (${preparerHabitacle.toString()})(${JSON.stringify(s)});
+        ${s.qualification && s.cockpit ? `r.observation = (${installerObservationCockpit.toString()})();` : ''} return r; })()`);
+    };
+    p.observer = ({ evaluer, rapport, i }) => {
+      const attente = rapport.phasesHabitacle?.find(e => e.image === i && e.phase === 'frame-et-PNG');
+      if (attente) attente.etat = 'recus';
+      return etapeHabitacle(evaluer, rapport, 'observation', `(() => { const r = (${observerHabitacle.toString()})();
+        ${s.qualification && s.cockpit ? `r.lisibilite = (${observerLisibiliteCockpit.toString()})(${mesurerLisibiliteCockpit.toString()},${JSON.stringify(SEUILS_COCKPIT)});` : ''} return r; })()`, i);
+    };
+    if (s.qualification && s.cockpit) p.avantImage = chaufferInstantCockpit;
     if (variante === 'apres' && o.avant) p.reference = path.join(o.sortie, 'avant', id, 'rapport.json');
     const resultat = await capturer(p), erreurs = verifierHabitacle(resultat, s, variante === 'apres');
     const constatsLisibilite = (resultat.images || []).flatMap(im => (im.observation?.lisibilite || []).flatMap(v => v.erreurs || []));
@@ -243,7 +271,8 @@ export async function campagneHabitacle(o) {
     if (sha !== resultat.build?.sha256) erreurs.push('Le HTML a changé pendant la capture');
     const empreintes = resultat.images.map(im => { const png = readFileSync(path.join(sortie, im.fichier));
       return { fichier: im.fichier, octets: png.length, sha256: createHash('sha256').update(png).digest('hex') }; });
-    r.passages.push({ variante, scenario: id, dossier, images: resultat.images.length, build: resultat.build, source: resultat.source, empreintes, constatsLisibilite, erreurs });
+    r.passages.push({ variante, scenario: id, dossier, images: resultat.images.length, build: resultat.build, source: resultat.source, empreintes, constatsLisibilite,
+      phasesHabitacle: resultat.phasesHabitacle || [], erreurs });
     r.echecs += erreurs.length ? 1 : 0;
     writeFileSync(path.join(o.sortie, 'rapport.json'), JSON.stringify(r, null, 2) + '\n');
     process.stderr.write(`${variante}/${id} : ${resultat.images.length} images, ${erreurs.length} erreurs\n`);

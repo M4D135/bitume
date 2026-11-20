@@ -171,8 +171,9 @@ export function preparerEtat(s) {
     description: 'Positions fixées par outil; horloge météo et rendu réels. Aucun essai de conduite ou de FPS.' };
 }
 
-// Sérialisée dans le navigateur. Le capturer natif avancera encore d'un pas avant le PNG.
-export function avantImageMeteo(s, i) {
+// Sérialisée dans le navigateur. Un appel ne fait au plus qu'un pas de recherche/alignement
+// d'impact ; le capturer natif avancera encore d'un pas avant le PNG.
+export function avantImageMeteo(s, i, avancerImpact = false) {
   const F = __METEO_FIXTURE, S = BITUME_JEU.session, pas = s.pas || .1;
   if (s.tunnel && i === 0) F.tunnel();
   if (s.pause && (i === 0 || i === 2)) document.getElementById(i === 0 ? 'b-pause' : 'b-reprendre').click();
@@ -182,19 +183,29 @@ export function avantImageMeteo(s, i) {
     if (i > 0) for (let n = 0; n < 20; n++) __BITUME_CAPTURE.avancer(100);
   }
   if (s.instantsImpact) {
-    if (i === 0) {
-      // Garder la même cadence depuis la recherche jusqu'au dernier PNG : passer de 30 à
-      // 120 Hz ferait filtrer/recaler les premiers rappels par la vraie cadence du jeu.
-      for (let n = 0; n < Math.ceil(8 / pas) && !F.impact; n++) __BITUME_CAPTURE.avancer(pas * 1000);
-      if (!F.impact) throw new Error('Aucun impact natif récent et cadré en huit secondes');
-    }
+    if (avancerImpact) __BITUME_CAPTURE.avancer(pas * 1000);
+    if (!F.impact) return { impact: false };
     F.instantDemande = s.instantsImpact[i];
     const e = F.lentilles.j1.e, d = e.simulation?.depots || e;
-    const horloge = () => d.temps + d.accumulateur;
-    const cible = F.impact.origine + F.instantDemande - pas;
-    for (let n = 0; n < 60 && horloge() < cible - 1e-7; n++) __BITUME_CAPTURE.avancer(pas * 1000);
-    if (Math.abs(horloge() - cible) > 1e-5) throw new Error('Instant de l’impact non atteint');
+    return { impact: true, temps: d.temps + d.accumulateur, cible: F.impact.origine + F.instantDemande - pas };
   }
+  return true;
+}
+
+// La recherche peut rendre 960 images : chaque pas doit rendre la main à DevTools,
+// pas retenir une seule Runtime.evaluate pendant tous les rendus logiciels.
+export async function preparerImageMeteo(s, i, evaluer) {
+  const expression = avancer => `(${avantImageMeteo.toString()})(${JSON.stringify(s)},${i},${avancer})`;
+  let etat = await evaluer(expression(false));
+  if (!s.instantsImpact) return etat;
+  const pas = s.pas || .1;
+  if (i === 0) {
+    // Même cadence pendant la recherche et les cinq PNG ; mêmes huit secondes au maximum.
+    for (let n = 0; n < Math.ceil(8 / pas) && !etat.impact; n++) etat = await evaluer(expression(true));
+    if (!etat.impact) throw new Error('Aucun impact natif récent et cadré en huit secondes');
+  }
+  for (let n = 0; n < 60 && etat.temps < etat.cible - 1e-7; n++) etat = await evaluer(expression(true));
+  if (!etat.impact || Math.abs(etat.temps - etat.cible) > 1e-5) throw new Error('Instant de l’impact non atteint');
   return true;
 }
 
@@ -461,7 +472,7 @@ export async function campagne(o) {
     p.ecrans = s.pause ? ['course', 'pause'] : ['course'];
     p.initialiser = ({ evaluer }) => evaluer(`(${preparerEtat.toString()})(${JSON.stringify(s)})`);
     p.observer = ({ evaluer }) => evaluer(`(${observerEtat.toString()})()`);
-    p.avantImage = ({ evaluer, i }) => evaluer(`(${avantImageMeteo.toString()})(${JSON.stringify(s)},${i})`);
+    p.avantImage = ({ evaluer, i }) => preparerImageMeteo(s, i, evaluer);
     const r = await capturer(p), erreurs = verifierRapport(r, s, nom === 'apres');
     if (s.qualificationPluie && createHash('sha256').update(readFileSync(fileURLToPath(url))).digest('hex') !== r.build?.sha256)
       erreurs.push('HTML exact modifié ou non identifié pendant la capture pluie');

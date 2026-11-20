@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { optionsHabitacle, optionsScenarioHabitacle, SCENARIOS_HABITACLE, SCENARIOS_COCKPIT, verifierHabitacle } from '../tools/captures-habitacle.mjs';
+import vm from 'node:vm';
+import { optionsHabitacle, optionsScenarioHabitacle, SCENARIOS_HABITACLE, SCENARIOS_COCKPIT, verifierHabitacle, chaufferInstantCockpit } from '../tools/captures-habitacle.mjs';
+import { horlogeCapture } from '../tools/controle-visuel.mjs';
 import { SEUILS_COCKPIT, DISTANCES_ROUTE, BANDES_ROUTE, mesurerLisibiliteCockpit, installerObservationCockpit } from '../tools/qualification/cockpit-lisibilite.mjs';
 
 test('inspection bornée à neuf scènes et deux images, vrais cockpits et LOD par distance', () => {
@@ -61,6 +63,67 @@ test('qualification ciblée : douze PNG, cinq dispositions, deux vrais cockpits 
   }
   assert.deepEqual(SEUILS_COCKPIT, { routeCadreeMin: .9, routeOcculteeMax: .05, routeCentraleOcculteeMax: 0,
     largeurGlaceMax: .18, erreurDomMaxPx: 2, recouvrementMaxPx2: 1 });
+});
+
+function contexteChauffe() {
+  const S = { locaux: [0, 1], course: { voitures: [0, 1].map(() => ({ etat: { v: 35, volant: .2, braquage: .024 } })) },
+    prec: [0, 1].map(x => ({ x, y: 2, z: 3, braquage: .024 })), cour: [0, 1].map(x => ({ x, y: 2, z: 3, braquage: .024 })),
+    tete: { y: 1 }, vueJ2: { tete: { y: 2 } } };
+  const contexte = vm.createContext({ BITUME_JEU: { session: S }, __HABITACLE_CAPTURE: { sujet: 0, relever: true, releves: { ancien: true } } });
+  vm.runInContext('globalThis.window = globalThis', contexte);
+  vm.runInContext(horlogeCapture(17017), contexte);
+  vm.runInContext(`globalThis.frames = [];
+    function image(t) {
+      const F = __HABITACLE_CAPTURE;
+      frames.push({ t, relever: F.relever, instant: F.instant });
+      if (F.relever) F.releves.derniereFrame = frames.length;
+      requestAnimationFrame(image);
+    }
+    requestAnimationFrame(image);`, contexte);
+  let enCours = false;
+  const evaluer = async expression => {
+    assert.equal(enCours, false, 'les commandes CDP doivent rester séquentielles'); enCours = true;
+    try {
+      await new Promise(resolve => setImmediate(resolve));
+      const avant = contexte.frames.length, r = vm.runInContext(expression, contexte);
+      assert(contexte.frames.length - avant <= 1, 'une commande CDP ne doit pas concentrer plusieurs rendus');
+      return r;
+    } finally { enCours = false; }
+  };
+  return { contexte, S, evaluer };
+}
+
+test('chauffe cockpit : 24 rappels réels séparés, mêmes poses duo, relevé uniquement sur la frame suivante', async () => {
+  for (const i of [0, 1]) {
+    const { contexte, S, evaluer } = contexteChauffe(), rapport = { scenario: 'temoin-duo' };
+    await chaufferInstantCockpit({ evaluer, rapport, i });
+    assert.equal(contexte.frames.length, 24); assert(contexte.frames.every(f => !f.relever));
+    assert(Math.abs(contexte.frames.at(-1).t - 1400) < 1e-8, 'les 24 pas de 1/60 s restent identiques');
+    assert.deepEqual(Object.keys(contexte.__HABITACLE_CAPTURE.releves), []);
+    assert.equal(S.tete, null); assert.equal(S.vueJ2.tete, null);
+    for (let j = 0; j < 2; j++) {
+      const e = S.course.voitures[j].etat, volant = i ? j ? -.65 : .65 : 0;
+      assert.equal(e.v, i ? 80 : 0); assert.equal(e.volant, volant); assert.equal(e.braquage, volant * .12);
+      for (const poses of [S.prec, S.cour]) assert.deepEqual(poses[j], { x: j, y: 2, z: 3, braquage: volant * .12 });
+    }
+    assert.equal(rapport.phasesHabitacle.at(-1).etat, 'attendus', 'une chauffe terminée ne prouve pas que le PNG existe');
+    await evaluer('__BITUME_CAPTURE.avancer(1000 / 60)'); // frame que le capturer rend avant son PNG
+    assert.equal(contexte.__HABITACLE_CAPTURE.releves.derniereFrame, 25);
+    assert.equal(contexte.frames.at(-1).instant, i ? 'vitesse-braquage' : 'neutre');
+  }
+});
+
+test('une commande de chauffe interrompue reste un échec tracé et n’arme pas une observation incomplète', async () => {
+  const { contexte, evaluer } = contexteChauffe(), rapport = { scenario: 'temoin-interruption' };
+  await assert.rejects(chaufferInstantCockpit({ i: 1, rapport, evaluer: expression => {
+    if (contexte.frames.length === 5) throw new Error('CDP interrompu au sixième pas');
+    return evaluer(expression);
+  } }), /CDP interrompu/);
+  assert.equal(contexte.frames.length, 5); assert.equal(contexte.__HABITACLE_CAPTURE.relever, false);
+  assert.deepEqual(Object.keys(contexte.__HABITACLE_CAPTURE.releves), []);
+  const derniere = rapport.phasesHabitacle.at(-1);
+  assert.equal(derniere.phase, 'chauffe-6/24'); assert.equal(derniere.etat, 'echec');
+  assert.match(derniere.erreur, /CDP interrompu/);
 });
 
 // Géométrie indépendante, construite depuis un plan image connu ; les rayons visent le sol y=0.

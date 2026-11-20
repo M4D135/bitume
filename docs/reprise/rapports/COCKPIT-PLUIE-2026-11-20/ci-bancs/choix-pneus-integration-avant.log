@@ -1,0 +1,37 @@
+✔ démarrage réel : ancienne préférence recopiée aux deux pilotes sans changer sa valeur (4.560035ms)
+✔ nouveau profil : les conseils suivent la chaussée et chaque choix manuel reste indépendant (0.508274ms)
+✖ mode Conseillés : seul le pilote visé suit la prévision, sans dépendre de l’ordre des contrôles (0.523847ms)
+✔ réglages anciens ou partiels : les faux types et modes ne deviennent pas des choix valides (0.440834ms)
+✔ menus : le second choix est masqué seul et visible pour le vrai nombre de pilotes locaux (0.340485ms)
+✔ départ solo et duo : seules les voitures humaines prennent leurs préférences distinctes (1.52969ms)
+✔ départ distant 2+2 : chaque id humain reçoit la configuration annoncée, aucune préférence locale ne fuit (0.581442ms)
+✔ démo et vitrine : les préférences des pilotes ne changent pas la monte conseillée des voitures (0.397649ms)
+✔ pause : le vrai clic de choix de stand ne remplace aucun pneu et ne répare rien (0.938482ms)
+✔ stand : le bon joueur local est trouvé même quand les id des humains sont 2 et 3 (0.423689ms)
+✔ service engagé : choix verrouillé, affichage figé, aucun clic ne change la transaction (0.575564ms)
+✔ commandes de service hors pause ou sans pilote local : rejet sans mutation de voiture (0.352543ms)
+✔ 12F3 : choix de monte en ligne autorisé pour chaque pilote local sans changer les pneus en place (0.955979ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 12
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17.333604
+
+✖ failing tests:
+
+test at verifications/choix-pneus-integration.test.mjs:105:1
+✖ mode Conseillés : seul le pilote visé suit la prévision, sans dépendre de l’ordre des contrôles (0.523847ms)
+  TypeError: Cannot read properties of undefined (reading 'normaliserForcePluie')
+      at conditionsDuDepart (eval at <anonymous> (file:///workspace/scratch/d61843ca5396/bitume/verifications/choix-pneus-integration.test.mjs:44:19), <anonymous>:103:76)
+      at choisirPneusPilote (eval at <anonymous> (file:///workspace/scratch/d61843ca5396/bitume/verifications/choix-pneus-integration.test.mjs:44:19), <anonymous>:43:54)
+      at eval (eval at <anonymous> (file:///workspace/scratch/d61843ca5396/bitume/verifications/choix-pneus-integration.test.mjs:44:19), <anonymous>:147:88)
+      at Object.changer (eval at <anonymous> (file:///workspace/scratch/d61843ca5396/bitume/verifications/choix-pneus-integration.test.mjs:44:19), <anonymous>:191:56)
+      at TestContext.<anonymous> (file:///workspace/scratch/d61843ca5396/bitume/verifications/choix-pneus-integration.test.mjs:107:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)

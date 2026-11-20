@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
-import { optionsMeteo, optionsScenario, preparerEtat, avantImageMeteo, observerEtat, SCENARIOS, SCENARIOS_E3, SCENARIOS_PLUIE,
+import { optionsMeteo, optionsScenario, preparerEtat, preparerImageMeteo, observerEtat, SCENARIOS, SCENARIOS_E3, SCENARIOS_PLUIE,
   verifierContrasteSillage, verifierContrasteCarrosserie, verifierRapport } from '../tools/captures-meteo.mjs';
 import { optionsCapture } from '../tools/controle-visuel.mjs';
 
@@ -374,7 +374,7 @@ test('chronologie native : naissance, couronne puis perle doivent appartenir à 
   assert(verifierRapport(sansPhases, s, true).length, 'cinq images de pluie ne remplacent pas les cinq phases observées');
 });
 
-test('la séquence d’impact suit l’optique native quand les poses et l’horloge de course sont figées', () => {
+test('le pilote CDP avance l’impact natif par commandes bornées et garde les limites de recherche', async () => {
   const require = createRequire(import.meta.url);
   for (const nom of ['vitre', 'visiere-optique', 'cadence']) require('../src/' + nom + '.js');
   const O = globalThis.BITUME.visiereOptique, C = globalThis.BITUME.cadence;
@@ -388,39 +388,66 @@ test('la séquence d’impact suit l’optique native quand les poses et l’hor
   const B = { circuit: { echantillon: (c, x) => ({ x, z: 0, y: 0, cap: 0, pente: 0, devers: 0 }) },
     vitre: { mettreAJour: (e, dt, c) => O.avancerEtat(e.simulation, dt, c) } };
   const gl = { getError: () => 0, isContextLost: () => false }, toile = { hidden: false, getContext: () => gl };
-  let tempsMs = 1000;
+  let tempsMs = 1000, pasCommande = null, optiqueArretee = false;
+  const commandes = [];
   const environnement = { BITUME: B,
     BITUME_JEU: { session: S, reglages: {}, ecran: 'course', rendu: { gl }, vitres: { j1: o.vitres.j1 } },
     document: { getElementById: id => id === 'vitre' ? toile : null },
     getComputedStyle: () => ({ display: 'block', visibility: 'visible' }),
     __BITUME_CAPTURE: { avancer(ms) {
+      if (pasCommande !== null) {
+        assert(++pasCommande <= 1, 'une commande CDP ne doit pas enchaîner plusieurs rendus');
+        assert.equal(ms, s.pas * 1000, 'recherche et alignement gardent leur pas de 1/120 s');
+      }
       const f = C.image(cadence, tempsMs += ms, { actif: false, echelle: 1 });
       if (f.rendre) {
         // Même contrat que jeu.js : acc < 0 gèle co.horloge et tRendu, mais pas dtImage.
         S.tRendu = S.course.horloge - 1 / 120;
         S.meteo.t += f.dt;
-        B.vitre.mettreAJour(e, f.dt, S.vitreContexte);
+        if (!optiqueArretee) B.vitre.mettreAJour(e, f.dt, S.vitreContexte);
       }
     } }
   };
   const contexte = vm.createContext(environnement);
   r.initialisation = JSON.parse(JSON.stringify(vm.runInContext(`(${preparerEtat.toString()})(${JSON.stringify(s)})`, contexte)));
+  const evaluer = async expression => {
+    pasCommande = 0;
+    const impactAvant = !!contexte.__METEO_FIXTURE.impact;
+    try {
+      const valeur = vm.runInContext(expression, contexte);
+      commandes.push({ pas: pasCommande, impactAvant, impactApres: !!contexte.__METEO_FIXTURE.impact });
+      // Même frontière JSON que Runtime.evaluate(returnByValue) ; le coût du rendu n'est pas simulé.
+      return JSON.parse(JSON.stringify(valeur));
+    } finally { pasCommande = null; }
+  };
   const poses = JSON.stringify(S.cour);
   for (let i = 0; i < s.images; i++) {
-    vm.runInContext(`(${avantImageMeteo.toString()})(${JSON.stringify(s)}, ${i})`, contexte);
+    await preparerImageMeteo(s, i, evaluer);
+    if (i === 0) {
+      const trouve = commandes.findIndex(c => !c.impactAvant && c.impactApres);
+      assert(trouve >= 0, 'une vraie arrivée doit être sélectionnée');
+      assert.equal(trouve, commandes.length - 1, 'la recherche s’arrête au pas qui trouve l’impact, avant le PNG');
+      assert(commandes.reduce((n, c) => n + c.pas, 0) <= 960, 'recherche bornée à huit secondes');
+    }
     environnement.__BITUME_CAPTURE.avancer(s.pas * 1000);
     r.images[i].observation = JSON.parse(JSON.stringify(vm.runInContext(`(${observerEtat.toString()})()`, contexte)));
     assert.equal(S.tRendu, origineCourse, 'l’horloge de course doit rester figée dans ce témoin');
     assert.equal(JSON.stringify(S.cour), poses, 'le banc ne doit pas déplacer les voitures pour avancer l’eau');
     if (i === 0) {
-      const avancer = environnement.__BITUME_CAPTURE.avancer;
-      environnement.__BITUME_CAPTURE.avancer = () => {};
-      assert.throws(() => vm.runInContext(`(${avantImageMeteo.toString()})(${JSON.stringify(s)}, 1)`, contexte),
+      const debut = commandes.length;
+      optiqueArretee = true;
+      await assert.rejects(preparerImageMeteo(s, 1, evaluer),
         /Instant de l’impact non atteint/, 'une optique réellement arrêtée doit rester un échec');
-      environnement.__BITUME_CAPTURE.avancer = avancer;
+      assert.equal(commandes.slice(debut).reduce((n, c) => n + c.pas, 0), 60, 'alignement arrêté après exactement 60 pas');
+      optiqueArretee = false;
     }
   }
   assert.deepEqual(verifierRapport(r, s, true), []);
+  const debut = commandes.length;
+  contexte.__METEO_FIXTURE.impact = null;
+  optiqueArretee = true;
+  await assert.rejects(preparerImageMeteo(s, 0, evaluer), /Aucun impact natif récent et cadré en huit secondes/);
+  assert.equal(commandes.slice(debut).reduce((n, c) => n + c.pas, 0), 960, 'recherche sans arrivée arrêtée après exactement 960 pas');
 });
 
 test('carrosserie : gouttes présentes dans le rendu et témoin sec sans eau, à mêmes poses', () => {

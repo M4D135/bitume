@@ -1,0 +1,82 @@
+[habitacle temoin-duo] image 0 preparer-instant
+✔ inspection bornée à neuf scènes et deux images, vrais cockpits et LOD par distance (2.946102ms)
+✔ identité exacte, caméra finale et état WebGL sont nécessaires même pour la référence (2.463426ms)
+✔ qualification ciblée : douze PNG, cinq dispositions, deux vrais cockpits dans les deux partages (0.590035ms)
+[habitacle temoin-duo] image 0 chauffe-1/24
+[habitacle temoin-duo] image 0 chauffe-2/24
+[habitacle temoin-duo] image 0 chauffe-3/24
+[habitacle temoin-duo] image 0 chauffe-4/24
+[habitacle temoin-duo] image 0 chauffe-5/24
+[habitacle temoin-duo] image 0 chauffe-6/24
+[habitacle temoin-duo] image 0 chauffe-7/24
+[habitacle temoin-duo] image 0 chauffe-8/24
+[habitacle temoin-duo] image 0 chauffe-9/24
+[habitacle temoin-duo] image 0 chauffe-10/24
+[habitacle temoin-duo] image 0 chauffe-11/24
+[habitacle temoin-duo] image 0 chauffe-12/24
+[habitacle temoin-duo] image 0 chauffe-13/24
+[habitacle temoin-duo] image 0 chauffe-14/24
+[habitacle temoin-duo] image 0 chauffe-15/24
+[habitacle temoin-duo] image 0 chauffe-16/24
+[habitacle temoin-duo] image 0 chauffe-17/24
+[habitacle temoin-duo] image 0 chauffe-18/24
+[habitacle temoin-duo] image 0 chauffe-19/24
+[habitacle temoin-duo] image 0 chauffe-20/24
+[habitacle temoin-duo] image 0 chauffe-21/24
+[habitacle temoin-duo] image 0 chauffe-22/24
+[habitacle temoin-duo] image 0 chauffe-23/24
+[habitacle temoin-duo] image 0 chauffe-24/24
+[habitacle temoin-duo] image 0 armer-observation
+[habitacle temoin-duo] image 0 frame-et-PNG
+[habitacle temoin-duo] image 1 preparer-instant
+[habitacle temoin-duo] image 1 chauffe-1/24
+[habitacle temoin-duo] image 1 chauffe-2/24
+[habitacle temoin-duo] image 1 chauffe-3/24
+[habitacle temoin-duo] image 1 chauffe-4/24
+[habitacle temoin-duo] image 1 chauffe-5/24
+[habitacle temoin-duo] image 1 chauffe-6/24
+[habitacle temoin-duo] image 1 chauffe-7/24
+[habitacle temoin-duo] image 1 chauffe-8/24
+[habitacle temoin-duo] image 1 chauffe-9/24
+[habitacle temoin-duo] image 1 chauffe-10/24
+[habitacle temoin-duo] image 1 chauffe-11/24
+[habitacle temoin-duo] image 1 chauffe-12/24
+[habitacle temoin-duo] image 1 chauffe-13/24
+[habitacle temoin-duo] image 1 chauffe-14/24
+[habitacle temoin-duo] image 1 chauffe-15/24
+[habitacle temoin-duo] image 1 chauffe-16/24
+[habitacle temoin-duo] image 1 chauffe-17/24
+[habitacle temoin-duo] image 1 chauffe-18/24
+[habitacle temoin-duo] image 1 chauffe-19/24
+[habitacle temoin-duo] image 1 chauffe-20/24
+[habitacle temoin-duo] image 1 chauffe-21/24
+[habitacle temoin-duo] image 1 chauffe-22/24
+[habitacle temoin-duo] image 1 chauffe-23/24
+[habitacle temoin-duo] image 1 chauffe-24/24
+[habitacle temoin-duo] image 1 armer-observation
+[habitacle temoin-duo] image 1 frame-et-PNG
+✔ chauffe cockpit : 24 rappels réels séparés, mêmes poses duo, relevé uniquement sur la frame suivante (9.120913ms)
+[habitacle temoin-interruption] image 1 preparer-instant
+[habitacle temoin-interruption] image 1 chauffe-1/24
+[habitacle temoin-interruption] image 1 chauffe-2/24
+[habitacle temoin-interruption] image 1 chauffe-3/24
+[habitacle temoin-interruption] image 1 chauffe-4/24
+[habitacle temoin-interruption] image 1 chauffe-5/24
+[habitacle temoin-interruption] image 1 chauffe-6/24
+✔ une commande de chauffe interrompue reste un échec tracé et n’arme pas une observation incomplète (1.673223ms)
+✔ chaussée : vrai sol, faces opaques, plan proche et roulis, sans faux masque par les faces arrière (7.051062ms)
+✔ contrôles négatifs : ancien œil trop bas et obstacle réel devant une chaussée pourtant projetée (2.127187ms)
+✔ contrôles négatifs : glace sur le volant, sur un gant, trop grande ou DOM désolidarisé (2.984859ms)
+✔ les quadrilatères/triangles importent, pas leur seule boîte, et les données absentes échouent (0.971762ms)
+✔ le rapport exige les deux états, les deux joueurs et les erreurs réelles de géométrie (14.416462ms)
+✔ observation passive : même draw et mêmes arguments, copie distincte J2 puis J1 malgré la liste partagée (1.230415ms)
+✔ les instruments réellement présents sont distincts du modèle disponible et des anciens manques (0.383629ms)
+✔ cockpit, passage, geste, portrait et LOD refusent leurs faux positifs (0.701ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 51.989052

@@ -1,0 +1,121 @@
+2026-11-20T20:49:24.5224603Z FAIL verifications/chaussee-preparation.test.mjs
+2026-11-20T20:49:24.5252949Z ok préparation et course choisissent neige même en hiver ensoleillé
+2026-11-20T20:49:24.5253801Z ok Port-Sable garde une chaussée sans neige et conseille les trois montes liquides
+2026-11-20T20:49:24.5254879Z ok un invité emploie eau, saison et circuit de l’hôte
+2026-11-20T20:49:24.5256491Z ok une observation de flocons ne prétend pas mesurer une couverture au sol
+2026-11-20T20:49:24.5257304Z <anonymous_script>:18
+2026-11-20T20:49:24.5258346Z     if (!k.mReelle && k.meteo === 'pluie') m.pluie = m.pluieFixe = B.conditionsCourse.FORCES_PLUIE[B.conditionsCourse.normaliserForcePluie(k.forcePluie)];
+2026-11-20T20:49:24.5259265Z                                                                                       ^
+2026-11-20T20:49:24.5259565Z 
+2026-11-20T20:49:24.5259938Z TypeError: Cannot read properties of undefined (reading 'FORCES_PLUIE')
+2026-11-20T20:49:24.5260880Z     at Object.meteoPourConditions (eval at <anonymous> (file:///home/runner/work/bitume/bitume/verifications/chaussee-preparation.test.mjs:19:14), <anonymous>:18:87)
+2026-11-20T20:49:24.5261965Z     at file:///home/runner/work/bitume/bitume/verifications/chaussee-preparation.test.mjs:67:29
+2026-11-20T20:49:26.6494010Z FAIL verifications/choix-pneus-integration.test.mjs
+2026-11-20T20:49:26.6517714Z ✔ démarrage réel : ancienne préférence recopiée aux deux pilotes sans changer sa valeur (6.784733ms)
+2026-11-20T20:49:26.6519195Z ✔ nouveau profil : les conseils suivent la chaussée et chaque choix manuel reste indépendant (0.736231ms)
+2026-11-20T20:49:26.6520710Z ✖ mode Conseillés : seul le pilote visé suit la prévision, sans dépendre de l’ordre des contrôles (0.769449ms)
+2026-11-20T20:49:26.6522204Z ✔ réglages anciens ou partiels : les faux types et modes ne deviennent pas des choix valides (0.671718ms)
+2026-11-20T20:49:26.6523548Z ✔ menus : le second choix est masqué seul et visible pour le vrai nombre de pilotes locaux (0.635221ms)
+2026-11-20T20:49:26.6524844Z ✔ départ solo et duo : seules les voitures humaines prennent leurs préférences distinctes (2.161828ms)
+2026-11-20T20:49:26.6525797Z ✔ départ distant 2+2 : chaque id humain reçoit la configuration annoncée, aucune préférence locale ne fuit (0.83149ms)
+2026-11-20T20:49:26.6526728Z ✔ démo et vitrine : les préférences des pilotes ne changent pas la monte conseillée des voitures (0.765528ms)
+2026-11-20T20:49:26.6527498Z ✔ pause : le vrai clic de choix de stand ne remplace aucun pneu et ne répare rien (1.512564ms)
+2026-11-20T20:49:26.6528596Z ✔ stand : le bon joueur local est trouvé même quand les id des humains sont 2 et 3 (0.85085ms)
+2026-11-20T20:49:26.6529475Z ✔ service engagé : choix verrouillé, affichage figé, aucun clic ne change la transaction (0.976592ms)
+2026-11-20T20:50:50.5985582Z FAIL verifications/decor.test.mjs
+2026-11-20T20:50:50.6009622Z FAIL Val-Brûlé : décor construit en moins de 150 ms: 152 ms
+2026-11-20T20:50:54.3086734Z PASS verifications/desert.test.mjs
+2026-11-20T20:50:54.3968679Z PASS verifications/determinisme-scenes.test.mjs
+2026-11-20T20:51:05.2711613Z PASS verifications/determinisme-simulation.test.mjs
+2026-11-20T20:51:10.4093403Z PASS verifications/eau-carrosserie-integration.test.mjs
+2026-11-20T20:51:15.3650667Z PASS verifications/echappement.test.mjs
+2026-11-20T20:51:16.8024090Z PASS verifications/ecologie.test.mjs
+2026-11-20T20:51:22.6933781Z PASS verifications/effets-allocation.test.mjs
+2026-11-20T20:51:24.0561128Z PASS verifications/effets-saison.test.mjs
+2026-11-20T20:51:24.0895940Z PASS verifications/embruns.test.mjs
+2026-11-20T20:51:24.1726319Z PASS verifications/expressions-pilote.test.mjs
+2026-11-20T20:51:27.3438504Z PASS verifications/faune.test.mjs
+2026-11-20T20:51:29.1558629Z PASS verifications/formes-libres.test.mjs
+2026-11-20T20:51:30.8856815Z PASS verifications/galerie-portails-physx.test.mjs
+2026-11-20T20:51:30.9686616Z PASS verifications/glissiere-etats.test.mjs
+2026-11-20T20:51:31.0188730Z PASS verifications/glissiere-rebond.test.mjs
+2026-11-20T20:51:31.0678092Z PASS verifications/graphismes.test.mjs
+2026-11-20T20:51:38.3214179Z PASS verifications/habitacle-monde.test.mjs
+2026-11-20T20:52:09.2945182Z PASS verifications/herbier-identite.test.mjs
+2026-11-20T20:52:43.8610031Z PASS verifications/herbier-saisons.test.mjs
+2026-11-20T20:52:44.0295273Z PASS verifications/hud-pneus.test.mjs
+2026-11-20T20:53:04.1802282Z PASS verifications/ia-attaque.test.mjs
+2026-11-20T20:53:04.2816102Z PASS verifications/ia-epaves.test.mjs
+2026-11-20T20:53:04.4183639Z PASS verifications/ia-reprise.test.mjs
+2026-11-20T20:53:04.5230446Z PASS verifications/ia.test.mjs
+2026-11-20T20:53:08.5187331Z PASS verifications/integration-parallele.test.mjs
+2026-11-20T20:53:12.0552532Z PASS verifications/islande.test.mjs
+2026-11-20T20:53:12.7615571Z PASS verifications/lieux-traces.test.mjs
+2026-11-20T20:53:12.8670607Z PASS verifications/main.test.mjs
+2026-11-20T20:53:12.9241211Z PASS verifications/manette.test.mjs
+2026-11-20T20:53:13.0881307Z PASS verifications/marseille-metadonnees.test.mjs
+2026-11-20T20:53:13.4724407Z PASS verifications/marseille-sources.test.mjs
+2026-11-20T20:53:14.8346934Z PASS verifications/marseille-voirie.test.mjs
+2026-11-20T20:53:16.0556981Z PASS verifications/menu-arcade.test.mjs
+2026-11-20T20:53:16.1486702Z PASS verifications/mesures.test.mjs
+2026-11-20T20:53:16.2335495Z PASS verifications/meteo-reelle.test.mjs
+2026-11-20T20:53:16.4246294Z PASS verifications/meteo-toile.test.mjs
+2026-11-20T20:53:16.5436600Z PASS verifications/meteo.test.mjs
+2026-11-20T20:53:18.4353563Z PASS verifications/monaco-altimetrie.test.mjs
+2026-11-20T20:53:19.7500103Z PASS verifications/monaco-mesures.test.mjs
+2026-11-20T20:53:22.8725599Z PASS verifications/monaco-revue-cartographie.test.mjs
+2026-11-20T20:53:24.5157127Z PASS verifications/monaco-revue.test.mjs
+2026-11-20T20:53:24.7464043Z PASS verifications/monaco-sources.test.mjs
+2026-11-20T20:53:27.1913253Z PASS verifications/monaco-voirie.test.mjs
+2026-11-20T20:53:27.2618809Z PASS verifications/moteur-emprise.test.mjs
+2026-11-20T20:53:27.3053221Z PASS verifications/nature-integration.test.mjs
+2026-11-20T20:53:29.6068337Z PASS verifications/nature-preparation.test.mjs
+2026-11-20T20:53:29.6792748Z PASS verifications/navigation-menu.test.mjs
+2026-11-20T20:53:31.4898848Z PASS verifications/obstacles-degagement.test.mjs
+2026-11-20T20:53:31.5405205Z PASS verifications/obstacles.test.mjs
+2026-11-20T20:53:34.3404536Z PASS verifications/ombres.test.mjs
+2026-11-20T20:53:35.3964224Z PASS verifications/options-image.test.mjs
+2026-11-20T20:53:43.6973512Z PASS verifications/pacifique.test.mjs
+2026-11-20T20:53:52.0964093Z PASS verifications/physique-cycle-seances.test.mjs
+2026-11-20T20:54:01.7508719Z PASS verifications/physique-stands.test.mjs
+2026-11-20T20:54:04.1668278Z PASS verifications/physique-voitures.test.mjs
+2026-11-20T20:54:04.5225401Z PASS verifications/physx-autorite-reseau.test.mjs
+2026-11-20T20:54:19.4875511Z PASS verifications/physx-circuits.test.mjs
+2026-11-20T20:54:19.8370382Z PASS verifications/physx-cycle-vie.test.mjs
+2026-11-20T20:56:59.6661182Z FAIL verifications/pneus-reseau-integration.test.mjs
+2026-11-20T20:56:59.6686352Z ✔ 12F3 : transport indépendant des pneus pour 2+2 (6.839408ms)
+2026-11-20T20:56:59.6687792Z ✔ 12F3 : transport indépendant des pneus pour 2+1 (1.237281ms)
+2026-11-20T20:56:59.6688869Z ✔ 12F3 : transport indépendant des pneus pour 1+2 (1.193719ms)
+2026-11-20T20:56:59.6689928Z ✔ 12F3 : envoi depuis la boucle réseau limité à deux états pneus par seconde (1.011761ms)
+2026-11-20T20:56:59.6691446Z ✔ 12F3 : le vrai callback cinématique conserve l’expéditeur et respecte les autorités de voitures (1.046879ms)
+2026-11-20T20:56:59.6692560Z ✔ 12F3 : service réel du second pilote invité envoyé immédiatement, ancien état et doublon sans effet (3.025052ms)
+2026-11-20T20:56:59.6693543Z ✔ 12F3 : état périodique hors ordre et usurpation d’expéditeur ne changent pas les pneus (1.180059ms)
+2026-11-20T20:56:59.6694468Z ✔ 12F3 : deux invités n’échangent des pneus que par un relais authentique de l’hôte (1.366952ms)
+2026-11-20T20:56:59.6695437Z ✖ 12F3 : chargement terminé après un service récupère le snapshot hôte et ses archives validées (2.719483ms)
+2026-11-20T20:56:59.6696401Z ✔ 12F3 : interpolation visuelle des roues distante sans seconde usure ni modification du pneu physique (2.552599ms)
+2026-11-20T20:56:59.6697505Z ✔ 12F3 : changement de séance refuse un paquet de la course précédente même à graine identique (0.762133ms)
+2026-11-20T20:57:02.3040618Z FAIL verifications/prets-enligne.test.mjs
+2026-11-20T20:57:02.3066134Z       at Test.run (node:internal/test_runner/test:1402:25)
+2026-11-20T20:57:02.3067079Z       at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+2026-11-20T20:57:02.3067727Z       at Test.postRun (node:internal/test_runner/test:1542:19)
+2026-11-20T20:57:02.3069426Z       at Test.run (node:internal/test_runner/test:1467:12)
+2026-11-20T20:57:02.3069888Z 
+2026-11-20T20:57:02.3070516Z test at verifications/prets-enligne.test.mjs:451:1
+2026-11-20T20:57:02.3072063Z ✖ 12F3 : départ répété avant et après le chargement ne recrée pas la séance, ancien départ refusé après la suivante (0.097432ms)
+2026-11-20T20:57:02.3073166Z   TypeError: Cannot read properties of undefined (reading 'normaliserForcePluie')
+2026-11-20T20:57:02.3074080Z       at conditionsDuDepart (eval at <anonymous> (file:///home/runner/work/bitume/bitume/verifications/prets-enligne.test.mjs:30:15), <anonymous>:138:76)
+2026-11-20T20:57:02.3075130Z       at annoncerCourse (eval at <anonymous> (file:///home/runner/work/bitume/bitume/verifications/prets-enligne.test.mjs:30:15), <anonymous>:183:43)
+2026-11-20T20:57:02.3076171Z       at Object.proposerCourse (eval at <anonymous> (file:///home/runner/work/bitume/bitume/verifications/prets-enligne.test.mjs:30:15), <anonymous>:205:5)
+2026-11-20T21:03:41.8389080Z Suites reussies : 174
+2026-11-20T21:03:41.8389818Z Suites en echec : 5
+2026-11-20T21:03:41.8555537Z ##[error]Process completed with exit code 1.
+2026-11-20T21:03:41.8680247Z ##[group]Run actions/upload-artifact@v4
+2026-11-20T21:03:41.8680701Z with:
+2026-11-20T21:03:41.8681053Z   name: bitume-4bb44d01f3d8330fe15cf31dae65ba874cbce3b9
+2026-11-20T21:03:41.8681509Z   path: qualification/
+dist/bitume.html
+SIZE.json
+
+2026-11-20T21:03:41.8681904Z   if-no-files-found: error
+2026-11-20T21:03:41.8682239Z   retention-days: 14
+2026-11-20T21:03:41.8682570Z   compression-level: 6

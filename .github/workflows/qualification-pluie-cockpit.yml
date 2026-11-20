@@ -14,20 +14,16 @@ concurrency:
 
 jobs:
   pluie:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-pluie-cockpit]')
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-pluie-cockpit]') || contains(github.event.head_commit.message, '[capture-pluie-impact]')
     runs-on: ubuntu-latest
     timeout-minutes: 25
     strategy:
       fail-fast: false
       max-parallel: 3
-      matrix:
-        include:
-          - groupe: forces-vues
-            cas: pluie-forces-arceau,pluie-duo-cockpit-arceau,pluie-arceau-sec
-          - groupe: impact
-            cas: pluie-impact-arceau
-          - groupe: carrosserie
-            cas: carrosserie-pluie,carrosserie-sec
+      matrix: >-
+        ${{ contains(github.event.head_commit.message, '[capture-pluie-impact]')
+        && fromJSON('{"include":[{"groupe":"impact","cas":"pluie-impact-arceau"}]}')
+        || fromJSON('{"include":[{"groupe":"forces-vues","cas":"pluie-forces-arceau,pluie-duo-cockpit-arceau,pluie-arceau-sec"},{"groupe":"impact","cas":"pluie-impact-arceau"},{"groupe":"carrosserie","cas":"carrosserie-pluie,carrosserie-sec"}]}') }}
     steps:
       - uses: actions/checkout@v4
         with:

@@ -1,0 +1,11 @@
+{
+  "artifact": 14669856838,
+  "zip_sha256": "399dd0077da5e6c03f32052b4ffc3eb62d2d181c9620b69d61b58c70b7e0e53b",
+  "source_commit": "c3d49089e68a46dc2163067afbdea7db81364fed",
+  "fichiers": 3815,
+  "octets": 139126135,
+  "ecarts": [],
+  "html_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+  "html_octets": 14502704,
+  "resume": "Suites reussies : 175\nSuites en echec : 4\n"
+}
