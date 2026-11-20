@@ -50,7 +50,7 @@
       "id": "eau_vitesse",
       "objectif": "Écarter et évacuer les gouttes selon vitesse, flux et orientation caméra",
       "etat": "in_progress",
-      "phase": "candidat_recupere_validation_partielle",
+      "phase": "candidat_0268_construit_validation_integration",
       "dependances": [
         "references"
       ],
@@ -58,7 +58,8 @@
       "prochain_sous_lot": "integration_et_qualification",
       "cloture": "Trajectoires signées et couches optiques cohérentes en cockpit/poursuite ; gravité lente et souffle rapide ; pause/J1J2/abris/aérien préservés ; séquences visuelles et coût qualifiés",
       "preuves": [
-        "docs/reprise/rapports/EAU-VITESSE-2026-11-20/RECUPERATION-0267.json"
+        "docs/reprise/rapports/EAU-VITESSE-2026-11-20/RECUPERATION-0267.json",
+        "docs/reprise/rapports/EAU-VITESSE-2026-11-20/CANDIDAT-0268.json"
       ]
     },
     {

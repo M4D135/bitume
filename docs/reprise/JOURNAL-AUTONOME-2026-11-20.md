@@ -255,3 +255,23 @@ La revue corrige le repli cinématique hors PhysX et raccorde un verdict directi
 fiable avant reconstruction/qualification. Ce checkpoint préserve l'original ; les
 éditions de reprise restent séparées. Prochaines preuves : campagne complète et
 captures du candidat final exact. Le pilote/habitacle n'est pas modifié ici.
+
+## 018 — repli de vitesse physique et build final 0.2.68
+
+Le checkpoint 0.2.67 est publié dans la PR39 (`a8a2369`, arbre938b6d10), avec
+validation partielle explicite. Main reste092a00b/0.2.66. La revue du repli hors
+PhysX a révélé une vitesse verticale artificielle issue du tangage visuel. Le
+correctif dérive le mouvement des deux poses physiques au pas fixe ; les retours
+en piste les égalisent déjà. Les contextes sans historique gardent seulement une
+vitesse horizontale signée. Dix-huit contrôles passent : route plate, pente20%,
+recul, dérive, changements de regard/cadence et véritable replacement. Le premier
+échec et une erreur de fixture sont conservés dans le reçu de correction.
+
+Deux builds identiques0.2.68 :14383155octets, SHA256
+`60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2`.
+Aucune modification FERRO ni physique p15. Le calcul CPU des trajectoires reste
+exactement celui des112contrôles précédents. Le suivi des nappes est désormais
+mesuré dans les pixels ; l’extension aux fines/moyennes a détecté un faux positif
+de l’appariement prédit sur PNG identique. L’identité des perles doit donc venir
+des voisinages observés et les négatifs doivent rester bloquants. Cette entrée
+précède le verdict natif final et la campagne CI : ne pas les supposer réussis.

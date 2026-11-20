@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-20",
+  "version": "0.2.68",
+  "base_main": "092a00b685219ad1e74d24f24a69182e5a0a5562",
+  "pr": 39,
+  "branche": "feat/bitume-eau-0267-20261120",
+  "checkpoint_0267": "a8a2369d4be573195bff0f96ca53e6a7def77d6c",
+  "build": {
+    "builds_identiques": true,
+    "version": "0.2.68",
+    "bytes": 14383155,
+    "sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2"
+  },
+  "sources_sha256": {
+    "src/jeu.js": "a0b95f4976ae132b06c16a6abf7df1b165dedb2a2b7089bfd9af4d0aff642c81",
+    "src/vitre.js": "f9935386db7010277dc1199e6c969af4282ec3dbc139425eaae8d71868bf27be",
+    "src/visiere-optique.js": "f503d993c797092a6d798add41cc739226ac75bba7905896431348f9ebe98e7a",
+    "verifications/vitre-integration.test.mjs": "33f2f9f9ae86a84a495edcd704a4acaf58efe936df9fe787d70a2e75d4cb94f9"
+  },
+  "validation": {
+    "integration_cinematique": {
+      "controles": 18,
+      "statut": "conforme",
+      "recu": "CORRECTIF-REPLI-VITESSE.json"
+    },
+    "trajectoires_cpu": {
+      "controles": 112,
+      "statut": "conforme_sources_inchangees",
+      "recu": "TRAJECTOIRES-CANDIDAT.json",
+      "attribution": "Mesures précédant la construction ; VERSION initiale conservée 0.2.66, sources vitre et outil identiques."
+    },
+    "images_natives": "verdict_directionnel_en_finalisation",
+    "campagne_generale": "a_lancer",
+    "captures_jeu": "a_lancer"
+  },
+  "reserves": [
+    "Le coût llvmpipe initial en poursuite augmente de 16,10 à 19,66 ms ; aucune qualification FPS matériel.",
+    "Les quatre échecs 0.2.65, le premier test de cadence, les intervalles natifs insuffisants et les faux positifs de suivi des perles restent consignés.",
+    "Habitacle commun, pilote abaissé et dégagement bras/buste restent un lot distinct préparé."
+  ]
+}

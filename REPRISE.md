@@ -12,16 +12,21 @@ HTML : 14 370 823 octets, SHA-256 `18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819
 
 ## Lot actif : eau, candidat à terminer et qualifier
 
-Candidat **0.2.67** récupéré et sauvegardé, 17 fichiers ; 112/112 contrôles de
-trajectoire et dix suites ciblées passent. Build local de 14 382 450 octets,
-SHA-256 `4a10ce1b93c15214ab72de9416801d47d545074291fd5788bee2b9f04c8341d7`.
-**Main jouable reste 0.2.66** ; aucune qualification complète de ce candidat annoncée.
+Candidat **0.2.68** construit deux fois à l’identique : 14 383 155 octets,
+SHA-256 `60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2`.
+Repli de vitesse hors PhysX corrigé : déplacement entre poses physiques au pas fixe,
+sans confondre tangage visuel et montée ; 18 contrôles d’intégration conformes.
+Les 112 contrôles CPU gardent leurs sources exactes et leur attribution antérieure.
+**Main jouable reste 0.2.66** ; campagne générale et images du jeu final à qualifier.
 
+[PR #39](https://github.com/M4D135/bitume/pull/39), checkpoint 0.2.67 publié `a8a2369`.
 Fiche : [eau et vitesse](docs/reprise/EAU-VITESSE-2026-11-20.md).
-Reçu : `docs/reprise/rapports/EAU-VITESSE-2026-11-20/RECUPERATION-0267.json`.
-Terminer repli cinématique, verdict des images natives, puis campagne générale et
-captures du vrai jeu exact ; conserver les échecs/réserves initiaux. Chromium local
-est bloqué (socket), les images de course devront être obtenues par la CI.
+Reçu : `docs/reprise/rapports/EAU-VITESSE-2026-11-20/CANDIDAT-0268.json`.
+Terminer le suivi indépendant des motifs dans les PNG, publier la tête finale,
+puis campagne générale et captures exactes par CI (Chromium local bloqué).
+Les nappes sont déjà mesurées sans prédiction ; le négatif « PNG identique mais
+uniformes en mouvement » a révélé un faux positif de l’ancien appariement des perles.
+Le verdict final doit le refuser. Aucun contrôle incomplet n’est annoncé conforme.
 
 Le [plan habitacle/pilote](docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md)
 reste préparé à H0/B0 : habitacle unique, assise plus basse et dégagement bras/buste.
@@ -36,5 +41,5 @@ reste préparé à H0/B0 : habitacle unique, assise plus basse et dégagement br
 
 [Publication de consolidation](docs/reprise/rapports/CONSOLIDATION-2026-11-20/PUBLICATION.json) ·
 [Préparations](docs/reprise/preparations/README.md) ·
-[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **017**.
+[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **018**.
 Lecture minimale : ce fichier, `ETAT.json` → `etat_courant`, puis la seule fiche active.

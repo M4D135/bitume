@@ -684,11 +684,20 @@
       if (mouvement && Number.isFinite(mouvement[0]) && Number.isFinite(mouvement[1]) && Number.isFinite(mouvement[2])) {
         contexte.vitesseX = mouvement[0]; contexte.vitesseY = mouvement[1]; contexte.vitesseZ = mouvement[2];
       } else {
-        const pose = S.cour?.[voiture.id], tangage = voiture.etat.tangage || 0;
-        const direction = (Number.isFinite(pose?.cap) ? pose.cap : contexte.cameraYaw - Math.PI / 2) - (voiture.etat.beta || 0);
-        const horizontal = contexte.vitesse * Math.cos(tangage);
-        contexte.vitesseX = horizontal * Math.cos(direction); contexte.vitesseY = contexte.vitesse * Math.sin(tangage);
-        contexte.vitesseZ = horizontal * Math.sin(direction);
+        // Modèle classique : v est en plan et le tangage contient le transfert de charge visuel.
+        // Ses deux poses physiques au pas fixe donnent le vrai déplacement, pente et saut compris.
+        // synchroniserReplacement les égalise déjà lors d'un retour en piste ; les coupes caméra
+        // et la cadence d'affichage ne participent jamais à cette différence.
+        const pose = S.cour?.[voiture.id], precedente = S.prec?.[voiture.id];
+        const dx = pose?.x - precedente?.x, dy = pose?.y - precedente?.y, dz = pose?.z - precedente?.z;
+        if (Number.isFinite(dx) && Number.isFinite(dy) && Number.isFinite(dz)) {
+          contexte.vitesseX = dx / DT; contexte.vitesseY = dy / DT; contexte.vitesseZ = dz / DT;
+        } else {
+          // Contexte ancien sans historique physique : seule la vitesse horizontale est connue.
+          const direction = (Number.isFinite(pose?.cap) ? pose.cap : contexte.cameraYaw - Math.PI / 2) - (voiture.etat.beta || 0);
+          contexte.vitesseX = contexte.vitesse * Math.cos(direction); contexte.vitesseY = 0;
+          contexte.vitesseZ = contexte.vitesse * Math.sin(direction);
+        }
       }
       contexte.pause = ecran === 'pause' || (ecran === 'reglages' && retourReglages === 'pause');
       contexte.actif = (ecran === 'course' || ecran === 'demo' || contexte.pause) && (vue === 'cockpit' || vue === 'poursuite');

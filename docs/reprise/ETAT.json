@@ -1,16 +1,16 @@
 {
   "date": "2026-11-20",
   "etat_courant": {
-    "version_courante": "0.2.67",
+    "version_courante": "0.2.68",
     "version_publiee_verifiee": "0.2.66",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "candidat_eau_recupere_validation_partielle",
+    "statut": "candidat_eau_construit_validation_integration",
     "lot": "eau_vitesse_integration",
     "fiche": "docs/reprise/EAU-VITESSE-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "017",
-    "prochaine_action": "Terminer repli cinématique et verdict visuel, reconstruire le candidat final, qualifier campagne/captures exactes puis publier sur main. H0/B0 habitacle reste préparé.",
+    "derniere_entree": "018",
+    "prochaine_action": "Terminer le verdict pixel indépendant, publier la tête finale PR39, exécuter la campagne et les captures exactes puis fusionner. H0/B0 habitacle reste préparé.",
     "dernier_lot_clos": "docs/reprise/rapports/CONSOLIDATION-2026-11-20/PUBLICATION.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md"
@@ -392,11 +392,13 @@
   "candidat_eau": {
     "base_integration": "092a00b685219ad1e74d24f24a69182e5a0a5562",
     "fiche": "docs/reprise/EAU-VITESSE-2026-11-20.md",
-    "recu": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/RECUPERATION-0267.json",
-    "version": "0.2.67",
-    "statut": "validation_partielle",
-    "build_sha256": "4a10ce1b93c15214ab72de9416801d47d545074291fd5788bee2b9f04c8341d7",
+    "recu": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/CANDIDAT-0268.json",
+    "version": "0.2.68",
+    "statut": "construit_validation_integration",
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
     "campagne_generale_terminee": false,
-    "captures_jeu_inspectees": false
+    "captures_jeu_inspectees": false,
+    "pr": 39,
+    "checkpoint_0267": "a8a2369d4be573195bff0f96ca53e6a7def77d6c"
   }
 }
