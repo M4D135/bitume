@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "discussion": "01",
+  "mission": "Pilote et Troll",
+  "statut": "preparee_non_lancee",
+  "fiche": "docs/reprise/PARALLELE-2026-11-20/01-PILOTE-TROLL.md",
+  "base_main": "d8f02cae45443ae6a1120dc93125d8adfae94422",
+  "branche_proposee": "codex/bitume-p01-pilote-troll-20261120",
+  "branche_reelle": null,
+  "head": null,
+  "pr": null,
+  "sous_lot": null,
+  "preuves": [],
+  "reserves": [],
+  "prochaine_action": "Retrouver le candidat habitacle et qualifier contacts/coude avant Troll.",
+  "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00."
+}

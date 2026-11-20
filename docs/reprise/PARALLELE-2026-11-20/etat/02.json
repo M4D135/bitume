@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "discussion": "02",
+  "mission": "Performance et FERRO",
+  "statut": "preparee_non_lancee",
+  "fiche": "docs/reprise/PARALLELE-2026-11-20/02-PERFORMANCE.md",
+  "base_main": "d8f02cae45443ae6a1120dc93125d8adfae94422",
+  "branche_proposee": "codex/bitume-p02-performance-20261120",
+  "branche_reelle": null,
+  "head": null,
+  "pr": null,
+  "sous_lot": null,
+  "preuves": [],
+  "reserves": [],
+  "prochaine_action": "Retrouver les optimisations preparees et etablir une mesure reproductible.",
+  "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00."
+}

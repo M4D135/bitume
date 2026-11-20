@@ -364,3 +364,11 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
 - Mettre en place un rendu de type fovéal guidé par vitesse, caméra et importance pour la course.
 - Privilégier les éléments visibles par culling/occlusion ; étudier séparément les rayons pour reflets/éclairage. Préserver les contributions aux rétroviseurs et aux ombres.
 - Pousser toutes ces demandes dans le suivi Git et poursuivre. Fiche : `docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md`.
+
+## Décision de David — 20 novembre 2026, discussions parallèles
+
+- Répartir les travaux en discussions indépendantes avec prompts de reprise, petits sous-lots et contexte court : `docs/reprise/PARALLELE-2026-11-20/README.md`.
+- Cette décision remplace la contrainte historique d'un seul sous-lot actif pour tout le dépôt : **un sous-lot par discussion**, propriétaires de fichiers distincts et intégration sérialisée.
+- Les rôles 01 à 04 peuvent avancer en parallèle ; 00 possède les raccordements partagés, versions/builds, imports FERRO et suivi global. 05 commence par les sources des circuits.
+- Chaque rôle publie sa branche et son propre état ; 00 rassemble les candidats qualifiés sur main. Préserver les travaux préparés, ne pas réinitialiser les dossiers d'une autre discussion et ne pas confondre un inventaire local avec une publication.
+- Lire la fiche de son rôle et son état, pas toutes les archives ; les prompts complets sont dans ce dossier. Cette préparation ne modifie pas le runtime livré.

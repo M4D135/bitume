@@ -442,5 +442,20 @@
     ],
     "publication_demandee": true,
     "validation": "ouverte ; aucune technique non mesurée annoncée comme livrée"
+  },
+  "repartition_parallele": {
+    "index": "docs/reprise/PARALLELE-2026-11-20/README.md",
+    "registre": "docs/reprise/PARALLELE-2026-11-20/REPARTITION.json",
+    "coordination": "00",
+    "discussions_initiales": [
+      "01",
+      "02",
+      "03",
+      "04"
+    ],
+    "preparation_circuits": "05",
+    "publication": "main apres qualification par 00",
+    "reprises": "docs/reprise/PARALLELE-2026-11-20/REPRISES-EXISTANTES.md",
+    "regle": "Conserver les lots et preuves existants. Une discussion par perimetre, un sous-lot par discussion ; raccordements et builds serialises."
   }
 }

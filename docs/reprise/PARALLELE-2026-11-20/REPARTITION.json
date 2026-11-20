@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "statut": "preparation_documentaire",
+  "base_main": "d8f02cae45443ae6a1120dc93125d8adfae94422",
+  "base_tree": "859b95aa2389da28eb7fb2f96088ca6fa1b46f97",
+  "runtime_livre": {
+    "version": "0.2.68",
+    "physique": "p15",
+    "ferro": "0.3.15",
+    "circuits": 9
+  },
+  "premier_groupe": [
+    "01",
+    "02",
+    "03",
+    "04"
+  ],
+  "coordinateur": "00",
+  "second_groupe": [
+    "05"
+  ],
+  "branches_creees_par_ce_plan": false,
+  "code_runtime_modifie": false,
+  "regles": [
+    "Un sous-lot par discussion ; integration serialisee.",
+    "Une branche/worktree isole par discussion ; aucune reinitialisation d'un autre dossier.",
+    "00 seul produit versions/builds et met a jour suivi global.",
+    "02 seul modifie le FERRO canonique ; 00 importe sa version qualifiee.",
+    "Propositions de raccord dans raccordements/NN.md.",
+    "Brouillons locaux recenses, non declares transferes ; verifier REPRISES-EXISTANTES.md."
+  ],
+  "lots": [
+    {
+      "id": "00",
+      "mission": "Integration",
+      "fiche": "00-INTEGRATION.md",
+      "etat": "etat/00.json",
+      "branche_proposee": "codex/bitume-p00-integration-20261120",
+      "propriete": [
+        "src/jeu.js",
+        "construire.py",
+        "VERSION.json",
+        "SIZE.json",
+        "dist/**",
+        "FERRO.lock.json",
+        "src/course.js",
+        "src/conduite.js",
+        "src/circuit.js",
+        "src/reseau.js",
+        "src/realisateur.js"
+      ],
+      "dependances": []
+    },
+    {
+      "id": "01",
+      "mission": "Pilote et Troll",
+      "fiche": "01-PILOTE-TROLL.md",
+      "etat": "etat/01.json",
+      "branche_proposee": "codex/bitume-p01-pilote-troll-20261120",
+      "propriete": [
+        "src/voiture.js",
+        "src/main.js",
+        "src/expressions-pilote.js",
+        "src/son.js"
+      ],
+      "dependances": [
+        "Troll apres habitacle et contrat menu"
+      ]
+    },
+    {
+      "id": "02",
+      "mission": "Performance et FERRO",
+      "fiche": "02-PERFORMANCE.md",
+      "etat": "etat/02.json",
+      "branche_proposee": "codex/bitume-p02-performance-20261120",
+      "propriete": [
+        "src/mesures.js",
+        "src/scene-bench.js",
+        "src/qualite.js",
+        "src/autoconfig.js",
+        "src/graphismes.js",
+        "src/cadence.js",
+        "src/ressources.js",
+        "src/importance-visuelle.js"
+      ],
+      "dependances": []
+    },
+    {
+      "id": "03",
+      "mission": "Menu arcade",
+      "fiche": "03-MENU.md",
+      "etat": "etat/03.json",
+      "branche_proposee": "codex/bitume-p03-menu-20261120",
+      "propriete": [
+        "src/index.html",
+        "src/style.css",
+        "src/navigation-menu.js",
+        "src/menu-arcade.js"
+      ],
+      "dependances": []
+    },
+    {
+      "id": "04",
+      "mission": "Saisons et matieres",
+      "fiche": "04-SAISON-MATIERES.md",
+      "etat": "etat/04.json",
+      "branche_proposee": "codex/bitume-p04-saisons-matieres-20261120",
+      "propriete": [
+        "src/saisons.js",
+        "src/botanique.js",
+        "src/decor.js",
+        "src/bords.js",
+        "src/route-des-cimes-decor.js",
+        "src/matieres-procedurales.js"
+      ],
+      "dependances": [
+        "Matieres apres saisons et budgets performance"
+      ]
+    },
+    {
+      "id": "05",
+      "mission": "Sources circuits",
+      "fiche": "05-CIRCUITS.md",
+      "etat": "etat/05.json",
+      "branche_proposee": "codex/bitume-p05-sources-circuits-20261120",
+      "propriete": [
+        "docs/references/monaco-2026/**",
+        "docs/references/marseille-2026/**"
+      ],
+      "dependances": [
+        "Runtime futur apres donnees qualifiees et transfert de fichiers"
+      ]
+    }
+  ]
+}

@@ -407,3 +407,13 @@ L’utilisateur demande explicitement de pousser toutes ses dernières demandes 
 ## 024 — mémoire, géométrie, matières, rendu fovéal et visibilité
 
 L’utilisateur demande une analyse technique actionnable et des améliorations : préchargement en RAM/GPU, streaming/pooling/gestion mémoire, réduction des triangles, shaders et alternatives géométriques, qualité des montagnes/terrain/matières proches/cockpit. Il ajoute un rendu « fovéal » suivant vitesse/vue et priorité de course, puis « genre ray tracing » pour privilégier ce qui est visible, et demande de pousser toutes ces demandes dans le suivi. La fiche OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20 distingue visibilité/occlusion du ray tracing d’éclairage et conserve les critères de performance, de continuité et de moteur canonique. Les travaux sont préparés ou ouverts ; aucune performance matérielle ni nouvelle matière n’est déclarée validée.
+
+## 025 — répartition en discussions parallèles et prompts de reprise
+
+L'utilisateur demande de préparer le travail par petits lots et de fournir les prompts de nouvelles discussions, pour économiser le contexte. La base distante d8f02ca et son arbre 859b95aa ont été relus. Runtime 0.2.68/p15/FERRO 0.3.15, neuf circuits, conservé sans changement.
+
+Le dossier PARALLELE-2026-11-20 définit quatre discussions de réalisation (01 pilote puis Troll, 02 performance/mémoire/FERRO/visibilité/importance visuelle, 03 menu arcade/manette, 04 saisons puis matières), une coordination 00 des fichiers partagés et une préparation 05 des sources de circuits. Chaque rôle a un prompt, une branche proposée, un état propre, des sous-lots, dépendances et contrôles. Les sources/builds et le suivi global ne sont plus écrits simultanément par plusieurs discussions. Les autres demandes de la file sont conservées.
+
+Les préparations locales habitacle, arcade, saisons et audio ont été inventoriées avec SHA et périmètres ; le worktree Troll recopie le candidat habitacle. Les nouveaux patches capturés localement n'ont pas pu être transférés avant indisponibilité de l'environnement : ils ne sont pas fournis et ne sont pas déclarés publiés. Le checkpoint habitacle déjà présent sur main reste accessible. Les missions commencent par rechercher les travaux plus récents avant toute réécriture.
+
+Publication documentaire uniquement : aucun code du jeu ou de FERRO modifié, aucune nouvelle performance matérielle annoncée, aucun déploiement. L'ancienne règle « un seul sous-lot » devient « un sous-lot par discussion » avec intégrations sérialisées, conformément à cette nouvelle demande.
