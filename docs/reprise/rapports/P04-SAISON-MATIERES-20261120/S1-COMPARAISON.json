@@ -1,0 +1,3304 @@
+{
+  "schema": 1,
+  "base": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "commit_sources": "722d732ebb1d4f26227593ca160b7deede56cb9b",
+  "sourcesAvant": {
+    "src/moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+    "src/circuit.js": "c78abe7215a25048a3e09b11989c332ed14c8844d3cd2eb7cd670d21aefc007c",
+    "src/couverts.js": "338c7e518a0d8cb199db30736ed9fc267756b80b4c6b1b5db643b1b62c266d74",
+    "src/route-des-cimes.js": "a83165c51644fde40545ea84d10748a56a2ddf4caed0b8372cf119ad7c4a4efa",
+    "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+    "src/botanique.js": "8ca32fb0aa467ea1ac4ce65b9f175254f3eb11ee14305f247f6015160b39bf8a",
+    "src/ecologie.js": "02e6ac06d118767e7020953dfe41542853892774ee649626f6110feb06d6d010",
+    "src/saisons.js": "b29843a28fe855076a6a514debe23038cc767343e7e6b0f7c87c102c62d46f0d",
+    "src/bords.js": "ef0488472987ff35d36f3a2bbd76e5a086cb7edf8bc038dfb01676dfe933b638",
+    "src/baikal.js": "0c691f2dbf5056897dd0341a7cb5593de8ea04e22803a232f153a06a3d05fdb6",
+    "src/batiments.js": "67fd03ce58096e60aee06f31160ec849bf950fb6d500c8731a62a1bb08938025",
+    "src/route-des-cimes-decor.js": "ece6e0fd7547afd0b5aaf9ea2ba08f448221fc1e351f8083c59fcb3f1340b919",
+    "src/chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+    "src/virages.js": "3dc70fac36c1ec4fd4ecbbb510d70800de13a7f80a54af7fd99ecb25156f55b1",
+    "src/decor.js": "2ac60e8166d9833cf55dde70a8c1140075ff241d5e50f5cff7f6f68926f8e2a5"
+  },
+  "sourcesApres": {
+    "src/moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+    "src/circuit.js": "c78abe7215a25048a3e09b11989c332ed14c8844d3cd2eb7cd670d21aefc007c",
+    "src/couverts.js": "338c7e518a0d8cb199db30736ed9fc267756b80b4c6b1b5db643b1b62c266d74",
+    "src/route-des-cimes.js": "a83165c51644fde40545ea84d10748a56a2ddf4caed0b8372cf119ad7c4a4efa",
+    "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+    "src/botanique.js": "7b7fdb36e771e0356bcff031a487c2acf0c87758668bb385d9d7addd6465fb11",
+    "src/ecologie.js": "02e6ac06d118767e7020953dfe41542853892774ee649626f6110feb06d6d010",
+    "src/saisons.js": "428f502714e87543bc60c812ef35a1c7688e42d40a76a4fcd0ca9d51bdee70a9",
+    "src/bords.js": "6f3a8f8c651fbd9d54cd1830bda81e5c848c7d40b515d09ecfdecfad9ba563c0",
+    "src/baikal.js": "0c691f2dbf5056897dd0341a7cb5593de8ea04e22803a232f153a06a3d05fdb6",
+    "src/batiments.js": "67fd03ce58096e60aee06f31160ec849bf950fb6d500c8731a62a1bb08938025",
+    "src/route-des-cimes-decor.js": "ece6e0fd7547afd0b5aaf9ea2ba08f448221fc1e351f8083c59fcb3f1340b919",
+    "src/chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+    "src/virages.js": "3dc70fac36c1ec4fd4ecbbb510d70800de13a7f80a54af7fd99ecb25156f55b1",
+    "src/decor.js": "1e7a0a690747280fc8fef9f7447a16fd57b968114a551b3cfe98e554a2e13198"
+  },
+  "qualites": {
+    "low": [
+      {
+        "circuit": "val-brule",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 8814,
+            "triangles": 184316
+          },
+          "apres": {
+            "instances": 8814,
+            "triangles": 184316
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3087,
+            "triangles": 63964
+          },
+          "apres": {
+            "instances": 3087,
+            "triangles": 63964
+          }
+        }
+      },
+      {
+        "circuit": "val-brule",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 8814,
+            "triangles": 184316
+          },
+          "apres": {
+            "instances": 8814,
+            "triangles": 184316
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3087,
+            "triangles": 63964
+          },
+          "apres": {
+            "instances": 3087,
+            "triangles": 63964
+          }
+        }
+      },
+      {
+        "circuit": "val-brule",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 8814,
+            "triangles": 184316
+          },
+          "apres": {
+            "instances": 8814,
+            "triangles": 184316
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3087,
+            "triangles": 63964
+          },
+          "apres": {
+            "instances": 3087,
+            "triangles": 63964
+          }
+        }
+      },
+      {
+        "circuit": "val-brule",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 8814,
+            "triangles": 184316
+          },
+          "apres": {
+            "instances": 8702,
+            "triangles": 176252
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3087,
+            "triangles": 63964
+          },
+          "apres": {
+            "instances": 3087,
+            "triangles": 63964
+          }
+        }
+      },
+      {
+        "circuit": "port-sable",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 7876,
+            "triangles": 147100
+          },
+          "apres": {
+            "instances": 7876,
+            "triangles": 147100
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 2628,
+            "triangles": 47860
+          },
+          "apres": {
+            "instances": 2628,
+            "triangles": 47860
+          }
+        }
+      },
+      {
+        "circuit": "port-sable",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 7876,
+            "triangles": 147100
+          },
+          "apres": {
+            "instances": 7876,
+            "triangles": 147100
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 2628,
+            "triangles": 47860
+          },
+          "apres": {
+            "instances": 2628,
+            "triangles": 47860
+          }
+        }
+      },
+      {
+        "circuit": "port-sable",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 7876,
+            "triangles": 147100
+          },
+          "apres": {
+            "instances": 7876,
+            "triangles": 147100
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 2628,
+            "triangles": 47860
+          },
+          "apres": {
+            "instances": 2628,
+            "triangles": 47860
+          }
+        }
+      },
+      {
+        "circuit": "port-sable",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 7876,
+            "triangles": 147100
+          },
+          "apres": {
+            "instances": 7876,
+            "triangles": 147100
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 2628,
+            "triangles": 47860
+          },
+          "apres": {
+            "instances": 2628,
+            "triangles": 47860
+          }
+        }
+      },
+      {
+        "circuit": "haut-col",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10013,
+            "triangles": 201700
+          },
+          "apres": {
+            "instances": 9955,
+            "triangles": 197524
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3532,
+            "triangles": 68948
+          },
+          "apres": {
+            "instances": 3532,
+            "triangles": 68948
+          }
+        }
+      },
+      {
+        "circuit": "haut-col",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10013,
+            "triangles": 201700
+          },
+          "apres": {
+            "instances": 9955,
+            "triangles": 197524
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3532,
+            "triangles": 68948
+          },
+          "apres": {
+            "instances": 3532,
+            "triangles": 68948
+          }
+        }
+      },
+      {
+        "circuit": "haut-col",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10013,
+            "triangles": 201700
+          },
+          "apres": {
+            "instances": 9955,
+            "triangles": 197524
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3532,
+            "triangles": 68948
+          },
+          "apres": {
+            "instances": 3532,
+            "triangles": 68948
+          }
+        }
+      },
+      {
+        "circuit": "haut-col",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10013,
+            "triangles": 201700
+          },
+          "apres": {
+            "instances": 9955,
+            "triangles": 197524
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3532,
+            "triangles": 68948
+          },
+          "apres": {
+            "instances": 3532,
+            "triangles": 68948
+          }
+        }
+      },
+      {
+        "circuit": "lande-noire",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9398,
+            "triangles": 154496
+          },
+          "apres": {
+            "instances": 9398,
+            "triangles": 154496
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3341,
+            "triangles": 51624
+          },
+          "apres": {
+            "instances": 3341,
+            "triangles": 51624
+          }
+        }
+      },
+      {
+        "circuit": "lande-noire",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9398,
+            "triangles": 154496
+          },
+          "apres": {
+            "instances": 9398,
+            "triangles": 154496
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3341,
+            "triangles": 51624
+          },
+          "apres": {
+            "instances": 3341,
+            "triangles": 51624
+          }
+        }
+      },
+      {
+        "circuit": "lande-noire",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9398,
+            "triangles": 154496
+          },
+          "apres": {
+            "instances": 9398,
+            "triangles": 154496
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3341,
+            "triangles": 51624
+          },
+          "apres": {
+            "instances": 3341,
+            "triangles": 51624
+          }
+        }
+      },
+      {
+        "circuit": "lande-noire",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9398,
+            "triangles": 154496
+          },
+          "apres": {
+            "instances": 9398,
+            "triangles": 154496
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3341,
+            "triangles": 51624
+          },
+          "apres": {
+            "instances": 3341,
+            "triangles": 51624
+          }
+        }
+      },
+      {
+        "circuit": "roche-fauve",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 8604,
+            "triangles": 146360
+          },
+          "apres": {
+            "instances": 8604,
+            "triangles": 146360
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3098,
+            "triangles": 47492
+          },
+          "apres": {
+            "instances": 3098,
+            "triangles": 47492
+          }
+        }
+      },
+      {
+        "circuit": "roche-fauve",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 8604,
+            "triangles": 146360
+          },
+          "apres": {
+            "instances": 8604,
+            "triangles": 146360
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3098,
+            "triangles": 47492
+          },
+          "apres": {
+            "instances": 3098,
+            "triangles": 47492
+          }
+        }
+      },
+      {
+        "circuit": "roche-fauve",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 8604,
+            "triangles": 146360
+          },
+          "apres": {
+            "instances": 8604,
+            "triangles": 146360
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3098,
+            "triangles": 47492
+          },
+          "apres": {
+            "instances": 3098,
+            "triangles": 47492
+          }
+        }
+      },
+      {
+        "circuit": "roche-fauve",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 8604,
+            "triangles": 146360
+          },
+          "apres": {
+            "instances": 8604,
+            "triangles": 146360
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3098,
+            "triangles": 47492
+          },
+          "apres": {
+            "instances": 3098,
+            "triangles": 47492
+          }
+        }
+      },
+      {
+        "circuit": "brume-de-jade",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9406,
+            "triangles": 174476
+          },
+          "apres": {
+            "instances": 9406,
+            "triangles": 174476
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3117,
+            "triangles": 59120
+          },
+          "apres": {
+            "instances": 3117,
+            "triangles": 59120
+          }
+        }
+      },
+      {
+        "circuit": "brume-de-jade",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9406,
+            "triangles": 174476
+          },
+          "apres": {
+            "instances": 9406,
+            "triangles": 174476
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3117,
+            "triangles": 59120
+          },
+          "apres": {
+            "instances": 3117,
+            "triangles": 59120
+          }
+        }
+      },
+      {
+        "circuit": "brume-de-jade",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9406,
+            "triangles": 174476
+          },
+          "apres": {
+            "instances": 9406,
+            "triangles": 174476
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3117,
+            "triangles": 59120
+          },
+          "apres": {
+            "instances": 3117,
+            "triangles": 59120
+          }
+        }
+      },
+      {
+        "circuit": "brume-de-jade",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9406,
+            "triangles": 174476
+          },
+          "apres": {
+            "instances": 9358,
+            "triangles": 171020
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3117,
+            "triangles": 59120
+          },
+          "apres": {
+            "instances": 3117,
+            "triangles": 59120
+          }
+        }
+      },
+      {
+        "circuit": "cap-sequoia",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9328,
+            "triangles": 208912
+          },
+          "apres": {
+            "instances": 9328,
+            "triangles": 208912
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3245,
+            "triangles": 74432
+          },
+          "apres": {
+            "instances": 3245,
+            "triangles": 74432
+          }
+        }
+      },
+      {
+        "circuit": "cap-sequoia",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9328,
+            "triangles": 208912
+          },
+          "apres": {
+            "instances": 9328,
+            "triangles": 208912
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3245,
+            "triangles": 74432
+          },
+          "apres": {
+            "instances": 3245,
+            "triangles": 74432
+          }
+        }
+      },
+      {
+        "circuit": "cap-sequoia",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9328,
+            "triangles": 208912
+          },
+          "apres": {
+            "instances": 9328,
+            "triangles": 208912
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3245,
+            "triangles": 74432
+          },
+          "apres": {
+            "instances": 3245,
+            "triangles": 74432
+          }
+        }
+      },
+      {
+        "circuit": "cap-sequoia",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9328,
+            "triangles": 208912
+          },
+          "apres": {
+            "instances": 9328,
+            "triangles": 208912
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3245,
+            "triangles": 74432
+          },
+          "apres": {
+            "instances": 3245,
+            "triangles": 74432
+          }
+        }
+      },
+      {
+        "circuit": "baikal",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10800,
+            "triangles": 188752
+          },
+          "apres": {
+            "instances": 10800,
+            "triangles": 188752
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3569,
+            "triangles": 65360
+          },
+          "apres": {
+            "instances": 3569,
+            "triangles": 65360
+          }
+        }
+      },
+      {
+        "circuit": "baikal",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10800,
+            "triangles": 188752
+          },
+          "apres": {
+            "instances": 10800,
+            "triangles": 188752
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3569,
+            "triangles": 65360
+          },
+          "apres": {
+            "instances": 3569,
+            "triangles": 65360
+          }
+        }
+      },
+      {
+        "circuit": "baikal",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10800,
+            "triangles": 188752
+          },
+          "apres": {
+            "instances": 10800,
+            "triangles": 188752
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3569,
+            "triangles": 65360
+          },
+          "apres": {
+            "instances": 3569,
+            "triangles": 65360
+          }
+        }
+      },
+      {
+        "circuit": "baikal",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10800,
+            "triangles": 188752
+          },
+          "apres": {
+            "instances": 10792,
+            "triangles": 188176
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3569,
+            "triangles": 65360
+          },
+          "apres": {
+            "instances": 3569,
+            "triangles": 65360
+          }
+        }
+      },
+      {
+        "circuit": "route-des-cimes",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 12529,
+            "triangles": 266044
+          },
+          "apres": {
+            "instances": 12437,
+            "triangles": 259420
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 5699,
+            "triangles": 108756
+          },
+          "apres": {
+            "instances": 5699,
+            "triangles": 108756
+          }
+        }
+      },
+      {
+        "circuit": "route-des-cimes",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 12529,
+            "triangles": 266044
+          },
+          "apres": {
+            "instances": 12437,
+            "triangles": 259420
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 5699,
+            "triangles": 108756
+          },
+          "apres": {
+            "instances": 5699,
+            "triangles": 108756
+          }
+        }
+      },
+      {
+        "circuit": "route-des-cimes",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 12529,
+            "triangles": 266044
+          },
+          "apres": {
+            "instances": 12437,
+            "triangles": 259420
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 5699,
+            "triangles": 108756
+          },
+          "apres": {
+            "instances": 5699,
+            "triangles": 108756
+          }
+        }
+      },
+      {
+        "circuit": "route-des-cimes",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 12529,
+            "triangles": 266044
+          },
+          "apres": {
+            "instances": 12437,
+            "triangles": 259420
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 5699,
+            "triangles": 108756
+          },
+          "apres": {
+            "instances": 5699,
+            "triangles": 108756
+          }
+        }
+      }
+    ],
+    "medium": [
+      {
+        "circuit": "val-brule",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10434,
+            "triangles": 360900
+          },
+          "apres": {
+            "instances": 10434,
+            "triangles": 360900
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3199,
+            "triangles": 80988
+          },
+          "apres": {
+            "instances": 3199,
+            "triangles": 80988
+          }
+        }
+      },
+      {
+        "circuit": "val-brule",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10434,
+            "triangles": 360900
+          },
+          "apres": {
+            "instances": 10434,
+            "triangles": 360900
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3199,
+            "triangles": 80988
+          },
+          "apres": {
+            "instances": 3199,
+            "triangles": 80988
+          }
+        }
+      },
+      {
+        "circuit": "val-brule",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10434,
+            "triangles": 360900
+          },
+          "apres": {
+            "instances": 10434,
+            "triangles": 360900
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3199,
+            "triangles": 80988
+          },
+          "apres": {
+            "instances": 3199,
+            "triangles": 80988
+          }
+        }
+      },
+      {
+        "circuit": "val-brule",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10434,
+            "triangles": 360900
+          },
+          "apres": {
+            "instances": 10434,
+            "triangles": 336708
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3199,
+            "triangles": 80988
+          },
+          "apres": {
+            "instances": 3199,
+            "triangles": 77852
+          }
+        }
+      },
+      {
+        "circuit": "port-sable",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9692,
+            "triangles": 261714
+          },
+          "apres": {
+            "instances": 9692,
+            "triangles": 261714
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 2667,
+            "triangles": 63226
+          },
+          "apres": {
+            "instances": 2667,
+            "triangles": 63226
+          }
+        }
+      },
+      {
+        "circuit": "port-sable",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9692,
+            "triangles": 261714
+          },
+          "apres": {
+            "instances": 9692,
+            "triangles": 261714
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 2667,
+            "triangles": 63226
+          },
+          "apres": {
+            "instances": 2667,
+            "triangles": 63226
+          }
+        }
+      },
+      {
+        "circuit": "port-sable",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9692,
+            "triangles": 261714
+          },
+          "apres": {
+            "instances": 9692,
+            "triangles": 261714
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 2667,
+            "triangles": 63226
+          },
+          "apres": {
+            "instances": 2667,
+            "triangles": 63226
+          }
+        }
+      },
+      {
+        "circuit": "port-sable",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9692,
+            "triangles": 261714
+          },
+          "apres": {
+            "instances": 9692,
+            "triangles": 261714
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 2667,
+            "triangles": 63226
+          },
+          "apres": {
+            "instances": 2667,
+            "triangles": 63226
+          }
+        }
+      },
+      {
+        "circuit": "haut-col",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11931,
+            "triangles": 376740
+          },
+          "apres": {
+            "instances": 11931,
+            "triangles": 354120
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3590,
+            "triangles": 87392
+          },
+          "apres": {
+            "instances": 3590,
+            "triangles": 82578
+          }
+        }
+      },
+      {
+        "circuit": "haut-col",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11931,
+            "triangles": 376740
+          },
+          "apres": {
+            "instances": 11931,
+            "triangles": 354120
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3590,
+            "triangles": 87392
+          },
+          "apres": {
+            "instances": 3590,
+            "triangles": 82578
+          }
+        }
+      },
+      {
+        "circuit": "haut-col",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11931,
+            "triangles": 376740
+          },
+          "apres": {
+            "instances": 11931,
+            "triangles": 354120
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3590,
+            "triangles": 87392
+          },
+          "apres": {
+            "instances": 3590,
+            "triangles": 82578
+          }
+        }
+      },
+      {
+        "circuit": "haut-col",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11931,
+            "triangles": 376740
+          },
+          "apres": {
+            "instances": 11931,
+            "triangles": 347856
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3590,
+            "triangles": 87392
+          },
+          "apres": {
+            "instances": 3590,
+            "triangles": 81766
+          }
+        }
+      },
+      {
+        "circuit": "lande-noire",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10651,
+            "triangles": 212164
+          },
+          "apres": {
+            "instances": 10651,
+            "triangles": 212164
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3341,
+            "triangles": 51624
+          },
+          "apres": {
+            "instances": 3341,
+            "triangles": 51624
+          }
+        }
+      },
+      {
+        "circuit": "lande-noire",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10651,
+            "triangles": 212164
+          },
+          "apres": {
+            "instances": 10651,
+            "triangles": 212164
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3341,
+            "triangles": 51624
+          },
+          "apres": {
+            "instances": 3341,
+            "triangles": 51624
+          }
+        }
+      },
+      {
+        "circuit": "lande-noire",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10651,
+            "triangles": 212164
+          },
+          "apres": {
+            "instances": 10651,
+            "triangles": 212164
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3341,
+            "triangles": 51624
+          },
+          "apres": {
+            "instances": 3341,
+            "triangles": 51624
+          }
+        }
+      },
+      {
+        "circuit": "lande-noire",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10651,
+            "triangles": 212164
+          },
+          "apres": {
+            "instances": 10651,
+            "triangles": 212164
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3341,
+            "triangles": 51624
+          },
+          "apres": {
+            "instances": 3341,
+            "triangles": 51624
+          }
+        }
+      },
+      {
+        "circuit": "roche-fauve",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9783,
+            "triangles": 191900
+          },
+          "apres": {
+            "instances": 9783,
+            "triangles": 191900
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3098,
+            "triangles": 47492
+          },
+          "apres": {
+            "instances": 3098,
+            "triangles": 47492
+          }
+        }
+      },
+      {
+        "circuit": "roche-fauve",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9783,
+            "triangles": 191900
+          },
+          "apres": {
+            "instances": 9783,
+            "triangles": 191900
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3098,
+            "triangles": 47492
+          },
+          "apres": {
+            "instances": 3098,
+            "triangles": 47492
+          }
+        }
+      },
+      {
+        "circuit": "roche-fauve",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9783,
+            "triangles": 191900
+          },
+          "apres": {
+            "instances": 9783,
+            "triangles": 191900
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3098,
+            "triangles": 47492
+          },
+          "apres": {
+            "instances": 3098,
+            "triangles": 47492
+          }
+        }
+      },
+      {
+        "circuit": "roche-fauve",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9783,
+            "triangles": 191900
+          },
+          "apres": {
+            "instances": 9783,
+            "triangles": 191900
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3098,
+            "triangles": 47492
+          },
+          "apres": {
+            "instances": 3098,
+            "triangles": 47492
+          }
+        }
+      },
+      {
+        "circuit": "brume-de-jade",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11032,
+            "triangles": 280980
+          },
+          "apres": {
+            "instances": 11032,
+            "triangles": 280980
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3165,
+            "triangles": 66416
+          },
+          "apres": {
+            "instances": 3165,
+            "triangles": 66416
+          }
+        }
+      },
+      {
+        "circuit": "brume-de-jade",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11032,
+            "triangles": 280980
+          },
+          "apres": {
+            "instances": 11032,
+            "triangles": 280980
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3165,
+            "triangles": 66416
+          },
+          "apres": {
+            "instances": 3165,
+            "triangles": 66416
+          }
+        }
+      },
+      {
+        "circuit": "brume-de-jade",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11032,
+            "triangles": 280980
+          },
+          "apres": {
+            "instances": 11032,
+            "triangles": 280980
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3165,
+            "triangles": 66416
+          },
+          "apres": {
+            "instances": 3165,
+            "triangles": 66416
+          }
+        }
+      },
+      {
+        "circuit": "brume-de-jade",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11032,
+            "triangles": 280980
+          },
+          "apres": {
+            "instances": 11032,
+            "triangles": 270612
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3165,
+            "triangles": 66416
+          },
+          "apres": {
+            "instances": 3165,
+            "triangles": 65072
+          }
+        }
+      },
+      {
+        "circuit": "cap-sequoia",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10467,
+            "triangles": 648814
+          },
+          "apres": {
+            "instances": 10467,
+            "triangles": 648814
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3245,
+            "triangles": 145730
+          },
+          "apres": {
+            "instances": 3245,
+            "triangles": 145730
+          }
+        }
+      },
+      {
+        "circuit": "cap-sequoia",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10467,
+            "triangles": 648814
+          },
+          "apres": {
+            "instances": 10467,
+            "triangles": 648814
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3245,
+            "triangles": 145730
+          },
+          "apres": {
+            "instances": 3245,
+            "triangles": 145730
+          }
+        }
+      },
+      {
+        "circuit": "cap-sequoia",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10467,
+            "triangles": 648814
+          },
+          "apres": {
+            "instances": 10467,
+            "triangles": 648814
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3245,
+            "triangles": 145730
+          },
+          "apres": {
+            "instances": 3245,
+            "triangles": 145730
+          }
+        }
+      },
+      {
+        "circuit": "cap-sequoia",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10467,
+            "triangles": 648814
+          },
+          "apres": {
+            "instances": 10467,
+            "triangles": 648814
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3245,
+            "triangles": 145730
+          },
+          "apres": {
+            "instances": 3245,
+            "triangles": 145730
+          }
+        }
+      },
+      {
+        "circuit": "baikal",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 12952,
+            "triangles": 317056
+          },
+          "apres": {
+            "instances": 12952,
+            "triangles": 317056
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3586,
+            "triangles": 73416
+          },
+          "apres": {
+            "instances": 3586,
+            "triangles": 73416
+          }
+        }
+      },
+      {
+        "circuit": "baikal",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 12952,
+            "triangles": 317056
+          },
+          "apres": {
+            "instances": 12952,
+            "triangles": 317056
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3586,
+            "triangles": 73416
+          },
+          "apres": {
+            "instances": 3586,
+            "triangles": 73416
+          }
+        }
+      },
+      {
+        "circuit": "baikal",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 12952,
+            "triangles": 317056
+          },
+          "apres": {
+            "instances": 12952,
+            "triangles": 317056
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3586,
+            "triangles": 73416
+          },
+          "apres": {
+            "instances": 3586,
+            "triangles": 73416
+          }
+        }
+      },
+      {
+        "circuit": "baikal",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 12952,
+            "triangles": 317056
+          },
+          "apres": {
+            "instances": 12952,
+            "triangles": 315328
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3586,
+            "triangles": 73416
+          },
+          "apres": {
+            "instances": 3586,
+            "triangles": 73192
+          }
+        }
+      },
+      {
+        "circuit": "route-des-cimes",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 14928,
+            "triangles": 490662
+          },
+          "apres": {
+            "instances": 14928,
+            "triangles": 454782
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 5744,
+            "triangles": 136530
+          },
+          "apres": {
+            "instances": 5744,
+            "triangles": 128894
+          }
+        }
+      },
+      {
+        "circuit": "route-des-cimes",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 14928,
+            "triangles": 490662
+          },
+          "apres": {
+            "instances": 14928,
+            "triangles": 454782
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 5744,
+            "triangles": 136530
+          },
+          "apres": {
+            "instances": 5744,
+            "triangles": 128894
+          }
+        }
+      },
+      {
+        "circuit": "route-des-cimes",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 14928,
+            "triangles": 490662
+          },
+          "apres": {
+            "instances": 14928,
+            "triangles": 454782
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 5744,
+            "triangles": 136530
+          },
+          "apres": {
+            "instances": 5744,
+            "triangles": 128894
+          }
+        }
+      },
+      {
+        "circuit": "route-des-cimes",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 14928,
+            "triangles": 490662
+          },
+          "apres": {
+            "instances": 14928,
+            "triangles": 444846
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 5744,
+            "triangles": 136530
+          },
+          "apres": {
+            "instances": 5744,
+            "triangles": 127606
+          }
+        }
+      }
+    ],
+    "high": [
+      {
+        "circuit": "val-brule",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10434,
+            "triangles": 467076
+          },
+          "apres": {
+            "instances": 10434,
+            "triangles": 467076
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3199,
+            "triangles": 90396
+          },
+          "apres": {
+            "instances": 3199,
+            "triangles": 90396
+          }
+        }
+      },
+      {
+        "circuit": "val-brule",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10434,
+            "triangles": 467076
+          },
+          "apres": {
+            "instances": 10434,
+            "triangles": 467076
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3199,
+            "triangles": 90396
+          },
+          "apres": {
+            "instances": 3199,
+            "triangles": 90396
+          }
+        }
+      },
+      {
+        "circuit": "val-brule",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10434,
+            "triangles": 467076
+          },
+          "apres": {
+            "instances": 10434,
+            "triangles": 467076
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3199,
+            "triangles": 90396
+          },
+          "apres": {
+            "instances": 3199,
+            "triangles": 90396
+          }
+        }
+      },
+      {
+        "circuit": "val-brule",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10434,
+            "triangles": 467076
+          },
+          "apres": {
+            "instances": 10434,
+            "triangles": 434820
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3199,
+            "triangles": 90396
+          },
+          "apres": {
+            "instances": 3199,
+            "triangles": 89500
+          }
+        }
+      },
+      {
+        "circuit": "port-sable",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9692,
+            "triangles": 302118
+          },
+          "apres": {
+            "instances": 9692,
+            "triangles": 302118
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 2667,
+            "triangles": 71650
+          },
+          "apres": {
+            "instances": 2667,
+            "triangles": 71650
+          }
+        }
+      },
+      {
+        "circuit": "port-sable",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9692,
+            "triangles": 302118
+          },
+          "apres": {
+            "instances": 9692,
+            "triangles": 302118
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 2667,
+            "triangles": 71650
+          },
+          "apres": {
+            "instances": 2667,
+            "triangles": 71650
+          }
+        }
+      },
+      {
+        "circuit": "port-sable",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9692,
+            "triangles": 302118
+          },
+          "apres": {
+            "instances": 9692,
+            "triangles": 302118
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 2667,
+            "triangles": 71650
+          },
+          "apres": {
+            "instances": 2667,
+            "triangles": 71650
+          }
+        }
+      },
+      {
+        "circuit": "port-sable",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9692,
+            "triangles": 302118
+          },
+          "apres": {
+            "instances": 9692,
+            "triangles": 302118
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 2667,
+            "triangles": 71650
+          },
+          "apres": {
+            "instances": 2667,
+            "triangles": 71650
+          }
+        }
+      },
+      {
+        "circuit": "haut-col",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11931,
+            "triangles": 483924
+          },
+          "apres": {
+            "instances": 11931,
+            "triangles": 435204
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3590,
+            "triangles": 99224
+          },
+          "apres": {
+            "instances": 3590,
+            "triangles": 90930
+          }
+        }
+      },
+      {
+        "circuit": "haut-col",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11931,
+            "triangles": 483924
+          },
+          "apres": {
+            "instances": 11931,
+            "triangles": 435204
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3590,
+            "triangles": 99224
+          },
+          "apres": {
+            "instances": 3590,
+            "triangles": 90930
+          }
+        }
+      },
+      {
+        "circuit": "haut-col",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11931,
+            "triangles": 483924
+          },
+          "apres": {
+            "instances": 11931,
+            "triangles": 435204
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3590,
+            "triangles": 99224
+          },
+          "apres": {
+            "instances": 3590,
+            "triangles": 90930
+          }
+        }
+      },
+      {
+        "circuit": "haut-col",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11931,
+            "triangles": 483924
+          },
+          "apres": {
+            "instances": 11931,
+            "triangles": 426852
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3590,
+            "triangles": 99224
+          },
+          "apres": {
+            "instances": 3590,
+            "triangles": 90698
+          }
+        }
+      },
+      {
+        "circuit": "lande-noire",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10651,
+            "triangles": 212164
+          },
+          "apres": {
+            "instances": 10651,
+            "triangles": 212164
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3341,
+            "triangles": 51624
+          },
+          "apres": {
+            "instances": 3341,
+            "triangles": 51624
+          }
+        }
+      },
+      {
+        "circuit": "lande-noire",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10651,
+            "triangles": 212164
+          },
+          "apres": {
+            "instances": 10651,
+            "triangles": 212164
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3341,
+            "triangles": 51624
+          },
+          "apres": {
+            "instances": 3341,
+            "triangles": 51624
+          }
+        }
+      },
+      {
+        "circuit": "lande-noire",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10651,
+            "triangles": 212164
+          },
+          "apres": {
+            "instances": 10651,
+            "triangles": 212164
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3341,
+            "triangles": 51624
+          },
+          "apres": {
+            "instances": 3341,
+            "triangles": 51624
+          }
+        }
+      },
+      {
+        "circuit": "lande-noire",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10651,
+            "triangles": 212164
+          },
+          "apres": {
+            "instances": 10651,
+            "triangles": 212164
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3341,
+            "triangles": 51624
+          },
+          "apres": {
+            "instances": 3341,
+            "triangles": 51624
+          }
+        }
+      },
+      {
+        "circuit": "roche-fauve",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9783,
+            "triangles": 191900
+          },
+          "apres": {
+            "instances": 9783,
+            "triangles": 191900
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3098,
+            "triangles": 47492
+          },
+          "apres": {
+            "instances": 3098,
+            "triangles": 47492
+          }
+        }
+      },
+      {
+        "circuit": "roche-fauve",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9783,
+            "triangles": 191900
+          },
+          "apres": {
+            "instances": 9783,
+            "triangles": 191900
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3098,
+            "triangles": 47492
+          },
+          "apres": {
+            "instances": 3098,
+            "triangles": 47492
+          }
+        }
+      },
+      {
+        "circuit": "roche-fauve",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9783,
+            "triangles": 191900
+          },
+          "apres": {
+            "instances": 9783,
+            "triangles": 191900
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3098,
+            "triangles": 47492
+          },
+          "apres": {
+            "instances": 3098,
+            "triangles": 47492
+          }
+        }
+      },
+      {
+        "circuit": "roche-fauve",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 9783,
+            "triangles": 191900
+          },
+          "apres": {
+            "instances": 9783,
+            "triangles": 191900
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3098,
+            "triangles": 47492
+          },
+          "apres": {
+            "instances": 3098,
+            "triangles": 47492
+          }
+        }
+      },
+      {
+        "circuit": "brume-de-jade",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11032,
+            "triangles": 326484
+          },
+          "apres": {
+            "instances": 11032,
+            "triangles": 326484
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3165,
+            "triangles": 70448
+          },
+          "apres": {
+            "instances": 3165,
+            "triangles": 70448
+          }
+        }
+      },
+      {
+        "circuit": "brume-de-jade",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11032,
+            "triangles": 326484
+          },
+          "apres": {
+            "instances": 11032,
+            "triangles": 326484
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3165,
+            "triangles": 70448
+          },
+          "apres": {
+            "instances": 3165,
+            "triangles": 70448
+          }
+        }
+      },
+      {
+        "circuit": "brume-de-jade",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11032,
+            "triangles": 326484
+          },
+          "apres": {
+            "instances": 11032,
+            "triangles": 326484
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3165,
+            "triangles": 70448
+          },
+          "apres": {
+            "instances": 3165,
+            "triangles": 70448
+          }
+        }
+      },
+      {
+        "circuit": "brume-de-jade",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 11032,
+            "triangles": 326484
+          },
+          "apres": {
+            "instances": 11032,
+            "triangles": 312660
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3165,
+            "triangles": 70448
+          },
+          "apres": {
+            "instances": 3165,
+            "triangles": 70064
+          }
+        }
+      },
+      {
+        "circuit": "cap-sequoia",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10467,
+            "triangles": 1079398
+          },
+          "apres": {
+            "instances": 10467,
+            "triangles": 1079398
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3245,
+            "triangles": 193262
+          },
+          "apres": {
+            "instances": 3245,
+            "triangles": 193262
+          }
+        }
+      },
+      {
+        "circuit": "cap-sequoia",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10467,
+            "triangles": 1079398
+          },
+          "apres": {
+            "instances": 10467,
+            "triangles": 1079398
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3245,
+            "triangles": 193262
+          },
+          "apres": {
+            "instances": 3245,
+            "triangles": 193262
+          }
+        }
+      },
+      {
+        "circuit": "cap-sequoia",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10467,
+            "triangles": 1079398
+          },
+          "apres": {
+            "instances": 10467,
+            "triangles": 1079398
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3245,
+            "triangles": 193262
+          },
+          "apres": {
+            "instances": 3245,
+            "triangles": 193262
+          }
+        }
+      },
+      {
+        "circuit": "cap-sequoia",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 10467,
+            "triangles": 1079398
+          },
+          "apres": {
+            "instances": 10467,
+            "triangles": 1079398
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3245,
+            "triangles": 193262
+          },
+          "apres": {
+            "instances": 3245,
+            "triangles": 193262
+          }
+        }
+      },
+      {
+        "circuit": "baikal",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 12952,
+            "triangles": 365296
+          },
+          "apres": {
+            "instances": 12952,
+            "triangles": 365296
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3586,
+            "triangles": 78576
+          },
+          "apres": {
+            "instances": 3586,
+            "triangles": 78576
+          }
+        }
+      },
+      {
+        "circuit": "baikal",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 12952,
+            "triangles": 365296
+          },
+          "apres": {
+            "instances": 12952,
+            "triangles": 365296
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3586,
+            "triangles": 78576
+          },
+          "apres": {
+            "instances": 3586,
+            "triangles": 78576
+          }
+        }
+      },
+      {
+        "circuit": "baikal",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 12952,
+            "triangles": 365296
+          },
+          "apres": {
+            "instances": 12952,
+            "triangles": 365296
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3586,
+            "triangles": 78576
+          },
+          "apres": {
+            "instances": 3586,
+            "triangles": 78576
+          }
+        }
+      },
+      {
+        "circuit": "baikal",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 12952,
+            "triangles": 365296
+          },
+          "apres": {
+            "instances": 12952,
+            "triangles": 362992
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 3586,
+            "triangles": 78576
+          },
+          "apres": {
+            "instances": 3586,
+            "triangles": 78512
+          }
+        }
+      },
+      {
+        "circuit": "route-des-cimes",
+        "saison": "printemps",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 14928,
+            "triangles": 655134
+          },
+          "apres": {
+            "instances": 14928,
+            "triangles": 577854
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 5744,
+            "triangles": 154686
+          },
+          "apres": {
+            "instances": 5744,
+            "triangles": 141530
+          }
+        }
+      },
+      {
+        "circuit": "route-des-cimes",
+        "saison": "ete",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 14928,
+            "triangles": 655134
+          },
+          "apres": {
+            "instances": 14928,
+            "triangles": 577854
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 5744,
+            "triangles": 154686
+          },
+          "apres": {
+            "instances": 5744,
+            "triangles": 141530
+          }
+        }
+      },
+      {
+        "circuit": "route-des-cimes",
+        "saison": "automne",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 14928,
+            "triangles": 655134
+          },
+          "apres": {
+            "instances": 14928,
+            "triangles": 577854
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 5744,
+            "triangles": 154686
+          },
+          "apres": {
+            "instances": 5744,
+            "triangles": 141530
+          }
+        }
+      },
+      {
+        "circuit": "route-des-cimes",
+        "saison": "hiver",
+        "identite": {
+          "racinesSHA256": true,
+          "obstaclesSHA256": true,
+          "troncsSHA256": true,
+          "geometrieSolSHA256": true
+        },
+        "proche": {
+          "avant": {
+            "instances": 14928,
+            "triangles": 655134
+          },
+          "apres": {
+            "instances": 14928,
+            "triangles": 564606
+          }
+        },
+        "loin": {
+          "avant": {
+            "instances": 5744,
+            "triangles": 154686
+          },
+          "apres": {
+            "instances": 5744,
+            "triangles": 141162
+          }
+        }
+      }
+    ]
+  },
+  "identites_conservees": 432,
+  "identites_attendues": 432,
+  "hausses_instances_ou_triangles": 0,
+  "conditions": {
+    "arbres": 220,
+    "vegetation": false,
+    "saisons": [
+      "printemps",
+      "ete",
+      "automne",
+      "hiver"
+    ]
+  },
+  "limites": [
+    "Inventaire complet des lots préparés, pas une mesure de visibilité ni FPS.",
+    "Les compteurs de géométrie ne mesurent pas les tableaux JS ni le coût GPU."
+  ]
+}

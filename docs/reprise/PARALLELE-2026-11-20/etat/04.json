@@ -2,27 +2,37 @@
   "schema": 1,
   "discussion": "04",
   "mission": "Saisons et matieres",
-  "statut": "en_cours_sources_reprises",
+  "statut": "node_qualifie_images_en_cours",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/04-SAISON-MATIERES.md",
   "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p04-saisons-matieres-20261120",
   "branche_reelle": "codex/bitume-p04-saisons-matieres-20261120",
-  "head": "722d732ebb1d4f26227593ca160b7deede56cb9b",
+  "head": "259ed2bb8ba39375f6b792459c24997cfac6e701",
   "pr": null,
-  "sous_lot": "04-S0 : reprise saisons seule, premiers controles Node",
+  "sous_lot": "04-S1 : matrice 108 preparations, identites 432/432, captures CI",
   "preuves": [
-    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S0-REPRISE.json"
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S0-REPRISE.json",
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-NODE.json",
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-COMPARAISON.json"
   ],
   "reserves": [
-    "Pas de qualification visuelle à ce jalon.",
-    "Trois paliers, caches Cimes/Baikal et comparaison au parent en cours.",
-    "Aucun build partagé, aucun fichier audio, aucun module FERRO ni physique modifié."
+    "Qualification visuelle en attente de capture et inspection des images.",
+    "Aucun gain matériel Xbox/Intel ni FPS annoncé.",
+    "Aucune fusion main ni publication du build commun.",
+    "CI commune attend le build publié par 00 ; garde de reconstruction rouge sur la branche de sources."
   ],
-  "prochaine_action": "Terminer les 3 paliers et caches Cimes/Baikal, comparer les budgets au parent puis inspecter les captures du vrai jeu.",
+  "prochaine_action": "Inspecter les 88 PNG des 44 scenes CI, puis qualifier le premier lot de pierres proches en Fine.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "preparations_portables": [
     "docs/reprise/PARALLELE-2026-11-20/preparations/saisons.patch"
   ],
   "preparations_statut": "saisons.patch_reprise_sans_audio",
-  "head_designe": "Dernier commit des sources de ce sous-lot ; le commit de cet état vient ensuite."
+  "head_designe": "Dernier commit des sources de ce sous-lot ; le commit de cet état vient ensuite.",
+  "capture_ci": {
+    "run_id": 44782100015,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44782100015",
+    "scenes_attendues": 44,
+    "png_attendus": 88,
+    "inspectees": 0
+  }
 }
