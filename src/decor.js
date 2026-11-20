@@ -4,6 +4,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virages) require('./virages.js');
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.baikal) require('./baikal.js');
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batiments) require('./batiments.js');
+if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimesDecor) require('./route-des-cimes-decor.js');
 (function (B) {
   'use strict';
 
@@ -294,7 +295,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
           }
           const ia = sommet(nap, p0, n0, mat, col0), ib = sommet(nap, p1, n1, mat, col1);
           const prec = premiers[b];
-          if (prec.length) {
+          if (prec.length && !(B.cimesDecor && B.cimesDecor.couperAccotement(c, f.s - c.pas / 2, type))) {
             const [pa, pb] = prec;
             if (type === 'herbe' || type === 'jupe') herbeTriangles.push(nap.i.length, nap.i.length + 3);
             nap.i.push(pa, pb, ib, pa, ib, ia);
@@ -395,6 +396,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
           h += (th.eau - 18 - h) * falaise;
         } else h -= 34 * lisse(merDebut - 40, merDebut + 220, p) * lisse(60, 140, d);
       }
+      if (B.cimesDecor) h = B.cimesDecor.relief(c, x, z, q, h);
       return { h, d };
     };
     for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
@@ -1650,6 +1652,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
       l.objets.push(...objets); l.loin.push(...loin);
     });
 
+    const lieuxCimes = B.cimesDecor && B.cimesDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
+
     // Finition des lots : sphère englobante et portée.
     const lots = [];
     for (const l of groupes.values()) {
@@ -1687,6 +1691,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
     if (architecture) Object.defineProperty(decor, 'architecture', { value: architecture });
+    if (lieuxCimes) decor.cimes = lieuxCimes;
     if (terrain.paysageBaikal) Object.defineProperty(decor, 'baikal', { value: Object.freeze({
       plan: terrain.paysageBaikal, maisons: maisonsBaikal,
       lieux: Object.freeze([{ nom: 'Cap des Pins', t: terrain.paysageBaikal.cap }, { nom: 'Anse Claire', t: terrain.paysageBaikal.baie }, { nom: 'Éperon du Nord', t: 880 }].map(l => {

@@ -22,7 +22,10 @@ for (const k of catalogue) {
     verifier(k.nom + ' : rayons de suspension sur chaussée, vibreurs et accotements', () => {
       const w = c.largeur / 2, hit = {};
       for (let i = 0; i < c.n; i += 19) for (const d of [-w - 2, -w + .5, 0, w - .5, w + 2]) {
-        const q = B.circuit.echantillon(c, i * c.pas + .37), x = q.x - Math.sin(q.cap) * d, z = q.z + Math.cos(q.cap) * d;
+        const s = i * c.pas + .37;
+        // Sur un vrai pont, l’herbe au-delà du parapet n’est plus un sol de roulement.
+        if (Math.abs(d) > w + 1 && c.ponts?.some(p => s > p.debut + 3 && s < p.fin - 3)) continue;
+        const q = B.circuit.echantillon(c, s), x = q.x - Math.sin(q.cap) * d, z = q.z + Math.cos(q.cap) * d;
         const sol = q.y - Math.max(-w, Math.min(w, d)) * Math.sin(q.devers);
         world.raycast([x, sol + 2, z], [0, -1, 0], 3, { mask: 1, staticOnly: true }, hit); rayons++;
         assert.ok(hit.hit, `appui absent à s=${i * c.pas + .37}, d=${d}`);

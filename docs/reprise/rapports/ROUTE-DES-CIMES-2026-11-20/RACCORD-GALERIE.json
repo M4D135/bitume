@@ -1,0 +1,124 @@
+{
+  "date": "2026-11-20",
+  "statut": "raccord_galerie_corrige_tunnel_echelles_a_corriger_avant_fusion",
+  "physique": "p15 conservée",
+  "moteur": "FERRO 0.3.15 conservé",
+  "preuves_initiales": {
+    "avec_galerie_et_pont_reels": true,
+    "avant_raccord": {
+      "reussi": false,
+      "chocs": [
+        {
+          "t": 131.99166666671096,
+          "type": "choc",
+          "id": 6,
+          "force": 59.682768834965344,
+          "obstacle": "sol-galerie",
+          "obstacleId": 5359,
+          "s": 6056.965504806045,
+          "d": -2.9470823536213953,
+          "v": 0
+        },
+        {
+          "t": 132.29166666671068,
+          "type": "choc",
+          "id": 6,
+          "force": 5.421240896247647,
+          "obstacle": "pilier-galerie",
+          "obstacleId": 5404,
+          "s": 6057.231879362684,
+          "d": -6.289508563337703,
+          "v": -9.54408976621487
+        }
+      ],
+      "corrections": {
+        "setPose": 1,
+        "setVelocity": 1,
+        "setAngularVelocity": 1
+      },
+      "sourceHashes": {
+        "src/circuit.js": "c78abe7215a25048a3e09b11989c332ed14c8844d3cd2eb7cd670d21aefc007c",
+        "src/couverts.js": "b973db5de7dce46ef76d3d6ed74840fbdcad70cc4457454f677d7a4439e6732d",
+        "src/route-des-cimes.js": "a83165c51644fde40545ea84d10748a56a2ddf4caed0b8372cf119ad7c4a4efa",
+        "src/route-des-cimes-decor.js": "ece6e0fd7547afd0b5aaf9ea2ba08f448221fc1e351f8083c59fcb3f1340b919",
+        "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+        "src/course.js": "bec39581653d200ca03679c62195bb3bb4087eb666112685ef7687d2a8e247fb",
+        "src/physique.js": "2dc2dede6b8f8e3a863a09c754bed30baf2cdf38af0dc6b71e9d839eb153a089",
+        "src/solides-physx.js": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+        "src/bords.js": "ef0488472987ff35d36f3a2bbd76e5a086cb7edf8bc038dfb01676dfe933b638",
+        "src/chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+        "src/ferro/physx.js": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+        "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+        "tools/qualification/route-des-cimes-physx.mjs": "bae21fc4afebc1408772653b0ebd7ea9d4de8c5dbca3565158c4108744a03ea6"
+      },
+      "decor": {
+        "source": "src/decor.js",
+        "candidatExterne": false,
+        "sha256": "f9f6a608d1c016aa28e2ef630abaa6013ea1f3ed59765df3b02c699dbe4559e7"
+      }
+    },
+    "apres_raccord_galerie": {
+      "reussi": false,
+      "chocs": [
+        {
+          "t": 136.83333333337322,
+          "type": "choc",
+          "id": 4,
+          "force": 75.31081336056359,
+          "obstacle": "sol-tunnel",
+          "obstacleId": 5726,
+          "s": 6531.528057629395,
+          "d": 4.762086970703229,
+          "v": 0
+        }
+      ],
+      "corrections": {
+        "setPose": 1,
+        "setVelocity": 1,
+        "setAngularVelocity": 1
+      },
+      "sourceHashes": {
+        "src/circuit.js": "c78abe7215a25048a3e09b11989c332ed14c8844d3cd2eb7cd670d21aefc007c",
+        "src/couverts.js": "bca42347fa8565d435ec32b0de01ec7f99f71c3c289510f3415ad4dfd2e541f3",
+        "src/route-des-cimes.js": "a83165c51644fde40545ea84d10748a56a2ddf4caed0b8372cf119ad7c4a4efa",
+        "src/route-des-cimes-decor.js": "ece6e0fd7547afd0b5aaf9ea2ba08f448221fc1e351f8083c59fcb3f1340b919",
+        "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+        "src/course.js": "bec39581653d200ca03679c62195bb3bb4087eb666112685ef7687d2a8e247fb",
+        "src/physique.js": "2dc2dede6b8f8e3a863a09c754bed30baf2cdf38af0dc6b71e9d839eb153a089",
+        "src/solides-physx.js": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+        "src/bords.js": "ef0488472987ff35d36f3a2bbd76e5a086cb7edf8bc038dfb01676dfe933b638",
+        "src/chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+        "src/ferro/physx.js": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+        "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+        "tools/qualification/route-des-cimes-physx.mjs": "bae21fc4afebc1408772653b0ebd7ea9d4de8c5dbca3565158c4108744a03ea6"
+      },
+      "decor": {
+        "source": "src/decor.js",
+        "candidatExterne": false,
+        "sha256": "f9f6a608d1c016aa28e2ef630abaa6013ea1f3ed59765df3b02c699dbe4559e7"
+      }
+    }
+  },
+  "regression": {
+    "commande": "node verifications/galerie-portails-physx.test.mjs",
+    "portails": 2,
+    "rayons": 294,
+    "marche_ancienne_m": 0.0414290556971082,
+    "marche_corrigee_max_m": 0.008633907079882874,
+    "seuil_inchange_m": 0.015,
+    "ancienne_source_echoue": true,
+    "source_corrigee_reussit": true
+  },
+  "geometrie": {
+    "trace_controles": 9,
+    "decor_controles": 9,
+    "solides_natifs_catalogue_controles": 26,
+    "circuits": 9,
+    "rayons_catalogue": 6474
+  },
+  "suite": "Intégrer le raccord de sol des tunnels explicites puis refaire le roulage de douze voitures ; captures des portails et galerie encore attendues.",
+  "limites": [
+    "La première preuve de préintégration à douze voitures ne construisait pas la galerie : elle ne qualifie pas ces ouvrages.",
+    "Les contrôles géométriques et rayons ne remplacent pas le roulage natif ni la validation visuelle."
+  ]
+}

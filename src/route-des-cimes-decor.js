@@ -84,6 +84,19 @@
       const site = { x, z, sol, bas: sol - 1.4, a: f.cap, l: 15.5, w: 9.5, h: 5.2, theme: 'montagne', graine: c.graine,
         enduit: [.62, .59, .50] };
       const maison = B.batiments.maison(site, { detail: qualite !== 'low', neige: !!outils.saison?.neige });
+      const point = (dx, dy, dz) => [x + Math.cos(f.cap) * dx - Math.sin(f.cap) * dz, sol + dy,
+        z + Math.sin(f.cap) * dx + Math.cos(f.cap) * dz];
+      const enveloppe = [
+        { shape: 'bevel', p: point(0,-.75,0), s: [site.l+1,1.8,site.w+1], r: [0,-f.cap,0], mat: 9, color: pierre, partie: 'socle-refuge' }
+      ];
+      for (const cote of [-1,1]) {
+        enveloppe.push({ shape: 'bevel', p: point(0,site.h/2,cote*(site.w/2-.17)), s: [site.l,site.h,.34], r:[0,-f.cap,0], mat:13.2,color:site.enduit,partie:'mur-refuge' });
+        enveloppe.push({ shape: 'bevel', p: point(cote*(site.l/2-.17),site.h/2,0), s: [.34,site.h,site.w], r:[0,-f.cap,0],mat:13.2,color:site.enduit,partie:'mur-refuge' });
+        enveloppe.push({ shape: 'box', p: point(0,site.h+site.w*.14,cote*site.w*.25), s:[site.l+.65,.22,site.w*.6],
+          r:[cote*.5,-f.cap,0],mat:1,color:outils.saison?.neige?[.87,.90,.93]:[.27,.22,.18],partie:'toiture-refuge' });
+      }
+      for (const o of enveloppe) D.marquerSolide(o,'refuge-cimes',2);
+      maison.objets.unshift(...enveloppe); maison.loin.unshift(...enveloppe);
       for (const o of maison.objets) o.lieuCimes = 'Refuge de l’Aiglière';
       ajouter(maison.objets, maison.loin, x, z); refuge = { x, z, y: sol, objets: maison.objets.length };
     }
