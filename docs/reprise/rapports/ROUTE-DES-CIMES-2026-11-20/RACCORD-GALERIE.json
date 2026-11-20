@@ -1,6 +1,6 @@
 {
   "date": "2026-11-20",
-  "statut": "raccord_galerie_corrige_tunnel_echelles_a_corriger_avant_fusion",
+  "statut": "raccords_corriges_roulage_reussi_trois_conditions",
   "physique": "p15 conservée",
   "moteur": "FERRO 0.3.15 conservé",
   "preuves_initiales": {
@@ -116,7 +116,7 @@
     "circuits": 9,
     "rayons_catalogue": 6474
   },
-  "suite": "Intégrer le raccord de sol des tunnels explicites puis refaire le roulage de douze voitures ; captures des portails et galerie encore attendues.",
+  "suite": "Raccords galerie et tunnels explicites validés ensemble par douze voitures au sec, sous pluie et sous neige ; voir QUALIFICATION-OUVRAGES.json. Captures et CI intégrées encore attendues.",
   "limites": [
     "La première preuve de préintégration à douze voitures ne construisait pas la galerie : elle ne qualifie pas ces ouvrages.",
     "Les contrôles géométriques et rayons ne remplacent pas le roulage natif ni la validation visuelle."

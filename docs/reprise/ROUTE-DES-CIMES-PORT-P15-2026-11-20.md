@@ -132,3 +132,21 @@ La course suivante franchit la galerie mais révèle la même tranche devant le
 Tunnel des Échelles : le raccord du tunnel et la campagne complète restent requis.
 Reçu : `rapports/ROUTE-DES-CIMES-2026-11-20/RACCORD-GALERIE.json`.
 Aucun build, aucune version ni règle de conduite ne change dans ce checkpoint.
+
+
+### Roulage natif des ouvrages corrigés
+
+Les raccords de la galerie et des tunnels explicites ont ensuite été réunis.
+Trois campagnes complètes passent avec douze voitures chacune : **205,817 s au sec**,
+**226,067 s sous pluie**, **234,800 s sous neige**. Chaque voiture parcourt plus
+de 10,197 km, les trois couverts et le pont, avec **80 016 sondes de sol au total**.
+Aucune absence ou traversée de sol, aucun replacement, aucune correction imposée de
+pose/vitesse et aucune perte complète d’appui ne sont relevés. L’arche est ouverte
+dans PhysX et les trois toits et revêtements sont réellement présents.
+
+Reçus complets et empreintes : `rapports/ROUTE-DES-CIMES-2026-11-20/QUALIFICATION-OUVRAGES.json`.
+Les deux échecs avant correction restent dans `RACCORD-GALERIE.json`. Les 14 sources
+du banc correspondent à l’assemblage 0.2.64 ; le seul écart du décor concerne son
+ancien bloc optionnel de matières, inactif dans ces essais, sans différence de
+géométrie ou de solides. Les captures des portails et de la galerie, et la CI de
+l’assemblage final, restent attendues. Les sept lieux ne sont pas tous enrichis.

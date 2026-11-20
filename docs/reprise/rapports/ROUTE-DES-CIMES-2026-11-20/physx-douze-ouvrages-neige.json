@@ -1,0 +1,1253 @@
+{
+  "schema": 2,
+  "physique": "p15",
+  "backend": {
+    "ready": true,
+    "version": "5.12.0",
+    "worlds": 0,
+    "queryCount": 0
+  },
+  "dt": 0.008333333333333333,
+  "rivaux": 11,
+  "meteo": "neige",
+  "dureeMax": 420,
+  "sourceHashes": {
+    "src/circuit.js": "c78abe7215a25048a3e09b11989c332ed14c8844d3cd2eb7cd670d21aefc007c",
+    "src/couverts.js": "84c7ea91127f538bcdebf07176e8ebcdff0ea18ce02e4a30e28d858115582d84",
+    "src/route-des-cimes.js": "a83165c51644fde40545ea84d10748a56a2ddf4caed0b8372cf119ad7c4a4efa",
+    "src/route-des-cimes-decor.js": "ece6e0fd7547afd0b5aaf9ea2ba08f448221fc1e351f8083c59fcb3f1340b919",
+    "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+    "src/course.js": "bec39581653d200ca03679c62195bb3bb4087eb666112685ef7687d2a8e247fb",
+    "src/physique.js": "2dc2dede6b8f8e3a863a09c754bed30baf2cdf38af0dc6b71e9d839eb153a089",
+    "src/solides-physx.js": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+    "src/bords.js": "ef0488472987ff35d36f3a2bbd76e5a086cb7edf8bc038dfb01676dfe933b638",
+    "src/chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+    "src/ferro/physx.js": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+    "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "tools/qualification/route-des-cimes-physx.mjs": "dfa7cf0b1346864fb5404d4e07576a534932f3930181d3773e2ac458f0aafe71"
+  },
+  "decor": {
+    "source": "src/decor.js",
+    "candidatExterne": false,
+    "sha256": "dfdbdfa038f782f6e5935c19c1c3a69afb8864cc72bb24f859772453e76dd2a6"
+  },
+  "geometrie": {
+    "longueur": 9697.52858032384,
+    "denivele": 270.28010796346786,
+    "penteMin": -0.09999995398901786,
+    "penteMax": 0.3000000460109821,
+    "rayonMin": 32,
+    "longueurAu20": 329.98395870353244,
+    "longueurCouverte": 774.7197551196596,
+    "ecartAuPlanFinalM": -0.47141967615971225
+  },
+  "progres": [
+    {
+      "t": 0.008333333333333333,
+      "voitures": [
+        {
+          "id": 0,
+          "s": 9599.528782403122,
+          "d": 2.399995776819232,
+          "v": 0.026166453497579456,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 1,
+          "s": 9615.528553404452,
+          "d": 2.399999905109531,
+          "v": 3.767516114097574e-9,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 2,
+          "s": 9655.528608141583,
+          "d": -2.3999999716048026,
+          "v": 3.73714549356893e-9,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 3,
+          "s": 9607.528608489334,
+          "d": -2.3999999665812197,
+          "v": 0.00000445340711072523,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 4,
+          "s": 9687.528607909753,
+          "d": -2.400000054426717,
+          "v": 3.7582249982872955e-9,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 5,
+          "s": 9623.52860837342,
+          "d": -2.3999998887828875,
+          "v": 3.794423629782833e-9,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 6,
+          "s": 9663.528553056702,
+          "d": 2.399999900085948,
+          "v": 3.752713292948263e-9,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 7,
+          "s": 9647.528553172619,
+          "d": 2.4000000607061955,
+          "v": 3.740024943744147e-9,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 8,
+          "s": 9671.528608025666,
+          "d": -2.39999989380647,
+          "v": 3.766338406310313e-9,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 9,
+          "s": 9631.528553288535,
+          "d": 2.3999999829078633,
+          "v": 3.751025262103813e-9,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 10,
+          "s": 9679.528552940785,
+          "d": 2.39999997788428,
+          "v": 3.752735423023139e-9,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 11,
+          "s": 9639.528608257504,
+          "d": -2.400000049403135,
+          "v": 3.747703636324764e-9,
+          "appuis": 4,
+          "replacements": 0
+        }
+      ]
+    },
+    {
+      "t": 40.008333333331706,
+      "voitures": [
+        {
+          "id": 0,
+          "s": 1555.5914185863367,
+          "d": -2.8275429134189216,
+          "v": 38.4915590900156,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 1,
+          "s": 1594.4346267335313,
+          "d": -0.9347129628162079,
+          "v": 42.794297237573616,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 2,
+          "s": 1603.6644336976951,
+          "d": -1.5390010884457979,
+          "v": 43.485772287683176,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 3,
+          "s": 1574.5077642644592,
+          "d": -1.7678042374866154,
+          "v": 39.348052844212425,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 4,
+          "s": 1711.4568690389915,
+          "d": 4.226536520517419,
+          "v": 45.382281248803814,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 5,
+          "s": 1507.8041677319434,
+          "d": -4.357088622021316,
+          "v": 36.32695338542616,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 6,
+          "s": 1628.9312651827731,
+          "d": 1.3916788776612925,
+          "v": 46.95495034763638,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 7,
+          "s": 1583.2940093614252,
+          "d": -0.8930779369794125,
+          "v": 39.60731834069939,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 8,
+          "s": 1646.7779183405055,
+          "d": 2.708225251969674,
+          "v": 47.054410357758975,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 9,
+          "s": 1573.978347397875,
+          "d": 1.4803200104823375,
+          "v": 39.16531470107766,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 10,
+          "s": 1081.7791249429847,
+          "d": -3.617781472793603,
+          "v": 32.11853697766637,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 11,
+          "s": 1604.3742196910534,
+          "d": 2.5664885141652416,
+          "v": 44.5966993725657,
+          "appuis": 4,
+          "replacements": 0
+        }
+      ]
+    },
+    {
+      "t": 80.00833333334307,
+      "voitures": [
+        {
+          "id": 0,
+          "s": 3084.0308300732268,
+          "d": 1.9458399830662512,
+          "v": 39.562145222781076,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 1,
+          "s": 3202.7837814470604,
+          "d": -2.1020243504331284,
+          "v": 43.77726575491178,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 2,
+          "s": 3197.3295537836093,
+          "d": -3.2737331156643177,
+          "v": 43.944101592255116,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 3,
+          "s": 3155.3299450810446,
+          "d": 0.8667802624723414,
+          "v": 47.266784873580264,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 4,
+          "s": 3312.018340306866,
+          "d": -4.2646404610245465,
+          "v": 20.825272609674712,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 5,
+          "s": 3075.5337247386997,
+          "d": 2.1327303330012803,
+          "v": 39.5301998774373,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 6,
+          "s": 3262.149487612838,
+          "d": -2.2151900692523987,
+          "v": 33.31113328368584,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 7,
+          "s": 3172.943817343821,
+          "d": -1.6302826022718213,
+          "v": 47.71587855927028,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 8,
+          "s": 3246.535792747585,
+          "d": -3.0584306664637655,
+          "v": 35.77776645767551,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 9,
+          "s": 3188.953770335016,
+          "d": -1.93400900145428,
+          "v": 45.62251774042184,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 10,
+          "s": 2742.2094656740355,
+          "d": 2.2822557927477165,
+          "v": 48.76072148484925,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 11,
+          "s": 3227.5773599036565,
+          "d": -3.994004194669002,
+          "v": 40.04035882225072,
+          "appuis": 4,
+          "replacements": 0
+        }
+      ]
+    },
+    {
+      "t": 120.0083333333749,
+      "voitures": [
+        {
+          "id": 0,
+          "s": 4169.844330760712,
+          "d": -0.1297225481291571,
+          "v": 37.12377244194116,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 1,
+          "s": 4368.626153668838,
+          "d": 3.9703365009345717,
+          "v": 50.41794933905632,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 2,
+          "s": 4314.873147753169,
+          "d": 4.058527322476748,
+          "v": 47.993741706079035,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 3,
+          "s": 4271.109206412981,
+          "d": 4.234129002716713,
+          "v": 47.194382588243926,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 4,
+          "s": 4609.740541299483,
+          "d": -4.1321754858525,
+          "v": 59.348234424785566,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 5,
+          "s": 4248.807023797806,
+          "d": 2.7145554327015273,
+          "v": 45.890127791762694,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 6,
+          "s": 4492.915451173438,
+          "d": -0.7975024026801364,
+          "v": 55.94872160921106,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 7,
+          "s": 4301.950564691044,
+          "d": 3.7439227654676586,
+          "v": 46.94186728752927,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 8,
+          "s": 4393.2842477766335,
+          "d": 4.134293932509179,
+          "v": 51.555680620313865,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 9,
+          "s": 4289.112723502754,
+          "d": 3.912176413452729,
+          "v": 47.36125014558538,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 10,
+          "s": 3980.748788769826,
+          "d": -4.247730283546035,
+          "v": 19.230976016738175,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 11,
+          "s": 4359.891051622253,
+          "d": 4.492945634385038,
+          "v": 50.59534916058333,
+          "appuis": 4,
+          "replacements": 0
+        }
+      ]
+    },
+    {
+      "t": 160.00833333335214,
+      "voitures": [
+        {
+          "id": 0,
+          "s": 6439.410592510902,
+          "d": 4.58964761419561,
+          "v": 61.26813795723736,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 1,
+          "s": 6833.441846893849,
+          "d": 4.628606276642119,
+          "v": 67.61348835659427,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 2,
+          "s": 6749.275453334405,
+          "d": 3.5789036502810148,
+          "v": 66.31396988620321,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 3,
+          "s": 6718.533846912764,
+          "d": 4.575645855137887,
+          "v": 67.1394612681435,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 4,
+          "s": 7144.845765437312,
+          "d": -3.1118125533780328,
+          "v": 55.39752851899426,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 5,
+          "s": 6632.513469393158,
+          "d": 4.5450562965439145,
+          "v": 66.02247250580687,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 6,
+          "s": 7020.106459964296,
+          "d": 4.176953742294057,
+          "v": 68.352999541425,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 7,
+          "s": 6734.087889927272,
+          "d": 3.78439186190586,
+          "v": 65.94935214718113,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 8,
+          "s": 6858.704689348455,
+          "d": 4.593919652867437,
+          "v": 67.05639663664363,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 9,
+          "s": 6735.360252435483,
+          "d": 1.153558191990474,
+          "v": 66.9323593751539,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 10,
+          "s": 6095.2168769016935,
+          "d": -1.9843348002322958,
+          "v": 55.08303993741178,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 11,
+          "s": 6833.9542766157065,
+          "d": 1.9512699151634314,
+          "v": 67.65102740107815,
+          "appuis": 4,
+          "replacements": 0
+        }
+      ]
+    },
+    {
+      "t": 200.00833333331576,
+      "voitures": [
+        {
+          "id": 0,
+          "s": 8465.736508422913,
+          "d": -4.028042743581335,
+          "v": 47.124953811417974,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 1,
+          "s": 8920.398171324869,
+          "d": -4.564725084517792,
+          "v": 53.553642527820934,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 2,
+          "s": 8872.63907479389,
+          "d": -4.2543881121678195,
+          "v": 50.815231791786424,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 3,
+          "s": 8817.234797919085,
+          "d": -3.103708284881709,
+          "v": 38.33602924531902,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 4,
+          "s": 9254.409951038695,
+          "d": -2.769122225561401,
+          "v": 61.801288931367246,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 5,
+          "s": 8816.419640409818,
+          "d": -0.4960548921886662,
+          "v": 38.2900750639715,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 6,
+          "s": 9128.31277004155,
+          "d": -3.5818439829022277,
+          "v": 59.29646022239612,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 7,
+          "s": 8826.601182301772,
+          "d": -4.474342515853912,
+          "v": 37.73424388756182,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 8,
+          "s": 8974.692187983946,
+          "d": -3.4041254680363657,
+          "v": 54.63526777260784,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 9,
+          "s": 8278.388759608697,
+          "d": -6.04341236226915,
+          "v": 20.33417733873277,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 10,
+          "s": 8408.623316793786,
+          "d": -3.8767243360431887,
+          "v": 49.494425664656696,
+          "appuis": 4,
+          "replacements": 0
+        },
+        {
+          "id": 11,
+          "s": 8966.897373685973,
+          "d": -4.728727070018549,
+          "v": 54.485917497667764,
+          "appuis": 4,
+          "replacements": 0
+        }
+      ]
+    }
+  ],
+  "evenements": [
+    {
+      "t": 4.275000000000002,
+      "type": "contact",
+      "a": 3,
+      "b": 0,
+      "force": 1.2121029283741087,
+      "s": 9676.925792775863,
+      "d": 2.187985744223246,
+      "v": 33.22959761335714
+    },
+    {
+      "t": 7.975000000000186,
+      "type": "choc",
+      "id": 10,
+      "force": 4.896573237808257,
+      "obstacle": "pilier",
+      "obstacleId": 321,
+      "s": 61.53757036362367,
+      "d": -12.75181747472036,
+      "v": 0.7623744879266787
+    },
+    {
+      "t": 8.833333333333472,
+      "type": "choc",
+      "id": 10,
+      "force": 0.944940694173215,
+      "obstacle": "gradin",
+      "obstacleId": 311,
+      "s": 62.22430366296976,
+      "d": -13.153750910400808,
+      "v": 0.6646049637314668
+    },
+    {
+      "t": 23.849999999999287,
+      "type": "contact",
+      "a": 8,
+      "b": 6,
+      "force": 0.7424289662087058,
+      "s": 1016.795029079818,
+      "d": 1.7045545113495366,
+      "v": 27.16113542088019
+    },
+    {
+      "t": 24.34999999999926,
+      "type": "contact",
+      "a": 9,
+      "b": 7,
+      "force": 2.655907163441053,
+      "s": 1008.6214883324792,
+      "d": 1.9517558386757325,
+      "v": 30.693885652685616
+    },
+    {
+      "t": 27.549999999999077,
+      "type": "contact",
+      "a": 8,
+      "b": 6,
+      "force": 0.570080505514601,
+      "s": 1135.8546337217194,
+      "d": -3.4843443368160014,
+      "v": 32.286685268325755
+    },
+    {
+      "t": 28.358333333332364,
+      "type": "contact",
+      "a": 6,
+      "b": 2,
+      "force": 3.245728220754977,
+      "s": 1153.6702218514401,
+      "d": -0.9564470977122731,
+      "v": 28.012785025890732
+    },
+    {
+      "t": 54.224999999997564,
+      "type": "contact",
+      "a": 2,
+      "b": 1,
+      "force": 0.45131766691276226,
+      "s": 2251.6168182404617,
+      "d": -4.168875404278506,
+      "v": 30.0416860915218
+    },
+    {
+      "t": 87.06666666668202,
+      "type": "contact",
+      "a": 9,
+      "b": 7,
+      "force": 0.37091045940166933,
+      "s": 3373.3451394204167,
+      "d": -1.7772437810147197,
+      "v": 18.449478731374075
+    },
+    {
+      "t": 88.0833333333495,
+      "type": "contact",
+      "a": 9,
+      "b": 7,
+      "force": 0.39938404117030585,
+      "s": 3392.4639604013064,
+      "d": 0.2629154372455676,
+      "v": 19.551465954343087
+    },
+    {
+      "t": 92.09166666668602,
+      "type": "contact",
+      "a": 9,
+      "b": 7,
+      "force": 0.6853635294155068,
+      "s": 3505.0532873753073,
+      "d": 3.4737694531008585,
+      "v": 38.34517894033244
+    },
+    {
+      "t": 93.45833333335378,
+      "type": "contact",
+      "a": 11,
+      "b": 1,
+      "force": 0.6868979858801015,
+      "s": 3575.2135512569203,
+      "d": 2.494156855802256,
+      "v": 36.93385877114594
+    },
+    {
+      "t": 110.25833333336715,
+      "type": "contact",
+      "a": 7,
+      "b": 3,
+      "force": 0.7092457541831553,
+      "s": 4001.0715722881832,
+      "d": -1.3236751736108288,
+      "v": 17.235905362695398
+    },
+    {
+      "t": 137.90000000003892,
+      "type": "contact",
+      "a": 11,
+      "b": 1,
+      "force": 1.5207269009537379,
+      "s": 5497.086992929904,
+      "d": 2.465044602746837,
+      "v": 63.86578593368656
+    },
+    {
+      "t": 177.78333333333597,
+      "type": "contact",
+      "a": 9,
+      "b": 0,
+      "force": 15.639782696726797,
+      "s": 7496.699776152873,
+      "d": -3.868821507204135,
+      "v": 37.34232143375817
+    },
+    {
+      "t": 179.12500000000142,
+      "type": "contact",
+      "a": 9,
+      "b": 0,
+      "force": 0.7753603288395499,
+      "s": 7548.55945787907,
+      "d": -5.380817191216444,
+      "v": 40.28350446565449
+    },
+    {
+      "t": 180.0583333333339,
+      "type": "contact",
+      "a": 9,
+      "b": 0,
+      "force": 1.6384286843760307,
+      "s": 7589.090955879117,
+      "d": -3.1560662488001046,
+      "v": 43.11380304830346
+    },
+    {
+      "t": 199.12499999998323,
+      "type": "contact",
+      "a": 5,
+      "b": 3,
+      "force": 1.0682768570133363,
+      "s": 8782.099861440409,
+      "d": -1.5663965727499407,
+      "v": 40.68238389466773
+    },
+    {
+      "t": 229.57499999995554,
+      "type": "contact",
+      "a": 7,
+      "b": 5,
+      "force": 1.6508564107614185,
+      "s": 855.0239783404231,
+      "d": -2.083189562751677,
+      "v": 47.83113358185836
+    },
+    {
+      "t": 231.32499999995395,
+      "type": "contact",
+      "a": 7,
+      "b": 5,
+      "force": 0.9114466817433886,
+      "s": 934.9450337424278,
+      "d": 2.1762464609091206,
+      "v": 40.23025416286438
+    }
+  ],
+  "corrections": {
+    "setPose": 0,
+    "setVelocity": 0,
+    "setAngularVelocity": 0
+  },
+  "reussi": true,
+  "constructionMs": 2003.4564520000001,
+  "provenance": {
+    "source": "tools/lieux-partitions.mjs",
+    "constructeur": "tools/lieux-trace.mjs",
+    "base": "f41614e",
+    "sourceSHA256": "4e6ef531f90ee49518cd92ffe171297252534d723072c60863158b9fbeefa279",
+    "identiteHistorique": "haut-col-etude-22F",
+    "identiteRuntime": "route-des-cimes",
+    "longueurPlanFinalM": 9698,
+    "sequencesFinalesRetrouvees": false,
+    "qualificationCatalogue": false,
+    "versionPhysique": "p15",
+    "reconstruction": "Étude métrique et objectif utilisateur ; Mur +40 m à 22 %, raccord haut +30 m à 7 %, première branche des Lacets à 3 %.",
+    "avertissement": "Le commit historique final n’a pas été retrouvé ; la reconstruction ne revendique pas son identité.",
+    "variante": "reconstruction-2026-11-20"
+  },
+  "statiques": {
+    "nappes": 291,
+    "obstaclesHistoriques": 2114,
+    "complements": 6277,
+    "trianglesSol": 162074,
+    "trianglesObstacles": 120780,
+    "trianglesEauIgnores": 0
+  },
+  "ouvrages": {
+    "declares": [
+      {
+        "type": "tunnel",
+        "nom": "Tunnel du Rocher",
+        "debut": 4276.56945810762,
+        "fin": 4581.28921322728,
+        "id": "cimes-couvert-0",
+        "mur": 7.6,
+        "hauteur": 6.4
+      },
+      {
+        "type": "galerie",
+        "nom": "Galerie des Avalanches",
+        "ouvert": "G",
+        "debut": 6058.9587399358425,
+        "fin": 6358.9587399358425,
+        "id": "cimes-couvert-1",
+        "mur": 7.6,
+        "hauteur": 6.4
+      },
+      {
+        "type": "tunnel",
+        "nom": "Tunnel des Échelles",
+        "debut": 6533.491665135275,
+        "fin": 6703.491665135275,
+        "id": "cimes-couvert-2",
+        "mur": 7.6,
+        "hauteur": 6.4
+      }
+    ],
+    "ponts": [
+      {
+        "type": "arche",
+        "nom": "Pont de la Gorge",
+        "debut": 7887.1527022713235,
+        "fin": 8017.1527022713235
+      }
+    ],
+    "solsTunnel": 80,
+    "galerieConstruite": true,
+    "pontConstruit": true,
+    "rayonsOuvrages": [
+      {
+        "nom": "Tunnel du Rocher",
+        "toit": "voute-tunnel",
+        "sol": "sol-tunnel"
+      },
+      {
+        "nom": "Galerie des Avalanches",
+        "toit": "voute-galerie",
+        "sol": "sol-galerie"
+      },
+      {
+        "nom": "Tunnel des Échelles",
+        "toit": "voute-tunnel",
+        "sol": "sol-tunnel"
+      }
+    ],
+    "archeOuverte": true
+  },
+  "pas": 28176,
+  "dureeSimulee": 234.79999999995078,
+  "executionMs": 53156.772957,
+  "placementsSupplementaires": 0,
+  "voitures": [
+    {
+      "id": 0,
+      "distanceDepart": 0,
+      "maxAbsD": 4.8722704161865,
+      "minCaisseSol": -0.037557125091552734,
+      "maxCaisseSol": 0.02491801604628563,
+      "sansSol": 0,
+      "sousSol": 0,
+      "sansAppui": 0,
+      "maxSansAppuiS": 0,
+      "dernierSansAppuiS": 0,
+      "couvertsParcourus": [
+        "Tunnel du Rocher",
+        "Galerie des Avalanches",
+        "Tunnel des Échelles"
+      ],
+      "pontsParcourus": [
+        "Pont de la Gorge"
+      ],
+      "sondesSol": 2348,
+      "distance": 10499.641282357694,
+      "replacements": 0,
+      "tours": 1,
+      "appuisFin": 4
+    },
+    {
+      "id": 1,
+      "distanceDepart": 0,
+      "maxAbsD": 7.727317893848995,
+      "minCaisseSol": -0.04053211212158203,
+      "maxCaisseSol": 0.026458740234375,
+      "sansSol": 0,
+      "sousSol": 0,
+      "sansAppui": 0,
+      "maxSansAppuiS": 0,
+      "dernierSansAppuiS": 0,
+      "couvertsParcourus": [
+        "Tunnel du Rocher",
+        "Galerie des Avalanches",
+        "Tunnel des Échelles"
+      ],
+      "pontsParcourus": [
+        "Pont de la Gorge"
+      ],
+      "sondesSol": 2348,
+      "distance": 10919.400998656241,
+      "replacements": 0,
+      "tours": 1,
+      "appuisFin": 4
+    },
+    {
+      "id": 2,
+      "distanceDepart": 0,
+      "maxAbsD": 5.495181688960565,
+      "minCaisseSol": -0.03972005844116211,
+      "maxCaisseSol": 0.024574245293024433,
+      "sansSol": 0,
+      "sousSol": 0,
+      "sansAppui": 0,
+      "maxSansAppuiS": 0,
+      "dernierSansAppuiS": 0,
+      "couvertsParcourus": [
+        "Tunnel du Rocher",
+        "Galerie des Avalanches",
+        "Tunnel des Échelles"
+      ],
+      "pontsParcourus": [
+        "Pont de la Gorge"
+      ],
+      "sondesSol": 2348,
+      "distance": 10834.010184355962,
+      "replacements": 0,
+      "tours": 1,
+      "appuisFin": 4
+    },
+    {
+      "id": 3,
+      "distanceDepart": 0,
+      "maxAbsD": 4.879805667562376,
+      "minCaisseSol": -0.04041695594787598,
+      "maxCaisseSol": 0.024906645991904952,
+      "sansSol": 0,
+      "sousSol": 0,
+      "sansAppui": 0,
+      "maxSansAppuiS": 0,
+      "dernierSansAppuiS": 0,
+      "couvertsParcourus": [
+        "Tunnel du Rocher",
+        "Galerie des Avalanches",
+        "Tunnel des Échelles"
+      ],
+      "pontsParcourus": [
+        "Pont de la Gorge"
+      ],
+      "sondesSol": 2348,
+      "distance": 10784.158370736859,
+      "replacements": 0,
+      "tours": 1,
+      "appuisFin": 4
+    },
+    {
+      "id": 4,
+      "distanceDepart": 0,
+      "maxAbsD": 4.858731232327011,
+      "minCaisseSol": -0.04088783264160156,
+      "maxCaisseSol": 0.024574233255520994,
+      "sansSol": 0,
+      "sousSol": 0,
+      "sansAppui": 0,
+      "maxSansAppuiS": 0,
+      "dernierSansAppuiS": 0,
+      "couvertsParcourus": [
+        "Tunnel du Rocher",
+        "Galerie des Avalanches",
+        "Tunnel des Échelles"
+      ],
+      "pontsParcourus": [
+        "Pont de la Gorge"
+      ],
+      "sondesSol": 2348,
+      "distance": 11095.381301749852,
+      "replacements": 0,
+      "tours": 1,
+      "appuisFin": 4
+    },
+    {
+      "id": 5,
+      "distanceDepart": 0,
+      "maxAbsD": 5.483705559665309,
+      "minCaisseSol": -0.04149270057678223,
+      "maxCaisseSol": 0.02457425733086893,
+      "sansSol": 0,
+      "sousSol": 0,
+      "sansAppui": 0,
+      "maxSansAppuiS": 0,
+      "dernierSansAppuiS": 0,
+      "couvertsParcourus": [
+        "Tunnel du Rocher",
+        "Galerie des Avalanches",
+        "Tunnel des Échelles"
+      ],
+      "pontsParcourus": [
+        "Pont de la Gorge"
+      ],
+      "sondesSol": 2348,
+      "distance": 10834.558729104298,
+      "replacements": 0,
+      "tours": 1,
+      "appuisFin": 4
+    },
+    {
+      "id": 6,
+      "distanceDepart": 0,
+      "maxAbsD": 4.811648475481624,
+      "minCaisseSol": -0.04118680953979492,
+      "maxCaisseSol": 0.024574234833039554,
+      "sansSol": 0,
+      "sousSol": 0,
+      "sansAppui": 0,
+      "maxSansAppuiS": 0,
+      "dernierSansAppuiS": 0,
+      "couvertsParcourus": [
+        "Tunnel du Rocher",
+        "Galerie des Avalanches",
+        "Tunnel des Échelles"
+      ],
+      "pontsParcourus": [
+        "Pont de la Gorge"
+      ],
+      "sondesSol": 2348,
+      "distance": 11027.75823006906,
+      "replacements": 0,
+      "tours": 1,
+      "appuisFin": 4
+    },
+    {
+      "id": 7,
+      "distanceDepart": 0,
+      "maxAbsD": 5.129094881612607,
+      "minCaisseSol": -0.04027199745178223,
+      "maxCaisseSol": 0.0285797119140625,
+      "sansSol": 0,
+      "sousSol": 0,
+      "sansAppui": 0,
+      "maxSansAppuiS": 0,
+      "dernierSansAppuiS": 0,
+      "couvertsParcourus": [
+        "Tunnel du Rocher",
+        "Galerie des Avalanches",
+        "Tunnel des Échelles"
+      ],
+      "pontsParcourus": [
+        "Pont de la Gorge"
+      ],
+      "sondesSol": 2348,
+      "distance": 10799.312019021312,
+      "replacements": 0,
+      "tours": 1,
+      "appuisFin": 4
+    },
+    {
+      "id": 8,
+      "distanceDepart": 0,
+      "maxAbsD": 4.883340688814624,
+      "minCaisseSol": -0.03955578804016113,
+      "maxCaisseSol": 0.024574254175377064,
+      "sansSol": 0,
+      "sousSol": 0,
+      "sansAppui": 0,
+      "maxSansAppuiS": 0,
+      "dernierSansAppuiS": 0,
+      "couvertsParcourus": [
+        "Tunnel du Rocher",
+        "Galerie des Avalanches",
+        "Tunnel des Échelles"
+      ],
+      "pontsParcourus": [
+        "Pont de la Gorge"
+      ],
+      "sondesSol": 2348,
+      "distance": 10880.367401956266,
+      "replacements": 0,
+      "tours": 1,
+      "appuisFin": 4
+    },
+    {
+      "id": 9,
+      "distanceDepart": 0,
+      "maxAbsD": 16.710630388350708,
+      "minCaisseSol": -0.04180741310119629,
+      "maxCaisseSol": 0.03509521484375,
+      "sansSol": 0,
+      "sousSol": 0,
+      "sansAppui": 0,
+      "maxSansAppuiS": 0,
+      "dernierSansAppuiS": 0,
+      "couvertsParcourus": [
+        "Tunnel du Rocher",
+        "Galerie des Avalanches",
+        "Tunnel des Échelles"
+      ],
+      "pontsParcourus": [
+        "Pont de la Gorge"
+      ],
+      "sondesSol": 2348,
+      "distance": 10197.638806467297,
+      "replacements": 0,
+      "tours": 1,
+      "appuisFin": 4
+    },
+    {
+      "id": 10,
+      "distanceDepart": 0,
+      "maxAbsD": 13.1605971121694,
+      "minCaisseSol": -0.04098176956176758,
+      "maxCaisseSol": 0.024574243715505872,
+      "sansSol": 0,
+      "sousSol": 0,
+      "sansAppui": 0,
+      "maxSansAppuiS": 0,
+      "dernierSansAppuiS": 0,
+      "couvertsParcourus": [
+        "Tunnel du Rocher",
+        "Galerie des Avalanches",
+        "Tunnel des Échelles"
+      ],
+      "pontsParcourus": [
+        "Pont de la Gorge"
+      ],
+      "sondesSol": 2348,
+      "distance": 10422.598417362726,
+      "replacements": 0,
+      "tours": 1,
+      "appuisFin": 4
+    },
+    {
+      "id": 11,
+      "distanceDepart": 0,
+      "maxAbsD": 5.535373630583419,
+      "minCaisseSol": -0.04200863838195801,
+      "maxCaisseSol": 0.024574236410899175,
+      "sansSol": 0,
+      "sousSol": 0,
+      "sansAppui": 0,
+      "maxSansAppuiS": 0,
+      "dernierSansAppuiS": 0,
+      "couvertsParcourus": [
+        "Tunnel du Rocher",
+        "Galerie des Avalanches",
+        "Tunnel des Échelles"
+      ],
+      "pontsParcourus": [
+        "Pont de la Gorge"
+      ],
+      "sondesSol": 2348,
+      "distance": 10916.78895544594,
+      "replacements": 0,
+      "tours": 1,
+      "appuisFin": 4
+    }
+  ]
+}

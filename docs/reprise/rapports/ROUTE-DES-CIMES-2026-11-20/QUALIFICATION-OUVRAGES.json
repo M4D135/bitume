@@ -1,0 +1,76 @@
+{
+  "date": "2026-11-20",
+  "statut": "roulage_natif_reussi_captures_et_ci_integrees_attendues",
+  "commit_code": "886116c5029f7df615ba496f1a2b28e40a65389c",
+  "physique": "p15",
+  "ferro": "0.3.15",
+  "conditions": {
+    "sec": {
+      "recu": "physx-douze-ouvrages-sec.json",
+      "sha256": "5f59ad74089418e0c8282551e333aa99bd91eda316175962abc74071836dc0d9",
+      "voitures": 12,
+      "duree_simulee_s": 205.8166666666438,
+      "distance_min_m": 10198.112310890196,
+      "sondes_sol": 24708,
+      "sans_sol": 0,
+      "traversees_sol": 0,
+      "replacements": 0,
+      "perte_appui_complete_max_s": 0,
+      "corrections_imposees": {
+        "setPose": 0,
+        "setVelocity": 0,
+        "setAngularVelocity": 0
+      },
+      "galerie_construite": true,
+      "arche_ouverte": true,
+      "couverts_et_pont_franchis_par_tous": true
+    },
+    "pluie": {
+      "recu": "physx-douze-ouvrages-pluie.json",
+      "sha256": "58a163bf5515c4c009fca347fd1914d3e421109703953f0394fc5ac4caa5aff0",
+      "voitures": 12,
+      "duree_simulee_s": 226.0666666666254,
+      "distance_min_m": 10197.992036098052,
+      "sondes_sol": 27132,
+      "sans_sol": 0,
+      "traversees_sol": 0,
+      "replacements": 0,
+      "perte_appui_complete_max_s": 0,
+      "corrections_imposees": {
+        "setPose": 0,
+        "setVelocity": 0,
+        "setAngularVelocity": 0
+      },
+      "galerie_construite": true,
+      "arche_ouverte": true,
+      "couverts_et_pont_franchis_par_tous": true
+    },
+    "neige": {
+      "recu": "physx-douze-ouvrages-neige.json",
+      "sha256": "68d394d097ee9c2ae5ea01538d0e865fd9644556041628fae885761188e238cf",
+      "voitures": 12,
+      "duree_simulee_s": 234.79999999995078,
+      "distance_min_m": 10197.638806467297,
+      "sondes_sol": 28176,
+      "sans_sol": 0,
+      "traversees_sol": 0,
+      "replacements": 0,
+      "perte_appui_complete_max_s": 0,
+      "corrections_imposees": {
+        "setPose": 0,
+        "setVelocity": 0,
+        "setAngularVelocity": 0
+      },
+      "galerie_construite": true,
+      "arche_ouverte": true,
+      "couverts_et_pont_franchis_par_tous": true
+    }
+  },
+  "reprises_initiales_conservees": "RACCORD-GALERIE.json",
+  "limites": [
+    "Roulage commandé par la vraie IA, pas une mesure de FPS ni une appréciation visuelle des portails.",
+    "Les 14 sources du banc correspondent à l’assemblage 0.2.64 ; le décor conserve seulement son ancien bloc optionnel de matières procédurales, inactif dans ces essais. Aucun écart de géométrie ou de solides dans ce diff.",
+    "Les captures du jeu assemblé et sa CI complète restent nécessaires avant publication du neuvième circuit."
+  ],
+  "sondes_sol_total": 80016
+}

@@ -94,5 +94,5 @@ for (const k of catalogue) {
     rapports.push({ circuit: k.id, acteurs: montage.ids.length, rayons });
   } finally { S.liberer(montage); assert.equal(world._bodies.size, 0); world.dispose(); }
 }
-verifier('les huit mondes libérés ne gardent aucun acteur ni monde natif', () => { assert.equal(X.status().worlds, 0); });
+verifier('les ' + catalogue.length + ' mondes libérés ne gardent aucun acteur ni monde natif', () => { assert.equal(X.status().worlds, 0); });
 console.log(JSON.stringify({ controles: nombre, versionPhysX: X.status().version, rapports }));
