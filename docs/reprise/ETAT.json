@@ -4,13 +4,13 @@
     "version_courante": "0.2.60",
     "physique": "p14",
     "version_publiee_verifiee": "0.2.60",
-    "statut": "haut_col_meteo_realiste_en_cours",
-    "branche_livraison": "correctif/haut-col-meteo-20261120",
+    "statut": "haut_col_meteo_pr24_qualification_a_corriger",
+    "branche_livraison": "fix/haut-col-meteo-0261-20261120",
     "lot": "haut_col_sol_et_meteo_realiste",
     "fiche": "docs/reprise/HAUT-COL-METEO-2026-11-20.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
     "derniere_entree": "048",
-    "prochaine_action": "Publier le candidat 0.2.61 en PR, vérifier CI et captures réelles avant fusion ; conserver la suite Monaco.",
+    "prochaine_action": "Terminer la qualification de la PR #24 : contrat météo et attente du démarrage corrigés ; vérifier campagne complète et captures avant fusion.",
     "publication_precedente": {
       "commit_fusion": "02e8bac6b9ed762e0da06ab7c223e9cbd419968e",
       "tete_qualifiee": "d052f4c30cef0e18ea5e0bef84ca5ecae8af2108",
@@ -66,13 +66,15 @@
   "regle": "Un sous-lot à la fois ; préserver les preuves et la reprise courte. Aucun push forcé.",
   "candidat": {
     "version_cible": "0.2.61",
-    "statut": "construit_ciblees_15_sur_15_attente_ci_visuelle",
+    "statut": "pr24_premiere_ci_142_sur_143_captures_interrompues",
     "physique": "p14",
     "moteur": "FERRO 0.3.15 canonique",
     "lots": [
       "sol et caméra des plans animaliers Haut-Col",
       "visière pluie/neige avec effets optiques et nuage d’eau"
-    ]
+    ],
+    "pr": 24,
+    "premiere_ci": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-INITIAL.json"
   },
   "acces": {
     "ci_distante": "CI de la PR #20 : 137/137 suites réussies, aucun échec. Le blocage de lancement FERRO décrit précédemment ne vaut pas pour cette exécution BITUME.",

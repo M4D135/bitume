@@ -4,7 +4,10 @@
 
 Demande du 20/11 : corriger le sol absent dans les plans faune Haut-Col et reprendre les effets
 pluie/neige du prototype Claude montré dans les captures. Fiche active :
-`docs/reprise/HAUT-COL-METEO-2026-11-20.md`. Candidat 0.2.61 en cours, physique p14 conservée.
+`docs/reprise/HAUT-COL-METEO-2026-11-20.md`. Candidat 0.2.61 publié en **PR #24**, physique p14 conservée.
+Première CI : **142/143** (contrat météo à six arguments à actualiser) ; captures interrompues
+par le démarrage asynchrone avant/après. Correctifs des contrôles en cours ; jeu et build inchangés.
+Terminer la CI et inspecter les dix scènes candidates et cinq références avant fusion.
 
 ## Dernier sous-lot clos — Monaco 14A, relevés et registre contrôlé
 

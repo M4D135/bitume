@@ -45,3 +45,17 @@ Les poses sont figées ; il s’agit du rendu réel avec des états de référen
 
 Réserves historiques conservées : 188 ms Val-Brûlé, 154 et 167 ms Haut-Col, seuil 150 ms.
 8 circuits jouables / 17 destinations prévues ; Monaco n'est pas jouable. Site non déployé ici.
+
+## Première CI de la PR #24
+
+La PR est publiée au commit `4355cea7ad43de50529d9052a479f900cd68ab73`.
+Le run `44686881553` termine à **142/143** : seul le contrat historique de raccord météo
+cherchait encore cinq arguments, alors que la voiture filmée constitue désormais le sixième.
+Le contrôle exécute le raccord réel ; 106 contrôles passent et quatre mutations négatives échouent.
+
+Les trois groupes du run visuel `44686881119` échouent : le scénario de course était installé
+avant la fin du démarrage asynchrone, qui reprenait ensuite la main et lançait la démo.
+Le même défaut touche la référence 0.2.60. Attendre la fin réelle du démarrage avant d'installer
+les états de capture ; les assertions de course et la couverture restent requises.
+Reçu conservé : `rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-INITIAL.json`.
+Le runtime et le build 0.2.61 restent inchangés par ces corrections de qualification.

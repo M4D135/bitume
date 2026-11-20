@@ -78,13 +78,39 @@ export function horlogeCapture(graine) {
     Math.random = () => { hasard = (Math.imul(hasard, 1664525) + 1013904223) >>> 0; return hasard / 4294967296; };
     window.requestAnimationFrame = fn => { const id = ++identifiant; attente.set(id, fn); return id; };
     window.cancelAnimationFrame = id => attente.delete(id);
-    window.__BITUME_CAPTURE = { avancer(ms) {
+    window.__BITUME_CAPTURE = { reinitialiser() { temps = 1000; }, avancer(ms) {
       temps += ms;
       const callbacks = Array.from(attente.values()); attente.clear();
       for (const callback of callbacks) callback(temps);
       return { temps, callbacks: callbacks.length, attente: attente.size };
     } };
   })()`;
+}
+
+// Le renderer existe avant la fin du démarrage asynchrone (détection puis vitrine). Une référence
+// installée trop tôt est remplacée plus tard par cette vitrine, puis par la démo automatique.
+// Faire vivre les rAF du démarrage et passer le banc matériel par son bouton : le profil demandé
+// pour les captures sera ensuite imposé par reference(), sans prétendre mesurer SwiftShader.
+export async function attendreDemarrage(evaluer, attendre, dormir = ms => new Promise(r => setTimeout(r, ms))) {
+  const fin = Date.now() + attendre;
+  let etat = null;
+  while (Date.now() <= fin) {
+    etat = await evaluer(`(() => {
+      const J = window.BITUME_JEU;
+      if (!J) return { pret: false, ecran: null };
+      J.reglages.demo = 'non'; J.pauseAuto = false;
+      const detection = document.getElementById('autodetection');
+      if (J.ecran === 'detection' && detection && !detection.hidden)
+        document.getElementById('detection-annuler').click();
+      const chargement = J.chargement, type = J.session?.type;
+      return { pret: !!J.rendu && J.ecran === 'titre' && type === 'vitrine' && !!chargement && !chargement.enCours && !chargement.voile,
+        ecran: J.ecran, type, etape: chargement?.etape, preparation: !!chargement?.enCours };
+    })()`);
+    if (etat.pret) return etat;
+    await evaluer('window.__BITUME_CAPTURE?.avancer(1000 / 60)');
+    await dormir(10);
+  }
+  throw new Error('Démarrage du jeu inachevé avant la référence : ' + JSON.stringify(etat));
 }
 
 function informationsGit() {
@@ -191,11 +217,7 @@ export async function capturer(o) {
     await envoyer('Emulation.setDeviceMetricsOverride', { width: o.taille[0], height: o.taille[1], deviceScaleFactor: 1, mobile: false });
     await envoyer('Page.addScriptToEvaluateOnNewDocument', { source: horlogeCapture(o.referenceJeu.graine) });
     await envoyer('Page.navigate', { url: o.url });
-    const delaiJeu = Date.now() + o.attendre;
-    while (!await evaluer('!!(window.BITUME_JEU && BITUME_JEU.rendu)')) {
-      if (Date.now() > delaiJeu) throw new Error('BITUME ne démarre pas');
-      await dormir(100);
-    }
+    rapport.demarrage = await attendreDemarrage(evaluer, o.attendre, dormir);
     if (!await evaluer('typeof BITUME_JEU.reference === "function"')) throw new Error('Ce build doit exposer BITUME_JEU.reference(options) pour les captures reproductibles');
     // L'initialisation PhysX se fait en arrière-plan dans le jeu. Une capture ne doit pas changer de moteur
     // de débris au hasard de la durée réelle d'un rendu : attendre la même promesse avant le premier pas.
@@ -204,7 +226,13 @@ export async function capturer(o) {
       let erreur = null; try { await FPhysX.init(); } catch (e) { erreur = String(e.message || e); }
       const s = FPhysX.status(); return { disponible: true, ready: !!s.ready, version: s.version, erreur };
     })()`);
+    await evaluer('__BITUME_CAPTURE.reinitialiser(); true');
     rapport.referenceJeu = await evaluer(`BITUME_JEU.reference(${JSON.stringify(o.referenceJeu)})`);
+    await evaluer(`(() => { const J = BITUME_JEU;
+      if (J.ecran !== 'course' || J.session?.type !== ${JSON.stringify(o.referenceJeu.mode === 'duo' ? 'duo' : 'course')} || J.session.course.phase !== 'course' || J.chargement.enCours)
+        throw new Error('La référence n’a pas installé une course prête');
+      globalThis.__BITUME_REFERENCE = J.session;
+    })()`);
     await evaluer('BITUME_JEU.pauseAuto = false; BITUME_JEU.mesures = false; true');
     rapport.environnement = await evaluer(`(() => { const gl = BITUME_JEU.rendu.gl, info = gl.getExtension('WEBGL_debug_renderer_info');
       return { navigateur: navigator.userAgent, gpu: info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
@@ -223,9 +251,10 @@ export async function capturer(o) {
           if (r.width > 1 && r.height > 1 && !e.hidden && s.display !== 'none' && s.visibility !== 'hidden' && r.right > 0 && r.bottom > 0 && r.x < innerWidth && r.y < innerHeight)
             zones[id] = { x: Math.max(0,r.x), y: Math.max(0,r.y), width: Math.min(innerWidth,r.right)-Math.max(0,r.x), height: Math.min(innerHeight,r.bottom)-Math.max(0,r.y) };
         }
-        return { ecran: BITUME_JEU.ecran, phase: S.course.phase, horloge: S.course.horloge, meteo: S.meteo.phase,
+        return { ecran: BITUME_JEU.ecran, phase: S.course.phase, referenceConservee: S === __BITUME_REFERENCE, horloge: S.course.horloge, meteo: S.meteo.phase,
           joueurs: (S.locaux || [0]).map(id => { const e = S.course.voitures[id].etat; return { id, s:e.s, d:e.d, v:e.v }; }),
           lumiere: S.lumiere, lumiereJ2: S.vueJ2?.lumiere, reflets: S.refletsEcran, zones }; })()`);
+      if (!etat.referenceConservee) throw new Error('La séance de référence a été remplacée pendant la capture');
       if (!(o.ecrans || ['course']).includes(etat.ecran) || !['course', 'arrivee'].includes(etat.phase)) throw new Error('La séquence a quitté la course : ' + etat.ecran + '/' + etat.phase);
       if (!etat.zones.scene) throw new Error('Toile principale absente de la capture');
       if (o.referenceJeu.mode === 'duo' && !etat.zones.scene2) throw new Error('Toile J2 absente de la capture duo');
