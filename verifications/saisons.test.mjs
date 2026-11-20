@@ -44,7 +44,7 @@ verifier('profils figés, été par défaut et aucune neige sur Port-Sable', () 
     assert.equal(S.normaliser(id), id);
     const p = S.profil(id, theme); assert.equal(p.id, id); assert.ok(Object.isFrozen(p));
     assert.equal(p.neige, id === 'hiver' && theme !== 'cote');
-    assert.equal(p.feuilles, id === 'automne' && theme === 'foret');
+    assert.equal(p.feuilles, id === 'automne' && (theme === 'foret' || theme === 'montagne'));
     assert.ok(p.faune >= 0 && p.faune <= 1);
     if (p.neige) assert.equal(p.faune, 0, 'aucun habitat animal à initialiser sur la neige');
     const sortie = [0, 0, 0], base = [.20, .35, .13];
@@ -75,8 +75,9 @@ verifier('douze scènes : recoloration seulement, chaussée hivernale lisible, c
           const asphalte = n.surfaceType === 'accotement' && (mat === 14 || mat === 21)
             && reference.sommets[v * 13 + 10] < .3
             && reference.sommets[v * 13 + 10] === reference.sommets[v * 13 + 11];
+          const neigeRocher = d.saison.neige && theme === 'montagne' && n.surfaceType === 'terrain' && n.sommets[v * 13 + 4] > .45;
           assert.ok(couleur >= 0 && couleur <= 1);
-          if (!masque[v] && !(d.saison.neige && asphalte)) assert.equal(couleur, reference.sommets[v * 13 + 10 + k], 'marquages, sable, eau, roches et asphalte hors hiver inchangés');
+          if (!masque[v] && !(d.saison.neige && asphalte) && !neigeRocher) assert.equal(couleur, reference.sommets[v * 13 + 10 + k], 'marquages, sable, eau, parois abruptes et asphalte hors hiver inchangés');
           else if (d.saison.neige && asphalte) assert.ok(couleur >= reference.sommets[v * 13 + 10 + k], 'asphalte enneigé plus clair, ou sec sous abri');
           else if (d.saison.neige) assert.ok(couleur > .80, 'les vrais accotements et terrains herbeux sont enneigés');
         }

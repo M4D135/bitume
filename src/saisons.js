@@ -13,7 +13,7 @@
   const profils = {};
   for (const id of IDS) for (const theme of ['foret', 'cote', 'montagne', 'islande', 'desert', 'asie', 'pacifique', 'baikal']) {
     const d = DONNEES[id], neige = id === 'hiver' && theme !== 'cote';
-    profils[id + ':' + theme] = Object.freeze({ id, theme, neige, feuilles: id === 'automne' && (theme === 'foret' || theme === 'asie' || theme === 'baikal'),
+    profils[id + ':' + theme] = Object.freeze({ id, theme, neige, feuilles: id === 'automne' && (theme === 'foret' || theme === 'montagne' || theme === 'asie' || theme === 'baikal'),
       faune: neige || theme === 'islande' || theme === 'desert' ? 0 : d.faune, soleil: d.soleil, teinteSoleil: Object.freeze(d.teinteSoleil.slice()) });
   }
   function profil(id, theme = 'foret') {
@@ -35,7 +35,8 @@
   const SEC = [.43, .36, .16], FROID = [.25, .32, .28], NEIGE = [.91, .94, .97];
   function teinte(p, famille, base, x, z, habitat, sortie) {
     const resultat = sortie || new Array(3), n = bruit(x, z, 139), nuance = bruit(x + 197, z - 311, 277);
-    const feuillage = famille === 'feuillage' || famille === 'feuillage-caduque', fleurs = famille === 'fleurs';
+    const feuillage = famille === 'feuillage' || famille === 'feuillage-caduque' || famille === 'feuillage-persistant', fleurs = famille === 'fleurs';
+    const caduc = famille === 'feuillage-caduque' || famille === 'feuillage' && (p.theme === 'foret' || p.theme === 'asie');
     let cible = base, part = 0;
     if (p.neige) {
       cible = NEIGE; part = feuillage ? .55 + .32 * n : famille === 'sol' ? .93 + .04 * n : .78 + .12 * n;
@@ -49,21 +50,27 @@
       cible = p.id === 'printemps' ? [.67, .45, .25] : p.id === 'automne' ? [.59, .32, .14] : [.82, .59, .31];
       part = (p.id === 'ete' ? .10 : .06) + .04 * n;
     } else if (p.id === 'printemps') {
-      if (feuillage && (p.theme === 'foret' || p.theme === 'asie')) {
+      if (caduc && (p.theme === 'foret' || p.theme === 'asie')) {
         const floraison = lisse(.38, .72, n + (habitat ? habitat.fleurs : 0) * .24);
         cible = nuance < .5 ? BLANC : ROSE; part = floraison * .94;
-      } else if (!feuillage) {
+      } else if (feuillage) {
+        // Jeunes feuilles boréales/alpines et pousses des persistants ; pas de floraison rose des pins.
+        cible = [base[0] * .88, Math.min(1, base[1] * 1.22 + .025), base[2] * .94];
+        part = caduc ? .64 : .30;
+      } else {
         cible = fleurs ? ROSE : [base[0] * .88, Math.min(1, base[1] * 1.16), base[2] * .91];
         part = fleurs ? .14 : .40;
       }
     } else if (p.id === 'ete') {
       cible = SEC;
-      part = feuillage ? (p.theme === 'foret' || p.theme === 'asie' ? .18 : .09) + .18 * n
+      part = feuillage ? (caduc ? .18 + .18 * n : .06 + .07 * n)
         : fleurs ? .12 : .22 + .19 * n + (habitat ? (1 - habitat.herbe) * .10 : 0);
     } else if (p.id === 'automne') {
-      if (feuillage && (p.theme === 'foret' || p.theme === 'asie' || famille === 'feuillage-caduque')) {
+      if (caduc) {
         cible = p.theme === 'baikal' ? OR : n < .34 ? CUIVRE : n < .67 ? ORANGE : OR; part = .79 + .18 * nuance;
-      } else if (!feuillage) { cible = SEC; part = fleurs ? .30 : .35 + .20 * nuance; }
+      } else if (feuillage) {
+        cible = [base[0] * .96, base[1] * .92, base[2] * 1.03]; part = .55;
+      } else { cible = SEC; part = fleurs ? .30 : .35 + .20 * nuance; }
     } else {
       // Le Sud reste sans neige, y compris sur les pins, les plantes et leurs sources d'effets.
       cible = FROID; part = feuillage ? .13 : .20;
