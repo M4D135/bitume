@@ -167,3 +167,27 @@ plus bas dans la cuve. La lecture confirme des transformations propres aux vues 
 l'absence de régression bras/buste ; la pénétration précise reste à reproduire.
 La publication et l'ascendance des 15 têtes doivent encore être vérifiées avant de
 déclarer la consolidation terminée. Aucun nettoyage de références effectué.
+
+## 015 — consolidation reçue et plans complets prêts à publier
+
+Main distant vérifié : `9f2246df61c6503ea8fa0f71a28813b15b17f51c`, arbre
+`4e9d600ebd8b5d60ae533941e87a21e16cc1e952`, identique à la consolidation locale.
+Le commit conserve les 15 têtes historiques comme parents, en plus de la base main.
+Les 50 références restent attribuées et les dix patches conservés ; aucun prototype
+n’est activé par cette fusion. Le runtime 0.2.66/p15/FERRO 0.3.15 reste inchangé.
+
+Le plan habitacle/pilote réunit H0–H2 et B0–B5 : géométrie unique en coordonnées
+réelles dans toutes les vues, assise commune plus basse et plus enfoncée, contrôle
+des bras contre le buste et la coque, mouvements et trois niveaux de détail.
+Les sources primaires MotionBricks, codepawl/CMU et leurs conditions sont reconsultées ;
+elles documentent une étude, sans importer de modèles ni d’animations dans le jeu.
+
+Le plan eau/vitesse E0–E3 formalise la dernière précision : les gouttes peuvent
+descendre à l’arrêt ; en roulant, le flux doit les écarter et les chasser visiblement.
+Direction et trajectoire sont mesurées dans chaque vue cockpit/poursuite ; les sorties
+par les bords, leur surface, le séchage et les nouveaux impacts restent distincts.
+Les petites perles, nappes, grosses gouttes et traces sont toutes concernées.
+
+Ces deux fiches sont prêtes à publier avant l’implémentation. Prochain lot météo :
+E0/E1 ; chantier habitacle toujours ouvert H0/B0. Cette préparation documentaire
+ne relance ni campagne ni capture, ne modifie aucun runtime et ne clôt aucun défaut.

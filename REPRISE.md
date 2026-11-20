@@ -7,22 +7,32 @@
 HTML : **14 370 823 octets**, SHA-256
 `18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b`.
 
-## Lot actif : consolider, puis publier le plan habitacle/pilote
+## Consolidation publiée et vérifiée
 
-La consolidation préparée réunit 50 références : 34 secondaires déjà contenues et
-15 têtes historiques à rendre ancêtres de main. Dix patches de sources/études
-sont réappliqués exactement ; les prototypes restent des préparations attribuées.
+Main reçu : `9f2246df61c6503ea8fa0f71a28813b15b17f51c`, arbre `4e9d600ebd8b5d60ae533941e87a21e16cc1e952`.
+Les 50 références inventoriées sont réunies : 34 secondaires déjà contenues et
+15 têtes historiques préservées par ascendance. Les dix patches se réappliquent
+exactement ; leurs prototypes restent des préparations attribuées.
 Inventaire : `docs/reprise/preparations/MANIFESTE.json`, lecture : son `README.md`.
 
 La PR #37 est réconciliée : dix reçus conservés, contrôles compatibles repris,
 ancien seuil de faible sillage rejeté. **8/8 tests**, **16/16 rapports**, **48/48 PNG**
 contrôlés sans nouveau rendu. Le jeu et le build restent inchangés.
-Reçu : `docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/RECONCILIATION-PR37-0266.json`.
 
-**Prochaine action :** publier et vérifier cette consolidation sur main, puis y ajouter
-le plan complet : un habitacle commun aux deux vues, une assise plus basse dans la cuve,
-et le dégagement des bras par rapport au buste. Les références MotionBricks/CMU seront
-documentées dans ce plan. Le défaut visuel n'est pas encore corrigé.
+## Lot actif : publier les plans, puis qualifier l’écoulement
+
+Deux fiches sont prêtes à publier avant les corrections :
+
+- `docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md` : habitacle métrique unique
+  dans les deux vues, assise commune plus basse/enfoncée, dégagement bras/buste,
+  contrôles H0–H2 et B0–B5 ; MotionBricks/CMU documentés.
+- `docs/reprise/EAU-VITESSE-2026-11-20.md` : gravité à l’arrêt, puis écartement et
+  évacuation par vitesse/flux d’air en cockpit et poursuite ; direction, trajectoire
+  et sorties par les bords mesurées séparément du séchage.
+
+**Prochaine action :** publier et vérifier ces fiches sur main, puis E0/E1 météo.
+Le chantier habitacle reste ouvert à H0/B0 ; aucun défaut du pilote ni écoulement
+correct ne sont déclarés corrigés par la publication de ces plans.
 
 ## Preuves et réserves à conserver
 
@@ -34,5 +44,5 @@ documentées dans ce plan. Le défaut visuel n'est pas encore corrigé.
 - FPS matériels, audio, manettes et réseau entre machines non qualifiés ; Monaco `readyForRuntime=false`.
 
 Publication runtime : `docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/PUBLICATION-0266.json`.
-Journal : `docs/reprise/JOURNAL-AUTONOME-2026-11-20.md`, entrée **014**.
+Journal : `docs/reprise/JOURNAL-AUTONOME-2026-11-20.md`, entrée **015**.
 Lecture minimale : ce fichier, `ETAT.json` → `etat_courant`, puis la seule fiche active.
