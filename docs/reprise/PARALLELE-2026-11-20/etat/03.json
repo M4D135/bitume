@@ -7,9 +7,9 @@
   "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p03-menu-20261120",
   "branche_reelle": "codex/bitume-p03-menu-20261120",
-  "head": "10f2948784defacef8a1889bb956e019794e0645",
+  "head": "08f391cbc4935a73d2244fef59ab116fad92f63b",
   "pr": "https://github.com/M4D135/bitume/pull/40",
-  "sous_lot": "M1.4 — valeurs de test conformes aux vrais choix et bilan insécable",
+  "sous_lot": "M1.5 — synchroniser la mesure après la dernière image statique",
   "preuves": [
     "21/21 contrôles navigation menu.",
     "12 contrôles aperçu : 9 circuits × 144 rotations × 6 formats, arrêt caché et mouvement réduit.",
@@ -20,10 +20,11 @@
     "CI dédiée 44782638763 réussie : 19 parcours Chromium, 14 captures, aucune exception JavaScript. Relecture : bureau/portrait lisibles ; correction du tracé et du bilan coupés en paysage en cours.",
     "Comparaison au main récent : 131 contrôles existants et 35 groupes nommés conservés, raccord applicable sans changement de jeu.js/construire.py.",
     "CI 44784147128 : construction et 196 contrôles ciblés réussis, arrêt du banc avant premier scénario car Passer a disparu pendant le clic à la fin naturelle de la détection ; titre atteint, aucune exception JS. Attente corrigée sans changement runtime.",
-    "CI 44784834119 verte : 19 parcours, 14 PNG inspectés, aucune exception, tracé et trois cartes bilan entièrement visibles en paysage. Fixture corrigée après relecture : soleil et faune off ; contrôle des boutons météo cochés ajouté."
+    "CI 44784834119 verte : 19 parcours, 14 PNG inspectés, aucune exception, tracé et trois cartes bilan entièrement visibles en paysage. Fixture corrigée après relecture : soleil et faune off ; contrôle des boutons météo cochés ajouté.",
+    "CI 44785755259 : valeurs injectées validées ; mesure Figer commencée avant la dernière image statique utile (6 contre 5). Banc synchronisé sur deux RAF pour les transitions visibles ; zéro dessin toujours exigé ensuite et immédiatement après masquage."
   ],
   "reserves": [
-    "Dernière reprise CI après correction des valeurs injectées par le banc et espace insécable J1/J2 dans le bilan proposé.",
+    "Reprise CI avec mesure synchronisée des transitions visibles ; assertions des aperçus cachés inchangées.",
     "CI globale de publication attend un build/version identique aux sources : garde non applicable à cette branche de sources réservée à 00.",
     "Troll son+geste/IA/protocole réseau restent à 01/00 ; le menu conserve les choix et retire prêt après modification.",
     "Préchauffage initial conservé ; rendu continu et reconstructions de scènes cachées arrêtés dans le raccord proposé.",

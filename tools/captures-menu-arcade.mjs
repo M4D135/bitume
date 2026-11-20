@@ -32,6 +32,7 @@ page.on('pageerror', e => rapport.erreurs.push(e.message));
 const notes = (nom, preuve = {}) => { rapport.controles.push({ nom, statut: 'ok', ...preuve }); console.log('OK ' + nom); };
 const lire = () => page.evaluate(() => ({ ecran: BITUME_JEU.ecran, menu: BITUME_JEU.menuArcade, reglages: BITUME_JEU.reglages, dessins: __menuEssai.dessins, vibrations: __menuEssai.vibrations, session: { i: BITUME_JEU.session?.i, type: BITUME_JEU.session?.type } }));
 const ecran = n => page.waitForFunction(n => window.BITUME_JEU?.ecran === n, n, { timeout: 120000 });
+const deuxImages = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 async function attendreTitre(phase) {
   const pret = () => window.BITUME_JEU?.ecran === 'titre' && document.getElementById('titre')?.hidden === false && document.getElementById('autodetection')?.hidden === true;
   await page.waitForFunction(() => window.BITUME_JEU && (BITUME_JEU.ecran === 'titre' || document.getElementById('autodetection')?.hidden === false), null, { timeout: 120000 });
@@ -128,16 +129,17 @@ try {
   assert.equal(await page.locator('#p-circuit-nom').textContent(), 'Route-des-Cimes');
   assert.equal((await lire()).session.i, 0, 'la sélection ne reconstruit pas une vitrine');
   notes('Clavier : neuf circuits, sélection réelle de Route-des-Cimes, scène inchangée');
-  await page.locator('#p-rotation').click(); await page.waitForTimeout(100); await calme('Tracé figé sans nouveau dessin');
-  await page.locator('#p-rotation').click(); await page.waitForTimeout(100);
-  await page.emulateMedia({ reducedMotion: 'reduce' }); await page.waitForTimeout(100); await calme('Mouvement réduit sans animation persistante');
+  // Figer un aperçu visible demande une dernière image statique utile. La mesurer seulement après sa présentation.
+  await page.locator('#p-rotation').click(); await deuxImages(); await calme('Tracé figé sans nouveau dessin');
+  await page.locator('#p-rotation').click(); await deuxImages();
+  await page.emulateMedia({ reducedMotion: 'reduce' }); await deuxImages(); await calme('Mouvement réduit sans animation persistante');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   const avantMasque = await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, value: true }); document.dispatchEvent(new Event('visibilitychange')); return BITUME_JEU.menuArcade.images; });
   await page.waitForTimeout(240); assert.equal((await lire()).menu.images, avantMasque);
   await page.evaluate(() => { delete document.hidden; document.dispatchEvent(new Event('visibilitychange')); });
   notes('Masquage document simulé : aperçu arrêté');
   // La reprise protège contre un bouton déjà tenu ; laisser les deux manettes repasser au neutre.
-  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  await deuxImages();
   await bouton(9, 1); assert.equal((await lire()).menu.etape, 1); await verifierMeteoManuelle(); await calme('Conditions : aucun aperçu ni scène cachée');
   assert.equal((await lire()).ecran, 'preparation');
   await page.locator('label:has(input[name="saisonDepart"][value="hiver"])').click();
