@@ -144,12 +144,15 @@
   function avancer(e, c, budget, pluie, neige, vitesse, vent, intensite) {
     e.temps += PAS; e.stats.etapes++;
     const couvert = !!c.abri, eau = couvert || neige ? 0 : pluie, flocons = couvert ? 0 : neige;
+    const spray = couvert || neige ? 0 : clamp(Number(c.embruns) || 0, 0, 1);
     const air = clamp((vitesse - 18) / 102, 0, 1) ** 2, rythme = 2 + vitesse * .07;
-    // À grande vitesse, l'air chasse aussi les nouveaux impacts avant qu'ils adhèrent. Augmenter seulement
-    // leur défilement laisserait une vitre constamment pleine sous l'averse malgré le dégagement demandé.
-    const exposition = (c.cockpit === false ? .42 : 1) * intensite / (1 + air * 3.5);
-    e.creditEau = Math.min(3, e.creditEau + PAS * eau * rythme * budget.gouttes / 24 * exposition);
-    e.creditNeige = Math.min(2, e.creditNeige + PAS * flocons * (1 + vitesse * .035) * budget.neige / 12 * exposition);
+    // La pluie ambiante adhère moins à grande vitesse ; les projections du rival restent un flux distinct.
+    // La vitesse continue d'évacuer les gouttes déjà présentes : sortir du sillage dégage la visière.
+    const exposition = (c.cockpit === false ? .42 : 1) * intensite;
+    const fluxPluie = eau * rythme / (1 + air * 3.5);
+    const fluxSpray = spray * (12 + vitesse * .22) / (1 + air * .6);
+    e.creditEau = Math.min(3, e.creditEau + PAS * (fluxPluie + fluxSpray) * budget.gouttes / 24 * exposition);
+    e.creditNeige = Math.min(2, e.creditNeige + PAS * flocons * (1 + vitesse * .035) * budget.neige / 12 * exposition / (1 + air * 3.5));
     while (e.creditEau >= 1) { deposer(e, false, budget.gouttes); e.creditEau--; }
     while (e.creditNeige >= 1) { deposer(e, true, budget.neige); e.creditNeige--; }
     let gouttes = 0, restes = 0;
@@ -157,7 +160,7 @@
       const p = e.gouttes[i]; if (!p.vivant) continue;
       p.px = p.x; p.py = p.y; p.pa = p.age; p.pp = p.poids; p.pr = p.taille;
       garderTrajet(p);
-      p.age += PAS * ((eau > .05 ? 1 : 1.55) + air * 5);
+      p.age += PAS * ((eau > .05 || spray > .05 ? 1 : 1.55) + air * 5);
       p.poids = clamp(p.poids + PAS * (i < budget.gouttes ? 5 : -2), 0, 1);
       const mobilite = Math.max(p.glisse, clamp((p.taille - 3.4) / 3, .04, 1));
       const ruisselle = mobilite * (8 + vitesse * .42) * (p.taille * .35 + p.vitesse);
@@ -263,7 +266,7 @@
       const pluie = clamp(Number(c.pluie) || 0, 0, 1), neige = clamp(Number(c.neige) || 0, 0, 1);
       // Au sec, sous abri ou sans précipitation, visière vide et propre : un pas ne ferait qu'avancer l'horloge
       // (aucun crédit ne peut atteindre un dépôt). On l'avance sans mesurer la toile ni parcourir les pools.
-      if (vide && e.propre && !(c.abri ? 0 : neige || pluie)) {
+      if (vide && e.propre && !(c.abri ? 0 : neige || pluie || Number(c.embruns) > 0)) {
         while (e.accumulateur + 1e-10 >= PAS) { e.temps += PAS; e.stats.etapes++; e.accumulateur -= PAS; }
         return e.stats;
       }

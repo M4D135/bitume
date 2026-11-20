@@ -15,6 +15,8 @@
 // En p14, la géométrie qualifiée du décor porte une référence distincte (determinisme-scenes-0260.json).
 // Tous les états, contacts, événements, configurations et bilans restent comparés à la fixture p14 intégrale,
 // dont l'empreinte de fichier est aussi contrôlée ; aucune régénération du comportement avec le nouveau décor.
+// p15 corrige le sens de l'aspiration : sa nouvelle référence contient la scène ET la simulation PhysX
+// complètes. Les archives p14 et leur contrat de scène restent inchangés et contrôlés séparément.
 //
 // Les empreintes de référence (verifications/fixtures/determinisme-p9.json) ont été prises sur le code d'avant
 // le lot « Fluidité » de la simulation (commit 54e98c9). Cette archive p9 reste intacte. Un changement de physique
@@ -31,6 +33,12 @@ import path from 'node:path';
 const ici = path.dirname(fileURLToPath(import.meta.url));
 const PHYSIQUE = readFileSync(path.join(ici, '..', 'src', 'jeu.js'), 'utf8').match(/\bPHYSIQUE\s*=\s*['"](p\d+)['"]/)?.[1];
 if (!PHYSIQUE) throw new Error('PHYSIQUE introuvable dans src/jeu.js : aucune fixture choisie implicitement');
+const PHYSIQUES_NATIVES = new Set(['p14', 'p15']);
+const PHYSIQUES_HISTORIQUES = new Set(['p9', 'p10', 'p11', 'p12', 'p13']);
+if (!PHYSIQUES_NATIVES.has(PHYSIQUE) && !PHYSIQUES_HISTORIQUES.has(PHYSIQUE))
+  throw new Error('Physique non qualifiée : ' + PHYSIQUE + ' ; aucun repli implicite vers le banc historique');
+if (process.argv.includes('--physx-worker') && !PHYSIQUES_NATIVES.has(PHYSIQUE))
+  throw new Error('Un worker PhysX ne peut pas exécuter le banc historique ' + PHYSIQUE);
 const req = createRequire(import.meta.url);
 for (const f of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'course', 'carene', 'decor']) req(path.join(ici, '..', 'src', f + '.js'));
 const B = globalThis.BITUME;
@@ -222,12 +230,12 @@ function resume(co, compte, extra = {}) {
   };
 }
 
-// p14 porte les corps dans le vrai WASM et les triangles du décor. Les scénarios historiques
+// p14 et p15 portent les corps dans le vrai WASM et les triangles du décor. Les scénarios historiques
 // ci-dessous restent réservés à leurs physiques : aucun oracle Frenet n'est présenté comme PhysX.
-if (PHYSIQUE === 'p14') {
+if (PHYSIQUES_NATIVES.has(PHYSIQUE)) {
   const { controlerDeterminismePhysX } = await import('./helpers/determinisme-physx.mjs');
   await controlerDeterminismePhysX({ Ecrivain, etatCourse, fixture: FIXTURE, ecrire: ECRIRE,
-    fichier: fileURLToPath(import.meta.url) });
+    fichier: fileURLToPath(import.meta.url), physique: PHYSIQUE });
   process.exit(0);
 }
 

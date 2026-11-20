@@ -51,6 +51,24 @@ verifier('le nuage d’eau monte puis s’efface, sans supprimer les dépôts pe
   const e=O.creerEtat();avancer(e,contexte({pluie:0,embruns:1}),1);assert(e.embruns>.95 && e.eau>.5);
   avancer(e,contexte({pluie:0,embruns:0}),3);assert(e.embruns<.02 && e.eau>.1);
 });
+verifier('à 300 km/h le sillage recharge la visière ; en sortir évacue la charge sans effacement brutal',()=>{
+  const pluie=O.creerEtat(),sillage=O.creerEtat(),c=contexte({vitesse:300/3.6});
+  avancer(pluie,c,12);avancer(sillage,{...c,embruns:.8},12);
+  assert(sillage.eau>pluie.eau*2.5,'les projections sont encore chassées comme la pluie libre');
+  assert(sillage.film>pluie.film*3,'film du sillage insuffisant à grande vitesse');
+  const avant=sillage.eau;avancer(sillage,{...c,pluie:0,embruns:0},.25);
+  assert(sillage.eau>0 && sillage.eau<avant,'sortie du sillage progressive');
+  avancer(sillage,{...c,pluie:0,embruns:0},15);
+  assert(sillage.eau<.001 && sillage.embruns<.001 && sillage.film<.001);
+});
+verifier('les projections seules mouillent à grande vitesse ; abri et neige coupent les nouveaux impacts',()=>{
+  const c=contexte({pluie:0,embruns:.8,vitesse:300/3.6});
+  const e=O.creerEtat();avancer(e,c,8);assert(e.eau>.65 && e.embruns>.79);
+  const avant=JSON.stringify(e);avancer(e,{...c,pause:true},8);assert.equal(JSON.stringify(e),avant);
+  const abri=O.creerEtat(),neige=O.creerEtat();
+  avancer(abri,{...c,abri:true},8);assert.equal(abri.eau,0);assert.equal(abri.embruns,0);
+  avancer(neige,{...c,neige:1},1);assert.equal(neige.embruns,0);
+});
 verifier('pause exacte, temps borné après interruption et indépendance des vues',()=>{
   const a=O.creerEtat({graine:1}),b=O.creerEtat({graine:2});avancer(a,contexte(),4);avancer(b,contexte(),4);
   assert.notEqual(a.uniformes[10],b.uniformes[10]);const avant=JSON.stringify(a);

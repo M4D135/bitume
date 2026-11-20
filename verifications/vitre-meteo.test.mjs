@@ -124,6 +124,21 @@ verifier('les caméras extérieures atténuent les dépôts et leur opacité ; l
   assert(b.stats.gouttes < a.stats.gouttes * .65); assert(b.opacite < a.opacite * .6);
   V.mettreAJour(a, 0, contexte({ retro: true })); assert.equal(vivants(a).length, 0); assert(a.masquee);
 });
+verifier('à 300 km/h une chaussée mouillée sans pluie recharge le repli Canvas avec les projections du rival', () => {
+  const e = V.creer(toile()), libre = V.creer(toile()), c = contexte({ vitesse: 300 / 3.6, embruns: .8 });
+  avancer(e, c, 8); avancer(libre, contexte({ vitesse: 300 / 3.6, pluie: 1 }), 8);
+  assert(e.stats.gouttes > 25 && surface(e) > surface(libre) * 1.5, 'projections absentes ou étouffées par la vitesse');
+  const avant = etat(e); avancer(e, { ...c, pause: true }, 8); assert.equal(etat(e), avant);
+  const sequence = e.sequence; avancer(e, { ...c, abri: true }, .25);
+  assert.equal(e.sequence, sequence); assert(e.stats.gouttes > 0, 'pas d’effacement brutal sous abri');
+  avancer(e, { ...c, embruns: 0 }, 15); assert.equal(e.stats.gouttes, 0); assert(e.propre);
+});
+verifier('les projections gardent le même résultat à 30 et 144 Hz, et ne déposent rien sous abri', () => {
+  const a = V.creer(toile()), b = V.creer(toile()), abri = V.creer(toile());
+  const c = contexte({ vitesse: 300 / 3.6, embruns: .8 });
+  avancer(a, c, 4, 30); avancer(b, c, 4, 144); avancer(abri, { ...c, abri: true }, 4);
+  assert.equal(etat(a), etat(b)); assert(a.stats.gouttes > 0); assert.equal(abri.stats.gouttes, 0);
+});
 verifier('pause : aucune avance, aucun pixel redessiné, aucun rattrapage à la reprise', () => {
   const e = V.creer(toile()), c = contexte({ pluie: 1, vitesse: 40 }); avancer(e, c, 4);
   const avant = etat(e), stats = { ...e.stats }, accumulateur = e.accumulateur;

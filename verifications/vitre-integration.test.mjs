@@ -115,6 +115,28 @@ verifier('un changement de voiture filmée emploie immédiatement sa vitesse et 
   j.dessiner(S, 'cockpit', 1/30, false, [0,1,0], S.course.voitures[1]);
   assert.equal(S.vitreContexte.vitesse, 65);
 });
+verifier('les projections à 300 km/h suivent le panache humide, avec des vitres J1/J2 indépendantes', () => {
+  const j = jeu(), S = seance(), J2 = { ...S, suivie: 1, vitreContexte: null }; j.initialiser(S);
+  S.meteo.pluie = 0; S.meteo.mouille = 1;
+  S.course.voitures[0].etat.v = S.course.voitures[1].etat.v = 300 / 3.6;
+  S.sillage = globalThis.BITUME.sillage.creer();
+  globalThis.BITUME.sillage.mettreAJour(S.sillage, [{ id: 7, etat: { v: 300 / 3.6, s: 0 } }], [{ x: 0, y: 0, z: 0, cap: 0 }]);
+  for (let i = 0; i < 120; i++) {
+    j.dessiner(S, 'cockpit', 1/30, false, [-12,1,0]);
+    j.dessiner(J2, 'poursuite', 1/30, false, [-12,1,8]);
+  }
+  assert(j.vues()[0].stats.gouttes > 25); assert.equal(j.vues()[1].stats.gouttes, 0);
+  const apres = JSON.stringify(j.vues()[0].gouttes);
+  j.dessiner(J2, 'poursuite', 1/30, false, [-12,1,0]); assert.equal(JSON.stringify(j.vues()[0].gouttes), apres);
+});
+verifier('les plans aériens et distants n’ont aucun dépôt ; cockpit et poursuite les rétablissent', () => {
+  const j = jeu(), S = seance(); j.initialiser(S);
+  for (const vue of ['helico', 'panorama', 'tele', 'faune', 'pilote', 'orbite', 'sol', 'travelling', 'flore', 'peloton', 'aileron']) {
+    avancer(j, S, 2, 'cockpit'); assert(j.vues()[0].stats.gouttes > 0);
+    j.dessiner(S, vue, 0); assert(j.vues()[0].masquee && j.vues()[0].propre, vue);
+  }
+  avancer(j, S, 3, 'poursuite'); assert(j.vues()[0].stats.gouttes > 0);
+});
 verifier('les glaces J1/J2 sont composées après les deux vitres ; le HUD reste après la scène', () => {
   for (const glace of ['glace-g', 'glace-d', 'glaces2']) for (const vitre of ['vitre', 'vitre2'])
     assert(html.indexOf('id="' + glace + '"') > html.indexOf('id="' + vitre + '"'));

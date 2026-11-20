@@ -7,6 +7,8 @@ import { B, CD, P, G, DT, deg, clamp, circuit, commande, piloter, rouler, tenir,
 
 const ici = path.dirname(fileURLToPath(import.meta.url));
 const req = createRequire(import.meta.url);
+req(path.join(ici, '..', 'src', 'circuit.js'));
+const CIRCUIT_REEL = B.circuit;
 // Le banc de conduite utilise aussi l'aspiration et les contacts du vrai module de course.
 req(path.join(ici, '..', 'src', 'course.js'));
 
@@ -280,7 +282,7 @@ function withIn(x, a, b) { return x >= a && x <= b; }
 }
 {
   const vrai = B.circuit;
-  B.circuit = { echantillon: () => ({ x: 0, y: 0, z: 0, cap: 0, courbure: 0, pente: 0, devers: 0, ligne: 0, vitesse: 0 }), vibreurA: () => false, ecart: (c, a, b) => a - b };
+  B.circuit = { echantillon: () => ({ x: 0, y: 0, z: 0, cap: 0, courbure: 0, pente: 0, devers: 0, ligne: 0, vitesse: 0 }), vibreurA: () => false, ecart: CIRCUIT_REEL.ecart };
   const c = { longueur: 1e6, largeur: 12, limite: 20 }, v0 = 250 / 3.6, cmd = commande({ gaz: 1 }), gain = (derriere, cote) => {
     const rival = CD.creer(1000, 0), suiveur = CD.creer(1000 - derriere, cote), seul = CD.creer(0, 0);
     for (const e of [rival, suiveur, seul]) { e.v = v0; e.rapport = 6; }
@@ -360,7 +362,7 @@ function withIn(x, a, b) { return x >= a && x <= b; }
 
 // Les critères de course sont exécutés ici contre le vrai module, pas contre un stub de contacts.
 {
-  req(path.join(ici, '..', 'src', 'circuit.js'));
+  B.circuit = CIRCUIT_REEL;
   req(path.join(ici, '..', 'src', 'course.js'));
   const c = B.circuit.creer(11, { theme: 'foret', longueur: 4200 });
   const co = B.course.creer(c, { mode: 'course', tours: 3, difficulte: 1, rivaux: 11, graine: 5, placeJoueur: 8 });

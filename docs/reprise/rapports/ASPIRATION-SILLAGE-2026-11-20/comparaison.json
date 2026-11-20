@@ -1,0 +1,143 @@
+{
+  "format": "bitume-aspiration-comparaison-1",
+  "protocole": {
+    "piste": "Droite plane dédiée de 4096 m, 512 triangles, trajectoire à 500 m au moins des extrémités",
+    "departs": "Même état du suiveur, vitesse native initiale et sixième rapport ; tous les pilotes plein gaz, sans direction ni assistance",
+    "mesure": "Positions et vitesses lues dans PhysX, vraie B.course.pas ; aucune substitution de ecart, aspirer, conduite ou solveur",
+    "conditions": "Sec, pneus slicks, masses de 600 kg ; distances du meneur libres après le départ, aucun maintien artificiel du sillage",
+    "limites": "Banc contrôlé du jeu ; ne mesure ni vitesse maximale, ni course complète, ni aérodynamique de voitures réelles, ni FPS"
+  },
+  "cas_par_version": 12,
+  "pas_par_version": 8640,
+  "duree_par_cas_s": 6,
+  "vitesse_depart_kmh": [
+    160,
+    235,
+    300
+  ],
+  "sillage_depart_m": 20,
+  "source_hashes_baseline": {
+    "src/circuit.js": "39389f4855fd9010c083baba6d3ed43aa8838817f484624eec5adff0aa4a5a72",
+    "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+    "src/degats.js": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247",
+    "src/contacts.js": "d6e583db729c91df8de21621c05b3b24835e6dc996e9dd4df7cb0464b27e1b7a",
+    "src/course.js": "6b3ec1ab4dc526d8da81f1fcf9410d68927d9a65743ac45c9335f3386f93b53f",
+    "src/solides-physx.js": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+    "src/physique.js": "2dc2dede6b8f8e3a863a09c754bed30baf2cdf38af0dc6b71e9d839eb153a089",
+    "src/pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+    "src/usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+    "src/chaussee.js": "26845218ad17b60301f97f3374ac31fc4a61fab75b137d9497bb7742a983753d",
+    "src/strategie-stands.js": "c0b8326627e0225bf8197719472062b181038346eb3d1b3ca4b6ef320d0dee50",
+    "src/ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+    "src/ferro/physx.js": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+    "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "FERRO.lock.json": "f0003205bc89775777a49a4895d8f611be9262b339439e00a1f38bc1d983a4c2",
+    "tools/qualification/aspiration-physx.mjs": "4cd8af92ecee4c1907fa928133b6cdce26d54b6cc354f869b7e71de63fb3a803",
+    "verifications/helpers/physx-runtime.mjs": "7503d286787cd0bcf04d0d14abeece417419c85f2ce32b619506f08087cc5741"
+  },
+  "source_hashes_candidat": {
+    "src/circuit.js": "39389f4855fd9010c083baba6d3ed43aa8838817f484624eec5adff0aa4a5a72",
+    "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+    "src/degats.js": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247",
+    "src/contacts.js": "d6e583db729c91df8de21621c05b3b24835e6dc996e9dd4df7cb0464b27e1b7a",
+    "src/course.js": "bec39581653d200ca03679c62195bb3bb4087eb666112685ef7687d2a8e247fb",
+    "src/solides-physx.js": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+    "src/physique.js": "2dc2dede6b8f8e3a863a09c754bed30baf2cdf38af0dc6b71e9d839eb153a089",
+    "src/pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+    "src/usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+    "src/chaussee.js": "26845218ad17b60301f97f3374ac31fc4a61fab75b137d9497bb7742a983753d",
+    "src/strategie-stands.js": "c0b8326627e0225bf8197719472062b181038346eb3d1b3ca4b6ef320d0dee50",
+    "src/ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+    "src/ferro/physx.js": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+    "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "FERRO.lock.json": "f0003205bc89775777a49a4895d8f611be9262b339439e00a1f38bc1d983a4c2",
+    "tools/qualification/aspiration-physx.mjs": "4cd8af92ecee4c1907fa928133b6cdce26d54b6cc354f869b7e71de63fb3a803",
+    "verifications/helpers/physx-runtime.mjs": "7503d286787cd0bcf04d0d14abeece417419c85f2ce32b619506f08087cc5741"
+  },
+  "source_diff_physique": [
+    "src/course.js"
+  ],
+  "rapport_baseline_sha256": "c4c3c084bb1c8f8a6976dea5f9f24c5c0e3c7917a5cd854757c59df2892dcb5a",
+  "rapport_candidat_sha256": "36176cd9382412c0933f1e3a78771ef797d677af645bd3c55fa21d46dc71b5ce",
+  "sans_alerte_cooking": true,
+  "controles_candidat_reussis": 5,
+  "resultats": [
+    {
+      "vitesse_depart_kmh": 160,
+      "baseline_p14": {
+        "suiveur_gain_m": 0,
+        "suiveur_gain_kmh": 0,
+        "meneur_gain_m": 2.49365234375,
+        "meneur_gain_kmh": 3.029562392043232,
+        "resistance_suiveur_initiale_n": -849.2592059100126,
+        "resistance_meneur_initiale_n": -767.6789652205111,
+        "minimum_ecart_m": 19.999969482421875
+      },
+      "candidat_p15": {
+        "suiveur_gain_m": 2.81390380859375,
+        "suiveur_gain_kmh": 3.871664456384309,
+        "meneur_gain_m": 0.0001220703125,
+        "meneur_gain_kmh": 5.7696070143720135e-12,
+        "resistance_suiveur_initiale_n": -767.6789652205111,
+        "resistance_meneur_initiale_n": -849.2592059100126,
+        "minimum_ecart_m": 17.18621826171875
+      }
+    },
+    {
+      "vitesse_depart_kmh": 235,
+      "baseline_p14": {
+        "suiveur_gain_m": 0,
+        "suiveur_gain_kmh": 0,
+        "meneur_gain_m": 4.365478515625,
+        "meneur_gain_kmh": 4.414553837310564,
+        "resistance_suiveur_initiale_n": -1658.4606873265025,
+        "resistance_meneur_initiale_n": -1482.4736071384104,
+        "minimum_ecart_m": 19.999969482421875
+      },
+      "candidat_p15": {
+        "suiveur_gain_m": 5.32421875,
+        "suiveur_gain_kmh": 6.693804953712629,
+        "meneur_gain_m": 0,
+        "meneur_gain_kmh": 2.7465811228921666e-05,
+        "resistance_suiveur_initiale_n": -1482.4736071384104,
+        "resistance_meneur_initiale_n": -1658.4606873265025,
+        "minimum_ecart_m": 14.67578125
+      }
+    },
+    {
+      "vitesse_depart_kmh": 300,
+      "baseline_p14": {
+        "suiveur_gain_m": 0,
+        "suiveur_gain_kmh": 0,
+        "meneur_gain_m": 5.949462890625,
+        "meneur_gain_kmh": 5.361273193322347,
+        "resistance_suiveur_initiale_n": -2608.333483378095,
+        "resistance_meneur_initiale_n": -2321.527910317317,
+        "minimum_ecart_m": 20
+      },
+      "candidat_p15": {
+        "suiveur_gain_m": 7.873046875,
+        "suiveur_gain_kmh": 9.686425786939765,
+        "meneur_gain_m": 0.0001220703125,
+        "meneur_gain_kmh": -5.684341886080802e-14,
+        "resistance_suiveur_initiale_n": -2321.527910317317,
+        "resistance_meneur_initiale_n": -2608.333483378095,
+        "minimum_ecart_m": 12.1270751953125
+      }
+    }
+  ],
+  "baseline_p14": {
+    "corrections_pose_vitesse": 0,
+    "contacts_voitures": 0,
+    "replacements": 0,
+    "appuis_min": 4,
+    "force_native_error_max_n": 0
+  },
+  "candidat_p15": {
+    "corrections_pose_vitesse": 0,
+    "contacts_voitures": 0,
+    "replacements": 0,
+    "appuis_min": 4,
+    "force_native_error_max_n": 0
+  }
+}

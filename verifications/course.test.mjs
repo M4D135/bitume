@@ -171,7 +171,7 @@ verifier('aspiration', () => {
   const vrai = B.circuit;
   B.circuit = {
     echantillon: () => ({ x: 0, y: 0, z: 0, cap: 0, courbure: 0, pente: 0, devers: 0, ligne: 0, vitesse: 0 }),
-    vibreurA: () => false, ecart: (c, a, b) => a - b
+    vibreurA: () => false, ecart: vrai.ecart
   };
   try {
     const droite = { longueur: 1e6, largeur: 12, limite: 20 }, v0 = 250 / 3.6;
@@ -196,6 +196,15 @@ verifier('aspiration', () => {
       B.course.aspirer(droite, V); return V[1].etat.aspiration;
     };
     assert.ok(part(29, 0) > 0 && part(30.5, 0) === 0 && part(10, 2.05) === 0 && part(10, 1.5) > 0, 'portée et côté');
+    // Le vrai sens de l'abscisse et son bouclage doivent aussi fonctionner sans dépendre de l'ordre de V.
+    for (const [sSuiveur, sMeneur] of [[990, 1000], [droite.longueur - 5, 5]]) {
+      const suiveur = { etat: B.conduite.creer(sSuiveur, 0) }, meneur = { etat: B.conduite.creer(sMeneur, 0) };
+      for (const V of [[suiveur, meneur], [meneur, suiveur]]) {
+        B.course.aspirer(droite, V);
+        assert.ok(suiveur.etat.aspiration > 0, 'seule la voiture derrière est aspirée');
+        assert.equal(meneur.etat.aspiration, 0, 'pas d’aspiration produite par un rival derrière');
+      }
+    }
   } finally { B.circuit = vrai; }
 });
 
