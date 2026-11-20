@@ -7,8 +7,8 @@
   "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p01-pilote-troll-20261120",
   "branche_reelle": "codex/bitume-p01-pilote-troll-20261120",
-  "head": "2f4bbd0cdb9cb031eef7b93ef5997279a4f75a1d",
-  "pr": null,
+  "head": "5e710039424e3761ee04750619152a0cb279bdb2",
+  "pr": 41,
   "sous_lot": "H1-B4, T1 klaxons et T2 Troll clos au niveau modules ; raccord partage propose a 00",
   "preuves": [
     "docs/reprise/PARALLELE-2026-11-20/preuves/01-habitacle.json",
@@ -50,5 +50,18 @@
     "poses_allocations": 60000,
     "octets_par_pose": 1.052,
     "gc_mineurs": 0
+  },
+  "pr_url": "https://github.com/M4D135/bitume/pull/41",
+  "pr_statut": "brouillon_sources_raccord_00_requis",
+  "transmission_00": "PR #41, raccordements/01.md, 01-jeu.patch et 01-raccord.test.mjs ; rapprochement menu 03 PR #40.",
+  "ci_observee": {
+    "commit": "5e710039424e3761ee04750619152a0cb279bdb2",
+    "workflow": "Qualification BITUME",
+    "run": 44784958357,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44784958357",
+    "statut": "echec_garde_build_avant_suites",
+    "cause": "La CI reconstruit puis git diff --exit-code constate les ecarts de VERSION.json, SIZE.json et dist/bitume.html ; ces fichiers communs restent reserves a 00.",
+    "suites_ci_executees": false,
+    "action": "Ne pas modifier les builds communs ni assouplir le garde dans 01 ; integration et qualification de publication par 00."
   }
 }
