@@ -1,0 +1,1268 @@
+{
+  "format": "bitume-revue-troll-poursuite-v1",
+  "dateUTC": "2026-11-20T21:31:52.280958+00:00",
+  "ci": {
+    "run_id": 44818836198,
+    "run_url": "https://github.com/M4D135/bitume/actions/runs/44818836198",
+    "conclusion": "failure",
+    "head_sha": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+    "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
+    "created_at": "2026-11-20T21:16:23Z",
+    "updated_at": "2026-11-20T21:28:09Z",
+    "artifact_id": 14671183383,
+    "artifact_name": "bitume-troll-duo-poursuite-3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+    "zip_digest": "sha256:3f176dad8ea040557d12a94dcf98f711035693e4f3bd46bec41de3922f982147",
+    "zip_octets": 9603432,
+    "job_id": 136574106932
+  },
+  "archive": {
+    "fichier": "/workspace/scratch/d61843ca5396/qa/14671183383/artifact.zip",
+    "sha256": "3f176dad8ea040557d12a94dcf98f711035693e4f3bd46bec41de3922f982147",
+    "octets": 9603432,
+    "digestGitHubConforme": true,
+    "extraction": "Chemins relatifs sans parent .., chemin absolu, antislash ni lien symbolique ; extraction sous le dossier de cet artefact."
+  },
+  "identite": {
+    "version": "V0.2.70",
+    "htmlSha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+    "htmlOctets": 14502704,
+    "commit": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+    "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
+    "traceNonSuivieDeclaree": [
+      "?? qualification/"
+    ],
+    "htmlInchangeParRapportCockpit0270": true
+  },
+  "conclusion": {
+    "statut": "partiel_non_clos",
+    "qualificationComplete": false,
+    "blocageQualification": true,
+    "blocageFrancVisuelObserveSurImagesDisponibles": false,
+    "raison": "11 images sur 13 : expiration de Page.captureScreenshot ; les phases maintien-apres-delai et relachement manquent. Aucun succès de campagne ni de qualification poursuite ne peut être prononcé.",
+    "imagesAttendues": 13,
+    "imagesPresentes": 11,
+    "imagesOuvertesEtExaminees": 11,
+    "imagesManquantes": [
+      "0011.png",
+      "0012.png"
+    ],
+    "phasesManquantes": [
+      "maintien-apres-delai",
+      "relachement"
+    ]
+  },
+  "methode": {
+    "visuel": "Les onze PNG disponibles ont été ouverts individuellement avec view_image ; aucune image reconstruite. L’inspection partielle sert à détecter un défaut concret et ne clôt pas la séquence.",
+    "integrite": "SHA256/taille de chaque PNG recalculés et comparés au manifeste du rapport agrégé.",
+    "campagne": "Aucune relance ni capture locale."
+  },
+  "diagnostic": {
+    "fatal": "Error: DevTools expiré : Page.captureScreenshot\n    at Timeout._onTimeout (file:///home/runner/work/bitume/bitume/tools/controle-visuel.mjs:175:88)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)",
+    "erreursAgregees": [
+      "Error: DevTools expiré : Page.captureScreenshot",
+      "Séquence temporelle incomplète",
+      "Observation absente : maintien-apres-delai",
+      "Observation absente : relachement"
+    ],
+    "causeImmediate": "La commande DevTools Page.captureScreenshot ne répond pas avant la borne existante de120000 ms de la campagne Troll. Ce run ne s’est pas arrêté sur le timeout global de18 minutes.",
+    "dernierInstantArchive": 2.15,
+    "prochainInstantPrevu": 2.8,
+    "cheminDeCode": "Avant l’image11, avantImage fait avancer 12 pas de50 ms dans une seule Runtime.evaluate (2,15 vers2,75), puis capturer ajoute le pas final de50 ms, lit/vérifie l’état et demande le PNG. L’observateur vient après le PNG ; il n’existe donc pas d’observation persistée de l’image11.",
+    "hypothese": "L’intervalle le plus long peut accumuler des rendus natifs sans rendre la main au navigateur, puis bloquer la capture/composition logicielle. C’est une hypothèse étayée par le point d’arrêt récurrent et la boucle embarquée, pas une preuve d’un défaut de physique ou d’expression du pilote.",
+    "diagnosticLimite": "Pas de trace conservée du GPU/compositeur au moment du timeout ; aucune cause racine WebGL/runtime ne peut être définitivement exclue par ces seules preuves.",
+    "propositionAutoriseeParParent": "Déplacer la boucle temporelle dans le pilote Node : au plus un pas natif par commande, même limite80, mêmes13instants, événements CDP fiables dans le même ordre ; propager les erreurs et tracer les phases. Ne changer ni seuil, ni délai, ni renderer.",
+    "runtimeModifie": false,
+    "nouvelleCampagneLancee": false
+  },
+  "raccordAssemble": {
+    "fichier": "/workspace/scratch/d61843ca5396/qa/14671183383/raccord-assemble.json",
+    "sha256": "219254c26eab1021f68a38564c9a65415a02adb9488194dbdc5dd689de5b5c22",
+    "poses": 5080,
+    "echecs": 0,
+    "controles": [
+      {
+        "nom": "J1-J2-temporalite-et-poses",
+        "statut": "ok"
+      },
+      {
+        "nom": "ID-locaux-non-contigus",
+        "statut": "ok"
+      },
+      {
+        "nom": "clavier-repetition-delai-independance",
+        "statut": "ok"
+      },
+      {
+        "nom": "rapport-differe-depart-commun",
+        "statut": "ok"
+      }
+    ],
+    "qualificationWebGL": false,
+    "ecouteAudio": false,
+    "limites": [
+      "Modules et raccords extraits du HTML identifié, sans exécution de la page complète.",
+      "Événements DOM, état de course, horloge et API Web Audio simulés ; aucun appui matériel ni audio entendu.",
+      "Vraies géométries et poses procédurales, sans rasterisation, shaders, inspection WebGL ni contrôle visuel du naturel.",
+      "Aucun essai PhysX, réseau entre machines, allocation en navigateur ou performance matérielle.",
+      "Cette preuve complète les captures du candidat ; elle ne clôt pas la validation visuelle du jeu assemblé."
+    ]
+  },
+  "raccordSonEtChronologie": {
+    "configuration": [
+      {
+        "joueur": "J1",
+        "geste": "poing",
+        "cote": "gauche",
+        "klaxon": "ancien"
+      },
+      {
+        "joueur": "J2",
+        "geste": "salut",
+        "cote": "droite",
+        "klaxon": "mariage"
+      }
+    ],
+    "observations": "Départ J1 àt=0,05s, J2 àt=0,20s ; montées et plateaux indépendants, puis retour J1 et retour J2. Àt=2,15s, expressions nulles et mains/poses déclarées revenues au repos.",
+    "audio": "Compteur joues 0→1→2, ignores0, aucune réémission à la première répétition. API WebAudio réelle déclarée active dans le navigateur ; aucune écoute effectuée. Le banc assemblé utilise une API audio simulée.",
+    "limite": "Le maintien après délai et le relâchement ne sont pas capturés dans cette vue et restent non qualifiés."
+  },
+  "limitesVisuelles": [
+    "Les pilotes sont petits dans le cadrage de poursuite : des mains levées sont discernables, mais doigts, attaches, contacts avec commandes et dégagements fins ne sont pas qualifiables.",
+    "Les faces des miroirs ne sont pas inspectables depuis cette vue arrière ; le scénario désactive les toiles de rétroviseur. La revue cockpit fournit leur contrôle distinct.",
+    "Voitures immobiles et rAF commandé sous SwiftShader : aucune performance matérielle, fluidité réelle ou conduite qualifiée.",
+    "Aucune écoute audio, aucun périphérique physique ni réseau entre machines qualifié.",
+    "Les deux dernières images manquantes interdisent la clôture."
+  ],
+  "rapport": {
+    "fichier": "/workspace/scratch/d61843ca5396/qa/14671183383/images/duo-poursuite/rapport.json",
+    "sha256": "62e5b7e32d46b01dfcbf25e95a3822eeb58d8a7537a176ec756cbd24cb39f36d",
+    "erreurs": [],
+    "avertissements": [],
+    "alertes": [],
+    "fatal": "Error: DevTools expiré : Page.captureScreenshot\n    at Timeout._onTimeout (file:///home/runner/work/bitume/bitume/tools/controle-visuel.mjs:175:88)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)"
+  },
+  "images": [
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671183383/images/duo-poursuite/0000.png",
+      "sha256": "71132ec940333268547740bdcad7dd97b5ea8cf0ce8c3d08c79b097af2097744",
+      "octets": 867584,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteConforme": true,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "phase": "repos",
+      "tempsRelatif": 0,
+      "observationVisuelle": "Deux scènes de poursuite normalement rendues, voiture rouge J1 en haut et blanche J2 en bas ; aucune main levée nettement visible au repos.",
+      "blocageFrancVisuelObserve": false,
+      "mesuresRapport": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 0,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 0,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 0,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 0,
+          "pilote": -1,
+          "geste": null,
+          "klaxon": "classique",
+          "instant": 0,
+          "cote": -1
+        },
+        "audioEvenement": {
+          "klaxon": "classique",
+          "gain": 0,
+          "pan": 0
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671183383/images/duo-poursuite/0001.png",
+      "sha256": "ac47b05d617bf5fc435cca12e0ca847677694e1cd28b151f20041cedab95db89",
+      "octets": 867718,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteConforme": true,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "phase": "j1-debut",
+      "tempsRelatif": 0.04999999999999982,
+      "observationVisuelle": "Les deux voitures et le décor restent rendus ; J1 est à l’instant de déclenchement, sans déplacement de main nettement lisible à cette échelle.",
+      "blocageFrancVisuelObserve": false,
+      "mesuresRapport": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 1,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 0,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 1,
+          "pilote": 0,
+          "geste": "poing",
+          "klaxon": "ancien",
+          "instant": 6.291666666666665,
+          "cote": -1
+        },
+        "audioEvenement": {
+          "klaxon": "ancien",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671183383/images/duo-poursuite/0002.png",
+      "sha256": "34f6925f1a6611f31f85283048368cbac6c93ed30b6021d0e17cab3b35d6866d",
+      "octets": 867560,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteConforme": true,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "phase": "j1-montee",
+      "tempsRelatif": 0.14999999999999947,
+      "observationVisuelle": "Début de geste de J1 discret et partiellement masqué par coque/casque ; J2 demeure visuellement au repos, aucune disparition de scène.",
+      "blocageFrancVisuelObserve": false,
+      "mesuresRapport": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 1,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 0,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 1,
+          "pilote": 0,
+          "geste": "poing",
+          "klaxon": "ancien",
+          "instant": 6.291666666666665,
+          "cote": -1
+        },
+        "audioEvenement": {
+          "klaxon": "ancien",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.07142857142857117,
+              "gesteCote": -1,
+              "gesteIntensite": 0.3761574074074053,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "addab402"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671183383/images/duo-poursuite/0003.png",
+      "sha256": "a38bcbe531ce04741e5b99e0714a2f4d200c8865daa18350a619949f844b21cb",
+      "octets": 867731,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteConforme": true,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "phase": "j2-debut",
+      "tempsRelatif": 0.1999999999999993,
+      "observationVisuelle": "J1 poursuit sa montée ; départ J2 à intensité nulle déclaré dans le rapport. Le cadrage arrière ne permet pas une mesure visuelle précise des doigts.",
+      "blocageFrancVisuelObserve": false,
+      "mesuresRapport": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.10714285714285676,
+              "gesteCote": -1,
+              "gesteIntensite": 0.6835937499999969,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "44dee8d6"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0,
+              "gesteCote": 1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671183383/images/duo-poursuite/0004.png",
+      "sha256": "c52a106adfd66540c311c2c79af757fde09dd5945f5b42579bc2aea2d897d915",
+      "octets": 868047,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteConforme": true,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "phase": "montees",
+      "tempsRelatif": 0.34999999999999876,
+      "observationVisuelle": "Petite main rouge levée discernable près du côté gauche du casque J1 ; un petit mouvement apparaît à droite du casque J2. Coques, roues et casques restent présents.",
+      "blocageFrancVisuelObserve": false,
+      "mesuresRapport": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.21428571428571352,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "58d4cd08"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.08333333333333304,
+              "gesteCote": 1,
+              "gesteIntensite": 0.6835937499999969,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "3e0f8427"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671183383/images/duo-poursuite/0005.png",
+      "sha256": "c6ed53fbe496fc11e836501dc3e5027494cab26fb13df03e99ca89def01337bc",
+      "octets": 868032,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteConforme": true,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "phase": "plateau",
+      "tempsRelatif": 0.5999999999999979,
+      "observationVisuelle": "Positions levées discernables près des deux casques ; la silhouette des doigts reste trop petite pour une qualification détaillée du poing et du salut.",
+      "blocageFrancVisuelObserve": false,
+      "mesuresRapport": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.39285714285714146,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "1ed38a69"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.22222222222222143,
+              "gesteCote": 1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "962ba7ae"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671183383/images/duo-poursuite/0006.png",
+      "sha256": "43c070527163e0c981523690631fd8a1354bb67740e0fc8e61c1c6bde043a151",
+      "octets": 867625,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteConforme": true,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "phase": "plateau-fin",
+      "tempsRelatif": 1.0499999999999963,
+      "observationVisuelle": "Les deux gestes restent discernables près des casques au plateau ; aucune rupture franche de la silhouette des voitures ni écran noir.",
+      "blocageFrancVisuelObserve": false,
+      "mesuresRapport": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.7142857142857117,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "9ed47860"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.47222222222222054,
+              "gesteCote": 1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "7815a021"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671183383/images/duo-poursuite/0007.png",
+      "sha256": "f7d24d5641ad3952f1e3df5cebac217e45473c823c01234ef298124ee486bfdc",
+      "octets": 867339,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteConforme": true,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "phase": "retour-j1",
+      "tempsRelatif": 1.2999999999999954,
+      "observationVisuelle": "La main de J1 redescend et devient masquée par la coque ; celle de J2 reste près du casque. Ordre cohérent avec le retour J1 déclaré.",
+      "blocageFrancVisuelObserve": false,
+      "mesuresRapport": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.8928571428571398,
+              "gesteCote": -1,
+              "gesteIntensite": 0.376157407407425,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "a2831ddb"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.6111111111111089,
+              "gesteCote": 1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "7fa8c5f9"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671183383/images/duo-poursuite/0008.png",
+      "sha256": "8dde6d0f643cc6591c79fd199379c3c57d958c6319308ec43a80017fd19b44e8",
+      "octets": 867394,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteConforme": true,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "phase": "j1-termine",
+      "tempsRelatif": 1.5499999999999945,
+      "observationVisuelle": "J1 retrouve une silhouette de repos ; petite main J2 encore levée. Les deux scènes restent normalement rendues.",
+      "blocageFrancVisuelObserve": false,
+      "mesuresRapport": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.7499999999999973,
+              "gesteCote": 1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "bcbdfeb2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671183383/images/duo-poursuite/0009.png",
+      "sha256": "604a2ac84821f3da6b590d7865e4fc9c448f3154326a37608fb6b76538b77bb5",
+      "octets": 867256,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteConforme": true,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "phase": "retour-j2",
+      "tempsRelatif": 1.7999999999999954,
+      "observationVisuelle": "Le geste de J2 devient moins visible au retour derrière la coque ; J1 reste au repos, aucune anomalie franche de rendu.",
+      "blocageFrancVisuelObserve": false,
+      "mesuresRapport": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.8888888888888867,
+              "gesteCote": 1,
+              "gesteIntensite": 0.582990397805229,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "7468de72"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671183383/images/duo-poursuite/0010.png",
+      "sha256": "6808d772f0e68e6e8862ea192ba63b83921de6b0eab6b6e440c6543ed309082e",
+      "octets": 867703,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteConforme": true,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "phase": "repos-final",
+      "tempsRelatif": 2.1500000000000004,
+      "observationVisuelle": "Les deux voitures retrouvent leur silhouette de repos. Dernier PNG disponible, avant les phases maintien après délai et relâchement absentes.",
+      "blocageFrancVisuelObserve": false,
+      "mesuresRapport": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": 1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

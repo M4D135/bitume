@@ -1,0 +1,49 @@
+✖ HUD de référence : les preuves absentes ou invalides restent des échecs structurels (4.053995ms)
+✖ référence paysage : intersection de glace réelle, supérieure au seuil et explicitement constatée aux deux poses (4.315464ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 85.024912
+
+✖ failing tests:
+
+test at verifications/captures-habitacle.test.mjs:340:1
+✖ HUD de référence : les preuves absentes ou invalides restent des échecs structurels (4.053995ms)
+  AssertionError [ERR_ASSERTION]: q => { delete q.hud; }
+      at TestContext.<anonymous> (file:///workspace/scratch/d61843ca5396/bitume/verifications/captures-habitacle.test.mjs:350:43)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at verifications/captures-habitacle.test.mjs:354:1
+✖ référence paysage : intersection de glace réelle, supérieure au seuil et explicitement constatée aux deux poses (4.315464ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(verifierHabitacle(libre, s, false).some(e => /masque HUD connu/.test(e)))
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/d61843ca5396/bitume/verifications/captures-habitacle.test.mjs:357:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

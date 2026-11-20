@@ -1,0 +1,28 @@
+troll 12/13 maintien-apres-delai : lecture-horloge
+troll 12/13 maintien-apres-delai : avance-horloge
+troll 12/13 maintien-apres-delai : entrees-cdp
+troll 12/13 maintien-apres-delai : attente-capture
+troll 13/13 relachement : lecture-horloge
+troll 13/13 relachement : avance-horloge
+troll 13/13 relachement : entrees-cdp
+troll 13/13 relachement : attente-capture
+troll 12/13 maintien-apres-delai : lecture-horloge
+troll 12/13 maintien-apres-delai : avance-horloge
+troll 12/13 maintien-apres-delai : lecture-horloge
+troll 12/13 maintien-apres-delai : avance-horloge
+✔ la campagne exige un HTML identifié, deux vraies vues duo et tous les instants (1.895533ms)
+✔ les deux séquences cohérentes satisfont le contrat sans confondre identifiants et places (2.959541ms)
+✔ les faux succès audio et le déclenchement contournant les vrais appuis sont refusés (5.972532ms)
+✔ une pose figée, une montée manquante et un retour incomplet ne closent pas le pilote (1.368881ms)
+✔ la seconde vue, les quatre rétros et le vrai WebGL font partie de la preuve (1.246129ms)
+✔ le vrai pilote avance la vraie horloge entre deux instants sans regrouper les rendus (4.489031ms)
+✔ une interruption du pilote interrompt les pas et empêche les événements suivants (1.862864ms)
+✔ une horloge de rendu arrêtée conserve la borne de quatre-vingts pas (2.376426ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27.824465

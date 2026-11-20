@@ -5,16 +5,16 @@
     "version_publiee_verifiee": "0.2.69",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "candidat_cockpit_pluie_0270_en_qualification",
+    "statut": "candidat_0271_en_qualification_cockpit_pluie_HUD",
     "lot": "00D_cockpit_pluie",
     "fiche": "docs/reprise/COCKPIT-PLUIE-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "033",
-    "prochaine_action": "Recevoir et inspecter les captures cockpit/Troll/pluie du HTML exact et sa CI avant publication normale sur main.",
+    "derniere_entree": "034",
+    "prochaine_action": "Recevoir la CI complète et les nouveaux PNG cockpit/Troll/pluie du HTML 0.2.71 exact, inspecter les masques HUD puis décider la fusion normale de PR 44.",
     "dernier_lot_clos": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
-    "entree_journal": "033",
+    "entree_journal": "034",
     "dernieres_demandes": "docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md",
@@ -24,7 +24,7 @@
     "dernier_lot_coordination_clos": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
     "runtime_modifie_par_coordination_portee": "0.2.69 publié sur main et contenu reçu vérifié.",
     "preuve_t3": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
-    "reserve_lisibilite_cockpit": "Défaut bloquant signalé par photo utilisateur : volant/tableau trop hauts et glaces superposées. La projection seule de 0.2.69 ne prouvait pas la route libre. Correction géométrique et rayons sur vrais triangles en cours.",
+    "reserve_lisibilite_cockpit": "Géométrie 0.2.70 reçue, mais HUD bloquant confirmé en paysage et duo haut/bas : classement et carte sur les glaces, annonce sur la route. Grand format Mac incomplet. Correctif HUD et contrôle DOM en préparation.",
     "alerte_budget_decor": {
       "statut": "ouvert",
       "run": 44803588903,
@@ -37,8 +37,9 @@
     "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
     "tete_qualifiee": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
     "pr_publiee": 42,
-    "branche_candidate": "codex/bitume-cockpit-pluie-20261120",
-    "version_candidate": "0.2.70"
+    "branche_candidate": "codex/bitume-0271-hud-20261120",
+    "version_candidate": "0.2.71",
+    "branche_pr": "codex/bitume-cockpit-pluie-20261120"
   },
   "publication": {
     "version": "0.2.69",
@@ -897,5 +898,40 @@
     "push_force": false,
     "date_commit_fusion_utc": "2026-11-20T19:52:29Z"
   },
-  "suite_portee": "Suivi distinct des sources Monaco, conservé ; la prochaine action de coordination figure dans etat_courant."
+  "suite_portee": "Suivi distinct des sources Monaco, conservé ; la prochaine action de coordination figure dans etat_courant.",
+  "qualification_cockpit_pluie_0270": {
+    "commit_outils": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+    "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
+    "html_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+    "html_octets": 14502704,
+    "ci_complete": {
+      "run": 44818836125,
+      "statut": "success",
+      "suites_node": 179,
+      "echecs": 0,
+      "tests_python": 8,
+      "sources_verifiees": 3852,
+      "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/ci-finale-0270/RECEPTION-CI.json"
+    },
+    "statut_visuel": "bloque",
+    "recu_cockpit": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/REVUE-COCKPIT-0270.json",
+    "impact": "cinq PNG inspectés, même goutte et cinq instants conformes",
+    "troll_poursuite": "11 PNG sur 13 ; maintien après délai et relâchement absents",
+    "meteo_historique": "Six jobs réussis, un annulé ; passage legere absent",
+    "fusion_autorisee_par_qualification": false,
+    "reserves_decor_ms": [
+      172,
+      152
+    ]
+  },
+  "candidat_cockpit_pluie_0271": {
+    "branche": "codex/bitume-0271-hud-20261120",
+    "base": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+    "html_sha256": "0e4cdb72ecceb434c086a6bdc365346cfac1900871b95afadd96932cb3fd8ce3",
+    "html_octets": 14507449,
+    "sources_sha256": "fd4eefe258dc634ab197a6690a77c15a254aa676320078a433430814e3c2200f",
+    "recu_local": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0271/VALIDATION-LOCALE.json",
+    "qualification_visuelle": "en_attente",
+    "fusionnee": false
+  }
 }

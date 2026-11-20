@@ -20,10 +20,14 @@ export const SCENARIOS_HABITACLE = Object.freeze([
   { id: 'lod-simple', lod: 'simple', fov: 60 }
 ].map(s => Object.freeze({ images: 2, chauffe: 24, pas: 1 / 60, fov: 40, ...s })));
 
-// Campagne ciblée : dix vues du siège (deux états pour cinq dispositions), deux vues extérieures.
+// Campagne ciblée : deux états par disposition, préférences du petit paysage et vues extérieures.
 export const SCENARIOS_COCKPIT = Object.freeze([
   { id: 'cockpit-mac', cockpit: true, taille: '1440,900' },
   { id: 'cockpit-paysage', cockpit: true, taille: '1280,720' },
+  { id: 'cockpit-compact', cockpit: true, taille: '960,540', rival: 18,
+    cartePosition: 'droite', carteTaille: 'normale', tableau: 'reduit' },
+  { id: 'cockpit-carte-gauche', cockpit: true, taille: '960,540', rival: 18,
+    cartePosition: 'gauche', carteTaille: 'grande', tableau: 'complet' },
   { id: 'cockpit-vertical', cockpit: true, taille: '540,960' },
   { id: 'cockpit-duo-haut-bas', cockpit: true, taille: '1440,900', duo: true, partage: 'haut-bas' },
   { id: 'cockpit-duo-cote', cockpit: true, taille: '1440,900', duo: true, partage: 'cote' },
@@ -36,11 +40,12 @@ export function optionsHabitacle(argv) {
   const o = {};
   for (let i = 0; i < argv.length; i += 2) {
     const k = argv[i].replace(/^--/, '');
-    if (!argv[i].startsWith('--') || !['url', 'avant', 'sortie', 'chrome', 'cas', 'taille'].includes(k) ||
+    if (!argv[i].startsWith('--') || !['url', 'avant', 'sortie', 'chrome', 'cas', 'taille', 'reference-seule'].includes(k) ||
       o[k] !== undefined || !argv[i + 1] || argv[i + 1].startsWith('--')) throw new Error('Option inconnue, répétée ou valeur absente : ' + argv[i]);
     o[k] = argv[i + 1];
   }
   if (!o.url || !o.sortie) throw new Error('--url file: et --sortie nécessaires');
+  if (o['reference-seule'] && (o['reference-seule'] !== 'oui' || o.avant)) throw new Error('--reference-seule oui exige une seule URL de référence');
   for (const k of ['url', 'avant']) if (o[k] && new URL(o[k]).protocol !== 'file:') throw new Error('URL file: nécessaire pour identifier le HTML exact');
   o.cas = o.cas ? o.cas.split(',') : SCENARIOS_HABITACLE.map(s => s.id);
   if (!o.cas.length || new Set(o.cas).size !== o.cas.length || o.cas.some(id => !TOUS_SCENARIOS.some(s => s.id === id))) throw new Error('Scénario habitacle inconnu ou dupliqué');
@@ -67,10 +72,13 @@ export function preparerHabitacle(s) {
   const J = BITUME_JEU, B = BITUME, S = J.session, co = S.course, sujet = co.joueur.id;
   if (S.type !== (s.duo ? 'duo' : 'course') || !S.reference) throw new Error('Séance réelle de référence requise');
   S.acc = -1; J.pauseAuto = false; J.reglages.secousses = 0; J.camera = null;
+  Object.assign(J.reglages, { carte: 'oui', cartePosition: s.cartePosition || 'droite',
+    carteTaille: s.carteTaille || 'normale', tableau: s.tableau || 'reduit', annoncesVirages: 'ecran' });
   co.horloge = co.temps = 12;
   for (const v of co.voitures) {
     const second = s.duo && v.id === S.locaux[1];
-    const abscisse = v.id === sujet ? 280 : second ? 200 : 430 + v.id * 12, q = B.circuit.echantillon(co.c, abscisse);
+    const rival = s.rival && v.id === (sujet === 0 ? 1 : 0);
+    const abscisse = v.id === sujet ? 280 : second ? 200 : rival ? 280 + s.rival : 430 + v.id * 12, q = B.circuit.echantillon(co.c, abscisse);
     const e = v.etat, volant = v.id === sujet ? s.volant || 0 : 0;
     Object.assign(e, { s: abscisse, d: 0, v: 35, psi: 0, beta: 0, volant, braquage: volant * .12,
       rapport: 3, regime: 9000, alat: 0, along: 0, y: q.y, tangage: Math.atan(q.pente || 0), roulis: q.devers || 0 });
@@ -120,6 +128,8 @@ export function preparerHabitacle(s) {
   const avancer = __BITUME_CAPTURE.avancer;
   __BITUME_CAPTURE.avancer = ms => { co.horloge += ms / 1000; co.temps = co.horloge; return avancer(ms); };
   return { entree: 'BITUME_JEU.reference', type: S.type, sujet, posesPrescrites: true, cameraPrescrite: !s.cockpit,
+    reglagesHud: { carte: J.reglages.carte, cartePosition: J.reglages.cartePosition,
+      carteTaille: J.reglages.carteTaille, tableau: J.reglages.tableau }, rivalDistance: s.rival || null,
     graineExpression, simulationConduite: false, description: 'Vrai modèle et vrai renderer ; caméra d’inspection via API pour les vues extérieures, caméra réelle du siège en cockpit.' };
 }
 
@@ -175,6 +185,9 @@ export function observerHabitacle() {
   const hit = S.course.physique.world.raycast(cam.pos, direction.map(x => x / distance), Math.max(0, distance - .15), { mask: 3, staticOnly: true });
   const gl = J.rendu.gl;
   return { type: S.type, ecran: J.ecran, vue: S.vue, vue2: S.vueJ2?.vue || null, instant: F.instant || null, cameraImposee: J.camera !== null,
+    reglagesHud: { carte: J.reglages.carte, cartePosition: J.reglages.cartePosition,
+      carteTaille: J.reglages.carteTaille, tableau: J.reglages.tableau },
+    rivalDistance: F.scenario.rival ? S.course.voitures[F.sujet === 0 ? 1 : 0].etat.s - v.etat.s : null,
     camera: { pos: [...cam.pos], yaw: cam.yaw, pitch: cam.pitch, roll: cam.roll || 0, fov: cam.fov, near: cam.near },
     cameraPrescrite: F.cameraPrescrite, distanceLOD: F.distanceLOD, obstructionStatique: !!hit.hit,
     glErreur: gl.getError(), glPerdu: gl.isContextLost(), temps: S.tRendu, pose: { ...p }, oeilVoiture: [...B.voiture.OEIL],
@@ -192,6 +205,22 @@ export function observerHabitacle() {
 export function verifierHabitacle(r, s, candidat = true) {
   const fautes = [];
   const cameraValide = c => Array.isArray(c?.pos) && c.pos.length === 3 && c.pos.every(Number.isFinite) && [c.yaw, c.pitch, c.fov].every(Number.isFinite);
+  const hudValide = (q, joueur) => {
+    const h = q?.hud, racine = joueur === 2 ? 'hud2' : 'hud';
+    if (h?.observe !== true || h.joueur !== joueur || h.racine !== racine || !Array.isArray(h.rectangles) || !h.rectangles.length ||
+      h.rectangles.some(r => !r || typeof r.id !== 'string' || !r.id.startsWith(racine + ':') ||
+        ![r.x, r.y, r.width, r.height].every(Number.isFinite) || r.width <= 0 || r.height <= 0)) return false;
+    const ids = new Set(h.rectangles.map(r => r.id)), roles = ['volant', 'gant-0', 'gant-1'];
+    if (ids.size !== h.rectangles.length) return false;
+    const recouvrementValide = (aire, parties) => Number.isFinite(aire) && aire >= 0 && Array.isArray(parties) &&
+      parties.every(p => p && ids.has(p.id) && Number.isFinite(p.airePx2) && p.airePx2 > 0) &&
+      parties.reduce((s, p) => s + p.airePx2, 0) === aire;
+    return Array.isArray(h.commandes) && h.commandes.length === roles.length && new Set(h.commandes.map(c => c?.role)).size === roles.length &&
+      h.commandes.every(c => roles.includes(c?.role) && recouvrementValide(c.recouvrementPx2, c.recouvrements)) &&
+      Array.isArray(q.glaces) && q.glaces.length === 2 && q.glaces.every(g => g?.valide === true && recouvrementValide(g.hudRecouvrementPx2, g.hudRecouvrements)) &&
+      Array.isArray(q.route?.points) && q.route.points.length === 20 && q.route.points.every(p => Array.isArray(p?.hud) && p.hud.every(id => ids.has(id))) &&
+      Array.isArray(q.erreurs) && !q.erreurs.some(e => /^(Données HUD|Rectangle HUD)/.test(e));
+  };
   if (r.fatal) fautes.push(r.fatal.split('\n')[0]);
   for (const e of r.erreurs || []) fautes.push('Erreur page : ' + e);
   for (const e of r.avertissements || []) if (/GL_INVALID|shader.*(error|failed)|GLSL|context lost/i.test(e)) fautes.push('Erreur graphique : ' + e);
@@ -206,6 +235,9 @@ export function verifierHabitacle(r, s, candidat = true) {
     if (!o) { fautes.push('Observation absente'); continue; }
     if (o.type !== (s.duo ? 'duo' : 'course') || o.ecran !== 'course' || o.vue !== (s.cockpit ? 'cockpit' : 'poursuite') || s.duo && o.vue2 !== 'cockpit') fautes.push('Vue réelle différente de la demande');
     if (o.cameraImposee !== !s.cockpit) fautes.push('Caméra de siège remplacée ou caméra d’inspection absente');
+    if (s.cartePosition && (o.reglagesHud?.carte !== 'oui' || o.reglagesHud.cartePosition !== s.cartePosition ||
+      o.reglagesHud.carteTaille !== s.carteTaille || o.reglagesHud.tableau !== s.tableau)) fautes.push('Préférences HUD prescrites non exercées');
+    if (s.rival && (!Number.isFinite(o.rivalDistance) || Math.abs(o.rivalDistance - s.rival) > 1e-9)) fautes.push('Rival natif à distance prescrite absent');
     if (!cameraValide(o.camera)) fautes.push('Caméra finale invalide');
     if (!s.cockpit && (!cameraValide(o.camera) || !cameraValide(o.cameraPrescrite) || ['yaw', 'pitch', 'fov'].some(k => Math.abs(o.camera[k] - o.cameraPrescrite[k]) > 1e-9) ||
       o.camera.pos.some((x, k) => Math.abs(x - o.cameraPrescrite.pos[k]) > 1e-9))) fautes.push('Caméra finale différente de l’inspection');
@@ -220,6 +252,12 @@ export function verifierHabitacle(r, s, candidat = true) {
         const q = vues.find(q => q.joueur === j + 1);
         if (!q || q.vitesse !== (i ? 80 : 0) || q.volant !== (i ? j ? -.65 : .65 : 0)) fautes.push('Vitesse/braquage J' + (j + 1) + ' non exercé');
         if (!q?.route || !q?.glaces || !Array.isArray(q?.erreurs)) fautes.push('Mesure réelle de chaussée/glaces absente');
+        // Une référence peut échouer à la lisibilité, mais jamais à la collecte des preuves.
+        if (!hudValide(q, j + 1)) fautes.push('Données HUD absentes ou invalides : J' + (j + 1));
+        if (!candidat && s.id === 'cockpit-paysage' && !(Array.isArray(q?.glaces) && Array.isArray(q?.erreurs) &&
+          q.glaces.some(g => Number.isFinite(g?.hudRecouvrementPx2) && g.hudRecouvrementPx2 > SEUILS_COCKPIT.recouvrementMaxPx2 &&
+            q.erreurs.includes('HUD superposé à la glace : ' + g.id))))
+          fautes.push('Le masque HUD connu de la référence n’a pas été détecté : image ' + i);
         if (candidat) for (const erreur of q?.erreurs || []) fautes.push('J' + (j + 1) + ' : ' + erreur);
       }
     }
@@ -245,10 +283,11 @@ export async function campagneHabitacle(o) {
     limites: ['Poses prescrites : aucun essai de conduite ni de performance matérielle.',
       'Les caméras extérieures sont des inspections via l’API du jeu ; les vues cockpit gardent sa vraie caméra.',
       'Les LOD sont sélectionnés par distance sans forcer le modèle ; leurs petits pixels ne prouvent pas le dégagement des bras.',
-      'La lisibilité ciblée mesure vingt rayons vers le vrai sol à 12/20/35/55 m, les triangles opaques de la voiture et les quadrilatères DOM des glaces ; elle ne couvre pas tout le circuit.',
+      'La lisibilité ciblée mesure vingt rayons vers le vrai sol à 12/20/35/55 m, les triangles opaques de la voiture, les quadrilatères DOM des glaces et les masques visibles du HUD ; elle ne couvre pas tout le circuit.',
       'La présence de pièces et les images ne prouvent ni absence d’intersection ni identité des sommets : contrôles géométriques séparés requis.',
       'Revue visuelle des PNG encore requise ; deux images ne constituent pas une qualification temporelle complète.'] };
-  for (const [variante, url] of [...(o.avant ? [['avant', o.avant]] : []), ['apres', o.url]]) for (const id of o.cas) {
+  const variantes = o['reference-seule'] === 'oui' ? [['avant', o.url]] : [...(o.avant ? [['avant', o.avant]] : []), ['apres', o.url]];
+  for (const [variante, url] of variantes) for (const id of o.cas) {
     const s = TOUS_SCENARIOS.find(s => s.id === id), dossier = path.join(variante, id), sortie = path.join(o.sortie, dossier);
     const p = optionsScenarioHabitacle(s, url, sortie, o);
     p.initialiser = ({ evaluer, rapport }) => {

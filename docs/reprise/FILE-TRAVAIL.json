@@ -11,7 +11,7 @@
     "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
   },
   "destinations_prevues": 17,
-  "lot_actif": "00C_publication_0269_close_reserves_cockpit_et_decor",
+  "lot_actif": "00D_cockpit_pluie_HUD_0271_en_qualification",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -450,6 +450,90 @@
       ],
       "prochain_sous_lot": "Mesurer dans des conditions comparables sans relever le seuil ni attribuer une cause non mesurée.",
       "cloture": "Écart expliqué et coût qualifié ; aucun gain matériel déclaré à partir de ce seul test."
+    },
+    {
+      "id": "transitions_vues_continues",
+      "objectif": "Transitions continues poursuite, arceau et cockpit, chaussée visible pendant tout le trajet",
+      "etat": "planned",
+      "dependances": [
+        "habitacle_pilote_commun"
+      ],
+      "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
+      "references": "docs/reprise/REFERENCES-VIDEO-ARCADE-SURVOL-2026-11-20.json",
+      "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
+      "proprietaire_propose": "00 avec 01 pour enveloppe pilote",
+      "cloture": "Captures temporelles, géométrie commune, J1/J2 indépendants, mouvement réduit et p15 conservés",
+      "runtime_livre": false
+    },
+    {
+      "id": "virages_inclines",
+      "objectif": "Virages relevés, dévers progressifs, surfaces dessinées et contacts PhysX cohérents",
+      "etat": "planned",
+      "dependances": [
+        "conduite"
+      ],
+      "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
+      "references": "docs/reprise/REFERENCES-VIDEO-ARCADE-SURVOL-2026-11-20.json",
+      "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
+      "proprietaire_propose": "04 avec coordination conduite/00",
+      "cloture": "Continuité chaussée/abords, IA et roulage sec/mouillé ; version physique séparée si surfaces de conduite modifiées",
+      "runtime_livre": false
+    },
+    {
+      "id": "panneaux_virages_animes",
+      "objectif": "Panneaux directionnels clignotants et lisibles avant freinage et le long des courbes",
+      "etat": "planned",
+      "dependances": [
+        "references"
+      ],
+      "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
+      "references": "docs/reprise/REFERENCES-VIDEO-ARCADE-SURVOL-2026-11-20.json",
+      "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
+      "proprietaire_propose": "04 avec raccords 00",
+      "cloture": "Sens/difficulté réels, distances, phase commune, lisibilité permanente et coût borné",
+      "runtime_livre": false
+    },
+    {
+      "id": "bandeaux_led_course",
+      "objectif": "Bandeaux LED procéduraux affichant drapeaux, tours, secteurs, stands et météo",
+      "etat": "planned",
+      "dependances": [
+        "references"
+      ],
+      "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
+      "references": "docs/reprise/REFERENCES-VIDEO-ARCADE-SURVOL-2026-11-20.json",
+      "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
+      "proprietaire_propose": "Nouveau module à attribuer ; raccords 00",
+      "cloture": "Messages français conformes à la course, cohérence J1/J2, grille préchargée et mises à jour bornées",
+      "runtime_livre": false
+    },
+    {
+      "id": "aeriens_helicopteres",
+      "objectif": "Hélicoptères visibles de retransmission survolant le peloton, rotors et trajectoires animés",
+      "etat": "planned",
+      "dependances": [
+        "references"
+      ],
+      "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
+      "references": "docs/reprise/REFERENCES-VIDEO-ARCADE-SURVOL-2026-11-20.json",
+      "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
+      "proprietaire_propose": "Nouveau module aérien à attribuer ; raccords 00, son 01, coûts 02",
+      "cloture": "Survol terrain/structures, vues/rétros cohérents, pools/LOD, audio synthétique ; p15 conservée au premier lot",
+      "runtime_livre": false
+    },
+    {
+      "id": "aeriens_drones_metal",
+      "objectif": "Drones de tournage issus des modèles procéduraux de METAL",
+      "etat": "planned",
+      "dependances": [
+        "references"
+      ],
+      "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
+      "references": "docs/reprise/REFERENCES-VIDEO-ARCADE-SURVOL-2026-11-20.json",
+      "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
+      "proprietaire_propose": "Même module aérien ; raccords 00, son 01, coûts 02",
+      "cloture": "Provenance METAL, adaptation repère/hauteur, rotors, LOD et pools ; aucun système de combat importé",
+      "runtime_livre": false
     }
   ],
   "lots_livres_a_preserver": [
@@ -638,5 +722,20 @@
       "cause": "non déterminée",
       "ci_pr_meme_arbre": "suite réussie, durées individuelles non enregistrées"
     }
+  },
+  "demandes_video_survol_2026_11_20": {
+    "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
+    "references": "docs/reprise/REFERENCES-VIDEO-ARCADE-SURVOL-2026-11-20.json",
+    "ids": [
+      "transitions_vues_continues",
+      "virages_inclines",
+      "panneaux_virages_animes",
+      "bandeaux_led_course",
+      "aeriens_helicopteres",
+      "aeriens_drones_metal"
+    ],
+    "etat": "demandes_enregistrees_implementation_planifiee",
+    "qualification_cockpit_pluie_independante": true,
+    "demandes_precedentes_preservees": true
   }
 }

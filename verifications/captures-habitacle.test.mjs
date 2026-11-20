@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import { optionsHabitacle, optionsScenarioHabitacle, SCENARIOS_HABITACLE, SCENARIOS_COCKPIT, verifierHabitacle, chaufferInstantCockpit } from '../tools/captures-habitacle.mjs';
 import { horlogeCapture } from '../tools/controle-visuel.mjs';
-import { SEUILS_COCKPIT, DISTANCES_ROUTE, BANDES_ROUTE, mesurerLisibiliteCockpit, installerObservationCockpit } from '../tools/qualification/cockpit-lisibilite.mjs';
+import { SEUILS_COCKPIT, DISTANCES_ROUTE, BANDES_ROUTE, mesurerLisibiliteCockpit, installerObservationCockpit, observerLisibiliteCockpit } from '../tools/qualification/cockpit-lisibilite.mjs';
 
 test('inspection bornée à neuf scènes et deux images, vrais cockpits et LOD par distance', () => {
   const base = ['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/habitacle'];
@@ -20,9 +20,19 @@ test('inspection bornée à neuf scènes et deux images, vrais cockpits et LOD p
   assert.throws(() => optionsHabitacle([...base, '--url', 'file:///tmp/b.html']));
 });
 
+test('référence seule : option explicite et exclusive du couple avant/après', () => {
+  const base = ['--url', 'file:///tmp/reference.html', '--sortie', '/tmp/reference', '--cas', 'cockpit-paysage'];
+  const o = optionsHabitacle([...base, '--reference-seule', 'oui']);
+  assert.equal(o['reference-seule'], 'oui');
+  assert.deepEqual(o.cas, ['cockpit-paysage']); assert.equal(o.url, 'file:///tmp/reference.html'); assert.equal(o.avant, undefined);
+  for (const valeur of ['non', 'true', '1']) assert.throws(() => optionsHabitacle([...base, '--reference-seule', valeur]));
+  assert.throws(() => optionsHabitacle([...base, '--reference-seule', 'oui', '--avant', 'file:///tmp/autre.html']));
+});
+
 function rapport(s) {
   const cam = { pos: [1, 2, 3], yaw: .2, pitch: -.1, roll: 0, fov: 40 };
   const o = { type: s.duo ? 'duo' : 'course', ecran: 'course', vue: s.cockpit ? 'cockpit' : 'poursuite', vue2: s.duo ? 'cockpit' : null, cameraImposee: !s.cockpit,
+    reglagesHud: { carte: 'oui', cartePosition: s.cartePosition || 'droite', carteTaille: s.carteTaille || 'normale', tableau: s.tableau || 'reduit' }, rivalDistance: s.rival || null,
     camera: cam, cameraPrescrite: s.cockpit ? null : structuredClone(cam), glErreur: 0, glPerdu: false,
     obstructionStatique: false, volant: s.volant || 0, rapport: 3, rapportAvant: s.passage ? 2 : 3, passage: .5,
     expression: { geste: s.geste || null, gesteIntensite: s.geste ? 1 : 0 },
@@ -51,10 +61,17 @@ test('identité exacte, caméra finale et état WebGL sont nécessaires même po
   }
 });
 
-test('qualification ciblée : douze PNG, cinq dispositions, deux vrais cockpits dans les deux partages', () => {
-  assert.equal(SCENARIOS_COCKPIT.reduce((n, s) => n + s.images, 0), 12);
+test('qualification ciblée : seize PNG, compact et préférence de carte, deux vrais cockpits dans les deux partages', () => {
+  assert.equal(SCENARIOS_COCKPIT.reduce((n, s) => n + s.images, 0), 16);
   const cas = SCENARIOS_COCKPIT.map(s => s.id).join(','), o = optionsHabitacle(['--url', 'file:///tmp/b.html', '--sortie', '/tmp/c', '--cas', cas]);
-  assert.equal(o.cas.length, 7);
+  assert.equal(o.cas.length, 9);
+  for (const id of ['cockpit-compact', 'cockpit-carte-gauche']) {
+    const s = SCENARIOS_COCKPIT.find(s => s.id === id);
+    assert(s?.cockpit); assert.equal(s.taille, '960,540'); assert.equal(s.images, 2);
+    assert.equal(s.chauffe, 24); assert.equal(s.pas, 1 / 60);
+    assert.equal(s.rival, 18);
+    assert.deepEqual([s.cartePosition, s.carteTaille, s.tableau], id === 'cockpit-compact' ? ['droite', 'normale', 'reduit'] : ['gauche', 'grande', 'complet']);
+  }
   for (const s of SCENARIOS_COCKPIT) {
     const p = optionsScenarioHabitacle(s, o.url, '/tmp/' + s.id, o);
     assert.deepEqual(p.taille, s.taille.split(',').map(Number)); assert.equal(p.images, s.images);
@@ -137,12 +154,27 @@ function sceneMesure(roll = 0) {
     const quad = [[cx - largeur / 2, cy - .03], [cx + largeur / 2, cy - .03], [cx + largeur / 2, cy + .03], [cx - largeur / 2, cy + .03]];
     return { id, visible: true, monde: quad.map(p => monde(p)), dom: quad.map(p => [p[0] * 1000, p[1] * 600]) };
   };
-  const d = { camera, viewport,
+  const d = { joueur: 1, camera, viewport,
+    hud: { observe: true, racine: 'hud', joueur: 1, rectangles: [{ id: 'hud:compteur', x: 20, y: 10, width: 120, height: 35 }] },
     triangles: [triangle('volant', [[.4, .84], [.6, .84], [.5, .65]]), triangle('gant-0', [[.31, .78], [.36, .78], [.335, .70]]),
       triangle('gant-1', [[.64, .78], [.69, .78], [.665, .70]])],
     route: DISTANCES_ROUTE.flatMap(distance => BANDES_ROUTE.map(bande => ({ distance, bande, point: [bande * 4, 0, -distance] }))),
     glaces: [glace('g', .2, .6), glace('d', .8, .6)] };
   return { d, triangle, glace };
+}
+
+function rapportCockpit(s, masqueHud = false) {
+  const r = rapport(s);
+  if (s.cockpit) for (const [i, im] of r.images.entries()) {
+    const o = im.observation; o.instant = i ? 'vitesse-braquage' : 'neutre'; o.volant = i ? .65 : 0;
+    o.lisibilite = Array.from({ length: s.duo ? 2 : 1 }, (_, j) => {
+      const { d } = sceneMesure(); d.joueur = j + 1; d.hud.joueur = j + 1; d.hud.racine = j ? 'hud2' : 'hud';
+      d.hud.rectangles.forEach(h => { h.id = d.hud.racine + ':compteur'; });
+      if (masqueHud) d.hud.rectangles.push({ id: d.hud.racine + ':classement:ligne0', x: 170, y: 350, width: 40, height: 20 });
+      return { joueur: j + 1, sujet: j, vitesse: i ? 80 : 0, volant: i ? j ? -.65 : .65 : 0, ...mesurerLisibiliteCockpit(d, SEUILS_COCKPIT) };
+    });
+  }
+  return r;
 }
 
 test('chaussée : vrai sol, faces opaques, plan proche et roulis, sans faux masque par les faces arrière', () => {
@@ -193,14 +225,97 @@ test('les quadrilatères/triangles importent, pas leur seule boîte, et les donn
   }
 });
 
+test('HUD : une glace, un point central de chaussée ou une commande masqués échouent aux seuils inchangés', () => {
+  const { d } = sceneMesure(), libre = mesurerLisibiliteCockpit(d, SEUILS_COCKPIT);
+  assert.deepEqual(libre.erreurs, []);
+  const rect = (x, y, width, height) => ({ id: 'hud:obstacle', x, y, width, height });
+  const mesurer = r => mesurerLisibiliteCockpit({ ...d, hud: { ...d.hud, rectangles: [r] } }, SEUILS_COCKPIT);
+  const glace = mesurer(rect(170, 350, 40, 20));
+  assert.equal(glace.glaces[0].recouvrementPx2, 0, 'le modèle seul ne masque pas la glace');
+  assert(glace.glaces[0].hudRecouvrementPx2 > SEUILS_COCKPIT.recouvrementMaxPx2);
+  assert(glace.erreurs.includes('HUD superposé à la glace : g'));
+  const point = libre.route.points.find(p => p.bande === 0).ecran;
+  const route = mesurer(rect(point[0] - 2, point[1] - 2, 4, 4));
+  assert.equal(route.route.cadree, 1); assert.equal(route.route.centreOcculte, .25);
+  assert(route.route.points.some(p => p.bande === 0 && p.hud.includes('hud:obstacle')));
+  assert(route.erreurs.some(e => /Chaussée utile occultée/.test(e)));
+  for (const [r, role] of [[rect(325, 434, 20, 20), 'gant-0'], [rect(490, 430, 20, 20), 'volant']]) {
+    const commande = mesurer(r);
+    assert(commande.hud.commandes.find(c => c.role === role).recouvrementPx2 > SEUILS_COCKPIT.recouvrementMaxPx2);
+    assert(commande.erreurs.includes('HUD superposé à la commande : ' + role));
+  }
+  assert.deepEqual(mesurer(rect(410, 405, 10, 10)).erreurs, [], 'un HUD dans la boîte du volant mais hors de ses triangles reste admis');
+});
+
+test('HUD : données absentes, incomplètes, invalides ou empruntées à l’autre joueur refusées', () => {
+  for (const changer of [d => { delete d.hud; }, d => { d.hud.observe = false; }, d => { d.hud.rectangles = []; },
+    d => { d.hud.rectangles[0] = null; }, d => { d.hud.rectangles[0].width = NaN; }, d => { d.hud.rectangles[0].height = -1; }, d => { d.hud.joueur = 2; }]) {
+    const { d } = sceneMesure(); changer(d);
+    assert(mesurerLisibiliteCockpit(d, SEUILS_COCKPIT).erreurs.some(e => /HUD/.test(e)));
+  }
+});
+
+test('HUD DOM : rectangles transformés propres à J1/J2, clipping et visibilité réelle sans conteneurs vides', () => {
+  const style = { display: 'block', visibility: 'visible', opacity: '1', overflowX: 'visible', overflowY: 'visible',
+    borderTopWidth: '0px', borderRightWidth: '0px', borderBottomWidth: '0px', borderLeftWidth: '0px', backgroundColor: 'rgba(0, 0, 0, 0)', backgroundImage: 'none' };
+  const element = (id, selecteur, rectangle, extra = {}) => ({ id, selecteur, hidden: false, textContent: 'visible',
+    parentElement: null, style: { ...style }, clientWidth: rectangle.width / .6, clientHeight: rectangle.height / .6,
+    getClientRects: () => [rectangle], getBoundingClientRect: () => rectangle, ...extra });
+  const racines = [0, 1].map(j => element(j ? 'hud2' : 'hud', '', { x: j * 720, y: 0, width: 720, height: 900 }));
+  const noeuds = racines.map((racine, j) => {
+    const x = j * 720;
+    const liste = [element('h-pos', '.compteurs > .case > *', { x: x + 12, y: 18, width: 60, height: 24 }),
+      element('c-position', '.compteurs > .case', { x: x + 12, y: 16, width: 60, height: 28 },
+        { style: { ...style, borderTopWidth: '2px', borderTopStyle: 'solid', borderTopColor: 'rgb(0, 200, 0)' } }),
+      element('carte', '#carte', { x: x + 700, y: 80, width: 60, height: 70 }),
+      element('transparent', '.hud-haut', { x, y: 0, width: 720, height: 900 }),
+      element('h-virage', '#h-virage', { x: x + 200, y: 60, width: 160, height: 40 }, { hidden: true }),
+      element('h-regime', '.tableau .regime', { x: x + 500, y: 700, width: 80, height: 40 }, { style: { ...style, display: 'none' } }),
+      element('b-pause', '#b-pause', { x: x + 650, y: 700, width: 40, height: 40 }, { style: { ...style, visibility: 'hidden' } }),
+      element('message', '#message', { x: x + 180, y: 200, width: 360, height: 50 }, { textContent: '' }),
+      element('sous-message', '#sous-message', { x: x + 180, y: 260, width: 360, height: 50 }, { style: { ...style, opacity: '0' } }),
+      element('h-fps', '#h-fps', { x: x + 20, y: 890, width: 60, height: 22 })];
+    for (const e of liste) e.parentElement = racine;
+    racine.querySelectorAll = selecteurs => liste.filter(e => selecteurs.split(',').map(s => s.trim()).includes(e.selecteur));
+    return liste;
+  });
+  const contexte = vm.createContext({ document: { getElementById: id => racines.find(r => r.id === id) }, getComputedStyle: e => e.style,
+    __HABITACLE_CAPTURE: { relever: true, releves: Object.fromEntries(racines.map((r, j) => [j, {
+      joueur: j + 1, sujet: j, viewport: { x: j * 720, y: 0, width: 720, height: 900 }, glaces: [] }])) } });
+  const observer = () => JSON.parse(JSON.stringify(vm.runInContext(`(${observerLisibiliteCockpit.toString()})(d => ({ hud: d.hud }), {})`, contexte)));
+  const avant = JSON.stringify(noeuds.map(l => l.map(e => ({ id: e.id, hidden: e.hidden, style: e.style, rect: e.getClientRects() }))));
+  const r = observer();
+  assert.equal(contexte.__HABITACLE_CAPTURE.relever, false);
+  for (let j = 0; j < 2; j++) {
+    assert.equal(r[j].hud.observe, true); assert.equal(r[j].hud.racine, racines[j].id); assert.equal(r[j].hud.joueur, j + 1);
+    const rectangles = r[j].hud.rectangles;
+    assert.equal(rectangles.length, 4, 'seuls compteur, filet peint, carte et FPS sont visibles');
+    const compteur = rectangles.find(e => e.id.includes('h-pos'));
+    assert.deepEqual([compteur.x, compteur.y, compteur.width, compteur.height], [j * 720 + 12, 18, 60, 24], 'rectangles écran après transformation, sans appliquer une seconde fois le scale duo');
+    const carte = rectangles.find(e => e.id.includes('carte'));
+    assert.deepEqual([carte.x, carte.width], [j * 720 + 700, 20], 'clip au bord du viewport du joueur');
+    assert.equal(rectangles.find(e => e.id.includes('h-fps')).height, 10);
+    const filet = rectangles.find(e => e.id.includes('bordure-Top'));
+    assert(Math.abs(filet.height - 1.2) < 1e-8, 'une bordure verte finissant par zéro dans rgb reste peinte et suit le scale');
+    assert(rectangles.every(e => e.id.startsWith(racines[j].id + ':')));
+  }
+  assert.equal(JSON.stringify(noeuds.map(l => l.map(e => ({ id: e.id, hidden: e.hidden, style: e.style, rect: e.getClientRects() })))), avant, 'aucune mutation de style ou disposition');
+  racines[1].style.overflowX = 'hidden'; racines[1].getBoundingClientRect().width = 715;
+  assert.equal(observer()[1].hud.rectangles.find(e => e.id.includes('carte')).width, 15, 'le clipping d’un ancêtre est respecté après transformation');
+  racines[1].style.opacity = '0';
+  assert.equal(observer()[1].hud.rectangles.length, 0, 'un parent transparent cache ses descendants');
+  racines[1].style.opacity = '1';
+  racines[1].style.display = 'none';
+  assert.equal(observer()[1].hud.rectangles.length, 0, 'un parent display:none cache ses descendants');
+  racines[1].style.display = 'block'; racines[1].hidden = true;
+  assert.equal(observer()[1].hud.rectangles.length, 0, 'hidden sur le HUD parent doit être respecté');
+  racines.pop();
+  assert.equal(observer()[1].hud, null, 'une racine absente reste une donnée absente');
+});
+
 test('le rapport exige les deux états, les deux joueurs et les erreurs réelles de géométrie', () => {
   for (const s of SCENARIOS_COCKPIT) {
-    const r = rapport(s);
-    if (s.cockpit) for (const [i, im] of r.images.entries()) {
-      const o = im.observation; o.instant = i ? 'vitesse-braquage' : 'neutre'; o.volant = i ? .65 : 0;
-      o.lisibilite = Array.from({ length: s.duo ? 2 : 1 }, (_, j) => ({ joueur: j + 1, sujet: j,
-        vitesse: i ? 80 : 0, volant: i ? j ? -.65 : .65 : 0, ...mesurerLisibiliteCockpit(sceneMesure().d, SEUILS_COCKPIT) }));
-    }
+    const r = rapportCockpit(s);
     assert.deepEqual(verifierHabitacle(r, s), [], s.id);
     if (!s.cockpit) continue;
     for (const changer of [x => { x.images[1].observation.instant = 'neutre'; },
@@ -213,7 +328,45 @@ test('le rapport exige les deux états, les deux joueurs et les erreurs réelles
       const faux = structuredClone(r); faux.images[0].observation.lisibilite[1].joueur = 1;
       assert(verifierHabitacle(faux, s).length);
     }
+    if (s.rival) for (const changer of [o => { o.rivalDistance += 1; }, o => { delete o.rivalDistance; },
+      o => { o.reglagesHud.carte = 'non'; }, o => { o.reglagesHud.cartePosition = 'absente'; },
+      o => { o.reglagesHud.carteTaille = 'absente'; }, o => { o.reglagesHud.tableau = 'absent'; }]) {
+      const faux = structuredClone(r); changer(faux.images[0].observation);
+      assert(verifierHabitacle(faux, s).length, 'préférences/rival du compact réellement prescrits');
+    }
   }
+});
+
+test('HUD de référence : les preuves absentes ou invalides restent des échecs structurels', () => {
+  const s = SCENARIOS_COCKPIT.find(s => s.id === 'cockpit-paysage'), r = rapportCockpit(s, true);
+  assert.deepEqual(verifierHabitacle(r, s, false), []);
+  for (const changer of [q => { delete q.hud; }, q => { q.hud.observe = false; }, q => { q.hud.racine = 'hud2'; },
+    q => { q.hud.joueur = 2; }, q => { q.hud.rectangles = []; }, q => { q.hud.rectangles[0].x = NaN; },
+    q => { q.hud.rectangles[0].height = 0; }, q => { q.hud.commandes.pop(); },
+    q => { q.hud.commandes[0].recouvrementPx2 = NaN; }, q => { delete q.glaces[0].hudRecouvrementPx2; },
+    q => { q.glaces[0].hudRecouvrements = null; }, q => { delete q.route.points[0].hud; },
+    q => { q.erreurs.push('Rectangle HUD invalide : hud:autre'); }, q => { q.erreurs.push('Données HUD absentes ou incomplètes'); }]) {
+    const faux = structuredClone(r); changer(faux.images[0].observation.lisibilite[0]);
+    for (const candidat of [false, true]) assert(verifierHabitacle(faux, s, candidat).some(e => /Données HUD/.test(e)), changer.toString());
+  }
+});
+
+test('référence paysage : intersection de glace réelle, supérieure au seuil et explicitement constatée aux deux poses', () => {
+  const s = SCENARIOS_COCKPIT.find(s => s.id === 'cockpit-paysage'), r = rapportCockpit(s, true), libre = rapportCockpit(s);
+  assert.deepEqual(verifierHabitacle(r, s, false), []);
+  assert(verifierHabitacle(libre, s, false).some(e => /masque HUD connu/.test(e)));
+  for (const changer of [
+    q => { q.erreurs = ['Données HUD absentes ou incomplètes']; },
+    q => { q.erreurs = ['Rectangle HUD invalide : hud:compteur']; },
+    q => { q.erreurs = ['HUD superposé à la glace : glace-inexistante']; },
+    q => { q.glaces[0].hudRecouvrementPx2 = SEUILS_COCKPIT.recouvrementMaxPx2; q.glaces[0].hudRecouvrements[0].airePx2 = SEUILS_COCKPIT.recouvrementMaxPx2; },
+    q => { q.glaces[0].hudRecouvrementPx2 = 0; q.glaces[0].hudRecouvrements = []; }
+  ]) {
+    const faux = structuredClone(r); changer(faux.images[0].observation.lisibilite[0]);
+    assert(verifierHabitacle(faux, s, false).length, changer.toString());
+  }
+  const uneSeulePose = structuredClone(r); uneSeulePose.images[1] = libre.images[1];
+  assert(verifierHabitacle(uneSeulePose, s, false).some(e => /masque HUD connu/.test(e)));
 });
 
 test('observation passive : même draw et mêmes arguments, copie distincte J2 puis J1 malgré la liste partagée', () => {

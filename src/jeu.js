@@ -2938,6 +2938,8 @@
     majGlaces(S, vue, cam, ps, sortie, S.ambianceImage, suivie, dtImage);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
+    const affichage = S.type === 'duo' && S !== session ? hud2 : $('hud');
+    if (affichage.dataset.vue !== vue) affichage.dataset.vue = vue;
     // En cockpit, la planche donne vitesse, rapport et régime : le tableau réduit retire plan et compteurs, qui
     // couvriraient les pneus avant.
     const reduit = vue === 'cockpit' && reglages.tableau === 'reduit' ? 'oui' : 'non';

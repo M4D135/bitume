@@ -48,6 +48,26 @@ export function mesurerLisibiliteCockpit(d, seuils) {
   };
   const objets = visibles.filter(t => /^(volant|gant-[01])$/.test(t.role)).map(t => ({ role: t.role, poly: polygone(t) })).filter(t => t.poly.length >= 3);
   for (const role of ['volant', 'gant-0', 'gant-1']) if (!objets.some(t => t.role === role)) erreurs.push('Surface réelle absente : ' + role);
+  // Les rectangles sont les boîtes écran des éléments visibles du HUD, après les transforms duo.
+  // Leur absence est une preuve manquante, jamais un HUD supposé transparent.
+  const hud = [], racineHud = d.joueur === 2 ? 'hud2' : 'hud';
+  if (d.hud?.observe !== true || d.hud.racine !== racineHud || d.hud.joueur !== d.joueur ||
+      !Array.isArray(d.hud.rectangles) || !d.hud.rectangles.length) erreurs.push('Données HUD absentes ou incomplètes');
+  for (const h of Array.isArray(d.hud?.rectangles) ? d.hud.rectangles : []) {
+    if (!h || typeof h.id !== 'string' || !h.id || ![h.x, h.y, h.width, h.height].every(Number.isFinite) || h.width <= 0 || h.height <= 0) {
+      erreurs.push('Rectangle HUD invalide : ' + h?.id); continue;
+    }
+    const x = Math.max(v.x, h.x), y = Math.max(v.y, h.y), droite = Math.min(v.x + v.width, h.x + h.width), bas = Math.min(v.y + v.height, h.y + h.height);
+    if (droite > x && bas > y) hud.push({ id: h.id, x, y, width: droite - x, height: bas - y,
+      poly: [[x, y], [droite, y], [droite, bas], [x, bas]] });
+  }
+  const commandesHud = ['volant', 'gant-0', 'gant-1'].map(role => {
+    const recouvrements = hud.map(h => ({ id: h.id, airePx2: objets.filter(t => t.role === role)
+      .reduce((s, t) => s + Math.abs(aireSignee(intersection(t.poly, h.poly))), 0) })).filter(h => h.airePx2 > 1e-7);
+    const recouvrementPx2 = recouvrements.reduce((s, h) => s + h.airePx2, 0);
+    if (recouvrementPx2 > seuils.recouvrementMaxPx2) erreurs.push('HUD superposé à la commande : ' + role);
+    return { role, recouvrementPx2, recouvrements };
+  });
   const glaces = (d.glaces || []).map(g => {
     if (g.monde?.length !== 4 || !g.monde.every(finie) || g.dom?.length !== 4 || !g.dom.every(p => Array.isArray(p) && p.length === 2 && p.every(Number.isFinite))) {
       erreurs.push('Quadrilatère de glace invalide : ' + g.id); return { id: g.id, valide: false };
@@ -63,7 +83,10 @@ export function mesurerLisibiliteCockpit(d, seuils) {
     if (erreurDomPx > seuils.erreurDomMaxPx) erreurs.push('Glace DOM désolidarisée du boîtier : ' + g.id);
     if (largeur > seuils.largeurGlaceMax) erreurs.push('Glace trop large : ' + g.id);
     if (recouvrementPx2 > seuils.recouvrementMaxPx2) erreurs.push('Glace superposée au volant/gant : ' + g.id);
-    return { id: g.id, valide: true, monde, dom, cadree, largeur, erreurDomPx, recouvrementPx2,
+    const hudRecouvrements = hud.map(h => ({ id: h.id, airePx2: Math.abs(aireSignee(intersection(dom, h.poly))) })).filter(h => h.airePx2 > 1e-7);
+    const hudRecouvrementPx2 = hudRecouvrements.reduce((s, h) => s + h.airePx2, 0);
+    if (hudRecouvrementPx2 > seuils.recouvrementMaxPx2) erreurs.push('HUD superposé à la glace : ' + g.id);
+    return { id: g.id, valide: true, monde, dom, cadree, largeur, erreurDomPx, recouvrementPx2, hudRecouvrementPx2, hudRecouvrements,
       recouvrements: ['volant', 'gant-0', 'gant-1'].map(role => ({ role, airePx2: recouvrements.filter(t => t.role === role).reduce((s, t) => s + t.airePx2, 0) })) };
   });
   if (glaces.length !== 2 || new Set(glaces.map(g => g.id)).size !== 2) erreurs.push('Deux glaces distinctes requises');
@@ -85,15 +108,18 @@ export function mesurerLisibiliteCockpit(d, seuils) {
     const ecran = projeter(p.point), cadree = dansVue(ecran); let touche = null, proche = 1;
     for (const t of visibles) { const f = coupeRayon(p.point, t); if (f !== null && f < proche) { touche = { role: t.role, shape: t.shape, distance: Math.hypot(...sub(p.point, cam.pos)) * f }; proche = f; } }
     const glaceDom = glaces.find(g => g.valide && dansPoly(ecran, g.dom))?.id || null;
-    return { ...p, ecran, cadree, touche, glaceDom, occultee: !!touche || !!glaceDom };
+    const masquesHud = hud.filter(h => dansPoly(ecran, h.poly)).map(h => h.id);
+    return { ...p, ecran, cadree, touche, glaceDom, hud: masquesHud, occultee: !!touche || !!glaceDom || masquesHud.length > 0 };
   });
   const cadree = route.filter(p => p.cadree).length / route.length, occultee = route.filter(p => p.occultee).length / route.length;
   const centreOcculte = route.filter(p => p.bande === 0 && p.occultee).length / 4;
   if (cadree < seuils.routeCadreeMin || route.some(p => p.bande === 0 && !p.cadree)) erreurs.push('Chaussée utile hors champ');
-  if (occultee > seuils.routeOcculteeMax || centreOcculte > seuils.routeCentraleOcculteeMax) erreurs.push('Chaussée utile occultée par le cockpit');
+  if (occultee > seuils.routeOcculteeMax || centreOcculte > seuils.routeCentraleOcculteeMax)
+    erreurs.push('Chaussée utile occultée par le cockpit' + (route.some(p => p.hud.length) ? ' ou le HUD' : ''));
   return { erreurs, seuils, camera: cam, viewport: v, triangles: { opaques: triangles.length, facesAvant: visibles.length,
     commandes: Object.fromEntries(['volant', 'gant-0', 'gant-1'].map(role => [role, objets.filter(t => t.role === role).length])) },
-    route: { cadree, occultee, centreOcculte, points: route }, glaces };
+    route: { cadree, occultee, centreOcculte, points: route }, glaces,
+    hud: d.hud ? { ...d.hud, rectangles: hud.map(({ poly, ...h }) => h), commandes: commandesHud } : null };
 }
 
 // Observation passive du draw original, nécessaire car J1/J2 réutilisent S.sortie et les objets du modèle.
@@ -145,6 +171,16 @@ export function installerObservationCockpit() {
 
 export function observerLisibiliteCockpit(mesurer, seuils) {
   const F = __HABITACLE_CAPTURE; F.relever = false;
+  const couleurVisible = c => !!c && c !== 'transparent' && !/^rgba\([^)]*,\s*0(?:\.0+)?\s*\)$/.test(c) && !/\/\s*0(?:\.0+)?%?\s*\)$/.test(c);
+  const visible = e => {
+    const s = getComputedStyle(e);
+    if (s.visibility === 'hidden' || s.visibility === 'collapse') return false;
+    for (let p = e; p; p = p.parentElement) {
+      const s = getComputedStyle(p);
+      if (p.hidden || s.display === 'none' || Number(s.opacity) === 0 || s.contentVisibility === 'hidden') return false;
+    }
+    return true;
+  };
   return Object.values(F.releves).map(d => {
     for (const g of d.glaces) {
       const e = document.getElementById(g.id), s = getComputedStyle(e), M = new DOMMatrix(s.transform), parent = e.offsetParent.getBoundingClientRect();
@@ -152,6 +188,41 @@ export function observerLisibiliteCockpit(mesurer, seuils) {
       g.dom = [[0, 0], [e.clientWidth, 0], [e.clientWidth, e.clientHeight], [0, e.clientHeight]].map(([x, y]) => {
         const p = new DOMPoint(x, y).matrixTransform(M); return [parent.x + e.offsetLeft + p.x / p.w, parent.y + e.offsetTop + p.y / p.w];
       });
+    }
+    const racine = document.getElementById(d.joueur === 2 ? 'hud2' : 'hud');
+    d.hud = racine ? { observe: true, racine: racine.id, joueur: d.joueur, rectangles: [] } : null;
+    if (racine) {
+      const ajouter = (e, r, suffixe) => {
+        if (!visible(e)) return;
+        const v = d.viewport; let x = Math.max(v.x, r.x), y = Math.max(v.y, r.y), droite = Math.min(v.x + v.width, r.x + r.width), bas = Math.min(v.y + v.height, r.y + r.height);
+        for (let p = e.parentElement; p; p = p.parentElement) {
+          const s = getComputedStyle(p), b = p.getBoundingClientRect();
+          if (/^(hidden|clip|auto|scroll)$/.test(s.overflowX)) { x = Math.max(x, b.x); droite = Math.min(droite, b.x + b.width); }
+          if (/^(hidden|clip|auto|scroll)$/.test(s.overflowY)) { y = Math.max(y, b.y); bas = Math.min(bas, b.y + b.height); }
+        }
+        if (droite > x && bas > y) d.hud.rectangles.push({ id: racine.id + ':' + (e.id || e.className || e.tagName) + ':' + suffixe,
+          x, y, width: droite - x, height: bas - y });
+      };
+      // Pas de boîte globale hud-haut/compteurs/chronos/tableau : leurs vides sont transparents.
+      const selecteurs = '.compteurs > .case > *, .chronos .etiquette, .chronos .temps, .classement li, #h-virage, #carte, ' +
+        '.tableau .vitesse, .tableau .regime, .tableau .jauge-derive, #h-fps, #b-pause, #message, #sous-message, #feux i';
+      let numero = 0;
+      for (const e of racine.querySelectorAll(selecteurs)) {
+        if ((e.id === 'message' || e.id === 'sous-message') && !e.textContent.trim()) continue;
+        for (const r of e.getClientRects()) ajouter(e, r, numero++);
+      }
+      // Le filet coloré des compteurs est peint, mais pas tout le rectangle transparent de la case.
+      for (const e of racine.querySelectorAll('.compteurs > .case')) {
+        const s = getComputedStyle(e), r = e.getBoundingClientRect(), kx = r.width / (e.offsetWidth || e.clientWidth), ky = r.height / (e.offsetHeight || e.clientHeight);
+        if (couleurVisible(s.backgroundColor) || (s.backgroundImage && s.backgroundImage !== 'none')) ajouter(e, r, 'fond');
+        for (const [nom, x, y, width, height] of [
+          ['Top', r.x, r.y, r.width, parseFloat(s.borderTopWidth) * ky],
+          ['Right', r.x + r.width - parseFloat(s.borderRightWidth) * kx, r.y, parseFloat(s.borderRightWidth) * kx, r.height],
+          ['Bottom', r.x, r.y + r.height - parseFloat(s.borderBottomWidth) * ky, r.width, parseFloat(s.borderBottomWidth) * ky],
+          ['Left', r.x, r.y, parseFloat(s.borderLeftWidth) * kx, r.height]
+        ]) if (width > 0 && height > 0 && s['border' + nom + 'Style'] !== 'none' && couleurVisible(s['border' + nom + 'Color']))
+          ajouter(e, { x, y, width, height }, 'bordure-' + nom);
+      }
     }
     return { joueur: d.joueur, sujet: d.sujet, vitesse: d.vitesse, volant: d.volant, ...mesurer(d, seuils) };
   });

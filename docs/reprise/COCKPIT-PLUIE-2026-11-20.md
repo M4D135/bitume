@@ -93,3 +93,63 @@ pas la forme complète du geste levé. La poursuite reste à compléter.
 Les campagnes cockpit dédiées et les cinq instants d’impact restent des portes
 ouvertes avant fusion. La PR 43 et ses preuves d’abris restent séparées ; les
 précautions de son intégration ultérieure figurent dans `SUITE-06.json`.
+
+## Images 0.2.70 reçues : HUD bloquant, correctif 0.2.71 en préparation
+
+La CI complète `44818836125` réussit sur `3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a` :
+179 suites JavaScript et huit tests Python, sans échec. Le HTML reste celui de
+0.2.70. Les dépassements décor historiques de 172 et 152 ms demeurent ouverts.
+
+Les cinq PNG d’impact sur l’arceau ont été inspectés : même goutte, impact bref,
+puis perle persistante qui descend à vitesse nulle. Les 24 PNG de couverts et
+les 39 PNG météo disponibles (27 candidat et 12 références) ont aussi été lus.
+Le dernier groupe météo a été annulé : son passage `legere` manque et n’est pas
+qualifié. La poursuite Troll reste à 11 PNG sur 13 après expiration de capture ;
+maintien après délai et relâchement restent absents.
+
+La campagne cockpit apporte dix PNG du candidat et deux de la référence 0.2.69.
+Les contrôles de géométrie réussissent en paysage, mais le classement masque
+la glace gauche et la carte traverse la droite. En duo haut/bas, l’annonce de
+virage recouvre les points centraux de chaussée à 35 et 55 m. **0.2.70 ne doit
+pas être fusionnée dans cet état.** Les anciens contrôles ignoraient ces masques
+DOM ; leur succès ne validait pas l’image composée. Le bandeau violet/vert en
+haut de J2 côte/côte est une publicité native de passerelle : sa projection
+correspond aux deux poses, sans corruption de copie J2 démontrée.
+
+Le grand format Mac reste incomplet : les deux PNG de référence sont reçus,
+mais la limite externe de 18 minutes coupe la chauffe du candidat. Les deux
+versions seront désormais capturées dans des jobs distincts, sans augmenter
+les délais ni retirer de pas. La référence 0.2.70 en paysage doit être reconnue
+comme négative par le nouveau contrôle HUD.
+
+Le correctif suivant adapte le HUD à la vue propre à chaque joueur et à la taille
+de son écran. La carte reste en haut avec ses préférences gauche/droite et taille.
+Les yeux, le siège, la géométrie commune, les roues et la physique sont conservés.
+L’oracle observe les rectangles visibles de chaque HUD, leurs transformations et
+leur découpe, puis mesure leurs intersections avec glaces, commandes et chaussée.
+Les six seuils initiaux restent inchangés ; l’absence de données HUD est un échec.
+
+La prochaine campagne comprend neuf scènes et seize PNG du candidat, plus deux
+PNG de référence dans un job dédié. Deux cas à 960 × 540 exercent un rival natif
+à 18 m, la carte normale à droite et la grande carte à gauche avec tableau complet.
+Le pilote Troll rend aussi la main à DevTools entre chacun des pas natifs, sans
+changer les treize instants, les entrées réelles, les 80 pas maximum ni le délai.
+La validation de ces changements par les images reste ouverte avant publication.
+
+### Construction du candidat HUD
+
+0.2.71 est reconstruite deux fois à l’identique : 14 507 449 octets, SHA256
+`0e4cdb72ecceb434c086a6bdc365346cfac1900871b95afadd96932cb3fd8ce3`.
+Seuls `src/index.html`, `src/jeu.js` et `src/style.css` changent dans le runtime.
+Les 34 copies FERRO sont conformes. Les cinq suites ciblées passent 60 contrôles :
+19 cockpit, huit captures Troll, 13 HUD, 11 options et neuf raccords Troll assemblés.
+
+La revue a également fermé un faux positif de référence : un message générique
+« HUD » ne suffit plus. Chacune des deux poses de la référence paysage doit
+montrer une vraie intersection avec une glace au-delà de 1 px² et son constat
+explicite ; des données HUD absentes ou invalides font échouer la référence aussi.
+Les contrôles négatifs avant correction et leurs résultats après sont conservés.
+
+Les calculs de disposition prévoient une carte toujours haute, avec réservation
+entre compteurs et chronos et les trois tailles relatives conservées. Cette
+prévision reste à confirmer par les rectangles DOM réels et la revue des PNG.

@@ -1,0 +1,1418 @@
+{
+  "format": "bitume-reception-ci-v2",
+  "dateUTC": "2026-11-20T21:41:57.386367+00:00",
+  "artifact": 14671049059,
+  "zip_sha256": "4a9c2573cd1362f6de764b1a88d06becddbcd994ec524c27aa8059174d703fcf",
+  "zip_octets": 80988298,
+  "zip_digest_github": "sha256:4a9c2573cd1362f6de764b1a88d06becddbcd994ec524c27aa8059174d703fcf",
+  "zip_conforme": true,
+  "fichiers_extraits_verifies_contre_zip": 189,
+  "source_commit": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+  "source_tree": "5ca64577b6044672a61feda146c405e18e6294c6",
+  "commit_tar_pax": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+  "tree_reconstruit_depuis_tar": "5ca64577b6044672a61feda146c405e18e6294c6",
+  "fichiers": 3852,
+  "repertoires": 233,
+  "entrees_tar": 4085,
+  "octets": 139697811,
+  "ecarts": [],
+  "verification_sources": {
+    "reference": "git ls-tree -r -t -z 3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+    "working_tree_utilise": false,
+    "chemins_types_modes_blobs_tous_verifies": true,
+    "arbres_reconstruits_et_verifies": 234,
+    "algorithme_blob": "SHA-1 Git de blob <taille> NUL suivi du contenu TAR ; comparaison à chaque OID de git ls-tree.",
+    "algorithme_arbre": "Arbres reconstruits du bas vers la racine avec modes Git, noms UTF-8 triés comme Git et OID binaires des enfants.",
+    "modes_tar_verifies": {
+      "git_100644": "0664",
+      "git_100755": "0775",
+      "git_040000": "0775",
+      "explication": "Permissions du format git archive avec umask 002 ; bit exécutable normalisé vers le mode suivi par Git. Aucun écart de mode brut à cette politique."
+    },
+    "comptages_modes_tar": [
+      {
+        "type": "0",
+        "mode": "0664",
+        "nombre": 3847
+      },
+      {
+        "type": "0",
+        "mode": "0775",
+        "nombre": 5
+      },
+      {
+        "type": "5",
+        "mode": "0775",
+        "nombre": 233
+      }
+    ],
+    "sha256_inventaire_git_et_tar": "00e8150bf69d42f95a735eedc82764c65e0868ce0bee2fd975fa96088d7a9adc",
+    "format_inventaire": "JSON UTF-8 compact : liste triée par chemin de [chemin, mode Git, type, OID] ; mêmes octets pour le tar vérifié et git ls-tree.",
+    "archive_sources_sha256": "d899111c3fb9f4dc1d89b1cb3545d5dce5480189474b9c7a05beb2be12a4679e",
+    "archive_sources_octets": 77421385
+  },
+  "html_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+  "html_octets": 14502704,
+  "html_blob_git": "aa65fb2a1e739bf313ada8d95e7f386f86659bbc",
+  "html_identique_archive_git_et_ci": true,
+  "size_json_blob_conforme": true,
+  "ci": {
+    "run": {
+      "id": 44818836125,
+      "url": "https://github.com/M4D135/bitume/actions/runs/44818836125",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
+      "updated_at": "2026-11-20T21:32:09Z"
+    },
+    "job": {
+      "id": 136574228101,
+      "name": "qualification",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44818836125,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Sauvegarder les sources exactes du commit",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Reconstruire et verifier toutes les suites",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Verifier les mesures de trajectoire dans les pixels",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Conserver sources, build et rapports, meme en cas d'echec",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        }
+      ]
+    },
+    "suites_reussies": 179,
+    "suites_en_echec": 0,
+    "journaux_suites_presents": 179,
+    "tests_python_reussis": 8,
+    "tests_python_en_echec": 0
+  },
+  "resume": "Suites reussies : 179\nSuites en echec : 0\n",
+  "historique": {
+    "reception_precedente": {
+      "artifact": 14669856838,
+      "copie_repo": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/ci-initiale/RECEPTION-CI.json",
+      "zip_sha256": "399dd0077da5e6c03f32052b4ffc3eb62d2d181c9620b69d61b58c70b7e0e53b"
+    },
+    "source_commit_precedent": "c3d49089e68a46dc2163067afbdea7db81364fed",
+    "resultat_precedent": "175 suites réussies / 4 en échec ; preuve conservée, non réécrite.",
+    "note": "Les réparations du banc conduisent à 179/179 sur 3d ; la réception précédente et le run PR avec dépassement décor restent des preuves historiques distinctes."
+  },
+  "reserves_maintenues": [
+    {
+      "objet": "construction décor Val-Brûlé",
+      "mesure_ms": 172,
+      "seuil_strict_ms": 150,
+      "statut": "ouverte",
+      "source_commit": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "source": "docs/reprise/COCKPIT-PLUIE-2026-11-20.md",
+      "raison": "La CI verte ne démontre ni la disparition de la variabilité ni un gain de performance matérielle."
+    },
+    {
+      "objet": "construction décor Val-Brûlé dans le passage PR",
+      "mesure_ms": 152,
+      "seuil_strict_ms": 150,
+      "statut": "ouverte",
+      "source_commit": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "source": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/ci-initiale/CI-PR-ECHECS.log",
+      "raison": "Le dépassement historique est conservé ; aucun seuil relâché et aucune clôture de cette réserve par ce succès isolé."
+    }
+  ],
+  "portee": {
+    "statut": "identite_sources_build_et_ci_conformes_reserves_performance_ouvertes",
+    "runtime_qualifie": "HTML 0.2.70 identifié ci-dessus et sources du seul commit 3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a.",
+    "branche_en_cours_qualifiee": false,
+    "version_0271_qualifiee": false,
+    "validation_visuelle_globale": false,
+    "performance_materielle_qualifiee": false,
+    "limites": [
+      "Aucune reconstruction ou nouvelle campagne exécutée pour cette réception.",
+      "Les 179 suites et les 8 tests Python ne remplacent pas les captures navigateur et leur inspection.",
+      "Le workflow Troll poursuite séparé conserve son propre résultat ; cette CI générale ne le transforme pas en succès.",
+      "Les coûts historiques de 172 ms et 152 ms pour un seuil strict < 150 ms restent ouverts."
+    ]
+  },
+  "pieces_copiees_dans_repo": [
+    {
+      "source": "qualification/COMMIT.txt",
+      "destination": "COMMIT.txt",
+      "octets": 41,
+      "sha256": "dde1723f94b50358bcc36ec1514461b31841f9d37b20ac1acba2557a3399fa58"
+    },
+    {
+      "source": "qualification/ENVIRONNEMENT.txt",
+      "destination": "ENVIRONNEMENT.txt",
+      "octets": 23,
+      "sha256": "392513832412d72cb52d3136eb8b6e8ab96fa9894a4a800100457ac355d654cd"
+    },
+    {
+      "source": "qualification/SHA256SUMS.txt",
+      "destination": "SHA256SUMS.txt",
+      "octets": 83,
+      "sha256": "d8538f1e96820160030889bdc069866845122cd50d8e530522987849b85671b6"
+    },
+    {
+      "source": "qualification/RESUME.txt",
+      "destination": "RESUME.txt",
+      "octets": 42,
+      "sha256": "93719343906c22b220d45e50531f78a39a4e53ec59673fd2e776b82098d7d84f"
+    },
+    {
+      "source": "qualification/build.log",
+      "destination": "build.log",
+      "octets": 183,
+      "sha256": "d88941dfb4f6ce4d7d855e821bda4527aa20ecaf138feef44b1cedfcf10d8a03"
+    },
+    {
+      "source": "qualification/visiere-png-python.log",
+      "destination": "visiere-png-python.log",
+      "octets": 106,
+      "sha256": "5877b8a03e7dd619357a0da0b93742129bf0f723ed4edd260d06317694f66d83"
+    },
+    {
+      "source": "qualification/visiere-png-install.log",
+      "destination": "visiere-png-install.log",
+      "octets": 860,
+      "sha256": "9de9fe276704d6492dabb4c437088018aadca1e76fac46da3c8b01a207f77bd0"
+    },
+    {
+      "source": "qualification/choix-pneus-integration.log",
+      "destination": "choix-pneus-integration.log",
+      "octets": 1542,
+      "sha256": "170b05334c9f987e8722fa80657f883e3910e87fc7f57fba33683dfe9fbd0f13"
+    },
+    {
+      "source": "qualification/pneus-reseau-integration.log",
+      "destination": "pneus-reseau-integration.log",
+      "octets": 1467,
+      "sha256": "8e89a6a715f12bcd1dd509c8c7360668d9ec80541d4e326b25bf963c79f5d28a"
+    },
+    {
+      "source": "qualification/chaussee-preparation.log",
+      "destination": "chaussee-preparation.log",
+      "octets": 657,
+      "sha256": "6dd9de22e3a729617216028954f9b2c4873785b08553caec4ba95cb55252a01a"
+    },
+    {
+      "source": "qualification/prets-enligne.log",
+      "destination": "prets-enligne.log",
+      "octets": 5570,
+      "sha256": "9ef7625f3f4430856ca3a5b02e4a916c5abf6be21ffda73de65395bd56e81e7a"
+    },
+    {
+      "source": "qualification/controle-visuel.log",
+      "destination": "controle-visuel.log",
+      "octets": 1076,
+      "sha256": "c8432354387cf9f8cca9198a77fe6d1d48777a5415ac73873d864399a8684549"
+    },
+    {
+      "source": "qualification/captures-habitacle.log",
+      "destination": "captures-habitacle.log",
+      "octets": 4378,
+      "sha256": "121e73c42eb1260e4679f788ab2615178ff74daf56d8459de6ab8d67c333ae0e"
+    },
+    {
+      "source": "qualification/captures-meteo.log",
+      "destination": "captures-meteo.log",
+      "octets": 2016,
+      "sha256": "bac6832bc021bf12ed9dc1e37955aa424b1bd27b60610c56efea9691cc11d670"
+    },
+    {
+      "source": "qualification/captures-troll.log",
+      "destination": "captures-troll.log",
+      "octets": 618,
+      "sha256": "283c0c293a81b93d0062652e976ab2a2973374fa777fa20440725058600101ea"
+    },
+    {
+      "source": "qualification/troll-assemble.log",
+      "destination": "troll-assemble.log",
+      "octets": 746,
+      "sha256": "755ed6f519927ff71e5f4392e5eb9743d142446842b3edd4cf5df4cfe886d04c"
+    },
+    {
+      "source": "qualification/cockpit-visibilite.log",
+      "destination": "cockpit-visibilite.log",
+      "octets": 1164,
+      "sha256": "47cecc60667ad35b20d65d33a03cbea5ad7e1c9eb7713de2bda2b79a67b5dec6"
+    },
+    {
+      "source": "qualification/pilote-commun.log",
+      "destination": "pilote-commun.log",
+      "octets": 717,
+      "sha256": "039b0072b45a3b8369ab999712bc499831ad74ca930d45d3f81b0399259d62b2"
+    },
+    {
+      "source": "qualification/pilote-habitacle.log",
+      "destination": "pilote-habitacle.log",
+      "octets": 1974,
+      "sha256": "33af817af4fc795c44106ed5c592b53788c0e752541e46d0604b7b5d42c4f54b"
+    },
+    {
+      "source": "qualification/eau-carrosserie-integration.log",
+      "destination": "eau-carrosserie-integration.log",
+      "octets": 581,
+      "sha256": "0a2a9a7f36ab7af9ab2166d9417f37edcd1a8bd262d2bde731f2eb44a5b9bb35"
+    },
+    {
+      "source": "qualification/visiere-optique.log",
+      "destination": "visiere-optique.log",
+      "octets": 2078,
+      "sha256": "6e978c0376a281d752b7d47dee99f0c3894820d4ea15e30daf9a886f8b40ad33"
+    },
+    {
+      "source": "qualification/vitre-impacts.log",
+      "destination": "vitre-impacts.log",
+      "octets": 1000,
+      "sha256": "fd2f27e8dde8b16bae30009a767bf72ae2e394cb3c45242c571ee16a15af135a"
+    },
+    {
+      "source": "qualification/vitre-cadence.log",
+      "destination": "vitre-cadence.log",
+      "octets": 873,
+      "sha256": "b48e588fd7f6317a4bc917b8492fba0fec30b01b0b4619900d07ded0feb5a5ea"
+    },
+    {
+      "source": "qualification/decor.log",
+      "destination": "decor.log",
+      "octets": 36,
+      "sha256": "9816345560e4ddb0b6a3f4109110e3af9299c5d3a4f8e99c00102b303f6b2018"
+    },
+    {
+      "source": "qualification/scene-bench.log",
+      "destination": "scene-bench.log",
+      "octets": 295,
+      "sha256": "0abe318cf18b1450c3c0bd3fd5c54f3546ec3b7288d17de02ad073e532e70914"
+    }
+  ],
+  "journaux_179_suites": [
+    {
+      "suite": "verifications/adherence-chaussee.test.mjs",
+      "journal": "qualification/adherence-chaussee.log",
+      "octets": 1114,
+      "sha256": "03eb48798788bc16cf051b534285ac64e15029c0dbbfacb8c765d4da6bf96f6a"
+    },
+    {
+      "suite": "verifications/ambiance.test.mjs",
+      "journal": "qualification/ambiance.log",
+      "octets": 354,
+      "sha256": "3c2764cbff57112ae73f0ae5b2b869f606ad9744fe1877acc8bedcbc57f7d90f"
+    },
+    {
+      "suite": "verifications/animaux.test.mjs",
+      "journal": "qualification/animaux.log",
+      "octets": 3351,
+      "sha256": "39ff3eed252333b4cc9a93b7cc1b1f9e40e82b8dd097b77e23b28e22399060bf"
+    },
+    {
+      "suite": "verifications/arbres-lots.test.mjs",
+      "journal": "qualification/arbres-lots.log",
+      "octets": 1248,
+      "sha256": "8b2ef431d51cb1f57a4700377586e6d52335d3ce52f4115ead5889cdd5fc6743"
+    },
+    {
+      "suite": "verifications/asie.test.mjs",
+      "journal": "qualification/asie.log",
+      "octets": 1086,
+      "sha256": "5e7b9f3000ea1e700014d37bdd7436ca19b5a2e4ddb8e6baedd50ec7ece5fff0"
+    },
+    {
+      "suite": "verifications/aspiration-physx.test.mjs",
+      "journal": "qualification/aspiration-physx.log",
+      "octets": 455,
+      "sha256": "002d99ef973a33a27d3cacc9c1e04b21bcaf9d79cfdd1d639f510c06abb369b0"
+    },
+    {
+      "suite": "verifications/aurores.test.mjs",
+      "journal": "qualification/aurores.log",
+      "octets": 492,
+      "sha256": "96e4bc0a1aa2fb91e59afa0136d2d16de2bddd388c9e7f199b5ff564d11928ca"
+    },
+    {
+      "suite": "verifications/autoconfig-integration.test.mjs",
+      "journal": "qualification/autoconfig-integration.log",
+      "octets": 2139,
+      "sha256": "732f1b372640d414c657836bc25bd00c27e1bd90f51b88aa7c2c3c654db10f09"
+    },
+    {
+      "suite": "verifications/autoconfig.test.mjs",
+      "journal": "qualification/autoconfig.log",
+      "octets": 2822,
+      "sha256": "8201a11e8e80de8aaf73ef64df4d865e76193b1c612a75e4c602d1cdf0134d02"
+    },
+    {
+      "suite": "verifications/baikal-decor.test.mjs",
+      "journal": "qualification/baikal-decor.log",
+      "octets": 1079,
+      "sha256": "500b2b8a056985427da0a974c4d130000e7d9912e15e63139a3a911ae28fe6d2"
+    },
+    {
+      "suite": "verifications/batiments-stands.test.mjs",
+      "journal": "qualification/batiments-stands.log",
+      "octets": 2508,
+      "sha256": "4666006673d9f258a42a0eb35a23b8acecd6edf194785bc322c958f72b201312"
+    },
+    {
+      "suite": "verifications/bords-integration.test.mjs",
+      "journal": "qualification/bords-integration.log",
+      "octets": 1188,
+      "sha256": "3285d8eacafe8041bafda9eb62b0181600b557b967822ed65f4f4bd32feb8c24"
+    },
+    {
+      "suite": "verifications/bords.test.mjs",
+      "journal": "qualification/bords.log",
+      "octets": 751,
+      "sha256": "3ef5d7a2f92bebe57103a6d7926bd3ae8f6cd53af142a227d753b9938c291e7d"
+    },
+    {
+      "suite": "verifications/botanique.test.mjs",
+      "journal": "qualification/botanique.log",
+      "octets": 2042,
+      "sha256": "9a9fda8eed989fbd4eec283c261eeb1fb714c7e1713b8f8148ffba15b6fa3e30"
+    },
+    {
+      "suite": "verifications/cadence.test.mjs",
+      "journal": "qualification/cadence.log",
+      "octets": 3327,
+      "sha256": "22d90966ae53029ef79f4b332a249c6f25e9e2de081fce2eb29be0ad10cc8e58"
+    },
+    {
+      "suite": "verifications/captures-couverts.test.mjs",
+      "journal": "qualification/captures-couverts.log",
+      "octets": 1120,
+      "sha256": "f41ec16ea4d0144768f31aaa25c99fd0f0e801c4a3518592507de548fd7820f1"
+    },
+    {
+      "suite": "verifications/captures-demo.test.mjs",
+      "journal": "qualification/captures-demo.log",
+      "octets": 893,
+      "sha256": "dca231eace14c583f00a33f17ac8df19a7ce9153c8fe611c9a817977ba780a22"
+    },
+    {
+      "suite": "verifications/captures-habitacle.test.mjs",
+      "journal": "qualification/captures-habitacle.log",
+      "octets": 4378,
+      "sha256": "121e73c42eb1260e4679f788ab2615178ff74daf56d8459de6ab8d67c333ae0e"
+    },
+    {
+      "suite": "verifications/captures-meteo.test.mjs",
+      "journal": "qualification/captures-meteo.log",
+      "octets": 2016,
+      "sha256": "bac6832bc021bf12ed9dc1e37955aa424b1bd27b60610c56efea9691cc11d670"
+    },
+    {
+      "suite": "verifications/captures-saisons.test.mjs",
+      "journal": "qualification/captures-saisons.log",
+      "octets": 526,
+      "sha256": "830439ff01d5491c6f8561bc05e2422138bb1ceb9d77d1b2f4ab3007a1e23e64"
+    },
+    {
+      "suite": "verifications/captures-troll.test.mjs",
+      "journal": "qualification/captures-troll.log",
+      "octets": 618,
+      "sha256": "283c0c293a81b93d0062652e976ab2a2973374fa777fa20440725058600101ea"
+    },
+    {
+      "suite": "verifications/carene.test.mjs",
+      "journal": "qualification/carene.log",
+      "octets": 1087,
+      "sha256": "31e13dbaf09da4f7b0e32013cbaa20a402aac75bf6fbb010b8cb763826e37eb4"
+    },
+    {
+      "suite": "verifications/chargement.test.mjs",
+      "journal": "qualification/chargement.log",
+      "octets": 898,
+      "sha256": "7e6b85a80734bcd1791f7110e25d176361955c71f3590d1ebc605967b4ac3e7a"
+    },
+    {
+      "suite": "verifications/chaussee-preparation.test.mjs",
+      "journal": "qualification/chaussee-preparation.log",
+      "octets": 657,
+      "sha256": "6dd9de22e3a729617216028954f9b2c4873785b08553caec4ba95cb55252a01a"
+    },
+    {
+      "suite": "verifications/chaussee-visuelle.test.mjs",
+      "journal": "qualification/chaussee-visuelle.log",
+      "octets": 1035,
+      "sha256": "3c656e6e981e78165fc4ab1ea80e591f48107261c8b2e2d9d3a2aedbb30ab1d9"
+    },
+    {
+      "suite": "verifications/chaussee.test.mjs",
+      "journal": "qualification/chaussee.log",
+      "octets": 1339,
+      "sha256": "3680989081d702a7eb69d7d976d01e589a9ed70c6bd45ce991dce7eeb567e32b"
+    },
+    {
+      "suite": "verifications/choix-pneus-integration.test.mjs",
+      "journal": "qualification/choix-pneus-integration.log",
+      "octets": 1542,
+      "sha256": "170b05334c9f987e8722fa80657f883e3910e87fc7f57fba33683dfe9fbd0f13"
+    },
+    {
+      "suite": "verifications/cinema-raccords.test.mjs",
+      "journal": "qualification/cinema-raccords.log",
+      "octets": 476,
+      "sha256": "15645edde94117d120eb0f707ccbe8c3aedd67a6382060d8ff897fb68a986ea5"
+    },
+    {
+      "suite": "verifications/cinema-sol-faune.test.mjs",
+      "journal": "qualification/cinema-sol-faune.log",
+      "octets": 501,
+      "sha256": "5d4b0e8b967462b41430d33dbcd71a3f50a8e448ddb88059bf862741cd0380eb"
+    },
+    {
+      "suite": "verifications/cinema-trajectoires.test.mjs",
+      "journal": "qualification/cinema-trajectoires.log",
+      "octets": 1119,
+      "sha256": "bd3f14c16937e59faf5ba130eab29dd511cefe5746068459e5e1f83c3e6e8604"
+    },
+    {
+      "suite": "verifications/cinema.test.mjs",
+      "journal": "qualification/cinema.log",
+      "octets": 3043,
+      "sha256": "47e92926f5c717ac0b6971d67442ba00f6252bbdaf1b9974aa9054374b311ec7"
+    },
+    {
+      "suite": "verifications/circuit.test.mjs",
+      "journal": "qualification/circuit.log",
+      "octets": 1001,
+      "sha256": "b46f02efb4a3197eff35ae791970cef4f34de64c871e033483554b61495ebfa3"
+    },
+    {
+      "suite": "verifications/cockpit-matieres.test.mjs",
+      "journal": "qualification/cockpit-matieres.log",
+      "octets": 508,
+      "sha256": "4bbd97203bc8c4d0a44127ec9252674a6d117252d66320f3d4e5d1460edeea8f"
+    },
+    {
+      "suite": "verifications/cockpit-visibilite.test.mjs",
+      "journal": "qualification/cockpit-visibilite.log",
+      "octets": 1164,
+      "sha256": "47cecc60667ad35b20d65d33a03cbea5ad7e1c9eb7713de2bda2b79a67b5dec6"
+    },
+    {
+      "suite": "verifications/collisions-orientees.test.mjs",
+      "journal": "qualification/collisions-orientees.log",
+      "octets": 2191,
+      "sha256": "2e938559e3333fb3e4821f32c3dd47d0a190cd40ba5bd363bbb3f9a2426a4318"
+    },
+    {
+      "suite": "verifications/commandes-partage.test.mjs",
+      "journal": "qualification/commandes-partage.log",
+      "octets": 3442,
+      "sha256": "4029cd2ea676795f3503ffab30131fee34595f718cc46f820a9191d752eb209e"
+    },
+    {
+      "suite": "verifications/conditions-course.test.mjs",
+      "journal": "qualification/conditions-course.log",
+      "octets": 1315,
+      "sha256": "e079b079505b320a0ca2a4348c9d06567a4cbaef6d0eef90308fbd01a0931478"
+    },
+    {
+      "suite": "verifications/conditions-integration.test.mjs",
+      "journal": "qualification/conditions-integration.log",
+      "octets": 1765,
+      "sha256": "2aa6090663a272006039b636ee081ceadd8a7d84e223a9873d4c3572654e81e0"
+    },
+    {
+      "suite": "verifications/conduite-criteres.test.mjs",
+      "journal": "qualification/conduite-criteres.log",
+      "octets": 3910,
+      "sha256": "8c1c4fe26e7b7e3224c85fc7eaa7a5f56088665a376c822999e9f90673e9b243"
+    },
+    {
+      "suite": "verifications/conduite.test.mjs",
+      "journal": "qualification/conduite.log",
+      "octets": 454,
+      "sha256": "1529ab394092c5c5498d18bc99857bc8490bd1a89b55cfa36c7e1addb7787c71"
+    },
+    {
+      "suite": "verifications/contacts.test.mjs",
+      "journal": "qualification/contacts.log",
+      "octets": 3232,
+      "sha256": "aa539556430d85eee065985cd6fa3c3750d328432588d1bb56f609c8ad94ca0a"
+    },
+    {
+      "suite": "verifications/controle-visuel.test.mjs",
+      "journal": "qualification/controle-visuel.log",
+      "octets": 1076,
+      "sha256": "c8432354387cf9f8cca9198a77fe6d1d48777a5415ac73873d864399a8684549"
+    },
+    {
+      "suite": "verifications/course.test.mjs",
+      "journal": "qualification/course.log",
+      "octets": 144,
+      "sha256": "fdab0d8ffa61b4184e46d31447636fd43464128f118990b6f9ae3d408f0eefa1"
+    },
+    {
+      "suite": "verifications/couverts-joints-courbes.test.mjs",
+      "journal": "qualification/couverts-joints-courbes.log",
+      "octets": 586,
+      "sha256": "e5396f226ba4066b5f95ffa59720ea2c2e1b29bc5805493b50c014d87995e1b6"
+    },
+    {
+      "suite": "verifications/couverts-multiples.test.mjs",
+      "journal": "qualification/couverts-multiples.log",
+      "octets": 621,
+      "sha256": "4a59e984cdb4a4a4a25d91f1510ea26ff5aace0a9e91d88aca62b4b5c1da7036"
+    },
+    {
+      "suite": "verifications/couverts-physx.test.mjs",
+      "journal": "qualification/couverts-physx.log",
+      "octets": 321,
+      "sha256": "7333bda74d55ba1e59062e89c1648a94bc5e90f84d94bbf8ae02bc9257a5e578"
+    },
+    {
+      "suite": "verifications/crash.test.mjs",
+      "journal": "qualification/crash.log",
+      "octets": 2548,
+      "sha256": "23977173486197133bde46654405a88311942336092bbb324ba0a140232fe305"
+    },
+    {
+      "suite": "verifications/decor-identite.test.mjs",
+      "journal": "qualification/decor-identite.log",
+      "octets": 76,
+      "sha256": "b6af6569a3dba0e2e58c4bbdc030c3a009be39dadac91565fed92ac8bf41f6c2"
+    },
+    {
+      "suite": "verifications/decor-obstacles.test.mjs",
+      "journal": "qualification/decor-obstacles.log",
+      "octets": 1623,
+      "sha256": "ef0d8cff278fa81c2e5347ea539a280d10290a9dbdf07011ec82dd122c67abb3"
+    },
+    {
+      "suite": "verifications/decor.test.mjs",
+      "journal": "qualification/decor.log",
+      "octets": 36,
+      "sha256": "9816345560e4ddb0b6a3f4109110e3af9299c5d3a4f8e99c00102b303f6b2018"
+    },
+    {
+      "suite": "verifications/desert.test.mjs",
+      "journal": "qualification/desert.log",
+      "octets": 840,
+      "sha256": "abf30dd683162591c94b2bb6f2f88561bcaf576026ca64b4f97ded59f672f8e1"
+    },
+    {
+      "suite": "verifications/determinisme-scenes.test.mjs",
+      "journal": "qualification/determinisme-scenes.log",
+      "octets": 869,
+      "sha256": "ec422ee39026f9f9d6dccb674a045dc4d4afcee22d8ae9f2bee53850e4155c87"
+    },
+    {
+      "suite": "verifications/determinisme-simulation.test.mjs",
+      "journal": "qualification/determinisme-simulation.log",
+      "octets": 602,
+      "sha256": "b93c8804717ea5e42bc5ba176b7fec7ecafb22a5ee338a5e3ac5d7e3f481d610"
+    },
+    {
+      "suite": "verifications/eau-carrosserie-integration.test.mjs",
+      "journal": "qualification/eau-carrosserie-integration.log",
+      "octets": 581,
+      "sha256": "0a2a9a7f36ab7af9ab2166d9417f37edcd1a8bd262d2bde731f2eb44a5b9bb35"
+    },
+    {
+      "suite": "verifications/echappement.test.mjs",
+      "journal": "qualification/echappement.log",
+      "octets": 1915,
+      "sha256": "afc6c7e06882e3770aef124a8ee59ec59d2277a1523d488da3f8517433dc7537"
+    },
+    {
+      "suite": "verifications/ecologie.test.mjs",
+      "journal": "qualification/ecologie.log",
+      "octets": 1836,
+      "sha256": "891960f37670fb192ef7904d306f244b17db814a432a52de9301be4ad3904a43"
+    },
+    {
+      "suite": "verifications/effets-allocation.test.mjs",
+      "journal": "qualification/effets-allocation.log",
+      "octets": 523,
+      "sha256": "8bfe2869ebb24cc1eb206d5317b5cccc6b9eaa51c0d89e04796f5cf6946a0374"
+    },
+    {
+      "suite": "verifications/effets-saison.test.mjs",
+      "journal": "qualification/effets-saison.log",
+      "octets": 841,
+      "sha256": "c47f4449ca74f6c9263c2be23ba9b9d9630ff7571d753127a98b96c87c76a83a"
+    },
+    {
+      "suite": "verifications/embruns.test.mjs",
+      "journal": "qualification/embruns.log",
+      "octets": 575,
+      "sha256": "46d1664c73ce541ad0a1c16dc13c72286bf3ebe255ba3c37d65e5197d25f027a"
+    },
+    {
+      "suite": "verifications/expressions-pilote.test.mjs",
+      "journal": "qualification/expressions-pilote.log",
+      "octets": 1267,
+      "sha256": "463113c512d06165a41dc112d45e1fbced01191c6b2d4fbbc985858a357f5f38"
+    },
+    {
+      "suite": "verifications/faune.test.mjs",
+      "journal": "qualification/faune.log",
+      "octets": 1335,
+      "sha256": "3cc84f55fadb17ca8899c2953904711a2c3419458fd72d500486a55feaf92a95"
+    },
+    {
+      "suite": "verifications/formes-libres.test.mjs",
+      "journal": "qualification/formes-libres.log",
+      "octets": 64,
+      "sha256": "8da68ab8819fcd8ba3f2646c1939a690279fc3339f7a63acf92ffe39c24cbe7e"
+    },
+    {
+      "suite": "verifications/galerie-portails-physx.test.mjs",
+      "journal": "qualification/galerie-portails-physx.log",
+      "octets": 88,
+      "sha256": "b80a39841f8f368bc515c1454954d1a6e7211dcf17ec9c919ee93f076402e522"
+    },
+    {
+      "suite": "verifications/glissiere-etats.test.mjs",
+      "journal": "qualification/glissiere-etats.log",
+      "octets": 975,
+      "sha256": "87823fec46c54e453653d2c714e46e256ad94d1efa3963ca69f504cc46db1ed5"
+    },
+    {
+      "suite": "verifications/glissiere-rebond.test.mjs",
+      "journal": "qualification/glissiere-rebond.log",
+      "octets": 1476,
+      "sha256": "88714c9dfe5fdef66290db71729faed669d24a21203e47ac1c7faded95e33874"
+    },
+    {
+      "suite": "verifications/graphismes.test.mjs",
+      "journal": "qualification/graphismes.log",
+      "octets": 1579,
+      "sha256": "7ad47c7ac4090f1878bca161e4fb12f1298df97538df429013ec87991ef85edd"
+    },
+    {
+      "suite": "verifications/habitacle-monde.test.mjs",
+      "journal": "qualification/habitacle-monde.log",
+      "octets": 1134,
+      "sha256": "a14e9d30b7b2ae2cf6fd59c09adcfb3235ed0b8deb5f252eaf4f050a99233d4c"
+    },
+    {
+      "suite": "verifications/herbier-identite.test.mjs",
+      "journal": "qualification/herbier-identite.log",
+      "octets": 2189,
+      "sha256": "1089baca10812c4f53e8967d6157a159a57c3dd772cf68910ef4f6c6cfe557ca"
+    },
+    {
+      "suite": "verifications/herbier-saisons.test.mjs",
+      "journal": "qualification/herbier-saisons.log",
+      "octets": 506,
+      "sha256": "81344abf3c58535fba209238345ea55847d714b839e4f740dc29fc80f7c920e0"
+    },
+    {
+      "suite": "verifications/hud-pneus.test.mjs",
+      "journal": "qualification/hud-pneus.log",
+      "octets": 1322,
+      "sha256": "486a33fd368946d72f5d16001314e86dd507609f799839adc4577f68af31fa63"
+    },
+    {
+      "suite": "verifications/ia-attaque.test.mjs",
+      "journal": "qualification/ia-attaque.log",
+      "octets": 1319,
+      "sha256": "de7b035e39186bcf232aada08bd7fb07f9204337953560494721bd3c5a402d27"
+    },
+    {
+      "suite": "verifications/ia-epaves.test.mjs",
+      "journal": "qualification/ia-epaves.log",
+      "octets": 944,
+      "sha256": "f8740fc8d0e51fb49a9f6b51700d172ac2f1f492564a56ffe3731ddeabce9e98"
+    },
+    {
+      "suite": "verifications/ia-reprise.test.mjs",
+      "journal": "qualification/ia-reprise.log",
+      "octets": 1046,
+      "sha256": "7930811d150b7e3a57350e14f3e88f40cdfad3e42941b8c79045e324939b7109"
+    },
+    {
+      "suite": "verifications/ia.test.mjs",
+      "journal": "qualification/ia.log",
+      "octets": 423,
+      "sha256": "371b77ff405d94335a6bf0600cd2a7b49d36a654359733fa65dc08ec8f8fd405"
+    },
+    {
+      "suite": "verifications/integration-parallele.test.mjs",
+      "journal": "qualification/integration-parallele.log",
+      "octets": 2103,
+      "sha256": "fcb7269ac6ab1e50a5a4ed0b18a866a71d7c377262f0b0fa71ce05f7c1fbc4c4"
+    },
+    {
+      "suite": "verifications/islande.test.mjs",
+      "journal": "qualification/islande.log",
+      "octets": 941,
+      "sha256": "e30061e283f7c2fca136c8371659982157cc5c206446ec0289a221aafedfd964"
+    },
+    {
+      "suite": "verifications/lieux-traces.test.mjs",
+      "journal": "qualification/lieux-traces.log",
+      "octets": 560,
+      "sha256": "72bf83bdd4c0067b056ddd98845bdb82961f8d6511a0664a365cc219d3a60010"
+    },
+    {
+      "suite": "verifications/main.test.mjs",
+      "journal": "qualification/main.log",
+      "octets": 616,
+      "sha256": "dca764c8503bb4871b664b997a1cfa89ed547f3d62d159d743688cf821fc2ded"
+    },
+    {
+      "suite": "verifications/manette.test.mjs",
+      "journal": "qualification/manette.log",
+      "octets": 2444,
+      "sha256": "527fe2f9af5cfc2e58856be62dfe704b26638740ff6c9033f33332096787238d"
+    },
+    {
+      "suite": "verifications/marseille-metadonnees.test.mjs",
+      "journal": "qualification/marseille-metadonnees.log",
+      "octets": 641,
+      "sha256": "f447915bc8c1ffceae693a02a9f01d0ae56fcf77f0b94cb5902fafbc460cc092"
+    },
+    {
+      "suite": "verifications/marseille-sources.test.mjs",
+      "journal": "qualification/marseille-sources.log",
+      "octets": 841,
+      "sha256": "82c12a737f66cc93799c65426e5453501963da0ae48a4c94c1cfa683b7ad2913"
+    },
+    {
+      "suite": "verifications/marseille-voirie.test.mjs",
+      "journal": "qualification/marseille-voirie.log",
+      "octets": 802,
+      "sha256": "8ef38540f190f04a24580e17c124119fda12d0c052fda27af5052902300d7d6b"
+    },
+    {
+      "suite": "verifications/menu-arcade.test.mjs",
+      "journal": "qualification/menu-arcade.log",
+      "octets": 1193,
+      "sha256": "c69cdfecbfafde7cc27f82ad30c0ba902e34b417a6ceb693185c5dee8637f92d"
+    },
+    {
+      "suite": "verifications/mesures.test.mjs",
+      "journal": "qualification/mesures.log",
+      "octets": 1849,
+      "sha256": "a0af4e0fd6db5860d09fb8067693cefe39e230e573ae81b97f25e451c61ac39f"
+    },
+    {
+      "suite": "verifications/meteo-reelle.test.mjs",
+      "journal": "qualification/meteo-reelle.log",
+      "octets": 425,
+      "sha256": "1ca0c08ad61967b93014db660ce908bbcfc566a0af62d57063c1c5462bc0ebba"
+    },
+    {
+      "suite": "verifications/meteo-toile.test.mjs",
+      "journal": "qualification/meteo-toile.log",
+      "octets": 39,
+      "sha256": "3e9672ae1f7c75d1dd260b69d4a243d76280328d3bfe4774fc71b42b4cca572c"
+    },
+    {
+      "suite": "verifications/meteo.test.mjs",
+      "journal": "qualification/meteo.log",
+      "octets": 94,
+      "sha256": "6f12037fade5ae4c968cc7cf0fd59ce28c085c861dcfe754059696dac57dd17e"
+    },
+    {
+      "suite": "verifications/monaco-altimetrie.test.mjs",
+      "journal": "qualification/monaco-altimetrie.log",
+      "octets": 885,
+      "sha256": "f0429aa3f641d83e671ca2edf9a730517a498a138093781134d88f7ad62476d7"
+    },
+    {
+      "suite": "verifications/monaco-mesures.test.mjs",
+      "journal": "qualification/monaco-mesures.log",
+      "octets": 1242,
+      "sha256": "2fb0570850ea9e679ade202ccc6b1c03cf88e6defe423e60df55f7c62a774c39"
+    },
+    {
+      "suite": "verifications/monaco-revue-cartographie.test.mjs",
+      "journal": "qualification/monaco-revue-cartographie.log",
+      "octets": 929,
+      "sha256": "62f2c39823150b5dbf5611a5f183a1f3a506dae22157afa3c6487cfb95415f49"
+    },
+    {
+      "suite": "verifications/monaco-revue.test.mjs",
+      "journal": "qualification/monaco-revue.log",
+      "octets": 1083,
+      "sha256": "9a216e4d8e7f88534b231e64f076c65ae47b759aca4bdadc68073c35133ee7d8"
+    },
+    {
+      "suite": "verifications/monaco-sources.test.mjs",
+      "journal": "qualification/monaco-sources.log",
+      "octets": 639,
+      "sha256": "c00fdc4c4046c30078c8f96b643206bbfc75f2f2fc9d11dee719f937a9d47c07"
+    },
+    {
+      "suite": "verifications/monaco-voirie.test.mjs",
+      "journal": "qualification/monaco-voirie.log",
+      "octets": 1014,
+      "sha256": "ef648b4404e149a051b2e76df4d93493704d5cef773982b2d9e150cf24b85004"
+    },
+    {
+      "suite": "verifications/moteur-emprise.test.mjs",
+      "journal": "qualification/moteur-emprise.log",
+      "octets": 409,
+      "sha256": "f6e5a43c07e443f074e8d667162e729271c0d67f9bddb5f523ac09ea7b110ff2"
+    },
+    {
+      "suite": "verifications/nature-integration.test.mjs",
+      "journal": "qualification/nature-integration.log",
+      "octets": 348,
+      "sha256": "ea1c579c76aafc68b4144b82b559219500ccd774e248b2b822de68038511348d"
+    },
+    {
+      "suite": "verifications/nature-preparation.test.mjs",
+      "journal": "qualification/nature-preparation.log",
+      "octets": 398,
+      "sha256": "79841675f9a7c73e86c2afc671cb79fc055da0ae506109ff68e56c1e673d71c2"
+    },
+    {
+      "suite": "verifications/navigation-menu.test.mjs",
+      "journal": "qualification/navigation-menu.log",
+      "octets": 1837,
+      "sha256": "ae8bc1b9deda3352019b5f786c537847671163e2de0cfd330b2424927abe9e49"
+    },
+    {
+      "suite": "verifications/obstacles-degagement.test.mjs",
+      "journal": "qualification/obstacles-degagement.log",
+      "octets": 560,
+      "sha256": "f231fa6303d1dcec6a3065b461224c3a12ab6b8b0b73cb52322482917631b2de"
+    },
+    {
+      "suite": "verifications/obstacles.test.mjs",
+      "journal": "qualification/obstacles.log",
+      "octets": 2708,
+      "sha256": "05cb010d4e76823ec212470db21486eb19ba269ee77e71ab752d85ef00173278"
+    },
+    {
+      "suite": "verifications/ombres.test.mjs",
+      "journal": "qualification/ombres.log",
+      "octets": 1058,
+      "sha256": "4a508ecae602e5ee0aaf88dca072b8344f118cf7b49a68d2b6e30d4d1f9827e0"
+    },
+    {
+      "suite": "verifications/options-image.test.mjs",
+      "journal": "qualification/options-image.log",
+      "octets": 965,
+      "sha256": "6862512aaaa3bf07ac29dbe8dfbbe06bcdf5835ae08c8ca8fe8682720c54b561"
+    },
+    {
+      "suite": "verifications/pacifique.test.mjs",
+      "journal": "qualification/pacifique.log",
+      "octets": 1521,
+      "sha256": "ec5d4b841400c0ead9eff96f87a908fe2397eddd4e528b064baa756b3da1bfb9"
+    },
+    {
+      "suite": "verifications/physique-cycle-seances.test.mjs",
+      "journal": "qualification/physique-cycle-seances.log",
+      "octets": 1276,
+      "sha256": "0e519e642cec9f574c74c27370fdfdc3456e460c28e3a4e743c334a99d7aa5a0"
+    },
+    {
+      "suite": "verifications/physique-stands.test.mjs",
+      "journal": "qualification/physique-stands.log",
+      "octets": 1491,
+      "sha256": "241c2d29bdb7eb4ca458f256faeb4ebdd808a25cb3581483180769afa8592e4f"
+    },
+    {
+      "suite": "verifications/physique-voitures.test.mjs",
+      "journal": "qualification/physique-voitures.log",
+      "octets": 1181,
+      "sha256": "c5d41b1451c541333c5273619930ef60dbbccf3549f48378152e4b477e669f2a"
+    },
+    {
+      "suite": "verifications/physx-autorite-reseau.test.mjs",
+      "journal": "qualification/physx-autorite-reseau.log",
+      "octets": 338,
+      "sha256": "1a7ffea4491dceaa0b8610c49432c9ed15a0a9a4fe8f2123fedab1d06140d20d"
+    },
+    {
+      "suite": "verifications/physx-circuits.test.mjs",
+      "journal": "qualification/physx-circuits.log",
+      "octets": 8764,
+      "sha256": "3edd71e4a17bae260e4aabda2258e62e198d97523ae33c7b5162cfcc9c609998"
+    },
+    {
+      "suite": "verifications/physx-cycle-vie.test.mjs",
+      "journal": "qualification/physx-cycle-vie.log",
+      "octets": 347,
+      "sha256": "35615241d1c411982bd71986d6d43ee2a38836da2a87aed344c3cb7eaab327f6"
+    },
+    {
+      "suite": "verifications/physx-degagement.test.mjs",
+      "journal": "qualification/physx-degagement.log",
+      "octets": 516,
+      "sha256": "033db6a393f846acdee691cd5795c981c89e45ee3061529106d43e90e838a79f"
+    },
+    {
+      "suite": "verifications/physx-monde.test.mjs",
+      "journal": "qualification/physx-monde.log",
+      "octets": 1003,
+      "sha256": "adc3643ebcb12bcdf39f3892cf06c380c89d5a8e38464f791d635c61477ed95b"
+    },
+    {
+      "suite": "verifications/physx-reseau.test.mjs",
+      "journal": "qualification/physx-reseau.log",
+      "octets": 1310,
+      "sha256": "d7b89fe59dc5c6a72d34ea2960ad34c317ddb08e7e73e0d1bc94ec86230c1fc5"
+    },
+    {
+      "suite": "verifications/physx-stands.test.mjs",
+      "journal": "qualification/physx-stands.log",
+      "octets": 1540,
+      "sha256": "a5182518b418ee5d66d265b1c04f62e1374f62b54d15821db2c9270fff6440ae"
+    },
+    {
+      "suite": "verifications/pieces.test.mjs",
+      "journal": "qualification/pieces.log",
+      "octets": 2907,
+      "sha256": "1e7409c5cb4388c264801774ba429beed2321d1c154ee723ea67c61e6d7a9068"
+    },
+    {
+      "suite": "verifications/pilote-commun.test.mjs",
+      "journal": "qualification/pilote-commun.log",
+      "octets": 717,
+      "sha256": "039b0072b45a3b8369ab999712bc499831ad74ca930d45d3f81b0399259d62b2"
+    },
+    {
+      "suite": "verifications/pilote-expressions.test.mjs",
+      "journal": "qualification/pilote-expressions.log",
+      "octets": 709,
+      "sha256": "18db50bfff6372f057cbb8f6c6028715e79585f6d7fb2930744d1065bd425fb9"
+    },
+    {
+      "suite": "verifications/pilote-exterieur.test.mjs",
+      "journal": "qualification/pilote-exterieur.log",
+      "octets": 1540,
+      "sha256": "4e0c42904f651d108d74edbe455a9a5647a1aaf2881305114d4d878722845f82"
+    },
+    {
+      "suite": "verifications/pilote-gestes-extremes.test.mjs",
+      "journal": "qualification/pilote-gestes-extremes.log",
+      "octets": 597,
+      "sha256": "d10c7f60f8c1d34bd814f8743b6c3e904d9caa3b430c73e23c53ba50c6a51862"
+    },
+    {
+      "suite": "verifications/pilote-habitacle.test.mjs",
+      "journal": "qualification/pilote-habitacle.log",
+      "octets": 1974,
+      "sha256": "33af817af4fc795c44106ed5c592b53788c0e752541e46d0604b7b5d42c4f54b"
+    },
+    {
+      "suite": "verifications/pilote-surfaces.test.mjs",
+      "journal": "qualification/pilote-surfaces.log",
+      "octets": 753,
+      "sha256": "c8ffbbc7ed8e4dc6e947caa29e4cd598c04771479cace293764619b72a983bba"
+    },
+    {
+      "suite": "verifications/pilote-thorax.test.mjs",
+      "journal": "qualification/pilote-thorax.log",
+      "octets": 427,
+      "sha256": "b26cb61223138ca356fdf2cdc3872d2fd2bd7251f45a1d4684eecfb9495659a9"
+    },
+    {
+      "suite": "verifications/pneus-pilotes.test.mjs",
+      "journal": "qualification/pneus-pilotes.log",
+      "octets": 518,
+      "sha256": "dd0fbd8450c3908b5648235e811f7e080717c2d384b26ff7c624d29b1656335e"
+    },
+    {
+      "suite": "verifications/pneus-reseau-integration.test.mjs",
+      "journal": "qualification/pneus-reseau-integration.log",
+      "octets": 1467,
+      "sha256": "8e89a6a715f12bcd1dd509c8c7360668d9ec80541d4e326b25bf963c79f5d28a"
+    },
+    {
+      "suite": "verifications/pneus-reseau.test.mjs",
+      "journal": "qualification/pneus-reseau.log",
+      "octets": 1613,
+      "sha256": "26fe6caa484a9f8a553391f47acc4e2148c67030f6557468774c514d7636af2c"
+    },
+    {
+      "suite": "verifications/pneus-service-visuel.test.mjs",
+      "journal": "qualification/pneus-service-visuel.log",
+      "octets": 611,
+      "sha256": "41fdc421203ba53be734895bb8772a8af3c79e1c47d3d7ceac98ec7364b107bf"
+    },
+    {
+      "suite": "verifications/pneus.test.mjs",
+      "journal": "qualification/pneus.log",
+      "octets": 868,
+      "sha256": "dd2f77b3ceeb8dba2173c2a66dfb454fcb6cacf605c97c47640945f76a9e29f5"
+    },
+    {
+      "suite": "verifications/prets-enligne.test.mjs",
+      "journal": "qualification/prets-enligne.log",
+      "octets": 5570,
+      "sha256": "9ef7625f3f4430856ca3a5b02e4a916c5abf6be21ffda73de65395bd56e81e7a"
+    },
+    {
+      "suite": "verifications/public.test.mjs",
+      "journal": "qualification/public.log",
+      "octets": 1711,
+      "sha256": "6c9dfa41f5451fa52412f1a99faaf00d8aeaec9e86e423d3f971f4a9140a0c23"
+    },
+    {
+      "suite": "verifications/qualite.test.mjs",
+      "journal": "qualification/qualite.log",
+      "octets": 1829,
+      "sha256": "ea5dedd26752a9992b06f65411015a1050a7847f3e10b5b194621571146ca236"
+    },
+    {
+      "suite": "verifications/realisateur.test.mjs",
+      "journal": "qualification/realisateur.log",
+      "octets": 695,
+      "sha256": "1a1b57eb65bbfd520d29435ee45e00177de40c7e3f6e03d814fe9f9db5de3941"
+    },
+    {
+      "suite": "verifications/regard-arriere.test.mjs",
+      "journal": "qualification/regard-arriere.log",
+      "octets": 1108,
+      "sha256": "293e0548c0bd0d7111cfb565668ed28d68b6a452ee05807e0d0db023fc525c1b"
+    },
+    {
+      "suite": "verifications/relectures-phase2.test.mjs",
+      "journal": "qualification/relectures-phase2.log",
+      "octets": 406,
+      "sha256": "fe81a756f0818b97adbbc5219302fa6e8e71d7cff92a39aaaea8c51dc88bb885"
+    },
+    {
+      "suite": "verifications/rendu-halo.test.mjs",
+      "journal": "qualification/rendu-halo.log",
+      "octets": 398,
+      "sha256": "c5da4690e7b52df2c52d8be3d81b934bcd407795e7488f5437e2011bc16868a8"
+    },
+    {
+      "suite": "verifications/reperes-virages.test.mjs",
+      "journal": "qualification/reperes-virages.log",
+      "octets": 5854,
+      "sha256": "eb0f22d0d039f0877dcd86d65f5dad8b577ae4ed7edd1aa300891c4f4b1d0140"
+    },
+    {
+      "suite": "verifications/reprise-recul.test.mjs",
+      "journal": "qualification/reprise-recul.log",
+      "octets": 2433,
+      "sha256": "0f7b3274a6c561310547216e6be49a01db56de95df65860c7f19145ac59afd07"
+    },
+    {
+      "suite": "verifications/roues-detail.test.mjs",
+      "journal": "qualification/roues-detail.log",
+      "octets": 814,
+      "sha256": "f5d9f24732fbcc808d74729fffe296d435fff08fb5954b3c363e1c848e4d2982"
+    },
+    {
+      "suite": "verifications/route-des-cimes-decor.test.mjs",
+      "journal": "qualification/route-des-cimes-decor.log",
+      "octets": 737,
+      "sha256": "2ad5d0f9870a9363c778f26f584f403b7adef48008734d4656a57e45d4dfbdb4"
+    },
+    {
+      "suite": "verifications/route-des-cimes.test.mjs",
+      "journal": "qualification/route-des-cimes.log",
+      "octets": 846,
+      "sha256": "3f70bc920ef94125a6add7aebe627e9f0a1ee193264185055d7de4d3c9aa63f0"
+    },
+    {
+      "suite": "verifications/russie.test.mjs",
+      "journal": "qualification/russie.log",
+      "octets": 894,
+      "sha256": "572bec4f47ca9882c792fd25eb315b1dbd93645095c7745f1ef31240f2eba95e"
+    },
+    {
+      "suite": "verifications/saisons-cache.test.mjs",
+      "journal": "qualification/saisons-cache.log",
+      "octets": 318,
+      "sha256": "ea6be726f4dd206d5e028dfa2ebe537a989d156abe24eb04c03500620a09a2ae"
+    },
+    {
+      "suite": "verifications/saisons-circuits.test.mjs",
+      "journal": "qualification/saisons-circuits.log",
+      "octets": 3213,
+      "sha256": "2587560ee566e6cd173f20ebfca763a0dbf5a6df1d38a87e7c095b04155aab2f"
+    },
+    {
+      "suite": "verifications/saisons.test.mjs",
+      "journal": "qualification/saisons.log",
+      "octets": 6042,
+      "sha256": "93d89d0d18b5ceb5be055e8f1487873d4d65cb86b49e3824dbd7e713bc5a9812"
+    },
+    {
+      "suite": "verifications/salon-protocole.test.mjs",
+      "journal": "qualification/salon-protocole.log",
+      "octets": 1906,
+      "sha256": "1ce72f45c72586723090016acf048e8ab7d8807c775c9c24b50934278547b2b9"
+    },
+    {
+      "suite": "verifications/scene-bench.test.mjs",
+      "journal": "qualification/scene-bench.log",
+      "octets": 295,
+      "sha256": "0abe318cf18b1450c3c0bd3fd5c54f3546ec3b7288d17de02ad073e532e70914"
+    },
+    {
+      "suite": "verifications/sillage.test.mjs",
+      "journal": "qualification/sillage.log",
+      "octets": 761,
+      "sha256": "049cb02f94047fa81b1670f0476a2c4a13f146d1390d9b32445d5a221d547f0c"
+    },
+    {
+      "suite": "verifications/simulation-sorties.test.mjs",
+      "journal": "qualification/simulation-sorties.log",
+      "octets": 855,
+      "sha256": "2e1a7d011c7363e112f7360372ccb4409391a48cde8f22d39dfdfb783c2b2285"
+    },
+    {
+      "suite": "verifications/solides-physx-geometrie.test.mjs",
+      "journal": "qualification/solides-physx-geometrie.log",
+      "octets": 5437,
+      "sha256": "2e57c6bba5bca170692c17c4687d784489da174bf5b2371e776d99d6e602eb53"
+    },
+    {
+      "suite": "verifications/solides-physx-wasm.test.mjs",
+      "journal": "qualification/solides-physx-wasm.log",
+      "octets": 2420,
+      "sha256": "03594e4c68360529e641d052a43cde8b439ebd9675802a32d64e390deb84b5f0"
+    },
+    {
+      "suite": "verifications/sols-proceduraux.test.mjs",
+      "journal": "qualification/sols-proceduraux.log",
+      "octets": 6828,
+      "sha256": "ec1b9fb01a966a103509a2c5118f8743d485d7916326e09f1b314d96e45e5bb0"
+    },
+    {
+      "suite": "verifications/son-aspiration.test.mjs",
+      "journal": "qualification/son-aspiration.log",
+      "octets": 762,
+      "sha256": "39c4a4c8d718d401f227d48a3f096d54905451d8b2f27940bb1160e55bd0c66d"
+    },
+    {
+      "suite": "verifications/son.test.mjs",
+      "journal": "qualification/son.log",
+      "octets": 2017,
+      "sha256": "8dc547f5e4a79e38b506abd00aea060ab3d7b1d716205f0df0cecd8bb3a676ad"
+    },
+    {
+      "suite": "verifications/stands-pneus.test.mjs",
+      "journal": "qualification/stands-pneus.log",
+      "octets": 2817,
+      "sha256": "7e41a548a5613d7b1b842f0569414825e8644fe73b2c180b0d3e3a5a4ac5b53e"
+    },
+    {
+      "suite": "verifications/stands.test.mjs",
+      "journal": "qualification/stands.log",
+      "octets": 1248,
+      "sha256": "77799d5e390a2281922e1e0eecaf2b6e786a0735b4356ef80ef0c276c35f13a6"
+    },
+    {
+      "suite": "verifications/strategie-stands-decisions.test.mjs",
+      "journal": "qualification/strategie-stands-decisions.log",
+      "octets": 736,
+      "sha256": "9bce1f512e26d0a4f445ce56391c3c1781396d7392655bd5c2013a53eb322e05"
+    },
+    {
+      "suite": "verifications/strategie-stands-sortie-file.test.mjs",
+      "journal": "qualification/strategie-stands-sortie-file.log",
+      "octets": 1070,
+      "sha256": "daa7aeb1c89f1a3f9b9c43b6280636e6e799f21f09fedb4d85756ab5110b40b5"
+    },
+    {
+      "suite": "verifications/strategie-stands.test.mjs",
+      "journal": "qualification/strategie-stands.log",
+      "octets": 1955,
+      "sha256": "873b17f04e920ad1daff08a6b9f83ab4715665e249ad210dc69a66fb52fad7c1"
+    },
+    {
+      "suite": "verifications/titre-signature.test.mjs",
+      "journal": "qualification/titre-signature.log",
+      "octets": 401,
+      "sha256": "d87a02d1ec5a2020eb3b39f1b9d81c131f83a3c9f4ba29da98fc3cefa815ec3a"
+    },
+    {
+      "suite": "verifications/trace-explicite.test.mjs",
+      "journal": "qualification/trace-explicite.log",
+      "octets": 1909,
+      "sha256": "f900a1e17211744f33a4ce63fb6c60d513fa27fed86749b9da95e78ffe193aab"
+    },
+    {
+      "suite": "verifications/traces.test.mjs",
+      "journal": "qualification/traces.log",
+      "octets": 1737,
+      "sha256": "5fb6f708c46a4bcae1bf05e850499c76bd89396aef36f68d0b1f38aebfe7d5a8"
+    },
+    {
+      "suite": "verifications/troll-assemble.test.mjs",
+      "journal": "qualification/troll-assemble.log",
+      "octets": 746,
+      "sha256": "755ed6f519927ff71e5f4392e5eb9743d142446842b3edd4cf5df4cfe886d04c"
+    },
+    {
+      "suite": "verifications/troll-pilote.test.mjs",
+      "journal": "qualification/troll-pilote.log",
+      "octets": 2118,
+      "sha256": "aae28f35cade635465c6514753bdc38e8315346b044ae3b6454f1764026af6b0"
+    },
+    {
+      "suite": "verifications/troncs.test.mjs",
+      "journal": "qualification/troncs.log",
+      "octets": 2169,
+      "sha256": "5aaf97f33eaec88243b9cbadea22c62747910e83255e26c78a1ab59b2b5f7b1d"
+    },
+    {
+      "suite": "verifications/tunnel-transitions.test.mjs",
+      "journal": "qualification/tunnel-transitions.log",
+      "octets": 826,
+      "sha256": "bcd7128ee8c60e1d16ab580abffd7573c28e88002e187ea19c74f048130c62dd"
+    },
+    {
+      "suite": "verifications/tunnel.test.mjs",
+      "journal": "qualification/tunnel.log",
+      "octets": 457,
+      "sha256": "8a576d718b7607027664b72d208c9b17ff336574b785c9cb92a3a91ea5782b05"
+    },
+    {
+      "suite": "verifications/usure-integration.test.mjs",
+      "journal": "qualification/usure-integration.log",
+      "octets": 803,
+      "sha256": "ebca48cba20d4bd83f416c08e32b5904f2b56640bc36f6b08ea061bd9a9893df"
+    },
+    {
+      "suite": "verifications/usure-pneus.test.mjs",
+      "journal": "qualification/usure-pneus.log",
+      "octets": 1540,
+      "sha256": "471a80e341db1ce24b7a8436478d316924a2fd3418b92fb6646cda47e0e7ec63"
+    },
+    {
+      "suite": "verifications/usure-visuelle.test.mjs",
+      "journal": "qualification/usure-visuelle.log",
+      "octets": 743,
+      "sha256": "ec3b316f5b951af4317ee53db830373e254cf883af4fa3583cf8c1a6a267f09d"
+    },
+    {
+      "suite": "verifications/vegetation.test.mjs",
+      "journal": "qualification/vegetation.log",
+      "octets": 17438,
+      "sha256": "9c29d96b220dfd845f7d95fb1faec81102a96af3d9515d23af2ce53fecb533ab"
+    },
+    {
+      "suite": "verifications/vibrations.test.mjs",
+      "journal": "qualification/vibrations.log",
+      "octets": 1654,
+      "sha256": "fa4a7f7e5402d5b35752edd7492bd4beee62bada27d7b5c6fe08638e05d34917"
+    },
+    {
+      "suite": "verifications/virages.test.mjs",
+      "journal": "qualification/virages.log",
+      "octets": 4106,
+      "sha256": "c7fb022eb11e743fda1392d1e5b52e0c425cdeec9de96e71f2f89de77b1feaed"
+    },
+    {
+      "suite": "verifications/visiere-optique.test.mjs",
+      "journal": "qualification/visiere-optique.log",
+      "octets": 2078,
+      "sha256": "6e978c0376a281d752b7d47dee99f0c3894820d4ea15e30daf9a886f8b40ad33"
+    },
+    {
+      "suite": "verifications/vitre-cadence.test.mjs",
+      "journal": "qualification/vitre-cadence.log",
+      "octets": 873,
+      "sha256": "b48e588fd7f6317a4bc917b8492fba0fec30b01b0b4619900d07ded0feb5a5ea"
+    },
+    {
+      "suite": "verifications/vitre-flux.test.mjs",
+      "journal": "qualification/vitre-flux.log",
+      "octets": 1245,
+      "sha256": "e44c45b10afd45b12448926cc9e179ed57d4420523ea8997c11023d362d41060"
+    },
+    {
+      "suite": "verifications/vitre-impacts.test.mjs",
+      "journal": "qualification/vitre-impacts.log",
+      "octets": 1000,
+      "sha256": "fd2f27e8dde8b16bae30009a767bf72ae2e394cb3c45242c571ee16a15af135a"
+    },
+    {
+      "suite": "verifications/vitre-integration.test.mjs",
+      "journal": "qualification/vitre-integration.log",
+      "octets": 1738,
+      "sha256": "141f31975e1e9baa34302c560133dc6ecddf350c45de631dffe382bb0983316a"
+    },
+    {
+      "suite": "verifications/vitre-meteo.test.mjs",
+      "journal": "qualification/vitre-meteo.log",
+      "octets": 1642,
+      "sha256": "dff0a3d438ba9072901072867269cb60fe1d081c4e17b240d57cd58f13290175"
+    },
+    {
+      "suite": "verifications/vitre.test.mjs",
+      "journal": "qualification/vitre.log",
+      "octets": 674,
+      "sha256": "db68b0d49c3df18e4bfa58a172d840b17214208f2ee526720b7ccdc81c8f9278"
+    },
+    {
+      "suite": "verifications/voiture-identite.test.mjs",
+      "journal": "qualification/voiture-identite.log",
+      "octets": 562,
+      "sha256": "20b19a356e481da3e4eaab304afcac9e0d2465584db89c4f605de71daccbc0f7"
+    },
+    {
+      "suite": "verifications/voiture-permanents.test.mjs",
+      "journal": "qualification/voiture-permanents.log",
+      "octets": 1709,
+      "sha256": "d966da31b0fa18b1d63bf89a38b8052e88391f49f5d6f8996b9e9d23cdf3464e"
+    },
+    {
+      "suite": "verifications/voiture.test.mjs",
+      "journal": "qualification/voiture.log",
+      "octets": 2741,
+      "sha256": "75c059c1fce17f2c03c9a2512bc88890b7d957c7e1053898b9274607202f3ac6"
+    }
+  ]
+}

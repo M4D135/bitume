@@ -1,0 +1,26 @@
+✔ options de capture bornées, cas explicites et URL valides (3.292179ms)
+✔ complément E3 explicite : portraits et duo à vues différentes sans élargir la campagne historique (0.781628ms)
+✔ portraits E3 : viewport et scène réellement verticaux, sillage et vue contrôlés (2.581515ms)
+✔ duo E3 : chaque lentille humide reçoit sa caméra et seuls les rétros du cockpit sont visibles (1.859287ms)
+✔ erreurs de page, GL et repli optique silencieux empêchent la qualification (1.076807ms)
+✔ nuage rival, neige, tunnel et seconde vue sont vraiment exercés (1.114039ms)
+✔ pause figée puis reprise vérifiées sur l’horloge observée (0.310025ms)
+✔ les rétroviseurs suivent le profil réel : absents en Légère, deux par joueur en Fine (2.28427ms)
+✔ sillage à 300 km/h : vitesse, humidité, vrais dépôts, vue et poses sont observés (2.109287ms)
+✔ le témoin sec et l’hélico sous pluie restent sans dépôts ; les autres contrôles graphiques demeurent (1.276575ms)
+✔ contraste humide/sec : mêmes poses, même caméra, même horloge, apport distinct de la visière (0.776638ms)
+✔ préparation du témoin : seule l’humidité change, aucune implantation d’effet n’est remplacée (3.18065ms)
+✔ pluie ciblée : six scénarios explicites, 17 images et diagnostics complets acceptés (26.358412ms)
+✔ pluie arceau : une lentille inactive, masquée ou sans arrivée ne prouve pas la pluie (1.432289ms)
+✔ chronologie native : naissance, couronne puis perle doivent appartenir à la même goutte (6.288687ms)
+✔ le pilote CDP avance l’impact natif par commandes bornées et garde les limites de recherche (41.766587ms)
+✔ carrosserie : gouttes présentes dans le rendu et témoin sec sans eau, à mêmes poses (1.838083ms)
+✔ la CI conserve les groupes historiques une fois, admet les compléments explicites et fige la référence publiée (0.622955ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 112.468084

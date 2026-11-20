@@ -267,6 +267,8 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 
 /* ------------------------------------------------------------------ affichage de course */
 #hud { position: absolute; inset: 0; pointer-events: none; padding: var(--marge); padding-top: max(var(--marge), env(safe-area-inset-top)); font-variant-numeric: tabular-nums; }
+#hud, #hud2 { container: affichage-course / size; }
+.hud-rivaux { display: contents; }
 .hud-haut { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
 .compteurs { display: flex; gap: 8px; }
 .classement li { background: var(--nuit-legere); border: 1px solid var(--trait); border-radius: var(--rayon); }
@@ -584,6 +586,41 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 #jeu[data-partage="haut-bas"] #vitre2 { display: block; inset: auto; left: 0; top: 50%; width: 100%; height: 50%; }
 #jeu[data-partage="cote"] #vitre { width: 50%; }
 #jeu[data-partage="cote"] #vitre2 { display: block; inset: auto; left: 50%; top: 0; width: 50%; height: 100%; }
+
+/* Cockpit large : les panneaux latéraux dégagent les glaces et l'horizon. Le ratio est celui de chaque
+   affichage, y compris à deux après réduction ; les vues étroites et le tactile gardent leur disposition haute. */
+@container affichage-course (min-aspect-ratio: 6/5) {
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .hud-rivaux { position: absolute; left: max(var(--marge),env(safe-area-inset-left)); bottom: 30%; width: min(192px,22%); display: grid; gap: 6px; }
+  body:not(.tactile) #jeu[data-carte-position="gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-rivaux { left: auto; right: max(var(--marge),env(safe-area-inset-right)); }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement { position: static; inset: auto; width: auto; gap: 2px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li { grid-template-columns: 22px 5px minmax(0,1fr) auto; gap: 6px; padding: 2px 6px 2px 0; font-size: 13px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li .p { font-size: 15px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li .c { width: 5px; height: 12px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li .e { font-size: 11px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li.saut { height: 4px; padding: 0; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .annonce-virage { position: static; inset: auto; transform: none; width: auto; max-width: none; grid-template-columns: 24px minmax(0,1fr); gap: 3px 6px; padding: 5px 6px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .virage-fleche { grid-row: 1 / 3; width: 24px; height: 24px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .virage-nom { font-size: 13px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .virage-distance { grid-column: 2; text-align: left; font-size: 15px; }
+}
+
+/* Entre 6/5 et 2/1, les glaces occupent les coins hauts : la carte prend une place réservée entre les
+   compteurs et les chronos. Sa borne suit la hauteur locale, avec les mêmes rapports 3/4, 1 et 5/4. */
+@container affichage-course (min-aspect-ratio: 6/5) and (max-aspect-ratio: 2/1) {
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] :is(.hud-haut, #zone-carte) { --carte-cockpit: min(160px,21.6cqh); }
+  body:not(.tactile) #jeu[data-carte-taille="petite"] :is(#hud, #hud2)[data-vue="cockpit"] :is(.hud-haut, #zone-carte) { --carte-cockpit: min(120px,16.2cqh); }
+  body:not(.tactile) #jeu[data-carte-taille="grande"] :is(#hud, #hud2)[data-vue="cockpit"] :is(.hud-haut, #zone-carte) { --carte-cockpit: min(200px,27cqh); }
+  body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-haut { display: grid; grid-template-columns: minmax(0,1fr) 22%; column-gap: calc(var(--carte-cockpit) + 2 * var(--marge)); }
+  body:not(.tactile) #jeu[data-carte-position="gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-haut { grid-template-columns: 22% minmax(0,1fr); }
+  body:not(.tactile) #jeu[data-carte-position="gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .compteurs { grid-column: 2; grid-row: 1; justify-content: flex-end; }
+  body:not(.tactile) #jeu[data-carte-position="gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .chronos { grid-column: 1; grid-row: 1; }
+  body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .chronos { min-width: 0; padding: 4px 0; }
+  body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .ligne-chrono { gap: 4px; }
+  body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .ligne-chrono .etiquette { font-size: 9px; letter-spacing: .08em; }
+  body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .ligne-chrono .temps { font-size: 18px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] #zone-carte { position: absolute; top: max(8px,env(safe-area-inset-top)); bottom: auto; left: auto; right: calc(24% + 1.5 * var(--marge)); width: var(--carte-cockpit); height: auto; aspect-ratio: 1; }
+  body:not(.tactile) #jeu[data-carte-position="gauche"] :is(#hud, #hud2)[data-vue="cockpit"] #zone-carte { right: auto; left: calc(24% + 1.5 * var(--marge)); }
+}
 
 /* Commandes des joueurs : appareil et touches (réglages), choix rapide à la préparation d'une course à deux */
 #jeu[data-souris="oui"] { cursor: none; }

@@ -63,7 +63,6 @@ export function preparerTroll(reference, choix) {
   });
   const avancer = __BITUME_CAPTURE.avancer;
   __BITUME_CAPTURE.avancer = ms => { S.course.horloge += ms / 1000; S.course.temps = S.course.horloge; return avancer(ms); };
-  for (let k = 0; k < 4; k++) __BITUME_CAPTURE.avancer(50);
   return { entree: 'BITUME_JEU.reference', mode: S.type, locaux: [...S.locaux], choix: J.reglages.trollPilotes,
     entreeClavier: 'CDP Input.dispatchKeyEvent, événements isTrusted observés', simulationConduite: false,
     modulesRemplaces: false, cameraImposee: false };
@@ -141,6 +140,53 @@ export function verifierTroll(r, s) {
   return [...new Set(fautes)];
 }
 
+function tracerPhaseTroll(trace, phase) {
+  trace.phase = phase;
+  trace.phases.push({ phase, date: new Date().toISOString() });
+  process.stderr.write(`troll ${trace.index + 1}/${INSTANTS_TROLL.length} ${trace.instant} : ${phase}\n`);
+}
+
+export async function avantImageTroll({ evaluer, envoyer, rapport, i }) {
+  const instant = INSTANTS_TROLL[i];
+  const trace = { index: i, instant: instant.id, t: instant.t, phases: [], pasDemandes: 0, pasTermines: 0, entrees: [] };
+  (rapport.progressionTroll ||= []).push(trace);
+  try {
+    tracerPhaseTroll(trace, 'lecture-horloge');
+    const etat = await evaluer(`(() => { const F = __TROLL_CAPTURE; F.index = ${i};
+      return { origine: F.origine, tempsRendu: BITUME_JEU.session.tRendu }; })()`);
+    trace.tempsRendu = etat.tempsRendu;
+    if (etat.origine !== null) {
+      const cible = etat.origine + instant.t - .05;
+      trace.cible = cible;
+      if (!Number.isFinite(cible) || !Number.isFinite(trace.tempsRendu)) throw Error('Horloge de rendu non atteinte');
+      tracerPhaseTroll(trace, 'avance-horloge');
+      // Une seule image native par commande : Chrome peut traiter sa file de rendu entre les pas.
+      for (let k = 0; k < 80 && trace.tempsRendu < cible - 1e-7; k++) {
+        trace.pasDemandes++;
+        trace.tempsRendu = await evaluer(`(() => {
+          __BITUME_CAPTURE.avancer(Math.min(50, (${cible} - BITUME_JEU.session.tRendu) * 1000));
+          return BITUME_JEU.session.tRendu;
+        })()`);
+        trace.pasTermines++;
+      }
+      if (!Number.isFinite(trace.tempsRendu) || Math.abs(trace.tempsRendu - cible) > 1e-5) throw Error('Horloge de rendu non atteinte');
+    }
+    tracerPhaseTroll(trace, 'entrees-cdp');
+    const appuyer = async params => {
+      const entree = { ...params, terminee: false }; trace.entrees.push(entree);
+      await envoyer('Input.dispatchKeyEvent', params);
+      entree.terminee = true;
+    };
+    if (instant.appui !== undefined) await appuyer({ type: 'keyDown', ...touches[instant.appui] });
+    if (instant.repeter || instant.relacher) for (const touche of touches)
+      await appuyer({ type: instant.relacher ? 'keyUp' : 'keyDown', ...touche, autoRepeat: !instant.relacher });
+    tracerPhaseTroll(trace, 'attente-capture');
+  } catch (e) {
+    trace.erreur = e.stack || String(e);
+    throw e;
+  }
+}
+
 export async function campagneTroll(o) {
   mkdirSync(o.sortie, { recursive: true });
   const r = { format: 'bitume-captures-troll-v1', date: new Date().toISOString(), demandes: o.cas, passages: [], echecs: 0,
@@ -152,25 +198,21 @@ export async function campagneTroll(o) {
     const s = SCENARIOS_TROLL.find(s => s.id === id), sortie = path.join(o.sortie, id), p = optionsScenarioTroll(s, o.url, sortie, o);
     p.initialiser = async ({ evaluer, envoyer }) => {
       const initialisation = await evaluer(`(${preparerTroll.toString()})(${JSON.stringify(p.referenceJeu)},${JSON.stringify(CHOIX_TROLL)})`);
+      for (let k = 0; k < 4; k++) await evaluer('__BITUME_CAPTURE.avancer(50)');
       await envoyer('Input.dispatchKeyEvent', { type: 'keyDown', key: 'l', code: 'KeyL', windowsVirtualKeyCode: 76 });
       await envoyer('Input.dispatchKeyEvent', { type: 'keyUp', key: 'l', code: 'KeyL', windowsVirtualKeyCode: 76 });
       await evaluer('new Promise(resolve => setTimeout(resolve, 100))');
       initialisation.audio = await evaluer('BITUME_JEU.son');
       return initialisation;
     };
-    p.avantImage = async ({ evaluer, envoyer, i }) => {
-      const instant = INSTANTS_TROLL[i];
-      await evaluer(`(() => { const F = __TROLL_CAPTURE; F.index = ${i}; if (F.origine === null) return;
-        const cible = F.origine + ${instant.t} - .05;
-        for (let k = 0; k < 80 && BITUME_JEU.session.tRendu < cible - 1e-7; k++)
-          __BITUME_CAPTURE.avancer(Math.min(50, (cible - BITUME_JEU.session.tRendu) * 1000));
-        if (Math.abs(BITUME_JEU.session.tRendu - cible) > 1e-5) throw Error('Horloge de rendu non atteinte');
-      })()`);
-      if (instant.appui !== undefined) await envoyer('Input.dispatchKeyEvent', { type: 'keyDown', ...touches[instant.appui] });
-      if (instant.repeter || instant.relacher) for (const touche of touches)
-        await envoyer('Input.dispatchKeyEvent', { type: instant.relacher ? 'keyUp' : 'keyDown', ...touche, autoRepeat: !instant.relacher });
+    p.avantImage = avantImageTroll;
+    p.observer = async ({ evaluer, rapport }) => {
+      const trace = rapport.progressionTroll.at(-1);
+      tracerPhaseTroll(trace, 'observation');
+      const observation = await evaluer(`(${observerTroll.toString()})()`);
+      tracerPhaseTroll(trace, 'termine');
+      return observation;
     };
-    p.observer = ({ evaluer }) => evaluer(`(${observerTroll.toString()})()`);
     const resultat = await capturer(p), erreurs = verifierTroll(resultat, s);
     const sha = createHash('sha256').update(readFileSync(fileURLToPath(o.url))).digest('hex');
     if (sha !== resultat.build?.sha256) erreurs.push('HTML modifié pendant la capture');

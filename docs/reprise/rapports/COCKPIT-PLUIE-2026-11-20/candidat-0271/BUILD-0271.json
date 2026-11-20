@@ -1,0 +1,31 @@
+{
+  "VERSION.json": {
+    "octets": 151,
+    "sha256": "49428d8998f7400679210b16d17e5a8014a7d2bb20b4125e85cb63e914340705"
+  },
+  "SIZE.json": {
+    "octets": 2055,
+    "sha256": "92973ec845f7479fcaee57223c48d8721e46e6a2272b09b72f728a20c62355e7"
+  },
+  "dist/bitume.html": {
+    "octets": 14507449,
+    "sha256": "0e4cdb72ecceb434c086a6bdc365346cfac1900871b95afadd96932cb3fd8ce3"
+  },
+  "version": {
+    "version": "0.2.71",
+    "titre": "BITUME",
+    "moteur": "FERRO",
+    "empreinte": "fd4eefe258dc634ab197a6690a77c15a254aa676320078a433430814e3c2200f"
+  },
+  "base": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+  "reconstruction_identique": true,
+  "sources_runtime_modifiees": [
+    "src/index.html",
+    "src/jeu.js",
+    "src/style.css"
+  ],
+  "physique": "p15",
+  "ferro": "0.3.15",
+  "modules_ferro": 34,
+  "modules_modele_camera_physique_et_roues_inchanges": true
+}

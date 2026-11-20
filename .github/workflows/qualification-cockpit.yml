@@ -22,10 +22,14 @@ jobs:
       max-parallel: 3
       matrix:
         include:
-          - groupe: mac-reference
+          - groupe: mac
             cas: cockpit-mac
           - groupe: paysage
             cas: cockpit-paysage
+          - groupe: compact
+            cas: cockpit-compact
+          - groupe: carte-gauche
+            cas: cockpit-carte-gauche
           - groupe: vertical
             cas: cockpit-vertical
           - groupe: duo-haut-bas
@@ -36,6 +40,8 @@ jobs:
             cas: cockpit-profil
           - groupe: trois-quarts
             cas: cockpit-trois-quarts
+          - groupe: reference-0270
+            cas: cockpit-paysage
     steps:
       - uses: actions/checkout@v4
         with:
@@ -63,23 +69,23 @@ jobs:
         run: |
           set -euo pipefail
           node verifications/captures-habitacle.test.mjs > qualification/test-outil.log 2>&1
-      - name: Recevoir le commit de reference publie 0.2.69
-        if: matrix.groupe == 'mac-reference'
+      - name: Recevoir le candidat de reference 0.2.70
+        if: matrix.groupe == 'reference-0270'
         uses: actions/checkout@v4
         with:
-          ref: 89aa13299221ebc8b5f0474ae5a662680dd6fe32
-          path: qualification/reference-0269
+          ref: 3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a
+          path: qualification/reference-0270
           persist-credentials: false
-      - name: Extraire la reference publiee 0.2.69 et verifier son SHA
-        if: matrix.groupe == 'mac-reference'
+      - name: Extraire la reference 0.2.70 et verifier son SHA
+        if: matrix.groupe == 'reference-0270'
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git -C qualification/reference-0269 rev-parse HEAD)" = 89aa13299221ebc8b5f0474ae5a662680dd6fe32
-          cp qualification/reference-0269/dist/bitume.html qualification/avant-0269.html
-          printf '%s\n' 'bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10  qualification/avant-0269.html' > qualification/AVANT-SHA256.txt
+          test "$(git -C qualification/reference-0270 rev-parse HEAD)" = 3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a
+          cp qualification/reference-0270/dist/bitume.html qualification/avant-0270.html
+          printf '%s\n' 'b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344  qualification/avant-0270.html' > qualification/AVANT-SHA256.txt
           sha256sum --check qualification/AVANT-SHA256.txt
-      - name: Capturer les cinq dispositions et les deux etats
+      - name: Capturer chaque disposition et les deux etats
         shell: bash
         env:
           CAS_COCKPIT: ${{ matrix.cas }}
@@ -87,11 +93,13 @@ jobs:
         run: |
           set -euo pipefail
           args=()
-          if [ "$GROUPE_COCKPIT" = mac-reference ]; then
-            args+=(--avant "file://$GITHUB_WORKSPACE/qualification/avant-0269.html")
+          html="$GITHUB_WORKSPACE/dist/bitume.html"
+          if [ "$GROUPE_COCKPIT" = reference-0270 ]; then
+            html="$GITHUB_WORKSPACE/qualification/avant-0270.html"
+            args+=(--reference-seule oui)
           fi
           timeout --signal=TERM --kill-after=30s 18m node tools/captures-habitacle.mjs \
-            --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --sortie qualification/images \
+            --url "file://$html" --sortie qualification/images \
             --cas "$CAS_COCKPIT" --chrome /usr/bin/google-chrome "${args[@]}" \
             > qualification/captures.log 2>&1
           git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json

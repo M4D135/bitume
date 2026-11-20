@@ -1,0 +1,24 @@
+ok état et uniformes identiques aux cadences 30/47/60/120/144 Hz
+ok petite pluie, averse et réglage fort font monter la charge d’eau ; la vitesse la chasse
+ok neige accumulée, eau de fonte et dégagement progressif sous abri
+ok le nuage d’eau monte puis s’efface, sans supprimer les dépôts persistants
+ok à 300 km/h le sillage recharge la visière ; en sortir évacue la charge sans effacement brutal
+ok les projections seules mouillent à grande vitesse ; abri et neige coupent les nouveaux impacts
+ok pause exacte, temps borné après interruption et indépendance des vues
+ok WebGL2 choisit le bon backend ; absence WebGL2 conserve le repli existant
+ok préchauffage prépare la vraie passe puis la laisse transparente et sans dépôt
+ok source propre à la vue, budgets de pixels et palier Léger sans copie
+ok copie refusée : overlay sans scène ; copie suivante valide rétablit la réfraction
+ok contexte perdu masque la couche ; restauration redessine et libération nettoie
+ok pause ne copie ni ne dessine ; zéro, rétro et off effacent immédiatement
+ok sans dimensions dans le contexte du jeu, dépôts et traînées suivent chaque toile et son redimensionnement
+ok sillage réel à 360 km/h : dépôts denses, fusions, sorties aux bords et récupération hors panache
+ok route humide sans pluie dépose de l’eau ; sur route sèche, le vrai sillage n’en crée pas
+ok la fusion conserve toute l’aire visible à chaque image, même sans film diffus
+ok gouttes et traînées physiques identiques à 30/47/60/120/144 Hz, plafonds par qualité
+ok perles et film : gravité à l’arrêt, transport vers les quatre bords à 300 km/h dans les deux vues
+ok changements de flux : positions continues, histoire conservée et projection cohérente
+ok renouvellement des perles sans saut : populations pondérées, tampons permanents et cadence conservée
+ok la vraie frontière WebGL transmet le champ et les trajectoires des couches
+ok une toile momentanément nulle ne contamine pas le transport lors de son retour
+visière optique : 23 contrôles passés

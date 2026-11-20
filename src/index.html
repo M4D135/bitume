@@ -36,19 +36,21 @@
       </div>
     </div>
 
-    <ol id="classement" class="classement" aria-label="Classement"></ol>
+    <div class="hud-rivaux">
+      <div id="h-virage" class="annonce-virage" data-sens="droite" data-difficulte="1" hidden>
+        <svg class="virage-fleche" viewBox="0 0 40 40" aria-hidden="true"><path class="virage-courbe" d="M7 33V20c0-6 4-10 10-10h16m-7-7 7 7-7 7"></path><path class="virage-epingle" d="M8 34V14a10 10 0 0 1 20 0v18m-6-6 6 6 6-6"></path></svg>
+        <b id="h-virage-nom" class="virage-nom"></b>
+        <span id="h-virage-distance" class="virage-distance"></span>
+      </div>
+      <ol id="classement" class="classement" aria-label="Classement"></ol>
+    </div>
     <div id="message" class="message" role="status" aria-live="polite"></div>
     <div id="sous-message" class="sous-message"></div>
 
-    <div id="h-virage" class="annonce-virage" data-sens="droite" data-difficulte="1" hidden>
-      <svg class="virage-fleche" viewBox="0 0 40 40" aria-hidden="true"><path class="virage-courbe" d="M7 33V20c0-6 4-10 10-10h16m-7-7 7 7-7 7"></path><path class="virage-epingle" d="M8 34V14a10 10 0 0 1 20 0v18m-6-6 6 6 6-6"></path></svg>
-      <b id="h-virage-nom" class="virage-nom"></b>
-      <span id="h-virage-distance" class="virage-distance"></span>
-    </div>
     <span id="h-virage-annonce" class="texte-accessible" role="status" aria-live="polite" aria-atomic="true"></span>
 
+    <div id="zone-carte"><canvas id="carte" class="carte" width="220" height="220" aria-label="Plan du circuit"></canvas></div>
     <div class="hud-bas">
-      <div id="zone-carte"><canvas id="carte" class="carte" width="220" height="220" aria-label="Plan du circuit"></canvas></div>
       <div class="tableau">
         <div id="jauge-derive" class="jauge-derive" data-niveau="0" hidden>
           <span class="etiquette">Dérive</span>

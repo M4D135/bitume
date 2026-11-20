@@ -7,7 +7,12 @@ intérieur/extérieur, volant et tableau abaissés, rétros séparés des mains 
 [contrat et preuves en cours](docs/reprise/COCKPIT-PLUIE-2026-11-20.md).
 La suite comprend pluie en vue arceau, quatre forces, impacts à l’écran et
 gouttes sur les véhicules. Le candidat 0.2.70 est assemblé sur `codex/bitume-cockpit-pluie-20261120`.
-Les preuves visuelles et la CI de ce candidat restent à recevoir avant fusion.
+La CI complète est reçue conforme (179 suites Node et huit tests Python), mais
+les PNG révèlent le HUD sur les glaces et la route. **0.2.70 reste bloquée** ;
+le correctif HUD **0.2.71** est assemblé pour `codex/bitume-0271-hud-20261120`.
+Deux reconstructions identiques, 60 contrôles ciblés et verrou FERRO conformes.
+HTML : `0e4cdb72ecceb434c086a6bdc365346cfac1900871b95afadd96932cb3fd8ce3`.
+Ses nouvelles captures et sa CI restent à recevoir avant toute fusion de PR 44.
 
 
 ## Publié sur main : 0.2.69
@@ -73,5 +78,14 @@ et Marseille reçues ; ces circuits ne sont pas encore jouables.
 [Publication 0.2.68](docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json) ·
 [Réception 05](docs/reprise/PARALLELE-2026-11-20/rapports/00-RECEPTION-05.json).
 
-[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **033**.
+[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **034**.
 Lire ce fichier, `docs/reprise/ETAT.json` → `etat_courant`, puis la fiche active.
+
+## Demandes ajoutées : vidéo arcade et survol de course
+
+[Liste détaillée du 20 novembre](docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md) :
+transitions continues entre vues, virages inclinés, panneaux de virage clignotants,
+bandeaux LED informatifs, hélicoptères visibles et drones repris de METAL.
+La vidéo exacte a été examinée ; les sources procédurales des drones sont identifiées.
+Six lots sont ajoutés à FILE-TRAVAIL, tous **planifiés, non livrés**. Les travaux cockpit/pluie,
+la réserve décor et les demandes précédentes restent suivis séparément.

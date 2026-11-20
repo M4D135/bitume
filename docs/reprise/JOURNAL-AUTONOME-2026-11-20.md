@@ -592,3 +592,33 @@ Les documents de clôture conservent ces réserves sans changer le runtime publi
 Aucun déploiement du site.
 
 Reçu : `docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json`.
+
+## 034 — Réception 0.2.70, défaut HUD et préparation 0.2.71
+
+La CI complète `44818836125` réussit sur `3d9825d4` : 179 suites JavaScript,
+huit tests Python. L’archive des 3 852 fichiers reconstruit exactement l’arbre
+`5ca64577b6044672a61feda146c405e18e6294c6` ; HTML 0.2.70 inchangé, SHA256
+`b0f1b5d9…`, 14 502 704 octets. Les quatre bancs réparés importent leurs vrais
+modules sans alléger les assertions. Les alertes décor 172/152 ms sont conservées.
+
+Les PNG cockpit montrent un défaut distinct de la géométrie : classement sur
+glace gauche, carte sur glace droite et annonce sur route centrale en duo haut/bas.
+Le grand format Mac est incomplet après la référence, arrêté par la limite globale
+de 18 minutes. La poursuite Troll s’arrête à 11/13 PNG. Les cinq instants d’impact
+sont reçus et inspectés ; la campagne météo historique reste privée du cas `legere`.
+Les autres images disponibles sont consignées individuellement dans les reçus.
+
+La fusion de PR44 reste bloquée. Le correctif HUD suivant conserve les yeux,
+le siège, le modèle commun, les roues, p15 et FERRO. La carte reste en haut et
+garde ses préférences. Le banc contrôle désormais les masques visibles du HUD
+contre les vraies glaces, commandes et points de chaussée, sans changer ses seuils.
+Deux cas compacts avec rival à 18 m complètent les neuf scènes candidat ; la
+référence a son propre job. Les pas Troll sont séparés entre commandes DevTools,
+en conservant instants, événements, borne et délai. Nouvelles preuves à recevoir
+après construction 0.2.71 ; aucun déploiement du site ni intégration de PR43.
+
+Construction du correctif : 0.2.71, 14 507 449 octets, SHA256 `0e4cdb72…`,
+deux reconstructions identiques et 60 contrôles ciblés réussis. La référence
+négative exige désormais un recouvrement HUD/glace réel aux deux poses ; les
+données manquantes font échouer candidat et référence. Branche de validation
+prévue : `codex/bitume-0271-hud-20261120`. Les PNG de ce nouvel HTML restent attendus.
