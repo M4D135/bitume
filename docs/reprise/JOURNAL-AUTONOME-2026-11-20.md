@@ -122,3 +122,14 @@ références comprises, avec réserves explicites de pluie sous abri, bandeaux e
 La campagne complète 44747519912 des outils corrigés reste en cours. Les travaux suivants
 (pluie préparée, bandeaux encore sans correctif, PR #37 distincte) sont inventoriés dans
 `rapports/COUVERTS-CIMES-2026-11-20/APRES-0266-PREPARATIONS.json` sans les déclarer intégrés.
+
+## 012 — qualification finale complète, prête pour main
+
+Run 44747519912 sur 40774189 : 159/159 suites, zéro échec. Artefact 14634652050
+vérifié par digest ; 3 405 fichiers et modes conformes, 159 journaux présents, HTML identique.
+Les 113 images retenues sont inspectées ; les 2 aériennes rejetées et la CI 0.2.65
+à 155/159 restent attribuées à leur version. Les preuves finales ne changent que les documents
+après la tête qualifiée. Reçu principal : `rapports/COUVERTS-CIMES-2026-11-20/PUBLICATION-0266.json`.
+Le prototype pluie est également sauvegardé sur `backup/pluie-abris-20261120`, arbre exact
+65442e90, commit d3bd240a ; il reste non intégré et non qualifié. La PR #37 reste conservée.
+Prochaine opération : réunir ces preuves dans la PR #38, fusionner puis vérifier main.

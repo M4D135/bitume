@@ -30,7 +30,7 @@
     }
   ],
   "pending": [
-    "Fin et vérification de la campagne complète 44747519912, puis fusion."
+    "Fusion et contrôle distant de main."
   ],
   "chromium_local_run": false,
   "full_campaign_rerun": true,
@@ -42,7 +42,8 @@
     "images_run": 44747519881,
     "images_statut": "success",
     "qualification_run": 44747519912,
-    "qualification_statut": "in_progress"
+    "qualification_statut": "success",
+    "qualification_recu": "CI-0266-CAPTURE-CORRIGEE.json"
   },
   "etat_avant_publication": {
     "pushed": false,

@@ -1,6 +1,15 @@
 # Couverts et Route-des-Cimes — intégration du 20 novembre 2026
 
-## Point de reprise
+## Qualification finale 0.2.66
+
+La tête `40774189` réussit 159/159 suites ; 3 405 sources et le build sont conformes.
+113 images retenues sont inspectées, dont la reprise des deux vues aériennes invalides.
+Le correctif ne change que les outils de capture, leur régression et le déclenchement ciblé.
+Les échecs initiaux, les deux images refusées et les réserves restent conservés.
+Reçu : `rapports/COUVERTS-CIMES-2026-11-20/PUBLICATION-0266.json`.
+Fusion et contrôle distant de main à terminer. Les sections suivantes sont l’historique du lot.
+
+## Point initial conservé — 0.2.64
 
 La base démos/pilotes/météo **0.2.64 / p15 / FERRO 0.3.15** est sauvegardée
 en [PR #37](https://github.com/M4D135/bitume/pull/37), tête `80aa1e2`,

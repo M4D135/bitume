@@ -26,7 +26,15 @@
       "worst_ms": 42.643433000000186,
       "limitations": "Temps CPU JavaScript et requêtes WASM, Canvas instrumenté sans raster ; aucun FPS matériel déduit."
     },
-    "dependency": "Reprendre apres fusion 0.2.66 et qualifier CPU/compositing du masque spatial PhysX en vraies images."
+    "dependency": "Reprendre apres fusion 0.2.66 et qualifier CPU/compositing du masque spatial PhysX en vraies images.",
+    "sauvegarde_distante": {
+      "branch": "backup/pluie-abris-20261120",
+      "head": "d3bd240a1bfa02ac1e0dbcc8f5c4cdb3b7176531",
+      "tree": "65442e902e38ae0e93d80698c8c262ae198422cf",
+      "arbre_identique_au_prototype_local": true,
+      "integre": false,
+      "recu": "SAUVEGARDE-PLUIE-PREPAREE.json"
+    }
   },
   "bandeaux": {
     "worktree_name": "bitume-demo-ui",
@@ -87,6 +95,11 @@
       "SIZE.json",
       "dist/bitume.html"
     ],
-    "decision": "Conserver ouverte : sa tête comporte du code, un build et des reçus propres. Comparer les corrections avec 0.2.66 et préserver les preuves avant toute clôture ; ne pas la fusionner aveuglément."
+    "decision": "Conserver ouverte : sa tête comporte du code, un build et des reçus propres. Comparer les corrections avec 0.2.66 et préserver les preuves avant toute clôture ; ne pas la fusionner aveuglément.",
+    "rapprochement_cible": {
+      "voiture": "La différence restante restructure le choix de passage dans le tampon CLE : priorité et bornes identiques, ternaire résiduel supprimé dans le candidat 0.2.66.",
+      "captures": "Le contrat de poursuite de la PR37 attend une faible exposition de la lentille (<0,1). Il ne doit pas remplacer celui de la 0.2.66, dont le panache élargi arrose réellement cette caméra (>0,6).",
+      "suite": "Préserver les reçus et examiner séparément les contrôles supplémentaires de diagnostic ; aucune fusion automatique de cette ancienne branche."
+    }
   }
 }

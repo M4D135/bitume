@@ -1,6 +1,6 @@
 {
   "version": "0.2.66",
-  "statut": "images_qualifiees_campagne_outils_corriges_en_cours",
+  "statut": "qualifie_pret_a_fusionner",
   "date": "2026-11-20",
   "repository": "M4D135/bitume",
   "pr": 38,
@@ -29,7 +29,6 @@
     "recu": "CI-0265-INITIAL.json"
   },
   "a_terminer": [
-    "Fin de la campagne complète des outils corrigés",
     "Fusion sur main avec contrôle de la tête attendue",
     "Vérification distante après fusion et clôture du journal"
   ],
@@ -82,7 +81,11 @@
     "head": "40774189dc3a68242a3908f72e09f2676519ccbf",
     "tree": "52c3b4be0c5ea159ffc90a05a60631d0a7956a02",
     "run": 44747519912,
-    "statut": "in_progress",
-    "runtime_et_build_identiques": true
+    "statut": "success",
+    "runtime_et_build_identiques": true,
+    "suites_reussies": 159,
+    "suites_echouees": 0,
+    "sources_verifiees": 3405,
+    "recu": "CI-0266-CAPTURE-CORRIGEE.json"
   }
 }
