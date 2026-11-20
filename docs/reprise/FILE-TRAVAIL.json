@@ -429,5 +429,18 @@
       "ia": "geste et klaxon aléatoires, notamment après dépassement",
       "activation": "un seul bouton Troll, son et mouvement simultanés"
     }
+  },
+  "demandes_moteur_2026_11_20": {
+    "fiche": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
+    "statut": "in_progress",
+    "axes": [
+      "mémoire, préchargement CPU/GPU, streaming, pools bornés",
+      "géométrie, LOD, shaders, alternatives triangles",
+      "montagnes, terrain, matières proches et cockpit",
+      "importance pour la course selon vitesse et caméra, rendu de type fovéal",
+      "culling et occlusion par vue, étude rayons/reflets séparée"
+    ],
+    "publication_demandee": true,
+    "validation": "ouverte ; aucune technique non mesurée annoncée comme livrée"
   }
 }

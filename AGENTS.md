@@ -356,3 +356,11 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
 - Refaire le menu en plusieurs écrans arcade, choix de circuit facile avec son vrai tracé 3D rotatif, navigation complète à la manette.
 - Prioriser la réduction des coûts intrinsèques du moteur pour Xbox Edge et petits PC/GPU intégré Intel ; mesures avant/après à scène identique, profils cohérents et choix manuels préservés. Les modifications FERRO restent canoniques.
 - Avant course, chaque joueur choisit le geste et le klaxon de son emote (classique, ancien, mariage). Le même bouton Troll active simultanément le son et le geste. Les IA choisissent les deux au hasard et réagissent notamment lorsqu’elles dépassent le joueur ; limiter la fréquence.
+
+## Décisions de David — 20 novembre 2026, mémoire, géométrie et visibilité
+
+- Précharger et préchauffer les ressources utiles avant course, avec pools et streaming adaptés, mémoire bornée et mesures de saccades/allocations.
+- Étudier et améliorer triangles/LOD/matières procédurales, terrain et montagnes, détails proches du cockpit et cockpit lui-même. Préserver qualité utile et conduite.
+- Mettre en place un rendu de type fovéal guidé par vitesse, caméra et importance pour la course.
+- Privilégier les éléments visibles par culling/occlusion ; étudier séparément les rayons pour reflets/éclairage. Préserver les contributions aux rétroviseurs et aux ombres.
+- Pousser toutes ces demandes dans le suivi Git et poursuivre. Fiche : `docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md`.

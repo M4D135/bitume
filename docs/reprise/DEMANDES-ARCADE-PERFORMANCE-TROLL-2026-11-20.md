@@ -28,3 +28,7 @@ Ces demandes complètent le programme et les correctifs eau/habitacle/pilote. El
 - [Saisons du catalogue](SAISONS-CATALOGUE-2026-11-20.md).
 - [Habitacle et pilote communs](PILOTE-HABITACLE-COMMUN-2026-11-20.md).
 - [File complète](FILE-TRAVAIL.json) et [journal](JOURNAL-AUTONOME-2026-11-20.md).
+
+## Complément moteur et qualité
+
+Les demandes suivantes sont également conservées : mémoire/préchargement/streaming/pooling, réduction de géométrie et alternatives aux triangles, amélioration des matières du terrain et du cockpit, rendu de type fovéal selon vitesse/vue et visibilité/occlusion « genre ray tracing ». Voir la [fiche détaillée](OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md).

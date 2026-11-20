@@ -31,12 +31,14 @@ Les anciens tests/images ne sont pas à relancer.
 
 [Toutes les dernières demandes, y compris Troll son + geste](docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md).
 
+[Nouvelles demandes moteur : mémoire, géométrie, matières, rendu fovéal et visibilité](docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md).
+
 ## Réserves et reprise
 
 Coût logiciel de l’optique conservé ; FPS matériels, audio, manettes réelles et
 réseau entre machines non qualifiés. La préparation pluie extérieure sous abri
 reste distincte. Les autres lots et 17 destinations restent dans FILE-TRAVAIL.
 
-[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **023**.
+[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **024**.
 Lecture minimale : ce fichier, `docs/reprise/ETAT.json` → `etat_courant`,
 puis la fiche du lot traité. Sauvegarder les étapes et poursuivre sans redemander un go.
