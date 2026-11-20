@@ -76,8 +76,9 @@ Preuves : `rapports/ASPIRATION-SILLAGE-2026-11-20/QUALIFICATION.json`, `comparai
 `node tools/qualification/aspiration-physx.mjs` ; régression :
 `node verifications/aspiration-physx.test.mjs`.
 
-Le premier passage complet local a révélé un scénario de dégagement dépendant d’un accident
-après 80 secondes de trafic p14. Avec p15, ce choc ne se produisait plus. Le même tronc
+Le passage complet local compte **146/147 suites réussies**, avec le seul échec
+`obstacles-degagement.test.mjs`. Ce scénario dépendait d’un accident après 80 secondes de
+trafic p14. Avec p15, ce choc ne se produisait plus. Le même tronc
 est désormais exercé dans une situation pré-impact contrôlée, avec aspiration nulle :
 choc réel, marche arrière, reprise, plus de 250 m, aucun replacement et pneus préservés.
 Les cinq contrôles passent sur p14 et p15 ; ce banc historique utilise explicitement
@@ -109,6 +110,9 @@ reproduit exactement les mesures locales ; une relecture indépendante confirme 
 Les archives de 3 337 puis 3 339 sources ont été téléchargées et comparées intégralement
 (contenus et modes), ainsi que le HTML. Les arbres des deux fusions sont ceux des candidats.
 Reçu complet : `rapports/ASPIRATION-SILLAGE-2026-11-20/PUBLICATION-0262.json`.
+
+S8 reste une mesure facultative ouverte : **1 031 °/s² pour une cible ≤ 300 °/s²**,
+avec **46/46 critères obligatoires** réussis.
 
 Réserves : terrain clair strié identique à 0.2.61 ; projections encore discrètes en poursuite
 sur ces captures, malgré un renforcement clair en cockpit. Les poses figées et SwiftShader

@@ -9,7 +9,7 @@
     "lot": "aspiration_sillage_clos",
     "fiche": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "053",
+    "derniere_entree": "054",
     "prochaine_action": "Réconcilier le travail démo/sols/volant/pilotes/gouttes préparé avec main p15, puis qualifier un prochain petit lot.",
     "dernier_lot_clos": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md"
   },
@@ -56,7 +56,14 @@
     "reseau_entre_machines_qualifie": false,
     "site_deploye": false,
     "spark_disponible": false,
-    "projections_poursuite": "Présentes mais discrètes dans les captures à 300 km/h ; densité/dynamique à réconcilier avec le travail préparé."
+    "projections_poursuite": "Présentes mais discrètes dans les captures à 300 km/h ; densité/dynamique à réconcilier avec le travail préparé.",
+    "lissage_S8_facultatif": {
+      "obligatoire": false,
+      "pire_deg_s2": 1031,
+      "cible_deg_s2": 300,
+      "criteres_obligatoires_reussis": 46,
+      "criteres_obligatoires_total": 46
+    }
   },
   "suite": {
     "lot": "14A_Monaco_sources_et_mesures",
