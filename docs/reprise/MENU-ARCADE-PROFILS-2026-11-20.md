@@ -25,3 +25,5 @@ Ce nouveau lot complète les saisons et l’habitacle ; il ne supprime aucun obj
 Le 20 novembre, l’utilisateur demande de réduire le coût du moteur lui-même. Mesurer le rendu, les voitures, les rétroviseurs et les effets à scène identique ; éliminer les calculs et dessins inutiles. Les profils adaptés complètent ces corrections. Aucun gain Xbox/Intel sans mesure sur ces appareils. Toute correction FERRO se fait dans la référence canonique puis se propage.
 
 Avant course, chaque joueur choisit indépendamment son geste et son type de klaxon : classique, ancien, mariage. Un appui joue la combinaison ; les deux joueurs locaux conservent leurs choix. Les IA tirent geste et son au hasard, notamment après dépassement d’un joueur, avec temporisation. Les klaxons restent synthétisés, courts et plafonnés en voix ; le thème musical reste limité au titre.
+
+Confirmation finale : **le même bouton/action Troll active simultanément le son et le mouvement du personnage**. Aucune commande séparée pour le klaxon. [Suivi de toutes les demandes](DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md).

@@ -399,3 +399,7 @@ précédents. Aucun résultat de performance sur ces appareils n’est inventé.
 Demandes ajoutées : optimiser les coûts du moteur sur Xbox Edge et petits PC/GPU Intel, avec mesures comparables et profils cohérents ; menu arcade en plusieurs écrans, tracé réel en 3D rotatif et navigation manette ; appliquer les saisons sur les neuf circuits. Chaque joueur choisit avant course son geste et son klaxon (classique, ancien, mariage). Les IA choisissent les deux au hasard, notamment lorsqu’elles dépassent le joueur, avec délai entre réactions. Les tâches préparées du pilote restent conservées et à qualifier.
 
 Réconciliation de main398959e : tous ses reçus complets sont conservés. Le complément E3 porte le total à122 PNG du jeu (98 candidat,24 référence), HTML0.2.68 inchangé. Aucune nouvelle performance matérielle n’est supposée.
+
+## 023 — toutes les demandes récentes conservées ; Troll unique
+
+L’utilisateur demande explicitement de pousser toutes ses dernières demandes sur Git, puis de continuer. La fiche DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20 rassemble saisons, menu arcade, navigation manette, petites configurations, optimisation intrinsèque du moteur et emotes. Précision finale : le même bouton Troll joue simultanément le klaxon choisi et le geste choisi par chaque joueur ; les IA tirent les deux au hasard, notamment après dépassement. Les états en préparation restent distincts des corrections qualifiées. Main2815b16 conserve déjà les preuves eau E3 et les préparations ; cette entrée complète le contrat sans modifier le build0.2.68.

@@ -419,5 +419,15 @@
     "saisons_catalogue",
     "menu_arcade_profils_modestes"
   ],
-  "priorite_utilisateur_2026_11_20": "Réduire les coûts intrinsèques du moteur pour configurations modestes ; menu arcade ; saisons cohérentes ; emotes humaines choisies avant course et IA aléatoires."
+  "priorite_utilisateur_2026_11_20": "Réduire les coûts intrinsèques du moteur pour configurations modestes ; menu arcade ; saisons cohérentes ; emotes humaines choisies avant course et IA aléatoires.",
+  "dernieres_demandes": {
+    "date": "2026-11-20",
+    "fiche": "docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md",
+    "etat": "en_cours",
+    "troll": {
+      "humains": "geste et klaxon choisis avant course par joueur",
+      "ia": "geste et klaxon aléatoires, notamment après dépassement",
+      "activation": "un seul bouton Troll, son et mouvement simultanés"
+    }
+  }
 }

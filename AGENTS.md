@@ -355,4 +355,4 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
 - Vérifier les quatre saisons sur les neuf circuits : végétation, couleurs, feuillage et neige selon les espèces et le climat, particulièrement Route-des-Cimes.
 - Refaire le menu en plusieurs écrans arcade, choix de circuit facile avec son vrai tracé 3D rotatif, navigation complète à la manette.
 - Prioriser la réduction des coûts intrinsèques du moteur pour Xbox Edge et petits PC/GPU intégré Intel ; mesures avant/après à scène identique, profils cohérents et choix manuels préservés. Les modifications FERRO restent canoniques.
-- Avant course, chaque joueur choisit le geste et le klaxon de son emote (classique, ancien, mariage). Les IA choisissent les deux au hasard et réagissent notamment lorsqu’elles dépassent le joueur ; limiter la fréquence.
+- Avant course, chaque joueur choisit le geste et le klaxon de son emote (classique, ancien, mariage). Le même bouton Troll active simultanément le son et le geste. Les IA choisissent les deux au hasard et réagissent notamment lorsqu’elles dépassent le joueur ; limiter la fréquence.

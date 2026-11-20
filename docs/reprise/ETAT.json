@@ -14,7 +14,8 @@
     "dernier_lot_clos": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
-    "entree_journal": "022"
+    "entree_journal": "023",
+    "dernieres_demandes": "docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md"
   },
   "publication": {
     "pr": 38,
