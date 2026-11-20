@@ -60,6 +60,17 @@
     r[0] = Math.atan2(a12, a22); r[1] = -Math.asin(Math.max(-1, Math.min(1, a02))); r[2] = Math.atan2(a01, a00);
     return r;
   }
+  function anglesPiloteProduit(r, M, m) {
+    anglesProduit(r, M, m);
+    const a02 = M[2] * m[0] + M[5] * m[1] + M[8] * m[2];
+    // Planche transverse : à ±90° de lacet, les deux atan2(0,0) perdaient sa pente de 25°.
+    // Fixer un angle libre et retrouver l'autre garde la vraie matrice, y compris voiture retournée.
+    if (Math.abs(a02) > 1 - 1e-12) {
+      const a10 = M[0] * m[3] + M[3] * m[4] + M[6] * m[5], a11 = M[1] * m[3] + M[4] * m[4] + M[7] * m[5];
+      r[0] = Math.atan2(-a02 * a10, a11); r[2] = 0;
+    }
+    return r;
+  }
   const T_A = new Float64Array(9), T_B = new Float64Array(9), T_C = new Float64Array(9), T_D = new Float64Array(9), ANG = new Float64Array(3);
   // attitude(ev.cap, ev.tangage || 0, ev.roulis || 0), dans M
   function attitudeDans(M, ev) {
@@ -1191,6 +1202,27 @@
   const PRISES_MAIN = ['main-gant-d'];
   for (let n = 1; n < 5; n++) { const nom = 'main-gant-d-prise-' + n; forme(nom, B.main.construire(n / 5).gant); PRISES_MAIN.push(nom); }
   PRISES_MAIN.push('main-gant-d-ouvert');
+  // Variantes préparées une fois : les deux mains savent quitter la jante, puis déplier des doigts lisibles.
+  const PRISES_GAUCHE = ['main-gant-g'], GESTES_MAIN = { majeur: { d: [], g: [] }, poing: { d: [], g: [] }, salut: { d: [], g: [] } };
+  for (let n = 1; n <= 5; n++) { const nom = 'main-gant-g-prise-' + n; forme(nom, C.miroir(B.main.construire(n / 5).gant)); PRISES_GAUCHE.push(nom); }
+  for (const geste of ['majeur', 'poing', 'salut']) for (let n = 0; n <= 5; n++) {
+    const gant = B.main.construire(1, { geste, progression: n / 5 }).gant;
+    for (const cote of ['d', 'g']) {
+      const nom = 'main-geste-' + geste + '-' + cote + '-' + n;
+      forme(nom, cote === 'd' ? gant : C.miroir(gant)); GESTES_MAIN[geste][cote].push(nom);
+    }
+  }
+  const FORMES_EXPRESSIONS = [...PRISES_MAIN, ...PRISES_GAUCHE, ...Object.values(GESTES_MAIN).flatMap(g => [...g.d, ...g.g])];
+  // Appel sous le voile : les sommets sont déjà dans le buffer GPU global, mais chaque packer d'instances
+  // prépare aussi ici ses groupes de formes (vue extérieure et overlay), avant le premier geste en démo.
+  function preparerExpressions(sortie, p) {
+    const mat = B.cockpitMatieres ? B.cockpitMatieres.tissu : TISSU;
+    for (const nom of FORMES_EXPRESSIONS) for (const overlay of [false, true]) {
+      const f = FORMES[nom];
+      sortie.push({ shape: f.nom, p: Array.from(p), s: f.taille.map(v => v * .9 * ECHELLE), r: [0, 0, 0], mat, color: IVOIRE, surface: 'object', overlay });
+    }
+    return FORMES_EXPRESSIONS.length * 2;
+  }
   const clarte = c => .3 * c[0] + .59 * c[1] + .11 * c[2], ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
   // Courbes de l'habitacle, écrites en place dans habitacle et majVolant (aucun appel par pose) : borner(x, a, b) vaut
   // x < a ? a : x > b ? b : x ; lisse(a, b, x) vaut u·u·(3 − 2u), u = borner((x − a) / (b − a), 0, 1). Position du
@@ -1249,9 +1281,9 @@
   // change, par les mêmes opérations dans le même ordre : l'image ne dépend pas de ce qui a été gardé.
   function construireHabitacle(mod) {
     const liv = mod.livree, c1 = liv.couleur, c2 = liv.seconde || BLANC;
-    const H = { rotM: trois(), epoque: 0, c2, pret: false, cle: new Float64Array(6), planche: [], lampe: null, alerte: null, aiguilles: [],
+    const H = { rotM: trois(), epoque: 0, c2, pret: false, cle: new Float64Array(10), planche: [], lampe: null, alerte: null, aiguilles: [],
       rapport: null, diagonale: null, vitesse: [], volant: [], rJante: null, jante: null, branches: null, rCaches: null, caches: [], vis: [],
-      ruban: null, tige: null, pommeau: null, mains: null, glaces: [],
+      ruban: null, moyeu: [], supportVolant: [], tige: null, pommeau: null, mains: null, glaces: [],
       piloteReel: false, articulations: new Float64Array(18) };
     const reperes = [];
     const repere = m => {   // repère fixe, partagé par les pièces de même rotation
@@ -1323,8 +1355,22 @@
     V.push(H.jante = mettre(FORMES.jante.nom, null, FORMES.jante.taille, TISSU, [.045, .045, .05], H.rJante));
     V.push(H.branches = mettre(FORMES.branches.nom, null, FORMES.branches.taille, METAL_MAT, ACIER, H.rJante));
     for (let j = 0; j < 3; j++) for (let q = 0; q < 2; q++) { const b = mettre('box', null, [RV * .17, .003, .010 * E_VOLANT], MAT, NOIR, H.rCaches[j]); H.caches.push(b); V.push(b); }
-    V.push(mettre('cylinder', plus(CV, [WN, .002]), [.060 * E_VOLANT, .012, .060 * E_VOLANT], METAL_MAT, ACIER, H.rJante));
-    V.push(mettre('cylinder', plus(CV, [WN, .008]), [.040 * E_VOLANT, .012, .040 * E_VOLANT], MAT, NOIR, H.rJante));
+    H.moyeu.push(mettre('cylinder', plus(CV, [WN, .002]), [.060 * E_VOLANT, .012, .060 * E_VOLANT], METAL_MAT, ACIER, H.rJante));
+    H.moyeu.push(mettre('cylinder', plus(CV, [WN, .008]), [.040 * E_VOLANT, .012, .040 * E_VOLANT], MAT, NOIR, H.rJante));
+    V.push(...H.moyeu);
+    // L'arbre suit l'axe du moyeu jusqu'à la vraie face de la planche ; le palier et les attaches sont fixes.
+    // La copie extérieure conservait seulement jante/branches : ni cette liaison, ni même la planche n'existaient.
+    const profondeurColonne = ((CV[0] - PLANCHE[0]) * PN[0] + (CV[1] - PLANCHE[1]) * PN[1]) / (WN[0] * PN[0] + WN[1] * PN[1]);
+    const fondColonne = plus(CV, [WN, -profondeurColonne]), axeFixe = [WU, WN, WR];
+    H.supportVolant.push(mettre('cylinder', plus(CV, [WN, -.5 * profondeurColonne]), [.029, profondeurColonne + .010, .029], METAL_MAT, ACIER, axeFixe));
+    H.supportVolant.push(mettre('cylinder', plus(fondColonne, [WN, .012]), [.055, .034, .055], MAT, [.065, .065, .07], axeFixe));
+    H.supportVolant.push(mettre('box', plus(fondColonne, [PN, -.004]), [.084, .028, .018], MAT, [.055, .055, .06], cadre));
+    // Deux montants descendent de la planche dans la cuve. Leur place physique est partagée par les trois vues.
+    for (const k of [-1, 1]) {
+      const haut = sur(k * .14, -.036, -.008), bas = [.40, .415, k * .126].map((v, i) => ((v - PILOTE_DECALAGE[i]) / PILOTE_ECHELLE - OEIL[i]) / K);
+      const axe = haut.map((v, i) => v - bas[i]), centre = haut.map((v, i) => (v + bas[i]) * .5);
+      H.supportVolant.push(mettre('cylinder', centre, [.026, Math.hypot(...axe) + .008, .026], MAT, [.045, .045, .05], selonAxe(axe)));
+    }
     for (let b = 0; b < 3; b++) { const v = mettre('cylinder', null, [.007 * E_VOLANT, .004, .007 * E_VOLANT], METAL_MAT, ARGENT, H.rJante); H.vis.push(v); V.push(v); }
     const TUBE = .0225 * E_VOLANT;
     V.push(H.ruban = mettre('cylinder', null, [TUBE + .003, .010, TUBE + .003], TISSU, IVOIRE, libre()));
@@ -1339,7 +1385,8 @@
       PIECES_MAIN.forEach((nom, q) => {
         const ferme = variante('main-' + nom + '-' + cote), e = emplacement(ferme.nom, ferme.s, TISSU, couleurs[q], rep, undefined);
         e.ferme = ferme; e.ouvert = k > 0 && nom === 'gant' ? variante('main-gant-d-ouvert') : ferme;
-        e.prises = k > 0 && nom === 'gant' ? PRISES_MAIN.map(variante) : null;
+        e.prises = nom === 'gant' ? (k > 0 ? PRISES_MAIN : PRISES_GAUCHE).map(variante) : null;
+        e.gestes = nom === 'gant' ? [null, GESTES_MAIN.majeur[cote].map(variante), GESTES_MAIN.poing[cote].map(variante), GESTES_MAIN.salut[cote].map(variante)] : null;
         main.pieces.push(e); V.push(e);
       });
       for (let n = 1; n <= 6; n++) {
@@ -1372,7 +1419,8 @@
   }
 
   // Pilote extérieur : la même cinématique de prise/levier que le cockpit, ramenée à la taille du corps réel.
-  // ev.pilote = { volant, rapport, rapportAvant, passage } est un objet permanent fourni par jeu.js. L'animation
+  // ev.pilote ajoute regard (rad, +droite), geste, gesteCote (-1 gauche), gestePhase et gesteIntensite.
+  // Cet objet permanent est fourni par jeu.js. L'animation
   // est une fonction de cette pose : ni horloge cachée, ni avancement par caméra, ni écriture dans la simulation.
   // Sans ce champ, les anciennes poses et leurs empreintes restent strictement inchangées.
   const PILOTE_COU = [0, .772, 0], PILOTE_RECUL = -.10, PILOTE_VOLANT = [.25, .70, 0], PILOTE_ECHELLE = .9 / K;
@@ -1414,6 +1462,9 @@
       };
       ajouter('volant', H.jante, niveau === 2 ? 'cylinder' : null);
       if (niveau < 2) ajouter('branches', H.branches, null);
+      for (let i = 0; i < H.moyeu.length; i++) ajouter('moyeu-' + i, H.moyeu[i], null);
+      ajouter('planche', H.planche[0], null); ajouter('casquette', H.planche[5], null);
+      for (let i = 0; i < H.supportVolant.length; i++) ajouter('support-volant-' + i, H.supportVolant[i], null);
       ajouter('levier', H.tige, null); ajouter('pommeau', H.pommeau, null);
       {
         const f = FORMES['console-levier-pilote'], o = objet(f.nom, MAT, [.035, .035, .04]);
@@ -1458,8 +1509,9 @@
     CLE[0] = volant * VOLANT.course; CLE[1] = t;
     CLE[2] = nA > 0 ? (nA % 2 ? 1 : -1) * .024 : 0; CLE[3] = nA > 0 ? (Math.floor((nA - 1) / 2) - 1) * .017 : 0;
     CLE[4] = nB > 0 ? (nB % 2 ? 1 : -1) * .024 : 0; CLE[5] = nB > 0 ? (Math.floor((nB - 1) / 2) - 1) * .017 : 0;
+    cleExpressions(etat, true);
     let change = !H.pret;
-    for (let i = 0; i < 6; i++) if (!Object.is(cle[i], CLE[i])) { cle[i] = CLE[i]; change = true; }
+    for (let i = 0; i < 10; i++) if (!Object.is(cle[i], CLE[i])) { cle[i] = CLE[i]; change = true; }
     if (change) { majVolant(H); H.pret = true; }
 
     // Même aller/retour au levier que les mains. Le regard anticipe doucement le braquage et accompagne le passage,
@@ -1467,7 +1519,8 @@
     let u = t / .3, retour = (t - .65) / .35;
     u = u < 0 ? 0 : u > 1 ? 1 : u; retour = retour < 0 ? 0 : retour > 1 ? 1 : retour;
     const prise = u * u * (3 - 2 * u) * (1 - retour * retour * (3 - 2 * retour));
-    ANG[0] = -(.22 * volant + .10 * prise); ANG[1] = -.10 * prise; ANG[2] = -.035 * volant;
+    const regard = Number.isFinite(etat.regard) ? Math.max(-.32, Math.min(.32, etat.regard)) : 0;
+    ANG[0] = -Math.max(-.46, Math.min(.46, .22 * volant + .10 * prise + regard)); ANG[1] = -.10 * prise; ANG[2] = -.035 * volant;
     produitDans(R.tete, eulerDe(T_A, ANG, 0, 1), produitDans(T_B, eulerDe(T_C, ANG, 1, 2), eulerDe(T_D, ANG, 2, 0)));
 
     // Les articulations sont calculées dans majVolant, en même temps que les mains et les manches.
@@ -1484,8 +1537,11 @@
     const dx = A[j + 6] - A[j], dy = A[j + 7] - A[j + 1], dz = A[j + 8] - A[j + 2];
     const distance = Math.max(1e-9, Math.sqrt(dx * dx + dy * dy + dz * dz)), ux = dx / distance, uy = dy / distance, uz = dz / distance;
     // Pli vers le bas de la cuve. L'ancien pôle positif (.65, ±1) levait et écartait les coudes.
-    // Aucun terme latéral : la flexion reste près du buste, à l'intérieur des flancs.
-    let bx = ux * uy, by = -1 + uy * uy, bz = uz * uy;
+    // À la jante, le pôle historique reste inchangé. Quand la main se lève, ramener le coude vers le buste
+    // empêche l'humérus de traverser le jonc ; les deux os conservent exactement leurs longueurs.
+    const versBuste = H.cle[6] && H.cle[7] === cote ? .9 * portionGeste(H.cle[8], .44, .85) : 0;
+    const lateral = -cote * versBuste, produit = -uy + lateral * uz;
+    let bx = versBuste ? -ux * produit : ux * uy, by = versBuste ? -1 - uy * produit : -1 + uy * uy, bz = versBuste ? lateral - uz * produit : uz * uy;
     let norme = Math.sqrt(bx * bx + by * by + bz * bz);
     if (norme < 1e-9) { bx = -uz; by = 0; bz = ux; norme = Math.sqrt(bx * bx + bz * bz); }
     if (norme < 1e-9) { bx = 1; by = 0; bz = 0; norme = 1; }
@@ -1514,7 +1570,7 @@
         // Ici il ne reste que le changement d'échelle/cadrage global de la vue extérieure.
         objet.shape = e.simple || source.objet.shape;
         objet.s[0] = PILOTE_ECHELLE * taille[0]; objet.s[1] = PILOTE_ECHELLE * taille[1]; objet.s[2] = PILOTE_ECHELLE * taille[2];
-        if (source.rep) anglesProduit(objet.r, M, source.rep.m);
+        if (source.rep) anglesPiloteProduit(objet.r, M, source.rep.m);
       } else if (e.de !== undefined) {
         const a = e.de, b = e.a;
         x = (A[a] + A[b]) * .5; y = (A[a + 1] + A[b + 1]) * .5; z = (A[a + 2] + A[b + 2]) * .5;
@@ -1606,13 +1662,23 @@
   function placer(H, e, M, P, sortie) {
     const o = e.o, p = e.objet.p, x = o[0], y = o[1], z = o[2], rep = e.rep;
     p[0] = P[0] + (M[0] * x + M[3] * y + M[6] * z); p[1] = P[1] + (M[1] * x + M[4] * y + M[7] * z); p[2] = P[2] + (M[2] * x + M[5] * y + M[8] * z);
-    if (rep !== null && rep.epoque !== H.epoque) { anglesProduit(rep.r, M, rep.m); rep.epoque = H.epoque; }
+    if (rep !== null && rep.epoque !== H.epoque) { if (H.piloteReel) anglesPiloteProduit(rep.r, M, rep.m); else anglesProduit(rep.r, M, rep.m); rep.epoque = H.epoque; }
     sortie.push(e.objet);
   }
   function placerTout(H, liste, M, P, sortie) { for (let i = 0; i < liste.length; i++) placer(H, liste[i], M, P, sortie); }
 
   const U = new Float64Array(3), RD = new Float64Array(3), EX = new Float64Array(3), HT = new Float64Array(3), GC = new Float64Array(3), ANGLE = new Float64Array(1),
-    BOUT = new Float64Array(3), ICI = new Float64Array(3), AV = new Float64Array(3), P1 = new Float64Array(3), P2 = new Float64Array(3), CLE = new Float64Array(6);
+    BOUT = new Float64Array(3), ICI = new Float64Array(3), AV = new Float64Array(3), P1 = new Float64Array(3), P2 = new Float64Array(3), CLE = new Float64Array(10);
+  function cleExpressions(etat, reel) {
+    const geste = reel && CLE[1] === 1 ? etat.geste : null;
+    CLE[6] = geste === 'majeur' ? 1 : geste === 'poing' ? 2 : geste === 'salut' ? 3 : 0;
+    CLE[7] = etat.gesteCote === -1 ? -1 : 1;
+    CLE[8] = CLE[6] && Number.isFinite(etat.gesteIntensite) ? Math.max(0, Math.min(1, etat.gesteIntensite)) : 0;
+    CLE[9] = CLE[6] && Number.isFinite(etat.gestePhase) ? Math.max(0, Math.min(1, etat.gestePhase)) : 0;
+  }
+  // L'intensité déjà lissée est le paramètre du trajet. Ces portions placent seulement ses étapes mécaniques :
+  // délier les doigts, dégager la jante, lever le poignet et enfin former le geste ; retour par le même chemin.
+  function portionGeste(x, a, b) { const u = Math.max(0, Math.min(1, (x - a) / (b - a))); return u * u * (3 - 2 * u); }
   // Volant (braquage phi), levier (passage t, grille de départ gA et d'arrivée gB) et mains, d'après H.cle = (phi, t,
   // gAx, gAy, gBx, gBy). lisse(a, b, x) et borner(x, a, b) (voir plus haut) y sont écrits en place, mêmes opérations.
   // Volant : jante gainée, trois branches d'aluminium ajourées, flasque, cache et vis, ruban blanc en haut de la jante.
@@ -1674,7 +1740,7 @@
       const main = H.mains[h], k = main.k, F = main.rep.m, co = main.coude;
       // repère de la prise : x vers le pilote, y le long de la jante vers le haut, z vers le moyeu (miroir à gauche)
       for (let i = 0; i < 3; i++) { const rk = RD[i] * k; EX[i] = U[i] * cP + rk * sP; HT[i] = U[i] * sP - rk * cP; }
-      let gx = CV[0] + EX[0] * RV, gy = CV[1] + EX[1] * RV, gz = CV[2] + EX[2] * RV, ecart = 0;
+      let gx = CV[0] + EX[0] * RV, gy = CV[1] + EX[1] * RV, gz = CV[2] + EX[2] * RV, ecart = 0, doigtsGeste = -1;
       F[0] = WN[0]; F[1] = WN[1]; F[2] = WN[2]; F[3] = HT[0]; F[4] = HT[1]; F[5] = HT[2]; F[6] = -k * EX[0]; F[7] = -k * EX[1]; F[8] = -k * EX[2];
       if (k > 0 && (vl > 0 || H.piloteReel && ouverture > 0)) {
         // La paume rejoint réellement le pommeau (jeu de 0,9 mm), au lieu de flotter 18 mm au-dessus.
@@ -1716,10 +1782,42 @@
           gy -= F[1] * poignet[0] + F[4] * poignet[1] + F[7] * poignet[2];
           gz -= F[2] * poignet[0] + F[5] * poignet[1] + F[8] * poignet[2];
         }
-
+      }
+      if (cle[6] && k === cle[7] && cle[8] > 0) {
+        const intensite = cle[8], mouvement = portionGeste(intensite, .42, 1), dehors = portionGeste(intensite, .06, .26), recul = portionGeste(intensite, .20, .44);
+        ecart = portionGeste(intensite, 0, .16);
+        gx += EX[0] * .020 * dehors + (WN[0] * .060 + WU[0] * .045) * recul;
+        gy += EX[1] * .020 * dehors + (WN[1] * .060 + WU[1] * .045) * recul;
+        gz += EX[2] * .020 * dehors + (WN[2] * .060 + WU[2] * .045) * recul;
+        const poignet = main.pieces[3].ferme.c;
+        let wx = gx + F[0] * poignet[0] + F[3] * poignet[1] + F[6] * poignet[2];
+        let wy = gy + F[1] * poignet[0] + F[4] * poignet[1] + F[7] * poignet[2];
+        let wz = gz + F[2] * poignet[0] + F[5] * poignet[1] + F[8] * poignet[2];
+        // La main haute est déjà devant la visière : son dégagement ne recule jamais la manchette dans le casque.
+        wx = Math.max(wx, ((.100 - PILOTE_DECALAGE[0]) / PILOTE_ECHELLE - OEIL[0]) / K);
+        // Poignet à côté du casque, au-dessus du jonc. Une seule main quitte le volant, l'autre garde sa prise.
+        // Le salut oscille légèrement, le poing se lève de 8 mm : les modulations s'annulent avec le geste.
+        const onde = Math.sin(cle[9] * Math.PI * 6) * mouvement;
+        const cibleX = ((.080 - PILOTE_DECALAGE[0]) / PILOTE_ECHELLE - OEIL[0]) / K;
+        const cibleY = ((.920 + (cle[6] === 2 ? .008 * onde : 0) - PILOTE_DECALAGE[1]) / PILOTE_ECHELLE - OEIL[1]) / K;
+        const cibleZ = ((k * (.240 + (cle[6] === 3 ? .010 * onde : 0)) - PILOTE_DECALAGE[2]) / PILOTE_ECHELLE - OEIL[2]) / K;
+        const contour = 4 * mouvement * (1 - mouvement);
+        wx += (cibleX - wx) * mouvement - .015 / .9 * contour;
+        wy += (cibleY - wy) * mouvement;
+        wz += (cibleZ - wz) * mouvement + k * .055 / .9 * contour;
+        // Annuler le braquage avant de redresser la main : matrices orthonormales et poignet fixe sous les doigts.
+        ANGLE[0] = phi * mouvement; tournerColonnes(F, WN, ANGLE);
+        AXE[0] = 0; AXE[1] = 0; AXE[2] = 1; ANGLE[0] = (Math.PI / 2 + TAU) * mouvement; tournerColonnes(F, AXE, ANGLE);
+        AXE[0] = 1; AXE[1] = 0; AXE[2] = 0; ANGLE[0] = -k * Math.atan2(B.main.AXE[2], B.main.AXE[0]) * mouvement; tournerColonnes(F, AXE, ANGLE);
+        AXE[0] = 0; AXE[1] = 1; AXE[2] = 0; ANGLE[0] = k * (.42 + (cle[6] === 3 ? .09 * onde : 0)) * mouvement; tournerColonnes(F, AXE, ANGLE);
+        gx = wx - F[0] * poignet[0] - F[3] * poignet[1] - F[6] * poignet[2];
+        gy = wy - F[1] * poignet[0] - F[4] * poignet[1] - F[7] * poignet[2];
+        gz = wz - F[2] * poignet[0] - F[5] * poignet[1] - F[8] * poignet[2];
+        if (intensite >= .48) doigtsGeste = Math.min(5, Math.floor(portionGeste(intensite, .48, 1) * 5 + 1e-8));
       }
       for (let q = 0; q < 5; q++) {
-        const e = main.pieces[q], fo = H.piloteReel && e.prises ? e.prises[Math.min(5, Math.floor(ecart * 5 + 1e-8))] : ecart >= .25 ? e.ouvert : e.ferme, c = fo.c, o = e.objet, p = e.o;
+        const e = main.pieces[q], fo = doigtsGeste >= 0 && e.gestes ? e.gestes[cle[6]][doigtsGeste]
+          : H.piloteReel && e.prises ? e.prises[Math.min(5, Math.floor(ecart * 5 + 1e-8))] : ecart >= .25 ? e.ouvert : e.ferme, c = fo.c, o = e.objet, p = e.o;
         p[0] = ((gx + F[0] * c[0]) + F[3] * c[1]) + F[6] * c[2]; p[1] = ((gy + F[1] * c[0]) + F[4] * c[1]) + F[7] * c[2]; p[2] = ((gz + F[2] * c[0]) + F[5] * c[1]) + F[8] * c[2]; versVoiture(p);
         if (o.shape !== fo.nom) { o.shape = fo.nom; o.s = fo.s; }
       }
@@ -1789,10 +1887,12 @@
     CLE[0] = x * VOLANT.course; CLE[1] = t;
     CLE[2] = nA > 0 ? (nA % 2 ? 1 : -1) * .024 : 0; CLE[3] = nA > 0 ? (Math.floor((nA - 1) / 2) - 1) * .017 : 0;   // grille(nA)
     CLE[4] = nB > 0 ? (nB % 2 ? 1 : -1) * .024 : 0; CLE[5] = nB > 0 ? (Math.floor((nB - 1) / 2) - 1) * .017 : 0;   // grille(nB)
+    cleExpressions(ev.pilote || etat, H.piloteReel);
     let change = !H.pret;
-    for (let i = 0; i < 6; i++) if (!Object.is(cle[i], CLE[i])) { cle[i] = CLE[i]; change = true; }
+    for (let i = 0; i < 10; i++) if (!Object.is(cle[i], CLE[i])) { cle[i] = CLE[i]; change = true; }
     if (change) { majVolant(H); H.pret = true; }
     placerTout(H, H.volant, M, P, sortie);
+    if (H.piloteReel) placerTout(H, H.supportVolant, M, P, sortie);
     // Rétroviseurs (voir RETRO) : boîtier de la couleur de la voiture, patte vers le flanc de l'habitacle, glace. Le
     // fond de la glace montre ciel, horizon et piste, et les voitures qui suivent à leur place ; quand le jeu pose
     // dessus l'image réelle de la scène arrière (jeu.js, majGlaces), ce fond reste dessous.
@@ -1854,5 +1954,5 @@
     for (let i = 0; i < F.objets.length; i++) { monde(F.objets[i].p, M, F.o[i], P); sortie.push(F.objets[i]); }
   }
 
-  B.voiture = { modele, preparerPneusService, changerPneus, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, detailRouesPour, distanceRoues2, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES, SEGMENTS_ROUE, ROUES_FORMES, JANTES_FORMES };
+  B.voiture = { modele, preparerPneusService, preparerExpressions, changerPneus, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, detailRouesPour, distanceRoues2, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES, SEGMENTS_ROUE, ROUES_FORMES, JANTES_FORMES };
 })(globalThis.BITUME = globalThis.BITUME || {});

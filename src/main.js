@@ -46,11 +46,13 @@
   // 12,4 mm : la peau se recoupait) ; le premier point de contact est un peu plus haut sur la jante.
   const POUCE = { r: [.0160, .0158, .0124, .0108, .0094], eminence: [[.016, .012, .018], [.036, .020, .026]], tour: [[.028, -20], [.040, -32], [.052, -36]] };
 
-  function construire(ouvert) {
+  function construire(ouvert, expression) {
     const C = B.carene;
     // Les booléens gardent exactement les deux maillages historiques. Une fraction prépare une prise
     // intermédiaire au chargement : aucun sommet n'est reconstruit pendant l'animation des doigts.
     const ouverture = typeof ouvert === 'number' ? Math.max(0, Math.min(1, ouvert)) : ouvert ? 1 : 0;
+    const geste = expression && ['majeur', 'poing', 'salut'].includes(expression.geste) ? expression.geste : null;
+    const progression = geste ? Number.isFinite(expression.progression) ? Math.max(0, Math.min(1, expression.progression)) : 1 : 0;
     const K = AUTOUR(0, JOINTURES.theta, JOINTURES.d);            // jointure du majeur et de l'annulaire : origine du dos
     const a = AXE, bz = [0, 1, 0], Y = croix(bz, a);              // Y : normale au dos de la main, vers le dehors
     const m = [a, Y, bz];
@@ -65,6 +67,20 @@
       const psi = doigt.s / JANTE.R, jointure = AUTOUR(psi, JOINTURES.theta, JOINTURES.d), r = doigt.r;
       const rayons = EFFILE.map(f => r * f);
       const pts = [additionner(jointure, multiplier(a, .024)), jointure, ...doigt.tour.map((t, i) => AUTOUR(psi, JOINTURES.theta + (t * deg - JOINTURES.theta) * serrage, JANTE.r + rayons[i + 2] + JEU))];
+      if (geste) {
+        // Les jointures et le poignet restent identiques à la prise. Seules les phalanges changent : le majeur
+        // se dresse seul, le salut déploie quatre doigts légèrement écartés, le poing les replie dans la paume.
+        const etendu = geste === 'salut' || geste === 'majeur' && doigt.nom === 'majeur';
+        const longueur = doigt.nom === 'majeur' ? .081 : doigt.nom === 'index' ? .071 : doigt.nom === 'annulaire' ? .074 : .059;
+        const pli = [[.028, -.010], [.034, -.033], [.018, -.046], [-.004, -.045]];
+        for (let n = 0; n < 4; n++) {
+          const d = etendu ? longueur * [.28, .57, .82, 1][n] : pli[n][0];
+          const paume = etendu ? -[.001, .002, .004, .007][n] : pli[n][1];
+          const ecart = geste === 'salut' ? doigt.s * .30 * (n + 1) / 4 : 0;
+          const cible = additionner(jointure, additionner(multiplier(a, -d), additionner(multiplier(Y, paume), multiplier(bz, ecart))));
+          for (let k = 0; k < 3; k++) pts[n + 2][k] += (cible[k] - pts[n + 2][k]) * progression;
+        }
+      }
       gant.push(...C.tube(pts, rayons, { cotes: 10, pas: 4, bouts: true }));
       pointsDoigts.push(pts); jointures.push(jointure);
     }
@@ -83,6 +99,14 @@
     const eminence = POUCE.eminence.map(([x, y, z]) => additionner(additionner(W, multiplier(a, -x)), additionner(multiplier(bz, y), multiplier(Y, -z))));
     const pliPouce = ouverture === 0 ? 1 : ouverture === 1 ? .3 : 1 - .7 * ouverture;
     const pouce = [...eminence, ...POUCE.tour.map(([s, t], i) => AUTOUR(s / JANTE.R, t * deg * pliPouce, JANTE.r + POUCE.r[i + 2] + 4 * JEU))];
+    if (geste) {
+      const cibles = geste === 'salut' ? [[.030, .040, -.022], [.016, .063, -.020], [.003, .075, -.020]]
+        : [[.014, .030, -.038], [-.003, .012, -.046], [-.002, -.008, -.048]];
+      for (let n = 0; n < 3; n++) {
+        const [x, y, z] = cibles[n], cible = additionner(K, additionner(multiplier(a, x), additionner(multiplier(bz, y), multiplier(Y, z))));
+        for (let k = 0; k < 3; k++) pouce[n + 2][k] += (cible[k] - pouce[n + 2][k]) * progression;
+      }
+    }
     gant.push(...C.tube(pouce, POUCE.r, { cotes: 12, pas: 4, bouts: true }));
 
     // --- Paume : cuir sombre côté jante, sous le dos ---
