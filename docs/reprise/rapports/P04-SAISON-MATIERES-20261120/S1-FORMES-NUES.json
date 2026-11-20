@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "nature": "Registre statique de formes, sans dessin ni mesure FPS",
+  "dateUTC": "2026-11-20T17:22:57.658Z",
+  "environnement": {
+    "node": "24.22.3",
+    "v8": "13.6.233.17-node.63",
+    "plateforme": "linux",
+    "architecture": "x64"
+  },
+  "methode": "Deux VM indépendantes, mêmes sources FERRO ; geometry(false) après chargement botanique seulement ; comptage exact Float32Array/Uint32Array.",
+  "sources": {
+    "avant": {
+      "commit": "1c71bb341d20df4328e5178497503ee4ad26a131",
+      "arbre": "409499e1631489b667f34bf83e37682cd18657ae",
+      "fichiers": {
+        "src/moteur/renderer.js": {
+          "sha256": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8"
+        },
+        "src/botanique.js": {
+          "sha256": "8ca32fb0aa467ea1ac4ce65b9f175254f3eb11ee14305f247f6015160b39bf8a"
+        }
+      }
+    },
+    "apres": {
+      "commit": "259ed2bb8ba39375f6b792459c24997cfac6e701",
+      "arbre": "170f85b287063b9453548cf1978415559ea11939",
+      "fichiers": {
+        "src/moteur/renderer.js": {
+          "sha256": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8"
+        },
+        "src/botanique.js": {
+          "sha256": "7b7fdb36e771e0356bcff031a487c2acf0c87758668bb385d9d7addd6465fb11"
+        }
+      }
+    }
+  },
+  "registreAvant": {
+    "formes": 27,
+    "triangles": 17862,
+    "float32Sommets": 321516,
+    "sommets": 53586,
+    "indices": 53586,
+    "octetsSommets": 1286064,
+    "octetsIndices": 214344,
+    "octetsTotal": 1500408
+  },
+  "registreApres": {
+    "formes": 33,
+    "triangles": 21070,
+    "float32Sommets": 379260,
+    "sommets": 63210,
+    "indices": 63210,
+    "octetsSommets": 1517040,
+    "octetsIndices": 252840,
+    "octetsTotal": 1769880
+  },
+  "delta": {
+    "formes": 6,
+    "triangles": 3208,
+    "float32Sommets": 57744,
+    "sommets": 9624,
+    "indices": 9624,
+    "octetsSommets": 230976,
+    "octetsIndices": 38496,
+    "octetsTotal": 269472
+  },
+  "formes": [
+    {
+      "nom": "arbre-feuillu-nu-proche-low",
+      "triangles": 72,
+      "sommets": 216,
+      "float32Sommets": 1296,
+      "octetsSommets": 5184,
+      "indices": 216,
+      "octetsIndices": 864,
+      "octetsTotal": 6048
+    },
+    {
+      "nom": "arbre-feuillu-nu-proche-medium",
+      "triangles": 858,
+      "sommets": 2574,
+      "float32Sommets": 15444,
+      "octetsSommets": 61776,
+      "indices": 2574,
+      "octetsIndices": 10296,
+      "octetsTotal": 72072
+    },
+    {
+      "nom": "arbre-feuillu-nu-proche-high",
+      "triangles": 1734,
+      "sommets": 5202,
+      "float32Sommets": 31212,
+      "octetsSommets": 124848,
+      "indices": 5202,
+      "octetsIndices": 20808,
+      "octetsTotal": 145656
+    },
+    {
+      "nom": "arbre-feuillu-nu-loin-low",
+      "triangles": 72,
+      "sommets": 216,
+      "float32Sommets": 1296,
+      "octetsSommets": 5184,
+      "indices": 216,
+      "octetsIndices": 864,
+      "octetsTotal": 6048
+    },
+    {
+      "nom": "arbre-feuillu-nu-loin-medium",
+      "triangles": 184,
+      "sommets": 552,
+      "float32Sommets": 3312,
+      "octetsSommets": 13248,
+      "indices": 552,
+      "octetsIndices": 2208,
+      "octetsTotal": 15456
+    },
+    {
+      "nom": "arbre-feuillu-nu-loin-high",
+      "triangles": 288,
+      "sommets": 864,
+      "float32Sommets": 5184,
+      "octetsSommets": 20736,
+      "indices": 864,
+      "octetsIndices": 3456,
+      "octetsTotal": 24192
+    }
+  ],
+  "coutDessin": {
+    "mesure": false,
+    "explication": "Seules les instances caduques présentes et leur LOD sélectionné utilisent ces formes ; la somme des six formes enregistrées ne représente pas des triangles rendus à chaque image."
+  },
+  "limites": [
+    "Primitives FERRO et botanique seulement : les totaux avant/après excluent les formes voiture, pilote, végétation et autres modules du jeu.",
+    "Octets exacts des tableaux géométriques à envoyer au renderer, pas une mesure complète RAM/VRAM. Le tas JS des triangles, tableaux de génération, index de travail et caches du pilote graphique ne sont pas mesurés.",
+    "Les six formes sont préchargées pour les trois qualités, indépendamment de la saison de la première course.",
+    "Chaque renderer possède sa géométrie ; un renderer de rétroviseurs peut détenir un second exemplaire du même delta. Aucun total multiplateforme ou de mémoire GPU réelle n’est revendiqué.",
+    "Aucune mesure de coût d’image, de GPU matériel ni de FPS."
+  ],
+  "reproduction": {
+    "script": "mesurer-formes-nues.mjs",
+    "arguments": [
+      "DEPOT",
+      "SORTIE.json",
+      "1c71bb341d20df4328e5178497503ee4ad26a131",
+      "259ed2bb8ba39375f6b792459c24997cfac6e701"
+    ]
+  }
+}
