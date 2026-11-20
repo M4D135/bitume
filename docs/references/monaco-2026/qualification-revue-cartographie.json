@@ -1,0 +1,165 @@
+{
+  "format": "bitume-monaco-cartography-qualification",
+  "version": 1,
+  "date": "2026-11-20",
+  "scope": "Complément cartographique et provenance temporelle ; aucune géométrie de course importée.",
+  "baseCommit": "9ff09b6c4fcaea32875eca0e95a058598e99fdd9",
+  "foundation": {
+    "pr": 26,
+    "head": "4fba4b0cea7dad3254822fbda25c217708526607",
+    "merge": "ed32c88e0878e57cd5e64476360047d2354f4816",
+    "qualifiedTree": "c155250cf75370a1e42aed69a3e677a83c637c6e",
+    "ciRun": 44706854811,
+    "passed": 144,
+    "failed": 0,
+    "artifactId": 14615204104,
+    "artifactSha256": "cc3c7edbc4c40261ebaebf42416e5dfe2db8203b414950f8e90886e8149b571d",
+    "sourceFilesVerified": 3319,
+    "archiveVerified": true,
+    "closurePr": 28,
+    "closureCommit": "9ff09b6c4fcaea32875eca0e95a058598e99fdd9",
+    "receipt": "PUBLICATION-REVUE-20261120.json"
+  },
+  "reconciliation": {
+    "redundantPrClosed": 27,
+    "workPreservedOnBranch": true,
+    "foundationToolTestsAndOutputsUnchanged": true,
+    "separateTest": "verifications/monaco-revue-cartographie.test.mjs",
+    "separateReceipt": "qualification-revue-cartographie.json"
+  },
+  "localChecks": {
+    "commands": [
+      {
+        "command": "node --test verifications/monaco-revue-cartographie.test.mjs",
+        "exitCode": 0,
+        "seconds": 3.828
+      },
+      {
+        "command": "python3 tools/preparer-monaco-revue.py --check",
+        "exitCode": 0,
+        "seconds": 0.216
+      }
+    ],
+    "node": "v24.22.3",
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "filesStableDuringChecks": true
+  },
+  "inputs": {
+    "sourceAndDerivedFilesVerified": 18,
+    "matchFoundationExactly": true,
+    "osmAndTerrainRebuiltBeforeReview": true,
+    "networkUsedByGenerator": false,
+    "olderFilesRewritten": false
+  },
+  "summary": {
+    "pointCount": 415,
+    "terrainObservations": 830,
+    "eligibleRoadObservations": 0,
+    "differencePointCount": 32,
+    "differenceGroupCount": 7,
+    "positiveDifferences": 7,
+    "negativeDifferences": 25,
+    "differencePointsTaggedTunnel": 20,
+    "gradeObservations": 17,
+    "distinctGradeEdges": 17,
+    "gradeByDataset": {
+      "lidar": 5,
+      "rge": 12
+    },
+    "tunnelTaggedPoints": 33,
+    "tunnelRuns": 2,
+    "candidatePortals": 4,
+    "surveyedPortals": 0,
+    "unknownRoadMeasurements": {
+      "y": 415,
+      "leftWidthM": 415,
+      "rightWidthM": 415,
+      "bankRadians": 415
+    }
+  },
+  "temporalProvenance": {
+    "tilePeriodsPreserved": true,
+    "individualCellMeasurementDatesConfirmed": 0,
+    "singleDayTileMetadataIsNotIndividualDate": true
+  },
+  "independentReview": {
+    "groupsAndGradeAlertsRecomputed": true,
+    "sourceValuesAndCoordinatesChecked": 830,
+    "svgRenderedAndInspected": true,
+    "cyclicTunnelClosureChecked": true
+  },
+  "sourceReview": {
+    "document": "REVUE-SOURCES-20261120.md",
+    "complementsRoadCandidate": "PISTE-BDTOPO.md",
+    "copcTiles": [
+      "1056_6303",
+      "1056_6304"
+    ],
+    "boundedRangeHttpStatuses": [
+      403,
+      403
+    ],
+    "cloudsAcquired": 0,
+    "causeOfAccessRefusal": "not_established"
+  },
+  "files": {
+    "tools/preparer-monaco-revue.py": {
+      "bytes": 26100,
+      "sha256": "de3670a08d0b160f5d13a812ddd0438f13a674e044b533e8f385b014e5f798bc"
+    },
+    "docs/references/monaco-2026/revue-chaussee.json": {
+      "bytes": 205826,
+      "sha256": "ca95ab7405a3d44788fc07de60a5fdbc840b805cee908eab6cee3bb0992b0b83"
+    },
+    "docs/references/monaco-2026/revue-chaussee.svg": {
+      "bytes": 31158,
+      "sha256": "4d8933f1b2a103c5076e0936f321dddb4474be77d987404b2eefd4302ae2809c"
+    },
+    "verifications/monaco-revue-cartographie.test.mjs": {
+      "bytes": 10171,
+      "sha256": "bf3b6031d69e976fd7b6bead9faca1d23c3edf2495b00b998f8053a2f7418cbe"
+    }
+  },
+  "existingFilesPreserved": {
+    "tools/examiner-monaco-mesures.py": "e3590cec66bc2b84849299c3106608ce610bc34fede44910daecafdf7175fd11",
+    "verifications/monaco-revue.test.mjs": "afc907bce1f18a3bc474ad858e8dd8f132a35b4a6e21b0cb0fe4df4e0ad6a849",
+    "docs/references/monaco-2026/revue-mesures.json": "f209eab38936f28b1e554aa0f056f8b79052e76b5d8729e5201dbd568bc74dcc",
+    "docs/references/monaco-2026/revue-mesures.md": "9bd5359b9424e065307cab45e977d3f581666292b49c5b8583455571bad34e50",
+    "tools/preparer-monaco-mesures.py": "d772112a4bbc3a73e142d8d2dbfbc39b796f7cfc778cc898a16c57a5ccb6c0c7",
+    "tools/preparer-monaco-14a.py": "20c054fc6ab2ff4cd0fec56d5ed66a3d358113db1419644d2655406e8b4ce996",
+    "tools/monaco_mesures.py": "a5240f589f4d9b2554b3bf3d2ff3d31386eadb43aba038c645814c55e1d40df9",
+    "VERSION.json": "5d247a754b0eb9c936bdc898c05f5760971b3825f0ec5ace75ffaa06aacbfaeb",
+    "dist/bitume.html": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d"
+  },
+  "game": {
+    "version": "0.2.61",
+    "physics": "p14",
+    "engine": "FERRO 0.3.15",
+    "runtimeChanged": false,
+    "buildChanged": false,
+    "buildBytes": 14265416,
+    "buildSha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d",
+    "localBuildOrGameCampaignRerun": false
+  },
+  "publication": {
+    "status": "pending",
+    "pr": null,
+    "head": null,
+    "merge": null
+  },
+  "ci": {
+    "status": "pending",
+    "runId": null,
+    "result": null
+  },
+  "remaining": [
+    "Monaco non jouable ; aucune altitude de chaussée, largeur, valeur de dévers ou limite de course qualifiée.",
+    "Les quatre extrémités de tags sont des portails candidats non mesurés.",
+    "Acquérir les objets routiers BD TOPO ciblés, confronter leurs niveaux et ruptures, établir datum et dates ; compléter les limites de course.",
+    "Piste COPC conservée en complément : accès autorisé à résoudre, sans contourner les refus.",
+    "Les références historiques et le programme de 8 circuits jouables / 17 destinations restent conservés."
+  ],
+  "complete14AClosed": false
+}
