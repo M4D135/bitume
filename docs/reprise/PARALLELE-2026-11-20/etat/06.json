@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "discussion": "06",
+  "mission": "Pluie extérieure depuis les abris",
+  "statut": "qualification_du_prototype_en_cours",
+  "branche_reelle": "codex/bitume-p06-pluie-abris-20261120",
+  "base": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+  "main_observe": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
+  "prototype": "d3bd240a1bfa02ac1e0dbcc8f5c4cdb3b7176531",
+  "fiche": "docs/reprise/PARALLELE-2026-11-20/06-PLUIE-ABRIS.md",
+  "propriete": ["src/meteo.js", "verifications/meteo-couverts-physx.test.mjs", "tools/mesurer-pluie-abris.mjs", "tools/captures-pluie-abris.mjs", ".github/workflows/qualification-pluie-abris.yml"],
+  "raccord_00": "docs/reprise/PARALLELE-2026-11-20/raccordements/06-jeu.patch",
+  "suivi_global_modifie": false,
+  "build_commun_modifie": false,
+  "physique": "p15",
+  "ferro": "0.3.15",
+  "prochaine_action": "Qualifier le masque des traits avec PhysX, mesurer CPU/rayons, puis recevoir le raster du jeu raccordé.",
+  "reserves": ["Prototype non qualifié pour intégration.", "Les caméras et la publication 0.2.70 appartiennent à la conversation concurrente 00."],
+  "site_deploye": false
+}
