@@ -55,7 +55,7 @@ export function optionsCapture(argv) {
     url: url.href, sortie: path.resolve(a.sortie), reference: a.reference ? path.resolve(a.reference) : null,
     chrome: a.chrome || process.env.CHROME || ['/usr/bin/chromium', '/usr/bin/google-chrome', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].find(existsSync) || 'google-chrome',
     angle: choix('angle', 'swiftshader', ['swiftshader', 'native']), attendre: nombre('attendre', 60000, 1000, 300000),
-    scenario, taille, images: nombre('images', 48, 3, 1000, true), pas: nombre('pas', .1, 1 / 240, .1), chauffe: nombre('chauffe', 4, 0, 240, true),
+    scenario, taille, images: nombre('images', 48, 2, 1000, true), pas: nombre('pas', .1, 1 / 240, .1), chauffe: nombre('chauffe', 4, 0, 240, true),
     // Le catalogue du jeu valide ensuite l'indice exact ; l'outil accompagne son extension par petits lots.
     referenceJeu: { graine: nombre('graine', 17017, 0, 0xffffffff, true), circuit: nombre('circuit', scenario === 'tunnel' ? 2 : 0, 0, 255, true),
       qualite: choix('qualite', 'high', ['low', 'medium', 'high']), mode: scenario === 'duo' ? 'duo' : 'solo',
@@ -78,13 +78,39 @@ export function horlogeCapture(graine) {
     Math.random = () => { hasard = (Math.imul(hasard, 1664525) + 1013904223) >>> 0; return hasard / 4294967296; };
     window.requestAnimationFrame = fn => { const id = ++identifiant; attente.set(id, fn); return id; };
     window.cancelAnimationFrame = id => attente.delete(id);
-    window.__BITUME_CAPTURE = { avancer(ms) {
+    window.__BITUME_CAPTURE = { reinitialiser() { temps = 1000; }, avancer(ms) {
       temps += ms;
       const callbacks = Array.from(attente.values()); attente.clear();
       for (const callback of callbacks) callback(temps);
       return { temps, callbacks: callbacks.length, attente: attente.size };
     } };
   })()`;
+}
+
+// Le renderer existe avant la fin du démarrage asynchrone (détection puis vitrine). Une référence
+// installée trop tôt est remplacée plus tard par cette vitrine, puis par la démo automatique.
+// Faire vivre les rAF du démarrage et passer le banc matériel par son bouton : le profil demandé
+// pour les captures sera ensuite imposé par reference(), sans prétendre mesurer SwiftShader.
+export async function attendreDemarrage(evaluer, attendre, dormir = ms => new Promise(r => setTimeout(r, ms))) {
+  const fin = Date.now() + attendre;
+  let etat = null;
+  while (Date.now() <= fin) {
+    etat = await evaluer(`(() => {
+      const J = window.BITUME_JEU;
+      if (!J) return { pret: false, ecran: null };
+      J.reglages.demo = 'non'; J.pauseAuto = false;
+      const detection = document.getElementById('autodetection');
+      if (J.ecran === 'detection' && detection && !detection.hidden)
+        document.getElementById('detection-annuler').click();
+      const chargement = J.chargement, type = J.session?.type;
+      return { pret: !!J.rendu && J.ecran === 'titre' && type === 'vitrine' && !!chargement && !chargement.enCours && !chargement.voile,
+        ecran: J.ecran, type, etape: chargement?.etape, preparation: !!chargement?.enCours };
+    })()`);
+    if (etat.pret) return etat;
+    await evaluer('window.__BITUME_CAPTURE?.avancer(1000 / 60)');
+    await dormir(10);
+  }
+  throw new Error('Démarrage du jeu inachevé avant la référence : ' + JSON.stringify(etat));
 }
 
 function informationsGit() {
@@ -111,6 +137,10 @@ function planche(rapport) {
 }
 
 export async function capturer(o) {
+  // Crochets réservés aux scénarios versionnés des outils, jamais lus dans la page ou en ligne de commande.
+  // Ils servent à disposer un état visuel et à observer le rendu réel sans ajouter de commandes au jeu livré.
+  for (const cle of ['initialiser', 'avantImage', 'observer'])
+    if (o[cle] !== undefined && typeof o[cle] !== 'function') throw new Error('Crochet de capture invalide : ' + cle);
   mkdirSync(o.sortie, { recursive: true });
   if (existsSync(path.join(o.sortie, 'rapport.json')) || existsSync(path.join(o.sortie, '0000.png')))
     throw new Error('Dossier déjà utilisé : choisir un dossier neuf pour éviter les captures périmées');
@@ -124,6 +154,7 @@ export async function capturer(o) {
       'Le son, les manettes physiques et une partie WebRTC entre machines ne sont pas qualifiés.',
       'Les zones rectangulaires suivent les toiles visibles ; les éléments de HUD superposés peuvent masquer un défaut local.'
     ] };
+  if (o.images < 3) rapport.limites.push('Deux images : aucun contrôle de variation fugitive sur trois images.');
   if (o.url.startsWith('file:')) {
     const html = readFileSync(fileURLToPath(o.url));
     rapport.build = { sha256: createHash('sha256').update(html).digest('hex'), octets: html.length };
@@ -186,11 +217,7 @@ export async function capturer(o) {
     await envoyer('Emulation.setDeviceMetricsOverride', { width: o.taille[0], height: o.taille[1], deviceScaleFactor: 1, mobile: false });
     await envoyer('Page.addScriptToEvaluateOnNewDocument', { source: horlogeCapture(o.referenceJeu.graine) });
     await envoyer('Page.navigate', { url: o.url });
-    const delaiJeu = Date.now() + o.attendre;
-    while (!await evaluer('!!(window.BITUME_JEU && BITUME_JEU.rendu)')) {
-      if (Date.now() > delaiJeu) throw new Error('BITUME ne démarre pas');
-      await dormir(100);
-    }
+    rapport.demarrage = await attendreDemarrage(evaluer, o.attendre, dormir);
     if (!await evaluer('typeof BITUME_JEU.reference === "function"')) throw new Error('Ce build doit exposer BITUME_JEU.reference(options) pour les captures reproductibles');
     // L'initialisation PhysX se fait en arrière-plan dans le jeu. Une capture ne doit pas changer de moteur
     // de débris au hasard de la durée réelle d'un rendu : attendre la même promesse avant le premier pas.
@@ -199,7 +226,13 @@ export async function capturer(o) {
       let erreur = null; try { await FPhysX.init(); } catch (e) { erreur = String(e.message || e); }
       const s = FPhysX.status(); return { disponible: true, ready: !!s.ready, version: s.version, erreur };
     })()`);
+    await evaluer('__BITUME_CAPTURE.reinitialiser(); true');
     rapport.referenceJeu = await evaluer(`BITUME_JEU.reference(${JSON.stringify(o.referenceJeu)})`);
+    await evaluer(`(() => { const J = BITUME_JEU;
+      if (J.ecran !== 'course' || J.session?.type !== ${JSON.stringify(o.referenceJeu.mode === 'duo' ? 'duo' : 'course')} || J.session.course.phase !== 'course' || J.chargement.enCours)
+        throw new Error('La référence n’a pas installé une course prête');
+      globalThis.__BITUME_REFERENCE = J.session;
+    })()`);
     await evaluer('BITUME_JEU.pauseAuto = false; BITUME_JEU.mesures = false; true');
     rapport.environnement = await evaluer(`(() => { const gl = BITUME_JEU.rendu.gl, info = gl.getExtension('WEBGL_debug_renderer_info');
       return { navigateur: navigator.userAgent, gpu: info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
@@ -208,18 +241,21 @@ export async function capturer(o) {
       gpuModeste: BITUME_JEU.gpuModeste, webgl2: BITUME_JEU.rendu.stats.webglVersion === 2 }; })()`);
     rapport.environnement.physx = physx;
     if (/swiftshader|llvmpipe|software/i.test(rapport.environnement.gpu)) rapport.limites.push('Rendu logiciel : aucune performance de GPU réel n’est qualifiée.');
+    if (o.initialiser) rapport.initialisation = await o.initialiser({ evaluer, envoyer, rapport });
     for (let i = 0; i < o.chauffe; i++) await evaluer(`__BITUME_CAPTURE.avancer(${o.pas * 1000})`);
     for (let i = 0; i < o.images; i++) {
+      if (o.avantImage) await o.avantImage({ evaluer, envoyer, rapport, i });
       const horloge = await evaluer(`__BITUME_CAPTURE.avancer(${o.pas * 1000})`);
       const etat = await evaluer(`(() => { const S = BITUME_JEU.session, zones = {}; const ids = ['scene','scene2','glace-g','glace-d','glace-g2','glace-d2'];
         for (const id of ids) { const e = document.getElementById(id); if (!e) continue; const r = e.getBoundingClientRect(), s = getComputedStyle(e);
           if (r.width > 1 && r.height > 1 && !e.hidden && s.display !== 'none' && s.visibility !== 'hidden' && r.right > 0 && r.bottom > 0 && r.x < innerWidth && r.y < innerHeight)
             zones[id] = { x: Math.max(0,r.x), y: Math.max(0,r.y), width: Math.min(innerWidth,r.right)-Math.max(0,r.x), height: Math.min(innerHeight,r.bottom)-Math.max(0,r.y) };
         }
-        return { ecran: BITUME_JEU.ecran, phase: S.course.phase, horloge: S.course.horloge, meteo: S.meteo.phase,
+        return { ecran: BITUME_JEU.ecran, phase: S.course.phase, referenceConservee: S === __BITUME_REFERENCE, horloge: S.course.horloge, meteo: S.meteo.phase,
           joueurs: (S.locaux || [0]).map(id => { const e = S.course.voitures[id].etat; return { id, s:e.s, d:e.d, v:e.v }; }),
           lumiere: S.lumiere, lumiereJ2: S.vueJ2?.lumiere, reflets: S.refletsEcran, zones }; })()`);
-      if (etat.ecran !== 'course' || !['course', 'arrivee'].includes(etat.phase)) throw new Error('La séquence a quitté la course : ' + etat.ecran + '/' + etat.phase);
+      if (!etat.referenceConservee) throw new Error('La séance de référence a été remplacée pendant la capture');
+      if (!(o.ecrans || ['course']).includes(etat.ecran) || !['course', 'arrivee'].includes(etat.phase)) throw new Error('La séquence a quitté la course : ' + etat.ecran + '/' + etat.phase);
       if (!etat.zones.scene) throw new Error('Toile principale absente de la capture');
       if (o.referenceJeu.mode === 'duo' && !etat.zones.scene2) throw new Error('Toile J2 absente de la capture duo');
       const capture = await envoyer('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
@@ -227,7 +263,8 @@ export async function capturer(o) {
       for (const [vue, zone] of Object.entries(etat.zones)) vues[vue] = mesurerImage(image, zone);
       const fichier = String(i).padStart(4, '0') + '.png';
       writeFileSync(path.join(o.sortie, fichier), png);
-      rapport.images.push({ fichier, temps: (horloge.temps - 1000) / 1000, etat, vues });
+      const observation = o.observer ? await o.observer({ evaluer, envoyer, rapport, i }) : undefined;
+      rapport.images.push({ fichier, temps: (horloge.temps - 1000) / 1000, etat, vues, observation });
       if (i % 8 === 0 || i === o.images - 1) process.stderr.write(`capture ${i + 1}/${o.images}\n`);
     }
     rapport.alertes = analyserSequence(rapport.images);

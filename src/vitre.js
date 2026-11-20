@@ -30,12 +30,16 @@
     if (e.canvas && e.canvas.style) e.canvas.style.visibility = visible ? '' : 'hidden';
   }
   function creer(canvas, options) {
+    // Un contexte WebGL2 dédié compose les lentilles de la vue courante. Le Canvas2D reste le repli
+    // des navigateurs sans WebGL2 et des bancs de simulation : aucune modification du FERRO verrouillé.
+    const optique = B.visiereOptique && B.visiereOptique.creer(canvas, options);
+    if (optique) { optique.optique = true; return optique; }
     const contexte = canvas && typeof canvas.getContext === 'function' ? canvas.getContext('2d', { alpha: true }) : null;
     const e = { canvas, contexte, gouttes: pool(112), neige: pool(36), accumulateur: 0, temps: 0, sequence: 0, masquee: false,
       graine: options && Number.isInteger(options.graine) ? options.graine | 0 : 0,
       creditEau: 0, creditNeige: 0, largeur: canvas ? canvas.clientWidth || canvas.width || 1 : 1,
       hauteur: canvas ? canvas.clientHeight || canvas.height || 1 : 1, dpr: 1, dprPalier: null, propre: true, libere: false,
-      opacite: 1, stats: { gouttes: 0, neige: 0, dessins: 0, etapes: 0, largeur: 0, hauteur: 0, dpr: 1, pixels: 0, fraction: 0,
+      opacite: 1, stats: { backend: 'canvas2d', pret: !!contexte, gouttes: 0, neige: 0, dessins: 0, etapes: 0, largeur: 0, hauteur: 0, dpr: 1, pixels: 0, fraction: 0,
         fusionsEau: 0, fusionsNeige: 0, fonte: 0, expulses: 0, eauEvacuee: 0, paires: 0 } };
     montrer(e, false); // toile neuve, vide
     return e;
@@ -47,6 +51,7 @@
   }
   function effacer(e) {
     if (!e) return;
+    if (e.optique) { B.visiereOptique.effacer(e); return; }
     if (!e.propre) viderPixels(e);
     montrer(e, false);
     for (let i = 0; i < e.gouttes.length; i++) e.gouttes[i].vivant = false;
@@ -56,6 +61,7 @@
   }
   function liberer(e) {
     if (!e || e.libere) return;
+    if (e.optique) { B.visiereOptique.liberer(e); return; }
     effacer(e); e.canvas = null; e.contexte = null; e.libere = true;
   }
   // La part du palier dans la définition ne fait que descendre pendant une séance : le premier appel actif la
@@ -243,6 +249,7 @@
   }
   function mettreAJour(e, dt, contexte) {
     if (!e || e.libere) return e ? e.stats : null;
+    if (e.optique) return B.visiereOptique.mettreAJour(e, dt, contexte);
     const c = contexte || {}, budget = BUDGETS[c.qualite] || BUDGETS.high;
     const intensite = Number.isFinite(Number(c.intensite)) && c.intensite != null ? clamp(Number(c.intensite), 0, 2) : 1;
     if (!e.contexte || c.actif === false || c.retro === true || !intensite || budget === BUDGETS.off) { effacer(e); return e.stats; }
@@ -272,6 +279,7 @@
   // paie pas la création de la surface et des tracés 2D. Le prochain appel actif les efface.
   function prechauffer(e, contexte) {
     if (!e || e.libere || !e.contexte || !e.canvas) return false;
+    if (e.optique) return B.visiereOptique.prechauffer(e, contexte);
     const c = contexte || {}, budget = BUDGETS[c.qualite] || BUDGETS.high;
     if (budget === BUDGETS.off || c.actif === false || c.retro === true || c.intensite === 0) return false;
     suivrePalier(e, budget); dimensionner(e, c, budget); viderPixels(e);

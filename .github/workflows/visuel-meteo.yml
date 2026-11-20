@@ -1,0 +1,75 @@
+name: Images Haut-Col et meteo
+
+on:
+  pull_request:
+    paths:
+      - 'src/animaux.js'
+      - 'src/cinema.js'
+      - 'src/jeu.js'
+      - 'src/meteo.js'
+      - 'src/sillage.js'
+      - 'src/visiere-optique.js'
+      - 'src/vitre.js'
+      - 'tools/captures-meteo.mjs'
+      - 'tools/controle-visuel.mjs'
+      - '.github/workflows/visuel-meteo.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: visuel-meteo-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - groupe: pluie
+            cas: pluie-grille,pluie-spray235,tunnel
+          - groupe: neige
+            cas: neige45,pause-reprise,legere
+          - groupe: vues
+            cas: duo,sec,faune-haut-col-ete,faune-haut-col-hiver
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Preparer la reference 0.2.60 et le build candidat
+        shell: bash
+        run: |
+          mkdir -p qualification
+          git show a2d0bf5247640338f01ee3e3c8c5bebbef0b94b7:dist/bitume.html > qualification/reference-0260.html
+          python3 construire.py > qualification/build.log
+          git diff --exit-code -- VERSION.json SIZE.json dist/bitume.html
+          git rev-parse HEAD > qualification/COMMIT.txt
+          sha256sum dist/bitume.html qualification/reference-0260.html > qualification/SHA256SUMS.txt
+          google-chrome --version > qualification/ENVIRONNEMENT.txt
+          node --version >> qualification/ENVIRONNEMENT.txt
+      - name: Capturer et controler les scenes en raster logiciel
+        shell: bash
+        run: |
+          node tools/captures-meteo.mjs --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --avant "file://$GITHUB_WORKSPACE/qualification/reference-0260.html" --sortie qualification/visuel-meteo --chrome /usr/bin/google-chrome --cas "${{ matrix.cas }}"
+      - name: Conserver les images et diagnostics meme en cas d'echec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-images-${{ matrix.groupe }}-${{ github.sha }}
+          path: |
+            qualification/visuel-meteo/
+            qualification/COMMIT.txt
+            qualification/SHA256SUMS.txt
+            qualification/ENVIRONNEMENT.txt
+            qualification/build.log
+          if-no-files-found: error
+          retention-days: 14

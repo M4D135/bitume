@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { deflateSync } from 'node:zlib';
 import vm from 'node:vm';
 import { decoderPng, mesurerImage, analyserSequence, comparerSequences, difference } from '../tools/visuel-images.mjs';
-import { optionsCapture, horlogeCapture } from '../tools/controle-visuel.mjs';
+import { optionsCapture, horlogeCapture, attendreDemarrage } from '../tools/controle-visuel.mjs';
 
 function crc32(b) {
   let c = 0xffffffff;
@@ -133,4 +133,45 @@ test('l’horloge de capture contrôle chaque rAF sans falsifier performance.now
   assert.deepEqual(Array.from(ctx.resultats), [1100, 1200]);
   assert.equal(vm.runInContext('performance.now()', ctx), 12345);
   assert.equal(vm.runInContext('Date.now()', ctx), 1700000000000 + 17017 * 128);
+  ctx.__BITUME_CAPTURE.reinitialiser();
+  vm.runInContext('requestAnimationFrame(t => resultats.push(t))', ctx);
+  ctx.__BITUME_CAPTURE.avancer(100);
+  assert.equal(ctx.resultats.at(-1), 1100, 'le démarrage ne décale pas les captures avant/après');
+});
+
+test('le démarrage asynchrone finit sa vitrine avant d’autoriser la référence', async () => {
+  const ctx = vm.createContext({ performance: { now: () => 12345 } });
+  vm.runInContext('window = globalThis', ctx);
+  vm.runInContext(horlogeCapture(17017), ctx);
+  vm.runInContext(`
+    const chargement = { enCours: false, voile: false, etape: null };
+    BITUME_JEU = { rendu: {}, ecran: 'detection', reglages: {}, session: null, chargement };
+    let passes = 0;
+    document = { getElementById(id) { return id === 'autodetection' ? { hidden: false } : { click() {
+      if (passes++) return;
+      requestAnimationFrame(() => {
+        BITUME_JEU.ecran = 'chargement'; chargement.enCours = true; chargement.etape = 'seance';
+        BITUME_JEU.session = { type: 'vitrine' };
+        requestAnimationFrame(() => {
+          chargement.enCours = false; chargement.etape = null; BITUME_JEU.ecran = 'titre';
+        });
+      });
+    } }; } };
+  `, ctx);
+  const phases = [];
+  const etat = await attendreDemarrage(async code => {
+    const r = vm.runInContext(code, ctx);
+    if (r?.ecran) phases.push([r.ecran, r.pret]);
+    return r;
+  }, 1000, async () => {});
+  assert.equal(etat.pret, true);
+  assert.deepEqual(phases, [['detection', false], ['chargement', false], ['titre', true]]);
+  assert.equal(ctx.BITUME_JEU.reglages.demo, 'non');
+  assert.equal(ctx.BITUME_JEU.pauseAuto, false);
+});
+
+test('un renderer créé sans démarrage terminé n’est jamais qualifié prêt', async () => {
+  await assert.rejects(attendreDemarrage(async code => code.includes('const J')
+    ? { pret: false, ecran: 'chargement', type: 'vitrine', preparation: true } : null,
+  5, async () => new Promise(r => setTimeout(r, 2))), /Démarrage du jeu inachevé/);
 });

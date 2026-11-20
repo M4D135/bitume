@@ -1,0 +1,151 @@
+{
+  "format": "bitume-qualification-haut-col-meteo-v1",
+  "date": "2026-11-20",
+  "base": "a2d0bf5247640338f01ee3e3c8c5bebbef0b94b7",
+  "version": "0.2.61",
+  "physique": "p14",
+  "ferro": "0.3.15",
+  "local": {
+    "suites": [
+      {
+        "suite": "cinema-sol-faune",
+        "code": 0,
+        "seconds": 5.095
+      },
+      {
+        "suite": "cinema",
+        "code": 0,
+        "seconds": 10.917
+      },
+      {
+        "suite": "cinema-raccords",
+        "code": 0,
+        "seconds": 0.231
+      },
+      {
+        "suite": "animaux",
+        "code": 0,
+        "seconds": 7.83
+      },
+      {
+        "suite": "visiere-optique",
+        "code": 0,
+        "seconds": 0.098
+      },
+      {
+        "suite": "vitre",
+        "code": 0,
+        "seconds": 0.374
+      },
+      {
+        "suite": "vitre-meteo",
+        "code": 0,
+        "seconds": 1.658
+      },
+      {
+        "suite": "vitre-integration",
+        "code": 0,
+        "seconds": 0.115
+      },
+      {
+        "suite": "vitre-cadence",
+        "code": 0,
+        "seconds": 0.318
+      },
+      {
+        "suite": "sillage",
+        "code": 0,
+        "seconds": 0.071
+      },
+      {
+        "suite": "embruns",
+        "code": 0,
+        "seconds": 0.057
+      },
+      {
+        "suite": "chargement",
+        "code": 0,
+        "seconds": 1.705
+      },
+      {
+        "suite": "captures-meteo",
+        "code": 0,
+        "seconds": 0.093
+      },
+      {
+        "suite": "controle-visuel",
+        "code": 0,
+        "seconds": 0.092
+      },
+      {
+        "suite": "meteo-toile",
+        "code": 0,
+        "seconds": 0.207
+      }
+    ],
+    "reussies": 15,
+    "echecs": 0
+  },
+  "egl": {
+    "resultat": "GLSL compile, lie et rendu sans erreur (0x0)",
+    "pilote": "OpenGL ES 3.2 Mesa 25 llvmpipe",
+    "limite": "fond synthetique, pas navigateur ni FPS materiels"
+  },
+  "hautCol": {
+    "postes": 16,
+    "appuisMasquesAvant": 6,
+    "appuisMasquesApres": 0,
+    "rayonsIndependants": 240,
+    "animauxTerrainPhysiqueModifies": false
+  },
+  "empreintes": {
+    "src/cinema.js": {
+      "bytes": 14422,
+      "sha256": "95762825e25ca70476d56688894479e5bcade89a52508144ef90c89f71675738"
+    },
+    "src/visiere-optique.js": {
+      "bytes": 18464,
+      "sha256": "0df8ed5465c1c6f4317bb28f13be3a63917ab11acb2ebd8313bf0bf186e4fa80"
+    },
+    "src/vitre.js": {
+      "bytes": 20558,
+      "sha256": "7e526d9320330e45b2aa80e28c6a26993b0b7038ba7ebb49dfa2625fd898a2e4"
+    },
+    "src/sillage.js": {
+      "bytes": 5445,
+      "sha256": "c807533879989bab8b65411e306cf4a1e32896978208ba2f75050e5077849f9c"
+    },
+    "src/jeu.js": {
+      "bytes": 337699,
+      "sha256": "23a5c2d8b9148b9e76c08a59794a070bdaea8c562fee77d15454e637f1e81d25"
+    },
+    "construire.py": {
+      "bytes": 8934,
+      "sha256": "eab700793bb8e07b529905c2600e99680865b8d913d23f0b8dd9e271ec7a6db1"
+    },
+    "dist/bitume.html": {
+      "bytes": 14265416,
+      "sha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d"
+    }
+  },
+  "ci": {
+    "statut": "a_realiser",
+    "visuel": "captures Chromium SwiftShader requises avant fusion"
+  },
+  "reservesHistoriques": {
+    "seuilMs": 150,
+    "Val-Brule": [
+      188
+    ],
+    "Haut-Col": [
+      154,
+      167
+    ]
+  },
+  "limites": [
+    "Aucun FPS materiel qualifie.",
+    "Les captures figent les voitures et fournissent les vitesses aux effets; pas de campagne de conduite.",
+    "Ni FERRO verrouille ni physique p14 modifies.",
+    "Site non deploye."
+  ]
+}

@@ -65,7 +65,18 @@ for(const hz of [30,60,120]){
 assert.deepEqual(results[0],results[1]);assert.deepEqual(results[0],results[2]);controles+=2;
 const a=M.ambiance({pluie:1,nuage:1,eclair:1,mouille:.8,ventX:2,ventZ:.3});
 check(a.pluie===.72&&a.nuage===.86&&a.eclair===.3&&a.mouille===.8,'contrat ambiance borné et mouillage pour renderer');
-check(source.includes('dessinerMeteo(S, dtImage, cam, vue, P);'),'overlay reçoit secondes, caméra effectivement rendue et profil courant');
+// Exécuter le raccord courant : le véhicule filmé est désormais nécessaire pour
+// la vitesse et l'exclusion de ses propres embruns, y compris après un changement
+// de plan. Des sentinelles distinctes détectent aussi un mauvais tampon ou des ms.
+const appelsOverlay = source.match(/^\s*dessinerMeteo\([^\n]+;/gm) || [];
+check(appelsOverlay.length === 1, 'un raccord de rendu météo par vue');
+const overlay = { S: {}, dtImage: 1/60, dureeImage: 1000/60, cam: {}, vue: 'cockpit', P: {}, suivie: {} };
+let argumentsOverlay;
+overlay.dessinerMeteo = (...args) => { argumentsOverlay = args; };
+vm.runInNewContext(appelsOverlay[0], overlay);
+check(argumentsOverlay.length === 6 && argumentsOverlay.every((v, i) =>
+  v === [overlay.S, overlay.dtImage, overlay.cam, overlay.vue, overlay.P, overlay.suivie][i]),
+  'overlay reçoit secondes, caméra rendue, profil courant et véhicule filmé');
 // Exécuter les vrais appels de rendu avec une frontière instrumentée : le tampon
 // de météo et les sources de sillage doivent être communs à la scène et aux miroirs.
 const appelsRendu=[],rendu={draw:(cam,objets,fx)=>appelsRendu.push(fx)};

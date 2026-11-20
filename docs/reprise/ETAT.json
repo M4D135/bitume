@@ -4,13 +4,13 @@
     "version_courante": "0.2.60",
     "physique": "p14",
     "version_publiee_verifiee": "0.2.60",
-    "statut": "monaco_14A_sous_lot_publie_chaussee_restante",
-    "branche_livraison": "main",
-    "lot": "14A_monaco_acquisitions_altimetriques_et_registre",
-    "fiche": "docs/reprise/MONACO-MESURES-2026-11-20.md",
+    "statut": "haut_col_meteo_pr24_derniere_qualification",
+    "branche_livraison": "fix/haut-col-meteo-0261-20261120",
+    "lot": "haut_col_sol_et_meteo_realiste",
+    "fiche": "docs/reprise/HAUT-COL-METEO-2026-11-20.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
     "derniere_entree": "048",
-    "prochaine_action": "Qualifier les chaussées et limites des points signalés, surtout tunnels et niveaux superposés ; ne pas refaire les acquisitions ni la publication du sous-lot.",
+    "prochaine_action": "Vérifier la dernière CI de la PR #24 après correction du contrat de rétroviseurs Légère ; inspecter toutes les images puis fusionner et clore la reprise.",
     "publication_precedente": {
       "commit_fusion": "02e8bac6b9ed762e0da06ab7c223e9cbd419968e",
       "tete_qualifiee": "d052f4c30cef0e18ea5e0bef84ca5ecae8af2108",
@@ -65,27 +65,17 @@
   },
   "regle": "Un sous-lot à la fois ; préserver les preuves et la reprise courte. Aucun push forcé.",
   "candidat": {
-    "version_cible": "0.2.60",
-    "statut": "publie_sur_main",
+    "version_cible": "0.2.61",
+    "statut": "ci_143_sur_143_31_images_contrat_legere_corrige",
     "physique": "p14",
     "moteur": "FERRO 0.3.15 canonique",
     "lots": [
-      "pilote commun et coudes bas",
-      "roues sans barres blanches",
-      "cuir et tissu procéduraux fins",
-      "gouttes et neige sur écran",
-      "maisons détaillées et garages",
-      "Baïkal 13B",
-      "fondation métrique de tracé explicite",
-      "contrats de traces fiabilisés"
+      "sol et caméra des plans animaliers Haut-Col",
+      "visière pluie/neige avec effets optiques et nuage d’eau"
     ],
-    "qualification_union_complete": true,
-    "publie_sur_main": true,
-    "programme_complet": "docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md",
-    "sources_preparatoires": [
-      "docs/references/monaco-2026/README.md",
-      "docs/references/marseille-2026/README.md"
-    ]
+    "pr": 24,
+    "premiere_ci": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-INITIAL.json",
+    "deuxieme_ci": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-DEUXIEME.json"
   },
   "acces": {
     "ci_distante": "CI de la PR #20 : 137/137 suites réussies, aucun échec. Le blocage de lancement FERRO décrit précédemment ne vaut pas pour cette exécution BITUME.",

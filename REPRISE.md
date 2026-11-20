@@ -1,11 +1,20 @@
 # BITUME — reprise courte
 
-## Lot actif — Monaco 14A, relevés et registre contrôlé
+## Lot actif — Haut-Col et météo réaliste
+
+Demande du 20/11 : corriger le sol absent dans les plans faune Haut-Col et reprendre les effets
+pluie/neige du prototype Claude montré dans les captures. Fiche active :
+`docs/reprise/HAUT-COL-METEO-2026-11-20.md`. Candidat 0.2.61 publié en **PR #24**, physique p14 conservée.
+CI corrigée : **143/143**, archive de **3 308 sources** conforme. **31 PNG** produits sur les dix
+scènes candidates et cinq références ; seul le validateur Légère réclamait des rétros dynamiques
+absents de ce profil. Contrat corrigé, nouvelle CI requise avant fusion ; jeu et build inchangés.
+
+## Dernier sous-lot clos — Monaco 14A, relevés et registre contrôlé
 
 Le jeu **0.2.60 / p14 / FERRO 0.3.15** est livré et clos : PR #20, reçu
 `docs/reprise/rapports/REALISME-2026-11-19/PUBLICATION-0260.json`. Ne pas refaire cette livraison.
 Le sous-lot actuel ajoute des données de préparation et des outils ; **aucune nouvelle course jouable**.
-Lire `docs/reprise/ETAT.json`, puis `docs/reprise/MONACO-MESURES-2026-11-20.md`.
+Monaco reste préparatoire et reprendra après ce correctif prioritaire.
 
 ## Sous-lot publié — PR #22
 

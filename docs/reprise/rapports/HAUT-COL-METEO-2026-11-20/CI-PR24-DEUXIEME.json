@@ -1,0 +1,63 @@
+{
+  "format": "bitume-ci-haut-col-meteo-v2",
+  "date": "2026-11-20",
+  "pr": 24,
+  "head": "c1e4490c6fd3cba933bf7e1704755c907b8602d7",
+  "tree": "4d3947c28ef624a8f358da0e62b7f0beb44a7a5e",
+  "checkout": "1e8d3fc53c471256dd8a05a20d98558dc8762bc4",
+  "qualification": {
+    "runId": 44688763745,
+    "jobId": 136129265580,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44688763745",
+    "conclusion": "success",
+    "passed": 143,
+    "failed": 0,
+    "total": 143,
+    "artifactId": 14607434334,
+    "artifactSha256": "0b184d8ac7f5199442983d7f387766eada99491bf5fe037cd0b550dec7627241",
+    "artifactBytes": 71218985,
+    "sourceFilesVerified": 3308,
+    "sourceContentsAndModesMatch": true,
+    "buildBytes": 14265416,
+    "buildSha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d"
+  },
+  "visual": {
+    "runId": 44688763784,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44688763784",
+    "status": "completed",
+    "views": "success",
+    "snow": "failure",
+    "snowFailure": "Rétroviseurs incomplets dans le seul cas Légère.",
+    "cause": "Le profil réel low utilise des glaces peintes (retroImages=false, glaces=0). Le validateur réclamait à tort les toiles des images arrière.",
+    "correction": "Absence des toiles exigée en Légère ; deux images arrière en Fine solo et quatre en duo ; contrôle du profil réellement rendu. Aucun changement du jeu.",
+    "localHarnessTestsPassed": 16,
+    "existingReportsRechecked": 10,
+    "existingReportsRecheckFailures": 0,
+    "inspection": "Vrais rendus du jeu : faune été/hiver et appuis visibles ; deux cockpits en duo ; pluie absente au sec ; neige périphérique irrégulière ; horloge et états optiques figés en pause puis repris.",
+    "conclusion": "failure",
+    "rain": "success",
+    "passages": 15,
+    "pngs": 31,
+    "failedPassages": 1,
+    "failedCases": [
+      "legere"
+    ],
+    "rainArtifactId": 14607769358,
+    "rainArtifactSha256": "30879561f2620afd90fd6a67e8a394bdecc51d149dfaec54b2990d01cb8f84a5",
+    "pausePngsByteIdentical": true
+  },
+  "remainingVisualIssue": "Lignes diagonales répétitives sur les pentes claires de Haut-Col, déjà présentes dans les images 0.2.60 ; conservées pour le suivi du rendu terrain, hors correction caméra et sans retouche locale de FERRO.",
+  "historicalDurationReservesMs": {
+    "threshold": 150,
+    "Val-Brule": [
+      188
+    ],
+    "Haut-Col": [
+      154,
+      167
+    ]
+  },
+  "runtimeChangedByQualificationCorrections": false,
+  "hardwareFpsQualified": false,
+  "siteDeployed": false
+}

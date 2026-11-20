@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-for (const nom of ['graphismes', 'pneus', 'ambiance', 'saisons', 'chaussee', 'meteo', 'conditions-course', 'cadence', 'vitre']) require('../src/' + nom + '.js');
+for (const nom of ['graphismes', 'pneus', 'ambiance', 'saisons', 'chaussee', 'meteo', 'conditions-course', 'cadence', 'vitre', 'sillage']) require('../src/' + nom + '.js');
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const html = readFileSync(new URL('../src/index.html', import.meta.url), 'utf8');
 function bloc(debut, fin) {
@@ -39,11 +39,11 @@ const executer = new Function('B', 'prefs', `
     initialiser: S => { session = S; ecran = 'course'; },
     ecran: (nom, retour = 'titre') => { ecran = nom; retourReglages = retour; },
     choisir: valeur => { $('v-gouttes').value = String(valeur); $('v-gouttes').listeners.get('input')({ target: $('v-gouttes') }); },
-    dessiner: (S, vue = 'cockpit', dt = 1/30, abri = false) => dessinerMeteo(S, dt, { pos: { abri } }, vue, { palier: 'ultra' }),
+    dessiner: (S, vue = 'cockpit', dt = 1/30, abri = false, position = [0,1,0], suivie) => dessinerMeteo(S, dt, { pos: Object.assign([...position], { abri }) }, vue, { palier: 'ultra' }, suivie),
     vues: () => [vitreVue, vitreVue2] };
 `);
 function seance() {
-  const voitures = [{ etat: { v: 35 } }, { etat: { v: 35 } }];
+  const voitures = [{ id: 0, etat: { v: 35 } }, { id: 1, etat: { v: 35 } }];
   return { i: 0, suivie: 0, nature: { saison: { neige: false } }, meteo: { pluie: 1, ventX: 4, ventZ: 2 },
     course: { c: {}, voitures, joueur: voitures[0] }, vitreContexte: null };
 }
@@ -93,6 +93,27 @@ verifier('précipitations neige réelles, saison et exception côtière restent 
   S.meteo.precipitationsNeige = true; S.i = 1; j.dessiner(S); assert.equal(S.vitreContexte.neige, 0);
   const meteoAvant = JSON.stringify(S.meteo); j.dessiner(S, 'cockpit', 1/30, true);
   assert.equal(S.vitreContexte.abri, true); assert.equal(JSON.stringify(S.meteo), meteoAvant);
+});
+verifier('la source optique suit le rendu courant et les embruns sont propres à chaque caméra', () => {
+  const j = jeu(), S = seance(), J2 = { ...S, suivie: 1, vitreContexte: null }; j.initialiser(S);
+  S.sillage = globalThis.BITUME.sillage.creer();
+  globalThis.BITUME.sillage.mettreAJour(S.sillage, [{ id: 7, etat: { v: 65, s: 0 } }], [{ x: 0, y: 0, z: 0, cap: 0 }]);
+  j.dessiner(S, 'cockpit', 1/30, false, [-12,1,0]);
+  assert.strictEqual(S.vitreContexte.sourceScene, j.elements.get('scene'));
+  assert(S.vitreContexte.embruns > .6);
+  j.dessiner(J2, 'cockpit', 1/30, false, [12,1,0]);
+  assert.equal(J2.vitreContexte.embruns, 0); assert(S.vitreContexte.embruns > .6);
+  j.dessiner(S, 'cockpit', 1/30, true, [-12,1,0]); assert.equal(S.vitreContexte.embruns, 0);
+  S.meteo.pluie = 0; S.meteo.mouille = 1;
+  j.dessiner(S, 'cockpit', 1/30, false, [-12,1,0]); assert(S.vitreContexte.embruns > .6, 'route encore mouillée');
+  S.meteo.mouille = 0;
+  j.dessiner(S, 'cockpit', 1/30, false, [-12,1,0]); assert.equal(S.vitreContexte.embruns, 0);
+});
+verifier('un changement de voiture filmée emploie immédiatement sa vitesse et son identifiant', () => {
+  const j = jeu(), S = seance(); j.initialiser(S);
+  S.course.voitures[1].etat.v = 65;
+  j.dessiner(S, 'cockpit', 1/30, false, [0,1,0], S.course.voitures[1]);
+  assert.equal(S.vitreContexte.vitesse, 65);
 });
 verifier('les glaces J1/J2 sont composées après les deux vitres ; le HUD reste après la scène', () => {
   for (const glace of ['glace-g', 'glace-d', 'glaces2']) for (const vitre of ['vitre', 'vitre2'])
