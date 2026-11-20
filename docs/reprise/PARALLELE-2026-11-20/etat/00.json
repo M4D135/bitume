@@ -2,19 +2,20 @@
   "schema": 1,
   "discussion": "00",
   "mission": "Integration",
-  "statut": "inventaire_contrats_et_P0_02_prets_publication_documentaire",
+  "statut": "inventaire_contrats_et_P0_02_publies_sur_main",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/00-INTEGRATION.md",
   "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p00-integration-20261120",
   "branche_reelle": "codex/bitume-p00-integration-20261120",
-  "head": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "head": "a8a6435c529fe326e9f26124f25ba0911d3b70fb",
   "pr": null,
   "sous_lot": "00A_inventaire_contrats_et_reception_02_P0",
   "preuves": [
     "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
     "docs/reprise/PARALLELE-2026-11-20/rapports/00-QUALIFICATION-DOCUMENTAIRE.json",
     "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
-    "docs/reprise/PARALLELE-2026-11-20/rapports/02-P0-INVENTAIRE.md"
+    "docs/reprise/PARALLELE-2026-11-20/rapports/02-P0-INVENTAIRE.md",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json"
   ],
   "reserves": [
     "01/03 publiés comme checkpoints non qualifiés ; 02/P0 documentaire retenu, P1 non qualifié ; 04/05 sans branche au relevé. Des travaux locaux peuvent continuer.",
@@ -27,7 +28,7 @@
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "base_main_preparation": "d8f02cae45443ae6a1120dc93125d8adfae94422",
   "base_tree": "409499e1631489b667f34bf83e37682cd18657ae",
-  "head_signification": "Parent distant vérifié ; le SHA du commit documentaire sera inscrit au reçu de publication après réception.",
+  "head_signification": "Dernier jalon qualifié et publié vérifié ; sa clôture documentaire est un descendant, HEAD actuel à lire sur la branche.",
   "lots_integres": [
     {
       "discussion": "02",
@@ -36,7 +37,8 @@
       "tree": "a0c7aec10114f6530b3ffd53e745edf0f7028503",
       "fichiers": 3,
       "runtime_modifie": false,
-      "statut": "assemble_non_encore_publie_sur_main"
+      "statut": "publie_sur_main",
+      "commit_integration": "a8a6435c529fe326e9f26124f25ba0911d3b70fb"
     }
   ],
   "lots_prets_observes": [
@@ -95,5 +97,12 @@
       "head": null,
       "statut": "aucune_livraison_distante_observee"
     }
-  ]
+  ],
+  "publication": {
+    "commit": "a8a6435c529fe326e9f26124f25ba0911d3b70fb",
+    "tree": "d2a766837812905aa9ab421fd77d80c7625d25f2",
+    "main_verifie": true,
+    "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json",
+    "pr": null
+  }
 }

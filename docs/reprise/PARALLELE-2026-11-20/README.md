@@ -22,7 +22,8 @@ Base GitHub vérifiée : **d8f02cae45443ae6a1120dc93125d8adfae94422**, arbre **8
 Le premier relevé conserve main **1c71bb3** et ses 52 branches historiques.
 La relecture avant publication trouve **55 branches**, dont les checkpoints
 **01 `007970e`, 02 `0e42588`, 03 `1d09794`**, et aucune PR ouverte.
-Le P0 documentaire de 02 est retenu à son SHA exact (état, raccord, rapport).
+Le P0 documentaire de 02 est intégré à son SHA exact (état, raccord, rapport).
+Publication 00 sur main **a8a6435**, arbre exact vérifié : [reçu](rapports/00-PUBLICATION-20261120.json).
 Les checkpoints habitacle/menu et P1 ne sont pas qualifiés pour le runtime.
 04/05 n’ont pas de branche au relevé ; leur éventuel travail local reste inconnu.
 Les états 01/03/04/05 de main restent intacts, l’état 02 est importé sans réécriture.

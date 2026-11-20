@@ -29,7 +29,9 @@ sans application au runtime.
 
 Relevés du 20/11 sur main `1c71bb3` : 52 branches historiques déjà contenues, puis
 **trois checkpoints 01/02/03** apparus avant publication ; aucune PR ouverte.
-Le **P0 documentaire de 02** (`0e42588`) est retenu avec ses trois fichiers exacts.
+Le **P0 documentaire de 02** (`0e42588`) est intégré avec ses trois fichiers exacts.
+**00 publié sur main : `a8a6435`**, arbre reçu identique au candidat ;
+[reçu de publication](docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json).
 Habitacle, menu et optimisation P1 restent non qualifiés ; 04/05 sans branche au relevé.
 [Inventaire exact](docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json) ·
 [Contrats de raccordement, révision 1](docs/reprise/PARALLELE-2026-11-20/raccordements/00.md).
@@ -61,6 +63,6 @@ Coût logiciel de l’optique conservé ; FPS matériels, audio, manettes réell
 réseau entre machines non qualifiés. La préparation pluie extérieure sous abri
 reste distincte. Les autres lots et 17 destinations restent dans FILE-TRAVAIL.
 
-[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **027**.
+[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **028**.
 Lecture minimale : ce fichier, `docs/reprise/ETAT.json` → `etat_courant`,
 puis la fiche du lot traité. Sauvegarder les étapes et poursuivre sans redemander un go.

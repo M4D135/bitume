@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "statut": "publie_sur_main_verifie",
+  "lot": "00A_inventaire_contrats_et_reception_02_P0",
+  "repository": "M4D135/bitume",
+  "branche": "codex/bitume-p00-integration-20261120",
+  "commit_publie": "a8a6435c529fe326e9f26124f25ba0911d3b70fb",
+  "url": "https://github.com/M4D135/bitume/commit/a8a6435c529fe326e9f26124f25ba0911d3b70fb",
+  "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "parents": [
+    "1c71bb341d20df4328e5178497503ee4ad26a131",
+    "0e42588fa03a10cf12444af81193dbc7458e601e"
+  ],
+  "arbre_local_qualifie": "d2a766837812905aa9ab421fd77d80c7625d25f2",
+  "arbre_distant_recu": "d2a766837812905aa9ab421fd77d80c7625d25f2",
+  "arbres_identiques": true,
+  "main_relu_apres_publication": "a8a6435c529fe326e9f26124f25ba0911d3b70fb",
+  "verification_utc": "2026-11-20 17:17:59 UTC",
+  "mode_publication": "Commit de coordination à deux parents ; création de branche 00 puis avance conditionnelle de main avec expected_sha et force=false.",
+  "pr": null,
+  "integration_02": {
+    "commit_source": "0e42588fa03a10cf12444af81193dbc7458e601e",
+    "tree_reconstruit": "a0c7aec10114f6530b3ffd53e745edf0f7028503",
+    "tree_distant_identique": true,
+    "blobs_fichiers_identiques": 3,
+    "fichiers": [
+      {
+        "path": "docs/reprise/PARALLELE-2026-11-20/etat/02.json",
+        "blob": "e828a6529c40af892589a502ac635ab4f3314c85"
+      },
+      {
+        "path": "docs/reprise/PARALLELE-2026-11-20/raccordements/02.md",
+        "blob": "975018379547fc849186684547a4eb0e5cf9d047"
+      },
+      {
+        "path": "docs/reprise/PARALLELE-2026-11-20/rapports/02-P0-INVENTAIRE.md",
+        "blob": "94151e41b0c53430add2030af5762cf2ba9f62d1"
+      }
+    ],
+    "ancetre_main_verifie": true,
+    "perimetre": "P0 documentaire seulement"
+  },
+  "fichiers_documentaires": 13,
+  "chemins": [
+    "REPRISE.md",
+    "docs/reprise/ETAT.json",
+    "docs/reprise/FILE-TRAVAIL.json",
+    "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
+    "docs/reprise/PARALLELE-2026-11-20/README.md",
+    "docs/reprise/PARALLELE-2026-11-20/REPARTITION.json",
+    "docs/reprise/PARALLELE-2026-11-20/etat/00.json",
+    "docs/reprise/PARALLELE-2026-11-20/etat/02.json",
+    "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
+    "docs/reprise/PARALLELE-2026-11-20/raccordements/02.md",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/00-QUALIFICATION-DOCUMENTAIRE.json",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/02-P0-INVENTAIRE.md"
+  ],
+  "runtime": {
+    "version": "0.2.68",
+    "physique": "p15",
+    "moteur": "0.3.15",
+    "circuits": 9,
+    "html_octets": 14383155,
+    "html_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "nouvelle_construction": false,
+    "campagne_runtime_relancee": false
+  },
+  "qualification": "docs/reprise/PARALLELE-2026-11-20/rapports/00-QUALIFICATION-DOCUMENTAIRE.json",
+  "inventaire": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
+  "contrat_revision": 1,
+  "contrats": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
+  "preservation": {
+    "anciennes_preuves_0268": "inchangées, aucune campagne relancée",
+    "autres_branches_modifiees": false,
+    "etats_01_03_04_05_main": "inchangés",
+    "etat_02": "trois fichiers P0 reçus exactement, aucune réécriture",
+    "runtime_01_03": "non importé ; qualification en cours au relevé",
+    "ferro_P1": "non qualifié, non importé",
+    "sources_04_05": "pas de branche au relevé, travail local inconnu"
+  },
+  "site_deploye": false,
+  "cloture": "Ce reçu et la reprise actualisent le jalon publié sans modifier son runtime. Leur commit descendant est résolu par la tête de main ; pas d’auto-référence au SHA du fichier.",
+  "prochaine_action": "Relire les têtes et états distants, puis intégrer le premier petit lot runtime prêt sans attendre les autres discussions."
+}

@@ -483,6 +483,11 @@
       "tree": "a0c7aec10114f6530b3ffd53e745edf0f7028503",
       "fichiers": 3,
       "runtime_modifie": false
+    },
+    "publication_00": {
+      "commit": "a8a6435c529fe326e9f26124f25ba0911d3b70fb",
+      "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json",
+      "runtime_modifie": false
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "date": "2026-11-20",
-  "statut": "coordination_inventoriee_contrats_revision_1",
+  "statut": "coordination_contrats_revision_1_et_P0_02_publies",
   "base_main": "d8f02cae45443ae6a1120dc93125d8adfae94422",
   "base_tree": "859b95aa2389da28eb7fb2f96088ca6fa1b46f97",
   "runtime_livre": {
@@ -150,5 +150,9 @@
     ],
     "aucune_livraison_runtime_prete": true,
     "livraison_documentaire_retenue": "02/P0"
+  },
+  "publication_00": {
+    "commit": "a8a6435c529fe326e9f26124f25ba0911d3b70fb",
+    "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json"
   }
 }

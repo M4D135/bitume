@@ -459,3 +459,23 @@ comme historiques. Campagnes closes non relancées, aucun déploiement du site.
 Prochaine action : relire main/branches/PR et intégrer le premier petit lot
 runtime prêt, sur son SHA et ses preuves, sans attendre la fin des autres chantiers.
 Le présent jalon publie inventaire, contrats, suivi 00 et P0 documentaire de 02.
+
+
+## 028 — publication vérifiée de la coordination 00 et du P0 de 02
+
+Le jalon documentaire est publié sur main au commit
+`a8a6435c529fe326e9f26124f25ba0911d3b70fb`, arbre
+`d2a766837812905aa9ab421fd77d80c7625d25f2`, identique au candidat local vérifié.
+Les deux parents sont la base main `1c71bb3` et le P0 de 02 `0e42588` ; son auteur
+et son historique sont conservés. Avance conditionnelle sans force, puis tête
+main relue et ascendance du P0 confirmée. Les autres branches restent intactes.
+
+Treize fichiers documentaires : contrats 00, inventaire daté, suivi et trois
+fichiers P0 exacts. Contrôles de structure/liens, empreintes, périmètre et arbre
+conformes. Runtime 0.2.68/p15/FERRO 0.3.15 inchangé, preuves historiques conservées,
+aucun nouveau build ni campagne complète, aucun déploiement.
+
+Le reçu `PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json` et l'état 00
+actualisent cette publication. Les checkpoints 01/03 et le moteur P1 restent à
+qualifier ; les livraisons attendues par rôle sont consignées. Reprendre par une
+lecture des têtes/états, sans attente en boucle ni réapplication des préparations.

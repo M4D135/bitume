@@ -5,22 +5,23 @@
     "version_publiee_verifiee": "0.2.68",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "coordination_00_inventaire_contrats_et_P0_02_assembles_aucun_runtime_pret",
+    "statut": "coordination_00_contrats_et_P0_02_publies_aucun_nouveau_runtime",
     "lot": "00A_inventaire_contrats_et_reception_02_P0",
     "fiche": "docs/reprise/PARALLELE-2026-11-20/00-INTEGRATION.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "027",
+    "derniere_entree": "028",
     "prochaine_action": "À la prochaine reprise 00, relire les branches/PR et états distants ; intégrer le premier petit lot indépendant prêt selon raccordements/00.md. Aucune attente en boucle.",
     "dernier_lot_clos": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
-    "entree_journal": "027",
+    "entree_journal": "028",
     "dernieres_demandes": "docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md",
     "contrats_integration": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
     "inventaire_branches": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
-    "runtime_modifie_par_coordination": false
+    "runtime_modifie_par_coordination": false,
+    "dernier_lot_coordination_clos": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json"
   },
   "publication": {
     "version": "0.2.68",
@@ -485,7 +486,7 @@
   },
   "repartition_parallele": {
     "date": "2026-11-20",
-    "statut": "inventaire_00_contrats_et_P0_02_a_publier",
+    "statut": "contrats_00_et_P0_02_publies",
     "index": "docs/reprise/PARALLELE-2026-11-20/README.md",
     "registre": "docs/reprise/PARALLELE-2026-11-20/REPARTITION.json",
     "base_main_verifiee": "d8f02cae45443ae6a1120dc93125d8adfae94422",
@@ -537,6 +538,11 @@
       "tree": "a0c7aec10114f6530b3ffd53e745edf0f7028503",
       "fichiers": 3,
       "runtime_modifie": false
+    },
+    "publication_00": {
+      "commit": "a8a6435c529fe326e9f26124f25ba0911d3b70fb",
+      "tree": "d2a766837812905aa9ab421fd77d80c7625d25f2",
+      "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json"
     }
   },
   "historique_alias_avant_coordination_00": {
