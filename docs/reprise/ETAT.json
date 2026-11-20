@@ -5,12 +5,12 @@
     "version_publiee_verifiee": "0.2.61",
     "physique": "p14",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "0261_publiee_reprise_monaco_14A",
-    "lot": "14A_Monaco_sources_et_mesures",
-    "fiche": "docs/reprise/MONACO-MESURES-2026-11-20.md",
+    "statut": "monaco_14A_revue_locale_qualifiee_publication_a_constater",
+    "lot": "14A_Monaco_revue_localisee",
+    "fiche": "docs/reprise/MONACO-REVUE-2026-11-20.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "049",
-    "prochaine_action": "Examiner les 32 écarts >1 m et les 33 points tunnel ; acquérir ou qualifier chaussée, limites, largeurs, dévers et portails datés avec incertitudes.",
+    "derniere_entree": "050",
+    "prochaine_action": "Publier le sous-lot de revue, constater sa CI et son archive puis clore la publication ; poursuivre ensuite les acquisitions de chaussée par accès autorisé.",
     "dernier_lot_clos": "docs/reprise/HAUT-COL-METEO-2026-11-20.md"
   },
   "publication": {
@@ -60,9 +60,9 @@
   },
   "suite": {
     "lot": "14A_Monaco_sources_et_mesures",
-    "statut": "chaussee_et_limites_a_qualifier",
+    "statut": "revue_localisee_preparee_acces_nuages_et_chaussee_restants",
     "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
-    "prochaine_action": "Examiner les 32 écarts >1 m et les 33 points tunnel ; acquérir ou qualifier chaussée, limites, largeurs, dévers et portails datés avec incertitudes.",
+    "prochaine_action": "Résoudre l’accès autorisé aux deux nuages COPC référencés ou obtenir un relevé adapté ; contrôler les quatre emprises candidates, l’origine et les niveaux avant de qualifier chaussée, limites, largeurs, dévers et portails.",
     "references": "docs/references/monaco-2026/README.md",
     "points_boucle_osm": 415,
     "observations_terrain": 830,
@@ -93,5 +93,32 @@
     "bitume_0259": "docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/PUBLICATION-0259.json",
     "bitume_0257": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/PUBLICATION-0257.json"
   },
-  "regle": "Un sous-lot à la fois ; préserver les preuves, reprise courte et programme complet ; aucun push forcé."
+  "regle": "Un sous-lot à la fois ; préserver les preuves, reprise courte et programme complet ; aucun push forcé.",
+  "preparation_monaco_revue": {
+    "statut": "qualified_locally_pending_publication",
+    "qualification": "docs/references/monaco-2026/qualification-revue.json",
+    "carte": "docs/references/monaco-2026/revue-chaussee.svg",
+    "recherche_sources": "docs/references/monaco-2026/REVUE-SOURCES-20261120.md",
+    "nouveaux_controles": {
+      "reussis": 8,
+      "echecs": 0
+    },
+    "inputs_historiques_inchanges": 18,
+    "ecarts": 32,
+    "groupes": 7,
+    "alertes_pente_terrain": 17,
+    "ensembles_tunnel_osm": 2,
+    "intervalle_non_tague_m": 85.19,
+    "portails_candidats": 4,
+    "portails_mesures": 0,
+    "nuages_copc_acquis": 0,
+    "acces_copc": "HTTP403 sur requêtes bornées des deux URL exactes ; cause non établie.",
+    "dates_individuelles_mnt_confirmees": 0,
+    "jeu_et_build_changes": false,
+    "publication": {
+      "status": "pending",
+      "pr": null,
+      "merge": null
+    }
+  }
 }

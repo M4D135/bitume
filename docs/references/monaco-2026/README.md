@@ -191,3 +191,33 @@ largeur constante de circuit. Les fichiers historiques `donnees.json`, `comparai
 `plan.svg`, leurs champs `null` et la longueur de reconnaissance restent inchangés.
 
 Fiche complète : [Monaco — mesures traçables](../../reprise/MONACO-MESURES-2026-11-20.md).
+
+
+## Revue localisée des écarts et passages couverts — 20 novembre 2026
+
+La revue exhaustive localise les **32 écarts supérieurs à 1 m en sept groupes**, les
+**17 segments de pente de terrain à relire**, les deux ensembles OSM de passages couverts
+et leurs quatre extrémités candidates. Elle conserve les **85,190 m non tagués** entre ces
+ensembles ; leur proximité ne justifie pas de les réunir en un tunnel unique.
+
+- [Carte et profils comparatifs](revue-chaussee.svg) : situation des groupes et lecture des deux MNT.
+- [Dossier calculé](revue-chaussee.json) : points, abscisses, voies, sources, périodes de dalle et limites.
+- [Revue des sources et acquisition ciblée](REVUE-SOURCES-20261120.md) : deux nuages COPC référencés,
+  résultats d’accès et protocole de contrôle de la chaussée.
+
+```sh
+python3 tools/preparer-monaco-revue.py
+python3 tools/preparer-monaco-revue.py --check
+node --test verifications/monaco-revue.test.mjs
+```
+
+Le préparateur vérifie les empreintes puis reconstitue la géométrie et les observations depuis
+les instantanés bruts avant de comparer les anciens fichiers dérivés. Il n’écrit que les deux
+nouveaux fichiers de revue ; `--check` n’écrit rien. Il conserve les périodes des dalles, mais
+`individualMeasurementDate` reste inconnu pour les échantillons MNT. Une date de dalle, même
+limitée à une journée, ne démontre pas la date de chaque point ayant servi au modèle.
+
+Les écarts de signe variable, les niveaux sous ouvrages et les informations temporelles encore
+incomplètes restent des observations à examiner. Aucune correction constante, interpolation
+routière ou sélection automatique d’un des deux produits n’est appliquée. Les 415 altitudes,
+largeurs gauche/droite et dévers restent `null`, les portails non mesurés et Monaco non jouable.

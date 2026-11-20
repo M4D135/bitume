@@ -1,0 +1,117 @@
+{
+  "schema": "bitume-monaco-review-qualification-v1",
+  "date": "2026-11-20",
+  "baseCommit": "560646cf48fe85befafa80c1cf07cfd29e58fe0c",
+  "scope": "Revue métrique et sources, sans nouvelle course ni modification du jeu.",
+  "localChecks": {
+    "command": "node --test verifications/monaco-revue.test.mjs",
+    "exitCode": 0,
+    "seconds": 3.688,
+    "node": "v24.22.3",
+    "filesStableDuringChecks": true,
+    "sha256": {
+      "tools/preparer-monaco-revue.py": "de3670a08d0b160f5d13a812ddd0438f13a674e044b533e8f385b014e5f798bc",
+      "verifications/monaco-revue.test.mjs": "bf3b6031d69e976fd7b6bead9faca1d23c3edf2495b00b998f8053a2f7418cbe",
+      "docs/references/monaco-2026/revue-chaussee.json": "ca95ab7405a3d44788fc07de60a5fdbc840b805cee908eab6cee3bb0992b0b83",
+      "docs/references/monaco-2026/revue-chaussee.svg": "4d8933f1b2a103c5076e0936f321dddb4474be77d987404b2eefd4302ae2809c"
+    },
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0
+  },
+  "reproduction": {
+    "generation": "success",
+    "check": "success",
+    "checkWritesFiles": false,
+    "networkUsedByGenerator": false,
+    "sourceIntegrityVerified": true,
+    "existingInputFiles": 18,
+    "existingInputsMatchBase": true
+  },
+  "summary": {
+    "pointCount": 415,
+    "terrainObservations": 830,
+    "eligibleRoadObservations": 0,
+    "differencePointCount": 32,
+    "differenceGroupCount": 7,
+    "positiveDifferences": 7,
+    "negativeDifferences": 25,
+    "differencePointsTaggedTunnel": 20,
+    "gradeObservations": 17,
+    "distinctGradeEdges": 17,
+    "gradeByDataset": {
+      "lidar": 5,
+      "rge": 12
+    },
+    "tunnelTaggedPoints": 33,
+    "tunnelRuns": 2,
+    "candidatePortals": 4,
+    "surveyedPortals": 0,
+    "unknownRoadMeasurements": {
+      "y": 415,
+      "leftWidthM": 415,
+      "rightWidthM": 415,
+      "bankRadians": 415
+    }
+  },
+  "independentReview": {
+    "complete": true,
+    "sourceSnapshotsVerified": 5,
+    "samplesAndCoordinatesCompared": 830,
+    "groupsAndTerrainGradeAlertsRecomputed": true,
+    "tunnelClosureCaseReviewed": true,
+    "svgRenderedAndInspected": true,
+    "remainingBlockingFindings": []
+  },
+  "sourceReview": {
+    "document": "REVUE-SOURCES-20261120.md",
+    "copcTiles": [
+      "1056_6303",
+      "1056_6304"
+    ],
+    "boundedRangeRequestResults": [
+      403,
+      403
+    ],
+    "pointCloudsAcquired": 0,
+    "accessFailureCause": "not_established",
+    "individualCellMeasurementDatesConfirmed": 0,
+    "tileAcquisitionPeriodsPreserved": true
+  },
+  "game": {
+    "version": "0.2.61",
+    "physics": "p14",
+    "engine": "FERRO 0.3.15",
+    "runtimeChanged": false,
+    "buildChanged": false,
+    "buildBytes": 14265416,
+    "buildSha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d",
+    "localGameCampaignRerun": false,
+    "localBuildRerun": false
+  },
+  "files": {
+    "tools/preparer-monaco-revue.py": "de3670a08d0b160f5d13a812ddd0438f13a674e044b533e8f385b014e5f798bc",
+    "verifications/monaco-revue.test.mjs": "bf3b6031d69e976fd7b6bead9faca1d23c3edf2495b00b998f8053a2f7418cbe",
+    "docs/references/monaco-2026/revue-chaussee.json": "ca95ab7405a3d44788fc07de60a5fdbc840b805cee908eab6cee3bb0992b0b83",
+    "docs/references/monaco-2026/revue-chaussee.svg": "4d8933f1b2a103c5076e0936f321dddb4474be77d987404b2eefd4302ae2809c"
+  },
+  "publication": {
+    "status": "pending",
+    "pr": null,
+    "head": null,
+    "merge": null
+  },
+  "ci": {
+    "status": "pending",
+    "runId": null,
+    "result": null
+  },
+  "remaining": [
+    "Aucune observation de chaussée ni limite de course qualifiée ; y, largeurs et dévers restent null.",
+    "Portails candidats non mesurés ; readyForRuntime=false.",
+    "Accès aux deux nuages référencés à résoudre sans contourner les refus ; cause des403 inconnue.",
+    "Les dates des dalles ne certifient pas la date individuelle des cellules du MNT.",
+    "Longueur OSM3323.610m, écartFIA−13.390m conservés sans mise à l’échelle."
+  ],
+  "complete14AClosed": false
+}
