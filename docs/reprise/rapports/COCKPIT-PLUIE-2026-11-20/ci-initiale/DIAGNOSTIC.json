@@ -1,0 +1,74 @@
+{
+  "candidat": "c3d49089e68a46dc2163067afbdea7db81364fed",
+  "tree": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+  "html_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+  "runtime_modifie": false,
+  "constats": [
+    {
+      "run": 44814581017,
+      "job": 136559475308,
+      "type": "reference_non_conforme",
+      "message": "SHA256 de la reference 0.2.69 recue via gh api different du SHA attendu. Controle strict maintenu ; extraction remplacee par checkout du commit exact."
+    },
+    {
+      "run": 44814581017,
+      "job": 136559474857,
+      "type": "delai_capture",
+      "message": "DevTools expire sur Page.captureScreenshot, WebGL2/PhysX prets, aucun diagnostic page ou graphique. Reprise de ce seul job necessaire pour distinguer incident navigateur et defaut reproductible.",
+      "tentative_reprise": {
+        "acceptee": false,
+        "raison": "403: workflow contenant ce job encore en cours ; aucune reprise executee."
+      }
+    },
+    {
+      "run": 44814580966,
+      "job": 136559474699,
+      "type": "demarrage_chromium",
+      "message": "Port DevTools introuvable avant toute image. Resultat conserve ; aucun effet carrosserie qualifie par cet echec."
+    },
+    {
+      "run": 44814580966,
+      "job": 136559474657,
+      "type": "horloge_banc",
+      "message": "S.tRendu est fige intentionnellement par le scenario. L’optique avance avec dtImage. Le banc suit desormais temps+accumulateur des depots ; identite, ages, uniformes et cinq phases restent controles."
+    }
+  ],
+  "test_horloge": {
+    "avant": "echec_reproduit",
+    "apres": "18/18",
+    "fichiers": [
+      "tools/captures-meteo.mjs",
+      "verifications/captures-meteo.test.mjs"
+    ],
+    "optique_arretee": "reste_un_echec"
+  },
+  "revue_independante": "Corrections de banc recues sans blocage ; les PNG du HTML exact restent requis.",
+  "artifacts": [
+    {
+      "id": 14669575557,
+      "sha256": "c6982e086d216ac1e01a47f48601f2b27708e053801f7b1359f605a68c4a29b2"
+    },
+    {
+      "id": 14669301499,
+      "sha256": "1100a3bfd4b6ccc6b3421a2685e8054b2a803c51be0d9c51a3b434c377a6002d"
+    },
+    {
+      "id": 14669217039,
+      "sha256": "77a4899664c515a2ec23f4dcb2563e0971abbc95d35c616fdc1c9f981f00a463"
+    },
+    {
+      "id": 14668083492,
+      "sha256": "560c0f822299a280846c83a66adb59ebe8dc0e11c3a5a3cd4c5869aafc4db613"
+    }
+  ],
+  "revue_source": {
+    "perimetre": "ancrages communs, cadrage retros/J2, pluie/conditions reseau, impacts et eau de carrosserie",
+    "resultat": "aucun nouveau blocage de code identifie",
+    "limites": [
+      "324 rayons limités à une chaussée horizontale et bras au volant ; images et Troll du candidat requis.",
+      "Quatre forces observées avec historique de l’eau conservé : la progression à durée égale relève des tests vitre-impacts.",
+      "Perles de carrosserie bornées aux triangles ; pas de simulation complète d’écoulement entre pièces.",
+      "Mesures CPU locales distinctes des FPS Xbox/Intel."
+    ]
+  }
+}

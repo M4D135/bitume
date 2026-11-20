@@ -1,0 +1,28 @@
+✖ la séquence d’impact suit l’optique native quand les poses et l’horloge de course sont figées (26.666676ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 118.439723
+
+✖ failing tests:
+
+test at verifications/captures-meteo.test.mjs:377:1
+✖ la séquence d’impact suit l’optique native quand les poses et l’horloge de course sont figées (26.666676ms)
+  evalmachine.<anonymous>:19
+      if (Math.abs(S.tRendu - cible) > 1e-5) throw new Error('Instant de l’impact non atteint');
+                                             ^
+  
+  Error: Instant de l’impact non atteint
+      at avantImageMeteo (evalmachine.<anonymous>:19:50)
+      at evalmachine.<anonymous>:22:3
+      at Script.runInContext (node:vm:149:12)
+      at Object.runInContext (node:vm:301:6)
+      at TestContext.<anonymous> (file:///workspace/scratch/d61843ca5396/bitume/verifications/captures-meteo.test.mjs:410:8)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)

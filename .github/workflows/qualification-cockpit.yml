@@ -54,15 +54,20 @@ jobs:
         run: |
           set -euo pipefail
           node verifications/captures-habitacle.test.mjs > qualification/test-outil.log 2>&1
+      - name: Recevoir le commit de reference publie 0.2.69
+        if: matrix.groupe == 'mac-reference'
+        uses: actions/checkout@v4
+        with:
+          ref: 89aa13299221ebc8b5f0474ae5a662680dd6fe32
+          path: qualification/reference-0269
+          persist-credentials: false
       - name: Extraire la reference publiee 0.2.69 et verifier son SHA
         if: matrix.groupe == 'mac-reference'
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh api 'repos/${{ github.repository }}/contents/dist/bitume.html?ref=89aa13299221ebc8b5f0474ae5a662680dd6fe32' \
-            -H 'Accept: application/vnd.github.raw+json' > qualification/avant-0269.html
+          test "$(git -C qualification/reference-0269 rev-parse HEAD)" = 89aa13299221ebc8b5f0474ae5a662680dd6fe32
+          cp qualification/reference-0269/dist/bitume.html qualification/avant-0269.html
           printf '%s\n' 'bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10  qualification/avant-0269.html' > qualification/AVANT-SHA256.txt
           sha256sum --check qualification/AVANT-SHA256.txt
       - name: Capturer les cinq dispositions et les deux etats

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
-import { optionsMeteo, optionsScenario, preparerEtat, observerEtat, SCENARIOS, SCENARIOS_E3, SCENARIOS_PLUIE,
+import { optionsMeteo, optionsScenario, preparerEtat, avantImageMeteo, observerEtat, SCENARIOS, SCENARIOS_E3, SCENARIOS_PLUIE,
   verifierContrasteSillage, verifierContrasteCarrosserie, verifierRapport } from '../tools/captures-meteo.mjs';
 import { optionsCapture } from '../tools/controle-visuel.mjs';
 
@@ -372,6 +372,55 @@ test('chronologie native : naissance, couronne puis perle doivent appartenir à 
   const sansPhases = structuredClone(r);
   for (const im of sansPhases.images) im.observation.pluie.impact = null;
   assert(verifierRapport(sansPhases, s, true).length, 'cinq images de pluie ne remplacent pas les cinq phases observées');
+});
+
+test('la séquence d’impact suit l’optique native quand les poses et l’horloge de course sont figées', () => {
+  const require = createRequire(import.meta.url);
+  for (const nom of ['vitre', 'visiere-optique', 'cadence']) require('../src/' + nom + '.js');
+  const O = globalThis.BITUME.visiereOptique, C = globalThis.BITUME.cadence;
+  const s = SCENARIOS_PLUIE.find(s => s.instantsImpact), r = rapportPluie(s);
+  const origineCourse = 6 - 1 / 120, cadence = C.creer({ mode: 'ecran' });
+  const simulation = O.creerEtat({ graine: 0 }), e = { simulation, stats: simulation.depots.stats };
+  const voitures = [{ id: 0, etat: {} }], o = r.images[0].observation;
+  const S = { suivie: 0, locaux: [0], course: { horloge: 6, c: { longueur: 1000 }, voitures },
+    prec: [{}], cour: [{}], sortie: [], meteo: { t: 0 }, tRendu: origineCourse,
+    camera: o.camera, vue: s.vue, vitreContexte: { ...o.j1, largeur: 960, hauteur: 540, intensite: 1 } };
+  const B = { circuit: { echantillon: (c, x) => ({ x, z: 0, y: 0, cap: 0, pente: 0, devers: 0 }) },
+    vitre: { mettreAJour: (e, dt, c) => O.avancerEtat(e.simulation, dt, c) } };
+  const gl = { getError: () => 0, isContextLost: () => false }, toile = { hidden: false, getContext: () => gl };
+  let tempsMs = 1000;
+  const environnement = { BITUME: B,
+    BITUME_JEU: { session: S, reglages: {}, ecran: 'course', rendu: { gl }, vitres: { j1: o.vitres.j1 } },
+    document: { getElementById: id => id === 'vitre' ? toile : null },
+    getComputedStyle: () => ({ display: 'block', visibility: 'visible' }),
+    __BITUME_CAPTURE: { avancer(ms) {
+      const f = C.image(cadence, tempsMs += ms, { actif: false, echelle: 1 });
+      if (f.rendre) {
+        // Même contrat que jeu.js : acc < 0 gèle co.horloge et tRendu, mais pas dtImage.
+        S.tRendu = S.course.horloge - 1 / 120;
+        S.meteo.t += f.dt;
+        B.vitre.mettreAJour(e, f.dt, S.vitreContexte);
+      }
+    } }
+  };
+  const contexte = vm.createContext(environnement);
+  r.initialisation = JSON.parse(JSON.stringify(vm.runInContext(`(${preparerEtat.toString()})(${JSON.stringify(s)})`, contexte)));
+  const poses = JSON.stringify(S.cour);
+  for (let i = 0; i < s.images; i++) {
+    vm.runInContext(`(${avantImageMeteo.toString()})(${JSON.stringify(s)}, ${i})`, contexte);
+    environnement.__BITUME_CAPTURE.avancer(s.pas * 1000);
+    r.images[i].observation = JSON.parse(JSON.stringify(vm.runInContext(`(${observerEtat.toString()})()`, contexte)));
+    assert.equal(S.tRendu, origineCourse, 'l’horloge de course doit rester figée dans ce témoin');
+    assert.equal(JSON.stringify(S.cour), poses, 'le banc ne doit pas déplacer les voitures pour avancer l’eau');
+    if (i === 0) {
+      const avancer = environnement.__BITUME_CAPTURE.avancer;
+      environnement.__BITUME_CAPTURE.avancer = () => {};
+      assert.throws(() => vm.runInContext(`(${avantImageMeteo.toString()})(${JSON.stringify(s)}, 1)`, contexte),
+        /Instant de l’impact non atteint/, 'une optique réellement arrêtée doit rester un échec');
+      environnement.__BITUME_CAPTURE.avancer = avancer;
+    }
+  }
+  assert.deepEqual(verifierRapport(r, s, true), []);
 });
 
 test('carrosserie : gouttes présentes dans le rendu et témoin sec sans eau, à mêmes poses', () => {

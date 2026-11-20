@@ -138,7 +138,10 @@ export function preparerEtat(s) {
           // Sélection d'une vraie arrivée récente au milieu de la lentille, visible hors de l'ATH.
           if (p.vivant && p.impactForce > 0 && age < .009 && p.impactRayon >= 5 &&
             p.x > .2 && p.x < .8 && p.y > .25 && p.y < .75) {
-            F.impact = { indice, identite: p.phase, naissance: S.tRendu - age, origine: S.tRendu + s.pas };
+            // Les poses sont figées par S.acc = -1 : tRendu appartient à la course arrêtée.
+            // Les dépôts continuent par dtImage et fournissent leur propre horloge native.
+            const temps = d.temps + d.accumulateur;
+            F.impact = { indice, identite: p.phase, naissance: temps - age, origine: temps + s.pas };
             break;
           }
         }
@@ -180,14 +183,17 @@ export function avantImageMeteo(s, i) {
   }
   if (s.instantsImpact) {
     if (i === 0) {
-      for (let n = 0; n < 240 && !F.impact; n++) __BITUME_CAPTURE.avancer(1000 / 30);
+      // Garder la même cadence depuis la recherche jusqu'au dernier PNG : passer de 30 à
+      // 120 Hz ferait filtrer/recaler les premiers rappels par la vraie cadence du jeu.
+      for (let n = 0; n < Math.ceil(8 / pas) && !F.impact; n++) __BITUME_CAPTURE.avancer(pas * 1000);
       if (!F.impact) throw new Error('Aucun impact natif récent et cadré en huit secondes');
     }
     F.instantDemande = s.instantsImpact[i];
+    const e = F.lentilles.j1.e, d = e.simulation?.depots || e;
+    const horloge = () => d.temps + d.accumulateur;
     const cible = F.impact.origine + F.instantDemande - pas;
-    for (let n = 0; n < 60 && S.tRendu < cible - 1e-7; n++)
-      __BITUME_CAPTURE.avancer(Math.min(1000 / 60, (cible - S.tRendu) * 1000));
-    if (Math.abs(S.tRendu - cible) > 1e-5) throw new Error('Instant de l’impact non atteint');
+    for (let n = 0; n < 60 && horloge() < cible - 1e-7; n++) __BITUME_CAPTURE.avancer(pas * 1000);
+    if (Math.abs(horloge() - cible) > 1e-5) throw new Error('Instant de l’impact non atteint');
   }
   return true;
 }
@@ -224,7 +230,7 @@ export function observerEtat() {
       let indiceUniforme = -1;
       for (let i = 0; i < (simulation?.nbGouttes || 0); i++) if (Math.abs(uniformes[i * 4 + 2] - F.impact.identite) < 1e-6) { indiceUniforme = i; break; }
       const j = indiceUniforme * 4;
-      impact = { ...F.impact, instantDemande: F.instantDemande, instant: S.tRendu - F.impact.origine,
+      impact = { ...F.impact, instantDemande: F.instantDemande, instant: d.temps + d.accumulateur - F.impact.origine,
         identiteCourante: p.phase, vivant: p.vivant, age, duree: p.impactDuree, forceInitiale: p.impactForce,
         indiceUniforme, uniforme: indiceUniforme < 0 ? null : Array.from(uniformes.slice(j, j + 4)),
         perle: indiceUniforme < 0 ? null : Array.from(simulation.gouttesUniformes.slice(j, j + 4)),
