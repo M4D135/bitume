@@ -1179,10 +1179,25 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
         const long = longueurAxe + .05 + ajout0 + ajout1, translation = (ajout1 - ajout0) / (2 * longueurAxe);
         const no = [Math.sin(f0.devers) * f0.r[0], Math.cos(f0.devers), Math.sin(f0.devers) * f0.r[2]], rotSol = angles(...base(axe, no));
         const milieu = (d, h) => { const p = pointPlan(f0, d, (y0 + y1) / 2 + h), q = pointPlan(f1, d, 0); return [(p[0] + q[0]) / 2 + axe[0] * translation, p[1] + axe[1] * translation, (p[2] + q[2]) / 2 + axe[2] * translation]; };
-        // revêtement intérieur (4 cm au-dessus de la nappe) et lignes de rive
-        const sol = marquerSolide({ shape: 'box', p: milieu(0, -.01), s: [long, .1, 2 * M], r: rotSol, mat: 7, color: SOL, outdoor: false, surface: 'object' }, 'sol-tunnel', 1, 'piste');
+        // Revêtement intérieur et lignes de rive. Les ouvrages explicites raccordent leur
+        // surépaisseur de 4 cm sur six mètres : sur une descente, sa tranche verticale arrêtait
+        // le châssis avant l'entrée. Le tunnel historique sans type garde sa géométrie qualifiée.
+        let positionSol = milieu(0, -.01), rotationSol = rotSol, longSol = long, centreDessus = null, axesSol = null;
+        if (T.type === 'tunnel') {
+          const rehausse = j => { const u = Math.max(0, Math.min(1, Math.min(j - iD, iF - j) * c.pas / 6)); return .002 + .038 * u * u * (3 - 2 * u); };
+          const h0 = rehausse(i), h1 = rehausse(suivant), axeSol = [axe[0], axe[1] + h1 - h0, axe[2]], normeSol = Math.hypot(...axeSol);
+          axesSol = base(axeSol, no); rotationSol = angles(...axesSol);
+          const decalageSol = (ajout1 - ajout0) / (2 * normeSol);
+          centreDessus = [(a0[0] + a1[0]) / 2, (y0 + y1 + h0 + h1) / 2, (a0[2] + a1[2]) / 2].map((v, k) => v + axeSol[k] * decalageSol);
+          positionSol = centreDessus.map((v, k) => v - .05 * axesSol[1][k]);
+          longSol = normeSol + .05 + ajout0 + ajout1;
+        }
+        const sol = marquerSolide({ shape: 'box', p: positionSol, s: [longSol, .1, 2 * M], r: rotationSol, mat: 7, color: SOL, outdoor: false, surface: 'object' }, 'sol-tunnel', 1, 'piste');
         objets.push(sol); loin.push(sol);
-        for (const cote of [-1, 1]) objets.push({ shape: 'box', p: milieu(cote * (w - .15), .045), s: [long, .02, .26], r: rotSol, mat: 7, color: LIGNE, outdoor: false, surface: 'object' });
+        for (const cote of [-1, 1]) {
+          const p = centreDessus ? centreDessus.map((v, k) => v + cote * (w - .15) * axesSol[2][k] + .005 * axesSol[1][k]) : milieu(cote * (w - .15), .045);
+          objets.push({ shape: 'box', p, s: [longSol, .02, .26], r: rotationSol, mat: 7, color: LIGNE, outdoor: false, surface: 'object' });
+        }
         for (const cote of [-1, 1]) {
           const p0 = pointPlan(f0, cote * (M + .3), y0), p1 = pointPlan(f1, cote * (M + .3), y1);
           const dir = [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]], rot = angles(...base(dir, [0, 1, 0]));

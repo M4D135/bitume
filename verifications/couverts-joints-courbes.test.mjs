@@ -73,6 +73,22 @@ try {
           }
         }
       });
+      verifier('les entrées et sorties inclinées présentent un raccord bas, sens ' + sens, () => {
+        // La route extérieure intervient seulement pour ce contrôle de franchissement : à un
+        // portail courbe, le bord de la dalle est une corde, tandis que l'abscisse suit l'arc.
+        const solExterieur = B.solidesPhysX.installer(w, c, { nappes: d.nappes, obstacles: [], lots: [] });
+        try {
+          for (const t of c.couverts) for (const [borne, direction] of [[t.debut, 1], [t.fin, -1]]) {
+            for (const distance of [-.16, -.08, -.03, .03, .08, .16, .32, .64, 1, 2, 4, 6]) for (const lat of [-4, 0, 4]) {
+              const { q, p } = pose(borne + direction * distance, lat, 1.2), hit = rayon(p, [0, -1, 0], 2, 1);
+              assert.ok(hit.hit, `${t.id}, distance=${distance}, côté=${lat}`);
+              // Exigence géométrique, sans recopier la fonction de raccord du décor : moins de
+              // 15 mm à l'entrée des roues, puis moins de 6 cm sur les six premiers mètres.
+              assert.ok(Math.abs(hit.y - q.y) < (distance <= .16 ? .015 : .06), `butée ${t.id}, distance=${distance}, côté=${lat}, hauteur=${hit.y - q.y}`);
+            }
+          }
+        } finally { B.solidesPhysX.liberer(solExterieur); }
+      });
     } finally { B.solidesPhysX.liberer(m); w.dispose(); }
   }
 } finally { X.dispose(); }
