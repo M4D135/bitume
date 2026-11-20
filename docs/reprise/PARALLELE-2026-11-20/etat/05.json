@@ -2,21 +2,22 @@
   "schema": 1,
   "discussion": "05",
   "mission": "Sources circuits",
-  "statut": "05A_05B_publies_05C_qualifie_a_publier",
+  "statut": "trois_jalons_publies_sources_pretes_pour_00",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/05-CIRCUITS.md",
   "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p05-sources-circuits-20261120",
   "branche_reelle": "codex/bitume-p05-sources-circuits-20261120",
-  "head": "3251b6b7d3d383046363b26ad7decd95a5438125",
+  "head": "d6386526e877c1e590c8a4d10f22cd2fd86c8e76",
   "pr": null,
-  "sous_lot": "05C-marseille-voirie-corridor",
+  "sous_lot": "05A_05B_05C_sources_outillage_termines",
   "preuves": [
     "docs/references/monaco-2026/qualification-voirie-p05.json",
     "docs/references/monaco-2026/VOIRIE-P05-20261120.md",
     "docs/references/marseille-2026/qualification-metadonnees-p05.json",
     "docs/references/marseille-2026/METADONNEES-20261120.md",
     "docs/references/marseille-2026/qualification-voirie-corridor-p05.json",
-    "docs/references/marseille-2026/voirie-corridor-p05.md"
+    "docs/references/marseille-2026/voirie-corridor-p05.md",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/05-PUBLICATION-20261120.json"
   ],
   "reserves": [
     "Monaco non jouable ; 415 valeurs null pour chacun des quatre champs routiers.",
@@ -30,7 +31,7 @@
   ],
   "prochaine_action": "00 peut integrer les sources/outils/tests. Reprise05 : resoudre Louis-II/Portier et qualifier limites/devers ; rapprocher voirie/corridor Marseille par niveau avant fermeture. Suite Cimes/Haut-Col apres transfert explicite avec04.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
-  "head_semantique": "Dernier jalon publie et relu a cet instant ; le commit contenant cet etat peut etre un checkpoint plus recent.",
+  "head_semantique": "Dernier commit de sources qualifie et publie ; le checkpoint documentaire de publication peut avoir un HEAD plus recent sans changement de ces sources.",
   "raccordements": "docs/reprise/PARALLELE-2026-11-20/raccordements/05.md",
   "livraisons": [
     {
@@ -46,6 +47,13 @@
       "tree": "e85463666ba68ffa40f1815be3a869a1b3fc70a5",
       "publication_verifiee": true,
       "tests": 5
+    },
+    {
+      "lot": "05C",
+      "sha": "d6386526e877c1e590c8a4d10f22cd2fd86c8e76",
+      "tree": "cf96e8165cd585743db2954bce00177ee26c0e6d",
+      "publication_verifiee": true,
+      "tests": 6
     }
   ],
   "suite_circuits": "docs/reprise/PARALLELE-2026-11-20/SUITE-CIRCUITS-05.md",
@@ -60,5 +68,27 @@
     "echecs": 0
   },
   "pret_integration_sources": true,
-  "pret_integration_runtime": false
+  "pret_integration_runtime": false,
+  "main_revu": "d230d8c6995e44d63b0a072fa3d6362d04a8e5ce",
+  "publication": "docs/reprise/PARALLELE-2026-11-20/rapports/05-PUBLICATION-20261120.json",
+  "ci_observee": [
+    {
+      "commit": "466afcd91647b557cead466864b98e1c024f1684",
+      "runId": 44781969600,
+      "status": "completed",
+      "conclusion": "cancelled"
+    },
+    {
+      "commit": "3251b6b7d3d383046363b26ad7decd95a5438125",
+      "runId": 44782217174,
+      "status": "completed",
+      "conclusion": "cancelled"
+    },
+    {
+      "commit": "d6386526e877c1e590c8a4d10f22cd2fd86c8e76",
+      "runId": 44783388788,
+      "status": "in_progress",
+      "conclusion": null
+    }
+  ]
 }

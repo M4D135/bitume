@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "discussion": "05",
+  "dateUtc": "2026-11-20T17:29:20.779149+00:00",
+  "branch": "codex/bitume-p05-sources-circuits-20261120",
+  "baseMain": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "qualifiedSourceHead": "d6386526e877c1e590c8a4d10f22cd2fd86c8e76",
+  "qualifiedSourceTree": "cf96e8165cd585743db2954bce00177ee26c0e6d",
+  "deliveries": [
+    {
+      "lot": "05A",
+      "sha": "466afcd91647b557cead466864b98e1c024f1684",
+      "parent": "1c71bb341d20df4328e5178497503ee4ad26a131",
+      "tree": "836336ed40d23ac4bf1b94b03b86b3de8c63cf1b",
+      "remoteReadbackVerified": true,
+      "matchesQualifiedTree": true,
+      "targetedTestsPassed": 9,
+      "qualification": "docs/references/monaco-2026/qualification-voirie-p05.json",
+      "paths": [
+        "docs/references/monaco-2026/VOIRIE-P05-20261120.md",
+        "docs/references/monaco-2026/qualification-voirie-p05-tests.log",
+        "docs/references/monaco-2026/qualification-voirie-p05.json",
+        "docs/references/monaco-2026/sources-voirie-p05.json",
+        "docs/references/monaco-2026/sources/voirie-p05-20261120/constructions-prioritaires.geojson",
+        "docs/references/monaco-2026/sources/voirie-p05-20261120/mirabeau-bas.geojson",
+        "docs/references/monaco-2026/sources/voirie-p05-20261120/portier.geojson",
+        "docs/references/monaco-2026/sources/voirie-p05-20261120/tabac-quais.geojson",
+        "docs/references/monaco-2026/voirie-p05.json",
+        "docs/references/monaco-2026/voirie-p05.md",
+        "docs/reprise/PARALLELE-2026-11-20/etat/05.json",
+        "docs/reprise/PARALLELE-2026-11-20/raccordements/05.md",
+        "tools/preparer-monaco-voirie.py",
+        "verifications/monaco-voirie.test.mjs"
+      ]
+    },
+    {
+      "lot": "05B",
+      "sha": "3251b6b7d3d383046363b26ad7decd95a5438125",
+      "parent": "466afcd91647b557cead466864b98e1c024f1684",
+      "tree": "e85463666ba68ffa40f1815be3a869a1b3fc70a5",
+      "remoteReadbackVerified": true,
+      "matchesQualifiedTree": true,
+      "targetedTestsPassed": 5,
+      "qualification": "docs/references/marseille-2026/qualification-metadonnees-p05.json",
+      "paths": [
+        "docs/references/marseille-2026/METADONNEES-20261120.md",
+        "docs/references/marseille-2026/metadonnees-grille.json",
+        "docs/references/marseille-2026/qualification-metadonnees-p05.json",
+        "docs/references/marseille-2026/qualification-metadonnees-tests.log",
+        "docs/references/marseille-2026/sources-metadonnees.json",
+        "docs/references/marseille-2026/sources/metadonnees-20261120/lidar-tiles.geojson",
+        "docs/reprise/PARALLELE-2026-11-20/etat/05.json",
+        "docs/reprise/PARALLELE-2026-11-20/raccordements/05.md",
+        "tools/preparer-marseille-metadonnees.mjs",
+        "verifications/marseille-metadonnees.test.mjs"
+      ]
+    },
+    {
+      "lot": "05C",
+      "sha": "d6386526e877c1e590c8a4d10f22cd2fd86c8e76",
+      "parent": "3251b6b7d3d383046363b26ad7decd95a5438125",
+      "tree": "cf96e8165cd585743db2954bce00177ee26c0e6d",
+      "remoteReadbackVerified": true,
+      "matchesQualifiedTree": true,
+      "targetedTestsPassed": 6,
+      "qualification": "docs/references/marseille-2026/qualification-voirie-corridor-p05.json",
+      "paths": [
+        "docs/references/marseille-2026/qualification-voirie-corridor-p05.json",
+        "docs/references/marseille-2026/qualification-voirie-corridor-tests.log",
+        "docs/references/marseille-2026/sources-voirie-corridor-p05.json",
+        "docs/references/marseille-2026/sources/voirie-p05-20261120/bdtopo-quais.geojson",
+        "docs/references/marseille-2026/sources/voirie-p05-20261120/constructions-quais.geojson",
+        "docs/references/marseille-2026/voirie-corridor-p05.json",
+        "docs/references/marseille-2026/voirie-corridor-p05.md",
+        "docs/reprise/PARALLELE-2026-11-20/SUITE-CIRCUITS-05.md",
+        "docs/reprise/PARALLELE-2026-11-20/etat/05.json",
+        "docs/reprise/PARALLELE-2026-11-20/raccordements/05.md",
+        "tools/preparer-marseille-voirie.py",
+        "verifications/marseille-voirie.test.mjs"
+      ]
+    }
+  ],
+  "targetedLocalTests": {
+    "tests": 20,
+    "passed": 20,
+    "failed": 0
+  },
+  "ciObserved": [
+    {
+      "commit": "466afcd91647b557cead466864b98e1c024f1684",
+      "runId": 44781969600,
+      "status": "completed",
+      "conclusion": "cancelled"
+    },
+    {
+      "commit": "3251b6b7d3d383046363b26ad7decd95a5438125",
+      "runId": 44782217174,
+      "status": "completed",
+      "conclusion": "cancelled"
+    },
+    {
+      "commit": "d6386526e877c1e590c8a4d10f22cd2fd86c8e76",
+      "runId": 44783388788,
+      "status": "in_progress",
+      "conclusion": null
+    }
+  ],
+  "ciNote": "Etats releves, non conclusifs pour le dernier candidat ; aucune relance manuelle. La cloture documentaire ne relance pas le runtime inchange.",
+  "mainObservedAtClose": "d230d8c6995e44d63b0a072fa3d6362d04a8e5ce",
+  "mainChangedPaths": [
+    "REPRISE.md",
+    "docs/reprise/ETAT.json",
+    "docs/reprise/FILE-TRAVAIL.json",
+    "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
+    "docs/reprise/PARALLELE-2026-11-20/README.md",
+    "docs/reprise/PARALLELE-2026-11-20/REPARTITION.json",
+    "docs/reprise/PARALLELE-2026-11-20/etat/00.json",
+    "docs/reprise/PARALLELE-2026-11-20/etat/02.json",
+    "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
+    "docs/reprise/PARALLELE-2026-11-20/raccordements/02.md",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/00-QUALIFICATION-DOCUMENTAIRE.json",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/02-P0-INVENTAIRE.md"
+  ],
+  "overlapWithLot05": [],
+  "runtimeChanged": false,
+  "buildProducedBy05": false,
+  "mainMergedBy05": false,
+  "siteDeployed": false,
+  "readyForSourceIntegrationBy00": true,
+  "readyForRuntimeIntegration": false,
+  "handoff": "docs/reprise/PARALLELE-2026-11-20/raccordements/05.md",
+  "futureCircuits": "docs/reprise/PARALLELE-2026-11-20/SUITE-CIRCUITS-05.md"
+}
