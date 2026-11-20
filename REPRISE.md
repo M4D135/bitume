@@ -1,5 +1,17 @@
 # BITUME — reprise courte
 
+## Candidat 0.2.65 — correctifs de qualification
+
+La PR #37 réunit démos, pilotes et météo sur p15 / FERRO 0.3.15.
+La CI initiale 0.2.64 passe 151/152 suites ; ses 3 366 sources archivées sont exactes.
+L’allocation par pose du pilote est corrigée : 0,6845 octet/pose, seuil inchangé ;
+864 comparaisons de poses strictement identiques. Les contrôles aérien/poursuite
+lisent maintenant le diagnostic public et distinguent casque et lentille.
+Les échecs initiaux et les 58 PNG inspectés sont conservés par des reçus.
+Build 0.2.65 reproduit ; nouvelle CI et nouvelles captures à terminer avant fusion.
+`main` reste en 0.2.62. Fortes projections en poursuite, matières et FPS matériels réservés.
+Reçu : `docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/CANDIDAT-0265.json`.
+
 ## Candidat 0.2.64 — démos, pilotes et météo
 
 Les deux branches sont assemblées sur p15 ; build reproductible, FERRO 0.3.15 conforme.

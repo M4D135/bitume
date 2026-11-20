@@ -1,0 +1,458 @@
+{
+  "format": "bitume-requalification-poursuite-v1",
+  "date": "2026-11-20T12:32:36.578Z",
+  "correctif": {
+    "commit": "4e017562cdeb4e204922c424fef8ba9fc59fee18",
+    "parent": "649fe5dcf53c1ab36e4b5218f3c4765514f77a10",
+    "fichiers": [
+      "tools/captures-demo.mjs",
+      "verifications/captures-demo.test.mjs"
+    ],
+    "runtimeModifie": false,
+    "buildModifie": false,
+    "versionModifiee": false,
+    "scenariosConserves": 12,
+    "imagesParScenario": 3
+  },
+  "original": {
+    "rapport": "demo-pluie-poursuite/files/visuel-demo/apres/pluie-poursuite-sillage/rapport.json",
+    "rapportSHA256": "eea841fb8ea2b8d40912d146f37f3b258d49836624b98182dedd0e87e6373209",
+    "campagne": "demo-pluie-poursuite/files/visuel-demo/rapport.json",
+    "campagneSHA256": "4c289444eb56ef8042260e6dc260d890aa4a35e9e63f1060a8e5cef9febf2104",
+    "echecs": 1,
+    "erreurs": [
+      "Fort sillage ou évacuation des gouttes non exercés"
+    ],
+    "conserveIntact": true
+  },
+  "identites": {
+    "commit": "eb30f18dfb30fa79f2c5a3684f3cd876398c0984",
+    "arbre": "e015629469ca27ae5e8af4105c8b2b4a946f79aa",
+    "buildSHA256": "98848efea4b0969805008ba37cba7cab67b11434a9d960173ba77b157fcf8ef7",
+    "buildLocalRehacheIdentique": true
+  },
+  "resultat": {
+    "ancienVerifier": [
+      "Fort sillage ou évacuation des gouttes non exercés"
+    ],
+    "nouveauVerifier": [],
+    "nouvelleCapture": false,
+    "nouvelleCI": false,
+    "lotProduitFortSprayPoursuiteClos": false
+  },
+  "contrat": {
+    "source": "docs/METEO.md et src/jeu.js : exposition à cam.pos, voiture filmée exclue",
+    "casque": "Exposition > 0.6, un seul rival distinct du sujet, contribution de ce rival égale à l’exposition du casque.",
+    "lentille": "Exposition observée à cam.pos faible, entre 0 et 0.1 ; contexte et état optique concordants après chauffe.",
+    "pluie": "Pluie effective, toile visible, activité vraie et eau/gouttes/dépôts/évacuations positifs.",
+    "cockpit": "Seuils forts et dépôts de sillage conservés."
+  },
+  "mesures": [
+    {
+      "fichier": "0000.png",
+      "pngSHA256": "9e4bbca7a57e0ecd0f726f5914e5a48a555f4305bc16dd31685476c819fba765",
+      "casque": 0.756958506986315,
+      "lentille": 0.04821429079292072,
+      "contexte": 0.04821429079292072,
+      "optique": 0.04821429079292062,
+      "eau": 0.6463429704040723,
+      "gouttes": 18,
+      "depotsEau": 43,
+      "depotsEmbruns": 0,
+      "expulses": 22
+    },
+    {
+      "fichier": "0001.png",
+      "pngSHA256": "a8ee5c571f40e43ba19c51368a4762df611fd903358465e40e834a9f1d8efba6",
+      "casque": 0.756958506986315,
+      "lentille": 0.04821429079292072,
+      "contexte": 0.04821429079292072,
+      "optique": 0.04821429079292062,
+      "eau": 0.6464149090251163,
+      "gouttes": 18,
+      "depotsEau": 44,
+      "depotsEmbruns": 0,
+      "expulses": 23
+    },
+    {
+      "fichier": "0002.png",
+      "pngSHA256": "daea75324d508fa1940eeacc231a8978a9a1ba2aa1c64198a0d1b8804fa45fbe",
+      "casque": 0.756958506986315,
+      "lentille": 0.04821429079292072,
+      "contexte": 0.04821429079292072,
+      "optique": 0.04821429079292062,
+      "eau": 0.6464818501345997,
+      "gouttes": 18,
+      "depotsEau": 44,
+      "depotsEmbruns": 0,
+      "expulses": 23
+    }
+  ],
+  "tests": {
+    "suites": 8,
+    "echecs": 0,
+    "journal": "correctif-poursuite-tests.log",
+    "observateurExecuteSurSillageReel": "cam.pos transmis au calcul, sujet exclu de toutes les mesures, valeurs casque et lentille comparées séparément",
+    "mutationsSurRapportReel": [
+      {
+        "nom": "Lentille nulle",
+        "rejete": true,
+        "erreurs": [
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Exposition contexte nulle",
+        "rejete": true,
+        "erreurs": [
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Exposition optique nulle",
+        "rejete": true,
+        "erreurs": [
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Lentille forte",
+        "rejete": true,
+        "erreurs": [
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Exposition contexte forte",
+        "rejete": true,
+        "erreurs": [
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Exposition optique forte",
+        "rejete": true,
+        "erreurs": [
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Lentille absente",
+        "rejete": true,
+        "erreurs": [
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Exposition contexte absente",
+        "rejete": true,
+        "erreurs": [
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Exposition optique absente",
+        "rejete": true,
+        "erreurs": [
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Lentille non finie",
+        "rejete": true,
+        "erreurs": [
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Exposition contexte non finie",
+        "rejete": true,
+        "erreurs": [
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Exposition optique non finie",
+        "rejete": true,
+        "erreurs": [
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Casque substitué aux trois mesures de lentille",
+        "rejete": true,
+        "erreurs": [
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Casque et lentille inversés",
+        "rejete": true,
+        "erreurs": [
+          "Le sillage d’un seul rival n’est pas prouvé",
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Sillage absent",
+        "rejete": true,
+        "erreurs": [
+          "Le sillage d’un seul rival n’est pas prouvé",
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Rival absent",
+        "rejete": true,
+        "erreurs": [
+          "Le sillage d’un seul rival n’est pas prouvé"
+        ]
+      },
+      {
+        "nom": "Sources absentes",
+        "rejete": true,
+        "erreurs": [
+          "Le sillage d’un seul rival n’est pas prouvé"
+        ]
+      },
+      {
+        "nom": "Deux rivaux",
+        "rejete": true,
+        "erreurs": [
+          "Le sillage d’un seul rival n’est pas prouvé"
+        ]
+      },
+      {
+        "nom": "Mauvais rival",
+        "rejete": true,
+        "erreurs": [
+          "Le sillage d’un seul rival n’est pas prouvé"
+        ]
+      },
+      {
+        "nom": "Voiture filmée prise comme source",
+        "rejete": true,
+        "erreurs": [
+          "Le sillage d’un seul rival n’est pas prouvé"
+        ]
+      },
+      {
+        "nom": "Exposition de source nulle",
+        "rejete": true,
+        "erreurs": [
+          "Le sillage d’un seul rival n’est pas prouvé"
+        ]
+      },
+      {
+        "nom": "Casque insuffisamment exposé",
+        "rejete": true,
+        "erreurs": [
+          "Le sillage d’un seul rival n’est pas prouvé"
+        ]
+      },
+      {
+        "nom": "Casque non fini",
+        "rejete": true,
+        "erreurs": [
+          "Le sillage d’un seul rival n’est pas prouvé"
+        ]
+      },
+      {
+        "nom": "Casque absent",
+        "rejete": true,
+        "erreurs": [
+          "Le sillage d’un seul rival n’est pas prouvé"
+        ]
+      },
+      {
+        "nom": "Toile cachée",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "Visibilité absente",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "Vitrage inactif",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "Activité absente",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "Diagnostic absent",
+        "rejete": true,
+        "erreurs": [
+          "Diagnostic optique absent ou en erreur",
+          "Pluie ou évacuation des gouttes non exercées en poursuite",
+          "Exposition de la lentille de poursuite incohérente"
+        ]
+      },
+      {
+        "nom": "Repli Canvas2D",
+        "rejete": true,
+        "erreurs": [
+          "Diagnostic optique absent ou en erreur"
+        ]
+      },
+      {
+        "nom": "Diagnostic non prêt",
+        "rejete": true,
+        "erreurs": [
+          "Diagnostic optique absent ou en erreur"
+        ]
+      },
+      {
+        "nom": "Contexte perdu",
+        "rejete": true,
+        "erreurs": [
+          "Diagnostic optique absent ou en erreur"
+        ]
+      },
+      {
+        "nom": "Erreur optique",
+        "rejete": true,
+        "erreurs": [
+          "Diagnostic optique absent ou en erreur"
+        ]
+      },
+      {
+        "nom": "Pluie nulle",
+        "rejete": true,
+        "erreurs": [
+          "Pluie demandée non exercée"
+        ]
+      },
+      {
+        "nom": "Pluie absente",
+        "rejete": true,
+        "erreurs": [
+          "Pluie demandée non exercée"
+        ]
+      },
+      {
+        "nom": "Pluie non finie",
+        "rejete": true,
+        "erreurs": [
+          "Pluie demandée non exercée"
+        ]
+      },
+      {
+        "nom": "eau nul",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "eau absent",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "eau non fini",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "gouttes nul",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "gouttes absent",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "gouttes non fini",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "depotsEau nul",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "depotsEau absent",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "depotsEau non fini",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "expulses nul",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "expulses absent",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      },
+      {
+        "nom": "expulses non fini",
+        "rejete": true,
+        "erreurs": [
+          "Pluie ou évacuation des gouttes non exercées en poursuite"
+        ]
+      }
+    ],
+    "controlesConserves": [
+      {
+        "scenario": "pluie-cockpit",
+        "rapport": "demo-pluie-cockpit/files/visuel-demo/apres/pluie-cockpit/rapport.json",
+        "sha256": "d8a24f3870385d3e832ebf8a86fedd295eef3475fdc5434da4899a94793ecbbc",
+        "erreurs": []
+      },
+      {
+        "scenario": "pluie-aerien",
+        "rapport": "demo-pluie-aerien/files/visuel-demo/apres/pluie-aerien/rapport.json",
+        "sha256": "1c05b207e9a6b67185ab147261ee7ccec80afe8030745c5aea4cff22cf15c343",
+        "erreurs": []
+      }
+    ]
+  },
+  "reserves": [
+    "Ce scénario prouve le contrat spatial actuel : casque fortement exposé, lentille de poursuite en bord de panache. Il ne qualifie pas de fortes projections sur la lentille de poursuite et ne clôture pas cet objectif produit.",
+    "Requalification des rapports conservés uniquement ; l’échec CI historique reste conservé.",
+    "Poses prescrites sous SwiftShader, sans conduite ni mesures de FPS matériel."
+  ]
+}

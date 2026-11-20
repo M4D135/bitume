@@ -57,8 +57,8 @@ export function preparerEtat(s) {
     phase: s.pluie ? 'pluie' : 'clair', mouille: s.pluie ? 1 : 0, neige: false, precipitationsNeige: false, eclair: 0 });
   const sujet = co.joueur.id, rival = co.voitures.find(v => v.id !== sujet).id;
   for (const v of co.voitures) {
-    // Un seul véhicule devant la voiture suivie ; les autres restent à distance. La vue de poursuite
-    // doit transmettre l'exposition réelle du pilote sans exiger un peloton artificiellement dense.
+    // Un seul véhicule devant la voiture suivie ; les autres restent à distance. Le casque est dans
+    // le fort sillage, la caméra de poursuite en bord de panache : le raccord suit la lentille réelle.
     const e = v.etat, ds = v.id === sujet ? 0 : s.spray && v.id === rival ? 18 : 120 + v.id * 12;
     const abscisse = (s.depart + ds) % c.longueur, p = B.circuit.echantillon(c, abscisse), d = s.spray && v.id === rival || v.id === sujet ? 0 : v.id % 2 ? 2.6 : -2.6;
     Object.assign(e, { s: abscisse, d, v: s.vitesse, psi: 0, beta: 0, volant: v.id === sujet ? (s.volant || 0) : 0,
@@ -166,12 +166,25 @@ export function verifierRapport(r, s, candidat = true) {
     if (s.realisation && o.plan?.motif !== 'expression') erreurs.push('Le réalisateur n’a pas cadré le geste');
     if (s.pluie) {
       const v = o.vitres?.j1;
-      if (!v || v.erreur || v.perdu || v.erreurs?.length || typeof v.erreurs === 'number' && v.erreurs > 0) erreurs.push('Diagnostic optique absent ou en erreur');
+      if (!v || v.backend !== 'webgl2' || v.pret !== true || v.erreur || v.perdu || v.erreurs?.length || typeof v.erreurs === 'number' && v.erreurs > 0) erreurs.push('Diagnostic optique absent ou en erreur');
+      if (!(o.vitrage?.pluie > 0)) erreurs.push('Pluie demandée non exercée');
       if (s.aerien) {
-        if (o.vitrage?.actif !== false || o.vitreVisible || v?.propre !== true || v?.masquee !== true || v?.eau !== 0 || v?.embruns !== 0 || v?.gouttes !== 0) erreurs.push('Overlay humide présent dans la vue aérienne');
+        // J.vitres expose les statistiques publiques, pas propre/masquee de l'état interne.
+        // Le DOM prouve la toile masquée ; les compteurs courants prouvent l'absence de dépôts.
+        if (o.vitrage?.actif !== false || o.vitreVisible !== false ||
+          ['eau','embruns','gouttes','accumulationNeige','neige'].some(k => v?.[k] !== 0)) erreurs.push('Overlay humide présent dans la vue aérienne');
       } else {
-        if (!(o.vitrage?.actif && o.vitrage.embruns > .6 && v?.eau > 0 && v?.gouttes > 0 && v?.depotsEmbruns > 0 && v?.expulses > 0)) erreurs.push('Fort sillage ou évacuation des gouttes non exercés');
-        if (o.sillage?.sources?.length !== 1 || o.sillage.sources[0].id !== o.sillage.rival || !(o.sillage.casque > .6)) erreurs.push('Le sillage d’un seul rival n’est pas prouvé');
+        const spray = o.sillage;
+        if (!Number.isInteger(spray?.rival) || spray.rival === o.plan?.sujet || spray.sources?.length !== 1 ||
+          spray.sources[0]?.id !== spray.rival || !Number.isFinite(spray.casque) || !(spray.casque > .6 && spray.casque <= 1) ||
+          !Number.isFinite(spray.sources[0]?.exposition) || !(Math.abs(spray.sources[0].exposition - spray.casque) < 1e-6)) erreurs.push('Le sillage d’un seul rival n’est pas prouvé');
+        if (s.vue === 'poursuite') {
+          if (!(o.vitrage?.actif === true && o.vitreVisible === true && v?.eau > 0 && v?.gouttes > 0 && v?.depotsEau > 0 && v?.expulses > 0)) erreurs.push('Pluie ou évacuation des gouttes non exercées en poursuite');
+          // L'observateur calcule séparément l'exposition à cam.pos ; ne pas lui substituer le casque.
+          if (!(Number.isFinite(spray?.lentille) && spray.lentille > 0 && spray.lentille < .1 &&
+            Number.isFinite(o.vitrage?.embruns) && Math.abs(o.vitrage.embruns - spray.lentille) < 1e-6 &&
+            Number.isFinite(v?.embruns) && Math.abs(v.embruns - spray.lentille) < 1e-6)) erreurs.push('Exposition de la lentille de poursuite incohérente');
+        } else if (!(o.vitrage?.actif && o.vitrage.embruns > .6 && v?.eau > 0 && v?.gouttes > 0 && v?.depotsEmbruns > 0 && v?.expulses > 0)) erreurs.push('Fort sillage ou évacuation des gouttes non exercés');
       }
     }
   }
@@ -189,6 +202,7 @@ export async function campagne(o) {
   mkdirSync(o.sortie, { recursive: true });
   const resultat = { format: 'bitume-captures-demo-v1', date: new Date().toISOString(), source: fileURLToPath(import.meta.url),
     limites: ['Raster logiciel : aucun FPS matériel qualifié.', 'Vraies caméras et réalisation du jeu, sur poses prescrites : aucun essai de conduite.',
+      'Poursuite : casque dans le fort sillage, lentille en bord de panache ; les fortes projections sur la lentille restent à qualifier.',
       'Les captures nécessitent un examen visuel ; les contrôles numériques ne qualifient pas seuls la composition.'], passages: [], echecs: 0 };
   for (const [variante, url] of [...(o.avant ? [['avant', o.avant]] : []), ['apres', o.url]]) for (const id of o.cas) {
     if (variante === 'avant' && !AVANT.has(id)) continue;

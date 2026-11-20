@@ -1,0 +1,42 @@
+{
+  "format": "bitume-candidat-corrige-v1",
+  "date": "2026-11-20",
+  "version": "0.2.65",
+  "physique": "p15",
+  "ferro": "0.3.15",
+  "empreinteSources": "ac4faef8b8717f84dac50607dabb6f23976edf3cd2072e8d4c235eec10d179e4",
+  "buildOctets": 14318056,
+  "buildSha256": "909229bbc2b37eb12fd3fe256ee057b7069cb1ac880654c491dba5ae74c0a98b",
+  "base": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
+  "pr": 37,
+  "allocation": {
+    "avantOctetsParPose": 16.3099,
+    "apresOctetsParPose": 0.6845,
+    "gcMineursApres": 1,
+    "seuilOctetsParPose": 4,
+    "seuilGcMineurs": 2,
+    "posesCompareesStrictementIdentiques": 864,
+    "controlesCiblesAutres": 30,
+    "preuve": "CORRECTION-ALLOCATION-PILOTE.json"
+  },
+  "captures": {
+    "aerien": "Diagnostic public + DOM, champs privés absents;29mutants réels rejetés.",
+    "poursuite": "Casque fort et lentille faible hors panache distingués;48mutants réels rejetés.",
+    "testsHarness": 8,
+    "imagesInspecteesDansRecus": 58,
+    "fortesProjectionsLentillePoursuiteQualifiees": false
+  },
+  "ciInitiale0264": {
+    "reussies": 151,
+    "echouees": 1,
+    "sourcesArchiveVerifiees": 3366,
+    "preuve": "CI-0264.json"
+  },
+  "ciNouvelleTete": "a lancer après push",
+  "livraisonMain": "0.2.62",
+  "reserves": [
+    "Les images0.2.64 ne sont pas des captures de0.2.65; elles sont conservées comme preuves initiales.",
+    "Qualité des sols et distinction visuelle des doigts à960×540 encore réservées.",
+    "Aucun FPS matériel qualifié, aucun déploiement du site."
+  ]
+}

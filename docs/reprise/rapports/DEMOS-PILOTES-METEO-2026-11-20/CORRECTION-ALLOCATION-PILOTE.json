@@ -1,0 +1,65 @@
+{
+  "date": "2026-11-20",
+  "base": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
+  "version_base": "0.2.64",
+  "node_local": "v24.22.3",
+  "perimetre": "src/voiture.js : sélection de passageVisuel/passage dans preparerPiloteExterieur ; aucun build ni changement de version.",
+  "echec_ci_initial": {
+    "run": 44734044312,
+    "job": 136280816060,
+    "suites_reussies": 151,
+    "suites_total": 152,
+    "suite": "verifications/pilote-exterieur.test.mjs",
+    "appels": 60000,
+    "octets_par_pose": 17.2228,
+    "gc_mineurs": 2
+  },
+  "reproduction_locale_avant": {
+    "appels": 60000,
+    "octets_par_pose": 16.309866666666668,
+    "gc_mineurs": 1,
+    "seuil_octets_respecte": false
+  },
+  "diagnostic": {
+    "cause": "Le ternaire imbriqué passageVisuel/passage provoque un boxing de passage en HeapNumber de 16 octets avant son stockage dans CLE[1], lorsque passageVisuel est absent.",
+    "attribution": "Profil Inspector et code optimisé TurboFan : allocation à la lecture de etat.passage dans preparerPiloteExterieur ; 972656 octets échantillonnés attribués à cette fonction sur 60000 poses.",
+    "correction": "Chaque branche écrit directement dans le Float64Array CLE existant, puis la valeur est relue et bornée comme auparavant. Priorité, valeurs, ordre des calculs d’animation et zéros signés conservés.",
+    "chauffe": "Le défaut reste présent après les 40000 poses de chauffe du contrôle original ; aucune chauffe supplémentaire ni modification du GC n’est utilisée."
+  },
+  "mesure_apres": {
+    "appels": 60000,
+    "octets_par_pose": 1.12,
+    "gc_mineurs": 0
+  },
+  "controle_original_apres": {
+    "tests": 1,
+    "reussis": 1,
+    "appels": 60000,
+    "octets_par_pose": 0.6845333333333333,
+    "gc_mineurs": 1,
+    "seuils_inchanges": { "octets_par_pose_strictement_inferieurs_a": 4, "gc_mineurs_maximum": 2 },
+    "commande": "node --test --test-name-pattern='préallocation active' verifications/pilote-exterieur.test.mjs"
+  },
+  "autres_controles_cibles": {
+    "tests": 30,
+    "reussis": 30,
+    "commande": "node --test --test-skip-pattern='préallocation active' verifications/pilote-exterieur.test.mjs verifications/pilote-expressions.test.mjs verifications/expressions-pilote.test.mjs",
+    "precision": "Le contrôle de préallocation est exécuté séparément ci-dessus ; aucun test du dépôt n’est modifié ou désactivé."
+  },
+  "identite_numerique": {
+    "reference": "80aa1e2:src/voiture.js",
+    "comparaisons_exactes": 864,
+    "poses": 432,
+    "miroirs": 432,
+    "details": ["complet", "moyen", "simple"],
+    "valeurs_par_entree": ["undefined", "null", "NaN", "Infinity", "-Infinity", "-0.25", "-0", "0", "0.16", "0.65", "1", "2"],
+    "methode": "Deux contextes VM indépendants, toutes les combinaisons passageVisuel/passage et les trois LOD, gestes et regards variés. Comparaison stricte des objets posés, tête, articulations et clé ; entrées figées ; zéros signés comparés."
+  },
+  "empreintes_sha256": {
+    "src/voiture.js_avant": "e2ddaa10783efeaa3c9f84a71f43c40ea679b2dc7139b198e1ebfb6fe2cac682",
+    "src/voiture.js_apres": "a55e000d36354dcd286084cb71511d313065a96a88f6124385aac02333c422bb",
+    "verifications/pilote-exterieur.test.mjs_inchange": "972c3cc0729d531ebd51321cb4c747d8d7311d2e6c8e4ca1cfc62c217348419c"
+  },
+  "commande_reproduction": "node --expose-gc --max-semi-space-size=1 verifications/pilote-exterieur.test.mjs --allocation",
+  "reserve": "Qualification locale ciblée. La CI de la nouvelle tête, le rebuild et les captures restent du ressort de l’assemblage ; aucune nouvelle qualification globale ni conclusion sur les FPS matériels."
+}

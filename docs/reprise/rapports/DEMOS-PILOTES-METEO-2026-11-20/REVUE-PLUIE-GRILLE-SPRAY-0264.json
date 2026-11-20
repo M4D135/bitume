@@ -1,0 +1,81 @@
+{
+  "format": "bitume-revue-visuelle-meteo-v1",
+  "date": "2026-11-20",
+  "auteur": "root",
+  "pngInspectesIndividuellement": 8,
+  "groupes": [
+    {
+      "id": "meteo-pluie-spray",
+      "commit": "eb30f18dfb30fa79f2c5a3684f3cd876398c0984",
+      "empreintes": [
+        "98848efea4b0969805008ba37cba7cab67b11434a9d960173ba77b157fcf8ef7  dist/bitume.html",
+        "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297  qualification/reference-0262.html"
+      ],
+      "echecs": 0,
+      "arbreDansArtefact": false
+    },
+    {
+      "id": "meteo-pluie-grille",
+      "commit": "eb30f18dfb30fa79f2c5a3684f3cd876398c0984",
+      "empreintes": [
+        "98848efea4b0969805008ba37cba7cab67b11434a9d960173ba77b157fcf8ef7  dist/bitume.html",
+        "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297  qualification/reference-0262.html"
+      ],
+      "echecs": 0,
+      "arbreDansArtefact": false
+    }
+  ],
+  "images": [
+    {
+      "chemin": "meteo-pluie-spray/files/visuel-meteo/apres/pluie-spray235/0000.png",
+      "sha256": "9f8a28920bc56df153312297d7e519ef97142656cb9b8bcdb6bfd8a162f0970b",
+      "inspecteIndividuellement": true
+    },
+    {
+      "chemin": "meteo-pluie-spray/files/visuel-meteo/apres/pluie-spray235/0001.png",
+      "sha256": "5fa9f6f7944d858ecce9cd2c146f68c8114f64cdf6293ff165fefd1a36abb531",
+      "inspecteIndividuellement": true
+    },
+    {
+      "chemin": "meteo-pluie-spray/files/visuel-meteo/avant/pluie-spray235/0000.png",
+      "sha256": "1ee249cbdb601522947c2231ac2b9634feed9b674d25014c1b058a80685359fe",
+      "inspecteIndividuellement": true
+    },
+    {
+      "chemin": "meteo-pluie-spray/files/visuel-meteo/avant/pluie-spray235/0001.png",
+      "sha256": "807d1b0cfbc37cf7bab221be58dfefb3c5c02af532ad29cf9794a5330eb198ab",
+      "inspecteIndividuellement": true
+    },
+    {
+      "chemin": "meteo-pluie-grille/files/visuel-meteo/apres/pluie-grille/0000.png",
+      "sha256": "f53fae80eb5201a05eb25220e466485ca2d669e85f959f43682f0782a7cf4263",
+      "inspecteIndividuellement": true
+    },
+    {
+      "chemin": "meteo-pluie-grille/files/visuel-meteo/apres/pluie-grille/0001.png",
+      "sha256": "86056f6c0d43598121b897fc07614e195639d9543f8b012386137d05bddff311",
+      "inspecteIndividuellement": true
+    },
+    {
+      "chemin": "meteo-pluie-grille/files/visuel-meteo/avant/pluie-grille/0000.png",
+      "sha256": "e04157d423de31e6930ef702a2ab0e620293d5a421e88d01f9018cd3c09b0414",
+      "inspecteIndividuellement": true
+    },
+    {
+      "chemin": "meteo-pluie-grille/files/visuel-meteo/avant/pluie-grille/0001.png",
+      "sha256": "649f5059f376284bade78f448cdfa1fe9e81860d12c01741ffe9cfc4b5fb1ffb",
+      "inspecteIndividuellement": true
+    }
+  ],
+  "observations": {
+    "pluie-spray235": "À235km/h, les deux candidats montrent une densité de petits grains et un voile plus forts que les références0.2.62. Les grosses gouttes changent entre les deux instants; rival, bordures, cockpit et route restent lisibles.",
+    "pluie-grille": "À0km/h, accumulation de grains et grosses gouttes visible; la grille et la route restent lisibles. Les deux images candidates diffèrent légèrement avec la pluie active.",
+    "commun": "Pas de frame noire ni de disparition du décor visibles. Forme des grosses gouttes assez opaque et stylisée."
+  },
+  "limites": [
+    "Paires à poses disposées, pas une course dynamique.",
+    "Aucune qualification de FPS matériel : cadence imposée100ms et raster logiciel.",
+    "TREE.txt absent de ces lots; COMMIT identique à celui dont les3366sources ont été vérifiées, buildSHA256 conforme.",
+    "Cette revue ne qualifie pas les portails ni les forts embruns sur une lentille de poursuite hors panache."
+  ]
+}

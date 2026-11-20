@@ -41,3 +41,7 @@ La revue du vrai rig a trouvé un saut de poignet à l’interruption d’un ges
 Retour amorti puis trajet du levier sont maintenant partagés entre les vues, sans changer
 la boîte physique. 810 poses sans traversée et 21 tests ciblés réussis. Le build 0.2.64
 est reproductible. CI complète et captures intégrées à contrôler avant fusion.
+
+## Correctifs de qualification — candidat 0.2.65
+
+CI initiale conservée à151/152 et archive de3366sources vérifiée. Allocation du pilote corrigée sans mouvement ni seuil modifié;864comparaisons exactes. Contrôles aérien/poursuite raccordés au diagnostic public et au contrat caméra;29+48mutations rejetées.58PNG initiaux inspectés avec réserves. Reçu `rapports/DEMOS-PILOTES-METEO-2026-11-20/CANDIDAT-0265.json`. Nouvelle CI/captures nécessaires avant fusion;main reste0.2.62.

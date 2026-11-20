@@ -2,10 +2,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { optionsDemo, optionsScenario, SCENARIOS, verifierRapport, preparerEtat } from '../tools/captures-demo.mjs';
+import { runInNewContext } from 'node:vm';
+import { optionsDemo, optionsScenario, SCENARIOS, verifierRapport, preparerEtat, observerEtat } from '../tools/captures-demo.mjs';
 
 const base = ['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/qualification'];
 function rapport(s) {
+  const lentille = s.aerien ? 0 : s.vue === 'poursuite' ? .05 : .8;
   const o = { type: 'demo', ecran: 'demo', cameraImposee: false, gardeDisponible: true, vue: s.attendu,
     plan: { vue: s.attendu, motif: s.realisation ? 'expression' : s.refus ? 'cadre' : 'course', sujet: 0 },
     camera: { pos: [0, 2, 0], yaw: 0, pitch: -.1, fov: 34, secours: false }, obstruction: { hit: false },
@@ -13,10 +15,10 @@ function rapport(s) {
     faune: s.faune ? { y: 1, sol: 1, fractionHauteur: .16 } : null,
     volants: s.pilote ? [{ p: [0, 1, 0], r: [0, 0, .4] }] : [], volant: s.volant || 0,
     pilote: s.geste ? { geste: s.geste, gesteIntensite: 1 } : null,
-    sillage: s.spray ? { rival: 1, sources: [{ id: 1, exposition: .76 }], casque: .76, lentille: .05 } : null,
-    vitrage: { actif: !s.aerien, embruns: .8 }, vitreVisible: !s.aerien,
-    vitres: { j1: { erreur: null, erreurs: 0, perdu: false, propre: !!s.aerien, masquee: !!s.aerien, eau: s.aerien ? 0 : 20, embruns: s.aerien ? 0 : 10,
-      gouttes: s.aerien ? 0 : 20, depotsEmbruns: 600, expulses: 250 } } };
+    sillage: s.spray ? { rival: 1, sources: [{ id: 1, exposition: .76 }], casque: .76, lentille } : null,
+    vitrage: { actif: !s.aerien, pluie: s.pluie ? 1 : 0, neige: 0, embruns: lentille }, vitreVisible: !s.aerien,
+    vitres: { j1: { backend: 'webgl2', pret: true, erreur: null, erreurs: 0, perdu: false, eau: s.aerien ? 0 : 20, embruns: lentille,
+      gouttes: s.aerien ? 0 : 20, accumulationNeige: 0, neige: 0, depotsEau: 43, depotsEmbruns: s.vue === 'poursuite' ? 0 : 600, expulses: 250 } } };
   return { initialisation: { entree: 'BITUME_JEU.demo', cameraImposee: false }, environnement: { gpu: 'ANGLE SwiftShader' }, erreurs: [], avertissements: [],
     images: Array.from({ length: s.images }, () => ({ observation: structuredClone(o), vues: { scene: { noir: .02, luminance: .4 } } })) };
 }
@@ -78,17 +80,61 @@ test('le volant extérieur et les trois gestes doivent être rendus par le bon p
 
 test('pluie en sillage et vue aérienne sans overlay sont des preuves distinctes', () => {
   for (const s of SCENARIOS.filter(s => s.pluie && !s.aerien)) {
-    for (const cle of ['eau','gouttes','depotsEmbruns','expulses']) rejette(s, (_, o) => { o.vitres.j1[cle] = 0; }, 'non exercés');
-    for (const embruns of [0, .05, .5]) rejette(s, (_, o) => { o.vitrage.embruns = embruns; }, 'non exercés');
+    for (const cle of ['eau','gouttes','expulses']) for (const valeur of [0, NaN, undefined])
+      rejette(s, (_, o) => { o.vitres.j1[cle] = valeur; }, 'non exerc');
+    if (s.vue === 'cockpit') {
+      rejette(s, (_, o) => { o.vitres.j1.depotsEmbruns = 0; }, 'non exercés');
+      for (const embruns of [0, .05, .5]) rejette(s, (_, o) => { o.vitrage.embruns = embruns; }, 'non exercés');
+    }
     rejette(s, (_, o) => { o.sillage.sources.push({ id: 2, exposition: .6 }); }, 'seul rival');
+    rejette(s, (_, o) => { o.sillage.sources = []; }, 'seul rival');
+    rejette(s, (_, o) => { delete o.sillage.rival; }, 'seul rival');
+    rejette(s, (_, o) => { o.sillage.sources[0].id = o.sillage.rival = o.plan.sujet; }, 'seul rival');
+    rejette(s, (_, o) => { o.sillage.sources[0].id = 2; }, 'seul rival');
+    rejette(s, (_, o) => { o.sillage.sources[0].exposition = 0; }, 'seul rival');
+    for (const casque of [0, .5, NaN, undefined]) rejette(s, (_, o) => { o.sillage.casque = casque; }, 'seul rival');
+    for (const pluie of [0, undefined, NaN]) rejette(s, (_, o) => { o.vitrage.pluie = pluie; }, 'non exercée');
   }
   const s = SCENARIOS.find(s => s.aerien);
   rejette(s, (_, o) => { o.vitreVisible = true; }, 'Overlay');
+  rejette(s, (_, o) => { delete o.vitreVisible; }, 'Overlay');
   rejette(s, (_, o) => { o.vitrage.actif = true; }, 'Overlay');
-  for (const cle of ['propre','masquee']) rejette(s, (_, o) => { o.vitres.j1[cle] = false; }, 'Overlay');
-  for (const cle of ['eau','embruns','gouttes']) rejette(s, (_, o) => { o.vitres.j1[cle] = 1; }, 'Overlay');
+  rejette(s, (_, o) => { delete o.vitrage.actif; }, 'Overlay');
+  for (const cle of ['eau','embruns','gouttes','accumulationNeige','neige']) {
+    for (const valeur of [1, NaN, undefined]) rejette(s, (_, o) => { o.vitres.j1[cle] = valeur; }, 'Overlay');
+  }
+  for (const changer of [o => { o.vitres = null; }, o => { o.vitres.j1.backend = 'canvas2d'; },
+    o => { o.vitres.j1.pret = false; }, o => { o.vitres.j1.perdu = true; }, o => { o.vitres.j1.erreur = 'shader'; },
+    o => { o.vitres.j1.erreurs = 1; }, o => { o.vitres.j1.erreurs = ['GL_INVALID_OPERATION']; }])
+    rejette(s, (_, o) => changer(o), 'Diagnostic optique');
+  for (const pluie of [0, undefined, NaN]) rejette(s, (_, o) => { o.vitrage.pluie = pluie; }, 'non exercée');
   const historiques = rapport(s); historiques.images[0].observation.vitres.j1.expulses = 1800;
   assert.deepEqual(verifierRapport(historiques, s), [], 'un compteur cumulé ne prouve pas un overlay encore composé');
+  const publicSeulement = rapport(s);
+  for (const im of publicSeulement.images) {
+    assert(!Object.hasOwn(im.observation.vitres.j1, 'propre'));
+    assert(!Object.hasOwn(im.observation.vitres.j1, 'masquee'));
+  }
+  assert.deepEqual(verifierRapport(publicSeulement, s), [], 'le diagnostic public réel ne contient pas les champs privés propre/masquee');
+});
+
+test('la poursuite contrôle sa lentille réelle sans reprendre le sillage fort du casque', () => {
+  const s = SCENARIOS.find(s => s.id === 'pluie-poursuite-sillage');
+  for (const valeur of [0, NaN, undefined]) rejette(s, (_, o) => { o.vitres.j1.depotsEau = valeur; }, 'non exercées');
+  for (const valeur of [false, undefined]) {
+    rejette(s, (_, o) => { o.vitreVisible = valeur; }, 'non exercées');
+    rejette(s, (_, o) => { o.vitrage.actif = valeur; }, 'non exercées');
+  }
+  for (const valeur of [0, .2, .8, NaN, undefined]) rejette(s, (_, o) => { o.sillage.lentille = valeur; }, 'lentille');
+  for (const valeur of [0, .8, NaN, undefined]) {
+    rejette(s, (_, o) => { o.vitrage.embruns = valeur; }, 'lentille');
+    rejette(s, (_, o) => { o.vitres.j1.embruns = valeur; }, 'lentille');
+  }
+  rejette(s, (_, o) => { o.sillage.lentille = o.vitrage.embruns = o.vitres.j1.embruns = o.sillage.casque; }, 'lentille');
+  rejette(s, (_, o) => { o.sillage = null; }, 'seul rival');
+  const r = rapport(s);
+  assert.equal(r.images[0].observation.vitres.j1.depotsEmbruns, 0);
+  assert.deepEqual(verifierRapport(r, s), [], 'la pluie reste rendue et évacuée quand la lentille reçoit peu de projections');
 });
 
 test('un seul rival à18m arrose le casque alors que la caméra de poursuite sort du panache', () => {
@@ -106,6 +152,21 @@ test('un seul rival à18m arrose le casque alors que la caméra de poursuite sor
   assert(B.sillage.exposition(etat, casque, 1, 0) > .6);
   assert.equal(etat.sources.filter(source => B.sillage.exposition({ sources: [source] }, casque, 1, 0) > 1e-6).length, 1);
   assert.equal(B.sillage.exposition(etat, camera, 0, 0), 0, 'l’exposition ne dépend plus du mouillage');
+  const appels = [], s = SCENARIOS.find(s => s.id === 'pluie-poursuite-sillage');
+  const S = { type: 'demo', cour: poses, suivie: 0, sortie: [], vue: 'poursuite', meteo: { pluie: 1, mouille: 1 }, sillage: etat,
+    camera: { pos: camera, cible: [p.x, p.y + .65, p.z] }, course: { voitures, physique: { world: { raycast: () => ({ hit: false }) } } } };
+  const observation = runInNewContext(`(${observerEtat.toString()})()`, {
+    BITUME: { ...B, voiture: { FORMES: { jante: { nom: 'jante' } } }, cinema: { valider() {} }, sillage: { exposition(...args) {
+      appels.push(args); return B.sillage.exposition(...args);
+    } } },
+    BITUME_JEU: { session: S, camera: null, ecran: 'demo', scene: { saison: 'ete' }, rendu: { gl: { getError: () => 0, isContextLost: () => false } } },
+    __DEMO_FIXTURE: { scenario: s, sujet: 0, rival: 1 }, document: { getElementById: () => ({ hidden: false }) },
+    getComputedStyle: () => ({ display: 'block', visibility: 'visible' })
+  });
+  assert.equal(appels.at(-1)[1], camera, 'l’observateur doit échantillonner cam.pos, pas le casque');
+  assert(appels.every(args => args[3] === 0), 'le véhicule filmé doit être exclu de chaque mesure');
+  assert.equal(observation.sillage.lentille, B.sillage.exposition(etat, camera, 1, 0));
+  assert.equal(observation.sillage.casque, B.sillage.exposition(etat, casque, 1, 0));
 });
 
 test('erreurs page/GL, image noire et archive incomplète bloquent le résultat', () => {
