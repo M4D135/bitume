@@ -1,0 +1,75 @@
+name: Complements HUD compact du candidat exact
+
+on:
+  push:
+    branches: ['codex/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hud-complement-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  hud-complement:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-hud-complement]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - groupe: duo-compact
+            cas: cockpit-duo-compact
+          - groupe: carte-gauche-stabilise
+            cas: cockpit-carte-gauche-stabilise
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Reconstruire et identifier le meme HTML
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qualification
+          git rev-parse HEAD > qualification/OUTILS-COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification/TREE.txt
+          node --version > qualification/ENVIRONNEMENT.txt
+          google-chrome --version >> qualification/ENVIRONNEMENT.txt
+          python3 construire.py > qualification/reconstruction.log 2>&1
+          sha256sum dist/bitume.html > qualification/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+      - name: Verifier les gardes positifs et negatifs
+        shell: bash
+        run: |
+          set -euo pipefail
+          node verifications/captures-habitacle.test.mjs > qualification/test-outil.log 2>&1
+      - name: Capturer les deux etats du cas complementaire
+        shell: bash
+        env:
+          CAS_COCKPIT: ${{ matrix.cas }}
+        run: |
+          set -euo pipefail
+          timeout --signal=TERM --kill-after=30s 18m node tools/captures-habitacle.mjs \
+            --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --sortie qualification/images \
+            --cas "$CAS_COCKPIT" --chrome /usr/bin/google-chrome \
+            > qualification/captures.log 2>&1
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+      - name: Conserver les preuves y compris en cas d'echec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-hud-complement-${{ matrix.groupe }}-${{ github.sha }}
+          path: |
+            qualification/*.txt
+            qualification/*.json
+            qualification/*.log
+            qualification/images/
+          if-no-files-found: error
+          retention-days: 14

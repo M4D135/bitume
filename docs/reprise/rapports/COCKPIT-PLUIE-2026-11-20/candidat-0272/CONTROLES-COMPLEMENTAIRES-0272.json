@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "version": "0.2.72",
+  "statut": "outils_complementaires_verifies_captures_attendues",
+  "base_locale": "4a9bb6ba5b441f0a293cba312bb89da1b445cdf4",
+  "candidat_github": "6e84c4dd1aeeb602f2348840710f36758c6cf47a",
+  "arbre_runtime": "8b5fecec829e53012b584513ee25e1ddd9f89ba2",
+  "pr_candidat": 48,
+  "branche_outils": "codex/bitume-0272-reception-20261120",
+  "html_sha256": "391db2defe23308f88500fdd138d3b8573596d1ca0f53e058ef5c66c0c510a90",
+  "runtime_modifie": false,
+  "tests_captures_habitacle": {
+    "passes": 30,
+    "echecs": 0
+  },
+  "scenes_historiques_conservees": 9,
+  "seuils_cockpit_inchanges": 6,
+  "gardes_compteurs_et_planche_seule_conservees": true,
+  "origine_preparation": {
+    "base": "ee3bb57ee59d62f2da3fa4e552dfbcbf74593301",
+    "branche_locale": "codex/bitume-0272-controles-hud-20261120",
+    "integration": "ajouts cibles ; aucun remplacement integral des fichiers anterieurs"
+  },
+  "ajouts": [
+    {
+      "scenario": "cockpit-duo-compact",
+      "taille": [
+        960,
+        540
+      ],
+      "partage": "haut-bas",
+      "images": 2,
+      "chauffe_par_instant": 24,
+      "risque": "Annonce susceptible de remonter sur POSITION/TOUR ; prediction de disposition, capture requise."
+    },
+    {
+      "scenario": "cockpit-carte-gauche-stabilise",
+      "taille": [
+        960,
+        540
+      ],
+      "tableau": "complet",
+      "carte": "grande a gauche",
+      "volant_vitesse": -0.35,
+      "images": 2,
+      "chauffe_par_instant": 120,
+      "risque": "Main droite susceptible de recouvrir le regime lorsque le regard finit de tourner ; diagnostic CPU, capture requise."
+    }
+  ],
+  "oracle_hud_interne": "Annonce, carte et FPS contre les autres rectangles du meme joueur ; doublons et parentes DOM exclus ; seuil conserve de 1 px2.",
+  "preuves_deja_recues": [
+    {
+      "groupe": "compact",
+      "artifact": 14677800802,
+      "images_inspectees": 2,
+      "echecs": 0
+    },
+    {
+      "groupe": "paysage",
+      "artifact": 14677556361,
+      "images_inspectees": 2,
+      "echecs": 0
+    }
+  ],
+  "relecture_anciens_rapports": "Rejouer le nouvel oracle sur les rectangles existants ; le contenu des anciens rapports est preserve.",
+  "captures_complementaires": "attendues ; workflow distinct pour ne pas interrompre la campagne initiale44831750401",
+  "reserves": [
+    "CI complete et autres images du candidat encore en reception",
+    "Budget decor historique ouvert ; seuil150ms conserve",
+    "Poses prescrites ; aucun gain de FPS materiel annonce"
+  ],
+  "site_deploye": false
+}

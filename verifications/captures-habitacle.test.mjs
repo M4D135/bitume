@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import { optionsHabitacle, optionsScenarioHabitacle, SCENARIOS_HABITACLE, SCENARIOS_COCKPIT, verifierHabitacle, chaufferInstantCockpit } from '../tools/captures-habitacle.mjs';
 import { horlogeCapture } from '../tools/controle-visuel.mjs';
-import { SEUILS_COCKPIT, DISTANCES_ROUTE, BANDES_ROUTE, mesurerLisibiliteCockpit, installerObservationCockpit, observerLisibiliteCockpit } from '../tools/qualification/cockpit-lisibilite.mjs';
+import { SEUILS_COCKPIT, DISTANCES_ROUTE, BANDES_ROUTE, mesurerLisibiliteCockpit, mesurerSuperpositionsHud, installerObservationCockpit, observerLisibiliteCockpit } from '../tools/qualification/cockpit-lisibilite.mjs';
 
 test('inspection bornée à neuf scènes et deux images, vrais cockpits et LOD par distance', () => {
   const base = ['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/habitacle'];
@@ -61,17 +61,25 @@ test('identité exacte, caméra finale et état WebGL sont nécessaires même po
   }
 });
 
-test('qualification ciblée : seize PNG, compact et préférence de carte, deux vrais cockpits dans les deux partages', () => {
-  assert.equal(SCENARIOS_COCKPIT.reduce((n, s) => n + s.images, 0), 16);
+test('qualification ciblée : vingt PNG, cas historiques conservés, braquage stabilisé et duo compact distincts', () => {
+  assert.equal(SCENARIOS_COCKPIT.reduce((n, s) => n + s.images, 0), 20);
   const cas = SCENARIOS_COCKPIT.map(s => s.id).join(','), o = optionsHabitacle(['--url', 'file:///tmp/b.html', '--sortie', '/tmp/c', '--cas', cas]);
-  assert.equal(o.cas.length, 9);
+  assert.equal(o.cas.length, 11);
   for (const id of ['cockpit-compact', 'cockpit-carte-gauche']) {
     const s = SCENARIOS_COCKPIT.find(s => s.id === id);
     assert(s?.cockpit); assert.equal(s.taille, '960,540'); assert.equal(s.images, 2);
     assert.equal(s.chauffe, 24); assert.equal(s.pas, 1 / 60);
+    assert.equal(s.chauffeInstant, 24); assert.equal(s.volantVitesse, .65);
     assert.equal(s.rival, 18);
     assert.deepEqual([s.cartePosition, s.carteTaille, s.tableau], id === 'cockpit-compact' ? ['droite', 'normale', 'reduit'] : ['gauche', 'grande', 'complet']);
   }
+  for (const [id, volant] of [['cockpit-carte-gauche-stabilise', -.35]]) {
+    const s = SCENARIOS_COCKPIT.find(s => s.id === id), ancien = SCENARIOS_COCKPIT.find(s => s.id === id.replace('-stabilise', ''));
+    assert.equal(s.volantVitesse, volant); assert.equal(s.chauffeInstant, 120); assert.equal(s.pas, 1 / 60);
+    for (const cle of ['cockpit', 'taille', 'rival', 'cartePosition', 'carteTaille', 'tableau', 'images', 'chauffe']) assert.equal(s[cle], ancien[cle], cle);
+  }
+  const compact = SCENARIOS_COCKPIT.find(s => s.id === 'cockpit-duo-compact');
+  assert.deepEqual([compact.taille, compact.duo, compact.partage, compact.volantVitesse, compact.chauffeInstant], ['960,540', true, 'haut-bas', .65, 24]);
   for (const s of SCENARIOS_COCKPIT) {
     const p = optionsScenarioHabitacle(s, o.url, '/tmp/' + s.id, o);
     assert.deepEqual(p.taille, s.taille.split(',').map(Number)); assert.equal(p.images, s.images);
@@ -82,11 +90,11 @@ test('qualification ciblée : seize PNG, compact et préférence de carte, deux 
     largeurGlaceMax: .18, erreurDomMaxPx: 2, recouvrementMaxPx2: 1 });
 });
 
-function contexteChauffe() {
+function contexteChauffe(scenario = {}) {
   const S = { locaux: [0, 1], course: { voitures: [0, 1].map(() => ({ etat: { v: 35, volant: .2, braquage: .024 } })) },
     prec: [0, 1].map(x => ({ x, y: 2, z: 3, braquage: .024 })), cour: [0, 1].map(x => ({ x, y: 2, z: 3, braquage: .024 })),
     tete: { y: 1 }, vueJ2: { tete: { y: 2 } } };
-  const contexte = vm.createContext({ BITUME_JEU: { session: S }, __HABITACLE_CAPTURE: { sujet: 0, relever: true, releves: { ancien: true } } });
+  const contexte = vm.createContext({ BITUME_JEU: { session: S }, __HABITACLE_CAPTURE: { scenario, sujet: 0, relever: true, releves: { ancien: true } } });
   vm.runInContext('globalThis.window = globalThis', contexte);
   vm.runInContext(horlogeCapture(17017), contexte);
   vm.runInContext(`globalThis.frames = [];
@@ -143,6 +151,25 @@ test('une commande de chauffe interrompue reste un échec tracé et n’arme pas
   assert.match(derniere.erreur, /CDP interrompu/);
 });
 
+test('braquages stabilisés : 120 rappels réels de 1/60 s, signes prescrits et relevé après la chauffe', async () => {
+  for (const s of SCENARIOS_COCKPIT.filter(s => s.chauffeInstant === 120)) for (const i of [0, 1]) {
+    const { contexte, S, evaluer } = contexteChauffe(s), rapport = { scenarioHabitacle: s.id };
+    await chaufferInstantCockpit({ evaluer, rapport, i }, s);
+    assert.equal(contexte.frames.length, 120); assert(contexte.frames.every(f => !f.relever));
+    assert(Math.abs(contexte.frames.at(-1).t - 3000) < 1e-8, 'deux secondes commandées en 120 pas');
+    const phases = rapport.phasesHabitacle.filter(e => e.phase.startsWith('chauffe-'));
+    assert.equal(phases.length, 120); assert.equal(phases.at(-1).phase, 'chauffe-120/120');
+    for (let j = 0; j < 2; j++) {
+      const volant = i ? j ? -s.volantVitesse : s.volantVitesse : 0;
+      assert.equal(S.course.voitures[j].etat.volant, volant);
+      assert.equal(S.course.voitures[j].etat.v, i ? 80 : 0);
+      for (const poses of [S.prec, S.cour]) assert.equal(poses[j].braquage, volant * .12);
+    }
+    await evaluer('__BITUME_CAPTURE.avancer(1000 / 60)');
+    assert.equal(contexte.__HABITACLE_CAPTURE.releves.derniereFrame, 121);
+  }
+});
+
 // Géométrie indépendante, construite depuis un plan image connu ; les rayons visent le sol y=0.
 function sceneMesure(roll = 0) {
   const camera = { pos: [0, 1, 0], yaw: 0, pitch: 0, roll, fov: 60, near: .1 };
@@ -165,8 +192,11 @@ function sceneMesure(roll = 0) {
 
 function rapportCockpit(s, masqueHud = false) {
   const r = rapport(s);
+  if (s.chauffeInstant === 120) r.phasesHabitacle = [0, 1].flatMap(image => Array.from({ length: 120 }, (_, n) => ({
+    image, phase: `chauffe-${n + 1}/120`, etat: 'terminee', horloge: { temps: 1000 + (image * 121 + n + 1) * 1000 / 60, callbacks: 1, attente: 1 } })));
   if (s.cockpit) for (const [i, im] of r.images.entries()) {
-    const o = im.observation; o.instant = i ? 'vitesse-braquage' : 'neutre'; o.volant = i ? .65 : 0;
+    const o = im.observation, volantVitesse = s.volantVitesse ?? .65;
+    o.instant = i ? 'vitesse-braquage' : 'neutre'; o.volant = i ? volantVitesse : 0;
     o.lisibilite = Array.from({ length: s.duo ? 2 : 1 }, (_, j) => {
       const { d } = sceneMesure(); d.joueur = j + 1; d.hud.joueur = j + 1; d.hud.racine = j ? 'hud2' : 'hud';
       d.hud.rectangles.forEach(h => { h.id = d.hud.racine + ':compteur'; });
@@ -176,7 +206,7 @@ function rapportCockpit(s, masqueHud = false) {
         { id: d.hud.racine + ':vitesse:0', x: 900, y: 480, width: 80, height: 40 },
         { id: d.hud.racine + ':h-regime:0', x: 900, y: 530, width: 80, height: 30 });
       if (masqueHud) d.hud.rectangles.push({ id: d.hud.racine + ':classement:ligne0', x: 170, y: 350, width: 40, height: 20 });
-      return { joueur: j + 1, sujet: j, vitesse: i ? 80 : 0, volant: i ? j ? -.65 : .65 : 0, ...mesurerLisibiliteCockpit(d, SEUILS_COCKPIT) };
+      return { joueur: j + 1, sujet: j, vitesse: i ? 80 : 0, volant: i ? j ? -volantVitesse : volantVitesse : 0, ...mesurerLisibiliteCockpit(d, SEUILS_COCKPIT) };
     });
   }
   return r;
@@ -260,6 +290,40 @@ test('HUD : données absentes, incomplètes, invalides ou empruntées à l’aut
   }
 });
 
+test('HUD interne : annonce sur POSITION/TOUR, carte et FPS sont détectés au seuil de 1 px²', () => {
+  for (const id of ['h-virage', 'carte', 'h-fps']) {
+    const rectangles = [{ id: 'hud:' + id + ':0', x: 16, y: 45, width: 160, height: 32 },
+      { id: 'hud:grand:1', compteur: 'c-position', x: 24, y: 35, width: 60, height: 26 },
+      { id: 'hud:grand:2', compteur: 'c-tour', x: 124, y: 35, width: 50, height: 26 }];
+    const r = mesurerSuperpositionsHud(rectangles, SEUILS_COCKPIT);
+    assert.equal(r.recouvrements.length, 2); assert.equal(r.erreurs.length, 2);
+    for (const compteur of ['c-position', 'c-tour']) assert(r.erreurs.some(e => e.includes(compteur)), compteur);
+    assert(r.recouvrements.every(p => p.airePx2 > 1 && p.source === rectangles[0].id));
+    rectangles[1] = { ...rectangles[1], x: 175, y: 76, width: 20, height: 20 }; rectangles.pop();
+    assert.deepEqual(mesurerSuperpositionsHud(rectangles, SEUILS_COCKPIT).erreurs, [], 'un pixel carré reste toléré');
+    rectangles[1].x -= .01;
+    assert.equal(mesurerSuperpositionsHud(rectangles, SEUILS_COCKPIT).erreurs.length, 1, 'au-delà du même seuil le conflit échoue');
+  }
+  const { d } = sceneMesure();
+  d.hud.rectangles.push({ id: 'hud:h-virage:0', x: 20, y: 10, width: 120, height: 35 });
+  const r = vm.runInNewContext(`(${mesurerLisibiliteCockpit.toString()})(d, seuils, ${mesurerSuperpositionsHud.toString()})`, { d, seuils: SEUILS_COCKPIT });
+  assert(r.erreurs.some(e => /Éléments HUD superposés/.test(e)), 'le diagnostic sérialisé dans la page appelle le même oracle');
+  assert.equal(r.hud.superpositions.length, 1);
+});
+
+test('HUD interne : propre rectangle, parent/enfant et autre joueur exclus ; frères distincts conservés', () => {
+  const annonce = { id: 'hud:h-virage:0', element: 'hud:element-1', ancetres: ['hud:element-0'], x: 20, y: 20, width: 100, height: 40 };
+  const rectangles = [annonce, { ...annonce }, { ...annonce, id: 'hud:h-virage:fragment' },
+    { ...annonce, id: 'hud:annonce-texte:1', element: 'hud:element-2', ancetres: ['hud:element-1', 'hud:element-0'] },
+    { ...annonce, id: 'hud:conteneur:2', element: 'hud:element-0', ancetres: [] },
+    { ...annonce, id: 'hud2:h-fps:0', element: 'hud2:element-1', ancetres: [] }];
+  assert.deepEqual(mesurerSuperpositionsHud(rectangles, SEUILS_COCKPIT).erreurs, []);
+  rectangles.push({ ...annonce, id: 'hud:grand:3', element: 'hud:element-3', compteur: 'c-position' });
+  assert(mesurerSuperpositionsHud(rectangles, SEUILS_COCKPIT).erreurs.some(e => /c-position/.test(e)), 'un ancêtre commun ne doit pas supprimer un conflit entre frères');
+  const paire = [annonce, { ...annonce, id: 'hud:carte:4', element: 'hud:element-4' }];
+  assert.equal(mesurerSuperpositionsHud(paire, SEUILS_COCKPIT).recouvrements.length, 1, 'un conflit entre deux blocs surveillés est compté une fois');
+});
+
 test('HUD DOM : rectangles transformés propres à J1/J2, clipping et visibilité réelle sans conteneurs vides', () => {
   const style = { display: 'block', visibility: 'visible', opacity: '1', overflowX: 'visible', overflowY: 'visible',
     borderTopWidth: '0px', borderRightWidth: '0px', borderBottomWidth: '0px', borderLeftWidth: '0px', backgroundColor: 'rgba(0, 0, 0, 0)', backgroundImage: 'none' };
@@ -281,6 +345,7 @@ test('HUD DOM : rectangles transformés propres à J1/J2, clipping et visibilit�
       element('sous-message', '#sous-message', { x: x + 180, y: 260, width: 360, height: 50 }, { style: { ...style, opacity: '0' } }),
       element('h-fps', '#h-fps', { x: x + 20, y: 890, width: 60, height: 22 })];
     for (const e of liste) e.parentElement = racine;
+    liste[0].parentElement = liste[1];
     racine.querySelectorAll = selecteurs => liste.filter(e => selecteurs.split(',').map(s => s.trim()).includes(e.selecteur));
     return liste;
   });
@@ -301,6 +366,8 @@ test('HUD DOM : rectangles transformés propres à J1/J2, clipping et visibilit�
     assert.deepEqual([carte.x, carte.width], [j * 720 + 700, 20], 'clip au bord du viewport du joueur');
     assert.equal(rectangles.find(e => e.id.includes('h-fps')).height, 10);
     const filet = rectangles.find(e => e.id.includes('bordure-Top'));
+    assert.equal(compteur.compteur, 'c-position'); assert(compteur.ancetres.includes(filet.element));
+    assert.notEqual(compteur.element, filet.element, 'la parenté DOM ne se déduit pas d’une classe partagée');
     assert(Math.abs(filet.height - 1.2) < 1e-8, 'une bordure verte finissant par zéro dans rgb reste peinte et suit le scale');
     assert(rectangles.every(e => e.id.startsWith(racines[j].id + ':')));
   }
@@ -339,6 +406,38 @@ test('le rapport exige les deux états, les deux joueurs et les erreurs réelles
       const faux = structuredClone(r); changer(faux.images[0].observation);
       assert(verifierHabitacle(faux, s).length, 'préférences/rival du compact réellement prescrits');
     }
+  }
+});
+
+test('les cas stabilisés refusent une chauffe de 24 pas, interrompue, sans rappel ou à cadence différente', () => {
+  for (const s of SCENARIOS_COCKPIT.filter(s => s.chauffeInstant === 120)) {
+    const r = rapportCockpit(s); assert.deepEqual(verifierHabitacle(r, s), []);
+    for (const changer of [
+      x => { delete x.phasesHabitacle; },
+      x => { x.phasesHabitacle = x.phasesHabitacle.filter(e => Number(e.phase.match(/\d+/)[0]) <= 24); },
+      x => { x.phasesHabitacle[119].etat = 'en-cours'; },
+      x => { x.phasesHabitacle[119].horloge.callbacks = 0; },
+      x => { x.phasesHabitacle[119].horloge.temps += 1; },
+      x => { x.phasesHabitacle[120].phase = 'chauffe-1/24'; }
+    ]) {
+      const faux = structuredClone(r); changer(faux);
+      assert(verifierHabitacle(faux, s).some(e => /Stabilisation cockpit incomplète/.test(e)), changer.toString());
+    }
+    const mauvais = structuredClone(r); mauvais.images[1].observation.volant = .65;
+    mauvais.images[1].observation.lisibilite[0].volant = .65;
+    assert(verifierHabitacle(mauvais, s).some(e => /Braquage non exercé|Vitesse\/braquage/.test(e)), 'les anciennes poses ne remplacent pas le braquage intermédiaire prescrit');
+  }
+});
+
+test('relecture JSON : le chevauchement annonce/compteur ne passe pas avec un ancien tableau d’erreurs vide', () => {
+  const s = SCENARIOS_COCKPIT.find(s => s.id === 'cockpit-duo-compact');
+  for (let j = 0; j < 2; j++) {
+    const r = JSON.parse(JSON.stringify(rapportCockpit(s))), q = r.images[1].observation.lisibilite[j];
+    const annonce = q.hud.rectangles.find(h => h.id.includes(':h-virage:'));
+    const compteur = q.hud.rectangles[0];
+    Object.assign(annonce, { x: compteur.x, y: compteur.y, width: compteur.width, height: compteur.height });
+    compteur.compteur = 'c-position'; q.erreurs = [];
+    assert(verifierHabitacle(r, s).some(e => e.startsWith('J' + (j + 1)) && /Éléments HUD superposés.*c-position/.test(e)));
   }
 });
 

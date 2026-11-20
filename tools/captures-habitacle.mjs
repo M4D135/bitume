@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { capturer, optionsCapture } from './controle-visuel.mjs';
-import { SEUILS_COCKPIT, mesurerLisibiliteCockpit, installerObservationCockpit, observerLisibiliteCockpit } from './qualification/cockpit-lisibilite.mjs';
+import { SEUILS_COCKPIT, mesurerLisibiliteCockpit, mesurerSuperpositionsHud, installerObservationCockpit, observerLisibiliteCockpit } from './qualification/cockpit-lisibilite.mjs';
 
 export const SCENARIOS_HABITACLE = Object.freeze([
   { id: 'face', poste: [1.7, 1.30, 0], cible: [0, .65, 0] },
@@ -28,12 +28,15 @@ export const SCENARIOS_COCKPIT = Object.freeze([
     cartePosition: 'droite', carteTaille: 'normale', tableau: 'reduit' },
   { id: 'cockpit-carte-gauche', cockpit: true, taille: '960,540', rival: 18,
     cartePosition: 'gauche', carteTaille: 'grande', tableau: 'complet' },
+  { id: 'cockpit-carte-gauche-stabilise', cockpit: true, taille: '960,540', rival: 18,
+    cartePosition: 'gauche', carteTaille: 'grande', tableau: 'complet', volantVitesse: -.35, chauffeInstant: 120 },
   { id: 'cockpit-vertical', cockpit: true, taille: '540,960' },
   { id: 'cockpit-duo-haut-bas', cockpit: true, taille: '1440,900', duo: true, partage: 'haut-bas' },
+  { id: 'cockpit-duo-compact', cockpit: true, taille: '960,540', duo: true, partage: 'haut-bas' },
   { id: 'cockpit-duo-cote', cockpit: true, taille: '1440,900', duo: true, partage: 'cote' },
   { id: 'cockpit-profil', poste: [-.1, 1.02, -2], cible: [-.05, .62, 0], images: 1, taille: '1280,720' },
   { id: 'cockpit-trois-quarts', poste: [-1.15, 1.55, 1.25], cible: [.05, .58, 0], images: 1, taille: '1280,720' }
-].map(s => Object.freeze({ images: 2, chauffe: 24, pas: 1 / 60, fov: 40, qualification: true, ...s })));
+].map(s => Object.freeze({ images: 2, chauffe: 24, chauffeInstant: 24, volantVitesse: .65, pas: 1 / 60, fov: 40, qualification: true, ...s })));
 const TOUS_SCENARIOS = [...SCENARIOS_HABITACLE, ...SCENARIOS_COCKPIT];
 
 export function optionsHabitacle(argv) {
@@ -138,7 +141,8 @@ export function preparerInstantCockpit(i) {
   const J = BITUME_JEU, S = J.session, F = __HABITACLE_CAPTURE;
   F.relever = false; F.releves = {}; F.instant = i === 0 ? 'neutre' : 'vitesse-braquage';
   (S.locaux || [F.sujet]).forEach((id, joueur) => {
-    const e = S.course.voitures[id].etat, volant = i === 0 ? 0 : (joueur ? -.65 : .65);
+    const e = S.course.voitures[id].etat, braquagePrescrit = F.scenario?.volantVitesse ?? .65;
+    const volant = i === 0 ? 0 : (joueur ? -braquagePrescrit : braquagePrescrit);
     Object.assign(e, { v: i === 0 ? 0 : 80, volant, braquage: volant * .12, alat: 0, along: 0 });
     for (const poses of [S.prec, S.cour]) poses[id].braquage = e.braquage;
   });
@@ -158,12 +162,13 @@ async function etapeHabitacle(evaluer, rapport, phase, expression, image = null)
   } catch (e) { etape.etat = 'echec'; etape.erreur = String(e.message || e); throw e; }
 }
 
-// La même chauffe en 24 commandes CDP laisse le navigateur reprendre la main entre les rendus.
+// Chaque commande CDP rend la main au navigateur ; les nouveaux cas stabilisés prescrivent 120 pas.
 // Son effet sur les délais SwiftShader reste à qualifier ; aucune pose ni frame n'est retirée.
-export async function chaufferInstantCockpit({ evaluer, rapport, i }) {
+export async function chaufferInstantCockpit({ evaluer, rapport, i }, scenario = {}) {
+  const chauffe = scenario.chauffeInstant ?? 24;
   await etapeHabitacle(evaluer, rapport, 'preparer-instant', `(${preparerInstantCockpit.toString()})(${i})`, i);
-  for (let n = 0; n < 24; n++)
-    await etapeHabitacle(evaluer, rapport, `chauffe-${n + 1}/24`, '__BITUME_CAPTURE.avancer(1000 / 60)', i);
+  for (let n = 0; n < chauffe; n++)
+    await etapeHabitacle(evaluer, rapport, `chauffe-${n + 1}/${chauffe}`, '__BITUME_CAPTURE.avancer(1000 / 60)', i);
   await etapeHabitacle(evaluer, rapport, 'armer-observation', '__HABITACLE_CAPTURE.relever = true; __HABITACLE_CAPTURE.instant', i);
   rapport.phasesHabitacle.push({ image: i, phase: 'frame-et-PNG', etat: 'attendus' });
   process.stderr.write(`[habitacle ${rapport.scenarioHabitacle || rapport.scenario}] image ${i} frame-et-PNG\n`);
@@ -244,13 +249,20 @@ export function verifierHabitacle(r, s, candidat = true) {
     if (o.glErreur || o.glPerdu) fautes.push('Erreur WebGL');
     if (o.obstructionStatique !== false) fautes.push('Visée masquée par le décor');
     if (!im.etat?.zones?.scene || im.vues?.scene?.noir > .97 && im.vues.scene.luminance < .025) fautes.push('Scène absente ou noire');
-    if (o.volant !== (s.qualification && s.cockpit ? i ? .65 : 0 : s.volant || 0)) fautes.push('Braquage non exercé');
+    const volantVitesse = s.volantVitesse ?? .65;
+    if (o.volant !== (s.qualification && s.cockpit ? i ? volantVitesse : 0 : s.volant || 0)) fautes.push('Braquage non exercé');
     if (s.qualification && s.cockpit) {
+      if (s.chauffeInstant === 120) {
+        const chauffe = (r.phasesHabitacle || []).filter(e => e.image === i && /^chauffe-/.test(e.phase));
+        if (chauffe.length !== 120 || chauffe.some((e, n) => e.phase !== `chauffe-${n + 1}/120` || e.etat !== 'terminee' ||
+          !Number.isFinite(e.horloge?.temps) || !(e.horloge?.callbacks > 0) || n && Math.abs(e.horloge.temps - chauffe[n - 1].horloge?.temps - 1000 / 60) > 1e-6))
+          fautes.push('Stabilisation cockpit incomplète : 120 pas de 1/60 s requis, image ' + i);
+      }
       const vues = o.lisibilite || [];
       if (o.instant !== (i ? 'vitesse-braquage' : 'neutre') || vues.length !== (s.duo ? 2 : 1) || new Set(vues.map(v => v.joueur)).size !== vues.length) fautes.push('Observation des deux états/joueurs incomplète');
       for (let j = 0; j < (s.duo ? 2 : 1); j++) {
         const q = vues.find(q => q.joueur === j + 1);
-        if (!q || q.vitesse !== (i ? 80 : 0) || q.volant !== (i ? j ? -.65 : .65 : 0)) fautes.push('Vitesse/braquage J' + (j + 1) + ' non exercé');
+        if (!q || q.vitesse !== (i ? 80 : 0) || q.volant !== (i ? j ? -volantVitesse : volantVitesse : 0)) fautes.push('Vitesse/braquage J' + (j + 1) + ' non exercé');
         if (!q?.route || !q?.glaces || !Array.isArray(q?.erreurs)) fautes.push('Mesure réelle de chaussée/glaces absente');
         // Une référence peut échouer à la lisibilité, mais jamais à la collecte des preuves.
         if (!hudValide(q, j + 1)) fautes.push('Données HUD absentes ou invalides : J' + (j + 1));
@@ -259,6 +271,8 @@ export function verifierHabitacle(r, s, candidat = true) {
         // s=344 doit être visible à 80 m/s et masquée à l'arrêt. Leur disparition ne doit pas
         // faire réussir artificiellement les contrôles de recouvrement.
         const racine = j ? 'hud2' : 'hud', rectangles = Array.isArray(q?.hud?.rectangles) ? q.hud.rectangles : [];
+        // Recalcul depuis les boîtes reçues : des erreurs omises dans un ancien JSON ne valent pas validation.
+        if (candidat) for (const erreur of mesurerSuperpositionsHud(rectangles, SEUILS_COCKPIT).erreurs) fautes.push('J' + (j + 1) + ' : ' + erreur);
         const temoins = id => rectangles.filter(h => typeof h?.id === 'string' && h.id.startsWith(racine + ':' + id + ':'));
         const cartes = temoins('carte'), annonces = temoins('h-virage'), v = q?.viewport;
         const dansViewport = h => h && v && [v.x, v.y, v.width, v.height, h.x, h.y, h.width, h.height].every(Number.isFinite)
@@ -332,9 +346,9 @@ export async function campagneHabitacle(o) {
       const attente = rapport.phasesHabitacle?.find(e => e.image === i && e.phase === 'frame-et-PNG');
       if (attente) attente.etat = 'recus';
       return etapeHabitacle(evaluer, rapport, 'observation', `(() => { const r = (${observerHabitacle.toString()})();
-        ${s.qualification && s.cockpit ? `r.lisibilite = (${observerLisibiliteCockpit.toString()})(${mesurerLisibiliteCockpit.toString()},${JSON.stringify(SEUILS_COCKPIT)});` : ''} return r; })()`, i);
+        ${s.qualification && s.cockpit ? `r.lisibilite = (${observerLisibiliteCockpit.toString()})(${mesurerLisibiliteCockpit.toString()},${JSON.stringify(SEUILS_COCKPIT)},${mesurerSuperpositionsHud.toString()});` : ''} return r; })()`, i);
     };
-    if (s.qualification && s.cockpit) p.avantImage = chaufferInstantCockpit;
+    if (s.qualification && s.cockpit) p.avantImage = a => chaufferInstantCockpit(a, s);
     if (variante === 'apres' && o.avant) p.reference = path.join(o.sortie, 'avant', id, 'rapport.json');
     const resultat = await capturer(p), erreurs = verifierHabitacle(resultat, s, variante === 'apres');
     const constatsLisibilite = (resultat.images || []).flatMap(im => (im.observation?.lisibilite || []).flatMap(v => v.erreurs || []));
