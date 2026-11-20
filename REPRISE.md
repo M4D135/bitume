@@ -7,7 +7,9 @@ Le candidat **0.2.66** est sauvegardé en [PR #38](https://github.com/M4D135/bit
 tête `1c1ac0c9e190368a02101263ddceb6be0b77240d`, arbre `1f05e9b399e4584b814c4050bad9f5652261b097`.
 Sa campagne complète réussit **159/159 suites**, avec **3 405 sources** conformes en contenu
 et mode, et le build exact. Ses 48 images de démo sont inspectées (7/7 groupes réussis).
-Les captures météo/couverts sont encore en cours. La CI **0.2.65 155/159** reste
+Les captures météo/couverts sont encore en cours. Le scénario aérien des couverts a
+échoué : il déclenche le repli normal en poursuite et place la caméra dans le relief.
+Correctif de la scène et de sa régression en préparation, sans changement du jeu. La CI **0.2.65 155/159** reste
 conservée avec ses quatre échecs : cinéma, géométrie, allocation des effets et glaces cockpit.
 
 La **0.2.66** corrige ces quatre échecs. Seul changement runtime : parcours indexé

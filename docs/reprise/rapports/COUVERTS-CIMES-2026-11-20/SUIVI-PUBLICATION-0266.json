@@ -1,6 +1,6 @@
 {
   "version": "0.2.66",
-  "statut": "candidat_publie_validation_en_cours",
+  "statut": "capture_aerienne_a_corriger",
   "date": "2026-11-20",
   "repository": "M4D135/bitume",
   "pr": 38,
@@ -24,7 +24,7 @@
       "cinema",
       "solides-physx-geometrie",
       "effets-allocation",
-      "glacesCockpit"
+      "voiture-permanents (glacesCockpit)"
     ],
     "recu": "CI-0265-INITIAL.json"
   },
@@ -55,5 +55,10 @@
     "sources_verifiees": 3405,
     "contenus_et_modes_identiques": true,
     "recu": "CI-0266-FINALE.json"
+  },
+  "capture_aerienne": {
+    "statut": "echec_scene_prescrite",
+    "recu": "ECHEC-CAPTURE-AERIENNE-0266.json",
+    "runtime_modifie": false
   }
 }

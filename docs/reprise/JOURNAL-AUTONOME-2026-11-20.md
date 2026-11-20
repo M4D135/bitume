@@ -98,3 +98,14 @@ ont exactement les contenus et modes du candidat. Le build est identique aux deu
 constructions qualifiées. Les quatre échecs 0.2.65 restent dans le reçu historique.
 Reçu : `rapports/COUVERTS-CIMES-2026-11-20/CI-0266-FINALE.json`. Les images météo
 et couverts doivent encore être inspectées avant la fusion. Aucune campagne relancée.
+
+## 010 — échec du scénario aérien conservé, fusion suspendue
+
+La campagne générale reste à 159/159 et les premières vues tunnel passent. Le groupe
+`cimes-dessus-toit` échoue : la voiture suivie sous le tunnel déclenche le repli normal
+en poursuite, puis une caméra libre est posée dans le relief. Elle reçoit donc une
+visière et ne montre pas le survol attendu. Les deux PNG et leurs observations sont
+attribués au candidat exact. Le correctif porte sur la scène de capture et sa régression,
+avec les mêmes rayons de route/voûte et les mêmes exigences d’absence de dépôt aérien.
+Reçu : `rapports/COUVERTS-CIMES-2026-11-20/ECHEC-CAPTURE-AERIENNE-0266.json`.
+La fusion attend cette reprise et les autres images. Aucun changement runtime annoncé.

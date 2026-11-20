@@ -5,12 +5,12 @@
     "version_publiee_verifiee": "0.2.62",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "campagne_159_sur_159_images_meteo_couverts_en_cours",
+    "statut": "capture_aerienne_a_corriger",
     "lot": "couverts_cimes_et_correctifs_0265",
     "fiche": "docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "009",
-    "prochaine_action": "Terminer les images météo et couverts du candidat exact 0.2.66, puis fusionner la PR38 et publier la clôture.",
+    "derniere_entree": "010",
+    "prochaine_action": "Qualifier la correction du scénario aérien, terminer les autres captures, puis fusionner la 0.2.66.",
     "dernier_lot_clos": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md"
   },
   "publication": {
