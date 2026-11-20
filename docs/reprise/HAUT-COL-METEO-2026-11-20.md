@@ -59,3 +59,18 @@ Le même défaut touche la référence 0.2.60. Attendre la fin réelle du démar
 les états de capture ; les assertions de course et la couverture restent requises.
 Reçu conservé : `rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-INITIAL.json`.
 Le runtime et le build 0.2.61 restent inchangés par ces corrections de qualification.
+
+## Deuxième CI et contrat Légère
+
+Le run complet `44688763745` réussit **143/143 suites**. Archive vérifiée : **3 308 sources**,
+contenus et modes identiques au candidat, HTML inchangé. Le run visuel `44688763784` produit
+**31 PNG** sur 15 passages (dix candidats, cinq références). Pluie et vues réussissent ;
+seul le cas Légère échoue sur une attente erronée du validateur.
+
+Ce profil conserve volontairement les glaces peintes : `retroImages=false`, zéro rendu arrière.
+Le contrôle exige maintenant leur absence, deux images en Fine solo et quatre en duo, ainsi que
+le bon profil observé. 16/16 tests ciblés passent, avec mutations des glaces et du profil.
+Les deux images de pause sont identiques octet par octet et les compteurs reprennent ensuite.
+Les lignes diagonales sur les pentes claires sont visibles avant et après : réserve de rendu
+terrain conservée pour FERRO, distincte de la correction caméra. Aucun runtime ni build modifié
+par les correctifs de qualification. Reçu : `rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-DEUXIEME.json`.

@@ -13,22 +13,36 @@
     "passed": 142,
     "failed": 1,
     "total": 143,
-    "failedSuites": ["verifications/meteo.test.mjs"],
+    "failedSuites": [
+      "verifications/meteo.test.mjs"
+    ],
     "cause": "Le contrat cherchait encore un appel à cinq arguments ; le raccord réel en passe six pour désigner la voiture filmée et exclure ses propres embruns.",
     "correction": "Le contrôle exécute désormais le vrai raccord avec des sentinelles distinctes pour les secondes, la caméra, le profil et la voiture filmée.",
-    "localAfterCorrection": {"checks": 106, "negativeMutationsRejected": 4}
+    "localAfterCorrection": {
+      "checks": 106,
+      "negativeMutationsRejected": 4
+    }
   },
   "visual": {
     "url": "https://github.com/M4D135/bitume/actions/runs/44686881119",
     "runId": 44686881119,
     "conclusion": "failure",
     "failedJobs": 3,
-    "observed": "Les anciens plans faune été/hiver produisent quatre images ; pluie, neige et duo quittent la course pour demo/grille avant la capture. Aucune capture candidate n'est qualifiée.",
+    "observed": "Quatre fichiers PNG sont produits pour les anciens plans faune été/hiver, mais leur inspection montre encore le réglage automatique : ils ne qualifient pas le rendu du jeu. Pluie, neige et duo quittent la course pour demo/grille avant la capture. Aucune capture candidate ni référence visuelle de ce premier passage n’est qualifiée.",
     "cause": "Le scénario était installé avant la fin du démarrage asynchrone du jeu ; ce démarrage reprenait ensuite la main. Le défaut se reproduit sur la référence 0.2.60 et le candidat 0.2.61.",
     "required": "Attendre la fin réelle du démarrage, rejouer les dix états candidats et les cinq références, puis inspecter les images avant fusion."
   },
   "runtimeChangedByCorrections": false,
   "buildSha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d",
-  "historicalDurationReservesMs": {"threshold": 150, "Val-Brule": [188], "Haut-Col": [154, 167]},
+  "historicalDurationReservesMs": {
+    "threshold": 150,
+    "Val-Brule": [
+      188
+    ],
+    "Haut-Col": [
+      154,
+      167
+    ]
+  },
   "mergeAllowedByThisReceipt": false
 }

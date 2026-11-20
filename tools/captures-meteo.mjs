@@ -117,8 +117,16 @@ export function verifierRapport(r, s, candidat) {
     if (o.glErreur || o.glPerdu) fautes.push('Échec WebGL : ' + o.glErreur + (o.glPerdu ? ' / contexte perdu' : ''));
     for (const g of Object.values(o.vitresGL || {})) if (!g.present || g.erreur || g.perdu) fautes.push('Échec WebGL de la visière');
     for (const vue of ['scene', ...(s.duo ? ['scene2'] : [])]) if (im.vues?.[vue]?.noir > .97 && im.vues[vue].luminance < .025) fautes.push('Vue rendue noire : ' + vue);
-    if (s.duo && (!o.j2 || !im.etat.zones.scene2 || !im.etat.zones['glace-g2'] || !im.etat.zones['glace-d2'])) fautes.push('Vue J2/rétroviseurs incomplets');
-    if (!s.faune && !s.duo && (!im.etat.zones['glace-g'] || !im.etat.zones['glace-d'])) fautes.push('Rétroviseurs incomplets');
+    if (s.duo && (!o.j2 || !im.etat.zones.scene2)) fautes.push('Vue J2 incomplète');
+    const qualite = s.qualite || 'high';
+    if (!s.faune && o.j1?.qualite !== qualite) fautes.push('Qualité rendue différente du scénario');
+    // Légère conserve les glaces peintes de la voiture, sans toiles ni rendus arrière (graphismes.PROFILS.low).
+    // Fine doit montrer les deux vraies images pour chaque joueur ; une caméra faune les masque aussi.
+    const glaces = !s.faune && qualite !== 'low' ? ['glace-g', 'glace-d', ...(s.duo ? ['glace-g2', 'glace-d2'] : [])] : [];
+    for (const id of ['glace-g', 'glace-d', 'glace-g2', 'glace-d2']) {
+      if (glaces.includes(id) && !im.etat.zones[id]) fautes.push('Rétroviseurs incomplets : ' + id);
+      if (!glaces.includes(id) && im.etat.zones[id]) fautes.push('Toile de rétroviseur inattendue : ' + id);
+    }
     if (s.tunnel && o.j1?.abri !== true) fautes.push('Caméra non abritée dans le tunnel');
     if (s.saison === 'hiver' && !s.faune && !(o.j1?.neige > 0 && o.j1.pluie === 0)) fautes.push('Neige non distinguée de la pluie');
     if (candidat && !s.faune) {
