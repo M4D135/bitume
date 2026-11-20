@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "lot": "01-raccord-propose-00",
+  "statut": "neuf_tests_reussis_non_applique_au_jeu",
+  "base_jeu": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "commit_modules": "2f4bbd0cdb9cb031eef7b93ef5997279a4f75a1d",
+  "main_plus_recent_relu": "d230d8c6995e44d63b0a072fa3d6362d04a8e5ce",
+  "contrat_00_revision": 1,
+  "sources": {
+    "docs/reprise/PARALLELE-2026-11-20/raccordements/01-jeu.patch": "7bdc2db8fcb207ecd083756629fcf69c67716a884e868785f92073d2b2e9fe73",
+    "docs/reprise/PARALLELE-2026-11-20/raccordements/01-raccord.test.mjs": "cfff2d0f116cfe0a763413c0a541ebbb9da50f104984407334951cdead62302c"
+  },
+  "validation": {
+    "commande": "node docs/reprise/PARALLELE-2026-11-20/raccordements/01-raccord.test.mjs",
+    "tests": 9,
+    "reussis": 9,
+    "git_apply_check": true,
+    "node_check": true,
+    "base_appliquee_dans_dossier_temporaire": true,
+    "jeu_source_inchange": true,
+    "couverture": [
+      "choix locaux remappes sur les identifiants [3,7]",
+      "helper menu 03 ou repli reglages puis normalisation",
+      "actualiser puis consommation unique avant les vues",
+      "demande differee par rapport sans son premature",
+      "drainage hors ecran et audio absent ou refusant",
+      "spatialisation depuis le local le plus proche ou le sujet de demo",
+      "64 evenements simultanes et reutilisation des sorties"
+    ]
+  },
+  "reconciliation_03": "Les deux propositions touchent potentiellement apres S.locaux ; conserver un seul configurerTrollLocaux(S), avec choixTrollLocaux declare comme fonction accessible.",
+  "limites": [
+    "Proposition pour 00 seulement, aucun src/jeu.js partage modifie.",
+    "Extraction de fonctions reelles avec shell simule : aucun menu, navigateur ou build assemble qualifie.",
+    "Aucun transport ou recepteur reseau ajoute."
+  ]
+}

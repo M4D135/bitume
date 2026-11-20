@@ -1,0 +1,149 @@
+diff --git a/src/jeu.js b/src/jeu.js
+--- a/src/jeu.js
++++ b/src/jeu.js
+@@ -303,7 +303,9 @@
+       detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
+       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
+       real: demo ? B.realisateur.creer(graineCourse) : null, cinema: null, planVu: null, suivie: 0, enchaine: false,
+-      expressions: B.expressionsPilote ? B.expressionsPilote.creer(course.voitures.length, graineCourse) : null,
++      expressions: B.expressionsPilote ? B.expressionsPilote.creer(course.voitures.length, graineCourse, { ia: joue }) : null,
++      trollEvenement: { sequence: 0, pilote: -1, geste: null, klaxon: 'classique', instant: 0, cote: -1 },
++      trollAudio: { klaxon: 'classique', gain: 0, pan: 0 },
+       fx: B.traces.creer(course.voitures.length, graineCourse, course.physique.world),
+       // flammes et détonations d'échappement (lot 20) : hasard propre, tiré de la graine de la course
+       ech: B.echappement ? B.echappement.creer(course.voitures.length, graineCourse) : null,
+@@ -339,6 +341,7 @@
+       detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
+       suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null, animauxVue: null });
+     S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une, ou deux à l'écran partagé)
++    if (joue && S.expressions) configurerTrollLocaux(S);
+     if (joue) {
+       majPneusHUD(HUD1, course.voitures[S.locaux[0] ?? course.joueur.id].etat);
+       if (duo) majPneusHUD(HUD2, course.voitures[S.locaux[1] ?? course.joueur.id].etat);
+@@ -422,6 +425,18 @@
+   const doigt = { volant: 0, gaz: false, frein: false, derive: false, id: null, x0: 0 };
+   let analogique = false;
+   let relacherTactile = () => {};
++
++  // Les choix du menu sont copiés au départ, par place locale et non par identifiant de voiture.
++  // Le raccord 03 peut fournir choixTrollLocaux ; les réglages directs restent un repli autonome.
++  function configurerTrollLocaux(S) {
++    const X = B.expressionsPilote;
++    if (!S.expressions || !X?.configurer) return;
++    const choix = typeof choixTrollLocaux === 'function' ? choixTrollLocaux() : reglages.trollPilotes;
++    for (let n = 0; n < S.locaux.length; n++) {
++      const c = choix?.[n];
++      X.configurer(S.expressions, S.locaux[n], { geste: X.normaliserGeste(c?.geste), klaxon: X.normaliserKlaxon(c?.klaxon) });
++    }
++  }
+
+   // Un front de touche, de bouton ou un clic tactile : aucune répétition quand on maintient la commande.
+   // L'animation choisit sa variante et son côté sans toucher à l'état de conduite ni au hasard de la course.
+@@ -1660,17 +1675,23 @@
+   $('pr-reglages').addEventListener('click', () => { retirerPret(); retourReglages = 'prets'; aller('reglages'); });
+
+   // ---------------------------------------------------------------- caméras
+-  // Champ du cockpit : réglage en degrés horizontaux mesurés en 16:9 (60° par défaut, 36° verticaux). Plus large
+-  // que 16:9, le champ vertical est gardé ; plus étroit (fenêtre presque carrée, portrait), la diagonale du cadre de
+-  // référence 16:9 : garder tout le champ horizontal ouvrait 66° verticaux dans une fenêtre carrée, d'où des bras
+-  // interminables et une image déformée (David, 16/11 : « fov moins prononcé », « bras de 10 km »). Sur téléphone,
+-  // David demande un champ plus serré (16/11) : tangente réduite de 18 %. L'ouverture avec la vitesse est discrète
+-  // (5 %, 4 % sur téléphone). Le curseur reste mémorisé.
++  // Champ du cockpit : réglage horizontal en 16:9, sans modifier la préférence mémorisée. Le cadre étroit garde
++  // d'abord la diagonale de référence. L'habitacle étant désormais métrique et commun, il ne peut plus rapprocher
++  // ses glaces pour un téléphone : la projection s'ouvre seulement assez pour contenir les deux vrais montages.
++  // La discrète ouverture de vitesse demeure ; la position des yeux et la géométrie ne dépendent pas de l'écran.
++  const INCLINAISON_COCKPIT = -Math.PI / 60;
+   function champCockpit(aspect, v) {
+     const t = Math.tan(clamp(+reglages.champ || 60, 60, 105) * Math.PI / 360);
+     const tv = aspect < 16 / 9 ? Math.hypot(t, t / (16 / 9)) / Math.hypot(1, Math.max(.3, aspect)) : t / (16 / 9);
+     const portraitTelephone = estTactile && canvas.clientWidth <= 600 && aspect < 1;
+-    const vertical = 2 * Math.atan(tv * (portraitTelephone ? .82 : 1)) * 180 / Math.PI;
++    let tangente = tv * (portraitTelephone ? .82 : 1);
++    if (aspect < 16 / 9) {
++      const miroir = B.voiture.RETRO, oeil = B.voiture.OEIL;
++      const profondeur = Math.max(.1, miroir.x - oeil[0] - miroir.l * .5 * Math.abs(Math.sin(miroir.angle)));
++      const largeur = miroir.z + miroir.l * .5 + .01;
++      tangente = Math.max(tangente, largeur / profondeur / Math.max(.3, aspect));
++    }
++    const vertical = 2 * Math.atan(tangente) * 180 / Math.PI;
+     return clamp(vertical * (1 + (portraitTelephone ? .04 : .05) * clamp(v / 85, 0, 1)), 10, 110);
+   }
+   // La tête du pilote vit : elle part vers l'extérieur du virage et vers l'avant au freinage (2 cm au plus), le regard
+@@ -1685,7 +1706,7 @@
+     const vib = (et.surface === 'vibreur' ? .006 : et.surface === 'herbe' ? .004 * Math.min(1, et.v / 20) : 0) + .0011 * Math.pow(clamp(et.v / 85, 0, 1), 2);
+     return {
+       pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib * reglages.secousses, p.z + o[2]], yaw: p.cap + Math.PI / 2 + T.regard * .07,
+-      pitch: p.tangage * .85 + Math.min(0, T.lon) * .012, roll: -p.roulis * .85 + T.lat * .014,
++      pitch: p.tangage * .85 + INCLINAISON_COCKPIT + Math.min(0, T.lon) * .012, roll: -p.roulis * .85 + T.lat * .014,
+       fov: champCockpit(canvas.clientWidth / Math.max(1, canvas.clientHeight), et.v), near: .1, far: PORTEE_VUE
+     };
+   }
+@@ -2310,7 +2331,7 @@
+   // vue (J2, puis J1, puis leurs glaces) finit de s'en servir avant que la suivante les réécrive. Seize voitures au
+   // plus (onze rivaux, quatre humains) ; au-delà, les tableaux grandissent.
+   const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0, etatPneus: null,
+-    pilote: { volant: 0, rapport: 1, rapportAvant: 1, passage: 1, alat: 0, along: 0, v: 0, t: 0,
++    pilote: { volant: 0, rapport: 1, rapportAvant: 1, passage: 1, regime: 0, kmh: 0, alat: 0, along: 0, v: 0, t: 0,
+       regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0, passageVisuel: null } });
+   const nouvellesOptions = () => ({ detail: 'complet', roues: undefined, casse: false, plafond: 'complet', rouesDetail: 0 });
+   const POSES_RENDU = Array.from({ length: 16 }, nouvellePose), OPTIONS_POSE = Array.from({ length: 16 }, nouvellesOptions);
+@@ -2366,6 +2387,37 @@
+     return SUIVEURS;
+   }
+
++  // Un seul événement sonore pour chaque départ réel de geste, avant toute vue ou rétroviseur.
++  // Toujours vider la file, même si l'audio est absent/muet ou si un menu masque la séance.
++  // Les voix et tampons appartiennent à son.js ; ce raccord ne crée aucun contexte ni oscillateur.
++  function consommerTroll(S, poses) {
++    const X = B.expressionsPilote;
++    if (!S.expressions || !X?.consommerEvenement) return;
++    const evenement = S.trollEvenement, audio = S.trollAudio, demo = S.type === 'demo';
++    const audible = demo ? ecran === 'demo'
++      : ecran === 'course' && (S.type === 'course' || S.type === 'chrono' || S.type === 'duo');
++    while (X.consommerEvenement(S.expressions, evenement)) {
++      if (!audible || !son) continue;
++      const p = poses[evenement.pilote];
++      if (!p || !Number.isFinite(p.x) || !Number.isFinite(p.y) || !Number.isFinite(p.z)) continue;
++      let ecoute = null, distance2 = Infinity;
++      const nombre = demo ? 1 : S.locaux.length || 1;
++      for (let n = 0; n < nombre; n++) {
++        const id = demo ? S.suivie : S.locaux[n] ?? S.course.joueur.id;
++        const q = poses[id] || (demo ? poses[S.course.joueur.id] : null);
++        if (!q || !Number.isFinite(q.x) || !Number.isFinite(q.y) || !Number.isFinite(q.z) || !Number.isFinite(q.cap)) continue;
++        const dx = p.x - q.x, dy = p.y - q.y, dz = p.z - q.z, d2 = dx * dx + dy * dy + dz * dz;
++        if (d2 < distance2) { distance2 = d2; ecoute = q; }
++      }
++      if (!ecoute) continue;
++      const dx = p.x - ecoute.x, dz = p.z - ecoute.z, ca = Math.cos(ecoute.cap), sa = Math.sin(ecoute.cap);
++      audio.klaxon = evenement.klaxon;
++      audio.gain = B.son.gainDistance(Math.sqrt(distance2));
++      audio.pan = B.son.panoramique(Math.atan2(-dx * sa + dz * ca, dx * ca + dz * sa));
++      son.evenement('troll', audio);
++    }
++  }
++
+   function rendreImage(S, alpha, dtImage) {
+     appliquerCarte();
+     const co = S.course, j = co.joueur;
+@@ -2376,7 +2428,10 @@
+     // pris au dernier pas, ils avançaient par sauts de 1/120 s (à 144 Hz, une image sur six sans pas les figeait) et
+     // devançaient les voitures d'un pas au plus. La vue du joueur 2 hérite des deux valeurs (Object.create).
+     S.retardImage = (1 - alpha) * DT; S.tRendu = co.horloge - S.retardImage;
+-    if (S.expressions) B.expressionsPilote.actualiser(S.expressions, co, poses, S.tRendu, S.type === 'demo');
++    if (S.expressions) {
++      B.expressionsPilote.actualiser(S.expressions, co, poses, S.tRendu, S.type === 'demo');
++      consommerTroll(S, poses);
++    }
+     if (B.sillage) B.sillage.mettreAJour(S.sillage || (S.sillage = creationTardive('sillage', B.sillage.creer())), co.voitures, poses, co.c);
+     if (B.mesures.actif) {
+       let actives = 0;
+@@ -2612,6 +2667,8 @@
+       pilote.rapportAvant = voiture.rapportAvant === undefined ? etatPilote.rapport : voiture.rapportAvant;
+       pilote.passage = voiture.tPassage === undefined ? 1 : clamp((S.tRendu - voiture.tPassage) / .36, 0, 1);
+       pilote.alat = etatPilote.alat; pilote.along = etatPilote.along; pilote.v = etatPilote.v; pilote.t = S.tRendu;
++      // Les instruments appartiennent à la voiture : même mesure pour l'habitacle, les rivaux et les rétros.
++      pilote.regime = etatPilote.regime; pilote.kmh = B.conduite.kmh(etatPilote);
+       if (S.expressions) B.expressionsPilote.lire(S.expressions, k, pilote);
+       // Hystérésis propre à cette vue : ni la seconde moitié d'écran ni les deux miroirs ne la réécrivent.
+       const rouesDetail = S.detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos), tanDemi, hauteur, S.detailsRoues[k]);

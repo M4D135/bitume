@@ -2,28 +2,53 @@
   "schema": 1,
   "discussion": "01",
   "mission": "Pilote et Troll",
-  "statut": "habitacle_modules_qualifies_troll_suivant",
+  "statut": "sources_pilote_troll_qualifiees_raccord_00_requis",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/01-PILOTE-TROLL.md",
   "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p01-pilote-troll-20261120",
   "branche_reelle": "codex/bitume-p01-pilote-troll-20261120",
-  "head": "007970e5c8f2973ec3070462908fee48dbc0965d",
+  "head": "2f4bbd0cdb9cb031eef7b93ef5997279a4f75a1d",
   "pr": null,
-  "sous_lot": "H1-B4 clos pour modules ; Troll son/geste a raccorder",
+  "sous_lot": "H1-B4, T1 klaxons et T2 Troll clos au niveau modules ; raccord partage propose a 00",
   "preuves": [
-    "docs/reprise/PARALLELE-2026-11-20/preuves/01-habitacle.json"
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-habitacle.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-visuel-module.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-klaxons.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-raccord.json"
   ],
   "reserves": [
-    "Raccord camera/projection/instruments dans jeu.js a realiser par 00.",
-    "Qualification visuelle WebGL du jeu assemble reste a 00 ; capture module isolee en cours.",
-    "Physique p15 et FERRO inchanges ; aucun build commun."
+    "Raccord jeu.js camera/projection/instruments et consommation Troll propose, a integrer par 00 avec le menu 03.",
+    "Qualification WebGL du jeu assemble, paysage/portrait/duo/retroviseurs et audio reel reste a 00 ; captures isolees Canvas2D uniquement.",
+    "Transport des choix et evenements Troll en ligne non implemente dans ce lot ; aucune qualification entre machines.",
+    "Budget de cinq voix audio propose a 00 : quatre humains plus une IA ; tests modules reussis.",
+    "Matieres/shaders supplementaires soumis au budget et au raccord 00/02.",
+    "Physique p15, FERRO, versions, builds communs et main inchanges par 01."
   ],
-  "prochaine_action": "Implementer evenement Troll commun, choix par joueur, klaxons et reactions IA ; fournir raccords 00/03.",
+  "prochaine_action": "00 : reprendre la branche et rapprocher 01-jeu.patch de 03-menu.patch, appliquer le test camera sauvegarde, qualifier le jeu assemble et le raccord en ligne ; ne pas rejouer les anciennes preparations sur ces sources.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "preparations_portables": [
     "docs/reprise/PARALLELE-2026-11-20/preparations/habitacle.patch",
     "docs/reprise/PARALLELE-2026-11-20/preparations/audio-troll.patch"
   ],
-  "preparations_statut": "habitacle_repris_dans_perimetre_01_audio_conserve_pour_sous_lot_suivant",
-  "head_semantique": "Dernier commit connu lors de cette ecriture ; HEAD courant via la branche."
+  "preparations_statut": "habitacle_et_audio_repris_dans_perimetre_01_qualifies_et_pousses",
+  "head_semantique": "Dernier commit publie verifie lors de cette ecriture ; head_sources fige les sources qualifiees. Le commit documentaire courant est un descendant a lire sur la branche.",
+  "head_sources": "2f4bbd0cdb9cb031eef7b93ef5997279a4f75a1d",
+  "main_plus_recent_relu": "d230d8c6995e44d63b0a072fa3d6362d04a8e5ce",
+  "raccordements": [
+    "docs/reprise/PARALLELE-2026-11-20/raccordements/01.md",
+    "docs/reprise/PARALLELE-2026-11-20/raccordements/01-jeu.patch",
+    "docs/reprise/PARALLELE-2026-11-20/raccordements/01-raccord.test.mjs"
+  ],
+  "validation": {
+    "suites_habitacle": 11,
+    "troll_tests": 20,
+    "expressions_historiques_tests": 11,
+    "audio_controles": 25,
+    "raccord_tests": 9,
+    "images_module_canvas2d": 16,
+    "poses_allocations": 60000,
+    "octets_par_pose": 1.052,
+    "gc_mineurs": 0
+  }
 }
