@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "statut": "acquisition_complementaire_metadonnees_sans_nouvelle_grille",
+  "acquisition": {
+    "url": "https://data.geopf.fr/wfs/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=IGNF_LIDAR-HD_METADONNEE%3Ametadata&bbox=5.3658%2C43.2906%2C5.3810%2C43.3018%2Curn%3Aogc%3Adef%3Acrs%3AOGC%3A%3ACRS84&outputFormat=application%2Fjson&srsName=urn%3Aogc%3Adef%3Acrs%3AOGC%3A%3ACRS84",
+    "method": "GET",
+    "parameters": {
+      "service": "WFS",
+      "version": "2.0.0",
+      "request": "GetFeature",
+      "typeNames": "IGNF_LIDAR-HD_METADONNEE:metadata",
+      "bbox": "5.3658,43.2906,5.3810,43.3018,urn:ogc:def:crs:OGC::CRS84",
+      "outputFormat": "application/json",
+      "srsName": "urn:ogc:def:crs:OGC::CRS84"
+    },
+    "requestedAtUtc": "2026-11-20T17:10:00.973720+00:00",
+    "newAcquisition": true,
+    "source": "IGN WFS LiDAR HD metadata",
+    "status": 200,
+    "headers": {
+      "date": "Fri, 20 Nov 2026 17:10:07 GMT",
+      "content-type": "application/json;charset=UTF-8"
+    },
+    "bytes": 7620,
+    "sha256": "0234a3a3825609bff96f046d6ec97e02c9786169e1ba3d8f499c1f8583ba13c7",
+    "numberMatched": 4,
+    "numberReturned": 4,
+    "featureCount": 4
+  },
+  "fichier": "sources/metadonnees-20261120/lidar-tiles.geojson",
+  "licence": "Licence Ouverte 2.0",
+  "licence_source_url": "https://www.data.gouv.fr/datasets/mnt-lidar-hd",
+  "attribution": "© IGN — métadonnées LiDAR HD acquises le 20 novembre 2026 ; Licence Ouverte 2.0. Géographie EMPRISE : © les contributeurs d’OpenStreetMap, ODbL 1.0.",
+  "entrees_historiques": [
+    {
+      "fichier": "sources.json",
+      "octets": 9649,
+      "sha256": "ded44397e0cac77d43d296ec8b56facda2bb7b2a7b0de03a6140b99d1df8eb66"
+    },
+    {
+      "fichier": "coeur.json",
+      "octets": 1993967,
+      "sha256": "b7f1155fdc9e4aadb011bd397cd2f63f4eedbec3036dacd8453a428671a4a1e4"
+    },
+    {
+      "fichier": "inventaire.json",
+      "octets": 2592842,
+      "sha256": "29e2eb9ae9e8b4cbbf501ebf1fa6af4f5b0f19b71ac82c6937f4bee86c83be2d"
+    },
+    {
+      "fichier": "grille.json",
+      "octets": 644537,
+      "sha256": "d4b1e7c9148a5db816e4ec88e5d41f7dfd85d8cbe30a53e1f0a2d2c7283d2bfd"
+    },
+    {
+      "fichier": "qualification.json",
+      "octets": 9082,
+      "sha256": "46e0aec7f7758e88e86fd2f3eb8f8755c8751f3c633b2209243f1d4c0c453c7c"
+    }
+  ],
+  "regles": [
+    "Rattachement spatial aux emprises de dalles, pas traçabilité individuelle API vers dalle prouvée.",
+    "Date du vol conservée comme intervalle brut, distincte des dates de publication et de téléchargement.",
+    "Aucune altitude routière, largeur, dévers ou portail déduit des métadonnées terrain.",
+    "Bbox contradictoire du descriptif de ressource historique conservée ; cause non établie."
+  ]
+}

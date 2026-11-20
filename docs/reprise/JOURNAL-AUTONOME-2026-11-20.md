@@ -479,3 +479,9 @@ Le reçu `PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json` et l'état
 actualisent cette publication. Les checkpoints 01/03 et le moteur P1 restent à
 qualifier ; les livraisons attendues par rôle sont consignées. Reprendre par une
 lecture des têtes/états, sans attente en boucle ni réapplication des préparations.
+
+## 029 — réception des sources 05 et préparation de l'assemblage
+
+Les trois jalons de sources Monaco/Marseille sont reçus depuis fa29088. La CI44783388788 est réussie sur le code d638652 ; seules trois clôtures documentaires suivent. Les trois suites sources ont été rejouées dans l'assemblage sans modifier le runtime0.2.68/p15/FERRO0.3.15. Les inconnues et les statuts non jouables sont conservés.
+
+Les PR41 (pilote/Troll) et40 (menu) sont maintenant recevables pour raccordement par00. Le jalon saisonsS1 6cbfa7e est retenu, hors M1 pierres en cours. Les tests de raccord des branches vérifient leurs bases temporaires, pas encore le futur jeu.js assemblé ; ils seront adaptés au fichier réellement intégré avant qualification. Aucun nouveau moteur FERRO qualifié : ne pas importer P1.

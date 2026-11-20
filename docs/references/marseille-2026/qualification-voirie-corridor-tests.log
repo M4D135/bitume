@@ -1,0 +1,14 @@
+✔ 305 objets sources conservés avec leurs propriétés ; aucune acquisition close réécrite (294.239651ms)
+✔ treize polylignes EMPRISE exactes, douze raccords, ouverture et inconnus routiers conservés (13.382224ms)
+✔ repère Marseille vérifié indépendamment : X est, Z sud, aucun réemploi de la projection Monaco (12.630805ms)
+✔ Pas de Z/9999, liaisons maritimes et fictifs exclus ; largeurs brutes jamais divisées (2.669188ms)
+✔ tunnels : huit extrémités, jonction triple et variations Z signalées sans portail inventé (3.993617ms)
+✔ captures altérées, tronquées, faux datum et raccords cassés refusés sans écriture ; --check reproductible (962.502621ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1386.382179

@@ -2,29 +2,30 @@
   "schema": 1,
   "discussion": "00",
   "mission": "Integration",
-  "statut": "inventaire_contrats_et_P0_02_publies_sur_main",
+  "statut": "sources_05_integrees_candidat_runtime_suivant",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/00-INTEGRATION.md",
-  "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "base_main": "d230d8c6995e44d63b0a072fa3d6362d04a8e5ce",
   "branche_proposee": "codex/bitume-p00-integration-20261120",
-  "branche_reelle": "codex/bitume-p00-integration-20261120",
+  "branche_reelle": "codex/bitume-p00-assemblage-20261120",
   "head": "a8a6435c529fe326e9f26124f25ba0911d3b70fb",
   "pr": null,
-  "sous_lot": "00A_inventaire_contrats_et_reception_02_P0",
+  "sous_lot": "00B_reception_sources_05",
   "preuves": [
     "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
     "docs/reprise/PARALLELE-2026-11-20/rapports/00-QUALIFICATION-DOCUMENTAIRE.json",
     "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
     "docs/reprise/PARALLELE-2026-11-20/rapports/02-P0-INVENTAIRE.md",
-    "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json"
+    "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/00-RECEPTION-05.json"
   ],
   "reserves": [
-    "01/03 publiés comme checkpoints non qualifiés ; 02/P0 documentaire retenu, P1 non qualifié ; 04/05 sans branche au relevé. Des travaux locaux peuvent continuer.",
-    "Quatre préparations portables conservées, non qualifiées pour le runtime.",
-    "Menu préparé sans raccord jeu.js : bouton de départ caché, parcours non qualifié.",
-    "Troll : événements acceptés, voix audio et raccord réseau encore à livrer.",
-    "FPS Xbox/Intel, manettes/audio réels et réseau entre machines non qualifiés."
+    "01/03 recevables pour assemblage, pas pour fusion brute : raccords jeu.js et build commun necessaires.",
+    "04 S1 qualifie au niveau modules/captures ; assembler 6cbfa7e uniquement. M1 pierres exclu.",
+    "02 P0 deja integre ; aucune nouvelle version FERRO qualifiee.",
+    "Sources Monaco/Marseille completees ; mesures encore inconnues, circuits non jouables.",
+    "FPS Xbox/Intel, manettes/audio reels et reseau entre machines non qualifies."
   ],
-  "prochaine_action": "À la prochaine reprise 00, relire les branches/PR et états distants ; intégrer le premier petit lot indépendant prêt selon raccordements/00.md. Aucune attente en boucle.",
+  "prochaine_action": "Assembler PR41 pilote/Troll, PR40 menu et le seul jalon saisons S1 6cbfa7e ; conserver FERRO0.3.15, exclure M1 pierres non qualifie.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "base_main_preparation": "d8f02cae45443ae6a1120dc93125d8adfae94422",
   "base_tree": "409499e1631489b667f34bf83e37682cd18657ae",
@@ -39,10 +40,23 @@
       "runtime_modifie": false,
       "statut": "publie_sur_main",
       "commit_integration": "a8a6435c529fe326e9f26124f25ba0911d3b70fb"
+    },
+    {
+      "discussion": "05",
+      "lot": "05A_05B_05C_sources",
+      "head": "fa290886089a650981c688ebaac893159912a62b",
+      "tete_code_qualifiee": "d6386526e877c1e590c8a4d10f22cd2fd86c8e76",
+      "runtime_modifie": false,
+      "statut": "recu_controle_pour_publication",
+      "ci_run": 44783388788,
+      "ci_conclusion": "success"
     }
   ],
   "lots_prets_observes": [
-    "02/P0_documentaire"
+    "05_sources",
+    "01_modules_pilote_troll",
+    "03_menu",
+    "04_S1_saisons"
   ],
   "releve_utc": "2026-11-20 17:10:00 UTC",
   "contrat_revision": 1,
@@ -69,7 +83,10 @@
     "04": "Matrice neuf circuits × quatre saisons, preuves Route-des-Cimes, invariants graines/climat/physique/budgets.",
     "05": "Sources routières Monaco/Marseille avec provenance, niveaux/datum/incertitudes ; aucun nouveau circuit jouable."
   },
-  "lots_runtime_prets_observes": [],
+  "lots_runtime_prets_observes": [
+    "01_et_03_avec_raccords_00",
+    "04_S1_sans_M1"
+  ],
   "relecture_consignee_utc": "2026-11-20 17:15:12 UTC",
   "checkpoints_observes": [
     {

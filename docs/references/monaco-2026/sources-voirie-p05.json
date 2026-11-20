@@ -1,0 +1,244 @@
+{
+  "format": "bitume-monaco-road-sources",
+  "version": 1,
+  "readyForRuntime": false,
+  "purpose": "Confronter les axes routiers BD TOPO aux points prioritaires, sans affecter une cote ou une limite de piste.",
+  "baseMain": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "sources": [
+    {
+      "id": "bdtopo-mirabeau-bas",
+      "file": "sources/voirie-p05-20261120/mirabeau-bas.geojson",
+      "url": "https://data.geopf.fr/wfs/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=BDTOPO_V3%3Atroncon_de_route&BBOX=7.4289545%2C43.7405808%2C7.4296672%2C43.7411054%2CEPSG%3A4326&COUNT=200&OUTPUTFORMAT=application%2Fjson&SRSNAME=EPSG%3A4326&PROPERTYNAME=geometrie%2Ccleabs%2Cnature%2Cnom_collaboratif_gauche%2Cnom_collaboratif_droite%2Cposition_par_rapport_au_sol%2Cdate_creation%2Cdate_modification%2Cdate_d_apparition%2Cdate_de_confirmation%2Cmethode_d_acquisition_altimetrique%2Cprecision_altimetrique%2Cprecision_planimetrique%2Clargeur_de_chaussee%2Cnombre_de_voies%2Cfictif%2Cetat_de_l_objet%2Csens_de_circulation",
+      "method": "GET",
+      "parameters": {
+        "SERVICE": "WFS",
+        "VERSION": "2.0.0",
+        "REQUEST": "GetFeature",
+        "TYPENAMES": "BDTOPO_V3:troncon_de_route",
+        "BBOX": "7.4289545,43.7405808,7.4296672,43.7411054,EPSG:4326",
+        "COUNT": 200,
+        "OUTPUTFORMAT": "application/json",
+        "SRSNAME": "EPSG:4326",
+        "PROPERTYNAME": "geometrie,cleabs,nature,nom_collaboratif_gauche,nom_collaboratif_droite,position_par_rapport_au_sol,date_creation,date_modification,date_d_apparition,date_de_confirmation,methode_d_acquisition_altimetrique,precision_altimetrique,precision_planimetrique,largeur_de_chaussee,nombre_de_voies,fictif,etat_de_l_objet,sens_de_circulation"
+      },
+      "acquiredUtc": "2026-11-20T17:10:35.537672+00:00",
+      "httpStatus": 200,
+      "responseHeaders": {
+        "Date": "Fri, 20 Nov 2026 17:10:35 GMT",
+        "Content-Type": "application/json;charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": null
+      },
+      "bytes": 5922,
+      "sha256": "84b0af540ab08f1ff3d3c1d609df428d02cbf52b7a0821ae4cda5f807d1138cc",
+      "numberMatched": 6,
+      "numberReturned": 6,
+      "responseTimeStamp": "2026-11-20T17:10:35.475Z",
+      "targetPointIndices": [
+        194,
+        195
+      ],
+      "bbox": [
+        7.4289545,
+        43.7405808,
+        7.4296672,
+        43.7411054
+      ],
+      "license": "Licence Ouverte 2.0",
+      "horizontalCoordinateOrder": "longitude,latitude",
+      "individualMeasurementDate": null,
+      "verticalDatum": null,
+      "noDataZValues": [],
+      "featureKind": "road_axis"
+    },
+    {
+      "id": "bdtopo-portier",
+      "file": "sources/voirie-p05-20261120/portier.geojson",
+      "url": "https://data.geopf.fr/wfs/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=BDTOPO_V3%3Atroncon_de_route&BBOX=7.4296819%2C43.7408231%2C7.4306028%2C43.7413404%2CEPSG%3A4326&COUNT=200&OUTPUTFORMAT=application%2Fjson&SRSNAME=EPSG%3A4326&PROPERTYNAME=geometrie%2Ccleabs%2Cnature%2Cnom_collaboratif_gauche%2Cnom_collaboratif_droite%2Cposition_par_rapport_au_sol%2Cdate_creation%2Cdate_modification%2Cdate_d_apparition%2Cdate_de_confirmation%2Cmethode_d_acquisition_altimetrique%2Cprecision_altimetrique%2Cprecision_planimetrique%2Clargeur_de_chaussee%2Cnombre_de_voies%2Cfictif%2Cetat_de_l_objet%2Csens_de_circulation",
+      "method": "GET",
+      "parameters": {
+        "SERVICE": "WFS",
+        "VERSION": "2.0.0",
+        "REQUEST": "GetFeature",
+        "TYPENAMES": "BDTOPO_V3:troncon_de_route",
+        "BBOX": "7.4296819,43.7408231,7.4306028,43.7413404,EPSG:4326",
+        "COUNT": 200,
+        "OUTPUTFORMAT": "application/json",
+        "SRSNAME": "EPSG:4326",
+        "PROPERTYNAME": "geometrie,cleabs,nature,nom_collaboratif_gauche,nom_collaboratif_droite,position_par_rapport_au_sol,date_creation,date_modification,date_d_apparition,date_de_confirmation,methode_d_acquisition_altimetrique,precision_altimetrique,precision_planimetrique,largeur_de_chaussee,nombre_de_voies,fictif,etat_de_l_objet,sens_de_circulation"
+      },
+      "acquiredUtc": "2026-11-20T17:10:39.513383+00:00",
+      "httpStatus": 200,
+      "responseHeaders": {
+        "Date": "Fri, 20 Nov 2026 17:10:39 GMT",
+        "Content-Type": "application/json;charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": null
+      },
+      "bytes": 14325,
+      "sha256": "1b50a44973c05296f9f3d3a1e347c359b7d5c134253386b699ba710a67dac55d",
+      "numberMatched": 17,
+      "numberReturned": 17,
+      "responseTimeStamp": "2026-11-20T17:10:39.409Z",
+      "targetPointIndices": [
+        206,
+        207,
+        208,
+        209,
+        210,
+        211
+      ],
+      "bbox": [
+        7.4296819,
+        43.7408231,
+        7.4306028,
+        43.7413404
+      ],
+      "license": "Licence Ouverte 2.0",
+      "horizontalCoordinateOrder": "longitude,latitude",
+      "individualMeasurementDate": null,
+      "verticalDatum": null,
+      "noDataZValues": [],
+      "featureKind": "road_axis"
+    },
+    {
+      "id": "bdtopo-tabac-quais",
+      "file": "sources/voirie-p05-20261120/tabac-quais.geojson",
+      "url": "https://data.geopf.fr/wfs/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=BDTOPO_V3%3Atroncon_de_route&BBOX=7.421616%2C43.7362107%2C7.4236782%2C43.737151%2CEPSG%3A4326&COUNT=200&OUTPUTFORMAT=application%2Fjson&SRSNAME=EPSG%3A4326&PROPERTYNAME=geometrie%2Ccleabs%2Cnature%2Cnom_collaboratif_gauche%2Cnom_collaboratif_droite%2Cposition_par_rapport_au_sol%2Cdate_creation%2Cdate_modification%2Cdate_d_apparition%2Cdate_de_confirmation%2Cmethode_d_acquisition_altimetrique%2Cprecision_altimetrique%2Cprecision_planimetrique%2Clargeur_de_chaussee%2Cnombre_de_voies%2Cfictif%2Cetat_de_l_objet%2Csens_de_circulation",
+      "method": "GET",
+      "parameters": {
+        "SERVICE": "WFS",
+        "VERSION": "2.0.0",
+        "REQUEST": "GetFeature",
+        "TYPENAMES": "BDTOPO_V3:troncon_de_route",
+        "BBOX": "7.421616,43.7362107,7.4236782,43.737151,EPSG:4326",
+        "COUNT": 200,
+        "OUTPUTFORMAT": "application/json",
+        "SRSNAME": "EPSG:4326",
+        "PROPERTYNAME": "geometrie,cleabs,nature,nom_collaboratif_gauche,nom_collaboratif_droite,position_par_rapport_au_sol,date_creation,date_modification,date_d_apparition,date_de_confirmation,methode_d_acquisition_altimetrique,precision_altimetrique,precision_planimetrique,largeur_de_chaussee,nombre_de_voies,fictif,etat_de_l_objet,sens_de_circulation"
+      },
+      "acquiredUtc": "2026-11-20T17:10:42.917904+00:00",
+      "httpStatus": 200,
+      "responseHeaders": {
+        "Date": "Fri, 20 Nov 2026 17:10:42 GMT",
+        "Content-Type": "application/json;charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": null
+      },
+      "bytes": 16857,
+      "sha256": "6b3980e8cc4273ee02de588fed0141638effca617eab6f4a1f01a7bb8c1e5412",
+      "numberMatched": 17,
+      "numberReturned": 17,
+      "responseTimeStamp": "2026-11-20T17:10:42.812Z",
+      "targetPointIndices": [
+        278,
+        279,
+        280,
+        281,
+        282,
+        283,
+        284,
+        285,
+        286,
+        287,
+        288,
+        289
+      ],
+      "bbox": [
+        7.421616,
+        43.7362107,
+        7.4236782,
+        43.737151
+      ],
+      "license": "Licence Ouverte 2.0",
+      "horizontalCoordinateOrder": "longitude,latitude",
+      "individualMeasurementDate": null,
+      "verticalDatum": null,
+      "noDataZValues": [],
+      "featureKind": "road_axis"
+    },
+    {
+      "file": "sources/bdtopo-20261120/sonde-louis-ii.geojson",
+      "url": "https://data.geopf.fr/wfs/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=BDTOPO_V3%3Atroncon_de_route&BBOX=7.4284%2C43.7386%2C7.4292%2C43.7393%2CEPSG%3A4326&COUNT=30&OUTPUTFORMAT=application%2Fjson&SRSNAME=EPSG%3A4326&PROPERTYNAME=geometrie%2Ccleabs%2Cnature%2Cnom_collaboratif_gauche%2Cposition_par_rapport_au_sol%2Cdate_creation%2Cdate_modification%2Cdate_d_apparition%2Cdate_de_confirmation%2Cmethode_d_acquisition_altimetrique%2Cprecision_altimetrique%2Cprecision_planimetrique%2Clargeur_de_chaussee",
+      "acquiredUtc": "2026-11-20T08:53:15.535256+00:00",
+      "httpStatus": 200,
+      "httpDate": null,
+      "bytes": 6210,
+      "sha256": "b9e7772adf67f51af2707b380e3b2da5532cfa1794f3886f2c868f5664702177",
+      "numberMatched": 7,
+      "numberReturned": 7,
+      "responseTimeStamp": "2026-11-20T08:53:15.461Z",
+      "id": "bdtopo-louis-ii-sonde-conservee",
+      "method": "GET",
+      "license": "Licence Ouverte 2.0",
+      "horizontalCoordinateOrder": "longitude,latitude",
+      "individualMeasurementDate": null,
+      "verticalDatum": null,
+      "noDataZValues": [],
+      "reuse": "Acquisition conservee, non telechargee de nouveau.",
+      "featureKind": "road_axis"
+    },
+    {
+      "url": "https://data.geopf.fr/wfs/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=BDTOPO_V3%3Aconstruction_lineaire&BBOX=7.421766%2C43.7362607%2C7.4305639%2C43.7412904%2CEPSG%3A4326&COUNT=100&OUTPUTFORMAT=application%2Fjson&SRSNAME=EPSG%3A4326",
+      "acquiredUtc": "2026-11-20T17:11:32.291406+00:00",
+      "httpStatus": 200,
+      "httpDate": "Fri, 20 Nov 2026 17:11:32 GMT",
+      "bytes": 28391,
+      "sha256": "13fdbd7db3b7c6b834ff2926721461f5d662cfc30ff5ac5801d2d979cbc10601",
+      "parameters": {
+        "SERVICE": "WFS",
+        "VERSION": "2.0.0",
+        "REQUEST": "GetFeature",
+        "TYPENAMES": "BDTOPO_V3:construction_lineaire",
+        "BBOX": "7.421766,43.7362607,7.4305639,43.7412904,EPSG:4326",
+        "COUNT": 100,
+        "OUTPUTFORMAT": "application/json",
+        "SRSNAME": "EPSG:4326"
+      },
+      "id": "bdtopo-galeries",
+      "file": "sources/voirie-p05-20261120/constructions-prioritaires.geojson",
+      "method": "GET",
+      "numberMatched": 30,
+      "numberReturned": 30,
+      "responseTimeStamp": "2026-11-20T17:11:32.102Z",
+      "license": "Licence Ouverte 2.0",
+      "horizontalCoordinateOrder": "longitude,latitude",
+      "individualMeasurementDate": null,
+      "verticalDatum": null,
+      "noDataZValues": [],
+      "featureKind": "tunnel_axis",
+      "selection": "Conserver tous les objets sources, interpreter uniquement nature Tunnel."
+    }
+  ],
+  "interpretationReferences": [
+    {
+      "id": "ign-bdtopo-35",
+      "url": "https://data.geopf.fr/annexes/ressources/documentation/DC_BDTOPO_3-5.pdf",
+      "revision": "2026-07",
+      "sections": [
+        "pp.14-15,31: precisions estimees et absence de Z (9999, Pas de Z)",
+        "pp.21-23: dates informatiques et dates dexistence distinctes",
+        "p.27: methode BDTopo historique",
+        "pp.90-91: voie et galerie, extremites de galerie ; exception sous dalle/batiment",
+        "pp.367,370: position au sol ordinale",
+        "p.372: largeur indicative de chaussee"
+      ],
+      "limitation": "Reference de classe ; ni leve individuel ni date du releve.",
+      "bytes": 5608070,
+      "sha256": "0542356dcf921bff5263043fe2af288a018d61d8e0f4d750005142f09cdb7331",
+      "archivedInRuntime": false
+    }
+  ],
+  "screening": {
+    "radiusM": 30,
+    "radiusIsSurveyAccuracy": false,
+    "purpose": "Liste des candidats proches en plan, sans choix automatique de voie ou de niveau."
+  },
+  "unresolved": [
+    "Correspondance de voie/niveau avec le parcours 2026",
+    "Datum individuel et date de mesure de chaque axe",
+    "Limites FIA et largeurs gauche/droite",
+    "Devers mesure",
+    "Portails reels et gabarit"
+  ]
+}

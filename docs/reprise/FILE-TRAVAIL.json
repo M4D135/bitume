@@ -489,5 +489,10 @@
       "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json",
       "runtime_modifie": false
     }
+  },
+  "reception_sources_05": {
+    "head": "fa290886089a650981c688ebaac893159912a62b",
+    "runtime_modifie": false,
+    "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-RECEPTION-05.json"
   }
 }

@@ -9,12 +9,12 @@
     "lot": "00A_inventaire_contrats_et_reception_02_P0",
     "fiche": "docs/reprise/PARALLELE-2026-11-20/00-INTEGRATION.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "028",
-    "prochaine_action": "À la prochaine reprise 00, relire les branches/PR et états distants ; intégrer le premier petit lot indépendant prêt selon raccordements/00.md. Aucune attente en boucle.",
+    "derniere_entree": "029",
+    "prochaine_action": "Coordination00 : assembler pilote/Troll, menu et saisonsS1 qualifies localement ; construire et qualifier le candidat commun.",
     "dernier_lot_clos": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
-    "entree_journal": "028",
+    "entree_journal": "029",
     "dernieres_demandes": "docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md",
@@ -575,5 +575,28 @@
     "gouttes_vitesse_avant_0268": "Transport partiellement descendant renforcé par vitesse ; pas de flux relatif projeté caméra pour les dépôts. Direction et couches à corriger/qualifier selon E0-E3.",
     "publication_eau_png_avant_complement": 113,
     "catalogue_jouables_avant_cimes": 8
+  },
+  "coordination_00_sources_05": {
+    "base_main": "d230d8c6995e44d63b0a072fa3d6362d04a8e5ce",
+    "lot": "05A_05B_05C",
+    "head": "fa290886089a650981c688ebaac893159912a62b",
+    "tete_code": "d6386526e877c1e590c8a4d10f22cd2fd86c8e76",
+    "fichiers_importes": 33,
+    "ci": {
+      "run": 44783388788,
+      "conclusion": "success",
+      "head": "d6386526e877c1e590c8a4d10f22cd2fd86c8e76"
+    },
+    "tests_cibles": [
+      "monaco-voirie",
+      "marseille-metadonnees",
+      "marseille-voirie"
+    ],
+    "runtime_modifie": false,
+    "version": "0.2.68",
+    "physique": "p15",
+    "ferro": "0.3.15",
+    "nouveaux_circuits_jouables": false,
+    "regle": "Les trois fichiers de cloture apres le SHA qualifie sont documentaires ; sources et outils qualifies conserves exactement."
   }
 }

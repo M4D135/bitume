@@ -1,0 +1,23 @@
+{
+  "base_main": "d230d8c6995e44d63b0a072fa3d6362d04a8e5ce",
+  "lot": "05A_05B_05C",
+  "head": "fa290886089a650981c688ebaac893159912a62b",
+  "tete_code": "d6386526e877c1e590c8a4d10f22cd2fd86c8e76",
+  "fichiers_importes": 33,
+  "ci": {
+    "run": 44783388788,
+    "conclusion": "success",
+    "head": "d6386526e877c1e590c8a4d10f22cd2fd86c8e76"
+  },
+  "tests_cibles": [
+    "monaco-voirie",
+    "marseille-metadonnees",
+    "marseille-voirie"
+  ],
+  "runtime_modifie": false,
+  "version": "0.2.68",
+  "physique": "p15",
+  "ferro": "0.3.15",
+  "nouveaux_circuits_jouables": false,
+  "regle": "Les trois fichiers de cloture apres le SHA qualifie sont documentaires ; sources et outils qualifies conserves exactement."
+}

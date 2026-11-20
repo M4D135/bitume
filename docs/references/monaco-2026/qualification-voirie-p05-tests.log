@@ -1,0 +1,17 @@
+✔ captures conservees, 49 priorites et intervalle non tague sans decision routiere (357.07821ms)
+✔ interpolation de revue : deux voies superposees gardent deux Z, jamais une profondeur par niveau (78.856372ms)
+✔ Z absents/sentinelles/Pas de Z exclus ; valeurs negatives valides conservees (88.647136ms)
+✔ portails de galerie, localisateurs et doublons de classes ne sont pas des observations independantes (3.299514ms)
+✔ variation Z source Louis II conservee et signalee, sans correction ni pente de jeu (1.907113ms)
+✔ segment vertical de longueur horizontale nulle signale et jamais interpole (71.54195ms)
+✔ reponses tronquees, CRS change, doublons, faux datum/date refusent avant ecriture (1988.637676ms)
+✔ capture alteree et sortie --check divergente : aucune reparation silencieuse (952.054082ms)
+✔ sorties et sources restent confinees dans le dossier demande (511.464426ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4288.905982

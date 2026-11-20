@@ -1,0 +1,251 @@
+{
+  "format": "bitume-marseille-road-sources",
+  "version": 1,
+  "readyForRuntime": false,
+  "sourceEmpriseCommit": "cc004826a506e6979eaaec217748fe85d5cd6ac5",
+  "purpose": "Corridor ouvert de reconnaissance et inventaire voirie/ouvrages ; aucun circuit choisi ni profil routier produit.",
+  "historicInputs": [
+    {
+      "file": "sources.json",
+      "bytes": 9649,
+      "sha256": "ded44397e0cac77d43d296ec8b56facda2bb7b2a7b0de03a6140b99d1df8eb66"
+    },
+    {
+      "file": "coeur.json",
+      "bytes": 1993967,
+      "sha256": "b7f1155fdc9e4aadb011bd397cd2f63f4eedbec3036dacd8453a428671a4a1e4"
+    },
+    {
+      "file": "inventaire.json",
+      "bytes": 2592842,
+      "sha256": "29e2eb9ae9e8b4cbbf501ebf1fa6af4f5b0f19b71ac82c6937f4bee86c83be2d"
+    },
+    {
+      "file": "grille.json",
+      "bytes": 644537,
+      "sha256": "d4b1e7c9148a5db816e4ec88e5d41f7dfd85d8cbe30a53e1f0a2d2c7283d2bfd"
+    },
+    {
+      "file": "qualification.json",
+      "bytes": 9082,
+      "sha256": "46e0aec7f7758e88e86fd2f3eb8f8755c8751f3c633b2209243f1d4c0c453c7c"
+    }
+  ],
+  "corridorSelection": [
+    [
+      970,
+      1
+    ],
+    [
+      1017,
+      -1
+    ],
+    [
+      1016,
+      1
+    ],
+    [
+      715,
+      1
+    ],
+    [
+      719,
+      1
+    ],
+    [
+      677,
+      1
+    ],
+    [
+      673,
+      1
+    ],
+    [
+      668,
+      1
+    ],
+    [
+      642,
+      1
+    ],
+    [
+      633,
+      1
+    ],
+    [
+      631,
+      1
+    ],
+    [
+      489,
+      1
+    ],
+    [
+      477,
+      1
+    ]
+  ],
+  "query": {
+    "marginM": 50,
+    "marginIsSurveyAccuracy": false,
+    "localBoundsXZ": [
+      -660,
+      -68.5,
+      147.4000015258789,
+      480.20001220703125
+    ],
+    "bboxLonLat": [
+      5.365266732,
+      43.29187771,
+      5.37521643,
+      43.29681657
+    ]
+  },
+  "sources": [
+    {
+      "id": "bdtopo-quais",
+      "url": "https://data.geopf.fr/wfs/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=BDTOPO_V3%3Atroncon_de_route&BBOX=5.365266732%2C43.29187771%2C5.37521643%2C43.29681657%2CEPSG%3A4326&COUNT=500&OUTPUTFORMAT=application%2Fjson&SRSNAME=EPSG%3A4326&PROPERTYNAME=geometrie%2Ccleabs%2Cnature%2Cnom_collaboratif_gauche%2Cnom_collaboratif_droite%2Cposition_par_rapport_au_sol%2Cdate_creation%2Cdate_modification%2Cdate_d_apparition%2Cdate_de_confirmation%2Cmethode_d_acquisition_altimetrique%2Cprecision_altimetrique%2Cprecision_planimetrique%2Clargeur_de_chaussee%2Cnombre_de_voies%2Cfictif%2Cetat_de_l_objet%2Csens_de_circulation",
+      "method": "GET",
+      "parameters": {
+        "SERVICE": "WFS",
+        "VERSION": "2.0.0",
+        "REQUEST": "GetFeature",
+        "TYPENAMES": "BDTOPO_V3:troncon_de_route",
+        "BBOX": "5.365266732,43.29187771,5.37521643,43.29681657,EPSG:4326",
+        "COUNT": 500,
+        "OUTPUTFORMAT": "application/json",
+        "SRSNAME": "EPSG:4326",
+        "PROPERTYNAME": "geometrie,cleabs,nature,nom_collaboratif_gauche,nom_collaboratif_droite,position_par_rapport_au_sol,date_creation,date_modification,date_d_apparition,date_de_confirmation,methode_d_acquisition_altimetrique,precision_altimetrique,precision_planimetrique,largeur_de_chaussee,nombre_de_voies,fictif,etat_de_l_objet,sens_de_circulation"
+      },
+      "requestedUtc": "2026-11-20T17:19:37.556556+00:00",
+      "bbox": [
+        5.365266732,
+        43.29187771,
+        5.37521643,
+        43.29681657
+      ],
+      "countLimit": 500,
+      "horizontalCoordinateOrder": "longitude,latitude",
+      "individualMeasurementDate": null,
+      "verticalDatum": null,
+      "noDataZValues": [],
+      "featureKind": "road_axis",
+      "file": "sources/voirie-p05-20261120/bdtopo-quais.geojson",
+      "license": "Licence Ouverte 2.0",
+      "httpStatus": 200,
+      "responseHeaders": {
+        "Date": "Fri, 20 Nov 2026 17:19:43 GMT",
+        "Content-Type": "application/json;charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": null
+      },
+      "bytes": 194414,
+      "sha256": "15def85c8b4d1ecbea8eaebad8e581a6323d572a45940c909a15bf00d6501f92",
+      "numberMatched": 229,
+      "numberReturned": 229,
+      "responseTimeStamp": "2026-11-20T17:19:43.883Z",
+      "featureCount": 229
+    },
+    {
+      "id": "constructions-quais",
+      "url": "https://data.geopf.fr/wfs/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=BDTOPO_V3%3Aconstruction_lineaire&BBOX=5.365266732%2C43.29187771%2C5.37521643%2C43.29681657%2CEPSG%3A4326&COUNT=500&OUTPUTFORMAT=application%2Fjson&SRSNAME=EPSG%3A4326&PROPERTYNAME=geometrie%2Ccleabs%2Cnature%2Cdate_creation%2Cdate_modification%2Cdate_d_apparition%2Cdate_de_confirmation%2Cmethode_d_acquisition_altimetrique%2Cprecision_altimetrique%2Cprecision_planimetrique",
+      "method": "GET",
+      "parameters": {
+        "SERVICE": "WFS",
+        "VERSION": "2.0.0",
+        "REQUEST": "GetFeature",
+        "TYPENAMES": "BDTOPO_V3:construction_lineaire",
+        "BBOX": "5.365266732,43.29187771,5.37521643,43.29681657,EPSG:4326",
+        "COUNT": 500,
+        "OUTPUTFORMAT": "application/json",
+        "SRSNAME": "EPSG:4326",
+        "PROPERTYNAME": "geometrie,cleabs,nature,date_creation,date_modification,date_d_apparition,date_de_confirmation,methode_d_acquisition_altimetrique,precision_altimetrique,precision_planimetrique"
+      },
+      "requestedUtc": "2026-11-20T17:19:37.557183+00:00",
+      "bbox": [
+        5.365266732,
+        43.29187771,
+        5.37521643,
+        43.29681657
+      ],
+      "countLimit": 500,
+      "horizontalCoordinateOrder": "longitude,latitude",
+      "individualMeasurementDate": null,
+      "verticalDatum": null,
+      "noDataZValues": [],
+      "featureKind": "linear_construction_axis",
+      "file": "sources/voirie-p05-20261120/constructions-quais.geojson",
+      "license": "Licence Ouverte 2.0",
+      "httpStatus": 200,
+      "responseHeaders": {
+        "Date": "Fri, 20 Nov 2026 17:19:43 GMT",
+        "Content-Type": "application/json;charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": null
+      },
+      "bytes": 45928,
+      "sha256": "c431d8fddb62e76b3fed25856739a40fa2b153367d5adc48b6317f0bf6236363",
+      "numberMatched": 76,
+      "numberReturned": 76,
+      "responseTimeStamp": "2026-11-20T17:19:43.897Z",
+      "featureCount": 76
+    }
+  ],
+  "interpretationReferences": [
+    {
+      "id": "ign-bdtopo-35",
+      "url": "https://data.geopf.fr/annexes/ressources/documentation/DC_BDTOPO_3-5.pdf",
+      "revision": "2026-07",
+      "sections": [
+        "pp.14-15,31: precisions estimees et absence de Z (9999, Pas de Z)",
+        "pp.21-23: dates informatiques et dates dexistence distinctes",
+        "p.27: methode BDTopo historique",
+        "pp.90-91: voie et galerie, extremites de galerie ; exception sous dalle/batiment",
+        "pp.367,370: position au sol ordinale",
+        "p.372: largeur indicative de chaussee"
+      ],
+      "limitation": "Reference de classe ; ni leve individuel ni date du releve.",
+      "bytes": 5608070,
+      "sha256": "0542356dcf921bff5263043fe2af288a018d61d8e0f4d750005142f09cdb7331",
+      "archivedInRuntime": false
+    }
+  ],
+  "attribution": {
+    "urban": "© les contributeurs d’OpenStreetMap — ODbL 1.0 ; cœur EMPRISE, tuiles OpenFreeMap, schéma OpenMapTiles.",
+    "bdtopo": "© IGN — BD TOPO, acquisition WFS du 20 novembre 2026 ; Licence Ouverte 2.0."
+  },
+  "unknowns": [
+    "Surface et niveau routiers associés au corridor ; les axes et le MNT ne sont pas interchangeables.",
+    "Date de mesure et datum individuels des axes ; dates informatiques distinctes.",
+    "Limites de course, largeurs gauche/droite, dévers et portails géométriques.",
+    "Fermeture du parcours hors du cœur EMPRISE ; aucune rue ajoutée."
+  ],
+  "preparationDependencies": {
+    "applyBefore": "05A",
+    "publishedCommit": "466afcd",
+    "publishedTreePrefix": "836336ed",
+    "reason": "Validateur de propriétés et d’axes BD TOPO partagé ; projection Marseille fournie explicitement, aucun calcul de proximité Monaco réutilisé.",
+    "tools": [
+      {
+        "file": "preparer-monaco-voirie.py",
+        "sha256": "1f86c43314d72d2e4ea17c71a1640a22adb3140a3a4ee0d11bcbde0367cdbd8f"
+      },
+      {
+        "file": "preparer-monaco-revue.py",
+        "sha256": "de3670a08d0b160f5d13a812ddd0438f13a674e044b533e8f385b014e5f798bc"
+      },
+      {
+        "file": "preparer-monaco-mesures.py",
+        "sha256": "d772112a4bbc3a73e142d8d2dbfbc39b796f7cfc778cc898a16c57a5ccb6c0c7"
+      },
+      {
+        "file": "preparer-monaco-14a.py",
+        "sha256": "20c054fc6ab2ff4cd0fec56d5ed66a3d358113db1419644d2655406e8b4ce996"
+      },
+      {
+        "file": "monaco_mesures.py",
+        "sha256": "a5240f589f4d9b2554b3bf3d2ff3d31386eadb43aba038c645814c55e1d40df9"
+      }
+    ]
+  }
+}

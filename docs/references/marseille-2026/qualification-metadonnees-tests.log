@@ -1,0 +1,13 @@
+✔ nouvelle acquisition WFS intègre quatre dalles complètes et conserve ses dates source (9.797511ms)
+✔ rattachement des 4 225 points confirmé par nombres d’enroulement indépendants (13.751147ms)
+✔ trous, recouvrements, frontières et absences ne choisissent aucune dalle en silence (0.618158ms)
+✔ empreintes des acquisitions et dérivés historiques contrôlées, altération rejetée (19.046919ms)
+✔ rapport reproductible sans transformer les métadonnées terrain en qualification de chaussée (34.954264ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 196.65359
