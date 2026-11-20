@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "lot": "00A_inventaire_contrats_et_reception_02_P0",
+  "statut": "qualification_documentaire_locale_reussie",
+  "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "base_tree": "409499e1631489b667f34bf83e37682cd18657ae",
+  "P0_02": {
+    "commit_source": "0e42588fa03a10cf12444af81193dbc7458e601e",
+    "tree_reconstruit": "a0c7aec10114f6530b3ffd53e745edf0f7028503",
+    "tree_distant_identique": true,
+    "blobs_fichiers_identiques": 3,
+    "fichiers": [
+      {
+        "path": "docs/reprise/PARALLELE-2026-11-20/etat/02.json",
+        "blob": "e828a6529c40af892589a502ac635ab4f3314c85"
+      },
+      {
+        "path": "docs/reprise/PARALLELE-2026-11-20/raccordements/02.md",
+        "blob": "975018379547fc849186684547a4eb0e5cf9d047"
+      },
+      {
+        "path": "docs/reprise/PARALLELE-2026-11-20/rapports/02-P0-INVENTAIRE.md",
+        "blob": "94151e41b0c53430add2030af5762cf2ba9f62d1"
+      }
+    ]
+  },
+  "controles": {
+    "diff_check": true,
+    "perimetre_documentaire_uniquement": true,
+    "chemins_proteges_inchanges": [
+      "src",
+      "construire.py",
+      "VERSION.json",
+      "SIZE.json",
+      "dist",
+      "FERRO.lock.json",
+      "docs/reprise/rapports",
+      "docs/reprise/PARALLELE-2026-11-20/preparations",
+      "docs/reprise/PARALLELE-2026-11-20/etat/01.json",
+      "docs/reprise/PARALLELE-2026-11-20/etat/03.json",
+      "docs/reprise/PARALLELE-2026-11-20/etat/04.json",
+      "docs/reprise/PARALLELE-2026-11-20/etat/05.json"
+    ],
+    "json_valides_hors_ce_recu": 6,
+    "liens_locaux_valides": 29,
+    "aliases_courants_0268_conformes": true,
+    "anciens_alias_0266_preserves": true,
+    "modules_ferro": 34,
+    "patches_sha256_conformes": 4
+  },
+  "runtime": {
+    "version": "0.2.68",
+    "physique": "p15",
+    "moteur": "0.3.15",
+    "circuits": 9,
+    "html_octets": 14383155,
+    "html_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "nouvelle_construction": false,
+    "campagne_runtime_relancee": false
+  },
+  "chemins_candidat": [
+    "REPRISE.md",
+    "docs/reprise/ETAT.json",
+    "docs/reprise/FILE-TRAVAIL.json",
+    "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
+    "docs/reprise/PARALLELE-2026-11-20/README.md",
+    "docs/reprise/PARALLELE-2026-11-20/REPARTITION.json",
+    "docs/reprise/PARALLELE-2026-11-20/etat/00.json",
+    "docs/reprise/PARALLELE-2026-11-20/etat/02.json",
+    "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
+    "docs/reprise/PARALLELE-2026-11-20/raccordements/02.md",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/00-QUALIFICATION-DOCUMENTAIRE.json",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/02-P0-INVENTAIRE.md"
+  ],
+  "preuves_existantes": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
+  "limites": [
+    "Relecture documentaire et invariance du runtime ; aucune nouvelle validation fonctionnelle.",
+    "Checkpoints 01/03 et moteur P1 non qualifies ; aucun import de leur code.",
+    "Aucune mesure Xbox/Intel, manette/audio/reseau reels ni deploiement."
+  ]
+}

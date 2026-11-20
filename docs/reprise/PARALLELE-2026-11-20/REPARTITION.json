@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "date": "2026-11-20",
-  "statut": "preparation_documentaire",
+  "statut": "coordination_inventoriee_contrats_revision_1",
   "base_main": "d8f02cae45443ae6a1120dc93125d8adfae94422",
   "base_tree": "859b95aa2389da28eb7fb2f96088ca6fa1b46f97",
   "runtime_livre": {
@@ -133,5 +133,22 @@
       ]
     }
   ],
-  "preparations_portables": "preparations/MANIFESTE.json"
+  "preparations_portables": "preparations/MANIFESTE.json",
+  "releve_00": {
+    "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
+    "date_utc": "2026-11-20 17:10:00 UTC",
+    "inventaire": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
+    "contrats": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
+    "aucune_livraison_distante_observee": false,
+    "date_relecture_utc": "2026-11-20 17:15:12 UTC",
+    "branches": 55,
+    "tetes_historiques_ancetres_main": 52,
+    "checkpoints": [
+      "01",
+      "02",
+      "03"
+    ],
+    "aucune_livraison_runtime_prete": true,
+    "livraison_documentaire_retenue": "02/P0"
+  }
 }

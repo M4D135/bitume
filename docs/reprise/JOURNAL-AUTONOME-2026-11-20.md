@@ -425,3 +425,37 @@ Le dossier de répartition et ses prompts ont été publiés puis relus sur main
 Les patches sont conservés dans PARALLELE-2026-11-20/preparations avec un manifeste de provenance et un mode de reprise. Le nouveau menu-arcade.js auparavant non suivi est inclus ; l'audio Troll est séparé du lot saisons ; le diff du worktree Troll, identique à l'habitacle, n'est pas dupliqué. Dist, VERSION/SIZE, images et anciens rapports ne sont pas recopiés.
 
 Ces contrôles attestent la conservation et l'applicabilité individuelle des préparations. Ils ne qualifient ni leur assemblage, ni leurs performances, ni les nouveaux comportements du jeu. Les raccords jeu.js/construire.py restent au coordinateur00. La livraison0.2.68, p15 et FERRO0.3.15 restent inchangés.
+
+
+## 027 — coordination 00 : inventaire, contrats et premier lot documentaire 02
+
+Mission reprise sur main `1c71bb341d20df4328e5178497503ee4ad26a131`, arbre
+`409499e1631489b667f34bf83e37682cd18657ae`, dans un checkout isolé. Premier relevé :
+52 têtes distantes déjà contenues dans main, aucune PR ouverte. Relecture avant
+publication : 55 branches ; checkpoints 01 `007970e`, 02 `0e42588`, 03 `1d09794`.
+01 et 03 annoncent encore leur qualification en cours ; P1 moteur n'est pas
+qualifié. 04/05 sans branche au relevé. Aucune conclusion sur leurs travaux locaux.
+
+Le P0 de 02 est un petit lot documentaire indépendant : état, raccord et inventaire
+repris exactement du commit `0e42588fa03a10cf12444af81193dbc7458e601e`, avec leurs
+blobs GitHub vérifiés. Son commit source est conservé comme parent du candidat
+00. Ses mesures historiques de rétroviseurs ne sont pas des gains sur main ; la
+préparation habitacle les contient déjà. Aucun import FERRO ni code de 01/03.
+
+Les contrats révision 1 fixent les choix Troll par joueur, l'événement de début
+réel consommé une fois avant J2/J1, les limites audio et l'exception étroite du
+klaxon mariage ; le menu arcade, son vrai tracé, l'arrêt caché et le départ ; les
+caches saisonniers, les budgets par vue et l'import d'un SHA FERRO qualifié.
+Le patch arcade seul cache le départ sans raccord jeu.js : il reste préparatoire.
+Livraisons attendues et SHA dans l'inventaire, aucun comportement déclaré intégré.
+
+Vérification légère : HTML 0.2.68, 14 383 155 octets et SHA256 `60184ddf…` conservés,
+34 modules FERRO et quatre empreintes de patches conformes. Sources/builds,
+anciens reçus et états 01/03/04/05 préservés ; état 02 importé sans réécriture.
+Les alias courants sont réconciliés avec le reçu canonique 0.2.68 : neuf circuits
+et 122 images. Les anciens alias 0.2.66 et la réserve pré-E0–E3 sont conservés
+comme historiques. Campagnes closes non relancées, aucun déploiement du site.
+
+Prochaine action : relire main/branches/PR et intégrer le premier petit lot
+runtime prêt, sur son SHA et ses preuves, sans attendre la fin des autres chantiers.
+Le présent jalon publie inventaire, contrats, suivi 00 et P0 documentaire de 02.

@@ -2,16 +2,98 @@
   "schema": 1,
   "discussion": "00",
   "mission": "Integration",
-  "statut": "preparee_non_lancee",
+  "statut": "inventaire_contrats_et_P0_02_prets_publication_documentaire",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/00-INTEGRATION.md",
-  "base_main": "d8f02cae45443ae6a1120dc93125d8adfae94422",
+  "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p00-integration-20261120",
-  "branche_reelle": null,
-  "head": null,
+  "branche_reelle": "codex/bitume-p00-integration-20261120",
+  "head": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "pr": null,
-  "sous_lot": null,
-  "preuves": [],
-  "reserves": [],
-  "prochaine_action": "Verifier main/branches et preparer les contrats et raccords.",
-  "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00."
+  "sous_lot": "00A_inventaire_contrats_et_reception_02_P0",
+  "preuves": [
+    "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/00-QUALIFICATION-DOCUMENTAIRE.json",
+    "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/02-P0-INVENTAIRE.md"
+  ],
+  "reserves": [
+    "01/03 publiés comme checkpoints non qualifiés ; 02/P0 documentaire retenu, P1 non qualifié ; 04/05 sans branche au relevé. Des travaux locaux peuvent continuer.",
+    "Quatre préparations portables conservées, non qualifiées pour le runtime.",
+    "Menu préparé sans raccord jeu.js : bouton de départ caché, parcours non qualifié.",
+    "Troll : événements acceptés, voix audio et raccord réseau encore à livrer.",
+    "FPS Xbox/Intel, manettes/audio réels et réseau entre machines non qualifiés."
+  ],
+  "prochaine_action": "À la prochaine reprise 00, relire les branches/PR et états distants ; intégrer le premier petit lot indépendant prêt selon raccordements/00.md. Aucune attente en boucle.",
+  "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
+  "base_main_preparation": "d8f02cae45443ae6a1120dc93125d8adfae94422",
+  "base_tree": "409499e1631489b667f34bf83e37682cd18657ae",
+  "head_signification": "Parent distant vérifié ; le SHA du commit documentaire sera inscrit au reçu de publication après réception.",
+  "lots_integres": [
+    {
+      "discussion": "02",
+      "lot": "P0",
+      "head": "0e42588fa03a10cf12444af81193dbc7458e601e",
+      "tree": "a0c7aec10114f6530b3ffd53e745edf0f7028503",
+      "fichiers": 3,
+      "runtime_modifie": false,
+      "statut": "assemble_non_encore_publie_sur_main"
+    }
+  ],
+  "lots_prets_observes": [
+    "02/P0_documentaire"
+  ],
+  "releve_utc": "2026-11-20 17:10:00 UTC",
+  "contrat_revision": 1,
+  "contrats": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
+  "inventaire": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
+  "runtime_livre": {
+    "version": "0.2.68",
+    "physique": "p15",
+    "ferro": "0.3.15",
+    "circuits": 9,
+    "html_octets": 14383155,
+    "html_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "modules_ferro_verifies": 34,
+    "recu": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json"
+  },
+  "runtime_modifie": false,
+  "nouveau_build": false,
+  "campagne_0268_relancee": false,
+  "site_deploye": false,
+  "livraisons_attendues": {
+    "01": "Habitacle commun : contacts bras/buste/coque, coude continu, trois niveaux de détail, raccord caméra ; Troll ensuite.",
+    "02": "Mesure parent/candidat reproductible, premier gain isolé ; SHA FERRO qualifié si moteur modifié.",
+    "03": "Écrans/focus/manette et vrai tracé 3D, arrêt des aperçus cachés, raccords jeu.js/construire.py.",
+    "04": "Matrice neuf circuits × quatre saisons, preuves Route-des-Cimes, invariants graines/climat/physique/budgets.",
+    "05": "Sources routières Monaco/Marseille avec provenance, niveaux/datum/incertitudes ; aucun nouveau circuit jouable."
+  },
+  "lots_runtime_prets_observes": [],
+  "relecture_consignee_utc": "2026-11-20 17:15:12 UTC",
+  "checkpoints_observes": [
+    {
+      "discussion": "01",
+      "head": "007970e5c8f2973ec3070462908fee48dbc0965d",
+      "statut": "checkpoint_non_qualifie_pour_runtime"
+    },
+    {
+      "discussion": "02",
+      "head": "0e42588fa03a10cf12444af81193dbc7458e601e",
+      "statut": "P0_documentaire_recevable_P1_non_qualifie"
+    },
+    {
+      "discussion": "03",
+      "head": "1d09794bf6f3aa9752450ccca3af43788c610a9d",
+      "statut": "checkpoint_non_qualifie_pour_runtime"
+    },
+    {
+      "discussion": "04",
+      "head": null,
+      "statut": "aucune_livraison_distante_observee"
+    },
+    {
+      "discussion": "05",
+      "head": null,
+      "statut": "aucune_livraison_distante_observee"
+    }
+  ]
 }

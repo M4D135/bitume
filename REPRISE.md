@@ -25,6 +25,18 @@ sur sa branche, une intégration à la fois. Les reprises déjà préparées son
 inventoriées ; quatre patches portables sont sauvegardés avec leurs empreintes,
 sans application au runtime.
 
+## Coordination 00 : inventaire et contrats
+
+Relevés du 20/11 sur main `1c71bb3` : 52 branches historiques déjà contenues, puis
+**trois checkpoints 01/02/03** apparus avant publication ; aucune PR ouverte.
+Le **P0 documentaire de 02** (`0e42588`) est retenu avec ses trois fichiers exacts.
+Habitacle, menu et optimisation P1 restent non qualifiés ; 04/05 sans branche au relevé.
+[Inventaire exact](docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json) ·
+[Contrats de raccordement, révision 1](docs/reprise/PARALLELE-2026-11-20/raccordements/00.md).
+Menu, Troll, caches saisonniers, budgets par vue et imports FERRO sont cadrés.
+Les sources préparées restent non qualifiées ; aucun nouveau build. À la prochaine
+reprise, intégrer le premier petit lot distant prêt, sans attendre tous les autres.
+
 ## Travaux actifs
 
 1. **Habitacle/pilote** : géométrie métrique commune, vraie cuve et assise abaissée
@@ -49,6 +61,6 @@ Coût logiciel de l’optique conservé ; FPS matériels, audio, manettes réell
 réseau entre machines non qualifiés. La préparation pluie extérieure sous abri
 reste distincte. Les autres lots et 17 destinations restent dans FILE-TRAVAIL.
 
-[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **026**.
+[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **027**.
 Lecture minimale : ce fichier, `docs/reprise/ETAT.json` → `etat_courant`,
 puis la fiche du lot traité. Sauvegarder les étapes et poursuivre sans redemander un go.

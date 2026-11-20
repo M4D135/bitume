@@ -17,6 +17,23 @@ Base GitHub vérifiée : **d8f02cae45443ae6a1120dc93125d8adfae94422**, arbre **8
 | 04 | Saisons puis matières | Qualifier les neuf circuits et quatre saisons | [04-SAISON-MATIERES.md](04-SAISON-MATIERES.md) |
 | 05 | Sources Monaco/Marseille, suite des circuits | Qualifier les données routières manquantes | [05-CIRCUITS.md](05-CIRCUITS.md) |
 
+## Relevé de coordination 00
+
+Le premier relevé conserve main **1c71bb3** et ses 52 branches historiques.
+La relecture avant publication trouve **55 branches**, dont les checkpoints
+**01 `007970e`, 02 `0e42588`, 03 `1d09794`**, et aucune PR ouverte.
+Le P0 documentaire de 02 est retenu à son SHA exact (état, raccord, rapport).
+Les checkpoints habitacle/menu et P1 ne sont pas qualifiés pour le runtime.
+04/05 n’ont pas de branche au relevé ; leur éventuel travail local reste inconnu.
+Les états 01/03/04/05 de main restent intacts, l’état 02 est importé sans réécriture.
+
+[Contrats retenus, révision 1](raccordements/00.md) ·
+[Inventaire daté, têtes et livraisons attendues](rapports/00-INVENTAIRE-20261120.json) ·
+[État 00](etat/00.json).
+
+Jalon documentaire : runtime 0.2.68/p15/FERRO 0.3.15 inchangé. Les quatre patches
+sont conservés avec leurs empreintes ; aucun n'est déclaré intégré ou qualifié.
+
 ## Fonctionnement commun
 
 1. Lire AGENTS.md, REPRISE.md, cette page, puis seulement sa fiche et son état dans etat/NN.json. Dans le grand ETAT.json, privilégier etat_courant et les reçus exacts ; les sections historiques peuvent décrire une ancienne version.

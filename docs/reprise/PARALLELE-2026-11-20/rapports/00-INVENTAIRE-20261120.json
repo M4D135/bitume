@@ -1,0 +1,724 @@
+{
+  "schema": 1,
+  "releve_utc": "2026-11-20 17:10:00 UTC",
+  "repository": "M4D135/bitume",
+  "main": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "tree": "409499e1631489b667f34bf83e37682cd18657ae",
+  "branches": [
+    {
+      "name": "backup/demos-pilotes-20261120",
+      "sha": "9d6c47a952422d8ee4a392c06ea66a56d38c589c",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "backup/meteo-matiere-20261120",
+      "sha": "99bd04a6e28a26a33314d2366ad516cd6bef6af7",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "backup/pluie-abris-20261120",
+      "sha": "d3bd240a1bfa02ac1e0dbcc8f5c4cdb3b7176531",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "circuits/lot22",
+      "sha": "10fbad842fc8b86e36891963a30d656a83a94155",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-0255-cloture-20261119",
+      "sha": "35a899a33f0c0d25ac325dce2cfb2baee673c856",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-12f2-revue-20261119",
+      "sha": "fb18a8358943576ab7b14b47383c5468bf8b2b62",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-12f3-20261119",
+      "sha": "baeea4909f64b350fcc83a5706ff1ade12492783",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-12f4-20261119",
+      "sha": "6a3fb86a51db46f2d3b2483bedb34d406ebff705",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-12f4-sortie-file-20261119",
+      "sha": "b8c670283112a35c7ae447537c8cab58bbd88b6f",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-13a-russie-20261119",
+      "sha": "b1eabdff3a83e11110bef285ead46d47b6b3c9c9",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-capture-toit-0266-20261120",
+      "sha": "40774189dc3a68242a3908f72e09f2676519ccbf",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-ci-apres-fusion-0259-20261119",
+      "sha": "c1fe2503e633f225b08c38553a56494256d987f4",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-cloture-0256-20261119",
+      "sha": "c4e995bd63ee834e134a1777e967ad2d905fe15e",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-cloture-0259-20261119",
+      "sha": "8b380de569074fe62ce60d7f187ed50a243cdd9e",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-cloture-0260-pr20",
+      "sha": "520a09239f3aac576737d45b89f144b9bbb5a1be",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-cloture-monaco14a-20261120",
+      "sha": "b3bb19b158f7b0943481337daf656f798dc6cc63",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-cockpit-exterieur-20261119",
+      "sha": "42a916fdea88f38ad5be1275bbeed89f193cd26c",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-cockpit-pilotes-20261119",
+      "sha": "d052f4c30cef0e18ea5e0bef84ca5ecae8af2108",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-demos-regard-arriere-20261119",
+      "sha": "652749694a1a77f25501c6c4fe7100c8b4636f97",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-monaco-mesures-14a-20261120",
+      "sha": "eaded11a0f265b7879e189436fae7d1c08d77152",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-p01-pilote-troll-20261120",
+      "sha": "007970e5c8f2973ec3070462908fee48dbc0965d",
+      "object_local_available": false,
+      "ancestor_main": false
+    },
+    {
+      "name": "codex/bitume-p02-performance-20261120",
+      "sha": "0e42588fa03a10cf12444af81193dbc7458e601e",
+      "object_local_available": false,
+      "ancestor_main": false
+    },
+    {
+      "name": "codex/bitume-p03-menu-20261120",
+      "sha": "1d09794bf6f3aa9752450ccca3af43788c610a9d",
+      "object_local_available": false,
+      "ancestor_main": false
+    },
+    {
+      "name": "codex/bitume-physx-sols-pilotes-20261119",
+      "sha": "b8f050745c68e2c7a9e482611cfdc980efe1ada3",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-physx-sols-pilotes-20261119-qualifie",
+      "sha": "253322d311a8b0cda01f5846dcc03ebd3af3f7cd",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-realisme-0260-20261120",
+      "sha": "43720ca0d8fd2a78c60fb37aa8ed181dcbbd30a7",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "codex/bitume-reperes-annonces-reflets-20261119",
+      "sha": "cc79b2e0ec3d46ab467bd928e28ad8ed8abcbead",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "conduite/etude",
+      "sha": "8476c5b10e7ff7561e2d8845f01502cfea3041a8",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "data/monaco-revue-mesures-20261120",
+      "sha": "4fba4b0cea7dad3254822fbda25c217708526607",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "docs/bitume-0262-cloture-physx-45f8-20261120",
+      "sha": "11cf1f4d50b8b043cc5c85859fc5060277ac2aa4",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "docs/bitume-0262-preuves-20261120",
+      "sha": "2ddbf49fc4018e34fce2ec6af0f20aaa709cbc5d",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "docs/bitume-0266-cloture-20261120",
+      "sha": "5b83dddd47283ed406bd27555324c5df56172f5d",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "docs/bitume-lots-restants-20261120",
+      "sha": "559944e0895af8b33b65a4d9a266ce6151eb90cc",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "docs/bitume-modeles-objectifs-20261120",
+      "sha": "30c3496f689bab575f34be08d688f553277fde38",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "docs/cloture-haut-col-meteo-0261-20261120",
+      "sha": "d64d8227dd1f535c0b86c4f87b5afc76f3bea2fc",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "docs/cloture-monaco-revue-20261120",
+      "sha": "ac4e3dbca01aa34d3d03790416b98a2969fdee01",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "docs/monaco-carte-cloture-20261120",
+      "sha": "2f7723cafa981770cf4652066d7332b58d740ee0",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "etude/enligne",
+      "sha": "654e75e684a0b5335035bb7d1f776d1d6ebe9d10",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "etude/photo",
+      "sha": "53048015dc94621ae24a3a7e251867a1b4fb1e0b",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "etude/procedural",
+      "sha": "dad93266dc6c82d6c1b49b86d61274f0c86c5134",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "etude/vitre",
+      "sha": "9e29337b280f6481689fa410b443a189fea74b86",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "feat/bitume-0263-demos-meteo-20261120",
+      "sha": "e12420c7db914fa82d420cbbde75d763dea78668",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "feat/bitume-couverts-cimes-20261120",
+      "sha": "6c83902378e923c13683ce853428bc38b879d551",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "feat/bitume-couverts-final-20261120-ec92",
+      "sha": "5b83dddd47283ed406bd27555324c5df56172f5d",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "feat/bitume-eau-0267-20261120",
+      "sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "feat/bitume-eau-cameras-20261120",
+      "sha": "7c93854e56fc5bc9c1676a6ecb70c727a674db07",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "feat/monaco-cartographie-20261120",
+      "sha": "b48685ec513c06b1911953868aca6a5413adc040",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "feat/monaco-revue-mesures-20261120",
+      "sha": "c6d6fe6e5367a65fbe9c71fef31ce11688bc4912",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "fix/bitume-aspiration-20261120",
+      "sha": "05e99510a09052baeadff5d83369f4ab001b9ce6",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "fix/haut-col-meteo-0261-20261120",
+      "sha": "a57aabe5a8be7d5d1877447555f899dc7cfb2ba9",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "main",
+      "sha": "1c71bb341d20df4328e5178497503ee4ad26a131",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "spark/calcul",
+      "sha": "807ae77b9d556f4feb34c0455ac4c12095e3bce9",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "spark/circuits",
+      "sha": "5d3ea96737a553f71d7b7690a804c07c08475433",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "spark/conduite",
+      "sha": "0b6b9f9804aea890e2bc8d7b61df532315683a54",
+      "object_local_available": true,
+      "ancestor_main": true
+    },
+    {
+      "name": "test/bitume-degagement-physx-p15-20261120",
+      "sha": "86ebfce674ed42d81e11fdc7251ce421614d08dc",
+      "object_local_available": true,
+      "ancestor_main": true
+    }
+  ],
+  "open_prs": [],
+  "recent_prs": [
+    {
+      "number": 39,
+      "state": "closed",
+      "merged_at": "2026-11-20T16:02:43Z",
+      "title": "fix: orienter et évacuer l’eau selon la vitesse et la caméra (0.2.68)",
+      "head": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
+      "branch": "feat/bitume-eau-0267-20261120",
+      "base": "main",
+      "updated_at": "2026-11-20T16:10:33Z",
+      "url": "https://github.com/M4D135/bitume/pull/39"
+    },
+    {
+      "number": 37,
+      "state": "closed",
+      "merged_at": "2026-11-20T14:29:41Z",
+      "title": "BITUME : démos et météo réconciliées dans main 0.2.66",
+      "head": "e12420c7db914fa82d420cbbde75d763dea78668",
+      "branch": "feat/bitume-0263-demos-meteo-20261120",
+      "base": "main",
+      "updated_at": "2026-11-20T14:42:10Z",
+      "url": "https://github.com/M4D135/bitume/pull/37"
+    },
+    {
+      "number": 38,
+      "state": "closed",
+      "merged_at": "2026-11-20T14:04:59Z",
+      "title": "BITUME 0.2.66 : Route-des-Cimes, couverts et validation complète",
+      "head": "5b83dddd47283ed406bd27555324c5df56172f5d",
+      "branch": "feat/bitume-couverts-final-20261120-ec92",
+      "base": "main",
+      "updated_at": "2026-11-20T14:04:59Z",
+      "url": "https://github.com/M4D135/bitume/pull/38"
+    },
+    {
+      "number": 36,
+      "state": "closed",
+      "merged_at": "2026-11-20T11:19:59Z",
+      "title": "Modèles utilisateur, objectifs et feuille de route autonome [skip ci]",
+      "head": "30c3496f689bab575f34be08d688f553277fde38",
+      "branch": "docs/bitume-modeles-objectifs-20261120",
+      "base": "main",
+      "updated_at": "2026-11-20T11:19:59Z",
+      "url": "https://github.com/M4D135/bitume/pull/36"
+    },
+    {
+      "number": 35,
+      "state": "closed",
+      "merged_at": "2026-11-20T11:05:09Z",
+      "title": "Préciser le bilan local de BITUME 0.2.62 et la réserve S8 [skip ci]",
+      "head": "2ddbf49fc4018e34fce2ec6af0f20aaa709cbc5d",
+      "branch": "docs/bitume-0262-preuves-20261120",
+      "base": "main",
+      "updated_at": "2026-11-20T11:05:09Z",
+      "url": "https://github.com/M4D135/bitume/pull/35"
+    },
+    {
+      "number": 34,
+      "state": "closed",
+      "merged_at": "2026-11-20T11:02:35Z",
+      "title": "Réconcilier les branches et les lots restants après BITUME 0.2.62",
+      "head": "559944e0895af8b33b65a4d9a266ce6151eb90cc",
+      "branch": "docs/bitume-lots-restants-20261120",
+      "base": "main",
+      "updated_at": "2026-11-20T11:02:35Z",
+      "url": "https://github.com/M4D135/bitume/pull/34"
+    },
+    {
+      "number": 33,
+      "state": "closed",
+      "merged_at": "2026-11-20T10:57:39Z",
+      "title": "Clôture vérifiée de BITUME 0.2.62 et du dégagement PhysX [skip ci]",
+      "head": "11cf1f4d50b8b043cc5c85859fc5060277ac2aa4",
+      "branch": "docs/bitume-0262-cloture-physx-45f8-20261120",
+      "base": "main",
+      "updated_at": "2026-11-20T10:57:39Z",
+      "url": "https://github.com/M4D135/bitume/pull/33"
+    },
+    {
+      "number": 32,
+      "state": "closed",
+      "merged_at": "2026-11-20T10:54:20Z",
+      "title": "Vérifier le dégagement après choc dans le vrai PhysX — complément p15",
+      "head": "86ebfce674ed42d81e11fdc7251ce421614d08dc",
+      "branch": "test/bitume-degagement-physx-p15-20261120",
+      "base": "main",
+      "updated_at": "2026-11-20T10:54:20Z",
+      "url": "https://github.com/M4D135/bitume/pull/32"
+    },
+    {
+      "number": 31,
+      "state": "closed",
+      "merged_at": "2026-11-20T10:53:53Z",
+      "title": "Aspiration p15 : gain PhysX réel, souffle et projections à 300 km/h — 0.2.62",
+      "head": "05e99510a09052baeadff5d83369f4ab001b9ce6",
+      "branch": "fix/bitume-aspiration-20261120",
+      "base": "main",
+      "updated_at": "2026-11-20T10:54:06Z",
+      "url": "https://github.com/M4D135/bitume/pull/31"
+    },
+    {
+      "number": 30,
+      "state": "closed",
+      "merged_at": "2026-11-20T09:27:47Z",
+      "title": "docs: clôture du complément cartographique Monaco 14A [skip ci]",
+      "head": "2f7723cafa981770cf4652066d7332b58d740ee0",
+      "branch": "docs/monaco-carte-cloture-20261120",
+      "base": "main",
+      "updated_at": "2026-11-20T09:27:47Z",
+      "url": "https://github.com/M4D135/bitume/pull/30"
+    },
+    {
+      "number": 29,
+      "state": "closed",
+      "merged_at": "2026-11-20T09:26:03Z",
+      "title": "Monaco 14A : complément cartographique et provenance temporelle",
+      "head": "b48685ec513c06b1911953868aca6a5413adc040",
+      "branch": "feat/monaco-cartographie-20261120",
+      "base": "main",
+      "updated_at": "2026-11-20T09:26:03Z",
+      "url": "https://github.com/M4D135/bitume/pull/29"
+    },
+    {
+      "number": 28,
+      "state": "closed",
+      "merged_at": "2026-11-20T09:10:02Z",
+      "title": "Clôture Monaco 14A : reçu CI et prochaine acquisition [skip ci]",
+      "head": "ac4e3dbca01aa34d3d03790416b98a2969fdee01",
+      "branch": "docs/cloture-monaco-revue-20261120",
+      "base": "main",
+      "updated_at": "2026-11-20T09:10:02Z",
+      "url": "https://github.com/M4D135/bitume/pull/28"
+    }
+  ],
+  "ferro": {
+    "main": "7de089805ba04465d48684085a79a84fa6160b26",
+    "tree": "403c9c99102559ae2a15c9cba953b4f7ce0756a4",
+    "branches": [
+      {
+        "name": "codex/ferro-matieres-0315-20261119",
+        "sha": "41a4c8829819a1659d8f04c8c2aed4d8d44d9164"
+      },
+      {
+        "name": "codex/ferro-physx-sols-0313-20261119",
+        "sha": "5a7d9e3952c2793036a625513e0b2b6193be806b"
+      },
+      {
+        "name": "codex/ferro-physx-sols-pilotes-20261119",
+        "sha": "a22b738fbe2aa2b36b659fca94527acc2ffcd635"
+      },
+      {
+        "name": "codex/ferro-upholstery-0315",
+        "sha": "f77f5b0c474dddc0adf3348e8d869c03ee6a8a03"
+      },
+      {
+        "name": "codex/ferro-webidl-0314-20261119",
+        "sha": "f145e080d1cabab9802dc002debbf54aa8cc0bb6"
+      },
+      {
+        "name": "main",
+        "sha": "7de089805ba04465d48684085a79a84fa6160b26"
+      }
+    ],
+    "open_prs": []
+  },
+  "sources": [
+    "https://api.github.com/repos/M4D135/bitume/git/matching-refs/heads/",
+    "https://api.github.com/repos/M4D135/bitume/pulls?state=all&sort=updated&direction=desc&per_page=12",
+    "https://api.github.com/repos/M4D135/FERRO/git/matching-refs/heads/",
+    "https://api.github.com/repos/M4D135/FERRO/pulls?state=open&per_page=100",
+    "https://api.github.com/repos/M4D135/bitume/pulls?state=open&per_page=100"
+  ],
+  "limite": "Instantane distant ; absence de branche de livraison ne signifie pas absence de travaux locaux dans les autres discussions.",
+  "lots": [
+    {
+      "discussion": "01",
+      "branche_attendue": "codex/bitume-p01-pilote-troll-20261120",
+      "branche_distante_presente": true,
+      "head_distant": "007970e5c8f2973ec3070462908fee48dbc0965d",
+      "pr_ouverte": null,
+      "etat_fichier": "docs/reprise/PARALLELE-2026-11-20/etat/01.json",
+      "etat_blob_base": "56809d1e61a3da500fe2147c7a754ea0f80ba58a",
+      "etat_publie": "habitacle_repris_qualification_en_cours",
+      "livraison_attendue": "Habitacle commun : contacts bras/buste/coque, coude continu, trois niveaux de détail, raccord caméra ; Troll ensuite.",
+      "statut_observe": "checkpoint_non_qualifie_pour_runtime",
+      "etat_blob_distant": "2e0856ffb915b127396e761a375398c0cbe69696",
+      "sous_lot": "H1-B4 : reprise du modele commun et qualification contacts/continuite",
+      "avance_commits": 1,
+      "retard_commits": 0,
+      "chemins_changes": [
+        "docs/reprise/PARALLELE-2026-11-20/etat/01.json",
+        "docs/reprise/PARALLELE-2026-11-20/raccordements/01.md",
+        "src/voiture.js",
+        "tools/captures-habitacle.mjs",
+        "tools/qualification/habitacle-mesures.mjs",
+        "tools/qualification/pilote-surfaces.mjs",
+        "tools/qualification/pilote-thorax.mjs",
+        "verifications/captures-habitacle.test.mjs",
+        "verifications/habitacle-monde.test.mjs",
+        "verifications/pilote-commun.test.mjs",
+        "verifications/pilote-expressions.test.mjs",
+        "verifications/pilote-exterieur.test.mjs",
+        "verifications/pilote-habitacle.test.mjs",
+        "verifications/pilote-surfaces.test.mjs",
+        "verifications/pilote-thorax.test.mjs",
+        "verifications/voiture.test.mjs"
+      ],
+      "preuves_annoncees": [
+        "Preparations SHA256 conformes au manifeste ; git apply --check reussi sur la base distante.",
+        "Suites voiture, habitacle-monde et pilote-commun reussies ; autres controles en cours."
+      ],
+      "reserves_annoncees": [
+        "Sources reprises uniquement, aucune integration jeu ni nouveau build.",
+        "src/jeu.js et cockpit-camera.test.mjs exclus du patch ; raccord a realiser par 00.",
+        "Images exactes du jeu assemble, audio/manettes/reseau reels reserves au coordinateur."
+      ]
+    },
+    {
+      "discussion": "02",
+      "branche_attendue": "codex/bitume-p02-performance-20261120",
+      "branche_distante_presente": true,
+      "head_distant": "0e42588fa03a10cf12444af81193dbc7458e601e",
+      "pr_ouverte": null,
+      "etat_fichier": "docs/reprise/PARALLELE-2026-11-20/etat/02.json",
+      "etat_blob_base": "6716d1dbeb4c55453244d82a04bf9150e0f1db53",
+      "etat_publie": "P0_inventaire_repris_P1_mesure_en_cours",
+      "livraison_attendue": "Mesure parent/candidat reproductible, premier gain isolé ; SHA FERRO qualifié si moteur modifié.",
+      "statut_observe": "P0_documentaire_recevable_P1_non_qualifie",
+      "etat_blob_distant": "e828a6529c40af892589a502ac635ab4f3314c85",
+      "sous_lot": "P1_deduplication_exacte",
+      "avance_commits": 1,
+      "retard_commits": 0,
+      "chemins_changes": [
+        "docs/reprise/PARALLELE-2026-11-20/etat/02.json",
+        "docs/reprise/PARALLELE-2026-11-20/raccordements/02.md",
+        "docs/reprise/PARALLELE-2026-11-20/rapports/02-P0-INVENTAIRE.md"
+      ],
+      "preuves_annoncees": [
+        "docs/reprise/PARALLELE-2026-11-20/rapports/02-P0-INVENTAIRE.md"
+      ],
+      "reserves_annoncees": [
+        "Preparation deduplication non qualifiee",
+        "Poses retros dans preparation 01/00, ne pas reappliquer",
+        "Aucune mesure GPU physique Xbox/Intel",
+        "Calibration CPU isolee ne mesure pas PhysX p15 complet"
+      ],
+      "livraison_documentaire_retenue": "P0",
+      "fichiers_importes_exacts": [
+        {
+          "path": "docs/reprise/PARALLELE-2026-11-20/etat/02.json",
+          "blob": "e828a6529c40af892589a502ac635ab4f3314c85"
+        },
+        {
+          "path": "docs/reprise/PARALLELE-2026-11-20/raccordements/02.md",
+          "blob": "975018379547fc849186684547a4eb0e5cf9d047"
+        },
+        {
+          "path": "docs/reprise/PARALLELE-2026-11-20/rapports/02-P0-INVENTAIRE.md",
+          "blob": "94151e41b0c53430add2030af5762cf2ba9f62d1"
+        }
+      ]
+    },
+    {
+      "discussion": "03",
+      "branche_attendue": "codex/bitume-p03-menu-20261120",
+      "branche_distante_presente": true,
+      "head_distant": "1d09794bf6f3aa9752450ccca3af43788c610a9d",
+      "pr_ouverte": null,
+      "etat_fichier": "docs/reprise/PARALLELE-2026-11-20/etat/03.json",
+      "etat_blob_base": "ffa6b5aeb3c05e7d3d4efb3afeb143a9991837c6",
+      "etat_publie": "reprise_en_cours_non_qualifiee",
+      "livraison_attendue": "Écrans/focus/manette et vrai tracé 3D, arrêt des aperçus cachés, raccords jeu.js/construire.py.",
+      "statut_observe": "checkpoint_non_qualifie_pour_runtime",
+      "etat_blob_distant": "c9c3e60fa6dfe8a784aefbc3b9eb44abffb63c18",
+      "sous_lot": "M0 — restauration de la preparation portable",
+      "avance_commits": 1,
+      "retard_commits": 0,
+      "chemins_changes": [
+        "docs/reprise/PARALLELE-2026-11-20/etat/03.json",
+        "src/index.html",
+        "src/menu-arcade.js",
+        "src/navigation-menu.js",
+        "src/style.css"
+      ],
+      "preuves_annoncees": [
+        "Préparation arcade SHA256 65b33f89e91d761525230ff0b05486481e33cd50deee30dff48e922838e4297d ; git apply --check réussi sur les quatre fichiers possédés.",
+        "main 1c71bb3 et branches/PR vérifiés au démarrage : aucune publication plus récente du menu."
+      ],
+      "reserves_annoncees": [
+        "Préparation restaurée non qualifiée ; menu-arcade.js pas encore inclus par construire.py.",
+        "Raccords jeu.js/construire.py réservés à 00 ; aucune version ni build commun modifié.",
+        "Manette physique, audio et Xbox/Intel non vérifiés."
+      ]
+    },
+    {
+      "discussion": "04",
+      "branche_attendue": "codex/bitume-p04-saisons-matieres-20261120",
+      "branche_distante_presente": false,
+      "head_distant": null,
+      "pr_ouverte": null,
+      "etat_fichier": "docs/reprise/PARALLELE-2026-11-20/etat/04.json",
+      "etat_blob_base": "9a18b9358cf087019dad7011486408d423d9f573",
+      "etat_publie": "preparee_non_lancee",
+      "livraison_attendue": "Matrice neuf circuits × quatre saisons, preuves Route-des-Cimes, invariants graines/climat/physique/budgets.",
+      "statut_observe": "aucune_livraison_distante_observee"
+    },
+    {
+      "discussion": "05",
+      "branche_attendue": "codex/bitume-p05-sources-circuits-20261120",
+      "branche_distante_presente": false,
+      "head_distant": null,
+      "pr_ouverte": null,
+      "etat_fichier": "docs/reprise/PARALLELE-2026-11-20/etat/05.json",
+      "etat_blob_base": "548e8e669641b13d5dbe46912d661cfb8764265b",
+      "etat_publie": "preparee_non_lancee",
+      "livraison_attendue": "Sources routières Monaco/Marseille avec provenance, niveaux/datum/incertitudes ; aucun nouveau circuit jouable.",
+      "statut_observe": "aucune_livraison_distante_observee"
+    }
+  ],
+  "preparations": [
+    {
+      "id": "habitacle",
+      "patch": "docs/reprise/PARALLELE-2026-11-20/preparations/habitacle.patch",
+      "sha256": "058fa1793435a220071eec9cc3dab7eb669016535d70064f61c78a0aaafd721b",
+      "octets": 195693,
+      "empreinte_verifiee": true,
+      "qualification_runtime": false
+    },
+    {
+      "id": "arcade",
+      "patch": "docs/reprise/PARALLELE-2026-11-20/preparations/arcade.patch",
+      "sha256": "65b33f89e91d761525230ff0b05486481e33cd50deee30dff48e922838e4297d",
+      "octets": 59813,
+      "empreinte_verifiee": true,
+      "qualification_runtime": false
+    },
+    {
+      "id": "saisons",
+      "patch": "docs/reprise/PARALLELE-2026-11-20/preparations/saisons.patch",
+      "sha256": "43403458bcfc466c3cd6759f078e22b8570f86612ccf1c784d9bbad51afcc2d7",
+      "octets": 54562,
+      "empreinte_verifiee": true,
+      "qualification_runtime": false
+    },
+    {
+      "id": "audio-troll",
+      "patch": "docs/reprise/PARALLELE-2026-11-20/preparations/audio-troll.patch",
+      "sha256": "b48d3fcc8707d7ef789e1af3450f119334458e40cee5b2d802165bb8d15e8cd9",
+      "octets": 10958,
+      "empreinte_verifiee": true,
+      "qualification_runtime": false
+    }
+  ],
+  "tetes_ancetres_main": 52,
+  "runtime": {
+    "version": "0.2.68",
+    "physique": "p15",
+    "ferro": "0.3.15",
+    "circuits": 9,
+    "html_octets": 14383155,
+    "html_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "modules_ferro_verifies": 34,
+    "recu": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json"
+  },
+  "decision": "Intégrer les trois documents P0 de 02 à leur SHA exact, publier les contrats et le suivi 00 ; 01/03 restent en qualification, P1 non qualifié, 04/05 sans branche au relevé. Pas de boucle d’attente.",
+  "premier_releve": {
+    "date_utc": "2026-11-20 17:10:00 UTC",
+    "branches": 52,
+    "tetes_ancetres_main": 52,
+    "pr_ouvertes": 0,
+    "lots_publies": []
+  },
+  "relecture_consignee_utc": "2026-11-20 17:15:12 UTC",
+  "livraisons_runtime_pretes": [],
+  "livraisons_documentaires_retenues": [
+    {
+      "discussion": "02",
+      "lot": "P0",
+      "head": "0e42588fa03a10cf12444af81193dbc7458e601e",
+      "tree": "a0c7aec10114f6530b3ffd53e745edf0f7028503",
+      "fichiers": 3,
+      "runtime_modifie": false
+    }
+  ]
+}
