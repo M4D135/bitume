@@ -26,7 +26,9 @@ const copies = Object.fromEntries(['avant', 'apres'].map(variante => [variante, 
 }))]));
 const rapports = {};
 for (const variante of ['avant', 'apres']) {
-  const contexte = vm.createContext({ console, Buffer, createHash, sha }), sources = {};
+  // Même Math standard pour les deux copies : évite le coût des recherches de propriétés
+  // du proxy vm dans les millions d'échantillons, sans changer le hasard ni les sources.
+  const contexte = vm.createContext({ console, Buffer, createHash, sha, Math }), sources = {};
   for (const [f, source] of Object.entries(copies[variante])) { sources[f] = sha(source); vm.runInContext(source, contexte, { filename: f }); }
   vm.runInContext('const objetsSaisons=' + objetsSaisons.toString() + ';globalThis.observer=' + observerSaisons.toString() + ';', contexte);
   const B = contexte.BITUME, r = rapports[variante] = { format: 'bitume-saisons-budgets-v1', base, sources,
@@ -54,3 +56,4 @@ for (let i = 0; i < a.circuits.length; i++) for (let j = 0; j < a.circuits[i].sc
 r.identitesConservees = conservation; r.identitesAttendues = r.cas.length * 4;
 fs.writeFileSync(path.join(sortie, 'comparaison-budgets.json'), JSON.stringify(r, null, 2) + '\n');
 console.log(JSON.stringify({ identitesConservees: conservation, identitesAttendues: r.identitesAttendues }));
+if (conservation !== r.identitesAttendues) process.exitCode = 1;

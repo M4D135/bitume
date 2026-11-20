@@ -3,10 +3,10 @@ import { test } from 'node:test';
 import { B, CATALOGUE_SAISONS, creerCircuitSaisons, objetsSaisons, observerSaisons } from '../tools/qualification/saisons-circuits.mjs';
 
 assert.equal(CATALOGUE_SAISONS.length, 9, 'les neuf circuits réellement sélectionnables');
-for (const definition of CATALOGUE_SAISONS) test(definition.id + ' : quatre saisons, essences cohérentes et géométrie physique conservée', () => {
+for (const qualite of ['low', 'medium', 'high']) for (const definition of CATALOGUE_SAISONS) test(definition.id + ' / ' + qualite + ' : quatre saisons, essences et lots réellement dessinés cohérents', () => {
   const c = creerCircuitSaisons(definition), toutes = [], decors = {};
   for (const saison of B.saisons.IDS) {
-    const d = B.decor.construire(c, { qualite: 'low', vegetation: false, arbres: 220, saison });
+    const d = B.decor.construire(c, { qualite, vegetation: false, arbres: 220, saison });
     const m = observerSaisons(d); toutes.push(m); decors[saison] = d;
     assert.equal(m.caducs + m.persistants, m.arbres, 'chaque arbre déclare sa vraie essence');
     assert.equal(m.sourcesFeuilles, saison === 'automne' ? m.caducs : 0, 'les feuilles viennent des seuls caducs présents');
@@ -20,6 +20,25 @@ for (const definition of CATALOGUE_SAISONS) test(definition.id + ' : quatre sais
       if (o.partieArbre === 'feuillage' && o.essenceArbre !== 'feuillu' && saison !== 'hiver')
         assert(o.color[1] > o.color[0], 'pin/séquoia/conifère non transformé en feuillu orange');
     }
+    // L'herbier conserve l'ordre historique. Moyenne/Fine redistribuent les arbres en cases
+    // pour le renderer : vérifier également ces vrais lots, dans leurs deux niveaux de détail.
+    for (const distant of [false, true]) {
+      const dessines = d.lots.flatMap(l => distant ? l.loin || [] : l.objets);
+      const couronne = o => o.partieArbre === 'feuillage' || o.partieArbre === 'branches';
+      const attendues = new Set(objetsSaisons(d, distant).filter(couronne));
+      const presentes = new Set(dessines.filter(couronne));
+      assert.equal(presentes.size, attendues.size, 'aucun houppier perdu ou ajouté dans les lots d’image');
+      for (const o of attendues) assert(presentes.has(o), 'même couronne dans l’herbier et le rendu');
+      assert.equal([...presentes].filter(o => o.partieArbre === 'branches').length,
+        saison === 'hiver' ? m.caducs : 0, 'une silhouette nue par caduc à chaque LOD');
+      if (saison === 'hiver') assert(![...presentes].some(o => o.partieArbre === 'feuillage' && o.essenceArbre === 'feuillu'));
+      assert([...presentes].filter(o => o.partieArbre === 'feuillage' && o.essenceArbre !== 'feuillu').length >= m.persistants,
+        'les persistants gardent leurs aiguilles dans le vrai rendu lointain');
+      // Le fût allégé de la case n'est ni un second arbre, ni un houppier persistant.
+      for (const o of dessines) if (o.shape === B.botanique.TRONC_LOINTAIN) {
+        assert(!presentes.has(o)); assert.equal(o.mat, B.botanique.matiere('ecorce'));
+      }
+    }
   }
   const ete = toutes.find(m => m.saison === 'ete'), hiver = toutes.find(m => m.saison === 'hiver');
   for (const m of toutes) for (const cle of ['racinesSHA256', 'obstaclesSHA256', 'troncsSHA256', 'geometrieSolSHA256'])
@@ -27,7 +46,8 @@ for (const definition of CATALOGUE_SAISONS) test(definition.id + ' : quatre sais
   for (const saison of B.saisons.IDS) assert.deepEqual(decors[saison].nappes.filter(n => n.surfaceType === 'eau').map(n => n.sommets),
     decors.ete.nappes.filter(n => n.surfaceType === 'eau').map(n => n.sommets), 'eau non recolorée en neige');
   assert.equal(new Set(toutes.map(m => m.couleursSolSHA256)).size, 4, 'le terrain répond réellement aux quatre saisons');
-  assert(hiver.lotsProches.instances <= ete.lotsProches.instances, 'aucun objet supplémentaire par branche en Légère');
+  assert(hiver.lotsProches.instances <= ete.lotsProches.instances, 'aucun objet supplémentaire par branche');
+  assert(hiver.lotsProches.triangles <= ete.lotsProches.triangles, 'aucun surcoût géométrique hivernal du décor proche');
   assert(hiver.lotsLointains.triangles <= ete.lotsLointains.triangles, 'aucun surcoût géométrique hivernal du décor lointain');
   if (definition.theme === 'montagne') {
     assert(ete.caducs > 0 && ete.persistants > 0, 'la forêt basse est mixte');
