@@ -254,6 +254,26 @@ export function verifierHabitacle(r, s, candidat = true) {
         if (!q?.route || !q?.glaces || !Array.isArray(q?.erreurs)) fautes.push('Mesure réelle de chaussée/glaces absente');
         // Une référence peut échouer à la lisibilité, mais jamais à la collecte des preuves.
         if (!hudValide(q, j + 1)) fautes.push('Données HUD absentes ou invalides : J' + (j + 1));
+        // Ces témoins sont déjà dans les rapports : aucun nouveau champ ni nouvelle capture requis.
+        // La carte est demandée par preparerHabitacle ; à s=280 (J2=200), l'annonce du virage à
+        // s=344 doit être visible à 80 m/s et masquée à l'arrêt. Leur disparition ne doit pas
+        // faire réussir artificiellement les contrôles de recouvrement.
+        const racine = j ? 'hud2' : 'hud', rectangles = Array.isArray(q?.hud?.rectangles) ? q.hud.rectangles : [];
+        const temoins = id => rectangles.filter(h => typeof h?.id === 'string' && h.id.startsWith(racine + ':' + id + ':'));
+        const cartes = temoins('carte'), annonces = temoins('h-virage'), v = q?.viewport;
+        const dansViewport = h => h && v && [v.x, v.y, v.width, v.height, h.x, h.y, h.width, h.height].every(Number.isFinite)
+          && v.width > 0 && v.height > 0 && h.width > 0 && h.height > 0
+          && h.x >= v.x - 1e-7 && h.y >= v.y - 1e-7
+          && h.x + h.width <= v.x + v.width + 1e-7 && h.y + h.height <= v.y + v.height + 1e-7;
+        if (o.reglagesHud?.carte !== 'oui' || cartes.length !== 1 || !dansViewport(cartes[0]))
+          fautes.push('Carte demandée absente du HUD visible : J' + (j + 1) + ', image ' + i);
+        if (i ? annonces.length !== 1 || !dansViewport(annonces[0]) : annonces.length !== 0)
+          fautes.push('Annonce de virage ' + (i ? 'absente en vitesse-braquage' : 'visible au neutre') + ' : J' + (j + 1));
+        if (s.cartePosition && cartes.length === 1 && dansViewport(cartes[0])) {
+          const carte = cartes[0], milieu = v.x + v.width / 2;
+          if (s.cartePosition === 'gauche' ? carte.x + carte.width > milieu + 1e-7 : carte.x < milieu - 1e-7)
+            fautes.push('Carte visible du mauvais côté : J' + (j + 1) + ', image ' + i);
+        }
         if (!candidat && s.id === 'cockpit-paysage' && !(Array.isArray(q?.glaces) && Array.isArray(q?.erreurs) &&
           q.glaces.some(g => Number.isFinite(g?.hudRecouvrementPx2) && g.hudRecouvrementPx2 > SEUILS_COCKPIT.recouvrementMaxPx2 &&
             q.erreurs.includes('HUD superposé à la glace : ' + g.id))))

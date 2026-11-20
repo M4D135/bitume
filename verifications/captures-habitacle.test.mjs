@@ -170,6 +170,8 @@ function rapportCockpit(s, masqueHud = false) {
     o.lisibilite = Array.from({ length: s.duo ? 2 : 1 }, (_, j) => {
       const { d } = sceneMesure(); d.joueur = j + 1; d.hud.joueur = j + 1; d.hud.racine = j ? 'hud2' : 'hud';
       d.hud.rectangles.forEach(h => { h.id = d.hud.racine + ':compteur'; });
+      d.hud.rectangles.push({ id: d.hud.racine + ':carte:0', x: s.cartePosition === 'gauche' ? 300 : 600, y: 10, width: 100, height: 100 });
+      if (i) d.hud.rectangles.push({ id: d.hud.racine + ':h-virage:0', x: 20, y: 170, width: 140, height: 40 });
       if (masqueHud) d.hud.rectangles.push({ id: d.hud.racine + ':classement:ligne0', x: 170, y: 350, width: 40, height: 20 });
       return { joueur: j + 1, sujet: j, vitesse: i ? 80 : 0, volant: i ? j ? -.65 : .65 : 0, ...mesurerLisibiliteCockpit(d, SEUILS_COCKPIT) };
     });
@@ -335,6 +337,80 @@ test('le rapport exige les deux états, les deux joueurs et les erreurs réelles
       assert(verifierHabitacle(faux, s).length, 'préférences/rival du compact réellement prescrits');
     }
   }
+});
+
+test('les rapports JSON exigent la carte visible aux deux poses et pour chaque joueur', () => {
+  for (const s of SCENARIOS_COCKPIT.filter(s => s.cockpit)) {
+    const r = JSON.parse(JSON.stringify(rapportCockpit(s)));
+    assert.deepEqual(verifierHabitacle(r, s), [], 'les champs déjà capturés suffisent, sans DOM ni navigateur');
+    for (const [i, im] of r.images.entries()) for (let j = 0; j < im.observation.lisibilite.length; j++) {
+      for (const changer of [
+        (q, carte) => { q.hud.rectangles = q.hud.rectangles.filter(h => h !== carte); },
+        (q, carte) => { carte.id = carte.id.replace(':carte:', ':carte-fausse:'); },
+        (q, carte) => { carte.width = 0; },
+        (q, carte) => { carte.x = q.viewport.x + q.viewport.width; },
+        (q, carte) => { q.hud.rectangles.push({ ...carte, id: carte.id + '-bis' }); }
+      ]) {
+        const faux = structuredClone(r), q = faux.images[i].observation.lisibilite[j];
+        changer(q, q.hud.rectangles.find(h => h.id.includes(':carte:')));
+        assert(verifierHabitacle(faux, s).some(e => /Carte demandée absente/.test(e)), s.id + '/image' + i + '/J' + (j + 1));
+      }
+    }
+    const masquee = structuredClone(r); masquee.images[0].observation.reglagesHud.carte = 'non';
+    assert(verifierHabitacle(masquee, s).some(e => /Carte demandée absente/.test(e)), 'le scénario exige toujours une carte');
+  }
+});
+
+test('l’annonce doit être visible en vitesse-braquage et absente au neutre, pour J1 et J2', () => {
+  for (const s of SCENARIOS_COCKPIT.filter(s => s.cockpit)) {
+    const r = rapportCockpit(s);
+    for (let j = 0; j < r.images[1].observation.lisibilite.length; j++) {
+      for (const changer of [
+        (q, annonce) => { q.hud.rectangles = q.hud.rectangles.filter(h => h !== annonce); },
+        (q, annonce) => { annonce.id = annonce.id.replace(':h-virage:', ':h-virage-annonce:'); },
+        (q, annonce) => { annonce.height = 0; },
+        (q, annonce) => { annonce.y = q.viewport.y + q.viewport.height; }
+      ]) {
+        const faux = structuredClone(r), q = faux.images[1].observation.lisibilite[j];
+        changer(q, q.hud.rectangles.find(h => h.id.includes(':h-virage:')));
+        assert(verifierHabitacle(faux, s).some(e => /Annonce de virage absente en vitesse-braquage/.test(e)), s.id + '/J' + (j + 1));
+      }
+      const faux = structuredClone(r), annonce = faux.images[1].observation.lisibilite[j].hud.rectangles.find(h => h.id.includes(':h-virage:'));
+      faux.images[0].observation.lisibilite[j].hud.rectangles.push(structuredClone(annonce));
+      assert(verifierHabitacle(faux, s).some(e => /Annonce de virage visible au neutre/.test(e)), s.id + '/J' + (j + 1));
+    }
+  }
+});
+
+test('les cas compacts exigent le côté réel de la carte, même avec les bons réglages déclarés', () => {
+  for (const s of SCENARIOS_COCKPIT.filter(s => s.cartePosition)) {
+    const r = rapportCockpit(s);
+    for (let i = 0; i < 2; i++) for (const position of ['inverse', 'a-cheval']) {
+      const faux = structuredClone(r), q = faux.images[i].observation.lisibilite[0];
+      const carte = q.hud.rectangles.find(h => h.id.includes(':carte:')), milieu = q.viewport.x + q.viewport.width / 2;
+      carte.x = position === 'a-cheval' ? milieu - carte.width / 2 : s.cartePosition === 'gauche' ? milieu + 20 : milieu - carte.width - 20;
+      assert(verifierHabitacle(faux, s).some(e => /Carte visible du mauvais côté/.test(e)), s.id + '/image' + i + '/' + position);
+    }
+    const deplace = structuredClone(r);
+    for (const im of deplace.images) for (const q of im.observation.lisibilite) {
+      q.viewport.x += 700; for (const rectangle of q.hud.rectangles) rectangle.x += 700;
+    }
+    assert.deepEqual(verifierHabitacle(deplace, s), [], 'le côté est relatif au viewport, pas à l’origine globale');
+  }
+});
+
+test('la référence négative exige aussi sa carte et l’annonce dans les bons états', () => {
+  const s = SCENARIOS_COCKPIT.find(s => s.id === 'cockpit-paysage'), r = rapportCockpit(s, true);
+  assert.deepEqual(verifierHabitacle(JSON.parse(JSON.stringify(r)), s, false), []);
+  for (const [i, id, attendu] of [[0, 'carte', /Carte demandée absente/], [1, 'carte', /Carte demandée absente/],
+    [1, 'h-virage', /Annonce de virage absente en vitesse-braquage/]]) {
+    const faux = structuredClone(r), q = faux.images[i].observation.lisibilite[0];
+    q.hud.rectangles = q.hud.rectangles.filter(h => !h.id.includes(':' + id + ':'));
+    assert(verifierHabitacle(faux, s, false).some(e => attendu.test(e)), 'le masque de glace connu ne remplace pas le témoin ' + id);
+  }
+  const faux = structuredClone(r);
+  faux.images[0].observation.lisibilite[0].hud.rectangles.push({ id: 'hud:h-virage:temoin', x: 20, y: 170, width: 140, height: 40 });
+  assert(verifierHabitacle(faux, s, false).some(e => /Annonce de virage visible au neutre/.test(e)));
 });
 
 test('HUD de référence : les preuves absentes ou invalides restent des échecs structurels', () => {
