@@ -1,0 +1,330 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "base": "f41614e1f3887a79ebbd633df3fde754534f202e",
+  "runtime_livre": {
+    "version": "0.2.62",
+    "physique": "p15",
+    "moteur": "FERRO 0.3.15",
+    "circuits": 8
+  },
+  "destinations_prevues": 17,
+  "lot_actif": "references",
+  "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
+  "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
+  "statuts": [
+    "planned",
+    "in_progress",
+    "prepared",
+    "qualified",
+    "published",
+    "conditional",
+    "blocked_by_evidence"
+  ],
+  "regle": "Une preuve appartient à une version exacte. Sauvegarder les checkpoints ; intégrer les candidats qualifiés ; poursuivre sans redemander un go.",
+  "lots": [
+    {
+      "id": "references",
+      "objectif": "Références, modèles et programme complet",
+      "etat": "prepared",
+      "dependances": [],
+      "cloture": "Empreintes, liens et JSON ; publier en premier",
+      "preuves": []
+    },
+    {
+      "id": "demos_pilotes",
+      "objectif": "Caméras, sols, volant et pilote expressif",
+      "etat": "in_progress",
+      "dependances": [
+        "references"
+      ],
+      "cloture": "Géométrie, trajectoires natives, commandes et captures intégrées",
+      "preuves": []
+    },
+    {
+      "id": "meteo",
+      "objectif": "Pluie, panache et neige selon les références",
+      "etat": "in_progress",
+      "dependances": [
+        "references"
+      ],
+      "cloture": "Shader réel, mouvement, abri, J1/J2, pause, vues et captures",
+      "preuves": []
+    },
+    {
+      "id": "couverts",
+      "objectif": "Plusieurs passages couverts et niveaux cohérents",
+      "etat": "planned",
+      "dependances": [
+        "references"
+      ],
+      "cloture": "Physique, météo, lumière, caméra et rétros partagent les sections",
+      "preuves": []
+    },
+    {
+      "id": "cimes",
+      "objectif": "Route-des-Cimes distincte, objectif 9,70 km",
+      "etat": "in_progress",
+      "dependances": [
+        "couverts"
+      ],
+      "cloture": "Tracé fermé, Mur 30 %, 3 couverts, pont/gorge, châssis et IA",
+      "preuves": []
+    },
+    {
+      "id": "haut_col",
+      "objectif": "Haut-Col : rampes, corniche, second tunnel",
+      "etat": "planned",
+      "dependances": [
+        "couverts"
+      ],
+      "cloture": "Identité et plan conservés, pentes >10 %, appuis et IA",
+      "preuves": []
+    },
+    {
+      "id": "monaco_sources",
+      "objectif": "Monaco 14A : chaussée, niveaux et provenance",
+      "etat": "in_progress",
+      "dependances": [
+        "references"
+      ],
+      "cloture": "Distinguer MNT/chaussée ; largeurs, dévers, portails, incertitudes",
+      "preuves": []
+    },
+    {
+      "id": "monaco_route",
+      "objectif": "Monaco 14B–D : route, murs, IA, stands et tunnel",
+      "etat": "planned",
+      "dependances": [
+        "monaco_sources",
+        "couverts"
+      ],
+      "cloture": "Enveloppes, rues voisines et couches distinctes, course qualifiée",
+      "preuves": []
+    },
+    {
+      "id": "monaco_ville",
+      "objectif": "Monaco 14E–F : port, architecture et fidélité",
+      "etat": "planned",
+      "dependances": [
+        "monaco_route"
+      ],
+      "cloture": "Repères et rapport mesuré des écarts ; aucune fidélité inventée",
+      "preuves": []
+    },
+    {
+      "id": "marseille_sources",
+      "objectif": "Marseille 15A–B : corridor et relief",
+      "etat": "planned",
+      "dependances": [
+        "references"
+      ],
+      "cloture": "Résoudre bbox/provenance, densifier chaussée et tabliers",
+      "preuves": []
+    },
+    {
+      "id": "marseille_course",
+      "objectif": "Marseille 15C–F : route, ville, collisions et IA",
+      "etat": "planned",
+      "dependances": [
+        "marseille_sources",
+        "couverts"
+      ],
+      "cloture": "Course complète sur relief cohérent, niveaux superposés",
+      "preuves": []
+    },
+    {
+      "id": "fjord",
+      "objectif": "16A Fjord-d’Argent",
+      "etat": "planned",
+      "dependances": [
+        "couverts"
+      ],
+      "cloture": "Destination originale et course/biome qualifiés",
+      "preuves": []
+    },
+    {
+      "id": "carpates",
+      "objectif": "16B Crêtes-des-Carpates",
+      "etat": "planned",
+      "dependances": [
+        "couverts"
+      ],
+      "cloture": "Destination originale et course/biome qualifiés",
+      "preuves": []
+    },
+    {
+      "id": "ecosse",
+      "objectif": "16C Landes-d’Écosse",
+      "etat": "planned",
+      "dependances": [
+        "couverts"
+      ],
+      "cloture": "Destination originale et course/biome qualifiés",
+      "preuves": []
+    },
+    {
+      "id": "sierra",
+      "objectif": "16D Sierra-Cuivrée",
+      "etat": "planned",
+      "dependances": [
+        "couverts"
+      ],
+      "cloture": "Destination originale et course/biome qualifiés",
+      "preuves": []
+    },
+    {
+      "id": "corail",
+      "objectif": "16E Baie-du-Corail",
+      "etat": "planned",
+      "dependances": [
+        "couverts"
+      ],
+      "cloture": "Destination originale et course/biome qualifiés",
+      "preuves": []
+    },
+    {
+      "id": "andes",
+      "objectif": "16F Col-des-Andes",
+      "etat": "planned",
+      "dependances": [
+        "couverts"
+      ],
+      "cloture": "Destination originale et course/biome qualifiés",
+      "preuves": []
+    },
+    {
+      "id": "conduite",
+      "objectif": "17 : puissance, ABS, glisse et aides depuis p15",
+      "etat": "planned",
+      "dependances": [
+        "references"
+      ],
+      "cloture": "521 ch calibrés, niveaux ABS, physique versionnée et contrôles",
+      "preuves": []
+    },
+    {
+      "id": "rendu",
+      "objectif": "21 : sols, ombres, eau, reflets, nuit, Photo et grain",
+      "etat": "planned",
+      "dependances": [
+        "demos_pilotes"
+      ],
+      "cloture": "Défauts reproduits puis corrigés ; moteur via FERRO canonique",
+      "preuves": []
+    },
+    {
+      "id": "matieres",
+      "objectif": "23/25 : freins, chaleur, salissures et matières",
+      "etat": "planned",
+      "dependances": [
+        "demos_pilotes"
+      ],
+      "cloture": "Silhouette, ancrages et cockpit préservés ; effets mesurés",
+      "preuves": []
+    },
+    {
+      "id": "reseau",
+      "objectif": "27 : invitations sans serveur dédié à administrer",
+      "etat": "planned",
+      "dependances": [
+        "references"
+      ],
+      "cloture": "Signalisation, repli et réseaux distincts ; salon conservé jusque-là",
+      "preuves": []
+    },
+    {
+      "id": "chargement",
+      "objectif": "28B/28D : précréation et installation progressive",
+      "etat": "planned",
+      "dependances": [
+        "references"
+      ],
+      "cloture": "Mesures de tâches et budget de chargement, repli compatible",
+      "preuves": []
+    },
+    {
+      "id": "cache",
+      "objectif": "28E : IndexedDB versionné et intègre",
+      "etat": "planned",
+      "dependances": [
+        "chargement"
+      ],
+      "cloture": "Invalidation, quota, erreurs, régénération et gain mesuré",
+      "preuves": []
+    },
+    {
+      "id": "calcul_conditionnel",
+      "objectif": "28F–H : Worker/WASM/WebGPU selon mesure",
+      "etat": "conditional",
+      "dependances": [
+        "chargement"
+      ],
+      "cloture": "Ne se réalise que pour un coût établi, avec repli",
+      "preuves": []
+    },
+    {
+      "id": "records",
+      "objectif": "Records par circuit, mode, boîte et modèle",
+      "etat": "planned",
+      "dependances": [
+        "references"
+      ],
+      "cloture": "Migration non destructive et isolation des essais",
+      "preuves": []
+    },
+    {
+      "id": "championnat",
+      "objectif": "Championnat de plusieurs courses",
+      "etat": "planned",
+      "dependances": [
+        "records"
+      ],
+      "cloture": "Progression, classement, sauvegarde et reprise cohérents",
+      "preuves": []
+    },
+    {
+      "id": "qualification_finale",
+      "objectif": "Qualification et publication du programme",
+      "etat": "planned",
+      "dependances": [
+        "cimes",
+        "haut_col",
+        "monaco_ville",
+        "marseille_course",
+        "fjord",
+        "carpates",
+        "ecosse",
+        "sierra",
+        "corail",
+        "andes",
+        "conduite",
+        "rendu",
+        "matieres",
+        "reseau",
+        "cache",
+        "championnat",
+        "meteo"
+      ],
+      "cloture": "CI/build/captures exacts ; essais matériels séparés et limites explicites",
+      "preuves": []
+    }
+  ],
+  "lots_livres_a_preserver": [
+    "5B chargement de base",
+    "12A–F4 roues pneus stands",
+    "13A–B Baïkal",
+    "18 public",
+    "20 échappement",
+    "24 vibrations",
+    "26 faune",
+    "28A/C herbier saisons",
+    "p15 aspiration et dégagement natif"
+  ],
+  "limites_transversales": [
+    "FPS matériels",
+    "manettes et audio physiques",
+    "liaison entre réseaux réels",
+    "Monaco : chaussée largeurs dévers non qualifiés"
+  ]
+}

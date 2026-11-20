@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "date_reception": "2026-11-20",
+  "provenance": "Originaux joints par David à la demande de continuation de BITUME",
+  "usage": "Documentation et objectifs ; aucun asset runtime",
+  "images": [
+    {
+      "fichier": "route-des-cimes-plan.png",
+      "original": "4908D265-7549-4C8F-A002-8CA343A6EF90.png",
+      "role": "plan_cible",
+      "octets": 179694,
+      "dimensions": [
+        1500,
+        1000
+      ],
+      "sha256": "29ce4f714e260643a3dfde3b5e6abf25c28243c9b4155b1f598ad7faebf64ea7",
+      "preuve_runtime": false
+    },
+    {
+      "fichier": "haut-col-etude-historique.png",
+      "original": "7D874AF1-E839-4EC0-8626-2152AFE2408F.png",
+      "role": "etude_historique",
+      "octets": 179413,
+      "dimensions": [
+        1500,
+        1000
+      ],
+      "sha256": "3da8fdc2d72802703e26ee6058110aea045d0aa1cf45b922040ce9b67b2668dd",
+      "preuve_runtime": false
+    },
+    {
+      "fichier": "profil-montagne-historique.png",
+      "original": "5D16C74C-6461-486E-8034-C3AE2E2C6917.png",
+      "role": "etude_p9_p10",
+      "octets": 156672,
+      "dimensions": [
+        1500,
+        1235
+      ],
+      "sha256": "ddf1b0b0fe0a8c56f2a2376b4351d86167ff7d9d39b918c4c8d140e3b26ba421",
+      "preuve_runtime": false
+    },
+    {
+      "fichier": "pluie-grille.jpeg",
+      "original": "200E7CC8-6BB0-4CC5-9ECC-5EAA072F009F.jpeg",
+      "role": "objectif_visuel",
+      "octets": 370196,
+      "dimensions": [
+        1280,
+        720
+      ],
+      "sha256": "44a6ff63876bebfe265ddab8ad39854f731ce5a40684855729daf64ae2856675",
+      "preuve_runtime": false
+    },
+    {
+      "fichier": "panache-235.jpeg",
+      "original": "93420F9B-DED3-43D3-BF4E-EC270A3EF2A2.jpeg",
+      "role": "objectif_visuel",
+      "octets": 266338,
+      "dimensions": [
+        1280,
+        720
+      ],
+      "sha256": "714b65f22e15343c56d3a92022b2021f57df3b8d749b509cb14251f0c1dcf2f2",
+      "preuve_runtime": false
+    },
+    {
+      "fichier": "neige-45.jpeg",
+      "original": "00B707D1-4D02-4FB5-A53B-E1EA52D6EBC2.jpeg",
+      "role": "objectif_visuel",
+      "octets": 199181,
+      "dimensions": [
+        1280,
+        720
+      ],
+      "sha256": "dc292107058d6fa252e0a4f94bccfc1ee9e86e1131d270f313c19a5e99cbe5c5",
+      "preuve_runtime": false
+    }
+  ]
+}
