@@ -1,0 +1,2139 @@
+{
+  "format": "bitume-revue-meteo-0268-v1",
+  "date": "2026-11-20T15:51:30.986566+00:00",
+  "run": 44761148719,
+  "runURL": "https://github.com/M4D135/bitume/actions/runs/44761148719",
+  "decision": "Intégration visuelle météo 0.2.68 examinée favorablement dans les scénarios capturés ; réserves conservées. Aucun accord de fusion ou publication.",
+  "source": {
+    "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+    "tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+    "treeEvidence": {
+      "mode": "API GitHub commit consultée par agent root",
+      "parentsPrefixes": [
+        "092a00b",
+        "3daefb7"
+      ],
+      "treeFilePresent": false
+    },
+    "candidate": {
+      "version": "0.2.68",
+      "sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+      "octets": 14383155
+    },
+    "reference": {
+      "version": "0.2.62",
+      "commit": "f41614e1f3887a79ebbd633df3fde754534f202e",
+      "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+      "octets": 14268457
+    }
+  },
+  "comptes": {
+    "artefacts": 7,
+    "rapportsCampagne": 7,
+    "rapportsScene": 20,
+    "images": 41,
+    "apres": 29,
+    "avant": 12,
+    "inspectees": 41,
+    "imagesPleineResolution": 33,
+    "erreursVerification": 0,
+    "alertesPauseAttendues": 3,
+    "autresAlertes": 0,
+    "avertissements": 0
+  },
+  "verificationRapports": {
+    "outilLocal": "tools/captures-meteo.mjs",
+    "outilLocalSHA256": "2fa66ea3102ba7978dddbdfb5cae7bb2bc88c0a72fe2f5a3fd37e8d07ee1071e",
+    "fonctions": [
+      "verifierRapport",
+      "verifierContrasteSillage"
+    ],
+    "date": "2026-11-20T15:49:39.997Z",
+    "rapports": 20,
+    "erreurs": 0,
+    "portee": "Rejeu numérique des rapports existants ; aucun nouveau rendu."
+  },
+  "archives": [
+    {
+      "artifact": "bitume-images-pluie-spray-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "id": 14642896638,
+      "digestExpected": "sha256:3a0e1541b042e8ae3a40901ee2fd6cfc565b2138324aef1c6978ee8d837338ae",
+      "digestActual": "sha256:3a0e1541b042e8ae3a40901ee2fd6cfc565b2138324aef1c6978ee8d837338ae",
+      "digestMatches": true,
+      "extractedDifferences": [],
+      "pngs": 4,
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "sha256s": {
+        "dist/bitume.html": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+        "qualification/reference-0262.html": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297"
+      },
+      "treeFilePresent": false
+    },
+    {
+      "artifact": "bitume-images-pluie-grille-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "id": 14642478089,
+      "digestExpected": "sha256:f7d1fd702914e5fc09a55966b04b1ced4e32699eb5c8b7b8a5e0ef1922a038d2",
+      "digestActual": "sha256:f7d1fd702914e5fc09a55966b04b1ced4e32699eb5c8b7b8a5e0ef1922a038d2",
+      "digestMatches": true,
+      "extractedDifferences": [],
+      "pngs": 4,
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "sha256s": {
+        "dist/bitume.html": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+        "qualification/reference-0262.html": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297"
+      },
+      "treeFilePresent": false
+    },
+    {
+      "artifact": "bitume-images-pluie-tunnel-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "id": 14642073583,
+      "digestExpected": "sha256:52f05e51f2cff8d557fced4e07cd46ae9c136728d26f2da4be67cbd8801f0944",
+      "digestActual": "sha256:52f05e51f2cff8d557fced4e07cd46ae9c136728d26f2da4be67cbd8801f0944",
+      "digestMatches": true,
+      "extractedDifferences": [],
+      "pngs": 2,
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "sha256s": {
+        "dist/bitume.html": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+        "qualification/reference-0262.html": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297"
+      },
+      "treeFilePresent": false
+    },
+    {
+      "artifact": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "id": 14643776836,
+      "digestExpected": "sha256:9791f147aac3bc3ef326e632ee69f5ef86d43f6f3941a36c3cbfceb7a877b024",
+      "digestActual": "sha256:9791f147aac3bc3ef326e632ee69f5ef86d43f6f3941a36c3cbfceb7a877b024",
+      "digestMatches": true,
+      "extractedDifferences": [],
+      "pngs": 12,
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "sha256s": {
+        "dist/bitume.html": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+        "qualification/reference-0262.html": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297"
+      },
+      "treeFilePresent": false
+    },
+    {
+      "artifact": "bitume-images-sillage-vues-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "id": 14645925976,
+      "digestExpected": "sha256:b72c6c2030033d7faaac7646492cb54f11a348521d7d0a9e92b1b4af47eaefa3",
+      "digestActual": "sha256:b72c6c2030033d7faaac7646492cb54f11a348521d7d0a9e92b1b4af47eaefa3",
+      "digestMatches": true,
+      "extractedDifferences": [],
+      "pngs": 4,
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "sha256s": {
+        "dist/bitume.html": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+        "qualification/reference-0262.html": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297"
+      },
+      "treeFilePresent": false
+    },
+    {
+      "artifact": "bitume-images-neige-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "id": 14643872699,
+      "digestExpected": "sha256:de023f1f846c1400bf24d70cd7f06d6c89afb3e162925f4a8670fdb9662673a1",
+      "digestActual": "sha256:de023f1f846c1400bf24d70cd7f06d6c89afb3e162925f4a8670fdb9662673a1",
+      "digestMatches": true,
+      "extractedDifferences": [],
+      "pngs": 9,
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "sha256s": {
+        "dist/bitume.html": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+        "qualification/reference-0262.html": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297"
+      },
+      "treeFilePresent": false
+    },
+    {
+      "artifact": "bitume-images-sillage-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "id": 14646186691,
+      "digestExpected": "sha256:4328557b99950a8a079c39643d6594af94cb99d27ab175a891e661e0ba86dc27",
+      "digestActual": "sha256:4328557b99950a8a079c39643d6594af94cb99d27ab175a891e661e0ba86dc27",
+      "digestMatches": true,
+      "extractedDifferences": [],
+      "pngs": 6,
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "sha256s": {
+        "dist/bitume.html": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+        "qualification/reference-0262.html": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297"
+      },
+      "treeFilePresent": false
+    }
+  ],
+  "contrasteSillage": {
+    "erreurs": [],
+    "vitesseKmh": 300,
+    "posesCameraHorlogeIdentiques": true,
+    "pluieAmbiante": 0,
+    "humide": [
+      {
+        "temps": 5.941666666666662,
+        "embruns": 0.9377724461274026,
+        "eau": 1.4377489768846536,
+        "gouttes": 24,
+        "expulses": 46
+      },
+      {
+        "temps": 6.041666666666662,
+        "embruns": 0.9375465028575918,
+        "eau": 1.4388371215780875,
+        "gouttes": 24,
+        "expulses": 47
+      }
+    ],
+    "sec": [
+      {
+        "temps": 5.941666666666662,
+        "embruns": 0,
+        "eau": 0,
+        "gouttes": 0,
+        "visible": false
+      },
+      {
+        "temps": 6.041666666666662,
+        "embruns": 0,
+        "eau": 0,
+        "gouttes": 0,
+        "visible": false
+      }
+    ],
+    "limite": "Le témoin retire le mouillage de la source ; chaussée et monte de pneus changent aussi. Ne pas attribuer toute différence de pixels à la seule visière."
+  },
+  "scenes": [
+    {
+      "variante": "avant",
+      "scenario": "pluie-spray235",
+      "rapport": "bitume-images-pluie-spray-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/pluie-spray235/rapport.json",
+      "rapportSHA256": "dd3089420f2b852ff9e35ba10963e20a5593c06a4957f41c3165b9b46750693f",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Rival au centre, pluie de lentille et rétroviseurs présents ; référence 0.2.62.",
+      "images": [
+        {
+          "fichier": "bitume-images-pluie-spray-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/pluie-spray235/0000.png",
+          "sha256": "1ee249cbdb601522947c2231ac2b9634feed9b674d25014c1b058a80685359fe",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 8.941666666666652,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 65.27777777777777,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0.8621807248547035,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 1.3604575494675024,
+              "gouttes": 0,
+              "embruns": 0.8621807248547019,
+              "expulses": null,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-pluie-spray-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/pluie-spray235/0001.png",
+          "sha256": "807d1b0cfbc37cf7bab221be58dfefb3c5c02af532ad29cf9794a5330eb198ab",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 9.041666666666652,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 65.27777777777777,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0.8621807248547035,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 1.360608969757625,
+              "gouttes": 0,
+              "embruns": 0.8621807248547019,
+              "expulses": null,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "pluie-spray235",
+      "rapport": "bitume-images-pluie-spray-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/pluie-spray235/rapport.json",
+      "rapportSHA256": "a63c49f452d723c26346dae8a1488c0eb3a450034a0bf75d1a9cf506961a816c",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Dépôts et brume composés autour du rival à 235 km/h ; instruments et deux rétroviseurs présents, aucune rupture visible.",
+      "images": [
+        {
+          "fichier": "bitume-images-pluie-spray-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/pluie-spray235/0000.png",
+          "sha256": "f53d8bbfe9c40567f0ab2246e73e7d7878b008c702fb824cdb36ee17782175fa",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 8.941666666666652,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 65.27777777777777,
+              "vitesseX": -14.978395442718048,
+              "vitesseY": 0,
+              "vitesseZ": -63.5360995148939,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0.9100376449217281,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 1.8969607548910592,
+              "gouttes": 24,
+              "embruns": 0.9100376449217265,
+              "expulses": 46,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-pluie-spray-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/pluie-spray235/0001.png",
+          "sha256": "3e1bdc06e25a49deaed5bb9f215ff22feecafcbf1fec04f233b994944358ac52",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 9.041666666666652,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 65.27777777777777,
+              "vitesseX": -14.978395442718048,
+              "vitesseY": 0,
+              "vitesseZ": -63.5360995148939,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0.9100376449217281,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 1.8971718885261877,
+              "gouttes": 22,
+              "embruns": 0.9100376449217265,
+              "expulses": 50,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "avant",
+      "scenario": "pluie-grille",
+      "rapport": "bitume-images-pluie-grille-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/pluie-grille/rapport.json",
+      "rapportSHA256": "a0da8751d67e186edae2f016ccbf1fb7f7269ad8158e823269227f929731610a",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Grille humide à l’arrêt, dépôts visibles, cockpit et rétroviseurs composés.",
+      "images": [
+        {
+          "fichier": "bitume-images-pluie-grille-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/pluie-grille/0000.png",
+          "sha256": "e04157d423de31e6930ef702a2ab0e620293d5a421e88d01f9018cd3c09b0414",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 8.941666666666652,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0.9484803774455296,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": null,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-pluie-grille-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/pluie-grille/0001.png",
+          "sha256": "649f5059f376284bade78f448cdfa1fe9e81860d12c01741ffe9cfc4b5fb1ffb",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 9.041666666666652,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0.9485859442630938,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": null,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "pluie-grille",
+      "rapport": "bitume-images-pluie-grille-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/pluie-grille/rapport.json",
+      "rapportSHA256": "167f86886e4972d860929ccd55480e630531c8867efe7c4b39bd5e8a47b0e321",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Accumulation de gouttes plus dense à l’arrêt, piste/cockpit/rétros lisibles sur les deux images.",
+      "images": [
+        {
+          "fichier": "bitume-images-pluie-grille-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/pluie-grille/0000.png",
+          "sha256": "54f71beaa72ffd1c7e42b44b3aef4c697cb23ef4ecc25457ca52ede8d5195790",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 8.941666666666652,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 0,
+              "vitesseX": 0,
+              "vitesseY": 0,
+              "vitesseZ": 0,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 1.1980804767732998,
+              "gouttes": 23,
+              "embruns": 0,
+              "expulses": 3,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-pluie-grille-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/pluie-grille/0001.png",
+          "sha256": "0d431f8dbc53e9d7d277a5526058bc65ae29336a0b2f6452e37087dbc9e6e513",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 9.041666666666652,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 0,
+              "vitesseX": 0,
+              "vitesseY": 0,
+              "vitesseZ": 0,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 1.1982138243323281,
+              "gouttes": 24,
+              "embruns": 0,
+              "expulses": 3,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "tunnel",
+      "rapport": "bitume-images-pluie-tunnel-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/tunnel/rapport.json",
+      "rapportSHA256": "7ff5f3c3166998fc2f029c0834dcc61d45282840bc79b3bd0ac345f8247552c6",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Parois et plafond du tunnel lisibles, rival proche selon pose fixée ; dépôts résiduels visibles, pas de visière artificiellement sèche exigée.",
+      "images": [
+        {
+          "fichier": "bitume-images-pluie-tunnel-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/tunnel/0000.png",
+          "sha256": "5c977c6c651feeadc2a0df842533e079291056722fb7d17a85b2e66038b811a7",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 8.941666666666652,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 35,
+              "vitesseX": 31.421962579177993,
+              "vitesseY": 0.5602958509785173,
+              "vitesseZ": 15.406048689787852,
+              "cameraYaw": 2.0266502865249514,
+              "cameraPitch": 0.013607766206195651,
+              "cameraRoll": 4.587527602752171e-16,
+              "abri": true,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0.9330980874026081,
+              "gouttes": 24,
+              "embruns": 0.01827393150049024,
+              "expulses": 10,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-pluie-tunnel-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/tunnel/0001.png",
+          "sha256": "023cfbcd87d0d6754d584f92343a6c64e0ca6d383b4db8e31ecf5f88e82c5751",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 9.041666666666652,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 35,
+              "vitesseX": 31.421962579177993,
+              "vitesseY": 0.5602958509785173,
+              "vitesseZ": 15.406048689787852,
+              "cameraYaw": 2.0266502865249514,
+              "cameraPitch": 0.013607766206195651,
+              "cameraRoll": 4.587527602752171e-16,
+              "abri": true,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0.8962767765375129,
+              "gouttes": 23,
+              "embruns": 0.01588659284306485,
+              "expulses": 11,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "avant",
+      "scenario": "faune-haut-col-ete",
+      "rapport": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/faune-haut-col-ete/rapport.json",
+      "rapportSHA256": "4a179f0f681079db69d62c9697a51ca6733bb713d88fc274a7e5e65e926966e5",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Animaux petits dans la pente claire, plan large et terrain strié.",
+      "images": [
+        {
+          "fichier": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/faune-haut-col-ete/0000.png",
+          "sha256": "29973f9a81c134d2b8f1f0ce8c4ac33ed31b53dfff49deef139a8f17e7410eac",
+          "inspectee": true,
+          "methode": "planche 480×270 par image",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 0.4083333333333333,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": null,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/faune-haut-col-ete/0001.png",
+          "sha256": "01d70f301661e4e48f62e7fa65d2a3d06ce45fef1685a3ef980c70023cf76a0f",
+          "inspectee": true,
+          "methode": "planche 480×270 par image",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 0.5083333333333333,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": null,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "avant",
+      "scenario": "faune-haut-col-hiver",
+      "rapport": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/faune-haut-col-hiver/rapport.json",
+      "rapportSHA256": "7f4ff601fd43f9d2f656c2c854e7584c5920aa06b22892b9454c0fd9d14ffac7",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Animaux petits et manteaux sombres, plan large.",
+      "images": [
+        {
+          "fichier": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/faune-haut-col-hiver/0000.png",
+          "sha256": "ddfe1a2f8f047dde8e5d16c3cd4a458481e370f1f5059c90b976ac9f467f74b4",
+          "inspectee": true,
+          "methode": "planche 480×270 par image",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 0.4083333333333333,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": null,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/faune-haut-col-hiver/0001.png",
+          "sha256": "933e636cd41fdd0f7c9b06dd30637c54bf8a95981f6c10517010de6074562ca7",
+          "inspectee": true,
+          "methode": "planche 480×270 par image",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 0.5083333333333333,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": null,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "duo",
+      "rapport": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/duo/rapport.json",
+      "rapportSHA256": "80fa653c6760bf208db2a26e6c2c04831341971967d05807a467f5ede0ad61a2",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Deux cockpits séparés proprement à mi-écran ; dépôts différents, instruments 162/45 et deux rétroviseurs par joueur visibles. Ce scénario historique ne couvre pas deux types de vues différents.",
+      "images": [
+        {
+          "fichier": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/duo/0000.png",
+          "sha256": "f08969877564a5f5cef3981910760afa5f932890aa6ea79921583b7dfe1c0408",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 5.941666666666662,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 45,
+              "vitesseX": -10.325532177533294,
+              "vitesseY": 0,
+              "vitesseZ": -43.79935370813963,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0.029597031867472312,
+              "pause": false,
+              "actif": true
+            },
+            "j2": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 12.5,
+              "vitesseX": -2.868203382648475,
+              "vitesseY": 0,
+              "vitesseZ": -12.166487141149817,
+              "cameraYaw": -0.23151901171724143,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0.8202553821238341,
+              "pause": false,
+              "actif": true
+            },
+            "visieresVisibles": {
+              "j1": true,
+              "j2": true
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0.8030439130145347,
+              "gouttes": 24,
+              "embruns": 0.029597031866061354,
+              "expulses": 10,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/duo/0001.png",
+          "sha256": "75039ba35cb24b6d08a38064b5b50eeaf446f8d48b4816ebef8e86efc0c9de69",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 6.041666666666662,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 45,
+              "vitesseX": -10.325532177533294,
+              "vitesseY": 0,
+              "vitesseZ": -43.79935370813963,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0.029597031867472312,
+              "pause": false,
+              "actif": true
+            },
+            "j2": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 12.5,
+              "vitesseX": -2.868203382648475,
+              "vitesseY": 0,
+              "vitesseZ": -12.166487141149817,
+              "cameraYaw": -0.23151901171724143,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0.8202553821238341,
+              "pause": false,
+              "actif": true
+            },
+            "visieresVisibles": {
+              "j1": true,
+              "j2": true
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0.8038285796629964,
+              "gouttes": 23,
+              "embruns": 0.02959703186652652,
+              "expulses": 11,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "sec",
+      "rapport": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sec/rapport.json",
+      "rapportSHA256": "70d16853290678110f64dfe221c128e324270c223da84d3b1bbbd03fe02bef8d",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Cockpit et piste sans dépôt humide, deux rétroviseurs présents ; ciel clair et lentille propre.",
+      "images": [
+        {
+          "fichier": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sec/0000.png",
+          "sha256": "61c9e13d709a81ea50110ef72a91d5c17bc883dac2e49c65f893e79a0f9947bd",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 0.4083333333333333,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 0,
+              "vitesseX": 0,
+              "vitesseY": 0,
+              "vitesseZ": 0,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": 0,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sec/0001.png",
+          "sha256": "c1d24b4f4ebb6eae7a027f3dde4304d27b77801dedd8852b27347ae75404a15e",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 0.5083333333333333,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 0,
+              "vitesseX": 0,
+              "vitesseY": 0,
+              "vitesseZ": 0,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": 0,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "faune-haut-col-ete",
+      "rapport": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/faune-haut-col-ete/rapport.json",
+      "rapportSHA256": "efa5999b7b3f9b8c750db61b47c56b4715d3acdd0b401257bebb414f309088ab",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Bouquetins lisibles et posés sur la pente ; pas de chevauchement du bandeau démo (vue de référence hors démo).",
+      "images": [
+        {
+          "fichier": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/faune-haut-col-ete/0000.png",
+          "sha256": "edcec1358ed7f2cc23acd72bcacd3a7762371eab44b2f954491ce131cf3abe83",
+          "inspectee": true,
+          "methode": "planche 480×270 par image",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 0.4083333333333333,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 0,
+              "vitesseX": 0,
+              "vitesseY": 0,
+              "vitesseZ": 0,
+              "cameraYaw": -2.3877023204119534,
+              "cameraPitch": -0.08782394078984455,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": 0,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/faune-haut-col-ete/0001.png",
+          "sha256": "4714093a7cf8b3e5cdc8555fe5f041a0abfd02a7cc8f8acb18dc9659d6f3c546",
+          "inspectee": true,
+          "methode": "planche 480×270 par image",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 0.5083333333333333,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 0,
+              "vitesseX": 0,
+              "vitesseY": 0,
+              "vitesseZ": 0,
+              "cameraYaw": -2.3877023204119534,
+              "cameraPitch": -0.08782394078984455,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": 0,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "faune-haut-col-hiver",
+      "rapport": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/faune-haut-col-hiver/rapport.json",
+      "rapportSHA256": "349a5d44612686daf09dc9c78c0a53c9454f0887ed665520002d55460a774735",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Groupe hivernal agrandi, silhouettes lisibles et appuis cohérents.",
+      "images": [
+        {
+          "fichier": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/faune-haut-col-hiver/0000.png",
+          "sha256": "206b77073a6ac2aefc6d579bd78a1ef6ee1ac9e8bf58dc3fcf4a80f55c280fad",
+          "inspectee": true,
+          "methode": "planche 480×270 par image",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 0.4083333333333333,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 0,
+              "vitesseX": 0,
+              "vitesseY": 0,
+              "vitesseZ": 0,
+              "cameraYaw": -2.3877023204119525,
+              "cameraPitch": -0.08782394078984505,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": 0,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/faune-haut-col-hiver/0001.png",
+          "sha256": "2df87e21e14b6b9e19e8f0aed0e427d78635049bce37c63e44468cb16fbef781",
+          "inspectee": true,
+          "methode": "planche 480×270 par image",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 0.5083333333333333,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 0,
+              "vitesseX": 0,
+              "vitesseY": 0,
+              "vitesseZ": 0,
+              "cameraYaw": -2.3877023204119525,
+              "cameraPitch": -0.08782394078984505,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": 0,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "sillage300-poursuite",
+      "rapport": "bitume-images-sillage-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sillage300-poursuite/rapport.json",
+      "rapportSHA256": "b233bef3457683262bf9b67de0692789d3c07d78d673e75745ef2a9b3503e79c",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Voiture et piste lisibles, dépôts de lentille présents sans pluie ambiante ; pose et allure 300 km/h fournies par scénario.",
+      "images": [
+        {
+          "fichier": "bitume-images-sillage-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sillage300-poursuite/0000.png",
+          "sha256": "030b8a99f5d8c8837184fa17a354a0cf403789bba1d4b0dfd52705dbda7671e1",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "poursuite",
+            "ecran": "course",
+            "tempsMeteo": 5.941666666666662,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 83.33333333333333,
+              "vitesseX": -19.121355884320913,
+              "vitesseY": 0,
+              "vitesseZ": -81.10991427433264,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": -0.12,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": false,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0.8109796362435087,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 1.2499327514219114,
+              "gouttes": 24,
+              "embruns": 0.8145387454686607,
+              "expulses": 38,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-sillage-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sillage300-poursuite/0001.png",
+          "sha256": "b99fca58da4ebe0d5fee47a60ab1bf32631a382af482c1211c5da266efe5d8e5",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "poursuite",
+            "ecran": "course",
+            "tempsMeteo": 6.041666666666662,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 83.33333333333333,
+              "vitesseX": -19.121355884320913,
+              "vitesseY": 0,
+              "vitesseZ": -81.10991427433264,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": -0.12,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": false,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0.8104328126701141,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 1.2503790552094225,
+              "gouttes": 23,
+              "embruns": 0.8140023391625246,
+              "expulses": 40,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "sillage300-helico",
+      "rapport": "bitume-images-sillage-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sillage300-helico/rapport.json",
+      "rapportSHA256": "0561c891a8cc495d9b8d12e68ef876b2a21ed0c512dae00180b5c2f4788911b4",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Vraie vue aérienne lisible, plusieurs voitures sur piste ; pluie monde visible, aucune goutte sur la lentille.",
+      "images": [
+        {
+          "fichier": "bitume-images-sillage-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sillage300-helico/0000.png",
+          "sha256": "be6899eb941094d236b7618e74aa306b2831e6d899eabb51734cc8fa8fad47b7",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "helico",
+            "ecran": "course",
+            "tempsMeteo": 5.941666666666662,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 83.33333333333333,
+              "vitesseX": -19.121355884320913,
+              "vitesseY": 0,
+              "vitesseZ": -81.10991427433264,
+              "cameraYaw": -0.23151901171721403,
+              "cameraPitch": -0.4735975293936116,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": false,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": false
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": 0,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-sillage-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sillage300-helico/0001.png",
+          "sha256": "91fbda0e0154b67d588a67fda53b908507a2bc39817664e023dfaf51756aba96",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "helico",
+            "ecran": "course",
+            "tempsMeteo": 6.041666666666662,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 83.33333333333333,
+              "vitesseX": -19.121355884320913,
+              "vitesseY": 0,
+              "vitesseZ": -81.10991427433264,
+              "cameraYaw": -0.23151901171721403,
+              "cameraPitch": -0.4735975293936116,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": false,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": false
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": 0,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "avant",
+      "scenario": "neige45",
+      "rapport": "bitume-images-neige-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/neige45/rapport.json",
+      "rapportSHA256": "3c85c54ec75d9aa12bfd0494cfdccf8297af3347f0dd9dfd7e54641d0d964ec1",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Flocons ronds et givre périphérique visibles à 45 km/h ; piste, cockpit et deux rétroviseurs lisibles.",
+      "images": [
+        {
+          "fichier": "bitume-images-neige-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/neige45/0000.png",
+          "sha256": "36ca0210895dfd4ccd8611f6faead9f3d5ef5c7727b3dc02228b60655f9bfcf8",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 11.941666666666642,
+            "j1": {
+              "pluie": 0,
+              "neige": 1,
+              "vitesse": 12.5,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0.08876222882269644,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": null,
+              "accumulationNeige": 0.6689696358046332
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-neige-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/neige45/0001.png",
+          "sha256": "abb6330c323ba02263532a862c7e44a611268c395d149e7cd9ac8a18e9274591",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 12.041666666666641,
+            "j1": {
+              "pluie": 0,
+              "neige": 1,
+              "vitesse": 12.5,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0.08948984910097633,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": null,
+              "accumulationNeige": 0.6718626912080871
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "neige45",
+      "rapport": "bitume-images-neige-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/neige45/rapport.json",
+      "rapportSHA256": "aa10f71a9428d8656d4d80231578b5fbc99f62437f0a531ab2719aab8f8b58c5",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Flocons plus découpés et givre périphérique, lentille visuellement distincte de la pluie liquide ; cockpit, piste et rétroviseurs lisibles.",
+      "images": [
+        {
+          "fichier": "bitume-images-neige-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/neige45/0000.png",
+          "sha256": "443b61a7b3b9814d210cc3aa7e6c464c2d8adcdebf90ebbff9166940396f2212",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 11.941666666666642,
+            "j1": {
+              "pluie": 0,
+              "neige": 1,
+              "vitesse": 12.5,
+              "vitesseX": -2.868203382648137,
+              "vitesseY": 0,
+              "vitesseZ": -12.166487141149897,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0.08763856752091526,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": 0,
+              "accumulationNeige": 0.6544007659877865
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-neige-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/neige45/0001.png",
+          "sha256": "2fcab84235e454f55c97e970f6e1dacfb24ab6db503f4c3dccf4ee7dfd8a2766",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 12.041666666666641,
+            "j1": {
+              "pluie": 0,
+              "neige": 1,
+              "vitesse": 12.5,
+              "vitesseX": -2.868203382648137,
+              "vitesseY": 0,
+              "vitesseZ": -12.166487141149897,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0.08834958353433,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": 0,
+              "accumulationNeige": 0.6572308162183748
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "pause-reprise",
+      "rapport": "bitume-images-neige-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/pause-reprise/rapport.json",
+      "rapportSHA256": "d69428fa70fc2aebd22802dd56aca984cb07ee9cb9b46e0e5a256ddbeb3bf1a2",
+      "erreursRejeu": [],
+      "alertes": [
+        {
+          "image": 1,
+          "vue": "scene",
+          "type": "identique",
+          "valeur": 0
+        },
+        {
+          "image": 1,
+          "vue": "glace-g",
+          "type": "identique",
+          "valeur": 0
+        },
+        {
+          "image": 1,
+          "vue": "glace-d",
+          "type": "identique",
+          "valeur": 0
+        }
+      ],
+      "observationVisuelle": "Deux vues de menu pause identiques visuellement, puis course humide avec dépôts à la reprise ; pas d’écran noir de transition.",
+      "images": [
+        {
+          "fichier": "bitume-images-neige-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/pause-reprise/0000.png",
+          "sha256": "ddea06c2b9672f5c751a9504e67c61a94164124dfe104a05bb54c9f450692de7",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "pause",
+            "tempsMeteo": 8.841666666666653,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 25,
+              "vitesseX": -5.736406765296274,
+              "vitesseY": 0,
+              "vitesseZ": -24.332974282299794,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 1.0235011180527953,
+              "gouttes": 24,
+              "embruns": 0,
+              "expulses": 5,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-neige-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/pause-reprise/0001.png",
+          "sha256": "ddea06c2b9672f5c751a9504e67c61a94164124dfe104a05bb54c9f450692de7",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "pause",
+            "tempsMeteo": 8.841666666666653,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 25,
+              "vitesseX": -5.736406765296274,
+              "vitesseY": 0,
+              "vitesseZ": -24.332974282299794,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 1.0235011180527953,
+              "gouttes": 24,
+              "embruns": 0,
+              "expulses": 5,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-neige-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/pause-reprise/0002.png",
+          "sha256": "bcc1ed9e08224a29b438ac80398e1bd860f2a0f76f853271bf17425c4e632eeb",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 8.941666666666652,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 25,
+              "vitesseX": -5.736406765296274,
+              "vitesseY": 0,
+              "vitesseZ": -24.332974282299794,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 1.0236235538891567,
+              "gouttes": 23,
+              "embruns": 0,
+              "expulses": 6,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "legere",
+      "rapport": "bitume-images-neige-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/legere/rapport.json",
+      "rapportSHA256": "e510720842cc916a82f6ee41b674592781dfb86dc04f658da5e9315d3a1eb80d",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Scène simplifiée et dépôts ronds visibles ; glaces peintes sans images de rétroviseur, conformément au profil low.",
+      "images": [
+        {
+          "fichier": "bitume-images-neige-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/legere/0000.png",
+          "sha256": "6f695a593ea5194884187e68f26072ad46758b0b055b654535afb3628cb01319",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 5.941666666666662,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 45,
+              "vitesseX": -10.325532177533294,
+              "vitesseY": 0,
+              "vitesseZ": -43.79935370813963,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "low",
+              "intensite": 1,
+              "embruns": 0.1392427571169842,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0.9947042071230883,
+              "gouttes": 6,
+              "embruns": 0.13924275711034614,
+              "expulses": 3,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-neige-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/legere/0001.png",
+          "sha256": "f39ef98f2faead92178d4053ba53db5323d38f22f7752a867ee9b71886b6a3e3",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 6.041666666666662,
+            "j1": {
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 45,
+              "vitesseX": -10.325532177533294,
+              "vitesseY": 0,
+              "vitesseZ": -43.79935370813963,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "low",
+              "intensite": 1,
+              "embruns": 0.1392427571169842,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0.995676148014196,
+              "gouttes": 6,
+              "embruns": 0.13924275711253456,
+              "expulses": 3,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "avant",
+      "scenario": "sillage300",
+      "rapport": "bitume-images-sillage-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/sillage300/rapport.json",
+      "rapportSHA256": "ba007594d96c6a74ed1f95fe34a0969205177f9ad430f6728762193a6bf7d243",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Référence 0.2.62 : gouttes de lentille visibles, rival au centre et deux rétroviseurs présents.",
+      "images": [
+        {
+          "fichier": "bitume-images-sillage-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/sillage300/0000.png",
+          "sha256": "57ab0b0dad2c34e64155ad3426d9b3553270663a46c4a37e92d28e8f217ea300",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 5.941666666666662,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 83.33333333333333,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0.9003763827414775,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0.8691901852765005,
+              "gouttes": 0,
+              "embruns": 0.9023051325407424,
+              "expulses": null,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-sillage-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/avant/sillage300/0001.png",
+          "sha256": "401e4e7752c119caf842e8f63728fb947d1e50026749b9d71dd99e2de7c95454",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 6.041666666666662,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 83.33333333333333,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0.9000790506824294,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0.8697754926431475,
+              "gouttes": 0,
+              "embruns": 0.9020143132786257,
+              "expulses": null,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "sillage300",
+      "rapport": "bitume-images-sillage-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sillage300/rapport.json",
+      "rapportSHA256": "6246589cfe616542cf5671e7866ad1d80f58e465fd2b6b5ee3bcbb6939d86e4f",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Forts dépôts sur lentille et brume du sillage à 300 km/h sans pluie ambiante ; rival, cockpit et rétroviseurs restent reconnaissables.",
+      "images": [
+        {
+          "fichier": "bitume-images-sillage-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sillage300/0000.png",
+          "sha256": "4e29456ce061ec2ed873f94f37a6b22223903fd085dcc20adac386cb43b1f80e",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 5.941666666666662,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 83.33333333333333,
+              "vitesseX": -19.121355884320913,
+              "vitesseY": 0,
+              "vitesseZ": -81.10991427433264,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0.9377724461274026,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 1.4377489768846536,
+              "gouttes": 24,
+              "embruns": 0.9392307409321388,
+              "expulses": 46,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-sillage-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sillage300/0001.png",
+          "sha256": "e06780d7384446077e14863fe70f7ef31618f7408f15a25207c7d125faf668df",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 6.041666666666662,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 83.33333333333333,
+              "vitesseX": -19.121355884320913,
+              "vitesseY": 0,
+              "vitesseZ": -81.10991427433264,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0.9375465028575918,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": true,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 1.4388371215780875,
+              "gouttes": 24,
+              "embruns": 0.9390107090980715,
+              "expulses": 47,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "sillage300-sec",
+      "rapport": "bitume-images-sillage-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sillage300-sec/rapport.json",
+      "rapportSHA256": "58877be87e26c28c69a839fc8be6950cdc7c7cd31bf4f94af857e59ed1aee188",
+      "erreursRejeu": [],
+      "alertes": [],
+      "observationVisuelle": "Témoin candidat : lentille propre et rival au même emplacement ; chaussée et monte de pneus changent aussi avec le sec.",
+      "images": [
+        {
+          "fichier": "bitume-images-sillage-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sillage300-sec/0000.png",
+          "sha256": "bd7c37424c404be98cba264115c3a1ea74793445255ffe35f68e2da19a8575d7",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 5.941666666666662,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 83.33333333333333,
+              "vitesseX": -19.121355884320913,
+              "vitesseY": 0,
+              "vitesseZ": -81.10991427433264,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": 0,
+              "accumulationNeige": 0
+            }
+          }
+        },
+        {
+          "fichier": "bitume-images-sillage-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-meteo/apres/sillage300-sec/0001.png",
+          "sha256": "c53ad99f9a7f5f81c1be9ba7c010df2fe66596171ea1cbab23fbed8a293ba51c",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540",
+          "observables": {
+            "vue": "cockpit",
+            "ecran": "course",
+            "tempsMeteo": 6.041666666666662,
+            "j1": {
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 83.33333333333333,
+              "vitesseX": -19.121355884320913,
+              "vitesseY": 0,
+              "vitesseZ": -81.10991427433264,
+              "cameraYaw": -0.23151901171721367,
+              "cameraPitch": 0,
+              "cameraRoll": 0,
+              "abri": false,
+              "cockpit": true,
+              "qualite": "high",
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false,
+              "actif": true
+            },
+            "j2": null,
+            "visieresVisibles": {
+              "j1": false,
+              "j2": false
+            },
+            "optiqueJ1": {
+              "backend": "webgl2",
+              "eau": 0,
+              "gouttes": 0,
+              "embruns": 0,
+              "expulses": 0,
+              "accumulationNeige": 0
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "limites": [
+    "Captures sur poses prescrites, sans essai de conduite, collision ou performance matérielle.",
+    "SwiftShader, WebGL2, 960×540, DPR 1 ; 10 FPS affiché ne qualifie pas le débit matériel.",
+    "Les PNG et contrôles d’intégration ne démontrent pas seuls la direction du ruissellement ; conserver les mesures natives distinctes.",
+    "La référence avant est 0.2.62, pas 0.2.66.",
+    "Habitacle/bras/buste/assise restent hors clôture de cette revue et requièrent H1+B2.",
+    "La faune météo est cadrée via la caméra prescrite issue de l’API cinéma ; la revue démo séparée vérifie le réalisateur réel.",
+    "Duo historique = cockpit/cockpit ; le complément E3 portrait et vues différentes est traité séparément par root.",
+    "Aucun TREE.txt dans ces archives météo ; arbre attribué par l’API GitHub côté root, pas recalculé dans le clone inspecteur.",
+    "Trois alertes identique sont attendues dans la pause ; elles concordent avec les deux PNG de même SHA et l’horloge figée.",
+    "Le contraste humide/sec change également la chaussée et les pneus ; ce n’est pas un masque différentiel de la seule lentille."
+  ]
+}

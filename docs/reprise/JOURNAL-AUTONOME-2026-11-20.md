@@ -298,7 +298,38 @@ de la PR39. Le HTML garde exactement le SHA60184ddf de l’entrée018. Cette pre
 native sur mire ne remplace pas les images du jeu ni les essais de performance
 matérielle ; le surcoût logiciel initial reste une réserve explicite.
 
-## 020 — eau 0.2.68 qualifiée, fusionnée et preuves publiées
+
+## 020 — tests complets conformes et compléments portrait/duo
+
+Le candidat PR39 `3daefb7c` est qualifié par la CI générale `44761148529` :
+160/160 suites Node et 8/8 tests Python. Le commit de fusion testé `4343db0e`
+porte exactement l’arbre `b84d8553` du candidat ; reconstruction propre, HTML
+0.2.68 SHA256 `60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2`.
+
+Les 48 PNG de démo sont inspectés, leurs 16 rapports conformes, et les 7 archives
+vérifiées. L’avant est explicitement 0.2.62. Les réserves pilote/habitacle et
+bandeaux proches de tête/doigts restent ouvertes. Le complément E3 publié
+`073b70dd` ajoute seulement outils/tests/workflow : portraits cockpit et poursuite
+à 300 km/h, duo cockpit/poursuite indépendant. Run 44762219230 réussi, neuf PNG
+inspectés, trois rapports conformes ; HTML strictement identique.
+
+Les reçus portables des trajectoires natives, des négatifs et de leur revue
+indépendante sont conservés avec les preuves CI et de composition. Ils ne
+qualifient pas les FPS matériels et ne réécrivent pas les verdicts initiaux.
+La campagne météo/couverts poursuit ses derniers groupes. Le premier
+`cimes-rocher` échoue avant le chargement du jeu (port DevTools absent, zéro PNG) ;
+une reprise ciblée attend la fin de la campagne, GitHub refusant la reprise d’un
+job tant que son run est actif. Main demeure 0.2.66 jusqu’à cette clôture.
+
+H1+B2 est préparé séparément : pièces de l’habitacle métriques et communes,
+cavité ouverte à fond conservé, planche abaissée 65 mm. L’assise, le thorax, les
+trajectoires des bras et la caméra réelle ne sont pas encore acceptés ; aucun
+build habitacle ni changement de physique p15/FERRO n’est publié comme terminé.
+
+
+## 020 bis — clôture publiée sur main398959e
+
+Cette clôture complémentaire est conservée de la publication parallèle ; les neuf images E3 supplémentaires sont comptées dans021.
 
 PR #39 fusionnée sur main : `4a04c090535f0c11d3db9900284c31e244a0c79c`.
 Tête qualifiée `3daefb7c9d7decaf77beb94219abcf16d907bb38`, arbre
@@ -339,3 +370,32 @@ Prochaine étape préparée : **H0/B0 habitacle/pilote communs**. Mesurer géom�
 monde, assise/bassin/yeux et pénétrations bras/buste, conserver les poses fautives,
 puis H1. Les trois demandes du pilote restent ouvertes ; autres travaux et
 17 destinations préservés. Lire REPRISE, etat_courant et la seule fiche active.
+
+## 021 — eau0.2.68 fusionnée ; saisons et menu ajoutés
+
+Les dernières images exactes sont inspectées : démo48, météo41, couverts24 et
+portrait/duo9, soit122 PNG (98 candidat et24 références0.2.62),45 rapports
+conformes plus contraste humide/sec. Le premier démarrage cimes-rocher avait
+échoué avant le jeu ; le seul job repris réussit, même arbre et même HTML.
+PR39 est fusionnée en4a04c090535f0c11d3db9900284c31e244a0c79c ; son arbre
+b84d8553 est relu et identique au candidat/commit CI4343db0. Les160 suites Node
+et8 tests Python restent clos. Le coût logiciel et les échecs antérieurs sont
+conservés. Les outils E3 déjà vérifiés et reçus portables sont consolidés ensuite,
+sans modifier le HTML.
+
+L’habitacle métrique/assise/yeux réels, cuve, thorax fermé, siège et outils de
+qualification sont sauvegardés comme préparation réapplicable. Les défauts
+restants des contacts extrêmes et de continuité du coude ne sont pas déclarés
+corrigés par ce checkpoint ; aucun build habitacle ne lui est attribué.
+
+Deux demandes ajoutées pendant le travail : saisons appliquées aux neuf circuits
+(couleurs/feuilles/terrain, notamment Cimes), puis menu arcade multi-écrans avec
+tracé3D rotatif et navigation manette, plus optimisation Xbox/Edge et GPU intégrés
+Intel. Les fiches et la file conservent les trois chantiers sans abandonner les
+précédents. Aucun résultat de performance sur ces appareils n’est inventé.
+
+## 022 — priorité moteur, arcade, saisons et emotes
+
+Demandes ajoutées : optimiser les coûts du moteur sur Xbox Edge et petits PC/GPU Intel, avec mesures comparables et profils cohérents ; menu arcade en plusieurs écrans, tracé réel en 3D rotatif et navigation manette ; appliquer les saisons sur les neuf circuits. Chaque joueur choisit avant course son geste et son klaxon (classique, ancien, mariage). Les IA choisissent les deux au hasard, notamment lorsqu’elles dépassent le joueur, avec délai entre réactions. Les tâches préparées du pilote restent conservées et à qualifier.
+
+Réconciliation de main398959e : tous ses reçus complets sont conservés. Le complément E3 porte le total à122 PNG du jeu (98 candidat,24 référence), HTML0.2.68 inchangé. Aucune nouvelle performance matérielle n’est supposée.

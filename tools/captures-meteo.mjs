@@ -24,6 +24,16 @@ export const SCENARIOS = Object.freeze([
   { id: 'sillage300-poursuite', vitesse: 300 / 3.6, chauffe: 60, spray: true, pluie: 0, mouille: 1, nuage: .9, vue: 'poursuite', controleSillage: true },
   { id: 'sillage300-helico', vitesse: 300 / 3.6, chauffe: 60, rival: true, vue: 'helico', inactif: true, controleSillage: true }
 ].map(Object.freeze));
+// Complément E3 explicite : les campagnes historiques gardent leur liste et leur coût.
+// Les deux portraits fixent le viewport ; le duo exerce deux caméras réelles dans la même image.
+export const SCENARIOS_E3 = Object.freeze([
+  { id: 'sillage300-portrait-cockpit', vitesse: 300 / 3.6, chauffe: 60, images: 3, spray: true, pluie: 0, mouille: 1,
+    nuage: .9, vue: 'cockpit', taille: '540,960', controleSillage: true },
+  { id: 'sillage300-portrait-poursuite', vitesse: 300 / 3.6, chauffe: 60, images: 3, spray: true, pluie: 0, mouille: 1,
+    nuage: .9, vue: 'poursuite', taille: '540,960', controleSillage: true },
+  { id: 'duo-vues', vitesse: 45, chauffe: 60, images: 3, duo: true, vue: 'cockpit', vue2: 'poursuite' }
+].map(Object.freeze));
+const TOUS_SCENARIOS = Object.freeze([...SCENARIOS, ...SCENARIOS_E3]);
 const CAS_AVANT = ['pluie-grille', 'pluie-spray235', 'neige45', 'faune-haut-col-ete', 'faune-haut-col-hiver', 'sillage300'];
 
 export function optionsMeteo(argv) {
@@ -37,7 +47,7 @@ export function optionsMeteo(argv) {
   if (!o.url || !o.sortie) throw new Error('--url et --sortie nécessaires');
   for (const cle of ['url', 'avant']) if (o[cle] && !['file:', 'http:', 'https:'].includes(new URL(o[cle]).protocol)) throw new Error('URL file/http/https attendue');
   o.cas = o.cas ? o.cas.split(',') : SCENARIOS.map(s => s.id);
-  if (!o.cas.length || new Set(o.cas).size !== o.cas.length || o.cas.some(id => !SCENARIOS.some(s => s.id === id))) throw new Error('Cas météo inconnu ou dupliqué');
+  if (!o.cas.length || new Set(o.cas).size !== o.cas.length || o.cas.some(id => !TOUS_SCENARIOS.some(s => s.id === id))) throw new Error('Cas météo inconnu ou dupliqué');
   o.taille = o.taille || '960,540';
   const taille = o.taille.split(',').map(Number);
   if (taille.length !== 2 || taille.some(n => !Number.isInteger(n) || n < 240 || n > 1920)) throw new Error('Taille attendue : largeur,hauteur (240..1920)');
@@ -120,8 +130,9 @@ export function observerEtat() {
   }
   return { glErreur: gl.getError(), glPerdu: gl.isContextLost(), vitres, vitresGL, visieresVisibles,
     j1: contexte(S.vitreContexte), j2: contexte(S.vueJ2?.vitreContexte), faune: __METEO_FIXTURE.faune,
-    vue: S.vue, positions: __METEO_FIXTURE.controleSillage ? __METEO_FIXTURE.positions() : null,
-    camera: __METEO_FIXTURE.controleSillage ? { pos: [...S.camera.pos], yaw: S.camera.yaw, pitch: S.camera.pitch, roll: S.camera.roll, fov: S.camera.fov } : null,
+    vue: S.vue, vue2: S.vueJ2?.vue || null, positions: __METEO_FIXTURE.controleSillage ? __METEO_FIXTURE.positions() : null,
+    camera: S.camera ? { pos: [...S.camera.pos], yaw: S.camera.yaw, pitch: S.camera.pitch, roll: S.camera.roll || 0, fov: S.camera.fov } : null,
+    camera2: S.vueJ2?.camera ? { pos: [...S.vueJ2.camera.pos], yaw: S.vueJ2.camera.yaw, pitch: S.vueJ2.camera.pitch, roll: S.vueJ2.camera.roll || 0, fov: S.vueJ2.camera.fov } : null,
     precipitation: { pluie: S.meteo.pluie, neige: S.meteo.precipitationsNeige, mouille: S.meteo.mouille },
     temps: S.meteo.t, ecran: J.ecran };
 }
@@ -133,6 +144,7 @@ export function verifierRapport(r, s, candidat) {
   for (const e of r.avertissements) if (/GL_INVALID|shader.*(error|failed)|GLSL|context lost/i.test(e)) fautes.push('Erreur graphique : ' + e);
   if (r.images.length !== (s.images || 2)) fautes.push('Nombre de captures incomplet');
   if (!/swiftshader|llvmpipe|software/i.test(r.environnement.gpu || '')) fautes.push('Raster logiciel non identifié');
+  if (s.taille && s.taille.split(',').some((n, i) => r.environnement.resolution?.[i] !== Number(n))) fautes.push('Viewport portrait différent du scénario');
   for (const im of r.images) {
     const o = im.observation;
     if (!o) { fautes.push('Observation absente'); continue; }
@@ -144,7 +156,10 @@ export function verifierRapport(r, s, candidat) {
     if (!s.faune && o.j1?.qualite !== qualite) fautes.push('Qualité rendue différente du scénario');
     // Légère conserve les glaces peintes de la voiture, sans toiles ni rendus arrière (graphismes.PROFILS.low).
     // Fine doit montrer les deux vraies images pour chaque joueur ; une caméra faune les masque aussi.
-    const glaces = !s.faune && (!s.vue || s.vue === 'cockpit') && qualite !== 'low' ? ['glace-g', 'glace-d', ...(s.duo ? ['glace-g2', 'glace-d2'] : [])] : [];
+    const glaces = !s.faune && qualite !== 'low' ? [
+      ...(!s.vue || s.vue === 'cockpit' ? ['glace-g', 'glace-d'] : []),
+      ...(s.duo && (!s.vue2 || s.vue2 === 'cockpit') ? ['glace-g2', 'glace-d2'] : [])
+    ] : [];
     for (const id of ['glace-g', 'glace-d', 'glace-g2', 'glace-d2']) {
       if (glaces.includes(id) && !im.etat.zones[id]) fautes.push('Rétroviseurs incomplets : ' + id);
       if (!glaces.includes(id) && im.etat.zones[id]) fautes.push('Toile de rétroviseur inattendue : ' + id);
@@ -152,6 +167,20 @@ export function verifierRapport(r, s, candidat) {
     if (s.tunnel && o.j1?.abri !== true) fautes.push('Caméra non abritée dans le tunnel');
     if (s.saison === 'hiver' && !s.faune && !(o.j1?.neige > 0 && o.j1.pluie === 0)) fautes.push('Neige non distinguée de la pluie');
     if (candidat && !s.faune) {
+      if (s.taille && !(im.etat.zones.scene?.width > 0 && im.etat.zones.scene.height > im.etat.zones.scene.width)) fautes.push('Scène portrait non exercée');
+      if (s.duo && s.vue2) {
+        if (o.vue !== (s.vue || 'cockpit') || o.vue2 !== s.vue2) fautes.push('Vues différentes du duo non exercées');
+        for (const [joueur, nomVue, camera] of [['j1', s.vue || 'cockpit', o.camera], ['j2', s.vue2, o.camera2]]) {
+          const contexte = o[joueur], optique = o.vitres?.[joueur];
+          if (!Array.isArray(camera?.pos) || camera.pos.length !== 3 || !camera.pos.every(Number.isFinite) ||
+            ![camera.yaw, camera.pitch, camera.roll, camera.fov].every(Number.isFinite)) fautes.push('Caméra du duo absente ou invalide : ' + joueur);
+          if (contexte?.cockpit !== (nomVue === 'cockpit') || contexte?.actif !== true || contexte?.qualite !== qualite ||
+            !(contexte?.pluie > 0 && optique?.eau > .05) || o.visieresVisibles?.[joueur] !== true) fautes.push('Pluie de la vue du duo non exercée : ' + joueur);
+          if (contexte?.cameraYaw !== camera?.yaw || contexte?.cameraPitch !== camera?.pitch || contexte?.cameraRoll !== camera?.roll)
+            fautes.push('Flux du duo raccordé à une autre caméra : ' + joueur);
+        }
+        if (JSON.stringify(o.camera?.pos) === JSON.stringify(o.camera2?.pos)) fautes.push('Caméras du duo non indépendantes');
+      }
       if (!o.vitres?.j1) fautes.push('Diagnostic de visière J1 absent');
       for (const v of Object.values(o.vitres || {})) if (v?.erreur || v?.erreurs?.length || typeof v?.erreurs === 'number' && v.erreurs > 0 || v?.perdu) fautes.push('Erreur de visière : ' + JSON.stringify(v.erreur || v.erreurs || 'contexte perdu'));
       if (!s.sec && s.qualite !== 'low' && o.vitres?.j1?.backend !== 'webgl2') fautes.push('Optique WebGL2 inactive');
@@ -194,9 +223,12 @@ export function verifierRapport(r, s, candidat) {
 export function optionsScenario(s, url, sortie, o) {
   const vue = s.vue || 'cockpit';
   if (!['cockpit', 'poursuite', 'helico'].includes(vue)) throw new Error('Vue du scénario météo inconnue');
+  if (s.vue2 && (!s.duo || !['cockpit', 'poursuite'].includes(s.vue2))) throw new Error('Seconde vue du scénario météo invalide');
+  const retro = !s.faune && (vue === 'cockpit' || s.duo && (!s.vue2 || s.vue2 === 'cockpit'));
   const args = ['--url', url, '--sortie', sortie, '--scenario', s.duo ? 'duo' : 'pluie', '--images', String(s.images || 2), '--chauffe', String(s.chauffe),
-    '--taille', o.taille, '--pas', '.1', '--qualite', s.qualite || 'high', '--circuit', String(s.circuit || 0),
-    '--saison', s.saison || 'ete', '--meteo', s.sec ? 'sec' : 'pluie', '--vitesse', String(s.vitesse), '--depart', '280', '--retro', s.faune || vue !== 'cockpit' ? 'non' : 'oui', '--attendre', '120000'];
+    '--taille', s.taille || o.taille, '--pas', '.1', '--qualite', s.qualite || 'high', '--circuit', String(s.circuit || 0),
+    '--saison', s.saison || 'ete', '--meteo', s.sec ? 'sec' : 'pluie', '--vitesse', String(s.vitesse), '--depart', '280', '--retro', retro ? 'oui' : 'non', '--attendre', '120000'];
+  if (s.vue2) args.push('--vue2', s.vue2);
   if (o.chrome) args.push('--chrome', o.chrome);
   const p = optionsCapture(args);
   // L'API reference du jeu accepte aussi helico. Le CLI générique reste limité aux deux vues de conduite ;
@@ -229,7 +261,7 @@ export async function campagne(o) {
     limites: ['Raster logiciel SwiftShader; aucun FPS matériel qualifié.', 'Scènes disposées et figées pour comparer les effets; aucun essai de conduite.', 'Rendu et effets du HTML désigné, sans injection de leur implémentation.'], passages: [], echecs: 0 };
   const paireSillage = {};
   for (const [nom, url] of [...(o.avant ? [['avant', o.avant]] : []), ['apres', o.url]]) for (const id of o.cas.filter(id => nom !== 'avant' || CAS_AVANT.includes(id))) {
-    const s = SCENARIOS.find(s => s.id === id), sortie = path.join(o.sortie, nom, id);
+    const s = TOUS_SCENARIOS.find(s => s.id === id), sortie = path.join(o.sortie, nom, id);
     const p = optionsScenario(s, url, sortie, o);
     if (o.avant && nom === 'apres' && CAS_AVANT.includes(id)) p.reference = path.resolve(o.sortie, 'avant', id, 'rapport.json');
     p.ecrans = s.pause ? ['course', 'pause'] : ['course'];

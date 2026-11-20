@@ -1,25 +1,16 @@
-# Eau, vitesse et orientation des gouttes — plan et livraison 0.2.68
+# Eau, vitesse et orientation des gouttes — plan E0 à E3
+
+## Clôture :0.2.68 publiée
+
+PR #39 fusionnée sur main (`4a04c090`), HTML SHA256 `60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2`.160 suites Node et8 tests Python réussis ;112 contrôles CPU,18 d’intégration,24 intervalles PNG indépendants/2076 mesures. Les122 captures inspectées couvrent démo48, météo41, couverts24 et complément portrait/duo9. Les24 références sont explicitement0.2.62. Le coût logiciel initial et l’échec Chromium avant chargement sont conservés ; aucun FPS matériel n’est déduit de cette qualification.
+
+[Reçu de publication](rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json). Le texte ci-dessous conserve le diagnostic et le plan initiaux ; il ne décrit pas des défauts encore présents dans le transport livré.
+
 
 Demande du 20 novembre 2026 : en **cockpit et poursuite**, l’écoulement dépend de la vitesse et du flux d’air. **À l’arrêt, les gouttes peuvent descendre ; en roulant, elles doivent s’écarter et être évacuées visiblement.** Vérifier la direction et la trajectoire dans chaque vue, en plus de la quantité réellement évacuée. Une disparition par séchage ne remplace pas une sortie visible par le bord.
-Base consolidée vérifiée : `main` à `9f2246df61c6503ea8fa0f71a28813b15b17f51c`, BITUME **0.2.66**, physique **p15**, FERRO **0.3.15**. Cette base et le diagnostic initial sont conservés ci-dessous ; la livraison suivante apporte le correctif.
+Base consolidée vérifiée : `main` à `9f2246df61c6503ea8fa0f71a28813b15b17f51c`, BITUME **0.2.66**, physique **p15**, FERRO **0.3.15**. Cette fiche est publiée ; elle ne modifie pas le runtime et ne constitue pas une qualification du correctif.
 
-## Livraison vérifiée — 0.2.68
-
-PR #39 fusionnée sur main au commit `4a04c090535f0c11d3db9900284c31e244a0c79c`.
-Le [reçu de publication](rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json) relie
-l’arbre qualifié `b84d8553` et le HTML `60184ddf…` aux contrôles et aux images.
-
-- Flux du mouvement réel et du vent projeté dans la caméra ; gravité lente, transport et sortie par le pourtour à grande vitesse.
-- Perles, nappes et traces raccordées au même flux, historique continu ; repli classique mesuré entre poses physiques.
-- 56 scénarios CPU/112 contrôles,24 intervalles PNG/2 076 mesures indépendantes conformes. Le témoin haut-gauche à 300 km/h parcourt −206,106 px/−84,073 px en 1 s ; à l’arrêt, +24,8 px vers le bas.
-- 160/160 suites Node et 8/8 tests Python ;21/21 checks GitHub ;113 images du jeu inspectées, dont 24 références historiques 0.2.62.
-- Sillage humide renouvelé, route sèche sans eau, pause figée, vues séparées, abris/résidus et aérien contrôlés. Reprise ciblée Cimes-rocher sur le même code, échec initial conservé.
-
-Qualification des cas prescrits, avec limites explicites : pas toutes les vitesses/angles,
-pas de mesure FPS matériel, couche micro 0 et gravité des fines non isolées dans les PNG
-natifs. La pluie extérieure depuis un abri reste distincte. Prochain lot : H0/B0 habitacle/pilote.
-
-## Diagnostic initial — sources 0.2.66
+## Diagnostic initial dans le code0.2.66
 
 - `src/jeu.js`, `dessinerMeteo` : les gouttes reçoivent `abs(voiture.etat.v)` et les composantes mondiales `ventX/ventZ`. Le contexte ne transmet ni vecteur de vitesse, ni orientation caméra. Cockpit/poursuite partagent donc le transport ; leurs différences concernent surtout exposition et opacité. L’abri et le sillage sont déjà évalués à la position de la caméra.
 - `src/vitre.js`, `avancer` : la vitesse évacue les dépôts, augmente leur vieillissement et ajoute une dispersion autour d’un centre écran fixe. Mais le ruissellement descendant conserve le facteur **`8 + vitesse * .42`**. Le vent devient un scalaire écran (`.20*ventX + .08*ventZ`), sans projection caméra. La vitesse ne produit donc pas encore un transport cohérent avec la direction du déplacement et du regard.
@@ -28,7 +19,7 @@ natifs. La pluie extérieure depuis un abri reste distincte. Prochain lot : H0/B
 
 **Hypothèse à vérifier en images :** les perles/nappes verticales et la composante descendante croissante des grosses gouttes expliquent le signalement. Leur contribution respective, selon vitesse, cadrage et qualité, n’est pas encore mesurée. Il serait incorrect de conclure que toutes les gouttes actuelles sont strictement verticales : une dispersion radiale existe déjà.
 
-## Validation initiale — avant le correctif
+## Validation disponible au diagnostic initial
 
 Les tests `visiere-optique`, `vitre-meteo`, `vitre-integration` et `vitre-cadence` couvrent charge d’eau, évacuation à vitesse élevée, continuité temporelle, sillage, pause, séparation J1/J2, abris et absence de dépôts en aérien. Le test des traces inclinées de `vitre-meteo` vérifie un déplacement sous vent imposé et son historique ; il ne prouve pas une direction issue du repère caméra. Une baisse d’eau ou un nombre de gouttes expulsées ne suffit pas à établir une trajectoire convaincante.
 
@@ -74,7 +65,7 @@ Répéter les trajectoires identifiées en cockpit et en poursuite, avec la cam�
 
 ## Reprise et publication
 
-Le plan a été publié après la consolidation, puis le correctif eau 0.2.68 a été qualifié et fusionné. Les échecs initiaux et les reçus gardent leurs versions exactes. La reprise courte passe au [plan habitacle/pilote](PILOTE-HABITACLE-COMMUN-2026-11-20.md), H0/B0 ; la campagne eau terminée ne doit pas être relancée sans nouveau changement ou risque concret.
+Ce plan et le [plan habitacle/pilote](PILOTE-HABITACLE-COMMUN-2026-11-20.md) sont publiés après la consolidation. Prochain lot actif : E0, puis E1. Chaque lot conserve son échec initial et son reçu de correction, avec commit source, empreinte du build et prochaines actions. Mettre à jour la reprise courte à chaque publication. Les contrôles de direction/trajectoire et les images du candidat exact conditionnent la clôture E3.
 
 Le prototype pluie extérieure sous abri reste une préparation distincte ; la correction de transport des gouttes collées ne permet pas de le déclarer intégré. Le chantier habitacle H0/B0 reste ouvert, avec assise commune plus basse et contrôle bras/buste. Les autres lots sont conservés dans `FILE-TRAVAIL.json`.
 

@@ -60,8 +60,8 @@
     "methode": "Réanalyse des mêmes PNG exacts ; identification par pixels et voisinages, indépendante des uniformes/transport annoncés."
   },
   "captures_jeu": {
-    "png_inspectes": 113,
-    "candidat_0268": 89,
+    "png_inspectes": 122,
+    "candidat_0268": 98,
     "references_historiques_0262": 24,
     "demos": {
       "png": 48,
@@ -78,7 +78,14 @@
       "run": 44761148534,
       "recu": "REVUE-COUVERTS-0268.json"
     },
-    "seconde_lecture_root": "Cockpit/poursuite démo235 km/h et sillage cockpit300 km/h humide/sec revus ; scènes et rétroviseurs lisibles, aucune trajectoire déduite des seules images fixes."
+    "seconde_lecture_root": "Cockpit/poursuite démo235 km/h et sillage cockpit300 km/h humide/sec revus ; scènes et rétroviseurs lisibles, aucune trajectoire déduite des seules images fixes.",
+    "portrait_duo": {
+      "png": 9,
+      "run": 44762219230,
+      "recu": "REVUE-EAU-CAMERAS-0268.json",
+      "commit_outil": "073b70dd3f7e942a44d073b471b41599d5d6f8c8",
+      "meme_html_0268": true
+    }
   },
   "reprise_cimes_rocher": {
     "cause_initiale": "Port DevTools absent au démarrage de Chrome, avant navigation vers BITUME.",
@@ -108,13 +115,14 @@
   ],
   "suite": {
     "lot": "habitacle_pilote_commun",
-    "phase": "H0_B0_preparee",
+    "phase": "H1_B2_preparee_non_qualifiee",
     "fiche": "../../PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "objectifs": [
       "habitacle unique en coordonnées monde",
       "assise commune plus basse",
       "dégagement bras/buste"
-    ]
+    ],
+    "preparation": "../../preparations/habitacle-commun-2026-11-20/CHECKPOINT.json"
   },
-  "publication_preuves": "Ajout documentaire après la fusion ; sources, outils de validation et HTML qualifiés inchangés. La fusion reprend l’arbre qualifié exact, sans seconde campagne identique."
+  "publication_preuves": "Réconciliation des preuves main398959e et du complément portrait/duo073b70d. Les trois fichiers outils E3 sont ajoutés avec leur qualification ; les sources exécutées et le HTML0.2.68 restent inchangés. Aucun essai clos n’est relancé."
 }

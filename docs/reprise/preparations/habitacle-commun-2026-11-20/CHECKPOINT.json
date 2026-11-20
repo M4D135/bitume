@@ -1,0 +1,109 @@
+{
+  "format": "bitume-preparation-habitacle-1",
+  "date": "2026-11-20",
+  "statut": "preparation_non_qualifiee_non_integree_au_runtime",
+  "baseCommitGitHub": "7c93854e56fc5bc9c1676a6ecb70c727a674db07",
+  "baseTree": "35ff18611d787e2a3425ef4de153d6eadd92698a",
+  "arbreApresPatch": "7da0910371dcf2525fa15f7f0cc8746132763a24",
+  "patchSHA256": "048a604538c8b95aaeaefcd748065ff10f66293dfcf046e28d89d139578ae586",
+  "octets": 195302,
+  "reapplicationExacte": true,
+  "sources": [
+    {
+      "fichier": ".github/workflows/visuel-habitacle.yml",
+      "sha256": "39cbb31dfe92fb03bd4491b867992b98ce3caecba7a6170c5ac3105629c27bca",
+      "octets": 4129
+    },
+    {
+      "fichier": "src/jeu.js",
+      "sha256": "3f79b16692d0157dac39a812aa27748896867cd210494967991a7bfdf7023651",
+      "octets": 344650
+    },
+    {
+      "fichier": "src/voiture.js",
+      "sha256": "90def42c38be6ee9f326db009d35f3a4fe09313f78cf4c344cc35553d31b1e83",
+      "octets": 154214
+    },
+    {
+      "fichier": "tools/captures-habitacle.mjs",
+      "sha256": "8963133a789661b48091c8c2a505c8e166297b3252a4f25b1b17a73e6b9bdb01",
+      "octets": 16355
+    },
+    {
+      "fichier": "tools/qualification/habitacle-mesures.mjs",
+      "sha256": "eb5cfddf4689c28ae69ac6f80b78d2c4e81e52d5c67f64bd6ab9b930ea55f7df",
+      "octets": 19353
+    },
+    {
+      "fichier": "tools/qualification/pilote-surfaces.mjs",
+      "sha256": "6599cc0bbb042028a7d091b401e22a567202b3eff15be087fe041d78984b2517",
+      "octets": 10661
+    },
+    {
+      "fichier": "tools/qualification/pilote-thorax.mjs",
+      "sha256": "68fe0fe2ae63497150f9d719a25427e7de27b78a965b89757471617702b7fdc8",
+      "octets": 9176
+    },
+    {
+      "fichier": "verifications/captures-habitacle.test.mjs",
+      "sha256": "41b4ddedfafcdc33399e40f2116d5253e521f3d4aaf880d4243e6328949bba99",
+      "octets": 5021
+    },
+    {
+      "fichier": "verifications/cockpit-camera.test.mjs",
+      "sha256": "766fd2e376cdc5ed9c2b028e9e09046c1512dbf027ac71624d151f83540f98e2",
+      "octets": 5855
+    },
+    {
+      "fichier": "verifications/habitacle-monde.test.mjs",
+      "sha256": "d0f2a8ffb2e5c768aa359aa4491bfb1c896cdd898dd422f7a2b013b32498d15f",
+      "octets": 12363
+    },
+    {
+      "fichier": "verifications/pilote-commun.test.mjs",
+      "sha256": "50f524b3ea2b6f16a05c9ddd24a6e7442dfcc036eacc6d7e59338d60b5cc4f05",
+      "octets": 11989
+    },
+    {
+      "fichier": "verifications/pilote-expressions.test.mjs",
+      "sha256": "dd78f1482b4b5aa77af7d167e3eb8e37ada5a76e23e282d23cfa64251c679923",
+      "octets": 8972
+    },
+    {
+      "fichier": "verifications/pilote-exterieur.test.mjs",
+      "sha256": "6920291fc20ce56f615acbb7223b663c139bb733197da70dfc90f17eb7166829",
+      "octets": 15023
+    },
+    {
+      "fichier": "verifications/pilote-habitacle.test.mjs",
+      "sha256": "fb905522766d6f38cc0978a412126a72b9afa361c7ddd6f680a03e992427a604",
+      "octets": 30221
+    },
+    {
+      "fichier": "verifications/pilote-surfaces.test.mjs",
+      "sha256": "8efeaaa60ba308f59e8ca3fc306f5eb08aa94b9ce02bf91cc4388e5de1158489",
+      "octets": 4273
+    },
+    {
+      "fichier": "verifications/pilote-thorax.test.mjs",
+      "sha256": "4a79a2d74c8886d64c8601bc69c56eba5363a99eadb3777cbabb417ada872c79",
+      "octets": 4235
+    },
+    {
+      "fichier": "verifications/voiture.test.mjs",
+      "sha256": "3d0640450d0d81a1794a62cb141951fbc27d5c96cb636ddfd150bd794b4971f1",
+      "octets": 37400
+    }
+  ],
+  "build": "Aucun nouveau HTML de ce checkpoint : la base demeure0.2.68.",
+  "reste": [
+    "Corriger les derniers contacts extrêmes et la continuité du coude IK ; les premiers balayages et leurs échecs sont conservés dans les reçus du chantier.",
+    "Terminer le balayage des surfaces réelles sur les trois LOD, les contacts/continuités, les mesures de coût et le budget.",
+    "Construire puis qualifier le candidat exact et inspecter ses captures avant intégration."
+  ],
+  "perimetre": [
+    "Habitacle métrique commun, vraie cuve et assise abaissée, repères mesurés des yeux, siège/supports, thorax fermé et membres articulés.",
+    "Tests indépendants et outils de capture préparés ; ceci ne vaut pas validation finale."
+  ],
+  "regle": "La publication de cette préparation préserve le travail. Elle ne remplace aucun fichier du runtime livré sur main."
+}

@@ -1,40 +1,40 @@
 # BITUME — reprise courte
 
-## Livré sur main : 0.2.68
+## Publié sur main : eau 0.2.68
 
-**0.2.68 / p15 / FERRO 0.3.15 / neuf circuits.** PR #39 fusionnée :
-`4a04c090535f0c11d3db9900284c31e244a0c79c`.
-HTML : 14 383 155 octets, SHA-256
-`60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2`.
-Deux builds locaux identiques ; reconstruction et archive CI exactes.
+PR #39 fusionnée : `4a04c090535f0c11d3db9900284c31e244a0c79c` ; arbre `b84d8553` relu,
+exactement celui du candidat qualifié. **0.2.68 / p15 / FERRO 0.3.15 / neuf circuits.**
+HTML : 14 383 155 octets, SHA256 `60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2`.
 
-L’eau suit le vent relatif et la caméra en cockpit/poursuite. La gravité reste
-présente à l’arrêt ; la vitesse écarte les gouttes et les expulse réellement.
-Perles/nappes/traces cohérentes ; repli de vitesse fondé sur les poses physiques.
+L’eau suit le flux relatif et la caméra : gravité à l’arrêt, écartement/évacuation
+à vitesse élevée, perles/nappes/grosses gouttes raccordées.
+**160/160 suites Node, 8/8 tests Python ; 24/24 intervalles PNG indépendants,
+2076 mesures ; 122 PNG du jeu inspectés** (98 candidat, 24 référence 0.2.62).
+Démos 48, météo 41, couverts 24, portrait/duo 9 ; 45 rapports conformes.
+L’unique échec de démarrage Chromium est conservé ; seul son job a été repris.
+[Publication et preuves](docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json).
+Les anciens tests/images ne sont pas à relancer.
 
-**160/160 suites Node, 8/8 tests Python, 21/21 checks GitHub.**
-112 contrôles CPU, 24 intervalles PNG et 2 076 mesures indépendantes conformes.
-**113 images inspectées** : 89 candidat, 24 références historiques 0.2.62.
-[Publication et preuves](docs/reprise/rapports/EAU-VITESSE-2026-11-20/README.md).
+## Travaux actifs
 
-## Prochain lot : habitacle et pilote communs — H0/B0
-
-Lire uniquement le [plan habitacle/pilote](docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md)
-et les extraits nécessaires. Mesurer les écarts en coordonnées monde, les repères
-d’assise et les pénétrations bras/buste avant correction. Objectifs : un seul
-habitacle entre vues, pilote plus bas/enfoncé, bras hors du buste, contacts et gestes
-cohérents. Les références MotionBricks/CMU sont documentées dans ce plan.
-**Ces trois défauts restent à corriger.**
+1. **Habitacle/pilote** : géométrie métrique commune, vraie cuve et assise abaissée
+   préparées ; contrôles fins des bras et du coude encore ouverts avant build.
+   [Fiche](docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md) ·
+   [checkpoint réapplicable, non qualifié](docs/reprise/preparations/habitacle-commun-2026-11-20/README.md).
+2. **Saisons sur les neuf circuits**, demande ajoutée pendant ce travail : vérifier
+   couleurs/feuilles/neige et générateurs spécifiques, particulièrement Route-des-Cimes.
+   [Fiche](docs/reprise/SAISONS-CATALOGUE-2026-11-20.md).
+3. **Menu arcade et configurations modestes** : plusieurs écrans, sélection facile
+   des circuits avec tracé 3D rotatif, navigation manette ; profil adapté Xbox/Edge
+   et GPU intégré Intel. Priorité aux coûts réels du moteur. Chaque joueur choisit
+   geste et klaxon avant course ; les IA les tirent au hasard après dépassement. [Fiche](docs/reprise/MENU-ARCADE-PROFILS-2026-11-20.md).
 
 ## Réserves et reprise
 
-Les quatre échecs 0.2.65, les deux images aériennes 0.2.66 refusées, le premier
-démarrage Chrome Cimes-rocher et les anciennes analyses PNG refusées sont conservés.
-La reprise Cimes-rocher réussit sur le même code ; aucune baisse de seuil.
-FPS matériels, audio, manettes et réseau entre machines non qualifiés ; pluie
-extérieure depuis abri, bandeaux, neige et alertes miroir historiques restent ouverts.
-Monaco `readyForRuntime=false` ; autres travaux et 17 destinations dans FILE-TRAVAIL.
+Coût logiciel de l’optique conservé ; FPS matériels, audio, manettes réelles et
+réseau entre machines non qualifiés. La préparation pluie extérieure sous abri
+reste distincte. Les autres lots et 17 destinations restent dans FILE-TRAVAIL.
 
-Main reste la branche de publication ; consolidation et prototypes archivés conservés.
-[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **020**.
-Lecture minimale : ce fichier, `ETAT.json` → `etat_courant`, puis la seule fiche active.
+[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **022**.
+Lecture minimale : ce fichier, `docs/reprise/ETAT.json` → `etat_courant`,
+puis la fiche du lot traité. Sauvegarder les étapes et poursuivre sans redemander un go.

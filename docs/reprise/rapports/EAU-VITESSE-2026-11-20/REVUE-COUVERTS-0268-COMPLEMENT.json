@@ -1,0 +1,318 @@
+{
+  "format": "bitume-inspection-couverts-v1",
+  "run": 44761148534,
+  "termine": true,
+  "scenes": [
+    {
+      "scenario": "cimes-galerie",
+      "artifact": 14642548588,
+      "digest": "sha256:410628010865e3b5288a5f05d8c7cb4ec04666a59a231f58b0fef66dbcb9b6df",
+      "rapportSHA256": "c4e8c790c5acc6b30b33ebf4e2a18efe3d36814b92f99a90eb3e00452750d694",
+      "images": 5,
+      "verification": {
+        "erreurs": [],
+        "eau": [
+          0.8067267558640112,
+          0.22158130353034755,
+          0.06086231071497484,
+          0.01671665385106285,
+          0.8208169594182262
+        ]
+      },
+      "inspection": "Tous les PNG vus en pleine résolution ; composition lisible, miroirs présents en cockpit, dépôts extérieurs et résiduels cohérents. Survol sans gouttes de lentille."
+    },
+    {
+      "scenario": "haut-col-portails",
+      "artifact": 14642787484,
+      "digest": "sha256:07c8ba0a5cf46cb0cf0c367cf335b817d42450555e35de668af3060326dd1dc7",
+      "rapportSHA256": "672e095143c7e70b64093db840df4623b4b9db0fa7057a5d932249197e7321b5",
+      "images": 5,
+      "verification": {
+        "erreurs": [],
+        "eau": [
+          0.8221371596671615,
+          0.23599600966051437,
+          0.06774312298030269,
+          0.01944591126937213,
+          0.8363361778220995
+        ]
+      },
+      "inspection": "Tous les PNG vus en pleine résolution ; composition lisible, miroirs présents en cockpit, dépôts extérieurs et résiduels cohérents. Survol sans gouttes de lentille."
+    },
+    {
+      "scenario": "cimes-echelles",
+      "artifact": 14642782600,
+      "digest": "sha256:be26f7ca30ee29a0200f851907e9bfeb81769e8781b46a0013f2a4c6d0c01f94",
+      "rapportSHA256": "845e9b407f077dc9797f0b74b353f2af48dda4c915c3a8c84413313a5492d551",
+      "images": 5,
+      "verification": {
+        "erreurs": [],
+        "eau": [
+          0.7930013230670767,
+          0.20644225509172126,
+          0.05374184892657868,
+          0.013989944888047199,
+          0.8039476001447445
+        ]
+      },
+      "inspection": "Tous les PNG vus en pleine résolution ; composition lisible, miroirs présents en cockpit, dépôts extérieurs et résiduels cohérents. Survol sans gouttes de lentille."
+    },
+    {
+      "scenario": "cimes-dessus-toit",
+      "artifact": 14642439202,
+      "digest": "sha256:222daeb911287a197f1b1f550282829ec44a6898a49305b05536144b369dfc70",
+      "rapportSHA256": "85af2fb6584d6c706d095ce2db0106875fd9cd1b26b8d7ec27d69c5e5c646943",
+      "images": 2,
+      "verification": {
+        "erreurs": [],
+        "eau": [
+          0,
+          0
+        ]
+      },
+      "inspection": "Tous les PNG vus en pleine résolution ; composition lisible, miroirs présents en cockpit, dépôts extérieurs et résiduels cohérents. Survol sans gouttes de lentille."
+    },
+    {
+      "scenario": "cimes-deux-vues",
+      "artifact": 14644631102,
+      "digest": "sha256:5891e7bfe03b3323cc66c31ed9fc299b8cc02d1d9b5464993f59b0a685aa4959",
+      "rapportSHA256": "647dafd4d6494a96195de29754ff91bf7e06d6a9c890668960858012d85233f3",
+      "images": 2,
+      "verification": {
+        "erreurs": [],
+        "eauJ1": [
+          0,
+          0
+        ],
+        "eauJ2": [
+          0,
+          0
+        ]
+      },
+      "inspection": "Deux PNG vus en pleine résolution : J1 tunnel sombre éclairé, J2 galerie ouverte claire, HUD et deux paires de glaces visibles. Aucune eau ajoutée sous les abris."
+    },
+    {
+      "scenario": "cimes-rocher",
+      "artifact": 14646073492,
+      "digest": "sha256:264a4dc3bbe79649c16b1de9bdf2c1f9349e601190b148dceb9b91bba77689d4",
+      "rapportSHA256": "39fc192a686d07c8c338400a49ae885665580b438ef27b14bf59157b3eab1c72",
+      "images": 5,
+      "tentative": 2,
+      "job": 136389895636,
+      "verification": {
+        "erreurs": [],
+        "eau": [
+          0.7766631119963193,
+          0.19166129158832082,
+          0.04699489298471053,
+          0.011522807712818012,
+          0.7871567343378181
+        ]
+      },
+      "inspection": "Cinq PNG vus en pleine résolution : tunnel éclairé, piste/rival/mirroirs visibles ; dépôts résiduels en diminution sous le toit, reprise en extérieur. Aucun défaut bloquant relevé."
+    }
+  ],
+  "images": [
+    {
+      "artifact": 14642548588,
+      "scenario": "cimes-galerie",
+      "fichier": "visuel-couverts/cimes-galerie/0000.png",
+      "sha256": "ee3110c65c8b96500f18b6fd3c82ecb96e9dc7c41719dd5324b8876b02dd929f",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642548588,
+      "scenario": "cimes-galerie",
+      "fichier": "visuel-couverts/cimes-galerie/0001.png",
+      "sha256": "9c66e4b4898657b272cbd177a3d18058aa4d92ec2d44336c147b45fc54e3859e",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642548588,
+      "scenario": "cimes-galerie",
+      "fichier": "visuel-couverts/cimes-galerie/0002.png",
+      "sha256": "1d3e3d6aaf03ea08673eff8e930e681262909d2d2ed09773f556e6b43f231893",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642548588,
+      "scenario": "cimes-galerie",
+      "fichier": "visuel-couverts/cimes-galerie/0003.png",
+      "sha256": "1f8a6ad20b15483d02976ad760995427c6af1388429e6d0223173e37fc451457",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642548588,
+      "scenario": "cimes-galerie",
+      "fichier": "visuel-couverts/cimes-galerie/0004.png",
+      "sha256": "06ea2326bd68aa591ffb377e660a30eb9145b2a72ade1c082cc9cdd2a7775b9c",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642787484,
+      "scenario": "haut-col-portails",
+      "fichier": "visuel-couverts/haut-col-portails/0000.png",
+      "sha256": "d3f84c9c8d91371007ebc64fe6530ab58be9b311d03421b3b4f9c14615412e66",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642787484,
+      "scenario": "haut-col-portails",
+      "fichier": "visuel-couverts/haut-col-portails/0001.png",
+      "sha256": "4de0a30251d3168d4f9d6d86b381e9319f735d93ce1ba9306279e9feb8779ee4",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642787484,
+      "scenario": "haut-col-portails",
+      "fichier": "visuel-couverts/haut-col-portails/0002.png",
+      "sha256": "360133918bf01630ab9fcf54f8db2b742a9c847a2aac4fde4e733a7ca55fbde2",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642787484,
+      "scenario": "haut-col-portails",
+      "fichier": "visuel-couverts/haut-col-portails/0003.png",
+      "sha256": "2013a0f9e77fdaff90f97c84f24780c6eaadc1e363c90dcff41928a1ce1ab5c6",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642787484,
+      "scenario": "haut-col-portails",
+      "fichier": "visuel-couverts/haut-col-portails/0004.png",
+      "sha256": "8a345dc5bcec7ac8e4e21997ebe31a81869acf75c04dc8ccb96ab9fbefeb5daf",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642782600,
+      "scenario": "cimes-echelles",
+      "fichier": "visuel-couverts/cimes-echelles/0000.png",
+      "sha256": "9a556197dadff27b9424ab4fd706bed3f89e8ba88ff7da143b642aab841afe6c",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642782600,
+      "scenario": "cimes-echelles",
+      "fichier": "visuel-couverts/cimes-echelles/0001.png",
+      "sha256": "6d349dfd24419aafb6ec6972cc7b21a05c1fdb892e21b2a99d7e2abe5bf1a8f8",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642782600,
+      "scenario": "cimes-echelles",
+      "fichier": "visuel-couverts/cimes-echelles/0002.png",
+      "sha256": "2407606727f1a0f391d4c283a1bf9174df674a93cd28573253845eb45a1bcd85",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642782600,
+      "scenario": "cimes-echelles",
+      "fichier": "visuel-couverts/cimes-echelles/0003.png",
+      "sha256": "8a0da99bbcf9f350b09cbac4b815ab041f06094fbf8e24ae143e636c2b944b31",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642782600,
+      "scenario": "cimes-echelles",
+      "fichier": "visuel-couverts/cimes-echelles/0004.png",
+      "sha256": "052662c5906ac118dd344caa9dfe74d4f1bc86f972ced0a41f6d8e13aa37b1e0",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642439202,
+      "scenario": "cimes-dessus-toit",
+      "fichier": "visuel-couverts/cimes-dessus-toit/0000.png",
+      "sha256": "19807ba2c6e6af5a120db4413beaff743339fbd0aeb041d284ac03eb1f319eb6",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14642439202,
+      "scenario": "cimes-dessus-toit",
+      "fichier": "visuel-couverts/cimes-dessus-toit/0001.png",
+      "sha256": "e11d4e0a30450c2edc341fae01e319ce60de12d0b7c189c88f83c50416418476",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14644631102,
+      "scenario": "cimes-deux-vues",
+      "fichier": "visuel-couverts/cimes-deux-vues/0000.png",
+      "sha256": "1c9025a1c823c6d1522a6e763da5f196fee09ad2a02c53ac3f88a2d070d7d17a",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14644631102,
+      "scenario": "cimes-deux-vues",
+      "fichier": "visuel-couverts/cimes-deux-vues/0001.png",
+      "sha256": "b1beaa16c631707a09183c9894ad835169bbe9060cccdd002dc247dffad3fea3",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14646073492,
+      "scenario": "cimes-rocher",
+      "fichier": "visuel-couverts/cimes-rocher/0000.png",
+      "sha256": "aeada7fbbe394c3eb768b5fe8558e5a590e3bd7a877c2954a5d1ba482690e2a6",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14646073492,
+      "scenario": "cimes-rocher",
+      "fichier": "visuel-couverts/cimes-rocher/0001.png",
+      "sha256": "ad031851c695896dd83f85b079224ed4e881136f1d52ac12b79cbebfa806bff3",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14646073492,
+      "scenario": "cimes-rocher",
+      "fichier": "visuel-couverts/cimes-rocher/0002.png",
+      "sha256": "6faa3836853a68620b2268e5642a95e73a1a17190a362193b519ef4eda15d2e8",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14646073492,
+      "scenario": "cimes-rocher",
+      "fichier": "visuel-couverts/cimes-rocher/0003.png",
+      "sha256": "f6dd49a18e30ca1dc6a6f0f2c3c75b5421add2cdf4d2b133cc2fe42f8ac06bd1",
+      "methode": "pleine résolution"
+    },
+    {
+      "artifact": 14646073492,
+      "scenario": "cimes-rocher",
+      "fichier": "visuel-couverts/cimes-rocher/0004.png",
+      "sha256": "a446cd18b8abade68b3b9640f7f181899fddd173dbc07e2b1e4219ce77321ef1",
+      "methode": "pleine résolution"
+    }
+  ],
+  "failures": [
+    {
+      "scenario": "cimes-rocher",
+      "job": 136373698503,
+      "artifact": 14641565877,
+      "digest": "sha256:c7c3ffb09d544234a97ac556c5bbbbd8b9ccde5f8e3c40cbaab33a5159005698",
+      "rapportSHA256": "d828735e25da0591381687e3b0fa7bc4a0f29fefa5fc2666810d419c0a853674",
+      "images": 0,
+      "raison": "Error: Port DevTools introuvable : [2364:2393:1120/151419.062529:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")",
+      "reprise": "Seul job relancé après la fin du run initial : tentative2, job136389895636 réussi, cinq images du même arbre et HTML."
+    }
+  ],
+  "date": "2026-11-20",
+  "version": "0.2.68",
+  "html": {
+    "sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "octets": 14383155
+  },
+  "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+  "tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+  "ci": {
+    "run": 44761148534,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44761148534",
+    "conclusion": "success",
+    "tentativeFinale": 2,
+    "repriseLimiteeAuJob": "cimes-rocher"
+  },
+  "limites": [
+    "Poses prescrites à des étapes distinctes ; aucune traversée conduite ni FPS matériel qualifiés.",
+    "Les trajectoires pixel par pixel sont qualifiées par le reçu natif séparé.",
+    "Le survol ne prétend pas montrer une route superposée.",
+    "Le prototype pluie extérieure vue depuis un abri demeure un lot séparé non intégré."
+  ]
+}

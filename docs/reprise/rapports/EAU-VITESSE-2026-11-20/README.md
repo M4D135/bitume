@@ -11,9 +11,10 @@ La PR #39 est fusionnée sur main. Le [reçu de publication](PUBLICATION-0268.js
 | Matière et mouvement dans les pixels | [Qualification native](QUALIFICATION-VISIERE-0268.json), [directions](DIRECTION-PNG-0268.json), [négatifs](NEGATIFS-PNG-0268.json) |47 rasters,24 intervalles,2 076 mesures ; contre-épreuves refusées |
 | Démos | [Revue](visuel-demo/REVUE-DEMOS-0268.md), [inventaire](visuel-demo/INVENTAIRE-PNG-0268.json) |48 images inspectées |
 | Météo | [Revue](REVUE-METEO-0268.json) |41 images inspectées |
+| Portrait et duo | [Revue E3](REVUE-EAU-CAMERAS-0268.json) | 9 images inspectées sur le même HTML |
 | Passages couverts | [Revue](REVUE-COUVERTS-0268.json) |24 images inspectées ; reprise Cimes-rocher sur le même build |
 
-Les 113 captures comprennent89 images du candidat et 24 références historiques 0.2.62. Les rapports conservent les identifiants/digests des artefacts, les empreintes PNG, les observations et leur portée. Les chemins d’images dans ces reçus désignent les fichiers des archives de capture ; ces images ne sont pas des assets du jeu.
+Les 122 captures comprennent 98 images du candidat et 24 références historiques 0.2.62. Les rapports conservent les identifiants/digests des artefacts, les empreintes PNG, les observations et leur portée. Les chemins d’images dans ces reçus désignent les fichiers des archives de capture ; ces images ne sont pas des assets du jeu.
 
 ## Échecs conservés et limites
 

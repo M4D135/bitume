@@ -349,3 +349,10 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
 - Les bras ne doivent plus traverser le buste. Vérifier la silhouette, les épaules, les coudes et les manches sur les surfaces réellement affichées, pendant les gestes et aux trois niveaux de détail. MotionBricks et CMU mocap GLB sont les références fournies pour étudier corps et mouvements ; leur usage/provenance est décrit dans la fiche.
 - En cockpit et en poursuite, la vitesse doit écarter et évacuer les gouttes ; elles ne doivent pas conserver une descente verticale dominante à grande vitesse. Le flux dépend du mouvement et du repère caméra ; gravité à basse vitesse, trajectoires et couches optiques cohérentes. Fiche `docs/reprise/EAU-VITESSE-2026-11-20.md`.
 - Un seul petit lot actif selon `REPRISE.md` : les fiches décrivent E0–E3 pour l’eau et H0–H2/B0–B5 pour l’habitacle/pilote. Le plan publié ne vaut pas correction ni validation de ces défauts.
+
+## Décisions de David — 20 novembre 2026, arcade, saisons et performance
+
+- Vérifier les quatre saisons sur les neuf circuits : végétation, couleurs, feuillage et neige selon les espèces et le climat, particulièrement Route-des-Cimes.
+- Refaire le menu en plusieurs écrans arcade, choix de circuit facile avec son vrai tracé 3D rotatif, navigation complète à la manette.
+- Prioriser la réduction des coûts intrinsèques du moteur pour Xbox Edge et petits PC/GPU intégré Intel ; mesures avant/après à scène identique, profils cohérents et choix manuels préservés. Les modifications FERRO restent canoniques.
+- Avant course, chaque joueur choisit le geste et le klaxon de son emote (classique, ancien, mariage). Les IA choisissent les deux au hasard et réagissent notamment lorsqu’elles dépassent le joueur ; limiter la fréquence.

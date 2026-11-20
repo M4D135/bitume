@@ -1,0 +1,63 @@
+name: Images eau portrait et deux cameras
+
+on:
+  push:
+    branches: ['feat/bitume-eau-cameras-20261120']
+  pull_request:
+    paths:
+      - 'src/jeu.js'
+      - 'src/vitre.js'
+      - 'src/visiere-optique.js'
+      - 'tools/captures-meteo.mjs'
+      - 'tools/controle-visuel.mjs'
+      - '.github/workflows/visuel-eau-cameras.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: visuel-eau-cameras-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        cas: [sillage300-portrait-cockpit, sillage300-portrait-poursuite, duo-vues]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verifier le build et les scenarios supplementaires
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p qualification
+          python3 construire.py 2>&1 | tee qualification/build.log
+          git diff --exit-code -- VERSION.json SIZE.json dist/bitume.html
+          node verifications/captures-meteo.test.mjs > qualification/captures-meteo.log 2>&1
+          git rev-parse HEAD > qualification/COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification/TREE.txt
+          sha256sum dist/bitume.html tools/captures-meteo.mjs tools/controle-visuel.mjs > qualification/SHA256SUMS.txt
+          google-chrome --version > qualification/ENVIRONNEMENT.txt
+          node --version >> qualification/ENVIRONNEMENT.txt
+      - name: Capturer le portrait et les cameras independantes
+        shell: bash
+        run: |
+          node tools/captures-meteo.mjs --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --sortie qualification/visuel-eau-cameras --chrome /usr/bin/google-chrome --cas "${{ matrix.cas }}"
+      - name: Conserver images et diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-eau-cameras-${{ matrix.cas }}-${{ github.sha }}
+          path: qualification/
+          if-no-files-found: error
+          retention-days: 14

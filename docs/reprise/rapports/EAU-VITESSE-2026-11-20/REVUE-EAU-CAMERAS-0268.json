@@ -1,0 +1,334 @@
+{
+  "format": "bitume-revue-eau-cameras-v1",
+  "date": "2026-11-20",
+  "candidat": "0.2.68",
+  "commit": "073b70dd3f7e942a44d073b471b41599d5d6f8c8",
+  "tree": "a73a1031e94519a7c65a3b6319d25f6e591891f0",
+  "runtime": {
+    "sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "octets": 14383155,
+    "identiqueAuCandidatPR39": true
+  },
+  "ci": {
+    "run": 44762219230,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44762219230",
+    "conclusion": "success",
+    "scenarios": 3,
+    "images": 9
+  },
+  "sources": [
+    {
+      "fichier": "tools/captures-meteo.mjs",
+      "sha256": "2fa66ea3102ba7978dddbdfb5cae7bb2bc88c0a72fe2f5a3fd37e8d07ee1071e"
+    },
+    {
+      "fichier": "tools/controle-visuel.mjs",
+      "sha256": "2722939bcff81ab74be92479550d138694b9107c510e7e2bcd16bbf1060e2da9"
+    },
+    {
+      "fichier": "verifications/captures-meteo.test.mjs",
+      "sha256": "2ac8067979181cb7b371189b0b1a03536553d6ab120f5e988f87f548e7a58372"
+    },
+    {
+      "fichier": ".github/workflows/visuel-eau-cameras.yml",
+      "sha256": "bca351439e05a6fd51c8815381a4909ad62bc836df369513366ce225243464d1"
+    }
+  ],
+  "scenes": [
+    {
+      "scenario": "sillage300-portrait-cockpit",
+      "artifact": {
+        "id": 14641174220,
+        "name": "bitume-eau-cameras-sillage300-portrait-cockpit-073b70dd3f7e942a44d073b471b41599d5d6f8c8",
+        "archiveSHA256": "sha256:fc957feda3249690d0b858a29d7cb5ba52694de60624b8bd96f8e99b717258b1"
+      },
+      "rapportSHA256": "8ff387bcbd77d4a276913ecb00a9e74943f501acf0713b4c80f6486a9e341773",
+      "resolution": [
+        540,
+        960,
+        1
+      ],
+      "version": "V0.2.68",
+      "verification": {
+        "erreurs": [],
+        "images": 3,
+        "webgl": "WebGL2 SwiftShader",
+        "physxPret": true
+      },
+      "images": [
+        {
+          "fichier": "0000.png",
+          "sha256": "a0e99cbcb44095fd12098c5d19b1c4153bf8bd4a14da20c5863162c5dcee4e93",
+          "temps": 6.1,
+          "glErreur": 0,
+          "vues": [
+            "cockpit"
+          ],
+          "contexts": [
+            {
+              "joueur": "j1",
+              "vitesseKmh": 300,
+              "pluie": 0,
+              "embruns": 0.9377724461274026,
+              "cameraPitch": 0,
+              "cockpit": true,
+              "eau": 1.4377489768846536
+            }
+          ],
+          "inspection": "Vue en pleine résolution : composition lisible, effet humide visible, aucun défaut bloquant relevé."
+        },
+        {
+          "fichier": "0001.png",
+          "sha256": "4b6e9f86088380698dab952c1c3b06f32b981781c58cc2f6b883cfdf1869147e",
+          "temps": 6.2,
+          "glErreur": 0,
+          "vues": [
+            "cockpit"
+          ],
+          "contexts": [
+            {
+              "joueur": "j1",
+              "vitesseKmh": 300,
+              "pluie": 0,
+              "embruns": 0.9375465028575918,
+              "cameraPitch": 0,
+              "cockpit": true,
+              "eau": 1.4388371215780875
+            }
+          ],
+          "inspection": "Vue en pleine résolution : composition lisible, effet humide visible, aucun défaut bloquant relevé."
+        },
+        {
+          "fichier": "0002.png",
+          "sha256": "cf6ffcdf60ccf8ca01329b3b79ae7efd3d13793f023df725ae27024a8c187251",
+          "temps": 6.3,
+          "glErreur": 0,
+          "vues": [
+            "cockpit"
+          ],
+          "contexts": [
+            {
+              "joueur": "j1",
+              "vitesseKmh": 300,
+              "pluie": 0,
+              "embruns": 0.9373197418894831,
+              "cameraPitch": 0,
+              "cockpit": true,
+              "eau": 1.4398252532455156
+            }
+          ],
+          "inspection": "Vue en pleine résolution : composition lisible, effet humide visible, aucun défaut bloquant relevé."
+        }
+      ]
+    },
+    {
+      "scenario": "sillage300-portrait-poursuite",
+      "artifact": {
+        "id": 14642975016,
+        "name": "bitume-eau-cameras-sillage300-portrait-poursuite-073b70dd3f7e942a44d073b471b41599d5d6f8c8",
+        "archiveSHA256": "sha256:cf97ef9e23c39a808a37433509d351676dd8572a2c2727c5913c6fd3fb7ffbab"
+      },
+      "rapportSHA256": "c8c0962f714d6a628b07ce6e377724d0e389f2ece562a745b9f2ccdf544c02bb",
+      "resolution": [
+        540,
+        960,
+        1
+      ],
+      "version": "V0.2.68",
+      "verification": {
+        "erreurs": [],
+        "images": 3,
+        "webgl": "WebGL2 SwiftShader",
+        "physxPret": true
+      },
+      "images": [
+        {
+          "fichier": "0000.png",
+          "sha256": "af47cab98cc936eeb136c619f5e941a2550309383ba44585cf8675fe78a72358",
+          "temps": 6.1,
+          "glErreur": 0,
+          "vues": [
+            "poursuite"
+          ],
+          "contexts": [
+            {
+              "joueur": "j1",
+              "vitesseKmh": 300,
+              "pluie": 0,
+              "embruns": 0.8109796362435087,
+              "cameraPitch": -0.12,
+              "cockpit": false,
+              "eau": 1.2499327514219114
+            }
+          ],
+          "inspection": "Vue en pleine résolution : composition lisible, effet humide visible, aucun défaut bloquant relevé."
+        },
+        {
+          "fichier": "0001.png",
+          "sha256": "af9c2023d0cfea705ae5a1607631df156721b0dbd4e4eea57294895412695d2f",
+          "temps": 6.2,
+          "glErreur": 0,
+          "vues": [
+            "poursuite"
+          ],
+          "contexts": [
+            {
+              "joueur": "j1",
+              "vitesseKmh": 300,
+              "pluie": 0,
+              "embruns": 0.8104328126701141,
+              "cameraPitch": -0.12,
+              "cockpit": false,
+              "eau": 1.2503790552094225
+            }
+          ],
+          "inspection": "Vue en pleine résolution : composition lisible, effet humide visible, aucun défaut bloquant relevé."
+        },
+        {
+          "fichier": "0002.png",
+          "sha256": "e08d0b51ef60751414d38d66275bc631cc24016d93813d6504bb65415724a217",
+          "temps": 6.3,
+          "glErreur": 0,
+          "vues": [
+            "poursuite"
+          ],
+          "contexts": [
+            {
+              "joueur": "j1",
+              "vitesseKmh": 300,
+              "pluie": 0,
+              "embruns": 0.8098845632909049,
+              "cameraPitch": -0.12,
+              "cockpit": false,
+              "eau": 1.2507353120039022
+            }
+          ],
+          "inspection": "Vue en pleine résolution : composition lisible, effet humide visible, aucun défaut bloquant relevé."
+        }
+      ]
+    },
+    {
+      "scenario": "duo-vues",
+      "artifact": {
+        "id": 14641423157,
+        "name": "bitume-eau-cameras-duo-vues-073b70dd3f7e942a44d073b471b41599d5d6f8c8",
+        "archiveSHA256": "sha256:d4ca44370de77411c52c3349f34002495a1748d34786cdbbcb00a751f2107d82"
+      },
+      "rapportSHA256": "70093c6eea8c8f8f2474b2f3c9a2ebec789bb397e9e5b2ae5e6b3109ecf9bc8e",
+      "resolution": [
+        960,
+        540,
+        1
+      ],
+      "version": "V0.2.68",
+      "verification": {
+        "erreurs": [],
+        "images": 3,
+        "webgl": "WebGL2 SwiftShader",
+        "physxPret": true
+      },
+      "images": [
+        {
+          "fichier": "0000.png",
+          "sha256": "73ba3f5735b1dc6c356b997a41d5dbf17f43c48fd6f35f6c1d7ae63c12f505d1",
+          "temps": 6.1,
+          "glErreur": 0,
+          "vues": [
+            "cockpit",
+            "poursuite"
+          ],
+          "contexts": [
+            {
+              "joueur": "j1",
+              "vitesseKmh": 162,
+              "pluie": 1,
+              "embruns": 0.029597031867472312,
+              "cameraPitch": 0,
+              "cockpit": true,
+              "eau": 0.8030439130145347
+            },
+            {
+              "joueur": "j2",
+              "vitesseKmh": 45,
+              "pluie": 1,
+              "embruns": 0.41283592916879497,
+              "cameraPitch": -0.12,
+              "cockpit": false,
+              "eau": 1.8736462872825586
+            }
+          ],
+          "inspection": "Vue en pleine résolution : composition lisible, effet humide visible, aucun défaut bloquant relevé."
+        },
+        {
+          "fichier": "0001.png",
+          "sha256": "6d91a654f6478754d517b4ea9ad44807e1df63d392e8e4b41f65bad50ddde85c",
+          "temps": 6.2,
+          "glErreur": 0,
+          "vues": [
+            "cockpit",
+            "poursuite"
+          ],
+          "contexts": [
+            {
+              "joueur": "j1",
+              "vitesseKmh": 162,
+              "pluie": 1,
+              "embruns": 0.029597031867472312,
+              "cameraPitch": 0,
+              "cockpit": true,
+              "eau": 0.8038285796629964
+            },
+            {
+              "joueur": "j2",
+              "vitesseKmh": 45,
+              "pluie": 1,
+              "embruns": 0.41283592916879497,
+              "cameraPitch": -0.12,
+              "cockpit": false,
+              "eau": 1.875477056097088
+            }
+          ],
+          "inspection": "Vue en pleine résolution : composition lisible, effet humide visible, aucun défaut bloquant relevé."
+        },
+        {
+          "fichier": "0002.png",
+          "sha256": "203e30fcdd40c35dfe59ffdb43a28c829c383e52b2fc59194bc19fdbd0978e05",
+          "temps": 6.3,
+          "glErreur": 0,
+          "vues": [
+            "cockpit",
+            "poursuite"
+          ],
+          "contexts": [
+            {
+              "joueur": "j1",
+              "vitesseKmh": 162,
+              "pluie": 1,
+              "embruns": 0.029597031867472312,
+              "cameraPitch": 0,
+              "cockpit": true,
+              "eau": 0.8045587362223026
+            },
+            {
+              "joueur": "j2",
+              "vitesseKmh": 45,
+              "pluie": 1,
+              "embruns": 0.41283592916879497,
+              "cameraPitch": -0.12,
+              "cockpit": false,
+              "eau": 1.8771806430420956
+            }
+          ],
+          "inspection": "Vue en pleine résolution : composition lisible, effet humide visible, aucun défaut bloquant relevé."
+        }
+      ]
+    }
+  ],
+  "limites": [
+    "Scènes disposées et positions figées : ceci ne constitue pas un essai de conduite.",
+    "Raster logiciel SwiftShader et horloge imposée : aucun FPS matériel qualifié.",
+    "Inspection de composition et intégration. Les trajectoires pixel par pixel sont qualifiées séparément par les PNG natifs et les témoins négatifs.",
+    "Deux portraits solo à 300 km/h ; duo 960×540 avec J1 cockpit à 162 km/h et J2 poursuite à 45 km/h.",
+    "La correction de géométrie habitacle/pilote reste un lot distinct."
+  ]
+}
