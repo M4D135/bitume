@@ -58,12 +58,15 @@ test('les trois gestes ont des doigts distincts ; majeur dressé seul et quatre 
 test('les gestes lèvent un vrai gant au-dessus du jonc, avec les doigts lisibles de dehors', () => {
   const modele = creer(), ev = pose(), hauteurs = {};
   for (const geste of ['majeur', 'poing', 'salut']) for (const gesteCote of [-1, 1]) {
-    Object.assign(ev.pilote, { geste, gesteCote, gesteIntensite: 1 }); V.poser(modele, ev, []);
+    Object.assign(ev.pilote, { geste, gesteCote, gesteIntensite: 1 }); const sortie = []; V.poser(modele, ev, sortie);
     const role = 'gant-' + (gesteCote < 0 ? 0 : 1) + '-0';
     const gant = modele.objetsRendu.pilote.variantes[0].pieces.find(p => p.role === role).objet, points = sommets(gant);
     const ymin = Math.min(...points.map(p => p[1])), ymax = Math.max(...points.map(p => p[1]));
-    assert.ok(ymin > .90 && ymax > 1.01, 'gant réellement levé : ' + JSON.stringify({ geste, gesteCote, ymin, ymax }));
-    assert.ok(points.every(p => gesteCote * p[2] > .17), 'gant à côté du casque');
+    const hautJonc = Math.max(...sommets(sortie.find(o => o.shape === V.FORMES.jonc.nom)).map(p => p[1]));
+    const hautVisiere = Math.max(...sommets(sortie.find(o => o.shape === V.FORMES['pilote-visiere'].nom)).map(p => p[1]));
+    const coteCasque = Math.max(...sommets(sortie.find(o => o.shape === V.FORMES['pilote-casque'].nom)).map(p => gesteCote * p[2]));
+    assert.ok(ymin > hautJonc + .03 && ymax > hautVisiere + .05, 'gant levé au-dessus du jonc et de la visière réellement posés : ' + JSON.stringify({ geste, gesteCote, ymin, ymax, hautJonc, hautVisiere }));
+    assert.ok(points.every(p => gesteCote * p[2] > coteCasque + .015), 'gant dégagé latéralement du vrai casque');
     hauteurs[geste] = ymax;
   }
   assert.ok(hauteurs.majeur > hauteurs.poing + .035, 'silhouette du majeur reconnaissable');
