@@ -1159,11 +1159,24 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
       const ROCHE = [.43, .41, .38], ROCHE2 = [.36, .35, .33], ROCHE3 = [.48, .46, .42];
       if (!tunnelLampes) tunnelLampes = [];
       for (let i = iD; i < iF; i += PAS_T) {
-        const f0 = cadreOuvrage(c, i), f1 = cadreOuvrage(c, Math.min(i + PAS_T, iF)), y0 = hauteurRoute(f0, 0, w), y1 = hauteurRoute(f1, 0, w);
+        const suivant = Math.min(i + PAS_T, iF), f0 = cadreOuvrage(c, i), f1 = cadreOuvrage(c, suivant), y0 = hauteurRoute(f0, 0, w), y1 = hauteurRoute(f1, 0, w);
         const objets = [], loin = [];
-        const a0 = pointPlan(f0, 0, y0), a1 = pointPlan(f1, 0, y1), axe = [a1[0] - a0[0], a1[1] - a0[1], a1[2] - a0[2]], long = Math.hypot(...axe) + .05;
+        const a0 = pointPlan(f0, 0, y0), a1 = pointPlan(f1, 0, y1), axe = [a1[0] - a0[0], a1[1] - a0[1], a1[2] - a0[2]], longueurAxe = Math.hypot(...axe);
+        // Deux boîtes de longueur centrale laissent une fente du côté extérieur d'une courbe.
+        // Prolonger seulement les joints intérieurs, selon l'angle des vraies cordes voisines ;
+        // les portails et le tunnel droit historique gardent exactement leurs extrémités.
+        const raccord = (dx, dz) => {
+          const angle = Math.abs(Math.atan2(dx * axe[2] - dz * axe[0], dx * axe[0] + dz * axe[2]));
+          return angle < 1e-7 ? 0 : Math.tan(Math.min(angle / 2, .45));
+        };
+        const avant = i > iD ? cadreOuvrage(c, Math.max(iD, i - PAS_T)) : null;
+        const apres = suivant < iF ? cadreOuvrage(c, Math.min(iF, suivant + PAS_T)) : null;
+        const joint0 = avant ? raccord(f0.x - avant.x, f0.z - avant.z) : 0;
+        const joint1 = apres ? raccord(apres.x - f1.x, apres.z - f1.z) : 0;
+        const ajout0 = (M + .7) * joint0, ajout1 = (M + .7) * joint1;
+        const long = longueurAxe + .05 + ajout0 + ajout1, translation = (ajout1 - ajout0) / (2 * longueurAxe);
         const no = [Math.sin(f0.devers) * f0.r[0], Math.cos(f0.devers), Math.sin(f0.devers) * f0.r[2]], rotSol = angles(...base(axe, no));
-        const milieu = (d, h) => { const p = pointPlan(f0, d, (y0 + y1) / 2 + h), q = pointPlan(f1, d, 0); return [(p[0] + q[0]) / 2, p[1], (p[2] + q[2]) / 2]; };
+        const milieu = (d, h) => { const p = pointPlan(f0, d, (y0 + y1) / 2 + h), q = pointPlan(f1, d, 0); return [(p[0] + q[0]) / 2 + axe[0] * translation, p[1] + axe[1] * translation, (p[2] + q[2]) / 2 + axe[2] * translation]; };
         // revêtement intérieur (4 cm au-dessus de la nappe) et lignes de rive
         const sol = marquerSolide({ shape: 'box', p: milieu(0, -.01), s: [long, .1, 2 * M], r: rotSol, mat: 7, color: SOL, outdoor: false, surface: 'object' }, 'sol-tunnel', 1, 'piste');
         objets.push(sol); loin.push(sol);
@@ -1171,11 +1184,14 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
         for (const cote of [-1, 1]) {
           const p0 = pointPlan(f0, cote * (M + .3), y0), p1 = pointPlan(f1, cote * (M + .3), y1);
           const dir = [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]], rot = angles(...base(dir, [0, 1, 0]));
-          const m = [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, (p0[2] + p1[2]) / 2];
-          const mur = marquerSolide({ shape: 'box', p: [m[0], m[1] + H / 2 - .2, m[2]], s: [long, H + .4, .6], r: rot, mat: 3, color: BETON, outdoor: false }, 'mur-tunnel');
+          const courbe = joint0 > 0 || joint1 > 0, longueurMur = courbe ? Math.hypot(...dir) : longueurAxe;
+          const longMur = courbe ? longueurMur + .05 + .3 * (joint0 + joint1) : long;
+          const translationMur = courbe ? .3 * (joint1 - joint0) / (2 * longueurMur) : 0;
+          const m = [(p0[0] + p1[0]) / 2 + dir[0] * translationMur, (p0[1] + p1[1]) / 2 + dir[1] * translationMur, (p0[2] + p1[2]) / 2 + dir[2] * translationMur];
+          const mur = marquerSolide({ shape: 'box', p: [m[0], m[1] + H / 2 - .2, m[2]], s: [longMur, H + .4, .6], r: rot, mat: 3, color: BETON, outdoor: false }, 'mur-tunnel');
           objets.push(mur); loin.push(mur);
           // bande réfléchissante, et une lampe tous les 12 m de chaque côté, en quinconce
-          objets.push({ shape: 'box', p: [m[0] - f0.r[0] * cote * .32, m[1] + .9, m[2] - f0.r[2] * cote * .32], s: [long, .14, .02], r: rot, mat: 16, color: [.85, .72, .2], outdoor: false });
+          objets.push({ shape: 'box', p: [m[0] - f0.r[0] * cote * .32, m[1] + .9, m[2] - f0.r[2] * cote * .32], s: [longMur, .14, .02], r: rot, mat: 16, color: [.85, .72, .2], outdoor: false });
           if ((Math.round((i - iD) / PAS_T) + (cote > 0 ? 0 : 2)) % 4 === 0) {
             const lampe = { shape: 'box', p: [m[0] - f0.r[0] * cote * .34, m[1] + H - .6, m[2] - f0.r[2] * cote * .34], s: [1.1, .16, .08], r: rot, mat: 5, color: [1, .86, .58], emissive: 2.4, outdoor: false };
             objets.push(lampe); loin.push(lampe);
@@ -1183,7 +1199,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
           }
         }
         const c0 = pointPlan(f0, 0, y0 + H + .35), c1 = pointPlan(f1, 0, y1 + H + .35), dir = [c1[0] - c0[0], c1[1] - c0[1], c1[2] - c0[2]];
-        const voute = marquerSolide({ shape: 'box', p: [(c0[0] + c1[0]) / 2, (c0[1] + c1[1]) / 2, (c0[2] + c1[2]) / 2], s: [long, .7, 2 * M + 1.4], r: angles(...base(dir, [0, 1, 0])), mat: 3, color: VOUTE, outdoor: false }, 'voute-tunnel');
+        const voute = marquerSolide({ shape: 'box', p: [(c0[0] + c1[0]) / 2 + axe[0] * translation, (c0[1] + c1[1]) / 2 + axe[1] * translation, (c0[2] + c1[2]) / 2 + axe[2] * translation], s: [long, .7, 2 * M + 1.4], r: angles(...base(dir, [0, 1, 0])), mat: 3, color: VOUTE, outdoor: false }, 'voute-tunnel');
         objets.push(voute); loin.push(voute);
         ajouter(objets, loin, f0.x, f0.z);
       }
