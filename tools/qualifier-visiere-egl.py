@@ -4,6 +4,8 @@
 Usage : python3 tools/qualifier-visiere-egl.py --sortie /tmp/bitume-visiere
 Nécessite Node, libEGL/libGL, NumPy et Pillow. Aucun navigateur ni FPS matériel qualifié.
 Les états viennent de la simulation du jeu ; aucune image de référence n'est importée.
+Le succès exige le raster ET les trajectoires mesurées dans ses PNG ; une preuve
+directionnelle insuffisante est conservée dans le rapport et produit un code 1.
 """
 import argparse
 import ctypes as C
@@ -33,7 +35,13 @@ spec = importlib.util.spec_from_file_location('bitume_egl', helper)
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 ctx = module.Context(960, 540)
-source = (root / 'src/visiere-optique.js').read_text()
+paths_sources = ['src/visiere-optique.js', 'src/vitre.js', 'tools/qualifier-visiere-egl.py', 'tools/qualification/visiere-png.py']
+sources = {nom: (root / nom).read_bytes() for nom in paths_sources}
+source = sources['src/visiere-optique.js'].decode()
+empreintes = {nom: hashlib.sha256(data).hexdigest() for nom, data in sources.items()}
+(out / 'sources').mkdir()
+for nom, data in sources.items():
+    (out / 'sources' / Path(nom).name).write_bytes(data)
 vertex = re.search(r'const VERTEX = `([\s\S]*?)`;', source).group(1)
 fragment = re.search(r'const FRAGMENT = `([\s\S]*?)`;', source).group(1)
 program = ctx.program(vertex, fragment, varyings=())
@@ -74,12 +82,13 @@ simuler('legere',{qualite:'low',vitesse:235/3.6,embruns:.8});
 simuler('sec',{pluie:0});
 // Même shader et même état du jeu, couches isolées uniquement par leurs poids uniformes.
 // Les centres suivis dans les PNG prouvent le sens du mouvement, distinctement du nombre de sorties.
-if(O.COUCHES)for(const cockpit of [true,false])for(const vitesse of [0,300/3.6])for(const couche of [3,4]){
+if(O.COUCHES)for(const cockpit of [true,false])for(const vitesse of [0,300/3.6])for(const couche of [1,2,3,4]){
+ if(couche<3 && !vitesse)continue; // À l'arrêt, le déplacement fin est subpixel sur ce court intervalle.
  const e=O.creerEtat({graine:4}),c={qualite:'high',actif:true,pluie:1,neige:0,embruns:0,vitesse,intensite:1,
   cockpit,largeur:1280,hauteur:720};
  for(let i=1;i<=108;i++){
   O.avancerEtat(e,1/120,c);if(![12,48,108].includes(i))continue;
-  const nom=`trajet-${cockpit?'cockpit':'poursuite'}-${vitesse?300:0}-${couche===3?'perles':'film'}-${i}`;
+  const nom=`trajet-${cockpit?'cockpit':'poursuite'}-${vitesse?300:0}-${['micro','perles-fines','perles-moyennes','perles','film'][couche]}-${i}`;
   const f=instantane(e,c,nom);f.uniformes[0]=1.7;f.uniformes[1]=f.uniformes[2]=f.uniformes[3]=0;f.nombre=0;
   for(let j=0;j<12;j++)if(j!==couche*2)f.transport[j*4+3]=0;
   f.suivi={groupe:nom.slice(0,nom.lastIndexOf('-')),image:i,cockpit,vitesse,couche,transport:f.transport.slice(couche*8,couche*8+4)};
@@ -172,11 +181,11 @@ def mesurer_raster(f, programme):
 
 report = {
     'source': 'GLSL ES 3.00 exact de src/visiere-optique.js et états de la simulation réelle ; mire procédurale.',
-    'sourceSha256': hashlib.sha256(source.encode()).hexdigest(), 'contexte': ctx.info, 'compilation': True,
+    'sourceSha256': hashlib.sha256(source.encode()).hexdigest(), 'sourcesSha256': empreintes,
+    'contexte': ctx.info, 'compilation': True,
     'limites': ['Mire de matière, pas capture de course.', 'Raster logiciel Mesa, ni WebGL navigateur ni FPS matériel qualifiés.'],
     'cas': [],
 }
-suivis = {}
 for f in fixtures:
     g.glViewport(0, 0, w, h)
     g.glDisable(0x0B71)
@@ -215,14 +224,27 @@ for f in fixtures:
         'alphaCentre': float(np.mean(alpha[~border]) / 255), 'pixelsSha256': hashlib.sha256(pixels.tobytes()).hexdigest(),
         'rasterLogiciel': temps,
     })
-    if f.get('suivi'):
-        suivis.setdefault(f['suivi']['groupe'], []).append((f, alpha.copy()))
 cases = {c['nom']: c for c in report['cas']}
 assert cases['sillage300']['alphaMoyen'] > cases['pluie300']['alphaMoyen'] * 2
 assert cases['sillage300-poursuite']['alphaMoyen'] > .1
 assert cases['sillage300-pause']['pixelsSha256'] == cases['sillage300']['pixelsSha256']
 assert cases['neige45']['alphaBords'] > cases['neige45']['alphaCentre'] * 1.5
 assert cases['depots-sans-film']['pixelsAlphaNonNul'] > 300
-report['reussi'] = True
+report['raster'] = {'reussi': True, 'cas': len(cases), 'erreursGL': 0}
+spec = importlib.util.spec_from_file_location('bitume_visiere_png', root / 'tools/qualification/visiere-png.py')
+mesures = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(mesures)
+trajectoires = mesures.analyser(out)
+(out / 'trajectoires-png.json').write_text(json.dumps(trajectoires, ensure_ascii=False, indent=2) + '\n')
+report['trajectoires'] = {'reussi': trajectoires['reussi'], **trajectoires['synthese'],
+                         'recu': 'trajectoires-png.json',
+                         'sha256': hashlib.sha256((out / 'trajectoires-png.json').read_bytes()).hexdigest()}
+report['sourcesStables'] = all((root / nom).read_bytes() == data for nom, data in sources.items())
+report['reussi'] = trajectoires['reussi'] and report['sourcesStables']
+report['statut'] = ('conforme' if report['reussi'] else 'sources_modifiees_pendant_mesure' if not report['sourcesStables']
+                    else 'trajectoires_non_conformes' if trajectoires['synthese']['nonConformes'] else 'trajectoires_insuffisantes')
 (out / 'rapport.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
-print(json.dumps({'sortie': str(out), 'cas': len(report['cas']), 'reussi': True, 'contexte': ctx.info}, ensure_ascii=False))
+print(json.dumps({'sortie': str(out), 'cas': len(report['cas']), 'compilation': True,
+                  'rasterReussi': True, 'trajectoires': report['trajectoires'],
+                  'reussi': report['reussi'], 'statut': report['statut'], 'contexte': ctx.info}, ensure_ascii=False))
+raise SystemExit(0 if report['reussi'] else 1)

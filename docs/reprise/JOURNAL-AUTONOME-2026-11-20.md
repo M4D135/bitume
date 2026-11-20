@@ -275,3 +275,25 @@ mesuré dans les pixels ; l’extension aux fines/moyennes a détecté un faux p
 de l’appariement prédit sur PNG identique. L’identité des perles doit donc venir
 des voisinages observés et les négatifs doivent rester bloquants. Cette entrée
 précède le verdict natif final et la campagne CI : ne pas les supposer réussis.
+
+## 019 — verdict des pixels indépendant ; campagne finale prête
+
+La 0.2.68 est poussée en checkpoint `da4ac263`, arbre `440eec59`, sans déclencher
+une campagne intermédiaire. Le suivi des fines/moyennes compare les voisinages
+géométriques observés ; celui des grandes perles/nappes compare les motifs alpha
+avec unicité, corrélation et retour mutuel. Aucun transport annoncé ne choisit
+l’identité. L’ancienne méthode produisait un faux positif sur PNG identique ;
+ce cas est désormais bloquant. Les seuils de suffisance restent 12 mesures par
+intervalle, deux par quadrant et 90 % conformes dans chacun.
+
+La réanalyse des mêmes PNG natifs exacts donne 24/24 intervalles conformes et
+2 076 mesures hors centre. Les huit tests dédiés passent. Sur de vrais PNG,
+huit intervalles répétés, huit avec opacité seule et huit inversés sont refusés ;
+la suppression des métadonnées de transport laisse huit résultats inchangés.
+Les rasters initiaux et leurs verdicts insuffisants ne sont pas réécrits.
+
+Le workflow ajoute séparément ces tests Python aux 160 suites Node. La prochaine
+publication sans skip-ci lance la campagne générale et les 20 groupes d’images
+de la PR39. Le HTML garde exactement le SHA60184ddf de l’entrée018. Cette preuve
+native sur mire ne remplace pas les images du jeu ni les essais de performance
+matérielle ; le surcoût logiciel initial reste une réserve explicite.

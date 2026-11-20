@@ -50,7 +50,7 @@
       "id": "eau_vitesse",
       "objectif": "Écarter et évacuer les gouttes selon vitesse, flux et orientation caméra",
       "etat": "in_progress",
-      "phase": "candidat_0268_construit_validation_integration",
+      "phase": "candidat_0268_pret_campagne_complete",
       "dependances": [
         "references"
       ],

@@ -29,13 +29,25 @@
       "recu": "TRAJECTOIRES-CANDIDAT.json",
       "attribution": "Mesures précédant la construction ; VERSION initiale conservée 0.2.66, sources vitre et outil identiques."
     },
-    "images_natives": "verdict_directionnel_en_finalisation",
+    "images_natives": "24_intervalles_conformes_2076_mesures_independantes_reanalyse_des_png",
     "campagne_generale": "a_lancer",
-    "captures_jeu": "a_lancer"
+    "captures_jeu": "a_lancer",
+    "oracle_pixels": {
+      "tests_regression": 8,
+      "negatifs_reels": {
+        "repete": 8,
+        "opacite_seule": 8,
+        "inverse": 8,
+        "invariance_sans_transport": 8
+      },
+      "statut": "conforme",
+      "script_sha256": "c8591fcc5873b6ac71b96fd592d780548d0e83b52aab688c4e27f3772a99a4c1"
+    }
   },
   "reserves": [
     "Le coût llvmpipe initial en poursuite augmente de 16,10 à 19,66 ms ; aucune qualification FPS matériel.",
     "Les quatre échecs 0.2.65, le premier test de cadence, les intervalles natifs insuffisants et les faux positifs de suivi des perles restent consignés.",
     "Habitacle commun, pilote abaissé et dégagement bras/buste restent un lot distinct préparé."
-  ]
+  ],
+  "checkpoint_runtime": "da4ac263bcc45ff3bf429df212045fcd9e344b0a"
 }

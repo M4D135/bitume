@@ -19,14 +19,15 @@ sans confondre tangage visuel et montée ; 18 contrôles d’intégration confor
 Les 112 contrôles CPU gardent leurs sources exactes et leur attribution antérieure.
 **Main jouable reste 0.2.66** ; campagne générale et images du jeu final à qualifier.
 
-[PR #39](https://github.com/M4D135/bitume/pull/39), checkpoint 0.2.67 publié `a8a2369`.
+[PR #39](https://github.com/M4D135/bitume/pull/39), checkpoint 0.2.68 publié `da4ac263`
+après le candidat initial 0.2.67 `a8a2369`.
 Fiche : [eau et vitesse](docs/reprise/EAU-VITESSE-2026-11-20.md).
 Reçu : `docs/reprise/rapports/EAU-VITESSE-2026-11-20/CANDIDAT-0268.json`.
-Terminer le suivi indépendant des motifs dans les PNG, publier la tête finale,
-puis campagne générale et captures exactes par CI (Chromium local bloqué).
-Les nappes sont déjà mesurées sans prédiction ; le négatif « PNG identique mais
-uniformes en mouvement » a révélé un faux positif de l’ancien appariement des perles.
-Le verdict final doit le refuser. Aucun contrôle incomplet n’est annoncé conforme.
+Suivi des motifs dans les PNG : **24/24 intervalles conformes, 2 076 mesures**,
+sans utiliser le transport prédit pour identifier les perles/nappes. Huit tests
+de régression passent ; les images répétées, opacité seule et trajectoires
+inversées sont refusées. L’ancien faux positif et les insuffisances sont conservés.
+Prochaine étape : campagne générale et captures exactes par CI (Chromium local bloqué).
 
 Le [plan habitacle/pilote](docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md)
 reste préparé à H0/B0 : habitacle unique, assise plus basse et dégagement bras/buste.
@@ -41,5 +42,5 @@ reste préparé à H0/B0 : habitacle unique, assise plus basse et dégagement br
 
 [Publication de consolidation](docs/reprise/rapports/CONSOLIDATION-2026-11-20/PUBLICATION.json) ·
 [Préparations](docs/reprise/preparations/README.md) ·
-[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **018**.
+[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **019**.
 Lecture minimale : ce fichier, `ETAT.json` → `etat_courant`, puis la seule fiche active.
